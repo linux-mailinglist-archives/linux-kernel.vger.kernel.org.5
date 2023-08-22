@@ -2,95 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CF4F784BC0
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 23:01:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65421784BC7
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 23:07:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230452AbjHVVBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 17:01:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49462 "EHLO
+        id S230247AbjHVVHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 17:07:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229929AbjHVVBU (ORCPT
+        with ESMTP id S230018AbjHVVHF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 17:01:20 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBF681B0;
-        Tue, 22 Aug 2023 14:01:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=A8/vJDmnxqneK9l/E7LtDD+PprhiMBOzpHX1desAXDs=; b=aBdwc+wnbyM/Fbk0LQyrKzXMtO
-        6tDJZHqjzVKT0VdJP9YIltqPeMY4fECpuun6hwyMP1yi2Q3ShUFBfCgaEZEmhjhU1vZQ+mKRD6WWh
-        Qh1OBEcVDn84gf7XQQ9iwYkn94NTL2sXtPaxk9+LyNW1M81F5gHgN019Xdzz5GbB0kL2snueS6rtG
-        7/W8oWx9DdTlJmmlAZNccAfQaT+SbimsKC0M8WSGi5PM8GXnKLqmWsd0lTygMcB7RjnQbO7xmdLeZ
-        oLNduG1TEBMXPmfxLvWqQbbRjwofYF2BXbx6uZQWAD8xNUd9kGEHW06ABDwOAf4dVWs63GJDrLjuo
-        EAzE937g==;
-Received: from [2601:1c2:980:9ec0::2764]
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qYYV3-00GnT7-0l;
-        Tue, 22 Aug 2023 21:01:17 +0000
-Message-ID: <1812e39f-ddbc-d655-5d04-0a13d04437ab@infradead.org>
-Date:   Tue, 22 Aug 2023 14:01:16 -0700
+        Tue, 22 Aug 2023 17:07:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB545CF3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 14:06:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692738381;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=eozuvkXZf7lt2j4GJR5fEMVPoz5joKAi735jAZphMzo=;
+        b=BAb2chtr9jmuQF5TF6QDuWcbsUTQ76d9cS4AeyY/6s0XOKW6dcE3q+UTThGPxKWgwOHUGZ
+        17XScQKR2J2mMyRNQ6T6885wXIXK7g4ClkNQ98nLy8Oh/0SlmKnveaeIAh3nl6o8kWNpmn
+        vQCDDgfA8gnic7SnEgoPVD9ItSwQW9c=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-416-8S8a3y05OKuv6OpUkkBPFA-1; Tue, 22 Aug 2023 17:06:19 -0400
+X-MC-Unique: 8S8a3y05OKuv6OpUkkBPFA-1
+Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-4fe3c8465e0so5260151e87.1
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 14:06:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692738374; x=1693343174;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eozuvkXZf7lt2j4GJR5fEMVPoz5joKAi735jAZphMzo=;
+        b=bpLe/zYw+C7fQBjgMr4uAeAbXh6IwCuwlFvTnN1rhOMk1wwQtxKtwvnPW67fT8Hqyk
+         62l33NRpHgY58WqjQxDLfu1n95nip8ex54F+KrPTKfoaptZg83g+b3BBMUU19DalojdS
+         sGmSnKkieSBrRYiAGxLXcU8fnrN1rzU+MBz++Eqtl65nOefts79s0VhH0M/SMVehYYI7
+         os8kCdXl+JknRDAPoKWAf4E0BzXbJpNG9XiMtErz4L0eGjp3bSu+UlnYjnuPxZlwjeDV
+         cmjDBDIxsP3VZDdzoHz3VSx24cms95b9WqXal87neiAmJ8aVKveZ5USo/QMnvynZKei2
+         pjsA==
+X-Gm-Message-State: AOJu0Ywl7ebul2NF59MrbF/KklyJZSkNROkC4E6BrxynaAMwpDHs7ooX
+        uksTT9ruTsZqceKzWBBEEu9L+mD+aJA5u/ZFwkhs1Vq5TTJZWnOF3+xP43noXkBsVW9gMDpqyNA
+        yS2/spIrS3RMrtd8oJPTL4E4IGe345mQOwUIhlxx8
+X-Received: by 2002:ac2:55a7:0:b0:500:8fcd:c3b5 with SMTP id y7-20020ac255a7000000b005008fcdc3b5mr1464016lfg.12.1692738374175;
+        Tue, 22 Aug 2023 14:06:14 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHeNyF1wlvbOJcWPDTAWORFiO3zXf51SnVR8DhrtgaVaRfNn3Wuj/OWqV2eXbAGJfYHTm1809Rq9Jm3OA9QzNg=
+X-Received: by 2002:ac2:55a7:0:b0:500:8fcd:c3b5 with SMTP id
+ y7-20020ac255a7000000b005008fcdc3b5mr1464006lfg.12.1692738373861; Tue, 22 Aug
+ 2023 14:06:13 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 1/1] media: via: Use correct dependency for camera sensor
- drivers
-Content-Language: en-US
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-media@vger.kernel.org
-Cc:     hverkuil@xs4all.nl, Stephen Rothwell <sfr@canb.auug.org.au>,
+References: <CAFhGd8ryUcu2yPC+dFyDKNuVFHxT-=iayG+n2iErotBxgd0FVw@mail.gmail.com>
+ <CAKwvOd=p_7gWwBnR_RHUPukkG1A25GQy6iOnX_eih7u65u=oxw@mail.gmail.com>
+ <CAO-hwJLio2dWs01VAhCgmub5GVxRU-3RFQifviOL0OTaqj9Ktg@mail.gmail.com> <CAFhGd8qmXD6VN+nuXKtV_Uz14gzY1Kqo7tmOAhgYpTBdCnoJRQ@mail.gmail.com>
+In-Reply-To: <CAFhGd8qmXD6VN+nuXKtV_Uz14gzY1Kqo7tmOAhgYpTBdCnoJRQ@mail.gmail.com>
+From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date:   Tue, 22 Aug 2023 23:06:02 +0200
+Message-ID: <CAO-hwJJ_ipXwLjyhGC6_4r-uZ-sDbrb_W7um6F2vgws0d-hvTQ@mail.gmail.com>
+Subject: Re: selftests: hid: trouble building with clang due to missing header
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
+        linux-input@vger.kernel.org,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-next@vger.kernel.org, Wentong Wu <wentong.wu@intel.com>,
-        Zhifeng Wang <zhifeng.wang@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-References: <20230822081034.3869843-1-sakari.ailus@linux.intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20230822081034.3869843-1-sakari.ailus@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Nathan Chancellor <nathan@kernel.org>,
+        Kees Cook <keescook@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Aug 22, 2023 at 10:57=E2=80=AFPM Justin Stitt <justinstitt@google.c=
+om> wrote:
+>
+[...]
+> > > > Here's the invocation I am running to build kselftest:
+> > > > `$ make LLVM=3D1 ARCH=3Dx86_64 mrproper headers && make LLVM=3D1 AR=
+CH=3Dx86_64
+> > > > -j128 V=3D1 -C tools/testing/selftests`
+> >
+> > I think I fixed the same issue in the script I am running to launch
+> > those tests in a VM. This was in commit
+> > f9abdcc617dad5f14bbc2ebe96ee99f3e6de0c4e (in the v6.5-rc+ series).
+> >
+> > And in the commit log, I wrote:
+> > ```
+> > According to commit 01d6c48a828b ("Documentation: kselftest:
+> > "make headers" is a prerequisite"), running the kselftests requires
+> > to run "make headers" first.
+> > ```
+> >
+> > So my assumption is that you also need to run "make headers" with the
+> > proper flags before compiling the selftests themselves (I might be
+> > wrong but that's how I read the commit).
+>
+> In my original email I pasted the invocation I used which includes the
+> headers target. What are the "proper flags" in this case?
+>
 
+"make LLVM=3D1 ARCH=3Dx86_64 headers" no?
 
-On 8/22/23 01:10, Sakari Ailus wrote:
-> The via camera controller driver selected ov7670 driver, however now that
-> driver has dependencies and may no longer be selected unconditionally.
-> 
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Fixes: 7d3c7d2a2914 ("media: i2c: Add a camera sensor top level menu")
-> Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+But now I'm starting to wonder if that was not the intent of your
+combined "make mrproper headers". I honestly never tried to combine
+the 2. It's worth a try to split them I would say.
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-Tested-by: Randy Dunlap <rdunlap@infradead.org>
+Cheers,
+Benjamin
 
-Thanks.
-
-> ---
->  drivers/media/platform/via/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/media/platform/via/Kconfig b/drivers/media/platform/via/Kconfig
-> index 8926eb0803b2..6e603c038248 100644
-> --- a/drivers/media/platform/via/Kconfig
-> +++ b/drivers/media/platform/via/Kconfig
-> @@ -7,7 +7,7 @@ config VIDEO_VIA_CAMERA
->  	depends on V4L_PLATFORM_DRIVERS
->  	depends on FB_VIA && VIDEO_DEV
->  	select VIDEOBUF2_DMA_SG
-> -	select VIDEO_OV7670
-> +	select VIDEO_OV7670 if VIDEO_CAMERA_SENSOR
->  	help
->  	   Driver support for the integrated camera controller in VIA
->  	   Chrome9 chipsets.  Currently only tested on OLPC xo-1.5 systems
-
--- 
-~Randy
