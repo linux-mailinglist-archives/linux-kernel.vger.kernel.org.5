@@ -2,182 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FFA7784C26
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 23:37:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1409784C23
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 23:37:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231379AbjHVVh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 17:37:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57422 "EHLO
+        id S231377AbjHVVhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 17:37:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229999AbjHVVhZ (ORCPT
+        with ESMTP id S229999AbjHVVhR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 17:37:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D8FBCE6
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 14:36:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692740196;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tBQOgMQJRUbh9wxMdCk/gDJiess5vlOHWyyr/sOqAOQ=;
-        b=MiV+QQwhrgRaBR3tZU1Nz7HRLcjm+sS1HZ7b7bkD4uI2kRnV2g71Z+58oRD1bpaN7Jlrdh
-        wvCfs89kMXhljz/XgXKZ33/uPKlwDcfRM7JJwMLQVaWlKASRBZ11n3GFDhDchxL+NV+2Qp
-        3r9vIn948gBEl+cur4Ti0i+ciM5uL60=
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
- [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-691-epMc1IkoPAO0W4NZU7zxbw-1; Tue, 22 Aug 2023 17:36:34 -0400
-X-MC-Unique: epMc1IkoPAO0W4NZU7zxbw-1
-Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-4fe3c8465e0so5282583e87.1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 14:36:33 -0700 (PDT)
+        Tue, 22 Aug 2023 17:37:17 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27F85CE8
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 14:37:16 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2bb8a12e819so77309261fa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 14:37:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692740234; x=1693345034;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UWG+u89MMAHtiBm7y83iu0g0+SiXpFk+lzAlRc4AybQ=;
+        b=NYxZXtGFfl4kr/DbeQO9NS4V0Q5C7O6vUyG27wCl1RHj5+GeB50prkqHQglhjBKi65
+         X4Mj5wFqzRWyFX9TuKOpBsX0KRldI0+dW70K/b7HbK1w2VIgbLkcvfZZIuogCpOWuNnB
+         O7YvhvyTRL+wA+XibMUf0pbXbK8YSgmGN++SrDb0neiXcJzU6CkVGwCEcDDKwBDcAeOv
+         BLA4RusqWxapjJvYe6hijnB01BnmtXJlHFOhBi+4EEm9bmT/ii6miMwiGTzpUtp3vc8h
+         TFPcwfxLlYX7EmlKH8Po5JdoFuq0w2lbslMSjrO6qE8rcARSEWVuQ2mA6ggyVmvwzo9v
+         cF4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692740192; x=1693344992;
+        d=1e100.net; s=20221208; t=1692740234; x=1693345034;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=tBQOgMQJRUbh9wxMdCk/gDJiess5vlOHWyyr/sOqAOQ=;
-        b=HdGFV3a4KstBYixEXyIOX7A0xWAW8Ky6yeh+GUXRKAWmIkIUVmKvIPs81V5A1YapNu
-         UCHhTGaN9SVU/1+vf7Cs0szi2HQLl/zNTB9oCgYvByQf5hWkDmct2e5waaWVy96JQg0B
-         8T9mPEkczYCcf/KFqxgdxk3aO9nK1m+P15SiQ94xkYIrH7gONBhjfGoWaJdCJAh9dizT
-         6y1lhSBjjQw4WhHaI5u7L67sceyI+DmiVBvTEaLh0p+GGocygeysyAYWueRvrX6ImjE1
-         g6F9j7DzABr4rZ84ce6Mm+ctGY3QDd9ZuVwLCRlaYO3ZdrwehJSCBtivGPDPdeqvWV9/
-         maOg==
-X-Gm-Message-State: AOJu0YyUa9TP0ymL4iO3BVWevOtMAPxdokYZJTZw3HoA/hZci2yDu2fl
-        wR9sl7B3QIXmz3bSxZaBBhhjP0TzXZEhEoJs157GIdDg6rL3FhB3j4XFv9Gi4aZIWp4hcoioZXa
-        SxGx94qhbpANCzWkwg/EMRh4hoXZCaD90yMyVIfV1
-X-Received: by 2002:a05:6512:33c1:b0:4f8:4512:c846 with SMTP id d1-20020a05651233c100b004f84512c846mr9307245lfg.49.1692740192229;
-        Tue, 22 Aug 2023 14:36:32 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHKm2GBxDVov1JaqkcKK8hb+vMJnaCM7rzDbVkGmJZmxaKGyfikCiUZjMDnWq5P6ApdJCEktBHclzVh3N/ERMw=
-X-Received: by 2002:a05:6512:33c1:b0:4f8:4512:c846 with SMTP id
- d1-20020a05651233c100b004f84512c846mr9307220lfg.49.1692740191838; Tue, 22 Aug
- 2023 14:36:31 -0700 (PDT)
+        bh=UWG+u89MMAHtiBm7y83iu0g0+SiXpFk+lzAlRc4AybQ=;
+        b=hI1MFzEXxNTk6CMBG048pQgDOOdX2P0gEPp4Y+NlR85L7OKiq3xmNqVsup2DI85Zrk
+         5kU8L9NMdx5JgvAtE94dJY/aVTRUTirBVzU73kK6C0W5J0dds/uaPJkdMbJkAYTJlz01
+         zQVRvnoTIt8a5SVDcw9zxhYuaf7FfQWDGENEREccECzgjYnPVJWvqOp5i4wirM5oCB9s
+         YH1yGtQzV4NUliOIqcsLfsprMVtIfJBecrAtKyq20RpKPaq39V57vm5Tn+NYG65siOEP
+         Y4Po4Rb37ELl8jlxcNfetSYt1cpLNzPHRY9azIaE4gV6JWEsBzAT9F5wcTIV011gG2Qf
+         uHYA==
+X-Gm-Message-State: AOJu0Yyxj4dC9ne+8x1uQzEp+eB4FgohgS1cqJf21eb+ye8TTUxgf3qg
+        3Bmcy9bKYNcfxejBDT9RUouRG5znf6CjeX51mz0=
+X-Google-Smtp-Source: AGHT+IGb0jKdWeAqMVlM3HYthIMgASULPBvl5ZUOhUVtxxb/idwG08vSd/5OB0hFPemdM0Nd/Z+x1d/pk3PI+QEAQak=
+X-Received: by 2002:a2e:3001:0:b0:2bc:d567:bdbd with SMTP id
+ w1-20020a2e3001000000b002bcd567bdbdmr1817825ljw.15.1692740234253; Tue, 22 Aug
+ 2023 14:37:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAFhGd8ryUcu2yPC+dFyDKNuVFHxT-=iayG+n2iErotBxgd0FVw@mail.gmail.com>
- <CAKwvOd=p_7gWwBnR_RHUPukkG1A25GQy6iOnX_eih7u65u=oxw@mail.gmail.com>
- <CAO-hwJLio2dWs01VAhCgmub5GVxRU-3RFQifviOL0OTaqj9Ktg@mail.gmail.com>
- <CAFhGd8qmXD6VN+nuXKtV_Uz14gzY1Kqo7tmOAhgYpTBdCnoJRQ@mail.gmail.com>
- <CAO-hwJJ_ipXwLjyhGC6_4r-uZ-sDbrb_W7um6F2vgws0d-hvTQ@mail.gmail.com>
- <CAO-hwJ+DTPXWbpNaBDvCkyAsWZHbeLiBwYo4k93ZW79Jt-HAkg@mail.gmail.com> <CAFhGd8pVjUPpukHxxbQCEnmgDUqy-tgBa7POkmgrYyFXVRAMEw@mail.gmail.com>
-In-Reply-To: <CAFhGd8pVjUPpukHxxbQCEnmgDUqy-tgBa7POkmgrYyFXVRAMEw@mail.gmail.com>
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date:   Tue, 22 Aug 2023 23:36:20 +0200
-Message-ID: <CAO-hwJJntQTzcJH5nf9RM1bVWGVW1kb28rJ3tgew1AEH00PmJQ@mail.gmail.com>
-Subject: Re: selftests: hid: trouble building with clang due to missing header
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
-        linux-input@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Kees Cook <keescook@google.com>
+References: <20230817-free_pcppages_bulk-v1-0-c14574a9f80c@kernel.org>
+ <20230821103225.qntnsotdzuthxn2y@techsingularity.net> <CAF8kJuOsWo5RfDcfnWZfnqYXjf6bkkxdXG1JCwjaEZ1nn29AaA@mail.gmail.com>
+ <CAADnVQKzzj4f-FPPqmnvMttc=_v7ZXmitc2wgNM0bJpm9FcpsQ@mail.gmail.com> <CAF8kJuOFcVsAWt_sMKvSgw_vpikX0-+T4388pJn_F2-2sW_4Kg@mail.gmail.com>
+In-Reply-To: <CAF8kJuOFcVsAWt_sMKvSgw_vpikX0-+T4388pJn_F2-2sW_4Kg@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 22 Aug 2023 14:37:02 -0700
+Message-ID: <CAADnVQ+e6C4OpWxXu5NAb-kNT0gOyDu6aqUNZ35ZOsa2+s9d7A@mail.gmail.com>
+Subject: Re: [PATCH RFC 0/2] mm/page_alloc: free_pcppages_bulk safeguard
+To:     Chris Li <chrisl@kernel.org>
+Cc:     Mel Gorman <mgorman@techsingularity.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kemeng Shi <shikemeng@huaweicloud.com>,
+        baolin.wang@linux.alibaba.com, Michal Hocko <mhocko@suse.com>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Namhyung Kim <namhyung@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        John Sperbeck <jsperbeck@google.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 11:26=E2=80=AFPM Justin Stitt <justinstitt@google.c=
-om> wrote:
+On Tue, Aug 22, 2023 at 2:34=E2=80=AFPM Chris Li <chrisl@kernel.org> wrote:
 >
-> On Tue, Aug 22, 2023 at 2:15=E2=80=AFPM Benjamin Tissoires
-> <benjamin.tissoires@redhat.com> wrote:
+> Hi Alexei,
+>
+> On Tue, Aug 22, 2023 at 11:57=E2=80=AFAM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
 > >
-> > On Tue, Aug 22, 2023 at 11:06=E2=80=AFPM Benjamin Tissoires
-> > <benjamin.tissoires@redhat.com> wrote:
+> > On Tue, Aug 22, 2023 at 10:48=E2=80=AFAM Chris Li <chrisl@kernel.org> w=
+rote:
 > > >
-> > > On Tue, Aug 22, 2023 at 10:57=E2=80=AFPM Justin Stitt <justinstitt@go=
-ogle.com> wrote:
-> > > >
-> > > [...]
-> > > > > > > Here's the invocation I am running to build kselftest:
-> > > > > > > `$ make LLVM=3D1 ARCH=3Dx86_64 mrproper headers && make LLVM=
-=3D1 ARCH=3Dx86_64
-> > > > > > > -j128 V=3D1 -C tools/testing/selftests`
-> > > > >
-> > > > > I think I fixed the same issue in the script I am running to laun=
-ch
-> > > > > those tests in a VM. This was in commit
-> > > > > f9abdcc617dad5f14bbc2ebe96ee99f3e6de0c4e (in the v6.5-rc+ series)=
-.
-> > > > >
-> > > > > And in the commit log, I wrote:
-> > > > > ```
-> > > > > According to commit 01d6c48a828b ("Documentation: kselftest:
-> > > > > "make headers" is a prerequisite"), running the kselftests requir=
-es
-> > > > > to run "make headers" first.
-> > > > > ```
-> > > > >
-> > > > > So my assumption is that you also need to run "make headers" with=
- the
-> > > > > proper flags before compiling the selftests themselves (I might b=
-e
-> > > > > wrong but that's how I read the commit).
-> > > >
-> > > > In my original email I pasted the invocation I used which includes =
-the
-> > > > headers target. What are the "proper flags" in this case?
-> > > >
+> > > Hi Mel,
 > > >
-> > > "make LLVM=3D1 ARCH=3Dx86_64 headers" no?
+> > > Adding Alexei to the discussion.
 > > >
-> > > But now I'm starting to wonder if that was not the intent of your
-> > > combined "make mrproper headers". I honestly never tried to combine
-> > > the 2. It's worth a try to split them I would say.
+> > > On Mon, Aug 21, 2023 at 3:32=E2=80=AFAM Mel Gorman <mgorman@techsingu=
+larity.net> wrote:
+> > > >
+> > > > On Thu, Aug 17, 2023 at 11:05:22PM -0700, Chris Li wrote:
+> > > > > In this patch series I want to safeguard
+> > > > > the free_pcppage_bulk against change in the
+> > > > > pcp->count outside of this function. e.g.
+> > > > > by BPF program inject on the function tracepoint.
+> > > > >
+> > > > > I break up the patches into two seperate patches
+> > > > > for the safeguard and clean up.
+> > > > >
+> > > > > Hopefully that is easier to review.
+> > > > >
+> > > > > Signed-off-by: Chris Li <chrisl@kernel.org>
+> > > >
+> > > > This sounds like a maintenance nightmare if internal state can be a=
+rbitrary
+> > > > modified by a BPF program and still expected to work properly in al=
+l cases.
+> > > > Every review would have to take into account "what if a BPF script =
+modifies
+> > > > state behind our back?"
 > >
-> > Apologies, I just tested it, and it works (combining the 2).
+> > Where did this concern come from?
+> > Since when BPF can modify arbitrary state?
 > >
-> > Which kernel are you trying to test?
-> > I tested your 2 commands on v6.5-rc7 and it just works.
+> > But I wasn't cc-ed on the original patch, so not sure what it attempts =
+to do.
+> > Maybe concern is valid.
 >
-> I'm also on v6.5-rc7 (706a741595047797872e669b3101429ab8d378ef)
+> Sorry I did not CC you on the original patch submission.  I should.
 >
-> I ran these exact commands:
-> |    $ make mrproper
-> |    $ make LLVM=3D1 ARCH=3Dx86_64 headers
-> |    $ make LLVM=3D1 ARCH=3Dx86_64 -j128 -C tools/testing/selftests
-> TARGETS=3Dhid &> out
+> Here is the link for the 1/2 patch, which has the step to reproduce.
 >
-> and here's the contents of `out` (still warnings/errors):
-> https://gist.github.com/JustinStitt/d0c30180a2a2e046c32d5f0ce5f59c6d
+> https://lore.kernel.org/linux-mm/20230817-free_pcppages_bulk-v1-1-c14574a=
+9f80c@kernel.org/
 >
-> I have a feeling I'm doing something fundamentally incorrectly. Any ideas=
-?
+> It is using an older version of the BPF program. That spinlock
+> allocation was fixed
+> in  commit c66a36af7ba3a628.
 
-Sigh... there is a high chance my Makefile is not correct and uses the
-installed headers (I was running the exact same commands, but on a
-v6.4-rc7+ kernel).
-
-But sorry, it will have to wait for tomorrow if you want me to have a
-look at it. It's 11:35 PM here, and I need to go to bed
-
-Cheers,
-Benjamin
-
->
-> To be clear, I can build the Kernel itself just fine across many
-> configs and architectures. I have, at the very least, the dependencies
-> required to accomplish that.
->
-> >
-> > FTR:
-> > $> git checkout v6.5-rc7
-> > $> make LLVM=3D1 ARCH=3Dx86_64 mrproper headers
-> > $> make LLVM=3D1 ARCH=3Dx86_64 -j8 -C tools/testing/selftests TARGETS=
-=3Dhid
-> >
-> > ->   BINARY   hid_bpf
-> >
-> > Cheers,
-> > Benjamin
-> >
->
-
+No. It was a temp workaround. It was fixed on bpf local storage side later.
