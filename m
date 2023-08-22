@@ -2,107 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AB5F784B52
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 22:23:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD148784B57
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 22:24:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230502AbjHVUXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 16:23:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37610 "EHLO
+        id S230510AbjHVUYj convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 22 Aug 2023 16:24:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229516AbjHVUXr (ORCPT
+        with ESMTP id S229516AbjHVUYj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 16:23:47 -0400
-Received: from mail-oa1-x35.google.com (mail-oa1-x35.google.com [IPv6:2001:4860:4864:20::35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6059E50;
-        Tue, 22 Aug 2023 13:23:35 -0700 (PDT)
-Received: by mail-oa1-x35.google.com with SMTP id 586e51a60fabf-1c11d53221cso3180377fac.2;
-        Tue, 22 Aug 2023 13:23:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692735815; x=1693340615;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jqi3CURD1i8JRUxuB5MEXSey4Yu1NRacqMjmHXpb1qA=;
-        b=aSXkQr2s1RA5cBAyhs8eZgXQWhEROgEBM1yN6Ve2691jUCUqbRIqt24CHWtZdWN9nv
-         oEP/l6SIlZLzCy6JFtBKllAi0H8u5IZEDwdfyasmUeldWda3Y7cIGn2ldfoRck39fcZj
-         AgUxglBO88vB7pFCug3egYT7c2FKX3eCM9sENBv/VjiKm8hyr7kLRuVWHTY6+81uuJAn
-         J5r2kJ+7Jygi2TPWMSajEl9XHe/31i3lggdvO37mLhWbfKX42yU8k+xC4OQxQgO/Q+ha
-         Vd0ULCrP7ophvNZw4jeJvKsJcA24uVw4jtYtlPy5ENJENGu8It1W4f98spTTCTQRdv+S
-         W4kA==
+        Tue, 22 Aug 2023 16:24:39 -0400
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C455DCC;
+        Tue, 22 Aug 2023 13:24:37 -0700 (PDT)
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1c0a4333e03so628685ad.0;
+        Tue, 22 Aug 2023 13:24:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692735815; x=1693340615;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jqi3CURD1i8JRUxuB5MEXSey4Yu1NRacqMjmHXpb1qA=;
-        b=Dyx8LCYsQjSEEEcQlKu7z7tEuAwXvPL8EVuDKJ9fMPZ07BzUTEPI8/CloaxcNVCslM
-         AAQxoVOVowNX+73dXnw3YAoil6cgi7txwlLVzc1/1WOnX4IToZ2w27Ve7iNWgs0HJEmk
-         sni7AZCdyXLHHcFuflJce5Ma7GFqJ+il9K18T1TUboYnxwR6f6AbSnHKzUKvtzCJJriN
-         Ia4+HJ2ZtwcnNZ6X6Jbo5a6WXVwpAtblE8tQCqwYOKuBrfnbjkhqArFc6TI2P3eKgGrJ
-         doV+UNdksrRynXFQr/rZckts30FlrKoWM6L5sHMwRLsm6KCzZ1ZDu5qopuJ+jB/pwa3M
-         gLXg==
-X-Gm-Message-State: AOJu0Yz+TZ3+r3PxZatgZsOSgZ7XaX+vdsW9kZ7X7KmWJnECHpdQoFTT
-        maG6LDnMqJzjjnL0j5LW7L0=
-X-Google-Smtp-Source: AGHT+IG/FGtyCP48fro2CrnwocGv7TDALAy+pryH74Z/aT+ZSu5UWrreZjVZYosdOw/Z/3FYMNZ/pw==
-X-Received: by 2002:a05:6870:2188:b0:19f:6711:8e0a with SMTP id l8-20020a056870218800b0019f67118e0amr13111471oae.32.1692735815183;
-        Tue, 22 Aug 2023 13:23:35 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id b5-20020a0cf045000000b0063cfe9adb2csm3293671qvl.108.2023.08.22.13.23.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Aug 2023 13:23:34 -0700 (PDT)
-Message-ID: <2333b38a-fe55-7972-0418-c5946dcda672@gmail.com>
-Date:   Tue, 22 Aug 2023 13:23:13 -0700
+        d=1e100.net; s=20221208; t=1692735877; x=1693340677;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rRjwbC3faFyj1ntUMUYXl/W2oCQKNk5Ltvd5akdjB5M=;
+        b=XBuqHbFeJBy9crGJX1IjvnCJJGZd/hhku/yc9USqPU+M7hDBulx3wP/qB2thW5RGpd
+         D9pijijahwTw9BdvcutJv5iCA2snr8PnaiUJwlwKZw3mR/0y0QXBjCN3eU6y9v4vinli
+         fF1lArKh5iMawBM53+wB0SCvwW1MGjejp3S2BXVFnUQTH5D4qMRLHGVVJXJJ/o2zqiqU
+         7x97uF0SyjsFnY4yjbNSWKiEb7g05k4pOE7UFKj0l3MYBmyn/tiimqGPv7iZR0kRLZCR
+         pXzkF6NegM/aVookEF/TlTIdNQzvXYj5syQSbmxOc2gD6BxqBZRZ1wNUNftivCkzSGmu
+         9g6Q==
+X-Gm-Message-State: AOJu0YzXMmG0u5vWSG6bjxWL8W8zu/ZnAVOep7ofrMF92FccGCOlY62R
+        NAqewlzX6DqnrbIuGsIt4yH+h6AsCdq2bBvEKaNU7oWj
+X-Google-Smtp-Source: AGHT+IGMUPtyUadxi5DFzNZrTXoyg21N2lb/li23jigebTRkrG58L2O8qutnwi/o7gn7wVUUP+rB4nTU99ifNDuI3pc=
+X-Received: by 2002:a17:90a:64c9:b0:263:2312:60c2 with SMTP id
+ i9-20020a17090a64c900b00263231260c2mr9571280pjm.3.1692735877175; Tue, 22 Aug
+ 2023 13:24:37 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 6.1 000/194] 6.1.47-rc1 review
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-References: <20230821194122.695845670@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20230821194122.695845670@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230818114452.66780-1-swapnil.sapkal@amd.com>
+In-Reply-To: <20230818114452.66780-1-swapnil.sapkal@amd.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 22 Aug 2023 22:24:25 +0200
+Message-ID: <CAJZ5v0hH1iJ-QT+Sm32ESy_JstD+1TF=wV3FW7rnkCAiDjEeig@mail.gmail.com>
+Subject: Re: [PATCH v1 0/2] amd-pstate-ut: Fix issues observed after loading
+ amd-pstate-ut driver
+To:     Swapnil Sapkal <swapnil.sapkal@amd.com>
+Cc:     ray.huang@amd.com, rafael@kernel.org, viresh.kumar@linaro.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gautham.shenoy@amd.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/21/23 12:39, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.1.47 release.
-> There are 194 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 23 Aug 2023 19:40:45 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.47-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+On Fri, Aug 18, 2023 at 1:45 PM Swapnil Sapkal <swapnil.sapkal@amd.com> wrote:
+>
+> This series fixes amd-pstate-ut which is currently failing for two
+> reasons:
+>
+> 1) The code for amd-pstate-ut was written when CONFIG_X86_AMD_PSTATE
+> was tristate config and amd_pstate can be built as module. In
+> current implementation the driver is built-in and previous module
+> parameters are removed. But amd-pstate-ut still try to read old module
+> parameters. Therefore, test fails. First patch fixes this issue by
+> removing those module parameter references.
+>
+> 2) In amd_pstate_ut_check_perf() and amd_pstate_ut_check_freq()
+> functions, cpufreq_cpu_get() is called to get policy of the
+> cpu and mark it as busy. In these functions cpufreq_cpu_put()
+> should be used to release the policy. As cpufreq_cpu_put()
+> is not used to release the policy, any other entity trying to
+> access the policy is blocked indefinitely. One such scenario
+> occurs when mode of amd-pstate is changed. Second patch fixes this
+> by calling cpufreq_cpu_put() wherever necessary.
+>
+> Swapnil Sapkal (2):
+>   amd-pstate-ut: Remove module parameter access from amd-pstate-ut
+>   amd-pstate-ut: Fix kernel panic due to loading amd-pstate-ut driver
+>
+>  drivers/cpufreq/amd-pstate-ut.c | 46 +++++++++++++--------------------
+>  1 file changed, 18 insertions(+), 28 deletions(-)
+>
+> --
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
-BMIPS_GENERIC:
+Both patches applied as 6.6 material with subjects adjusted to the
+usual cpufreq patch naming pattern and some changelog edits.
 
-Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
-
+Thanks!
