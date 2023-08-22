@@ -2,73 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8482378458B
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 17:30:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17CD878458F
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 17:31:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234472AbjHVPas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 11:30:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41016 "EHLO
+        id S237121AbjHVPbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 11:31:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233285AbjHVPaq (ORCPT
+        with ESMTP id S237117AbjHVPbB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 11:30:46 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69A1CCD2
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 08:30:44 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2bbac8ec902so72239751fa.1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 08:30:44 -0700 (PDT)
+        Tue, 22 Aug 2023 11:31:01 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DC74CDF
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 08:30:58 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-3fef56e85edso83675e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 08:30:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692718242; x=1693323042;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=9jLe3aS6oHv7LXqfot3AlJx+jHhWMRNhwylusvC3Hno=;
-        b=1nNMUj+JgJ/msq8cZiBCa8v/TbP0d9ORcQHmlu9M6RZjcKQX2uBVnok+in04BF0Vm5
-         7+i96DocFBoQbs6OYoLWk1N4vsYFad0F6MfUJIG6SBHbJn0sQGeFtVZZ4a2HyReq1YRf
-         d1TeFz/A+7H3zimfpnsaJZuOoO2shESI+2b9Gme610irXIm45tk9VHkHUKTzgBhc6t1K
-         pyXfs8KOOM4WsfihKZLR7DK60sB7CDhIg+OqQtx2aglkouLVsfFCETc9lv81Od8a3kCf
-         58bhwp9+lhlyWY/vmP6/SneKCtCSGaja1ZfZKeEXYeicRuuo9GGCGgUmY/1IWpRVBMaj
-         LIrg==
+        d=google.com; s=20221208; t=1692718257; x=1693323057;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=a7rvpiaBmdaWESCzJVCBdhucf56RoNv7C/zYiNdqugw=;
+        b=1wJYwF/XUeBhFNuVLT9M6HxNx22zvWEOGkabOBprp3VPK7ecH6H8+WQb+PZ7C/NCpt
+         Ck5ii8Mz711rRiDKPqlGnX/A/fC8hzKhoGaSLeXlK9RiTR3yPUlaVATQ4tR1Evqow1XZ
+         6truoiONXUoJXKQRJm1T7EVAuC/tr7RAC8LolwaT4w6uct3C9G/LHCao8Kvcj06I7f8u
+         eDaGKuBZhqGT8KibcEIVeVLhn5DZX6+OupQi/a1pu/hNrXF5HQ/UOn6EFCRqpqY64qup
+         zJqW1TqWuAN5jMj9xCzbC8AwDj59mQbkBi01tS5+mEMcOpKjVh+FpJ1T1dOf9nzgWhxh
+         QEtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692718242; x=1693323042;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9jLe3aS6oHv7LXqfot3AlJx+jHhWMRNhwylusvC3Hno=;
-        b=O23Z4fr7nOLRyHcu3YYW5QN+3oIWwDTDd9IF8ZHAycscZT6o10suDhCirWO/trpprz
-         cbrsRpPtQeu4E/CpXuMvfbijB0O1j1h519q9QFdvT7+BfSuKub5zvvgaoFdS8nSsGlSW
-         SERiquZulAkUhPbxibINgnok6920trBpcYpXkbfZO1v6P2i4ELmej0L9l0W3U7znRU6H
-         +vBLg3kjWma5gGZRHG6hD8BTI0JyhveYvEcpesElChDRmBEWvzJ5GBPl3IwBgK4Fii5a
-         lp8H0PHPvcqa4tsgSvODSOFiDL5MiIYSWEqmJGMLKvh6isEspmbni4gZoxLZY3ZAwAID
-         SrLQ==
-X-Gm-Message-State: AOJu0Yx5K7DQMqGgCQRiOKPohXNrXHHQqiO/Phv18yX1TlHSK3togd0U
-        RblG5wFGThsCKVTGzEjh6QSMsOWxESrml2sMTshjzA==
-X-Google-Smtp-Source: AGHT+IHj5NEzUxDIG8nZNuwvZFRAKokOiiGQkNLlSwSEoa9qnMaznGTV9FDbXoxI5OM5wbSxZjgLunlmQRlGB+LZ6lE=
-X-Received: by 2002:a2e:8891:0:b0:2b9:f3b4:6808 with SMTP id
- k17-20020a2e8891000000b002b9f3b46808mr7836633lji.29.1692718242268; Tue, 22
- Aug 2023 08:30:42 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692718257; x=1693323057;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=a7rvpiaBmdaWESCzJVCBdhucf56RoNv7C/zYiNdqugw=;
+        b=HY+UK42P3zF4KrksXczOhRYhudUnnD3kRaY6S0wv2WPl9LvIhcH+UbjepPqpzNRt7O
+         ERcgA/g/GtRyh05ygUDFQ1BqK7sejfYYHfwNFQRkLvxaHclAXjyWtJ51rH08uklwl4Zf
+         gV8Tw28k8mTO/XmYFpuaIhuLn5MBPbzWDcesPU3C6sXCOTTM6hzVvnbdShYqMc+rbUkJ
+         Pjk2bQVQl0wQ88gYOJY2ULvr0nOW8+F5ehMcsm//E03o+S+usHU/VU8bkg3mvicxx38x
+         RwNQ2zq/q5VFEfIiJv5rwrN0bBRR4DSElrxN8toxNCCOncXYPVTLG6xNCYci50HeUU9X
+         6xnA==
+X-Gm-Message-State: AOJu0YxzuuOFbWZyEZmM0jNicC5j3Jxux1FgGo7Wg/yJOmcs1QiBsbmK
+        wTvRuBncVPhRTt00082wzpSE8sHP6xCSLacQPa0NJw==
+X-Google-Smtp-Source: AGHT+IFyMgkMgYPE+lsjqN8nfI8yOuu8gDBvx8ZWd4M7BOWwoDnsNIcZ50kelsgmgyRcsCUSHPMH6DyCCbSZ5fwKiiA=
+X-Received: by 2002:a05:600c:1716:b0:3fe:5228:b7a2 with SMTP id
+ c22-20020a05600c171600b003fe5228b7a2mr96047wmn.5.1692718256744; Tue, 22 Aug
+ 2023 08:30:56 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230821205458.1764662-1-yosryahmed@google.com>
- <20230821205458.1764662-4-yosryahmed@google.com> <ZOR6eyYfJYlxdMet@dhcp22.suse.cz>
-In-Reply-To: <ZOR6eyYfJYlxdMet@dhcp22.suse.cz>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 22 Aug 2023 08:30:05 -0700
-Message-ID: <CAJD7tka13M-zVZTyQJYL1iUAYvuQ1fcHbCjcOBZcz6POYTV-4g@mail.gmail.com>
-Subject: Re: [PATCH 3/3] mm: memcg: use non-unified stats flushing for
- userspace reads
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: multipart/mixed; boundary="0000000000008ab2d0060384ad3e"
+References: <4d31abf5-56c0-9f3d-d12f-c9317936691@google.com>
+ <CAG48ez1XAePj5MUG8AUmnTjRLcxKre-NGYV82kB68-X8Rh6fxA@mail.gmail.com>
+ <f2dc6d6b-c516-932-1598-a58e2afffe9a@google.com> <CAG48ez0S-RjAapaDiJ+oZXpn1vs9niWx54iqzusUScS-BYu0hw@mail.gmail.com>
+ <ZOTSyv6fuC1pkt76@casper.infradead.org>
+In-Reply-To: <ZOTSyv6fuC1pkt76@casper.infradead.org>
+From:   Jann Horn <jannh@google.com>
+Date:   Tue, 22 Aug 2023 17:30:19 +0200
+Message-ID: <CAG48ez2NrQjB5T5++uJSZ8-id5-H2mbSRX8c36gAJ5p_BMHOFw@mail.gmail.com>
+Subject: Re: [PATCH mm-unstable] mm/khugepaged: fix collapse_pte_mapped_thp()
+ versus uffd
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Qi Zheng <zhengqi.arch@bytedance.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Peter Xu <peterx@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Steven Price <steven.price@arm.com>,
+        SeongJae Park <sj@kernel.org>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Zack Rusin <zackr@vmware.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Song Liu <song@kernel.org>,
+        Thomas Hellstrom <thomas.hellstrom@linux.intel.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Vishal Moola <vishal.moola@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Zi Yan <ziy@nvidia.com>,
+        "Zach O'Keefe" <zokeefe@google.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        sparclinux@vger.kernel.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,141 +122,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000008ab2d0060384ad3e
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Aug 22, 2023 at 2:06=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrot=
-e:
+On Tue, Aug 22, 2023 at 5:23=E2=80=AFPM Matthew Wilcox <willy@infradead.org=
+> wrote:
+> On Tue, Aug 22, 2023 at 04:39:43PM +0200, Jann Horn wrote:
+> > > Perhaps something else will want that same behaviour in future (it's
+> > > tempting, but difficult to guarantee correctness); for now, it is jus=
+t
+> > > userfaultfd (but by saying "_armed" rather than "_missing", I'm half-
+> > > expecting uffd to add more such exceptional modes in future).
+> >
+> > Hm, yeah, sounds okay. (I guess we'd also run into this if we ever
+> > wanted to make it possible to reliably install PTE markers with
+> > madvise() or something like that, which might be nice for allowing
+> > userspace to create guard pages without unnecessary extra VMAs...)
 >
-> On Mon 21-08-23 20:54:58, Yosry Ahmed wrote:
-> > Unified flushing allows for great concurrency for paths that attempt to
-> > flush the stats, at the expense of potential staleness and a single
-> > flusher paying the extra cost of flushing the full tree.
-> >
-> > This tradeoff makes sense for in-kernel flushers that may observe high
-> > concurrency (e.g. reclaim, refault). For userspace readers, stale stats
-> > may be unexpected and problematic, especially when such stats are used
-> > for critical paths such as userspace OOM handling. Additionally, a
-> > userspace reader will occasionally pay the cost of flushing the entire
-> > hierarchy, which also causes problems in some cases [1].
-> >
-> > Opt userspace reads out of unified flushing. This makes the cost of
-> > reading the stats more predictable (proportional to the size of the
-> > subtree), as well as the freshness of the stats. Since userspace reader=
-s
-> > are not expected to have similar concurrency to in-kernel flushers,
-> > serializing them among themselves and among in-kernel flushers should b=
-e
-> > okay.
-> >
-> > This was tested on a machine with 256 cpus by running a synthetic test
-> > The script that creates 50 top-level cgroups, each with 5 children (250
-> > leaf cgroups). Each leaf cgroup has 10 processes running that allocate
-> > memory beyond the cgroup limit, invoking reclaim (which is an in-kernel
-> > unified flusher). Concurrently, one thread is spawned per-cgroup to rea=
-d
-> > the stats every second (including root, top-level, and leaf cgroups --
-> > so total 251 threads). No regressions were observed in the total runnin=
-g
-> > time; which means that non-unified userspace readers are not slowing
-> > down in-kernel unified flushers:
->
-> I have to admit I am rather confused by cgroup_rstat_flush (and
-> cgroup_rstat_flush_locked). The former says it can block but the later
-> doesn't ever block and even if it drops the cgroup_rstat_lock it merely
-> cond_rescheds or busy loops. How much of a contention and yielding can
-> you see with this patch? What is the worst case? How bad a random user
-> can make the situation by going crazy and trying to flush from many
-> different contexts?
+> I don't know what a userspace API for this would look like, but I have
+> a dream of creating guard VMAs which only live in the maple tree and
+> don't require the allocation of a struct VMA.  Use some magic reserved
+> pointer value like XA_ZERO_ENTRY to represent them ... seems more
+> robust than putting a PTE marker in the page tables?
 
-Userspace readers (or more generically non-unified flushers) can all
-collectively only block a single unified flusher at most.
-Specifically, one userspace reader goes to flush and holds
-cgroup_rstat_lock, meanwhile an in-kernel flusher (e.g. reclaim) goes
-and tries to flush, and spins on cgroup_rstat_lock. Other in-kernel
-(unified) flushers will just see another unified flusher in progress
-and skip. So userspace can only block a single in-kernel reclaimer.
-Not that it's not really that bad because:
-(a) As you note, cgroup_rstat_flush() does not really "block", it's
-cpu-bound. Even when it cond_resched()'s, it yields the lock first. So
-it can't really hold anyone hostage for long.
-(b) I assume a random user can only read their own stats, which should
-be a relatively small subtree, quick to flush. I am assuming a random
-user cannot read root's memory.stat (which is most expensive).
-(c) Excessive flushing doesn't really build up because there will be
-nothing to flush and the lock will be released very shortly after it's
-held.
+Chrome currently uses a lot of VMAs for its heap, which I think are
+basically alternating PROT_NONE and PROT_READ|PROT_WRITE anonymous
+VMAs. Like this:
 
-So to answer your question, I don't think a random user can really
-affect the system in a significant way by constantly flushing. In
-fact, in the test script (which I am now attaching, in case you're
-interested), there are hundreds of threads that are reading stats of
-different cgroups every 1s, and I don't see any negative effects on
-in-kernel flushers in this case (reclaimers).
+[...]
+3a10002cf000-3a10002d0000 ---p 00000000 00:00 0
+3a10002d0000-3a10002e6000 rw-p 00000000 00:00 0
+3a10002e6000-3a10002e8000 ---p 00000000 00:00 0
+3a10002e8000-3a10002f2000 rw-p 00000000 00:00 0
+3a10002f2000-3a10002f4000 ---p 00000000 00:00 0
+3a10002f4000-3a10002fb000 rw-p 00000000 00:00 0
+3a10002fb000-3a10002fc000 ---p 00000000 00:00 0
+3a10002fc000-3a1000303000 rw-p 00000000 00:00 0
+3a1000303000-3a1000304000 ---p 00000000 00:00 0
+3a1000304000-3a100031b000 rw-p 00000000 00:00 0
+3a100031b000-3a100031c000 ---p 00000000 00:00 0
+3a100031c000-3a1000326000 rw-p 00000000 00:00 0
+3a1000326000-3a1000328000 ---p 00000000 00:00 0
+3a1000328000-3a100033a000 rw-p 00000000 00:00 0
+3a100033a000-3a100033c000 ---p 00000000 00:00 0
+3a100033c000-3a100038b000 rw-p 00000000 00:00 0
+3a100038b000-3a100038c000 ---p 00000000 00:00 0
+3a100038c000-3a100039b000 rw-p 00000000 00:00 0
+3a100039b000-3a100039c000 ---p 00000000 00:00 0
+3a100039c000-3a10003af000 rw-p 00000000 00:00 0
+3a10003af000-3a10003b0000 ---p 00000000 00:00 0
+3a10003b0000-3a10003e8000 rw-p 00000000 00:00 0
+3a10003e8000-3a1000401000 ---p 00000000 00:00 0
+3a1000401000-3a1000402000 rw-p 00000000 00:00 0
+3a1000402000-3a100040c000 ---p 00000000 00:00 0
+3a100040c000-3a100046f000 rw-p 00000000 00:00 0
+3a100046f000-3a1000470000 ---p 00000000 00:00 0
+3a1000470000-3a100047a000 rw-p 00000000 00:00 0
+3a100047a000-3a100047c000 ---p 00000000 00:00 0
+3a100047c000-3a1000492000 rw-p 00000000 00:00 0
+3a1000492000-3a1000494000 ---p 00000000 00:00 0
+3a1000494000-3a10004a2000 rw-p 00000000 00:00 0
+3a10004a2000-3a10004a4000 ---p 00000000 00:00 0
+3a10004a4000-3a10004b6000 rw-p 00000000 00:00 0
+3a10004b6000-3a10004b8000 ---p 00000000 00:00 0
+3a10004b8000-3a10004ea000 rw-p 00000000 00:00 0
+3a10004ea000-3a10004ec000 ---p 00000000 00:00 0
+3a10004ec000-3a10005f4000 rw-p 00000000 00:00 0
+3a10005f4000-3a1000601000 ---p 00000000 00:00 0
+3a1000601000-3a1000602000 rw-p 00000000 00:00 0
+3a1000602000-3a1000604000 ---p 00000000 00:00 0
+3a1000604000-3a100062b000 rw-p 00000000 00:00 0
+3a100062b000-3a1000801000 ---p 00000000 00:00 0
+[...]
 
-> --
-> Michal Hocko
-> SUSE Labs
-
---0000000000008ab2d0060384ad3e
-Content-Type: text/x-sh; charset="US-ASCII"; name="stress.sh"
-Content-Disposition: attachment; filename="stress.sh"
-Content-Transfer-Encoding: base64
-Content-ID: <f_llmgovtf0>
-X-Attachment-Id: f_llmgovtf0
-
-IyEvYmluL2Jhc2gKCk5SX0wxX0NHUk9VUFM9NTAKTlJfTDJfQ0dST1VQU19QRVJfTDE9NQpOUl9M
-Ml9DR1JPVVBTPSQoKCBOUl9MMV9DR1JPVVBTICogTlJfTDJfQ0dST1VQU19QRVJfTDEgKSkKTlJf
-V09SS0VSU19QRVJfQ0dST1VQPTEwCldPUktFUl9NQj0xMApOUl9UT1RBTF9XT1JLRVJTPSQoKCBO
-Ul9XT1JLRVJTX1BFUl9DR1JPVVAgKiAoMSArIE5SX0wxX0NHUk9VUFMgKyBOUl9MMl9DR1JPVVBT
-KSApKQpMMV9DR1JPVVBfTElNSVRfTUI9JCgoIE5SX0wyX0NHUk9VUFNfUEVSX0wxICogTlJfV09S
-S0VSU19QRVJfQ0dST1VQICogV09SS0VSX01CIC8gNCApKQpUT1RBTF9NQj0kKCggTlJfVE9UQUxf
-V09SS0VSUyAqIFdPUktFUl9NQiApKQpUTVBGUz0kKG1rdGVtcCAtZCkKUk9PVD0iL3N5cy9mcy9j
-Z3JvdXAvIgpBRE1JTj0iL3N5cy9mcy9jZ3JvdXAvYWRtaW4iClpSQU1fREVWPSIvbW50L2RldnRt
-cGZzL3pyYW0wIgoKY2xlYW51cF9jZ3JvdXAoKSB7CiAgbG9jYWwgLXIgY2c9JDEKICBsb2NhbCAt
-ciBwcm9jcz0kKGNhdCAkY2cvY2dyb3VwLnByb2NzKQogIGlmIFtbIC1uICRwcm9jcyBdXTsgdGhl
-bgogICAga2lsbCAtS0lMTCAkcHJvY3MKICAgIHdhaXQgJHByb2NzIDI+L2Rldi9udWxsCiAgZmkK
-ICB3aGlsZSBbWyAtbiAkKGNhdCAkY2cvY2dyb3VwLnByb2NzKSBdXTsgZG8KICAgIHNsZWVwIDAu
-MQogIGRvbmUKICBybWRpciAkY2cKfQoKY2xlYW51cCgpIHsKICBmb3IgaSBpbiAkKHNlcSAkTlJf
-TDFfQ0dST1VQUyk7IGRvCiAgICBsMT0iJFJPT1QvcGFyZW50JGkiCiAgICBmb3IgaiBpbiAkKHNl
-cSAkTlJfTDJfQ0dST1VQU19QRVJfTDEpOyBkbwogICAgICBsMj0iJGwxL2NoaWxkJGoiCiAgICAg
-IGNsZWFudXBfY2dyb3VwICRsMgogICAgZG9uZQogICAgY2xlYW51cF9jZ3JvdXAgJGwxCiAgZG9u
-ZQoKICBjbGVhbnVwX2Nncm91cCAkQURNSU4KCiAgdW1vdW50ICRUTVBGUwogIHJtIC1yZiAkVE1Q
-RlMKCiAgc3dhcG9mZiAkWlJBTV9ERVYKICBlY2hvIDEgPiAiL3N5cy9ibG9jay96cmFtMC9yZXNl
-dCIKfQp0cmFwIGNsZWFudXAgSU5UIFFVSVQgRVhJVAoKcnVuX3N0YXRzX3JlYWRlcigpIHsKICBs
-b2NhbCAtciBjZ19ydW49JDEKICBsb2NhbCAtciBjZ19yZWFkPSQyCgogICMgcmVhZCB0aGUgc3Rh
-dHMgZXZlcnkgc2Vjb25kIHVudGlsIHdvcmtlcnMgYXJlIGRvbmUKICBlY2hvIDAgPiAiJGNnX3J1
-bi9jZ3JvdXAucHJvY3MiCiAgd2hpbGUgW1sgJChscyAkVE1QRlMpIF1dOyBkbwogICAgY2F0ICIk
-Y2dfcmVhZC9tZW1vcnkuc3RhdCIgPiAvZGV2L251bGwKICAgIHNsZWVwIDEKICBkb25lCn0KCnJ1
-bl93b3JrZXIoKSB7CiAgbG9jYWwgLXIgY2c9JDEKICBsb2NhbCAtciBmPSQyCgogIGVjaG8gMCA+
-ICIkY2cvY2dyb3VwLnByb2NzIgogIHJtIC1yZiAiJGYiCiAgZGQgaWY9L2Rldi96ZXJvIG9mPSIk
-ZiIgYnM9MU0gY291bnQ9JFdPUktFUl9NQiBzdGF0dXM9bm9uZQogIGNhdCAiJGYiID4gL2Rldi9u
-dWxsCiAgcm0gIiRmIgp9CgojIFNldHVwIHpyYW0KZWNobyAkKChUT1RBTF9NQiA8PCAyMCkpID4g
-Ii9zeXMvYmxvY2svenJhbTAvZGlza3NpemUiCm1rc3dhcCAkWlJBTV9ERVYKc3dhcG9uICRaUkFN
-X0RFVgplY2hvICJTZXR1cCB6cmFtIGRvbmUiCgojIE1vdW50IHRtcGZzCm1vdW50IC10IHRtcGZz
-IG5vbmUgJFRNUEZTCgojIENyZWF0ZSBhZG1pbiBjZ3JvdXAKbWtkaXIgJEFETUlOCgojIENyZWF0
-ZSB3b3JrZXIgY2dyb3Vwcywgc2V0IGxpbWl0cwplY2hvICIrbWVtb3J5IiA+ICIkUk9PVC9jZ3Jv
-dXAuc3VidHJlZV9jb250cm9sIgpmb3IgaSBpbiAkKHNlcSAkTlJfTDFfQ0dST1VQUyk7IGRvCiAg
-bDE9IiRST09UL3BhcmVudCRpIgogIG1rZGlyICRsMQogIGVjaG8gIittZW1vcnkiID4gIiRsMS9j
-Z3JvdXAuc3VidHJlZV9jb250cm9sIgogIGZvciBqIGluICQoc2VxICROUl9MMl9DR1JPVVBTX1BF
-Ul9MMSk7IGRvCiAgICBsMj0iJGwxL2NoaWxkJGoiCiAgICBta2RpciAkbDIKICBkb25lCiAgZWNo
-byAkKCggTDFfQ0dST1VQX0xJTUlUX01CIDw8IDIwKSkgPiAiJGwxL21lbW9yeS5tYXgiCmRvbmUK
-ZWNobyAiU2V0dXAgJE5SX0wxX0NHUk9VUFMgTDEgY2dyb3VwcyB3aXRoIGxpbWl0ICR7TDFfQ0dS
-T1VQX0xJTUlUX01CfU0gZG9uZSIKZWNobyAiRWFjaCBMMSBjZ3JvdXAgaGFzICROUl9MMl9DR1JP
-VVBTX1BFUl9MMSBMMiBjaGlsZHJlbiIKCiMgU3RhcnQgd29ya2VycyB0byBhbGxvY2F0ZSB0bXBm
-cyBtZW1vcnkKZm9yIGkgaW4gJChzZXEgJE5SX0wxX0NHUk9VUFMpOyBkbwogIGwxPSIkUk9PVC9w
-YXJlbnQkaSIKICBmb3IgaiBpbiAkKHNlcSAkTlJfTDJfQ0dST1VQU19QRVJfTDEpOyBkbwogICAg
-bDI9IiRsMS9jaGlsZCRqIgogICAgZm9yIGsgaW4gJChzZXEgJE5SX1dPUktFUlNfUEVSX0NHUk9V
-UCk7IGRvCiAgICAgIChydW5fd29ya2VyICIkbDIiICIkVE1QRlMvJGktJGotJGsiKSYKICAgIGRv
-bmUKICBkb25lCmRvbmUKCiMgU3RhcnQgc3RhdCByZWFkZXJzCihydW5fc3RhdHNfcmVhZGVyICIk
-QURNSU4iICIkUk9PVCIpJgpmb3IgaSBpbiAkKHNlcSAkTlJfTDFfQ0dST1VQUyk7IGRvCiAgbDE9
-IiRST09UL3BhcmVudCRpIgogIChydW5fc3RhdHNfcmVhZGVyICIkQURNSU4iICIkbDEiKSYKICBm
-b3IgaiBpbiAkKHNlcSAkTlJfTDJfQ0dST1VQU19QRVJfTDEpOyBkbwogICAgbDI9IiRsMS9jaGls
-ZCRqIgogICAgIyBSYW4gc3RhdCByZWFkZXJzIGluIHRoZSBhZG1pbiBjZ3JvdXAgYXMgd2VsbCBh
-cyB0aGUgY2dyb3VwIGl0c2VsZgogICAgKHJ1bl9zdGF0c19yZWFkZXIgIiRBRE1JTiIgIiRsMiIp
-JgogICAgKHJ1bl9zdGF0c19yZWFkZXIgIiRsMiIgIiRsMiIpJgogIGRvbmUKZG9uZQoKIyBXYWl0
-IGZvciB3b3JrZXJzCmVjaG8gIlJhbiAkTlJfV09SS0VSU19QRVJfQ0dST1VQIHdvcmtlcnMgcGVy
-IEwyIGNncm91cCwgZWFjaCBhbGxvY2F0aW5nICR7V09SS0VSX01CfU0sIHdhaXRpbmcuLiIKd2Fp
-dAoK
---0000000000008ab2d0060384ad3e--
+I was thinking if you used PTE markers as guards, you could maybe turn
+all that into more or less a single VMA?
