@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E69847848C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 19:53:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 415B97848CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 19:53:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229642AbjHVRxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 13:53:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46324 "EHLO
+        id S229639AbjHVRxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 13:53:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229630AbjHVRxD (ORCPT
+        with ESMTP id S229637AbjHVRxO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 13:53:03 -0400
+        Tue, 22 Aug 2023 13:53:14 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D3C42D5E;
-        Tue, 22 Aug 2023 10:52:52 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB5C330C4;
+        Tue, 22 Aug 2023 10:52:55 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0147165D01;
-        Tue, 22 Aug 2023 17:52:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 122E1C433C7;
-        Tue, 22 Aug 2023 17:52:50 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 404B56564C;
+        Tue, 22 Aug 2023 17:52:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21924C433C8;
+        Tue, 22 Aug 2023 17:52:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692726771;
-        bh=Dsse2EXPJm7afjD/S0aYe9v2HwReu5s8zAOGObwbpTY=;
+        s=k20201202; t=1692726774;
+        bh=7ZBQ60QAjHKVFVd0j7bD6mifIJEl/fZHiRDkdIVlxpc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mP40p1L8eBT57/1OVzjRwoYkjURWEYIIxNblts9y/gpvswwmNcJ7xhxPhjjtUzu6G
-         TqwRbvWY9zj5RNUWalAVrIlcKJNbkP7apUWF2kiqaj9/r4hK+rl+Q/NCEhLWD9/6zz
-         YOFqun03acTdvEuoINqJPodASvYatE9LTsBhszl1Mj3Qw26PO62vZksXfRGGDMIuK6
-         lY5s2EmqpUCxoXy/Hje+7/Zm62V+gBkd82OydCf3W7V1eGs/qhSW++52EGfWjfHV8T
-         p7xfx5LSk/GHoLzRZ17O0p92ad8RaWDxFM6W+ebsxny8s02frtn8QgoX6B5fH1p6Lk
-         CD/WASLtUuUGw==
+        b=V1boDcjEUEjowJ74wIqHCDivWYXpyGjFaDDuAS9KS90+lQjBnBz51TP6w5Ic6x43H
+         Zz20oIizH/yH2WSkoXhh+vUmhufn+/aPX3wY3Zj9KKrOTGW+zaHMgqjp+oMUW7EspJ
+         5Ji01WRp74jsgv+RUr3hBbdJdGzR5wpY2UHcb7UVwhm6cZVtN18gFeOJ+9VvzluVWy
+         TCX7ssofokW2yaUtoo3uQls99pOxJRAj3dZThYhCWM1whyqbQeilV9mvzByhZU5D9t
+         zQ7BVuwAg5+JbtMGdlpwfOvgXPn+jjskPrzt60OdUKfVmOu+5g5h77A+8XR79ME0Lm
+         vfbeaVeEzcKkQ==
 From:   Jarkko Sakkinen <jarkko@kernel.org>
 To:     linux-sgx@vger.kernel.org
 Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
@@ -42,14 +42,15 @@ Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
         David Howells <dhowells@redhat.com>,
         Jason Gunthorpe <jgg@ziepe.ca>,
         Mimi Zohar <zohar@linux.ibm.com>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jerry Snitselaar <jsnitsel@redhat.com>,
-        Julien Gomes <julien@arista.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 5/6] tpm: Add tpm_buf_read_{u8,u16,u32}
-Date:   Tue, 22 Aug 2023 20:52:20 +0300
-Message-Id: <20230822175221.2196136-6-jarkko@kernel.org>
+        James Bottomley <jejb@linux.ibm.com>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 6/6] KEYS: trusted: tpm2: Use struct tpm_buf for sized buffers
+Date:   Tue, 22 Aug 2023 20:52:21 +0300
+Message-Id: <20230822175221.2196136-7-jarkko@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230822175221.2196136-1-jarkko@kernel.org>
 References: <20230822175221.2196136-1-jarkko@kernel.org>
@@ -57,113 +58,134 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add tpm_buf_read_u8(), tpm_buf_read_u16() and tpm_read_u32() for the sake
-of more convenient parsing of TPM responses.
+Take advantage of the new sized buffer (TPM2B) mode of struct tpm_buf in
+tpm2_seal_trusted(). This allows to add robustness to the command
+construction without requiring to calculate buffer sizes manually.
 
 Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
----
- drivers/char/tpm/tpm-buf.c | 69 ++++++++++++++++++++++++++++++++++++++
- include/linux/tpm.h        |  3 ++
- 2 files changed, 72 insertions(+)
 
-diff --git a/drivers/char/tpm/tpm-buf.c b/drivers/char/tpm/tpm-buf.c
-index f1d92d7e758d..bcd3cbcd9dd9 100644
---- a/drivers/char/tpm/tpm-buf.c
-+++ b/drivers/char/tpm/tpm-buf.c
-@@ -124,3 +124,72 @@ void tpm_buf_append_u32(struct tpm_buf *buf, const u32 value)
- 	tpm_buf_append(buf, (u8 *)&value2, 4);
- }
- EXPORT_SYMBOL_GPL(tpm_buf_append_u32);
-+
-+/**
-+ * tpm_buf_read() - Read from a TPM buffer
-+ * @buf:	&tpm_buf instance
-+ * @offset:	offset within the buffer
-+ * @count:	the number of bytes to read
-+ * @output:	the output buffer
-+ */
-+static void tpm_buf_read(const struct tpm_buf *buf, off_t *offset, size_t count, void *output)
-+{
-+	if (*(offset + count) >= buf->length) {
-+		WARN(1, "tpm_buf: overflow\n");
-+		return;
+v2:
+* Use tpm_buf_read_*
+---
+ security/keys/trusted-keys/trusted_tpm2.c | 51 +++++++++++++----------
+ 1 file changed, 29 insertions(+), 22 deletions(-)
+
+diff --git a/security/keys/trusted-keys/trusted_tpm2.c b/security/keys/trusted-keys/trusted_tpm2.c
+index c41f30770138..5d262306184c 100644
+--- a/security/keys/trusted-keys/trusted_tpm2.c
++++ b/security/keys/trusted-keys/trusted_tpm2.c
+@@ -228,8 +228,9 @@ int tpm2_seal_trusted(struct tpm_chip *chip,
+ 		      struct trusted_key_payload *payload,
+ 		      struct trusted_key_options *options)
+ {
++	off_t offset = TPM_HEADER_SIZE;
++	struct tpm_buf buf, sized;
+ 	int blob_len = 0;
+-	struct tpm_buf buf;
+ 	u32 hash;
+ 	u32 flags;
+ 	int i;
+@@ -258,6 +259,13 @@ int tpm2_seal_trusted(struct tpm_chip *chip,
+ 		return rc;
+ 	}
+ 
++	rc = tpm_buf_init(&sized, true, true);
++	if (rc) {
++		tpm_buf_destroy(&buf);
++		tpm_put_ops(chip);
++		return rc;
 +	}
 +
-+	memcpy(output, &buf->data[*offset], count);
-+	*offset += count;
-+}
-+
-+/**
-+ * tpm_buf_read_u8() - Read 8-bit word from a TPM buffer
-+ * @buf:	&tpm_buf instance
-+ * @offset:	offset within the buffer
-+ *
-+ * Return: next 8-bit word
-+ */
-+u8 tpm_buf_read_u8(const struct tpm_buf *buf, off_t *offset)
-+{
-+	u8 value;
-+
-+	tpm_buf_read(buf, offset, sizeof(value), &value);
-+
-+	return value;
-+}
-+EXPORT_SYMBOL_GPL(tpm_buf_read_u8);
-+
-+/**
-+ * tpm_buf_read_u16() - Read 16-bit word from a TPM buffer
-+ * @buf:	&tpm_buf instance
-+ * @offset:	offset within the buffer
-+ *
-+ * Return: next 16-bit word
-+ */
-+u16 tpm_buf_read_u16(const struct tpm_buf *buf, off_t *offset)
-+{
-+	u16 value;
-+
-+	tpm_buf_read(buf, offset, sizeof(value), &value);
-+
-+	return be16_to_cpu(value);
-+}
-+EXPORT_SYMBOL_GPL(tpm_buf_read_u16);
-+
-+/**
-+ * tpm_buf_read_u32() - Read 32-bit word from a TPM buffer
-+ * @buf:	&tpm_buf instance
-+ * @offset:	offset within the buffer
-+ *
-+ * Return: next 32-bit word
-+ */
-+u32 tpm_buf_read_u32(const struct tpm_buf *buf, off_t *offset)
-+{
-+	u32 value;
-+
-+	tpm_buf_read(buf, offset, sizeof(value), &value);
-+
-+	return be32_to_cpu(value);
-+}
-+EXPORT_SYMBOL_GPL(tpm_buf_read_u32);
-diff --git a/include/linux/tpm.h b/include/linux/tpm.h
-index 687b5173bdab..6590bd1f0a0e 100644
---- a/include/linux/tpm.h
-+++ b/include/linux/tpm.h
-@@ -337,6 +337,9 @@ void tpm_buf_append(struct tpm_buf *buf, const u8 *new_data, u16 new_length);
- void tpm_buf_append_u8(struct tpm_buf *buf, const u8 value);
- void tpm_buf_append_u16(struct tpm_buf *buf, const u16 value);
- void tpm_buf_append_u32(struct tpm_buf *buf, const u32 value);
-+u8 tpm_buf_read_u8(const struct tpm_buf *buf, off_t *offset);
-+u16 tpm_buf_read_u16(const struct tpm_buf *buf, off_t *offset);
-+u32 tpm_buf_read_u32(const struct tpm_buf *buf, off_t *offset);
+ 	tpm_buf_reset(&buf, TPM2_ST_SESSIONS, TPM2_CC_CREATE);
+ 	tpm_buf_append_u32(&buf, options->keyhandle);
+ 	tpm2_buf_append_auth(&buf, TPM2_RS_PW,
+@@ -267,36 +275,36 @@ int tpm2_seal_trusted(struct tpm_chip *chip,
+ 			     TPM_DIGEST_SIZE);
  
- /*
-  * Check if TPM device is in the firmware upgrade mode.
+ 	/* sensitive */
+-	tpm_buf_append_u16(&buf, 4 + options->blobauth_len + payload->key_len);
++	tpm_buf_append_u16(&sized, options->blobauth_len);
+ 
+-	tpm_buf_append_u16(&buf, options->blobauth_len);
+ 	if (options->blobauth_len)
+-		tpm_buf_append(&buf, options->blobauth, options->blobauth_len);
++		tpm_buf_append(&sized, options->blobauth, options->blobauth_len);
+ 
+-	tpm_buf_append_u16(&buf, payload->key_len);
+-	tpm_buf_append(&buf, payload->key, payload->key_len);
++	tpm_buf_append_u16(&sized, payload->key_len);
++	tpm_buf_append(&sized, payload->key, payload->key_len);
++	tpm_buf_append(&buf, sized.data, sized.length);
+ 
+ 	/* public */
+-	tpm_buf_append_u16(&buf, 14 + options->policydigest_len);
+-	tpm_buf_append_u16(&buf, TPM_ALG_KEYEDHASH);
+-	tpm_buf_append_u16(&buf, hash);
++	tpm_buf_init(&sized, false, true);
++	tpm_buf_append_u16(&sized, TPM_ALG_KEYEDHASH);
++	tpm_buf_append_u16(&sized, hash);
+ 
+ 	/* key properties */
+ 	flags = 0;
+ 	flags |= options->policydigest_len ? 0 : TPM2_OA_USER_WITH_AUTH;
+-	flags |= payload->migratable ? 0 : (TPM2_OA_FIXED_TPM |
+-					    TPM2_OA_FIXED_PARENT);
+-	tpm_buf_append_u32(&buf, flags);
++	flags |= payload->migratable ? 0 : (TPM2_OA_FIXED_TPM | TPM2_OA_FIXED_PARENT);
++	tpm_buf_append_u32(&sized, flags);
+ 
+ 	/* policy */
+-	tpm_buf_append_u16(&buf, options->policydigest_len);
++	tpm_buf_append_u16(&sized, options->policydigest_len);
+ 	if (options->policydigest_len)
+-		tpm_buf_append(&buf, options->policydigest,
+-			       options->policydigest_len);
++		tpm_buf_append(&sized, options->policydigest, options->policydigest_len);
+ 
+ 	/* public parameters */
+-	tpm_buf_append_u16(&buf, TPM_ALG_NULL);
+-	tpm_buf_append_u16(&buf, 0);
++	tpm_buf_append_u16(&sized, TPM_ALG_NULL);
++	tpm_buf_append_u16(&sized, 0);
++
++	tpm_buf_append(&buf, sized.data, sized.length);
+ 
+ 	/* outside info */
+ 	tpm_buf_append_u16(&buf, 0);
+@@ -313,21 +321,20 @@ int tpm2_seal_trusted(struct tpm_chip *chip,
+ 	if (rc)
+ 		goto out;
+ 
+-	blob_len = be32_to_cpup((__be32 *) &buf.data[TPM_HEADER_SIZE]);
++	blob_len = tpm_buf_read_u32(&buf, &offset);
+ 	if (blob_len > MAX_BLOB_SIZE) {
+ 		rc = -E2BIG;
+ 		goto out;
+ 	}
+-	if (tpm_buf_length(&buf) < TPM_HEADER_SIZE + 4 + blob_len) {
++	if (buf.length - offset < blob_len) {
+ 		rc = -EFAULT;
+ 		goto out;
+ 	}
+ 
+-	blob_len = tpm2_key_encode(payload, options,
+-				   &buf.data[TPM_HEADER_SIZE + 4],
+-				   blob_len);
++	blob_len = tpm2_key_encode(payload, options, &buf.data[offset], blob_len);
+ 
+ out:
++	tpm_buf_destroy(&sized);
+ 	tpm_buf_destroy(&buf);
+ 
+ 	if (rc > 0) {
 -- 
 2.39.2
 
