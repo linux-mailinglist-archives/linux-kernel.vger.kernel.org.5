@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0B017840B9
+	by mail.lfdr.de (Postfix) with ESMTP id 672917840B8
 	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 14:26:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235738AbjHVM0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 08:26:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38370 "EHLO
+        id S235728AbjHVM0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 08:26:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235607AbjHVM0A (ORCPT
+        with ESMTP id S235719AbjHVM0A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 22 Aug 2023 08:26:00 -0400
 Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D6C61BE
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D64D1B2
         for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 05:25:57 -0700 (PDT)
 Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 5491A12000C;
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 7983712000D;
         Tue, 22 Aug 2023 15:25:54 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 5491A12000C
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 7983712000D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
         s=mail; t=1692707154;
-        bh=DBRyrqGlJ2TH4ASNAwlWnFX5atmr+4R7MtVFb9QXKEg=;
+        bh=hGLCpp8kF6fiAnZ+P/Yb76gyGxaPZI9c6OUPVuPR9xE=;
         h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-        b=aq9MI2KDf6Y+rNJHBLIuFxmdSQ4x7QXjUOUk/os+o8Ene88wPrL4ds4wdxoSUYQ/3
-         +snAgBghQ+QPcCsa1STHUqkvHnI26TBzNFdOGEvdo04ZTQQygsXpW0YujYmd0YFI6h
-         6kGl24wmdwLD4Gx4Y/hfFZPdlmlo6drrVlF1OVhpotqugpxNx5ifz5W1Sg+yfkCYz7
-         z3pk//EH7rI6LbWWk2uKsroQZIKMcDkeWU1fTDT1MKenS54/qFzgPeCwCL77JMDJKg
-         +L+zEXhGQ9QWFPiQQNkmqusCKAt1m/qCgTg7R7MIdD5EGqm1xxheGiylGImYjotpve
-         pijBLMm2W8Q2A==
+        b=cba8YCe7I0zCib6OiN7uC7RpNlN+ExWjAM3KEAw5YMkMpTTo8pTlZHBUu1lkbloMa
+         pGEHzC37zErzP7RT4YR2Dm5xfEHZ5HIal+o/iX6fGp26quv3fKKkj1y3HsWUCFQ1YH
+         QMt0JnjA4fF12jZmQhNUsfgUSUibVMj3qP1AdvPmZWKg5nH8rfPrGpvIBdmKPm7Cdz
+         +DxHSt8pFX+EXX50YxNR5d/tMagf/igxVHtKgg4FsZ06/0GwqtAGTMYWWINlpDFMMM
+         /dGTlpcxrubccKcPgIbdzfQ3BPcLva+QQ80p9Vta7MEX2alzEiOWxGzEVNClqxqckC
+         OuQ/ExnaixcNw==
 Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
@@ -45,10 +45,12 @@ To:     Miquel Raynal <miquel.raynal@bootlin.com>,
 CC:     <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
         <kernel@sberdevices.ru>,
         Martin Kurbanov <mmkurbanov@sberdevices.ru>
-Subject: [PATCH v2 0/2] mtd: spinand: micron: correct parameters
-Date:   Tue, 22 Aug 2023 15:25:32 +0300
-Message-ID: <20230822122534.872646-1-mmkurbanov@sberdevices.ru>
+Subject: [PATCH v2 1/2] mtd: spinand: micron: correct bitmask for ecc status
+Date:   Tue, 22 Aug 2023 15:25:33 +0300
+Message-ID: <20230822122534.872646-2-mmkurbanov@sberdevices.ru>
 X-Mailer: git-send-email 2.40.0
+In-Reply-To: <20230822122534.872646-1-mmkurbanov@sberdevices.ru>
+References: <20230822122534.872646-1-mmkurbanov@sberdevices.ru>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -64,11 +66,11 @@ X-KSMG-AntiSpam-Rate: 0
 X-KSMG-AntiSpam-Status: not_detected
 X-KSMG-AntiSpam-Method: none
 X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 527 527 5bb611be2ca2baa31d984ccbf4ef4415504fc308, {Tracking_smtp_not_equal_from}, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;salutedevices.com:7.1.1;sberdevices.ru:5.0.1,7.1.1;lore.kernel.org:7.1.1, FromAlignment: n, {Tracking_smtp_domain_mismatch}, {Tracking_smtp_domain_2level_mismatch}, ApMailHostAddress: 100.64.160.123
+X-KSMG-AntiSpam-Info: LuaCore: 527 527 5bb611be2ca2baa31d984ccbf4ef4415504fc308, {Tracking_smtp_not_equal_from}, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;salutedevices.com:7.1.1;127.0.0.199:7.1.2;sberdevices.ru:5.0.1,7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1, FromAlignment: n, {Tracking_smtp_domain_mismatch}, {Tracking_smtp_domain_2level_mismatch}, ApMailHostAddress: 100.64.160.123
 X-MS-Exchange-Organization-SCL: -1
 X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean, bases: 2023/08/22 10:39:00
-X-KSMG-LinksScanning: Clean, bases: 2023/08/22 10:39:00
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
 X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/08/22 09:22:00 #21674243
 X-KSMG-AntiVirus-Status: Clean, skipped
 X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -81,24 +83,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patchset includes following fixes:
-  1. Correct bitmask for ecc status.
-  2. Fix oob layout: the first 4 bytes are reserved for bad block data.
+Valid bitmask is 0x70 in the status register.
 
-Changes v2 since v1 at [1]:
-  - Split into two individual patches.
-  - Remove the fix for using only non-protected ECC bytes from OOB area.
+Signed-off-by: Martin Kurbanov <mmkurbanov@sberdevices.ru>
+---
+ drivers/mtd/nand/spi/micron.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Links:
-  [1] https://lore.kernel.org/all/20230815161024.810729-1-mmkurbanov@sberdevices.ru/
-
-Martin Kurbanov (2):
-  mtd: spinand: micron: correct bitmask for ecc status
-  mtd: spinand: micron: fixing the offset for OOB
-
- drivers/mtd/nand/spi/micron.c | 22 ++++++++++++++++++----
- 1 file changed, 18 insertions(+), 4 deletions(-)
-
---
+diff --git a/drivers/mtd/nand/spi/micron.c b/drivers/mtd/nand/spi/micron.c
+index 50b7295bc922..12601bc4227a 100644
+--- a/drivers/mtd/nand/spi/micron.c
++++ b/drivers/mtd/nand/spi/micron.c
+@@ -12,7 +12,7 @@
+ 
+ #define SPINAND_MFR_MICRON		0x2c
+ 
+-#define MICRON_STATUS_ECC_MASK		GENMASK(7, 4)
++#define MICRON_STATUS_ECC_MASK		GENMASK(6, 4)
+ #define MICRON_STATUS_ECC_NO_BITFLIPS	(0 << 4)
+ #define MICRON_STATUS_ECC_1TO3_BITFLIPS	(1 << 4)
+ #define MICRON_STATUS_ECC_4TO6_BITFLIPS	(3 << 4)
+-- 
 2.40.0
 
