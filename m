@@ -2,139 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F8DE783DE7
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 12:29:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68B41783DEC
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 12:29:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233641AbjHVK3d convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 22 Aug 2023 06:29:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42708 "EHLO
+        id S234194AbjHVK3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 06:29:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231781AbjHVK3b (ORCPT
+        with ESMTP id S232556AbjHVK3j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 06:29:31 -0400
-Received: from mail-oa1-f47.google.com (mail-oa1-f47.google.com [209.85.160.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0125FE4B;
-        Tue, 22 Aug 2023 03:28:57 -0700 (PDT)
-Received: by mail-oa1-f47.google.com with SMTP id 586e51a60fabf-1c0fcbf7ae4so3137565fac.0;
-        Tue, 22 Aug 2023 03:28:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692700137; x=1693304937;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EsbuYvLkHCqEgs9rtro3s+O6SiQIK8Nmj+hy3dIrz14=;
-        b=jfmMbmfpfmZkCbzT/C6mrdix2ZSErIjFVFE9xcZczj2JFY5zaFAomV5dckUwWTk0IN
-         4k4qr8K68MErUFkgjnR//Syf/Bftk0fOfg+jMGz/gLca7qdPDEg5RrM76vG0vs2Mkpgn
-         3/DeSbWzJL1JZe5ulNMrXUZyl36+H88qPkeZw8u/WN7narSEposbmH1u+jRDXwCm4jII
-         w1ly1sKFk+7Vk+ATeMnSt5NtHkXxltyqskxJBzL0nki/JfhXIU/oiDDYDh3J5+Q4f6UF
-         l+67oN2rdO5B8OIpCq5O4reAidAAuRWPSDLIhUXzwhYkSA0bxuVYVx5vyH+xEkBjyF+b
-         ldmA==
-X-Gm-Message-State: AOJu0YwzZUlP/JH8sttG0svKrFyHg7VpVxR7lBSf6cmVqfaZDmdKVe8o
-        f774/Vo0N+5X/2DW24//XLBsi+DPH9PQzg==
-X-Google-Smtp-Source: AGHT+IE7Y2sxaXwTsePaxMeT5fcVy66s+VPGs1BYfGFxKybmtPE0wR/Gd9inOnaTnp3jLZWi55n4yw==
-X-Received: by 2002:a05:6870:a48e:b0:1bb:4ec1:50ae with SMTP id j14-20020a056870a48e00b001bb4ec150aemr11009094oal.24.1692700137228;
-        Tue, 22 Aug 2023 03:28:57 -0700 (PDT)
-Received: from mail-oo1-f52.google.com (mail-oo1-f52.google.com. [209.85.161.52])
-        by smtp.gmail.com with ESMTPSA id ec40-20020a0568708c2800b001cc6b64d5f3sm3253946oab.44.2023.08.22.03.28.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Aug 2023 03:28:57 -0700 (PDT)
-Received: by mail-oo1-f52.google.com with SMTP id 006d021491bc7-56ffe7eee6fso1884609eaf.1;
-        Tue, 22 Aug 2023 03:28:57 -0700 (PDT)
-X-Received: by 2002:a05:6358:52d4:b0:139:cdc2:e618 with SMTP id
- z20-20020a05635852d400b00139cdc2e618mr9632089rwz.8.1692700136852; Tue, 22 Aug
- 2023 03:28:56 -0700 (PDT)
+        Tue, 22 Aug 2023 06:29:39 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79410E51;
+        Tue, 22 Aug 2023 03:29:08 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1259A65134;
+        Tue, 22 Aug 2023 10:29:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BAC36C433C7;
+        Tue, 22 Aug 2023 10:29:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692700147;
+        bh=IvGfBZV/2Fq02VPlpwX47hDqBBEMCLHL/8A28vWDXUc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=uqwRdGXrLVVBzIrINCLqNlhho2l5dOyRLX1h/2OMPF3QFkA+7uotHE76sAa8VIjYF
+         k+fhy01JNfiBFQ44lEw50tXOhL0YrJ4yLdtUEAxBPf3IktZr0ZlHHPODFVar1aziel
+         6RAyn4VX8VBpS8NgDz0+9S9X07mvyZiZrw/l0+QPZp82mbFJrWdaLBiSh+B+cp/JkM
+         CBkVX7MpUB/q6pV1EIiqOoJNRElangAk5sKwHkFj6jNTZAFe031xrgJw+8pUewD0PN
+         W1Jrn0Hu2smyWzlHqy4t8r4oA0hzgqG1LHyxnpWiB6AbxLlIe46kIFbrp3sPey0iv/
+         j66lhtnxaN+Jg==
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     linux-sgx@vger.kernel.org
+Cc:     Jarkko Sakkinen <jarkko@kernel.org>, stable@vger.kernel.org,
+        kernel test robot <lkp@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Serge Ayoun <serge.ayoun@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] x86/sgx: Describe the parameters of sgx_calc_section_metric()
+Date:   Tue, 22 Aug 2023 13:28:53 +0300
+Message-Id: <20230822102853.15078-1-jarkko@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-References: <20230821023928.3324283-1-peng.fan@oss.nxp.com>
- <20230821023928.3324283-2-peng.fan@oss.nxp.com> <169265161637.2283882.6488993918028899667.robh@kernel.org>
-In-Reply-To: <169265161637.2283882.6488993918028899667.robh@kernel.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 22 Aug 2023 12:28:44 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWyVeaKTX3ZyWU56xM4CPCyQF=i-AhDKwyN6C2cJTB=iA@mail.gmail.com>
-Message-ID: <CAMuHMdWyVeaKTX3ZyWU56xM4CPCyQF=i-AhDKwyN6C2cJTB=iA@mail.gmail.com>
-Subject: Re: [PATCH V3 2/2] of/platform: increase refcount of fwnode
-To:     Rob Herring <robh@kernel.org>
-Cc:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
-        linux-kernel@vger.kernel.org, frowand.list@gmail.com,
-        krzysztof.kozlowski+dt@linaro.org, isaacmanjarres@google.com,
-        conor+dt@kernel.org, rafael@kernel.org, devicetree@vger.kernel.org,
-        jeremy.kerr@canonical.com, robh+dt@kernel.org,
-        gregkh@linuxfoundation.org, linux@armlinux.org.uk, arnd@arndb.de,
-        hdegoede@redhat.com, andriy.shevchenko@linux.intel.com,
-        grant.likely@secretlab.ca, Peng Fan <peng.fan@nxp.com>,
-        ulf.hansson@linaro.org, linus.walleij@linaro.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+Cc: stable@vger.kernel.org # v5.11+
+Fixes: e7e0545299d8 ("x86/sgx: Initialize metadata for Enclave Page Cache (EPC) sections")
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202308221542.11UpkVfp-lkp@intel.com/
+Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+---
+ arch/x86/kernel/cpu/sgx/main.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-On Tue, Aug 22, 2023 at 1:33 AM Rob Herring <robh@kernel.org> wrote:
-> On Mon, 21 Aug 2023 10:39:28 +0800, Peng Fan (OSS) wrote:
-> > From: Peng Fan <peng.fan@nxp.com>
-> >
-> > commit 0f8e5651095b
-> > ("of/platform: Propagate firmware node by calling device_set_node()")
-> > use of_fwnode_handle to replace of_node_get, which introduces a side
-> > effect that the refcount is not increased. Then the out of tree
-> > jailhouse hypervisor enable/disable test will trigger kernel dump in
-> > of_overlay_remove, with the following sequence
-> > "
-> >    of_changeset_revert(&overlay_changeset);
-> >    of_changeset_destroy(&overlay_changeset);
-> >    of_overlay_remove(&overlay_id);
-> > "
-> >
-> > So increase the refcount to avoid issues.
-> >
-> > This patch also release the refcount when releasing amba device to avoid
-> > refcount leakage.
-> >
-> > Fixes: 0f8e5651095b ("of/platform: Propagate firmware node by calling device_set_node()")
-> > Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> > ---
-> >
-> > V3:
-> >  - Move amba device changes to patch 1/1
-> >
-> > V2:
-> >  - Per Andy's comment, use of_fwnode_handle(of_node_get(np))
-> >  - release amba device of_node refcount when releasing amba device, this is
-> >    done from code inspection, no test.
-> >
-> >  drivers/of/platform.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
->
-> Applied, thanks!
-
-Good to see this got applied!
-
-I had missed this fix, and spent quite some time investigating why multiple
-overlay add/removal sequences caused a crash.  Only after I had
-written a reproducer unittest[1], I managed to bisect the issue,
-and found Peng's fix. Thanks!
-
-Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-[1] "[PATCH] of: unittest: Run overlay apply/revert sequence three times"
-    https://lore.kernel.org/all/a9fb4eb560c58d11a7f167bc78a137b46e76cf15.1692699743.git.geert+renesas@glider.be/
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+index 166692f2d501..388350b8f5e3 100644
+--- a/arch/x86/kernel/cpu/sgx/main.c
++++ b/arch/x86/kernel/cpu/sgx/main.c
+@@ -732,6 +732,10 @@ int arch_memory_failure(unsigned long pfn, int flags)
+ }
+ 
+ /**
++ * sgx_calc_section_metric() - Calculate an EPC section metric
++ * @low:	low 32-bit word from CPUID:0x12:{2, ...}
++ * @high:	high 32-bit word from CPUID:0x12:{2, ...}
++ *
+  * A section metric is concatenated in a way that @low bits 12-31 define the
+  * bits 12-31 of the metric and @high bits 0-19 define the bits 32-51 of the
+  * metric.
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.39.2
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
