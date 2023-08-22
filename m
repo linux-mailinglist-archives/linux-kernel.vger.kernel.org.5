@@ -2,93 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A178D784497
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 16:42:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A49A278449A
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 16:43:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236897AbjHVOmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 10:42:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50250 "EHLO
+        id S236775AbjHVOns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 10:43:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236887AbjHVOmp (ORCPT
+        with ESMTP id S232957AbjHVOnr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 10:42:45 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 043C8187;
-        Tue, 22 Aug 2023 07:42:43 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8E2A46592A;
-        Tue, 22 Aug 2023 14:42:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A521C433C9;
-        Tue, 22 Aug 2023 14:42:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1692715362;
-        bh=JwRaFdXpBFPQvWg+7PAhwk5RLTvKjoAS3evEC/T1Ics=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0euQLufgFNRSnjyplQRQhH6HbdZ16LqtVmuSb58MLZK863JtFKmETmzT7qsFuvx/1
-         7AZFXTdjbLMe+TvyViLIOikGnRQlyITSgy6SalJvI4fc9sZgJ1Gyv3f4zzqpVi5SkV
-         rMT1Wl/QM+uKVEgvzVXFUQNMsQRQCzzhGz5Nl3IY=
-Date:   Tue, 22 Aug 2023 16:42:39 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Grant B Adams <nemith592@gmail.com>
-Cc:     linux-omap@vger.kernel.org, tony@atomide.com,
-        Sebastian Reichel <sre@kernel.org>, Bin Liu <b-liu@ti.com>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Subject: Re: [PATCH 2/2] usb: musb: dsps: Fix vbus vs tps65217-charger irq
- conflict
-Message-ID: <2023082256-judiciary-udder-6d06@gregkh>
-References: <20230822132202.19659-1-nemith592@gmail.com>
+        Tue, 22 Aug 2023 10:43:47 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8EE0124;
+        Tue, 22 Aug 2023 07:43:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692715425; x=1724251425;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=CZBWAUJ1YziSU1jNwy5/HWNayXg6woaad+C8SdM8SNA=;
+  b=gTuxGU/DiEC6WyhFQMUJf0oKMQyJXE2vjFcDe+broXC5tbb9sZiuYDso
+   o18JGTMDxIKI3MKKnBNTkvK4dfoNfV+qfIwg5Q5ZaOVgT9H5DgEkMOaSl
+   3zfThTWe1e/FiPoVD6LBo6+wQZZXcfq2GZmbsDYrhjOEOAxU859NfKVok
+   IRp+fQEmBhJzSWPZsCFlPACPSDbLPRlnZqykpyNIYuuDynK5Kr1G9FeAX
+   ryw/mSC5XWpG1t6I1ezdVDhItTzaSKzoEZAnupNYOGZKRF9a4rqdYwS1o
+   +RYBoIMWQjzApJEh5PWxa6fitfVcV8nggw3O0eCFUVZshwqorbMEQq7em
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="377656020"
+X-IronPort-AV: E=Sophos;i="6.01,193,1684825200"; 
+   d="scan'208";a="377656020"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2023 07:43:45 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="850645964"
+X-IronPort-AV: E=Sophos;i="6.01,193,1684825200"; 
+   d="scan'208";a="850645964"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP; 22 Aug 2023 07:43:43 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qYSbd-00Em1X-1c;
+        Tue, 22 Aug 2023 17:43:41 +0300
+Date:   Tue, 22 Aug 2023 17:43:41 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Yann Sionneau <ysionneau@kalray.eu>
+Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Julian Vetter <jvetter@kalrayinc.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6] i2c: designware: Add support for recovery when GPIO
+ need pinctrl.
+Message-ID: <ZOTJnWjG90tyGkJl@smile.fi.intel.com>
+References: <20230822143437.9395-1-ysionneau@kalray.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230822132202.19659-1-nemith592@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230822143437.9395-1-ysionneau@kalray.eu>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 03:22:02PM +0200, Grant B Adams wrote:
-> Enabling the tps65217-charger driver/module causes an interrupt conflict
-> with the vbus driver resulting in a probe failure.
-> The conflict is resolved by changing both driver's threaded interrupt
-> request function from IRQF_ONESHOT to IRQF_SHARED.
+On Tue, Aug 22, 2023 at 04:34:37PM +0200, Yann Sionneau wrote:
+> Currently if the SoC needs pinctrl to switch the SCL and SDA from the I2C
+> function to GPIO function, the recovery won't work.
 > 
-> Signed-off-by: Grant B Adams <nemith592@gmail.com>
-> ---
->  drivers/usb/musb/musb_dsps.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> scl-gpio = <>;
+> sda-gpio = <>;
 > 
-> diff --git a/drivers/usb/musb/musb_dsps.c b/drivers/usb/musb/musb_dsps.c
-> index 9119b1d51370..cbb45de5a76f 100644
-> --- a/drivers/usb/musb/musb_dsps.c
-> +++ b/drivers/usb/musb/musb_dsps.c
-> @@ -851,7 +851,7 @@ static int dsps_setup_optional_vbus_irq(struct platform_device *pdev,
->  
->  	error = devm_request_threaded_irq(glue->dev, glue->vbus_irq,
->  					  NULL, dsps_vbus_threaded_irq,
-> -					  IRQF_ONESHOT,
-> +					  IRQF_SHARED,
->  					  "vbus", glue);
->  	if (error) {
->  		glue->vbus_irq = 0;
-> -- 
-> 2.34.1
+> Are not enough for some SoCs to have a working recovery.
+> Some need:
 > 
+> scl-gpio = <>;
+> sda-gpio = <>;
+> pinctrl-names = "default", "recovery";
+> pinctrl-0 = <&i2c_pins_hw>;
+> pinctrl-1 = <&i2c_pins_gpio>;
+> 
+> The driver was not filling rinfo->pinctrl with the device node
+> pinctrl data which is needed by generic recovery code.
 
-Why is the patch here talking about the tps65217-charger driver?  That's
-totally independent.
+Now looks pretty much good enough (yet the period is not needed in the Subject,
+but it's fine for your newbie submission — no need to resend or make a new
+version). Thank you!
 
-Also, your patches are not threaded, how did you send them?  Are they
-related in some way or not?
+-- 
+With Best Regards,
+Andy Shevchenko
 
-thanks,
 
-greg k-h
