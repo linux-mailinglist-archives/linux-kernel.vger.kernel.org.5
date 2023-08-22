@@ -2,210 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 530DE784272
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 15:52:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF25A784277
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 15:52:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236168AbjHVNwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 09:52:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46050 "EHLO
+        id S233485AbjHVNww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 09:52:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230238AbjHVNwT (ORCPT
+        with ESMTP id S235894AbjHVNww (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 09:52:19 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E15961AD;
-        Tue, 22 Aug 2023 06:52:16 -0700 (PDT)
-Received: from notapiano (zone.collabora.co.uk [167.235.23.81])
+        Tue, 22 Aug 2023 09:52:52 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2A751B9;
+        Tue, 22 Aug 2023 06:52:41 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        (Authenticated sender: nfraprado)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 987AD6607257;
-        Tue, 22 Aug 2023 14:52:13 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1692712335;
-        bh=OTe/Rs4xCY6y3VpYdVCCOh7OTSULMcvgoBdkqKXkjHk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=G+p/xwuT7U9DQahKB8g1hMGrtK+lYHNl4tVApI54D011YmSggWD4HZLiXdvaPc1yj
-         t6oMT5ixY03p2e2/gsjWOPBt1fZ94a2bVIO/I9CMKwvkEmdQYbziyh334PlMinEuep
-         fc1zrq5dk8vqKf9LlbSkB0FzFKQnULy8VEY/9hwB85i2qKFcIJ3LrkZBj3ahW31Ft+
-         mHVUtwke1Eob3Vh1aL/tU870nxjHljy1Nm8ckhOVX1mb60CLoU3MuM9PzfzBSiDOQC
-         mFcbA2D8xLn/5J4GML1yNjri/70zEVCC/vtuMJ/dbkDBiElBzLDK+J29nUCMeciyx9
-         yTXfgckc4ABJw==
-Date:   Tue, 22 Aug 2023 09:52:09 -0400
-From:   =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado 
-        <nfraprado@collabora.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>, kernel@collabora.com,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH] thermal/core: Don't update trip points inside the
- hysteresis range
-Message-ID: <777f7688-34d1-4b1e-9187-6f605fb8e80c@notapiano>
-References: <20230703171502.44657-1-nfraprado@collabora.com>
- <CAJZ5v0hiiiReiJBPZRCMs16E247GL-nJGjnwkiMCNq5q4VjkyQ@mail.gmail.com>
- <3bc5be02-4e05-4c5c-a247-58c4b862528d@notapiano>
- <CAJZ5v0gwgBmj0XaLhBz0puSOA_OYUy0oFEjoBVCWjT3XW+qZVg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJZ5v0gwgBmj0XaLhBz0puSOA_OYUy0oFEjoBVCWjT3XW+qZVg@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5FD1F656E1;
+        Tue, 22 Aug 2023 13:52:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B56FC433C8;
+        Tue, 22 Aug 2023 13:52:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692712360;
+        bh=YzLaCmClh/kthvSkr231iUB47ivUYlUZTI93ZVPO1Aw=;
+        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+        b=Xv86NiVJL0UIRMRHHqzYGKVamDEosHJ15fZyFUcNxwo2+/HJjJLW6Cekg6rylMsZE
+         BOHh7HSkiZ+CiLgnvAtLFP3r7NCvuHVQWiHpkUs/F4h9OessD8sJvMyM+gPHWH/q3F
+         KBictTPTNbxBt+dSaF+icZkrwmLe+z+PrB6rO4V03xUGCURi7Tf6W4Gl/uh5YRnX/G
+         B/vNgtshsaKxZLPRBqjT2HrENPHJJk/9AGE5W/QFPao6qaWfl9cys0WotLsDnPqEad
+         ZzLp8dlPAzAQ9bND8/DSR45U9wKL2ZWkVQOneqPI1zN+6InjpXsTKwC77ViAZ6wWS8
+         Js89xzfiAsl5A==
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Tue, 22 Aug 2023 16:52:36 +0300
+Message-Id: <CUZ4G9FRXIW1.23TJD5ASQBUNE@suppilovahvero>
+Cc:     <jejb@linux.ibm.com>, <zohar@linux.ibm.com>,
+        <jens.wiklander@linaro.org>, <sudeep.holla@arm.com>,
+        <achin.gupta@arm.com>, <linux-security-module@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] KEYS: trusted: tee: Refactor register SHM usage
+From:   "Jarkko Sakkinen" <jarkko@kernel.org>
+To:     "Sumit Garg" <sumit.garg@linaro.org>,
+        <linux-integrity@vger.kernel.org>, <keyrings@vger.kernel.org>
+X-Mailer: aerc 0.14.0
+References: <20230822112933.1550062-1-sumit.garg@linaro.org>
+In-Reply-To: <20230822112933.1550062-1-sumit.garg@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 12:57:59PM +0200, Rafael J. Wysocki wrote:
-> On Tue, Aug 22, 2023 at 12:25 AM Nícolas F. R. A. Prado
-> <nfraprado@collabora.com> wrote:
-> >
-> > On Mon, Aug 21, 2023 at 11:10:27PM +0200, Rafael J. Wysocki wrote:
-> > > On Mon, Jul 3, 2023 at 7:15 PM Nícolas F. R. A. Prado
-> > > <nfraprado@collabora.com> wrote:
-> > > >
-> > > > When searching for the trip points that need to be set, the nearest trip
-> > > > point's temperature is used for the high trip, while the nearest trip
-> > > > point's temperature minus the hysteresis is used for the low trip. The
-> > > > issue with this logic is that when the current temperature is inside a
-> > > > trip point's hysteresis range, both high and low trips will come from
-> > > > the same trip point. As a consequence instability can still occur like
-> > > > this:
-> > > > * the temperature rises slightly and enters the hysteresis range of a
-> > > >   trip point
-> > > > * polling happens and updates the trip points to the hysteresis range
-> > > > * the temperature falls slightly, exiting the hysteresis range, crossing
-> > > >   the trip point and triggering an IRQ, the trip points are updated
-> > > > * repeat
-> > > >
-> > > > So even though the current hysteresis implementation prevents
-> > > > instability from happening due to IRQs triggering on the same
-> > > > temperature value, both ways, it doesn't prevent it from happening due
-> > > > to an IRQ on one way and polling on the other.
-> > > >
-> > > > To properly implement a hysteresis behavior, when inside the hysteresis
-> > > > range, don't update the trip points. This way, the previously set trip
-> > > > points will stay in effect, which will in a way remember the previous
-> > > > state (if the temperature signal came from above or below the range) and
-> > > > therefore have the right trip point already set. The exception is if
-> > > > there was no previous trip point set, in which case a previous state
-> > > > doesn't exist, and so it's sensible to allow the hysteresis range as
-> > > > trip points.
-> > > >
-> > > > Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
-> > > >
-> > > > ---
-> > > >
-> > > >  drivers/thermal/thermal_trip.c | 21 +++++++++++++++++++--
-> > > >  1 file changed, 19 insertions(+), 2 deletions(-)
-> > > >
-> > > > diff --git a/drivers/thermal/thermal_trip.c b/drivers/thermal/thermal_trip.c
-> > > > index 907f3a4d7bc8..c386ac5d8bad 100644
-> > > > --- a/drivers/thermal/thermal_trip.c
-> > > > +++ b/drivers/thermal/thermal_trip.c
-> > > > @@ -57,6 +57,7 @@ void __thermal_zone_set_trips(struct thermal_zone_device *tz)
-> > > >  {
-> > > >         struct thermal_trip trip;
-> > > >         int low = -INT_MAX, high = INT_MAX;
-> > > > +       int low_trip_id = -1, high_trip_id = -2;
-> > > >         int i, ret;
-> > > >
-> > > >         lockdep_assert_held(&tz->lock);
-> > > > @@ -73,18 +74,34 @@ void __thermal_zone_set_trips(struct thermal_zone_device *tz)
-> > > >
-> > > >                 trip_low = trip.temperature - trip.hysteresis;
-> > > >
-> > > > -               if (trip_low < tz->temperature && trip_low > low)
-> > > > +               if (trip_low < tz->temperature && trip_low > low) {
-> > > >                         low = trip_low;
-> > > > +                       low_trip_id = i;
-> > > > +               }
-> > > >
-> > >
-> > > I think I get the idea, but wouldn't a similar effect be achieved by
-> > > adding an "else" here?
-> >
-> > No. That would only fix the problem in one direction, namely, when the
-> > temperature entered the hysteresis range from above. But when the temperature
-> > entered the range from below, we'd need to check the high threshold first to
-> > achieve the same result.
-> >
-> > The way I've implemented here is the simplest I could think of that works for
-> > both directions.
-> 
-> Well, what about the replacement patch below (untested)?
+On Tue Aug 22, 2023 at 2:29 PM EEST, Sumit Garg wrote:
+> The OP-TEE driver using the old SMC based ABI permits overlapping shared
+> buffers, but with the new FF-A based ABI each physical page may only
+> be registered once.
+>
+> As the key and blob buffer are allocated adjancently, there is no need
+> for redundant register shared memory invocation. Also, it is incompatibil=
+e
+> with FF-A based ABI limitation. So refactor register shared memory
+> implementation to use only single invocation to register both key and blo=
+b
+> buffers.
+>
+> Fixes: 4615e5a34b95 ("optee: add FF-A support")
+> Reported-by: Jens Wiklander <jens.wiklander@linaro.org>
+> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
 
-Yes, the patch below should work just as well as the one I've proposed. Do you
-want me to send a v2 with this code, or do you want to send this patch yourself?
+Does this retain backwards compatibility?
 
-I'll also give it some testing.
-
-Thanks,
-Nícolas
-
-> 
 > ---
->  drivers/thermal/thermal_trip.c |   19 +++++++++++++++++--
->  1 file changed, 17 insertions(+), 2 deletions(-)
-> 
-> Index: linux-pm/drivers/thermal/thermal_trip.c
-> ===================================================================
-> --- linux-pm.orig/drivers/thermal/thermal_trip.c
-> +++ linux-pm/drivers/thermal/thermal_trip.c
-> @@ -55,6 +55,7 @@ void __thermal_zone_set_trips(struct the
->  {
->      struct thermal_trip trip;
->      int low = -INT_MAX, high = INT_MAX;
-> +    bool same_trip = false;
->      int i, ret;
-> 
->      lockdep_assert_held(&tz->lock);
-> @@ -63,6 +64,7 @@ void __thermal_zone_set_trips(struct the
->          return;
-> 
->      for (i = 0; i < tz->num_trips; i++) {
-> +        bool low_set = false;
->          int trip_low;
-> 
->          ret = __thermal_zone_get_trip(tz, i , &trip);
-> @@ -71,18 +73,31 @@ void __thermal_zone_set_trips(struct the
-> 
->          trip_low = trip.temperature - trip.hysteresis;
-> 
-> -        if (trip_low < tz->temperature && trip_low > low)
-> +        if (trip_low < tz->temperature && trip_low > low) {
->              low = trip_low;
-> +            low_set = true;
-> +            same_trip = false;
-> +        }
-> 
->          if (trip.temperature > tz->temperature &&
-> -            trip.temperature < high)
-> +            trip.temperature < high) {
->              high = trip.temperature;
-> +            same_trip = low_set;
-> +        }
->      }
-> 
->      /* No need to change trip points */
->      if (tz->prev_low_trip == low && tz->prev_high_trip == high)
->          return;
-> 
-> +    /*
-> +     * If "high" and "low" are the same, skip the change unless this is the
-> +     * first time.
-> +     */
-> +    if (same_trip && (tz->prev_low_trip != -INT_MAX ||
-> +        tz->prev_high_trip != INT_MAX))
-> +        return;
-> +
->      tz->prev_low_trip = low;
->      tz->prev_high_trip = high;
+>  security/keys/trusted-keys/trusted_tee.c | 64 ++++++++----------------
+>  1 file changed, 20 insertions(+), 44 deletions(-)
+>
+> diff --git a/security/keys/trusted-keys/trusted_tee.c b/security/keys/tru=
+sted-keys/trusted_tee.c
+> index ac3e270ade69..aa3d477de6db 100644
+> --- a/security/keys/trusted-keys/trusted_tee.c
+> +++ b/security/keys/trusted-keys/trusted_tee.c
+> @@ -65,24 +65,16 @@ static int trusted_tee_seal(struct trusted_key_payloa=
+d *p, char *datablob)
+>  	int ret;
+>  	struct tee_ioctl_invoke_arg inv_arg;
+>  	struct tee_param param[4];
+> -	struct tee_shm *reg_shm_in =3D NULL, *reg_shm_out =3D NULL;
+> +	struct tee_shm *reg_shm =3D NULL;
+> =20
+>  	memset(&inv_arg, 0, sizeof(inv_arg));
+>  	memset(&param, 0, sizeof(param));
+> =20
+> -	reg_shm_in =3D tee_shm_register_kernel_buf(pvt_data.ctx, p->key,
+> -						 p->key_len);
+> -	if (IS_ERR(reg_shm_in)) {
+> -		dev_err(pvt_data.dev, "key shm register failed\n");
+> -		return PTR_ERR(reg_shm_in);
+> -	}
+> -
+> -	reg_shm_out =3D tee_shm_register_kernel_buf(pvt_data.ctx, p->blob,
+> -						  sizeof(p->blob));
+> -	if (IS_ERR(reg_shm_out)) {
+> -		dev_err(pvt_data.dev, "blob shm register failed\n");
+> -		ret =3D PTR_ERR(reg_shm_out);
+> -		goto out;
+> +	reg_shm =3D tee_shm_register_kernel_buf(pvt_data.ctx, p->key,
+> +					      sizeof(p->key) + sizeof(p->blob));
+> +	if (IS_ERR(reg_shm)) {
+> +		dev_err(pvt_data.dev, "shm register failed\n");
+> +		return PTR_ERR(reg_shm);
+>  	}
+> =20
+>  	inv_arg.func =3D TA_CMD_SEAL;
+> @@ -90,13 +82,13 @@ static int trusted_tee_seal(struct trusted_key_payloa=
+d *p, char *datablob)
+>  	inv_arg.num_params =3D 4;
+> =20
+>  	param[0].attr =3D TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_INPUT;
+> -	param[0].u.memref.shm =3D reg_shm_in;
+> +	param[0].u.memref.shm =3D reg_shm;
+>  	param[0].u.memref.size =3D p->key_len;
+>  	param[0].u.memref.shm_offs =3D 0;
+>  	param[1].attr =3D TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_OUTPUT;
+> -	param[1].u.memref.shm =3D reg_shm_out;
+> +	param[1].u.memref.shm =3D reg_shm;
+>  	param[1].u.memref.size =3D sizeof(p->blob);
+> -	param[1].u.memref.shm_offs =3D 0;
+> +	param[1].u.memref.shm_offs =3D sizeof(p->key);
+> =20
+>  	ret =3D tee_client_invoke_func(pvt_data.ctx, &inv_arg, param);
+>  	if ((ret < 0) || (inv_arg.ret !=3D 0)) {
+> @@ -107,11 +99,7 @@ static int trusted_tee_seal(struct trusted_key_payloa=
+d *p, char *datablob)
+>  		p->blob_len =3D param[1].u.memref.size;
+>  	}
+> =20
+> -out:
+> -	if (reg_shm_out)
+> -		tee_shm_free(reg_shm_out);
+> -	if (reg_shm_in)
+> -		tee_shm_free(reg_shm_in);
+> +	tee_shm_free(reg_shm);
+> =20
+>  	return ret;
+>  }
+> @@ -124,24 +112,16 @@ static int trusted_tee_unseal(struct trusted_key_pa=
+yload *p, char *datablob)
+>  	int ret;
+>  	struct tee_ioctl_invoke_arg inv_arg;
+>  	struct tee_param param[4];
+> -	struct tee_shm *reg_shm_in =3D NULL, *reg_shm_out =3D NULL;
+> +	struct tee_shm *reg_shm =3D NULL;
+> =20
+>  	memset(&inv_arg, 0, sizeof(inv_arg));
+>  	memset(&param, 0, sizeof(param));
+> =20
+> -	reg_shm_in =3D tee_shm_register_kernel_buf(pvt_data.ctx, p->blob,
+> -						 p->blob_len);
+> -	if (IS_ERR(reg_shm_in)) {
+> -		dev_err(pvt_data.dev, "blob shm register failed\n");
+> -		return PTR_ERR(reg_shm_in);
+> -	}
+> -
+> -	reg_shm_out =3D tee_shm_register_kernel_buf(pvt_data.ctx, p->key,
+> -						  sizeof(p->key));
+> -	if (IS_ERR(reg_shm_out)) {
+> -		dev_err(pvt_data.dev, "key shm register failed\n");
+> -		ret =3D PTR_ERR(reg_shm_out);
+> -		goto out;
+> +	reg_shm =3D tee_shm_register_kernel_buf(pvt_data.ctx, p->key,
+> +					      sizeof(p->key) + sizeof(p->blob));
+> +	if (IS_ERR(reg_shm)) {
+> +		dev_err(pvt_data.dev, "shm register failed\n");
+> +		return PTR_ERR(reg_shm);
+>  	}
+> =20
+>  	inv_arg.func =3D TA_CMD_UNSEAL;
+> @@ -149,11 +129,11 @@ static int trusted_tee_unseal(struct trusted_key_pa=
+yload *p, char *datablob)
+>  	inv_arg.num_params =3D 4;
+> =20
+>  	param[0].attr =3D TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_INPUT;
+> -	param[0].u.memref.shm =3D reg_shm_in;
+> +	param[0].u.memref.shm =3D reg_shm;
+>  	param[0].u.memref.size =3D p->blob_len;
+> -	param[0].u.memref.shm_offs =3D 0;
+> +	param[0].u.memref.shm_offs =3D sizeof(p->key);
+>  	param[1].attr =3D TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_OUTPUT;
+> -	param[1].u.memref.shm =3D reg_shm_out;
+> +	param[1].u.memref.shm =3D reg_shm;
+>  	param[1].u.memref.size =3D sizeof(p->key);
+>  	param[1].u.memref.shm_offs =3D 0;
+> =20
+> @@ -166,11 +146,7 @@ static int trusted_tee_unseal(struct trusted_key_pay=
+load *p, char *datablob)
+>  		p->key_len =3D param[1].u.memref.size;
+>  	}
+> =20
+> -out:
+> -	if (reg_shm_out)
+> -		tee_shm_free(reg_shm_out);
+> -	if (reg_shm_in)
+> -		tee_shm_free(reg_shm_in);
+> +	tee_shm_free(reg_shm);
+> =20
+>  	return ret;
+>  }
+> --=20
+> 2.34.1
+
+BR, Jarkko
