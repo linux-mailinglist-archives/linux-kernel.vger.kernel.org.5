@@ -2,54 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E51B8783AED
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 09:31:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC674783AF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 09:32:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233280AbjHVHbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 03:31:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50778 "EHLO
+        id S233418AbjHVHcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 03:32:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232802AbjHVHba (ORCPT
+        with ESMTP id S232073AbjHVHch (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 03:31:30 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B956D130;
-        Tue, 22 Aug 2023 00:31:28 -0700 (PDT)
+        Tue, 22 Aug 2023 03:32:37 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18E4A133;
+        Tue, 22 Aug 2023 00:32:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692689488; x=1724225488;
-  h=from:to:cc:subject:date:message-id;
-  bh=3BYZu9n4dVZV2dz0cvespv/7zchBpnF7YiYEuX3chcA=;
-  b=mim1Eo/FOLiJRb3qfDq/8Ggz6pVpJyOEpw3OaIduwBhOt1n64Fou+pLo
-   n253HeZk7WlXFzNH4OKgjf2e43ocHqops7BMdZq4uJPD1AFzWtKDdVTDB
-   Sl994fE1/yIJw/xtJSPd+FklZan9jQ20IH83aiPh3+Qjr/rrby5jKbQKU
-   DOsZ6EVYu8ydaraOOdrYNihC8VXxGfWEogbzbyV5pVMzApc7faLFYmgq2
-   xFS8Fp4qU8fnel+B4B5r9jd2lfjkJ2MkWt3ZHn3Yp/u+mSclVaaxc8zs+
-   1v9p+IGccSyNq2ZOtySBqR4pMavV3+l+UJXDpDvHrmgW9fXUHw+jfRsgt
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="437722371"
+  t=1692689556; x=1724225556;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=2WDGroCf9hVRdMg3TmwFYLJHYRQhPfk99Hlw9ivghVQ=;
+  b=I63MPDUfeXXWJENVAhs+7ue/zYBsxlwRsKGIN5FlOqDB8Hqch00l4f1S
+   vE5BM3yt9kChiB+53Go8cTQJyDpe399WUSFilNpHRVxk7Le4VpgxQTAo7
+   5Hr3VVYWak/akY7Z+MVBoxjCq9HNq9QyfJ6xyteJuhzIIiTP6DCxCdw4f
+   D4y33zo1fLbKro0B8oIPEolalDpiJbdTfuzT0VMb51H3+9Mj9xvhIi6aq
+   2vSMnISpAXBNTmU1Hk34h2jWgJpkW/84duv4PdQ53UvXcNYIGhgVlQlgV
+   mC47kcC/UkViEW94NYSWEiEvMvZUNgrMq3ggsuQjqbaTwNVHsMZ71lqYp
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="376540902"
 X-IronPort-AV: E=Sophos;i="6.01,192,1684825200"; 
-   d="scan'208";a="437722371"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2023 00:31:28 -0700
+   d="scan'208";a="376540902"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2023 00:32:35 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="850506464"
+X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="685944607"
 X-IronPort-AV: E=Sophos;i="6.01,192,1684825200"; 
-   d="scan'208";a="850506464"
-Received: from inlubt0316.iind.intel.com ([10.191.20.213])
-  by fmsmga002.fm.intel.com with ESMTP; 22 Aug 2023 00:31:25 -0700
-From:   Raag Jadav <raag.jadav@intel.com>
-To:     linus.walleij@linaro.org, mika.westerberg@linux.intel.com,
-        andriy.shevchenko@linux.intel.com
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mallikarjunappa.sangannavar@intel.com, pandith.n@intel.com,
-        Raag Jadav <raag.jadav@intel.com>
-Subject: [PATCH v1] pinctrl: intel: consolidate ACPI dependency
-Date:   Tue, 22 Aug 2023 13:00:56 +0530
-Message-Id: <20230822073056.10208-1-raag.jadav@intel.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+   d="scan'208";a="685944607"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.252.189.107]) ([10.252.189.107])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2023 00:32:30 -0700
+Message-ID: <fe03b53a-c9f9-cc6b-a1fd-d6fd2f1a1ddc@linux.intel.com>
+Date:   Tue, 22 Aug 2023 15:32:26 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Cc:     baolu.lu@linux.intel.com, kvm@vger.kernel.org,
+        iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
+        joro@8bytes.org, will@kernel.org, robin.murphy@arm.com,
+        kevin.tian@intel.com, jacob.jun.pan@linux.intel.com,
+        yi.l.liu@intel.com, yi.y.sun@intel.com
+Subject: Re: [PATCH] iommu/vt-d: Introduce a rb_tree for looking up device
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Huang Jiaqing <jiaqing.huang@intel.com>
+References: <20230821071659.123981-1-jiaqing.huang@intel.com>
+ <ZOOWMUmwG2jXOaXL@ziepe.ca>
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <ZOOWMUmwG2jXOaXL@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -58,170 +70,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since all the Intel specific platform drivers depend on ACPI, we can
-consolidate their config dependency.
+On 2023/8/22 0:52, Jason Gunthorpe wrote:
+> On Mon, Aug 21, 2023 at 12:16:59AM -0700, Huang Jiaqing wrote:
+>> The existing IO page fault handler locates the PCI device by calling
+>> pci_get_domain_bus_and_slot(), which searches the list of all PCI
+>> devices until the desired PCI device is found. This is inefficient
+>> because the algorithm efficiency of searching a list is O(n). In the
+>> critical path of handling an IO page fault, this can cause a significant
+>> performance bottleneck.
+>>
+>> To improve the performance of the IO page fault handler, replace
+>> pci_get_domain_bus_and_slot() with a local red-black tree. A red-black
+>> tree is a self-balancing binary search tree, which means that the
+>> average time complexity of searching a red-black tree is O(log(n)). This
+>> is significantly faster than O(n), so it can significantly improve the
+>> performance of the IO page fault handler.
+>>
+>> In addition, we can only insert the affected devices (those that have IO
+>> page fault enabled) into the red-black tree. This can further improve
+>> the performance of the IO page fault handler.
+>>
+>> Signed-off-by: Huang Jiaqing<jiaqing.huang@intel.com>
+>> ---
+>>   drivers/iommu/intel/iommu.c | 68 +++++++++++++++++++++++++++++++++++++
+>>   drivers/iommu/intel/iommu.h |  8 +++++
+>>   drivers/iommu/intel/svm.c   | 13 +++----
+>>   3 files changed, 81 insertions(+), 8 deletions(-)
+> I feel like this should be a helper library provided by the core
+> code, doesn't every PRI driver basically need the same thing?
 
-Signed-off-by: Raag Jadav <raag.jadav@intel.com>
-Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
----
- drivers/pinctrl/intel/Kconfig | 20 +-------------------
- 1 file changed, 1 insertion(+), 19 deletions(-)
+It seems to be. pci_get_domain_bus_and_slot() is also used in the amd
+driver. And the risc-v iommu driver under discussion is also proposing
+this.
 
-diff --git a/drivers/pinctrl/intel/Kconfig b/drivers/pinctrl/intel/Kconfig
-index f42a83e29b8b..d66f4f6932d8 100644
---- a/drivers/pinctrl/intel/Kconfig
-+++ b/drivers/pinctrl/intel/Kconfig
-@@ -1,11 +1,10 @@
- # SPDX-License-Identifier: GPL-2.0
- # Intel pin control drivers
- menu "Intel pinctrl drivers"
--	depends on X86 || COMPILE_TEST
-+	depends on ACPI && (X86 || COMPILE_TEST)
- 
- config PINCTRL_BAYTRAIL
- 	bool "Intel Baytrail GPIO pin control"
--	depends on ACPI
- 	select PINCTRL_INTEL
- 	help
- 	  driver for memory mapped GPIO functionality on Intel Baytrail
-@@ -17,7 +16,6 @@ config PINCTRL_BAYTRAIL
- 
- config PINCTRL_CHERRYVIEW
- 	tristate "Intel Cherryview/Braswell pinctrl and GPIO driver"
--	depends on ACPI
- 	select PINCTRL_INTEL
- 	help
- 	  Cherryview/Braswell pinctrl driver provides an interface that
-@@ -25,7 +23,6 @@ config PINCTRL_CHERRYVIEW
- 
- config PINCTRL_LYNXPOINT
- 	tristate "Intel Lynxpoint pinctrl and GPIO driver"
--	depends on ACPI
- 	select PINCTRL_INTEL
- 	help
- 	  Lynxpoint is the PCH of Intel Haswell. This pinctrl driver
-@@ -42,7 +39,6 @@ config PINCTRL_INTEL
- 
- config PINCTRL_ALDERLAKE
- 	tristate "Intel Alder Lake pinctrl and GPIO driver"
--	depends on ACPI
- 	select PINCTRL_INTEL
- 	help
- 	  This pinctrl driver provides an interface that allows configuring
-@@ -50,7 +46,6 @@ config PINCTRL_ALDERLAKE
- 
- config PINCTRL_BROXTON
- 	tristate "Intel Broxton pinctrl and GPIO driver"
--	depends on ACPI
- 	select PINCTRL_INTEL
- 	help
- 	  Broxton pinctrl driver provides an interface that allows
-@@ -58,7 +53,6 @@ config PINCTRL_BROXTON
- 
- config PINCTRL_CANNONLAKE
- 	tristate "Intel Cannon Lake PCH pinctrl and GPIO driver"
--	depends on ACPI
- 	select PINCTRL_INTEL
- 	help
- 	  This pinctrl driver provides an interface that allows configuring
-@@ -66,7 +60,6 @@ config PINCTRL_CANNONLAKE
- 
- config PINCTRL_CEDARFORK
- 	tristate "Intel Cedar Fork pinctrl and GPIO driver"
--	depends on ACPI
- 	select PINCTRL_INTEL
- 	help
- 	  This pinctrl driver provides an interface that allows configuring
-@@ -74,7 +67,6 @@ config PINCTRL_CEDARFORK
- 
- config PINCTRL_DENVERTON
- 	tristate "Intel Denverton pinctrl and GPIO driver"
--	depends on ACPI
- 	select PINCTRL_INTEL
- 	help
- 	  This pinctrl driver provides an interface that allows configuring
-@@ -82,7 +74,6 @@ config PINCTRL_DENVERTON
- 
- config PINCTRL_ELKHARTLAKE
- 	tristate "Intel Elkhart Lake SoC pinctrl and GPIO driver"
--	depends on ACPI
- 	select PINCTRL_INTEL
- 	help
- 	  This pinctrl driver provides an interface that allows configuring
-@@ -90,7 +81,6 @@ config PINCTRL_ELKHARTLAKE
- 
- config PINCTRL_EMMITSBURG
- 	tristate "Intel Emmitsburg pinctrl and GPIO driver"
--	depends on ACPI
- 	select PINCTRL_INTEL
- 	help
- 	  This pinctrl driver provides an interface that allows configuring
-@@ -98,7 +88,6 @@ config PINCTRL_EMMITSBURG
- 
- config PINCTRL_GEMINILAKE
- 	tristate "Intel Gemini Lake SoC pinctrl and GPIO driver"
--	depends on ACPI
- 	select PINCTRL_INTEL
- 	help
- 	  This pinctrl driver provides an interface that allows configuring
-@@ -106,7 +95,6 @@ config PINCTRL_GEMINILAKE
- 
- config PINCTRL_ICELAKE
- 	tristate "Intel Ice Lake PCH pinctrl and GPIO driver"
--	depends on ACPI
- 	select PINCTRL_INTEL
- 	help
- 	  This pinctrl driver provides an interface that allows configuring
-@@ -114,7 +102,6 @@ config PINCTRL_ICELAKE
- 
- config PINCTRL_JASPERLAKE
- 	tristate "Intel Jasper Lake PCH pinctrl and GPIO driver"
--	depends on ACPI
- 	select PINCTRL_INTEL
- 	help
- 	  This pinctrl driver provides an interface that allows configuring
-@@ -122,7 +109,6 @@ config PINCTRL_JASPERLAKE
- 
- config PINCTRL_LAKEFIELD
- 	tristate "Intel Lakefield SoC pinctrl and GPIO driver"
--	depends on ACPI
- 	select PINCTRL_INTEL
- 	help
- 	  This pinctrl driver provides an interface that allows configuring
-@@ -130,7 +116,6 @@ config PINCTRL_LAKEFIELD
- 
- config PINCTRL_LEWISBURG
- 	tristate "Intel Lewisburg pinctrl and GPIO driver"
--	depends on ACPI
- 	select PINCTRL_INTEL
- 	help
- 	  This pinctrl driver provides an interface that allows configuring
-@@ -138,7 +123,6 @@ config PINCTRL_LEWISBURG
- 
- config PINCTRL_METEORLAKE
- 	tristate "Intel Meteor Lake pinctrl and GPIO driver"
--	depends on ACPI
- 	select PINCTRL_INTEL
- 	help
- 	  This pinctrl driver provides an interface that allows configuring
-@@ -146,7 +130,6 @@ config PINCTRL_METEORLAKE
- 
- config PINCTRL_SUNRISEPOINT
- 	tristate "Intel Sunrisepoint pinctrl and GPIO driver"
--	depends on ACPI
- 	select PINCTRL_INTEL
- 	help
- 	  Sunrisepoint is the PCH of Intel Skylake. This pinctrl driver
-@@ -155,7 +138,6 @@ config PINCTRL_SUNRISEPOINT
- 
- config PINCTRL_TIGERLAKE
- 	tristate "Intel Tiger Lake pinctrl and GPIO driver"
--	depends on ACPI
- 	select PINCTRL_INTEL
- 	help
- 	  This pinctrl driver provides an interface that allows configuring
-
-base-commit: 83f7586f3b365330765a24eb40f99a1c1a43d38e
--- 
-2.17.1
-
+Best regards,
+baolu
