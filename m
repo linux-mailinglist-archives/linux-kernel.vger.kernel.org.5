@@ -2,99 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E666A78482A
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 19:03:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D99678482E
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 19:04:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237991AbjHVRDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 13:03:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32804 "EHLO
+        id S238002AbjHVREQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 13:04:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232822AbjHVRDd (ORCPT
+        with ESMTP id S235151AbjHVREP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 13:03:33 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA5DDD7;
-        Tue, 22 Aug 2023 10:03:31 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 50D8B65219;
-        Tue, 22 Aug 2023 17:03:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61C30C433C8;
-        Tue, 22 Aug 2023 17:03:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692723810;
-        bh=8wMhVveLF8PjIobLdGG6n7O8n0YBi7GDfqfSSGbmszQ=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=Jfp25yXGkhHJ/wEA2m58vqN/Z7elwNST+xEs+96v7HU3Fh8PxY08hfWPwiC8QVzcO
-         CbO0AG9ZhbSxjsIrn7/UUH/Dz4SgQ+b3h5EDpmfFKMGFkFY6xPuHdtWPIUDKJZ/S41
-         GJKw8IvczlbFbC0kQnU2WEew54kvk1ToX5Xoqi2E+vlV9LRpHct8NC4qFYTcNNrenw
-         EB7hSpxwtwvpWWyLXo2Y5x/sMYmNOl8UpMiFpCehL++FlbTr2a0aTfkvZ9ChHk/2zg
-         ANeAoYG7lC3OVkGgH143hBt7J8oIBtYEPEbCc3TC3yUOA9yr7fZYVwBaGRTdksJQC2
-         UNVFuRugByodQ==
-From:   Mark Brown <broonie@kernel.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-In-Reply-To: <20230822-topic-sm8x50-upstream-rpmh-regulator-suffix-v2-1-136b315085a4@linaro.org>
-References: <20230822-topic-sm8x50-upstream-rpmh-regulator-suffix-v2-1-136b315085a4@linaro.org>
-Subject: Re: [PATCH v2] dt-bindings: regulator: qcom,rpmh-regulator: allow
- i, j, l, m & n as RPMh resource name suffix
-Message-Id: <169272380811.78906.9773466229058057452.b4-ty@kernel.org>
-Date:   Tue, 22 Aug 2023 18:03:28 +0100
+        Tue, 22 Aug 2023 13:04:15 -0400
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2078.outbound.protection.outlook.com [40.107.100.78])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBB58A1;
+        Tue, 22 Aug 2023 10:04:07 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RwsYt2LFXvyQCUEm7R8vaufTEkMtjb6BJRWPz78VfFpSdr1uIcCexwDFRYO4NqH1YzMOKGCOfpnHbLtmmJeEhHnTymFJxFgAF+vgKieJ8fL13faiWW+Znr0X8srksPMa5nGV6P5OSVeNMi0dufG9AuzxH0Q8jZALOM++WsCKI1Q4wVwU7BgWqWkNddFOoM+k+984PesZAWKgBk4OxUnbbaA/LV2YwY7zeKNIzTH9+Y2FMJHbqaAnutWWttV95Myp0lEKkr0WYfDCCg3oJG5y2b/A8wQUC+Qp2rrZXAdfWN8ZxrxWCy9xJpigCFeyPtdOCqryIvFUrLU+O60wKyd7Ww==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=EjRBJRxdRyeW8SkkpY42Wfz4bLZMQ/B7Qo6MGIIWBTM=;
+ b=YXfP+3lNrAyl+nMARXoE24q3o+qz6+scgX+j+lS+BFs4YaZ8R02DhSQef72grGQ6la6MJghnqY7NigQ+A9WawOU/450R/URnOIDiVOk9QJqdKVM3rMj+O7fn0nLIT2BSn1cvetNUrpFsDZ+g0LwCfXegzOPDI/ZSuVi/OqDr4JS6hyGe2teu9c1OdHEhqz1eXlrGWUS/hbf9rTWKFtSo6ixOITZ44rfH89TR8TP9v4fAwJIxoEH3FdcOa0WRC05o3pPm011oCgD4xahDvy5qLA+rmR9QyGmv3VaxcU8CFPijqyvkNfMW03hRJ98N5h+Kb9k5B0thhFJo0nQv8cwnsA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=lists.freedesktop.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EjRBJRxdRyeW8SkkpY42Wfz4bLZMQ/B7Qo6MGIIWBTM=;
+ b=qtIxL2FDOXgtjQnJVUiHFKzLqwJC51UtOUsD4bFjbOfP5ooaCABwpFXb0Q83Qv2dsVJH/OFdC7QGmywDA6x9I5hGaLWFkW0nfdYp3zRekbpJut+lzOjux2u077w2tcm53vY2Bpc2P+PnBCQOUQ+IiAyCdyHW/SkGjFx4PiZmCGk=
+Received: from BY5PR03CA0030.namprd03.prod.outlook.com (2603:10b6:a03:1e0::40)
+ by CH2PR12MB4247.namprd12.prod.outlook.com (2603:10b6:610:7c::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.24; Tue, 22 Aug
+ 2023 17:04:02 +0000
+Received: from SA2PEPF000015CB.namprd03.prod.outlook.com
+ (2603:10b6:a03:1e0:cafe::60) by BY5PR03CA0030.outlook.office365.com
+ (2603:10b6:a03:1e0::40) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.20 via Frontend
+ Transport; Tue, 22 Aug 2023 17:04:02 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ SA2PEPF000015CB.mail.protection.outlook.com (10.167.241.201) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6699.14 via Frontend Transport; Tue, 22 Aug 2023 17:04:01 +0000
+Received: from hamza-pc.localhost (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 22 Aug
+ 2023 12:04:00 -0500
+From:   Hamza Mahfooz <hamza.mahfooz@amd.com>
+To:     <amd-gfx@lists.freedesktop.org>
+CC:     Hamza Mahfooz <hamza.mahfooz@amd.com>, <stable@vger.kernel.org>,
+        "Swapnil Patel" <swapnil.patel@amd.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        "Leo Li" <sunpeng.li@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        "Alex Deucher" <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, Jun Lei <jun.lei@amd.com>,
+        Wayne Lin <wayne.lin@amd.com>,
+        Wenjing Liu <wenjing.liu@amd.com>,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        "Leo (Hanghong) Ma" <hanghong.ma@amd.com>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] drm/amd/display: register edp_backlight_control() for DCN301
+Date:   Tue, 22 Aug 2023 13:03:42 -0400
+Message-ID: <20230822170343.137958-1-hamza.mahfooz@amd.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-034f2
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA2PEPF000015CB:EE_|CH2PR12MB4247:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1eb5ec72-4a4b-419a-ab42-08dba331c8c0
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: qLg/1gS1O4/u9YyZkiIUvUvt5CTAnZBa2rNH2n/y19aNmSCUZQw/aEdR02PZikvjYMhOc40o1eHXvFLopzfsp+hTxlcpqywVDY88ZIMjo5z4KILpQQ72bouf6/nMDFYrTd05MJAIdifEHCO9m24XQBhqdTTorr6hg/zH5/5sWTRgJN58sgUezPgJP9jFDiBMk9ckeWsFKZWZTvXuUDtTK8g9NXms/FtLl/xY+rLGfPmzZEZImYOwv3wADDFMOlozxoAJr7xZlM1wF/Lqu+eKg9mHzGFGmOgy5oWlV9CwmHcl8GWGrVHQWwQj0PTE5lhWHpuvXA2qud8+WYGxXCUtV0FbWXB4VIZLE/hhmuaLg8qQ2xK8kYvu6NbLC/2mfF91w8WrVe9zeuH/6UCwTaH6S8DL11vFhU/fDnALvV9XyghkXmnHbTwgwx3jI3jaL7kisqOfErptXF2dWG39pNexZwe94z07yVna/ZTRMAWzQUNtJ9+Uum2HxNYYEwD/SPiImJ8LDdoXNZ+jsl7cNrF/nBc3ppKmwD/gNCZ1+gXj7nnaF3HBAaG9Wk4IbzaYN/bC1lsGsc9Q0hC0zAtaVkBq3pvwmxDjHLDGYiFAaHYUIev6jSFeduznGC24UhDTZJ91mF3hu1j+Ksymglhptk9zZocvatKmKsSACYC81W3b0mTqkXxCW7xuBTeYg0sj/MKvkoKrZvRPsHJEfYrGd2nWyZsX5u7jyWsEO3UxGUqOq0ifLk//+mdz+bD0suzps3oBYMbiK5xDo5pf0Jj/OjIAmf0ebdQViPtfAN44FukpSos=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(396003)(136003)(346002)(376002)(186009)(1800799009)(82310400011)(451199024)(36840700001)(40470700004)(46966006)(54906003)(6916009)(70586007)(316002)(70206006)(966005)(8676002)(8936002)(2616005)(4326008)(36756003)(40460700003)(41300700001)(1076003)(356005)(81166007)(82740400003)(478600001)(6666004)(40480700001)(83380400001)(2906002)(47076005)(36860700001)(86362001)(44832011)(426003)(336012)(5660300002)(26005)(16526019)(16060500005)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Aug 2023 17:04:01.8758
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1eb5ec72-4a4b-419a-ab42-08dba331c8c0
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: SA2PEPF000015CB.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4247
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 22 Aug 2023 12:03:43 +0200, Neil Armstrong wrote:
-> Add "i", "j", "l", "m" and "n" to the allowed subffix list as they can be
-> used as RPMh resource name suffixes on new platforms.
-> 
-> 
+As made mention of in commit 099303e9a9bd ("drm/amd/display: eDP
+intermittent black screen during PnP"), we need to turn off the
+display's backlight before powering off an eDP display. Not doing so
+will result in undefined behaviour according to the eDP spec. So, set
+DCN301's edp_backlight_control() function pointer to
+dce110_edp_backlight_control().
 
-Applied to
+Cc: stable@vger.kernel.org
+Link: https://gitlab.freedesktop.org/drm/amd/-/issues/2765
+Fixes: 9c75891feef0 ("drm/amd/display: rework recent update PHY state commit")
+Suggested-by: Swapnil Patel <swapnil.patel@amd.com>
+Signed-off-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
+---
+ drivers/gpu/drm/amd/display/dc/dcn301/dcn301_init.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
-
-Thanks!
-
-[1/1] dt-bindings: regulator: qcom,rpmh-regulator: allow i, j, l, m & n as RPMh resource name suffix
-      commit: ed7c6a2ba6a682f191f289de01e8eb0a1366c3eb
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn301/dcn301_init.c b/drivers/gpu/drm/amd/display/dc/dcn301/dcn301_init.c
+index 257df8660b4c..61205cdbe2d5 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn301/dcn301_init.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn301/dcn301_init.c
+@@ -75,6 +75,7 @@ static const struct hw_sequencer_funcs dcn301_funcs = {
+ 	.get_hw_state = dcn10_get_hw_state,
+ 	.clear_status_bits = dcn10_clear_status_bits,
+ 	.wait_for_mpcc_disconnect = dcn10_wait_for_mpcc_disconnect,
++	.edp_backlight_control = dce110_edp_backlight_control,
+ 	.edp_power_control = dce110_edp_power_control,
+ 	.edp_wait_for_hpd_ready = dce110_edp_wait_for_hpd_ready,
+ 	.set_cursor_position = dcn10_set_cursor_position,
+-- 
+2.41.0
 
