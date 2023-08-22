@@ -2,134 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32B937849DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 21:04:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A35F7849EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 21:07:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230007AbjHVTEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 15:04:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33256 "EHLO
+        id S230011AbjHVTHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 15:07:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229989AbjHVTEE (ORCPT
+        with ESMTP id S229544AbjHVTHN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 15:04:04 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20719CD1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 12:04:02 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-50087d47d4dso2429411e87.1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 12:04:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692731040; x=1693335840;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xMIdA2LGk1sJ3CEqERbuxzJSilxx/7toGS2HI7pofz4=;
-        b=sFBanmUnVxv5OtXJb8GV4Tvk/z9rO8NhxbqyCzPIp5CqKtzMv+/mxNc/WczABOKoE7
-         TYR9OkKfrFMEtCKwuFgSu01PcbPuz1St12SImB7VitVA7bmXGhJDxq7mg0K6SWD1f2VW
-         aT4I8h6YhN/cqQBMhnd1aVc5nRd/AugJqbEfOyxw7PWwbq998kEwXO5MEh9A4uM6ro8S
-         oaVBt97UjOSgNYfysd5GzNDG78CKaZz8Ttfi8VkftUSjQn/XzJqhhC+ETTSUl8gDOePr
-         QBxnioBOSQiIwQqk8kMTf8KkUOs6CPXc7YGLu6WQsvdCm6PrTK4XlWVa0Htv/Dn6arF9
-         ySrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692731040; x=1693335840;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xMIdA2LGk1sJ3CEqERbuxzJSilxx/7toGS2HI7pofz4=;
-        b=IdxbgPM89FLWMKjzbixF0gM9B7miZ+xXRoaBgmgE5nLoZnGAE9DzMt3PbNASu7eh+z
-         B6llX8GeVFTAYs/t8ePA71SPGHfjWP8TxbekZ3kawy8bB5QyzGCP8wbCmZ0DAd8DP3oK
-         RYDKGnEeIbZMuXOGIyjSl9CcuSYwPv3W/cAGle0a1muIpOd2ItgBTEQKLadun5EZ9zLT
-         gNHWYsGVmLDTr6Dq1SyTf/SEZpiQd3AqLPqTaw829OSV0Yj6PJ2hsPij/yJ666PY9FHN
-         wcf+zEzeLBIII5gjb59tlNRgRV9F+ypAfdK/64fm2GGs8ygCVfWn83rlyGDHLFkKkSH6
-         kSSw==
-X-Gm-Message-State: AOJu0YxUUfqlLAWqpmycEhoRxAMhNkXwyiCZsZQvRpav3nkQdixtBlY7
-        RpMXBzh/vxnXDpkSmp53iz6QYg==
-X-Google-Smtp-Source: AGHT+IH49N6lN9cj8u9gYTzDFG7gpdm89P7a++8jngJ2sOV6RbP/ugxa+GDhWrbpvO5o/2BW6thpbQ==
-X-Received: by 2002:a05:6512:3f09:b0:4fe:3e89:fcb2 with SMTP id y9-20020a0565123f0900b004fe3e89fcb2mr8107456lfa.34.1692731040167;
-        Tue, 22 Aug 2023 12:04:00 -0700 (PDT)
-Received: from [192.168.1.101] (abyk189.neoplus.adsl.tpnet.pl. [83.9.30.189])
-        by smtp.gmail.com with ESMTPSA id b30-20020a056512025e00b004ff725d1a27sm618041lfo.234.2023.08.22.12.03.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Aug 2023 12:03:59 -0700 (PDT)
-Message-ID: <65c46da5-b03b-41cd-9030-8ebd7ae7b1e9@linaro.org>
-Date:   Tue, 22 Aug 2023 21:03:57 +0200
+        Tue, 22 Aug 2023 15:07:13 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id F27C4E56;
+        Tue, 22 Aug 2023 12:07:04 -0700 (PDT)
+Received: by linux.microsoft.com (Postfix, from userid 1152)
+        id 7C04A2126CD2; Tue, 22 Aug 2023 12:07:04 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7C04A2126CD2
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1692731224;
+        bh=whYffB2KfagGrQHJGCkbdR1Z999poStA2tZvLaZ3rXY=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=Q8Ju5xkD2umspXxrx50ajhElN8beTyaEtOlHmbsFeyq5OwhCHYFPrnDXTbGa8Tcqv
+         g60b+aosmK2PXEW3udE3rH0X8jPv/CjbARwGYm1gP1YFhykMFKjNFWakyNNBeoPdns
+         vY13LzzJbcsBSTX82ty7AF3/MYLzd9tJN0QsXcd4=
+Received: from localhost (localhost [127.0.0.1])
+        by linux.microsoft.com (Postfix) with ESMTP id 77D5330705C5;
+        Tue, 22 Aug 2023 12:07:04 -0700 (PDT)
+Date:   Tue, 22 Aug 2023 12:07:04 -0700 (PDT)
+From:   Shyam Saini <shyamsaini@linux.microsoft.com>
+To:     Sumit Garg <sumit.garg@linaro.org>
+cc:     Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Jerome Forissier <jerome.forissier@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
+        op-tee@lists.trustedfirmware.org, linux-scsi@vger.kernel.org,
+        =?ISO-8859-15?Q?Alex_Benn=E9e?= <alex.bennee@linaro.org>,
+        Tomas Winkler <tomas.winkler@intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd.bergmann@linaro.org>,
+        Tyler Hicks <code@tyhicks.com>,
+        "Srivatsa S . Bhat" <srivatsa@csail.mit.edu>,
+        Paul Moore <paul@paul-moore.com>,
+        Allen Pais <apais@linux.microsoft.com>
+Subject: Re: [RFC, PATCH 1/1] rpmb: add Replay Protected Memory Block (RPMB)
+ driver
+In-Reply-To: <CAFA6WYMPsBUutjKrm+6qTNHpVr80K2GcSLoYa+MFE3CfLSo8ew@mail.gmail.com>
+Message-ID: <226aa02d-1247-a42c-123d-1c86b6b43d9f@linux.microsoft.com>
+References: <20230722014037.42647-1-shyamsaini@linux.microsoft.com> <20230722014037.42647-2-shyamsaini@linux.microsoft.com> <CAPDyKFoBC+GaGerGDEAjg9q4ayV9mMBKkfFk3nO-zcQzOZ_H6Q@mail.gmail.com> <b875892c-1777-d84a-987e-1b0d5ac29df@linux.microsoft.com>
+ <94728786-b41b-1467-63c1-8e2d5acfa5e4@linaro.org> <CAFA6WYNPViMs=3cbNsEdhqnjNOUCsHE_8uqiDTzwCKDNNiDkCw@mail.gmail.com> <CAHUa44Ek0k2b-igA6Gd1ZXVzibTh2sNDMnE-weQwFFKEZ_1jOA@mail.gmail.com> <CAC_iWjKKap47PhiCi=BfPZC_wJhVDB10WSf9oWMgdwSgWCfO_A@mail.gmail.com>
+ <CAFA6WYMPsBUutjKrm+6qTNHpVr80K2GcSLoYa+MFE3CfLSo8ew@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 8/9] media: qcom: camss: Fix set CSI2_RX_CFG1_VC_MODE
- when VC is greater than 3
-Content-Language: en-US
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>, rfoss@kernel.org,
-        todor.too@gmail.com, agross@kernel.org, andersson@kernel.org,
-        mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
-        laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com,
-        andrey.konovalov@linaro.org
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <20230822161620.1915110-1-bryan.odonoghue@linaro.org>
- <20230822161620.1915110-9-bryan.odonoghue@linaro.org>
- <5c917927-92ed-4139-a69f-95761ec63c83@linaro.org>
- <b5b3a8a6-c54d-c503-db76-c8c38942b3b0@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <b5b3a8a6-c54d-c503-db76-c8c38942b3b0@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; boundary="656392-1544379424-1692731224=:12353"
+X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.08.2023 21:03, Bryan O'Donoghue wrote:
-> On 22/08/2023 17:32, Konrad Dybcio wrote:
->>>       val = 1 << CSI2_RX_CFG1_PACKET_ECC_CORRECTION_EN;
->>> +    if (vc > 3)
->> I hope you don't pull your hair out, but I think GENMASK(1,0) could be
-> 
-> 
-> I generally dislike the pattern of 1 << value in this code but, it's not something I'm proposing to solve at this time.
-> 
->> in order here with a comment about the bitlength requirements
-> 
-> Not parsing the bitlength requirements comment, whatdoyoumean ?
-The thing you mentioned in the commit message, it could also be a
-hint in the code above the if-statement.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Konrad
+--656392-1544379424-1692731224=:12353
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8BIT
+
+
+> On Mon, 21 Aug 2023 at 17:26, Ilias Apalodimas
+> <ilias.apalodimas@linaro.org> wrote:
+>>
+>> On Mon, 21 Aug 2023 at 14:19, Jens Wiklander <jens.wiklander@linaro.org> wrote:
+>>>
+>>> On Mon, Aug 21, 2023 at 12:03 PM Sumit Garg <sumit.garg@linaro.org> wrote:
+>>>>
+>>>> On Mon, 21 Aug 2023 at 15:19, Jerome Forissier
+>>>> <jerome.forissier@linaro.org> wrote:
+>>>>>
+>>>>>
+>>>>>
+>>>>> On 8/17/23 01:31, Shyam Saini wrote:
+>>>>>>
+>>>>>> Hi Ulf,
+>>>>>>
+>>>>>>> On Sat, 22 Jul 2023 at 03:41, Shyam Saini
+>>>>>>> <shyamsaini@linux.microsoft.com> wrote:
+>>>>>>>>
+>>>>>>>> From: Alex Bennée <alex.bennee@linaro.org>
+>>>>>>>>
+>>>>>>>> [This is patch 1 from [1] Alex's submission and this RPMB layer was
+>>>>>>>> originally proposed by [2]Thomas Winkler ]
+>>>>>>>>
+>>>>>>>> A number of storage technologies support a specialised hardware
+>>>>>>>> partition designed to be resistant to replay attacks. The underlying
+>>>>>>>> HW protocols differ but the operations are common. The RPMB partition
+>>>>>>>> cannot be accessed via standard block layer, but by a set of specific
+>>>>>>>> commands: WRITE, READ, GET_WRITE_COUNTER, and PROGRAM_KEY. Such a
+>>>>>>>> partition provides authenticated and replay protected access, hence
+>>>>>>>> suitable as a secure storage.
+>>>>>>>>
+>>>>>>>> The initial aim of this patch is to provide a simple RPMB Driver which
+>>>>>>>> can be accessed by Linux's optee driver to facilitate fast-path for
+>>>>>>>> RPMB access to optee OS(secure OS) during the boot time. [1] Currently,
+>>>>>>>> Optee OS relies on user-tee supplicant to access eMMC RPMB partition.
+>>>>>>>>
+>>>>>>>> A TEE device driver can claim the RPMB interface, for example, via
+>>>>>>>> class_interface_register(). The RPMB driver provides a series of
+>>>>>>>> operations for interacting with the device.
+>>>>>>>
+>>>>>>> I don't quite follow this. More exactly, how will the TEE driver know
+>>>>>>> what RPMB device it should use?
+>>>>>>
+>>>>>> I don't have complete code to for this yet, but i think OP-TEE driver
+>>>>>> should register with RPMB subsystem and then we can have eMMC/UFS/NVMe
+>>>>>> specific implementation for RPMB operations.
+>>>>>>
+>>>>>> Linux optee driver can handle RPMB frames and pass it to RPMB subsystem
+>>>>>>
+>>>>
+>>>> It would be better to have this OP-TEE use case fully implemented. So
+>>>> that we can justify it as a valid user for this proposed RPMB
+>>>> subsystem. If you are looking for any further suggestions then please
+>>>> let us know.
+>>>
+>>> +1
+>>>
+>>>>
+>>>>>> [1] U-Boot has mmc specific implementation
+>>>>>>
+>>>>>> I think OPTEE-OS has CFG_RPMB_FS_DEV_ID option
+>>>>>> CFG_RPMB_FS_DEV_ID=1 for /dev/mmcblk1rpmb,
+>>>>>
+>>>>> Correct. Note that tee-supplicant will ignore this device ID if --rmb-cid
+>>>>> is given and use the specified RPMB instead (the CID is a non-ambiguous way
+>>>>> to identify a RPMB device).
+>>>>>
+>>>>>> but in case if a
+>>>>>> system has multiple RPMB devices such as UFS/eMMC/NVMe, one them
+>>>>>> should be declared as secure storage and optee should access that one only.
+>>>>>
+>>>>> Indeed, that would be an equivalent of tee-supplicant's --rpmb-cid.
+>>>>>
+>>>>>> Sumit, do you have suggestions for this ?
+>>>>>
+>>>>
+>>>> I would suggest having an OP-TEE secure DT property that would provide
+>>>> the RPMB CID which is allocated to the secure world.
+>>>
+>>> Another option is for OP-TEE to iterate over all RPMBs with a
+>>> programmed key and test if the key OP-TEE would use works. That should
+>>> avoid the problem of provisioning a device-unique secure DTB. I'd
+>>> expect that the RPMB key is programmed by a trusted provisioning tool
+>>> since allowing OP-TEE to program the RPMB key has never been secure,
+>>> not unless the OP-TEE binary is rollback protected.
+>>
+>> +1 to that.  Overall we shound't 'trust' to do the programming. For
+>> example, in OP-TEE if you compile it with device programming
+>> capabilities, you can easily convince OP-TEE to send you the symmetric
+>> key by swapping the supplicant with a malicious application.
+>>
+>
+> Agree, with your overall intent, that OP-TEE shouldn't expose RPMB key
+> in plain form. But with suggested OP-TEE RPMB frames routing via
+> kernel, tee-supplicant won't be used for RPMB accesses.
+
+do we plan to disable access to RPMB devices, once we have this RPMB 
+driver in place. User space tools like mmc-utils/nvme/ufs utils
+can still access RPMB and programme the key and should
+RPMB driver deny access to RPMB ?
+--656392-1544379424-1692731224=:12353--
