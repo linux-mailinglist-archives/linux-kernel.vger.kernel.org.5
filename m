@@ -2,147 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2447F783CF4
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 11:32:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BAE9783CF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 11:33:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234378AbjHVJcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 05:32:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46146 "EHLO
+        id S234370AbjHVJdU convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 22 Aug 2023 05:33:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234365AbjHVJcA (ORCPT
+        with ESMTP id S232280AbjHVJdT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 05:32:00 -0400
-Received: from mail-ed1-x549.google.com (mail-ed1-x549.google.com [IPv6:2a00:1450:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BA1CCCB
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 02:31:58 -0700 (PDT)
-Received: by mail-ed1-x549.google.com with SMTP id 4fb4d7f45d1cf-52576448c91so2781457a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 02:31:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692696716; x=1693301516;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=u/W6jtJXaUE/gh/n+1FodWgnqTe/idj5hBc66GJX2bo=;
-        b=Fd/2xyqlDK8ctp+IphjXZfkwLM3vpM3cfpY5hhlTJ6PcnNjQz2e0EFZLcmmWlL0155
-         g7HjV35Qm7PeAa//XiJE6Mgd4FHd4HSSDmNgNIjtqJerMRqcjtYEYP3y67QaZfMAv0dl
-         GdU0Vm7U7ahsDeeayRohyZE8DyzXdcHnfe1VTTgkbSeCzEsMlnQ/3BQSNuELCVdmyXOr
-         vBhOCuLCAH8yQR+ucvwyHyTR/Mx4fH0k+S6bx3V6KRMODn1984frfmoj0y9FpTwzl7dA
-         H8offrTWZ4xwq1KDOYCV9Yu4ulRUy+BbeaRsZdQtvvYpCllK92eB/IPtopx37Uq5FGD+
-         nydg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692696716; x=1693301516;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=u/W6jtJXaUE/gh/n+1FodWgnqTe/idj5hBc66GJX2bo=;
-        b=lna5zh+T99s+vVBCLQhqSfrbIhraIzgfVrRNKgVxKWzRe9p7yjgzWqR2fMuF6rnjcV
-         BVTuoOCCC2rtzoMWWismn3q4oz1yqOM795s6gmpZg89A1ZZrXqsp548fo+9uE98nPO+Z
-         wORV+4SrXfoEvkZ1/2zGW+DYakKVEV0LJ+ktt+mrRTVojortUS1pz4LkUMG0Maw1fNl8
-         6CuqKuSHuUjmxz0fuRgEzwl0JnLZHd9eSnWuQoJA4iSHITgVgXXTtW9pBixI9V0vrsJm
-         22GunNDIqzY1xv5SkBwC6wtzqDskwGbmy1Eygeuci+caIj910vUwe3KFbnCaYoQW7QwZ
-         00dw==
-X-Gm-Message-State: AOJu0YzYoI0dzN6XYEv/b94T/bxE08mJyARFg1rhvhEEZp/0BWcRWJ5A
-        ec+2ojcaigF+7OJ1LvQs6QC2+a1EasFP+d8=
-X-Google-Smtp-Source: AGHT+IHU5+U+7RFLKURa2jqbhBEn2o6/mkJMJNhOerO0L9z5FZBO9RapI/AMbpvltVZlSY10g5zOZyZifzbKvKU=
-X-Received: from aliceryhl.c.googlers.com ([fda3:e722:ac3:cc00:31:98fb:c0a8:6c8])
- (user=aliceryhl job=sendgmr) by 2002:a50:ab4f:0:b0:527:251d:f2ea with SMTP id
- t15-20020a50ab4f000000b00527251df2eamr54769edc.5.1692696716598; Tue, 22 Aug
- 2023 02:31:56 -0700 (PDT)
-Date:   Tue, 22 Aug 2023 09:31:54 +0000
-In-Reply-To: <87r0octho8.fsf@metaspace.dk>
-Mime-Version: 1.0
-References: <87r0octho8.fsf@metaspace.dk>
-X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
-Message-ID: <20230822093154.3478754-1-aliceryhl@google.com>
-Subject: Re: [PATCH v1] rust: add improved version of `ForeignOwnable::borrow_mut`
-From:   Alice Ryhl <aliceryhl@google.com>
-To:     nmi@metaspace.dk
-Cc:     alex.gaynor@gmail.com, aliceryhl@google.com,
-        benno.lossin@proton.me, bjorn3_gh@protonmail.com,
-        boqun.feng@gmail.com, gary@garyguo.net,
-        linux-kernel@vger.kernel.org, ojeda@kernel.org,
-        patches@lists.linux.dev, rust-for-linux@vger.kernel.org,
-        wedsonaf@gmail.com
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 22 Aug 2023 05:33:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C4C31B2;
+        Tue, 22 Aug 2023 02:33:18 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B826161A04;
+        Tue, 22 Aug 2023 09:33:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 222BBC433C8;
+        Tue, 22 Aug 2023 09:33:16 +0000 (UTC)
+Date:   Tue, 22 Aug 2023 05:33:13 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Linux trace kernel <linux-trace-kernel@vger.kernel.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: [PATCH] tracefs: Remove kerneldoc from struct eventfs_file
+Message-ID: <20230822053313.77aa3397@rorschach.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andreas Hindborg <nmi@metaspace.dk> writes:
->> diff --git a/rust/kernel/sync/arc.rs b/rust/kernel/sync/arc.rs
->> index 172f563976a9..f152a562c9c3 100644
->> --- a/rust/kernel/sync/arc.rs
->> +++ b/rust/kernel/sync/arc.rs
->> @@ -232,26 +232,35 @@ pub fn ptr_eq(this: &Self, other: &Self) -> bool {
->>  
->>  impl<T: 'static> ForeignOwnable for Arc<T> {
->>      type Borrowed<'a> = ArcBorrow<'a, T>;
->> +    // Mutable access to the `Arc` does not give any extra abilities over
->> +    // immutable access.
->> +    type BorrowedMut<'a> = ArcBorrow<'a, T>;
->>  
->>      fn into_foreign(self) -> *const core::ffi::c_void {
->>          ManuallyDrop::new(self).ptr.as_ptr() as _
->>      }
->>  
->> -    unsafe fn borrow<'a>(ptr: *const core::ffi::c_void) -> ArcBorrow<'a, T> {
->> -        // SAFETY: By the safety requirement of this function, we know that `ptr` came from
->> -        // a previous call to `Arc::into_foreign`.
->> -        let inner = NonNull::new(ptr as *mut ArcInner<T>).unwrap();
->> -
->> -        // SAFETY: The safety requirements of `from_foreign` ensure that the object remains alive
->> -        // for the lifetime of the returned value.
->> -        unsafe { ArcBorrow::new(inner) }
->> -    }
->> -
->>      unsafe fn from_foreign(ptr: *const core::ffi::c_void) -> Self {
->>          // SAFETY: By the safety requirement of this function, we know that `ptr` came from
->>          // a previous call to `Arc::into_foreign`, which guarantees that `ptr` is valid and
->>          // holds a reference count increment that is transferrable to us.
->> -        unsafe { Self::from_inner(NonNull::new(ptr as _).unwrap()) }
->> +        unsafe { Self::from_inner(NonNull::new_unchecked(ptr as _)) }
->>      }
->> +
->> +    unsafe fn borrow<'a>(ptr: *const core::ffi::c_void) -> ArcBorrow<'a, T> {
->> +        // SAFETY: By the safety requirement of this function, we know that `ptr` came from
->> +        // a previous call to `Arc::into_foreign`.
->> +        let inner = unsafe { NonNull::new_unchecked(ptr as *mut ArcInner<T>) };
->> +
->> +        // SAFETY: The safety requirements ensure that we will not give up our
->> +        // foreign-owned refcount while the `ArcBorrow` is still live.
->> +        unsafe { ArcBorrow::new(inner) }
->> +    }
->> +
->> +    unsafe fn borrow_mut<'a>(ptr: *const core::ffi::c_void) -> ArcBorrow<'a, T> {
->> +        // SAFETY: The safety requirements for `borrow_mut` are a superset of the safety
->> +        // requirements for `borrow`.
->> +        unsafe { Self::borrow(ptr) }
->> +    }
->
-> I am not sure this makes sense. How about splitting the trait in two,
-> immutable and mutable and only implementing the immutable one or Arc?
+From d0d094090c093499380049c413b8f1c5b995ff52 Mon Sep 17 00:00:00 2001
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+Date: Tue, 22 Aug 2023 05:29:22 -0400
+Subject: [PATCH] tracefs: Remove kerneldoc from struct eventfs_file
 
-I used this design based on what would make sense for a linked list. The
-idea is that we can have two different types of cursors for a linked
-list: immutable and mutable. The immutable cursor lets you:
+The struct eventfs_file is a local structure and should not be parsed by
+kernel doc. It also does not fully follow the kerneldoc format and is
+causing kerneldoc to spit out errors. Replace the /** to /* so that
+kerneldoc no longer processes this structure.
 
- * move around the linked list
- * access the values using `borrow`
+Also format the comments of the delete union of the structure to be a bit
+better.
 
-The mutable cursor lets you:
+Link: https://lore.kernel.org/linux-trace-kernel/20230818201414.2729745-1-willy@infradead.org/
 
- * move around the linked list
- * delete or add items to the list
- * access the values using `borrow_mut`
+Reported-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ fs/tracefs/event_inode.c | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
-The mutable cursor gives you extra abilities beyond the `borrow` vs
-`borrow_mut` distinction, so we want to provide both types of cursors
-even if the pointer type is Arc. To do that, we need a trait that
-defines what it means to have mutable access to an Arc.
-
-Alice
+diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
+index da8d2e73cc47..237c6f370ad9 100644
+--- a/fs/tracefs/event_inode.c
++++ b/fs/tracefs/event_inode.c
+@@ -27,7 +27,7 @@ struct eventfs_inode {
+ 	struct list_head	e_top_files;
+ };
+ 
+-/**
++/*
+  * struct eventfs_file - hold the properties of the eventfs files and
+  *                       directories.
+  * @name:	the name of the file or directory to create
+@@ -48,10 +48,16 @@ struct eventfs_file {
+ 	struct eventfs_inode		*ei;
+ 	const struct file_operations	*fop;
+ 	const struct inode_operations	*iop;
++	/*
++	 * Union - used for deletion
++	 * @del_list:	list of eventfs_file to delete
++	 * @rcu:	eventfs_file to delete in RCU
++	 * @is_freed:	node is freed if one of the above is set
++	 */
+ 	union {
+-		struct list_head	del_list; /* list of eventfs_file to delete */
+-		struct rcu_head		rcu; /* eventfs_file to delete */
+-		unsigned long		is_freed; /* Freed if one of the above is set */
++		struct list_head	del_list;
++		struct rcu_head		rcu;
++		unsigned long		is_freed;
+ 	};
+ 	void				*data;
+ 	umode_t				mode;
+-- 
+2.40.1
 
