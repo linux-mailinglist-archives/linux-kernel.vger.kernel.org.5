@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40235783AA0
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 09:13:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 151FB783A82
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 09:11:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233523AbjHVHNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 03:13:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53122 "EHLO
+        id S233406AbjHVHLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 03:11:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233435AbjHVHMS (ORCPT
+        with ESMTP id S233375AbjHVHL2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 03:12:18 -0400
+        Tue, 22 Aug 2023 03:11:28 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECB1110E9
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 00:11:52 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E46E1B0
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 00:11:03 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 106FA63114
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 07:10:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6466C433CB;
-        Tue, 22 Aug 2023 07:10:32 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E5A8264861
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 07:10:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8336C433C7;
+        Tue, 22 Aug 2023 07:10:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692688234;
-        bh=EyuDNaE5JOFL0ZQ/K44CuNRKS87m9hVeJq1QWqZcq6Y=;
+        s=k20201202; t=1692688236;
+        bh=qrtlb3Inp+0PAFufVQ6/JFPnxSSyzXyjdaLgPSqbaiA=;
         h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=sp7b3u+PWApSoU/k5kQtDAbpB3iK5by3FUYfWHuflSPkPDiJHvzuE8107LItsmPX9
-         os1bPIEs6+lQguKVm+Dvf/Na9v7xZsUAJumSxTfjYvOIayeLejIFXWzeiLcIBxPcJG
-         YIafoDOTy/PV8SuNu9H8WHJtdwwpGt6Xo0ppp5yme0Chpcu2JENtM0Zp0dO5ooqtfU
-         uyVQbThIvukFSCfosNt4UgBy+5myyWJus8LRMwyfLHMIBdoTLpnoiyUp4HJijLpLrz
-         6yPJz0hF2zTKnmHJfW3K7dZQ80xg9+Bd6YYAKauwwb8045/v3JUrRKsJGpH7WVZAXG
-         XZitwFwwH2CsA==
+        b=nOGo3pil1/gkWPoExVzoflFCYD8btxkzwg/oQ6hr6HF8V5/ZWffWM9tKR8/oTQl28
+         gDrwIfDZoIlTeVhOvaisvBS0f3QSbxNQ1GviHgyfrSRepxP9nIzhCzFNxMHeGvp9db
+         RG8F0Zpn/Zv4/GSPp/vwryzpsLbhCfDqn3dPQMHfmirXQjXz8C2YwWSesG5mCiDqSY
+         rU1FhfhzBWT2sUBNWDryLg1V03VuIShWsc5GNrQ650Doc0oD6EBIhLFOS21KZP6rC8
+         5sVJKLnWsMWPxVq5uwb3M3BF3caVb7tV5wqi+UH2nW6wl2b9R/HFjA1HOWKV3kQqPb
+         aZDZBtLfqKxHg==
 From:   Michael Walle <mwalle@kernel.org>
-Date:   Tue, 22 Aug 2023 09:09:45 +0200
-Subject: [PATCH v2 29/41] mtd: spi-nor: xilinx: use new macros in
- S3AN_INFO()
+Date:   Tue, 22 Aug 2023 09:09:46 +0200
+Subject: [PATCH v2 30/41] mtd: spi-nor: xmc: convert flash_info to new
+ format
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230807-mtd-flash-info-db-rework-v2-29-291a0f39f8d8@kernel.org>
+Message-Id: <20230807-mtd-flash-info-db-rework-v2-30-291a0f39f8d8@kernel.org>
 References: <20230807-mtd-flash-info-db-rework-v2-0-291a0f39f8d8@kernel.org>
 In-Reply-To: <20230807-mtd-flash-info-db-rework-v2-0-291a0f39f8d8@kernel.org>
 To:     Tudor Ambarus <tudor.ambarus@linaro.org>,
@@ -60,57 +60,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There won't be any new entries, nor are the entries that much different
-and the very odd page and sector sizes make the new format hard to read.
-Therefore, convert the old S3AN_INFO() macro.
+The INFOx() macros are going away. Convert the flash_info database to
+the new format.
 
 Signed-off-by: Michael Walle <mwalle@kernel.org>
 ---
-This collides with the atmel flashes and there seems to be a typo in the
-IDs. All this makes me wonder wether we shouldn't deprecate the support
-for this (FPGA configuration) flash.
----
- drivers/mtd/spi-nor/xilinx.c | 23 ++++++++++++-----------
- 1 file changed, 12 insertions(+), 11 deletions(-)
+ drivers/mtd/spi-nor/xmc.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/xilinx.c b/drivers/mtd/spi-nor/xilinx.c
-index 8d4539e32dfe..f99118c691b0 100644
---- a/drivers/mtd/spi-nor/xilinx.c
-+++ b/drivers/mtd/spi-nor/xilinx.c
-@@ -21,21 +21,22 @@
- 		   SPI_MEM_OP_NO_DUMMY,					\
- 		   SPI_MEM_OP_DATA_IN(1, buf, 0))
+diff --git a/drivers/mtd/spi-nor/xmc.c b/drivers/mtd/spi-nor/xmc.c
+index 48062ccb22fa..d5a06054b0dd 100644
+--- a/drivers/mtd/spi-nor/xmc.c
++++ b/drivers/mtd/spi-nor/xmc.c
+@@ -9,12 +9,17 @@
+ #include "core.h"
  
--#define S3AN_INFO(_jedec_id, _n_sectors, _page_size)			\
--		SPI_NOR_ID(_jedec_id, 0),				\
--		.size = 8 * (_page_size) * (_n_sectors),		\
--		.sector_size = (8 * (_page_size)),			\
--		.page_size = (_page_size),				\
--		.flags = SPI_NOR_NO_FR
-+#define S3AN_FLASH(_id, _name, _n_sectors, _page_size)		\
-+	.id = _id,						\
-+	.name = _name,						\
-+	.size = 8 * (_page_size) * (_n_sectors),		\
-+	.sector_size = (8 * (_page_size)),			\
-+	.page_size = (_page_size),				\
-+	.flags = SPI_NOR_NO_FR
- 
- /* Xilinx S3AN share MFR with Atmel SPI NOR */
- static const struct flash_info xilinx_nor_parts[] = {
- 	/* Xilinx S3AN Internal Flash */
--	{ "3S50AN", S3AN_INFO(0x1f2200, 64, 264) },
--	{ "3S200AN", S3AN_INFO(0x1f2400, 256, 264) },
--	{ "3S400AN", S3AN_INFO(0x1f2400, 256, 264) },
--	{ "3S700AN", S3AN_INFO(0x1f2500, 512, 264) },
--	{ "3S1400AN", S3AN_INFO(0x1f2600, 512, 528) },
-+	{ S3AN_FLASH(SNOR_ID(0x1f, 0x22, 0x00), "3S50AN", 64, 264) },
-+	{ S3AN_FLASH(SNOR_ID(0x1f, 0x24, 0x00), "3S200AN", 256, 264) },
-+	{ S3AN_FLASH(SNOR_ID(0x1f, 0x24, 0x00), "3S400AN", 256, 264) },
-+	{ S3AN_FLASH(SNOR_ID(0x1f, 0x25, 0x00), "3S700AN", 512, 264) },
-+	{ S3AN_FLASH(SNOR_ID(0x1f, 0x26, 0x00), "3S1400AN", 512, 528) },
+ static const struct flash_info xmc_nor_parts[] = {
+-	{ "XM25QH64A", INFO(0x207017, 0, 64 * 1024, 128)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
+-			      SPI_NOR_QUAD_READ) },
+-	{ "XM25QH128A", INFO(0x207018, 0, 64 * 1024, 256)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
+-			      SPI_NOR_QUAD_READ) },
++	{
++		.id = SNOR_ID(0x20, 0x70, 0x17),
++		.name = "XM25QH64A",
++		.size = SZ_8M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++	}, {
++		.id = SNOR_ID(0x20, 0x70, 0x18),
++		.name = "XM25QH128A",
++		.size = SZ_16M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++	},
  };
  
- /*
+ /* XMC (Wuhan Xinxin Semiconductor Manufacturing Corp.) */
 
 -- 
 2.39.2
