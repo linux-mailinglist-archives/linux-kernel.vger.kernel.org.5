@@ -2,166 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98FC87837B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 03:58:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D09777837A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 03:54:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232202AbjHVB6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 21:58:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35848 "EHLO
+        id S232158AbjHVBya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 21:54:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232177AbjHVB6O (ORCPT
+        with ESMTP id S232108AbjHVBy3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 21:58:14 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E41E1BE
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 18:58:03 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RVCD663Nnz4f3lVX
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 09:57:58 +0800 (CST)
-Received: from [10.174.178.129] (unknown [10.174.178.129])
-        by APP4 (Coremail) with SMTP id gCh0CgDnvaAnFuRkPEMkBQ--.36670S2;
-        Tue, 22 Aug 2023 09:58:00 +0800 (CST)
-Subject: Re: [PATCH 7/9] mm/compaction: factor out code to test if we should
- run compaction for target order
-To:     Baolin Wang <baolin.wang@linux.alibaba.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        mgorman@techsingularity.net, david@redhat.com
-References: <20230805110711.2975149-1-shikemeng@huaweicloud.com>
- <20230805110711.2975149-8-shikemeng@huaweicloud.com>
- <7b337eca-1c45-c802-0aea-50d8d149efb4@linux.alibaba.com>
- <631d62de-c9b5-3c5f-e0b3-df0109627a27@huaweicloud.com>
- <3aefc27b-f7b8-6832-964d-77a55ea304fc@linux.alibaba.com>
-From:   Kemeng Shi <shikemeng@huaweicloud.com>
-Message-ID: <ba737e36-ef83-8254-aff1-1a46a9029fff@huaweicloud.com>
-Date:   Tue, 22 Aug 2023 09:57:59 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.0
+        Mon, 21 Aug 2023 21:54:29 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3D06113;
+        Mon, 21 Aug 2023 18:54:26 -0700 (PDT)
+Received: from dggpemm500009.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RVC6K1X1rz1L9Kv;
+        Tue, 22 Aug 2023 09:52:57 +0800 (CST)
+Received: from huawei.com (10.175.113.32) by dggpemm500009.china.huawei.com
+ (7.185.36.225) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Tue, 22 Aug
+ 2023 09:54:24 +0800
+From:   Liu Shixin <liushixin2@huawei.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        <wangkefeng.wang@huawei.com>
+CC:     <linux-kernel@vger.kernel.org>, <cgroups@vger.kernel.org>,
+        <linux-mm@kvack.org>, Liu Shixin <liushixin2@huawei.com>
+Subject: [PATCH v2] mm: vmscan: reclaim anon pages if there are swapcache pages
+Date:   Tue, 22 Aug 2023 10:49:01 +0800
+Message-ID: <20230822024901.2412520-1-liushixin2@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <3aefc27b-f7b8-6832-964d-77a55ea304fc@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgDnvaAnFuRkPEMkBQ--.36670S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxAw1ftr4rXr4rKw13Cr4kJFb_yoWrZrW7pF
-        18JFWUG3yrXr1fGr1xt3WUJFy3tw48J3WDXrn2qF17Jw4ayr1qgr1qqryq9r1UXr48Jr1U
-        XF1UJF9rZF15AaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
-        6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUrNtxDUUUU
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.32]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500009.china.huawei.com (7.185.36.225)
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When spaces of swap devices are exhausted, only file pages can be reclaimed.
+But there are still some swapcache pages in anon lru list. This can lead
+to a premature out-of-memory.
 
+This problem can be fixed by checking number of swapcache pages in
+can_reclaim_anon_pages(). For memcg v2, there are swapcache stat that can
+be used directly. For memcg v1, use total_swapcache_pages() instead, which
+may not accurate but can solve the problem.
 
-on 8/19/2023 8:27 PM, Baolin Wang wrote:
-> 
-> 
-> On 8/15/2023 8:10 PM, Kemeng Shi wrote:
->>
->>
->> on 8/15/2023 4:53 PM, Baolin Wang wrote:
->>>
->>>
->>> On 8/5/2023 7:07 PM, Kemeng Shi wrote:
->>>> We always do zone_watermark_ok check and compaction_suitable check
->>>> together to test if compaction for target order should be runned.
->>>> Factor these code out for preparation to remove repeat code.
->>>>
->>>> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
->>>> ---
->>>>    mm/compaction.c | 42 +++++++++++++++++++++++++++++-------------
->>>>    1 file changed, 29 insertions(+), 13 deletions(-)
->>>>
->>>> diff --git a/mm/compaction.c b/mm/compaction.c
->>>> index b5a699ed526b..26787ebb0297 100644
->>>> --- a/mm/compaction.c
->>>> +++ b/mm/compaction.c
->>>> @@ -2365,6 +2365,30 @@ bool compaction_zonelist_suitable(struct alloc_context *ac, int order,
->>>>        return false;
->>>>    }
->>>>    +/*
->>>> + * Should we do compaction for target allocation order.
->>>> + * Return COMPACT_SUCCESS if allocation for target order can be already
->>>> + * satisfied
->>>> + * Return COMPACT_SKIPPED if compaction for target order is likely to fail
->>>> + * Return COMPACT_CONTINUE if compaction for target order should be runned
->>>> + */
->>>> +static inline enum compact_result
->>>> +compaction_suit_allocation_order(struct zone *zone, unsigned int order,
->>>> +                 int highest_zoneidx, unsigned int alloc_flags)
->>>> +{
->>>> +    unsigned long watermark;
->>>> +
->>>> +    watermark = wmark_pages(zone, alloc_flags & ALLOC_WMARK_MASK);
->>>
->>> IIUC, the watermark used in patch 8 and patch 9 is different, right? Have you measured the impact of modifying this watermark?
->>>
->> Actually, there is no functional change intended. Consider wmark_pages with
->> alloc_flags = 0 is equivalent to min_wmark_pages, patch 8 and patch 9 still
->> use original watermark.
-> 
-> Can you use ALLOC_WMARK_MIN macro to make it more clear?
-Sorry, I can't quite follow this. The watermark should differ with different
-alloc_flags instead of WMARK_MIN hard-coded.
-Patch 8 and patch 9 use watermark with WMARK_MIN as they get alloc_flags = 0.
-> 
-> And I think patch 8 and patch 9 should be squashed into patch 7 to convert all at once.
-Sure, i could do this in next version.
-> 
->>>> +    if (zone_watermark_ok(zone, order, watermark, highest_zoneidx,
->>>> +                  alloc_flags))
->>>> +        return COMPACT_SUCCESS;
->>>> +
->>>> +    if (!compaction_suitable(zone, order, highest_zoneidx))
->>>> +        return COMPACT_SKIPPED;
->>>> +
->>>> +    return COMPACT_CONTINUE;
->>>> +}
->>>> +
->>>>    static enum compact_result
->>>>    compact_zone(struct compact_control *cc, struct capture_control *capc)
->>>>    {
->>>> @@ -2390,19 +2414,11 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
->>>>        cc->migratetype = gfp_migratetype(cc->gfp_mask);
->>>>          if (compaction_with_allocation_order(cc->order)) {
->>>> -        unsigned long watermark;
->>>> -
->>>> -        /* Allocation can already succeed, nothing to do */
->>>> -        watermark = wmark_pages(cc->zone,
->>>> -                    cc->alloc_flags & ALLOC_WMARK_MASK);
->>>> -        if (zone_watermark_ok(cc->zone, cc->order, watermark,
->>>> -                      cc->highest_zoneidx, cc->alloc_flags))
->>>> -            return COMPACT_SUCCESS;
->>>> -
->>>> -        /* Compaction is likely to fail */
->>>> -        if (!compaction_suitable(cc->zone, cc->order,
->>>> -                     cc->highest_zoneidx))
->>>> -            return COMPACT_SKIPPED;
->>>> +        ret = compaction_suit_allocation_order(cc->zone, cc->order,
->>>> +                               cc->highest_zoneidx,
->>>> +                               cc->alloc_flags);
->>>> +        if (ret != COMPACT_CONTINUE)
->>>> +            return ret;
->>>>        }
->>>>          /*
->>>
->>>
-> 
-> 
+Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+---
+ include/linux/swap.h |  6 ++++++
+ mm/memcontrol.c      |  8 ++++++++
+ mm/vmscan.c          | 12 ++++++++----
+ 3 files changed, 22 insertions(+), 4 deletions(-)
+
+diff --git a/include/linux/swap.h b/include/linux/swap.h
+index 456546443f1f..0318e918bfa4 100644
+--- a/include/linux/swap.h
++++ b/include/linux/swap.h
+@@ -669,6 +669,7 @@ static inline void mem_cgroup_uncharge_swap(swp_entry_t entry, unsigned int nr_p
+ }
+ 
+ extern long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg);
++extern long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg);
+ extern bool mem_cgroup_swap_full(struct folio *folio);
+ #else
+ static inline void mem_cgroup_swapout(struct folio *folio, swp_entry_t entry)
+@@ -691,6 +692,11 @@ static inline long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg)
+ 	return get_nr_swap_pages();
+ }
+ 
++static inline long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg)
++{
++	return total_swapcache_pages();
++}
++
+ static inline bool mem_cgroup_swap_full(struct folio *folio)
+ {
+ 	return vm_swap_full();
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index e8ca4bdcb03c..3e578f41023e 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -7567,6 +7567,14 @@ long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg)
+ 	return nr_swap_pages;
+ }
+ 
++long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg)
++{
++	if (mem_cgroup_disabled() || do_memsw_account())
++		return total_swapcache_pages();
++
++	return memcg_page_state(memcg, NR_SWAPCACHE);
++}
++
+ bool mem_cgroup_swap_full(struct folio *folio)
+ {
+ 	struct mem_cgroup *memcg;
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index 7c33c5b653ef..bcb6279cbae7 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -609,13 +609,17 @@ static inline bool can_reclaim_anon_pages(struct mem_cgroup *memcg,
+ 	if (memcg == NULL) {
+ 		/*
+ 		 * For non-memcg reclaim, is there
+-		 * space in any swap device?
++		 * space in any swap device or swapcache pages?
+ 		 */
+-		if (get_nr_swap_pages() > 0)
++		if (get_nr_swap_pages() + total_swapcache_pages() > 0)
+ 			return true;
+ 	} else {
+-		/* Is the memcg below its swap limit? */
+-		if (mem_cgroup_get_nr_swap_pages(memcg) > 0)
++		/*
++		 * Is the memcg below its swap limit or is there swapcache
++		 * pages can be freed?
++		 */
++		if (mem_cgroup_get_nr_swap_pages(memcg) +
++		    mem_cgroup_get_nr_swapcache_pages(memcg) > 0)
+ 			return true;
+ 	}
+ 
+-- 
+2.25.1
 
