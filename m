@@ -2,96 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74B28784CFF
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 00:53:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25193784CFD
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 00:52:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231589AbjHVWxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 18:53:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42410 "EHLO
+        id S231577AbjHVWwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 18:52:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbjHVWxC (ORCPT
+        with ESMTP id S229519AbjHVWwt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 18:53:02 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5C0EE4A;
-        Tue, 22 Aug 2023 15:52:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1692744772;
-        bh=HF0pKNyPsfPVW6YNobRMdCL/yLQFuP64rg4a4abFP6w=;
-        h=Date:From:To:Cc:Subject:From;
-        b=LgWDse7TDE3TnNfntc50xpFFayJ2NLQaXdsBMNRKqyIUdsLFJOX1sYyeEzbLfETTL
-         VKRipk1huTEkAfismKG/pjQAlXGhu3ozR/0hCmNKgcpxDm3elW7qbA67DANmMWWh+R
-         4UpEFHnEXxX7CXLik3atxbde8f2wYN6F0NEzs2sMbw7uSJGe3G45B/sUQ1JA+fRGEC
-         lz0wbZf8lI6+aMHoBby7pnzvLyKpZrxddSEdYRnG++iagGNeeaP3JhLybXljThn5nq
-         PfxGzkqbmz5wIA6NlsDPGpiEb8S/6WwZbWV+cMdoDle9e+CcM5mM1jR3U4aHibC/73
-         40ektCep3Pixw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        Tue, 22 Aug 2023 18:52:49 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E0B7133;
+        Tue, 22 Aug 2023 15:52:48 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RVl440xgwz4wxW;
-        Wed, 23 Aug 2023 08:52:52 +1000 (AEST)
-Date:   Wed, 23 Aug 2023 08:52:36 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Stefan Roesch <shr@devkernel.io>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the mm tree
-Message-ID: <20230823085236.0db2e377@canb.auug.org.au>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B3C8B61C4A;
+        Tue, 22 Aug 2023 22:52:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D004CC433C7;
+        Tue, 22 Aug 2023 22:52:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692744767;
+        bh=yWNdNH98z11k2f6XrB1ayhOgAMMe6RDCicH8KsnHT7g=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Hiu4BvHGryw/cf0SMNOnRqWCAk6pjbHNi/br7X+APUbz5YDCOHKRIeqsHDXaduB2O
+         k2EEdPgeoQAC0c4Sh2+/uGG32klYGK+SMSyfuEt7Vqlhy035HC68FgYlqED2SzFiNZ
+         ExvAvTZyAR3RsifUyNdSGZIxCh5/EIiMZewXp2glvf+m/bPvqDhmdI4ee2hAE8YR+z
+         uStNVtIgQzmlUrbMr+El1Fc2x1u+ZLxlts0MkOtDwN7Il0YHoB/KGa/sKfIHPfUvuV
+         hD4Dg2zGUAMmQWQnI7O8pQ1e17noooK3jqLhQS4OQJluHLIskNpCfic2E+zgOBjH6K
+         mZWKGQnHp6Vaw==
+From:   Stephen Boyd <sboyd@kernel.org>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        patches@lists.linux.dev,
+        Andrey Skvortsov <andrej.skvortzov@gmail.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Subject: [PATCH] clk: Cleanup devm_clk_match() wreckage
+Date:   Tue, 22 Aug 2023 15:52:42 -0700
+Message-ID: <20230822225245.3624370-1-sboyd@kernel.org>
+X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/imbYznHbCMZJpJ7mGFeP37x";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/imbYznHbCMZJpJ7mGFeP37x
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The 'res' pointer passed to devm_clk_match() is a pointer to struct
+devm_clk_state after commit abae8e57e49a ("clk: generalize
+devm_clk_get() a bit"). Update the logic here to convert the void
+pointer to the right type so that this is cleaner. Note that this
+doesn't actually change anything due to how struct devm_clk_state is
+defined to have a struct clk pointer as the first member.
 
-Hi all,
+Given we're cleaning things up, split the WARN_ON() into two different
+conditions to provide clarity about which condition is false. Also move
+the WARN_ON to the conditional so that the compiler is hinted that all
+this code is unlikely().
 
-After merging the mm tree, today's linux-next build (arm
-multi_v7_defconfig) failed like this:
+Cc: Andrey Skvortsov <andrej.skvortzov@gmail.com>
+Cc: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+---
+ drivers/clk/clk-devres.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-fs/proc/task_mmu.c: In function 'smaps_account':
-fs/proc/task_mmu.c:457:40: error: implicit declaration of function 'is_ksm_=
-zero_pte' [-Werror=3Dimplicit-function-declaration]
-  457 |         if (PageKsm(page) && (!pte || !is_ksm_zero_pte(*pte)))
-      |                                        ^~~~~~~~~~~~~~~
+diff --git a/drivers/clk/clk-devres.c b/drivers/clk/clk-devres.c
+index 737aa70e2cb3..979562ee79ba 100644
+--- a/drivers/clk/clk-devres.c
++++ b/drivers/clk/clk-devres.c
+@@ -184,12 +184,14 @@ EXPORT_SYMBOL_GPL(devm_clk_bulk_get_all);
+ 
+ static int devm_clk_match(struct device *dev, void *res, void *data)
+ {
+-	struct clk **c = res;
+-	if (!c || !*c) {
+-		WARN_ON(!c || !*c);
++	struct devm_clk_state *state = res;
++
++	if (WARN_ON(!state))
+ 		return 0;
+-	}
+-	return *c == data;
++	if (WARN_ON(!state->clk))
++		return 0;
++
++	return state->clk == data;
+ }
+ 
+ void devm_clk_put(struct device *dev, struct clk *clk)
 
-Caused by commit
+base-commit: 66fbfb35da47f391bdadf9fa7ceb88af4faa9022
+-- 
+https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/
+https://git.kernel.org/pub/scm/linux/kernel/git/sboyd/spmi.git
 
-  5233d9beb1a8 ("proc/ksm: add ksm stats to /proc/pid/smaps")
-
-# CONFIG_KSM is not set
-
-I have reverted that commit for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/imbYznHbCMZJpJ7mGFeP37x
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTlPDQACgkQAVBC80lX
-0Gzaogf/QWWlccScarEB4z6Vcv0zJdSwRADgQvwppZ7oLFRt092NglW4cOdlMWVX
-p2kQi4bobXUSTHZImkvrWPazWyA4uCWKz/YRJM0eyE+36jqSVvl4JYRYGJqgwu4f
-UvL/5zpyjxVbv57TY/VE9BhpG+1g6yVZLoYW7le8SC7QF5dIaA/gjfD9oXvUTDGY
-cGVP0aRwovLhGP4ev3TaTUvduSI12jzk3zXceIIZnBcAy7JuGOSL+d3t9orTJ4iO
-Bbc8Zs9y0LwQ1kvcsnvzXmwMc9wtVg/K1ynbb/SzbIw4LaUhZJ9zK0OWsBmj2LeT
-4/MjVHsRbxANfJBg/v7gbWcSqW95sA==
-=RpMJ
------END PGP SIGNATURE-----
-
---Sig_/imbYznHbCMZJpJ7mGFeP37x--
