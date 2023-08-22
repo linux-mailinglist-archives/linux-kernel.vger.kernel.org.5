@@ -2,477 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9D82783BAF
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 10:23:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5498A783BB1
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 10:24:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233785AbjHVIXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 04:23:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54404 "EHLO
+        id S233801AbjHVIY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 04:24:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233108AbjHVIXm (ORCPT
+        with ESMTP id S231920AbjHVIYz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 04:23:42 -0400
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2081.outbound.protection.outlook.com [40.107.20.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB572CCA;
-        Tue, 22 Aug 2023 01:23:36 -0700 (PDT)
+        Tue, 22 Aug 2023 04:24:55 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30A5E19C;
+        Tue, 22 Aug 2023 01:24:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692692693; x=1724228693;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=Hl0zISkZGD0Vh9RxW4srsvre9nKZ6YrfXsj/t6GP0iA=;
+  b=RCq1VPmL9MzqKbhmDP9ungY7uRMNCrZ5S2GRT65RbfcvFAxfGhQ/yNoZ
+   PaDgpNOzsVVoIDOqudw3bnOZnQafukDwoPQ0+6mIa1bplxa3qXhowvgS0
+   L/8+wEn8tABYs9edTh0yDGv9gQzuF+mkZQBZSPtE8+Xy+RydYpTu6gZjo
+   anOFNmCvnbtuslGZekxkkjhoGTKPu8WNGvrdNUCPy1EVFUSXHc9sTgXX3
+   zRniCEYmNkgljBLWirZLVKJRbA0QNz1ZeoIoE0VE75GcXwtfoA1yhgDmE
+   Fc/7YhCNFiXyerzhUsD28mAxUxgOeo8mP+4CI7CdeswouL86QyIpBg19S
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="358811026"
+X-IronPort-AV: E=Sophos;i="6.01,192,1684825200"; 
+   d="scan'208";a="358811026"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2023 01:24:52 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="806193869"
+X-IronPort-AV: E=Sophos;i="6.01,192,1684825200"; 
+   d="scan'208";a="806193869"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by fmsmga004.fm.intel.com with ESMTP; 22 Aug 2023 01:24:52 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Tue, 22 Aug 2023 01:24:51 -0700
+Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Tue, 22 Aug 2023 01:24:51 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Tue, 22 Aug 2023 01:24:51 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.45) by
+ edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Tue, 22 Aug 2023 01:24:51 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mdEgGSdwYkLRDXaPtj+nhnMiWf3UIcpu1vWcAYoFEcLXDpM6KpwOFYzMTeEIdQdH6ouUMTOfzh6XcsnkQBn48IwtYfbXJDgdgBxQCB4K6iS3hh4pctu5wTi/f5EvJEx+YwZ2bOAWljODy2czsOZR32fix89otHp2O8ewkWT1KfpAiGFbhI3Jyj8XWa/5iV3sW1L4NhUJHwruxZ/SsZx/IBIFTAaQLDP+1Bh5rYmlWlKWweR+NUh5nh6eybk2CP13zBL7lVdPnLCMnQETTdmGNsWwDbkJmO8XqFtUdZZfEGVyscxW7fmTLFyFSaVdJK5oJTV8xXxqE8xRUwUYlikOhQ==
+ b=V+oZnPgww53JnbFnkpFh11E0BnpV/WPXm0cLcKoucq9SGB/LOoGyCUbJrNqxzTzTANxtsxJgF6nRePaJ95yMZoLnEPZ4Mm6Cc7Hjh5pL0QL9AiqzqS9yE5p3yNQtvjij/ULS6UseNjBbSaS1WmLGhQ/3Lw60PZ1O49yhBiMPSEUUH5Sm5b4QuBwiT6/9VSnIMMhX/1y/AujlW/D8Lc8OjkH0q9WMeHNLrBRLzfnv5JlPzg111kz8sXFgQXih6s04kVZXTGc9c+AXEVvaXUGHitVdptv1JRF7CWws0iTZaXys8Zv/OqR5nTjHJrH+lXkp5q7KLSuZPye/nfQdkrhcPg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=VuWEv7dZoq3awqAmlm5KNdlg5dr1Qt+6XDJQ3U8+KjU=;
- b=Xql2aLHpPT3IabCf0HKty8gV8EJw5Yu9FexSX9Iih8LTO+oBOBM7rA3ovOUkmOSgXXZIJc5USaTwC4GujldlOO2YyIK8M62geMGCoyfqXgRB9DlW620TrMtIG4widp96YoWvGtZik2u9AILm3PX6F73TYjeuGN+VSckae61VAjLVZoEyQA+PmN/E9a0I7H/wHK/EgDPevGNUrMs8hFRaoZZoskPrpA2fd6ozG2lmZAdY/ufuGczriqsH6lH66rqUh1zd3lbPlLkx1AOzcaj59Hwi+rxphicqJzDuvqgkkjNqLyLuwWNuQ0T4v2MiAl1NeXU+upFvYKVRPf5IiZJMvA==
+ bh=Hl0zISkZGD0Vh9RxW4srsvre9nKZ6YrfXsj/t6GP0iA=;
+ b=ec1S8ck3MmOquuZEJgDp9KYs6tfNZP9KqOI4VOILSYijDhP4Agv2pZ2HFs1/IrEbiTnzHXHh1Ai8A4d8apn2jEalEtfS1/oE0pd4SgoU/C+s/kwKEG8A8MtODkdHrtIO7arwwDmWo+K3zl9zpCY42TMNaGPtbweeer2GbC8pcKgmmXM0OUjtxdnbq0gJ8bJCqwa9oI5knrQS0fTOwSgbCB9W4g4rp1gNNMktMRczt0v1UdUG2gXUHO41mI6rF1kgInGVtmqtKoMnebAb5BVPechinnpypExSkAtHTtpyjAy8pj9nK4wP0k3xIXniQv4ivRNYUwSFXZvpnDz+xERbjg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VuWEv7dZoq3awqAmlm5KNdlg5dr1Qt+6XDJQ3U8+KjU=;
- b=o5axI0ibuf47viftMjt9uBIq2QBW3hiSPr9ng9JFvWQ9cCRtQ3im/lwFzTgq+3mKYreXJ/LQMblkj+A35klQBiHb/beE9fNSP0kbBkMdrezVWi25Is75IgnpcxwJEtdEPAX8ySN3/TVFlh70f2FbTEyiMQqmWFDZUOnuKUfp7XY=
-Received: from AM7PR04MB7046.eurprd04.prod.outlook.com (2603:10a6:20b:113::22)
- by AS1PR04MB9286.eurprd04.prod.outlook.com (2603:10a6:20b:4de::11) with
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
+ by MN2PR11MB4536.namprd11.prod.outlook.com (2603:10b6:208:26a::23) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.24; Tue, 22 Aug
- 2023 08:23:33 +0000
-Received: from AM7PR04MB7046.eurprd04.prod.outlook.com
- ([fe80::9018:e395:332c:e24b]) by AM7PR04MB7046.eurprd04.prod.outlook.com
- ([fe80::9018:e395:332c:e24b%4]) with mapi id 15.20.6699.022; Tue, 22 Aug 2023
- 08:23:33 +0000
-From:   Ying Liu <victor.liu@nxp.com>
-To:     "mripard@kernel.org" <mripard@kernel.org>
-CC:     "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "airlied@gmail.com" <airlied@gmail.com>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "maarten.lankhorst@linux.intel.com" 
-        <maarten.lankhorst@linux.intel.com>,
-        "tzimmermann@suse.de" <tzimmermann@suse.de>,
-        =?iso-8859-1?Q?Guido_G=FCnther?= <guido.gunther@puri.sm>,
-        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
-        "Laurentiu Palcu (OSS)" <laurentiu.palcu@oss.nxp.com>,
-        "robh@kernel.org" <robh@kernel.org>
-Subject: RE: [PATCH v14 0/6] drm/imx: Introduce i.MX8qm/qxp DPU DRM
-Thread-Topic: [PATCH v14 0/6] drm/imx: Introduce i.MX8qm/qxp DPU DRM
-Thread-Index: AQHZIZK391aAnd1BtU2IGNfkhc3wq6/3Lu6AgAAs6ACAAAMlUA==
-Date:   Tue, 22 Aug 2023 08:23:33 +0000
-Message-ID: <AM7PR04MB70461F09E4FD268D9D3FFBD0981FA@AM7PR04MB7046.eurprd04.prod.outlook.com>
-References: <20230106055056.2883302-1-victor.liu@nxp.com>
- <AM7PR04MB7046E7F22B817FC6FE8DA95A981FA@AM7PR04MB7046.eurprd04.prod.outlook.com>
- <x3odw5zxaz5r52zmwf6owdgalthkhbjogsvblzuj3vjaugu3kr@6jr4lsaxkkn3>
-In-Reply-To: <x3odw5zxaz5r52zmwf6owdgalthkhbjogsvblzuj3vjaugu3kr@6jr4lsaxkkn3>
+ 2023 08:24:49 +0000
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::dcf3:7bac:d274:7bed]) by BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::dcf3:7bac:d274:7bed%4]) with mapi id 15.20.6699.022; Tue, 22 Aug 2023
+ 08:24:49 +0000
+From:   "Tian, Kevin" <kevin.tian@intel.com>
+To:     Baolu Lu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "Will Deacon" <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "Jason Gunthorpe" <jgg@ziepe.ca>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Nicolin Chen <nicolinc@nvidia.com>
+CC:     "Liu, Yi L" <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v2 1/3] iommu: Make single-device group for PASID explicit
+Thread-Topic: [PATCH v2 1/3] iommu: Make single-device group for PASID
+ explicit
+Thread-Index: AQHZzk2NHVN7+Xla/Uen90/PQyM06K/vcbqggATWyoCAAA098IABk6cAgAAdWTA=
+Date:   Tue, 22 Aug 2023 08:24:49 +0000
+Message-ID: <BN9PR11MB5276CFED0281AA06E0EB14A28C1FA@BN9PR11MB5276.namprd11.prod.outlook.com>
+References: <20230814011759.102089-1-baolu.lu@linux.intel.com>
+ <20230814011759.102089-2-baolu.lu@linux.intel.com>
+ <BN9PR11MB5276E3C3D99C2DFA963805C98C1BA@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <51dfc143-aafd-fea2-26fe-e2e9025fcd21@linux.intel.com>
+ <BN9PR11MB5276EBE5788713FBA99332F88C1EA@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <93811e0c-ff04-366d-493e-7186e4588359@linux.intel.com>
+In-Reply-To: <93811e0c-ff04-366d-493e-7186e4588359@linux.intel.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
 authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
+ header.d=none;dmarc=none action=none header.from=intel.com;
 x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: AM7PR04MB7046:EE_|AS1PR04MB9286:EE_
-x-ms-office365-filtering-correlation-id: 573029fa-d7bd-4b4e-e137-08dba2e91318
-x-ld-processed: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635,ExtAddr
+x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|MN2PR11MB4536:EE_
+x-ms-office365-filtering-correlation-id: 01c97be1-263d-49ca-c14a-08dba2e9404b
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: WOUTGw2vZ9sfh/zPqjsF9MAK+dQy2+bvNmlC08pqDjTKCkvy5IvmFL9jJF9sLVTbESkjCkto30yXCS0ZNNbiBd+6vjvYnsfKr6YkrzRmyKtnF2b67xseZGsRAuuZfCpjM218I3VOE2YGaEg3irXDlKBRfw9qk9jTiuoMIm+cmhpFFBSPHeDXS98S0hUsFZu1q2Tu7HBZ+skn8ELynFEodkkmtFtewsvAnKqZLhsSP/CU6P8QnzKAH7noxexcaTNY1WKrljB8sTb54+TY5S1A3Ar4FNEshuNcyyXTVqUuiYKNQqRPqNtpAZm12zZ2ChZBH2mhZVg17OGa0ufOT/3HkYors5J44QnYULEJNLcxWuIe5lAVioHBHg8A03k7ld4mKCdxyvDa5HxKS/cR2HGL05fU0ouTqjzu37rFCl1f4FZa4pglvpCamo8D9aMq7jUUWHwntZN5vn4gBMr74gS12HNrp756I1O0sBUu73fWDW/n3a6jotDQp+IjYFvJofdIOfJWZSuGYyo1kLbBDYGG831N6BHlQ4c/gF1eKrq8B7lJdKbMpYCtT1NlnEATVoyxUXdTVBIjXe77zVshrFFN0dmbKj8AlmynxUlLCX5oPVA=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR04MB7046.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(346002)(39860400002)(136003)(396003)(451199024)(1800799009)(186009)(2906002)(30864003)(7416002)(53546011)(38070700005)(38100700002)(6506007)(83380400001)(5660300002)(52536014)(33656002)(26005)(7696005)(86362001)(8676002)(8936002)(4326008)(316002)(9686003)(66946007)(64756008)(66446008)(6916009)(54906003)(76116006)(66556008)(66476007)(66899024)(966005)(478600001)(122000001)(71200400001)(55016003)(41300700001);DIR:OUT;SFP:1101;
+x-microsoft-antispam-message-info: qx+m3g0dXEF0TxnN62Gh26tpF7N61mbPQoHpUptBRg+pWETbaiKRMFO+8lhsmhxCGUYIGsKLJEWQFqG3A49x8sCd/m49eE+UzqAOqpWS/jRIzqSnGbUsOOdEwElpdoK1kneSC/g0hy0KXd5XphyLXv9JXq7Wv9DOrCkt+9NZsAD+y56PQWBk8keK7PRprU610104mncdMCdsFg/LPWqRGZeeXaeNuKHruhPas25x1z6ek1g1YeZElf1QXLtP6v5AXJZvUNEfFPoq5K0NrEj34hj0jtO6xg9rSZeViUB7D73p1rSCVt7P+Es3AF4ncRfPwFM3VZDAewQMQrsPRvvds57Drp2cfbMvVqV9UegADGLRbpYUMCtHjWXxzHngOh7Z3Xx2DkFiiqyE9qH8/gpEsVk5lWSj3g84fWqipvE62wsKyYi0Qfa66DaUaooNRqG6L1kC4WR1Pz5RHQ9E+cVIBn3/MLY/PSVk/vyrPSdXre8gXiMYsbfgvLS5ei+UNdpIPyGIkPmNBhCvzO+PApabFBw7KM6aBW3yRKPmn/nyAJ5j2SkMY6/ivHZz8VHeu+MkzPA/2V1TVgeIgxaF51Cxfgn2FBcSuZnSMIrkHudTUFk=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(346002)(39860400002)(136003)(396003)(451199024)(1800799009)(186009)(2906002)(7416002)(53546011)(38070700005)(38100700002)(6506007)(83380400001)(5660300002)(52536014)(33656002)(26005)(7696005)(86362001)(8676002)(8936002)(4326008)(316002)(9686003)(66946007)(64756008)(66446008)(54906003)(76116006)(66556008)(66476007)(110136005)(82960400001)(966005)(478600001)(122000001)(71200400001)(55016003)(41300700001);DIR:OUT;SFP:1102;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?TWuqtbiTwDXDSSv1sctCxkScAGBoxbZVqdfBMEG89jGhG5BwtfaM5Hg1YX?=
- =?iso-8859-1?Q?AOtEZozZTW7SbG5jJo3EN2dTRQZ+kQ3zSZ37NkSEr8hoNqwzoS5b07v+bG?=
- =?iso-8859-1?Q?tyt1bbFpYvlahKJx1VSqLkDTBkIuy++7PbZfbZBvtyDKkf20gZweDskkZT?=
- =?iso-8859-1?Q?D9pAgRlruK4YD23PqvjAaGcDIhVB7mGzhfqrKNFLLmYYBt68CaX+JVcOts?=
- =?iso-8859-1?Q?24a5EG9uHkoc1cy8bsuEMtM4G1hSGLCU0K2uDWj6/djBM9FmhZIIOMsuVw?=
- =?iso-8859-1?Q?IDZYL3AKsaHzKbtNgsZy+Qbc5OIo7wslZE93jGUCDkhDeA4kjXGh14YFIg?=
- =?iso-8859-1?Q?4yn5Pjz8UgFnnEc049LMdxTC24DqlUIFQUg06MKuQoO7LkEvaiXLUOfOn5?=
- =?iso-8859-1?Q?e9NSBZiso8vDIzo3g6g6lSOYcHi03ykW1m4KK1i8qOAKm1B/q3FySgyEcZ?=
- =?iso-8859-1?Q?1oZ8nymGsWuo43Sh/LpAABSIIUH5sE7Wz35MOBOXzlWdH/H4UbJEe8U5mE?=
- =?iso-8859-1?Q?NWIaD1BSq11c8S3+F4EpL5NzCMz1u700FIbSwosAfl9eQMPOkiWzSTa5+X?=
- =?iso-8859-1?Q?JtckarapDXvZnGsDkN0TwPBVWX54lcmHr47G0G4XEtD0IIclf1Dp/dk7SH?=
- =?iso-8859-1?Q?XD1hjlGshUZ9vgpoN7cMs59SOBhKMKJcySlJY+Id7/09LCKwTVsGkNUhZR?=
- =?iso-8859-1?Q?2VzWGufdTe4SBt8EepO5V7FIw3IhwHBiMVqDVcE8LrsV2y/n8Scyur9w8a?=
- =?iso-8859-1?Q?BQhLu0MKsxY3FfLcGRge/2UZiFlmAaC12DKFvI9F8MQoV+rSHT9X6VGFdB?=
- =?iso-8859-1?Q?Pm8jeJWcQPZ/Gdtc5OmfhzjbbXgCix0d2iTWgfNM1aFJhWG+KAwddwC/FP?=
- =?iso-8859-1?Q?0unGXzRNiKGyJb1TJ5cc0wO+JGjRDZ5LZDk6pKFvzZSLTU+hpJytXQRYHI?=
- =?iso-8859-1?Q?uFDMNLop3s2dzmXgfJlyE9pOCR/JlOJZzgecyIrNljC5WbWt+w5mW/BWo0?=
- =?iso-8859-1?Q?DWRwIAp+ztmI7tN0h2g6ptXWYZQApg7dbIdrk3H6j0YE449ZNG35FEz2eC?=
- =?iso-8859-1?Q?xrOObwKdE1hBAsEE32SOHn9/6aRETpc7+Eee5ui876CnSr6JSwuLGwOd/T?=
- =?iso-8859-1?Q?tS7vP+m3DfJKHjYQ2HtWGMRhCkDZL07fQ0AtIj94uogQJz88e0XVfc1AW4?=
- =?iso-8859-1?Q?kbUPpmMfgUIqBrCskRY3aeUv3Xq+rSQEaREb0xhtnogLjY5IGDPYX8lAsV?=
- =?iso-8859-1?Q?2SHyCz58SPSuWbL8uazvRFoE6w3ofLKnOp88+eyUQX/PHgT/2FqLfvsI7O?=
- =?iso-8859-1?Q?prFiioEV2Hg77+gxylyhED8Z/xCXjMnpcc3K1MjwK+JDzu3C/5AWJX3GnO?=
- =?iso-8859-1?Q?AqKpQRuhfRSjhcexrdthGS0QM8VgTLZdtNjvQa/s5KLiS4XA3R0M8fbYVx?=
- =?iso-8859-1?Q?XEt2XddOJRMOoxJhIs/mGXt8fJSJcU5YxELD01m6NlTY8X1AoXRMQbx9HF?=
- =?iso-8859-1?Q?2pgYlDnBubhqQiMaYQMjzrr7AjhvU/wpopUv4v6H6YMuFl/5nJ0gxJOhv3?=
- =?iso-8859-1?Q?Dmj6ANedJ8Jx89biESLmYGsEOadoG5SSNImm6pMlgQbIwSna8XoBAyY9BG?=
- =?iso-8859-1?Q?CRgqhltZp2/kE=3D?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?NklVSFRPbndQclNmekZSNGhwTUd5VlpCNmJ6YldBQktMZTdaTEs2ZVh3TVlX?=
+ =?utf-8?B?aGFyQlMrSUhUeDZTVTUyMTBVQkVpY1hEaWUvWXA2NEVXL01iYTlqcFh4bUVk?=
+ =?utf-8?B?MVg4THpteVdkQ2ZrYzY2aFcwRGFabWJLWC9ra0FzdisxM0pyYUtpOTVGN1Vv?=
+ =?utf-8?B?Z2k1Mjk1T2kzd3lucW5zTWxBd05FdmNxSEpiamlBUjArVS8rR1RLTDhUdnJO?=
+ =?utf-8?B?Z25EQ2ttNWtKVUdxSUxsdHduZDNrT3RNUG1paWJFWmFadVJEaytkb2xBLzFK?=
+ =?utf-8?B?V2UwdnhIU1VHbDZSVDhJNHpPZkFYMEYzUXg5Z29MOFQrd2x2VVRZZjdINk5I?=
+ =?utf-8?B?UFF2T09TYzlqR08zNC80Z3hvcVk2VHJJZlJUU2JkbTJ4UUZFZEwvSnMrakxK?=
+ =?utf-8?B?bWVJZ2lySWE5M09ZZjFYanJ1N25DZXBlREtEMVBKajZoK2piNXlHcGZId3Ir?=
+ =?utf-8?B?SjdWeUtwbTZBVmJKa1NhZzZQYnlGNnRRclVJMnp5a1BaSUNNU3dRZ0ZaaUx2?=
+ =?utf-8?B?YWxqdS9HODFaTzlkUXpmaVpDRXR5YUY1VmpFaHpBZk9JRG82cy9zYXMyQ0Ev?=
+ =?utf-8?B?T2JVS0IxMHdka3RHQ0hwREZwQ0hrdE1iMkxIdkNuSUhqa3VkbmMrMmlVMXlN?=
+ =?utf-8?B?Sk1tbWxlLzczS2wwOUNzYXQ3ZWxMUll3d0swWjFGOUU4WEJBZER4dGMzWmoz?=
+ =?utf-8?B?NlBKWVgxalFVc1ZjOE8wek84SW5iKzh1L0JZbjNUN1ZYVHVpS25OQ3g5Vmx4?=
+ =?utf-8?B?TjFObjJpcjBDOTVxdnVlVWhhWExTVVEwWlA5S0daa0d3WTZpbk14ZjBhM1lW?=
+ =?utf-8?B?YnB3Y2I2SjMwT1V3dVdZQjFlNzVvaFg0RE9ZY09WYlBDUjhkY25uTGx3UDMr?=
+ =?utf-8?B?RkVtSm9hZVlZYms1eU5uSlJ4MURDa1EvWDBLeWlaelA3VlhablJQaHE5eUhw?=
+ =?utf-8?B?cXVCMFY3bnJjN1VTZlI3UGt1eURBLytpZDJmb3g1OThSSUViUkVTREo3WUFm?=
+ =?utf-8?B?VkxWYnEyTHhKVjhpN1RHbmRkdnIyRE5TcUx1am1hcUxpVlJtakg2SkorcjlK?=
+ =?utf-8?B?MmxkQ3RvUEJwa0dkZTNPNDZsWnVUY2gvMjFMOUpnOFE5Tm9WZHJlaU5LcjJL?=
+ =?utf-8?B?ZzVGYkFSSm5WbTRjUWpPd0pBeGF6clJ5SWRZYUswNnBTQjBueWlOWnBReURj?=
+ =?utf-8?B?OXZvcThYbEwwM1hFSWVSeFc0TkdpRjNsZ1NmbHZVa28xQkF1bXBTZEhUTVRB?=
+ =?utf-8?B?Y2RCMGQ5OHVjRmpiRW1QYW5QdTFpZW9LeTJhQlhpbTdCQTY3YWgzbGJDOEM2?=
+ =?utf-8?B?TlBUbUo2ZlYzcGxYS1haQTR6RWpweUY4SEJza2ZZWGVOQ3NpOVV5SjZjMUhz?=
+ =?utf-8?B?T0hkUVJQV1hXZkg2MzJZcVAyQWxFajhqUGdDb2I0cEpLZ2NwSU9VU2Vhckgz?=
+ =?utf-8?B?eEtBNnJ0UEdQbzNJb1VRd0tESHRJYzdvV1h0THl6UnlpdzBzeG5wa0lJZnhJ?=
+ =?utf-8?B?QmFLcmZ5b0pxZ29nczcvY1JqeUd1Q0dLQTJ6bjh0NTAreHFIUE14eTA4WVR4?=
+ =?utf-8?B?bnVYRnpxeVE1TW10UlRhVDJzbDh5RGxIUkY4ZFRYL0hmR21FU2pZL3kxdERr?=
+ =?utf-8?B?TEhhZXI2S0xKZnl1eWh1VFVKMktHT1hMcmdUTDFTVzhmT2ROaFhlcnZ4eTVq?=
+ =?utf-8?B?ZWZlVm1RUE5rZDQ2QTRGd3BZWEhjTm1sTEdWR2VreWFTRDNuaHNXanF0aTZC?=
+ =?utf-8?B?OSsxQTlLQnFva3FsZy80MHZvYTdhK0Y4N2t2RXVsVnlrb0M5WGQ5NnJYS0Nl?=
+ =?utf-8?B?MEFybUtDNTJON3VQTGFxYVMxUFBLakQ4bTQ3aXFwNmI4UE5weEEzcTZtYWZG?=
+ =?utf-8?B?aXlXcVhtRjArZS9SMDV4MDc5dTNaN2daOVZJeGhOYWdKYnRadGhvK0syamdx?=
+ =?utf-8?B?SThmbkhZMFhlRHgwZ1ZMZENjZDhEZzNoRThoeFpJVWR1elU5blJid1B0L3JN?=
+ =?utf-8?B?a3g2bW1yS1FXaExGWm9iK0pFNE9oZUtnODVFZTJJRXRVR3RidjN4eVpoNE5n?=
+ =?utf-8?B?NUVUdVRoSnZLSlRHK3NDajJ4aXJSRG9LeUhQdGxxZ0dtNnZEOHZXaDNUc2Rp?=
+ =?utf-8?Q?Zbk2Y3C6zwk9N4lZJzMmhRD+g?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM7PR04MB7046.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 573029fa-d7bd-4b4e-e137-08dba2e91318
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Aug 2023 08:23:33.4215
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 01c97be1-263d-49ca-c14a-08dba2e9404b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Aug 2023 08:24:49.2631
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: /S3RtgEx30QhzTFDXCmZvuQOl1uiy0Lkk+15OZqm0zq1ZG/lyaPCYlrOJf90TxilFt+rHsqliAxMwabG8mI3TQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS1PR04MB9286
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-userprincipalname: CP/NCl4mymKCywEXC2OS3/cTyVgfF8uaC2qJnoDURaMMyWBaz0RtK3Tizq2S9GWNL9M/a4FdicJhQbxcWpi/Dw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB4536
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Tuesday, August 22, 2023 4:06 PM Maxime <mripard@kernel.org> wrote:
->=20
-> Hi,
-
-Hi,
-
->=20
-> On Tue, Aug 22, 2023 at 05:36:14AM +0000, Ying Liu wrote:
-> > Hi,
-> >
-> > > On Friday, January 6, 2023 1:50 PM Ying Liu wrote:
-> > >
-> > > Hi,
-> > >
-> > >
-> > > This is the v14 series to introduce i.MX8qm/qxp Display Processing
-> Unit(DPU)
-> > > DRM support.
-> > >
-> > > DPU is comprised of a blit engine for 2D graphics, a display controll=
-er
-> > > and a command sequencer.  Outside of DPU, optional prefetch engines
-> can
-> > > fetch data from memory prior to some DPU fetchunits of blit engine an=
-d
-> > > display controller.  The pre-fetchers support linear formats and Viva=
-nte
-> > > GPU tile formats.
-> > >
-> > > Reference manual can be found at:
-> > > https://www.nxp.com/webapp/Download?colCode=3DIMX8DQXPRM
-> > >
-> > >
-> > > This patch set adds kernel modesetting support for the display contro=
-ller
-> part.
-> > > It supports two CRTCs per display controller, several planes, prefetc=
-h
-> > > engines and some properties of CRTC and plane.  Currently, the regist=
-ers
-> of
-> > > the controller is accessed without command sequencer involved, instea=
-d
-> just
-> > > by
-> > > using CPU.  DRM connectors would be created from the DPU KMS driver.
-> > >
-> > >
-> > > Patch 1 ~ 3 add dt-bindings for DPU and prefetch engines.
-> > > Patch 4 is a minor improvement of a macro to suppress warning as the
-> KMS
-> > > driver
-> > > uses it.
-> > > Patch 5 introduces the DPU DRM support.
-> > > Patch 6 updates MAINTAINERS.
-> > >
-> > > Welcome comments, thanks.
-> > >
-> > > v13->v14:
-> > > * Rebase the patch series to the latest drm-misc-next branch(v6.1-rc6
-> based).
-> > > * Include drm_fbdev_generic.h in dpu_drv.c due to the rebase.
-> > > * Fix dpu drm driver suspend/resume by properly get drm device throug=
-h
-> > >   dev_get_drvdata().
-> > > * Use pm_ptr() macro for dpu core driver PM operations.
-> > > * Use pm_sleep_ptr() macro for dpu drm driver PM operations.
-> > > * Use DEFINE_SIMPLE_DEV_PM_OPS() macro to define dpu drm driver
-> PM
-> > > operations,
-> > >   instead of SIMPLE_DEV_PM_OPS().
-> > > * Update year of Copyright.
-> > > * Add SoC series name 'i.MX8'/'IMX8'/'imx8' to dpu driver module
-> decription,
-> > >   Kconfig name, dpu driver names and dpu driver object name.
-> > >
-> > > v12->v13:
-> > > * Drop 'drm->irq_enabled =3D true;' from patch 5/6 to fix a potential=
- build
-> > >   break reported by 'kernel test robot <lkp@intel.com>'.  drm-
-> >irq_enabled
-> > >   should not be used by imx-dpu drm as it is only used by legacy driv=
-ers
-> > >   with userspace modesetting.
-> > >
-> > > v11->v12:
-> > > * Rebase the series upon v6.1-rc1.
-> > > * Minor update on Kconfigs, struct names and macro names for patch 5/=
-6
-> > >   due to the rebase.
-> > >
-> > > v10->v11:
-> > > * Rebase the series upon v6.0-rc1.
-> > > * Include drm_blend.h and drm_framebuffer.h in dpu-kms.c and dpu-
-> > > plane.c
-> > >   to fix build errors due to the rebase.
-> > > * Fix a checkpatch warning for dpu-crtc.c.
-> > > * Properly use dev_err_probe() to return it's return value directly w=
-here
-> > >   possible.
-> > >
-> > > v9->v10:
-> > > * Rebase the series upon v5.18-rc1.
-> > > * Make 'checkpatch.pl --strict' happier for patch 5/6.
-> > > * Add Rob's R-b tag on patch 3/6.
-> > > * Add Laurentiu's R-b tag on patch 5/6.
-> > > * Add Laurentiu's A-b tag on patch 6/6.
-> > >
-> > > v8->v9:
-> > > * Use drm_atomic_get_new_plane_state() in dpu_plane_atomic_update()
-> > > for
-> > >   patch 5/6. (Laurentiu)
-> > > * Drop getting DPU DT alias ID for patch 5/6, as it is unused.
-> > > * Reference 'interrupts-extended' schema instead of 'interrupts' for =
-patch
-> > > 3/6
-> > >   to require an additional DPR interrupt(r_rtram_stall) because the
-> reference
-> > >   manual does mention it, though the driver doesn't get/use it for no=
-w.
-> > >   Reference 'interrupt-names' schema to define the two DPR interrupt
-> names
-> > > -
-> > >   'dpr_wrap' and 'r_rtram_stall'.  Accordingly, patch 5/6 gets the
-> 'dpr_wrap'
-> > >   interrupt by name.
-> > > * Drop Rob's R-b tag on patch 3/6, as review is needed.
-> > >
-> > > v7->v8:
-> > > * Rebase this series up onto the latest drm-misc-next branch, due to =
-DRM
-> > > plane
-> > >   helper functions API change(atomic_check and atomic_update) from
-> DRM
-> > > atomic
-> > >   core.  So, dpu_plane_atomic_check() and dpu_plane_atomic_update()
-> are
-> > > updated
-> > >   accordingly in patch 5/6.  Also, rename plane->state variables and
-> relevant
-> > >   DPU plane state variables in those two functions to reflect they ar=
-e new
-> > >   states, like the patch 'drm: Rename plane->state variables in atomi=
-c
-> update
-> > >   and disable' recently landed in drm-misc-next.
-> > > * Replace drm_gem_fb_prepare_fb() with
-> > > drm_gem_plane_helper_prepare_fb() in
-> > >   patch 5/6, due to DRM core API change.
-> > > * Improve DPR burst length for GPU standard tile and 32bpp GPU super
-> tile in
-> > >   patch 5/6 to align with the latest version of internal HW documenti=
-on.
-> > >
-> > > v6->v7:
-> > > * Fix return value of dpu_get_irqs() if platform_get_irq() fails. (La=
-urentiu)
-> > > * Use the function array dpu_irq_handler[] to store individual DPU ir=
-q
-> > > handlers.
-> > >   (Laurentiu)
-> > > * Call get/put() hooks directly to get/put DPU fetchunits for DPU pla=
-ne
-> groups.
-> > >   (Laurentiu)
-> > > * Shorten the names of individual DPU irq handlers by using DPU unit
-> abbrev
-> > >   names to make writing dpu_irq_handler[] easier.
-> > > * Add Rob's R-b tag back on DPU dt-binding patch as change in v6 was
-> > > reviewed.
-> > >
-> > > v5->v6:
-> > > * Use graph schema in the DPU dt-binding.
-> > > * Do not use macros where possible in the DPU DRM driver. (Laurentiu)
-> > > * Break dpu_plane_atomic_check() into some smaller functions.
-> (Laurentiu)
-> > > * Address some minor comments from Laurentiu on the DPU DRM driver.
-> > > * Add dpu_crtc_err() helper marco in the DPU DRM driver to tell dmesg
-> > >   which CRTC generates error.
-> > > * Drop calling dev_set_drvdata() from dpu_drm_bind/unbind() in the
-> DPU
-> > > DRM
-> > >   driver as it is done in dpu_drm_probe().
-> > > * Some trivial tweaks.
-> > >
-> > > v4->v5:
-> > > * Rebase up onto the latest drm-misc-next branch and remove the hook
-> to
-> > >   drm_atomic_helper_legacy_gamma_set() from patch 5/6, because it
-> was
-> > > dropped
-> > >   by the newly landed commit 'drm: automatic legacy gamma support'.
-> > > * Remove a redundant blank line from dpu_plane_atomic_update() in
-> patch
-> > > 5/6.
-> > >
-> > > v3->v4:
-> > > * Improve compatible properties in DPU and prefetch engines' dt
-> bindings
-> > >   by using enum instead of oneOf+const.
-> > > * Add Rob's R-b tags on dt binding patches(patch 1/6, 2/6 and 3/6).
-> > > * Add Daniel's A-b tag on patch 4/6.
-> > >
-> > > v2->v3:
-> > > * Fix DPU DRM driver build warnings which are
-> > >   Reported-by: kernel test robot <lkp@intel.com>.
-> > > * Drop DPU DRM driver build dependency on IMX_SCU, as dummy SCU
-> > > functions have
-> > >   been added in header files by the patch 'firmware: imx: add dummy
-> > > functions'
-> > >   which has landed in linux-next/master branch.
-> > > * Add a missing blank line in include/drm/drm_atomic.h.
-> > >
-> > > v1->v2:
-> > > * Test this patch set also with i.MX8qm LVDS displays.
-> > > * Drop the device tree patches because we'll use new dt binding way t=
-o
-> > >   support i.MX8qm/qxp clocks.  This depends on a not-yet-landed patch
-> set
-> > >   to do basic conversions for the platforms.
-> > > * Fix dt binding yamllint warnings.
-> > > * Require bypass0 and bypass1 clocks for both i.MX8qxp and i.MX8qm in
-> > > DPU's
-> > >   dt binding documentation.
-> > > * Use new dt binding way to add clocks in the dt binding examples.
-> > > * Address several comments from Laurentiu on the DPU DRM patch.
-> > >
-> > >
-> > > Liu Ying (6):
-> > >   dt-bindings: display: imx: Add i.MX8qxp/qm DPU binding
-> > >   dt-bindings: display: imx: Add i.MX8qxp/qm PRG binding
-> > >   dt-bindings: display: imx: Add i.MX8qxp/qm DPR channel binding
-> > >   drm/atomic: Avoid unused-but-set-variable warning on
-> > >     for_each_old_plane_in_state
-> > >   drm/imx: Introduce i.MX8qm/qxp DPU DRM
-> > >   MAINTAINERS: add maintainer for i.MX8qxp DPU DRM driver
-> > >
-> > >  .../display/imx/fsl,imx8qxp-dprc.yaml         |  100 ++
-> > >  .../bindings/display/imx/fsl,imx8qxp-dpu.yaml |  387 ++++++
-> > >  .../bindings/display/imx/fsl,imx8qxp-prg.yaml |   60 +
-> > >  MAINTAINERS                                   |    9 +
-> > >  drivers/gpu/drm/imx/Kconfig                   |    1 +
-> > >  drivers/gpu/drm/imx/Makefile                  |    1 +
-> > >  drivers/gpu/drm/imx/dpu/Kconfig               |    9 +
-> > >  drivers/gpu/drm/imx/dpu/Makefile              |   10 +
-> > >  drivers/gpu/drm/imx/dpu/dpu-constframe.c      |  171 +++
-> > >  drivers/gpu/drm/imx/dpu/dpu-core.c            | 1044 +++++++++++++++=
-++
-> > >  drivers/gpu/drm/imx/dpu/dpu-crtc.c            |  969 +++++++++++++++
-> > >  drivers/gpu/drm/imx/dpu/dpu-crtc.h            |   72 ++
-> > >  drivers/gpu/drm/imx/dpu/dpu-disengcfg.c       |  117 ++
-> > >  drivers/gpu/drm/imx/dpu/dpu-dprc.c            |  715 +++++++++++
-> > >  drivers/gpu/drm/imx/dpu/dpu-dprc.h            |   40 +
-> > >  drivers/gpu/drm/imx/dpu/dpu-drv.c             |  294 +++++
-> > >  drivers/gpu/drm/imx/dpu/dpu-drv.h             |   28 +
-> > >  drivers/gpu/drm/imx/dpu/dpu-extdst.c          |  299 +++++
-> > >  drivers/gpu/drm/imx/dpu/dpu-fetchdecode.c     |  292 +++++
-> > >  drivers/gpu/drm/imx/dpu/dpu-fetcheco.c        |  224 ++++
-> > >  drivers/gpu/drm/imx/dpu/dpu-fetchlayer.c      |  152 +++
-> > >  drivers/gpu/drm/imx/dpu/dpu-fetchunit.c       |  610 ++++++++++
-> > >  drivers/gpu/drm/imx/dpu/dpu-fetchunit.h       |  195 +++
-> > >  drivers/gpu/drm/imx/dpu/dpu-fetchwarp.c       |  248 ++++
-> > >  drivers/gpu/drm/imx/dpu/dpu-framegen.c        |  395 +++++++
-> > >  drivers/gpu/drm/imx/dpu/dpu-gammacor.c        |  223 ++++
-> > >  drivers/gpu/drm/imx/dpu/dpu-hscaler.c         |  275 +++++
-> > >  drivers/gpu/drm/imx/dpu/dpu-kms.c             |  542 +++++++++
-> > >  drivers/gpu/drm/imx/dpu/dpu-kms.h             |   23 +
-> > >  drivers/gpu/drm/imx/dpu/dpu-layerblend.c      |  348 ++++++
-> > >  drivers/gpu/drm/imx/dpu/dpu-plane.c           |  804 +++++++++++++
-> > >  drivers/gpu/drm/imx/dpu/dpu-plane.h           |   59 +
-> > >  drivers/gpu/drm/imx/dpu/dpu-prg.c             |  433 +++++++
-> > >  drivers/gpu/drm/imx/dpu/dpu-prg.h             |   45 +
-> > >  drivers/gpu/drm/imx/dpu/dpu-prv.h             |  231 ++++
-> > >  drivers/gpu/drm/imx/dpu/dpu-tcon.c            |  250 ++++
-> > >  drivers/gpu/drm/imx/dpu/dpu-vscaler.c         |  308 +++++
-> > >  drivers/gpu/drm/imx/dpu/dpu.h                 |  385 ++++++
-> > >  include/drm/drm_atomic.h                      |    5 +-
-> > >  39 files changed, 10372 insertions(+), 1 deletion(-)
-> > >  create mode 100644
-> > > Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-dprc.yaml
-> > >  create mode 100644
-> > > Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-dpu.yaml
-> > >  create mode 100644
-> > > Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-prg.yaml
-> > >  create mode 100644 drivers/gpu/drm/imx/dpu/Kconfig
-> > >  create mode 100644 drivers/gpu/drm/imx/dpu/Makefile
-> > >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-constframe.c
-> > >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-core.c
-> > >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-crtc.c
-> > >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-crtc.h
-> > >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-disengcfg.c
-> > >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-dprc.c
-> > >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-dprc.h
-> > >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-drv.c
-> > >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-drv.h
-> > >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-extdst.c
-> > >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-fetchdecode.c
-> > >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-fetcheco.c
-> > >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-fetchlayer.c
-> > >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-fetchunit.c
-> > >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-fetchunit.h
-> > >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-fetchwarp.c
-> > >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-framegen.c
-> > >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-gammacor.c
-> > >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-hscaler.c
-> > >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-kms.c
-> > >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-kms.h
-> > >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-layerblend.c
-> > >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-plane.c
-> > >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-plane.h
-> > >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-prg.c
-> > >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-prg.h
-> > >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-prv.h
-> > >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-tcon.c
-> > >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-vscaler.c
-> > >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu.h
-> > >
-> > > --
-> > > 2.37.1
-> >
-> > This patch series has been submitted for a quite long period of time.
-> >
-> > Anything I can do to have it landed ?
->=20
-> I'm not sure why it fell through the cracks, but given that it's more
-> than 6 monthes old, please rebase and resend it.
-
-Ok, will do that, though "git am" still runs successfully for this series
-against the latest drm-misc-next.
-
-Regards,
-Liu Ying
-
->=20
-> Maxime
+PiBGcm9tOiBCYW9sdSBMdSA8YmFvbHUubHVAbGludXguaW50ZWwuY29tPg0KPiBTZW50OiBUdWVz
+ZGF5LCBBdWd1c3QgMjIsIDIwMjMgMjozNyBQTQ0KPiANCj4gT24gMjAyMy84LzIxIDE0OjMzLCBU
+aWFuLCBLZXZpbiB3cm90ZToNCj4gPj4gRnJvbTogQmFvbHUgTHUgPGJhb2x1Lmx1QGxpbnV4Lmlu
+dGVsLmNvbT4NCj4gPj4gU2VudDogTW9uZGF5LCBBdWd1c3QgMjEsIDIwMjMgMTo0NSBQTQ0KPiA+
+Pg0KPiA+PiBPbiAyMDIzLzgvMTggMTE6NTYsIFRpYW4sIEtldmluIHdyb3RlOg0KPiA+Pj4+IEZy
+b206IEx1IEJhb2x1IDxiYW9sdS5sdUBsaW51eC5pbnRlbC5jb20+DQo+ID4+Pj4gU2VudDogTW9u
+ZGF5LCBBdWd1c3QgMTQsIDIwMjMgOToxOCBBTQ0KPiA+Pj4+DQo+ID4+Pj4gVGhlIFBBU0lEIGlu
+dGVyZmFjZXMgaGF2ZSBhbHdheXMgc3VwcG9ydGVkIG9ubHkgc2luZ2xlLWRldmljZSBncm91cHMu
+DQo+ID4+Pj4gVGhpcyB3YXMgZmlyc3QgaW50cm9kdWNlZCBpbiBjb21taXQgMjZiMjVhMmI5OGU0
+NSAoImlvbW11OiBCaW5kDQo+ID4+IHByb2Nlc3MNCj4gPj4+PiBhZGRyZXNzIHNwYWNlcyB0byBk
+ZXZpY2VzIiksIGFuZCBoYXMgYmVlbiBrZXB0IGNvbnNpc3RlbnQgaW4NCj4gc3Vic2VxdWVudA0K
+PiA+Pj4+IGNvbW1pdHMuDQo+ID4+Pj4NCj4gPj4+PiBIb3dldmVyLCB0aGUgY29yZSBjb2RlIGRv
+ZXNuJ3QgZXhwbGljaXRseSBjaGVjayBmb3IgdGhpcyByZXF1aXJlbWVudA0KPiA+Pj4+IGFmdGVy
+IGNvbW1pdCAyMDEwMDdlZjcwN2E4ICgiUENJOiBFbmFibGUgUEFTSUQgb25seSB3aGVuIEFDUyBS
+UiAmDQo+IFVGDQo+ID4+Pj4gZW5hYmxlZCBvbiB1cHN0cmVhbSBwYXRoIiksIHdoaWNoIG1hZGUg
+dGhpcyByZXF1aXJlbWVudCBpbXBsaWNpdC4NCj4gPj4+Pg0KPiA+Pj4+IFJlc3RvcmUgdGhlIGNo
+ZWNrIHRvIG1ha2UgaXQgZXhwbGljaXQgdGhhdCB0aGUgUEFTSUQgaW50ZXJmYWNlcyBvbmx5DQo+
+ID4+Pj4gc3VwcG9ydCBkZXZpY2VzIGJlbG9uZ2luZyB0byBzaW5nbGUtZGV2aWNlIGdyb3Vwcy4N
+Cj4gPj4+Pg0KPiA+Pj4+IFNpZ25lZC1vZmYtYnk6IEx1IEJhb2x1IDxiYW9sdS5sdUBsaW51eC5p
+bnRlbC5jb20+DQo+ID4+Pj4gLS0tDQo+ID4+Pj4gICAgZHJpdmVycy9pb21tdS9pb21tdS5jIHwg
+NSArKysrKw0KPiA+Pj4+ICAgIDEgZmlsZSBjaGFuZ2VkLCA1IGluc2VydGlvbnMoKykNCj4gPj4+
+Pg0KPiA+Pj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2lvbW11L2lvbW11LmMgYi9kcml2ZXJzL2lv
+bW11L2lvbW11LmMNCj4gPj4+PiBpbmRleCA3MWI5YzQxZjJhOWUuLmYxZWJhNjBlNTczZiAxMDA2
+NDQNCj4gPj4+PiAtLS0gYS9kcml2ZXJzL2lvbW11L2lvbW11LmMNCj4gPj4+PiArKysgYi9kcml2
+ZXJzL2lvbW11L2lvbW11LmMNCj4gPj4+PiBAQCAtMzQwOCw2ICszNDA4LDExIEBAIGludCBpb21t
+dV9hdHRhY2hfZGV2aWNlX3Bhc2lkKHN0cnVjdA0KPiA+Pj4+IGlvbW11X2RvbWFpbiAqZG9tYWlu
+LA0KPiA+Pj4+ICAgIAkJcmV0dXJuIC1FTk9ERVY7DQo+ID4+Pj4NCj4gPj4+PiAgICAJbXV0ZXhf
+bG9jaygmZ3JvdXAtPm11dGV4KTsNCj4gPj4+PiArCWlmIChsaXN0X2NvdW50X25vZGVzKCZncm91
+cC0+ZGV2aWNlcykgIT0gMSkgew0KPiA+Pj4+ICsJCXJldCA9IC1FSU5WQUw7DQo+ID4+Pj4gKwkJ
+Z290byBvdXRfdW5sb2NrOw0KPiA+Pj4+ICsJfQ0KPiA+Pj4+ICsNCj4gPj4+DQo+ID4+PiBJIHdv
+bmRlciB3aGV0aGVyIHdlIHNob3VsZCBhbHNvIGJsb2NrIGFkZGluZyBuZXcgZGV2aWNlIHRvIHRo
+aXMNCj4gPj4+IGdyb3VwIG9uY2UgdGhlIHNpbmdsZS1kZXZpY2UgaGFzIHBhc2lkIGVuYWJsZWQu
+IE90aGVyd2lzZSB0aGUNCj4gPj4NCj4gPj4gVGhpcyBoYXMgYmVlbiBndWFyYW50ZWVkIGJ5IHBj
+aV9lbmFibGVfcGFzaWQoKToNCj4gPj4NCj4gPj4gICAgICAgICAgIGlmICghcGNpX2Fjc19wYXRo
+X2VuYWJsZWQocGRldiwgTlVMTCwgUENJX0FDU19SUiB8IFBDSV9BQ1NfVUYpKQ0KPiA+PiAgICAg
+ICAgICAgICAgICAgICByZXR1cm4gLUVJTlZBTDsNCj4gPj4NCj4gPg0KPiA+IHdlbGwgc2luY2Ug
+eW91IGFyZSBhZGRpbmcgZ2VuZXJpYyBjb3JlIGNoZWNrIHRoZW4gaXQncyBub3QgZ29vZCB0bw0K
+PiA+IHJlbHkgb24gdGhlIGZhY3Qgb2YgYSBzcGVjaWZpYyBidXMuLi4NCj4gDQo+IFdlIGF0dGVt
+cHRlZCB0byBkbyB0aGlzIGluIHRoZSBwYXRjaCBsaW5rZWQgYmVsb3cuDQo+IA0KPiBodHRwczov
+L2xvcmUua2VybmVsLm9yZy9saW51eC1pb21tdS8yMDIyMDcwNTA1MDcxMC4yODg3MjA0LTUtDQo+
+IGJhb2x1Lmx1QGxpbnV4LmludGVsLmNvbS8NCj4gDQo+IEFmdGVyIGxvbmcgZGlzY3Vzc2lvbiwg
+d2UgZGVjaWRlZCB0byBtb3ZlIGl0IHRvIHRoZSBwY2lfZW5hYmxlX3Bhc2lkKCkNCj4gaW50ZXJm
+YWNlLiBUaGUgbm9uLXN0YXRpYyBzaW5nbGUgZGV2aWNlIGdyb3VwIGlzIG9ubHkgcmVsZXZhbnQg
+dG8gUENJDQo+IGZhYnJpY3MgdGhhdCBzdXBwb3J0IGhvdC1wbHVnZ2luZyB3aXRob3V0IEFDUyBz
+dXBwb3J0IG9uIHRoZSB1cHN0cmVhbQ0KPiBwYXRoLg0KPiANCg0KSWYgdGhhdCdzIHRoZSBjYXNl
+IGJldHRlciBhZGQgYSBjb21tZW50IHRvIGluY2x1ZGUgdGhpcyBmYWN0LiBTbyANCmFub3RoZXIg
+b25lIGxvb2tpbmcgYXQgdGhpcyBjb2RlIHdvbid0IGZhbGwgaW50byB0aGUgc2FtZSBwdXp6bGUN
+CndvbmRlcmluZyB3aGF0IGFib3V0IGEgZ3JvdXAgYmVjb21pbmcgbm9uLXNpbmdsZXRvbiBhZnRl
+cg0KYWJvdmUgY2hlY2suIPCfmIoNCg==
