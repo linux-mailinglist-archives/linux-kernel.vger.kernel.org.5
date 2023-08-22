@@ -2,116 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D80A4784B38
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 22:15:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A9D5784B3D
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 22:17:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230450AbjHVUPe convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 22 Aug 2023 16:15:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46890 "EHLO
+        id S230177AbjHVURV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 16:17:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230435AbjHVUPd (ORCPT
+        with ESMTP id S229878AbjHVURU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 16:15:33 -0400
-Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8790CE8;
-        Tue, 22 Aug 2023 13:15:31 -0700 (PDT)
-Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-569612f9d89so306767a12.0;
-        Tue, 22 Aug 2023 13:15:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692735331; x=1693340131;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=m1F/YuUxdcKJr7smXX2ZZ2vuPoNRmrhMlAHFUit9bp0=;
-        b=PtlEtHBf1yxTsO7Rr4SSf8/WDIfspVTLvux3Zv8lwDdapvziiiakfaJlvDVu4UuDYC
-         xSLLDtboaVE+ZOrOE90nAx6aXL1koZ4KGSjwtYxEXZJeMUB2VCPlnx8wKjLiy7QbNEcL
-         hRzfweuo4HClq0Fa3nmdPLRN6smjTb+qNmDy5XNidDXenpGV+Zzz6dooN2EqPaM2CtpQ
-         FYjDM1SYGc188foKDoJ73Y7i0UVdIPEHDbxnffFlTb43fr9xZ5zbWUcY4ie1rfpXinKm
-         7MckevB41gYhGQE5U+/KSN9Tj9lDLvPMR4GoX3REhYIiYVmJv8vwAoJA8hrl+bGEpcjj
-         jr1A==
-X-Gm-Message-State: AOJu0YyoSswL1U59Ea++V4+lX1oMU5gJnqwzy4oG3qdBgPSslrfG/cee
-        uiuZA/+A+so+JU9MOE/sJh5YLPsQ70kGBjMfaVU=
-X-Google-Smtp-Source: AGHT+IFmBDkLRRJmA2VZ8BjkFl4TGw+aAVWGGca1M5OjSqJ2HlQnrpKtMtsmEIwSvaYIqleolv5msCH0uoO+D3s9G8A=
-X-Received: by 2002:a17:90a:680e:b0:26d:2635:5a7c with SMTP id
- p14-20020a17090a680e00b0026d26355a7cmr9661643pjj.2.1692735331184; Tue, 22 Aug
- 2023 13:15:31 -0700 (PDT)
+        Tue, 22 Aug 2023 16:17:20 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58D31CC;
+        Tue, 22 Aug 2023 13:17:19 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B6D8B63CE0;
+        Tue, 22 Aug 2023 20:17:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08250C433C7;
+        Tue, 22 Aug 2023 20:17:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692735438;
+        bh=QdTTuQ+Mug3wHUDRHlafLoo8YB7CrkNNHVFAfFK1fWs=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=A25SwGi5HWqRbBZutRVRGVmfML+PS/yJFx4jXa6520tJU1uwK95Ffppwy2i5WiKiv
+         v3J+HSJN0eyaazJRietKvypvI3PzVq/odPmXjF3RQYvxOprHcXai4Ofo9M7b8N9ttz
+         akFjpPXlRIjZDECWg82v8UxpboUlyjfasfACpKDllLh/boOznPgTDMRM3QfvLTWvlQ
+         /ZPeISUawzQKZpd5jPhd7Gav+bQiPBgz9VF+dClu1LBnpQ0XMQSHcrI/qYAeO5dAl+
+         ybYqevHnqZcV7oaCtOjXDg0Um/zQdpzlsPCYT/yJ6kxxdNS6reSEX+bG/pkAgd24Uu
+         q9J1h798v9UEw==
+Message-ID: <17bd83d833b59fd4f64eec433589fa55.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20230816145741.1472721-1-abel.vesa@linaro.org>
-In-Reply-To: <20230816145741.1472721-1-abel.vesa@linaro.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 22 Aug 2023 22:15:19 +0200
-Message-ID: <CAJZ5v0iCap-HgejaXPi4h_CROWJXBSRDQZ57Z7Tgi67FeDXnAw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/6] PM: domains: Add control for switching back and
- forth to HW control
-To:     Abel Vesa <abel.vesa@linaro.org>
-Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Mike Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Taniya Das <tdas@qti.qualcomm.com>, linux-pm@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20230811161446.636253-2-cristian.marussi@arm.com>
+References: <20230811161446.636253-1-cristian.marussi@arm.com> <20230811161446.636253-2-cristian.marussi@arm.com>
+Subject: Re: [PATCH 1/6] firmware: arm_scmi: Simplify enable/disable Clock operations
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     sudeep.holla@arm.com, james.quinlan@broadcom.com,
+        f.fainelli@gmail.com, vincent.guittot@linaro.org,
+        etienne.carriere@linaro.org, peng.fan@oss.nxp.com,
+        chuck.cannon@nxp.com, souvik.chakravarty@arm.com,
+        nicola.mazzucato@arm.com,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-clk@vger.kernel.org
+To:     Cristian Marussi <cristian.marussi@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Date:   Tue, 22 Aug 2023 13:17:15 -0700
+User-Agent: alot/0.10
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023 at 4:57 PM Abel Vesa <abel.vesa@linaro.org> wrote:
->
-> The v1 (and the back story) can be found here:
-> https://lore.kernel.org/all/20230628105652.1670316-1-abel.vesa@linaro.org/
->
-> Changes since v1:
->  * patch for printing domain HW-managed mode in the summary
->  * patch that adds one consumer (venus)
->  * patch for gdsc with new (different) flag
->  * patch for videocc GDSC provider to update flags
->
-> Abel Vesa (1):
->   PM: domains: Add the domain HW-managed mode to the summary
->
-> Jagadeesh Kona (4):
->   clk: qcom: gdsc: Add set and get hwmode callbacks to switch GDSC mode
->   clk: qcom: Use HW_CTRL_TRIGGER flag to switch video GDSC to HW mode
->   clk: qcom: videocc-sm8550: Use HW_CTRL_TRIGGER instead of HW_CTRL for
->     GDSC
->   venus: pm_helpers: Use dev_pm_genpd_set_hwmode to switch GDSC mode
->
-> Ulf Hansson (1):
->   PM: domains: Allow devices attached to genpd to be managed by HW
->
->  drivers/base/power/domain.c                   | 84 ++++++++++++++++++-
->  drivers/clk/qcom/gdsc.c                       | 32 +++++++
->  drivers/clk/qcom/gdsc.h                       |  1 +
->  drivers/clk/qcom/videocc-sc7180.c             |  2 +-
->  drivers/clk/qcom/videocc-sc7280.c             |  2 +-
->  drivers/clk/qcom/videocc-sdm845.c             |  4 +-
->  drivers/clk/qcom/videocc-sm8250.c             |  4 +-
->  drivers/clk/qcom/videocc-sm8550.c             |  4 +-
->  drivers/media/platform/qcom/venus/core.c      |  4 +
->  drivers/media/platform/qcom/venus/core.h      |  1 +
->  .../media/platform/qcom/venus/pm_helpers.c    | 47 +++++------
->  include/linux/pm_domain.h                     | 17 ++++
->  12 files changed, 165 insertions(+), 37 deletions(-)
->
-> --
+Quoting Cristian Marussi (2023-08-11 09:14:41)
+> Add a param to Clock enable/disable operation to ask for atomic operation
+> and remove _atomic version of such operations.
 
-The second patch requires an ACK from Ulf anyway and with his ACK the
-whole series can be routed via arm-soc as far as I'm concerned.
+Why?
 
-I have nothing to add here.
+>=20
+> No functional change.
+>=20
+> CC: Michael Turquette <mturquette@baylibre.com>
+> CC: Stephen Boyd <sboyd@kernel.org>
+> CC: linux-clk@vger.kernel.org
+> Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+> ---
+>  drivers/clk/clk-scmi.c            |  8 ++++----
+>  drivers/firmware/arm_scmi/clock.c | 24 ++++++------------------
+>  include/linux/scmi_protocol.h     |  9 ++++-----
+>  3 files changed, 14 insertions(+), 27 deletions(-)
+>=20
+> diff --git a/drivers/clk/clk-scmi.c b/drivers/clk/clk-scmi.c
+> index 2c7a830ce308..ff003083e592 100644
+> --- a/drivers/clk/clk-scmi.c
+> +++ b/drivers/clk/clk-scmi.c
+> @@ -78,28 +78,28 @@ static int scmi_clk_enable(struct clk_hw *hw)
+>  {
+>         struct scmi_clk *clk =3D to_scmi_clk(hw);
+> =20
+> -       return scmi_proto_clk_ops->enable(clk->ph, clk->id);
+> +       return scmi_proto_clk_ops->enable(clk->ph, clk->id, false);
+>  }
+> =20
+>  static void scmi_clk_disable(struct clk_hw *hw)
+>  {
+>         struct scmi_clk *clk =3D to_scmi_clk(hw);
+> =20
+> -       scmi_proto_clk_ops->disable(clk->ph, clk->id);
+> +       scmi_proto_clk_ops->disable(clk->ph, clk->id, false);
 
-Thanks!
+I enjoyed how it was before because I don't know what 'false' means
+without looking at the ops now.
+
+>  }
+> =20
+>  static int scmi_clk_atomic_enable(struct clk_hw *hw)
+>  {
+>         struct scmi_clk *clk =3D to_scmi_clk(hw);
+> =20
+> -       return scmi_proto_clk_ops->enable_atomic(clk->ph, clk->id);
+> +       return scmi_proto_clk_ops->enable(clk->ph, clk->id, true);
+>  }
+> =20
+>  static void scmi_clk_atomic_disable(struct clk_hw *hw)
+>  {
+>         struct scmi_clk *clk =3D to_scmi_clk(hw);
+> =20
+> -       scmi_proto_clk_ops->disable_atomic(clk->ph, clk->id);
+> +       scmi_proto_clk_ops->disable(clk->ph, clk->id, true);
+>  }
+> =20
+>  /*
