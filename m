@@ -2,241 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 928997847A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 18:32:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FB107847A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 18:32:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237827AbjHVQcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 12:32:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44734 "EHLO
+        id S237822AbjHVQcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 12:32:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233464AbjHVQcU (ORCPT
+        with ESMTP id S237810AbjHVQcJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 12:32:20 -0400
-Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23AFACE6;
-        Tue, 22 Aug 2023 09:32:18 -0700 (PDT)
-Received: from local
-        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-         (Exim 4.96)
-        (envelope-from <daniel@makrotopia.org>)
-        id 1qYUIb-0000HY-2d;
-        Tue, 22 Aug 2023 16:32:10 +0000
-Date:   Tue, 22 Aug 2023 17:32:03 +0100
-From:   Daniel Golle <daniel@makrotopia.org>
-To:     Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Daniel Golle <daniel@makrotopia.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH net-next v3 2/4] net: ethernet: mtk_eth_soc: add reset bits
- for MT7988
-Message-ID: <89b6c38380e7a3800c1362aa7575600717bc7543.1692721443.git.daniel@makrotopia.org>
-References: <cover.1692721443.git.daniel@makrotopia.org>
+        Tue, 22 Aug 2023 12:32:09 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AB7E137
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 09:32:08 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-99c4923195dso607498166b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 09:32:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692721926; x=1693326726;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3uQSylp0y7KOudR5yNt2H8UCOVpvtj04yDey4znHRLA=;
+        b=e5CZu2+RpDcrjPEl8gmUFILhTTitUimNfzkLuXEk57VQEAR2kqg4fzp0GPXAj6oabp
+         y/RseqyXDzppUaEiTL85pFDe1WvN3QJYyOeMFpclFRQ/AkswADsSbfon5WGJ33/DT18o
+         KtT5l2KhvnfzIeAdB76PQW/Ov67hq+hLXRfBGw6HvcvdHYAYUVzlXBFPQtE3tso33cjb
+         tsTACVCo49NMTag1NXI9lSVdEud/QGTchIkcgqlHbMsvvLlIAgDl/iLVO/BPrY8zjLfR
+         GwEBlkmoJEdJ9K7LE4qGL/ApbUeXqvu65DKCENt2U+QuaxoILHikD32g8j3t1mGm4Btz
+         eCCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692721926; x=1693326726;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3uQSylp0y7KOudR5yNt2H8UCOVpvtj04yDey4znHRLA=;
+        b=TmAUIb481vbbfBlWtLDmi1c+hW5pXw0DPRKyOEDdJXBSgj7ysmFyOXhmxS346Os016
+         sgFEBf4aAiIzVeeZ42t0Ytx2UEAOnvzknGqyHjlT+KPBEgwu6TW3I0nbhT3DLHDdkQBQ
+         /zmZ5nIOGiawwQ/LTzjyRUb/SyiGIUeHZAADVgjyHS0UzBTGRtFMVCHCw4p3bvDZ329g
+         w3xgYHIe+FY6axw2ShQvwN397EKlfv14JrNXnPSTAfxqjZNQy1R7KJnh0Ero9RCG5ie5
+         9aNCaGFmWcQ8fPz8mSBMVYc3SD7vX32qSLbMACtirhsUnRMktSLMCq8HIwZS0lJkuLJl
+         nVjA==
+X-Gm-Message-State: AOJu0Yzyojrx3HrHCrx0pXLjuCPqepVEFugmH/Fm9lJmfkLhk4zjIohU
+        3tNW6p7uafh7J/4PtCsq5L6JPg==
+X-Google-Smtp-Source: AGHT+IHY8roXOKlErN1u6cAk1xEiMD1JJ8eVAuVfBioslGRRaPmLvzi0W/JaIoSiX7eCI6hpEj0Ksg==
+X-Received: by 2002:a17:906:cc16:b0:9a1:870e:cc9d with SMTP id ml22-20020a170906cc1600b009a1870ecc9dmr6733431ejb.18.1692721926631;
+        Tue, 22 Aug 2023 09:32:06 -0700 (PDT)
+Received: from [192.168.0.22] ([77.252.47.198])
+        by smtp.gmail.com with ESMTPSA id x5-20020a170906148500b0098e42bef736sm8505501ejc.176.2023.08.22.09.32.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Aug 2023 09:32:06 -0700 (PDT)
+Message-ID: <d2a6060a-c8a0-51c7-f621-1bed2c3074b4@linaro.org>
+Date:   Tue, 22 Aug 2023 18:32:04 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1692721443.git.daniel@makrotopia.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH V10 1/4] dt-bindings: clock: document Amlogic S4 SoC PLL
+ clock controller
+Content-Language: en-US
+To:     Yu Tu <yu.tu@amlogic.com>, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     kelvin.zhang@amlogic.com, qi.duan@amlogic.com
+References: <20230822082750.27633-1-yu.tu@amlogic.com>
+ <20230822082750.27633-2-yu.tu@amlogic.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230822082750.27633-2-yu.tu@amlogic.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add bits needed to reset the frame engine on MT7988.
+On 22/08/2023 10:27, Yu Tu wrote:
+> Add the S4 PLL clock controller dt-bindings in the S4 SoC family.
+> 
+> Signed-off-by: Yu Tu <yu.tu@amlogic.com>
 
-Fixes: 445eb6448ed3 ("net: ethernet: mtk_eth_soc: add basic support for MT7988 SoC")
-Signed-off-by: Daniel Golle <daniel@makrotopia.org>
----
- drivers/net/ethernet/mediatek/mtk_eth_soc.c | 76 +++++++++++++++------
- drivers/net/ethernet/mediatek/mtk_eth_soc.h | 16 +++--
- 2 files changed, 68 insertions(+), 24 deletions(-)
+Lovely. I sent youa  friendly reminder at v8 which turns our you
+ignored. You keep ignoring, I will start ignoring as well from now on.
 
-diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-index fe05c90202699..2482f47313085 100644
---- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-+++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-@@ -3613,19 +3613,34 @@ static void mtk_hw_reset(struct mtk_eth *eth)
- {
- 	u32 val;
- 
--	if (mtk_is_netsys_v2_or_greater(eth)) {
-+	if (mtk_is_netsys_v2_or_greater(eth))
- 		regmap_write(eth->ethsys, ETHSYS_FE_RST_CHK_IDLE_EN, 0);
-+
-+	if (mtk_is_netsys_v3_or_greater(eth)) {
-+		val = RSTCTRL_PPE0_V3;
-+
-+		if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE1))
-+			val |= RSTCTRL_PPE1_V3;
-+
-+		if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE2))
-+			val |= RSTCTRL_PPE2;
-+
-+		val |= RSTCTRL_WDMA0 | RSTCTRL_WDMA1 | RSTCTRL_WDMA2;
-+	} else if (mtk_is_netsys_v2_or_greater(eth)) {
- 		val = RSTCTRL_PPE0_V2;
-+
-+		if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE1))
-+			val |= RSTCTRL_PPE1;
- 	} else {
- 		val = RSTCTRL_PPE0;
- 	}
- 
--	if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE1))
--		val |= RSTCTRL_PPE1;
--
- 	ethsys_reset(eth, RSTCTRL_ETH | RSTCTRL_FE | val);
- 
--	if (mtk_is_netsys_v2_or_greater(eth))
-+	if (mtk_is_netsys_v3_or_greater(eth))
-+		regmap_write(eth->ethsys, ETHSYS_FE_RST_CHK_IDLE_EN,
-+			     0x6f8ff);
-+	else if (mtk_is_netsys_v2_or_greater(eth))
- 		regmap_write(eth->ethsys, ETHSYS_FE_RST_CHK_IDLE_EN,
- 			     0x3ffffff);
- }
-@@ -3651,13 +3666,21 @@ static void mtk_hw_warm_reset(struct mtk_eth *eth)
- 		return;
- 	}
- 
--	if (mtk_is_netsys_v2_or_greater(eth))
-+	if (mtk_is_netsys_v3_or_greater(eth)) {
-+		rst_mask = RSTCTRL_ETH | RSTCTRL_PPE0_V3;
-+		if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE1))
-+			rst_mask |= RSTCTRL_PPE1_V3;
-+		if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE2))
-+			rst_mask |= RSTCTRL_PPE2;
-+
-+		rst_mask |= RSTCTRL_WDMA0 | RSTCTRL_WDMA1 | RSTCTRL_WDMA2;
-+	} else if (mtk_is_netsys_v2_or_greater(eth)) {
- 		rst_mask = RSTCTRL_ETH | RSTCTRL_PPE0_V2;
--	else
-+		if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE1))
-+			rst_mask |= RSTCTRL_PPE1;
-+	} else {
- 		rst_mask = RSTCTRL_ETH | RSTCTRL_PPE0;
--
--	if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE1))
--		rst_mask |= RSTCTRL_PPE1;
-+	}
- 
- 	regmap_update_bits(eth->ethsys, ETHSYS_RSTCTRL, rst_mask, rst_mask);
- 
-@@ -4009,11 +4032,17 @@ static void mtk_prepare_for_reset(struct mtk_eth *eth)
- 	u32 val;
- 	int i;
- 
--	/* disabe FE P3 and P4 */
--	val = mtk_r32(eth, MTK_FE_GLO_CFG) | MTK_FE_LINK_DOWN_P3;
--	if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE1))
--		val |= MTK_FE_LINK_DOWN_P4;
--	mtk_w32(eth, val, MTK_FE_GLO_CFG);
-+	/* set FE PPE ports link down */
-+	for (i = MTK_GMAC1_ID;
-+	     i <= (mtk_is_netsys_v3_or_greater(eth) ? MTK_GMAC3_ID : MTK_GMAC2_ID);
-+	     i += 2) {
-+		val = mtk_r32(eth, MTK_FE_GLO_CFG(i)) | MTK_FE_LINK_DOWN_P(PSE_PPE0_PORT);
-+		if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE1))
-+			val |= MTK_FE_LINK_DOWN_P(PSE_PPE1_PORT);
-+		if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE2))
-+			val |= MTK_FE_LINK_DOWN_P(PSE_PPE2_PORT);
-+		mtk_w32(eth, val, MTK_FE_GLO_CFG(i));
-+	}
- 
- 	/* adjust PPE configurations to prepare for reset */
- 	for (i = 0; i < ARRAY_SIZE(eth->ppe); i++)
-@@ -4074,11 +4103,18 @@ static void mtk_pending_work(struct work_struct *work)
- 		}
- 	}
- 
--	/* enabe FE P3 and P4 */
--	val = mtk_r32(eth, MTK_FE_GLO_CFG) & ~MTK_FE_LINK_DOWN_P3;
--	if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE1))
--		val &= ~MTK_FE_LINK_DOWN_P4;
--	mtk_w32(eth, val, MTK_FE_GLO_CFG);
-+	/* set FE PPE ports link up */
-+	for (i = MTK_GMAC1_ID;
-+	     i <= (mtk_is_netsys_v3_or_greater(eth) ? MTK_GMAC3_ID : MTK_GMAC2_ID);
-+	     i += 2) {
-+		val = mtk_r32(eth, MTK_FE_GLO_CFG(i)) & ~MTK_FE_LINK_DOWN_P(PSE_PPE0_PORT);
-+		if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE1))
-+			val &= ~MTK_FE_LINK_DOWN_P(PSE_PPE1_PORT);
-+		if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE2))
-+			val &= ~MTK_FE_LINK_DOWN_P(PSE_PPE2_PORT);
-+
-+		mtk_w32(eth, val, MTK_FE_GLO_CFG(i));
-+	}
- 
- 	clear_bit(MTK_RESETTING, &eth->state);
- 
-diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.h b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-index 8d2d35b322351..cf9381a3d68b7 100644
---- a/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-+++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-@@ -76,9 +76,8 @@
- #define	MTK_HW_LRO_SDL_REMAIN_ROOM	1522
- 
- /* Frame Engine Global Configuration */
--#define MTK_FE_GLO_CFG		0x00
--#define MTK_FE_LINK_DOWN_P3	BIT(11)
--#define MTK_FE_LINK_DOWN_P4	BIT(12)
-+#define MTK_FE_GLO_CFG(x)	(((x) == MTK_GMAC3_ID) ? 0x24 : 0x00)
-+#define MTK_FE_LINK_DOWN_P(x)	BIT(((x) + 8) % 16)
- 
- /* Frame Engine Global Reset Register */
- #define MTK_RST_GL		0x04
-@@ -522,9 +521,15 @@
- /* ethernet reset control register */
- #define ETHSYS_RSTCTRL			0x34
- #define RSTCTRL_FE			BIT(6)
-+#define RSTCTRL_WDMA0			BIT(24)
-+#define RSTCTRL_WDMA1			BIT(25)
-+#define RSTCTRL_WDMA2			BIT(26)
- #define RSTCTRL_PPE0			BIT(31)
- #define RSTCTRL_PPE0_V2			BIT(30)
- #define RSTCTRL_PPE1			BIT(31)
-+#define RSTCTRL_PPE0_V3			BIT(29)
-+#define RSTCTRL_PPE1_V3			BIT(30)
-+#define RSTCTRL_PPE2			BIT(31)
- #define RSTCTRL_ETH			BIT(23)
- 
- /* ethernet reset check idle register */
-@@ -931,6 +936,7 @@ enum mkt_eth_capabilities {
- 	MTK_QDMA_BIT,
- 	MTK_SOC_MT7628_BIT,
- 	MTK_RSTCTRL_PPE1_BIT,
-+	MTK_RSTCTRL_PPE2_BIT,
- 	MTK_U3_COPHY_V2_BIT,
- 
- 	/* MUX BITS*/
-@@ -965,6 +971,7 @@ enum mkt_eth_capabilities {
- #define MTK_QDMA		BIT_ULL(MTK_QDMA_BIT)
- #define MTK_SOC_MT7628		BIT_ULL(MTK_SOC_MT7628_BIT)
- #define MTK_RSTCTRL_PPE1	BIT_ULL(MTK_RSTCTRL_PPE1_BIT)
-+#define MTK_RSTCTRL_PPE2	BIT_ULL(MTK_RSTCTRL_PPE2_BIT)
- #define MTK_U3_COPHY_V2		BIT_ULL(MTK_U3_COPHY_V2_BIT)
- 
- #define MTK_ETH_MUX_GDM1_TO_GMAC1_ESW		\
-@@ -1047,7 +1054,8 @@ enum mkt_eth_capabilities {
- 		      MTK_MUX_GMAC12_TO_GEPHY_SGMII | MTK_QDMA | \
- 		      MTK_RSTCTRL_PPE1)
- 
--#define MT7988_CAPS  (MTK_GDM1_ESW | MTK_QDMA | MTK_RSTCTRL_PPE1)
-+#define MT7988_CAPS  (MTK_GDM1_ESW | MTK_QDMA | MTK_RSTCTRL_PPE1 | \
-+		      MTK_RSTCTRL_PPE2)
- 
- struct mtk_tx_dma_desc_info {
- 	dma_addr_t	addr;
--- 
-2.41.0
+Best regards,
+Krzysztof
+
