@@ -2,113 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B07C783A0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 08:36:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12377783A14
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 08:37:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233064AbjHVGf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 02:35:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51750 "EHLO
+        id S233075AbjHVGhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 02:37:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231928AbjHVGf5 (ORCPT
+        with ESMTP id S231928AbjHVGg4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 02:35:57 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A693FBC;
-        Mon, 21 Aug 2023 23:35:51 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EE0F12F4;
-        Mon, 21 Aug 2023 23:36:31 -0700 (PDT)
-Received: from FVFF77S0Q05N (unknown [10.57.3.221])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5A2D23F740;
-        Mon, 21 Aug 2023 23:35:48 -0700 (PDT)
-Date:   Tue, 22 Aug 2023 07:35:41 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Marc Zyngier <maz@kernel.org>,
-        linux-perf-users@vger.kernel.org, ito-yuichi@fujitsu.com,
-        Chen-Yu Tsai <wens@csie.org>, Ard Biesheuvel <ardb@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-arm-kernel@lists.infradead.org,
-        kgdb-bugreport@lists.sourceforge.net,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Lecopzer Chen <lecopzer.chen@mediatek.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v9 5/7] arm64: ipi_debug: Add support for backtrace using
- the debug IPI
-Message-ID: <ZORXPXbi3f8tUY-N@FVFF77S0Q05N>
-References: <20230601213440.2488667-1-dianders@chromium.org>
- <20230601143109.v9.5.I65981105e1f62550b0316625dd1e599deaf9e1aa@changeid>
- <ZNDGMJW01avOMShn@FVFF77S0Q05N.cambridge.arm.com>
- <CAD=FV=Wz4Y836__Fo=Va8ek9BLEoTTbYx_zycBuVony37eOGVg@mail.gmail.com>
+        Tue, 22 Aug 2023 02:36:56 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8D25BC;
+        Mon, 21 Aug 2023 23:36:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692686210; x=1724222210;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=afCoa/ZZo8JlXd4rmTwsUfx9qsQ2KBQvigqx0/qmV5A=;
+  b=Hk2Zrynpe1injH8WsX1j9NKoM51q+fiWqySBUuHwnyo6zpyDDLE/QxGS
+   PT9c5qzTIa9HmQDRHYPZxvnQZPbnn2qH36Cm5RXaXDFH9/6cUMQYJqKOy
+   g/Bl7+uRS03TVUkYHJl/Ir3YF6ktu7ApYlNVJcVxadYx2xW5VQzzBrnLv
+   RI1APmzYwILIAdM5I64y1xC2YOsfutMQX8mJe7GFa7WWkhWI4Iyq6MK+g
+   XRYCVLnxBDGX7woziz4nyVEbcV+L7QqcZ2kOmWL4sll2fZjqc80c+OroK
+   fm2LIkAaNafuCNPHOCfhSk6f4xZMyNpBALFgPpYGT6Qzc+hrfCulMcEaT
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="404795979"
+X-IronPort-AV: E=Sophos;i="6.01,192,1684825200"; 
+   d="scan'208";a="404795979"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2023 23:36:50 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="801540554"
+X-IronPort-AV: E=Sophos;i="6.01,192,1684825200"; 
+   d="scan'208";a="801540554"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.252.189.107]) ([10.252.189.107])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2023 23:36:44 -0700
+Message-ID: <93811e0c-ff04-366d-493e-7186e4588359@linux.intel.com>
+Date:   Tue, 22 Aug 2023 14:36:40 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAD=FV=Wz4Y836__Fo=Va8ek9BLEoTTbYx_zycBuVony37eOGVg@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Cc:     baolu.lu@linux.intel.com, "Liu, Yi L" <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/3] iommu: Make single-device group for PASID explicit
+To:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Nicolin Chen <nicolinc@nvidia.com>
+References: <20230814011759.102089-1-baolu.lu@linux.intel.com>
+ <20230814011759.102089-2-baolu.lu@linux.intel.com>
+ <BN9PR11MB5276E3C3D99C2DFA963805C98C1BA@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <51dfc143-aafd-fea2-26fe-e2e9025fcd21@linux.intel.com>
+ <BN9PR11MB5276EBE5788713FBA99332F88C1EA@BN9PR11MB5276.namprd11.prod.outlook.com>
+Content-Language: en-US
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <BN9PR11MB5276EBE5788713FBA99332F88C1EA@BN9PR11MB5276.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 21, 2023 at 05:06:50PM -0700, Doug Anderson wrote:
-> On Mon, Aug 7, 2023 at 3:23 AM Mark Rutland <mark.rutland@arm.com> wrote:
-> > On Thu, Jun 01, 2023 at 02:31:49PM -0700, Douglas Anderson wrote:
-> > > From: Sumit Garg <sumit.garg@linaro.org>
-
-> > >  static irqreturn_t ipi_debug_handler(int irq, void *data)
-> > >  {
-> > > -     /* nop, NMI handlers for special features can be added here. */
-> > > +     irqreturn_t ret = IRQ_NONE;
-> > > +
-> > > +     /*
-> > > +      * NOTE: Just like in arch_trigger_cpumask_backtrace(), we're calling
-> > > +      * a function with "nmi_" in the name but it works fine even if we
-> > > +      * are using a regulaor IPI.
-> > > +      */
-> > > +     if (nmi_cpu_backtrace(get_irq_regs()))
-> > > +             ret = IRQ_HANDLED;
-> > >
-> >
-> > Does this need the printk_deferred_{enter,exit}() that 32-bit arm has?
+On 2023/8/21 14:33, Tian, Kevin wrote:
+>> From: Baolu Lu <baolu.lu@linux.intel.com>
+>> Sent: Monday, August 21, 2023 1:45 PM
+>>
+>> On 2023/8/18 11:56, Tian, Kevin wrote:
+>>>> From: Lu Baolu <baolu.lu@linux.intel.com>
+>>>> Sent: Monday, August 14, 2023 9:18 AM
+>>>>
+>>>> The PASID interfaces have always supported only single-device groups.
+>>>> This was first introduced in commit 26b25a2b98e45 ("iommu: Bind
+>> process
+>>>> address spaces to devices"), and has been kept consistent in subsequent
+>>>> commits.
+>>>>
+>>>> However, the core code doesn't explicitly check for this requirement
+>>>> after commit 201007ef707a8 ("PCI: Enable PASID only when ACS RR & UF
+>>>> enabled on upstream path"), which made this requirement implicit.
+>>>>
+>>>> Restore the check to make it explicit that the PASID interfaces only
+>>>> support devices belonging to single-device groups.
+>>>>
+>>>> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+>>>> ---
+>>>>    drivers/iommu/iommu.c | 5 +++++
+>>>>    1 file changed, 5 insertions(+)
+>>>>
+>>>> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+>>>> index 71b9c41f2a9e..f1eba60e573f 100644
+>>>> --- a/drivers/iommu/iommu.c
+>>>> +++ b/drivers/iommu/iommu.c
+>>>> @@ -3408,6 +3408,11 @@ int iommu_attach_device_pasid(struct
+>>>> iommu_domain *domain,
+>>>>    		return -ENODEV;
+>>>>
+>>>>    	mutex_lock(&group->mutex);
+>>>> +	if (list_count_nodes(&group->devices) != 1) {
+>>>> +		ret = -EINVAL;
+>>>> +		goto out_unlock;
+>>>> +	}
+>>>> +
+>>>
+>>> I wonder whether we should also block adding new device to this
+>>> group once the single-device has pasid enabled. Otherwise the
+>>
+>> This has been guaranteed by pci_enable_pasid():
+>>
+>>           if (!pci_acs_path_enabled(pdev, NULL, PCI_ACS_RR | PCI_ACS_UF))
+>>                   return -EINVAL;
+>>
 > 
-> I don't _think_ so, but I also don't _think_ it's needed for arm32.
-> ;-) Let me explain my logic and you can tell me if it sounds right to
-> you.
-> 
-> If we're doing the backtrace in pseudo-NMI context then we definitely
-> don't need it. Specifically, the printk_deferred_{enter,exit}() just
-> manages the per-cpu "printk_context" value. That value doesn't matter
-> if "in_nmi()" returns true.
-> 
-> If we're _not_ doing the backtrace in pseudo-NMI context then I think
-> we also don't need it. After all, if we're not in pseudo-NMI context
-> then it's perfectly fine to print, right?
-> 
-> While it's hard to know 100% for sure, my best guess is that in arm
-> this might have helped prevent stack traces from getting interspersed
-> among one another. I guess this is no longer needed as of commit
-> 55d6af1d6688 ("lib/nmi_backtrace: explicitly serialize banner and
-> regs")? In any case, when I tested this earlier things seemed to
-> printout fine without it...
+> well since you are adding generic core check then it's not good to
+> rely on the fact of a specific bus...
 
-Thanks for that explanation; that makes sense to me! Looking around a bit I see
-that x86 doesn't bother either.
+We attempted to do this in the patch linked below.
 
-> That being said, it wouldn't hurt to include it here and I'll do it if you
-> want.
+https://lore.kernel.org/linux-iommu/20220705050710.2887204-5-baolu.lu@linux.intel.com/
 
-No need -- I'm happy without it.
+After long discussion, we decided to move it to the pci_enable_pasid()
+interface. The non-static single device group is only relevant to PCI
+fabrics that support hot-plugging without ACS support on the upstream
+path.
 
-Thanks,
-Mark.
+Best regards,
+baolu
