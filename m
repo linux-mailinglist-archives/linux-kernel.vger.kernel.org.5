@@ -2,59 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2C18783FA9
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 13:38:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC5F1783FD7
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 13:45:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235332AbjHVLig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 07:38:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49390 "EHLO
+        id S235162AbjHVLp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 07:45:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235288AbjHVLiR (ORCPT
+        with ESMTP id S235173AbjHVLp4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 07:38:17 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56DA0E6C;
-        Tue, 22 Aug 2023 04:37:45 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E38C36538F;
-        Tue, 22 Aug 2023 11:37:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18E44C433CB;
-        Tue, 22 Aug 2023 11:37:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692704259;
-        bh=28dopH/9gA+1tqzVakq4FVJFAhk5Y4JfAi/XUlsF/f4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YZJiZW76yiG6O11M/20YrhCJtBh65jOcAYC8EyR/iX2GDRTQp2DiYs5jGP7+RgY5y
-         BEC0tQ8xxqASqF7tVeakntMR/Xd7q7JmvIYZOMH4r+kSFOIEEe2jut3l3QzwM0P5lw
-         SKa9cw9UTKQoyU6OQ5rtBi7h959oM7eokLPQdxy7kz9DnSQRw8wmFTM+XGuN6Wlpsk
-         oUH8PMngulhOXU2Wqyk+2Uwj62eyLRJtnp6abPr8A8DmzeYMZjctH9jtLvnoGXPPwX
-         eas+rZeMXzv9QjeDM9RO0p6SOSfavdwLV0Rmp9rei63i0WxHiHCrl83jOdBhmc2gHb
-         rIVceH0ie6XQw==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Chengfeng Ye <dg573847474@gmail.com>,
-        Manish Rangankar <mrangankar@marvell.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>, njavali@marvell.com,
-        GR-QLogic-Storage-Upstream@marvell.com, jejb@linux.ibm.com,
-        linux-scsi@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 2/2] scsi: qedi: Fix potential deadlock on &qedi_percpu->p_work_lock
-Date:   Tue, 22 Aug 2023 07:37:34 -0400
-Message-Id: <20230822113735.3551762-2-sashal@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230822113735.3551762-1-sashal@kernel.org>
-References: <20230822113735.3551762-1-sashal@kernel.org>
+        Tue, 22 Aug 2023 07:45:56 -0400
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFF0BE6F
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 04:45:31 -0700 (PDT)
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-99bdeae1d0aso577490566b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 04:45:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692704343; x=1693309143;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=swtdZ6iWxZkwX4JLChr/7mfm4cT7UFQIrvk9nhlFwu8=;
+        b=TPmTNZHvxiq7S1kpFeok1VPQ7IF3mZnrnz07IcXRQMymJ9KyKC3bkhhgxd5wKrUO5j
+         F4c4ASZ7V98gFFbWL8F7KvzG3Xtfa+njT55ft2MDw4jqwAzfN2uLgOuDgm2pa+Xs4pPd
+         MkGua9VAMKgXX5L7KKu6ZW/M7xoM3RlBBC6rF5inMHUWfB8xUFYHloeKugcUybmNSM4K
+         v1mdqpFpT7aLeqMR7MhB0/l8v4CRQZidm+f5g0KV0v3g/x5ZvfOcG38LMP7sMD3JuQrQ
+         M6NGmQ19pKFj5xrpfmKmj9lSPDe2iPjngWjXpgsi3ZkD8S8qoxpcI6K4jyMDrqrtCl7z
+         AoFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692704343; x=1693309143;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=swtdZ6iWxZkwX4JLChr/7mfm4cT7UFQIrvk9nhlFwu8=;
+        b=BiqQYYxtLX/+eNd4Jz5xvJcwec1TBoX1c6dnEl9Zg7i8uwl04850T7aU5G20BA5WN6
+         iiBOhhagKnO95eAwn23/vIsFou8U5PWtAanifuaSoHkL30PMCQtAfJkyVeEFGUXTkBhc
+         TWOJ+UQa7Ehn04Evp7Kth02R5ImvfEyyFqbNeKDDNroCSWHDrNd+L41aznKRw6fFiYvI
+         Y6UhERO6Efi7mNAfdTDqtoUEXUGROtg/RO5Nlw/k6zKA3Js/1Jiy61k90xPCHuBUgofG
+         a0aq7BKlXfNyDo+yHrO7uDxG/4bKZIiuZMkZ+TPNJCtiSeCr2QPT5SglLDmQONIaPd/W
+         QuDQ==
+X-Gm-Message-State: AOJu0YyeS+ThU5UTqG3i78ZANfsRRbuFgfaMkyaycVggVvX5baYPNyTf
+        bz/q3aG4wrw/ttBHTSKaQEIRSQ==
+X-Google-Smtp-Source: AGHT+IHUjfXRdbb5xkWxvSmHYtiXNjA44zx5N05SQQus1ESIq5Ng+XMglFSU3mnkglNjVtBmwz7itg==
+X-Received: by 2002:a17:907:78d0:b0:98e:1c4b:10bb with SMTP id kv16-20020a17090778d000b0098e1c4b10bbmr7236522ejc.35.1692704342896;
+        Tue, 22 Aug 2023 04:39:02 -0700 (PDT)
+Received: from [192.168.0.22] ([77.252.47.198])
+        by smtp.gmail.com with ESMTPSA id y6-20020a170906070600b0099cadcf13cesm8051872ejb.66.2023.08.22.04.39.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Aug 2023 04:39:02 -0700 (PDT)
+Message-ID: <c534e39f-f8dc-b9eb-ef27-3ace29192cfc@linaro.org>
+Date:   Tue, 22 Aug 2023 13:39:01 +0200
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 4.14.323
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v9 3/4] arm64: dts: qcom: ipq5332: Enable USB
+Content-Language: en-US
+To:     Varadarajan Narayanan <quic_varada@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        catalin.marinas@arm.com, will@kernel.org, vkoul@kernel.org,
+        kishon@kernel.org, arnd@arndb.de, geert+renesas@glider.be,
+        nfraprado@collabora.com, rafal@milecki.pl, peng.fan@nxp.com,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-phy@lists.infradead.org
+References: <cover.1692699472.git.quic_varada@quicinc.com>
+ <27d6303008be83131048ddf2ecef91cec9519ee2.1692699472.git.quic_varada@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <27d6303008be83131048ddf2ecef91cec9519ee2.1692699472.git.quic_varada@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,65 +83,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chengfeng Ye <dg573847474@gmail.com>
+On 22/08/2023 12:29, Varadarajan Narayanan wrote:
+> Enable USB2 in host mode.
+> 
+> Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
+> ---
+> v9:
+> 	regulator_fixed_5p0: s0500 -> regulator_fixed_5p0: regulator_s0500
+> 	"make ARCH=arm64 -j 16 CHECK_DTBS=y DT_SCHEMA_FILES=qcom,ipq5332-usb-hsphy.yaml dtbs_check" passed
+> v6:
+> 	Add vdd-supply and corresponding regulator
+> v1:
+> 	Enable usb-phy node
+> ---
+>  arch/arm64/boot/dts/qcom/ipq5332-rdp468.dts | 23 +++++++++++++++++++++++
+>  1 file changed, 23 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/ipq5332-rdp468.dts b/arch/arm64/boot/dts/qcom/ipq5332-rdp468.dts
+> index f96b0c8..53696f4 100644
+> --- a/arch/arm64/boot/dts/qcom/ipq5332-rdp468.dts
+> +++ b/arch/arm64/boot/dts/qcom/ipq5332-rdp468.dts
+> @@ -12,6 +12,15 @@
+>  / {
+>  	model = "Qualcomm Technologies, Inc. IPQ5332 MI01.6";
+>  	compatible = "qcom,ipq5332-ap-mi01.6", "qcom,ipq5332";
+> +
+> +	regulator_fixed_5p0: regulator_s0500 {
 
-[ Upstream commit dd64f80587190265ca8a0f4be6c64c2fda6d3ac2 ]
+No underscores in node names. If you look at any source code, you will
+notice lack of them.
 
-As &qedi_percpu->p_work_lock is acquired by hard IRQ qedi_msix_handler(),
-other acquisitions of the same lock under process context should disable
-IRQ, otherwise deadlock could happen if the IRQ preempts the execution
-while the lock is held in process context on the same CPU.
-
-qedi_cpu_offline() is one such function which acquires the lock in process
-context.
-
-[Deadlock Scenario]
-qedi_cpu_offline()
-    ->spin_lock(&p->p_work_lock)
-        <irq>
-        ->qedi_msix_handler()
-        ->edi_process_completions()
-        ->spin_lock_irqsave(&p->p_work_lock, flags); (deadlock here)
-
-This flaw was found by an experimental static analysis tool I am developing
-for IRQ-related deadlocks.
-
-The tentative patch fix the potential deadlock by spin_lock_irqsave()
-under process context.
-
-Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
-Link: https://lore.kernel.org/r/20230726125655.4197-1-dg573847474@gmail.com
-Acked-by: Manish Rangankar <mrangankar@marvell.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/scsi/qedi/qedi_main.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/scsi/qedi/qedi_main.c b/drivers/scsi/qedi/qedi_main.c
-index 09f57ef35990c..b8b177018031c 100644
---- a/drivers/scsi/qedi/qedi_main.c
-+++ b/drivers/scsi/qedi/qedi_main.c
-@@ -1669,8 +1669,9 @@ static int qedi_cpu_offline(unsigned int cpu)
- 	struct qedi_percpu_s *p = this_cpu_ptr(&qedi_percpu);
- 	struct qedi_work *work, *tmp;
- 	struct task_struct *thread;
-+	unsigned long flags;
- 
--	spin_lock_bh(&p->p_work_lock);
-+	spin_lock_irqsave(&p->p_work_lock, flags);
- 	thread = p->iothread;
- 	p->iothread = NULL;
- 
-@@ -1681,7 +1682,7 @@ static int qedi_cpu_offline(unsigned int cpu)
- 			kfree(work);
- 	}
- 
--	spin_unlock_bh(&p->p_work_lock);
-+	spin_unlock_irqrestore(&p->p_work_lock, flags);
- 	if (thread)
- 		kthread_stop(thread);
- 	return 0;
--- 
-2.40.1
+Best regards,
+Krzysztof
 
