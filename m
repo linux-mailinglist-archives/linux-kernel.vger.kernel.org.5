@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB5AD784B05
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 22:06:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40B63784B0A
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 22:06:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230356AbjHVUGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 16:06:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40526 "EHLO
+        id S229582AbjHVUGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 16:06:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230325AbjHVUGg (ORCPT
+        with ESMTP id S230337AbjHVUGh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 16:06:36 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3F65CED
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 13:06:34 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-31aec0a1a8bso2184710f8f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 13:06:34 -0700 (PDT)
+        Tue, 22 Aug 2023 16:06:37 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13122CEF
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 13:06:36 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-31c5cac3ae2so1617318f8f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 13:06:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692734793; x=1693339593;
+        d=linaro.org; s=google; t=1692734794; x=1693339594;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=OFC5befy1B0F6DaTi/N+wys/sVJv12I6nLzZb1Lm1oY=;
-        b=d0WBoA0WWQC/vb52sZv9vPGSanvUji7KX0y7Ts1JWHJqwfEm12Wu0k3rqlB7NcO3GR
-         yMXbE2i4UJ87eF8Z3+IFs6M6BiGhbE7yYXw4lssfBeUaI44FJvBHPRAkFOujzUmInA5V
-         PYAzTd0jbytTE3UZAjzptmQkrDd8/eLsbfavOcRt8oJOtYLrqwSAlODmkcU4P94uerF3
-         qkqr/SuDGOcXu4CRpbVjmGpEwxcvIddibisBHjl/NlFhQUQJ7kTr1jR/VhKoDQZi/mvU
-         /ze7J/vqbD0d+Jwtlnt/1jbI2bjXkFQ47IY+OWHlL0wiVf+bQjYWzjWqXq1nT5aMPPtO
-         YEOQ==
+        bh=X48QdO7ZGmP4DgIzy4AepzJ0PTfhLqJqNGkl4UYymyI=;
+        b=BUJ1MI41qACsWQ/vLK7pgu/2HJjCWyekOC5Y8gXK+ebDGE4B0VUbu/J84uQoiYFAU+
+         NeK0t3bOziD8KiBUgmP5+TLQ2Yf7KH7bRGMVvqyPR2NUhYoCnwPBmSA0wFXoZ/j6euPd
+         7s5PZyZ5AlDxecHQxqtQ1+gPFbf6XUFTtSlokxi1gc+JYxC1ZLQnjNvI6MvV1iNKuf2W
+         qL8N6LQRVtkvTmc68WxNzEd7mqeibAY6OfUUD+DZMtlYLnDV4mjzohWSIkx6VdQVNBGf
+         sQLyPABmIgc+Lpl8TTYcPd1GhtA//l7picoSgpWeCDl4j4coUaI04lB//H5AgNgf0oaj
+         WSvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692734793; x=1693339593;
+        d=1e100.net; s=20221208; t=1692734794; x=1693339594;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=OFC5befy1B0F6DaTi/N+wys/sVJv12I6nLzZb1Lm1oY=;
-        b=U1UKOsiOA4QrTjvD3xbT8BDv0PmuFX1kkUkkXYhZUTNrcksNpImt5QudsI5iU9s6ip
-         RLiLkALWtSoKWbobddHzFXbli2SEekeyHpK5C/xyByQsD5TLB8zA6IvtWeRXxo7Djrf0
-         7Xbuby4VM/2RkkMXfnkQ/nrVHLEWlWcrFxNhuh2ja3vJVX6ZtPR5VIR9HYMhTfEnIxv9
-         HxdHuU9AlFOpks2CuGQrZbPIJ5Yd+q1V6imn4HdQdHUsFuvhyiRRCpKTAxDCkjqga9TB
-         tMf45GknNXD9Q5lm1jy8d/csFhaeyJ9bfcKFyFC8SKdmt9I+ANMOY541w9kihpCDdWQO
-         OXwg==
-X-Gm-Message-State: AOJu0Yy/B9YlzdgWd5B5pU+NNYLcnnCaXfZ5CN4elD2h4dgi669FlcoV
-        8ATg+ijdFoCjicUuq4tGd89Y1Q==
-X-Google-Smtp-Source: AGHT+IEz8kbqeiCPikQZtaldhZ4L98TZeKwAoyjtudgWaOIkZS8VBAYHD1esNnBmjh51/AAdWqpD9w==
-X-Received: by 2002:adf:e704:0:b0:314:2f3e:dca5 with SMTP id c4-20020adfe704000000b003142f3edca5mr9847764wrm.28.1692734793459;
-        Tue, 22 Aug 2023 13:06:33 -0700 (PDT)
+        bh=X48QdO7ZGmP4DgIzy4AepzJ0PTfhLqJqNGkl4UYymyI=;
+        b=VUB40UbjYP2tCKeNUf5D13exsi6xVRuKjBr+60dkKuO6tTsuRRxuKL5QhcrQPaFjtu
+         Bcmv4ay6krlyDMDMusQ9hv+60xsiSWnuEF5VL6UUt9lqxLWmGBLKouBwkIYo5tWvnh7h
+         vGAkPPdtnVIdm8XI2m4NMVfFXCyCdvek3sh8Wt5HZb7kEkLyt4DtDh6UJRUt8an+MPfk
+         TYwCtyqHgY1EfWcqmjhI1vb9lvy/RWIM2VsfavTiv6xHDVCdy5JwpK7FL0vPjah7YJO/
+         MHutBnlIUcPdhOrgwkk/uNwRA91HNEsaxFYsSEweHwvAOV6l8aHXiBSVjxbGTd4CJdkE
+         BZ/Q==
+X-Gm-Message-State: AOJu0Yy0vpTkj0eRpbQBG4k9FoupH8bZEWs3Q9gfZb7lFZvc39Wz15xv
+        yPCgPFZe5otuMH4xPUvLFF8GUw==
+X-Google-Smtp-Source: AGHT+IF+bofEoyb8KWplasp+JLd1ZKK7rGpWfmHgkQb/utt0re9fXPVXIBLEocPKvn55p+73ba8T1A==
+X-Received: by 2002:a5d:55c3:0:b0:319:7a9f:c63 with SMTP id i3-20020a5d55c3000000b003197a9f0c63mr7672656wrw.50.1692734794667;
+        Tue, 22 Aug 2023 13:06:34 -0700 (PDT)
 Received: from sagittarius-a.chello.ie (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
-        by smtp.gmail.com with ESMTPSA id y12-20020adfee0c000000b0031aeca90e1fsm12873690wrn.70.2023.08.22.13.06.32
+        by smtp.gmail.com with ESMTPSA id y12-20020adfee0c000000b0031aeca90e1fsm12873690wrn.70.2023.08.22.13.06.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Aug 2023 13:06:32 -0700 (PDT)
+        Tue, 22 Aug 2023 13:06:34 -0700 (PDT)
 From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 To:     rfoss@kernel.org, todor.too@gmail.com, bryan.odonoghue@linaro.org,
         agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
@@ -58,9 +58,9 @@ To:     rfoss@kernel.org, todor.too@gmail.com, bryan.odonoghue@linaro.org,
         andrey.konovalov@linaro.org
 Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: [PATCH v2 3/9] media: qcom: camss: Fix vfe_get() error jump
-Date:   Tue, 22 Aug 2023 21:06:20 +0100
-Message-ID: <20230822200626.1931129-4-bryan.odonoghue@linaro.org>
+Subject: [PATCH v2 4/9] media: qcom: camss: Fix VFE-17x vfe_disable_output()
+Date:   Tue, 22 Aug 2023 21:06:21 +0100
+Message-ID: <20230822200626.1931129-5-bryan.odonoghue@linaro.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230822200626.1931129-1-bryan.odonoghue@linaro.org>
 References: <20230822200626.1931129-1-bryan.odonoghue@linaro.org>
@@ -76,94 +76,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Right now it is possible to do a vfe_get() with the internal reference
-count at 1. If vfe_check_clock_rates() returns non-zero then we will
-leave the reference count as-is and
+There are two problems with the current vfe_disable_output() routine.
 
-run:
-- pm_runtime_put_sync()
-- vfe->ops->pm_domain_off()
+Firstly we rightly use a spinlock to protect output->gen2.active_num
+everywhere except for in the IDLE timeout path of vfe_disable_output().
+Even if that is not racy "in practice" somehow it is by happenstance not
+by design.
 
-skip:
-- camss_disable_clocks()
+Secondly we do not get consistent behaviour from this routine. On
+sc8280xp 50% of the time I get "VFE idle timeout - resetting". In this
+case the subsequent capture will succeed. The other 50% of the time, we
+don't hit the idle timeout, never do the VFE reset and subsequent
+captures stall indefinitely.
 
-Subsequent vfe_put() calls will when the ref-count is non-zero
-unconditionally run:
+Rewrite the vfe_disable_output() routine to
 
-- pm_runtime_put_sync()
-- vfe->ops->pm_domain_off()
-- camss_disable_clocks()
+- Quiesce write masters with vfe_wm_stop()
+- Set active_num = 0
 
-vfe_get() should not attempt to roll-back on error when the ref-count is
-non-zero as the upper layers will still do their own vfe_put() operations.
+remembering to hold the spinlock when we do so followed by
 
-vfe_put() will drop the reference count and do the necessary power
-domain release, the cleanup jumps in vfe_get() should only be run when
-the ref-count is zero.
+- Reset the VFE
 
-[   50.095796] CPU: 7 PID: 3075 Comm: cam Not tainted 6.3.2+ #80
-[   50.095798] Hardware name: LENOVO 21BXCTO1WW/21BXCTO1WW, BIOS N3HET82W (1.54 ) 05/26/2023
-[   50.095799] pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-[   50.095802] pc : refcount_warn_saturate+0xf4/0x148
-[   50.095804] lr : refcount_warn_saturate+0xf4/0x148
-[   50.095805] sp : ffff80000c7cb8b0
-[   50.095806] x29: ffff80000c7cb8b0 x28: ffff16ecc0e3fc10 x27: 0000000000000000
-[   50.095810] x26: 0000000000000000 x25: 0000000000020802 x24: 0000000000000000
-[   50.095813] x23: ffff16ecc7360640 x22: 00000000ffffffff x21: 0000000000000005
-[   50.095815] x20: ffff16ed175f4400 x19: ffffb4d9852942a8 x18: ffffffffffffffff
-[   50.095818] x17: ffffb4d9852d4a48 x16: ffffb4d983da5db8 x15: ffff80000c7cb320
-[   50.095821] x14: 0000000000000001 x13: 2e656572662d7265 x12: 7466612d65737520
-[   50.095823] x11: 00000000ffffefff x10: ffffb4d9850cebf0 x9 : ffffb4d9835cf954
-[   50.095826] x8 : 0000000000017fe8 x7 : c0000000ffffefff x6 : 0000000000057fa8
-[   50.095829] x5 : ffff16f813fe3d08 x4 : 0000000000000000 x3 : ffff621e8f4d2000
-[   50.095832] x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff16ed32119040
-[   50.095835] Call trace:
-[   50.095836]  refcount_warn_saturate+0xf4/0x148
-[   50.095838]  device_link_put_kref+0x84/0xc8
-[   50.095843]  device_link_del+0x38/0x58
-[   50.095846]  vfe_pm_domain_off+0x3c/0x50 [qcom_camss]
-[   50.095860]  vfe_put+0x114/0x140 [qcom_camss]
-[   50.095869]  csid_set_power+0x2c8/0x408 [qcom_camss]
-[   50.095878]  pipeline_pm_power_one+0x164/0x170 [videodev]
-[   50.095896]  pipeline_pm_power+0xc4/0x110 [videodev]
-[   50.095909]  v4l2_pipeline_pm_use+0x5c/0xa0 [videodev]
-[   50.095923]  v4l2_pipeline_pm_get+0x1c/0x30 [videodev]
-[   50.095937]  video_open+0x7c/0x100 [qcom_camss]
-[   50.095945]  v4l2_open+0x84/0x130 [videodev]
-[   50.095960]  chrdev_open+0xc8/0x250
-[   50.095964]  do_dentry_open+0x1bc/0x498
-[   50.095966]  vfs_open+0x34/0x40
-[   50.095968]  path_openat+0xb44/0xf20
-[   50.095971]  do_filp_open+0xa4/0x160
-[   50.095974]  do_sys_openat2+0xc8/0x188
-[   50.095975]  __arm64_sys_openat+0x6c/0xb8
-[   50.095977]  invoke_syscall+0x50/0x128
-[   50.095982]  el0_svc_common.constprop.0+0x4c/0x100
-[   50.095985]  do_el0_svc+0x40/0xa8
-[   50.095988]  el0_svc+0x2c/0x88
-[   50.095991]  el0t_64_sync_handler+0xf4/0x120
-[   50.095994]  el0t_64_sync+0x190/0x198
-[   50.095996] ---[ end trace 0000000000000000 ]---
+Testing on sc8280xp and sdm845 shows this to be a valid fix.
 
-Fixes: 779096916dae ("media: camss: vfe: Fix runtime PM imbalance on error")
+Fixes: 7319cdf189bb ("media: camss: Add support for VFE hardware version Titan 170")
 Cc: stable@vger.kernel.org
 Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 ---
- drivers/media/platform/qcom/camss/camss-vfe.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../media/platform/qcom/camss/camss-vfe-170.c | 19 +++----------------
+ 1 file changed, 3 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/media/platform/qcom/camss/camss-vfe.c b/drivers/media/platform/qcom/camss/camss-vfe.c
-index dabfd613b2f94..938f373bcd1fd 100644
---- a/drivers/media/platform/qcom/camss/camss-vfe.c
-+++ b/drivers/media/platform/qcom/camss/camss-vfe.c
-@@ -611,7 +611,7 @@ int vfe_get(struct vfe_device *vfe)
- 	} else {
- 		ret = vfe_check_clock_rates(vfe);
- 		if (ret < 0)
--			goto error_pm_runtime_get;
-+			goto error_pm_domain;
- 	}
- 	vfe->power_count++;
+diff --git a/drivers/media/platform/qcom/camss/camss-vfe-170.c b/drivers/media/platform/qcom/camss/camss-vfe-170.c
+index 02494c89da91c..ae9137633c301 100644
+--- a/drivers/media/platform/qcom/camss/camss-vfe-170.c
++++ b/drivers/media/platform/qcom/camss/camss-vfe-170.c
+@@ -500,28 +500,15 @@ static int vfe_disable_output(struct vfe_line *line)
+ 	struct vfe_output *output = &line->output;
+ 	unsigned long flags;
+ 	unsigned int i;
+-	bool done;
+-	int timeout = 0;
+-
+-	do {
+-		spin_lock_irqsave(&vfe->output_lock, flags);
+-		done = !output->gen2.active_num;
+-		spin_unlock_irqrestore(&vfe->output_lock, flags);
+-		usleep_range(10000, 20000);
+-
+-		if (timeout++ == 100) {
+-			dev_err(vfe->camss->dev, "VFE idle timeout - resetting\n");
+-			vfe_reset(vfe);
+-			output->gen2.active_num = 0;
+-			return 0;
+-		}
+-	} while (!done);
+ 
+ 	spin_lock_irqsave(&vfe->output_lock, flags);
+ 	for (i = 0; i < output->wm_num; i++)
+ 		vfe_wm_stop(vfe, output->wm_idx[i]);
++	output->gen2.active_num = 0;
+ 	spin_unlock_irqrestore(&vfe->output_lock, flags);
+ 
++	vfe_reset(vfe);
++
+ 	return 0;
+ }
  
 -- 
 2.41.0
