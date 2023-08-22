@@ -2,124 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 518A2783756
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 03:22:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47ADE783758
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 03:28:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232025AbjHVBWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 21:22:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58516 "EHLO
+        id S232001AbjHVB2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 21:28:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231562AbjHVBWk (ORCPT
+        with ESMTP id S232021AbjHVB2G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 21:22:40 -0400
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA631123;
-        Mon, 21 Aug 2023 18:22:38 -0700 (PDT)
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1bf1935f6c2so26452505ad.1;
-        Mon, 21 Aug 2023 18:22:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692667358; x=1693272158;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=u4XMj6NCEe6Vw86vn80CV6xa830vO2fpeQEV9NovfxU=;
-        b=kuLXc8zg+iUYY6rwMVDghw9elJlZlaXB2Pw9kzkvOlsQMI5RopnGbOCi8fv3qU1kkd
-         A4+Jvoi9C+yxo13F01UGMll7wDwUfadas326RKZY5ew4LL/sJSTsr4aaFu4nq4cqPErE
-         x3JBIS4hCJ+yrH0ghlk45jLLzKK5uBDWiB+trGTmi9a6LJSe10OG3jYlEaT4EsPK/c5c
-         IEJ99V2LYX9nKHJkVSfTL5keJ6h3vr7EAi1KuOJBlVTyaTV+e2cjcWayIU2guLwJRNYa
-         42Gmc6k9yraPdH0fFN/yVTZFdbBJ+767Cb13iHqHgguTrrboWGjXM2Ji/UaDvz0lejAN
-         ofYg==
-X-Gm-Message-State: AOJu0YzxcddVZG6Ou4o7kYFmEMBIDeLHa885IdDKwoHkov8ACdvKe3qB
-        FXuYKvxJPPXZnEF524anWeo=
-X-Google-Smtp-Source: AGHT+IEReTPdnzD7gRJqUON++JWGiLkPednkeuQJ9Q/LGmsS3qQTO7HlxxeZYUTBxkB0Kho8i/vjYg==
-X-Received: by 2002:a17:903:41d1:b0:1bf:193a:70b6 with SMTP id u17-20020a17090341d100b001bf193a70b6mr12540696ple.5.1692667357727;
-        Mon, 21 Aug 2023 18:22:37 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([20.69.120.36])
-        by smtp.gmail.com with ESMTPSA id 12-20020a170902ee4c00b001bbb1eec92dsm7683523plo.224.2023.08.21.18.22.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Aug 2023 18:22:37 -0700 (PDT)
-Date:   Tue, 22 Aug 2023 01:22:17 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     "Michael Kelley (LINUX)" <mikelley@microsoft.com>
-Cc:     Dexuan Cui <decui@microsoft.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "kw@linux.com" <kw@linux.com>, KY Srinivasan <kys@microsoft.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "lpieralisi@kernel.org" <lpieralisi@kernel.org>,
-        "robh@kernel.org" <robh@kernel.org>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "helgaas@kernel.org" <helgaas@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] PCI: hv: Fix a crash in hv_pci_restore_msi_msg()
- during hibernation
-Message-ID: <ZOQNyVtQ9Cilfk92@liuwe-devbox-debian-v2>
-References: <20230816175939.21566-1-decui@microsoft.com>
- <BYAPR21MB16888FCA41CEB8569685FBB1D715A@BYAPR21MB1688.namprd21.prod.outlook.com>
+        Mon, 21 Aug 2023 21:28:06 -0400
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F40C11D
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 18:27:47 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RVBY85qNXz4f3jMN
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 09:27:40 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+        by APP1 (Coremail) with SMTP id cCh0CgCXDSoOD+Rk4z7YBA--.32329S2;
+        Tue, 22 Aug 2023 09:27:43 +0800 (CST)
+Subject: Re: [PATCH RFC 0/2] mm/page_alloc: free_pcppages_bulk safeguard
+To:     Mel Gorman <mgorman@techsingularity.net>,
+        Chris Li <chrisl@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        baolin.wang@linux.alibaba.com, Michal Hocko <mhocko@suse.com>,
+        david@redhat.com, willy@infradead.org, linux-mm@kvack.org,
+        Namhyung Kim <namhyung@google.com>,
+        Greg Thelen <gthelen@google.com>, linux-kernel@vger.kernel.org,
+        John Sperbeck <jsperbeck@google.com>
+References: <20230817-free_pcppages_bulk-v1-0-c14574a9f80c@kernel.org>
+ <20230821103225.qntnsotdzuthxn2y@techsingularity.net>
+From:   Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <6a18b295-92ac-1633-0b79-6aaf18a8496d@huaweicloud.com>
+Date:   Tue, 22 Aug 2023 09:27:42 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BYAPR21MB16888FCA41CEB8569685FBB1D715A@BYAPR21MB1688.namprd21.prod.outlook.com>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20230821103225.qntnsotdzuthxn2y@techsingularity.net>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: cCh0CgCXDSoOD+Rk4z7YBA--.32329S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7GryUJF1UKr1fJF1DCr13twb_yoWftrg_ua
+        9Fgwn29r4jvrZFvFn5WrWaqFZ7K3s7Z34rXrWqqr43u34DXFyDJFWrCr92gF4xArWrGFn3
+        ua1fJr4jvr1avjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbIxYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
+        Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+        A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x02
+        67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
+        07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
+        GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+        CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
+        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
+        7IU1zuWJUUUUU==
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023 at 08:10:25PM +0000, Michael Kelley (LINUX) wrote:
-> From: Dexuan Cui <decui@microsoft.com> Sent: Wednesday, August 16, 2023 11:00 AM
-> > 
-> > When a Linux VM with an assigned PCI device runs on Hyper-V, if the PCI
-> > device driver is not loaded yet (i.e. MSI-X/MSI is not enabled on the
-> > device yet), doing a VM hibernation triggers a panic in
-> > hv_pci_restore_msi_msg() -> msi_lock_descs(&pdev->dev), because
-> > pdev->dev.msi.data is still NULL.
-> > 
-> > Avoid the panic by checking if MSI-X/MSI is enabled.
-> > 
-> > Fixes: dc2b453290c4 ("PCI: hv: Rework MSI handling")
-> > Signed-off-by: Dexuan Cui <decui@microsoft.com>
-> > ---
-> > 
-> > Changes in v2:
-> >     Replaced the test "if (!pdev->dev.msi.data)" with
-> > 		      "if (!pdev->msi_enabled && !pdev->msix_enabled)".
-> >       Thanks Michael!
-> >     Updated the changelog accordingly.
-> > 
-> >  drivers/pci/controller/pci-hyperv.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> > 
-> > diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
-> > index 2d93d0c4f10d..bed3cefdaf19 100644
-> > --- a/drivers/pci/controller/pci-hyperv.c
-> > +++ b/drivers/pci/controller/pci-hyperv.c
-> > @@ -3983,6 +3983,9 @@ static int hv_pci_restore_msi_msg(struct pci_dev *pdev, void *arg)
-> >  	struct msi_desc *entry;
-> >  	int ret = 0;
-> > 
-> > +	if (!pdev->msi_enabled && !pdev->msix_enabled)
-> > +		return 0;
-> > +
-> >  	msi_lock_descs(&pdev->dev);
-> >  	msi_for_each_desc(entry, &pdev->dev, MSI_DESC_ASSOCIATED) {
-> >  		irq_data = irq_get_irq_data(entry->irq);
-> > --
-> > 2.25.1
-> 
-> Reviewed-by: Michael Kelley <mikelley@microsoft.com>
-> 
-> 
 
-I expect this to go through the PCI tree. Just let me know if I should
-pick this up.
 
-Thanks,
-Wei.
+on 8/21/2023 6:32 PM, Mel Gorman wrote:
+> On Thu, Aug 17, 2023 at 11:05:22PM -0700, Chris Li wrote:
+>> In this patch series I want to safeguard
+>> the free_pcppage_bulk against change in the
+>> pcp->count outside of this function. e.g.
+>> by BPF program inject on the function tracepoint.
+>>
+>> I break up the patches into two seperate patches
+>> for the safeguard and clean up.
+>>
+>> Hopefully that is easier to review.
+>>
+>> Signed-off-by: Chris Li <chrisl@kernel.org>
+> 
+> This sounds like a maintenance nightmare if internal state can be arbitrary
+> modified by a BPF program and still expected to work properly in all cases.
+> Every review would have to take into account "what if a BPF script modifies
+> state behind our back?"
+> 
+Agreed. We assume pcp->count is protected by pcp->lock. Instead of make code
+work in case pcp->count could be changed without lock held, it's more reasonble
+to modify pcp->count with pcp->lock held in BPF program.
+
