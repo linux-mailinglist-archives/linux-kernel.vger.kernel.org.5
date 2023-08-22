@@ -2,181 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CA97784D8D
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 01:58:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 814B1784D90
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 01:59:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231829AbjHVX6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 19:58:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59460 "EHLO
+        id S231838AbjHVX7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 19:59:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229796AbjHVX6o (ORCPT
+        with ESMTP id S229796AbjHVX73 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 19:58:44 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 185D0CF9;
-        Tue, 22 Aug 2023 16:58:42 -0700 (PDT)
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37MNrc8w019427;
-        Tue, 22 Aug 2023 23:58:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=VwpTXaMNlC8r9DEmyDGakUHDwr2NYiRXS33qig45UEg=;
- b=BlnT3RUeJSq2qrbCtYswCZmpqAtFs3A16Fz/K2dKMaDM/8EiCn1wawsgKH7aViSxCRDm
- RS0txAjKsP7Wois+WgiY3KuHB9ZQN1QId1W3JjhvCMvBE4Nmi5ofO/1ZZHVMgwdLbVdU
- O+qe9lo4m4ut/nZ/Fz8eb87PF53BpxVQhV3ETbxd5jbZX2seASNtikPuTQp5lfU4aGkc
- VLNFjdIf56VRK2eBbV6denib8AtEW+mjhN+TTN27dhu+EN1PX5mF5CpPEJ5J5vmoEThS
- iJaxsOrAOmd12P5UOXNTM9qg8oMgk4KKrdXhlP/uZg93EXGgkZfWaF0Q2MNWMCLUdyLo wA== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sn2mvge89-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Aug 2023 23:58:34 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37MNwXxX007723
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Aug 2023 23:58:33 GMT
-Received: from [10.110.87.122] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 22 Aug
- 2023 16:58:32 -0700
-Message-ID: <a0a6c561-6319-00ba-c6db-f1dec9f0f0aa@quicinc.com>
-Date:   Tue, 22 Aug 2023 16:58:32 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH v4 2/3] dt-bindings: usb: snps,dwc3: Add
- runtime-suspend-on-usb-suspend property
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <gregkh@linuxfoundation.org>, <Thinh.Nguyen@synopsys.com>,
-        <rogerq@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <devicetree@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>
-References: <20230814185043.9252-1-quic_eserrao@quicinc.com>
- <20230814185043.9252-3-quic_eserrao@quicinc.com>
- <a77403f5-8b99-3012-3843-1999ee8d12ce@linaro.org>
- <6b27cd55-4e44-7a26-30ff-9692344cae4c@quicinc.com>
- <31fa930a-51fb-6a7f-300d-e71f6b399eb1@linaro.org>
-From:   Elson Serrao <quic_eserrao@quicinc.com>
-In-Reply-To: <31fa930a-51fb-6a7f-300d-e71f6b399eb1@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: wOtcQ-jMWoVOhNoyIuQj7Dil_hFbl4_N
-X-Proofpoint-GUID: wOtcQ-jMWoVOhNoyIuQj7Dil_hFbl4_N
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-22_21,2023-08-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
- impostorscore=0 mlxscore=0 priorityscore=1501 lowpriorityscore=0
- suspectscore=0 spamscore=0 mlxlogscore=359 bulkscore=0 clxscore=1015
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2308220197
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 22 Aug 2023 19:59:29 -0400
+Received: from mail-oa1-x49.google.com (mail-oa1-x49.google.com [IPv6:2001:4860:4864:20::49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBD90E47
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 16:59:27 -0700 (PDT)
+Received: by mail-oa1-x49.google.com with SMTP id 586e51a60fabf-1ca47197311so5722189fac.0
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 16:59:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692748766; x=1693353566;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=cGRueg2eqYbMCY2ShRbCc3/RucSV6L/B/eSOD25AmaY=;
+        b=oE7rm9AjFtO/wJhPR4I/B3C9PzPl0U9GIJtJ8lqhBf1+Myf/+D2iSRfZgrmLr7mR/x
+         nMayejh5oe5AWTapQPCLq5jq9CY0Pyc9ctwVerkEBlIECHUhVK4vkKvWYwR27pziznqm
+         9W/6Luzdj+ygswvRfmFxADqiAuYOViFaMm49y1CXqPV3sBb/+KuycOsoULepp7onHymj
+         YJMqT/JW19FcVl0zqu0VHtUAcLgBtMlKbMHcBgSSsL0o1dCaBKqqRdrNmCLdDIilXVF7
+         j8JurhCuRPmIhc+12Fomrtw8IDBZ0+NlB1WaYQiZQ5AwOcourf0LmrvpQCxGkEeWzW/q
+         LmPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692748766; x=1693353566;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cGRueg2eqYbMCY2ShRbCc3/RucSV6L/B/eSOD25AmaY=;
+        b=HhGRQxK1CPHKASEh/f/3xVo6wja8eXFFGj8cR6rX8kXAPVNuFImZqZHi4jLJeWnvJe
+         vzzPLNbEvZk2o+lrXVMjCBnAAM9w+1O7Ianq/KTzXiriSsEgxpgHwhgHZGxv46yIdFOG
+         AMihmjYvMkhUI5FFOYVddJslHxPxPDmIwwm5Lj03nrkRq5iHle1Lm/jTaKVQLYqg9WEd
+         qnhFDUmmKrUFbmum2OxO5CmFJrrCl9HMOb15k6g9zK1a0faxATEfk6oEw5ti9ECLRNv7
+         I9C+b7IWiTdPf8Vs0dVCIJxHLgrc/pFfSsNgD/0wY24B6YXGu4Qu3tLlO89BF3+5TsvM
+         ix8w==
+X-Gm-Message-State: AOJu0YxeZ1jZEkymq8ILpcvwznsA0/i8Cs3Vr031g/qUMeFinpuoaF1G
+        oZ7MrDZHsOftb/iH1YUUS+45Mr789hQKqpboyg==
+X-Google-Smtp-Source: AGHT+IEg7NbVScd59jOYBOeVb3GuBkFoZlJ1jMAeIVZP8P7/g2W+bAHAovNBatxzdjVp9Qhlv5I+h6M7X52P9QgtDQ==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a05:6870:c796:b0:1bb:91fa:7aab with
+ SMTP id dy22-20020a056870c79600b001bb91fa7aabmr174453oab.1.1692748766615;
+ Tue, 22 Aug 2023 16:59:26 -0700 (PDT)
+Date:   Tue, 22 Aug 2023 23:59:26 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAN1L5WQC/x2N0QrCMAxFf2Xk2UCtjIm/Ij60WabBrStJGcrYv
+ xt8PHDPPTsYq7DBrdtBeROTtTicTx3QK5Uno4zOEEO8hGuMaE0L1S/meaU31qRNmjuGtIyzFN/ nBYepz0SpDwMn8KuqPMnnn7k/juMHT0R0HHYAAAA=
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1692748765; l=1601;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=DvMuu8/lxku646YrnJJTNn2dZrYri5zBU+GthJXHRdo=; b=y9qu1DfwgWfym6uoXSaFbpI+RHlMMNIUgnNRgLwXSTUj4rO+8MpulMdSPc9QurH/sB/n7zscE
+ V8PMAm229yiAOd/7pdZGUlXbYKP5Dt7IqsFe36jFT6eAtvHiQDn1fkp
+X-Mailer: b4 0.12.3
+Message-ID: <20230822-strncpy-block-partitions-cmdline-ibm-v1-1-154dea8f755c@google.com>
+Subject: [PATCH] partitions/ibm: refactor deprecated strncpy
+From:   Justin Stitt <justinstitt@google.com>
+To:     Stefan Haberland <sth@linux.ibm.com>,
+        Jan Hoeppner <hoeppner@linux.ibm.com>,
+        Jens Axboe <axboe@kernel.dk>
+Cc:     linux-s390@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+`strncpy` is deprecated for use on NUL-terminated destination strings [1].
 
+A suitable replacement is `strscpy` [2] due to the fact that it
+guarantees NUL-termination on its destination buffer argument which is
+_not_ the case for `strncpy`!
 
-On 8/19/2023 2:35 AM, Krzysztof Kozlowski wrote:
-> On 18/08/2023 21:16, Elson Serrao wrote:
->>
->>
->> On 8/15/2023 10:44 PM, Krzysztof Kozlowski wrote:
->>> On 14/08/2023 20:50, Elson Roy Serrao wrote:
->>>> This property allows dwc3 runtime suspend when bus suspend interrupt
->>>> is received even with cable connected. This would allow the dwc3
->>>> controller to enter low power mode during bus suspend scenario.
->>>>
->>>> This property would particularly benefit dwc3 IPs where hibernation is
->>>> not enabled and the dwc3 low power mode entry/exit is handled by the
->>>> glue driver. The assumption here is that the platform using this dt
->>>> property is capable of detecting resume events to bring the controller
->>>> out of suspend.
->>>>
->>>> Signed-off-by: Elson Roy Serrao <quic_eserrao@quicinc.com>
->>>> ---
->>>>    Documentation/devicetree/bindings/usb/snps,dwc3.yaml | 5 +++++
->>>>    1 file changed, 5 insertions(+)
->>>>
->>>> diff --git a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
->>>> index a696f23730d3..e19a60d06d2b 100644
->>>> --- a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
->>>> +++ b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
->>>> @@ -403,6 +403,11 @@ properties:
->>>>        description:
->>>>          Enable USB remote wakeup.
->>>>    
->>>> +  snps,runtime-suspend-on-usb-suspend:
->>>> +    description:
->>>> +      If True then dwc3 runtime suspend is allowed during bus suspend
->>>> +      case even with the USB cable connected.
->>>
->>> This was no tested... but anyway, this is no a DT property but OS
->>> policy. There is no such thing as "runtime suspend" in the hardware,
->>> because you describe one particular OS.
->>>
->>> Sorry, no a DT property, drop the change entirely.
->>>
->>>
->> Hi Krzysztof
->>
->> Sorry my local dt checker had some issue and it did not catch these
->> errors. I have rectified it now.
->>
->> This dt property is mainly for skipping dwc3 controller halt when a USB
->> suspend interrupt is received with usb cable connected, so that we dont
->> trigger a DISCONNECT event. Perhaps a better name would reflect the true
->> usage of this?
->>
->> Something like snps,skip-dwc3-halt-on-usb-suspend. dwc3 cores where
->> hibernation feature is not enabled/supported can use this property
-> 
-> So this is specific to DWC3 core, thus should be just implied by compatible.
-> 
+Link: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings[1]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+ block/partitions/ibm.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Hi Krzysztof
+diff --git a/block/partitions/ibm.c b/block/partitions/ibm.c
+index 403756dbd50d..e5893cf71b57 100644
+--- a/block/partitions/ibm.c
++++ b/block/partitions/ibm.c
+@@ -111,11 +111,11 @@ static int find_label(struct parsed_partitions *state,
+ 		    !strcmp(temp, "LNX1") ||
+ 		    !strcmp(temp, "CMS1")) {
+ 			if (!strcmp(temp, "VOL1")) {
+-				strncpy(type, label->vol.vollbl, 4);
+-				strncpy(name, label->vol.volid, 6);
++				strscpy(type, label->vol.vollbl, 4);
++				strscpy(name, label->vol.volid, 6);
+ 			} else {
+-				strncpy(type, label->lnx.vollbl, 4);
+-				strncpy(name, label->lnx.volid, 6);
++				strscpy(type, label->lnx.vollbl, 4);
++				strscpy(name, label->lnx.volid, 6);
+ 			}
+ 			EBCASC(type, 4);
+ 			EBCASC(name, 6);
 
-Apologies for not being clear. Below is the reasoning behind this dt entry.
+---
+base-commit: 706a741595047797872e669b3101429ab8d378ef
+change-id: 20230822-strncpy-block-partitions-cmdline-ibm-7f5bcca507ea
 
-When bus suspend interrupt is received and if usb cable is connected, 
-dwc3 driver does not suspend. The aim of this series is to handle this 
-interrupt when USB cable is connected to achieve power savings. OEMs 
-might have their own implementation in their glue driver to turn off 
-clocks and other resources when USB is not in use, thus saving power. 
-But since glue layer has dependency on dwc3 driver (parent-child 
-relationship) we need to allow dwc3 driver to NOT ignore the bus suspend 
-interrupt and let the dwc3 driver suspend (so that glue driver can 
-suspend as well)
-
-Now it is the responsibility of glue driver to detect USB wakeup signal 
-from the host during resume (since dwc3 driver is suspended at this 
-point and cannot handle interrupts). Every OEM may not have the 
-capability to detect wakeup signal. The goal of this dt property is for 
-the dwc3 driver to allow handling of the bus suspend interrupt when such 
-a capability exists on a given HW platform. When this property is 
-defined dwc3 driver knows that the low power mode entry/exit is 
-controlled by the glue driver and thus it can allow the suspend 
-operation when bus suspend interrupt is received.
-
-For example on Qualcomm platforms there is a phy sideband signalling 
-which detects the wakeup signal when resume is initiated by the host. 
-Thus qcom platforms can benefit from this feature by defining this dt 
-property. (in a parallel discussion with Thinh N to come up with a 
-better name for this dt entry).
-
-Thanks
-Elson
-
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
 
