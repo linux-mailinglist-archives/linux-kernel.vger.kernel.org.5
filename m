@@ -2,116 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65F96783C62
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 11:01:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92994783C67
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 11:02:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234144AbjHVJBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 05:01:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36348 "EHLO
+        id S234152AbjHVJCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 05:02:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234140AbjHVJBc (ORCPT
+        with ESMTP id S234151AbjHVJB5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 05:01:32 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DC851B2;
-        Tue, 22 Aug 2023 02:01:30 -0700 (PDT)
-Received: from localhost.localdomain (unknown [39.45.215.81])
+        Tue, 22 Aug 2023 05:01:57 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA08B1B7;
+        Tue, 22 Aug 2023 02:01:55 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        (Authenticated sender: usama.anjum)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 61634660723E;
-        Tue, 22 Aug 2023 10:01:27 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1692694889;
-        bh=G+PYlsLKKNrAJfjnLhUkS/SXCH0SH1cJtUJtNZ50U6Q=;
-        h=From:To:Cc:Subject:Date:From;
-        b=kGi7C/fwaHu5a8ZX9E0xrhwivYmQ9nFQV2i0aRhf5Ag1tBQKCdVCQ8QWyuBfMLDGJ
-         vellhOLG+C48tk8dXJIaNGg72aRZIMQEkcAtPe/aadZFvs5Z8EcyI37HGIfgu0fmq2
-         z4c+q2LjoTk0VX4ATRzVZ7YFGvyXwTMSvN3MRiHE2RKw1688gsYj2xOL7dibahaPJS
-         F+Thb9u6OnMLND1UZWr0mbOB7+DEUu/j7mF4C4r8HOMDhwxj+Ps5STxKK4zM+0UYyX
-         guQUetONQwfdps0WvR0oIwMC4nu2k99uWU1kVjqXknY0odpUoSgp4HUOUAcNfI/kWS
-         VQhWpiTqpYAnQ==
-From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>, Ingo Molnar <mingo@elte.hu>
-Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        kernel@collabora.com, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: [PATCH v2 RESEND] tty/sysrq: replace smp_processor_id() with get_cpu()
-Date:   Tue, 22 Aug 2023 14:01:11 +0500
-Message-Id: <20230822090112.2601273-1-usama.anjum@collabora.com>
-X-Mailer: git-send-email 2.40.1
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 37D19637EC;
+        Tue, 22 Aug 2023 09:01:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CBD6C433CA;
+        Tue, 22 Aug 2023 09:01:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692694914;
+        bh=oCbojt07SO8RbzwvZv92plbP41oFUdM1PKdym5EtsfI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ejrTcNOML+v/yoUgA5Kwpb44WA3VNRLu9jjOGOsnxQIwSlaxCp540Hmvyg63i9rtH
+         NdoIi551+poyczVZA2UTFZ5DlC0VSUsvPKRz8YEWfUb6M0souzHca+GM79eNmbfCU5
+         KVoBkD6GSip0E/5EzRgqxXSf3zqmL/jBy3g4trtpSvDWQ/UeiGuIPipI/KSLm8PHrj
+         wi0oMF8WbQ9eHTlZpyyhkZL2HPZcXItn3Y6DCNL5+hE8LvRIw54l2RyqdM7hBxUYBt
+         IsuqXXAbc3ytNVE7BX3Ogu6VXKu/H+zqfrNwHgy41qXj3G0NyAPja/nQyUezJtWl13
+         WQJp9W02FGyEw==
+Date:   Tue, 22 Aug 2023 11:01:44 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Franklin =?utf-8?B?4oCcU25haXBl4oCd?= Mathieu <snaipe@arista.com>,
+        ovt@google.com, corbet@lwn.net, akpm@linux-foundation.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH] shmem: add support for user extended attributes
+Message-ID: <20230822-mammut-weinlaune-7925b2a8af59@brauner>
+References: <9b8d38f0-fd22-3f98-d070-16baf976ecb5@google.com>
+ <20230814082339.2006418-1-snaipe@arista.com>
+ <986c412c-669a-43fe-d72a-9e81bca8211@google.com>
+ <CAK8sBDM5aid1vkCKhBxqUHXrG_FbDRN0noLtPkcPv=jXb7NTNg@mail.gmail.com>
+ <20230815-sensibel-weltumsegelung-6593f2195293@brauner>
+ <924ed61c-5681-aa8b-d943-7f73694d159@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <924ed61c-5681-aa8b-d943-7f73694d159@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The smp_processor_id() shouldn't be called from preemptible code.
-Instead use get_cpu() and put_cpu() which disables preemption in
-addition to getting the processor id. This fixes the following bug:
+> "tmpfs,xattr: GFP_KERNEL_ACCOUNT for simple xattrs" just sent to fix it:
+> https://lore.kernel.org/linux-fsdevel/f6953e5a-4183-8314-38f2-40be60998615@google.com/
 
-[  119.143590] sysrq: Show backtrace of all active CPUs
-[  119.143902] BUG: using smp_processor_id() in preemptible [00000000] code: bash/873
-[  119.144586] caller is debug_smp_processor_id+0x20/0x30
-[  119.144827] CPU: 6 PID: 873 Comm: bash Not tainted 5.10.124-dirty #3
-[  119.144861] Hardware name: QEMU QEMU Virtual Machine, BIOS 2023.05-1 07/22/2023
-[  119.145053] Call trace:
-[  119.145093]  dump_backtrace+0x0/0x1a0
-[  119.145122]  show_stack+0x18/0x70
-[  119.145141]  dump_stack+0xc4/0x11c
-[  119.145159]  check_preemption_disabled+0x100/0x110
-[  119.145175]  debug_smp_processor_id+0x20/0x30
-[  119.145195]  sysrq_handle_showallcpus+0x20/0xc0
-[  119.145211]  __handle_sysrq+0x8c/0x1a0
-[  119.145227]  write_sysrq_trigger+0x94/0x12c
-[  119.145247]  proc_reg_write+0xa8/0xe4
-[  119.145266]  vfs_write+0xec/0x280
-[  119.145282]  ksys_write+0x6c/0x100
-[  119.145298]  __arm64_sys_write+0x20/0x30
-[  119.145315]  el0_svc_common.constprop.0+0x78/0x1e4
-[  119.145332]  do_el0_svc+0x24/0x8c
-[  119.145348]  el0_svc+0x10/0x20
-[  119.145364]  el0_sync_handler+0x134/0x140
-[  119.145381]  el0_sync+0x180/0x1c0
-
-Cc: stable@vger.kernel.org
-Fixes: 47cab6a722d4 ("debug lockups: Improve lockup detection, fix generic arch fallback")
-Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
----
-Changes since v1:
-- Add "Cc: stable@vger.kernel.org" tag
----
- drivers/tty/sysrq.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/tty/sysrq.c b/drivers/tty/sysrq.c
-index 23198e3f1461a..6b4a28bcf2f5f 100644
---- a/drivers/tty/sysrq.c
-+++ b/drivers/tty/sysrq.c
-@@ -262,13 +262,14 @@ static void sysrq_handle_showallcpus(u8 key)
- 		if (in_hardirq())
- 			regs = get_irq_regs();
- 
--		pr_info("CPU%d:\n", smp_processor_id());
-+		pr_info("CPU%d:\n", get_cpu());
- 		if (regs)
- 			show_regs(regs);
- 		else
- 			show_stack(NULL, NULL, KERN_INFO);
- 
- 		schedule_work(&sysrq_showallcpus);
-+		put_cpu();
- 	}
- }
- 
--- 
-2.40.1
-
+Thank you. I snatched it now.
