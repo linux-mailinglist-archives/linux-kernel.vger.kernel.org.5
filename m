@@ -2,247 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A288783CBD
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 11:19:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD414783CBE
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 11:19:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234247AbjHVJT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 05:19:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48456 "EHLO
+        id S234254AbjHVJTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 05:19:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234131AbjHVJT0 (ORCPT
+        with ESMTP id S234249AbjHVJTa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 05:19:26 -0400
-Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com [IPv6:2607:f8b0:4864:20::933])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0BA8189
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 02:19:23 -0700 (PDT)
-Received: by mail-ua1-x933.google.com with SMTP id a1e0cc1a2514c-79414715edeso980692241.0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 02:19:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692695963; x=1693300763;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8nvpdjKXSBqBHYloPrbuamz5gPPZpwYPPdcO5Rimn7Y=;
-        b=lIjIfbtmR2VfB302I98ZJVNqp8a2UmqgCeTfRrQHGpTBh1hkST42i+4CP7DQ7beo+a
-         Vg9R122jgeKQ+Z54bDkkTzdqZ1/ktQTcuSqRs14YQuyJeAFMrQsYhGgWZ6QBs5j2/iYy
-         nzG7XSTari2xKqVkqrwum0qKfE5H6wjG6NUcRC0zv1OegYgo9gLL8sXROClOtsS9ZaaQ
-         f6Wg5tkDT9TyXptAlOG5D3Hk+nDkb2JZmdC6Wh7ipw1BkLaH/6YhYGLCl5nBqv8s3Br4
-         oWTUEbs9V6aEdtBiqMs9rjUTutSjh9w0pgRqSef8CcYDfFSB8lpCERxAEtqZBadT1N1r
-         yenA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692695963; x=1693300763;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8nvpdjKXSBqBHYloPrbuamz5gPPZpwYPPdcO5Rimn7Y=;
-        b=jiXfybJjgO/2M6XEDdtr3MqKW6UswGF83n7+8VWPWOozfBm3rVPQhUdEKQxk7Q/7DQ
-         6y26WIaOaaVfDiZFPwDMv79UDriyJUcsyPiFx/of0kHUiX+ZZNC4qgExvxymNsgeIbQc
-         pmR08/St4DgZ1gjSuIUKK8JhYe4MzO0+6TQ1aS3lv2gLpE0Z7bIfj1GLJt42EIgj6oXg
-         BfMXEX7cq2YZ3tM8upjYxqq9dM2mNcR4f/wFVgp159P5AnJBfeW1ODcB23RarDNlpQTD
-         +mAdK7RpczjvPjiWfw4mOaOCdZIFqcWnwT76RmDgdtgFpHil3NjOI3YalRLkb4Ox1KPm
-         kcGQ==
-X-Gm-Message-State: AOJu0Yz0Yrx0euAFt8eat0BMrBKYINpntbdP446c6iyqdakk8IpBsC4Z
-        yQa9xPg9pElJjgEC59/OK0GVpIJHWZ5jy00bt2medA==
-X-Google-Smtp-Source: AGHT+IFniA3ENsW+7fd9ZvvNB/PCzGmL1RKQj7BUmj8xkYjGOWdrte3GnZTJFLPiQlit6Yo34ynWmAN0u450b+Rt400=
-X-Received: by 2002:a05:6102:2446:b0:44d:521b:8ec with SMTP id
- g6-20020a056102244600b0044d521b08ecmr3144126vss.20.1692695962948; Tue, 22 Aug
- 2023 02:19:22 -0700 (PDT)
+        Tue, 22 Aug 2023 05:19:30 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 93908113
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 02:19:28 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 031D911FB;
+        Tue, 22 Aug 2023 02:20:09 -0700 (PDT)
+Received: from [10.57.5.95] (unknown [10.57.5.95])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BF3EC3F64C;
+        Tue, 22 Aug 2023 02:19:26 -0700 (PDT)
+Message-ID: <f468b461-b203-5179-eb6d-9432b9911329@arm.com>
+Date:   Tue, 22 Aug 2023 10:19:21 +0100
 MIME-Version: 1.0
-References: <20230821194128.754601642@linuxfoundation.org>
-In-Reply-To: <20230821194128.754601642@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 22 Aug 2023 14:49:11 +0530
-Message-ID: <CA+G9fYsbpcnnN2O2eF0TJkz=9xdbtmpA1V9yKaPPrXC1izgPUA@mail.gmail.com>
-Subject: Re: [PATCH 6.4 000/234] 6.4.12-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 1/3] iommu/io-pgtable-arm: Add nents_per_pgtable in struct
+ io_pgtable_cfg
+Content-Language: en-GB
+To:     Nicolin Chen <nicolinc@nvidia.com>, will@kernel.org, jgg@nvidia.com
+Cc:     joro@8bytes.org, jean-philippe@linaro.org, apopple@nvidia.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux.dev
+References: <cover.1692693557.git.nicolinc@nvidia.com>
+ <0fe68babdb3a07adf024ed471fead4e3eb7e703f.1692693557.git.nicolinc@nvidia.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <0fe68babdb3a07adf024ed471fead4e3eb7e703f.1692693557.git.nicolinc@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 22 Aug 2023 at 01:30, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 6.4.12 release.
-> There are 234 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 23 Aug 2023 19:40:45 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
-6.4.12-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-6.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On 2023-08-22 09:45, Nicolin Chen wrote:
+> Add a new nents_per_pgtable in struct io_pgtable_cfg to store the number
+> of entries per IO pagetable, so it can be passed back to an IOMMU driver.
+> It will be used by one of the following changes to set the maximum number
+> of TLBI operations in the arm-smmu-v3 driver.
+> 
+> Signed-off-by: Nicolin Chen <nicolinc@nvidia.com>
+> ---
+>   drivers/iommu/io-pgtable-arm.c | 3 +++
+>   include/linux/io-pgtable.h     | 2 ++
+>   2 files changed, 5 insertions(+)
+> 
+> diff --git a/drivers/iommu/io-pgtable-arm.c b/drivers/iommu/io-pgtable-arm.c
+> index 72dcdd468cf3..7583d9ecca2b 100644
+> --- a/drivers/iommu/io-pgtable-arm.c
+> +++ b/drivers/iommu/io-pgtable-arm.c
+> @@ -891,6 +891,7 @@ arm_64_lpae_alloc_pgtable_s1(struct io_pgtable_cfg *cfg, void *cookie)
+>   
+>   	/* TTBR */
+>   	cfg->arm_lpae_s1_cfg.ttbr = virt_to_phys(data->pgd);
+> +	cfg->nents_per_pgtable = 1 << data->bits_per_level;
+>   	return &data->iop;
+>   
+>   out_free_data:
+> @@ -993,6 +994,7 @@ arm_64_lpae_alloc_pgtable_s2(struct io_pgtable_cfg *cfg, void *cookie)
+>   
+>   	/* VTTBR */
+>   	cfg->arm_lpae_s2_cfg.vttbr = virt_to_phys(data->pgd);
+> +	cfg->nents_per_pgtable = 1 << data->bits_per_level;
+>   	return &data->iop;
+>   
+>   out_free_data:
+> @@ -1071,6 +1073,7 @@ arm_mali_lpae_alloc_pgtable(struct io_pgtable_cfg *cfg, void *cookie)
+>   					  ARM_MALI_LPAE_TTBR_ADRMODE_TABLE;
+>   	if (cfg->coherent_walk)
+>   		cfg->arm_mali_lpae_cfg.transtab |= ARM_MALI_LPAE_TTBR_SHARE_OUTER;
+> +	cfg->nents_per_pgtable = 1 << data->bits_per_level;
 
+The result of this highly complex and expensive calculation is clearly 
+redundant with the existing bits_per_level field, so why do we need to 
+waste space storing when the driver could simply use bits_per_level?
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Thanks,
+Robin.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-## Build
-* kernel: 6.4.12-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-6.4.y
-* git commit: 2a85de3fab437809a8c511762a7ef4d75db71585
-* git describe: v6.4.11-235-g2a85de3fab43
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.4.y/build/v6.4.1=
-1-235-g2a85de3fab43
-
-## Test Regressions (compared to v6.4.11)
-
-## Metric Regressions (compared to v6.4.11)
-
-## Test Fixes (compared to v6.4.11)
-
-## Metric Fixes (compared to v6.4.11)
-
-## Test result summary
-total: 153971, pass: 133147, fail: 1667, skip: 18988, xfail: 169
-
-## Build Summary
-* arc: 5 total, 5 passed, 0 failed
-* arm: 141 total, 139 passed, 2 failed
-* arm64: 52 total, 49 passed, 3 failed
-* i386: 39 total, 37 passed, 2 failed
-* mips: 28 total, 26 passed, 2 failed
-* parisc: 4 total, 4 passed, 0 failed
-* powerpc: 37 total, 35 passed, 2 failed
-* riscv: 26 total, 23 passed, 3 failed
-* s390: 16 total, 14 passed, 2 failed
-* sh: 12 total, 10 passed, 2 failed
-* sparc: 8 total, 8 passed, 0 failed
-* x86_64: 46 total, 44 passed, 2 failed
-
-## Test suites summary
-* boot
-* kselftest-android
-* kselftest-arm64
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers-dma-buf
-* kselftest-efivarfs
-* kselftest-exec
-* kselftest-filesystems
-* kselftest-filesystems-binderfs
-* kselftest-filesystems-epoll
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-ftrace
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-net-forwarding
-* kselftest-net-mptcp
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-user_events
-* kselftest-vDSO
-* kselftest-vm
-* kselftest-watchdog
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libgpiod
-* libhugetlbfs
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds
-* ltp-commands
-* ltp-containers
-* ltp-controllers
-* ltp-cpuhotplug
-* ltp-crypto
-* ltp-cve
-* ltp-dio
-* ltp-fcntl-locktests
-* ltp-filecaps
-* ltp-fs
-* ltp-fs_bind
-* ltp-fs_perms_simple
-* ltp-fsx
-* ltp-hugetlb
-* ltp-io
-* ltp-ipc
-* ltp-math
-* ltp-mm
-* ltp-nptl
-* ltp-pty
-* ltp-sched
-* ltp-securebits
-* ltp-smoke
-* ltp-syscalls
-* ltp-tracing
-* network-basic-tests
-* perf
-* rcutorture
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+>   	return &data->iop;
+>   
+> diff --git a/include/linux/io-pgtable.h b/include/linux/io-pgtable.h
+> index 1b7a44b35616..4b55a327abc1 100644
+> --- a/include/linux/io-pgtable.h
+> +++ b/include/linux/io-pgtable.h
+> @@ -55,6 +55,7 @@ struct iommu_flush_ops {
+>    *                 tables.
+>    * @ias:           Input address (iova) size, in bits.
+>    * @oas:           Output address (paddr) size, in bits.
+> + * @nents_per_pgtable: Number of entries per page table.
+>    * @coherent_walk  A flag to indicate whether or not page table walks made
+>    *                 by the IOMMU are coherent with the CPU caches.
+>    * @tlb:           TLB management callbacks for this set of tables.
+> @@ -96,6 +97,7 @@ struct io_pgtable_cfg {
+>   	unsigned long			pgsize_bitmap;
+>   	unsigned int			ias;
+>   	unsigned int			oas;
+> +	unsigned int			nents_per_pgtable;
+>   	bool				coherent_walk;
+>   	const struct iommu_flush_ops	*tlb;
+>   	struct device			*iommu_dev;
