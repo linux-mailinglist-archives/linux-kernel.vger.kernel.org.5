@@ -2,182 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3D69784BAF
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 22:57:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AD05784BB8
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 23:00:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230070AbjHVU5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 16:57:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35680 "EHLO
+        id S230247AbjHVVAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 17:00:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230055AbjHVU5U (ORCPT
+        with ESMTP id S229562AbjHVVAF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 16:57:20 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44D2ACFE
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 13:57:18 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-4ff8a1746e0so7554402e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 13:57:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692737836; x=1693342636;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PzHAvJvU/nApA2yMoHvJ1G6cDPyhvuZ9u+E3dxZTTl0=;
-        b=CZwvKWGK3DckCO7Fi8mS3W7MwGDdoUCTakynZcFLiDP12Qs5dJmvuSPK56+EGHsd//
-         s8vDrDu7Bg6unT9uqT3ibMk3RpFhOr3LKZ0pDmc02GvoA9AtyrZNlwVyORhAu8GHZWFy
-         95WyLiJons3xvMHdyD965uHJc59jKIxt0tp1+SzhUNHHORN7RBgyeWb9V8l7d/8eYiKp
-         MKp8kGZKcktKz4f22biVRmiDQbjAEoymZimW+GqcfyLfX8+TphZHpq9uT9KQe/l6IzK2
-         qZbke/ZRXqDWSc9NxgxDBPyXxkOKKfKfAFrJb4dIJ395fdM2xfUr+0oAC8JRAmuiCNhD
-         n+OQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692737836; x=1693342636;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PzHAvJvU/nApA2yMoHvJ1G6cDPyhvuZ9u+E3dxZTTl0=;
-        b=JphL+PSH3pzNf+Rlaq6ZTjd2d0Wqq1kEyRBZ/FxHbs4GJt333iIuwHa70UKWWnb7zp
-         k/DqEF0K3Npw4Y60h0dliqCFyuwkUbZHVt/jyWLFVBvEaWEsRr7fxwv9onZO8FL9w0bl
-         rdwurdnqAAPuiAubJcUHTxIoLVxtIlQ4uq435/U9+6LbJPxPr9BB3Dh8jTR1vqYg9hhO
-         yq59A7SXVKRBWKurUuH89e19EG5T4WIx1fICzClGpLttpuuiUlzVy012dYN9sSxa9ZYv
-         QSq8kVrr3lPBWOghDCAWQ/74etKOIDLny4tV5iRqdv+tguoThpOM1EfdCydE+lt/a9w4
-         ajeQ==
-X-Gm-Message-State: AOJu0YzT+X/WDzx4dM/uaq7gjoLeZRmGIyjwtYyHkNysXgqVfAuUImLq
-        LBVZL3sqYYZwO+NzsN9BTGljGfVHrYDu2BuySqXzuw==
-X-Google-Smtp-Source: AGHT+IENL3fGaa5c8yeC0Cvpb3NAyDAe2M8ES19Hvh6sDem/HbedUBIz+q/XLprGZ7xJXvyjWuu+0QOfvgRmwAHcxOU=
-X-Received: by 2002:a05:6512:2522:b0:4f1:3d7d:409e with SMTP id
- be34-20020a056512252200b004f13d7d409emr9198896lfb.0.1692737836393; Tue, 22
- Aug 2023 13:57:16 -0700 (PDT)
+        Tue, 22 Aug 2023 17:00:05 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4669C1B0;
+        Tue, 22 Aug 2023 14:00:02 -0700 (PDT)
+Received: from [192.168.0.5] (71-212-112-68.tukw.qwest.net [71.212.112.68])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 6E15F2126CD1;
+        Tue, 22 Aug 2023 14:00:01 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 6E15F2126CD1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1692738001;
+        bh=Wik2nYlgFy2h1vwJvpE3BbkkhoxbzmyA5NHLHlPVd2g=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=Z/J45Xowxo29xY/xCJi1OztlNqr4L62uk0uJjhJWK4PJzqvW/0uXbhZf+d5fywsGH
+         nOWnLmddSQJ3gTJiBRWuTuimYwrk/fjCu9d3kFnz1ucTJUSNR0ztdQW7W6I6mAUb3R
+         4TRYyaYL/egYfQNi9SS8ROI9g6UVFOxwWsObhWFA=
+Message-ID: <c53fa288-a16d-4f23-83de-84d6ff20823c@linux.microsoft.com>
+Date:   Tue, 22 Aug 2023 14:00:10 -0700
 MIME-Version: 1.0
-References: <CAFhGd8ryUcu2yPC+dFyDKNuVFHxT-=iayG+n2iErotBxgd0FVw@mail.gmail.com>
- <CAKwvOd=p_7gWwBnR_RHUPukkG1A25GQy6iOnX_eih7u65u=oxw@mail.gmail.com> <CAO-hwJLio2dWs01VAhCgmub5GVxRU-3RFQifviOL0OTaqj9Ktg@mail.gmail.com>
-In-Reply-To: <CAO-hwJLio2dWs01VAhCgmub5GVxRU-3RFQifviOL0OTaqj9Ktg@mail.gmail.com>
-From:   Justin Stitt <justinstitt@google.com>
-Date:   Tue, 22 Aug 2023 13:57:04 -0700
-Message-ID: <CAFhGd8qmXD6VN+nuXKtV_Uz14gzY1Kqo7tmOAhgYpTBdCnoJRQ@mail.gmail.com>
-Subject: Re: selftests: hid: trouble building with clang due to missing header
-To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
-        linux-input@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Kees Cook <keescook@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 15/15] Drivers: hv: Add modules to expose /dev/mshv to
+ VMMs running on Hyper-V
+Content-Language: en-US
+To:     Saurabh Singh Sengar <ssengar@microsoft.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>
+Cc:     "patches@lists.linux.dev" <patches@lists.linux.dev>,
+        "Michael Kelley (LINUX)" <mikelley@microsoft.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        "apais@linux.microsoft.com" <apais@linux.microsoft.com>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        "ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
+        MUKESH RATHOR <mukeshrathor@microsoft.com>,
+        "stanislav.kinsburskiy@gmail.com" <stanislav.kinsburskiy@gmail.com>,
+        "jinankjain@linux.microsoft.com" <jinankjain@linux.microsoft.com>,
+        vkuznets <vkuznets@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>
+References: <1692309711-5573-1-git-send-email-nunodasneves@linux.microsoft.com>
+ <1692309711-5573-16-git-send-email-nunodasneves@linux.microsoft.com>
+ <PUZP153MB063571CB1D30770996948726BE1EA@PUZP153MB0635.APCP153.PROD.OUTLOOK.COM>
+From:   Nuno Das Neves <nunodasneves@linux.microsoft.com>
+In-Reply-To: <PUZP153MB063571CB1D30770996948726BE1EA@PUZP153MB0635.APCP153.PROD.OUTLOOK.COM>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 1:52=E2=80=AFPM Benjamin Tissoires
-<benjamin.tissoires@redhat.com> wrote:
->
-> Justin,
->
-> On Tue, Aug 22, 2023 at 10:44=E2=80=AFPM Nick Desaulniers
-> <ndesaulniers@google.com> wrote:
-> >
-> > + Ben, author of commit dbb60c8a26da ("selftests: add tests for the
-> > HID-bpf initial implementation")
-> >
-> > On Tue, Aug 22, 2023 at 1:34=E2=80=AFPM Justin Stitt <justinstitt@googl=
-e.com> wrote:
-> > >
-> > > Hi, I'd like to get some help with building the kselftest target.
-> > >
-> > > I am running into some warnings within the hid tree:
-> > > | progs/hid_bpf_helpers.h:9:38: error: declaration of 'struct
-> > > hid_bpf_ctx' will \
-> > > |       not be visible outside of this function [-Werror,-Wvisibility=
-]
-> > > |     9 | extern __u8 *hid_bpf_get_data(struct hid_bpf_ctx *ctx,
-> > > |       |                                      ^
-> > > | progs/hid.c:23:35: error: incompatible pointer types passing 'struc=
-t
-> > > hid_bpf_ctx *' \
-> > > |       to parameter of type 'struct hid_bpf_ctx *'
-> > > [-Werror,-Wincompatible-pointer-types]
-> > > |    23 |         __u8 *rw_data =3D hid_bpf_get_data(hid_ctx, 0 /*
-> > > offset */, 3 /* size */);
-> > >
-> > > This warning, amongst others, is due to some symbol not being include=
-d.
-> > > In this case, `struct hid_bpf_ctx` is not being defined anywhere that=
- I
-> > > can see inside of the testing tree itself.
-> > >
-> > > Instead, `struct hid_bpf_ctx` is defined and implemented at
-> > > `include/linux/hid_bpf.h`. AFAIK, I cannot just include this header a=
-s
-> > > the tools directory is a separate entity from kbuild and these tests =
-are
-> > > meant to be built/ran without relying on kernel headers. Am I correct=
- in
-> > > this assumption? At any rate, the include itself doesn't work. How ca=
-n I
-> > > properly include this struct definition and fix the warning(s)?
-> > >
-> > > Please note that we cannot just forward declare the struct as it is
-> > > being dereferenced and would then yield a completely different
-> > > error/warning for an incomplete type. We need the entire implementati=
-on
-> > > for the struct included.
-> > >
-> > > Other symbols also defined in `include/linux/hid_bpf.h` that we need =
-are
-> > > `struct hid_report_type` and `HID_BPF_FLAG...`
-> > >
-> > > Here's the invocation I am running to build kselftest:
-> > > `$ make LLVM=3D1 ARCH=3Dx86_64 mrproper headers && make LLVM=3D1 ARCH=
-=3Dx86_64
-> > > -j128 V=3D1 -C tools/testing/selftests`
->
-> I think I fixed the same issue in the script I am running to launch
-> those tests in a VM. This was in commit
-> f9abdcc617dad5f14bbc2ebe96ee99f3e6de0c4e (in the v6.5-rc+ series).
->
-> And in the commit log, I wrote:
-> ```
-> According to commit 01d6c48a828b ("Documentation: kselftest:
-> "make headers" is a prerequisite"), running the kselftests requires
-> to run "make headers" first.
-> ```
->
-> So my assumption is that you also need to run "make headers" with the
-> proper flags before compiling the selftests themselves (I might be
-> wrong but that's how I read the commit).
+On 8/21/2023 11:18 AM, Saurabh Singh Sengar wrote:
+> 
+> 
+>> -----Original Message-----
+>> From: Nuno Das Neves <nunodasneves@linux.microsoft.com>
+>> Sent: Friday, August 18, 2023 3:32 AM
+>> To: linux-hyperv@vger.kernel.org; linux-kernel@vger.kernel.org;
+>> x86@kernel.org; linux-arm-kernel@lists.infradead.org; linux-
+>> arch@vger.kernel.org
+>> Cc: patches@lists.linux.dev; Michael Kelley (LINUX)
+>> <mikelley@microsoft.com>; KY Srinivasan <kys@microsoft.com>;
+>> wei.liu@kernel.org; Haiyang Zhang <haiyangz@microsoft.com>; Dexuan Cui
+>> <decui@microsoft.com>; apais@linux.microsoft.com; Tianyu Lan
+>> <Tianyu.Lan@microsoft.com>; ssengar@linux.microsoft.com; MUKESH
+>> RATHOR <mukeshrathor@microsoft.com>; stanislav.kinsburskiy@gmail.com;
+>> jinankjain@linux.microsoft.com; vkuznets <vkuznets@redhat.com>;
+>> tglx@linutronix.de; mingo@redhat.com; bp@alien8.de;
+>> dave.hansen@linux.intel.com; hpa@zytor.com; will@kernel.org;
+>> catalin.marinas@arm.com
+>> Subject: [PATCH v2 15/15] Drivers: hv: Add modules to expose /dev/mshv to
+>> VMMs running on Hyper-V
+>>
+>> Add mshv, mshv_root, and mshv_vtl modules:
+>>
+> 
+> <snip>
+> 
+>> +	ret = mshv_set_vp_registers(vp->index, vp->partition->id,
+>> +				    1, &dispatch_suspend);
+>> +	if (ret)
+>> +		pr_err("%s: failed to suspend partition %llu vp %u\n",
+>> +			__func__, vp->partition->id, vp->index);
+>> +
+>> +	return ret;
+>> +}
+>> +
+>> +static int
+>> +get_vp_signaled_count(struct mshv_vp *vp, u64 *count)
+>> +{
+>> +	int ret;
+>> +	struct hv_register_assoc root_signal_count = {
+>> +		.name = HV_REGISTER_VP_ROOT_SIGNAL_COUNT,
+>> +	};
+>> +
+>> +	ret = mshv_get_vp_registers(vp->index, vp->partition->id,
+>> +				    1, &root_signal_count);
+>> +
+>> +	if (ret) {
+>> +		pr_err("%s: failed to get root signal count for partition %llu vp
+>> %u",
+>> +			__func__, vp->partition->id, vp->index);
+>> +		*count = 0;
+> 
+> Have we missed a return here ?
+> Moreover, the return type of this function is never checked consider
+> checking it or change it to void.
+> 
 
-In my original email I pasted the invocation I used which includes the
-headers target. What are the "proper flags" in this case?
+Thanks, we do need to return here.
 
->
-> Cheers,
-> Benjamin
->
-> > >
-> > > If anyone is currently getting clean builds of kselftest with clang,
-> > > what invocation works for you?
-> > >
-> > >
-> > >
-> > > Link: https://github.com/ClangBuiltLinux/linux/issues/1698
-> > > Full-build-log:
-> > > https://gist.github.com/JustinStitt/b217f6e47c1d762e5e1cc6c3532f1bbb
-> > > (V=3D1)
-> > >
-> > > Thanks.
-> > > Justin
-> >
-> >
-> >
-> > --
-> > Thanks,
-> > ~Nick Desaulniers
-> >
->
+This function is called on a cleanup path (deleting the guest VM), so if it fails
+something is wrong. Instead of returning void, I think we should check the return
+value with WARN_ON(), and abort the cleanup if it failed.
+
+>> +
+>> +/* Retrieve and stash the supported scheduler type */
+>> +static int __init mshv_retrieve_scheduler_type(void)
+>> +{
+>> +	struct hv_input_get_system_property *input;
+>> +	struct hv_output_get_system_property *output;
+>> +	unsigned long flags;
+>> +	u64 status;
+>> +
+>> +	local_irq_save(flags);
+>> +	input = *this_cpu_ptr(hyperv_pcpu_input_arg);
+>> +	output = *this_cpu_ptr(hyperv_pcpu_output_arg);
+>> +
+>> +	memset(input, 0, sizeof(*input));
+>> +	memset(output, 0, sizeof(*output));
+>> +	input->property_id = HV_SYSTEM_PROPERTY_SCHEDULER_TYPE;
+>> +
+>> +	status = hv_do_hypercall(HVCALL_GET_SYSTEM_PROPERTY, input,
+>> output);
+>> +	if (!hv_result_success(status)) {
+>> +		local_irq_restore(flags);
+>> +		pr_err("%s: %s\n", __func__, hv_status_to_string(status));
+>> +		return hv_status_to_errno(status);
+>> +	}
+>> +
+>> +	hv_scheduler_type = output->scheduler_type;
+>> +	local_irq_restore(flags);
+>> +
+>> +	pr_info("mshv: hypervisor using %s\n",
+>> scheduler_type_to_string(hv_scheduler_type));
+> 
+> Nit: In this file we are using two styles of prints, few are appended with
+> "mshv:" and few with "__func__".  It's better to have a single style
+> for one module.
+
+Thanks, I'll switch them all to __func__
