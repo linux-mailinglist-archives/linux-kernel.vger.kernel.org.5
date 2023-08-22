@@ -2,215 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64FDE78383A
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 04:59:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ACB578383C
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 05:00:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232400AbjHVC7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 22:59:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37644 "EHLO
+        id S232406AbjHVDAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 23:00:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231926AbjHVC7b (ORCPT
+        with ESMTP id S231126AbjHVDAl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 22:59:31 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 587A3184
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 19:59:29 -0700 (PDT)
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37M2p47Q009298;
-        Tue, 22 Aug 2023 02:59:22 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=MMwpKZTR3loitLXFWxg9FyWYJi69JC54MDLGW2Rxaik=;
- b=T81PzbdUlOp/KZfeN2QXUlp/zvFl6IrMbHJ7F98V1ofolG6+4IhLpjwtM848Y2LDUQOQ
- yKWZNQrHLrNe/Qtb7uNXLl2Y7MybYJdPn/gWk596zIzoS60IzBY2oNnA4gX8BJuE4B9F
- Qg6CpyGM5Gul3eh5lacRR/OcOL1ntsGnHYaYw4R6CXRiUtkizxUTUkhryVTdiR2zaN8c
- MU+JgCZV6zbuum/G/EiNa3fecx6mvBafBk9cUTX4O6bmfToAzIUn+2sd76iOawSrQ5d1
- lu0HqInh5KgL2v0obtiLQGq/m+2ZrLqxaOg7yQKR881eQ90DlB8VZrugxsnDBsfJDjAm Qw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3smmkn03ts-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Aug 2023 02:59:22 +0000
-Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37M2pYfY011129;
-        Tue, 22 Aug 2023 02:59:22 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3smmkn03tn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Aug 2023 02:59:21 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37M1FF7l007242;
-        Tue, 22 Aug 2023 02:59:21 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3smc7w36yq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Aug 2023 02:59:21 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37M2xJB524379974
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 22 Aug 2023 02:59:19 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6C61D20049;
-        Tue, 22 Aug 2023 02:59:19 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 708EE20040;
-        Tue, 22 Aug 2023 02:59:18 +0000 (GMT)
-Received: from ozlabs.au.ibm.com (unknown [9.192.253.14])
-        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Tue, 22 Aug 2023 02:59:18 +0000 (GMT)
-Received: from jarvis.ozlabs.ibm.com (haven.au.ibm.com [9.192.254.114])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ozlabs.au.ibm.com (Postfix) with ESMTPSA id 629A360113;
-        Tue, 22 Aug 2023 12:59:15 +1000 (AEST)
-Message-ID: <6672135f7db2ae6481b605d7d33f2265a562712f.camel@linux.ibm.com>
-Subject: Re: [PATCH v2] [next] initramfs: Parse KBUILD_BUILD_TIMESTAMP as
- UTC date
-From:   Andrew Donnellan <ajd@linux.ibm.com>
-To:     Paulo Miguel Almeida <paulo.miguel.almeida.rodenas@gmail.com>,
-        masahiroy@kernel.org, bgray@linux.ibm.com, n.schier@avm.de
-Cc:     linux-kernel@vger.kernel.org, keescook@chromium.org
-Date:   Tue, 22 Aug 2023 12:59:15 +1000
-In-Reply-To: <ZOPTbkHvj8XQiott@mail.google.com>
-References: <ZOPTbkHvj8XQiott@mail.google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: HiRkfrUS_4nZYAGFmDMo2ewKwDgumj-c
-X-Proofpoint-ORIG-GUID: fG2oGBsHWrjXLQGmQ5jB4BB_znbUNj2i
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Mon, 21 Aug 2023 23:00:41 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B88C184;
+        Mon, 21 Aug 2023 20:00:40 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-68a6cd7c6a6so254971b3a.1;
+        Mon, 21 Aug 2023 20:00:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692673240; x=1693278040;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=V9rfUX1u4J49X94MB9ALqEh64ViMp1rzQu7h3fdjufc=;
+        b=WbUmxXtLHsBzeFfjTvBbxz+tAqRHcV3W+q1fGCn04MOP2oOH7gu8NXS9fm5m0rctFH
+         55MwZP2fB3apWah2GE0IhbmmaqdhoU3s9CGH4bgN7XSp1tGMG8wiwZ6E6xmGjDSDaJNB
+         ovmsCyAvbQpCwrkeR+sMZvXnfmsuqsawvc/h4lLpYTNnmgF/KtN8ualZfvZMj3U6SSgn
+         7wY1CckLUMd1cngGqfvBmP1c6HRv3ybLZlFNfnt/bASraLPB1kde5/0+0t25R5uLTxZT
+         8Bm9jidqTEEMiVNO07Ka1/rFQnSsCI8L6XwoOtCeSJaJ+uPkcUJdWwNn3YdpssvbQKSA
+         efpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692673240; x=1693278040;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=V9rfUX1u4J49X94MB9ALqEh64ViMp1rzQu7h3fdjufc=;
+        b=lswJIPvFFqxc5c1tedF36InpJy7/KrD64LyZvewZ6YOBfu2CwIixSQDVol4BBwMAup
+         3IUWE39+kBLa8hXYAkKLW1uek4WpkILm3MOvXXOyxInfgacUmwVXNQcw8VRBEd7gylDv
+         pdxECwvZB+CQrrBir8HppSigfPFSUhVUovEqJPBtpARjX06+WqYOkyrMRE7XhyxUOaTk
+         H2mY3+/SMol/yjdI47vN2jeNPUap5nHccomDzGAtSUNLmGHgS8ps1hBLGtcndsBEYjvq
+         6tsgAKEr4PNjjupImZtco1eAWEtjfij+z+r6biRSLK7sycjPNSLNk8ufRX1uFmASwajf
+         N1bw==
+X-Gm-Message-State: AOJu0Yz8PcfRSnYEMZpvlzMeNOL4kqVGKJLqqB9inlx6Sk4p/ialBKxw
+        gRxdAxKlRiOWbZodQoVhMtU=
+X-Google-Smtp-Source: AGHT+IEPUEaprDP/xtAgTBz3MFCvIwylRxhHji6XmYEcLC6SQBDdoIrJaM7ZgaMiruQBpHNqzWlcgA==
+X-Received: by 2002:a05:6a20:7488:b0:133:7ad8:712b with SMTP id p8-20020a056a20748800b001337ad8712bmr7912837pzd.52.1692673239808;
+        Mon, 21 Aug 2023 20:00:39 -0700 (PDT)
+Received: from debian.me ([103.124.138.83])
+        by smtp.gmail.com with ESMTPSA id c15-20020a170903234f00b001b9be3b94d3sm7744501plh.140.2023.08.21.20.00.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Aug 2023 20:00:39 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id 5CFF080696E1; Tue, 22 Aug 2023 10:00:37 +0700 (WIB)
+Date:   Tue, 22 Aug 2023 10:00:37 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+Subject: Re: [PATCH 6.1 000/194] 6.1.47-rc1 review
+Message-ID: <ZOQk1ethQ8mDedes@debian.me>
+References: <20230821194122.695845670@linuxfoundation.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-21_13,2023-08-18_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
- bulkscore=0 adultscore=0 impostorscore=0 malwarescore=0 phishscore=0
- lowpriorityscore=0 mlxscore=0 spamscore=0 priorityscore=1501
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308220019
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="7uBiktEJ0pmNpR/L"
+Content-Disposition: inline
+In-Reply-To: <20230821194122.695845670@linuxfoundation.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-08-22 at 09:13 +1200, Paulo Miguel Almeida wrote:
-> When KBUILD_BUILD_TIMESTAMP is specified, the date command will parse
-> it to Unix Epoch time in UTC. However, the date command is
-> timezone-aware so it will convert from the local timezone to UTC
-> first
-> which hits some of the sanity checks added on commit 5efb685bb3af1
-> ("initramfs: Check negative timestamp to prevent broken cpio
-> archive")
->=20
-> This creates an edge case for the UTC+<N> part of the world. For
-> instance
->=20
-> =C2=A0- In New Zealand (UTC+12:00):
-> =C2=A0=C2=A0=C2=A0=C2=A0 $ date -d"1970-01-01" +%s
-> =C2=A0=C2=A0=C2=A0=C2=A0 -43200
->=20
-> =C2=A0=C2=A0=C2=A0=C2=A0 $ make KBUILD_BUILD_TIMESTAMP=3D1970-01-01
-> =C2=A0=C2=A0=C2=A0=C2=A0 make[1]: Entering directory '<snip>/linux/'
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 GEN=C2=A0=C2=A0=C2=A0=C2=A0 Makefile
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 DESCEND objtool
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 INSTALL libsubcmd_headers
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 CALL=C2=A0=C2=A0=C2=A0 ../scripts/ch=
-ecksyscalls.sh
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 GEN=C2=A0=C2=A0=C2=A0=C2=A0 usr/init=
-ramfs_data.cpio
-> =C2=A0=C2=A0=C2=A0=C2=A0 ERROR: Timestamp out of range for cpio format
-> =C2=A0=C2=A0=C2=A0=C2=A0 make[4]: *** [../usr/Makefile:76: usr/initramfs_=
-data.cpio] Error
-> 1
->=20
-> =C2=A0- In Seattle, WA (UTC-07:00):
-> =C2=A0=C2=A0=C2=A0=C2=A0 $ date -d"1970-01-01" +%s
-> =C2=A0=C2=A0=C2=A0=C2=A0 32400
->=20
-> =C2=A0=C2=A0=C2=A0=C2=A0 $ make KBUILD_BUILD_TIMESTAMP=3D1970-01-01
-> =C2=A0=C2=A0=C2=A0=C2=A0 <builds fine>
->=20
-> Parse KBUILD_BUILD_TIMESTAMP date string as UTC so no localtime
-> conversion is done, which fixes the edge case aforementioned
->=20
-> Signed-off-by: Paulo Miguel Almeida
-> <paulo.miguel.almeida.rodenas@gmail.com>
 
-Thanks!
+--7uBiktEJ0pmNpR/L
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Andrew Donnellan <ajd@linux.ibm.com>
+On Mon, Aug 21, 2023 at 09:39:39PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.1.47 release.
+> There are 194 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>=20
 
-> ---
-> Changelog:
->=20
-> - v2: Document behaviour and way to override it on
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Documentation/kbuild/kbuild.rst. (Req: And=
-rew Donnellan)
->=20
-> - v1:
-> https://lore.kernel.org/lkml/ZMSdUS37BD5b%2Fdn7@mail.google.com/
-> ---
-> =C2=A0Documentation/kbuild/kbuild.rst | 9 ++++++++-
-> =C2=A0usr/gen_initramfs.sh=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 | 2 +-
-> =C2=A02 files changed, 9 insertions(+), 2 deletions(-)
->=20
-> diff --git a/Documentation/kbuild/kbuild.rst
-> b/Documentation/kbuild/kbuild.rst
-> index bd906407e307..8c204186c762 100644
-> --- a/Documentation/kbuild/kbuild.rst
-> +++ b/Documentation/kbuild/kbuild.rst
-> @@ -296,7 +296,14 @@ KBUILD_BUILD_TIMESTAMP
-> =C2=A0Setting this to a date string overrides the timestamp used in the
-> =C2=A0UTS_VERSION definition (uname -v in the running kernel). The value
-> has to
-> =C2=A0be a string that can be passed to date -d. The default value
-> -is the output of the date command at one point during build.
-> +is the output of the date command at one point during build. E.g.::
-> +
-> +=C2=A0=C2=A0=C2=A0 $ make KBUILD_BUILD_TIMESTAMP=3D"1991-08-25"
-> +
-> +By default, the value is interpreted as UTC. To override this,
-> append
-> +the desired timezone. E.g.::
-> +
-> +=C2=A0=C2=A0=C2=A0 $ make KBUILD_BUILD_TIMESTAMP=3D"1991-08-25 UTC+03:00"
-> =C2=A0
-> =C2=A0KBUILD_BUILD_USER, KBUILD_BUILD_HOST
-> =C2=A0------------------------------------
-> diff --git a/usr/gen_initramfs.sh b/usr/gen_initramfs.sh
-> index 14b5782f961a..a90316d9a080 100755
-> --- a/usr/gen_initramfs.sh
-> +++ b/usr/gen_initramfs.sh
-> @@ -221,7 +221,7 @@ while [ $# -gt 0 ]; do
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0shi=
-ft
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0;;
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0"-d")=C2=A0=C2=A0=C2=A0# date for file mtimes
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0timestamp=
-=3D"$(date -d"$1" +%s || :)"
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0timestamp=
-=3D"$(date -d"$1" -u +%s || :)"
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if =
-test -n "$timestamp"; then
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0timestamp=3D"-t $timestamp"
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0fi
+Successfully compiled and installed bindeb-pkgs on my computer (Acer
+Aspire E15, Intel Core i3 Haswell). No noticeable regressions.
+
+Tested-by: Bagas Sanjaya <bagasdotme@gmail.com>
 
 --=20
-Andrew Donnellan    OzLabs, ADL Canberra
-ajd@linux.ibm.com   IBM Australia Limited
+An old man doll... just what I always wanted! - Clara
+
+--7uBiktEJ0pmNpR/L
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZOQk0AAKCRD2uYlJVVFO
+ozXzAQCZI/bgzdBJ0CLOqilgxE+g8kjNqp1WL/59lwKhjPBzsQD/Xz4v+bTAUVZs
+Tbg8aSt0obkISjlRGk5Oiupi++u5aA4=
+=C27w
+-----END PGP SIGNATURE-----
+
+--7uBiktEJ0pmNpR/L--
