@@ -2,116 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 977CF784837
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 19:05:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1137E784840
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 19:12:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238011AbjHVRFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 13:05:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40532 "EHLO
+        id S232842AbjHVRMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 13:12:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237959AbjHVRFb (ORCPT
+        with ESMTP id S229668AbjHVRMR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 13:05:31 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 012ABD7;
-        Tue, 22 Aug 2023 10:05:29 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 804EF621B9;
-        Tue, 22 Aug 2023 17:05:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C885FC433C8;
-        Tue, 22 Aug 2023 17:05:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692723928;
-        bh=+/XUXGpY2ACCPD3YzzrpK3JtSQqnOrDZMR5OCAEhgDg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=G928dxMHkk1xDk/SX1dNnL+spqkcZRuq0C5Z40fu1Tb9wObRKQhtFzT0ipOQBh80X
-         M0BVrVcY8VmxczuqKrntaU8eZ0hqbR8EE1e7UAwRJz7snKD2v4GCMfQ9hgFuv0aBvc
-         38dD7dDK0lef3oOPG14kshG+9z1JoNQxNiubdga4OgfcfWS0/Ve3yY/2BVaHKd3pvN
-         cYaVOE7zu3UopoUb04Il5Y+Q0rXflj/XshyiU6vP1UN0j8lgReDw7ES6DUIaCc0AWt
-         YsDqY20pamlKghLyhjkFUTLoZ7KEg8lQf5JmsfEUOmiIbu47LoB18jET0Zcw96dt7s
-         2Z35AOyitp5nQ==
-Date:   Tue, 22 Aug 2023 18:05:19 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Will Deacon <will@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        Tue, 22 Aug 2023 13:12:17 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1689CFF
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 10:12:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=pAvdzBr8xJbkKP9oGhwJOhkcjpuEd8zfm5pqt9FtdRs=; b=Ekgm6EikmR6wKxMWvcB5lAVHZ/
+        zawmmDfz/wu1BrkzlQ8UHJuvsLyQtemb2FLLRSqAE2KClRiAuT/k0scuv438iGVvV8L1mQTRuHRWO
+        Shsqm2mDcbzwB30feJKklUNzNbpwc8jrgvxcv0QCRlVxDY4v1bzeBmmewrsd7tnEQXONbsmXunzLQ
+        su8FI2nZL7i61j+44TosPFs9DXpjd4bLTTXKiscLeV2oDz0TiWHSylDwNgEbiaTNyUfXMg5Zl5JK0
+        vsZ1ob2lV0EdArVXGwa0aNNxXD2xuTOXm8ylHBj+yDppn2CgYsz5gtfEaWNzAcnIL90w2RpPTvMq3
+        EwYSaX8A==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qYUvK-00HVGo-83; Tue, 22 Aug 2023 17:12:10 +0000
+Date:   Tue, 22 Aug 2023 18:12:10 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Andrew Morton <akpm@linux-foundation.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Shuah Khan <shuah@kernel.org>,
-        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
-        Deepak Gupta <debug@rivosinc.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v4 21/36] arm64/mm: Implement map_shadow_stack()
-Message-ID: <007e1239-1258-4b89-b5db-a1c505e7aff5@sirena.org.uk>
-References: <20230807-arm64-gcs-v4-0-68cfa37f9069@kernel.org>
- <20230807-arm64-gcs-v4-21-68cfa37f9069@kernel.org>
- <ZNZkADhSnodXuH5F@arm.com>
- <9c722954-8f30-425e-a0a4-6edad463620f@sirena.org.uk>
- <ZOTlBpAbSX6TSZzW@arm.com>
+        Mike Rapoport <rppt@kernel.org>
+Subject: Re: [PATCH] arm: dma-mapping: don't call folio_next() beyond the
+ requested region
+Message-ID: <ZOTsamBusDJu7wY0@casper.infradead.org>
+References: <CGME20230810092017eucas1p23930e5e5ec443ac7776002f2f09967d4@eucas1p2.samsung.com>
+ <20230810091955.3579004-1-m.szyprowski@samsung.com>
+ <ZNTEoUB7V5BtNvfp@shell.armlinux.org.uk>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="exkeVuAAvGvWqCpS"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZOTlBpAbSX6TSZzW@arm.com>
-X-Cookie: MIT:
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ZNTEoUB7V5BtNvfp@shell.armlinux.org.uk>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Aug 10, 2023 at 12:06:09PM +0100, Russell King (Oracle) wrote:
+> However, consider what happens with the above when offset is larger
+> than the first folio size. To show this, let's rewrite it:
 
---exkeVuAAvGvWqCpS
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hmm.  I thought 'off' had to be smaller than PAGE_SIZE.
 
-On Tue, Aug 22, 2023 at 05:40:38PM +0100, Catalin Marinas wrote:
-> On Fri, Aug 18, 2023 at 06:08:52PM +0100, Mark Brown wrote:
+> So, in all, to me it looks like this conversion is basically wrong, and it
+> needs to be something like:
+> 
+> 		size_t left = size;
+> 
+> 		while (off >= folio_size(folio)) {
+> 			off -= folio_size(folio);
+> 			folio = folio_next(folio);
+> 		}
 
-> > mprotect() uses arch_validate_flags() which we're already having cover
-> > this so it's already covered.
 
-> I searched the patches and there's no change to the arm64
-> arch_validate_flags(). Maybe I missed it.
+We can jump straight to the first folio without iterating over the
+folios in between.  Like so:
 
-It's in v5, the update to arch_validate_flags() was one of your comments
-=66rom another patch in the series.
+static void __dma_page_dev_to_cpu(struct page *page, unsigned long off,
+        size_t size, enum dma_data_direction dir)
+{
+        phys_addr_t paddr = page_to_phys(page) + off;
 
---exkeVuAAvGvWqCpS
-Content-Type: application/pgp-signature; name="signature.asc"
+...
 
------BEGIN PGP SIGNATURE-----
+        if (dir != DMA_TO_DEVICE && size >= PAGE_SIZE) {
+                struct folio *folio = pfn_folio(paddr / PAGE_SIZE);
+                size_t offset = offset_in_folio(folio, paddr);
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTk6s4ACgkQJNaLcl1U
-h9DssAf9EW4nFH7RlADvE4EkIEjYj6kUziCf6Hh2iZGyNLK3aFRxnL1nY1u1zP6j
-q/ACfgdD1+OLEnvbezfXu1bJ6avmKqmnJHnkP7zF5C/63tXoF8IUUwodZXV4d3DP
-54ezvT4yQ8Yu5AxpmLPCItJkHbeLAezr41EbEpcJWSfkAnXqhT/cO7JREhVKH/3f
-czlWXKNy8c+vwIXC7x7mRKOCeBcJ4mofi6i5T8JDYcL1b59ItFYO7zfcB1H/nPh7
-qV10AxG61aXsJoiboml1UjyOA8+ZaiLpjgGmxZ1YEZSF3C+TVw2Ul5Z4yHtgdVdA
-FQHfQawXdzOTgnqQG2uCel7CjV9LDQ==
-=ME24
------END PGP SIGNATURE-----
+                for (;;) {
+                        size_t sz = folio_size(folio) - offset;
 
---exkeVuAAvGvWqCpS--
+                        if (size < sz)
+                                break;
+                        if (!offset)
+                                set_bit(PG_dcache_clean, &folio->flags);
+                        offset = 0;
+                        size -= sz;
+                        if (!size)
+                                break;
+                        folio = folio_next(folio);
+                }
+        }
+
+Advantages:
+ * No more signed arithmetic
+ * Not even an intended arithmetic overflow
+ * Only one call to folio_size() per loop
+ * Folded the first conditional into the loop
+
+Disadvantages:
+ * Some maintainers don't like a for (;;) loop, or a two-exit loop.
+   (we could remove the for (;;) by moving 'sz' outside the loop and
+    recalculating it at the end of the loop)
