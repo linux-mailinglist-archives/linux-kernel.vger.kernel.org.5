@@ -2,201 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C3BD7844F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 17:05:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08BE37844FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 17:06:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235797AbjHVPFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 11:05:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34028 "EHLO
+        id S234630AbjHVPF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 11:05:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235003AbjHVPFL (ORCPT
+        with ESMTP id S234755AbjHVPF4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 11:05:11 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC5C019A
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 08:05:09 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-529c706ba0aso1023870a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 08:05:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google; t=1692716708; x=1693321508;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6aw1h5ltJY1xekDMwEa/K9T9lzVExgD9NzCephvXT7Q=;
-        b=OrIw82ZxO05jS6YdzGOPgw0TxbG/69fheBkmjShD1KLKpUpUYqdJk0mFn7KnzgIioa
-         VsaUvVaNm9QGi2zxPzk45Z7Xqva4xTNpgp59QR926dgrsK3+rOseu1IB/j9EOJbb4obp
-         ux7PXJXTiDQA9HE+L/XuXPX5TrYwocM+pDHfk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692716708; x=1693321508;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6aw1h5ltJY1xekDMwEa/K9T9lzVExgD9NzCephvXT7Q=;
-        b=CLKLfWsNxt7fB7rbICIFh8lbE3i9gqNzPFHwo6X1ZqowUJuT6wsfDZd4ez/upi1TEN
-         0jfSAy3/D0/WZN26I/TsHq21N0dqdYqoziPKljzkkhhz3ydSN16P/J+mvJeiYhWCPuLc
-         jCk0jqcl34X4O01KIl1OROhUJyr9Bw42J2VH/wmsIPEdHZtpxyNszt986IrJBKiXEynS
-         osYVd4lz7TTi2Ry6JztUNcaxVidcGE2Hvtu5dyjwvhC/KaU6f+7+5JBJ/ou5qRjaE8SX
-         ynKTypJkqCSPxNS0IxUXVbJkBEoK0E0YieiDY0ls37w+6iXJaT7BJAEdElCPlpoLjWbk
-         PNag==
-X-Gm-Message-State: AOJu0YxC/KKbCWb5TyVEswRzozl0pvsyCtJRlIxq5JB3UVO/Z6dJuIIC
-        WWDZaSRme4x5obDlA0C1IdwRzw==
-X-Google-Smtp-Source: AGHT+IHKUPeWelpuX45Y7jiCCZzspAkZ8+9vFiWM5y0dmpuiiz/NkCIJmz7A6LWRi7SXKrRyoxMRQg==
-X-Received: by 2002:a05:6402:268e:b0:523:2e64:122b with SMTP id w14-20020a056402268e00b005232e64122bmr7600966edd.3.1692716708186;
-        Tue, 22 Aug 2023 08:05:08 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id g21-20020aa7c855000000b005255f5735adsm7747597edt.24.2023.08.22.08.05.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Aug 2023 08:05:07 -0700 (PDT)
-Date:   Tue, 22 Aug 2023 17:05:05 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Jani Nikula <jani.nikula@linux.intel.com>
-Cc:     Maxime Ripard <mripard@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Emma Anholt <emma@anholt.net>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH RFC 00/13] drm/connector: Create HDMI Connector
- infrastructure
-Message-ID: <ZOTOoSATcVk9vaPn@phenom.ffwll.local>
-Mail-Followup-To: Jani Nikula <jani.nikula@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>, Emma Anholt <emma@anholt.net>,
-        Hans Verkuil <hverkuil@xs4all.nl>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-References: <20230814-kms-hdmi-connector-state-v1-0-048054df3654@kernel.org>
- <ZOTDKHxn2bOg+Xmg@phenom.ffwll.local>
- <sh3f7nuks7cww43ajz2iwrgzkxbqpk7752iu4pj4vtwaiv76x4@itnf6f2mnbgn>
- <87pm3f5dvo.fsf@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        Tue, 22 Aug 2023 11:05:56 -0400
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2079.outbound.protection.outlook.com [40.107.20.79])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B60E198;
+        Tue, 22 Aug 2023 08:05:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
+ s=selector2-armh-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BfrtkIHD41BdedViPMyVzl+Hx3DX+Q5alc3k43j05cI=;
+ b=KNOT4WQr2ip1eJmqTzufkPODbARBuwPqAGEyg6jwpkUvQuj4hpohkJYoQs4aBWGNs+kCbeSXxznfj+zGXGBCf8g7HLr3Enjotltdm9WrXEcSlyi/WfjklvG65BbEF8OcU8vJTeatsxO/PJ4bBqUjSnqV6qdc+zHyL2aebdW5uTM=
+Received: from DUZPR01CA0298.eurprd01.prod.exchangelabs.com
+ (2603:10a6:10:4b7::15) by AS8PR08MB8491.eurprd08.prod.outlook.com
+ (2603:10a6:20b:566::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.24; Tue, 22 Aug
+ 2023 15:05:49 +0000
+Received: from DBAEUR03FT036.eop-EUR03.prod.protection.outlook.com
+ (2603:10a6:10:4b7:cafe::79) by DUZPR01CA0298.outlook.office365.com
+ (2603:10a6:10:4b7::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.25 via Frontend
+ Transport; Tue, 22 Aug 2023 15:05:49 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 63.35.35.123)
+ smtp.mailfrom=arm.com; dkim=pass (signature was verified)
+ header.d=armh.onmicrosoft.com;dmarc=pass action=none header.from=arm.com;
+Received-SPF: Pass (protection.outlook.com: domain of arm.com designates
+ 63.35.35.123 as permitted sender) receiver=protection.outlook.com;
+ client-ip=63.35.35.123; helo=64aa7808-outbound-1.mta.getcheckrecipient.com;
+ pr=C
+Received: from 64aa7808-outbound-1.mta.getcheckrecipient.com (63.35.35.123) by
+ DBAEUR03FT036.mail.protection.outlook.com (100.127.142.193) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6723.15 via Frontend Transport; Tue, 22 Aug 2023 15:05:49 +0000
+Received: ("Tessian outbound 169aaa6bf2b7:v175"); Tue, 22 Aug 2023 15:05:49 +0000
+X-CheckRecipientChecked: true
+X-CR-MTA-CID: d37bb38f735fa9d8
+X-CR-MTA-TID: 64aa7808
+Received: from 44561ca60c7c.2
+        by 64aa7808-outbound-1.mta.getcheckrecipient.com id 31AF0FB9-91C9-4605-8271-7B75269EFF6E.1;
+        Tue, 22 Aug 2023 15:05:42 +0000
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com
+    by 64aa7808-outbound-1.mta.getcheckrecipient.com with ESMTPS id 44561ca60c7c.2
+    (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384);
+    Tue, 22 Aug 2023 15:05:42 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fLmSz49N4qNR5r0qm1oDSblwsc8ngBADluagQFCnQzg6tDu95KIShybBbukcLSpFGdJK+2kOsRVTFLOgSYqqzl0/gUxCEaG0Fpl2X5UShTkYZs30CnrvrV/elyUWl5QUhAi5XvE/ONduBFMRg3bpv5Zpj6lU5pb6D7qecDNUsa/RZuutI4kK6I3mlnJxqXjc7IlN/hKYdMLt0yESjnr1OvuHI9JSHb0Xak+FQUMr+qrL3he5uFk3JMp7jvDOdi9x+xceVRBSBqRdjpYIu/+eGowkzlXgtnAgxk+l5Xo/XLey+RcNN7NNFk8EdEjYO7wsH8sQsP08pOlgqIsl5GPWFw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=BfrtkIHD41BdedViPMyVzl+Hx3DX+Q5alc3k43j05cI=;
+ b=Ok8nPlgNTEmmtAwEG3R3clvatLK6DtXq5BTK43DZIYItmOAvdWWx1NuhwB/d5q1X8mv75I+2rwPKjF5qFuXqTdGiXYYnKvImc3kYeomlPznbW46YFDUCoWnOEth+x48Gb1d508XXW3+5dqfjExWnIdbUGGdvERB5lBaxFq10gxSuNRwu7gpDFCNmI9sLICYDUwHEWTdllKjQbIAh2UEwxHY6idVbEswpF2h8LVByveNYaoCUXIWssFzMY0DbPtxIvFXS7h9rYZ1+XPpJWkPiugiuJw04Hym8pllNokQmX4iMO26VMXI93/vN6NLU8NcfMYi9wMz7zVkAuJvruN4b2w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=arm.com; dmarc=pass action=none header.from=arm.com; dkim=pass
+ header.d=arm.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
+ s=selector2-armh-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BfrtkIHD41BdedViPMyVzl+Hx3DX+Q5alc3k43j05cI=;
+ b=KNOT4WQr2ip1eJmqTzufkPODbARBuwPqAGEyg6jwpkUvQuj4hpohkJYoQs4aBWGNs+kCbeSXxznfj+zGXGBCf8g7HLr3Enjotltdm9WrXEcSlyi/WfjklvG65BbEF8OcU8vJTeatsxO/PJ4bBqUjSnqV6qdc+zHyL2aebdW5uTM=
+Authentication-Results-Original: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=arm.com;
+Received: from DB9PR08MB7179.eurprd08.prod.outlook.com (2603:10a6:10:2cc::19)
+ by AM8PR08MB5732.eurprd08.prod.outlook.com (2603:10a6:20b:1d4::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.24; Tue, 22 Aug
+ 2023 15:05:39 +0000
+Received: from DB9PR08MB7179.eurprd08.prod.outlook.com
+ ([fe80::adb0:61cb:8733:6db2]) by DB9PR08MB7179.eurprd08.prod.outlook.com
+ ([fe80::adb0:61cb:8733:6db2%7]) with mapi id 15.20.6699.022; Tue, 22 Aug 2023
+ 15:05:39 +0000
+Date:   Tue, 22 Aug 2023 16:05:15 +0100
+From:   Szabolcs Nagy <Szabolcs.Nagy@arm.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Shuah Khan <shuah@kernel.org>,
+        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
+        Deepak Gupta <debug@rivosinc.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+Cc:     "H.J. Lu" <hjl.tools@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v5 04/37] arm64/gcs: Document the ABI for Guarded Control
+ Stacks
+Message-ID: <ZOTOqxBFqselqN8U@arm.com>
+References: <20230822-arm64-gcs-v5-0-9ef181dd6324@kernel.org>
+ <20230822-arm64-gcs-v5-4-9ef181dd6324@kernel.org>
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <87pm3f5dvo.fsf@intel.com>
-X-Operating-System: Linux phenom 6.3.0-2-amd64 
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230822-arm64-gcs-v5-4-9ef181dd6324@kernel.org>
+X-ClientProxiedBy: SN1PR12CA0070.namprd12.prod.outlook.com
+ (2603:10b6:802:20::41) To DB9PR08MB7179.eurprd08.prod.outlook.com
+ (2603:10a6:10:2cc::19)
+MIME-Version: 1.0
+X-MS-TrafficTypeDiagnostic: DB9PR08MB7179:EE_|AM8PR08MB5732:EE_|DBAEUR03FT036:EE_|AS8PR08MB8491:EE_
+X-MS-Office365-Filtering-Correlation-Id: c0698088-b06a-462f-86cb-08dba321456c
+x-checkrecipientrouted: true
+NoDisclaimer: true
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam-Untrusted: BCL:0;
+X-Microsoft-Antispam-Message-Info-Original: YcQqMwk4Dn5hMK+j4004Cs80OkhHHW6XQ7wOn41UvxizXAzqHevZO8vajBB9wd6zzuuO/XQSS10lQO09TMQVDfSDBHBMpeq2o9AcXLqwGMhvEe259I03oqU8PCZLDkXX7/q5VmGxHru6Ld/j3nQdfeSuVbb0v/VTe4Oel4cmS6F+InXhLkK/b7NTmpC8KttkbWlKmZqw2oVUOsEEqCrrtQEidefpZtXNy9KIpjRUeqSvWgHBPTG5Gi6fTShgUV9cDG9/fcX48UQWgPQEKZx4cw3Xm4STZn3TeyCdClt+bArIyIJjvq2HvPUugHEITSgPWmv4xqWU//JPcnpFnImaZkWXRUcM8HVs8sbB4DyljPhGEq2up1Q6LH+2jaWwxQ2WMp0gl9YjzDNvbOG8LmC1P+CSbh9Qcc7eJ1m3Eozz9YA34eQ3RIhTLhzbrwj8KQ5NBQSGflJATJtHpcqvxZE0j2J0Giy3lpuIkx/KGdBXOPWWhqaJXm6IYDh3OhS3lNHR+R90aZLBTTfQqmmMKnvBjSFYJbV/kf9nv7lPuPWQ1ET3jxTMhDbfJXF8/T8g/2buoK3RXkbc81lJdh/FBpyIgpbsuuRHu/CPZzRpVKK6CwQ=
+X-Forefront-Antispam-Report-Untrusted: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR08MB7179.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(376002)(39860400002)(346002)(366004)(1800799009)(186009)(451199024)(54906003)(66476007)(66556008)(6512007)(316002)(66946007)(110136005)(8676002)(8936002)(2616005)(4326008)(36756003)(41300700001)(921005)(478600001)(6666004)(38100700002)(6486002)(6506007)(4744005)(2906002)(7416002)(86362001)(5660300002)(26005);DIR:OUT;SFP:1101;
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR08MB5732
+Original-Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=arm.com;
+X-EOPAttributedMessage: 0
+X-MS-Exchange-Transport-CrossTenantHeadersStripped: DBAEUR03FT036.eop-EUR03.prod.protection.outlook.com
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id-Prvs: d3ed07dc-d070-4514-981c-08dba3213f11
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 2WOUFxXj/22wybnGSH9BkICb8ukXUpakkExclI8FkAE1klcazkDsigPO3nJfriBLll8Aaqj7pwEZ5todAAaFOF8ZCqhxJ4ht7o2vVxQumERQvYLaEhQBvqiJn5rZDKwTslZlp4qhJykWEEUb39o2CAJa9NKcYgsUNJkIfnli1oFz3gZ5s3HoyGwfM1bmUbv2JZ/dSE/7UdZXDdeT0vU2runKP9mJmhQdlCUthOfRBXjA8iCfSYgNsJ9vi1B+Zd5K3faAzFarZ17pbmFuCpTMMOyIKAN550VHB8++bD51Dt0kLjuKwHK/5ggFlC58BteF5A/OU+S8Vs1vndxtm6i5PAlbCpiHCjPPhrgBv8ugfFxktgDVqDABh8YYCxpdK4coHwdkwd4tRCGgSsinEc5tlNZEFloyixBsV4LPCaT47CvJE+ZU9CRn1fZtLji5Dd7qwf0iUeEKLJ5zRdCxsVN0YLTZBZ2lZKA0eJgT236f4syf/9jTyoycqYgbZnQWkkCe1e57xzev07UL63ZYCaiJDBDZqQ9RG1wN3MGY9A0RfI+wbON4vkwGBgr4Y8Oa+rPxuzvFjParO9cfFr6DPspTx+uu3Do6BuKKtoBUr5ZUBZeHIhewFBq6UoX+x0GlZKw162tEGE37DAunmKvUJ1OMnNKSnL430z8gjoC1YWVUc6/SwYmITpwAq+GBP1CkqJ77Jv0tri72F72U0gn2Uh9mGuRg1zE+r7DPlHj34Fx9O5qSkoGCn+aSNxCS6g4chmNv
+X-Forefront-Antispam-Report: CIP:63.35.35.123;CTRY:IE;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:64aa7808-outbound-1.mta.getcheckrecipient.com;PTR:ec2-63-35-35-123.eu-west-1.compute.amazonaws.com;CAT:NONE;SFS:(13230031)(4636009)(396003)(136003)(376002)(39860400002)(346002)(1800799009)(186009)(451199024)(82310400011)(46966006)(36840700001)(40470700004)(54906003)(6512007)(70586007)(316002)(70206006)(110136005)(450100002)(8676002)(8936002)(2616005)(107886003)(4326008)(36756003)(40460700003)(41300700001)(82740400003)(356005)(81166007)(921005)(478600001)(6666004)(6486002)(6506007)(40480700001)(4744005)(2906002)(47076005)(36860700001)(86362001)(336012)(5660300002)(26005);DIR:OUT;SFP:1101;
+X-OriginatorOrg: arm.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Aug 2023 15:05:49.5952
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: c0698088-b06a-462f-86cb-08dba321456c
+X-MS-Exchange-CrossTenant-Id: f34e5979-57d9-4aaa-ad4d-b122a662184d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f34e5979-57d9-4aaa-ad4d-b122a662184d;Ip=[63.35.35.123];Helo=[64aa7808-outbound-1.mta.getcheckrecipient.com]
+X-MS-Exchange-CrossTenant-AuthSource: DBAEUR03FT036.eop-EUR03.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR08MB8491
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FORGED_SPF_HELO,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_PASS,SPF_NONE,UNPARSEABLE_RELAY autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 05:51:39PM +0300, Jani Nikula wrote:
-> On Tue, 22 Aug 2023, Maxime Ripard <mripard@kernel.org> wrote:
-> > Hi,
-> >
-> > On Tue, Aug 22, 2023 at 04:16:08PM +0200, Daniel Vetter wrote:
-> >> On Mon, Aug 14, 2023 at 03:56:12PM +0200, Maxime Ripard wrote:
-> >> > Here's a series that creates a subclass of drm_connector specifically
-> >> > targeted at HDMI controllers.
-> >> > 
-> >> > The idea behind this series came from a recent discussion on IRC during
-> >> > which we discussed infoframes generation of i915 vs everything else. 
-> >> > 
-> >> > Infoframes generation code still requires some decent boilerplate, with
-> >> > each driver doing some variation of it.
-> >> > 
-> >> > In parallel, while working on vc4, we ended up converting a lot of i915
-> >> > logic (mostly around format / bpc selection, and scrambler setup) to
-> >> > apply on top of a driver that relies only on helpers.
-> >> > 
-> >> > While currently sitting in the vc4 driver, none of that logic actually
-> >> > relies on any driver or hardware-specific behaviour.
-> >> > 
-> >> > The only missing piec to make it shareable are a bunch of extra
-> >> > variables stored in a state (current bpc, format, RGB range selection,
-> >> > etc.).
-> >> > 
-> >> > Thus, I decided to create some generic subclass of drm_connector to
-> >> > address HDMI connectors, with a bunch of helpers that will take care of
-> >> > all the "HDMI Spec" related code. Scrambler setup is missing at the
-> >> > moment but can easily be plugged in.
-> >> > 
-> >> > Last week, Hans Verkuil also expressed interest in retrieving the
-> >> > infoframes generated from userspace to create an infoframe-decode tool.
-> >> > This series thus leverages the infoframe generation code to expose it
-> >> > through debugfs.
-> >> > 
-> >> > This entire series is only build-tested at the moment. Let me know what
-> >> > you think,
-> >>
-> >> I think the idea overall makes sense, we we probably need it to roll out
-> >> actual hdmi support to all the hdmi drivers we have. But there's the
-> >> eternal issue of "C sucks at multiple inheritance".
-> >> 
-> >> Which means if you have a driver that subclasses drm_connector already for
-> >> it's driver needs it defacto cannot, or only under some serious pains, use
-> >> this.
-> >
-> > That's what vc4 is doing, and it went fine I think? it was mostly a
-> > matter of subclassing drm_hdmi_connector instead of drm_connector, and
-> > adjusting the various pointers and accessors here and there.
-> >
-> > It does create a fairly big diffstat, but nothing too painful.
-> 
-> The main pain point is not the diffstat per se, but that *all* casts to
-> subclass need to check what the connector type is before doing
-> so. You'll also get fun NULL conditions that you need to check and
-> handle if the type isn't what you'd like it to be.
-> 
-> Currently i915 can just assume all drm_connectors it encounters are
-> intel_connectors that it created, always.
-> 
-> Basically this has blocked the writeback connector stuff for a few years
-> now in i915, because writeback forces a different subclassing, and what
-> should be a small change in i915 turns into huge churn.
+just nits.
 
-Yeah after the writeback experience I'm heavily leaning towards "this was
-a mistake".
+The 08/22/2023 14:56, Mark Brown wrote:
+> +3.  Allocation of Guarded Control Stacks
+> +----------------------------------------
+...
+> +* Stacks allocated using map_shadow_stack() must be larger than 8 bytes and
+> +  must be 8 bytes aligned.
 
-For writeback we could refactor it I think by just moving it all (which I
-hope isn't too much churn), and then removing the then empty types (which
-is where the big churn kicks in, so maybe just add that to gpu/todo.rst).
+"the size must be multiple of 8 bytes."
 
-Cheers, Sima
+> +
+> +* An address can be specified to map_shadow_stack(), if one is provided then
+> +  it must be aligned to a page boundary.
+...
+> +5.  Signal return
+> +-----------------
+...
+> +
+> +7.  ptrace extensions
+> +---------------------
 
-> 
-> BR,
-> Jani.
-> 
-> 
-> >
-> >> Which is kinda why in practice we tend to not subclass, but stuff
-> >> subclass fields into a name sub-structure. So essentially struct
-> >> drm_connector.hdmi and struct drm_connector_state.hdmi instead of
-> >> drm_hdmi_connector and drm_hdmi_connector_state. The helper functions to
-> >> set it all up would all still be the same roughly. It's less typesafe but
-> >> I think the gain in practical use (like you could make i915 use the
-> >> helpers probably, which with this approach here is practically
-> >> impossible).
-> >
-> > Ack.
-> >
-> >> The only other nit is that we probably want to put some of the hdmi
-> >> properties into struct drm_mode_config because there's no reason to have
-> >> per-connector valid values.
-> >
-> > What property would you want to move?
-> >
-> >> Also, it might be really good if you can find a co-conspirator who also
-> >> wants to use this in their driver, then with some i915 extracting we'd
-> >> have three, which should ensure the helper api is solid.
-> >
-> > I can convert sunxi (old) HDMI driver if needed. I'm not sure how
-> > helpful it would be since it doesn't support bpc > 8, but it could be a
-> > nice showcase still for "simple" HDMI controllers.
-> >
-> > Maxime
-> 
-> -- 
-> Jani Nikula, Intel Open Source Graphics Center
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+section 6. is missing
