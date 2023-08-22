@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D35B478477E
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 18:26:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8C3E784780
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 18:27:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237766AbjHVQ0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 12:26:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47642 "EHLO
+        id S234365AbjHVQ1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 12:27:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237735AbjHVQ0y (ORCPT
+        with ESMTP id S237768AbjHVQ1D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 12:26:54 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A502CDD;
-        Tue, 22 Aug 2023 09:26:38 -0700 (PDT)
+        Tue, 22 Aug 2023 12:27:03 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FB9CCDF;
+        Tue, 22 Aug 2023 09:26:48 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C814A65A5B;
-        Tue, 22 Aug 2023 16:26:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39391C433C8;
-        Tue, 22 Aug 2023 16:26:34 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DA93765A66;
+        Tue, 22 Aug 2023 16:26:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A2E3C433CA;
+        Tue, 22 Aug 2023 16:26:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692721597;
-        bh=z5HZQKxxeBH9fJjmD9jGaQHV/G79OpU0dTqpNG/QDZA=;
+        s=k20201202; t=1692721607;
+        bh=3tArSSgLBVUpSApZ3ckVBhaESejOigfqYy9S4v1G3b0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oq/3X6LYWFJThLSdPdEL1gHoqZCZwmHEWwbLIlgsufVtvCw4fobzSpk+DfbaGjC05
-         71AMN2qkeTuShdudBf9UDlcVpvvitoN19mxRYt7RfhZRIyx6RIitE+Fp6OUesb9SaX
-         prtIXhVk6eJvvG5BHegvUf4BtVnTBa06ub+y2d0cThDPxdpkAorpTc2ZwWyCjarlHK
-         mJcbCMq32ihwMpltloyVUHeUociaZJUmukcUxIHAvRKmTxd+CHWIlXjpNIH3pEtywS
-         wJovvqbYgrdIjsZQhIq+JMbL9JlIPCwZ3vSqSIBquCPxADiHZL3FXF0X0T3tsBOeOc
-         IN5BLn02Q8alg==
+        b=RMuuJ+eJ9KvwevOTqNRKFaQoy//X33dDhuYpwZO9m+fhgx06t6CwHTr9bH0yEP3b+
+         GZ7ZVDNnBozeY8bELji1HrKYFzp/VeToolY9ctyepNXUvEHa0ICxDYkfsF1EgDspjn
+         9tY7YEoOt54+UIY1kEv7bIQUh0yEDmLzJsJQL3ypeDrWjRWctFizoZ4uTEbOvdQh85
+         YJa3r8WvTJlNO3nFLHCRtkI94WYU35ZvIrUdNcgZKdGbmYgfdu1njLCqh5XpM6TE9n
+         BCgDJKRAOhyhmq9lYWgyAZzJOGs5UC9CBrPA6pKBo93Se2+xTQPEc2Mk0dd+GkdSqn
+         /LUBG+GVS/Y2Q==
 From:   "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
 To:     linux-trace-kernel@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
         mhiramat@kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
         bpf@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>,
         Alexei Starovoitov <ast@kernel.org>
-Subject: [PATCH v6 6/9] tracing/probes: Add string type check with BTF
-Date:   Wed, 23 Aug 2023 01:26:32 +0900
-Message-Id: <169272159250.160970.1881112937198526188.stgit@devnote2>
+Subject: [PATCH v6 7/9] tracing/fprobe-event: Assume fprobe is a return event by $retval
+Date:   Wed, 23 Aug 2023 01:26:42 +0900
+Message-Id: <169272160261.160970.13613040161560998787.stgit@devnote2>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <169272153143.160970.15584603734373446082.stgit@devnote2>
 References: <169272153143.160970.15584603734373446082.stgit@devnote2>
@@ -49,8 +49,8 @@ User-Agent: StGit/0.19
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,156 +60,120 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-Add a string type checking with BTF information if possible.
-This will check whether the given BTF argument (and field) is
-signed char array or pointer to signed char. If not, it reject
-the 'string' type. If it is pointer to signed char, it adds
-a dereference opration so that it can correctly fetch the
-string data from memory.
+Assume the fprobe event is a return event if there is $retval is
+used in the probe's argument without %return. e.g.
 
- # echo 'f getname_flags%return retval->name:string' >> dynamic_events
- # echo 't sched_switch next->comm:string' >> dynamic_events
+echo 'f:myevent vfs_read $retval' >> dynamic_events
 
-The above cases, 'struct filename::name' is 'char *' and
-'struct task_struct::comm' is 'char []'. But in both case,
-user can specify ':string' to fetch the string data.
+then 'myevent' is a return probe event.
 
+Suggested-by: Steven Rostedt <rostedt@goodmis.org>
 Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 Acked-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- Changes in v3:
-  - Use ctx->btf instead of traceprobe_get_btf().
----
- kernel/trace/trace_probe.c |   89 +++++++++++++++++++++++++++++++++++++++++++-
- kernel/trace/trace_probe.h |    3 +
- 2 files changed, 89 insertions(+), 3 deletions(-)
+ kernel/trace/trace_fprobe.c                        |   58 +++++++++++++++-----
+ .../ftrace/test.d/dynevent/fprobe_syntax_errors.tc |    2 -
+ 2 files changed, 45 insertions(+), 15 deletions(-)
 
-diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
-index 7345e1af4db2..4dc74d73fc1d 100644
---- a/kernel/trace/trace_probe.c
-+++ b/kernel/trace/trace_probe.c
-@@ -310,6 +310,77 @@ static u32 btf_type_int(const struct btf_type *t)
- 	return *(u32 *)(t + 1);
+diff --git a/kernel/trace/trace_fprobe.c b/kernel/trace/trace_fprobe.c
+index 8f43f1f65b1b..8bfe23af9c73 100644
+--- a/kernel/trace/trace_fprobe.c
++++ b/kernel/trace/trace_fprobe.c
+@@ -898,6 +898,46 @@ static struct tracepoint *find_tracepoint(const char *tp_name)
+ 	return data.tpoint;
  }
  
-+static bool btf_type_is_char_ptr(struct btf *btf, const struct btf_type *type)
++static int parse_symbol_and_return(int argc, const char *argv[],
++				   char **symbol, bool *is_return,
++				   bool is_tracepoint)
 +{
-+	const struct btf_type *real_type;
-+	u32 intdata;
-+	s32 tid;
++	char *tmp = strchr(argv[1], '%');
++	int i;
 +
-+	real_type = btf_type_skip_modifiers(btf, type->type, &tid);
-+	if (!real_type)
-+		return false;
++	if (tmp) {
++		int len = tmp - argv[1];
 +
-+	if (BTF_INFO_KIND(real_type->info) != BTF_KIND_INT)
-+		return false;
-+
-+	intdata = btf_type_int(real_type);
-+	return !(BTF_INT_ENCODING(intdata) & BTF_INT_SIGNED)
-+		&& BTF_INT_BITS(intdata) == 8;
-+}
-+
-+static bool btf_type_is_char_array(struct btf *btf, const struct btf_type *type)
-+{
-+	const struct btf_type *real_type;
-+	const struct btf_array *array;
-+	u32 intdata;
-+	s32 tid;
-+
-+	if (BTF_INFO_KIND(type->info) != BTF_KIND_ARRAY)
-+		return false;
-+
-+	array = (const struct btf_array *)(type + 1);
-+
-+	real_type = btf_type_skip_modifiers(btf, array->type, &tid);
-+
-+	intdata = btf_type_int(real_type);
-+	return !(BTF_INT_ENCODING(intdata) & BTF_INT_SIGNED)
-+		&& BTF_INT_BITS(intdata) == 8;
-+}
-+
-+static int check_prepare_btf_string_fetch(char *typename,
-+				struct fetch_insn **pcode,
-+				struct traceprobe_parse_context *ctx)
-+{
-+	struct btf *btf = ctx->btf;
-+
-+	if (!btf || !ctx->last_type)
-+		return 0;
-+
-+	/* char [] does not need any change. */
-+	if (btf_type_is_char_array(btf, ctx->last_type))
-+		return 0;
-+
-+	/* char * requires dereference the pointer. */
-+	if (btf_type_is_char_ptr(btf, ctx->last_type)) {
-+		struct fetch_insn *code = *pcode + 1;
-+
-+		if (code->op == FETCH_OP_END) {
-+			trace_probe_log_err(ctx->offset, TOO_MANY_OPS);
-+			return -E2BIG;
++		if (!is_tracepoint && !strcmp(tmp, "%return")) {
++			*is_return = true;
++		} else {
++			trace_probe_log_err(len, BAD_ADDR_SUFFIX);
++			return -EINVAL;
 +		}
-+		if (typename[0] == 'u')
-+			code->op = FETCH_OP_UDEREF;
-+		else
-+			code->op = FETCH_OP_DEREF;
-+		code->offset = 0;
-+		*pcode = code;
-+		return 0;
-+	}
-+	/* Other types are not available for string */
-+	trace_probe_log_err(ctx->offset, BAD_TYPE4STR);
-+	return -EINVAL;
-+}
++		*symbol = kmemdup_nul(argv[1], len, GFP_KERNEL);
++	} else
++		*symbol = kstrdup(argv[1], GFP_KERNEL);
++	if (!*symbol)
++		return -ENOMEM;
 +
- static const char *fetch_type_from_btf_type(struct btf *btf,
- 					const struct btf_type *type,
- 					struct traceprobe_parse_context *ctx)
-@@ -675,6 +746,13 @@ static int parse_btf_bitfield(struct fetch_insn **pcode,
- #define find_fetch_type_from_btf_type(ctx)		\
- 	find_fetch_type(NULL, ctx->flags)
- 
-+static int check_prepare_btf_string_fetch(char *typename,
-+				struct fetch_insn **pcode,
-+				struct traceprobe_parse_context *ctx)
-+{
++	if (*is_return)
++		return 0;
++
++	/* If there is $retval, this should be a return fprobe. */
++	for (i = 2; i < argc; i++) {
++		tmp = strstr(argv[i], "$retval");
++		if (tmp && !isalnum(tmp[7]) && tmp[7] != '_') {
++			*is_return = true;
++			/*
++			 * NOTE: Don't check is_tracepoint here, because it will
++			 * be checked when the argument is parsed.
++			 */
++			break;
++		}
++	}
 +	return 0;
 +}
 +
- #endif
+ static int __trace_fprobe_create(int argc, const char *argv[])
+ {
+ 	/*
+@@ -927,7 +967,7 @@ static int __trace_fprobe_create(int argc, const char *argv[])
+ 	struct trace_fprobe *tf = NULL;
+ 	int i, len, new_argc = 0, ret = 0;
+ 	bool is_return = false;
+-	char *symbol = NULL, *tmp = NULL;
++	char *symbol = NULL;
+ 	const char *event = NULL, *group = FPROBE_EVENT_SYSTEM;
+ 	const char **new_argv = NULL;
+ 	int maxactive = 0;
+@@ -983,20 +1023,10 @@ static int __trace_fprobe_create(int argc, const char *argv[])
+ 	trace_probe_log_set_index(1);
  
- #define PARAM_MAX_STACK (THREAD_SIZE / sizeof(unsigned long))
-@@ -1117,8 +1195,15 @@ static int traceprobe_parse_probe_arg_body(const char *argv, ssize_t *size,
+ 	/* a symbol(or tracepoint) must be specified */
+-	symbol = kstrdup(argv[1], GFP_KERNEL);
+-	if (!symbol)
+-		return -ENOMEM;
++	ret = parse_symbol_and_return(argc, argv, &symbol, &is_return, is_tracepoint);
++	if (ret < 0)
++		goto parse_error;
  
- 	/* Update storing type if BTF is available */
- 	if (IS_ENABLED(CONFIG_PROBE_EVENTS_BTF_ARGS) &&
--	    !t && ctx->last_type)
--		parg->type = find_fetch_type_from_btf_type(ctx);
-+	    ctx->last_type) {
-+		if (!t) {
-+			parg->type = find_fetch_type_from_btf_type(ctx);
-+		} else if (strstr(t, "string")) {
-+			ret = check_prepare_btf_string_fetch(t, &code, ctx);
-+			if (ret)
-+				goto fail;
-+		}
-+	}
+-	tmp = strchr(symbol, '%');
+-	if (tmp) {
+-		if (!is_tracepoint && !strcmp(tmp, "%return")) {
+-			*tmp = '\0';
+-			is_return = true;
+-		} else {
+-			trace_probe_log_err(tmp - symbol, BAD_ADDR_SUFFIX);
+-			goto parse_error;
+-		}
+-	}
+ 	if (!is_return && maxactive) {
+ 		trace_probe_log_set_index(0);
+ 		trace_probe_log_err(1, BAD_MAXACT_TYPE);
+diff --git a/tools/testing/selftests/ftrace/test.d/dynevent/fprobe_syntax_errors.tc b/tools/testing/selftests/ftrace/test.d/dynevent/fprobe_syntax_errors.tc
+index 812f5b3f6055..72563b2e0812 100644
+--- a/tools/testing/selftests/ftrace/test.d/dynevent/fprobe_syntax_errors.tc
++++ b/tools/testing/selftests/ftrace/test.d/dynevent/fprobe_syntax_errors.tc
+@@ -30,11 +30,11 @@ check_error 'f:^ vfs_read'		# NO_EVENT_NAME
+ check_error 'f:foo/^12345678901234567890123456789012345678901234567890123456789012345 vfs_read'	# EVENT_TOO_LONG
+ check_error 'f:foo/^bar.1 vfs_read'	# BAD_EVENT_NAME
  
- 	ret = -EINVAL;
- 	/* Store operation */
-diff --git a/kernel/trace/trace_probe.h b/kernel/trace/trace_probe.h
-index 9184c84833f8..7f929482e8d4 100644
---- a/kernel/trace/trace_probe.h
-+++ b/kernel/trace/trace_probe.h
-@@ -513,7 +513,8 @@ extern int traceprobe_define_arg_fields(struct trace_event_call *event_call,
- 	C(NOSUP_DAT_ARG,	"Non pointer structure/union argument is not supported."),\
- 	C(BAD_HYPHEN,		"Failed to parse single hyphen. Forgot '>'?"),	\
- 	C(NO_BTF_FIELD,		"This field is not found."),	\
--	C(BAD_BTF_TID,		"Failed to get BTF type info."),
-+	C(BAD_BTF_TID,		"Failed to get BTF type info."),\
-+	C(BAD_TYPE4STR,		"This type does not fit for string."),
+-check_error 'f vfs_read ^$retval'	# RETVAL_ON_PROBE
+ check_error 'f vfs_read ^$stack10000'	# BAD_STACK_NUM
  
- #undef C
- #define C(a, b)		TP_ERR_##a
+ check_error 'f vfs_read ^$arg10000'	# BAD_ARG_NUM
+ 
++check_error 'f vfs_read $retval ^$arg1' # BAD_VAR
+ check_error 'f vfs_read ^$none_var'	# BAD_VAR
+ check_error 'f vfs_read ^'$REG		# BAD_VAR
+ 
 
