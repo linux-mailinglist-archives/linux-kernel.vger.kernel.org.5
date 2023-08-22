@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52E977837A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 03:55:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B8377837AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 03:55:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232191AbjHVBzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 21:55:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58948 "EHLO
+        id S232210AbjHVBzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 21:55:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232172AbjHVBzZ (ORCPT
+        with ESMTP id S232178AbjHVBz0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 21:55:25 -0400
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AB67113
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 18:55:24 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id e9e14a558f8ab-34ca192f8feso8741595ab.3
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 18:55:24 -0700 (PDT)
+        Mon, 21 Aug 2023 21:55:26 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BE11113
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 18:55:25 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id e9e14a558f8ab-34ca07e6d6cso7276675ab.0
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 18:55:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1692669323; x=1693274123;
+        d=joelfernandes.org; s=google; t=1692669324; x=1693274124;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7MVDg4AiFSlG/+H1Z+4rrwZ5TuiaCol/qVRe1MkiyJ4=;
-        b=dfaWwvA9oBL1IZ1Ld8nmBYZfchopf8juXDP2xXzgSG1+4P+Y22COL076a6tOgVMiwz
-         QILZngUNHyArlcv/oP21Fea28QqZgLAOBnLUlGNmpK8m4daK64fIorApmoM/BsiyrFBx
-         m5xcXJdKn0E99mRIBpuKTVuUQA71ez3oXSMYA=
+        bh=u/QIpV5GdoUntyQD+YAulEqEr5HWAYhIt+wE2vL+NDs=;
+        b=XkzwrKY2BPO8OgeQrtUkfRLAKPdqR5M18ZKGU4FGFYxvzWBQw/eRILHendM5mzgczx
+         BYc3zziDMJlYLqaCnwu/53EUEoReNctpO9RDz4aY9+4UOxQi20TdBSerToh1EPXlQG2U
+         E93hf56fnUcks90HI5CRHcJwgSm33hqntG3Xo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692669323; x=1693274123;
+        d=1e100.net; s=20221208; t=1692669324; x=1693274124;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7MVDg4AiFSlG/+H1Z+4rrwZ5TuiaCol/qVRe1MkiyJ4=;
-        b=c+2E7IFTJMBzksKucQ/ygN0IELnQ5HN0KQ4g59aEkSRTMFHF97bFExBaM6TrY2f8pc
-         lHNBQ7SA0/jpuba66dIhE7P9mbvYnOBGjDe9Braqaf+h1N37JSeId8/bjAlycEcQJg5I
-         8ElXpoWQfn3Q41rzuhhhyVJ/QvfobRa7eN8mav2nGTHg7SLyjJONQQxJHUu2BaY/PG3G
-         PNFddu3zSXKvLPF89jRpyXrQc4kk/erqn/bN+JNNzdzRdf6eH6CS/u4IBZbQEYRIdj6E
-         hUyDZa/PYQJXSSZSXtP7yaGm7m8N1idnQwZbUffHqy1l0UfW1ir101EIvz+vcKmXIker
-         laTg==
-X-Gm-Message-State: AOJu0YynWEc2ux2Ws0327NnMfiRdlCwkjfaqiX3F5qCV+Mfs4q7/v8uP
-        dHXNkUBvYHm5IAf+S/DVYERx0Bb47S/A2uae1bw=
-X-Google-Smtp-Source: AGHT+IHvqVdYTC6n4DObVG1/cE1N4x7Ela2mYdMwjClLo2WnnHgsjk7IpjhEewtQDpWgbd40PsHlhw==
-X-Received: by 2002:a05:6e02:1906:b0:345:b923:971b with SMTP id w6-20020a056e02190600b00345b923971bmr12162039ilu.3.1692669323174;
-        Mon, 21 Aug 2023 18:55:23 -0700 (PDT)
+        bh=u/QIpV5GdoUntyQD+YAulEqEr5HWAYhIt+wE2vL+NDs=;
+        b=OjjueaextO1BbhyMhjMEeaFrQEL6l1lk6ngz6G1d84VbR4k5vtN7Wa/M+hFNwOtQuf
+         PgrdAphwKCz3f73Gwlw4JAYFV1GWKygCJw6jBHDxUEcHNMBj2L7O9aSAOA6nMC7ktYRq
+         k38E5URqpmdv3S+hfjJyxvg+bDBk7iFCYYPSOurc9Dcy6weOwnXRum2gyyyC5tTplIhR
+         WGysRrenIYffjPBo+Aj4DVaYcQ0iRQm5RAK2H5MPDtOPgWae9y7BqWVSppK+7NJSzf8M
+         vRT4ZrFcyhnYb5bnDFoGysG3rrwIgFCvwE3zJl72Lhpa08a1PrfLWd56RIOaz205y5gn
+         nm5A==
+X-Gm-Message-State: AOJu0YxbcDidRka9raJf0lIY+fQn4OdFCk2ynlGs0y6WzYJtZN1DT/Vc
+        Ir5+evxBpFuf/NReWdgXKWfQcB72ihJeTbUMnGk=
+X-Google-Smtp-Source: AGHT+IH/MZvRRV4VaPoT76ACeI7st3J3G1ER7zfxqE1rsoOojx8UWxh8tAIJJ7hX3Eu9rNxe5sWekA==
+X-Received: by 2002:a05:6e02:2189:b0:349:2bab:9e47 with SMTP id j9-20020a056e02218900b003492bab9e47mr10720872ila.12.1692669324214;
+        Mon, 21 Aug 2023 18:55:24 -0700 (PDT)
 Received: from joelboxx5.c.googlers.com.com (156.190.123.34.bc.googleusercontent.com. [34.123.190.156])
-        by smtp.gmail.com with ESMTPSA id q11-20020a92d40b000000b0034886587bdcsm2907390ilm.18.2023.08.21.18.55.22
+        by smtp.gmail.com with ESMTPSA id q11-20020a92d40b000000b0034886587bdcsm2907390ilm.18.2023.08.21.18.55.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Aug 2023 18:55:22 -0700 (PDT)
+        Mon, 21 Aug 2023 18:55:23 -0700 (PDT)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
@@ -62,9 +62,9 @@ Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
         Suren Baghdasaryan <surenb@google.com>,
         Kalesh Singh <kaleshsingh@google.com>,
         Lokesh Gidra <lokeshgidra@google.com>
-Subject: [PATCH v5 3/7] selftests: mm: Fix failure case when new remap region was not found
-Date:   Tue, 22 Aug 2023 01:54:56 +0000
-Message-ID: <20230822015501.791637-4-joel@joelfernandes.org>
+Subject: [PATCH v5 4/7] selftests: mm: Add a test for mutually aligned moves > PMD size
+Date:   Tue, 22 Aug 2023 01:54:57 +0000
+Message-ID: <20230822015501.791637-5-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
 In-Reply-To: <20230822015501.791637-1-joel@joelfernandes.org>
 References: <20230822015501.791637-1-joel@joelfernandes.org>
@@ -80,27 +80,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a valid remap region could not be found, the source mapping is not
-cleaned up. Fix the goto statement such that the clean up happens.
+This patch adds a test case to check if a PMD-alignment optimization
+successfully happens.
+
+I add support to make sure there is some room before the source mapping,
+otherwise the optimization to trigger PMD-aligned move will be disabled
+as the kernel will detect that a mapping before the source exists and
+such optimization becomes impossible.
 
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- tools/testing/selftests/mm/mremap_test.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/testing/selftests/mm/mremap_test.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
 diff --git a/tools/testing/selftests/mm/mremap_test.c b/tools/testing/selftests/mm/mremap_test.c
-index 5c3773de9f0f..6822d657f589 100644
+index 6822d657f589..6304eb0947a3 100644
 --- a/tools/testing/selftests/mm/mremap_test.c
 +++ b/tools/testing/selftests/mm/mremap_test.c
-@@ -316,7 +316,7 @@ static long long remap_region(struct config c, unsigned int threshold_mb,
- 		if (addr + c.dest_alignment < addr) {
- 			ksft_print_msg("Couldn't find a valid region to remap to\n");
- 			ret = -1;
--			goto out;
-+			goto clean_up_src;
- 		}
- 		addr += c.dest_alignment;
- 	}
+@@ -44,6 +44,7 @@ enum {
+ 	_1MB = 1ULL << 20,
+ 	_2MB = 2ULL << 20,
+ 	_4MB = 4ULL << 20,
++	_5MB = 5ULL << 20,
+ 	_1GB = 1ULL << 30,
+ 	_2GB = 2ULL << 30,
+ 	PMD = _2MB,
+@@ -235,6 +236,11 @@ static void *get_source_mapping(struct config c)
+ 	unsigned long long mmap_min_addr;
+ 
+ 	mmap_min_addr = get_mmap_min_addr();
++	/*
++	 * For some tests, we need to not have any mappings below the
++	 * source mapping. Add some headroom to mmap_min_addr for this.
++	 */
++	mmap_min_addr += 10 * _4MB;
+ 
+ retry:
+ 	addr += c.src_alignment;
+@@ -434,7 +440,7 @@ static int parse_args(int argc, char **argv, unsigned int *threshold_mb,
+ 	return 0;
+ }
+ 
+-#define MAX_TEST 13
++#define MAX_TEST 14
+ #define MAX_PERF_TEST 3
+ int main(int argc, char **argv)
+ {
+@@ -500,6 +506,10 @@ int main(int argc, char **argv)
+ 	test_cases[12] = MAKE_TEST(PUD, PUD, _2GB, NON_OVERLAPPING, EXPECT_SUCCESS,
+ 				   "2GB mremap - Source PUD-aligned, Destination PUD-aligned");
+ 
++	/* Src and Dest addr 1MB aligned. 5MB mremap. */
++	test_cases[13] = MAKE_TEST(_1MB, _1MB, _5MB, NON_OVERLAPPING, EXPECT_SUCCESS,
++				  "5MB mremap - Source 1MB-aligned, Destination 1MB-aligned");
++
+ 	perf_test_cases[0] =  MAKE_TEST(page_size, page_size, _1GB, NON_OVERLAPPING, EXPECT_SUCCESS,
+ 					"1GB mremap - Source PTE-aligned, Destination PTE-aligned");
+ 	/*
 -- 
 2.42.0.rc1.204.g551eb34607-goog
 
