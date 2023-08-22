@@ -2,395 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19CC2783D87
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 12:04:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88DE9783D8A
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 12:05:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234575AbjHVKER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 06:04:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51016 "EHLO
+        id S234593AbjHVKFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 06:05:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234579AbjHVKEP (ORCPT
+        with ESMTP id S232258AbjHVKFL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 06:04:15 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24D70CDB
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 03:04:12 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1bf095e1becso7719585ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 03:04:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=quanta-corp-partner-google-com.20221208.gappssmtp.com; s=20221208; t=1692698651; x=1693303451;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2liHGnZ6WhCsCTEPPeyDpLR5DjUMU+Qgp6w0/TwpXWY=;
-        b=ZVzxBI9b3S/I7nGRghgeH6UvXsNdDj2RFw0utbCIQTQbyjfqUaUrVqU5KSfy4iSUQ/
-         SktnZJkag2sFGaSSWC7xwMWh+buJ3oeJPTA6vI/ucIQDDkuYliP97zzWGmIM6zRmHLEt
-         EtklBoHYwG0ckFG7MSqP4eTcnXVN1N1NfCqxp7oEiV8Yu+EGarJLaLA77mRro8FY0FO2
-         wB1KS89kumZ1qPh+G2IUPHTmcxmxZ3PVRLB1DTBgCWUHEQe/t/5SL7hNnSdd5hMuaPWX
-         KxBbk8hPCDK9D7sn57NwYURrvBmlM4O5bj2L0mfcKVImdx0XJ4hVHAWLMOl98X+3pLGA
-         LTvQ==
+        Tue, 22 Aug 2023 06:05:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20CE8CD8
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 03:04:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692698656;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=eunSjqXebVmPJQFHfHymAQbG2gyuuDWNReWk5LCjmQE=;
+        b=IeU1W60CKmIsdha2OxVWsKJyDeewaM8LYGZs7CniTnw9zySCMGjdEMOhYeJnGZFEIeQl4M
+        U0EDzJxA2EXlHPpWZO99c94eq0s79Bv5E9P0lFlT7ulkJPu+rjrQVBJAyLXshrDkiL57j9
+        rm49c0axkvoAg0bC5jDT0x63+1U/2E0=
+Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
+ [209.85.216.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-687--9CtqCg-MzigZm2MUsEAfQ-1; Tue, 22 Aug 2023 06:04:14 -0400
+X-MC-Unique: -9CtqCg-MzigZm2MUsEAfQ-1
+Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-26b3e13a776so4476117a91.3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 03:04:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692698651; x=1693303451;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1692698654; x=1693303454;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2liHGnZ6WhCsCTEPPeyDpLR5DjUMU+Qgp6w0/TwpXWY=;
-        b=Gc9a76BAeIPoJUSLqWWW1xdHhrOov3qKOJ9czuDgjstGAY66cNXQxSYwVT5sy4Zg9J
-         2FLbzUQfAFdzY1zWkY32en4kNH6yfqolCmj1ED5L615r1JcypTBhiGF+Sl83gyDSjQMT
-         cQQRMCnYzUiUsb0R6YhgDf3KovQn8+Y2Q5WeHkACKIzGomDaQ58TDRcc+8rsMBJkuOVD
-         /gkWBwrkFjRMTx9PbX0fRn9r6CTqbFte1rqFhy2lsL0Cl36cCscTXbzQzcfgDT0DUXSu
-         LDtuDVV0dZlI3LTByjBmGGU1Q5Y9moIc1pIIh9jfPAwjp0/N/A4JOc2Bb8mVI9X54ukv
-         HDGg==
-X-Gm-Message-State: AOJu0YzqUPu3zDCDevUTJDnZTNEYsleWyTC07aj1uYSOikrU46fpvCSv
-        3DawbVj1WCQL9j2vT5PEoOeM6oadUqYuXJRDFgxNFQ==
-X-Google-Smtp-Source: AGHT+IE5FwbP8mHyM6AkIXQDcqMT/He2/tTzOg9/aLhrPjms6oHbcVJdwHEPPT3JIndaGTNqzXEKPw==
-X-Received: by 2002:a17:902:ea04:b0:1b8:811:b079 with SMTP id s4-20020a170902ea0400b001b80811b079mr10270400plg.0.1692698651355;
-        Tue, 22 Aug 2023 03:04:11 -0700 (PDT)
-Received: from liang-Predator-PH517-52.. (60-250-232-247.hinet-ip.hinet.net. [60.250.232.247])
-        by smtp.gmail.com with ESMTPSA id jc9-20020a17090325c900b001bbb22652a4sm8663176plb.226.2023.08.22.03.04.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Aug 2023 03:04:11 -0700 (PDT)
-From:   Sheng-Liang Pan <sheng-liang.pan@quanta.corp-partner.google.com>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     dianders@chromium.org,
-        Sheng-Liang Pan <sheng-liang.pan@quanta.corp-partner.google.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        cros-qcom-dts-watchers@chromium.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: [PATCH v5 2/2] arm64: dts: qcom: sc7180: Add sku_id and board id for lazor/limozeen
-Date:   Tue, 22 Aug 2023 18:03:58 +0800
-Message-Id: <20230822180054.v5.2.I8f20fdfe34a2e8a38373bbd65587754b324f3dcb@changeid>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230822100359.124282-1-sheng-liang.pan@quanta.corp-partner.google.com>
-References: <20230822100359.124282-1-sheng-liang.pan@quanta.corp-partner.google.com>
+        bh=eunSjqXebVmPJQFHfHymAQbG2gyuuDWNReWk5LCjmQE=;
+        b=Q5ZEB+s5SFC0C6pgqoc4joY+clZuWH96BIbrsohQjDDEzL7jbxMRX60iX+D8+a0rSZ
+         fIslTEhiXBn15/4SnMR5VDfJ+vwzqyxhEBEe11wEbLWPUalzl5Xi16tlLwbuIcVMcMb2
+         Jg2a4+2ijfpySZxWamgyxob/Cf9d+1MroQmnybPnQ4N8vASYal5IYb8AgPARMRffl4bd
+         e3GFRjAHO05pSety3x76ZQ9WXFOX+U9uMkCv7L22bXVWDGAIh+V/TqFAQtBLOcROTorb
+         qfK48s4czFO3Y7FXKS83ntdASBRJtc5d5tw0ozJurn4rG8PYbGlDieBK363U4DhuvPmX
+         X4vg==
+X-Gm-Message-State: AOJu0Yym6sfGDOiyDMLYP2LMoHRPKm15SApp2VeV59y6mbCTMFc2QZtC
+        PAdS63hLW7q+5pnoAuRiVNyVXfdGABEJ9B+lTdYeNoflwq+Rb6HKMFywix3nv7xG6VilVZTihHJ
+        q0Bodmnhwfdyi9V8YmMHgINGbrRIFGnZG4Mqo2xTK
+X-Received: by 2002:a17:90a:8681:b0:267:fba3:ed96 with SMTP id p1-20020a17090a868100b00267fba3ed96mr5698302pjn.3.1692698653956;
+        Tue, 22 Aug 2023 03:04:13 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFQAyUGLu26v0m9FhbT8nXHCmebwasow1EknDEE9+bi+15V6BUlty4S6j9T52Z0FdgUC5Ho6Jjv+/2I19wxkQc=
+X-Received: by 2002:a17:90a:8681:b0:267:fba3:ed96 with SMTP id
+ p1-20020a17090a868100b00267fba3ed96mr5698287pjn.3.1692698653590; Tue, 22 Aug
+ 2023 03:04:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20230820090949.2874537-1-yukuai1@huaweicloud.com> <20230820090949.2874537-2-yukuai1@huaweicloud.com>
+In-Reply-To: <20230820090949.2874537-2-yukuai1@huaweicloud.com>
+From:   Xiao Ni <xni@redhat.com>
+Date:   Tue, 22 Aug 2023 18:04:02 +0800
+Message-ID: <CALTww2_XL7j_OMjNMNdCti8TyOxC_U69v6Dg1UXHfajaWeN4Cg@mail.gmail.com>
+Subject: Re: [PATCH -next v3 1/7] md: use separate work_struct for md_start_sync()
+To:     Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     song@kernel.org, mariusz.tkaczyk@linux.intel.com,
+        linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yukuai3@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SKU ID 10: Lazor LTE+Wifi, no-esim (Strapped 0 X 0)
-SKU ID 15: Limozeen LTE+Wifi, TS, no esim (Strapped 1 X 0)
-SKU ID 18: Limozeen LTE+Wifi, no TS, no esim (Strapped X 0 0)
+On Sun, Aug 20, 2023 at 5:13=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.com> w=
+rote:
+>
+> From: Yu Kuai <yukuai3@huawei.com>
+>
+> It's a little weird to borrow 'del_work' for md_start_sync(), declare
+> a new work_struct 'sync_work' for md_start_sync().
+>
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> ---
+>  drivers/md/md.c | 10 ++++++----
+>  drivers/md/md.h |  5 ++++-
+>  2 files changed, 10 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/md/md.c b/drivers/md/md.c
+> index 5c3c19b8d509..90815be1e80f 100644
+> --- a/drivers/md/md.c
+> +++ b/drivers/md/md.c
+> @@ -631,13 +631,13 @@ void mddev_put(struct mddev *mddev)
+>                  * flush_workqueue() after mddev_find will succeed in wai=
+ting
+>                  * for the work to be done.
+>                  */
+> -               INIT_WORK(&mddev->del_work, mddev_delayed_delete);
+>                 queue_work(md_misc_wq, &mddev->del_work);
+>         }
+>         spin_unlock(&all_mddevs_lock);
+>  }
+>
+>  static void md_safemode_timeout(struct timer_list *t);
+> +static void md_start_sync(struct work_struct *ws);
+>
+>  void mddev_init(struct mddev *mddev)
+>  {
+> @@ -662,6 +662,9 @@ void mddev_init(struct mddev *mddev)
+>         mddev->resync_min =3D 0;
+>         mddev->resync_max =3D MaxSector;
+>         mddev->level =3D LEVEL_NONE;
+> +
+> +       INIT_WORK(&mddev->sync_work, md_start_sync);
+> +       INIT_WORK(&mddev->del_work, mddev_delayed_delete);
+>  }
+>  EXPORT_SYMBOL_GPL(mddev_init);
+>
+> @@ -9245,7 +9248,7 @@ static int remove_and_add_spares(struct mddev *mdde=
+v,
+>
+>  static void md_start_sync(struct work_struct *ws)
+>  {
+> -       struct mddev *mddev =3D container_of(ws, struct mddev, del_work);
+> +       struct mddev *mddev =3D container_of(ws, struct mddev, sync_work)=
+;
+>
+>         rcu_assign_pointer(mddev->sync_thread,
+>                            md_register_thread(md_do_sync, mddev, "resync"=
+));
+> @@ -9458,8 +9461,7 @@ void md_check_recovery(struct mddev *mddev)
+>                                  */
+>                                 md_bitmap_write_all(mddev->bitmap);
+>                         }
+> -                       INIT_WORK(&mddev->del_work, md_start_sync);
+> -                       queue_work(md_misc_wq, &mddev->del_work);
+> +                       queue_work(md_misc_wq, &mddev->sync_work);
+>                         goto unlock;
+>                 }
+>         not_running:
+> diff --git a/drivers/md/md.h b/drivers/md/md.h
+> index 9bcb77bca963..64d05cb65287 100644
+> --- a/drivers/md/md.h
+> +++ b/drivers/md/md.h
+> @@ -450,7 +450,10 @@ struct mddev {
+>         struct kernfs_node              *sysfs_degraded;        /*handle =
+for 'degraded' */
+>         struct kernfs_node              *sysfs_level;           /*handle =
+for 'level' */
+>
+> -       struct work_struct del_work;    /* used for delayed sysfs removal=
+ */
+> +       /* used for delayed sysfs removal */
+> +       struct work_struct del_work;
+> +       /* used for register new sync thread */
+> +       struct work_struct sync_work;
+>
+>         /* "lock" protects:
+>          *   flush_bio transition from NULL to !NULL
+> --
+> 2.39.2
+>
 
-Even though the "no esim" boards are strapped differently than
-ones that have an esim, the esim isn't represented in the
-device tree so the same device tree can be used for LTE w/ esim
-and LTE w/out esim.
-
-add BRD_ID(0, Z, 0) = 10 for new board with ALC5682i-VS
-
-Signed-off-by: Sheng-Liang Pan <sheng-liang.pan@quanta.corp-partner.google.com>
----
-
-Changes in v5:
-- include rt5682s node for new board version 10
-
-Changes in v4:
-- combine pathc2 and patch3
-
-Changes in v3:
-- sort out the node order alphabetically
-
-Changes in v2:
-- add new entry rev9 with Parade bridge chip
-- correct newly create dts files
-
- arch/arm64/boot/dts/qcom/Makefile             |  5 +++
- ...sc7180-trogdor-lazor-limozeen-nots-r10.dts | 29 ++++++++++++
- .../sc7180-trogdor-lazor-limozeen-nots-r9.dts |  4 +-
- .../sc7180-trogdor-lazor-limozeen-r10.dts     | 45 +++++++++++++++++++
- .../qcom/sc7180-trogdor-lazor-limozeen-r9.dts |  4 +-
- .../dts/qcom/sc7180-trogdor-lazor-r10-kb.dts  | 23 ++++++++++
- .../dts/qcom/sc7180-trogdor-lazor-r10-lte.dts | 27 +++++++++++
- .../dts/qcom/sc7180-trogdor-lazor-r10.dts     | 19 ++++++++
- .../dts/qcom/sc7180-trogdor-lazor-r9-kb.dts   |  4 +-
- .../dts/qcom/sc7180-trogdor-lazor-r9-lte.dts  |  4 +-
- .../boot/dts/qcom/sc7180-trogdor-lazor-r9.dts |  4 +-
- 11 files changed, 158 insertions(+), 10 deletions(-)
- create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-nots-r10.dts
- create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-r10.dts
- create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r10-kb.dts
- create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r10-lte.dts
- create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r10.dts
-
-diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
-index 337abc4ceb17..73e745fb1ff0 100644
---- a/arch/arm64/boot/dts/qcom/Makefile
-+++ b/arch/arm64/boot/dts/qcom/Makefile
-@@ -109,11 +109,16 @@ dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-r3-lte.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-r9.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-r9-kb.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-r9-lte.dtb
-+dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-r10.dtb
-+dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-r10-kb.dtb
-+dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-r10-lte.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-limozeen-r4.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-limozeen-r9.dtb
-+dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-limozeen-r10.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-limozeen-nots-r4.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-limozeen-nots-r5.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-limozeen-nots-r9.dtb
-+dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-limozeen-nots-r10.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-pazquel-lte-parade.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-pazquel-lte-ti.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-pazquel-parade.dtb
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-nots-r10.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-nots-r10.dts
-new file mode 100644
-index 000000000000..943f267a5586
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-nots-r10.dts
-@@ -0,0 +1,29 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Google Lazor Limozeen board device tree source
-+ *
-+ * Copyright 2023 Google LLC.
-+ */
-+
-+/dts-v1/;
-+
-+#include "sc7180-trogdor.dtsi"
-+#include "sc7180-trogdor-parade-ps8640.dtsi"
-+#include "sc7180-trogdor-lazor.dtsi"
-+#include "sc7180-trogdor-lte-sku.dtsi"
-+#include "sc7180-trogdor-rt5682s-sku.dtsi"
-+
-+/ {
-+	model = "Google Lazor Limozeen without Touchscreen (rev10+)";
-+	compatible = "google,lazor-sku6", "google,lazor-sku18", "qcom,sc7180";
-+};
-+
-+/delete-node/&ap_ts;
-+
-+&panel {
-+	compatible = "edp-panel";
-+};
-+
-+&sdhc_2 {
-+	status = "okay";
-+};
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-nots-r9.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-nots-r9.dts
-index 400f9e18977f..88451935174e 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-nots-r9.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-nots-r9.dts
-@@ -14,8 +14,8 @@
- #include "sc7180-trogdor-rt5682i-sku.dtsi"
- 
- / {
--	model = "Google Lazor Limozeen without Touchscreen (rev9+)";
--	compatible = "google,lazor-sku6", "qcom,sc7180";
-+	model = "Google Lazor Limozeen without Touchscreen (rev9)";
-+	compatible = "google,lazor-rev9-sku6", "google,lazor-rev9-sku18", "qcom,sc7180";
- };
- 
- /delete-node/&ap_ts;
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-r10.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-r10.dts
-new file mode 100644
-index 000000000000..d77376892f20
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-r10.dts
-@@ -0,0 +1,45 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Google Lazor Limozeen board device tree source
-+ *
-+ * Copyright 2023 Google LLC.
-+ */
-+
-+/dts-v1/;
-+
-+#include "sc7180-trogdor.dtsi"
-+#include "sc7180-trogdor-parade-ps8640.dtsi"
-+#include "sc7180-trogdor-lazor.dtsi"
-+#include "sc7180-trogdor-lte-sku.dtsi"
-+#include "sc7180-trogdor-rt5682s-sku.dtsi"
-+
-+/ {
-+	model = "Google Lazor Limozeen (rev10+)";
-+	compatible = "google,lazor-sku4", "google,lazor-sku15", "qcom,sc7180";
-+};
-+
-+/delete-node/&ap_ts;
-+
-+&ap_ts_pen_1v8 {
-+	ap_ts: touchscreen@10 {
-+		compatible = "elan,ekth3500";
-+		reg = <0x10>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&ts_int_l>, <&ts_reset_l>;
-+
-+		interrupt-parent = <&tlmm>;
-+		interrupts = <9 IRQ_TYPE_LEVEL_LOW>;
-+
-+		vcc33-supply = <&pp3300_ts>;
-+
-+		reset-gpios = <&tlmm 8 GPIO_ACTIVE_LOW>;
-+	};
-+};
-+
-+&panel {
-+	compatible = "auo,b116xa01";
-+};
-+
-+&sdhc_2 {
-+	status = "okay";
-+};
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-r9.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-r9.dts
-index 09a4ff13f072..76a76b8c0268 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-r9.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-r9.dts
-@@ -14,8 +14,8 @@
- #include "sc7180-trogdor-rt5682i-sku.dtsi"
- 
- / {
--	model = "Google Lazor Limozeen (rev9+)";
--	compatible = "google,lazor-sku4", "qcom,sc7180";
-+	model = "Google Lazor Limozeen (rev9)";
-+	compatible = "google,lazor-rev9-sku4", "google,lazor-rev9-sku15", "qcom,sc7180";
- };
- 
- /delete-node/&ap_ts;
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r10-kb.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r10-kb.dts
-new file mode 100644
-index 000000000000..45d34718a1bc
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r10-kb.dts
-@@ -0,0 +1,23 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Google Lazor board device tree source
-+ *
-+ * Copyright 2023 Google LLC.
-+ */
-+
-+/dts-v1/;
-+
-+#include "sc7180-trogdor.dtsi"
-+#include "sc7180-trogdor-parade-ps8640.dtsi"
-+#include "sc7180-trogdor-lazor.dtsi"
-+#include "sc7180-lite.dtsi"
-+#include "sc7180-trogdor-rt5682s-sku.dtsi"
-+
-+/ {
-+	model = "Google Lazor (rev10+) with KB Backlight";
-+	compatible = "google,lazor-sku2", "qcom,sc7180";
-+};
-+
-+&keyboard_backlight {
-+	status = "okay";
-+};
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r10-lte.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r10-lte.dts
-new file mode 100644
-index 000000000000..79028d0dd1b0
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r10-lte.dts
-@@ -0,0 +1,27 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Google Lazor board device tree source
-+ *
-+ * Copyright 2023 Google LLC.
-+ */
-+
-+/dts-v1/;
-+
-+#include "sc7180-trogdor.dtsi"
-+#include "sc7180-trogdor-parade-ps8640.dtsi"
-+#include "sc7180-trogdor-lazor.dtsi"
-+#include "sc7180-trogdor-lte-sku.dtsi"
-+#include "sc7180-trogdor-rt5682s-sku.dtsi"
-+
-+/ {
-+	model = "Google Lazor (rev10+) with LTE";
-+	compatible = "google,lazor-sku0", "google,lazor-sku10", "qcom,sc7180";
-+};
-+
-+&ap_sar_sensor_i2c {
-+	status = "okay";
-+};
-+
-+&keyboard_backlight {
-+	status = "okay";
-+};
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r10.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r10.dts
-new file mode 100644
-index 000000000000..045827341ea0
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r10.dts
-@@ -0,0 +1,19 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Google Lazor board device tree source
-+ *
-+ * Copyright 2023 Google LLC.
-+ */
-+
-+/dts-v1/;
-+
-+#include "sc7180-trogdor.dtsi"
-+#include "sc7180-trogdor-parade-ps8640.dtsi"
-+#include "sc7180-trogdor-lazor.dtsi"
-+#include "sc7180-lite.dtsi"
-+#include "sc7180-trogdor-rt5682s-sku.dtsi"
-+
-+/ {
-+	model = "Google Lazor (rev10+)";
-+	compatible = "google,lazor", "qcom,sc7180";
-+};
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r9-kb.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r9-kb.dts
-index 1c4f0773a242..cabe99c23a7c 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r9-kb.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r9-kb.dts
-@@ -14,8 +14,8 @@
- #include "sc7180-lite.dtsi"
- 
- / {
--	model = "Google Lazor (rev9+) with KB Backlight";
--	compatible = "google,lazor-sku2", "qcom,sc7180";
-+	model = "Google Lazor (rev9) with KB Backlight";
-+	compatible = "google,lazor-rev9-sku2", "qcom,sc7180";;
- };
- 
- &keyboard_backlight {
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r9-lte.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r9-lte.dts
-index ec73943abc4c..d737fd0637fb 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r9-lte.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r9-lte.dts
-@@ -14,8 +14,8 @@
- #include "sc7180-trogdor-rt5682i-sku.dtsi"
- 
- / {
--	model = "Google Lazor (rev9+) with LTE";
--	compatible = "google,lazor-sku0", "qcom,sc7180";
-+	model = "Google Lazor (rev9) with LTE";
-+	compatible = "google,lazor-rev9-sku0", "google,lazor-rev9-sku10", "qcom,sc7180";
- };
- 
- &ap_sar_sensor_i2c {
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r9.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r9.dts
-index 6cedc0ba9653..8daad32ff53b 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r9.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r9.dts
-@@ -14,6 +14,6 @@
- #include "sc7180-lite.dtsi"
- 
- / {
--	model = "Google Lazor (rev9+)";
--	compatible = "google,lazor", "qcom,sc7180";
-+	model = "Google Lazor (rev9)";
-+	compatible = "google,lazor-rev9", "qcom,sc7180";
- };
--- 
-2.34.1
+Reviewed-by: Xiao Ni <xni@redhat.com>
 
