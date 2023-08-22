@@ -2,133 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C25D784D33
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 01:14:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B39D784D36
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 01:15:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231637AbjHVXO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 19:14:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35416 "EHLO
+        id S231648AbjHVXP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 19:15:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230519AbjHVXO1 (ORCPT
+        with ESMTP id S230519AbjHVXPZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 19:14:27 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28055CE9
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 16:14:24 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-4fe15bfb1adso7584525e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 16:14:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1692746062; x=1693350862;
-        h=cc:to:subject:message-id:date:user-agent:from:references
-         :in-reply-to:mime-version:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YSHMwkSWj+u0BB4H/Eo8pB+iKXhMpxFBtrURAK/KgwY=;
-        b=CFQLVEZLykqjzDO7usGcMJuYkJlvatCTEZRBqCa5ZQK+ctOL++F8hjWBQU/QQNbz1x
-         ddIRInCUD8C2fG5FUO/vHg+B/KkgFbXq2pbO7k6qHnqQrhMjV5f5cfy0sW+JF5vwePBo
-         HNM+NJz7fv46v8rG41AMguHMRE2oMWrER6LZ8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692746062; x=1693350862;
-        h=cc:to:subject:message-id:date:user-agent:from:references
-         :in-reply-to:mime-version:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YSHMwkSWj+u0BB4H/Eo8pB+iKXhMpxFBtrURAK/KgwY=;
-        b=FTzseubgUqdVacITm5JrK9rvkqRWk5p5SsyFDOPWOOECn1qFkXVZvaUe3ZHDZUg5yE
-         3O7EnL6Lp5qbuQvPJd8rB2IHG3Kz8+pt5xQ9xYINcARrtpyw0cHAj6adz2qRIkiSwgC9
-         wfLSiFFZN/DLzrZU3yjnOkZ/YfVW9J7oVPrN5O/ihpNpIWgXzq5wbfxkPLReO4hX9f4Z
-         IzKtqQ/vLPf2DvBl9EVteAXtfi+Vb4tJxRsRJYfcPB67FO+Et8cHasFoPdWKZ1sLWsIt
-         8QgIYNzzTWdvPtt9F98mLwXpWx4wmWJLr+hnIAtA3yLHOyMhu8ehBKtRQraCxw6Rj7/q
-         AUOQ==
-X-Gm-Message-State: AOJu0Ywb1YwTjCSrDZ3RNBCSwqQjZib7eGlA4Ev4qFy/ZkQMEtS7QEJE
-        ualklP3qy3PpSRtwt96QS9uVMYs4VN/OubjbFMBBgQ==
-X-Google-Smtp-Source: AGHT+IE9cNxYcnE+sNDcjWkiOsU52/mJjpudLz7kYq/Voq07K6+JEnzA+zqz02s367o6vNiTqYWr4E4Lc//Ttvw4Omw=
-X-Received: by 2002:a19:7b12:0:b0:4f6:2b25:194e with SMTP id
- w18-20020a197b12000000b004f62b25194emr6213559lfc.58.1692746062347; Tue, 22
- Aug 2023 16:14:22 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 22 Aug 2023 16:14:21 -0700
+        Tue, 22 Aug 2023 19:15:25 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3356CE9;
+        Tue, 22 Aug 2023 16:15:23 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 76673611AF;
+        Tue, 22 Aug 2023 23:15:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60173C433C8;
+        Tue, 22 Aug 2023 23:15:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692746122;
+        bh=nV+IFIjcUjUr5NTuen91t3f//+1v/zufLJTVPhd3Ra4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=k/at1DXhhWgueWlzkp5tYKsA4+wV/WV74HgVexY4xp8Cmli5rPBbHtJHDqgNOv/s3
+         foOK4vRVHs9vRI0ILIcR4p4FFYJi3pupv5UVAmTMmcqGzDnfnzDJj8eRWzCxO4UmX6
+         SrylOnSZZ7RiojGrCLVYj8G2Y0SyYjgxr4Boe+E6N7oGE7yEWMU3Wim18KQJCaMJVe
+         E3L2bIOm/M1sn/7cWZya1DgTGizkIS8F1nExGHfj92zIX2ahAFLPMcZ/tsp7Eimq3q
+         otmIGupevfZNlYuJDZIf979hqhO6+tWqLlI/rMzoRgjD94CwWkTL7AfxEOXzgSBCFl
+         8CWvRBfB87pxQ==
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     linux-integrity@vger.kernel.org
+Cc:     Jerry Snitselaar <jsnitsel@redhat.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>, stable@vger.kernel.org,
+        Todd Brandt <todd.e.brandt@intel.com>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3] tpm: Enable hwrng only for Pluton on AMD CPUs
+Date:   Wed, 23 Aug 2023 02:15:10 +0300
+Message-Id: <20230822231510.2263255-1-jarkko@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-In-Reply-To: <20230822142644.v10.2.I4baba13e220bdd24d11400c67f137c35f07f82c7@changeid>
-References: <20230822212927.249645-1-dianders@chromium.org> <20230822142644.v10.2.I4baba13e220bdd24d11400c67f137c35f07f82c7@changeid>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.10
-Date:   Tue, 22 Aug 2023 16:14:21 -0700
-Message-ID: <CAE-0n53QBBfX77ibE+NdWZa70VVOKkNnhn5BNhBk04XKEFKNJw@mail.gmail.com>
-Subject: Re: [PATCH v10 2/6] arm64: idle: Tag the arm64 idle functions as __cpuidle
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Will Deacon <will@kernel.org>
-Cc:     Lecopzer Chen <lecopzer.chen@mediatek.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        kgdb-bugreport@lists.sourceforge.net, ito-yuichi@fujitsu.com,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Chen-Yu Tsai <wens@csie.org>, Ard Biesheuvel <ardb@kernel.org>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Guo Ren <guoren@kernel.org>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Douglas Anderson (2023-08-22 14:26:57)
-> As per the (somewhat recent) comment before the definition of
-> `__cpuidle`, the tag is like `noinstr` but also marks a function so it
-> can be identified by cpu_in_idle(). Let'a add this.
+The vendor check introduced by commit 554b841d4703 ("tpm: Disable RNG for
+all AMD fTPMs") doesn't work properly on a number of Intel fTPMs.  On the
+reported systems the TPM doesn't reply at bootup and returns back the
+command code. This makes the TPM fail probe.
 
-s/Let'a/Let's/
+Since only Microsoft Pluton is the only known combination of AMD CPU and
+fTPM from other vendor, disable hwrng otherwise. In order to make sysadmin
+aware of this, print also info message to the klog.
 
-Maybe also define "this" to be "Let's add these markings to arm64
-cpuidle functions".
+Cc: stable@vger.kernel.org
+Fixes: 554b841d4703 ("tpm: Disable RNG for all AMD fTPMs")
+Reported-by: Todd Brandt <todd.e.brandt@intel.com>
+Closes: https://bugzilla.kernel.org/show_bug.cgi?id=217804
+Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+---
+v3:
+* Forgot to amend config flags.
+v2:
+* CONFIG_X86
+* Removed "Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>"
+* Removed "Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>"
+---
+ drivers/char/tpm/tpm_crb.c | 33 ++++++++-------------------------
+ 1 file changed, 8 insertions(+), 25 deletions(-)
 
->
-> After doing this then when we dump stack traces of all processors
-> using nmi_cpu_backtrace() then instead of getting useless backtraces
-> we get things like:
+diff --git a/drivers/char/tpm/tpm_crb.c b/drivers/char/tpm/tpm_crb.c
+index 65ff4d2fbe8d..ea085b14ab7c 100644
+--- a/drivers/char/tpm/tpm_crb.c
++++ b/drivers/char/tpm/tpm_crb.c
+@@ -463,28 +463,6 @@ static bool crb_req_canceled(struct tpm_chip *chip, u8 status)
+ 	return (cancel & CRB_CANCEL_INVOKE) == CRB_CANCEL_INVOKE;
+ }
+ 
+-static int crb_check_flags(struct tpm_chip *chip)
+-{
+-	u32 val;
+-	int ret;
+-
+-	ret = crb_request_locality(chip, 0);
+-	if (ret)
+-		return ret;
+-
+-	ret = tpm2_get_tpm_pt(chip, TPM2_PT_MANUFACTURER, &val, NULL);
+-	if (ret)
+-		goto release;
+-
+-	if (val == 0x414D4400U /* AMD */)
+-		chip->flags |= TPM_CHIP_FLAG_HWRNG_DISABLED;
+-
+-release:
+-	crb_relinquish_locality(chip, 0);
+-
+-	return ret;
+-}
+-
+ static const struct tpm_class_ops tpm_crb = {
+ 	.flags = TPM_OPS_AUTO_STARTUP,
+ 	.status = crb_status,
+@@ -827,9 +805,14 @@ static int crb_acpi_add(struct acpi_device *device)
+ 	if (rc)
+ 		goto out;
+ 
+-	rc = crb_check_flags(chip);
+-	if (rc)
+-		goto out;
++#ifdef CONFIG_X86
++	/* A quirk for https://www.amd.com/en/support/kb/faq/pa-410 */
++	if (boot_cpu_data.x86_vendor == X86_VENDOR_AMD &&
++	    priv->sm != ACPI_TPM2_COMMAND_BUFFER_WITH_PLUTON) {
++		dev_info(dev, "Disabling hwrng\n");
++		chip->flags |= TPM_CHIP_FLAG_HWRNG_DISABLED;
++	}
++#endif /* CONFIG_X86 */
+ 
+ 	rc = tpm_chip_register(chip);
+ 
+-- 
+2.39.2
 
-Sorry, this sentence is really hard for me to read. Perhaps:
-
-With this change we get useful backtraces like:
-
-   NMI backtrace for cpu N skipped: idling at cpu_do_idle+0x94/0x98
-
-instead of useless backtraces when dumping all processors using
-nmi_cpu_backtrace().
-
->
->   NMI backtrace for cpu N skipped: idling at cpu_do_idle+0x94/0x98
->
-> NOTE: this patch won't make cpu_in_idle() work perfectly for arm64,
-> but it doesn't hurt and does catch some cases. Specifically an example
-> that wasn't caught in my testing looked like this:
-
-I wonder if it improves locality of cpu idle code as well by moving the
-functions to the idle text section so any branch targets are closer.
-
->
->  gic_cpu_sys_reg_init+0x1f8/0x314
->  gic_cpu_pm_notifier+0x40/0x78
->  raw_notifier_call_chain+0x5c/0x134
->  cpu_pm_notify+0x38/0x64
->  cpu_pm_exit+0x20/0x2c
->  psci_enter_idle_state+0x48/0x70
->  cpuidle_enter_state+0xb8/0x260
->  cpuidle_enter+0x44/0x5c
->  do_idle+0x188/0x30c
->
-> Acked-by: Mark Rutland <mark.rutland@arm.com>
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
