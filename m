@@ -2,210 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77BC2784CAF
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 00:07:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3931C784CBA
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 00:13:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231544AbjHVWHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 18:07:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60724 "EHLO
+        id S231552AbjHVWNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 18:13:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbjHVWHW (ORCPT
+        with ESMTP id S230246AbjHVWNn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 18:07:22 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6CEDF1B9;
-        Tue, 22 Aug 2023 15:07:19 -0700 (PDT)
-Received: from UbuntuVM-18.efytirfs5hsengjwslc1ligxab.xx.internal.cloudapp.net (unknown [20.72.208.6])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 8811A2126CD6;
-        Tue, 22 Aug 2023 15:07:18 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8811A2126CD6
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1692742038;
-        bh=ccvcmxKiUzDpgLMe6MY0JLVApyZVXWCFreGvGxxSy8k=;
-        h=From:To:Cc:Subject:Date:From;
-        b=qCLXJOqaVbypJI1xgc0o9bQjz5O56c9z6O2uibHeeA+p9OA4FCJ69VapxdCFTKGm9
-         Uh0HR62602PgPemQQz/zxRmxXxeGackiUuCJyJEShXwDyXK5Hc1lvqqAH0dtdJb7GP
-         88V5SlfLGiar6rv/3h/3yB0JHnXi1idcxOaKIYJ8=
-From:   Hardik Garg <hargar@linux.microsoft.com>
-To:     stable@vger.kernel.org
-Cc:     Shuah Khan <shuah@kernel.org>, Hangbin Liu <liuhangbin@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bjorn@kernel.org
-Subject: [PATCH 6.1] selftests/net: mv bpf/nat6to4.c to net folder
-Date:   Tue, 22 Aug 2023 22:07:10 +0000
-Message-Id: <20230822220710.3992-1-hargar@linux.microsoft.com>
-X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-17.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SBL,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=no autolearn_force=no version=3.4.6
+        Tue, 22 Aug 2023 18:13:43 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00DF8CCB
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 15:13:41 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-58fbc0e0c6dso44687737b3.0
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 15:13:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692742421; x=1693347221;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=xmjVsGgx6gF9dMVPPrLxg3tMP8b+7Z4gdwQXJbdCgco=;
+        b=DbMG4atXV04JeA1MlW5YM7QZEFAcLCcbYhd+q3Kl//ACedYN6oe2Fx+a1RIfufErAe
+         IUT8kbXSuCyjKsT+9snF4ikwgpUqx2C3e1qBKhpjaxZT29AQtuiebZ8iO4u4JC3liD2m
+         uLC1kp1LK3j/isA8qa9Gewhx+4tUKRnl6Lt9OpGByfDmV6a6BIHcaKs0ak7GKTX0i1Y7
+         FbM5FFz+vYdX+/HuObwWg/7qp78bXOBrLj6WF8ZgahP8ptM0e/Pk62Cu4buPraagFZg2
+         emQBRuKBHul46vWmNQ8OEzn5LBZYC0ygn7NREdyHR3KsACHhId+oxosa0yg2OkI8C89D
+         0T/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692742421; x=1693347221;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=xmjVsGgx6gF9dMVPPrLxg3tMP8b+7Z4gdwQXJbdCgco=;
+        b=NEyVLWRpCm0gxnWsycLVNFwsL0Ph63qjoxD7vjBn8x2e0WbZHIHadkPHho4V4vi5fU
+         hFQItMo9x9d5mR+xP/6wkspKIGy/A3IlMH8SSk7ozMuuFKrXuw88QML2Twc0u2HRh0CH
+         opw/m446oxfSC//hx9pEjTCC4Ipn47OCv9rabxLSN130DzQZC4qTqP+0FyTwiaGFTHXC
+         uI1n+lf4eMR0GnFJr+Eaq0sUBeJBfzZ5UIdx0wdASTlN4eVltND7cprZ/z7lhzJgCnCn
+         w49sb4qNbe2xSQPICGISYvSJaxwSBQOkYPflfPzz8rWEF25OSvNle+hr2WivNyl7SyPl
+         SaoA==
+X-Gm-Message-State: AOJu0YxFf69Vv5baI2kp8iSbClIm0XtMgregojLVsJl9EfU63f0iNkZ8
+        H162oKSORgc5iKtEBC83Mfje5rT/W7ibzbN/hw==
+X-Google-Smtp-Source: AGHT+IGE6GoIEbEH7DYVNW4HTiMGU+iCqd+cjZZkK4wdjIzwI/89TsZlV9fO7SSVysshSkpTnvseKNXgG3iQx/dYOg==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a05:6902:118a:b0:d05:7ba4:67f9 with
+ SMTP id m10-20020a056902118a00b00d057ba467f9mr138492ybu.3.1692742421250; Tue,
+ 22 Aug 2023 15:13:41 -0700 (PDT)
+Date:   Tue, 22 Aug 2023 22:13:36 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAA8z5WQC/x3MQQ6CMBAF0KuQWTsJVsTqVQgLaD90oqnNlBAM4
+ e40Lt/m7ZShgkyvaifFKlm+seB6qciFIc5g8cVkanOrrTGcF40u/XhQF3izLb+hER8OCQs3/v5 wo7cYny2VIikm2f591x/HCVo5fvNuAAAA
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1692742420; l=1686;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=W25RC9CnsMsDX2n9Nx4KPoyzwG23ZFjcDXue4o9Kb6w=; b=0QcIzSUF693AP4G0xx/Dhih8ldcUVnRy4oxKaohCBvY6PwUjw/rulIO1ilg7PD2+HIcoaGr1K
+ X/gNQPei+BEBto244jiaJPh20B53KKtAHiByBBLgF0+NLT49VGP8dyQ
+X-Mailer: b4 0.12.3
+Message-ID: <20230822-strncpy-arch-x86-kernel-hpet-v1-1-2c7d3be86f4a@google.com>
+Subject: [PATCH] x86/hpet: refactor deprecated strncpy
+From:   Justin Stitt <justinstitt@google.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>
+Cc:     linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hangbin Liu <liuhangbin@gmail.com>
+`strncpy` is deprecated for use on NUL-terminated destination strings [1].
 
-commit 3c107f36db06 ("selftests/net: mv bpf/nat6to4.c to net folder")
-backport this v6.4 commit to v6.1 to fix this error:
-error: unable to open output file 'linux/kselftest/net/bpf/nat6to4.o':
-'No such file or directory'
+A suitable replacement is `strscpy` [2] due to the fact that it
+guarantees NUL-termination on its destination buffer argument which is
+_not_ the case for `strncpy`!
 
-There are some issues with the bpf/nat6to4.c building.
+In this case, it is a simple swap from `strncpy` to `strscpy`. There is
+one slight difference, though. If NUL-padding is a functional
+requirement here we should opt for `strscpy_pad`. It seems like this
+shouldn't be needed as I see no obvious signs of any padding being
+required.
 
-1. It use TEST_CUSTOM_PROGS, which will add the nat6to4.o to
-   kselftest-list file and run by common run_tests.
-2. When building the test via `make -C tools/testing/selftests/
-   TARGETS="net"`, the nat6to4.o will be build in selftests/net/bpf/
-   folder. But in test udpgro_frglist.sh it refers to ../bpf/nat6to4.o.
-   The correct path should be ./bpf/nat6to4.o.
-3. If building the test via `make -C tools/testing/selftests/ TARGETS="net"
-   install`. The nat6to4.o will be installed to kselftest_install/net/
-   folder. Then the udpgro_frglist.sh should refer to ./nat6to4.o.
-
-To fix the confusing test path, let's just move the nat6to4.c to net folder
-and build it as TEST_GEN_FILES.
-
-Fixes: edae34a3ed92 ("selftests net: add UDP GRO fraglist + bpf self-tests")
-Tested-by: Björn Töpel <bjorn@kernel.org>
-Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
-Link: https://lore.kernel.org/r/20230118020927.3971864-1-liuhangbin@gmail.com
-Signed-off-by: Paolo Abeni <pabeni@redhat.com>
-Signed-off-by: Hardik Garg <hargar@linux.microsoft.com>
+Link: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings[1]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
 ---
- tools/testing/selftests/net/Makefile          | 50 ++++++++++++++++++-
- tools/testing/selftests/net/bpf/Makefile      | 14 ------
- .../testing/selftests/net/{bpf => }/nat6to4.c |  0
- tools/testing/selftests/net/udpgro_frglist.sh |  8 +--
- 4 files changed, 52 insertions(+), 20 deletions(-)
- delete mode 100644 tools/testing/selftests/net/bpf/Makefile
- rename tools/testing/selftests/net/{bpf => }/nat6to4.c (100%)
+Note: build-tested only.
+---
+ arch/x86/kernel/hpet.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/net/Makefile b/tools/testing/selftests/net/Makefile
-index 69c58362c0ed..48d1a68be1d5 100644
---- a/tools/testing/selftests/net/Makefile
-+++ b/tools/testing/selftests/net/Makefile
-@@ -71,14 +71,60 @@ TEST_GEN_FILES += bind_bhash
- TEST_GEN_PROGS += sk_bind_sendto_listen
- TEST_GEN_PROGS += sk_connect_zero_addr
- TEST_PROGS += test_ingress_egress_chaining.sh
-+TEST_GEN_FILES += nat6to4.o
+diff --git a/arch/x86/kernel/hpet.c b/arch/x86/kernel/hpet.c
+index c8eb1ac5125a..1648aa0204d9 100644
+--- a/arch/x86/kernel/hpet.c
++++ b/arch/x86/kernel/hpet.c
+@@ -421,7 +421,7 @@ static void __init hpet_legacy_clockevent_register(struct hpet_channel *hc)
+ 	 * the IO_APIC has been initialized.
+ 	 */
+ 	hc->cpu = boot_cpu_data.cpu_index;
+-	strncpy(hc->name, "hpet", sizeof(hc->name));
++	strscpy(hc->name, "hpet", sizeof(hc->name));
+ 	hpet_init_clockevent(hc, 50);
  
- TEST_FILES := settings
- 
- include ../lib.mk
- 
--include bpf/Makefile
--
- $(OUTPUT)/reuseport_bpf_numa: LDLIBS += -lnuma
- $(OUTPUT)/tcp_mmap: LDLIBS += -lpthread
- $(OUTPUT)/tcp_inq: LDLIBS += -lpthread
- $(OUTPUT)/bind_bhash: LDLIBS += -lpthread
-+
-+# Rules to generate bpf obj nat6to4.o
-+CLANG ?= clang
-+SCRATCH_DIR := $(OUTPUT)/tools
-+BUILD_DIR := $(SCRATCH_DIR)/build
-+BPFDIR := $(abspath ../../../lib/bpf)
-+APIDIR := $(abspath ../../../include/uapi)
-+
-+CCINCLUDE += -I../bpf
-+CCINCLUDE += -I../../../../usr/include/
-+CCINCLUDE += -I$(SCRATCH_DIR)/include
-+
-+BPFOBJ := $(BUILD_DIR)/libbpf/libbpf.a
-+
-+MAKE_DIRS := $(BUILD_DIR)/libbpf
-+$(MAKE_DIRS):
-+	mkdir -p $@
-+
-+# Get Clang's default includes on this system, as opposed to those seen by
-+# '-target bpf'. This fixes "missing" files on some architectures/distros,
-+# such as asm/byteorder.h, asm/socket.h, asm/sockios.h, sys/cdefs.h etc.
-+#
-+# Use '-idirafter': Don't interfere with include mechanics except where the
-+# build would have failed anyways.
-+define get_sys_includes
-+$(shell $(1) $(2) -v -E - </dev/null 2>&1 \
-+	| sed -n '/<...> search starts here:/,/End of search list./{ s| \(/.*\)|-idirafter \1|p }') \
-+$(shell $(1) $(2) -dM -E - </dev/null | grep '__riscv_xlen ' | awk '{printf("-D__riscv_xlen=%d -D__BITS_PER_LONG=%d", $$3, $$3)}')
-+endef
-+
-+ifneq ($(CROSS_COMPILE),)
-+CLANG_TARGET_ARCH = --target=$(notdir $(CROSS_COMPILE:%-=%))
-+endif
-+
-+CLANG_SYS_INCLUDES = $(call get_sys_includes,$(CLANG),$(CLANG_TARGET_ARCH))
-+
-+$(OUTPUT)/nat6to4.o: nat6to4.c $(BPFOBJ) | $(MAKE_DIRS)
-+	$(CLANG) -O2 -target bpf -c $< $(CCINCLUDE) $(CLANG_SYS_INCLUDES) -o $@
-+
-+$(BPFOBJ): $(wildcard $(BPFDIR)/*.[ch] $(BPFDIR)/Makefile)		       \
-+	   $(APIDIR)/linux/bpf.h					       \
-+	   | $(BUILD_DIR)/libbpf
-+	$(MAKE) $(submake_extras) -C $(BPFDIR) OUTPUT=$(BUILD_DIR)/libbpf/     \
-+		    EXTRA_CFLAGS='-g -O0'				       \
-+		    DESTDIR=$(SCRATCH_DIR) prefix= all install_headers
-+
-+EXTRA_CLEAN := $(SCRATCH_DIR)
-diff --git a/tools/testing/selftests/net/bpf/Makefile b/tools/testing/selftests/net/bpf/Makefile
-deleted file mode 100644
-index 8ccaf8732eb2..000000000000
---- a/tools/testing/selftests/net/bpf/Makefile
-+++ /dev/null
-@@ -1,14 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0
--
--CLANG ?= clang
--CCINCLUDE += -I../../bpf
--CCINCLUDE += -I../../../../lib
--CCINCLUDE += -I../../../../../usr/include/
--
--TEST_CUSTOM_PROGS = $(OUTPUT)/bpf/nat6to4.o
--all: $(TEST_CUSTOM_PROGS)
--
--$(OUTPUT)/%.o: %.c
--	$(CLANG) -O2 -target bpf -c $< $(CCINCLUDE) -o $@
--
--EXTRA_CLEAN := $(TEST_CUSTOM_PROGS)
-diff --git a/tools/testing/selftests/net/bpf/nat6to4.c b/tools/testing/selftests/net/nat6to4.c
-similarity index 100%
-rename from tools/testing/selftests/net/bpf/nat6to4.c
-rename to tools/testing/selftests/net/nat6to4.c
-diff --git a/tools/testing/selftests/net/udpgro_frglist.sh b/tools/testing/selftests/net/udpgro_frglist.sh
-index c9c4b9d65839..0a6359bed0b9 100755
---- a/tools/testing/selftests/net/udpgro_frglist.sh
-+++ b/tools/testing/selftests/net/udpgro_frglist.sh
-@@ -40,8 +40,8 @@ run_one() {
- 
- 	ip -n "${PEER_NS}" link set veth1 xdp object ${BPF_FILE} section xdp
- 	tc -n "${PEER_NS}" qdisc add dev veth1 clsact
--	tc -n "${PEER_NS}" filter add dev veth1 ingress prio 4 protocol ipv6 bpf object-file ../bpf/nat6to4.o section schedcls/ingress6/nat_6  direct-action
--	tc -n "${PEER_NS}" filter add dev veth1 egress prio 4 protocol ip bpf object-file ../bpf/nat6to4.o section schedcls/egress4/snat4 direct-action
-+	tc -n "${PEER_NS}" filter add dev veth1 ingress prio 4 protocol ipv6 bpf object-file nat6to4.o section schedcls/ingress6/nat_6  direct-action
-+	tc -n "${PEER_NS}" filter add dev veth1 egress prio 4 protocol ip bpf object-file nat6to4.o section schedcls/egress4/snat4 direct-action
-         echo ${rx_args}
- 	ip netns exec "${PEER_NS}" ./udpgso_bench_rx ${rx_args} -r &
- 
-@@ -88,8 +88,8 @@ if [ ! -f ${BPF_FILE} ]; then
- 	exit -1
- fi
- 
--if [ ! -f bpf/nat6to4.o ]; then
--	echo "Missing nat6to4 helper. Build bpfnat6to4.o selftest first"
-+if [ ! -f nat6to4.o ]; then
-+	echo "Missing nat6to4 helper. Build bpf nat6to4.o selftest first"
- 	exit -1
- fi
- 
--- 
-2.33.8
+ 	hc->evt.tick_resume	= hpet_clkevt_legacy_resume;
+
+---
+base-commit: 706a741595047797872e669b3101429ab8d378ef
+change-id: 20230822-strncpy-arch-x86-kernel-hpet-4d57cbd8eb96
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
 
