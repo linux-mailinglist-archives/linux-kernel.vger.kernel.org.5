@@ -2,47 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F5E6783F0C
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 13:32:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9DD1783F2B
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 13:33:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234326AbjHVLcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 07:32:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50958 "EHLO
+        id S234980AbjHVLdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 07:33:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234928AbjHVLcw (ORCPT
+        with ESMTP id S234963AbjHVLdr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 07:32:52 -0400
+        Tue, 22 Aug 2023 07:33:47 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 775DFCE7;
-        Tue, 22 Aug 2023 04:32:22 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F8C1CFE;
+        Tue, 22 Aug 2023 04:33:25 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5323E652C0;
-        Tue, 22 Aug 2023 11:32:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EDC5C433D9;
-        Tue, 22 Aug 2023 11:32:20 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0D309652DB;
+        Tue, 22 Aug 2023 11:32:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C7F3C433C9;
+        Tue, 22 Aug 2023 11:32:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692703941;
-        bh=KsOKHiygKpqL3JfDSmiPSy4RSTpplxLAURixhu/LNgA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=etU2YWjxcaBBfoDte9X+PChSHeEqKS/M6IUPn172r2RfeivgA6ZXQmoVlS22PIrOQ
-         aKShA+XK/fMlLfYCnH1xwNamXkkdLZjA9/m8UdKdpT1i9IMKi8dSEo2wuJ7Gs6F6Fr
-         0+rq+Wwyx5mBkrJBLA9gffYC5cBWoZcA/7vE0QKGU0CiODpgtNe3L2ZaplaG5eyaSd
-         UNZpDc6jguv9bu1sdTVFtAoSguUJ8dxGKdwx3/Afsa/m5/HQkR19dzBjbv4cY1O8hq
-         wSwlVViajwt++N9u0ujj9ulThveoG0SZAuUBuPPzE85KHwK6MWzENAM5yQhhSMLoPh
-         7PTJvgURejTCQ==
+        s=k20201202; t=1692703943;
+        bh=lsPGMgScbWHu9V8R9g0k8Yk4SAYA7ZfkOo550ZhYhdc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=oTTLGPifec//zVvV66L0Z6J798jDlXZtNX4xedZ4blAA86q68S7hJUtv4C/Y4LJzg
+         mdlpCdTYQo0SZfPrATqNkeUV8L8wf41mG6J856q6PjWBtTwU2oc5KOmtgeZieBsGAk
+         hvla9cO6h2ZI/sI8ugpV4I2Vc5/ozZ3mC85LLCjIY9v6+ftxZClfF4XsIU5hhazoCu
+         zjx89a6TudqMJXvmQceW/6eJ1reIQawKXXoA6xtOiBvVZllk8uEpE2ZEfzCywcrBUE
+         vsSy3MauWejuh5kNCXV5vGvdXNqW75ziGU+xqepnEDNR0Tj3hm513+00tPvT7Lq/cn
+         rBAEMJqrMtPbQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Baoquan He <bhe@redhat.com>, kernel test robot <lkp@intel.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.4 1/3] clk: fixed-mmio: make COMMON_CLK_FIXED_MMIO depend on HAS_IOMEM
-Date:   Tue, 22 Aug 2023 07:32:16 -0400
-Message-Id: <20230822113218.3550311-1-sashal@kernel.org>
+Cc:     Martin Kohn <m.kohn@welotec.com>, Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, bjorn@mork.no,
+        davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
+        netdev@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 2/3] net: usb: qmi_wwan: add Quectel EM05GV2
+Date:   Tue, 22 Aug 2023 07:32:17 -0400
+Message-Id: <20230822113218.3550311-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230822113218.3550311-1-sashal@kernel.org>
+References: <20230822113218.3550311-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -58,50 +60,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Baoquan He <bhe@redhat.com>
+From: Martin Kohn <m.kohn@welotec.com>
 
-[ Upstream commit e7dd44f4f3166db45248414f5df8f615392de47a ]
+[ Upstream commit d4480c9bb9258db9ddf2e632f6ef81e96b41089c ]
 
-On s390 systems (aka mainframes), it has classic channel devices for
-networking and permanent storage that are currently even more common
-than PCI devices. Hence it could have a fully functional s390 kernel
-with CONFIG_PCI=n, then the relevant iomem mapping functions
-[including ioremap(), devm_ioremap(), etc.] are not available.
+Add support for Quectel EM05GV2 (G=global) with vendor ID
+0x2c7c and product ID 0x030e
 
-Here let COMMON_CLK_FIXED_MMIO depend on HAS_IOMEM so that it won't
-be built to cause below compiling error if PCI is unset:
+Enabling DTR on this modem was necessary to ensure stable operation.
+Patch for usb: serial: option: is also in progress.
 
-------
-ld: drivers/clk/clk-fixed-mmio.o: in function `fixed_mmio_clk_setup':
-clk-fixed-mmio.c:(.text+0x5e): undefined reference to `of_iomap'
-ld: clk-fixed-mmio.c:(.text+0xba): undefined reference to `iounmap'
-------
+T:  Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  2 Spd=480  MxCh= 0
+D:  Ver= 2.00 Cls=ef(misc ) Sub=02 Prot=01 MxPS=64 #Cfgs=  1
+P:  Vendor=2c7c ProdID=030e Rev= 3.18
+S:  Manufacturer=Quectel
+S:  Product=Quectel EM05-G
+C:* #Ifs= 5 Cfg#= 1 Atr=a0 MxPwr=500mA
+I:* If#= 0 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
+E:  Ad=81(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=01(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+I:* If#= 1 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
+E:  Ad=83(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
+E:  Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+I:* If#= 2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
+E:  Ad=85(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
+E:  Ad=84(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=03(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+I:* If#= 3 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
+E:  Ad=87(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
+E:  Ad=86(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=04(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+I:* If#= 4 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=ff Driver=qmi_wwan
+E:  Ad=89(I) Atr=03(Int.) MxPS=   8 Ivl=32ms
+E:  Ad=88(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=05(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
 
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202306211329.ticOJCSv-lkp@intel.com/
-Signed-off-by: Baoquan He <bhe@redhat.com>
-Cc: Michael Turquette <mturquette@baylibre.com>
-Cc: Stephen Boyd <sboyd@kernel.org>
-Cc: linux-clk@vger.kernel.org
-Link: https://lore.kernel.org/r/20230707135852.24292-8-bhe@redhat.com
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Signed-off-by: Martin Kohn <m.kohn@welotec.com>
+Link: https://lore.kernel.org/r/AM0PR04MB57648219DE893EE04FA6CC759701A@AM0PR04MB5764.eurprd04.prod.outlook.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/Kconfig | 1 +
+ drivers/net/usb/qmi_wwan.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/clk/Kconfig b/drivers/clk/Kconfig
-index cc871ae3a1792..5b34dbc830ee4 100644
---- a/drivers/clk/Kconfig
-+++ b/drivers/clk/Kconfig
-@@ -302,6 +302,7 @@ config COMMON_CLK_BD718XX
- config COMMON_CLK_FIXED_MMIO
- 	bool "Clock driver for Memory Mapped Fixed values"
- 	depends on COMMON_CLK && OF
-+	depends on HAS_IOMEM
- 	help
- 	  Support for Memory Mapped IO Fixed clocks
- 
+diff --git a/drivers/net/usb/qmi_wwan.c b/drivers/net/usb/qmi_wwan.c
+index a4be176fdd249..ebc1f01d5ea27 100644
+--- a/drivers/net/usb/qmi_wwan.c
++++ b/drivers/net/usb/qmi_wwan.c
+@@ -1373,6 +1373,7 @@ static const struct usb_device_id products[] = {
+ 	{QMI_QUIRK_SET_DTR(0x2c7c, 0x0191, 4)},	/* Quectel EG91 */
+ 	{QMI_QUIRK_SET_DTR(0x2c7c, 0x0195, 4)},	/* Quectel EG95 */
+ 	{QMI_FIXED_INTF(0x2c7c, 0x0296, 4)},	/* Quectel BG96 */
++	{QMI_QUIRK_SET_DTR(0x2c7c, 0x030e, 4)},	/* Quectel EM05GV2 */
+ 	{QMI_QUIRK_SET_DTR(0x2cb7, 0x0104, 4)},	/* Fibocom NL678 series */
+ 	{QMI_FIXED_INTF(0x0489, 0xe0b4, 0)},	/* Foxconn T77W968 LTE */
+ 	{QMI_FIXED_INTF(0x0489, 0xe0b5, 0)},	/* Foxconn T77W968 LTE with eSIM support*/
 -- 
 2.40.1
 
