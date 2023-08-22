@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4565C78396D
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 07:40:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00D3078396F
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 07:43:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231893AbjHVFky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 01:40:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58810 "EHLO
+        id S232862AbjHVFng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 01:43:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232852AbjHVFkw (ORCPT
+        with ESMTP id S232523AbjHVFnf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 01:40:52 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3152C130;
-        Mon, 21 Aug 2023 22:40:51 -0700 (PDT)
+        Tue, 22 Aug 2023 01:43:35 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57A68133;
+        Mon, 21 Aug 2023 22:43:34 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BB24F61F5D;
-        Tue, 22 Aug 2023 05:40:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1668C433C7;
-        Tue, 22 Aug 2023 05:40:48 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D7DBD61F5D;
+        Tue, 22 Aug 2023 05:43:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BAC6DC433C9;
+        Tue, 22 Aug 2023 05:43:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692682849;
-        bh=B0RTMXdNrXo+jpL+zYehIvYeTpfEwW/DXoX6NawYtmg=;
+        s=k20201202; t=1692683012;
+        bh=MlkDt4lSwRLkNkwyY2fyqOrEpkJm8+YSKKaLzasKkek=;
         h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-        b=DxxYZEEdc991o8aCPJuW8sE5QsbAvcS0SiA1SU3ofh4lwXy5m6oEgNDdb/1lODM+E
-         DMqqg5adLjnYraZwDq2MKoarPSW9gQZuDDTQFwL/gsBszENsiDHJ3OwuwfAgQZCuhd
-         H2Ajme4xW62Y/pr9c8Pe2kthuzB5ag92L9uhOW9O0/D2f1NArFGjOx3EHf5p8m/EWN
-         t1VzMrxTRQtYt/ZokST7e7XMgUbjYDbuaJG9Q4oh6t61zBmC+77MY1rXp9HB96c+LB
-         2RwJBh6iAnfA4yez1/uZxbqtiWq/7reZgtuHmFpOoo3KiFnaTAog4tWumToN0vCrqs
-         ydClNHo6cQjnw==
+        b=o5eDhnoYUR6MC0uhXLUEzzr8DYAZ0ei3bSVg57wqinm3UUaeQ0Wdv7X50n0jwp34t
+         uV3Mu9SfiKmT+h+UALoxPSDtmrLYoCqpcSIxUkJwh028sjRoca/6mJ+DPr8PFCRCq5
+         iLQIEJsAKpzDDSrw60lXU36CyB+NfmKPa7BFLWhjIixXnSRcdFHgVvQc2fX0Lz5k2i
+         /JEmZZAyspOrP6ce6fz+JQ1YAR8Y6ZRZhLAC9Pptj9BGkAgv0MWRhg5UHJGBIA90SU
+         kXDxdiDxjf2G/G8ZaiDMgi6yWAwSLXmHlInK98qBkSZGUEubqoyXXWJQFgRsbkilJd
+         1Nn0sqnuZ7ilw==
 From:   Kalle Valo <kvalo@kernel.org>
-To:     Ping-Ke Shih <pkshih@realtek.com>
-Cc:     Sergey Korolev <korolev.sergey@gmail.com>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: PROBLEM: kernel warns about voluntary context switch within RCU
- critical section in rtw88_usb
-References: <CA+QjRnJ+YMdOM0OzwG+Pz8-mTPo5nZVioCjbz1xY0jVSGXBk7w@mail.gmail.com>
-        <bfaa8714467a4954a045475e062f78b1@realtek.com>
-Date:   Tue, 22 Aug 2023 08:41:45 +0300
-In-Reply-To: <bfaa8714467a4954a045475e062f78b1@realtek.com> (Ping-Ke Shih's
-        message of "Tue, 22 Aug 2023 01:47:34 +0000")
-Message-ID: <87pm3fws4m.fsf@kernel.org>
+To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
+Cc:     Wang Ming <machel@vivo.com>, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org, opensource.kernel@vivo.com
+Subject: Re: [PATCH net-next v3] wifi: ath9k: Remove error checking for
+ debugfs_create_dir()
+References: <20230726110750.3925-1-machel@vivo.com> <87sf8tbr3a.fsf@toke.dk>
+        <87bkf0k1rt.fsf@kernel.org> <87350cbiv9.fsf@toke.dk>
+Date:   Tue, 22 Aug 2023 08:44:29 +0300
+In-Reply-To: <87350cbiv9.fsf@toke.dk> ("Toke =?utf-8?Q?H=C3=B8iland-J?=
+ =?utf-8?Q?=C3=B8rgensen=22's?= message of
+        "Mon, 21 Aug 2023 15:55:06 +0200")
+Message-ID: <87lee3ws02.fsf@kernel.org>
 User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,27 +59,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ping-Ke Shih <pkshih@realtek.com> writes:
+Toke H=C3=B8iland-J=C3=B8rgensen <toke@toke.dk> writes:
 
-> From: Sergey Korolev <korolev.sergey@gmail.com>=20
-> Sent: Monday, August 21, 2023 10:28 PM
-> To: Ping-Ke Shih <pkshih@realtek.com>; Kalle Valo <kvalo@kernel.org>; lin=
-ux-wireless@vger.kernel.org; linux-kernel@vger.kernel.org
-> Subject: PROBLEM: kernel warns about voluntary context switch within RCU =
-critical section in rtw88_usb
->>=20
->> Please note I use an unmodified driver from the upstream=C2=A028c11c2949=
-4f1b34e39641eead9c60a8bd26170d
->> ("wifi: rtw88: fix not entering PS mode after AP stops") build for 6.2 k=
-ernel (Ubuntu 23.04).
+> Kalle Valo <kvalo@kernel.org> writes:
 >
-> I feel Martin has been addressed this problem during development of SDIO =
-and USB
-> by 8a1e2fd8e2da ("wifi: rtw88: Move register access from rtw_bf_assoc() o=
-utside the RCU")
-> Please take a look if this patch is existing in your source.=20
+>> Toke H=C3=B8iland-J=C3=B8rgensen <toke@toke.dk> writes:
+>>
+>>> Wang Ming <machel@vivo.com> writes:
+>>>
+>>>> It is expected that most callers should _ignore_ the errors
+>>>> return by debugfs_create_dir() in ath9k_htc_init_debug().
+>>>>
+>>>> Signed-off-by: Wang Ming <machel@vivo.com>
+>>>> ---
+>>>>  drivers/net/wireless/ath/ath9k/htc_drv_debug.c | 2 --
+>>>>  1 file changed, 2 deletions(-)
+>>>>
+>>>> diff --git a/drivers/net/wireless/ath/ath9k/htc_drv_debug.c b/drivers/=
+net/wireless/ath/ath9k/htc_drv_debug.c
+>>>> index b3ed65e5c4da..85ad45771b44 100644
+>>>> --- a/drivers/net/wireless/ath/ath9k/htc_drv_debug.c
+>>>> +++ b/drivers/net/wireless/ath/ath9k/htc_drv_debug.c
+>>>> @@ -491,8 +491,6 @@ int ath9k_htc_init_debug(struct ath_hw *ah)
+>>>>=20=20
+>>>>  	priv->debug.debugfs_phy =3D debugfs_create_dir(KBUILD_MODNAME,
+>>>>  					     priv->hw->wiphy->debugfsdir);
+>>>> -	if (!priv->debug.debugfs_phy)
+>>>> -		return -ENOMEM;
+>>>
+>>> Hmm, so it's true that all the debugfs_create* functions deal correctly
+>>> with the dir pointer being an error pointer, which means that it's
+>>> possible to just ignore the return value of debugfs_create_dir() without
+>>> anything breaking.
+>>
+>> The comment in debugfs_create_dir() states:
+>>
+>>  * NOTE: it's expected that most callers should _ignore_ the errors retu=
+rned
+>>  * by this function. Other debugfs functions handle the fact that the "d=
+entry"
+>>  * passed to them could be an error and they don't crash in that case.
+>>  * Drivers should generally work fine even if debugfs fails to init anyw=
+ay.
+>>
+>>> However, it also seems kinda pointless to have all those calls if we
+>>> know they're going to fail, so I prefer v1 of this patch that just
+>>> fixed the IS_ERR check. No need to resend, we can just apply v1
+>>> instead...
+>>
+>> Because of the comment I'm leaning towards v3.
+>
+> Well, the comment says "most callers" :)
+>
+> I think having an early return like this is perfectly valid
+> optimisation, even if it doesn't really make any performance difference.
+> I don't feel incredibly strongly about it (given that the current check
+> is broken I guess the early return has never actually worked), so if you
+> feel like overriding your submaintainer on this, feel free ;)
 
-Commit 8a1e2fd8e2da was merged to v6.3-rc1 so v6.2 won't have it.
+No no, I don't want to override anything :) Just making sure you were
+aware of the comment. v1 is in my pending branch right now.
 
 --=20
 https://patchwork.kernel.org/project/linux-wireless/list/
