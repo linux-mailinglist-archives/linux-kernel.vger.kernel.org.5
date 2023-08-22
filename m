@@ -2,199 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E668783D8C
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 12:05:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66E76783D8D
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 12:06:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234599AbjHVKFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 06:05:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39670 "EHLO
+        id S234603AbjHVKGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 06:06:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234596AbjHVKFs (ORCPT
+        with ESMTP id S234404AbjHVKGm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 06:05:48 -0400
+        Tue, 22 Aug 2023 06:06:42 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 615521B0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 03:04:57 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13D14CD0
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 03:05:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692698696;
+        s=mimecast20190719; t=1692698757;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Nhj91CECcIxnBdAViZ5aTSC/L/AeQfU+/IVAfuxs9/E=;
-        b=NtCalsTRvWnhImkcBLFklAaBV1rSubawIvB4+neSjWgOwjmJrGlJsWWJ4viVVXADa0X4xy
-        O0L+A/AxbxKln/gtVrOUZeaOU4CzkS9mpSpGkcUhVPqi2og8mSAh809KtMFE+MfEnwH8Z+
-        NKD1B2aiESMqeJo1qX3Y1IoFquwmJJY=
-Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
- [209.85.216.71]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=Ljh8mgcq2yx3L1h9FQGeznUQ1rxHUXwLkH1HroGp6xY=;
+        b=NSohfqO7ttx3XK53sFCGHYT/SP9KeAFN91BCLQDBMLhKggSggcvM3JUTx9kDE8A391S6dD
+        slKQXHPkbLX/wYhqAS6IkHlPR8UWRT5pRlf6SaTRfNonkyDg3V6k6ir3G93efBABqNYI/6
+        6vn08S2N7uTQAXt/gVaDJdP1apZUCjM=
+Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
+ [209.85.214.199]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-294-ebnRquNiODqD2lAk-X1ceA-1; Tue, 22 Aug 2023 06:04:55 -0400
-X-MC-Unique: ebnRquNiODqD2lAk-X1ceA-1
-Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-26d52dc97e3so3995064a91.2
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 03:04:54 -0700 (PDT)
+ us-mta-394-U6Vs8cplNe2voNjOWhL9EA-1; Tue, 22 Aug 2023 06:05:56 -0400
+X-MC-Unique: U6Vs8cplNe2voNjOWhL9EA-1
+Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-1c0888beb4bso2481045ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 03:05:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692698694; x=1693303494;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Nhj91CECcIxnBdAViZ5aTSC/L/AeQfU+/IVAfuxs9/E=;
-        b=GuqN67J2vMJShOYRw2Un/0UjOKTQIF7fG71/e7ywb786uZPcljBXdF2TeKa4rflcJn
-         PCFayDtvzPA/DFUpY+fzY0dYOFbl26yB95IQ1OUC9OjNfG8HbcUsU2IP9g2PGeEiPgjW
-         9xplwv3Pw+PIoateqIwKSU844f5gijaKSSzuFrL6dF54sOPyldXNf3I2JenFQevg6+o6
-         JtTI9xVG9o5JvKFuK9MZMw/V1kSAHog3JxchUXP9/fZI4XXhaMpEV1sEyG4MgAQJS6JC
-         evdQsTDWPIqlpsGK/9afV5RSHGO4obZX1xs6+qk4m32smrvyoKfyWwklZvLQ1q7fpG0N
-         wvwA==
-X-Gm-Message-State: AOJu0YyiuUCB4t5FXteZGCIjb8NBnxLZF3UbWny3oftVhqzDNtecQLNJ
-        0EBitZPkihA9QGt9CuMCV6inAx/6GFcF4gGDhWUZFxe7ouHsHyljBL8j8qROLoTISo1r5/8FMXr
-        D0zFSAyIGrld9Uxi1yWA7TVNxqQfbIot1NWW3VciI0MtJzh5MSkg/Og==
-X-Received: by 2002:a17:90b:23c7:b0:26b:17ef:7365 with SMTP id md7-20020a17090b23c700b0026b17ef7365mr5178883pjb.48.1692698693950;
-        Tue, 22 Aug 2023 03:04:53 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE26YlmJHhfUHjcy5IY/xEkYsiQelMxX0OM604G2+o0BGV4NyzNRdOvhHe0daPV5pBt8ZpWUWL7H4NQIZSw9E8=
-X-Received: by 2002:a17:90b:23c7:b0:26b:17ef:7365 with SMTP id
- md7-20020a17090b23c700b0026b17ef7365mr5178866pjb.48.1692698693668; Tue, 22
- Aug 2023 03:04:53 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692698754; x=1693303554;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ljh8mgcq2yx3L1h9FQGeznUQ1rxHUXwLkH1HroGp6xY=;
+        b=bVBOZjaTf8ZFXRM98Jox3+5PBmhzGarIzJ+CvfMkeCHpRmCJhIwQPtqFfHhpNa0T1O
+         zUpKmYODUUQOz6DsL7FBVFB89xlqel51wp6H3+ASMsXH52H9H9A54qerJMRQg09zVL61
+         3rGPEiGmb3loKwKqRBUOer1i6DVNdzV/rEPHF/NWFB4RY29Joa6wvNUtLFPwLcga4vZq
+         YkMTqIyKdZBqxfTY7cpFBYD1VyBLJk1eZp1T5th515OXPdwzT7G3kc8rzp+T44dqTaXG
+         OxzGv4oN3fl+bAp1unwTMCkUd+pWXYYYO6n2QfWwru+r65UjJjASvjej7YPlgf7sdlI4
+         7Y4Q==
+X-Gm-Message-State: AOJu0YxxOQ/RVnhBx4Xuo7qO+y8zuK1kVHSComk27bQaOkgSzRcGR7/2
+        wdnnKrN8U17/M0bXuRKfh3uzOux7geA7covihSLW5f8N/3AHbCiXJzlkm4Oyy4iXpKniLH2CmQ3
+        R56g3TQzSs9Xb5gDbPSDDbKBT
+X-Received: by 2002:a17:902:cecc:b0:1b3:ec39:f42c with SMTP id d12-20020a170902cecc00b001b3ec39f42cmr10623699plg.5.1692698754301;
+        Tue, 22 Aug 2023 03:05:54 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEBhn68XouwWIaKc08runbGqmfjkKyK5I3i4ktoUZ68HemKWF8GXSCA5juwTjuCj2HbOAuLAA==
+X-Received: by 2002:a17:902:cecc:b0:1b3:ec39:f42c with SMTP id d12-20020a170902cecc00b001b3ec39f42cmr10623682plg.5.1692698753973;
+        Tue, 22 Aug 2023 03:05:53 -0700 (PDT)
+Received: from [10.72.112.73] ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id q4-20020a170902bd8400b001b9f032bb3dsm8603671pls.3.2023.08.22.03.05.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Aug 2023 03:05:52 -0700 (PDT)
+Message-ID: <1c6c07af-f6d0-89a6-1b7d-164ca100ac88@redhat.com>
+Date:   Tue, 22 Aug 2023 18:05:47 +0800
 MIME-Version: 1.0
-References: <20230820090949.2874537-1-yukuai1@huaweicloud.com> <20230820090949.2874537-3-yukuai1@huaweicloud.com>
-In-Reply-To: <20230820090949.2874537-3-yukuai1@huaweicloud.com>
-From:   Xiao Ni <xni@redhat.com>
-Date:   Tue, 22 Aug 2023 18:04:43 +0800
-Message-ID: <CALTww29sF3OMdPfcKWqBoNcbKJPKot22SnpsJ3Dr5fudGNcfDQ@mail.gmail.com>
-Subject: Re: [PATCH -next v3 2/7] md: factor out a helper to choose sync
- action from md_check_recovery()
-To:     Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     song@kernel.org, mariusz.tkaczyk@linux.intel.com,
-        linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yukuai3@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH v5 08/12] KVM: arm64: PMU: Allow userspace to limit
+ PMCR_EL0.N for the guest
+Content-Language: en-US
+To:     Raghavendra Rao Ananta <rananta@google.com>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Marc Zyngier <maz@kernel.org>
+Cc:     Alexandru Elisei <alexandru.elisei@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+References: <20230817003029.3073210-1-rananta@google.com>
+ <20230817003029.3073210-9-rananta@google.com>
+From:   Shaoqin Huang <shahuang@redhat.com>
+In-Reply-To: <20230817003029.3073210-9-rananta@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 20, 2023 at 5:13=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.com> w=
-rote:
->
-> From: Yu Kuai <yukuai3@huawei.com>
->
-> There are no functional changes, on the one hand make the code cleaner,
-> on the other hand prevent following checkpatch error in the next patch to
-> delay choosing sync action to md_start_sync().
->
-> ERROR: do not use assignment in if condition
-> +       } else if ((spares =3D remove_and_add_spares(mddev, NULL))) {
->
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+Hi Raghavendra,
+
+On 8/17/23 08:30, Raghavendra Rao Ananta wrote:
+> From: Reiji Watanabe <reijiw@google.com>
+> 
+> KVM does not yet support userspace modifying PMCR_EL0.N (With
+> the previous patch, KVM ignores what is written by upserspace).
+> Add support userspace limiting PMCR_EL0.N.
+> 
+> Disallow userspace to set PMCR_EL0.N to a value that is greater
+> than the host value (KVM_SET_ONE_REG will fail), as KVM doesn't
+> support more event counters than the host HW implements.
+> Although this is an ABI change, this change only affects
+> userspace setting PMCR_EL0.N to a larger value than the host.
+> As accesses to unadvertised event counters indices is CONSTRAINED
+> UNPREDICTABLE behavior, and PMCR_EL0.N was reset to the host value
+> on every vCPU reset before this series, I can't think of any
+> use case where a user space would do that.
+> 
+> Also, ignore writes to read-only bits that are cleared on vCPU reset,
+> and RES{0,1} bits (including writable bits that KVM doesn't support
+> yet), as those bits shouldn't be modified (at least with
+> the current KVM).
+> 
+> Signed-off-by: Reiji Watanabe <reijiw@google.com>
+> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
 > ---
->  drivers/md/md.c | 70 +++++++++++++++++++++++++++++++------------------
->  1 file changed, 45 insertions(+), 25 deletions(-)
->
-> diff --git a/drivers/md/md.c b/drivers/md/md.c
-> index 90815be1e80f..0cb9fa703a0c 100644
-> --- a/drivers/md/md.c
-> +++ b/drivers/md/md.c
-> @@ -9246,6 +9246,50 @@ static int remove_and_add_spares(struct mddev *mdd=
-ev,
->         return spares;
->  }
->
-> +static bool md_choose_sync_action(struct mddev *mddev, int *spares)
+>   arch/arm64/include/asm/kvm_host.h |  3 ++
+>   arch/arm64/kvm/pmu-emul.c         |  1 +
+>   arch/arm64/kvm/sys_regs.c         | 49 +++++++++++++++++++++++++++++--
+>   3 files changed, 51 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+> index 0f2dbbe8f6a7e..c15ec365283d1 100644
+> --- a/arch/arm64/include/asm/kvm_host.h
+> +++ b/arch/arm64/include/asm/kvm_host.h
+> @@ -259,6 +259,9 @@ struct kvm_arch {
+>   	/* PMCR_EL0.N value for the guest */
+>   	u8 pmcr_n;
+>   
+> +	/* Limit value of PMCR_EL0.N for the guest */
+> +	u8 pmcr_n_limit;
+> +
+>   	/* Hypercall features firmware registers' descriptor */
+>   	struct kvm_smccc_features smccc_feat;
+>   	struct maple_tree smccc_filter;
+> diff --git a/arch/arm64/kvm/pmu-emul.c b/arch/arm64/kvm/pmu-emul.c
+> index ce7de6bbdc967..39ad56a71ad20 100644
+> --- a/arch/arm64/kvm/pmu-emul.c
+> +++ b/arch/arm64/kvm/pmu-emul.c
+> @@ -896,6 +896,7 @@ int kvm_arm_set_vm_pmu(struct kvm *kvm, struct arm_pmu *arm_pmu)
+>   	 * while the latter does not.
+>   	 */
+>   	kvm->arch.pmcr_n = arm_pmu->num_events - 1;
+> +	kvm->arch.pmcr_n_limit = arm_pmu->num_events - 1;
+>   
+>   	return 0;
+>   }
+> diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
+> index 2075901356c5b..c01d62afa7db4 100644
+> --- a/arch/arm64/kvm/sys_regs.c
+> +++ b/arch/arm64/kvm/sys_regs.c
+> @@ -1086,6 +1086,51 @@ static int get_pmcr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *r,
+>   	return 0;
+>   }
+>   
+> +static int set_pmcr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *r,
+> +		    u64 val)
 > +{
-> +       /* Check if reshape is in progress first. */
-> +       if (mddev->reshape_position !=3D MaxSector) {
-> +               if (mddev->pers->check_reshape =3D=3D NULL ||
-> +                   mddev->pers->check_reshape(mddev) !=3D 0)
-> +                       return false;
+> +	struct kvm *kvm = vcpu->kvm;
+> +	u64 new_n, mutable_mask;
+> +	int ret = 0;
 > +
-> +               set_bit(MD_RECOVERY_RESHAPE, &mddev->recovery);
-> +               clear_bit(MD_RECOVERY_RECOVER, &mddev->recovery);
-> +               return true;
-> +       }
+> +	new_n = FIELD_GET(ARMV8_PMU_PMCR_N, val);
 > +
-> +       /*
-> +        * Remove any failed drives, then add spares if possible. Spares =
-are
-> +        * also removed and re-added, to allow the personality to fail th=
-e
-> +        * re-add.
-> +        */
-> +       *spares =3D remove_and_add_spares(mddev, NULL);
-> +       if (*spares) {
-> +               clear_bit(MD_RECOVERY_SYNC, &mddev->recovery);
-> +               clear_bit(MD_RECOVERY_CHECK, &mddev->recovery);
-> +               clear_bit(MD_RECOVERY_REQUESTED, &mddev->recovery);
+> +	mutex_lock(&kvm->arch.config_lock);
+> +	if (unlikely(new_n != kvm->arch.pmcr_n)) {
+> +		/*
+> +		 * The vCPU can't have more counters than the PMU
+> +		 * hardware implements.
+> +		 */
+> +		if (new_n <= kvm->arch.pmcr_n_limit)
+> +			kvm->arch.pmcr_n = new_n;
+> +		else
+> +			ret = -EINVAL;
+> +	}
+> +	mutex_unlock(&kvm->arch.config_lock);
+
+Another thing I am just wonder is that should we block any modification 
+to the pmcr_n after vm start to run? Like add one more checking 
+kvm_vm_has_ran_once() at the beginning of the set_pmcr() function.
+
+Thanks,
+Shaoqin
+
+> +	if (ret)
+> +		return ret;
 > +
-> +               /* Start new recovery. */
-> +               set_bit(MD_RECOVERY_RECOVER, &mddev->recovery);
-> +               return true;
-> +       }
+> +	/*
+> +	 * Ignore writes to RES0 bits, read only bits that are cleared on
+> +	 * vCPU reset, and writable bits that KVM doesn't support yet.
+> +	 * (i.e. only PMCR.N and bits [7:0] are mutable from userspace)
+> +	 * The LP bit is RES0 when FEAT_PMUv3p5 is not supported on the vCPU.
+> +	 * But, we leave the bit as it is here, as the vCPU's PMUver might
+> +	 * be changed later (NOTE: the bit will be cleared on first vCPU run
+> +	 * if necessary).
+> +	 */
+> +	mutable_mask = (ARMV8_PMU_PMCR_MASK | ARMV8_PMU_PMCR_N);
+> +	val &= mutable_mask;
+> +	val |= (__vcpu_sys_reg(vcpu, r->reg) & ~mutable_mask);
 > +
-> +       /* Check if recovery is in progress. */
-> +       if (mddev->recovery_cp < MaxSector) {
-> +               set_bit(MD_RECOVERY_SYNC, &mddev->recovery);
-> +               clear_bit(MD_RECOVERY_RECOVER, &mddev->recovery);
-> +               return true;
-> +       }
+> +	/* The LC bit is RES1 when AArch32 is not supported */
+> +	if (!kvm_supports_32bit_el0())
+> +		val |= ARMV8_PMU_PMCR_LC;
 > +
-> +       /* Delay to choose resync/check/repair in md_do_sync(). */
-> +       if (test_bit(MD_RECOVERY_SYNC, &mddev->recovery))
-> +               return true;
-> +
-> +       /* Nothing to be done */
-> +       return false;
+> +	__vcpu_sys_reg(vcpu, r->reg) = val;
+> +	return 0;
 > +}
 > +
->  static void md_start_sync(struct work_struct *ws)
->  {
->         struct mddev *mddev =3D container_of(ws, struct mddev, sync_work)=
-;
-> @@ -9427,32 +9471,8 @@ void md_check_recovery(struct mddev *mddev)
->                 if (!test_and_clear_bit(MD_RECOVERY_NEEDED, &mddev->recov=
-ery) ||
->                     test_bit(MD_RECOVERY_FROZEN, &mddev->recovery))
->                         goto not_running;
-> -               /* no recovery is running.
-> -                * remove any failed drives, then
-> -                * add spares if possible.
-> -                * Spares are also removed and re-added, to allow
-> -                * the personality to fail the re-add.
-> -                */
-> -
-> -               if (mddev->reshape_position !=3D MaxSector) {
-> -                       if (mddev->pers->check_reshape =3D=3D NULL ||
-> -                           mddev->pers->check_reshape(mddev) !=3D 0)
-> -                               /* Cannot proceed */
-> -                               goto not_running;
-> -                       set_bit(MD_RECOVERY_RESHAPE, &mddev->recovery);
-> -                       clear_bit(MD_RECOVERY_RECOVER, &mddev->recovery);
-> -               } else if ((spares =3D remove_and_add_spares(mddev, NULL)=
-)) {
-> -                       clear_bit(MD_RECOVERY_SYNC, &mddev->recovery);
-> -                       clear_bit(MD_RECOVERY_CHECK, &mddev->recovery);
-> -                       clear_bit(MD_RECOVERY_REQUESTED, &mddev->recovery=
-);
-> -                       set_bit(MD_RECOVERY_RECOVER, &mddev->recovery);
-> -               } else if (mddev->recovery_cp < MaxSector) {
-> -                       set_bit(MD_RECOVERY_SYNC, &mddev->recovery);
-> -                       clear_bit(MD_RECOVERY_RECOVER, &mddev->recovery);
-> -               } else if (!test_bit(MD_RECOVERY_SYNC, &mddev->recovery))
-> -                       /* nothing to be done ... */
-> +               if (!md_choose_sync_action(mddev, &spares))
->                         goto not_running;
-> -
->                 if (mddev->pers->sync_request) {
->                         if (spares) {
->                                 /* We are adding a device or devices to a=
-n array
-> --
-> 2.39.2
->
+>   /* Silly macro to expand the DBG{BCR,BVR,WVR,WCR}n_EL1 registers in one go */
+>   #define DBG_BCR_BVR_WCR_WVR_EL1(n)					\
+>   	{ SYS_DESC(SYS_DBGBVRn_EL1(n)),					\
+> @@ -2147,8 +2192,8 @@ static const struct sys_reg_desc sys_reg_descs[] = {
+>   	{ SYS_DESC(SYS_CTR_EL0), access_ctr },
+>   	{ SYS_DESC(SYS_SVCR), undef_access },
+>   
+> -	{ PMU_SYS_REG(PMCR_EL0), .access = access_pmcr,
+> -	  .reset = reset_pmcr, .reg = PMCR_EL0, .get_user = get_pmcr },
+> +	{ PMU_SYS_REG(PMCR_EL0), .access = access_pmcr, .reset = reset_pmcr,
+> +	  .reg = PMCR_EL0, .get_user = get_pmcr, .set_user = set_pmcr },
+>   	{ PMU_SYS_REG(PMCNTENSET_EL0),
+>   	  .access = access_pmcnten, .reg = PMCNTENSET_EL0 },
+>   	{ PMU_SYS_REG(PMCNTENCLR_EL0),
 
-Reviewed-by: Xiao Ni <xni@redhat.com>
+-- 
+Shaoqin
 
