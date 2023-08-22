@@ -2,105 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 707C378437D
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 16:09:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF36C78437E
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 16:09:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236576AbjHVOJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 10:09:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60694 "EHLO
+        id S236587AbjHVOJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 10:09:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235011AbjHVOJh (ORCPT
+        with ESMTP id S234420AbjHVOJt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 10:09:37 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFEDDE4E
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 07:09:11 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id ca18e2360f4ac-760dff4b701so38909039f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 07:09:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1692713282; x=1693318082;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0Sv9Fe+EBLlzCKA7Fw8Ctu6Jx8HbbPfz2ki4k9zi0Qs=;
-        b=L8T134VPAe3dTLu2VnFTRHlVyS3WmjzSYqzPQN/4uxgai+nz6DYXWWlLULm5r2FfUs
-         YtYF4w/Goun7y5u0cvNHNNDoxBvCs61W87Mj6wCAeMlKeT8I/2wOSjlhPHDiSd/vYfiZ
-         t4JzAu8yP+gGP269gYUQWYNXdxd0aGCE39H6Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692713282; x=1693318082;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0Sv9Fe+EBLlzCKA7Fw8Ctu6Jx8HbbPfz2ki4k9zi0Qs=;
-        b=FxGYF8/4hxj09qWT+nKGp+qURMcSybBedsVaMUZzr+lZnL4e8HgG3rM7KSM0rKUKYi
-         eM8R6P9BF3f+TsiAQFkOQvZLgvyRmZTcckVwnbafKL8yislRNX7RLM74rk5STRKs1hJJ
-         imkfRVwCRXeqfSf+tJpXCielzRi9T7WNgRcR4bfIbj/M6P1BMNlNEnABRZ9ek0KyvQqk
-         yCy8nx+kZgSLXZMX6R3/yDupn6s6EC72igGBqSDLdzt0vGrAa5hSx1fFgsJ9PrdH7eev
-         JoIlvJi4SSTPKdo/4yZgY5MbHOdfJ120o1JxdenpXzQfsIZ8RXy09qmzHw5oBivhNmSa
-         CToA==
-X-Gm-Message-State: AOJu0YyUCAoKRGzgqipVqQWDwqJkxUFYCHbhjW7N5xgmpiLOV00x4aAs
-        3HSyVzFhh/H09PAVWAYNENwA7tY9tiU2LGcKszk=
-X-Google-Smtp-Source: AGHT+IE/sY5y70dT2P1jGFBFoB4PjfCtYg1oDiKqs+unQsjzJZhRsERUTViMa7ZaE1WhcfrSs0gQjQ==
-X-Received: by 2002:a6b:4e17:0:b0:790:958e:a667 with SMTP id c23-20020a6b4e17000000b00790958ea667mr11207987iob.2.1692713282247;
-        Tue, 22 Aug 2023 07:08:02 -0700 (PDT)
-Received: from [192.168.1.128] ([38.15.45.1])
-        by smtp.gmail.com with ESMTPSA id dl28-20020a056638279c00b0042b320c13aasm3128441jab.89.2023.08.22.07.08.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Aug 2023 07:08:02 -0700 (PDT)
-Message-ID: <fb189b65-ccc9-a322-ffd6-ab00a2b82887@linuxfoundation.org>
-Date:   Tue, 22 Aug 2023 08:08:01 -0600
+        Tue, 22 Aug 2023 10:09:49 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4299E7E
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 07:09:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3DDAA65807
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 14:08:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48A62C433CA;
+        Tue, 22 Aug 2023 14:08:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1692713304;
+        bh=OiO4Q0DrwnUgVuWcPzjWf7klGr0wIyHezsX7cDgwsVU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CiihC7ll43QWv7GYzP+aWWA2r+24DDlJGB2Ms13ZeBzK8K+TkSg49SWRH4ygwvZvJ
+         V1UE3uYinJD54vcunhqoLw8wR1JGEltsI7+1xg2zMQTTQACi/R+AHf97Wv5wHWnVAq
+         GQKlTmgV6ETD6LXMvgjIA63yV2HHPf7dlILmXMbo=
+Date:   Tue, 22 Aug 2023 16:08:21 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Abhijit Gangurde <abhijit.gangurde@amd.com>
+Cc:     masahiroy@kernel.org, linux-kernel@vger.kernel.org,
+        Nipun.Gupta@amd.com, nikhil.agarwal@amd.com, puneet.gupta@amd.com,
+        git@amd.com, michal.simek@amd.com,
+        Pieter Jansen van Vuuren <pieter.jansen-van-vuuren@amd.com>
+Subject: Re: [PATCH v3 3/5] cdx: add support for bus enable and disable
+Message-ID: <2023082201-silenced-exfoliate-e6a6@gregkh>
+References: <20230814102223.418046-1-abhijit.gangurde@amd.com>
+ <20230814102223.418046-4-abhijit.gangurde@amd.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 6.1 000/194] 6.1.47-rc1 review
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20230821194122.695845670@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20230821194122.695845670@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230814102223.418046-4-abhijit.gangurde@amd.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/21/23 13:39, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.1.47 release.
-> There are 194 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Mon, Aug 14, 2023 at 03:52:21PM +0530, Abhijit Gangurde wrote:
+> CDX bus needs to be disabled before updating/writing devices
+> in the FPGA. Once the devices are written, the bus shall be
+> rescanned. This change provides sysfs entry to enable/disable the
+> CDX bus.
 > 
-> Responses should be made by Wed, 23 Aug 2023 19:40:45 +0000.
-> Anything received after that time might be too late.
+> Co-developed-by: Nipun Gupta <nipun.gupta@amd.com>
+> Signed-off-by: Nipun Gupta <nipun.gupta@amd.com>
+> Signed-off-by: Abhijit Gangurde <abhijit.gangurde@amd.com>
+> Reviewed-by: Pieter Jansen van Vuuren <pieter.jansen-van-vuuren@amd.com>
+> Tested-by: Nikhil Agarwal <nikhil.agarwal@amd.com>
+> ---
+>  Documentation/ABI/testing/sysfs-bus-cdx | 27 +++++++
+>  drivers/cdx/cdx.c                       | 94 +++++++++++++++++++++++++
+>  drivers/cdx/controller/cdx_controller.c | 50 +++++++++++++
+>  drivers/cdx/controller/mc_cdx_pcol.h    | 54 ++++++++++++++
+>  drivers/cdx/controller/mcdi_functions.c | 24 +++++++
+>  drivers/cdx/controller/mcdi_functions.h | 18 +++++
+>  include/linux/cdx/cdx_bus.h             | 12 ++++
+>  7 files changed, 279 insertions(+)
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.47-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+> diff --git a/Documentation/ABI/testing/sysfs-bus-cdx b/Documentation/ABI/testing/sysfs-bus-cdx
+> index 7af477f49998..04c8dfe7e201 100644
+> --- a/Documentation/ABI/testing/sysfs-bus-cdx
+> +++ b/Documentation/ABI/testing/sysfs-bus-cdx
+> @@ -11,6 +11,33 @@ Description:
+>  
+>  		  # echo 1 > /sys/bus/cdx/rescan
+>  
+> +What:		/sys/bus/cdx/enable
+> +Date:		July 2023
+> +Contact:	nipun.gupta@amd.com
+> +Description:
+> +		Writing bus number in hex to this file will attempt to enable
+> +		the CDX bus. The bus number for the cdx devices can be found
+> +		at /sys/bus/cdx/devices/cdx-BB:DD, where BB denotes the bus
+> +		number for the respective device.
+> +
+> +		For example ::
+> +
+> +		  # echo 00 > /sys/bus/cdx/enable
+> +
+> +What:		/sys/bus/cdx/disable
+> +Date:		July 2023
+> +Contact:	nipun.gupta@amd.com
+> +Description:
+> +		Writing bus number in hex to this file will attempt to disable
+> +		the CDX bus. CDX bus should be disabled before updating the
+> +		devices in FPGA. The bus number for the cdx devices can be
+> +		found at /sys/bus/cdx/devices/cdx-BB:DD, where BB denotes the
+> +		bus number for the respective device.
+> +
+> +		For example ::
+> +
+> +		  # echo 00 > /sys/bus/cdx/disable
+> +
+>  What:		/sys/bus/cdx/devices/.../vendor
+>  Date:		March 2023
+>  Contact:	nipun.gupta@amd.com
+> diff --git a/drivers/cdx/cdx.c b/drivers/cdx/cdx.c
+> index 50df061f4537..411beb035fdd 100644
+> --- a/drivers/cdx/cdx.c
+> +++ b/drivers/cdx/cdx.c
+> @@ -70,6 +70,10 @@
+>  #define CDX_DEFAULT_DMA_MASK	(~0ULL)
+>  #define MAX_CDX_CONTROLLERS 16
+>  
+> +#define CONTROLLER_ID(X)	\
+> +	(((X) & CDX_CONTROLLER_ID_MASK) >> CDX_CONTROLLER_ID_SHIFT)
+> +#define BUS_ID(X) ((X) & CDX_BUS_NUM_MASK)
+> +
+>  /* IDA for CDX controllers registered with the CDX bus */
+>  DEFINE_IDA(cdx_controller_ida);
+>  /* Lock to protect controller ops */
+> @@ -384,6 +388,94 @@ static struct attribute *cdx_dev_attrs[] = {
+>  };
+>  ATTRIBUTE_GROUPS(cdx_dev);
+>  
+> +static struct cdx_controller *cdx_find_controller(u8 controller_id)
+> +{
+> +	struct cdx_controller *cdx = NULL;
+> +	struct platform_device *pd;
+> +	struct device_node *np;
+> +
+> +	for_each_compatible_node(np, NULL, compat_node_name) {
+> +		if (!np)
+> +			return NULL;
+> +
+> +		pd = of_find_device_by_node(np);
+> +		if (!pd)
+> +			return NULL;
+> +
+> +		cdx = platform_get_drvdata(pd);
+> +		if (cdx && cdx->controller_registered && cdx->id == controller_id) {
+> +			put_device(&pd->dev);
+> +			break;
+> +		}
+> +
+> +		put_device(&pd->dev);
 
-Compiled and booted on my test system. No dmesg regressions.
+Where is the locking if a platform device is removed?
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+> +	}
+> +
+> +	return cdx;
+> +}
+> +
+> +static ssize_t enable_store(const struct bus_type *bus,
+> +			    const char *buf, size_t count)
+> +{
+> +	unsigned long controller_id;
+> +	struct cdx_controller *cdx;
+> +	u8 bus_id;
+> +	int ret;
+> +
+> +	if (kstrtou8(buf, 16, &bus_id))
+> +		return -EINVAL;
+> +
+> +	controller_id = CONTROLLER_ID(bus_id);
+> +	bus_id = BUS_ID(bus_id);
+> +
+> +	mutex_lock(&cdx_controller_lock);
+> +
+> +	cdx = cdx_find_controller(controller_id);
+
+You lock before you call this function?  Is the lock required before you
+call it?  If so, please document that and enforce it with the proper
+sparse marking.
 
 thanks,
--- Shuah
+
+greg k-h
