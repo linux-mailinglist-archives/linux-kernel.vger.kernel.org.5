@@ -2,155 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D04B9784548
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 17:20:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3ABA78454D
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 17:20:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236905AbjHVPU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 11:20:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56940 "EHLO
+        id S236916AbjHVPUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 11:20:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234758AbjHVPU1 (ORCPT
+        with ESMTP id S233491AbjHVPUu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 11:20:27 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7DD9ECCB
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 08:20:25 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A7DB411FB;
-        Tue, 22 Aug 2023 08:21:05 -0700 (PDT)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B6CAA3F64C;
-        Tue, 22 Aug 2023 08:20:21 -0700 (PDT)
-Message-ID: <f6da7769-dcda-f8f9-934d-b581d3e77618@arm.com>
-Date:   Tue, 22 Aug 2023 17:20:20 +0200
+        Tue, 22 Aug 2023 11:20:50 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19340CD9;
+        Tue, 22 Aug 2023 08:20:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=j7dccOxm/oPivTdOBSmOXPPu0sVwTdHd1TVVg6mfImQ=; b=jtLyJAjm9RaGoQDTEOw/dfKFkT
+        6DW7BdJSJcJQUt4xUWRDvj7XoY2GOUltc9Th4srekp3SDPZeVRUW9GRQyyWm096X0Ya0EoCOye164
+        jJKhrXWzAtjxxqPDWdr0trqb4PFFaMKIHEzFpw5joJCtwj/AwtjpZUp/QatWKRs5EWtQ=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qYTBL-004nDz-T5; Tue, 22 Aug 2023 17:20:35 +0200
+Date:   Tue, 22 Aug 2023 17:20:35 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Keguang Zhang <keguang.zhang@gmail.com>
+Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Subject: Re: [PATCH v2 3/4] net: stmmac: Add glue layer for Loongson-1 SoC
+Message-ID: <150ae6c1-8a2f-4fd7-b012-a53a909919d4@lunn.ch>
+References: <20230816111310.1656224-1-keguang.zhang@gmail.com>
+ <20230816111310.1656224-4-keguang.zhang@gmail.com>
+ <c3454ad9-1874-4301-b1b1-4f76886802fb@lunn.ch>
+ <CAJhJPsWVRJg7zNeXPDovkBM4pm7hD+RP21DRxt0726VXtzvCHw@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v5 16/19] sched: Fix proxy/current (push,pull)ability
-Content-Language: en-US
-To:     John Stultz <jstultz@google.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        Joel Fernandes <joelaf@google.com>,
-        Qais Yousef <qyousef@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Zimuzo Ezeozue <zezeozue@google.com>,
-        Youssef Esmat <youssefesmat@google.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, kernel-team@android.com,
-        Connor O'Brien <connoro@google.com>
-References: <20230819060915.3001568-1-jstultz@google.com>
- <20230819060915.3001568-17-jstultz@google.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-In-Reply-To: <20230819060915.3001568-17-jstultz@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJhJPsWVRJg7zNeXPDovkBM4pm7hD+RP21DRxt0726VXtzvCHw@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/08/2023 08:08, John Stultz wrote:
-> From: Valentin Schneider <valentin.schneider@arm.com>
+> > What about the other three RGMII modes? Plain rgmii is pretty unusual,
+> > rgmii-id is the most used.
+> >
+> According to the LS1B datasheet, only RGMII and MII are supported.
+> And I can confirm that MII mode does work for LS1B.
 
-[...]
+What does your device tree look like? What are you setting phy-mode to
+in the rgmii case? As i said, "rgmii" is pretty unusual, you normally
+need "rgmii-id".
 
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index bee7082b294f..e8065fc5c894 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -6656,6 +6656,21 @@ proxy(struct rq *rq, struct task_struct *next, struct rq_flags *rf)
->  	raw_spin_unlock(&mutex->wait_lock);
->  	return ret;
->  }
-> +
-> +static inline void proxy_tag_curr(struct rq *rq, struct task_struct *next)
-> +{
-> +	/*
-> +	 * pick_next_task() calls set_next_task() on the selected task
-> +	 * at some point, which ensures it is not push/pullable.
-> +	 * However, the selected task *and* the ,mutex owner form an
-> +	 * atomic pair wrt push/pull.
-> +	 *
-> +	 * Make sure owner is not pushable. Unfortunately we can only
-> +	 * deal with that by means of a dequeue/enqueue cycle. :-/
-> +	 */
-> +	dequeue_task(rq, next, DEQUEUE_NOCLOCK | DEQUEUE_SAVE);
-> +	enqueue_task(rq, next, ENQUEUE_NOCLOCK | ENQUEUE_RESTORE);
-> +}
->  #else /* PROXY_EXEC */
->  static struct task_struct *
->  proxy(struct rq *rq, struct task_struct *next, struct rq_flags *rf)
-> @@ -6663,6 +6678,8 @@ proxy(struct rq *rq, struct task_struct *next, struct rq_flags *rf)
->  	BUG(); // This should never be called in the !PROXY case
->  	return next;
->  }
-> +
-> +static inline void proxy_tag_curr(struct rq *rq, struct task_struct *next) { }
->  #endif /* PROXY_EXEC */
->  
->  /*
-> @@ -6711,6 +6728,7 @@ static void __sched notrace __schedule(unsigned int sched_mode)
->  	unsigned long prev_state;
->  	struct rq_flags rf;
->  	struct rq *rq;
-> +	bool proxied;
->  	int cpu;
->  
->  	cpu = smp_processor_id();
-> @@ -6760,6 +6778,7 @@ static void __sched notrace __schedule(unsigned int sched_mode)
->  		switch_count = &prev->nvcsw;
->  	}
->  
-> +	proxied = (rq_selected(rq) != prev);
+Something in the system needs to add 2ns delays to the RGMII clock
+lines. Generally in device tree you pass phy-mode = "rgmii-id"; The
+MAC configures itself for RGMII, and passes
+PHY_INTERFACE_MODE_RGMII_ID to the PHY when it is attached. The PHY
+then inserts the delays.
 
-Looks like proxied isn't used here. (*)
+What is inserting the delays in your system?
 
->  pick_again:
->  	next = pick_next_task(rq, rq_selected(rq), &rf);
->  	rq_set_selected(rq, next);
-> @@ -6786,6 +6805,10 @@ static void __sched notrace __schedule(unsigned int sched_mode)
->  		 * changes to task_struct made by pick_next_task().
->  		 */
->  		RCU_INIT_POINTER(rq->curr, next);
-> +
-> +		if (unlikely(!task_current_selected(rq, next)))
-> +			proxy_tag_curr(rq, next);
-> +
->  		/*
->  		 * The membarrier system call requires each architecture
->  		 * to have a full memory barrier after updating
-> @@ -6810,6 +6833,10 @@ static void __sched notrace __schedule(unsigned int sched_mode)
->  		/* Also unlocks the rq: */
->  		rq = context_switch(rq, prev, next, &rf);
->  	} else {
-> +		/* In case next was already curr but just got blocked_donor*/
-> +		if (unlikely(!task_current_selected(rq, next)))
-> +			proxy_tag_curr(rq, next);
+     Andrew
 
-(*) v4 had:
-
-+          /* In case next was already curr but just got blocked_donor*/
-+             if (unlikely(!proxied && next->blocked_donor))
-
-> +
->  		rq->clock_update_flags &= ~(RQCF_ACT_SKIP|RQCF_REQ_SKIP);
->  
->  		rq_unpin_lock(rq, &rf);
-
-I miss changes in enqueue_task_rt() and put_prev_task_rt() related to
-'affinity of blocked tasks doesn't matter' from v4.
