@@ -2,158 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EE8C7843FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 16:25:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD61E7843FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 16:25:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235168AbjHVOZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 10:25:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33780 "EHLO
+        id S236616AbjHVOZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 10:25:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231964AbjHVOY7 (ORCPT
+        with ESMTP id S236611AbjHVOZB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 10:24:59 -0400
-Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20637CD1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 07:24:58 -0700 (PDT)
-Received: by mail-oo1-xc2c.google.com with SMTP id 006d021491bc7-56e99f97f0fso2556876eaf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 07:24:58 -0700 (PDT)
+        Tue, 22 Aug 2023 10:25:01 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 116F2CC1
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 07:25:00 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-50091b91a83so411638e87.3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 07:24:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692714297; x=1693319097;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=OFGMF6bcGMZZC92fwyfQGf3wf3ZewzE1L+corQ9L5+8=;
-        b=KmUR/h58wS4CPwF7dTTAoEmoVh4ntgAg+5zevPT+H6hksStT4T2nZiAX8xTSflK3g9
-         aAP7544VCUb7ywvL7MvKqMZJ/0wlCaqDw8npWG1ZcLMObqAjrMyFowrSa295LNopvaI3
-         b/0Ybup1LtGa24cif9uVt1AmaL04v4BmKxuz6iI4ZaYPVFa82r1z9XMdGKQ2Uj/cxtwb
-         soiM6TE2vOfPeHwoVvz3bMKy92irygehXg8/4b5hn8Rv8y1n1RzlUpcq6QxCKyLnBnTs
-         zd2+fq/ac/0ksRhsi4YWsPqSYEbKVZS+c6hcZQYfbRoNc/xwRlw2/SQsa8nCKyenFOnz
-         rg7g==
+        d=linaro.org; s=google; t=1692714298; x=1693319098;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1177Hy2Xl35VY6ObgrAdoUnRe7+5oCh27iDgdAIO6Cc=;
+        b=uNhOOiG5t4V3L7cVDuW9WKlWJSVb9HF8hclns+0CfdLTspb98jkm5xaA/kE+N6MVoj
+         twBSrXfr094JpQRJbGdHnbuW0RJehqmTtx0GTJzyX5SqoCdS5Ysj2tKLaH+Ken/mlzaw
+         hX+kNg3JOHzTopEoChb1/qFRQ3hFPFXNpiwoPAPPJhPQJmKThOHfr45Y9L04jk/4vn3j
+         hsMyBGWWJDwQAIuTlmcFFJmRexUcqBBJpGCfeOXpl5/HCtxSUPA7d8O70Co5eQdI/L4b
+         suEH2OXnKLJLpLf/MvVKcrt/J4TH92VJOWpLd2xHc7oLYcMNRJXsAkw2IHwjuuTTtWZa
+         JCXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692714297; x=1693319097;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=OFGMF6bcGMZZC92fwyfQGf3wf3ZewzE1L+corQ9L5+8=;
-        b=iDM9lt/b8aV8IDcus7KKMnkOjf6kGlMbOBfVij62fjgmubx5NjGLEk2QaS7TWYRYwF
-         78Et6b7uxlYb78BB4qqlZJ3cLq7cxdipnjZEbD7F/59dg3yrr69Y3Kz15LrDJDmnro3f
-         3TfZm/GmX3J9bQE65/ZUvSNqTHGMhsFqh9i+f+/UKSopvw4P4jhO6a6Hh44njw+A8WJF
-         yT+1IETOf2bMT76RFIqu5sJB++ylfiu8fz5uZZCVBKa2eMDrmd4AQ4zoSLD4VOCA+C8w
-         Vap2GSge9lWra8x6q2rmFz7Wdahv5kH9gbX6VC7dtvvcLRZ/wEnAXJ+5dylpFCcoFGxm
-         rFQg==
-X-Gm-Message-State: AOJu0YwGnz9RwmsYtf6k65dGPQQJ3luc8MhK0wXMi0WrJOajPXv+fVgG
-        l3Z/ZwR0UpsHnZb2LzLCpHIJyr7hEl9yrJFB/iU=
-X-Google-Smtp-Source: AGHT+IFkxxDZfD4EH7dcr8h0nrHXTNxvBsjY/gDCbkvc9Bo2D3WpqIrtMXQJvz04yKHBxfqwav8CsP8f9t3QB73Y3A4=
-X-Received: by 2002:a4a:dfb8:0:b0:56e:68a8:7f5d with SMTP id
- k24-20020a4adfb8000000b0056e68a87f5dmr10933306ook.3.1692714297342; Tue, 22
- Aug 2023 07:24:57 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692714298; x=1693319098;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1177Hy2Xl35VY6ObgrAdoUnRe7+5oCh27iDgdAIO6Cc=;
+        b=G1yXm5tolIO2AhIzLMGmulKIaLZ1ucQQc1/Kbdixn3ZT0hKhHiH7I+GCYl0k5MV6wz
+         /Rtut4jNMnuj3G7QoNevcgVN/DW5K2w7DztwQoJYP3xquwLDV/IrvbMlK630Qr6qUQsM
+         y4FaBQcj6+Rux5+lmpL5xkhFn1zPeucuMcYW2fa+9ruUkGIEVdikgrMkRyC4zJobivHa
+         DZyYnN6VZAHrv2ozaH6x+zf94U9iabONfNjKv0MiXF/qiDUL5z7z/Vel/ZN0DGDeOhHL
+         /wj9g9rFV+/ecs7/rwTxBJlMcuQTYtow2p4upRJgILxwKK2tnbeha3DztO8VceJ60w8g
+         DQyg==
+X-Gm-Message-State: AOJu0YzjxSM4lcZaLVuuhokxzjbABVcvfKKDauU941AI8lOxHB+lalpA
+        OzJCt1k/kSSbHBFiyPLXKAFO1g==
+X-Google-Smtp-Source: AGHT+IF5jmsSA+OZ44jWPxlBoucKEptYNc+V/Afk5XSk4UuYXDmuIae/D6KqhQB/oMWb7IoCwSPu5g==
+X-Received: by 2002:a05:6512:1088:b0:4fb:89b3:3373 with SMTP id j8-20020a056512108800b004fb89b33373mr8183436lfg.43.1692714298320;
+        Tue, 22 Aug 2023 07:24:58 -0700 (PDT)
+Received: from [192.168.1.101] (abyk189.neoplus.adsl.tpnet.pl. [83.9.30.189])
+        by smtp.gmail.com with ESMTPSA id b11-20020ac247eb000000b004fddb0eb961sm2241255lfp.18.2023.08.22.07.24.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Aug 2023 07:24:58 -0700 (PDT)
+Message-ID: <b4d7d4cf-5bee-492c-819d-79af01e73cec@linaro.org>
+Date:   Tue, 22 Aug 2023 16:24:57 +0200
 MIME-Version: 1.0
-Received: by 2002:ac9:6647:0:b0:4f0:1250:dd51 with HTTP; Tue, 22 Aug 2023
- 07:24:56 -0700 (PDT)
-In-Reply-To: <20230822095154.7cr5ofogw552z3jk@quack3>
-References: <20230821202829.2163744-1-mjguzik@gmail.com> <ZOPSEJTzrow8YFix@snowbird>
- <20230821213951.bx3yyqh7omdvpyae@f> <CAGudoHHJECp2-DfSr5hudooAdV6mivvSO+4mC9kwUrWnSiob5g@mail.gmail.com>
- <20230822095154.7cr5ofogw552z3jk@quack3>
-From:   Mateusz Guzik <mjguzik@gmail.com>
-Date:   Tue, 22 Aug 2023 16:24:56 +0200
-Message-ID: <CAGudoHHe5nzRTuj4G1fphD+JJ02TE5BnHEDwFm=-W6DoEj2qVQ@mail.gmail.com>
-Subject: Re: [PATCH 0/2] execve scalability issues, part 1
-To:     Jan Kara <jack@suse.cz>
-Cc:     Dennis Zhou <dennis@kernel.org>, linux-kernel@vger.kernel.org,
-        tj@kernel.org, cl@linux.com, akpm@linux-foundation.org,
-        shakeelb@google.com, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm64: defconfig: Enable GCC and interconnect for
+ QDU1000/QRU1000
+Content-Language: en-US
+To:     Komal Bajaj <quic_kbajaj@quicinc.com>, catalin.marinas@arm.com,
+        will@kernel.org, quic_bjorande@quicinc.com, arnd@arndb.de,
+        krzysztof.kozlowski@linaro.org, geert+renesas@glider.be,
+        neil.armstrong@linaro.org, nfraprado@collabora.com,
+        rafal@milecki.pl
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20230822132333.17580-1-quic_kbajaj@quicinc.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20230822132333.17580-1-quic_kbajaj@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/22/23, Jan Kara <jack@suse.cz> wrote:
-> On Tue 22-08-23 00:29:49, Mateusz Guzik wrote:
->> On 8/21/23, Mateusz Guzik <mjguzik@gmail.com> wrote:
->> > True Fix(tm) is a longer story.
->> >
->> > Maybe let's sort out this patchset first, whichever way. :)
->> >
->>
->> So I found the discussion around the original patch with a perf
->> regression report.
->>
->> https://lore.kernel.org/linux-mm/20230608111408.s2minsenlcjow7q3@quack3/
->>
->> The reporter suggests dodging the problem by only allocating per-cpu
->> counters when the process is going multithreaded. Given that there is
->> still plenty of forever single-threaded procs out there I think that's
->> does sound like a great plan regardless of what happens with this
->> patchset.
->>
->> Almost all access is already done using dedicated routines, so this
->> should be an afternoon churn to sort out, unless I missed a
->> showstopper. (maybe there is no good place to stuff a flag/whatever
->> other indicator about the state of counters?)
->>
->> That said I'll look into it some time this or next week.
->
-> Good, just let me know how it went, I also wanted to start looking into
-> this to come up with some concrete patches :). What I had in mind was that
-> we could use 'counters == NULL' as an indication that the counter is still
-> in 'single counter mode'.
->
+On 22.08.2023 15:23, Komal Bajaj wrote:
+> Add the QDU1000/QRU1000 GCC and interconnect drivers as built-in.
+> These are necessary for the Qualcomm QDU1000/QRU1000 platform to boot
+> to shell.
+> 
+> Signed-off-by: Komal Bajaj <quic_kbajaj@quicinc.com>
+> ---
+Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-In the current state there are only pointers to counters in mm_struct
-and there is no storage for them in task_struct. So I don't think
-merely null-checking the per-cpu stuff is going to cut it -- where
-should the single-threaded counters land?
-
-Bonus problem, non-current can modify these counters and this needs to
-be safe against current playing with them at the same time. (and it
-would be a shame to require current to use atomic on them)
-
-That said, my initial proposal adds a union:
-diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-index 5e74ce4a28cd..ea70f0c08286 100644
---- a/include/linux/mm_types.h
-+++ b/include/linux/mm_types.h
-@@ -737,7 +737,11 @@ struct mm_struct {
-
-                unsigned long saved_auxv[AT_VECTOR_SIZE]; /* for
-/proc/PID/auxv */
-
--               struct percpu_counter rss_stat[NR_MM_COUNTERS];
-+               union {
-+                       struct percpu_counter rss_stat[NR_MM_COUNTERS];
-+                       u64 *rss_stat_single;
-+               };
-+               bool    magic_flag_stuffed_elsewhere;
-
-                struct linux_binfmt *binfmt;
-
-
-Then for single-threaded case an area is allocated for NR_MM_COUNTERS
-countes * 2 -- first set updated without any synchro by current
-thread. Second set only to be modified by others and protected with
-mm->arg_lock. The lock protects remote access to the union to begin
-with.
-
-Transition to per-CPU operation sets the magic flag (there is plenty
-of spare space in mm_struct, I'll find a good home for it without
-growing the struct). It would be a one-way street -- a process which
-gets a bunch of threads and goes back to one stays with per-CPU.
-
-Then you get the true value of something by adding both counters.
-
-arg_lock is sparingly used, so remote ops are not expected to contend
-with anything. In fact their cost is going to go down since percpu
-summation takes a spinlock which also disables interrupts.
-
-Local ops should be about the same in cost as they are right now.
-
-I might have missed some detail in the above description, but I think
-the approach is decent.
-
--- 
-Mateusz Guzik <mjguzik gmail.com>
+Konrad
