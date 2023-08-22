@@ -2,133 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E5BE783C58
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 10:58:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95178783C5C
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 10:59:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234120AbjHVI6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 04:58:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35340 "EHLO
+        id S234108AbjHVI7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 04:59:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234125AbjHVI6R (ORCPT
+        with ESMTP id S234032AbjHVI7M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 04:58:17 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAD1CE50;
-        Tue, 22 Aug 2023 01:57:53 -0700 (PDT)
-Received: from [192.168.10.12] (unknown [39.45.215.81])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: usama.anjum)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id BED3E660723E;
-        Tue, 22 Aug 2023 09:57:44 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1692694666;
-        bh=wntvJCRNZSJZfOWzq0DzF9xFq9O+r9VsQVLUqGarZ7A=;
-        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-        b=VOpJVz4mrfYcTuC1jZo/XaMqhQO4hGE8mqTklaD9JK4WVjEfY53B/5eBZ+dBfQkOw
-         UX9YXt2puhRwPWV4kTxVR3sLtBZupYjrSfRn7wXLOzPqfXsYPmY+PRPnt3irbbJOo9
-         yPKbd/PvRYuoZIsxSdeHHWFdiGjKljMd73wafSk+pgDIory7RoQ3goCZphf1VedpUo
-         2aSIdD3Ei+GMxw0OPYL+dBDE2q0STm4mnJLDGcHhjsT2P+NckLCODgBCscLnoFUnLo
-         awPcfeTxXX/hyD9l4DYPHIcibYp9iTFXZXhCj7DWtNmv+Bn+Y1U/ylE/OLO257r2Hd
-         mjpL8apaPfOdg==
-Message-ID: <95fc0e92-79ed-4748-a565-a82469d087f6@collabora.com>
-Date:   Tue, 22 Aug 2023 13:57:40 +0500
+        Tue, 22 Aug 2023 04:59:12 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36965E70
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 01:58:34 -0700 (PDT)
+Received: from dggpemm500002.china.huawei.com (unknown [172.30.72.53])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RVNWc2JN6z1L9V8;
+        Tue, 22 Aug 2023 16:57:00 +0800 (CST)
+Received: from [10.174.179.5] (10.174.179.5) by dggpemm500002.china.huawei.com
+ (7.185.36.229) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Tue, 22 Aug
+ 2023 16:58:27 +0800
+Subject: Re: [Question] report a race condition between CPU hotplug state
+ machine and hrtimer 'sched_cfs_period_timer' for cfs bandwidth throttling
+To:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+CC:     <vschneid@redhat.com>, Phil Auld <pauld@redhat.com>,
+        <vdonnefort@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Wei Li <liwei391@huawei.com>,
+        "liaoyu (E)" <liaoyu15@huawei.com>, <zhangqiao22@huawei.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ingo Molnar <mingo@kernel.org>, <xiafukun@huawei.com>,
+        "Chenhui (Judy)" <judy.chenhui@huawei.com>, <tanghui20@huawei.com>
+References: <8e785777-03aa-99e1-d20e-e956f5685be6@huawei.com>
+ <87mt18it1y.ffs@tglx> <68baeac9-9fa7-5594-b5e7-4baf8ac86b77@huawei.com>
+ <ba352e83-b8b1-d900-9c1f-56b8c8a8b8fb@huawei.com>
+ <CAKfTPtBoe_jRn-EMsQxssQ4BcveT+Qcd+GmsRbQEXQDGfzFOMg@mail.gmail.com>
+ <875y774wvp.ffs@tglx>
+ <CAKfTPtAzTy4KPrBNRA4cMeTonxn5EKLEAg0b9iH5ecJkAMEStw@mail.gmail.com>
+ <87pm5f2qm2.ffs@tglx>
+ <CAKfTPtBSx7h1caR9g8wEK5GG2JMfSBRqSzLgjRUjrnp1Zc-ssg@mail.gmail.com>
+From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
+Message-ID: <6620fb0a-19c1-526c-77b9-61098f59256d@huawei.com>
+Date:   Tue, 22 Aug 2023 16:58:26 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        kernel@collabora.com, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/6] selftests: capabilities: remove duplicate unneeded
- defines
-To:     Shuah Khan <shuah@kernel.org>
-References: <20230805073809.1753462-1-usama.anjum@collabora.com>
-Content-Language: en-US
-From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <20230805073809.1753462-1-usama.anjum@collabora.com>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <CAKfTPtBSx7h1caR9g8wEK5GG2JMfSBRqSzLgjRUjrnp1Zc-ssg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Originating-IP: [10.174.179.5]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500002.china.huawei.com (7.185.36.229)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Shuah,
+(+Cc other colleagues who are testing the modification Thomas gave)
 
-Christian Brauner had picked [PATCH 4/6]. Others are still not picked.
-Please have a look.
+Kindly ping
+
+Does Thomas's modification look all right ? I can help to send the patch.
+Also other colleagues from my department are doing some stress tests base on
+this modification.
 
 Thanks,
-Usama
+Xiongfeng
 
-On 8/5/23 12:37 PM, Muhammad Usama Anjum wrote:
-> These duplicate defines should automatically be picked up from kernel
-> headers. Use KHDR_INCLUDES to add kernel header files.
+On 2023/6/29 16:30, Vincent Guittot wrote:
+> On Thu, 29 Jun 2023 at 00:01, Thomas Gleixner <tglx@linutronix.de> wrote:
+>>
+>> On Wed, Jun 28 2023 at 14:35, Vincent Guittot wrote:
+>>> On Wed, 28 Jun 2023 at 14:03, Thomas Gleixner <tglx@linutronix.de> wrote:
+>>>> No, because this is fundamentally wrong.
+>>>>
+>>>> If the CPU is on the way out, then the scheduler hotplug machinery
+>>>> has to handle the period timer so that the problem Xiongfeng analyzed
+>>>> does not happen in the first place.
+>>>
+>>> But the hrtimer was enqueued before it starts to offline the cpu
+>>
+>> It does not really matter when it was enqueued. The important point is
+>> that it was enqueued on that outgoing CPU for whatever reason.
+>>
+>>> Then, hrtimers_dead_cpu should take care of migrating the hrtimer out
+>>> of the outgoing cpu but :
+>>> - it must run on another target cpu to migrate the hrtimer.
+>>> - it runs in the context of the caller which can be throttled.
+>>
+>> Sure. I completely understand the problem. The hrtimer hotplug callback
+>> does not run because the task is stuck and waits for the timer to
+>> expire. Circular dependency.
+>>
+>>>> sched_cpu_wait_empty() would be the obvious place to cleanup armed CFS
+>>>> timers, but let me look into whether we can migrate hrtimers early in
+>>>> general.
+>>>
+>>> but for that we must check if the timer is enqueued on the outgoing
+>>> cpu and we then need to choose a target cpu.
+>>
+>> You're right. I somehow assumed that cfs knows where it queued stuff,
+>> but obviously it does not.
 > 
-> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
-> ---
->  tools/testing/selftests/capabilities/Makefile       | 2 +-
->  tools/testing/selftests/capabilities/test_execve.c  | 8 --------
->  tools/testing/selftests/capabilities/validate_cap.c | 8 --------
->  3 files changed, 1 insertion(+), 17 deletions(-)
+> scheduler doesn't know where hrtimer enqueues the timer
 > 
-> diff --git a/tools/testing/selftests/capabilities/Makefile b/tools/testing/selftests/capabilities/Makefile
-> index 6e9d98d457d5b..411ac098308f1 100644
-> --- a/tools/testing/selftests/capabilities/Makefile
-> +++ b/tools/testing/selftests/capabilities/Makefile
-> @@ -2,7 +2,7 @@
->  TEST_GEN_FILES := validate_cap
->  TEST_GEN_PROGS := test_execve
->  
-> -CFLAGS += -O2 -g -std=gnu99 -Wall
-> +CFLAGS += -O2 -g -std=gnu99 -Wall $(KHDR_INCLUDES)
->  LDLIBS += -lcap-ng -lrt -ldl
->  
->  include ../lib.mk
-> diff --git a/tools/testing/selftests/capabilities/test_execve.c b/tools/testing/selftests/capabilities/test_execve.c
-> index df0ef02b40367..e3a352b020a79 100644
-> --- a/tools/testing/selftests/capabilities/test_execve.c
-> +++ b/tools/testing/selftests/capabilities/test_execve.c
-> @@ -20,14 +20,6 @@
->  
->  #include "../kselftest.h"
->  
-> -#ifndef PR_CAP_AMBIENT
-> -#define PR_CAP_AMBIENT			47
-> -# define PR_CAP_AMBIENT_IS_SET		1
-> -# define PR_CAP_AMBIENT_RAISE		2
-> -# define PR_CAP_AMBIENT_LOWER		3
-> -# define PR_CAP_AMBIENT_CLEAR_ALL	4
-> -#endif
-> -
->  static int nerrs;
->  static pid_t mpid;	/*  main() pid is used to avoid duplicate test counts */
->  
-> diff --git a/tools/testing/selftests/capabilities/validate_cap.c b/tools/testing/selftests/capabilities/validate_cap.c
-> index cdfc94268fe6e..60b4e7b716a75 100644
-> --- a/tools/testing/selftests/capabilities/validate_cap.c
-> +++ b/tools/testing/selftests/capabilities/validate_cap.c
-> @@ -9,14 +9,6 @@
->  
->  #include "../kselftest.h"
->  
-> -#ifndef PR_CAP_AMBIENT
-> -#define PR_CAP_AMBIENT			47
-> -# define PR_CAP_AMBIENT_IS_SET		1
-> -# define PR_CAP_AMBIENT_RAISE		2
-> -# define PR_CAP_AMBIENT_LOWER		3
-> -# define PR_CAP_AMBIENT_CLEAR_ALL	4
-> -#endif
-> -
->  #if __GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 19)
->  # define HAVE_GETAUXVAL
->  #endif
-
--- 
-BR,
-Muhammad Usama Anjum
+>>
+>> I think we can avoid all that by simply taking that user space task out
+>> of the picture completely, which avoids debating whether there are other
+>> possible weird conditions to consider alltogether.
+> 
+> yes, the offline sequence should not be impacted by the caller context
+> 
+>>
+>> Something like the untested below should just work.
+>>
+>> Thanks,
+>>
+>>         tglx
+>> ---
+>> --- a/kernel/cpu.c
+>> +++ b/kernel/cpu.c
+>> @@ -1490,6 +1490,13 @@ static int cpu_down(unsigned int cpu, en
+>>         return err;
+>>  }
+>>
+>> +static long __cpu_device_down(void *arg)
+>> +{
+>> +       struct device *dev = arg;
+>> +
+>> +       return cpu_down(dev->id, CPUHP_OFFLINE);
+>> +}
+>> +
+>>  /**
+>>   * cpu_device_down - Bring down a cpu device
+>>   * @dev: Pointer to the cpu device to offline
+>> @@ -1502,7 +1509,12 @@ static int cpu_down(unsigned int cpu, en
+>>   */
+>>  int cpu_device_down(struct device *dev)
+>>  {
+>> -       return cpu_down(dev->id, CPUHP_OFFLINE);
+>> +       unsigned int cpu = cpumask_any_but(cpu_online_mask, dev->id);
+>> +
+>> +       if (cpu >= nr_cpu_ids)
+>> +               return -EBUSY;
+>> +
+>> +       return work_on_cpu(cpu, __cpu_device_down, dev);
+> 
+> The comment for work_on_cpu :
+> 
+>  * It is up to the caller to ensure that the cpu doesn't go offline.
+>  * The caller must not hold any locks which would prevent @fn from completing.
+> 
+> make me wonder if this should be done only once the hotplug lock is
+> taken so the selected cpu will not go offline
+> 
+>>  }
+>>
+>>  int remove_cpu(unsigned int cpu)
+> .
+> 
