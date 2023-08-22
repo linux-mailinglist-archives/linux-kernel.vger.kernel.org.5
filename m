@@ -2,167 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A176783C6D
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 11:02:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9898783CEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 11:29:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234178AbjHVJCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 05:02:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33482 "EHLO
+        id S234330AbjHVJ3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 05:29:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234170AbjHVJCp (ORCPT
+        with ESMTP id S234324AbjHVJ3b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 05:02:45 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4DABCE
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 02:02:42 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id 98e67ed59e1d1-26b67b38b61so2556809a91.0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 02:02:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=9elements.com; s=google; t=1692694962; x=1693299762;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=jYslESWmMQ4K7vL4A0BMOOm6rNRmZOTpHTitLw9DHqU=;
-        b=IZpmDu44ZxrJ28gkaSTau6rtcq4Mn0RS1cPgOg/yZQpFy1RSpxwNPef21oo3JoQHAy
-         mktU0yR3mPGt69oSav3EI+zYvaUCJyUxEhIpYZv7LQHGzOkgARKIJ+Hpeeli4uONq5hl
-         YFJ8r/mj+TUMAhEvLErkjEm9/qyu2UVplM7aCP6AD+AFhxT0iUjCxxTjd5CE3DHqoYsb
-         wD395ozmg2i80QGYoh4P2kuABNKnixmHgct1mEDkzfC3WTVQkQhNLeKA7j5AbbsleA64
-         bn1xODYGm/1yLrNSlhUj/tyurEis8l24M5LG5h9EZPpxFywQBvk80TmlHfZPiQtsEB/S
-         sEzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692694962; x=1693299762;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jYslESWmMQ4K7vL4A0BMOOm6rNRmZOTpHTitLw9DHqU=;
-        b=i5IipIMWpZy/jFsBhNIuoQplQkn1OsDRc5YxAXlvuQxkjcMBbRfALE+bMAlVVaN+8X
-         LIFXcOIs5eQej1scaqrMuMnclNXtp+KuFn4v7vlBuJGoj6gHNT0t4GORchR7K43hgoQG
-         YGm0axVd/oaP0f9QjajoR+7RY+RmrYIDPF2VJRJJDG5Ywe7Ig/GipMUNuakoADA41Zp2
-         qAynK1A3+rSdltEz1szLNnbn4xCT3OBZpVpo7XaLaMOU/OUQSTVHI3XPNK8PcaziIIm7
-         /U2P1vv7i8P6XqvOanKcONhC4jI6TVTascoYxlzSbLPXy/hAw0cnVyWVfkcsGHLoj+F3
-         x2tA==
-X-Gm-Message-State: AOJu0YzShSe2rzuaRJE388Hln7hzcaKLDEc+4P/6F4YjZL3NbpzcamO9
-        TU19WVYi9JaTD7m+eOeBJXt2P0QZ3CEq98hfTQP5rHdegGd5SIwR405oGg==
-X-Google-Smtp-Source: AGHT+IFt499tIWzynN4fBJ9ZZ/oKER6cpMYoxuVszPhAfMParzVVg13mb6qLOSJaPIjSOdErxj19rn4mfJHazwpejyI=
-X-Received: by 2002:a17:90b:1081:b0:267:717f:2f91 with SMTP id
- gj1-20020a17090b108100b00267717f2f91mr5890871pjb.40.1692694962355; Tue, 22
- Aug 2023 02:02:42 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230802193155.2170935-1-Naresh.Solanki@9elements.com>
- <20230808-stand-cheddar-b76b0b7509a0@spud> <eced746a-1181-bd8f-6828-4a4eeb79727c@roeck-us.net>
- <20230808-esquire-epidemic-f9bd74ffde25@spud> <CABqG17jm938MaEeqS03WeryVWSRBS7Bqq2Vwq9SL4QOGqXU43A@mail.gmail.com>
- <b3eebd2b-c73b-fdc7-2b2b-07e97db26d92@linaro.org> <CABqG17hgU44H9KbALy_336Sb+YOiEOzbnAihiox1OEuVnNiayQ@mail.gmail.com>
- <5cde8986-1b12-a85e-b2fe-e1aa1087b429@linaro.org>
-In-Reply-To: <5cde8986-1b12-a85e-b2fe-e1aa1087b429@linaro.org>
-From:   Naresh Solanki <naresh.solanki@9elements.com>
-Date:   Tue, 22 Aug 2023 14:32:31 +0530
-Message-ID: <CABqG17gL7XL0nKZ0QEYkF672AvfJQXapExw3p1iGm88U9idq=w@mail.gmail.com>
-Subject: Re: [PATCH v3 1/3] dt-bindings: hwmon: Add Infineon TDA38640
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Conor Dooley <conor@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>,
-        krzysztof.kozlowski+dt@linaro.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-hwmon@vger.kernel.org,
-        Patrick Rudolph <patrick.rudolph@9elements.com>,
-        Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Tue, 22 Aug 2023 05:29:31 -0400
+Received: from mx4.sionneau.net (mx4.sionneau.net [51.15.250.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 613F2CCD;
+        Tue, 22 Aug 2023 02:29:27 -0700 (PDT)
+Received: from junon.lin.mbt.kalray.eu (<unknown> [217.181.231.53])
+        by mx4.sionneau.net (OpenSMTPD) with ESMTPSA id 901dd392 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Tue, 22 Aug 2023 09:02:45 +0000 (UTC)
+From:   Yann Sionneau <ysionneau@kalray.eu>
+To:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Julian Vetter <jvetter@kalrayinc.com>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yann Sionneau <ysionneau@kalray.eu>,
+        Jonathan Borne <jborne@kalray.eu>
+Subject: [PATCH v3] i2c: designware: fix __i2c_dw_disable() in case master is holding SCL low
+Date:   Tue, 22 Aug 2023 11:02:33 +0200
+Message-Id: <20230822090233.14885-1-ysionneau@kalray.eu>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_FAIL,SPF_HELO_NONE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+The DesignWare IP can be synthesized with the IC_EMPTYFIFO_HOLD_MASTER_EN
+parameter.
+In this case, when the TX FIFO gets empty and the last command didn't have
+the STOP bit (IC_DATA_CMD[9]), the controller will hold SCL low until
+a new command is pushed into the TX FIFO or the transfer is aborted.
 
-On Fri, 18 Aug 2023 at 14:53, Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> On 16/08/2023 10:51, Naresh Solanki wrote:
-> > Hi Krzysztof,
-> >
-> > On Tue, 15 Aug 2023 at 01:02, Krzysztof Kozlowski
-> > <krzysztof.kozlowski@linaro.org> wrote:
-> >>
-> >> On 11/08/2023 18:00, Naresh Solanki wrote:
-> >>> Hi,
-> >>>
-> >>> On Tue, 8 Aug 2023 at 19:58, Conor Dooley <conor@kernel.org> wrote:
-> >>>>
-> >>>> On Tue, Aug 08, 2023 at 07:10:08AM -0700, Guenter Roeck wrote:
-> >>>>> On 8/8/23 04:46, Conor Dooley wrote:
-> >>>>>> On Wed, Aug 02, 2023 at 09:31:51PM +0200, Naresh Solanki wrote:
-> >>>>>>> From: Patrick Rudolph <patrick.rudolph@9elements.com>
-> >>>>>>>
-> >>>>>>> The TDA38640 chip has different output control mechanisms depending on
-> >>>>>>> its mode of operation. When the chip is in SVID mode, only
-> >>>>>>> hardware-based output control is supported via ENABLE pin. However, when
-> >>>>>>> it operates in PMBus mode, software control works perfectly.
-> >>>>>>>
-> >>>>>>> To enable software control as a workaround in SVID mode, add the DT
-> >>>>>>> property 'infineon,en-svid-control'. This property will enable the
-> >>>>>>> workaround, which utilizes ENABLE pin polarity flipping for output when
-> >>>>>>> the chip is in SVID mode.
-> >>>>>>
-> >>>>>> Why do you need a custom property for this? How come it is not possible
-> >>>>>> to determine what bus you are on?
-> >>>>>>
-> >>>>>
-> >>>>> That is not the point. Yes, it can be detected if the control method is
-> >>>>> PMBus or SVID. However, in SVID mode, SVID is supposed to control the
-> >>>>> output, not PMBUs. This is bypassed by controlling the polarity of the
-> >>>>> (physical) output enable signal. We do _not_ want this enabled automatically
-> >>>>> in SVID mode. Its side effects on random boards using this chip are unknown.
-> >>>>> Thus, this needs a property which specifically enables this functionality
-> >>>>> for users who _really_ need to use it and (hopefully) know what they are
-> >>>>> doing.
-> >>>>
-> >>>> Hmm, reading this it makes a lot more sense why this is a property - I
-> >>>> guess I just struggled to understand the commit message here,
-> >>>> particularly what the benefit of using the workaround is. I'm still
-> >>>> having difficulty parsing the commit & property text though - its
-> >>>> unclear to me when you would need to use it - so I will stay out
-> >>>> of the way & let Rob or Krzysztof handle things.
-> >>>
-> >>> To provide context, my system employs a unique power sequence
-> >>> strategy utilizing a BMC (Baseboard Management Controller),
-> >>> rendering the reliance on the ENABLE pin unnecessary.
-> >>> In this configuration, the ENABLE pin is grounded in the hardware.
-> >>> While most regulators facilitate PMBus Operation for output control,
-> >>> the TDA38640 chip, when in SVID mode, is constrained by the
-> >>> ENABLE pin to align with Intel specifications.
-> >>> My communication with Infineon confirmed that the recommended
-> >>> approach is to invert the Enable Pin for my use case.
-> >>>
-> >>> Since this is not typically the use case for most setup & hence DT property
-> >>> is must for enabling the special case.
-> >>>
-> >>> For further insight into my setup's power sequence strategy, you can
-> >>> refer to the following link: https://github.com/9elements/pwrseqd
-> >>>
-> >>
-> >> This justifies to me the property, but still you described desired
-> >> driver behavior, not the hardware characteristic. Don't describe what
-> >> you want to control, but describe the entire system.
-> > I guess by entire system you mean how the regulators(including
-> > TDA38640) connected & operated in our setup ?
->
-> I mean, property name and description should say what is the
-> characteristic of the hardware/firmware/entire system.
-Based on your feedback, will update to below:
-infineon,fixed-level-en-pin:
-    description: |
-      Indicate the ENABLE pin is set at fixed level or left
-      unconnected(has internal pull-up).
-    type: boolean
->
->
-> Best regards,
-> Krzysztof
->
+When the controller is holding SCL low, it cannot be disabled.
+The transfer must first be aborted.
+Also, the bus recovery won't work because SCL is held low by the master.
+
+Check if the master is holding SCL low in __i2c_dw_disable() before trying
+to disable the controller. If SCL is held low, an abort is initiated.
+When the abort is done, then proceed with disabling the controller.
+
+This whole situation can happen for instance during SMBus read data block
+if the slave just responds with "byte count == 0".
+This puts the driver in an unrecoverable state, because the controller is
+holding SCL low and the current __i2c_dw_disable() procedure is not
+working. In this situation only a SoC reset can fix the i2c bus.
+
+Co-developed-by: Jonathan Borne <jborne@kalray.eu>
+Signed-off-by: Jonathan Borne <jborne@kalray.eu>
+Signed-off-by: Yann Sionneau <ysionneau@kalray.eu>
+---
+V2 -> V3:
+* do not rename timeout variable for disabling loop
+in order to ease backports
+* replace abort loop with regmap_read_poll_timeout()
+* remove extra empty line.
+
+V1 -> V2:
+* use reverse christmas tree order for variable declarations
+* use unsigned int type instead of u32 for regmap_read
+* give its own loop to the abort procedure with its own timeout
+* print an error message if the abort never finishes during the timeout
+* rename the timeout variable for the controller disabling loop
+* with the usleep_range(10, 20) it takes only 1 loop iteration.
+Without it takes 75 iterations and with udelay(1) it takes 16
+loop iterations.
+
+ drivers/i2c/busses/i2c-designware-common.c | 17 +++++++++++++++++
+ drivers/i2c/busses/i2c-designware-core.h   |  3 +++
+ 2 files changed, 20 insertions(+)
+
+diff --git a/drivers/i2c/busses/i2c-designware-common.c b/drivers/i2c/busses/i2c-designware-common.c
+index 9f8574320eb2..0cd0f85e1350 100644
+--- a/drivers/i2c/busses/i2c-designware-common.c
++++ b/drivers/i2c/busses/i2c-designware-common.c
+@@ -438,8 +438,25 @@ int i2c_dw_set_sda_hold(struct dw_i2c_dev *dev)
+ 
+ void __i2c_dw_disable(struct dw_i2c_dev *dev)
+ {
++	unsigned int raw_intr_stats;
++	unsigned int enable;
+ 	int timeout = 100;
++	bool abort_needed;
+ 	u32 status;
++	int ret;
++
++	regmap_read(dev->map, DW_IC_RAW_INTR_STAT, &raw_intr_stats);
++	regmap_read(dev->map, DW_IC_ENABLE, &enable);
++
++	abort_needed = raw_intr_stats & DW_IC_INTR_MST_ON_HOLD;
++	if (abort_needed) {
++		regmap_write(dev->map, DW_IC_ENABLE, enable | DW_IC_ENABLE_ABORT);
++		ret = regmap_read_poll_timeout(dev->map, DW_IC_ENABLE, enable,
++					       !(enable & DW_IC_ENABLE_ABORT), 10,
++					       100);
++		if (ret)
++			dev_err(dev->dev, "timeout while trying to abort current transfer\n");
++	}
+ 
+ 	do {
+ 		__i2c_dw_disable_nowait(dev);
+diff --git a/drivers/i2c/busses/i2c-designware-core.h b/drivers/i2c/busses/i2c-designware-core.h
+index 19ae23575945..dcd9bd9ee00f 100644
+--- a/drivers/i2c/busses/i2c-designware-core.h
++++ b/drivers/i2c/busses/i2c-designware-core.h
+@@ -98,6 +98,7 @@
+ #define DW_IC_INTR_START_DET	BIT(10)
+ #define DW_IC_INTR_GEN_CALL	BIT(11)
+ #define DW_IC_INTR_RESTART_DET	BIT(12)
++#define DW_IC_INTR_MST_ON_HOLD	BIT(13)
+ 
+ #define DW_IC_INTR_DEFAULT_MASK		(DW_IC_INTR_RX_FULL | \
+ 					 DW_IC_INTR_TX_ABRT | \
+@@ -109,6 +110,8 @@
+ 					 DW_IC_INTR_RX_UNDER | \
+ 					 DW_IC_INTR_RD_REQ)
+ 
++#define DW_IC_ENABLE_ABORT		BIT(1)
++
+ #define DW_IC_STATUS_ACTIVITY		BIT(0)
+ #define DW_IC_STATUS_TFE		BIT(2)
+ #define DW_IC_STATUS_MASTER_ACTIVITY	BIT(5)
+-- 
+2.17.1
+
