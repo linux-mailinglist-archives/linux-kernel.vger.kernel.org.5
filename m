@@ -2,47 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DB3B783F70
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 13:37:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56770783FA0
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 13:38:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235047AbjHVLhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 07:37:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36408 "EHLO
+        id S235350AbjHVLiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 07:38:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235039AbjHVLhd (ORCPT
+        with ESMTP id S235097AbjHVLiG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 07:37:33 -0400
+        Tue, 22 Aug 2023 07:38:06 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47666CE5;
-        Tue, 22 Aug 2023 04:37:08 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA06EE4A;
+        Tue, 22 Aug 2023 04:37:36 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 971EA63A54;
-        Tue, 22 Aug 2023 11:36:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDE3BC433CB;
-        Tue, 22 Aug 2023 11:36:11 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 77465642D1;
+        Tue, 22 Aug 2023 11:36:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06514C433C8;
+        Tue, 22 Aug 2023 11:36:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692704172;
-        bh=m1o0jXed7BnewlHKG+1vCqtrmwRS0IPm7ZfcZTswWms=;
+        s=k20201202; t=1692704181;
+        bh=mWSMZxxPFeZtx5ZSwOL70WwFeclugfVCWSNWY3eQCt8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IrdYlZZaWqM3fQQ0NJZafwAu1OL695GbZndRx3hQf5zRk7iEndCWn4NvUZNMeiyxB
-         pv7g/X3WcItoae5jC4aG1ydhvIm4MHngcMdkbYNei/4rydcfm01ef2uPpTWKBWI/b7
-         jtsV2C/WsPOBDvE/vRooAtVx3WfBIjTewkF6Q/ENDXipbzdcwiXHMoZGX5X6gGOiuS
-         kEbdKGW1PhUN4X6iEwDujtXmH0EA488QHaoreoVM4chme3YuAatq1rtn4I6XK6bl5K
-         O7n+oCm/S32gLduTZ2o9O9w9/mL5hwh91MWehm0EvbbUN647voxBgJIgXy+sPqVX2F
-         Ypjx9gBGtnWRg==
+        b=ij9SRDhUMtuEGusKdFCse5pUIjP/e1kHyC/EogKfAFe89muz3GupDqA5xM6ZynKoZ
+         7D2ZvGUEcQVIOPBoTJy9MctvwhZu0QnoNOcoXtK4qnngStJn837iFFQ2kpTMJUnfh4
+         +4KtmYTuktpqUwk3c6uPh/kPAuASIwA7aAruu3IN7FrLMZJPoGzkVNS5X6r9phFtyV
+         8uhed3bu+yD+njedkm2S4f2zbKn8Q/TOe/uznM2Hl/u1lJDFk3HsntVrCYTn74dfpj
+         aYxiMYLdBYxZ6+qvGijcwP61B6YhK20HIPXdV8iH23dBn9rbkyEltdC/ZYGOn+z6v3
+         UpmRSP7Gw4w8g==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Wen Gong <quic_wgong@quicinc.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Sasha Levin <sashal@kernel.org>, kvalo@kernel.org,
-        quic_jjohnson@quicinc.com, ath12k@lists.infradead.org,
-        linux-wireless@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.4 06/11] wifi: ath12k: Fix buffer overflow when scanning with extraie
-Date:   Tue, 22 Aug 2023 07:35:48 -0400
-Message-Id: <20230822113553.3551206-6-sashal@kernel.org>
+Cc:     Lijo Lazar <lijo.lazar@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>, christian.koenig@amd.com,
+        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
+        Hawking.Zhang@amd.com, candice.li@amd.com, john.clements@amd.com,
+        mario.limonciello@amd.com, Likun.Gao@amd.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 6.4 08/11] drm/amdgpu: Match against exact bootloader status
+Date:   Tue, 22 Aug 2023 07:35:50 -0400
+Message-Id: <20230822113553.3551206-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230822113553.3551206-1-sashal@kernel.org>
 References: <20230822113553.3551206-1-sashal@kernel.org>
@@ -61,54 +63,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wen Gong <quic_wgong@quicinc.com>
+From: Lijo Lazar <lijo.lazar@amd.com>
 
-[ Upstream commit 06f2ab86a5b6ed55f013258de4be9319841853ea ]
+[ Upstream commit d3de41ee5febe5c2d9989fe9810bce2bb54a3a8e ]
 
-If cfg80211 is providing extraie's for a scanning process then ath12k will
-copy that over to the firmware. The extraie.len is a 32 bit value in struct
-element_info and describes the amount of bytes for the vendor information
-elements.
+On PSP v13.x ASICs, boot loader will set only the MSB to 1 and clear the
+least significant bits for any command submission. Hence match against
+the exact register value, otherwise a register value of all 0xFFs also
+could falsely indicate that boot loader is ready. Also, from PSP v13.0.6
+and newer, bits[7:0] will be used to indicate command error status.
 
-The problem is the allocation of the buffer. It has to align the TLV
-sections by 4 bytes. But the code was using an u8 to store the newly
-calculated length of this section (with alignment). And the new
-calculated length was then used to allocate the skbuff. But the actual
-code to copy in the data is using the extraie.len and not the calculated
-"aligned" length.
-
-The length of extraie with IEEE80211_HW_SINGLE_SCAN_ON_ALL_BANDS enabled
-was 264 bytes during tests with a wifi card. But it only allocated 8
-bytes (264 bytes % 256) for it. As consequence, the code to memcpy the
-extraie into the skb was then just overwriting data after skb->end. Things
-like shinfo were therefore corrupted. This could usually be seen by a crash
-in skb_zcopy_clear which tried to call a ubuf_info callback (using a bogus
-address).
-
-Tested-on: WCN7850 hw2.0 PCI WLAN.HMT.1.0-03427-QCAHMTSWPL_V1.0_V2.0_SILICONZ-1.15378.4
-
-Signed-off-by: Wen Gong <quic_wgong@quicinc.com>
-Link: https://lore.kernel.org/r/20230809081241.32765-1-quic_wgong@quicinc.com
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Lijo Lazar <lijo.lazar@amd.com>
+Acked-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath12k/wmi.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/psp_v13_0.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath12k/wmi.c b/drivers/net/wireless/ath/ath12k/wmi.c
-index 7ae0bb78b2b53..1e65e35b5f3a6 100644
---- a/drivers/net/wireless/ath/ath12k/wmi.c
-+++ b/drivers/net/wireless/ath/ath12k/wmi.c
-@@ -2144,8 +2144,7 @@ int ath12k_wmi_send_scan_start_cmd(struct ath12k *ar,
- 	struct wmi_tlv *tlv;
- 	void *ptr;
- 	int i, ret, len;
--	u32 *tmp_ptr;
--	u8 extraie_len_with_pad = 0;
-+	u32 *tmp_ptr, extraie_len_with_pad = 0;
- 	struct ath12k_wmi_hint_short_ssid_arg *s_ssid = NULL;
- 	struct ath12k_wmi_hint_bssid_arg *hint_bssid = NULL;
+diff --git a/drivers/gpu/drm/amd/amdgpu/psp_v13_0.c b/drivers/gpu/drm/amd/amdgpu/psp_v13_0.c
+index caee76ab71105..92f2ee412908d 100644
+--- a/drivers/gpu/drm/amd/amdgpu/psp_v13_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/psp_v13_0.c
+@@ -136,14 +136,15 @@ static int psp_v13_0_wait_for_bootloader(struct psp_context *psp)
+ 	int ret;
+ 	int retry_loop;
  
++	/* Wait for bootloader to signify that it is ready having bit 31 of
++	 * C2PMSG_35 set to 1. All other bits are expected to be cleared.
++	 * If there is an error in processing command, bits[7:0] will be set.
++	 * This is applicable for PSP v13.0.6 and newer.
++	 */
+ 	for (retry_loop = 0; retry_loop < 10; retry_loop++) {
+-		/* Wait for bootloader to signify that is
+-		    ready having bit 31 of C2PMSG_35 set to 1 */
+-		ret = psp_wait_for(psp,
+-				   SOC15_REG_OFFSET(MP0, 0, regMP0_SMN_C2PMSG_35),
+-				   0x80000000,
+-				   0x80000000,
+-				   false);
++		ret = psp_wait_for(
++			psp, SOC15_REG_OFFSET(MP0, 0, regMP0_SMN_C2PMSG_35),
++			0x80000000, 0xffffffff, false);
+ 
+ 		if (ret == 0)
+ 			return 0;
 -- 
 2.40.1
 
