@@ -2,243 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B9F4784075
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 14:13:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF5F6784084
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 14:15:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235603AbjHVMND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 08:13:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42540 "EHLO
+        id S235606AbjHVMP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 08:15:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232943AbjHVMNC (ORCPT
+        with ESMTP id S234085AbjHVMPy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 08:13:02 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21AAF193;
-        Tue, 22 Aug 2023 05:13:00 -0700 (PDT)
-Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RVSr13fyWz1L9DH;
-        Tue, 22 Aug 2023 20:11:29 +0800 (CST)
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Tue, 22 Aug 2023 20:12:56 +0800
-Message-ID: <7fff8202-0be1-4989-959f-8c0b14ca1236@huawei.com>
-Date:   Tue, 22 Aug 2023 20:12:55 +0800
+        Tue, 22 Aug 2023 08:15:54 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF8D6199;
+        Tue, 22 Aug 2023 05:15:52 -0700 (PDT)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37MABNrE018413;
+        Tue, 22 Aug 2023 12:15:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=5fy9r+OihAp7IxpCaXvtSARKZ9Gq58Rvo24OX1Y8VWw=;
+ b=B4JYBwDnE1fKefAeKPyxz0dACb74blgbxYf+ekMQ3Xk3Aq8KkYJNLB0sOPtw+mNJojPq
+ ztzbY7104EcEsjv3IzbBX87DblCNN32xel4ZZ8yCfPNCKAFCdk0ulOoFtQ021cwUkRKa
+ lbfZrMuGoTzp8K6gRGnDiylHAQnPNcPyNCaP0gwLjYu9gQdkfuvAFqIq1A0IptN4PCPo
+ nwBya63Z+sOcPElvVAfnYZfjBv9B0cgKNTfta5Fgt1fdgKztbSR11u1hn0qWBNBObFXJ
+ 8M1zKyNFROSHthfK+Mm3WuiKZXj8WgnxYlDNCL0KXJ/BufS9fQk+HEQPGHycm3BDg0e9 Dw== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3smdhwhhk0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Aug 2023 12:15:48 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37MCFlLL002440
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Aug 2023 12:15:47 GMT
+Received: from hu-ninanaik-blr.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Tue, 22 Aug 2023 05:15:42 -0700
+From:   Ninad Naik <quic_ninanaik@quicinc.com>
+To:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>
+CC:     <psodagud@quicinc.com>, <quic_ppareek@quicinc.com>,
+        <quic_kprasan@quicinc.com>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <kernel@quicinc.com>,
+        Ninad Naik <quic_ninanaik@quicinc.com>
+Subject: [RFC PATCH 0/1] Add driver to read secondary bootloader (XBL) log
+Date:   Tue, 22 Aug 2023 17:45:11 +0530
+Message-ID: <20230822121512.8631-1-quic_ninanaik@quicinc.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH rfc v2 05/10] powerpc: mm: use try_vma_locked_page_fault()
-Content-Language: en-US
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
-CC:     "surenb@google.com" <surenb@google.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>
-References: <20230821123056.2109942-1-wangkefeng.wang@huawei.com>
- <20230821123056.2109942-6-wangkefeng.wang@huawei.com>
- <7eeed961-c2c0-2aeb-ff8c-3717de09d605@csgroup.eu>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-In-Reply-To: <7eeed961-c2c0-2aeb-ff8c-3717de09d605@csgroup.eu>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.243]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm100001.china.huawei.com (7.185.36.93)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: LkJPrnnGDQF9hkgy2tkdj-CfE1ZhQm0c
+X-Proofpoint-GUID: LkJPrnnGDQF9hkgy2tkdj-CfE1ZhQm0c
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-22_11,2023-08-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 phishscore=0
+ impostorscore=0 adultscore=0 lowpriorityscore=0 malwarescore=0
+ mlxlogscore=935 mlxscore=0 priorityscore=1501 suspectscore=0 bulkscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308220091
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Boot time logs for Qualcomm secondary boot-loader or XBL can help to
+identify different set of information regarding firmware configuration,
+SoC boot KPIs. A dedicated region is carved out in the memory map in order
+to store this log in the memory.
 
+The objective of this driver is to read the XBL boot log stored in
+this memory region post boot-up, and provide an entry in debugfs, which
+can be used to read back the logs and print them on to the console.
 
-On 2023/8/22 17:38, Christophe Leroy wrote:
-> 
-> 
-> Le 21/08/2023 à 14:30, Kefeng Wang a écrit :
->> Use new try_vma_locked_page_fault() helper to simplify code.
->> No functional change intended.
-> 
-> Does it really simplifies code ? It's 32 insertions versus 34 deletions
-> so only removing 2 lines.
+Further, this log can be parsed to extract different set of information
+as required.
 
-Yes，it is unfriendly for powerpc as the arch's vma access check is much
-complex than other arch,
-> 
-> I don't like the struct vm_fault you are adding because when it was four
-> independant variables it was handled through local registers. Now that
-> it is a struct it has to go via the stack, leading to unnecessary memory
-> read and writes. And going back and forth between architecture code and
-> generic code may also be counter-performant.
+For example, one use case can be parsing boot time KPIs to calculate,
+ - PBL End time
+ - SBL End time
+ - UEFI Start/Stop time
 
-Because different arch has different var to check vma access, so the
-easy way to add them into vmf, I don' find a better way.
-> 
-> Did you make any performance analysis ? Page faults are really a hot
-> path when dealling with minor faults.
+Corresponding log contents as captured in /sys/kernel/debug/xbl_log entry
+which prints the above counters,
 
-no, this is only built and rfc to see the feedback about the conversion.
+        S -     59378 - PBL, End
+        B -     68198 - SBL1, Start
+        B -   1308877 - SBL1, End
+        UEFI Start     [ 3370]
+         - 0x0AF001000 [ 3375] Sec.efi
+        UEFI Total : 466 m
+        POST Time      [ 3836] OS Loader
+         - 0x0ABE10000 [ 3838] LinuxLoader.efi
+        Exit EBS        [ 4878] UEFI End
 
-Thanks.
+        /* Note - these are few excerpts picked from the complete XBL log
+         *        as tested on SA8775p
+         */
 
-> 
-> Thanks
-> Christophe
-> 
->>
->> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
->> ---
->>    arch/powerpc/mm/fault.c | 66 ++++++++++++++++++++---------------------
->>    1 file changed, 32 insertions(+), 34 deletions(-)
->>
->> diff --git a/arch/powerpc/mm/fault.c b/arch/powerpc/mm/fault.c
->> index b1723094d464..52f9546e020e 100644
->> --- a/arch/powerpc/mm/fault.c
->> +++ b/arch/powerpc/mm/fault.c
->> @@ -391,6 +391,22 @@ static int page_fault_is_bad(unsigned long err)
->>    #define page_fault_is_bad(__err)	((__err) & DSISR_BAD_FAULT_32S)
->>    #endif
->>    
->> +#ifdef CONFIG_PER_VMA_LOCK
->> +bool arch_vma_access_error(struct vm_area_struct *vma, struct vm_fault *vmf)
->> +{
->> +	int is_exec = TRAP(vmf->regs) == INTERRUPT_INST_STORAGE;
->> +	int is_write = page_fault_is_write(vmf->fault_code);
->> +
->> +	if (unlikely(access_pkey_error(is_write, is_exec,
->> +				(vmf->fault_code & DSISR_KEYFAULT), vma)))
->> +		return true;
->> +
->> +	if (unlikely(access_error(is_write, is_exec, vma)))
->> +		return true;
->> +	return false;
->> +}
->> +#endif
->> +
->>    /*
->>     * For 600- and 800-family processors, the error_code parameter is DSISR
->>     * for a data fault, SRR1 for an instruction fault.
->> @@ -407,12 +423,18 @@ static int ___do_page_fault(struct pt_regs *regs, unsigned long address,
->>    {
->>    	struct vm_area_struct * vma;
->>    	struct mm_struct *mm = current->mm;
->> -	unsigned int flags = FAULT_FLAG_DEFAULT;
->>    	int is_exec = TRAP(regs) == INTERRUPT_INST_STORAGE;
->>    	int is_user = user_mode(regs);
->>    	int is_write = page_fault_is_write(error_code);
->>    	vm_fault_t fault, major = 0;
->>    	bool kprobe_fault = kprobe_page_fault(regs, 11);
->> +	struct vm_fault vmf = {
->> +		.real_address = address,
->> +		.fault_code = error_code,
->> +		.regs = regs,
->> +		.flags = FAULT_FLAG_DEFAULT,
->> +	};
->> +
->>    
->>    	if (unlikely(debugger_fault_handler(regs) || kprobe_fault))
->>    		return 0;
->> @@ -463,45 +485,21 @@ static int ___do_page_fault(struct pt_regs *regs, unsigned long address,
->>    	 * mmap_lock held
->>    	 */
->>    	if (is_user)
->> -		flags |= FAULT_FLAG_USER;
->> +		vmf.flags |= FAULT_FLAG_USER;
->>    	if (is_write)
->> -		flags |= FAULT_FLAG_WRITE;
->> +		vmf.flags |= FAULT_FLAG_WRITE;
->>    	if (is_exec)
->> -		flags |= FAULT_FLAG_INSTRUCTION;
->> +		vmf.flags |= FAULT_FLAG_INSTRUCTION;
->>    
->> -	if (!(flags & FAULT_FLAG_USER))
->> -		goto lock_mmap;
->> -
->> -	vma = lock_vma_under_rcu(mm, address);
->> -	if (!vma)
->> -		goto lock_mmap;
->> -
->> -	if (unlikely(access_pkey_error(is_write, is_exec,
->> -				       (error_code & DSISR_KEYFAULT), vma))) {
->> -		vma_end_read(vma);
->> -		goto lock_mmap;
->> -	}
->> -
->> -	if (unlikely(access_error(is_write, is_exec, vma))) {
->> -		vma_end_read(vma);
->> -		goto lock_mmap;
->> -	}
->> -
->> -	fault = handle_mm_fault(vma, address, flags | FAULT_FLAG_VMA_LOCK, regs);
->> -	if (!(fault & (VM_FAULT_RETRY | VM_FAULT_COMPLETED)))
->> -		vma_end_read(vma);
->> -
->> -	if (!(fault & VM_FAULT_RETRY)) {
->> -		count_vm_vma_lock_event(VMA_LOCK_SUCCESS);
->> +	fault = try_vma_locked_page_fault(&vmf);
->> +	if (fault == VM_FAULT_NONE)
->> +		goto retry;
->> +	if (!(fault & VM_FAULT_RETRY))
->>    		goto done;
->> -	}
->> -	count_vm_vma_lock_event(VMA_LOCK_RETRY);
->>    
->>    	if (fault_signal_pending(fault, regs))
->>    		return user_mode(regs) ? 0 : SIGBUS;
->>    
->> -lock_mmap:
->> -
->>    	/* When running in the kernel we expect faults to occur only to
->>    	 * addresses in user space.  All other faults represent errors in the
->>    	 * kernel and should generate an OOPS.  Unfortunately, in the case of an
->> @@ -528,7 +526,7 @@ static int ___do_page_fault(struct pt_regs *regs, unsigned long address,
->>    	 * make sure we exit gracefully rather than endlessly redo
->>    	 * the fault.
->>    	 */
->> -	fault = handle_mm_fault(vma, address, flags, regs);
->> +	fault = handle_mm_fault(vma, address, vmf.flags, regs);
->>    
->>    	major |= fault & VM_FAULT_MAJOR;
->>    
->> @@ -544,7 +542,7 @@ static int ___do_page_fault(struct pt_regs *regs, unsigned long address,
->>    	 * case.
->>    	 */
->>    	if (unlikely(fault & VM_FAULT_RETRY)) {
->> -		flags |= FAULT_FLAG_TRIED;
->> +		vmf.flags |= FAULT_FLAG_TRIED;
->>    		goto retry;
->>    	}
->>    
+Ninad Naik (1):
+  soc: qcom: Add driver to read secondary bootloader (XBL) log
+
+ drivers/soc/qcom/Kconfig        |  13 +++
+ drivers/soc/qcom/Makefile       |   1 +
+ drivers/soc/qcom/dump_xbl_log.c | 139 ++++++++++++++++++++++++++++++++
+ 3 files changed, 153 insertions(+)
+ create mode 100644 drivers/soc/qcom/dump_xbl_log.c
+
+-- 
+2.41.0
+
