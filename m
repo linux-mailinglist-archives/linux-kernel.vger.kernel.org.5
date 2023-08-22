@@ -2,117 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78BF7784B7D
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 22:35:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A14DE784B86
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 22:37:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231151AbjHVUfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 16:35:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38348 "EHLO
+        id S229813AbjHVUhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 16:37:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231142AbjHVUfA (ORCPT
+        with ESMTP id S229619AbjHVUhV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 16:35:00 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D9F7CEE
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 13:34:59 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id ca18e2360f4ac-7909307ecd1so167943939f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 13:34:59 -0700 (PDT)
+        Tue, 22 Aug 2023 16:37:21 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C3E1CE9
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 13:37:20 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-5232ce75e26so816a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 13:37:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1692736498; x=1693341298;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=google.com; s=20221208; t=1692736639; x=1693341439;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=IAoCNyZqfvnfH/0/0Sp/bNbHBZV5FWrs/u1Wpi/L2lY=;
-        b=LT5Eqx/qlnBPzXAqQIgggqVZHv+YCKJ+0iWbylurX1QFNVV18FyFBIyuIoD9FU/0eg
-         0JUuimV6sFdex20VLm+bcsgHJ+a542gNwqwX/Kwr6lWylmlmK92K8pIIXEi6OlaEv7au
-         a/wps5s1f+rdlw80rXaimfr2ZjQyq39JTggvQ=
+        bh=621Dqja2RNYBFFHxmHaf8VVJzOZCsbe/JAuSG72Lm5M=;
+        b=Qf4va+JJGu83spSuvNpiszBgy/kH1iwdNNXWCBAZmhHIlX75e2TwfBBue0Qbx54L6o
+         juGixw46nbOVFnTinQGxBNf7kqc1pCXq/bCuX3aZ1wUtgQOqMJY74Kd0ZHPenB793h46
+         6GGAXUgXnAqEca3toJ/UfpCyqwH65Zcqpj41gYgmD+I33ZJw9gmo602WqDWN1WXuCNuu
+         xj+fBTsQeRzlCB/I2e8tFx6H4rig8Uy1foqib4hViYRGmHi1i78DPdNOYY2On+qr3WMB
+         MlNhJmg0t5X/zKr2HNFlZbRIipmFxtS2UjmRkiS8lDU93qzZgtuO17oNbc56lwo6SctM
+         UCGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692736498; x=1693341298;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1692736639; x=1693341439;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=IAoCNyZqfvnfH/0/0Sp/bNbHBZV5FWrs/u1Wpi/L2lY=;
-        b=jdQ2xWWKO7eWVNlvQwXS120+4IrDt8VI2dlfX6zUTGekhgv6d4f/nwQe/oZGVgdOP9
-         ae7u03AG/TR5V3Zf3r3lukKSEDnF1PYisxmuB38F8/eJpn/0dGFVHZt4J1lhUo72blGP
-         b/c8clkCAbUh78h3UQfz1bwlH9ogzIjTvQMLb6GHpbXcx+R6UwTQI7RJzrPhDAjEvZND
-         1qTbGOXSfeDIovob51E8Bmu20nE2kGMYh3qN7lMRyR6XOb0gKiFCeX2O8+v6y0Nbk7Rv
-         9Tm+k/3KLJ9OZbE9jj5/LBMGaJMlt7ipalHs/fQdUBLmy4yDIg1+dFGe1jnj8xpCHEAL
-         afRA==
-X-Gm-Message-State: AOJu0Yzumu+hjmdz3+1P8wqIKPWWhtjO8a6ZIp0DEuxklBI9rhBWWQZi
-        fIAPkxAm5DbVJlCYmWULuKytGg==
-X-Google-Smtp-Source: AGHT+IGrtcKkLUDbfM2/xR8cobFWMcEKBMWgBL9b5Nhq1+ovWu1dKbVkA9ITN/X9uDBnaMJz55KHKg==
-X-Received: by 2002:a6b:dd08:0:b0:783:3899:e1d0 with SMTP id f8-20020a6bdd08000000b007833899e1d0mr1007976ioc.6.1692736498725;
-        Tue, 22 Aug 2023 13:34:58 -0700 (PDT)
-Received: from kea.bld.corp.google.com ([2620:15c:183:200:b7f:10f7:eb5:da54])
-        by smtp.gmail.com with ESMTPSA id s20-20020a5eaa14000000b0078754bed499sm3500745ioe.37.2023.08.22.13.34.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Aug 2023 13:34:57 -0700 (PDT)
-From:   Simon Glass <sjg@chromium.org>
-To:     devicetree@vger.kernel.org
-Cc:     Rob Herring <robh@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-        Chiu Chasel <chasel.chiu@intel.com>,
-        U-Boot Mailing List <u-boot@lists.denx.de>,
-        Gua Guo <gua.guo@intel.com>, linux-acpi@vger.kernel.org,
-        lkml <linux-kernel@vger.kernel.org>,
-        Yunhui Cui <cuiyunhui@bytedance.com>,
-        ron minnich <rminnich@gmail.com>,
-        Tom Rini <trini@konsulko.com>,
-        Lean Sheng Tan <sheng.tan@9elements.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Simon Glass <sjg@chromium.org>
-Subject: [PATCH v3 2/2] memory: Add ECC property
-Date:   Tue, 22 Aug 2023 14:34:43 -0600
-Message-ID: <20230822203446.4111742-2-sjg@chromium.org>
-X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
-In-Reply-To: <20230822203446.4111742-1-sjg@chromium.org>
-References: <20230822203446.4111742-1-sjg@chromium.org>
+        bh=621Dqja2RNYBFFHxmHaf8VVJzOZCsbe/JAuSG72Lm5M=;
+        b=RAIV7K8hW943mTsxStomHs+nZ9Hzfl2/zsq/flH2+8l6sTQzxEqYT4BQ4BUNry6YaY
+         bnmyCfjjh8IqLY2a1rZUtq6NnDLneoKukh2l2hL4MCOhX+zxCTWmZR+XVsvdHUeoDc6B
+         qjahAdSOt8/VZQQW2V80PwrzpqqVuUzUgolCu1EOJg3Gkczdh5sZMLfGcVZBw+vrijq7
+         cavarjIakR5kiZ4VG8Vd+Fjr5yAhe48g/2BLjkPVqkdZKugOjo73dTVQMB73WggKxrk6
+         LW8yiGZbFRYLqtgI8FaU5ISTPG9n2LCxpOaXoewYl/3+ZgrM9rNSr8qQkMloSl/f3nrn
+         eJxg==
+X-Gm-Message-State: AOJu0YwLK1kWMnAW2++nQMlQEbv2wZyEc6ktApbkz8UKG9fkEMzPexaz
+        EA4My7CJbBCo39NgH2BwfAESWjQjp7JsppdhElET2w==
+X-Google-Smtp-Source: AGHT+IFoCsdtugQC1NgLocnGbVdSHy/DAl3o3XYzBnz31F2BWo2BiRQvWRAUz1StSS4DOMOa924oiZrNR/QOFtwI6dc=
+X-Received: by 2002:a50:9fa9:0:b0:525:573c:643b with SMTP id
+ c38-20020a509fa9000000b00525573c643bmr154602edf.7.1692736638776; Tue, 22 Aug
+ 2023 13:37:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20230731165926.1815338-1-rdbabiera@google.com>
+ <CALzBnUFH=eQmhdpkt5_czKsZ22=u6yDoZZ0TX4eJkHGbjLANAw@mail.gmail.com> <2023082231-strode-pretty-f5a3@gregkh>
+In-Reply-To: <2023082231-strode-pretty-f5a3@gregkh>
+From:   RD Babiera <rdbabiera@google.com>
+Date:   Tue, 22 Aug 2023 13:37:07 -0700
+Message-ID: <CALzBnUHXnRjDMr2BaGp4btY3HZu_j4=VB8S-FUC1jiL_aoHBJQ@mail.gmail.com>
+Subject: Re: [PATCH v2] usb: typec: tcpm: set initial svdm version based on pd revision
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux@roeck-us.net, heikki.krogerus@linux.intel.com,
+        kyletso@google.com, badhri@google.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some memories provides ECC correction. For software which wants to check
-memory, it is helpful to see which regions provide this feature.
+On Tue, Aug 22, 2023 at 5:38=E2=80=AFAM Greg KH <gregkh@linuxfoundation.org=
+> wrote:
+> What patch?
 
-Add this as a property of the /memory nodes, since it presumably follows
-the hardware-level memory system.
+My previous email was a reply-to for the email containing the patch, at lea=
+st
+when I look at the kernel lore it's accounted for with Message-Id
+<20230731165926.1815338-1-rdbabiera@google.com>.
 
-Signed-off-by: Simon Glass <sjg@chromium.org>
+> And note, people were on vacation.  If can, to help your patch get to
+> the front of the review queue, please review other typec patches on the
+> mailing list.
+
+I'll start looking more actively and helping where I can, thanks for the
+advice.
+
 ---
-
-Changes in v3:
-- Add new patch to update the /memory nodes
-
- dtschema/schemas/memory.yaml | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
-
-diff --git a/dtschema/schemas/memory.yaml b/dtschema/schemas/memory.yaml
-index 1d74410..981af04 100644
---- a/dtschema/schemas/memory.yaml
-+++ b/dtschema/schemas/memory.yaml
-@@ -34,7 +34,14 @@ patternProperties:
-         description:
-           For the purpose of identification, each NUMA node is associated with
-           a unique token known as a node id.
--
-+      attr:
-+        $ref: /schemas/types.yaml#/definitions/string-array
-+        description: |
-+          Attributes possessed by this memory region:
-+
-+            "single-bit-ecc" - supports single-bit ECC
-+            "multi-bit-ecc" - supports multiple-bit ECC
-+            "no-ecc" - non-ECC memory
- 
-     required:
-       - device_type
--- 
-2.42.0.rc1.204.g551eb34607-goog
-
+thanks,
+rd
