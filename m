@@ -2,223 +2,435 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2647784A9A
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 21:40:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E61CE784A9E
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 21:42:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229938AbjHVTk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 15:40:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57888 "EHLO
+        id S229940AbjHVTmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 15:42:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229617AbjHVTkZ (ORCPT
+        with ESMTP id S229510AbjHVTmG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 15:40:25 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ECFDCD2
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 12:40:22 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-523b066d7ceso5909572a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 12:40:22 -0700 (PDT)
+        Tue, 22 Aug 2023 15:42:06 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 875B0128;
+        Tue, 22 Aug 2023 12:42:00 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2bb8a12e819so75826021fa.1;
+        Tue, 22 Aug 2023 12:42:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692733221; x=1693338021;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=oncWTlQk8VDq0hStA9yIW5pShLFRqkLO/45VKHfvDbY=;
-        b=iqKxwUnpJsfPKGpODtNN+Pd+GT5zpruOKowDyFgFmDZDqT1p9lopCmC0R6vbFjeTgS
-         We3rj1I7cVPaPUnsiBDw3wHk37aqPZ6lnIVc8U3j2iBgRLzZWzvZcnLwG5uwhtrm5pa1
-         IqY8WL4o04kXjVF8EFsdlZwMgCWQTTmkl6A3Ke+o9gcKpbEy4ocWBtfAOCnrdbTl33MK
-         6vdUkZxibv/ypQt6Ejt7AK0+UWwmqfIUDGL9/EOKqPmfdMOtIocjo3Ozf89y/UwHCw7r
-         kDBkcewLbnIViDiJ9iTeTcDuTKnfZd97PAXVj3VadTky68vFIsRQcOcZEay+QITXL/Y4
-         S/3Q==
+        d=gmail.com; s=20221208; t=1692733319; x=1693338119;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ekT+KnPQapoSZb+HgQwJZbxXHHn2bhATol004PVLTDI=;
+        b=DYs/J02QqJnuy4HpJ9uOG/0WpAWt/D5SzHwToudSzMLyTc6gzeAn7gLgxWaK2RvTss
+         Tfkeu8QG/TglFKDccR94PGMiN9nkNKXSyjMp8A3CGfw3B+o2shbvzA7w+/e8gi+tbVCc
+         VxIXkBu7qsWUMm0vyzZRMLSTG7saoA6VpuPhG0Vz8YXXItTUbvrcmLdGOXavmBtR3QTb
+         4fJI8cEjgUQBtxc3Ph2VunHf8gePBpoE1R9yTqsIW1zd0Vi7KBrPDvnyuuBtv/7a//7l
+         b5F/2ckFlgtZVWFyzziXsLFGOiR0+FZYMVYaX9u37bJ+uEj7Lh2QGnGHmD5iw+WgJYQ/
+         qvrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692733221; x=1693338021;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=oncWTlQk8VDq0hStA9yIW5pShLFRqkLO/45VKHfvDbY=;
-        b=IkG4UzwRR74QCXb62Dm1cR3bnZV/HfutlgULuxxq/LCjAX0Anh5j/9yHENLCDMRA55
-         CIeEjJbgxY3FJK3w/3ik1UWpVPFRQHUrt2yzBLcaM618NbrpwgmiG8vW1jte5VqfWbtc
-         8cmvj5XbEhECuioOP/Od8DRN4lYbq95UYigvsrATlYpcOHCHAQrv2C0XHteEIV20pZ6N
-         c5c0sJV7WJ8vjfe1mi6YDl5nZupIKsB4TGJP/Elt2f0lgZG14Av3XXRdczN7IZzNBvEk
-         H2JcBvPOR7JSSjTACczZh5RU+gE4hpIHVGsnDBNqmzgatRsKBN731rYaxpKtX2pUbxya
-         EvSQ==
-X-Gm-Message-State: AOJu0Yx7zVIxBxVOMVUXXvb+eDK0YNTUdNdm2ZRqBTl6+mAY585/Y7or
-        pOQmWY14GAZH1Y3/5+qqE77a5g==
-X-Google-Smtp-Source: AGHT+IEfWoVEpmQaJIzd2SVcJ8YfHw3JakiI1hknfuAmtQIy7qr8RlSu+3Xqc3F6rEIuTgoAgzS9oQ==
-X-Received: by 2002:a17:907:a041:b0:99d:e3d3:15a9 with SMTP id gz1-20020a170907a04100b0099de3d315a9mr8513551ejc.10.1692733220987;
-        Tue, 22 Aug 2023 12:40:20 -0700 (PDT)
-Received: from [192.168.0.22] ([77.252.47.198])
-        by smtp.gmail.com with ESMTPSA id e16-20020a170906045000b0098dfec235ccsm8621380eja.47.2023.08.22.12.40.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Aug 2023 12:40:20 -0700 (PDT)
-Message-ID: <60221aab-d8da-9f0b-057b-e8a28840849f@linaro.org>
-Date:   Tue, 22 Aug 2023 21:40:19 +0200
+        d=1e100.net; s=20221208; t=1692733319; x=1693338119;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ekT+KnPQapoSZb+HgQwJZbxXHHn2bhATol004PVLTDI=;
+        b=i9DeCOcyD+xMtaqSOdn/sYQ3PHMFtKTy04yrd1ldwr1Vv8nh46ryVwXU88TAAmmPYY
+         6bmROXZUYSlRmoeyC8FRsa/T5fbE5Hevoj/gSoQCSE1tPyDSktnw1OIvbQWWsfkIL+9q
+         d5fAwqXKkcfEfWIoKIXLDIFSyPJblF2wQw1tX1TVOUN7c1gNCKCzTEkHSDmfM1892XXJ
+         Ao+wzLcyPiEj448so58WcZZ8gV1j6YlgIie7zBMTloR/hrRqIwkbTBB3T/+7ZWr3HzKx
+         UubhE8szW/M+P6FLwED7crQ7SxbB1+USKEocNxGFB14dlHPc0Maa0ueakASROgt/f2AE
+         /CTQ==
+X-Gm-Message-State: AOJu0YxlEkK2jYWuaEMmR0bk5+oExC+gR+XzN1+VcLkBmBTPSSKHSxyN
+        XpZ/sHZyf71WN9ibzqyiA45dQysWDHqaE7JUbFo=
+X-Google-Smtp-Source: AGHT+IF5Y7sltnG9NEzSqnXnsm8UX23VUWOvyTRUcAKipH9CVnSqpI3VozQ/+PRLIhufU+M15K/F252K31BiYW8eJNU=
+X-Received: by 2002:a05:6512:a92:b0:4fe:c55:4861 with SMTP id
+ m18-20020a0565120a9200b004fe0c554861mr9104480lfu.53.1692733318382; Tue, 22
+ Aug 2023 12:41:58 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v2 05/11] regulator: dt-bindings: mediatek: Add MT6366
- PMIC
-Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Chen-Yu Tsai <wenst@chromium.org>, Lee Jones <lee@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Zhiyong Tao <zhiyong.tao@mediatek.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <20230822084520.564937-1-wenst@chromium.org>
- <20230822084520.564937-6-wenst@chromium.org>
- <337f20d5-4dfe-90ef-16b9-c10b14060b97@linaro.org>
-In-Reply-To: <337f20d5-4dfe-90ef-16b9-c10b14060b97@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230822180208.95556-1-robdclark@gmail.com> <20230822180208.95556-4-robdclark@gmail.com>
+ <CAJZ5v0jLzhhMM58EtyKaFOa8c=bE+XU5=OafvCx0vTBQpNZ0gQ@mail.gmail.com>
+In-Reply-To: <CAJZ5v0jLzhhMM58EtyKaFOa8c=bE+XU5=OafvCx0vTBQpNZ0gQ@mail.gmail.com>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Tue, 22 Aug 2023 12:41:46 -0700
+Message-ID: <CAF6AEGs_8Q7Z2x_CNqkx2cJQ8bo0KtUPk+xT1xHNRXwuQUMZaQ@mail.gmail.com>
+Subject: Re: [PATCH v5 03/11] PM / QoS: Fix constraints alloc vs reclaim locking
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org,
+        Rob Clark <robdclark@chromium.org>,
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:HIBERNATION (aka Software Suspend, aka swsusp)" 
+        <linux-pm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/08/2023 21:39, Krzysztof Kozlowski wrote:
-> On 22/08/2023 10:45, Chen-Yu Tsai wrote:
->> From: Zhiyong Tao <zhiyong.tao@mediatek.com>
->>
->> The MediaTek MT6366 PMIC is similar to the MT6358 PMIC. It is designed
->> to be paired with the MediaTek MT8186 SoC. It has 9 buck regulators and
->> 29 LDO regulators, not counting ones that feed internally and basically
->> have no controls. The regulators are named after their intended usage
->> for the SoC and system design, thus not named generically as ldoX or
->> dcdcX, but as vcn33 or vgpu.
->>
->> Add a binding document describing all the regulators and their supplies.
->>
->> Signed-off-by: Zhiyong Tao <zhiyong.tao@mediatek.com>
->> [wens@chromium.org: major rework and added commit message]
->> Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
->> ---
->> Changes since v1:
->> - Replaced underscores in supply names to hyphens
->> - Merged with MT6358 regulator binding
->> - Added MT6358 fallback compatible to MT6366 regulator
->>
->> Changes since Zhiyong's last version (v4) [1]:
->> - simplified regulator names
->> - added descriptions to regulators
->> - removed bogus regulators (*_sshub)
->> - merged vcn33-wifi and vcn33-bt as vcn33
->> - added missing regulators (vm18, vmddr, vsram-core)
->> - cut down examples to a handful of cases and made them complete
->> - expanded commit message a lot
->>
->> [1] https://lore.kernel.org/linux-arm-kernel/20220823123745.14061-1-zhiyong.tao@mediatek.com/
->>  .../regulator/mediatek,mt6358-regulator.yaml  | 227 +++++++++++++-----
->>  1 file changed, 168 insertions(+), 59 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/regulator/mediatek,mt6358-regulator.yaml b/Documentation/devicetree/bindings/regulator/mediatek,mt6358-regulator.yaml
->> index 82328fe17680..b350181f33ff 100644
->> --- a/Documentation/devicetree/bindings/regulator/mediatek,mt6358-regulator.yaml
->> +++ b/Documentation/devicetree/bindings/regulator/mediatek,mt6358-regulator.yaml
->> @@ -16,14 +16,18 @@ description: |
->>  
->>  properties:
->>    compatible:
->> -    const: mediatek,mt6358-regulator
->> +    oneOf:
->> +      - const: mediatek,mt6358-regulator
->> +      - items:
->> +          - const: mediatek,mt6366-regulator
->> +          - const: mediatek,mt6358-regulator
->>  
->>    vsys-ldo1-supply:
->>      description: Supply for LDOs vfe28, vxo22, vcn28, vaux18, vaud28, vsim1, vusb, vbif28
->>    vsys-ldo2-supply:
->> -    description: Supply for LDOs vldo28, vio28, vmc, vmch, vsim2
->> +    description: Supply for LDOs vldo28 (MT6358 only), vio28, vmc, vmch, vsim2
->>    vsys-ldo3-supply:
->> -    description: Supply for LDOs vcn33, vcama1, vcama2, vemc, vibr
->> +    description: Supply for LDOs vcn33, vcama[12] (MT6358 only), vemc, vibr
->>    vsys-vcore-supply:
->>      description: Supply for buck regulator vcore
->>    vsys-vdram1-supply:
->> @@ -43,75 +47,138 @@ properties:
->>    vsys-vs2-supply:
->>      description: Supply for buck regulator vs2
->>    vs1-ldo1-supply:
->> -    description: Supply for LDOs vrf18, vefuse, vcn18, vcamio, vio18
->> +    description: Supply for LDOs vrf18, vefuse, vcn18, vcamio (MT6358 only), vio18
->>    vs2-ldo1-supply:
->> -    description: Supply for LDOs vdram2
->> +    description: Supply for LDOs vdram2, vmddr (MT6366 only)
->>    vs2-ldo2-supply:
->>      description: Supply for LDOs vrf12, va12
->>    vs2-ldo3-supply:
->> -    description: Supply for LDOs vsram-gpu, vsram-others, vsram-proc11, vsram-proc12
->> -  vs2-ldo4-supply:
->> -    description: Supply for LDO vcamd
->> -
->> -patternProperties:
->> -  "^buck_v(core|dram1|gpu|modem|pa|proc1[12]|s[12])$":
->> -    description: Buck regulators
->> -    type: object
->> -    $ref: regulator.yaml#
->> -    unevaluatedProperties: false
->> -
->> -  "^ldo_v(a|rf)12":
->> -    description: LDOs with fixed 1.2V output and 0~100/10mV tuning
->> -    type: object
->> -    $ref: regulator.yaml#
->> -    unevaluatedProperties: false
->> -
->> -  "^ldo_v((aux|cn|io|rf)18|camio)":
->> -    description: LDOs with fixed 1.8V output and 0~100/10mV tuning
->> -    type: object
->> -    $ref: regulator.yaml#
->> -    unevaluatedProperties: false
->> -
->> -  "^ldo_vxo22":
->> -    description: LDOs with fixed 2.2V output and 0~100/10mV tuning
->> -    type: object
->> -    $ref: regulator.yaml#
->> -    unevaluatedProperties: false
->> -
->> -  "^ldo_v(aud|bif|cn|fe|io)28":
->> -    description: LDOs with fixed 2.8V output and 0~100/10mV tuning
->> -    type: object
->> -    $ref: regulator.yaml#
->> -    unevaluatedProperties: false
->> -
->> -  "^ldo_vusb":
->> -    description: LDOs with fixed 3.0V output and 0~100/10mV tuning
->> -    type: object
->> -    $ref: regulator.yaml#
->> -    unevaluatedProperties: false
->> -
->> -  "^ldo_vsram_(gpu|others|proc1[12])$":
->> -    description: LDOs with variable output
->> -    type: object
->> -    $ref: regulator.yaml#
->> -    unevaluatedProperties: false
->> -
->> -  "^ldo_v(cama[12]|camd|cn33|dram2|efuse|emc|ibr|ldo28|mc|mch|sim[12])$":
->> -    description: LDOs with variable output and 0~100/10mV tuning
->> -    type: object
->> -    $ref: regulator.yaml#
->> -    unevaluatedProperties: false
-> 
-> I don't understand. You just added it and it is already wrong? Please,
-> do not add code which is clearly incorrect.
+On Tue, Aug 22, 2023 at 11:48=E2=80=AFAM Rafael J. Wysocki <rafael@kernel.o=
+rg> wrote:
+>
+> On Tue, Aug 22, 2023 at 8:02=E2=80=AFPM Rob Clark <robdclark@gmail.com> w=
+rote:
+> >
+> > From: Rob Clark <robdclark@chromium.org>
+> >
+> > In the process of adding lockdep annotation for drm GPU scheduler's
+> > job_run() to detect potential deadlock against shrinker/reclaim, I hit
+> > this lockdep splat:
+> >
+> >    =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D
+> >    WARNING: possible circular locking dependency detected
+> >    6.2.0-rc8-debug+ #558 Tainted: G        W
+> >    ------------------------------------------------------
+> >    ring0/125 is trying to acquire lock:
+> >    ffffffd6d6ce0f28 (dev_pm_qos_mtx){+.+.}-{3:3}, at: dev_pm_qos_update=
+_request+0x38/0x68
+> >
+> >    but task is already holding lock:
+> >    ffffff8087239208 (&gpu->active_lock){+.+.}-{3:3}, at: msm_gpu_submit=
++0xec/0x178
+> >
+> >    which lock already depends on the new lock.
+> >
+> >    the existing dependency chain (in reverse order) is:
+> >
+> >    -> #4 (&gpu->active_lock){+.+.}-{3:3}:
+> >           __mutex_lock+0xcc/0x3c8
+> >           mutex_lock_nested+0x30/0x44
+> >           msm_gpu_submit+0xec/0x178
+> >           msm_job_run+0x78/0x150
+> >           drm_sched_main+0x290/0x370
+> >           kthread+0xf0/0x100
+> >           ret_from_fork+0x10/0x20
+> >
+> >    -> #3 (dma_fence_map){++++}-{0:0}:
+> >           __dma_fence_might_wait+0x74/0xc0
+> >           dma_resv_lockdep+0x1f4/0x2f4
+> >           do_one_initcall+0x104/0x2bc
+> >           kernel_init_freeable+0x344/0x34c
+> >           kernel_init+0x30/0x134
+> >           ret_from_fork+0x10/0x20
+> >
+> >    -> #2 (mmu_notifier_invalidate_range_start){+.+.}-{0:0}:
+> >           fs_reclaim_acquire+0x80/0xa8
+> >           slab_pre_alloc_hook.constprop.0+0x40/0x25c
+> >           __kmem_cache_alloc_node+0x60/0x1cc
+> >           __kmalloc+0xd8/0x100
+> >           topology_parse_cpu_capacity+0x8c/0x178
+> >           get_cpu_for_node+0x88/0xc4
+> >           parse_cluster+0x1b0/0x28c
+> >           parse_cluster+0x8c/0x28c
+> >           init_cpu_topology+0x168/0x188
+> >           smp_prepare_cpus+0x24/0xf8
+> >           kernel_init_freeable+0x18c/0x34c
+> >           kernel_init+0x30/0x134
+> >           ret_from_fork+0x10/0x20
+> >
+> >    -> #1 (fs_reclaim){+.+.}-{0:0}:
+> >           __fs_reclaim_acquire+0x3c/0x48
+> >           fs_reclaim_acquire+0x54/0xa8
+> >           slab_pre_alloc_hook.constprop.0+0x40/0x25c
+> >           __kmem_cache_alloc_node+0x60/0x1cc
+> >           kmalloc_trace+0x50/0xa8
+> >           dev_pm_qos_constraints_allocate+0x38/0x100
+> >           __dev_pm_qos_add_request+0xb0/0x1e8
+> >           dev_pm_qos_add_request+0x58/0x80
+> >           dev_pm_qos_expose_latency_limit+0x60/0x13c
+> >           register_cpu+0x12c/0x130
+> >           topology_init+0xac/0xbc
+> >           do_one_initcall+0x104/0x2bc
+> >           kernel_init_freeable+0x344/0x34c
+> >           kernel_init+0x30/0x134
+> >           ret_from_fork+0x10/0x20
+> >
+> >    -> #0 (dev_pm_qos_mtx){+.+.}-{3:3}:
+> >           __lock_acquire+0xe00/0x1060
+> >           lock_acquire+0x1e0/0x2f8
+> >           __mutex_lock+0xcc/0x3c8
+> >           mutex_lock_nested+0x30/0x44
+> >           dev_pm_qos_update_request+0x38/0x68
+> >           msm_devfreq_boost+0x40/0x70
+> >           msm_devfreq_active+0xc0/0xf0
+> >           msm_gpu_submit+0x10c/0x178
+> >           msm_job_run+0x78/0x150
+> >           drm_sched_main+0x290/0x370
+> >           kthread+0xf0/0x100
+> >           ret_from_fork+0x10/0x20
+> >
+> >    other info that might help us debug this:
+> >
+> >    Chain exists of:
+> >      dev_pm_qos_mtx --> dma_fence_map --> &gpu->active_lock
+> >
+> >     Possible unsafe locking scenario:
+> >
+> >           CPU0                    CPU1
+> >           ----                    ----
+> >      lock(&gpu->active_lock);
+> >                                   lock(dma_fence_map);
+> >                                   lock(&gpu->active_lock);
+> >      lock(dev_pm_qos_mtx);
+> >
+> >     *** DEADLOCK ***
+> >
+> >    3 locks held by ring0/123:
+> >     #0: ffffff8087251170 (&gpu->lock){+.+.}-{3:3}, at: msm_job_run+0x64=
+/0x150
+> >     #1: ffffffd00b0e57e8 (dma_fence_map){++++}-{0:0}, at: msm_job_run+0=
+x68/0x150
+> >     #2: ffffff8087251208 (&gpu->active_lock){+.+.}-{3:3}, at: msm_gpu_s=
+ubmit+0xec/0x178
+> >
+> >    stack backtrace:
+> >    CPU: 6 PID: 123 Comm: ring0 Not tainted 6.2.0-rc8-debug+ #559
+> >    Hardware name: Google Lazor (rev1 - 2) with LTE (DT)
+> >    Call trace:
+> >     dump_backtrace.part.0+0xb4/0xf8
+> >     show_stack+0x20/0x38
+> >     dump_stack_lvl+0x9c/0xd0
+> >     dump_stack+0x18/0x34
+> >     print_circular_bug+0x1b4/0x1f0
+> >     check_noncircular+0x78/0xac
+> >     __lock_acquire+0xe00/0x1060
+> >     lock_acquire+0x1e0/0x2f8
+> >     __mutex_lock+0xcc/0x3c8
+> >     mutex_lock_nested+0x30/0x44
+> >     dev_pm_qos_update_request+0x38/0x68
+> >     msm_devfreq_boost+0x40/0x70
+> >     msm_devfreq_active+0xc0/0xf0
+> >     msm_gpu_submit+0x10c/0x178
+> >     msm_job_run+0x78/0x150
+> >     drm_sched_main+0x290/0x370
+> >     kthread+0xf0/0x100
+> >     ret_from_fork+0x10/0x20
+> >
+> > The issue is that dev_pm_qos_mtx is held in the runpm suspend/resume (o=
+r
+> > freq change) path, but it is also held across allocations that could
+> > recurse into shrinker.
+> >
+> > Solve this by changing dev_pm_qos_constraints_allocate() into a functio=
+n
+> > that can be called unconditionally before the device qos object is
+> > needed and before aquiring dev_pm_qos_mtx.  This way the allocations ca=
+n
+>
+> acquiring
+>
+> > be done without holding the mutex.  In the case that we raced with
+> > another thread to allocate the qos object, detect this *after* acquirin=
+g
+> > the dev_pm_qos_mtx and simply free the redundant allocations.
+> >
+> > Suggested-by: Rafael J. Wysocki <rafael@kernel.org>
+> > Signed-off-by: Rob Clark <robdclark@chromium.org>
+>
+> Please feel free to add
+>
+> Acked-by: Rafael J. Wysocki <rafael@kernel.org>
+>
+> to this patch and the next 2 PM QoS ones in this series.
+>
 
-Sent too early - anyway properties cannot be defined in allOf:. That's
-not the place for them and there is no single reason for it. From which
-regulator binding you got this example?
+thanks
 
-Best regards,
-Krzysztof
-
+> Thanks!
+>
+> > ---
+> >  drivers/base/power/qos.c | 76 +++++++++++++++++++++++++++++-----------
+> >  1 file changed, 56 insertions(+), 20 deletions(-)
+> >
+> > diff --git a/drivers/base/power/qos.c b/drivers/base/power/qos.c
+> > index 8e93167f1783..7e95760d16dc 100644
+> > --- a/drivers/base/power/qos.c
+> > +++ b/drivers/base/power/qos.c
+> > @@ -185,27 +185,33 @@ static int apply_constraint(struct dev_pm_qos_req=
+uest *req,
+> >  }
+> >
+> >  /*
+> > - * dev_pm_qos_constraints_allocate
+> > + * dev_pm_qos_constraints_allocate: Allocate and initializes qos const=
+raints
+> >   * @dev: device to allocate data for
+> >   *
+> > - * Called at the first call to add_request, for constraint data alloca=
+tion
+> > - * Must be called with the dev_pm_qos_mtx mutex held
+> > + * Called to allocate constraints before dev_pm_qos_mtx mutex is held.=
+  Should
+> > + * be matched with a call to dev_pm_qos_constraints_set() once dev_pm_=
+qos_mtx
+> > + * is held.
+> >   */
+> > -static int dev_pm_qos_constraints_allocate(struct device *dev)
+> > +static struct dev_pm_qos *dev_pm_qos_constraints_allocate(struct devic=
+e *dev)
+> >  {
+> >         struct dev_pm_qos *qos;
+> >         struct pm_qos_constraints *c;
+> >         struct blocking_notifier_head *n;
+> >
+> > -       qos =3D kzalloc(sizeof(*qos), GFP_KERNEL);
+> > +       /*
+> > +        * If constraints are already allocated, we can skip speculativ=
+ely
+> > +        * allocating a new one, as we don't have to work about qos tra=
+nsitioning
+> > +        * from non-null to null.  The constraints are only freed on de=
+vice
+> > +        * removal.
+> > +        */
+> > +       if (dev->power.qos)
+> > +               return NULL;
+> > +
+> > +       qos =3D kzalloc(sizeof(*qos) + 3 * sizeof(*n), GFP_KERNEL);
+> >         if (!qos)
+> > -               return -ENOMEM;
+> > +               return NULL;
+> >
+> > -       n =3D kzalloc(3 * sizeof(*n), GFP_KERNEL);
+> > -       if (!n) {
+> > -               kfree(qos);
+> > -               return -ENOMEM;
+> > -       }
+> > +       n =3D (struct blocking_notifier_head *)(qos + 1);
+> >
+> >         c =3D &qos->resume_latency;
+> >         plist_head_init(&c->list);
+> > @@ -227,11 +233,29 @@ static int dev_pm_qos_constraints_allocate(struct=
+ device *dev)
+> >
+> >         INIT_LIST_HEAD(&qos->flags.list);
+> >
+> > +       return qos;
+> > +}
+> > +
+> > +/*
+> > + * dev_pm_qos_constraints_set: Ensure dev->power.qos is set
+> > + *
+> > + * If dev->power.qos is already set, free the newly allocated qos cons=
+traints.
+> > + * Otherwise set dev->power.qos.  Must be called with dev_pm_qos_mtx h=
+eld.
+> > + *
+> > + * This split unsynchronized allocation and synchronized set moves all=
+ocation
+> > + * out from under dev_pm_qos_mtx, so that lockdep does does not get an=
+gry about
+> > + * drivers which use dev_pm_qos in paths related to shrinker/reclaim.
+> > + */
+> > +static void dev_pm_qos_constraints_set(struct device *dev, struct dev_=
+pm_qos *qos)
+> > +{
+> > +       if (dev->power.qos) {
+> > +               kfree(qos);
+> > +               return;
+> > +       }
+> > +
+> >         spin_lock_irq(&dev->power.lock);
+> >         dev->power.qos =3D qos;
+> >         spin_unlock_irq(&dev->power.lock);
+> > -
+> > -       return 0;
+> >  }
+> >
+> >  static void __dev_pm_qos_hide_latency_limit(struct device *dev);
+> > @@ -309,7 +333,6 @@ void dev_pm_qos_constraints_destroy(struct device *=
+dev)
+> >         dev->power.qos =3D ERR_PTR(-ENODEV);
+> >         spin_unlock_irq(&dev->power.lock);
+> >
+> > -       kfree(qos->resume_latency.notifiers);
+> >         kfree(qos);
+> >
+> >   out:
+> > @@ -341,7 +364,7 @@ static int __dev_pm_qos_add_request(struct device *=
+dev,
+> >         if (IS_ERR(dev->power.qos))
+> >                 ret =3D -ENODEV;
+> >         else if (!dev->power.qos)
+> > -               ret =3D dev_pm_qos_constraints_allocate(dev);
+> > +               ret =3D -ENOMEM;
+> >
+> >         trace_dev_pm_qos_add_request(dev_name(dev), type, value);
+> >         if (ret)
+> > @@ -388,9 +411,11 @@ static int __dev_pm_qos_add_request(struct device =
+*dev,
+> >  int dev_pm_qos_add_request(struct device *dev, struct dev_pm_qos_reque=
+st *req,
+> >                            enum dev_pm_qos_req_type type, s32 value)
+> >  {
+> > +       struct dev_pm_qos *qos =3D dev_pm_qos_constraints_allocate(dev)=
+;
+> >         int ret;
+> >
+> >         mutex_lock(&dev_pm_qos_mtx);
+> > +       dev_pm_qos_constraints_set(dev, qos);
+> >         ret =3D __dev_pm_qos_add_request(dev, req, type, value);
+> >         mutex_unlock(&dev_pm_qos_mtx);
+> >         return ret;
+> > @@ -535,14 +560,15 @@ EXPORT_SYMBOL_GPL(dev_pm_qos_remove_request);
+> >  int dev_pm_qos_add_notifier(struct device *dev, struct notifier_block =
+*notifier,
+> >                             enum dev_pm_qos_req_type type)
+> >  {
+> > +       struct dev_pm_qos *qos =3D dev_pm_qos_constraints_allocate(dev)=
+;
+> >         int ret =3D 0;
+> >
+> >         mutex_lock(&dev_pm_qos_mtx);
+> >
+> > +       dev_pm_qos_constraints_set(dev, qos);
+> > +
+> >         if (IS_ERR(dev->power.qos))
+> >                 ret =3D -ENODEV;
+> > -       else if (!dev->power.qos)
+> > -               ret =3D dev_pm_qos_constraints_allocate(dev);
+> >
+> >         if (ret)
+> >                 goto unlock;
+> > @@ -903,12 +929,22 @@ s32 dev_pm_qos_get_user_latency_tolerance(struct =
+device *dev)
+> >   */
+> >  int dev_pm_qos_update_user_latency_tolerance(struct device *dev, s32 v=
+al)
+> >  {
+> > -       int ret;
+> > +       struct dev_pm_qos *qos =3D dev_pm_qos_constraints_allocate(dev)=
+;
+> > +       int ret =3D 0;
+> >
+> >         mutex_lock(&dev_pm_qos_mtx);
+> >
+> > -       if (IS_ERR_OR_NULL(dev->power.qos)
+> > -           || !dev->power.qos->latency_tolerance_req) {
+> > +       dev_pm_qos_constraints_set(dev, qos);
+> > +
+> > +       if (IS_ERR(dev->power.qos))
+> > +               ret =3D -ENODEV;
+> > +       else if (!dev->power.qos)
+> > +               ret =3D -ENOMEM;
+> > +
+> > +       if (ret)
+> > +               goto out;
+> > +
+> > +       if (!dev->power.qos->latency_tolerance_req) {
+> >                 struct dev_pm_qos_request *req;
+> >
+> >                 if (val < 0) {
+> > --
+> > 2.41.0
+> >
