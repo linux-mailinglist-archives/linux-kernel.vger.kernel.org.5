@@ -2,78 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4441C783B32
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 09:52:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B310783B35
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 09:54:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233553AbjHVHwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 03:52:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41580 "EHLO
+        id S233041AbjHVHyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 03:54:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233564AbjHVHwg (ORCPT
+        with ESMTP id S229954AbjHVHyi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 03:52:36 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51678193;
-        Tue, 22 Aug 2023 00:52:33 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-5259cf39154so5238994a12.2;
-        Tue, 22 Aug 2023 00:52:33 -0700 (PDT)
+        Tue, 22 Aug 2023 03:54:38 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 757C012C
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 00:54:36 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-68781a69befso727251b3a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 00:54:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692690752; x=1693295552;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0US/9vzbx+c8F2WOJrOOVtzNnNHMJoadK1FXJ0ylzVc=;
-        b=Nc0oOBn0CTXc0LVwa0AuE9FI24wT1the3uRU2Y75Eox0+gl4XNACh8ltYciU5eyFAy
-         eRG+klHKncENMLlN4KeVTRHpQ8/4a2GVnL6PK+i6ZBNvq58dq6SEia0B1sOu9zbJfmr/
-         wgBXw0k7dGPBcvBv1ti3kN4bqm1vQmD2SBZf9+KY8OMV+nPqeVAd1fG7uGFLXWX9USeL
-         5X+5CKmcW5Jw3VBkUg257Ph1d5HyYwoWdWLUITSi2NNCUdMCS9oP5y/UPpmi9lSr0A3m
-         pBRu1Zvw1yH/wGyArKD8dPDFWDYiNE/TiBH5j6jrGV9q0i0QKMGWrQf+8zr6eYcJbYsO
-         7gfg==
+        d=bytedance.com; s=google; t=1692690876; x=1693295676;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=f4jgfORi8SmWQDQbZiOec8xn7xqyqjppzAhLAq8G/jM=;
+        b=SOneL3NtXO9oBFlq98JcoX4t3EnesJboldSnWumz5DiUkBnpG7CqEL1eKt5K9rqcA2
+         U3RRuLkwT/GCIUVInlzMYcDj50xv/uxs2qyBQzzhPTYMtkXg2PqKFlKcIAWegMjhGkJZ
+         +fKZaiHC6mfcqYHxcipesaABAxYak2/MZ+QrJr3V6cvvZyagkXZ1QARSjdPbn3ezO8GR
+         DM/xTyQvFqdpZfQWlB4kjX8ZI5jxXRK08bUzQm7S1Pr0J54SUbds0ZKp7eHCmdt5Dn0n
+         NGugvmaAkNnFAW1NpNnaUcyir+eJIXKp9n7vk7+IuTaAiuOSGyKdmnu+jJCHneFWcinO
+         cGiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692690752; x=1693295552;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0US/9vzbx+c8F2WOJrOOVtzNnNHMJoadK1FXJ0ylzVc=;
-        b=F5bj/BewEZwPTE6uLm8sqYkA2S9tAcbqweJ6V5ypVstkEEr2KP1hgJ+zN05x0EYSlD
-         OUBpzy8EYX2ILwrUgctluuNDeJDucD6QXYIU7bFqhlKzb/AtA4o8OjOyAW9ACO1LUF/9
-         sVYX4MRgGkASLBXRmAflsdDMuoBqfxi0I+t/IPJHX95EhsXe6cZXiFcMNJxHg2WGyp0g
-         Bk/4rs476izOQ+Ip0m3yGpBkvtkuMGFuWJHbaQx6gl7u0VWsEMgbikKeMBttdgzBOg2w
-         iL0nJMleDfLAVU2LuQy5QKPbHHGHI1O4qbXUTludD6HkVUWZ1TGcNdwbFi3zF9voVGpn
-         oRtg==
-X-Gm-Message-State: AOJu0YwjmZ+YyE8at9os5IGCSabXj+K3+8Mh5vZjqqiEVTdJsP4AysJI
-        jBfBgh7bIZUcbqNdkftdIFU=
-X-Google-Smtp-Source: AGHT+IEhOGZA7NHDv5ED8bUuE4okXlUJbiEMbWdIwcfIULbFUGXosC2Peqs4fbDpSHOEuhpTCX5VfQ==
-X-Received: by 2002:a05:6402:b29:b0:523:102f:3ce0 with SMTP id bo9-20020a0564020b2900b00523102f3ce0mr7071365edb.21.1692690751654;
-        Tue, 22 Aug 2023 00:52:31 -0700 (PDT)
-Received: from orome (p200300e41f1bd600f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f1b:d600:f22f:74ff:fe1f:3a53])
-        by smtp.gmail.com with ESMTPSA id p1-20020aa7cc81000000b00525c01f91b0sm7345294edt.42.2023.08.22.00.52.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Aug 2023 00:52:31 -0700 (PDT)
-Date:   Tue, 22 Aug 2023 09:52:29 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Kartik <kkartik@nvidia.com>, arnd@arndb.de, digetx@gmail.com,
-        frank.li@vivo.com, jonathanh@nvidia.com,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        pdeschrijver@nvidia.com, petlozup@nvidia.com, pshete@nvidia.com,
-        robh@kernel.org, stefank@nvidia.com, sumitg@nvidia.com,
-        windhl@126.com
-Subject: Re: [PATCH 1/6] soc/tegra: fuse: Add tegra_acpi_init_apbmisc()
-Message-ID: <ZORpPYYczxRN_wuI@orome>
-References: <ZN9wdTLK1rwnVK/e@smile.fi.intel.com>
- <20230821113220.4255-1-kkartik@nvidia.com>
- <ZONZaZ1QaWKBCMYj@smile.fi.intel.com>
+        d=1e100.net; s=20221208; t=1692690876; x=1693295676;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=f4jgfORi8SmWQDQbZiOec8xn7xqyqjppzAhLAq8G/jM=;
+        b=GynZRGUzVKuHje/+Pu/n8UF9nZZDkUlHyUoNJZyst76kcX5jMAwn8wtqABrhFDt1EI
+         1pJyyQW8A4CrXzyDNVcxP+0GBhygFEw3ZeVxU60BmV2vOJ35VL5QCFxSQ0ShM+z7WIPe
+         HM2f+YQRSlIDjZtfWTX4aP9/9GH0jkkBPFDmUdYcYGoShbUXlwZcVUrk8uG10N1VAnjJ
+         DaB0BkyOL8hPkCD7667F+xpWWk+ECoqZr8yMJTuwAu5wVvzfua2U55PZmb4fu9nXLk++
+         4WEMQuAF4kg4wNpVvUPNxW4hi1Q5nDf3+tZH4PA0Wn/my7llCO1RLvDr8QA7s0XrYYqu
+         2Krw==
+X-Gm-Message-State: AOJu0YwsdHxX2H1CAqLEK0i2p1aSMRwWC40fkUZYq1HaZQAPd82IvCYx
+        /m3KKtCf6SMqCudSioMNSWtteA==
+X-Google-Smtp-Source: AGHT+IGcQ/Vaoo9QWtXIDxo0cmgc5wb+yjqs29/LxRS2cKLFil77dp/RF48DaAlmNeNv2ExX4nw11A==
+X-Received: by 2002:a05:6a21:788a:b0:13a:3649:dc1a with SMTP id bf10-20020a056a21788a00b0013a3649dc1amr12492491pzc.0.1692690875899;
+        Tue, 22 Aug 2023 00:54:35 -0700 (PDT)
+Received: from [10.70.252.135] ([203.208.167.146])
+        by smtp.gmail.com with ESMTPSA id q6-20020a170902a3c600b001bbdd44bbb6sm8506831plb.136.2023.08.22.00.54.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Aug 2023 00:54:35 -0700 (PDT)
+Message-ID: <c6f933ee-751f-def1-31f6-0940e2ee0108@bytedance.com>
+Date:   Tue, 22 Aug 2023 15:54:25 +0800
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="3tebZ8yOd3fV2Qwz"
-Content-Disposition: inline
-In-Reply-To: <ZONZaZ1QaWKBCMYj@smile.fi.intel.com>
-User-Agent: Mutt/2.2.10 (2023-03-25)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [PATCH v2 0/5] use refcount+RCU method to implement lockless slab
+ shrink (part 1)
+Content-Language: en-US
+To:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
+        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
+        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
+        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
+        yujie.liu@intel.com, gregkh@linuxfoundation.org,
+        muchun.song@linux.dev, joel@joelfernandes.org,
+        christian.koenig@amd.com
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        dri-devel@lists.freedesktop.org, linux-fsdevel@vger.kernel.org,
+        Qi Zheng <zhengqi.arch@bytedance.com>
+References: <20230817112402.77010-1-zhengqi.arch@bytedance.com>
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+In-Reply-To: <20230817112402.77010-1-zhengqi.arch@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -81,67 +84,68 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---3tebZ8yOd3fV2Qwz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Aug 21, 2023 at 03:32:41PM +0300, Andy Shevchenko wrote:
-> On Mon, Aug 21, 2023 at 05:02:20PM +0530, Kartik wrote:
-> > On Fri, 2023-08-18 at 16:21 +0300, Andy Shevchenko wrote:
->=20
-> ...
->=20
-> > >>  void tegra_init_revision(void);
-> > >>  void tegra_init_apbmisc(void);
-> > >> +void tegra_acpi_init_apbmisc(void);
-> > >
-> > >Why do you  need a separate function?
-> >=20
-> > Function tegra_init_apbmisc() is called from tegra_init_fuse() which
-> > is invoked at early init and it also has `__init` keyword. If we use
-> > the same function for both ACPI/DT, then we will get init section
-> > mismatches when the Tegra Fuse driver probes using ACPI.
-> >=20
-> > We can use the same function by dropping the `init` keyword. But
-> > the way we are getting the resources for device-tree and on ACPI is
-> > slightly different. Hence, I kept a separate function for ACPI
-> > and move the common bits to a function shared between
-> > tegra_init_apbmisc() and tegra_acpi_init_apbmisc().
->=20
-> So, you mean that behaviour is different for ACPI and DT cases.
-> Then obvious question why DT case can't be delayed to not so early
-> stage to be run? This requires some explanations, more than given
-> in the commit message and here.
+On 2023/8/17 19:23, Qi Zheng wrote:
+> Hi all,
+> 
+> To make reviewing and updating easier, I've chosen to split the previous
+> patchset[1] into the following three parts:
+> 
+> part 1: some cleanups and preparations
+> part 2: introduce new APIs and convert all shrinnkers to use these
+> part 3: implement lockless slab shrink
+> 
+> This series is the part 1 and is based on the next-20230815.
+> 
+> Comments and suggestions are welcome.
+> 
+> [1]. https://lore.kernel.org/lkml/20230807110936.21819-1-zhengqi.arch@bytedance.com/
+> 
+> Thanks,
+> Qi
+> 
+> Changlog in part 1 v1 -> part 1 v2:
+>   - fix compilation warning in [PATCH 1/5]
+>   - rename synchronize_shrinkers() to ttm_pool_synchronize_shrinkers()
+>     (pointed by Christian König)
+>   - collect Reviewed-by
+> 
+> Changlog in v4 -> part 1 v1:
+>   - split from the previous large patchset
+>   - fix comment format in [PATCH v4 01/48] (pointed by Muchun Song)
+>   - change to use kzalloc_node() and fix typo in [PATCH v4 44/48]
+>     (pointed by Dave Chinner)
+>   - collect Reviewed-bys
+>   - rebase onto the next-20230815
 
-We've done some experiments in the past to unify this and unfortunately
-we can't. The reason is that some of the old 32-bit ARM code needs some
-information from the APBMISC registers very early during boot (among
-other things for SMP support), so delaying this doesn't work.
+Hi all,
 
-I agree that it would be good to put this into some comment for later
-reference.
+Any more comments and suggestions for this part 1? Or can this part
+be merged first (just some cleanups and preparations)? Or should I
+post the part 2 and part 3 first for everyone to review together?
 
-Thierry
+Either one is fine for me. :)
 
---3tebZ8yOd3fV2Qwz
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
+Qi
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmTkaToACgkQ3SOs138+
-s6GJFA//bjlGLsSf/pP4BdoONw7NWXEk7RaSkK3HRBfiOFctHxyp+Gjl3qvTAbPM
-MRV9y/z6v0V7DIBNeRh1PFFGDTMNxcY+ikL7iwTX3gHcBdvgifxfAJWtsK4Q5Y5a
-DbFtpIEN58rbzGJkYCYOo54LGYeo7MSmKAMxXK0YtnPAc5DPY6beYyVY28ucE2gy
-RupL8CYRZ+dFGPkJosJpzNGhsYtb1iM234zST/hsRpqLxKVcbGc54ISv71Z2EiKQ
-xWAHQHl08BvmRQPYwtIPnbOkT0mSOOJISVoFx1vTFZW008RylNTcZZC9KZnJ0zX3
-p38yHo0OoTMu2YTU2VCmWoe9KJwyMaSn7mhA3xqIMJJ6YuOQVtOyglagh8kmx5XB
-2znXl4vq20xfQqujNYfrOqnmtG8Uw+gB+Wd8kwf3m3FLitF7T9wOi8Sm9O6veW1D
-O/WST8seudDBMX0ARCAMqtP0OZvmZ2V3oTFC13gTgP1IhH1wRuBrdSDTuqFDNcmF
-vJwOwV6KbBbDZfgdfPRBNZ10uqqHBKhThRMvRkkEPqmfCZAQU8RmPs1rU9vUn6ay
-+W0hVrpvXvrYH2dfrkM6KVxDBANAVK73xryACAzd2W5nVtqvEk4DOOxqIhwGeImz
-ZmSwk9RkSegYOfCxM6r4W28BWEwRgvsv0Vmi6Ah5QGisb5IlrZk=
-=Xo4J
------END PGP SIGNATURE-----
-
---3tebZ8yOd3fV2Qwz--
+> 
+> Qi Zheng (5):
+>    mm: move some shrinker-related function declarations to mm/internal.h
+>    mm: vmscan: move shrinker-related code into a separate file
+>    mm: shrinker: remove redundant shrinker_rwsem in debugfs operations
+>    drm/ttm: introduce pool_shrink_rwsem
+>    mm: shrinker: add a secondary array for shrinker_info::{map,
+>      nr_deferred}
+> 
+>   drivers/gpu/drm/ttm/ttm_pool.c |  17 +-
+>   include/linux/memcontrol.h     |  12 +-
+>   include/linux/shrinker.h       |  37 +-
+>   mm/Makefile                    |   4 +-
+>   mm/internal.h                  |  28 ++
+>   mm/shrinker.c                  | 751 +++++++++++++++++++++++++++++++++
+>   mm/shrinker_debug.c            |  18 +-
+>   mm/vmscan.c                    | 701 ------------------------------
+>   8 files changed, 818 insertions(+), 750 deletions(-)
+>   create mode 100644 mm/shrinker.c
+> 
