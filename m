@@ -2,286 +2,459 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D23B6783D67
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 11:56:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2073B783D6A
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 11:57:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234525AbjHVJ4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 05:56:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44870 "EHLO
+        id S234534AbjHVJ5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 05:57:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234461AbjHVJ4f (ORCPT
+        with ESMTP id S231879AbjHVJ5d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 05:56:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 885E11A1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 02:55:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692698146;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JlPpdmOPNah22Y7KSbuXMrfVQtLyHU45KlxBrK0MuU0=;
-        b=fEdwMdn8CUoDNz9QnwdKvfNdDA8eu0gm1fkUNoLmSop5LQgWR0M7oiAiHHlxBD5UzF15TI
-        LyNmTuMpC6qE0StEdj92DBav7v1+c0KUKVAhbCONsbqaESRUXfHzo1U+67t79spJpHikEO
-        BAkiu9CKSJfeX9TW7XdFnCl2di7Nf+I=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-528-0PD6XVKTNTKE-fwCEavGag-1; Tue, 22 Aug 2023 05:55:45 -0400
-X-MC-Unique: 0PD6XVKTNTKE-fwCEavGag-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-3fe216798e9so28428895e9.3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 02:55:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692698144; x=1693302944;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JlPpdmOPNah22Y7KSbuXMrfVQtLyHU45KlxBrK0MuU0=;
-        b=LlK/qCzX5Vtc4srdwW/J3qei48zorRT95AIqKLJaOxPpaP/lplDp8png7lwu0GocBs
-         xx03CAMhDkyTq/1TSmzjJ70fAhxjfGYVDPzZK/wIrgW8VNy+9Wq+YPifjQ9zxRQu8G9y
-         Zp/mhH5Kr1f/KBNvbx6pSMdD5+5s38MRHrCQKGuG4tISytv0LD7cGkKe7Kd01Np7i6Va
-         8B9QAszryEYnKmoLa+bQL+Q/8V6q5McbO8fgQb50MeCkezW8EBRSPjI3MHyqs4MfAAvi
-         UWnsE4jTznmNankU5Jg8IviXxICLn6cjej2njT68cB8HQgJUMitVSGWV55m81SdR2LQ1
-         Hgiw==
-X-Gm-Message-State: AOJu0YwzqZ5J/NUC3wYeCwh3mJOniJwPkeMgKW+sSvS2EmKVizuDSF1B
-        dRUr06+glEiTF/Gfi15B+L6ZMxgzkkGmKd7OrDXmgWs98KhD3lFfireitezl0G6ivg7xM2Lhn2b
-        Ke5Sxx0qauCTwUNEcJX6CKLbQ
-X-Received: by 2002:adf:f405:0:b0:317:5eb8:b1c4 with SMTP id g5-20020adff405000000b003175eb8b1c4mr7768962wro.2.1692698144290;
-        Tue, 22 Aug 2023 02:55:44 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHgF/Yousk5x+50wI8hFuNqpLCpQeaVe39/29TiQhdgw9ZK1+z5je96xbrCiOhE74jmuvxFXg==
-X-Received: by 2002:adf:f405:0:b0:317:5eb8:b1c4 with SMTP id g5-20020adff405000000b003175eb8b1c4mr7768951wro.2.1692698143902;
-        Tue, 22 Aug 2023 02:55:43 -0700 (PDT)
-Received: from toolbox ([2001:9e8:89b6:500:ebf6:f095:1c69:67b4])
-        by smtp.gmail.com with ESMTPSA id l9-20020a5d6749000000b003143867d2ebsm15492195wrw.63.2023.08.22.02.55.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Aug 2023 02:55:43 -0700 (PDT)
-Date:   Tue, 22 Aug 2023 11:55:41 +0200
-From:   Sebastian Wick <sebastian.wick@redhat.com>
-To:     =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>
-Cc:     dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, wayland-devel@lists.freedesktop.org,
-        pierre-eric.pelloux-prayer@amd.com,
-        Daniel Vetter <daniel@ffwll.ch>,
-        'Marek =?utf-8?B?T2zFocOhayc=?= <maraeo@gmail.com>,
-        Michel =?iso-8859-1?Q?D=E4nzer?= <michel.daenzer@mailbox.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Pekka Paalanen <ppaalanen@gmail.com>,
-        Daniel Stone <daniel@fooishbar.org>, hwentlan@amd.com,
-        Rob Clark <robdclark@gmail.com>, ville.syrjala@linux.intel.com,
-        kernel-dev@igalia.com, alexander.deucher@amd.com,
-        Dave Airlie <airlied@gmail.com>, christian.koenig@amd.com,
-        joshua@froggi.es, Jessica Zhang <quic_jesszhan@quicinc.com>
-Subject: Re: [PATCH v6 5/6] drm: Refuse to async flip with atomic prop changes
-Message-ID: <20230822095541.GA110557@toolbox>
-References: <20230815185710.159779-1-andrealmeid@igalia.com>
- <20230815185710.159779-6-andrealmeid@igalia.com>
+        Tue, 22 Aug 2023 05:57:33 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A74711A1;
+        Tue, 22 Aug 2023 02:57:30 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1A99B11FB;
+        Tue, 22 Aug 2023 02:58:11 -0700 (PDT)
+Received: from donnerap.manchester.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 733743F64C;
+        Tue, 22 Aug 2023 02:57:27 -0700 (PDT)
+Date:   Tue, 22 Aug 2023 10:57:24 +0100
+From:   Andre Przywara <andre.przywara@arm.com>
+To:     Aleksandr Shubin <privatesub2@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= 
+        <u.kleine-koenig@pengutronix.de>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v5 2/3] pwm: Add Allwinner's D1/T113-S3/R329 SoCs PWM
+ support
+Message-ID: <20230822105724.23ba2215@donnerap.manchester.arm.com>
+In-Reply-To: <20230814133238.741950-3-privatesub2@gmail.com>
+References: <20230814133238.741950-1-privatesub2@gmail.com>
+        <20230814133238.741950-3-privatesub2@gmail.com>
+Organization: ARM
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.32; aarch64-unknown-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230815185710.159779-6-andrealmeid@igalia.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 15, 2023 at 03:57:09PM -0300, André Almeida wrote:
-> Given that prop changes may lead to modesetting, which would defeat the
-> fast path of the async flip, refuse any atomic prop change for async
-> flips in atomic API. The only exceptions are the framebuffer ID to flip
-> to and the mode ID, that could be referring to an identical mode.
+On Mon, 14 Aug 2023 16:32:17 +0300
+Aleksandr Shubin <privatesub2@gmail.com> wrote:
 
-FYI, the solid fill series adds an enum drm_plane_pixel_source and and a
-new solid fill pixel source. Changing the solid fill color would be
-effectively the same as changing the FB_ID. On the other hand, changing
-the FB_ID no longer necessarily results in an update when the pixel
-source is set to solid fill.
+Hi,
 
-> Signed-off-by: André Almeida <andrealmeid@igalia.com>
-> ---
-> v5: no changes
-> v4: new patch
-> ---
->  drivers/gpu/drm/drm_atomic_helper.c |  5 +++
->  drivers/gpu/drm/drm_atomic_uapi.c   | 52 +++++++++++++++++++++++++++--
->  drivers/gpu/drm/drm_crtc_internal.h |  2 +-
->  drivers/gpu/drm/drm_mode_object.c   |  2 +-
->  4 files changed, 56 insertions(+), 5 deletions(-)
+> Allwinner's D1, T113-S3 and R329 SoCs have a quite different PWM
+> controllers with ones supported by pwm-sun4i driver.
 > 
-> diff --git a/drivers/gpu/drm/drm_atomic_helper.c b/drivers/gpu/drm/drm_atomic_helper.c
-> index 292e38eb6218..b34e3104afd1 100644
-> --- a/drivers/gpu/drm/drm_atomic_helper.c
-> +++ b/drivers/gpu/drm/drm_atomic_helper.c
-> @@ -629,6 +629,11 @@ drm_atomic_helper_check_modeset(struct drm_device *dev,
->  		WARN_ON(!drm_modeset_is_locked(&crtc->mutex));
+> This patch adds a PWM controller driver for Allwinner's D1,
+> T113-S3 and R329 SoCs. The main difference between these SoCs
+> is the number of channels defined by the DT property.
+> 
+> Signed-off-by: Aleksandr Shubin <privatesub2@gmail.com>
+> ---
+>  drivers/pwm/Kconfig      |  10 ++
+>  drivers/pwm/Makefile     |   1 +
+>  drivers/pwm/pwm-sun20i.c | 323 +++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 334 insertions(+)
+>  create mode 100644 drivers/pwm/pwm-sun20i.c
+> 
+> diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
+> index 8df861b1f4a3..05c48a36969e 100644
+> --- a/drivers/pwm/Kconfig
+> +++ b/drivers/pwm/Kconfig
+> @@ -594,6 +594,16 @@ config PWM_SUN4I
+>  	  To compile this driver as a module, choose M here: the module
+>  	  will be called pwm-sun4i.
 >  
->  		if (!drm_mode_equal(&old_crtc_state->mode, &new_crtc_state->mode)) {
-> +			if (new_crtc_state->async_flip) {
-> +				drm_dbg_atomic(dev, "[CRTC:%d:%s] no mode changes allowed during async flip\n",
-> +					       crtc->base.id, crtc->name);
-> +				return -EINVAL;
-> +			}
->  			drm_dbg_atomic(dev, "[CRTC:%d:%s] mode changed\n",
->  				       crtc->base.id, crtc->name);
->  			new_crtc_state->mode_changed = true;
-> diff --git a/drivers/gpu/drm/drm_atomic_uapi.c b/drivers/gpu/drm/drm_atomic_uapi.c
-> index a15121e75a0a..6c423a7e8c7b 100644
-> --- a/drivers/gpu/drm/drm_atomic_uapi.c
-> +++ b/drivers/gpu/drm/drm_atomic_uapi.c
-> @@ -1006,13 +1006,28 @@ int drm_atomic_connector_commit_dpms(struct drm_atomic_state *state,
->  	return ret;
->  }
->  
-> +static int drm_atomic_check_prop_changes(int ret, uint64_t old_val, uint64_t prop_value,
-> +					 struct drm_property *prop)
+> +config PWM_SUN20I
+> +	tristate "Allwinner D1/T113s/R329 PWM support"
+> +	depends on ARCH_SUNXI || COMPILE_TEST
+> +	depends on COMMON_CLK
+> +	help
+> +	  Generic PWM framework driver for Allwinner D1/T113s/R329 SoCs.
+> +
+> +	  To compile this driver as a module, choose M here: the module
+> +	  will be called pwm-sun20i.
+> +
+>  config PWM_SUNPLUS
+>  	tristate "Sunplus PWM support"
+>  	depends on ARCH_SUNPLUS || COMPILE_TEST
+> diff --git a/drivers/pwm/Makefile b/drivers/pwm/Makefile
+> index 19899b912e00..cea872e22c78 100644
+> --- a/drivers/pwm/Makefile
+> +++ b/drivers/pwm/Makefile
+> @@ -55,6 +55,7 @@ obj-$(CONFIG_PWM_STM32)		+= pwm-stm32.o
+>  obj-$(CONFIG_PWM_STM32_LP)	+= pwm-stm32-lp.o
+>  obj-$(CONFIG_PWM_STMPE)		+= pwm-stmpe.o
+>  obj-$(CONFIG_PWM_SUN4I)		+= pwm-sun4i.o
+> +obj-$(CONFIG_PWM_SUN20I)	+= pwm-sun20i.o
+>  obj-$(CONFIG_PWM_SUNPLUS)	+= pwm-sunplus.o
+>  obj-$(CONFIG_PWM_TEGRA)		+= pwm-tegra.o
+>  obj-$(CONFIG_PWM_TIECAP)	+= pwm-tiecap.o
+> diff --git a/drivers/pwm/pwm-sun20i.c b/drivers/pwm/pwm-sun20i.c
+> new file mode 100644
+> index 000000000000..0475bb30e01d
+> --- /dev/null
+> +++ b/drivers/pwm/pwm-sun20i.c
+> @@ -0,0 +1,323 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * PWM Controller Driver for sunxi platforms (D1, T113-S3 and R329)
+> + *
+> + * Limitations:
+> + * - When the parameters change, current running period will not be completed
+> + *   and run new settings immediately.
+> + * - It output HIGH-Z state when PWM channel disabled.
+> + *
+> + * Copyright (c) 2023 Aleksandr Shubin <privatesub2@gmail.com>
+> + */
+> +
+> +#include <linux/bitfield.h>
+> +#include <linux/clk.h>
+> +#include <linux/err.h>
+> +#include <linux/io.h>
+> +#include <linux/module.h>
+> +#include <linux/of_device.h>
+> +#include <linux/pwm.h>
+> +#include <linux/reset.h>
+> +
+> +#define PWM_CLK_CFG(chan)		(0x20 + (((chan) >> 1) * 0x4))
+> +#define PWM_CLK_CFG_SRC			GENMASK(8, 7)
+> +#define PWM_CLK_CFG_DIV_M		GENMASK(3, 0)
+> +
+> +#define PWM_CLK_GATE			0x40
+> +#define PWM_CLK_GATE_BYPASS(chan)	BIT((chan) - 16)
+> +#define PWM_CLK_GATE_GATING(chan)	BIT(chan)
+> +
+> +#define PWM_ENABLE			0x80
+> +#define PWM_ENABLE_EN(chan)		BIT(chan)
+> +
+> +#define PWM_CTL(chan)			(0x100 + (chan) * 0x20)
+> +#define PWM_CTL_ACT_STA			BIT(8)
+> +#define PWM_CTL_PRESCAL_K		GENMASK(7, 0)
+> +
+> +#define PWM_PERIOD(chan)		(0x104 + (chan) * 0x20)
+> +#define PWM_PERIOD_ENTIRE_CYCLE		GENMASK(31, 16)
+> +#define PWM_PERIOD_ACT_CYCLE		GENMASK(15, 0)
+> +
+> +#define PWM_MAGIC			(255 * 65535 + 2 * 65534 + 1)
+> +
+> +struct sun20i_pwm_chip {
+> +	struct clk *clk_bus, *clk_hosc;
+
+As mentioned in the binding patch, we should not mix the bus clock (which
+controls the register access itself) and the APB0 clock, as a possible PWM
+clock source, even if one happens to be the gated version of the other.
+They are conceptually two different clocks.
+For the bus clock, we just need a clk_prepare_enable() in _probe(), and
+clk_disable_unprepare in _remove().
+So you should add a clk_abp0 pointer here and use that instead of clk_bus
+throughout the driver.
+
+Cheers,
+Andre
+
+> +	struct reset_control *rst;
+> +	struct pwm_chip chip;
+> +	void __iomem *base;
+> +	/* Mutex to protect pwm apply state */
+> +	struct mutex mutex;
+> +};
+> +
+> +static inline struct sun20i_pwm_chip *to_sun20i_pwm_chip(struct pwm_chip *chip)
 > +{
-> +	if (ret != 0 || old_val != prop_value) {
-> +		drm_dbg_atomic(prop->dev,
-> +			       "[PROP:%d:%s] No prop can be changed during async flip\n",
-> +			       prop->base.id, prop->name);
-> +		return -EINVAL;
-> +	}
+> +	return container_of(chip, struct sun20i_pwm_chip, chip);
+> +}
+> +
+> +static inline u32 sun20i_pwm_readl(struct sun20i_pwm_chip *chip,
+> +				   unsigned long offset)
+> +{
+> +	return readl(chip->base + offset);
+> +}
+> +
+> +static inline void sun20i_pwm_writel(struct sun20i_pwm_chip *chip,
+> +				     u32 val, unsigned long offset)
+> +{
+> +	writel(val, chip->base + offset);
+> +}
+> +
+> +static int sun20i_pwm_get_state(struct pwm_chip *chip,
+> +				struct pwm_device *pwm,
+> +				struct pwm_state *state)
+> +{
+> +	struct sun20i_pwm_chip *sun20i_chip = to_sun20i_pwm_chip(chip);
+> +	u16 ent_cycle, act_cycle, prescal;
+> +	u64 clk_rate, tmp;
+> +	u8 div_id;
+> +	u32 val;
+> +
+> +	mutex_lock(&sun20i_chip->mutex);
+> +
+> +	val = sun20i_pwm_readl(sun20i_chip, PWM_CLK_CFG(pwm->hwpwm));
+> +	div_id = FIELD_GET(PWM_CLK_CFG_DIV_M, val);
+> +	if (FIELD_GET(PWM_CLK_CFG_SRC, val) == 0)
+> +		clk_rate = clk_get_rate(sun20i_chip->clk_hosc);
+> +	else
+> +		clk_rate = clk_get_rate(sun20i_chip->clk_bus);
+> +
+> +	val = sun20i_pwm_readl(sun20i_chip, PWM_CTL(pwm->hwpwm));
+> +	state->polarity = (PWM_CTL_ACT_STA & val) ? PWM_POLARITY_NORMAL : PWM_POLARITY_INVERSED;
+> +
+> +	prescal = FIELD_GET(PWM_CTL_PRESCAL_K, val) + 1;
+> +
+> +	val = sun20i_pwm_readl(sun20i_chip, PWM_ENABLE);
+> +	state->enabled = (PWM_ENABLE_EN(pwm->hwpwm) & val) ? true : false;
+> +
+> +	val = sun20i_pwm_readl(sun20i_chip, PWM_PERIOD(pwm->hwpwm));
+> +	act_cycle = FIELD_GET(PWM_PERIOD_ACT_CYCLE, val);
+> +	ent_cycle = FIELD_GET(PWM_PERIOD_ENTIRE_CYCLE, val);
+> +
+> +	/*
+> +	 * The duration of the active phase should not be longer
+> +	 * than the duration of the period
+> +	 */
+> +	if (act_cycle > ent_cycle)
+> +		act_cycle = ent_cycle;
+> +
+> +	tmp = ((u64)(act_cycle) * prescal << div_id) * NSEC_PER_SEC;
+> +	state->duty_cycle = DIV_ROUND_UP_ULL(tmp, clk_rate);
+> +	tmp = ((u64)(ent_cycle) * prescal << div_id) * NSEC_PER_SEC;
+> +	state->period = DIV_ROUND_UP_ULL(tmp, clk_rate);
+> +	mutex_unlock(&sun20i_chip->mutex);
 > +
 > +	return 0;
 > +}
 > +
->  int drm_atomic_set_property(struct drm_atomic_state *state,
->  			    struct drm_file *file_priv,
->  			    struct drm_mode_object *obj,
->  			    struct drm_property *prop,
-> -			    uint64_t prop_value)
-> +			    uint64_t prop_value,
-> +			    bool async_flip)
->  {
->  	struct drm_mode_object *ref;
-> +	uint64_t old_val;
->  	int ret;
->  
->  	if (!drm_property_change_valid_get(prop, prop_value, &ref))
-> @@ -1029,6 +1044,13 @@ int drm_atomic_set_property(struct drm_atomic_state *state,
->  			break;
->  		}
->  
-> +		if (async_flip) {
-> +			ret = drm_atomic_connector_get_property(connector, connector_state,
-> +								prop, &old_val);
-> +			ret = drm_atomic_check_prop_changes(ret, old_val, prop_value, prop);
-> +			break;
+> +static int sun20i_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
+> +			    const struct pwm_state *state)
+> +{
+> +	struct sun20i_pwm_chip *sun20i_chip = to_sun20i_pwm_chip(chip);
+> +	u32 clk_gate, clk_cfg, pwm_en, ctl, period;
+> +	u64 bus_rate, hosc_rate, clk_div, val;
+> +	u32 prescaler, div_m;
+> +	bool use_bus_clk;
+> +	int ret = 0;
+> +
+> +	mutex_lock(&sun20i_chip->mutex);
+> +
+> +	pwm_en = sun20i_pwm_readl(sun20i_chip, PWM_ENABLE);
+> +
+> +	if (state->enabled != pwm->state.enabled)
+> +		clk_gate = sun20i_pwm_readl(sun20i_chip, PWM_CLK_GATE);
+> +
+> +	if (state->enabled != pwm->state.enabled && !state->enabled) {
+> +		clk_gate &= ~PWM_CLK_GATE_GATING(pwm->hwpwm);
+> +		pwm_en &= ~PWM_ENABLE_EN(pwm->hwpwm);
+> +		sun20i_pwm_writel(sun20i_chip, pwm_en, PWM_ENABLE);
+> +		sun20i_pwm_writel(sun20i_chip, clk_gate, PWM_CLK_GATE);
+> +	}
+> +
+> +	if (state->polarity != pwm->state.polarity ||
+> +	    state->duty_cycle != pwm->state.duty_cycle ||
+> +	    state->period != pwm->state.period) {
+> +		ctl = sun20i_pwm_readl(sun20i_chip, PWM_CTL(pwm->hwpwm));
+> +		clk_cfg = sun20i_pwm_readl(sun20i_chip, PWM_CLK_CFG(pwm->hwpwm));
+> +		hosc_rate = clk_get_rate(sun20i_chip->clk_hosc);
+> +		bus_rate = clk_get_rate(sun20i_chip->clk_bus);
+> +		if (pwm_en & PWM_ENABLE_EN(pwm->hwpwm ^ 1)) {
+> +			/* if the neighbor channel is enable, check period only */
+> +			use_bus_clk = FIELD_GET(PWM_CLK_CFG_SRC, clk_cfg) != 0;
+> +			val = state->period * (use_bus_clk ? bus_rate : hosc_rate);
+> +			do_div(val, NSEC_PER_SEC);
+> +
+> +			div_m = FIELD_GET(PWM_CLK_CFG_DIV_M, clk_cfg);
+> +		} else {
+> +			/* check period and select clock source */
+> +			use_bus_clk = false;
+> +			val = state->period * hosc_rate;
+> +			do_div(val, NSEC_PER_SEC);
+> +			if (val <= 1) {
+> +				use_bus_clk = true;
+> +				val = state->period * bus_rate;
+> +				do_div(val, NSEC_PER_SEC);
+> +				if (val <= 1) {
+> +					ret = -EINVAL;
+> +					goto unlock_mutex;
+> +				}
+> +			}
+> +			div_m = fls(DIV_ROUND_DOWN_ULL(val, PWM_MAGIC));
+> +			if (div_m >= 9) {
+> +				ret = -EINVAL;
+> +				goto unlock_mutex;
+> +			}
+> +
+> +			/* set up the CLK_DIV_M and clock CLK_SRC */
+> +			clk_cfg = FIELD_PREP(PWM_CLK_CFG_DIV_M, div_m);
+> +			clk_cfg |= FIELD_PREP(PWM_CLK_CFG_SRC, use_bus_clk);
+> +
+> +			sun20i_pwm_writel(sun20i_chip, clk_cfg, PWM_CLK_CFG(pwm->hwpwm));
 > +		}
 > +
->  		ret = drm_atomic_connector_set_property(connector,
->  				connector_state, file_priv,
->  				prop, prop_value);
-> @@ -1037,6 +1059,7 @@ int drm_atomic_set_property(struct drm_atomic_state *state,
->  	case DRM_MODE_OBJECT_CRTC: {
->  		struct drm_crtc *crtc = obj_to_crtc(obj);
->  		struct drm_crtc_state *crtc_state;
-> +		struct drm_mode_config *config = &crtc->dev->mode_config;
->  
->  		crtc_state = drm_atomic_get_crtc_state(state, crtc);
->  		if (IS_ERR(crtc_state)) {
-> @@ -1044,6 +1067,18 @@ int drm_atomic_set_property(struct drm_atomic_state *state,
->  			break;
->  		}
->  
+> +		/* calculate prescaler, PWM entire cycle */
+> +		clk_div = val >> div_m;
+> +		if (clk_div <= 65534) {
+> +			prescaler = 0;
+> +		} else {
+> +			prescaler = DIV_ROUND_UP_ULL(clk_div - 65534, 65535);
+> +			if (prescaler >= 256) {
+> +				ret = -EINVAL;
+> +				goto unlock_mutex;
+> +			}
+> +			do_div(clk_div, prescaler + 1);
+> +		}
+> +
+> +		period = FIELD_PREP(PWM_PERIOD_ENTIRE_CYCLE, clk_div);
+> +
+> +		/* set duty cycle */
+> +		val = state->duty_cycle * (use_bus_clk ? bus_rate : hosc_rate);
+> +		do_div(val, NSEC_PER_SEC);
+> +		clk_div = val >> div_m;
+> +		do_div(clk_div, prescaler + 1);
+> +
 > +		/*
-> +		 * We allow mode_id changes here for async flips, because we
-> +		 * check later on drm_atomic_helper_check_modeset() callers if
-> +		 * there are modeset changes or they are equal
+> +		 * The formula of the output period and the duty-cycle for PWM are as follows.
+> +		 * T period = (PWM01_CLK / PWM0_PRESCALE_K)^-1 * (PPR0.PWM_ENTIRE_CYCLE + 1)
+> +		 * T high-level = (PWM01_CLK / PWM0_PRESCALE_K)^-1 * PPR0.PWM_ACT_CYCLE
+> +		 * Duty-cycle = T high-level / T period
+> +		 * In accordance with this formula, in order to set the duty-cycle to 100%,
+> +		 * it is necessary that PWM_ACT_CYCLE >= PWM_ENTIRE_CYCLE + 1
 > +		 */
-> +		if (async_flip && prop != config->prop_mode_id) {
-> +			ret = drm_atomic_crtc_get_property(crtc, crtc_state,
-> +							   prop, &old_val);
-> +			ret = drm_atomic_check_prop_changes(ret, old_val, prop_value, prop);
-> +			break;
-> +		}
+> +		if (state->duty_cycle == state->period)
+> +			clk_div++;
+> +		period |= FIELD_PREP(PWM_PERIOD_ACT_CYCLE, clk_div);
+> +		sun20i_pwm_writel(sun20i_chip, period, PWM_PERIOD(pwm->hwpwm));
 > +
->  		ret = drm_atomic_crtc_set_property(crtc,
->  				crtc_state, prop, prop_value);
->  		break;
-> @@ -1051,6 +1086,7 @@ int drm_atomic_set_property(struct drm_atomic_state *state,
->  	case DRM_MODE_OBJECT_PLANE: {
->  		struct drm_plane *plane = obj_to_plane(obj);
->  		struct drm_plane_state *plane_state;
-> +		struct drm_mode_config *config = &plane->dev->mode_config;
->  
->  		plane_state = drm_atomic_get_plane_state(state, plane);
->  		if (IS_ERR(plane_state)) {
-> @@ -1058,6 +1094,13 @@ int drm_atomic_set_property(struct drm_atomic_state *state,
->  			break;
->  		}
->  
-> +		if (async_flip && prop != config->prop_fb_id) {
-> +			ret = drm_atomic_plane_get_property(plane, plane_state,
-> +							    prop, &old_val);
-> +			ret = drm_atomic_check_prop_changes(ret, old_val, prop_value, prop);
-> +			break;
-> +		}
+> +		ctl = FIELD_PREP(PWM_CTL_PRESCAL_K, prescaler);
+> +		if (state->polarity == PWM_POLARITY_NORMAL)
+> +			ctl |= PWM_CTL_ACT_STA;
 > +
->  		ret = drm_atomic_plane_set_property(plane,
->  				plane_state, file_priv,
->  				prop, prop_value);
-> @@ -1349,6 +1392,7 @@ int drm_mode_atomic_ioctl(struct drm_device *dev,
->  	struct drm_out_fence_state *fence_state;
->  	int ret = 0;
->  	unsigned int i, j, num_fences;
-> +	bool async_flip = false;
->  
->  	/* disallow for drivers not supporting atomic: */
->  	if (!drm_core_check_feature(dev, DRIVER_ATOMIC))
-> @@ -1385,6 +1429,8 @@ int drm_mode_atomic_ioctl(struct drm_device *dev,
->  				       "commit failed: DRM_MODE_PAGE_FLIP_ASYNC not supported with atomic\n");
->  			return -EINVAL;
->  		}
+> +		sun20i_pwm_writel(sun20i_chip, ctl, PWM_CTL(pwm->hwpwm));
+> +	}
 > +
-> +		async_flip = true;
->  	}
->  
->  	/* can't test and expect an event at the same time. */
-> @@ -1469,8 +1515,8 @@ int drm_mode_atomic_ioctl(struct drm_device *dev,
->  				goto out;
->  			}
->  
-> -			ret = drm_atomic_set_property(state, file_priv,
-> -						      obj, prop, prop_value);
-> +			ret = drm_atomic_set_property(state, file_priv, obj,
-> +						      prop, prop_value, async_flip);
->  			if (ret) {
->  				drm_mode_object_put(obj);
->  				goto out;
-> diff --git a/drivers/gpu/drm/drm_crtc_internal.h b/drivers/gpu/drm/drm_crtc_internal.h
-> index 501a10edd0e1..381130cebe81 100644
-> --- a/drivers/gpu/drm/drm_crtc_internal.h
-> +++ b/drivers/gpu/drm/drm_crtc_internal.h
-> @@ -251,7 +251,7 @@ int drm_atomic_set_property(struct drm_atomic_state *state,
->  			    struct drm_file *file_priv,
->  			    struct drm_mode_object *obj,
->  			    struct drm_property *prop,
-> -			    uint64_t prop_value);
-> +			    uint64_t prop_value, bool async_flip);
->  int drm_atomic_get_property(struct drm_mode_object *obj,
->  			    struct drm_property *property, uint64_t *val);
->  
-> diff --git a/drivers/gpu/drm/drm_mode_object.c b/drivers/gpu/drm/drm_mode_object.c
-> index ac0d2ce3f870..0e8355063eee 100644
-> --- a/drivers/gpu/drm/drm_mode_object.c
-> +++ b/drivers/gpu/drm/drm_mode_object.c
-> @@ -538,7 +538,7 @@ static int set_property_atomic(struct drm_mode_object *obj,
->  						       obj_to_connector(obj),
->  						       prop_value);
->  	} else {
-> -		ret = drm_atomic_set_property(state, file_priv, obj, prop, prop_value);
-> +		ret = drm_atomic_set_property(state, file_priv, obj, prop, prop_value, false);
->  		if (ret)
->  			goto out;
->  		ret = drm_atomic_commit(state);
-> -- 
-> 2.41.0
-> 
+> +	if (state->enabled != pwm->state.enabled && state->enabled) {
+> +		clk_gate &= ~PWM_CLK_GATE_BYPASS(pwm->hwpwm);
+> +		clk_gate |= PWM_CLK_GATE_GATING(pwm->hwpwm);
+> +		pwm_en |= PWM_ENABLE_EN(pwm->hwpwm);
+> +		sun20i_pwm_writel(sun20i_chip, pwm_en, PWM_ENABLE);
+> +		sun20i_pwm_writel(sun20i_chip, clk_gate, PWM_CLK_GATE);
+> +	}
+> +
+> +unlock_mutex:
+> +	mutex_unlock(&sun20i_chip->mutex);
+> +
+> +	return ret;
+> +}
+> +
+> +static const struct pwm_ops sun20i_pwm_ops = {
+> +	.get_state = sun20i_pwm_get_state,
+> +	.apply = sun20i_pwm_apply,
+> +	.owner = THIS_MODULE,
+> +};
+> +
+> +static const struct of_device_id sun20i_pwm_dt_ids[] = {
+> +	{ .compatible = "allwinner,sun20i-d1-pwm" },
+> +	{ },
+> +};
+> +MODULE_DEVICE_TABLE(of, sun20i_pwm_dt_ids);
+> +
+> +static int sun20i_pwm_probe(struct platform_device *pdev)
+> +{
+> +	struct sun20i_pwm_chip *sun20i_chip;
+> +	int ret;
+> +
+> +	sun20i_chip = devm_kzalloc(&pdev->dev, sizeof(*sun20i_chip), GFP_KERNEL);
+> +	if (!sun20i_chip)
+> +		return -ENOMEM;
+> +
+> +	sun20i_chip->base = devm_platform_ioremap_resource(pdev, 0);
+> +	if (IS_ERR(sun20i_chip->base))
+> +		return PTR_ERR(sun20i_chip->base);
+> +
+> +	sun20i_chip->clk_bus = devm_clk_get_enabled(&pdev->dev, "bus");
+> +	if (IS_ERR(sun20i_chip->clk_bus))
+> +		return dev_err_probe(&pdev->dev, PTR_ERR(sun20i_chip->clk_bus),
+> +				     "failed to get bus clock\n");
+> +
+> +	sun20i_chip->clk_hosc = devm_clk_get_enabled(&pdev->dev, "hosc");
+> +	if (IS_ERR(sun20i_chip->clk_hosc))
+> +		return dev_err_probe(&pdev->dev, PTR_ERR(sun20i_chip->clk_hosc),
+> +				     "failed to get hosc clock\n");
+> +
+> +	sun20i_chip->rst = devm_reset_control_get_exclusive(&pdev->dev, NULL);
+> +	if (IS_ERR(sun20i_chip->rst))
+> +		return dev_err_probe(&pdev->dev, PTR_ERR(sun20i_chip->rst),
+> +				     "failed to get bus reset\n");
+> +
+> +	ret = of_property_read_u32(pdev->dev.of_node, "allwinner,pwm-channels",
+> +				   &sun20i_chip->chip.npwm);
+> +	if (ret)
+> +		sun20i_chip->chip.npwm = 8;
+> +
+> +	/* Deassert reset */
+> +	ret = reset_control_deassert(sun20i_chip->rst);
+> +	if (ret)
+> +		return dev_err_probe(&pdev->dev, ret, "failed to deassert reset\n");
+> +
+> +	sun20i_chip->chip.dev = &pdev->dev;
+> +	sun20i_chip->chip.ops = &sun20i_pwm_ops;
+> +
+> +	mutex_init(&sun20i_chip->mutex);
+> +
+> +	ret = pwmchip_add(&sun20i_chip->chip);
+> +	if (ret < 0) {
+> +		reset_control_assert(sun20i_chip->rst);
+> +		return dev_err_probe(&pdev->dev, ret, "failed to add PWM chip\n");
+> +	}
+> +
+> +	platform_set_drvdata(pdev, sun20i_chip);
+> +
+> +	return 0;
+> +}
+> +
+> +static void sun20i_pwm_remove(struct platform_device *pdev)
+> +{
+> +	struct sun20i_pwm_chip *sun20i_chip = platform_get_drvdata(pdev);
+> +
+> +	pwmchip_remove(&sun20i_chip->chip);
+> +
+> +	reset_control_assert(sun20i_chip->rst);
+> +}
+> +
+> +static struct platform_driver sun20i_pwm_driver = {
+> +	.driver = {
+> +		.name = "sun20i-pwm",
+> +		.of_match_table = sun20i_pwm_dt_ids,
+> +	},
+> +	.probe = sun20i_pwm_probe,
+> +	.remove_new = sun20i_pwm_remove,
+> +};
+> +module_platform_driver(sun20i_pwm_driver);
+> +
+> +MODULE_AUTHOR("Aleksandr Shubin <privatesub2@gmail.com>");
+> +MODULE_DESCRIPTION("Allwinner sun20i PWM driver");
+> +MODULE_LICENSE("GPL");
 
