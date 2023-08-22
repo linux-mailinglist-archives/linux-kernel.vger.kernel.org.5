@@ -2,69 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99ED1784818
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 18:59:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48ADD78481A
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 19:00:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237954AbjHVQ7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 12:59:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44074 "EHLO
+        id S237958AbjHVRAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 13:00:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229893AbjHVQ7E (ORCPT
+        with ESMTP id S229893AbjHVRAp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 12:59:04 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 225A1FB;
-        Tue, 22 Aug 2023 09:59:02 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id ca18e2360f4ac-7922ca5cdbfso55377139f.0;
-        Tue, 22 Aug 2023 09:59:02 -0700 (PDT)
+        Tue, 22 Aug 2023 13:00:45 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEBBB1B0
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 10:00:42 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-99df11828c6so1205188966b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 10:00:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692723541; x=1693328341;
+        d=google.com; s=20221208; t=1692723641; x=1693328441;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=N28LuQnV9GildzcT8LKkphpWOthpCuwzebagXmXjarY=;
-        b=DjHjLvwER9a8EUgsdxU3QPMVGvEkpl2obK0Y10/iLsjkRQ0AdxRs+Bm2HDjYWWDAiF
-         wDwYxDVpWbb0lkfDGOXdcjxv3cw4TMC04lO0jOFFeYoyd65nIIJ5Yw20KDdXzg4nYXRs
-         E4lX/S8GUQR+6rWczJ9zAkUUN7VktM+SK3I7XnISpvmM50h924QPSxl+M9tPnKG/L1oW
-         bgu7AyScSSetEKgGkiYyy1KYyGDWbZLozFPZ9mOn/ygOhbclYRxkPxP3DKK5f3IU8R07
-         /AdBeUaP/KyuNJlqXwWAV4wTd01ScacY4i/XtHLafd6eXNKcCWGTI95Ny5jKfrnwMFXo
-         d2pQ==
+        bh=JZUbfAzYGz3v36gjFaurJR1ubEKPGQnTkTa8Ar2a45A=;
+        b=4jRci1y6zV56tlbGQj++H4N/tMfMYeo2ZUkjZ14qcMQ7vkC9P2hTD4IPaFHUlD3AAh
+         EvzpVCoSREUfiEYuVJKI0DzzAFJ/Pr/ms4uacWVN50slkdF20vA6qZby/UhzWdDYDERl
+         7+iYP+SgrPkRWdc4Y4v8gODontaJK2CNI9ng8TyirwsXb3SR/fz5tGCmDyl55RsqVQJQ
+         vrQQVswoIUM2v7N5nkRoAmLjXYjy0XM328untXhHzz9Ix4QWUnGl224gZ8HNdsMD1+xH
+         5ZoIIjyyudAf+BtEd+S0I3hJl4/7PR9abCc/PbWNGHghKg58EqJcQRw4rfFVISjmtVC6
+         Oz8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692723541; x=1693328341;
+        d=1e100.net; s=20221208; t=1692723641; x=1693328441;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=N28LuQnV9GildzcT8LKkphpWOthpCuwzebagXmXjarY=;
-        b=H8z3Vu2O3JE5s67klrqTTqd3ZMAcoN99hRcR4LBw/4Oc5YUDZRxqT67/j/AK1MC/zh
-         lUtWo4g1o4CGWH7gsbI5a+RiZZsFGBVzGMRUQ7zCl7/br26osJsVcs0ljo2+tbjde5Y2
-         WgDMKJe9Lfhk9sf83VCv+W2XAusuIwmIj2s2MLtx/38vAJkzQ+xnZ3zX06Zr4rh8XuJp
-         zu5ZdeYiDvXSRuDPNkzamwulzT7swgq64S03u8m6OHdSRfWIM3uRJwZllPt5wBJXZzmb
-         GdM99lNW2ygRM6tuPYFGDul6A9V66cj/qmryZtMBXkgGLDbr7sSH9SmXT2PNcHmWQc1d
-         PffQ==
-X-Gm-Message-State: AOJu0YyZzqpTcA77YkVnHeG4SybHZ8MIg2bw7XlZst6+K8V/EKbYaQ1M
-        noaZFlcGg9pk9HqmFJvjf/54OHc/JTesibSV+Gc=
-X-Google-Smtp-Source: AGHT+IHt26+UQXrWFQH+3S8jn1srFoxmOruOmztWrMHgGMGI6XKgZdP5HwziGldvSChthRr3P/HMv/uzSc4RKexOUPU=
-X-Received: by 2002:a05:6e02:1d97:b0:348:b086:2c4b with SMTP id
- h23-20020a056e021d9700b00348b0862c4bmr184020ila.9.1692723541341; Tue, 22 Aug
- 2023 09:59:01 -0700 (PDT)
+        bh=JZUbfAzYGz3v36gjFaurJR1ubEKPGQnTkTa8Ar2a45A=;
+        b=IyQyfDAYQH9DQ+ConsyMFkYQ1WLbw5JbExdgGICc+WLSgALFlTsK1BqqiSSXI2nUWp
+         67Vegtfw9sBXadfk/DVDC6vOUZDOXoiFzablTOXOWrkkaM9NIfA+vC/cV0xF0YToVtAT
+         ZanL+ghUoT1qJtiO8pDNCxTSBWTEPNwzKa/FQjlrfJtER0afB3v0wCXsS4h7cQfHCOjw
+         ZlNc8BbQ+VY/83zBaLSTvI1+5Mk5Zb2wj24HgGCfjvQIEV7rvmLoCIyPPyYr9jVfkvtv
+         o8uN0sKA1d9GB9HeKdfficpFZ7TxpdRA/ynhOlvBrCzcp1h4cG/JwQWhAmnh2KYFGSoZ
+         5ZBQ==
+X-Gm-Message-State: AOJu0Yycsr6FnVbWWo724v6TxWiCZ1Orm2xvgM/WDi30pdSaCVwVZuBy
+        c04MlUiUeBggVdh83Dh89gTpmkZrEYUIIyS1tfBCvA==
+X-Google-Smtp-Source: AGHT+IECpjSEhdUBwmCMsY3jOPY46f7tYrmZ9nJqd197KnPIyXeHnd1w5NuXfiXFAhAlTBsskMGCDfBvFk5nAZcvARY=
+X-Received: by 2002:a17:906:2249:b0:9a1:cbe5:758a with SMTP id
+ 9-20020a170906224900b009a1cbe5758amr472967ejr.18.1692723641082; Tue, 22 Aug
+ 2023 10:00:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230821160534.3414911-1-andre.przywara@arm.com>
- <20230821160534.3414911-3-andre.przywara@arm.com> <CAKEwX=NEZjeFFQsC3gWLgkh=PMHDh44Uzo3aZFH07y1xL=VvWg@mail.gmail.com>
-In-Reply-To: <CAKEwX=NEZjeFFQsC3gWLgkh=PMHDh44Uzo3aZFH07y1xL=VvWg@mail.gmail.com>
-From:   Nhat Pham <nphamcs@gmail.com>
-Date:   Tue, 22 Aug 2023 09:58:50 -0700
-Message-ID: <CAKEwX=OJLHBSk5F2TvFLTD1f-PMdKy50=GPHApj7eohtT8St5g@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] selftests: cachestat: catch failing fsync test on tmpfs
-To:     Andre Przywara <andre.przywara@arm.com>
-Cc:     Shuah Khan <shuah@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
+References: <20230821160849.531668-1-david@redhat.com> <20230821160849.531668-2-david@redhat.com>
+In-Reply-To: <20230821160849.531668-2-david@redhat.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Tue, 22 Aug 2023 10:00:04 -0700
+Message-ID: <CAJD7tkZNjwq6sWE5hCh6rYpSdD0quGFevXWq9eO_t3tHQBTNmA@mail.gmail.com>
+Subject: Re: [PATCH mm-unstable v1 1/4] mm/swap: stop using page->private on
+ tail pages for THP_SWAP
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-arm-kernel@lists.infradead.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Peter Xu <peterx@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Hugh Dickins <hughd@google.com>,
+        Seth Jennings <sjenning@redhat.com>,
+        Dan Streetman <ddstreet@ieee.org>,
+        Vitaly Wool <vitaly.wool@konsulko.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,256 +79,243 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 8:55=E2=80=AFAM Nhat Pham <nphamcs@gmail.com> wrote=
-:
+On Mon, Aug 21, 2023 at 9:09=E2=80=AFAM David Hildenbrand <david@redhat.com=
+> wrote:
 >
-> On Mon, Aug 21, 2023 at 9:05=E2=80=AFAM Andre Przywara <andre.przywara@ar=
-m.com> wrote:
-> >
-> > The cachestat kselftest runs a test on a normal file, which is created
-> > temporarily in the current directory. Among the tests it runs there is =
-a
-> > call to fsync(), which is expected to clean all dirty pages used by the
-> > file.
-> > However the tmpfs filesystem implements fsync() as noop_fsync(), so the
-> > call will not even attempt to clean anything when this test file happen=
-s
-> > to live on a tmpfs instance. This happens in an initramfs, or when the
-> > current directory is in /dev/shm or sometimes /tmp.
-> >
-> > To avoid this test failing wrongly, use statfs() to check which filesys=
-tem
-> > the test file lives on. If that is "tmpfs", we skip the fsync() test.
-> >
-> > Since the fsync test is only one part of the "normal file" test, we now
-> > execute this twice, skipping the fsync part on the first call.
-> > This way only the second test, including the fsync part, would be skipp=
-ed.
-> >
-> > Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-> > ---
-> >  .../selftests/cachestat/test_cachestat.c      | 62 ++++++++++++++-----
-> >  1 file changed, 47 insertions(+), 15 deletions(-)
-> >
-> > diff --git a/tools/testing/selftests/cachestat/test_cachestat.c b/tools=
-/testing/selftests/cachestat/test_cachestat.c
-> > index 8f8f46c24846d..4804c7dc7b312 100644
-> > --- a/tools/testing/selftests/cachestat/test_cachestat.c
-> > +++ b/tools/testing/selftests/cachestat/test_cachestat.c
-> > @@ -4,10 +4,12 @@
-> >  #include <stdio.h>
-> >  #include <stdbool.h>
-> >  #include <linux/kernel.h>
-> > +#include <linux/magic.h>
-> >  #include <linux/mman.h>
-> >  #include <sys/mman.h>
-> >  #include <sys/shm.h>
-> >  #include <sys/syscall.h>
-> > +#include <sys/vfs.h>
-> >  #include <unistd.h>
-> >  #include <string.h>
-> >  #include <fcntl.h>
-> > @@ -15,7 +17,7 @@
-> >
-> >  #include "../kselftest.h"
-> >
-> > -#define NR_TESTS       8
-> > +#define NR_TESTS       9
-> >
-> >  static const char * const dev_files[] =3D {
-> >         "/dev/zero", "/dev/null", "/dev/urandom",
-> > @@ -91,6 +93,20 @@ bool write_exactly(int fd, size_t filesize)
-> >         return ret;
-> >  }
-> >
-> > +/*
-> > + * fsync() is implemented via noop_fsync() on tmpfs. This makes the fs=
-ync()
-> > + * test fail below, so we need to check for test file living on a tmpf=
-s.
-> > + */
-> > +static bool is_on_tmpfs(int fd)
-> > +{
-> > +       struct statfs statfs_buf;
-> > +
-> > +       if (fstatfs(fd, &statfs_buf))
-> > +               return false;
-> > +
-> > +       return statfs_buf.f_type =3D=3D TMPFS_MAGIC;
-> > +}
-> > +
-> >  /*
-> >   * Open/create the file at filename, (optionally) write random data to=
- it
-> >   * (exactly num_pages), then test the cachestat syscall on this file.
-> > @@ -98,13 +114,13 @@ bool write_exactly(int fd, size_t filesize)
-> >   * If test_fsync =3D=3D true, fsync the file, then check the number of=
- dirty
-> >   * pages.
-> >   */
-> > -bool test_cachestat(const char *filename, bool write_random, bool crea=
-te,
-> > -               bool test_fsync, unsigned long num_pages, int open_flag=
-s,
-> > -               mode_t open_mode)
-> > +static int test_cachestat(const char *filename, bool write_random, boo=
-l create,
-> > +                         bool test_fsync, unsigned long num_pages,
-> > +                         int open_flags, mode_t open_mode)
-> >  {
-> Hmm would the semantic change a bit here?
+> Let's stop using page->private on tail pages, making it possible to
+> just unconditionally reuse that field in the tail pages of large folios.
 >
-> Previously, this function returned true if passed.
-> But it seems like KSFT_PASS is defined as 0:
-> https://github.com/torvalds/linux/blob/9e38be7/tools/testing/selftests/ks=
-elftest.h#L74
+> The remaining usage of the private field for THP_SWAP is in the THP
+> splitting code (mm/huge_memory.c), that we'll handle separately later.
 >
-> So maybe we have to change from:
+> Update the THP_SWAP documentation and sanity checks in mm_types.h and
+> __split_huge_page_tail().
 >
-> if (test_<test-name>())
+> Signed-off-by: David Hildenbrand <david@redhat.com>
+> ---
+>  arch/arm64/mm/mteswap.c  |  5 +++--
+>  include/linux/mm_types.h | 12 +-----------
+>  include/linux/swap.h     |  9 +++++++++
+>  mm/huge_memory.c         | 15 ++++++---------
+>  mm/memory.c              |  2 +-
+>  mm/rmap.c                |  2 +-
+>  mm/swap_state.c          |  5 +++--
+>  mm/swapfile.c            |  4 ++--
+>  8 files changed, 26 insertions(+), 28 deletions(-)
 >
+> diff --git a/arch/arm64/mm/mteswap.c b/arch/arm64/mm/mteswap.c
+> index cd508ba80ab1..a31833e3ddc5 100644
+> --- a/arch/arm64/mm/mteswap.c
+> +++ b/arch/arm64/mm/mteswap.c
+> @@ -33,8 +33,9 @@ int mte_save_tags(struct page *page)
 >
-> to:
+>         mte_save_page_tags(page_address(page), tag_storage);
 >
-> if (!test_<test-name>)())
+> -       /* page_private contains the swap entry.val set in do_swap_page *=
+/
+> -       ret =3D xa_store(&mte_pages, page_private(page), tag_storage, GFP=
+_KERNEL);
+> +       /* lookup the swap entry.val from the page */
+> +       ret =3D xa_store(&mte_pages, page_swap_entry(page).val, tag_stora=
+ge,
+> +                      GFP_KERNEL);
+>         if (WARN(xa_is_err(ret), "Failed to store MTE tags")) {
+>                 mte_free_tag_storage(tag_storage);
+>                 return xa_err(ret);
+> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+> index b9b6c88875b9..61361f1750c3 100644
+> --- a/include/linux/mm_types.h
+> +++ b/include/linux/mm_types.h
+> @@ -333,11 +333,8 @@ struct folio {
+>                         atomic_t _pincount;
+>  #ifdef CONFIG_64BIT
+>                         unsigned int _folio_nr_pages;
+> -                       /* 4 byte gap here */
+> -       /* private: the union with struct page is transitional */
+> -                       /* Fix THP_SWAP to not use tail->private */
+> -                       unsigned long _private_1;
+>  #endif
+> +       /* private: the union with struct page is transitional */
+>                 };
+>                 struct page __page_1;
+>         };
+> @@ -358,9 +355,6 @@ struct folio {
+>         /* public: */
+>                         struct list_head _deferred_list;
+>         /* private: the union with struct page is transitional */
+> -                       unsigned long _avail_2a;
+> -                       /* Fix THP_SWAP to not use tail->private */
+> -                       unsigned long _private_2a;
+>                 };
+>                 struct page __page_2;
+>         };
+> @@ -385,9 +379,6 @@ FOLIO_MATCH(memcg_data, memcg_data);
+>                         offsetof(struct page, pg) + sizeof(struct page))
+>  FOLIO_MATCH(flags, _flags_1);
+>  FOLIO_MATCH(compound_head, _head_1);
+> -#ifdef CONFIG_64BIT
+> -FOLIO_MATCH(private, _private_1);
+> -#endif
+>  #undef FOLIO_MATCH
+>  #define FOLIO_MATCH(pg, fl)                                            \
+>         static_assert(offsetof(struct folio, fl) =3D=3D                  =
+   \
+> @@ -396,7 +387,6 @@ FOLIO_MATCH(flags, _flags_2);
+>  FOLIO_MATCH(compound_head, _head_2);
+>  FOLIO_MATCH(flags, _flags_2a);
+>  FOLIO_MATCH(compound_head, _head_2a);
+> -FOLIO_MATCH(private, _private_2a);
+>  #undef FOLIO_MATCH
 >
-> or, explicitly as:
+>  /**
+> diff --git a/include/linux/swap.h b/include/linux/swap.h
+> index bb5adc604144..84fe0e94f5cd 100644
+> --- a/include/linux/swap.h
+> +++ b/include/linux/swap.h
+> @@ -339,6 +339,15 @@ static inline swp_entry_t folio_swap_entry(struct fo=
+lio *folio)
+>         return entry;
+>  }
 >
-> if (test_<test-name>() =3D=3D KSFT_PASS)
-Ah never mind, ignore this. I didn't see your change
-down in the main function.
+> +static inline swp_entry_t page_swap_entry(struct page *page)
+> +{
+> +       struct folio *folio =3D page_folio(page);
+> +       swp_entry_t entry =3D folio_swap_entry(folio);
+> +
+> +       entry.val +=3D page - &folio->page;
 
-Everything LGTM!
-Acked-by: Nhat Pham <nphamcs@gmail.com>
+Would it be better to use folio_page_idx() here?
+
+> +       return entry;
+> +}
+> +
+>  static inline void folio_set_swap_entry(struct folio *folio, swp_entry_t=
+ entry)
+>  {
+>         folio->private =3D (void *)entry.val;
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index cc2f65f8cc62..c04702ae71d2 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -2446,18 +2446,15 @@ static void __split_huge_page_tail(struct page *h=
+ead, int tail,
+>         page_tail->index =3D head->index + tail;
+>
+>         /*
+> -        * page->private should not be set in tail pages with the excepti=
+on
+> -        * of swap cache pages that store the swp_entry_t in tail pages.
+> -        * Fix up and warn once if private is unexpectedly set.
+> -        *
+> -        * What of 32-bit systems, on which folio->_pincount overlays
+> -        * head[1].private?  No problem: THP_SWAP is not enabled on 32-bi=
+t, and
+> -        * pincount must be 0 for folio_ref_freeze() to have succeeded.
+> +        * page->private should not be set in tail pages. Fix up and warn=
+ once
+> +        * if private is unexpectedly set.
+>          */
+> -       if (!folio_test_swapcache(page_folio(head))) {
+> -               VM_WARN_ON_ONCE_PAGE(page_tail->private !=3D 0, page_tail=
+);
+> +       if (unlikely(page_tail->private)) {
+> +               VM_WARN_ON_ONCE_PAGE(true, page_tail);
+>                 page_tail->private =3D 0;
+>         }
+> +       if (PageSwapCache(head))
+> +               set_page_private(page_tail, (unsigned long)head->private =
++ tail);
+>
+>         /* Page flags must be visible before we make the page non-compoun=
+d. */
+>         smp_wmb();
+> diff --git a/mm/memory.c b/mm/memory.c
+> index d003076b218d..ff13242c1589 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -3882,7 +3882,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>                  * changed.
+>                  */
+>                 if (unlikely(!folio_test_swapcache(folio) ||
+> -                            page_private(page) !=3D entry.val))
+> +                            page_swap_entry(page).val !=3D entry.val))
+>                         goto out_page;
+>
+>                 /*
+> diff --git a/mm/rmap.c b/mm/rmap.c
+> index 1f04debdc87a..ec7f8e6c9e48 100644
+> --- a/mm/rmap.c
+> +++ b/mm/rmap.c
+> @@ -1647,7 +1647,7 @@ static bool try_to_unmap_one(struct folio *folio, s=
+truct vm_area_struct *vma,
+>                          */
+>                         dec_mm_counter(mm, mm_counter(&folio->page));
+>                 } else if (folio_test_anon(folio)) {
+> -                       swp_entry_t entry =3D { .val =3D page_private(sub=
+page) };
+> +                       swp_entry_t entry =3D page_swap_entry(subpage);
+>                         pte_t swp_pte;
+>                         /*
+>                          * Store the swap location in the pte.
+> diff --git a/mm/swap_state.c b/mm/swap_state.c
+> index 01f15139b7d9..2f2417810052 100644
+> --- a/mm/swap_state.c
+> +++ b/mm/swap_state.c
+> @@ -100,6 +100,7 @@ int add_to_swap_cache(struct folio *folio, swp_entry_=
+t entry,
+>
+>         folio_ref_add(folio, nr);
+>         folio_set_swapcache(folio);
+> +       folio_set_swap_entry(folio, entry);
+>
+>         do {
+>                 xas_lock_irq(&xas);
+> @@ -113,7 +114,6 @@ int add_to_swap_cache(struct folio *folio, swp_entry_=
+t entry,
+>                                 if (shadowp)
+>                                         *shadowp =3D old;
+>                         }
+> -                       set_page_private(folio_page(folio, i), entry.val =
++ i);
+>                         xas_store(&xas, folio);
+>                         xas_next(&xas);
+>                 }
+> @@ -154,9 +154,10 @@ void __delete_from_swap_cache(struct folio *folio,
+>         for (i =3D 0; i < nr; i++) {
+>                 void *entry =3D xas_store(&xas, shadow);
+>                 VM_BUG_ON_PAGE(entry !=3D folio, entry);
+> -               set_page_private(folio_page(folio, i), 0);
+>                 xas_next(&xas);
+>         }
+> +       entry.val =3D 0;
+> +       folio_set_swap_entry(folio, entry);
+>         folio_clear_swapcache(folio);
+>         address_space->nrpages -=3D nr;
+>         __node_stat_mod_folio(folio, NR_FILE_PAGES, -nr);
+> diff --git a/mm/swapfile.c b/mm/swapfile.c
+> index d46933adf789..bd9d904671b9 100644
+> --- a/mm/swapfile.c
+> +++ b/mm/swapfile.c
+> @@ -3369,7 +3369,7 @@ struct swap_info_struct *swp_swap_info(swp_entry_t =
+entry)
+>
+>  struct swap_info_struct *page_swap_info(struct page *page)
+>  {
+> -       swp_entry_t entry =3D { .val =3D page_private(page) };
+> +       swp_entry_t entry =3D page_swap_entry(page);
+>         return swp_swap_info(entry);
+>  }
+>
+> @@ -3384,7 +3384,7 @@ EXPORT_SYMBOL_GPL(swapcache_mapping);
+>
+>  pgoff_t __page_file_index(struct page *page)
+>  {
+> -       swp_entry_t swap =3D { .val =3D page_private(page) };
+> +       swp_entry_t swap =3D page_swap_entry(page);
+>         return swp_offset(swap);
+>  }
+>  EXPORT_SYMBOL_GPL(__page_file_index);
+> --
+> 2.41.0
 >
 >
-> >         size_t PS =3D sysconf(_SC_PAGESIZE);
-> >         int filesize =3D num_pages * PS;
-> > -       bool ret =3D true;
-> > +       int ret =3D KSFT_PASS;
-> >         long syscall_ret;
-> >         struct cachestat cs;
-> >         struct cachestat_range cs_range =3D { 0, filesize };
-> > @@ -113,7 +129,7 @@ bool test_cachestat(const char *filename, bool writ=
-e_random, bool create,
-> >
-> >         if (fd =3D=3D -1) {
-> >                 ksft_print_msg("Unable to create/open file.\n");
-> > -               ret =3D false;
-> > +               ret =3D KSFT_FAIL;
-> >                 goto out;
-> >         } else {
-> >                 ksft_print_msg("Create/open %s\n", filename);
-> > @@ -122,7 +138,7 @@ bool test_cachestat(const char *filename, bool writ=
-e_random, bool create,
-> >         if (write_random) {
-> >                 if (!write_exactly(fd, filesize)) {
-> >                         ksft_print_msg("Unable to access urandom.\n");
-> > -                       ret =3D false;
-> > +                       ret =3D KSFT_FAIL;
-> >                         goto out1;
-> >                 }
-> >         }
-> > @@ -133,7 +149,7 @@ bool test_cachestat(const char *filename, bool writ=
-e_random, bool create,
-> >
-> >         if (syscall_ret) {
-> >                 ksft_print_msg("Cachestat returned non-zero.\n");
-> > -               ret =3D false;
-> > +               ret =3D KSFT_FAIL;
-> >                 goto out1;
-> >
-> >         } else {
-> > @@ -143,15 +159,17 @@ bool test_cachestat(const char *filename, bool wr=
-ite_random, bool create,
-> >                         if (cs.nr_cache + cs.nr_evicted !=3D num_pages)=
- {
-> >                                 ksft_print_msg(
-> >                                         "Total number of cached and evi=
-cted pages is off.\n");
-> > -                               ret =3D false;
-> > +                               ret =3D KSFT_FAIL;
-> >                         }
-> >                 }
-> >         }
-> >
-> >         if (test_fsync) {
-> > -               if (fsync(fd)) {
-> > +               if (is_on_tmpfs(fd)) {
-> > +                       ret =3D KSFT_SKIP;
-> > +               } else if (fsync(fd)) {
-> >                         ksft_print_msg("fsync fails.\n");
-> > -                       ret =3D false;
-> > +                       ret =3D KSFT_FAIL;
-> >                 } else {
-> >                         syscall_ret =3D syscall(__NR_cachestat, fd, &cs=
-_range, &cs, 0);
-> >
-> > @@ -162,13 +180,13 @@ bool test_cachestat(const char *filename, bool wr=
-ite_random, bool create,
-> >                                 print_cachestat(&cs);
-> >
-> >                                 if (cs.nr_dirty) {
-> > -                                       ret =3D false;
-> > +                                       ret =3D KSFT_FAIL;
-> >                                         ksft_print_msg(
-> >                                                 "Number of dirty should=
- be zero after fsync.\n");
-> >                                 }
-> >                         } else {
-> >                                 ksft_print_msg("Cachestat (after fsync)=
- returned non-zero.\n");
-> > -                               ret =3D false;
-> > +                               ret =3D KSFT_FAIL;
-> >                                 goto out1;
-> >                         }
-> >                 }
-> > @@ -259,7 +277,7 @@ int main(void)
-> >                 const char *dev_filename =3D dev_files[i];
-> >
-> >                 if (test_cachestat(dev_filename, false, false, false,
-> > -                       4, O_RDONLY, 0400))
-> > +                       4, O_RDONLY, 0400) =3D=3D KSFT_PASS)
-> >                         ksft_test_result_pass("cachestat works with %s\=
-n", dev_filename);
-> >                 else {
-> >                         ksft_test_result_fail("cachestat fails with %s\=
-n", dev_filename);
-> > @@ -268,13 +286,27 @@ int main(void)
-> >         }
-> >
-> >         if (test_cachestat("tmpfilecachestat", true, true,
-> > -               true, 4, O_CREAT | O_RDWR, 0400 | 0600))
-> > +               false, 4, O_CREAT | O_RDWR, 0600) =3D=3D KSFT_PASS)
-> >                 ksft_test_result_pass("cachestat works with a normal fi=
-le\n");
-> >         else {
-> >                 ksft_test_result_fail("cachestat fails with normal file=
-\n");
-> >                 ret =3D 1;
-> >         }
-> >
-> > +       switch (test_cachestat("tmpfilecachestat", true, true,
-> > +               true, 4, O_CREAT | O_RDWR, 0600)) {
-> > +       case KSFT_FAIL:
-> > +               ksft_test_result_fail("cachestat fsync fails with norma=
-l file\n");
-> > +               ret =3D KSFT_FAIL;
-> > +               break;
-> > +       case KSFT_PASS:
-> > +               ksft_test_result_pass("cachestat fsync works with a nor=
-mal file\n");
-> > +               break;
-> > +       case KSFT_SKIP:
-> > +               ksft_test_result_skip("tmpfilecachestat is on tmpfs\n")=
-;
-> > +               break;
-> > +       }
-> > +
-> >         if (test_cachestat_shmem())
-> >                 ksft_test_result_pass("cachestat works with a shmem fil=
-e\n");
-> >         else {
-> > --
-> > 2.25.1
-> >
