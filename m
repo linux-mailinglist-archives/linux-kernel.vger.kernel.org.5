@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D148F783DFC
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 12:31:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F8AB783DFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 12:31:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234374AbjHVKbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 06:31:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33868 "EHLO
+        id S234743AbjHVKbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 06:31:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234290AbjHVKbL (ORCPT
+        with ESMTP id S234320AbjHVKbM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 06:31:11 -0400
+        Tue, 22 Aug 2023 06:31:12 -0400
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06D52CED;
-        Tue, 22 Aug 2023 03:30:34 -0700 (PDT)
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37MA9Ejc014158;
-        Tue, 22 Aug 2023 10:30:10 GMT
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D59DCE5;
+        Tue, 22 Aug 2023 03:30:40 -0700 (PDT)
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37MA9bdG007562;
+        Tue, 22 Aug 2023 10:30:17 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=qcppdkim1;
- bh=4UM9Y352igvtobdLrpEaaqCVDwff36bHTSykSbCKUxc=;
- b=DY1axGLhNRVpYoZQJV0v99MOATqfvTQ28s1ikJoQnpCWRy4/VCEVluXaD++dSvVmMf0Q
- 0ujJjSPaCEXpu/mYDgTJW6tTSqRzwFy9Qo4jwzbdxvD6upK71hHHebsSlXt5g5Zb/a8b
- KIL7mL7vnWfs1alVPj1kroD1Zi/3zuzamLXEKwKyHP1FF8E2AbgLMCGit6IKAptdZF3I
- WPE9LaoJ5eCqd0OsqdBj9jar+TrZDgn2XdaIFIWRCNbbDdrSQDn9PFgA07ukEil5fmox
- y8cGny5VQaaCO9TiMdEdnBamM81OWUrDaQEt69APRRUyg49jllCQS/AB4eRccDz4LL// jA== 
+ bh=iu0SUzK0fLcsbZ+Si3bWb4NyUGGrimuOQK8o1JnMlmU=;
+ b=N/sOL8cxtifje0x2jtYzIXuG0yIuae6qY4Vem0G1v3TxTkitxpg7h48bzyt74xTPfI+O
+ YgMbO/fF0U6pXLWAFINFDMvTM17c/N7yapV7KCa6n8RlnrypWZtPZD0JAPIeZ+af8I03
+ 0IJCfkqjzplFFeN9i19oMfRs+GUYqDFwxtZZJD1eNPYdYIl2Clf2UfY4c0saYEV9w17H
+ VFgKVPNJGVwy/B937HBnCiXMJHeLHLSBTh40jtab9jR8AZJgkmvcio3bF1XKrT4uKku/
+ vaX9F9rl5MkNwRFkUDPTh8XCOikaWjgKqgzHU0Uad26eGJNRXicybdg/MxNUp1E4paVH gA== 
 Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3smgeq12s0-1
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3smasmsr22-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Aug 2023 10:30:10 +0000
+        Tue, 22 Aug 2023 10:30:17 +0000
 Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37MAU9sl011171
+        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37MAUFEp011480
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Aug 2023 10:30:09 GMT
+        Tue, 22 Aug 2023 10:30:15 GMT
 Received: from varda-linux.qualcomm.com (10.80.80.8) by
  nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Tue, 22 Aug 2023 03:30:03 -0700
+ 15.2.1118.36; Tue, 22 Aug 2023 03:30:09 -0700
 From:   Varadarajan Narayanan <quic_varada@quicinc.com>
 To:     <agross@kernel.org>, <andersson@kernel.org>,
         <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
@@ -51,9 +51,9 @@ To:     <agross@kernel.org>, <andersson@kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-phy@lists.infradead.org>
 CC:     Varadarajan Narayanan <quic_varada@quicinc.com>
-Subject: [PATCH v9 3/4] arm64: dts: qcom: ipq5332: Enable USB
-Date:   Tue, 22 Aug 2023 15:59:14 +0530
-Message-ID: <27d6303008be83131048ddf2ecef91cec9519ee2.1692699472.git.quic_varada@quicinc.com>
+Subject: [PATCH v9 4/4] arm64: defconfig: Enable M31 USB phy driver
+Date:   Tue, 22 Aug 2023 15:59:15 +0530
+Message-ID: <84162d7d21d6bf45c4cf670000dae3f03b05ad93.1692699472.git.quic_varada@quicinc.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <cover.1692699472.git.quic_varada@quicinc.com>
 References: <cover.1692699472.git.quic_varada@quicinc.com>
@@ -64,15 +64,15 @@ X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
  nasanex01a.na.qualcomm.com (10.52.223.231)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: yJup65XMegpc9ai2MOcFMtaEq0HbUduj
-X-Proofpoint-ORIG-GUID: yJup65XMegpc9ai2MOcFMtaEq0HbUduj
+X-Proofpoint-ORIG-GUID: 22G__srgbXiGgRiOmO0n4JF8LLdy6ukO
+X-Proofpoint-GUID: 22G__srgbXiGgRiOmO0n4JF8LLdy6ukO
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
  definitions=2023-08-22_10,2023-08-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- lowpriorityscore=0 malwarescore=0 phishscore=0 spamscore=0 suspectscore=0
- bulkscore=0 impostorscore=0 mlxscore=0 priorityscore=1501 mlxlogscore=632
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=588
+ bulkscore=0 clxscore=1015 suspectscore=0 mlxscore=0 malwarescore=0
+ priorityscore=1501 lowpriorityscore=0 phishscore=0 impostorscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2306200000 definitions=main-2308220079
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -84,59 +84,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable USB2 in host mode.
+Enable M31 USB phy driver present in IPQ5332.
 
 Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
 ---
-v9:
-	regulator_fixed_5p0: s0500 -> regulator_fixed_5p0: regulator_s0500
-	"make ARCH=arm64 -j 16 CHECK_DTBS=y DT_SCHEMA_FILES=qcom,ipq5332-usb-hsphy.yaml dtbs_check" passed
-v6:
-	Add vdd-supply and corresponding regulator
-v1:
-	Enable usb-phy node
+v2:
+	Add full stop to commit log.
 ---
- arch/arm64/boot/dts/qcom/ipq5332-rdp468.dts | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+ arch/arm64/configs/defconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/ipq5332-rdp468.dts b/arch/arm64/boot/dts/qcom/ipq5332-rdp468.dts
-index f96b0c8..53696f4 100644
---- a/arch/arm64/boot/dts/qcom/ipq5332-rdp468.dts
-+++ b/arch/arm64/boot/dts/qcom/ipq5332-rdp468.dts
-@@ -12,6 +12,15 @@
- / {
- 	model = "Qualcomm Technologies, Inc. IPQ5332 MI01.6";
- 	compatible = "qcom,ipq5332-ap-mi01.6", "qcom,ipq5332";
-+
-+	regulator_fixed_5p0: regulator_s0500 {
-+		compatible = "regulator-fixed";
-+		regulator-min-microvolt = <500000>;
-+		regulator-max-microvolt = <500000>;
-+		regulator-boot-on;
-+		regulator-always-on;
-+		regulator-name = "fixed_5p0";
-+	};
- };
- 
- &blsp1_spi0 {
-@@ -79,3 +88,17 @@
- 		bias-pull-up;
- 	};
- };
-+
-+&usbphy0 {
-+	vdd-supply = <&regulator_fixed_5p0>;
-+
-+	status = "okay";
-+};
-+
-+&usb {
-+	status = "okay";
-+};
-+
-+&usb2_0_dwc {
-+	dr_mode = "host";
-+};
+diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+index 5315789..c1e2372 100644
+--- a/arch/arm64/configs/defconfig
++++ b/arch/arm64/configs/defconfig
+@@ -1422,6 +1422,7 @@ CONFIG_PHY_QCOM_USB_SNPS_FEMTO_V2=m
+ CONFIG_PHY_QCOM_USB_HS_28NM=m
+ CONFIG_PHY_QCOM_USB_SS=m
+ CONFIG_PHY_QCOM_SGMII_ETH=m
++CONFIG_PHY_QCOM_M31_USB=m
+ CONFIG_PHY_R8A779F0_ETHERNET_SERDES=y
+ CONFIG_PHY_RCAR_GEN3_PCIE=y
+ CONFIG_PHY_RCAR_GEN3_USB2=y
 -- 
 2.7.4
 
