@@ -2,65 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D910C7844BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 16:51:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDA887844C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 16:55:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236978AbjHVOv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 10:51:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33894 "EHLO
+        id S236965AbjHVOzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 10:55:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235762AbjHVOv4 (ORCPT
+        with ESMTP id S233629AbjHVOzI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 10:51:56 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E6F7CDA
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 07:51:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692715905; x=1724251905;
-  h=from:to:subject:in-reply-to:references:date:message-id:
-   mime-version;
-  bh=OX7Pj2Q2LK76Q8Stxn/xyJU6l2MEuoC2QmDhxxoblig=;
-  b=gADo1f8BYtKtbuIFfC1EtCHgNwH/JTRP37J7Odzbph3hEC9M+zIcgfU4
-   yfUZQx5okD5gGeQqMxvugee6g1J4WTeBf4T1mqpUut5Rg+uznZ18Xdg1n
-   +twlREEkCN1gqKw7qUBq6D6v0i1/bwgZAugMnjYsd91gsAKKbxh6eMtbU
-   Uhp8KbzWK3jQu46Rc0WSr3Mng+j8gLOK7N5ifgtvdkqF9MZ+2y79MystO
-   /PEMHfsLZAi2BcI26EN8E+51TZMFF9W6FDMm7BCnW6EyjByv25awZQ0P1
-   PieYNZdyDWxNHxSZcbGrZDg8Vieop6Hy9qlSBQgJGQCrnVVkTmcnG8hPm
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="353468278"
-X-IronPort-AV: E=Sophos;i="6.01,193,1684825200"; 
-   d="scan'208";a="353468278"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2023 07:51:44 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="739330839"
-X-IronPort-AV: E=Sophos;i="6.01,193,1684825200"; 
-   d="scan'208";a="739330839"
-Received: from kainaats-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.42.230])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2023 07:51:42 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Maxime Ripard <mripard@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Emma Anholt <emma@anholt.net>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH RFC 00/13] drm/connector: Create HDMI Connector
- infrastructure
-In-Reply-To: <sh3f7nuks7cww43ajz2iwrgzkxbqpk7752iu4pj4vtwaiv76x4@itnf6f2mnbgn>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20230814-kms-hdmi-connector-state-v1-0-048054df3654@kernel.org>
- <ZOTDKHxn2bOg+Xmg@phenom.ffwll.local>
- <sh3f7nuks7cww43ajz2iwrgzkxbqpk7752iu4pj4vtwaiv76x4@itnf6f2mnbgn>
-Date:   Tue, 22 Aug 2023 17:51:39 +0300
-Message-ID: <87pm3f5dvo.fsf@intel.com>
+        Tue, 22 Aug 2023 10:55:08 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B8F2126;
+        Tue, 22 Aug 2023 07:55:04 -0700 (PDT)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37MAttru009628;
+        Tue, 22 Aug 2023 14:54:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=6eMQNrgqHLU00wjLkJ1Kb7ZQimnUmm3q3EnMMewUbqE=;
+ b=Q2tTnXajY14lxamm5/0NcWa5C0iGBhyU/5H144PbQkfh68qmse/0C3W0Vh8rnWMQ+nkS
+ f5yUMqmlUkhhOMmqFWRM19G/7CII88OPQEWznTQvZR1PQhNwM6jCbvugDbMZwP+rY305
+ o2BMBVyGI1BjfgESxlokoigVgT+o/q6AfCSmajU5VnBFSsZjfgJfICC5FXAYG4w0Omsf
+ 5Ptz87fGbGlc5MWgpnzquuvTdYxejAQD/qXd5O8DIdXN5//ch5S5TsJREnqs7g0T/AoI
+ QjsVFEDaI/nUvXDUTc7UO+UONohPmYxud4tMQ7CYY1OACno8eKXQm8MuEqO2EUVZ4fom Zg== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3smreu0ycr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Aug 2023 14:54:56 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37MEsqqw004750
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Aug 2023 14:54:52 GMT
+Received: from [10.216.6.154] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 22 Aug
+ 2023 07:54:47 -0700
+Message-ID: <b73106c5-74e4-479d-8733-b99454768c15@quicinc.com>
+Date:   Tue, 22 Aug 2023 20:24:43 +0530
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] dt-bindings: crypto: qcom,prng: document SM8550
+Content-Language: en-US
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20230822-topic-sm8550-rng-v1-0-8e10055165d1@linaro.org>
+ <20230822-topic-sm8550-rng-v1-1-8e10055165d1@linaro.org>
+ <8479869b-9984-41e3-9812-c7f5727cfd2c@linaro.org>
+From:   Om Prakash Singh <quic_omprsing@quicinc.com>
+In-Reply-To: <8479869b-9984-41e3-9812-c7f5727cfd2c@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 5hcqZvyc_Ev1y0_cCYlRb8yVHZ5-cDUg
+X-Proofpoint-ORIG-GUID: 5hcqZvyc_Ev1y0_cCYlRb8yVHZ5-cDUg
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-22_13,2023-08-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ clxscore=1011 bulkscore=0 mlxscore=0 priorityscore=1501 mlxlogscore=972
+ impostorscore=0 malwarescore=0 spamscore=0 suspectscore=0 phishscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308220114
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,101 +89,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 22 Aug 2023, Maxime Ripard <mripard@kernel.org> wrote:
-> Hi,
->
-> On Tue, Aug 22, 2023 at 04:16:08PM +0200, Daniel Vetter wrote:
->> On Mon, Aug 14, 2023 at 03:56:12PM +0200, Maxime Ripard wrote:
->> > Here's a series that creates a subclass of drm_connector specifically
->> > targeted at HDMI controllers.
->> > 
->> > The idea behind this series came from a recent discussion on IRC during
->> > which we discussed infoframes generation of i915 vs everything else. 
->> > 
->> > Infoframes generation code still requires some decent boilerplate, with
->> > each driver doing some variation of it.
->> > 
->> > In parallel, while working on vc4, we ended up converting a lot of i915
->> > logic (mostly around format / bpc selection, and scrambler setup) to
->> > apply on top of a driver that relies only on helpers.
->> > 
->> > While currently sitting in the vc4 driver, none of that logic actually
->> > relies on any driver or hardware-specific behaviour.
->> > 
->> > The only missing piec to make it shareable are a bunch of extra
->> > variables stored in a state (current bpc, format, RGB range selection,
->> > etc.).
->> > 
->> > Thus, I decided to create some generic subclass of drm_connector to
->> > address HDMI connectors, with a bunch of helpers that will take care of
->> > all the "HDMI Spec" related code. Scrambler setup is missing at the
->> > moment but can easily be plugged in.
->> > 
->> > Last week, Hans Verkuil also expressed interest in retrieving the
->> > infoframes generated from userspace to create an infoframe-decode tool.
->> > This series thus leverages the infoframe generation code to expose it
->> > through debugfs.
->> > 
->> > This entire series is only build-tested at the moment. Let me know what
->> > you think,
+PRNG Block on most of newer target from Qualcomm have some configuration 
+where clock is configured by security firmware.
+
+Adding separate compatible string for each platform is overhead.
+
+We need to introduce common compatible string that can be used for all 
+platforms with same configuration.
+
+I would suggest to use "qcom,rng-ee" for newer platform, dropping "p" 
+also signifies it is not a Pseudo Random Number Generator.
+
+On 8/22/2023 7:58 PM, Konrad Dybcio wrote:
+> On 22.08.2023 16:11, Neil Armstrong wrote:
+>> Document SM8550 compatible for Pseudo Random Generator,
+>> like SM8450 doesn't require clocks setup done by the secure
+>> firmware.
 >>
->> I think the idea overall makes sense, we we probably need it to roll out
->> actual hdmi support to all the hdmi drivers we have. But there's the
->> eternal issue of "C sucks at multiple inheritance".
->> 
->> Which means if you have a driver that subclasses drm_connector already for
->> it's driver needs it defacto cannot, or only under some serious pains, use
->> this.
->
-> That's what vc4 is doing, and it went fine I think? it was mostly a
-> matter of subclassing drm_hdmi_connector instead of drm_connector, and
-> adjusting the various pointers and accessors here and there.
->
-> It does create a fairly big diffstat, but nothing too painful.
-
-The main pain point is not the diffstat per se, but that *all* casts to
-subclass need to check what the connector type is before doing
-so. You'll also get fun NULL conditions that you need to check and
-handle if the type isn't what you'd like it to be.
-
-Currently i915 can just assume all drm_connectors it encounters are
-intel_connectors that it created, always.
-
-Basically this has blocked the writeback connector stuff for a few years
-now in i915, because writeback forces a different subclassing, and what
-should be a small change in i915 turns into huge churn.
-
-BR,
-Jani.
-
-
->
->> Which is kinda why in practice we tend to not subclass, but stuff
->> subclass fields into a name sub-structure. So essentially struct
->> drm_connector.hdmi and struct drm_connector_state.hdmi instead of
->> drm_hdmi_connector and drm_hdmi_connector_state. The helper functions to
->> set it all up would all still be the same roughly. It's less typesafe but
->> I think the gain in practical use (like you could make i915 use the
->> helpers probably, which with this approach here is practically
->> impossible).
->
-> Ack.
->
->> The only other nit is that we probably want to put some of the hdmi
->> properties into struct drm_mode_config because there's no reason to have
->> per-connector valid values.
->
-> What property would you want to move?
->
->> Also, it might be really good if you can find a co-conspirator who also
->> wants to use this in their driver, then with some i915 extracting we'd
->> have three, which should ensure the helper api is solid.
->
-> I can convert sunxi (old) HDMI driver if needed. I'm not sure how
-> helpful it would be since it doesn't support bpc > 8, but it could be a
-> nice showcase still for "simple" HDMI controllers.
->
-> Maxime
-
--- 
-Jani Nikula, Intel Open Source Graphics Center
+>> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+>> ---
+> + CC Om
+> 
+> As mentioned in [1], perhaps we should rethink the compatible as
+> it may be a TRNG and not a PRNG?
+> 
+> Konrad
+> 
+> [1] https://lore.kernel.org/linux-arm-msm/d93902ee-c305-42cb-9d0d-1f0971ab3a70@quicinc.com/
