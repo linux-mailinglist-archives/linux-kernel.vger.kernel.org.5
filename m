@@ -2,150 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C39B7837DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 04:21:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 988F17837DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 04:22:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232040AbjHVCVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 22:21:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35368 "EHLO
+        id S232090AbjHVCWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 22:22:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231311AbjHVCVr (ORCPT
+        with ESMTP id S230526AbjHVCWf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 22:21:47 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BF4EFD;
-        Mon, 21 Aug 2023 19:21:45 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RVClT4hZqz4f3k6k;
-        Tue, 22 Aug 2023 10:21:41 +0800 (CST)
-Received: from [10.174.178.129] (unknown [10.174.178.129])
-        by APP4 (Coremail) with SMTP id gCh0CgDndqm0G+Rk4JQlBQ--.39660S2;
-        Tue, 22 Aug 2023 10:21:42 +0800 (CST)
-Subject: Re: [PATCH 12/13] ext4: remove unnecessary check for avoiding
- multiple update_backups in ext4_flex_group_add
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230629120044.1261968-1-shikemeng@huaweicloud.com>
- <20230629120044.1261968-13-shikemeng@huaweicloud.com>
- <20230816034730.GT2247938@mit.edu>
- <2a0c45d9-29f0-10a3-fc40-d48e101c8d91@huaweicloud.com>
- <20230817141112.GZ2247938@mit.edu>
- <cfad4b27-3174-1124-1516-a2ddb3843639@huaweicloud.com>
- <20230818050036.GG3464136@mit.edu>
- <8f8dc5cf-cfd9-eb90-9f09-ee2dc89de537@huaweicloud.com>
- <20230818160038.GA3515079@mit.edu>
-From:   Kemeng Shi <shikemeng@huaweicloud.com>
-Message-ID: <7dafe2b7-d78e-ec99-18f9-2830d614d01b@huaweicloud.com>
-Date:   Tue, 22 Aug 2023 10:21:40 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.0
+        Mon, 21 Aug 2023 22:22:35 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43F6BDB
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 19:22:33 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CBC54646F3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 02:22:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF53CC433C7;
+        Tue, 22 Aug 2023 02:22:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692670952;
+        bh=XPEg5hUhI7aGUhMtVHHgnDv/L9i0G9LNRyzRNkNkFdQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hoWYIIbE+vK0DxVQ4dcG9LGDVUpnwr9HGaXmBDi/yhO9VB71fFJrYQeGbymbpZ4JA
+         /Kn75DtzlOoIF//ehC5WIxJ2O2AQqv/m4T2MPBLxZX2hgLo595E7JwvNcHDnYreIIE
+         C3EahmqtWp2fzqmAfYEfsFU+qrx9ndALzI/4mwTnd+82aOierotcTrPJx5mOhSH5nP
+         9GwKEfPE5eMJX7UNM0X07sR7Cjz2J2Nn/cP1n3MjfqPZvJLfeRZ9V3T5p4mqMDu3zl
+         8IyyOpj3lRduE3GoEFZqHR9p8e0U9+r+OuSqMeimNvNQuN0ht+seuT6JxqAaYJXJz6
+         0qgqkh2WA58iA==
+Date:   Mon, 21 Aug 2023 19:22:29 -0700
+From:   Josh Poimboeuf <jpoimboe@kernel.org>
+To:     Andrew Cooper <andrew.cooper3@citrix.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Babu Moger <babu.moger@amd.com>, David.Kaplan@amd.com,
+        Nikolay Borisov <nik.borisov@suse.com>,
+        gregkh@linuxfoundation.org, Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH RFC 4/4] x86/srso: Use CALL-based return thunks to reduce
+ overhead
+Message-ID: <20230822022229.xlctyccmgdxiy6ic@treble>
+References: <20230821112723.3995187-1-andrew.cooper3@citrix.com>
+ <20230821112723.3995187-5-andrew.cooper3@citrix.com>
+ <20230821151636.onk2e6tlhmjg5yz5@treble>
+ <810fa94b-9417-0076-1232-d263ef882027@citrix.com>
 MIME-Version: 1.0
-In-Reply-To: <20230818160038.GA3515079@mit.edu>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: gCh0CgDndqm0G+Rk4JQlBQ--.39660S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxJF1DGF47KryUtw48ZFW3GFg_yoW5KryUp3
-        98Aa90krn8Gr4fZ3W8J340va4Fkws7AFs8Jry3Xw15G39xKr4Iqr9rKr1YyFWqqFs7uw1j
-        vF10yry3Cw4q9aDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
-        6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUzsqWUUUUU
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
-        MAY_BE_FORGED,NICE_REPLY_A,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <810fa94b-9417-0076-1232-d263ef882027@citrix.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Aug 22, 2023 at 12:01:29AM +0100, Andrew Cooper wrote:
+> On 21/08/2023 4:16 pm, Josh Poimboeuf wrote:
+> > On Mon, Aug 21, 2023 at 12:27:23PM +0100, Andrew Cooper wrote:
+> >> The SRSO safety depends on having a CALL to an {ADD,LEA}/RET sequence which
+> >> has been made safe in the BTB.  Specifically, there needs to be no pertubance
+> >> to the RAS between a correctly predicted CALL and the subsequent RET.
+> >>
+> >> Use the new infrastructure to CALL to a return thunk.  Remove
+> >> srso_fam1?_safe_ret() symbols and point srso_fam1?_return_thunk().
+> >>
+> >> This removes one taken branch from every function return, which will reduce
+> >> the overhead of the mitigation.  It also removes one of three moving pieces
+> >> from the SRSO mess.
+> > So, the address of whatever instruction comes after the 'CALL
+> > srso_*_return_thunk' is added to the RSB/RAS, and that might be
+> > speculated to when the thunk returns.  Is that a concern?
+> 
+> That is very intentional, and key to the safety.
+> 
+> Replacing a RET with a CALL/{ADD,LEA}/RET sequence is a form of
+> retpoline thunk.  The only difference with regular retpolines is that
+> the intended target is already on the stack, and not in a GPR.
+> 
+> 
+> If the CALL mispredicts, it doesn't matter.  When decode catches up
+> (allegedly either instantaneously on Fam19h, or a few cycles late on
+> Fam17h), the top of the RAS is corrected will point at the INT3
+> following the CALL instruction.
 
+That's the thing though, at least with my kernel/compiler combo there's
+no INT3 after the JMP __x86_return_thunk, and there's no room to patch
+one in after the CALL, as the JMP and CALL are both 5 bytes.
 
-on 8/19/2023 12:00 AM, Theodore Ts'o wrote:
-> On Fri, Aug 18, 2023 at 04:42:31PM +0800, Kemeng Shi wrote:
->>> s_group_desc[] is initialized in ext4_group_desc_init() in
->>> fs/ext4/super.c, and it is used in fs/ext4/balloc.c, and of course, it
->>> is defined in fs/ext4.h.  
->> I plan to add comment in fs/ext4.h as following:
->> struct ext4_sb_info {
->> 	...
->> 	struct buffer_head * __rcu *s_group_desc; /* Primary gdb blocks of online groups */
->> But I'm not sure it's proper now as you menthioned s_group_desc[] is to
->> keep the buffer_heads for the block group descriptor blocks in memory
->> and it contains primary gdb block is a coincidence that we only modify
->> primary block in kernel.
-> 
-> In general, the terminology that ext4 developers have used is "block
-> group descriptors" and "backup block group descriptors".  The kernel
-> never *uses* the backup block group users; and with the sparse_super2
-> feature, the "backup superblocks" and "backup block group descriptors"
-> are optional.
-> 
-Sure.
-> They are used by e2fsck if we need to recover a trashed superblock and
-> block group descriptors, which is why code that is resizing the file
-> system, or updating the label or the UUID need to update the backup
-> superblocks and/or backup block group descriptors so that we can
-> better recover disaster.
-OK, kernel updates backup blocks and userspace tool recovers from backup
-in case that blocks used by kernel is corrupted.
-> 
-> So I'd just suggest changing the comment above to "array of bh's for
-> the block group descriptors".
-> 
-Sure, I will do this in next version.
-
-Besides, what about the check this patch tries to remove. Would you
-prefer to keep it or remove it with better git description. Both
-ways are acceptable to me. Thanks.
-
-> Cheers,
-> 
-> 							- Ted
-> 
->> Besides, I plan to go through the resize code again in fulture and
->> add some comments to make it easy for anyone starting read this
->> or make it easy to maintain. Please let me if you disklike it.
-> 
-> P.S.
-> 
-> BTW, a useful test program to add is one that checks to make sure that
-> the "static" parts of the superblock and block group descriptors
-> (i.e., the parts that don't get changed under normal operation while
-> the file system is mounted when the kernel *isn't* trying to do a
-> resize or change the label, UUID, or in the future, the new ioctl's to
-> update the parts of the superblock that can get modified by tune2fs),
-> and to make sure that all of the backup superblock and block group
-> descriptors have gotten updated>
-> Some of the bugs that you found may have resulted in some of the
-> backup bg descriptors not getting updataed, which we wouldn't
-> necessarily notice unless we had a test program that explicitly
-> checked for them.
-> 
-> And truth to tell, the only backup superblock and block group
-> descriptor that actually gets used to recover the file system is the
-> first one, since that's the one e2fsck will fall back to
-> automatically.  An expert might try to use one of the other backup
-> block groups as a desperate measure, and there might be some automated
-> programs that might be smart enough to use the backup block groups
-> when trying to recover the location of the partition table when the
-> file system and partition table is very badly damaged --- so that's
-> one of the reasons why with sparse_super2, the number of backup block
-> group descriptors can be limited to (for example) one located in the
-> first block group, and one located in the very last block group.
-> 
-> Thanks for let me know and I do have no knowldge about how backup is used
-in usersapce.
-
+-- 
+Josh
