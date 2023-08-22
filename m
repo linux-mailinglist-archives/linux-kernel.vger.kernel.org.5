@@ -2,124 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD61E7843FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 16:25:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83268784402
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 16:25:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236616AbjHVOZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 10:25:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34638 "EHLO
+        id S236618AbjHVOZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 10:25:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236611AbjHVOZB (ORCPT
+        with ESMTP id S236406AbjHVOZ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 10:25:01 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 116F2CC1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 07:25:00 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-50091b91a83so411638e87.3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 07:24:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692714298; x=1693319098;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1177Hy2Xl35VY6ObgrAdoUnRe7+5oCh27iDgdAIO6Cc=;
-        b=uNhOOiG5t4V3L7cVDuW9WKlWJSVb9HF8hclns+0CfdLTspb98jkm5xaA/kE+N6MVoj
-         twBSrXfr094JpQRJbGdHnbuW0RJehqmTtx0GTJzyX5SqoCdS5Ysj2tKLaH+Ken/mlzaw
-         hX+kNg3JOHzTopEoChb1/qFRQ3hFPFXNpiwoPAPPJhPQJmKThOHfr45Y9L04jk/4vn3j
-         hsMyBGWWJDwQAIuTlmcFFJmRexUcqBBJpGCfeOXpl5/HCtxSUPA7d8O70Co5eQdI/L4b
-         suEH2OXnKLJLpLf/MvVKcrt/J4TH92VJOWpLd2xHc7oLYcMNRJXsAkw2IHwjuuTTtWZa
-         JCXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692714298; x=1693319098;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1177Hy2Xl35VY6ObgrAdoUnRe7+5oCh27iDgdAIO6Cc=;
-        b=G1yXm5tolIO2AhIzLMGmulKIaLZ1ucQQc1/Kbdixn3ZT0hKhHiH7I+GCYl0k5MV6wz
-         /Rtut4jNMnuj3G7QoNevcgVN/DW5K2w7DztwQoJYP3xquwLDV/IrvbMlK630Qr6qUQsM
-         y4FaBQcj6+Rux5+lmpL5xkhFn1zPeucuMcYW2fa+9ruUkGIEVdikgrMkRyC4zJobivHa
-         DZyYnN6VZAHrv2ozaH6x+zf94U9iabONfNjKv0MiXF/qiDUL5z7z/Vel/ZN0DGDeOhHL
-         /wj9g9rFV+/ecs7/rwTxBJlMcuQTYtow2p4upRJgILxwKK2tnbeha3DztO8VceJ60w8g
-         DQyg==
-X-Gm-Message-State: AOJu0YzjxSM4lcZaLVuuhokxzjbABVcvfKKDauU941AI8lOxHB+lalpA
-        OzJCt1k/kSSbHBFiyPLXKAFO1g==
-X-Google-Smtp-Source: AGHT+IF5jmsSA+OZ44jWPxlBoucKEptYNc+V/Afk5XSk4UuYXDmuIae/D6KqhQB/oMWb7IoCwSPu5g==
-X-Received: by 2002:a05:6512:1088:b0:4fb:89b3:3373 with SMTP id j8-20020a056512108800b004fb89b33373mr8183436lfg.43.1692714298320;
-        Tue, 22 Aug 2023 07:24:58 -0700 (PDT)
-Received: from [192.168.1.101] (abyk189.neoplus.adsl.tpnet.pl. [83.9.30.189])
-        by smtp.gmail.com with ESMTPSA id b11-20020ac247eb000000b004fddb0eb961sm2241255lfp.18.2023.08.22.07.24.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Aug 2023 07:24:58 -0700 (PDT)
-Message-ID: <b4d7d4cf-5bee-492c-819d-79af01e73cec@linaro.org>
-Date:   Tue, 22 Aug 2023 16:24:57 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: defconfig: Enable GCC and interconnect for
- QDU1000/QRU1000
-Content-Language: en-US
-To:     Komal Bajaj <quic_kbajaj@quicinc.com>, catalin.marinas@arm.com,
-        will@kernel.org, quic_bjorande@quicinc.com, arnd@arndb.de,
-        krzysztof.kozlowski@linaro.org, geert+renesas@glider.be,
-        neil.armstrong@linaro.org, nfraprado@collabora.com,
-        rafal@milecki.pl
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20230822132333.17580-1-quic_kbajaj@quicinc.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20230822132333.17580-1-quic_kbajaj@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Tue, 22 Aug 2023 10:25:26 -0400
+Received: from mx4.sionneau.net (mx4.sionneau.net [51.15.250.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AD0FCDD;
+        Tue, 22 Aug 2023 07:25:20 -0700 (PDT)
+Received: from junon.lin.mbt.kalray.eu (<unknown> [217.181.231.53])
+        by mx4.sionneau.net (OpenSMTPD) with ESMTPSA id 5f2f9678 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Tue, 22 Aug 2023 14:25:19 +0000 (UTC)
+From:   Yann Sionneau <ysionneau@kalray.eu>
+To:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Julian Vetter <jvetter@kalrayinc.com>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yann Sionneau <ysionneau@kalray.eu>
+Subject: [PATCH v5] i2c: designware: Currently if the SoC needs pinctrl to switch the SCL and SDA from the I2C function to GPI
+Date:   Tue, 22 Aug 2023 16:25:13 +0200
+Message-Id: <20230822142513.7518-1-ysionneau@kalray.eu>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_FAIL,
+        SPF_HELO_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.08.2023 15:23, Komal Bajaj wrote:
-> Add the QDU1000/QRU1000 GCC and interconnect drivers as built-in.
-> These are necessary for the Qualcomm QDU1000/QRU1000 platform to boot
-> to shell.
-> 
-> Signed-off-by: Komal Bajaj <quic_kbajaj@quicinc.com>
-> ---
-Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+scl-gpio = <>;
+sda-gpio = <>;
 
-Konrad
+Are not enough for some SoCs to have a working recovery.
+Some need:
+
+scl-gpio = <>;
+sda-gpio = <>;
+pinctrl-names = "default", "recovery";
+pinctrl-0 = <&i2c_pins_hw>;
+pinctrl-1 = <&i2c_pins_gpio>;
+
+The driver was not filling rinfo->pinctrl with the device node
+pinctrl data which is needed by generic recovery code.
+
+Signed-off-by: Yann Sionneau <ysionneau@kalray.eu>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+V4 -> V5:
+* put back `else if`
+* reword the commit msg Subject to add the `i2c: designware: ` tag
+* Add the missing `Reviewed-by: Andy Shevchenko` tag
+
+V3 -> V4:
+* Replace `else if` by simply `if`.
+
+V2 -> V3:
+* put back 'if (!rinfo->pinctrl)' test since devm_pinctrl_get()
+can return NULL if CONFIG_PINCTRL is not set.
+* print an error msg when devm_pinctrl_get() returns an error that
+is not -EPROBE_DEFER.
+* print a dbg msg if devm_pinctrl_get() return NULL. 
+
+V1 -> V2:
+* remove the unnecessary 'if (!rinfo->pinctrl)' test
+* test if return is -EPROBE_DEFER, in that case, return it.
+* Reword the commit message according to review
+
+ drivers/i2c/busses/i2c-designware-master.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/drivers/i2c/busses/i2c-designware-master.c b/drivers/i2c/busses/i2c-designware-master.c
+index b720fcc5c10a..30b2de829a32 100644
+--- a/drivers/i2c/busses/i2c-designware-master.c
++++ b/drivers/i2c/busses/i2c-designware-master.c
+@@ -17,6 +17,7 @@
+ #include <linux/interrupt.h>
+ #include <linux/io.h>
+ #include <linux/module.h>
++#include <linux/pinctrl/consumer.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/regmap.h>
+ #include <linux/reset.h>
+@@ -855,6 +856,17 @@ static int i2c_dw_init_recovery_info(struct dw_i2c_dev *dev)
+ 		return PTR_ERR(gpio);
+ 	rinfo->sda_gpiod = gpio;
+ 
++	rinfo->pinctrl = devm_pinctrl_get(dev->dev);
++	if (IS_ERR(rinfo->pinctrl)) {
++		if (PTR_ERR(rinfo->pinctrl) == -EPROBE_DEFER)
++			return PTR_ERR(rinfo->pinctrl);
++
++		rinfo->pinctrl = NULL;
++		dev_err(dev->dev, "getting pinctrl info failed: bus recovery might not work\n");
++	} else if (!rinfo->pinctrl) {
++		dev_dbg(dev->dev, "pinctrl is disabled, bus recovery might not work\n");
++	}
++
+ 	rinfo->recover_bus = i2c_generic_scl_recovery;
+ 	rinfo->prepare_recovery = i2c_dw_prepare_recovery;
+ 	rinfo->unprepare_recovery = i2c_dw_unprepare_recovery;
+-- 
+2.17.1
+
