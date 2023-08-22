@@ -2,96 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBE1C784001
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 13:49:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C2AA784010
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 13:50:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235410AbjHVLtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 07:49:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50984 "EHLO
+        id S235455AbjHVLus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 07:50:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235380AbjHVLtL (ORCPT
+        with ESMTP id S235438AbjHVLup (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 07:49:11 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CE9093
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 04:48:52 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9a1681fa868so513162166b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 04:48:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692704923; x=1693309723;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=oH11Oc+qbxmWTzYqIGrVP17FnC0Zqpu68k1rvfbbDX0=;
-        b=P4Qf1myvTmUWlrB6GossTUcUgcbmdwvSKgQz+8PFMPd+AXQDqxt18/VpcxkKXkMHe+
-         1OSrBCNuUKxSzIh9WXDWeaD5tXNmcbaRk0ID4AiMJYwNOPC9ztzNQ4TeAvhD0lbpCERe
-         V5eIzmMuhp8SrDC9kScNsToK16LLNFtc0ss/2yXH/PKiE60jPrrm8OcOoKPCjESuU8g2
-         dMj9DQenXX6r9NkRsSXTFjvkqiDaksGcslAFoE2msJ3atai1dinKn+aDSHnDaOoA3Vmb
-         mCGLo8dozgQMZfgRUyNy9j4vJIalBdlmPWUoxYQrxwxBbLO4cMW254X2d8Z6+lSbkV3b
-         56Xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692704923; x=1693309723;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=oH11Oc+qbxmWTzYqIGrVP17FnC0Zqpu68k1rvfbbDX0=;
-        b=ao7jsQui1VKhLeQlYB/kgq7eXxhj7/h7aI65tcRkn/gR5x3n23va9NeZRh26uybOsA
-         Q9aHK8gsnKT1Ju15DXauVXtDrVkiHQby6bB7uUphvUx9xjH2xN+8QT1hUg6qtLxVYF/T
-         +KPy3mq58dMvIzYlErzyi2naWPAIk3D6eKLdi1Zaonx3AknYl5YhdLSAV3AZz9vIFQbq
-         usJnb29nwY+fVpvMRwQnUsbZutKMnj5nrbcdjEhhnERTstSO1PK0mjDKvHaGP5yKs7zA
-         OA89TWQzOhCm4W2VUdwgKr5Zed5Xksgv75jc8traSxUYwriYx0dDvKReT7wV7PR+1TH4
-         2jhA==
-X-Gm-Message-State: AOJu0YyGIiLshIaA0q1oJ4ai7/RRKwQsj4RT2RZrsCSMlw8kUeW3Qkef
-        KS3wO8s7irDugXqZPEpunCfxdg==
-X-Google-Smtp-Source: AGHT+IE7A1CYr6kVDOW4fVuqD06IgAC6NbsrvQnOKHnd0u7YxGHAAHU+Uj53ZLTs4MMK2cnh00OO7w==
-X-Received: by 2002:a17:907:2c6a:b0:991:d05c:f065 with SMTP id ib10-20020a1709072c6a00b00991d05cf065mr7417198ejc.52.1692704923543;
-        Tue, 22 Aug 2023 04:48:43 -0700 (PDT)
-Received: from [192.168.0.22] ([77.252.47.198])
-        by smtp.gmail.com with ESMTPSA id f20-20020a170906561400b0099bd1a78ef5sm8026861ejq.74.2023.08.22.04.48.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Aug 2023 04:48:43 -0700 (PDT)
-Message-ID: <8ff579bc-423c-3edf-dc78-28370b2a0f19@linaro.org>
-Date:   Tue, 22 Aug 2023 13:48:42 +0200
+        Tue, 22 Aug 2023 07:50:45 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E388E54;
+        Tue, 22 Aug 2023 04:50:17 -0700 (PDT)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37MBmJxE018539;
+        Tue, 22 Aug 2023 11:49:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=GX9Dx4X238Po93JWCAFM59M9qdZqbmiNK78YWDcEq9E=;
+ b=V43kB1SMRw6GlCjfjKE8tSaAsRXkCBLIpd6LkEpDabSkgU7jXkpRYTsOf2ebc40+iDd9
+ a86ZqqD7aMgYLVvdDFoYpaBEAZq2NGJxH9phQs70HiWEm4M3Q2FiDmJcjkDzvA5iUILc
+ o5wqdZhDQEDTqvLrJrLZuoEuY3yEfp/VpuqxpxHyPvjkb/hmKQ+sVLjI/ZTv1mg8MdHf
+ ikozCdjbpYevi/Ty5X7SSASZ3HuS/jILsEzfMDGB4U+WENaKLFgJiXgzfT1pf71yYGyL
+ U+Sk0+Jc7CqtdFofbz0lu7ny+ROW1donk/TCaPNVW8bM+azPBY7UjjllJcS1p0yXVfU4 mw== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3smdhwhfsy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Aug 2023 11:49:17 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37MBnG2a000974
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Aug 2023 11:49:16 GMT
+Received: from hu-kbajaj-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Tue, 22 Aug 2023 04:49:13 -0700
+From:   Komal Bajaj <quic_kbajaj@quicinc.com>
+To:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Komal Bajaj <quic_kbajaj@quicinc.com>
+Subject: [PATCH] arm64: dts: qcom: qru1000-idp: add SDHCI for emmc
+Date:   Tue, 22 Aug 2023 17:18:50 +0530
+Message-ID: <20230822114850.3335-1-quic_kbajaj@quicinc.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v2 1/2] dt-bindings: rtc: Add Epson RX8111
-Content-Language: en-US
-To:     Waqar Hameed <waqar.hameed@axis.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     kernel@axis.com, linux-rtc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1692699931.git.waqar.hameed@axis.com>
- <903c1e05804535f212fa128425326b7554c0794a.1692699931.git.waqar.hameed@axis.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <903c1e05804535f212fa128425326b7554c0794a.1692699931.git.waqar.hameed@axis.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: m9XpiVZyM0kbG7qeIdc8YLFbuORaSi6C
+X-Proofpoint-GUID: m9XpiVZyM0kbG7qeIdc8YLFbuORaSi6C
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-22_10,2023-08-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 phishscore=0
+ impostorscore=0 adultscore=0 lowpriorityscore=0 malwarescore=0
+ mlxlogscore=683 mlxscore=0 priorityscore=1501 suspectscore=0 bulkscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308220089
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/08/2023 12:25, Waqar Hameed wrote:
-> Epson RX8111 is an RTC with timestamp functionality. Add devicetree
-> bindings requiring the compatible string and I2C slave address (reg)
-> through `trivial-rtc.yaml`.
-> 
-> Signed-off-by: Waqar Hameed <waqar.hameed@axis.com>
-> ---
+Add sdhci node for emmc in qru1000-idp.
 
+Signed-off-by: Komal Bajaj <quic_kbajaj@quicinc.com>
+---
+ arch/arm64/boot/dts/qcom/qru1000-idp.dts | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+diff --git a/arch/arm64/boot/dts/qcom/qru1000-idp.dts b/arch/arm64/boot/dts/qcom/qru1000-idp.dts
+index 2a862c83309e..672e1946eba2 100644
+--- a/arch/arm64/boot/dts/qcom/qru1000-idp.dts
++++ b/arch/arm64/boot/dts/qcom/qru1000-idp.dts
+@@ -460,6 +460,29 @@ tenx_sp_mem: tenx-sp-buffer@800000000 {
+ 	};
+ };
 
-Best regards,
-Krzysztof
++&sdhc {
++	pinctrl-0 = <&sdc_on_state>;
++	pinctrl-1 = <&sdc_off_state>;
++	pinctrl-names = "default", "sleep";
++
++	cap-mmc-hw-reset;
++	mmc-ddr-1_8v;
++	mmc-hs200-1_8v;
++	mmc-hs400-1_8v;
++	mmc-hs400-enhanced-strobe;
++
++	non-removable;
++	no-sd;
++	no-sdio;
++
++	supports-cqe;
++
++	vmmc-supply = <&vreg_l10a_2p95>;
++	vqmmc-supply = <&vreg_l7a_1p8>;
++
++	status = "okay";
++};
++
+ &tlmm {
+ 	gpio-reserved-ranges = <28 2>;
+ };
+--
+2.41.0
 
