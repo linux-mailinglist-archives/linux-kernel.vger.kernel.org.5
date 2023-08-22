@@ -2,182 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9654C784669
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 17:58:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17945784672
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 18:00:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237462AbjHVP6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 11:58:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49476 "EHLO
+        id S237469AbjHVQAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 12:00:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237454AbjHVP6C (ORCPT
+        with ESMTP id S236352AbjHVQAq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 11:58:02 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56ADA12C
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 08:58:00 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2bbad32bc79so78556021fa.0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 08:58:00 -0700 (PDT)
+        Tue, 22 Aug 2023 12:00:46 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88CC2BE
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 09:00:44 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-9a19bf6ab66so260486666b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 09:00:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692719878; x=1693324678;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ziQuC645DrIZLGT5VV7OX3wRBfSiQDkNJDxc2Uc2oXw=;
-        b=Y7NgyweM5DH3Gm2s9TufjiIGig+WFCgkXWcJGvd7/by/T1HVwHC5f6cO0OMGFXmCwR
-         FjOCvQ8d5Fu3q0bk4OE1rm9i2OOGwiMnwEb49iuzc+ejIPAL37iR8Jz8c80HU/zQGwwX
-         YGmMGibXiwWYnmWC/Mend1Hyi+vyj70md1bGNIlpPnofaip2Wm7TugJ82uBzzkE3wMSZ
-         9Ce9FU7fpyH8bz2BHLnBZTQb+M+FJmYCoaBenL8y13tH5dWOBQcQRnlV2wu1mXhFe4pv
-         SOyMDono7ZPmCzGEsEGCSan2XzBKgioNpXHH7aDBT7ZowTUhJWjxIOdbDOhNdhMl7d24
-         8hEQ==
+        d=google.com; s=20221208; t=1692720043; x=1693324843;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/rWz75d47k1ZaMKSZ8edfmuuQmWRaz5rkymhn45IF0k=;
+        b=15DCdBwX9G07pujOr3Nbx+i2bQ13Rphta48yDKVMfOIAUrZfp2m22HFbnXuC7Oprxc
+         42lqBtGWYqaLduCFwdCo1FynweYmtDURInMRPCUhGUVgu5oG6stOtXegP48Q3A1ICaKY
+         mLXJqLzKp6NFvac+PoOcfeHDT0Ie8vy0eeyyqIA1UQwwnJr8+OV0+tZwBa6fFKNNajbx
+         /R3v6DMUGqUbo0C/VZjwBMI/FVX+Kt7H3Q/NXSv6GsmwHD3pN0N2pSB8V2M4uwhGCThg
+         5KSOGPPN5e+K+6w4K5ICQ5i34gRorsUI8RcNwjR34ZQoyFdkIT0jWtcp9wAs94exiQYO
+         Zklw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692719878; x=1693324678;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ziQuC645DrIZLGT5VV7OX3wRBfSiQDkNJDxc2Uc2oXw=;
-        b=eOTe+7XcfysnW7dgfgPb6trnW/UEK21QAmySHYZelQRChCtDajs39ujByoc5GolsEj
-         sRktEhOt9cwDKswb1XUTjDcbpSu3D3AmnkOQ3x3fdCXQFrCxN5SePM5E/Anjl/N2KnSN
-         8NPVhtQnWSGiRXrqWQL5CK3uo9ZYPC7rdkL4OILb+BKwWE4lsDXthkS9fHqgKe8FTXvf
-         XQP7EMEjQjBkPj1NQMOQconn0fbZP4G2oV6LpveRQVvVMsRf1NGZYlmGKxmbVDEYjjJ+
-         qH4kx44Xh6vAamAd7QjdbC8Oo3PDAVk8lBaLEXBb5LU/PQidbvUDl7wIzCpL/4C5r2EM
-         160Q==
-X-Gm-Message-State: AOJu0YwV3pLhu9i5UsfXxJ6mr0RSOJQ1nQC0xIqV5/wG5EXV67m2hooA
-        i2qwVvBScBvQoDvJDukHsPpDVA==
-X-Google-Smtp-Source: AGHT+IGTiH0yWLnVA01NmPlWC40z88n4Ts80NmctR6S8tLxvtl5DLS8LM8jvfx6OVVJQwZJAghSsSQ==
-X-Received: by 2002:a05:6512:2354:b0:4ff:a8c6:d1aa with SMTP id p20-20020a056512235400b004ffa8c6d1aamr8302630lfu.48.1692719878499;
-        Tue, 22 Aug 2023 08:57:58 -0700 (PDT)
-Received: from [192.168.0.22] ([77.252.47.198])
-        by smtp.gmail.com with ESMTPSA id q6-20020aa7d446000000b0052718577668sm7698214edr.11.2023.08.22.08.57.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Aug 2023 08:57:58 -0700 (PDT)
-Message-ID: <e146782f-a93c-e694-1b08-7c2dba597bcf@linaro.org>
-Date:   Tue, 22 Aug 2023 17:57:56 +0200
+        d=1e100.net; s=20221208; t=1692720043; x=1693324843;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/rWz75d47k1ZaMKSZ8edfmuuQmWRaz5rkymhn45IF0k=;
+        b=VOKcKsIwT14nbCwV7oJHQc+PNrKHfkislDpaZaEJPGPVrxSxTeYHTU1NwXxh3wzPc0
+         Nzxzjs6L/pYrDjpXrhftkpZgZAyLcn2nQ8TM8TjQnfsI+dUoUiWDd4jB7I4+qDOt6Dw/
+         Z3FLve/jhNFXSQ3B0dMHnbqQccrhqcaEJTAByKnBbB7DmuW4+gdk1m/fXtxutRCY2i+v
+         Iz/Gk+AqMtoTZGBEhC0TDFHz+YUIZG2xpCKMMfUqnLtVfUAuLUOz5fPHZGNO+ZGH256s
+         eC6F6VrnLbz9jZPakx+nfpTAn7q0lX5MENPrN8iU268JfrV0fqZ5pUpGvfZhcrsepuY3
+         d+9g==
+X-Gm-Message-State: AOJu0YzhcTRBGXwlrpY8zyhXk4Ellxy06HHCRNOQx5/+SEu+EF0Qy+bT
+        wxLXJEUXGx7czZgK6YCgjrnZbQW5Dw4ygcnGl1z2bQ==
+X-Google-Smtp-Source: AGHT+IEt/X5C1XEK0W3JF+CDHSqXvExt9Z0Cc0UCTv1JvWTAaDy2qDS+2xdx2UgqhZArlLDuCUYZ3r87ssJ2HmPdBKI=
+X-Received: by 2002:a17:906:32d3:b0:9a1:8a54:145f with SMTP id
+ k19-20020a17090632d300b009a18a54145fmr5088359ejk.40.1692720042815; Tue, 22
+ Aug 2023 09:00:42 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [EXT] Re: [PATCH 1/2] dt-bindings: power: Add regulator-pd yaml
- file
-Content-Language: en-US
-To:     Shenwei Wang <shenwei.wang@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        "imx@lists.linux.dev" <imx@lists.linux.dev>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-References: <20230818153446.1076027-1-shenwei.wang@nxp.com>
- <CAL_Jsq+XA_P-aRK9_WuGPmJ0_xJgsSr9smZy4BRbKZbmVsMQBQ@mail.gmail.com>
- <PAXPR04MB918539A19B8F817F623BBD1F891BA@PAXPR04MB9185.eurprd04.prod.outlook.com>
- <9927403d-6dd9-3e5e-8f9d-f38e6640f95f@linaro.org>
- <PAXPR04MB91850D8807CE374BD7C30CC5891EA@PAXPR04MB9185.eurprd04.prod.outlook.com>
- <CAL_JsqJ3dr7gxq+D5DYG8oQ=igzjARz=beQoYL7rrydV4SwDTw@mail.gmail.com>
- <PAXPR04MB918567C378D420DB4830B869891FA@PAXPR04MB9185.eurprd04.prod.outlook.com>
- <51bc0ccf-425b-5f16-b8f2-94d7cc979fae@linaro.org>
- <PAXPR04MB9185F7B520E8BE94B97C4908891FA@PAXPR04MB9185.eurprd04.prod.outlook.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <PAXPR04MB9185F7B520E8BE94B97C4908891FA@PAXPR04MB9185.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230821205458.1764662-1-yosryahmed@google.com>
+ <20230821205458.1764662-3-yosryahmed@google.com> <y7vvyndehadwy5ouounm5oyo52bqhsysiizuphzki2h3bwpdpc@3hvaq6sp6f4k>
+In-Reply-To: <y7vvyndehadwy5ouounm5oyo52bqhsysiizuphzki2h3bwpdpc@3hvaq6sp6f4k>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Tue, 22 Aug 2023 09:00:06 -0700
+Message-ID: <CAJD7tkaVuiMU-ifJiyH5d_W1hi9DnAymYJxzBxEKCVX+tU=OCA@mail.gmail.com>
+Subject: Re: [PATCH 2/3] mm: memcg: add a helper for non-unified stats flushing
+To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/08/2023 17:50, Shenwei Wang wrote:
-> 
-> 
->> -----Original Message-----
->> From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->> Sent: Tuesday, August 22, 2023 10:26 AM
->> To: Shenwei Wang <shenwei.wang@nxp.com>; Rob Herring
->> <robh+dt@kernel.org>
->> Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>; Conor Dooley
->> <conor+dt@kernel.org>; Ulf Hansson <ulf.hansson@linaro.org>; Liam Girdwood
->> <lgirdwood@gmail.com>; Mark Brown <broonie@kernel.org>;
->> imx@lists.linux.dev; devicetree@vger.kernel.org; linux-kernel@vger.kernel.org;
->> dl-linux-imx <linux-imx@nxp.com>
->> Subject: [EXT] Re: [PATCH 1/2] dt-bindings: power: Add regulator-pd yaml file
->>>
->>> No offend. :) Sorry for my poor word. To provide more context, a
->>> common use case example is using a GPIO pin as a power switch. The
->>> current implementation operates as a fixed regulator, which makes it
->>> difficult to control the on/off timing without modifying its driver.
->>
->> So it is a problem of a driver?
->>
-> 
-> That is arguable too. The driver may assume its power is on when probed, which 
-> aligns with how the PD behaves.
+On Tue, Aug 22, 2023 at 6:01=E2=80=AFAM Michal Koutn=C3=BD <mkoutny@suse.co=
+m> wrote:
+>
+> On Mon, Aug 21, 2023 at 08:54:57PM +0000, Yosry Ahmed <yosryahmed@google.=
+com> wrote:
+> > +static void do_stats_flush(struct mem_cgroup *memcg)
+> > +{
+> > +     cgroup_rstat_flush(memcg->css.cgroup);
+>         if(memcg =3D=3D root_mem_cgroup)
+>                 atomic_set(&stats_flush_threshold, 0);
+> > +}
+> > +
+> >  /*
+> >   * do_unified_stats_flush - do a unified flush of memory cgroup statis=
+tics
+> >   *
+> > @@ -656,7 +667,7 @@ static void do_unified_stats_flush(void)
+> >
+> >       WRITE_ONCE(flush_next_time, jiffies_64 + 2*FLUSH_TIME);
+> >
+> > -     cgroup_rstat_flush(root_mem_cgroup->css.cgroup);
+> > +     do_stats_flush(root_mem_cgroup);
+> >
+>   -     atomic_set(&stats_flush_threshold, 0);
+> >       atomic_set(&stats_flush_ongoing, 0);
+>
+> You may reset stats_flush_threshold to save the unified flushers some
+> work.
 
-So everything in driver... no discussion about bindings.
+We can probably also kick FLUSH_TIME forward as well. Perhaps I can
+move both into do_stats_flush() then. If I understand correctly this
+is what you mean?
 
-> 
->>> It also lacks power management support.
->>
->> Which is not related to bindings but implementation in given driver.
->>
-> 
-> For those simple drivers, the default power management logic can handle 
-> power correctly without requiring any specialized implementation in the 
-> driver code.
+static void do_stats_flush(struct mem_cgroup *memcg)
+{
+       if (mem_cgroup_is_root(memcg))
+               WRITE_ONCE(flush_next_time, jiffies_64 + 2*FLUSH_TIME);
 
-You can create any drivers you wish or change existing ones. I don't see
-a problem here.
+       cgroup_rstat_flush(memcg->css.cgroup);
 
-> 
->>>
->>>> The detail that power-domains get handled automatically is an
->>>> implementation detail in the kernel (currently). That could easily
->>>> change and you'd be in the same position as with regulator supplies.
->>>
->>> The proposed regulator-pd driver follows the standard PD driver
->>> framework, so it for sure relies on certain kernel implementation
->>> details. If those underlying implementation details change in the
->>> future, this driver as well as other PD drivers built on the same framework
->> would need to be updated accordingly.
->>
->> We talk about bindings which you would not be allowed to change. Thus your
->> case would stop working...
->>
-> 
-> As a new driver, it has to involve some new bindings especially the compatible 
-> string.
+       if (mem_cgroup_is_root(memcg))
+               atomic_set(&stats_flush_threshold, 0);
+}
 
-I am not talking about this. I do not speak about creating new bindings,
-but changing them.
-> 
->>>
->>>> We could just as easily decide to make the driver core turn on all
->>>> supplies in a node. That would give you the same "feature". Why would
->>>> you design your DT around implementation decisions of the OS?
->>>>
->>>
->>> This DT properties are proposed solely for this specific driver, not
->>> to hack the OS. This is no different than other PD drivers like gpc/scu-
->> pd/imx93-pd.
->>
->> I am not sure if you got Rob's point, I have feelings that not. Argument that
->> some OS implements something some way, is not an argument for a new
->> binding, barely hardware related.
->>
-> 
-> Thank you for the clarification. The issue is that this driver is purely a software layer 
-> that wraps the regulators as a power domain. The bindings make the implementation 
-> clean and easy to understand.  I don't think we should add extra complex logic inside 
-> the driver solely to avoid introducing new bindings.
+  static void do_unified_stats_flush(void)
+  {
+          if (atomic_read(&stats_flush_ongoing) ||
+              atomic_xchg(&stats_flush_ongoing, 1))
+                  return;
 
-Since bindings are not for software layers, I don't think we should be
-talking about them just to avoid introducing driver changes.
+          do_stats_flush(root_mem_cgroup);
+          atomic_set(&stats_flush_ongoing, 0);
+  }
 
-Best regards,
-Krzysztof
+, or simplify it further by just resetting stats_flush_threshold
+before we flush as well:
 
+static void do_stats_flush(struct mem_cgroup *memcg)
+{
+       /* for unified flushing, root non-unified flushing can help as well =
+*/
+       if (mem_cgroup_is_root(memcg)) {
+               WRITE_ONCE(flush_next_time, jiffies_64 + 2*FLUSH_TIME);
+               atomic_set(&stats_flush_threshold, 0);
+       }
+
+       cgroup_rstat_flush(memcg->css.cgroup);
+}
+
+  static void do_unified_stats_flush(void)
+  {
+          if (atomic_read(&stats_flush_ongoing) ||
+              atomic_xchg(&stats_flush_ongoing, 1))
+                  return;
+
+          do_stats_flush(root_mem_cgroup);
+          atomic_set(&stats_flush_ongoing, 0);
+  }
+
+
+What do you think?
