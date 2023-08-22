@@ -2,101 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0967578414F
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 14:56:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 637BA784151
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 14:56:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235869AbjHVM4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 08:56:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59332 "EHLO
+        id S235894AbjHVM4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 08:56:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235395AbjHVM4b (ORCPT
+        with ESMTP id S235395AbjHVM4c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 08:56:31 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3A2ECD5;
-        Tue, 22 Aug 2023 05:56:29 -0700 (PDT)
+        Tue, 22 Aug 2023 08:56:32 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6755ECD1;
+        Tue, 22 Aug 2023 05:56:31 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 51C25653A7;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0061D61A44;
+        Tue, 22 Aug 2023 12:56:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE2D9C433C7;
         Tue, 22 Aug 2023 12:56:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CF48C433C8;
-        Tue, 22 Aug 2023 12:56:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692708988;
-        bh=2WNX9QQVAoAuPFyHg3TYLIP+sACknmV5BgHbBDJLXhg=;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-        b=Kc9wbtP019ThJqTZl07TKJdIhRJV8MLPsBxb6Bpoaq511RbNdjQva/I5VkTXMePXq
-         xvFhDnBgHVwsbleZbHEy0Zy817mp44jSaT9epmtiPtNAx15KgjRkhjvm4kxHxLqpoa
-         tjuYkcSO08QKQcqSQm7TtkTaWtz/en9nCFU7MSChqqBrzdaMCABurvhXLLHDrBliPe
-         WSqZim9GcJwi/FxUl7jhuNm4cSGN37j2ScUwtYMtDD4avD/4LAqJf+a1GDBrK9fG7V
-         u/T8IHmkCUSd9709CN1Cn0XsigAmn4c2n76TC6tUWPGvPeaUe9QENW78p6z40y26Ue
-         wTaS/FD140PcQ==
-From:   Kalle Valo <kvalo@kernel.org>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Jeff Johnson <quic_jjohnson@quicinc.com>,
-        Bjorn Andersson <quic_bjorande@quicinc.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Manikanta Pubbisetty <quic_mpubbise@quicinc.com>,
-        ath11k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Revert "Revert "wifi: ath11k: Enable threaded NAPI""
-References: <20230809073432.4193-1-johan+linaro@kernel.org>
-        <ZONpkVU1ORHj-zFH@hovoldconsulting.com>
-Date:   Tue, 22 Aug 2023 15:56:24 +0300
-In-Reply-To: <ZONpkVU1ORHj-zFH@hovoldconsulting.com> (Johan Hovold's message
-        of "Mon, 21 Aug 2023 15:41:37 +0200")
-Message-ID: <87o7izi6br.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1692708990;
+        bh=u83VinJfs7MQi4Ly6CqCBrjqNaWBfD36bQjG7fO9JPc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AqVWJUl4Qn5JOZNqMpR6VRVx0WtUZmiKEUpN/6V9A+opPY/lHktb0qcrxfFMIzI7F
+         fWNfj7k/BScCJx6pZPA9h5f6gTTXZNCs8jvpGkXJ00Ggf0SWYCSLVwQG6R8jk1UmIJ
+         j+K7Ze9XDSsI7s/nt1xGL4J14mHBVvGJixcKHEqs=
+Date:   Tue, 22 Aug 2023 14:56:27 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 09/10] tty: tty_buffer: initialize variables in
+ initializers already
+Message-ID: <2023082232-runaround-captive-aa7a@gregkh>
+References: <20230816105530.3335-1-jirislaby@kernel.org>
+ <20230816105530.3335-10-jirislaby@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230816105530.3335-10-jirislaby@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Johan Hovold <johan@kernel.org> writes:
+On Wed, Aug 16, 2023 at 12:55:29PM +0200, Jiri Slaby (SUSE) wrote:
+> It makes the code both more compact, and more understandable.
+> 
+> Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
+> ---
+>  drivers/tty/tty_buffer.c | 13 +++----------
+>  1 file changed, 3 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/tty/tty_buffer.c b/drivers/tty/tty_buffer.c
+> index 414bb7f9155f..44c0adaec850 100644
+> --- a/drivers/tty/tty_buffer.c
+> +++ b/drivers/tty/tty_buffer.c
+> @@ -262,17 +262,10 @@ static int __tty_buffer_request_room(struct tty_port *port, size_t size,
+>  				     bool flags)
+>  {
+>  	struct tty_bufhead *buf = &port->buf;
+> -	struct tty_buffer *b, *n;
+> -	size_t left;
+> -	bool change;
+> +	struct tty_buffer *n, *b = buf->tail;
+> +	size_t left = (b->flags ? 1 : 2) * b->size - b->used;
 
-> Hi Kalle,
->
-> On Wed, Aug 09, 2023 at 09:34:32AM +0200, Johan Hovold wrote:
->
->> Disabling threaded NAPI caused a severe regression in 6.5-rc5 by making
->> the X13s completely unusable (e.g. no keyboard input, I've seen an RCU
->> splat once).
->> 
->> I'm supposed to be on holiday this week, but thanks to the rain I gave
->> rc5 a try and ran into this.
->> 
->> I've added Bjorn, Mani and Konrad on CC who may be able to help with
->> debugging this further if needed while I'm out-of-office.
->
-> Back from my holiday now, and this regression is still there with
-> 6.5-rc7.
+That's understandable?  Hah!
 
-I was also away but back now.
+I'll take it, but ick, the original:
 
-> Any chance we can get the offending commit reverted before 6.5 is
-> released? 
+> +	bool change = !b->flags && flags;
+>  
+> -	b = buf->tail;
+> -	if (!b->flags)
+> -		left = 2 * b->size - b->used;
+> -	else
+> -		left = b->size - b->used;
 
-The problem here is that would break QCN9074 again so there is no good
-solution. I suspect we have a fundamental issue in ath11k which we just
-haven't discovered yet. I would prefer to get to the bottom of this
-before reverting anything.
+Is much more readable.
 
-> I'll take a closer look at this meanwhile.
+Well kind of, it's all a mess :)
 
-Thanks, much appreciated. Did you try enabling all kernel debug
-features, maybe they would give some hints?
+thanks,
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+greg k-h
