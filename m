@@ -2,134 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C3F4783A06
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 08:32:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 401CA783A0C
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 08:34:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233041AbjHVGcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 02:32:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56238 "EHLO
+        id S233065AbjHVGeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 02:34:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233033AbjHVGca (ORCPT
+        with ESMTP id S233049AbjHVGeE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 02:32:30 -0400
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2064.outbound.protection.outlook.com [40.107.237.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87DBE1A4;
-        Mon, 21 Aug 2023 23:32:21 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JBezX/+/9GQ9PbMSj2P3bq8WPexMmntmRglWXfDbLo2DX8e84SJ0s5pL85TYfHD797+tjGv8zjuBqRF8EMUIpZRD27VNxmzD2GR8XyE1O67/V3txHKgXX9A1AsBzbzwfsh8Hpfok43eMsFIL8fmu2WVpA31n9ZfQv7f+0gms350TMq6ZpyMJYYaQGULwG2QkIj4HqajjKB3BuIVAh2GpE2uH+aREJQ4Mcf2h4LVDbIhk9D8aqe/o2Pwk7VXH0SMO+u8TZF6MOQHRh07jd5lBGakhP62IFwflqYIHVcbxaosF6iCfWOktwpEx7b9gbW8f13MLX1+I50vsxpoBPpKMcA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=B3/luZGIP2yZkNSQosU26Zs3McFWtFDRsmMlXPnoZG4=;
- b=hiNmWMO0J0/bUvOXzEB7NbzmOl37UcKvPP3VAFn7UKT/b1vTQaSY5CZtO2qBhiLjlVAMjRNm6ZhlQf0MpUgNtMhPx9JOwMn5aVsRlBUMTRE0rCIo/bhChVjybfh0g8RKILy3F8XUcXng+TPE8xR3FnmtTOjpu07+scKpkQ2pnkM2m4qjetBI7ReGh21gUdzknOfOqu+4l3lXskXeQFB0d/5o/GdMqAujN8+i83QRBu+ef9K1R69ny9NP2/DSdrxZsQ4x4WTQDjFpg2L7C6XeOLDPI1JcE4xmMuatGUvFUGMQFomwQGfJiPs5srttwCKvkapnYq6a8B46Bkq5MQML3A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=linuxfoundation.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=B3/luZGIP2yZkNSQosU26Zs3McFWtFDRsmMlXPnoZG4=;
- b=O6W/fET4sb7rf60LE4iyDKy3rwTl5gIerInLGd7Ds55FME9Kr7bLmTD90EjV8gK1JeQsSft55H5m12rD7UnuhkgKJA5M4waB4p3C04Ws4zTbeqFU4+JuSg1EEAkOflQU2JYp4tM21SG+KomXqaRe/Dpo8sohry6awptvPTWzEVk=
-Received: from SA1P222CA0137.NAMP222.PROD.OUTLOOK.COM (2603:10b6:806:3c2::6)
- by MW4PR12MB8611.namprd12.prod.outlook.com (2603:10b6:303:1ed::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.24; Tue, 22 Aug
- 2023 06:32:18 +0000
-Received: from SN1PEPF00026368.namprd02.prod.outlook.com
- (2603:10b6:806:3c2:cafe::e6) by SA1P222CA0137.outlook.office365.com
- (2603:10b6:806:3c2::6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.20 via Frontend
- Transport; Tue, 22 Aug 2023 06:32:18 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- SN1PEPF00026368.mail.protection.outlook.com (10.167.241.133) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6699.14 via Frontend Transport; Tue, 22 Aug 2023 06:32:18 +0000
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 22 Aug
- 2023 01:32:17 -0500
-Received: from xhdpiyushm40.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.27 via Frontend
- Transport; Tue, 22 Aug 2023 01:32:14 -0500
-From:   Piyush Mehta <piyush.mehta@amd.com>
-To:     <gregkh@linuxfoundation.org>, <michal.simek@amd.com>,
-        <u.kleine-koenig@pengutronix.de>, <linus.walleij@linaro.org>
-CC:     <linux-usb@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <git@amd.com>,
-        Piyush Mehta <piyush.mehta@amd.com>
-Subject: [PATCH 3/3] usb: gadget: udc-xilinx: fix incorrect type in assignment warning
-Date:   Tue, 22 Aug 2023 12:02:01 +0530
-Message-ID: <20230822063201.16929-4-piyush.mehta@amd.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20230822063201.16929-1-piyush.mehta@amd.com>
-References: <20230822063201.16929-1-piyush.mehta@amd.com>
+        Tue, 22 Aug 2023 02:34:04 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D45E1E47;
+        Mon, 21 Aug 2023 23:33:36 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 01FC422C44;
+        Tue, 22 Aug 2023 06:33:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1692685983; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0LefrGrfWIlUUodSIRfdXfGvUMxOpn3Da/x1z7+TACM=;
+        b=dcW/Td18f6Fki4csXaJVH2kX+joGxDMOht06LwZTOfNsgqpMfncIfcqoPyYT4pr6k4mnSU
+        M0TGSwt1po685EhpFFg+MsGQqwUnObFIRiO2wfy913FH+/Lel6/Fb2dOKqsq92KJa+2uD1
+        Bu3YIapaL9IWtKzXxWr75rikpNrC41E=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1692685983;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0LefrGrfWIlUUodSIRfdXfGvUMxOpn3Da/x1z7+TACM=;
+        b=rG0JjH04TqT5CksLvToAlLn8tIAFYWH057rgn75zDtNS/jv7ATjOlZlbjVPfguARFEVAuk
+        XrENx1kzxGQ4t0Cg==
+Received: from kitsune.suse.cz (kitsune.suse.cz [10.100.12.127])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 4B5DF2C143;
+        Tue, 22 Aug 2023 06:32:58 +0000 (UTC)
+Date:   Tue, 22 Aug 2023 08:32:57 +0200
+From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
+To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Cc:     Eric DeVolder <eric.devolder@oracle.com>, linux@armlinux.org.uk,
+        catalin.marinas@arm.com, will@kernel.org, chenhuacai@kernel.org,
+        geert@linux-m68k.org, tsbogend@alpha.franken.de,
+        James.Bottomley@hansenpartnership.com, deller@gmx.de,
+        ysato@users.sourceforge.jp, dalias@libc.org,
+        glaubitz@physik.fu-berlin.de, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-ia64@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, peterz@infradead.org,
+        linus.walleij@linaro.org, hpa@zytor.com, kernel@xen0n.name,
+        ardb@kernel.org, tsi@tuyoix.net, agordeev@linux.ibm.com,
+        paulmck@kernel.org, bhe@redhat.com, masahiroy@kernel.org,
+        konrad.wilk@oracle.com, sebastian.reichel@collabora.com,
+        samitolvanen@google.com, ojeda@kernel.org,
+        juerg.haefliger@canonical.com, borntraeger@linux.ibm.com,
+        frederic@kernel.org, arnd@arndb.de, mhiramat@kernel.org,
+        aou@eecs.berkeley.edu, keescook@chromium.org, gor@linux.ibm.com,
+        anshuman.khandual@arm.com, hca@linux.ibm.com, xin3.li@intel.com,
+        npiggin@gmail.com, rmk+kernel@armlinux.org.uk,
+        paul.walmsley@sifive.com, boris.ostrovsky@oracle.com,
+        ziy@nvidia.com, hbathini@linux.ibm.com, gregkh@linuxfoundation.org,
+        kirill.shutemov@linux.intel.com, ndesaulniers@google.com,
+        sourabhjain@linux.ibm.com, palmer@dabbelt.com, svens@linux.ibm.com,
+        tj@kernel.org, akpm@linux-foundation.org, rppt@kernel.org
+Subject: Re: [PATCH v6 02/14] x86/kexec: refactor for kernel/Kconfig.kexec
+Message-ID: <20230822063257.GI8826@kitsune.suse.cz>
+References: <20230712161545.87870-1-eric.devolder@oracle.com>
+ <20230712161545.87870-3-eric.devolder@oracle.com>
+ <d8ddd4bd-fbc9-dbe9-f5c3-daf8d89aa46d@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN1PEPF00026368:EE_|MW4PR12MB8611:EE_
-X-MS-Office365-Filtering-Correlation-Id: b55912b8-f052-4630-d7fc-08dba2d9884c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: pVd4Wu7glJ1URHRErvu/mbl+vih/A6VHmVyulLR3NWkopebWv278ZxwI73+f6Ljhm3VZ+vR2yIQuypf3ddpUDFb+dy9NSQzIiubmmPoL4TIn37/D1k5VPbLSN3kFwi2uYPU54xJSSFPcW1yZ/YYMJV3XHuwlS5wNC7ZZvbOXnuaMoipQY+ATQYBe66TIznjSvMhWw6eM2nAxyEI7apuwc5apq9RRJ7Ir3pccELHr5sY6qB31ttms03eoy4klt+DkDBtvgmYb8UdHNGPem0LKQCPqbk51zdgzTL9dsuU8u4OJtv2o92o2P92lytqtCK6M4oUSE/7J/iz2TElfmBQjQpjOJnc+VFKQNX7KnJZw5xbcZEPqnO9ELdWl0yBM+XdSFdqq7Ktq6pvOi1yHtXLVeiZ/KvUT+s998HuTnd9LL3MPUyJMcCpmAcUtWfrUUPS3Ai+cMYIb+P6BkHUcxxcBuaKodo+KqW7GVXs0U8CWVfiZcsgMmp3y2TxhLoppbMrS3SMbUmC6+/2U5Gt8gKiWWCAiMbRMh087Nab4WApEjZwGf6/grefrxkuoxLLaQ+jL62vmPy/a7eWUd5T+QxrmYb3JSoe170T1bHWtzhy7OxgrD27oUYz8mYq1S4bTH7H65Q+Eu05FGUOZxXYiPVBt89da79ENiRWDrCQiyCKNjm229NV5iFsFFWXVXdSCc12yLHIScIrnB4Yh5hwX8tqrt39OILMYTSbNFWMnjMDxutuHWFaaOwqXyIruzGElwPWuwrub3wXCXoG3WQIu5hPSBw==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(346002)(396003)(39860400002)(136003)(451199024)(82310400011)(1800799009)(186009)(36840700001)(40470700004)(46966006)(2906002)(40480700001)(83380400001)(5660300002)(44832011)(336012)(426003)(26005)(86362001)(36860700001)(47076005)(8676002)(2616005)(8936002)(4326008)(70206006)(316002)(70586007)(54906003)(110136005)(966005)(478600001)(82740400003)(356005)(81166007)(6666004)(40460700003)(36756003)(41300700001)(1076003)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Aug 2023 06:32:18.0616
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: b55912b8-f052-4630-d7fc-08dba2d9884c
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: SN1PEPF00026368.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB8611
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d8ddd4bd-fbc9-dbe9-f5c3-daf8d89aa46d@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The bitwise attribute is used by the sparse utility to make sure the
-variable is converted to the local processor type before other (unsafe)
-operations are performed on the variable. Fix the below sparse warnings
-type casted with __le16:
+Hello,
 
-warning: incorrect type in assignment (different base types)
-   expected unsigned short [usertype]
-   got restricted __le16 [usertype]
+On Thu, Jul 13, 2023 at 07:13:57PM +0800, Leizhen (ThunderTown) wrote:
+> 
+> 
+> On 2023/7/13 0:15, Eric DeVolder wrote:
+> > The kexec and crash kernel options are provided in the common
+> > kernel/Kconfig.kexec. Utilize the common options and provide
+> > the ARCH_SUPPORTS_ and ARCH_SELECTS_ entries to recreate the
+> > equivalent set of KEXEC and CRASH options.
+> > 
+> > Signed-off-by: Eric DeVolder <eric.devolder@oracle.com>
+> > ---
+> >  arch/x86/Kconfig | 92 ++++++++++--------------------------------------
+> >  1 file changed, 19 insertions(+), 73 deletions(-)
+> > 
+> > diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> > index 7422db409770..9767a343f7c2 100644
+> > --- a/arch/x86/Kconfig
+> > +++ b/arch/x86/Kconfig
+> > @@ -2040,88 +2040,34 @@ config EFI_RUNTIME_MAP
+> >  
+> >  source "kernel/Kconfig.hz"
+> >  
+> > -config KEXEC
+> > -	bool "kexec system call"
+> > -	select KEXEC_CORE
+> > -	help
+> > -	  kexec is a system call that implements the ability to shutdown your
+> > -	  current kernel, and to start another kernel.  It is like a reboot
+> > -	  but it is independent of the system firmware.   And like a reboot
+> > -	  you can start any kernel with it, not just Linux.
+> > -
+> > -	  The name comes from the similarity to the exec system call.
+> > -
+> > -	  It is an ongoing process to be certain the hardware in a machine
+> > -	  is properly shutdown, so do not be surprised if this code does not
+> > -	  initially work for you.  As of this writing the exact hardware
+> > -	  interface is strongly in flux, so no good recommendation can be
+> > -	  made.
+> > -
+> > -config KEXEC_FILE
+> > -	bool "kexec file based system call"
+> > -	select KEXEC_CORE
+> > -	select HAVE_IMA_KEXEC if IMA
+> > -	depends on X86_64
+> > -	depends on CRYPTO=y
+> > -	depends on CRYPTO_SHA256=y
+> > -	help
+> > -	  This is new version of kexec system call. This system call is
+> > -	  file based and takes file descriptors as system call argument
+> > -	  for kernel and initramfs as opposed to list of segments as
+> > -	  accepted by previous system call.
+> > +config ARCH_SUPPORTS_KEXEC
+> > +	def_bool y
+> 
+> In v5, Joel Fernandes seems to suggest you change it to the following form:
 
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/all/202209020044.CX2PfZzM-lkp@intel.com/
-Signed-off-by: Piyush Mehta <piyush.mehta@amd.com>
----
- drivers/usb/gadget/udc/udc-xilinx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+It's unfortunate that the suggestion did not make it to the mailinglist.
 
-diff --git a/drivers/usb/gadget/udc/udc-xilinx.c b/drivers/usb/gadget/udc/udc-xilinx.c
-index 476c0a8fc5e7..0b12155635d9 100644
---- a/drivers/usb/gadget/udc/udc-xilinx.c
-+++ b/drivers/usb/gadget/udc/udc-xilinx.c
-@@ -1638,7 +1638,7 @@ static void xudc_getstatus(struct xusb_udc *udc)
- 	}
- 
- 	req->usb_req.length = 2;
--	*(u16 *)req->usb_req.buf = cpu_to_le16(status);
-+	*(__le16 *)req->usb_req.buf = cpu_to_le16(status);
- 	ret = __xudc_ep0_queue(ep0, req);
- 	if (ret == 0)
- 		return;
--- 
-2.17.1
+> In arch/Kconfig:
+> +config ARCH_SUPPORTS_KEXEC
+> +	bool
+> 
+> In arch/x86/Kconfig:
+> config X86
+> 	... ...
+> +	select ARCH_SUPPORTS_KEXEC
+> 
+> In arch/arm64/Kconfig:
+> config ARM64
+> 	... ...
+> +	select ARCH_SUPPORTS_KEXEC if PM_SLEEP_SMP
 
+Which might work for this case
+
+> 
+> etc..
+> 
+> You can refer to ARCH_HAS_DEBUG_VIRTUAL.
+> 
+> >  
+> > -config ARCH_HAS_KEXEC_PURGATORY
+> > -	def_bool KEXEC_FILE
+> > +config ARCH_SUPPORTS_KEXEC_FILE
+> > +	def_bool X86_64 && CRYPTO && CRYPTO_SHA256
+> >  
+> > -config KEXEC_SIG
+> > -	bool "Verify kernel signature during kexec_file_load() syscall"
+> > +config ARCH_SELECTS_KEXEC_FILE
+> > +	def_bool y
+> >  	depends on KEXEC_FILE
+> > -	help
+> > +	select HAVE_IMA_KEXEC if IMA
+
+but not this case, at least not this trivially.
+
+Than for consistency it looks better to keep as is.
+
+Thanks
+
+Michal
+
+> >  
+> > -	  This option makes the kexec_file_load() syscall check for a valid
+> > -	  signature of the kernel image.  The image can still be loaded without
+> > -	  a valid signature unless you also enable KEXEC_SIG_FORCE, though if
+> > -	  there's a signature that we can check, then it must be valid.
+> > +config ARCH_HAS_KEXEC_PURGATORY
+> > +	def_bool KEXEC_FILE
+> >  
+> > -	  In addition to this option, you need to enable signature
+> > -	  verification for the corresponding kernel image type being
+> > -	  loaded in order for this to work.
+> > +config ARCH_SUPPORTS_KEXEC_SIG
+> > +	def_bool y
+> >  
+> > -config KEXEC_SIG_FORCE
+> > -	bool "Require a valid signature in kexec_file_load() syscall"
+> > -	depends on KEXEC_SIG
+> > -	help
+> > -	  This option makes kernel signature verification mandatory for
+> > -	  the kexec_file_load() syscall.
+> > +config ARCH_SUPPORTS_KEXEC_SIG_FORCE
+> > +	def_bool y
+> >  
+> > -config KEXEC_BZIMAGE_VERIFY_SIG
+> > -	bool "Enable bzImage signature verification support"
+> > -	depends on KEXEC_SIG
+> > -	depends on SIGNED_PE_FILE_VERIFICATION
+> > -	select SYSTEM_TRUSTED_KEYRING
+> > -	help
+> > -	  Enable bzImage signature verification support.
+> > +config ARCH_SUPPORTS_KEXEC_BZIMAGE_VERIFY_SIG
+> > +	def_bool y
+> >  
+> > -config CRASH_DUMP
+> > -	bool "kernel crash dumps"
+> > -	depends on X86_64 || (X86_32 && HIGHMEM)
+> > -	help
+> > -	  Generate crash dump after being started by kexec.
+> > -	  This should be normally only set in special crash dump kernels
+> > -	  which are loaded in the main kernel with kexec-tools into
+> > -	  a specially reserved region and then later executed after
+> > -	  a crash by kdump/kexec. The crash dump kernel must be compiled
+> > -	  to a memory address not used by the main kernel or BIOS using
+> > -	  PHYSICAL_START, or it must be built as a relocatable image
+> > -	  (CONFIG_RELOCATABLE=y).
+> > -	  For more details see Documentation/admin-guide/kdump/kdump.rst
+> > +config ARCH_SUPPORTS_KEXEC_JUMP
+> > +	def_bool y
+> >  
+> > -config KEXEC_JUMP
+> > -	bool "kexec jump"
+> > -	depends on KEXEC && HIBERNATION
+> > -	help
+> > -	  Jump between original kernel and kexeced kernel and invoke
+> > -	  code in physical address mode via KEXEC
+> > +config ARCH_SUPPORTS_CRASH_DUMP
+> > +	def_bool X86_64 || (X86_32 && HIGHMEM)
+> >  
+> >  config PHYSICAL_START
+> >  	hex "Physical address where the kernel is loaded" if (EXPERT || CRASH_DUMP)
+> > 
+> 
+> -- 
+> Regards,
+>   Zhen Lei
