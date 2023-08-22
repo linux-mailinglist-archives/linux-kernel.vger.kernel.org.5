@@ -2,175 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E37F783E64
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 12:56:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DF86783E66
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 12:56:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233637AbjHVK4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 06:56:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36798 "EHLO
+        id S233736AbjHVK4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 06:56:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233635AbjHVK4L (ORCPT
+        with ESMTP id S233652AbjHVK4M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 06:56:11 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 900FC1BE;
-        Tue, 22 Aug 2023 03:56:09 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37MAtg31121408;
-        Tue, 22 Aug 2023 05:55:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1692701742;
-        bh=7RoHGug6Z1HsMl9lmqCBKqn7chJKElqrqq3ewAnqj/Q=;
-        h=Date:Subject:From:To:CC:References:In-Reply-To;
-        b=RE1v+aucnRe+XqtD8Khpw3Nd0jOYTRMi/o7HiHkQYPrHRZGeKxvIUminEsImBK0wv
-         cUr7mopKaff03sFy/i+/rTwseoIyU8V3/dBHzAhrtqRZj9tnyG1E+pN66lYqNYtZRk
-         rFvdi0ObekraIiwkBqQLO5JpIdp0F39uZaAeOu7M=
-Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37MAtg4h118376
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 22 Aug 2023 05:55:42 -0500
-Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 22
- Aug 2023 05:55:41 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 22 Aug 2023 05:55:41 -0500
-Received: from [172.24.227.217] (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37MAtZfN094729;
-        Tue, 22 Aug 2023 05:55:36 -0500
-Message-ID: <73169382-dd0a-ddb7-caf6-ba9a783736fe@ti.com>
-Date:   Tue, 22 Aug 2023 16:25:34 +0530
+        Tue, 22 Aug 2023 06:56:12 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5723ECCA
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 03:56:10 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id 46e09a7af769-6bdba622d1cso500941a34.1
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 03:56:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692701769; x=1693306569;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=7gmbZKg8MO0Caap6tnCCUDBVYQhIxs2ct9dxwNPhfJ8=;
+        b=HFzZ/XXKeXpwjt82B0mHZZG9JKd6iIY4ybXgnQTjEt4HKwvapq/RCvE2f60dmd+BtX
+         qR7RQ5hyVVRD0Dd8h2DQsbfm66JefEkz44PWjkzcmV0xCYCYDr/7YZO5XNrdzNjEs5nD
+         0YxF0MXW452u/h7z/H0eO25m6+tHTijDgiYfLTmkCNYX7+XKKKmKmaBFvo/s71QTmhXH
+         G6hALlUeB01GA8vjdpiks5zjQIZhEEBbuxzLz9YliCJMdInzekL2/B7VNKKCGYO8DDm9
+         sfx9FgnPtqtIq6+ixjtyIXFzi1LY1VmNYGVVCa5pbwyk8QdTyCGoybPLRcoGlaOtSr7I
+         GWhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692701769; x=1693306569;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7gmbZKg8MO0Caap6tnCCUDBVYQhIxs2ct9dxwNPhfJ8=;
+        b=QVVhaDvTPqWckpspAr2swzTqFjZSEXtTryi9f0ZsH52Vwk5lOEZvJYxVzI1xaHUx+x
+         yNmCPtXwy7Xv6qT9mqsc3O3LYBipvgUSqsdCe7cdSr/IypYD3WQ22FMGj9qVpoRn3Mf3
+         HmEcm+PmGgViw3Y1KgEjMSXWv4XNC7itTgBmHoN4TkDa+wVKYEz41f7KWszIBmdsroDC
+         q3ZPH/oLzTzfUj5H2MgCUgfOuVs1qGP4w0bDiQxA5UzSTtVf89b7t9fix2l1DviK+KkA
+         QoStb0S7B9WYXP9ZTY6ZEzL+JjEz4Teh8wkfH0u+7x94Uvoe3b+hYZv+CgRTFLyWR3YQ
+         P7Rg==
+X-Gm-Message-State: AOJu0Yw8KSSF/97PVz43Db5tnoHJPJbQzxY/o5qoPFp2zNmzTblkKxhF
+        gCyZJyPkwqbY/8klfNvlp2TjIE2nYd10iJ8rk8SO8g==
+X-Google-Smtp-Source: AGHT+IHRpjn+Tn5STuiluP/0dZcO+kQ0j7tCK8/nXpSRwA5NzJZfFnhty39Igkdoef8Hg8QvdY5b0Y2Ut+Iz5kCQ/U8=
+X-Received: by 2002:a05:6358:9889:b0:134:dee2:8c18 with SMTP id
+ q9-20020a056358988900b00134dee28c18mr8946835rwa.27.1692701769535; Tue, 22 Aug
+ 2023 03:56:09 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [EXTERNAL] Re: [PATCH v2 2/5] dt-bindings: net: Add iep property
- in ICSSG dt binding
-Content-Language: en-US
-From:   Md Danish Anwar <a0501179@ti.com>
-To:     Rob Herring <robh@kernel.org>, MD Danish Anwar <danishanwar@ti.com>
-CC:     Randy Dunlap <rdunlap@infradead.org>,
-        Roger Quadros <rogerq@kernel.org>,
-        Simon Horman <simon.horman@corigine.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>, <nm@ti.com>, <srk@ti.com>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20230807110048.2611456-1-danishanwar@ti.com>
- <20230807110048.2611456-3-danishanwar@ti.com>
- <20230821160120.GA1734560-robh@kernel.org>
- <81330882-e8bc-558c-f1bf-9a10108973af@ti.com>
-Organization: Texas Instruments
-In-Reply-To: <81330882-e8bc-558c-f1bf-9a10108973af@ti.com>
+References: <cover.1692699472.git.quic_varada@quicinc.com> <6d1638daf9b0616816fdecb529df86a394db7942.1692699472.git.quic_varada@quicinc.com>
+In-Reply-To: <6d1638daf9b0616816fdecb529df86a394db7942.1692699472.git.quic_varada@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Tue, 22 Aug 2023 13:55:58 +0300
+Message-ID: <CAA8EJpryKOzGd42NjG470D9jGr1Huv5D-F-NqaTo-0EJeFUr+A@mail.gmail.com>
+Subject: Re: [PATCH v9 1/4] phy: qcom: m31: Fix indentation issues
+To:     Varadarajan Narayanan <quic_varada@quicinc.com>
+Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, catalin.marinas@arm.com, will@kernel.org,
+        vkoul@kernel.org, kishon@kernel.org, arnd@arndb.de,
+        geert+renesas@glider.be, nfraprado@collabora.com, rafal@milecki.pl,
+        peng.fan@nxp.com, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-phy@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+On Tue, 22 Aug 2023 at 13:31, Varadarajan Narayanan
+<quic_varada@quicinc.com> wrote:
+>
+> * Fix indentation
+> * Drop simple success messages
+>
+> Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
+> ---
+> v9:
+>         Fix line break alignment
+>         Remove register success print
+>         v8 version of the driver has been picked up for merge.
+>         (https://lore.kernel.org/linux-arm-msm/169226613917.81413.1200008047604336868.b4-ty@kernel.org/)
+> v8:
+>         Change commit subject and message per review comments
+>         Don't include of_platform.h
+>         Change struct init coding style
+>         GENMASK -> BIT for one define
+> v6:
+>         Kconfig:Add COMPILE_TEST and remove USB_GADGET from 'depends'
+>                 Change 'selects' USB_PHY -> GENERIC_PHY
+>         Driver: Use correct headers
+>                 const int -> unsigned int for 'nregs' in private data
+>                 Use generic names for clk, phy in m31 phy structure
+>                 Init register details directly instead of using macro
+>                 Use dev_err_probe in the error paths of driver probe
+> v5:
+>         Kconfig and Makefile:- place snippet according to sorted order
+>         Use generic phy instead of usb-phy
+>         Use ARRAY_SIZE for reg init instead of blank last entry
+>         Fix copyright year
+>
+> v4:
+>         Remove unused enum
+>         Error handling for devm_clk_get
+> v1:
+>         Combine driver, makefile and kconfig into 1 patch
+>         Remove 'qscratch' region and its usage. The controller driver takes care
+>         of those settings
+>         Use compatible/data to handle ipq5332 init
+>         Drop the default case
+>         Get resources by index instead of name as there is only one resource
+>         Add clock
+>         Fix review comments in the driver
+> ---
+>  drivers/phy/qualcomm/phy-qcom-m31.c | 8 +++-----
+>  1 file changed, 3 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/phy/qualcomm/phy-qcom-m31.c b/drivers/phy/qualcomm/phy-qcom-m31.c
+> index ed08072..ea79c18 100644
+> --- a/drivers/phy/qualcomm/phy-qcom-m31.c
+> +++ b/drivers/phy/qualcomm/phy-qcom-m31.c
+> @@ -242,7 +242,7 @@ static int m31usb_phy_probe(struct platform_device *pdev)
+>         qphy->clk = devm_clk_get(dev, NULL);
+>         if (IS_ERR(qphy->clk))
+>                 return dev_err_probe(dev, PTR_ERR(qphy->clk),
+> -                                               "failed to get clk\n");
+> +                                    "failed to get clk\n");
 
-On 22/08/23 3:29 pm, Md Danish Anwar wrote:
-> Hi Rob,
-> 
-> On 21/08/23 9:31 pm, Rob Herring wrote:
->> On Mon, Aug 07, 2023 at 04:30:45PM +0530, MD Danish Anwar wrote:
->>> Add iep node in ICSSG driver dt binding document.
->>
->> Why?
->>
->> Bindings are for h/w, not drivers. You are adding a property, not a 
-> 
-> I will change the above to "Add IEP property in ICSSG hardware DT binding
-> document."
-> 
->> node. Would be nice to know what 'iep' is without having to look at the 
->> diff (e.g. when running 'git log').
->>
-> 
-> Sure, I will provide description of IEP in the commit message.
-> 
+But why are you trying to fix this? aligning next line to the opening
+bracket is perfectly fine (and is one of the endorsed styles).
 
-I will change the commit message to below.
+>
+>         data = of_device_get_match_data(dev);
+>         qphy->regs              = data->regs;
+> @@ -252,18 +252,16 @@ static int m31usb_phy_probe(struct platform_device *pdev)
+>         qphy->phy = devm_phy_create(dev, NULL, &m31usb_phy_gen_ops);
+>         if (IS_ERR(qphy->phy))
+>                 return dev_err_probe(dev, PTR_ERR(qphy->phy),
+> -                                               "failed to create phy\n");
+> +                                    "failed to create phy\n");
+>
+>         qphy->vreg = devm_regulator_get(dev, "vdda-phy");
+>         if (IS_ERR(qphy->vreg))
+>                 return dev_err_probe(dev, PTR_ERR(qphy->phy),
+> -                                               "failed to get vreg\n");
+> +                                    "failed to get vreg\n");
+>
+>         phy_set_drvdata(qphy->phy, qphy);
+>
+>         phy_provider = devm_of_phy_provider_register(dev, of_phy_simple_xlate);
+> -       if (!IS_ERR(phy_provider))
+> -               dev_info(dev, "Registered M31 USB phy\n");
 
-    dt-bindings: net: Add IEP property in ICSSG
+This is irrelevant to the indentation.
 
-    Add IEP property in ICSSG hardware DT binding document.
-    ICSSG uses IEP (Industrial Ethernet Peripheral) to support timestamping
-    of ethernet packets, PTP and PPS.
+>
+>         return PTR_ERR_OR_ZERO(phy_provider);
+>  }
+> --
+> 2.7.4
+>
 
-Please let me know if this looks OK to you.
-
->>>
->>> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
->>> ---
->>>  Documentation/devicetree/bindings/net/ti,icssg-prueth.yaml | 7 +++++++
->>>  1 file changed, 7 insertions(+)
->>>
->>> diff --git a/Documentation/devicetree/bindings/net/ti,icssg-prueth.yaml b/Documentation/devicetree/bindings/net/ti,icssg-prueth.yaml
->>> index 8ec30b3eb760..36870238f92f 100644
->>> --- a/Documentation/devicetree/bindings/net/ti,icssg-prueth.yaml
->>> +++ b/Documentation/devicetree/bindings/net/ti,icssg-prueth.yaml
->>> @@ -52,6 +52,12 @@ properties:
->>>      description:
->>>        phandle to MII_RT module's syscon regmap
->>>  
->>> +  ti,iep:
->>> +    $ref: /schemas/types.yaml#/definitions/phandle-array
->>
->> phandle-array really means matrix, so you need to fully describe the 
->> items constraints.
->>
->>> +    maxItems: 2
->>
->> 2 phandles or 1 phandle and 1 arg? Looks like the former from the 
-> 
-> It's 2 phandles.
-> 
->> example, so:
->>
->> maxItems: 2
->> items:
->>   maxItems: 1
->>
-> 
-> Sure, I will change the item constraints to above.
-> 
->>> +    description:
->>> +      phandle to IEP (Industrial Ethernet Peripheral) for ICSSG driver
->>> +
->>>    interrupts:
->>>      maxItems: 2
->>>      description:
->>> @@ -155,6 +161,7 @@ examples:
->>>                      "tx1-0", "tx1-1", "tx1-2", "tx1-3",
->>>                      "rx0", "rx1";
->>>          ti,mii-g-rt = <&icssg2_mii_g_rt>;
->>> +        ti,iep = <&icssg2_iep0>, <&icssg2_iep1>;
->>>          interrupt-parent = <&icssg2_intc>;
->>>          interrupts = <24 0 2>, <25 1 3>;
->>>          interrupt-names = "tx_ts0", "tx_ts1";
->>> -- 
->>> 2.34.1
->>>
-> 
 
 -- 
-Thanks and Regards,
-Danish.
+With best wishes
+Dmitry
