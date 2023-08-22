@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C7F67846B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 18:16:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7760F7846B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 18:16:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237567AbjHVQQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 12:16:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53922 "EHLO
+        id S237576AbjHVQQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 12:16:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235021AbjHVQQa (ORCPT
+        with ESMTP id S237563AbjHVQQb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 12:16:30 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F395137
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 09:16:28 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2bb9a063f26so74810401fa.2
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 09:16:28 -0700 (PDT)
+        Tue, 22 Aug 2023 12:16:31 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 935B6187
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 09:16:29 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-3feef504ccbso24062915e9.2
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 09:16:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692720987; x=1693325787;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=+aamOY9tWQl1yDw6EglxMSOp5KjQTwYClXfZ+RS9kD8=;
-        b=zxwtHOBu51pGYphJZU/FsnIVY14v80PUR2G6elLozRHCPVviQqeNevne+eTjsz2Sfz
-         TLkaDOoM2FgTSGXsbbAqTo+cRS2TFUfxDtxrFkYYY1UwKdtUOcklAqxCqwEXwEMJAkXO
-         11U9Ot1qc4x3utKo04CEMBAB1hYJUdQsKvhSjcgS/ZJH4acPSzgPVFPSm01EesdiJppN
-         byBvSNVOkWwdNwXop1oIyXEsa+zB+a+22GZJ1IV2tbuz5z+9+1yK5sXiCxP9ZDKKGCRx
-         8w1Zv41Z8YpmxygY2vbVEtPC6OwKKEDayd5zAfONPV94XH+eXTzOLLmaiImMR12x0YpI
-         BgRw==
+        d=linaro.org; s=google; t=1692720988; x=1693325788;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uRW3uVyacKVMz0n3X0Q3Lp2slVRo4x30QDLpyV/AFPs=;
+        b=Pk2F0c9Rrazytsk16HB+LRnddYNJXPCP3yl2gz8VJKPrcoV6Hokw4kg7LsP0acL3jv
+         NkRk7hi0k2D3BJ4wwtuhOMOgtVVt7T5vbMvQl7ioykCr8jahINu06Q11xUsFSsMQh0LL
+         n18hC646m3ynfxuRFoIBK9US8nxX+G3GBTJ8H3sJLK6aWL1ez5vQEvQOqJ7uwChOS49p
+         8tsTrKr1j0Ho3XZr6tEbpJATJtTuMMymD4UI2Dlw5oDyY3kzSYT6ZW1y+SZWgK8nRwT5
+         JPMSp7rhv7tiQU/F+3+UIqE/YHYvxhWPSiT5Upgu58oWHUgSsLeqxVSgUI19oBJ4vfnc
+         UUrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692720987; x=1693325787;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+aamOY9tWQl1yDw6EglxMSOp5KjQTwYClXfZ+RS9kD8=;
-        b=KCciWu4oquXMjeTPNLTGoz+OqVzoupqDxH1ee6u5IyVkdJ2iAmkgiGq+0BEiPZtNNj
-         hUAMf8G1q9o519J/H1tCGjvOxWfmgiJed1TwSKMktC9bmt6UeAoxSKameb5doP0uHd+m
-         o0xemk5sAyx/m0J9ATlemE2+ih4NgD1JyJoUN9o27KMM74Bv7wmGvNIuSuqD0EtM3PdL
-         t0bzSxbtbVedoWjhh8B51jjOe20DZd5LjUHkGsNa05PPydtxPXPa9ti6B12zrWjFjdGs
-         KlzFeucunoenX9a9/9CLp+Zo+8jFVNpdT0s4aqtCGnfsF02ZgskN6wqpNpIEhQIX92eR
-         fGQw==
-X-Gm-Message-State: AOJu0Yw6CtCSCrLrM9I3b+JxDnI6yPOjw9Gpc0fMnr+jAbr2p0ZdhMLC
-        dqMVklY84Epzq/oGquDTqduQDyv66VGYQccCOcA=
-X-Google-Smtp-Source: AGHT+IGoQO15/tEGDHhkk5R2/Kfphc/BQactKKbeUPEgxihemSj0oFRMtypm/SWkLhfrkVVLoF+BGQ==
-X-Received: by 2002:a05:651c:21b:b0:2b6:eefc:3e4f with SMTP id y27-20020a05651c021b00b002b6eefc3e4fmr7849412ljn.21.1692720986749;
-        Tue, 22 Aug 2023 09:16:26 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692720988; x=1693325788;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uRW3uVyacKVMz0n3X0Q3Lp2slVRo4x30QDLpyV/AFPs=;
+        b=XuSrQA+ygkdqUmctKcZA9GupiXz4JnTaQEWRb9scVYvrhkQsqI5cN3cwRnW9f7KVxO
+         /isDjIXeBlLDuK7LRwdvxnjSFs9Fm9GddAco3p5OteaR6q841bcVlcQOZC/HAb0FuP06
+         JSB2/GnrHWoAcgMCL43kmYAPYzbGzUZlDBgBiN8+gbadL0p8eQ9jvHuFNkDCtqXEvS1N
+         UabU5GuGQprc0MzQu3omX1pmUiErjv2YVhvrg/VHBumpamgu9hnUv7P532yE1R0fmQjB
+         56XZjenjvmBTV8J/1Rh500myNp+YrOYneKt3xvg9nCLH147E8r4kz2GHqhImmZB3g9fN
+         s1Ww==
+X-Gm-Message-State: AOJu0YwjRcEBsWIcsBVlkaWJu7e8LkSKgDLLNUj6RkCjJ5PkGjU527mC
+        WyRZeBUWiuIr1CHmQsd6FioC5Q==
+X-Google-Smtp-Source: AGHT+IGE2IthDSXynumdojcQS2kqJagZpGEDWNoRrEyfwvVk1jQZisP5AJpzMBj2Lv+cnfjySip1Uw==
+X-Received: by 2002:a1c:7907:0:b0:3fe:1bef:4034 with SMTP id l7-20020a1c7907000000b003fe1bef4034mr8471234wme.37.1692720988108;
+        Tue, 22 Aug 2023 09:16:28 -0700 (PDT)
 Received: from sagittarius-a.chello.ie (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
-        by smtp.gmail.com with ESMTPSA id t23-20020a7bc3d7000000b003fe1fe56202sm16516130wmj.33.2023.08.22.09.16.25
+        by smtp.gmail.com with ESMTPSA id t23-20020a7bc3d7000000b003fe1fe56202sm16516130wmj.33.2023.08.22.09.16.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Aug 2023 09:16:25 -0700 (PDT)
+        Tue, 22 Aug 2023 09:16:27 -0700 (PDT)
 From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 To:     rfoss@kernel.org, todor.too@gmail.com, bryan.odonoghue@linaro.org,
         agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
@@ -56,11 +57,13 @@ To:     rfoss@kernel.org, todor.too@gmail.com, bryan.odonoghue@linaro.org,
         laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com,
         andrey.konovalov@linaro.org
 Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v1 0/9] media: qcom: camss: Bugfix series
-Date:   Tue, 22 Aug 2023 17:16:11 +0100
-Message-ID: <20230822161620.1915110-1-bryan.odonoghue@linaro.org>
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: [PATCH v1 1/9] media: qcom: camss: Fix pm_domain_on sequence in probe
+Date:   Tue, 22 Aug 2023 17:16:12 +0100
+Message-ID: <20230822161620.1915110-2-bryan.odonoghue@linaro.org>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230822161620.1915110-1-bryan.odonoghue@linaro.org>
+References: <20230822161620.1915110-1-bryan.odonoghue@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -73,48 +76,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-V1:
-- Drops dt_id = vc * 4 in favour of a patch in a later series - Hans
-  Link: https://git.codelinaro.org/bryan.odonoghue/kernel/-/commit/d4c382c5d6ee153b410a01e172b3e811011d0b14
-- Adds Konrad's Acked-by as indicated
+We need to make sure camss_configure_pd() happens before
+camss_register_entities() as the vfe_get() path relies on the pointer
+provided by camss_configure_pd().
 
-V0:
-This series covers a number of Fixes: all of which are for application to
-stable as well as -next with the exception of the second patch which is a
-fix for a SHA that is still in -next.
+Fix the ordering sequence in probe to ensure the pointers vfe_get() demands
+are present by the time camss_register_entities() runs.
 
-Link: https://git.codelinaro.org/bryan.odonoghue/kernel/-/tree/linux-next-23-08-07-db410c-rb3-camss-dts-v3
+In order to facilitate backporting to stable kernels I've moved the
+configure_pd() call pretty early on the probe() function so that
+irrespective of the existence of the old error handling jump labels this
+patch should still apply to -next circa Aug 2023 to v5.13 inclusive.
 
-This series is part of a larger set of fixes, improvements developed/found
-when adding a new SoC.
+Fixes: 2f6f8af67203 ("media: camss: Refactor VFE power domain toggling")
+Cc: stable@vger.kernel.org
+Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+---
+ drivers/media/platform/qcom/camss/camss.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-Link: https://git.codelinaro.org/bryan.odonoghue/kernel/-/tree/lenovo-x13s-v6.5-rc4-x13s-camss-patches
-
-First pass on that larger series is to get all of the current Fixes: in the
-branch out.
-
-Andrey Konovalov (1):
-  media: qcom: camss: Fix csid-gen2 for test pattern generator
-
-Bryan O'Donoghue (8):
-  media: qcom: camss: Fix pm_domain_on sequence in probe
-  media: qcom: camss: Fix V4L2 async notifier error path
-  media: qcom: camss: Fix vfe_get() error jump
-  media: qcom: camss: Fix VFE-17x vfe_disable_output()
-  media: qcom: camss: Fix VFE-480 vfe_disable_output()
-  media: qcom: camss: Fix missing vfe_lite clocks check
-  media: qcom: camss: Fix invalid clock enable bit disjunction
-  media: qcom: camss: Fix set CSI2_RX_CFG1_VC_MODE when VC is greater
-    than 3
-
- .../platform/qcom/camss/camss-csid-gen2.c     | 11 ++++----
- .../qcom/camss/camss-csiphy-3ph-1-0.c         |  2 +-
- .../media/platform/qcom/camss/camss-vfe-170.c | 19 +++-----------
- .../media/platform/qcom/camss/camss-vfe-480.c | 19 +++-----------
- drivers/media/platform/qcom/camss/camss-vfe.c |  5 ++--
- drivers/media/platform/qcom/camss/camss.c     | 26 +++++++++----------
- 6 files changed, 28 insertions(+), 54 deletions(-)
-
+diff --git a/drivers/media/platform/qcom/camss/camss.c b/drivers/media/platform/qcom/camss/camss.c
+index f11dc59135a5a..75991d849b571 100644
+--- a/drivers/media/platform/qcom/camss/camss.c
++++ b/drivers/media/platform/qcom/camss/camss.c
+@@ -1619,6 +1619,12 @@ static int camss_probe(struct platform_device *pdev)
+ 	if (ret < 0)
+ 		goto err_cleanup;
+ 
++	ret = camss_configure_pd(camss);
++	if (ret < 0) {
++		dev_err(dev, "Failed to configure power domains: %d\n", ret);
++		goto err_cleanup;
++	}
++
+ 	ret = camss_init_subdevices(camss);
+ 	if (ret < 0)
+ 		goto err_cleanup;
+@@ -1678,12 +1684,6 @@ static int camss_probe(struct platform_device *pdev)
+ 		}
+ 	}
+ 
+-	ret = camss_configure_pd(camss);
+-	if (ret < 0) {
+-		dev_err(dev, "Failed to configure power domains: %d\n", ret);
+-		return ret;
+-	}
+-
+ 	pm_runtime_enable(dev);
+ 
+ 	return 0;
 -- 
 2.41.0
 
