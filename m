@@ -2,147 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF765784D65
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 01:38:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9337C784D66
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 01:39:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231755AbjHVXi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 19:38:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38072 "EHLO
+        id S231761AbjHVXj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 19:39:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229890AbjHVXi5 (ORCPT
+        with ESMTP id S231639AbjHVXj4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 19:38:57 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A685CD7;
-        Tue, 22 Aug 2023 16:38:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1692747534;
-        bh=yZs+o7fq+3ECzw1nBRtgOPe68rPMKRQ0lFhjxf9Nc5Q=;
-        h=Date:From:To:Cc:Subject:From;
-        b=o6tm0f2CCnCgPOlhxtk00vQ6IK9BhdJjQlUSQdxvNcest3kZIYf59Kh7c4scxSFJa
-         Wf+TTmBxN/B0zMjpcGej4h4PX6YNMsKwCdXDg2ZhmIkt7Op9r0rysS8eP1OyS4mamY
-         RNdEH+demzT+g5OFLQbg1+lI6+Apmb0LRWrcrNfjejEmSntux5XmCd1+Oxf1aV6prD
-         BaIvmvLz863ztQ6c+wOfA48W6PTjlNHOaVpFVARJ5dx+Nco+xTH3ZHda/Kah/nYTyA
-         zLTjid8WngMPIYGG7tuKgy4IEJfbLehYwGJFDMM9mjJcZ6GIHphOPjaM/5+qqTGLf9
-         NdwV8ag10i3lQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RVm595VC5z4wxW;
-        Wed, 23 Aug 2023 09:38:53 +1000 (AEST)
-Date:   Wed, 23 Aug 2023 09:38:52 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Christian Brauner <brauner@kernel.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        David Chinner <david@fromorbit.com>
-Cc:     Christoph Hellwig <hch@lst.de>, <linux-xfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the vfs-brauner tree with the xfs tree
-Message-ID: <20230823093852.7bf03b7e@canb.auug.org.au>
+        Tue, 22 Aug 2023 19:39:56 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D0ABCD7
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 16:39:54 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-4ffae5bdc9aso5611330e87.1
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 16:39:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1692747593; x=1693352393;
+        h=cc:to:subject:message-id:date:user-agent:from:references
+         :in-reply-to:mime-version:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BBnThSAKzhzR9rSGGQ+uW8RCv4yp0DSEOJ+0TVL56nk=;
+        b=QsWKy1jTDTWB52uTxFOi3zfsOweTLAKE3PIHrsWhMpiDKzBr4toJGch4TKmtMUvYqG
+         3GzQ1U9eZDhrRAtWdnMSLfjPzssVgU4ZTTvsHDjNjP5dg8GL+S8oOqqlNglvm4NnylKc
+         6+zHhcCs50LUOHQJb0msu4XGtH1LwbJGc0ftU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692747593; x=1693352393;
+        h=cc:to:subject:message-id:date:user-agent:from:references
+         :in-reply-to:mime-version:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BBnThSAKzhzR9rSGGQ+uW8RCv4yp0DSEOJ+0TVL56nk=;
+        b=i7vQHfyZTfJmcgaLRapOcFU1n93Gf4zEEfqlIl4nTHlT9TbpXn8OilwBkOk54ZcUGl
+         pINNWX6bHXAOaRjMTgkitd+Rc+rkYpbT32mLAxmRNInzSR/9Iz63PraroPiwrzYwY8aq
+         /b4YTE40QgZrH6ZLD7X04n5qgqalxL3RWJOeA+MPvu6D5xDGwHMgVAJ0jkoTSrNM78Rs
+         mDzs7shsNl4bC4McJzM2JoQiCoS61tLqfZbNV+Xk7AXHxOJiuBQ9zFlDIvET5YwJAgaY
+         /LoZwr2tSFMaFqmxkQXumgU+s7edVG7f6PWWtRdy01AetIHAeMFtigfgIgR/yCi600OF
+         Oueg==
+X-Gm-Message-State: AOJu0YyyNO0nCdFKO4JCSynyb0PMEObk7k6D2zlbqHpaBvB6zTlDioy7
+        zRoNzSbDe/dt8BL+7IMsfkdxXblbO5EGu4Fwo90F5w==
+X-Google-Smtp-Source: AGHT+IGU9ghgpnimdTBYx+LsvN3eXoAUQ0e5d7XJpOiOkBBJbb3/8kf+cIH2Muh6sY0AYdzIn/S1uuiuvJTrDHYspL8=
+X-Received: by 2002:a05:6512:3045:b0:4fb:89b3:3374 with SMTP id
+ b5-20020a056512304500b004fb89b33374mr9771049lfb.54.1692747592254; Tue, 22 Aug
+ 2023 16:39:52 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Tue, 22 Aug 2023 16:39:51 -0700
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/n5wKtoreezILvO5+.oog+Ed";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230822142644.v10.4.Ie6c132b96ebbbcddbf6954b9469ed40a6960343c@changeid>
+References: <20230822212927.249645-1-dianders@chromium.org> <20230822142644.v10.4.Ie6c132b96ebbbcddbf6954b9469ed40a6960343c@changeid>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.10
+Date:   Tue, 22 Aug 2023 16:39:51 -0700
+Message-ID: <CAE-0n52ZLr0qZ=9zN0kcXK2G5=sGKizGg5F9z4pLPjY_Xv6OJw@mail.gmail.com>
+Subject: Re: [PATCH v10 4/6] arm64: smp: Add arch support for backtrace using pseudo-NMI
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Will Deacon <will@kernel.org>
+Cc:     Lecopzer Chen <lecopzer.chen@mediatek.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        kgdb-bugreport@lists.sourceforge.net, ito-yuichi@fujitsu.com,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Chen-Yu Tsai <wens@csie.org>, Ard Biesheuvel <ardb@kernel.org>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Masayoshi Mizuma <msys.mizuma@gmail.com>,
+        D Scott Phillips <scott@os.amperecomputing.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Valentin Schneider <vschneid@redhat.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/n5wKtoreezILvO5+.oog+Ed
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Quoting Douglas Anderson (2023-08-22 14:26:59)
+> diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
+> index bfe60adbc453..15b66dc1391b 100644
+> --- a/arch/arm64/kernel/smp.c
+> +++ b/arch/arm64/kernel/smp.c
+> @@ -845,6 +852,22 @@ static void __noreturn ipi_cpu_crash_stop(unsigned int cpu, struct pt_regs *regs
+>  #endif
+>  }
+>
+> +void arm64_backtrace_ipi(cpumask_t *mask)
+> +{
+> +       __ipi_send_mask(ipi_desc[IPI_CPU_BACKTRACE], mask);
+> +}
+> +
+> +void arch_trigger_cpumask_backtrace(const cpumask_t *mask, int exclude_cpu)
+> +{
+> +       /*
+> +        * NOTE: though nmi_trigger_cpumask_backtrace has "nmi_" in the name,
+> +        * nothing about it truly needs to be backed by an NMI, it's just that
+> +        * it's _allowed_ to work with NMIs. If ipi_should_be_nmi() returned
+> +        * false our backtrace attempt will just be backed by a regular IPI.
 
-Hi all,
+I think "backed by" is an idiom and may be confusing. Simplify by
+replacing "backed by" with "implemented using"?
 
-Today's linux-next merge of the vfs-brauner tree got a conflict in:
-
-  fs/xfs/xfs_super.c
-
-between commit:
-
-  a76dba3b248c ("xfs: create scaffolding for creating debugfs entries")
-
-from the xfs tree and commit:
-
-  35a93b148b03 ("xfs: close the external block devices in xfs_mount_free")
-
-from the vfs-brauner tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc fs/xfs/xfs_super.c
-index 09638e8fb4ee,c79eac048456..000000000000
---- a/fs/xfs/xfs_super.c
-+++ b/fs/xfs/xfs_super.c
-@@@ -760,7 -772,17 +774,18 @@@ static voi
-  xfs_mount_free(
-  	struct xfs_mount	*mp)
-  {
-+ 	/*
-+ 	 * Free the buftargs here because blkdev_put needs to be called outside
-+ 	 * of sb->s_umount, which is held around the call to ->put_super.
-+ 	 */
-+ 	if (mp->m_logdev_targp && mp->m_logdev_targp !=3D mp->m_ddev_targp)
-+ 		xfs_free_buftarg(mp->m_logdev_targp);
-+ 	if (mp->m_rtdev_targp)
-+ 		xfs_free_buftarg(mp->m_rtdev_targp);
-+ 	if (mp->m_ddev_targp)
-+ 		xfs_free_buftarg(mp->m_ddev_targp);
-+=20
- +	debugfs_remove(mp->m_debugfs);
-  	kfree(mp->m_rtname);
-  	kfree(mp->m_logname);
-  	kmem_free(mp);
-@@@ -1538,18 -1537,11 +1556,18 @@@ xfs_fs_fill_super
- =20
-  	error =3D xfs_open_devices(mp);
-  	if (error)
-- 		goto out_free_names;
-+ 		return error;
- =20
- +	if (xfs_debugfs) {
- +		mp->m_debugfs =3D xfs_debugfs_mkdir(mp->m_super->s_id,
- +						  xfs_debugfs);
- +	} else {
- +		mp->m_debugfs =3D NULL;
- +	}
- +
-  	error =3D xfs_init_mount_workqueues(mp);
-  	if (error)
-- 		goto out_close_devices;
-+ 		goto out_shutdown_devices;
- =20
-  	error =3D xfs_init_percpu_counters(mp);
-  	if (error)
-
---Sig_/n5wKtoreezILvO5+.oog+Ed
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTlRwwACgkQAVBC80lX
-0Gz6gwf+KtMm/B6ztfqsX2qtt8tquwCNqAyDznpCY1BGycC/pG7kOkQO8U6Mi/pX
-+7e32oEgfiGQ0PqngPdxyOk51FGpVrEVrJTYw/VDvERStnEDdIUcJXKbRHzNrH+F
-HfH9lwySQZGMESO/kF3Xw6Z9l+eqHfkWwbRZBwUO73Vaz/LSHaSuLRABpCMA7aUA
-BK3owTjhZTsybE7nHzdsDS+hbWILcvT6oMcLiW85kC30trNCR9cCVoNFByPbtiYI
-jyz/ChtoK+z9OS871AeCwOSLeIqLO4vi+5eCiWlpy19h9zQD9JvIh4k0roISJF04
-lMqLamBeg7rTGsZE9N+BZ9/AwZbC7w==
-=8d5B
------END PGP SIGNATURE-----
-
---Sig_/n5wKtoreezILvO5+.oog+Ed--
+> +        */
+> +       nmi_trigger_cpumask_backtrace(mask, exclude_cpu, arm64_backtrace_ipi);
+> +}
+> +
+>  /*
+>   * Main handler for inter-processor interrupts
+>   */
