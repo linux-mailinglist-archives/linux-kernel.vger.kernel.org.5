@@ -2,126 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00D3078396F
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 07:43:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4EE1783972
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 07:44:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232862AbjHVFng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 01:43:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42428 "EHLO
+        id S232871AbjHVFoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 01:44:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232523AbjHVFnf (ORCPT
+        with ESMTP id S232523AbjHVFoi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 01:43:35 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57A68133;
-        Mon, 21 Aug 2023 22:43:34 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D7DBD61F5D;
-        Tue, 22 Aug 2023 05:43:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BAC6DC433C9;
-        Tue, 22 Aug 2023 05:43:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692683012;
-        bh=MlkDt4lSwRLkNkwyY2fyqOrEpkJm8+YSKKaLzasKkek=;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-        b=o5eDhnoYUR6MC0uhXLUEzzr8DYAZ0ei3bSVg57wqinm3UUaeQ0Wdv7X50n0jwp34t
-         uV3Mu9SfiKmT+h+UALoxPSDtmrLYoCqpcSIxUkJwh028sjRoca/6mJ+DPr8PFCRCq5
-         iLQIEJsAKpzDDSrw60lXU36CyB+NfmKPa7BFLWhjIixXnSRcdFHgVvQc2fX0Lz5k2i
-         /JEmZZAyspOrP6ce6fz+JQ1YAR8Y6ZRZhLAC9Pptj9BGkAgv0MWRhg5UHJGBIA90SU
-         kXDxdiDxjf2G/G8ZaiDMgi6yWAwSLXmHlInK98qBkSZGUEubqoyXXWJQFgRsbkilJd
-         1Nn0sqnuZ7ilw==
-From:   Kalle Valo <kvalo@kernel.org>
-To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
-Cc:     Wang Ming <machel@vivo.com>, linux-wireless@vger.kernel.org,
-        linux-kernel@vger.kernel.org, opensource.kernel@vivo.com
-Subject: Re: [PATCH net-next v3] wifi: ath9k: Remove error checking for
- debugfs_create_dir()
-References: <20230726110750.3925-1-machel@vivo.com> <87sf8tbr3a.fsf@toke.dk>
-        <87bkf0k1rt.fsf@kernel.org> <87350cbiv9.fsf@toke.dk>
-Date:   Tue, 22 Aug 2023 08:44:29 +0300
-In-Reply-To: <87350cbiv9.fsf@toke.dk> ("Toke =?utf-8?Q?H=C3=B8iland-J?=
- =?utf-8?Q?=C3=B8rgensen=22's?= message of
-        "Mon, 21 Aug 2023 15:55:06 +0200")
-Message-ID: <87lee3ws02.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        Tue, 22 Aug 2023 01:44:38 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E770A133
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 22:44:35 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-5256d74dab9so4934646a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 22:44:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692683074; x=1693287874;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+Pz65IM6yK+nsY8GMYtZPvYOmwUF6F4yt+xPaiBO+hQ=;
+        b=j0ze+Q9Xmul9BQ10lkn/30oKMU0MyDZKtP7kQkGfEnhhujbMxX7Ip2T/3BVh19T2IU
+         pCzUdFVH3moQIcnmtDZdQeXuNpJmo5Kv+3i+BHQboEBpqFdd2/JYifyyhZHCpBSdXk9S
+         6nZnfj0hOiXu74eY9Ly0NZyI3gOK4bnrWsik1o27xn7A9wUmRbW+wY4DigX2ZdZiVHwy
+         h5QrSneVtgDKfqyZYSwUlyAKD5mVaMTHoproyvuT+UUjLWtElgjfZs+1qIe99hNqCnQf
+         fLhPUGBIrZ1QY2KGIjkZd+Sq6sUJwTa/J7iiEgVwbQBl+Mb+LpeMziVfNTDXF4Op9lf4
+         +JDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692683074; x=1693287874;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+Pz65IM6yK+nsY8GMYtZPvYOmwUF6F4yt+xPaiBO+hQ=;
+        b=CoLH7pzYQmgrolT93zj2wgBdLtqgHLSDZasGRqvIC0NV5KL6m/wOHwVK3ROEI2xD4q
+         ua14rJTWVmvqtJQpEDwnihA3nLKPoGtDTQnYvUXhDD1UmNEy7fNRrcP3jmfyhYofBsN/
+         P0QEvcKa7fDNIwJXc8jqBfTvexgOawPhJqNrbdZU7rD/ZPxjKvMqHNSHEEC6sD18pZyK
+         EjytElUtQHivr+NEixPvcUj8tlAd1jE7h8pEQEuOwGRq0Tjt4VMyTfMYcL3RCTgAET/a
+         Lhy8WD04yUJ/F70/bLYANZxOOs7ouNeIRlVnwGV+kl7CPtDZIzhUeRK4mFynAdGW9GcO
+         Z/yg==
+X-Gm-Message-State: AOJu0Yw9SVpnzAmPlz94fp1VUMBwKBoV0H1azgjvZNzfNBAovgza5OL3
+        rbgbEcP4NZ969405DdXiFvf5mc4nAMYN3K98dCc=
+X-Google-Smtp-Source: AGHT+IFsW2EHW1wtQRSB+/XNA/5uXxvwe55YXZkjJn3VtfUvXo1Lrm3RDMPjqSfYk1A6u+bSg2Uevw==
+X-Received: by 2002:a17:906:3089:b0:9a1:c216:c89c with SMTP id 9-20020a170906308900b009a1c216c89cmr26722ejv.66.1692683074320;
+        Mon, 21 Aug 2023 22:44:34 -0700 (PDT)
+Received: from [192.168.0.22] ([77.252.47.198])
+        by smtp.gmail.com with ESMTPSA id bv17-20020a170906b1d100b00992e265495csm7557220ejb.212.2023.08.21.22.44.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Aug 2023 22:44:33 -0700 (PDT)
+Message-ID: <e62185ca-cdf6-bde9-ad46-f4150db9ed6d@linaro.org>
+Date:   Tue, 22 Aug 2023 07:44:32 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v2] dt-bindings: interrupt-controller: loongson,liointc:
+ Fix warnings about liointc-2.0
+To:     Binbin Zhou <zhoubinbin@loongson.cn>,
+        Binbin Zhou <zhoubb.aaron@gmail.com>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     Huacai Chen <chenhuacai@kernel.org>,
+        loongson-kernel@lists.loongnix.cn, devicetree@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-mips@vger.kernel.org, diasyzhang@tencent.com,
+        linux-kernel@vger.kernel.org
+References: <20230821061315.3416836-1-zhoubinbin@loongson.cn>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230821061315.3416836-1-zhoubinbin@loongson.cn>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Toke H=C3=B8iland-J=C3=B8rgensen <toke@toke.dk> writes:
+On 21/08/2023 08:13, Binbin Zhou wrote:
+> Since commit f4dee5d8e1fa ("dt-bindings: interrupt-controller: Add
+> Loongson-2K1000 LIOINTC"), the loongson liointc supports configuring
+> routes for 64-bit interrupt sources.
+> 
+> For liointc-2.0, we need to define two liointc nodes in dts, one for
+> "0-31" interrupt sources and the other for "32-63" interrupt sources.
+> This applies to mips Loongson-2K1000.
+> 
+> Unfortunately, there are some warnings about "loongson,liointc-2.0":
+> 1. "interrupt-names" should be "required", the driver gets the parent
+> interrupts through it.
 
-> Kalle Valo <kvalo@kernel.org> writes:
->
->> Toke H=C3=B8iland-J=C3=B8rgensen <toke@toke.dk> writes:
->>
->>> Wang Ming <machel@vivo.com> writes:
->>>
->>>> It is expected that most callers should _ignore_ the errors
->>>> return by debugfs_create_dir() in ath9k_htc_init_debug().
->>>>
->>>> Signed-off-by: Wang Ming <machel@vivo.com>
->>>> ---
->>>>  drivers/net/wireless/ath/ath9k/htc_drv_debug.c | 2 --
->>>>  1 file changed, 2 deletions(-)
->>>>
->>>> diff --git a/drivers/net/wireless/ath/ath9k/htc_drv_debug.c b/drivers/=
-net/wireless/ath/ath9k/htc_drv_debug.c
->>>> index b3ed65e5c4da..85ad45771b44 100644
->>>> --- a/drivers/net/wireless/ath/ath9k/htc_drv_debug.c
->>>> +++ b/drivers/net/wireless/ath/ath9k/htc_drv_debug.c
->>>> @@ -491,8 +491,6 @@ int ath9k_htc_init_debug(struct ath_hw *ah)
->>>>=20=20
->>>>  	priv->debug.debugfs_phy =3D debugfs_create_dir(KBUILD_MODNAME,
->>>>  					     priv->hw->wiphy->debugfsdir);
->>>> -	if (!priv->debug.debugfs_phy)
->>>> -		return -ENOMEM;
->>>
->>> Hmm, so it's true that all the debugfs_create* functions deal correctly
->>> with the dir pointer being an error pointer, which means that it's
->>> possible to just ignore the return value of debugfs_create_dir() without
->>> anything breaking.
->>
->> The comment in debugfs_create_dir() states:
->>
->>  * NOTE: it's expected that most callers should _ignore_ the errors retu=
-rned
->>  * by this function. Other debugfs functions handle the fact that the "d=
-entry"
->>  * passed to them could be an error and they don't crash in that case.
->>  * Drivers should generally work fine even if debugfs fails to init anyw=
-ay.
->>
->>> However, it also seems kinda pointless to have all those calls if we
->>> know they're going to fail, so I prefer v1 of this patch that just
->>> fixed the IS_ERR check. No need to resend, we can just apply v1
->>> instead...
->>
->> Because of the comment I'm leaning towards v3.
->
-> Well, the comment says "most callers" :)
->
-> I think having an early return like this is perfectly valid
-> optimisation, even if it doesn't really make any performance difference.
-> I don't feel incredibly strongly about it (given that the current check
-> is broken I guess the early return has never actually worked), so if you
-> feel like overriding your submaintainer on this, feel free ;)
+No, why? Parent? This does not make sense.
 
-No no, I don't want to override anything :) Just making sure you were
-aware of the comment. v1 is in my pending branch right now.
+> 
+> 2. Since not all CPUs are multicore, e.g. Loongson-2K0500 is a
+> single-core CPU, there is no core1-related registers. So "reg" and
+> "reg-names" should be set to "minItems 2".
+> 
+> 3. Routing interrupts from "int0" is a common solution in practice, but
+> theoretically there is no such requirement, as long as conflicts are
+> avoided. So "interrupt-names" should be defined by "pattern".
 
---=20
-https://patchwork.kernel.org/project/linux-wireless/list/
+Why? What the pattern has to do with anything in routing or not routing
+something?
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
-hes
+> 
+> This fixes dtbs_check warning:
+> 
+> DTC_CHK arch/mips/boot/dts/loongson/loongson64_2core_2k1000.dtb
+> arch/mips/boot/dts/loongson/loongson64_2core_2k1000.dtb: interrupt-controller@1fe11440: interrupt-names:0: 'int0' was expected
+>       From schema: Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml
+> arch/mips/boot/dts/loongson/loongson64_2core_2k1000.dtb: interrupt-controller@1fe11440: Unevaluated properties are not allowed ('interrupt-names' was unexpected)
+>       From schema: Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml
+> 
+> Fixes: f4dee5d8e1fa ("dt-bindings: interrupt-controller: Add Loongson-2K1000 LIOINTC")
+> Signed-off-by: Binbin Zhou <zhoubinbin@loongson.cn>
+> ---
+> V2:
+> 1. Update commit message;
+> 2. "interruprt-names" should be "required", the driver gets the parent
+> interrupts through it;
+> 3. Add more descriptions to explain the rationale for multiple nodes;
+> 4. Rewrite if-else statements.
+> 
+> Link to V1:
+> https://lore.kernel.org/all/20230815084713.1627520-1-zhoubinbin@loongson.cn/
+> 
+>  .../loongson,liointc.yaml                     | 74 +++++++++----------
+>  1 file changed, 37 insertions(+), 37 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml b/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml
+> index 00b570c82903..f695d3a75ddf 100644
+> --- a/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml
+> +++ b/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml
+> @@ -11,11 +11,11 @@ maintainers:
+>  
+>  description: |
+>    This interrupt controller is found in the Loongson-3 family of chips and
+> -  Loongson-2K1000 chip, as the primary package interrupt controller which
+> +  Loongson-2K series chips, as the primary package interrupt controller which
+>    can route local I/O interrupt to interrupt lines of cores.
+> -
+> -allOf:
+> -  - $ref: /schemas/interrupt-controller.yaml#
+> +  In particular, the Loongson-2K1000/2K0500 has 64 interrupt sources that we
+> +  need to describe with two dts nodes. One for interrupt sources "0-31" and
+> +  the other for interrupt sources "32-63".
+>  
+>  properties:
+>    compatible:
+> @@ -24,15 +24,9 @@ properties:
+>        - loongson,liointc-1.0a
+>        - loongson,liointc-2.0
+>  
+> -  reg:
+> -    minItems: 1
+> -    maxItems: 3
+> +  reg: true
+
+No. Constraints must be here.
+
+>  
+> -  reg-names:
+> -    items:
+> -      - const: main
+> -      - const: isr0
+> -      - const: isr1
+> +  reg-names: true
+
+No, keep at least min/maxItems here.
+
+>  
+>    interrupt-controller: true
+>  
+> @@ -45,11 +39,9 @@ properties:
+>    interrupt-names:
+>      description: List of names for the parent interrupts.
+>      items:
+> -      - const: int0
+> -      - const: int1
+> -      - const: int2
+> -      - const: int3
+> +      pattern: int[0-3]
+>      minItems: 1
+> +    maxItems: 4
+
+I don't see reason behind it.
+
+>  
+>    '#interrupt-cells':
+>      const: 2
+> @@ -69,32 +61,41 @@ required:
+>    - compatible
+>    - reg
+>    - interrupts
+> +  - interrupt-names
+
+Why? You are doing multiple things at once, without proper explanation.
+
+>    - interrupt-controller
+>    - '#interrupt-cells'
+>    - loongson,parent_int_map
+>  
+> -
+>  unevaluatedProperties: false
+>  
+> -if:
+> -  properties:
+> -    compatible:
+> -      contains:
+> -        enum:
+> -          - loongson,liointc-2.0
+> -
+> -then:
+> -  properties:
+> -    reg:
+> -      minItems: 3
+> -
+> -  required:
+> -    - reg-names
+> -
+> -else:
+> -  properties:
+> -    reg:
+> -      maxItems: 1
+> +allOf:
+> +  - $ref: /schemas/interrupt-controller.yaml#
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - loongson,liointc-2.0
+> +    then:
+> +      properties:
+> +        reg:
+> +          minItems: 2
+> +          items:
+> +            - description: Interrupt routing registers.
+> +            - description: Low/high 32-bit interrupt status routed to core0.
+> +            - description: Low/high 32-bit interrupt status routed to core1.
+> +        reg-names:
+> +          minItems: 2
+> +          items:
+> +            - const: main
+> +            - const: isr0
+> +            - const: isr1
+
+Srsly, why this is moved here from the top? It does not make sense.
+
+> +      required:
+> +        - reg-names
+> +    else:
+> +      properties:
+> +        reg:
+> +          maxItems: 1
+
+so reg-names can be "pink-pony"?
+
+Best regards,
+Krzysztof
+
