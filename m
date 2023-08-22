@@ -2,73 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BCD5783B9D
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 10:18:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C1A6783B9F
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 10:18:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233766AbjHVISX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 04:18:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50188 "EHLO
+        id S233751AbjHVISZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 04:18:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233773AbjHVISJ (ORCPT
+        with ESMTP id S233765AbjHVISO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 04:18:09 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6194D1AE
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 01:18:08 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id d75a77b69052e-40a47e8e38dso164071cf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 01:18:08 -0700 (PDT)
+        Tue, 22 Aug 2023 04:18:14 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D6E4CC1
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 01:18:12 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-51cff235226so8672617a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 01:18:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692692287; x=1693297087;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0Y+P92gaIOtxmJ4GQuI1gvrZz/VMhfETxorK5TKfzBk=;
-        b=XTbK95xrJra6oEzO1gFH4l3LUyPCQjhZVzPiUtK12pfKx1SfKU/ZmRcBAyKT6CYABK
-         HKyrx3uFVJcTcBmsvdmN7zERpPi1u+63GNjEr8uaoOAd5l254TvXdetBum+neGos1/xj
-         znnlKqJv0gPnoKlPNvUK/E8aiGqMv6ihs76Z0ezD6UaJYbqqVZ7arIE4fDWPKUecZze2
-         4rnMhiYUUjnZ4KcHp5jHFfBIeqSep+q9So0PEC69rRHb0JgqBGm+N5Jo0OFmfnRA3eUp
-         pjB4/txnakmdH/53EJfRWnVrmwTGIOydAWTGEdbbzdG3xSj4itwzPnN1N/CAVz6NXIMx
-         zWHg==
+        d=linaro.org; s=google; t=1692692290; x=1693297090;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Z1MQ9JDRqAXFUR5POQlWiEXtOzxxDfLtExomDvSRs4g=;
+        b=ZShpc+OjL6atbhiSlZgFZjO6BHhlIcXf4egHk65Yw/TLtOdRYbtnA51muuFMA6Iml/
+         YLGljqfCkpbwQOa1n7wlxHYcc5hkMBmoxjcnmpdgxmw5nvPmlHx2wV361yulvh/Bo1Ky
+         uLPGJ3kaadU8HdR7i8ZLiQH9TevJeSnMdAyaTmhORYZT4aY7EFfwOyAti3ovBsY3z3xf
+         pVlFY9+eVYSSIbZ4nzhPAxaUTARbWRVVtrDeBZ9J2J4Cl+mMIwVIsDn39AgONR35Vbug
+         rwbQwjm9AgkPWe/aCf6J5ejQo1/e1nMQBXXOiBpnDwTIKoSI86iKDyGgdKcyKwSpLWY/
+         vAoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692692287; x=1693297087;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0Y+P92gaIOtxmJ4GQuI1gvrZz/VMhfETxorK5TKfzBk=;
-        b=NWGmGtnTzTYgGB05rHVjSpxSVD13ZZ1B35GX5ccVh8WP60CeDpm26V6/qk7HyDBdmY
-         XWF7VrrJ4MCzW79v6QN7K8bL4FAEFtyfngCMMdlOYMiL7LMuJEXNH0WDl6GKLgbrDEqP
-         F1kErndIVcKjc5SqKmC9/dn6hnTyyW/MiPSHE64lCbWV+nfkX3yIMEXTnDG5BrdM68rq
-         q955OQFFSjqTLI1q3vMOQqRP8LowJp59SEQY0i+Ep6MNFePdlgry9S1PdN8HLZA9Up1m
-         buKO4wDuHW1uBXSVsqKX8mqPl6ptxbW9yQpx/fJiCGiVoMdgaiXbGaTwiGiXzGYUoMsi
-         Dnfg==
-X-Gm-Message-State: AOJu0YzWGig0d6pDvzt6RwdT0HN2EqfYrHwufgIve9SsxVyppg67TjyO
-        5Sn7JRP+YY24oDa76oC+TIkDEtU00r7HH7uyAtfBl49+tRUH0eDdwn20cw==
-X-Google-Smtp-Source: AGHT+IG6Imz+hb2H6ThrnJJSyj9TF/FlinkAsxgSUw9yPUDKDS984QzNxxtXbKl1fI2UbBLRqax8GK76LtgImM4gJkA=
-X-Received: by 2002:ac8:5cc4:0:b0:410:9855:acd with SMTP id
- s4-20020ac85cc4000000b0041098550acdmr209444qta.14.1692692287343; Tue, 22 Aug
- 2023 01:18:07 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692692290; x=1693297090;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z1MQ9JDRqAXFUR5POQlWiEXtOzxxDfLtExomDvSRs4g=;
+        b=Cm1I4z1COOkcYvdzQPq5vM9cR6ASXtkTlo5iGiGcvQn50gKyxAr27Fh+Fd3czjirc7
+         cpX+iFgZkyy9WEUeHtEl0JPtsVmgzSeFyrpeumVRiKAuvf72s6oqFe/tiyWB25i55tvC
+         hzRZjoJzuLMGCBUFMiIpNM87FxTCt3O120E1AIx9ievj7kGo0to+edInU7KauDyK2AIR
+         Syap6XiKhGkMB4pzmEBowLptUsrRNhZEj+CjTjKoDkIXi1EejDOLxNZSDGc7jXB6lNBo
+         Z6LLqpDAsggcqORSRkUKY1XvYUA/ckNl+1AWgpIxZ+PNIT65SKQUyfVkNkwRxZPtkyPn
+         c2vw==
+X-Gm-Message-State: AOJu0YyGIgojJYTXXulhKeioB2PHNOGFVTrSIuzegqdoeT9obmAfSDW6
+        xPRHttOLywbw4yt1jv59ICj6UQ==
+X-Google-Smtp-Source: AGHT+IF/wxJ/4XOkLbbb7O+KZzjeajYoXprZMACUlegqY6DyztH0lDuyaAXJXaZc7jKn7ONnfTW48w==
+X-Received: by 2002:a05:6402:1d4c:b0:51f:ef58:da87 with SMTP id dz12-20020a0564021d4c00b0051fef58da87mr12008495edb.2.1692692290509;
+        Tue, 22 Aug 2023 01:18:10 -0700 (PDT)
+Received: from [192.168.0.22] ([77.252.47.198])
+        by smtp.gmail.com with ESMTPSA id r20-20020aa7d154000000b0052a1a623267sm731594edo.62.2023.08.22.01.18.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Aug 2023 01:18:10 -0700 (PDT)
+Message-ID: <452f8d9c-e4ee-ad30-3637-7a44702b8d80@linaro.org>
+Date:   Tue, 22 Aug 2023 10:18:08 +0200
 MIME-Version: 1.0
-References: <20230817182055.1770180-1-mshavit@google.com> <20230818021629.RFC.v1.2.I782000a264a60e00ecad1bee06fd1413685f9253@changeid>
- <ZN5y4N8ffSoiR/sm@nvidia.com> <05f69a1a-97c9-ebca-5e01-c0b00699c93e@arm.com>
- <CAKHBV27suc5nDoH7gMHebjYBONTNqsugWvxbo2E-fRjRGs288w@mail.gmail.com>
- <ZN93TO9mRIrX1grw@nvidia.com> <CAKHBV24L7pTajkStWCRiW7976+B8VtDHRDpo+Emta0RshkvRhQ@mail.gmail.com>
- <ZONRRubvUK7GXO4i@nvidia.com>
-In-Reply-To: <ZONRRubvUK7GXO4i@nvidia.com>
-From:   Michael Shavit <mshavit@google.com>
-Date:   Tue, 22 Aug 2023 16:17:31 +0800
-Message-ID: <CAKHBV26knnw7WjUP-6kw1v0T9=196d3cJa5zO1tQa4kjteO-fg@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 2/8] iommu/arm-smmu-v3: Perform invalidations over installed_smmus
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Robin Murphy <robin.murphy@arm.com>, iommu@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        will@kernel.org, nicolinc@nvidia.com, tina.zhang@intel.com,
-        jean-philippe@linaro.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 2/2] mfd: sprd-sc27xx-spi: Add PMICs support for UMS9621
+ SoC
+Content-Language: en-US
+To:     Jiansheng Wu <jiansheng.wu@unisoc.com>, Lee Jones <lee@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yongzhi.chen@unisoc.com, xiaoqing.wu@unisoc.com,
+        jinfeng.lin1@unisoc.com, jianshengwu16@gmail.com
+References: <20230822075113.25506-1-jiansheng.wu@unisoc.com>
+ <20230822075113.25506-3-jiansheng.wu@unisoc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230822075113.25506-3-jiansheng.wu@unisoc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,35 +84,150 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 21, 2023 at 7:58=E2=80=AFPM Jason Gunthorpe <jgg@nvidia.com> wr=
-ote:
->
-> > Since there's now a loop over a series of SMMUs inside
-> > arm_smmu_tlb_inv_range_asid, it makes sense to move the check into
-> > that loop. This technically works because only SVA is calling
-> > arm_smmu_tlb_inv_range_asid but can (IMO) risk introducing bugs in
-> > the future since it's not obvious from the function name.
->
-> Well, I would remove the duplication and add an argument if you intend
-> to share the function that loops
+On 22/08/2023 09:51, Jiansheng Wu wrote:
+> There are three PMICs (UMP9620/21/22) on Unisoc's UMS9621 chip.
+> UMP9620 is a master PMIC, the others are slave ones. Slave PMICs
+> don't have irq functions, which is different from master device,
+> such as SC27xx series and UMP9620, etc.
+> 
+> Signed-off-by: Jiansheng Wu <jiansheng.wu@unisoc.com>
+> ---
+>  drivers/mfd/sprd-sc27xx-spi.c | 104 +++++++++++++++++++++++++---------
+>  1 file changed, 77 insertions(+), 27 deletions(-)
+> 
+> diff --git a/drivers/mfd/sprd-sc27xx-spi.c b/drivers/mfd/sprd-sc27xx-spi.c
+> index d21f32cc784d..aa91301568a9 100644
+> --- a/drivers/mfd/sprd-sc27xx-spi.c
+> +++ b/drivers/mfd/sprd-sc27xx-spi.c
+> @@ -24,6 +24,10 @@
+>  #define SPRD_SC2731_IRQ_BASE		0x140
+>  #define SPRD_SC2731_IRQ_NUMS		16
+>  #define SPRD_SC2731_CHG_DET		0xedc
+> +#define SPRD_UMP9620_IRQ_BASE           0x80
+> +#define SPRD_UMP9620_IRQ_NUMS           11
+> +#define SPRD_UMP9621_SLAVE_ID           0x8000
+> +#define SPRD_UMP9622_SLAVE_ID           0xc000
+>  
+>  /* PMIC charger detection definition */
+>  #define SPRD_PMIC_CHG_DET_DELAY_US	200000
+> @@ -45,6 +49,7 @@ struct sprd_pmic {
+>  };
+>  
+>  struct sprd_pmic_data {
+> +	u32 slave_id;
 
-What do you think about this as a final stage:
-Once the set_dev_pasid and sva refactor lands, SVA could call a common
-arm_smmu_inv_range_domain implementation which would:
-1. Skip the TLB invalidation on a per-smmu basis if it detects that
-the domain type is SVA, or based on a passed-in parameter that is only
-set True by SVA.
-2. Issue ATC invalidations with SSIDs found in the arm_smmu_domain.
-This common function would be used for all use-cases: invalidations of
-domains attached on RIDs, on PASIDs (SVA and non SVA).
+See coding style about such wording. You know, it is not 2010 anymore...
 
-Then we have two options for the intermediate stage with this series:
-1. Non-SVA code uses arm_smmu_inv_range_domain which calls
-arm_smmu_tlb_inv_range_domain(_no_atc) and arm_smmu_atc_range_domain,
-SVA code individually calls those two functions.
-arm_smmu_tlb_inv_range_domain(_no_atc) accepts a parameter to skip the
-invalidation if BTM feature is set.
-2. Same as option 1, but SVA also calls arm_smmu_inv_range_domain.
-arm_smmu_inv_range_domain accepts both a parameter to skip TLB inv
-when BTM is set, as well as an SSID for the atc invalidation. SSID
-would be 0 in non-sva callers, and mm->pasid for SVA.
+>  	u32 irq_base;
+>  	u32 num_irqs;
+>  	u32 charger_det;
+> @@ -67,6 +72,19 @@ static const struct sprd_pmic_data sc2731_data = {
+>  	.charger_det = SPRD_SC2731_CHG_DET,
+>  };
+>  
+> +static const struct sprd_pmic_data ump9620_data = {
+> +	.irq_base = SPRD_UMP9620_IRQ_BASE,
+> +	.num_irqs = SPRD_UMP9620_IRQ_NUMS,
+> +};
+> +
+> +static const struct sprd_pmic_data ump9621_data = {
+> +	.slave_id = SPRD_UMP9621_SLAVE_ID,
+> +};
+> +
+> +static const struct sprd_pmic_data ump9622_data = {
+> +	.slave_id = SPRD_UMP9622_SLAVE_ID,
+> +};
+> +
+>  enum usb_charger_type sprd_pmic_detect_charger_type(struct device *dev)
+>  {
+>  	struct spi_device *spi = to_spi_device(dev);
+> @@ -108,8 +126,27 @@ static int sprd_pmic_spi_write(void *context, const void *data, size_t count)
+>  {
+>  	struct device *dev = context;
+>  	struct spi_device *spi = to_spi_device(dev);
+> +	const struct sprd_pmic_data *pdata;
+> +	int ret;
+> +	u32 *pmdata;
+> +
+> +	if (!pdata->slave_id) {
+> +		ret = spi_write(spi, data, count);
+> +	} else {
+> +		pdata = ((struct sprd_pmic *)spi_get_drvdata(spi))->pdata;
+> +
+> +		pmdata = kzalloc(count, GFP_KERNEL);
+> +		if (!pmdata)
+> +			return -ENOMEM;
+> +		memcpy(pmdata, data, count);
+> +		*pmdata += pdata->slave_id;
+> +		ret = spi_write(spi, (const void *)pmdata, count);
+> +		kfree(pmdata);
+> +	}
+> +	if (ret)
+> +		pr_err("pmic mfd write failed!\n");
+>  
+> -	return spi_write(spi, data, count);
+> +	return ret;
+>  }
+>  
+>  static int sprd_pmic_spi_read(void *context,
+> @@ -118,6 +155,7 @@ static int sprd_pmic_spi_read(void *context,
+>  {
+>  	struct device *dev = context;
+>  	struct spi_device *spi = to_spi_device(dev);
+> +	const struct sprd_pmic_data *pdata;
+>  	u32 rx_buf[2] = { 0 };
+>  	int ret;
+>  
+> @@ -125,11 +163,16 @@ static int sprd_pmic_spi_read(void *context,
+>  	if (reg_size != sizeof(u32) || val_size != sizeof(u32))
+>  		return -EINVAL;
+>  
+> +	pdata = ((struct sprd_pmic *)spi_get_drvdata(spi))->pdata;
+>  	/* Copy address to read from into first element of SPI buffer. */
+>  	memcpy(rx_buf, reg, sizeof(u32));
+> +	if (!pdata->slave_id)
+> +		rx_buf[0] += pdata->slave_id;
+>  	ret = spi_read(spi, rx_buf, 1);
+> -	if (ret < 0)
+> +	if (ret < 0) {
+> +		pr_err("pmic mfd read failed!\n");
+
+Eh... drivers do not use pr_ but dev_. Which you can easily see within
+this driver, so before posting changes please look at the driver and its
+style, then learn from it and use similar coding convention.
+
+>  		return ret;
+> +	}
+>  
+>  	memcpy(val, rx_buf, val_size);
+>  	return 0;
+
+...
+
+
+>  
+>  	ret = devm_of_platform_populate(&spi->dev);
+> @@ -240,6 +284,9 @@ static DEFINE_SIMPLE_DEV_PM_OPS(sprd_pmic_pm_ops,
+>  static const struct of_device_id sprd_pmic_match[] = {
+>  	{ .compatible = "sprd,sc2730", .data = &sc2730_data },
+>  	{ .compatible = "sprd,sc2731", .data = &sc2731_data },
+> +	{ .compatible = "sprd,ump9620", .data = &ump9620_data },
+> +	{ .compatible = "sprd,ump9621", .data = &ump9621_data },
+> +	{ .compatible = "sprd,ump9622", .data = &ump9622_data },
+>  	{},
+>  };
+>  MODULE_DEVICE_TABLE(of, sprd_pmic_match);
+> @@ -247,6 +294,9 @@ MODULE_DEVICE_TABLE(of, sprd_pmic_match);
+>  static const struct spi_device_id sprd_pmic_spi_ids[] = {
+>  	{ .name = "sc2730", .driver_data = (unsigned long)&sc2730_data },
+>  	{ .name = "sc2731", .driver_data = (unsigned long)&sc2731_data },
+> +	{ .name = "ump9620", .driver_data = (unsigned long)&ump9620_data },
+> +	{ .name = "ump9621", .driver_data = (unsigned long)&ump9621_data },
+> +	{ .name = "ump9622", .driver_data = (unsigned long)&ump9622_data },
+
+So here you sneaked new compatibles... Sorry, adding new compatibles is
+not the same as converting old ones. Entirely separate patch.
+
+Best regards,
+Krzysztof
+
