@@ -2,201 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BEDA783CB4
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 11:17:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67F75783CB7
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 11:17:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234234AbjHVJRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 05:17:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44024 "EHLO
+        id S234242AbjHVJRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 05:17:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234131AbjHVJRV (ORCPT
+        with ESMTP id S234131AbjHVJRs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 05:17:21 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C4A4113
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 02:17:19 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-99df431d4bfso545753266b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 02:17:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20221208.gappssmtp.com; s=20221208; t=1692695838; x=1693300638;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/CWoG7qRKl6509z+iJcRCAg2R0UyuGwnsqPdw/VQlf8=;
-        b=dDq3dcvsvTrkw8/fTjwFtJVU4wCg0C0KBDymZYe3rP6YCK+rEG8TzF5WjW8twjm7kE
-         mDg4Ozm0gJ0SMY217KSmOWmua63FKrcppJ+d8ihWM5KizM4jBzb/yf337O6ADCxdM/kc
-         ZvMV/czt73eHwYJrFfQftwmMdlmr1lkVOL38wFwxSGI+QUsenerFQ9JTxlV5djvGxGMH
-         aW2sXu57HD+9kk4AOY/EH+ojEA/qKE3j42RTnUF4SMicGWIGxBYQJjbq4Ps8ofbefQHM
-         yfB42oO0rcdAUCVteDvwyNbER7r34QSQCIyuULnmd1Sq26m6dNfWkWuJEYA9BoREmDmz
-         ughA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692695838; x=1693300638;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/CWoG7qRKl6509z+iJcRCAg2R0UyuGwnsqPdw/VQlf8=;
-        b=hNIKNPWnTC1l3RoEuMN+oHnKF7l1lLhHMKlnrnV07He7KAm3dmEfMVigD2vZsyml8a
-         9gRYdfF7QpLa1pAWTIKwS3J46S3EYuwZ7IVGiP3/zmnDTC9eRn51wYKhCib04QjePaAO
-         3P8FnxzE4bxXvXAJlO3qCISsMxZ5lkRGcX2qJKK6xTDY2HsoLqhmYSczvQM5+GK7MkNr
-         0GpzVtL4s3zm5QVpA8nBi1BT775xU66OHp+Misnwlv1aNjoS/dpU9N0fiXGcd859q7NL
-         kOpOeWiTFStL3jyPL4IBWwuiwhbVUH16iUNQbnl3UEY4+BKdurCG/xOub3gmZgJTfKNc
-         sPCA==
-X-Gm-Message-State: AOJu0YymKsj0BxJNufY6YszVW2hoSkHTSaRVefL8lSxYSIYnldSWMK3r
-        g1g88rcGUCCFqUgj4+eHqsnV93CP35Ya1XjHw53pIQ==
-X-Google-Smtp-Source: AGHT+IHxPQErliFw+rDoGut7BPctC5862/YdpkZCfUimLQfKm6GTLGZRh4PuERYr+rzciy17JW5MeeQkK65KyJNX52c=
-X-Received: by 2002:a17:906:748a:b0:9a1:697e:4bb7 with SMTP id
- e10-20020a170906748a00b009a1697e4bb7mr7276530ejl.73.1692695837666; Tue, 22
- Aug 2023 02:17:17 -0700 (PDT)
+        Tue, 22 Aug 2023 05:17:48 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD49C113;
+        Tue, 22 Aug 2023 02:17:45 -0700 (PDT)
+Received: from dggpeml500019.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RVNvC0NVnztRrB;
+        Tue, 22 Aug 2023 17:13:59 +0800 (CST)
+Received: from [10.67.121.58] (10.67.121.58) by dggpeml500019.china.huawei.com
+ (7.185.36.137) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Tue, 22 Aug
+ 2023 17:17:41 +0800
+Message-ID: <ce499ce6-0b05-a17c-fe03-b2630acb97ce@hisilicon.com>
+Date:   Tue, 22 Aug 2023 17:17:41 +0800
 MIME-Version: 1.0
-References: <20230822054739.33552-1-nick.hu@sifive.com> <CAAhSdy32DYoHpBKS3TF1SapM5fuMF5K00oqRxw8JF05v=DrUuw@mail.gmail.com>
- <CAKddAkDohdZqhjZKSawTg5NLMs0AXkL9SyYQr1q6vM1vm4Csfw@mail.gmail.com>
-In-Reply-To: <CAKddAkDohdZqhjZKSawTg5NLMs0AXkL9SyYQr1q6vM1vm4Csfw@mail.gmail.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Tue, 22 Aug 2023 14:47:06 +0530
-Message-ID: <CAAhSdy0Yt-xcDYWz9BJCUgErpC2xM97yMXw4Wto078DKNk1nUg@mail.gmail.com>
-Subject: Re: [PATCH v2] riscv: suspend: Add syscore ops for suspend
-To:     Nick Hu <nick.hu@sifive.com>
-Cc:     paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, leyfoon.tan@starfivetech.com,
-        mason.huo@starfivetech.com, conor.dooley@microchip.com,
-        jeeheng.sia@starfivetech.com, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, zong.li@sifive.com,
-        Andy Chiu <andy.chiu@sifive.com>,
-        Andrew Jones <ajones@ventanamicro.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.2
+Subject: Re: [RFC PATCH] cpufreq: Support per-policy performance boost
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+CC:     <rafael@kernel.org>, <linux-pm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
+        <xuwei5@huawei.com>, <wanghuiqiang@huawei.com>,
+        <jonathan.cameron@huawei.com>, <wangxiongfeng2@huawei.com>
+References: <20230724075827.4160512-1-zhanjie9@hisilicon.com>
+ <20230816062757.tocdrqh3isxcrt3r@vireshk-i7>
+From:   Jie Zhan <zhanjie9@hisilicon.com>
+In-Reply-To: <20230816062757.tocdrqh3isxcrt3r@vireshk-i7>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.121.58]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500019.china.huawei.com (7.185.36.137)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 1:28=E2=80=AFPM Nick Hu <nick.hu@sifive.com> wrote:
+Hi Viresh,
+
+Many thanks for your sugguestion.
+
+Happy with all the comments. Will send a v2 soon.
+
+Jie
+
+On 16/08/2023 14:27, Viresh Kumar wrote:
+> Hi Jie,
 >
-> Hi Anup
+> I am not sure how useful this per-policy boost is for your use case,
+> but I have no objection to the same if it is worth it.
 >
+> On 24-07-23, 15:58, Jie Zhan wrote:
+>> The boost control currently applies to the whole system.  However, users
+>> may prefer to boost a subset of cores in order to provide prioritized
+>> performance to workloads running on the boosted cores.
+>>
+>> Enable per-policy boost by adding a 'local_boost' sysfs interface.  This
+>> can be found at:
+>>
+>> 	/sys/devices/system/cpu/cpufreq/policy<*>/local_boost
+> Just name it boost instead of local_boost, it is present in the
+> policy's directory, that is enough.
 >
-> On Tue, Aug 22, 2023 at 2:16=E2=80=AFPM Anup Patel <anup@brainfault.org> =
-wrote:
-> >
-> > On Tue, Aug 22, 2023 at 11:17=E2=80=AFAM Nick Hu <nick.hu@sifive.com> w=
-rote:
-> > >
-> > > If a task is the one who performs the suspend flow and it also do som=
-e
-> > > floating or vector operations before the suspend, we might lose the F=
-PU
-> > > and vector states when it goes to the non-retention system suspend st=
-ate.
-> > > Add syscore ops to save and restore the FPU and vector states of the
-> > > current task to fix the issue above.
-> >
-> > This only applies to non-retentive system suspend so why do we need
-> > this before SBI system suspend is merged ?
-> >
-> > Regards,
-> > Anup
-> >
-> >
-> How about hibernation?
-
-If this is for hibernation then the commit description should say so.
-
-Adding syscore_ops would mean these callbacks will be called for
-both suspend-to-ram and hibernate cases. Other architectures don't
-have this save/restore for suspend-to-ram because it is generally
-called from idle task.
-
-Why not do the save/restore in save_processor_state() and
-restore_processor_state() just like arch/mips/power/cpu.c ?
-
-Regards,
-Anup
-
-
+>> Same to the global boost switch, writing 1/0 to 'local_boost'
+>> enables/disables boost on a cpufreq policy respectively.
+>>
+>> The user view of global and local boost controls should be:
+>>
+>> 1. Enabling global boost initially enables local boost on all policies, and
+>> local boost can then be enabled or disabled individually on each policy,
+>> given that the platform does support so.
+>>
+>> 2. Disabling global boost makes enabling local boost illegal, while writing
+>> 0 to 'local_boost' is fine but takes no effect.
+>>
+>> A possible question could be: why not just limiting 'scaling_max_freq'?
+>> Well, the fundamental difference is that 'local_boost' could be more
+>> user-friendly.  When global boost is enabled, it is not straightforward to
+>> figure out the base frequency for setting 'scaling_max_freq' to a non-boost
+>> value. Also, this is supposed to take effect on the physical upper
+>> frequency limit, reflected through 'cpuinfo_max_freq'.
+>>
+>> Signed-off-by: Jie Zhan <zhanjie9@hisilicon.com>
+>> Reviewed-by: Wei Xu <xuwei5@hisilicon.com>
+>> ---
+>>   drivers/cpufreq/cpufreq.c | 33 +++++++++++++++++++++++++++++++++
+>>   include/linux/cpufreq.h   |  3 +++
+>>   2 files changed, 36 insertions(+)
+>>
+>> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+>> index 6b52ebe5a890..14579c59f7ba 100644
+>> --- a/drivers/cpufreq/cpufreq.c
+>> +++ b/drivers/cpufreq/cpufreq.c
+>> @@ -621,6 +621,35 @@ static ssize_t store_boost(struct kobject *kobj, struct kobj_attribute *attr,
+>>   }
+>>   define_one_global_rw(boost);
+>>   
+>> +static ssize_t show_local_boost(struct cpufreq_policy *policy, char *buf)
+>> +{
+>> +	return sysfs_emit(buf, "%d\n", policy->local_boost_enabled);
+>> +}
+>> +
+>> +static ssize_t store_local_boost(struct cpufreq_policy *policy,
+>> +				 const char *buf, size_t count)
+>> +{
+>> +	int ret, enable;
+>> +
+>> +	ret = kstrtoint(buf, 10, &enable);
+>> +	if (ret || enable < 0 || enable > 1)
+>> +		return -EINVAL;
+>> +
+>> +	if (enable && !cpufreq_driver->boost_enabled)
+>> +		return -EINVAL;
+> Not just while enabling it, you should check for boost_enabled all the
+> time.
 >
-> Regards,
-> Nick
-> > >
-> > > Co-developed-by: Andy Chiu <andy.chiu@sifive.com>
-> > > Signed-off-by: Andy Chiu <andy.chiu@sifive.com>
-> > > Signed-off-by: Nick Hu <nick.hu@sifive.com>
-> > > ---
-> > > Changes in v2:
-> > > a) Add Co-developed-by and adjust the order of signed-off
-> > > b) Rephrase the commit message
-> > >
-> > >  arch/riscv/kernel/suspend.c | 45 +++++++++++++++++++++++++++++++++++=
-++
-> > >  1 file changed, 45 insertions(+)
-> > >
-> > > diff --git a/arch/riscv/kernel/suspend.c b/arch/riscv/kernel/suspend.=
-c
-> > > index 3c89b8ec69c4..ff69ff8a1974 100644
-> > > --- a/arch/riscv/kernel/suspend.c
-> > > +++ b/arch/riscv/kernel/suspend.c
-> > > @@ -4,9 +4,14 @@
-> > >   * Copyright (c) 2022 Ventana Micro Systems Inc.
-> > >   */
-> > >
-> > > +#include <linux/cpu_pm.h>
-> > >  #include <linux/ftrace.h>
-> > > +#include <linux/thread_info.h>
-> > > +#include <linux/syscore_ops.h>
-> > >  #include <asm/csr.h>
-> > >  #include <asm/suspend.h>
-> > > +#include <asm/switch_to.h>
-> > > +#include <asm/vector.h>
-> > >
-> > >  void suspend_save_csrs(struct suspend_context *context)
-> > >  {
-> > > @@ -85,3 +90,43 @@ int cpu_suspend(unsigned long arg,
-> > >
-> > >         return rc;
-> > >  }
-> > > +
-> > > +static int riscv_cpu_suspend(void)
-> > > +{
-> > > +       struct task_struct *cur_task =3D get_current();
-> > > +       struct pt_regs *regs =3D task_pt_regs(cur_task);
-> > > +
-> > > +       if (has_fpu()) {
-> > > +               if (unlikely(regs->status & SR_SD))
-> > > +                       fstate_save(cur_task, regs);
-> > > +       }
-> > > +       if (has_vector()) {
-> > > +               if (unlikely(regs->status & SR_SD))
-> > > +                       riscv_v_vstate_save(cur_task, regs);
-> > > +       }
-> > > +
-> > > +       return 0;
-> > > +}
-> > > +
-> > > +static void riscv_cpu_resume(void)
-> > > +{
-> > > +       struct task_struct *cur_task =3D get_current();
-> > > +       struct pt_regs *regs =3D task_pt_regs(cur_task);
-> > > +
-> > > +       if (has_fpu())
-> > > +               fstate_restore(cur_task, regs);
-> > > +       if (has_vector())
-> > > +               riscv_v_vstate_restore(cur_task, regs);
-> > > +}
-> > > +
-> > > +static struct syscore_ops riscv_cpu_syscore_ops =3D {
-> > > +       .suspend        =3D riscv_cpu_suspend,
-> > > +       .resume         =3D riscv_cpu_resume,
-> > > +};
-> > > +
-> > > +static int __init riscv_cpu_suspend_init(void)
-> > > +{
-> > > +       register_syscore_ops(&riscv_cpu_syscore_ops);
-> > > +       return 0;
-> > > +}
-> > > +arch_initcall(riscv_cpu_suspend_init);
-> > > --
-> > > 2.34.1
-> > >
+> Also, you can optimize here if the state is being set to existing
+> state and quit early. This is done in the case of global boost
+> already. Have a look.
+>
+>> +
+>> +	cpus_read_lock();
+>> +	ret = cpufreq_driver->set_boost(policy, enable);
+>> +	cpus_read_unlock();
+>> +
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	policy->local_boost_enabled = enable;
+> s/local_//
+>
+>> +
+>> +	return count;
+>> +}
+>> +
+>>   static struct cpufreq_governor *find_governor(const char *str_governor)
+>>   {
+>>   	struct cpufreq_governor *t;
+>> @@ -931,6 +960,7 @@ cpufreq_freq_attr_rw(scaling_min_freq);
+>>   cpufreq_freq_attr_rw(scaling_max_freq);
+>>   cpufreq_freq_attr_rw(scaling_governor);
+>>   cpufreq_freq_attr_rw(scaling_setspeed);
+>> +cpufreq_freq_attr_rw(local_boost);
+>>   
+>>   static struct attribute *cpufreq_attrs[] = {
+>>   	&cpuinfo_min_freq.attr,
+>> @@ -944,6 +974,7 @@ static struct attribute *cpufreq_attrs[] = {
+>>   	&scaling_driver.attr,
+>>   	&scaling_available_governors.attr,
+>>   	&scaling_setspeed.attr,
+>> +	&local_boost.attr,
+> Making this file available if the global boost file isn't present is a
+> bit tricky I think. Maybe at least check for cpufreq_boost_supported()
+> before doing so.
+>
+>>   	NULL
+>>   };
+>>   ATTRIBUTE_GROUPS(cpufreq);
+>> @@ -2716,6 +2747,8 @@ int cpufreq_boost_trigger_state(int state)
+>>   		ret = cpufreq_driver->set_boost(policy, state);
+>>   		if (ret)
+>>   			goto err_reset_state;
+>> +
+>> +		policy->local_boost_enabled = state;
+>>   	}
+>>   	cpus_read_unlock();
+>>   
+>> diff --git a/include/linux/cpufreq.h b/include/linux/cpufreq.h
+>> index 26e2eb399484..a99a48ac9fdb 100644
+>> --- a/include/linux/cpufreq.h
+>> +++ b/include/linux/cpufreq.h
+>> @@ -140,6 +140,9 @@ struct cpufreq_policy {
+>>   	 */
+>>   	bool			dvfs_possible_from_any_cpu;
+>>   
+>> +	/* Per policy boost enabled flag. */
+>> +	bool			local_boost_enabled;
+>> +
+>>   	 /* Cached frequency lookup from cpufreq_driver_resolve_freq. */
+>>   	unsigned int cached_target_freq;
+>>   	unsigned int cached_resolved_idx;
+>> -- 
+>> 2.30.0
+
