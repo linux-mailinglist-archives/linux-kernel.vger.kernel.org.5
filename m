@@ -2,140 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4986783700
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 02:16:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F7F9783702
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 02:16:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231825AbjHVAP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 20:15:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34072 "EHLO
+        id S231956AbjHVAQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 20:16:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231894AbjHVAPr (ORCPT
+        with ESMTP id S231918AbjHVAQ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 20:15:47 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A86F18E;
-        Mon, 21 Aug 2023 17:15:45 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Mon, 21 Aug 2023 20:16:29 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09C091A8;
+        Mon, 21 Aug 2023 17:16:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1692663378;
+        bh=k2ZrAAORqZd1ybuBEXkZq8qLjVGqshyS/ofyxUhkJk8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=eYuYRY9QKqPLF/nAstussaWknreBAk+B/WEpFUK5NEgqsKt0SXx1oTQStoHFDJWd0
+         06pY5vJ37BZb8t76hOvUzaBi8C/82HndW6Yih8BtmQX1YrGapxnRccCqVVXny6e0bc
+         6cNVIq6RI9vq5rFOWnDKFS3gp22FFKIwYmApvgJcfYV/gHgjl7ffWtP0qi1hx9iFZm
+         9vnlYBQ1nEowXAorfdr5vUTZhukyz3K6YGGSFpGaosFuDO58aeoPlCa+8yDR8DI1uF
+         rX/7B1BTUn5Okqvbsc4KvP/WLmSxSteZdFF/Pm9E6NcpZI+CGp1x05ITOwZvDs8hhJ
+         rthk/M5UR50FA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CE4AA61A70;
-        Tue, 22 Aug 2023 00:15:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1069BC433C8;
-        Tue, 22 Aug 2023 00:15:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692663344;
-        bh=n2Old7YYoUHJOORuHws8xgDm/6YhMrO0TuSlC5P3adw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=pVXc7u2AyY0jrrtLJ+GvpxnTj67uMowoDpws6YlkMGiZV9+cXOHgcrfDb4HHavXhA
-         VDmPE9SfjfT0x/w313l/q+4Mkvw9ROUpRyhyDeU87HB+m232bFP77OuYmrw2mSINHW
-         ddTI3It4GoWi4iXldATHna8nh8+9FXse9bo396wINkBW6m6MnRcHJ4GNv/QVZ42AgG
-         4kgHOctFLeOUu/F0FsL5m1pRkcsnRYsuznA0Grhyaz1Gndn3lANU7lJGOJytdX5XVg
-         l6m/H6IvjGlBg1zgTyYYUInrz2CV3BAtTcntmM69+7oPYne6GPqrkxN74ZDzPYPgdf
-         R31ypKVzyvLGw==
-Date:   Tue, 22 Aug 2023 09:15:40 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH] tracing: Fix to avoid wakeup loop in splice read of
- per-cpu buffer
-Message-Id: <20230822091540.99e581b579aa790a90e335bc@kernel.org>
-In-Reply-To: <169262755804.106231.8245792908363050528.stgit@devnote2>
-References: <169262755804.106231.8245792908363050528.stgit@devnote2>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RV8yp3Zgmz4wb0;
+        Tue, 22 Aug 2023 10:16:18 +1000 (AEST)
+Date:   Tue, 22 Aug 2023 10:16:15 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Baoquan He <bhe@redhat.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Vaibhav Jain <vaibhav@linux.ibm.com>
+Subject: linux-next: manual merge of the powerpc tree with the mm-stable
+ tree
+Message-ID: <20230822101615.046f0c32@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/qXSVAU3nkCzwSZSkVMZ_B4y";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 21 Aug 2023 23:19:18 +0900
-"Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
+--Sig_/qXSVAU3nkCzwSZSkVMZ_B4y
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> 
-> ftrace user can set 0 or small number to the 'buffer_percent' for quick
-> response for the ring buffer. In that case wait_on_pipe() will return
-> before filling a page of the ring buffer. That is too soon for splice()
-> because ring_buffer_read_page() will fail again.
-> This leads unnecessary loop in tracing_buffers_splice_read().
-> 
-> Set a minimum percentage of the buffer which is enough to fill a page to
-> wait_on_pipe() to avoid this situation.
-> 
-> Fixes: 03329f993978 ("tracing: Add tracefs file buffer_percentage")
-> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> ---
->  kernel/trace/trace.c |   12 +++++++++++-
->  1 file changed, 11 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-> index b8870078ef58..88448e8d8214 100644
-> --- a/kernel/trace/trace.c
-> +++ b/kernel/trace/trace.c
-> @@ -8462,6 +8462,8 @@ tracing_buffers_splice_read(struct file *file, loff_t *ppos,
->  	/* did we read anything? */
->  	if (!spd.nr_pages) {
->  		long wait_index;
-> +		size_t nr_pages;
-> +		size_t full;
->  
->  		if (ret)
->  			goto out;
-> @@ -8472,7 +8474,15 @@ tracing_buffers_splice_read(struct file *file, loff_t *ppos,
->  
->  		wait_index = READ_ONCE(iter->wait_index);
->  
-> -		ret = wait_on_pipe(iter, iter->tr->buffer_percent);
-> +		/* For splice, we have to ensure at least 1 page is filled */
-> +		nr_pages = ring_buffer_nr_pages(iter->array_buffer->buffer, iter->cpu_file);
-> +		if (nr_pages * iter->tr->buffer_percent < 100) {
-> +			full = nr_pages + 99;
-> +			do_div(full, nr_pages);
-> +		} else
-> +			full = iter->tr->buffer_percent;
+Hi all,
 
-Ah I must have to take a sleep well. What I need is to ensure full >= 1.
+Today's linux-next merge of the powerpc tree got a conflict in:
 
-static __always_inline bool full_hit(struct trace_buffer *buffer, int cpu, int full)
-{
-...
-        return (dirty * 100) > (full * nr_pages);
-}
+  arch/powerpc/Kconfig
 
-If dirty = 0, this always false.
-But I think if full == 0, this should return true.
+between commit:
 
-If dirty = 1,
+  8d05554dca2a ("powerpc: mm: convert to GENERIC_IOREMAP")
 
-- nr_pages < 100, this is always true and that is good.
+from the mm-stable tree and commit:
 
-- nr_pages > 100, even if full is 1 (smallest), it doesn't true. But that is OK
-  because dirty page number will be increased later.
+  0ceef6e99cc3 ("powerpc/idle: Add support for nohlt")
 
-- nr_pages == 100 is the corner case. I think this should be
+from the powerpc tree.
 
-  return (dirty * 100) >= (full * nr_pages);
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
 
-Let me update the patch.
+--=20
+Cheers,
+Stephen Rothwell
 
-Thank you,
+diff --cc arch/powerpc/Kconfig
+index 21edd664689e,c831e20cf40f..000000000000
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@@ -195,7 -194,7 +196,8 @@@ config PP
+  	select GENERIC_CPU_VULNERABILITIES	if PPC_BARRIER_NOSPEC
+  	select GENERIC_EARLY_IOREMAP
+  	select GENERIC_GETTIMEOFDAY
++ 	select GENERIC_IDLE_POLL_SETUP
+ +	select GENERIC_IOREMAP
+  	select GENERIC_IRQ_SHOW
+  	select GENERIC_IRQ_SHOW_LEVEL
+  	select GENERIC_PCI_IOMAP		if PCI
 
-> +
-> +		ret = wait_on_pipe(iter, full);
->  		if (ret)
->  			goto out;
->  
-> 
+--Sig_/qXSVAU3nkCzwSZSkVMZ_B4y
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
+-----BEGIN PGP SIGNATURE-----
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTj/k8ACgkQAVBC80lX
+0GxCMAgAlFzgy+Rn2m3nNB1KybK8ks+xuSJdcicuO00rmVqXUhb9zRM9uLuF9HK8
+yNvBMZ6D23sDyBuW+NN51BhHxU5PMx2uAqNpt0TStImpGdPcL/rrQ66wZcaxNijH
+pxy0MAGxpm985rw7Ua8esMUon09AHrne98AJh9fMQ3lk20/eGIbal9P4VwClay+W
+MohrkVd2LaHyOPI6FjnK7GHlmYilVncq3zt0L3kuEwWNJR0UB34ZA7kRBPC1qj3q
+j9n94Vz5/u9h6lju4T7pnfw59QE8gFt2n5rTjP3T197oXNBy0nzrSZ7r7MpQeQJP
+eWEFpn4punhaXMq4BWZY+0nQA2f/iA==
+=T/9b
+-----END PGP SIGNATURE-----
+
+--Sig_/qXSVAU3nkCzwSZSkVMZ_B4y--
