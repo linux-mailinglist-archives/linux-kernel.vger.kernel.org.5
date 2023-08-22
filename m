@@ -2,106 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC674783AF5
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 09:32:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9D2C783AF7
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 09:32:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233418AbjHVHcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 03:32:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39370 "EHLO
+        id S233428AbjHVHct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 03:32:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232073AbjHVHch (ORCPT
+        with ESMTP id S233420AbjHVHcr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 03:32:37 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18E4A133;
-        Tue, 22 Aug 2023 00:32:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692689556; x=1724225556;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=2WDGroCf9hVRdMg3TmwFYLJHYRQhPfk99Hlw9ivghVQ=;
-  b=I63MPDUfeXXWJENVAhs+7ue/zYBsxlwRsKGIN5FlOqDB8Hqch00l4f1S
-   vE5BM3yt9kChiB+53Go8cTQJyDpe399WUSFilNpHRVxk7Le4VpgxQTAo7
-   5Hr3VVYWak/akY7Z+MVBoxjCq9HNq9QyfJ6xyteJuhzIIiTP6DCxCdw4f
-   D4y33zo1fLbKro0B8oIPEolalDpiJbdTfuzT0VMb51H3+9Mj9xvhIi6aq
-   2vSMnISpAXBNTmU1Hk34h2jWgJpkW/84duv4PdQ53UvXcNYIGhgVlQlgV
-   mC47kcC/UkViEW94NYSWEiEvMvZUNgrMq3ggsuQjqbaTwNVHsMZ71lqYp
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="376540902"
-X-IronPort-AV: E=Sophos;i="6.01,192,1684825200"; 
-   d="scan'208";a="376540902"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2023 00:32:35 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="685944607"
-X-IronPort-AV: E=Sophos;i="6.01,192,1684825200"; 
-   d="scan'208";a="685944607"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.252.189.107]) ([10.252.189.107])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2023 00:32:30 -0700
-Message-ID: <fe03b53a-c9f9-cc6b-a1fd-d6fd2f1a1ddc@linux.intel.com>
-Date:   Tue, 22 Aug 2023 15:32:26 +0800
+        Tue, 22 Aug 2023 03:32:47 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F12CF184;
+        Tue, 22 Aug 2023 00:32:45 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 79BF66497C;
+        Tue, 22 Aug 2023 07:32:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CF17C433C9;
+        Tue, 22 Aug 2023 07:32:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692689564;
+        bh=qm8bePmXQDxAe4hMK7cV/0XRjLqFLVFhkUxWkK/1yls=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Pu2+4xk3oy9SpJI1drb/oR1mmRFpYziweg8onCssqW4SS+/4DIYN3qxfgL1MaiFRD
+         TxcA7P2ew90rAY1GB4SvUcLJIPXqTqbyEn+5UYNk0cBV0T3p44yYnXY+DLkvFoKJrQ
+         e9aqZqt62mBMIA7oFEUXTJZOWioQJwHV/lH6MbSk3o+U34nNc9xzrH1TzCJ7o/qysY
+         E4QhXFX0/HyMgEDeywjRn9tHTf7T9LJwMtPSW1K2OvsKmm8K0WUz7lz22mseK5+64d
+         ubrE4TOzPjYlSkpfoHLhurUsW8vRmU1/rq57zmtxvkwwHfDYoFw+CaxlzosVAt0vN3
+         fMh4bPlb+SrOw==
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-4fe2d152f62so6425347e87.0;
+        Tue, 22 Aug 2023 00:32:44 -0700 (PDT)
+X-Gm-Message-State: AOJu0YwNAZtEag+D94XKBvmgS3+rYR8OHMUEmG0jsBk+baBMYz0ZBxKE
+        1WZhQX6IrXz2g7WTMn/zPRHqeV0B309TFxOMvFI=
+X-Google-Smtp-Source: AGHT+IFpQJc7vqi9NEfra/Rh1hIm2mnVKSukKSrt+zRTz0wsLhC3bRak9Ae0hEdXcZdVETVuDF7RmJ9NbLdVeYxLK2Y=
+X-Received: by 2002:a05:6512:3047:b0:4fe:9f83:8bda with SMTP id
+ b7-20020a056512304700b004fe9f838bdamr7199240lfb.52.1692689562489; Tue, 22 Aug
+ 2023 00:32:42 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Cc:     baolu.lu@linux.intel.com, kvm@vger.kernel.org,
-        iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
-        joro@8bytes.org, will@kernel.org, robin.murphy@arm.com,
-        kevin.tian@intel.com, jacob.jun.pan@linux.intel.com,
-        yi.l.liu@intel.com, yi.y.sun@intel.com
-Subject: Re: [PATCH] iommu/vt-d: Introduce a rb_tree for looking up device
-Content-Language: en-US
-To:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Huang Jiaqing <jiaqing.huang@intel.com>
-References: <20230821071659.123981-1-jiaqing.huang@intel.com>
- <ZOOWMUmwG2jXOaXL@ziepe.ca>
-From:   Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <ZOOWMUmwG2jXOaXL@ziepe.ca>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230822164859.26b0b8f6@canb.auug.org.au>
+In-Reply-To: <20230822164859.26b0b8f6@canb.auug.org.au>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 22 Aug 2023 09:32:31 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXGKtpGNYx6hqygya+k_gQaMTiwEZnRGk9rZ=hcbcagKXA@mail.gmail.com>
+Message-ID: <CAMj1kXGKtpGNYx6hqygya+k_gQaMTiwEZnRGk9rZ=hcbcagKXA@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the efi tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/22 0:52, Jason Gunthorpe wrote:
-> On Mon, Aug 21, 2023 at 12:16:59AM -0700, Huang Jiaqing wrote:
->> The existing IO page fault handler locates the PCI device by calling
->> pci_get_domain_bus_and_slot(), which searches the list of all PCI
->> devices until the desired PCI device is found. This is inefficient
->> because the algorithm efficiency of searching a list is O(n). In the
->> critical path of handling an IO page fault, this can cause a significant
->> performance bottleneck.
->>
->> To improve the performance of the IO page fault handler, replace
->> pci_get_domain_bus_and_slot() with a local red-black tree. A red-black
->> tree is a self-balancing binary search tree, which means that the
->> average time complexity of searching a red-black tree is O(log(n)). This
->> is significantly faster than O(n), so it can significantly improve the
->> performance of the IO page fault handler.
->>
->> In addition, we can only insert the affected devices (those that have IO
->> page fault enabled) into the red-black tree. This can further improve
->> the performance of the IO page fault handler.
->>
->> Signed-off-by: Huang Jiaqing<jiaqing.huang@intel.com>
->> ---
->>   drivers/iommu/intel/iommu.c | 68 +++++++++++++++++++++++++++++++++++++
->>   drivers/iommu/intel/iommu.h |  8 +++++
->>   drivers/iommu/intel/svm.c   | 13 +++----
->>   3 files changed, 81 insertions(+), 8 deletions(-)
-> I feel like this should be a helper library provided by the core
-> code, doesn't every PRI driver basically need the same thing?
+Hello Stephen,
 
-It seems to be. pci_get_domain_bus_and_slot() is also used in the amd
-driver. And the risc-v iommu driver under discussion is also proposing
-this.
+On Tue, 22 Aug 2023 at 08:49, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> After merging the efi tree, today's linux-next build (x86_64 allmodconfig)
+> failed like this:
+>
+> In file included from drivers/platform/x86/uv_sysfs.c:14:
+> arch/x86/include/asm/uv/bios.h:118:22: error: expected ')' before '*' token
+>   118 |         u64 (__efiapi *function)(enum uv_bios_cmd, ...);
+>       |                      ^~
+>       |                      )
+>
+> Caused by commit
+>
+>   73632c8c865f ("efi/runtime-wrappers: Remove duplicated macro for service returning void")
+>
 
-Best regards,
-baolu
+Thanks for the report.
+
+I cannot reproduce this with Debian's GCC 12.2.0 when building the
+efi/next tree either in isolation, or merged into yesterday's next.
+
+Could you please share the compiler version and the .config you used? Thanks.
+
+-- 
+Ard.
