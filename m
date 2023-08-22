@@ -2,212 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28AC9784A6E
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 21:28:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A35D6784A73
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 21:29:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230172AbjHVT2y convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 22 Aug 2023 15:28:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46100 "EHLO
+        id S230177AbjHVT3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 15:29:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229515AbjHVT2x (ORCPT
+        with ESMTP id S229983AbjHVT3u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 15:28:53 -0400
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5E1110D;
-        Tue, 22 Aug 2023 12:28:51 -0700 (PDT)
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-68a56ed12c0so444336b3a.0;
-        Tue, 22 Aug 2023 12:28:51 -0700 (PDT)
+        Tue, 22 Aug 2023 15:29:50 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B43510D
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 12:29:49 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-3fee843b44cso30031185e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 12:29:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1692732588; x=1693337388;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=466Sg4iv0QPYwqla3IN/qZazdkQTuc/CHLvGEclLflM=;
+        b=fg1ZktYtogcavbabgsn5hjJepJazA2t34SDkIvKwH6CJ4g75yfMM+ylYY3T2j644gv
+         2cjq2+JzE630hSEz49V50klQEOMIz48dfXP9OhjqHNC4yEwITahXO8RL1lW0WBdbMQAF
+         G+onVaEDXEy8rHRIcVZcCs1lAmTnYbE4SSmIpfEQovTVO1sIP/0qZpFrXb4vcGltl4Pk
+         6DyCVcr9OyUZ/KSVsF7ABijyAWbiENblMxMPRCpj5a6gC/PW3YY9aoFRx39qXW6JWNKi
+         fxoagOJdC8gxm6cB6ydGgn29dqbQRQsSNd/AjdSQ2AHGjXf3OzG3GQGT0q5F03xHaCC9
+         kFOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692732531; x=1693337331;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FUOTEpYouPiI3er3W6uP/bJHtOiZZQik2GTUe+jS9ls=;
-        b=iLRcurrDvnWIQUxP+hOmWqb1zKaJqHHIhuYYVipM6tOaqOY0OX79vVHmAu/iNnYLWE
-         3D4vtOP03myQcf+tj5fYUrqOAHA3Hjkd7Jyonvvk6e4yUJ+qXZnxBt6ZtCRFBq3Iz02x
-         x5loKjJA1HMRST62almteTI6lSaClQiY8qKTjif/u+EhJzV56RnpXTOMXzJbc68q8Nk0
-         ytpLE4rs3rRrg3MPTdhDJwsfmtOPtC+Kn5waFKAjmAkKlkOAszhSCfMMAkAOWWCyDVWv
-         cklhFyB5TO37sEz5naPHTc2vcIAbAj9GODe1//s6EtLMJai9Qna+t41JUA2bz6Q2myN6
-         aFEA==
-X-Gm-Message-State: AOJu0YxOtMea1/vBAl954xImcoZMu4ruR1dJ6LgRTw8lSsGpuapU3wMl
-        Mokk8WU+L/9NFZ3M/rPz4STDwdGBhFVqx3bPzVA=
-X-Google-Smtp-Source: AGHT+IGwvr6LYscPtF6NdLVdbNpxAgF+p1Ak/HskvZqtoetpy1Q5WSMGjR8kBH+18O4q27t2OdyUTx87dMOnveGBtLE=
-X-Received: by 2002:a05:6a20:6a05:b0:134:d4d3:f0a5 with SMTP id
- p5-20020a056a206a0500b00134d4d3f0a5mr13624476pzk.2.1692732531185; Tue, 22 Aug
- 2023 12:28:51 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692732588; x=1693337388;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=466Sg4iv0QPYwqla3IN/qZazdkQTuc/CHLvGEclLflM=;
+        b=cctBFYrD2IFpwzBdqtMoMqSk6vhg13pLn5ws06F/oEa730SQXMPxNUIsHcK/Z6Jp7u
+         clCMdQ//OkWqVqEp9zNMLqRyLkXCJRNV0VLoUIlEMM1VIgDF6NXjb3r8CrJBTuQWGz4N
+         IWh0A4nwIAE/EfStQrDtXWkudnALG2qHp7+BI/j3hS0nRBcHHSQEein8GJ6e/grSyCET
+         XWGHDC/UJStnWz60msoJIq/A/My+3Fnf6ArkQIXiRtsu8AndLn8KM9qe/aAnVzdKjSoD
+         E4CrsrQAwGAvqCPUkwDXncTNwiTSQqwjZShDr0j1ZXviZGiSD8Th7jWnxFDL+KwitoiL
+         2UNA==
+X-Gm-Message-State: AOJu0YzjPC79Jow5b74CF7/idt6ibYZW7nbPBhxzcBQPdMIaYjG/ZJTh
+        P9mv87Qg2fOkByQy0eDBD60DuA==
+X-Google-Smtp-Source: AGHT+IFIlrjbTyqnZfVROgE6smTniEOIXGrSGniQw4H0h0WObRmAX9yY6dVlSqyG3yG16BYhgckUaQ==
+X-Received: by 2002:a5d:62ce:0:b0:31a:ed75:75df with SMTP id o14-20020a5d62ce000000b0031aed7575dfmr6660534wrv.15.1692732587551;
+        Tue, 22 Aug 2023 12:29:47 -0700 (PDT)
+Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:ca21:e0f4:e967:fd3d])
+        by smtp.gmail.com with ESMTPSA id s3-20020a1cf203000000b003fe17901fcdsm20062516wmc.32.2023.08.22.12.29.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Aug 2023 12:29:47 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kent Gibson <warthog618@gmail.com>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: [PATCH v2 1/2] gpio: sim: dispose of irq mappings before destroying the irq_sim domain
+Date:   Tue, 22 Aug 2023 21:29:42 +0200
+Message-Id: <20230822192943.493182-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-References: <20230719130527.8074-1-xuewen.yan@unisoc.com> <20230721221944.dthg3tf25j4qgc2z@airbuntu>
- <CAB8ipk8b8ZfwXN7KK-zFVPQ-8i37h64v-wz2ErB3AANaZ9w7aA@mail.gmail.com>
- <20230724155328.7odez6dcoafksr3i@airbuntu> <CAB8ipk-VuD2oMDaV6B6i-eoKE+JZ0FpsUZAdT0R5S3to07JkFw@mail.gmail.com>
- <CAJZ5v0gGXyURiqcspDdLf99dKjoFKDRZ=nc55b9OHXRdat8T_w@mail.gmail.com> <CAB8ipk9NBQKjOLurtzTQO8KwQAKLPJ8YGjnLwSo5q1BrPeLSbA@mail.gmail.com>
-In-Reply-To: <CAB8ipk9NBQKjOLurtzTQO8KwQAKLPJ8YGjnLwSo5q1BrPeLSbA@mail.gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 22 Aug 2023 21:28:39 +0200
-Message-ID: <CAJZ5v0iPdQZBf0tBCtguP-1H2h4h8umyQ1BebuyAA4u5n2uEfA@mail.gmail.com>
-Subject: Re: [PATCH] cpufreq: schedutil: next_freq need update when
- cpufreq_limits changed
-To:     Xuewen Yan <xuewen.yan94@gmail.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Qais Yousef <qyousef@layalina.io>,
-        Xuewen Yan <xuewen.yan@unisoc.com>, viresh.kumar@linaro.org,
-        mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-        guohua.yan@unisoc.com, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 2:09 PM Xuewen Yan <xuewen.yan94@gmail.com> wrote:
->
-> Hi Rafael
->
-> On Tue, Jul 25, 2023 at 4:51 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
-> >
-> > On Tue, Jul 25, 2023 at 4:21 AM Xuewen Yan <xuewen.yan94@gmail.com> wrote:
-> > >
-> > > On Mon, Jul 24, 2023 at 11:53 PM Qais Yousef <qyousef@layalina.io> wrote:
-> > > >
-> > > > On 07/24/23 11:36, Xuewen Yan wrote:
-> > > > > On Sat, Jul 22, 2023 at 7:02 AM Qais Yousef <qyousef@layalina.io> wrote:
-> > > > > >
-> > > > > > On 07/19/23 21:05, Xuewen Yan wrote:
-> > > > > > > When cpufreq's policy is single, there is a scenario that will
-> > > > > > > cause sg_policy's next_freq to be unable to update.
-> > > > > > >
-> > > > > > > When the cpu's util is always max, the cpufreq will be max,
-> > > > > > > and then if we change the policy's scaling_max_freq to be a
-> > > > > > > lower freq, indeed, the sg_policy's next_freq need change to
-> > > > > > > be the lower freq, however, because the cpu_is_busy, the next_freq
-> > > > > > > would keep the max_freq.
-> > > > > > >
-> > > > > > > For example:
-> > > > > > > The cpu7 is single cpu:
-> > > > > > >
-> > > > > > > unisoc:/sys/devices/system/cpu/cpufreq/policy7 # while true;do done&
-> > > > > > > [1] 4737
-> > > > > > > unisoc:/sys/devices/system/cpu/cpufreq/policy7 # taskset -p 80 4737
-> > > > > > > pid 4737's current affinity mask: ff
-> > > > > > > pid 4737's new affinity mask: 80
-> > > > > > > unisoc:/sys/devices/system/cpu/cpufreq/policy7 # cat scaling_max_freq
-> > > > > > > 2301000
-> > > > > > > unisoc:/sys/devices/system/cpu/cpufreq/policy7 # cat scaling_cur_freq
-> > > > > > > 2301000
-> > > > > > > unisoc:/sys/devices/system/cpu/cpufreq/policy7 # echo 2171000 > scaling_max_freq
-> > > > > > > unisoc:/sys/devices/system/cpu/cpufreq/policy7 # cat scaling_max_freq
-> > > > > > > 2171000
-> > > > > > >
-> > > > > > > At this time, the sg_policy's next_freq would keep 2301000.
-> > > > > > >
-> > > > > > > To prevent the case happen, add the judgment of the need_freq_update flag.
-> > > > > > >
-> > > > > > > Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
-> > > > > > > Co-developed-by: Guohua Yan <guohua.yan@unisoc.com>
-> > > > > > > Signed-off-by: Guohua Yan <guohua.yan@unisoc.com>
-> > > > > > > ---
-> > > > > > >  kernel/sched/cpufreq_schedutil.c | 3 ++-
-> > > > > > >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > > > > > >
-> > > > > > > diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-> > > > > > > index 4492608b7d7f..458d359f5991 100644
-> > > > > > > --- a/kernel/sched/cpufreq_schedutil.c
-> > > > > > > +++ b/kernel/sched/cpufreq_schedutil.c
-> > > > > > > @@ -350,7 +350,8 @@ static void sugov_update_single_freq(struct update_util_data *hook, u64 time,
-> > > > > > >        * Except when the rq is capped by uclamp_max.
-> > > > > > >        */
-> > > > > > >       if (!uclamp_rq_is_capped(cpu_rq(sg_cpu->cpu)) &&
-> > > > > > > -         sugov_cpu_is_busy(sg_cpu) && next_f < sg_policy->next_freq) {
-> > > > > > > +         sugov_cpu_is_busy(sg_cpu) && next_f < sg_policy->next_freq &&
-> > > > > > > +         !sg_policy->need_freq_update) {
-> > > > > >
-> > > > > > What about sugov_update_single_perf()? It seems to have the same problem, no?
-> > > > >
-> > > > > There is no problem in sugov_update_single_perf, because the next_freq
-> > > > > is updated by drivers, maybe the next_freq is not used when using
-> > > > > sugov_update_single_perf..
-> > > >
-> > > > Ah I see; we just use prev_util but the request will go through and the driver
-> > > > should observe the new limit regardless of what util value we pass to it. Got
-> > > > ya.
-> > > >
-> > > > >
-> > > > > But  for the last_freq_update_time, I think there are some problems
-> > > > > when using sugov_update_single_perf:
-> > > > > Now, there is no judgment condition for the update of the
-> > > > > last_freq_update_time. That means the last_freq_update_time is always
-> > > > > updated in sugov_update_single_perf.
-> > > > > And in sugov_should_update_freq: it would judge the
-> > > > > freq_update_delay_ns. As a result, If we use the
-> > > > > sugov_update_single_perf, the cpu frequency would only be periodically
-> > > > > updated according to freq_update_delay_ns.
-> > > > > Maybe we should judge the cpufreq_driver_adjust_perf's return value,
-> > > > > if the freq is not updated, the last_freq_update_time also does not
-> > > > > have to update.
-> > > > >
-> > > > > Just like:
-> > > > > ---
-> > > > > diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-> > > > > index 458d359f5991..10f18b054f01 100644
-> > > > > --- a/kernel/sched/cpufreq_schedutil.c
-> > > > > +++ b/kernel/sched/cpufreq_schedutil.c
-> > > > > @@ -381,6 +381,7 @@ static void sugov_update_single_perf(struct
-> > > > > update_util_data *hook, u64 time,
-> > > > >         struct sugov_cpu *sg_cpu = container_of(hook, struct
-> > > > > sugov_cpu, update_util);
-> > > > >         unsigned long prev_util = sg_cpu->util;
-> > > > >         unsigned long max_cap;
-> > > > > +       bool freq_updated;
-> > > > >
-> > > > >         /*
-> > > > >          * Fall back to the "frequency" path if frequency invariance is not
-> > > > > @@ -407,10 +408,11 @@ static void sugov_update_single_perf(struct
-> > > > > update_util_data *hook, u64 time,
-> > > > >             sugov_cpu_is_busy(sg_cpu) && sg_cpu->util < prev_util)
-> > > > >                 sg_cpu->util = prev_util;
-> > > > >
-> > > > > -       cpufreq_driver_adjust_perf(sg_cpu->cpu, map_util_perf(sg_cpu->bw_dl),
-> > > > > +       freq_updated = cpufreq_driver_adjust_perf(sg_cpu->cpu,
-> > > > > map_util_perf(sg_cpu->bw_dl),
-> > > > >                                    map_util_perf(sg_cpu->util), max_cap);
-> > > > >
-> > > > > -       sg_cpu->sg_policy->last_freq_update_time = time;
-> > > > > +       if (freq_updated)
-> > > > > +               sg_cpu->sg_policy->last_freq_update_time = time;
-> > > > >  }
-> > > >
-> > > > Sound reasonable in principle, but it could lead to overhead; for example when
-> > > > the system is busy and maxed out, the last_freq_update_time will never be
-> > > > updated and will end up continuously calling to the driver to change frequency
-> > > > without any rate limit AFAICS. Which might not be an acceptable overhead,
-> > > > I don't know. Logically this is wasted cycles preventing the tasks from doing
-> > > > useful work. I think we need to look at such corner cases and treat them
-> > > > appropriately to not call the driver if we go with this approach.
-> > >
-> > > Hi Qais,
-> > >
-> > > I can understand what you mean, but I don't think this is a problem.
-> > > For the driver, the calculation of whether to update the frequency may
-> > > not be the main time-consuming, but the main time-consuming may be the
-> > > frequency conversion time of the hardware. If the hardware does not
-> > > need frequency conversion, the operation of calculating the frequency
-> > > takes a very short time.
-> > > If the operation of calling the driver frequently is unacceptable, can
-> > > prev_util be used?
-> >
-> > No, it's better to pass the data to the driver directly and let it
-> > sort that out in this particular case.
->
-> Yes, I know. we should not interfere with the driver's behavior.
->
-> By the way, What do you think of the patch fixing the sugov_update_single_freq?
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-IIUC, you have found a genuine issue and the patch should address it.
+If a GPIO simulator device is unbound with interrupts still requested,
+we will hit a use-after-free issue in __irq_domain_deactivate_irq(). The
+owner of the irq domain must dispose of all mappings before destroying
+the domain object.
+
+Fixes: cb8c474e79be ("gpio: sim: new testing module")
+Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+---
+v1 -> v2:
+- drop the return value check of irq_find_mapping()
+
+ drivers/gpio/gpio-sim.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/drivers/gpio/gpio-sim.c b/drivers/gpio/gpio-sim.c
+index f1f6f1c32987..8fb11a5395eb 100644
+--- a/drivers/gpio/gpio-sim.c
++++ b/drivers/gpio/gpio-sim.c
+@@ -291,6 +291,15 @@ static void gpio_sim_mutex_destroy(void *data)
+ 	mutex_destroy(lock);
+ }
+ 
++static void gpio_sim_dispose_mappings(void *data)
++{
++	struct gpio_sim_chip *chip = data;
++	unsigned int i;
++
++	for (i = 0; i < chip->gc.ngpio; i++)
++		irq_dispose_mapping(irq_find_mapping(chip->irq_sim, i));
++}
++
+ static void gpio_sim_sysfs_remove(void *data)
+ {
+ 	struct gpio_sim_chip *chip = data;
+@@ -406,6 +415,10 @@ static int gpio_sim_add_bank(struct fwnode_handle *swnode, struct device *dev)
+ 	if (IS_ERR(chip->irq_sim))
+ 		return PTR_ERR(chip->irq_sim);
+ 
++	ret = devm_add_action_or_reset(dev, gpio_sim_dispose_mappings, chip);
++	if (ret)
++		return ret;
++
+ 	mutex_init(&chip->lock);
+ 	ret = devm_add_action_or_reset(dev, gpio_sim_mutex_destroy,
+ 				       &chip->lock);
+-- 
+2.39.2
+
