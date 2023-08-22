@@ -2,51 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FD57784AF4
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 22:01:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECBB5784AF6
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 22:05:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230042AbjHVUBn convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 22 Aug 2023 16:01:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35888 "EHLO
+        id S230109AbjHVUFS convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 22 Aug 2023 16:05:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229937AbjHVUBl (ORCPT
+        with ESMTP id S229790AbjHVUFR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 16:01:41 -0400
-Received: from mail-oo1-f43.google.com (mail-oo1-f43.google.com [209.85.161.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2581FCE6;
-        Tue, 22 Aug 2023 13:01:40 -0700 (PDT)
-Received: by mail-oo1-f43.google.com with SMTP id 006d021491bc7-570c1364e5eso367301eaf.0;
-        Tue, 22 Aug 2023 13:01:40 -0700 (PDT)
+        Tue, 22 Aug 2023 16:05:17 -0400
+Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2961DCE3;
+        Tue, 22 Aug 2023 13:05:16 -0700 (PDT)
+Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-55b5a37acb6so311985a12.0;
+        Tue, 22 Aug 2023 13:05:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692734499; x=1693339299;
+        d=1e100.net; s=20221208; t=1692734715; x=1693339515;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=IGp/1KbTUz+Ui/4a8BwzMWjLiVQYdfk0/9ww8lHSVlY=;
-        b=Nb6EG2grWEoXzUS8fbMpA0cjpTXrOfX6mop60y98lgIrDBQf3zJ8YWJQr5NzQiZTJo
-         /Z759Pc0kpNp6/NzTuOkK0tVwUvqADwrRLyegyE6Khwtoqm6WyynNZVY1APrWxi6if4d
-         BqsoOPy01zVXZeh6SGXgaRO2jHKkiL9+DQStExh+3DV4BAbPo0sJohP19jPCHwaP+Ygp
-         9qIl9wGeKkixskXsudE8eY/bPNOPdytXaDAeNcw1MB6bP/CfGd8MdvKL9W7aiNzSmWbG
-         loeaXw/r2MHXeD1C7YeFJwBDSrhpRgK/TuC+WFUaFKRtLZ0bcpkAEUOuK/S9F6cB4OwC
-         wamw==
-X-Gm-Message-State: AOJu0YzcmXZqLi3THfQKcoESIIsal2xCmkn1khqtDQIOOkAwe1gbS4KE
-        YXXRAdOc6bu7RuxFrIF1ZvNGzsq799g9T7KUH0k=
-X-Google-Smtp-Source: AGHT+IEN3EP7ULYKFEMxVyXQg5v3UbYhCP0pdirUGKy9Z0d0es7y+MVsQmWXP9+FgCa35mj0vPNkIQRuHc80WmUQLGc=
-X-Received: by 2002:a4a:bc82:0:b0:569:a08a:d9c5 with SMTP id
- m2-20020a4abc82000000b00569a08ad9c5mr9291442oop.0.1692734499240; Tue, 22 Aug
- 2023 13:01:39 -0700 (PDT)
+        bh=6nEly565Pd1n4WCOmXfLlZXqFmNl3e/Ja0A4TkYgo6M=;
+        b=JfABTYuDcKNUNptaVknLE+zVdd8OhcYdhZnX3P0LhRQ3Or2/UTzQl9rTiumqSm6oGm
+         0tdpGCtm7qmNpDcpo9048vZ/e/B7OZvC5dm0/0CrRZosP/CCPYuPWDzT5HDhXaBhuIDp
+         xXcIkc0Ht9pa2koTWRdj3P74Dn6fATNeXmdj3g/NSGI2McgfyqNC9B6bCGF7p64vw3gG
+         npv7UGDyTsyLTMJJKE2zUBMctpGoAoN/B4I3wLoy36xHQsTNHjjj1l4tvFAoswAADS0g
+         cWG97NDPq/Dj7UdXUR0usZzD55vWSQpmGd+ejRq3oncCiyL2Kie2qDlCxfhApd4KGygy
+         h9KA==
+X-Gm-Message-State: AOJu0YxktNqRVzjqfYo5GNODGdfP+fjyfG5ViDqDhvihA2GghTBHPdAA
+        NMoB9NXWjbzl+93HSGmuG7pnyJYWXQAl8xe6Tnk=
+X-Google-Smtp-Source: AGHT+IG6mc3lJzxWNu/ElWNj2ObP6RcbJ1uBedWK259bxTSk3JV+Q6upDJQ61fv8Xf8AiZswjscDuYPw1TcteOJXnTI=
+X-Received: by 2002:a05:6a20:7da2:b0:13e:7439:1449 with SMTP id
+ v34-20020a056a207da200b0013e74391449mr12997402pzj.0.1692734715646; Tue, 22
+ Aug 2023 13:05:15 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230808111325.8600-1-TonyWWang-oc@zhaoxin.com>
-In-Reply-To: <20230808111325.8600-1-TonyWWang-oc@zhaoxin.com>
+References: <20230810162119.152589-1-ulf.hansson@linaro.org> <DU0PR04MB94175C3C8869A61403975E76881AA@DU0PR04MB9417.eurprd04.prod.outlook.com>
+In-Reply-To: <DU0PR04MB94175C3C8869A61403975E76881AA@DU0PR04MB9417.eurprd04.prod.outlook.com>
 From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 22 Aug 2023 22:01:28 +0200
-Message-ID: <CAJZ5v0h8M-hNJfRTSxtVmfmpF09h9zmNmG-e=iMemzPwsK50Zg@mail.gmail.com>
-Subject: Re: [PATCH v2] cpufreq: ACPI: add ITMT support when CPPC enabled
-To:     Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
-Cc:     rafael@kernel.org, viresh.kumar@linaro.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        CobeChen@zhaoxin.com, TimGuo@zhaoxin.com, LeoLiu-oc@zhaoxin.com,
-        LindaChai@zhaoxin.com
+Date:   Tue, 22 Aug 2023 22:05:03 +0200
+Message-ID: <CAJZ5v0iBOSnSdMitUHGk6aUJaA6+6NFOLP06FJJai-Fe3kpOnQ@mail.gmail.com>
+Subject: Re: [PATCH] PM: sleep: Add helpers to allow a device to remain powered-on
+To:     Peng Fan <peng.fan@nxp.com>, Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Patrice Chotard <patrice.chotard@st.com>,
+        Ajay Agarwal <ajayagarwal@google.com>,
+        Michael Shavit <mshavit@google.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8BIT
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
@@ -59,169 +63,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 8, 2023 at 1:13 PM Tony W Wang-oc <TonyWWang-oc@zhaoxin.com> wrote:
+On Thu, Aug 17, 2023 at 11:40 AM Peng Fan <peng.fan@nxp.com> wrote:
 >
-> The _CPC method can get per-core highest frequency.
-
-Well, not exactly.  A more precise way to say this would be "The
-per-core highest frequency can be obtained via CPPC."
-
-> The highest frequency may varies between cores which mean cores can
-
-"may vary" and "which means"
-
-> running at different max frequency, so can use it as a core priority
-
-"can run", but it would be better to say "may run".
-
-> and give a hint to scheduler in order to put critical task to the
-> higher priority core.
-
-Well, roughly speaking ...
-
-You should really talk about ITMT and how it can be hooked up to this.
-
-> Signed-off-by: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
-> ---
-> v1->v2: Fix build errors reported by kernel test robot
+> > Subject: [PATCH] PM: sleep: Add helpers to allow a device to remain
+> > powered-on
+> >
+> > On some platforms a device and its corresponding PM domain, may need to
+> > remain powered-on during system wide suspend, to support various use
+> > cases.
+> > For example, when the console_suspend_enabled flag is unset for a serial
+> > controller, the corresponding device may need to remain powered on.
+> > Other use cases exists too.
+> >
+> > In fact, we already have the mechanism in the PM core to deal with these
+> > kind of use cases. However, the current naming of the corresponding
+> > functions/flags clearly suggests these should be use for system wakeup.
+> > See device_wakeup_path(), device_set_wakeup_path and
+> > dev->power.wakeup_path.
+> >
+> > As a way to extend the use of the existing mechanism, let's introduce two
+> > new helpers functions, device_awake_path() and device_set_awake_path().
+> > At this point, let them act as wrappers of the existing functions. Ideally,
+> > when all users have been converted to use the new helpers, we may decide
+> > to drop the old ones and rename the flag.
+> >
+> > Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 >
->  arch/x86/kernel/itmt.c         |  2 ++
->  drivers/cpufreq/acpi-cpufreq.c | 59 ++++++++++++++++++++++++++++++----
->  2 files changed, 54 insertions(+), 7 deletions(-)
->
-> diff --git a/arch/x86/kernel/itmt.c b/arch/x86/kernel/itmt.c
-> index ee4fe8cdb857..b49ac8ecbbd6 100644
-> --- a/arch/x86/kernel/itmt.c
-> +++ b/arch/x86/kernel/itmt.c
-> @@ -122,6 +122,7 @@ int sched_set_itmt_support(void)
->
->         return 0;
->  }
-> +EXPORT_SYMBOL_GPL(sched_set_itmt_support);
+> Reviewed-by: Peng Fan <peng.fan@nxp.com>
 
-This requires an ACK from the x86 maintainers.
-
->
->  /**
->   * sched_clear_itmt_support() - Revoke platform's support of ITMT
-> @@ -181,3 +182,4 @@ void sched_set_itmt_core_prio(int prio, int cpu)
->  {
->         per_cpu(sched_core_priority, cpu) = prio;
->  }
-> +EXPORT_SYMBOL_GPL(sched_set_itmt_core_prio);
-
-And same here.
-
-> diff --git a/drivers/cpufreq/acpi-cpufreq.c b/drivers/cpufreq/acpi-cpufreq.c
-> index b2f05d27167e..5733323e04ac 100644
-> --- a/drivers/cpufreq/acpi-cpufreq.c
-> +++ b/drivers/cpufreq/acpi-cpufreq.c
-> @@ -628,28 +628,35 @@ static int acpi_cpufreq_blacklist(struct cpuinfo_x86 *c)
->  #endif
->
->  #ifdef CONFIG_ACPI_CPPC_LIB
-> -static u64 get_max_boost_ratio(unsigned int cpu)
-> +static void cpufreq_get_core_perf(int cpu, u64 *highest_perf, u64 *nominal_perf)
-
-This is not a cpufreq core function, so please use a different prefix
-in its name.
-
->  {
->         struct cppc_perf_caps perf_caps;
-> -       u64 highest_perf, nominal_perf;
->         int ret;
->
->         if (acpi_pstate_strict)
-> -               return 0;
-> +               return;
->
->         ret = cppc_get_perf_caps(cpu, &perf_caps);
->         if (ret) {
->                 pr_debug("CPU%d: Unable to get performance capabilities (%d)\n",
->                          cpu, ret);
-> -               return 0;
-> +               return;
->         }
->
->         if (boot_cpu_data.x86_vendor == X86_VENDOR_AMD)
-> -               highest_perf = amd_get_highest_perf();
-> +               *highest_perf = amd_get_highest_perf();
->         else
-> -               highest_perf = perf_caps.highest_perf;
-> +               *highest_perf = perf_caps.highest_perf;
-> +
-> +       *nominal_perf = perf_caps.nominal_perf;
-> +       return;
-> +}
->
-> -       nominal_perf = perf_caps.nominal_perf;
-> +static u64 get_max_boost_ratio(unsigned int cpu)
-> +{
-> +       u64 highest_perf, nominal_perf;
-> +
-> +       cpufreq_get_core_perf(cpu, &highest_perf, &nominal_perf);
->
->         if (!highest_perf || !nominal_perf) {
->                 pr_debug("CPU%d: highest or nominal performance missing\n", cpu);
-> @@ -663,8 +670,44 @@ static u64 get_max_boost_ratio(unsigned int cpu)
->
->         return div_u64(highest_perf << SCHED_CAPACITY_SHIFT, nominal_perf);
->  }
-> +
-> +static void cpufreq_sched_itmt_work_fn(struct work_struct *work)
-
-A similar comment applies here.
-
-> +{
-> +       sched_set_itmt_support();
-> +}
-> +
-> +static DECLARE_WORK(sched_itmt_work, cpufreq_sched_itmt_work_fn);
-> +
-> +static void cpufreq_set_itmt_prio(int cpu)
-> +{
-> +       u64 highest_perf, nominal_perf;
-> +       static u32 max_highest_perf = 0, min_highest_perf = U32_MAX;
-> +
-> +       cpufreq_get_core_perf(cpu, &highest_perf, &nominal_perf);
-> +
-> +       sched_set_itmt_core_prio(highest_perf, cpu);
-> +
-> +       if (max_highest_perf <= min_highest_perf) {
-> +               if (highest_perf > max_highest_perf)
-> +                       max_highest_perf = highest_perf;
-> +
-> +               if (highest_perf < min_highest_perf)
-> +                       min_highest_perf = highest_perf;
-> +
-> +               if (max_highest_perf > min_highest_perf) {
-> +                       /*
-> +                        * This code can be run during CPU online under the
-> +                        * CPU hotplug locks, so sched_set_itmt_support()
-> +                        * cannot be called from here.  Queue up a work item
-> +                        * to invoke it.
-> +                        */
-> +                       schedule_work(&sched_itmt_work);
-> +               }
-
-This potentially runs before ITMT priorities are set for all CPUs.
-Isn't it a problem?
-
-> +       }
-> +}
->  #else
->  static inline u64 get_max_boost_ratio(unsigned int cpu) { return 0; }
-> +static void cpufreq_set_itmt_prio(int cpu) { return; }
->  #endif
->
->  static int acpi_cpufreq_cpu_init(struct cpufreq_policy *policy)
-> @@ -870,6 +913,8 @@ static int acpi_cpufreq_cpu_init(struct cpufreq_policy *policy)
->         /* notify BIOS that we exist */
->         acpi_processor_notify_smm(THIS_MODULE);
->
-> +       cpufreq_set_itmt_prio(cpu);
-> +
->         pr_debug("CPU%u - ACPI performance management activated.\n", cpu);
->         for (i = 0; i < perf->state_count; i++)
->                 pr_debug("     %cP%d: %d MHz, %d mW, %d uS\n",
-> --
+Applied as 6.6 material, thanks!
