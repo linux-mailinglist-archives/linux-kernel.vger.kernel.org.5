@@ -2,115 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B170E7841E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 15:22:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13DA77841F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 15:24:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236073AbjHVNW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 09:22:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42044 "EHLO
+        id S236098AbjHVNYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 09:24:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234984AbjHVNW1 (ORCPT
+        with ESMTP id S229805AbjHVNYx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 09:22:27 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0F8B18B;
-        Tue, 22 Aug 2023 06:22:25 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7CB9862274;
-        Tue, 22 Aug 2023 13:22:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32749C43142;
-        Tue, 22 Aug 2023 13:22:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692710544;
-        bh=8f1xuEvwUyr4BzbIAvQIfSMXVJQby2xz/NDa3h2g9HE=;
-        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-        b=JhIJXRloUMZX1/B6p6lWe+IsPQjLswHXXgg8kpeO2YVkOVjmN3YIpYFZk9atGpiye
-         37DrG45RXIp/1mxVUqCBcR9w3EKThIyelrWpGnRFp9qUChBvatHmQrwf5pr6jhK2Pt
-         ECHqlTHdjkCsbfYAntga7/AlbccjbWawfNX30GK2CrE3024puGWfvvPDkWG4bpUZ2f
-         d8mUWK7WsZRXZrY18+jNQHDc2eoZF1d+jiTxVUc0mIwEJyuVBKmlRMQ1RMzxF9MVy5
-         mFgBGS0x56oEjqzTTH6yY9kharuDnUU83wE1av52jJaS/MaZVx7HzHYiXckkCCdez0
-         smK94fTqhfQ5g==
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Tue, 22 Aug 2023 16:22:21 +0300
-Message-Id: <CUZ3T3G99JG2.29X1G67HRO9QT@suppilovahvero>
-Cc:     <linux-integrity@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <stable@vger.kernel.org>, "Todd Brandt" <todd.e.brandt@intel.com>,
-        "Patrick Steinhardt" <ps@pks.im>, "Ronan Pigott" <ronan@rjp.ie>,
-        "Raymond Jay Golo" <rjgolo@gmail.com>
-Subject: Re: [PATCH v2] tpm: Don't make vendor check required for probe
-From:   "Jarkko Sakkinen" <jarkko@kernel.org>
-To:     "Mario Limonciello" <mario.limonciello@amd.com>
-X-Mailer: aerc 0.14.0
-References: <20230821140230.1168-1-mario.limonciello@amd.com>
-In-Reply-To: <20230821140230.1168-1-mario.limonciello@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Tue, 22 Aug 2023 09:24:53 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51DB0CD4
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 06:24:52 -0700 (PDT)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37MCpASm020595;
+        Tue, 22 Aug 2023 13:23:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=qqs/5lvP/7804lVdxkLNqe97hJb9/UBhJjUytrMjrro=;
+ b=cKdFdyJNiey33EBLHFXfPBZ8O10XT/zhVjYvqOndmatWxYhuUwjsUAekJmfT15ui5ltu
+ Y7/OyKmp4lvqoBqOwXiibAlINILJEOxP7yGysrUHp4ntBdjWPPOjAMHdHmRpZsw92+SG
+ a8nTW9a0WXVHFpnEvTfRzfOSdD6Vbx4y4cHZ8WXWvV32BtxB4s0z+0QHsT2LbpLlzsa6
+ cFeRhCuWiHmaCzWv9Hn+ZUsHOM9CpYcjNVrCCU+pFCr0cr8uuCmtJRcVDwPfzKYMeHxl
+ MTGGjxdjMlaipwo9MlnM7DV98P2xaClAv3Rp3D6TDrj9Mmx0o1Wx+P1LJsIopnqRXN8Q QQ== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sm6uujxjg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Aug 2023 13:23:58 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37MDNvp6004767
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Aug 2023 13:23:57 GMT
+Received: from hu-kbajaj-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Tue, 22 Aug 2023 06:23:53 -0700
+From:   Komal Bajaj <quic_kbajaj@quicinc.com>
+To:     <catalin.marinas@arm.com>, <will@kernel.org>,
+        <quic_bjorande@quicinc.com>, <arnd@arndb.de>,
+        <konrad.dybcio@linaro.org>, <krzysztof.kozlowski@linaro.org>,
+        <geert+renesas@glider.be>, <neil.armstrong@linaro.org>,
+        <nfraprado@collabora.com>, <rafal@milecki.pl>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Komal Bajaj <quic_kbajaj@quicinc.com>
+Subject: [PATCH] arm64: defconfig: Enable GCC and interconnect for QDU1000/QRU1000
+Date:   Tue, 22 Aug 2023 18:53:33 +0530
+Message-ID: <20230822132333.17580-1-quic_kbajaj@quicinc.com>
+X-Mailer: git-send-email 2.41.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: T5SLk00HahFrxNkIjURjYRHNJZ3NlPKp
+X-Proofpoint-GUID: T5SLk00HahFrxNkIjURjYRHNJZ3NlPKp
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-22_13,2023-08-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
+ spamscore=0 clxscore=1011 malwarescore=0 adultscore=0 lowpriorityscore=0
+ suspectscore=0 mlxscore=0 priorityscore=1501 phishscore=0 mlxlogscore=726
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
+ definitions=main-2308220100
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon Aug 21, 2023 at 5:02 PM EEST, Mario Limonciello wrote:
-> The vendor check introduced by commit 554b841d4703 ("tpm: Disable RNG for
-> all AMD fTPMs") doesn't work properly on a number of Intel fTPMs.  On the
-> reported systems the TPM doesn't reply at bootup and returns back the
-> command code. This makes the TPM fail probe.
->
-> As this isn't crucial for anything but AMD fTPM and AMD fTPM works, check
-> the chip vendor and if it's not AMD don't run the checks.
->
-> Cc: stable@vger.kernel.org
-> Fixes: 554b841d4703 ("tpm: Disable RNG for all AMD fTPMs")
-> Reported-by: Todd Brandt <todd.e.brandt@intel.com>
-> Reported-by: Patrick Steinhardt <ps@pks.im>
-> Reported-by: Ronan Pigott <ronan@rjp.ie>
-> Reported-by: Raymond Jay Golo <rjgolo@gmail.com>
-> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=3D217804
-> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
-> ---
-> v1->v2:
->  * Check x86 vendor for AMD
-> ---
->  drivers/char/tpm/tpm_crb.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/char/tpm/tpm_crb.c b/drivers/char/tpm/tpm_crb.c
-> index 9eb1a18590123..7faf670201ccc 100644
-> --- a/drivers/char/tpm/tpm_crb.c
-> +++ b/drivers/char/tpm/tpm_crb.c
-> @@ -465,8 +465,12 @@ static bool crb_req_canceled(struct tpm_chip *chip, =
-u8 status)
-> =20
->  static int crb_check_flags(struct tpm_chip *chip)
->  {
-> +	int ret =3D 0;
-> +#ifdef CONFIG_X86
->  	u32 val;
-> -	int ret;
-> +
-> +	if (boot_cpu_data.x86_vendor !=3D X86_VENDOR_AMD)
-> +		return ret;
-> =20
->  	ret =3D crb_request_locality(chip, 0);
->  	if (ret)
-> @@ -481,6 +485,7 @@ static int crb_check_flags(struct tpm_chip *chip)
-> =20
->  release:
->  	crb_relinquish_locality(chip, 0);
-> +#endif
+Add the QDU1000/QRU1000 GCC and interconnect drivers as built-in.
+These are necessary for the Qualcomm QDU1000/QRU1000 platform to boot
+to shell.
 
-Looks much better but the main question here is that is this combination
-possible:
+Signed-off-by: Komal Bajaj <quic_kbajaj@quicinc.com>
+---
+ arch/arm64/configs/defconfig | 2 ++
+ 1 file changed, 2 insertions(+)
 
-1. AMD CPU
-2. Non-AMD fTPM (i.e. manufacturer property differs)
+diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+index a25d783dfb95..1228e1c4d85d 100644
+--- a/arch/arm64/configs/defconfig
++++ b/arch/arm64/configs/defconfig
+@@ -1189,6 +1189,7 @@ CONFIG_MSM_GCC_8998=y
+ CONFIG_QCM_GCC_2290=y
+ CONFIG_QCM_DISPCC_2290=m
+ CONFIG_QCS_GCC_404=y
++CONFIG_QDU_GCC_1000=y
+ CONFIG_SA_GCC_8775P=y
+ CONFIG_SC_DISPCC_8280XP=m
+ CONFIG_SA_GPUCC_8775P=m
+@@ -1445,6 +1446,7 @@ CONFIG_INTERCONNECT_QCOM_MSM8996=m
+ CONFIG_INTERCONNECT_QCOM_OSM_L3=m
+ CONFIG_INTERCONNECT_QCOM_QCM2290=m
+ CONFIG_INTERCONNECT_QCOM_QCS404=m
++CONFIG_INTERCONNECT_QCOM_QDU1000=y
+ CONFIG_INTERCONNECT_QCOM_SA8775P=y
+ CONFIG_INTERCONNECT_QCOM_SC7180=y
+ CONFIG_INTERCONNECT_QCOM_SC7280=y
+--
+2.41.0
 
-BR, Jarkko
