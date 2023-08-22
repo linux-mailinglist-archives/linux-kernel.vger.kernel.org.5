@@ -2,190 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C473C7844FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 17:06:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EB1F784522
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 17:12:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236507AbjHVPGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 11:06:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37552 "EHLO
+        id S234614AbjHVPMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 11:12:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236034AbjHVPGW (ORCPT
+        with ESMTP id S233516AbjHVPMn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 11:06:22 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22E381B9
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 08:06:19 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-31c66b7da88so55293f8f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 08:06:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692716777; x=1693321577;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=hiuif0UPEilRfTqfvjhgYV9OjFsrTUZzsOgS/HAy03Q=;
-        b=EK/QqDRkxi36aIi0UBd9fmgJGjMU2iJAesESNS7RXj3CU+4OgQFnmS0DRe1Pjqt3Vj
-         aSNjrghPdOk8/h1SE6SKPJAzc5DqcD4+5PrMeavHJyeyp9S2zKh9XaOtlZn7mY5eYSD/
-         cm7wR5jRdkxFzEfC6rjLF6OrbpWnmsYdVYAbNFkRPqOaRDPsW+L2vGKCop7uzax2TDuC
-         euiDhxVc05SOEdjkhWgM5YYDIwbmQVLcQmKlNFbOLPaHYZPkGsrL6Tw3elinaF/uY5e/
-         yOhAj28EKnvg3I1Q1bZmpJZa6Itn2Tc0RfB8et8DvcNdvmh/azKkJDvWb84xZwElkzTw
-         kTWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692716777; x=1693321577;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hiuif0UPEilRfTqfvjhgYV9OjFsrTUZzsOgS/HAy03Q=;
-        b=R0lHPJ5DXEDEFeZZoXJQfFGSLl6m340F0HO/J/uvtNuvzyIoYm5HwxEZi9mM7SfVgx
-         /lK/hT1/2ed0b2QKDTYYU/Hf+oxSGQ5/slcPlb8SHoTzG+tjFr82SJ8NNv6TuVeuU/pV
-         5+nV0leMsgRpqd3khQBetBizbqpYdszZHEiXqmbdfv9HPjOXoF7rwwOuQVbesyeUjjXp
-         YN6cp8yDJOS6Dak1Nc/QjhRVL8KhFpodbUTpyPUVUYP0fwaeFn7imPrRroSneabZ++Mu
-         1cgsRyCZyti4L/xTbAqO5TiUkvG1Z6M4oNFYTyfC+j8OcVF5l0U6No1yIukEg8+f+5GQ
-         SLXQ==
-X-Gm-Message-State: AOJu0YzqH/G9zLk8esc88YD1862W5HiW+NmJr18/5cCiW31wwi2ITkO0
-        RWwLZJzMzF1MduQVDyOlvCM=
-X-Google-Smtp-Source: AGHT+IG/WYaK4QKoY/sXJElN3HnYE35+BGE/wEL15yzukGUemxKM29AaJP9Afn93aZrjhi0CYRIJjg==
-X-Received: by 2002:adf:e710:0:b0:317:3d36:b2c1 with SMTP id c16-20020adfe710000000b003173d36b2c1mr8082225wrm.7.1692716776656;
-        Tue, 22 Aug 2023 08:06:16 -0700 (PDT)
-Received: from ivan-HLYL-WXX9.. ([141.136.93.153])
-        by smtp.gmail.com with ESMTPSA id p13-20020adff20d000000b0031c52e81490sm6619066wro.72.2023.08.22.08.06.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Aug 2023 08:06:16 -0700 (PDT)
-From:   Ivan Orlov <ivan.orlov0322@gmail.com>
-To:     perex@perex.cz, tiwai@suse.com
-Cc:     Ivan Orlov <ivan.orlov0322@gmail.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ALSA: pcmtest: Add support for pcm pausing
-Date:   Tue, 22 Aug 2023 19:05:41 +0400
-Message-Id: <20230822150541.8450-1-ivan.orlov0322@gmail.com>
-X-Mailer: git-send-email 2.34.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Tue, 22 Aug 2023 11:12:43 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B775B1B9;
+        Tue, 22 Aug 2023 08:12:38 -0700 (PDT)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37MDeZUq031343;
+        Tue, 22 Aug 2023 15:12:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id; s=qcppdkim1;
+ bh=eW3RyZ4QBo5qREd9Dm/xiHKptXK3qCzHQrZPKpZK2RI=;
+ b=OnUnN7jW96N68HWnAWf5npCy4FqlBSMNSr52o4oMdWnmlduTPbGY6rthyktUVEhYxsmG
+ v4BXnQOO3vpdDSGyuZlMfsYHYXTRGAdrzpyUMG/xCgg2mgvSa8mnt1M2ixOTFHmwC2ba
+ m1rOHIuxVcJSx8z4128d4C5x8UsRdUGrR8ObLP1YEloNyrieaS2k4c33OtTmiofVwRm1
+ vL3SNtuad1okCrE40DMcOnfM62cPvCHgT0RheRJeLul4NE0KET4I+6BkggGo0SlAnK8c
+ WZgpIJBtbt0thOb0/MH0C7zo7NaDR+YV7qZ+Togp6FifljThj4EHqznuKMTjS2kGRgTG iA== 
+Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3smx3009hr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Aug 2023 15:12:27 +0000
+Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+        by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 37MFCNgY032346;
+        Tue, 22 Aug 2023 15:12:23 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 3sjptkwbvh-1;
+        Tue, 22 Aug 2023 15:12:23 +0000
+Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37MFCNGw032338;
+        Tue, 22 Aug 2023 15:12:23 GMT
+Received: from hu-sgudaval-hyd.qualcomm.com (hu-krichai-hyd.qualcomm.com [10.213.110.112])
+        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 37MFCNet032335;
+        Tue, 22 Aug 2023 15:12:23 +0000
+Received: by hu-sgudaval-hyd.qualcomm.com (Postfix, from userid 4058933)
+        id 8414D4B78; Tue, 22 Aug 2023 20:42:22 +0530 (+0530)
+From:   Krishna chaitanya chundru <quic_krichai@quicinc.com>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     helgaas@kernel.org, linux-pci@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_vbadigan@quicinc.com, quic_nitegupt@quicinc.com,
+        quic_skananth@quicinc.com, quic_ramkri@quicinc.com,
+        quic_parass@quicinc.com, krzysztof.kozlowski@linaro.org,
+        Krishna chaitanya chundru <quic_krichai@quicinc.com>
+Subject: [PATCH v4 0/4] PCI: qcom: Add support for OPP
+Date:   Tue, 22 Aug 2023 20:42:17 +0530
+Message-Id: <1692717141-32743-1-git-send-email-quic_krichai@quicinc.com>
+X-Mailer: git-send-email 2.7.4
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: qZQIbarT60QCB-nINTHD-fZsWanizyuS
+X-Proofpoint-GUID: qZQIbarT60QCB-nINTHD-fZsWanizyuS
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-22_13,2023-08-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 clxscore=1015
+ adultscore=0 mlxlogscore=558 priorityscore=1501 impostorscore=0 mlxscore=0
+ phishscore=0 suspectscore=0 spamscore=0 bulkscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
+ definitions=main-2308220116
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add pause push/release support to the virtual PCM test driver. Add
-'suspend' boolean field to the pcmtst_buf_iter structure, so we can
-pause the timer without shutting it down. Update the trigger callback
-handler correspondingly. Extract buffer initialization to the
-'reset_buf_iterator' function since it is used in multiple places now.
+This patch adds support for OPP to vote for the performance state of RPMH
+power domain based upon GEN speed it PCIe got enumerated.
 
-Signed-off-by: Ivan Orlov <ivan.orlov0322@gmail.com>
----
- sound/drivers/pcmtest.c | 49 ++++++++++++++++++++++++++++++++++-------
- 1 file changed, 41 insertions(+), 8 deletions(-)
+Before link up PCIe driver will vote for the maximum performance state.
 
-diff --git a/sound/drivers/pcmtest.c b/sound/drivers/pcmtest.c
-index 27cbb9d38f08..b59b78a09224 100644
---- a/sound/drivers/pcmtest.c
-+++ b/sound/drivers/pcmtest.c
-@@ -108,6 +108,7 @@ struct pcmtst_buf_iter {
- 	size_t total_bytes;			// Total bytes read/written
- 	size_t chan_block;			// Bytes in one channel buffer when non-interleaved
- 	struct snd_pcm_substream *substream;
-+	bool suspend;				// We need to pause timer without shutting it down
- 	struct timer_list timer_instance;
- };
- 
-@@ -115,7 +116,8 @@ static struct snd_pcm_hardware snd_pcmtst_hw = {
- 	.info = (SNDRV_PCM_INFO_INTERLEAVED |
- 		 SNDRV_PCM_INFO_BLOCK_TRANSFER |
- 		 SNDRV_PCM_INFO_NONINTERLEAVED |
--		 SNDRV_PCM_INFO_MMAP_VALID),
-+		 SNDRV_PCM_INFO_MMAP_VALID |
-+		 SNDRV_PCM_INFO_PAUSE),
- 	.formats =		SNDRV_PCM_FMTBIT_U8 | SNDRV_PCM_FMTBIT_S16_LE,
- 	.rates =		SNDRV_PCM_RATE_8000_48000,
- 	.rate_min =		8000,
-@@ -346,6 +348,9 @@ static void timer_timeout(struct timer_list *data)
- 	v_iter = from_timer(v_iter, data, timer_instance);
- 	substream = v_iter->substream;
- 
-+	if (v_iter->suspend)
-+		return;
-+
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK && !v_iter->is_buf_corrupted)
- 		check_buf_block(v_iter, substream->runtime);
- 	else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
-@@ -358,7 +363,9 @@ static void timer_timeout(struct timer_list *data)
- 		v_iter->period_pos %= v_iter->period_bytes;
- 		snd_pcm_period_elapsed(substream);
- 	}
--	mod_timer(&v_iter->timer_instance, jiffies + TIMER_INTERVAL + inject_delay);
-+
-+	if (!v_iter->suspend)
-+		mod_timer(&v_iter->timer_instance, jiffies + TIMER_INTERVAL + inject_delay);
- }
- 
- static int snd_pcmtst_pcm_open(struct snd_pcm_substream *substream)
-@@ -373,19 +380,15 @@ static int snd_pcmtst_pcm_open(struct snd_pcm_substream *substream)
- 	if (!v_iter)
- 		return -ENOMEM;
- 
-+	v_iter->substream = substream;
- 	runtime->hw = snd_pcmtst_hw;
- 	runtime->private_data = v_iter;
--	v_iter->substream = substream;
--	v_iter->buf_pos = 0;
--	v_iter->is_buf_corrupted = false;
--	v_iter->period_pos = 0;
--	v_iter->total_bytes = 0;
- 
- 	playback_capture_test = 0;
- 	ioctl_reset_test = 0;
- 
- 	timer_setup(&v_iter->timer_instance, timer_timeout, 0);
--	mod_timer(&v_iter->timer_instance, jiffies + TIMER_INTERVAL);
-+
- 	return 0;
- }
- 
-@@ -400,10 +403,40 @@ static int snd_pcmtst_pcm_close(struct snd_pcm_substream *substream)
- 	return 0;
- }
- 
-+static inline void reset_buf_iterator(struct pcmtst_buf_iter *v_iter)
-+{
-+	v_iter->buf_pos = 0;
-+	v_iter->is_buf_corrupted = false;
-+	v_iter->period_pos = 0;
-+	v_iter->total_bytes = 0;
-+}
-+
-+static inline void start_pcmtest_timer(struct pcmtst_buf_iter *v_iter)
-+{
-+	v_iter->suspend = false;
-+	mod_timer(&v_iter->timer_instance, jiffies + TIMER_INTERVAL);
-+}
-+
- static int snd_pcmtst_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- {
-+	struct pcmtst_buf_iter *v_iter = substream->runtime->private_data;
-+
- 	if (inject_trigger_err)
- 		return -EINVAL;
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+		reset_buf_iterator(v_iter);
-+		start_pcmtest_timer(v_iter);
-+		break;
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		start_pcmtest_timer(v_iter);
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		// We can't call timer_shutdown_sync here, as it is forbidden to sleep here
-+		v_iter->suspend = true;
-+		break;
-+	}
- 
- 	return 0;
- }
+Add API dev_pm_opp_find_level_floor to find To find the highest opp for a device
+based on the level.
+
+changes from v3:
+	- Removing the opp vote on suspend when the link is not up and link is not
+	  up and add debug prints as suggested by pavan.
+	- Added dev_pm_opp_find_level_floor API to find the highest opp to vote.
+changes from v2:
+	- Instead of using the freq based opp search use level based as suggested
+	  by Dmitry Baryshkov.
+Changes from v1:
+        - Addressed comments from Krzysztof Kozlowski.
+        - Added the rpmhpd_opp_xxx phandle as suggested by pavan.
+        - Added dev_pm_opp_set_opp API call which was missed on previous patch.
+
+Krishna chaitanya chundru (4):
+  dt-bindings: pci: qcom: Add opp table
+  arm64: dts: qcom: sm8450: Add opp table support to PCIe
+  OPP: Add api to retrieve opps which is at most the provided level
+  PCI: qcom: Add OPP support for speed based performance state of RPMH
+
+ .../devicetree/bindings/pci/qcom,pcie.yaml         |  4 ++
+ arch/arm64/boot/dts/qcom/sm8450.dtsi               | 47 +++++++++++++++++++
+ drivers/opp/core.c                                 | 26 +++++++++++
+ drivers/pci/controller/dwc/pcie-qcom.c             | 52 ++++++++++++++++++++++
+ include/linux/pm_opp.h                             |  4 ++
+ 5 files changed, 133 insertions(+)
+
 -- 
-2.34.1
+2.7.4
 
