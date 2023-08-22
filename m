@@ -2,307 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5253A783C6A
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 11:02:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D619783C6B
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 11:02:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234162AbjHVJCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 05:02:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36678 "EHLO
+        id S234166AbjHVJCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 05:02:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234151AbjHVJCX (ORCPT
+        with ESMTP id S234232AbjHVJCn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 05:02:23 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C06F113;
-        Tue, 22 Aug 2023 02:02:21 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C8344612CB;
-        Tue, 22 Aug 2023 09:02:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 281D1C433C7;
-        Tue, 22 Aug 2023 09:02:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692694940;
-        bh=54luh6aWDj+Dj6PCgagvuO1k+5MIOroKY5M7KCBKnsw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=I5NWbbQmafaI/unLPzRx2CDciEoxctCBCvzlAgz2f0THOSfkd6gFdWSKEx3ZHmox6
-         5g3aIfJgb3li19UAfb41tbDKfwnxVn6OD3bvIkx085TRPEm11sXWYz0q76RKDkeuWs
-         86CsYc8qV+tXfj7ANzydP9E+9I0kYqVrVqgwIm+45ZCW6Cnt5H39EZvuwxgLWm1nCx
-         ZOJMiLxNlYz/FdtelyeoXu5MrT3FQSTCDJ3/avpHrmhjoId5hs7Qm6vMTcAa0nC5tB
-         mF3+KyKwPhMuyutmf2nDVDS2u+TcQDfdyRA8n7g7BW89aAeeeEMNcWmWUZ4z75xu68
-         Tb828Ha8kERMQ==
-Date:   Tue, 22 Aug 2023 11:02:11 +0200
-From:   Lorenzo Pieralisi <lpieralisi@kernel.org>
-To:     Frank Li <Frank.Li@nxp.com>
-Cc:     bhelgaas@google.com, devicetree@vger.kernel.org,
-        gustavo.pimentel@synopsys.com, helgaas@kernel.org,
-        imx@lists.linux.dev, kw@linux.com, leoyang.li@nxp.com,
-        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        lorenzo.pieralisi@arm.com, mani@kernel.org,
-        manivannan.sadhasivam@linaro.org, minghuan.lian@nxp.com,
-        mingkai.hu@nxp.com, robh+dt@kernel.org, roy.zang@nxp.com,
-        shawnguo@kernel.org, zhiqiang.hou@nxp.com
-Subject: Re: [PATCH v12 3/3] PCI: layerscape: Add power management support
- for ls1028a
-Message-ID: <ZOR5k7B3qRFEjPXR@lpieralisi>
-References: <20230821184815.2167131-1-Frank.Li@nxp.com>
- <20230821184815.2167131-4-Frank.Li@nxp.com>
+        Tue, 22 Aug 2023 05:02:43 -0400
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2086.outbound.protection.outlook.com [40.107.93.86])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18A62CE
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 02:02:40 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Bj2qB5jaft/+jv92SwD7cPV5FRiGKHcWABbHJ4+i4eN1gMNqwBf+0xwE/ejxUBYYXEu1RUaNYISgbSXQAOQHPfrvSCwoCNCxdqXEl1wt0FkwpnBMJ4rYbwC+ceDPlfBF94/jlgFVeTvk7yfCoAjdJMObu4Wi4xxtiDzuTRNMpB1tML8Phvb7OnkumBDITkr0I2eXeEwLu2nXgDDPrM4qnujzzRBWhl6sk9SGoEo+gn3APV8Ohkc7Ko93Zb5858k/8GyG/UBzHcK6xtFCqNceINxiSvaAZO+RWGeVzrQjS3raRGQrgA//9lxTIDV8MI1hUjXGqUuR6QYzi4Q6TLWkfQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=PzVOzcEBTdxrPj0u0nuylBt3NI4+/MEhmQG6j8STia0=;
+ b=D6D7OZPD0TgszUfa/Kmsp8DLxEzN5Spgy07U5X8eJ+YqbVyPQ1thCZE3Ia+JfYjOotlGpHXLSyJROG03oJlBw8W8un+/0V9NwArGiYbe5DyXCGnCrfnX/dRV8Ig4tRa6BtEqEPTww2aD5e9uUcMilFR6WGa0Z5UckPHnTj/fWSbbu4bKx0P5mwDGlc8KzEXGVjfhNEvF131Hw4LEY1qxacTNXEnFJVaTYwUl+c7tzWDDCyKrlsjk6BnC83Wt438GSTGhQtz2p/BEYqWgfU8iDcD4ZxVpHhVgSrd5NNY7D1BtyJfV1RYkFOtwghPUAA7SI6reCTtFd1PmLsLeEgZYeQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PzVOzcEBTdxrPj0u0nuylBt3NI4+/MEhmQG6j8STia0=;
+ b=B5aTci0KPt5u25jLqIV4DfQbZbd/5BSvVRjSZ/xaJAQCn9axXf79MEAVvRciVzztaRaTOm631aUoCYT+Wwg3QKtPwPWD1rEGUldsnzx+dkwdTEo9Fgo8b+wrMuta7/BBKyBuuPE1vbwn8gF0NxG/7sydWxBhL9qhj3CE8wpPojg=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from IA1PR12MB6434.namprd12.prod.outlook.com (2603:10b6:208:3ae::10)
+ by CH3PR12MB7524.namprd12.prod.outlook.com (2603:10b6:610:146::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.24; Tue, 22 Aug
+ 2023 09:02:38 +0000
+Received: from IA1PR12MB6434.namprd12.prod.outlook.com
+ ([fe80::17b8:2ba3:147e:b8cd]) by IA1PR12MB6434.namprd12.prod.outlook.com
+ ([fe80::17b8:2ba3:147e:b8cd%6]) with mapi id 15.20.6699.020; Tue, 22 Aug 2023
+ 09:02:37 +0000
+Message-ID: <95d72acc-c4fa-cd71-a27f-113f0c2a8649@amd.com>
+Date:   Tue, 22 Aug 2023 14:32:25 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v2 2/4] mm: migrate: move the numamigrate_isolate_page()
+ into do_numa_page()
+Content-Language: en-US
+To:     Baolin Wang <baolin.wang@linux.alibaba.com>,
+        akpm@linux-foundation.org
+Cc:     mgorman@techsingularity.net, shy828301@gmail.com, david@redhat.com,
+        ying.huang@intel.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1692665449.git.baolin.wang@linux.alibaba.com>
+ <9ff2a9e3e644103a08b9b84b76b39bbd4c60020b.1692665449.git.baolin.wang@linux.alibaba.com>
+From:   Bharata B Rao <bharata@amd.com>
+In-Reply-To: <9ff2a9e3e644103a08b9b84b76b39bbd4c60020b.1692665449.git.baolin.wang@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PN3PR01CA0193.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:be::22) To IA1PR12MB6434.namprd12.prod.outlook.com
+ (2603:10b6:208:3ae::10)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230821184815.2167131-4-Frank.Li@nxp.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: IA1PR12MB6434:EE_|CH3PR12MB7524:EE_
+X-MS-Office365-Filtering-Correlation-Id: 66df8e74-962c-4efc-a5f8-08dba2ee87eb
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: syzOdNh6uIZdyxjypgN/GlVG5j5c7f3D06O9OrgtQyia6JedMQeaPUr3MHjIPGdD8u7NmFGaVa/3KE9oxjxG/3S2t3rUqDkIc3QFf/m3DQ3b5lEbIRMIc8SUOkBypgI9qsL/sFmWXWvtiljN47Iirl9nwIpFFL92psi/qYfkTvMSkZsO8m4Z36Iq4AxD5W6CYFmqsA0ISxxj/QibxZxLIJSb3eKox7kVQRKcPOCaVO4Fc1JMYE7oe1Ok/QvFaABFN7KVkSXhBlz2FhBscHKYR6VR3EKCtH/IRrbWgoR/kf+aM9vcENsmUoTBpWgPoWGm7Hx8uNnZWrRx25miY87DmeZPcRs0JOoRh4OygWF/vZsfdPsWyRef4v+3nepVXVTV/Y8xiOrtF/8Ri0AgEMT0rEDhzID4cb4UXytfMEaSDFw5uEPA9m/uiLQck/BgWkJDo4CH5xfxveE8g8mohL02o/bPtseng3PAJNYsAOmF2W8tLXYtZsIdV6NgnjPenmI+chkSBnkS/NSufyTEeCbPONILq3qX6bvc8fsS93dTH64rglI6ZBsMGn/8p72YtwmylDgw6TNg7hfWoNvSPUAhpDiDREsCATf98+lnBTOWm4vF/PI9TAAE0ln2D4jg8ghJIVmD9D/nA/5+baOpJo6Nww==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR12MB6434.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(39860400002)(346002)(376002)(366004)(1800799009)(186009)(451199024)(66476007)(66556008)(316002)(66946007)(6512007)(8676002)(8936002)(2616005)(4326008)(36756003)(41300700001)(478600001)(6666004)(38100700002)(53546011)(6506007)(6486002)(83380400001)(2906002)(86362001)(31686004)(31696002)(5660300002)(26005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Y2lMRkNjWGlpWERHcEo0K1BGV2tzSjFIUFlReGNNcERaUUlOM3h2ZThGOXFj?=
+ =?utf-8?B?TzZkSzZmUlpnNWVUdW1ocEZNZzhvcjJtU1JVcTNRYkh0TjFtdWFpblh4R2RY?=
+ =?utf-8?B?ZUpKSVpYdXJ5ZXdmN3lUSjkzYXM3SGxYWVdpaUt4OHNTcFZQYkVoRklvMUZv?=
+ =?utf-8?B?ZzRHZWpMamhiTW9OL3VIVVlTdXBjamZ5N3FndC9zdHFOeXJid0t3ci9xN04v?=
+ =?utf-8?B?VEdGOEo5UUV1VnprSmR4VjZWUGlMTllEaUpOVjNRUHNjazZaNG5pNjBaKzll?=
+ =?utf-8?B?d1lOSjlrRDNTdzB1aWdrMVVZSlFwOEtoaFlTN3RuZmZPY0dyZlhHQXlGeTcw?=
+ =?utf-8?B?YW1Ib250YktjNUxXRnc3cmNLUGVOOW00S1RudVhVbzhpUG01dmh2WUY3WWdE?=
+ =?utf-8?B?MjN5d3pYZWZCRW95ald4bUNaVmdZUDFnclN2bHIrakJxcnpLTW1wN3Z2M2Vt?=
+ =?utf-8?B?Z0Z1UWNpdUJvdUFWRkxKL0pqcCtsOUhLQjd4RmI5WkMyT2h4WUlQSnloNkpa?=
+ =?utf-8?B?K0xqVWtiSytxKzRiN1plam16M3B4L2s2bHZvNTNNKzdiK3ZiNkQxbzF5bkRz?=
+ =?utf-8?B?RDN6NFlvZDRIelJsU3FyaFpMdXBMT01IQ3RRWm1ORGoyVUZFajNmOHFwVUFp?=
+ =?utf-8?B?OHJkU1FiQ0RpSkVYcHRaUy9SNzF0TTFOQXJwbDhkcTNvMGJhZ0dncFhUSE9u?=
+ =?utf-8?B?eWxuS2prZTRuWU5yV21rZE5sOGJMWUhteUFlQUpJUlF0c1NWZDNuaXVpSncw?=
+ =?utf-8?B?RUNQYWthZ1dYdzBHQkJPNUcyZ2Q0alR3aDVxS0JmTEdyMlVoU1B4aGZjcGU1?=
+ =?utf-8?B?RTgvdDhtM0FLSmpicnVMT3ZIamlhZnFmYXdaVGtZOTQzblg3QngvdkFsVzFw?=
+ =?utf-8?B?M2p5dDhSWjJyWWxjZDczL0p4UE9ORCt6bFdaaVR5Tys4cGZHMkh2MUs5blZ3?=
+ =?utf-8?B?ZVg2dS9vVm0xUWtBWHBxYytMOVY0eCswcW1zUktRaDJ1dEZZQlpIaTN6NytX?=
+ =?utf-8?B?T3VGS0syeHNQOFVZRTFVMmRObmxKVEdRdzZkWWhGdGxLTjlqNHVDb1Arcml2?=
+ =?utf-8?B?M1ZDWFEzaEsrSUE4RjRUU0xLVW9WZzdqQUZWZDY0amVTZTJpamh2b1lLb2Vw?=
+ =?utf-8?B?aGhNdHlDc3VPUFBRUTRsWm5BMEl2cEZxNDIwaFRaTFcwNy9zdlNoZ2szVWpP?=
+ =?utf-8?B?WnVZK294TW5TZ0ZNUDh4ZHUwYXdLN3VSVjJPOGk5dXQvSWFud0RqN21JTmFE?=
+ =?utf-8?B?UXhFREJyalRCeE40QytjalgzKzQ1M28wNlRZZG5OWkxhWDBwajd4QjM4SFcx?=
+ =?utf-8?B?Tk4xcTNMcnlFQ1NsdGgrRGhBWWVDQUdDeUZ2K2QvRWJMVlRrcER2QVc5ekhL?=
+ =?utf-8?B?N3FYN3JqV0NQcW9CYjl0VzQ5bUUxMlhnbFZHNTk5UHNLMDd0QTlvNVJVUUlU?=
+ =?utf-8?B?REtlS0Yya2d5V3JiQjhyODVlbnVRVk5vcitUTU9xZWZOOGZRV29YUlBIblIr?=
+ =?utf-8?B?ekxEMkxDOUlSbzJ6UDN4aExlaVZhVTljdW9ZSVVKNEh1WlZtTVRQVm5UajY1?=
+ =?utf-8?B?Y0ZDc3lWODgyQ2duL0owTGF6cWxGZXo0VW5LeWh6ZjBZZEZWdGkxak5Uc0RR?=
+ =?utf-8?B?REw3VjUyYU5HRk45V2NRT0FTQStHaFFIc3RHZ0ltcU9YSDZvSm5JWmRKOVJC?=
+ =?utf-8?B?VTRJSlNrYzA2SEFxdTJxYVlheWlySms3ZkVjRUwvNW5pRmtrS1R4YzZ6SW5X?=
+ =?utf-8?B?aXJjMXRQejVQaGVNcjFEQm4xZ2xGNGwxczgzYXB2bXNodHJyUlVBaW5JbURZ?=
+ =?utf-8?B?T3lRSUZ5WU0zS3dHejFKSE9BcTIveC93V0VSeDV4dUZwVjhIY1F6ZzBLcEdo?=
+ =?utf-8?B?Y1Aya0NJK3B1UnYrMVFCV0hmMnpHYTBERkhSa0cyNkc0eWRCZUV1ZHFSRmN4?=
+ =?utf-8?B?WHJoTE9UOHpPMEQ3UHRvK2VVekFFdFpUWEliT3JvNHd2YUt2Y3B2aHNMOXN0?=
+ =?utf-8?B?eWFFakk1eW84bkUyL3RsRkh0TFNqRzFwYzZQSEFkNHpWYVV5cnowRC9ZYzBE?=
+ =?utf-8?B?ZVdnOW9ZMWVjZmp5UElXNFgvUmwwN053K1ZjejlML01SSklicHNEVnJXZSto?=
+ =?utf-8?Q?ASTsQQCsd8PvyL8/QX4Li0NAg?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 66df8e74-962c-4efc-a5f8-08dba2ee87eb
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR12MB6434.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Aug 2023 09:02:37.8277
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: CMhGjtqMTcg2/HlhaXn2Gm9OVoqIlGbBK3UD8rCFd0zs0uJe2H2V5fJmoqz67qWlwd1ow4p6hdbyWPguxsCkxA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB7524
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 21, 2023 at 02:48:15PM -0400, Frank Li wrote:
-> From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+On 22-Aug-23 6:23 AM, Baolin Wang wrote:
+> Move the numamigrate_isolate_page() into do_numa_page() to simplify the
+> migrate_misplaced_page(), which now only focuses on page migration, and
+> it also serves as a preparation for supporting batch migration for
+> migrate_misplaced_page().
 > 
-> Add PME_Turn_off/PME_TO_Ack handshake sequence for ls1028a platform. Call
-> common dwc dw_pcie_suspend(resume)_noirq() function when system enter/exit
-> suspend state.
+> While we are at it, change the numamigrate_isolate_page() to boolean
+> type to make the return value more clear.
 > 
-> Acked-by: Manivannan Sadhasivam <mani@kernel.org>
-> Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 > ---
->  drivers/pci/controller/dwc/pci-layerscape.c | 135 ++++++++++++++++++--
->  1 file changed, 126 insertions(+), 9 deletions(-)
+>  include/linux/migrate.h |  6 ++++++
+>  mm/huge_memory.c        |  7 +++++++
+>  mm/memory.c             |  7 +++++++
+>  mm/migrate.c            | 22 +++++++---------------
+>  4 files changed, 27 insertions(+), 15 deletions(-)
 > 
-> diff --git a/drivers/pci/controller/dwc/pci-layerscape.c b/drivers/pci/controller/dwc/pci-layerscape.c
-> index ed5fb492fe08..97b8d3329df7 100644
-> --- a/drivers/pci/controller/dwc/pci-layerscape.c
-> +++ b/drivers/pci/controller/dwc/pci-layerscape.c
-> @@ -8,9 +8,11 @@
->   * Author: Minghuan Lian <Minghuan.Lian@freescale.com>
->   */
->  
-> +#include <linux/delay.h>
->  #include <linux/kernel.h>
->  #include <linux/interrupt.h>
->  #include <linux/init.h>
-> +#include <linux/iopoll.h>
->  #include <linux/of_pci.h>
->  #include <linux/of_platform.h>
->  #include <linux/of_address.h>
-> @@ -20,6 +22,7 @@
->  #include <linux/mfd/syscon.h>
->  #include <linux/regmap.h>
->  
-> +#include "../../pci.h"
->  #include "pcie-designware.h"
->  
->  /* PEX Internal Configuration Registers */
-> @@ -27,12 +30,26 @@
->  #define PCIE_ABSERR		0x8d0 /* Bridge Slave Error Response Register */
->  #define PCIE_ABSERR_SETTING	0x9401 /* Forward error of non-posted request */
->  
-> +/* PF Message Command Register */
-> +#define LS_PCIE_PF_MCR		0x2c
-> +#define PF_MCR_PTOMR		BIT(0)
-> +#define PF_MCR_EXL2S		BIT(1)
-> +
->  #define PCIE_IATU_NUM		6
->  
-> +struct ls_pcie_drvdata {
-> +	const u32 pf_off;
-> +	bool pm_support;
-> +};
-> +
->  struct ls_pcie {
->  	struct dw_pcie *pci;
-> +	const struct ls_pcie_drvdata *drvdata;
-> +	void __iomem *pf_base;
-> +	bool big_endian;
->  };
->  
-> +#define ls_pcie_pf_readl_addr(addr)	ls_pcie_pf_readl(pcie, addr)
->  #define to_ls_pcie(x)	dev_get_drvdata((x)->dev)
->  
->  static bool ls_pcie_is_bridge(struct ls_pcie *pcie)
-> @@ -73,6 +90,64 @@ static void ls_pcie_fix_error_response(struct ls_pcie *pcie)
->  	iowrite32(PCIE_ABSERR_SETTING, pci->dbi_base + PCIE_ABSERR);
->  }
->  
-> +static u32 ls_pcie_pf_readl(struct ls_pcie *pcie, u32 off)
-> +{
-> +	if (pcie->big_endian)
-> +		return ioread32be(pcie->pf_base + off);
-> +
-> +	return ioread32(pcie->pf_base + off);
-> +}
-> +
-> +static void ls_pcie_pf_writel(struct ls_pcie *pcie, u32 off, u32 val)
-> +{
-> +	if (pcie->big_endian)
-> +		iowrite32be(val, pcie->pf_base + off);
-> +	else
-> +		iowrite32(val, pcie->pf_base + off);
-> +}
-> +
-> +static void ls_pcie_send_turnoff_msg(struct dw_pcie_rp *pp)
-> +{
-> +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-> +	struct ls_pcie *pcie = to_ls_pcie(pci);
-> +	u32 val;
-> +	int ret;
-> +
-> +	val = ls_pcie_pf_readl(pcie, LS_PCIE_PF_MCR);
-> +	val |= PF_MCR_PTOMR;
-> +	ls_pcie_pf_writel(pcie, LS_PCIE_PF_MCR, val);
-> +
-> +	ret = readx_poll_timeout(ls_pcie_pf_readl_addr, LS_PCIE_PF_MCR,
-> +				 val, !(val & PF_MCR_PTOMR),
-> +				 PCIE_PME_TO_L2_TIMEOUT_US/10,
-> +				 PCIE_PME_TO_L2_TIMEOUT_US);
-> +	if (ret)
-> +		dev_err(pcie->pci->dev, "PME_Turn_off timeout\n");
-> +}
-> +
-> +static void ls_pcie_exit_from_l2(struct dw_pcie_rp *pp)
-> +{
-> +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-> +	struct ls_pcie *pcie = to_ls_pcie(pci);
-> +	u32 val;
-> +	int ret;
-> +
-> +	/*
-> +	 * Set PF_MCR_EXL2S bit in LS_PCIE_PF_MCR register for the link
-> +	 * to exit L2 state.
-> +	 */
-> +	val = ls_pcie_pf_readl(pcie, LS_PCIE_PF_MCR);
-> +	val |= PF_MCR_EXL2S;
-> +	ls_pcie_pf_writel(pcie, LS_PCIE_PF_MCR, val);
-> +
-> +	ret = readx_poll_timeout(ls_pcie_pf_readl_addr, LS_PCIE_PF_MCR,
-> +				 val, !(val & PF_MCR_EXL2S),
-> +				 1000,
-> +				 10000);
-
-I can add a comment myself - please explain how this delay was chosen,
-any piece of information could be useful for a future developer, let
-me know and I will add it.
-
-> +	if (ret)
-> +		dev_err(pcie->pci->dev, "L2 exit timeout\n");
-> +}
-> +
->  static int ls_pcie_host_init(struct dw_pcie_rp *pp)
+> diff --git a/include/linux/migrate.h b/include/linux/migrate.h
+> index 711dd9412561..ddcd62ec2c12 100644
+> --- a/include/linux/migrate.h
+> +++ b/include/linux/migrate.h
+> @@ -144,12 +144,18 @@ const struct movable_operations *page_movable_ops(struct page *page)
+>  #ifdef CONFIG_NUMA_BALANCING
+>  int migrate_misplaced_page(struct page *page, struct vm_area_struct *vma,
+>  			   int node);
+> +bool numamigrate_isolate_page(pg_data_t *pgdat, struct page *page);
+>  #else
+>  static inline int migrate_misplaced_page(struct page *page,
+>  					 struct vm_area_struct *vma, int node)
 >  {
->  	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-> @@ -91,18 +166,27 @@ static int ls_pcie_host_init(struct dw_pcie_rp *pp)
->  
->  static const struct dw_pcie_host_ops ls_pcie_host_ops = {
->  	.host_init = ls_pcie_host_init,
-> +	.pme_turn_off = ls_pcie_send_turnoff_msg,
-> +};
+>  	return -EAGAIN; /* can't migrate now */
+>  }
 > +
-> +static const struct ls_pcie_drvdata ls1021a_drvdata = {
-
-I suggest adding .pm_support = false explicitly here, I can
-do it myself.
-
-Thanks,
-Lorenzo
-
-> +};
+> +static inline bool numamigrate_isolate_page(pg_data_t *pgdat, struct page *page)
+> +{
+> +	return false;
+> +}
+>  #endif /* CONFIG_NUMA_BALANCING */
+>  
+>  #ifdef CONFIG_MIGRATION
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index 4a9b34a89854..07149ead11e4 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -1496,6 +1496,7 @@ vm_fault_t do_huge_pmd_numa_page(struct vm_fault *vmf)
+>  	int target_nid, last_cpupid = (-1 & LAST_CPUPID_MASK);
+>  	bool migrated = false, writable = false;
+>  	int flags = 0;
+> +	pg_data_t *pgdat;
+>  
+>  	vmf->ptl = pmd_lock(vma->vm_mm, vmf->pmd);
+>  	if (unlikely(!pmd_same(oldpmd, *vmf->pmd))) {
+> @@ -1545,6 +1546,12 @@ vm_fault_t do_huge_pmd_numa_page(struct vm_fault *vmf)
+>  		goto migrate_fail;
+>  	}
+>  
+> +	pgdat = NODE_DATA(target_nid);
+> +	if (!numamigrate_isolate_page(pgdat, page)) {
+> +		put_page(page);
+> +		goto migrate_fail;
+> +	}
 > +
-> +static const struct ls_pcie_drvdata layerscape_drvdata = {
-> +	.pf_off = 0xc0000,
-> +	.pm_support = true,
->  };
+>  	migrated = migrate_misplaced_page(page, vma, target_nid);
+>  	if (migrated) {
+>  		flags |= TNF_MIGRATED;
+> diff --git a/mm/memory.c b/mm/memory.c
+> index fc6f6b7a70e1..4e451b041488 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -4769,6 +4769,7 @@ static vm_fault_t do_numa_page(struct vm_fault *vmf)
+>  	int target_nid;
+>  	pte_t pte, old_pte;
+>  	int flags = 0;
+> +	pg_data_t *pgdat;
 >  
->  static const struct of_device_id ls_pcie_of_match[] = {
-> -	{ .compatible = "fsl,ls1012a-pcie", },
-> -	{ .compatible = "fsl,ls1021a-pcie", },
-> -	{ .compatible = "fsl,ls1028a-pcie", },
-> -	{ .compatible = "fsl,ls1043a-pcie", },
-> -	{ .compatible = "fsl,ls1046a-pcie", },
-> -	{ .compatible = "fsl,ls2080a-pcie", },
-> -	{ .compatible = "fsl,ls2085a-pcie", },
-> -	{ .compatible = "fsl,ls2088a-pcie", },
-> -	{ .compatible = "fsl,ls1088a-pcie", },
-> +	{ .compatible = "fsl,ls1012a-pcie", .data = &layerscape_drvdata },
-> +	{ .compatible = "fsl,ls1021a-pcie", .data = &ls1021a_drvdata },
-> +	{ .compatible = "fsl,ls1028a-pcie", .data = &layerscape_drvdata },
-> +	{ .compatible = "fsl,ls1043a-pcie", .data = &ls1021a_drvdata },
-> +	{ .compatible = "fsl,ls1046a-pcie", .data = &layerscape_drvdata },
-> +	{ .compatible = "fsl,ls2080a-pcie", .data = &layerscape_drvdata },
-> +	{ .compatible = "fsl,ls2085a-pcie", .data = &layerscape_drvdata },
-> +	{ .compatible = "fsl,ls2088a-pcie", .data = &layerscape_drvdata },
-> +	{ .compatible = "fsl,ls1088a-pcie", .data = &layerscape_drvdata },
->  	{ },
->  };
+>  	/*
+>  	 * The "pte" at this point cannot be used safely without
+> @@ -4844,6 +4845,12 @@ static vm_fault_t do_numa_page(struct vm_fault *vmf)
+>  		goto migrate_fail;
+>  	}
 >  
-> @@ -121,6 +205,8 @@ static int ls_pcie_probe(struct platform_device *pdev)
->  	if (!pci)
->  		return -ENOMEM;
->  
-> +	pcie->drvdata = of_device_get_match_data(dev);
+> +	pgdat = NODE_DATA(target_nid);
+> +	if (!numamigrate_isolate_page(pgdat, page)) {
+> +		put_page(page);
+> +		goto migrate_fail;
+> +	}
 > +
->  	pci->dev = dev;
->  	pci->pp.ops = &ls_pcie_host_ops;
->  
-> @@ -131,6 +217,10 @@ static int ls_pcie_probe(struct platform_device *pdev)
->  	if (IS_ERR(pci->dbi_base))
->  		return PTR_ERR(pci->dbi_base);
->  
-> +	pcie->big_endian = of_property_read_bool(dev->of_node, "big-endian");
-> +
-> +	pcie->pf_base = pci->dbi_base + pcie->drvdata->pf_off;
-> +
->  	if (!ls_pcie_is_bridge(pcie))
->  		return -ENODEV;
->  
-> @@ -139,12 +229,39 @@ static int ls_pcie_probe(struct platform_device *pdev)
->  	return dw_pcie_host_init(&pci->pp);
+>  	/* Migrate to the requested node */
+>  	if (migrate_misplaced_page(page, vma, target_nid)) {
+>  		page_nid = target_nid;
+> diff --git a/mm/migrate.c b/mm/migrate.c
+> index 9cc98fb1d6ec..0b2b69a2a7ab 100644
+> --- a/mm/migrate.c
+> +++ b/mm/migrate.c
+> @@ -2478,7 +2478,7 @@ static struct folio *alloc_misplaced_dst_folio(struct folio *src,
+>  	return __folio_alloc_node(gfp, order, nid);
 >  }
 >  
-> +static int ls_pcie_suspend_noirq(struct device *dev)
-> +{
-> +	struct ls_pcie *pcie = dev_get_drvdata(dev);
-> +
-> +	if (!pcie->drvdata->pm_support)
-> +		return 0;
-> +
-> +	return dw_pcie_suspend_noirq(pcie->pci);
-> +}
-> +
-> +static int ls_pcie_resume_noirq(struct device *dev)
-> +{
-> +	struct ls_pcie *pcie = dev_get_drvdata(dev);
-> +
-> +	if (!pcie->drvdata->pm_support)
-> +		return 0;
-> +
-> +	ls_pcie_exit_from_l2(&pcie->pci->pp);
-> +
-> +	return dw_pcie_resume_noirq(pcie->pci);
-> +}
-> +
-> +static const struct dev_pm_ops ls_pcie_pm_ops = {
-> +	NOIRQ_SYSTEM_SLEEP_PM_OPS(ls_pcie_suspend_noirq, ls_pcie_resume_noirq)
-> +};
-> +
->  static struct platform_driver ls_pcie_driver = {
->  	.probe = ls_pcie_probe,
->  	.driver = {
->  		.name = "layerscape-pcie",
->  		.of_match_table = ls_pcie_of_match,
->  		.suppress_bind_attrs = true,
-> +		.pm = &ls_pcie_pm_ops,
->  	},
->  };
->  builtin_platform_driver(ls_pcie_driver);
-> -- 
-> 2.34.1
-> 
+> -static int numamigrate_isolate_page(pg_data_t *pgdat, struct page *page)
+> +bool numamigrate_isolate_page(pg_data_t *pgdat, struct page *page)
+>  {
+>  	int nr_pages = thp_nr_pages(page);
+>  	int order = compound_order(page);
+> @@ -2496,11 +2496,11 @@ static int numamigrate_isolate_page(pg_data_t *pgdat, struct page *page)
+>  				break;
+>  		}
+
+There is an other s/return 0/return false/ changed required here for this chunk:
+
+if (!(sysctl_numa_balancing_mode & NUMA_BALANCING_MEMORY_TIERING))
+                        return 0;
+
+>  		wakeup_kswapd(pgdat->node_zones + z, 0, order, ZONE_MOVABLE);
+> -		return 0;
+> +		return false;
+>  	}
+
+Looks like this whole section under "Avoiding migrating to a node that is nearly full"
+check could be moved to numa_page_can_migrate() as that can be considered as one more
+check (or action to) see if the page can be migrated or not. After that numamigrate_isolate_page()
+will truly be about isolating the page.
+
+Regards,
+Bharata.
