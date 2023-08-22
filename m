@@ -2,113 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E687E783C21
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 10:52:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFBA2783C26
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 10:54:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233554AbjHVIwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 04:52:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40720 "EHLO
+        id S233982AbjHVIyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 04:54:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232330AbjHVIwm (ORCPT
+        with ESMTP id S233949AbjHVIyR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 04:52:42 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC48ECE;
-        Tue, 22 Aug 2023 01:52:40 -0700 (PDT)
-Received: from localhost.localdomain (unknown [39.45.215.81])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: usama.anjum)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id EB99D66071F4;
-        Tue, 22 Aug 2023 09:52:36 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1692694359;
-        bh=NGdGyOxLJtlnYFKmnZVtWI/rXq95i4OikjQx7fOm8Ls=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ImK/YbGqOs3zVZ4bLjzr+ehQ9VcISLRyIUKyI3aYHrysIzK3idPwjhnXTy0EhchmC
-         /qUAIIGLrfxdX3+E2wmfZPNxtBd1SFiiI3opX9X7afDeZl/ehbyVo0aTuzknwtcbdj
-         8rnefvKwV/99Bz3ncGpMWjMnzdqOJVHL0ttjN4FNqX63EgSDsgK5BZ5NXTL58MK172
-         4pWOE7TJgSNUJBDJUm8Zx6FDhIslAWwVt7DYBbvAm8oLv8AlyExsngxG2AHl8JoXyC
-         WDiIl2l6kyvo3Z3X4HHUciLiKQy1i7de34w2OkIYnHOWrYLa3sREQfnW7D8pzjiHZZ
-         L02PLQSjl0s2A==
-From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>, Ingo Molnar <mingo@elte.hu>
-Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        kernel@collabora.com, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: [PATCH v2] tty/sysrq: replace smp_processor_id() with get_cpu()
-Date:   Tue, 22 Aug 2023 13:52:03 +0500
-Message-Id: <20230822085204.2575767-1-usama.anjum@collabora.com>
-X-Mailer: git-send-email 2.40.1
+        Tue, 22 Aug 2023 04:54:17 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0063AE4E
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 01:54:11 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id d75a77b69052e-4036bd4fff1so243681cf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 01:54:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692694451; x=1693299251;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RYH3dUSDs9v17pTi1zWcJ78xVX1MVU0RCa4MT/4Yxs0=;
+        b=dTMvSSoIZ6kCkSkQgwlYvjOKZYbVKzTROd6wTJyMbhG2TMp03D98PMAghcvl/h+hHu
+         v84CG1UiYIIc2LyzEHkyxizjc0xn/ADi2RZTWcuCbRpjG4a/kGRuNquQxe4yi+iWSf5O
+         sf+EwEdak5IHHYB/Md6PNeo8AVtGHoAlpjYsnyhPFexkqzXCkG8lfVSbhjA7GiRCmsgu
+         iJFBBGmZ2EPddQtqHsVE6HTZTgVJlQKO+k91RFDlDTL5yR9M5fU+GGa6x5K8RKKivopp
+         2AogkOOr2NHy5NvG0P1U6V8Va6rp0/WTfOeq/UpeykDQZ81xCpHvEwc21SWdJ+0evg/U
+         vfuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692694451; x=1693299251;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RYH3dUSDs9v17pTi1zWcJ78xVX1MVU0RCa4MT/4Yxs0=;
+        b=gFQ93aCivbtIyzg5pxVpgzrF9Q7nKo1rczRLiogUGqKEYkWMOkE6o3vWvWtmOcOp6v
+         4fQ/nGUlieyl/yBqERLAlqJOfTKT7uibB2LMDBtJaQHQzaohXRE4IIk00Cp2MgoesCTE
+         c8A1lW626OUwf/2Sf5msUtvmQV8w7xVGYJHXjzN4afx18fwugaDcYLkHluMJfAn61sXg
+         2YAQgzNiZylKbYm09NMDXNxKP4437MsQ4NfS8+bjpQqdOtywB9H7sJVioI1kJVZCDjhT
+         mPkK2yqBEY5HMAwoM63A8eHbRabaotM/Q5xGqbUpdDlTSrKcM75uGRO8/UjlaMUV4rCn
+         6cFg==
+X-Gm-Message-State: AOJu0YyDK1mcKwAIjrC3AaT13ngpSFYjcmG7Pq6sVL1KrUbJB8ObGnNd
+        OUVYQ+SD3qxOxIGzRnYjDsp8FHhHPYaNnFvEu4nKnw==
+X-Google-Smtp-Source: AGHT+IHPkk75C1bdYvP+EuL7CdVDVQ8If+W8vM2KpDrVG9bYqoQnKM8zJlD52OebVy67O9zqx96hbGEcbRh8shKmECs=
+X-Received: by 2002:a05:622a:144a:b0:3f2:2c89:f1ef with SMTP id
+ v10-20020a05622a144a00b003f22c89f1efmr115447qtx.5.1692694450838; Tue, 22 Aug
+ 2023 01:54:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230817182055.1770180-1-mshavit@google.com> <20230818021629.RFC.v1.3.I326c62dc062aed8d901d319aa665dbe983c7904c@changeid>
+ <ZN5pK03Drao/egeF@nvidia.com> <CAKHBV27k8F0ZLy=RA=WhjJ7+C9JMHRRnKs=4W4pJMNmxrMEXxw@mail.gmail.com>
+ <ZONQgNh6qarqgA+f@nvidia.com> <CAKHBV26oTZLssq5bopePojqgrEJwukKHYEbhU02nAvHHVB13mw@mail.gmail.com>
+ <ZONrkVX6kZjX/wus@nvidia.com> <CAKHBV27PL=2jxOd0BoYdoBMTu_0rm4z_JP6iG+SVi5Ag7w2kWw@mail.gmail.com>
+ <ZON0E3KV46EEPw/p@nvidia.com> <CAKHBV25P9kNGkM7f5Xc-HsozK362XzMz+NnLa8FcWiu3FFr13g@mail.gmail.com>
+ <ZON7Dt4Hkf8iwaDC@nvidia.com>
+In-Reply-To: <ZON7Dt4Hkf8iwaDC@nvidia.com>
+From:   Michael Shavit <mshavit@google.com>
+Date:   Tue, 22 Aug 2023 16:53:33 +0800
+Message-ID: <CAKHBV24qFgbw4uBY7qQkPeWowZ=F9d6YW-WeqsTG7Y_z0Yw85g@mail.gmail.com>
+Subject: Re: [RFC PATCH v1 3/8] iommu/arm-smmu-v3-sva: Allocate new ASID from installed_smmus
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     iommu@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, will@kernel.org, nicolinc@nvidia.com,
+        tina.zhang@intel.com, jean-philippe@linaro.org,
+        robin.murphy@arm.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The smp_processor_id() shouldn't be called from preemptible code.
-Instead use get_cpu() and put_cpu() which disables preemption in
-addition to getting the processor id. This fixes the following bug:
+On Mon, Aug 21, 2023 at 10:56=E2=80=AFPM Jason Gunthorpe <jgg@nvidia.com> w=
+rote:
+>
+> On Mon, Aug 21, 2023 at 10:39:14PM +0800, Michael Shavit wrote:
+> > > > > > (on a loop over every smmu the domain in arm_smmu_mmu_notifier_=
+get is
+> > > > > > attached to, which just at a glance looks headache inducing bec=
+ause of
+> > > > > > sva's piggybacking on the rid domain.)
+> > > > >
+> > > > > Not every smmu, just the one you are *currently* attaching to. We
+> > > > > don't care if the *other* smmu's have different ASIDs, maybe they=
+ are
+> > > > > not using BTM, or won't use SVA.
+> > > >
+> > > > I mean because the domain in arm_smmu_mmu_notifier_get is the RID
+> > > > domain (not the SVA domain, same issue we discussed in previous
+> > > > thread) , which can be attached to multiple SMMUs.
+> > >
+> > > Oh that is totally nonsensical. I expect you will need to fix that
+> > > sooner than later. Once the CD table is moved and there is a proper
+> > > way to track the PASID it should not be needed. It shouldn't fall int=
+o
+> > > the decision making about where to put the ASID xarray.
+> >
+> > Right I got a bit of a chicken and egg problem with all these series.
+>
+> Yes, I'm not surprised to hear this
+>
+> Still, it would nice to move forward without going in a weird
+> direction too much.
+>
+> Once the CD table is moved to the master what do you think is blocking
+> fixing up the SVA stuff to not rely on a RID domain?
 
-[  119.143590] sysrq: Show backtrace of all active CPUs
-[  119.143902] BUG: using smp_processor_id() in preemptible [00000000] code: bash/873
-[  119.144586] caller is debug_smp_processor_id+0x20/0x30
-[  119.144827] CPU: 6 PID: 873 Comm: bash Not tainted 5.10.124-dirty #3
-[  119.144861] Hardware name: QEMU QEMU Virtual Machine, BIOS 2023.05-1 07/22/2023
-[  119.145053] Call trace:
-[  119.145093]  dump_backtrace+0x0/0x1a0
-[  119.145122]  show_stack+0x18/0x70
-[  119.145141]  dump_stack+0xc4/0x11c
-[  119.145159]  check_preemption_disabled+0x100/0x110
-[  119.145175]  debug_smp_processor_id+0x20/0x30
-[  119.145195]  sysrq_handle_showallcpus+0x20/0xc0
-[  119.145211]  __handle_sysrq+0x8c/0x1a0
-[  119.145227]  write_sysrq_trigger+0x94/0x12c
-[  119.145247]  proc_reg_write+0xa8/0xe4
-[  119.145266]  vfs_write+0xec/0x280
-[  119.145282]  ksys_write+0x6c/0x100
-[  119.145298]  __arm64_sys_write+0x20/0x30
-[  119.145315]  el0_svc_common.constprop.0+0x78/0x1e4
-[  119.145332]  do_el0_svc+0x24/0x8c
-[  119.145348]  el0_svc+0x10/0x20
-[  119.145364]  el0_sync_handler+0x134/0x140
-[  119.145381]  el0_sync+0x180/0x1c0
+These aren't necessarily strict dependencies, but ideally I'd like to:
+1. Natively support PASID attachments in the smmu domain (patch(es)
+from the set_dev_pasid series)
+2. Support attaching a domain to multiple SMMUs (this series)
+3. SVA framework support for allocating a single SVA domain per MM
+struct (Tina's series)
 
-Cc: stable@vger.kernel.org
-Fixes: 47cab6a722d4 ("debug lockups: Improve lockup detection, fix generic arch fallback")
-Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
----
- drivers/tty/sysrq.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/tty/sysrq.c b/drivers/tty/sysrq.c
-index 23198e3f1461a..6b4a28bcf2f5f 100644
---- a/drivers/tty/sysrq.c
-+++ b/drivers/tty/sysrq.c
-@@ -262,13 +262,14 @@ static void sysrq_handle_showallcpus(u8 key)
- 		if (in_hardirq())
- 			regs = get_irq_regs();
- 
--		pr_info("CPU%d:\n", smp_processor_id());
-+		pr_info("CPU%d:\n", get_cpu());
- 		if (regs)
- 			show_regs(regs);
- 		else
- 			show_stack(NULL, NULL, KERN_INFO);
- 
- 		schedule_work(&sysrq_showallcpus);
-+		put_cpu();
- 	}
- }
- 
--- 
-2.40.1
-
+SVA can then directly attach an sva domain to a master in its
+set_dev_pasid call, without having to do any sort of sharing of
+smmu_notifiers or CDs across domains. The SVA domain allocated would
+directly be attached to the master.
