@@ -2,144 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52F38785D2B
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 18:26:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66F83785D2E
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 18:26:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234061AbjHWQ0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 12:26:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37784 "EHLO
+        id S237371AbjHWQ0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 12:26:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231976AbjHWQ0Q (ORCPT
+        with ESMTP id S231976AbjHWQ0U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 12:26:16 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5F9BE68;
-        Wed, 23 Aug 2023 09:26:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692807974; x=1724343974;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Uh40LslCjNWpAlM1qtjuXk8TRQEreFpGEUbxgUCgHFM=;
-  b=aZEOiUylEelIEgIx6urGXdQ9Z5tax7rvEWI/G3/MNqLeZocQz0I24DZl
-   NKh5uJ1fn3Fbymd77V2iBmEs0RWNUD44cUayZtgYwke+VHrBNAWMmziXn
-   dMRcXYhEqBebF2DBHVbdrs4Lu2hmaB7YEZo8pUxiNFF9+GgQMq0wVv03U
-   Jawg1wylVfwwH+DBnQ1nck5B7CrrbXvgeoCUSaI1z5lc4+kvqx6eoHzLu
-   dsQWzOSjEnLPfM9Lvmdd887MSNowv+GmyzIhcJaCb5pmhEcx4KSsxLipl
-   W1YkOWwbzXLakoOXAdlu2DiBiqcUKyELfnbdpPidEUYw+DtIwbPMVAZhl
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="376933148"
-X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
-   d="scan'208";a="376933148"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2023 09:26:14 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="826791632"
-X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
-   d="scan'208";a="826791632"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by FMSMGA003.fm.intel.com with ESMTP; 23 Aug 2023 09:26:12 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qYqgM-00FI6w-2p;
-        Wed, 23 Aug 2023 19:26:10 +0300
-Date:   Wed, 23 Aug 2023 19:26:10 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Angel Iglesias <ang.iglesiasg@gmail.com>
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v2 2/3] iio: pressure: bmp280: Allow multiple chips id
- per family of devices
-Message-ID: <ZOYzIvrvZGjQldDe@smile.fi.intel.com>
-References: <cover.1692805377.git.ang.iglesiasg@gmail.com>
- <7bdfbfeb106acc5560e6cb090131f105b2d2e418.1692805377.git.ang.iglesiasg@gmail.com>
+        Wed, 23 Aug 2023 12:26:20 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D654E7E
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 09:26:18 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 96D0C620ED
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 16:26:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FF7CC433CA;
+        Wed, 23 Aug 2023 16:26:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692807976;
+        bh=MjJ78APs4nHACIMIv6Eznanwwx/xp3HSffo39PEGkLc=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=naClsm80YD7oHCWwv1RWWUoEU9YM9rlrMQY8UOwMqM7wPbnCqSP9qGwq056tWdymk
+         8t4uMB1gcqjD87X2cJQeSpXIz/6tOVKVrNHrxmnZsAyCEe8gPaD7k28Y4QbtQ/NDch
+         YOVepeLHur/3iHdPjGVuIyprai0wl2T+QWqMsT1eChkAwDTrltdJ8N2l9vtpJf80Gl
+         BHCIln2RMs/G877RCJTvewgQvuvWrGIih3QwkwhR7ej8+fyreXayBqIdBPz7i6WLYl
+         rZ6spsxHNETyfJSM2XS28TkIfkNkNgdNkDVZhWQxXxfdwtngt66OTFcVvuaYsW/+1g
+         ZzONVi9IuDgoQ==
+From:   Mark Brown <broonie@kernel.org>
+To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+In-Reply-To: <20230821-delete-l3-v1-1-26d9cd32e7a2@linaro.org>
+References: <20230821-delete-l3-v1-1-26d9cd32e7a2@linaro.org>
+Subject: Re: [PATCH] ASoC: Delete UDA134x/L3 audio codec
+Message-Id: <169280797490.53791.2553554158977527260.b4-ty@kernel.org>
+Date:   Wed, 23 Aug 2023 17:26:14 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7bdfbfeb106acc5560e6cb090131f105b2d2e418.1692805377.git.ang.iglesiasg@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-034f2
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 23, 2023 at 05:58:06PM +0200, Angel Iglesias wrote:
-> Improve device detection in certain chip families known to have various
-> chip ids.
+On Mon, 21 Aug 2023 16:17:57 +0200, Linus Walleij wrote:
+> This codec was used by the deleted S3C board
+> sound/soc/samsung/s3c24xx_uda134x.c.
+> 
+> 
 
-IDs
+Applied to
 
-...
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
->  #include <linux/completion.h>
->  #include <linux/pm_runtime.h>
->  #include <linux/random.h>
-> +#include <linux/overflow.h>
+Thanks!
 
-Please, preserve ordering.
+[1/1] ASoC: Delete UDA134x/L3 audio codec
+      commit: 6dd11b945951315ba4986844f20e83a0c27c1d38
 
-...
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
->  	struct bmp280_data *data;
->  	struct gpio_desc *gpiod;
->  	unsigned int chip_id;
-> -	int ret;
-> +	int ret, i;
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-	unsigned int i;
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-...
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-> +	if (i == data->chip_info->num_chip_id) {
-> +		size_t nbuf;
-> +		char *buf;
-> +
-> +		// 0x<id>, so four chars per number plus one space + ENDL
-
-> +		if (check_mul_overflow(5, data->chip_info->num_chip_id, &nbuf))
-> +			return ret;
-> +
-> +		buf = kmalloc_array(nbuf, sizeof(char), GFP_KERNEL);
-
-We almost never do a array allocation for byte sizes. Instead of the above you
-need to use
-
-		buf = kmalloc_array(data->chip_info->num_chip_id, 5, GFP_KERNEL);
-
-> +		if (!buf)
-
-This check assumes that num_chip_id is never 0, so...
-
-> +			return ret;
-> +
-> +		for (i = 0; i < data->chip_info->num_chip_id; i++)
-> +			snprintf(&buf[i*5], nbuf, "0x%x ", data->chip_info->chip_id[i]);
-
-> +		buf[nbuf-1] = '\0';
-
-...this is redundant assignment. sprintf() guarantees the NUL termination.
-
-> +
-> +		dev_err(dev, "bad chip id: expected [ %s ] got 0x%x\n", buf, chip_id);
-
-"...expected one of..."
-
-> +		kfree(buf);
-> +		return ret;
-
-Oh, I didn't get that you allocated memory only to print a message...
-
-
->  	}
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+Thanks,
+Mark
 
