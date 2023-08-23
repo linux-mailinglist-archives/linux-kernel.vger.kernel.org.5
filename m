@@ -2,152 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 11DA4786003
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 20:43:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2256A786007
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 20:43:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238224AbjHWSnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 14:43:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42072 "EHLO
+        id S238242AbjHWSnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 14:43:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238269AbjHWSnL (ORCPT
+        with ESMTP id S238227AbjHWSnX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 14:43:11 -0400
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7436AE6C
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 11:43:09 -0700 (PDT)
-Received: by mail-qt1-x82d.google.com with SMTP id d75a77b69052e-407db3e9669so41511cf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 11:43:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692816188; x=1693420988;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=6+XSIvloO52/PerpGIhD9DOTdAIwJk+Ck8XFoQL2ICM=;
-        b=U3enfibZ7MUvZOLPvMsjhrEqUopH4bVD4f0QMW/QXQ2sQL9XmhV1FZ1SlM79vy4Te8
-         I8io/Z5/7oSIbu5ghh8ykVDj/JSQv0Zx4VfUlrEIJavElN4aZElpSYBSJn/uHHDPgDKH
-         oDitURq+84XUHRAF7wjLtIx8wOgcOLI6aIss2ZTIymKr3iO9AfV2e84Wv8j7wYl21YaJ
-         zzFQnyL4/Wag1ee7UdOBnCcR6eyiCKTUHwPep0R/M3UBQDWuR2gj966L1NEEgJpMu7Ki
-         yuBtopBRl80wC3JXvdcus+oe8yngzrBEZjBPi4cxTbUZ23d8WNoqO5Ena5O8qscAm460
-         Q1Sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692816188; x=1693420988;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6+XSIvloO52/PerpGIhD9DOTdAIwJk+Ck8XFoQL2ICM=;
-        b=FGBXDxBsWzLSlJCiP6UTsQ1Llv92eF7VIjfT1PLgdOLTWxgrYBfbYhU+KxP3NwqzoR
-         6C4vye1cNUURLPlgMhivBepVnmUU0MwrcXlq4szXe78weUXJdrsuePn1DyW/lbrd3dcC
-         kKj8i1ndpmBDlWWsIBRfKyQqZNP8Ct3TwDthya3otSAyg2sdXrmudk0bOOxynAb5QB9c
-         0f8sf3yGQDADO56aYDMFSU6O/rUQccV+07a7F4WFG2AcxUvFKmMCeaQHFSeoOWiA+neA
-         GxdGt/IpIPKZYrnI8E/QgC5HEJYNPlLy7gj+w90sWaTNH/kEXZAmRF7fwD7rD1tC/AiH
-         xvgw==
-X-Gm-Message-State: AOJu0YyTks5KvqfLqYfECi2gXpTEh7JFfSDA6/gGA5JFD9UiOvkzNpXu
-        aX7WMQZcM+NZuZX+TjQ20vpfrCw9Pasm/oiPbAqNIw==
-X-Google-Smtp-Source: AGHT+IENjXj5MwD0FjyqaHCxv/R/C1JZAejGWgv7ImlKmPWRbkiQxZENqzpnsbXnZEOwp8LzZHHCpx4DLbGtuwg0Jh4=
-X-Received: by 2002:a05:622a:2d3:b0:3de:1aaa:42f5 with SMTP id
- a19-20020a05622a02d300b003de1aaa42f5mr599446qtx.15.1692816188425; Wed, 23 Aug
- 2023 11:43:08 -0700 (PDT)
+        Wed, 23 Aug 2023 14:43:23 -0400
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A100E6C;
+        Wed, 23 Aug 2023 11:43:21 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id 5720D5C018F;
+        Wed, 23 Aug 2023 14:43:18 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Wed, 23 Aug 2023 14:43:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm3; t=
+        1692816198; x=1692902598; bh=Lf0TK4b0kz3ZTddMClnpqPUYI5onbONBpkw
+        ylHQPOO4=; b=LDEVsRp1ZoH3vtP4T0b4mspjoxXr4rKZcOOmCkQIPI0QD66pBGq
+        DUS6hEZLZBcl0tCKOX6orUIFChH/Aw9QN8CCe4Sc/wphnQW9fzfDzSrtA0MpcRA5
+        J9tah14JVB5f/hLoz51f4glFoZ2rWZWjJVTgRHzhZTquGXaMFq1Qx1ug64/j0Zbx
+        BFYrwy7LLlm5czknV3nhoajeD3HedZlmFbafDyfi1t/IIe09bL+SRmjGAXSbccH2
+        MvbIuH/uSKYD78N3Fn/V/ONkTRaklhx6DcTljq/S9vnOD+GCFg9DkEXa/wFseR53
+        qHzSvX4KET+wmaSivfx0oFE+vZ8nDGeJjSQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+        1692816198; x=1692902598; bh=Lf0TK4b0kz3ZTddMClnpqPUYI5onbONBpkw
+        ylHQPOO4=; b=k92Rj8m8RayyoWyKyft2/QjhXz6D6zvA5fDHuLXoVe0SFKfAFdi
+        4ZWCfbdxJFXbeZvSz9oXpJEpOPqhLZmIrUluzIUVWIEDMjz2Hq2vxZHw2y1iVEUk
+        Byzw5MdHCPVG7epa7pAdRV6wMb/Pgp7Xjik/+XIAKVc87CFa9ekpoR1+uaiUuEiE
+        S4WAC0FruCBoUvE7ofZMH+2AwlJvWIFLWEk+amqW9O8RS/I0vt3V5NbbtuXDz3TR
+        LVKPAprmn9IKqQPOYViNpTIwzrTlrlYCg73nJgbyrg8ewchXrLvelBSD0Q15ON+v
+        pLeka/MWhupL8wC00vaK+DuYvh/pUBD2xAA==
+X-ME-Sender: <xms:RVPmZHtr7Jg-axTKrwq7C3M5O-_eU43ceAAIAXZmHIxF4encS3DDXQ>
+    <xme:RVPmZIdhlIzG5zwcNBivUg1QFQtnFi_C3oOMq05v4nONOB8Oxd_JCM070fWjS1piW
+    gwrOUp5QPo4jRf0pw>
+X-ME-Received: <xmr:RVPmZKwooRwDEs6wtBxayeP9G_zVIIfqf5drFzg_16b-mXUdIfDDZglTKKpYtfh51g6ZeXx0OSnsxGY2E-zg7NFwQJ3agAgwrncSlT0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedruddvgedguddviecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enfghrlhcuvffnffculdejtddmnecujfgurhepfffhvfevuffkfhggtggugfgjsehtkefs
+    tddttdejnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihii
+    eqnecuggftrfgrthhtvghrnheptdfgueeuueekieekgfeiueekffelteekkeekgeegffev
+    tddvjeeuheeuueelfeetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
+    hilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:RlPmZGNFnOaMDbTDjSOABTeMWu_Xt6pG2KgYUN5YyIsmUKBv_vBr1w>
+    <xmx:RlPmZH9BaKRH_k11aS6oNB5pLM93vv7cKUxFjlEU5xzD94AofHT7tw>
+    <xmx:RlPmZGWZNq88WGFK0R46JTvTl-YTK1TypB2i6JOCrWU8mg74cgBbbA>
+    <xmx:RlPmZKWPSK-iiIPVWhwnp8V0nJnb54D-U7cpE2wGhSJLxuqiyNuGTw>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 23 Aug 2023 14:43:16 -0400 (EDT)
+Date:   Wed, 23 Aug 2023 12:43:15 -0600
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
+        martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next] libbpf: Add bpf_object__unpin()
+Message-ID: <gu4eynktnim7l2oln4i4sgmziluhdfmzgcbbukfebv5bo57g5r@5kxyfar7tlzv>
+References: <aeb83832ae61bbf463e1b2e39c1e30c3b227f5a5.1692769396.git.dxu@dxuuu.xyz>
+ <CAEf4BzbGhhOyeWLuP95K20344aZnQ61TjiQ=scd5TKz_fiP_AQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20230817121513.1382800-1-jackmanb@google.com>
-In-Reply-To: <20230817121513.1382800-1-jackmanb@google.com>
-From:   Brendan Jackman <jackmanb@google.com>
-Date:   Wed, 23 Aug 2023 11:42:56 -0700
-Message-ID: <CA+i-1C2JjKRNJQhsaXk0kYfre40X61iC9807V+Zu-4iBKNF0Hw@mail.gmail.com>
-Subject: Re: [PATCH RESEND] x86/entry: Don't write to CR3 when restoring to
- kernel CR3
-To:     luto@kernel.org, Peter Zijlstra <peterz@infradead.org>
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        linux-kernel@vger.kernel.org, laijs@linux.alibaba.com,
-        yosryahmed@google.com, reijiw@google.com, oweisse@google.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzbGhhOyeWLuP95K20344aZnQ61TjiQ=scd5TKz_fiP_AQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Oops, just noticed I didn't put +Peter in the recipients.
+On Wed, Aug 23, 2023 at 10:19:10AM -0700, Andrii Nakryiko wrote:
+> On Tue, Aug 22, 2023 at 10:44 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
+> >
+> > For bpf_object__pin_programs() there is bpf_object__unpin_programs().
+> > Likewise bpf_object__unpin_maps() for bpf_object__pin_maps().
+> >
+> > But no bpf_object__unpin() for bpf_object__pin(). Adding the former adds
+> > symmetry to the API.
+> >
+> > It's also convenient for cleanup in application code. It's an API I
+> > would've used if it was available for a repro I was writing earlier.
+> >
+> > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> > ---
+> >  tools/lib/bpf/libbpf.c   | 15 +++++++++++++++
+> >  tools/lib/bpf/libbpf.h   |  1 +
+> >  tools/lib/bpf/libbpf.map |  1 +
+> >  3 files changed, 17 insertions(+)
+> >
+> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > index 4c3967d94b6d..96ff1aa4bf6a 100644
+> > --- a/tools/lib/bpf/libbpf.c
+> > +++ b/tools/lib/bpf/libbpf.c
+> > @@ -8376,6 +8376,21 @@ int bpf_object__pin(struct bpf_object *obj, const char *path)
+> >         return 0;
+> >  }
+> >
+> > +int bpf_object__unpin(struct bpf_object *obj, const char *path)
+> > +{
+> > +       int err;
+> > +
+> > +       err = bpf_object__unpin_programs(obj, path);
+> > +       if (err)
+> > +               return libbpf_err(err);
+> > +
+> > +       err = bpf_object__unpin_maps(obj, path);
+> > +       if (err)
+> > +               return libbpf_err(err);
+> > +
+> > +       return 0;
+> > +}
+> > +
+> 
+> pin APIs predate me, and I barely ever use them, but I wonder if
+> people feel fine with the fact that if any single unpin fails, all the
+> other programs/maps will not be unpinned? I also wonder if the best
+> effort unpinning of everything (while propagating first/last error) is
+> more practical? Looking at bpf_object__pin_programs, we try unpin
+> everything, even if some unpins fail.
+> 
+> Any thoughts or preferences?
 
-On Thu, 17 Aug 2023 at 05:15, Brendan Jackman <jackmanb@google.com> wrote:
->
-> From: Lai Jiangshan <laijs@linux.alibaba.com>
->
-> Skip resuming KERNEL pages since it is already KERNEL CR3
->
-> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
-> Signed-off-by: Brendan Jackman <jackmanb@google.com>
-> ---
->
-> While staring at paranoid_exit I was confused about why we had this CR3
-> write, avoiding it seems like a free optimisation. The original commit
-> 21e94459110252 ("x86/mm: Optimize RESTORE_CR3") says "Most NMI/paranoid
-> exceptions will not in fact change pagetables" but I didn't't understand
-> what the "most" was referring to. I then discovered this patch on the
-> mailing list, Andy said[1] that it looks correct so maybe now is the
-> time to merge it?
->
-> Note there's another patch in [1] as well, the benefit of that one is
-> not obvious to me though.
+Yeah, I noticed bpf_object__pin_programs() tries to simulate some
+transactionality. However, bpf_object__unpin_programs() and
+bpf_object__unpin_maps() both do not try rollbacks and have already been
+exposed as public API. So I thought it would be best to stay consistent.
 
-Also expanding on this a bit: the main purpose of this code is to
-switch back to the user address space after handling one of these
-"paranoid" exceptions. When one of those exceptions interrupts kernel
-mode, we didn't switch from user to kernel address space so the
-restore isn't needed.
+I also figured it's unlikely only a single unpin() fails. For pin(), you
+could have name collisions. But not for unpin(). I suppose the main
+error case is if some 3rd party (or yourself) comes in and messes with
+your objects in bpffs.
 
-There's no other reason to change CR3 here; context switches don't
-happen in these exceptions but even if they did we would restore CR3
-from the returning context_switch path. In fact in that case doing it
-in paranoid_exit would potentially use the wrong PCID if it had been
-reallocated by choose_new_asid. (And on the other side of the coin if
-the restore was needed, it would be needed under !KPTI too).
+In general, though, there are other places where transactionality would
+be a nice property. For example, if I have a TC prog that I want to
+attach to, say, _all_ ethernet interfaces, I have to be careful about
+rollbacks in the event of failure on a single iface.
 
-> We've tested an equivalent patch in our internal kernel.
->
-> [1] https://lore.kernel.org/lkml/20200526043507.51977-3-laijs@linux.alibaba.com/
-> -- >8 --
->  arch/x86/entry/calling.h | 13 ++++---------
->  1 file changed, 4 insertions(+), 9 deletions(-)
->
-> diff --git a/arch/x86/entry/calling.h b/arch/x86/entry/calling.h
-> index f6907627172b..b2458685d56e 100644
-> --- a/arch/x86/entry/calling.h
-> +++ b/arch/x86/entry/calling.h
-> @@ -236,14 +236,13 @@ For 32-bit we have the following conventions - kernel is built with
->  .macro RESTORE_CR3 scratch_reg:req save_reg:req
->         ALTERNATIVE "jmp .Lend_\@", "", X86_FEATURE_PTI
->
-> -       ALTERNATIVE "jmp .Lwrcr3_\@", "", X86_FEATURE_PCID
-> -
->         /*
-> -        * KERNEL pages can always resume with NOFLUSH as we do
-> -        * explicit flushes.
-> +        * Skip resuming KERNEL pages since it is already KERNEL CR3.
->          */
->         bt      $PTI_USER_PGTABLE_BIT, \save_reg
-> -       jnc     .Lnoflush_\@
-> +       jnc     .Lend_\@
-> +
-> +       ALTERNATIVE "jmp .Lwrcr3_\@", "", X86_FEATURE_PCID
->
->         /*
->          * Check if there's a pending flush for the user ASID we're
-> @@ -261,10 +260,6 @@ For 32-bit we have the following conventions - kernel is built with
->         SET_NOFLUSH_BIT \save_reg
->
->  .Lwrcr3_\@:
-> -       /*
-> -        * The CR3 write could be avoided when not changing its value,
-> -        * but would require a CR3 read *and* a scratch register.
-> -        */
->         movq    \save_reg, %cr3
->  .Lend_\@:
->  .endm
-> --
-> 2.41.0.694.ge786442a9b-goog
->
+It would be really nice if the kernel  had a general way to provide
+atomicity w.r.t. multiple operations. But I suppose that's a hard
+problem.
+
+[...]
+
+Thanks,
+Daniel
