@@ -2,104 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 414F9786218
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 23:17:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A726786230
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 23:18:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237355AbjHWVQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 17:16:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36546 "EHLO
+        id S237884AbjHWVRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 17:17:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237851AbjHWVQr (ORCPT
+        with ESMTP id S237598AbjHWVRQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 17:16:47 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 083791719
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 14:16:34 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id 3f1490d57ef6-d746d030a86so4837654276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 14:16:34 -0700 (PDT)
+        Wed, 23 Aug 2023 17:17:16 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF7D110F4;
+        Wed, 23 Aug 2023 14:16:50 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-3fea0640d7aso59745915e9.0;
+        Wed, 23 Aug 2023 14:16:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692825394; x=1693430194;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iEpTjrnLVqxen66G7Uvz7Jyy/E11cVlVrjCW6/VyKj8=;
-        b=ZDmv2BjJU3fBSftYGcNM3tb+ILU/d9+cLODcLN7bJx5jE0GqvFKrPnlSYGlL0k9kWu
-         m0bch7za38IJ+CLWsWjflpljG/O8F9HEsNE/VWjVNStBDOBq3iJDnH2eTLO/dJEAtALA
-         zbXY+4ZWcbcUYtwqB7UctSATyz1sDYmgfZ/uZj88iB4dhaAHsNB4lm1XJShf+lSlTUF4
-         q1mw8cBg/PsTLqlxfYRQ9OdT1JyBSqfrgsLuehUHu9V36ypWdR+RMX9JIQmW7yxqcnfx
-         Bu1+6uVlgAFqvayOjaJa8cEpXa7Hm+cDiofeMeKPmewLASFqzTHTuUzB1cC9zTcv8uzK
-         +bQw==
+        d=gmail.com; s=20221208; t=1692825409; x=1693430209;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=l4CWoGjnRBIe/Yd0zSFfsBQ3gwH+gJPLctSjYv0zNW0=;
+        b=H1yJsTISw+7GhYGxH8RepIaGFDZ7KDvukxUxxmuDG1vaCntKRS0LJiD/mOoyYF/o24
+         JlKdFLiNo5JyoxmSngRGnCjNt8YBueVnckOlZm/kdpM3ezrbldgQftu1qjPRHwLDflZq
+         vftOXQNcW8VgYeJTk4PaJ6z9ykmkU639iiPL8x9RM/GS1/K3lj+cnP7IC9/WGZ0OTmde
+         URrC09xAm9q4fhdQ6Oxb3oCXb6TTqUoKNiduPNS8zlpON8fcH11NJwOtaUmuov3yIutv
+         s+1Roze9uaJABbnAHb44te54NxfjERoajevoGgyq5A8rbozb+1CA1VJK7kWcmBpNfngO
+         PqPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692825394; x=1693430194;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iEpTjrnLVqxen66G7Uvz7Jyy/E11cVlVrjCW6/VyKj8=;
-        b=Nkj1TMnHQoVEmKTaB/5R/GBeLAMZoY8uTafHtYMQZ7Aehg8k7UPKl80Bjg9qJCZB0M
-         G3GTJd+npPhaOoXTzNvmg0+cCVjBjzQ81BjX0G96lDAd11wsNLv/GTvqiyrIrKVRsvHd
-         SpXSC9Z+0B7qYrZ0WvFpOXGQsmDfLf16V8oBDxktM8dsEKYnquqdMfllNpuY1FxC4SBL
-         apMD98p9WlG1FvfLzw3ALUrlRhY63V8ZxneCdxx6vJjU1GiDcrkK56dn6QfU/MPtmmwv
-         5vVgO0qzH9XF5s9PkgvDwR7IFHK+Z2KGqzWkdqGprljLDK+v091XAE8KEre25yYzK7kZ
-         XXig==
-X-Gm-Message-State: AOJu0Yyx5osJLk+MK+l4F88S0C5CSucQMGgcZ3/J/zEcHRARHg8LyXc9
-        jCIXX1Y5SEvsnqSgkK0m82bFkXD/HGV8orqfm/Q8ow==
-X-Google-Smtp-Source: AGHT+IGU5hlAbzjKR6dHf8nG7wjH+gLTIhLdkOAR0BQZYCAzmvxO+0vsobrLpwu8+6G8uJRZXAov+P50unjaO9+ZE7g=
-X-Received: by 2002:a25:c08f:0:b0:d09:f39b:cecf with SMTP id
- c137-20020a25c08f000000b00d09f39bcecfmr12862557ybf.9.1692825393910; Wed, 23
- Aug 2023 14:16:33 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692825409; x=1693430209;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=l4CWoGjnRBIe/Yd0zSFfsBQ3gwH+gJPLctSjYv0zNW0=;
+        b=Px0TnRxN6OXy0nzfDTlVt7oq6/lFY/5ZaUTUFq+S3tRdkPGTopoBTzgTLFoAIaXxsK
+         k7eSdUbHR5mpoSgtyLCIQrxntjH9KsxCqjBmK373Zr9bxca55IuPb+kJeWCXQK+ve1ol
+         VIOov96D8+IzQgxa9E+g5sZZCf4RELdxfzgR0gB+O9q31pKxbl1zUGlGVOnFy1xkMW25
+         xpr15Hv31AxIccTH6PYIUe6+fojVqIOszCAiiyfmpK0sSaL6PyXrd1wdb5yC1tAVyEL9
+         P0R+f+r5uUgzqd2tyVFnfNaXGd20XelEts+FRSjWf8VhMJ8Ut2xP3bCbUN+YKvNAk3wa
+         s1ZA==
+X-Gm-Message-State: AOJu0Yz14wUOIYhL3CrnVbwmlAzbYXocZFWi29qKja95JHIOuCM7b6kQ
+        xKl3xD869wKaLDG/JvxWWz8=
+X-Google-Smtp-Source: AGHT+IHPo8LRPmT0pGeQNQRir5ZoVmsM+/YBoPk/zG1pgNxGhsWBb19K1mKMTSld7esrmFKHP3tNPg==
+X-Received: by 2002:a7b:ce91:0:b0:400:6b36:ee2a with SMTP id q17-20020a7bce91000000b004006b36ee2amr1657009wmj.26.1692825409024;
+        Wed, 23 Aug 2023 14:16:49 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:e0a:bb2:6df0:64ae:3840:3a64:b26a])
+        by smtp.gmail.com with ESMTPSA id p11-20020adfe60b000000b003176c6e87b1sm20193399wrm.81.2023.08.23.14.16.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Aug 2023 14:16:47 -0700 (PDT)
+From:   Mehdi Djait <mehdi.djait.k@gmail.com>
+To:     jic23@kernel.org, mazziesaccount@gmail.com
+Cc:     krzysztof.kozlowski+dt@linaro.org,
+        andriy.shevchenko@linux.intel.com, robh+dt@kernel.org,
+        lars@metafoo.de, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Mehdi Djait <mehdi.djait.k@gmail.com>
+Subject: [PATCH v8 0/7] iio: accel: Add support for Kionix/ROHM KX132-1211 accelerometer
+Date:   Wed, 23 Aug 2023 23:16:34 +0200
+Message-Id: <cover.1692824815.git.mehdi.djait.k@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20230823183749.2609013-1-robh@kernel.org>
-In-Reply-To: <20230823183749.2609013-1-robh@kernel.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 23 Aug 2023 23:16:22 +0200
-Message-ID: <CACRpkdbuB-NotnMXc9vZj-byjk7spCSkZ+Dx=R_eOqoSV5CdTA@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: Drop remaining unneeded quotes
-To:     Rob Herring <robh@kernel.org>
-Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        James Clark <james.clark@arm.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Shevchenko <andy@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>, Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Corey Minyard <minyard@acm.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        M ark Brown <broonie@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, linux-i3c@lists.infradead.org,
-        linux-iio@vger.kernel.org,
-        openipmi-developer@lists.sourceforge.net,
-        linux-media@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
-        alsa-devel@alsa-project.org, linux-scsi@vger.kernel.org,
-        linux-watchdog@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -107,15 +73,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 23, 2023 at 8:38=E2=80=AFPM Rob Herring <robh@kernel.org> wrote=
-:
+Hello everyone,
 
-> Cleanup bindings dropping the last remaining unneeded quotes. With this,
-> the check for this can be enabled in yamllint.
->
-> Signed-off-by: Rob Herring <robh@kernel.org>
+Version 8 for adding support for the kx132-1211 accelerometer
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+KX132-1211 accelerometer is a sensor which:
+	- supports G-ranges of (+/-) 2, 4, 8, and 16G
+	- can be connected to I2C or SPI
+	- has internal HW FIFO buffer
+	- supports various ODRs (output data rates)
 
-Yours,
-Linus Walleij
+The KX132-1211 accelerometer is very similar to the KX022A. 
+One key difference is number of bits to report the number of data bytes that 
+have been stored in the buffer: 8 bits for KX022A vs 10 bits for
+KX132-1211.
+
+Changes in v8:
+- replaced min_t by min and kmalloc by kmalloc_array as suggested by Andy
+
+Changes in v7:
+- added a min_t in kx132_get_fifo_bytes to ensure that we don't that the
+  fifo_bytes is never bigger than the 
+  fifo_length * KX022A_FIFO_SAMPLES_SIZE_BYTES - no matter what we read from I2C
+  as suggested by Matti
+
+Changes in v6:
+- check for availability of chip_info for the SPI case
+- changed the order of elements in the kx022a_data struct to save memory
+
+Changes in v5:
+- moved the "kfree" call to match the reverse of what happens in 
+  kx022a_fifo_enable() as suggested by Matti and Jonathan
+- used min_t, checked for availability of chip_info and moved the
+  position of u16 buf_smp_lvl_mask as suggested by Andy
+- introduced buf_smp_lvl_mask in Patch 7 as suggested by Jonathan
+
+Changes in v4:
+- moved the allocation of the fifo_buffer to kx022a_fifo_enable and
+  kx022a_fifo_disable
+- some fixes to the regmap ranges of kx132-1211 
+
+Changes in v3:
+- added two new patches by separating the addition of the 
+  i2c_device_id table and the removal of blank lines from other
+  unrelated changes
+- fixes a warning detected by the kernel test robot
+- made all the changes related the chip_info in one patch
+
+Changes in v2:
+- added a new patch for warning when the device_id match fails in the
+  probe function
+- added a new patch for the function that retrieves the number of bytes
+  in the buffer
+- added a change to the Kconfig file in the patch adding the support
+  for the kx132-1211
+- various fixes and modifications listed under each patch
+
+
+Mehdi Djait (7):
+  dt-bindings: iio: Add KX132-1211 accelerometer
+  iio: accel: kionix-kx022a: Remove blank lines
+  iio: accel: kionix-kx022a: Warn on failed matches and assume
+    compatibility
+  iio: accel: kionix-kx022a: Add an i2c_device_id table
+  iio: accel: kionix-kx022a: Refactor driver and add chip_info structure
+  iio: accel: kionix-kx022a: Add a function to retrieve number of bytes
+    in buffer
+  iio: accel: Add support for Kionix/ROHM KX132-1211 accelerometer
+
+ .../bindings/iio/accel/kionix,kx022a.yaml     |  12 +-
+ drivers/iio/accel/Kconfig                     |   8 +-
+ drivers/iio/accel/kionix-kx022a-i2c.c         |  25 +-
+ drivers/iio/accel/kionix-kx022a-spi.c         |  15 +-
+ drivers/iio/accel/kionix-kx022a.c             | 315 ++++++++++++++----
+ drivers/iio/accel/kionix-kx022a.h             | 110 +++++-
+ 6 files changed, 410 insertions(+), 75 deletions(-)
+
+-- 
+2.30.2
+
