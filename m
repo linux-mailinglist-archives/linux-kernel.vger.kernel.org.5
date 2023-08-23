@@ -2,167 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 802D2786160
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 22:25:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22B1978618A
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 22:28:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236182AbjHWUZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 16:25:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56496 "EHLO
+        id S236253AbjHWU2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 16:28:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236113AbjHWUZN (ORCPT
+        with ESMTP id S236297AbjHWU2C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 16:25:13 -0400
-Received: from s1.sapience.com (s1.sapience.com [72.84.236.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C133E1A5
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 13:25:10 -0700 (PDT)
-Authentication-Results: dkim-srvy7; dkim=pass (Good ed25519-sha256 
-   signature) header.d=sapience.com header.i=@sapience.com 
-   header.a=ed25519-sha256; dkim=pass (Good 2048 bit rsa-sha256 signature) 
-   header.d=sapience.com header.i=@sapience.com header.a=rsa-sha256
-Received: from srv8.prv.sapience.com (srv8.prv.sapience.com [x.x.x.x])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
-        (No client certificate requested)
-        by s1.sapience.com (Postfix) with ESMTPS id CDC57480A3D;
-        Wed, 23 Aug 2023 16:25:09 -0400 (EDT)
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=sapience.com;
- i=@sapience.com; q=dns/txt; s=dk-ed25519-220413; t=1692822309;
- h=message-id : date : mime-version : subject : to : cc : references :
- from : in-reply-to : content-type : content-transfer-encoding : from;
- bh=Ft03CV2PAvrd6Ou6FSTiA4u/1nSBwbfPWSQS7Uu0uW0=;
- b=VFSvEnctGQ7Pbrci/n7uhRb3x3mfT1DP+fWhgihksY/Dt2nSADWnR1OTH/PGLt2N9D3UW
- IkpK1Ui24LowyzZDg==
-ARC-Seal: i=1; a=rsa-sha256; d=sapience.com; s=arc6-rsa-220412; t=1692822309;
-        cv=none; b=JLo8rB8M7KFPFp1d5FLvd/KTpSS3OIK2i3eMvAgXE0tXZvhiXt6Zg101c+yOu6p1Kfk7wzajT8Ey9yaV/6uJogj6Odo4Hb4k3Jy0QgOZFHPZ88417YbVF4mRwBRR4JkCwCOWvJgxRNc/voZj9iu0OIghueenlGmUY7z94PCVGsBuWwggyAjW46zYYJKI/1oX1OeTJ6sB+uRcpnYbEnrLski3NGWDf6Y19QRpfnzCWjuslBY1D6YOFYHSjEzXpIAwOXbFFMaX7QAp3QfWvd0K2EsKrUaVMOdjSN5nXaf+Vt5kPQYHwoXMsllCWP+vdLmW1Ov2rI1S66UJEqk9GYyT7g==
-ARC-Message-Signature: i=1; a=rsa-sha256; d=sapience.com; s=arc6-rsa-220412;
-        t=1692822309; c=relaxed/simple;
-        bh=1WiXPw6udIcWYNpBiU1SuaqbQe6zJ8KvPhSxwPE/kEY=;
-        h=DKIM-Signature:DKIM-Signature:Message-ID:Date:MIME-Version:
-         User-Agent:Subject:Content-Language:To:Cc:References:From:
-         In-Reply-To:Content-Type:Content-Transfer-Encoding; b=kkD34ra9+s20M5pTmukJWy4wF1X05d8sFla80Huil8OGn/Eevpymrj0JlnvAzYMCHvC2Sm7RyEYE0b5/nzzcALTXtQ+6Lk3c4Fpy8XTHrbNnIAjfy1ks6I/YVwjQEcY/uf4/8XQ6eZDUQ1jPHBc7ng+5lixb/aLagHcv0xGcmxoaiJ48to89ygO5T1GfQ7a6I4dBKnXXnyEzMwSSMZrjW90OwrJLEueDI115FGMyPvMqr7oLqmc4MVc6ijknTbHc8tqdfYqO5SSXxBZrcL3nO7nOyjrAY1VReeWDxdPlkotrg3uBCvLAHa5x0+5C9eB9qnpziqLRb917SsICPchhNA==
-ARC-Authentication-Results: i=1; arc-srv8.sapience.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sapience.com;
- i=@sapience.com; q=dns/txt; s=dk-rsa-220413; t=1692822309;
- h=message-id : date : mime-version : subject : to : cc : references :
- from : in-reply-to : content-type : content-transfer-encoding : from;
- bh=Ft03CV2PAvrd6Ou6FSTiA4u/1nSBwbfPWSQS7Uu0uW0=;
- b=IJyHNePtaGtm0bc3DsnSiZlVpi0UQIYZ0FzZk+IXr1wukn+0oSc/eD6bJZ2SIoXXMLHjO
- zWfbGL1LWs1UuZQq/aEMZb84q598X4oo6u/VBaZv4iJj/e//yr4DNaRY1f5MQmH5qliC7Rh
- jJdLWET0GoYxJj1DhDPxg/7PJlH0xd3oZhMPsFBCJXfv7Y5NFXB0frkax1inRdH36gKvgAF
- UYwugW8upS2bmKdlg7M6uuG8cwtJUI1RIHb/Cee07ZQmb4usU24j/WtlLVKRxh3hD7f7xr9
- Zpqhh15yHnFHR1KFo84XO2UB0/8r42m1zDPM05qpqzLfwuriy+8tp5cAOHvg==
-Message-ID: <7cf188d0-77b4-4e80-8da6-2045a7f29866@sapience.com>
-Date:   Wed, 23 Aug 2023 16:25:09 -0400
+        Wed, 23 Aug 2023 16:28:02 -0400
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D08E10D8
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 13:28:00 -0700 (PDT)
+Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-26b5e737191so3417467a91.2
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 13:28:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692822479; x=1693427279;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NOFQJKFHeWeaDdjT7tL752Uv3UvOkwmfZ3hHz0dcMOo=;
+        b=kEGQhqpV+cPX06PaTq4Rp9B0wY7orQI8W2c5z8huSSV9rR+T+uX18eW0fo1wGeD6eu
+         rpWGcCuYAnBqucY3fBURCEn1/fycfCv+uGOYf3BbG9xz2vvPVflg8kK0WiVT1slThxQV
+         x8Hsk9LsYZup4ICHaFz30DfABAQGxxhzrL5+ELvNK8Zio3yOeo/TMCGhGr0QH/ZsIMfX
+         /MxTvnRvPXgMSmV/hsKxfBqxBEzJDWyh3MsVQgG03wjPRuLiBqmF4UolC8OiH0mHPHdT
+         /+ac7sz7CJKSRAAtX8gt9ZSLYLPYAjTXnOz7c+Shhno4Tz54VWAm7iQ8DhcSDiW382c7
+         VQQw==
+X-Gm-Message-State: AOJu0YwMtviJJ73op3F08kFPW+icLBAe3ZfAhWjOVM5mnRbejXV2q22a
+        5aKiyAs4dxW+qjEXJHjddVc=
+X-Google-Smtp-Source: AGHT+IF5n0k8B2+8yg9Yqfc5kblL6ty6PmgZqB7/RsCQCsYM1xqQARwOAGlozcpSP6F7OVGy1UzWkQ==
+X-Received: by 2002:a17:90b:20d:b0:26b:455b:657e with SMTP id fy13-20020a17090b020d00b0026b455b657emr10659945pjb.41.1692822479199;
+        Wed, 23 Aug 2023 13:27:59 -0700 (PDT)
+Received: from snowbird ([199.73.127.3])
+        by smtp.gmail.com with ESMTPSA id 6-20020a17090a01c600b00265c742a262sm211975pjd.4.2023.08.23.13.27.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Aug 2023 13:27:58 -0700 (PDT)
+Date:   Wed, 23 Aug 2023 13:27:56 -0700
+From:   Dennis Zhou <dennis@kernel.org>
+To:     Jan Kara <jack@suse.cz>, Mateusz Guzik <mjguzik@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, tj@kernel.org, cl@linux.com,
+        akpm@linux-foundation.org, shakeelb@google.com, linux-mm@kvack.org
+Subject: Re: [PATCH 0/2] execve scalability issues, part 1
+Message-ID: <ZOZrzG/MgL8vw+lI@snowbird>
+References: <20230821202829.2163744-1-mjguzik@gmail.com>
+ <ZOPSEJTzrow8YFix@snowbird>
+ <20230821213951.bx3yyqh7omdvpyae@f>
+ <CAGudoHHJECp2-DfSr5hudooAdV6mivvSO+4mC9kwUrWnSiob5g@mail.gmail.com>
+ <20230822095154.7cr5ofogw552z3jk@quack3>
+ <CAGudoHHe5nzRTuj4G1fphD+JJ02TE5BnHEDwFm=-W6DoEj2qVQ@mail.gmail.com>
+ <20230823094915.ggv3spzevgyoov6i@quack3>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Possible nvme regression in 6.4.11
-Content-Language: en-US
-To:     Keith Busch <kbusch@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, axboe@kernel.dk, sagi@grimberg.me,
-        linux-nvme@lists.infradead.org, hch@lst.de, arnd@arndb.de,
-        ricky_wu@realtek.com, gregkh@linuxfoundation.org
-References: <5f968b95-6b1c-4d6f-aac7-5d54f66834a8@sapience.com>
- <ZN050TFnKZ54LJ5v@kbusch-mbp.dhcp.thefacebook.com>
- <30b69186-5a6e-4f53-b24c-2221926fc3b4@sapience.com>
- <570d465a-7500-4b58-98f0-fd781c8740cc@sapience.com>
- <ZOZEwafA8+tknJNT@kbusch-mbp.dhcp.thefacebook.com>
-From:   Genes Lists <lists@sapience.com>
-In-Reply-To: <ZOZEwafA8+tknJNT@kbusch-mbp.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230823094915.ggv3spzevgyoov6i@quack3>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/23/23 13:41, Keith Busch wrote:
-> On Thu, Aug 17, 2023 at 05:16:01AM -0400, Genes Lists wrote:
->>> ----------------------------------------------------------------
->>> 69304c8d285b77c9a56d68f5ddb2558f27abf406 is the first bad commit
->>> commit 69304c8d285b77c9a56d68f5ddb2558f27abf406
->>> Author: Ricky WU <ricky_wu@realtek.com>
->>> Date:   Tue Jul 25 09:10:54 2023 +0000
->>>
->>>       misc: rtsx: judge ASPM Mode to set PETXCFG Reg
->>>
->>>       commit 101bd907b4244a726980ee67f95ed9cafab6ff7a upstream.
->>>
->>>       ASPM Mode is ASPM_MODE_CFG need to judge the value of clkreq_0
->>>       to set HIGH or LOW, if the ASPM Mode is ASPM_MODE_REG
->>>       always set to HIGH during the initialization.
->>>
->>>       Cc: stable@vger.kernel.org
->>>       Signed-off-by: Ricky Wu <ricky_wu@realtek.com>
->>>       Link:
->>> https://lore.kernel.org/r/52906c6836374c8cb068225954c5543a@realtek.com
->>>       Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->>>
->>>    drivers/misc/cardreader/rts5227.c  |  2 +-
->>>    drivers/misc/cardreader/rts5228.c  | 18 ------------------
->>>    drivers/misc/cardreader/rts5249.c  |  3 +--
->>>    drivers/misc/cardreader/rts5260.c  | 18 ------------------
->>>    drivers/misc/cardreader/rts5261.c  | 18 ------------------
->>>    drivers/misc/cardreader/rtsx_pcr.c |  5 ++++-
->>>    6 files changed, 6 insertions(+), 58 deletions(-)
->>>
->>> ------------------------------------------------------
->>>
->>> And the machine does have this hardware:
->>>
->>> 03:00.0 Unassigned class [ff00]: Realtek Semiconductor Co., Ltd. RTS525A
->>> PCI Express Card Reader (rev 01)
->>>           Subsystem: Dell RTS525A PCI Express Card Reader
->>>           Physical Slot: 1
->>>           Flags: bus master, fast devsel, latency 0, IRQ 141
->>>           Memory at ed100000 (32-bit, non-prefetchable) [size=4K]
->>>           Capabilities: [80] Power Management version 3
->>>           Capabilities: [90] MSI: Enable+ Count=1/1 Maskable- 64bit+
->>>           Capabilities: [b0] Express Endpoint, MSI 00
->>>           Kernel driver in use: rtsx_pci
->>>           Kernel modules: rtsx_pci
->>>
->>>
->>>
->>
->>
->> Adding to CC list since bisect landed on
->>
->>     drivers/misc/cardreader/rtsx_pcr.c
->>
->> Thread starts here: https://lkml.org/lkml/2023/8/16/1154
+On Wed, Aug 23, 2023 at 11:49:15AM +0200, Jan Kara wrote:
+> On Tue 22-08-23 16:24:56, Mateusz Guzik wrote:
+> > On 8/22/23, Jan Kara <jack@suse.cz> wrote:
+> > > On Tue 22-08-23 00:29:49, Mateusz Guzik wrote:
+> > >> On 8/21/23, Mateusz Guzik <mjguzik@gmail.com> wrote:
+> > >> > True Fix(tm) is a longer story.
+> > >> >
+> > >> > Maybe let's sort out this patchset first, whichever way. :)
+> > >> >
+> > >>
+> > >> So I found the discussion around the original patch with a perf
+> > >> regression report.
+> > >>
+> > >> https://lore.kernel.org/linux-mm/20230608111408.s2minsenlcjow7q3@quack3/
+> > >>
+> > >> The reporter suggests dodging the problem by only allocating per-cpu
+> > >> counters when the process is going multithreaded. Given that there is
+> > >> still plenty of forever single-threaded procs out there I think that's
+> > >> does sound like a great plan regardless of what happens with this
+> > >> patchset.
+> > >>
+> > >> Almost all access is already done using dedicated routines, so this
+> > >> should be an afternoon churn to sort out, unless I missed a
+> > >> showstopper. (maybe there is no good place to stuff a flag/whatever
+> > >> other indicator about the state of counters?)
+> > >>
+> > >> That said I'll look into it some time this or next week.
+> > >
+> > > Good, just let me know how it went, I also wanted to start looking into
+> > > this to come up with some concrete patches :). What I had in mind was that
+> > > we could use 'counters == NULL' as an indication that the counter is still
+> > > in 'single counter mode'.
+> > >
+> > 
+> > In the current state there are only pointers to counters in mm_struct
+> > and there is no storage for them in task_struct. So I don't think
+> > merely null-checking the per-cpu stuff is going to cut it -- where
+> > should the single-threaded counters land?
 > 
-> I realize you can work around this by blacklisting the rtsx_pci, but
-> that's not a pleasant solution. With only a few days left in 6.5, should
-> the commit just be reverted?
+> I think you misunderstood. What I wanted to do it to provide a new flavor
+> of percpu_counter (sharing most of code and definitions) which would have
+> an option to start as simple counter (indicated by pcc->counters == NULL
+> and using pcc->count for counting) and then be upgraded by a call to real
+> percpu thing. Because I think such counters would be useful also on other
+> occasions than as rss counters.
+> 
 
-Keith - thanks for reminder.
+Kent wrote something similar and sent it out last year [1]. However, the
+case slightly differs from what we'd want here, 1 -> 2 threads becomes
+percpu vs update rate which a single thread might be able to trigger?
 
-The card reader device itself is non-critical and very low priority.
+[1] https://lore.kernel.org/lkml/20230501165450.15352-8-surenb@google.com/
 
-What perhaps is a little more worrisome is the change in rtsx somehow 
-prevented nvme from functioning normally and the machine then not 
-booting (at least for some combination(s) of hardware).
+Thanks,
+Dennis
 
-If there is a simple fix to prevent nvme from being impacted by the rtsx 
-driver that would be more than sufficient?
-
-On the other hand 6.4.11 is out, and I'm guessing there isn't a lot of 
-noise on this either. From what I've seen, 1 other user with same 
-problem [1] and 1 with same card reader not having a problema [2].
-And no 'me-too's in the kernel bugzilla [3] either.
-
-
-Gene
-
-
-[1] https://bbs.archlinux.org/viewtopic.php?id=288095
-[2] https://bugs.archlinux.org/task/79439
-[3] https://bugzilla.kernel.org/show_bug.cgi?id=217802
-
-
-
+> > Bonus problem, non-current can modify these counters and this needs to
+> > be safe against current playing with them at the same time. (and it
+> > would be a shame to require current to use atomic on them)
+> 
+> Hum, I didn't realize that. Indeed I can see that e.g. khugepaged can be
+> modifying the counters for other processes. Thanks for pointing this out.
+> 
+> > That said, my initial proposal adds a union:
+> > diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+> > index 5e74ce4a28cd..ea70f0c08286 100644
+> > --- a/include/linux/mm_types.h
+> > +++ b/include/linux/mm_types.h
+> > @@ -737,7 +737,11 @@ struct mm_struct {
+> > 
+> >                 unsigned long saved_auxv[AT_VECTOR_SIZE]; /* for
+> > /proc/PID/auxv */
+> > 
+> > -               struct percpu_counter rss_stat[NR_MM_COUNTERS];
+> > +               union {
+> > +                       struct percpu_counter rss_stat[NR_MM_COUNTERS];
+> > +                       u64 *rss_stat_single;
+> > +               };
+> > +               bool    magic_flag_stuffed_elsewhere;
+> > 
+> >                 struct linux_binfmt *binfmt;
+> > 
+> > 
+> > Then for single-threaded case an area is allocated for NR_MM_COUNTERS
+> > countes * 2 -- first set updated without any synchro by current
+> > thread. Second set only to be modified by others and protected with
+> > mm->arg_lock. The lock protects remote access to the union to begin
+> > with.
+> 
+> arg_lock seems a bit like a hack. How is it related to rss_stat? The scheme
+> with two counters is clever but I'm not 100% convinced the complexity is
+> really worth it. I'm not sure the overhead of always using an atomic
+> counter would really be measurable as atomic counter ops in local CPU cache
+> tend to be cheap. Did you try to measure the difference?
+> 
+> If the second counter proves to be worth it, we could make just that one
+> atomic to avoid the need for abusing some spinlock.
+> 
+> > Transition to per-CPU operation sets the magic flag (there is plenty
+> > of spare space in mm_struct, I'll find a good home for it without
+> > growing the struct). It would be a one-way street -- a process which
+> > gets a bunch of threads and goes back to one stays with per-CPU.
+> 
+> Agreed with switching to be a one-way street.
+> 
+> > Then you get the true value of something by adding both counters.
+> > 
+> > arg_lock is sparingly used, so remote ops are not expected to contend
+> > with anything. In fact their cost is going to go down since percpu
+> > summation takes a spinlock which also disables interrupts.
+> > 
+> > Local ops should be about the same in cost as they are right now.
+> > 
+> > I might have missed some detail in the above description, but I think
+> > the approach is decent.
+> 
+> 								Honza
+> -- 
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
