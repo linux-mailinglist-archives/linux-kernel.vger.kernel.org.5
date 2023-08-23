@@ -2,72 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27722785A7A
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 16:28:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43508785A7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 16:28:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236404AbjHWO2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 10:28:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47064 "EHLO
+        id S236413AbjHWO2o convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 23 Aug 2023 10:28:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233339AbjHWO2T (ORCPT
+        with ESMTP id S233339AbjHWO2o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 10:28:19 -0400
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35F5CE54;
-        Wed, 23 Aug 2023 07:28:18 -0700 (PDT)
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1bc8a2f71eeso37414965ad.0;
-        Wed, 23 Aug 2023 07:28:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692800897; x=1693405697;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ifSk/zsvJJFaiG6xt0kd3cwJmAV4kGD5Bq/Ohxo7ks0=;
-        b=VbDoCHj83wm/8SG6ANgr0zjOR9/U54QTTvoYixMWTrCO8Hgg8osQhTe5zqQrHIfDGm
-         Md8lmizmjjELb8UR4Hv4E/4oYPrpZi11uoIcpmpowNf+YfNgPVax1hf0/AhBnLMVNvZE
-         gycWq5YvVrPzCp8teUS20z7IMuPzLO+81KXnX9q5QQeMJU2bNOBz2rlBa5Fg4I5sJhlP
-         yJ4LZ57QRgwMPnwwEgTKkY4PBqd5Uipdk9nOaIEaGaI1CVmqYvAEnChbzfuDcJ4YrLsR
-         4frZbSuQnH4D0wPJMYec3D4dmeD7mtScBL0lRuIQI1psbhdDv2ltRcAxaOfTcF4Koo+X
-         uRAg==
-X-Gm-Message-State: AOJu0YzOjSz8PRwBL9jOEnIRN8u/ikHO9qMRr3OvFGCszeL/JbJJ4d82
-        SmJHC59kA7ZfGStdxFGbB0Q=
-X-Google-Smtp-Source: AGHT+IFwpdtgp8F8RGlrjvFxJk+k7IAaPAnQOVe4Lxqk60PIWuIuUzZMOwAcfCHMHKa65pYms/sLIQ==
-X-Received: by 2002:a17:902:b582:b0:1b9:e591:db38 with SMTP id a2-20020a170902b58200b001b9e591db38mr9367083pls.8.1692800897460;
-        Wed, 23 Aug 2023 07:28:17 -0700 (PDT)
-Received: from ?IPV6:2620:15c:211:201:ecb6:e8b9:f433:b4b4? ([2620:15c:211:201:ecb6:e8b9:f433:b4b4])
-        by smtp.gmail.com with ESMTPSA id iz22-20020a170902ef9600b001b9da42cd7dsm11107382plb.279.2023.08.23.07.28.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Aug 2023 07:28:16 -0700 (PDT)
-Message-ID: <a1732d82-2b5d-7865-d13f-dde1f31257d8@acm.org>
-Date:   Wed, 23 Aug 2023 07:28:15 -0700
+        Wed, 23 Aug 2023 10:28:44 -0400
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 87133E5F;
+        Wed, 23 Aug 2023 07:28:42 -0700 (PDT)
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 37NERwIsA030051, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 37NERwIsA030051
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 23 Aug 2023 22:27:58 +0800
+Received: from RTEXMBS02.realtek.com.tw (172.21.6.95) by
+ RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.32; Wed, 23 Aug 2023 22:28:21 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXMBS02.realtek.com.tw (172.21.6.95) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.7; Wed, 23 Aug 2023 22:28:20 +0800
+Received: from RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d]) by
+ RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d%5]) with mapi id
+ 15.01.2375.007; Wed, 23 Aug 2023 22:28:20 +0800
+From:   Justin Lai <justinlai0215@realtek.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     "kuba@kernel.org" <kuba@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "jiri@resnulli.us" <jiri@resnulli.us>
+Subject: RE: [PATCH net-next v6 1/2] net/ethernet/realtek: Add Realtek automotive PCIe driver code
+Thread-Topic: [PATCH net-next v6 1/2] net/ethernet/realtek: Add Realtek
+ automotive PCIe driver code
+Thread-Index: AQHZ1KdKxMskTPV/qUeQjEQ9njC6tK/2FT0AgAHdc4A=
+Date:   Wed, 23 Aug 2023 14:28:20 +0000
+Message-ID: <5ae1444b03f64e7287fc7abb6cd56063@realtek.com>
+References: <20230822031805.4752-1-justinlai0215@realtek.com>
+ <20230822031805.4752-2-justinlai0215@realtek.com>
+ <aa7e5c75-e337-4150-bba5-a139ab4fc02f@lunn.ch>
+In-Reply-To: <aa7e5c75-e337-4150-bba5-a139ab4fc02f@lunn.ch>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.21.210.185]
+x-kse-serverinfo: RTEXMBS02.realtek.com.tw, 9
+x-kse-antispam-interceptor-info: fallback
+x-kse-antivirus-interceptor-info: fallback
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Subject: Re: [PATCH v2 1/6] blk-mq-tag: support queue filter in bt_tags_iter()
-Content-Language: en-US
-To:     chengming.zhou@linux.dev, axboe@kernel.dk, ming.lei@redhat.com,
-        hch@lst.de
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhouchengming@bytedance.com
-References: <20230823090441.3986631-1-chengming.zhou@linux.dev>
- <20230823090441.3986631-2-chengming.zhou@linux.dev>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20230823090441.3986631-2-chengming.zhou@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/23/23 02:04, chengming.zhou@linux.dev wrote:
-> The only user of bt_for_each() is blk_mq_queue_tag_busy_iter(), which
-> need to filter queue when iterate the tags. In preparation of removing
-> bt_for_each(), support queue filter in bt_tags_iter().
-
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+> 
+> > +     do {
+> > +             status = RTL_R32(tp, ivec->isr_addr);
+> > +
+> > +             handled = 1;
+> > +             RTL_W32(tp, ivec->imr_addr, 0x0);
+> > +             RTL_W32(tp, ivec->isr_addr, (status & ~FOVW));
+> > +
+> > +             if ((status & ivec->imr)) {
+> > +                     if (likely(napi_schedule_prep(&ivec->napi)))
+> > +                             __napi_schedule(&ivec->napi);
+> > +             }
+> > +     } while (false);
+> 
+> Remember i said that if you do something which no other network driver does,
+> it is probably wrong. How many drivers have a do {} while (false); loop?
+> 
+> Please spend a few days just reading other drivers, and compare your code
+> with those drivers. Try to find all the things your driver does which no other
+> driver has. That code is probably wrong and you should fix it.
+> 
+>         Andrew
+> 
+Thank you for your suggestions, I will read other drivers and modify some problems of this driver.
