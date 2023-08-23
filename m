@@ -2,97 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 42FA0785D0D
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 18:14:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58BDB785D0E
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 18:14:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237470AbjHWQNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 12:13:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46050 "EHLO
+        id S237475AbjHWQOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 12:14:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234317AbjHWQNy (ORCPT
+        with ESMTP id S234519AbjHWQOf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 12:13:54 -0400
-Received: from mail-vk1-xa29.google.com (mail-vk1-xa29.google.com [IPv6:2607:f8b0:4864:20::a29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA919E74
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 09:13:52 -0700 (PDT)
-Received: by mail-vk1-xa29.google.com with SMTP id 71dfb90a1353d-48f8890c18eso706752e0c.3
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 09:13:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692807232; x=1693412032;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qYDRjZGGnr/gd/Y4NfdXBAYEsXLOeNO0yDjSsAIxxnQ=;
-        b=QXVB0hx7nZbR9a/xJxl3SPteIS/xfEPueK2yGQazaEiqkdeUlNElcO6ihxLJx7jCft
-         rbnSRC5o7Q9mG1W88nBYn/SMMhxKoN9ADjOKyhLrmA2KvkFACJlpNeJQ/lZyD3d9Pk5R
-         CyOEpCVtt+J68VRQ1Rv2Egohr4T9ofueOyvTCO0gzh48C2ji+7gF4ak1j9TdXIPY4j8R
-         N9Y51nBsTcr8GlkawNoMz6kMu2sdRo0szqBcFA0hxR1U4SMVM5OuNqeIv9TF3l9tPYfA
-         /xpqywWAR9FJKxxGe2jY0o0y+dBLKhE6uMc3XdTnqlTcn9W0z/ki1oT1CjnyUUhLXE1C
-         nnPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692807232; x=1693412032;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qYDRjZGGnr/gd/Y4NfdXBAYEsXLOeNO0yDjSsAIxxnQ=;
-        b=Na73Ns9JN+DbZblX4tynly+/wvnEXX5Ls0QPnpWXxrBsR9wIByi4aaJARPci7iqD/L
-         y70K0Wilo2hAIVqZR1jFnlh8G5HkI2B8Qd8VMFW5ftfB4yPuTelIBslAao0AmWJY18an
-         bqS8t3ldKqCt6m/QK+T3kiGMn60oY4etg2LCX0qZJoGvLFgpo3zevzZrQgfCZ29ju6Wy
-         hE2A+sSUyBfcDR5NYGYEJFyLyTwnMGbXY3MD3VNgJKEPghL+Ydcw/j/Yq+uhDZf6sjEx
-         /Y+HiwM1UzFG2CB+8xSTwfU5A4hrih7o4qBGZzOxsBa9IknXyVT7Y2NBwrOuNXy+JiwA
-         jCFw==
-X-Gm-Message-State: AOJu0YyikJPjvNadbA+WsQ7vwaPS+HQnC+g3lCQZtj395Aff+Ah1TEMb
-        jEKOooeZj3oZfsg0dvBL/pRudq8e2Gk=
-X-Google-Smtp-Source: AGHT+IHxaYIwgFIbiRSAvQlMoHt8IPyb70oVumD80k6VwpFWQHz9Xk+5kWOSX5un9zocVRmc49k6GQ==
-X-Received: by 2002:a1f:e643:0:b0:48d:1cf0:f3c3 with SMTP id d64-20020a1fe643000000b0048d1cf0f3c3mr7131329vkh.14.1692807231772;
-        Wed, 23 Aug 2023 09:13:51 -0700 (PDT)
-Received: from alolivei-thinkpadt480s.gru.csb ([2804:14c:bf20:82ea:8c7c:b784:3f92:988a])
-        by smtp.gmail.com with ESMTPSA id u18-20020a0cdd12000000b0061a68b5a8c4sm2255840qvk.134.2023.08.23.09.13.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Aug 2023 09:13:51 -0700 (PDT)
-Date:   Wed, 23 Aug 2023 13:13:47 -0300
-From:   Alexon Oliveira <alexondunkan@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     martyn@welchs.me.uk, manohar.vanga@gmail.com,
-        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
-Subject: [PATCH] staging: vme_user: fix check unbalaced braces
-Message-ID: <ZOYwO2UivRSo4F4P@alolivei-thinkpadt480s.gru.csb>
+        Wed, 23 Aug 2023 12:14:35 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E527EE68;
+        Wed, 23 Aug 2023 09:14:32 -0700 (PDT)
+Received: from pwmachine.numericable.fr (85-170-34-233.rev.numericable.fr [85.170.34.233])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 2BAF52126CC6;
+        Wed, 23 Aug 2023 09:14:31 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 2BAF52126CC6
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1692807272;
+        bh=GSsNCY8KC3V4foUT3nbiUGYLIoC98erD7H+/xMZ+8ak=;
+        h=From:To:Cc:Subject:Date:From;
+        b=PGHxj2s3KGO/aDOT8e3A3dEB0bl4FEId6QFVk6ZDcCNTPezF/pVEj8NZ6ItuixOLq
+         ty8r3yFrD5utQiwPmbaBwXIWyRZXbBlOGcf5ZdDCdyTn9Nx0zdrvll9k/Yz2nQwizz
+         //HUw4orHvGlb8txQqMK+UeNDrZRNy2V+3FtPr48=
+From:   Francis Laniel <flaniel@linux.microsoft.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-trace-kernel@vger.kernel.org,
+        Francis Laniel <flaniel@linux.microsoft.com>
+Subject: [RFC PATCH v1 0/1] Return ENAMESVRLSYMS when func matches several symbols during PMU kprobe creation
+Date:   Wed, 23 Aug 2023 18:14:09 +0200
+Message-Id: <20230823161410.103489-1-flaniel@linux.microsoft.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed all CHECK: Unbalanced braces around else statement
-and CHECK: braces {} should be used on all arms of this statement,
-because both are related, as reported by checkpatch to adhere
-to the Linux kernel coding-style guidelines.
+Hi.
 
-Signed-off-by: Alexon Oliveira <alexondunkan@gmail.com>
+
+In the kernel source code, it exists different functions which share the same
+name but which have, of course, different addresses as they can be defined in
+different modules:
+root@vm-amd64:~# grep ntfs_file_write_iter /proc/kallsyms
+ffffffff814ce3c0 t __pfx_ntfs_file_write_iter
+ffffffff814ce3d0 t ntfs_file_write_iter
+ffffffff814fc8a0 t __pfx_ntfs_file_write_iter
+ffffffff814fc8b0 t ntfs_file_write_iter
+This can be source of troubles when you create a PMU kprobe for such a function,
+as it will only install one for the first address (e.g. 0xffffffff814ce3d0 in
+the above).
+This could lead to some troubles were BPF based tools does not report any event
+because the second function is not called:
+root@vm-amd64:/mnt# mount | grep /mnt
+/foo.img on /mnt type ntfs3 (rw,relatime,uid=0,gid=0,iocharset=utf8)
+# ig is a tool which installs a PMU kprobe on ntfs_file_write_iter().
+root@vm-amd64:/mnt# ig trace fsslower -m 0 -f ntfs3 --host &> /tmp/foo &
+[1] 207
+root@vm-amd64:/mnt# dd if=./foo of=./bar count=3
+3+0 records in
+3+0 records out
+1536 bytes (1.5 kB, 1.5 KiB) copied, 0.00543323 s, 283 kB/s
+root@vm-amd64:/mnt# fg
+ig trace fsslower -m 0 -f ntfs3 --host &> /tmp/foo
+^Croot@vm-amd64:/mnt# more /tmp/foo
+RUNTIME.CONTAINERNAME          RUNTIME.CONTAIN… PID              COMM
+  T      BYTES     OFFSET        LAT FILE
+                                                214              dd
+  R        512          0        766 foo
+                                                214              dd
+  R        512        512          9 foo
+                                                214              dd
+As you can see in the above, only read events are reported and no write because
+the kprobe is installed for the old ntfs_file_write_iter() and not the ntfs3
+one.
+
+In this contribution, I modified create_local_trace_kprobe() to test if the
+function name given as argument matches several symbols.
+If this is the case ENAMESVRLSYMS, a new error code, is returned to indicate the
+user to use addr and offs to remove this ambiguity.
+So, when the above BPF tool is run, the following error message is printed:
+root@vm-amd64:~# ig trace fsslower -m 0 -f ntfs3 --host &> /tmp/foo
+root@vm-amd64:~# more /tmp/foo
+RUNTIME.CONTAINERNAME          RUNTIME.CONTAIN… PID              COMM
+  T      BYTES     OFFSET        LAT FILE
+Error: running gadget: running gadget: installing tracer: attaching kprobe: crea
+ting perf_kprobe PMU (arch-specific fallback for "ntfs_file_write_iter"): token
+ntfs_file_write_iter: opening perf event: errno 134
+
+Note that, this contribution is the conclusion of a previous RFC which intended
+to install a PMU kprobe for all matching symbols [1, 2].
+
+If you see any way to improve this contribution, particularly if you have an
+idea to add a test for this behavior, please share your feedback.
+
+Francis Laniel (1):
+  tracing/kprobes: Return ENAMESVRLSYMS when func matches several symbols
+
+ arch/alpha/include/uapi/asm/errno.h        |  2 ++
+ arch/mips/include/uapi/asm/errno.h         |  2 ++
+ arch/parisc/include/uapi/asm/errno.h       |  2 ++
+ arch/sparc/include/uapi/asm/errno.h        |  2 ++
+ include/uapi/asm-generic/errno.h           |  2 ++
+ kernel/trace/trace_kprobe.c                | 26 ++++++++++++++++++++++
+ tools/arch/alpha/include/uapi/asm/errno.h  |  2 ++
+ tools/arch/mips/include/uapi/asm/errno.h   |  2 ++
+ tools/arch/parisc/include/uapi/asm/errno.h |  2 ++
+ tools/arch/sparc/include/uapi/asm/errno.h  |  2 ++
+ tools/include/uapi/asm-generic/errno.h     |  2 ++
+ 11 files changed, 46 insertions(+)
+
+
+Best regards and thank you in advance.
 ---
- drivers/staging/vme_user/vme.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/staging/vme_user/vme.c b/drivers/staging/vme_user/vme.c
-index d0366dd3f2b1..ac98b3da6bed 100644
---- a/drivers/staging/vme_user/vme.c
-+++ b/drivers/staging/vme_user/vme.c
-@@ -1866,8 +1866,9 @@ static int __vme_register_driver_bus(struct vme_driver *drv,
- 		if (vdev->dev.platform_data) {
- 			list_add_tail(&vdev->drv_list, &drv->devices);
- 			list_add_tail(&vdev->bridge_list, &bridge->devices);
--		} else
-+		} else {
- 			device_unregister(&vdev->dev);
-+		}
- 	}
- 	return 0;
- 
--- 
-2.41.0
+[1]: https://lore.kernel.org/lkml/20230816163517.112518-1-flaniel@linux.microsoft.com/
+[2]: https://lore.kernel.org/lkml/20230819101105.b0c104ae4494a7d1f2eea742@kernel.org/
+--
+2.34.1
 
