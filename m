@@ -2,54 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDE4D785F23
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 20:04:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8573785F2A
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 20:04:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238031AbjHWSEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 14:04:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58174 "EHLO
+        id S238027AbjHWSEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 14:04:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237995AbjHWSD6 (ORCPT
+        with ESMTP id S237995AbjHWSEc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 14:03:58 -0400
+        Wed, 23 Aug 2023 14:04:32 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53BB5CD5;
-        Wed, 23 Aug 2023 11:03:54 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 910E51AD;
+        Wed, 23 Aug 2023 11:04:26 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C2DFA64C34;
-        Wed, 23 Aug 2023 18:03:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7549C433C8;
-        Wed, 23 Aug 2023 18:03:52 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1EFC265BD7;
+        Wed, 23 Aug 2023 18:04:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C0FEC433C7;
+        Wed, 23 Aug 2023 18:04:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692813833;
-        bh=0zDTi1uOchDkfTsQ1sXBAVST+n+bUDwVoftDqwhHlHQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=A0+VcsbEDYgspwstRkBcfXH59khMCilDmfCxhZar36w6Nbx5q7yARDkmQm9Cs4xbt
-         n0MkwI8/M613/DBkMfkFye14BXq9Pdhq522sDzQAxJs1sZp1LQinO8VZQI9BUs4GwD
-         5NXIBTqWNSUPNQtsP9RdjWIf1gDRNLAroq+whrBFJT/3QitHNRwBO8+maNgXaOMLqo
-         +ymYcwDOiQdQkfGDfZqZKEqoWTrKlDQHuO5Eu7b3d9r5Dl2AKUwOCylC8pQ9+U8BJE
-         UrQp6yYuUMlGahKZZXF+Srx1TegpJBXnTkFHRr0u0jV8eDVTypT1f2dZkh4qAeWiDc
-         PLp963qAzBTKQ==
-Date:   Wed, 23 Aug 2023 14:03:51 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Kalle Valo <quic_kvalo@quicinc.com>,
-        Kalle Valo <kvalo@kernel.org>, quic_jjohnson@quicinc.com,
-        ath11k@lists.infradead.org, linux-wireless@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 6.4 03/10] Revert "wifi: ath11k: Enable threaded
- NAPI"
-Message-ID: <ZOZKB5J+Xwu+41Xw@sashalap>
-References: <20230822113101.3549915-1-sashal@kernel.org>
- <20230822113101.3549915-3-sashal@kernel.org>
- <ZOTcGEfqsBkWugAa@hovoldconsulting.com>
+        s=k20201202; t=1692813865;
+        bh=1d7ThlaABV8FE3gjTpsPvmzevwSLEmFn0LkTXxK0Hxk=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=gDw9+o1p3Jcpof2McSd2doyZWwQvklS2nKFVPyXXYuJxZ9p1XYgUr+vU0lmn2Ta31
+         YVFaGFy+UWNABaRcsuu4ZbWg0Az5hqSaAWPQRWZh3WqqOOoGKxREtZNu7qtmoumKAI
+         cMRPdiYpI8z5lzz+LfRCtQistmDbkVgj5hHKbeU3kGh9xhGLp6VJtndewnBDOv1c39
+         lMU1oZsYxAzl3yCQPa5r7bxzI8xt4AonxeBb89LRjJyLiDGL3u3iAo+tZXXXhO0xvv
+         hwf+iYsgiKK38DuQ7nmC9kErBm8kXgVV9BuRAd3nYaIt4LZLVGq89wut59XLdCL3aj
+         QZVfwcjPFJZHg==
+Message-ID: <2819cf11177d81ab1fcface7e742cf50.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <ZOTcGEfqsBkWugAa@hovoldconsulting.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20230823085031.27252-2-quic_luoj@quicinc.com>
+References: <20230823085031.27252-1-quic_luoj@quicinc.com> <20230823085031.27252-2-quic_luoj@quicinc.com>
+Subject: Re: [PATCH v5 1/4] clk: qcom: branch: Add clk_branch2_mdio_ops
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_srichara@quicinc.com
+To:     Luo Jie <quic_luoj@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, catalin.marinas@arm.com, conor+dt@kernel.org,
+        konrad.dybcio@linaro.org, krzysztof.kozlowski+dt@linaro.org,
+        mturquette@baylibre.com, p.zabel@pengutronix.de,
+        robh+dt@kernel.org, will@kernel.org
+Date:   Wed, 23 Aug 2023 11:04:22 -0700
+User-Agent: alot/0.10
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -60,35 +61,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 06:02:32PM +0200, Johan Hovold wrote:
->On Tue, Aug 22, 2023 at 07:30:53AM -0400, Sasha Levin wrote:
->> From: Kalle Valo <quic_kvalo@quicinc.com>
->>
->> [ Upstream commit d265ebe41c911314bd273c218a37088835959fa1 ]
->>
->> This reverts commit 13aa2fb692d3717767303817f35b3e650109add3.
->>
->> This commit broke QCN9074 initialisation:
->>
->> [  358.960477] ath11k_pci 0000:04:00.0: ce desc not available for wmi command 36866
->> [  358.960481] ath11k_pci 0000:04:00.0: failed to send WMI_STA_POWERSAVE_PARAM_CMDID
->> [  358.960484] ath11k_pci 0000:04:00.0: could not set uapsd params -105
->>
->> As there's no fix available let's just revert it to get QCN9074 working again.
->>
->> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=217536
->> Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
->> Signed-off-by: Kalle Valo <kvalo@kernel.org>
->> Link: https://lore.kernel.org/r/20230720151444.2016637-1-kvalo@kernel.org
->> Signed-off-by: Sasha Levin <sashal@kernel.org>
->
->This commit break machines like the Lenovo ThinkPad X13s so please do
->not backport until this has been resolved:
->
->	https://lore.kernel.org/lkml/20230809073432.4193-1-johan+linaro@kernel.org
+Quoting Luo Jie (2023-08-23 01:50:28)
+> diff --git a/drivers/clk/qcom/clk-branch.c b/drivers/clk/qcom/clk-branch.c
+> index fc4735f74f0f..5e08c026ca4a 100644
+> --- a/drivers/clk/qcom/clk-branch.c
+> +++ b/drivers/clk/qcom/clk-branch.c
+> @@ -153,3 +153,10 @@ const struct clk_ops clk_branch_simple_ops =3D {
+>         .is_enabled =3D clk_is_enabled_regmap,
+>  };
+>  EXPORT_SYMBOL_GPL(clk_branch_simple_ops);
+> +
+> +const struct clk_ops clk_branch2_mdio_ops =3D {
+> +       .prepare =3D clk_branch2_enable,
+> +       .unprepare =3D clk_branch2_disable,
+> +       .is_prepared =3D clk_is_enabled_regmap,
+> +};
+> +EXPORT_SYMBOL_GPL(clk_branch2_mdio_ops);
 
-I'll drop it for now, thanks!
-
--- 
-Thanks,
-Sasha
+I'd call it clk_branch2_simple_prepare_ops or something like that.
+There's nothing mdio specific about it.
