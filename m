@@ -2,419 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BDFB78636D
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 00:32:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 761E578636B
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 00:32:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238663AbjHWWcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 18:32:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56226 "EHLO
+        id S238659AbjHWWbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 18:31:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238676AbjHWWcC (ORCPT
+        with ESMTP id S238646AbjHWWbM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 18:32:02 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 084DFE6F
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 15:32:00 -0700 (PDT)
+        Wed, 23 Aug 2023 18:31:12 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CACB1701;
+        Wed, 23 Aug 2023 15:31:08 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6F90F62E8E
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 22:31:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 950EFC433C7
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 22:31:58 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 21C7562369;
+        Wed, 23 Aug 2023 22:31:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F293C433C8;
+        Wed, 23 Aug 2023 22:31:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692829918;
-        bh=VJ3FDsQLtsFaOLutSkEya6nnUp0/Yr92VbJ58AMjlYA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=TiJ+GeT2zHLkW9BxDewhBXBBJDBzavNvIUEx6zH5a+BIxA+ITd0H7dCS/I2tUBIAm
-         Ecj/vLfSomicgNzhyiNtU6EMrjoZl0WVDxJRR67gS7TnQQVeWQ9T+1ajbQrUGiYGoz
-         CLRLVyp045BkO8IQ6TasM06YiUDZOrsyNfzgoqOaGTenaqT+lFQh4xszJyVXnG59Qy
-         XJRGdRyI74N6PeGdkS15PBQwQrzkPxmFebbvl5iQMVBxiFSFeb27m/9E+DLwo/+4mY
-         JsriJC6hJiiCJ6q9a4rsoo7aM+50d8tp/fF1YZy3fUF06/RCuBXafQdEMFYwpDxCJj
-         V469zb7xjPYgw==
-Received: by mail-oa1-f53.google.com with SMTP id 586e51a60fabf-1a28de15c8aso4112859fac.2
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 15:31:58 -0700 (PDT)
-X-Gm-Message-State: AOJu0YzYdtGEHXZhCxrfFSiaJ1V0QTTAgePLd1S09McqsXw7g63A9MiG
-        WNPrURgmJ5sc3GSs7736pyOSFOv/QMLmSh1+D5w=
-X-Google-Smtp-Source: AGHT+IEs+NFuXPKug7C2Ca+pWt4iWIo18bHwzImDfHMzO3mGxeBhyfkg+YTyOjiyfHbBUG73zNlMJi21/sZPlejk86k=
-X-Received: by 2002:a05:6870:2155:b0:1be:f311:4a2b with SMTP id
- g21-20020a056870215500b001bef3114a2bmr18319535oae.24.1692829917725; Wed, 23
- Aug 2023 15:31:57 -0700 (PDT)
+        s=k20201202; t=1692829867;
+        bh=7LddEz2AC5zh2tF8Hq6Rqi34+txun2qg3JRu3gII7P4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ASQx5g1LUUoFGyQaaK4qN2QP2Cu3UunhFaR1+PFBMr4h+z4bm7g9ALVBQ8Zi8fuZt
+         Y3vCUH9nf/Vi2cLS6q4kF9Y7toF31nSLYdXivLxWPMbfC7bZn/6JEhzqiaRc4uPRVY
+         /y/bple93yQDmkE8iHt3w88CzubgT1G1SpU+toRrwy3QRGkHUhFGS63zPiofOVa558
+         PtA2cRln0uxTCVMx+qJHUILa3d2d2NBcg5AGMNOTIP/lXhFhy7ZJlub/fOedlYD9xP
+         xRS/CINTBH+aK4NSwvXso9XHui7HG6BdSemvpqxp5JY4Gb4vg46Myi4gG04/LGMfzV
+         TVJWPYwHESoIw==
+Date:   Wed, 23 Aug 2023 16:32:06 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Brian Norris <briannorris@chromium.org>,
+        Kalle Valo <kvalo@kernel.org>,
+        Amitkumar Karwar <akarwar@marvell.com>,
+        Xinming Hu <huxm@marvell.com>, Dan Williams <dcbw@redhat.com>
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH 2/3] wifi: mwifiex: Replace one-element array with
+ flexible-array member in struct mwifiex_ie_types_rxba_sync
+Message-ID: <774ab3c21e1f2ee9c95909e5779216d83d05fd9f.1692829410.git.gustavoars@kernel.org>
+References: <cover.1692829410.git.gustavoars@kernel.org>
 MIME-Version: 1.0
-References: <20230816082531.164695-1-sarah.walker@imgtec.com>
-In-Reply-To: <20230816082531.164695-1-sarah.walker@imgtec.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 24 Aug 2023 07:31:21 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARQZjudwHe=u-Q1_y4HwpeamL-RiMnJ3fcPy93gaeQefA@mail.gmail.com>
-Message-ID: <CAK7LNARQZjudwHe=u-Q1_y4HwpeamL-RiMnJ3fcPy93gaeQefA@mail.gmail.com>
-Subject: Re: [PATCH v5 00/17] Imagination Technologies PowerVR DRM driver
-To:     Sarah Walker <sarah.walker@imgtec.com>
-Cc:     dri-devel@lists.freedesktop.org, frank.binns@imgtec.com,
-        donald.robson@imgtec.com, boris.brezillon@collabora.com,
-        faith.ekstrand@collabora.com, airlied@gmail.com, daniel@ffwll.ch,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, afd@ti.com, hns@goldelico.com,
-        matthew.brost@intel.com, christian.koenig@amd.com,
-        luben.tuikov@amd.com, dakr@redhat.com, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1692829410.git.gustavoars@kernel.org>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 4:35=E2=80=AFAM Sarah Walker <sarah.walker@imgtec.c=
-om> wrote:
->
-> This patch series adds the initial DRM driver for Imagination Technologie=
-s PowerVR
-> GPUs, starting with those based on our Rogue architecture. It's worth poi=
-nting
-> out that this is a new driver, written from the ground up, rather than a
-> refactored version of our existing downstream driver (pvrsrvkm).
->
-> This new DRM driver supports:
-> - GEM shmem allocations
-> - dma-buf / PRIME
-> - Per-context userspace managed virtual address space
-> - DRM sync objects (binary and timeline)
-> - Power management suspend / resume
-> - GPU job submission (geometry, fragment, compute, transfer)
-> - META firmware processor
-> - MIPS firmware processor
-> - GPU hang detection and recovery
->
-> Currently our main focus is on the AXE-1-16M GPU. Testing so far has been=
- done
-> using a TI SK-AM62 board (AXE-1-16M GPU). Firmware for the AXE-1-16M can =
-be
-> found here:
-> https://gitlab.freedesktop.org/frankbinns/linux-firmware/-/tree/powervr
->
-> A Vulkan driver that works with our downstream kernel driver has already =
-been
-> merged into Mesa [1][2]. Support for this new DRM driver is being maintai=
-ned in
-> a merge request [3], with the branch located here:
-> https://gitlab.freedesktop.org/frankbinns/mesa/-/tree/powervr-winsys
->
-> Job stream formats are documented at:
-> https://gitlab.freedesktop.org/mesa/mesa/-/blob/f8d2b42ae65c2f16f36a43e0a=
-e39d288431e4263/src/imagination/csbgen/rogue_kmd_stream.xml
->
-> The Vulkan driver is progressing towards Vulkan 1.0. We're code complete,=
- and
-> are working towards passing conformance. The current combination of this =
-kernel
-> driver with the Mesa Vulkan driver (powervr-mesa-next branch) achieves 88=
-.3% conformance.
->
-> The code in this patch series, along with some of its history, can also b=
-e found here:
-> https://gitlab.freedesktop.org/frankbinns/powervr/-/tree/powervr-next
->
-> This patch series has dependencies on a number of patches not yet merged.=
- They
-> are listed below :
->
-> drm/sched: Convert drm scheduler to use a work queue rather than kthread:
->   https://lore.kernel.org/dri-devel/20230404002211.3611376-2-matthew.bros=
-t@intel.com/
-> drm/sched: Move schedule policy to scheduler / entity:
->   https://lore.kernel.org/dri-devel/20230404002211.3611376-3-matthew.bros=
-t@intel.com/
-> drm/sched: Add DRM_SCHED_POLICY_SINGLE_ENTITY scheduling policy:
->   https://lore.kernel.org/dri-devel/20230404002211.3611376-4-matthew.bros=
-t@intel.com/
-> drm/sched: Start run wq before TDR in drm_sched_start:
->   https://lore.kernel.org/dri-devel/20230404002211.3611376-6-matthew.bros=
-t@intel.com/
-> drm/sched: Submit job before starting TDR:
->   https://lore.kernel.org/dri-devel/20230404002211.3611376-7-matthew.bros=
-t@intel.com/
-> drm/sched: Add helper to set TDR timeout:
->   https://lore.kernel.org/dri-devel/20230404002211.3611376-8-matthew.bros=
-t@intel.com/
->
-> [1] https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/15243
-> [2] https://gitlab.freedesktop.org/mesa/mesa/-/tree/main/src/imagination/=
-vulkan
-> [3] https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/15507
->
-> High level summary of changes:
->
-> v5:
-> * Retrieve GPU device information from firmware image header
-> * Address issues with DT binding and example DTS
-> * Update VM code for upstream GPU VA manager
-> * BOs are always zeroed on allocation
-> * Update copyright
->
-> v4:
-> * Implemented hang recovery via firmware hard reset
-> * Add support for partial render jobs
-> * Move to a threaded IRQ
-> * Remove unnecessary read/write and clock helpers
-> * Remove device tree elements not relevant to AXE-1-16M
-> * Clean up resource acquisition
-> * Remove unused DT binding attributes
->
-> v3:
-> * Use drm_sched for scheduling
-> * Use GPU VA manager
-> * Use runtime PM
-> * Use drm_gem_shmem
-> * GPU watchdog and device loss handling
-> * DT binding changes: remove unused attributes, add additionProperties:fa=
-lse
->
-> v2:
-> * Redesigned and simplified UAPI based on RFC feedback from XDC 2022
-> * Support for transfer and partial render jobs
-> * Support for timeline sync objects
->
-> RFC v1: https://lore.kernel.org/dri-devel/20220815165156.118212-1-sarah.w=
-alker@imgtec.com/
->
-> RFC v2: https://lore.kernel.org/dri-devel/20230413103419.293493-1-sarah.w=
-alker@imgtec.com/
->
-> v3: https://lore.kernel.org/dri-devel/20230613144800.52657-1-sarah.walker=
-@imgtec.com/
->
-> v4: https://lore.kernel.org/dri-devel/20230714142355.111382-1-sarah.walke=
-r@imgtec.com/
->
-> Matt Coster (1):
->   sizes.h: Add entries between 32G and 64T
->
-> Sarah Walker (16):
->   dt-bindings: gpu: Add Imagination Technologies PowerVR GPU
->   drm/imagination/uapi: Add PowerVR driver UAPI
->   drm/imagination: Add skeleton PowerVR driver
->   drm/imagination: Get GPU resources
->   drm/imagination: Add GPU register and FWIF headers
->   drm/imagination: Add GPU ID parsing and firmware loading
->   drm/imagination: Add GEM and VM related code
->   drm/imagination: Implement power management
->   drm/imagination: Implement firmware infrastructure and META FW support
->   drm/imagination: Implement MIPS firmware processor and MMU support
->   drm/imagination: Implement free list and HWRT create and destroy
->     ioctls
->   drm/imagination: Implement context creation/destruction ioctls
->   drm/imagination: Implement job submission and scheduling
->   drm/imagination: Add firmware trace to debugfs
->   drm/imagination: Add driver documentation
->   arm64: dts: ti: k3-am62-main: Add GPU device node [DO NOT MERGE]
+One-element and zero-length arrays are deprecated. So, replace
+one-element array in struct mwifiex_ie_types_rxba_sync with
+flexible-array member, and refactor the rest of the code, accordingly.
 
+This results in no differences in binary output.
 
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c | 2 +-
+ drivers/net/wireless/marvell/mwifiex/fw.h            | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c b/drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c
+index d1d3632a3ed7..735aac52bdc4 100644
+--- a/drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c
++++ b/drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c
+@@ -918,7 +918,7 @@ void mwifiex_11n_rxba_sync_event(struct mwifiex_private *priv,
+ 
+ 	mwifiex_dbg_dump(priv->adapter, EVT_D, "RXBA_SYNC event:",
+ 			 event_buf, len);
+-	while (tlv_buf_left >= sizeof(*tlv_rxba)) {
++	while (tlv_buf_left > sizeof(*tlv_rxba)) {
+ 		tlv_type = le16_to_cpu(tlv_rxba->header.type);
+ 		tlv_len  = le16_to_cpu(tlv_rxba->header.len);
+ 		if (tlv_type != TLV_TYPE_RXBA_SYNC) {
+diff --git a/drivers/net/wireless/marvell/mwifiex/fw.h b/drivers/net/wireless/marvell/mwifiex/fw.h
+index f2168fac95ed..8e6db904e5b2 100644
+--- a/drivers/net/wireless/marvell/mwifiex/fw.h
++++ b/drivers/net/wireless/marvell/mwifiex/fw.h
+@@ -779,7 +779,7 @@ struct mwifiex_ie_types_rxba_sync {
+ 	u8 reserved;
+ 	__le16 seq_num;
+ 	__le16 bitmap_len;
+-	u8 bitmap[1];
++	u8 bitmap[];
+ } __packed;
+ 
+ struct chan_band_param_set {
+-- 
+2.34.1
 
-
-
-I failed to compile this patch set.
-
-I applied this series to linux next-20230822 and set CONFIG_DRM_POWERVR=3Dm=
-.
-
-
-I got this error.
-
-  CC [M]  drivers/gpu/drm/imagination/pvr_ccb.o
-In file included from drivers/gpu/drm/imagination/pvr_ccb.c:4:
-drivers/gpu/drm/imagination/pvr_ccb.h:7:10: fatal error:
-pvr_rogue_fwif.h: No such file or directory
-    7 | #include "pvr_rogue_fwif.h"
-      |          ^~~~~~~~~~~~~~~~~~
-compilation terminated.
-
-
-
-Did you forget to do 'git add' or am I missing something?
-
-
-I do not see pvr_rogue_fwif.h
-in the following diff stat.
-
-
->  .../devicetree/bindings/gpu/img,powervr.yaml  |   75 +
->  Documentation/gpu/drivers.rst                 |    2 +
->  Documentation/gpu/imagination/index.rst       |   14 +
->  Documentation/gpu/imagination/uapi.rst        |  174 +
->  .../gpu/imagination/virtual_memory.rst        |  462 ++
->  MAINTAINERS                                   |   10 +
->  arch/arm64/boot/dts/ti/k3-am62-main.dtsi      |    9 +
->  drivers/gpu/drm/Kconfig                       |    2 +
->  drivers/gpu/drm/Makefile                      |    1 +
->  drivers/gpu/drm/imagination/Kconfig           |   16 +
->  drivers/gpu/drm/imagination/Makefile          |   35 +
->  drivers/gpu/drm/imagination/pvr_ccb.c         |  641 ++
->  drivers/gpu/drm/imagination/pvr_ccb.h         |   71 +
->  drivers/gpu/drm/imagination/pvr_cccb.c        |  267 +
->  drivers/gpu/drm/imagination/pvr_cccb.h        |  109 +
->  drivers/gpu/drm/imagination/pvr_context.c     |  460 ++
->  drivers/gpu/drm/imagination/pvr_context.h     |  205 +
->  drivers/gpu/drm/imagination/pvr_debugfs.c     |   53 +
->  drivers/gpu/drm/imagination/pvr_debugfs.h     |   29 +
->  drivers/gpu/drm/imagination/pvr_device.c      |  651 ++
->  drivers/gpu/drm/imagination/pvr_device.h      |  704 ++
->  drivers/gpu/drm/imagination/pvr_device_info.c |  253 +
->  drivers/gpu/drm/imagination/pvr_device_info.h |  185 +
->  drivers/gpu/drm/imagination/pvr_drv.c         | 1515 ++++
->  drivers/gpu/drm/imagination/pvr_drv.h         |  129 +
->  drivers/gpu/drm/imagination/pvr_free_list.c   |  625 ++
->  drivers/gpu/drm/imagination/pvr_free_list.h   |  195 +
->  drivers/gpu/drm/imagination/pvr_fw.c          | 1470 ++++
->  drivers/gpu/drm/imagination/pvr_fw.h          |  508 ++
->  drivers/gpu/drm/imagination/pvr_fw_info.h     |  135 +
->  drivers/gpu/drm/imagination/pvr_fw_meta.c     |  554 ++
->  drivers/gpu/drm/imagination/pvr_fw_meta.h     |   14 +
->  drivers/gpu/drm/imagination/pvr_fw_mips.c     |  250 +
->  drivers/gpu/drm/imagination/pvr_fw_mips.h     |   38 +
->  .../gpu/drm/imagination/pvr_fw_startstop.c    |  301 +
->  .../gpu/drm/imagination/pvr_fw_startstop.h    |   13 +
->  drivers/gpu/drm/imagination/pvr_fw_trace.c    |  515 ++
->  drivers/gpu/drm/imagination/pvr_fw_trace.h    |   78 +
->  drivers/gpu/drm/imagination/pvr_gem.c         |  396 ++
->  drivers/gpu/drm/imagination/pvr_gem.h         |  184 +
->  drivers/gpu/drm/imagination/pvr_hwrt.c        |  549 ++
->  drivers/gpu/drm/imagination/pvr_hwrt.h        |  165 +
->  drivers/gpu/drm/imagination/pvr_job.c         |  770 ++
->  drivers/gpu/drm/imagination/pvr_job.h         |  161 +
->  drivers/gpu/drm/imagination/pvr_mmu.c         | 2523 +++++++
->  drivers/gpu/drm/imagination/pvr_mmu.h         |  108 +
->  drivers/gpu/drm/imagination/pvr_params.c      |  147 +
->  drivers/gpu/drm/imagination/pvr_params.h      |   72 +
->  drivers/gpu/drm/imagination/pvr_power.c       |  421 ++
->  drivers/gpu/drm/imagination/pvr_power.h       |   39 +
->  drivers/gpu/drm/imagination/pvr_queue.c       | 1455 ++++
->  drivers/gpu/drm/imagination/pvr_queue.h       |  179 +
->  .../gpu/drm/imagination/pvr_rogue_cr_defs.h   | 6193 +++++++++++++++++
->  .../imagination/pvr_rogue_cr_defs_client.h    |  159 +
->  drivers/gpu/drm/imagination/pvr_rogue_defs.h  |  179 +
->  drivers/gpu/drm/imagination/pvr_rogue_fwif.h  | 2208 ++++++
->  .../drm/imagination/pvr_rogue_fwif_check.h    |  491 ++
->  .../drm/imagination/pvr_rogue_fwif_client.h   |  371 +
->  .../imagination/pvr_rogue_fwif_client_check.h |  133 +
->  .../drm/imagination/pvr_rogue_fwif_common.h   |   60 +
->  .../drm/imagination/pvr_rogue_fwif_dev_info.h |  112 +
->  .../pvr_rogue_fwif_resetframework.h           |   28 +
->  .../gpu/drm/imagination/pvr_rogue_fwif_sf.h   | 1648 +++++
->  .../drm/imagination/pvr_rogue_fwif_shared.h   |  258 +
->  .../imagination/pvr_rogue_fwif_shared_check.h |  108 +
->  .../drm/imagination/pvr_rogue_fwif_stream.h   |   78 +
->  .../drm/imagination/pvr_rogue_heap_config.h   |  113 +
->  drivers/gpu/drm/imagination/pvr_rogue_meta.h  |  356 +
->  drivers/gpu/drm/imagination/pvr_rogue_mips.h  |  335 +
->  .../drm/imagination/pvr_rogue_mips_check.h    |   58 +
->  .../gpu/drm/imagination/pvr_rogue_mmu_defs.h  |  136 +
->  drivers/gpu/drm/imagination/pvr_stream.c      |  285 +
->  drivers/gpu/drm/imagination/pvr_stream.h      |   75 +
->  drivers/gpu/drm/imagination/pvr_stream_defs.c |  351 +
->  drivers/gpu/drm/imagination/pvr_stream_defs.h |   16 +
->  drivers/gpu/drm/imagination/pvr_sync.c        |  287 +
->  drivers/gpu/drm/imagination/pvr_sync.h        |   84 +
->  drivers/gpu/drm/imagination/pvr_vm.c          |  906 +++
->  drivers/gpu/drm/imagination/pvr_vm.h          |   60 +
->  drivers/gpu/drm/imagination/pvr_vm_mips.c     |  208 +
->  drivers/gpu/drm/imagination/pvr_vm_mips.h     |   22 +
->  include/linux/sizes.h                         |    9 +
->  include/uapi/drm/pvr_drm.h                    | 1303 ++++
->  83 files changed, 34567 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/gpu/img,powervr.yam=
-l
->  create mode 100644 Documentation/gpu/imagination/index.rst
->  create mode 100644 Documentation/gpu/imagination/uapi.rst
->  create mode 100644 Documentation/gpu/imagination/virtual_memory.rst
->  create mode 100644 drivers/gpu/drm/imagination/Kconfig
->  create mode 100644 drivers/gpu/drm/imagination/Makefile
->  create mode 100644 drivers/gpu/drm/imagination/pvr_ccb.c
->  create mode 100644 drivers/gpu/drm/imagination/pvr_ccb.h
->  create mode 100644 drivers/gpu/drm/imagination/pvr_cccb.c
->  create mode 100644 drivers/gpu/drm/imagination/pvr_cccb.h
->  create mode 100644 drivers/gpu/drm/imagination/pvr_context.c
->  create mode 100644 drivers/gpu/drm/imagination/pvr_context.h
->  create mode 100644 drivers/gpu/drm/imagination/pvr_debugfs.c
->  create mode 100644 drivers/gpu/drm/imagination/pvr_debugfs.h
->  create mode 100644 drivers/gpu/drm/imagination/pvr_device.c
->  create mode 100644 drivers/gpu/drm/imagination/pvr_device.h
->  create mode 100644 drivers/gpu/drm/imagination/pvr_device_info.c
->  create mode 100644 drivers/gpu/drm/imagination/pvr_device_info.h
->  create mode 100644 drivers/gpu/drm/imagination/pvr_drv.c
->  create mode 100644 drivers/gpu/drm/imagination/pvr_drv.h
->  create mode 100644 drivers/gpu/drm/imagination/pvr_free_list.c
->  create mode 100644 drivers/gpu/drm/imagination/pvr_free_list.h
->  create mode 100644 drivers/gpu/drm/imagination/pvr_fw.c
->  create mode 100644 drivers/gpu/drm/imagination/pvr_fw.h
->  create mode 100644 drivers/gpu/drm/imagination/pvr_fw_info.h
->  create mode 100644 drivers/gpu/drm/imagination/pvr_fw_meta.c
->  create mode 100644 drivers/gpu/drm/imagination/pvr_fw_meta.h
->  create mode 100644 drivers/gpu/drm/imagination/pvr_fw_mips.c
->  create mode 100644 drivers/gpu/drm/imagination/pvr_fw_mips.h
->  create mode 100644 drivers/gpu/drm/imagination/pvr_fw_startstop.c
->  create mode 100644 drivers/gpu/drm/imagination/pvr_fw_startstop.h
->  create mode 100644 drivers/gpu/drm/imagination/pvr_fw_trace.c
->  create mode 100644 drivers/gpu/drm/imagination/pvr_fw_trace.h
->  create mode 100644 drivers/gpu/drm/imagination/pvr_gem.c
->  create mode 100644 drivers/gpu/drm/imagination/pvr_gem.h
->  create mode 100644 drivers/gpu/drm/imagination/pvr_hwrt.c
->  create mode 100644 drivers/gpu/drm/imagination/pvr_hwrt.h
->  create mode 100644 drivers/gpu/drm/imagination/pvr_job.c
->  create mode 100644 drivers/gpu/drm/imagination/pvr_job.h
->  create mode 100644 drivers/gpu/drm/imagination/pvr_mmu.c
->  create mode 100644 drivers/gpu/drm/imagination/pvr_mmu.h
->  create mode 100644 drivers/gpu/drm/imagination/pvr_params.c
->  create mode 100644 drivers/gpu/drm/imagination/pvr_params.h
->  create mode 100644 drivers/gpu/drm/imagination/pvr_power.c
->  create mode 100644 drivers/gpu/drm/imagination/pvr_power.h
->  create mode 100644 drivers/gpu/drm/imagination/pvr_queue.c
->  create mode 100644 drivers/gpu/drm/imagination/pvr_queue.h
->  create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_cr_defs.h
->  create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_cr_defs_client.=
-h
->  create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_defs.h
->  create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_fwif.h
->  create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_fwif_check.h
->  create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_fwif_client.h
->  create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_fwif_client_che=
-ck.h
->  create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_fwif_common.h
->  create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_fwif_dev_info.h
->  create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_fwif_resetframe=
-work.h
->  create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_fwif_sf.h
->  create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_fwif_shared.h
->  create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_fwif_shared_che=
-ck.h
->  create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_fwif_stream.h
->  create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_heap_config.h
->  create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_meta.h
->  create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_mips.h
->  create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_mips_check.h
->  create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_mmu_defs.h
->  create mode 100644 drivers/gpu/drm/imagination/pvr_stream.c
->  create mode 100644 drivers/gpu/drm/imagination/pvr_stream.h
->  create mode 100644 drivers/gpu/drm/imagination/pvr_stream_defs.c
->  create mode 100644 drivers/gpu/drm/imagination/pvr_stream_defs.h
->  create mode 100644 drivers/gpu/drm/imagination/pvr_sync.c
->  create mode 100644 drivers/gpu/drm/imagination/pvr_sync.h
->  create mode 100644 drivers/gpu/drm/imagination/pvr_vm.c
->  create mode 100644 drivers/gpu/drm/imagination/pvr_vm.h
->  create mode 100644 drivers/gpu/drm/imagination/pvr_vm_mips.c
->  create mode 100644 drivers/gpu/drm/imagination/pvr_vm_mips.h
->  create mode 100644 include/uapi/drm/pvr_drm.h
->
-> --
-> 2.41.0
->
-
-
---=20
-Best Regards
-Masahiro Yamada
