@@ -2,63 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA8B9785ACF
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 16:36:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE64B785AD6
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 16:36:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236101AbjHWOgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 10:36:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44222 "EHLO
+        id S236544AbjHWOgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 10:36:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235712AbjHWOgb (ORCPT
+        with ESMTP id S236541AbjHWOgh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 10:36:31 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1E0FE5F
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 07:36:28 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7AB8765295
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 14:36:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AFEE6C433C9;
-        Wed, 23 Aug 2023 14:36:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692801387;
-        bh=eRT5wpPzE2dG8Htf1U5WjVNZWKMJy4q5xPRnCCdw3jg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qZLsHVOkbIOn1hjfAmB+/RmDZAks8n7X+JQRAlO5qAuHYIP46RoFCPzYnCoKGUCnp
-         Z2eOolqYNWZV2PQW9dxB5jwJjrxvWjHMjcWQtBg6xoG5DnSZS3dLDyUW24EKCuekIt
-         rE3ZlfKpkUcQWNZjx9XGhO1bcpy+0l32Ltl0ool76uPBNsu1p0FqWRuwQ0BbNthHo1
-         2HKVGbgx5xwA/uU2bQh39yGp62AvxtIPtjuNc/t8C0INMsDxg9IpMOo37BomlTdeKu
-         U0m1dojN3+E1f6F0fzWD6pVPmj4x8qVJoBDNEZ9SlNduy3drMmWNFVfpjWB/fNfVkk
-         DkmwDwJ584Ajw==
-Date:   Wed, 23 Aug 2023 15:35:56 +0100
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Liam Ni <zhiguangni01@gmail.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        loongarch@lists.linux.dev, zhoubinbin@loongson.cn,
-        chenfeiyang@loongson.cn, jiaxun.yang@flygoat.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>, peterz@infradead.org,
-        luto@kernel.org, Dave Hansen <dave.hansen@linux.intel.com>,
-        kernel@xen0n.name, chenhuacai@kernel.org
-Subject: Re: [RESEND PATCH V3] NUMA:Improve the efficiency of calculating
- pages loss
-Message-ID: <20230823143556.GA188089@kernel.org>
-References: <CACZJ9cUXiWxDb6hF4JFhWe7Np82k6LopVQ+_AoGFOccN4kjJqA@mail.gmail.com>
- <20230814155911.GN2607694@kernel.org>
- <CACZJ9cU5g5wD=qEg7tbr-Gk4EADDORSG-=U1_c7nq=fO9XhJ0Q@mail.gmail.com>
+        Wed, 23 Aug 2023 10:36:37 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80884E7E
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 07:36:34 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-5007abb15e9so5828996e87.0
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 07:36:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692801393; x=1693406193;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Xr0WXPB/dyDXmkBwE/up+Cse+tTESwjdOxAD9XzT4D4=;
+        b=I4OLaVDt8t6QuVqQW0oXUFyaVK+p7WZ/eQVqlFs8sYbXEtTdVBjMuQhMNJ9QLMHnEU
+         0fReHkk9UwbRYiWW7cZvqqAsECWh5ZJJ9wdI5vbHRtPN/wylFHPaOM10CfcUGsIKJWFl
+         Cw14UXUWKZyvyVuI9uWEgNk9pcE0tsKOZ3WKzOVH5MV/PDsEkkRXzOIsli8ItO8RpCoF
+         PgJvScEd3Q/A3NYiJdaIe82PtW1OHQSkzhcqQyhR7gW+LNeKXdzLj7R/81eEIxi1JAPN
+         5gcpU3tsQekgNBfxLgIIFoWqt3kV+1MMJTewS4RdROWxj0CgtwB21uy5S44M4H4ylEfg
+         093Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692801393; x=1693406193;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Xr0WXPB/dyDXmkBwE/up+Cse+tTESwjdOxAD9XzT4D4=;
+        b=LPMrAY8+lQChgkMf+k7ZjCDFh2Czh9zzYL58AsOX87dct2thmPHhHvzEtSf7z0HExB
+         MisrRs4yyqYue5zbWJPYYz6moVar0nEnrngTt9pjN4d+qnGvYRKxYnvLHMSoUXihy5n7
+         R4TwN9zjM/pHGA/Fhq2/DHEhmwe5b0HulvHT0DnZf9oNRoRkfpKDfqwwKgpC15lCYSdJ
+         qempYvv0NJXgX16QA+5ZaOIsNDWrTbRpVJWkIXJNjMGyj9TSkG0mxp6WakiOyUDGsnHj
+         ieEdYcIg6Ouk2H1jAL6VWaJiKL7PhhwYGUSN+4NFQlE70+banCW/v8a/n7aXkpKLptxi
+         b8JA==
+X-Gm-Message-State: AOJu0YxTbhsjZknnlSKuEiwHxbXabnJou+ZamOI6qiXQ6+Hhv0nGReBw
+        0C4ToVwDZuhlVre1gPYzViZ5oA==
+X-Google-Smtp-Source: AGHT+IEeAzz7Fc12Wo7U8YW9ztfNhpcjpgIT0TvWojmUwAQpAv63XRnUFQxMfqT5iNtoJ4mpMfzt6A==
+X-Received: by 2002:a05:6512:615:b0:4fd:c923:db59 with SMTP id b21-20020a056512061500b004fdc923db59mr8238274lfe.15.1692801392840;
+        Wed, 23 Aug 2023 07:36:32 -0700 (PDT)
+Received: from [192.168.1.101] (abyj76.neoplus.adsl.tpnet.pl. [83.9.29.76])
+        by smtp.gmail.com with ESMTPSA id z6-20020ac24186000000b004fe36bae2d6sm2668882lfh.81.2023.08.23.07.36.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Aug 2023 07:36:32 -0700 (PDT)
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Subject: [PATCH RESEND v2 0/3] MM8013 fg driver
+Date:   Wed, 23 Aug 2023 16:36:12 +0200
+Message-Id: <20230621-topic-mm8013-v2-0-9f1b41f4bc06@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACZJ9cU5g5wD=qEg7tbr-Gk4EADDORSG-=U1_c7nq=fO9XhJ0Q@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAF0Z5mQC/32NsQ7CIBiEX8Uwi6E/LW2dHOzqoKNxAIotSQsNV
+ KJp+u4im4lxvLt89y3IK6eVR/vNgpwK2mtrYoDtBsmem05h3caMgAAlDDI820lLPI4VySimJSu
+ LWtWVgApFRHCvsHDcyD5C5jEMsZycuutnclzRubk0pyO6xb7XfrbuldQhS+tvS8gwwXlOSsmAE
+ VLQw6ANd3ZnXZeeAvyj4UMLxQBoUZW8/aLXdX0D46K64AQBAAA=
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Konrad Dybcio <konradybcio@kernel.org>
+Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1692801391; l=1223;
+ i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
+ bh=Tv3ZU/Y/oaQ4y5pFMlSPbbUL6DzIaXj6CuswkA+bj4I=;
+ b=/B5r4Op5WONnZuRO1PGIp3BIjVAGY9BDl1xMD2zOyDaOCzbxX32YcA++owcL9ZqgW/QBeg54G
+ /uXHBvX9edsCZui9lPRBF9nUFPOw+j5zT15cZxLYEIlSKMeYbQjOPEX
+X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
+ pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,198 +88,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 07:49:05PM +0800, Liam Ni wrote:
-> On Tue, 15 Aug 2023 at 00:00, Mike Rapoport <rppt@kernel.org> wrote:
-> >
-> > On Fri, Aug 04, 2023 at 11:32:51PM +0800, Liam Ni wrote:
-> > > Optimize the way of calculating missing pages.
-> > >
-> > > In the previous implementation, We calculate missing pages as follows:
-> > > 1. calculate numaram by traverse all the numa_meminfo's and for each of
-> > > them traverse all the regions in memblock.memory to prepare for
-> > > counting missing pages.
-> > >
-> > > 2. Traverse all the regions in memblock.memory again to get e820ram.
-> > >
-> > > 3. the missing page is (e820ram - numaram )
-> > >
-> > > But,it's enough to count memory in ‘memblock.memory’ that doesn't have
-> > > the node assigned.
-> > >
-> > > V2:https://lore.kernel.org/all/20230619075315.49114-1-zhiguangni01@gmail.com/
-> > > V1:https://lore.kernel.org/all/20230615142016.419570-1-zhiguangni01@gmail.com/
-> > >
-> > > Signed-off-by: Liam Ni <zhiguangni01@gmail.com>
-> > > ---
-> > >  arch/loongarch/kernel/numa.c | 23 ++++++++---------------
-> > >  arch/x86/mm/numa.c           | 26 +++++++-------------------
-> > >  include/linux/mm.h           |  1 +
-> > >  mm/mm_init.c                 | 20 ++++++++++++++++++++
-> > >  4 files changed, 36 insertions(+), 34 deletions(-)
-> > >
-> > > diff --git a/arch/loongarch/kernel/numa.c b/arch/loongarch/kernel/numa.c
-> > > index 708665895b47..0239891e4d19 100644
-> > > --- a/arch/loongarch/kernel/numa.c
-> > > +++ b/arch/loongarch/kernel/numa.c
-> > > @@ -262,25 +262,18 @@ static void __init node_mem_init(unsigned int node)
-> > >   * Sanity check to catch more bad NUMA configurations (they are amazingly
-> > >   * common).  Make sure the nodes cover all memory.
-> > >   */
-> > > -static bool __init numa_meminfo_cover_memory(const struct numa_meminfo *mi)
-> > > +static bool __init memblock_validate_numa_coverage(const u64 limit)
-> >
-> > There is no need to have arch specific memblock_validate_numa_coverage().
-> > You can add this function to memblock and call it from NUMA initialization
-> > instead of numa_meminfo_cover_memory().
-> 
-> Remove implementation of numa_meminfo_cover_memory function?
- 
-Yes, that's the idea.
+Resending due to no responses for 2 months.
 
-> > The memblock_validate_numa_coverage() will count all the pages without node
-> > ID set and compare to the threshold provided by the architectures.
-> >
-> > >  {
-> > > -       int i;
-> > > -       u64 numaram, biosram;
-> > > +       u64 lo_pg;
-> > >
-> > > -       numaram = 0;
-> > > -       for (i = 0; i < mi->nr_blks; i++) {
-> > > -               u64 s = mi->blk[i].start >> PAGE_SHIFT;
-> > > -               u64 e = mi->blk[i].end >> PAGE_SHIFT;
-> > > +       lo_pg = max_pfn - calculate_without_node_pages_in_range();
-> > >
-> > > -               numaram += e - s;
-> > > -               numaram -= __absent_pages_in_range(mi->blk[i].nid, s, e);
-> > > -               if ((s64)numaram < 0)
-> > > -                       numaram = 0;
-> > > +       /* We seem to lose 3 pages somewhere. Allow 1M of slack. */
-> > > +       if (lo_pg >= limit) {
-> > > +               pr_err("NUMA: We lost 1m size page.\n");
-> > > +               return false;
-> > >         }
-> > > -       max_pfn = max_low_pfn;
-> > > -       biosram = max_pfn - absent_pages_in_range(0, max_pfn);
-> > >
-> > > -       BUG_ON((s64)(biosram - numaram) >= (1 << (20 - PAGE_SHIFT)));
-> > >         return true;
-> > >  }
-> > >
-> > > @@ -428,7 +421,7 @@ int __init init_numa_memory(void)
-> > >                 return -EINVAL;
-> > >
-> > >         init_node_memblock();
-> > > -       if (numa_meminfo_cover_memory(&numa_meminfo) == false)
-> > > +       if (memblock_validate_numa_coverage(SZ_1M) == false)
-> > >                 return -EINVAL;
-> > >
-> > >         for_each_node_mask(node, node_possible_map) {
-> > > diff --git a/arch/x86/mm/numa.c b/arch/x86/mm/numa.c
-> > > index 2aadb2019b4f..14feec144675 100644
-> > > --- a/arch/x86/mm/numa.c
-> > > +++ b/arch/x86/mm/numa.c
-> > > @@ -451,30 +451,18 @@ EXPORT_SYMBOL(__node_distance);
-> > >   * Sanity check to catch more bad NUMA configurations (they are amazingly
-> > >   * common).  Make sure the nodes cover all memory.
-> > >   */
-> > > -static bool __init numa_meminfo_cover_memory(const struct numa_meminfo *mi)
-> > > +static bool __init memblock_validate_numa_coverage(const u64 limit)
-> > >  {
-> > > -       u64 numaram, e820ram;
-> > > -       int i;
-> > > +       u64 lo_pg;
-> > >
-> > > -       numaram = 0;
-> > > -       for (i = 0; i < mi->nr_blks; i++) {
-> > > -               u64 s = mi->blk[i].start >> PAGE_SHIFT;
-> > > -               u64 e = mi->blk[i].end >> PAGE_SHIFT;
-> > > -               numaram += e - s;
-> > > -               numaram -= __absent_pages_in_range(mi->blk[i].nid, s, e);
-> > > -               if ((s64)numaram < 0)
-> > > -                       numaram = 0;
-> > > -       }
-> > > -
-> > > -       e820ram = max_pfn - absent_pages_in_range(0, max_pfn);
-> > > +       lo_pg = max_pfn - calculate_without_node_pages_in_range();
-> > >
-> > >         /* We seem to lose 3 pages somewhere. Allow 1M of slack. */
-> > > -       if ((s64)(e820ram - numaram) >= (1 << (20 - PAGE_SHIFT))) {
-> > > -               printk(KERN_ERR "NUMA: nodes only cover %LuMB of your
-> > > %LuMB e820 RAM. Not used.\n",
-> > > -                      (numaram << PAGE_SHIFT) >> 20,
-> > > -                      (e820ram << PAGE_SHIFT) >> 20);
-> > > +       if (lo_pg >= limit) {
-> > > +               pr_err("NUMA: We lost 1m size page.\n");
-> > >                 return false;
-> > >         }
-> > > +
-> > >         return true;
-> > >  }
-> > >
-> > > @@ -583,7 +571,7 @@ static int __init numa_register_memblks(struct
-> > > numa_meminfo *mi)
-> > >                         return -EINVAL;
-> > >                 }
-> > >         }
-> > > -       if (!numa_meminfo_cover_memory(mi))
-> > > +       if (!memblock_validate_numa_coverage(SZ_1M))
-> > >                 return -EINVAL;
-> > >
-> > >         /* Finally register nodes. */
-> > > diff --git a/include/linux/mm.h b/include/linux/mm.h
-> > > index 0daef3f2f029..b32457ad1ae3 100644
-> > > --- a/include/linux/mm.h
-> > > +++ b/include/linux/mm.h
-> > > @@ -3043,6 +3043,7 @@ unsigned long __absent_pages_in_range(int nid,
-> > > unsigned long start_pfn,
-> > >                                                 unsigned long end_pfn);
-> > >  extern unsigned long absent_pages_in_range(unsigned long start_pfn,
-> > >                                                 unsigned long end_pfn);
-> > > +extern unsigned long calculate_without_node_pages_in_range(void);
-> > >  extern void get_pfn_range_for_nid(unsigned int nid,
-> > >                         unsigned long *start_pfn, unsigned long *end_pfn);
-> > >
-> > > diff --git a/mm/mm_init.c b/mm/mm_init.c
-> > > index 3ddd18a89b66..13a4883787e3 100644
-> > > --- a/mm/mm_init.c
-> > > +++ b/mm/mm_init.c
-> > > @@ -1132,6 +1132,26 @@ static void __init
-> > > adjust_zone_range_for_zone_movable(int nid,
-> > >         }
-> > >  }
-> > >
-> > > +/**
-> > > + * @start_pfn: The start PFN to start searching for holes
-> > > + * @end_pfn: The end PFN to stop searching for holes
-> > > + *
-> > > + * Return: Return the number of page frames without node assigned
-> > > within a range.
-> > > + */
-> > > +unsigned long __init calculate_without_node_pages_in_range(void)
-> > > +{
-> > > +       unsigned long num_pages;
-> > > +       unsigned long start_pfn, end_pfn;
-> > > +       int nid, i;
-> > > +
-> > > +       for_each_mem_pfn_range(i, MAX_NUMNODES, &start_pfn, &end_pfn, &nid) {
-> > > +               if (nid == NUMA_NO_NODE)
-> > > +                       num_pages += end_pfn - start_pfn;
-> > > +       }
-> > > +
-> > > +       return num_pages;
-> > > +}
-> > > +
-> > >  /*
-> > >   * Return the number of holes in a range on a node. If nid is MAX_NUMNODES,
-> > >   * then all holes in the requested range will be accounted for.
-> > > --
-> > > 2.25.1
-> >
-> > --
-> > Sincerely yours,
-> > Mike.
+This series brings support for the Mitsumi MM8013 Li-Ion fuel gauge.
 
+Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+---
+Changes in v2:
+- Fix typo in patch 2 commit message
+- Drop driver.owner in patch 3
+- Add PRESENT psy property
+- Pick up tags
+- Link to v1: https://lore.kernel.org/r/20230621-topic-mm8013-v1-0-4407c6260053@linaro.org
+
+---
+Konrad Dybcio (3):
+      dt-bindings: vendor-prefixes: Add Mitsumi Electric Co., Ltd.
+      dt-bindings: power: supply: Document Mitsumi MM8013 fuel gauge
+      power: supply: Introduce MM8013 fuel gauge driver
+
+ .../bindings/power/supply/mitsumi,mm8013.yaml      |  35 +++
+ .../devicetree/bindings/vendor-prefixes.yaml       |   2 +
+ MAINTAINERS                                        |   5 +
+ drivers/power/supply/Kconfig                       |   9 +
+ drivers/power/supply/Makefile                      |   1 +
+ drivers/power/supply/mm8013.c                      | 283 +++++++++++++++++++++
+ 6 files changed, 335 insertions(+)
+---
+base-commit: 60e7c4a25da68cd826719b685babbd23e73b85b0
+change-id: 20230621-topic-mm8013-376759e98b28
+
+Best regards,
 -- 
-Sincerely yours,
-Mike.
+Konrad Dybcio <konrad.dybcio@linaro.org>
+
