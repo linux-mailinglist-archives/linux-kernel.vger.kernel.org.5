@@ -2,63 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB419785042
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 07:58:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D167378503E
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 07:57:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232772AbjHWF6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 01:58:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44898 "EHLO
+        id S232745AbjHWF5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 01:57:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232761AbjHWF56 (ORCPT
+        with ESMTP id S231815AbjHWF5T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 01:57:58 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E77AA1;
-        Tue, 22 Aug 2023 22:57:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692770276; x=1724306276;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=PKQknWrLrf78uQf9GH3dL4JsbgZGq50+lfliSCkg8zA=;
-  b=S1eMAawR1CuhekvdXBA8ICsq3Tw7WOPyTHCxiptBOJZXebBP9zH4dhD4
-   mM/PHAAVfrzXSg1iMQa3VZdAo09aEp5lHbjDnLM1cLYJK/IdzHoRok4xh
-   1724o3zm+T2eCl+ZVX0m6Ux2LH/UJVS4qTxTSBkTPjPGP0UuQVSasv0gs
-   Br6U0epYiMPa27LpHiOfdrK1LirkyzZ/IbRZd/DwpVRJDpqhNaauAyXyV
-   DI0InLpBu7hbpc9nav1J+yyz53qx9Gt7GqDyyBeEeiuTVzX7RMh6MpNJ0
-   fBgNr5yZtwwNQtD3bU8QzBGMH/19OKvdQppAd56L9OldvqAXVqMm9MR3J
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10810"; a="438009784"
-X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
-   d="scan'208";a="438009784"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2023 22:57:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10810"; a="983140557"
-X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
-   d="scan'208";a="983140557"
-Received: from ebold-mobl1.ger.corp.intel.com (HELO tkristo-desk.bb.dnainternet.fi) ([10.251.213.156])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2023 22:57:51 -0700
-From:   Tero Kristo <tero.kristo@linux.intel.com>
-To:     dave.hansen@linux.intel.com, tglx@linutronix.de, x86@kernel.org,
-        bp@alien8.de
-Cc:     artem.bityutskiy@linux.intel.com, acme@kernel.org,
-        bpf@vger.kernel.org, namhyung@kernel.org, mingo@redhat.com,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        irogers@google.com, hpa@zytor.com, mark.rutland@arm.com,
-        jolsa@kernel.org, adrian.hunter@intel.com,
-        alexander.shishkin@linux.intel.com, peterz@infradead.org
-Subject: [PATCH 2/2] perf/core: Allow reading package events from perf_event_read_local
-Date:   Wed, 23 Aug 2023 08:56:53 +0300
-Message-Id: <20230823055653.2964237-3-tero.kristo@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230823055653.2964237-1-tero.kristo@linux.intel.com>
-References: <20230823055653.2964237-1-tero.kristo@linux.intel.com>
+        Wed, 23 Aug 2023 01:57:19 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10F35E47
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 22:57:18 -0700 (PDT)
+Received: from nazgul.tnic (unknown [78.130.214.203])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E84251EC04CC;
+        Wed, 23 Aug 2023 07:57:15 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1692770236;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Jekj/XN7VQmzj7iDipWSEqYR0+QJ8y1AHl8lSmzuAZQ=;
+        b=pHSsgbNjC8P89aLWdeS6zkZJiQ9Ua+KzoLsWozWHFOOQCrWeqOJV/4HJpGB4hfkIqVkNy8
+        b68I6aA4MB5nGELINFyFIJqpTL7hjJwMY1EGWMIEnZAhjBeKN8S8yraB8JhH90l+2Q8tT8
+        xYNDDg5+8X2awoHYwzd/GnPeoQykrMw=
+Date:   Wed, 23 Aug 2023 07:57:20 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Josh Poimboeuf <jpoimboe@kernel.org>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Babu Moger <babu.moger@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>, David.Kaplan@amd.com,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Nikolay Borisov <nik.borisov@suse.com>,
+        gregkh@linuxfoundation.org, Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 05/22] x86/srso: Fix SBPB enablement for mitigations=off
+Message-ID: <20230823055720.GDZOWfwIMn+o7spi8v@fat_crate.local>
+References: <cover.1692580085.git.jpoimboe@kernel.org>
+ <141c92f20ab46cf0c028e86b946134cd702d0ea5.1692580085.git.jpoimboe@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <141c92f20ab46cf0c028e86b946134cd702d0ea5.1692580085.git.jpoimboe@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,66 +58,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Per-package perf events are typically registered with a single CPU only,
-however they can be read across all the CPUs within the package.
-Currently perf_event_read maps the event CPU according to the topology
-information to avoid an unnecessary SMP call, however
-perf_event_read_local deals with hard values and rejects a read with a
-failure if the CPU is not the one exactly registered. Allow similar
-mapping within the perf_event_read_local if the perf event in question
-can support this.
+On Sun, Aug 20, 2023 at 06:19:02PM -0700, Josh Poimboeuf wrote:
+> If the user has requested no mitigations with mitigations=off, use the
+> lighter-weight SBPB instead of IBPB for other mitigations.
+> 
+> Note that even with mitigations=off, IBPB/SBPB may still be used for
+> Spectre v2 user <-> user protection.  Whether that makes sense is a
+> question for another day.
 
-This allows users like BPF code to read the package perf events properly
-across different CPUs within a package.
+Well, with my user hat on, off means off.
 
-Signed-off-by: Tero Kristo <tero.kristo@linux.intel.com>
----
- kernel/events/core.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+IINM, spectre_v2_parse_cmdline() will give SPECTRE_V2_CMD_NONE to
+spectre_v2_select_mitigation() when mitigations=off.
 
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 78ae7b6f90fd..37db7c003b79 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -4528,6 +4528,7 @@ int perf_event_read_local(struct perf_event *event, u64 *value,
- {
- 	unsigned long flags;
- 	int ret = 0;
-+	int event_cpu;
- 
- 	/*
- 	 * Disabling interrupts avoids all counter scheduling (context
-@@ -4551,15 +4552,19 @@ int perf_event_read_local(struct perf_event *event, u64 *value,
- 		goto out;
- 	}
- 
-+	/* Allow reading a per-package perf-event from local CPU also */
-+	event_cpu = READ_ONCE(event->oncpu);
-+	event_cpu = __perf_event_read_cpu(event, event_cpu);
-+
- 	/* If this is a per-CPU event, it must be for this CPU */
- 	if (!(event->attach_state & PERF_ATTACH_TASK) &&
--	    event->cpu != smp_processor_id()) {
-+	    event_cpu != smp_processor_id()) {
- 		ret = -EINVAL;
- 		goto out;
- 	}
- 
- 	/* If this is a pinned event it must be running on this CPU */
--	if (event->attr.pinned && event->oncpu != smp_processor_id()) {
-+	if (event->attr.pinned && event_cpu != smp_processor_id()) {
- 		ret = -EBUSY;
- 		goto out;
- 	}
-@@ -4569,7 +4574,7 @@ int perf_event_read_local(struct perf_event *event, u64 *value,
- 	 * or local to this CPU. Furthermore it means its ACTIVE (otherwise
- 	 * oncpu == -1).
- 	 */
--	if (event->oncpu == smp_processor_id())
-+	if (event_cpu == smp_processor_id())
- 		event->pmu->read(event);
- 
- 	*value = local64_read(&event->count);
+spectre_v2_user_select_mitigation() will use the
+spectre_v2_select_mitigation()'s result, which turn into
+SPECTRE_V2_USER_CMD_NONE and then not enable *BPB either.
+
+So even if we set x86_pred_cmd to SBPB here, it won't do anything
+because X86_FEATURE_USE_IBPB won't be set and
+indirect_branch_prediction_barrier() will be a NOP.
+
+IOW, I think we should separate the check:
+
+        if (cpu_mitigations_off())
+                return;
+
+at the beginning of srso_select_mitigation() so that it is crystal
+clear. Maybe even slap a comment over it.
+
+Thx.
+
 -- 
-2.25.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
