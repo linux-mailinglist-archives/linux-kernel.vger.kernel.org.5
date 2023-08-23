@@ -2,328 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDA64785A3C
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 16:17:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06A9F785A40
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 16:19:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235600AbjHWORD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 10:17:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47800 "EHLO
+        id S235640AbjHWOS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 10:18:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235560AbjHWORB (ORCPT
+        with ESMTP id S231387AbjHWOS5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 10:17:01 -0400
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AFBCE7A
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 07:16:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-        s=smtpout1; t=1692800207;
-        bh=gc0k1hXe0zhiXzU5BN0pRAZYWRsVxwi7FeM8y50KyKs=;
-        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-        b=mS3Tde0AnAW4ltsWLI/eGH+04GnhScMMyVR9OlB1WHftPtQjYVTir1lWxz9Jm22Xf
-         9wnOot1entXW4pNRWMk2mSrlqfuGyEbGpGksgpOYCrh6Wprf0terzqrxqXXVcU4Ctf
-         q1clWYendNIRQMUKtUUovnhdCfG7i2+6NVE/hBZn7UK3xU252Yh3V/0E8KCZiGVUKZ
-         Loh/mwHwxfTdEbeRQm8Xy0bXVRRm39yjhuKNzPvCZlKbC579W0qolc9Qglay4P9p3L
-         b1KqCVs+1pWYxJsc8F6SzLcJC+DWYHpDFMtoj2zgOnyXclGbTJ34m0SilLXzcY2Jdj
-         qGvXfuzSLXP4g==
-Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4RW7Z71RVhz1M5C;
-        Wed, 23 Aug 2023 10:16:47 -0400 (EDT)
-Message-ID: <460a9efb-f5f1-614e-1902-45f8500925fd@efficios.com>
-Date:   Wed, 23 Aug 2023 10:17:56 -0400
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 1/1] sched/fair: ratelimit update to tg->load_avg
+        Wed, 23 Aug 2023 10:18:57 -0400
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2052.outbound.protection.outlook.com [40.107.220.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71C0AE47;
+        Wed, 23 Aug 2023 07:18:55 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gC1hiTfRbd/HTrrZphHTHcNGGIAevVb+H8JaljBwmxVz8gfnXSbn3XMMkHIlphrvgQb365w3cWRmH6ItuZP8hKU+DI/QI3t92U+aQ40oXSaLBD+TLbklZTcxo9mq90aHVQRq1cva2B13Hqsx470TlLrrMlFUAQQBK40TLohAnZvIlIeXlVULuG8mfSCehDjF3YhdzivOPsAAkNcBmMjCXNxGMXCluMYBOrI4Np78YMA8TMV3hjTt8ih7af/lONCZHTm5mrWf/HDYEiskC9+hS7fJ9eE3GFGGFIpw5FDTbAcjXDTmQPzvpvlYoLJjmMR5DH51J98r5TLCbj6zkOGgmw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/Q1+PY6JGQHzTp+gVq1YSU/RQi0saf+qy1vLZ1+JBQw=;
+ b=Gc/5aWzvtyN20Yg3Tdef7PZBhUm8g11RKBFQJF7whq8QOiaureXt6Ums0LDHwDkrEk7cjyQr1npPnt8KwFMcgheSH1XaCZR8rfEl0zgaOzwt3qAI64qWGOyfVkPxDII78Jcp7c0Egs5jxHlOnPXiMhorzbuUvQfLcXSnlyReACOOFJ9Jb2hI8bihcbCsjEhx4986BSadOc5pEaJ7g4nCsQ90AhWlfOLPaP8FrFlxFyjHxSIsECBbkBFZk2Hpmhf5Z8khriAfVg14y/31BGGiCmN2+BCAENHJ/CuspQ4QoUR+hH9lJKO0LrxkHH6TrgG+7SaKoyUArBOH/uENaYpyqA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/Q1+PY6JGQHzTp+gVq1YSU/RQi0saf+qy1vLZ1+JBQw=;
+ b=EQL5Le5qNxnHhJIWdAgeJyzwx+xTiAOmQc79g56ABx5C1feLbUlKZWWy+ROLFAJTcpNPoBkKkc4hnr42T35W147VnZMKXC7VC+QmEfTfF7KosLRmdX8yRF7q9tQd6f9hzsMCj562dv+RM69UjRYfVHijFev+2XmPQuwkYRV1Hn8RyHRfwlOzmG3KFvVvyaF692CfoQ6X7Fg0tJ6/Oi/885wP7NYRecbbpnnNerz+sL66/i7OMPpUlaUw0zCx3DnP1Fava42aFteqdqllGlOn4/HrY523XJvBB2eXg0LQ6bxs+LF+80kz3Lor9mg5Jw45SWpLNmlF2J2X6IJCFfRs9A==
+Received: from BY5PR12MB3763.namprd12.prod.outlook.com (2603:10b6:a03:1a8::24)
+ by BY5PR12MB4082.namprd12.prod.outlook.com (2603:10b6:a03:212::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.26; Wed, 23 Aug
+ 2023 14:18:53 +0000
+Received: from BY5PR12MB3763.namprd12.prod.outlook.com
+ ([fe80::9e7a:4853:fa35:a060]) by BY5PR12MB3763.namprd12.prod.outlook.com
+ ([fe80::9e7a:4853:fa35:a060%2]) with mapi id 15.20.6699.026; Wed, 23 Aug 2023
+ 14:18:52 +0000
+From:   Ankit Agrawal <ankita@nvidia.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        "shameerali.kolothum.thodi@huawei.com" 
+        <shameerali.kolothum.thodi@huawei.com>,
+        "kevin.tian@intel.com" <kevin.tian@intel.com>,
+        Aniket Agashe <aniketa@nvidia.com>, Neo Jia <cjia@nvidia.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        "Tarun Gupta (SW-GPU)" <targupta@nvidia.com>,
+        Vikram Sethi <vsethi@nvidia.com>,
+        Andy Currid <acurrid@nvidia.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Dan Williams <danw@nvidia.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v7 1/1] vfio/nvgpu: Add vfio pci variant module for grace
+ hopper
+Thread-Topic: [PATCH v7 1/1] vfio/nvgpu: Add vfio pci variant module for grace
+ hopper
+Thread-Index: AQHZ1TZ6Nms5b5NPG0K9tyfNGGuGJa/36LOAgAAEwjA=
+Date:   Wed, 23 Aug 2023 14:18:52 +0000
+Message-ID: <BY5PR12MB37635FB280AECC6A4CF59431B01CA@BY5PR12MB3763.namprd12.prod.outlook.com>
+References: <20230822202303.19661-1-ankita@nvidia.com>
+ <ZOYP92q1mDQgwnc9@nvidia.com>
+In-Reply-To: <ZOYP92q1mDQgwnc9@nvidia.com>
+Accept-Language: en-US
 Content-Language: en-US
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Aaron Lu <aaron.lu@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>
-Cc:     Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Tim Chen <tim.c.chen@intel.com>,
-        Nitin Tekchandani <nitin.tekchandani@intel.com>,
-        Yu Chen <yu.c.chen@intel.com>,
-        Waiman Long <longman@redhat.com>,
-        Deng Pan <pan.deng@intel.com>,
-        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
-        David Vernet <void@manifault.com>, linux-kernel@vger.kernel.org
-References: <20230823060832.454842-1-aaron.lu@intel.com>
- <20230823060832.454842-2-aaron.lu@intel.com>
- <fd568884-9df4-2990-7b81-655fc7f63a4a@efficios.com>
-In-Reply-To: <fd568884-9df4-2990-7b81-655fc7f63a4a@efficios.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BY5PR12MB3763:EE_|BY5PR12MB4082:EE_
+x-ms-office365-filtering-correlation-id: 823333ad-7501-4b9e-3633-08dba3e3e0a7
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: jBBPmXiotw2DEtzPgolWaR5kLci0xfMFMJKmxCCIRp5fKxx4Nke1GWiN8SnrYyegSezHL9sBnR07Fq+mRnxGQq+/YRHnKtaPIcOqeQ1HCmnr37oQPPd7hm86AN3l8mmUUUxlF5pCvZB5lMKDEq3IcESqAkNmKTxllzEFx8OYTT4JsZTc/ZJcgUuNR1J/kS2rb3NJehkacfQCBSQiwjdz/+RaQpXyr/ubVLolv9qsJYYatCaYgEygrcs7PFOI8UfkFKEn3aMy7xx7nIBHt23bJCs7EF8g7vONNp1iMR0KEqWlXd0YQCTd1Ks7k5Z/KJzmr8dRrvegywkq6udma6tyuEb5tiC954m6nBCmliJuKN8HfKLR7XdntsbU1L1FXoZXfc9ZFkmwf14/NOpZSCpM3XivcREVwxPNOprjc1QVhN8IH+RrIwgr6AjceF8iV3MqRFEatrJ5c+84MAuJXYwBcPCv7K5JoRYOHPTUISzAmjTotYlKSn5eift7MPbqKlxzQbSWa3vvtfEMmDxK+llJcJmwIjxReXea9fsJlv689A+tAATXuwiHlHpcqn0NofCBggBU4p7/bg1RG/GTHobRgPegjAUIS/gTMhwFV2i0F1w1fU010PsLGUrLYuARhcka
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB3763.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(376002)(136003)(346002)(39860400002)(1800799009)(186009)(451199024)(86362001)(33656002)(55016003)(52536014)(5660300002)(26005)(6862004)(4326008)(8936002)(8676002)(2906002)(83380400001)(4744005)(478600001)(6506007)(71200400001)(7696005)(66946007)(76116006)(6636002)(66476007)(54906003)(316002)(64756008)(66446008)(41300700001)(9686003)(66556008)(91956017)(38100700002)(38070700005)(122000001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?7kWYluxpJutSCeiZQOMnxt+CeFM0D9u260DylVwQA5IBkSuFegnIyWGmXc?=
+ =?iso-8859-1?Q?ZSA6jwEHx1lau4+KXttdJLLfF1+P54ZPdJPLfJSGtlKRE7S6UN07inS0us?=
+ =?iso-8859-1?Q?rTCKYq+aSn0MByxTkyEwrSIF0MzvvBLOU27fWVa4U3PNcNiLsouzGQuLeR?=
+ =?iso-8859-1?Q?J7br6Z4KJBX8q8qIMv+GZKSVn9k57oVfnunlOakcq33viXiPC5c7TQbVBP?=
+ =?iso-8859-1?Q?CPB0rEOm0SbnCUDP8fRkBPfOnJlCac36SfwjUlpn5jZZlYz6flc+DQGl5N?=
+ =?iso-8859-1?Q?9jCPKWEEBCpqskYbJPM6VMkg0i/KQe0T6YZFfEXMPQP9/NL7YRHDhl8jG/?=
+ =?iso-8859-1?Q?Q5M8OI5fbfxYtuFum+i6tTxrkEza5NKS6hkNiz1Tpzis5nELh/7GKC47qo?=
+ =?iso-8859-1?Q?mLcnYxLxfjek9vfjwKQUVqfewtyAy/oMOSFF/qDHigSxG99PAspuQ2LpWD?=
+ =?iso-8859-1?Q?TybxscnJl95iHy/y/MSHdxuGWtDa7bx72EDWPV9r52nJbiwtCTI5BQyULD?=
+ =?iso-8859-1?Q?erwPJ5CK2hBVAI4FlM5y5MyDB68Qv5vSRVGU1y2g3D4Fq0zKZwFOawjQgW?=
+ =?iso-8859-1?Q?NXziCmFPq8urigheXidYnTLp1KMcQ0FxIMijGDvC/0++nlO5PcIidPRUsB?=
+ =?iso-8859-1?Q?z0GpjTroRIBA5eJZ1Wg0nHOneNOtEtrRZCXmXfDsgw+D6AjMFgFC3WB2pN?=
+ =?iso-8859-1?Q?R5N9yX2QQydUbVcl8SamMbBvsKchRf7teOg3vcOGIXNE90L+I6Mw1IAhag?=
+ =?iso-8859-1?Q?MKhw3TGGAXxRDGsIF0dXONpCaIIkgPN987uKDBXJLUU1cNSmih4N4QXBZ6?=
+ =?iso-8859-1?Q?RJsWJMNbFF8oKgacEPtsFtvSM38n4bAjRwUFD3iM6UPPg4hfk9yb6Zwz3v?=
+ =?iso-8859-1?Q?GMYO+26tCn0NaCwZWYYWUjudt8EDONBbTs0/g821rR+YhfQkhzK2F34d+Y?=
+ =?iso-8859-1?Q?Url1YFM9Gr9u2tYSmYVBbze6fdYAQLSonM+jlrPfv5PiXF2KALjmI2ZvnC?=
+ =?iso-8859-1?Q?0e/56e08Qk8a4CjOPnhrlw20mPcVbANa5MGD5KUL57vuWMHexuVlfCjyID?=
+ =?iso-8859-1?Q?1DH3OWSSsLCfKUx39/vbuuNOMfst15upF14C/mQS+ary4einqdcQ1DMbs1?=
+ =?iso-8859-1?Q?EHqoVVvPboMRP9zj7Rvfrh0tUESmj3OrANPjyx26bxwEfFQtbzhRI7u8ok?=
+ =?iso-8859-1?Q?Prr/sZyD7RPL2wquHtHA86dHZYIdpjDTThSK1IB2EiMZusWShSnEO6BR+Y?=
+ =?iso-8859-1?Q?ccu7ra6pCyDFpuXEw/URixGy5zuZLI5Gtl7UTUyTSAE7JImG6C3fNPsgUl?=
+ =?iso-8859-1?Q?STgUni9wvAeO0V7mCNLYc87lTx3pIH8bGomVYDy9DBrzAv+cAymulReuiZ?=
+ =?iso-8859-1?Q?KpiDTeYYKDZ1mMkQAjmhEvfVRSJvFTelnTskJ0XMI0eivQnfVIBW195BeH?=
+ =?iso-8859-1?Q?areXLt++axB0NNHsNgTSMlhqLV5lOCeQHvYDFEALlI0VFD1f4FTjx/tFNl?=
+ =?iso-8859-1?Q?kx8xA9m2EFGN+/WHMmi9dy6rgeul87W1pJKcUcscNN2qKpPMw7miS7E8Lx?=
+ =?iso-8859-1?Q?kThi9YzB1Wk7kOj1Inuy1AYP4tzHNn8UuoYbMS+9UCNtdIHbel8yRfSxpG?=
+ =?iso-8859-1?Q?NGkgXl906hiNE=3D?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB3763.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 823333ad-7501-4b9e-3633-08dba3e3e0a7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Aug 2023 14:18:52.4889
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: N1LvPMjrpwq3ASIq4L10bFFbdisrK/qKJGRUk7S9QGIMvs/Z1IQK1K+7Z2DjBMvbB5iBsI4O/rAUNO8zTN6i9Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4082
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/23/23 10:05, Mathieu Desnoyers wrote:
-> On 8/23/23 02:08, Aaron Lu wrote:
->> When using sysbench to benchmark Postgres in a single docker instance
->> with sysbench's nr_threads set to nr_cpu, it is observed there are times
->> update_cfs_group() and update_load_avg() shows noticeable overhead on
->> a 2sockets/112core/224cpu Intel Sapphire Rapids(SPR):
->>
->>      13.75%    13.74%  [kernel.vmlinux]           [k] update_cfs_group
->>      10.63%    10.04%  [kernel.vmlinux]           [k] update_load_avg
->>
->> Annotate shows the cycles are mostly spent on accessing tg->load_avg
->> with update_load_avg() being the write side and update_cfs_group() being
->> the read side. tg->load_avg is per task group and when different tasks
->> of the same taskgroup running on different CPUs frequently access
->> tg->load_avg, it can be heavily contended.
->>
->> E.g. when running postgres_sysbench on a 2sockets/112cores/224cpus Intel
->> Sappire Rapids, during a 5s window, the wakeup number is 14millions and
->> migration number is 11millions and with each migration, the task's load
->> will transfer from src cfs_rq to target cfs_rq and each change involves
->> an update to tg->load_avg. Since the workload can trigger as many wakeups
->> and migrations, the access(both read and write) to tg->load_avg can be
->> unbound. As a result, the two mentioned functions showed noticeable
->> overhead. With netperf/nr_client=nr_cpu/UDP_RR, the problem is worse:
->> during a 5s window, wakeup number is 21millions and migration number is
->> 14millions; update_cfs_group() costs ~25% and update_load_avg() costs 
->> ~16%.
->>
->> Reduce the overhead by limiting updates to tg->load_avg to at most once
->> per ms. After this change, the cost of accessing tg->load_avg is greatly
->> reduced and performance improved. Detailed test results below.
-> 
-> By applying your patch on top of my patchset at:
-> 
-> https://lore.kernel.org/lkml/20230822113133.643238-1-mathieu.desnoyers@efficios.com/
-> 
-> The combined hackbench results look very promising:
-> 
-> (hackbench -g 32 -f 20 --threads --pipe -l 480000 -s 100)
-> (192 cores AMD EPYC 9654 96-Core Processor (over 2 sockets), with 
-> hyperthreading)
-> 
-> Baseline:                                       49s
-> With L2-ttwu-queue-skip:                        34s (30% speedup)
-> With L2-ttwu-queue-skip + ratelimit-load-avg:   26s (46% speedup)
-
-Here is an additional interesting data point:
-
-With only ratelimit-load-avg patch:               32s (35% speedup)
-
-So each series appear to address a different scalability issue, and
-combining both seems worthwhile, at least from the point of view of
-this specific benchmark on this hardware.
-
-I'm looking forward to see numbers for other benchmarks and hardware.
-
-Thanks,
-
-Mathieu
-
-> 
-> Feel free to apply my:
-> 
-> Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Tested-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> 
-> Thanks Aaron!
-> 
-> Mathieu
-> 
->>
->> ==============================
->> postgres_sysbench on SPR:
->> 25%
->> base:   42382±19.8%
->> patch:  50174±9.5%  (noise)
->>
->> 50%
->> base:   67626±1.3%
->> patch:  67365±3.1%  (noise)
->>
->> 75%
->> base:   100216±1.2%
->> patch:  112470±0.1% +12.2%
->>
->> 100%
->> base:    93671±0.4%
->> patch:  113563±0.2% +21.2%
->>
->> ==============================
->> hackbench on ICL:
->> group=1
->> base:    114912±5.2%
->> patch:   117857±2.5%  (noise)
->>
->> group=4
->> base:    359902±1.6%
->> patch:   361685±2.7%  (noise)
->>
->> group=8
->> base:    461070±0.8%
->> patch:   491713±0.3% +6.6%
->>
->> group=16
->> base:    309032±5.0%
->> patch:   378337±1.3% +22.4%
->>
->> =============================
->> hackbench on SPR:
->> group=1
->> base:    100768±2.9%
->> patch:   103134±2.9%  (noise)
->>
->> group=4
->> base:    413830±12.5%
->> patch:   378660±16.6% (noise)
->>
->> group=8
->> base:    436124±0.6%
->> patch:   490787±3.2% +12.5%
->>
->> group=16
->> base:    457730±3.2%
->> patch:   680452±1.3% +48.8%
->>
->> ============================
->> netperf/udp_rr on ICL
->> 25%
->> base:    114413±0.1%
->> patch:   115111±0.0% +0.6%
->>
->> 50%
->> base:    86803±0.5%
->> patch:   86611±0.0%  (noise)
->>
->> 75%
->> base:    35959±5.3%
->> patch:   49801±0.6% +38.5%
->>
->> 100%
->> base:    61951±6.4%
->> patch:   70224±0.8% +13.4%
->>
->> ===========================
->> netperf/udp_rr on SPR
->> 25%
->> base:   104954±1.3%
->> patch:  107312±2.8%  (noise)
->>
->> 50%
->> base:    55394±4.6%
->> patch:   54940±7.4%  (noise)
->>
->> 75%
->> base:    13779±3.1%
->> patch:   36105±1.1% +162%
->>
->> 100%
->> base:     9703±3.7%
->> patch:   28011±0.2% +189%
->>
->> ==============================================
->> netperf/tcp_stream on ICL (all in noise range)
->> 25%
->> base:    43092±0.1%
->> patch:   42891±0.5%
->>
->> 50%
->> base:    19278±14.9%
->> patch:   22369±7.2%
->>
->> 75%
->> base:    16822±3.0%
->> patch:   17086±2.3%
->>
->> 100%
->> base:    18216±0.6%
->> patch:   18078±2.9%
->>
->> ===============================================
->> netperf/tcp_stream on SPR (all in noise range)
->> 25%
->> base:    34491±0.3%
->> patch:   34886±0.5%
->>
->> 50%
->> base:    19278±14.9%
->> patch:   22369±7.2%
->>
->> 75%
->> base:    16822±3.0%
->> patch:   17086±2.3%
->>
->> 100%
->> base:    18216±0.6%
->> patch:   18078±2.9%
->>
->> Reported-by: Nitin Tekchandani <nitin.tekchandani@intel.com>
->> Suggested-by: Vincent Guittot <vincent.guittot@linaro.org>
->> Signed-off-by: Aaron Lu <aaron.lu@intel.com>
->> Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
->> ---
->>   kernel/sched/fair.c  | 13 ++++++++++++-
->>   kernel/sched/sched.h |  1 +
->>   2 files changed, 13 insertions(+), 1 deletion(-)
->>
->> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
->> index c28206499a3d..a5462d1fcc48 100644
->> --- a/kernel/sched/fair.c
->> +++ b/kernel/sched/fair.c
->> @@ -3664,7 +3664,8 @@ static inline bool cfs_rq_is_decayed(struct 
->> cfs_rq *cfs_rq)
->>    */
->>   static inline void update_tg_load_avg(struct cfs_rq *cfs_rq)
->>   {
->> -    long delta = cfs_rq->avg.load_avg - cfs_rq->tg_load_avg_contrib;
->> +    long delta;
->> +    u64 now;
->>       /*
->>        * No need to update load_avg for root_task_group as it is not 
->> used.
->> @@ -3672,9 +3673,19 @@ static inline void update_tg_load_avg(struct 
->> cfs_rq *cfs_rq)
->>       if (cfs_rq->tg == &root_task_group)
->>           return;
->> +    /*
->> +     * For migration heavy workload, access to tg->load_avg can be
->> +     * unbound. Limit the update rate to at most once per ms.
->> +     */
->> +    now = sched_clock_cpu(cpu_of(rq_of(cfs_rq)));
->> +    if (now - cfs_rq->last_update_tg_load_avg < NSEC_PER_MSEC)
->> +        return;
->> +
->> +    delta = cfs_rq->avg.load_avg - cfs_rq->tg_load_avg_contrib;
->>       if (abs(delta) > cfs_rq->tg_load_avg_contrib / 64) {
->>           atomic_long_add(delta, &cfs_rq->tg->load_avg);
->>           cfs_rq->tg_load_avg_contrib = cfs_rq->avg.load_avg;
->> +        cfs_rq->last_update_tg_load_avg = now;
->>       }
->>   }
->> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
->> index 6a8b7b9ed089..52ee7027def9 100644
->> --- a/kernel/sched/sched.h
->> +++ b/kernel/sched/sched.h
->> @@ -593,6 +593,7 @@ struct cfs_rq {
->>       } removed;
->>   #ifdef CONFIG_FAIR_GROUP_SCHED
->> +    u64            last_update_tg_load_avg;
->>       unsigned long        tg_load_avg_contrib;
->>       long            propagate;
->>       long            prop_runnable_sum;
-> 
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
-
+>> +=0A=
+>> +     /*=0A=
+>> +      * Handle read on the BAR2 region. Map to the target device memory=
+=0A=
+>> +      * physical address and copy to the request read buffer.=0A=
+>> +      */=0A=
+>> +     if (copy_to_user(buf, (u8 *)addr + offset, read_count))=0A=
+>> +             return -EFAULT;=0A=
+>=0A=
+> Just to verify, does this memory allow access of arbitrary alignment=0A=
+> and size?=0A=
+=0A=
+Please correct me if I'm wrong, but based on following gdb dump data on=0A=
+the corresponding MemoryRegion->ops, unaligned access isn't supported, and=
+=0A=
+a read of size upto 8 may be done. =0A=
+=0A=
+(gdb) p/x *(mr->ops)=0A=
+$7 =3D {read =3D 0xaaab5e0b1c50, write =3D 0xaaab5e0b1a50, read_with_attrs =
+=3D 0x0, write_with_attrs =3D 0x0,=0A=
+  endianness =3D 0x2, valid =3D {min_access_size =3D 0x1, max_access_size =
+=3D 0x8, unaligned =3D 0x0, accepts =3D 0x0},=0A=
+  impl =3D {min_access_size =3D 0x1, max_access_size =3D 0x8, unaligned =3D=
+ 0x0}}=0A=
+=0A=
+Thanks=0A=
+Ankit Agrawal=
