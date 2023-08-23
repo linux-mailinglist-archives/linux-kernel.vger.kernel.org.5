@@ -2,89 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0726C7854B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 11:56:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D7E07854C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 12:00:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236153AbjHWJ45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 05:56:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54838 "EHLO
+        id S233551AbjHWKAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 06:00:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232347AbjHWJ4c (ORCPT
+        with ESMTP id S233109AbjHWKAS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 05:56:32 -0400
-Received: from jari.cn (unknown [218.92.28.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 26FDD10B
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 02:56:27 -0700 (PDT)
-Received: from chenxuebing$jari.cn ( [125.70.163.142] ) by
- ajax-webmail-localhost.localdomain (Coremail) ; Wed, 23 Aug 2023 17:56:02
- +0800 (GMT+08:00)
-X-Originating-IP: [125.70.163.142]
-Date:   Wed, 23 Aug 2023 17:56:02 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   "XueBing Chen" <chenxuebing@jari.cn>
-To:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/amdgpu: Clean up errors in gfx_v6_0.c
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version 2023.1-cmXT6 build
- 20230419(ff23bf83) Copyright (c) 2002-2023 www.mailtech.cn
- mispb-4e503810-ca60-4ec8-a188-7102c18937cf-zhkzyfz.cn
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Wed, 23 Aug 2023 06:00:18 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A403493;
+        Wed, 23 Aug 2023 03:00:14 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-4fe8c16c1b4so8279108e87.2;
+        Wed, 23 Aug 2023 03:00:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692784813; x=1693389613;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=F7VHCNyxaZNPU4FyyEuB/AUclDUQkc0xiHJpU5W0gcM=;
+        b=DdRC64F7TsIqvpbURAmjmkXHNfUOXPKAzFNkwftE/JYO2mn6+EIJz4h5vUusHNSInk
+         ihpZMYIoHmNcIqvOfo/aA45XdLGOqKyLDFidZEUGAFYVndU+OgexWr0XhjDbiJyaoe3e
+         d2rTeB64fxD21JyVBvxGgckJv7UYM3mool0AbfUxhdmTYaAxf0CEsbt703bUf3/9ylLS
+         vM1O5Io6v5Phkat83ZapzexKAzZ6tOwiIkS+8f/Vm+Exxs3TY5OkLYAv3oFKbiHQkqTZ
+         wL6jkqX6n/2lqsov5XOl0atK2yo2Z5k3wdeSFrAIr5k7P8hw8rEcQiJkg0tm8+CWus5Y
+         Fu6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692784813; x=1693389613;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=F7VHCNyxaZNPU4FyyEuB/AUclDUQkc0xiHJpU5W0gcM=;
+        b=P7OTrvPS8IMruq4SBAF2YWv84x4/HN2/svp6yiEJtsxQn4bf0V8mcSf910vfxWyALd
+         3MGuvxTz+eyDo5QlTiOV3qvOPDUTrQcgnRzL3Nkz9QvhPo49Ie1ITkS5RxOM+f22BNz9
+         H/ew7jM3bdO96tUt4HI4VkDzMMYy/Yv2HbydN5DQYeHt618VUyG2hvSR46w80G83doXd
+         9Vg1+aoHdRVUXTz2Z2pkCNe1+4vg1eaoaweWKw0dSCt8HM/xLGdzWqVFJ4AUDrn4Gfyn
+         rCSPFiQER4JieUp4aecUws3ukROUe6OBCGZYhbC8S9s9s976pHGQnyIUC0tYEXqC6YiX
+         XPnA==
+X-Gm-Message-State: AOJu0Yy4vbtFbUE4WoxNh/SAYkBDWymODEbKoSZCx1kwYl7UVkfWh0tt
+        Merx6WMFImlhEzqLIaJSR28=
+X-Google-Smtp-Source: AGHT+IFWKdHrFCphsDQXjanEbkwZOxjJGhc6zJjHuGkpv8q/4gqZ5pti/2VT7HTAMlTRGfXSuLIDJA==
+X-Received: by 2002:a19:7617:0:b0:4fd:f77d:5051 with SMTP id c23-20020a197617000000b004fdf77d5051mr7774975lff.26.1692784812522;
+        Wed, 23 Aug 2023 03:00:12 -0700 (PDT)
+Received: from mobilestation ([178.176.56.174])
+        by smtp.gmail.com with ESMTPSA id c26-20020ac244ba000000b004f61187363asm2603076lfm.66.2023.08.23.03.00.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Aug 2023 03:00:12 -0700 (PDT)
+Date:   Wed, 23 Aug 2023 13:00:09 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Rohan G Thomas <rohan.g.thomas@intel.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Conor Dooley <conor.dooley@microchip.com>
+Subject: Re: [PATCH net-next v5 1/2] dt-bindings: net: snps,dwmac: Tx queues
+ with coe
+Message-ID: <l7yajzhpuotn62pjkxk43qtcn3u4zltpyqcvo224737bjg3eab@bzu6pirxbvh2>
+References: <20230819023132.23082-1-rohan.g.thomas@intel.com>
+ <20230819023132.23082-2-rohan.g.thomas@intel.com>
+ <20230822171525.692bd2df@kernel.org>
 MIME-Version: 1.0
-Message-ID: <2d0c6301.62b.18a21d2920f.Coremail.chenxuebing@jari.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: AQAAfwDHZD+y1+Vk53aQAA--.478W
-X-CM-SenderInfo: hfkh05pxhex0nj6mt2flof0/1tbiAQAMCmTl1A4AAgADsd
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
-X-Spam-Status: No, score=2.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_PBL,RDNS_NONE,T_SPF_HELO_PERMERROR,T_SPF_PERMERROR,XPRIO
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: **
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230822171525.692bd2df@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rml4IHRoZSBmb2xsb3dpbmcgZXJyb3JzIHJlcG9ydGVkIGJ5IGNoZWNrcGF0Y2g6CgpFUlJPUjog
-dGhhdCBvcGVuIGJyYWNlIHsgc2hvdWxkIGJlIG9uIHRoZSBwcmV2aW91cyBsaW5lCkVSUk9SOiBz
-cGFjZSBwcm9oaWJpdGVkIGJlZm9yZSB0aGF0ICcrKycgKGN0eDpXeE8pCkVSUk9SOiBzcGFjZSBy
-ZXF1aXJlZCBiZWZvcmUgdGhlIG9wZW4gYnJhY2UgJ3snCkVSUk9SOiB0cmFpbGluZyBzdGF0ZW1l
-bnRzIHNob3VsZCBiZSBvbiBuZXh0IGxpbmUKClNpZ25lZC1vZmYtYnk6IFh1ZUJpbmcgQ2hlbiA8
-Y2hlbnh1ZWJpbmdAamFyaS5jbj4KLS0tCiBkcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS9nZnhf
-djZfMC5jIHwgMTMgKysrKysrLS0tLS0tLQogMSBmaWxlIGNoYW5nZWQsIDYgaW5zZXJ0aW9ucygr
-KSwgNyBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGdw
-dS9nZnhfdjZfMC5jIGIvZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvZ2Z4X3Y2XzAuYwppbmRl
-eCBkYTZjYWZmNzhjMjIuLjM2ZDAyYzdiOWM4YyAxMDA2NDQKLS0tIGEvZHJpdmVycy9ncHUvZHJt
-L2FtZC9hbWRncHUvZ2Z4X3Y2XzAuYworKysgYi9kcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS9n
-ZnhfdjZfMC5jCkBAIC04Niw4ICs4Niw3IEBAIHN0YXRpYyB2b2lkIGdmeF92Nl8wX2luaXRfcGco
-c3RydWN0IGFtZGdwdV9kZXZpY2UgKmFkZXYpOwogI2RlZmluZSBNQUNST19USUxFX0FTUEVDVCh4
-KQkJCQkoKHgpIDw8IDE4KQogI2RlZmluZSBOVU1fQkFOS1MoeCkJCQkJCSgoeCkgPDwgMjApCiAK
-LXN0YXRpYyBjb25zdCB1MzIgdmVyZGVfcmxjX3NhdmVfcmVzdG9yZV9yZWdpc3Rlcl9saXN0W10g
-PQoteworc3RhdGljIGNvbnN0IHUzMiB2ZXJkZV9ybGNfc2F2ZV9yZXN0b3JlX3JlZ2lzdGVyX2xp
-c3RbXSA9IHsKIAkoMHg4MDAwIDw8IDE2KSB8ICgweDk4ZjQgPj4gMiksCiAJMHgwMDAwMDAwMCwK
-IAkoMHg4MDQwIDw8IDE2KSB8ICgweDk4ZjQgPj4gMiksCkBAIC0zMzQsNyArMzMzLDggQEAgc3Rh
-dGljIGludCBnZnhfdjZfMF9pbml0X21pY3JvY29kZShzdHJ1Y3QgYW1kZ3B1X2RldmljZSAqYWRl
-dikKIAljYXNlIENISVBfSEFJTkFOOgogCQljaGlwX25hbWUgPSAiaGFpbmFuIjsKIAkJYnJlYWs7
-Ci0JZGVmYXVsdDogQlVHKCk7CisJZGVmYXVsdDoKKwkJQlVHKCk7CiAJfQogCiAJc25wcmludGYo
-ZndfbmFtZSwgc2l6ZW9mKGZ3X25hbWUpLCAiYW1kZ3B1LyVzX3BmcC5iaW4iLCBjaGlwX25hbWUp
-OwpAQCAtMzIyMiw3ICszMjIyLDcgQEAgc3RhdGljIHZvaWQgZ2Z4X3Y2XzBfc2V0X2NvbXB1dGVf
-ZW9wX2ludGVycnVwdF9zdGF0ZShzdHJ1Y3QgYW1kZ3B1X2RldmljZSAqYWRldiwKIAkJCQkJCSAg
-ICAgZW51bSBhbWRncHVfaW50ZXJydXB0X3N0YXRlIHN0YXRlKQogewogCXUzMiBjcF9pbnRfY250
-bDsKLQlzd2l0Y2ggKHN0YXRlKXsKKwlzd2l0Y2ggKHN0YXRlKSB7CiAJY2FzZSBBTURHUFVfSVJR
-X1NUQVRFX0RJU0FCTEU6CiAJCWlmIChyaW5nID09IDApIHsKIAkJCWNwX2ludF9jbnRsID0gUlJF
-RzMyKG1tQ1BfSU5UX0NOVExfUklORzEpOwpAQCAtMzU4Myw3ICszNTgzLDcgQEAgc3RhdGljIHZv
-aWQgZ2Z4X3Y2XzBfZ2V0X2N1X2luZm8oc3RydWN0IGFtZGdwdV9kZXZpY2UgKmFkZXYpCiAJCQkJ
-aWYgKGJpdG1hcCAmIG1hc2spIHsKIAkJCQkJaWYgKGNvdW50ZXIgPCBhb19jdV9udW0pCiAJCQkJ
-CQlhb19iaXRtYXAgfD0gbWFzazsKLQkJCQkJY291bnRlciArKzsKKwkJCQkJY291bnRlcisrOwog
-CQkJCX0KIAkJCQltYXNrIDw8PSAxOwogCQkJfQpAQCAtMzYwMSw4ICszNjAxLDcgQEAgc3RhdGlj
-IHZvaWQgZ2Z4X3Y2XzBfZ2V0X2N1X2luZm8oc3RydWN0IGFtZGdwdV9kZXZpY2UgKmFkZXYpCiAJ
-Y3VfaW5mby0+YW9fY3VfbWFzayA9IGFvX2N1X21hc2s7CiB9CiAKLWNvbnN0IHN0cnVjdCBhbWRn
-cHVfaXBfYmxvY2tfdmVyc2lvbiBnZnhfdjZfMF9pcF9ibG9jayA9Ci17Citjb25zdCBzdHJ1Y3Qg
-YW1kZ3B1X2lwX2Jsb2NrX3ZlcnNpb24gZ2Z4X3Y2XzBfaXBfYmxvY2sgPSB7CiAJLnR5cGUgPSBB
-TURfSVBfQkxPQ0tfVFlQRV9HRlgsCiAJLm1ham9yID0gNiwKIAkubWlub3IgPSAwLAotLSAKMi4x
-Ny4xCg==
+On Tue, Aug 22, 2023 at 05:15:25PM -0700, Jakub Kicinski wrote:
+> On Sat, 19 Aug 2023 10:31:31 +0800 Rohan G Thomas wrote:
+> > +      snps,tx-queues-with-coe:
+> > +        $ref: /schemas/types.yaml#/definitions/uint32
+> > +        description: number of TX queues that support TX checksum offloading
+> 
+
+> Is it going to be obvious that if not present all queues support
+> checksum offload? I think we should document the default.
+
+This question is debatable:
+1. By default the DW xGMAC and DW QoS Eth IP-cores are
+synthesized with only the very first Tx queue having Tx COE enabled.
+2. If TSO is disabled then the Tx COE can be individually enabled
+for each queue available on DW QoS Eth controller and for the very
+first N queues on DW xGMAC controller.
+3. If TSO is enabled then the Tx COE will be automatically and always
+enabled for as many first queues as there are TSO-capable
+DMA-channels.
+4. At the current state the STMMAC driver assumes that all Tx Queues
+support Tx COE.
+
+The entry 4 can't be changed since we'll risk to catch regressions on
+the platforms with no property specified. On the other hand it partly
+contradicts to the rest of the entries. I don't know what would be a
+correct way to specify the default value in this case. Most likely
+just keep the entry 4 and be done with it.
+
+BTW I just noticed that but the suggested "snps,tx-queues-with-coe"
+property semantic will only cover a DW XGMAC-part of the case 2. DW
+QoS Eth can be synthesized with Tx COE individually enabled for a
+particular queue if TSO is unavailable.
+
+-Serge(y)
+
+> -- 
+> pw-bot: cr
