@@ -2,114 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71E8A7853B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 11:20:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9220785381
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 11:09:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232548AbjHWJUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 05:20:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59294 "EHLO
+        id S235276AbjHWJHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 05:07:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235423AbjHWJQi (ORCPT
+        with ESMTP id S235332AbjHWI7r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 05:16:38 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 475F819A1;
-        Wed, 23 Aug 2023 01:54:49 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-31c3df710bdso2728115f8f.1;
-        Wed, 23 Aug 2023 01:54:49 -0700 (PDT)
+        Wed, 23 Aug 2023 04:59:47 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA5CB1BC8
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 01:55:53 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-99c353a395cso713391666b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 01:55:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692780888; x=1693385688;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=BswGZjQLEAdts40JO7B/IE0p4jIiLic8b6XiJmbSSU8=;
-        b=fSDE82jP59sJAPSRXKdVYg+WN0BbOPfp5i6NmlFjJHRaIR2z8gNl1IglMyTOPoxE27
-         Vt+0l+NBoMOv86vUwP/7EoYCQms98lAL1tRcuBiQ4QTYcnx9dVMaZjCaWj+14ZshJNbH
-         uucTDRizEa5zYS8htbqqor/8rJZwTyGU32tZ9NPQtgdODGCfleKYL2HtVC9fzFYtgnl0
-         9iqGKmAmP6/tqCb9O/E+Y11GziSbDd2FraZgxDYPlXsyWgGj2CSX1mcWZy5HYOvfLDPH
-         +vVrkcLFEKn8Wx9HDs8jJKVZ3pHarNx1ufz6NqtIzsltmt4m4wZTXEAtwvx43opoHh6e
-         wY2w==
+        d=linaro.org; s=google; t=1692780952; x=1693385752;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=AYGyGHMZwBxdZ1RQTk/EEbCraB4/0nD5+ya3KFYbydA=;
+        b=zrywOA/hGJM0tQr04pvblm2mnQ/OoscDLbdDxFolm46XWpN9mcZ2c58rQ5jm+GBSdl
+         Pvopgy4l7Ut/PUxHQH05+kbrdIYFeOIGOOTnmp/R8cK0ufiZl2vaAFadbIoPz1LJ9gT0
+         yhsVNikPAaObvRiMLhwzU0leI8UY+VHhpds33hpSJ4fSz0BHAO+RXyn1hk98GizB7psq
+         AX6aHIMnbjs3S7hfqb+ruPgsK/t2nn0ONjoU7WS3z/p6+h1KHSnd+sYDTrn2hJglswP3
+         uwfLxLjDMFSTcHPDTI9fYKG6LL/qHF+v8CcOPtWUgiGsS7qUikI8+QAM4nm3i5FgDTEc
+         QL6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692780888; x=1693385688;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BswGZjQLEAdts40JO7B/IE0p4jIiLic8b6XiJmbSSU8=;
-        b=N8gucg4IjGEvN9+VTIGt86OuWsauFIT/MO4hMqmdSkVnf6qaPWiJvKKpLUB9TCezt2
-         g00khd61xkyPbVoMq2Aalr+H+06NH0is4Yw9w8qb21pEti27MfRqxUeSdZ8VvU8AvQZf
-         P/WHgf5tH4zeJS4eqemsvk1iNc8AycsqHsefqY1E2Aydhbx/TN3CJQ+mfK7Wnwp8LM8/
-         okv0BFoJM5ie5kLfiy3Od7dwufIvtPULcbxbn5EEhfwZ1FjUzu7xsDV6/pDydkigGLFn
-         4NwGlMXvW7ai91GPfgRUkjqvP2eOJSztoxQMYMMSFZ5laSG71f7CfdA+X0SdP77AQ2HH
-         841w==
-X-Gm-Message-State: AOJu0YxKrz2Dh0sq4OKdVjnjg84uR48sC/hCe5817BIPM5wCbB/tqS/p
-        ttZsswoIm7A6gyBUt2il/to=
-X-Google-Smtp-Source: AGHT+IHQjqP4ss6RAjHKdp48XvlaiwLE59zsm0ttZMacwSKYnoz7zPhcE40z1lNftwIMZWc/LGZyUg==
-X-Received: by 2002:adf:facd:0:b0:314:3ad6:2327 with SMTP id a13-20020adffacd000000b003143ad62327mr8096342wrs.12.1692780887797;
-        Wed, 23 Aug 2023 01:54:47 -0700 (PDT)
-Received: from debian ([167.98.27.226])
-        by smtp.gmail.com with ESMTPSA id t10-20020a5d49ca000000b0031ad2f9269dsm18179338wrs.40.2023.08.23.01.54.46
+        d=1e100.net; s=20221208; t=1692780952; x=1693385752;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AYGyGHMZwBxdZ1RQTk/EEbCraB4/0nD5+ya3KFYbydA=;
+        b=dp09YROAwlCC73F7m/+nrCA4e0LUAwaYZ+3qkr2sDxiXMMPm3f/L5A/Hmq05ZzpFmV
+         g8+PqCr+Z6CFRkZikMq29mE+et1P6GViEXwqY906e39ZVay9apDb1r5cEhOu1Pl7l2Ok
+         xSpKVHELhfrNwYAp/fx/EekaUNCi+7Jcvpy9hgatvTTk1cRkUWPzlksiSEWkGgQffVzz
+         1aaZe4RXB5b/TBFqYZIDfiQrjjgLFHNmog1+r/tuWrbr0zIyLixldiaC8vYmazPJdilc
+         rHrxA5KiwO109FjL1emXehIM5LwsL1uKQ0517jmerEM2eS++cvDgEbrn5GjeITGoxND+
+         BHwg==
+X-Gm-Message-State: AOJu0YyBNxBzmTaq/9QQ0BMLeAmO+yHtaY2LmQX7GehECOCkSdd46Xxp
+        4jf6QASRSHCpRzlptpHQzZzljA==
+X-Google-Smtp-Source: AGHT+IEvHUcT/doZpFo+FtdyhmCu2TD96+TXGBsn4uRWu6N2tGNhvyrNls0sicSwD5Dbeg8MvBxR3w==
+X-Received: by 2002:a17:906:2250:b0:99b:ed18:7a10 with SMTP id 16-20020a170906225000b0099bed187a10mr9473272ejr.36.1692780952060;
+        Wed, 23 Aug 2023 01:55:52 -0700 (PDT)
+Received: from krzk-bin.. ([77.252.47.198])
+        by smtp.gmail.com with ESMTPSA id j26-20020a170906255a00b009a1e0349c4csm566862ejb.23.2023.08.23.01.55.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Aug 2023 01:54:47 -0700 (PDT)
-Date:   Wed, 23 Aug 2023 09:54:45 +0100
-From:   "Sudip Mukherjee (Codethink)" <sudipm.mukherjee@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, srw@sladewatkins.net,
-        rwarsow@gmx.de, conor@kernel.org
-Subject: Re: [PATCH 6.1 000/194] 6.1.47-rc1 review
-Message-ID: <ZOXJVamgYV1Mb+7S@debian>
-References: <20230821194122.695845670@linuxfoundation.org>
+        Wed, 23 Aug 2023 01:55:51 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH] pinctrl: use capital "OR" for multiple licenses in SPDX
+Date:   Wed, 23 Aug 2023 10:55:46 +0200
+Message-Id: <20230823085546.116494-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230821194122.695845670@linuxfoundation.org>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+Documentation/process/license-rules.rst and checkpatch expect the SPDX
+identifier syntax for multiple licenses to use capital "OR".  Correct it
+to keep consistent format and avoid copy-paste issues.
 
-On Mon, Aug 21, 2023 at 09:39:39PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.1.47 release.
-> There are 194 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 23 Aug 2023 19:40:45 +0000.
-> Anything received after that time might be too late.
+Correct also the placement of SPDX identifier in pinctrl-meson-axg
+files:
 
-Build test (gcc version 12.3.1 20230625):
-mips: 52 configs -> no failure
-arm: 100 configs -> no failure
-arm64: 3 configs -> no failure
-x86_64: 4 configs -> no failure
-alpha allmodconfig -> no failure
-csky allmodconfig -> no failure
-powerpc allmodconfig -> no failure
-riscv allmodconfig -> no failure
-s390 allmodconfig -> no failure
-xtensa allmodconfig -> no failure
+  WARNING: Misplaced SPDX-License-Identifier tag - use line 1 instead
 
-Boot test:
-x86_64: Booted on my test laptop. Warning on boot, already reported by others.
-x86_64: Booted on qemu. Warning on boot, already reported by others. [1]
-arm64: Booted on rpi4b (4GB model). No regression. [2]
-mips: Booted on ci20 board. No regression. [3]
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+ drivers/pinctrl/meson/pinctrl-meson-axg-pmx.c | 3 +--
+ drivers/pinctrl/meson/pinctrl-meson-axg-pmx.h | 2 +-
+ drivers/pinctrl/meson/pinctrl-meson-axg.c     | 3 +--
+ drivers/pinctrl/meson/pinctrl-meson-g12a.c    | 2 +-
+ drivers/pinctrl/pinctrl-mlxbf3.c              | 2 +-
+ 5 files changed, 5 insertions(+), 7 deletions(-)
 
-[1]. https://openqa.qa.codethink.co.uk/tests/4765
-[2]. https://openqa.qa.codethink.co.uk/tests/4773
-[3]. https://openqa.qa.codethink.co.uk/tests/4772
-
-Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
-
+diff --git a/drivers/pinctrl/meson/pinctrl-meson-axg-pmx.c b/drivers/pinctrl/meson/pinctrl-meson-axg-pmx.c
+index 80c43683c789..ae3f8d0da05f 100644
+--- a/drivers/pinctrl/meson/pinctrl-meson-axg-pmx.c
++++ b/drivers/pinctrl/meson/pinctrl-meson-axg-pmx.c
+@@ -1,3 +1,4 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+ /*
+  * Second generation of pinmux driver for Amlogic Meson-AXG SoC.
+  *
+@@ -6,8 +7,6 @@
+  *
+  * Copyright (c) 2017 Amlogic, Inc. All rights reserved.
+  * Author: Xingyu Chen <xingyu.chen@amlogic.com>
+- *
+- * SPDX-License-Identifier: (GPL-2.0+ or MIT)
+  */
+ 
+ /*
+diff --git a/drivers/pinctrl/meson/pinctrl-meson-axg-pmx.h b/drivers/pinctrl/meson/pinctrl-meson-axg-pmx.h
+index aa79d7ecee00..67147ebaef1b 100644
+--- a/drivers/pinctrl/meson/pinctrl-meson-axg-pmx.h
++++ b/drivers/pinctrl/meson/pinctrl-meson-axg-pmx.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: (GPL-2.0+ or MIT) */
++/* SPDX-License-Identifier: (GPL-2.0+ OR MIT) */
+ /*
+  * Copyright (c) 2017 Baylibre SAS.
+  * Author:  Jerome Brunet  <jbrunet@baylibre.com>
+diff --git a/drivers/pinctrl/meson/pinctrl-meson-axg.c b/drivers/pinctrl/meson/pinctrl-meson-axg.c
+index d249a035c2b9..6667c9d0238f 100644
+--- a/drivers/pinctrl/meson/pinctrl-meson-axg.c
++++ b/drivers/pinctrl/meson/pinctrl-meson-axg.c
+@@ -1,10 +1,9 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+ /*
+  * Pin controller and GPIO driver for Amlogic Meson AXG SoC.
+  *
+  * Copyright (c) 2017 Amlogic, Inc. All rights reserved.
+  * Author: Xingyu Chen <xingyu.chen@amlogic.com>
+- *
+- * SPDX-License-Identifier: (GPL-2.0+ or MIT)
+  */
+ 
+ #include <dt-bindings/gpio/meson-axg-gpio.h>
+diff --git a/drivers/pinctrl/meson/pinctrl-meson-g12a.c b/drivers/pinctrl/meson/pinctrl-meson-g12a.c
+index 3cd86d6a0a60..2c17891ba6a9 100644
+--- a/drivers/pinctrl/meson/pinctrl-meson-g12a.c
++++ b/drivers/pinctrl/meson/pinctrl-meson-g12a.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: (GPL-2.0+ or MIT)
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+ /*
+  * Pin controller and GPIO driver for Amlogic Meson G12A SoC.
+  *
+diff --git a/drivers/pinctrl/pinctrl-mlxbf3.c b/drivers/pinctrl/pinctrl-mlxbf3.c
+index d9944e6a0af9..903606b64d2f 100644
+--- a/drivers/pinctrl/pinctrl-mlxbf3.c
++++ b/drivers/pinctrl/pinctrl-mlxbf3.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0-only or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0-only OR BSD-3-Clause
+ /* Copyright (C) 2022 NVIDIA CORPORATION & AFFILIATES */
+ 
+ #include <linux/bitfield.h>
 -- 
-Regards
-Sudip
+2.34.1
+
