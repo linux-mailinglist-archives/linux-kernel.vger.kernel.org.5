@@ -2,83 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECEF3785F6A
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 20:17:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D7FD785F6E
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 20:17:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238072AbjHWSRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 14:17:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35664 "EHLO
+        id S238087AbjHWSRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 14:17:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229864AbjHWSRE (ORCPT
+        with ESMTP id S238082AbjHWSRL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 14:17:04 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25637CC7;
-        Wed, 23 Aug 2023 11:17:03 -0700 (PDT)
+        Wed, 23 Aug 2023 14:17:11 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3801CD1
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 11:17:09 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A6A1463D52;
-        Wed, 23 Aug 2023 18:17:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03400C433C7;
-        Wed, 23 Aug 2023 18:16:55 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 39B936251E
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 18:17:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0A21C4167D;
+        Wed, 23 Aug 2023 18:17:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692814621;
-        bh=z4aynHRzkI+QjbnRFX6g1vVxQ5ejtsIbs5rrGfHFHGE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vOmP4hLKyqUTY4Rpo3iF4nxe1oNnRDDYIYRbZ/skZ0s1Z1rqv3ybf1aNIxyXlfoZi
-         XzisYoLx7TaoSyRzhpiq5y79KygxbLW8f3Y0aJffZZZK7hn134I1xclZvmJl/advUK
-         FV3HcydgfFsNEx1mO4o6fk/h0jrhMpmi1nPkkVh+mPt1TaLdb9rJOn2FjvFo2V5SVn
-         0YorKgoH/DUEFkI5en//P98Di0z8jX8gihJYc5+yYn8tQilGMhbF79vDUmtEfqzTPE
-         LDNRjNI1lzg8m7cs4daU/NrYVTQWUoyjFGUHdKTLpL2Geei5FDlJv0IUpwuMr4GMxk
-         ZGPH+S1BybA6w==
-Date:   Wed, 23 Aug 2023 19:16:52 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Szabolcs Nagy <Szabolcs.Nagy@arm.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Shuah Khan <shuah@kernel.org>,
-        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
-        Deepak Gupta <debug@rivosinc.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        "H.J. Lu" <hjl.tools@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
+        s=k20201202; t=1692814628;
+        bh=oVc34mgV3FCHCFRuWZIFh7s3iqRrh+uYOxu0gKgphbc=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=gbl8Ho+OIJFBCVGkffy0ZCht+2m9HlRKIBb+duA+VU3Ht+iJBwRrlDv1vyAcArPps
+         Zt+17ndNPH54GvaNh/oBz8tlBp/nZAKHignXtbUKnNPqEXWmn3dDwp8IdgFhJ8dzMa
+         HwHKIDXMJ/uqCIpdB9JTLjEwfbPOPgvWn/4EcmIItoiStt0TL5MgXoTiF6XzgsTZc5
+         bigYmUMs41UnYcr88jWVP9DxRfX06OOqGxR7uKaYnhAJ8+iFtBDDtMzniXIGA81gaS
+         OOFuFsMwDe2Y85oXpD1Z0ZR1GWeBrnQWqGy7cpsInsjF3Jm7lgOBAmuPeCPpGKTTQI
+         BQMCMes+TQKog==
+From:   =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To:     Pu Lehui <pulehui@huaweicloud.com>,
+        linux-riscv@lists.infradead.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
         Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v4 03/36] arm64/gcs: Document the ABI for Guarded Control
- Stacks
-Message-ID: <ef7272d2-d807-428f-9915-6fc9febadb5c@sirena.org.uk>
-References: <ZNOhjrYleGBR6Pbs@arm.com>
- <f4cec4b3-c386-4873-aa1d-90528e062f2a@sirena.org.uk>
- <ZN+qki9EaZ6f9XNi@arm.com>
- <aaea542c-929c-4c9b-8caa-ca67e0eb9c1e@sirena.org.uk>
- <ZOTnL1SDJWZjHPUW@arm.com>
- <43ec219d-bf20-47b8-a5f8-32bc3b64d487@sirena.org.uk>
- <ZOXa98SqwYPwxzNP@arm.com>
- <227e6552-353c-40a9-86c1-280587a40e3c@sirena.org.uk>
- <ZOY3lz+Zyhd5ZyQ9@arm.com>
- <ZOZEmO6WGyVAcOqK@arm.com>
+        Xu Kuohai <xukuohai@huawei.com>,
+        Puranjay Mohan <puranjay12@gmail.com>,
+        Pu Lehui <pulehui@huawei.com>,
+        Pu Lehui <pulehui@huaweicloud.com>
+Subject: Re: [PATCH bpf-next 2/7] riscv, bpf: Support sign-extension load insns
+In-Reply-To: <20230823231059.3363698-3-pulehui@huaweicloud.com>
+References: <20230823231059.3363698-1-pulehui@huaweicloud.com>
+ <20230823231059.3363698-3-pulehui@huaweicloud.com>
+Date:   Wed, 23 Aug 2023 20:17:05 +0200
+Message-ID: <87h6oplj32.fsf@all.your.base.are.belong.to.us>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="eccODu5HN5W02WFY"
-Content-Disposition: inline
-In-Reply-To: <ZOZEmO6WGyVAcOqK@arm.com>
-X-Cookie: Some optional equipment shown.
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -89,36 +70,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Pu Lehui <pulehui@huaweicloud.com> writes:
 
---eccODu5HN5W02WFY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> From: Pu Lehui <pulehui@huawei.com>
+>
+> Add Support sign-extension load instructions for RV64.
+>
+> Signed-off-by: Pu Lehui <pulehui@huawei.com>
 
-On Wed, Aug 23, 2023 at 06:40:40PM +0100, Szabolcs Nagy wrote:
-
-> i don't know if we can allow disabled gcs thread creation with locked
-> gcs state. (i can see arguments both ways, so further prctl flag may
-> be needed which may be another divergence from x86)
-
-I think that if we do add a new flag that'd just be new functionality,
-the divergence would be in allowing configuration via clone3() rather
-than the flag.  TBH I'm not sure I see a use case for locking but
-providing a mechanism for getting out of the lock, that seems very
-questionable.
-
---eccODu5HN5W02WFY
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTmTRMACgkQJNaLcl1U
-h9AFoAf/Rmp/X+zsA/zDX+bXBUla+v8qz72JS4cU/67DmXv5Fb8FKCj4nY5j/OnZ
-3G9+lHZYYRFTA8sdQH2qULPo0S6QafNbebM0WxsjYuiCw8CKuztE1jOm+l6aVyf7
-G/h5YxEOQBb4ChLezEXXQWZC0wR/S+7bf34IxDycvRh6Y0700VL4eZ7pu4fc8WDu
-rHrMeB82zAlQCr3fdUgu5FzPQFUiY4dbDzPrJHpuVIq+Vnpk7RK7b1vkYZa4fo5o
-2YB87p19ylZBQa0LvKdA+RkgDNvExeujREoO1O+WrBVa1bdtKw80kGgvXJC3oy0f
-P8bazSIfrut0e41Y3agZotCijYwTlg==
-=JX+L
------END PGP SIGNATURE-----
-
---eccODu5HN5W02WFY--
+Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org>
