@@ -2,157 +2,351 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DC217861FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 23:14:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 204717861FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 23:13:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237129AbjHWVNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 17:13:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39896 "EHLO
+        id S237108AbjHWVNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 17:13:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237158AbjHWVNQ (ORCPT
+        with ESMTP id S237040AbjHWVMy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 17:13:16 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D40910E5
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 14:13:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692825193; x=1724361193;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=defJ4soWaA1pNiXr8MEpc33gCgleHCb3i8oy08Xij0k=;
-  b=YY2cMkGDZ2MizRJt9npcIzOKwXOALJpxFLLU6nFXqBs8EQGOGro0K6WL
-   mCExtmFI0WySPdaSaUg8SASit+u+eaPDPGQ6Ajv1Bc4X6FfV3+Hv7tUG2
-   Of9IuhyLtg2VQZrRIPrKZXKsNup6N0IbTx0AVZU88dehFSdGg5h3dpDbL
-   RUzTLUI8YZn63AhMImdzuSFgSWKkFq3QFEVsXYz0SdUJ/KUyZsWV8Ezqo
-   zJkSziM1tcR9dIHtTvqj+SWehG/xKauYtTfo/mrPmdTpxu+KGEdFlxxSA
-   FtnES4sIBL3qqtLK/6GrZJoexT3BMwm02ncex4w7UhmpZ+8zT1Fk3wOj6
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="353819303"
-X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
-   d="scan'208";a="353819303"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2023 14:13:13 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="851197932"
-X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
-   d="scan'208";a="851197932"
-Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 23 Aug 2023 14:13:07 -0700
-Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qYvA2-0001Vq-0c;
-        Wed, 23 Aug 2023 21:13:06 +0000
-Date:   Thu, 24 Aug 2023 05:12:11 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     John Stultz <jstultz@google.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, John Stultz <jstultz@google.com>,
-        Joel Fernandes <joelaf@google.com>,
-        Qais Yousef <qyousef@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Zimuzo Ezeozue <zezeozue@google.com>,
-        Youssef Esmat <youssefesmat@google.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, kernel-team@android.com
-Subject: Re: [PATCH v5 13/19] sched: Split out __sched() deactivate task
- logic into a helper
-Message-ID: <202308240439.2aDXO6Ks-lkp@intel.com>
-References: <20230819060915.3001568-14-jstultz@google.com>
+        Wed, 23 Aug 2023 17:12:54 -0400
+Received: from genua.uuid.uk (genua.uuid.uk [78.47.120.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1022E6C;
+        Wed, 23 Aug 2023 14:12:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=octiron.net
+        ; s=20230424-rsa3072; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        References:Cc:To:From:Subject:MIME-Version:Date:Message-ID:From:Sender:
+        Reply-To:Subject:Date:Message-ID:To:Cc:Bcc:MIME-Version:Content-Type:
+        Content-Disposition:Content-Transfer-Encoding:In-Reply-To:References:
+        Organization; bh=gPJ7fUW8ARzgzBmBbKR4BwRFESO2WZO2zZnd0h3g8pU=; t=1692825171; 
+        b=f0jWnImxIeOcijAxBl7QmJVe174x2lI6v4SIdv+Ie/+EPKVCjIRalxY44E0JBxF1Z+29YPuj7X/
+        /Fa+Rdm4Q/B+tIfgTP69Gm4zLwrBO9wnkSb6z9JsDeJ5+abh2NhAiyexkqpfZbQ3ri2L+JCaJFOcv
+        P9WtfxkD9lZmm5NvbMEuBNjj+amEDE3wVIApf/ATxg99C275vkTJP6b79fUFQboI0u8PGwsPAqUBA
+        9Rr4vRR/fm5w4L1RvANAZoqgfTINlEvdZEy+QaQUIbGxmKtOjLtz+Hm+OD0ZvJPPpQp7w7aNKcNsN
+        FbPYLZxTIR1H2EKZxH8WICzLOvituuHt8dd+ZCRyIwFRkqDGb5YuxCxTIhHqZSKUhSzALUZEIYR4R
+        /ZokrG/F+COi7kZEskwN4sfvsGBoUJt3WKrSKSPmJnK2IAKHIIo8lC9ZXcl/msAjbM4iH2kfHLs1q
+        5xvwyas5TL9AhGDtUyElHg+YdUTRp5DeATczpCzIQm/FGlF7HwdY;
+DKIM-Signature: v=1; a=ed25519-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=octiron.net; s=20230410-ed25519; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:References:Cc:To:From:Subject:MIME-Version:Date:Message-ID:From:
+        Sender:Reply-To:Subject:Date:Message-ID:To:Cc:Bcc:MIME-Version:Content-Type:
+        Content-Disposition:Content-Transfer-Encoding:In-Reply-To:References:
+        Organization; bh=gPJ7fUW8ARzgzBmBbKR4BwRFESO2WZO2zZnd0h3g8pU=; t=1692825171; 
+        b=a8tz+a0GXGk616iX2AQmIISVUotMy7WI5VnhYAWrViWkF18bHPiHF7MpDAHXKbHW81kPnW25tgn
+        J2G2MC1O3Ag==;
+Received: by genua.uuid.uk with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.93)
+        (envelope-from <simon@octiron.net>)
+        id 1qYv9h-00AOsS-HN; Wed, 23 Aug 2023 22:12:46 +0100
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=octiron.net
+        ; s=20230424-rsa3072; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        References:Cc:To:From:Subject:MIME-Version:Date:Message-ID:From:Sender:
+        Reply-To:Subject:Date:Message-ID:To:Cc:Bcc:MIME-Version:Content-Type:
+        Content-Disposition:Content-Transfer-Encoding:In-Reply-To:References:
+        Organization; bh=gPJ7fUW8ARzgzBmBbKR4BwRFESO2WZO2zZnd0h3g8pU=; t=1692825165; 
+        b=XOQy3dEmLzbUjtPlogEMFUjYmDofiDU1EjCz1jKjNv5ApC47zaoMpQdMTJJCr0w5l/hjhzGBN8y
+        2+HeoWxxYswNvxkLrEkT5Oiuyhg6XwXxkzV3Yox2SMkc/cukypuMNJkLVgkKU7mGh/qMCQY9FO9ul
+        j/oyv/i4kpTZ+5IghtpNpofPYaBVmc4Hw8RBRQeElbHxZ+TXrJPwpkO/sk5nfcW8wHNXpq5Dpf14V
+        k4F0wj23DTz0BUliDSwbwK8o2aJ33Gtx8tfaY7t8i6Q8QKrYeCw1QueIf4/SjJr36XHSocyEfyFI1
+        ucITgnbU4WkPGOmeGnMuXGHKkzS+9ehn2ajDssd6lW7an4vniHepwnk0z2tkX3WAXHBVOCbEUCerJ
+        X3ugtkZjFCkHreIo8CKKswo7xzeCcgeURmxO7ckqVVwjWaeVVuW1onOjyJpi9ZkGGJ2MZezJbYI/u
+        4s+PCkbA0CC5+Eu0ZEdFzaVuP5EigwA4GBW5s/dqQMudP0PGWAF0;
+DKIM-Signature: v=1; a=ed25519-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=octiron.net; s=20230410-ed25519; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:References:Cc:To:From:Subject:MIME-Version:Date:Message-ID:From:
+        Sender:Reply-To:Subject:Date:Message-ID:To:Cc:Bcc:MIME-Version:Content-Type:
+        Content-Disposition:Content-Transfer-Encoding:In-Reply-To:References:
+        Organization; bh=gPJ7fUW8ARzgzBmBbKR4BwRFESO2WZO2zZnd0h3g8pU=; t=1692825165; 
+        b=00zfea8O4idFXu8iUZcdX34A/kdyCU2COISZ+h1Xqa1KgeotInGHtNFiheIOt9ykDoCcXhCK693
+        j1eHxmT4KBg==;
+Received: by tsort.uuid.uk with esmtps (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128)
+        (Exim 4.93)
+        (envelope-from <simon@octiron.net>)
+        id 1qYv9f-004aRo-0T; Wed, 23 Aug 2023 22:12:43 +0100
+Message-ID: <40c5c70f-46ff-c5f3-212b-2badc47e49a3@0882a8b5-c6c3-11e9-b005-00805fc181fe.uuid.home.arpa>
+Date:   Wed, 23 Aug 2023 22:12:42 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230819060915.3001568-14-jstultz@google.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: [PATCH (v2)] USB: cdc-acm: expose serial close_delay and closing_wait
+ in sysfs
+Content-Language: en-GB
+From:   Simon Arlott <simon@octiron.net>
+To:     Oliver Neukum <oneukum@suse.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-serial@vger.kernel.org
+References: <ea1a13ad-a1e0-540a-e97a-4c44f6d2d33b@0882a8b5-c6c3-11e9-b005-00805fc181fe.uuid.home.arpa>
+X-Face: -|Y&Xues/.'(7\@`_\lFE/)pw"7..-Ur1^@pRL`Nad5a()6r+Y)18-pi'!`GI/zGn>6a6ik
+ mcW-%sg_wM:4PXDw:(;Uu,n&!8=;A<P|QG`;AMu5ypJkN-Sa<eyt,Ap3q`5Z{D0BN3G`OmX^8x^++R
+ Gr9G'%+PNM/w+w1+vB*a($wYgA%*cm3Hds`a7k)CQ7'"[\C|g2k]FQ-f*DDi{pU]v%5JZm
+In-Reply-To: <ea1a13ad-a1e0-540a-e97a-4c44f6d2d33b@0882a8b5-c6c3-11e9-b005-00805fc181fe.uuid.home.arpa>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi John,
+If the serial device never reads data written to it (because it is "output
+only") then the write buffers will still be waiting for the URB to complete
+on close(), which will hang for 30s until the closing_wait timeout expires.
 
-kernel test robot noticed the following build warnings:
+This can happen with the ESP32-H2/ESP32-C6 USB serial interface. Instead of
+changing all userspace applications to flush (discard) their output in this
+specific scenario it would be easier to adjust the closing_wait timeout
+with udev rules but the only available interface is the TIOCGSERIAL ioctl.
 
-[auto build test WARNING on tip/locking/core]
-[also build test WARNING on linus/master tip/auto-latest v6.5-rc7]
-[cannot apply to tip/sched/core tip/master next-20230823]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+The serial_core driver (ttySx) exposes its supported ioctl values as
+read-only sysfs attributes. Add read-write sysfs attributes "close_delay"
+and "closing_wait" to cdc-acm (ttyACMx) devices. These are the same as the
+attributes in serial_core except that the "closing_wait" sysfs values are
+modified so that "-1" is used for "infinite wait" (instead of 0) and "0"
+is used for "no wait" (instead of 65535).
 
-url:    https://github.com/intel-lab-lkp/linux/commits/John-Stultz/sched-Unify-runtime-accounting-across-classes/20230821-121604
-base:   tip/locking/core
-patch link:    https://lore.kernel.org/r/20230819060915.3001568-14-jstultz%40google.com
-patch subject: [PATCH v5 13/19] sched: Split out __sched() deactivate task logic into a helper
-config: riscv-allnoconfig (https://download.01.org/0day-ci/archive/20230824/202308240439.2aDXO6Ks-lkp@intel.com/config)
-compiler: riscv64-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20230824/202308240439.2aDXO6Ks-lkp@intel.com/reproduce)
+Signed-off-by: Simon Arlott <simon@octiron.net>
+---
+> @@ -976,9 +973,7 @@ static int set_serial_info(struct tty_struct *tty, struct serial_struct *ss)
+> -	if (!capable(CAP_SYS_ADMIN)) {
+> +	if (!admin) {
+>  		if ((close_delay != acm->port.close_delay) ||
+>  		    (closing_wait != acm->port.closing_wait))
+>  			retval = -EPERM;
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308240439.2aDXO6Ks-lkp@intel.com/
+Sorry, I hadn't tested the ioctl and this return value wasn't actually
+getting returned.
 
-All warnings (new ones prefixed by >>):
+ Documentation/ABI/testing/sysfs-tty |  21 +++++
+ drivers/usb/class/cdc-acm.c         | 139 +++++++++++++++++++++++++---
+ 2 files changed, 146 insertions(+), 14 deletions(-)
 
->> kernel/sched/core.c:6565:6: warning: no previous prototype for 'try_to_deactivate_task' [-Wmissing-prototypes]
-    6565 | bool try_to_deactivate_task(struct rq *rq, struct task_struct *p, unsigned long state)
-         |      ^~~~~~~~~~~~~~~~~~~~~~
-
-
-vim +/try_to_deactivate_task +6565 kernel/sched/core.c
-
-  6564	
-> 6565	bool try_to_deactivate_task(struct rq *rq, struct task_struct *p, unsigned long state)
-  6566	{
-  6567		if (signal_pending_state(state, p)) {
-  6568			WRITE_ONCE(p->__state, TASK_RUNNING);
-  6569		} else {
-  6570			p->sched_contributes_to_load =
-  6571				(state & TASK_UNINTERRUPTIBLE) &&
-  6572				!(state & TASK_NOLOAD) &&
-  6573				!(state & TASK_FROZEN);
-  6574	
-  6575			if (p->sched_contributes_to_load)
-  6576				rq->nr_uninterruptible++;
-  6577	
-  6578			/*
-  6579			 * __schedule()			ttwu()
-  6580			 *   prev_state = prev->state;    if (p->on_rq && ...)
-  6581			 *   if (prev_state)		    goto out;
-  6582			 *     p->on_rq = 0;		  smp_acquire__after_ctrl_dep();
-  6583			 *				  p->state = TASK_WAKING
-  6584			 *
-  6585			 * Where __schedule() and ttwu() have matching control dependencies.
-  6586			 *
-  6587			 * After this, schedule() must not care about p->state any more.
-  6588			 */
-  6589			deactivate_task(rq, p, DEQUEUE_SLEEP | DEQUEUE_NOCLOCK);
-  6590	
-  6591			if (p->in_iowait) {
-  6592				atomic_inc(&rq->nr_iowait);
-  6593				delayacct_blkio_start();
-  6594			}
-  6595			return true;
-  6596		}
-  6597		return false;
-  6598	}
-  6599	
+diff --git a/Documentation/ABI/testing/sysfs-tty b/Documentation/ABI/testing/sysfs-tty
+index 820e412d38a8..e04e322af568 100644
+--- a/Documentation/ABI/testing/sysfs-tty
++++ b/Documentation/ABI/testing/sysfs-tty
+@@ -161,3 +161,24 @@ Contact:	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+ Description:
+ 		 Allows user to detach or attach back the given device as
+ 		 kernel console. It shows and accepts a boolean variable.
++
++What:		/sys/class/tty/ttyACM0/close_delay
++Date:		August 2023
++Contact:	linux-usb@vger.kernel.org
++Description:
++		Set the closing delay time for this port in ms.
++
++		These sysfs values expose the TIOCGSERIAL interface via
++		sysfs rather than via ioctls.
++
++What:		/sys/class/tty/ttyACM0/closing_wait
++Date:		August 2023
++Contact:	linux-usb@vger.kernel.org
++Description:
++		Set the close wait time for this port in ms.
++
++		These sysfs values expose the TIOCGSERIAL interface via
++		sysfs rather than via ioctls.
++
++		Unlike the ioctl interface, waiting forever is represented as
++		-1 and zero is used to disable waiting on close.
+diff --git a/drivers/usb/class/cdc-acm.c b/drivers/usb/class/cdc-acm.c
+index 00db9e1fc7ed..7e0f94e18445 100644
+--- a/drivers/usb/class/cdc-acm.c
++++ b/drivers/usb/class/cdc-acm.c
+@@ -953,42 +953,57 @@ static int acm_tty_tiocmset(struct tty_struct *tty,
+ 	return acm_set_control(acm, acm->ctrlout = newctrl);
+ }
+ 
+-static int get_serial_info(struct tty_struct *tty, struct serial_struct *ss)
++static void acm_read_serial_info(struct acm *acm, struct serial_struct *ss)
+ {
+-	struct acm *acm = tty->driver_data;
+-
+ 	ss->line = acm->minor;
+ 	ss->close_delay	= jiffies_to_msecs(acm->port.close_delay) / 10;
+ 	ss->closing_wait = acm->port.closing_wait == ASYNC_CLOSING_WAIT_NONE ?
+ 				ASYNC_CLOSING_WAIT_NONE :
+ 				jiffies_to_msecs(acm->port.closing_wait) / 10;
+-	return 0;
+ }
+ 
+-static int set_serial_info(struct tty_struct *tty, struct serial_struct *ss)
++static int acm_write_serial_info(struct acm *acm, struct serial_struct *ss,
++	bool admin)
+ {
+-	struct acm *acm = tty->driver_data;
+ 	unsigned int closing_wait, close_delay;
+-	int retval = 0;
++	int ret = 0;
+ 
+ 	close_delay = msecs_to_jiffies(ss->close_delay * 10);
+ 	closing_wait = ss->closing_wait == ASYNC_CLOSING_WAIT_NONE ?
+ 			ASYNC_CLOSING_WAIT_NONE :
+ 			msecs_to_jiffies(ss->closing_wait * 10);
+ 
+-	mutex_lock(&acm->port.mutex);
+-
+-	if (!capable(CAP_SYS_ADMIN)) {
++	if (!admin) {
+ 		if ((close_delay != acm->port.close_delay) ||
+ 		    (closing_wait != acm->port.closing_wait))
+-			retval = -EPERM;
++			ret = -EPERM;
+ 	} else {
+ 		acm->port.close_delay  = close_delay;
+ 		acm->port.closing_wait = closing_wait;
+ 	}
+ 
++	return ret;
++}
++
++static int get_serial_info(struct tty_struct *tty, struct serial_struct *ss)
++{
++	struct acm *acm = tty->driver_data;
++
++	mutex_lock(&acm->port.mutex);
++	acm_read_serial_info(acm, ss);
++	mutex_unlock(&acm->port.mutex);
++	return 0;
++}
++
++static int set_serial_info(struct tty_struct *tty, struct serial_struct *ss)
++{
++	struct acm *acm = tty->driver_data;
++	int ret = 0;
++
++	mutex_lock(&acm->port.mutex);
++	ret = acm_write_serial_info(acm, ss, capable(CAP_SYS_ADMIN));
+ 	mutex_unlock(&acm->port.mutex);
+-	return retval;
++	return ret;
+ }
+ 
+ static int wait_serial_change(struct acm *acm, unsigned long arg)
+@@ -1162,6 +1177,102 @@ static int acm_write_buffers_alloc(struct acm *acm)
+ 	return 0;
+ }
+ 
++static ssize_t close_delay_show(struct device *dev,
++	struct device_attribute *attr, char *buf)
++{
++	struct acm *acm = dev_get_drvdata(dev);
++	struct serial_struct ss;
++
++	mutex_lock(&acm->port.mutex);
++	acm_read_serial_info(acm, &ss);
++	mutex_unlock(&acm->port.mutex);
++
++	return snprintf(buf, PAGE_SIZE, "%u\n", ss.close_delay);
++}
++
++static ssize_t close_delay_store(struct device *dev,
++	struct device_attribute *attr, const char *buf, size_t count)
++{
++	struct acm *acm = dev_get_drvdata(dev);
++	struct serial_struct ss;
++	u16 close_delay;
++	int ret;
++
++	ret = kstrtou16(buf, 0, &close_delay);
++	if (ret)
++		return ret;
++
++	mutex_lock(&acm->port.mutex);
++	acm_read_serial_info(acm, &ss);
++	ss.close_delay = close_delay;
++	ret = acm_write_serial_info(acm, &ss, true);
++	mutex_unlock(&acm->port.mutex);
++
++	return ret ? ret : count;
++}
++
++static ssize_t closing_wait_show(struct device *dev,
++	struct device_attribute *attr, char *buf)
++{
++	struct acm *acm = dev_get_drvdata(dev);
++	struct serial_struct ss;
++	s32 value;
++
++	mutex_lock(&acm->port.mutex);
++	acm_read_serial_info(acm, &ss);
++	mutex_unlock(&acm->port.mutex);
++
++	if (ss.closing_wait == ASYNC_CLOSING_WAIT_NONE)
++		value = 0;
++	else if (ss.closing_wait == ASYNC_CLOSING_WAIT_INF)
++		value = -1;
++	else
++		value = ss.closing_wait;
++
++	return snprintf(buf, PAGE_SIZE, "%d\n", value);
++}
++
++static ssize_t closing_wait_store(struct device *dev,
++	struct device_attribute *attr, const char *buf, size_t count)
++{
++	struct acm *acm = dev_get_drvdata(dev);
++	struct serial_struct ss;
++	s32 closing_wait;
++	int ret;
++
++	ret = kstrtos32(buf, 0, &closing_wait);
++	if (ret)
++		return ret;
++
++	if (closing_wait == 0) {
++		closing_wait = ASYNC_CLOSING_WAIT_NONE;
++	} else if (closing_wait == -1) {
++		closing_wait = ASYNC_CLOSING_WAIT_INF;
++	} else if (closing_wait == ASYNC_CLOSING_WAIT_NONE
++			|| closing_wait == ASYNC_CLOSING_WAIT_INF /* redundant (0) */
++			|| closing_wait < -1 || closing_wait > U16_MAX) {
++		return -ERANGE;
++	}
++
++	mutex_lock(&acm->port.mutex);
++	acm_read_serial_info(acm, &ss);
++	ss.closing_wait = closing_wait;
++	ret = acm_write_serial_info(acm, &ss, true);
++	mutex_unlock(&acm->port.mutex);
++
++	return ret ? ret : count;
++}
++
++static DEVICE_ATTR_RW(close_delay);
++static DEVICE_ATTR_RW(closing_wait);
++
++static struct attribute *tty_dev_attrs[] = {
++	&dev_attr_close_delay.attr,
++	&dev_attr_closing_wait.attr,
++	NULL,
++};
++ATTRIBUTE_GROUPS(tty_dev);
++
+ static int acm_probe(struct usb_interface *intf,
+ 		     const struct usb_device_id *id)
+ {
+@@ -1503,8 +1614,8 @@ static int acm_probe(struct usb_interface *intf,
+ 			goto err_remove_files;
+ 	}
+ 
+-	tty_dev = tty_port_register_device(&acm->port, acm_tty_driver, minor,
+-			&control_interface->dev);
++	tty_dev = tty_port_register_device_attr(&acm->port, acm_tty_driver,
++			minor, &control_interface->dev, acm, tty_dev_groups);
+ 	if (IS_ERR(tty_dev)) {
+ 		rv = PTR_ERR(tty_dev);
+ 		goto err_release_data_interface;
+-- 
+2.37.0
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Simon Arlott
+
