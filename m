@@ -2,62 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F59378564B
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 12:54:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CF10785650
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 12:56:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234142AbjHWKyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 06:54:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57758 "EHLO
+        id S234194AbjHWK4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 06:56:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232161AbjHWKyn (ORCPT
+        with ESMTP id S232161AbjHWK4G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 06:54:43 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C0AFCD6;
-        Wed, 23 Aug 2023 03:54:41 -0700 (PDT)
-From:   Kurt Kanzenbach <kurt@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1692788079;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wmHgbHhEItbnaHrWyL/jeRkBYJl8ncNrJqVyvLd/saQ=;
-        b=anN/lNv5unmqi1nUqtab4bLJR5gSJp6iiya4k1viCB8W5eN5rKibFN+D/O4tjHTG7noX10
-        QfNlhQkp+FVRZTDNjIlSgUH17JOgj3RnkrXDqJVGAxNiB5i3f4XRk4ZUpFRlMIYfcjcGBV
-        CglhcxA4VGfS74j9Q2dOFPxs8jASarE1W1eqlY7XTj2WPcC5EHe4ZymV/sPNaVyIvVxmrc
-        DnlCKjt6CrPQXJLSFiMcGyXxt50Lfbg/wyoK8iHMatQ6EFOfNIbXKB3BDAIHPyihbUrnrD
-        zZJ3IPzSbLDlnP5m7IsBYeS2RqL/mGsQEz0/v/BCabrDitFuBTMe5PGuhzMk2Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1692788079;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wmHgbHhEItbnaHrWyL/jeRkBYJl8ncNrJqVyvLd/saQ=;
-        b=b6PFK7JQ1o0blushrjGnYwuctmmS3/8m0hKdIy2gBeF9gWizfyyBUPqxgB14N1B+W4iihu
-        PL9HJiiwCyKxLPBg==
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        Wed, 23 Aug 2023 06:56:06 -0400
+Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A8ECCD5;
+        Wed, 23 Aug 2023 03:56:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:Content-Type:MIME-Version:
+        Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=A0IfQ3GE4OZYWrbHk+XuRIci+HdUerkCEp4gSqVg1CY=; b=ixH5wEv23MRgT8EdKOFC+2XcBq
+        Zbr7ojt4TgC3mlPHt2/nt3SiGzNEazg42Cm44GEOB2TOaMgeDHAGmOMzdnAcYYj4XOWG4xyH+QT+s
+        NxJBkOZlXDI2vwhZK1crUAzDdVN7gzmeAr+sJIW6bG+YRljNivIfIZ0Do5zoH6H80rayAz0r0ndFb
+        gzNul1mtpWANTsi6QBCsBQfG9lQvPaBiAa6fdlqY34Kgm2a+VtJ80jyDf7y18eQJsJj+NuN7T5rP0
+        cF3wLemJJxsr4m3IOFlnM7AKX6w04ziNtyja2TNm56Nh6yjqG+WrAhk9qZJ5qeDTmZfD5RsKbY+Xr
+        9on7KwXw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55524)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qYlWU-0002dt-13;
+        Wed, 23 Aug 2023 11:55:38 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qYlWQ-0006l0-4y; Wed, 23 Aug 2023 11:55:34 +0100
+Date:   Wed, 23 Aug 2023 11:55:34 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Serge Semin <fancer.lancer@gmail.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Rohan G Thomas <rohan.g.thomas@intel.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
         Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH net-next] net: dsa: use capital "OR" for multiple
- licenses in SPDX
-In-Reply-To: <601f8735-39ea-7579-0047-3d3358851339@linaro.org>
-References: <20230823085632.116725-1-krzysztof.kozlowski@linaro.org>
- <87h6oq9k9d.fsf@kurt> <601f8735-39ea-7579-0047-3d3358851339@linaro.org>
-Date:   Wed, 23 Aug 2023 12:54:37 +0200
-Message-ID: <87edju9ggi.fsf@kurt>
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Conor Dooley <conor.dooley@microchip.com>
+Subject: Synopsis XLGMII MAC, IEEE 802.3 and XLGMII interfaces
+Message-ID: <ZOXlpkbcAZ4okric@shell.armlinux.org.uk>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha512; protocol="application/pgp-signature"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,84 +71,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
-On Wed Aug 23 2023, Krzysztof Kozlowski wrote:
-> On 23/08/2023 11:32, Kurt Kanzenbach wrote:
->> On Wed Aug 23 2023, Krzysztof Kozlowski wrote:
->>> Documentation/process/license-rules.rst and checkpatch expect the SPDX
->>> identifier syntax for multiple licenses to use capital "OR".  Correct it
->>> to keep consistent format and avoid copy-paste issues.
->>>
->>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->>=20
->> Reviewed-by: Kurt Kanzenbach <kurt@linutronix.de>
->>=20
->> Side note: The SPDX spec in section D.2 says: "License expression
->> operators (AND, OR and WITH) should be matched in a case-sensitive
->> manner.". Should is not must. So I assume checkpatch and spdxcheck
->> should handle both cases. Especially because:
->>=20
->> |linux (git)-[master] % git grep 'SPDX' | grep ' or ' | wc -l
->> |370
->>=20
->
-> But "should" denotes preferred rule:
+Okay, I think it's time to get to the bottom of this, and below are my
+ramblings so far.
 
-Yes, of course :).
+According to IEEE 802.3 80.1.3, XLGMII is the 40 Gb/s MII and CGMII
+is the 100 Gb/s MII. 81.1 goes on to state:
 
-You mentioned checkpatch. But checkpatch doesn't warn about it. Or does
-it?=20
+The XLGMII/CGMII has the following characteristics:
 
-|linux (git)-[master] % ./scripts/checkpatch.pl -- drivers/net/dsa/hirschma=
-nn/hellcreek.h
-|total: 0 errors, 0 warnings, 0 checks, 321 lines checked
-|
-|drivers/net/dsa/hirschmann/hellcreek.h has no obvious style problems and
-|is ready for submission.
+  a)    The XLGMII supports a speed of 40 Gb/s.
+  b)    The CGMII supports a speed of 100 Gb/s.
+  c)    Data and delimiters are synchronous to a clock reference.
+  d)    It provides independent 64-bit wide transmit and receive data paths.
+  e)    It supports full duplex operation only.
 
-What about something like this?
+That seems very clear.
 
-|linux (git)-[master*] % ./scripts/checkpatch.pl -- drivers/net/dsa/hirschm=
-ann/hellcreek.h
-|WARNING: License expression operators (AND, OR, WITH) should be upper case
-|#1: FILE: drivers/net/dsa/hirschmann/hellcreek.h:1:
-|+/* SPDX-License-Identifier: (GPL-2.0 or MIT) */
-|
-|total: 0 errors, 1 warnings, 0 checks, 321 lines checked
-|
-|NOTE: For some of the reported defects, checkpatch may be able to
-|      mechanically convert to the typical style using --fix or --fix-inpla=
-ce.
-|
-|drivers/net/dsa/hirschmann/hellcreek.h has style problems, please review.
-|
-|NOTE: If any of the errors are false positives, please report
-|      them to the maintainer, see CHECKPATCH in MAINTAINERS.
+According to
+https://www.synopsys.com/dw/ipdir.php?ds=dwc_ether_enterprise_mac
+XLGMII operates at 25 Gb/s, 40 Gb/s, 50 Gb/s and 100 Gb/s. This
+appears to "disagree" with IEEE 802.3.
 
-Thanks,
-Kurt
+It appears, at least to me, that CGMII and XLGMII are physically
+similar interfaces, the only difference seems to be the speed of
+operation, so it would be entirely possible to have a MAC that
+can operate at both speeds - or indeed at other speeds such as
+Synopsys' "XLGMII" MAC.
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+Now, the problem is... phylink interprets PHY_INTERFACE_MODE_XLGMII
+to mean the IEEE 802.3 defined 40 Gb/s mode - in that it _only_
+supports 40 Gb/s over that interface mode. Clearly, that's the right
+thing to be doing, because this is what IEEE defines and vendor
+stuff doesn't apply for generic code.
 
------BEGIN PGP SIGNATURE-----
+phylib hasn't defined PHY_INTERFACE_MODE_CGMII yet, so phylink doesn't
+provide that (maybe it should.) However, when it does, phylink will
+then allow 100 Gb/s over CGMII.
 
-iQJHBAEBCgAxFiEEvLm/ssjDfdPf21mSwZPR8qpGc4IFAmTl5W4THGt1cnRAbGlu
-dXRyb25peC5kZQAKCRDBk9HyqkZzgkKfD/9p7DMXuJxhJWoePn8AcmZQDBL7HlAk
-4NgAljOSk5P5TAmVWUPRf8EVP2y/4aVDnmq6G0Qg84F5xTMuwLN1Mfkp+lV8HARN
-ocAVhiCOR1f/EU2U/MuHiqPMoQwq1eh+9AZiTjXqQCtEZPT4sPKdBKyIxl80eBmo
-/onDChcy8CVsGqxXfr9IsllGwBjSppdXTmxUPK4sHW1abnEvmvJ591orfwzCdoX0
-htUrY2o2aH2OVFgJmINlHgAE2JU3hnBJeUGT0L69HtACdyUeYjjXsAFMA3f2NeJ3
-Ff8muRbSK6TCka7vh0GAmXXjsq/Bw7i02wwfe8JJNNnTUxXIKp+/APAm0Np9g0vC
-jSIIwCimO0C6TjPRR/SDggf/lXltCzuMaYzRqkQOHFYfusQF/hSGV6ue6Xw7o+y+
-fl58F6qZ81Ga8iv8FjxqWr/ujCU3xuyZocxstZ9uap5D3dJMlptGdhuCOy83Nb+c
-AZJVjmbpjeRl5NmBV/mFs8aMBuEvDDEtSTI52VP/Y+iQRDxe34iofJ3iXitcu28V
-ehbQiTiS5VqfPUQqe/+50+GCYgzS5rcIvJG4+7nLWR9NTFxdcBLXzevIaN0WS7NS
-IL1YTlxvsrQ2Ho4dvxD7ngfTPerrywk29RO8hF5G2Dxowc77tEgmwWJhvqg+FWtO
-mc15jJSm9KbbHg==
-=gNOL
------END PGP SIGNATURE-----
---=-=-=--
+Are there other standards that define 25 and 50 Gb/s over an XLGMII-
+like link?
+
+Given the way things are at present, it means that the switch statement
+in stmmac_mac_link_up() for PHY_INTERFACE_MODE_XLGMII, only one case
+will ever be used - SPEED_40000. I'm guessing this isn't a problem as
+no one has reported any problems.
+
+Then... there's the inclusion of 10G, 2.5G and 1G in the XLGMII switch.
+The above link to Synopsys website suggests that XGMII is used for 10G
+and GMII for 1G.
+
+Given that this is just the MAC, and we would normally have a PCS after
+it (which may be XPCS), the interface used between the MAC and PCS isn't
+all that relevant, since PHY_INTERFACE_MODE_xxx primerily defines the
+interface to any PHY that is connected, and as a secondary function the
+interface to fiber (since [MAC - PCS - Serdes] - PHY - media and
+[MAC - PCS - Serdes] - media are common, it has made sense to use the
+PHY interface mode to define the protocol used on that part of the
+link that a PHY _could_ be connected to.)
+
+So, I'm not convinced that the fact that this MAC core uses XLGMII,
+XGMII and GMII has any relevance to the PHY_INTERFACE_MODE_ passed
+by phylink into functions such as stmmac_mac_link_up(), _unless_ a
+PHY is connected directly to the MAC.
+
+If XPCS is connected, that interface mode would be whatever XPCS is
+using to talk to the "outside world" not what the connection is
+between the MAC and XPCS. If we want to know what that is, then
+stmmac needs to be asking XPCS for that information (and maybe
+phylink needs to get that from its PCS on behalf of the MAC driver.)
+
+I think there's a lot that needs to be thought about here.
+
+Part 2 of this will be USXGMII... which I'll do as a separate email.
+
+Thanks.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
