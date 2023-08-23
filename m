@@ -2,67 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0E9B78594E
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 15:29:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F905785951
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 15:29:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236048AbjHWN3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 09:29:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52650 "EHLO
+        id S236178AbjHWN3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 09:29:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236034AbjHWN3A (ORCPT
+        with ESMTP id S236033AbjHWN3A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 23 Aug 2023 09:29:00 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E91001718
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 06:28:38 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-99df11828c6so1386044666b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 06:28:38 -0700 (PDT)
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C41ED1720
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 06:28:39 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-99c0cb7285fso715068966b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 06:28:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692797288; x=1693402088;
+        d=linaro.org; s=google; t=1692797289; x=1693402089;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1Po0Cjg3C1rN8c8fqj5mDXBBf8xDUIggifQYVVJsMcc=;
-        b=xN6e9qtylN1hsXgdFmZHlmfpPXh9CNK0ozDyPU2d+sJ4qjh3xP0pdh5rYoiAyCQjMD
-         tH4gcrZ4aIXIMcD+sqUlrhFt+E+I51sTMU3vZA08cmG3g06kdBhAwBydeFPWroy7q0VA
-         vHiPiH31LkSCwzYchzd6pVhyfCeGKwngniF8LkwmiXJesJNtyXMh48+54vzmkyMjLzCh
-         ddzefQkCL19hQ/kGtS79iVgcp2w8jQtA62yw/S4GjzQhhqPC/L5ag5by2Q+uAQP4iUZQ
-         0acRKaPsNil7vuFnT2oioZrlK1C8j1ZlBhUdlo5RZkojX7W3j/iZj/RSuRAAitQ73/A6
-         jOYg==
+        bh=QMjewjbqgRLUDOfDr2fvd0INz7ulNUEmSWxMy1iHfM4=;
+        b=QC8WNOEnw83dUT5oLd4d2HU/C2dd/BNWFk3OexfbGtxK6yjbI8iCfj1LGJ3Xzu4Mkj
+         JOJm1LmB/apLw0J7055bbDA70G0oR0cHm15chwcPAvyWnKn3DUXPMUW7NP8blC0NORM0
+         iatSkNk+71oFzDdPasLixE9G59bN+DGHwSTP7QPyG/JIhvc2sWaMotQzf4v/JLtMPiWp
+         wnhSrG/5wypZGLP9C37Hu1bNsTV4QT7cmqA+MxxxfymOfVfG87xwbwxXVy8TCUplROuj
+         Z4dvMHD14DzYOgQncGZzU+CJ8Qkeul2tvFzYxHLiqFlMVtpIXAXRn/FH668xRVyP3f0j
+         s0lQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692797288; x=1693402088;
+        d=1e100.net; s=20221208; t=1692797289; x=1693402089;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=1Po0Cjg3C1rN8c8fqj5mDXBBf8xDUIggifQYVVJsMcc=;
-        b=Yf15fh7RylwQaln0WWd2g0Crcc2m3LAudPDiXRlW+xOdotNoh71RZxq3+Vlt72Tiav
-         rv85p5yjGbYdTkM3t1OH62nsA7vQAOCBVea8JsmbFSaVzJJXU87wfGIhO719BOonoTMB
-         t2BlUWVTRZskvLYVoxXUkOY0p6ARaohzuwR2pZEz26iPN7GR6Vx0y5VQ2ZlW5j0FfLiY
-         aE828aeDomAkob0c/iNsZw/a2G/RRe//8tRDGKqHQ4k7OjV0qlvYMJfFU/vRNOdOcsSM
-         ZAsDncq6PSpjPgn0uUL7YEmhlCV1/NkaS7B9mzagfEbTYG4fLo3aR1Gytuqib9qzZMxn
-         bxdg==
-X-Gm-Message-State: AOJu0Ywlmm+hqkYnQYgO2hu4q2+ydDygyFvtrsz2fJOWWeRNYaT4+NDp
-        a8spUInf/Da2DrxVHeYDMi5c3Q==
-X-Google-Smtp-Source: AGHT+IFQ7ZBoWyGJnyM3wR4lxLwaABkyfmzPVWPn3nBb4dg6VizlcE8iOxa/J7RO80vb+lY4pMnJ1w==
-X-Received: by 2002:a17:907:7e8c:b0:978:8979:c66c with SMTP id qb12-20020a1709077e8c00b009788979c66cmr14911646ejc.18.1692797288065;
+        bh=QMjewjbqgRLUDOfDr2fvd0INz7ulNUEmSWxMy1iHfM4=;
+        b=LqrdqDMxd6xdaNaDdBv/HDwqLYR6hRoeahGB+RKO7bPzK9rs/DP1cNTaO5iT12byP9
+         OphXu0qYv6/tVqPSKEeZCeomib+EwrdtToCCgsvNCl1HGxNgNWsCsj1SWamRQbsPhjEb
+         D96Eug/nfFCYk0grftGw3+cp0KSn4gmgmd1D7MtHXUAf/LUF5BDKEA4JBxMAQ1Z9dsCr
+         usI+f/Kpx9isIDoXSmSwwrNRkJgguDBnCRrLY1/Mp5PIqY6saXtCCZJHTjoRbuEP7liV
+         wLCvqVkNzXeBolohUk2VVXgwpgQIOqx3k3hDK37LcQFKNYvvqoqlpE+6QvmtX89HBkzR
+         GsUw==
+X-Gm-Message-State: AOJu0YwMFkVUtZlV58V7KabA5K2Y/6oN2eHj7d25HNjsZXrhHdhZKBHF
+        027rw/MAgILsCMRw2JrPVsXF3A==
+X-Google-Smtp-Source: AGHT+IGrvIxVqHeFC2jS2OeOZgWiruNGsPoceBz7kOZgnYDpuSImdznIVFg7VB5mkP9tBIX8kuJ6Xg==
+X-Received: by 2002:a17:906:20d6:b0:9a1:caa8:2061 with SMTP id c22-20020a17090620d600b009a1caa82061mr2354482ejc.23.1692797288961;
         Wed, 23 Aug 2023 06:28:08 -0700 (PDT)
 Received: from localhost.localdomain ([5.133.47.210])
-        by smtp.gmail.com with ESMTPSA id l9-20020a1709066b8900b009a168ab6ee2sm8918202ejr.164.2023.08.23.06.28.06
+        by smtp.gmail.com with ESMTPSA id l9-20020a1709066b8900b009a168ab6ee2sm8918202ejr.164.2023.08.23.06.28.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Aug 2023 06:28:06 -0700 (PDT)
+        Wed, 23 Aug 2023 06:28:08 -0700 (PDT)
 From:   srinivas.kandagatla@linaro.org
 To:     gregkh@linuxfoundation.org
 Cc:     linux-kernel@vger.kernel.org, Richard Alpe <richard@bit42.se>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        =?UTF-8?q?Niklas=20S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v2 11/22] dt-bindings: nvmem: Add t1023-sfp efuse support
-Date:   Wed, 23 Aug 2023 14:27:33 +0100
-Message-Id: <20230823132744.350618-12-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 12/22] nvmem: add new NXP QorIQ eFuse driver
+Date:   Wed, 23 Aug 2023 14:27:34 +0100
+Message-Id: <20230823132744.350618-13-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230823132744.350618-1-srinivas.kandagatla@linaro.org>
 References: <20230823132744.350618-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1459; i=srinivas.kandagatla@linaro.org; h=from:subject; bh=1cjACcaM5mn9GzVS+HtF5Uwe7y7QX0kihzmbQYQS62s=; b=owEBbQGS/pANAwAKAXqh/VnHNFU3AcsmYgBk5glInAepEvWKb7vh4FKvdVRfiP0D5wqc7k8yt v6kpZT/VDSJATMEAAEKAB0WIQQi509axvzi9vce3Y16of1ZxzRVNwUCZOYJSAAKCRB6of1ZxzRV N7QVB/0ezBdfgJWvZpQ/zot4iPnkk73Ddyt95ZwNRtamOOXfYyEHxK3K4gDkRP14grK1gu1Z9GR aYnmN8IZLwdgFyvpG3hCtbDUp2gnaPFleZ6IU5mFFovGZHc7PEiMX94ZHGq3NlCKjqIEvM7QcPa /DonTSExcyit2t0eaGCqp/tJNyyoO1aK2R8zV1iV5c3owjEHjh5Qe+InD3KOsoNP7K++CDdS2Km V3Zea5UFRT0KeHeCmbgpOHx9unvl/uwuqbskHx5YeBTwT6Hv2t33naYHDrRRAoQpp/Xs84WdoYf afmE0HOmhwFvdxpyfcaOIIr99cmTONcNAq7UOk5aKb0nR+Mv
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4189; i=srinivas.kandagatla@linaro.org; h=from:subject; bh=YdhH6iItu2C4qF1b74Vy48ysltYv9i8utmZeJSeqkO0=; b=owEBbQGS/pANAwAKAXqh/VnHNFU3AcsmYgBk5glIJ4z+MlwShrixTo43S2bBQE1eQHgrm4XBh b5GvX1Hai2JATMEAAEKAB0WIQQi509axvzi9vce3Y16of1ZxzRVNwUCZOYJSAAKCRB6of1ZxzRV N8wrB/9t/WiARB7SG5/GVagKb6z9sOiTL2rqsTeHPml9fK52ulFcbVlbVlmT9/Q569ls5MRMjtx hKEBCQVk9NNFPMBfYoOq5H/qEVMopj+5bzJz3Sy2GdtTPzt4i7VrN5nKbkIDlLZRDAB8Bb92Vko FUdLYvZbZ4z7SM+eLkGZdzeBMDRYoBx6BewZ8xtFs14CUy7YcLe42NNjg9sTPbIu0I0Ju0lHJMw WzZM9Y0HUQaQu5xbFQdZQyiysoF3gKHklmgSsJP9OFfYrJfXWQ7pq50c/CpMFBX+khvekoXDAak lglUdeB1b4a/iipryU3OsiV2opJxNDLCya8pVXY8o4aI6czL
 X-Developer-Key: i=srinivas.kandagatla@linaro.org; a=openpgp; fpr=ED6472765AB36EC43B3EF97AD77E3FC0562560D6
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -78,59 +79,138 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Richard Alpe <richard@bit42.se>
 
-Add a schema for the NVMEM eFuse (SFP) layout on the NXP QorIQ SOC.
+Add SFP (Security Fuse Processor) read support for NXP (Freescale)
+QorIQ series SOC's.
+
+This patch adds support for the T1023 SOC using the SFP offset from
+the existing T1023 device tree. In theory this should also work for
+T1024, T1014 and T1013 which uses the same SFP base offset.
 
 Signed-off-by: Richard Alpe <richard@bit42.se>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Reviewed-by: Niklas Söderlund <niklas.soderlund@ragnatech.se>
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- .../bindings/nvmem/fsl,t1023-sfp.yaml         | 37 +++++++++++++++++++
- 1 file changed, 37 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/nvmem/fsl,t1023-sfp.yaml
+ drivers/nvmem/Kconfig       | 12 ++++++
+ drivers/nvmem/Makefile      |  2 +
+ drivers/nvmem/qoriq-efuse.c | 78 +++++++++++++++++++++++++++++++++++++
+ 3 files changed, 92 insertions(+)
+ create mode 100644 drivers/nvmem/qoriq-efuse.c
 
-diff --git a/Documentation/devicetree/bindings/nvmem/fsl,t1023-sfp.yaml b/Documentation/devicetree/bindings/nvmem/fsl,t1023-sfp.yaml
+diff --git a/drivers/nvmem/Kconfig b/drivers/nvmem/Kconfig
+index da9befa3d6c4..5c5d7414f78c 100644
+--- a/drivers/nvmem/Kconfig
++++ b/drivers/nvmem/Kconfig
+@@ -392,4 +392,16 @@ config NVMEM_ZYNQMP
+ 
+ 	  If sure, say yes. If unsure, say no.
+ 
++config NVMEM_QORIQ_EFUSE
++	tristate "NXP QorIQ eFuse support"
++	depends on PPC_85xx || COMPILE_TEST
++	depends on HAS_IOMEM
++	help
++	  This driver provides read support for the eFuses (SFP) on NXP QorIQ
++	  series SoC's. This includes secure boot settings, the globally unique
++	  NXP ID 'FUIDR' and the OEM unique ID 'OUIDR'.
++
++	  This driver can also be built as a module. If so, the module
++	  will be called nvmem_qoriq_efuse.
++
+ endif
+diff --git a/drivers/nvmem/Makefile b/drivers/nvmem/Makefile
+index cc23ce4ffb1f..e0e67a942c4f 100644
+--- a/drivers/nvmem/Makefile
++++ b/drivers/nvmem/Makefile
+@@ -77,3 +77,5 @@ obj-$(CONFIG_NVMEM_VF610_OCOTP)		+= nvmem-vf610-ocotp.o
+ nvmem-vf610-ocotp-y			:= vf610-ocotp.o
+ obj-$(CONFIG_NVMEM_ZYNQMP)		+= nvmem_zynqmp_nvmem.o
+ nvmem_zynqmp_nvmem-y			:= zynqmp_nvmem.o
++obj-$(CONFIG_NVMEM_QORIQ_EFUSE)		+= nvmem-qoriq-efuse.o
++nvmem-qoriq-efuse-y			:= qoriq-efuse.o
+diff --git a/drivers/nvmem/qoriq-efuse.c b/drivers/nvmem/qoriq-efuse.c
 new file mode 100644
-index 000000000000..df826b40d8ca
+index 000000000000..e7fd04d6dd94
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/nvmem/fsl,t1023-sfp.yaml
-@@ -0,0 +1,37 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/nvmem/fsl,t1023-sfp.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
++++ b/drivers/nvmem/qoriq-efuse.c
+@@ -0,0 +1,78 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ *  Copyright (C) 2023  Westermo Network Technologies AB
++ */
 +
-+title: NXP QorIQ eFuse support
++#include <linux/device.h>
++#include <linux/io.h>
++#include <linux/module.h>
++#include <linux/mod_devicetable.h>
++#include <linux/nvmem-provider.h>
++#include <linux/platform_device.h>
 +
-+maintainers:
-+  - Richard Alpe <richard@bit42.se>
++struct qoriq_efuse_priv {
++	void __iomem *base;
++};
 +
-+description:
-+  Read support for the eFuses (SFP) on NXP QorIQ series SoC's.
++static int qoriq_efuse_read(void *context, unsigned int offset, void *val,
++			    size_t bytes)
++{
++	struct qoriq_efuse_priv *priv = context;
 +
-+allOf:
-+  - $ref: nvmem.yaml#
++	/* .stride = 4 so offset is guaranteed to be aligned */
++	__ioread32_copy(val, priv->base + offset, bytes / 4);
 +
-+properties:
-+  compatible:
-+    const: fsl,t1023-sfp
++	/* Ignore trailing bytes (there shouldn't be any) */
 +
-+  reg:
-+    maxItems: 1
++	return 0;
++}
 +
-+required:
-+  - compatible
-+  - reg
++static int qoriq_efuse_probe(struct platform_device *pdev)
++{
++	struct nvmem_config config = {
++		.dev = &pdev->dev,
++		.read_only = true,
++		.reg_read = qoriq_efuse_read,
++		.stride = sizeof(u32),
++		.word_size = sizeof(u32),
++		.name = "qoriq_efuse_read",
++		.id = NVMEM_DEVID_AUTO,
++		.root_only = true,
++	};
++	struct qoriq_efuse_priv *priv;
++	struct nvmem_device *nvmem;
++	struct resource *res;
 +
-+unevaluatedProperties: false
++	priv = devm_kzalloc(config.dev, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
 +
-+examples:
-+  - |
-+    efuse@e8000 {
-+        compatible = "fsl,t1023-sfp";
-+        reg = <0xe8000 0x1000>;
-+    };
-+...
++	priv->base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
++	if (IS_ERR(priv->base))
++		return PTR_ERR(priv->base);
++
++	config.size = resource_size(res);
++	config.priv = priv;
++	nvmem = devm_nvmem_register(config.dev, &config);
++
++	return PTR_ERR_OR_ZERO(nvmem);
++}
++
++static const struct of_device_id qoriq_efuse_of_match[] = {
++	{ .compatible = "fsl,t1023-sfp", },
++	{/* sentinel */},
++};
++MODULE_DEVICE_TABLE(of, qoriq_efuse_of_match);
++
++static struct platform_driver qoriq_efuse_driver = {
++	.probe = qoriq_efuse_probe,
++	.driver = {
++		.name = "qoriq-efuse",
++		.of_match_table = qoriq_efuse_of_match,
++	},
++};
++module_platform_driver(qoriq_efuse_driver);
++
++MODULE_AUTHOR("Richard Alpe <richard.alpe@bit42.se>");
++MODULE_DESCRIPTION("NXP QorIQ Security Fuse Processor (SFP) Reader");
++MODULE_LICENSE("GPL");
 -- 
 2.25.1
 
