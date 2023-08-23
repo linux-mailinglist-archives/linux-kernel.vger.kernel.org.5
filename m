@@ -2,123 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B45078573B
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 13:53:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83E7A78573F
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 13:53:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234600AbjHWLxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 07:53:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42682 "EHLO
+        id S234602AbjHWLxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 07:53:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234595AbjHWLxR (ORCPT
+        with ESMTP id S233257AbjHWLxm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 07:53:17 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E85DAE70;
-        Wed, 23 Aug 2023 04:52:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1692791577; x=1724327577;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=P+msHyqhyTgIowePgGmJTm4oqKwwJ9h/OkrOjGnPZWA=;
-  b=MF0mXjyA81p3vfJrmdSm6l1l1jJVvbl/YCYVVtWa9HLCp8JG2tYLroXE
-   TlWZ9iqS7D2XtUuBivViVbbEbCwyV4TbPtqlcxQ8KHD2J/BtqrVXpnQ1F
-   CLSCbcRwtN8VUzomKcqarfT+5orykWAIk0gtUhOGPvJJ2neENRXqLgwOo
-   NFpPCcRlluClL2LQVKd/p+e40Ptb2UMiJv2NxkshIDNEqUEvYD0wSDtXP
-   8/31NAWKuUXtgYp3r4zdyJz6kzw2uo8yKWpOIgG31FMviqrCZyIMs+jtO
-   Dxdbfo2c/2igftMjAuZquWLTO11yTMaeQwEAQLlUxHZsLGIHtyC7+Cqf9
-   A==;
-X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
-   d="asc'?scan'208";a="231293047"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Aug 2023 04:52:56 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Wed, 23 Aug 2023 04:51:57 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex01.mchp-main.com (10.10.85.143)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Wed, 23 Aug 2023 04:51:54 -0700
-Date:   Wed, 23 Aug 2023 12:51:13 +0100
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     <patchwork-bot+linux-riscv@kernel.org>
-CC:     Mingzheng Xing <xingmingzheng@iscas.ac.cn>,
-        <linux-riscv@lists.infradead.org>, <conor@kernel.org>,
-        <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
-        <aou@eecs.berkeley.edu>, <nathan@kernel.org>,
-        <ndesaulniers@google.com>, <trix@redhat.com>, <bmeng@tinylab.org>,
-        <guoren@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <llvm@lists.linux.dev>, <stable@vger.kernel.org>
-Subject: Re: [PATCH v5] riscv: Handle zicsr/zifencei issue between gcc and
- binutils
-Message-ID: <20230823-captive-abdomen-befd942a4a73@wendy>
-References: <20230809165648.21071-1-xingmingzheng@iscas.ac.cn>
- <169228562484.20811.14246462375671910714.git-patchwork-notify@kernel.org>
+        Wed, 23 Aug 2023 07:53:42 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 579B0CF;
+        Wed, 23 Aug 2023 04:53:41 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D8ACA660D3;
+        Wed, 23 Aug 2023 11:53:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 064C5C433C8;
+        Wed, 23 Aug 2023 11:53:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692791620;
+        bh=9ozTPMOCGjgHLaJa54zNz+3htX4e52MyhqXdip941jo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=l24jGUE83dTC5LIpesTj/6es0p1WS7ylU3MUON3FJiuoWQxxRCjlR5z3wIFk4K+oU
+         K2AWIcTPkmDsluBNADDyBlpMDLA8Rp+uKKqJoCHs0avzOBmXGyOqYqn+BCh16bjUI2
+         hvhq9h51Ry+gIiCJSOxxraYuuki2GsBa0J1eiiJ7gXumwLCguGvREwpTyW9YV+YEk7
+         dNwAKeoP3UDdpi+bdNOnHPI9JPaBhU60YEN1dK+7znlOZ/CRo/Tve9mIsDAErxAZ59
+         jKyyPyla2DIuaYkyUmtM5hqQ6DDKwQ7Gc/a1lvWnat8Yxav7r0p1B08W1yk1QFolNU
+         SsschzuYYGj6A==
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2b9a2033978so85419711fa.0;
+        Wed, 23 Aug 2023 04:53:39 -0700 (PDT)
+X-Gm-Message-State: AOJu0YzeoE8DrkY1ssL4mcHThu/+2gPw1ranXjVHX0bhmCULQnxwjCkE
+        vr5i4h/rxjHgTNHGXbG+3iz2c7reamk9dk5gEA==
+X-Google-Smtp-Source: AGHT+IG6AYWn2ZBtqiggebw0M0LEoLpjEjEkmAuyxGb6SqXHXb0v7iaIhaSPWuqzMe7IxI9zjdhMNEvmSNHymSTc/JA=
+X-Received: by 2002:a2e:7008:0:b0:2bc:d8fd:13df with SMTP id
+ l8-20020a2e7008000000b002bcd8fd13dfmr2086615ljc.41.1692791617967; Wed, 23 Aug
+ 2023 04:53:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="W7NS5WMbXWdulCbP"
-Content-Disposition: inline
-In-Reply-To: <169228562484.20811.14246462375671910714.git-patchwork-notify@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230714174702.4059100-1-robh@kernel.org> <CABb+yY0ZEkU2fEoFcihDM0GPuNBkCJHYXfkq-+bLJY1xtbf5Jw@mail.gmail.com>
+In-Reply-To: <CABb+yY0ZEkU2fEoFcihDM0GPuNBkCJHYXfkq-+bLJY1xtbf5Jw@mail.gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Wed, 23 Aug 2023 06:53:25 -0500
+X-Gmail-Original-Message-ID: <CAL_Jsq+EbxHkdXEJsgAETrQj8Ps30umOMcArt1fCaNumxBem5A@mail.gmail.com>
+Message-ID: <CAL_Jsq+EbxHkdXEJsgAETrQj8Ps30umOMcArt1fCaNumxBem5A@mail.gmail.com>
+Subject: Re: [PATCH] mailbox: Explicitly include correct DT includes
+To:     Jassi Brar <jassisinghbrar@gmail.com>
+Cc:     Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Daire McNamara <daire.mcnamara@microchip.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Michal Simek <michal.simek@amd.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        linux-rockchip@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-tegra@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---W7NS5WMbXWdulCbP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Tue, Aug 22, 2023 at 6:05=E2=80=AFPM Jassi Brar <jassisinghbrar@gmail.co=
+m> wrote:
+>
+> On Fri, Jul 14, 2023 at 12:47=E2=80=AFPM Rob Herring <robh@kernel.org> wr=
+ote:
+> >
+> > The DT of_device.h and of_platform.h date back to the separate
+> > of_platform_bus_type before it as merged into the regular platform bus.
+> > As part of that merge prepping Arm DT support 13 years ago, they
+> > "temporarily" include each other. They also include platform_device.h
+> > and of.h. As a result, there's a pretty much random mix of those includ=
+e
+> > files used throughout the tree. In order to detangle these headers and
+> > replace the implicit includes with struct declarations, users need to
+> > explicitly include the correct includes.
+> >
+> > Signed-off-by: Rob Herring <robh@kernel.org>
+> >
+> I thought I was to pick the patch. But I see you intend to do it. Np.
 
-On Thu, Aug 17, 2023 at 03:20:24PM +0000, patchwork-bot+linux-riscv@kernel.=
-org wrote:
-> Hello:
->=20
-> This patch was applied to riscv/linux.git (fixes)
-> by Palmer Dabbelt <palmer@rivosinc.com>:
->=20
-> On Thu, 10 Aug 2023 00:56:48 +0800 you wrote:
-> > Binutils-2.38 and GCC-12.1.0 bumped[0][1] the default ISA spec to the n=
-ewer
-> > 20191213 version which moves some instructions from the I extension to =
-the
-> > Zicsr and Zifencei extensions. So if one of the binutils and GCC exceeds
-> > that version, we should explicitly specifying Zicsr and Zifencei via -m=
-arch
-> > to cope with the new changes. but this only occurs when binutils >=3D 2=
-=2E36
-> > and GCC >=3D 11.1.0. It's a different story when binutils < 2.36.
-> >=20
-> > [...]
->=20
-> Here is the summary with links:
->   - [v5] riscv: Handle zicsr/zifencei issue between gcc and binutils
->     https://git.kernel.org/riscv/c/ca09f772ccca
+No, please apply it.
 
-*sigh* so this breaks the build for gcc-11 & binutils 2.37 w/
-	Assembler messages:
-	Error: cannot find default versions of the ISA extension `zicsr'
-	Error: cannot find default versions of the ISA extension `zifencei'
+Thanks,
+Rob
 
-I'll have a poke later.
-
---W7NS5WMbXWdulCbP
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZOXysQAKCRB4tDGHoIJi
-0umKAPsHfU8Vxgef4+lOhFoGQMmuEDZ660fUifAWXoqFaCjwlQD/dLrrEsJhYReV
-cosGU4uWW2+SuNH9+QHMozew2ttVyAk=
-=9H5F
------END PGP SIGNATURE-----
-
---W7NS5WMbXWdulCbP--
+>
+> Acked-by: Jassi Brar <jassisinghbrar@gmail.com>
+>
+> thanks
