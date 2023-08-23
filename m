@@ -2,70 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25153785CE8
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 18:04:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE8DE785CF9
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 18:06:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237413AbjHWQEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 12:04:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36726 "EHLO
+        id S236793AbjHWQGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 12:06:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234129AbjHWQE3 (ORCPT
+        with ESMTP id S235492AbjHWQGT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 12:04:29 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C2C5184
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 09:04:28 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id d75a77b69052e-410915344aeso24231521cf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 09:04:28 -0700 (PDT)
+        Wed, 23 Aug 2023 12:06:19 -0400
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A66E184
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 09:06:14 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id d75a77b69052e-40a47e8e38dso301691cf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 09:06:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692806667; x=1693411467;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=AgwQQssNisFcDlSAbmB9tgKtABE8UDfzKEg3w2u2WUY=;
-        b=PSHh0C0tup1HpJUcqAvhjxPp6TSWZfWCVDX4C6McSPiPkRG6fA1s4JVpwur/iUjjE5
-         shFyXvjiCTQXOL8n1DADayXGQ/D+OUlX/1PGjxNYeVrDxt0IG6t4xvAicxy7c6UwhROr
-         sGy5dHpBjLaCzkEY0vRuEPoE4brJUXa6CvcpxDm973Gsc1zuhjfGLjaYpM7M6qDV7Nmg
-         v02UyYYx220ZOUdjSCVuD2DXmXrSTLFSZuBEmG6GfKt5Rm26KTqoD0iAXMPjU5Fasjvo
-         2pKNlWBGMa4E6ozr31/ekMKNzYGzxoeTF1UHC6/QKLdO1kVGWM4J17MHVyrg86ON+TsV
-         GGYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692806667; x=1693411467;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20221208; t=1692806773; x=1693411573;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=AgwQQssNisFcDlSAbmB9tgKtABE8UDfzKEg3w2u2WUY=;
-        b=B1CZXSTCRjCAvfDLZVmNV3YB4EfHtFwIj3SLEqMPfiG5BvGTNevVhI6mKcok3S4doD
-         1+IKrUeL/MS0M9LBbAQSVrgNmReGNWEwDdHUcITs76saxEXEST1K8MBD63qLVvLiC9AN
-         joYs/D9JRa46wd33lNMARm8K9kUEro2xjPhmzIqWbk7Y/cLCIw9HUpr/6zPciAtgJ5jx
-         SYr0Q4IkEkBI4cKqExmUsYuRnuWqYQ4SO9sH9q+xNYlkm7DXl7DmVpbh8CvYVig1nG+f
-         aGp8UVFdN8ac6yFO9phlmtMHcih/TKCjluTBRiCDxB3uZdoy6gqMtxpT6w2hq8/9l+z/
-         V4wA==
-X-Gm-Message-State: AOJu0Yxg6/pPA3qhZ5nHA084QFmPjpxGxgw+r/3rbRuHu4TlyCXLp3sQ
-        kzWWN29B3NClCJbQjNSXWLx20rL21A0=
-X-Google-Smtp-Source: AGHT+IHivHnj0yHlLVwLmnIv66NnFWZ14jcAHFP7qjk81m/CRqyiuMtdCNcSvg0MFWW1vMa5IEIAdQ==
-X-Received: by 2002:a0c:e149:0:b0:64f:5ad7:f56a with SMTP id c9-20020a0ce149000000b0064f5ad7f56amr2555864qvl.9.1692806667162;
-        Wed, 23 Aug 2023 09:04:27 -0700 (PDT)
-Received: from alolivei-thinkpadt480s.gru.csb ([2804:14c:bf20:82ea:8c7c:b784:3f92:988a])
-        by smtp.gmail.com with ESMTPSA id c16-20020a0cca10000000b0064b502fdeecsm4133909qvk.68.2023.08.23.09.04.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Aug 2023 09:04:26 -0700 (PDT)
-Date:   Wed, 23 Aug 2023 13:04:22 -0300
-From:   Alexon Oliveira <alexondunkan@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     martyn@welchs.me.uk, manohar.vanga@gmail.com,
-        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
-Subject: Re: [PATCH] staging: vme_user: fix check unbalaced braces and
- misspellings
-Message-ID: <ZOYuBvMS3pcpA37b@alolivei-thinkpadt480s.gru.csb>
-References: <ZOVjfKUWsSAkbpZG@alolivei-thinkpadt480s.gru.csb>
- <2023082303-balmy-bucktooth-f85b@gregkh>
+        bh=C7pbYc3cWzUuemTPAl/D1nSHc5zEIFeD9puZanDYIGs=;
+        b=2TTKoEKSSROueBqUfTiWRuUIf/t+jJXyxLv+JoXQUYIMNvA3U7woiSez1H6yLxFb/u
+         Uvmww63a5/ZjqeUquvgFAEMNlKEcNISwGHjWKNeMLWUEXn2dQH7DjhNaEKg1iNNa6zro
+         drI9+sV5Yyolacc5wequgp+RkcMYzvGrgglnnF4hX35gpl6rwFDWDdWclZOyYns17ZO+
+         qKD1Qbkv4+gL0n4ObjzKb/S3PloaVEMGFu7m6HWQiUtamYwzIXtiW2zpagZqwqPBBcK7
+         k25sBpTKMklbEpQAXAwNCcCBf/hmOFLXhlRt8rFqr7RJ+MBN/Hf7Py5FBd6mC/BCnY84
+         A+zg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692806773; x=1693411573;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=C7pbYc3cWzUuemTPAl/D1nSHc5zEIFeD9puZanDYIGs=;
+        b=T8tjswYYJMpXONDkvlcNtv3r7+4K0/f4B+Mc/ODZ+Iy3MZE9/Uk/cjhX/13eHlUaPu
+         nQLAdWeIuC70PFNUo4703Z1z1d2A4si6swAIukZap3VQ79MRA6EZvaFn0PxBisGn3PTA
+         YY+Xe/tt6SS01Yx1N98105l59zNDptgvMJNjNe3vgyGyaVaiIMKwGAb/Thx/loWljstQ
+         //GeZ7BzDyWDv3U97nNggBZ0Csz0tg+/1ZOxMtdefUh4xSgI9To+IzU95WwoYMnMcBO3
+         nFB5tJ4HvG6YSCSiS8u+/f2CP4mQkPgzXLBjfinQBiixf1ZUGOb8daeGlQ2YQy3KSCJA
+         gJ3g==
+X-Gm-Message-State: AOJu0Yx1F/Grc+ZB7pvqxHboxvdL0dpssN4yuCjRu10mJF4sRWenVS8G
+        Bz1XVEiZSq40Gvzhd3nMgEsYwMNUi96MBisl8jOlxQ==
+X-Google-Smtp-Source: AGHT+IGV1CYyxAdrvhOhjVX5heWnvD4h1VweRqaPWtGenmweevOV0fIK1K68madw/WFYQPk3NLfqn/Vo6ILUVZh/DSE=
+X-Received: by 2002:a05:622a:38f:b0:40f:d1f4:aa58 with SMTP id
+ j15-20020a05622a038f00b0040fd1f4aa58mr505066qtx.8.1692806773226; Wed, 23 Aug
+ 2023 09:06:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2023082303-balmy-bucktooth-f85b@gregkh>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20230817003029.3073210-1-rananta@google.com> <20230817003029.3073210-9-rananta@google.com>
+ <1c6c07af-f6d0-89a6-1b7d-164ca100ac88@redhat.com>
+In-Reply-To: <1c6c07af-f6d0-89a6-1b7d-164ca100ac88@redhat.com>
+From:   Raghavendra Rao Ananta <rananta@google.com>
+Date:   Wed, 23 Aug 2023 09:06:02 -0700
+Message-ID: <CAJHc60x=rZTpeJ3PDUWmc08Aziow6S+2nndcL90vHfru5GhXtA@mail.gmail.com>
+Subject: Re: [PATCH v5 08/12] KVM: arm64: PMU: Allow userspace to limit
+ PMCR_EL0.N for the guest
+To:     Shaoqin Huang <shahuang@redhat.com>
+Cc:     Oliver Upton <oliver.upton@linux.dev>,
+        Marc Zyngier <maz@kernel.org>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,24 +82,163 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 23, 2023 at 08:49:25AM +0200, Greg KH wrote:
-> On Tue, Aug 22, 2023 at 10:40:12PM -0300, Alexon Oliveira wrote:
-> > Fixed all CHECK: Unbalanced braces around else statement,
-> > CHECK: braces {} should be used on all arms of this statement,
-> > and CHECK: 'specificed' may be misspelled - perhaps 'specified'?
-> > as reported by checkpatch to adhere to the Linux kernel
-> > coding-style guidelines.
-> 
-> That's two different things, so that means it should be two different
-> patches.  Please send a patch series for this.
-> 
-
-ACK. I'm splitting them and resubmitting right now.
-
-> thanks,
-> 
-> greg k-h
+On Tue, Aug 22, 2023 at 3:06=E2=80=AFAM Shaoqin Huang <shahuang@redhat.com>=
+ wrote:
+>
+> Hi Raghavendra,
+>
+> On 8/17/23 08:30, Raghavendra Rao Ananta wrote:
+> > From: Reiji Watanabe <reijiw@google.com>
+> >
+> > KVM does not yet support userspace modifying PMCR_EL0.N (With
+> > the previous patch, KVM ignores what is written by upserspace).
+> > Add support userspace limiting PMCR_EL0.N.
+> >
+> > Disallow userspace to set PMCR_EL0.N to a value that is greater
+> > than the host value (KVM_SET_ONE_REG will fail), as KVM doesn't
+> > support more event counters than the host HW implements.
+> > Although this is an ABI change, this change only affects
+> > userspace setting PMCR_EL0.N to a larger value than the host.
+> > As accesses to unadvertised event counters indices is CONSTRAINED
+> > UNPREDICTABLE behavior, and PMCR_EL0.N was reset to the host value
+> > on every vCPU reset before this series, I can't think of any
+> > use case where a user space would do that.
+> >
+> > Also, ignore writes to read-only bits that are cleared on vCPU reset,
+> > and RES{0,1} bits (including writable bits that KVM doesn't support
+> > yet), as those bits shouldn't be modified (at least with
+> > the current KVM).
+> >
+> > Signed-off-by: Reiji Watanabe <reijiw@google.com>
+> > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> > ---
+> >   arch/arm64/include/asm/kvm_host.h |  3 ++
+> >   arch/arm64/kvm/pmu-emul.c         |  1 +
+> >   arch/arm64/kvm/sys_regs.c         | 49 +++++++++++++++++++++++++++++-=
+-
+> >   3 files changed, 51 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm=
+/kvm_host.h
+> > index 0f2dbbe8f6a7e..c15ec365283d1 100644
+> > --- a/arch/arm64/include/asm/kvm_host.h
+> > +++ b/arch/arm64/include/asm/kvm_host.h
+> > @@ -259,6 +259,9 @@ struct kvm_arch {
+> >       /* PMCR_EL0.N value for the guest */
+> >       u8 pmcr_n;
+> >
+> > +     /* Limit value of PMCR_EL0.N for the guest */
+> > +     u8 pmcr_n_limit;
+> > +
+> >       /* Hypercall features firmware registers' descriptor */
+> >       struct kvm_smccc_features smccc_feat;
+> >       struct maple_tree smccc_filter;
+> > diff --git a/arch/arm64/kvm/pmu-emul.c b/arch/arm64/kvm/pmu-emul.c
+> > index ce7de6bbdc967..39ad56a71ad20 100644
+> > --- a/arch/arm64/kvm/pmu-emul.c
+> > +++ b/arch/arm64/kvm/pmu-emul.c
+> > @@ -896,6 +896,7 @@ int kvm_arm_set_vm_pmu(struct kvm *kvm, struct arm_=
+pmu *arm_pmu)
+> >        * while the latter does not.
+> >        */
+> >       kvm->arch.pmcr_n =3D arm_pmu->num_events - 1;
+> > +     kvm->arch.pmcr_n_limit =3D arm_pmu->num_events - 1;
+> >
+> >       return 0;
+> >   }
+> > diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
+> > index 2075901356c5b..c01d62afa7db4 100644
+> > --- a/arch/arm64/kvm/sys_regs.c
+> > +++ b/arch/arm64/kvm/sys_regs.c
+> > @@ -1086,6 +1086,51 @@ static int get_pmcr(struct kvm_vcpu *vcpu, const=
+ struct sys_reg_desc *r,
+> >       return 0;
+> >   }
+> >
+> > +static int set_pmcr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *=
+r,
+> > +                 u64 val)
+> > +{
+> > +     struct kvm *kvm =3D vcpu->kvm;
+> > +     u64 new_n, mutable_mask;
+> > +     int ret =3D 0;
+> > +
+> > +     new_n =3D FIELD_GET(ARMV8_PMU_PMCR_N, val);
+> > +
+> > +     mutex_lock(&kvm->arch.config_lock);
+> > +     if (unlikely(new_n !=3D kvm->arch.pmcr_n)) {
+> > +             /*
+> > +              * The vCPU can't have more counters than the PMU
+> > +              * hardware implements.
+> > +              */
+> > +             if (new_n <=3D kvm->arch.pmcr_n_limit)
+> > +                     kvm->arch.pmcr_n =3D new_n;
+> > +             else
+> > +                     ret =3D -EINVAL;
+> > +     }
+> > +     mutex_unlock(&kvm->arch.config_lock);
+>
+> Another thing I am just wonder is that should we block any modification
+> to the pmcr_n after vm start to run? Like add one more checking
+> kvm_vm_has_ran_once() at the beginning of the set_pmcr() function.
+>
+Thanks for bringing it up. Reiji and I discussed about this. Checking
+for kvm_vm_has_ran_once() will be a good move, however, it will go
+against the ABI expectations of setting the PMCR. I'd like others to
+weigh in on this as well. What do you think?
 
 Thank you.
-
-Alexon Oliveira
+Raghavendra
+> Thanks,
+> Shaoqin
+>
+> > +     if (ret)
+> > +             return ret;
+> > +
+> > +     /*
+> > +      * Ignore writes to RES0 bits, read only bits that are cleared on
+> > +      * vCPU reset, and writable bits that KVM doesn't support yet.
+> > +      * (i.e. only PMCR.N and bits [7:0] are mutable from userspace)
+> > +      * The LP bit is RES0 when FEAT_PMUv3p5 is not supported on the v=
+CPU.
+> > +      * But, we leave the bit as it is here, as the vCPU's PMUver migh=
+t
+> > +      * be changed later (NOTE: the bit will be cleared on first vCPU =
+run
+> > +      * if necessary).
+> > +      */
+> > +     mutable_mask =3D (ARMV8_PMU_PMCR_MASK | ARMV8_PMU_PMCR_N);
+> > +     val &=3D mutable_mask;
+> > +     val |=3D (__vcpu_sys_reg(vcpu, r->reg) & ~mutable_mask);
+> > +
+> > +     /* The LC bit is RES1 when AArch32 is not supported */
+> > +     if (!kvm_supports_32bit_el0())
+> > +             val |=3D ARMV8_PMU_PMCR_LC;
+> > +
+> > +     __vcpu_sys_reg(vcpu, r->reg) =3D val;
+> > +     return 0;
+> > +}
+> > +
+> >   /* Silly macro to expand the DBG{BCR,BVR,WVR,WCR}n_EL1 registers in o=
+ne go */
+> >   #define DBG_BCR_BVR_WCR_WVR_EL1(n)                                  \
+> >       { SYS_DESC(SYS_DBGBVRn_EL1(n)),                                 \
+> > @@ -2147,8 +2192,8 @@ static const struct sys_reg_desc sys_reg_descs[] =
+=3D {
+> >       { SYS_DESC(SYS_CTR_EL0), access_ctr },
+> >       { SYS_DESC(SYS_SVCR), undef_access },
+> >
+> > -     { PMU_SYS_REG(PMCR_EL0), .access =3D access_pmcr,
+> > -       .reset =3D reset_pmcr, .reg =3D PMCR_EL0, .get_user =3D get_pmc=
+r },
+> > +     { PMU_SYS_REG(PMCR_EL0), .access =3D access_pmcr, .reset =3D rese=
+t_pmcr,
+> > +       .reg =3D PMCR_EL0, .get_user =3D get_pmcr, .set_user =3D set_pm=
+cr },
+> >       { PMU_SYS_REG(PMCNTENSET_EL0),
+> >         .access =3D access_pmcnten, .reg =3D PMCNTENSET_EL0 },
+> >       { PMU_SYS_REG(PMCNTENCLR_EL0),
+>
+> --
+> Shaoqin
+>
