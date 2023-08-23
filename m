@@ -2,339 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 868C0784E1B
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 03:20:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB7C2784E1D
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 03:22:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231983AbjHWBUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 21:20:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53914 "EHLO
+        id S231993AbjHWBWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 21:22:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229609AbjHWBUP (ORCPT
+        with ESMTP id S229609AbjHWBWR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 21:20:15 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83052CFF;
-        Tue, 22 Aug 2023 18:20:13 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1E43D62A48;
-        Wed, 23 Aug 2023 01:20:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5AF33C433C8;
-        Wed, 23 Aug 2023 01:20:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692753612;
-        bh=GIvn29gMcjhbraAI1SXkvPH9UMyalsHtGw2I8teQ5rQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PhzXQHEWqRBC3xqaLKrn1CwxhVfs5k2+dxBKsGfPfKdz2dW0FPwzvD7FItmTIEFih
-         aX8YeC/nuQCed7oKX5x9CoAtSdkSM+aIh/t40N944skEMZXPZQ56gPWZJhrsZr6TEH
-         7FW2tF9Ti2zZLvWDmGcJIWcS9C2lVG0fyF2QKZCITkIyxuTgokjGhfjI+SRTBP3kWe
-         7B5tpNgvSbekTzGNl07bRGWIUX86U9B93rfRBWiHexsi4zP3ZYm6tnG6I2e+kDW7oO
-         TnVOkcprh4UZ9prYzFBDal+zyF21EiFHYPBi2osqrvYIEvSpJA2m/m+ziCMGqcnEvF
-         DhAzylxwd/dXA==
-Date:   Tue, 22 Aug 2023 18:20:11 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     tglx@linutronix.de, peterz@infradead.org,
-        xfs <linux-xfs@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH] xfs: fix per-cpu CIL structure aggregation racing
- with dying cpus
-Message-ID: <20230823012011.GE11286@frogsfrogsfrogs>
-References: <20230804223854.GL11352@frogsfrogsfrogs>
- <ZOLzgBOuyWHapOyZ@dread.disaster.area>
- <20230822183016.GC11263@frogsfrogsfrogs>
- <ZOVEkMffTLXBJfmn@dread.disaster.area>
+        Tue, 22 Aug 2023 21:22:17 -0400
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A14EE45;
+        Tue, 22 Aug 2023 18:22:11 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RVpND5h7Nz4f40Qx;
+        Wed, 23 Aug 2023 09:22:04 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP4 (Coremail) with SMTP id gCh0CgDHVqk+X+VkH9VwBQ--.54452S3;
+        Wed, 23 Aug 2023 09:22:07 +0800 (CST)
+Subject: Re: md_raid: mdX_raid6 looping after sync_action "check" to "idle"
+ transition
+To:     Dragan Stancevic <dragan@stancevic.com>, song@kernel.org
+Cc:     buczek@molgen.mpg.de, guoqing.jiang@linux.dev,
+        it+raid@molgen.mpg.de, linux-kernel@vger.kernel.org,
+        linux-raid@vger.kernel.org, msmith626@gmail.com,
+        yukuai1@huaweicloud.com, "yukuai (C)" <yukuai3@huawei.com>,
+        "yangerkun@huawei.com" <yangerkun@huawei.com>
+References: <CAPhsuW6R11y6vETeZ4vmFGmV6DRrj2gwhp1-Nm+csvtHb2nQYg@mail.gmail.com>
+ <20230822211627.1389410-1-dragan@stancevic.com>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <ab757e2b-3ff0-33d9-d30c-61669b738664@huaweicloud.com>
+Date:   Wed, 23 Aug 2023 09:22:05 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZOVEkMffTLXBJfmn@dread.disaster.area>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230822211627.1389410-1-dragan@stancevic.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgDHVqk+X+VkH9VwBQ--.54452S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxWr45GrWUKryDtFWrXrWkJFb_yoW7JF1Upr
+        y5KF13tF4UJr1UAr1xtw10qay8tw1rXr1rXry5Xr18Xr1qgrnxtry7GrWUuFyDXr1Skr1j
+        qF1Iqa9xZr1DArJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9214x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
+        0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+        kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+        67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+        CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWr
+        Zr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYx
+        BIdaVFxhVjvjDU0xZFpf9x0JUZa9-UUUUU=
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        MAY_BE_FORGED,NICE_REPLY_A,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 23, 2023 at 09:28:16AM +1000, Dave Chinner wrote:
-> On Tue, Aug 22, 2023 at 11:30:16AM -0700, Darrick J. Wong wrote:
-> > On Mon, Aug 21, 2023 at 03:17:52PM +1000, Dave Chinner wrote:
-> > > On Fri, Aug 04, 2023 at 03:38:54PM -0700, Darrick J. Wong wrote:
-> > > > From: Darrick J. Wong <djwong@kernel.org>
-> > > > 
-> > > > In commit 7c8ade2121200 ("xfs: implement percpu cil space used
-> > > > calculation"), the XFS committed (log) item list code was converted to
-> > > > use per-cpu lists and space tracking to reduce cpu contention when
-> > > > multiple threads are modifying different parts of the filesystem and
-> > > > hence end up contending on the log structures during transaction commit.
-> > > > Each CPU tracks its own commit items and space usage, and these do not
-> > > > have to be merged into the main CIL until either someone wants to push
-> > > > the CIL items, or we run over a soft threshold and switch to slower (but
-> > > > more accurate) accounting with atomics.
-> > > > 
-> > > > Unfortunately, the for_each_cpu iteration suffers from the same race
-> > > > with cpu dying problem that was identified in commit 8b57b11cca88f
-> > > > ("pcpcntrs: fix dying cpu summation race") -- CPUs are removed from
-> > > > cpu_online_mask before the CPUHP_XFS_DEAD callback gets called.  As a
-> > > > result, both CIL percpu structure aggregation functions fail to collect
-> > > > the items and accounted space usage at the correct point in time.
-> > > > 
-> > > > If we're lucky, the items that are collected from the online cpus exceed
-> > > > the space given to those cpus, and the log immediately shuts down in
-> > > > xlog_cil_insert_items due to the (apparent) log reservation overrun.
-> > > > This happens periodically with generic/650, which exercises cpu hotplug
-> > > > vs. the filesystem code.
-> > > > 
-> > > > Applying the same sort of fix from 8b57b11cca88f to the CIL code seems
-> > > > to make the generic/650 problem go away, but I've been told that tglx
-> > > > was not happy when he saw:
-> > > > 
-> > > > "...the only thing we actually need to care about is that
-> > > > percpu_counter_sum() iterates dying CPUs. That's trivial to do, and when
-> > > > there are no CPUs dying, it has no addition overhead except for a
-> > > > cpumask_or() operation."
-> > > > 
-> > > > I have no idea what the /correct/ solution is, but I've been holding on
-> > > > to this patch for 3 months.  In that time, 8b57b11cca88 hasn't been
-> > > > reverted and cpu_dying_mask hasn't been removed, so I'm sending this and
-> > > > we'll see what happens.
-> > > > 
-> > > > So, how /do/ we perform periodic aggregation of per-cpu data safely?
-> > > > Move the xlog_cil_pcp_dead call to the dying section, where at least the
-> > > > other cpus will all be stopped?  And have it dump its items into any
-> > > > online cpu's data structure?
-> > > 
-> > > I suspect that we have to stop using for_each_*cpu() and hotplug
-> > > notifiers altogether for this code.
-> > > 
-> > > That is, we simply create our own bitmap for nr_possible_cpus in the
-> > > CIL checkpoint context we allocate for each checkpoint (i.e. the
-> > > struct xfs_cil_ctx). When we store something on that CPU for that
-> > > CIL context, we set the corresponding bit for that CPU. Then when we
-> > > are aggregating the checkpoint, we simply walk all the cpus with the
-> > > "has items" bit set and grab everything.
-> > > 
-> > > This gets rid of the need for hotplug notifiers completely - we just
-> > > don't care if the CPU is online or offline when we sweep the CIL
-> > > context for items at push time - if the bit is set then there's
-> > > stuff to sweep...
-> > 
-> > Oooh, good idea.  Something like this, then?  Lightly tested via
-> > generic/650 for five minutes...
-> 
-> Not quite what I was saying - you put the cpu mask in the struct
-> xfs_cil, which means it can potentially be accessed from both commit
-> and aggregation at the same time for different checkpoints.
-> 
-> What I was suggesting is that it gets placed in the struct
-> xfs_cil_ctx which is guaranteed to be private to
+Hi,
 
-private to...?
-
-> > 
-> > --
-> > From: Darrick J. Wong <djwong@kernel.org>
-> > Subject: [PATCH] xfs: fix per-cpu CIL structure aggregation racing with dying cpus
-> > 
-> > In commit 7c8ade2121200 ("xfs: implement percpu cil space used
-> > calculation"), the XFS committed (log) item list code was converted to
-> > use per-cpu lists and space tracking to reduce cpu contention when
-> > multiple threads are modifying different parts of the filesystem and
-> > hence end up contending on the log structures during transaction commit.
-> > Each CPU tracks its own commit items and space usage, and these do not
-> > have to be merged into the main CIL until either someone wants to push
-> > the CIL items, or we run over a soft threshold and switch to slower (but
-> > more accurate) accounting with atomics.
-> > 
-> > Unfortunately, the for_each_cpu iteration suffers from the same race
-> > with cpu dying problem that was identified in commit 8b57b11cca88f
-> > ("pcpcntrs: fix dying cpu summation race") -- CPUs are removed from
-> > cpu_online_mask before the CPUHP_XFS_DEAD callback gets called.  As a
-> > result, both CIL percpu structure aggregation functions fail to collect
-> > the items and accounted space usage at the correct point in time.
-> > 
-> > If we're lucky, the items that are collected from the online cpus exceed
-> > the space given to those cpus, and the log immediately shuts down in
-> > xlog_cil_insert_items due to the (apparent) log reservation overrun.
-> > This happens periodically with generic/650, which exercises cpu hotplug
-> > vs. the filesystem code:
-> > 
-> > smpboot: CPU 3 is now offline
-> > XFS (sda3): ctx ticket reservation ran out. Need to up reservation
-> > XFS (sda3): ticket reservation summary:
-> > XFS (sda3):   unit res    = 9268 bytes
-> > XFS (sda3):   current res = -40 bytes
-> > XFS (sda3):   original count  = 1
-> > XFS (sda3):   remaining count = 1
-> > XFS (sda3): Filesystem has been shut down due to log error (0x2).
-> > 
-> > Applying the same sort of fix from 8b57b11cca88f to the CIL code seems
-> > to make the generic/650 problem go away, but I've been told that tglx
-> > was not happy when he saw:
-> > 
-> > "...the only thing we actually need to care about is that
-> > percpu_counter_sum() iterates dying CPUs. That's trivial to do, and when
-> > there are no CPUs dying, it has no addition overhead except for a
-> > cpumask_or() operation."
-> > 
-> > The CPU hotplug code is rather complex and difficult to understand and I
-> > don't want to try to understand the cpu hotplug locking well enough to
-> > use cpu_dying mask.  Furthermore, there's a performance improvement that
-> > could be had here.  Attach a private cpu mask to the CIL structure so
-> > that we can track exactly which cpus have accessed the percpu data at
-> > all.  It doesn't matter if the cpu has since gone offline; log item
-> > aggregation will still find the items.  Better yet, we skip cpus that
-> > have not recently logged anything.
-> > 
-> > Link: https://lore.kernel.org/linux-xfs/ZOLzgBOuyWHapOyZ@dread.disaster.area/T/
-> > Link: https://lore.kernel.org/lkml/877cuj1mt1.ffs@tglx/
-> > Link: https://lore.kernel.org/lkml/20230414162755.281993820@linutronix.de/
-> > Cc: tglx@linutronix.de
-> > Cc: peterz@infradead.org
-> > Signed-off-by: Darrick J. Wong <djwong@kernel.org>
-> > ---
-> >  fs/xfs/xfs_log_cil.c  |   58 ++++++++++++++++++++-----------------------------
-> >  fs/xfs/xfs_log_priv.h |   15 ++++++-------
-> >  fs/xfs/xfs_super.c    |    1 -
-> >  3 files changed, 31 insertions(+), 43 deletions(-)
-> > 
-> > diff --git a/fs/xfs/xfs_log_cil.c b/fs/xfs/xfs_log_cil.c
-> > index eccbfb99e894..d91589a959ee 100644
-> > --- a/fs/xfs/xfs_log_cil.c
-> > +++ b/fs/xfs/xfs_log_cil.c
-> > @@ -124,7 +124,7 @@ xlog_cil_push_pcp_aggregate(
-> >  	struct xlog_cil_pcp	*cilpcp;
-> >  	int			cpu;
-> >  
-> > -	for_each_online_cpu(cpu) {
-> > +	for_each_cpu(cpu, &cil->xc_pcpmask) {
-> >  		cilpcp = per_cpu_ptr(cil->xc_pcp, cpu);
-> >  
-> >  		ctx->ticket->t_curr_res += cilpcp->space_reserved;
-> > @@ -165,7 +165,14 @@ xlog_cil_insert_pcp_aggregate(
-> >  	if (!test_and_clear_bit(XLOG_CIL_PCP_SPACE, &cil->xc_flags))
-> >  		return;
-> >  
-> > -	for_each_online_cpu(cpu) {
-> > +	/*
-> > +	 * We don't hold xc_push_lock here, so we can race with other cpus
-> > +	 * setting xc_pcpmask.  However, we've atomically cleared PCP_SPACE
-> > +	 * which forces other threads to add to the global space used count.
-> > +	 * xc_pcpmask is a superset of cilpcp structures that could have a
-> > +	 * nonzero space_used.
-> > +	 */
-> > +	for_each_cpu(cpu, &cil->xc_pcpmask) {
-> >  		int	old, prev;
+ÔÚ 2023/08/23 5:16, Dragan Stancevic Ð´µÀ:
+> On Tue, 3/28/23 17:01 Song Liu wrote:
+>> On Thu, Mar 16, 2023 at 8:25=E2=80=AFAM Marc Smith <msmith626@gmail.com>
+>> wr=
+>> ote:
+>>   >
+>>   > On Tue, Mar 14, 2023 at 10:45=E2=80=AFAM Marc Smith
+>> <msmith626@gmail.com>=
+>>    wrote:
+>>   > >
+>>   > > On Tue, Mar 14, 2023 at 9:55=E2=80=AFAM Guoqing Jiang
+>> <guoqing.jiang@li=
+>> nux.dev> wrote:
+>>   > > >
+>>   > > >
+>>   > > >
+>>   > > > On 3/14/23 21:25, Marc Smith wrote:
+>>   > > > > On Mon, Feb 8, 2021 at 7:49=E2=80=AFPM Guoqing Jiang
+>>   > > > > <guoqing.jiang@cloud.ionos.com> wrote:
+>>   > > > >> Hi Donald,
+>>   > > > >>
+>>   > > > >> On 2/8/21 19:41, Donald Buczek wrote:
+>>   > > > >>> Dear Guoqing,
+>>   > > > >>>
+>>   > > > >>> On 08.02.21 15:53, Guoqing Jiang wrote:
+>>   > > > >>>>
+>>   > > > >>>> On 2/8/21 12:38, Donald Buczek wrote:
+>>   > > > >>>>>> 5. maybe don't hold reconfig_mutex when try to unregister
+>>   > > > >>>>>> sync_thread, like this.
+>>   > > > >>>>>>
+>>   > > > >>>>>>           /* resync has finished, collect result */
+>>   > > > >>>>>>           mddev_unlock(mddev);
+>>   > > > >>>>>>           md_unregister_thread(&mddev->sync_thread);
+>>   > > > >>>>>>           mddev_lock(mddev);
+>>   > > > >>>>> As above: While we wait for the sync thread to terminate,
+>> would=
+>> n't it
+>>   > > > >>>>> be a problem, if another user space operation takes the mutex?
+>>   > > > >>>> I don't think other places can be blocked while hold mutex,
+>> othe=
+>> rwise
+>>   > > > >>>> these places can cause potential deadlock. Please try above
+>> two =
+>> lines
+>>   > > > >>>> change. And perhaps others have better idea.
+>>   > > > >>> Yes, this works. No deadlock after >11000 seconds,
+>>   > > > >>>
+>>   > > > >>> (Time till deadlock from previous runs/seconds: 1723, 37,
+>> 434, 12=
+>> 65,
+>>   > > > >>> 3500, 1136, 109, 1892, 1060, 664, 84, 315, 12, 820 )
+>>   > > > >> Great. I will send a formal patch with your reported-by and
+>> tested=
+>> -by.
+>>   > > > >>
+>>   > > > >> Thanks,
+>>   > > > >> Guoqing
+>>   > > > > I'm still hitting this issue with Linux 5.4.229 -- it looks
+>> like 1/=
+>> 2
+>>   > > > > of the patches that supposedly resolve this were applied to the
+>> sta=
+>> ble
+>>   > > > > kernels, however, one was omitted due to a regression:
+>>   > > > > md: don't unregister sync_thread with reconfig_mutex held
+>> (upstream
+>>   > > > > commit 8b48ec23cc51a4e7c8dbaef5f34ebe67e1a80934)
+>>   > > > >
+>>   > > > > I don't see any follow-up on the thread from June 8th 2022
+>> asking f=
+>> or
+>>   > > > > this patch to be dropped from all stable kernels since it caused a
+>>   > > > > regression.
+>>   > > > >
+>>   > > > > The patch doesn't appear to be present in the current mainline
+>> kern=
+>> el
+>>   > > > > (6.3-rc2) either. So I assume this issue is still present
+>> there, or=
+>>    it
+>>   > > > > was resolved differently and I just can't find the commit/patch.
+>>   > > >
+>>   > > > It should be fixed by commit 9dfbdafda3b3"md: unlock mddev before
+>> rea=
+>> p
+>>   > > > sync_thread in action_store".
+>>   > >
+>>   > > Okay, let me try applying that patch... it does not appear to be
+>>   > > present in my 5.4.229 kernel source. Thanks.
+>>   >
+>>   > Yes, applying this '9dfbdafda3b3 "md: unlock mddev before reap
+>>   > sync_thread in action_store"' patch on top of vanilla 5.4.229 source
+>>   > appears to fix the problem for me -- I can't reproduce the issue with
+>>   > the script, and it's been running for >24 hours now. (Previously I was
+>>   > able to induce the issue within a matter of minutes.)
+>>
+>> Hi Marc,
+>>
+>> Could you please run your reproducer on the md-tmp branch?
+>>
+>> https://git.kernel.org/pub/scm/linux/kernel/git/song/md.git/log/?h=3Dmd-tmp
+>>
+>> This contains a different version of the fix by Yu Kuai.
+>>
+>> Thanks,
+>> Song
+>>
 > 
-> I don't think the xc_push_lock means anything here; if we use atomic
-> bit ops to set the pcpmask it certainly doesn't. AFAICT, there
-> aren't any new races here by adding the private pcp mask. If we do
-> race, then the push aggregation will still correctly aggregate any
-> count that was missed on the global total...
-
-Agreed.
-
-> >  		cilpcp = per_cpu_ptr(cil->xc_pcp, cpu);
-> > @@ -186,6 +193,7 @@ xlog_cil_ctx_switch(
-> >  	xlog_cil_set_iclog_hdr_count(cil);
-> >  	set_bit(XLOG_CIL_EMPTY, &cil->xc_flags);
-> >  	set_bit(XLOG_CIL_PCP_SPACE, &cil->xc_flags);
-> > +	cpumask_clear(&cil->xc_pcpmask);
-> >  	ctx->sequence = ++cil->xc_current_sequence;
-> >  	ctx->cil = cil;
-> >  	cil->xc_ctx = ctx;
-> > @@ -554,6 +562,7 @@ xlog_cil_insert_items(
-> >  	int			iovhdr_res = 0, split_res = 0, ctx_res = 0;
-> >  	int			space_used;
-> >  	int			order;
-> > +	unsigned int		cpu_nr;
-> >  	struct xlog_cil_pcp	*cilpcp;
-> >  
-> >  	ASSERT(tp);
-> > @@ -579,6 +588,18 @@ xlog_cil_insert_items(
-> >  	 */
-> >  	cilpcp = get_cpu_ptr(cil->xc_pcp);
-> >  
-> > +	/*
-> > +	 * Add this cpu to the mask of cpus that could have touched xc_pcp.
-> > +	 * The push aggregation function is called with the push lock held,
-> > +	 * so take it here if we have to update the mask.
-> > +	 */
-> > +	cpu_nr = current_cpu();
-> > +	if (!cpumask_test_cpu(cpu_nr, &cil->xc_pcpmask)) {
-> > +		spin_lock(&cil->xc_push_lock);
-> > +		cpumask_set_cpu(cpu_nr, &cil->xc_pcpmask);
-> > +		spin_unlock(&cil->xc_push_lock);
-> > +	}
+> Hi Song, I can easily reproduce this issue on 5.10.133 and 5.10.53. The change
+> "9dfbdafda3b3 "md: unlock mddev before reap" does not fix the issue for me.
 > 
-> I don't think this needs a spin lock - an atomic test-and-set would
-> be just fine here (i.e. cpumask_test_and_set_cpu()) and so we only
-> need a single atomic operation here instead of two. i.e. make it a
-> test-test-and-set operation similar to clearing XLOG_CIL_EMPTY in
-> this fast path:
+> But I did pull the changes from the md-tmp branch you are refering:
+> https://git.kernel.org/pub/scm/linux/kernel/git/song/md.git/log/?h=3Dmd-tmp
 > 
-> 	if (!cpumask_test_cpu(cpu, &cil->xc_pcpmask))
-> 		cpumask_test_and_set_cpu(cpu_nr, &cil->xc_pcpmask);
+> I was not totally clear on which change exactly to pull, but I pulled
+> the following changes:
+> 2023-03-28 md: enhance checking in md_check_recovery()md-tmp	Yu Kuai	1 -7/+15
+> 2023-03-28 md: wake up 'resync_wait' at last in md_reap_sync_thread()	Yu Kuai	1 -1/+1
+> 2023-03-28 md: refactor idle/frozen_sync_thread()	Yu Kuai	2 -4/+22
+> 2023-03-28 md: add a mutex to synchronize idle and frozen in action_store()	Yu Kuai	2 -0/+8
+> 2023-03-28 md: refactor action_store() for 'idle' and 'frozen'	Yu Kuai	1 -16/+45
 > 
-> We also don't have to care about memory barriers, etc w.r.t the
-> push aggregate function because this is all done under the
-> cil->xc_ctx_lock held shared.
-
-Oh, hah.  I missed that cpumask_test_and_set_cpu is atomic, so we don't
-need the spinlock here at all.  Good catch!
-
-> Also, I think it would be better to put all this insert code
-> explicitly under a single defined preempt disabled per-cpu section,
-> rather than using current_cpu() inside the preempt disabled section
-> without commenting on why it can be used like this safely. i.e.:
+> I used to be able to reproduce the lockup within minutes, but with those
+> changes the test system has been running for more than 120 hours.
 > 
->         /*
-> 	 * Grab the cpu before we start any accounting.  That
-> 	 * ensures that we are running with pre-emption disabled and
-> 	 * so we can't be scheduled away between split sample/update
-> 	 * operations that are done without outside locking to
-> 	 * serialise them.
->          */
-> 	cpu = get_cpu();
-> 	cilpcp = this_cpu_ptr(cil->xc_pcp);
+> When you said a "different fix", can you confirm that I grabbed the right
+> changes and that I need all 5 of them.
+
+Yes, you grabbed the right changes, and these patches is merged to
+linux-next as well.
 > 
-> 	/* Tell the future push it has work to do on this CPU. */
-> 	if (!cpumask_test_cpu(cpu, &cil->xc_pcpmask))
-> 		cpumask_test_and_set_cpu(cpu, &cil->xc_pcpmask);
-> 	....
-> 	<done with cilpcp>
-> 	put_cpu(cpu);
+> And second question was, has this fix been submitted upstream yet?
+> If so which kernel version?
 
-Much cleaner, thanks for the suggestion.
+This fix is currently in linux-next, and will be applied to v6.6-rc1
+soon.
 
-> .....
+Thanks,
+Kuai
+
 > 
-> > diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
-> > index 09638e8fb4ee..ef7775657ce3 100644
-> > --- a/fs/xfs/xfs_super.c
-> > +++ b/fs/xfs/xfs_super.c
-> > @@ -2313,7 +2313,6 @@ xfs_cpu_dead(
-> >  	list_for_each_entry_safe(mp, n, &xfs_mount_list, m_mount_list) {
-> >  		spin_unlock(&xfs_mount_list_lock);
-> >  		xfs_inodegc_cpu_dead(mp, cpu);
-> > -		xlog_cil_pcp_dead(mp->m_log, cpu);
-> >  		spin_lock(&xfs_mount_list_lock);
-> >  	}
-> >  	spin_unlock(&xfs_mount_list_lock);
+> Thank you
 > 
-> I wonder if we can do something similar for the inodegc code, and
-> once again get rid of the need for hotpulg notifiers in XFS?
-
-I would imagine so, if you don't mind bloating up xfs_mount.
-
---D
-
-> Cheers,
 > 
-> Dave.
-> -- 
-> Dave Chinner
-> david@fromorbit.com
+> .
+> 
+
