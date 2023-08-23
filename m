@@ -2,146 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56D54785967
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 15:33:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4881A785969
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 15:33:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236010AbjHWNda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 09:33:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59724 "EHLO
+        id S236017AbjHWNdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 09:33:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229635AbjHWNd2 (ORCPT
+        with ESMTP id S236037AbjHWNde (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 09:33:28 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D419CDF
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 06:33:00 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-991c786369cso750338066b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 06:33:00 -0700 (PDT)
+        Wed, 23 Aug 2023 09:33:34 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 876E3E4A
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 06:33:08 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-68a3f0a7092so3108054b3a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 06:33:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1692797544; x=1693402344;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gVkiAWQf02hIjXS1/nDmuDjVF+ZUw+QGWFD4hGm2aLY=;
-        b=aIDFRIbQ7V5SgLqH1ESBjTIQWXUV0Zv1y9Qj2HWdRNdDpX+J9VJY5OkeEHY3lWvF2D
-         MSk2kJJtniz6HTeZbjYYjAerkV+dx2nXyqKf9sJjOYfrghgw0HCe0AprInxYZt/lIJm6
-         oeoW04h7z6H6+3eJWUiv02oWdjZpqI5h0dugY=
+        d=gmail.com; s=20221208; t=1692797565; x=1693402365;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xv5eVKePCA5KFSpA2pd5w6RyWeOWdv6lLQse6vIRw0g=;
+        b=d0rgYS8Y+6I1+6cozNjw+GCbqT2zjh8JbBLG+5cUq6a7l8pa16P7H7MhNGEeYzzkOm
+         l4owq0Keli6qT4oZNQX5IDcU/SrmoNm85FbK+7kl2MSMZJczgQC0MOS6NOElJ4Vligka
+         LQ5XQKtSN07khtSl7L+wx0+27mqT6nH0NCIiKh7OfyDFr7A+whwjzWmXU1QzfmrLIVL1
+         tdvZdaamBtkdSXIMRjB4ubOddSASK1EU5lhzV9T6Ko0MhnWtaiEgwiKD5WcA6hDeOt47
+         oC2jHxemd/cNAi+BqwrNVD8MNZp4CQtXwamK3h5qSyx8e8X1RFTiGjapTB/ACvAmoBLZ
+         HEEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692797544; x=1693402344;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gVkiAWQf02hIjXS1/nDmuDjVF+ZUw+QGWFD4hGm2aLY=;
-        b=cFTq3nL2JxVaiLV/DZvck8FRDGlfHaKC54G9R782RGpz54Co3iPaPwjTe1XMqGOTY6
-         20NX8QeLih+rYSYcNgHnG1e6pWyCnzlqBeSXhDuYGAzuveFak/aPS0/6jkRIEWISTy1N
-         R0URKQ3RpVvlCdlHsjPcu5OhOoovNM/yKuUzjH/bFkYozokute8ir0akR8hDfZUcXicl
-         lqAnZE8K2dKeaO7BXIykV9BzW3RxtIlWF+D82kAp9HZ+3AvrkAuIwXUpybrCPbXOtAg7
-         Qajc7hFD5C7ZdGVmgMH6d8nyNHAxm+7oF1f9ICAFUB0uG8ZJ17byGB6IvC64t5c44Ygx
-         Gb+g==
-X-Gm-Message-State: AOJu0YxZU5zg3K4BVKF0pAR01kIRZh7twyFOffAaQ/2co7+X7+KMoHYW
-        5afJNSNCdRpZs2pSHpRoI8pevsyS/cawhPI91EZxKsaf
-X-Google-Smtp-Source: AGHT+IFZLB6alkkEt8zgGliu5JVfV2H1ZuAYCEEyI/etF0kIOVQXY7CVe7m+hhEZKRPRU/7JDOHXJw==
-X-Received: by 2002:a17:906:53cd:b0:99c:20f0:dec0 with SMTP id p13-20020a17090653cd00b0099c20f0dec0mr9804236ejo.43.1692797544012;
-        Wed, 23 Aug 2023 06:32:24 -0700 (PDT)
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com. [209.85.208.42])
-        by smtp.gmail.com with ESMTPSA id i12-20020a1709061ccc00b00991e2b5a27dsm9821752ejh.37.2023.08.23.06.32.23
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Aug 2023 06:32:23 -0700 (PDT)
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-51e24210395so13400a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 06:32:23 -0700 (PDT)
-X-Received: by 2002:a50:9f21:0:b0:525:573c:6444 with SMTP id
- b30-20020a509f21000000b00525573c6444mr288342edf.1.1692797543237; Wed, 23 Aug
- 2023 06:32:23 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692797565; x=1693402365;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xv5eVKePCA5KFSpA2pd5w6RyWeOWdv6lLQse6vIRw0g=;
+        b=TdhlnPMdZb+huUTPVWWEhMwWD5UcF2JvKolXnLmzZMwoie6+A/eumVN3/9p/O/tgna
+         rJ64ZpzdqdyJ06LMAcDTKEExf8zKuCNxLcyScEN0vGf4QtQXRMdhCZ03v3zQdO8uV4mM
+         umQ/dUpC84HqxYOjGUaKLgs49NjiRdjJo2LhNhuYLkLR58szPnGN3AbuDPyjlZhsjOdB
+         hElRV6ePFhAvxx2XJTvh2n3isDjY1L2S5VAKnmv2WDPGUdFbd3ADTJsyX2iJvbzyOh+U
+         C7iHtyOiF1dMById9+ff9BMZOQY2ph9j3uxzjYdxsPdAL9yju20cs/0umdreW01AbZdE
+         0M0Q==
+X-Gm-Message-State: AOJu0YylwGw8/mhDpROSrjF0yFyl3oQvcY+DOeiDp9YA/B1gltp1nPJw
+        ky8c//cOBB9mA38BhpnputU=
+X-Google-Smtp-Source: AGHT+IE81MW+dSvaXdO6AZ/Q5CDuianMLXm+d6NIWse2tOCvqLNqSdjiZ2QP2U/ORRuxCdQJXu3NOA==
+X-Received: by 2002:a05:6a00:2d08:b0:688:45a0:eb22 with SMTP id fa8-20020a056a002d0800b0068845a0eb22mr13346538pfb.1.1692797565242;
+        Wed, 23 Aug 2023 06:32:45 -0700 (PDT)
+Received: from ubuntu.myguest.virtualbox.org ([122.162.51.13])
+        by smtp.gmail.com with ESMTPSA id a21-20020aa780d5000000b00689f10adef9sm9569926pfn.67.2023.08.23.06.32.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Aug 2023 06:32:44 -0700 (PDT)
+Date:   Wed, 23 Aug 2023 19:02:40 +0530
+From:   Pavan Bobba <opensource206@gmail.com>
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     Forest Bond <forest@alittletooquiet.net>,
+        Michael Straube <straube.linux@gmail.com>,
+        Philipp Hortmann <philipp.g.hortmann@gmail.com>,
+        outreachy@lists.linux.dev, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] staging: vt6655: replace camel case by snake case
+Message-ID: <ZOYKePdysbxp8lDy@ubuntu.myguest.virtualbox.org>
+References: <ZOYBM9t0agzTKWwz@ubuntu.myguest.virtualbox.org>
+ <alpine.DEB.2.22.394.2308231457310.3210@hadrien>
 MIME-Version: 1.0
-References: <20230823071306.131373-1-sheng-liang.pan@quanta.corp-partner.google.com>
- <20230823151005.v6.2.I8f20fdfe34a2e8a38373bbd65587754b324f3dcb@changeid>
-In-Reply-To: <20230823151005.v6.2.I8f20fdfe34a2e8a38373bbd65587754b324f3dcb@changeid>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 23 Aug 2023 06:32:10 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=VKDpZkssNjPzgb62-WUaCU_Y7bqcdGDZrAgH5RFatp-A@mail.gmail.com>
-Message-ID: <CAD=FV=VKDpZkssNjPzgb62-WUaCU_Y7bqcdGDZrAgH5RFatp-A@mail.gmail.com>
-Subject: Re: [PATCH v6 2/2] arm64: dts: qcom: sc7180: Add sku_id and board id
- for lazor/limozeen
-To:     Sheng-Liang Pan <sheng-liang.pan@quanta.corp-partner.google.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        cros-qcom-dts-watchers@chromium.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.22.394.2308231457310.3210@hadrien>
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Aug 23, 2023 at 02:58:38PM +0200, Julia Lawall wrote:
+> 
+> >  		}
+> > -		if ((wDelay < W_MAX_TIMEOUT) &&
+> > -		    (!(byWait & I2MCSR_NACK))) {
+> > +		if ((delay < W_MAX_TIMEOUT) &&
+> 
+> Maybe the W_ should also be dropped?
+even non staging driver have this
+https://elixir.bootlin.com/linux/v6.5-rc7/source/drivers/net/ethernet/via/via-velocity.h#L959
 
-On Wed, Aug 23, 2023 at 12:13=E2=80=AFAM Sheng-Liang Pan
-<sheng-liang.pan@quanta.corp-partner.google.com> wrote:
->
-> SKU ID 10: Lazor LTE+Wifi, no-esim (Strapped 0 X 0)
-> SKU ID 15: Limozeen LTE+Wifi, TS, no esim (Strapped 1 X 0)
-> SKU ID 18: Limozeen LTE+Wifi, no TS, no esim (Strapped X 0 0)
->
-> Even though the "no esim" boards are strapped differently than
-> ones that have an esim, the esim isn't represented in the
-> device tree so the same device tree can be used for LTE w/ esim
-> and LTE w/out esim.
->
-> add BRD_ID(0, Z, 0) =3D 10 for new board with ALC5682i-VS
->
-> Signed-off-by: Sheng-Liang Pan <sheng-liang.pan@quanta.corp-partner.googl=
-e.com>
-> ---
-> This patch base on patch[1] which move trogdor rt5682s bits to a fragment=
-.
->
-> [1] https://lore.kernel.org/r/20230816112143.1.I7227efd47e0dc42b6ff243bd2=
-2aa1a3e01923220@changeid/
->
-> Changes in v6:
-> - commit update, add dependent patch link
-> - remove unnecessary symbol
-> - sort out the order of properties
->
-> Changes in v5:
-> - include rt5682s node for new board version 10
->
-> Changes in v4:
-> - combine pathc2 and patch3
->
-> Changes in v3:
-> - sort out the node order alphabetically
->
-> Changes in v2:
-> - add new entry rev9 with Parade bridge chip
-> - correct newly create dts files
->
->  arch/arm64/boot/dts/qcom/Makefile             |  5 +++
->  ...sc7180-trogdor-lazor-limozeen-nots-r10.dts | 29 ++++++++++++
->  .../sc7180-trogdor-lazor-limozeen-nots-r9.dts |  6 +--
->  .../sc7180-trogdor-lazor-limozeen-r10.dts     | 45 +++++++++++++++++++
->  .../qcom/sc7180-trogdor-lazor-limozeen-r9.dts | 10 ++---
->  .../dts/qcom/sc7180-trogdor-lazor-r10-kb.dts  | 23 ++++++++++
->  .../dts/qcom/sc7180-trogdor-lazor-r10-lte.dts | 27 +++++++++++
->  .../dts/qcom/sc7180-trogdor-lazor-r10.dts     | 19 ++++++++
->  .../dts/qcom/sc7180-trogdor-lazor-r9-kb.dts   |  4 +-
->  .../dts/qcom/sc7180-trogdor-lazor-r9-lte.dts  |  4 +-
->  .../boot/dts/qcom/sc7180-trogdor-lazor-r9.dts |  4 +-
->  11 files changed, 162 insertions(+), 14 deletions(-)
+> >   *  Out:
+> > - *      pbyEepromRegs   - EEPROM content Buffer
+> > + *      eepromregs   - EEPROM content Buffer
+> 
+> Here you could add some spaces to get the - EEPROM to line up with the
+> rest.  Likewise later.
+> 
+> julia
 
-It would have been fine to keep my Reviewed-by with just the minor
-changes that Konrad requested, but giving it again anyway:
+ok 
 
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> >   *
+> >   * Return Value: none
+> >   *
+> >   */
+> > -void SROMvReadAllContents(void __iomem *iobase, unsigned char *pbyEepromRegs)
+> > +void SROMvReadAllContents(void __iomem *iobase, unsigned char *eepromregs)
+> >  {
+> >  	int     ii;
+> >
+> >  	/* ii = Rom Address */
+> >  	for (ii = 0; ii < EEP_MAX_CONTEXT_SIZE; ii++) {
+> > -		*pbyEepromRegs = SROMbyReadEmbedded(iobase,
+> > +		*eepromregs = SROMbyReadEmbedded(iobase,
+> >  						    (unsigned char)ii);
+> > -		pbyEepromRegs++;
+> > +		eepromregs++;
+> >  	}
+> >  }
+> >
+> > @@ -122,19 +122,19 @@ void SROMvReadAllContents(void __iomem *iobase, unsigned char *pbyEepromRegs)
+> >   *  In:
+> >   *      iobase          - I/O base address
+> >   *  Out:
+> > - *      pbyEtherAddress - Ethernet Address buffer
+> > + *      etheraddress - Ethernet Address buffer
+> >   *
+> >   * Return Value: none
+> >   *
+> >   */
+> >  	}
+> >  }
+> > --
+> > 2.34.1
+> >
+> >
+> >
