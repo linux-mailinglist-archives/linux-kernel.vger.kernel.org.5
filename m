@@ -2,221 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFF52785D49
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 18:30:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F8EB785D47
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 18:30:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237591AbjHWQac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 12:30:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48496 "EHLO
+        id S237578AbjHWQaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 12:30:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237195AbjHWQaa (ORCPT
+        with ESMTP id S236790AbjHWQaX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 12:30:30 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EC67E78;
-        Wed, 23 Aug 2023 09:30:27 -0700 (PDT)
+        Wed, 23 Aug 2023 12:30:23 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D748CEE;
+        Wed, 23 Aug 2023 09:30:21 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0E844665C9;
-        Wed, 23 Aug 2023 16:30:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34BD7C433CA;
-        Wed, 23 Aug 2023 16:30:26 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DBC5365F75;
+        Wed, 23 Aug 2023 16:30:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3576C433C8;
+        Wed, 23 Aug 2023 16:30:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692808226;
-        bh=JbHQzMfTju097ssW3eXYCC3joHrbhFisQqAAa3GjgPQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=iZgvOdQmburvEeZjI/G2qqd7/g3Y+YyiSbRWxalCSBCTp/K1w/ZlKE2nabVSPF/lF
-         5gbpIc8l1RLlprMovInmBUFC/GY6HTJuEv512HM+OdD25EoJgWIpPppAykx6eL0SyD
-         NysNQ6d+TjFroMa7YHlvFzYJ7DyONJGfwxKce8EGYLXJp9ahx66jTfNU+Pt6LnR7Ed
-         NaN1AUCsa5LeZYyggKg/WbCk9dOsiP1RAjz3j9L6JXeQFkA9OERjIE3RweMZahdjo7
-         z10JRziPqHRYPi658t2GFXWTKuN1dDe8NKBCcRxBLI8AMqlX3KT+6T9B5A64C7F5r0
-         o7GeWIi+5uNpQ==
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-50043cf2e29so6453366e87.2;
-        Wed, 23 Aug 2023 09:30:26 -0700 (PDT)
-X-Gm-Message-State: AOJu0YziSiFQl/RnH0NKnImxeJJ7ZdEFPAmysY19Koww6f6iBvFgZZS8
-        TBysHwgyhWtj58O0A9XmY/Uxw6Ynz1w25AmUZEw=
-X-Google-Smtp-Source: AGHT+IFFbjR680KqVm45CX2LAjjEgqrOHfUpdg/o4e4Hpzj4iDJ29K0NsYIVM20gtTbjwb4xhUXulysYKsK7xSGQeQw=
-X-Received: by 2002:a05:6512:4026:b0:4ff:80d4:e132 with SMTP id
- br38-20020a056512402600b004ff80d4e132mr11276839lfb.29.1692808224007; Wed, 23
- Aug 2023 09:30:24 -0700 (PDT)
+        s=k20201202; t=1692808220;
+        bh=/WNbAnXi1d84e4EcnwObfxpDd7ZV1PyLpDQTUQsVaxI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mFQhuer6//gvdHElRxQ88TaN4iNbhTvGbwFuKgP858Ruh+tIybUTOpPkoTTP1SA55
+         icx8xugunlul7FqKazAD67zGBXhrA9XxgM8u9CJRoUmF7I2UgIVa6OPhMf623a8A7I
+         I/0j912q3/HHepG7lyEPUxFndrWIyRfzynQbOT5TmyO6hO0mkLUOOXIK0X9DULEwHu
+         wXTp3Hpuh4wrffmhgxr4S7ZRSbAUjOSinz5houFERhoK8o8d+cqIzfdSPAGRGpqSjO
+         ej0nUKA0c8mSwL2MYsE/JRCTyUzKqfAAP/I/JztsivDWShdZHVNexHati3KZO0Xe2q
+         bwE7Txea0p6mw==
+Date:   Wed, 23 Aug 2023 18:30:17 +0200
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Rahul Rameshbabu <rrameshbabu@nvidia.com>,
+        syzbot <syzbot+3a0ebe8a52b89c63739d@syzkaller.appspotmail.com>,
+        davidgow@google.com, gregkh@linuxfoundation.org,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rydberg@bitmath.org, syzkaller-bugs@googlegroups.com,
+        benjamin.tissoires@redhat.com
+Subject: Re: [syzbot] [input?] KASAN: slab-use-after-free Read in
+ input_dev_uevent
+Message-ID: <tl5fg66tvvql7iebgqvivdfqqovs3chimgji5ovnebxsj3mb7n@n3lyz2exou3w>
+References: <00000000000035beba060371a468@google.com>
+ <ijh2qmdtj452nq3idu2tohkrmfwr2qhbhrnyqzxjkkw2lrby53@v2dffcqdohsx>
+ <878ra3m5my.fsf@nvidia.com>
+ <nqrdxdcvuhvcs2syjfhcp5fbk4ckgzibc3izxknvsrka3kres6@ae65hqx67c4u>
+ <ZOYAtI5KttKQnLWs@google.com>
+ <y3hfjc227wouzraa4hyltyfd4athig5rmna2uwjqy6v23yzkad@wdmzmochmsve>
+ <ZOYd1R3Bx2IToWfb@google.com>
 MIME-Version: 1.0
-References: <20230822162350.1.I96423a31e88428004c2f4a28ccad13828adf433e@changeid>
-In-Reply-To: <20230822162350.1.I96423a31e88428004c2f4a28ccad13828adf433e@changeid>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 23 Aug 2023 18:30:12 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXHkrRvUbzdNg7WGmBPFW8MtnhEsSy1FOk4GZzVZ1H4fTw@mail.gmail.com>
-Message-ID: <CAMj1kXHkrRvUbzdNg7WGmBPFW8MtnhEsSy1FOk4GZzVZ1H4fTw@mail.gmail.com>
-Subject: Re: [PATCH] kernel: Add Mount Option For Efivarfs
-To:     Jiao Zhou <jiaozhou@google.com>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Peter Jones <pjones@redhat.com>
-Cc:     linux-fsdevel@vger.kernel.org, Jeremy Kerr <jk@ozlabs.org>,
-        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="5i7ms4oadi6z2cgm"
+Content-Disposition: inline
+In-Reply-To: <ZOYd1R3Bx2IToWfb@google.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(cc Peter and Matthew)
 
-On Tue, 22 Aug 2023 at 18:24, Jiao Zhou <jiaozhou@google.com> wrote:
+--5i7ms4oadi6z2cgm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Aug 23, 2023 at 07:55:17AM -0700, Dmitry Torokhov wrote:
+> On Wed, Aug 23, 2023 at 03:16:02PM +0200, Maxime Ripard wrote:
+> > On Wed, Aug 23, 2023 at 05:51:00AM -0700, Dmitry Torokhov wrote:
+> > > On Wed, Aug 23, 2023 at 09:44:22AM +0200, Maxime Ripard wrote:
+> > > > On Tue, Aug 22, 2023 at 08:57:41AM -0700, Rahul Rameshbabu wrote:
+> > > > > On Tue, 22 Aug, 2023 11:12:28 +0200 Maxime Ripard <mripard@kernel=
+=2Eorg> wrote:
+> > > > > > Hi,
+> > > > > >
+> > > > > > So, we discussed it this morning with Benjamin, and I think the=
+ culprit
+> > > > > > is that the uclogic driver will allocate a char array with devm=
+_kzalloc
+> > > > > > in uclogic_input_configured()
+> > > > > > (https://elixir.bootlin.com/linux/latest/source/drivers/hid/hid=
+-uclogic-core.c#L149),
+> > > > > > and will assign input_dev->name to that pointer.
+> > > > > >
+> > > > > > When the device is removed, the devm-allocated array is freed, =
+and the
+> > > > > > input framework will send a uevent in input_dev_uevent() using =
+the
+> > > > > > input_dev->name field:
+> > > > > >
+> > > > > > https://elixir.bootlin.com/linux/latest/source/drivers/input/in=
+put.c#L1688
+> > > > > >
+> > > > > > So it's a classic dangling pointer situation.
+> > > > > >
+> > > > > > And even though it was revealed by that patch, I think the issu=
+e is
+> > > > > > unrelated. The fundamental issue seems to be that the usage of =
+devm in
+> > > > > > that situation is wrong.
+> > > > > >
+> > > > > > input_dev->name is accessed by input_dev_uevent, which for KOBJ=
+_UNBIND
+> > > > > > and KOBJ_REMOVE will be called after remove.
+> > > > > >
+> > > > > > For example, in __device_release_driver() (with the driver remo=
+ve hook
+> > > > > > being called in device_remove() and devres_release_all() being =
+called in
+> > > > > > device_unbind_cleanup()):
+> > > > > > https://elixir.bootlin.com/linux/latest/source/drivers/base/dd.=
+c#L1278
+> > > > > >
+> > > > > > So, it looks to me that, with or without the patch we merged re=
+cently,
+> > > > > > the core has always sent uevent after device-managed resources =
+were
+> > > > > > freed. Thus, the uclogic (and any other input driver) was wrong=
+ in
+> > > > > > allocating its input_dev name with devm_kzalloc (or the phys an=
+d uniq
+> > > > > > fields in that struct).
+> > > > > >
+> > > > > > Note that freeing input_dev->name in remove would have been jus=
+t as bad.
+> > > > > >
+> > > > > > Looking at the code quickly, at least hid-playstation,
+> > > > > > hid-nvidia-shield, hid-logitech-hidpp, mms114 and tsc200x seem =
+to be
+> > > > > > affected by the same issue.
+> > > > >=20
+> > > > > I agree with this analysis overall. At least in hid-nvidia-shield=
+, I can
+> > > > > not use devm for allocating the input name string and explicitly =
+free it
+> > > > > after calling input_unregister_device. In this scenario, the name=
+ string
+> > > > > would have been freed explicitly after input_put_device was called
+> > > > > (since the input device is not devres managed). input_put_device =
+would
+> > > > > drop the reference count to zero and the device would be cleaned =
+up at
+> > > > > that point triggering KOBJ_REMOVE and firing off that final
+> > > > > input_dev_uevent.
+> > > > >=20
+> > > > > I think this can be done for a number of the drivers as a workaro=
+und
+> > > > > till this issue is properly resolved. If this seems appropriate, =
+I can
+> > > > > send out a series later in the day. This is just a workaround til=
+l the
+> > > > > discussion below converges (which I am interested in).
+> > > >=20
+> > > > I'm sorry, I don't know the input framework well enough to understa=
+nd
+> > > > what you had in mind exactly. Could you send a patch with your
+> > > > suggestion for the hid-nvidia-shield so we can discuss this further?
+> > > >=20
+> > > > That being said, I think that the current design around name, phys =
+and
+> > > > uniq is fairly treacherous to drivers and we should aim for a solut=
+ion
+> > > > that prevents that issue from being possible at all.
+> > > >=20
+> > > > I was inclined to go for a char array for each to get rid of the po=
+inter
+> > > > entirely, but Benjamin raised some concerns over the structure size=
+ so
+> > > > it's probably not a great solution.
+> > >=20
+> > > I think everything is much simpler, with uclogic driver being in the
+> > > wrong here: devm resource needs to be attached to the right device
+> > > (instance of HID) rather than to the input device itself (which should
+> > > never have any driver resources attached since it never has a driver).
+> > > Something like this:
+> > >=20
+> > > diff --git a/drivers/hid/hid-uclogic-core.c b/drivers/hid/hid-uclogic=
+-core.c
+> > > index f67835f9ed4c..f234a7c97360 100644
+> > > --- a/drivers/hid/hid-uclogic-core.c
+> > > +++ b/drivers/hid/hid-uclogic-core.c
+> > > @@ -148,7 +148,7 @@ static int uclogic_input_configured(struct hid_de=
+vice *hdev,
+> > > =20
+> > >  	if (suffix) {
+> > >  		len =3D strlen(hdev->name) + 2 + strlen(suffix);
+> > > -		name =3D devm_kzalloc(&hi->input->dev, len, GFP_KERNEL);
+> > > +		name =3D devm_kzalloc(&hdev->dev, len, GFP_KERNEL);
+> > >  		if (name) {
+> > >  			snprintf(name, len, "%s %s", hdev->name, suffix);
+> > >  			hi->input->name =3D name;
+> > >=20
+> > > In general, drivers should attach devm resources they allocate to the
+> > > instance of device they are binding to, and nothing else.
+> >=20
+> > I'm not sure that's enough unfortunately. The fundamental issue here
+> > seems to be that input_dev_uevent follows a pointer that can be
+> > allocated by the driver, and will be free'd before the last call to
+> > input_dev_uevent.
+>=20
+> Yes, this is a fundamental property of C pointers - you should not free
+> them before exiting last code section that may reference them. For input
+> devices it means that pointers should not be freed until after
+> input_unregister_device() is called.
+>=20
+> I.e. you have sequence like this:
+>=20
+> 	driver_data =3D kzalloc(...);
+> 	driver_data->input_name =3D kstrdup(...);
+> 	driver_data->input_phys =3D kstrdup(...);
+> 	input =3D input_allocate_device();
+> 	input->name =3D driver_data->input_name;
+> 	input->phys =3D driver_data->input_phys;
+> 	input_register_device(input);
+> 	...
+>=20
+> 	input_unregister_device(input);
+> 	kfree(driver_data->input_name);
+> 	kfree(driver_data->input_phys);
+> 	kfree(driver_data);
 >
-> Add uid and gid in efivarfs's mount option, so that
-> we can mount the file system with ownership. This approach
-> is used by a number of other filesystems that don't have
-> native support for ownership
->
-> Signed-off-by: Jiao Zhou <jiaozhou@google.com>
-> ---
->
->  fs/efivarfs/inode.c    |  4 ++++
->  fs/efivarfs/internal.h |  9 +++++++
->  fs/efivarfs/super.c    | 54 ++++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 67 insertions(+)
->
-> diff --git a/fs/efivarfs/inode.c b/fs/efivarfs/inode.c
-> index b973a2c03dde..86175e229b0f 100644
-> --- a/fs/efivarfs/inode.c
-> +++ b/fs/efivarfs/inode.c
-> @@ -20,9 +20,13 @@ struct inode *efivarfs_get_inode(struct super_block *sb,
->                                 const struct inode *dir, int mode,
->                                 dev_t dev, bool is_removable)
->  {
-> +       struct efivarfs_fs_info *fsi = sb->s_fs_info;
->         struct inode *inode = new_inode(sb);
-> +       struct efivarfs_mount_opts *opts = &fsi->mount_opts;
->
->         if (inode) {
-> +               inode->i_uid = opts->uid;
-> +               inode->i_gid = opts->gid;
->                 inode->i_ino = get_next_ino();
->                 inode->i_mode = mode;
->                 inode->i_atime = inode->i_mtime = inode->i_ctime = current_time(inode);
-> diff --git a/fs/efivarfs/internal.h b/fs/efivarfs/internal.h
-> index 8ebf3a6a8aa2..2c7b6b24df19 100644
-> --- a/fs/efivarfs/internal.h
-> +++ b/fs/efivarfs/internal.h
-> @@ -48,6 +48,15 @@ bool efivar_validate(efi_guid_t vendor, efi_char16_t *var_name, u8 *data,
->  bool efivar_variable_is_removable(efi_guid_t vendor, const char *name,
->                                   size_t len);
->
-> +struct efivarfs_mount_opts {
-> +       kuid_t uid;
-> +       kgid_t gid;
-> +};
-> +
-> +struct efivarfs_fs_info {
-> +       struct efivarfs_mount_opts mount_opts;
-> +};
-> +
->  extern const struct file_operations efivarfs_file_operations;
->  extern const struct inode_operations efivarfs_dir_inode_operations;
->  extern bool efivarfs_valid_name(const char *str, int len);
-> diff --git a/fs/efivarfs/super.c b/fs/efivarfs/super.c
-> index e028fafa04f3..e3c81fac8208 100644
-> --- a/fs/efivarfs/super.c
-> +++ b/fs/efivarfs/super.c
-> @@ -8,6 +8,7 @@
->  #include <linux/efi.h>
->  #include <linux/fs.h>
->  #include <linux/fs_context.h>
-> +#include <linux/fs_parser.h>
->  #include <linux/module.h>
->  #include <linux/pagemap.h>
->  #include <linux/ucs2_string.h>
-> @@ -60,10 +61,27 @@ static int efivarfs_statfs(struct dentry *dentry, struct kstatfs *buf)
->
->         return 0;
->  }
-> +static int efivarfs_show_options(struct seq_file *m, struct dentry *root)
-> +{
-> +       struct super_block *sb = root->d_sb;
-> +       struct efivarfs_fs_info *sbi = sb->s_fs_info;
-> +       struct efivarfs_mount_opts *opts = &sbi->mount_opts;
-> +
-> +       /* Show partition info */
-> +       if (!uid_eq(opts->uid, GLOBAL_ROOT_UID))
-> +               seq_printf(m, ",uid=%u",
-> +                               from_kuid_munged(&init_user_ns, opts->uid));
-> +       if (!gid_eq(opts->gid, GLOBAL_ROOT_GID))
-> +               seq_printf(m, ",gid=%u",
-> +                               from_kgid_munged(&init_user_ns, opts->gid));
-> +       return 0;
-> +}
-> +
->  static const struct super_operations efivarfs_ops = {
->         .statfs = efivarfs_statfs,
->         .drop_inode = generic_delete_inode,
->         .evict_inode = efivarfs_evict_inode,
-> +       .show_options   = efivarfs_show_options,
->  };
->
->  /*
-> @@ -225,6 +243,40 @@ static int efivarfs_destroy(struct efivar_entry *entry, void *data)
->         return 0;
->  }
->
-> +enum {
-> +       Opt_uid, Opt_gid,
-> +};
-> +
-> +static const struct fs_parameter_spec efivarfs_parameters[] = {
-> +       fsparam_u32("uid",                      Opt_uid),
-> +       fsparam_u32("gid",                      Opt_gid),
-> +};
-> +
-> +static int efivarfs_parse_param(struct fs_context *fc, struct fs_parameter *param)
-> +{
-> +       struct efivarfs_fs_info *sbi = fc->s_fs_info;
-> +       struct efivarfs_mount_opts *opts = &sbi->mount_opts;
-> +       struct fs_parse_result result;
-> +       int opt;
-> +
-> +       opt = fs_parse(fc, efivarfs_parameters, param, &result);
-> +       if (opt < 0)
-> +               return opt;
-> +
-> +       switch (opt) {
-> +       case Opt_uid:
-> +               opts->uid = make_kuid(current_user_ns(), result.uint_32);
-> +               break;
-> +       case Opt_gid:
-> +               opts->gid = make_kgid(current_user_ns(), result.uint_32);
-> +               break;
-> +       default:
-> +               return -EINVAL;
-> +       }
-> +
-> +       return 0;
-> +}
-> +
->  static int efivarfs_fill_super(struct super_block *sb, struct fs_context *fc)
->  {
->         struct inode *inode = NULL;
-> @@ -271,6 +323,7 @@ static int efivarfs_get_tree(struct fs_context *fc)
->
->  static const struct fs_context_operations efivarfs_context_ops = {
->         .get_tree       = efivarfs_get_tree,
-> +       .parse_param    = efivarfs_parse_param,
->  };
->
->  static int efivarfs_init_fs_context(struct fs_context *fc)
-> @@ -295,6 +348,7 @@ static struct file_system_type efivarfs_type = {
->         .name    = "efivarfs",
->         .init_fs_context = efivarfs_init_fs_context,
->         .kill_sb = efivarfs_kill_sb,
-> +       .parameters             = efivarfs_parameters,
->  };
->
->  static __init int efivarfs_init(void)
-> --
-> 2.42.0.rc1.204.g551eb34607-goog
->
+> devm typically helps with resources being freed at the right time, but
+> for that the managed resources should be attached to the *correct
+> device*, with correct device being one the driver is binding to, not any
+> random device structure.
+
+Thanks, I see what you mean now. It looks good to me indeed :)
+
+Maxime
+
+--5i7ms4oadi6z2cgm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZOY0GQAKCRDj7w1vZxhR
+xWbnAP9xu6t3POw9pX7tQmBHlLnx5QfpTpmrlDdcPxPmtJ+I8gEA0m+NNHUYA7HZ
+UXEexqqeR8Q+tJWc3Jk9+8l2hGSZcgE=
+=Wy/V
+-----END PGP SIGNATURE-----
+
+--5i7ms4oadi6z2cgm--
