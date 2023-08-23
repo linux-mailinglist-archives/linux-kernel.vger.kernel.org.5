@@ -2,120 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C2BC7860DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 21:43:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60CEA7860E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 21:44:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238363AbjHWTmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 15:42:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41598 "EHLO
+        id S238365AbjHWTo0 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 23 Aug 2023 15:44:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238377AbjHWTmW (ORCPT
+        with ESMTP id S233413AbjHWTnx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 15:42:22 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D5CDE6E;
-        Wed, 23 Aug 2023 12:42:20 -0700 (PDT)
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37NHxWPW031929;
-        Wed, 23 Aug 2023 19:42:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2023-03-30; bh=vmKNLJDuNsAz30h05ydMQimPh1tgOAbfXHtIErZ3kXg=;
- b=g6eb7F/0bGbQlgbbcecF19lnUDmOewLvh6/tt7swaDuPyLFTb5wSXbfr+FG/EFI2Vhdz
- 7C0gYakB05WMj6JjLPC4fUs19n/GcTjpg1xFyDoeZ1m0BAp/DD1QuNJ6z6D4wJjownJr
- rfBcw2e1wDtFM8W6Gi6uR3j5QNKXlPZLsDciqnSTj37vkuuwK/B6xKInxJG+r+e6hjZb
- NJoyEY57WqoD3FBCmyaO4IMPEg7SRv+YwHnOgW8xmiFbz7OII5ytv5AZlWMhxGQNRCQr
- I0boZAnHZALpqUsZmoeMibQYgNUzVazgO0lAlIkVL+jL4B3z8cpJNfFkiNxTh/OI89fO bQ== 
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3sn1yu2q6v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 23 Aug 2023 19:42:09 +0000
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 37NIwQWN033197;
-        Wed, 23 Aug 2023 19:42:08 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3sn1yvhj2h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 23 Aug 2023 19:42:08 +0000
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37NJg8Kr024393;
-        Wed, 23 Aug 2023 19:42:08 GMT
-Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.129.136.47])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3sn1yvhj15-1;
-        Wed, 23 Aug 2023 19:42:08 +0000
-From:   Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-To:     dmitry.baryshkov@linaro.org,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Liao Chang <liaochang1@huawei.com>,
-        Todor Tomov <todor.too@gmail.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>, Wolfram Sang <wsa@kernel.org>,
-        linux-i2c@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     dan.carpenter@linaro.org, kernel-janitors@vger.kernel.org,
-        error27@gmail.com, harshit.m.mogalapalli@oracle.com,
-        vegard.nossum@oracle.com
-Subject: [PATCH next] i2c: qcom-cci: Fix error checking in cci_probe()
-Date:   Wed, 23 Aug 2023 12:42:02 -0700
-Message-ID: <20230823194202.2280957-1-harshit.m.mogalapalli@oracle.com>
-X-Mailer: git-send-email 2.41.0
+        Wed, 23 Aug 2023 15:43:53 -0400
+Received: from relay02.th.seeweb.it (relay02.th.seeweb.it [5.144.164.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7121610CB
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 12:43:51 -0700 (PDT)
+Received: from [192.168.2.144] (bband-dyn125.178-40-246.t-com.sk [178.40.246.125])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 48BE1203FB;
+        Wed, 23 Aug 2023 21:43:46 +0200 (CEST)
+Date:   Wed, 23 Aug 2023 21:43:40 +0200
+From:   Martin Botka <martin.botka@somainline.org>
+Subject: Re: [PATCH v2 2/3] thermal: sun8i: Add support for H616 THS
+ controller
+To:     Jernej =?iso-8859-2?q?=A9krabec?= <jernej.skrabec@gmail.com>
+Cc:     Vasily Khoruzhick <anarsoul@gmail.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Samuel Holland <samuel@sholland.org>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Andre Przywara <andre.przywara@arm.com>,
+        Alan Ma <tech@biqu3d.com>,
+        Luke Harrison <bttuniversity@biqu3d.com>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Martin Botka <martin@biqu3d.com>
+Message-Id: <S40VZR.495H1PJ1FSZO3@somainline.org>
+In-Reply-To: <21986607.EfDdHjke4D@jernej-laptop>
+References: <20230821-ths-h616-v2-0-cda60d556798@somainline.org>
+        <20230821-ths-h616-v2-2-cda60d556798@somainline.org>
+        <21986607.EfDdHjke4D@jernej-laptop>
+X-Mailer: geary/43.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-23_14,2023-08-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0 bulkscore=0
- suspectscore=0 mlxscore=0 malwarescore=0 adultscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
- definitions=main-2308230179
-X-Proofpoint-GUID: CUfOwl5W092Su6ntIrYGo2rTnOFimzJl
-X-Proofpoint-ORIG-GUID: CUfOwl5W092Su6ntIrYGo2rTnOFimzJl
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-2; format=flowed
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-devm_clk_bulk_get_all() can return zero when no clocks are obtained.
-Passing zero to dev_err_probe() is a success which is incorrect.
 
-Fixes: 605efbf43813 ("i2c: qcom-cci: Use dev_err_probe in probe function")
-Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
----
-Only compile tested, found by static analysis with smatch.
 
-https://lore.kernel.org/all/CAA8EJprTOjbOy7N5+8NiJaNNhK+_btdUUFcpHKPkMuCZj5umMA@mail.gmail.com/
-^^ I reported initially here, Dmitry suggested we need to fix it in a
-different patch.
+On Wed, Aug 23 2023 at 09:38:30 PM +02:00:00, Jernej ©krabec 
+<jernej.skrabec@gmail.com> wrote:
+> Dne ponedeljek, 21. avgust 2023 ob 16:03:47 CEST je Martin Botka 
+> napisal(a):
+>>  Add support for the thermal sensor found in H616 SoC
+>>  which slightly resembles the H6 thermal sensor
+>>  controller with few changes like 4 sensors.
+>> 
+>>  Signed-off-by: Martin Botka <martin.botka@somainline.org>
+>>  ---
+>>   drivers/thermal/sun8i_thermal.c | 74
+>>  +++++++++++++++++++++++++++++++++++++++++ 1 file changed, 74 
+>> insertions(+)
+>> 
+>>  diff --git a/drivers/thermal/sun8i_thermal.c
+>>  b/drivers/thermal/sun8i_thermal.c index 195f3c5d0b38..cf96ab6a445b 
+>> 100644
+>>  --- a/drivers/thermal/sun8i_thermal.c
+>>  +++ b/drivers/thermal/sun8i_thermal.c
+>>  @@ -278,6 +278,66 @@ static int sun50i_h6_ths_calibrate(struct 
+>> ths_device
+>>  *tmdev, return 0;
+>>   }
+>> 
+>>  +static int sun50i_h616_ths_calibrate(struct ths_device *tmdev,
+>>  +				     u16 *caldata, int callen)
+>>  +{
+>>  +	struct device *dev = tmdev->dev;
+>>  +	int i, ft_temp;
+>>  +
+>>  +	if (!caldata[0])
+>>  +		return -EINVAL;
+>>  +
+>>  +	/*
+>>  +	 * h616 efuse THS calibration data layout:
+>>  +	 *
+>>  +	 * 0      11  16     27   32     43   48    57
+>>  +	 * +----------+-----------+-----------+-----------+
+>>  +	 * |  temp |  |sensor0|   |sensor1|   |sensor2|   |
+>>  +	 * +----------+-----------+-----------+-----------+
+>>  +	 *                      ^           ^           ^
+>>  +	 *                      |           |           |
+>>  +	 *                      |           |           sensor3[11:8]
+>>  +	 *                      |           sensor3[7:4]
+>>  +	 *                      sensor3[3:0]
+>>  +	 *
+>>  +	 * The calibration data on the H616 is the ambient temperature and
+>>  +	 * sensor values that are filled during the factory test stage.
+>>  +	 *
+>>  +	 * The unit of stored FT temperature is 0.1 degree celsius.
+>>  +	 */
+>>  +	ft_temp = caldata[0] & FT_TEMP_MASK;
+>>  +
+>>  +	for (i = 0; i < tmdev->chip->sensor_num; i++) {
+>>  +		int delta, cdata, offset, reg;
+>>  +
+>>  +		if (i == 3)
+>>  +			reg = (caldata[1] >> 12)
+>>  +			      | ((caldata[2] >> 12) << 4)
+>>  +			      | ((caldata[3] >> 12) << 8);
+>>  +		else
+>>  +			reg = (int)caldata[i + 1] & TEMP_CALIB_MASK;
+>>  +
+>>  +		int sensor_temp = tmdev->chip->calc_temp(tmdev, i, reg);
+> 
+> Variable declaration should be done at the beginning of code block.
+Hello Jernej,
 
-the Fixes commit used above pointed this bug, but the real fixes tag is this:
-Fixes: e517526195de ("i2c: Add Qualcomm CCI I2C driver")
----
- drivers/i2c/busses/i2c-qcom-cci.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Indeed. Will fix in next revision :)
 
-diff --git a/drivers/i2c/busses/i2c-qcom-cci.c b/drivers/i2c/busses/i2c-qcom-cci.c
-index cf13abec05f1..414882c57d7f 100644
---- a/drivers/i2c/busses/i2c-qcom-cci.c
-+++ b/drivers/i2c/busses/i2c-qcom-cci.c
-@@ -588,8 +588,10 @@ static int cci_probe(struct platform_device *pdev)
- 	/* Clocks */
- 
- 	ret = devm_clk_bulk_get_all(dev, &cci->clocks);
--	if (ret < 1)
-+	if (ret < 0)
- 		return dev_err_probe(dev, ret, "failed to get clocks\n");
-+	else if (!ret)
-+		return dev_err_probe(dev, -EINVAL, "not enough clocks in DT\n");
- 	cci->nclocks = ret;
- 
- 	/* Retrieve CCI clock rate */
--- 
-2.39.3
+Cheers,
+Martin
+> 
+> Best regards,
+> Jernej
+> 
+>>  +
+>>  +		delta = (sensor_temp - ft_temp * 100) * 10;
+>>  +		delta /= tmdev->chip->scale;
+>>  +		cdata = CALIBRATE_DEFAULT - delta;
+>>  +		if (cdata & ~TEMP_CALIB_MASK) {
+>>  +			dev_warn(dev, "sensor%d is not calibrated.
+> \n", i);
+>>  +
+>>  +			continue;
+>>  +		}
+>>  +
+>>  +		offset = (i % 2) * 16;
+>>  +		regmap_update_bits(tmdev->regmap,
+>>  +				   SUN50I_H6_THS_TEMP_CALIB + (i /
+> 2 * 4),
+>>  +				   TEMP_CALIB_MASK << offset,
+>>  +				   cdata << offset);
+>>  +	}
+>>  +
+>>  +	return 0;
+>>  +}
+>>  +
+>>   static int sun8i_ths_calibrate(struct ths_device *tmdev)
+>>   {
+>>   	struct nvmem_cell *calcell;
+>>  @@ -608,6 +668,19 @@ static const struct ths_thermal_chip 
+>> sun50i_h6_ths = {
+>>   	.calc_temp = sun8i_ths_calc_temp,
+>>   };
+>> 
+>>  +static const struct ths_thermal_chip sun50i_h616_ths = {
+>>  +	.sensor_num = 4,
+>>  +	.has_bus_clk_reset = true,
+>>  +	.ft_deviation = 8000,
+>>  +	.offset = 263655,
+>>  +	.scale = 810,
+>>  +	.temp_data_base = SUN50I_H6_THS_TEMP_DATA,
+>>  +	.calibrate = sun50i_h616_ths_calibrate,
+>>  +	.init = sun50i_h6_thermal_init,
+>>  +	.irq_ack = sun50i_h6_irq_ack,
+>>  +	.calc_temp = sun8i_ths_calc_temp,
+>>  +};
+>>  +
+>>   static const struct of_device_id of_ths_match[] = {
+>>   	{ .compatible = "allwinner,sun8i-a83t-ths", .data =
+> &sun8i_a83t_ths },
+>>   	{ .compatible = "allwinner,sun8i-h3-ths", .data = &sun8i_h3_ths },
+>>  @@ -616,6 +689,7 @@ static const struct of_device_id of_ths_match[] 
+>> = {
+>>   	{ .compatible = "allwinner,sun50i-a100-ths", .data =
+> &sun50i_a100_ths },
+>>   	{ .compatible = "allwinner,sun50i-h5-ths", .data = &sun50i_h5_ths
+> },
+>>   	{ .compatible = "allwinner,sun50i-h6-ths", .data = &sun50i_h6_ths
+> },
+>>  +	{ .compatible = "allwinner,sun50i-h616-ths", .data =
+> &sun50i_h616_ths },
+>>   	{ /* sentinel */ },
+>>   };
+>>   MODULE_DEVICE_TABLE(of, of_ths_match);
+> 
+> 
+> 
+> 
+
 
