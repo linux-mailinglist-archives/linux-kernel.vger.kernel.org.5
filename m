@@ -2,38 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A124786333
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 00:11:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9229786331
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 00:10:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238559AbjHWWLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 18:11:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41862 "EHLO
+        id S238552AbjHWWJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 18:09:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238555AbjHWWKy (ORCPT
+        with ESMTP id S238539AbjHWWJY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 18:10:54 -0400
-X-Greylist: delayed 601 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 23 Aug 2023 15:10:51 PDT
-Received: from yyz.mikelr.com (yyz.mikelr.com [170.75.163.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45FF7E6E;
-        Wed, 23 Aug 2023 15:10:51 -0700 (PDT)
-Received: from glidewell.ykf.mikelr.com (unknown [IPv6:2607:f2c0:e554:3f00:c018:4aba:e7e5:c2b1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by yyz.mikelr.com (Postfix) with ESMTPSA id B9B2868C18;
-        Wed, 23 Aug 2023 17:52:50 -0400 (EDT)
-From:   Mikel Rychliski <mikel@mikelr.com>
-To:     Ard Biesheuvel <ardb@kernel.org>, Ingo Molnar <mingo@kernel.org>
-Cc:     Mikel Rychliski <mikel@mikelr.com>, linux-efi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] x86/efistub: Fix PCI ROM preservation in mixed mode
-Date:   Wed, 23 Aug 2023 17:51:58 -0400
-Message-Id: <20230823215159.29082-1-mikel@mikelr.com>
-X-Mailer: git-send-email 2.35.3
+        Wed, 23 Aug 2023 18:09:24 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52443E68
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 15:09:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692828563; x=1724364563;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=F7xLTsJqFb5+CBDRtTHdJoFfEtc1Xi82HpVWJCok8A0=;
+  b=J+lNuAM0szzVJOYxzpdlmyYCmSfslJSkVdYXo8T37bnivbLGxWGFQtH2
+   +hPWr4viObfptzF0r9JsrH0JVB2yZuI2EKjS0Oy7ojExIVNXxzM6VhCmq
+   kzQLBLv96R6w/bYdo/CKCZsR/ZNisYi3c/DPUBCLJaf2hqmmivwKDdYmD
+   dt2Yz3B444SUc/vWCmJ4o3lomtOalXYZornAgN9iICUZttOWztR9Hg3ch
+   wyHGoGfZn6UCdY6uiAUkejxH0HrpNYCyFVwSS1bPdpfdRCo6cQogFn5WO
+   ZJCnQCDA6IPsIDyX26dNuRqpzVEOqyMeXNkkKry4ea9v+NW1YfzlPSUCE
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="354614494"
+X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
+   d="scan'208";a="354614494"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2023 15:09:22 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="802298732"
+X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
+   d="scan'208";a="802298732"
+Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
+  by fmsmga008.fm.intel.com with ESMTP; 23 Aug 2023 15:09:21 -0700
+Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qYw2T-0001Xg-0S;
+        Wed, 23 Aug 2023 22:09:21 +0000
+Date:   Thu, 24 Aug 2023 06:08:34 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: drivers/base/regmap/regmap-raw-ram.c:24:24: sparse: sparse: cast to
+ restricted __be16
+Message-ID: <202308240651.5l5Q4csN-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -41,30 +62,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-preserve_pci_rom_image() was accessing the romsize field in
-efi_pci_io_protocol_t directly instead of using the efi_table_attr()
-helper. This prevents the ROM image from being saved correctly during a
-mixed mode boot.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   a5e505a99ca748583dbe558b691be1b26f05d678
+commit: 65dd2f671875b1d97b6fa9bcf7677f5e1c55f776 regmap: Provide a ram backed regmap with raw support
+date:   2 months ago
+config: i386-randconfig-061-20230823 (https://download.01.org/0day-ci/archive/20230824/202308240651.5l5Q4csN-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20230824/202308240651.5l5Q4csN-lkp@intel.com/reproduce)
 
-Fixes: 2c3625cb9fa2 ("efi/x86: Fold __setup_efi_pci32() and __setup_efi_pci64() into one function")
-Signed-off-by: Mikel Rychliski <mikel@mikelr.com>
----
- drivers/firmware/efi/libstub/x86-stub.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308240651.5l5Q4csN-lkp@intel.com/
 
-diff --git a/drivers/firmware/efi/libstub/x86-stub.c b/drivers/firmware/efi/libstub/x86-stub.c
-index e976288728e9..2fee52ed335d 100644
---- a/drivers/firmware/efi/libstub/x86-stub.c
-+++ b/drivers/firmware/efi/libstub/x86-stub.c
-@@ -72,7 +72,7 @@ preserve_pci_rom_image(efi_pci_io_protocol_t *pci, struct pci_setup_rom **__rom)
- 	rom->data.type	= SETUP_PCI;
- 	rom->data.len	= size - sizeof(struct setup_data);
- 	rom->data.next	= 0;
--	rom->pcilen	= pci->romsize;
-+	rom->pcilen	= romsize;
- 	*__rom = rom;
- 
- 	status = efi_call_proto(pci, pci.read, EfiPciIoWidthUint16,
+sparse warnings: (new ones prefixed by >>)
+>> drivers/base/regmap/regmap-raw-ram.c:24:24: sparse: sparse: cast to restricted __be16
+>> drivers/base/regmap/regmap-raw-ram.c:26:24: sparse: sparse: cast to restricted __le16
+
+vim +24 drivers/base/regmap/regmap-raw-ram.c
+
+    18	
+    19	static unsigned int decode_reg(enum regmap_endian endian, const void *reg)
+    20	{
+    21		const u16 *r = reg;
+    22	
+    23		if (endian == REGMAP_ENDIAN_BIG)
+  > 24			return be16_to_cpu(*r);
+    25		else
+  > 26			return le16_to_cpu(*r);
+    27	}
+    28	
+
 -- 
-2.35.3
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
