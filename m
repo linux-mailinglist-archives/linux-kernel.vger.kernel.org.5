@@ -2,178 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A87078580F
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 14:51:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1B12785814
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 14:51:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235051AbjHWMvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 08:51:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54912 "EHLO
+        id S230526AbjHWMvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 08:51:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232211AbjHWMvI (ORCPT
+        with ESMTP id S232211AbjHWMvr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 08:51:08 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB4C1CD2;
-        Wed, 23 Aug 2023 05:51:04 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-68a3e271491so2688739b3a.0;
-        Wed, 23 Aug 2023 05:51:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692795064; x=1693399864;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=qw20Fq1hanjYGZIx2Ayv95MH0Xa2Yp73KlZZlOdt5jI=;
-        b=iVXbEOC0Bwp4i+vBVX3XVSt3RvckvADWcWt0X0ek8tfN8CrzteDJ0GWo7+xFLTuUYk
-         pyvfqfBC0SseQLQxc3yWZP9rMY6oqoAbBRi8Ik3eXtvVrxZMbmBmmSf8WCTRdr7EHTSm
-         Ohqtf2maVDUN00REHCbhrsxOb5wquzGHgIKbNFxwQr/FNPuDfEndS7yu00IMEWS6qMPt
-         ucAQXRcR6v3odBtiRUpsfVHxWSySl+2oKSDyMoQwQR7aqatPoFJZ6lew+bWJNLOuNl99
-         jkayUMj3NtqhvHzV+asE0SegYZFqddcJKRZJUU2QlKt3tuqVDGRsekFGuzN2lxYb151d
-         ePng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692795064; x=1693399864;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qw20Fq1hanjYGZIx2Ayv95MH0Xa2Yp73KlZZlOdt5jI=;
-        b=lwQZuki44ezOu6d2HaWAL417CfuF00ADJ4G8pQMLJ15/Gn7gENYOO3goDHRlLsSJxb
-         tyWw3PAmot6J2l5dBEACKJn5gzykb7cw+hNgoMVJ9a0npd7C1pe7yu/XE3ueDzdtdcv2
-         rgoJktVdSpLFmEWaH6gwSHVg+MtfWGQ4q/pQaerhOUE4xRYAikAAjtGbsotA2mc+z6br
-         b5EQ2UyUOqV/SJDmhuRKeVAbKFFuw6vhaF97NaAxzn/0zMEEaAYSg2h7jR/gFurxEHnq
-         XR1NF8MfLHqSifAfwzgvIDglJUiYKeFfUyqly8ksQV2vzyMERv3VNGQZ1q4+BFaJR3Rq
-         BtOg==
-X-Gm-Message-State: AOJu0Yyl4Bn3uT2BXP3JjDihV5+eAn38z3YGV9rdUn2uv+pdwKTOswzK
-        tfBIcYWceTOEvzm9CrwbZM8=
-X-Google-Smtp-Source: AGHT+IGGN6d5zLJz11JDfvlI4pkl3U7BE2VepAM3zBw+s+cwITNMxKvmbGcO+IebVrSlA8/kVcyjlQ==
-X-Received: by 2002:a05:6a20:8e1c:b0:149:8cc1:f30b with SMTP id y28-20020a056a208e1c00b001498cc1f30bmr6198806pzj.38.1692795063969;
-        Wed, 23 Aug 2023 05:51:03 -0700 (PDT)
-Received: from google.com ([2620:15c:9d:2:ee3c:9990:bc14:d56e])
-        by smtp.gmail.com with ESMTPSA id fm25-20020a056a002f9900b00689f3d73639sm5657662pfb.65.2023.08.23.05.51.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Aug 2023 05:51:03 -0700 (PDT)
-Date:   Wed, 23 Aug 2023 05:51:00 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Maxime Ripard <mripard@kernel.org>
-Cc:     Rahul Rameshbabu <rrameshbabu@nvidia.com>,
-        syzbot <syzbot+3a0ebe8a52b89c63739d@syzkaller.appspotmail.com>,
-        davidgow@google.com, gregkh@linuxfoundation.org,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rydberg@bitmath.org, syzkaller-bugs@googlegroups.com,
-        benjamin.tissoires@redhat.com
-Subject: Re: [syzbot] [input?] KASAN: slab-use-after-free Read in
- input_dev_uevent
-Message-ID: <ZOYAtI5KttKQnLWs@google.com>
-References: <00000000000035beba060371a468@google.com>
- <ijh2qmdtj452nq3idu2tohkrmfwr2qhbhrnyqzxjkkw2lrby53@v2dffcqdohsx>
- <878ra3m5my.fsf@nvidia.com>
- <nqrdxdcvuhvcs2syjfhcp5fbk4ckgzibc3izxknvsrka3kres6@ae65hqx67c4u>
+        Wed, 23 Aug 2023 08:51:47 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FAEEE47;
+        Wed, 23 Aug 2023 05:51:46 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A14E8645AF;
+        Wed, 23 Aug 2023 12:51:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4984C433C8;
+        Wed, 23 Aug 2023 12:51:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692795104;
+        bh=aIGZdAZfibpwOhOBqgFa8nf151J9Hk7d7fWvjMeY4zc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=khDVpCaQdQhHesYs9RGRpVlvH8eWo3qrAoJKrfl6rCMMNb3+VNdzi5pk2+Le8Y9ph
+         pjjFWBvFAjVLuMOHcw6ky5TwIBqzGIeijbo2SRxr602ZcPxbmBg0NBa4El+5f1jRbr
+         uQ8Gdwk7KGPF1ZuROilSORtcM8Q8jen2QoY/J5xt8KrtGhe6i09i87Gj80vGx+LwzA
+         Y4GMrP0i8eRT/b1xndfov0OxmF2Cz4oGiGH00guo7/YhFkDyuUKDLBQ8t5uExGCnkM
+         CfV0NIyavGSn7UdSBpuE5djPSMDymoFZn4E8QzB6e0N2EDt8dObvj+9ZSIZtzI6gMq
+         dbRiW9VbzcTqQ==
+Date:   Wed, 23 Aug 2023 13:51:35 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Szabolcs Nagy <Szabolcs.Nagy@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Shuah Khan <shuah@kernel.org>,
+        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
+        Deepak Gupta <debug@rivosinc.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        "H.J. Lu" <hjl.tools@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v4 03/36] arm64/gcs: Document the ABI for Guarded Control
+ Stacks
+Message-ID: <227e6552-353c-40a9-86c1-280587a40e3c@sirena.org.uk>
+References: <20230807-arm64-gcs-v4-0-68cfa37f9069@kernel.org>
+ <20230807-arm64-gcs-v4-3-68cfa37f9069@kernel.org>
+ <ZNOhjrYleGBR6Pbs@arm.com>
+ <f4cec4b3-c386-4873-aa1d-90528e062f2a@sirena.org.uk>
+ <ZN+qki9EaZ6f9XNi@arm.com>
+ <aaea542c-929c-4c9b-8caa-ca67e0eb9c1e@sirena.org.uk>
+ <ZOTnL1SDJWZjHPUW@arm.com>
+ <43ec219d-bf20-47b8-a5f8-32bc3b64d487@sirena.org.uk>
+ <ZOXa98SqwYPwxzNP@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="UdmTiHBngnlr6cvp"
 Content-Disposition: inline
-In-Reply-To: <nqrdxdcvuhvcs2syjfhcp5fbk4ckgzibc3izxknvsrka3kres6@ae65hqx67c4u>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ZOXa98SqwYPwxzNP@arm.com>
+X-Cookie: Some optional equipment shown.
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 23, 2023 at 09:44:22AM +0200, Maxime Ripard wrote:
-> Hi Rahul,
-> 
-> On Tue, Aug 22, 2023 at 08:57:41AM -0700, Rahul Rameshbabu wrote:
-> > On Tue, 22 Aug, 2023 11:12:28 +0200 Maxime Ripard <mripard@kernel.org> wrote:
-> > > Hi,
-> > >
-> > > So, we discussed it this morning with Benjamin, and I think the culprit
-> > > is that the uclogic driver will allocate a char array with devm_kzalloc
-> > > in uclogic_input_configured()
-> > > (https://elixir.bootlin.com/linux/latest/source/drivers/hid/hid-uclogic-core.c#L149),
-> > > and will assign input_dev->name to that pointer.
-> > >
-> > > When the device is removed, the devm-allocated array is freed, and the
-> > > input framework will send a uevent in input_dev_uevent() using the
-> > > input_dev->name field:
-> > >
-> > > https://elixir.bootlin.com/linux/latest/source/drivers/input/input.c#L1688
-> > >
-> > > So it's a classic dangling pointer situation.
-> > >
-> > > And even though it was revealed by that patch, I think the issue is
-> > > unrelated. The fundamental issue seems to be that the usage of devm in
-> > > that situation is wrong.
-> > >
-> > > input_dev->name is accessed by input_dev_uevent, which for KOBJ_UNBIND
-> > > and KOBJ_REMOVE will be called after remove.
-> > >
-> > > For example, in __device_release_driver() (with the driver remove hook
-> > > being called in device_remove() and devres_release_all() being called in
-> > > device_unbind_cleanup()):
-> > > https://elixir.bootlin.com/linux/latest/source/drivers/base/dd.c#L1278
-> > >
-> > > So, it looks to me that, with or without the patch we merged recently,
-> > > the core has always sent uevent after device-managed resources were
-> > > freed. Thus, the uclogic (and any other input driver) was wrong in
-> > > allocating its input_dev name with devm_kzalloc (or the phys and uniq
-> > > fields in that struct).
-> > >
-> > > Note that freeing input_dev->name in remove would have been just as bad.
-> > >
-> > > Looking at the code quickly, at least hid-playstation,
-> > > hid-nvidia-shield, hid-logitech-hidpp, mms114 and tsc200x seem to be
-> > > affected by the same issue.
-> > 
-> > I agree with this analysis overall. At least in hid-nvidia-shield, I can
-> > not use devm for allocating the input name string and explicitly free it
-> > after calling input_unregister_device. In this scenario, the name string
-> > would have been freed explicitly after input_put_device was called
-> > (since the input device is not devres managed). input_put_device would
-> > drop the reference count to zero and the device would be cleaned up at
-> > that point triggering KOBJ_REMOVE and firing off that final
-> > input_dev_uevent.
-> > 
-> > I think this can be done for a number of the drivers as a workaround
-> > till this issue is properly resolved. If this seems appropriate, I can
-> > send out a series later in the day. This is just a workaround till the
-> > discussion below converges (which I am interested in).
-> 
-> I'm sorry, I don't know the input framework well enough to understand
-> what you had in mind exactly. Could you send a patch with your
-> suggestion for the hid-nvidia-shield so we can discuss this further?
-> 
-> That being said, I think that the current design around name, phys and
-> uniq is fairly treacherous to drivers and we should aim for a solution
-> that prevents that issue from being possible at all.
-> 
-> I was inclined to go for a char array for each to get rid of the pointer
-> entirely, but Benjamin raised some concerns over the structure size so
-> it's probably not a great solution.
 
-I think everything is much simpler, with uclogic driver being in the
-wrong here: devm resource needs to be attached to the right device
-(instance of HID) rather than to the input device itself (which should
-never have any driver resources attached since it never has a driver).
-Something like this:
+--UdmTiHBngnlr6cvp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/hid/hid-uclogic-core.c b/drivers/hid/hid-uclogic-core.c
-index f67835f9ed4c..f234a7c97360 100644
---- a/drivers/hid/hid-uclogic-core.c
-+++ b/drivers/hid/hid-uclogic-core.c
-@@ -148,7 +148,7 @@ static int uclogic_input_configured(struct hid_device *hdev,
- 
- 	if (suffix) {
- 		len = strlen(hdev->name) + 2 + strlen(suffix);
--		name = devm_kzalloc(&hi->input->dev, len, GFP_KERNEL);
-+		name = devm_kzalloc(&hdev->dev, len, GFP_KERNEL);
- 		if (name) {
- 			snprintf(name, len, "%s %s", hdev->name, suffix);
- 			hi->input->name = name;
+On Wed, Aug 23, 2023 at 11:09:59AM +0100, Szabolcs Nagy wrote:
+> The 08/22/2023 18:53, Mark Brown wrote:
+> > On Tue, Aug 22, 2023 at 05:49:51PM +0100, Catalin Marinas wrote:
 
-In general, drivers should attach devm resources they allocate to the
-instance of device they are binding to, and nothing else.
+> > the what but not the why.  For example roughly the current behaviour was
+> > already in place in v10 of the original series:
 
-Thanks.
+> well the original shstk patches predate clone3 so no surprise there.
+> e.g. v6 is from 2018 and clone3 is 2019 linux 5.3
+> https://lore.kernel.org/lkml/20181119214809.6086-1-yu-cheng.yu@intel.com/
 
--- 
-Dmitry
+Ah, that'd do it.  People weren't excited enough on about clone3() when
+reviewing the shadow stack patches, I hadn't realised clone3() was so
+new.
+
+> > I do worry about the story for users calling the underlying clone3() API
+> > (or legacy clone() for that matter) directly, and we would also need to
+> > handle the initial GCS enable via prctl() - that's not insurmountable,
+> > we could add a size argument there that only gets interpreted during the
+> > initial enable for example.
+
+> musl and bionic currently use plain clone for threads.
+
+> and there is user code doing raw clone threads (such threads are
+> technically not allowed to call into libc) it's not immediately
+> clear to me if having gcs in those threads is better or worse.
+
+Right, that's my big worry - I hadn't realised it was extending as far
+as musl/bionic.
+
+> one difference is that userspace can then set gcspr of a new thread
+> and e.g. two threads can have overlapping gcs, however i don't think
+> this impacts security much since if clone3 is attacker controlled
+> then likely all bets are off.
+
+Yeah, I think that's a "you broke it, you get all the pieces" thing. =20
+
+> > My sense is that they deployment story is going to be smoother with
+> > defaults being provided since it avoids dealing with the issue of what
+> > to do if userspace creates a thread without a GCS in a GCS enabled
+> > process but like I say I'd be totally happy to extend clone3().  I will
+> > put some patches together for that (probably once the x86 stuff lands).
+> > Given the size of this series it might be better split out for
+> > manageability if nothing else.
+
+> i would make thread without gcs to implicitly disable gcs, since
+> that's what's bw compat with clones outside of libc (the libc can
+> guarantee gcs allocation when gcs is enabled).
+
+That'd create a pretty substantial divergence with the x86 patches if
+they land this time around, there's not enough time to rework them now -
+I suppose it'd mainly bite people implementing libc type stuff but
+still, doesn't feel great.
+
+--UdmTiHBngnlr6cvp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTmANcACgkQJNaLcl1U
+h9CieQf+MMgnojrsBIaDJI83Wq0C8xk7vAXbThpL0v56u9wjmEZMDh7EcY2ddq/2
+JABAkm2liE7SLPjWQBEUUN0/IeeUmkf96mYK4WQlULgjiwfY47oi3jWUhZ6k9LhM
+8pjyl1KON9bRNIrulNLtQVYAPXm7vhGBmR0BjziAHJsdoaxh/mFuY24eV8GU6M+g
+3y8nYYgKNOAjB6E6//Acfg4jVvxYJGMdmVlJl4REhmre1EGrE2R3NAiKDJZ/sKGz
+3F4rR/Opy2Sa/VQFqR1eyjhZEjZxVgbrBukhZV+ExyMSjPfagV2qok97yi7jIIXg
+lRrBa8MwILXz0GiOAj9Xz5WDbjUsRQ==
+=F2xx
+-----END PGP SIGNATURE-----
+
+--UdmTiHBngnlr6cvp--
