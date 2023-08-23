@@ -2,275 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B460A785A8F
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 16:32:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A64DC7859FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 16:04:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236460AbjHWOcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 10:32:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54194 "EHLO
+        id S236045AbjHWOEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 10:04:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236457AbjHWOcs (ORCPT
+        with ESMTP id S234430AbjHWOEt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 10:32:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F836E69
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 07:32:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692801121;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GzdoCs2Mn27/sh3oWYgFmEgOxiDPY2yxYeRmbUpWAOY=;
-        b=Ul+fLz6cwzESlZIgU9/+1gAJ+F+pwvRic/ILmLJLMYcR4QKw6NL+KMlN3esdcbrCqBTRh9
-        E1PednEjmHM0bNLJ22ybM90cR8hpygHHGTYIvYEXm2fLCwbrhP9dnsLXXHb2LUPrnXSNG+
-        uhr+qGGr7LmL8TzC8Oa5ursfDVGK2S4=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-637-By5pYbz3NJyE96tNOsOK2Q-1; Wed, 23 Aug 2023 10:32:00 -0400
-X-MC-Unique: By5pYbz3NJyE96tNOsOK2Q-1
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-99bcf6ae8e1so420880666b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 07:31:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692801118; x=1693405918;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=GzdoCs2Mn27/sh3oWYgFmEgOxiDPY2yxYeRmbUpWAOY=;
-        b=FWh6sFWO0MxEHxLBYAqJZ0m4axvLFzdUtTErBiCj0uQN/8KotfEx9bm5hMXqr4mMpD
-         mKbgckhqp/GA3zzHySgzqPbBq3LHV7LeZU3S9HFIIIFEvtWXob7mFINvFLDW6MTVcmlJ
-         HgzKD49UGMSN45AUoCcrUDJBXAiUF7LU2oLQDCFYshejvSry59tqbXrip5k+mHL6K+Rp
-         3+oazqe4lU23012Li6kg82sXFaxTK0A3jYdpG1+CKpQOTiqDN4m7xwvOYFqJqg2rZw3y
-         0+7k3G5llb0o4TxmCuFF2O8/ML0hHK2jtC4f44r22pcsyEEOdt3vROrSf0yT2J1jdtH+
-         nvLg==
-X-Gm-Message-State: AOJu0Yzk8I/LuZinjyXtICDKCMfT1IIUcCrfIaU3dRu66PigQIJNcGzK
-        cP+x4O++HNaJ3Agxf0evusEKdnbFA208nDWa5zYq/bt88A/bQ8KPlrhM78zc6Df6FhccJjJzpby
-        hrrUo0PlF77Qz7UtolUTmuS6yeW1ECu+Z
-X-Received: by 2002:a17:907:b15:b0:99b:ddac:d9d9 with SMTP id h21-20020a1709070b1500b0099bddacd9d9mr9977992ejl.53.1692801118466;
-        Wed, 23 Aug 2023 07:31:58 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHZe+M+2IV0Biir6gicbEcM3wtv1kibH9AhosiD4ierXNGvPNyLBv2sq9vftQipzU9U4NlSog==
-X-Received: by 2002:a17:907:b15:b0:99b:ddac:d9d9 with SMTP id h21-20020a1709070b1500b0099bddacd9d9mr9977977ejl.53.1692801118169;
-        Wed, 23 Aug 2023 07:31:58 -0700 (PDT)
-Received: from ?IPV6:2a02:810d:4b3f:de9c:642:1aff:fe31:a15c? ([2a02:810d:4b3f:de9c:642:1aff:fe31:a15c])
-        by smtp.gmail.com with ESMTPSA id mj14-20020a170906af8e00b0099c53c4407dsm9835727ejb.78.2023.08.23.07.31.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Aug 2023 07:31:57 -0700 (PDT)
-Message-ID: <19d68804-87f4-5f89-4a63-b85a9b204cd0@redhat.com>
-Date:   Wed, 23 Aug 2023 14:36:02 +0200
+        Wed, 23 Aug 2023 10:04:49 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE900CF3;
+        Wed, 23 Aug 2023 07:04:47 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 871C065C18;
+        Wed, 23 Aug 2023 14:04:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A91D3C433C7;
+        Wed, 23 Aug 2023 14:04:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692799486;
+        bh=fMzG+5ZYJwqkyX40cSxyRVnbZtJ1KnHDIN0uI3j8Kco=;
+        h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
+        b=BwZHZvPS+jqnh3gwaYlj7T7Siw6JGXZC7PSfeGq1tYJs1g5OuJDU8ARmJZwpth2Vn
+         AOFvWMxU3yG+v1UdBm7LGOr2wSyzjZlIZnLPOtpCNVxQ/1qappXwy/qSN5DXMSB3X0
+         3ch7nSVmxllTqzMuozBXFECvZIhdnhYA5SZ6bDdulxWd/AA3GWK2qBqAWShvc8M5fm
+         7jsB3Uwy5pvK0kg2zj+6BXJAAIXUUgGvIiU9LAX2jF64n0ixgshlG/4Vocuh8IR+V6
+         CTPmQ28trxzJGZrrLsc6JGJndrw1XDnAHZudZ7RJvfR79YEjjhC7HKpC3R0Bmt6BbI
+         VQMLIizTB6LWA==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH drm-misc-next] drm/nouveau: uapi: don't pass NO_PREFETCH
- flag implicitly
-Content-Language: en-US
-To:     Faith Ekstrand <faith@gfxstrand.net>
-Cc:     airlied@gmail.com, daniel@ffwll.ch, bskeggs@redhat.com,
-        kherbst@redhat.com, lyude@redhat.com, faith.ekstrand@collabora.com,
-        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-References: <20230822234139.11185-1-dakr@redhat.com>
- <CAOFGe978DoPqTqoFAMv84fcuyLR47fkGZ3NCn4dyD69i4QoobQ@mail.gmail.com>
-From:   Danilo Krummrich <dakr@redhat.com>
-Organization: RedHat
-In-Reply-To: <CAOFGe978DoPqTqoFAMv84fcuyLR47fkGZ3NCn4dyD69i4QoobQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] wifi: ath11k: Consistently use ath11k_vif_to_arvif()
+From:   Kalle Valo <kvalo@kernel.org>
+In-Reply-To: <20230821-ath11k_vif_to_arvif-v1-1-fa2c3b60b5cf@quicinc.com>
+References: <20230821-ath11k_vif_to_arvif-v1-1-fa2c3b60b5cf@quicinc.com>
+To:     Jeff Johnson <quic_jjohnson@quicinc.com>
+Cc:     <ath11k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Jeff Johnson <quic_jjohnson@quicinc.com>
+User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
+Message-ID: <169279948369.1241462.6552260393066152478.kvalo@kernel.org>
+Date:   Wed, 23 Aug 2023 14:04:45 +0000 (UTC)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/23/23 04:53, Faith Ekstrand wrote:
-> On Tue, Aug 22, 2023 at 6:41 PM Danilo Krummrich <dakr@redhat.com <mailto:dakr@redhat.com>> wrote:
-> 
->     Currently, NO_PREFETCH is passed implicitly through
->     drm_nouveau_gem_pushbuf_push::length and drm_nouveau_exec_push::va_len.
-> 
->     Since this is a direct representation of how the HW is programmed it
->     isn't really future proof for a uAPI. Hence, fix this up for the new
->     uAPI and split up the va_len field of struct drm_nouveau_exec_push,
->     such that we keep 32bit for va_len and 32bit for flags.
-> 
->     For drm_nouveau_gem_pushbuf_push::length at least provide
->     NOUVEAU_GEM_PUSHBUF_NO_PREFETCH to indicate the bit shift.
-> 
->     While at it, fix up nv50_dma_push() as well, such that the caller
->     doesn't need to encode the NO_PREFETCH flag into the length parameter.
-> 
->     Signed-off-by: Danilo Krummrich <dakr@redhat.com <mailto:dakr@redhat.com>>
->     ---
->       drivers/gpu/drm/nouveau/nouveau_dma.c  |  7 +++++--
->       drivers/gpu/drm/nouveau/nouveau_dma.h  |  8 ++++++--
->       drivers/gpu/drm/nouveau/nouveau_exec.c | 15 ++++++++++++---
->       drivers/gpu/drm/nouveau/nouveau_gem.c  |  6 ++++--
->       include/uapi/drm/nouveau_drm.h         |  8 +++++++-
->       5 files changed, 34 insertions(+), 10 deletions(-)
-> 
->     diff --git a/drivers/gpu/drm/nouveau/nouveau_dma.c b/drivers/gpu/drm/nouveau/nouveau_dma.c
->     index b90cac6d5772..059925e5db6a 100644
->     --- a/drivers/gpu/drm/nouveau/nouveau_dma.c
->     +++ b/drivers/gpu/drm/nouveau/nouveau_dma.c
->     @@ -69,16 +69,19 @@ READ_GET(struct nouveau_channel *chan, uint64_t *prev_get, int *timeout)
->       }
-> 
->       void
->     -nv50_dma_push(struct nouveau_channel *chan, u64 offset, int length)
->     +nv50_dma_push(struct nouveau_channel *chan, u64 offset, u32 length,
->     +             bool prefetch)
->       {
->              struct nvif_user *user = &chan->drm->client.device.user;
->              struct nouveau_bo *pb = chan->push.buffer;
->              int ip = (chan->dma.ib_put * 2) + chan->dma.ib_base;
-> 
->              BUG_ON(chan->dma.ib_free < 1);
->     +       WARN_ON(length > NV50_DMA_PUSH_MAX_LENGTH);
-> 
->              nouveau_bo_wr32(pb, ip++, lower_32_bits(offset));
->     -       nouveau_bo_wr32(pb, ip++, upper_32_bits(offset) | length << 8);
->     +       nouveau_bo_wr32(pb, ip++, upper_32_bits(offset) | length << 8 |
->     +                       (prefetch ? 0 : (1 << 31)));
-> 
-> 
-> It feels a bit weird to be inverting this bit twice. IDK that it matters, though.
+Jeff Johnson <quic_jjohnson@quicinc.com> wrote:
 
-I usually avoid negated argument names, in this case it kinda makes sense though.
+> Helper function ath11k_vif_to_arvif() exists to retrieve a struct
+> ath11k_vif from a struct ieee80211_vif. However, in multiple places
+> this logic is open-coded with inline typecasting. Since the
+> typecasting prevents the compiler from type-checking the source and
+> destination, update the driver to consistently use the helper
+> function.
+> 
+> No functional changes, compile tested only.
+> 
+> Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+> Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
 
-> 
-> 
->              chan->dma.ib_put = (chan->dma.ib_put + 1) & chan->dma.ib_max;
-> 
->     diff --git a/drivers/gpu/drm/nouveau/nouveau_dma.h b/drivers/gpu/drm/nouveau/nouveau_dma.h
->     index 035a709c7be1..fb471c357336 100644
->     --- a/drivers/gpu/drm/nouveau/nouveau_dma.h
->     +++ b/drivers/gpu/drm/nouveau/nouveau_dma.h
->     @@ -31,7 +31,8 @@
->       #include "nouveau_chan.h"
-> 
->       int nouveau_dma_wait(struct nouveau_channel *, int slots, int size);
->     -void nv50_dma_push(struct nouveau_channel *, u64 addr, int length);
->     +void nv50_dma_push(struct nouveau_channel *, u64 addr, u32 length,
->     +                  bool prefetch);
-> 
->       /*
->        * There's a hw race condition where you can't jump to your PUT offset,
->     @@ -45,6 +46,9 @@ void nv50_dma_push(struct nouveau_channel *, u64 addr, int length);
->        */
->       #define NOUVEAU_DMA_SKIPS (128 / 4)
-> 
->     +/* Maximum push buffer size. */
->     +#define NV50_DMA_PUSH_MAX_LENGTH 0x7fffff
->     +
->       /* Object handles - for stuff that's doesn't use handle == oclass. */
->       enum {
->              NvDmaFB         = 0x80000002,
->     @@ -89,7 +93,7 @@ FIRE_RING(struct nouveau_channel *chan)
-> 
->              if (chan->dma.ib_max) {
->                      nv50_dma_push(chan, chan->push.addr + (chan->dma.put << 2),
->     -                             (chan->dma.cur - chan->dma.put) << 2);
->     +                             (chan->dma.cur - chan->dma.put) << 2, true);
->              } else {
->                      WRITE_PUT(chan->dma.cur);
->              }
->     diff --git a/drivers/gpu/drm/nouveau/nouveau_exec.c b/drivers/gpu/drm/nouveau/nouveau_exec.c
->     index 0f927adda4ed..a123b07b2adf 100644
->     --- a/drivers/gpu/drm/nouveau/nouveau_exec.c
->     +++ b/drivers/gpu/drm/nouveau/nouveau_exec.c
->     @@ -164,8 +164,10 @@ nouveau_exec_job_run(struct nouveau_job *job)
->              }
-> 
->              for (i = 0; i < exec_job->push.count; i++) {
->     -               nv50_dma_push(chan, exec_job->push.s[i].va,
->     -                             exec_job->push.s[i].va_len);
->     +               struct drm_nouveau_exec_push *p = &exec_job->push.s[i];
->     +               bool prefetch = !(p->flags & DRM_NOUVEAU_EXEC_PUSH_NO_PREFETCH);
->     +
->     +               nv50_dma_push(chan, p->va, p->va_len, prefetch);
->              }
-> 
->              ret = nouveau_fence_emit(fence, chan);
->     @@ -223,7 +225,14 @@ nouveau_exec_job_init(struct nouveau_exec_job **pjob,
->       {
->              struct nouveau_exec_job *job;
->              struct nouveau_job_args args = {};
->     -       int ret;
->     +       int i, ret;
->     +
->     +       for (i = 0; i < __args->push.count; i++) {
->     +               struct drm_nouveau_exec_push *p = &__args->push.s[i];
->     +
->     +               if (p->va_len > NV50_DMA_PUSH_MAX_LENGTH)
->     +                       return -EINVAL;
-> 
-> 
-> This can probably be wrapped in unlikely().  Also, it'd be nice if we printed an error message like we do if you try to push too many things.
+Patch applied to ath-next branch of ath.git, thanks.
 
-Yep, will do.
+9476cda44c13 wifi: ath11k: Consistently use ath11k_vif_to_arvif()
 
-> 
-> Looks good. Thanks!
-> 
-> Reviewed-by: Faith Ekstrand <faith.ekstrand@collabora.com <mailto:faith.ekstrand@collabora.com>>
-> 
->     +       }
-> 
->              job = *pjob = kzalloc(sizeof(*job), GFP_KERNEL);
->              if (!job)
->     diff --git a/drivers/gpu/drm/nouveau/nouveau_gem.c b/drivers/gpu/drm/nouveau/nouveau_gem.c
->     index f39360870c70..2f3dc4d71657 100644
->     --- a/drivers/gpu/drm/nouveau/nouveau_gem.c
->     +++ b/drivers/gpu/drm/nouveau/nouveau_gem.c
->     @@ -856,9 +856,11 @@ nouveau_gem_ioctl_pushbuf(struct drm_device *dev, void *data,
->                      for (i = 0; i < req->nr_push; i++) {
->                              struct nouveau_vma *vma = (void *)(unsigned long)
->                                      bo[push[i].bo_index].user_priv;
->     +                       u64 addr = vma->addr + push[i].offset;
->     +                       u32 length = push[i].length & ~NOUVEAU_GEM_PUSHBUF_NO_PREFETCH;
->     +                       bool prefetch = !(push[i].length & NOUVEAU_GEM_PUSHBUF_NO_PREFETCH);
-> 
->     -                       nv50_dma_push(chan, vma->addr + push[i].offset,
->     -                                     push[i].length);
->     +                       nv50_dma_push(chan, addr, length, prefetch);
->                      }
->              } else
->              if (drm->client.device.info <http://client.device.info>.chipset >= 0x25) {
->     diff --git a/include/uapi/drm/nouveau_drm.h b/include/uapi/drm/nouveau_drm.h
->     index b1ad9d5ffce8..8f16724b5d05 100644
->     --- a/include/uapi/drm/nouveau_drm.h
->     +++ b/include/uapi/drm/nouveau_drm.h
->     @@ -138,6 +138,7 @@ struct drm_nouveau_gem_pushbuf_push {
->              __u32 pad;
->              __u64 offset;
->              __u64 length;
->     +#define NOUVEAU_GEM_PUSHBUF_NO_PREFETCH (1 << 23)
->       };
-> 
->       struct drm_nouveau_gem_pushbuf {
->     @@ -338,7 +339,12 @@ struct drm_nouveau_exec_push {
->              /**
->               * @va_len: the length of the push buffer mapping
->               */
->     -       __u64 va_len;
->     +       __u32 va_len;
->     +       /**
->     +        * flags: the flags for this push buffer mapping
->     +        */
->     +       __u32 flags;
->     +#define DRM_NOUVEAU_EXEC_PUSH_NO_PREFETCH 0x1
->       };
-> 
->       /**
-> 
->     base-commit: ad1367f831f8743746a1f49705c28e36a7c95525
->     -- 
->     2.41.0
-> 
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20230821-ath11k_vif_to_arvif-v1-1-fa2c3b60b5cf@quicinc.com/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
