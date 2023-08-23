@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF803785B6E
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 17:07:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 150B6785B6C
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 17:07:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236799AbjHWPHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 11:07:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36752 "EHLO
+        id S236793AbjHWPHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 11:07:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236772AbjHWPHA (ORCPT
+        with ESMTP id S236763AbjHWPHA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 23 Aug 2023 11:07:00 -0400
 Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6108FE78;
-        Wed, 23 Aug 2023 08:06:55 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC793E6D;
+        Wed, 23 Aug 2023 08:06:54 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RW8gs0975z4f3m8N;
-        Wed, 23 Aug 2023 23:06:49 +0800 (CST)
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RW8gr2wP6z4f3pHW;
+        Wed, 23 Aug 2023 23:06:48 +0800 (CST)
 Received: from ultra.huawei.com (unknown [10.90.53.71])
-        by APP4 (Coremail) with SMTP id gCh0CgAn_qCIIOZksUWeBQ--.39856S6;
+        by APP4 (Coremail) with SMTP id gCh0CgAn_qCIIOZksUWeBQ--.39856S7;
         Wed, 23 Aug 2023 23:06:49 +0800 (CST)
 From:   Pu Lehui <pulehui@huaweicloud.com>
 To:     linux-riscv@lists.infradead.org, bpf@vger.kernel.org,
@@ -40,32 +40,32 @@ Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
         Puranjay Mohan <puranjay12@gmail.com>,
         Pu Lehui <pulehui@huawei.com>,
         Pu Lehui <pulehui@huaweicloud.com>
-Subject: [PATCH bpf-next 4/7] riscv, bpf: Support 32-bit offset jmp insn
-Date:   Wed, 23 Aug 2023 23:10:56 +0000
-Message-Id: <20230823231059.3363698-5-pulehui@huaweicloud.com>
+Subject: [PATCH bpf-next 5/7] riscv, bpf: Support signed div/mod insns
+Date:   Wed, 23 Aug 2023 23:10:57 +0000
+Message-Id: <20230823231059.3363698-6-pulehui@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230823231059.3363698-1-pulehui@huaweicloud.com>
 References: <20230823231059.3363698-1-pulehui@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAn_qCIIOZksUWeBQ--.39856S6
-X-Coremail-Antispam: 1UD129KBjvdXoW7Wry5Ww4UWF1DWw15WF18Grg_yoWfGwcEkr
-        yxJFWIg398GFs8Xw1UZr4Fvryjkws3GF1DZ34SgFWjkan8X3ZYy34kKr9xX34xur1xtFW3
-        Zrn3Aayavw4aqjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbQAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M28IrcIa0xkI8V
-        A2jI8067AKxVWUAVCq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJ
-        M28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2I
-        x0cI8IcVCY1x0267AKxVWxJr0_GcWl84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vE
-        x4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2
-        IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r1j6r4U
-        McvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I64
-        8v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Gr0_Xr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1lIxAIcV
-        CF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIE
-        c7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjTRNL0eDUUUU
+X-CM-TRANSID: gCh0CgAn_qCIIOZksUWeBQ--.39856S7
+X-Coremail-Antispam: 1UD129KBjvJXoWxAFWrtF4UXF1fAr1DGrWDXFb_yoW5Kr4Dpr
+        9Ykrn3Z3yjqr4fJr9rJF4xX3WrArn2gwnFvF13KFWUtanFqrWDGrWfKw4fA3sxXrWfWa4D
+        WFWa9r90ka92yr7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUQl14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2jI8I6cxK62vIxIIY0VWUZVW8XwA2048vs2IY02
+        0E87I2jVAFwI0_JF0E3s1l82xGYIkIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0
+        rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6x
+        IIjxv20xvEc7CjxVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK
+        6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4
+        xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVWUJVW8
+        JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20V
+        AGYxC7M4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI
+        7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
+        Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY
+        6xIIjxv20xvE14v26r4j6ryUMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UMIIF0x
+        vE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv
+        6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7sRiHq2tUUUUU==
 X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
@@ -79,30 +79,117 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Pu Lehui <pulehui@huawei.com>
 
-Add support 32-bit offset jmp instruction for RV64.
+Add support signed div/mod instructions for RV64.
 
 Signed-off-by: Pu Lehui <pulehui@huawei.com>
 ---
- arch/riscv/net/bpf_jit_comp64.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ arch/riscv/net/bpf_jit.h        | 20 ++++++++++++++++++++
+ arch/riscv/net/bpf_jit_comp64.c | 26 ++++++++++++++++++++------
+ 2 files changed, 40 insertions(+), 6 deletions(-)
 
+diff --git a/arch/riscv/net/bpf_jit.h b/arch/riscv/net/bpf_jit.h
+index a52a3dda18c3..d21c6c92a683 100644
+--- a/arch/riscv/net/bpf_jit.h
++++ b/arch/riscv/net/bpf_jit.h
+@@ -431,11 +431,21 @@ static inline u32 rv_mulhu(u8 rd, u8 rs1, u8 rs2)
+ 	return rv_r_insn(1, rs2, rs1, 3, rd, 0x33);
+ }
+ 
++static inline u32 rv_div(u8 rd, u8 rs1, u8 rs2)
++{
++	return rv_r_insn(1, rs2, rs1, 4, rd, 0x33);
++}
++
+ static inline u32 rv_divu(u8 rd, u8 rs1, u8 rs2)
+ {
+ 	return rv_r_insn(1, rs2, rs1, 5, rd, 0x33);
+ }
+ 
++static inline u32 rv_rem(u8 rd, u8 rs1, u8 rs2)
++{
++	return rv_r_insn(1, rs2, rs1, 6, rd, 0x33);
++}
++
+ static inline u32 rv_remu(u8 rd, u8 rs1, u8 rs2)
+ {
+ 	return rv_r_insn(1, rs2, rs1, 7, rd, 0x33);
+@@ -776,11 +786,21 @@ static inline u32 rv_mulw(u8 rd, u8 rs1, u8 rs2)
+ 	return rv_r_insn(1, rs2, rs1, 0, rd, 0x3b);
+ }
+ 
++static inline u32 rv_divw(u8 rd, u8 rs1, u8 rs2)
++{
++	return rv_r_insn(1, rs2, rs1, 4, rd, 0x3b);
++}
++
+ static inline u32 rv_divuw(u8 rd, u8 rs1, u8 rs2)
+ {
+ 	return rv_r_insn(1, rs2, rs1, 5, rd, 0x3b);
+ }
+ 
++static inline u32 rv_remw(u8 rd, u8 rs1, u8 rs2)
++{
++	return rv_r_insn(1, rs2, rs1, 6, rd, 0x3b);
++}
++
+ static inline u32 rv_remuw(u8 rd, u8 rs1, u8 rs2)
+ {
+ 	return rv_r_insn(1, rs2, rs1, 7, rd, 0x3b);
 diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
-index d1497182cacf..3d4e9182385d 100644
+index 3d4e9182385d..027bd372c294 100644
 --- a/arch/riscv/net/bpf_jit_comp64.c
 +++ b/arch/riscv/net/bpf_jit_comp64.c
-@@ -1327,7 +1327,11 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
- 
- 	/* JUMP off */
- 	case BPF_JMP | BPF_JA:
--		rvoff = rv_offset(i, off, ctx);
-+	case BPF_JMP32 | BPF_JA:
-+		if (BPF_CLASS(code) == BPF_JMP)
-+			rvoff = rv_offset(i, off, ctx);
+@@ -1107,13 +1107,19 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+ 		break;
+ 	case BPF_ALU | BPF_DIV | BPF_X:
+ 	case BPF_ALU64 | BPF_DIV | BPF_X:
+-		emit(is64 ? rv_divu(rd, rd, rs) : rv_divuw(rd, rd, rs), ctx);
++		if (off)
++			emit(is64 ? rv_div(rd, rd, rs) : rv_divw(rd, rd, rs), ctx);
 +		else
-+			rvoff = rv_offset(i, imm, ctx);
- 		ret = emit_jump_and_link(RV_REG_ZERO, rvoff, true, ctx);
- 		if (ret)
- 			return ret;
++			emit(is64 ? rv_divu(rd, rd, rs) : rv_divuw(rd, rd, rs), ctx);
+ 		if (!is64 && !aux->verifier_zext)
+ 			emit_zext_32(rd, ctx);
+ 		break;
+ 	case BPF_ALU | BPF_MOD | BPF_X:
+ 	case BPF_ALU64 | BPF_MOD | BPF_X:
+-		emit(is64 ? rv_remu(rd, rd, rs) : rv_remuw(rd, rd, rs), ctx);
++		if (off)
++			emit(is64 ? rv_rem(rd, rd, rs) : rv_remw(rd, rd, rs), ctx);
++		else
++			emit(is64 ? rv_remu(rd, rd, rs) : rv_remuw(rd, rd, rs), ctx);
+ 		if (!is64 && !aux->verifier_zext)
+ 			emit_zext_32(rd, ctx);
+ 		break;
+@@ -1284,16 +1290,24 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+ 	case BPF_ALU | BPF_DIV | BPF_K:
+ 	case BPF_ALU64 | BPF_DIV | BPF_K:
+ 		emit_imm(RV_REG_T1, imm, ctx);
+-		emit(is64 ? rv_divu(rd, rd, RV_REG_T1) :
+-		     rv_divuw(rd, rd, RV_REG_T1), ctx);
++		if (off)
++			emit(is64 ? rv_div(rd, rd, RV_REG_T1) :
++			     rv_divw(rd, rd, RV_REG_T1), ctx);
++		else
++			emit(is64 ? rv_divu(rd, rd, RV_REG_T1) :
++			     rv_divuw(rd, rd, RV_REG_T1), ctx);
+ 		if (!is64 && !aux->verifier_zext)
+ 			emit_zext_32(rd, ctx);
+ 		break;
+ 	case BPF_ALU | BPF_MOD | BPF_K:
+ 	case BPF_ALU64 | BPF_MOD | BPF_K:
+ 		emit_imm(RV_REG_T1, imm, ctx);
+-		emit(is64 ? rv_remu(rd, rd, RV_REG_T1) :
+-		     rv_remuw(rd, rd, RV_REG_T1), ctx);
++		if (off)
++			emit(is64 ? rv_rem(rd, rd, RV_REG_T1) :
++			     rv_remw(rd, rd, RV_REG_T1), ctx);
++		else
++			emit(is64 ? rv_remu(rd, rd, RV_REG_T1) :
++			     rv_remuw(rd, rd, RV_REG_T1), ctx);
+ 		if (!is64 && !aux->verifier_zext)
+ 			emit_zext_32(rd, ctx);
+ 		break;
 -- 
 2.39.2
 
