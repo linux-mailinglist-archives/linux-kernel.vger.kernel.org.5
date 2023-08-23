@@ -2,88 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 466C8785D09
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 18:12:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06A82785D06
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 18:12:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237459AbjHWQMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 12:12:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45606 "EHLO
+        id S237454AbjHWQME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 12:12:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234317AbjHWQMp (ORCPT
+        with ESMTP id S234317AbjHWQMD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 12:12:45 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49141EE;
-        Wed, 23 Aug 2023 09:12:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692807163; x=1724343163;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=F+JIfj+wR1bPQ5fgehpu4nlo7lbXGYyhptJI4R8nGa0=;
-  b=htVDnyIeURg4RyKaGdWl+fVIgS8TZrcEcyKEn5Ds0iTiamy3reNufGKy
-   CCSNbqKSR9kIwzyVMdRi3HIKhJUzabSvXkurTs4s46v1hA0n1zKw4rIdB
-   5AsgAKmjlVNEJbFL3LsdB9eEj/ZnYcINgdGJLPTodSzUyxUGdGQJS5oHv
-   B7DCyDcTOv3oly9v2Y1gqYZLuaCXjK4Y1KGfUpLY8kEwwXC0tk9G0Zfvp
-   IhFJNB/ehMOcCYlXMfOA35wLg6avZMWr+404sqJy9+zAMdelnV80hPsSo
-   9rpUpIag8rLBPyzBroYhX5b5TtrNyZ7zhhueu+mTJq0Cu7BA4o4k0qPi8
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="438132889"
-X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
-   d="scan'208";a="438132889"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2023 09:10:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
-   d="scan'208";a="880456552"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga001.fm.intel.com with ESMTP; 23 Aug 2023 09:10:39 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qYqRF-00ElA2-1H;
-        Wed, 23 Aug 2023 19:10:33 +0300
-Date:   Wed, 23 Aug 2023 19:10:33 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Angel Iglesias <ang.iglesiasg@gmail.com>
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v2 1/3] iio: pressure: bmp280: Use uint8 to store chip ids
-Message-ID: <ZOYveUBg3rKK+ZQ9@smile.fi.intel.com>
-References: <cover.1692805377.git.ang.iglesiasg@gmail.com>
- <cf08dd2fab1fd91ca7ed0724d1f50435c8c2914b.1692805377.git.ang.iglesiasg@gmail.com>
+        Wed, 23 Aug 2023 12:12:03 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3289E74;
+        Wed, 23 Aug 2023 09:12:01 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 488B8642EB;
+        Wed, 23 Aug 2023 16:12:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04537C433C8;
+        Wed, 23 Aug 2023 16:11:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692807120;
+        bh=pNHMDSofAvP8QX/d2Msi3h2uJ91bbmjTCRWGWU/RVIw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=A7TFU5kwyCBeCDZIsZVe2kTo4ubtSfffDk1Gy2QGeC8f3zJuI+Jg1rdeWOBjledj6
+         9lXcoK47lDbiRx/0n/lwu7/065jhnCVkVymkJHRVK7FJkvPcsYxgURmJPmUtZxLvT7
+         tjgTLbPelxBGZfPGI9uMhBiDdaVtvH6ruxbFB28vLCsPbrhdt7AmgbFpDTw0leLDMI
+         pm1cKYnzISHsfFrU09v/nu8QIWekX5ODFbwCilNjrQYI3qh6Tl2KoaSBIoB7pyG+rV
+         aseiaHA0pj0mOWPu2cDuYAGPn+eEScHvUyzYdhUOhDQ4nc0LIUXysvE0dySMtop8w0
+         qrvWeYRIkNesg==
+Date:   Wed, 23 Aug 2023 18:11:53 +0200
+From:   Lorenzo Pieralisi <lpieralisi@kernel.org>
+To:     Frank Li <Frank.li@nxp.com>
+Cc:     Zhiqiang.Hou@nxp.com, bhelgaas@google.com, imx@lists.linux.dev,
+        kernel-janitors@vger.kernel.org, kw@linux.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        mani@kernel.org, markus.elfring@web.de, minghuan.Lian@nxp.com,
+        mingkai.hu@nxp.com, robh@kernel.org, roy.zang@nxp.com,
+        xiaowei.bao@nxp.com
+Subject: Re: [PATCH v4 1/2] PCI: layerscape: Add support for Link down
+ notification
+Message-ID: <ZOYvyUgC1o2lWAzE@lpieralisi>
+References: <20230720135834.1977616-1-Frank.Li@nxp.com>
+ <ZMfN9w6ixBFBmof7@lizhi-Precision-Tower-5810>
+ <ZNzw7MPF00t3i3bn@lizhi-Precision-Tower-5810>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cf08dd2fab1fd91ca7ed0724d1f50435c8c2914b.1692805377.git.ang.iglesiasg@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <ZNzw7MPF00t3i3bn@lizhi-Precision-Tower-5810>
+X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 23, 2023 at 05:58:05PM +0200, Angel Iglesias wrote:
-> Represent the device id reg values using uint8 to optimize memory use.
+On Wed, Aug 16, 2023 at 11:53:16AM -0400, Frank Li wrote:
+> On Mon, Jul 31, 2023 at 11:06:31AM -0400, Frank Li wrote:
+> > On Thu, Jul 20, 2023 at 09:58:33AM -0400, Frank Li wrote:
+> > > Add support to pass Link down notification to Endpoint function driver
+> > > so that the LINK_DOWN event can be processed by the function.
+> > > 
+> > > Acked-by: Manivannan Sadhasivam <mani@kernel.org>
+> > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> > > ---
+> > 
+> > @Lorenzo
+> > 
+> > Could you please consider pick both patches?
+> > Manivannan already reviewed and only impact layerscape.
+> 
+> @lorenzo:
+> 	ping
 
-This doesn't correspond to the code, in the code you used uint8_t.
+I will have a look tomorrow.
 
-...
+Lorenzo
 
->  struct bmp280_chip_info {
->  	unsigned int id_reg;
-> -	const unsigned int chip_id;
-> +	uint8_t chip_id;
-
-While this will compile and even work properly in kernel we use uXX types,
-here u8.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+> > 
+> > Frank
+> > 
+> > > Change from v2 to v4
+> > >  - none
+> > > Change from v1 to v2
+> > > 
+> > >  drivers/pci/controller/dwc/pci-layerscape-ep.c | 1 +
+> > >  1 file changed, 1 insertion(+)
+> > > 
+> > > diff --git a/drivers/pci/controller/dwc/pci-layerscape-ep.c b/drivers/pci/controller/dwc/pci-layerscape-ep.c
+> > > index de4c1758a6c3..e0969ff2ddf7 100644
+> > > --- a/drivers/pci/controller/dwc/pci-layerscape-ep.c
+> > > +++ b/drivers/pci/controller/dwc/pci-layerscape-ep.c
+> > > @@ -89,6 +89,7 @@ static irqreturn_t ls_pcie_ep_event_handler(int irq, void *dev_id)
+> > >  		dev_dbg(pci->dev, "Link up\n");
+> > >  	} else if (val & PEX_PF0_PME_MES_DR_LDD) {
+> > >  		dev_dbg(pci->dev, "Link down\n");
+> > > +		pci_epc_linkdown(pci->ep.epc);
+> > >  	} else if (val & PEX_PF0_PME_MES_DR_HRD) {
+> > >  		dev_dbg(pci->dev, "Hot reset\n");
+> > >  	}
+> > > -- 
+> > > 2.34.1
+> > > 
