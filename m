@@ -2,241 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7258784E11
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 03:14:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33D88784E16
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 03:18:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231961AbjHWBOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 21:14:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54202 "EHLO
+        id S231970AbjHWBSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 21:18:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231479AbjHWBOs (ORCPT
+        with ESMTP id S231479AbjHWBSD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 21:14:48 -0400
-Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6EF4E59
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 18:14:36 -0700 (PDT)
-Received: by mail-oo1-xc30.google.com with SMTP id 006d021491bc7-570e88ee36aso1241254eaf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 18:14:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692753276; x=1693358076;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=crWxE8XOEcCvVLdDxfeVx0+++iwdu7eHz9mdifeWTUk=;
-        b=P6GEHetF/kKHFyRe0mUZSg7SdmhzPs46vBYIZhsIW/iOqsi81hjMj59eodVPDInTiS
-         gcyP+ovHSs9riPzkL26OqY6gT8OBakvCb5jHCpOFEu9GNs0uo0SwFndMJX3NAUgQNfmp
-         EtG0G/doO5uIT4CO68SLBTxeob29tWzlzkJrqDekXwUQru5heXYfJsxQSvIDDYH1n1dU
-         oJ6IAbcDbv21/AUD5tduA79hm1TRBBiJ9bx126b2a7X668YqHaP5MN1y9ZC0A9Y92bul
-         uzcNCpdG3+56TuLKQ6j+vAs3X4K/ZS7RrECDfzWsK3Kk6+emWMgtHUv7iNhU0g1JXJDR
-         5J7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692753276; x=1693358076;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=crWxE8XOEcCvVLdDxfeVx0+++iwdu7eHz9mdifeWTUk=;
-        b=eSpTKP0FCruDOxciev0I2Xp9Pgd8XpaV9xv8wd6klKyn5ai8y6wHW19OB0O29EC5CT
-         zZTQRzs4ZI8a+UTRcVe8WteSjhOaVJOZNhWS9rxVqTMgM/eiPxtqRfDxRKGceOFPX/NJ
-         CxmQz+6GP5mFs5GbFg+AJJ0tFxWIDh+ajq7mk/UfWnY75eQIyZRY/81GFZUXNjP7pZAn
-         pbyIUP3/XXYbWyUWAoJw396iEfpfplI+Rl7Qp0A6Jdp5UTP+jKMLWSvXnIKVy8DyMMJs
-         KoAaWikQM148XMZJorNhYaf/aFICQbgEXoW8Quq+2jLUdq5l/2yTgYYo7WXEu+4KQPDi
-         et6Q==
-X-Gm-Message-State: AOJu0YwlyL1LKU7g9XnQ43g4EP5Jg0rERuOaW7u3hT+EabtHGKlQ2qXk
-        FNBBIwc08wxvFWkhvJelx9rYHhoZoGZk/J0+cU0sjIEjuYU=
-X-Google-Smtp-Source: AGHT+IEGOpp4iDxWPtESK4MPJRKZRNumCpbWWRQfzijm8v4Ib7IdbLo6M3zGWsWhkucbY4T61zR78xXloz+nt+nS1rA=
-X-Received: by 2002:a4a:624c:0:b0:566:f8ee:fa67 with SMTP id
- y12-20020a4a624c000000b00566f8eefa67mr11236070oog.0.1692753276042; Tue, 22
- Aug 2023 18:14:36 -0700 (PDT)
+        Tue, 22 Aug 2023 21:18:03 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AB0CCFF;
+        Tue, 22 Aug 2023 18:18:01 -0700 (PDT)
+Received: from kwepemm600003.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RVpDs6lmKzTkdD;
+        Wed, 23 Aug 2023 09:15:41 +0800 (CST)
+Received: from [10.67.111.205] (10.67.111.205) by
+ kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Wed, 23 Aug 2023 09:17:56 +0800
+Subject: Re: [PATCH v6 0/7] perf record: Track sideband events for all CPUs
+ when tracing selected CPUs
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+References: <20230821012734.18241-1-yangjihong1@huawei.com>
+From:   Yang Jihong <yangjihong1@huawei.com>
+CC:     <peterz@infradead.org>, <mingo@redhat.com>, <mark.rutland@arm.com>,
+        <alexander.shishkin@linux.intel.com>, <jolsa@kernel.org>,
+        <namhyung@kernel.org>, <irogers@google.com>,
+        <adrian.hunter@intel.com>, <kan.liang@linux.intel.com>,
+        <james.clark@arm.com>, <tmricht@linux.ibm.com>,
+        <ak@linux.intel.com>, <anshuman.khandual@arm.com>,
+        <linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>
+Message-ID: <3a069f1b-4bf8-f2f9-00fc-3e69c8b6cfcf@huawei.com>
+Date:   Wed, 23 Aug 2023 09:17:56 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Received: by 2002:ac9:5797:0:b0:4f0:1250:dd51 with HTTP; Tue, 22 Aug 2023
- 18:14:35 -0700 (PDT)
-In-Reply-To: <20230822184152.2194558-2-mjguzik@gmail.com>
-References: <20230822184152.2194558-1-mjguzik@gmail.com> <20230822184152.2194558-2-mjguzik@gmail.com>
-From:   Mateusz Guzik <mjguzik@gmail.com>
-Date:   Wed, 23 Aug 2023 03:14:35 +0200
-Message-ID: <CAGudoHE5iCbMzZ-N65RhQvdVygP7rcHKEqn90pif0M9DCZUm7g@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] pcpcntr: add group allocation/free
-To:     linux-kernel@vger.kernel.org
-Cc:     dennis@kernel.org, tj@kernel.org, cl@linux.com,
-        akpm@linux-foundation.org, shakeelb@google.com, linux-mm@kvack.org,
-        Mateusz Guzik <mjguzik@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230821012734.18241-1-yangjihong1@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.111.205]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm600003.china.huawei.com (7.193.23.202)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/22/23, Mateusz Guzik <mjguzik@gmail.com> wrote:
-> Allocations and frees are globally serialized on the pcpu lock (and the
-> CPU hotplug lock if enabled, which is the case on Debian).
->
-> At least one frequent consumer allocates 4 back-to-back counters (and
-> frees them in the same manner), exacerbating the problem.
->
-> While this does not fully remedy scalability issues, it is a step
-> towards that goal and provides immediate relief.
->
+Hi Arnaldo,
 
-I just found I'm going to have to send a v3 to handle !CONFIG_SMP.
-Temporarily I can't even compile-test that, so for now I'm just asking
-if this v2 looks fine (modulo the !smp problem).
+Can you consider applying this patchset ?
+Please let me know if there is anything that needs to be fixed.
 
-Sorry for the spam.
+Yang,
+Thanks
 
-> Signed-off-by: Mateusz Guzik <mjguzik@gmail.com>
-> ---
->  include/linux/percpu_counter.h | 20 ++++++++---
->  lib/percpu_counter.c           | 61 +++++++++++++++++++++++-----------
->  2 files changed, 57 insertions(+), 24 deletions(-)
->
-> diff --git a/include/linux/percpu_counter.h
-> b/include/linux/percpu_counter.h
-> index 75b73c83bc9d..518a4088b964 100644
-> --- a/include/linux/percpu_counter.h
-> +++ b/include/linux/percpu_counter.h
-> @@ -30,17 +30,27 @@ struct percpu_counter {
->
->  extern int percpu_counter_batch;
->
-> -int __percpu_counter_init(struct percpu_counter *fbc, s64 amount, gfp_t
-> gfp,
-> -			  struct lock_class_key *key);
-> +int __percpu_counter_init_many(struct percpu_counter *fbc, s64 amount,
-> gfp_t gfp,
-> +			  u32 nr_counters, struct lock_class_key *key);
->
-> -#define percpu_counter_init(fbc, value, gfp)				\
-> +#define percpu_counter_init_many(fbc, value, gfp, nr_counters)		\
->  	({								\
->  		static struct lock_class_key __key;			\
->  									\
-> -		__percpu_counter_init(fbc, value, gfp, &__key);		\
-> +		__percpu_counter_init_many(fbc, value, gfp, nr_counters,\
-> +					   &__key);			\
->  	})
->
-> -void percpu_counter_destroy(struct percpu_counter *fbc);
-> +
-> +#define percpu_counter_init(fbc, value, gfp)				\
-> +	percpu_counter_init_many(fbc, value, gfp, 1)
-> +
-> +void percpu_counter_destroy_many(struct percpu_counter *fbc, u32
-> nr_counters);
-> +static inline void percpu_counter_destroy(struct percpu_counter *fbc)
-> +{
-> +	percpu_counter_destroy_many(fbc, 1);
-> +}
-> +
->  void percpu_counter_set(struct percpu_counter *fbc, s64 amount);
->  void percpu_counter_add_batch(struct percpu_counter *fbc, s64 amount,
->  			      s32 batch);
-> diff --git a/lib/percpu_counter.c b/lib/percpu_counter.c
-> index 5004463c4f9f..9338b27f1cdd 100644
-> --- a/lib/percpu_counter.c
-> +++ b/lib/percpu_counter.c
-> @@ -151,48 +151,71 @@ s64 __percpu_counter_sum(struct percpu_counter *fbc)
->  }
->  EXPORT_SYMBOL(__percpu_counter_sum);
->
-> -int __percpu_counter_init(struct percpu_counter *fbc, s64 amount, gfp_t
-> gfp,
-> -			  struct lock_class_key *key)
-> +int __percpu_counter_init_many(struct percpu_counter *fbc, s64 amount,
-> gfp_t gfp,
-> +			  u32 nr_counters, struct lock_class_key *key)
->  {
->  	unsigned long flags __maybe_unused;
-> -
-> -	raw_spin_lock_init(&fbc->lock);
-> -	lockdep_set_class(&fbc->lock, key);
-> -	fbc->count = amount;
-> -	fbc->counters = alloc_percpu_gfp(s32, gfp);
-> -	if (!fbc->counters)
-> +	size_t counter_size;
-> +	s32 __percpu *counters;
-> +	u32 i;
-> +
-> +	counter_size = ALIGN(sizeof(*counters), __alignof__(*counters));
-> +	counters = __alloc_percpu_gfp(nr_counters * counter_size,
-> +				      __alignof__(*counters), gfp);
-> +	if (!counters) {
-> +		fbc[0].counters = NULL;
->  		return -ENOMEM;
-> +	}
->
-> -	debug_percpu_counter_activate(fbc);
-> +	for (i = 0; i < nr_counters; i++) {
-> +		raw_spin_lock_init(&fbc[i].lock);
-> +		lockdep_set_class(&fbc[i].lock, key);
-> +#ifdef CONFIG_HOTPLUG_CPU
-> +		INIT_LIST_HEAD(&fbc[i].list);
-> +#endif
-> +		fbc[i].count = amount;
-> +		fbc[i].counters = (void *)counters + (i * counter_size);
-> +
-> +		debug_percpu_counter_activate(&fbc[i]);
-> +	}
->
->  #ifdef CONFIG_HOTPLUG_CPU
-> -	INIT_LIST_HEAD(&fbc->list);
->  	spin_lock_irqsave(&percpu_counters_lock, flags);
-> -	list_add(&fbc->list, &percpu_counters);
-> +	for (i = 0; i < nr_counters; i++)
-> +		list_add(&fbc[i].list, &percpu_counters);
->  	spin_unlock_irqrestore(&percpu_counters_lock, flags);
->  #endif
->  	return 0;
->  }
-> -EXPORT_SYMBOL(__percpu_counter_init);
-> +EXPORT_SYMBOL(__percpu_counter_init_many);
->
-> -void percpu_counter_destroy(struct percpu_counter *fbc)
-> +void percpu_counter_destroy_many(struct percpu_counter *fbc, u32
-> nr_counters)
->  {
->  	unsigned long flags __maybe_unused;
-> +	u32 i;
-> +
-> +	if (WARN_ON_ONCE(!fbc))
-> +		return;
->
-> -	if (!fbc->counters)
-> +	if (!fbc[0].counters)
->  		return;
->
-> -	debug_percpu_counter_deactivate(fbc);
-> +	for (i = 0; i < nr_counters; i++)
-> +		debug_percpu_counter_deactivate(&fbc[i]);
->
->  #ifdef CONFIG_HOTPLUG_CPU
->  	spin_lock_irqsave(&percpu_counters_lock, flags);
-> -	list_del(&fbc->list);
-> +	for (i = 0; i < nr_counters; i++)
-> +		list_del(&fbc[i].list);
->  	spin_unlock_irqrestore(&percpu_counters_lock, flags);
->  #endif
-> -	free_percpu(fbc->counters);
-> -	fbc->counters = NULL;
-> +
-> +	free_percpu(fbc[0].counters);
-> +
-> +	for (i = 0; i < nr_counters; i++)
-> +		fbc[i].counters = NULL;
->  }
-> -EXPORT_SYMBOL(percpu_counter_destroy);
-> +EXPORT_SYMBOL(percpu_counter_destroy_many);
->
->  int percpu_counter_batch __read_mostly = 32;
->  EXPORT_SYMBOL(percpu_counter_batch);
-> --
-> 2.39.2
->
->
-
-
--- 
-Mateusz Guzik <mjguzik gmail.com>
+On 2023/8/21 9:27, Yang Jihong wrote:
+> User space tasks can migrate between CPUs, track sideband events for all
+> CPUs.
+> 
+> The specific scenarios are as follows:
+> 
+>           CPU0                                 CPU1
+>    perf record -C 0 start
+>                                taskA starts to be created and executed
+>                                  -> PERF_RECORD_COMM and PERF_RECORD_MMAP
+>                                     events only deliver to CPU1
+>                                ......
+>                                  |
+>                            migrate to CPU0
+>                                  |
+>    Running on CPU0    <----------/
+>    ...
+> 
+>    perf record -C 0 stop
+> 
+> Now perf samples the PC of taskA. However, perf does not record the
+> PERF_RECORD_COMM and PERF_RECORD_COMM events of taskA.
+> Therefore, the comm and symbols of taskA cannot be parsed.
+> 
+> The sys_perf_event_open invoked is as follows:
+> 
+>    # perf --debug verbose=3 record -e cpu-clock -C 1 true
+>    <SNIP>
+>    Opening: cpu-clock
+>    ------------------------------------------------------------
+>    perf_event_attr:
+>      type                             1 (PERF_TYPE_SOFTWARE)
+>      size                             136
+>      config                           0 (PERF_COUNT_SW_CPU_CLOCK)
+>      { sample_period, sample_freq }   4000
+>      sample_type                      IP|TID|TIME|CPU|PERIOD|IDENTIFIER
+>      read_format                      ID|LOST
+>      disabled                         1
+>      inherit                          1
+>      freq                             1
+>      sample_id_all                    1
+>      exclude_guest                    1
+>    ------------------------------------------------------------
+>    sys_perf_event_open: pid -1  cpu 1  group_fd -1  flags 0x8 = 5
+>    Opening: dummy:u
+>    ------------------------------------------------------------
+>    perf_event_attr:
+>      type                             1 (PERF_TYPE_SOFTWARE)
+>      size                             136
+>      config                           0x9 (PERF_COUNT_SW_DUMMY)
+>      { sample_period, sample_freq }   1
+>      sample_type                      IP|TID|TIME|CPU|IDENTIFIER
+>      read_format                      ID|LOST
+>      inherit                          1
+>      exclude_kernel                   1
+>      exclude_hv                       1
+>      mmap                             1
+>      comm                             1
+>      task                             1
+>      sample_id_all                    1
+>      exclude_guest                    1
+>      mmap2                            1
+>      comm_exec                        1
+>      ksymbol                          1
+>      bpf_event                        1
+>    ------------------------------------------------------------
+>    sys_perf_event_open: pid -1  cpu 0  group_fd -1  flags 0x8 = 6
+>    sys_perf_event_open: pid -1  cpu 1  group_fd -1  flags 0x8 = 7
+>    sys_perf_event_open: pid -1  cpu 2  group_fd -1  flags 0x8 = 9
+>    sys_perf_event_open: pid -1  cpu 3  group_fd -1  flags 0x8 = 10
+>    sys_perf_event_open: pid -1  cpu 4  group_fd -1  flags 0x8 = 11
+>    sys_perf_event_open: pid -1  cpu 5  group_fd -1  flags 0x8 = 12
+>    sys_perf_event_open: pid -1  cpu 6  group_fd -1  flags 0x8 = 13
+>    sys_perf_event_open: pid -1  cpu 7  group_fd -1  flags 0x8 = 14
+>    <SNIP>
+> 
+> Changes since_v5:
+>   - No code changes.
+>   - Detailed commit message of patch3.
+>   - Add Acked-by and Tested-by tags from Adrian Hunter.
+> 
+> Changes since_v4:
+>   - Simplify check code for record__tracking_system_wide().
+>   - Add perf attr test result to commit message for patch 7.
+> 
+> Changes since_v3:
+>   - Check fall_kernel, all_user, and dummy or exclude_user when determining
+>     whether system wide is required.
+> 
+> Changes since_v2:
+>   - Rename record_tracking.sh to record_sideband.sh in tools/perf/tests/shell.
+>   - Remove "perf evlist: Skip dummy event sample_type check for evlist_config" patch.
+>   - Add opts->all_kernel check in record__config_tracking_events().
+>   - Add perf_event_attr test for record selected CPUs exclude_user.
+>   - Update base-record & system-wide-dummy sample_type attr expected values for test-record-C0.
+> 
+> Changes since v1:
+>   - Add perf_evlist__go_system_wide() via internal/evlist.h instead of
+>     exporting perf_evlist__propagate_maps().
+>   - Use evlist__add_aux_dummy() instead of evlist__add_dummy() in
+>     evlist__findnew_tracking_event().
+>   - Add a parameter in evlist__findnew_tracking_event() to deal with
+>     system_wide inside.
+>   - Add sideband for all CPUs when tracing selected CPUs comments on
+>     the perf record man page.
+>   - Use "sideband events" instead of "tracking events".
+>   - Adjust the patches Sequence.
+>   - Add patch5 to skip dummy event sample_type check for evlist_config.
+>   - Add patch6 to update system-wide-dummy attr values for perf test.
+> 
+> Yang Jihong (7):
+>    perf evlist: Add perf_evlist__go_system_wide() helper
+>    perf evlist: Add evlist__findnew_tracking_event() helper
+>    perf record: Move setting dummy tracking before
+>      record__init_thread_masks()
+>    perf record: Track sideband events for all CPUs when tracing selected
+>      CPUs
+>    perf test: Update base-record & system-wide-dummy attr expected values
+>      for test-record-C0
+>    perf test: Add test case for record sideband events
+>    perf test: Add perf_event_attr test for record selected CPUs
+>      exclude_user
+> 
+>   tools/lib/perf/evlist.c                       |   9 ++
+>   tools/lib/perf/include/internal/evlist.h      |   2 +
+>   tools/perf/Documentation/perf-record.txt      |   3 +
+>   tools/perf/builtin-record.c                   | 106 +++++++++++++-----
+>   tools/perf/tests/attr/system-wide-dummy       |  14 ++-
+>   tools/perf/tests/attr/test-record-C0          |   4 +-
+>   .../perf/tests/attr/test-record-C0-all-kernel |  32 ++++++
+>   tools/perf/tests/shell/record_sideband.sh     |  44 ++++++++
+>   tools/perf/util/evlist.c                      |  18 +++
+>   tools/perf/util/evlist.h                      |   1 +
+>   10 files changed, 198 insertions(+), 35 deletions(-)
+>   create mode 100644 tools/perf/tests/attr/test-record-C0-all-kernel
+>   create mode 100755 tools/perf/tests/shell/record_sideband.sh
+> 
