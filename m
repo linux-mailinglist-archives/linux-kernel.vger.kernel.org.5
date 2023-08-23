@@ -2,141 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04F5A78508A
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 08:19:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC1BA78508D
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 08:20:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232912AbjHWGTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 02:19:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51600 "EHLO
+        id S232879AbjHWGUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 02:20:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231163AbjHWGTi (ORCPT
+        with ESMTP id S230038AbjHWGUj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 02:19:38 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35E95E7E;
-        Tue, 22 Aug 2023 23:19:22 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C44D861351;
-        Wed, 23 Aug 2023 06:19:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 938C3C433C7;
-        Wed, 23 Aug 2023 06:19:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692771561;
-        bh=hRs5dH0ZEPcb6II3vz8akVjaVIarEG42/y1v3tkpUzg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UbMFTgwT5DIncy9OyNxvxDcjJUmUgPFw7S5x606CbXJpl2Ajsbj6TiDFa/YQ78dFo
-         1+xteboubD3G3s2MMuyXy7QqqaOpnoMuXlTFuZs1E0QwQR/S7H4ciOpbbZTs8BD8T0
-         8l8KYh2C/htx1VRg17/k91/sHkNTodHdEZ4IORwl7MM3q0gbMowADeU8FOT74pFuEG
-         jb6nHdr6AO1SubsNLRkHgMqKZliGUYRAHjHivlSBs95f500FCOHFu984DexcWtjTVw
-         sRvufy3n7QSLO17xEiOpa46LpK20gEYM9LCIxNrJUyUZht9U30Ml8YPOhPJ+lqxC6Z
-         x9ciOHFMWXwig==
-Date:   Wed, 23 Aug 2023 11:49:04 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     Krishna chaitanya chundru <quic_krichai@quicinc.com>,
-        manivannan.sadhasivam@linaro.org, oe-kbuild-all@lists.linux.dev,
-        helgaas@kernel.org, linux-pci@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        quic_vbadigan@quicinc.com, quic_nitegupt@quicinc.com,
-        quic_skananth@quicinc.com, quic_ramkri@quicinc.com,
-        quic_parass@quicinc.com, krzysztof.kozlowski@linaro.org,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v5 1/4] PCI: endpoint: Add D-state change notifier support
-Message-ID: <20230823061904.GC3737@thinkpad>
-References: <1690948281-2143-2-git-send-email-quic_krichai@quicinc.com>
- <202308021312.obgu7FWM-lkp@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+        Wed, 23 Aug 2023 02:20:39 -0400
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2119.outbound.protection.outlook.com [40.107.117.119])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BFFB184;
+        Tue, 22 Aug 2023 23:20:37 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PGCoC6b2bBUIfqVcc4hfFOBeXeVb3ZOpspJ7r/oor0cE5lmG4EsB3L15tmMvtylYryD4RUTLuWKtWzNdnCtVTMmF5SIGaaxQdSdHcl05LcA42DVGWXN8auD30Utthy9uimFvz3Dpe3ES/tDa27Nc3wrkzdgYhKqvr8qThpzT3i+yFutD9FPH7yiQUepuVrynqfN7mrtRFfJRDkpJaKA6IlQ6Lf+3SY3SoRWVGpILtzDZTyKiAeEmKSWNZAxsZeHO8Ci1qoqJBKYbs8BXmTOnvri/lNjOrYxxnOZt3GSaKzbks9sJ8doXScx26KMX3aiQT/sZZv5gAWaAY4fgxg+kug==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=MiaKFYgo2ubnNwqn9Elmno7haNkh+PvmJJxdTHlp2JI=;
+ b=ArnUpOGuH8E+5s+BoKVBzBGNNHqhlxs2q8R/J5U5k3VP6va76BySgml9Spxhns+/DAaD/44DwXaL/t8lsm0LcspG/ARjUlJGPca0j2DBEGfYHDO+ylftRyGLneJBakg1t06Ys6SOiOecyFTGlZrE4aBlDK/1M1HDyen0jimOuaLaV5EywqsOXF/UCA9e30IJG+r5xZgzIovsM6EE7+2yyzNqbrIXUHZOLk4fOGmg+5JgDVkBXBvdH6NgEfFCeKgQNtymdpre97DqMVcVHDGTWBDABtsCiKT3M2XKVj0lfIVekXFGCjVj3ahG6ckFEg05gzh474dQUKHDM0vfedNEZQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amlogic.com; dmarc=pass action=none header.from=amlogic.com;
+ dkim=pass header.d=amlogic.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amlogic.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MiaKFYgo2ubnNwqn9Elmno7haNkh+PvmJJxdTHlp2JI=;
+ b=uvcgfbmk1DuOqYzyFMsD4r05bsE9H54Lkx26ol4+oDQG/oQscoZSGfAVRB4dfobkct/ZmVXAEe0jXGPrEPJv3IPrGanf4EjJkf821fzfqpcliRviY3fZkm6/ESQDunMPEqLEsv/Jy97aJHATVEF4Nj00Za74As9iHq7Aa6Lk2wpYFI5yeWVfvVIyGj3G83h7MadRm5YU03rnN8KgqA49ueZCp5kZo9eZma/2Q9ryoRwXUAdlLNnfc1gQIm7i1oRJNfCtlQJ+lJ+vJTGB/TaasKBeudXFLXgWAooV2T6Ti6v1l4C/dwjHIXV1tsuY6RrMqi3A051evJorS2RIRFwfLw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amlogic.com;
+Received: from SG2PR03MB6730.apcprd03.prod.outlook.com (2603:1096:4:1d5::9) by
+ SI2PR03MB5194.apcprd03.prod.outlook.com (2603:1096:4:106::6) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6699.25; Wed, 23 Aug 2023 06:20:34 +0000
+Received: from SG2PR03MB6730.apcprd03.prod.outlook.com
+ ([fe80::6f04:4b62:1127:59ed]) by SG2PR03MB6730.apcprd03.prod.outlook.com
+ ([fe80::6f04:4b62:1127:59ed%4]) with mapi id 15.20.6678.029; Wed, 23 Aug 2023
+ 06:20:34 +0000
+Message-ID: <eee9e730-f69b-1150-07fe-0d40a14b5a50@amlogic.com>
+Date:   Wed, 23 Aug 2023 14:20:30 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH V10 1/4] dt-bindings: clock: document Amlogic S4 SoC PLL
+ clock controller
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     kelvin.zhang@amlogic.com, qi.duan@amlogic.com
+References: <20230822082750.27633-1-yu.tu@amlogic.com>
+ <20230822082750.27633-2-yu.tu@amlogic.com>
+ <d2a6060a-c8a0-51c7-f621-1bed2c3074b4@linaro.org>
+ <e9932f90-a011-ee9b-ef09-f2e2475bdd0d@amlogic.com>
+ <c2faccd6-1d77-9b81-d8d9-830e95e804af@linaro.org>
+From:   Yu Tu <yu.tu@amlogic.com>
+In-Reply-To: <c2faccd6-1d77-9b81-d8d9-830e95e804af@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <202308021312.obgu7FWM-lkp@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-ClientProxiedBy: SI2PR02CA0010.apcprd02.prod.outlook.com
+ (2603:1096:4:194::15) To SG2PR03MB6730.apcprd03.prod.outlook.com
+ (2603:1096:4:1d5::9)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SG2PR03MB6730:EE_|SI2PR03MB5194:EE_
+X-MS-Office365-Filtering-Correlation-Id: f37cbf0f-317f-487e-ee3c-08dba3a10f49
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: s7ugeItRuHnZRV2bT2p20BEhCygL/bhOuVVDt0npX3dsPoqpOCEveswmLX4D67VZm64jFeDeMwZkMfMf7jF1EefVqoHocPgUHYCCk+ZSSGvDupXjVrEC1T54ME6jcCWlN13BGeAz4Rn7ppkFSJmwP9GWsIO28k3bRq4gcaHBU77SqmVHNZ1/6DS3KoH8/RQ0ChulHTD3OyzHUIg20Ed9il07RToE9FgispRLrQoYf4D7AN05HintKwW31vwY+3aLHtMqZfKRgyc73DqUBFYUFUBqd1CU0xh6nf8vlIcCwvm8E1cAPHv9TGBaSgGdTWBIksgSfXDPWx2Rs4e6qYSZN9ybQgGzp8Hu4JY5Y3WCzus0iOV0ZR9LbPhFVrdNocvrr8PY1VF3k9XnY5g2yTJI8vj75SSitsS6KeZJtsA13ZsCzk8lVSb1lF/VQz53l5h8A1NYi0VljAJpR8eEFILI6J0YmG7T966gtdaVQdJ8lQFZXWK4bII/itXMuNeYL45xFKU1g5e4lSriO5A/QBAejlsJBcdxfrnRZNhN3GxyRoyAVh/WshqWYnxzVaYLRuNCEG/KvQSY6cxqEdPdu9gBH/2tG7e3Qz9+y2Z1alB3KUWCr4YgTtWKPtbxUIOBHdNPw4Erfuu6kPrECqJw7vR7ghH2/nmN5a+93Ry8b5szpHbu2//m6+UhMD3Ss1Ow/EbJY2G/ETDuejXlfp2aS4zJquqX43hCgM51thfbxHc+7Dbdj243ksy3ru5njPkICkag
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR03MB6730.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(366004)(396003)(346002)(376002)(39850400004)(186009)(1800799009)(451199024)(110136005)(86362001)(31696002)(5660300002)(44832011)(8676002)(8936002)(7416002)(4326008)(2906002)(36756003)(6512007)(6486002)(6666004)(53546011)(6506007)(107886003)(26005)(2616005)(921005)(478600001)(12101799020)(83380400001)(31686004)(66476007)(66556008)(316002)(66946007)(38100700002)(41300700001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?azN5RDkxbDhYVWFCRHBjZjZuMGtkNU0zVi9NbmJrZnBFZFh4SEVnMUR5MG5t?=
+ =?utf-8?B?T0VMWEJzbXdrbDRvcEJnSWJzWldvNXh1QWUxQXpNcXpSTTNqb1FURnBFRk5m?=
+ =?utf-8?B?OEc3aGp4OXN3c3JQRUdkZzYrc05JQlc4djhxRkZPLy80Q2RpTm1KZVhPS1l6?=
+ =?utf-8?B?WG4xN05ZaGE3Q3JiaUZCdUtPejNPQTN1RWtBNzd3N2w3elRlU21SdU5qY3FW?=
+ =?utf-8?B?NFR6RDluLzlPV24yWVEzQUFENVNtN0pMNzVuVmdrdHdIazBiUGc1VnRMNmVP?=
+ =?utf-8?B?dVZjSE4xNjQ0NlljK2RBS0lCVVRWSi8xQTNrR05XWjNxcFlYNUFoV3dFczV5?=
+ =?utf-8?B?b0dxY2JPQUtabFd4M056WGd5SFdCQ3Y1dUF6Nzd4VHQ3SjRuUTN5cDRoVjJK?=
+ =?utf-8?B?Q29JMWxKN2JBVGs5RFV4OHpremNKaUNoZDZ3amYwRmtMRDVtYk1YSkh0a0xh?=
+ =?utf-8?B?endJMHVmWVR4MlV1c2Y2TGVIbXJwajlKYXFZSjJnZTFzNU1MU2Y0WDA1MDFz?=
+ =?utf-8?B?QzhiSDZicHh2ZElJWnJYclNrM3k3cWphVHRXVXRwa25pREpEZkpqcDFBUmx6?=
+ =?utf-8?B?N0NYNnk5a3BMcWo3NEJGZkxZaUFhRG1BdG1rMXIvNko2bzlQSzdvNTJ6MkhK?=
+ =?utf-8?B?WU5JdDUwOXJOR1hvVkNTQ2FoK1hYUE01R1B2WGdKbkQrWmx6Q25ROUtDblJY?=
+ =?utf-8?B?QjFMd1MxV0lZWWxEY0M1UzIwNFB4cHMxMU9tQWw0Z2dQWlVjMXFsd1BTRldI?=
+ =?utf-8?B?YWEzOG96RFNycllWSm82bEZPOVJFeityOFZPdFhYeVBYQlFPZ2c5eU5UcFNa?=
+ =?utf-8?B?bmxjSjA5Y21yTVgwRXkzdjQ1QjNRQzdraXJlT3U3QVVBL0t4bXowaUYxeXRu?=
+ =?utf-8?B?RlhoaXJpcHZsNEJudTFZZjBSYnpDWUhzNXVRN3k2QkwwTzg2RzRzcWJZcWI4?=
+ =?utf-8?B?SFJOaTQzZXVseHYrYTNkTDZMSHkvdE84UEtEYVBIWDZUVGRpYUVpcXQxY1J3?=
+ =?utf-8?B?RTRDcVhDN3VqZjd1V0RTd2hMV0laQXRsWnJPL1VVQVdKOUZQUGJZWkRUamc4?=
+ =?utf-8?B?QUovdTJpZ2dDamZvemlTMUk5VVV2Mkk0MldobnR6bEIwNUtGL2ozSnVSZU9R?=
+ =?utf-8?B?bGJiOG95L2NKakk4cC9SLzhISXVlRWpEQngwbHBBUVJ0Ujk2STY4VUxMZWFC?=
+ =?utf-8?B?SXZZRjlTSVMrUkxtTDNoaGRTc3BtcnM0dEVYN2lVTXhQOU5SQjR1amV3TU5F?=
+ =?utf-8?B?NU56bjBMR2hYc1JkbmhkdkxFcmUrNDNMdnVxYXlHamc5cyt1UTlRQ3lRQ0hF?=
+ =?utf-8?B?dUg2TU1zZE1XeG82QmZVbDhJMTZuQ2NsNnYxNFNPcng3ZGlnTDB4NGdYS1RS?=
+ =?utf-8?B?WXhOVTVHVk96dUIrNFEzRnQyZ1ZISEZCa1BMVXp1a2Z1TWR6UnNHVWJ3V2Iz?=
+ =?utf-8?B?N1BHTUdOVnZWMTVuT21qTU9QYkgxVHBQUFQ4Z1RZWWNmbFJvZG5yWjJFZCs4?=
+ =?utf-8?B?ZEdDOG9tR0V1eUsxQXI5b0wxWkl6NnJoNGVwYzlPR2NNZStUdDBNcWFkcklz?=
+ =?utf-8?B?SE9WK09LbWIrdWxEVjFKUWY2OEVXalJGN1UwRk4yWktkRGF6Rml6dTQ1ZldY?=
+ =?utf-8?B?ZHBaT01sUkhHRE5TNUlsZFVDOHhVTTdXUG9jdEtRcWJkNEJtYVhlQSthb2hY?=
+ =?utf-8?B?RTB0SkJzR2Vvbm5JTkdFNkZ6RFhKQWVXbWppUmgyRkJRU3c3V1BMa3dqVE9V?=
+ =?utf-8?B?ME1DaW85bTZtVGc2bWt3cmlCU244bDNhcWJmTGd4ODVweDVKbHJpQ2I2S1RB?=
+ =?utf-8?B?UkFqYzV2bW1VZXFSYlVkdjY0L1NTNzU1WDd5U1ZGaDFGcnBVaDB4SkdwZ3di?=
+ =?utf-8?B?TktjY3UvV2JXcFVRcWdRSVJGaC9nMXZYclJ2d1NUY3BLN3dIU1ZmaEVBMS9U?=
+ =?utf-8?B?U2NVdDh1eVlrNnFFeitrUmR0OFdWZkRkTEhSN3VJR1dCNThQUy9pL2Rhdmth?=
+ =?utf-8?B?VEtxd3BRRzJRU0UrNWdCY3hWQ0JoVUI2MVpqbzBPVGJ1R3JIM21KcTdvUThD?=
+ =?utf-8?B?RFlJcHhTQnpUajFiZU9KdGZZRDY0UXc4aG04ZjNhNWZtT0N4YXRWMHQ4ckZD?=
+ =?utf-8?Q?dZP25uT5sO1rD7NsHzyn+SLci?=
+X-OriginatorOrg: amlogic.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f37cbf0f-317f-487e-ee3c-08dba3a10f49
+X-MS-Exchange-CrossTenant-AuthSource: SG2PR03MB6730.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Aug 2023 06:20:34.6600
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 0df2add9-25ca-4b3a-acb4-c99ddf0b1114
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: z60PxGdGh90QzQBVsqsIbxQP6/wnW3behwmYShMSoXhxAzfzwtzIdue5GQI+qq9BDHWCavHVpH38cezwHmIj1A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SI2PR03MB5194
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 02, 2023 at 01:14:44PM +0800, kernel test robot wrote:
-> Hi Krishna,
-> 
-> kernel test robot noticed the following build warnings:
-> 
-> [auto build test WARNING on pci/next]
-> [also build test WARNING on pci/for-linus linus/master v6.5-rc4 next-20230801]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch#_base_tree_information]
-> 
-> url:    https://github.com/intel-lab-lkp/linux/commits/Krishna-chaitanya-chundru/PCI-endpoint-Add-D-state-change-notifier-support/20230802-115309
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git next
-> patch link:    https://lore.kernel.org/r/1690948281-2143-2-git-send-email-quic_krichai%40quicinc.com
-> patch subject: [PATCH v5 1/4] PCI: endpoint: Add D-state change notifier support
-> config: loongarch-allyesconfig (https://download.01.org/0day-ci/archive/20230802/202308021312.obgu7FWM-lkp@intel.com/config)
-> compiler: loongarch64-linux-gcc (GCC) 12.3.0
-> reproduce: (https://download.01.org/0day-ci/archive/20230802/202308021312.obgu7FWM-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202308021312.obgu7FWM-lkp@intel.com/
-> 
-> All warnings (new ones prefixed by >>):
-> 
-> >> drivers/pci/endpoint/pci-epc-core.c:795:6: warning: no previous prototype for 'pci_epc_dstate_notity' [-Wmissing-prototypes]
->      795 | void pci_epc_dstate_notity(struct pci_epc *epc, pci_power_t state)
 
-This tells that you haven't build tested the series before sending. Please
-always do both build and functionality testing before sending each iteration.
 
-- Mani
+On 2023/8/23 13:43, Krzysztof Kozlowski wrote:
+> 
+> [ EXTERNAL EMAIL ]
+> 
+> On 23/08/2023 04:24, Yu Tu wrote:
+>>
+>>
+>> On 2023/8/23 0:32, Krzysztof Kozlowski wrote:
+>>> [ EXTERNAL EMAIL ]
+>>>> On 22/08/2023 10:27, Yu Tu wrote:
+>>>> Add the S4 PLL clock controller dt-bindings in the S4 SoC family.
+>>>>
+>>>> Signed-off-by: Yu Tu <yu.tu@amlogic.com>
+>>>
+>>> Lovely. I sent youa  friendly reminder at v8 which turns our you
+>>> ignored. You keep ignoring, I will start ignoring as well from now on.
+>>
+>> Hi Krzysztof，
+>>
+>> Sorry. I did not forget the friendly reminder in v8, I consulted you for
+>> this at the time, so I re-sent V9 after adding the tag. Because it was
+>> just "meson" that was removed. But V10 is based on Neil's patch, which I
+>> think is a bit of a change. So I didn't dare add it. Instead of
+>> forgetting your reminder.
+>>
+>> So what should I do, I'll follow your advice exactly.
+> 
+> I don't think there was much difference between the version, which
+> received the review, and the current patch. Otherwise your changelog
+> should say that you drop Rb tag. Rebasing of something somewhere is not
+> the reason, so please describe what are the differences in the patch?
 
->          |      ^~~~~~~~~~~~~~~~~~~~~
-> 
-> 
-> vim +/pci_epc_dstate_notity +795 drivers/pci/endpoint/pci-epc-core.c
-> 
->    785	
->    786	/**
->    787	 * pci_epc_dstate_notity() - Notify the EPF driver that EPC device D-state
->    788	 *			has changed
->    789	 * @epc: the EPC device which has change in D-state
->    790	 * @state: the changed D-state
->    791	 *
->    792	 * Invoke to Notify the EPF device that the EPC device has D-state has
->    793	 * changed.
->    794	 */
->  > 795	void pci_epc_dstate_notity(struct pci_epc *epc, pci_power_t state)
->    796	{
->    797		struct pci_epf *epf;
->    798	
->    799		if (!epc || IS_ERR(epc))
->    800			return;
->    801	
->    802		mutex_lock(&epc->list_lock);
->    803		list_for_each_entry(epf, &epc->pci_epf, list) {
->    804			mutex_lock(&epf->lock);
->    805			if (epf->event_ops && epf->event_ops->dstate_notify)
->    806				epf->event_ops->dstate_notify(epf, state);
->    807			mutex_unlock(&epf->lock);
->    808		}
->    809		mutex_unlock(&epc->list_lock);
->    810	}
->    811	EXPORT_SYMBOL_GPL(pci_epc_dstate_notity);
->    812	
-> 
-> -- 
-> 0-DAY CI Kernel Test Service
-> https://github.com/intel/lkp-tests/wiki
+The current patch and V9 patch difference is mainly based on Neil patch 
+I put "include/dt - bindings/clock/amlogic,s4-pll-clkc.h" this document 
+describes the clock index all exposed.
 
--- 
-மணிவண்ணன் சதாசிவம்
+Next, I should add Rob's tag and resend it. If you have any other 
+suggestions, please tell me and I will strictly follow your suggestions.
+
+> 
+> Best regards,
+> Krzysztof
+> 
