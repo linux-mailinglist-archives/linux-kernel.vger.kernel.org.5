@@ -2,112 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3C7978554A
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 12:22:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C034B785550
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 12:25:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233351AbjHWKWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 06:22:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51684 "EHLO
+        id S233237AbjHWKZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 06:25:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232013AbjHWKWC (ORCPT
+        with ESMTP id S230141AbjHWKZP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 06:22:02 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33855124
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 03:21:59 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-99c93638322so1114350466b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 03:21:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692786117; x=1693390917;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cxd/f9pUe8tSEE35CH9p7Iwcb3H3wlv2n72/JZm5DmY=;
-        b=fhfCXRjF1eOLreLlvb8oxrNvDkJggjqJtbdAUtLifVJ4A/JJb126n//9lEO5dM3Qhj
-         8XsDVxuGPPOkF8JF8rzqm+vmjCLYsdmsjBavoTQtdo5JUlETw1AUp5SWfTWCRtomGfVw
-         TL39HS5JK7BYBZNVbaAwVaNbgxMFdV9hLz5OTj78DUYQmloM9KHMLAqfri9kp2+exXl3
-         /Kpjhg3Z79v8l/dZWrowRkxd4WPC6IZaOBU3tkF43NxJF8nL29xEx8UqsKGPchu0v4b6
-         LrY0i+DU4cK9g0PyGi0lRhzOq7XiYafobq4Yc7YHr9SjQQbceO0awX7if4rnOBrs10pd
-         le4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692786117; x=1693390917;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cxd/f9pUe8tSEE35CH9p7Iwcb3H3wlv2n72/JZm5DmY=;
-        b=iEDNiznTXOWofX/UCh2V4qwZmLf/Hji+7Wt0C+4q3tteSZSh0ksEQh5TNdj7PEqIaV
-         v1cE9ak2MpDFvV+x5WQ3XD/uLynu+ntUK4NmWFgTwE4pAdK1SO2oFB0XLHfEnUMuf7Uw
-         w8GMI2bn2JjsusFZdgKkAkYHI9iOwJrO0ONiia0o6PQultT498/GPf3wOSTjbVQEOhLn
-         cu20tAKKgYWIySxcR8SK4cEgqshSf6r3EnFeAh4RKkmIxe//hvIlHC9F6lWzSWbGzAwp
-         TZ2+TDUI0PI8TXCf3m3Q2f53iqvwNo22QgyBjJbg2fNj1Q5IJ6Jw/SG0WW+4x2+LYVsJ
-         5/Hw==
-X-Gm-Message-State: AOJu0YxVC4T2P73B09xuSya9znK4igXzonnebmBb7pv/O6NL4yX74ilL
-        IxDAQuK6mc/c1pVY9Z5uSzSIDg==
-X-Google-Smtp-Source: AGHT+IEUxXO44chPAXFLzuTL41oAjmwX7yfAnA+DmU4UChPuHTMzIvsQpBWV7EeqPqAFCShxzLV+kQ==
-X-Received: by 2002:a17:907:7b8b:b0:9a1:d29c:fb6b with SMTP id ne11-20020a1709077b8b00b009a1d29cfb6bmr2248394ejc.25.1692786117621;
-        Wed, 23 Aug 2023 03:21:57 -0700 (PDT)
-Received: from [192.168.0.22] ([77.252.47.198])
-        by smtp.gmail.com with ESMTPSA id a22-20020a1709064a5600b009a1c4d04989sm1695052ejv.217.2023.08.23.03.21.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Aug 2023 03:21:57 -0700 (PDT)
-Message-ID: <86d91b27-1573-7a7c-40c1-f0bbe4f8df9f@linaro.org>
-Date:   Wed, 23 Aug 2023 12:21:56 +0200
+        Wed, 23 Aug 2023 06:25:15 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BAC211F;
+        Wed, 23 Aug 2023 03:25:12 -0700 (PDT)
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37N9ULXg016321;
+        Wed, 23 Aug 2023 10:25:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=K5KxTV25eSkKqVuPGc6yQJ66jbQLXcAGnNjeCidT3UQ=;
+ b=o5UngKoeSvDyA91pfj7O9oBE6EvrhS223fgCv2nm2JVedgtuEgXdylP85+vkI3/xXkxV
+ IwIYNAUjDnfIPAzpIGlf1MiYCtVvxPwi2MuL9oEUJ1uDbZZylGRQ8ilumYz9K4Ds/M23
+ maBtbKlQpfYiR2aHRLsVB1TrAfO0zGdQ2CKCZKNhj42XSh8SlMVwi3+y5TbmPNZ+j0Kv
+ gqXa2qTW19/et3xBhw+tonGrZsJevYvohQWS9E33sg/lRhojwY9rvzLSl4b4YYuFN7SK
+ 8JRSnenR7OYOtCNCWq/+B5EeE/hJ243fjHjo5eHXxMs55rIfq+PxgPTZOQKWEWMUnnu+ mA== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sn2mvhjne-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 23 Aug 2023 10:25:03 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37NAP1Lx016960
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 23 Aug 2023 10:25:02 GMT
+Received: from [10.253.13.101] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 23 Aug
+ 2023 03:24:58 -0700
+Message-ID: <7eaca76f-e7ad-cb1c-5a1d-5a2b68357e9c@quicinc.com>
+Date:   Wed, 23 Aug 2023 18:24:55 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
  Thunderbird/102.14.0
-Subject: Re: [PATCH 2/2] rtc: m48t86: add DT support for m48t86
+Subject: Re: [PATCH v5 2/4] dt-bindings: clock: add qca8386/qca8084 clock and
+ reset definitions
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        <andersson@kernel.org>, <agross@kernel.org>,
+        <konrad.dybcio@linaro.org>, <mturquette@baylibre.com>,
+        <sboyd@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <catalin.marinas@arm.com>, <will@kernel.org>,
+        <p.zabel@pengutronix.de>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_srichara@quicinc.com>
+References: <20230823085031.27252-1-quic_luoj@quicinc.com>
+ <20230823085031.27252-3-quic_luoj@quicinc.com>
+ <692b7775-eeda-3c5b-cc24-c5dbdbb38c71@linaro.org>
 Content-Language: en-US
-To:     Nikita Shubin <nikita.shubin@maquefel.me>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>
-References: <20230823-m48t86_device_tree-v1-0-240023b435ac@maquefel.me>
- <20230823-m48t86_device_tree-v1-2-240023b435ac@maquefel.me>
- <19f09a5e-c420-f209-ebef-cfa36ffa8467@linaro.org>
- <c39b9281fa599d523591b3a3b34db6a05362cdbf.camel@maquefel.me>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <c39b9281fa599d523591b3a3b34db6a05362cdbf.camel@maquefel.me>
-Content-Type: text/plain; charset=UTF-8
+From:   Jie Luo <quic_luoj@quicinc.com>
+In-Reply-To: <692b7775-eeda-3c5b-cc24-c5dbdbb38c71@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 4eGDYzjcRDnS-wAmADU4X7l1O_k-SKiC
+X-Proofpoint-GUID: 4eGDYzjcRDnS-wAmADU4X7l1O_k-SKiC
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-23_06,2023-08-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
+ impostorscore=0 mlxscore=0 priorityscore=1501 lowpriorityscore=0
+ suspectscore=0 spamscore=0 mlxlogscore=742 bulkscore=0 clxscore=1015
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308230094
 X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/08/2023 12:20, Nikita Shubin wrote:
-> Hello Krzysztof!
-> 
-> On Wed, 2023-08-23 at 12:14 +0200, Krzysztof Kozlowski wrote:
->> On 23/08/2023 11:03, Nikita Shubin via B4 Relay wrote:
->>> From: Nikita Shubin <nikita.shubin@maquefel.me>
->>>
->>> Add OF ID match table.
->>>
->>> Acked-by: Arnd Bergmann <arnd@arndb.de>
->>> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+
+
+On 8/23/2023 6:11 PM, Krzysztof Kozlowski wrote:
+> On 23/08/2023 10:50, Luo Jie wrote:
+>> QCA8386/QCA8084 includes the clock & reset controller that is
+>> accessed by MDIO bus. Two work modes are supported, qca8386 works
+>> as switch mode, qca8084 works as PHY mode.
 >>
->> How did these appear? It's v1, so it is a bit confusing.
+>> Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
 > 
-> Indeed this is from "ep93xx device tree conversion" series, you asked
-> to submit these part as a separate.
+> You ignored tag, so I wrote you friendly reminder. You responded:
 > 
-> I don't know the rules for tags in such cases, sorry. It's discouraged
-> to use tags given elsewhere ?
+> "Okay, got it, thanks Krzysztof for the reminder."
+> 
+> so again you ignored the tag?
+> 
+> No, come on. Doing mistakes is fine. Doing the same mistakes over and
+> over is not fine.
+> 
+> Best regards,
+> Krzysztof
+> 
+oh, sorry for missed stating the reason for the tag removed, this patch 
+is updated, i forget to state the reason that the register address is 
+changed from 24 to 0x10, i will keep this in mind and add this info in 
+the next patch set.
 
-Ah, no, it's okay, but this patchset should have some history (e.g.
-continuing versioning and changelog) or references to previous lore
-submission with explanation.
-
-Best regards,
-Krzysztof
-
+Thanks Krzysztof for this reminder.
