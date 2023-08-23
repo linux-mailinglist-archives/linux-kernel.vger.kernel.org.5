@@ -2,110 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D7F87857F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 14:39:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51D247857F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 14:41:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234115AbjHWMjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 08:39:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33182 "EHLO
+        id S234330AbjHWMla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 08:41:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232906AbjHWMjO (ORCPT
+        with ESMTP id S232906AbjHWMl3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 08:39:14 -0400
-Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 840C3E40;
-        Wed, 23 Aug 2023 05:39:11 -0700 (PDT)
-Received: from i53875a83.versanet.de ([83.135.90.131] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <heiko@sntech.de>)
-        id 1qYn8T-0003UY-66; Wed, 23 Aug 2023 14:38:57 +0200
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Jakob Unterwurzacher <jakobunt@gmail.com>
-Cc:     jakob.unterwurzacher@theobroma-systems.com,
-        Ermin Sunj <ermin.sunj@theobroma-systems.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] TSD: arm64: dts: rockchip: use codec as clock master
-Date:   Wed, 23 Aug 2023 14:38:56 +0200
-Message-ID: <3763479.7s5MMGUR32@diego>
-In-Reply-To: <20230823122000.585787-1-jakob.unterwurzacher@theobroma-systems.com>
-References: <20230823122000.585787-1-jakob.unterwurzacher@theobroma-systems.com>
+        Wed, 23 Aug 2023 08:41:29 -0400
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABCC8E46
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 05:41:26 -0700 (PDT)
+Received: by mail-oi1-x22f.google.com with SMTP id 5614622812f47-3a85b9c6ccdso2227570b6e.0
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 05:41:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692794486; x=1693399286;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=e/f7T3FZf5QGSLEO262NyuWeijF0vG1zwz/aiGhEhO0=;
+        b=sr8rx74L1zfe5NRH3/c1LNcfCpc1f8v2uvrU94iCS9tu5m4puB6UFiog6hf29WcVOL
+         fWPjolJMZ8q/OrmRrs3XtWYMVXD43Hzye8A0YgH0Z4+8uub6URQ0BFy4kXsrYfMAUYO4
+         U+Osy05eZffzhbonC5XyLYPoSdD6+dmhf0eUjYyOv4ufmc56b1cVeML3pX3MaSTdAiq0
+         R84zBhoO4GWpBQ56nhP1hXX+3eguE8UrV26FiWotpz6QcHiiXVCBvTQJwrZ1xQGeRLN4
+         iVCuldTdO13IcvOP6ca19/MuwLYdVUyFxw2RuZvqU5H0fCnd/4Iy0cpIg7R1fthThHRS
+         /8sQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692794486; x=1693399286;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=e/f7T3FZf5QGSLEO262NyuWeijF0vG1zwz/aiGhEhO0=;
+        b=KPpYYgxY7Cc6SeNkZd2IeZrovEebDwIdToHK/1tCIYr4zQxVu6T1ejvHEVgrhVdJKd
+         FoFxFfryDEYl4hHX7ALYkXzVYGdcMfUB40k1r49ngh441Lf7ga3jQ+S/oeg27qQVDOZL
+         SWqaGzb9240YU8wNSAHlHaZq815kIB7K7PeEDnLNZ96AdcIilmDQc/bjKt1Ogj6uXr6/
+         j5ja6L+yHpP1lI4vNFFKLoTLwf9c5xLpJTo5MQ91ZssRicd1/FXFgaBWfMxnRlqIXF/d
+         Q897xGQmcdSMu8fv2TvQg+q656uZkmq0vyNOp9IG/QYWQEOoB6gvZqCRafstgL10GFHb
+         6Vjw==
+X-Gm-Message-State: AOJu0YzR+kEiIUO6ho0xr5q6X479lZtNx2O8beEEihDavZy9NyfiAikW
+        4RgXpDdMKOr+/oPAEO6Pxxl/ZamjHViWCSbSZXhENg==
+X-Google-Smtp-Source: AGHT+IGEVmJslUpD3TVQwsDHcK7stA8pSL9fmRj2QDvtZ9ZXvOFRcGwz5G+dkmi/efeD5ViaafkbJuoJhokEz4S2QrQ=
+X-Received: by 2002:a05:6358:33a2:b0:135:99fa:a125 with SMTP id
+ i34-20020a05635833a200b0013599faa125mr12763757rwd.1.1692794485931; Wed, 23
+ Aug 2023 05:41:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_PASS,T_SPF_HELO_TEMPERROR,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230823104010.79107-1-balamanikandan.gunasundar@microchip.com> <20230823104010.79107-4-balamanikandan.gunasundar@microchip.com>
+In-Reply-To: <20230823104010.79107-4-balamanikandan.gunasundar@microchip.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 23 Aug 2023 14:41:14 +0200
+Message-ID: <CACRpkda2gJkj6_25rnLUHNaLC3_kcSbCF+y6RRvbnUsju-iJYg@mail.gmail.com>
+Subject: Re: [PATCH v5 3/3] mmc: atmel-mci: Move card detect gpio polarity
+ quirk to gpiolib
+To:     Balamanikandan Gunasundar 
+        <balamanikandan.gunasundar@microchip.com>
+Cc:     dmitry.torokhov@gmail.com, ulf.hansson@linaro.org,
+        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        ludovic.desroches@microchip.com, nicolas.ferre@microchip.com,
+        alexandre.belloni@bootlin.com, hari.prasathge@microchip.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jakob,
+Hi Balamanikandan,
 
-the change itself looks ok, but there are some logistic changes needed.
+thanks for your patch!
 
-For one, please drop the local TSD prefix from patches submitted upstream.
-The patch subject should be something like
+On Wed, Aug 23, 2023 at 12:40=E2=80=AFPM Balamanikandan Gunasundar
+<balamanikandan.gunasundar@microchip.com> wrote:
 
-	arm64: dts: rockchip: use codec as clock master on px30-ringneck
+> The polarity of the card detection gpio is handled by the "cd-inverted"
+> property in the device tree. Move this inversion logic to gpiolib to avoi=
+d
+> reading the gpio raw value.
+>
+> Signed-off-by: Balamanikandan Gunasundar <balamanikandan.gunasundar@micro=
+chip.com>
+(...)
+>  drivers/gpio/gpiolib-of.c    |  7 +++++++
 
-Am Mittwoch, 23. August 2023, 14:19:59 CEST schrieb Jakob Unterwurzacher:
-> From: Ermin Sunj <ermin.sunj@theobroma-systems.com>
-> 
-> If the codec is not the clock master, the MCLK needs to be
-> synchronous to both I2S_SCL ans I2S_LRCLK. We do not have that
-> on Haikou, causing distorted audio.
-> 
-> Before:
-> 
->  Running audioloopback.py script on Ringneck, 1kHz
->  output sine wave is not stable and shows distortion.
-> 
-> After:
-> 
->  10h stress tests audioloopback.py failed only one time.
->  That is 0.00014% failure rate.
-> 
-> Signed-off-by: Ermin Sunj <ermin.sunj@theobroma-systems.com>
+Patching here is the right approach!
 
-As sender of the patch you need to add another Signed-off-by line
-of your own. With this you indicate that you were allowed to submit
-the patch. So this needs two SOB-lines, one for Ermin as the original
-author and one for you as the submitter.
+> +#if IS_ENABLED(CONFIG_MMC_ATMELMCI)
+> +       if (of_device_is_compatible(np->parent, "atmel,hsmci") &&
+> +           !strcmp(propname, "cd-gpios")) {
+> +               active_high =3D of_property_read_bool(np, "cd-inverted");
+> +               of_gpio_quirk_polarity(np, active_high, flags);
+> +       }
+> +#endif
+>         for (i =3D 0; i < ARRAY_SIZE(gpios); i++) {
+>                 if (of_device_is_compatible(np, gpios[i].compatible) &&
+>                     !strcmp(propname, gpios[i].gpio_propname)) {
 
-Probably same for the second patch.
+This duplicates the code right below. Can't you just add an entry to the
+existing gpios[] array?
 
+I would imagine:
 
-Thanks
-Heiko
-
-> ---
->  arch/arm64/boot/dts/rockchip/px30-ringneck-haikou.dts | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/boot/dts/rockchip/px30-ringneck-haikou.dts b/arch/arm64/boot/dts/rockchip/px30-ringneck-haikou.dts
-> index 3a447d03e2a8..dafeef0c2dab 100644
-> --- a/arch/arm64/boot/dts/rockchip/px30-ringneck-haikou.dts
-> +++ b/arch/arm64/boot/dts/rockchip/px30-ringneck-haikou.dts
-> @@ -68,8 +68,10 @@ i2s0-sound {
->  		simple-audio-card,format = "i2s";
->  		simple-audio-card,name = "Haikou,I2S-codec";
->  		simple-audio-card,mclk-fs = <512>;
-> +		simple-audio-card,frame-master = <&sgtl5000_codec>;
-> +		simple-audio-card,bitclock-master = <&sgtl5000_codec>;
->  
-> -		simple-audio-card,codec {
-> +		sgtl5000_codec: simple-audio-card,codec {
->  			clocks = <&sgtl5000_clk>;
->  			sound-dai = <&sgtl5000>;
->  		};
-> 
+    static const struct {
+        const char *compatible;
+        const char *gpio_propname;
+        const char *polarity_propname;
+    } gpios[] =3D {
+#if IS_ENABLED(CONFIG_MMC_ATMELMCI)
+        { "atmel,hsmci", "cd-gpios", "cd-inverted" },
+#endif
+(...)
 
 
-
-
+Yours,
+Linus Walleij
