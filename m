@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 994BC7850FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 08:59:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1F3D785100
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 08:59:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233071AbjHWG7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 02:59:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50700 "EHLO
+        id S233092AbjHWG7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 02:59:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231194AbjHWG7a (ORCPT
+        with ESMTP id S231194AbjHWG7f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 02:59:30 -0400
-Received: from out-10.mta0.migadu.com (out-10.mta0.migadu.com [91.218.175.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86FF4CE3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 23:59:28 -0700 (PDT)
-Message-ID: <86137972-fa63-ef07-3842-3a678329864a@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1692773964;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JBuitAfShYT5yjJqohH65eUyXBkcIa7zwJcRrZBv9C0=;
-        b=pJWkR9ObHdIgmBOPK2hAFmcOxHKN40edGEApsCwk/DjYevO39NRDZGgSXsNaLJ86t/pNNk
-        wxBV9D1A1DfYAXRsxjLxucN0o5RSp1Z57tM58mejtpUNMtrOTjlLYc45ukcTzMDvJrq6UL
-        TPTChaIacTqV0YFHaSdBoOwCJWfBsek=
-Date:   Wed, 23 Aug 2023 14:59:10 +0800
+        Wed, 23 Aug 2023 02:59:35 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C279CE3;
+        Tue, 22 Aug 2023 23:59:34 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DF78261044;
+        Wed, 23 Aug 2023 06:59:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9F75C433C8;
+        Wed, 23 Aug 2023 06:59:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692773973;
+        bh=Nb5NOLMCbzrJX2FpremlVeT/Pn2TmlTfjHH3zhMBlVo=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=baXqW9D/x7mqIxT04bR8D7YS/EpFiAeSSufKKGHltxhzDeJl5YbiiE3qQcMR6iWDL
+         BfC+0brQB7Mtu5zt4/lYbHTOEB3MGg0q1fgygt6V/NalvylqlaBK99iFlBv9PTOZF5
+         wXDud0DVZhpo4GcafBXOo02+Njp77A4/2HCc4jz3iavegL1XCWkyCvJO9qXM6NiNKE
+         XNCTUZbyPczjPTpSZ6xdokmH0Y03WgWtHcsVvskeXq58tOv2KDWK/IhLXA8x6pJY48
+         omjBXXqgmSF5hAg1q8aZYb5Ge8aZ60OmVl5hLwlK6u44BjZ2PBCrq9B55MUJn/DFN3
+         DKrg0+tNM97ew==
+From:   =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Subject: Re: linux-next: Tree for Aug 21 (riscv-64 asm)
+In-Reply-To: <0111b49a-8cdf-2c1a-bab3-d1fd647aafa6@infradead.org>
+References: <20230821164605.7bac05f1@canb.auug.org.au>
+ <5ebf04f8-0cf6-d2b4-fb73-f51fff421b3a@infradead.org>
+ <87ttsr33a8.fsf@all.your.base.are.belong.to.us>
+ <0111b49a-8cdf-2c1a-bab3-d1fd647aafa6@infradead.org>
+Date:   Wed, 23 Aug 2023 08:59:30 +0200
+Message-ID: <87bkeyxmzx.fsf@all.your.base.are.belong.to.us>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/2] RDMA/rxe: add missing newline to rxe_set_mtu message
-To:     "Zhijian Li (Fujitsu)" <lizhijian@fujitsu.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>,
-        "pmladek@suse.com" <pmladek@suse.com>,
-        "senozhatsky@chromium.org" <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "john.ogness@linutronix.de" <john.ogness@linutronix.de>
-Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>, "leon@kernel.org" <leon@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "rpearsonhpe@gmail.com" <rpearsonhpe@gmail.com>
-References: <20230823021306.170901-1-lizhijian@fujitsu.com>
- <ba7f496c-b0af-6532-76c7-08eedea886ce@linux.dev>
- <54f43b58-4986-f2c3-7488-ecaf150b1e79@fujitsu.com>
- <CAD=hENcGfS0++mTTX4z-YT3SAx=5OYyqSf89=AkOCD9+SrUtag@mail.gmail.com>
- <e823d7aa-99d6-1417-8aca-c89db1c350b9@fujitsu.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <e823d7aa-99d6-1417-8aca-c89db1c350b9@fujitsu.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,70 +60,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Randy Dunlap <rdunlap@infradead.org> writes:
 
-在 2023/8/23 14:47, Zhijian Li (Fujitsu) 写道:
+> Hi,
 >
-> On 23/08/2023 14:35, Zhu Yanjun wrote:
->> On Wed, Aug 23, 2023 at 2:25 PM Zhijian Li (Fujitsu)
->> <lizhijian@fujitsu.com> wrote:
->>>
->>>
->>> On 23/08/2023 14:12, Zhu Yanjun wrote:
->>>> 在 2023/8/23 10:13, Li Zhijian 写道:
->>>>> A newline help flushing message out.
->>>> rxe_info_dev will finally call printk to output information.
+> On 8/22/23 01:11, Bj=C3=B6rn T=C3=B6pel wrote:
+>> Randy Dunlap <rdunlap@infradead.org> writes:
+>>=20
+>>> On 8/20/23 23:46, Stephen Rothwell wrote:
+>>>> Hi all,
 >>>>
->>>> In this link https://github.com/torvalds/linux/blob/master/Documentation/core-api/printk-basics.rst,
->>>> "
->>>> All printk() messages are printed to the kernel log buffer, which is a ring buffer exported to userspace through /dev/kmsg. The usual way to read it is using dmesg.
->>>> "
->>>> Do you mean that a new line will help the kernel log buffer flush message out?
->>> Yeah, the message will be buffered until it is full or it meets a newline.
->> Add PRINTK reviewers:
->>
->> Petr Mladek <pmladek@suse.com>
->> Sergey Senozhatsky <senozhatsky@chromium.org>
->> Steven Rostedt <rostedt@goodmis.org>
->>    John Ogness <john.ogness@linutronix.de>
->>
->> This is about printk. They can decide this commit.
-> I don't think it's a printk stuff.
-Do you get me?
-
-I mean, prinkt reviewer will check the statement "the message will be 
-buffered until it is full or it meets a newline." correct or not.
-
-Zhu Yanjun
-
->
-> In general, when developers add some printk()/pr_info() to print some message in the kernel, they expect this message will be printed in time.
-> So most of the printk()/pr_info() calls in current kernel accompany a '\n' at the end.
->
-> And printk() will also print message to 'console' by default, console could be a serial port(ttyS0) or tty1 etc.
->
-> Thanks
-> Zhijian
->
->
->> Zhu Yanjun
->>
+>>>> Changes since 20230818:
+>>>>
+>>>
+>>> ../arch/riscv/kernel/traps.c: In function 'do_irq':
+>>> ../arch/riscv/kernel/traps.c:384:1: error: s0 cannot be used in 'asm' h=
+ere
+>>>   384 | }
+>>>       | ^
+>>> ../arch/riscv/kernel/irq.c: In function 'do_softirq_own_stack':
+>>> ../arch/riscv/kernel/irq.c:94:1: error: s0 cannot be used in 'asm' here
+>>>    94 | }
+>>>       | ^
 >>>
 >>>
->>>> Zhu Yanjun
->>>>> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
->>>>> ---
->>>>>     drivers/infiniband/sw/rxe/rxe.c | 2 +-
->>>>>     1 file changed, 1 insertion(+), 1 deletion(-)
->>>>>
->>>>> diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
->>>>> index 54c723a6edda..cb2c0d54aae1 100644
->>>>> --- a/drivers/infiniband/sw/rxe/rxe.c
->>>>> +++ b/drivers/infiniband/sw/rxe/rxe.c
->>>>> @@ -161,7 +161,7 @@ void rxe_set_mtu(struct rxe_dev *rxe, unsigned int ndev_mtu)
->>>>>         port->attr.active_mtu = mtu;
->>>>>         port->mtu_cap = ib_mtu_enum_to_int(mtu);
->>>>> -    rxe_info_dev(rxe, "Set mtu to %d", port->mtu_cap);
->>>>> +    rxe_info_dev(rxe, "Set mtu to %d\n", port->mtu_cap);
->>>>>     }
->>>>>     /* called by ifc layer to create new rxe device.
->>> >
+>>> 2 out of 10 risc-v 64-bit builds failed with these errors.
+>>>
+>>> Is this a toolchain problem or something else?
+>>=20
+>> Hmm, do you have a link to config/toolchain/log, or similar?
+>
+> The full randconfig file is attached.
+>
+> The toolchain is Arnd's build of gcc 13.1.0 from:
+>   https://mirrors.edge.kernel.org/pub/tools/crosstool/
+> (x86_64 host)
+>
+> Hm, I see that the latest/current there is gcc 13.2.0.
+> I'll upgrade later today.
+
+Thanks Randy! I can reproduce with GCC 12 on my machine.
+
+The config has
+ | # CONFIG_FRAME_POINTER is not set
+but for some reason "-fno-omit-frame-pointer" is passed to GCC anyway,
+which is why GCC complains about s0 (FP on RISC-V) in asm.
+
+
+I'll dig a bit more.
+Bj=C3=B6rn
