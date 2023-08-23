@@ -2,61 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D92A67853B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 11:20:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C2D67853BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 11:21:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235113AbjHWJU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 05:20:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56524 "EHLO
+        id S235381AbjHWJVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 05:21:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235575AbjHWJSo (ORCPT
+        with ESMTP id S235579AbjHWJSo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 23 Aug 2023 05:18:44 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02C7835BF
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 02:07:57 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-991c786369cso715294566b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 02:07:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google; t=1692781676; x=1693386476;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=FVP76RlJvsBtkWhgLM8vBQOXDlj8GhxoiyPHARb5l/E=;
-        b=LyVvis7zYm4I0vHCuioQM5J/LFAGr8OOXZdZExDQl1j63nfL3buqPv+l98yd2v5szd
-         jHpvj83SgKtnEhzrOVuPxK5trCmzk3MTUj9bjTKTnTEsumPlkRp3eyCrkrT0cP2thv2s
-         RuWwL1qDO4NABN0w6oGYhhPHwC9GvDmrDNS0w=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692781676; x=1693386476;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FVP76RlJvsBtkWhgLM8vBQOXDlj8GhxoiyPHARb5l/E=;
-        b=KNyn/UrvS1wN16O1H3+YMqC/IxxwnASZFLMdxnrxFwqxXvnqVLSBzQqyCMBFRRVRMb
-         RdCbv4WIyxUli+Q4GYkMEmHgansPPXnh0K+cwcc4xiLhjqu5d4dLNCo4Smz4R0gi+KzO
-         AsdLdcKYPU7YzDfkNNKS0Y5eu1XrA0/EV8NryClUCIYeHWIS6IU1+8+LwMuqM3EBpazb
-         /gBfbch7gp5oDf4G4h6/zeI8FLFLLTAEvpH2+tVRoMJpma6DEEPPLxyEqwN5l5+viWww
-         2ToYQlHbdD2AnL7yeHb2KaysPZA5lFfitoLk/fj3ec4O3Rr54PNUSt7OmoOznK7LLReD
-         GAxg==
-X-Gm-Message-State: AOJu0YzFIdQBBRc70BjeuxbBqRMUc6NzmRhB+KCQ2oRk58NrHVHnsm5y
-        s6zo+hcxKhYFXhg8PIX+vQbGvWvIfeZkMEhlqFwDwvdkADfJn8mBcJw=
-X-Google-Smtp-Source: AGHT+IFz8/brK1bWJ5bvmYypjGCFsAX9p1Z8B5AoZJZ+Gg/CamQ6zFRzZR72NtZl0GOitVFch3eYVledp8ZGP9aC53Y=
-X-Received: by 2002:a17:906:cc0b:b0:99b:499d:4635 with SMTP id
- ml11-20020a170906cc0b00b0099b499d4635mr9408127ejb.75.1692781676219; Wed, 23
- Aug 2023 02:07:56 -0700 (PDT)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 722C33A93;
+        Wed, 23 Aug 2023 02:08:09 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0841462C55;
+        Wed, 23 Aug 2023 09:08:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99F3CC433C7;
+        Wed, 23 Aug 2023 09:08:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1692781688;
+        bh=io4Q0PxusKKtCDplWhMVdna1pz9TzX1YUrlW8pFjO1A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XAA2JrXx6qAAt+nZq1vahQ+uXOCJ1xlcmx538cqtPSkgfM9aaoHDFrV5McTfaba+x
+         CM20rqIIJEXxfCH5pGV8PZS/PwKcnRSImWu5BPjBARP75nnyoDPFwhYhue8KiQhZgK
+         ei+3vUUWk1gKp9TlE80sWmmW0qv/JNHNV+1+PVvY=
+Date:   Wed, 23 Aug 2023 11:08:05 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Babis Chalios <bchalios@amazon.es>
+Cc:     Olivia Mackall <olivia@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Theodore Ts'o <tytso@mit.edu>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, graf@amazon.de,
+        xmarcalx@amazon.co.uk, aams@amazon.de, dwmw@amazon.co.uk
+Subject: Re: [RFC PATCH 1/2] random: emit reseed notifications for PRNGs
+Message-ID: <2023082322-semester-heave-e5bc@gregkh>
+References: <20230823090107.65749-1-bchalios@amazon.es>
+ <20230823090107.65749-2-bchalios@amazon.es>
 MIME-Version: 1.0
-References: <20230711043405.66256-1-zhangjiachen.jaycee@bytedance.com> <20230711043405.66256-5-zhangjiachen.jaycee@bytedance.com>
-In-Reply-To: <20230711043405.66256-5-zhangjiachen.jaycee@bytedance.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Wed, 23 Aug 2023 11:07:44 +0200
-Message-ID: <CAJfpegtqJo78wqT0EY0=1xfoSROsJogg9BNC_xJv6id9J1Oa+g@mail.gmail.com>
-Subject: Re: [PATCH 4/5] fuse: writeback_cache consistency enhancement (writeback_cache_v2)
-To:     Jiachen Zhang <zhangjiachen.jaycee@bytedance.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>, linux-fsdevel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        me@jcix.top
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230823090107.65749-2-bchalios@amazon.es>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -65,41 +61,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 11 Jul 2023 at 06:36, Jiachen Zhang
-<zhangjiachen.jaycee@bytedance.com> wrote:
->
-> Some users may want both the high performance of the writeback_cahe mode
-> and a little bit more consistency among FUSE mounts. Current
-> writeback_cache mode never updates attributes from server, so can never
-> see the file attributes changed by other FUSE mounts, which means
-> 'zero-consisteny'.
->
-> This commit introduces writeback_cache_v2 mode, which allows the attributes
-> to be updated from server to kernel when the inode is clean and no
-> writeback is in-progressing. FUSE daemons can select this mode by the
-> FUSE_WRITEBACK_CACHE_V2 init flag.
->
-> In writeback_cache_v2 mode, the server generates official attributes.
-> Therefore,
->
->     1. For the cmtime, the cmtime generated by kernel are just temporary
->     values that are never flushed to server by fuse_write_inode(), and they
->     could be eventually updated by the official server cmtime. The
->     mtime-based revalidation of the fc->auto_inval_data mode is also
->     skipped, as the kernel-generated temporary cmtime are likely not equal
->     to the offical server cmtime.
->
->     2. For the file size, we expect server updates its file size on
->     FUSE_WRITEs. So we increase fi->attr_version in fuse_writepage_end() to
->     check the staleness of the returning file size.
->
-> Together with FOPEN_INVAL_ATTR, a FUSE daemon is able to implement
-> close-to-open (CTO) consistency like NFS client implementations.
+On Wed, Aug 23, 2023 at 11:01:05AM +0200, Babis Chalios wrote:
+> Sometimes, PRNGs need to reseed. For example, on a regular timer
+> interval, to ensure nothing consumes a random value for longer than e.g.
+> 5 minutes, or when VMs get cloned, to ensure seeds don't leak in to
+> clones.
+> 
+> The notification happens through a 32bit epoch value that changes every
+> time cached entropy is no longer valid, hence PRNGs need to reseed. User
+> space applications can get hold of a pointer to this value through
+> /dev/(u)random. We introduce a new ioctl() that returns an anonymous
+> file descriptor. From this file descriptor we can mmap() a single page
+> which includes the epoch at offset 0.
+> 
+> random.c maintains the epoch value in a global shared page. It exposes
+> a registration API for kernel subsystems that are able to notify when
+> reseeding is needed. Notifiers register with random.c and receive a
+> unique 8bit ID and a pointer to the epoch. When they need to report a
+> reseeding event they write a new epoch value which includes the
+> notifier ID in the first 8 bits and an increasing counter value in the
+> remaining 24 bits:
+> 
+>               RNG epoch
+> *-------------*---------------------*
+> | notifier id | epoch counter value |
+> *-------------*---------------------*
+>      8 bits           24 bits
 
-What I'd prefer is mode similar to NFS: getattr flushes pending writes
-so that server ctime/mtime are always in sync with client.  FUSE
-probably should have done that from the beginning, but at that time I
-wasn't aware of the NFS solution.
+Why not just use 32/32 for a full 64bit value, or better yet, 2
+different variables?  Why is 32bits and packing things together here
+somehow simpler?
 
-Thanks,
-Miklos
+thanks,
+
+greg k-h
