@@ -2,33 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19D10785769
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 14:04:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD248785780
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 14:06:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234864AbjHWMEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 08:04:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53194 "EHLO
+        id S234764AbjHWMGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 08:06:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234694AbjHWMED (ORCPT
+        with ESMTP id S234232AbjHWMGN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 08:04:03 -0400
+        Wed, 23 Aug 2023 08:06:13 -0400
 Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBA73E65
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 05:03:57 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FD3410F5;
+        Wed, 23 Aug 2023 05:05:48 -0700 (PDT)
 Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RW4cr3brtz4wxQ;
-        Wed, 23 Aug 2023 22:03:56 +1000 (AEST)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RW4dx2H1qz4x2J;
+        Wed, 23 Aug 2023 22:04:53 +1000 (AEST)
 From:   Michael Ellerman <patch-notifications@ellerman.id.au>
-To:     Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-In-Reply-To: <36a19e13025dbf17e92e832dd24150642b0e9bad.1692341499.git.christophe.leroy@csgroup.eu>
-References: <36a19e13025dbf17e92e832dd24150642b0e9bad.1692341499.git.christophe.leroy@csgroup.eu>
-Subject: Re: [PATCH v2] powerpc/512x: Make mpc512x_select_reset_compat() static
-Message-Id: <169279175576.797584.9419412535329287.b4-ty@ellerman.id.au>
+To:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, Vaibhav Jain <vaibhav@linux.ibm.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Steven Rostedt (Google)" <rostedt@goodmis.org>,
+        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
+        Vaidyanathan Srinivasan <svaidy@linux.vnet.ibm.com>
+In-Reply-To: <20230818050739.827851-1-vaibhav@linux.ibm.com>
+References: <20230818050739.827851-1-vaibhav@linux.ibm.com>
+Subject: Re: [PATCH] powerpc: Enable generic cpu idle-loop
+Message-Id: <169279175578.797584.3100680047837397058.b4-ty@ellerman.id.au>
 Date:   Wed, 23 Aug 2023 21:55:55 +1000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -42,19 +51,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Aug 2023 08:51:48 +0200, Christophe Leroy wrote:
-> mpc512x_select_reset_compat() is only used in the file it
-> is defined.
+On Fri, 18 Aug 2023 10:37:37 +0530, Vaibhav Jain wrote:
+> This minor patch enables config option GENERIC_IDLE_POLL_SETUP for arch
+> powerpc. This should add support for kernel param 'nohlt'.
 > 
-> Make it static.
-> 
-> Move mpc512x_restart_init() after mpc512x_select_reset_compat().
+> Powerpc kernel also supports another kernel boot-time param called
+> 'powersave' which can also be used to disable all cpu idle-states and
+> forces CPU to an idle-loop similar to what cpu_idle_poll() does. This
+> patch however makes powerpc kernel-parameters better aligned to the
+> generic boot-time parameters.
 > 
 > [...]
 
 Applied to powerpc/next.
 
-[1/1] powerpc/512x: Make mpc512x_select_reset_compat() static
-      https://git.kernel.org/powerpc/c/be922070d0914c6642256ceec6b7be75c0a5ddf3
+[1/1] powerpc: Enable generic cpu idle-loop
+      https://git.kernel.org/powerpc/c/0ceef6e99cc3a57f33b84dafc6df5dfb3b28278d
 
 cheers
