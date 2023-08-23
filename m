@@ -2,56 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C904D7851E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 09:44:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5040C7851E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 09:45:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233539AbjHWHo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 03:44:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44574 "EHLO
+        id S233541AbjHWHpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 03:45:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233536AbjHWHo6 (ORCPT
+        with ESMTP id S233538AbjHWHpE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 03:44:58 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D29BE5F;
-        Wed, 23 Aug 2023 00:44:55 -0700 (PDT)
+        Wed, 23 Aug 2023 03:45:04 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E641CE5F
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 00:45:01 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AA2B065098;
-        Wed, 23 Aug 2023 07:44:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC190C433C7;
-        Wed, 23 Aug 2023 07:44:52 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 76FFA651BA
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 07:45:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACE2DC433C7;
+        Wed, 23 Aug 2023 07:45:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692776693;
-        bh=GaRTIporpq7hNYmlo3Hk1lZRAg2JAwt+yZf4dVRRhzk=;
+        s=k20201202; t=1692776700;
+        bh=Fx0FPACDZXSbXtney/v4smWbDcLrEcVygc6uYCB9xmI=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jE/l4y4krB6m5dzEAl0kB0TGvYHUy8194aLCSAfc0zBYh0OwC6TThxNWD5Irs6eJ7
-         6UmQYTawpOSPZpS3ztfdfwtbvD38cAZZkLfeNFiK62lsoH9NneKz70DttlUvUG4m4R
-         7hmDpMbjcz+aLUzSHLRxYdSLHA2NN83VZV2kR/qUuKjxY80T4N88aqfXHBZkabNmu4
-         hjYWiPMYKuGMt61Kyf1CY6DdlLABSLN/aWaSivM8hRX1hsvxh8Iq2fHU+XWT2lAOYE
-         E8O3hiDJhgwv3GF1Fut5uvMiVgZ5YXNnT6iouL6ydE2GyPEk4unl6aKALPtUAjJX+x
-         nJg6oVQ8Cau+A==
-Date:   Wed, 23 Aug 2023 09:44:49 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the vfs-brauner tree with the
- djw-vfs tree
-Message-ID: <20230823-wuseln-adrett-2b10dfcb3dee@brauner>
-References: <20230822110551.6386dd5d@canb.auug.org.au>
- <20230822025120.GA11286@frogsfrogsfrogs>
- <20230822-turnus-quert-9b11d4e30dc9@brauner>
- <20230822182604.GB11286@frogsfrogsfrogs>
- <20230822-mitbringen-unwillig-176fd9e8873b@brauner>
- <20230822211456.GC11286@frogsfrogsfrogs>
+        b=JRILnif71r4tPyGbEGyStZadyAPkiJdmqY8dzM1hbKydDOcDT7r5/VUmM8zLgCWFv
+         g0NjRTluZHcrxTaqxfaEHPHKjEGBUmNFeSGoYlPEr0X4a1fGYyD6m4bvMfHJPSYoA1
+         v8yO/Rs5g4F9P9iAce3GZwtB3/qDxfI02jj+n0RaqzV65fIWTbLn/oN8cJXbBUVitI
+         i5ro3fR+BiRPO66nSSDfMn5B+DXhvK0x0HyMmFm6BOD6sOxgXvEyo4uQ2e84gJoNme
+         CzTkB+c0XiuTOzo772LoELsrjIh+qUjNayK73gOld5h+o7grB+EFdwme1t2SSZY54B
+         ySxhk9ysOp2Lw==
+Received: from johan by theta with local (Exim 4.96)
+        (envelope-from <johan@kernel.org>)
+        id 1qYiXw-00088f-0z;
+        Wed, 23 Aug 2023 09:44:56 +0200
+Date:   Wed, 23 Aug 2023 09:44:56 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Yue Haibing <yuehaibing@huawei.com>
+Cc:     elder@kernel.org, gregkh@linuxfoundation.org,
+        greybus-dev@lists.linaro.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] greybus: svc: Remove unused declarations
+Message-ID: <ZOW4-OycWzNXdZDq@hovoldconsulting.com>
+References: <20230818124338.37880-1-yuehaibing@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230822211456.GC11286@frogsfrogsfrogs>
+In-Reply-To: <20230818124338.37880-1-yuehaibing@huawei.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -62,29 +59,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Hmm.  Looking at the {up,down}_write -> super_{un,}lock_excl conversion,
-> I think you missed wait_for_partially_frozen:
+On Fri, Aug 18, 2023 at 08:43:38PM +0800, Yue Haibing wrote:
+> Commit 84427943d2da ("greybus: svc: drop legacy-protocol dependency")
+> removed these implementations but not the declarations.
+> 
+> Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
+> ---
+>  include/linux/greybus/svc.h | 3 ---
+>  1 file changed, 3 deletions(-)
+> 
+> diff --git a/include/linux/greybus/svc.h b/include/linux/greybus/svc.h
+> index 5afaf5f06856..da547fb9071b 100644
+> --- a/include/linux/greybus/svc.h
+> +++ b/include/linux/greybus/svc.h
+> @@ -100,7 +100,4 @@ bool gb_svc_watchdog_enabled(struct gb_svc *svc);
+>  int gb_svc_watchdog_enable(struct gb_svc *svc);
+>  int gb_svc_watchdog_disable(struct gb_svc *svc);
+>  
+> -int gb_svc_protocol_init(void);
+> -void gb_svc_protocol_exit(void);
+> -
+>  #endif /* __SVC_H */
 
-Maha, I sure did. Thanks, converted as well.
+Yup, these are long gone:
 
-> That said, freeze_super() took an s_active refcount at the top, called
-> super_lock_excl (which means the sb isn't DYING and has been BORN) and
-> doesn't release it before calling wait_for_partially_frozen.
+Reviewed-by: Johan Hovold <johan@kernel.org>
 
-Yes.
-
-> AFAICT, the subsequent down_write -> super_lock_excl conversions in
-> freeze_super do not gain us much since I don't think the sb can get to
-> SB_DYING state without s_active reaching zero, right?  According to
-
-Yes, if you have an active reference count the superblock stays alive.
-If it ever gets into SB_DYING we have a bug.
-
-> The missing conversion isn't strictly necessary, but it probably makese
-> sense to do it anyway.
-
-I did. Thanks for pointing that out!
-
-> (Aside from that, the conversion looks correct to me.)
-
-Thanks!
+Johan
