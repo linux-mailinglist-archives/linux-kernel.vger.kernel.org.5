@@ -2,119 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BF58785393
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 11:14:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 738827853AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 11:19:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234946AbjHWJOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 05:14:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48496 "EHLO
+        id S235075AbjHWJRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 05:17:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235166AbjHWJLb (ORCPT
+        with ESMTP id S231451AbjHWJLo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 05:11:31 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 86A5946AD;
-        Wed, 23 Aug 2023 02:03:07 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 168A41042;
-        Wed, 23 Aug 2023 02:03:31 -0700 (PDT)
-Received: from e120937-lin (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 76B3E3F740;
-        Wed, 23 Aug 2023 02:02:48 -0700 (PDT)
-Date:   Wed, 23 Aug 2023 10:02:46 +0100
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        sudeep.holla@arm.com, james.quinlan@broadcom.com,
-        f.fainelli@gmail.com, vincent.guittot@linaro.org,
-        etienne.carriere@linaro.org, peng.fan@oss.nxp.com,
-        chuck.cannon@nxp.com, souvik.chakravarty@arm.com,
-        nicola.mazzucato@arm.com,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-clk@vger.kernel.org
-Subject: Re: [PATCH 1/6] firmware: arm_scmi: Simplify enable/disable Clock
- operations
-Message-ID: <ZOXLNliOogkNyJYQ@e120937-lin>
-References: <20230811161446.636253-1-cristian.marussi@arm.com>
- <20230811161446.636253-2-cristian.marussi@arm.com>
- <17bd83d833b59fd4f64eec433589fa55.sboyd@kernel.org>
+        Wed, 23 Aug 2023 05:11:44 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FE2449CE;
+        Wed, 23 Aug 2023 02:03:33 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EC73C65A0F;
+        Wed, 23 Aug 2023 09:03:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 0B961C433C9;
+        Wed, 23 Aug 2023 09:03:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692781412;
+        bh=8fCdzcn2VcvnUQp2D6Fuk/QxfB3MwobNYAHefW+j36I=;
+        h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
+        b=DiwUuH5Xi6vpIS+dIGw3WmrIlUG7alGvSDvTvRo90RlmiGT2DFC7bxQmy/FSR4JqW
+         VwLmnAR/+HB6NNq1A6gh92kLJ0b/fw2NFZ7mo1eNT2wBjOfecftAirU9z09kucnC3Y
+         eYdHeiBy701XWVtyt6busWkyAeqBiMmJdubCmu4A5UBvA5wf+cm1eP59XpSWgG5DvV
+         ApYFINdRqa9sqoghA+d7gmHYMD0tjj0Zch8bAl+9D9g3GPh8Va3GpL6cVwRRTqBDmt
+         /+WvOOpPxqLX2ZxLDs5ToBEgie2zxct1A+kTF5FhWxqiNjhJVpQKftwM6iuE5gkeDL
+         8gn1e6OyfsFHA==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by smtp.lore.kernel.org (Postfix) with ESMTP id DBE8EEE49B5;
+        Wed, 23 Aug 2023 09:03:31 +0000 (UTC)
+From:   Nikita Shubin via B4 Relay 
+        <devnull+nikita.shubin.maquefel.me@kernel.org>
+Date:   Wed, 23 Aug 2023 12:03:14 +0300
+Subject: [PATCH 1/2] dt-bindings: rtc: Add ST M48T86
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <17bd83d833b59fd4f64eec433589fa55.sboyd@kernel.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230823-m48t86_device_tree-v1-1-240023b435ac@maquefel.me>
+References: <20230823-m48t86_device_tree-v1-0-240023b435ac@maquefel.me>
+In-Reply-To: <20230823-m48t86_device_tree-v1-0-240023b435ac@maquefel.me>
+To:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Nikita Shubin <nikita.shubin@maquefel.me>
+X-Mailer: b4 0.12.1
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1692781413; l=1263;
+ i=nikita.shubin@maquefel.me; s=20230718; h=from:subject:message-id;
+ bh=y7M/fGH6tMQwq76PE+jI5ZilaSmr5fjvvIAr9uMS3jI=; =?utf-8?q?b=3D6ZM/ryKuE1kI?=
+ =?utf-8?q?jbSn+grM9CJPE9556P+3Zkt0S3hhK6elKCVNruOuML8tlO/RAOBu70/OWOyP1gtw?=
+ CRnSBYApBXosWIWOmiy3JHWSO2GWXUipnEjB5qKk1+Y7zKYwlaGO
+X-Developer-Key: i=nikita.shubin@maquefel.me; a=ed25519;
+ pk=vqf5YIUJ7BJv3EJFaNNxWZgGuMgDH6rwufTLflwU9ac=
+X-Endpoint-Received: by B4 Relay for nikita.shubin@maquefel.me/20230718 with auth_id=65
+X-Original-From: Nikita Shubin <nikita.shubin@maquefel.me>
+Reply-To: <nikita.shubin@maquefel.me>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 01:17:15PM -0700, Stephen Boyd wrote:
-> Quoting Cristian Marussi (2023-08-11 09:14:41)
-> > Add a param to Clock enable/disable operation to ask for atomic operation
-> > and remove _atomic version of such operations.
-> 
+From: Nikita Shubin <nikita.shubin@maquefel.me>
 
-Hi,
+Add YAML bindings for ST M48T86 / Dallas DS12887 RTC.
 
-> Why?
-> 
+Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+---
+ .../devicetree/bindings/rtc/st,m48t86.yaml         | 38 ++++++++++++++++++++++
+ 1 file changed, 38 insertions(+)
 
-:D, given that the 2 flavours of SCMI enable/disable ops (and the upcoming
-state_get) just differ in their operating mode (atomic or not) and the
-Clock framework in turn wrap such calls into 4 related and explicitly
-named clk_ops (scmi_clock_enable/scmi_clock_atomic_enable etc) that hint
-at what is being done, seemed to me reasonable to reduce the churn and
-remove a bit of code wrappers in favour of a param.
+diff --git a/Documentation/devicetree/bindings/rtc/st,m48t86.yaml b/Documentation/devicetree/bindings/rtc/st,m48t86.yaml
+new file mode 100644
+index 000000000000..e3e12fa23380
+--- /dev/null
++++ b/Documentation/devicetree/bindings/rtc/st,m48t86.yaml
+@@ -0,0 +1,38 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/rtc/st,m48t86.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: ST M48T86 / Dallas DS12887 RTC with SRAM
++
++maintainers:
++  - Alexandre Belloni <alexandre.belloni@bootlin.com>
++
++allOf:
++  - $ref: rtc.yaml
++
++properties:
++  compatible:
++    enum:
++      - st,m48t86
++
++  reg:
++    items:
++      - description: index register
++      - description: data register
++
++required:
++  - compatible
++  - reg
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    rtc@10800000 {
++      compatible = "st,m48t86";
++      reg = <0x10800000 0x1>, <0x11700000 0x1>;
++    };
++
++...
 
-> > 
-> > No functional change.
-> > 
-> > CC: Michael Turquette <mturquette@baylibre.com>
-> > CC: Stephen Boyd <sboyd@kernel.org>
-> > CC: linux-clk@vger.kernel.org
-> > Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
-> > ---
-> >  drivers/clk/clk-scmi.c            |  8 ++++----
-> >  drivers/firmware/arm_scmi/clock.c | 24 ++++++------------------
-> >  include/linux/scmi_protocol.h     |  9 ++++-----
-> >  3 files changed, 14 insertions(+), 27 deletions(-)
-> > 
-> > diff --git a/drivers/clk/clk-scmi.c b/drivers/clk/clk-scmi.c
-> > index 2c7a830ce308..ff003083e592 100644
-> > --- a/drivers/clk/clk-scmi.c
-> > +++ b/drivers/clk/clk-scmi.c
-> > @@ -78,28 +78,28 @@ static int scmi_clk_enable(struct clk_hw *hw)
-> >  {
-> >         struct scmi_clk *clk = to_scmi_clk(hw);
-> >  
-> > -       return scmi_proto_clk_ops->enable(clk->ph, clk->id);
-> > +       return scmi_proto_clk_ops->enable(clk->ph, clk->id, false);
-> >  }
-> >  
-> >  static void scmi_clk_disable(struct clk_hw *hw)
-> >  {
-> >         struct scmi_clk *clk = to_scmi_clk(hw);
-> >  
-> > -       scmi_proto_clk_ops->disable(clk->ph, clk->id);
-> > +       scmi_proto_clk_ops->disable(clk->ph, clk->id, false);
-> 
-> I enjoyed how it was before because I don't know what 'false' means
-> without looking at the ops now.
-> 
+-- 
+2.39.2
 
-Yes indeed, I can drop this and rework if you prefer to maintain the old
-API calls, but this would mean that whenever we'll add new atomic
-flavour to some new SCMI clk operations we'll have to add 2 ops instead
-of a parametrized one...this is what would happen also in this series
-with state_get (and what really triggered this refactor)
-
-(and please consider that on the SCMI side, for testing purposes, I would
-prefer to expose always both atomic and non-atomic flavours even if NOT
-both actively used by the Clock framework...like state_get() that can only
-be atomic for Clock frmwk...)
-
-Thanks,
-Cristian
