@@ -2,147 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94BF3784EAA
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 04:22:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63D05784EB2
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 04:26:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231993AbjHWCWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 22:22:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48566 "EHLO
+        id S232027AbjHWC0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 22:26:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231936AbjHWCWt (ORCPT
+        with ESMTP id S231496AbjHWC0f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 22:22:49 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D88CD3;
-        Tue, 22 Aug 2023 19:22:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692757367; x=1724293367;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=E2DY2rZ63Jkob00d6HBggLmef15UJ2Y9YFk0LbPi1i8=;
-  b=BCZ84vwnBF/m+vesZFYaUHWDLo5JzlBXg43TAs2k6cWUSZOAhksrXdoh
-   ZPu2FuqEsZz+yoMjI4KLxs35tY6Sq46G7h1/QXJuhIMokH7TL4b9FqZL8
-   kI+Sx3AM/3MOCoFWZrYkaeWdbHwWKvsX/BOcHa//mfF5qTyEfrW9th9CG
-   QSeUIaS+PQQBY0qg6EVgqw/0C0uh/48rfkU7WJOS/9oma2u9IJN9Phnwg
-   MNbIz+7ho3bziZaN1R+dgFCdUZJHsCLB0hXuAHjryuQNtrOabgv9YSgjc
-   IzaE0ukRmM9vemTYkQk1g8Sr8dfOnjNzu+R7CYtq7gYkGMWp877w7lyr9
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10810"; a="372931310"
-X-IronPort-AV: E=Sophos;i="6.01,194,1684825200"; 
-   d="scan'208";a="372931310"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2023 19:22:46 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10810"; a="765961314"
-X-IronPort-AV: E=Sophos;i="6.01,194,1684825200"; 
-   d="scan'208";a="765961314"
-Received: from dapengmi-mobl1.ccr.corp.intel.com (HELO [10.93.5.53]) ([10.93.5.53])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2023 19:22:43 -0700
-Message-ID: <18e606ba-d6b2-02f0-1511-d949c4c1e6ed@linux.intel.com>
-Date:   Wed, 23 Aug 2023 10:22:41 +0800
-MIME-Version: 1.0
+        Tue, 22 Aug 2023 22:26:35 -0400
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2135.outbound.protection.outlook.com [40.107.215.135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF634D3;
+        Tue, 22 Aug 2023 19:25:46 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ra/8ttWzwsERIohKW8cVxA+7+/HDHtfVABAgJlRh9moCsGgKaNM2xZOtC5SvsyF6Y0Sc9BWboyDwKVF/yf1BwipGnrfiP6CRemVP+ch8FHixHv6Z+x05HnNJjBLPcoz6h8Tkgq7CjJdpYtVSPvXrtanF1WdX29ytvxSuFMrbZz1sfBvtgR077ElvPn4Z3y9Z8GMD5gZz9zHcvWYpWMDaoGQXW7GToDERVG+T9W7bjJl9l7/3a3bsanOgRevOBeVw92b8Oq5/H3XSDJgPErWA27Z1Nd6xC+0IBAsG258gMlmph3M3OuemvlUvh+vTyZyayZKaIovo9FFheBhUh0k2pw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Qo3/Hu2ipxAGkoU1GPuc0+PGiajr1dNpa+Y4IDQdww4=;
+ b=HU8RudIEvvP45NoYHF4hPFhTqSjGL4sMJ39ftf7orEZcUEwxt9HfJj49TKy7TGuqt9nJ3/WiQzHLhxBxqy3rotNeVbVpZl8J74l7FpucOIxVnGTJEl+gQKuQIbOazTtSW1Aoimz8PIFyf7T+sqrmdBndDQFUQHBdBEkpe0sus3XsEkUH05ANx1MGaySQu83pHyqPtzg7Lu5IRUgXMCoBTc2jUpOcawC0RjTCYm/5CYOh+CXHGrQknfavmjNXXTVEzE6X29QA0nH0tpHqN87++RoFtKhnTwRWBA435n5L8nxsJKGIoc7d/uKkNlWbAZmcHryE5s5mv2yI0zaJSfIXcw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amlogic.com; dmarc=pass action=none header.from=amlogic.com;
+ dkim=pass header.d=amlogic.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amlogic.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Qo3/Hu2ipxAGkoU1GPuc0+PGiajr1dNpa+Y4IDQdww4=;
+ b=QKP4etB7qCjsvR7Ed9Oj1S20txRnHH2leqXrGgoR1lAADZfgu3W+QSCpjJBzNvPfbBc00q3x67buQSiplzTOW81TNt7QeojEEST8lUH57KFwZ/utlxs5KZX/DfXeyDtKZCz8fy3NRyA/VTnGqi2Z/pGXS+AsPaacMpxIojR6jpqNYtFZ3aWvrSLSRdE4OyJgjII7pmCdpQwxnVxxauWf451MhyBzZUnc6cD+cYg8vMtxhVLYrAYsrU8jBT5DXb7Ec5nYEXG9uaONzUzeBukcNcQV494aucn6BZw92m6oiUgRavSCvt+SdZBbpePZK00QmGx7x+5u5Rx4TqMZASHrAQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amlogic.com;
+Received: from SG2PR03MB6730.apcprd03.prod.outlook.com (2603:1096:4:1d5::9) by
+ SEZPR03MB7356.apcprd03.prod.outlook.com (2603:1096:101:12b::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.25; Wed, 23 Aug
+ 2023 02:25:43 +0000
+Received: from SG2PR03MB6730.apcprd03.prod.outlook.com
+ ([fe80::6f04:4b62:1127:59ed]) by SG2PR03MB6730.apcprd03.prod.outlook.com
+ ([fe80::6f04:4b62:1127:59ed%4]) with mapi id 15.20.6678.029; Wed, 23 Aug 2023
+ 02:25:43 +0000
+Message-ID: <e9932f90-a011-ee9b-ef09-f2e2475bdd0d@amlogic.com>
+Date:   Wed, 23 Aug 2023 10:24:51 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v2] KVM: x86/pmu: Manipulate FIXED_CTR_CTRL MSR with
- macros
+ Thunderbird/102.11.0
+Subject: Re: [PATCH V10 1/4] dt-bindings: clock: document Amlogic S4 SoC PLL
+ clock controller
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     kelvin.zhang@amlogic.com, qi.duan@amlogic.com
+References: <20230822082750.27633-1-yu.tu@amlogic.com>
+ <20230822082750.27633-2-yu.tu@amlogic.com>
+ <d2a6060a-c8a0-51c7-f621-1bed2c3074b4@linaro.org>
 Content-Language: en-US
-To:     Like Xu <like.xu.linux@gmail.com>
-Cc:     kvm@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhang Xiong <xiong.y.zhang@intel.com>,
-        Lv Zhiyuan <zhiyuan.lv@intel.com>,
-        Dapeng Mi <dapeng1.mi@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Kan Liang <kan.liang@linux.intel.com>
-References: <20230815032849.2929788-1-dapeng1.mi@linux.intel.com>
- <305fa208-e1d6-7e22-3156-11fd551a8dd1@gmail.com>
-From:   "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
-In-Reply-To: <305fa208-e1d6-7e22-3156-11fd551a8dd1@gmail.com>
+From:   Yu Tu <yu.tu@amlogic.com>
+In-Reply-To: <d2a6060a-c8a0-51c7-f621-1bed2c3074b4@linaro.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-ClientProxiedBy: SI2P153CA0012.APCP153.PROD.OUTLOOK.COM
+ (2603:1096:4:140::15) To SG2PR03MB6730.apcprd03.prod.outlook.com
+ (2603:1096:4:1d5::9)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SG2PR03MB6730:EE_|SEZPR03MB7356:EE_
+X-MS-Office365-Filtering-Correlation-Id: 69cd66ec-2791-40c3-bcf6-08dba3803fbe
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nDqNw7Kn7FUhnlHeJPECp+hArgIS37L1fTm3Y03bmNXVqRmZc5dOshDpFsp18L2xpxj2Iuu1pXwSUUjJWOjvA5LaMMr+vbG9azyclG/SYuevdx563inklwkWKnuZnIQAZkgUyyI4cnHVTXtg2imgetloNBI3XyHu4qq+kzplmTAADVmAU1qJX2HOoBYx8uKxzxfBcS2AE4jLh9yPlLkW6QSJ6e1YcpdZJl67FSFBj2Q7l4IW9kwjO8F7trRNkkDFjGwbl/GB41/WRcZNHmQC80udwtemEePJ3/esSaAy/9HWItYHt51oS7+lU7lbx4S3qOAuIdgiVifZOFT4kRSLKLja32jiKRaRndfv3qbfrMcmtMnGMl4Q9uKC+xjkWN0zol4WakgHjcVJcokDTgpxxwSRca9+TFtw9PMVbKdMyCihvXgfwd5tTWsepAhnZDv9uZCNN0LWy5SjyPZdSJVFitr7eoEjMZb4X2ZtxYCxN+946igXHKh9vafh7PmoMZmDLTcbZlwosTUiqqk4MNkpBwgsAUeeCjLlJtWXOnU6fqqb4KpW6L6dJ/H8C+KtMWSWmKL+qPakAJdzcf3P0YcCKu49NBBrma4iqfwfuhlSKwsbGJSK74pW0yVRKbjp1PAqEpv+YvWaVTeL++2JsbcnUZASMrIjflzNb4WKs6/s9HdrJDMihJhZJxh9BPmJFmoO6AZnsB5k0kMnKlPy3kAoUwJNW3JJyvLVpb+UK6FItdC+RR15UiQ+9jMpAS1/K8Ja
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR03MB6730.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39850400004)(376002)(366004)(136003)(396003)(451199024)(186009)(1800799009)(921005)(26005)(2616005)(478600001)(107886003)(6506007)(6486002)(6666004)(53546011)(6512007)(38100700002)(41300700001)(66946007)(316002)(66476007)(66556008)(110136005)(12101799020)(31686004)(83380400001)(5660300002)(44832011)(4744005)(8676002)(8936002)(4326008)(7416002)(2906002)(86362001)(31696002)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ekZXczhjY2habkZMTDcra25sTjhOWHVGdVJhTUorcTBvdTFrbjRWVEZTTThP?=
+ =?utf-8?B?Zm50b0FhYjU4MVhHbkJrYUZOZkpTT3drRDlZQ2QwVmJSaVh5aUJOZFQ5eGZI?=
+ =?utf-8?B?WEg5aHhoNURkUlRXc2NVRmlKWHN0U0JTN3VqUVpPaHgwbCswZXFLNW55OEN6?=
+ =?utf-8?B?enM1aWFvMFQrUFlhemJScFRqb3dlVTFUR1NFaFpFSTdIMWhZWDErZitrSXJr?=
+ =?utf-8?B?b1BkeFEwVU9pUlRqRWJCank2elFsc2Z4UWdCQUV3VXFHN1Z0TUJ6QzNoVU5y?=
+ =?utf-8?B?Vm1LL3ZDL1B0SHlleHB5REo4cURkbWtjeTQvclE0TXVMNDJBUmNlUHloYktm?=
+ =?utf-8?B?NHhyUVpRTS9kcVRnY1FSQlJVYXNRcWFJSTZoUUFtbjBDNU53cEJ4SEhaczZM?=
+ =?utf-8?B?VHp1aTFZMFNKOHY4M1habFI0Z09Dd2lnMFRkK2kxQzU0RFZtMXR3cy9uTng2?=
+ =?utf-8?B?SW0wQ3U5NGVRcjdHRjFXRjZva3pZM3M0Q0c1cXpycTFNdzlHaTQvMmdwRS9t?=
+ =?utf-8?B?eFZmdnh6dHRkbStZNzgwVUlXYWZmeFpmRStnSHQ4TUdidjBjSmozYTA3RjJq?=
+ =?utf-8?B?YjdoU08zNXdIUGxiNjVEc0dINExPY2pMcmVXc3lEV1BRczRWSWhHTVp4cE9k?=
+ =?utf-8?B?cmtTdnN5bGhjSVliQmtvdWV2M1pQT2hhZE1aL3QvOUNFenB1dnYxVmhrUjFh?=
+ =?utf-8?B?YnFmUFJ2OFdsd3FjVnB1WnduM0pUY3BybmliejhvTzJQR2FmUnI2WkNZR0Fm?=
+ =?utf-8?B?ZTlaakMyNkJLc1dJN3NRaXI0bkl3SzlmMHNwcXF4NFpQdWZVa0ZEbGRkUlV6?=
+ =?utf-8?B?dFI3V01jT2dIeVZlcVVpTyt3aDNRWUMwblM5THBaMXV1aitoMytpVUNMOGR0?=
+ =?utf-8?B?SzhqaEJVM3ZBby9TVFZoT2F1VVc2ZGF5dzlFdDRhdnZUL2tEZDBwT3ZCNWFX?=
+ =?utf-8?B?c0FYS1NCU0F4YzU0S21vNklTdEx4QVJ1YWdGaHR0WnkyWWZsM1Z4WTkwUHlX?=
+ =?utf-8?B?OWdGejRaTUttR1gvRlBZdzdPK2h4VFJQaFdzazAxRWN5d0lvV0V5eUJZL29h?=
+ =?utf-8?B?Y2cxa2t6ZGNzSWJ5SEFrbWoxL3ZoV1ErR2lWN2tvMnppNjM5cEwzTy9JeExJ?=
+ =?utf-8?B?TjJLQTUzRDhpaFNFT0Jza003Um81VkNGREttWnlpSmpLakhZaTMycHJ0dHht?=
+ =?utf-8?B?MGd3cGJlRVM2UTFMNFZHNzBFWEpKQ0dRV21mRXkwckw4Z1VRMmdmS1pSdjZn?=
+ =?utf-8?B?WDl4WnBXc0lNNUg3YWs0T3RDRTdzSThSK0JVcG1WTFhuaGxDdWhNSWd4bXU0?=
+ =?utf-8?B?WUdTaklLMjFtY1psTnA1czhucTE5S29PZzgxOTFxRkp1QXBoQ2s4UlJSY2wz?=
+ =?utf-8?B?NVIrR3lBY0V0Mk8zdlc5V1pucWNzZDJvRVNxajRnSUR5R2NFVmV3QUpvMmpG?=
+ =?utf-8?B?Zks1M3hLN3daZHF5b3lhSk13ODA3RXFXN2dSUlloa0hJTlUyVzNBdTJmMnJi?=
+ =?utf-8?B?emF3RjlDQTFSbExKRXlIK1RmdW5KaHhwZWg1eElzTC84Yk94VjNaWkV5Wng0?=
+ =?utf-8?B?RC9DeHNFVE9Xdkd4WURpTjlYQ1BPMW1aZGFoM2liNytGM0p6T2lhRTk5Qm5y?=
+ =?utf-8?B?Nzh3RWgyVWJYdWJMRW9qNzRUajlLYm9FSTVxVFh0dDJBWkZDRytPanZNZG9k?=
+ =?utf-8?B?aUJaTXFibk1VVVVWakY3UUw5SUtLbmcwcldVQ1B5alRPeHppMktOaVFZamFy?=
+ =?utf-8?B?OHYyYlZaSjVtTUVJdFF4VWp1d1dYRndidWxsd3B0ekEvQkxrcHRvRlMrMmxW?=
+ =?utf-8?B?emE1MHJLQTJYNmt5L0E4TTVSM1RCMDNZODVYdUM1SkcwTWd3UU1oYVZnQlB0?=
+ =?utf-8?B?aURBcTN5OGl4eU5qaHY4S3BGSml4NE82WUE5NmVsblZ0ZWpSUEkweFc1N0Zj?=
+ =?utf-8?B?S0tNTjhMdmZxZXFrbkhtc1FVdnBXYnFYSzJQMktXbHFCT3MyR3Yyc01LZ3RU?=
+ =?utf-8?B?SVMxdTFjV3JTK0Q1N2VqWk5DL096Q0F5eVc2T2tQYzBiSTdKYXhramZhTjVj?=
+ =?utf-8?B?OUpsRXZGWndqejJyVHFpUFEyd3ZQVDArbkJxRWpKUklWZ2JNNEkrNTBQamZi?=
+ =?utf-8?Q?RCaWL3T1gwZnecGHOBgosxoER?=
+X-OriginatorOrg: amlogic.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 69cd66ec-2791-40c3-bcf6-08dba3803fbe
+X-MS-Exchange-CrossTenant-AuthSource: SG2PR03MB6730.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Aug 2023 02:25:42.8587
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 0df2add9-25ca-4b3a-acb4-c99ddf0b1114
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: f/5lauZnVgRaWUI4PnXpc+v/xzjYHKn4vZUwhw+8cf2r4t7Lm9ID5hjXra6/sZ1aytpkFxU40tKgkm4X/dTE9Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR03MB7356
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/21/2023 4:05 PM, Like Xu wrote:
-> On 15/8/2023 11:28 am, Dapeng Mi wrote:
->> Magic numbers are used to manipulate the bit fields of
->> FIXED_CTR_CTRL MSR. This is not read-friendly and use macros to replace
->> these magic numbers to increase the readability.
->
-> More, reuse INTEL_FIXED_0_* macros for pmu->fixed_ctr_ctrl_mask, pls.
 
-Sure. Thanks.
->
+
+On 2023/8/23 0:32, Krzysztof Kozlowski wrote:
+> [ EXTERNAL EMAIL ]
+> > On 22/08/2023 10:27, Yu Tu wrote:
+>> Add the S4 PLL clock controller dt-bindings in the S4 SoC family.
 >>
->> Signed-off-by: Dapeng Mi <dapeng1.mi@linux.intel.com>
->> ---
->>   arch/x86/kvm/pmu.c | 10 +++++-----
->>   arch/x86/kvm/pmu.h |  6 ++++--
->>   2 files changed, 9 insertions(+), 7 deletions(-)
->>
->> diff --git a/arch/x86/kvm/pmu.c b/arch/x86/kvm/pmu.c
->> index edb89b51b383..fb4ef2da3e32 100644
->> --- a/arch/x86/kvm/pmu.c
->> +++ b/arch/x86/kvm/pmu.c
->> @@ -420,11 +420,11 @@ static void reprogram_counter(struct kvm_pmc *pmc)
->>       if (pmc_is_fixed(pmc)) {
->>           fixed_ctr_ctrl = fixed_ctrl_field(pmu->fixed_ctr_ctrl,
->>                             pmc->idx - INTEL_PMC_IDX_FIXED);
->> -        if (fixed_ctr_ctrl & 0x1)
->> +        if (fixed_ctr_ctrl & INTEL_FIXED_0_KERNEL)
->>               eventsel |= ARCH_PERFMON_EVENTSEL_OS;
->> -        if (fixed_ctr_ctrl & 0x2)
->> +        if (fixed_ctr_ctrl & INTEL_FIXED_0_USER)
->>               eventsel |= ARCH_PERFMON_EVENTSEL_USR;
->> -        if (fixed_ctr_ctrl & 0x8)
->> +        if (fixed_ctr_ctrl & INTEL_FIXED_0_ENABLE_PMI)
->>               eventsel |= ARCH_PERFMON_EVENTSEL_INT;
->>           new_config = (u64)fixed_ctr_ctrl;
->>       }
->> @@ -749,8 +749,8 @@ static inline bool cpl_is_matched(struct kvm_pmc 
->> *pmc)
->>       } else {
->>           config = fixed_ctrl_field(pmc_to_pmu(pmc)->fixed_ctr_ctrl,
->>                         pmc->idx - INTEL_PMC_IDX_FIXED);
->> -        select_os = config & 0x1;
->> -        select_user = config & 0x2;
->> +        select_os = config & INTEL_FIXED_0_KERNEL;
->> +        select_user = config & INTEL_FIXED_0_USER;
->>       }
->>         return (static_call(kvm_x86_get_cpl)(pmc->vcpu) == 0) ? 
->> select_os : select_user;
->> diff --git a/arch/x86/kvm/pmu.h b/arch/x86/kvm/pmu.h
->> index 7d9ba301c090..ffda2ecc3a22 100644
->> --- a/arch/x86/kvm/pmu.h
->> +++ b/arch/x86/kvm/pmu.h
->> @@ -12,7 +12,8 @@
->>                         MSR_IA32_MISC_ENABLE_BTS_UNAVAIL)
->>     /* retrieve the 4 bits for EN and PMI out of IA32_FIXED_CTR_CTRL */
->> -#define fixed_ctrl_field(ctrl_reg, idx) (((ctrl_reg) >> ((idx)*4)) & 
->> 0xf)
->> +#define fixed_ctrl_field(ctrl_reg, idx) \
->> +    (((ctrl_reg) >> ((idx) * INTEL_FIXED_BITS_STRIDE)) & 
->> INTEL_FIXED_BITS_MASK)
->>     #define VMWARE_BACKDOOR_PMC_HOST_TSC        0x10000
->>   #define VMWARE_BACKDOOR_PMC_REAL_TIME        0x10001
->> @@ -165,7 +166,8 @@ static inline bool pmc_speculative_in_use(struct 
->> kvm_pmc *pmc)
->>         if (pmc_is_fixed(pmc))
->>           return fixed_ctrl_field(pmu->fixed_ctr_ctrl,
->> -                    pmc->idx - INTEL_PMC_IDX_FIXED) & 0x3;
->> +                    pmc->idx - INTEL_PMC_IDX_FIXED) &
->> +                    (INTEL_FIXED_0_KERNEL | INTEL_FIXED_0_USER);
->>         return pmc->eventsel & ARCH_PERFMON_EVENTSEL_ENABLE;
->>   }
->>
->> base-commit: 240f736891887939571854bd6d734b6c9291f22e
+>> Signed-off-by: Yu Tu <yu.tu@amlogic.com>
+> 
+> Lovely. I sent youa  friendly reminder at v8 which turns our you
+> ignored. You keep ignoring, I will start ignoring as well from now on.
+
+Hi Krzysztof，
+
+Sorry. I did not forget the friendly reminder in v8, I consulted you for 
+this at the time, so I re-sent V9 after adding the tag. Because it was 
+just "meson" that was removed. But V10 is based on Neil's patch, which I 
+think is a bit of a change. So I didn't dare add it. Instead of 
+forgetting your reminder.
+
+So what should I do, I'll follow your advice exactly.
+
+> 
+> Best regards,
+> Krzysztof
+> 
