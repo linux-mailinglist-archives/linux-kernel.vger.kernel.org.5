@@ -2,118 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56746785C2D
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 17:34:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A99EC785C30
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 17:35:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237269AbjHWPeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 11:34:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53232 "EHLO
+        id S237273AbjHWPfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 11:35:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236110AbjHWPeP (ORCPT
+        with ESMTP id S236785AbjHWPfH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 11:34:15 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF0DFE5E;
-        Wed, 23 Aug 2023 08:34:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=bdZCYS5SPqQedWjwa/DjmCAhvMNMuHRnxN4lWjXUYEs=; b=SPMv9SI6N+QxbYdqeGdGl4Sgrp
-        bxI2vAeU55230m4843q2EyxlhXpZKWOI5KbV1Jp76tye/+ghuP/RDrRoZbGk6rjlMpotPPmbe/FTx
-        wQVZ/sOkt0T2dwaYb25r8SstqYTW5sJjp47qD5znai6v+M0yKbk0V3xLkrt0n2Qp205cf8WTZ56+b
-        63cLX0KlCFCckHiBkJgtbHzON+VQ6HDvftvkvjSXA1ZziYNyfjGa799wpR/zaLmCPlT74XZJdnYVq
-        WP64LXjlsAkZLaTo57h25tf+nxUI4HxnqoRNWHd1T3IUsdqWicYahO5AkQZHcyzzjKMPRlD2fpdoE
-        Jmi+3NCQ==;
-Received: from [2601:1c2:980:9ec0::2764]
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qYps0-000zTr-0B;
-        Wed, 23 Aug 2023 15:34:08 +0000
-Message-ID: <23368823-0377-00c0-28a1-e804e3a2acac@infradead.org>
-Date:   Wed, 23 Aug 2023 08:34:04 -0700
+        Wed, 23 Aug 2023 11:35:07 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F52FE50
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 08:35:04 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-68a56401c12so2398970b3a.2
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 08:35:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1692804904; x=1693409704;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=07Mce2G1b7jZbatYr8l4g8OrNA5u0GIrzsapzWVE+qk=;
+        b=nw9oh7b2KjmuRReJhcgYE293WQN0lQS+JMtFeKcJZKCS3LsY3rbr6Gw5fj76iDKPTL
+         wjoKkcN9ax6fncNVFl3fiIeWMj0K/gGxSGGigUYAFUNOnBATklm8t2iBitnytM4EBNpD
+         6uWLHu02+eKbpJ9mXHWzWGdAmy2RXbxogVja8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692804904; x=1693409704;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=07Mce2G1b7jZbatYr8l4g8OrNA5u0GIrzsapzWVE+qk=;
+        b=Lw4o5yPfp5t3hqh757y0W3uC8PWPmjXMfO4lQiwXjSZbGZLbvLr/YO6m1yqsuPyZtN
+         mXQV3vKUFA8WeAKn6STi1lwOmdqA23Z7ag5+doKHvJpn7IQokBAb1Sl2Psx6Sl8fjbhB
+         3AScEGkJTjcLUZX/j+Eljpg10Z+KWL//8adWsUNCb6VQ49O/4BeJ7TEtM43a9xFp8Dns
+         KuiD0klrU73YNExAX6UhZzl393mIxd53f/o3jOG5Lpp47Wp3CtszLCir+Sv4AkY/hgwI
+         /112lM7ZErrpwoy8X2oidBCBVCOu6/Jezh8ZdiuL9/QkrE+187etcWFI4F/z7vdMfAsI
+         gXtg==
+X-Gm-Message-State: AOJu0Ywwvnyr9ar6R0agMaex45sJq5evG1A+NsEyat8eLLqQ5Nm0edTW
+        LtEqs0NbsHLS+v9flQWExY9rpw==
+X-Google-Smtp-Source: AGHT+IFkfcfb94Hu56gn2/sqah/fCojupbSHzlxEt5JvjNyiB0KDOREoW+DVi51oV/njGmCoUTmFdw==
+X-Received: by 2002:a05:6a20:4417:b0:140:54ab:7f43 with SMTP id ce23-20020a056a20441700b0014054ab7f43mr13291414pzb.52.1692804903757;
+        Wed, 23 Aug 2023 08:35:03 -0700 (PDT)
+Received: from chromium.org (137.22.168.34.bc.googleusercontent.com. [34.168.22.137])
+        by smtp.gmail.com with ESMTPSA id v14-20020a62a50e000000b0068702b66ab1sm9940846pfm.174.2023.08.23.08.35.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Aug 2023 08:35:03 -0700 (PDT)
+Date:   Wed, 23 Aug 2023 15:35:01 +0000
+From:   Prashant Malani <pmalani@chromium.org>
+To:     "Patel, Utkarsh H" <utkarsh.h.patel@intel.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "heikki.krogerus@linux.intel.com" <heikki.krogerus@linux.intel.com>,
+        "bleung@chromium.org" <bleung@chromium.org>
+Subject: Re: [PATCH v4 1/2] platform/chrome: cros_ec_typec: Configure Retimer
+ cable type
+Message-ID: <ZOYnJTqTajyyJV0d@chromium.org>
+References: <20230718024703.1013367-1-utkarsh.h.patel@intel.com>
+ <20230718024703.1013367-2-utkarsh.h.patel@intel.com>
+ <ZN+j/z97Yy0wv/if@chromium.org>
+ <MWHPR11MB0048DAF02954ACC66C026533A91EA@MWHPR11MB0048.namprd11.prod.outlook.com>
+ <CACeCKacWhrZE6LFFwF=vDO8362u9feN71pPO8Qr8XoaRgwj5uw@mail.gmail.com>
+ <MWHPR11MB0048018BB93C531401D00EF9A91FA@MWHPR11MB0048.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH] riscv: Require FRAME_POINTER for some configurations
-Content-Language: en-US
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv@lists.infradead.org
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
-        linux-kernel@vger.kernel.org, Guo Ren <guoren@kernel.org>,
-        Drew Fustini <dfustini@baylibre.com>,
-        linux-next@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>
-References: <20230823082845.354839-1-bjorn@kernel.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20230823082845.354839-1-bjorn@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MWHPR11MB0048018BB93C531401D00EF9A91FA@MWHPR11MB0048.namprd11.prod.outlook.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Utkarsh,
 
-Hi,
-
-On 8/23/23 01:28, Björn Töpel wrote:
-> From: Björn Töpel <bjorn@rivosinc.com>
+On Aug 22 21:21, Patel, Utkarsh H wrote:
+> Hi Prashant,
 > 
-> Some V configurations implicitly turn on '-fno-omit-frame-pointer',
-> but leaving FRAME_POINTER disabled. This makes it hard to reason about
-> the FRAME_POINTER config, and also triggers build failures introduced
-> in by the commit in the Fixes: tag.
+> > -----Original Message-----
+> > From: Prashant Malani <pmalani@chromium.org>
+> > Sent: Monday, August 21, 2023 4:31 PM
+> > >
+> > > We are only calling it once depending upon which mode we enter TBT Alt or
+> > USB4.
+> > 
+> > There should only be 1 "call site" and that should be sufficient to grab the VDO
+> > from the framework for all circumstances. Whether the other invocation
+> > doesn't get called under certain circumstances isn't as relevant.
 > 
-> Select FRAME_POINTER explicitly for these configurations.
+> Are you suggesting something like this?
 > 
-> Fixes: ebc9cb03b21e ("riscv: stack: Fixup independent softirq stack for CONFIG_FRAME_POINTER=n")
-> Signed-off-by: Björn Töpel <bjorn@rivosinc.com>
-
-WorksForMe. Thanks.
-
-Tested-by: Randy Dunlap <rdunlap@infradead.org>
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-
-> ---
->  arch/riscv/Kconfig  | 1 +
->  arch/riscv/Makefile | 3 ---
->  2 files changed, 1 insertion(+), 3 deletions(-)
+> static int cros_typec_configure_mux(struct cros_typec_data *typec, int port_num,)...
 > 
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index 10e7a7ad175a..cd8075c092c3 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -62,6 +62,7 @@ config RISCV
->  	select COMMON_CLK
->  	select CPU_PM if CPU_IDLE || HIBERNATION
->  	select EDAC_SUPPORT
-> +	select FRAME_POINTER if PERF_EVENTS || (FUNCTION_TRACER && !DYNAMIC_FTRACE)
->  	select GENERIC_ARCH_TOPOLOGY
->  	select GENERIC_ATOMIC64 if !64BIT
->  	select GENERIC_CLOCKEVENTS_BROADCAST if SMP
-> diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
-> index 6ec6d52a4180..1329e060c548 100644
-> --- a/arch/riscv/Makefile
-> +++ b/arch/riscv/Makefile
-> @@ -87,9 +87,6 @@ endif
->  ifeq ($(CONFIG_CMODEL_MEDANY),y)
->  	KBUILD_CFLAGS += -mcmodel=medany
->  endif
-> -ifeq ($(CONFIG_PERF_EVENTS),y)
-> -        KBUILD_CFLAGS += -fno-omit-frame-pointer
-> -endif
->  
->  # Avoid generating .eh_frame sections.
->  KBUILD_CFLAGS += -fno-asynchronous-unwind-tables -fno-unwind-tables
-> 
-> base-commit: 89bf6209cad66214d3774dac86b6bbf2aec6a30d
+> 	if (port->mux_flags & USB_PD_MUX_USB4_ENABLED ||
+> 		port->mux_flags & USB_PD_MUX_TBT_COMPAT_ENABLED)
+> 		cable_tbt_vdo = cros_typec_get_cable_vdo(port, USB_TYPEC_TBT_SID);
 
--- 
-~Randy
+My apologies, I misread the patch. I think this looks good.
+
+Acked-by: Prashant Malani <pmalani@chromium.org>
+
