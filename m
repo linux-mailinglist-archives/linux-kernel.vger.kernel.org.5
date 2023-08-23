@@ -2,138 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7537F785B08
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 16:47:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C3FE785B0B
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 16:49:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236651AbjHWOrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 10:47:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50706 "EHLO
+        id S236659AbjHWOtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 10:49:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236633AbjHWOrk (ORCPT
+        with ESMTP id S234019AbjHWOs6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 10:47:40 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 739E2E69
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 07:47:38 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-52a069edca6so4738487a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 07:47:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692802057; x=1693406857;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=lttCoUpW+33nWPwSh/VvbJtmmiP9aE3qbjp47of8qLA=;
-        b=XVSfLiuRLRXRjwIBYBvYTnKu/h/xG2mJ7V0rORmITY+tEWz5U1qaDvzAax2H1zZ0f8
-         0x7N4NPX5EuSLlH8UJfLSYQRNXFEUlUqF1MYfSdpWXLQDf6+8gjDbKfetLlqNILzXDFB
-         etHUxCnde9Hye40mLGcFfQ9DNVbSTExsiRshI0TzcJqK30w5xTyE0Fe0yQ+2sj09ufgu
-         UZpzXpIdyHFVbyD/Vv5J4hG3XO8hhFTm8kf6vxrG0NqAWQNJKh5EDmjRpdRZUcsPM071
-         lpC5brHIkvTyHbKp0lRWLhB+OdPohxue+b/VsB8gGBXQqJhb+HZkrny6HZvMGhX3eU2x
-         +Mww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692802057; x=1693406857;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lttCoUpW+33nWPwSh/VvbJtmmiP9aE3qbjp47of8qLA=;
-        b=MfcXYdth+pg2Fe5T0FDlzo6/wsuPr99dKRDtPCDQgQVn0TGjWglbAlmovwCSUoaObx
-         NddS2I/FOgdJvr/FgVpFLLlqRrQTuIgqCl36v/L/3lEEC9AGZbMZ8lC8rXJnu1GYgTGi
-         XP2AZ9YPsnYd3xq9P51A0IKj/m2ZJufO8rUN9TEG5U1zo45JD93xHysDYYYJP9cByqcZ
-         d4CHuYrKR3utm4NyD9gFxLR7pwuL6d4TVPVq9I70QU6V5o/KkqAf/BNnwEXW3jUf8c3f
-         7+5NMczE50R6m/Ihm/NME7W9cXCsyp6ImuOezMMu5AOci1H0P7d2f9qCbye8d7WeOtnr
-         DKwA==
-X-Gm-Message-State: AOJu0YzmPrIGRdp8TBHz3L3CmO+UZMAUxlMIwNI7iSTDz4y7xrT/xWdl
-        hNX7mIZ4qB8JrhMiFP82cfRIklz43uAgdwt0LgA=
-X-Google-Smtp-Source: AGHT+IEpcF9SwW9BgoGhzfnDWp6nVY70dMbEpFSWMxJ6LRPGYqflgbb8qyuqxwNro4p06uM5uTRQJA==
-X-Received: by 2002:a17:907:a04a:b0:99c:4ea0:ed18 with SMTP id gz10-20020a170907a04a00b0099c4ea0ed18mr9027724ejc.8.1692802056960;
-        Wed, 23 Aug 2023 07:47:36 -0700 (PDT)
-Received: from [192.168.1.195] ([5.133.47.210])
-        by smtp.googlemail.com with ESMTPSA id c18-20020a170906341200b0099d9dee8108sm9959968ejb.149.2023.08.23.07.47.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Aug 2023 07:47:36 -0700 (PDT)
-Message-ID: <7c3cd9b5-89cf-274f-a6e7-351ed2aaed2e@linaro.org>
-Date:   Wed, 23 Aug 2023 15:47:35 +0100
+        Wed, 23 Aug 2023 10:48:58 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADC36E69;
+        Wed, 23 Aug 2023 07:48:56 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3F7C5635B5;
+        Wed, 23 Aug 2023 14:48:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FB62C43397;
+        Wed, 23 Aug 2023 14:48:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692802135;
+        bh=/mIR/BoeNsGIQ35vEJiMSnGRE9NkIijQbN8TMPht8lA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=JBv45U/ckigIhCoTgbnPxY3Ny4JXMfYMJCeyqcKL7v+4wHcK/eJQ9W+ASwoffbDAh
+         spSkMl0KWiaQ6cPaocfiphUqOrcmQ7vSO2Ej39BAIP0+vH/R22Go282M7Ey8r3tWHv
+         e3aa6Fjmlb1Ki1fJ2MCLJePdWG2gdv5kwfQPoKhbRJbyygnUwfb/eXr6BTyDTnvQ+Y
+         PwuKQBDRYU+JMnhe7ZoI89O4xb7Q6sFGHsm68tsuvX4Ddx1bp1aRq5ZRqE0plciE+i
+         Cggq1nw3xI4wQpGBYT3vXwj92L878Dfahl8lIf2gzZ5Pr9YC8whpYgA87LqaXoYdeL
+         SKgVCvl3TrrHQ==
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2b9bb097c1bso87672951fa.0;
+        Wed, 23 Aug 2023 07:48:55 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yyvc/SE3nMCj82UfZIxXqFcYiA2y16rRgrDk7AnZ6EBUtowYXwS
+        3drAU9fN8QmmeGwi9ECGZ52Brv7CIfPYmj5BrQ==
+X-Google-Smtp-Source: AGHT+IHMstTvKJFQFHSGfZa/sGOrQBVC6gBZtEcBjOgKF3HFClPHqsTsD0J+JzNdiJCbkccX59siSGCFrcffdxYYF1A=
+X-Received: by 2002:a2e:978c:0:b0:2bc:bb3e:1abe with SMTP id
+ y12-20020a2e978c000000b002bcbb3e1abemr7588725lji.41.1692802133206; Wed, 23
+ Aug 2023 07:48:53 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 00/22] nvmem: patches for v6.6
-Content-Language: en-US
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org
-References: <20230823132744.350618-1-srinivas.kandagatla@linaro.org>
- <2023082329-impotence-escalator-61c5@gregkh>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <2023082329-impotence-escalator-61c5@gregkh>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+References: <20230623144100.34196-1-james.quinlan@broadcom.com>
+ <20230623144100.34196-2-james.quinlan@broadcom.com> <ZON43rPGJGzjTTj/@lpieralisi>
+ <CA+-6iNwRGsnRsT9R=iEzaJNCTLu_pQNG4x+noE8bqLYCRm_PHQ@mail.gmail.com>
+ <ZOOFrqkAdW5d6WIj@lpieralisi> <CA+-6iNzZCFs_gQGqa8KAcBM6etFc=vAFoqFmde=xru2-O+F3_w@mail.gmail.com>
+ <ZOW1qDmTdy+8KODt@lpieralisi>
+In-Reply-To: <ZOW1qDmTdy+8KODt@lpieralisi>
+From:   Rob Herring <robh@kernel.org>
+Date:   Wed, 23 Aug 2023 09:48:40 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJSfKa=9nqzpdv0TVcik73_xTJ-LtBycDfFZiGkz2mDNQ@mail.gmail.com>
+Message-ID: <CAL_JsqJSfKa=9nqzpdv0TVcik73_xTJ-LtBycDfFZiGkz2mDNQ@mail.gmail.com>
+Subject: Re: [PATCH v6 1/5] dt-bindings: PCI: brcmstb: Add brcm,enable-l1ss property
+To:     Lorenzo Pieralisi <lpieralisi@kernel.org>
+Cc:     Jim Quinlan <james.quinlan@broadcom.com>,
+        linux-pci@vger.kernel.org,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Cyril Brulebois <kibi@debian.org>,
+        Phil Elwell <phil@raspberrypi.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Jim Quinlan <jim2101024@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "moderated list:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Aug 23, 2023 at 2:30=E2=80=AFAM Lorenzo Pieralisi <lpieralisi@kerne=
+l.org> wrote:
+>
+> On Mon, Aug 21, 2023 at 12:01:50PM -0400, Jim Quinlan wrote:
+> > On Mon, Aug 21, 2023 at 11:41=E2=80=AFAM Lorenzo Pieralisi
+> > <lpieralisi@kernel.org> wrote:
+> > >
+> > > On Mon, Aug 21, 2023 at 11:25:11AM -0400, Jim Quinlan wrote:
+> > > > On Mon, Aug 21, 2023 at 10:47=E2=80=AFAM Lorenzo Pieralisi
+> > > > <lpieralisi@kernel.org> wrote:
+> > > > >
+> > > > > On Fri, Jun 23, 2023 at 10:40:54AM -0400, Jim Quinlan wrote:
+> > > > > > This commit adds the boolean "brcm,enable-l1ss" property:
+> > > > > >
+> > > > > >   The Broadcom STB/CM PCIe HW -- a core that is also used by RP=
+i SOCs --
+> > > > > >   requires the driver probe() to deliberately place the HW one =
+of three
+> > > > > >   CLKREQ# modes:
+> > > > > >
+> > > > > >   (a) CLKREQ# driven by the RC unconditionally
+> > > > > >   (b) CLKREQ# driven by the EP for ASPM L0s, L1
+> > > > > >   (c) Bidirectional CLKREQ#, as used for L1 Substates (L1SS).
+> > > > > >
+> > > > > >   The HW+driver can tell the difference between downstream devi=
+ces that
+> > > > > >   need (a) and (b), but does not know when to configure (c).  A=
+ll devices
+> > > > > >   should work fine when the driver chooses (a) or (b), but (c) =
+may be
+> > > > > >   desired to realize the extra power savings that L1SS offers. =
+ So we
+> > > > > >   introduce the boolean "brcm,enable-l1ss" property to inform t=
+he driver
+> > > > > >   that (c) is desired.  Setting this property only makes sense =
+when the
+> > > > > >   downstream device is L1SS-capable and the OS is configured to=
+ activate
+> > > > > >   this mode (e.g. policy=3D=3Dpowersupersave).
+> > > > > >
+> > > > > >   This property is already present in the Raspian version of Li=
+nux, but the
+> > > > > >   upstream driver implementation that follows adds more details=
+ and
+> > > > > >   discerns between (a) and (b).
+> > > > > >
+> > > > > > Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
+> > > > > > Reviewed-by: Rob Herring <robh@kernel.org>
+> > > > > > ---
+> > > > > >  Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml | 9 +=
+++++++++
+> > > > > >  1 file changed, 9 insertions(+)
+> > > > > >
+> > > > > > diff --git a/Documentation/devicetree/bindings/pci/brcm,stb-pci=
+e.yaml b/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
+> > > > > > index 7e15aae7d69e..8b61c2179608 100644
+> > > > > > --- a/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
+> > > > > > +++ b/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
+> > > > > > @@ -64,6 +64,15 @@ properties:
+> > > > > >
+> > > > > >    aspm-no-l0s: true
+> > > > > >
+> > > > > > +  brcm,enable-l1ss:
+> > > > > > +    description: Indicates that PCIe L1SS power savings
+> > > > > > +      are desired, the downstream device is L1SS-capable, and =
+the
+> > > > > > +      OS has been configured to enable this mode.  For boards
+> > > > >
+> > > > > What does this mean ? I don't think DT properties are supposed
+> > > > > to carry information related to how the OS is configured.
+> > > >
+> > > > The DT setting in question is unrelated to the statement "and the O=
+S
+> > > > has been configured to
+> > > > enable this mode".
+> > > >
+> > > > This is merely saying that even if you enable "brcm,l1ss-enable"
+> > > > that you may not get L1SS power savings w/o setting
+> > > > "CONFIG_PCIEASPM_POWER_SUPERSAVE=3Dy".
+> > > > I mentioned that exact term but a reviewer nakked it because
+> > > > apparently DT descriptions should not be OS specific.
 
+Yeah, probably the OS part should be dropped.
 
-On 23/08/2023 15:35, Greg KH wrote:
-> On Wed, Aug 23, 2023 at 02:27:22PM +0100, srinivas.kandagatla@linaro.org wrote:
->> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->>
->> Here are some nvmem patches slightly more than usual for 6.6 that includes
->>
->> - Support for NXP eFuse, qcom secure qfprom, QCM2290 nvmem providers
->> - core level cleanup around error handling and layout creation.
->> - few minor cleanups across providers drivers to use better
->>    apis and a typo fix.
->>
->> Can you please queue them up for 6.6.
-> 
-> Better, but I don't have your gpg key, is it in the kernel keyring?
+> > > >
+> > > > I am actually open for this to be a command-line option but I wante=
+d to honor
+> > > > what the Raspian OS folks have already done.  RaspianOS already has
+> > > > "brcm,enable-l1ss"
+> > > > set in their DTS files.
+> > >
+> > > This is about the mainline kernel, I don't have any visibility into
+> > > downstream kernels (where that property management was added without =
+DT
+> > > and PCI maintainers supervision).
+> > >
+> > > Raspian OS folks' choice is theirs but it can't and it shouldn't over=
+ride
+> > > the mainline review process even though I understand the position you
+> > > are in.
 
-Its not in kernel keyring yet, I sent it out today morning for 
-inclusion. But key should be some of the old keyservers though.
+Sure, but we shouldn't change things just to be different from
+downstream. If we're only discussing the color of the shed, then no
+point changing it.
 
-> 
-> Grabbing thread from lore.kernel.org/all/20230823132744.350618-1-srinivas.kandagatla@linaro.org/t.mbox.gz
-> Analyzing 23 messages in the thread
-> Checking attestation on all messages, may take a moment...
-> ---
->    ✗ [PATCH v2 1/22] dt-bindings: nvmem: fixed-cell: add compatible for MAC cells
->    ✗ [PATCH v2 2/22] nvmem: sunxi_sid: Convert to devm_platform_ioremap_resource()
->    ✗ [PATCH v2 3/22] nvmem: brcm_nvram: Use devm_platform_get_and_ioremap_resource()
->    ✗ [PATCH v2 4/22] nvmem: lpc18xx_otp: Convert to devm_platform_ioremap_resource()
->    ✗ [PATCH v2 5/22] nvmem: meson-mx-efuse: Convert to devm_platform_ioremap_resource()
->    ✗ [PATCH v2 6/22] nvmem: rockchip-efuse: Use devm_platform_get_and_ioremap_resource()
->    ✗ [PATCH v2 7/22] nvmem: stm32-romem: Use devm_platform_get_and_ioremap_resource()
->    ✗ [PATCH v2 8/22] nvmem: qfprom: do some cleanup
->    ✗ [PATCH v2 9/22] nvmem: uniphier: Use devm_platform_get_and_ioremap_resource()
->    ✗ [PATCH v2 10/22] dt-bindings: nvmem: qfprom: Add compatible for MSM8226
->    ✗ [PATCH v2 11/22] dt-bindings: nvmem: Add t1023-sfp efuse support
->    ✗ [PATCH v2 12/22] nvmem: add new NXP QorIQ eFuse driver
->    ✗ [PATCH v2 13/22] nvmem: Explicitly include correct DT includes
->    ✗ [PATCH v2 14/22] nvmem: Kconfig: Fix typo "drive" -> "driver"
->    ✗ [PATCH v2 15/22] dt-bindings: nvmem: Add compatible for QCM2290
->    ✗ [PATCH v2 16/22] dt-bindings: nvmem: sec-qfprom: Add bindings for secure qfprom
->    ✗ [PATCH v2 17/22] nvmem: sec-qfprom: Add Qualcomm secure QFPROM support
->    ✗ [PATCH v2 18/22] nvmem: u-boot-env:: Replace zero-length array with DECLARE_FLEX_ARRAY() helper
->    ✗ [PATCH v2 19/22] nvmem: core: Create all cells before adding the nvmem device
->    ✗ [PATCH v2 20/22] nvmem: core: Return NULL when no nvmem layout is found
->    ✗ [PATCH v2 21/22] nvmem: core: Do not open-code existing functions
->    ✗ [PATCH v2 22/22] nvmem: core: Notify when a new layout is registered
->    ---
->    ✗ BADSIG: openpgp/srinivas.kandagatla@linaro.org
->    ✓ Signed: DKIM/linaro.org
-> 
-> At least DKIM passes :)
+> >
+> > Understood, but using the command line has its warts as well; I now rec=
+all the
+> > discussion Bjorn and I  had regarding this option.  I'm pretty sure
+> > that upstreaam will not allow the following
+> > possible command line kernel params:
+> >
+> >     brcm,enable-l1ss
+> >     pci=3Dbrcm,entable-l1ss
+> >
+> > Bjorn suggested using the  documented but (IMO) obscure  and  rarely
+> > used  format
+> >
+> >     pci=3D[<domain>:]<bus>:<dev>.<func>[/<dev>.<func>]*pci:<vendor>:<de=
+vice>[:<subvendor>:<subdevice>]
+> >
+> > but this is just going in the wrong direction; here's why.  Using the
+> > above iformat s completely dependent on the
+> > PCI "linux-domaiin"  property,  a non-HW related DT property I  might
+> > add.  Since "linux-domain" is already
+> > a valid and well-used  DT property, and the value of  the above
+> > command line format is dependent
+> > on the value of the "linux-domain", why not be consistent and let
+> > "brcm,enable-l1ss" be a Broadcom specific property?
+>
+> I am just asking to add a module_param to the host controller driver.
 
-> 
-> Anyway, all now queued up, they pass my local build tests, thanks for
-> fixing that up.
+FWIW, gregkh pretty much always nacks new module parameters.
 
-thanks for picking these up.
+>
+> Anyway - time is running out for v6.6, I need Rob's feedback, if I don't
+> hear from him today I will merge the last three patches and postpone the
+> discussion.
 
---srini
-> 
-> greg k-h
+You've already got my reviewed-by. If you aren't happy with this, then
+fine. I don't know enough about L1SS to comment further. Is it
+normally always supported or discoverable? If so, then I'd think we'd
+want it default enabled with a disable override flag. Maybe it should
+be generic?
+
+Rob
