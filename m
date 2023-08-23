@@ -2,96 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5C9C7862B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 23:42:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C14437862C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 23:53:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238482AbjHWVmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 17:42:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44278 "EHLO
+        id S237129AbjHWVws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 17:52:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238600AbjHWVl5 (ORCPT
+        with ESMTP id S235669AbjHWVwi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 17:41:57 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A697510F1;
-        Wed, 23 Aug 2023 14:41:52 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1692826911;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PK5b0ivuEa/PS4x9NzJ6KdYooqZ+f0W8WnndXaZS2Pg=;
-        b=0sG4P5mw38zKQGTymLeRst1lf6lhNxBsE3iDIVkNr+37BtKsIfFQFM+CopGywwCD3xUQJ4
-        1PIv/plA79QOLO8n7mazzHjACREs6aQKFhnyjh8sLXl34RS00aBq0MlCF8re3fC9lDhTOp
-        mC3XrB8xF7EThDVKic9Z/NaH235RYOHTAuV+RqHIz3ilmlsTXFsJuxR0t941n1L8arv+fA
-        aPj2C0W189rQWyWYS1KL3wl4Fp8aWwbe1bt0y7543vJsJG819KxLac0gFDBBjcBi2YVqRU
-        PsHsfSiA2pEj6YzKy8kikGbs4JrRKg1IMufIBLjx3n/n93XB67w9MKPW2Jikow==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1692826911;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PK5b0ivuEa/PS4x9NzJ6KdYooqZ+f0W8WnndXaZS2Pg=;
-        b=d1l8+UuwBMa5UJJnhQuKOSVTgAefBI82ymLBTZhWjY1QwSv1QJfAy/qBxbL/niYnxwN6Iw
-        dw6MFIaRJIqGUMBA==
-To:     Alan Huang <mmpgouride@gmail.com>,
-        Huacai Chen <chenhuacai@kernel.org>
-Cc:     Z qiang <qiang.zhang1211@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Huacai Chen <chenhuacai@loongson.cn>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        John Stultz <jstultz@google.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Binbin Zhou <zhoubinbin@loongson.cn>
-Subject: Re: [PATCH V4 2/2] rcu: Update jiffies in rcu_cpu_stall_reset()
-In-Reply-To: <D3AFC0E7-9E6C-43F2-B9F5-3AC498B14F0F@gmail.com>
-References: <20230814020045.51950-1-chenhuacai@loongson.cn>
- <20230814020045.51950-2-chenhuacai@loongson.cn>
- <18b9119c-cbc8-42a1-a313-9154d73c9841@paulmck-laptop>
- <CAAhV-H7t46hD1k18-sLYQA8h=M+ROdyMnT7gRtEGoRwKKBUZUA@mail.gmail.com>
- <CALm+0cWkQ8j_jiOSOuSsR9LbKPUL5cxRrONVxeNgSM5f1nDxMQ@mail.gmail.com>
- <CAAhV-H6S3Scu-Mf7E3aaqySytY4xDgjXrWc=fXSbr4i7R+-GDA@mail.gmail.com>
- <CALm+0cUpqONZOEHbc85d-Z5cC=P5LSeOAGuCCOukpTagLxnXWw@mail.gmail.com>
- <CAAhV-H7J6Rj99M6rxoFCEKu4G6NQPX9-N0a3-2GjEwbr+tbwQw@mail.gmail.com>
- <CALm+0cVdaXn5+4veu2NDwdi7htm=KY4ca+Eh54TwnN_6Xjs8TA@mail.gmail.com>
- <CAAhV-H6ejw=8afS0jmmQvKUrCw=qZm_P6SA0A+tuvvb8bsq4-Q@mail.gmail.com>
- <D3AFC0E7-9E6C-43F2-B9F5-3AC498B14F0F@gmail.com>
-Date:   Wed, 23 Aug 2023 23:41:50 +0200
-Message-ID: <87wmxlcu75.ffs@tglx>
+        Wed, 23 Aug 2023 17:52:38 -0400
+Received: from smtp.smtpout.orange.fr (smtp-19.smtpout.orange.fr [80.12.242.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7800ACD1
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 14:52:35 -0700 (PDT)
+Received: from [192.168.1.18] ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id YvmCq4908OQiUYvmCqJyW4; Wed, 23 Aug 2023 23:52:33 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1692827553;
+        bh=j0Q6ZACXreioCuofyUwWPOK8JOBOw6RQa+dbcUkEeMs=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=eW1mjcd73bwJPRolyDkNkML9akmDe00jByLrudUfx+bXtuqE5AkqxWf+PLPlMlR74
+         YI98ByZqybBI8D+G4KZQ1UV9soBFxtl4FsZQSd6LnG3awBJhuSD1JajitkXP1b/ZVM
+         9fRXBqZr5BMedN7eP/XoUpeizZz+v/1bw5Qsbe6FG3Tz1739eDvvQW7Fletdj4YOQc
+         x8M2zM3tdEDofFXKtKeHP50PtkZnIbGwDfmzpCOi1DbYb5heFfLpqNpGBOb4JCYq1G
+         YMY7XsXk3Obx33fmwb0rR1u2rNztio98vQuOIn+/s6bYwxQIBiFZr9IfrXCM9K/i8E
+         uYkB9bDagRklA==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Wed, 23 Aug 2023 23:52:33 +0200
+X-ME-IP: 86.243.2.178
+Message-ID: <c0dc90d4-8ae1-8acd-8d4d-aca9515cebef@wanadoo.fr>
+Date:   Wed, 23 Aug 2023 23:52:32 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] leds: max5970: Add support for max5970
+Content-Language: fr
+To:     Naresh Solanki <naresh.solanki@9elements.com>,
+        Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>
+Cc:     Patrick Rudolph <patrick.rudolph@9elements.com>,
+        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org
+References: <20230823212309.1463769-1-Naresh.Solanki@9elements.com>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20230823212309.1463769-1-Naresh.Solanki@9elements.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16 2023 at 23:56, Alan Huang wrote:
->> If  do_update_jiffies_64() cannot be used in NMI context, can we
->
-> What about updating jiffies in dbg_touch_watchdogs or adding a wrapper which updates
-> both jiffies and jiffies_stall?
+Le 23/08/2023 à 23:23, Naresh Solanki a écrit :
+> From: Patrick Rudolph <patrick.rudolph@9elements.com>
+> 
+> The MAX5970 is hot swap controller and has 4 indication LED.
+> 
+> Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
+> Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
+> ---
+>   drivers/leds/Kconfig        |  11 +++
+>   drivers/leds/Makefile       |   1 +
+>   drivers/leds/leds-max5970.c | 129 ++++++++++++++++++++++++++++++++++++
+>   3 files changed, 141 insertions(+)
+>   create mode 100644 drivers/leds/leds-max5970.c
+> 
+> diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
+> index b92208eccdea..03ef527cc545 100644
+> --- a/drivers/leds/Kconfig
+> +++ b/drivers/leds/Kconfig
+> @@ -637,6 +637,17 @@ config LEDS_ADP5520
+>   	  To compile this driver as a module, choose M here: the module will
+>   	  be called leds-adp5520.
+>   
+> +config LEDS_MAX5970
+> +	tristate "LED Support for Maxim 5970"
+> +	depends on LEDS_CLASS
+> +	depends on MFD_MAX5970
+> +	help
+> +	  This option enables support for the Maxim MAX5970 & MAX5978 smart
+> +	  switch indication LEDs via the I2C bus.
+> +
+> +	  To compile this driver as a module, choose M here: the module will
+> +	  be called leds-max5970.
+> +
+>   config LEDS_MC13783
+>   	tristate "LED Support for MC13XXX PMIC"
+>   	depends on LEDS_CLASS
+> diff --git a/drivers/leds/Makefile b/drivers/leds/Makefile
+> index d7348e8bc019..6eaee0a753c6 100644
+> --- a/drivers/leds/Makefile
+> +++ b/drivers/leds/Makefile
+> @@ -56,6 +56,7 @@ obj-$(CONFIG_LEDS_LP8501)		+= leds-lp8501.o
+>   obj-$(CONFIG_LEDS_LP8788)		+= leds-lp8788.o
+>   obj-$(CONFIG_LEDS_LP8860)		+= leds-lp8860.o
+>   obj-$(CONFIG_LEDS_LT3593)		+= leds-lt3593.o
+> +obj-$(CONFIG_LEDS_MAX5970)		+= leds-max5970.o
+>   obj-$(CONFIG_LEDS_MAX77650)		+= leds-max77650.o
+>   obj-$(CONFIG_LEDS_MAX8997)		+= leds-max8997.o
+>   obj-$(CONFIG_LEDS_MC13783)		+= leds-mc13783.o
+> diff --git a/drivers/leds/leds-max5970.c b/drivers/leds/leds-max5970.c
+> new file mode 100644
+> index 000000000000..5be1b927f39e
+> --- /dev/null
+> +++ b/drivers/leds/leds-max5970.c
+> @@ -0,0 +1,129 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Device driver for leds in MAX5970 and MAX5978 IC
+> + *
+> + * Copyright (c) 2022 9elements GmbH
+> + *
+> + * Author: Patrick Rudolph <patrick.rudolph@9elements.com>
+> + */
+> +
+> +#include <linux/leds.h>
+> +#include <linux/mfd/max5970.h>
+> +#include <linux/of.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/regmap.h>
+> +
+> +#define ldev_to_maxled(c)       container_of(c, struct max5970_led, cdev)
+> +
+> +struct max5970_led {
+> +	struct device *dev;
+> +	struct regmap *regmap;
+> +	struct led_classdev cdev;
+> +	unsigned int index;
+> +};
+> +
+> +static int max5970_led_set_brightness(struct led_classdev *cdev,
+> +				      enum led_brightness brightness)
+> +{
+> +	struct max5970_led *ddata = ldev_to_maxled(cdev);
+> +	int ret, val;
+> +
+> +	if (!ddata->regmap)
+> +		return -ENODEV;
+> +
+> +	/* Set/clear corresponding bit for given led index */
+> +	val = !brightness ? BIT(ddata->index) : 0;
+> +
+> +	ret = regmap_update_bits(ddata->regmap, MAX5970_REG_LED_FLASH, BIT(ddata->index), val);
+> +	if (ret < 0)
+> +		dev_err(cdev->dev, "failed to set brightness %d", ret);
+> +
+> +	return ret;
+> +}
+> +
+> +static int max5970_setup_led(struct max5970_led *ddata, struct regmap *regmap,
+> +			     struct device_node *nc, u32 reg)
+> +{
+> +	int ret;
+> +
+> +	if (of_property_read_string(nc, "label", &ddata->cdev.name))
+> +		ddata->cdev.name = nc->name;
+> +
+> +	ddata->cdev.max_brightness = 1;
+> +	ddata->cdev.brightness_set_blocking = max5970_led_set_brightness;
+> +	ddata->cdev.default_trigger = "none";
+> +
+> +	ret = devm_led_classdev_register(ddata->dev, &ddata->cdev);
+> +	if (ret)
+> +		dev_err(ddata->dev, "Error initializing LED %s", ddata->cdev.name);
+> +
+> +	return ret;
+> +}
+> +
+> +static int max5970_led_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct device_node *np = dev_of_node(dev->parent);
+> +	struct regmap *regmap;
+> +	struct device_node *led_node;
+> +	struct device_node *child;
+> +	struct max5970_led *ddata[MAX5970_NUM_LEDS];
+> +	int ret = -ENODEV, num_leds = 0;
+> +
+> +	regmap = dev_get_regmap(pdev->dev.parent, NULL);
+> +	if (!regmap)
+> +		return -EPROBE_DEFER;
+> +
+> +	led_node = of_get_child_by_name(np, "leds");
+> +	if (!led_node)
+> +		return -ENODEV;
+> +
+> +	for_each_available_child_of_node(led_node, child) {
+> +		u32 reg;
+> +
+> +		if (of_property_read_u32(child, "reg", &reg))
+> +			continue;
+> +
+> +		if (reg >= MAX5970_NUM_LEDS) {
+> +			dev_err(dev, "invalid LED (%u >= %d)\n", reg, MAX5970_NUM_LEDS);
+> +			continue;
+> +		}
+> +
+> +		ddata[num_leds] = devm_kzalloc(dev, sizeof(struct max5970_led), GFP_KERNEL);
+> +		if (!ddata[num_leds]) {
+> +			ret = -ENOMEM;
 
-What makes dbg_touch_watchdogs() any different?
+Hi,
 
-KGDB can pretty much have a breakpoint everywhere and therefore also
-within the jiffies lock held region.
+Should we have a "of_node_put(child);" here?
 
-Thanks,
+> +			goto exit;
+> +		}
+> +
+> +		ddata[num_leds]->index = reg;
+> +		ddata[num_leds]->regmap = regmap;
+> +		ddata[num_leds]->dev = dev;
+> +
+> +		ret = max5970_setup_led(ddata[num_leds], regmap, child, reg);
+> +		if (ret < 0) {
+> +			dev_err(dev, "Failed to initialize LED %u\n", reg);
 
-        tglx
+Should we have a "of_node_put(child);" here?
+
+> +			goto exit;
+> +		}
+> +		num_leds++;
+> +	}
+> +
+> +	return ret;
+> +
+> +exit:
+> +	for (int j = 0; j < num_leds; j++)
+> +		devm_led_classdev_unregister(dev, &ddata[j]->cdev);
+
+Is it really needed?
+There is no equivalent call in a .remove function and 
+devm_led_classdev_register() is used.
+
+Shouldn't the unregister step be done automatically by the framework?
+
+CJ
+
+> +
+> +	return ret;
+> +}
+> +
+> +static struct platform_driver max5970_led_driver = {
+> +	.driver = {
+> +		.name = "max5970-led",
+> +	},
+> +	.probe = max5970_led_probe,
+> +};
+> +
+> +module_platform_driver(max5970_led_driver);
+> +MODULE_AUTHOR("Patrick Rudolph <patrick.rudolph@9elements.com>");
+> +MODULE_DESCRIPTION("MAX5970_hot-swap controller LED driver");
+> +MODULE_LICENSE("GPL");
+> 
+> base-commit: baca986e1f2c31f8e4b2a6d99d47c3bc844033e8
+
