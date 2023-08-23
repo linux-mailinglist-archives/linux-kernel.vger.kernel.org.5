@@ -2,72 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A8CA785CFF
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 18:10:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56871785D03
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 18:10:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237435AbjHWQKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 12:10:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51456 "EHLO
+        id S231842AbjHWQKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 12:10:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234317AbjHWQKH (ORCPT
+        with ESMTP id S236216AbjHWQKj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 12:10:07 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69477CD6
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 09:10:05 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-997c4107d62so772059366b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 09:10:05 -0700 (PDT)
+        Wed, 23 Aug 2023 12:10:39 -0400
+Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22CA2E7B
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 09:10:31 -0700 (PDT)
+Received: by mail-oo1-xc2a.google.com with SMTP id 006d021491bc7-570f0cb0c1eso1380759eaf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 09:10:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=metaspace-dk.20221208.gappssmtp.com; s=20221208; t=1692807004; x=1693411804;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=AvCyDnox4fbKDW7rNSjZG6/gL/syisPTe8ALd97uo+Q=;
-        b=AMRCA5jQetEgbNYV7zkyPQEYLYr+i8pUdYZUEF4QON89eMWTb4UdIdYtj3uoFKba67
-         LZXYSU0+KedMQZ5+JpEvVjTZsFdPlHKtnDeg26ENh2AvkV9sfqbuU+BPxfFxmx/kUdSH
-         naknCJY4MAYa0aqSG74R4dvx6iHvj7VSUVgUpO2t/kuCwmxhLdcVLLL6k7xWHIDiI8im
-         aqWBaOrsQ1k0QsvOYK7DjYvrkr7j3FS4zjb7rhXjJpVIbxKA+ahm9kgFjUbe8l1etZn4
-         DaYsdfX/zC2jJLvApnGKQCAdgIqJ67AbybH9iIdjl8kC0gXT+ZCDJIhHKS8KDlH7uoPL
-         mHZQ==
+        d=gmail.com; s=20221208; t=1692807030; x=1693411830;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=+Z12QXPm+RDkF84iA+wv+FJPe57vLFa9VFZMfDdgrZg=;
+        b=Oj2bD1BYQrsDedtb975jwrwTiBtwGojHELCp43NyXpurcwTEyAl3cjHeAtkk3+H9i2
+         4zc6vx83c/fwBTkk/yBUCtM1BTyehyvCe9WT531ISPzmaCAsaU6YMSOf0Fd5J5nWZNRh
+         +4uNp15MLj5lrzcSAkFMvG0SIfj9+LkOt2xteHQc0nviquFtOiXY7BSTWMPhduCWowuz
+         hn6G5HRhPW3QJYaJED5VbXUaMCszaJz7jlsFHpyEmCG1vBTb9Db5YmEFDg5Pvd+fRk71
+         WxXq1ihjBkDF9vE8gxW/Z3iLNurl70/yv649QA71xHr/Q1R1wja9PFOJrQz4uxOMzZ3H
+         Y0Xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692807004; x=1693411804;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AvCyDnox4fbKDW7rNSjZG6/gL/syisPTe8ALd97uo+Q=;
-        b=PDx3UE8/lrz1vZG8Nl+kLVhxfvizXdOEb6qdp36LRA5uWNE8PqlhhOfYN1GmgF7Cgl
-         qc7StXrFxutOBubTT8n9niaA8tbpk14quKwBkURACbH5ixTZ1qpA+kgqovyDjdSAF/8t
-         I/X9UCxUFMPQ4+bSe4ejXQEGzx/jrMBB9btEmqrDknd4p5aIQ4YEC5SKNDUv12/AuFu0
-         +usOrcTRQou5nt0RQR03QgR2xNidpYKZ1vxHsJwaTzrfpDg3CkneV+tJU8oTmUPZgyH8
-         sezI1D7JW73LWINbIlkdPqpirEKZBrGmtZkcqvTBLUKOmw2JNtuPxHX7rFvtPQpkcHqG
-         QbPA==
-X-Gm-Message-State: AOJu0YwIHXT8qaH/LKfBF94bpQBUl/sQvlqQD+Afwpn1zduvzZHouCtW
-        rAI+TgT15rwfOtOCHGu2eRTjUA==
-X-Google-Smtp-Source: AGHT+IHqKjdbXppHqxgenNeZYES7RnrdB3Ff8k7iiNuK7kgXftXUykFdhh/FJBhTWdlI5gR+XbKyNA==
-X-Received: by 2002:a17:906:2d1:b0:991:d5ad:f1b1 with SMTP id 17-20020a17090602d100b00991d5adf1b1mr11989340ejk.47.1692807003799;
-        Wed, 23 Aug 2023 09:10:03 -0700 (PDT)
-Received: from localhost ([79.142.230.34])
-        by smtp.gmail.com with ESMTPSA id o5-20020a1709064f8500b0099d45ed589csm9938111eju.125.2023.08.23.09.10.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Aug 2023 09:10:03 -0700 (PDT)
-References: <87msyi406u.fsf@metaspace.dk>
- <20230823103458.243871-1-aliceryhl@google.com>
-User-agent: mu4e 1.10.5; emacs 28.2.50
-From:   "Andreas Hindborg (Samsung)" <nmi@metaspace.dk>
-To:     Alice Ryhl <aliceryhl@google.com>
-Cc:     alex.gaynor@gmail.com, benno.lossin@proton.me,
-        bjorn3_gh@protonmail.com, boqun.feng@gmail.com, gary@garyguo.net,
-        linux-kernel@vger.kernel.org, ojeda@kernel.org,
-        patches@lists.linux.dev, rust-for-linux@vger.kernel.org,
-        wedsonaf@gmail.com
-Subject: Re: [PATCH v1] rust: add improved version of
- `ForeignOwnable::borrow_mut`
-Date:   Wed, 23 Aug 2023 18:09:15 +0200
-In-reply-to: <20230823103458.243871-1-aliceryhl@google.com>
-Message-ID: <87a5uh4u5h.fsf@metaspace.dk>
+        d=1e100.net; s=20221208; t=1692807030; x=1693411830;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+Z12QXPm+RDkF84iA+wv+FJPe57vLFa9VFZMfDdgrZg=;
+        b=dpwyKj6d/nyo7Hbn4AV7RJvri2GpN2c90c5VekiXKmtbqHlgLYuCcvKw93nvBgUesR
+         K30Du60P6dlnAjx6t6AKa48oYrJNop8gsr8lhLRk2KlRmqItB7iH1rsNfwIVe67xQEpl
+         L6dwJhuUI9cvgWeCXTP//wcFZbAtJIyKBIBVtgwkue4kYRth5Lvkz94Zh7ksn1bqxVUW
+         U622eF0ZKbP6Z76+L5Sy12FmJMDpwXsuzedBM5YcxnU5sH1HI/qSFGYnetZk50u4ut9o
+         GecuG7V19Oux4eNp0PV4frBTmxfPqDJqXU8MI4B/s2GmmiTGEZyKDVGqbwExFxdG8q4L
+         h64w==
+X-Gm-Message-State: AOJu0Yx9qSXDN/V2YDN52JGVaaJEkvcrVSGzLWrPP+aAvkf8GA3C2TXb
+        XnCoG3RnB7Hyh6QlThMmn40vhqDZXOZDg6/y5vg=
+X-Google-Smtp-Source: AGHT+IGRSsNS00IocQRpXaHBCdTfIY/2jeMXsBQOdIeS808Lmcjm5mO2fEjc+m0Y/BGpPdci2J1A5fcxtMMLCte23Ik=
+X-Received: by 2002:a4a:2a1e:0:b0:56c:7149:7db6 with SMTP id
+ k30-20020a4a2a1e000000b0056c71497db6mr11355508oof.3.1692807030389; Wed, 23
+ Aug 2023 09:10:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Received: by 2002:ac9:5797:0:b0:4f0:1250:dd51 with HTTP; Wed, 23 Aug 2023
+ 09:10:29 -0700 (PDT)
+In-Reply-To: <20230823154728.rpkw6fpwvwqbnnh3@quack3>
+References: <20230821202829.2163744-1-mjguzik@gmail.com> <ZOPSEJTzrow8YFix@snowbird>
+ <20230821213951.bx3yyqh7omdvpyae@f> <CAGudoHHJECp2-DfSr5hudooAdV6mivvSO+4mC9kwUrWnSiob5g@mail.gmail.com>
+ <20230822095154.7cr5ofogw552z3jk@quack3> <CAGudoHHe5nzRTuj4G1fphD+JJ02TE5BnHEDwFm=-W6DoEj2qVQ@mail.gmail.com>
+ <20230823094915.ggv3spzevgyoov6i@quack3> <CAGudoHFFt5wvYWrwNkz813KaXBmROJ7YJ67s1h3_CBgcoV2fCA@mail.gmail.com>
+ <20230823154728.rpkw6fpwvwqbnnh3@quack3>
+From:   Mateusz Guzik <mjguzik@gmail.com>
+Date:   Wed, 23 Aug 2023 18:10:29 +0200
+Message-ID: <CAGudoHFvGwcQ+8JOjwR3B=KtHiVqC1=eiNgGv33z29443VJdFg@mail.gmail.com>
+Subject: Re: [PATCH 0/2] execve scalability issues, part 1
+To:     Jan Kara <jack@suse.cz>
+Cc:     Dennis Zhou <dennis@kernel.org>, linux-kernel@vger.kernel.org,
+        tj@kernel.org, cl@linux.com, akpm@linux-foundation.org,
+        shakeelb@google.com, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,41 +74,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Alice Ryhl <aliceryhl@google.com> writes:
-
-> Andreas Hindborg <nmi@metaspace.dk> writes:
->>>> I am not sure this makes sense. How about splitting the trait in two,
->>>> immutable and mutable and only implementing the immutable one or Arc?
->>>
->>> I used this design based on what would make sense for a linked list. The
->>> idea is that we can have two different types of cursors for a linked
->>> list: immutable and mutable. The immutable cursor lets you:
->>>
->>>  * move around the linked list
->>>  * access the values using `borrow`
->>>
->>> The mutable cursor lets you:
->>>
->>>  * move around the linked list
->>>  * delete or add items to the list
->>>  * access the values using `borrow_mut`
->>>
->>> The mutable cursor gives you extra abilities beyond the `borrow` vs
->>> `borrow_mut` distinction, so we want to provide both types of cursors
->>> even if the pointer type is Arc. To do that, we need a trait that
->>> defines what it means to have mutable access to an Arc.
->> 
->> I don't see how that prevents this trait from being split in two?
+On 8/23/23, Jan Kara <jack@suse.cz> wrote:
+> I didn't express myself well. Sure atomics are expensive compared to plain
+> arithmetic operations. But I wanted to say - we had atomics for RSS
+> counters before commit f1a7941243 ("mm: convert mm's rss stats into
+> percpu_counter") and people seemed happy with it until there were many CPUs
+> contending on the updates. So maybe RSS counters aren't used heavily enough
+> for the difference to practically matter? Probably operation like faulting
+> in (or unmapping) tmpfs file has the highest chance of showing the cost of
+> rss accounting compared to the cost of the remainder of the operation...
 >
-> Well, you could split the trait, but if you make the mutable iterator
-> require the `borrow_mut` trait, then you have to implement the mutable
-> trait for `Arc` too if you want the mutable iterator to work with `Arc`.
->
-> And if you're always going to implement both traits, then maybe it
-> makes more sense to not split the traits?
 
-Maybe. Do you have a prototype for the list cursor available?
+These stats used to be decentralized by storing them in task_struct,
+the commit complains about values deviating too much.
 
-BR Andreas
+The value would get synced every 64 uses, from the diff:
+-/* sync counter once per 64 page faults */
+-#define TASK_RSS_EVENTS_THRESH (64)
+-static void check_sync_rss_stat(struct task_struct *task)
+-{
+-       if (unlikely(task != current))
+-               return;
+-       if (unlikely(task->rss_stat.events++ > TASK_RSS_EVENTS_THRESH))
+-               sync_mm_rss(task->mm);
+-}
 
+other than that it was a non-atomic update in struct thread.
+
+-static void add_mm_counter_fast(struct mm_struct *mm, int member, int val)
+-{
+-       struct task_struct *task = current;
+-
+-       if (likely(task->mm == mm))
+-               task->rss_stat.count[member] += val;
+-       else
+-               add_mm_counter(mm, member, val);
+-}
+
+So the question is how much does this matter. My personal approach is
+that avoidable slowdowns (like atomics here) only facilitate further
+avoidable slowdowns as people can claim there is a minuscule change in
+% to baseline. But if the baseline is already slow....
+
+Anyhow, I just found that patch failed to completely remove
+SPLIT_RSS_COUNTING. I'm going to submit something about that later.
+
+-- 
+Mateusz Guzik <mjguzik gmail.com>
