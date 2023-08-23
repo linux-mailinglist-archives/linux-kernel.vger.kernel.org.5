@@ -2,255 +2,334 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 158C77861A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 22:37:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B25C87861B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 22:44:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236556AbjHWUhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 16:37:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48048 "EHLO
+        id S236558AbjHWUni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 16:43:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236431AbjHWUgc (ORCPT
+        with ESMTP id S236427AbjHWUna (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 16:36:32 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2071.outbound.protection.outlook.com [40.107.220.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6F9E10D3;
-        Wed, 23 Aug 2023 13:36:29 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fozbWuruEiC8rK9YTzsj9huoOreuVEpLCj9fK0TQoIUt7QUDFgWUGNx49U7p5sSzGe0svfVxOiQBNsqKvSPmd3ZlF8ypjeA1DpiCefnZww/NsVj7sBdP7rm2SgwO+vFiGvatyqhjQ96BGqk8zULn8HDKzwIMrlZYtL9MDB5RVIWekjS3QLgF4gnbqIBwVaDv1lveHU2fGwyBQA4pNy4qt63jQB0gEw4lAdTvoz0SiqRAMIeQZe8sueKxuP5PEMA1B6Q++DOnJL0mDHBgOctWfPXDuWJ9L+yRLjfFtpxWlEJ0LxKs+YjIT6lv1+asarTbokVzk/L/KLt5ZZ5b9UxUCw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=H3dukAcHOGIDZPr9kF0lCKa2a7C3p4kIk0sRiWZFPdI=;
- b=HaOdyjNJ8f9kxVfiwbZ2LaiiF7f6ysWNBttzrR5tylU+DxhrfyM6bgiw+aETGIlaejXZmTccv0fSLB8RnnZcnS4c3mHskmP9KRlMZbLi/KDXjPJdbuCMgbNKjEgy0AyD5MNIwcKrb9AYS1VQBkwvBY6WEB9NCPYCkbHJG7O1xiA9dB+Im/QHzdpF5LTHFb/3o2lFzb9wPhrQNvd5S4YKAvypOvJ8lCtIk7FX0NYUDXJtLGP1kL7G9RRDFUPx8w8WiakMzrUKPgHVOMVMMdqKlJOxpfV0OQK0hheDDDXiMfHO0yhiTEsxm7dRJRxLY4aPMraI5CptmmMAC7t3W2GzbA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=H3dukAcHOGIDZPr9kF0lCKa2a7C3p4kIk0sRiWZFPdI=;
- b=g6x59ygMMrsnQ3V6vm54ZEQPFERDVAXm8NORiKcdQm67aHIrVaoyUnjQxTArfpPptmuQPVcY4DZc+LGVmGA6/qM2Y1R60QNNHYcLNv7B/Pohp5RQiS9L5/kNCQ2bAOL8hCDg2ikWdwC6d5OxYq2pRHkGlgpX5PYVpmciTeTRZ6Y=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DM4PR12MB5229.namprd12.prod.outlook.com (2603:10b6:5:398::12)
- by MN6PR12MB8568.namprd12.prod.outlook.com (2603:10b6:208:471::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.26; Wed, 23 Aug
- 2023 20:36:27 +0000
-Received: from DM4PR12MB5229.namprd12.prod.outlook.com
- ([fe80::d267:7b8b:844f:8bcd]) by DM4PR12MB5229.namprd12.prod.outlook.com
- ([fe80::d267:7b8b:844f:8bcd%7]) with mapi id 15.20.6699.026; Wed, 23 Aug 2023
- 20:36:27 +0000
-Message-ID: <bc6a9c1f-d41e-ef81-3029-04c2938b300c@amd.com>
-Date:   Wed, 23 Aug 2023 15:36:25 -0500
+        Wed, 23 Aug 2023 16:43:30 -0400
+X-Greylist: delayed 330 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 23 Aug 2023 13:43:26 PDT
+Received: from papylos.uuid.uk (papylos.uuid.uk [209.16.157.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 011DD10C8;
+        Wed, 23 Aug 2023 13:43:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=octiron.net
+        ; s=20230424-rsa3072; h=Content-Transfer-Encoding:Content-Type:Subject:From:
+        Cc:To:MIME-Version:Date:Message-ID:From:Sender:Reply-To:Subject:Date:
+        Message-ID:To:Cc:Bcc:MIME-Version:Content-Type:Content-Disposition:
+        Content-Transfer-Encoding:In-Reply-To:References:Organization;
+        bh=g2NzWC9arVAC0sopw+XdtfCHYVWQGwXj1gterxHD360=; t=1692823406; b=ANb9+k7No0tO
+        N4dDT37kZf625ckIdKAIM7YEHO3+RPuBGMBMuZsc++TWuKMx966QJPeDITfRl2f4jasUDcazmqKhS
+        e3G+D6EpB8scJS/JBLI1C6TffrMNiMy+S+F9R9HDMBmIHqzGUnCcO9CxHuJ4+iJst1YQWTLZeE5s2
+        thnNkVTyVGa5bTqoLh/fAmM+FLo7EW6ptnHu9TyZBLNZuvYZzO0q3gN0DLaqBC3ZevZXSMb/NiG8J
+        TPkn+HLaocQn4nUUCI4rUew5+7I5csjk7/Q97tr9jtfF2DG6s94FLRek+72/hjyTavSm4DoLy9x69
+        SyjUTl8rZe1C2K/zsWksGjqktZdKJbQL9wCpN7aMCCFep24KCvlruP5oshjQJdiMpdT7/s0PHog/6
+        xr4K+ejM2UYxbP/dBL79gDuTepEiXu2AteRrT6zNkYAcIQjl+WBisJy0ygsM/viDOe7kOWVmhHYpa
+        8qCUiDAYko2lXCIGDG3EnAJszfCmk5bPVCG7rH;
+DKIM-Signature: v=1; a=ed25519-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=octiron.net; s=20230410-ed25519; h=Content-Transfer-Encoding:Content-Type:
+        Subject:From:Cc:To:MIME-Version:Date:Message-ID:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:Bcc:MIME-Version:Content-Type:Content-Disposition:
+        Content-Transfer-Encoding:In-Reply-To:References:Organization;
+        bh=g2NzWC9arVAC0sopw+XdtfCHYVWQGwXj1gterxHD360=; t=1692823406; b=U9YXv9z08h6x
+        ITC4BYZ2yXUw1hEyon4kPfj3hxA7csdp1zx0T7Z1PQAcTGEwdstwOxUdG2QZaBDF3H8lCgyWCw==;
+Received: by papylos.uuid.uk with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.93)
+        (envelope-from <simon@octiron.net>)
+        id 1qYubt-00AdHe-8H; Wed, 23 Aug 2023 21:37:50 +0100
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=octiron.net
+        ; s=20230424-rsa3072; h=Content-Transfer-Encoding:Content-Type:Subject:From:
+        Cc:To:MIME-Version:Date:Message-ID:From:Sender:Reply-To:Subject:Date:
+        Message-ID:To:Cc:Bcc:MIME-Version:Content-Type:Content-Disposition:
+        Content-Transfer-Encoding:In-Reply-To:References:Organization;
+        bh=g2NzWC9arVAC0sopw+XdtfCHYVWQGwXj1gterxHD360=; t=1692823069; b=Kr0Cqr46Y4k0
+        oUAa3l9FnJB3laSB6q2NAeTDnl8uBSMK3sSKQIEnlrrEEqcQqL+Vd1iECEI589KuOH6fNLHZMQ0Ip
+        plrPWzeXKsY/c0275yMeLRg6og5IiORFB9eOE396Mt3OfmDe3Asr9kZep5RxWy7HC9utbE8DV2IPE
+        t4lECa78nPZLufAFEmANpKZHKXgK+UpwukdjQQ12Zd+4BZWWhT3RpSbMQhLhbbuyeNgGkbk2erp9Y
+        hu2p3qibdG2sbtEyNzK5G+QIvnKBhcNS14OuN2fxpkjD3W4gNC0etuiB1n6yFYfohOnPrvicXZbJf
+        tIP0z1S534gRZDZFvw1/L8+CC0301evzaak/+GUzyI51rWXzAqti8cRkw630cJ5nsMKj1mN5Ia986
+        nqOFMebIQU0NpFScPh/Wwj1PFYYwjTWB5yR974UTMXg+/ErxDJCKc6OZPQSNUz0goUOCKMK+Tf08e
+        d4rxiROeLAeaI2gNi5FXZgjsdR34Mko4Gk2UAV;
+DKIM-Signature: v=1; a=ed25519-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=octiron.net; s=20230410-ed25519; h=Content-Transfer-Encoding:Content-Type:
+        Subject:From:Cc:To:MIME-Version:Date:Message-ID:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:Bcc:MIME-Version:Content-Type:Content-Disposition:
+        Content-Transfer-Encoding:In-Reply-To:References:Organization;
+        bh=g2NzWC9arVAC0sopw+XdtfCHYVWQGwXj1gterxHD360=; t=1692823069; b=1C8TxE61mSNn
+        XMxrheslkQOb3eBLgp+CRzuuN6A5iW+18LVZWunzHhVGAT0yb3pVnBeao7e88jiivuEMXKNDBg==;
+Received: by tsort.uuid.uk with esmtps (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128)
+        (Exim 4.93)
+        (envelope-from <simon@octiron.net>)
+        id 1qYubp-004ZvJ-HY; Wed, 23 Aug 2023 21:37:45 +0100
+Message-ID: <ea1a13ad-a1e0-540a-e97a-4c44f6d2d33b@0882a8b5-c6c3-11e9-b005-00805fc181fe.uuid.home.arpa>
+Date:   Wed, 23 Aug 2023 21:37:45 +0100
+MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH 0/2] KVM: SVM: Fix unexpected #UD on INT3 in SEV guests
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Wu Zongyo <wuzongyo@mail.ustc.edu.cn>
-References: <20230810234919.145474-1-seanjc@google.com>
- <bf3af7eb-f4ce-b733-08d4-6ab7f106d6e6@amd.com> <ZOTQ6izCUfrBh2oj@google.com>
- <d183c3f2-d94d-5f22-184d-eab80f9d0fe8@amd.com> <ZOZmFe7MT7zwrf/c@google.com>
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-In-Reply-To: <ZOZmFe7MT7zwrf/c@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Language: en-GB
+To:     Oliver Neukum <oneukum@suse.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-serial@vger.kernel.org
+From:   Simon Arlott <simon@octiron.net>
+Subject: [PATCH] USB: cdc-acm: expose serial close_delay and closing_wait in
+ sysfs
+X-Face: -|Y&Xues/.'(7\@`_\lFE/)pw"7..-Ur1^@pRL`Nad5a()6r+Y)18-pi'!`GI/zGn>6a6ik
+ mcW-%sg_wM:4PXDw:(;Uu,n&!8=;A<P|QG`;AMu5ypJkN-Sa<eyt,Ap3q`5Z{D0BN3G`OmX^8x^++R
+ Gr9G'%+PNM/w+w1+vB*a($wYgA%*cm3Hds`a7k)CQ7'"[\C|g2k]FQ-f*DDi{pU]v%5JZm
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: DM6PR07CA0049.namprd07.prod.outlook.com
- (2603:10b6:5:74::26) To DM4PR12MB5229.namprd12.prod.outlook.com
- (2603:10b6:5:398::12)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR12MB5229:EE_|MN6PR12MB8568:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5b6c7edb-0327-437b-09ce-08dba4189fb2
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2N0Vg3C9tSEhDzZfh2Va6ugSgdMmcsKQ2FI6ujAH2SXiD32Zfk5Vubi+xXZmzLdjHxVaynCXHkprPsGLu27P+o2iKwiZDtGnW2PAUSOUYXXHRO5pzpI0/p7lumq1jKwtKbOenhiT7UvazxaTn3JgMbMGdmHQN+erSFWD8p4ezd+CbH3iAM3S8riPKScwgJoG+iRUaipgXUGiCzxSx8MMpbcjqkCgIp54ZGdwsv2DlK5NEln6kprgnHPCnVnE5F80yVCs34uKRBW8DscjykiW3LUWRTICqoTwhBM/bmpxySly3XTKWYO7QolGUMLgYS/Dyk4zreerf3xV9k5qry5eb5rmI8zSrRsw7Az1EIRJIJQ0t0uBnIJfrWEFMr5sVL93eHA2Rhzm9AB6K4+kGn/1PMQ1p5WPAl1sKJxO2y7mq9xhVua9OgfRFUTZzgxdqxClvImZafEj9P/AtVDlCKnlHmXO3SclGlOnNHjXRKC0Zru8ZcPX+Z9APSF6bDUxHcXqtqoKV0DdmKCS6C5BOZBfKI4ulJcPRDXpPJwExrzHGsGwBOOT2gcw/tq8+hjrvUSjNgX/wiyxdv8D/xTxhzIdOF00xTODzjKKVnaaO+HPXQ+1/XBROBKhL1Au4GlmsnDk+aBIfsqMVHfUAf7M7XzL8w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5229.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(366004)(396003)(376002)(39860400002)(1800799009)(186009)(451199024)(5660300002)(36756003)(83380400001)(2906002)(38100700002)(31696002)(86362001)(41300700001)(6512007)(66556008)(66476007)(66946007)(54906003)(6486002)(6506007)(6916009)(316002)(2616005)(4326008)(8676002)(8936002)(53546011)(478600001)(31686004)(26005)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?endjZ0ozRXJLSXNsK3djN1Y0eVVxVVZOdDFzbUs2VWZZdU03RFhONHNaaXEw?=
- =?utf-8?B?ZkpHYmVsOG96SjB6RjNGRDdIeWY3aERNZTJORHpnY3QrYkY2T092UEtlUWc3?=
- =?utf-8?B?S1ljdWZYOUtTdjdwU1M2UUl5Q0ZibWw3aTlXcGlQSzduOGI0Y0ZVSmp3Lytq?=
- =?utf-8?B?Z0xyQTJXRUhjWURXc2F5Zzg3Z3dweFZBcGIxaVhtSEp5ODdXOWk4Wnc3VWlV?=
- =?utf-8?B?Sjd3TEZEenJQM2t5bVJiSlhzc05MR2pCTVI5RG1jWFJwV24xcVExUUo3amgr?=
- =?utf-8?B?NTBFSUhxa1laNUFRL0ZFN25BU0pnSHF1R1duckZaaFkrbndNVXpObTRjcE1t?=
- =?utf-8?B?RlpVVTkyREVEdmFmQ1FOeWtoKzV4a2JtS1UwK1UzMnJXVHNpMFdXNmw0UWhR?=
- =?utf-8?B?ektrYlVZa2QvUG9ITW1aYmt4aWljR0craGZhNHZ4WTlERGI1ak5ZYWNPUVc0?=
- =?utf-8?B?OVJ2aUFrNWNKY3JmbnJuTEgzdTIrcGRReWJDeFFEZVEzVG1BcTY2bGV1Wm41?=
- =?utf-8?B?R2p2c2s3Zm5SU2Z0WmswQnR6dGx3VHA0NVlZT25OSGdZQ2dLTEtSQ3Rabi94?=
- =?utf-8?B?NEVwME9VdGJxV3JoTHlDUDRUVkk2UmZPWDJ4dVU1WTVEcWp1OXc4NjJWb1h1?=
- =?utf-8?B?ajEwZlZjQXB5UDVDd1Z0dHFPNmZNKzRDS1ExVG9QSGtlZ3hBM1NQc3cxbVVY?=
- =?utf-8?B?bEM0UHFEN3lPNzkyMlNscEFwZm9Idm9WUW41bzF6NCtwMHBWbmZSL2JiNjV4?=
- =?utf-8?B?YXM4dHFycmR1RTBzZU5mTWxZSURjbVlzaCtHRC91YVI3clZ1L0pieUNWOVdU?=
- =?utf-8?B?WHpibEZuSjMxS2JEb0cza1BFWGx5dlp0SFlnNmlVYlRCY1lMNnBTWUVBYkxR?=
- =?utf-8?B?SlVnazFzazkzYnRIbFh3OUpqQ0kzekx2ZENGK3dmQlBjRXFtNU1HcFcwNWxW?=
- =?utf-8?B?ejQ3cHBBbGlYLzFic3UycUhPejVHOVBLLzM4Uk1YRGJYQUcvbmlSaGI1bjl4?=
- =?utf-8?B?VlJMZndYa3JabjFLeHBRcElIRlZkV21MYWtYeEFsSm5BRUdRNDZWQm85ZWdz?=
- =?utf-8?B?V2s1dEpuZFlSQmk2YzFQL2RVZ2VJUUxUNTFBN05QdnZTMkdxWjFIWHFpejhl?=
- =?utf-8?B?RFJ0SjgrWUFQOUJTM0lkeGhwdnhlTnh2SzJreENjb21LQkZ5VVNsRUpZNWV3?=
- =?utf-8?B?U3NPdi9rc2Y1WFEyVWFweGxLMnpISUQyQXI5MTNQUW1xbmN5aTNPQy9ZUUFZ?=
- =?utf-8?B?UDZ4ODJENWVZMUExbGVzZzBDTlE1bVJFSmFTeEl2bWo2SjVaQUJuV2lnRnlS?=
- =?utf-8?B?NjFBV3k4cURwTWZpQlNJZWxsUXEzb2NhSkM0MWxNR3kxTFdtSWtQYzd6TFpR?=
- =?utf-8?B?V3JpTVNRdXBTRnBoSFJ6bXJ5djNGdEtIT1RXM1lnZXN4M2ZJN21uVlZPNW5Q?=
- =?utf-8?B?VVh0cWp6NzhaZnZCUXAwN051ZTI2akJUeUgyUEtlcVQ3TnhJOTcrcVBuVFRn?=
- =?utf-8?B?bUlHUEFzOUU5RStNRzZLY2xiUEdleG1tazcxdGQzb0dvTmZLWVpKK0psZS80?=
- =?utf-8?B?Rk9aemt6bnZsZHhNYytZMDNCT3EwNTh2a1J1Z1Uza3FyL3NMeEhLVHRKRlY2?=
- =?utf-8?B?bjUwUFpkd3VET282NytQUlFjZEhPaWhpSEpGbGRnK0xEN1ZJNmZXNXZlK2t0?=
- =?utf-8?B?SllVMHh1UGlWNGJKNnFsVm8vZi95Q2U3emd0Mm9CbERLdUY1QmRydi8vVWY3?=
- =?utf-8?B?ZVZXZlVGRmcwNVdDZzZyTElMbFNIa1kvM3FoRnVlRWZPWG56bkZobGVUUSt5?=
- =?utf-8?B?dHRGYXJmVWJWTXNaK1VOak9QYUY4dWhSOUFwbENsSzFZMzBobkRyR2lwZm5h?=
- =?utf-8?B?dWZJaytiYmx5aDVnL0x2YW44MFhWalF5MzIrK3E3Y3oyT2lab1o5WnRjbXdx?=
- =?utf-8?B?NVBQamNPVTE5SjBYbkpLbmFQUVJXcDNKSkJUR2pScnBwVXZoUVpQNlJoTUZk?=
- =?utf-8?B?WFFZSjhvVUdOdDdkbjlYUFFOeUFZVGVWTkpMZlpHWmVnVEJBT3VUMjAyaVRH?=
- =?utf-8?B?anJ0eG9Qc1hPcnBSc2hKL09Oc1BOcWlvR3FKWFN3VzdLWC9RaUZPdzdBL2Nu?=
- =?utf-8?Q?OD1BJ7ZIz5Sg0uIAvJ4+FLUce?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5b6c7edb-0327-437b-09ce-08dba4189fb2
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5229.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Aug 2023 20:36:26.9969
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: J2DrajSHWAUQZYzVa6ozufrE3QFhTcwjXN2k5QTNrYvpw5gPPsZ8UuuaEOz1hg9QuA3hLtPBraekO4S4alftug==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN6PR12MB8568
-X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/23/23 15:03, Sean Christopherson wrote:
-> On Wed, Aug 23, 2023, Tom Lendacky wrote:
->> On 8/22/23 10:14, Sean Christopherson wrote:
->>> On Tue, Aug 22, 2023, Tom Lendacky wrote:
->>>> On 8/10/23 18:49, Sean Christopherson wrote:
->>>>> Fix a bug where KVM injects a bogus #UD for SEV guests when trying to skip
->>>>> an INT3 as part of re-injecting the associated #BP that got kinda sorta
->>>>> intercepted due to a #NPF occuring while vectoring/delivering the #BP.
->>>>>
->>>>> I haven't actually confirmed that patch 1 fixes the bug, as it's a
->>>>> different change than what I originally proposed.  I'm 99% certain it will
->>>>> work, but I definitely need verification that it fixes the problem
->>>>>
->>>>> Patch 2 is a tangentially related cleanup to make NRIPS a requirement for
->>>>> enabling SEV, e.g. so that we don't ever get "bug" reports of SEV guests
->>>>> not working when NRIPS is disabled.
->>>>>
->>>>> Sean Christopherson (2):
->>>>>      KVM: SVM: Don't inject #UD if KVM attempts emulation of SEV guest w/o
->>>>>        insn
->>>>>      KVM: SVM: Require nrips support for SEV guests (and beyond)
->>>>>
->>>>>     arch/x86/kvm/svm/sev.c |  2 +-
->>>>>     arch/x86/kvm/svm/svm.c | 37 ++++++++++++++++++++-----------------
->>>>>     arch/x86/kvm/svm/svm.h |  1 +
->>>>>     3 files changed, 22 insertions(+), 18 deletions(-)
->>>>
->>>> We ran some stress tests against a version of the kernel without this fix
->>>> and we're able to reproduce the issue, but not reliably, after a few hours.
->>>> With this patch, it has not reproduced after running for a week.
->>>>
->>>> Not as reliable a scenario as the original reporter, but this looks like it
->>>> resolves the issue.
->>>
->>> Thanks Tom!  I'll apply this for v6.6, that'll give us plenty of time to change
->>> course if necessary.
->>
->> I may have spoke to soon...  When the #UD was triggered it was here:
->>
->> [    0.118524] Spectre V2 : Enabling Restricted Speculation for firmware calls
->> [    0.118524] Spectre V2 : mitigation: Enabling conditional Indirect Branch Prediction Barrier
->> [    0.118524] Speculative Store Bypass: Mitigation: Speculative Store Bypass disabled via prctl
->> [    0.118524] invalid opcode: 0000 [#1] PREEMPT SMP NOPTI
->> [    0.118524] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 6.2.2-amdsos-build50-ubuntu-20.04+ #1
->> [    0.118524] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
->> [    0.118524] RIP: 0010:int3_selftest_ip+0x0/0x60
->> [    0.118524] Code: b9 25 05 00 00 48 c7 c2 e8 7c 80 b0 48 c7 c6 fe 1c d3 b0 48 c7 c7 f0 7d da b0 e8 4c 2c 0b ff e8 75 da 15 ff 0f 0b 48 8d 7d f4 <cc> 90 90 90 90 83 7d f4 01 74 2f 80 3d 39 7f a8 00 00 74 24 b9 34
->>
->>
->> Now (after about a week) we've encountered a hang here:
->>
->> [    0.106216] Spectre V2 : Enabling Restricted Speculation for firmware calls
->> [    0.106216] Spectre V2 : mitigation: Enabling conditional Indirect Branch Prediction Barrier
->> [    0.106216] Speculative Store Bypass: Mitigation: Speculative Store Bypass disabled via prctl
->>
->> It is in the very same spot and so I wonder if the return false (without
->> queuing a #UD) is causing an infinite loop here that appears as a guest
->> hang. Whereas, we have some systems running the first patch that you
->> created that have not hit this hang.
->>
->> But I'm not sure why or how this patch could cause the guest hang. I
->> would think that the retry of the instruction would resolve everything
->> and the guest would continue. Unfortunately, the guest was killed, so I'll
->> try to reproduce and get a dump or trace points of the VM to see what is
->> going on.
-> 
-> Gah, it's because x86_emulate_instruction() returns '1' and not '0' when
-> svm_can_emulate_instruction() returns false.  svm_update_soft_interrupt_rip()
-> would then continue with the injection, i.e. inject #BP on the INT3 RIP, not on
-> the RIP following the INT3, which would cause this check to fail
-> 
-> 	if (regs->ip - INT3_INSN_SIZE != selftest)
-> 		return NOTIFY_DONE;
-> 
-> and eventually send do_trap_no_signal() to die().
+If the serial device never reads data written to it (because it is "output
+only") then the write buffers will still be waiting for the URB to complete
+on close(), which will hang for 30s until the closing_wait timeout expires.
 
-Thanks for figuring that out so quickly!
+This can happen with the ESP32-H2/ESP32-C6 USB serial interface. Instead of
+changing all userspace applications to flush (discard) their output in this
+specific scenario it would be easier to adjust the closing_wait timeout
+with udev rules but the only available interface is the TIOCGSERIAL ioctl.
 
-> 
-> I distinctly remember seeing the return value problem when writing the patch, but
-> missed that it would result in KVM injecting the unexpected #BP.
-> 
-> I punted on trying to properly fix this by having can_emulate_instruction()
-> differentiate between "retry insn" and "inject exception", because that change
-> is painfully invasive and I though I could get away with the simple fix.  Drat.
-> 
-> I think the best option is to add a "temporary" patch so that the fix for @stable
-> is short, sweet, and safe, and then do the can_emulate_instruction() cleanup that
-> I was avoiding.
-> 
-> E.g. this as patch 2/4 (or maybe 2/5) of this series:
+The serial_core driver (ttySx) exposes its supported ioctl values as
+read-only sysfs attributes. Add read-write sysfs attributes "close_delay"
+and "closing_wait" to cdc-acm (ttyACMx) devices. These are the same as the
+attributes in serial_core except that the "closing_wait" sysfs values are
+modified so that "-1" is used for "infinite wait" (instead of 0) and "0"
+is used for "no wait" (instead of 65535).
 
-2/4 or 2/5? Do you mean 2/3 since there were only 2 patches in the series?
+Signed-off-by: Simon Arlott <simon@octiron.net>
+---
+ Documentation/ABI/testing/sysfs-tty |  21 +++++
+ drivers/usb/class/cdc-acm.c         | 135 +++++++++++++++++++++++++---
+ 2 files changed, 144 insertions(+), 12 deletions(-)
 
-I'll apply the below patch in between patches 1 and 2 and re-test. Should 
-have results in a week :)
+diff --git a/Documentation/ABI/testing/sysfs-tty b/Documentation/ABI/testing/sysfs-tty
+index 820e412d38a8..e04e322af568 100644
+--- a/Documentation/ABI/testing/sysfs-tty
++++ b/Documentation/ABI/testing/sysfs-tty
+@@ -161,3 +161,24 @@ Contact:	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+ Description:
+ 		 Allows user to detach or attach back the given device as
+ 		 kernel console. It shows and accepts a boolean variable.
++
++What:		/sys/class/tty/ttyACM0/close_delay
++Date:		August 2023
++Contact:	linux-usb@vger.kernel.org
++Description:
++		Set the closing delay time for this port in ms.
++
++		These sysfs values expose the TIOCGSERIAL interface via
++		sysfs rather than via ioctls.
++
++What:		/sys/class/tty/ttyACM0/closing_wait
++Date:		August 2023
++Contact:	linux-usb@vger.kernel.org
++Description:
++		Set the close wait time for this port in ms.
++
++		These sysfs values expose the TIOCGSERIAL interface via
++		sysfs rather than via ioctls.
++
++		Unlike the ioctl interface, waiting forever is represented as
++		-1 and zero is used to disable waiting on close.
+diff --git a/drivers/usb/class/cdc-acm.c b/drivers/usb/class/cdc-acm.c
+index 00db9e1fc7ed..07e805df5113 100644
+--- a/drivers/usb/class/cdc-acm.c
++++ b/drivers/usb/class/cdc-acm.c
+@@ -953,21 +953,18 @@ static int acm_tty_tiocmset(struct tty_struct *tty,
+ 	return acm_set_control(acm, acm->ctrlout = newctrl);
+ }
+ 
+-static int get_serial_info(struct tty_struct *tty, struct serial_struct *ss)
++static void acm_read_serial_info(struct acm *acm, struct serial_struct *ss)
+ {
+-	struct acm *acm = tty->driver_data;
+-
+ 	ss->line = acm->minor;
+ 	ss->close_delay	= jiffies_to_msecs(acm->port.close_delay) / 10;
+ 	ss->closing_wait = acm->port.closing_wait == ASYNC_CLOSING_WAIT_NONE ?
+ 				ASYNC_CLOSING_WAIT_NONE :
+ 				jiffies_to_msecs(acm->port.closing_wait) / 10;
+-	return 0;
+ }
+ 
+-static int set_serial_info(struct tty_struct *tty, struct serial_struct *ss)
++static int acm_write_serial_info(struct acm *acm, struct serial_struct *ss,
++	bool admin)
+ {
+-	struct acm *acm = tty->driver_data;
+ 	unsigned int closing_wait, close_delay;
+ 	int retval = 0;
+ 
+@@ -976,9 +973,7 @@ static int set_serial_info(struct tty_struct *tty, struct serial_struct *ss)
+ 			ASYNC_CLOSING_WAIT_NONE :
+ 			msecs_to_jiffies(ss->closing_wait * 10);
+ 
+-	mutex_lock(&acm->port.mutex);
+-
+-	if (!capable(CAP_SYS_ADMIN)) {
++	if (!admin) {
+ 		if ((close_delay != acm->port.close_delay) ||
+ 		    (closing_wait != acm->port.closing_wait))
+ 			retval = -EPERM;
+@@ -987,8 +982,28 @@ static int set_serial_info(struct tty_struct *tty, struct serial_struct *ss)
+ 		acm->port.closing_wait = closing_wait;
+ 	}
+ 
++	return 0;
++}
++
++static int get_serial_info(struct tty_struct *tty, struct serial_struct *ss)
++{
++	struct acm *acm = tty->driver_data;
++
++	mutex_lock(&acm->port.mutex);
++	acm_read_serial_info(acm, ss);
+ 	mutex_unlock(&acm->port.mutex);
+-	return retval;
++	return 0;
++}
++
++static int set_serial_info(struct tty_struct *tty, struct serial_struct *ss)
++{
++	struct acm *acm = tty->driver_data;
++	int ret = 0;
++
++	mutex_lock(&acm->port.mutex);
++	ret = acm_write_serial_info(acm, ss, capable(CAP_SYS_ADMIN));
++	mutex_unlock(&acm->port.mutex);
++	return ret;
+ }
+ 
+ static int wait_serial_change(struct acm *acm, unsigned long arg)
+@@ -1162,6 +1177,102 @@ static int acm_write_buffers_alloc(struct acm *acm)
+ 	return 0;
+ }
+ 
++static ssize_t close_delay_show(struct device *dev,
++	struct device_attribute *attr, char *buf)
++{
++	struct acm *acm = dev_get_drvdata(dev);
++	struct serial_struct ss;
++
++	mutex_lock(&acm->port.mutex);
++	acm_read_serial_info(acm, &ss);
++	mutex_unlock(&acm->port.mutex);
++
++	return snprintf(buf, PAGE_SIZE, "%u\n", ss.close_delay);
++}
++
++static ssize_t close_delay_store(struct device *dev,
++	struct device_attribute *attr, const char *buf, size_t count)
++{
++	struct acm *acm = dev_get_drvdata(dev);
++	struct serial_struct ss;
++	u16 close_delay;
++	int ret;
++
++	ret = kstrtou16(buf, 0, &close_delay);
++	if (ret)
++		return ret;
++
++	mutex_lock(&acm->port.mutex);
++	acm_read_serial_info(acm, &ss);
++	ss.close_delay = close_delay;
++	ret = acm_write_serial_info(acm, &ss, true);
++	mutex_unlock(&acm->port.mutex);
++
++	return ret ? ret : count;
++}
++
++static ssize_t closing_wait_show(struct device *dev,
++	struct device_attribute *attr, char *buf)
++{
++	struct acm *acm = dev_get_drvdata(dev);
++	struct serial_struct ss;
++	s32 value;
++
++	mutex_lock(&acm->port.mutex);
++	acm_read_serial_info(acm, &ss);
++	mutex_unlock(&acm->port.mutex);
++
++	if (ss.closing_wait == ASYNC_CLOSING_WAIT_NONE)
++		value = 0;
++	else if (ss.closing_wait == ASYNC_CLOSING_WAIT_INF)
++		value = -1;
++	else
++		value = ss.closing_wait;
++
++	return snprintf(buf, PAGE_SIZE, "%d\n", value);
++}
++
++static ssize_t closing_wait_store(struct device *dev,
++	struct device_attribute *attr, const char *buf, size_t count)
++{
++	struct acm *acm = dev_get_drvdata(dev);
++	struct serial_struct ss;
++	s32 closing_wait;
++	int ret;
++
++	ret = kstrtos32(buf, 0, &closing_wait);
++	if (ret)
++		return ret;
++
++	if (closing_wait == 0) {
++		closing_wait = ASYNC_CLOSING_WAIT_NONE;
++	} else if (closing_wait == -1) {
++		closing_wait = ASYNC_CLOSING_WAIT_INF;
++	} else if (closing_wait == ASYNC_CLOSING_WAIT_NONE
++			|| closing_wait == ASYNC_CLOSING_WAIT_INF /* redundant (0) */
++			|| closing_wait < -1 || closing_wait > U16_MAX) {
++		return -ERANGE;
++	}
++
++	mutex_lock(&acm->port.mutex);
++	acm_read_serial_info(acm, &ss);
++	ss.closing_wait = closing_wait;
++	ret = acm_write_serial_info(acm, &ss, true);
++	mutex_unlock(&acm->port.mutex);
++
++	return ret ? ret : count;
++}
++
++static DEVICE_ATTR_RW(close_delay);
++static DEVICE_ATTR_RW(closing_wait);
++
++static struct attribute *tty_dev_attrs[] = {
++	&dev_attr_close_delay.attr,
++	&dev_attr_closing_wait.attr,
++	NULL,
++};
++ATTRIBUTE_GROUPS(tty_dev);
++
+ static int acm_probe(struct usb_interface *intf,
+ 		     const struct usb_device_id *id)
+ {
+@@ -1503,8 +1614,8 @@ static int acm_probe(struct usb_interface *intf,
+ 			goto err_remove_files;
+ 	}
+ 
+-	tty_dev = tty_port_register_device(&acm->port, acm_tty_driver, minor,
+-			&control_interface->dev);
++	tty_dev = tty_port_register_device_attr(&acm->port, acm_tty_driver,
++			minor, &control_interface->dev, acm, tty_dev_groups);
+ 	if (IS_ERR(tty_dev)) {
+ 		rv = PTR_ERR(tty_dev);
+ 		goto err_release_data_interface;
+-- 
+2.37.0
 
-Thanks,
-Tom
-
-> 
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 7cb5ef5835c2..8457a36b44c1 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -364,6 +364,8 @@ static void svm_set_interrupt_shadow(struct kvm_vcpu *vcpu, int mask)
->                  svm->vmcb->control.int_state |= SVM_INTERRUPT_SHADOW_MASK;
->   
->   }
-> +static bool svm_can_emulate_instruction(struct kvm_vcpu *vcpu, int emul_type,
-> +                                       void *insn, int insn_len);
->   
->   static int __svm_skip_emulated_instruction(struct kvm_vcpu *vcpu,
->                                             bool commit_side_effects)
-> @@ -384,6 +386,14 @@ static int __svm_skip_emulated_instruction(struct kvm_vcpu *vcpu,
->          }
->   
->          if (!svm->next_rip) {
-> +               /*
-> +                * FIXME: Drop this when kvm_emulate_instruction() does the
-> +                * right thing and treats "can't emulate" as outright failure
-> +                * for EMULTYPE_SKIP.
-> +                */
-> +               if (!svm_can_emulate_instruction(vcpu, EMULTYPE_SKIP, NULL, 0))
-> +                       return 0;
-> +
->                  if (unlikely(!commit_side_effects))
->                          old_rflags = svm->vmcb->save.rflags;
+-- 
+Simon Arlott
