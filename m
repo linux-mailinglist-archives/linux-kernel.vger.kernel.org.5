@@ -2,234 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2BA978512C
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 09:11:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21226785132
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 09:13:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233156AbjHWHLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 03:11:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56904 "EHLO
+        id S233166AbjHWHND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 03:13:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231483AbjHWHLm (ORCPT
+        with ESMTP id S233158AbjHWHNC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 03:11:42 -0400
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2075.outbound.protection.outlook.com [40.107.223.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0820DB;
-        Wed, 23 Aug 2023 00:11:40 -0700 (PDT)
+        Wed, 23 Aug 2023 03:13:02 -0400
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2047.outbound.protection.outlook.com [40.107.117.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7027D1;
+        Wed, 23 Aug 2023 00:12:59 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Cu+TFixh215w5iroVrdRfEsrNBFNIBF7QZAR4WFcwCgaBjoVAtGPSHjAoDc2VWbQp6sJvG1U8k3xv9NrLqMXVUBPH1Mcx9yQzfQRBg28inozpTVpJc0Ocj7VYASkZ6Tga4arggAwNlnbHt6cDy1O+5TWReggFTPB07QLNnBmnEf2s0VKd6WLAmw5nUQSMi0qrIeJj8+79WNz254b+zmUlpKpnES8wgkGdc6OaahCGD2GltKhDHgzZikW+5Jn1DlMb0t3XBNf8/IIzJK/FPIdesoNv3k4tPcL+O7KRRmKBG1NXEhUUV+04Jb2swyy6jwP10YjgFa2CeZoOoOGJc5H/Q==
+ b=GJWFm2vwxurz3bjf7ORp09Edh72HNvo/tMfPB56lvfDG0ul0AFDq3ca6TsK+5NR5kw5scPPfNb83h2EN5AMlsvd2tBqHdtYHUHh2jLb842s/n0pwbh7ntwT/6AUXAxt8ltQupDIzUgAuFkg+hg2iPJ5dlVHYInm66Yk1Gx4G8GnT7AsjJcUfAn+jrRZQn3ILN4zTPIyVVRwcEtbYj8Y0UbS7oZW4ceOsJmm21EqkAhEBoUqE5Nwf1ipLGjah4gCDt1EXdimjOnK/H5VS9S7Sgqf3xwIGq7eSgfRnIe0zO39qY8QVRQZFKdCk1VaJO+J8GQB1ZZVkITF3mKwApRZv7Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=fZ9oCRnnTBuaXNUXSnIcU7+yBcbLaSDpO41hmwCnXu0=;
- b=X/VTx9Dz3U/faoWJjeggenHzW6Gk/x6PXsTiNKW686XDlFB89EXFVc1vG+5WtB4BamRDWGEDgd8Kxj8sGmnXLfk/bGxmNt6iPxoENhpz2A6VvhRny02xdMlLTfXGewENLTK8/+Q+1RQhr2r0uPuREZdgtDCzvWLDM5GG+A3YDivVwYWB865GHXA69WSMiuN7272jM/Y28sHCEb0BZUVrYwJ+11qndZlxkL9eYNKSQGXhlH76VQZbcmUbBki2sZEyCHhK6gPyqkiOb4i9WY+NlFacqMthqhgfU4nMQVCJNsOAltlnV1LVtv6RIobCWjsJFjqDkaiWrorjorLc+2yv6w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synaptics.com; dmarc=pass action=none
- header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
+ bh=bwDPLZtAyHatlg2hwtop+Faa8mph+phfV89NVDiFpBc=;
+ b=X9cqxYTbBfYJr4ySUDGU+udFy5LCPWK2n6AemtRVEkDMuWH6hv38Za0bJI2tzwt4LIlCvLdfRrKvaQKvWC1nHVmr2QTbrngQshcmp4eXZz/5eJFPO/cx0cQoEP2jKPVayBHSNuVLld5xC092FQl/QMj3UEGwAzDK15cbU4yajSphOU6zai5bbEWfRSyq8nINn5HRHa/pxXKafnbLLPSgOCh5ZYP1NqFqy9FjCtCMy3JxIUYe/OF7knO4pYJSACp5XsUv/J1Y1QuOWrRmDy7+MbIp6WkIIi5AJpdBkcaf3QooHMCc+wDMwfdM6cHkgTWM+PSvQ4gvA64NE7V/GcX96g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 211.75.126.7) smtp.rcpttodomain=kernel.org smtp.mailfrom=nuvoton.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=nuvoton.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nuvoton.com;
+ s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fZ9oCRnnTBuaXNUXSnIcU7+yBcbLaSDpO41hmwCnXu0=;
- b=V5b2BqPI3wsvXcMwrkjfiOhoJYpjxpoghJ+za5oX978uYfAKAPb9njB8PlAP7yA9ZXcl+q2jjG+F2Hcv2R+W6M1SvtP4PM+mb25QVn1tQA0sTQMX6h+84XH/vlm8QTzngEEZ1OJVg+suDmkHQuBdckyhOY3/I0M5GUMLDxXQ7mo=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=synaptics.com;
-Received: from DM6PR03MB5196.namprd03.prod.outlook.com (2603:10b6:5:24a::19)
- by DS0PR03MB7251.namprd03.prod.outlook.com (2603:10b6:8:116::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.24; Wed, 23 Aug
- 2023 07:11:37 +0000
-Received: from DM6PR03MB5196.namprd03.prod.outlook.com
- ([fe80::411c:e486:3837:cc25]) by DM6PR03MB5196.namprd03.prod.outlook.com
- ([fe80::411c:e486:3837:cc25%3]) with mapi id 15.20.6699.022; Wed, 23 Aug 2023
- 07:11:37 +0000
-Message-ID: <f8a168e8-1a23-c6b3-0f68-baa73396d594@synaptics.com>
-Date:   Wed, 23 Aug 2023 15:11:23 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [RFC]: shmem fd for non-DMA buffer sharing cross drivers
-Content-Language: en-GB
-To:     Tomasz Figa <tfiga@chromium.org>
-Cc:     linux-mm@kvack.org, dri-devel@lists.freedesktop.org,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        hughd@google.com, akpm@linux-foundation.org,
-        Simon Ser <contact@emersion.fr>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>, daniels@collabora.com,
-        ayaka <ayaka@soulik.info>, linux-kernel@vger.kernel.org,
-        Nicolas Dufresne <nicolas@ndufresne.ca>
-References: <029b982f-da62-4fa8-66c4-ab11a515574a@synaptics.com>
- <CAAFQd5CqAvr7ZUdDSYPEOWSgvbttTBjHa0YWDomxJJSaiZxGog@mail.gmail.com>
-From:   Hsia-Jun Li <Randy.Li@synaptics.com>
-In-Reply-To: <CAAFQd5CqAvr7ZUdDSYPEOWSgvbttTBjHa0YWDomxJJSaiZxGog@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: BY3PR04CA0023.namprd04.prod.outlook.com
- (2603:10b6:a03:217::28) To DM6PR03MB5196.namprd03.prod.outlook.com
- (2603:10b6:5:24a::19)
+ bh=bwDPLZtAyHatlg2hwtop+Faa8mph+phfV89NVDiFpBc=;
+ b=bt3NPm3UFAMEepYs9lXzmhGRwsAzlCKhtzyEyLtzRNoB22VI9QXxYD8pouHt9JXal6KkjLv1AWEfXLZUgxYN6vh47yiGJ6AtOCxHDZcoVmKTWMfjAcADIflAZ/uk0eAM1EpFynfOvA7LBVAD61VLsgMDOr+yeGJepFGgXn8iniI=
+Received: from PU1PR01CA0020.apcprd01.prod.exchangelabs.com
+ (2603:1096:803:15::32) by TYZPR03MB7395.apcprd03.prod.outlook.com
+ (2603:1096:400:420::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.25; Wed, 23 Aug
+ 2023 07:12:55 +0000
+Received: from HK3PEPF0000021A.apcprd03.prod.outlook.com
+ (2603:1096:803:15:cafe::ef) by PU1PR01CA0020.outlook.office365.com
+ (2603:1096:803:15::32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.26 via Frontend
+ Transport; Wed, 23 Aug 2023 07:12:54 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 211.75.126.7)
+ smtp.mailfrom=nuvoton.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nuvoton.com;
+Received-SPF: Pass (protection.outlook.com: domain of nuvoton.com designates
+ 211.75.126.7 as permitted sender) receiver=protection.outlook.com;
+ client-ip=211.75.126.7; helo=NTHCCAS01.nuvoton.com; pr=C
+Received: from NTHCCAS01.nuvoton.com (211.75.126.7) by
+ HK3PEPF0000021A.mail.protection.outlook.com (10.167.8.36) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6699.14 via Frontend Transport; Wed, 23 Aug 2023 07:12:54 +0000
+Received: from NTHCML01B.nuvoton.com (10.1.8.178) by NTHCCAS01.nuvoton.com
+ (10.1.8.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Wed, 23 Aug
+ 2023 15:12:51 +0800
+Received: from NTHCCAS01.nuvoton.com (10.1.8.28) by NTHCML01B.nuvoton.com
+ (10.1.8.178) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.14; Wed, 23 Aug
+ 2023 15:12:50 +0800
+Received: from localhost.localdomain (10.11.36.27) by NTHCCAS01.nuvoton.com
+ (10.1.8.28) with Microsoft SMTP Server id 15.1.2375.34 via Frontend
+ Transport; Wed, 23 Aug 2023 15:12:50 +0800
+From:   Seven Lee <wtli@nuvoton.com>
+To:     <broonie@kernel.org>
+CC:     <lgirdwood@gmail.com>, <alsa-devel@alsa-project.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <robh+dt@kernel.org>, <conor+dt@kernel.org>,
+        <YHCHuang@nuvoton.com>, <KCHSU0@nuvoton.com>, <CTLIN0@nuvoton.com>,
+        <SJLIN0@nuvoton.com>, <scott6986@gmail.com>,
+        <supercraig0719@gmail.com>, <dardar923@gmail.com>,
+        Seven Lee <wtli@nuvoton.com>
+Subject: [PATCH 1/2] ASoC: dt-bindings: nau8821: Add single-ended input feature
+Date:   Wed, 23 Aug 2023 15:12:43 +0800
+Message-ID: <20230823071244.1861487-1-wtli@nuvoton.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-NotSetDelaration: True
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR03MB5196:EE_|DS0PR03MB7251:EE_
-X-MS-Office365-Filtering-Correlation-Id: ef2f1bf7-85f1-480e-cf85-08dba3a830de
+X-MS-TrafficTypeDiagnostic: HK3PEPF0000021A:EE_|TYZPR03MB7395:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1c3cf316-5472-458b-1bb5-08dba3a85f00
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vfS5l1NrAoleWoMhAhz2IRxCg++aSXYSlj/+NqddLo8Rh5zzRwoZ45mqWWQEIkBbd4QwFQmghb8xPFVXRE2ywSydFrOBnOdBdmeU73RKG1dakbFDfoT7csp7aSpdszSNNHkdyJVk11GliE/JI6XtnM+tyC8TjXna+1ZXcf3aEBaAPJ4HbeTlTnq/y6teF618jn4QaeVPM82QNH1kfMsIQy6KaezKR1WhS3WLUnLbHyRpvkPq6T2+e2Av+yzk0ICHx0Hdb6qniOtzs0tb9+2DjjRTtUTFfArMhbMOM8lgHyCYJT5XxeEidCbvZYfG1+KcWY5XxmBs3x7T32yYBbFyr2taYJUGj1tDxyzPxFq4Sga12ARfndlhiFSsMIz2WmMPr+XVt8yA3+RQ96VLyfxftZDCoN8adCemmSVv+Ekw/LFgXhzHkGoccxv/DwysMfBCfLfPLthUk2sawsWjfQ0f+D8HR63qVdAlezGjMbLuyqp1oskFRMtxScPyIUm2yGtHDpKcLLYZUjpoe3fe/QL8mZZzKgwYGWOlPmMSW5XkQ0++czfRoORDeMyEknfJPi6L3h3qVani9BWccl98krH4AeYntvxZen+iwnhfhvY72I/O/6MUDw3QiUvVh9bbhVFvCoaHcfeDuMrTozAoGtsnAEtUCvfHJjTOzszJVVznojM=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR03MB5196.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(39860400002)(376002)(346002)(366004)(186009)(1800799009)(451199024)(54906003)(6916009)(66476007)(66556008)(66946007)(6512007)(316002)(8676002)(8936002)(2616005)(966005)(4326008)(36756003)(41300700001)(478600001)(6666004)(38100700002)(38350700002)(52116002)(6506007)(6486002)(53546011)(83380400001)(7416002)(2906002)(31686004)(31696002)(86362001)(5660300002)(26005)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dVhLeDUvVVgzWXZkaU1WUTQ1Q0JxNmIwaXdKbTg5ZXI1YlJJK25HOXFqSzNQ?=
- =?utf-8?B?TUgrbElyTk9wQi9SbjNmdGJ5RkRDYndvSU54ejl2QmtxOGdKNy9UN1hVQUYx?=
- =?utf-8?B?UWxEYUUvelBJcFlCUmpCRWl1b3BoLzZJd1hKTDBGclFEeUx1bW5KVzZRREJ5?=
- =?utf-8?B?cU9rcjhSeldQaDgzVDZTc3pOV2R5ZGJKN1ZzNHFXdkVONzhtSmtpMTJ1cUs3?=
- =?utf-8?B?MjYvM2Y5ekFQRWQ0V1UvWmFPUkt0Yk9nSGZmU3N0VS9Ldjk2MVFheHBOZHlH?=
- =?utf-8?B?TjMwV1M5WVZhQ2JOajFvc25XeGVWOUloNFNCQUNLNUlFeHlqeEwzc3pnZitl?=
- =?utf-8?B?U0kvUkdPbnY4ZTBqNTN4U3drYVRvNTJENkNkVFIzdER4QW01cWJ3eVoxNU51?=
- =?utf-8?B?SXR5N3pKUnRYNmgyZWhEdlk1NjB4MDBRWk5CYVBTT1N1ODRQZFJ0bFQ4aVp3?=
- =?utf-8?B?MVlOc2dqVDh5VXBEcnVJNGI1Z1VDOVRZdXFrdUIwT09LWm1sOXpUTzFNQ3VP?=
- =?utf-8?B?ZDVWb0xMcUI4d0VQbkZvNWRtV3NIL2VDRkFwTmVlajVrY05VQ3d4OW5PeTNv?=
- =?utf-8?B?bFRYSENhS0VyWXh4TUNORVdtUm9CT3JSdktENmZheTRZa1NobE5wVVVxdWRx?=
- =?utf-8?B?amFQSmdvVTZETG5UVDVuQ3hxcW9Ub0VxOHZJNGdVTDJNS1k2NGhWdUs5aEhD?=
- =?utf-8?B?dVhJcnhQTWt2MzBFdFBNbElQZFFVN0Y0c1d4aVhYV2Y5RHphZXJVdldMOVZG?=
- =?utf-8?B?QUprREZwQlMzNWsydnNNbUh4bjYvUkNzZFZBWGxZdUMrR1BqS2Q5bGkzYlFo?=
- =?utf-8?B?K0xkY2IwMkJlVUl4Q1p1Z3gybnliclprWWgyZ3pZdnpWSHdHUEdUaWFVaWhw?=
- =?utf-8?B?R0ZnMXo1MnNIZDdGdHFza01ZOVNmdFRqQ1BRSTg5UmZwRGV3dlo1NFp4UElW?=
- =?utf-8?B?cFlSUDVhR2xFZnNOeWF0Z1VtQjJuSXNRZDFHeDNzVWJ1RFRzM0tBQ2RVaUZL?=
- =?utf-8?B?aWxvSjNNSUpBVFdzSVduVzBSQ0R0VkZDdUVEUXQ5QVd4NC9iRFdraHFSTnRH?=
- =?utf-8?B?VVljeXJNVE1UZGdKaWxITlYrUDcyRW1oZFJVZDR1dHBkeStqZXQ5Mjc1S010?=
- =?utf-8?B?MmwycnIxN0dEM3VTeHN1SDBlUGI1UUNDSittck1ZOFBZL2gvOENxMTZCdHJB?=
- =?utf-8?B?ZU0wV0JCRlA0T2hVMTBUdHBPSUFJYVErNDZMSE9udTZWQWRGSEtiSXQ5enR5?=
- =?utf-8?B?TWYycFVoOFdsR1BKT2xLU0xvSDFIdExIVnJNbk8zcVNmRHUwUytHTm9UY1Yx?=
- =?utf-8?B?RW5SVTVRcjVJeUtjUHZqL05HUEVhWXExa0R6a2Y2YmtSbXhjcmFlb0pJKzRh?=
- =?utf-8?B?MHF2YmVFdzBOMlhpaG1WQmtQQ2F1MDRmTXNKK3lWdTJ1RFBveU5QNEo0bk80?=
- =?utf-8?B?dWZzTDk3a2lGZWl5NkJRK3BzMFdZcXBjMWc2bzdiSzkya3pEeGdJcjYyc3JG?=
- =?utf-8?B?cm16dm9yaHRZR2xsMjMzVGJmUlpnc1ZDdVUvM0JJczAvMTFLT1dsdnhlYWp0?=
- =?utf-8?B?UW8vUXVscFRkYVVVdnVLWXlyQWJHUklBdklzd2lJRWo2MEpGRzVhOFVlNjJL?=
- =?utf-8?B?RXZucUNuVnVadnNMRVVLN2tqajgxeGlWK3ViTVhrejZROFhBNkZuZ0VtdnVh?=
- =?utf-8?B?SUE2Uk9yTXM5MTNjVGFpUDJUZWVCRTRDSGhPQk5aWG5oTlA5RHhWUkV2aDFh?=
- =?utf-8?B?dFVEbVh1eU1oOGZVQUhZVVU0aWxSRmxHaDZZcm0vTU9ZLytqaktxVDc5UHU3?=
- =?utf-8?B?UldQTnFVWGp4WE1IVG1rUThqbHVONjVPR0VhcnNuMFA5bktGWG83SGEvNHNB?=
- =?utf-8?B?Q2xjQTM0dWsvSTdaMi9hWjZxUGRyUHAvQVFnbHlwUWJDc2x6TFVOTW04Nyt1?=
- =?utf-8?B?eEw4aGJhcmJwY3NjRUpoSzllelFVbm9lZlVQRmx4L2Nla0RIYkx4YnZSOWlO?=
- =?utf-8?B?TlpBWnBxN0oyUTduRVJPVXFxTVdyOUVXR0ZLcmVGemtDaEZ3d3ZaRTYxMWQy?=
- =?utf-8?B?OTQ4Yk5TK0xqdTZKSjlZL2I4NndYd2hXR2VJeW9wa1RsT0dPeXhaUWJ5QW9y?=
- =?utf-8?Q?uC8OoDOz4ZhAe670JJjcbl5C6?=
-X-OriginatorOrg: synaptics.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ef2f1bf7-85f1-480e-cf85-08dba3a830de
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR03MB5196.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Aug 2023 07:11:37.4177
+X-Microsoft-Antispam-Message-Info: PEd4zGR2tbeELCBSvW9TZbteTk5bnh0zMjKzR37TfOkMkN+BMLM3VIwMEeF3XOwyJDpa3Ti93Pf2lgb0cwTQjVZ+pdhe8KaqjvB1DFOSPMU2XGuR926BSClaPe1o/XbmbEvUEpXtZJleNsNBU7PzbHtZZ/+sVL/6YEnSdjicZ05WlDYYTJEJC7gHRj8X/foaNYr7mh9XRTR46K1Aa+YLBSxkotdlTDWVMeNrJBxdVZF2silM/O4r2ILwYIOfV4Jx9h4e9nH+SfhTSRabXUAiP/lg8mypEinCDipzKXYhSAJsYEmtrfh29Rk7jv60dgh2aSCjCwp1Du/Wy3KHJY5ijPHFjWU1nFHBkJrGBYKz2RvP9xDaSaGQsr4RNK7UsC7uMc+Hw3W9PIT10/ggkpE9UT8q8III49Lr4hzcUxh2t2Q7iYY98YB3Zpst62crRwaCFf+SDJoCxf/RssRRVYnhbsEa7CDW63dziPM3MH3OLiPYqqF14mu8ahb4oKTyt0M2UqkGkz40u/royNnooMgUcbJuJOIVOfUee87FmkPT2llqOzXlMassuaGx9dboC+RxgIPOi+AFd+1BoR45PewNURYMpBDQ1WbrFbsyLGPH7DsvvGioYAUibRjaLX1RUxuPCjE4tcj52l/3taY9gwuiJDSZpbMSxlcTpjz+9FdXSY2q5hEUUvc31IB5bt66uxBJdvQpmwcQjyY1I1184RB8Zm3AhQLQqVR+nIl6WJ7CGvB9HdMzl8x4oxZk3bND9vFQEc/og/zcwFxloAK2sCVsV9PksWwmQG7QvwyR28gFUe8/R3JhcVfgSVIMNqhhBXxY
+X-Forefront-Antispam-Report: CIP:211.75.126.7;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:NTHCCAS01.nuvoton.com;PTR:211-75-126-7.hinet-ip.hinet.net;CAT:NONE;SFS:(13230031)(4636009)(136003)(376002)(39860400002)(346002)(396003)(1800799009)(186009)(451199024)(82310400011)(40470700004)(36840700001)(46966006)(478600001)(6666004)(54906003)(70206006)(70586007)(316002)(6916009)(47076005)(40480700001)(41300700001)(8676002)(4326008)(1076003)(86362001)(8936002)(2616005)(107886003)(12101799020)(5660300002)(26005)(336012)(426003)(36756003)(83380400001)(40460700003)(7416002)(356005)(82740400003)(2906002)(81166007)(36860700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: nuvoton.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Aug 2023 07:12:54.6420
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: PS93sEMgbKu/X8Ov48qRErgQnUJyQ+qT3F2EK9R8qr0QyP9mT2UptuGuLzg1O3HjP0uS5c/aqyFYBixxgItdFQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR03MB7251
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1c3cf316-5472-458b-1bb5-08dba3a85f00
+X-MS-Exchange-CrossTenant-Id: a3f24931-d403-4b4a-94f1-7d83ac638e07
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=a3f24931-d403-4b4a-94f1-7d83ac638e07;Ip=[211.75.126.7];Helo=[NTHCCAS01.nuvoton.com]
+X-MS-Exchange-CrossTenant-AuthSource: HK3PEPF0000021A.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR03MB7395
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add input with single-ended control.
 
+Signed-off-by: Seven Lee <wtli@nuvoton.com>
+---
+ .../devicetree/bindings/sound/nuvoton,nau8821.yaml         | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-On 8/23/23 12:46, Tomasz Figa wrote:
-> CAUTION: Email originated externally, do not click links or open attachments unless you recognize the sender and know the content is safe.
-> 
-> 
-> Hi Hsia-Jun,
-> 
-> On Tue, Aug 22, 2023 at 8:14 PM Hsia-Jun Li <Randy.Li@synaptics.com> wrote:
->>
->> Hello
->>
->> I would like to introduce a usage of SHMEM slimier to DMA-buf, the major
->> purpose of that is sharing metadata or just a pure container for cross
->> drivers.
->>
->> We need to exchange some sort of metadata between drivers, likes dynamic
->> HDR data between video4linux2 and DRM.
-> 
-> If the metadata isn't too big, would it be enough to just have the
-> kernel copy_from_user() to a kernel buffer in the ioctl code?
-> 
->> Or the graphics frame buffer is
->> too complex to be described with plain plane's DMA-buf fd.
->> An issue between DRM and V4L2 is that DRM could only support 4 planes
->> while it is 8 for V4L2. It would be pretty hard for DRM to expend its
->> interface to support that 4 more planes which would lead to revision of
->> many standard likes Vulkan, EGL.
-> 
-> Could you explain how a shmem buffer could be used to support frame
-> buffers with more than 4 planes?
-> If you are asking why we need this:
-1. metadata likes dynamic HDR tone data
-2. DRM also challenges with this problem, let me quote what sima said:
-"another trick that we iirc used for afbc is that sometimes the planes 
-have a fixed layout
-like nv12
-and so logically it's multiple planes, but you only need one plane slot 
-to describe the buffer
-since I think afbc had the "we need more than 4 planes" issue too"
-
-Unfortunately, there are vendor pixel formats are not fixed layout.
-
-3. Secure(REE, trusted video piepline) info.
-
-For how to assign such metadata data.
-In case with a drm fb_id, it is simple, we just add a drm plane property 
-for it. The V4L2 interface is not flexible, we could only leave into 
-CAPTURE request_fd as a control.
->>
->> Also, there is no reason to consume a device's memory for the content
->> that device can't read it, or wasting an entry of IOMMU for such data.
-> 
-> That's right, but DMA-buf doesn't really imply any of those. DMA-buf
-> is just a kernel object with some backing memory. It's up to the
-> allocator to decide how the backing memory is allocated and up to the
-> importer on whether it would be mapped into an IOMMU.
-> 
-I just want to say it can't be allocated at the same place which was for 
-those DMA bufs(graphics or compressed bitstream).
-This also could be answer for your first question, if we place this kind 
-of buffer in a plane for DMABUF(importing) in V4L2, V4L2 core would try 
-to prepare it, which could map it into IOMMU.
-
->> Usually, such a metadata would be the value should be written to a
->> hardware's registers, a 4KiB page would be 1024 items of 32 bits registers.
->>
->> Still, I have some problems with SHMEM:
->> 1. I don't want the userspace modify the context of the SHMEM allocated
->> by the kernel, is there a way to do so?
-> 
-> This is generally impossible without doing any of the two:
-> 1) copying the contents to an internal buffer not accessible to the
-> userspace, OR
-> 2) modifying any of the buffer mappings to read-only
-> 
-> 2) can actually be more costly than 1) (depending on the architecture,
-> data size, etc.), so we shouldn't just discard the option of a simple
-> copy_from_user() in the ioctl.
-> 
-I don't want the userspace access it at all. So that won't be a problem.
->> 2. Should I create a helper function for installing the SHMEM file as a fd?
-> 
-> We already have the udmabuf device [1] to turn a memfd into a DMA-buf,
-> so maybe that would be enough?
-> 
-> [1] https://elixir.bootlin.com/linux/v6.5-rc7/source/drivers/dma-buf/udmabuf.c
-> 
-It is the kernel driver that allocate this buffer. For example, v4l2 
-CAPTURE allocate a buffer for metadata when VIDIOC_REQBUFS.
-Or GBM give you a fd which is assigned with a surface.
-
-So we need a kernel interface.
-> Best,
-> Tomasz
-> 
->>
->> --
->> Hsia-Jun(Randy) Li
-
+diff --git a/Documentation/devicetree/bindings/sound/nuvoton,nau8821.yaml b/Documentation/devicetree/bindings/sound/nuvoton,nau8821.yaml
+index fc2f4ce4db88..3e54abd4ca74 100644
+--- a/Documentation/devicetree/bindings/sound/nuvoton,nau8821.yaml
++++ b/Documentation/devicetree/bindings/sound/nuvoton,nau8821.yaml
+@@ -89,6 +89,12 @@ properties:
+     $ref: /schemas/types.yaml#/definitions/uint32
+     default: 3072000
+ 
++  nuvoton,left-input-single-end:
++    description: Enable left input with single-ended settings if set.
++        For the headset mic application, the single-ended control is
++        just limited to the left adc for design demand.
++    type: boolean
++
+   '#sound-dai-cells':
+     const: 0
+ 
+@@ -114,6 +120,7 @@ examples:
+             nuvoton,jkdet-pull-enable;
+             nuvoton,jkdet-pull-up;
+             nuvoton,key-enable;
++            nuvoton,left-input-single-end;
+             nuvoton,jkdet-polarity = <GPIO_ACTIVE_LOW>;
+             nuvoton,micbias-voltage = <6>;
+             nuvoton,vref-impedance = <2>;
 -- 
-Hsia-Jun(Randy) Li
+2.25.1
+
