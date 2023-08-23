@@ -2,82 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97A45785011
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 07:48:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D989785016
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 07:50:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232733AbjHWFsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 01:48:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38604 "EHLO
+        id S232744AbjHWFuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 01:50:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231815AbjHWFsS (ORCPT
+        with ESMTP id S231815AbjHWFue (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 01:48:18 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12D25E57
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 22:48:16 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-99bcfe28909so657909466b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 22:48:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692769694; x=1693374494;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=46RStdP/Qt/K8w0DMGkBqPuTHcz/tk87RawMdnkHi6E=;
-        b=VgnbV634oF+2LRhvV8FXPyOie3JKBlaALcCr128w+ZlL8ZIfQ8r6ez41La0WHMQEEv
-         I39TW78SBxefwEkutIgzcPgSGg5ALNbnOowDrIIhr96Wlnpj7De27UijIe/vzPkX1J5V
-         j23uk0VgJmhNHtcU5sMktyx6u5ntsWY4Rf6EpZnXy/yxnUFXUX4etFX2vBg3Mim0ULhI
-         joaWvlpusrpccpDEXDUk0tHBf16bPiuRayxl7Wol4EBYguW4mJKhQsilGbrNu4zEa3it
-         02p/sVtPyoFJaRgwb8MKv7xb1iapVPfRIa6BL3k2MTWidKlmYcaIeCc16UJiOo8XbKUc
-         g1Dg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692769694; x=1693374494;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=46RStdP/Qt/K8w0DMGkBqPuTHcz/tk87RawMdnkHi6E=;
-        b=TTiyvE+sxNT7mS6WYEMA4aUSc4aqBjPt4LVbIwOAcfNZXrojpKHdhi8+4oMifGCneb
-         GXjZt9YVZuD9/AMCntBQ4s1/ayCNV7j/dN47poiKhjA0E1XI+woz8deB500/ui/+PsX6
-         4vmjTeNoxP9ANrlk0hROEF5nj5nFeJHHlTVFlyEmCRn784NXDiqMOfnW7eMRtBD+U/fE
-         /Ur5yU4k5sARZeqLmHwI9mgpeYjcc17abyReOR+CbfVOOBLRc7ZQVfhvnkPf2D6XOfn+
-         jdtaMvnYKAEXqRJZCo2sP6chrvkS5zYvPZ60UPwNTHkM92izpZ6ttClLuji+PunFONhF
-         nc0w==
-X-Gm-Message-State: AOJu0Yx4Sa1VdouTJVa44KtTfdLld6gkmXilYJW9wiWcbuNcraXqaT/6
-        iQO0WewxC6Wk7IJIImHHN+5zoLRcQXa0CLiXs9g=
-X-Google-Smtp-Source: AGHT+IFPbUlDSF0J1kdpdEmWO0Ky+QwxfXgQYdaLU5e/JsyKQcL8x8+JagL85rqm6r5cOkvvGNImBw==
-X-Received: by 2002:a17:906:8477:b0:991:c566:979 with SMTP id hx23-20020a170906847700b00991c5660979mr9479926ejc.36.1692769694610;
-        Tue, 22 Aug 2023 22:48:14 -0700 (PDT)
-Received: from [192.168.0.22] ([77.252.47.198])
-        by smtp.gmail.com with ESMTPSA id ke9-20020a17090798e900b00988e953a586sm9289732ejc.61.2023.08.22.22.48.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Aug 2023 22:48:14 -0700 (PDT)
-Message-ID: <e1c69599-a894-4cc8-123b-f4654b08412d@linaro.org>
-Date:   Wed, 23 Aug 2023 07:48:13 +0200
+        Wed, 23 Aug 2023 01:50:34 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4096E57;
+        Tue, 22 Aug 2023 22:50:32 -0700 (PDT)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37N5V4qO000308;
+        Wed, 23 Aug 2023 05:50:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=cbEULeFlYu45Guxxob7axT5sbHmGemufvkzvuYW7UIA=;
+ b=OdkOWwhc2BxfXC6WRTBfPGMhGlSuo53uJqsp/xvtqeOGw5IG4kK1Ppw2zNThKE2MFKlw
+ 81Vsn6WVIPYOIHM0y2SigxRxWwz6AHaaVwbJv32qlz9u7TtfbWLICzIZLuCjskNUyVOb
+ aocWFsl0jpQnEYNbnvFY39RAzz388r0v3/Fjtydxrph3TnMM7drBZ/lUhMQwToE8OuD5
+ ehFNULUTCxPqXISURhqwM0oIh7uj97JGFAW7inOSXS6aRaQtGfNrcEFqhUhBcrM0KIjW
+ nSM2x3UShIsttp0Kx8c0gkotmHgnHiU0oUMs8xN/zX9g6IpJ9Z+qArnHVNdkDQa2Ki8d Dg== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sn2cm145f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 23 Aug 2023 05:50:17 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37N5oGlM001542
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 23 Aug 2023 05:50:16 GMT
+Received: from [10.253.13.101] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Tue, 22 Aug
+ 2023 22:50:12 -0700
+Message-ID: <de210a27-882b-da4e-7a86-288c2caf5c7f@quicinc.com>
+Date:   Wed, 23 Aug 2023 13:50:09 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
  Thunderbird/102.14.0
-Subject: Re: [PATCH v2 03/11] regulator: dt-bindings: mt6358: Convert to DT
- schema
+Subject: Re: [PATCH v3 3/3] clk: qcom: add clock controller driver for
+ qca8386/qca8084
+To:     Stephen Boyd <sboyd@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>, <agross@kernel.org>,
+        <andersson@kernel.org>, <catalin.marinas@arm.com>,
+        <conor+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <mturquette@baylibre.com>, <p.zabel@pengutronix.de>,
+        <robh+dt@kernel.org>, <will@kernel.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_srichara@quicinc.com>
+References: <20230810115419.25539-1-quic_luoj@quicinc.com>
+ <20230810115419.25539-4-quic_luoj@quicinc.com>
+ <9dec09fa-a5a3-416c-9b4d-4b4c4e10320b@linaro.org>
+ <9a55016f-0049-f185-f2be-d138fe33384b@quicinc.com>
+ <631d5a82-7d24-49cd-9868-74c7b3c08bcd@linaro.org>
+ <6ebdcbdc-409c-0c08-1e5d-f9aa0b92c3b2@quicinc.com>
+ <6e781c2d21e346cdd7f84c3b7a57dafc.sboyd@kernel.org>
 Content-Language: en-US
-To:     Chen-Yu Tsai <wenst@chromium.org>
-Cc:     Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Mark Brown <broonie@kernel.org>,
-        Zhiyong Tao <zhiyong.tao@mediatek.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <20230822084520.564937-1-wenst@chromium.org>
- <20230822084520.564937-4-wenst@chromium.org>
- <5ad5ff92-1367-ba96-b126-da80511a2769@linaro.org>
- <CAGXv+5Gc+R-hUJi5gm8an+dkq3JMD2JGwP4kDakKaHbAX2P0gQ@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <CAGXv+5Gc+R-hUJi5gm8an+dkq3JMD2JGwP4kDakKaHbAX2P0gQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+From:   Jie Luo <quic_luoj@quicinc.com>
+In-Reply-To: <6e781c2d21e346cdd7f84c3b7a57dafc.sboyd@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: _041J-ipfqwT3Y6d5iq8MMQeXuOdcKsh
+X-Proofpoint-GUID: _041J-ipfqwT3Y6d5iq8MMQeXuOdcKsh
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-23_03,2023-08-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ bulkscore=0 suspectscore=0 phishscore=0 spamscore=0 malwarescore=0
+ clxscore=1015 mlxlogscore=868 adultscore=0 priorityscore=1501 mlxscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308230052
 X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
@@ -88,44 +92,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/08/2023 05:54, Chen-Yu Tsai wrote:
->>> +
->>> +    regulator {
->>> +        compatible = "mediatek,mt6358-regulator";
->>> +
->>> +        buck_vgpu {
->>> +            regulator-name = "vgpu";
->>> +            regulator-min-microvolt = <625000>;
->>> +            regulator-max-microvolt = <900000>;
->>> +            regulator-ramp-delay = <6250>;
->>> +            regulator-enable-ramp-delay = <200>;
->>> +            regulator-allowed-modes = <MT6397_BUCK_MODE_AUTO
+
+
+On 8/23/2023 3:10 AM, Stephen Boyd wrote:
+> Quoting Jie Luo (2023-08-14 03:58:26)
 >>
->> mt6397?
 >>
->> Both cases look a bit confusing.
+>> On 8/12/2023 6:56 PM, Konrad Dybcio wrote:
+>>> My main point is, why can't you use qcom_cc_really_probe?
+>>>
+>>
+>> Hi Konrad,
+>> qcom_cc_really_probe is taking the platform_device as the input
+>> parameter, but the nss_cc_qca8k_probe takes the mdio_device as the probe
+>> parameter.
 > 
-> There's only two regulator binding header files, mt6397 and mt6360.
-> They seem to correspond to the two classes of PMICs that MediaTek has.
-> I believe the two header files and thus the macros are meant to be
-> shared?
+> There's no real reason why it takes a platform device instead of a plain
+> struct device. You can have an earlier patch change that function to
+> take a struct device instead.
 
-Defines have specific model name, so they do not look like meant to be
-shared. If all the values of the binding match, they can be shared, but
-then this should be mentioned in the binding plus it should be used in
-the driver. I don't see your driver patches add include of this header.
-
-> 
-> MT6397 and co refer to their AP PMICs, i.e. PMICs that are companion
-> chips to the SoC and provide most of the power rails a system needs,
-> along with things like RTC, audio codecs, etc.. The MT6358 and MT6366
-> belong to this class.
-> 
-> MT6360 and possibly others refer to their charger PMICs, which integrate
-> a battery charger, USB type-C PD stuff, LED drivers, and a handful of
-> regulators.
-
-
-Best regards,
-Krzysztof
-
+Okay, thanks Stephen for the comments, i will update it to use "struct 
+device" in the next version.
