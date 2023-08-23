@@ -2,121 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 506D6785006
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 07:43:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFB39785008
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 07:44:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232708AbjHWFnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 01:43:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56338 "EHLO
+        id S232716AbjHWFoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 01:44:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232670AbjHWFnU (ORCPT
+        with ESMTP id S232376AbjHWFom (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 01:43:20 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C292EE58
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 22:43:17 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-522bd411679so6388551a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 22:43:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692769396; x=1693374196;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mqyD8w2Ea4iyrL9XdQdNAhbH5OmX3Ob2k4iSn8KyfIA=;
-        b=bMY8d/W/LEgLPQBzWnaNhxz0dfV1gzfk2RhBG1NMcTxCaFr/nK1HoQNcPEmbR39cvU
-         5TKGqc584NBHL5D9SczyQAkcpFjD3b7g5/J/i6RILhtAlkrBxcwtGlW1nuO3WC418UxH
-         6sUlTPD0Ob57apybkYVJRHDAdof9oiLjjY9LaCjcH1Lpop7UrlJEnNO27yiDFuGGEeTh
-         Nq2HANaFrUL2pfy4VAVVeZt9RCM5fIRZXs1Y3zqa4OA24/6CTlVv5SCpk5DpJPNWqiJm
-         a+UQbjKSsepmyUsLwYKfBucwLW1sCHyWl2+JgMshLco6ziaYEBIS/jbpldGN2RQ1rISC
-         Hzpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692769396; x=1693374196;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mqyD8w2Ea4iyrL9XdQdNAhbH5OmX3Ob2k4iSn8KyfIA=;
-        b=WibrxqWjkvrve14y7xDRmfs/TyRX/vTSEd57WQ/YHTaslb8ucXC1N733BLZ94sLoRb
-         UB1Mzy2RrIRTM8h9M2erfWrFSOx7SUr9uPRdvh6E8nllXeHHAySkgxj+3kyQWzFNDExa
-         sbq+I499M8iiULLMSjutY/DquHHKXq9iIMA7wIk8omGwitKM0o3lxGw4CMHswXnUpvXZ
-         yMKi2d4X+hJwhZ7HIAx3JKLL9QTIwwxlFqz8SPkjEOwsixyMAfLti4Agp++0ZP7RdB8h
-         kfUybtJqediE1MVdo0K5GJSMQcqRFdUw7hlatijBXf/n2f2UvW4hasUYfzpTYCydHGI6
-         fEbA==
-X-Gm-Message-State: AOJu0Yxni5AvltBS/A+fn4mA0UuLuPrDj+Nd9AWJw+6JbWbuMTHyLXuV
-        ONcloqUCuYrsM0HyGDuOrR3t3g==
-X-Google-Smtp-Source: AGHT+IF3UMH3/lRVUBShLpk35pMdpeTpLzVykKBv/KpgWa477LjlFDFlSqmgvDXTRwzRNkr1zgLvOw==
-X-Received: by 2002:a17:906:7485:b0:9a1:c44d:7056 with SMTP id e5-20020a170906748500b009a1c44d7056mr2483700ejl.26.1692769396259;
-        Tue, 22 Aug 2023 22:43:16 -0700 (PDT)
-Received: from [192.168.0.22] ([77.252.47.198])
-        by smtp.gmail.com with ESMTPSA id x6-20020a170906134600b00992d70f8078sm9372064ejb.106.2023.08.22.22.43.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Aug 2023 22:43:15 -0700 (PDT)
-Message-ID: <c2faccd6-1d77-9b81-d8d9-830e95e804af@linaro.org>
-Date:   Wed, 23 Aug 2023 07:43:14 +0200
+        Wed, 23 Aug 2023 01:44:42 -0400
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31378CEC;
+        Tue, 22 Aug 2023 22:44:41 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id D0A9F320034E;
+        Wed, 23 Aug 2023 01:44:36 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Wed, 23 Aug 2023 01:44:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+        :cc:content-transfer-encoding:content-type:date:date:from:from
+        :in-reply-to:message-id:mime-version:reply-to:sender:subject
+        :subject:to:to; s=fm3; t=1692769476; x=1692855876; bh=kTagU20BDa
+        tLoGV7FZLLaKa0n82rBotBuZHl4PWOz10=; b=c43bGGhIRZyUgGlrRyz2z+CEfg
+        tbuzCkINjWyWzKNjYOyV8ePJojHHo8+mJZH3jP2r8/k7Esg/xkd0Yb8G+wpKVAfk
+        8sBXL06nHMYUW6SINDEW/d0qh7eQb1UM63Uf1oXDNo40BglbX/c36gMwqPyu4TJt
+        g5r6N2gt5Nisk+miXGAlqc3lw/mkhNWnlCDVt/twL/Nyi9O/W5yGexRBXGJHU4mF
+        dP8cDDFSGh/3tk+aYP3tq3TAptgX6tQFwxeCm8QTOmfy7dtDy4vZYczDZABz+QVD
+        nWjSVPVvCnQmG9t5QK255XFcYbAr29TkSvPVZgWpnIaOHmpPVtPq6G0q6Kig==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:date:date:feedback-id:feedback-id:from:from
+        :in-reply-to:message-id:mime-version:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1692769476; x=1692855876; bh=kTagU20BDatLo
+        GV7FZLLaKa0n82rBotBuZHl4PWOz10=; b=SHb5nhwJp8ce72wiHhQdG3AYO/scN
+        7/JYFrXWBnfG2e0z75FqqFJVWZlENIVaWz1ACeACHLQhS2B2L+6Qdp4oVvVyNjOA
+        rgJAKjrnKCOCAxZJX3x8gU4dkduEbgKRiOjVklnff4d0K5bsowg9hVkW+pG8aboB
+        U6nYvsGXYpbb1mOurYL8pETeuqZzqLBmmOeB1wAhgXiipdL17080W8jlbdtXNpam
+        q8sc6pDZtEQB5oWdW8gvA8/hn9pwukURHxIDz/35806Q9lYdqHn1c8+xz74osk0p
+        F3EK2b904fNthHNMNOkKnO0Pen6Ph2yjVeR7RaCFJ4ikz5neGgh17U88w==
+X-ME-Sender: <xms:xJzlZGY6ZMwqjtMBB2HakaLPyRH8tKHMVN_67CFU827IiT-V6MlGXQ>
+    <xme:xJzlZJadIqXVROOfSRS4VtF--I3lu9Lv9ssGs8c3bpP-vdPgVu7VQzW3Trl_tBkf2
+    nO7Z5Yu9NVkAIOaxg>
+X-ME-Received: <xmr:xJzlZA81-rps3HZYNCNd73foNzkRZySplsxwLrlUrl-vpxuNTqElv9PN87hBL3gjOh0YzdM35Ki_nomcLBB6R3BgE-ZQUCl4XJrDmzo>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedruddvvddgleejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdljedtmdenucfjughrpefhvf
+    evufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeffrghnihgvlhcuighuuceougig
+    uhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepvdeggfetgfelhefhueefke
+    duvdfguedvhfegleejudduffffgfetueduieeikeejnecuvehluhhsthgvrhfuihiivgep
+    tdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:xJzlZIp965iXdP8GCmfl4PRhwrwiT8xmqgXaZt83EYHkQhl3MKnRRw>
+    <xmx:xJzlZBo0ilIZSFMrvAQpuLjbwea3mL-LDvzLDMMtkCvrKGh1ManN9A>
+    <xmx:xJzlZGQnhmQTBO-NqS-uX5gNsNSmf4hF0nGOLKA5cExxSOHN3VrWqQ>
+    <xmx:xJzlZCTbRCqgffMDi5I7qNA_Tk1voy3m_naoRR8e6BQ8eMiaBTXoTg>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 23 Aug 2023 01:44:35 -0400 (EDT)
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net
+Cc:     martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next] libbpf: Add bpf_object__unpin()
+Date:   Tue, 22 Aug 2023 23:44:25 -0600
+Message-ID: <aeb83832ae61bbf463e1b2e39c1e30c3b227f5a5.1692769396.git.dxu@dxuuu.xyz>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH V10 1/4] dt-bindings: clock: document Amlogic S4 SoC PLL
- clock controller
-To:     Yu Tu <yu.tu@amlogic.com>, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     kelvin.zhang@amlogic.com, qi.duan@amlogic.com
-References: <20230822082750.27633-1-yu.tu@amlogic.com>
- <20230822082750.27633-2-yu.tu@amlogic.com>
- <d2a6060a-c8a0-51c7-f621-1bed2c3074b4@linaro.org>
- <e9932f90-a011-ee9b-ef09-f2e2475bdd0d@amlogic.com>
-Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <e9932f90-a011-ee9b-ef09-f2e2475bdd0d@amlogic.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/08/2023 04:24, Yu Tu wrote:
-> 
-> 
-> On 2023/8/23 0:32, Krzysztof Kozlowski wrote:
->> [ EXTERNAL EMAIL ]
->>> On 22/08/2023 10:27, Yu Tu wrote:
->>> Add the S4 PLL clock controller dt-bindings in the S4 SoC family.
->>>
->>> Signed-off-by: Yu Tu <yu.tu@amlogic.com>
->>
->> Lovely. I sent youa  friendly reminder at v8 which turns our you
->> ignored. You keep ignoring, I will start ignoring as well from now on.
-> 
-> Hi Krzysztof，
-> 
-> Sorry. I did not forget the friendly reminder in v8, I consulted you for 
-> this at the time, so I re-sent V9 after adding the tag. Because it was 
-> just "meson" that was removed. But V10 is based on Neil's patch, which I 
-> think is a bit of a change. So I didn't dare add it. Instead of 
-> forgetting your reminder.
-> 
-> So what should I do, I'll follow your advice exactly.
+For bpf_object__pin_programs() there is bpf_object__unpin_programs().
+Likewise bpf_object__unpin_maps() for bpf_object__pin_maps().
 
-I don't think there was much difference between the version, which
-received the review, and the current patch. Otherwise your changelog
-should say that you drop Rb tag. Rebasing of something somewhere is not
-the reason, so please describe what are the differences in the patch?
+But no bpf_object__unpin() for bpf_object__pin(). Adding the former adds
+symmetry to the API.
 
-Best regards,
-Krzysztof
+It's also convenient for cleanup in application code. It's an API I
+would've used if it was available for a repro I was writing earlier.
+
+Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+---
+ tools/lib/bpf/libbpf.c   | 15 +++++++++++++++
+ tools/lib/bpf/libbpf.h   |  1 +
+ tools/lib/bpf/libbpf.map |  1 +
+ 3 files changed, 17 insertions(+)
+
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 4c3967d94b6d..96ff1aa4bf6a 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -8376,6 +8376,21 @@ int bpf_object__pin(struct bpf_object *obj, const char *path)
+ 	return 0;
+ }
+ 
++int bpf_object__unpin(struct bpf_object *obj, const char *path)
++{
++	int err;
++
++	err = bpf_object__unpin_programs(obj, path);
++	if (err)
++		return libbpf_err(err);
++
++	err = bpf_object__unpin_maps(obj, path);
++	if (err)
++		return libbpf_err(err);
++
++	return 0;
++}
++
+ static void bpf_map__destroy(struct bpf_map *map)
+ {
+ 	if (map->inner_map) {
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index 2e3eb3614c40..0e52621cba43 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -266,6 +266,7 @@ LIBBPF_API int bpf_object__pin_programs(struct bpf_object *obj,
+ LIBBPF_API int bpf_object__unpin_programs(struct bpf_object *obj,
+ 					  const char *path);
+ LIBBPF_API int bpf_object__pin(struct bpf_object *object, const char *path);
++LIBBPF_API int bpf_object__unpin(struct bpf_object *object, const char *path);
+ 
+ LIBBPF_API const char *bpf_object__name(const struct bpf_object *obj);
+ LIBBPF_API unsigned int bpf_object__kversion(const struct bpf_object *obj);
+diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+index 841a2f9c6fef..abf8fea3988e 100644
+--- a/tools/lib/bpf/libbpf.map
++++ b/tools/lib/bpf/libbpf.map
+@@ -399,4 +399,5 @@ LIBBPF_1.3.0 {
+ 		bpf_program__attach_netfilter;
+ 		bpf_program__attach_tcx;
+ 		bpf_program__attach_uprobe_multi;
++		bpf_object__unpin;
+ } LIBBPF_1.2.0;
+-- 
+2.41.0
 
