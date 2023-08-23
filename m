@@ -2,52 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A62F785A8C
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 16:32:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8A8D785AA5
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 16:33:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236447AbjHWOc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 10:32:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49672 "EHLO
+        id S236470AbjHWOde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 10:33:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236170AbjHWOc2 (ORCPT
+        with ESMTP id S236492AbjHWOdd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 10:32:28 -0400
-Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com [209.85.215.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BCE4E74
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 07:32:24 -0700 (PDT)
-Received: by mail-pg1-f197.google.com with SMTP id 41be03b00d2f7-53ff4f39c0fso6300405a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 07:32:24 -0700 (PDT)
+        Wed, 23 Aug 2023 10:33:33 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B08D2E5F;
+        Wed, 23 Aug 2023 07:33:31 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-564af0ac494so3353462a12.0;
+        Wed, 23 Aug 2023 07:33:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692801211; x=1693406011;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=opEDXWUEt7EKF4zm4tFGmxwp6/VFKRX/hggL0pC3hFg=;
+        b=JGVtzFIwm9ATiCLFtcnR4ulEC/KTDJ5wcL7bo2i2dkdJ6wrrV2DMvys7roHvDlvnyp
+         InIhqHu18As19q4HC+xgrmQZSMwjOCbijG51sharRcrjron3f2rUmHwaZFm2lgF5CMhF
+         0uAOLXHN6ZieCobbUXgn+qbfA8ZGEBG4LTt2nznj8fQ9yREsZN2PrESlN6OCsHwwIKve
+         agcaTSdUY14ngP8i8kpkpD9ISSdYMu7i2T3z5NVrPlOwcQ8Z+v3jnjF+uJn1TiFDDpYb
+         oOscJjumi6/7Q1XoF94KLYpOnzwwas/r23gNNyc1l9/IKFsKUdjtSSTGNdlgR4BXYg9k
+         Mehw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692801143; x=1693405943;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ScA6Akx0VCHJI+vElTa6mVrXCUiV4W0qnHdlMLR7p58=;
-        b=Zorp10QVD2+lNHMpJMoqhTbVhcuLu0hHLbe/y8wh5PehIyaPu0+bB4TaztaZ+IHzp/
-         Vff2jizhqERB3qFXbxZSg31a6gaPhvwNgJeBuHJ4kgYLJqQSPn7D5hCIgQ+IXmRGMaQG
-         uoqPKr87ThXg2r+Xr/eTzeH7eLe/3mUx6HoWpshq9QMCRbdqgdv1lwiOOhW1AqBP+1oT
-         +Puip63QycjOFCPY2/2ijn6JfPortYYO3Lpjz9SJpX1gC9CdbxqDoQPaBqmESVxmOl5t
-         RWYn1QigzvMCtje+MLXNPCAutiEL5CqRAvdrIOWGKnuJ1yIoEeTWqffP3OAXCmppJM3c
-         welg==
-X-Gm-Message-State: AOJu0Yzp+qNz06a4wAhBNNNlQEiyIsk/LVyf4VD/VWPJmE2+vPFU70KQ
-        LvPVNnopdd7tOA/NnCMHH4d0m2ljbX1gM/J4cTEYiQ8xTr1F
-X-Google-Smtp-Source: AGHT+IGukamF5sCkLq/YzoJkU/p5OMyRIPsSJGkNG/SOIvg4u329S4qTmx4GQTgMXhvh66Ny9WicILn1eiHqXp+cO5QdHWcVP052
+        d=1e100.net; s=20221208; t=1692801211; x=1693406011;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=opEDXWUEt7EKF4zm4tFGmxwp6/VFKRX/hggL0pC3hFg=;
+        b=jDEQy0PWAa1rpYeY4GZNzTSqC0yOfvgDvqfGLegKAfKsGD2YjcXQsChuFN03GRhxp0
+         7hvhTz+g/I0cr3OBnvJzO/40Jo7mmV4tzz67CHeQ24MVy+CqxAFlPTiEZwnezqxbrAq+
+         /8GcEY7Q7EZEyyRVPaFCznYTmHUbaZHHCyDKo+ScZKGwWkg+Yhdnjf3e12FJ+EtSv5oq
+         1yioNOXrYFzSVtAvwSu82y/nqv+8QPms2WzSwZMYS3efOnxNeQpb9jVEvyIn6HUYaamN
+         Kh/hzhc/Jg+/W7OpzZ1TICKhs/x2GbOA35zVPWNEfciC+zHdXel5w4llcijqxN5qAcx6
+         k2dw==
+X-Gm-Message-State: AOJu0YxQcV4z4NrlEzZWGTiOWdGKklU8Govnmj+whz61Ek+eMcuY1at+
+        PJEZpZfnVTyy0276cZg55Ak+ue2COFdTBIJhoDM=
+X-Google-Smtp-Source: AGHT+IEYVLJxkNQ+r5jQ6CuGxcPrrROsrxTFPOgHY9VnYAB28C8do6b0cl9JPpTo2JeKUnzxrulPL7MFHljcVXMW9mg=
+X-Received: by 2002:a17:90b:124f:b0:26c:f6d2:2694 with SMTP id
+ gx15-20020a17090b124f00b0026cf6d22694mr9303778pjb.12.1692801211024; Wed, 23
+ Aug 2023 07:33:31 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a63:33ca:0:b0:55b:61bd:9bc9 with SMTP id
- z193-20020a6333ca000000b0055b61bd9bc9mr2126786pgz.12.1692801143555; Wed, 23
- Aug 2023 07:32:23 -0700 (PDT)
-Date:   Wed, 23 Aug 2023 07:32:23 -0700
-In-Reply-To: <20230823140836.2923-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d64f9b060397fa13@google.com>
-Subject: Re: [syzbot] [bluetooth?] KASAN: slab-use-after-free Read in hci_send_acl
-From:   syzbot <syzbot+a0c80b06ae2cb8895bc4@syzkaller.appspotmail.com>
-To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+References: <1690265540-25999-1-git-send-email-shengjiu.wang@nxp.com>
+ <47d66c28-1eb2-07f5-d6f9-779d675aefe8@xs4all.nl> <87il9xu1ro.wl-tiwai@suse.de>
+ <CAA+D8ANmBKMp_L2GS=Lp-saMQKja6L4E6No3yP-e=a5YQBD_jQ@mail.gmail.com>
+ <87il9xoddo.wl-tiwai@suse.de> <CAA+D8AOVEpGxO0YNeS1p+Ym86k6VP-CNQB3JmbeT7mPKg0R99A@mail.gmail.com>
+ <844ef9b6-d5e2-46a9-b7a5-7ee86a2e449c@sirena.org.uk> <CAA+D8AOnsx+7t3MrWm42waxtetL07nbKURLsh1hBx39LUDm+Zg@mail.gmail.com>
+ <CAA+D8AMriHO60SD2OqQSDMmi7wm=0MkoW6faR5nyve-j2Q5AEQ@mail.gmail.com>
+In-Reply-To: <CAA+D8AMriHO60SD2OqQSDMmi7wm=0MkoW6faR5nyve-j2Q5AEQ@mail.gmail.com>
+From:   Shengjiu Wang <shengjiu.wang@gmail.com>
+Date:   Wed, 23 Aug 2023 22:33:19 +0800
+Message-ID: <CAA+D8AN34-NVrgksRAG014PuHGUssTm0p-KR-HYGe+Pt8Yejxg@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 0/7] Add audio support in v4l2 framework
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Takashi Iwai <tiwai@suse.de>, Hans Verkuil <hverkuil@xs4all.nl>,
+        Shengjiu Wang <shengjiu.wang@nxp.com>, sakari.ailus@iki.fi,
+        tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xiubo.Lee@gmail.com, festevam@gmail.com, nicoleotsuka@gmail.com,
+        lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+        alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,182 +79,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, Aug 11, 2023 at 7:05=E2=80=AFPM Shengjiu Wang <shengjiu.wang@gmail.=
+com> wrote:
+>
+> Hi Mark, Takashi
+>
+> On Thu, Aug 3, 2023 at 9:11=E2=80=AFPM Shengjiu Wang <shengjiu.wang@gmail=
+.com> wrote:
+> >
+> > On Thu, Aug 3, 2023 at 1:28=E2=80=AFAM Mark Brown <broonie@kernel.org> =
+wrote:
+> > >
+> > > On Wed, Aug 02, 2023 at 10:41:43PM +0800, Shengjiu Wang wrote:
+> > >
+> > > > Currently the ASRC in ALSA is to connect to another I2S device as
+> > > > a sound card.  But we'd like to the ASRC can be used by user space =
+directly
+> > > > that user space application can get the output after conversion fro=
+m ASRC.
+> > >
+> > > That sort of use case would be handled via DPCM at the minute, though
+> > > persuading it to connect two front ends together might be fun (which =
+is
+> > > the sort of reason why we want to push digital information down into
+> > > DAPM and make everything a component).
+> >
+> > Thanks.
+> >
+> > ASRC M2M case needs to run as fast as possible, no sync clock control.
+> > If use sound card to handle ASRC M2M case,  the user application
+> > should be aplay/arecord, then we need to consider xrun issue, buffer
+> > may timeout, sync between aplay and arecord,  these should't be
+> > considered by pure memory to memory operation.
+> >
+> > DPCM may achitect all the audio things in components and sound
+> > card,  it is good. but for the M2M case, it is complcated. not sure
+> > it is doable.
+> >
+>
+> Beside the concern in previous mail,
+>
+> DPCM needs to separate ASRC to be two substreams (playback and capture).
+>
+> But the ASRC needs the sample rate & format of input and output first
+> then start conversion.
+>
+> If the playback controls the rate & format of input,  capture substream
+> controls the rate & format of output,  as a result
+> one substream needs to get information(dma buffer address, size...
+> rate, format) from another substream, then start both substreams in the
+> last substream. How to synchronize these two substreams is a problem.
+> One stream can be released but another stream doesn't know .
+>
+> So I don't think it is a good idea to use DPCM for pure M2M case.
+>
+> So can I persuade you to consider the V4L2 solution?
+>
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-KASAN: slab-out-of-bounds Read in l2cap_chan_del
+Just a summary:
 
-==================================================================
-BUG: KASAN: slab-out-of-bounds in hci_conn_drop include/net/bluetooth/hci_core.h:1549 [inline]
-BUG: KASAN: slab-out-of-bounds in hci_conn_drop include/net/bluetooth/hci_core.h:1519 [inline]
-BUG: KASAN: slab-out-of-bounds in l2cap_chan_del+0xa0b/0xa70 net/bluetooth/l2cap_core.c:668
-Read of size 8 at addr ffff888068778718 by task kworker/0:0/8
+Basic M2M conversion can work with DPCM, I have tried with some
+workaround to make it work.
 
-CPU: 0 PID: 8 Comm: kworker/0:0 Not tainted 6.5.0-rc6-next-20230818-syzkaller-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-Workqueue: events l2cap_chan_timeout
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:364 [inline]
- print_report+0xc4/0x620 mm/kasan/report.c:475
- kasan_report+0xda/0x110 mm/kasan/report.c:588
- hci_conn_drop include/net/bluetooth/hci_core.h:1549 [inline]
- hci_conn_drop include/net/bluetooth/hci_core.h:1519 [inline]
- l2cap_chan_del+0xa0b/0xa70 net/bluetooth/l2cap_core.c:668
- l2cap_chan_close+0xff/0xa20 net/bluetooth/l2cap_core.c:851
- l2cap_chan_timeout+0x17d/0x2f0 net/bluetooth/l2cap_core.c:452
- process_one_work+0x887/0x15d0 kernel/workqueue.c:2630
- process_scheduled_works kernel/workqueue.c:2703 [inline]
- worker_thread+0x8bb/0x1290 kernel/workqueue.c:2784
- kthread+0x33a/0x430 kernel/kthread.c:388
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
- </TASK>
+But there are several issues:
+1. Need to create sound cards.  ASRC module support multi instances, then
+need to create multi sound cards for each instance.
 
-Allocated by task 4708:
- kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
- kasan_set_track+0x25/0x30 mm/kasan/common.c:52
- ____kasan_kmalloc mm/kasan/common.c:374 [inline]
- __kasan_kmalloc+0xa2/0xb0 mm/kasan/common.c:383
- kasan_kmalloc include/linux/kasan.h:198 [inline]
- __do_kmalloc_node mm/slab_common.c:1004 [inline]
- __kmalloc_node_track_caller+0x61/0x100 mm/slab_common.c:1024
- kmalloc_reserve+0xef/0x270 net/core/skbuff.c:575
- __alloc_skb+0x12b/0x330 net/core/skbuff.c:644
- alloc_skb include/linux/skbuff.h:1286 [inline]
- alloc_skb_with_frags+0xe4/0x710 net/core/skbuff.c:6274
- sock_alloc_send_pskb+0x7c8/0x950 net/core/sock.c:2794
- unix_dgram_sendmsg+0x455/0x1c30 net/unix/af_unix.c:1953
- sock_sendmsg_nosec net/socket.c:730 [inline]
- sock_sendmsg+0xd9/0x180 net/socket.c:753
- sock_write_iter+0x29b/0x3d0 net/socket.c:1140
- call_write_iter include/linux/fs.h:1983 [inline]
- do_iter_readv_writev+0x21e/0x3c0 fs/read_write.c:735
- do_iter_write+0x17f/0x830 fs/read_write.c:860
- vfs_writev+0x221/0x700 fs/read_write.c:933
- do_writev+0x285/0x370 fs/read_write.c:976
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
+2. The ASRC is an entirety but with DPCM we need to separate input port and
+output port to playback substream and capture stream. Synchronous between
+playback substream and capture substream is a problem.
+How to start them and stop them at the same time.
 
-Freed by task 4707:
- kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
- kasan_set_track+0x25/0x30 mm/kasan/common.c:52
- kasan_save_free_info+0x2b/0x40 mm/kasan/generic.c:522
- ____kasan_slab_free mm/kasan/common.c:236 [inline]
- ____kasan_slab_free+0x15b/0x1b0 mm/kasan/common.c:200
- kasan_slab_free include/linux/kasan.h:164 [inline]
- slab_free_hook mm/slub.c:1800 [inline]
- slab_free_freelist_hook+0x114/0x1e0 mm/slub.c:1826
- slab_free mm/slub.c:3809 [inline]
- __kmem_cache_free+0xb8/0x2f0 mm/slub.c:3822
- skb_kfree_head net/core/skbuff.c:939 [inline]
- skb_free_head+0x110/0x1b0 net/core/skbuff.c:951
- skb_release_data+0x5ba/0x870 net/core/skbuff.c:981
- skb_release_all net/core/skbuff.c:1047 [inline]
- __kfree_skb net/core/skbuff.c:1061 [inline]
- consume_skb net/core/skbuff.c:1277 [inline]
- consume_skb+0xd2/0x170 net/core/skbuff.c:1271
- __unix_dgram_recvmsg+0x814/0xe50 net/unix/af_unix.c:2442
- unix_dgram_recvmsg+0xc3/0xf0 net/unix/af_unix.c:2459
- sock_recvmsg_nosec net/socket.c:1026 [inline]
- sock_recvmsg+0xe2/0x170 net/socket.c:1048
- sock_read_iter+0x2c3/0x3c0 net/socket.c:1118
- call_read_iter include/linux/fs.h:1977 [inline]
- do_iter_readv_writev+0x2f2/0x3c0 fs/read_write.c:733
- do_iter_read+0x315/0x870 fs/read_write.c:795
- vfs_readv+0x12d/0x1a0 fs/read_write.c:915
- do_readv+0x285/0x370 fs/read_write.c:952
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
+3. How to handle the xrun issue. pause or resume. which are brought by ALSA=
+.
 
-The buggy address belongs to the object at ffff888068778400
- which belongs to the cache kmalloc-cg-512 of size 512
-The buggy address is located 280 bytes to the right of
- allocated 512-byte region [ffff888068778400, ffff888068778600)
+So shall we make the decision that we can go to the V4L2 solution?
 
-The buggy address belongs to the physical page:
-page:ffffea0001a1de00 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x68778
-head:ffffea0001a1de00 order:2 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-memcg:ffff88801937bc01
-flags: 0xfff00000000840(slab|head|node=0|zone=1|lastcpupid=0x7ff)
-page_type: 0xffffffff()
-raw: 00fff00000000840 ffff888012c4f140 dead000000000122 0000000000000000
-raw: 0000000000000000 0000000000100010 00000001ffffffff ffff88801937bc01
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 2, migratetype Unmovable, gfp_mask 0x1d20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC|__GFP_HARDWALL), pid 4708, tgid 4708 (dhcpcd), ts 448399025420, free_ts 448388778101
- set_page_owner include/linux/page_owner.h:31 [inline]
- post_alloc_hook+0x2cf/0x340 mm/page_alloc.c:1536
- prep_new_page mm/page_alloc.c:1543 [inline]
- get_page_from_freelist+0x10d7/0x31b0 mm/page_alloc.c:3219
- __alloc_pages+0x1d0/0x4a0 mm/page_alloc.c:4475
- alloc_pages+0x1a9/0x270 mm/mempolicy.c:2298
- alloc_slab_page mm/slub.c:1870 [inline]
- allocate_slab+0x251/0x380 mm/slub.c:2017
- new_slab mm/slub.c:2070 [inline]
- ___slab_alloc+0x8be/0x1570 mm/slub.c:3223
- __slab_alloc.constprop.0+0x56/0xa0 mm/slub.c:3322
- __slab_alloc_node mm/slub.c:3375 [inline]
- slab_alloc_node mm/slub.c:3468 [inline]
- __kmem_cache_alloc_node+0x137/0x350 mm/slub.c:3517
- __do_kmalloc_node mm/slab_common.c:1003 [inline]
- __kmalloc_node_track_caller+0x50/0x100 mm/slab_common.c:1024
- kmalloc_reserve+0xef/0x270 net/core/skbuff.c:575
- __alloc_skb+0x12b/0x330 net/core/skbuff.c:644
- alloc_skb include/linux/skbuff.h:1286 [inline]
- alloc_skb_with_frags+0xe4/0x710 net/core/skbuff.c:6274
- sock_alloc_send_pskb+0x7c8/0x950 net/core/sock.c:2794
- unix_dgram_sendmsg+0x455/0x1c30 net/unix/af_unix.c:1953
- sock_sendmsg_nosec net/socket.c:730 [inline]
- sock_sendmsg+0xd9/0x180 net/socket.c:753
- sock_write_iter+0x29b/0x3d0 net/socket.c:1140
-page last free stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1136 [inline]
- free_unref_page_prepare+0x476/0xa40 mm/page_alloc.c:2348
- free_unref_page+0x33/0x3b0 mm/page_alloc.c:2441
- skb_kfree_head net/core/skbuff.c:939 [inline]
- skb_free_head+0x110/0x1b0 net/core/skbuff.c:951
- skb_release_data+0x5ba/0x870 net/core/skbuff.c:981
- skb_release_all net/core/skbuff.c:1047 [inline]
- __kfree_skb net/core/skbuff.c:1061 [inline]
- consume_skb net/core/skbuff.c:1277 [inline]
- consume_skb+0xd2/0x170 net/core/skbuff.c:1271
- __unix_dgram_recvmsg+0x814/0xe50 net/unix/af_unix.c:2442
- unix_dgram_recvmsg+0xc3/0xf0 net/unix/af_unix.c:2459
- sock_recvmsg_nosec net/socket.c:1026 [inline]
- sock_recvmsg+0xe2/0x170 net/socket.c:1048
- sock_read_iter+0x2c3/0x3c0 net/socket.c:1118
- call_read_iter include/linux/fs.h:1977 [inline]
- do_iter_readv_writev+0x2f2/0x3c0 fs/read_write.c:733
- do_iter_read+0x315/0x870 fs/read_write.c:795
- vfs_readv+0x12d/0x1a0 fs/read_write.c:915
- do_readv+0x285/0x370 fs/read_write.c:952
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-Memory state around the buggy address:
- ffff888068778600: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff888068778680: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->ffff888068778700: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-                            ^
- ffff888068778780: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff888068778800: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
-
-
-Tested on:
-
-commit:         7271b2a5 Add linux-next specific files for 20230818
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=142e2cbda80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1936af09cdef7dd6
-dashboard link: https://syzkaller.appspot.com/bug?extid=a0c80b06ae2cb8895bc4
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=12838e5ba80000
-
+Best regards
+Wang Shengjiu
