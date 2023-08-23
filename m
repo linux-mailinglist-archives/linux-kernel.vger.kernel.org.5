@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B70E5785270
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 10:12:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8587785277
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 10:13:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233673AbjHWIMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 04:12:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34564 "EHLO
+        id S234028AbjHWINr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 04:13:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233770AbjHWIJT (ORCPT
+        with ESMTP id S233783AbjHWIJX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 04:09:19 -0400
+        Wed, 23 Aug 2023 04:09:23 -0400
 Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81B57E74
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 01:08:37 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-58e4d2b7d16so71990177b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 01:08:37 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA06710C1
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 01:08:40 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-58cb845f2f2so72838757b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 01:08:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692778117; x=1693382917;
+        d=google.com; s=20221208; t=1692778119; x=1693382919;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=YVPNIKRWrRX85pZfkeIbGqGN+aZoz9nclv8JB/Dx+DY=;
-        b=2maq36UDs0VaiEhSZa+HOihekElrL31Y7dnJsQtE8bZUDmRBFN1lR+rsLege7SaQtM
-         RC+t3k9R4dvAeanDR/0eqeLUy6eDraJwzyW3yUHNYpbCCTMH2eT9TDmEWUFZ84/MWwX1
-         zxFZvceDTzy0qiEKhDlYcDOepm3nzaCNoJ0OuHLlUkGbMiywB8oGzvw/kpFoak+otjCB
-         Bvep9JpQO5Fx9/PtTYdv/CM+sKZ9PFJD4CBCQFBuHIBxTkhj4kZP9ZX970g49ZXXX5x5
-         rsI1VPoyeDPgF5Un3KGeDxnrvMZFa5KESm5+vHquELPRCYpdNy2zsdpTQcKGzLRX/7Ge
-         6oLQ==
+        bh=zbOd4cktnqwY3C7uOx37I8EsWOiY3ojcBmbOEcOxtrg=;
+        b=TVjeVQycUPbwnNb2TI5vTuU5hq4DhJNEjTYI2IlQgwLqdO0PCxXIn80etXfjCr0Gqy
+         rdwS4hbhtA2laZE8pKKUgf/kJFKIIeJw3hbft9tSjDTb0uwa7XoLsoTCDIRTkd/ws75T
+         s1zftdfnQCEfbkM8ssjC0CLnqkw3+HL9h10VbX3wxWp3qC+03Uct6bmSXDHtYt68W97+
+         vfDrIfUxFdXIDl8LvxYwMz5NxFe2Qwu3QFTLH2UmCHGlIsUhsO3302gdoqMCVq2dECDZ
+         dI8TUMAN3/XgCynHdQU8HN344ydOkFVTKj5ZXaZhEQUsU/WSg551gtpZa4nKIAxkSCU0
+         6DKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692778117; x=1693382917;
+        d=1e100.net; s=20221208; t=1692778119; x=1693382919;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YVPNIKRWrRX85pZfkeIbGqGN+aZoz9nclv8JB/Dx+DY=;
-        b=XiivqRshKb6rfK+4Wm6MXm/JRRhd+d25kohdI0o6Zy2mYMPJ1WWuR/gs2GehIGM1td
-         cfxbVuRv6XkH+9wFDmous1sIgQAbH6Kx5q0VhXFiQThkAFM+AsGsnL/pSxsfve86orFO
-         NaDE4wF73rmNjT729QtJirmIw6/PRBIHlrP9tLpZmRbDanH9qC1zvC4yWmtreR62nu//
-         sWxuWU1dN7uJOu1h6RoNExnV+UQI8nPEfUdweZZMSY+iJovgb6oOhybRq2rdPDW7Q0oS
-         S7L4kS2B1i33bSZlZXskxHqgrFwPA+lbs1hAFq1Gg/A7aqlJnzsyze7tIUuf+qDEy7pU
-         h/cw==
-X-Gm-Message-State: AOJu0YzuVEfaqO3yHQfryKYy7KmPMMVa2a9bdo5cB45C560rNklEYNGk
-        6NdtB8SSuViPh944mjz72wExvVGSiywQ
-X-Google-Smtp-Source: AGHT+IGNtc+vuUpoFkBQPAmSbNQ4ZcXCetCAAcNdD4zTkg2mp9pmA9kBpq8P8G/UaaTc8ofzxTgEMsGtFGHK
+        bh=zbOd4cktnqwY3C7uOx37I8EsWOiY3ojcBmbOEcOxtrg=;
+        b=j44oL4Q/Qjg8kV3RHAAG0rfn+KywSsFdQo9Ebh9F9cTpiAU7brSErXhSsLYYZaiuqU
+         xcCxHyEv7gNocXk10JLA6xrsXXVR3O6lj2dgcWgSr60zq//mgTWUJmf7wxKGXnfLUjdu
+         Z9HZ/9QCBvbudrMm4n/fs7McUgntSqldNSOmUxrZevMW+oA4tGFjQDEU52Lx/Bu1p776
+         uBpC0z91vSbCOXEispI1MYIQNdftdKyFInvKfGC1DurNVYXvkWpdz3a5inmuN4qz+Zwi
+         ofCkt3EORWNZFBZtjDQl5ZFc/EyKR1e+hJPbgDu5GNg+sTTUtxLOjwBJ5wK/5mPR6Szs
+         TZSw==
+X-Gm-Message-State: AOJu0YyQltjvB3jgI/l/Z0McPs1QXx1C5wsQDscQ/o6+bBA91HNckohE
+        zegt/jErOVlNovVSclyuwJunvXEIgId4
+X-Google-Smtp-Source: AGHT+IGXKT84Ue6RywhJHDK9fqe7aLr7VA0C6SOXlI2DXTTcq1jLdX9D5qIv5tM8tI38bPx1mkTkKSHNVhmo
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:3971:e84:f508:9a36])
- (user=irogers job=sendgmr) by 2002:a05:6902:691:b0:d4e:e2ae:e0c8 with SMTP id
- i17-20020a056902069100b00d4ee2aee0c8mr146979ybt.1.1692778116848; Wed, 23 Aug
- 2023 01:08:36 -0700 (PDT)
-Date:   Wed, 23 Aug 2023 01:08:05 -0700
+ (user=irogers job=sendgmr) by 2002:a25:e70e:0:b0:d74:6a19:f91b with SMTP id
+ e14-20020a25e70e000000b00d746a19f91bmr126206ybh.3.1692778119481; Wed, 23 Aug
+ 2023 01:08:39 -0700 (PDT)
+Date:   Wed, 23 Aug 2023 01:08:06 -0700
 In-Reply-To: <20230823080828.1460376-1-irogers@google.com>
-Message-Id: <20230823080828.1460376-3-irogers@google.com>
+Message-Id: <20230823080828.1460376-4-irogers@google.com>
 Mime-Version: 1.0
 References: <20230823080828.1460376-1-irogers@google.com>
 X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
-Subject: [PATCH v1 02/25] perf pmu: Avoid a path name copy
+Subject: [PATCH v1 03/25] perf pmu: Move perf_pmu__set_format to pmu.y
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -83,43 +83,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rather than read a base path and append into a 2nd path, read the base
-path directly into output buffer and append to that.
+Avoid having the function in the C and header file, as it is only used
+locally by pmu.y.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/pmu.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ tools/perf/util/pmu.c | 12 ------------
+ tools/perf/util/pmu.h |  1 -
+ tools/perf/util/pmu.y | 12 ++++++++++++
+ 3 files changed, 12 insertions(+), 13 deletions(-)
 
 diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-index a7f05e4dda97..7683c6749d66 100644
+index 7683c6749d66..40999e1fab8f 100644
 --- a/tools/perf/util/pmu.c
 +++ b/tools/perf/util/pmu.c
-@@ -1756,17 +1756,19 @@ int perf_pmu__event_source_devices_fd(void)
-  * then pathname will be filled with
-  * "/sys/bus/event_source/devices/cs_etm/format"
-  *
-- * Return 0 if the sysfs mountpoint couldn't be found or if no
-- * characters were written.
-+ * Return 0 if the sysfs mountpoint couldn't be found, if no characters were
-+ * written or if the buffer size is exceeded.
-  */
- int perf_pmu__pathname_scnprintf(char *buf, size_t size,
- 				 const char *pmu_name, const char *filename)
- {
--	char base_path[PATH_MAX];
-+	size_t len;
- 
--	if (!perf_pmu__event_source_devices_scnprintf(base_path, sizeof(base_path)))
-+	len = perf_pmu__event_source_devices_scnprintf(buf, size);
-+	if (!len || (len + strlen(pmu_name) + strlen(filename) + 1)  >= size)
- 		return 0;
--	return scnprintf(buf, size, "%s%s/%s", base_path, pmu_name, filename);
-+
-+	return scnprintf(buf + len, size - len, "%s/%s", pmu_name, filename);
+@@ -1417,18 +1417,6 @@ int perf_pmu__new_format(struct list_head *list, char *name,
+ 	return 0;
  }
  
- int perf_pmu__pathname_fd(int dirfd, const char *pmu_name, const char *filename, int flags)
+-void perf_pmu__set_format(unsigned long *bits, long from, long to)
+-{
+-	long b;
+-
+-	if (!to)
+-		to = from;
+-
+-	memset(bits, 0, BITS_TO_BYTES(PERF_PMU_FORMAT_BITS));
+-	for (b = from; b <= to; b++)
+-		__set_bit(b, bits);
+-}
+-
+ void perf_pmu__del_formats(struct list_head *formats)
+ {
+ 	struct perf_pmu_format *fmt, *tmp;
+diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
+index 7ff925224165..9c9ea40b9c71 100644
+--- a/tools/perf/util/pmu.h
++++ b/tools/perf/util/pmu.h
+@@ -231,7 +231,6 @@ void perf_pmu_error(struct list_head *list, char *name, void *scanner, char cons
+ 
+ int perf_pmu__new_format(struct list_head *list, char *name,
+ 			 int config, unsigned long *bits);
+-void perf_pmu__set_format(unsigned long *bits, long from, long to);
+ int perf_pmu__format_parse(int dirfd, struct list_head *head);
+ void perf_pmu__del_formats(struct list_head *formats);
+ bool perf_pmu__has_format(const struct perf_pmu *pmu, const char *name);
+diff --git a/tools/perf/util/pmu.y b/tools/perf/util/pmu.y
+index 3d46cca3bb94..9bd9e30791ff 100644
+--- a/tools/perf/util/pmu.y
++++ b/tools/perf/util/pmu.y
+@@ -21,6 +21,18 @@ do { \
+                 YYABORT; \
+ } while (0)
+ 
++static void perf_pmu__set_format(unsigned long *bits, long from, long to)
++{
++	long b;
++
++	if (!to)
++		to = from;
++
++	memset(bits, 0, BITS_TO_BYTES(PERF_PMU_FORMAT_BITS));
++	for (b = from; b <= to; b++)
++		__set_bit(b, bits);
++}
++
+ %}
+ 
+ %token PP_CONFIG
 -- 
 2.42.0.rc1.204.g551eb34607-goog
 
