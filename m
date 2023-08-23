@@ -2,95 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07F3F786077
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 21:15:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A3AD786079
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 21:16:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238271AbjHWTPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 15:15:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57696 "EHLO
+        id S238004AbjHWTPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 15:15:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238282AbjHWTOl (ORCPT
+        with ESMTP id S238298AbjHWTPO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 15:14:41 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D6D210DC;
-        Wed, 23 Aug 2023 12:14:38 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-99df11828c6so31546866b.1;
-        Wed, 23 Aug 2023 12:14:38 -0700 (PDT)
+        Wed, 23 Aug 2023 15:15:14 -0400
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B55C10D0;
+        Wed, 23 Aug 2023 12:15:09 -0700 (PDT)
+Received: by mail-qv1-xf34.google.com with SMTP id 6a1803df08f44-64a0176b1easo35085776d6.3;
+        Wed, 23 Aug 2023 12:15:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692818077; x=1693422877;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3GfGoPJfPXeL122AI/Y6i59RXbA4MoNTzdh5/a56Xn0=;
-        b=QJvDLNUBheJo6Z3mPsuYD5nZRJyW2l/OZodVbzD4U6Js7o5S2sE9dGB1wsabKctn2S
-         9tU+TeFm/qQCuHFmp9+YSNZFscM73NNk/0EBbZRVYyqTAlZqp4llP5sc9BvKrnVLTE4J
-         ZiQmZdxoRYvkbANv806hjyyKLb20aZqCYbTPdPq7pKNf5wAclWk+vJwjgLjsyvyo6dWZ
-         T2klMKPTCV0/DPK1JuLl8yOQEBFqT+8qtxTQxaPkokhC38PM/QV2mIhDHi+rlUHr5Keu
-         pU+J2vBCFvlIhfOsnGyHdzCN6h3rlGbVFTKCR7qnIQBk8bLMt/LcglVDySFm/y50gqXY
-         GjIw==
+        d=gmail.com; s=20221208; t=1692818108; x=1693422908;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ISfTpPb1V2P+jzT7DRqJg3+P9Rpp6ZuddKf1v0Q69Bg=;
+        b=KFjN1bVnsq2ecwzbZvnrSAX8HUoJYlMSih4uyjLyOzesfPHaRY3HhKzghx/38BGT5q
+         gfL8oDqED1zr9ZwPUrSKRobECWUW8KPaKQF/1g0FvSqSkDodK7PEcMy+HCOaIHpak6/j
+         IjmbwCvDaH5I27pm2XrBJSTI5xuIu01qAxfjYQGQc+LGoghJAFb5b3AOm84eeTjqN2DN
+         jmguWVBajtT4eDngMEL1cPSRIGdg7onV5kJqhDOg+J3Hun5yC310Oh3cg5bE63vYIO3R
+         zflAQALyH2AtnfT1gLOY7bnBVX58JE2gNrfaL0gtGJL1t5EuCuVHGn+i6Q2IO2YMgXTE
+         xwmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692818077; x=1693422877;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3GfGoPJfPXeL122AI/Y6i59RXbA4MoNTzdh5/a56Xn0=;
-        b=PkmcXyB9Hk7aF+LbOagZ6kP82Ovcay6mqmHhSkSa8Dl+IYeQUelz57IZnc0zXUeQrQ
-         +5Eu2ex6LLK9LMXvNlQ2S5NUBQXxI1mD6knmN3Xp+RiQf4ousCEBDr9YY/Ou1nlBfYwJ
-         ghDL06Iv+WWVBirsFYHWd/RyRvlM8pg2B3U6zBGlzUJEoxREL/JOHDdLYEfyKDEZr/+L
-         CKwAOCQZ7LwT82G3RMH0X6jJD7qmPz5sGrMJFGDHkUAsgn1plRO90AnN/eu3nchwyqsH
-         BGhPm+v5sn4+r9FrBdp577EPV0FmnHAt7yCLuiAyGejJ8f934IMuvuTRiM6zXgUX0u4h
-         QJ6w==
-X-Gm-Message-State: AOJu0YyXvX+aDhMJ/Ry8E3Pbrv4sBCb4KoBcOfaG5HlLrEncaKOufmU/
-        Wke5fMtCgdx1r4fQVN+nFqEv8pn+bTi+Qg==
-X-Google-Smtp-Source: AGHT+IEyB/ZIs6kkflGm4CaDR9JI8pIkw1oTLixQ0Y4DZJKD0Tq/QtdPvoLjd898II3fszhvDVCRmw==
-X-Received: by 2002:a17:906:3051:b0:99c:5056:4e31 with SMTP id d17-20020a170906305100b0099c50564e31mr17063070ejd.15.1692818076698;
-        Wed, 23 Aug 2023 12:14:36 -0700 (PDT)
-Received: from jernej-laptop.localnet (82-149-12-148.dynamic.telemach.net. [82.149.12.148])
-        by smtp.gmail.com with ESMTPSA id ci16-20020a170906c35000b0098e34446464sm10091272ejb.25.2023.08.23.12.14.34
+        d=1e100.net; s=20221208; t=1692818108; x=1693422908;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ISfTpPb1V2P+jzT7DRqJg3+P9Rpp6ZuddKf1v0Q69Bg=;
+        b=XXshiijCUpTECT1/Aaqnewmzmq4gtfnTAJPa5WUH8AwCa9/TuAqBkv4GF7kAlbLdu0
+         uc52Kz0fA460F/Qfv0VlrxkV+dUB/jeFmiLJL35/BMO3/Gigaa6X8XrVrI31egoNB3yT
+         RwmaqVc0QYSKxwCNCbAWHveWIhrQ+S1QsyQipXgEXbQ7BSrM/6fDouzIUXRIk5zcqdvB
+         J3GXHjTZgYw3cjnK/1z+lc1PckKnjl7HfgLDJvhOLmwqZ/X30wADafEdCLbf4Oxx82Es
+         Ed9XnJsXm65nTkKHhiQWcHDMsDvQt/w8lYYMkuO39aL57ee/JjvGb5xpF5UABLKUxRrx
+         8dhg==
+X-Gm-Message-State: AOJu0YyyPtbyi64sXRz1g8NdYKhrt9llCRnKmBALe4zNcjnLDEuUvMdr
+        IfqYj0WFj4XDDmJlB3Za2nU=
+X-Google-Smtp-Source: AGHT+IFfaRfpPJ21GEsT5Ao87FJteBSmW6mCf5mGefHgD9XZmcrxWpqJ7YiikryeJ7mgcf+pWmmN4Q==
+X-Received: by 2002:a05:6214:5489:b0:63d:4813:6a6a with SMTP id lg9-20020a056214548900b0063d48136a6amr14360059qvb.44.1692818108031;
+        Wed, 23 Aug 2023 12:15:08 -0700 (PDT)
+Received: from shaak (modemcable063.135-226-192.mc.videotron.ca. [192.226.135.63])
+        by smtp.gmail.com with ESMTPSA id c16-20020a0cca10000000b0064b502fdeecsm4245322qvk.68.2023.08.23.12.15.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Aug 2023 12:14:36 -0700 (PDT)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        arm@kernel.org, soc@kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Samuel Holland <samuel@sholland.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Liviu Dudau <liviu.dudau@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-renesas-soc@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH 2/2] arm64: dts: use capital "OR" for multiple licenses in SPDX
-Date:   Wed, 23 Aug 2023 21:14:34 +0200
-Message-ID: <4824782.GXAFRqVoOG@jernej-laptop>
-In-Reply-To: <20230823085146.113562-2-krzysztof.kozlowski@linaro.org>
-References: <20230823085146.113562-1-krzysztof.kozlowski@linaro.org>
- <20230823085146.113562-2-krzysztof.kozlowski@linaro.org>
+        Wed, 23 Aug 2023 12:15:07 -0700 (PDT)
+Date:   Wed, 23 Aug 2023 15:15:06 -0400
+From:   Liam Beguin <liambeguin@gmail.com>
+To:     Mike Looijmans <mike.looijmans@topic.nl>
+Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sboyd@kernel.org, mturquette@baylibre.com
+Subject: Re: [PATCH 3/3] clk: lmk04832: Support using PLL1_LD as SPI readback
+ pin
+Message-ID: <20230823191506.GC2572839@shaak>
+References: <20230802064100.15793-1-mike.looijmans@topic.nl>
+ <1b153bce-a66a-45ee-a5c6-963ea6fb1c82.949ef384-8293-46b8-903f-40a477c056ae.5ec2b609-3eb5-4de3-93d2-a352a16683c8@emailsignatures365.codetwo.com>
+ <20230802064100.15793-3-mike.looijmans@topic.nl>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230802064100.15793-3-mike.looijmans@topic.nl>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -98,63 +74,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne sreda, 23. avgust 2023 ob 10:51:46 CEST je Krzysztof Kozlowski napisal(a):
-> Documentation/process/license-rules.rst and checkpatch expect the SPDX
-> identifier syntax for multiple licenses to use capital "OR".  Correct it
-> to keep consistent format and avoid copy-paste issues.
+On Wed, Aug 02, 2023 at 08:41:00AM +0200, Mike Looijmans wrote:
+> The PLL1_PD pin (a.k.a. STATUS_LD1) can be used as SPI readback pin. Make
+> this possible.
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> 
+> Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
+
+Reviewed-by: Liam Beguin <liambeguin@gmail.com>
+
 > ---
+>  drivers/clk/clk-lmk04832.c | 23 ++++++++++++++++++-----
+>  1 file changed, 18 insertions(+), 5 deletions(-)
 > 
-> Rebased on next-20230822, so might not apply cleanly.  What does not
-> apply, can be skipped and I will fix it after next RC.
-> ---
->  arch/arm64/boot/dts/allwinner/sun50i-a100-allwinner-perf1.dts  | 2 +-
->  arch/arm64/boot/dts/allwinner/sun50i-a100.dtsi                 | 2 +-
->  arch/arm64/boot/dts/allwinner/sun50i-h6-pine-h64-model-b.dts   | 2 +-
->  arch/arm64/boot/dts/allwinner/sun50i-h616-orangepi-zero.dtsi   | 2 +-
->  arch/arm64/boot/dts/allwinner/sun50i-h616-orangepi-zero2.dts   | 2 +-
->  arch/arm64/boot/dts/allwinner/sun50i-h616-x96-mate.dts         | 2 +-
->  arch/arm64/boot/dts/allwinner/sun50i-h618-orangepi-zero3.dts   | 2 +-
-
-For Allwinner:
-Acked-by: Jernej Skrabec <jernej.skrabec@gmail.com>
-
-Best regards,
-Jernej
-
->  arch/arm64/boot/dts/arm/corstone1000-fvp.dts                   | 2 +-
->  arch/arm64/boot/dts/arm/corstone1000-mps3.dts                  | 2 +-
->  arch/arm64/boot/dts/arm/corstone1000.dtsi                      | 2 +-
->  arch/arm64/boot/dts/broadcom/stingray/bcm958802a802x.dts       | 2 +-
->  arch/arm64/boot/dts/broadcom/stingray/stingray-board-base.dtsi | 2 +-
->  arch/arm64/boot/dts/broadcom/stingray/stingray-pcie.dtsi       | 2 +-
->  arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi        | 2 +-
->  arch/arm64/boot/dts/freescale/imx8mm-emcon-avari.dts           | 2 +-
->  arch/arm64/boot/dts/freescale/imx8mm-emcon-avari.dtsi          | 2 +-
->  arch/arm64/boot/dts/freescale/imx8mm-emcon.dtsi                | 2 +-
->  arch/arm64/boot/dts/renesas/r8a77980a.dtsi                     | 2 +-
->  arch/arm64/boot/dts/renesas/r8a779f0-spider-cpu.dtsi           | 2 +-
->  arch/arm64/boot/dts/renesas/r8a779f0-spider.dts                | 2 +-
->  arch/arm64/boot/dts/renesas/r8a779f0.dtsi                      | 2 +-
->  arch/arm64/boot/dts/renesas/r8a779m0.dtsi                      | 2 +-
->  arch/arm64/boot/dts/renesas/r8a779m1-salvator-xs.dts           | 2 +-
->  arch/arm64/boot/dts/renesas/r8a779m1-ulcb-kf.dts               | 2 +-
->  arch/arm64/boot/dts/renesas/r8a779m1-ulcb.dts                  | 2 +-
->  arch/arm64/boot/dts/renesas/r8a779m1.dtsi                      | 2 +-
->  arch/arm64/boot/dts/renesas/r8a779m2.dtsi                      | 2 +-
->  arch/arm64/boot/dts/renesas/r8a779m3-salvator-xs.dts           | 2 +-
->  arch/arm64/boot/dts/renesas/r8a779m3-ulcb-kf.dts               | 2 +-
->  arch/arm64/boot/dts/renesas/r8a779m3-ulcb.dts                  | 2 +-
->  arch/arm64/boot/dts/renesas/r8a779m3.dtsi                      | 2 +-
->  arch/arm64/boot/dts/renesas/r8a779m4.dtsi                      | 2 +-
->  arch/arm64/boot/dts/renesas/r8a779m5-salvator-xs.dts           | 2 +-
->  arch/arm64/boot/dts/renesas/r8a779m5.dtsi                      | 2 +-
->  arch/arm64/boot/dts/renesas/r8a779m6.dtsi                      | 2 +-
->  arch/arm64/boot/dts/renesas/r8a779m7.dtsi                      | 2 +-
->  arch/arm64/boot/dts/renesas/r8a779m8.dtsi                      | 2 +-
->  arch/arm64/boot/dts/renesas/r8a779mb.dtsi                      | 2 +-
-
-
-
+> diff --git a/drivers/clk/clk-lmk04832.c b/drivers/clk/clk-lmk04832.c
+> index dd1f0c59ee71..99b271c1278a 100644
+> --- a/drivers/clk/clk-lmk04832.c
+> +++ b/drivers/clk/clk-lmk04832.c
+> @@ -134,6 +134,11 @@
+>  /* 0x14b - 0x152 Holdover */
+>  
+>  /* 0x153 - 0x15f PLL1 Configuration */
+> +#define LMK04832_REG_PLL1_LD		0x15f
+> +#define LMK04832_BIT_PLL1_LD_MUX		GENMASK(7, 3)
+> +#define LMK04832_VAL_PLL1_LD_MUX_SPI_RDBK		0x07
+> +#define LMK04832_BIT_PLL1_LD_TYPE		GENMASK(2, 0)
+> +#define LMK04832_VAL_PLL1_LD_TYPE_OUT_PP		0x03
+>  
+>  /* 0x160 - 0x16e PLL2 Configuration */
+>  #define LMK04832_REG_PLL2_R_MSB		0x160
+> @@ -206,6 +211,7 @@ enum lmk04832_rdbk_type {
+>  	RDBK_CLKIN_SEL0,
+>  	RDBK_CLKIN_SEL1,
+>  	RDBK_RESET,
+> +	RDBK_PLL1_LD,
+>  };
+>  
+>  struct lmk_dclk {
+> @@ -1346,6 +1352,10 @@ static int lmk04832_set_spi_rdbk(const struct lmk04832 *lmk, const int rdbk_pin)
+>  {
+>  	int reg;
+>  	int ret;
+> +	int val = FIELD_PREP(LMK04832_BIT_CLKIN_SEL_MUX,
+> +			     LMK04832_VAL_CLKIN_SEL_MUX_SPI_RDBK) |
+> +		  FIELD_PREP(LMK04832_BIT_CLKIN_SEL_TYPE,
+> +			     LMK04832_VAL_CLKIN_SEL_TYPE_OUT);
+>  
+>  	dev_info(lmk->dev, "setting up 4-wire mode\n");
+>  	ret = regmap_write(lmk->regmap, LMK04832_REG_RST3W,
+> @@ -1363,15 +1373,18 @@ static int lmk04832_set_spi_rdbk(const struct lmk04832 *lmk, const int rdbk_pin)
+>  	case RDBK_RESET:
+>  		reg = LMK04832_REG_CLKIN_RST;
+>  		break;
+> +	case RDBK_PLL1_LD:
+> +		reg = LMK04832_REG_PLL1_LD;
+> +		val = FIELD_PREP(LMK04832_BIT_PLL1_LD_MUX,
+> +				 LMK04832_VAL_PLL1_LD_MUX_SPI_RDBK) |
+> +		      FIELD_PREP(LMK04832_BIT_PLL1_LD_TYPE,
+> +				 LMK04832_VAL_PLL1_LD_TYPE_OUT_PP);
+> +		break;
+>  	default:
+>  		return -EINVAL;
+>  	}
+>  
+> -	return regmap_write(lmk->regmap, reg,
+> -			    FIELD_PREP(LMK04832_BIT_CLKIN_SEL_MUX,
+> -				       LMK04832_VAL_CLKIN_SEL_MUX_SPI_RDBK) |
+> -			    FIELD_PREP(LMK04832_BIT_CLKIN_SEL_TYPE,
+> -				       LMK04832_VAL_CLKIN_SEL_TYPE_OUT));
+> +	return regmap_write(lmk->regmap, reg, val);
+>  }
+>  
+>  static int lmk04832_probe(struct spi_device *spi)
+> -- 
+> 2.17.1
+> 
+> 
+> Met vriendelijke groet / kind regards,
+> 
+> Mike Looijmans
+> System Expert
+> 
+> 
+> TOPIC Embedded Products B.V.
+> Materiaalweg 4, 5681 RJ Best
+> The Netherlands
+> 
+> T: +31 (0) 499 33 69 69
+> E: mike.looijmans@topicproducts.com
+> W: www.topic.nl
+> 
+> Please consider the environment before printing this e-mail
