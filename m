@@ -2,100 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53515785658
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 12:58:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7552078565B
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 13:00:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234229AbjHWK6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 06:58:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54472 "EHLO
+        id S234267AbjHWK77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 06:59:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232105AbjHWK6y (ORCPT
+        with ESMTP id S234251AbjHWK75 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 06:58:54 -0400
-Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84BC4FB;
-        Wed, 23 Aug 2023 03:58:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:Content-Type:MIME-Version:
-        Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=QpqzTXlkvfTZwb/qvLffSgOkdmA3MgzLw1gYn4Tft4k=; b=s/9kx6+CR/fuCvSdzEXiuQjEfZ
-        EdboCKEcmE68sjpbz32RSMAnopH5pDf5FWnykSJznpjzbcLne2CEzF/ettMHvNxEZRwVE84hajdMi
-        NK88pFfypItbIjF3cChnkLE6vL2H8WQit9euN7sWPjMxwQjzOiSPZy+En65nCYIFEk6TejmTV9yxc
-        3BSESc8hQZqVZH1d4SKqulITtnWdmHws66OttGpvKlGtRUzwVgj0iPKwY9vYa3HaysPc7b6n/z0i8
-        NGnex4U5VnAjp6bSr3FR0EK+NP/LM8+C51OLtz2klZ/imZyb1e7HMGAHvV3sPD3iiYaiy3BRUCxJY
-        ikXoj3uA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:42594)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qYlZJ-0002eW-1e;
-        Wed, 23 Aug 2023 11:58:33 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qYlZI-0006lA-Js; Wed, 23 Aug 2023 11:58:32 +0100
-Date:   Wed, 23 Aug 2023 11:58:32 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Serge Semin <fancer.lancer@gmail.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Rohan G Thomas <rohan.g.thomas@intel.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Conor Dooley <conor.dooley@microchip.com>
-Subject: Synopsys XGMII MAC and USXGMII interfaces
-Message-ID: <ZOXmWLB4TKGKvkiE@shell.armlinux.org.uk>
+        Wed, 23 Aug 2023 06:59:57 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 099E319A
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 03:59:56 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1bf5c314a57so22522225ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 03:59:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1692788395; x=1693393195;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GYZFq9HoRCm6GUrGyMS4vRuIGoFXcojk2tIii80AOf8=;
+        b=hMCv8kaLg9uRTJ7vSvi6IGdU5fZSfTMhlG0zlRPlHSqcYvoDeYlf/0xO+0jJfC14cS
+         Bw/WseNRlkcUtziB19vuZoUOtCEHMS/ZTmr/X4WMxnB4mRrckS65mlok1QlaHfFhxJWk
+         sCvx4/kcuXPrO7i7krfxqRgWsnc78+OU1y2ROexiQGs+BLzrE+OARml5+vAU4fFs8ULg
+         vZc+BkaxQnXvXkkrRzvgPDlePDCUSX3woqMTGCbE1YsycvsZfrDHsQqaTcUoXCtw7MOX
+         MBAUxFHt8Uk9IU3BohH1PGp12RZ6tKt7MxNaUPCBmr/H2Ffdj7158cXTW8jz7fZUES/Q
+         AYYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692788395; x=1693393195;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=GYZFq9HoRCm6GUrGyMS4vRuIGoFXcojk2tIii80AOf8=;
+        b=VIF87fLD0lqAg7qtTQJSMK3N9F/KK6ZIF8/pl1CdNWwgCNii/LMPKNBn3jrSF3SohF
+         lFj3iS/P5VbjLTmkThK9kVTpP8JgcmwlqvMB3ARu+OBW90HQdAn5zo711nphPw0JCRDC
+         zjOCB6g/J/4GX/P9lBV2gT5486iHysP+lG/cZUUMsWXkWXcOVJF0XIfVoxcYbV4EVAUE
+         lENSl9qrg0vSeRSSO/7EpD2yX1MwQwx6TyQI+KtDkvZgS6OuWSzzqbckBLsdX4pbVwMw
+         WpuIz8NnmgrAADAtcK1trb+PXz+oXk7oaeGTXBiv5Y5Crmwmv9txjkDjefMm8wg24xwN
+         gVgQ==
+X-Gm-Message-State: AOJu0Ywp+IkcnknkgHQYj8EHFhAcZsmcvIv6uA1hZ3eHFqNXrMg8EunU
+        qdvl6DnYiYUHY5poQm2usQRLuA==
+X-Google-Smtp-Source: AGHT+IG9GEvdMxJhiziwd/SHslHP1nERR5FT/wwW48l3HyWAFbQ06s+mBPnSX8kpNLDY/xUfOyXAKg==
+X-Received: by 2002:a17:902:ea06:b0:1b2:1b22:196 with SMTP id s6-20020a170902ea0600b001b21b220196mr11544921plg.48.1692788395431;
+        Wed, 23 Aug 2023 03:59:55 -0700 (PDT)
+Received: from [10.255.208.99] ([139.177.225.251])
+        by smtp.gmail.com with ESMTPSA id a7-20020a170902ecc700b001b2069072ccsm10655073plh.18.2023.08.23.03.59.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Aug 2023 03:59:55 -0700 (PDT)
+Message-ID: <029cb695-9b8e-8fb3-ef0f-b223f34e7639@bytedance.com>
+Date:   Wed, 23 Aug 2023 18:59:49 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [PATCH 4/5] fuse: writeback_cache consistency enhancement
+ (writeback_cache_v2)
+To:     Bernd Schubert <bernd.schubert@fastmail.fm>,
+        Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Jonathan Corbet <corbet@lwn.net>, linux-fsdevel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        me@jcix.top
+References: <20230711043405.66256-1-zhangjiachen.jaycee@bytedance.com>
+ <20230711043405.66256-5-zhangjiachen.jaycee@bytedance.com>
+ <CAJfpegtqJo78wqT0EY0=1xfoSROsJogg9BNC_xJv6id9J1Oa+g@mail.gmail.com>
+ <699673a6-ff82-8968-6310-9a0b1c429be3@fastmail.fm>
+From:   Jiachen Zhang <zhangjiachen.jaycee@bytedance.com>
+In-Reply-To: <699673a6-ff82-8968-6310-9a0b1c429be3@fastmail.fm>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Part 2 of the discussion...
+On 2023/8/23 18:35, Bernd Schubert wrote:
+> On 8/23/23 11:07, Miklos Szeredi wrote:
+>> On Tue, 11 Jul 2023 at 06:36, Jiachen Zhang
+>> <zhangjiachen.jaycee@bytedance.com> wrote:
+>>>
+>>> Some users may want both the high performance of the writeback_cahe mode
+>>> and a little bit more consistency among FUSE mounts. Current
+>>> writeback_cache mode never updates attributes from server, so can never
+>>> see the file attributes changed by other FUSE mounts, which means
+>>> 'zero-consisteny'.
+>>>
+>>> This commit introduces writeback_cache_v2 mode, which allows the 
+>>> attributes
+>>> to be updated from server to kernel when the inode is clean and no
+>>> writeback is in-progressing. FUSE daemons can select this mode by the
+>>> FUSE_WRITEBACK_CACHE_V2 init flag.
+>>>
+>>> In writeback_cache_v2 mode, the server generates official attributes.
+>>> Therefore,
+>>>
+>>>      1. For the cmtime, the cmtime generated by kernel are just 
+>>> temporary
+>>>      values that are never flushed to server by fuse_write_inode(), 
+>>> and they
+>>>      could be eventually updated by the official server cmtime. The
+>>>      mtime-based revalidation of the fc->auto_inval_data mode is also
+>>>      skipped, as the kernel-generated temporary cmtime are likely not 
+>>> equal
+>>>      to the offical server cmtime.
+>>>
+>>>      2. For the file size, we expect server updates its file size on
+>>>      FUSE_WRITEs. So we increase fi->attr_version in 
+>>> fuse_writepage_end() to
+>>>      check the staleness of the returning file size.
+>>>
+>>> Together with FOPEN_INVAL_ATTR, a FUSE daemon is able to implement
+>>> close-to-open (CTO) consistency like NFS client implementations.
+>>
+>> What I'd prefer is mode similar to NFS: getattr flushes pending writes
+>> so that server ctime/mtime are always in sync with client.  FUSE
+>> probably should have done that from the beginning, but at that time I
+>> wasn't aware of the NFS solution.
+> 
+> 
+> I think it would be good to have flush-on-getattr configurable - systems 
+> with a distributed lock manager (DLM) and notifications from 
+> server/daemon to kernel should not need it.
+> 
+> 
+> Thanks,
+> Bernd
 
-A similar issue applies to PHY_INTERFACE_MODE_USXGMII, but is reversed.
-USXGMII supports 10M, 100M, 1G, 2.5G, 5G and 10G. Phylink allows all of
-these because that's what the appropriate standard says. dwxgmac2
-initialises config register settings for speeds from 10M up to 10G.
-However, the PHY_INTERFACE_MODE_USXGMII switch() block in
-stmmac_mac_link_up() only handles 2.5G, 5G and 10G. Shouldn't it handle
-the other speed cases - it looks like the MAC does support them.
+Hi Miklos and Bernd,
 
-The initialisation done by dwxgmac2_setup() does setup control register
-masks for everything from 10M to 10G, so on the face of it, it looks
-like a mistake in stmmac_mac_link_up().
+I agree that flush-on-getattr is a good solution to keep the c/mtime
+consistency for the view of userspace applications.
 
-If it's something outside of the MAC that doesn't support these speeds
-when operating as USXGMII, then that needs to be handled.
+Maybe in the next version, we can add the flush-on-getattr just for the
+writeback_cache_v2 mode, as daemons replying on reverse notifications
+are likely not need the writeback_cache_v2 mode. What do you think?
 
-The other weird thing is that when using PHY_INTERFACE_MODE_USXGMII
-with XPCS, XPCS supports 1G, 2.5G and 10G ethtool link modes, but not
-5G. So combining the implementation in stmmac_mac_link_up(), that
-means only 2.5G and 10G can actually be functional. Is that a fair
-assessment of the USXGMII situation with stmmac?
+Thanks,
+Jiachen
 
-Thanks.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
