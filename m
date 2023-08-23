@@ -2,99 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C12537859C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 15:50:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5CAB7859D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 15:52:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236289AbjHWNux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 09:50:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38510 "EHLO
+        id S236330AbjHWNwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 09:52:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233321AbjHWNuw (ORCPT
+        with ESMTP id S236233AbjHWNwT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 09:50:52 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D715CEE
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 06:50:50 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2bbbda48904so69016891fa.2
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 06:50:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1692798648; x=1693403448;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=e1EOrOgCseln8t37rY5FBO1h5UdCTgTFQYEVgsNrZcU=;
-        b=WCv92+IcD6D4hZoAESWW3dioRImv+ylYqTQXvnpsjZrO7x7/uDFqq1qpN/dGI5YwKU
-         B3EQpk9J1MSDK1wHZrKHxl3c+pqEgaokusOZaajgwzzvTQJQYrY/9oAh3gluHFn9nVN3
-         EBWyGiXWGM1USSI7Tggn9O1VCe9KE2y6lM6ek=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692798648; x=1693403448;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=e1EOrOgCseln8t37rY5FBO1h5UdCTgTFQYEVgsNrZcU=;
-        b=MgCFAs/5IgpF31r4OJqYPw+V1qZsMxbC4w1MVffBei8u+JI85DWcgPEdqer1RsHTkC
-         avQNAH5KiBQ1Iyzp07vQ2DfVb9+8SmEluqDJMAhbMeEn/ch29ZWrja6LZWYp94rP9IwQ
-         14B0VZAOoKK4UMEXRyqhKpIbWeU03FSU3TvQ0ovOm/Oqc+Tcuo7Vn/BcbxBP9T8Jupdj
-         it2Is9+cMCcIVmNgpGdOYBMf6bjLMcOxvGLFTWOH3swgzZfT4n3h3lBOoN/R6+XYpixj
-         +Pi4gPCJg6yR5MUwfUlAizndx4GJyII6GgVATywBDMYzHxylQHpJM+laH5CP/6b5RL+n
-         4HLw==
-X-Gm-Message-State: AOJu0Ywd1uFAt4uUar1H+i//jkR22V/Dfmua5r/jg+REmq8scm70gK8j
-        CsnnWScYkNei9w+waGntd1HwfrlKaag61bV0whugYw==
-X-Google-Smtp-Source: AGHT+IGo9+IRolLSArCmBrn+ncxG6gkdaLbU303VOalvuv1hvpM3HIfnQtUrdt3ph1C3tx20196fcVyK0fOYtp0qG8A=
-X-Received: by 2002:a2e:81d3:0:b0:2bc:db5a:9545 with SMTP id
- s19-20020a2e81d3000000b002bcdb5a9545mr1737607ljg.14.1692798648532; Wed, 23
- Aug 2023 06:50:48 -0700 (PDT)
+        Wed, 23 Aug 2023 09:52:19 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9FA619A
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 06:52:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692798737; x=1724334737;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=hhDbaxo+r59y9cxE+Cm53wih1htNCd2YXPEr7MQRr5Y=;
+  b=G9p3F9y7oz5iseyNti8MRpI6CzRpsvzy9E0mxVaCnC8LrMmZUm4Dfmwv
+   JPx5idxFdR7+RVHcgvxJCA2R9jUIEmph9qtz1Tm0xVSPCpfdJRrhm92nv
+   8J73xPfHivZORwSySbZHvM+Wgv5RnjHWDzGNSwbDFBJez2E5SO1esDwbb
+   0aQkrnTAofAidq2hHz6P7clplYi6HZvLbegrCeI059+syz8NW0ioJIjr0
+   R4sSCf1KaifPtBRl59NqDtSISo7niP1Xx/bBZmWd+zXz7SXv9sxZNke0V
+   m7NU5Dr8ksMeaYFl1LNltX9Wa6Qn/Ivbt9NtGpVbsI/o3JzIsdbO1lvMF
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="405166153"
+X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
+   d="scan'208";a="405166153"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2023 06:52:17 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="826734546"
+X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
+   d="scan'208";a="826734546"
+Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 23 Aug 2023 06:52:15 -0700
+Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qYoHO-0001Fb-30;
+        Wed, 23 Aug 2023 13:52:14 +0000
+Date:   Wed, 23 Aug 2023 21:51:54 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: drivers/base/regmap/regmap-raw-ram.c:24:24: sparse: sparse: cast to
+ restricted __be16
+Message-ID: <202308232120.uQEXvamQ-lkp@intel.com>
 MIME-Version: 1.0
-References: <CALm+0cVvHb=Fe8kseVLesjS1d=579c7Bn5hxdiqyzBp5Z7SugA@mail.gmail.com>
-In-Reply-To: <CALm+0cVvHb=Fe8kseVLesjS1d=579c7Bn5hxdiqyzBp5Z7SugA@mail.gmail.com>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Wed, 23 Aug 2023 09:50:37 -0400
-Message-ID: <CAEXW_YScFnFG0Y1NgFS7KGS6s9CoXJ3ZQB++6udyK38mcJ=1xg@mail.gmail.com>
-Subject: Re: rcutorture: Can not Disable RT throttling
-To:     Z qiang <qiang.zhang1211@gmail.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 3:37=E2=80=AFAM Z qiang <qiang.zhang1211@gmail.com>=
- wrote:
->
-> When running build-in rcutorture tests in 6.5.0-rc4-rt, and found that,
-> although the value of /proc/sys/kernel/sched_rt_runtime_us is -1,
->
-> cat /sys/kernel/debug/sched/debug
-> ....
-> rt_rq[6]:
->   .rt_nr_running                 : 4
->   .rt_nr_migratory               : 0
->   .rt_throttled                  : 0
->   .rt_time                       : 0.000000
->   .rt_runtime                    : 950.000000
->
-> but the rt_runtime still is 950.000000.
-> set sysctl_sched_rt_runtime in rcu_torture_disable_rt_throttle()
-> does not disable rt-throttling.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   89bf6209cad66214d3774dac86b6bbf2aec6a30d
+commit: 65dd2f671875b1d97b6fa9bcf7677f5e1c55f776 regmap: Provide a ram backed regmap with raw support
+date:   2 months ago
+config: i386-randconfig-061-20230823 (https://download.01.org/0day-ci/archive/20230823/202308232120.uQEXvamQ-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20230823/202308232120.uQEXvamQ-lkp@intel.com/reproduce)
 
-I think you have hit a bug. I think the problem is
-rcu_torture_disable_rt_throttle() modifies the sysctl knobs, but does
-not change def_rt_bandwidth and reinitialize the rt_rq. I think we
-need to call sched_rt_do_global() like the sysfs handler does, or
-change the sysctl knobs to be earlier in the boot process before the
-rt_rq are initialized.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308232120.uQEXvamQ-lkp@intel.com/
 
-Or better yet (not sure if it is possible) trigger the sysctl change
-via the sysctl layer and let it do the same logic.
+sparse warnings: (new ones prefixed by >>)
+>> drivers/base/regmap/regmap-raw-ram.c:24:24: sparse: sparse: cast to restricted __be16
+>> drivers/base/regmap/regmap-raw-ram.c:26:24: sparse: sparse: cast to restricted __le16
 
-Thoughts?
+vim +24 drivers/base/regmap/regmap-raw-ram.c
 
-Thanks.
+    18	
+    19	static unsigned int decode_reg(enum regmap_endian endian, const void *reg)
+    20	{
+    21		const u16 *r = reg;
+    22	
+    23		if (endian == REGMAP_ENDIAN_BIG)
+  > 24			return be16_to_cpu(*r);
+    25		else
+  > 26			return le16_to_cpu(*r);
+    27	}
+    28	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
