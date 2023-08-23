@@ -2,185 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADA1F7857F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 14:42:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ADEB7857FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 14:43:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234614AbjHWMmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 08:42:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46130 "EHLO
+        id S234736AbjHWMnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 08:43:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234515AbjHWMmU (ORCPT
+        with ESMTP id S233196AbjHWMns (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 08:42:20 -0400
+        Wed, 23 Aug 2023 08:43:48 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63597E46;
-        Wed, 23 Aug 2023 05:42:18 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D180D1;
+        Wed, 23 Aug 2023 05:43:46 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E5DAA650A5;
-        Wed, 23 Aug 2023 12:42:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B64AAC433C8;
-        Wed, 23 Aug 2023 12:42:16 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id AFEC264B97;
+        Wed, 23 Aug 2023 12:43:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D845C433C7;
+        Wed, 23 Aug 2023 12:43:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692794537;
-        bh=8uzezK1wRKIpXgIyZFlOrbzbnhXdWBh2a3dmZMdQpRo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=VWRpAmepzO+DtlYuaCJBkh8K15skd67DU6bGJvCLxJG1cfaX5G+SXYbb20zulpLkX
-         AggySYVeZDxigKgcblRxCrKi+STjTGSymdfdQhoDBAfmWiOj/3nCa/67IgNAwNtRcP
-         rskUJYcVSFFZy0cOMxRrXCegAjwyduZCKgh7TgYKbW0ODTSxJjyL4oR/mjtzRd0G7j
-         B4nUgarpP/AdCbRGE1oageZ9eZo77tI+pjR74VbKtTMnAZ2Sz1Py4oIlntMpBzlp/R
-         0Gca63BpG1ZF6yRyI5QTpWLIS4o5TmYlYgLONr1tHedjxEHiJp2BNEuzZdw3SPhuU6
-         4uHQCNiHnQIBQ==
-Date:   Wed, 23 Aug 2023 07:42:14 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Lorenzo Pieralisi <lpieralisi@kernel.org>
-Cc:     Jim Quinlan <james.quinlan@broadcom.com>,
-        linux-pci@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Cyril Brulebois <kibi@debian.org>,
-        Phil Elwell <phil@raspberrypi.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Jim Quinlan <jim2101024@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "moderated list:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v6 1/5] dt-bindings: PCI: brcmstb: Add brcm,enable-l1ss
- property
-Message-ID: <20230823124214.GA416689@bhelgaas>
+        s=k20201202; t=1692794625;
+        bh=/oxOH5QslwcioinYcdYU1DcnBL2tOvJ8u1CWKWHgJaM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NSeP+i6QwvdJ60NcsS4pDWGN3sTdjSpfQB4jiaVLLv1XY0W/IqfUWMEqx0W8H2OKw
+         0iMGdjO22CntMdk808/Cm7rXEm3+pkLbbp/LEMMLEkL67Vyo9m+EQLhJAUsGhbc61c
+         nCMfN6Eq5yRT6rldBiEvx8j9dlLp37xXPu3LkNw6OhcEMjOZhLrw0FWJdXFootqJzh
+         BqorUZveKobJGg7FcF/8U3Zs8NRvTO/4FDpZXzubrGvEvgBx9wRcBs6k/++jgPo6mN
+         GoWoLs+i1B5sm3idUIlP5Y0Q2uJ918PNWwAe3PsmPWzqsSQpqOahwDeZYnILD/x2KV
+         oQgIIMQ1EwdFA==
+Received: (nullmailer pid 2031776 invoked by uid 1000);
+        Wed, 23 Aug 2023 12:43:40 -0000
+Date:   Wed, 23 Aug 2023 07:43:40 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Pankaj Gupta <pankaj.gupta@nxp.com>
+Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        clin@suse.com, conor+dt@kernel.org, pierre.gondois@arm.com,
+        ping.bai@nxp.com, xiaoning.wang@nxp.com, wei.fang@nxp.com,
+        peng.fan@nxp.com, haibo.chen@nxp.com, festevam@gmail.com,
+        linux-imx@nxp.com, davem@davemloft.net,
+        krzysztof.kozlowski+dt@linaro.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, gaurav.jain@nxp.com,
+        alexander.stein@ew.tq-group.com, sahil.malhotra@nxp.com,
+        aisheng.dong@nxp.com, V.Sethi@nxp.com
+Subject: Re: [PATCH v5 01/11] dt-bindings: arm: fsl: add imx-se-fw binding doc
+Message-ID: <20230823124340.GA2022486-robh@kernel.org>
+References: <20230823073330.1712721-1-pankaj.gupta@nxp.com>
+ <20230823073330.1712721-2-pankaj.gupta@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZOW1qDmTdy+8KODt@lpieralisi>
+In-Reply-To: <20230823073330.1712721-2-pankaj.gupta@nxp.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 23, 2023 at 09:30:48AM +0200, Lorenzo Pieralisi wrote:
-> On Mon, Aug 21, 2023 at 12:01:50PM -0400, Jim Quinlan wrote:
-> > On Mon, Aug 21, 2023 at 11:41 AM Lorenzo Pieralisi
-> > <lpieralisi@kernel.org> wrote:
-> > > On Mon, Aug 21, 2023 at 11:25:11AM -0400, Jim Quinlan wrote:
-> > > > On Mon, Aug 21, 2023 at 10:47 AM Lorenzo Pieralisi
-> > > > <lpieralisi@kernel.org> wrote:
-> > > > > On Fri, Jun 23, 2023 at 10:40:54AM -0400, Jim Quinlan wrote:
-> > > > > > This commit adds the boolean "brcm,enable-l1ss" property:
-> > > > > >
-> > > > > >   The Broadcom STB/CM PCIe HW -- a core that is also used by RPi SOCs --
-> > > > > >   requires the driver probe() to deliberately place the HW one of three
-> > > > > >   CLKREQ# modes:
-> > > > > >
-> > > > > >   (a) CLKREQ# driven by the RC unconditionally
-> > > > > >   (b) CLKREQ# driven by the EP for ASPM L0s, L1
-> > > > > >   (c) Bidirectional CLKREQ#, as used for L1 Substates (L1SS).
-> > > > > >
-> > > > > >   The HW+driver can tell the difference between downstream devices that
-> > > > > >   need (a) and (b), but does not know when to configure (c).  All devices
-> > > > > >   should work fine when the driver chooses (a) or (b), but (c) may be
-> > > > > >   desired to realize the extra power savings that L1SS offers.  So we
-> > > > > >   introduce the boolean "brcm,enable-l1ss" property to inform the driver
-> > > > > >   that (c) is desired.  Setting this property only makes sense when the
-> > > > > >   downstream device is L1SS-capable and the OS is configured to activate
-> > > > > >   this mode (e.g. policy==powersupersave).
-> > > > > >
-> > > > > >   This property is already present in the Raspian version of Linux, but the
-> > > > > >   upstream driver implementation that follows adds more details and
-> > > > > >   discerns between (a) and (b).
-> > > > > >
-> > > > > > Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
-> > > > > > Reviewed-by: Rob Herring <robh@kernel.org>
-> > > > > > ---
-> > > > > >  Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml | 9 +++++++++
-> > > > > >  1 file changed, 9 insertions(+)
-> > > > > >
-> > > > > > diff --git a/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml b/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
-> > > > > > index 7e15aae7d69e..8b61c2179608 100644
-> > > > > > --- a/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
-> > > > > > +++ b/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
-> > > > > > @@ -64,6 +64,15 @@ properties:
-> > > > > >
-> > > > > >    aspm-no-l0s: true
-> > > > > >
-> > > > > > +  brcm,enable-l1ss:
-> > > > > > +    description: Indicates that PCIe L1SS power savings
-> > > > > > +      are desired, the downstream device is L1SS-capable, and the
-> > > > > > +      OS has been configured to enable this mode.  For boards
-> > > > >
-> > > > > What does this mean ? I don't think DT properties are supposed
-> > > > > to carry information related to how the OS is configured.
-> > > >
-> > > > The DT setting in question is unrelated to the statement "and the OS
-> > > > has been configured to
-> > > > enable this mode".
-> > > >
-> > > > This is merely saying that even if you enable "brcm,l1ss-enable"
-> > > > that you may not get L1SS power savings w/o setting
-> > > > "CONFIG_PCIEASPM_POWER_SUPERSAVE=y".
-> > > > I mentioned that exact term but a reviewer nakked it because
-> > > > apparently DT descriptions should not be OS specific.
-> > > >
-> > > > I am actually open for this to be a command-line option but I wanted to honor
-> > > > what the Raspian OS folks have already done.  RaspianOS already has
-> > > > "brcm,enable-l1ss"
-> > > > set in their DTS files.
-> > >
-> > > This is about the mainline kernel, I don't have any visibility into
-> > > downstream kernels (where that property management was added without DT
-> > > and PCI maintainers supervision).
-> > >
-> > > Raspian OS folks' choice is theirs but it can't and it shouldn't override
-> > > the mainline review process even though I understand the position you
-> > > are in.
-> > 
-> > Understood, but using the command line has its warts as well; I now recall the
-> > discussion Bjorn and I  had regarding this option.  I'm pretty sure
-> > that upstreaam will not allow the following
-> > possible command line kernel params:
-> > 
-> >     brcm,enable-l1ss
-> >     pci=brcm,entable-l1ss
-> > 
-> > Bjorn suggested using the  documented but (IMO) obscure  and  rarely
-> > used  format
-> > 
-> >     pci=[<domain>:]<bus>:<dev>.<func>[/<dev>.<func>]*pci:<vendor>:<device>[:<subvendor>:<subdevice>]
-> > 
-> > but this is just going in the wrong direction; here's why.  Using the
-> > above iformat s completely dependent on the
-> > PCI "linux-domaiin"  property,  a non-HW related DT property I  might
-> > add.  Since "linux-domain" is already
-> > a valid and well-used  DT property, and the value of  the above
-> > command line format is dependent
-> > on the value of the "linux-domain", why not be consistent and let
-> > "brcm,enable-l1ss" be a Broadcom specific property?
+On Wed, Aug 23, 2023 at 01:03:20PM +0530, Pankaj Gupta wrote:
+> The NXP's i.MX EdgeLock Enclave, a HW IP creating an embedded
+> secure enclave within the SoC boundary to enable features like
+> - HSM
+> - SHE
+> - V2X
 > 
-> I am just asking to add a module_param to the host controller driver.
+> Communicates via message unit with linux kernel. This driver
+> is enables communication ensuring well defined message sequence
+> protocol between Application Core and enclave's firmware.
+> 
+> Driver configures multiple misc-device on the MU, for multiple
+> user-space applications can communicate on single MU.
+> 
+> It exists on some i.MX processors. e.g. i.MX8ULP, i.MX93 etc.
+> 
+> Signed-off-by: Pankaj Gupta <pankaj.gupta@nxp.com>
+> ---
 
-A module_param sounds possible to me.  IIRC the bidirectional CLKREQ#
-(config (c)) has been tested and there are no known problems even if
-the OS doesn't enable L1SS.  The only issue (again, IIRC) is that the
-hardware engineer has unspecified reservations about it.
+v5? Where's the changelog for *this* patch?
 
-Is there any room to make (c) the default and have a module_param to
-*disable* the L1SS support?  I think the driver knows enough to then
-select (a) or (b) by itself.
+>  .../bindings/firmware/fsl,imx-se-fw.yaml      | 121 ++++++++++++++++++
+>  1 file changed, 121 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/firmware/fsl,imx-se-fw.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/firmware/fsl,imx-se-fw.yaml b/Documentation/devicetree/bindings/firmware/fsl,imx-se-fw.yaml
+> new file mode 100644
+> index 000000000000..f7230f93e56d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/firmware/fsl,imx-se-fw.yaml
+> @@ -0,0 +1,121 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/firmware/fsl,imx-se-fw.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: NXP i.MX EdgeLock Enclave Firmware (ELEFW)
+> +
+> +maintainers:
+> +  - Pankaj Gupta <pankaj.gupta@nxp.com>
+> +
+> +description:
+> +  The NXP's i.MX EdgeLock Enclave, a HW IP creating an embedded
+> +  secure enclave within the SoC boundary to enable features like
+> +  - HSM
+> +  - SHE
+> +  - V2X
+> +
+> +  It uses message unit to communicate and coordinate to pass messages
+> +  (e.g., data,  status and control) through its interfaces.
+> +
+> +  This driver configures multiple misc-devices on the MU, to exchange
+> +  messages from User-space application and NXP's Edgelocke Enclave firmware.
+> +  The driver ensures that the messages must follow the following protocol
+> +  defined.
+> +
+> +                                     Non-Secure           +   Secure
+> +                                                          |
+> +                                                          |
+> +                   +---------+      +-------------+       |
+> +                   | ele_mu.c+<---->+imx-mailbox.c|       |
+> +                   |         |      |  mailbox.c  +<-->+------+    +------+
+> +                   +---+-----+      +-------------+    | MU X +<-->+ ELE |
+> +                       |                               +------+    +------+
+> +                       +----------------+                 |
+> +                       |                |                 |
+> +                       v                v                 |
+> +                   logical           logical              |
+> +                   receiver          waiter               |
+> +                      +                 +                 |
+> +                      |                 |                 |
+> +                      |                 |                 |
+> +                      |            +----+------+          |
+> +                      |            |           |          |
+> +                      |            |           |          |
+> +               device_ctx     device_ctx     device_ctx   |
+> +                                                          |
+> +                 User 0        User 1       User Y        |
+> +                 +------+      +------+     +------+      |
+> +                 |misc.c|      |misc.c|     |misc.c|      |
+> +  kernel space   +------+      +------+     +------+      |
+> +                                                          |
+> +  +------------------------------------------------------ |
+> +                     |             |           |          |
+> +  userspace     /dev/ele_muXch0    |           |          |
+> +                           /dev/ele_muXch1     |          |
+> +                                         /dev/ele_muXchY  |
+> +                                                          |
+> +
+> +  When a user sends a command to the firmware, it registers its device_ctx
+> +  as waiter of a response from firmware.
+> +
+> +  A user can be registered as receiver of command from the ELE.
+> +  Create char devices in /dev as channels of the form /dev/ele_muXchY with X
+> +  the id of the driver and Y for each users. It allows to send and receive
+> +  messages to the NXP EdgeLock Enclave IP firmware on NXP SoC, where current
+> +  possible value, i.e., supported SoC(s) are imx8ulp, imx93.
 
-Bjorn
+Looks like a bunch of Linux details which don't belong in the binding.
+
+Why do you need your own custom interface to userspace? No one else has 
+a similar feature in their platforms? Something like virtio or rpmsg 
+doesn't work?
+
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - fsl,imx8ulp-se-fw
+> +      - fsl,imx93-se-fw
+> +
+> +  mboxes:
+> +    description:
+> +      All MU channels must be within the same MU instance. Cross instances are
+> +      not allowed. Users need to ensure that used MU instance does not conflict
+> +      with other execution environments.
+> +    items:
+> +      - description: TX0 MU channel
+> +      - description: RX0 MU channel
+> +
+> +  mbox-names:
+> +    items:
+> +      - const: tx
+> +      - const: rx
+> +
+> +  fsl,mu-did:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description:
+> +      By design, Domain is a clean separated processing island with separate power,
+> +      clocking and peripheral; but with a tightly integrated bus fabric for efficient
+> +      communication. The Domain to which this message-unit is associated, is identified
+> +      via Domain ID or did.
+> +
+> +  sram-pool:
+
+I believe 'sram' is the somewhat standard property to refer to an SRAM 
+region.
+
+> +    items:
+> +      - description: SRAM memory instance.
+
+Used for what?
+
+> +
+> +  memory-region:
+> +    items:
+> +      - description: Reserved memory region that can be accessed by firmware. Used for
+> +          exchanging the buffers between driver and firmware.
+> +
+> +required:
+> +  - compatible
+> +  - mboxes
+> +  - mbox-names
+> +  - mu-id
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    ele_fw: se-fw {
+> +      compatible = "fsl,imx8ulp-se-fw";
+> +      mbox-names = "tx", "rx";
+> +      mboxes = <&s4muap 0 0>, <&s4muap 1 0>;
+> +      fsl,mu-id = <2>;
+> +    };
+> -- 
+> 2.34.1
+> 
