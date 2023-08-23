@@ -2,128 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BB13785C88
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 17:50:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 401EE785C8E
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 17:51:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237143AbjHWPuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 11:50:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57540 "EHLO
+        id S237262AbjHWPvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 11:51:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237181AbjHWPuy (ORCPT
+        with ESMTP id S233338AbjHWPvQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 11:50:54 -0400
+        Wed, 23 Aug 2023 11:51:16 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFA3C10DB;
-        Wed, 23 Aug 2023 08:50:46 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA9BA10C7
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 08:51:11 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6D184627ED;
-        Wed, 23 Aug 2023 15:50:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18522C433C7;
-        Wed, 23 Aug 2023 15:50:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1692805845;
-        bh=QC0npHwIoJ+yUqO/mq98MMbc1AGocjrHz7+gNcbU17E=;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 797A76210D
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 15:51:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5236C433C8;
+        Wed, 23 Aug 2023 15:51:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692805870;
+        bh=ADd7oP1/d6c3aMgL14nq5nf0xJcSv5Z92YrLo2vXc+0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ggVv5DBTP8bNnkUnx5W8zpmbkyJYsv7Pok8UboHacBFpKlSXixMykw0ByIuPX8pgv
-         vYByBnfFkGcNqkSBT4bzadXlFJDPfW6o8FRVEVxwzbhbrDlyt/8DdJ+mvTlfyGmmLc
-         rSwrjQsmZmClPYnaJ9xRwVEnsHCRaytYXvMLLXss=
-Date:   Wed, 23 Aug 2023 17:50:42 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>, stable@vger.kernel.org,
-        patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-Subject: Re: [PATCH 6.1 000/194] 6.1.47-rc1 review
-Message-ID: <2023082325-expansion-revoke-1f3a@gregkh>
-References: <20230821194122.695845670@linuxfoundation.org>
- <991b93d2-9fde-4233-97d5-1133a9360d02@roeck-us.net>
- <2023082309-veggie-unwoven-a7df@gregkh>
- <CA+G9fYvwxuVpSn24YvtdNXaofg2JtZDREatOpDsKTVJX+nFN3Q@mail.gmail.com>
- <2d8a5f48-6c50-4c12-8a3d-23e621c6b722@roeck-us.net>
+        b=D0Nn8KkX888lKSilqWK8lqv0YMZVwtNhyxd5E4r9zzLidxs9n0j9WZruAB3jWJYk/
+         sy+wnYP2VA6UnkdZabC3WwRhIrBTTzPFjz2eTNSolzH4a/XbWhNOZw6reQsUBmpMqH
+         aeOb2Nm4hLDHybFqD1sdMoB55lAbl/t51fgyc3cE2PyB7iDadIw7AajUVJyyLlKCdJ
+         HLo+305rjRj94qQbddu33zj/xlfB6X1LvVbfBAt/OEkAxvoj04f+7w98UFTQofBmt7
+         FOXIs6pTXQSJvEEyPr3v247l69Cay3XDuqCSo1ufbicFYsYUQKM9j5w8e13flHrGiH
+         gMMiRiUlw3kng==
+Date:   Wed, 23 Aug 2023 16:51:01 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Ajye Huang <ajye_huang@compal.corp-partner.google.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Akihiko Odaki <akihiko.odaki@gmail.com>,
+        Yong Zhi <yong.zhi@intel.com>,
+        ye xingchen <ye.xingchen@zte.com.cn>,
+        "balamurugan . c" <balamurugan.c@intel.com>,
+        Libin Yang <libin.yang@intel.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        David Lin <CTLIN0@nuvoton.com>, Brent Lu <brent.lu@intel.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Terry Cheong <htcheong@chromium.org>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Gongjun Song <gongjun.song@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>, apoorv <apoorv@intel.com>,
+        alsa-devel@alsa-project.org, kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v1] Revert "ASoC: Intel: Add rpl_nau8318_8825 driver"
+Message-ID: <2ebbcb7a-bc0d-4f62-9f4b-706f0270b71a@sirena.org.uk>
+References: <20230823040755.2217942-1-ajye_huang@compal.corp-partner.google.com>
+ <dd6d51b0-cc60-4fb7-932d-1117143d1715@sirena.org.uk>
+ <CALprXBYxrwBW6HLP5MwYhFh1_Skei+pLbXd7yNAEuhLTQJLVPg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="gs3xv5excqw7RFrX"
 Content-Disposition: inline
-In-Reply-To: <2d8a5f48-6c50-4c12-8a3d-23e621c6b722@roeck-us.net>
+In-Reply-To: <CALprXBYxrwBW6HLP5MwYhFh1_Skei+pLbXd7yNAEuhLTQJLVPg@mail.gmail.com>
+X-Cookie: Some optional equipment shown.
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 23, 2023 at 06:30:13AM -0700, Guenter Roeck wrote:
-> On Wed, Aug 23, 2023 at 01:47:39PM +0530, Naresh Kamboju wrote:
-> > On Wed, 23 Aug 2023 at 12:33, Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > On Tue, Aug 22, 2023 at 05:49:54PM -0700, Guenter Roeck wrote:
-> > > > On Mon, Aug 21, 2023 at 09:39:39PM +0200, Greg Kroah-Hartman wrote:
-> > > > > This is the start of the stable review cycle for the 6.1.47 release.
-> > > > > There are 194 patches in this series, all will be posted as a response
-> > > > > to this one.  If anyone has any issues with these being applied, please
-> > > > > let me know.
-> > > > >
-> > > > > Responses should be made by Wed, 23 Aug 2023 19:40:45 +0000.
-> > > > > Anything received after that time might be too late.
-> > > > >
-> > > >
-> > > > Build results:
-> > > >       total: 157 pass: 156 fail: 1
-> > > > Failed builds:
-> > > >       m68k:sun3_defconfig
-> > > > Qemu test results:
-> > > >       total: 521 pass: 519 fail: 2
-> > > > Failed tests:
-> > > >       arm:fuji-bmc:aspeed_g5_defconfig:notests:mem1G:mtd128,0,8,1:net,nic:aspeed-bmc-facebook-fuji:f2fs
-> > > >       arm:bletchley-bmc,fmc-model=mt25qu02g,spi-model=mt25qu02g:aspeed_g5_defconfig:notests:mem1G:mtd256:net,nic:aspeed-bmc-facebook-bletchley:f2fs
-> > > >
-> > > > The m68k build failure is
-> > > >
-> > > > Inconsistent kallsyms data
-> > > > Try make KALLSYMS_EXTRA_PASS=1 as a workaround
-> > > >
-> > > > I already have KALLSYMS_EXTRA_PASS=1 enabled, so that doesn't help.
-> > > > Nothing to worry about. The f2fs crashes are still seen. They
-> > > > also happen for other architectures, so it is not just an arm problem.
-> > > > I'll probably just disable all f2fs testing going forward. If so I'll
-> > > > send a note clarifying that the lack of reported test failures doesn't
-> > > > mean that it works.
-> > >
-> > > I'll look into this later this week, next week to resolve the f2fs
-> > > stuff.  I wanted to get to the other known bug fixes first.
-> > >
-> > > > For x86 I get the same runtime warning as everyone else.
-> > >
-> > > Yeah, this is troubling...
-> > >
-> > > Is it clang only?  I'll dig into this today...
-> > 
-> > It is seen with gcc-13 and clang-17 with few extra configs.
-> > We are not booting defconfig.
-> > 
-> > The Kconfigs are enabled with KFENCE.
-> > 
-> I have KFENCE enabled as well, so it may well be that this triggers
-> the warning. I don't see it in 6.4.y or upstream, though.
 
-Ok, let me rip out all the x86 and objtool patches from this release,
-get it out the door with the good things in there that everyone else
-needs, and then we can focus on this mess...
+--gs3xv5excqw7RFrX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Maybe I'll just backport _all_ objtool changes to sync things up better,
-last time I tried that it was a maze of twisty passages, all coated in
-assembly...
+On Wed, Aug 23, 2023 at 11:45:09PM +0800, Ajye Huang wrote:
 
-thanks,
+> Please allow me to explain in more detail.
+> The 6b8b6892e434 should not be applied into file0yZ50U branch of broonie/ci.git.
 
-greg k-h
+That's my CI tree, things in there aren't going anywhere unless they
+pass testing.
+
+--gs3xv5excqw7RFrX
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTmKuUACgkQJNaLcl1U
+h9Aj7Qf+OO9n7pFmDLqmTaZ+TUXsgXxHBU7c2buA+pHaL6GdSYX9Z4BSey6nKNpY
+Byr0X9nXoDSeVReO9AhK3aPz1FwlkR8oyI8OQgg1tvSm5eF8rvs7KXtBnwA1xvaA
+spaEizonya+TtLhmESmTyQPpxDXqdfscAwEDOgJh4I/lf6rQpcUPknPFrWXYaVJC
+9DScI9v70bDXBdEiM01pOe/59gtnfxoWtLu6svNGRNaRIJtLsrf5YZP4I1pquUIN
+U0dn9g2I9S0qL/g92/k+DgPszGBpKTzlRWUICmejKyqtjRJuxhdJorU3NArd0L4+
+DAXGQbW0vkxQyRszEJ2O4mjYJBnpLw==
+=Kv8M
+-----END PGP SIGNATURE-----
+
+--gs3xv5excqw7RFrX--
