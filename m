@@ -2,146 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9F2D7852E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 10:41:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DE5D7852E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 10:43:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234782AbjHWIlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 04:41:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49708 "EHLO
+        id S234727AbjHWImm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 04:42:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234885AbjHWIhC (ORCPT
+        with ESMTP id S234762AbjHWIjI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 04:37:02 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B05510C7;
-        Wed, 23 Aug 2023 01:35:29 -0700 (PDT)
-Date:   Wed, 23 Aug 2023 08:35:27 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1692779728;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=83ap6gNjbZy8vamHzdazsWvNwO536xb4WpHK1tf2Qrg=;
-        b=XMjf6Qkd1Y6T84xTqorejUc3i2jbtS/xkFYPhYRrsZKjNmn9RTbY7mwbOsR9SfvdAAm7X5
-        EJ19DGnM1zYTPQHelmzhhuHidHRi1P87dWyVmCFV/v5w93IfQ/aqZHR1xAbmewG3GfGh/5
-        iojK9gXa/eSafujVls2WlwCHaCNaanlI8Dmpjw6kywnbaFycIQuNhBbDTGfVFQ5xftcyAy
-        W9GNlQCDXO1+b/YohTT/mesFpBdkpGDv/j5PxO4Z8C+Hgtf+wMUvxMVguWqU+1Y8+Gl4ZN
-        gV9fz0lMJUQPZSf16ad57zQa1lFCZPBvZvMF3n8qkko1LuAuRJLiZiWdweeyvg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1692779728;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=83ap6gNjbZy8vamHzdazsWvNwO536xb4WpHK1tf2Qrg=;
-        b=xATyOqGdBuKuZ9jmd51n371L5OH+tOXSYRvb75NXqFxIm1QUc129l+7aK6z5PVL4668a2S
-        ystWlYPl41zNiSCA==
-From:   "tip-bot2 for Mark Rutland" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/entry] entry: Remove empty addr_limit_user_check()
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20230821163526.2319443-1-mark.rutland@arm.com>
-References: <20230821163526.2319443-1-mark.rutland@arm.com>
+        Wed, 23 Aug 2023 04:39:08 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9E291705;
+        Wed, 23 Aug 2023 01:37:14 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RW02F2FqTz4f3pHZ;
+        Wed, 23 Aug 2023 16:37:09 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP4 (Coremail) with SMTP id gCh0CgDHVqk0xeVke9mIBQ--.11337S3;
+        Wed, 23 Aug 2023 16:37:10 +0800 (CST)
+Subject: Re: [PATCH -next v3 6/7] md: factor out a helper rdev_addable() from
+ remove_and_add_spares()
+To:     Song Liu <song@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     xni@redhat.com, mariusz.tkaczyk@linux.intel.com,
+        linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com, yangerkun@huawei.com,
+        "yukuai (C)" <yukuai3@huawei.com>
+References: <20230820090949.2874537-1-yukuai1@huaweicloud.com>
+ <20230820090949.2874537-7-yukuai1@huaweicloud.com>
+ <CAPhsuW74MEFjNTNErYfOT1gX+BUdbDwaV1oTmmcz=_76Ym3ZuA@mail.gmail.com>
+ <c7a82fb2-cf4b-2095-e813-84aed2418ff0@huaweicloud.com>
+ <2766d001-f618-d224-f8a9-ec38ed1dc2a7@huaweicloud.com>
+ <CAPhsuW6JQX7ujeO77NVTme8t0DvzVBrsXRHmayVnp4fwWoYhZg@mail.gmail.com>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <a004ed5b-cf4a-2392-c7e5-fcd1161a29a4@huaweicloud.com>
+Date:   Wed, 23 Aug 2023 16:37:08 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Message-ID: <169277972713.27769.12372205097599743330.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <CAPhsuW6JQX7ujeO77NVTme8t0DvzVBrsXRHmayVnp4fwWoYhZg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgDHVqk0xeVke9mIBQ--.11337S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxuFW8WrW3Ary7AryrJF15CFg_yoW7Ww4xpF
+        W8XFWSkr4UAr17uw1qgr1rX3WFqr18KF4xurySk34xZas0qrn8Gw48CFy5uFyDJr45ur1Y
+        vF15J3yxCw1YgFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkC14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
+        JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCYjI0SjxkI62AI1cAE67vI
+        Y487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
+        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y
+        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
+        WUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8
+        JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUoOJ5UU
+        UUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the core/entry branch of tip:
+Hi,
 
-Commit-ID:     1dfe3a5a7cefbe2162cecb759f3933baea22c393
-Gitweb:        https://git.kernel.org/tip/1dfe3a5a7cefbe2162cecb759f3933baea22c393
-Author:        Mark Rutland <mark.rutland@arm.com>
-AuthorDate:    Mon, 21 Aug 2023 17:35:26 +01:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Wed, 23 Aug 2023 10:32:39 +02:00
+在 2023/08/23 13:26, Song Liu 写道:
+> On Tue, Aug 22, 2023 at 8:04 PM Yu Kuai <yukuai1@huaweicloud.com> wrote:
+>>
+>> Hi,
+>>
+>> 在 2023/08/22 10:17, Yu Kuai 写道:
+>>> Hi,
+>>>
+>>> 在 2023/08/22 7:22, Song Liu 写道:
+>>>> On Sun, Aug 20, 2023 at 2:13 AM Yu Kuai <yukuai1@huaweicloud.com> wrote:
+>>>>>
+>>>>> From: Yu Kuai <yukuai3@huawei.com>
+>>>>>
+>>>>> There are no functional changes, just to make the code simpler and
+>>>>> prepare to delay remove_and_add_spares() to md_start_sync().
+>>>>>
+>>>>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+>>>>> ---
+>>>>>    drivers/md/md.c | 28 ++++++++++++++++------------
+>>>>>    1 file changed, 16 insertions(+), 12 deletions(-)
+>>>>>
+>>>>> diff --git a/drivers/md/md.c b/drivers/md/md.c
+>>>>> index 11d27c934fdd..cdc361c521d4 100644
+>>>>> --- a/drivers/md/md.c
+>>>>> +++ b/drivers/md/md.c
+>>>>> @@ -9177,6 +9177,20 @@ static bool rdev_is_spare(struct md_rdev *rdev)
+>>>>>                  !test_bit(Faulty, &rdev->flags);
+>>>>>    }
+>>>>>
+>>>>> +static bool rdev_addable(struct md_rdev *rdev)
+>>>>> +{
+>>>>> +       if (test_bit(Candidate, &rdev->flags) || rdev->raid_disk >= 0 ||
+>>>>> +           test_bit(Faulty, &rdev->flags))
+>>>>> +               return false;
+>>>>> +
+>>>>> +       if (!test_bit(Journal, &rdev->flags) &&
+>>>>> !md_is_rdwr(rdev->mddev) &&
+>>>>
+>>>> Instead of straightforward refactoring, I hope we can make these rdev_*
+>>>> helpers more meaningful, and hopefullly reusable. For example, let's
+>>>> define
+>>>> the meaning of "addable", and write the function to match that
+>>>> meaning. In
+>>>> this case, I think we shouldn't check md_is_rdwr() inside rdev_addable().
+>>>>
+>>>> Does this make sense?
+>>>
+>>> Yes, this make sense, rdev can be added to read-only array.
+>>>
+>>> There are total three callers of pers->hot_add_sisk, I'll try to find if
+>>> they have common conditions.
+>>
+>> Unfortunately, the conditions is quite different, and It's difficult to
+>> factor out a common helper for them to use.
+>>
+>> In this case, !md_is_rdwr() is one of the four conditions, which means
+>> if the array is read-only, there is a special case that rdev can't be
+>> added to the configuration. Perhaps it's okay to keep this?
+> 
+> My main concern is that rdev_addable() is not making the code easier to
+> understand. We have a few different cases at this point:
+> 
+> 1. rdev is not suitable for add (Faulty, raid_disk>=0, Candidate);
+> 2. rdev is Journal;
+> 3. Re-add rdev to RO array;
+> 4. Non-re-add rdev to RO array;
+> 5. Other cases.
+> 
+> Current rdev_addable() handles more or less all of this, which is
+> confusing. Maybe we can do something along similar to the
+> following (not tested). Does this look more clear?
+> 
+> Thanks,
+> Song
+> 
+> diff --git i/drivers/md/md.c w/drivers/md/md.c
+> index 78be7811a89f..8cb855d03e0a 100644
+> --- i/drivers/md/md.c
+> +++ w/drivers/md/md.c
+> @@ -9117,6 +9117,20 @@ void md_do_sync(struct md_thread *thread)
+>   }
+>   EXPORT_SYMBOL_GPL(md_do_sync);
+> 
+> +static bool rdev_addable(struct md_rdev *rdev)
+> +{
+> +       if (test_bit(Candidate, &rdev->flags) || rdev->raid_disk >= 0 ||
+> +           test_bit(Faulty, &rdev->flags))
+> +               return false;
+> +       return true;
+> +}
+> +
+> +static bool rdev_is_readd(struct md_rdev *rdev)
+> +{
+> +       return rdev->saved_raid_disk >= 0 ||
+> +               !test_bit(Bitmap_sync, &rdev->flags);
+This should use '&&' instead of '||' ?
 
-entry: Remove empty addr_limit_user_check()
+> +}
+> +
+>   static int remove_and_add_spares(struct mddev *mddev,
+>                                   struct md_rdev *this)
+>   {
+> @@ -9176,25 +9190,24 @@ static int remove_and_add_spares(struct mddev *mddev,
+>          rdev_for_each(rdev, mddev) {
+>                  if (this && this != rdev)
+>                          continue;
+> -               if (test_bit(Candidate, &rdev->flags))
+> -                       continue;
+>                  if (rdev->raid_disk >= 0 &&
+>                      !test_bit(In_sync, &rdev->flags) &&
+>                      !test_bit(Journal, &rdev->flags) &&
+>                      !test_bit(Faulty, &rdev->flags))
+>                          spares++;
+> -               if (rdev->raid_disk >= 0)
+> +
+> +               if (!rdev_addable(rdev))
+>                          continue;
+> -               if (test_bit(Faulty, &rdev->flags))
+> +
+> +               if (test_bit(Journal, &rdev->flags))
+> +                       goto hot_add_disk;
+> +
 
-Back when set_fs() was a generic API for altering the address limit,
-addr_limit_user_check() was a safety measure to prevent userspace being
-able to issue syscalls with an unbound limit.
+I understand what you mean now, but I must use the exact same judgement
+in the new helper md_spares_need_change() in patch 7, there will be 
+redundant code this way.
 
-With the the removal of set_fs() as a generic API, the last user of
-addr_limit_user_check() was removed in commit:
+How about this, rework rdev_addable():
 
-  b5a5a01d8e9a44ec ("arm64: uaccess: remove addr_limit_user_check()")
+   static bool rdev_addable(struct md_rdev *rdev)
+   {
++         /* rdev is already used, don't add it again. */
+           if (test_bit(Candidate, &rdev->flags) || rdev->raid_disk >= 0 ||
+               test_bit(Faulty, &rdev->flags))
+                   return false;
 
-... as since that commit, no architecture defines TIF_FSCHECK, and hence
-addr_limit_user_check() always expands to nothing.
+~         /* Allow to add journal disk. */
+~         if (test_bit(Journal, &rdev->flags))
+~_                return true;
 
-Remove addr_limit_user_check(), updating the comment in
-exit_to_user_mode_prepare() to no longer refer to it. At the same time,
-the comment is reworded to be a little more generic so as to cover
-kmap_assert_nomap() in addition to lockdep_sys_exit().
+~         /* Allow to add if array is read-write. */
++         if (md_is_rdwr(rdev->mddev))
++                 return true;
++
++         /*
++          * For read-only array, only allow to readd a rdev. And if 
+bitmap is
++          * used, don't allow to readd a rdev that is too old.
++          */
++         if (rdev->saved_raid_disk >=0 && !test_bit(Bitmap_sync, 
+&rdev->flags))
++                 return true;
++
++         return false;
+   }
 
-No functional change.
 
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20230821163526.2319443-1-mark.rutland@arm.com
+Thanks,
+Kuai
 
----
- include/linux/syscalls.h | 16 ----------------
- kernel/entry/common.c    |  3 +--
- 2 files changed, 1 insertion(+), 18 deletions(-)
+> +               if (!md_is_rdwr(mddev) && !rdev_is_readd(rdev))
+>                          continue;
+> -               if (!test_bit(Journal, &rdev->flags)) {
+> -                       if (!md_is_rdwr(mddev) &&
+> -                           !(rdev->saved_raid_disk >= 0 &&
+> -                             !test_bit(Bitmap_sync, &rdev->flags)))
+> -                               continue;
+> 
+> -                       rdev->recovery_offset = 0;
+> -               }
+> +               rdev->recovery_offset = 0;
+> +
+> +       hot_add_disk:
+>                  if (mddev->pers->hot_add_disk(mddev, rdev) == 0) {
+>                          /* failure here is OK */
+>                          sysfs_link_rdev(mddev, rdev);
+> .
+> 
 
-diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
-index 03e3d01..c4b9b66 100644
---- a/include/linux/syscalls.h
-+++ b/include/linux/syscalls.h
-@@ -284,22 +284,6 @@ static inline int is_syscall_trace_event(struct trace_event_call *tp_event)
- #endif
- 
- /*
-- * Called before coming back to user-mode. Returning to user-mode with an
-- * address limit different than USER_DS can allow to overwrite kernel memory.
-- */
--static inline void addr_limit_user_check(void)
--{
--#ifdef TIF_FSCHECK
--	if (!test_thread_flag(TIF_FSCHECK))
--		return;
--#endif
--
--#ifdef TIF_FSCHECK
--	clear_thread_flag(TIF_FSCHECK);
--#endif
--}
--
--/*
-  * These syscall function prototypes are kept in the same order as
-  * include/uapi/asm-generic/unistd.h. Architecture specific entries go below,
-  * followed by deprecated or obsolete system calls.
-diff --git a/kernel/entry/common.c b/kernel/entry/common.c
-index be61332..d7ee4bc 100644
---- a/kernel/entry/common.c
-+++ b/kernel/entry/common.c
-@@ -205,8 +205,7 @@ static void exit_to_user_mode_prepare(struct pt_regs *regs)
- 
- 	arch_exit_to_user_mode_prepare(regs, ti_work);
- 
--	/* Ensure that the address limit is intact and no locks are held */
--	addr_limit_user_check();
-+	/* Ensure that kernel state is sane for a return to userspace */
- 	kmap_assert_nomap();
- 	lockdep_assert_irqs_disabled();
- 	lockdep_sys_exit();
