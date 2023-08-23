@@ -2,263 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F006785A5B
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 16:23:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A515785A66
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 16:25:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236355AbjHWOX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 10:23:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52628 "EHLO
+        id S236375AbjHWOZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 10:25:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231846AbjHWOXz (ORCPT
+        with ESMTP id S235384AbjHWOZS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 10:23:55 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5852BE47;
-        Wed, 23 Aug 2023 07:23:53 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CCB8665E1C;
-        Wed, 23 Aug 2023 14:23:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11649C43391;
-        Wed, 23 Aug 2023 14:23:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692800632;
-        bh=L6RLKjcjf0wClZapR3eDem9qqnd+Wm/UZw5H508dK38=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=keenKXhdWPmWW/UM6/jrm2f8lqu83XeL3axzHEty84wzUfz6iGm5yF92b4siEMhVs
-         x8HPi9BfV6x6Wd1aPa7pAzzLryu8pXkMYpD9/Up/qFNIqQuYpvr/zlHw+XASC82WEU
-         c5pL7lAIOfIIIfyL5s+A/KitTVzaJAfYu6FhVYR1T+WtWnQwcWVmevz60wL+ECUAoG
-         21tKPiwWMQX9idR8sjPIq5gKfzDz21TiKyuCvYl3kpMHr3tBqJM6wjb9s3tJOtQX6C
-         c4t8X13CnFHlr6QBpHjf69YZrPhztbdJhbAJ9TlOu22oqPw0Tjfn7+4bwFY682wkkr
-         P9ohjVJcixSCA==
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-5007616b756so5905330e87.3;
-        Wed, 23 Aug 2023 07:23:51 -0700 (PDT)
-X-Gm-Message-State: AOJu0YzVnaiqt5gFElmfQNxALPqO/v17CutCU5f3Q5J2RuGbUAVhODYJ
-        T4TdyX7wGIeJ/Ueg+GOAMB8T2ZnAfezrbqV5GIw=
-X-Google-Smtp-Source: AGHT+IG+v0ql3xKgaaIRw2aNIMl4q7zemhhsd+/yB6IX6qUsIPOxXeEVctDDZNhBJ7VyqtLoumpqJTdkynEQuahFz/w=
-X-Received: by 2002:a19:651d:0:b0:4ff:8fdd:4be4 with SMTP id
- z29-20020a19651d000000b004ff8fdd4be4mr9463042lfb.29.1692800629839; Wed, 23
- Aug 2023 07:23:49 -0700 (PDT)
+        Wed, 23 Aug 2023 10:25:18 -0400
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2040.outbound.protection.outlook.com [40.107.92.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8144E52;
+        Wed, 23 Aug 2023 07:25:16 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WigXYXGmeBUGURws0Wrw3fHTKkFHTmvSv4O6yCgnYryrTeW3qP6ZBv+xgWJUImU8obC5gO6gvY+vC7lH8xnMKf19IhS4qBNIdmIJQDISWOERjMb+BooP1bOJ3FQUZI6CrhNv/vayP7M9K6HNQQz2lqPPvRtPHGU74guYBO6IpZCMatRCmr8VWZ5eyvcdciZnlg5Eg4GysyMONGj6/rojafdltsrO5i1g/dHXd885/fiUn8XC1M1ndG5IVKWWJAazEVuNCHvl0BmPBwJyR4csbScdwYpOTh1ZXMenpS1k+cWMnuV2ZnYa0tLFjQ3rpn/BgbAli6aHBqYsh+yLTVwwDA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=7mjNnhaNpaaIAEx1aRq3czPGjaf9NAEvyg+AgThChYI=;
+ b=ONmLmgyTxfJ06z5d4w9qrqDYxuFzWGiUihj8n/eHTvSBEMicOo3UrHVuX3zhmVKKfkG8qNTG/SxXgPbXRUz4b7ITyohtP+1y/Kw8qZWCT8sNNTXI+E0x49tKQzYLugLa+X1HXxoHe46WspmK2FwokNjpllgeBI8lClGkHa4yIpTRQCzGoFI/rwalULSn/IvcT12OwCn/3tBt0sdAdUe6dCJkciJvKW8ntr87Iggt7yrrLOP4tjASkOZSK1HFcNI46WGloYn7j3Xm/c5vTVtNQiiYISM2uFQhFWhwcZ/IVZjjwvqUWACpwsiyeXycoaDnJauDGWtswyG7aTyrmgbrBQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7mjNnhaNpaaIAEx1aRq3czPGjaf9NAEvyg+AgThChYI=;
+ b=PBxMq8eH0Gw67tlwUlraBFN3uhpcViKvH0kpKVo8WhPPjhBP5I8qMJyUaEbskHWDVpCpYTurk0BKymhC4RjhUrIu9CzN7wNQ8we83+4WczfIsE05th/jgLKlyZIDuOQjdebGQUvzSbX7xZ9YoQu7OKfleh0pAsAUyFazH11RpuCQeit05NPlutNNfw1Db+zDkwYJUZzxBbT++OC6Cr9J8XJgCOULo69naP+qrJi+U0CeB2t3O703NkN/ikVozvGpcKIiza46rg4rHoqFtAv+WVPgD8d2ZKy0L6uQN32REaJJNnIlq0g+T81iHjwVoYumQw1hGnfe/HXTv5136uN2PA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by MW4PR12MB6729.namprd12.prod.outlook.com (2603:10b6:303:1ed::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.24; Wed, 23 Aug
+ 2023 14:25:14 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::5111:16e8:5afe:1da1]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::5111:16e8:5afe:1da1%6]) with mapi id 15.20.6699.020; Wed, 23 Aug 2023
+ 14:25:14 +0000
+Date:   Wed, 23 Aug 2023 11:25:11 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Ankit Agrawal <ankita@nvidia.com>
+Cc:     "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        "shameerali.kolothum.thodi@huawei.com" 
+        <shameerali.kolothum.thodi@huawei.com>,
+        "kevin.tian@intel.com" <kevin.tian@intel.com>,
+        Aniket Agashe <aniketa@nvidia.com>, Neo Jia <cjia@nvidia.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        "Tarun Gupta (SW-GPU)" <targupta@nvidia.com>,
+        Vikram Sethi <vsethi@nvidia.com>,
+        Andy Currid <acurrid@nvidia.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Dan Williams <danw@nvidia.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v7 1/1] vfio/nvgpu: Add vfio pci variant module for grace
+ hopper
+Message-ID: <ZOYWx+ny0bCJYtbD@nvidia.com>
+References: <20230822202303.19661-1-ankita@nvidia.com>
+ <ZOYP92q1mDQgwnc9@nvidia.com>
+ <BY5PR12MB37635FB280AECC6A4CF59431B01CA@BY5PR12MB3763.namprd12.prod.outlook.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BY5PR12MB37635FB280AECC6A4CF59431B01CA@BY5PR12MB3763.namprd12.prod.outlook.com>
+X-ClientProxiedBy: SJ0PR13CA0007.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c0::12) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-References: <20230822203446.4111742-1-sjg@chromium.org> <ZOXKTrC_dzN_hUkY@FVFF77S0Q05N>
-In-Reply-To: <ZOXKTrC_dzN_hUkY@FVFF77S0Q05N>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 23 Aug 2023 16:23:38 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXEHpRjk_YKOm4czCnnpjqgahj2jV8MMfGLx7b1RdnBnVw@mail.gmail.com>
-Message-ID: <CAMj1kXEHpRjk_YKOm4czCnnpjqgahj2jV8MMfGLx7b1RdnBnVw@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] schemas: Add a schema for memory map
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Simon Glass <sjg@chromium.org>, devicetree@vger.kernel.org,
-        Rob Herring <robh@kernel.org>,
-        Chiu Chasel <chasel.chiu@intel.com>,
-        U-Boot Mailing List <u-boot@lists.denx.de>,
-        Gua Guo <gua.guo@intel.com>, linux-acpi@vger.kernel.org,
-        lkml <linux-kernel@vger.kernel.org>,
-        Yunhui Cui <cuiyunhui@bytedance.com>,
-        ron minnich <rminnich@gmail.com>,
-        Tom Rini <trini@konsulko.com>,
-        Lean Sheng Tan <sheng.tan@9elements.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|MW4PR12MB6729:EE_
+X-MS-Office365-Filtering-Correlation-Id: 438ea4eb-0a68-4016-921a-08dba3e4c428
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nYE1fnGCdcSQ7Rr+vferFoBHeRwh2byBMzyRdAN5W4wQJlixXRAd3hvG67Gctgsl6MBUt5Ljl4MoY+37Dpcdks9DHTnVL7+2/A6Jfc0n0y2vbVTz9Agltbon5aILSvykksTwvL3+A+tVsKP3GMEMPAu55PA3hcvztKKiMN826mbxTuPtzsk52pz75wkPbNgwVwLaP99QQC0FG9tYMCYQVpNdN/j8luHkACq6XQMWqQ2PwqwbaF44/St0t01V74UxvmCCc9TZ+S/5+pOPyoSVrNTvIovKpQM3CaZP4ckX3dbgsN2X30NyNF+sA32Ffo74BQT/6uijPPMzyKgGN55w02p4UQxMCte3T/9hexVJWWgEc/wHOPhp9YfLwFL0M9IoP3ApAMtRjzptwtKYMNNuzAjgDB8X1dy5Qp6YLlY/1qorBq3yrGmmcpUvL9L7u8b46wL3E5QxpMmElpwKW28gm3FtnfWWood1iLJ8kLg3EfIy24ygwDR5R6T4X7+hKqS9CEdwJ5BTDa7Fp2D4XJqMsk7qwAawIH/a7U0dAaAdUCA1OPeDN3isB1v+gcXtvkYlSkvelBUG0Ijndkl3+zDeJg8FyhBSHOa6qWYs+VeAxtc=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(136003)(346002)(366004)(376002)(1800799009)(186009)(451199024)(66476007)(66556008)(54906003)(37006003)(6512007)(316002)(8676002)(4326008)(2616005)(6862004)(8936002)(6636002)(41300700001)(36756003)(478600001)(66946007)(6666004)(38100700002)(6486002)(6506007)(2906002)(4744005)(83380400001)(86362001)(5660300002)(26005)(67856001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?+iWyLBgdxJQyaWmi2u4Sf8YfuJqrLUUB5zZd4ygaiRjJx7aWPJMOM5CWEHWg?=
+ =?us-ascii?Q?GTTRxi9VwMKfFqcX3ViL6zRc4oZvf0r+sebtBT/3HtNv9yiwysa8YDxKiZu8?=
+ =?us-ascii?Q?Nec4CDvvKGCnpTYOXfX2QwKGYa0xnyE+zMvAgrMWeanWdXrcTHgrPgzVJSam?=
+ =?us-ascii?Q?+mQXroOI73MizhyeAI0Npa/6byblOhSAVrRoH5/7btxNbaaOKgX1zZiQkIVd?=
+ =?us-ascii?Q?gQDsXj9zK1oPn3eInRkLPx9D8dPTp7IHCiC14Rie2C6kFjVm6taiB2FbJQdv?=
+ =?us-ascii?Q?Y/pJuYR+c1neHVIIgYIG6GOxslvsgfbYIEzJXXlg6vj9Sh71eOfQzeUfPx6O?=
+ =?us-ascii?Q?y80lpEbt5bjm2keUd+UGnHOTQ3G0L7RZLEflMoRR9gSzWHQ/Bam1rv2/tf53?=
+ =?us-ascii?Q?FO5jfeqBf6OgeWMI15SHvrXzaxm061B5w3RlR04YQ+wByPm5Ushre5sUbpTv?=
+ =?us-ascii?Q?tB90wOnqiZG6tkJkA3cyuLco09yGJ5SGOoXOyOC7RbqqZCS7YfM2dIC/Id7c?=
+ =?us-ascii?Q?UZ49KSUSGRW2J6yOCllZhuM5LYouiYpAOzM8UKCAe4cKcCGPkYbqnBDkS38r?=
+ =?us-ascii?Q?jPneBZpTU4k/8OZtG74o+nc4vwy1pMFMh0lBboFho5KB1bxenunIKF0GtG8U?=
+ =?us-ascii?Q?DQbwAK2XxFoLofqrFrJtHGgHX2gMG6lVhUhmsKm7bIWSeOF1H5HbDPywDIL0?=
+ =?us-ascii?Q?7Qm5HLg+nTh06KVbBUxKm+S9PuHfgvykiHbngR4wuZg9w+La3ND/Aro5x2wf?=
+ =?us-ascii?Q?2v5qmJJ45hQigwHICuoGmgC2X/GhG82LU0v32CeaJ2DJ9uvUkX6SQwnJdPi5?=
+ =?us-ascii?Q?nHIBOP2BXaKNojbRREEQ53MmIJep0JC4rXVadU+SeEcPcwgP1PQcD7sGxFvl?=
+ =?us-ascii?Q?seGY4feyyiJK9oBhUJfV54LPfgQXZJ+gZVez47QHTkssEj3hFpIVceGsgXVd?=
+ =?us-ascii?Q?AnxS90hI2i6TyryG0kcSNRfoYQTy05Fck8xkVBiT1M0+rF8jj8PURV4H5kOb?=
+ =?us-ascii?Q?oTsIW/O9auLvbda53J4Djna2R8eHNESWwydZAlHH8tVFOpm18F7JGAa/uaSd?=
+ =?us-ascii?Q?e4ItMI9d7J79ii+atr6/4aAm+ZHfdBa8RB934rLuVxD0fbajblK8SyBmc/aP?=
+ =?us-ascii?Q?DLtmCadi482iJweR48OPqIe/SuvgdSqZ/2IpQ/KGngncrBFcy75cxVwR7Nlm?=
+ =?us-ascii?Q?AYKfMwRy2Wmgv+DRY8ncG/5FPgBg8dmWhYy/uUYeUy2M0VRvsBfsP2+FV2Hx?=
+ =?us-ascii?Q?F452PlxayBalqmiXwpHw6EJZDIE0vKdBwnOQpvQvoDOl4cjNUEjRPnpKqapM?=
+ =?us-ascii?Q?6OmJnBxMYIQt6K6brn2sjk4J54pWuB54a80Teebu/hHqT2Vm/zfmkN+KEia3?=
+ =?us-ascii?Q?YCOnbMZlS/QYTHAxdeoD58D3LccDRinbWzQDvgHQqgn5m0tNS8Yzoo709jMD?=
+ =?us-ascii?Q?W7ePRmyZ1x/tOzXc2012vy0ZQ111i0yHOz7y2ez7uqviTg+YWLjInDIG11b1?=
+ =?us-ascii?Q?N/Hs6aXG25mzFXKz4cwzpzlGlHqt19x8loRw+5/jlXyYshssCIO69j3Qqlv6?=
+ =?us-ascii?Q?1PvZ3fi7BL45D/W2gVmQhtRxuMq9YifxNMT0PAIb?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 438ea4eb-0a68-4016-921a-08dba3e4c428
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Aug 2023 14:25:14.3563
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: LVJyN6PTbAG/V3tGcmzA4+QKuCWYBQCcabL2SlxRfUl+KXG3UB3YwYlhFgn25i5m
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB6729
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 23 Aug 2023 at 10:59, Mark Rutland <mark.rutland@arm.com> wrote:
->
-> On Tue, Aug 22, 2023 at 02:34:42PM -0600, Simon Glass wrote:
-> > The Devicetree specification skips over handling of a logical view of
-> > the memory map, pointing users to the UEFI specification.
+On Wed, Aug 23, 2023 at 02:18:52PM +0000, Ankit Agrawal wrote:
+> >> +
+> >> +     /*
+> >> +      * Handle read on the BAR2 region. Map to the target device memory
+> >> +      * physical address and copy to the request read buffer.
+> >> +      */
+> >> +     if (copy_to_user(buf, (u8 *)addr + offset, read_count))
+> >> +             return -EFAULT;
 > >
-> > It is common to split firmware into 'Platform Init', which does the
-> > initial hardware setup and a "Payload" which selects the OS to be booted.
-> > Thus an handover interface is required between these two pieces.
-> >
-> > Where UEFI boot-time services are not available, but UEFI firmware is
-> > present on either side of this interface, information about memory usage
-> > and attributes must be presented to the "Payload" in some form.
+> > Just to verify, does this memory allow access of arbitrary alignment
+> > and size?
+> 
+> Please correct me if I'm wrong, but based on following gdb dump data on
+> the corresponding MemoryRegion->ops, unaligned access isn't supported, and
+> a read of size upto 8 may be done.
 
-Not quite.
+Regardless, you used MEMREMAP_WB which is equivalent to normal system
+memory. It supports all accesses, including atomics, and doesn't
+require __iomem accessors.
 
-This seems to be intended for consumption by Linux booting in ACPI
-mode, but not via UEFI, right? Some proposed changes to support that
-were rejected on the basis that ACPI on non-x86 is strictly tied to
-ACPI boot, not only because the ACPI root table (rsdp) can only be
-discovered via UEFI, but also because the ACPI subsystem in Linux
-cross-references any memory mappings created from AML code against the
-UEFI memory map.
-
-Unfortunately, having a vague, non-exhaustive approximation of the
-UEFI memory map is unlikely to be sufficient here. The existing logic
-assumes that addresses not covered by the UEFI memory map are MMIO,
-which means that either a) the UEFI memory map needs to describe all
-RAM exhaustively or b) the existing logic needs to be modified to take
-memblock or other information sources into account as well in order to
-reason about whether a certain address requires device or normal
-memory attributes.
-
-Note that the ACPI spec only lists EFI as a valid way to obtain the
-root table pointer on architectures other than x86. If other ways are
-needed, they should be contributed to the spec, rather than being
-added to Linux as an ad hoc workaround for bootloaders that have
-trouble implementing the spec as is.
-
->
-> Today Linux does that by passing:
->
->   /chosen/linux,uefi-mmap-start
->   /chosen/linux,uefi-mmap-size
->   /chosen/linux,uefi-mmap-desc-size
->   /chosen/linux,uefi-mmap-desc-ver
->
-> ... or /chosen/xen,* variants of those.
->
-> Can't we document / genericise that?
->
-
-Given the ACPI angle, promoting this to external ABI would introduce a
-DT dependency to ACPI boot. So we'll at least have to be very clear
-about which takes precedence, or maybe disregard everything except the
-/chosen node when doing ACPI boot?
-
-This also argues for not creating an ordinary binding for this (i.e.,
-describing it as part of the platform topology), but putting it under
-/chosen as a Linux-only boot tweak.
-
-> Pointing to that rather than re-encoding it in DT means that it stays in-sync
-> with the EFI spec and we won't back ourselves into a corner where we cannot
-> encode something due to a structural difference. I don't think it's a good idea
-> to try to re-encode it, or we're just setting ourselves up for futher pain.
->
-
-What I would prefer is to formalize pseudo-EFI boot and define the
-bare required minimum (system table + memory map + config tables) in
-an arch-agnostic manner. That way, the only thing that needs to be
-passed via DT/boot_params/etc is the (pseudo-)EFI system table
-address, and everything else (SMBIOS, ACPI as well as the EFI memory
-map and even the initrd) can be passed via config tables as usual, all
-of which is already supported in (mostly) generic kernel code.
-
-This means that booting via the EFI stub would not be required, nor is
-implementing boot services or runtime services or any of the other
-things that people appear to hate with such a passion.
-
-I'd actually prefer not to use those /chosen DT nodes, but pass the
-memory map via a config table. This, however, requires* that the
-runtime services memory regions are mapped 1:1 so it is not something
-we can do for all currently supported systems. But for pseudo-EFI
-boot, stipulating 1:1 runtime mappings is fine (or no runtime mappings
-at all if the firmware does not expose runtime services)
-
-* SetVirtualAddressMap() relocates the config table array, and without
-a memory map, it is not possible to convert those address back to
-physical. SetVirtualAddressMap() is evil and needs to die, but this is
-off-topic for the thread at hand.
-
-> >
-> > This aims to provide an initial schema for this mapping.
-> >
-> > Note that this is separate from the existing /memory and /reserved-memory
-> > nodes, since it is mostly concerned with what the memory is used for. It
-> > may cover only a small fraction of available memory.
-> >
-> > For now, no attempt is made to create an exhaustive binding, so there are
-> > some example types listed. This can be completed once this has passed
-> > initial review.
-> >
-> > This binding does not include a binding for the memory 'attribute'
-> > property, defined by EFI_BOOT_SERVICES.GetMemoryMap(). It may be useful
-> > to have that as well, but perhaps not as a bit mask.
-> >
-> > Signed-off-by: Simon Glass <sjg@chromium.org>
-> > ---
-> >
-> > Changes in v3:
-> > - Reword commit message again
-> > - cc a lot more people, from the FFI patch
-> > - Split out the attributes into the /memory nodes
-> >
-> > Changes in v2:
-> > - Reword commit message
-> >
-> >  dtschema/schemas/memory-map.yaml | 61 ++++++++++++++++++++++++++++++++
-> >  1 file changed, 61 insertions(+)
-> >  create mode 100644 dtschema/schemas/memory-map.yaml
-> >
-> > diff --git a/dtschema/schemas/memory-map.yaml b/dtschema/schemas/memory-map.yaml
-> > new file mode 100644
-> > index 0000000..4b06583
-> > --- /dev/null
-> > +++ b/dtschema/schemas/memory-map.yaml
-> > @@ -0,0 +1,61 @@
-> > +# SPDX-License-Identifier: BSD-2-Clause
-> > +# Copyright 2023 Google LLC
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/memory-map.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: /memory-map nodes
-> > +description: |
-> > +  Common properties always required in /memory-map nodes. These nodes are
-> > +  intended to resolve the nonchalant clause 3.4.1 ("/memory node and UEFI")
-> > +  in the Devicetree Specification.
-> > +
-> > +maintainers:
-> > +  - Simon Glass <sjg@chromium.org>
-> > +
-> > +properties:
-> > +  $nodename:
-> > +    const: 'memory-map'
-> > +
-> > +patternProperties:
-> > +  "^([a-z][a-z0-9\\-]+@[0-9a-f]+)?$":
-> > +    type: object
-> > +    additionalProperties: false
-> > +
-> > +    properties:
-> > +      reg:
-> > +        minItems: 1
-> > +        maxItems: 1024
-> > +
-> > +      usage:
-> > +        $ref: /schemas/types.yaml#/definitions/string
-> > +        description: |
-> > +          Describes the usage of the memory region, e.g.:
-> > +
-> > +            "acpi-reclaim", "acpi-nvs", "bootcode", "bootdata", "bootdata",
-> > +            "runtime-code", "runtime-data".
-> > +
-> > +            See enum EFI_MEMORY_TYPE in "Unified Extensible Firmware Interface
-> > +            (UEFI) Specification" for all the types. For now there are not
-> > +            listed here.
-> > +
-> > +    required:
-> > +      - reg
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    memory-map {
-> > +        acpi@f0000 {
-> > +            reg = <0xf0000 0x4000>;
-> > +            usage = "acpi-reclaim";
-> > +        };
-> > +
-> > +        runtime@12300000 {
-> > +            reg = <0x12300000 0x28000>;
-> > +            usage = "runtime-code";
-> > +        };
-> > +    };
-> > +...
-> > --
-> > 2.42.0.rc1.204.g551eb34607-goog
-> >
+Jason
