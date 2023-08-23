@@ -2,275 +2,1250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E09F07851CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 09:40:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 805247851D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 09:43:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233494AbjHWHkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 03:40:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46360 "EHLO
+        id S233513AbjHWHno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 03:43:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230074AbjHWHki (ORCPT
+        with ESMTP id S233510AbjHWHnm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 03:40:38 -0400
-Received: from HK2P15301CU002.outbound.protection.outlook.com (mail-eastasiaazon11020016.outbound.protection.outlook.com [52.101.128.16])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D9F9FB;
-        Wed, 23 Aug 2023 00:40:36 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jdrOWUKCY+tZ6Tj9LLaVETI2iypnkUKDy2a6/FL0yYHfJqv3+ZnJxZpOgQ6IviGSVGMYzSiFIciEYdzl3Y1AWcXnV3DAj+jRSrpURcgHBgeyNNy/Yl+5BvKiddGzjootsBHW1rGWeuQYCAyOb+FLRCgd1cRqn5Jv//ANZV0C06D9nndfqN3i0C4hno658Qf/98TO6VffzQJUJXHO3gps5KEq70zRemg6MEWm0tZiPCavp9xda9+f6PvjbRr7w5bRAOfuizDU2XLJqaWDYLm7KS6WxCLCIRMutvZKfwr2FeriyhY4UBVlU/m+NqEM/UcXrv5fKqwSVFBvNN9Og/BGlw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ku/BsbCksZ4ZeS7Wn5A8BMT4Hh17yQu5w7cY3hWADIc=;
- b=USf8BmBKqdMf99HLZ1KP7UxEaza4ZduSt5n/1/6+comkXeqh7e0RLSv9AA0bm9rP4I7qp9XO4owTUqT7MbIWLhHtigUk6vaPJOywvD6/EUrXr/d8GSrREU+KcbJw/ei7wGAjdCU9H2q06Y/VFDeii33L14u0XkC618RgvWK4PoYET63hLgtyCECvCSW7e5t8bVUK5AvkrLb1t4HN+RcTVGN7UW3+qqj7frnv4WeYYYsb7R1SETteSkRuEdEC0Hx5BB1iWVWjCYdtX6USPQenc8RgqnXrQhj9brJgMbT4k+veSFoIY+wrln1tfvBffpX64PNRYAYazHPjFWRNVITDqw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ku/BsbCksZ4ZeS7Wn5A8BMT4Hh17yQu5w7cY3hWADIc=;
- b=XDaGf3ygfdNLpk+oJjR+lYxlNDK0lxkbZDll/F+LtoK8lMKWIErgAaY3PrIL85i65qEBDl7pU0ESzoZWNWhkzSgVEmqRXLZ4zc5ZsCRzfG6i7N9eRCuU85gvNEOtp0NiMYdD9vyi2+IPGPoUMvlP7DcDa+u9lTK+q74COKwzXLg=
-Received: from PUZP153MB0635.APCP153.PROD.OUTLOOK.COM (2603:1096:301:e2::8) by
- SI2P153MB0458.APCP153.PROD.OUTLOOK.COM (2603:1096:4:130::9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6745.5; Wed, 23 Aug 2023 07:40:31 +0000
-Received: from PUZP153MB0635.APCP153.PROD.OUTLOOK.COM
- ([fe80::4153:b8b:7077:5188]) by PUZP153MB0635.APCP153.PROD.OUTLOOK.COM
- ([fe80::4153:b8b:7077:5188%6]) with mapi id 15.20.6745.005; Wed, 23 Aug 2023
- 07:40:31 +0000
-From:   Saurabh Singh Sengar <ssengar@microsoft.com>
-To:     Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>
-CC:     "patches@lists.linux.dev" <patches@lists.linux.dev>,
-        "Michael Kelley (LINUX)" <mikelley@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        "apais@linux.microsoft.com" <apais@linux.microsoft.com>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        "ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
-        MUKESH RATHOR <mukeshrathor@microsoft.com>,
-        "stanislav.kinsburskiy@gmail.com" <stanislav.kinsburskiy@gmail.com>,
-        "jinankjain@linux.microsoft.com" <jinankjain@linux.microsoft.com>,
-        vkuznets <vkuznets@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>
-Subject: RE: [PATCH v2 15/15] Drivers: hv: Add modules to expose /dev/mshv to
- VMMs running on Hyper-V
-Thread-Topic: [PATCH v2 15/15] Drivers: hv: Add modules to expose /dev/mshv to
- VMMs running on Hyper-V
-Thread-Index: AQHZ0VZ96EEPB9Xi80mUoj983vpcr6/v7KBwgAB88wCAAjguIIAEJ0yAgACyiqA=
-Date:   Wed, 23 Aug 2023 07:40:30 +0000
-Message-ID: <PUZP153MB06355D695AC8AAFD2624ED2BBE1CA@PUZP153MB0635.APCP153.PROD.OUTLOOK.COM>
-References: <1692309711-5573-1-git-send-email-nunodasneves@linux.microsoft.com>
- <1692309711-5573-16-git-send-email-nunodasneves@linux.microsoft.com>
- <PUZP153MB063545036E6B547C009F6AECBE1BA@PUZP153MB0635.APCP153.PROD.OUTLOOK.COM>
- <664aec4c-7ea9-447f-afab-9e31e9e106c1@linux.microsoft.com>
- <PUZP153MB0635A9EBE87C3589612B628CBE19A@PUZP153MB0635.APCP153.PROD.OUTLOOK.COM>
- <8978223c-c5e8-4235-a0ed-2031583c2751@linux.microsoft.com>
-In-Reply-To: <8978223c-c5e8-4235-a0ed-2031583c2751@linux.microsoft.com>
-Accept-Language: en-IN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=75ae88da-eda1-415c-97f3-a1cc5fa28960;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-08-23T06:57:51Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PUZP153MB0635:EE_|SI2P153MB0458:EE_
-x-ms-office365-filtering-correlation-id: cec627cb-beae-4e8f-2f4d-08dba3ac3a37
-x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 9cL83czVKM3J7hsoIFKyLjsvD+2wM61j5t/ULh/SSt+I9t6+g4XJEHWod1I3T83UaKOfIwG9DrgU1NwntTiMBhh35qZcHCGBLufAnxWcwsxLYI+MQWa4c9n9bAcMYtn5CJffVo/nAljA174a2tIWglkTHtsjpI8gmf2icvS03sZGeD1tDPC2LWd/xRfWiM7FdWQ1ja4Jp1/wURR3qqWQfeoiy6b71lfzXbhbx6A94P6bb60d1svxcFpMkbGwJWQqFuN8jC2LPdjxELMHe5CBccFB082kC+ULvemogn8actirtvZwK5H+0zPBh9MyhaLWP5+FHXBkbsf0RTDdTCNgGYgFXRSaVVVHiZrW/74gAUs8JlEVzBxj7+bnppimiZ+ZhzztfJ2I+U7J9KWFi3Chr+e1E7Fjo3NdMpoDm2akbXovVsa1i2qy7mKEdsB4CCeMzls9i5vdCxe+0IqCymMFUJFNIN6kdT9Byrv9KTdg73Q0XwFvXJG/8o+t6T8mK//K6GzrQ5q/kibB8RUocd8GwBN1kvkVP3lVOOyR7cYCOKTF4Zd039tGJZtggauuBChW7v9ErBbv9+x8wcJUnP2iA6xtQRMzdMOJ/bOXJ1Ivl+yBPXNyXUyQOyJvLfoI7AKPK9ZEACFH3bYOyS9xfttQhjxcRDJoA0u0nmUdPbWmbkbyUtYAAMDdOGtkwlb7gI6H
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZP153MB0635.APCP153.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(366004)(346002)(376002)(396003)(451199024)(1800799009)(186009)(83380400001)(7416002)(2906002)(10290500003)(478600001)(41300700001)(66556008)(7696005)(66476007)(66446008)(64756008)(53546011)(71200400001)(12101799020)(52536014)(5660300002)(4326008)(8676002)(54906003)(8936002)(66946007)(122000001)(82950400001)(38070700005)(38100700002)(110136005)(76116006)(6506007)(316002)(9686003)(8990500004)(82960400001)(55016003)(86362001)(33656002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?q1B3bYq1RQSwxx0BG8z3FkmeYqiaCOtKvweLq9FrsCArvghs3HnROnizOlNM?=
- =?us-ascii?Q?Cyn92LDMzOF33gSmA+eLObjKosWHqdJqCiPzcCoVgBKD8CCgCXeX9wBQcmw4?=
- =?us-ascii?Q?SpOoDVacgZij86wefrrl327HyBguais8EKENwGugBJ7rmf2qiMx6Bs8QvJSR?=
- =?us-ascii?Q?9bx2yvBns6BvXEPE4gmOfacPvjJ2fThYMOQSQWZQi5+4zIs9h+HsX3c/hL4S?=
- =?us-ascii?Q?YFVdLhgbe82kmUpq60cxCelUmFpYLJDchCX2WxLsRXwPt2boAfmsNVMGdzmO?=
- =?us-ascii?Q?LDr6pmX+70BI31UXx4iM9tueq6v6T1ub/sGhbftVC5ckKhHh1xkx+rpjVsUb?=
- =?us-ascii?Q?OX6mFV53hxjCf0acPXrrmobVS1XZ6Rv2kCUvWflodRqOeRH+Dodso7V/Yxrx?=
- =?us-ascii?Q?ZO2u0v4Yxfg5QngySrGuG4D/Qrwl3WWJ65wlKz5Qef83tBdOAbvIo9c1gE7S?=
- =?us-ascii?Q?fGDDB8OQnDu2JreItL8kRPzt3rNDzSZQvovk9zwFVRCv1py0Wi4r7Rn6D9JO?=
- =?us-ascii?Q?SlV9PWQX8SaZF6KLVMlOIqwk8uTO8UBpVB8U/KPCSrGX3GPQOv+psxq3oVvu?=
- =?us-ascii?Q?fTs2u0BWsW9CvQh/AXgrSibnMmDcakj5/1tipQPaDWZiF2syZ91urRsrybhM?=
- =?us-ascii?Q?wf/RlXZMdGCL0+1tFEMpy7FK3r12EVT45iZYrjfWei28PJdh+yDYEADzGfDk?=
- =?us-ascii?Q?xL9DewhD8ibkUNebW5ADtiQZbWlq14QQ/pdhi0OPeo0IKH8dEn5NGcJKXRDU?=
- =?us-ascii?Q?MCtsX0XVRavRNxVQUajOe5zPTkC1p0OXCnrRyVR+ej9jVQEc8a58O7xL0r/H?=
- =?us-ascii?Q?+M9dGG8Z3pzG3cLSyW/x2D2WdIHk6upJwcWUBh5B0Y5ZSzYJ16MmdhDpmBOw?=
- =?us-ascii?Q?w3XESi8m2BN51G3vylU/JyVjs/Sd5ZESz85oLFgNj5MH8vm/8Qj9xozk2Xei?=
- =?us-ascii?Q?g2O90/qk55lNThdmCqJ+VjIJeeHS2k68Zf9z6RliEfDdSzUckqUghtLxCaJx?=
- =?us-ascii?Q?F1wTEJfBlKwRn/15l/jp28Ptw9gyVA03BDJ23b/0ro1EzEcs21CxSHr+Ai6Z?=
- =?us-ascii?Q?AuD7KnpyPFzvos8IfOzYCLI9KMrh5aImILHVJNcpjZBRM8Py96wzIbGnf/Y3?=
- =?us-ascii?Q?+C0MIfNfKqdTcpAANEwTsh3GVQvwhP2tEt3XOcWWQsYUgn7rL+jCGEfyikxI?=
- =?us-ascii?Q?gnC1N38N0e1ERVvStVzf88MTfdFWoDAtvX4DIHMqF+MznfNB+dB1sfpKDL/q?=
- =?us-ascii?Q?+KXryDxOe5Y1615shWuy5kA/nYZTky+jqXFxszM4Zwwb8DdprW2r2G8/MKap?=
- =?us-ascii?Q?4bRQ0h7X0mQnTqZFosNIPhjIBw3Egeq1IL5zcAgeb1VMUYrFpWtSQxFTYVDv?=
- =?us-ascii?Q?Mh4rdzElXo01Y8fw+lbtNrXYhr/oTWhZkBS3hbJK1P9K93cvxJf2H7O2tB5G?=
- =?us-ascii?Q?w88wXaL6/RWD8I9aPozNQyuQz9fEqrHsoUMBK/x0W1fn5oPYmn5UpPVx0Ktq?=
- =?us-ascii?Q?xjNkgc7LsqQZDFMXSAmqDEq6HEEqBu75NJz4xQ3IIJMLZr8ziO2bUmtEID5Z?=
- =?us-ascii?Q?DS7GSlFju7kCRAoxOQm++763pIr0sT05+74yXI3e?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Wed, 23 Aug 2023 03:43:42 -0400
+Received: from out-24.mta1.migadu.com (out-24.mta1.migadu.com [95.215.58.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB8A5CE6
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 00:43:36 -0700 (PDT)
+Message-ID: <f3f30d46-379a-8730-5797-400a77db61c3@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1692776615;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=M5rzoI6+B23g4ccugUT1/Q8jfD3bDbFz2SulRvZsU+A=;
+        b=IziPWBnMF8h6gW6k65j+9tlMgiatn9cOTu651yikDSvheKLNoyT5pOKPzGjhIz1l+EORL9
+        VU71cx7/g8C5IiE8OOWD31x9kSOcQkw5+cAP0iU/hEANrA5FJ0MbeJ21nnGRAeTekWYKtz
+        BAS2D/+if6yytjlLagK1yYAEtkUYtxQ=
+Date:   Wed, 23 Aug 2023 15:43:20 +0800
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PUZP153MB0635.APCP153.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: cec627cb-beae-4e8f-2f4d-08dba3ac3a37
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Aug 2023 07:40:30.9321
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: pTEVaPDj/bQaEx9LtYCIUdT5ynGEMk7BMqPYbBzUDcDYQtsfQQMybWKjWVgi9thJ6jWlHfk9fjK8xnHoj2xD5w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SI2P153MB0458
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE autolearn=no
-        autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v2 1/2] RDMA/rxe: Improve newline in printing messages
+To:     Li Zhijian <lizhijian@fujitsu.com>, linux-rdma@vger.kernel.org,
+        "pmladek@suse.com" <pmladek@suse.com>,
+        "senozhatsky@chromium.org" <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "john.ogness@linutronix.de" <john.ogness@linutronix.de>
+Cc:     zyjzyj2000@gmail.com, jgg@ziepe.ca, leon@kernel.org,
+        linux-kernel@vger.kernel.org, rpearsonhpe@gmail.com,
+        Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
+References: <20230823061141.258864-1-lizhijian@fujitsu.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <20230823061141.258864-1-lizhijian@fujitsu.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+在 2023/8/23 14:11, Li Zhijian 写道:
+> Previously rxe_{dbg,info,err}() macros are appened built-in newline,
+> sut some users will add redundent newline some times. So remove the
+> built-int newline for this macros.
+> 
 
+This commit is based on this statement "A newline help flushing message 
+out.".
 
-> -----Original Message-----
-> From: Nuno Das Neves <nunodasneves@linux.microsoft.com>
-> Sent: Wednesday, August 23, 2023 1:49 AM
-> To: Saurabh Singh Sengar <ssengar@microsoft.com>; linux-
-> hyperv@vger.kernel.org; linux-kernel@vger.kernel.org; x86@kernel.org; lin=
-ux-
-> arm-kernel@lists.infradead.org; linux-arch@vger.kernel.org
-> Cc: patches@lists.linux.dev; Michael Kelley (LINUX)
-> <mikelley@microsoft.com>; KY Srinivasan <kys@microsoft.com>;
-> wei.liu@kernel.org; Haiyang Zhang <haiyangz@microsoft.com>; Dexuan Cui
-> <decui@microsoft.com>; apais@linux.microsoft.com; Tianyu Lan
-> <Tianyu.Lan@microsoft.com>; ssengar@linux.microsoft.com; MUKESH
-> RATHOR <mukeshrathor@microsoft.com>; stanislav.kinsburskiy@gmail.com;
-> jinankjain@linux.microsoft.com; vkuznets <vkuznets@redhat.com>;
-> tglx@linutronix.de; mingo@redhat.com; bp@alien8.de;
-> dave.hansen@linux.intel.com; hpa@zytor.com; will@kernel.org;
-> catalin.marinas@arm.com
-> Subject: Re: [PATCH v2 15/15] Drivers: hv: Add modules to expose /dev/msh=
-v
-> to VMMs running on Hyper-V
->=20
-> On 8/19/2023 10:19 PM, Saurabh Singh Sengar wrote:
-> >
-> >
-> >> -----Original Message-----
-> >> From: Nuno Das Neves <nunodasneves@linux.microsoft.com>
-> >> Sent: Saturday, August 19, 2023 12:30 AM
-> >> To: Saurabh Singh Sengar <ssengar@microsoft.com>; linux-
-> >> hyperv@vger.kernel.org; linux-kernel@vger.kernel.org; x86@kernel.org;
-> >> linux- arm-kernel@lists.infradead.org; linux-arch@vger.kernel.org
-> >> Cc: patches@lists.linux.dev; Michael Kelley (LINUX)
-> >> <mikelley@microsoft.com>; KY Srinivasan <kys@microsoft.com>;
-> >> wei.liu@kernel.org; Haiyang Zhang <haiyangz@microsoft.com>; Dexuan
-> >> Cui <decui@microsoft.com>; apais@linux.microsoft.com; Tianyu Lan
-> >> <Tianyu.Lan@microsoft.com>; ssengar@linux.microsoft.com; MUKESH
-> >> RATHOR <mukeshrathor@microsoft.com>;
-> stanislav.kinsburskiy@gmail.com;
-> >> jinankjain@linux.microsoft.com; vkuznets <vkuznets@redhat.com>;
-> >> tglx@linutronix.de; mingo@redhat.com; bp@alien8.de;
-> >> dave.hansen@linux.intel.com; hpa@zytor.com; will@kernel.org;
-> >> catalin.marinas@arm.com
-> >> Subject: Re: [PATCH v2 15/15] Drivers: hv: Add modules to expose
-> >> /dev/mshv to VMMs running on Hyper-V
-> >>
-> >> On 8/18/2023 6:08 AM, Saurabh Singh Sengar wrote:
-> >>>> +
-> >>>> +config MSHV_VTL
-> >>>> +	tristate "Microsoft Hyper-V VTL driver"
-> >>>> +	depends on MSHV
-> >>>> +	select HYPERV_VTL_MODE
-> >>>> +	select TRANSPARENT_HUGEPAGE
-> >>>
-> >>> TRANSPARENT_HUGEPAGE can be avoided for now.
-> >>>
-> >>
-> >> I will remove it in the next version. Thanks.
-> >>>> +
-> >>>> +#define HV_GET_REGISTER_BATCH_SIZE	\
-> >>>> +	(HV_HYP_PAGE_SIZE / sizeof(union hv_register_value))
-> >>>> +#define HV_SET_REGISTER_BATCH_SIZE	\
-> >>>> +	((HV_HYP_PAGE_SIZE - sizeof(struct hv_input_set_vp_registers)) \
-> >>>> +		/ sizeof(struct hv_register_assoc))
-> >>>> +
-> >>>> +int hv_call_get_vp_registers(
-> >>>> +		u32 vp_index,
-> >>>> +		u64 partition_id,
-> >>>> +		u16 count,
-> >>>> +		union hv_input_vtl input_vtl,
-> >>>> +		struct hv_register_assoc *registers) {
-> >>>> +	struct hv_input_get_vp_registers *input_page;
-> >>>> +	union hv_register_value *output_page;
-> >>>> +	u16 completed =3D 0;
-> >>>> +	unsigned long remaining =3D count;
-> >>>> +	int rep_count, i;
-> >>>> +	u64 status;
-> >>>> +	unsigned long flags;
-> >>>> +
-> >>>> +	local_irq_save(flags);
-> >>>> +
-> >>>> +	input_page =3D *this_cpu_ptr(hyperv_pcpu_input_arg);
-> >>>> +	output_page =3D *this_cpu_ptr(hyperv_pcpu_output_arg);
-> >>>> +
-> >>>> +	input_page->partition_id =3D partition_id;
-> >>>> +	input_page->vp_index =3D vp_index;
-> >>>> +	input_page->input_vtl.as_uint8 =3D input_vtl.as_uint8;
-> >>>> +	input_page->rsvd_z8 =3D 0;
-> >>>> +	input_page->rsvd_z16 =3D 0;
-> >>>> +
-> >>>> +	while (remaining) {
-> >>>> +		rep_count =3D min(remaining, HV_GET_REGISTER_BATCH_SIZE);
-> >>>> +		for (i =3D 0; i < rep_count; ++i)
-> >>>> +			input_page->names[i] =3D registers[i].name;
-> >>>> +
-> >>>> +		status =3D hv_do_rep_hypercall(HVCALL_GET_VP_REGISTERS,
-> >>>> rep_count,
-> >>>> +					     0, input_page, output_page);
-> >>>
-> >>> Is there any possibility that count value is passed 0 by mistake ?
-> >>> In that case status will remain uninitialized.
-> >>>
-> >>
-> >> These lines ensure rep_count is never 0 here:
-> >>
-> >> 	while (remaining) {
-> >> 		rep_count =3D min(remaining, HV_GET_REGISTER_BATCH_SIZE);
-> >>
-> >> Remaining can't be 0 or the loop would exit, and
-> >> HV_GET_REGISTER_BATCH_SIZE is not 0, or we would never get any
-> registers.
-> >
-> > There is a parameter in this function "count". I was checking if there
-> > is any possibility that is passed as 0 by mistake ? this will lead to
-> > "remaining" value as 0 and loop will never execute. Which results using
-> "status" uninitialized later in the function.
-> >
-> >
->=20
-> Ah ok, thanks! I will change it to return immediately in case count is 0.
+All the rxe_xxx log functions will finally call printk.
 
-Or you can initialize status with appropriate error value, either way is fi=
-ne.
-Please consider fixing the same issue in hv_call_set_vp_registers as well.
+To pirntk, there is no such statement in kernel document. Not sure if 
+Jason and Leon can decide this statement correct or not.
 
-- Saurabh
+So I add PRINTK viewer to check this statement "A newline help flushing 
+message out.".
+
+pmladek@suse.com
+senozhatsky@chromium.org
+rostedt@goodmis.org
+john.ogness@linutronix.de
+
+Zhu Yanjun
+
+> In terms of rxe_{dbg,info,err}_xxx() macros, because they don't have
+> built-in newline, append newline when using them.
+> 
+> CC: Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
+> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+> ---
+>   I have use below script to verify if all of them are cleanup:
+>   git grep -n -E "rxe_info.*\"|rxe_err.*\"|rxe_dbg.*\"" drivers/infiniband/sw/rxe/ | grep -v '\\n'
+> ---
+>   drivers/infiniband/sw/rxe/rxe.c       |   6 +-
+>   drivers/infiniband/sw/rxe/rxe.h       |   6 +-
+>   drivers/infiniband/sw/rxe/rxe_comp.c  |   4 +-
+>   drivers/infiniband/sw/rxe/rxe_cq.c    |   4 +-
+>   drivers/infiniband/sw/rxe/rxe_mr.c    |  16 +-
+>   drivers/infiniband/sw/rxe/rxe_mw.c    |   2 +-
+>   drivers/infiniband/sw/rxe/rxe_resp.c  |  12 +-
+>   drivers/infiniband/sw/rxe/rxe_task.c  |   4 +-
+>   drivers/infiniband/sw/rxe/rxe_verbs.c | 216 +++++++++++++-------------
+>   9 files changed, 135 insertions(+), 135 deletions(-)
+> 
+> diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
+> index 54c723a6edda..a086d588e159 100644
+> --- a/drivers/infiniband/sw/rxe/rxe.c
+> +++ b/drivers/infiniband/sw/rxe/rxe.c
+> @@ -161,7 +161,7 @@ void rxe_set_mtu(struct rxe_dev *rxe, unsigned int ndev_mtu)
+>   	port->attr.active_mtu = mtu;
+>   	port->mtu_cap = ib_mtu_enum_to_int(mtu);
+>   
+> -	rxe_info_dev(rxe, "Set mtu to %d", port->mtu_cap);
+> +	rxe_info_dev(rxe, "Set mtu to %d\n", port->mtu_cap);
+>   }
+>   
+>   /* called by ifc layer to create new rxe device.
+> @@ -181,7 +181,7 @@ static int rxe_newlink(const char *ibdev_name, struct net_device *ndev)
+>   	int err = 0;
+>   
+>   	if (is_vlan_dev(ndev)) {
+> -		rxe_err("rxe creation allowed on top of a real device only");
+> +		rxe_err("rxe creation allowed on top of a real device only\n");
+>   		err = -EPERM;
+>   		goto err;
+>   	}
+> @@ -189,7 +189,7 @@ static int rxe_newlink(const char *ibdev_name, struct net_device *ndev)
+>   	rxe = rxe_get_dev_from_net(ndev);
+>   	if (rxe) {
+>   		ib_device_put(&rxe->ib_dev);
+> -		rxe_err_dev(rxe, "already configured on %s", ndev->name);
+> +		rxe_err_dev(rxe, "already configured on %s\n", ndev->name);
+>   		err = -EEXIST;
+>   		goto err;
+>   	}
+> diff --git a/drivers/infiniband/sw/rxe/rxe.h b/drivers/infiniband/sw/rxe/rxe.h
+> index d33dd6cf83d3..d8fb2c7af30a 100644
+> --- a/drivers/infiniband/sw/rxe/rxe.h
+> +++ b/drivers/infiniband/sw/rxe/rxe.h
+> @@ -38,7 +38,7 @@
+>   
+>   #define RXE_ROCE_V2_SPORT		(0xc000)
+>   
+> -#define rxe_dbg(fmt, ...) pr_debug("%s: " fmt "\n", __func__, ##__VA_ARGS__)
+> +#define rxe_dbg(fmt, ...) pr_debug("%s: " fmt, __func__, ##__VA_ARGS__)
+>   #define rxe_dbg_dev(rxe, fmt, ...) ibdev_dbg(&(rxe)->ib_dev,		\
+>   		"%s: " fmt, __func__, ##__VA_ARGS__)
+>   #define rxe_dbg_uc(uc, fmt, ...) ibdev_dbg((uc)->ibuc.device,		\
+> @@ -58,7 +58,7 @@
+>   #define rxe_dbg_mw(mw, fmt, ...) ibdev_dbg((mw)->ibmw.device,		\
+>   		"mw#%d %s:  " fmt, (mw)->elem.index, __func__, ##__VA_ARGS__)
+>   
+> -#define rxe_err(fmt, ...) pr_err_ratelimited("%s: " fmt "\n", __func__, \
+> +#define rxe_err(fmt, ...) pr_err_ratelimited("%s: " fmt, __func__, \
+>   					##__VA_ARGS__)
+>   #define rxe_err_dev(rxe, fmt, ...) ibdev_err_ratelimited(&(rxe)->ib_dev, \
+>   		"%s: " fmt, __func__, ##__VA_ARGS__)
+> @@ -79,7 +79,7 @@
+>   #define rxe_err_mw(mw, fmt, ...) ibdev_err_ratelimited((mw)->ibmw.device, \
+>   		"mw#%d %s:  " fmt, (mw)->elem.index, __func__, ##__VA_ARGS__)
+>   
+> -#define rxe_info(fmt, ...) pr_info_ratelimited("%s: " fmt "\n", __func__, \
+> +#define rxe_info(fmt, ...) pr_info_ratelimited("%s: " fmt, __func__, \
+>   					##__VA_ARGS__)
+>   #define rxe_info_dev(rxe, fmt, ...) ibdev_info_ratelimited(&(rxe)->ib_dev, \
+>   		"%s: " fmt, __func__, ##__VA_ARGS__)
+> diff --git a/drivers/infiniband/sw/rxe/rxe_comp.c b/drivers/infiniband/sw/rxe/rxe_comp.c
+> index 5111735aafae..2810c886cfca 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_comp.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_comp.c
+> @@ -433,7 +433,7 @@ static void make_send_cqe(struct rxe_qp *qp, struct rxe_send_wqe *wqe,
+>   		}
+>   	} else {
+>   		if (wqe->status != IB_WC_WR_FLUSH_ERR)
+> -			rxe_err_qp(qp, "non-flush error status = %d",
+> +			rxe_err_qp(qp, "non-flush error status = %d\n",
+>   				wqe->status);
+>   	}
+>   }
+> @@ -582,7 +582,7 @@ static int flush_send_wqe(struct rxe_qp *qp, struct rxe_send_wqe *wqe)
+>   
+>   	err = rxe_cq_post(qp->scq, &cqe, 0);
+>   	if (err)
+> -		rxe_dbg_cq(qp->scq, "post cq failed, err = %d", err);
+> +		rxe_dbg_cq(qp->scq, "post cq failed, err = %d\n", err);
+>   
+>   	return err;
+>   }
+> diff --git a/drivers/infiniband/sw/rxe/rxe_cq.c b/drivers/infiniband/sw/rxe/rxe_cq.c
+> index d5486cbb3f10..fec87c9030ab 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_cq.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_cq.c
+> @@ -27,7 +27,7 @@ int rxe_cq_chk_attr(struct rxe_dev *rxe, struct rxe_cq *cq,
+>   	if (cq) {
+>   		count = queue_count(cq->queue, QUEUE_TYPE_TO_CLIENT);
+>   		if (cqe < count) {
+> -			rxe_dbg_cq(cq, "cqe(%d) < current # elements in queue (%d)",
+> +			rxe_dbg_cq(cq, "cqe(%d) < current # elements in queue (%d)\n",
+>   					cqe, count);
+>   			goto err1;
+>   		}
+> @@ -96,7 +96,7 @@ int rxe_cq_post(struct rxe_cq *cq, struct rxe_cqe *cqe, int solicited)
+>   
+>   	full = queue_full(cq->queue, QUEUE_TYPE_TO_CLIENT);
+>   	if (unlikely(full)) {
+> -		rxe_err_cq(cq, "queue full");
+> +		rxe_err_cq(cq, "queue full\n");
+>   		spin_unlock_irqrestore(&cq->cq_lock, flags);
+>   		if (cq->ibcq.event_handler) {
+>   			ev.device = cq->ibcq.device;
+> diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
+> index f54042e9aeb2..bc81fde696ee 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_mr.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+> @@ -34,7 +34,7 @@ int mr_check_range(struct rxe_mr *mr, u64 iova, size_t length)
+>   	case IB_MR_TYPE_MEM_REG:
+>   		if (iova < mr->ibmr.iova ||
+>   		    iova + length > mr->ibmr.iova + mr->ibmr.length) {
+> -			rxe_dbg_mr(mr, "iova/length out of range");
+> +			rxe_dbg_mr(mr, "iova/length out of range\n");
+>   			return -EINVAL;
+>   		}
+>   		return 0;
+> @@ -319,7 +319,7 @@ int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr,
+>   
+>   	err = mr_check_range(mr, iova, length);
+>   	if (unlikely(err)) {
+> -		rxe_dbg_mr(mr, "iova out of range");
+> +		rxe_dbg_mr(mr, "iova out of range\n");
+>   		return err;
+>   	}
+>   
+> @@ -477,7 +477,7 @@ int rxe_mr_do_atomic_op(struct rxe_mr *mr, u64 iova, int opcode,
+>   	u64 *va;
+>   
+>   	if (unlikely(mr->state != RXE_MR_STATE_VALID)) {
+> -		rxe_dbg_mr(mr, "mr not in valid state");
+> +		rxe_dbg_mr(mr, "mr not in valid state\n");
+>   		return RESPST_ERR_RKEY_VIOLATION;
+>   	}
+>   
+> @@ -490,7 +490,7 @@ int rxe_mr_do_atomic_op(struct rxe_mr *mr, u64 iova, int opcode,
+>   
+>   		err = mr_check_range(mr, iova, sizeof(value));
+>   		if (err) {
+> -			rxe_dbg_mr(mr, "iova out of range");
+> +			rxe_dbg_mr(mr, "iova out of range\n");
+>   			return RESPST_ERR_RKEY_VIOLATION;
+>   		}
+>   		page_offset = rxe_mr_iova_to_page_offset(mr, iova);
+> @@ -501,7 +501,7 @@ int rxe_mr_do_atomic_op(struct rxe_mr *mr, u64 iova, int opcode,
+>   	}
+>   
+>   	if (unlikely(page_offset & 0x7)) {
+> -		rxe_dbg_mr(mr, "iova not aligned");
+> +		rxe_dbg_mr(mr, "iova not aligned\n");
+>   		return RESPST_ERR_MISALIGNED_ATOMIC;
+>   	}
+>   
+> @@ -534,7 +534,7 @@ int rxe_mr_do_atomic_write(struct rxe_mr *mr, u64 iova, u64 value)
+>   
+>   	/* See IBA oA19-28 */
+>   	if (unlikely(mr->state != RXE_MR_STATE_VALID)) {
+> -		rxe_dbg_mr(mr, "mr not in valid state");
+> +		rxe_dbg_mr(mr, "mr not in valid state\n");
+>   		return RESPST_ERR_RKEY_VIOLATION;
+>   	}
+>   
+> @@ -548,7 +548,7 @@ int rxe_mr_do_atomic_write(struct rxe_mr *mr, u64 iova, u64 value)
+>   		/* See IBA oA19-28 */
+>   		err = mr_check_range(mr, iova, sizeof(value));
+>   		if (unlikely(err)) {
+> -			rxe_dbg_mr(mr, "iova out of range");
+> +			rxe_dbg_mr(mr, "iova out of range\n");
+>   			return RESPST_ERR_RKEY_VIOLATION;
+>   		}
+>   		page_offset = rxe_mr_iova_to_page_offset(mr, iova);
+> @@ -560,7 +560,7 @@ int rxe_mr_do_atomic_write(struct rxe_mr *mr, u64 iova, u64 value)
+>   
+>   	/* See IBA A19.4.2 */
+>   	if (unlikely(page_offset & 0x7)) {
+> -		rxe_dbg_mr(mr, "misaligned address");
+> +		rxe_dbg_mr(mr, "misaligned address\n");
+>   		return RESPST_ERR_MISALIGNED_ATOMIC;
+>   	}
+>   
+> diff --git a/drivers/infiniband/sw/rxe/rxe_mw.c b/drivers/infiniband/sw/rxe/rxe_mw.c
+> index d9312b5c9d20..379e65bfcd49 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_mw.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_mw.c
+> @@ -198,7 +198,7 @@ int rxe_bind_mw(struct rxe_qp *qp, struct rxe_send_wqe *wqe)
+>   	}
+>   
+>   	if (access & ~RXE_ACCESS_SUPPORTED_MW) {
+> -		rxe_err_mw(mw, "access %#x not supported", access);
+> +		rxe_err_mw(mw, "access %#x not supported\n", access);
+>   		ret = -EOPNOTSUPP;
+>   		goto err_drop_mr;
+>   	}
+> diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
+> index 64c64f5f36a8..032bf305a58b 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_resp.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_resp.c
+> @@ -362,18 +362,18 @@ static enum resp_states rxe_resp_check_length(struct rxe_qp *qp,
+>   		if ((pkt->mask & RXE_START_MASK) &&
+>   		    (pkt->mask & RXE_END_MASK)) {
+>   			if (unlikely(payload > mtu)) {
+> -				rxe_dbg_qp(qp, "only packet too long");
+> +				rxe_dbg_qp(qp, "only packet too long\n");
+>   				return RESPST_ERR_LENGTH;
+>   			}
+>   		} else if ((pkt->mask & RXE_START_MASK) ||
+>   			   (pkt->mask & RXE_MIDDLE_MASK)) {
+>   			if (unlikely(payload != mtu)) {
+> -				rxe_dbg_qp(qp, "first or middle packet not mtu");
+> +				rxe_dbg_qp(qp, "first or middle packet not mtu\n");
+>   				return RESPST_ERR_LENGTH;
+>   			}
+>   		} else if (pkt->mask & RXE_END_MASK) {
+>   			if (unlikely((payload == 0) || (payload > mtu))) {
+> -				rxe_dbg_qp(qp, "last packet zero or too long");
+> +				rxe_dbg_qp(qp, "last packet zero or too long\n");
+>   				return RESPST_ERR_LENGTH;
+>   			}
+>   		}
+> @@ -382,7 +382,7 @@ static enum resp_states rxe_resp_check_length(struct rxe_qp *qp,
+>   	/* See IBA C9-94 */
+>   	if (pkt->mask & RXE_RETH_MASK) {
+>   		if (reth_len(pkt) > (1U << 31)) {
+> -			rxe_dbg_qp(qp, "dma length too long");
+> +			rxe_dbg_qp(qp, "dma length too long\n");
+>   			return RESPST_ERR_LENGTH;
+>   		}
+>   	}
+> @@ -1133,7 +1133,7 @@ static enum resp_states do_complete(struct rxe_qp *qp,
+>   		}
+>   	} else {
+>   		if (wc->status != IB_WC_WR_FLUSH_ERR)
+> -			rxe_err_qp(qp, "non-flush error status = %d",
+> +			rxe_err_qp(qp, "non-flush error status = %d\n",
+>   				wc->status);
+>   	}
+>   
+> @@ -1442,7 +1442,7 @@ static int flush_recv_wqe(struct rxe_qp *qp, struct rxe_recv_wqe *wqe)
+>   
+>   	err = rxe_cq_post(qp->rcq, &cqe, 0);
+>   	if (err)
+> -		rxe_dbg_cq(qp->rcq, "post cq failed err = %d", err);
+> +		rxe_dbg_cq(qp->rcq, "post cq failed err = %d\n", err);
+>   
+>   	return err;
+>   }
+> diff --git a/drivers/infiniband/sw/rxe/rxe_task.c b/drivers/infiniband/sw/rxe/rxe_task.c
+> index 1501120d4f52..80332638d9e3 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_task.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_task.c
+> @@ -156,7 +156,7 @@ static void do_task(struct rxe_task *task)
+>   
+>   		default:
+>   			WARN_ON(1);
+> -			rxe_dbg_qp(task->qp, "unexpected task state = %d",
+> +			rxe_dbg_qp(task->qp, "unexpected task state = %d\n",
+>   				   task->state);
+>   			task->state = TASK_STATE_IDLE;
+>   		}
+> @@ -167,7 +167,7 @@ static void do_task(struct rxe_task *task)
+>   			if (WARN_ON(task->num_done != task->num_sched))
+>   				rxe_dbg_qp(
+>   					task->qp,
+> -					"%ld tasks scheduled, %ld tasks done",
+> +					"%ld tasks scheduled, %ld tasks done\n",
+>   					task->num_sched, task->num_done);
+>   		}
+>   		spin_unlock_irqrestore(&task->lock, flags);
+> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
+> index 903f0b71447e..73c283a2d8ed 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_verbs.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
+> @@ -23,7 +23,7 @@ static int rxe_query_device(struct ib_device *ibdev,
+>   	int err;
+>   
+>   	if (udata->inlen || udata->outlen) {
+> -		rxe_dbg_dev(rxe, "malformed udata");
+> +		rxe_dbg_dev(rxe, "malformed udata\n");
+>   		err = -EINVAL;
+>   		goto err_out;
+>   	}
+> @@ -33,7 +33,7 @@ static int rxe_query_device(struct ib_device *ibdev,
+>   	return 0;
+>   
+>   err_out:
+> -	rxe_err_dev(rxe, "returned err = %d", err);
+> +	rxe_err_dev(rxe, "returned err = %d\n", err);
+>   	return err;
+>   }
+>   
+> @@ -45,7 +45,7 @@ static int rxe_query_port(struct ib_device *ibdev,
+>   
+>   	if (port_num != 1) {
+>   		err = -EINVAL;
+> -		rxe_dbg_dev(rxe, "bad port_num = %d", port_num);
+> +		rxe_dbg_dev(rxe, "bad port_num = %d\n", port_num);
+>   		goto err_out;
+>   	}
+>   
+> @@ -67,7 +67,7 @@ static int rxe_query_port(struct ib_device *ibdev,
+>   	return ret;
+>   
+>   err_out:
+> -	rxe_err_dev(rxe, "returned err = %d", err);
+> +	rxe_err_dev(rxe, "returned err = %d\n", err);
+>   	return err;
+>   }
+>   
+> @@ -79,7 +79,7 @@ static int rxe_query_pkey(struct ib_device *ibdev,
+>   
+>   	if (index != 0) {
+>   		err = -EINVAL;
+> -		rxe_dbg_dev(rxe, "bad pkey index = %d", index);
+> +		rxe_dbg_dev(rxe, "bad pkey index = %d\n", index);
+>   		goto err_out;
+>   	}
+>   
+> @@ -87,7 +87,7 @@ static int rxe_query_pkey(struct ib_device *ibdev,
+>   	return 0;
+>   
+>   err_out:
+> -	rxe_err_dev(rxe, "returned err = %d", err);
+> +	rxe_err_dev(rxe, "returned err = %d\n", err);
+>   	return err;
+>   }
+>   
+> @@ -100,7 +100,7 @@ static int rxe_modify_device(struct ib_device *ibdev,
+>   	if (mask & ~(IB_DEVICE_MODIFY_SYS_IMAGE_GUID |
+>   		     IB_DEVICE_MODIFY_NODE_DESC)) {
+>   		err = -EOPNOTSUPP;
+> -		rxe_dbg_dev(rxe, "unsupported mask = 0x%x", mask);
+> +		rxe_dbg_dev(rxe, "unsupported mask = 0x%x\n", mask);
+>   		goto err_out;
+>   	}
+>   
+> @@ -115,7 +115,7 @@ static int rxe_modify_device(struct ib_device *ibdev,
+>   	return 0;
+>   
+>   err_out:
+> -	rxe_err_dev(rxe, "returned err = %d", err);
+> +	rxe_err_dev(rxe, "returned err = %d\n", err);
+>   	return err;
+>   }
+>   
+> @@ -128,14 +128,14 @@ static int rxe_modify_port(struct ib_device *ibdev, u32 port_num,
+>   
+>   	if (port_num != 1) {
+>   		err = -EINVAL;
+> -		rxe_dbg_dev(rxe, "bad port_num = %d", port_num);
+> +		rxe_dbg_dev(rxe, "bad port_num = %d\n", port_num);
+>   		goto err_out;
+>   	}
+>   
+>   	//TODO is shutdown useful
+>   	if (mask & ~(IB_PORT_RESET_QKEY_CNTR)) {
+>   		err = -EOPNOTSUPP;
+> -		rxe_dbg_dev(rxe, "unsupported mask = 0x%x", mask);
+> +		rxe_dbg_dev(rxe, "unsupported mask = 0x%x\n", mask);
+>   		goto err_out;
+>   	}
+>   
+> @@ -149,7 +149,7 @@ static int rxe_modify_port(struct ib_device *ibdev, u32 port_num,
+>   	return 0;
+>   
+>   err_out:
+> -	rxe_err_dev(rxe, "returned err = %d", err);
+> +	rxe_err_dev(rxe, "returned err = %d\n", err);
+>   	return err;
+>   }
+>   
+> @@ -161,14 +161,14 @@ static enum rdma_link_layer rxe_get_link_layer(struct ib_device *ibdev,
+>   
+>   	if (port_num != 1) {
+>   		err = -EINVAL;
+> -		rxe_dbg_dev(rxe, "bad port_num = %d", port_num);
+> +		rxe_dbg_dev(rxe, "bad port_num = %d\n", port_num);
+>   		goto err_out;
+>   	}
+>   
+>   	return IB_LINK_LAYER_ETHERNET;
+>   
+>   err_out:
+> -	rxe_err_dev(rxe, "returned err = %d", err);
+> +	rxe_err_dev(rxe, "returned err = %d\n", err);
+>   	return err;
+>   }
+>   
+> @@ -181,7 +181,7 @@ static int rxe_port_immutable(struct ib_device *ibdev, u32 port_num,
+>   
+>   	if (port_num != 1) {
+>   		err = -EINVAL;
+> -		rxe_dbg_dev(rxe, "bad port_num = %d", port_num);
+> +		rxe_dbg_dev(rxe, "bad port_num = %d\n", port_num);
+>   		goto err_out;
+>   	}
+>   
+> @@ -197,7 +197,7 @@ static int rxe_port_immutable(struct ib_device *ibdev, u32 port_num,
+>   	return 0;
+>   
+>   err_out:
+> -	rxe_err_dev(rxe, "returned err = %d", err);
+> +	rxe_err_dev(rxe, "returned err = %d\n", err);
+>   	return err;
+>   }
+>   
+> @@ -210,7 +210,7 @@ static int rxe_alloc_ucontext(struct ib_ucontext *ibuc, struct ib_udata *udata)
+>   
+>   	err = rxe_add_to_pool(&rxe->uc_pool, uc);
+>   	if (err)
+> -		rxe_err_dev(rxe, "unable to create uc");
+> +		rxe_err_dev(rxe, "unable to create uc\n");
+>   
+>   	return err;
+>   }
+> @@ -222,7 +222,7 @@ static void rxe_dealloc_ucontext(struct ib_ucontext *ibuc)
+>   
+>   	err = rxe_cleanup(uc);
+>   	if (err)
+> -		rxe_err_uc(uc, "cleanup failed, err = %d", err);
+> +		rxe_err_uc(uc, "cleanup failed, err = %d\n", err);
+>   }
+>   
+>   /* pd */
+> @@ -234,14 +234,14 @@ static int rxe_alloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
+>   
+>   	err = rxe_add_to_pool(&rxe->pd_pool, pd);
+>   	if (err) {
+> -		rxe_dbg_dev(rxe, "unable to alloc pd");
+> +		rxe_dbg_dev(rxe, "unable to alloc pd\n");
+>   		goto err_out;
+>   	}
+>   
+>   	return 0;
+>   
+>   err_out:
+> -	rxe_err_dev(rxe, "returned err = %d", err);
+> +	rxe_err_dev(rxe, "returned err = %d\n", err);
+>   	return err;
+>   }
+>   
+> @@ -252,7 +252,7 @@ static int rxe_dealloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
+>   
+>   	err = rxe_cleanup(pd);
+>   	if (err)
+> -		rxe_err_pd(pd, "cleanup failed, err = %d", err);
+> +		rxe_err_pd(pd, "cleanup failed, err = %d\n", err);
+>   
+>   	return 0;
+>   }
+> @@ -279,7 +279,7 @@ static int rxe_create_ah(struct ib_ah *ibah,
+>   	err = rxe_add_to_pool_ah(&rxe->ah_pool, ah,
+>   			init_attr->flags & RDMA_CREATE_AH_SLEEPABLE);
+>   	if (err) {
+> -		rxe_dbg_dev(rxe, "unable to create ah");
+> +		rxe_dbg_dev(rxe, "unable to create ah\n");
+>   		goto err_out;
+>   	}
+>   
+> @@ -288,7 +288,7 @@ static int rxe_create_ah(struct ib_ah *ibah,
+>   
+>   	err = rxe_ah_chk_attr(ah, init_attr->ah_attr);
+>   	if (err) {
+> -		rxe_dbg_ah(ah, "bad attr");
+> +		rxe_dbg_ah(ah, "bad attr\n");
+>   		goto err_cleanup;
+>   	}
+>   
+> @@ -298,7 +298,7 @@ static int rxe_create_ah(struct ib_ah *ibah,
+>   					 sizeof(uresp->ah_num));
+>   		if (err) {
+>   			err = -EFAULT;
+> -			rxe_dbg_ah(ah, "unable to copy to user");
+> +			rxe_dbg_ah(ah, "unable to copy to user\n");
+>   			goto err_cleanup;
+>   		}
+>   	} else if (ah->is_user) {
+> @@ -314,9 +314,9 @@ static int rxe_create_ah(struct ib_ah *ibah,
+>   err_cleanup:
+>   	cleanup_err = rxe_cleanup(ah);
+>   	if (cleanup_err)
+> -		rxe_err_ah(ah, "cleanup failed, err = %d", cleanup_err);
+> +		rxe_err_ah(ah, "cleanup failed, err = %d\n", cleanup_err);
+>   err_out:
+> -	rxe_err_ah(ah, "returned err = %d", err);
+> +	rxe_err_ah(ah, "returned err = %d\n", err);
+>   	return err;
+>   }
+>   
+> @@ -327,7 +327,7 @@ static int rxe_modify_ah(struct ib_ah *ibah, struct rdma_ah_attr *attr)
+>   
+>   	err = rxe_ah_chk_attr(ah, attr);
+>   	if (err) {
+> -		rxe_dbg_ah(ah, "bad attr");
+> +		rxe_dbg_ah(ah, "bad attr\n");
+>   		goto err_out;
+>   	}
+>   
+> @@ -336,7 +336,7 @@ static int rxe_modify_ah(struct ib_ah *ibah, struct rdma_ah_attr *attr)
+>   	return 0;
+>   
+>   err_out:
+> -	rxe_err_ah(ah, "returned err = %d", err);
+> +	rxe_err_ah(ah, "returned err = %d\n", err);
+>   	return err;
+>   }
+>   
+> @@ -358,7 +358,7 @@ static int rxe_destroy_ah(struct ib_ah *ibah, u32 flags)
+>   
+>   	err = rxe_cleanup_ah(ah, flags & RDMA_DESTROY_AH_SLEEPABLE);
+>   	if (err)
+> -		rxe_err_ah(ah, "cleanup failed, err = %d", err);
+> +		rxe_err_ah(ah, "cleanup failed, err = %d\n", err);
+>   
+>   	return 0;
+>   }
+> @@ -376,7 +376,7 @@ static int rxe_create_srq(struct ib_srq *ibsrq, struct ib_srq_init_attr *init,
+>   	if (udata) {
+>   		if (udata->outlen < sizeof(*uresp)) {
+>   			err = -EINVAL;
+> -			rxe_err_dev(rxe, "malformed udata");
+> +			rxe_err_dev(rxe, "malformed udata\n");
+>   			goto err_out;
+>   		}
+>   		uresp = udata->outbuf;
+> @@ -384,20 +384,20 @@ static int rxe_create_srq(struct ib_srq *ibsrq, struct ib_srq_init_attr *init,
+>   
+>   	if (init->srq_type != IB_SRQT_BASIC) {
+>   		err = -EOPNOTSUPP;
+> -		rxe_dbg_dev(rxe, "srq type = %d, not supported",
+> +		rxe_dbg_dev(rxe, "srq type = %d, not supported\n",
+>   				init->srq_type);
+>   		goto err_out;
+>   	}
+>   
+>   	err = rxe_srq_chk_init(rxe, init);
+>   	if (err) {
+> -		rxe_dbg_dev(rxe, "invalid init attributes");
+> +		rxe_dbg_dev(rxe, "invalid init attributes\n");
+>   		goto err_out;
+>   	}
+>   
+>   	err = rxe_add_to_pool(&rxe->srq_pool, srq);
+>   	if (err) {
+> -		rxe_dbg_dev(rxe, "unable to create srq, err = %d", err);
+> +		rxe_dbg_dev(rxe, "unable to create srq, err = %d\n", err);
+>   		goto err_out;
+>   	}
+>   
+> @@ -406,7 +406,7 @@ static int rxe_create_srq(struct ib_srq *ibsrq, struct ib_srq_init_attr *init,
+>   
+>   	err = rxe_srq_from_init(rxe, srq, init, udata, uresp);
+>   	if (err) {
+> -		rxe_dbg_srq(srq, "create srq failed, err = %d", err);
+> +		rxe_dbg_srq(srq, "create srq failed, err = %d\n", err);
+>   		goto err_cleanup;
+>   	}
+>   
+> @@ -415,9 +415,9 @@ static int rxe_create_srq(struct ib_srq *ibsrq, struct ib_srq_init_attr *init,
+>   err_cleanup:
+>   	cleanup_err = rxe_cleanup(srq);
+>   	if (cleanup_err)
+> -		rxe_err_srq(srq, "cleanup failed, err = %d", cleanup_err);
+> +		rxe_err_srq(srq, "cleanup failed, err = %d\n", cleanup_err);
+>   err_out:
+> -	rxe_err_dev(rxe, "returned err = %d", err);
+> +	rxe_err_dev(rxe, "returned err = %d\n", err);
+>   	return err;
+>   }
+>   
+> @@ -433,34 +433,34 @@ static int rxe_modify_srq(struct ib_srq *ibsrq, struct ib_srq_attr *attr,
+>   	if (udata) {
+>   		if (udata->inlen < sizeof(cmd)) {
+>   			err = -EINVAL;
+> -			rxe_dbg_srq(srq, "malformed udata");
+> +			rxe_dbg_srq(srq, "malformed udata\n");
+>   			goto err_out;
+>   		}
+>   
+>   		err = ib_copy_from_udata(&cmd, udata, sizeof(cmd));
+>   		if (err) {
+>   			err = -EFAULT;
+> -			rxe_dbg_srq(srq, "unable to read udata");
+> +			rxe_dbg_srq(srq, "unable to read udata\n");
+>   			goto err_out;
+>   		}
+>   	}
+>   
+>   	err = rxe_srq_chk_attr(rxe, srq, attr, mask);
+>   	if (err) {
+> -		rxe_dbg_srq(srq, "bad init attributes");
+> +		rxe_dbg_srq(srq, "bad init attributes\n");
+>   		goto err_out;
+>   	}
+>   
+>   	err = rxe_srq_from_attr(rxe, srq, attr, mask, &cmd, udata);
+>   	if (err) {
+> -		rxe_dbg_srq(srq, "bad attr");
+> +		rxe_dbg_srq(srq, "bad attr\n");
+>   		goto err_out;
+>   	}
+>   
+>   	return 0;
+>   
+>   err_out:
+> -	rxe_err_srq(srq, "returned err = %d", err);
+> +	rxe_err_srq(srq, "returned err = %d\n", err);
+>   	return err;
+>   }
+>   
+> @@ -471,7 +471,7 @@ static int rxe_query_srq(struct ib_srq *ibsrq, struct ib_srq_attr *attr)
+>   
+>   	if (srq->error) {
+>   		err = -EINVAL;
+> -		rxe_dbg_srq(srq, "srq in error state");
+> +		rxe_dbg_srq(srq, "srq in error state\n");
+>   		goto err_out;
+>   	}
+>   
+> @@ -481,7 +481,7 @@ static int rxe_query_srq(struct ib_srq *ibsrq, struct ib_srq_attr *attr)
+>   	return 0;
+>   
+>   err_out:
+> -	rxe_err_srq(srq, "returned err = %d", err);
+> +	rxe_err_srq(srq, "returned err = %d\n", err);
+>   	return err;
+>   }
+>   
+> @@ -505,7 +505,7 @@ static int rxe_post_srq_recv(struct ib_srq *ibsrq, const struct ib_recv_wr *wr,
+>   
+>   	if (err) {
+>   		*bad_wr = wr;
+> -		rxe_err_srq(srq, "returned err = %d", err);
+> +		rxe_err_srq(srq, "returned err = %d\n", err);
+>   	}
+>   
+>   	return err;
+> @@ -518,7 +518,7 @@ static int rxe_destroy_srq(struct ib_srq *ibsrq, struct ib_udata *udata)
+>   
+>   	err = rxe_cleanup(srq);
+>   	if (err)
+> -		rxe_err_srq(srq, "cleanup failed, err = %d", err);
+> +		rxe_err_srq(srq, "cleanup failed, err = %d\n", err);
+>   
+>   	return 0;
+>   }
+> @@ -536,13 +536,13 @@ static int rxe_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *init,
+>   	if (udata) {
+>   		if (udata->inlen) {
+>   			err = -EINVAL;
+> -			rxe_dbg_dev(rxe, "malformed udata, err = %d", err);
+> +			rxe_dbg_dev(rxe, "malformed udata, err = %d\n", err);
+>   			goto err_out;
+>   		}
+>   
+>   		if (udata->outlen < sizeof(*uresp)) {
+>   			err = -EINVAL;
+> -			rxe_dbg_dev(rxe, "malformed udata, err = %d", err);
+> +			rxe_dbg_dev(rxe, "malformed udata, err = %d\n", err);
+>   			goto err_out;
+>   		}
+>   
+> @@ -554,25 +554,25 @@ static int rxe_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *init,
+>   
+>   	if (init->create_flags) {
+>   		err = -EOPNOTSUPP;
+> -		rxe_dbg_dev(rxe, "unsupported create_flags, err = %d", err);
+> +		rxe_dbg_dev(rxe, "unsupported create_flags, err = %d\n", err);
+>   		goto err_out;
+>   	}
+>   
+>   	err = rxe_qp_chk_init(rxe, init);
+>   	if (err) {
+> -		rxe_dbg_dev(rxe, "bad init attr, err = %d", err);
+> +		rxe_dbg_dev(rxe, "bad init attr, err = %d\n", err);
+>   		goto err_out;
+>   	}
+>   
+>   	err = rxe_add_to_pool(&rxe->qp_pool, qp);
+>   	if (err) {
+> -		rxe_dbg_dev(rxe, "unable to create qp, err = %d", err);
+> +		rxe_dbg_dev(rxe, "unable to create qp, err = %d\n", err);
+>   		goto err_out;
+>   	}
+>   
+>   	err = rxe_qp_from_init(rxe, qp, pd, init, uresp, ibqp->pd, udata);
+>   	if (err) {
+> -		rxe_dbg_qp(qp, "create qp failed, err = %d", err);
+> +		rxe_dbg_qp(qp, "create qp failed, err = %d\n", err);
+>   		goto err_cleanup;
+>   	}
+>   
+> @@ -582,9 +582,9 @@ static int rxe_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *init,
+>   err_cleanup:
+>   	cleanup_err = rxe_cleanup(qp);
+>   	if (cleanup_err)
+> -		rxe_err_qp(qp, "cleanup failed, err = %d", cleanup_err);
+> +		rxe_err_qp(qp, "cleanup failed, err = %d\n", cleanup_err);
+>   err_out:
+> -	rxe_err_dev(rxe, "returned err = %d", err);
+> +	rxe_err_dev(rxe, "returned err = %d\n", err);
+>   	return err;
+>   }
+>   
+> @@ -597,20 +597,20 @@ static int rxe_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
+>   
+>   	if (mask & ~IB_QP_ATTR_STANDARD_BITS) {
+>   		err = -EOPNOTSUPP;
+> -		rxe_dbg_qp(qp, "unsupported mask = 0x%x, err = %d",
+> +		rxe_dbg_qp(qp, "unsupported mask = 0x%x, err = %d\n",
+>   			   mask, err);
+>   		goto err_out;
+>   	}
+>   
+>   	err = rxe_qp_chk_attr(rxe, qp, attr, mask);
+>   	if (err) {
+> -		rxe_dbg_qp(qp, "bad mask/attr, err = %d", err);
+> +		rxe_dbg_qp(qp, "bad mask/attr, err = %d\n", err);
+>   		goto err_out;
+>   	}
+>   
+>   	err = rxe_qp_from_attr(qp, attr, mask, udata);
+>   	if (err) {
+> -		rxe_dbg_qp(qp, "modify qp failed, err = %d", err);
+> +		rxe_dbg_qp(qp, "modify qp failed, err = %d\n", err);
+>   		goto err_out;
+>   	}
+>   
+> @@ -622,7 +622,7 @@ static int rxe_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
+>   	return 0;
+>   
+>   err_out:
+> -	rxe_err_qp(qp, "returned err = %d", err);
+> +	rxe_err_qp(qp, "returned err = %d\n", err);
+>   	return err;
+>   }
+>   
+> @@ -644,18 +644,18 @@ static int rxe_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
+>   
+>   	err = rxe_qp_chk_destroy(qp);
+>   	if (err) {
+> -		rxe_dbg_qp(qp, "unable to destroy qp, err = %d", err);
+> +		rxe_dbg_qp(qp, "unable to destroy qp, err = %d\n", err);
+>   		goto err_out;
+>   	}
+>   
+>   	err = rxe_cleanup(qp);
+>   	if (err)
+> -		rxe_err_qp(qp, "cleanup failed, err = %d", err);
+> +		rxe_err_qp(qp, "cleanup failed, err = %d\n", err);
+>   
+>   	return 0;
+>   
+>   err_out:
+> -	rxe_err_qp(qp, "returned err = %d", err);
+> +	rxe_err_qp(qp, "returned err = %d\n", err);
+>   	return err;
+>   }
+>   
+> @@ -675,12 +675,12 @@ static int validate_send_wr(struct rxe_qp *qp, const struct ib_send_wr *ibwr,
+>   	do {
+>   		mask = wr_opcode_mask(ibwr->opcode, qp);
+>   		if (!mask) {
+> -			rxe_err_qp(qp, "bad wr opcode for qp type");
+> +			rxe_err_qp(qp, "bad wr opcode for qp type\n");
+>   			break;
+>   		}
+>   
+>   		if (num_sge > sq->max_sge) {
+> -			rxe_err_qp(qp, "num_sge > max_sge");
+> +			rxe_err_qp(qp, "num_sge > max_sge\n");
+>   			break;
+>   		}
+>   
+> @@ -689,27 +689,27 @@ static int validate_send_wr(struct rxe_qp *qp, const struct ib_send_wr *ibwr,
+>   			length += ibwr->sg_list[i].length;
+>   
+>   		if (length > (1UL << 31)) {
+> -			rxe_err_qp(qp, "message length too long");
+> +			rxe_err_qp(qp, "message length too long\n");
+>   			break;
+>   		}
+>   
+>   		if (mask & WR_ATOMIC_MASK) {
+>   			if (length != 8) {
+> -				rxe_err_qp(qp, "atomic length != 8");
+> +				rxe_err_qp(qp, "atomic length != 8\n");
+>   				break;
+>   			}
+>   			if (atomic_wr(ibwr)->remote_addr & 0x7) {
+> -				rxe_err_qp(qp, "misaligned atomic address");
+> +				rxe_err_qp(qp, "misaligned atomic address\n");
+>   				break;
+>   			}
+>   		}
+>   		if (ibwr->send_flags & IB_SEND_INLINE) {
+>   			if (!(mask & WR_INLINE_MASK)) {
+> -				rxe_err_qp(qp, "opcode doesn't support inline data");
+> +				rxe_err_qp(qp, "opcode doesn't support inline data\n");
+>   				break;
+>   			}
+>   			if (length > sq->max_inline) {
+> -				rxe_err_qp(qp, "inline length too big");
+> +				rxe_err_qp(qp, "inline length too big\n");
+>   				break;
+>   			}
+>   		}
+> @@ -747,7 +747,7 @@ static int init_send_wr(struct rxe_qp *qp, struct rxe_send_wr *wr,
+>   		case IB_WR_SEND:
+>   			break;
+>   		default:
+> -			rxe_err_qp(qp, "bad wr opcode %d for UD/GSI QP",
+> +			rxe_err_qp(qp, "bad wr opcode %d for UD/GSI QP\n",
+>   					wr->opcode);
+>   			return -EINVAL;
+>   		}
+> @@ -795,7 +795,7 @@ static int init_send_wr(struct rxe_qp *qp, struct rxe_send_wr *wr,
+>   		case IB_WR_ATOMIC_WRITE:
+>   			break;
+>   		default:
+> -			rxe_err_qp(qp, "unsupported wr opcode %d",
+> +			rxe_err_qp(qp, "unsupported wr opcode %d\n",
+>   					wr->opcode);
+>   			return -EINVAL;
+>   			break;
+> @@ -871,7 +871,7 @@ static int post_one_send(struct rxe_qp *qp, const struct ib_send_wr *ibwr)
+>   
+>   	full = queue_full(sq->queue, QUEUE_TYPE_FROM_ULP);
+>   	if (unlikely(full)) {
+> -		rxe_err_qp(qp, "send queue full");
+> +		rxe_err_qp(qp, "send queue full\n");
+>   		return -ENOMEM;
+>   	}
+>   
+> @@ -923,14 +923,14 @@ static int rxe_post_send(struct ib_qp *ibqp, const struct ib_send_wr *wr,
+>   	/* caller has already called destroy_qp */
+>   	if (WARN_ON_ONCE(!qp->valid)) {
+>   		spin_unlock_irqrestore(&qp->state_lock, flags);
+> -		rxe_err_qp(qp, "qp has been destroyed");
+> +		rxe_err_qp(qp, "qp has been destroyed\n");
+>   		return -EINVAL;
+>   	}
+>   
+>   	if (unlikely(qp_state(qp) < IB_QPS_RTS)) {
+>   		spin_unlock_irqrestore(&qp->state_lock, flags);
+>   		*bad_wr = wr;
+> -		rxe_err_qp(qp, "qp not ready to send");
+> +		rxe_err_qp(qp, "qp not ready to send\n");
+>   		return -EINVAL;
+>   	}
+>   	spin_unlock_irqrestore(&qp->state_lock, flags);
+> @@ -960,13 +960,13 @@ static int post_one_recv(struct rxe_rq *rq, const struct ib_recv_wr *ibwr)
+>   	full = queue_full(rq->queue, QUEUE_TYPE_FROM_ULP);
+>   	if (unlikely(full)) {
+>   		err = -ENOMEM;
+> -		rxe_dbg("queue full");
+> +		rxe_dbg("queue full\n");
+>   		goto err_out;
+>   	}
+>   
+>   	if (unlikely(num_sge > rq->max_sge)) {
+>   		err = -EINVAL;
+> -		rxe_dbg("bad num_sge > max_sge");
+> +		rxe_dbg("bad num_sge > max_sge\n");
+>   		goto err_out;
+>   	}
+>   
+> @@ -977,7 +977,7 @@ static int post_one_recv(struct rxe_rq *rq, const struct ib_recv_wr *ibwr)
+>   	/* IBA max message size is 2^31 */
+>   	if (length >= (1UL<<31)) {
+>   		err = -EINVAL;
+> -		rxe_dbg("message length too long");
+> +		rxe_dbg("message length too long\n");
+>   		goto err_out;
+>   	}
+>   
+> @@ -997,7 +997,7 @@ static int post_one_recv(struct rxe_rq *rq, const struct ib_recv_wr *ibwr)
+>   	return 0;
+>   
+>   err_out:
+> -	rxe_dbg("returned err = %d", err);
+> +	rxe_dbg("returned err = %d\n", err);
+>   	return err;
+>   }
+>   
+> @@ -1013,7 +1013,7 @@ static int rxe_post_recv(struct ib_qp *ibqp, const struct ib_recv_wr *wr,
+>   	/* caller has already called destroy_qp */
+>   	if (WARN_ON_ONCE(!qp->valid)) {
+>   		spin_unlock_irqrestore(&qp->state_lock, flags);
+> -		rxe_err_qp(qp, "qp has been destroyed");
+> +		rxe_err_qp(qp, "qp has been destroyed\n");
+>   		return -EINVAL;
+>   	}
+>   
+> @@ -1021,14 +1021,14 @@ static int rxe_post_recv(struct ib_qp *ibqp, const struct ib_recv_wr *wr,
+>   	if (unlikely((qp_state(qp) < IB_QPS_INIT))) {
+>   		spin_unlock_irqrestore(&qp->state_lock, flags);
+>   		*bad_wr = wr;
+> -		rxe_dbg_qp(qp, "qp not ready to post recv");
+> +		rxe_dbg_qp(qp, "qp not ready to post recv\n");
+>   		return -EINVAL;
+>   	}
+>   	spin_unlock_irqrestore(&qp->state_lock, flags);
+>   
+>   	if (unlikely(qp->srq)) {
+>   		*bad_wr = wr;
+> -		rxe_dbg_qp(qp, "qp has srq, use post_srq_recv instead");
+> +		rxe_dbg_qp(qp, "qp has srq, use post_srq_recv instead\n");
+>   		return -EINVAL;
+>   	}
+>   
+> @@ -1066,7 +1066,7 @@ static int rxe_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+>   	if (udata) {
+>   		if (udata->outlen < sizeof(*uresp)) {
+>   			err = -EINVAL;
+> -			rxe_dbg_dev(rxe, "malformed udata, err = %d", err);
+> +			rxe_dbg_dev(rxe, "malformed udata, err = %d\n", err);
+>   			goto err_out;
+>   		}
+>   		uresp = udata->outbuf;
+> @@ -1074,26 +1074,26 @@ static int rxe_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+>   
+>   	if (attr->flags) {
+>   		err = -EOPNOTSUPP;
+> -		rxe_dbg_dev(rxe, "bad attr->flags, err = %d", err);
+> +		rxe_dbg_dev(rxe, "bad attr->flags, err = %d\n", err);
+>   		goto err_out;
+>   	}
+>   
+>   	err = rxe_cq_chk_attr(rxe, NULL, attr->cqe, attr->comp_vector);
+>   	if (err) {
+> -		rxe_dbg_dev(rxe, "bad init attributes, err = %d", err);
+> +		rxe_dbg_dev(rxe, "bad init attributes, err = %d\n", err);
+>   		goto err_out;
+>   	}
+>   
+>   	err = rxe_add_to_pool(&rxe->cq_pool, cq);
+>   	if (err) {
+> -		rxe_dbg_dev(rxe, "unable to create cq, err = %d", err);
+> +		rxe_dbg_dev(rxe, "unable to create cq, err = %d\n", err);
+>   		goto err_out;
+>   	}
+>   
+>   	err = rxe_cq_from_init(rxe, cq, attr->cqe, attr->comp_vector, udata,
+>   			       uresp);
+>   	if (err) {
+> -		rxe_dbg_cq(cq, "create cq failed, err = %d", err);
+> +		rxe_dbg_cq(cq, "create cq failed, err = %d\n", err);
+>   		goto err_cleanup;
+>   	}
+>   
+> @@ -1102,9 +1102,9 @@ static int rxe_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+>   err_cleanup:
+>   	cleanup_err = rxe_cleanup(cq);
+>   	if (cleanup_err)
+> -		rxe_err_cq(cq, "cleanup failed, err = %d", cleanup_err);
+> +		rxe_err_cq(cq, "cleanup failed, err = %d\n", cleanup_err);
+>   err_out:
+> -	rxe_err_dev(rxe, "returned err = %d", err);
+> +	rxe_err_dev(rxe, "returned err = %d\n", err);
+>   	return err;
+>   }
+>   
+> @@ -1118,7 +1118,7 @@ static int rxe_resize_cq(struct ib_cq *ibcq, int cqe, struct ib_udata *udata)
+>   	if (udata) {
+>   		if (udata->outlen < sizeof(*uresp)) {
+>   			err = -EINVAL;
+> -			rxe_dbg_cq(cq, "malformed udata");
+> +			rxe_dbg_cq(cq, "malformed udata\n");
+>   			goto err_out;
+>   		}
+>   		uresp = udata->outbuf;
+> @@ -1126,20 +1126,20 @@ static int rxe_resize_cq(struct ib_cq *ibcq, int cqe, struct ib_udata *udata)
+>   
+>   	err = rxe_cq_chk_attr(rxe, cq, cqe, 0);
+>   	if (err) {
+> -		rxe_dbg_cq(cq, "bad attr, err = %d", err);
+> +		rxe_dbg_cq(cq, "bad attr, err = %d\n", err);
+>   		goto err_out;
+>   	}
+>   
+>   	err = rxe_cq_resize_queue(cq, cqe, uresp, udata);
+>   	if (err) {
+> -		rxe_dbg_cq(cq, "resize cq failed, err = %d", err);
+> +		rxe_dbg_cq(cq, "resize cq failed, err = %d\n", err);
+>   		goto err_out;
+>   	}
+>   
+>   	return 0;
+>   
+>   err_out:
+> -	rxe_err_cq(cq, "returned err = %d", err);
+> +	rxe_err_cq(cq, "returned err = %d\n", err);
+>   	return err;
+>   }
+>   
+> @@ -1203,18 +1203,18 @@ static int rxe_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
+>   	 */
+>   	if (atomic_read(&cq->num_wq)) {
+>   		err = -EINVAL;
+> -		rxe_dbg_cq(cq, "still in use");
+> +		rxe_dbg_cq(cq, "still in use\n");
+>   		goto err_out;
+>   	}
+>   
+>   	err = rxe_cleanup(cq);
+>   	if (err)
+> -		rxe_err_cq(cq, "cleanup failed, err = %d", err);
+> +		rxe_err_cq(cq, "cleanup failed, err = %d\n", err);
+>   
+>   	return 0;
+>   
+>   err_out:
+> -	rxe_err_cq(cq, "returned err = %d", err);
+> +	rxe_err_cq(cq, "returned err = %d\n", err);
+>   	return err;
+>   }
+>   
+> @@ -1232,7 +1232,7 @@ static struct ib_mr *rxe_get_dma_mr(struct ib_pd *ibpd, int access)
+>   
+>   	err = rxe_add_to_pool(&rxe->mr_pool, mr);
+>   	if (err) {
+> -		rxe_dbg_dev(rxe, "unable to create mr");
+> +		rxe_dbg_dev(rxe, "unable to create mr\n");
+>   		goto err_free;
+>   	}
+>   
+> @@ -1246,7 +1246,7 @@ static struct ib_mr *rxe_get_dma_mr(struct ib_pd *ibpd, int access)
+>   
+>   err_free:
+>   	kfree(mr);
+> -	rxe_err_pd(pd, "returned err = %d", err);
+> +	rxe_err_pd(pd, "returned err = %d\n", err);
+>   	return ERR_PTR(err);
+>   }
+>   
+> @@ -1260,7 +1260,7 @@ static struct ib_mr *rxe_reg_user_mr(struct ib_pd *ibpd, u64 start,
+>   	int err, cleanup_err;
+>   
+>   	if (access & ~RXE_ACCESS_SUPPORTED_MR) {
+> -		rxe_err_pd(pd, "access = %#x not supported (%#x)", access,
+> +		rxe_err_pd(pd, "access = %#x not supported (%#x)\n", access,
+>   				RXE_ACCESS_SUPPORTED_MR);
+>   		return ERR_PTR(-EOPNOTSUPP);
+>   	}
+> @@ -1271,7 +1271,7 @@ static struct ib_mr *rxe_reg_user_mr(struct ib_pd *ibpd, u64 start,
+>   
+>   	err = rxe_add_to_pool(&rxe->mr_pool, mr);
+>   	if (err) {
+> -		rxe_dbg_pd(pd, "unable to create mr");
+> +		rxe_dbg_pd(pd, "unable to create mr\n");
+>   		goto err_free;
+>   	}
+>   
+> @@ -1281,7 +1281,7 @@ static struct ib_mr *rxe_reg_user_mr(struct ib_pd *ibpd, u64 start,
+>   
+>   	err = rxe_mr_init_user(rxe, start, length, iova, access, mr);
+>   	if (err) {
+> -		rxe_dbg_mr(mr, "reg_user_mr failed, err = %d", err);
+> +		rxe_dbg_mr(mr, "reg_user_mr failed, err = %d\n", err);
+>   		goto err_cleanup;
+>   	}
+>   
+> @@ -1291,10 +1291,10 @@ static struct ib_mr *rxe_reg_user_mr(struct ib_pd *ibpd, u64 start,
+>   err_cleanup:
+>   	cleanup_err = rxe_cleanup(mr);
+>   	if (cleanup_err)
+> -		rxe_err_mr(mr, "cleanup failed, err = %d", cleanup_err);
+> +		rxe_err_mr(mr, "cleanup failed, err = %d\n", cleanup_err);
+>   err_free:
+>   	kfree(mr);
+> -	rxe_err_pd(pd, "returned err = %d", err);
+> +	rxe_err_pd(pd, "returned err = %d\n", err);
+>   	return ERR_PTR(err);
+>   }
+>   
+> @@ -1311,7 +1311,7 @@ static struct ib_mr *rxe_rereg_user_mr(struct ib_mr *ibmr, int flags,
+>   	 * rereg_pd and rereg_access
+>   	 */
+>   	if (flags & ~RXE_MR_REREG_SUPPORTED) {
+> -		rxe_err_mr(mr, "flags = %#x not supported", flags);
+> +		rxe_err_mr(mr, "flags = %#x not supported\n", flags);
+>   		return ERR_PTR(-EOPNOTSUPP);
+>   	}
+>   
+> @@ -1323,7 +1323,7 @@ static struct ib_mr *rxe_rereg_user_mr(struct ib_mr *ibmr, int flags,
+>   
+>   	if (flags & IB_MR_REREG_ACCESS) {
+>   		if (access & ~RXE_ACCESS_SUPPORTED_MR) {
+> -			rxe_err_mr(mr, "access = %#x not supported", access);
+> +			rxe_err_mr(mr, "access = %#x not supported\n", access);
+>   			return ERR_PTR(-EOPNOTSUPP);
+>   		}
+>   		mr->access = access;
+> @@ -1342,7 +1342,7 @@ static struct ib_mr *rxe_alloc_mr(struct ib_pd *ibpd, enum ib_mr_type mr_type,
+>   
+>   	if (mr_type != IB_MR_TYPE_MEM_REG) {
+>   		err = -EINVAL;
+> -		rxe_dbg_pd(pd, "mr type %d not supported, err = %d",
+> +		rxe_dbg_pd(pd, "mr type %d not supported, err = %d\n",
+>   			   mr_type, err);
+>   		goto err_out;
+>   	}
+> @@ -1361,7 +1361,7 @@ static struct ib_mr *rxe_alloc_mr(struct ib_pd *ibpd, enum ib_mr_type mr_type,
+>   
+>   	err = rxe_mr_init_fast(max_num_sg, mr);
+>   	if (err) {
+> -		rxe_dbg_mr(mr, "alloc_mr failed, err = %d", err);
+> +		rxe_dbg_mr(mr, "alloc_mr failed, err = %d\n", err);
+>   		goto err_cleanup;
+>   	}
+>   
+> @@ -1371,11 +1371,11 @@ static struct ib_mr *rxe_alloc_mr(struct ib_pd *ibpd, enum ib_mr_type mr_type,
+>   err_cleanup:
+>   	cleanup_err = rxe_cleanup(mr);
+>   	if (cleanup_err)
+> -		rxe_err_mr(mr, "cleanup failed, err = %d", err);
+> +		rxe_err_mr(mr, "cleanup failed, err = %d\n", err);
+>   err_free:
+>   	kfree(mr);
+>   err_out:
+> -	rxe_err_pd(pd, "returned err = %d", err);
+> +	rxe_err_pd(pd, "returned err = %d\n", err);
+>   	return ERR_PTR(err);
+>   }
+>   
+> @@ -1387,19 +1387,19 @@ static int rxe_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
+>   	/* See IBA 10.6.7.2.6 */
+>   	if (atomic_read(&mr->num_mw) > 0) {
+>   		err = -EINVAL;
+> -		rxe_dbg_mr(mr, "mr has mw's bound");
+> +		rxe_dbg_mr(mr, "mr has mw's bound\n");
+>   		goto err_out;
+>   	}
+>   
+>   	cleanup_err = rxe_cleanup(mr);
+>   	if (cleanup_err)
+> -		rxe_err_mr(mr, "cleanup failed, err = %d", cleanup_err);
+> +		rxe_err_mr(mr, "cleanup failed, err = %d\n", cleanup_err);
+>   
+>   	kfree_rcu_mightsleep(mr);
+>   	return 0;
+>   
+>   err_out:
+> -	rxe_err_mr(mr, "returned err = %d", err);
+> +	rxe_err_mr(mr, "returned err = %d\n", err);
+>   	return err;
+>   }
+>   
+
