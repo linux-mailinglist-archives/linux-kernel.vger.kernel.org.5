@@ -2,68 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00415785F96
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 20:27:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6EBC785F9F
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 20:29:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238137AbjHWS1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 14:27:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54332 "EHLO
+        id S238142AbjHWS3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 14:29:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238135AbjHWS1U (ORCPT
+        with ESMTP id S238151AbjHWS26 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 14:27:20 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17F7DE60
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 11:27:16 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A599A65085
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 18:27:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A4EBC433C7;
-        Wed, 23 Aug 2023 18:27:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692815234;
-        bh=WN9L1KlrQREqfwZPOPGJuWCDtRAjdgEQksUouW9qf9M=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=Y/hxvHUoxtBes39p/jN0qliJnRZK9bsMzMPSyB9IzlUpMCqaSXbqonYuSX0KYNSed
-         7ucAHpMo+3h/LoupE//4Dahe+bBhetrQCCBoCd1QOn2T4y0pSH3Zui96QG5PEZHzY4
-         lRyIh392RGpXlHS72s4eQtGxBSaw2K7reeUDguxRTUsk0YEQdUFB+dLtPpk59UBclh
-         UfN01KzI/dKFIBJaYvwE9jMie80LXbq8+Vml4ETXbI9dDKwVBj7OAxK9xh0THqNfmy
-         KEmDdJ7JY37mDg9tqNdgl5TO+YmobL0IBGNa5RL0HaeSiKALbS+hKB0ub5hpE3As19
-         2FEvD0AqxjqcA==
-From:   =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To:     Pu Lehui <pulehui@huaweicloud.com>,
-        linux-riscv@lists.infradead.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Xu Kuohai <xukuohai@huawei.com>,
-        Puranjay Mohan <puranjay12@gmail.com>,
-        Pu Lehui <pulehui@huawei.com>,
-        Pu Lehui <pulehui@huaweicloud.com>
-Subject: Re: [PATCH bpf-next 3/7] riscv, bpf: Support sign-extension mov insns
-In-Reply-To: <87pm3dlj80.fsf@all.your.base.are.belong.to.us>
-References: <20230823231059.3363698-1-pulehui@huaweicloud.com>
- <20230823231059.3363698-4-pulehui@huaweicloud.com>
- <87pm3dlj80.fsf@all.your.base.are.belong.to.us>
-Date:   Wed, 23 Aug 2023 20:27:11 +0200
-Message-ID: <87ttspk41s.fsf@all.your.base.are.belong.to.us>
+        Wed, 23 Aug 2023 14:28:58 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56C1AE6C
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 11:28:55 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-977e0fbd742so749633966b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 11:28:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692815334; x=1693420134;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=D1i56BJxrtFkay0cZ6IFmWxVW0ev3tPI6w5w2txm7Do=;
+        b=tY59VRdaWi1DBU5yE67ABWm0o7nBL9MaDrpmh6mNIpiomLMKYM9r5+wGag8dCdpGui
+         NaOu1KuepfxDYEnB5dPlu6HN3tZoqfi4h5AZqSoJMkAg0oJDWfVE8EHuzN27hE3O0KBP
+         JacU7TySMZ9zMI707ZZsNDN3xijkW23FU/k8wMptNZ3fySwsLdyTXz9Lxwn1rCU56ZCE
+         C/Rs2MpZPWH9uHcMD3MIE59ybie080aQKP2f9kpdsw97pgl7vV5p2yZBjbOIXCsUeFLe
+         cYN8QqkTzAvw/3ZN3fCU0RffyJWB4XNowo4aojHT/BDBDqMCUc9dr5tWJQZvMBpdddNz
+         e2UQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692815334; x=1693420134;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=D1i56BJxrtFkay0cZ6IFmWxVW0ev3tPI6w5w2txm7Do=;
+        b=H5EgjoVbRjRDhvTM5vm7JeWR2xBN7frJaxpGYnDE8SjCLviFcP3DkcEOLq1YEgjoHi
+         nOoCUHTETdry0HwXmOlAp0gNCzdD4zex2FCRHTEa3dDDg6TkEj6vie5IIfBj3Z+cI3Jb
+         4MCn36LNwnXUtGZQWYIf/nsA2x0Qp5gxv1bzQjUdwrPJegjvJOpzJylBPXBMFGvko7gE
+         NTQWJwEqRZDcr/KC1HkFeb/JG7f0Eb811HEO9TLHIDxwhtQ+YxQco4no4sjKE+ekEBl6
+         l00vxjVElCMUkBbrmCNwuyyMkozjqpQ7PT9z+MKQAbSJi71odbMRlOaA9lDCJmbMNUE9
+         HTVA==
+X-Gm-Message-State: AOJu0Yw1kPGVYeImCP1MR+NSWjLUkIv14ykiXURJFhaJw2xvG890xWyF
+        17rGHbjA2Ex0wTQmfGhugnsIjYIeSVR2TOy+koAVaKD+3ebmmq3KiOw=
+X-Google-Smtp-Source: AGHT+IHlQp9aiZ8Ka0ZJpgClwBB6XmkiaNX9y3bj9ftkzDoc7wSBGvtA2RV/u4qhbokdUveFaacH9H1ARr99SdESQ+M=
+X-Received: by 2002:a17:907:7714:b0:99b:6e54:bd6e with SMTP id
+ kw20-20020a170907771400b0099b6e54bd6emr9614282ejc.56.1692815333628; Wed, 23
+ Aug 2023 11:28:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20230504120042.785651-1-rkagan@amazon.de> <ZH6DJ8aFq/LM6Bk9@google.com>
+ <CALMp9eS3F08cwUJbKjTRAEL0KyZ=MC==YSH+DW-qsFkNfMpqEQ@mail.gmail.com>
+ <ZJ4dmrQSduY8aWap@google.com> <ZJ65CiW0eEL2mGg8@u40bc5e070a0153.ant.amazon.com>
+ <ZJ7mjdZ8h/RSilFX@google.com> <ZJ7y9DuedQyBb9eU@u40bc5e070a0153.ant.amazon.com>
+ <ZJ74gELkj4DgAk4S@google.com> <ZJ9IaskpbIK9q4rt@google.com> <bdc2be50-c8c4-ff06-196f-d9b67e61a6b5@gmail.com>
+In-Reply-To: <bdc2be50-c8c4-ff06-196f-d9b67e61a6b5@gmail.com>
+From:   Mingwei Zhang <mizhang@google.com>
+Date:   Wed, 23 Aug 2023 11:28:17 -0700
+Message-ID: <CAL715WJiUYpxRRqs3FNiLiS8b6=4Pm5K0u==S6t5NYi0p=vutw@mail.gmail.com>
+Subject: Re: [PATCH] KVM: x86: vPMU: truncate counter value to allowed width
+To:     Like Xu <like.xu.linux@gmail.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Roman Kagan <rkagan@amazon.de>,
+        Jim Mattson <jmattson@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Eric Hankland <ehankland@google.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,40 +78,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org> writes:
-
-> Pu Lehui <pulehui@huaweicloud.com> writes:
+On Tue, Aug 22, 2023 at 2:30=E2=80=AFAM Like Xu <like.xu.linux@gmail.com> w=
+rote:
 >
->> From: Pu Lehui <pulehui@huawei.com>
->>
->> Add support sign-extension mov instructions for RV64.
->>
->> Signed-off-by: Pu Lehui <pulehui@huawei.com>
->> ---
->>  arch/riscv/net/bpf_jit_comp64.c | 14 +++++++++++++-
->>  1 file changed, 13 insertions(+), 1 deletion(-)
->>
->> diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_co=
-mp64.c
->> index fd36cb17101a..d1497182cacf 100644
->> --- a/arch/riscv/net/bpf_jit_comp64.c
->> +++ b/arch/riscv/net/bpf_jit_comp64.c
->> @@ -1047,7 +1047,19 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn=
-, struct rv_jit_context *ctx,
->>  			emit_zext_32(rd, ctx);
->>  			break;
->>  		}
->> -		emit_mv(rd, rs, ctx);
->> +		switch (insn->off) {
->> +		case 0:
->> +			emit_mv(rd, rs, ctx);
->> +			break;
->> +		case 8:
->> +		case 16:
->> +			emit_slli(rs, rs, 64 - insn->off, ctx);
->> +			emit_srai(rd, rs, 64 - insn->off, ctx);
+> On 1/7/2023 5:26 am, Sean Christopherson wrote:
+> > Ugh, yeah, de0f619564f4 created a bit of a mess.  The underlying issue =
+that it
+> > was solving is that perf_event_read_value() and friends might sleep (ya=
+y mutex),
+> > and so can't be called from KVM's fastpath (IRQs disabled).
+> Updating pmu counters for emulated instructions cause troubles.
 >
-> You're clobbering the source register (rs) here, which is correct.
+> >
+> > However, detecting overflow requires reading perf_event_read_value() to=
+ gather
+> > the accumulated count from the hardware event in order to add it to the=
+ emulated
+> > count from software.  E.g. if pmc->counter is X and the perf event coun=
+ter is Y,
+> > KVM needs to factor in Y because X+Y+1 might overflow even if X+1 does =
+not.
+> >
+> > Trying to snapshot the previous counter value is a bit of a mess.  It c=
+ould probably
+> > made to work, but it's hard to reason about what the snapshot actually =
+contains
+> > and when it should be cleared, especially when factoring in the wrappin=
+g logic.
+> >
+> > Rather than snapshot the previous counter, I think it makes sense to:
+> >
+> >    1) Track the number of emulated counter events
+>
+> If events are counted separately, the challenge here is to correctly time
+> the emulation of counter overflows, which can occur on both sides of the
+> counter values out of sync.
+>
+> >    2) Accumulate and reset the counts from perf_event and emulated_coun=
+ter into
+> >       pmc->counter when pausing the PMC
+> >    3) Pause and reprogram the PMC on writes (instead of the current app=
+roach of
+> >       blindly updating the sample period)
+>
+> Updating the sample period is the only interface for KVM to configure hw
+> behaviour on hw-ctr. I note that perf_event_set_count() will be proposed,
+> and I'm pessimistic about this change.
+>
+> >    4) Pause the counter when stopping the perf_event to ensure pmc->cou=
+nter is
+> >       fresh (instead of manually updating pmc->counter)
+> >
+> > IMO, that yields more intuitive logic, and makes it easier to reason ab=
+out
+> > correctness since the behavior is easily define: pmc->counter holds the=
+ counts
+> > that have been gathered and processed, perf_event and emulated_counter =
+hold
+> > outstanding counts on top.  E.g. on a WRMSR to the counter, both the em=
+ulated
+> > counter and the hardware counter are reset, because whatever counts exi=
+sted
+> > previously are irrelevant.
+>
+> If we take the hardware view, a counter, emulated or not, just increments
+> and overflows at the threshold. The missing logic here is when the counte=
+r
+> is truncated when writing high bit-width values, and how to deal with the
+> value of pmc->prev_counter was before pmc->counter was truncated.
+>
+> >
+> > Pausing the counter_might_  make WRMSR slower, but we need to get this =
+all
+> > functionally correct before worrying too much about performance.
+>
+> Performance, security and correctness should all be considered at the beg=
+inning.
+>
 
-Too quick! s/correct/incorrect/! :-)
++1 on the performance part.
 
+I did several rounds of performance testing, pausing the counter is
+fast, but restarting the counter is *super* slow. The extra overhead
+might just make vPMU useless especially when the guest workload takes
+full CPU/memory resources in a VM (like SPEC2017 does).
+
+> >
+> > Diff below for what I'm thinking (needs to be split into multiple patch=
+es).  It's
+> > *very*  lightly tested.
+>
+> It saddens me that no one has come up with an actual low-level counter-te=
+st for
+> this issue.
+>
+> >
+> > I'm about to disappear for a week, I'll pick this back up when I get re=
+turn.  In
+> > the meantime, any testing and/or input would be much appreciated!
+>
+> How about accepting Roman's original fix and then exercising the rewritin=
+g genius ?
+
++1
+
+I think the best option would be to just apply the fix in a short term
+and put the refactoring of the emulated counter in the next series.
