@@ -2,97 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1614785E54
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 19:12:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03E08785E62
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 19:16:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237753AbjHWRMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 13:12:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35724 "EHLO
+        id S237765AbjHWRQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 13:16:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231433AbjHWRMS (ORCPT
+        with ESMTP id S237761AbjHWRQd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 13:12:18 -0400
-Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15234E66
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 10:12:17 -0700 (PDT)
-Received: by mail-oo1-xc30.google.com with SMTP id 006d021491bc7-57129417cecso31897eaf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 10:12:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692810736; x=1693415536;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=X3kf5tMI8ut+y9FRn5NAWKGikc29U/xDcFhkC4R7s/0=;
-        b=HvcujqRF/eEGtkLS78l2UiWtOLNFAF2fPJCbxw3yT3qh9h2t6ZW6Bh9M4YQFHoF7uX
-         xieuwO9PrRtr71KL94kNhh6jrrr1ZTphr2uigNOYobuM8AfblOvfy6B0KMBpnujLZCP9
-         PV9AFrzGhlhoJEojhq1eoOe3Ic3Wpq9G3ZEgeKYqDzAVh87Gp1MwRCRd010WjuRA0nvn
-         X3zbZtgJ/LnuD7F3CwWPgKILFu7WYk4XVFBPiC6DD4KSd5WIk0n1skHsy+Ier/TSgPkY
-         /kiDSf3/xE5JNyBSDUHB1mn4Sj0859nGDhPk+LyDO3Bkg00J+4/TnOGIXvS0lxPZoEW3
-         dhdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692810736; x=1693415536;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=X3kf5tMI8ut+y9FRn5NAWKGikc29U/xDcFhkC4R7s/0=;
-        b=gEBxkAyzbjUipMGeCd8mjBz82uMk/LS/bwcxGY1wqFCdzDm5U7ladoshVyMTe9kBAl
-         E3jxSx6eIXGsfQKbYoEiDinzZrK3pFlb0WVHJWhTBviz9Bbd2p7fG1a4eAjWgDUGkY/k
-         R4hgBM+I0z4h4+KPfFr6j/Ul1ld2mTvngh5kC2FQFppB9Qz6il8CyEDQjedy4zF5uIbi
-         sg2vCKNcQsSTMbfQzPSfwFVDFeoP9dY39lTNLRdqPsgmr+zzp/TlMp6K7KXowDoDOXS+
-         SSFqq/vVZujoL+ugPDvXLo0YPCaONJIs9FfHcBh2fz6G0UY03ZQFo/MuXyT351C7x9qT
-         0IQQ==
-X-Gm-Message-State: AOJu0Yy1jpsaSuow6zZnTDbVaKI6lXvGE1JKr30W09LgDhkM9eIwHA/B
-        YO7JaYfE1JMPQv20dz4q8kwv/IsJrE5poxIgL8Y=
-X-Google-Smtp-Source: AGHT+IGUs5LH9rHaR0tTkbQsJfX/lg3J2ggw+7MvXrCzYgEErNZnSIOE5nVbwlTeFJnRNO/tAn8zkbJ7hvqLbIHTKcg=
-X-Received: by 2002:a4a:e64e:0:b0:56c:a9fe:f701 with SMTP id
- q14-20020a4ae64e000000b0056ca9fef701mr8579452oot.3.1692810736161; Wed, 23 Aug
- 2023 10:12:16 -0700 (PDT)
+        Wed, 23 Aug 2023 13:16:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36660198
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 10:15:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692810946;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=WHgUcwnsySq6BgUpxdOLmSZh8dZaqGXaEYCOH3Xe4HI=;
+        b=EEiRYBz/wCPNnR0SjZH6tj6iKjbkVb9kwn7MI5Yp1PAzsh43Fa97DikUqxfhKJ/2E3NVE4
+        2qioqZ2slIugU+iCz2CHPj1wdEMizJru9KGuHD10NbFqYV23/SrwJEYYsQMpUZ9+YKPbcc
+        dsuQvjbYVBHYrmA0dMkJg+7jOJH9jBI=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-522-JRdb96DJOyC0gtKYV4hGvw-1; Wed, 23 Aug 2023 13:15:44 -0400
+X-MC-Unique: JRdb96DJOyC0gtKYV4hGvw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 12EEC8D40A4;
+        Wed, 23 Aug 2023 17:15:44 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.210])
+        by smtp.corp.redhat.com (Postfix) with SMTP id CDCADC15BAE;
+        Wed, 23 Aug 2023 17:15:42 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Wed, 23 Aug 2023 19:14:58 +0200 (CEST)
+Date:   Wed, 23 Aug 2023 19:14:55 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        David Laight <David.Laight@ACULAB.COM>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH RESEND] __kill_pgrp_info: simplify the calculation of return
+ value
+Message-ID: <20230823171455.GA12188@redhat.com>
 MIME-Version: 1.0
-Received: by 2002:ac9:5797:0:b0:4f0:1250:dd51 with HTTP; Wed, 23 Aug 2023
- 10:12:15 -0700 (PDT)
-In-Reply-To: <20230823164116.aqjl6f5m2o3rwyxe@quack3>
-References: <20230821202829.2163744-1-mjguzik@gmail.com> <ZOPSEJTzrow8YFix@snowbird>
- <20230821213951.bx3yyqh7omdvpyae@f> <CAGudoHHJECp2-DfSr5hudooAdV6mivvSO+4mC9kwUrWnSiob5g@mail.gmail.com>
- <20230822095154.7cr5ofogw552z3jk@quack3> <CAGudoHHe5nzRTuj4G1fphD+JJ02TE5BnHEDwFm=-W6DoEj2qVQ@mail.gmail.com>
- <20230823094915.ggv3spzevgyoov6i@quack3> <CAGudoHFFt5wvYWrwNkz813KaXBmROJ7YJ67s1h3_CBgcoV2fCA@mail.gmail.com>
- <20230823154728.rpkw6fpwvwqbnnh3@quack3> <CAGudoHFvGwcQ+8JOjwR3B=KtHiVqC1=eiNgGv33z29443VJdFg@mail.gmail.com>
- <20230823164116.aqjl6f5m2o3rwyxe@quack3>
-From:   Mateusz Guzik <mjguzik@gmail.com>
-Date:   Wed, 23 Aug 2023 19:12:15 +0200
-Message-ID: <CAGudoHEmKLkPHMegbuqDOdS-HvojWYJ-KKVjUs=N4e3DLMg-zA@mail.gmail.com>
-Subject: Re: [PATCH 0/2] execve scalability issues, part 1
-To:     Jan Kara <jack@suse.cz>
-Cc:     Dennis Zhou <dennis@kernel.org>, linux-kernel@vger.kernel.org,
-        tj@kernel.org, cl@linux.com, akpm@linux-foundation.org,
-        shakeelb@google.com, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/23/23, Jan Kara <jack@suse.cz> wrote:
-> On Wed 23-08-23 18:10:29, Mateusz Guzik wrote:
->> So the question is how much does this matter. My personal approach is
->> that avoidable slowdowns (like atomics here) only facilitate further
->> avoidable slowdowns as people can claim there is a minuscule change in
->> % to baseline. But if the baseline is already slow....
->
-> I get your point but over the years I've also learned that premature
-> optimization isn't good either as we will be dragging the maintenance
-> burden for a long time ;) It's a balance.
->
+No need to calculate/check the "success" variable, we can kill it and update
+retval in the main loop unless it is zero.
 
-Mate, your proposal is not maintenance burden-free either. ;)
+Suggested-by: David Laight <David.Laight@ACULAB.COM>
+Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+---
+ kernel/signal.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
-I claim mine is simpler and faster for single threaded case, but is
-not generic so should another consumer show up with the single vs
-multithreaded need, there may or may not be more work to accommodate
-it.
-
+diff --git a/kernel/signal.c b/kernel/signal.c
+index 128e9bb3d1a2..c0acdfd4c81b 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -1460,16 +1460,21 @@ int group_send_sig_info(int sig, struct kernel_siginfo *info,
+ int __kill_pgrp_info(int sig, struct kernel_siginfo *info, struct pid *pgrp)
+ {
+ 	struct task_struct *p = NULL;
+-	int retval, success;
++	int ret = -ESRCH;
+ 
+-	success = 0;
+-	retval = -ESRCH;
+ 	do_each_pid_task(pgrp, PIDTYPE_PGID, p) {
+ 		int err = group_send_sig_info(sig, info, p, PIDTYPE_PGID);
+-		success |= !err;
+-		retval = err;
++		/*
++		 * If group_send_sig_info() succeeds at least once ret
++		 * becomes 0 and after that the code below has no effect.
++		 * Otherwise we return the last err or -ESRCH if this
++		 * process group is empty.
++		 */
++		if (ret)
++			ret = err;
+ 	} while_each_pid_task(pgrp, PIDTYPE_PGID, p);
+-	return success ? 0 : retval;
++
++	return ret;
+ }
+ 
+ int kill_pid_info(int sig, struct kernel_siginfo *info, struct pid *pid)
 -- 
-Mateusz Guzik <mjguzik gmail.com>
+2.25.1.362.g51ebf55
+
+
