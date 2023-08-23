@@ -2,91 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B326785F56
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 20:12:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6530785F5E
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 20:14:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238060AbjHWSMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 14:12:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42706 "EHLO
+        id S238063AbjHWSO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 14:14:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230098AbjHWSMv (ORCPT
+        with ESMTP id S237624AbjHWSOO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 14:12:51 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27265CD1;
-        Wed, 23 Aug 2023 11:12:50 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-55b78bf0423so461618a12.0;
-        Wed, 23 Aug 2023 11:12:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692814369; x=1693419169;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Nfi1MCjIHEtRlK5qwURcP28HIGYnPOfh0hAIrnuyXfs=;
-        b=bw0Ib7Wvc3T8Jiw1TxIWLOXGEWigdrNUj+Hz6YzcrlTKkrK3yLz/GeZZkVa8tsF+9p
-         pOJ4tkcJ9g5a+HU4xOKhAT3jq5ENubE7Y4PEiNP89o/cKTxdjO6sU3AGykOB6yp3y+3x
-         Ope0Xn6VUoThLRJibm/zzh/ArlkhHT07L25JWfzmCm+FyqVqsO/Vq6p7GrFsX6gvIkqu
-         bbKHFBl1LBjjEq3U02Hu0GMKklx1ut/SJ+qS7U4+KrYU2ds+XejZlAVaunahO7+iqhE0
-         aj4VG0oZh5g4mY6wwb4iHUi/N/gORbDOSReKxzNFutkqAQ8pTEOlS/zxPw4zdMzWHIav
-         RwQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692814369; x=1693419169;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Nfi1MCjIHEtRlK5qwURcP28HIGYnPOfh0hAIrnuyXfs=;
-        b=QPAKax8qgKWphtZEVIsdCr0AvRnzMm6N2TWJBci/yEwgdZ2HV9rFPtgyaTslIg64AW
-         KogNY5PPkrz+iX31VluJrlb/QWqgvbJ9kRwZEu3DoIwgaGUBr778xlZOsQJxGXVvf2Fe
-         85Me4kc3bSs5aNVuGN3KmY3B5ENUYqajjuYOs7h7wJDj3oL8x2GYg+s6Sy7NAkfVbqOi
-         O/zULxh0Nd982xijfZ/nyfZbW4Vwb7t52rUc+8PU57f43Ys/ZciKguS2a+my1ONUkTJT
-         84Ejhtz5KfASP5D4lkEVjYPsgiaGp9LHK7ZjupF2TgD/LcYovXTTIu9Aj+E6SPOMuEGN
-         M4pw==
-X-Gm-Message-State: AOJu0YxKPA9UFCLwhXHvk/YnEPEv2cAaE9ui7VHpkllpOIfLBAfo1o1T
-        Sig0IbkctIkRUp/qIYs3U6StYI8MXFun7m3xs0EAiKcq9UE=
-X-Google-Smtp-Source: AGHT+IFF6OhUZ8qx+TAuEvDeAWn7ceIKu3CsmvmhMsA1uaEzf9RUbmyJ5z0dSEIdDcW6jmU2KkQBF68KWTyCDe1AxX0=
-X-Received: by 2002:a17:90a:9e2:b0:26d:1eff:619f with SMTP id
- 89-20020a17090a09e200b0026d1eff619fmr11985687pjo.2.1692814369623; Wed, 23 Aug
- 2023 11:12:49 -0700 (PDT)
+        Wed, 23 Aug 2023 14:14:14 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8025DCC7
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 11:14:12 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0E2C162D6C
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 18:14:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A293FC433C8;
+        Wed, 23 Aug 2023 18:14:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692814451;
+        bh=6WYbdQvbaUTU7jAYsOoRLczdc6WiEmOJqx1owqQdczY=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=jnp9OnkqCFGBj/h9OTMFiamfq/+P0dMbhMG2wym3WRwS3We453QbP6a6Naa6WA/55
+         d4lxewnPO9sJ/eOFdW8Id7q+oLH+qu5WfYDQfCvEZsEqA4fHS1ZXjl/MCVrHUqcm2V
+         rQnTACprz2PN91Wy6YquXbrmyxgR7JTtwCnIMQ5ArUm5o9SmwEW1AslQAiAZraDgQF
+         h2tDxxbMKoaqy+zaiPzYbMLAi/oaijp+DPUTHk158fgQD2Ywb/PZFPbzgyDYkg8qH9
+         1W3Xw4IOX9qUdj1RLfiTo/cEPzNfdE8Ln2S04DCPkN4s+5vlwAgONpQFbmC2McakrT
+         EjkJ7PP63sJqw==
+From:   =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To:     Pu Lehui <pulehui@huaweicloud.com>,
+        linux-riscv@lists.infradead.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Xu Kuohai <xukuohai@huawei.com>,
+        Puranjay Mohan <puranjay12@gmail.com>,
+        Pu Lehui <pulehui@huawei.com>,
+        Pu Lehui <pulehui@huaweicloud.com>
+Subject: Re: [PATCH bpf-next 3/7] riscv, bpf: Support sign-extension mov insns
+In-Reply-To: <20230823231059.3363698-4-pulehui@huaweicloud.com>
+References: <20230823231059.3363698-1-pulehui@huaweicloud.com>
+ <20230823231059.3363698-4-pulehui@huaweicloud.com>
+Date:   Wed, 23 Aug 2023 20:14:07 +0200
+Message-ID: <87pm3dlj80.fsf@all.your.base.are.belong.to.us>
 MIME-Version: 1.0
-References: <20230823180055.2605191-1-Frank.Li@nxp.com> <20230823180055.2605191-3-Frank.Li@nxp.com>
-In-Reply-To: <20230823180055.2605191-3-Frank.Li@nxp.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Wed, 23 Aug 2023 15:12:37 -0300
-Message-ID: <CAOMZO5BBLXyn7zpmb-DKNgJhY9DDP5_TgLZzPGREt-V_curvDw@mail.gmail.com>
-Subject: Re: [PATCH 2/3] arm64: dts: imx93: add dma support for lpuart[2..9]
-To:     Frank Li <Frank.Li@nxp.com>
-Cc:     clin@suse.com, conor+dt@kernel.org, devicetree@vger.kernel.org,
-        eagle.zhou@nxp.com, imx@lists.linux.dev, joy.zou@nxp.com,
-        kernel@pengutronix.de, krzysztof.kozlowski+dt@linaro.org,
-        leoyang.li@nxp.com, linux-arm-kernel@lists.infradead.org,
-        linux-imx@nxp.com, linux-kernel@vger.kernel.org,
-        pierre.gondois@arm.com, robh+dt@kernel.org, s.hauer@pengutronix.de,
-        shawnguo@kernel.org, shenwei.wang@nxp.com, sherry.sun@nxp.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Frank,
+Pu Lehui <pulehui@huaweicloud.com> writes:
 
-On Wed, Aug 23, 2023 at 3:01=E2=80=AFPM Frank Li <Frank.Li@nxp.com> wrote:
+> From: Pu Lehui <pulehui@huawei.com>
 >
-> Add dma support for lpuart[2..9]. The lpuart1 is debug console.
+> Add support sign-extension mov instructions for RV64.
+>
+> Signed-off-by: Pu Lehui <pulehui@huawei.com>
+> ---
+>  arch/riscv/net/bpf_jit_comp64.c | 14 +++++++++++++-
+>  1 file changed, 13 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_com=
+p64.c
+> index fd36cb17101a..d1497182cacf 100644
+> --- a/arch/riscv/net/bpf_jit_comp64.c
+> +++ b/arch/riscv/net/bpf_jit_comp64.c
+> @@ -1047,7 +1047,19 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn,=
+ struct rv_jit_context *ctx,
+>  			emit_zext_32(rd, ctx);
+>  			break;
+>  		}
+> -		emit_mv(rd, rs, ctx);
+> +		switch (insn->off) {
+> +		case 0:
+> +			emit_mv(rd, rs, ctx);
+> +			break;
+> +		case 8:
+> +		case 16:
+> +			emit_slli(rs, rs, 64 - insn->off, ctx);
+> +			emit_srai(rd, rs, 64 - insn->off, ctx);
 
-LPUART1 is the debug console on a particular board, but nothing prevents so=
-meone
-to design an imx93 board that has another LPUART port as the debug console.
+You're clobbering the source register (rs) here, which is correct.
 
-I suggest enabling DMA for all ports. That's what we do with other i.MX dev=
-ices.
+(Side note: Maybe it's time to add Zbb support to the JIT soon! ;-))
 
-By the way, the fsl_lpuart driver disables DMA for the console:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/dri=
-vers/tty/serial/fsl_lpuart.c?h=3Dv6.5-rc7#n1696
+
+Bj=C3=B6rn
