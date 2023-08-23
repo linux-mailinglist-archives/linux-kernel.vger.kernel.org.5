@@ -2,74 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B91A785B72
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 17:07:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25153785CE8
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 18:04:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234917AbjHWPHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 11:07:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36758 "EHLO
+        id S237413AbjHWQEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 12:04:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236780AbjHWPHB (ORCPT
+        with ESMTP id S234129AbjHWQE3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 11:07:01 -0400
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7F7C10D;
-        Wed, 23 Aug 2023 08:06:54 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RW8gp3y3Qz4f3lJv;
-        Wed, 23 Aug 2023 23:06:46 +0800 (CST)
-Received: from ultra.huawei.com (unknown [10.90.53.71])
-        by APP4 (Coremail) with SMTP id gCh0CgAn_qCIIOZksUWeBQ--.39856S9;
-        Wed, 23 Aug 2023 23:06:49 +0800 (CST)
-From:   Pu Lehui <pulehui@huaweicloud.com>
-To:     linux-riscv@lists.infradead.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Xu Kuohai <xukuohai@huawei.com>,
-        Puranjay Mohan <puranjay12@gmail.com>,
-        Pu Lehui <pulehui@huawei.com>,
-        Pu Lehui <pulehui@huaweicloud.com>
-Subject: [PATCH bpf-next 7/7] selftests/bpf: Enable cpu v4 tests for RV64
-Date:   Wed, 23 Aug 2023 23:10:59 +0000
-Message-Id: <20230823231059.3363698-8-pulehui@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230823231059.3363698-1-pulehui@huaweicloud.com>
-References: <20230823231059.3363698-1-pulehui@huaweicloud.com>
+        Wed, 23 Aug 2023 12:04:29 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C2C5184
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 09:04:28 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id d75a77b69052e-410915344aeso24231521cf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 09:04:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692806667; x=1693411467;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=AgwQQssNisFcDlSAbmB9tgKtABE8UDfzKEg3w2u2WUY=;
+        b=PSHh0C0tup1HpJUcqAvhjxPp6TSWZfWCVDX4C6McSPiPkRG6fA1s4JVpwur/iUjjE5
+         shFyXvjiCTQXOL8n1DADayXGQ/D+OUlX/1PGjxNYeVrDxt0IG6t4xvAicxy7c6UwhROr
+         sGy5dHpBjLaCzkEY0vRuEPoE4brJUXa6CvcpxDm973Gsc1zuhjfGLjaYpM7M6qDV7Nmg
+         v02UyYYx220ZOUdjSCVuD2DXmXrSTLFSZuBEmG6GfKt5Rm26KTqoD0iAXMPjU5Fasjvo
+         2pKNlWBGMa4E6ozr31/ekMKNzYGzxoeTF1UHC6/QKLdO1kVGWM4J17MHVyrg86ON+TsV
+         GGYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692806667; x=1693411467;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AgwQQssNisFcDlSAbmB9tgKtABE8UDfzKEg3w2u2WUY=;
+        b=B1CZXSTCRjCAvfDLZVmNV3YB4EfHtFwIj3SLEqMPfiG5BvGTNevVhI6mKcok3S4doD
+         1+IKrUeL/MS0M9LBbAQSVrgNmReGNWEwDdHUcITs76saxEXEST1K8MBD63qLVvLiC9AN
+         joYs/D9JRa46wd33lNMARm8K9kUEro2xjPhmzIqWbk7Y/cLCIw9HUpr/6zPciAtgJ5jx
+         SYr0Q4IkEkBI4cKqExmUsYuRnuWqYQ4SO9sH9q+xNYlkm7DXl7DmVpbh8CvYVig1nG+f
+         aGp8UVFdN8ac6yFO9phlmtMHcih/TKCjluTBRiCDxB3uZdoy6gqMtxpT6w2hq8/9l+z/
+         V4wA==
+X-Gm-Message-State: AOJu0Yxg6/pPA3qhZ5nHA084QFmPjpxGxgw+r/3rbRuHu4TlyCXLp3sQ
+        kzWWN29B3NClCJbQjNSXWLx20rL21A0=
+X-Google-Smtp-Source: AGHT+IHivHnj0yHlLVwLmnIv66NnFWZ14jcAHFP7qjk81m/CRqyiuMtdCNcSvg0MFWW1vMa5IEIAdQ==
+X-Received: by 2002:a0c:e149:0:b0:64f:5ad7:f56a with SMTP id c9-20020a0ce149000000b0064f5ad7f56amr2555864qvl.9.1692806667162;
+        Wed, 23 Aug 2023 09:04:27 -0700 (PDT)
+Received: from alolivei-thinkpadt480s.gru.csb ([2804:14c:bf20:82ea:8c7c:b784:3f92:988a])
+        by smtp.gmail.com with ESMTPSA id c16-20020a0cca10000000b0064b502fdeecsm4133909qvk.68.2023.08.23.09.04.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Aug 2023 09:04:26 -0700 (PDT)
+Date:   Wed, 23 Aug 2023 13:04:22 -0300
+From:   Alexon Oliveira <alexondunkan@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     martyn@welchs.me.uk, manohar.vanga@gmail.com,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: Re: [PATCH] staging: vme_user: fix check unbalaced braces and
+ misspellings
+Message-ID: <ZOYuBvMS3pcpA37b@alolivei-thinkpadt480s.gru.csb>
+References: <ZOVjfKUWsSAkbpZG@alolivei-thinkpadt480s.gru.csb>
+ <2023082303-balmy-bucktooth-f85b@gregkh>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAn_qCIIOZksUWeBQ--.39856S9
-X-Coremail-Antispam: 1UD129KBjvJXoWxCF1DJryUCr4UJw4UXrW5Wrg_yoW7Jr1rp3
-        WkuasIy3WxKF1a9F1fAF4jvFWrGrs7ZrWUAFW0vr4Du3ZrJrWIqr92kr45JrZ0grZYvrs5
-        Zw1IgwnxZr48Zw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUQl14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2jI8I6cxK62vIxIIY0VWUZVW8XwA2048vs2IY02
-        0E87I2jVAFwI0_JF0E3s1l82xGYIkIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0
-        rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6x
-        IIjxv20xvEc7CjxVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK
-        6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4
-        xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVWUJVW8
-        JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20V
-        AGYxC7M4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI
-        7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
-        Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY
-        6xIIjxv20xvE14v26r4j6ryUMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UMIIF0x
-        vE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv
-        6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7sRiHq2tUUUUU==
-X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2023082303-balmy-bucktooth-f85b@gregkh>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,104 +73,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pu Lehui <pulehui@huawei.com>
+On Wed, Aug 23, 2023 at 08:49:25AM +0200, Greg KH wrote:
+> On Tue, Aug 22, 2023 at 10:40:12PM -0300, Alexon Oliveira wrote:
+> > Fixed all CHECK: Unbalanced braces around else statement,
+> > CHECK: braces {} should be used on all arms of this statement,
+> > and CHECK: 'specificed' may be misspelled - perhaps 'specified'?
+> > as reported by checkpatch to adhere to the Linux kernel
+> > coding-style guidelines.
+> 
+> That's two different things, so that means it should be two different
+> patches.  Please send a patch series for this.
+> 
 
-Enable cpu v4 tests for RV64, and the relevant tests have passed.
+ACK. I'm splitting them and resubmitting right now.
 
-Signed-off-by: Pu Lehui <pulehui@huawei.com>
----
- tools/testing/selftests/bpf/progs/test_ldsx_insn.c | 3 ++-
- tools/testing/selftests/bpf/progs/verifier_bswap.c | 3 ++-
- tools/testing/selftests/bpf/progs/verifier_gotol.c | 3 ++-
- tools/testing/selftests/bpf/progs/verifier_ldsx.c  | 3 ++-
- tools/testing/selftests/bpf/progs/verifier_movsx.c | 3 ++-
- tools/testing/selftests/bpf/progs/verifier_sdiv.c  | 3 ++-
- 6 files changed, 12 insertions(+), 6 deletions(-)
+> thanks,
+> 
+> greg k-h
 
-diff --git a/tools/testing/selftests/bpf/progs/test_ldsx_insn.c b/tools/testing/selftests/bpf/progs/test_ldsx_insn.c
-index 916d9435f12c..67c14ba1e87b 100644
---- a/tools/testing/selftests/bpf/progs/test_ldsx_insn.c
-+++ b/tools/testing/selftests/bpf/progs/test_ldsx_insn.c
-@@ -5,7 +5,8 @@
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_tracing.h>
- 
--#if (defined(__TARGET_ARCH_arm64) || defined(__TARGET_ARCH_x86)) && __clang_major__ >= 18
-+#if (defined(__TARGET_ARCH_arm64) || defined(__TARGET_ARCH_x86) || \
-+     (defined(__TARGET_ARCH_riscv) && __riscv_xlen == 64)) && __clang_major__ >= 18
- const volatile int skip = 0;
- #else
- const volatile int skip = 1;
-diff --git a/tools/testing/selftests/bpf/progs/verifier_bswap.c b/tools/testing/selftests/bpf/progs/verifier_bswap.c
-index 770f9d882542..8893094725f0 100644
---- a/tools/testing/selftests/bpf/progs/verifier_bswap.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_bswap.c
-@@ -4,7 +4,8 @@
- #include <bpf/bpf_helpers.h>
- #include "bpf_misc.h"
- 
--#if (defined(__TARGET_ARCH_arm64) || defined(__TARGET_ARCH_x86)) && __clang_major__ >= 18
-+#if (defined(__TARGET_ARCH_arm64) || defined(__TARGET_ARCH_x86) || \
-+     (defined(__TARGET_ARCH_riscv) && __riscv_xlen == 64)) && __clang_major__ >= 18
- 
- SEC("socket")
- __description("BSWAP, 16")
-diff --git a/tools/testing/selftests/bpf/progs/verifier_gotol.c b/tools/testing/selftests/bpf/progs/verifier_gotol.c
-index 17319a505e87..2dae5322a18e 100644
---- a/tools/testing/selftests/bpf/progs/verifier_gotol.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_gotol.c
-@@ -4,7 +4,8 @@
- #include <bpf/bpf_helpers.h>
- #include "bpf_misc.h"
- 
--#if (defined(__TARGET_ARCH_arm64) || defined(__TARGET_ARCH_x86)) && __clang_major__ >= 18
-+#if (defined(__TARGET_ARCH_arm64) || defined(__TARGET_ARCH_x86) || \
-+     (defined(__TARGET_ARCH_riscv) && __riscv_xlen == 64)) && __clang_major__ >= 18
- 
- SEC("socket")
- __description("gotol, small_imm")
-diff --git a/tools/testing/selftests/bpf/progs/verifier_ldsx.c b/tools/testing/selftests/bpf/progs/verifier_ldsx.c
-index 4a2b567c0f69..0c638f45aaf1 100644
---- a/tools/testing/selftests/bpf/progs/verifier_ldsx.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_ldsx.c
-@@ -4,7 +4,8 @@
- #include <bpf/bpf_helpers.h>
- #include "bpf_misc.h"
- 
--#if (defined(__TARGET_ARCH_arm64) || defined(__TARGET_ARCH_x86)) && __clang_major__ >= 18
-+#if (defined(__TARGET_ARCH_arm64) || defined(__TARGET_ARCH_x86) || \
-+     (defined(__TARGET_ARCH_riscv) && __riscv_xlen == 64)) && __clang_major__ >= 18
- 
- SEC("socket")
- __description("LDSX, S8")
-diff --git a/tools/testing/selftests/bpf/progs/verifier_movsx.c b/tools/testing/selftests/bpf/progs/verifier_movsx.c
-index d9528d578bd9..3c8ac2c57b1b 100644
---- a/tools/testing/selftests/bpf/progs/verifier_movsx.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_movsx.c
-@@ -4,7 +4,8 @@
- #include <bpf/bpf_helpers.h>
- #include "bpf_misc.h"
- 
--#if (defined(__TARGET_ARCH_arm64) || defined(__TARGET_ARCH_x86)) && __clang_major__ >= 18
-+#if (defined(__TARGET_ARCH_arm64) || defined(__TARGET_ARCH_x86) || \
-+     (defined(__TARGET_ARCH_riscv) && __riscv_xlen == 64)) && __clang_major__ >= 18
- 
- SEC("socket")
- __description("MOV32SX, S8")
-diff --git a/tools/testing/selftests/bpf/progs/verifier_sdiv.c b/tools/testing/selftests/bpf/progs/verifier_sdiv.c
-index fa3945930e93..0990f8825675 100644
---- a/tools/testing/selftests/bpf/progs/verifier_sdiv.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_sdiv.c
-@@ -4,7 +4,8 @@
- #include <bpf/bpf_helpers.h>
- #include "bpf_misc.h"
- 
--#if (defined(__TARGET_ARCH_arm64) || defined(__TARGET_ARCH_x86)) && __clang_major__ >= 18
-+#if (defined(__TARGET_ARCH_arm64) || defined(__TARGET_ARCH_x86) || \
-+     (defined(__TARGET_ARCH_riscv) && __riscv_xlen == 64)) && __clang_major__ >= 18
- 
- SEC("socket")
- __description("SDIV32, non-zero imm divisor, check 1")
--- 
-2.39.2
+Thank you.
 
+Alexon Oliveira
