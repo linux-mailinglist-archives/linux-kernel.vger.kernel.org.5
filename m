@@ -2,146 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7552078565B
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 13:00:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73FDF785661
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 13:06:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234267AbjHWK77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 06:59:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51844 "EHLO
+        id S234029AbjHWLGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 07:06:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234251AbjHWK75 (ORCPT
+        with ESMTP id S231678AbjHWLGb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 06:59:57 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 099E319A
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 03:59:56 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1bf5c314a57so22522225ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 03:59:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1692788395; x=1693393195;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GYZFq9HoRCm6GUrGyMS4vRuIGoFXcojk2tIii80AOf8=;
-        b=hMCv8kaLg9uRTJ7vSvi6IGdU5fZSfTMhlG0zlRPlHSqcYvoDeYlf/0xO+0jJfC14cS
-         Bw/WseNRlkcUtziB19vuZoUOtCEHMS/ZTmr/X4WMxnB4mRrckS65mlok1QlaHfFhxJWk
-         sCvx4/kcuXPrO7i7krfxqRgWsnc78+OU1y2ROexiQGs+BLzrE+OARml5+vAU4fFs8ULg
-         vZc+BkaxQnXvXkkrRzvgPDlePDCUSX3woqMTGCbE1YsycvsZfrDHsQqaTcUoXCtw7MOX
-         MBAUxFHt8Uk9IU3BohH1PGp12RZ6tKt7MxNaUPCBmr/H2Ffdj7158cXTW8jz7fZUES/Q
-         AYYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692788395; x=1693393195;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=GYZFq9HoRCm6GUrGyMS4vRuIGoFXcojk2tIii80AOf8=;
-        b=VIF87fLD0lqAg7qtTQJSMK3N9F/KK6ZIF8/pl1CdNWwgCNii/LMPKNBn3jrSF3SohF
-         lFj3iS/P5VbjLTmkThK9kVTpP8JgcmwlqvMB3ARu+OBW90HQdAn5zo711nphPw0JCRDC
-         zjOCB6g/J/4GX/P9lBV2gT5486iHysP+lG/cZUUMsWXkWXcOVJF0XIfVoxcYbV4EVAUE
-         lENSl9qrg0vSeRSSO/7EpD2yX1MwQwx6TyQI+KtDkvZgS6OuWSzzqbckBLsdX4pbVwMw
-         WpuIz8NnmgrAADAtcK1trb+PXz+oXk7oaeGTXBiv5Y5Crmwmv9txjkDjefMm8wg24xwN
-         gVgQ==
-X-Gm-Message-State: AOJu0Ywp+IkcnknkgHQYj8EHFhAcZsmcvIv6uA1hZ3eHFqNXrMg8EunU
-        qdvl6DnYiYUHY5poQm2usQRLuA==
-X-Google-Smtp-Source: AGHT+IG9GEvdMxJhiziwd/SHslHP1nERR5FT/wwW48l3HyWAFbQ06s+mBPnSX8kpNLDY/xUfOyXAKg==
-X-Received: by 2002:a17:902:ea06:b0:1b2:1b22:196 with SMTP id s6-20020a170902ea0600b001b21b220196mr11544921plg.48.1692788395431;
-        Wed, 23 Aug 2023 03:59:55 -0700 (PDT)
-Received: from [10.255.208.99] ([139.177.225.251])
-        by smtp.gmail.com with ESMTPSA id a7-20020a170902ecc700b001b2069072ccsm10655073plh.18.2023.08.23.03.59.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Aug 2023 03:59:55 -0700 (PDT)
-Message-ID: <029cb695-9b8e-8fb3-ef0f-b223f34e7639@bytedance.com>
-Date:   Wed, 23 Aug 2023 18:59:49 +0800
+        Wed, 23 Aug 2023 07:06:31 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CAEBCDA;
+        Wed, 23 Aug 2023 04:06:29 -0700 (PDT)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37N8HvIt015116;
+        Wed, 23 Aug 2023 11:06:23 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=qiMmn5wx7QNMjhgbTwUVO0uesMmqRuxiNsiUbEPC25M=;
+ b=WHt6QVN+tnKPQ+lV2R1P2EAsCqHEC6y1cEJjBS7cJYd/9Nm26GqXUpsk6gifkFhL065Y
+ 52hpVucxN5FjxciRlDMtNv2/2uz06h70eOI/pzQBkjMSyebAPlZtNhgiD1WAkbFPzae5
+ nHz4WSRIzD0CzvIE6+sk7MPXsNHsq127GN/mPoRcSgimEqwOu5NfJ4GAiR9Ekj3J+RXX
+ DftG1PV8lSBv9jLlQBlXTvfCyL234S+mb0MEHA198DIyC9kx1/tmI6YUMQCecUy/g1ZD
+ 4Q5XG1PyY957fizftz4BWt9mEwx20hscfA/oV0r+rn+cTsT38TdTBWfCyT24HFdgPgxY rw== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sn2bt9qrx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 23 Aug 2023 11:06:23 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37NB6Mif024894
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 23 Aug 2023 11:06:22 GMT
+Received: from [10.50.32.23] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 23 Aug
+ 2023 04:06:17 -0700
+Message-ID: <08655b2e-a8c3-4355-90c3-a96f303e0640@quicinc.com>
+Date:   Wed, 23 Aug 2023 16:36:14 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.14.0
-Subject: Re: [PATCH 4/5] fuse: writeback_cache consistency enhancement
- (writeback_cache_v2)
-To:     Bernd Schubert <bernd.schubert@fastmail.fm>,
-        Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Jonathan Corbet <corbet@lwn.net>, linux-fsdevel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        me@jcix.top
-References: <20230711043405.66256-1-zhangjiachen.jaycee@bytedance.com>
- <20230711043405.66256-5-zhangjiachen.jaycee@bytedance.com>
- <CAJfpegtqJo78wqT0EY0=1xfoSROsJogg9BNC_xJv6id9J1Oa+g@mail.gmail.com>
- <699673a6-ff82-8968-6310-9a0b1c429be3@fastmail.fm>
-From:   Jiachen Zhang <zhangjiachen.jaycee@bytedance.com>
-In-Reply-To: <699673a6-ff82-8968-6310-9a0b1c429be3@fastmail.fm>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 1/1] soc: qcom: Add driver to read secondary
+ bootloader (XBL) log
+To:     Pavan Kondeti <quic_pkondeti@quicinc.com>
+CC:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <psodagud@quicinc.com>,
+        <quic_ppareek@quicinc.com>, <quic_kprasan@quicinc.com>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <kernel@quicinc.com>
+References: <20230822121512.8631-1-quic_ninanaik@quicinc.com>
+ <20230822121512.8631-2-quic_ninanaik@quicinc.com>
+ <d0f663e7-cee4-451e-9b28-99ba7e6f674a@quicinc.com>
+Content-Language: en-US
+From:   Ninad Naik <quic_ninanaik@quicinc.com>
+In-Reply-To: <d0f663e7-cee4-451e-9b28-99ba7e6f674a@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 2gZZWG3zl8TGW6xXpUnY858jkw19n_JA
+X-Proofpoint-GUID: 2gZZWG3zl8TGW6xXpUnY858jkw19n_JA
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-23_06,2023-08-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
+ priorityscore=1501 mlxscore=0 suspectscore=0 mlxlogscore=999 clxscore=1015
+ impostorscore=0 adultscore=0 spamscore=0 malwarescore=0 bulkscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308230101
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/23 18:35, Bernd Schubert wrote:
-> On 8/23/23 11:07, Miklos Szeredi wrote:
->> On Tue, 11 Jul 2023 at 06:36, Jiachen Zhang
->> <zhangjiachen.jaycee@bytedance.com> wrote:
->>>
->>> Some users may want both the high performance of the writeback_cahe mode
->>> and a little bit more consistency among FUSE mounts. Current
->>> writeback_cache mode never updates attributes from server, so can never
->>> see the file attributes changed by other FUSE mounts, which means
->>> 'zero-consisteny'.
->>>
->>> This commit introduces writeback_cache_v2 mode, which allows the 
->>> attributes
->>> to be updated from server to kernel when the inode is clean and no
->>> writeback is in-progressing. FUSE daemons can select this mode by the
->>> FUSE_WRITEBACK_CACHE_V2 init flag.
->>>
->>> In writeback_cache_v2 mode, the server generates official attributes.
->>> Therefore,
->>>
->>>      1. For the cmtime, the cmtime generated by kernel are just 
->>> temporary
->>>      values that are never flushed to server by fuse_write_inode(), 
->>> and they
->>>      could be eventually updated by the official server cmtime. The
->>>      mtime-based revalidation of the fc->auto_inval_data mode is also
->>>      skipped, as the kernel-generated temporary cmtime are likely not 
->>> equal
->>>      to the offical server cmtime.
->>>
->>>      2. For the file size, we expect server updates its file size on
->>>      FUSE_WRITEs. So we increase fi->attr_version in 
->>> fuse_writepage_end() to
->>>      check the staleness of the returning file size.
->>>
->>> Together with FOPEN_INVAL_ATTR, a FUSE daemon is able to implement
->>> close-to-open (CTO) consistency like NFS client implementations.
+Hi Pavan,
+
+On 8/22/2023 6:09 PM, Pavan Kondeti wrote:
+> On Tue, Aug 22, 2023 at 05:45:12PM +0530, Ninad Naik wrote:
+>> Qualcomm secondary bootloader (XBL) boot log holds information to
+>> identify various firmware configuration currently set on the SoC.
+>> The XBL log is stored in a predefined reserved memory region.
 >>
->> What I'd prefer is mode similar to NFS: getattr flushes pending writes
->> so that server ctime/mtime are always in sync with client.  FUSE
->> probably should have done that from the beginning, but at that time I
->> wasn't aware of the NFS solution.
+>> This drivers provides a way to print XBL logs on the console. To
+>> do so, it provides a debugfs entry which captures the logs stored
+>> in this reserved memory region. This entry can now be used to read
+>> and print the XBL logs to console.
+>>
+>> User can use the below command to print XBL log to console:
+>>          cat /sys/kernel/debug/xbl_log
+>>
+>> Signed-off-by: Ninad Naik <quic_ninanaik@quicinc.com>
+>> ---
 > 
+> For a single patch, cover letter may not be needed. The under cut
+> portion (this area) of the patch can be used to present the additional
+> details.
 > 
-> I think it would be good to have flush-on-getattr configurable - systems 
-> with a distributed lock manager (DLM) and notifications from 
-> server/daemon to kernel should not need it.
+Ack.
+>>   drivers/soc/qcom/Kconfig        |  13 +++
+>>   drivers/soc/qcom/Makefile       |   1 +
+>>   drivers/soc/qcom/dump_xbl_log.c | 139 ++++++++++++++++++++++++++++++++
+>>   3 files changed, 153 insertions(+)
+>>   create mode 100644 drivers/soc/qcom/dump_xbl_log.c
+>>
 > 
+> [...]
 > 
-> Thanks,
-> Bernd
+>> +static int map_addr_range(struct device_node **parent, const char *name,
+>> +			  struct xbl_log_data *xbl_data)
+>> +{
+>> +	struct device_node *node;
+>> +	struct resource res;
+>> +	int ret;
+>> +
+>> +	node = of_find_node_by_name(*parent, name);
+>> +	if (!node)
+>> +		return -ENODEV;
+>> +
+>> +	ret = of_address_to_resource(node, 0, &res);
+>> +	if (ret) {
+>> +		dev_err(xbl_data->dev, "Failed to parse memory region\n");
+>> +		return ret;
+>> +	}
+>> +	of_node_put(node);
+>> +
+>> +	if (!resource_size(&res)) {
+>> +		dev_err(xbl_data->dev, "Failed to parse memory region size\n");
+>> +		return -ENODEV;
+>> +	}
+>> +
+>> +	xbl_data->buf_size = resource_size(&res) - 1;
+>> +	xbl_data->xbl_buf = devm_memremap(xbl_data->dev, res.start,
+>> +					  xbl_data->buf_size, MEMREMAP_WB);
+>> +	if (!xbl_data->xbl_buf) {
+>> +		dev_err(xbl_data->dev, "%s: memory remap failed\n", name);
+>> +		return -ENOMEM;
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int xbl_log_probe(struct platform_device *pdev)
+>> +{
+>> +	struct device *dev = &pdev->dev;
+>> +	struct xbl_log_data *xbl_data;
+>> +	struct device_node *parent;
+>> +	int ret;
+>> +
+>> +	xbl_data = devm_kzalloc(dev, sizeof(*xbl_data), GFP_KERNEL);
+>> +	if (!xbl_data)
+>> +		return -ENOMEM;
+>> +
+>> +	xbl_data->dev = &pdev->dev;
+>> +	platform_set_drvdata(pdev, xbl_data);
+>> +
+>> +	parent = of_find_node_by_path("/reserved-memory");
+>> +	if (!parent) {
+>> +		dev_err(xbl_data->dev, "reserved-memory node missing\n");
+>> +		return -ENODEV;
+>> +	}
+>> +
+> 
+> You would need to present the Device Tree binding document for this. For
+> ex: pls see
+> Documentation/devicetree/bindings/reserved-memory/qcom,cmd-db.yaml
+> 
+Ack. Will add a corresponding DT binding in the next version
+>> +	ret = map_addr_range(&parent, "uefi-log", xbl_data);
+>> +	if (ret)
+>> +		goto put_node;
+>> +
+>> +	xbl_data->dbg_data.data = xbl_data->xbl_buf;
+>> +	xbl_data->dbg_data.size = xbl_data->buf_size;
+>> +	xbl_data->dbg_file = debugfs_create_blob("xbl_log", 0400, NULL,
+>> +						 &xbl_data->dbg_data);
+>> +	if (IS_ERR(xbl_data->dbg_file)) {
+>> +		dev_err(xbl_data->dev, "failed to create debugfs entry\n");
+>> +		ret = PTR_ERR(xbl_data->dbg_file);
+>> +	}
+>> +
+>> +put_node:
+>> +	of_node_put(parent);
+>> +	return ret;
+>> +}
+>> +
+>> +static int xbl_log_remove(struct platform_device *pdev)
+>> +{
+>> +	struct xbl_log_data *xbl_data = platform_get_drvdata(pdev);
+>> +
+>> +	debugfs_remove_recursive(xbl_data->dbg_file);
+>> +	return 0;
+>> +}
+>> +
+>> +static struct platform_driver xbl_log_driver = {
+>> +	.probe = xbl_log_probe,
+>> +	.remove = xbl_log_remove,
+>> +	.driver = {
+>> +		   .name = "xbl-log",
+>> +		   },
+>> +};
+>> +
+>> +static struct platform_device xbl_log_device = {
+>> +	.name = "xbl-log",
+>> +};
+>> +
+>> +static int __init xbl_log_init(void)
+>> +{
+>> +	int ret = 0;
+>> +
+>> +	ret = platform_driver_register(&xbl_log_driver);
+>> +	if (!ret) {
+>> +		ret = platform_device_register(&xbl_log_device);
+>> +		if (ret)
+>> +			platform_driver_unregister(&xbl_log_driver);
+>> +	}
+>> +	return ret;
+>> +}
+>> +
+> 
+> The platform device registration, the resource parsing can be completely
+> avoided by adding your compatible entry to reserved_mem_matches
+> structure defined in drivers/of/platform.c . There are some Qualcomm SoC
+> devices also present in that list.
+> 
+Ack. So once the compatible entry is added to reserved_mem_matches 
+structure here, a platform_device is created for this node to which this 
+driver can bind to. Thank you for the suggestion, I'll make the 
+necessary corrections in the next revision.
 
-Hi Miklos and Bernd,
-
-I agree that flush-on-getattr is a good solution to keep the c/mtime
-consistency for the view of userspace applications.
-
-Maybe in the next version, we can add the flush-on-getattr just for the
-writeback_cache_v2 mode, as daemons replying on reverse notifications
-are likely not need the writeback_cache_v2 mode. What do you think?
-
+>> +static void __exit xbl_log_exit(void)
+>> +{
+>> +	platform_device_unregister(&xbl_log_device);
+>> +	platform_driver_unregister(&xbl_log_driver);
+>> +}
+>> +
+>> +module_init(xbl_log_init);
+>> +module_exit(xbl_log_exit);
+>> +
+>> +MODULE_DESCRIPTION("Qualcomm Technologies, Inc. (QTI) XBL log driver");
+>> +MODULE_LICENSE("GPL");
+>> -- 
+>> 2.41.0
+>>
 Thanks,
-Jiachen
-
-
+Ninad
