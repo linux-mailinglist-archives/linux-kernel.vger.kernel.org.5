@@ -2,49 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 591DA785D31
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 18:26:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 292B1785D38
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 18:27:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237560AbjHWQ0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 12:26:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58522 "EHLO
+        id S237565AbjHWQ04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 12:26:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237554AbjHWQ0q (ORCPT
+        with ESMTP id S237554AbjHWQ0y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 12:26:46 -0400
+        Wed, 23 Aug 2023 12:26:54 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89C88170D
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 09:26:34 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C933B10CB;
+        Wed, 23 Aug 2023 09:26:36 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 108CA6463C
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 16:26:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F9A7C433C7;
-        Wed, 23 Aug 2023 16:26:32 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5903565B5F;
+        Wed, 23 Aug 2023 16:26:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9647C433C9;
+        Wed, 23 Aug 2023 16:26:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692807993;
-        bh=8Xz6d0pCiUX4KhFmORKGtMWROmdOQ3gU3+kJBggSQS4=;
+        s=k20201202; t=1692807995;
+        bh=Al2E1druB0P3ejb2/nbyyV1nrydyUGxUz/KKinqoeXw=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=YUHOeWi0Z6XaAUuJzg/WmoT+EukUSIPeOpFqtRzVLd6qRFDm5xt6aOEFEhE0vw82j
-         JF7vBeZQpr+gte+lOn4nI717EP09IJVkQlzP0/Fy4g02NDo+u+e2RMPMGZwL/BFtG4
-         dEZ0lSEzXEL0D3HGCa5ZzmdStlizbzPqRG+Qri3foNQaR4PsNuRohOgcqBUBC8t3YU
-         wf5nGfaJQYlhvnknUjzGSh9jVooHAb+sn2e3/LxFfqXnVqkOQVtG7uObYWpIUVVF8t
-         LeO9zmMjV7XC+TgKfyoiq02XFTpVB0GBS0J4mS0wIoHTsCQJj8dA+gW0evXOgh0wNV
-         bZCrsmYii/vfA==
+        b=Wnav+mQ7zbUlOMYQy6oS6fixkqGNt2FlLDc2v8vrglE5YyJQ1a7GiUs7OjmqDvMvw
+         DDsNUIHB59d38kmDd/eNN0329fmotS9z4R3p15rnukg5qco5x2ptral36+D1mtKR5e
+         rxM4XGvYEzzvMHp3qaJCU8PM5UUZkshIWQ5WhrqQyVr6IaL2B1126H+3f7Gfh5CPzi
+         k6r2szuFPGlrQwoioGiJW2SvIzdZsrezVjzWZnypry1U2Blw4N53XGEQ/KE3lARmqu
+         /SHFtjpVIi83YKv68phgAGTj2+0sB8xr2c9tI+1qswmnitl6lkFEyHszkozr17ElRu
+         fcf4MqhhApPfw==
 From:   Mark Brown <broonie@kernel.org>
-To:     Martin Fuzzey <martin.fuzzey@flowbird.group>
-Cc:     Support Opensource <support.opensource@diasemi.com>,
-        Adam Ward <DLG-Adam.Ward.opensource@dm.renesas.com>,
-        Benjamin Bara <benjamin.bara@skidata.com>,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20230804083514.1887124-1-martin.fuzzey@flowbird.group>
-References: <20230804083514.1887124-1-martin.fuzzey@flowbird.group>
-Subject: Re: [PATCH] regulator: da9063: better fix null deref with partial
- DT
-Message-Id: <169280799204.53966.2725365832263200294.b4-ty@kernel.org>
-Date:   Wed, 23 Aug 2023 17:26:32 +0100
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Abel Vesa <abel.vesa@linaro.org>
+Cc:     Rajendra Nayak <quic_rjendra@quicinc.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-arm-msm@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+In-Reply-To: <20230801095702.2891127-1-abel.vesa@linaro.org>
+References: <20230801095702.2891127-1-abel.vesa@linaro.org>
+Subject: Re: [PATCH] regulator: qcom-rpmh: Fix LDO 12 regulator for PM8550
+Message-Id: <169280799363.53966.9265296180737310826.b4-ty@kernel.org>
+Date:   Wed, 23 Aug 2023 17:26:33 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -59,17 +61,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 04 Aug 2023 10:34:30 +0200, Martin Fuzzey wrote:
-> Two versions of the original patch were sent but V1 was merged instead
-> of V2 due to a mistake.
+On Tue, 01 Aug 2023 12:57:02 +0300, Abel Vesa wrote:
+> The LDO 12 is NLDO 515 low voltage type, so fix accordingly.
 > 
-> So update to V2.
 > 
-> The advantage of V2 is that it completely avoids dereferencing the pointer,
-> even just to take the address, which may fix problems with some compilers.
-> Both versions work on my gcc 9.4 but use the safer one.
-> 
-> [...]
 
 Applied to
 
@@ -77,8 +72,8 @@ Applied to
 
 Thanks!
 
-[1/1] regulator: da9063: better fix null deref with partial DT
-      commit: e4eea71222725b7366d61ce7a9ce35202d8a6dfa
+[1/1] regulator: qcom-rpmh: Fix LDO 12 regulator for PM8550
+      commit: fb0db7f2d010e41fceffe801b2fb254e83785165
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
