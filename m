@@ -2,149 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C11ED784F65
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 05:41:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52A33784F6A
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 05:43:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232466AbjHWDlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 23:41:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47046 "EHLO
+        id S232475AbjHWDnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 23:43:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230518AbjHWDlx (ORCPT
+        with ESMTP id S232468AbjHWDnl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 23:41:53 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40470CF2;
-        Tue, 22 Aug 2023 20:41:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692762111; x=1724298111;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=mjPtcCXgRvgnCKnH7d3zDGsxkc2orDuelhXK1xkyMoM=;
-  b=k5SPo/OH03ktUlsQKcEsvCnF0d5PqykoclecaO9IVPiaePC4VIp2Qt//
-   emNt3IGXfr3gBVsn2bSm1l89bx60khdExrfSylvzMQ4QCPcc/tEqFfHdE
-   5FRlAFyN0IBuqdcBiDYHmJ5ZkYBkiZ357K8clwpXf15TfLcSkB7paXdBJ
-   fdGEfQ0sGTDrDBlXPFfY1ER3Eza8zMyp+7E0AKz365kYQSWIo17C8Pl4q
-   7zyz6wxFMmcaLezPQED81kkoY05M2DomDZqMFOt47K5QjGfmnmF3Qrxbw
-   BUL9ZtDPSSpMoLnoJDjxeia7c0x9uuDte93d2gh32Awpo7dw/dLWP4XuK
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10810"; a="377811120"
-X-IronPort-AV: E=Sophos;i="6.01,194,1684825200"; 
-   d="scan'208";a="377811120"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2023 20:41:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10810"; a="826561945"
-X-IronPort-AV: E=Sophos;i="6.01,194,1684825200"; 
-   d="scan'208";a="826561945"
-Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.93.6.77]) ([10.93.6.77])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2023 20:41:48 -0700
-Message-ID: <cf7c7ab6-0907-2eea-bf9c-0811f8ec6c59@intel.com>
-Date:   Wed, 23 Aug 2023 11:41:46 +0800
+        Tue, 22 Aug 2023 23:43:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 407CAE4E
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 20:42:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692762175;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gTjPxZw7WNaTCVVVAXqTDOYogHD7bNJ5OsZh/R8fNes=;
+        b=FuOHYFp78sVybED+4zN810Efz5UoVYwoxzZawCUUIJe1rjYndoUZWeYzU1rLs1i97GOI9r
+        +B5gpkjIPIYkZ4KEqveg73lunOpqAyvEkxUjnnosHjZ2iKbUs/r4fgiOBaNCgMOudWHdxX
+        p0m/NwFDYppmid6bHMEr31j4P5ZFS10=
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
+ [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-404-SssndY-JOXu4AsLOsh443g-1; Tue, 22 Aug 2023 23:42:53 -0400
+X-MC-Unique: SssndY-JOXu4AsLOsh443g-1
+Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-26fb3f2edc9so259980a91.3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 20:42:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692762172; x=1693366972;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gTjPxZw7WNaTCVVVAXqTDOYogHD7bNJ5OsZh/R8fNes=;
+        b=Bfdol2kOGgl5y7JYaTI9J+3gSONsD3NDQmsYAagp7Gj96Ef0syGVYyCiEbNNZRvQi8
+         76bbAUamVAvqhBd00QDfdB8vS8QJZMsSpOBrR9lmwToR69ExDl3/BB9IoDg+Q7o7oVru
+         gYOP+7Fjy7pHXH0cr/iwsLhqXSWZy/bM7OH9d8uI/W1WXNXROpvb2hJKySqG/6FKjwWy
+         YSM5HAuDbjefHzMZN6dLj+1DYtcjBVmnFBtgs2tsnpu5VpLZ85bq9I1QV3cudTnQCrtD
+         ofKCXqYWjycoE4Qfw+xz/Go0kvdLOQLORbp1IUWDKIDUL5JQhdmtVL8O09wb94Jf3gSy
+         omSw==
+X-Gm-Message-State: AOJu0YyyHipsLhX/AE4og8qPj7BDQ0yNXVRi6pvE6OMQaU1pgQDafogF
+        iLeW1d36hGgF4LMe1Rt50ovLS5v5dJAJ/LGvWSHQhClzkhDAgPiQBeSbrqYeqIuy4NpHCOZ2N/9
+        zTr1xE4jy/FJkTDedSdeKeK2sSxLEf/Nf3IcFykhujlhbFifaDmE=
+X-Received: by 2002:a17:90b:3ec7:b0:26d:19f3:ecb9 with SMTP id rm7-20020a17090b3ec700b0026d19f3ecb9mr7395777pjb.48.1692762172399;
+        Tue, 22 Aug 2023 20:42:52 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGrUrR/PNGh4AhU7u9sjqSdZkN2FfdIKgNq+EAOpSr3tCNAkVFKGCr0I2LXvsxVymrJB4EksP9iNHlBlUpu8Lk=
+X-Received: by 2002:a17:90b:3ec7:b0:26d:19f3:ecb9 with SMTP id
+ rm7-20020a17090b3ec700b0026d19f3ecb9mr7395768pjb.48.1692762172100; Tue, 22
+ Aug 2023 20:42:52 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.14.0
-Subject: Re: [PATCH] kvm: x86: emulate MSR_PLATFORM_INFO msr bits
-Content-Language: en-US
-To:     Hao Xiang <hao.xiang@linux.alibaba.com>, kvm@vger.kernel.org
-Cc:     shannon.zhao@linux.alibaba.com, pbonzini@redhat.com,
-        seanjc@google.com, linux-kernel@vger.kernel.org
-References: <1692588151-33716-1-git-send-email-hao.xiang@linux.alibaba.com>
-From:   Xiaoyao Li <xiaoyao.li@intel.com>
-In-Reply-To: <1692588151-33716-1-git-send-email-hao.xiang@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20230820090949.2874537-1-yukuai1@huaweicloud.com>
+ <20230820090949.2874537-5-yukuai1@huaweicloud.com> <CALTww2-mH7SW3Dz0DOd+NyBpZAZzB8r50UCBOkMipNtV4VxWTw@mail.gmail.com>
+ <941be671-0d33-ef3a-8e81-d89af66b38a4@huaweicloud.com>
+In-Reply-To: <941be671-0d33-ef3a-8e81-d89af66b38a4@huaweicloud.com>
+From:   Xiao Ni <xni@redhat.com>
+Date:   Wed, 23 Aug 2023 11:42:41 +0800
+Message-ID: <CALTww29j+xQ2y+0eSutuNUDEVfoPaHmS3BDPNdg+wxDNOrHGKw@mail.gmail.com>
+Subject: Re: [PATCH -next v3 4/7] md: factor out a helper rdev_removeable()
+ from remove_and_add_spares()
+To:     Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     song@kernel.org, mariusz.tkaczyk@linux.intel.com,
+        linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com, yangerkun@huawei.com,
+        "yukuai (C)" <yukuai3@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/21/2023 11:22 AM, Hao Xiang wrote:
-> For intel platform, The BzyMhz field of Turbostat shows zero
-> due to the missing of part msr bits of MSR_PLATFORM_INFO.
-> 
-> Acquire necessary msr bits, and expose following msr info to guest,
-> to make sure guest can get correct turbo frequency info.
+On Wed, Aug 23, 2023 at 10:45=E2=80=AFAM Yu Kuai <yukuai1@huaweicloud.com> =
+wrote:
 >
-> MSR_PLATFORM_INFO bits
-> bit 15:8, Maximum Non-Turbo Ratio (MAX_NON_TURBO_LIM_RATIO)
-> bit 47:40, Maximum Efficiency Ratio (MAX_EFFICIENCY_RATIO)
+> Hi,
+>
+> =E5=9C=A8 2023/08/22 18:19, Xiao Ni =E5=86=99=E9=81=93:
+> > On Sun, Aug 20, 2023 at 5:13=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.co=
+m> wrote:
+> >>
+> >> From: Yu Kuai <yukuai3@huawei.com>
+> >>
+> >> There are no functional changes, just to make the code simpler and
+> >> prepare to delay remove_and_add_spares() to md_start_sync().
+> >>
+> >> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> >> ---
+> >>   drivers/md/md.c | 33 +++++++++++++++++++--------------
+> >>   1 file changed, 19 insertions(+), 14 deletions(-)
+> >>
+> >> diff --git a/drivers/md/md.c b/drivers/md/md.c
+> >> index 561cac13ff96..ceace5ffadd6 100644
+> >> --- a/drivers/md/md.c
+> >> +++ b/drivers/md/md.c
+> >> @@ -9153,6 +9153,22 @@ void md_do_sync(struct md_thread *thread)
+> >>   }
+> >>   EXPORT_SYMBOL_GPL(md_do_sync);
+> >>
+> >> +static bool rdev_removeable(struct md_rdev *rdev)
+> >> +{
+> >> +       if (rdev->raid_disk < 0 || test_bit(Blocked, &rdev->flags) ||
+> >> +           atomic_read(&rdev->nr_pending))
+> >> +               return false;
+> >> +
+> >> +       if (test_bit(RemoveSynchronized, &rdev->flags))
+> >> +               return true;
+> >> +
+> >> +       if (test_bit(In_sync, &rdev->flags) ||
+> >> +           test_bit(Journal, &rdev->flags))
+> >> +               return false;
+> >> +
+> >> +       return true;
+> >> +}
+> >> +
+> >>   static int remove_and_add_spares(struct mddev *mddev,
+> >>                                   struct md_rdev *this)
+> >>   {
+> >> @@ -9166,11 +9182,7 @@ static int remove_and_add_spares(struct mddev *=
+mddev,
+> >>                  return 0;
+> >>
+> >>          rdev_for_each(rdev, mddev) {
+> >> -               if ((this =3D=3D NULL || rdev =3D=3D this) &&
+> >> -                   rdev->raid_disk >=3D 0 &&
+> >> -                   !test_bit(Blocked, &rdev->flags) &&
+> >> -                   test_bit(Faulty, &rdev->flags) &&
+> >> -                   atomic_read(&rdev->nr_pending)=3D=3D0) {
+> >> +               if ((this =3D=3D NULL || rdev =3D=3D this) && rdev_rem=
+oveable(rdev)) {
+> >
+> > There is a small change with the original method. Before this patch,
+> > it checks the Faulty flag when setting RemoveSynchronized and it
+> > checks RemoveSynchronized and "!In_sync && !Journal". I'm not sure if
+> > it's right or not.
+>
+> Yes, there is a small change. After a second thought, I think it's OK
+> to leave the code to set RemoveSynchronized where it is for now, because
+> it'll be removed later. I don't need to bother factor out a common code
+> to set RemoveSynchronized and call hot_remove_disk().
 
-I'm curious. How are they related to turbo frequency info?
+This will be easier for review, thanks.
 
-bits 15:8, tell the Non-turbo frequency and bits 47:40 tells the min 
-frequency.
+>
+> By the way, once refactor of mddev_suspend() is done, then access to
+> rdev from fastpath will be replaced from:
+>
+> rcu_read_lock()
+> ...
+> rcu_read_unlock()
+>
+> to:
+>
+> md_array_enter()
+> // grab 'active_io', 'active_io' will probably be renamed
+> ...
+> md_array_exit()
+>
+> That's why I said RemoveSynchronized will be removed.
 
-> Signed-off-by: Hao Xiang <hao.xiang@linux.alibaba.com>
-> ---
->   arch/x86/include/asm/msr-index.h |  4 ++++
->   arch/x86/kvm/x86.c               | 25 ++++++++++++++++++++++++-
->   2 files changed, 28 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
-> index 1d11135..1c8a276 100644
-> --- a/arch/x86/include/asm/msr-index.h
-> +++ b/arch/x86/include/asm/msr-index.h
-> @@ -68,6 +68,10 @@
->   #define MSR_PLATFORM_INFO		0x000000ce
->   #define MSR_PLATFORM_INFO_CPUID_FAULT_BIT	31
->   #define MSR_PLATFORM_INFO_CPUID_FAULT		BIT_ULL(MSR_PLATFORM_INFO_CPUID_FAULT_BIT)
-> +/* MSR_PLATFORM_INFO bit 15:8, Maximum Non-Turbo Ratio (MAX_NON_TURBO_LIM_RATIO) */
-> +#define MSR_PLATFORM_INFO_MAX_NON_TURBO_LIM_RATIO	0x00000000ff00
-> +/* MSR_PLATFORM_INFO bit 47:40, Maximum Efficiency Ratio (MAX_EFFICIENCY_RATIO) */
-> +#define MSR_PLATFORM_INFO_MAX_EFFICIENCY_RATIO		0xff0000000000
+:) I'll try to understand it in your following patches.
 
-They are mask not the value, please name them with _MASK suffix.
-
->   
->   #define MSR_IA32_UMWAIT_CONTROL			0xe1
->   #define MSR_IA32_UMWAIT_CONTROL_C02_DISABLE	BIT(0)
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index c381770..621c3e1 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -1679,6 +1679,29 @@ static u64 kvm_get_arch_capabilities(void)
->   	return data;
->   }
->   
-> +
-> +static u64 kvm_get_msr_platform_info(void)
-> +{
-> +	u64 msr_platform_info = 0;
-> +
-> +	rdmsrl_safe(MSR_PLATFORM_INFO, &msr_platform_info);
-> +	/*
-> +	 * MSR_PLATFORM_INFO bits:
-> +	 * bit 15:8, Maximum Non-Turbo Ratio (MAX_NON_TURBO_LIM_RATIO)
-> +	 * bit 31, CPUID Faulting Enabled (CPUID_FAULTING_EN)
-> +	 * bit 47:40, Maximum Efficiency Ratio (MAX_EFFICIENCY_RATIO)
-> +	 *
-> +	 * Emulate part msr bits, expose above msr info to guest,
-> +	 * to make sure guest can get correct turbo frequency info.
-> +	 */
-> +
-> +	msr_platform_info &= (MSR_PLATFORM_INFO_MAX_NON_TURBO_RATIO |
-> +			MSR_PLATFORM_INFO_MAX_EFFICIENCY_RATIO);
-> +	msr_platform_info |= MSR_PLATFORM_INFO_CPUID_FAULT;
-> +
-> +	return msr_platform_info;
-> +}
-> +
->   static int kvm_get_msr_feature(struct kvm_msr_entry *msr)
->   {
->   	switch (msr->index) {
-> @@ -11919,7 +11942,7 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
->   		goto free_guest_fpu;
->   
->   	vcpu->arch.arch_capabilities = kvm_get_arch_capabilities();
-> -	vcpu->arch.msr_platform_info = MSR_PLATFORM_INFO_CPUID_FAULT;
-> +	vcpu->arch.msr_platform_info = kvm_get_msr_platform_info();
->   	kvm_xen_init_vcpu(vcpu);
->   	kvm_vcpu_mtrr_init(vcpu);
->   	vcpu_load(vcpu);
+Regards
+Xiao
+>
+> Thanks,
+> Kuai
+>
+> >
+> >>                          /* Faulty non-Blocked devices with nr_pending=
+ =3D=3D 0
+> >>                           * never get nr_pending incremented,
+> >>                           * never get Faulty cleared, and never get Bl=
+ocked set.
+> >> @@ -9185,19 +9197,12 @@ static int remove_and_add_spares(struct mddev =
+*mddev,
+> >>                  synchronize_rcu();
+> >>          rdev_for_each(rdev, mddev) {
+> >>                  if ((this =3D=3D NULL || rdev =3D=3D this) &&
+> >> -                   rdev->raid_disk >=3D 0 &&
+> >> -                   !test_bit(Blocked, &rdev->flags) &&
+> >> -                   ((test_bit(RemoveSynchronized, &rdev->flags) ||
+> >> -                    (!test_bit(In_sync, &rdev->flags) &&
+> >> -                     !test_bit(Journal, &rdev->flags))) &&
+> >> -                   atomic_read(&rdev->nr_pending)=3D=3D0)) {
+> >> -                       if (mddev->pers->hot_remove_disk(
+> >> -                                   mddev, rdev) =3D=3D 0) {
+> >> +                   rdev_removeable(rdev) &&
+> >> +                   mddev->pers->hot_remove_disk(mddev, rdev) =3D=3D 0=
+) {
+> >>                                  sysfs_unlink_rdev(mddev, rdev);
+> >>                                  rdev->saved_raid_disk =3D rdev->raid_=
+disk;
+> >>                                  rdev->raid_disk =3D -1;
+> >>                                  removed++;
+> >> -                       }
+> >>                  }
+> >>                  if (remove_some && test_bit(RemoveSynchronized, &rdev=
+->flags))
+> >>                          clear_bit(RemoveSynchronized, &rdev->flags);
+> >> --
+> >> 2.39.2
+> >>
+> >
+> > .
+> >
+>
 
