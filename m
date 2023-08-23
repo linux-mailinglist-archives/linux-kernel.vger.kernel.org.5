@@ -2,1010 +2,683 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34882784DEA
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 02:43:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AB34784DF2
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 02:50:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231894AbjHWAnn convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 22 Aug 2023 20:43:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44896 "EHLO
+        id S231907AbjHWAuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 20:50:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230156AbjHWAnm (ORCPT
+        with ESMTP id S230156AbjHWAuF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 20:43:42 -0400
-Received: from mail-vk1-f173.google.com (mail-vk1-f173.google.com [209.85.221.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE14BCFE;
-        Tue, 22 Aug 2023 17:43:37 -0700 (PDT)
-Received: by mail-vk1-f173.google.com with SMTP id 71dfb90a1353d-48d2e2e05e7so901312e0c.3;
-        Tue, 22 Aug 2023 17:43:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692751417; x=1693356217;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rGmhHJh6XyDcGbYG88i0RTl58DdyNu4ldXfk0Wk6YTM=;
-        b=h61FU96Ri34ZIHIbZ/5v7IUju8GW8W/Y3h++709ciduLk4T6Sg9/q8hGfQEWhVqk01
-         UPBZTh1dktzUVaf7aPPhYaO/naU3hssbBlHpesqDaWJ3bgzesN/yOOciX81bkU82HR8u
-         LwLwZoBR4Ks58bIULi3ebHI2EdPFrWetSCYzhYM5IyiqMN9dE8uCmOnT3jT1X3FWqbxn
-         cI4IIGKheuIDULq6cCti10boq4YG0MvwAh4u5bKy5E0x1i2lqfiwfXCAjteKC3E6cfaM
-         8y6YRPuO1lNl+Cz0aCNykV1kQ1NjGWb7Y0sh0F6kw13trWv16xsbrtrG3uaYck/B1Qn2
-         e5CA==
-X-Gm-Message-State: AOJu0YyRRX1bIFWFAfCnKF9lOItz4Jrthf6sPBTnxQ1v1xHwNW42D+C0
-        1JpL0mhMphYcGa3aMlxENENcd9aDQznZedv4PT4=
-X-Google-Smtp-Source: AGHT+IHX/4vUPF/wu2K+CUSpSCmH+f3UdskU0VR4eerYRHBQFgbis1gYwhCoYFOGsFtcJEutE4g+Z5JFdCxDx5TIf+E=
-X-Received: by 2002:a1f:6281:0:b0:48f:8e3a:5b83 with SMTP id
- w123-20020a1f6281000000b0048f8e3a5b83mr2803012vkb.14.1692751416382; Tue, 22
- Aug 2023 17:43:36 -0700 (PDT)
+        Tue, 22 Aug 2023 20:50:05 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C91D4CD6;
+        Tue, 22 Aug 2023 17:50:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692751801; x=1724287801;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=m74Pl3pvDh4ONwv/L1TlxRbQupn1Ollb4NPyT/C2hRQ=;
+  b=fkj9W739MxCK22xQ9BpDQHdKslT5AK63yN35wn4Rm4nmxUcfUrIEpr3Z
+   4uAlSs2KuIwLcs/RD2za/lm651DhToV1LBtOqN8D8N1gGHBOObztLoGLy
+   ScKWMTOMezXKNXuFtT8SVqgfRbKJqfaa6W3C68V9B5RdfNXqwq27TFFYp
+   bX0Ki9c4YioV9yIB4JmlAQQJdxSTzbiLYUsNtJQI+zJed/P3s1zVLhJ4b
+   EPHhmlnWZQapcFdoTBOuIef98qOH6cs3sSXSQD+DCUoF4Yqjs8/GiPFYB
+   4lwyTE6AnK1v0AfvzaE2eQA/mNWE+9luwmNeEM0hFlsbBKq8mZv2c9uNd
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10810"; a="405031973"
+X-IronPort-AV: E=Sophos;i="6.01,194,1684825200"; 
+   d="scan'208";a="405031973"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2023 17:50:01 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10810"; a="801892911"
+X-IronPort-AV: E=Sophos;i="6.01,194,1684825200"; 
+   d="scan'208";a="801892911"
+Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
+  by fmsmga008.fm.intel.com with ESMTP; 22 Aug 2023 17:49:56 -0700
+Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qYc4J-0000fk-38;
+        Wed, 23 Aug 2023 00:49:55 +0000
+Date:   Wed, 23 Aug 2023 08:48:56 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Krishna chaitanya chundru <quic_krichai@quicinc.com>,
+        manivannan.sadhasivam@linaro.org
+Cc:     oe-kbuild-all@lists.linux.dev, helgaas@kernel.org,
+        linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, quic_vbadigan@quicinc.com,
+        quic_nitegupt@quicinc.com, quic_skananth@quicinc.com,
+        quic_ramkri@quicinc.com, quic_parass@quicinc.com,
+        krzysztof.kozlowski@linaro.org,
+        Krishna chaitanya chundru <quic_krichai@quicinc.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        "(open list:OPERATING PERFORMANCE POINTS (OPP))" 
+        <linux-pm@vger.kernel.org>
+Subject: Re: [PATCH v4 3/4] OPP: Add api to retrieve opps which is at most
+ the provided level
+Message-ID: <202308230848.SzyPhc6B-lkp@intel.com>
+References: <1692717141-32743-4-git-send-email-quic_krichai@quicinc.com>
 MIME-Version: 1.0
-References: <20230819093340.265817-1-leo.yan@linaro.org>
-In-Reply-To: <20230819093340.265817-1-leo.yan@linaro.org>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 22 Aug 2023 17:43:25 -0700
-Message-ID: <CAM9d7cj=ichFk4bVQSbyptqy9wo8GFm1Z1Q7QzfhMFLjewNF-Q@mail.gmail.com>
-Subject: Re: [PATCH v6] Documentation: userspace-api: Document perf ring
- buffer mechanism
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Jiri Olsa <jolsa@kernel.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1692717141-32743-4-git-send-email-quic_krichai@quicinc.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Leo,
+Hi Krishna,
 
-On Sat, Aug 19, 2023 at 2:34 AM Leo Yan <leo.yan@linaro.org> wrote:
->
-> In the Linux perf tool, the ring buffer serves not only as a medium for
-> transferring PMU event data but also as a vital mechanism for hardware
-> tracing using technologies like Intel PT and Arm CoreSight, etc.
->
-> Consequently, the ring buffer mechanism plays a crucial role by ensuring
-> high throughput for data transfer between the kernel and user space
-> while avoiding excessive overhead caused by the ring buffer itself.
->
-> This commit documents the ring buffer mechanism in detail.  It explains
-> the implementation of both the regular ring buffer and the AUX ring
-> buffer.  Additionally, it covers how these ring buffers support various
-> tracing modes and explains the synchronization with memory barriers.
->
-> Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> ---
->
-> Changes from v5:
-> - Fixed 'make htmldocs' warning (kernel test robot);
-> - Fixed whitespace errors detected by 'git am'.
->
-> Changes from v4:
-> - Amended the documentation for the stable interface in the uapi header
->   (Namhyung Kim).
->
-> Changes from v3:
-> - Converted to RST format and moved from perf folder to the
->   userspace-api folder (Jonathan Corbet).
->
-> Changes from v2:
-> - Refined doc for Thomas's suggestions (Thomas Richter).
->
-> Changes from v1:
-> - Addressed Ian's comments and suggestions (Ian Rogers).
->
->
->  Documentation/userspace-api/index.rst         |   1 +
->  .../userspace-api/perf_ring_buffer.rst        | 867 ++++++++++++++++++
->  2 files changed, 868 insertions(+)
->  create mode 100644 Documentation/userspace-api/perf_ring_buffer.rst
->
-> diff --git a/Documentation/userspace-api/index.rst b/Documentation/userspace-api/index.rst
-> index 72a65db0c498..ead958f5505d 100644
-> --- a/Documentation/userspace-api/index.rst
-> +++ b/Documentation/userspace-api/index.rst
-> @@ -32,6 +32,7 @@ place where this information is gathered.
->     sysfs-platform_profile
->     vduse
->     futex2
-> +   perf_ring_buffer
->
->  .. only::  subproject and html
->
-> diff --git a/Documentation/userspace-api/perf_ring_buffer.rst b/Documentation/userspace-api/perf_ring_buffer.rst
-> new file mode 100644
-> index 000000000000..a228368ae7db
-> --- /dev/null
-> +++ b/Documentation/userspace-api/perf_ring_buffer.rst
-> @@ -0,0 +1,867 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +================
-> +Perf ring buffer
-> +================
-> +
-> +.. CONTENTS
-> +
-> +    1. Introduction
-> +
-> +    2. Ring buffer implementation
-> +    2.1  Basic algorithm
-> +    2.2  Ring buffer for different tracing modes
-> +    2.2.1       Default mode
-> +    2.2.2       Per-thread mode
-> +    2.2.3       Per-CPU mode
-> +    2.2.4       System wide mode
-> +    2.3  Accessing buffer
-> +    2.3.1       Producer-consumer model
-> +    2.3.2       Writing samples into buffer
-> +    2.3.3       Reading samples from buffer
-> +    2.3.4       Memory synchronization
-> +
-> +    3. The mechanism of AUX ring buffer
-> +    3.1  The relationship between AUX and regular ring buffers
-> +    3.2  AUX events
-> +    3.3  Snapshot mode
-> +
-> +
-> +1. Introduction
-> +===============
-> +
-> +The ring buffer is a fundamental mechanism for data transfer.  perf uses
-> +ring buffers to transfer event data from kernel to user space, another
-> +kind of ring buffer which is so called auxiliary (AUX) ring buffer also
-> +plays an important role for hardware tracing with Intel PT, Arm
-> +CoreSight, etc.
-> +
-> +The ring buffer implementation is critical but it's also a very
-> +challenging work.  On the one hand, the kernel and perf tool in the user
-> +space use the ring buffer to exchange data and stores data into data
-> +file, thus the ring buffer needs to transfer data with high throughput;
-> +on the other hand, the ring buffer management should avoid significant
-> +overload to distract profiling results.
-> +
-> +This documentation dives into the details for perf ring buffer with two
-> +parts: firstly it explains the perf ring buffer implementation, then the
-> +second part discusses the AUX ring buffer mechanism.
-> +
-> +2. Ring buffer implementation
-> +=============================
-> +
-> +2.1 Basic algorithm
-> +-------------------
-> +
-> +That said, a typical ring buffer is managed by a head pointer and a tail
-> +pointer; the head pointer is manipulated by a writer and the tail
-> +pointer is updated by a reader respectively.
-> +
-> +::
-> +
-> +        +---------------------------+
-> +        |   |   |***|***|***|   |   |
-> +        +---------------------------+
-> +                `-> Tail    `-> Head
-> +
-> +        * : the data is filled by the writer.
-> +
-> +                Figure 1. Ring buffer
-> +
-> +Perf uses the same way to manage its ring buffer.  In the implementation
-> +there are two key data structures held together in a set of consecutive
-> +pages, the control structure and then the ring buffer itself.  The page
-> +with the control structure in is known as the "user page".  Being held
-> +in continuous virtual addresses simplifies locating the ring buffer
-> +address, it is in the pages after the page with the user page.
-> +
-> +The control structure is named as ``perf_event_mmap_page``, it contains a
-> +head pointer ``data_head`` and a tail pointer ``data_tail``.  When the
-> +kernel starts to fill records into the ring buffer, it updates the head
-> +pointer to reserve the memory so later it can safely store events into
-> +the buffer.  On the other side, when the user page is a writable mapping,
-> +the perf tool has the permission to update the tail pointer after consuming
-> +data from the ring buffer.  Yet another case is for the user page's
-> +read-only mapping, which is to be addressed in the section
-> +:ref:`writing_samples_into_buffer`.
-> +
-> +::
-> +
-> +          user page                          ring buffer
-> +    +---------+---------+   +---------------------------------------+
-> +    |data_head|data_tail|...|   |   |***|***|***|***|***|   |   |   |
-> +    +---------+---------+   +---------------------------------------+
-> +        `          `----------------^                   ^
-> +         `----------------------------------------------|
-> +
-> +              * : the data is filled by the writer.
-> +
-> +                Figure 2. Perf ring buffer
-> +
-> +When using the ``perf record`` tool, we can specify the ring buffer size
-> +with option ``-m`` or ``--mmap-pages=``, the given size will be rounded up
-> +to a power of two that is a multiple of a page size.  Though the kernel
-> +allocates at once for all memory pages, it's deferred to map the pages
-> +to VMA area until the perf tool accesses the buffer from the user space.
-> +In other words, at the first time accesses the buffer's page from user
-> +space in the perf tool, a data abort exception for page fault is taken
-> +and the kernel uses this occasion to map the page into process VMA
-> +(see ``perf_mmap_fault()``), thus the perf tool can continue to access
-> +the page after returning from the exception.
-> +
-> +2.2 Ring buffer for different tracing modes
-> +-------------------------------------------
-> +
-> +The perf profiles programs with different modes: default mode, per thread
-> +mode, per cpu mode, and system wide mode.  This section describes these
-> +modes and how the ring buffer meets requirements for them.  At last we
-> +will review the race conditions caused by these modes.
-> +
-> +2.2.1 Default mode
-> +^^^^^^^^^^^^^^^^^^
-> +
-> +Usually we execute ``perf record`` command followed by a profiling program
-> +name, like below command::
-> +
-> +        perf record test_program
-> +
-> +This command doesn't specify any options for CPU and thread modes, the
-> +perf tool applies the default mode on the perf event.  It maps all the
-> +CPUs in the system and the profiled program's PID on the perf event, and
-> +it enables inheritance mode on the event so that child tasks inherits
-> +the events.  As a result, the perf event is attributed as::
-> +
-> +    evsel::cpus::map[]    = { 0 .. _SC_NPROCESSORS_ONLN-1 }
-> +    evsel::threads::map[] = { pid }
-> +    evsel::attr::inherit  = 1
-> +
-> +These attributions finally will be reflected on the deployment of ring
-> +buffers.  As shown below, the perf tool allocates individual ring buffer
-> +for each CPU, but it only enables events for the profiled program rather
-> +than for all threads in the system.  The *T1* thread represents the
-> +thread context of the 'test_program', whereas *T2* and *T3* are irrelevant
-> +threads in the system.   The perf samples are exclusively collected for
-> +the *T1* thread and stored in the ring buffer associated with the CPU on
-> +which the *T1* thread is running.
-> +
-> +::
-> +
-> +              T1                      T2                 T1
-> +            +----+              +-----------+          +----+
-> +    CPU0    |xxxx|              |xxxxxxxxxxx|          |xxxx|
-> +            +----+--------------+-----------+----------+----+-------->
-> +              |                                          |
-> +              v                                          v
-> +            +-----------------------------------------------------+
-> +            |                  Ring buffer 0                      |
-> +            +-----------------------------------------------------+
-> +
-> +                   T1
-> +                 +-----+
-> +    CPU1         |xxxxx|
-> +            -----+-----+--------------------------------------------->
-> +                    |
-> +                    v
-> +            +-----------------------------------------------------+
-> +            |                  Ring buffer 1                      |
-> +            +-----------------------------------------------------+
-> +
-> +                                        T1              T3
-> +                                      +----+        +-------+
-> +    CPU2                              |xxxx|        |xxxxxxx|
-> +            --------------------------+----+--------+-------+-------->
-> +                                        |
-> +                                        v
-> +            +-----------------------------------------------------+
-> +            |                  Ring buffer 2                      |
-> +            +-----------------------------------------------------+
-> +
-> +                              T1
-> +                       +--------------+
-> +    CPU3               |xxxxxxxxxxxxxx|
-> +            -----------+--------------+------------------------------>
-> +                              |
-> +                              v
-> +            +-----------------------------------------------------+
-> +            |                  Ring buffer 3                      |
-> +            +-----------------------------------------------------+
-> +
-> +           T1: Thread 1; T2: Thread 2; T3: Thread 3
-> +           x: Thread is in running state
-> +
-> +                Figure 3. Ring buffer for default mode
-> +
-> +2.2.2 Per-thread mode
-> +^^^^^^^^^^^^^^^^^^^^^
-> +
-> +By specifying option ``--per-thread`` in perf command, e.g.
-> +
-> +::
-> +
-> +        perf record --per-thread test_program
-> +
-> +The perf event doesn't map to any CPUs and is only bound to the
-> +profiled process, thus, the perf event's attributions are::
-> +
-> +    evsel::cpus::map[0]   = { -1 }
-> +    evsel::threads::map[] = { pid }
-> +    evsel::attr::inherit  = 0
-> +
-> +In this mode, a single ring buffer is allocated for the profiled thread;
-> +if the thread is scheduled on a CPU, the events on that CPU will be
-> +enabled; and if the thread is scheduled out from the CPU, the events on
-> +the CPU will be disabled.  When the thread is migrated from one CPU to
-> +another, the events are to be disabled on the previous CPU and enabled
-> +on the next CPU correspondingly.
-> +
-> +::
-> +
-> +              T1                      T2                 T1
-> +            +----+              +-----------+          +----+
-> +    CPU0    |xxxx|              |xxxxxxxxxxx|          |xxxx|
-> +            +----+--------------+-----------+----------+----+-------->
-> +              |                                           |
-> +              |    T1                                     |
-> +              |  +-----+                                  |
-> +    CPU1      |  |xxxxx|                                  |
-> +            --|--+-----+----------------------------------|---------->
-> +              |     |                                     |
-> +              |     |                   T1            T3  |
-> +              |     |                 +----+        +---+ |
-> +    CPU2      |     |                 |xxxx|        |xxx| |
-> +            --|-----|-----------------+----+--------+---+-|---------->
-> +              |     |                   |                 |
-> +              |     |         T1        |                 |
-> +              |     |  +--------------+ |                 |
-> +    CPU3      |     |  |xxxxxxxxxxxxxx| |                 |
-> +            --|-----|--+--------------+-|-----------------|---------->
-> +              |     |         |         |                 |
-> +              v     v         v         v                 v
-> +            +-----------------------------------------------------+
-> +            |                  Ring buffer                        |
-> +            +-----------------------------------------------------+
-> +
-> +            T1: Thread 1
-> +            x: Thread is in running state
-> +
-> +                Figure 4. Ring buffer for per-thread mode
-> +
-> +When perf runs in per-thread mode, a ring buffer is allocated for the
-> +profiled thread *T1*.  The ring buffer is dedicated for thread *T1*, if the
-> +thread *T1* is running, the perf events will be recorded into the ring
-> +buffer; when the thread is sleeping, all associated events will be
-> +disabled, thus no trace data will be recorded into the ring buffer.
-> +
-> +2.2.3 Per-CPU mode
-> +^^^^^^^^^^^^^^^^^^
-> +
-> +The option ``-C`` is used to collect samples on the list of CPUs, for
-> +example the below perf command receives option ``-C 0,2``::
-> +
-> +       perf record -C 0,2 test_program
-> +
-> +It maps the perf event to CPUs 0 and 2, and the event is not associated to any
-> +PID.  Thus the perf event attributions are set as::
-> +
-> +    evsel::cpus::map[0]   = { 0, 2 }
-> +    evsel::threads::map[] = { -1 }
-> +    evsel::attr::inherit  = 0
-> +
-> +This results in the session of ``perf record`` will sample all threads on CPU0
-> +and CPU2, and be terminated until test_program exits.  Even there have tasks
-> +running on CPU1 and CPU3, since the ring buffer is absent for them, any
-> +activities on these two CPUs will be ignored.  A usage case is to combine the
-> +options for per-thread mode and per-CPU mode, e.g. the options ``–C 0,2`` and
-> +``––per–thread`` are specified together, the samples are recorded only when
-> +the profiled thread is scheduled on any of the listed CPUs.
-> +
-> +::
-> +
-> +              T1                      T2                 T1
-> +            +----+              +-----------+          +----+
-> +    CPU0    |xxxx|              |xxxxxxxxxxx|          |xxxx|
-> +            +----+--------------+-----------+----------+----+-------->
-> +              |                       |                  |
-> +              v                       v                  v
-> +            +-----------------------------------------------------+
-> +            |                  Ring buffer 0                      |
-> +            +-----------------------------------------------------+
-> +
-> +                   T1
-> +                 +-----+
-> +    CPU1         |xxxxx|
-> +            -----+-----+--------------------------------------------->
-> +
-> +                                        T1              T3
-> +                                      +----+        +-------+
-> +    CPU2                              |xxxx|        |xxxxxxx|
-> +            --------------------------+----+--------+-------+-------->
-> +                                        |               |
-> +                                        v               v
-> +            +-----------------------------------------------------+
-> +            |                  Ring buffer 1                      |
-> +            +-----------------------------------------------------+
-> +
-> +                              T1
-> +                       +--------------+
-> +    CPU3               |xxxxxxxxxxxxxx|
-> +            -----------+--------------+------------------------------>
-> +
-> +            T1: Thread 1; T2: Thread 2; T3: Thread 3
-> +            x: Thread is in running state
-> +
-> +                Figure 5. Ring buffer for per-CPU mode
-> +
-> +2.2.4 System wide mode
-> +^^^^^^^^^^^^^^^^^^^^^^
-> +
-> +By using option ``–a`` or ``––all–cpus``, perf collects samples on all CPUs
-> +for all tasks, we call it as the system wide mode, the command is::
-> +
-> +        perf record -a test_program
-> +
-> +Similar to the per-CPU mode, the perf event doesn't bind to any PID, and
-> +it maps to all CPUs in the system::
-> +
-> +   evsel::cpus::map[]    = { 0 .. _SC_NPROCESSORS_ONLN-1 }
-> +   evsel::threads::map[] = { -1 }
-> +   evsel::attr::inherit  = 0
-> +
-> +In the system wide mode, every CPU has its own ring buffer, all threads
-> +are monitored during the running state and the samples are recorded into
-> +the ring buffer belonging to the CPU which the events occurred on.
-> +
-> +::
-> +
-> +              T1                      T2                 T1
-> +            +----+              +-----------+          +----+
-> +    CPU0    |xxxx|              |xxxxxxxxxxx|          |xxxx|
-> +            +----+--------------+-----------+----------+----+-------->
-> +              |                       |                  |
-> +              v                       v                  v
-> +            +-----------------------------------------------------+
-> +            |                  Ring buffer 0                      |
-> +            +-----------------------------------------------------+
-> +
-> +                   T1
-> +                 +-----+
-> +    CPU1         |xxxxx|
-> +            -----+-----+--------------------------------------------->
-> +                    |
-> +                    v
-> +            +-----------------------------------------------------+
-> +            |                  Ring buffer 1                      |
-> +            +-----------------------------------------------------+
-> +
-> +                                        T1              T3
-> +                                      +----+        +-------+
-> +    CPU2                              |xxxx|        |xxxxxxx|
-> +            --------------------------+----+--------+-------+-------->
-> +                                        |               |
-> +                                        v               v
-> +            +-----------------------------------------------------+
-> +            |                  Ring buffer 2                      |
-> +            +-----------------------------------------------------+
-> +
-> +                              T1
-> +                       +--------------+
-> +    CPU3               |xxxxxxxxxxxxxx|
-> +            -----------+--------------+------------------------------>
-> +                              |
-> +                              v
-> +            +-----------------------------------------------------+
-> +            |                  Ring buffer 3                      |
-> +            +-----------------------------------------------------+
-> +
-> +            T1: Thread 1; T2: Thread 2; T3: Thread 3
-> +            x: Thread is in running state
-> +
-> +                Figure 6. Ring buffer for system wide mode
-> +
-> +2.3 Accessing buffer
-> +--------------------
-> +
-> +Based on the understanding of how the ring buffer is allocated in
-> +various modes, this section explains access the ring buffer.
-> +
-> +2.3.1 Producer-consumer model
-> +^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> +
-> +In the Linux kernel, the PMU events can produce samples which are stored
-> +into the ring buffer; the perf command in user space consumes the
-> +samples by reading out data from the ring buffer and finally saves the
-> +data into the file for post analysis.  It’s a typical producer-consumer
-> +model for using the ring buffer.
-> +
-> +The perf process polls on the PMU events and sleeps when no events are
-> +incoming.  To prevent frequent exchanges between the kernel and user
-> +space, the kernel event core layer introduces a watermark, which is
-> +stored in the ``perf_buffer::watermark``.  When a sample is recorded into
-> +the ring buffer, and if the used buffer exceeds the watermark, the
-> +kernel wakes up the perf process to read samples from the ring buffer.
-> +
-> +::
-> +
-> +                       Perf
-> +                       / | Read samples
-> +             Polling  /  `--------------|               Ring buffer
-> +                     v                  v    ;---------------------v
-> +    +----------------+     +---------+---------+   +-------------------+
-> +    |Event wait queue|     |data_head|data_tail|   |***|***|   |   |***|
-> +    +----------------+     +---------+---------+   +-------------------+
-> +             ^                  ^ `------------------------^
-> +             | Wake up tasks    | Store samples
-> +          +-----------------------------+
-> +          |  Kernel event core layer    |
-> +          +-----------------------------+
-> +
-> +              * : the data is filled by the writer.
-> +
-> +                Figure 7. Writing and reading the ring buffer
-> +
-> +When the kernel event core layer notifies the user space, because
-> +multiple events might share the same ring buffer for recording samples,
-> +the core layer iterates every event associated with the ring buffer and
-> +wakes up tasks waiting on the event.  This is fulfilled by the kernel
-> +function ``ring_buffer_wakeup()``.
-> +
-> +After the perf process is woken up, it starts to check the ring buffers
-> +one by one, if it finds any ring buffer containing samples it will read
-> +out the samples for statistics or saving into the data file.  Given the
-> +perf process is able to run on any CPU, this leads to the ring buffer
-> +potentially being accessed from multiple CPUs simultaneously, which
-> +causes race conditions.  The race condition handling is described in the
-> +section :ref:`memory_synchronization`.
-> +
-> +.. _writing_samples_into_buffer:
-> +
-> +2.3.2 Writing samples into buffer
-> +^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> +
-> +Ring buffers are mapped as read-write mode or read-only mode, which is
-> +used for a normal ring buffer and an overwritable ring buffer
-> +respectively.
-> +
-> +The ring buffer in the read-write mode is mapped with the property
-> +``PROT_READ | PROT_WRITE``.  With the write permission, the perf tool
-> +updates the ``data_tail`` to indicate the data start position.  Combining
-> +with the head pointer ``data_head``, which works as the end position of
-> +the current data, the perf tool can easily know where read out the data
-> +from.
-> +
-> +Alternatively, in the read-only mode, only the kernel keeps to update
-> +the ``data_head`` while the user space cannot access the ``data_tail`` due
-> +to the mapping property ``PROT_READ``.
-> +
-> +Why ring buffers are mapped with above two different modes?  Here the
-> +write direction matters.  The forward writing starts to save data from
-> +the beginning of the ring buffer and wrap around when overflow, which is
-> +used with the read-write mode in the normal ring buffer.  When the
-> +consumer doesn't keep up with the producer, it would lose some data, the
-> +kernel keeps how many records it lost and generates the
-> +``PERF_RECORD_LOST`` records in the next time when it finds a space in the
-> +ring buffer.
+kernel test robot noticed the following build warnings:
 
-Thanks for the update.  It's unclear to me if all 4 combination of
-(rw, ro) x (fwd, bwd) are possible (yes!).  The rw mode and back-
-ward is also possible but just not used for perf tool.
+[auto build test WARNING on pci/for-linus]
+[also build test WARNING on robh/for-next rafael-pm/linux-next linus/master v6.5-rc7 next-20230822]
+[cannot apply to pci/next]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-And I think the description below in this section shows kernel
-internals too much.  Name of kernel functions and data structure
-is not an API and can be changed any time.  You can describe
-the logic without the names.
+url:    https://github.com/intel-lab-lkp/linux/commits/Krishna-chaitanya-chundru/dt-bindings-pci-qcom-Add-opp-table/20230822-232104
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git for-linus
+patch link:    https://lore.kernel.org/r/1692717141-32743-4-git-send-email-quic_krichai%40quicinc.com
+patch subject: [PATCH v4 3/4] OPP: Add api to retrieve opps which is at most the provided level
+config: um-defconfig (https://download.01.org/0day-ci/archive/20230823/202308230848.SzyPhc6B-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20230823/202308230848.SzyPhc6B-lkp@intel.com/reproduce)
 
-Thanks,
-Namhyung
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308230848.SzyPhc6B-lkp@intel.com/
 
-> +
-> +On the other hand, the backward writing saves the data from the end of
-> +the ring buffer and the ``data_head`` keeps the position of current data,
-> +the perf always knows where it starts to read and until the end of the
-> +ring buffer, thus it don't need the ``data_tail``.  This is why the perf
-> +uses the backward writing with the read-only mode for the overwritable
-> +ring buffer.  In this mode, it will not generate the PERF_RECORD_LOST
-> +records.
-> +
-> +When a sample is taken and saved into the ring buffer, the function
-> +``__perf_event_output()`` is used to fill samples into the ring buffer -
-> +which can support both the forward and the backward writing.  It calls
-> +below sub functions:
-> +
-> +- The sub function ``perf_prepare_sample()`` prepares sample fields based on
-> +  the sample type;
-> +- ``output_begin()`` is a function pointer, it’s passed dynamically via the
-> +  argument for different writing directions - it can be
-> +  ``perf_output_begin_forward()`` or ``perf_output_begin_backward()``.  This
-> +  step is to prepare the info for writing ring buffer, when it returns back
-> +  the ring buffer info is stored in structure ``perf_output_handle``;
-> +- ``perf_output_sample()`` outputs the sample into the ring buffer;
-> +- ``perf_output_end()`` updates the head pointer for user page so perf tool
-> +  can see the latest value.
-> +
-> +Let's see how the data structures are used to help the recording.
-> +
-> +::
-> +
-> +      struct perf_output_handle       /---->  struct perf_buffer
-> +    +---------------------------+     |     +--------------------+
-> +    |           *rb;            |-----|     |   local_t head;    |
-> +    +---------------------------+           +--------------------+
-> +    |        int page;          |           |    *user_page;     |
-> +    +---------------------------+           +--------------------+
-> +    |       void *addr;         |                      |
-> +    +---------------------------+                      v
-> +    |   unsigned long size;     |         struct perf_event_mmap_page
-> +    +---------------------------+           +--------------------+
-> +                                            |   __u64 data_head; |
-> +                                            +--------------------+
-> +                                            |   __u64 data_tail; |
-> +                                            +--------------------+
-> +
-> +                Figure 8. Data structures for writing ring buffer
-> +
-> +In Linux kernel, the event core layer uses the structure ``perf_buffer`` to
-> +track the buffer’s latest header, and it keeps the information for
-> +buffer pages.  The structure ``perf_buffer`` manages ring buffer during its
-> +life cycle, it is allocated once the ring buffer is created and released
-> +when the ring buffer is destroyed.
-> +
-> +It’s possible for multiple events to write buffer concurrently.  For
-> +instance, a software event and a hardware PMU event both are enabled for
-> +profiling, when the software event is in the middle of sampling, the
-> +hardware event maybe be overflow and its interrupt is triggered in this
-> +case.  This leads to the race condition for updating ``perf_buffer::head``.
-> +In ``__perf_output_begin()``, Linux kernel uses compare-and-swap atomicity
-> +``local_cmpxchg()`` to implement the lockless algorithm for protecting
-> +``perf_buffer::head``.
-> +
-> +The structure ``perf_output_handle`` serves as a temporary context for
-> +tracking the information related to the buffer.  For instance, the
-> +``perf_output_handle::rb`` field points to the global ``perf_buffer``
-> +structure.  Additionally, the ``perf_output_handle::addr`` field, based on the
-> +lockless algorithm, specifies the destination address where the sample data is
-> +to be stored.
-> +
-> +The advantages of the ``perf_output_handle`` structure is that it enables
-> +concurrent writing to the buffer by different events.  For the previous
-> +example, two instances of ``perf_output_handle`` serve as separate contexts
-> +for software events and hardware events.  This allows each event to
-> +reserve its own memory space within the ``out_begin()`` function, and
-> +``perf_output_handle::addr`` is used for populating the specific event.
-> +
-> +Once the sample data has been successfully stored in the buffer, the
-> +header of the ring buffer is synced from ``perf_buffer::head`` to
-> +``perf_event_mmap_page::data_head``, which is fulfilled in the function
-> +``perf_output_end()``.  This synchronization indicates to the perf tool that
-> +it is now safe to read the newly added samples from the user space.
-> +
-> +2.3.3 Reading samples from buffer
-> +^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> +
-> +In the user space, the perf tool utilizes the ``perf_event_mmap_page``
-> +structure to handle the head and tail of the buffer.  It also uses
-> +``perf_mmap`` structure to keep track of a context for the ring buffer, this
-> +context includes information about the buffer's starting and ending
-> +addresses.  Additionally, the mask value can be utilized to compute the
-> +circular buffer pointer even for an overflow.
-> +
-> +Similar to the kernel, the perf tool in the user space first reads out
-> +the recorded data from the ring buffer, and then updates the buffer's
-> +tail pointer ``perf_event_mmap_page::data_tail``.
-> +
-> +.. _memory_synchronization:
-> +
-> +2.3.4 Memory synchronization
-> +^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> +
-> +The modern CPUs with relaxed memory model cannot promise the memory
-> +ordering, this means it’s possible to access the ring buffer and the
-> +``perf_event_mmap_page`` structure out of order.  To assure the specific
-> +sequence for memory accessing perf ring buffer, memory barriers are
-> +used to assure the data dependency.  The rationale for the memory
-> +synchronization is as below::
-> +
-> +  Kernel                          User space
-> +
-> +  if (LOAD ->data_tail) {         LOAD ->data_head
-> +                   (A)            smp_rmb()        (C)
-> +    STORE $data                   LOAD $data
-> +    smp_wmb()      (B)            smp_mb()         (D)
-> +    STORE ->data_head             STORE ->data_tail
-> +  }
-> +
-> +The comments in tools/include/linux/ring_buffer.h gives nice description
-> +for why and how to use memory barriers, here we will just provide an
-> +alternative explanation:
-> +
-> +(A) is a control dependency so that CPU assures order between checking
-> +pointer ``perf_event_mmap_page::data_tail`` and filling sample into ring
-> +buffer;
-> +
-> +(D) pairs with (A).  (D) separates the ring buffer data reading from
-> +writing the pointer ``data_tail``, perf tool first consumes samples and then
-> +tells the kernel that the data chunk has been released.  Since a reading
-> +operation is followed by a writing operation, thus (D) is a full memory
-> +barrier.
-> +
-> +(B) is a writing barrier in the middle of two writing operations, which
-> +makes sure that recording a sample must be prior to updating the head
-> +pointer.
-> +
-> +(C) pairs with (B).  (C) is a read memory barrier to ensure the head
-> +pointer is fetched before reading samples.
-> +
-> +To implement the above algorithm, the ``perf_output_put_handle()`` function
-> +in the kernel and two helpers ``ring_buffer_read_head()`` and
-> +``ring_buffer_write_tail()`` in the user space are introduced, they rely
-> +on memory barriers as described above to ensure the data dependency.
-> +
-> +Some architectures support one-way permeable barrier with load-acquire
-> +and store-release operations, these barriers are more relaxed with less
-> +performance penalty, so (C) and (D) can be optimized to use barriers
-> +``smp_load_acquire()`` and ``smp_store_release()`` respectively.
-> +
-> +If an architecture doesn’t support load-acquire and store-release in its
-> +memory model, it will roll back to the old fashion of memory barrier
-> +operations.  In this case, ``smp_load_acquire()`` encapsulates
-> +``READ_ONCE()`` + ``smp_mb()``, since ``smp_mb()`` is costly,
-> +``ring_buffer_read_head()`` doesn't invoke ``smp_load_acquire()`` and it uses
-> +the barriers ``READ_ONCE()`` + ``smp_rmb()`` instead.
-> +
-> +3. The mechanism of AUX ring buffer
-> +===================================
-> +
-> +In this chapter, we will explain the implementation of the AUX ring
-> +buffer.  In the first part it will discuss the connection between the
-> +AUX ring buffer and the regular ring buffer, then the second part will
-> +examine how the AUX ring buffer co-works with the regular ring buffer,
-> +as well as the additional features introduced by the AUX ring buffer for
-> +the sampling mechanism.
-> +
-> +3.1 The relationship between AUX and regular ring buffers
-> +---------------------------------------------------------
-> +
-> +Generally, the AUX ring buffer is an auxiliary for the regular ring
-> +buffer.  The regular ring buffer is primarily used to store the event
-> +samples and every event format complies with the definition in the
-> +union ``perf_event``; the AUX ring buffer is for recording the hardware
-> +trace data and the trace data format is hardware IP dependent.
-> +
-> +The general use and advantage of the AUX ring buffer is that it is
-> +written directly by hardware rather than by the kernel.  For example,
-> +regular profile samples that write to the regular ring buffer cause an
-> +interrupt.  Tracing execution requires a high number of samples and
-> +using interrupts would be overwhelming for the regular ring buffer
-> +mechanism.  Having an AUX buffer allows for a region of memory more
-> +decoupled from the kernel and written to directly by hardware tracing.
-> +
-> +The AUX ring buffer reuses the same algorithm with the regular ring
-> +buffer for the buffer management.  The control structure
-> +``perf_event_mmap_page`` extends the new fields ``aux_head`` and ``aux_tail``
-> +for the head and tail pointers of the AUX ring buffer.
-> +
-> +During the initialisation phase, besides the mmap()-ed regular ring
-> +buffer, the perf tool invokes a second syscall in the
-> +``auxtrace_mmap__mmap()`` function for the mmap of the AUX buffer;
-> +``rb_alloc_aux()`` in the kernel allocates pages correspondingly, these
-> +pages will be deferred to map into VMA when handling the page fault,
-> +which is the same lazy mechanism with the regular ring buffer.
-> +
-> +AUX events and AUX trace data are two different things.  Let's see an
-> +example::
-> +
-> +        perf record -a -e cycles -e cs_etm/@tmc_etr0/ -- sleep 2
-> +
-> +The above command enables two events: one is the event *cycles* from PMU
-> +and another is the AUX event *cs_etm* from Arm CoreSight, both are saved
-> +into the regular ring buffer while the CoreSight's AUX trace data is
-> +stored in the AUX ring buffer.
-> +
-> +As a result, we can see the regular ring buffer and the AUX ring buffer
-> +are allocated in pairs.  The perf in default mode allocates the regular
-> +ring buffer and the AUX ring buffer per CPU-wise, which is the same as
-> +the system wide mode, however, the default mode records samples only for
-> +the profiled program, whereas the latter mode profiles for all programs
-> +in the system.  For per-thread mode, the perf tool allocates only one
-> +regular ring buffer and one AUX ring buffer for the whole session.  For
-> +the per-CPU mode, the perf allocates two kinds of ring buffers for CPUs
-> +specified by the option ``-C``.
-> +
-> +The below figure demonstrates the buffers' layout in the system wide
-> +mode; if there are any activities on one CPU, the AUX event samples and
-> +the hardware trace data will be recorded into the dedicated buffers for
-> +the CPU.
-> +
-> +::
-> +
-> +              T1                      T2                 T1
-> +            +----+              +-----------+          +----+
-> +    CPU0    |xxxx|              |xxxxxxxxxxx|          |xxxx|
-> +            +----+--------------+-----------+----------+----+-------->
-> +              |                       |                  |
-> +              v                       v                  v
-> +            +-----------------------------------------------------+
-> +            |                  Ring buffer 0                      |
-> +            +-----------------------------------------------------+
-> +              |                       |                  |
-> +              v                       v                  v
-> +            +-----------------------------------------------------+
-> +            |               AUX Ring buffer 0                     |
-> +            +-----------------------------------------------------+
-> +
-> +                   T1
-> +                 +-----+
-> +    CPU1         |xxxxx|
-> +            -----+-----+--------------------------------------------->
-> +                    |
-> +                    v
-> +            +-----------------------------------------------------+
-> +            |                  Ring buffer 1                      |
-> +            +-----------------------------------------------------+
-> +                    |
-> +                    v
-> +            +-----------------------------------------------------+
-> +            |               AUX Ring buffer 1                     |
-> +            +-----------------------------------------------------+
-> +
-> +                                        T1              T3
-> +                                      +----+        +-------+
-> +    CPU2                              |xxxx|        |xxxxxxx|
-> +            --------------------------+----+--------+-------+-------->
-> +                                        |               |
-> +                                        v               v
-> +            +-----------------------------------------------------+
-> +            |                  Ring buffer 2                      |
-> +            +-----------------------------------------------------+
-> +                                        |               |
-> +                                        v               v
-> +            +-----------------------------------------------------+
-> +            |               AUX Ring buffer 2                     |
-> +            +-----------------------------------------------------+
-> +
-> +                              T1
-> +                       +--------------+
-> +    CPU3               |xxxxxxxxxxxxxx|
-> +            -----------+--------------+------------------------------>
-> +                              |
-> +                              v
-> +            +-----------------------------------------------------+
-> +            |                  Ring buffer 3                      |
-> +            +-----------------------------------------------------+
-> +                              |
-> +                              v
-> +            +-----------------------------------------------------+
-> +            |               AUX Ring buffer 3                     |
-> +            +-----------------------------------------------------+
-> +
-> +            T1: Thread 1; T2: Thread 2; T3: Thread 3
-> +            x: Thread is in running state
-> +
-> +                Figure 9. AUX ring buffer for system wide mode
-> +
-> +3.2 AUX events
-> +--------------
-> +
-> +Similar to ``perf_output_begin()`` and ``perf_output_end()``'s working for the
-> +regular ring buffer, ``perf_aux_output_begin()`` and ``perf_aux_output_end()``
-> +serve for the AUX ring buffer for processing the hardware trace data.
-> +The structure ``perf_output_handle`` is used as a context to track the AUX
-> +buffer’s info.
-> +
-> +``perf_aux_output_begin()`` initializes the structure perf_output_handle.
-> +It fetches the AUX head pointer and assigns to ``perf_output_handle::head``,
-> +afterwards, the low level driver uses ``perf_output_handle::head`` as the
-> +start address for storing hardware trace data.
-> +
-> +Once the hardware trace data is stored into the AUX ring buffer, the PMU
-> +driver will stop hardware tracing by calling the ``pmu::stop()`` callback.
-> +Similar to the regular ring buffer, the AUX ring buffer needs to apply
-> +the memory synchronization mechanism as discussed in the section
-> +:ref:`memory_synchronization`.  Since the AUX ring buffer is managed by the
-> +PMU driver, the barrier (B), which is a writing barrier to ensure the trace
-> +data is externally visible prior to updating the head pointer, is asked
-> +to be implemented in the PMU driver.
-> +
-> +Then ``pmu::stop()`` can safely call the ``perf_aux_output_end()`` function to
-> +finish two things:
-> +
-> +- It fills an event ``PERF_RECORD_AUX`` into the regular ring buffer, this
-> +  event delivers the information of the start address and data size for a
-> +  chunk of hardware trace data has been stored into the AUX ring buffer;
-> +
-> +- Since the hardware trace driver has stored new trace data into the AUX
-> +  ring buffer, the argument *size* indicates how many bytes have been
-> +  consumed by the hardware tracing, thus ``perf_aux_output_end()`` updates the
-> +  header pointer ``perf_buffer::aux_head`` to reflect the latest buffer usage.
-> +
-> +At the end, the PMU driver will restart hardware tracing.  During this
-> +temporary suspending period, it will lose hardware trace data, which
-> +will introduce a discontinuity during decoding phase.
-> +
-> +The event ``PERF_RECORD_AUX`` presents an AUX event which is handled in the
-> +kernel, but it lacks the information for saving the AUX trace data in
-> +the perf file.  When the perf tool copies the trace data from AUX ring
-> +buffer to the perf data file, it synthesizes a ``PERF_RECORD_AUXTRACE``
-> +event which includes the offest and size of the AUX trace data in the
-> +perf file.  Afterwards, the perf tool reads out the AUX trace data from
-> +the perf file based on the ``PERF_RECORD_AUXTRACE`` events, and the
-> +``PERF_RECORD_AUX`` event is used to decode a chunk of data by correlating
-> +with time order.
-> +
-> +3.3 Snapshot mode
-> +-----------------
-> +
-> +Perf supports snapshot mode for AUX ring buffer, in this mode, users
-> +only record AUX trace data at a specific time point which users are
-> +interested in.  E.g. below gives an example of how to take snapshots
-> +with 1 second interval with Arm CoreSight::
-> +
-> +  perf record -e cs_etm/@tmc_etr0/u -S -a program &
-> +  PERFPID=$!
-> +  while true; do
-> +      kill -USR2 $PERFPID
-> +      sleep 1
-> +  done
-> +
-> +The main flow for snapshot mode is:
-> +
-> +- Before a snapshot is taken, the AUX ring buffer acts in free run mode.
-> +  During free run mode the perf doesn't record any of the AUX events and
-> +  trace data;
-> +
-> +- Once the perf tool receives the *USR2* signal, it triggers the callback
-> +  function ``auxtrace_record::snapshot_start()`` to deactivate hardware
-> +  tracing.  The kernel driver then populates the AUX ring buffer with the
-> +  hardware trace data, and the event ``PERF_RECORD_AUX`` is stored in the
-> +  regular ring buffer;
-> +
-> +- Then perf tool takes a snapshot, ``record__read_auxtrace_snapshot()``
-> +  reads out the hardware trace data from the AUX ring buffer and saves it
-> +  into perf data file;
-> +
-> +- After the snapshot is finished, ``auxtrace_record::snapshot_finish()``
-> +  restarts the PMU event for AUX tracing.
-> +
-> +The perf only accesses the head pointer ``perf_event_mmap_page::aux_head``
-> +in snapshot mode and doesn’t touch tail pointer ``aux_tail``, this is
-> +because the AUX ring buffer can overflow in free run mode, the tail
-> +pointer is useless in this case.  Alternatively, the callback
-> +``auxtrace_record::find_snapshot()`` is introduced for making the decision
-> +of whether the AUX ring buffer has been wrapped around or not, at the
-> +end it fixes up the AUX buffer's head which are used to calculate the
-> +trace data size.
-> +
-> +As we know, the buffers' deployment can be per-thread mode, per-CPU
-> +mode, or system wide mode, and the snapshot can be applied to any of
-> +these modes.  Below is an example of taking snapshot with system wide
-> +mode.
-> +
-> +::
-> +
-> +                                         Snapshot is taken
-> +                                                 |
-> +                                                 v
-> +                        +------------------------+
-> +                        |  AUX Ring buffer 0     | <- aux_head
-> +                        +------------------------+
-> +                                                 v
-> +                +--------------------------------+
-> +                |          AUX Ring buffer 1     | <- aux_head
-> +                +--------------------------------+
-> +                                                 v
-> +    +--------------------------------------------+
-> +    |                      AUX Ring buffer 2     | <- aux_head
-> +    +--------------------------------------------+
-> +                                                 v
-> +         +---------------------------------------+
-> +         |                 AUX Ring buffer 3     | <- aux_head
-> +         +---------------------------------------+
-> +
-> +                Figure 10. Snapshot with system wide mode
-> --
-> 2.34.1
->
+All warnings (new ones prefixed by >>):
+
+         | ^
+   include/linux/unaligned/packed_struct.h:17:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      17 | {
+         | ^
+   include/linux/unaligned/packed_struct.h:23:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      23 | {
+         | ^
+   include/linux/unaligned/packed_struct.h:29:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      29 | {
+         | ^
+   include/linux/unaligned/packed_struct.h:35:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      35 | {
+         | ^
+   include/linux/unaligned/packed_struct.h:41:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      41 | {
+         | ^
+   include/asm-generic/unaligned.h:26:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      26 | {
+         | ^
+   include/asm-generic/unaligned.h:31:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      31 | {
+         | ^
+   include/asm-generic/unaligned.h:36:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      36 | {
+         | ^
+   include/asm-generic/unaligned.h:41:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      41 | {
+         | ^
+   include/asm-generic/unaligned.h:46:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      46 | {
+         | ^
+   include/asm-generic/unaligned.h:51:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      51 | {
+         | ^
+   include/asm-generic/unaligned.h:56:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      56 | {
+         | ^
+   include/asm-generic/unaligned.h:61:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      61 | {
+         | ^
+   include/asm-generic/unaligned.h:66:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      66 | {
+         | ^
+   include/asm-generic/unaligned.h:71:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      71 | {
+         | ^
+   include/asm-generic/unaligned.h:76:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      76 | {
+         | ^
+   include/asm-generic/unaligned.h:81:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      81 | {
+         | ^
+   include/asm-generic/unaligned.h:86:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      86 | {
+         | ^
+   include/asm-generic/unaligned.h:91:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      91 | {
+         | ^
+   include/asm-generic/unaligned.h:96:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      96 | {
+         | ^
+   include/asm-generic/unaligned.h:101:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     101 | {
+         | ^
+   include/asm-generic/unaligned.h:106:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     106 | {
+         | ^
+   include/asm-generic/unaligned.h:113:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     113 | {
+         | ^
+   include/asm-generic/unaligned.h:118:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     118 | {
+         | ^
+   include/asm-generic/unaligned.h:125:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     125 | {
+         | ^
+   include/asm-generic/unaligned.h:130:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     130 | {
+         | ^
+   include/asm-generic/unaligned.h:140:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     140 | {
+         | ^
+   include/asm-generic/unaligned.h:145:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     145 | {
+         | ^
+   include/asm-generic/unaligned.h:151:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     151 | {
+         | ^
+   arch/um/include/asm/uaccess.h:25:22: error: storage class specified for parameter 'raw_copy_from_user'
+      25 | extern unsigned long raw_copy_from_user(void *to, const void __user *from, unsigned long n);
+         |                      ^~~~~~~~~~~~~~~~~~
+   arch/um/include/asm/uaccess.h:26:22: error: storage class specified for parameter 'raw_copy_to_user'
+      26 | extern unsigned long raw_copy_to_user(void __user *to, const void *from, unsigned long n);
+         |                      ^~~~~~~~~~~~~~~~
+   arch/um/include/asm/uaccess.h:27:22: error: storage class specified for parameter '__clear_user'
+      27 | extern unsigned long __clear_user(void __user *mem, unsigned long len);
+         |                      ^~~~~~~~~~~~
+   arch/um/include/asm/uaccess.h:28:19: error: storage class specified for parameter '__access_ok'
+      28 | static inline int __access_ok(const void __user *ptr, unsigned long size);
+         |                   ^~~~~~~~~~~
+>> arch/um/include/asm/uaccess.h:28:19: warning: parameter '__access_ok' declared 'inline'
+>> arch/um/include/asm/uaccess.h:28:1: warning: 'gnu_inline' attribute ignored [-Wattributes]
+      28 | static inline int __access_ok(const void __user *ptr, unsigned long size);
+         | ^~~~~~
+   arch/um/include/asm/uaccess.h:28:19: error: 'no_instrument_function' attribute applies only to functions
+      28 | static inline int __access_ok(const void __user *ptr, unsigned long size);
+         |                   ^~~~~~~~~~~
+   In file included from arch/um/include/asm/uaccess.h:37:
+   include/asm-generic/uaccess.h:136:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     136 | {
+         | ^
+   include/asm-generic/uaccess.h:144:12: error: storage class specified for parameter '__put_user_bad'
+     144 | extern int __put_user_bad(void) __attribute__((noreturn));
+         |            ^~~~~~~~~~~~~~
+   include/asm-generic/uaccess.h:197:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     197 | {
+         | ^
+   include/asm-generic/uaccess.h:205:12: error: storage class specified for parameter '__get_user_bad'
+     205 | extern int __get_user_bad(void) __attribute__((noreturn));
+         |            ^~~~~~~~~~~~~~
+   include/asm-generic/uaccess.h:221:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     221 | {
+         | ^
+   In file included from ./arch/um/include/generated/asm/extable.h:1,
+                    from include/asm-generic/uaccess.h:229:
+   include/asm-generic/extable.h:18:1: warning: empty declaration
+      18 | struct exception_table_entry
+         | ^~~~~~
+   include/asm-generic/extable.h:24:1: warning: empty declaration
+      24 | struct pt_regs;
+         | ^~~~~~
+   include/asm-generic/extable.h:25:12: error: storage class specified for parameter 'fixup_exception'
+      25 | extern int fixup_exception(struct pt_regs *regs);
+         |            ^~~~~~~~~~~~~~~
+   In file included from include/linux/compiler_types.h:80,
+                    from <command-line>:
+   include/linux/compiler_attributes.h:356:41: error: expected declaration specifiers before '__attribute__'
+     356 | #define __must_check                    __attribute__((__warn_unused_result__))
+         |                                         ^~~~~~~~~~~~~
+   include/asm-generic/uaccess.h:231:1: note: in expansion of macro '__must_check'
+     231 | __must_check long strncpy_from_user(char *dst, const char __user *src,
+         | ^~~~~~~~~~~~
+   include/linux/compiler_attributes.h:356:41: error: expected declaration specifiers before '__attribute__'
+     356 | #define __must_check                    __attribute__((__warn_unused_result__))
+         |                                         ^~~~~~~~~~~~~
+   include/asm-generic/uaccess.h:233:1: note: in expansion of macro '__must_check'
+     233 | __must_check long strnlen_user(const char __user *src, long n);
+         | ^~~~~~~~~~~~
+   arch/um/include/asm/uaccess.h:40:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      40 | {
+         | ^
+   include/linux/uaccess.h:82:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      82 | {
+         | ^
+   include/linux/uaccess.h:94:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      94 | {
+         | ^
+   include/linux/uaccess.h:122:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     122 | {
+         | ^
+   include/linux/uaccess.h:132:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     132 | {
+         | ^
+   include/linux/uaccess.h:144:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     144 | {
+         | ^
+   include/linux/uaccess.h:164:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     164 | {
+         | ^
+   include/linux/uaccess.h:181:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     181 | {
+         | ^
+   include/linux/uaccess.h:189:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     189 | {
+         | ^
+   include/linux/uaccess.h:202:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     202 | {
+         | ^
+   include/linux/uaccess.h:209:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     209 | {
+         | ^
+   include/linux/uaccess.h:214:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     214 | {
+         | ^
+   include/linux/uaccess.h:226:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     226 | {
+         | ^
+   include/linux/uaccess.h:236:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     236 | {
+         | ^
+   include/linux/uaccess.h:249:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     249 | {
+         | ^
+   include/linux/uaccess.h:281:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     281 | {
+         | ^
+   include/linux/uaccess.h:292:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     292 | {
+         | ^
+   include/linux/uaccess.h:298:25: error: storage class specified for parameter 'check_zeroed_user'
+     298 | extern __must_check int check_zeroed_user(const void __user *from, size_t size);
+         |                         ^~~~~~~~~~~~~~~~~
+--
+         | ^
+   include/linux/page_ref.h:88:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      88 | {
+         | ^
+   include/linux/page_ref.h:93:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      93 | {
+         | ^
+   include/linux/page_ref.h:98:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      98 | {
+         | ^
+   include/linux/page_ref.h:105:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     105 | {
+         | ^
+   include/linux/page_ref.h:114:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     114 | {
+         | ^
+   include/linux/page_ref.h:119:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     119 | {
+         | ^
+   include/linux/page_ref.h:126:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     126 | {
+         | ^
+   include/linux/page_ref.h:131:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     131 | {
+         | ^
+   include/linux/page_ref.h:138:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     138 | {
+         | ^
+   include/linux/page_ref.h:143:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     143 | {
+         | ^
+   include/linux/page_ref.h:152:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     152 | {
+         | ^
+   include/linux/page_ref.h:157:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     157 | {
+         | ^
+   include/linux/page_ref.h:164:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     164 | {
+         | ^
+   include/linux/page_ref.h:169:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     169 | {
+         | ^
+   include/linux/page_ref.h:176:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     176 | {
+         | ^
+   include/linux/page_ref.h:181:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     181 | {
+         | ^
+   include/linux/page_ref.h:190:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     190 | {
+         | ^
+   include/linux/page_ref.h:195:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     195 | {
+         | ^
+   include/linux/page_ref.h:204:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     204 | {
+         | ^
+   include/linux/page_ref.h:209:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     209 | {
+         | ^
+   include/linux/page_ref.h:218:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     218 | {
+         | ^
+   include/linux/page_ref.h:223:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     223 | {
+         | ^
+   include/linux/page_ref.h:232:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     232 | {
+         | ^
+   include/linux/page_ref.h:237:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     237 | {
+         | ^
+   include/linux/page_ref.h:246:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     246 | {
+         | ^
+   include/linux/page_ref.h:262:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     262 | {
+         | ^
+   include/linux/page_ref.h:267:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     267 | {
+         | ^
+   include/linux/page_ref.h:312:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     312 | {
+         | ^
+   include/linux/page_ref.h:317:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     317 | {
+         | ^
+   include/linux/page_ref.h:326:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     326 | {
+         | ^
+   include/linux/page_ref.h:331:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     331 | {
+         | ^
+   include/linux/page_ref.h:341:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     341 | {
+         | ^
+   In file included from arch/um/include/asm/pgtable.h:11,
+                    from include/linux/pgtable.h:6,
+                    from include/linux/mm.h:29:
+>> arch/um/include/asm/fixmap.h:35:1: warning: empty declaration
+      35 | enum fixed_addresses {
+         | ^~~~
+   arch/um/include/asm/fixmap.h:39:13: error: storage class specified for parameter '__set_fixmap'
+      39 | extern void __set_fixmap (enum fixed_addresses idx,
+         |             ^~~~~~~~~~~~
+   In file included from arch/um/include/asm/fixmap.h:54:
+   include/asm-generic/fixmap.h:31:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      31 | {
+         | ^
+   include/asm-generic/fixmap.h:37:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      37 | {
+         | ^
+   In file included from include/asm-generic/pgtable-nopud.h:7,
+                    from arch/um/include/asm/pgtable-3level.h:10,
+                    from arch/um/include/asm/pgtable.h:28:
+   include/asm-generic/pgtable-nop4d.h:9:31: error: storage class specified for parameter 'p4d_t'
+       9 | typedef struct { pgd_t pgd; } p4d_t;
+         |                               ^~~~~
+   include/asm-generic/pgtable-nop4d.h:21:49: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      21 | static inline int pgd_none(pgd_t pgd)           { return 0; }
+         |                                                 ^
+   include/asm-generic/pgtable-nop4d.h:22:49: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      22 | static inline int pgd_bad(pgd_t pgd)            { return 0; }
+         |                                                 ^
+   include/asm-generic/pgtable-nop4d.h:23:49: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      23 | static inline int pgd_present(pgd_t pgd)        { return 1; }
+         |                                                 ^
+   include/asm-generic/pgtable-nop4d.h:24:49: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      24 | static inline void pgd_clear(pgd_t *pgd)        { }
+         |                                                 ^
+   include/asm-generic/pgtable-nop4d.h:35:21: error: expected '=', ',', ';', 'asm' or '__attribute__' before '*' token
+      35 | static inline p4d_t *p4d_offset(pgd_t *pgd, unsigned long address)
+         |                     ^
+   include/asm-generic/pgtable-nopud.h:16:18: error: expected specifier-qualifier-list before 'p4d_t'
+      16 | typedef struct { p4d_t p4d; } pud_t;
+         |                  ^~~~~
+   include/asm-generic/pgtable-nopud.h:16:31: error: storage class specified for parameter 'pud_t'
+      16 | typedef struct { p4d_t p4d; } pud_t;
+         |                               ^~~~~
+   include/asm-generic/pgtable-nopud.h:28:28: error: expected declaration specifiers or '...' before 'p4d_t'
+      28 | static inline int p4d_none(p4d_t p4d)           { return 0; }
+         |                            ^~~~~
+   include/asm-generic/pgtable-nopud.h:29:27: error: expected declaration specifiers or '...' before 'p4d_t'
+      29 | static inline int p4d_bad(p4d_t p4d)            { return 0; }
+         |                           ^~~~~
+   include/asm-generic/pgtable-nopud.h:30:31: error: expected declaration specifiers or '...' before 'p4d_t'
+      30 | static inline int p4d_present(p4d_t p4d)        { return 1; }
+         |                               ^~~~~
+   include/asm-generic/pgtable-nopud.h:31:30: error: expected declaration specifiers or '...' before 'p4d_t'
+      31 | static inline void p4d_clear(p4d_t *p4d)        { }
+         |                              ^~~~~
+   include/asm-generic/pgtable-nopud.h:42:21: error: expected '=', ',', ';', 'asm' or '__attribute__' before '*' token
+      42 | static inline pud_t *pud_offset(p4d_t *p4d, unsigned long address)
+         |                     ^
+   arch/um/include/asm/pgtable-3level.h:64:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      64 | {
+         | ^
+   arch/um/include/asm/pgtable-3level.h:68:46: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      68 | static inline void pgd_mkuptodate(pgd_t pgd) { pgd_val(pgd) &= ~_PAGE_NEWPAGE; }
+         |                                              ^
+   arch/um/include/asm/pgtable-3level.h:72:31: error: expected declaration specifiers or '...' before 'pud_t'
+      72 | static inline void pud_clear (pud_t *pud)
+         |                               ^~~~~
+   arch/um/include/asm/pgtable-3level.h:81:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      81 | {
+         | ^
+   arch/um/include/asm/pgtable-3level.h:86:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      86 | {
+         | ^
+   arch/um/include/asm/pgtable-3level.h:95:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      95 | {
+         | ^
+   arch/um/include/asm/pgtable.h:33:14: error: storage class specified for parameter 'swapper_pg_dir'
+      33 | extern pgd_t swapper_pg_dir[PTRS_PER_PGD];
+         |              ^~~~~~~~~~~~~~
+   arch/um/include/asm/pgtable.h:36:23: error: storage class specified for parameter 'empty_zero_page'
+      36 | extern unsigned long *empty_zero_page;
+         |                       ^~~~~~~~~~~~~~~
+   arch/um/include/asm/pgtable.h:46:22: error: storage class specified for parameter 'end_iomem'
+      46 | extern unsigned long end_iomem;
+         |                      ^~~~~~~~~
+   arch/um/include/asm/pgtable.h:112:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     112 | {
+         | ^
+   arch/um/include/asm/pgtable.h:121:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     121 | {
+         | ^
+   arch/um/include/asm/pgtable.h:126:38: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     126 | static inline int pte_exec(pte_t pte){
+         |                                      ^
+   arch/um/include/asm/pgtable.h:132:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     132 | {
+         | ^
+   arch/um/include/asm/pgtable.h:138:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     138 | {
+         | ^
+   arch/um/include/asm/pgtable.h:143:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     143 | {
+         | ^
+   arch/um/include/asm/pgtable.h:148:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     148 | {
+         | ^
+   arch/um/include/asm/pgtable.h:153:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     153 | {
+         | ^
+   arch/um/include/asm/pgtable.h:164:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     164 | {
+         | ^
+   arch/um/include/asm/pgtable.h:170:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     170 | {
+         | ^
+   arch/um/include/asm/pgtable.h:176:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     176 | {
+         | ^
+   arch/um/include/asm/pgtable.h:182:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     182 | {
+         | ^
+   arch/um/include/asm/pgtable.h:191:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     191 | {
+         | ^
+   arch/um/include/asm/pgtable.h:199:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     199 | {
+         | ^
+   arch/um/include/asm/pgtable.h:205:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     205 | {
+         | ^
+   arch/um/include/asm/pgtable.h:211:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     211 | {
+         | ^
+   arch/um/include/asm/pgtable.h:219:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     219 | {
+         | ^
+   arch/um/include/asm/pgtable.h:227:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     227 | {
+         | ^
+   arch/um/include/asm/pgtable.h:233:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     233 | {
+         | ^
+   arch/um/include/asm/pgtable.h:247:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     247 | {
+         | ^
+   arch/um/include/asm/pgtable.h:253:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     253 | {
+         | ^
+   arch/um/include/asm/pgtable.h:276:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     276 | {
+         | ^
+>> arch/um/include/asm/pgtable.h:289:1: warning: empty declaration
+     289 | struct mm_struct;
+         | ^~~~~~
+   arch/um/include/asm/pgtable.h:290:15: error: storage class specified for parameter 'virt_to_pte'
+     290 | extern pte_t *virt_to_pte(struct mm_struct *mm, unsigned long addr);
+         |               ^~~~~~~~~~~
+   arch/um/include/asm/pgtable.h:317:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     317 | {
+         | ^
+   arch/um/include/asm/pgtable.h:322:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     322 | {
+         | ^
+   arch/um/include/asm/pgtable.h:328:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     328 | {
+         | ^
+   In file included from include/linux/pgtable.h:14:
+   include/asm-generic/pgtable_uffd.h:6:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+       6 | {
+         | ^
+   include/asm-generic/pgtable_uffd.h:11:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      11 | {
+         | ^
+   include/asm-generic/pgtable_uffd.h:16:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      16 | {
+         | ^
+   include/asm-generic/pgtable_uffd.h:21:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      21 | {
+         | ^
+   include/asm-generic/pgtable_uffd.h:26:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      26 | {
+         | ^
+   include/asm-generic/pgtable_uffd.h:31:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      31 | {
+         | ^
+   include/asm-generic/pgtable_uffd.h:36:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      36 | {
+         | ^
+   include/asm-generic/pgtable_uffd.h:41:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      41 | {
+         | ^
+   include/asm-generic/pgtable_uffd.h:46:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      46 | {
+         | ^
+   include/asm-generic/pgtable_uffd.h:51:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      51 | {
+         | ^
+   include/asm-generic/pgtable_uffd.h:56:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      56 | {
+         | ^
+   include/asm-generic/pgtable_uffd.h:61:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      61 | {
+         | ^
+   In file included from include/linux/pgtable.h:15:
+   include/linux/page_table_check.h:119:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     119 | {
+         | ^
+   include/linux/page_table_check.h:123:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     123 | {
+         | ^
+   include/linux/page_table_check.h:128:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     128 | {
+         | ^
+   include/linux/page_table_check.h:133:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     133 | {
+         | ^
+   include/linux/page_table_check.h:137:67: error: expected declaration specifiers or '...' before 'pud_t'
+     137 |                                               unsigned long addr, pud_t pud)
+         |                                                                   ^~~~~
+   include/linux/page_table_check.h:144:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     144 | {
+         | ^
+   include/linux/page_table_check.h:150:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     150 | {
+         | ^
+   include/linux/page_table_check.h:154:65: error: expected declaration specifiers or '...' before 'pud_t'
+     154 |                                             unsigned long addr, pud_t *pudp,
+         |                                                                 ^~~~~
+   include/linux/page_table_check.h:155:45: error: expected declaration specifiers or '...' before 'pud_t'
+     155 |                                             pud_t pud)
+         |                                             ^~~~~
+   include/linux/page_table_check.h:162:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     162 | {
+         | ^
+   include/linux/pgtable.h:63:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      63 | {
+         | ^
+   include/linux/pgtable.h:70:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      70 | {
+         | ^
+   include/linux/pgtable.h:78:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      78 | {
+         | ^
+   include/linux/pgtable.h:91:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      91 | {
+         | ^
+   include/linux/pgtable.h:106:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     106 | {
+         | ^
+   include/linux/pgtable.h:110:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     110 | {
+         | ^
+..
+
+
+vim +28 arch/um/include/asm/uaccess.h
+
+^1da177e4c3f41 include/asm-um/uaccess.h      Linus Torvalds     2005-04-16  12  
+fced95cacfc21b arch/um/include/asm/uaccess.h Al Viro            2011-08-18  13  #define __under_task_size(addr, size) \
+fced95cacfc21b arch/um/include/asm/uaccess.h Al Viro            2011-08-18  14  	(((unsigned long) (addr) < TASK_SIZE) && \
+fced95cacfc21b arch/um/include/asm/uaccess.h Al Viro            2011-08-18  15  	 (((unsigned long) (addr) + (size)) < TASK_SIZE))
+fced95cacfc21b arch/um/include/asm/uaccess.h Al Viro            2011-08-18  16  
+f8d65d27e677da arch/um/include/asm/uaccess.h Richard Weinberger 2015-05-12  17  #define __access_ok_vsyscall(addr, size) \
+f8d65d27e677da arch/um/include/asm/uaccess.h Richard Weinberger 2015-05-12  18  	  (((unsigned long) (addr) >= FIXADDR_USER_START) && \
+fced95cacfc21b arch/um/include/asm/uaccess.h Al Viro            2011-08-18  19  	  ((unsigned long) (addr) + (size) <= FIXADDR_USER_END) && \
+fced95cacfc21b arch/um/include/asm/uaccess.h Al Viro            2011-08-18  20  	  ((unsigned long) (addr) + (size) >= (unsigned long)(addr)))
+fced95cacfc21b arch/um/include/asm/uaccess.h Al Viro            2011-08-18  21  
+fced95cacfc21b arch/um/include/asm/uaccess.h Al Viro            2011-08-18  22  #define __addr_range_nowrap(addr, size) \
+fced95cacfc21b arch/um/include/asm/uaccess.h Al Viro            2011-08-18  23  	((unsigned long) (addr) <= ((unsigned long) (addr) + (size)))
+fced95cacfc21b arch/um/include/asm/uaccess.h Al Viro            2011-08-18  24  
+a668ce3a001fe0 arch/um/include/asm/uaccess.h Al Viro            2017-03-28  25  extern unsigned long raw_copy_from_user(void *to, const void __user *from, unsigned long n);
+a668ce3a001fe0 arch/um/include/asm/uaccess.h Al Viro            2017-03-28 @26  extern unsigned long raw_copy_to_user(void __user *to, const void *from, unsigned long n);
+f8d65d27e677da arch/um/include/asm/uaccess.h Richard Weinberger 2015-05-12 @27  extern unsigned long __clear_user(void __user *mem, unsigned long len);
+12700c17fc2861 arch/um/include/asm/uaccess.h Arnd Bergmann      2022-02-15 @28  static inline int __access_ok(const void __user *ptr, unsigned long size);
+f8d65d27e677da arch/um/include/asm/uaccess.h Richard Weinberger 2015-05-12  29  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
