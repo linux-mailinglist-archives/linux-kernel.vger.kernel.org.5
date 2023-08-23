@@ -2,150 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DE8778538D
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 11:11:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E92FA785361
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 11:01:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235174AbjHWJLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 05:11:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54608 "EHLO
+        id S235106AbjHWJB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 05:01:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235229AbjHWJHm (ORCPT
+        with ESMTP id S235171AbjHWI5c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 05:07:42 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B16331706
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 01:54:06 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-99bf1f632b8so719497166b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 01:54:06 -0700 (PDT)
+        Wed, 23 Aug 2023 04:57:32 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A290C198C;
+        Wed, 23 Aug 2023 01:54:40 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3fee87dd251so34416345e9.2;
+        Wed, 23 Aug 2023 01:54:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692780845; x=1693385645;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=uaN9Yl4WIqy/Z9zG+P/bSUj8CiruvxWP/wFVfyfYE1w=;
-        b=PRYeGF4jZr/3AiuXom4wukvEG7mp/bxEvUG5mBtKiKXHpLAIX5BOMPuDJ5hyZfziGb
-         an5J1ZpSc7OU+p5jGwk/hO7GRWRhs5BRQaGi/Qn4a5tW6CWHK+5MQbixITEvinK4viea
-         X1yyRsShZKDsyFszyI7UdE1PaY2ztYWtdOgzQCsh7gFbL3n8sx8/7ATdKGgqEWFTo3WU
-         rKpE5NFfvopCzFZb1pvDOzfbvWQZTr/dAjLuCFvQkoGdUB041Ri8rzqcGPIOFJVtWdl8
-         MIld32R+zy2y2MoQsE1CwF3fZP3GX6PB1PPbcahK+E542G6p81ZZH4UWHOA5yitM45/n
-         Q2QQ==
+        d=gmail.com; s=20221208; t=1692780878; x=1693385678;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=wvjzMcJTUxU+MK76vz7j+AFRrvVux4oY0Dj2+641l0Y=;
+        b=sERsmZoOkLdDWTnwUP2Kofx4VkusIJAGiuQoHYP50D/0DsKohHTvlO4VSN2VS0Pczn
+         gI1S7i/EaQ96eca9cJqsoNip9YQqvxC8szUj/PAOEn6bXa3md8qZ6rTGDmqBEX4qqIRR
+         dDaCJrH1w026ctOn+5M/yxS0ibx9j29ej4nHtVg7atsjj2E9Q+fS1kigtf+Z4jjl04G4
+         fh/R0RXCbbziKaBdGuhHrXGEZkZT3omKclCnDWeyIWUHTPxBeqlPkgoIl+wT82TLPdQ9
+         AkZQ4191uITaHZMGqJCCETJoF0uoN0ow6owW7EygfSIGbc3TlVtTOqtYN0zjIXNlSTfi
+         iSCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692780845; x=1693385645;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uaN9Yl4WIqy/Z9zG+P/bSUj8CiruvxWP/wFVfyfYE1w=;
-        b=aj1+exUQAFAkn9rGb07ZRA8RAqHAFFxkzeR4YnCXYS2W53s1gxyu19nQIHITt8Q651
-         /t8bgANoRlPyHSzJoK6jPFDfDp1d8aT9YnyNWod0TiZq2WmBAt3uNtdwLW5I4gkShCsk
-         zdd6jARq6RYvv7UVuCPvRMlcrDB+yDK/U/JrV97m4QpYb3QcAUpdfxi3f/bAhfVTOD8Z
-         TwxL82yNOD8CN1YGhwHj9QBTc2zfrRMICjHrQyLzAgc9ZcxU9ILzAd6XBtoVtctu/Bf1
-         5Q//0OO5+EQPCAxx8IMrg6CLxlPHOkh65+znKwqHSZSKNU2i23tD9mAsl0YIruwjtmuW
-         yjQQ==
-X-Gm-Message-State: AOJu0YyJjbLJbntirYd8OIut5v03icPaQ5a6Qy/F8EbrObvlwJezs8h4
-        3xsnZOge/EWf1uw+Q2E8CMIqIEywmaZ0XWHMfes=
-X-Google-Smtp-Source: AGHT+IEis6Ss40Nzd3tp6z5kBEPdhj3dv4cnfQ8vSdqEPN6IDffVmTXW0Ch7DBb3la6IMkchQ+xfqw==
-X-Received: by 2002:a17:906:73d8:b0:99c:e38d:a823 with SMTP id n24-20020a17090673d800b0099ce38da823mr8812499ejl.67.1692780845208;
-        Wed, 23 Aug 2023 01:54:05 -0700 (PDT)
-Received: from [192.168.1.195] ([5.133.47.210])
-        by smtp.googlemail.com with ESMTPSA id gf2-20020a170906e20200b00993a9a951fasm9605904ejb.11.2023.08.23.01.54.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Aug 2023 01:54:04 -0700 (PDT)
-Message-ID: <a2cd120c-f09e-de58-b3a6-beaadb199ae4@linaro.org>
-Date:   Wed, 23 Aug 2023 09:54:04 +0100
+        d=1e100.net; s=20221208; t=1692780878; x=1693385678;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wvjzMcJTUxU+MK76vz7j+AFRrvVux4oY0Dj2+641l0Y=;
+        b=ZZNFHEJj2lXBzcyGpeGBem610oxa/TzNPtQXLymBeM9plvzibhxlcxKQZkga/KHrLJ
+         kyDvxPskW1pZDgzHKB7mOZLZz1NW9YUHedPqY+FO7pe20Lsl+V4KrGEkvnpVC8jTnfD8
+         uCYVZqUqHSWjcicTiX5T8rHHdliFYbmYAcGK6YIjg8/DSoUue+s7WkwH1jWKoDfI131G
+         yv+kLhQDyUHZWldG+TAg5bjd7KA9fqw1vw8JBLZbm7/wJpjLcQfUQuRZlTTbgcKzPM4l
+         B/6APTvONsEhQD2s/WYT3F2hqtAElOIJkwERTP9J+B1l+37sEIXB4Ivkb9JB2rsOOIOK
+         ZRyA==
+X-Gm-Message-State: AOJu0YzpKJlZJ3mYmqYMqd4pyBe8tP09ymQGJ22kt0wc4bO6eO7cq17r
+        YM4QzDOTwhQjHaULHQGuYixRYWpmsGhjyA==
+X-Google-Smtp-Source: AGHT+IGSqHZSd3AMmmQMokCafHKaqaeOt6ivAUAH16LjIYrCBQc0FrUQ77kSDtVWdQGNHPOi0ksgaA==
+X-Received: by 2002:a05:600c:286:b0:3ff:150:d898 with SMTP id 6-20020a05600c028600b003ff0150d898mr1118353wmk.21.1692780878201;
+        Wed, 23 Aug 2023 01:54:38 -0700 (PDT)
+Received: from gba-Precision-5530.kat.ac.za ([196.24.39.242])
+        by smtp.gmail.com with ESMTPSA id o10-20020a1c750a000000b003fed78b03b4sm16265420wmc.20.2023.08.23.01.54.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Aug 2023 01:54:37 -0700 (PDT)
+From:   Grant B Adams <nemith592@gmail.com>
+Cc:     linux-omap@vger.kernel.org, tony@atomide.com,
+        Grant B Adams <nemith592@gmail.com>,
+        Sebastian Reichel <sre@kernel.org>, Bin Liu <b-liu@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org
+Subject: [PATCH v2 0/2] Fix tps65217-charger vs vbus irq conflict
+Date:   Wed, 23 Aug 2023 10:54:28 +0200
+Message-Id: <20230823085430.6610-1-nemith592@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 00/22] nvmem: patches for v6.6
-Content-Language: en-US
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org
-References: <20230814165252.93422-1-srinivas.kandagatla@linaro.org>
- <2023082217-banter-craftwork-281a@gregkh>
- <6e3b58d0-4017-9051-9337-7d86a6be55de@linaro.org>
- <2023082220-cavalry-litigate-9fe3@gregkh>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <2023082220-cavalry-litigate-9fe3@gregkh>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Both the tps65217-charger and vbus drivers are trying to allocate the same
+TPS65217 device interrupt line (TPS65217 is a TI power management IC) 
+which results in the following error and a probe failure:
 
+genirq: Flags mismatch irq 148. 00002000 (vbus) vs. 00000000 
+(tps65217-charger)
 
-On 22/08/2023 18:37, Greg KH wrote:
-> On Tue, Aug 22, 2023 at 06:29:54PM +0100, Srinivas Kandagatla wrote:
->>
->>
->> On 22/08/2023 15:34, Greg KH wrote:
->>> On Mon, Aug 14, 2023 at 05:52:30PM +0100, Srinivas Kandagatla wrote:
->>>> Here are some nvmem patches slightly more than usual for 6.6 that includes
->>>>
->>>> - Support for NXP eFuse, qcom secure qfprom, QCM2290 nvmem providers
->>>> - core level cleanup around error handling and layout creation.
->>>> - few minor cleanups across providers drivers to use better
->>>>     apis and a typo fix.
->>>>
->>>> Can you please queue them up for 6.6.
->>>
->>> I did, thanks, but your email system needs to be fixed:
->>
->>
->> Do you mean Attestation failing part or something else?
-> 
-> Yes:
-> 
-I did not setup patatt in my workflow yet, which is why this is failing 
-attestation.
-will do that before sending out v2.
+For the Beaglebone Black's config the tps65217-charger driver is currently
+disabled and therefore no conflict. Based on comments from Robert C Nelson
+this driver has been disabled for a long time and he is uncertain on the
+reasons why it was disabled. With a battery connected to the BBB, I 
+re-enabled the tps65217-charger driver which resulted in the 
+abovementioned.
 
-thanks,
-srini
+The conflict is resolved by changing both driver's threaded interrupt
+request function from IRQF_ONESHOT to IRQF_SHARED.
 
->>>    Link: https://lore.kernel.org/r/20230818124338.37880-1-yuehaibing@huawei.com
->>>    Base: applies clean to current tree
->>>          git checkout -b 20230818_yuehaibing_huawei_com HEAD
->>> Applying: greybus: svc: Remove unused declarations
->>> Press any key to continue...
->>> Grabbing thread from lore.kernel.org/all/20230814165252.93422-1-srinivas.kandagatla@linaro.org/t.mbox.gz
->>> Analyzing 23 messages in the thread
->>> Checking attestation on all messages, may take a moment...
->>> ---
->>>     ✗ [PATCH 1/22] dt-bindings: nvmem: fixed-cell: add compatible for MAC cells
->>>     ✗ [PATCH 2/22] nvmem: sunxi_sid: Convert to devm_platform_ioremap_resource()
->>>     ✗ [PATCH 3/22] nvmem: brcm_nvram: Use devm_platform_get_and_ioremap_resource()
->>>     ✗ [PATCH 4/22] nvmem: lpc18xx_otp: Convert to devm_platform_ioremap_resource()
->>>     ✗ [PATCH 5/22] nvmem: meson-mx-efuse: Convert to devm_platform_ioremap_resource()
->>>     ✗ [PATCH 6/22] nvmem: rockchip-efuse: Use devm_platform_get_and_ioremap_resource()
->>>     ✗ [PATCH 7/22] nvmem: stm32-romem: Use devm_platform_get_and_ioremap_resource()
->>>     ✗ [PATCH 8/22] nvmem: qfprom: do some cleanup
->>>     ✗ [PATCH 9/22] nvmem: uniphier: Use devm_platform_get_and_ioremap_resource()
->>>     ✗ [PATCH 10/22] dt-bindings: nvmem: qfprom: Add compatible for MSM8226
->>>     ✗ [PATCH 11/22] dt-bindings: nvmem: Add t1023-sfp efuse support
->>>     ✗ [PATCH 12/22] nvmem: add new NXP QorIQ eFuse driver
->>>     ✗ [PATCH 13/22] nvmem: Explicitly include correct DT includes
->>>     ✗ [PATCH 14/22] nvmem: Kconfig: Fix typo "drive" -> "driver"
->>>     ✗ [PATCH 15/22] dt-bindings: nvmem: Add compatible for QCM2290
->>>     ✗ [PATCH 16/22] dt-bindings: nvmem: sec-qfprom: Add bindings for secure qfprom
->>>     ✗ [PATCH 17/22] nvmem: sec-qfprom: Add Qualcomm secure QFPROM support
->>>     ✗ [PATCH 18/22] nvmem: u-boot-env:: Replace zero-length array with DECLARE_FLEX_ARRAY() helper
->>>     ✗ [PATCH 19/22] nvmem: core: Create all cells before adding the nvmem device
->>>     ✗ [PATCH 20/22] nvmem: core: Return NULL when no nvmem layout is found
->>>     ✗ [PATCH 21/22] nvmem: core: Do not open-code existing functions
->>>     ✗ [PATCH 22/22] nvmem: core: Notify when a new layout is registered
->>>     ---
->>>     ✗ BADSIG: DKIM/linaro.org
-> 
-> Looks like someone is impersonating you, or Linaro's email server is
-> broken?  I think other Linaro emails validate properly, so is this
-> something with your setup?
-> 
-> thanks,
-> 
-> greg k-h
+Changes in v2:
+   Initial patches where emailed individually and not threaded. V2 patches 
+   sent as email thread. Feedback provided by gregkh@linuxfoundation.org
+
+Grant B Adams (2):
+  power: supply: Fix tps65217-charger vs vbus irq conflict
+  usb: musb: dsps: Fix vbus vs tps65217-charger irq conflict
+
+ drivers/power/supply/tps65217_charger.c | 2 +-
+ drivers/usb/musb/musb_dsps.c            | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+-- 
+2.34.1
+
