@@ -2,95 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4ECB785A6D
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 16:26:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2840E785A71
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 16:27:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236389AbjHWO0W convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 23 Aug 2023 10:26:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58044 "EHLO
+        id S236388AbjHWO1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 10:27:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236379AbjHWO0T (ORCPT
+        with ESMTP id S233339AbjHWO1D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 10:26:19 -0400
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 30416E62;
-        Wed, 23 Aug 2023 07:26:17 -0700 (PDT)
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 37NEPX5E0029614, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
-        by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 37NEPX5E0029614
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 23 Aug 2023 22:25:33 +0800
-Received: from RTEXMBS05.realtek.com.tw (172.21.6.98) by
- RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Wed, 23 Aug 2023 22:25:56 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS05.realtek.com.tw (172.21.6.98) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.34; Wed, 23 Aug 2023 22:25:55 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d]) by
- RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d%5]) with mapi id
- 15.01.2375.007; Wed, 23 Aug 2023 22:25:55 +0800
-From:   Justin Lai <justinlai0215@realtek.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     "kuba@kernel.org" <kuba@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "jiri@resnulli.us" <jiri@resnulli.us>
-Subject: RE: [PATCH net-next v6 1/2] net/ethernet/realtek: Add Realtek automotive PCIe driver code
-Thread-Topic: [PATCH net-next v6 1/2] net/ethernet/realtek: Add Realtek
- automotive PCIe driver code
-Thread-Index: AQHZ1KdKxMskTPV/qUeQjEQ9njC6tK/2EyOAgAHe1zA=
-Date:   Wed, 23 Aug 2023 14:25:55 +0000
-Message-ID: <27f9009ce2a1440290de672adf379bcd@realtek.com>
-References: <20230822031805.4752-1-justinlai0215@realtek.com>
- <20230822031805.4752-2-justinlai0215@realtek.com>
- <c9bbd802-27da-4775-8176-fa73e6ec4381@lunn.ch>
-In-Reply-To: <c9bbd802-27da-4775-8176-fa73e6ec4381@lunn.ch>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.21.210.185]
-x-kse-serverinfo: RTEXMBS05.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Wed, 23 Aug 2023 10:27:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BBF1E68
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 07:26:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692800773;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xnEXzn2y3iDWlgY1h5P4oZRrvMRBGOGB2OSW0swrWlM=;
+        b=Z0e6oVj5sVtpoSpwclOqaFBWe5XMYQT1oHCurv4xaIbDn8oUuVqtlHgh/pUbtJt+/AZqyg
+        BFvK2/o9kmEV72VV2vAHoXrfL/53dY8eB/jhfeR98vO+Aft64gWHKhTRZTdlJKHuncZu1j
+        NdIIZdtakXm4XLEtDuLmkV8napAiPMM=
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com
+ [209.85.166.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-637-yr3Uv9cYPQSVnm7evCdl8g-1; Wed, 23 Aug 2023 10:26:11 -0400
+X-MC-Unique: yr3Uv9cYPQSVnm7evCdl8g-1
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-786a6443490so522027939f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 07:26:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692800771; x=1693405571;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xnEXzn2y3iDWlgY1h5P4oZRrvMRBGOGB2OSW0swrWlM=;
+        b=LjfF3Aj2raDiNg9JqE7z02HnDErbLijgKRcJmeOrvPYKlxHC8+JFDp3d/W74pi53Gq
+         Kb7/hrNfDqsGzt5Hu6gMDh8NKl4DUW2h6KVqcjOY685E9YnLgJIGJBQzSjhsOMyA5VjK
+         w9CVcQrnTjyHWQb0Ep9xsx6sJhenckq6JkfiHi8Our38/UxuLkgZc1Y8aACa9np/4z6T
+         Q8ECMQeI3jZZvwQGUZhB6MlGtMMA20p3wTiI6lhWAmQU/A/Sm9YIZRnwEO8jMEiAM1X9
+         5ol7dDULL3xlP/870x7w+Bs3za4E0uXgy5nIEWyFLKNAtYNcBZ0tYBxMBL+0PbkQ62Zm
+         u/Jg==
+X-Gm-Message-State: AOJu0YzVS9MGVNx/QUXAn3Vkj8tVSS05oJQOZ2Jk7OGw88RuScpoB4xR
+        o8Q+x5a+bSKcNhGyU8+4J7H8KvR+CGM+yTj17etRvmvpx9H3YS/02rcYLBy7py9mjjhgdSNT64M
+        iPL+jyBDLsHkutYvWMsY1BB0F
+X-Received: by 2002:a6b:720b:0:b0:787:8d2:e0c with SMTP id n11-20020a6b720b000000b0078708d20e0cmr3146128ioc.12.1692800770863;
+        Wed, 23 Aug 2023 07:26:10 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IF01ICWqFHwLoVEr+m4RVo7T8U8PPG+t9CKdbKB3dT5STz1Cr0meVQgpxup5diHeDwWcJElIw==
+X-Received: by 2002:a6b:720b:0:b0:787:8d2:e0c with SMTP id n11-20020a6b720b000000b0078708d20e0cmr3146112ioc.12.1692800770642;
+        Wed, 23 Aug 2023 07:26:10 -0700 (PDT)
+Received: from redhat.com ([38.15.60.12])
+        by smtp.gmail.com with ESMTPSA id eq8-20020a0566384e2800b0042b4437d857sm3872718jab.106.2023.08.23.07.26.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Aug 2023 07:26:10 -0700 (PDT)
+Date:   Wed, 23 Aug 2023 08:26:08 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Ankit Agrawal <ankita@nvidia.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        "shameerali.kolothum.thodi@huawei.com" 
+        <shameerali.kolothum.thodi@huawei.com>,
+        "kevin.tian@intel.com" <kevin.tian@intel.com>,
+        Aniket Agashe <aniketa@nvidia.com>, Neo Jia <cjia@nvidia.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        "Tarun Gupta (SW-GPU)" <targupta@nvidia.com>,
+        Vikram Sethi <vsethi@nvidia.com>,
+        Andy Currid <acurrid@nvidia.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Dan Williams <danw@nvidia.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v7 1/1] vfio/nvgpu: Add vfio pci variant module for
+ grace hopper
+Message-ID: <20230823082608.2867b73e.alex.williamson@redhat.com>
+In-Reply-To: <BY5PR12MB37635FB280AECC6A4CF59431B01CA@BY5PR12MB3763.namprd12.prod.outlook.com>
+References: <20230822202303.19661-1-ankita@nvidia.com>
+        <ZOYP92q1mDQgwnc9@nvidia.com>
+        <BY5PR12MB37635FB280AECC6A4CF59431B01CA@BY5PR12MB3763.namprd12.prod.outlook.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.35; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > +static int rtase_set_pauseparam(struct net_device *dev, struct
-> > +ethtool_pauseparam *pause) {
-> > +     const struct rtase_private *tp = netdev_priv(dev);
-> > +     u16 value = RTL_R16(tp, CPLUS_CMD);
-> > +
-> > +     value &= ~(FORCE_TXFLOW_EN | FORCE_RXFLOW_EN);
-> > +
-> > +     if (pause->tx_pause)
-> > +             value |= FORCE_TXFLOW_EN;
-> > +
-> > +     if (pause->rx_pause)
-> > +             value |= FORCE_RXFLOW_EN;
-> > +
-> > +     RTL_W16(tp, CPLUS_CMD, value);
-> > +     return 0;
-> > +}
-> 
-> I'm pretty sure i said if pause->autoneg is true, you should return
-> -EOPNOTUSPP.
-> 
->         Andrew
+On Wed, 23 Aug 2023 14:18:52 +0000
+Ankit Agrawal <ankita@nvidia.com> wrote:
 
-Sorry this part has not been changed, I will modify this part in the next version.
+> >> +
+> >> +     /*
+> >> +      * Handle read on the BAR2 region. Map to the target device memory
+> >> +      * physical address and copy to the request read buffer.
+> >> +      */
+> >> +     if (copy_to_user(buf, (u8 *)addr + offset, read_count))
+> >> +             return -EFAULT;  
+> >
+> > Just to verify, does this memory allow access of arbitrary alignment
+> > and size?  
+> 
+> Please correct me if I'm wrong, but based on following gdb dump data on
+> the corresponding MemoryRegion->ops, unaligned access isn't supported, and
+> a read of size upto 8 may be done. 
+> 
+> (gdb) p/x *(mr->ops)
+> $7 = {read = 0xaaab5e0b1c50, write = 0xaaab5e0b1a50, read_with_attrs = 0x0, write_with_attrs = 0x0,
+>   endianness = 0x2, valid = {min_access_size = 0x1, max_access_size = 0x8, unaligned = 0x0, accepts = 0x0},
+>   impl = {min_access_size = 0x1, max_access_size = 0x8, unaligned = 0x0}}
+
+This is QEMU policy relative to this region, the kernel interface is
+not exclusive to QEMU usage.  Thanks,
+
+Alex
+
