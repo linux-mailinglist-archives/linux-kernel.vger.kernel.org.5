@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D5D578555F
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 12:30:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BB8D785560
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 12:30:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233730AbjHWKaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 06:30:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42506 "EHLO
+        id S233777AbjHWKar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 06:30:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230414AbjHWKaX (ORCPT
+        with ESMTP id S233733AbjHWKao (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 06:30:23 -0400
+        Wed, 23 Aug 2023 06:30:44 -0400
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 55597CD6
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 03:30:20 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 26E37CD1
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 03:30:35 -0700 (PDT)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A999811FB;
-        Wed, 23 Aug 2023 03:31:00 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7E4E11042;
+        Wed, 23 Aug 2023 03:31:15 -0700 (PDT)
 Received: from [192.168.178.6] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 574A83F64C;
-        Wed, 23 Aug 2023 03:30:18 -0700 (PDT)
-Message-ID: <77cd2ad7-7b94-7c45-fec3-131452229fc1@arm.com>
-Date:   Wed, 23 Aug 2023 12:30:17 +0200
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5769D3F64C;
+        Wed, 23 Aug 2023 03:30:33 -0700 (PDT)
+Message-ID: <671ff8bf-ed3e-b651-d9da-6507fddee010@arm.com>
+Date:   Wed, 23 Aug 2023 12:30:27 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH v4 2/3] sched/uclamp: Ignore (util == 0) optimization in
- feec() when p_util_max = 0
+Subject: Re: [PATCH v4 3/3] sched/tp: Add new tracepoint to track compute
+ energy computation
 Content-Language: en-US
 To:     Qais Yousef <qyousef@layalina.io>, Ingo Molnar <mingo@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
@@ -38,9 +38,9 @@ Cc:     linux-kernel@vger.kernel.org, Lukasz Luba <lukasz.luba@arm.com>,
         Jonathan JMChen <Jonathan.JMChen@mediatek.com>,
         Hongyan Xia <hongyan.xia2@arm.com>
 References: <20230821224504.710576-1-qyousef@layalina.io>
- <20230821224504.710576-3-qyousef@layalina.io>
+ <20230821224504.710576-4-qyousef@layalina.io>
 From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-In-Reply-To: <20230821224504.710576-3-qyousef@layalina.io>
+In-Reply-To: <20230821224504.710576-4-qyousef@layalina.io>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
@@ -53,76 +53,68 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 22/08/2023 00:45, Qais Yousef wrote:
-> find_energy_efficient_cpu() bails out early if effective util of the
-> task is 0 as the delta at this point will be zero and there's nothing
-> for EAS to do. When uclamp is being used, this could lead to wrong
-> decisions when uclamp_max is set to 0. In this case the task is capped
-
-Does uclamp_max plays a role here? We check util and uclamp_min in this
-condition.
-
-> to performance point 0, but it is actually running and consuming energy
-> and we can benefit from EAS energy calculations.
+> It was useful to track feec() placement decision and debug the spare
+> capacity and optimization issues vs uclamp_max.
 > 
-> Rework the condition so that it bails out for when util is actually 0 or
-> uclamp_min is requesting a higher performance point.
-
-I do get the condition:
-
-> +	if (!task_util_est(p) && p_util_min == 0)
->  		goto unlock;
-
-which is !(task_util_est(p) || p_util_min)
-
-But the text then should be '... bails out for when util is actually 0
-and uclamp_min is 0 too'? Or 'uclamp_min is not requesting ...'.
-
-> We can do that without needing to use uclamp_task_util(); remove it.
-> 
-> Fixes: d81304bc6193 ("sched/uclamp: Cater for uclamp in find_energy_efficient_cpu()'s early exit condition")
-> Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
 > Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
 > ---
->  kernel/sched/fair.c | 18 +-----------------
->  1 file changed, 1 insertion(+), 17 deletions(-)
+>  include/trace/events/sched.h | 5 +++++
+>  kernel/sched/core.c          | 1 +
+>  kernel/sched/fair.c          | 7 ++++++-
+>  3 files changed, 12 insertions(+), 1 deletion(-)
 > 
+> diff --git a/include/trace/events/sched.h b/include/trace/events/sched.h
+> index fbb99a61f714..a13d5d06be9d 100644
+> --- a/include/trace/events/sched.h
+> +++ b/include/trace/events/sched.h
+> @@ -735,6 +735,11 @@ DECLARE_TRACE(sched_update_nr_running_tp,
+>  	TP_PROTO(struct rq *rq, int change),
+>  	TP_ARGS(rq, change));
+>  
+> +DECLARE_TRACE(sched_compute_energy_tp,
+> +	TP_PROTO(struct task_struct *p, int dst_cpu, unsigned long energy,
+> +		 unsigned long max_util, unsigned long busy_time),
+> +	TP_ARGS(p, dst_cpu, energy, max_util, busy_time));
+> +
+>  #endif /* _TRACE_SCHED_H */
+>  
+>  /* This part must be outside protection */
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index efe3848978a0..36c60ad9966a 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -114,6 +114,7 @@ EXPORT_TRACEPOINT_SYMBOL_GPL(sched_overutilized_tp);
+>  EXPORT_TRACEPOINT_SYMBOL_GPL(sched_util_est_cfs_tp);
+>  EXPORT_TRACEPOINT_SYMBOL_GPL(sched_util_est_se_tp);
+>  EXPORT_TRACEPOINT_SYMBOL_GPL(sched_update_nr_running_tp);
+> +EXPORT_TRACEPOINT_SYMBOL_GPL(sched_compute_energy_tp);
+>  
+>  DEFINE_PER_CPU_SHARED_ALIGNED(struct rq, runqueues);
+>  
 > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 5da6538ed220..e19a36e7b433 100644
+> index e19a36e7b433..779c285203e3 100644
 > --- a/kernel/sched/fair.c
 > +++ b/kernel/sched/fair.c
-> @@ -4571,22 +4571,6 @@ static inline unsigned long task_util_est(struct task_struct *p)
->  	return max(task_util(p), _task_util_est(p));
+> @@ -7604,11 +7604,16 @@ compute_energy(struct energy_env *eenv, struct perf_domain *pd,
+>  {
+>  	unsigned long max_util = eenv_pd_max_util(eenv, pd_cpus, p, dst_cpu);
+>  	unsigned long busy_time = eenv->pd_busy_time;
+> +	unsigned long energy;
+>  
+>  	if (dst_cpu >= 0)
+>  		busy_time = min(eenv->pd_cap, busy_time + eenv->task_busy_time);
+>  
+> -	return em_cpu_energy(pd->em_pd, max_util, busy_time, eenv->cpu_cap);
+> +	energy = em_cpu_energy(pd->em_pd, max_util, busy_time, eenv->cpu_cap);
+> +
+> +	trace_sched_compute_energy_tp(p, dst_cpu, energy, max_util, busy_time);
+> +
+> +	return energy;
 >  }
 >  
-> -#ifdef CONFIG_UCLAMP_TASK
-> -static inline unsigned long uclamp_task_util(struct task_struct *p,
-> -					     unsigned long uclamp_min,
-> -					     unsigned long uclamp_max)
-> -{
-> -	return clamp(task_util_est(p), uclamp_min, uclamp_max);
-> -}
-> -#else
-> -static inline unsigned long uclamp_task_util(struct task_struct *p,
-> -					     unsigned long uclamp_min,
-> -					     unsigned long uclamp_max)
-> -{
-> -	return task_util_est(p);
-> -}
-> -#endif
-> -
->  static inline void util_est_enqueue(struct cfs_rq *cfs_rq,
->  				    struct task_struct *p)
->  {
-> @@ -7699,7 +7683,7 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
->  	target = prev_cpu;
->  
->  	sync_entity_load_avg(&p->se);
-> -	if (!uclamp_task_util(p, p_util_min, p_util_max))
-> +	if (!task_util_est(p) && p_util_min == 0)
->  		goto unlock;
->  
->  	eenv_task_busy_time(&eenv, p, prev_cpu);
+>  /*
 
-With the question about the content of the patch header in mind:
+I will make sure that this gets integrated into our trace module in Lisa
+https://github.com/ARM-software/lisa .
 
 Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
