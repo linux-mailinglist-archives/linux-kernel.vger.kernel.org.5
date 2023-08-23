@@ -2,247 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4132A785F8E
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 20:26:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C31E785F93
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 20:27:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235617AbjHWS0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 14:26:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35640 "EHLO
+        id S238126AbjHWS1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 14:27:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232782AbjHWS0m (ORCPT
+        with ESMTP id S232782AbjHWS1F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 14:26:42 -0400
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C977E57
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 11:26:40 -0700 (PDT)
-Received: by mail-qv1-xf32.google.com with SMTP id 6a1803df08f44-64ccdf8820dso660396d6.1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 11:26:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692815199; x=1693419999;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=xZeDhlP12CCN0oJNhTBAvVYGBetPZTP790HQ3Y1PxUo=;
-        b=sNluJTDQj1oYgAwBV1A0ERc7FZCkqLbSUBbtozuvy/vAB9aaN/ruYwYmGJPTraU9gU
-         U5MhQncCTUj/dTWKXyBvJWM3O8HKUwmJZAi7J8RdTFPbNZ7lGjxgNEh1FD26CMDEeoNR
-         1b1HWTz8QtTPkW/v6DzuXZ1pCNAIrt5xZwU/mPc056beS33k6MG5SpaW547ZBSQvq8JF
-         q/AO1gGD+t+pAjVpHZMCMB+XQwCSUEcN7YcsfSFwt9VpKBQBh+xIswOIgtjij3CkTiBh
-         gFwUvZ54+ofOzZsZNwkjN1tukPFKhlWidhHAtQt6kfwN1WMjI+DxmgpcO589VkyiAVgO
-         6jSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692815199; x=1693419999;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xZeDhlP12CCN0oJNhTBAvVYGBetPZTP790HQ3Y1PxUo=;
-        b=GLWReHQ1lzIz+R5xEtfWj1BI0ecsv/SgLVjC9FeE9wSd6o4MJM81htKF8B5W1r+fT6
-         4d8zjX1NpeF137JfhdeSLJTECyh9eTwRsC/GpcFOOu9RqoELJD3rtgJO4/SG0bZCbhK0
-         opX2MCmFmv2brX9aZ92YWWL7fHaAKzrZSpy9idmWi7EPzPrUDcQ7hk+8d6ywrOySRcvD
-         1kTYEDFzmEsrA2C+T8nOpr6Wshi1IZB2HZpog31egF2MWHDRDwxj9EnIBjpPpaS3pR8/
-         7zDGbuIYD4xOef7Zt7GhXCiXx5X2/BmjtZx5KuK3In2AYIL2If4iCN3BKHCfXrjO7JIg
-         vwtA==
-X-Gm-Message-State: AOJu0YxjxywmRzFA0DF7wZxWFcXyPNJeozxKuO+qWlUsYxfpO0q49WVB
-        RF04ClnW9qi934CTmhY3h+7i
-X-Google-Smtp-Source: AGHT+IHaVmV48pQahSmLLWjFOl/E9uPK/4Xo52hm7mmNtBhojPQ/gX+bwF2sGDbvEeRsxb7z34ArbQ==
-X-Received: by 2002:a05:6214:9d0:b0:63c:71bf:f5d1 with SMTP id dp16-20020a05621409d000b0063c71bff5d1mr17339344qvb.25.1692815199587;
-        Wed, 23 Aug 2023 11:26:39 -0700 (PDT)
-Received: from thinkpad ([117.206.118.65])
-        by smtp.gmail.com with ESMTPSA id x19-20020a0ce253000000b0064f4258184csm2556292qvl.53.2023.08.23.11.26.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Aug 2023 11:26:39 -0700 (PDT)
-Date:   Wed, 23 Aug 2023 23:56:28 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Lorenzo Pieralisi <lpieralisi@kernel.org>
-Cc:     Rob Herring <robh@kernel.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        linux-pci@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Cyril Brulebois <kibi@debian.org>,
-        Phil Elwell <phil@raspberrypi.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Jim Quinlan <jim2101024@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "moderated list:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v6 1/5] dt-bindings: PCI: brcmstb: Add brcm,enable-l1ss
- property
-Message-ID: <20230823182628.GM3737@thinkpad>
-References: <20230623144100.34196-1-james.quinlan@broadcom.com>
- <20230623144100.34196-2-james.quinlan@broadcom.com>
- <ZON43rPGJGzjTTj/@lpieralisi>
- <CA+-6iNwRGsnRsT9R=iEzaJNCTLu_pQNG4x+noE8bqLYCRm_PHQ@mail.gmail.com>
- <ZOOFrqkAdW5d6WIj@lpieralisi>
- <CA+-6iNzZCFs_gQGqa8KAcBM6etFc=vAFoqFmde=xru2-O+F3_w@mail.gmail.com>
- <ZOW1qDmTdy+8KODt@lpieralisi>
- <CAL_JsqJSfKa=9nqzpdv0TVcik73_xTJ-LtBycDfFZiGkz2mDNQ@mail.gmail.com>
- <ZOYz1BSwSb6NTPUr@lpieralisi>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+        Wed, 23 Aug 2023 14:27:05 -0400
+Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-db5eur01on2074.outbound.protection.outlook.com [40.107.15.74])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CA40E7F;
+        Wed, 23 Aug 2023 11:27:01 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hCavMQyahhzujB3by+/IDo7rzsqeuxcC2cADEez8zGV8CpxWpjb2olO+hn8CEPKb17v2jjqxgY1ZguVe9rirxA4DQl+HxzmPoLZRAtQELZ3O9/OavTdOVuXbH4+pNwXcrcC+HhdcjCPSc1MH/vhj/FgqBoYELlvnj2BvqpKZ65jV+RHeLy2M751vuIE0zsSJJTpzwMk2dn4yEm4cbM1UU9ghoLor4Y1jFfSHuhUppVtkT9ZaTdxgOsVIphZ2txXYhpjJ4Q1SKU4IijJjaVHfBT4Ph3uAz4bIr/KQL64BEloSIvpyBa5diTRpfdXZWcx3SK/4MtkriZ1GEuFD/RfhIQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=G+HhOaFE0Lu7eQOYxoTMn672CLEoIm2Vol59QiXEVP8=;
+ b=n2a6FSqXxICR78mV8zU+rg1FqDJ0Mm8QoSm+llVXzLbxlh9sr0TJDbcRqRr9UuRt+cra007xknm6qT6KzBhT2DNmzGBiG3vZ9NlW5cJhystFyIaLqXamSHW1srmtyCxjxfd5Rs+UuUqQpbBveBqS99e66i4zF9JFSECb8tF8TPE7FCysVIRZlqglKohWD3QY1MCTUTVisTGbvAELOLOAcFs1nxxSpHFxb+HzPFhcgnv/FFgmsmX5rU59MnrvGDD/tiroX5369OnXTAufTMpNLtx4dYgtlsaOGSD9CCW7w3sa8wyL4TbEOAO4JZhLRe7FiFU/alhoviiGZFTMRsS9WQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G+HhOaFE0Lu7eQOYxoTMn672CLEoIm2Vol59QiXEVP8=;
+ b=d/6hijS2KDBxzkGyhf9vDtxbLUqspX7gCnkh/g9qqYftKUTbdQ4gmrGgY6dbHq1T9lq4Gh2kjsOirKO8R/pD5c3Ky+xjfRKGfSMJh7nQIb+n7bxMNnSZ2hp0sqjoxGmz6qFxt8DPZcbS211DszRe8o4FY1KI5P0u88q0IIXKLsw=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
+ by DU0PR04MB9393.eurprd04.prod.outlook.com (2603:10a6:10:358::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.25; Wed, 23 Aug
+ 2023 18:26:58 +0000
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::a680:2943:82d1:6aa8]) by AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::a680:2943:82d1:6aa8%3]) with mapi id 15.20.6699.022; Wed, 23 Aug 2023
+ 18:26:58 +0000
+From:   Frank Li <Frank.Li@nxp.com>
+To:     vkoul@kernel.org
+Cc:     devicetree@vger.kernel.org, dmaengine@vger.kernel.org,
+        frank.li@nxp.com, imx@lists.linux.dev, joy.zou@nxp.com,
+        krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
+        peng.fan@nxp.com, robh+dt@kernel.org, shenwei.wang@nxp.com
+Subject: [PATCH 1/1] dmaengine: fsl-edma: fix edma4 channel enable failure on second attempt
+Date:   Wed, 23 Aug 2023 14:26:35 -0400
+Message-Id: <20230823182635.2618118-1-Frank.Li@nxp.com>
+X-Mailer: git-send-email 2.34.1
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZOYz1BSwSb6NTPUr@lpieralisi>
+Content-Type: text/plain
+X-ClientProxiedBy: BY5PR13CA0028.namprd13.prod.outlook.com
+ (2603:10b6:a03:180::41) To AM6PR04MB4838.eurprd04.prod.outlook.com
+ (2603:10a6:20b:4::16)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|DU0PR04MB9393:EE_
+X-MS-Office365-Filtering-Correlation-Id: 96ed612b-fd15-4d60-e86b-08dba4068940
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: RXnVqifhOV5o3IV29ghIEfnC8PjVzIBbO0NE5aAA0FalXW15flLuhXAuRH1PWEN452n/eoui5SZ4YdbbYg/uV8w1Gzx/CTmwcOtI+5qegFlAWIP84ZOH4G72+I2vrUzQGLE2tHY+HJ4T2dYIaaRPzE+dZQhe95knFdvjrRDQkSlrITKkzDFunPkEOW6sHZBlvd8HuoLcKkH9KXIE3uLA0P3O7K2m91NMKXZT7gxG4T4DUSEs/Ee+MkkYJSV08fV8zOoHiRZEUD8aWeN3g0B4BEH2P2YnltM2DkFAOYYuZXI0QSO439fS59vZyQOgJ146dukJaD0Yo36rXp2po8pWtprqCIyfpCh8No2qlcXwVlGngjRWYiqm9Wd+t6AI/FRtcFui2uZBtix/bcfT4C2sWpVkVlB4NCFchn2FFv+nz48D27+fl/4SW8kWlEI4+3narTZ4zus8zmJCvoYztJtEferIKS7AEex9TwZ1un5IJLH3yYIsGAd6Xsh5ljk1TZ3bp66amONUHhhJc+8V/rqi2cCOe1KTHyPwLSop7d6rNYKIPHdhe29XQkMgZf5JGN6r+4T/WiPZ9MG7z/jHE0OPuJdR+6dALOxl183HphqzUd1UNkfHmfc4JZDyAk34WU2G
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(136003)(39860400002)(376002)(396003)(451199024)(186009)(1800799009)(478600001)(86362001)(36756003)(6486002)(6506007)(66476007)(66556008)(316002)(6916009)(66946007)(6666004)(52116002)(41300700001)(6512007)(38100700002)(8676002)(38350700002)(4326008)(8936002)(5660300002)(1076003)(26005)(2616005)(83380400001)(2906002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?RfjwH5f/VuR9K5GsaHPtNLNXRopqxiu8Nwlt9WmOQdAHdzcII5wCAmoFjN3F?=
+ =?us-ascii?Q?nyBQegHuVT+byJNx12JoA0J1eu4XMgxrzgwUSrbA8p6wSZQyBh80gId+smCZ?=
+ =?us-ascii?Q?nL3S5gUkHmWNkj3v5BsAbta3S//Rla1U0jzeiv+eNb1+Pictjl+B4ad0xJV9?=
+ =?us-ascii?Q?1l1j9yU63QPhL0KB42lzJPpQiPIOekt3I2rCayl3Db6It+9iDQ0CxCIWZy7T?=
+ =?us-ascii?Q?iTp48T8L0SBSP64hNdBnbmrUR04zv0dJ4IMtkRPjeUOTZBAHzpuovpD5tp/4?=
+ =?us-ascii?Q?o8YTMI2bl6pebk3K6tNaWF3V8O6WJTN6AP7GO7NEyHfuWTzQPYiu+eWutIL0?=
+ =?us-ascii?Q?H+65vrx1fwF7kbmtcUwlPQbQSpuWP5ZxQptRsIoWsOBbP3qQcCbs3ZSgXjTQ?=
+ =?us-ascii?Q?5VuhXPsvdKJbvD0zDM/2kmIwDW4On+k+UZIBqQ93NWpJhTeaLLU6TV3TEd9X?=
+ =?us-ascii?Q?vCkOQ4LV3HsJEnrdb3TNMPemLyNpYQQkwvZE2fEQk8r7s+aYvdfAhD8wxNs1?=
+ =?us-ascii?Q?+Ry8xaYzi6jiLc8dK1FQiQP785WvJi7PljD9AfU/aduD5JKnCC3s9zNT7xkg?=
+ =?us-ascii?Q?Bq7I/9VIW9USNj+x/SYfLBygolzBt/D934o55WjYt2yyzRxrSpUwRZndsjUW?=
+ =?us-ascii?Q?E7jYEhpPMWhqC0SDV4OT1CtGp/2/ttNuxmwJYjdi6Jj9v8V+FgFOoEv61NYe?=
+ =?us-ascii?Q?F0vWbmZCResknrE0Vh2YEvjyHnOZc/sn1Ed3xAep2h0D58fNK1M4qqaRd39B?=
+ =?us-ascii?Q?T8+28B13PxWUko4oXONCEx36RQQ4vcCqWfE6XaVXDijR/uxEGkEbot6tZmPf?=
+ =?us-ascii?Q?24cFKBQTJ9q0dPx9Jll8Paud2avHazPJTKgUTpMtVKR8eh4O5BXbqZqjIKrB?=
+ =?us-ascii?Q?QKXKlhWDm+FPZdr5E9YQh+0lwNHaHfOXfYDshqHWbPiOSqfTKgVyzzaR7H0R?=
+ =?us-ascii?Q?CRL38iAnIfDqPZ2fcXwjNQXJKShBPw3WRHd8+qE38Iim+5DauaFysdtqPCln?=
+ =?us-ascii?Q?F45CciYlc7u2mFDt3h+6MiOOO0BkurTXaa6VxszyPIItv3nh0jgXLqhNyzer?=
+ =?us-ascii?Q?8r/x0VMSQEkbiiy0wZOvCph0TN6K0x2G852Y8+4dfGBtS6orRK8+Xc8EDrn5?=
+ =?us-ascii?Q?wsY5GP/fLkurEeAyXxUwKs4qFBB+Mv69zAr9z9Ji5d2FNOat/T4AbV1d3vj4?=
+ =?us-ascii?Q?ZXuLt20Z0e2zTe8hhlff0lt7kkLiUTKFRGuRpP71Pi7qHyA0Pwj6OrxXhUtw?=
+ =?us-ascii?Q?awf8rLTu+l4sRLMDYyAEUhwhloeHb8Gw24dDwY5qCsyHDiN0+GYYfL5dgSwk?=
+ =?us-ascii?Q?1HeQa/bO91yPgQfaQJdC80KNHJiM+/YsHVzy4DBQ3ZbYx8smRVEtmyniFAlk?=
+ =?us-ascii?Q?SAWldLkH6IVP3PxmNep3n9U72DeFD5jrKoTowwBdtJYLXSFrXnMSEjq4mMSA?=
+ =?us-ascii?Q?hWAAEsYnccQbKn0Ax8UT4qPUgMw8qr8BGeNIGbQADyxrmvd8BEdfK2kxFceh?=
+ =?us-ascii?Q?s3stRbuU63w8CAr08DFXHcHU811EUI1sEEjk7uuyVPpoq+t3EUxGik6mIB2v?=
+ =?us-ascii?Q?u14vBOTV5ztq2kN5Kp0=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 96ed612b-fd15-4d60-e86b-08dba4068940
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Aug 2023 18:26:58.4122
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: jOagCePGQEjiv2Vj2r7juST39vuGKXynXmCYb2qDAAi9VLdUUPeOLE2t6PBy+SyGFUjOwtnKWbj4pUrt5/W8rQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU0PR04MB9393
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 23, 2023 at 06:29:08PM +0200, Lorenzo Pieralisi wrote:
-> On Wed, Aug 23, 2023 at 09:48:40AM -0500, Rob Herring wrote:
-> > On Wed, Aug 23, 2023 at 2:30 AM Lorenzo Pieralisi <lpieralisi@kernel.org> wrote:
-> > >
-> > > On Mon, Aug 21, 2023 at 12:01:50PM -0400, Jim Quinlan wrote:
-> > > > On Mon, Aug 21, 2023 at 11:41 AM Lorenzo Pieralisi
-> > > > <lpieralisi@kernel.org> wrote:
-> > > > >
-> > > > > On Mon, Aug 21, 2023 at 11:25:11AM -0400, Jim Quinlan wrote:
-> > > > > > On Mon, Aug 21, 2023 at 10:47 AM Lorenzo Pieralisi
-> > > > > > <lpieralisi@kernel.org> wrote:
-> > > > > > >
-> > > > > > > On Fri, Jun 23, 2023 at 10:40:54AM -0400, Jim Quinlan wrote:
-> > > > > > > > This commit adds the boolean "brcm,enable-l1ss" property:
-> > > > > > > >
-> > > > > > > >   The Broadcom STB/CM PCIe HW -- a core that is also used by RPi SOCs --
-> > > > > > > >   requires the driver probe() to deliberately place the HW one of three
-> > > > > > > >   CLKREQ# modes:
-> > > > > > > >
-> > > > > > > >   (a) CLKREQ# driven by the RC unconditionally
-> > > > > > > >   (b) CLKREQ# driven by the EP for ASPM L0s, L1
-> > > > > > > >   (c) Bidirectional CLKREQ#, as used for L1 Substates (L1SS).
-> > > > > > > >
-> > > > > > > >   The HW+driver can tell the difference between downstream devices that
-> > > > > > > >   need (a) and (b), but does not know when to configure (c).  All devices
-> > > > > > > >   should work fine when the driver chooses (a) or (b), but (c) may be
-> > > > > > > >   desired to realize the extra power savings that L1SS offers.  So we
-> > > > > > > >   introduce the boolean "brcm,enable-l1ss" property to inform the driver
-> > > > > > > >   that (c) is desired.  Setting this property only makes sense when the
-> > > > > > > >   downstream device is L1SS-capable and the OS is configured to activate
-> > > > > > > >   this mode (e.g. policy==powersupersave).
-> > > > > > > >
-> > > > > > > >   This property is already present in the Raspian version of Linux, but the
-> > > > > > > >   upstream driver implementation that follows adds more details and
-> > > > > > > >   discerns between (a) and (b).
-> > > > > > > >
-> > > > > > > > Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
-> > > > > > > > Reviewed-by: Rob Herring <robh@kernel.org>
-> > > > > > > > ---
-> > > > > > > >  Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml | 9 +++++++++
-> > > > > > > >  1 file changed, 9 insertions(+)
-> > > > > > > >
-> > > > > > > > diff --git a/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml b/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
-> > > > > > > > index 7e15aae7d69e..8b61c2179608 100644
-> > > > > > > > --- a/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
-> > > > > > > > +++ b/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
-> > > > > > > > @@ -64,6 +64,15 @@ properties:
-> > > > > > > >
-> > > > > > > >    aspm-no-l0s: true
-> > > > > > > >
-> > > > > > > > +  brcm,enable-l1ss:
-> > > > > > > > +    description: Indicates that PCIe L1SS power savings
-> > > > > > > > +      are desired, the downstream device is L1SS-capable, and the
-> > > > > > > > +      OS has been configured to enable this mode.  For boards
-> > > > > > >
-> > > > > > > What does this mean ? I don't think DT properties are supposed
-> > > > > > > to carry information related to how the OS is configured.
-> > > > > >
-> > > > > > The DT setting in question is unrelated to the statement "and the OS
-> > > > > > has been configured to
-> > > > > > enable this mode".
-> > > > > >
-> > > > > > This is merely saying that even if you enable "brcm,l1ss-enable"
-> > > > > > that you may not get L1SS power savings w/o setting
-> > > > > > "CONFIG_PCIEASPM_POWER_SUPERSAVE=y".
-> > > > > > I mentioned that exact term but a reviewer nakked it because
-> > > > > > apparently DT descriptions should not be OS specific.
-> > 
-> > Yeah, probably the OS part should be dropped.
-> 
-> I will drop it - if you don't mind.
-> 
-> > > > > > I am actually open for this to be a command-line option but I wanted to honor
-> > > > > > what the Raspian OS folks have already done.  RaspianOS already has
-> > > > > > "brcm,enable-l1ss"
-> > > > > > set in their DTS files.
-> > > > >
-> > > > > This is about the mainline kernel, I don't have any visibility into
-> > > > > downstream kernels (where that property management was added without DT
-> > > > > and PCI maintainers supervision).
-> > > > >
-> > > > > Raspian OS folks' choice is theirs but it can't and it shouldn't override
-> > > > > the mainline review process even though I understand the position you
-> > > > > are in.
-> > 
-> > Sure, but we shouldn't change things just to be different from
-> > downstream. If we're only discussing the color of the shed, then no
-> > point changing it.
-> 
-> Sure, no problem.
-> 
-> > > > Understood, but using the command line has its warts as well; I now recall the
-> > > > discussion Bjorn and I  had regarding this option.  I'm pretty sure
-> > > > that upstreaam will not allow the following
-> > > > possible command line kernel params:
-> > > >
-> > > >     brcm,enable-l1ss
-> > > >     pci=brcm,entable-l1ss
-> > > >
-> > > > Bjorn suggested using the  documented but (IMO) obscure  and  rarely
-> > > > used  format
-> > > >
-> > > >     pci=[<domain>:]<bus>:<dev>.<func>[/<dev>.<func>]*pci:<vendor>:<device>[:<subvendor>:<subdevice>]
-> > > >
-> > > > but this is just going in the wrong direction; here's why.  Using the
-> > > > above iformat s completely dependent on the
-> > > > PCI "linux-domaiin"  property,  a non-HW related DT property I  might
-> > > > add.  Since "linux-domain" is already
-> > > > a valid and well-used  DT property, and the value of  the above
-> > > > command line format is dependent
-> > > > on the value of the "linux-domain", why not be consistent and let
-> > > > "brcm,enable-l1ss" be a Broadcom specific property?
-> > >
-> > > I am just asking to add a module_param to the host controller driver.
-> > 
-> > FWIW, gregkh pretty much always nacks new module parameters.
-> 
-> Fine by me.
-> 
-> > > Anyway - time is running out for v6.6, I need Rob's feedback, if I don't
-> > > hear from him today I will merge the last three patches and postpone the
-> > > discussion.
-> > 
-> > You've already got my reviewed-by. If you aren't happy with this, then
-> > fine. I don't know enough about L1SS to comment further. Is it
-> > normally always supported or discoverable? If so, then I'd think we'd
-> > want it default enabled with a disable override flag. Maybe it should
-> > be generic?
-> 
-> It is not that I am not happy with it - we asked questions to understand
-> what this property was for, I think that's normal.
-> 
-> I will merge this series as-is.
-> 
+When attempting to start DMA for the second time using
+fsl_edma3_enable_request(), channel never start.
 
-There is a discussion ongoing here: https://lore.kernel.org/linux-pci/20230823181650.GL3737@thinkpad/T/#u
+CHn_MUX must have a unique value when selecting a peripheral slot in the
+channel mux configuration. The only value that may overlap is source 0.
+If there is an attempt to write a mux configuration value that is already
+consumed by another channel, a mux configuration of 0 (SRC = 0) will be
+written.
 
-Can you please hold on to merging this series until we've reached a conclusion?
+Check CHn_MUX before writing in fsl_edma3_enable_request().
 
-- Mani
+Fixes: 72f5801a4e2b ("dmaengine: fsl-edma: integrate v3 support")
+Signed-off-by: Frank Li <Frank.Li@nxp.com>
+---
+ drivers/dma/fsl-edma-common.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-> Lorenzo
-
+diff --git a/drivers/dma/fsl-edma-common.c b/drivers/dma/fsl-edma-common.c
+index a0f5741abcc4..edb92fa93315 100644
+--- a/drivers/dma/fsl-edma-common.c
++++ b/drivers/dma/fsl-edma-common.c
+@@ -92,8 +92,14 @@ static void fsl_edma3_enable_request(struct fsl_edma_chan *fsl_chan)
+ 
+ 	edma_writel_chreg(fsl_chan, val, ch_sbr);
+ 
+-	if (flags & FSL_EDMA_DRV_HAS_CHMUX)
+-		edma_writel_chreg(fsl_chan, fsl_chan->srcid, ch_mux);
++	if (flags & FSL_EDMA_DRV_HAS_CHMUX) {
++		/*
++		 * ch_mux: With the exception of 0, attempts to write a value
++		 * already in use will be forced to 0.
++		 */
++		if (!edma_readl_chreg(fsl_chan, ch_mux))
++			edma_writel_chreg(fsl_chan, fsl_chan->srcid, ch_mux);
++	}
+ 
+ 	val = edma_readl_chreg(fsl_chan, ch_csr);
+ 	val |= EDMA_V3_CH_CSR_ERQ;
 -- 
-மணிவண்ணன் சதாசிவம்
+2.34.1
+
