@@ -2,140 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C148785CA5
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 17:51:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56773785CB8
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 17:54:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237324AbjHWPvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 11:51:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51860 "EHLO
+        id S237341AbjHWPyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 11:54:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233338AbjHWPvt (ORCPT
+        with ESMTP id S233338AbjHWPyf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 11:51:49 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF7FECD1;
-        Wed, 23 Aug 2023 08:51:46 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37NFpXt4038893;
-        Wed, 23 Aug 2023 10:51:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1692805893;
-        bh=W6V1upOtSdkrnnJgAfZkngCMorV465U5MgquJbm+CBM=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=rgEnzlZVRAsltvaxt2Lw7e/JB5pIwgDNJ5z7gXFgyTUlUozLCmPbcUZz1Z4Gz9aUw
-         qG/NHPERxiLA3KBo63RsXCv8xQf8UrKAaJioXhw084Sqf3/VUWZgfxhcrueSTdcJZC
-         xcua6yH55WJ4ueFYP69Qxw1TRXVvRBnh9MyTY0a0=
-Received: from DLEE111.ent.ti.com (dlee111.ent.ti.com [157.170.170.22])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37NFpXeC055323
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 23 Aug 2023 10:51:33 -0500
-Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 23
- Aug 2023 10:51:33 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 23 Aug 2023 10:51:33 -0500
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37NFpXj6008149;
-        Wed, 23 Aug 2023 10:51:33 -0500
-Date:   Wed, 23 Aug 2023 10:51:33 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     Bjorn Andersson <andersson@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-remoteproc@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Robert Nelson <robertcnelson@gmail.com>,
-        Kevin Cahalan <kevinacahalan@gmail.com>
-Subject: Re: [PATCH] remoteproc: core: Honor device tree /alias entries when
- assigning IDs
-Message-ID: <20230823155133.v7r3uddautivowps@frail>
-References: <20230807140247.956255-1-nm@ti.com>
- <ZOULmFR51C+9kEhZ@p14s>
- <20230822201205.4csoj4kym2yhuyrf@decrease>
- <ZOYkVec/aQSiCWxh@p14s>
+        Wed, 23 Aug 2023 11:54:35 -0400
+Received: from mail-oa1-x2b.google.com (mail-oa1-x2b.google.com [IPv6:2001:4860:4864:20::2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08497E5F;
+        Wed, 23 Aug 2023 08:54:33 -0700 (PDT)
+Received: by mail-oa1-x2b.google.com with SMTP id 586e51a60fabf-1ccd5b1b9d0so248582fac.1;
+        Wed, 23 Aug 2023 08:54:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692806072; x=1693410872;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=2VDLlTrw+KZAlR49NajxO5L4C9/jMnmujffHvdDJcQs=;
+        b=TWPitcP3YEZUukBZVunu8PzCPZoXcWsM3TV5NpvSYmWBc5Q4V6dH5euWfnbPlNUwM8
+         0nmbAAI16t5gbAkcMdIVZ/sqI0DwwQNHeokEs3kB0gi6u2VuwS0bc4K4KhPccpYM7/h9
+         CQc00tM3fzAIad7IHy28H9jMyW0oNLTJqIdk5vNzIdK70Ej+kstomGCF1/D7gYsVUI75
+         Rr9G/yPdaJiMTgYBVDspcUwfaIKo1lQKbqdM06R3vN1hswZT+mbTqlGlothZ9rToLdKo
+         OrtCqh54LQD3p9fTfkMS9EqvxnqCh9jFwyC156WolI8aDK9d7YIF0lkQqpEMWPXAK07p
+         /ixA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692806072; x=1693410872;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2VDLlTrw+KZAlR49NajxO5L4C9/jMnmujffHvdDJcQs=;
+        b=Mggkhln3+gSmITcB3r7S7dJltXf/LP7SEWQeUkHMTa4OoDBl+ydI9jZsECoxjCJLb2
+         BGMnlgW9h4IbZqdb0DqwGe6svGfofMhoE7Xcs1o8ll4UVHSHTLIAG+Lc3SVc9Bqc9o+o
+         girjs/zxT/zc1bErHlFVhHoXpvqCdq2B+DdnxtMJP3BNl+6E9WONstEbzu517Y8vz4DY
+         FzQfshJ6fKKtnfOJEMfe1CPFqLmmMan0Doecj2xgBOH6vDkqfPgiSOfBugFJDZmGOT0/
+         VT0VD9PCZIjTl/i+Qg5eqJpAO1GqDztGhEATO6xz41/bYmmN1WH7VKsbuKy/tw/4436a
+         aL4g==
+X-Gm-Message-State: AOJu0Yxm2/v+tOMDz7y/pNfML7SalZcRcTGlidniNLWUB6/yNuuFYsc3
+        50G1ezQU02GCT1wL4gX4zpM=
+X-Google-Smtp-Source: AGHT+IF61HSy033UpFh/6+Ke2kdywsHMIGweM8p3uBkmXG7/0UnB78wpgxYLgPqQ/ckE32rss1aOhw==
+X-Received: by 2002:a05:6870:e2d1:b0:1b7:4655:2ac9 with SMTP id w17-20020a056870e2d100b001b746552ac9mr16134185oad.6.1692806072168;
+        Wed, 23 Aug 2023 08:54:32 -0700 (PDT)
+Received: from [192.168.1.119] ([216.130.59.33])
+        by smtp.gmail.com with ESMTPSA id r7-20020a056870734700b001c0e840ebcfsm7059351oal.35.2023.08.23.08.54.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Aug 2023 08:54:31 -0700 (PDT)
+Sender: Larry Finger <larry.finger@gmail.com>
+Message-ID: <ffe7cc73-d2c7-d6d7-69e8-438a4a2f7be6@lwfinger.net>
+Date:   Wed, 23 Aug 2023 10:54:30 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZOYkVec/aQSiCWxh@p14s>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH] wifi: rtw88: usb: kill and free rx urbs on probe failure
+Content-Language: en-US
+To:     Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-wireless@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Ping-Ke Shih <pkshih@realtek.com>,
+        Kalle Valo <kvalo@kernel.org>,
+        =?UTF-8?Q?Ilgaz_=c3=96cal?= <ilgaz@ilgaz.gen.tr>,
+        kernel@pengutronix.de
+References: <20230823075021.588596-1-s.hauer@pengutronix.de>
+From:   Larry Finger <Larry.Finger@lwfinger.net>
+In-Reply-To: <20230823075021.588596-1-s.hauer@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09:23-20230823, Mathieu Poirier wrote:
-> On Tue, Aug 22, 2023 at 03:12:05PM -0500, Nishanth Menon wrote:
-> > On 13:25-20230822, Mathieu Poirier wrote:
-> > > Hi Nishanth,
-> > > 
-> > > On Mon, Aug 07, 2023 at 09:02:47AM -0500, Nishanth Menon wrote:
-> > > > On many platforms, such as Beaglebone-AI64 with many remote
-> > > > processors, firmware configurations provided by the distributions can
-> > > > vary substantially depending on the distribution build's functionality
-> > > > and the specific remote cores enabled in that variant. Ensuring
-> > > > consistent udev rules mapping remoteproc nodes to constant remote
-> > > > proc device indices across distributions (yocto, ubuntu, debian and
-> > > > it's variants, ...) on a board basis can be challenging due to the
-> > > > various functions of these distributions. Varied device node paths
-> > > > create challenges for applications that operate on remote processors,
-> > > > especially in minimal embedded systems(initrd like) that may not
-> > > > have udev-like capabilities and rely on a more straightforward bare
-> > > > filesystem. This challenge is similar to that faced by I2C, RTC or the
-> > > > GPIO subsystems.
-> > > >
-> > > 
-> > > I'm puzzled by this patch.  I can see how using an alias can help in boards with
-> > > various HW configuration.  That said, and as written above, FW files for remote
-> > > processors can vary based on the build's functionality.  As such "remoteproc3"
-> > > will reference the same HW device on all distributions but the functionality
-> > > enacted by the FW may be different.  As such I don't see how an alias can help
-> > > here.  Can you provide a concrete example that highlights the benefits?
-> > 
-> > Correct - *if* remoteproc3 is the constant node reference.
-> > 
-> > To take a trivial example: We ran into this issue with:
-> > https://github.com/kaofishy/bbai64_cortex-r5_example/blob/main/Makefile#L28
-> > 
-> > remoteproc18 apparently changed numbering in a different build.
-> > 
+On 8/23/23 02:50, Sascha Hauer wrote:
+> After rtw_usb_alloc_rx_bufs() has been called rx urbs have been
+> allocated and must be freed in the error path. After rtw_usb_init_rx()
+> has been called they are submitted, so they also must be killed.
 > 
-> We are going around in circles.  In the above link using an alias will
-> guarantee that "remoteproc18" is available but won't guarantee the
-> functionality enacted by the FW loaded in that remote processor, which is distro
-> dependent.
+> Add these forgotten steps to the probe error path.
+> 
+> Besides the lost memory this also fixes a problem when the driver
+> fails to download the firmware in rtw_chip_info_setup(). In this
+> case it can happen that the completion of the rx urbs handler runs
+> at a time when we already freed our data structures resulting in
+> a kernel crash.
+> 
+> fixes: a82dfd33d1237 ("wifi: rtw88: Add common USB chip support")
+> Cc: stable@vger.kernel.org
+> Reported-by: Ilgaz Öcal <ilgaz@ilgaz.gen.tr>
+> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> ---
+>   drivers/net/wireless/realtek/rtw88/usb.c | 5 ++++-
+>   1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/wireless/realtek/rtw88/usb.c b/drivers/net/wireless/realtek/rtw88/usb.c
+> index 4a57efdba97bb..875a61c9c80d4 100644
+> --- a/drivers/net/wireless/realtek/rtw88/usb.c
+> +++ b/drivers/net/wireless/realtek/rtw88/usb.c
+> @@ -844,7 +844,7 @@ int rtw_usb_probe(struct usb_interface *intf, const struct usb_device_id *id)
+>   
+>   	ret = rtw_core_init(rtwdev);
+>   	if (ret)
+> -		goto err_release_hw;
+> +		goto err_free_rx_bufs;
+>   
+>   	ret = rtw_usb_intf_init(rtwdev, intf);
+>   	if (ret) {
+> @@ -890,6 +890,9 @@ int rtw_usb_probe(struct usb_interface *intf, const struct usb_device_id *id)
+>   err_deinit_core:
+>   	rtw_core_deinit(rtwdev);
+>   
+> +err_free_rx_bufs:
+> +	rtw_usb_free_rx_bufs(rtwusb);
+> +
+>   err_release_hw:
+>   	ieee80211_free_hw(hw);
+>   
 
-Apologies, but I am trying to comprehend the relationship and probably
-am failing to see the linkage. Let me try:
+Acked-by: Larry Finger <Larry.Finger@lwfinger.net>
 
-If I understand you correctly, you are concerned that distros do not
-have a mechanism to provide consistent firmware to the correct remote
-proc for a specific functionality..
+Thanks Sasha,
 
-if so, distro loads / provides the requisite firmware. How
-the package distribution scheme works to distribute the firmware
-and versioning provided varies - One typical pattern has been to use
-linux-firmware repo[1] (at least in other domains - say GPU, wlink or
-the likes) and provide package distribution. The other pattern could
-be build and deploy based on tag (this would be no different from any
-other package deployment).
+Larry
 
-On the other hand, If we are looking at the fact that there can be
-different types of firmware that could be loaded to a remoteproc
-providing different functionality - that is correct, and at least in
-case of TI processors very valid - something like openAMP endpoint
-solutions probably help?
-
-Let me know if I am off-track here..
-
-[1] https://git.ti.com/cgit/processor-firmware/ti-linux-firmware/tree/ti-ipc?h=ti-linux-firmware
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
