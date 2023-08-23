@@ -2,70 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F143786069
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 21:14:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5597D786072
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 21:15:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238063AbjHWTOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 15:14:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54818 "EHLO
+        id S238153AbjHWTOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 15:14:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237937AbjHWTOE (ORCPT
+        with ESMTP id S238031AbjHWTOF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 15:14:04 -0400
-Received: from mail-oa1-x34.google.com (mail-oa1-x34.google.com [IPv6:2001:4860:4864:20::34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D8A810C3;
-        Wed, 23 Aug 2023 12:14:02 -0700 (PDT)
-Received: by mail-oa1-x34.google.com with SMTP id 586e51a60fabf-1bbb4bde76dso3732591fac.2;
-        Wed, 23 Aug 2023 12:14:02 -0700 (PDT)
+        Wed, 23 Aug 2023 15:14:05 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB5EE10C3;
+        Wed, 23 Aug 2023 12:14:03 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-99df431d4bfso777344366b.1;
+        Wed, 23 Aug 2023 12:14:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692818041; x=1693422841;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=bkRiXtT9qgRHA1MKcE0+A+p3QG0zRao4eJgb/tjcvlQ=;
-        b=Q7FSR6dB4wlwBDBXWX1KuXmDaeBGHhW7k1v1+ImA0gFuBtUwOFzm4sVD7FddobVmOr
-         3flBiIIHqODI7t/NtETd5yagNh/2+9nwVLOimnCEL/3pAZ8RjhiV22UkBemb+lIXscwj
-         DnFQ4PiEtqRe9E2f0zkPWsOj9Hy7mWxzVtKoJ9mepCvmUQHMlEuHbjs441uTrkJiDCGP
-         zOOUcPo6LL0fpfPCaoa+h4tYIUmAtTrNwKlxMERhHWFxOqZpB2UfXC5I0/E6y22ulicG
-         jBUuDlVtTebd0QNP7nUEgop+ZYUsMc+eB0t5G18veKrNJqhCljBxCriqGeos55fR4QVa
-         q37Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692818041; x=1693422841;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1692818042; x=1693422842;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=bkRiXtT9qgRHA1MKcE0+A+p3QG0zRao4eJgb/tjcvlQ=;
-        b=cB0TuaWtMIirz1llb2mitV39qqR6VdNZiMzfr8fYD/xW7WGMt92nPKMZV0fXleuMf2
-         E3cr7yj4kdhLLvFBFF7GwDwmbmBygg1ZOGecNcW7WDeXABr3jIvY0nYDvM253sz4ShfN
-         fez4A1F2DxkynOQkRwiXMzEHSqEiYXP6fNT21r077kZstBWy4rzLbwdjHhlZ+yo4tVsK
-         OiQa9m+zxdZ5VtVXhWptuAGAyOLhunu7faRfTS92bzVIkKS3EirQgnU/P9zUSBx42kV0
-         +laP6y4siN5KFNCnmMVMSbfizccL93Hg7K5GnQpodm8tRPjLri/jEBOZ267qypUaDYeA
-         I/+w==
-X-Gm-Message-State: AOJu0YwsflArI8dIRcpPWGkrMTcKsmyDnyJOWN/Hbux0gmtdik/Eu44d
-        MMZWEJMbwpGznoFW9knABVo7Leg+vHZBeUVf
-X-Google-Smtp-Source: AGHT+IHnSuSCucRZeqayL6ja0sJEQ/drYGXt+yBc/3mzIKZdrzN5yLF7PvV5D8Ze5IKPro5ArXJ8Hg==
-X-Received: by 2002:a05:6870:2051:b0:1c8:39a6:779d with SMTP id l17-20020a056870205100b001c839a6779dmr15738900oad.20.1692818041186;
-        Wed, 23 Aug 2023 12:14:01 -0700 (PDT)
-Received: from shaak (modemcable063.135-226-192.mc.videotron.ca. [192.226.135.63])
-        by smtp.gmail.com with ESMTPSA id d1-20020a0cf0c1000000b0064f46c719fasm2197994qvl.31.2023.08.23.12.13.59
+        bh=OCIrAxFDF25mzcKHeRcgDzkO8YOJQLUfVKMU+Ywn+CI=;
+        b=F0m1dC0r1D9CfIev6pc24EaKzGxk0UuGNnqavKUqIieO1QM7EZ7130J/Dl71vD6cck
+         b4tEURRXTFB8K8kYrJunVHW9jBttCV6oOn8MVoJC79gH1IKNI19yDUYtMafAbmCqjXGD
+         jVl603iPiqILuA4/TICEL/jjU1Zfbn8GRo7IvKdaiiAVALYvHyo8QXpiqsHXR3TLXa0H
+         BMTTH8pb0RyPS7pzI0xuKr4OWTzNw+a/EX5nYDengR5UprSeu/PNWdOWKKpalqT87OfD
+         yS2EFWh9G3CbcUle03vyDcSzD2TgQgsnuyYnmsRhV0Z/we7N8WB/AHWK+LsXaMGpdm0x
+         eX7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692818042; x=1693422842;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OCIrAxFDF25mzcKHeRcgDzkO8YOJQLUfVKMU+Ywn+CI=;
+        b=KhIrxkTnYyrlKngpOd4Q5IBFFSoXyxCjJOVNPbmjTdB3kxxiaGo75LkdE3Li7djVrx
+         U1LkRO8JFwnliNkc0wAxQlRPDGXMvQgL+TNC5hNVkzj2ST00hFj6vddYlYn64RgeXqkh
+         IO+0i6xTTLitwIxmCtY+PAdV7Tj+UDS0apaDL4JwJqwOejn4wWt+FSlZpmzUs5l1ei/p
+         LNWQdnJy4sBagE6uSqjIh0RvhvyvXVItQzW0SUavE8DkGQL/vx+2OGqv/l2JVvZtpB40
+         lb+kCexnyUOqN8IemcuomW1gZQiiNols2+or5U3ZqHNuen55epjqWF3YDHlaJRL0kUSS
+         tBWA==
+X-Gm-Message-State: AOJu0Yyhz9YDGwp14B0CiaXXM2zL/WPBocln+fg0WrHvbtldVAw0mGDS
+        j/qVVKCGXj2cR1KEdmnFyug=
+X-Google-Smtp-Source: AGHT+IFbojcSnWWb57HEiIyw8RL+IR9XS37Wm62sPrbcTpWpKP2WmF6c9EcbiBXGI99RpkWM2z7iJQ==
+X-Received: by 2002:a17:906:cc2:b0:99d:f560:5d3c with SMTP id l2-20020a1709060cc200b0099df5605d3cmr11357511ejh.23.1692818042131;
+        Wed, 23 Aug 2023 12:14:02 -0700 (PDT)
+Received: from jernej-laptop.localnet (82-149-12-148.dynamic.telemach.net. [82.149.12.148])
+        by smtp.gmail.com with ESMTPSA id f15-20020a170906084f00b0099cf9bf4c98sm10059758ejd.8.2023.08.23.12.14.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Aug 2023 12:14:00 -0700 (PDT)
-Date:   Wed, 23 Aug 2023 15:13:58 -0400
-From:   Liam Beguin <liambeguin@gmail.com>
-To:     Mike Looijmans <mike.looijmans@topic.nl>
-Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sboyd@kernel.org, mturquette@baylibre.com
-Subject: Re: [PATCH 1/3] clk: lmk04832: Set missing parent_names for output
- clocks
-Message-ID: <20230823191358.GA2572839@shaak>
-References: <1b153bce-a66a-45ee-a5c6-963ea6fb1c82.949ef384-8293-46b8-903f-40a477c056ae.05b2cfbe-0414-4869-b825-034b9be5bf9a@emailsignatures365.codetwo.com>
- <20230802064100.15793-1-mike.looijmans@topic.nl>
+        Wed, 23 Aug 2023 12:14:01 -0700 (PDT)
+From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        arm@kernel.org, soc@kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Samuel Holland <samuel@sholland.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Liviu Dudau <liviu.dudau@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-renesas-soc@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH 1/2] ARM: dts: use capital "OR" for multiple licenses in SPDX
+Date:   Wed, 23 Aug 2023 21:13:59 +0200
+Message-ID: <4504114.LvFx2qVVIh@jernej-laptop>
+In-Reply-To: <20230823085146.113562-1-krzysztof.kozlowski@linaro.org>
+References: <20230823085146.113562-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230802064100.15793-1-mike.looijmans@topic.nl>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,46 +97,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 02, 2023 at 08:40:58AM +0200, Mike Looijmans wrote:
-> lmk04832_register_clkout forgot to fill in the parent_names, resulting
-> in the error message "Must specify parents if num_parents > 0".
+Dne sreda, 23. avgust 2023 ob 10:51:45 CEST je Krzysztof Kozlowski napisal(a):
+> Documentation/process/license-rules.rst and checkpatch expect the SPDX
+> identifier syntax for multiple licenses to use capital "OR".  Correct it
+> to keep consistent format and avoid copy-paste issues.
 > 
-> Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
-
-Reviewed-by: Liam Beguin <liambeguin@gmail.com>
-
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> 
 > ---
->  drivers/clk/clk-lmk04832.c | 1 +
->  1 file changed, 1 insertion(+)
 > 
-> diff --git a/drivers/clk/clk-lmk04832.c b/drivers/clk/clk-lmk04832.c
-> index e22ac93e0c2f..188085e7a30b 100644
-> --- a/drivers/clk/clk-lmk04832.c
-> +++ b/drivers/clk/clk-lmk04832.c
-> @@ -1297,6 +1297,7 @@ static int lmk04832_register_clkout(struct lmk04832 *lmk, const int num)
->  		sprintf(dclk_name, "lmk-dclk%02d_%02d", num, num + 1);
->  		init.name = dclk_name;
->  		parent_names[0] = clk_hw_get_name(&lmk->vco);
-> +		init.parent_names = parent_names;
->  		init.ops = &lmk04832_dclk_ops;
->  		init.flags = CLK_SET_RATE_PARENT;
->  		init.num_parents = 1;
-> -- 
-> 2.17.1
-> 
-> 
-> Met vriendelijke groet / kind regards,
-> 
-> Mike Looijmans
-> System Expert
-> 
-> 
-> TOPIC Embedded Products B.V.
-> Materiaalweg 4, 5681 RJ Best
-> The Netherlands
-> 
-> T: +31 (0) 499 33 69 69
-> E: mike.looijmans@topicproducts.com
-> W: www.topic.nl
-> 
-> Please consider the environment before printing this e-mail
+> Rebased on next-20230822, so might not apply cleanly.  What does not
+> apply, can be skipped and I will fix it after next RC.
+> ---
+>  arch/arm/boot/dts/allwinner/sun8i-t113s-mangopi-mq-r-t113.dts | 2 +-
+>  arch/arm/boot/dts/allwinner/sun8i-t113s.dtsi                  | 2 +-
+>  arch/arm/boot/dts/allwinner/sunxi-d1s-t113-mangopi-mq-r.dtsi  | 2 +-
+
+For Allwinner:
+Acked-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+
+Best regards,
+Jernej
+
+>  arch/arm/boot/dts/nxp/imx/imx6dl-b105pv2.dts                  | 2 +-
+>  arch/arm/boot/dts/nxp/imx/imx6dl-b105v2.dts                   | 2 +-
+>  arch/arm/boot/dts/nxp/imx/imx6dl-b125pv2.dts                  | 2 +-
+>  arch/arm/boot/dts/nxp/imx/imx6dl-b125v2.dts                   | 2 +-
+>  arch/arm/boot/dts/nxp/imx/imx6dl-b155v2.dts                   | 2 +-
+>  arch/arm/boot/dts/nxp/imx/imx6dl-b1x5pv2.dtsi                 | 2 +-
+>  arch/arm/boot/dts/nxp/imx/imx6dl-b1x5v2.dtsi                  | 2 +-
+>  arch/arm/boot/dts/nxp/imx/imx6dl-emcon-avari.dts              | 2 +-
+>  arch/arm/boot/dts/nxp/imx/imx6dl-qmx6.dtsi                    | 2 +-
+>  arch/arm/boot/dts/nxp/imx/imx6q-emcon-avari.dts               | 2 +-
+>  arch/arm/boot/dts/nxp/imx/imx6qdl-emcon-avari.dtsi            | 2 +-
+>  arch/arm/boot/dts/nxp/imx/imx6qdl-emcon.dtsi                  | 2 +-
+>  arch/arm/boot/dts/st/stm32mp157c-emsbc-argon.dts              | 2 +-
+>  arch/arm/boot/dts/st/stm32mp157c-emstamp-argon.dtsi           | 2 +-
+
+
+
