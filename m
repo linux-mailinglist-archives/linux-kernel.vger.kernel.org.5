@@ -2,66 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9DA7785944
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 15:28:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01E0E785945
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 15:28:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230507AbjHWN2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 09:28:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59970 "EHLO
+        id S235995AbjHWN24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 09:28:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235980AbjHWN2q (ORCPT
+        with ESMTP id S236005AbjHWN2x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 09:28:46 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98A15E74
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 06:28:17 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-99de884ad25so753068466b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 06:28:17 -0700 (PDT)
+        Wed, 23 Aug 2023 09:28:53 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56EE610CE
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 06:28:24 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-99cce6f7de2so765196366b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 06:28:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692797280; x=1693402080;
+        d=linaro.org; s=google; t=1692797281; x=1693402081;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=iQ9qlAUbePlsiqKNAw2XCXfpwKOzQlpZ5FRE6WrsgJU=;
-        b=B39oYujJbKD+0HoWpcgl6v92MkV5ZEPg2AnRVVSQlnirR5PwAQkOb4HGyhScGqtZEg
-         AE3zaRkEXygH7LJ9/hJdYz+wyAGJu4I1sNIR5+D0BX46WaE7HWluqZ05K7dZIM+8FDn4
-         OKrlPPtly2HAM66qfA7utxoUYi7WSoV7i/JMxid+MeepBGltlPcS6I+/rHgh0PKUetWA
-         GmJsHqF8XcpebHJgfmiz4a9QyinAGOotkxqEN+0th91KnKP5CIdOrXRkkh32acz0aYzx
-         UiWR0/ITnozKOzxR5TV9oUd8juj+IlPmthJXtrR/xcNHfoLyyA8GGLe0esgOV9Omo3II
-         SRfw==
+        bh=rTLyzq+CmYuG8lZJh8FVcULeSIxdJ4wT6H5hFMK4AT4=;
+        b=BuKGGl5Z5AxzcdbTewz+Vb1xKA4Kfij64gkqKubkEXMfmMdCto9JGw94HjCF+9fDPF
+         JMA6grMghZOfVEyb1zFB1ZHSYUZ4gBKsbDG7NRjfmbL9QPZobSf118H4ColT3uZdumRE
+         rtkX+XAnLZFGTFnaX5E1xKECJMywrupZJDP85jbe98afxStMgVnlyYAlvSYjBznDrIuh
+         0fHkeVqJsLFjsyyAmlw0RfAY3OSQwen/sMj0dXMoyH/bJmt58EiX4NOQ/Wf05kymg3N5
+         hH1nC9oKhE1y/zCtaavH8HaEAw4MElv9MHUd384GC1ahzIRwZi+w7RBArQXr7JZT8SyZ
+         3gNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692797280; x=1693402080;
+        d=1e100.net; s=20221208; t=1692797281; x=1693402081;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=iQ9qlAUbePlsiqKNAw2XCXfpwKOzQlpZ5FRE6WrsgJU=;
-        b=S/YeQEbU22vbeU1WNH2AEqYKS0wnZPD4rlDZBa3ZnXe8sXZcEMg+rcOfBOPHn9sdX/
-         yr08sFhonhYoKMAUsmVuFQfzr7fYWWvnwz1kzjTjyism72ACQd47of3Z5DTHk5TmkPOf
-         nNPVj4YPgDvMi4qrYpWzqez+KIsCt7coGPLh5SSYngnORV2Twoak/LugDSvVWbUREjSR
-         j5fCowe5pAOm/Qh9SkcVy/Gvd20Ot/hPwzWU0ycX5Y1+rUxVKZHvXw+hqgjauw4DVuFH
-         9zbChtTEjQajHF/Khw4cM4Cz8zCHVYZmg6LUKUpXEkCgd6AhdG4qoD7dC9CbW+SjwCRY
-         Fh5A==
-X-Gm-Message-State: AOJu0Ywod+pgspTAC5ZKFoHR4GX/hgTtjCW9Z99IebyhUqL+IHhoXQu4
-        qY2Voth11Heaw5sIoDNzV6dtBg==
-X-Google-Smtp-Source: AGHT+IH/QDbEJOsygJStPLG1S6y/xakB+nnPz+7iF6ReOpopVocOU7UALrfFRbDZu6GZOgLmWzQHnQ==
-X-Received: by 2002:a17:906:8477:b0:99c:72c8:bfe1 with SMTP id hx23-20020a170906847700b0099c72c8bfe1mr9914817ejc.38.1692797280605;
-        Wed, 23 Aug 2023 06:28:00 -0700 (PDT)
+        bh=rTLyzq+CmYuG8lZJh8FVcULeSIxdJ4wT6H5hFMK4AT4=;
+        b=Uwga0hiy5ynq+sTom8hfjtNPB9oD5mZE+oqaQph160u6UkNBtSgpOH6IIgLtoPm5Gy
+         kKmxSjx+VQFbxqmDH8bd1qRsNUy9ySKRQAoJmGI6kieyhiEeucC2enjr+eiUyPc9iheI
+         FvSV8rwp8b2ezWkMp25Xput+jIRM0CebOyHwG9IzHElKCLRaxP+Cp7S5sJI+dR/6Cir2
+         eJQH/tJKkYGBO+Cy/gqsS3KRNq9g7vGLsL9PXaMXiUww0OKCdLFaIg52USwCsSHSFG1N
+         pGlyMRwC5GZlJ2lwyMWeUYoR7XONjuYmpeZ9o448bsPH1G+ikAn6vR2H8mlgP0kZaSBc
+         xIAw==
+X-Gm-Message-State: AOJu0YwinjH3m2Vq6tCrOo/5/DQ9/70okXpBKVk+Dv8q8M9lQjQc7nI8
+        hSe/uWar48goMx1+o+TQYHNzJQ==
+X-Google-Smtp-Source: AGHT+IEiTSeKeEjd9iqkWG7ZkLw9hJPFwQ63O0CBhMB4n8nJasDdPecoLkMPs63tRX/Af6wC5S4Hvg==
+X-Received: by 2002:a17:907:2c48:b0:99d:6b3c:3d40 with SMTP id hf8-20020a1709072c4800b0099d6b3c3d40mr9100257ejc.6.1692797281671;
+        Wed, 23 Aug 2023 06:28:01 -0700 (PDT)
 Received: from localhost.localdomain ([5.133.47.210])
-        by smtp.gmail.com with ESMTPSA id l9-20020a1709066b8900b009a168ab6ee2sm8918202ejr.164.2023.08.23.06.27.59
+        by smtp.gmail.com with ESMTPSA id l9-20020a1709066b8900b009a168ab6ee2sm8918202ejr.164.2023.08.23.06.28.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Aug 2023 06:27:59 -0700 (PDT)
+        Wed, 23 Aug 2023 06:28:01 -0700 (PDT)
 From:   srinivas.kandagatla@linaro.org
 To:     gregkh@linuxfoundation.org
 Cc:     linux-kernel@vger.kernel.org, Yangtao Li <frank.li@vivo.com>,
+        Heiko Stuebner <heiko@sntech.de>,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v2 05/22] nvmem: meson-mx-efuse: Convert to devm_platform_ioremap_resource()
-Date:   Wed, 23 Aug 2023 14:27:27 +0100
-Message-Id: <20230823132744.350618-6-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 06/22] nvmem: rockchip-efuse: Use devm_platform_get_and_ioremap_resource()
+Date:   Wed, 23 Aug 2023 14:27:28 +0100
+Message-Id: <20230823132744.350618-7-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230823132744.350618-1-srinivas.kandagatla@linaro.org>
 References: <20230823132744.350618-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1108; i=srinivas.kandagatla@linaro.org; h=from:subject; bh=EFkcO7vPsfe8JLUjVmXKJ1KFD3+kZMWu2vh9nY1/dy0=; b=owEBbQGS/pANAwAKAXqh/VnHNFU3AcsmYgBk5glFdYF4PIFMVLxBmEoLGEqaSXis+vnoFPwJj j8F8bc7ehiJATMEAAEKAB0WIQQi509axvzi9vce3Y16of1ZxzRVNwUCZOYJRQAKCRB6of1ZxzRV NxWoB/0Y83cWexjG5fsxOfLRThr+3Oh+bFBqBQB0NyPljTQM3aAB9m/68qW0sj6XIP/U52QkfXW BCvh3DJVjYC2A2q+qTTaYR4AU14NX4PveiFYy0Jx6vo7CjAZ1MXBHH/DIZTw7DIz3xz3V244+hv p7xDe087HI7Hy5L4H8zfvLSe7S2GHWI69zRcI/YFNfDeILxjgghjopb++bDKtJKS061EyB7wBDu 1/z4Fcvb6WfoTXqsQVSpgUUe0DrzAUWyT7AWt5YksowJpi7x1i86F3LUon/cxQ10wkr9Khhc1z0 iI9dh3yQM064og7LpxlIKAUS7rwtBSLoAuGSwP1qW+2PeMi7
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1000; i=srinivas.kandagatla@linaro.org; h=from:subject; bh=wT2UYdUVSvolFgk3Jn1XmE5iUG1nUKY5ixUGad4ElRE=; b=owEBbQGS/pANAwAKAXqh/VnHNFU3AcsmYgBk5glF78Pfsjbqc0hDApYmirQzJpE9Z1l77EsLb fvTGHhFZWOJATMEAAEKAB0WIQQi509axvzi9vce3Y16of1ZxzRVNwUCZOYJRQAKCRB6of1ZxzRV N0dmB/4hXBEKbH05q8yPShfwUjbwPZHE+G4zcdOEsq0Oud7H0g8T5AV/nuDCGbQVAUaSj/J9ZXN rmTmwXmbCJwMPT8iD8X6DQFybBhgaXUrnfZIAc8eOIBvP6zIyEAhPDY/423OFflbvIG3x7PhJ/Z s4qoNvVzkcYW5vKiQDgN3R/tJNy9KBCIrKHmhDG/Z4fJQ31MwTNAMs0d53+h2g/sCUaGiDXyxLt sdigkOakG4wyz3QmuAOnPzlJHJBn21yoi7jI6y61uPRbZP9R89YjDZoXavPz+M/eomBglFrg5cd +sxMlsPe+5CDUIXhCq4ngwEnLEvh2mz0lcPCjNvtBO4nttbo
 X-Developer-Key: i=srinivas.kandagatla@linaro.org; a=openpgp; fpr=ED6472765AB36EC43B3EF97AD77E3FC0562560D6
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -77,33 +78,28 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Yangtao Li <frank.li@vivo.com>
 
-Use devm_platform_ioremap_resource() to simplify code.
+Convert platform_get_resource(), devm_ioremap_resource() to a single
+call to devm_platform_get_and_ioremap_resource(), as this is exactly
+what this function does.
 
 Signed-off-by: Yangtao Li <frank.li@vivo.com>
+Reviewed-by: Heiko Stuebner <heiko@sntech.de>
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- drivers/nvmem/meson-mx-efuse.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/nvmem/rockchip-efuse.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/nvmem/meson-mx-efuse.c b/drivers/nvmem/meson-mx-efuse.c
-index 13eb14316f46..461e3ad87bcd 100644
---- a/drivers/nvmem/meson-mx-efuse.c
-+++ b/drivers/nvmem/meson-mx-efuse.c
-@@ -194,7 +194,6 @@ static int meson_mx_efuse_probe(struct platform_device *pdev)
- {
- 	const struct meson_mx_efuse_platform_data *drvdata;
- 	struct meson_mx_efuse *efuse;
--	struct resource *res;
- 
- 	drvdata = of_device_get_match_data(&pdev->dev);
- 	if (!drvdata)
-@@ -204,8 +203,7 @@ static int meson_mx_efuse_probe(struct platform_device *pdev)
+diff --git a/drivers/nvmem/rockchip-efuse.c b/drivers/nvmem/rockchip-efuse.c
+index e4579de5d014..4004c5bece42 100644
+--- a/drivers/nvmem/rockchip-efuse.c
++++ b/drivers/nvmem/rockchip-efuse.c
+@@ -267,8 +267,7 @@ static int rockchip_efuse_probe(struct platform_device *pdev)
  	if (!efuse)
  		return -ENOMEM;
  
 -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	efuse->base = devm_ioremap_resource(&pdev->dev, res);
-+	efuse->base = devm_platform_ioremap_resource(pdev, 0);
+-	efuse->base = devm_ioremap_resource(dev, res);
++	efuse->base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
  	if (IS_ERR(efuse->base))
  		return PTR_ERR(efuse->base);
  
