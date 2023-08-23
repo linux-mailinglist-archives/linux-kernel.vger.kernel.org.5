@@ -2,79 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65E2D785653
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 12:58:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53515785658
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 12:58:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234222AbjHWK6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 06:58:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33814 "EHLO
+        id S234229AbjHWK6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 06:58:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232161AbjHWK6W (ORCPT
+        with ESMTP id S232105AbjHWK6y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 06:58:22 -0400
-Received: from mail-40136.proton.ch (mail-40136.proton.ch [185.70.40.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B7FBFB
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 03:58:20 -0700 (PDT)
-Date:   Wed, 23 Aug 2023 10:58:11 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=emersion.fr;
-        s=protonmail2; t=1692788298; x=1693047498;
-        bh=cv2+UwZVJU09IPn6jP3k4R4bB5Rtx3kU0cPpN+EkpqQ=;
-        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-         Message-ID:BIMI-Selector;
-        b=hL2EcCgUlFXtDG9uDf7h6VjLM2JCqzIItk7ZdN7TuJ+RP5Tx8DbnvG663iH0FJLE2
-         km56x2lleDFAARH3XfeLNfW9MkHLi/Q/oGo4YHAm5dOZKvRUL0aJLyrU4CRYlfmsjD
-         xzHm2+LUhYCVOyvhkzyZ9UYcvnXA2xwlYEk/ezDPoCQTSYgcCPKFWtSMkukSIJoZSI
-         cJ2gMT0V2kK+cn6X62YMx4J4eUv18uyeF385wPICDRKOLKWkHmy0XHVji+6CPOG142
-         OKVKi1DUVvTd6zo1DbRwk9APiKFeZE2ItJTPqm4DpVxtEgFwdcu/4maatpnUbqZF9X
-         813v6eWx12b9g==
-To:     James Zhu <jamesz@amd.com>
-From:   Simon Ser <contact@emersion.fr>
-Cc:     =?utf-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        =?utf-8?Q?Micha=C5=82_Winiarski?= <michal.winiarski@intel.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oded Gabbay <ogabbay@kernel.org>,
-        James Zhu <James.Zhu@amd.com>,
-        Pekka Paalanen <pekka.paalanen@collabora.com>,
-        Emil Velikov <emil.l.velikov@gmail.com>
-Subject: Re: [PATCH v6 3/4] drm: Expand max DRM device number to full MINORBITS
-Message-ID: <RMIFRuUra0Qgzx9r2eT-GsI-9FdUFjfiNCvpax8I4OwuQidm8sFcaSzoZqHfbA3iXsW-z0z31K5qZ-7w_1ciDF4KSZwz2JbOggtTqHTsHsY=@emersion.fr>
-In-Reply-To: <f1Cwh796fW9-Sse4KkXw1Xpgaknx9yWMP3bi-8mGhNOmZ2_aeqg5unzrBNuHiNCPzvXTs6B2tH-XxNH7jVWDzg3PnVmCa5XaXTe3xhxyTM8=@emersion.fr>
-References: <20230724211428.3831636-1-michal.winiarski@intel.com> <20230724211428.3831636-4-michal.winiarski@intel.com> <83s0YPWEdYE6C2a8pa6UAa3EaWZ2zG-q7IL9M-y6W1ucF9V54VnZtigKj3BGKUA2FZpIrs0VVxmpHO2RAhs_FdOnss9vNLQNSHySY8uH7YA=@emersion.fr> <69801f61-37b0-3e46-cbef-31ff80ae9a34@amd.com> <TAdBP5BOy3cy7VnUb4t7ZkDOMK6wI_gPCjXanItN3TOsA1TbSk_6yrlcPTqvk3AZjamo96yHlEhjpfNUPFF6tA_9K8iRoie3h_z5Jf6zNtc=@emersion.fr> <ad26d275-4373-429f-ecaa-3e35978f1fb0@amd.com> <61efe587-9a7a-063c-a388-eed9f51958d4@amd.com> <f1Cwh796fW9-Sse4KkXw1Xpgaknx9yWMP3bi-8mGhNOmZ2_aeqg5unzrBNuHiNCPzvXTs6B2tH-XxNH7jVWDzg3PnVmCa5XaXTe3xhxyTM8=@emersion.fr>
-Feedback-ID: 1358184:user:proton
+        Wed, 23 Aug 2023 06:58:54 -0400
+Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84BC4FB;
+        Wed, 23 Aug 2023 03:58:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:Content-Type:MIME-Version:
+        Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=QpqzTXlkvfTZwb/qvLffSgOkdmA3MgzLw1gYn4Tft4k=; b=s/9kx6+CR/fuCvSdzEXiuQjEfZ
+        EdboCKEcmE68sjpbz32RSMAnopH5pDf5FWnykSJznpjzbcLne2CEzF/ettMHvNxEZRwVE84hajdMi
+        NK88pFfypItbIjF3cChnkLE6vL2H8WQit9euN7sWPjMxwQjzOiSPZy+En65nCYIFEk6TejmTV9yxc
+        3BSESc8hQZqVZH1d4SKqulITtnWdmHws66OttGpvKlGtRUzwVgj0iPKwY9vYa3HaysPc7b6n/z0i8
+        NGnex4U5VnAjp6bSr3FR0EK+NP/LM8+C51OLtz2klZ/imZyb1e7HMGAHvV3sPD3iiYaiy3BRUCxJY
+        ikXoj3uA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:42594)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qYlZJ-0002eW-1e;
+        Wed, 23 Aug 2023 11:58:33 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qYlZI-0006lA-Js; Wed, 23 Aug 2023 11:58:32 +0100
+Date:   Wed, 23 Aug 2023 11:58:32 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Serge Semin <fancer.lancer@gmail.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Rohan G Thomas <rohan.g.thomas@intel.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Conor Dooley <conor.dooley@microchip.com>
+Subject: Synopsys XGMII MAC and USXGMII interfaces
+Message-ID: <ZOXmWLB4TKGKvkiE@shell.armlinux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday, August 23rd, 2023 at 12:53, Simon Ser <contact@emersion.fr> w=
-rote:
+Part 2 of the discussion...
 
-> On Tuesday, August 8th, 2023 at 17:04, James Zhu jamesz@amd.com wrote:
->=20
-> > I have a MR for libdrm to support drm nodes type up to 2^MINORBITS
-> > nodes which can work with these patches,
-> >=20
-> > https://gitlab.freedesktop.org/mesa/drm/-/merge_requests/305
->=20
-> FWIW, this MR has been merged, so in theory this kernel patch should
-> work fine with latest libdrm.
+A similar issue applies to PHY_INTERFACE_MODE_USXGMII, but is reversed.
+USXGMII supports 10M, 100M, 1G, 2.5G, 5G and 10G. Phylink allows all of
+these because that's what the appropriate standard says. dwxgmac2
+initialises config register settings for speeds from 10M up to 10G.
+However, the PHY_INTERFACE_MODE_USXGMII switch() block in
+stmmac_mac_link_up() only handles 2.5G, 5G and 10G. Shouldn't it handle
+the other speed cases - it looks like the MAC does support them.
 
-Hm, we might want to adjust MAX_DRM_NODES still. It's set to 256
-currently, which should be enough for 128 DRM devices, but not more.
-Not bumping this value will make drmGetDevices2() print a warning and
-not return all devices on systems with more than 128 DRM devices.
+The initialisation done by dwxgmac2_setup() does setup control register
+masks for everything from 10M to 10G, so on the face of it, it looks
+like a mistake in stmmac_mac_link_up().
+
+If it's something outside of the MAC that doesn't support these speeds
+when operating as USXGMII, then that needs to be handled.
+
+The other weird thing is that when using PHY_INTERFACE_MODE_USXGMII
+with XPCS, XPCS supports 1G, 2.5G and 10G ethtool link modes, but not
+5G. So combining the implementation in stmmac_mac_link_up(), that
+means only 2.5G and 10G can actually be functional. Is that a fair
+assessment of the USXGMII situation with stmmac?
+
+Thanks.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
