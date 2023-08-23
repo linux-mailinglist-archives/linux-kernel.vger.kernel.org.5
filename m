@@ -2,260 +2,463 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F7D5785073
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 08:15:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E0BD78507A
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 08:17:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232876AbjHWGPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 02:15:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36608 "EHLO
+        id S232879AbjHWGRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 02:17:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232091AbjHWGP3 (ORCPT
+        with ESMTP id S232708AbjHWGRe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 02:15:29 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45A69E7D
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 23:15:02 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id E8D221F38A;
-        Wed, 23 Aug 2023 06:15:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1692771300; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=XX0SFi0xAKsABvy9DKR2kuVvokpN2st0DbYsF+zBs4g=;
-        b=HxFOIXZhJv400/U2a4/aYilt9YwRNsVziKoouDLwz0hSJabV8a+u1RcGu/Fdkjgc+pUz7m
-        b+I8jsruUnLjB6ry8tPQRRKMU4GPbpJHzBgygToYF4ijOaRRCt8zzTPWk8luOVI/bpSu2G
-        hEzAtYWIdlMCfXd42gRB7Pn0QE9Q3PU=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BE92B13458;
-        Wed, 23 Aug 2023 06:15:00 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id EE+YK+Sj5WTlHwAAMHmgww
-        (envelope-from <jgross@suse.com>); Wed, 23 Aug 2023 06:15:00 +0000
-Message-ID: <626874c3-cdd6-4547-87d7-710320c4e23f@suse.com>
-Date:   Wed, 23 Aug 2023 08:15:00 +0200
+        Wed, 23 Aug 2023 02:17:34 -0400
+Received: from smtp-fw-80009.amazon.com (smtp-fw-80009.amazon.com [99.78.197.220])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEBCACF1;
+        Tue, 22 Aug 2023 23:17:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
+  t=1692771452; x=1724307452;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=A0dSF1se0dwuuWV8KjfxXzxehIS0qmc3ZrH/O5/BvAI=;
+  b=Yh7D1Mvvw1uEq73FSmY32WobjkK9TgPIN/pknzjSq6SGZls/TSeZoVlF
+   3TXn7kBJsRsu+QLcoPtPFCjqbp/K4KsqvpvdWHfApoPnTyTD4l8m0jcgC
+   Iy2y1DjqVd4Th3mK1x5WmSobJQLWj1AM6T8PbPgIOGmCRIzOrgpZpN6Lu
+   0=;
+X-IronPort-AV: E=Sophos;i="6.01,195,1684800000"; 
+   d="scan'208";a="24137567"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-pdx-2a-m6i4x-1cca8d67.us-west-2.amazon.com) ([10.25.36.210])
+  by smtp-border-fw-80009.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2023 06:17:29 +0000
+Received: from EX19D008EUA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-pdx-2a-m6i4x-1cca8d67.us-west-2.amazon.com (Postfix) with ESMTPS id 3BAB780659;
+        Wed, 23 Aug 2023 06:17:28 +0000 (UTC)
+Received: from EX19MTAUEB001.ant.amazon.com (10.252.135.35) by
+ EX19D008EUA001.ant.amazon.com (10.252.50.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.37; Wed, 23 Aug 2023 06:17:26 +0000
+Received: from dev-dsk-mheyne-1b-c1362c4d.eu-west-1.amazon.com (10.15.57.183)
+ by mail-relay.amazon.com (10.252.135.35) with Microsoft SMTP Server id
+ 15.2.1118.30 via Frontend Transport; Wed, 23 Aug 2023 06:17:26 +0000
+Received: by dev-dsk-mheyne-1b-c1362c4d.eu-west-1.amazon.com (Postfix, from userid 5466572)
+        id 263BCBBA; Wed, 23 Aug 2023 06:17:26 +0000 (UTC)
+From:   Maximilian Heyne <mheyne@amazon.de>
+To:     <stable@vger.kernel.org>
+CC:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Michael Larabel <Michael@michaellarabel.com>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        Dave Chinner <david@fromorbit.com>,
+        Matthew Wilcox <willy@infradead.org>, Chris Mason <clm@fb.com>,
+        Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
+        Maximilian Heyne <mheyne@amazon.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
+Subject: [PATCH] mm: allow a controlled amount of unfairness in the page lock
+Date:   Wed, 23 Aug 2023 06:16:42 +0000
+Message-ID: <20230823061642.76949-1-mheyne@amazon.de>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] xen/xenbus: Avoid a lockdep warning when adding a watch
-Content-Language: en-US
-To:     Petr Pavlu <petr.pavlu@suse.com>, sstabellini@kernel.org,
-        oleksandr_tyshchenko@epam.com
-Cc:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-References: <20230607123624.15739-1-petr.pavlu@suse.com>
-From:   Juergen Gross <jgross@suse.com>
-Autocrypt: addr=jgross@suse.com; keydata=
- xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOB
- ycWxw3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJve
- dYm8Of8Zd621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJ
- NwQpd369y9bfIhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvx
- XP3FAp2pkW0xqG7/377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEB
- AAHNH0p1ZXJnZW4gR3Jvc3MgPGpncm9zc0BzdXNlLmNvbT7CwHkEEwECACMFAlOMcK8CGwMH
- CwkIBwMCAQYVCAIJCgsEFgIDAQIeAQIXgAAKCRCw3p3WKL8TL8eZB/9G0juS/kDY9LhEXseh
- mE9U+iA1VsLhgDqVbsOtZ/S14LRFHczNd/Lqkn7souCSoyWsBs3/wO+OjPvxf7m+Ef+sMtr0
- G5lCWEWa9wa0IXx5HRPW/ScL+e4AVUbL7rurYMfwCzco+7TfjhMEOkC+va5gzi1KrErgNRHH
- kg3PhlnRY0Udyqx++UYkAsN4TQuEhNN32MvN0Np3WlBJOgKcuXpIElmMM5f1BBzJSKBkW0Jc
- Wy3h2Wy912vHKpPV/Xv7ZwVJ27v7KcuZcErtptDevAljxJtE7aJG6WiBzm+v9EswyWxwMCIO
- RoVBYuiocc51872tRGywc03xaQydB+9R7BHPzsBNBFOMcBYBCADLMfoA44MwGOB9YT1V4KCy
- vAfd7E0BTfaAurbG+Olacciz3yd09QOmejFZC6AnoykydyvTFLAWYcSCdISMr88COmmCbJzn
- sHAogjexXiif6ANUUlHpjxlHCCcELmZUzomNDnEOTxZFeWMTFF9Rf2k2F0Tl4E5kmsNGgtSa
- aMO0rNZoOEiD/7UfPP3dfh8JCQ1VtUUsQtT1sxos8Eb/HmriJhnaTZ7Hp3jtgTVkV0ybpgFg
- w6WMaRkrBh17mV0z2ajjmabB7SJxcouSkR0hcpNl4oM74d2/VqoW4BxxxOD1FcNCObCELfIS
- auZx+XT6s+CE7Qi/c44ibBMR7hyjdzWbABEBAAHCwF8EGAECAAkFAlOMcBYCGwwACgkQsN6d
- 1ii/Ey9D+Af/WFr3q+bg/8v5tCknCtn92d5lyYTBNt7xgWzDZX8G6/pngzKyWfedArllp0Pn
- fgIXtMNV+3t8Li1Tg843EXkP7+2+CQ98MB8XvvPLYAfW8nNDV85TyVgWlldNcgdv7nn1Sq8g
- HwB2BHdIAkYce3hEoDQXt/mKlgEGsLpzJcnLKimtPXQQy9TxUaLBe9PInPd+Ohix0XOlY+Uk
- QFEx50Ki3rSDl2Zt2tnkNYKUCvTJq7jvOlaPd6d/W0tZqpyy7KVay+K4aMobDsodB3dvEAs6
- ScCnh03dDAFgIq5nsB11j3KPKdVoPlfucX2c7kGNH+LUMbzqV6beIENfNexkOfxHfw==
-In-Reply-To: <20230607123624.15739-1-petr.pavlu@suse.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------dXh4gafvuiQmFtCEUo0Ovfbq"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,T_SPF_PERMERROR,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------dXh4gafvuiQmFtCEUo0Ovfbq
-Content-Type: multipart/mixed; boundary="------------42ZRJ49UHDDY0uYFOcH0jiv9";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Petr Pavlu <petr.pavlu@suse.com>, sstabellini@kernel.org,
- oleksandr_tyshchenko@epam.com
-Cc: xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-Message-ID: <626874c3-cdd6-4547-87d7-710320c4e23f@suse.com>
-Subject: Re: [PATCH] xen/xenbus: Avoid a lockdep warning when adding a watch
-References: <20230607123624.15739-1-petr.pavlu@suse.com>
-In-Reply-To: <20230607123624.15739-1-petr.pavlu@suse.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
---------------42ZRJ49UHDDY0uYFOcH0jiv9
-Content-Type: multipart/mixed; boundary="------------yzuoFKRHnC0S0MoXwIsE14h9"
+[ upstream commit 5ef64cc8987a9211d3f3667331ba3411a94ddc79 ]
 
---------------yzuoFKRHnC0S0MoXwIsE14h9
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+Commit 2a9127fcf229 ("mm: rewrite wait_on_page_bit_common() logic") made
+the page locking entirely fair, in that if a waiter came in while the
+lock was held, the lock would be transferred to the lockers strictly in
+order.
 
-T24gMDcuMDYuMjMgMTQ6MzYsIFBldHIgUGF2bHUgd3JvdGU6DQo+IFRoZSBmb2xsb3dpbmcg
-bG9ja2RlcCB3YXJuaW5nIGFwcGVhcnMgZHVyaW5nIGJvb3Qgb24gYSBYZW4gZG9tMCBzeXN0
-ZW06DQo+IA0KPiBbICAgOTYuMzg4Nzk0XSA9PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT0NCj4gWyAgIDk2LjM4ODc5N10gV0FSTklORzog
-cG9zc2libGUgY2lyY3VsYXIgbG9ja2luZyBkZXBlbmRlbmN5IGRldGVjdGVkDQo+IFsgICA5
-Ni4zODg3OTldIDYuNC4wLXJjNS1kZWZhdWx0KyAjOCBUYWludGVkOiBHICAgICAgICAgICAg
-RUwNCj4gWyAgIDk2LjM4ODgwM10gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tDQo+IFsgICA5Ni4zODg4MDRdIHhlbmNvbnNvbGVkLzEz
-MzAgaXMgdHJ5aW5nIHRvIGFjcXVpcmUgbG9jazoNCj4gWyAgIDk2LjM4ODgwOF0gZmZmZmZm
-ZmY4MmFjZGQxMCAoeHNfd2F0Y2hfcndzZW0peysrKyt9LXszOjN9LCBhdDogcmVnaXN0ZXJf
-eGVuYnVzX3dhdGNoKzB4NDUvMHgxNDANCj4gWyAgIDk2LjM4ODg0N10NCj4gICAgICAgICAg
-ICAgICAgIGJ1dCB0YXNrIGlzIGFscmVhZHkgaG9sZGluZyBsb2NrOg0KPiBbICAgOTYuMzg4
-ODQ5XSBmZmZmODg4MTAwYzkyMDY4ICgmdS0+bXNnYnVmZmVyX211dGV4KXsrLisufS17Mzoz
-fSwgYXQ6IHhlbmJ1c19maWxlX3dyaXRlKzB4MmMvMHg2MDANCj4gWyAgIDk2LjM4ODg2Ml0N
-Cj4gICAgICAgICAgICAgICAgIHdoaWNoIGxvY2sgYWxyZWFkeSBkZXBlbmRzIG9uIHRoZSBu
-ZXcgbG9jay4NCj4gDQo+IFsgICA5Ni4zODg4NjRdDQo+ICAgICAgICAgICAgICAgICB0aGUg
-ZXhpc3RpbmcgZGVwZW5kZW5jeSBjaGFpbiAoaW4gcmV2ZXJzZSBvcmRlcikgaXM6DQo+IFsg
-ICA5Ni4zODg4NjZdDQo+ICAgICAgICAgICAgICAgICAtPiAjMiAoJnUtPm1zZ2J1ZmZlcl9t
-dXRleCl7Ky4rLn0tezM6M306DQo+IFsgICA5Ni4zODg4NzRdICAgICAgICBfX211dGV4X2xv
-Y2srMHg4NS8weGIzMA0KPiBbICAgOTYuMzg4ODg1XSAgICAgICAgeGVuYnVzX2Rldl9xdWV1
-ZV9yZXBseSsweDQ4LzB4MmIwDQo+IFsgICA5Ni4zODg4OTBdICAgICAgICB4ZW5idXNfdGhy
-ZWFkKzB4MWQ3LzB4OTUwDQo+IFsgICA5Ni4zODg4OTddICAgICAgICBrdGhyZWFkKzB4ZTcv
-MHgxMjANCj4gWyAgIDk2LjM4ODkwNV0gICAgICAgIHJldF9mcm9tX2ZvcmsrMHgyYy8weDUw
-DQo+IFsgICA5Ni4zODg5MTRdDQo+ICAgICAgICAgICAgICAgICAtPiAjMSAoeHNfcmVzcG9u
-c2VfbXV0ZXgpeysuKy59LXszOjN9Og0KPiBbICAgOTYuMzg4OTIzXSAgICAgICAgX19tdXRl
-eF9sb2NrKzB4ODUvMHhiMzANCj4gWyAgIDk2LjM4ODkzMF0gICAgICAgIHhlbmJ1c19iYWNr
-ZW5kX2lvY3RsKzB4NTYvMHgxYzANCj4gWyAgIDk2LjM4ODkzNV0gICAgICAgIF9feDY0X3N5
-c19pb2N0bCsweDkwLzB4ZDANCj4gWyAgIDk2LjM4ODk0Ml0gICAgICAgIGRvX3N5c2NhbGxf
-NjQrMHg1Yy8weDkwDQo+IFsgICA5Ni4zODg5NTBdICAgICAgICBlbnRyeV9TWVNDQUxMXzY0
-X2FmdGVyX2h3ZnJhbWUrMHg3Mi8weGRjDQo+IFsgICA5Ni4zODg5NTddDQo+ICAgICAgICAg
-ICAgICAgICAtPiAjMCAoeHNfd2F0Y2hfcndzZW0peysrKyt9LXszOjN9Og0KPiBbICAgOTYu
-Mzg4OTY1XSAgICAgICAgX19sb2NrX2FjcXVpcmUrMHgxNTM4LzB4MjI2MA0KPiBbICAgOTYu
-Mzg4OTcyXSAgICAgICAgbG9ja19hY3F1aXJlKzB4YzYvMHgyYjANCj4gWyAgIDk2LjM4ODk3
-Nl0gICAgICAgIGRvd25fcmVhZCsweDJkLzB4MTYwDQo+IFsgICA5Ni4zODg5ODNdICAgICAg
-ICByZWdpc3Rlcl94ZW5idXNfd2F0Y2grMHg0NS8weDE0MA0KPiBbICAgOTYuMzg4OTkwXSAg
-ICAgICAgeGVuYnVzX2ZpbGVfd3JpdGUrMHg1M2QvMHg2MDANCj4gWyAgIDk2LjM4ODk5NF0g
-ICAgICAgIHZmc193cml0ZSsweGU0LzB4NDkwDQo+IFsgICA5Ni4zODkwMDNdICAgICAgICBr
-c3lzX3dyaXRlKzB4YjgvMHhmMA0KPiBbICAgOTYuMzg5MDExXSAgICAgICAgZG9fc3lzY2Fs
-bF82NCsweDVjLzB4OTANCj4gWyAgIDk2LjM4OTAxN10gICAgICAgIGVudHJ5X1NZU0NBTExf
-NjRfYWZ0ZXJfaHdmcmFtZSsweDcyLzB4ZGMNCj4gWyAgIDk2LjM4OTAyM10NCj4gICAgICAg
-ICAgICAgICAgIG90aGVyIGluZm8gdGhhdCBtaWdodCBoZWxwIHVzIGRlYnVnIHRoaXM6DQo+
-IA0KPiBbICAgOTYuMzg5MDI1XSBDaGFpbiBleGlzdHMgb2Y6DQo+ICAgICAgICAgICAgICAg
-ICAgIHhzX3dhdGNoX3J3c2VtIC0tPiB4c19yZXNwb25zZV9tdXRleCAtLT4gJnUtPm1zZ2J1
-ZmZlcl9tdXRleA0KPiANCj4gWyAgIDk2LjQxMzQyOV0gIFBvc3NpYmxlIHVuc2FmZSBsb2Nr
-aW5nIHNjZW5hcmlvOg0KPiANCj4gWyAgIDk2LjQxMzQzMF0gICAgICAgIENQVTAgICAgICAg
-ICAgICAgICAgICAgIENQVTENCj4gWyAgIDk2LjQxMzQzMF0gICAgICAgIC0tLS0gICAgICAg
-ICAgICAgICAgICAgIC0tLS0NCj4gWyAgIDk2LjQxMzQzMV0gICBsb2NrKCZ1LT5tc2didWZm
-ZXJfbXV0ZXgpOw0KPiBbICAgOTYuNDEzNDMyXSAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgbG9jayh4c19yZXNwb25zZV9tdXRleCk7DQo+IFsgICA5Ni40MTM0MzNdICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICBsb2NrKCZ1LT5tc2didWZmZXJfbXV0ZXgpOw0K
-PiBbICAgOTYuNDEzNDM0XSAgIHJsb2NrKHhzX3dhdGNoX3J3c2VtKTsNCj4gWyAgIDk2LjQx
-MzQzNl0NCj4gICAgICAgICAgICAgICAgICAqKiogREVBRExPQ0sgKioqDQo+IA0KPiBbICAg
-OTYuNDEzNDM2XSAxIGxvY2sgaGVsZCBieSB4ZW5jb25zb2xlZC8xMzMwOg0KPiBbICAgOTYu
-NDEzNDM4XSAgIzA6IGZmZmY4ODgxMDBjOTIwNjggKCZ1LT5tc2didWZmZXJfbXV0ZXgpeysu
-Ky59LXszOjN9LCBhdDogeGVuYnVzX2ZpbGVfd3JpdGUrMHgyYy8weDYwMA0KPiBbICAgOTYu
-NDEzNDQ2XQ0KPiANCj4gQW4gaW9jdGwgY2FsbCBJT0NUTF9YRU5CVVNfQkFDS0VORF9TRVRV
-UCAocmVjb3JkICMxIGluIHRoZSByZXBvcnQpDQo+IHJlc3VsdHMgaW4gY2FsbGluZyB4ZW5i
-dXNfYWxsb2MoKSAtPiB4c19zdXNwZW5kKCkgd2hpY2ggaW50cm9kdWNlcw0KPiBvcmRlcmlu
-ZyB4c193YXRjaF9yd3NlbSAtLT4geHNfcmVzcG9uc2VfbXV0ZXguIFRoZSB4ZW5idXNfdGhy
-ZWFkKCkNCj4gb3BlcmF0aW9uIChyZWNvcmQgIzIpIGNyZWF0ZXMgeHNfcmVzcG9uc2VfbXV0
-ZXggLS0+ICZ1LT5tc2didWZmZXJfbXV0ZXguDQo+IEFuIFhTX1dBVENIIHdyaXRlIHRvIHRo
-ZSB4ZW5idXMgZmlsZSB0aGVuIHJlc3VsdHMgaW4gYSBjb21wbGFpbiBhYm91dA0KPiB0aGUg
-b3Bwb3NpdGUgbG9jayBvcmRlciAmdS0+bXNnYnVmZmVyX211dGV4IC0tPiB4c193YXRjaF9y
-d3NlbS4NCj4gDQo+IFRoZSBkZXBlbmRlbmN5IHhzX3dhdGNoX3J3c2VtIC0tPiB4c19yZXNw
-b25zZV9tdXRleCBpcyBzcHVyaW91cy4gQXZvaWQNCj4gaXQgYW5kIHRoZSB3YXJuaW5nIGJ5
-IGNoYW5naW5nIHRoZSBvcmRlcmluZyBpbiB4c19zdXNwZW5kKCksIGZpcnN0DQo+IGFjcXVp
-cmUgeHNfcmVzcG9uc2VfbXV0ZXggYW5kIHRoZW4geHNfd2F0Y2hfcndzZW0uIFJldmVyc2Ug
-YWxzbyB0aGUNCj4gdW5sb2NraW5nIG9yZGVyIGluIHhzX3N1c3BlbmRfY2FuY2VsKCkgZm9y
-IGNvbnNpc3RlbmN5LCBidXQga2VlcA0KPiB4c19yZXN1bWUoKSBhcyBpcyBiZWNhdXNlIGl0
-IG5lZWRzIHRvIGhhdmUgeHNfd2F0Y2hfcndzZW0gdW5sb2NrZWQgb25seQ0KPiBhZnRlciBl
-eGl0aW5nIHhzIHN1c3BlbmQgYW5kIHJlLWFkZGluZyBhbGwgd2F0Y2hlcy4NCj4gDQo+IFNp
-Z25lZC1vZmYtYnk6IFBldHIgUGF2bHUgPHBldHIucGF2bHVAc3VzZS5jb20+DQoNClB1c2hl
-ZCB0byB4ZW4vdGlwLmdpdCBmb3ItbGludXMtNi42DQoNCg0KSnVlcmdlbg0KDQo=
---------------yzuoFKRHnC0S0MoXwIsE14h9
-Content-Type: application/pgp-keys; name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Disposition: attachment; filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Description: OpenPGP public key
-Content-Transfer-Encoding: quoted-printable
+That was intended to finally get rid of the long-reported watchdog
+failures that involved the page lock under extreme load, where a process
+could end up waiting essentially forever, as other page lockers stole
+the lock from under it.
 
------BEGIN PGP PUBLIC KEY BLOCK-----
+It also improved some benchmarks, but it ended up causing huge
+performance regressions on others, simply because fair lock behavior
+doesn't end up giving out the lock as aggressively, causing better
+worst-case latency, but potentially much worse average latencies and
+throughput.
 
-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
-jR/i1DG86lem3iBDXzXsZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
+Instead of reverting that change entirely, this introduces a controlled
+amount of unfairness, with a sysctl knob to tune it if somebody needs
+to.  But the default value should hopefully be good for any normal load,
+allowing a few rounds of lock stealing, but enforcing the strict
+ordering before the lock has been stolen too many times.
 
---------------yzuoFKRHnC0S0MoXwIsE14h9--
+There is also a hint from Matthieu Baerts that the fair page coloring
+may end up exposing an ABBA deadlock that is hidden by the usual
+optimistic lock stealing, and while the unfairness doesn't fix the
+fundamental issue (and I'm still looking at that), it avoids it in
+practice.
 
---------------42ZRJ49UHDDY0uYFOcH0jiv9--
+The amount of unfairness can be modified by writing a new value to the
+'sysctl_page_lock_unfairness' variable (default value of 5, exposed
+through /proc/sys/vm/page_lock_unfairness), but that is hopefully
+something we'd use mainly for debugging rather than being necessary for
+any deep system tuning.
 
---------------dXh4gafvuiQmFtCEUo0Ovfbq
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+This whole issue has exposed just how critical the page lock can be, and
+how contended it gets under certain locks.  And the main contention
+doesn't really seem to be anything related to IO (which was the origin
+of this lock), but for things like just verifying that the page file
+mapping is stable while faulting in the page into a page table.
 
------BEGIN PGP SIGNATURE-----
+Link: https://lore.kernel.org/linux-fsdevel/ed8442fd-6f54-dd84-cd4a-941e8b7ee603@MichaelLarabel.com/
+Link: https://www.phoronix.com/scan.php?page=article&item=linux-50-59&num=1
+Link: https://lore.kernel.org/linux-fsdevel/c560a38d-8313-51fb-b1ec-e904bd8836bc@tessares.net/
+Reported-and-tested-by: Michael Larabel <Michael@michaellarabel.com>
+Tested-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+Cc: Dave Chinner <david@fromorbit.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Chris Mason <clm@fb.com>
+Cc: Jan Kara <jack@suse.cz>
+Cc: Amir Goldstein <amir73il@gmail.com>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+CC: <stable@vger.kernel.org> # 5.4
+[ mheyne: fixed contextual conflict in mm/filemap.c due to missing
+  commit c7510ab2cf5c ("mm: abstract out wake_page_match() from
+  wake_page_function()"). Added WQ_FLAG_CUSTOM due to missing commit
+  7f26482a872c ("locking/percpu-rwsem: Remove the embedded rwsem") ]
+Signed-off-by: Maximilian Heyne <mheyne@amazon.de>
+---
+ include/linux/mm.h   |   2 +
+ include/linux/wait.h |   2 +
+ kernel/sysctl.c      |   8 +++
+ mm/filemap.c         | 160 ++++++++++++++++++++++++++++++++++---------
+ 4 files changed, 141 insertions(+), 31 deletions(-)
 
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmTlo+QFAwAAAAAACgkQsN6d1ii/Ey+M
-RwgAmYVg8iwB8QzOZkrF2CucnZZHgCOnq7doZmYwc+NIOUZGxybCmUBNsjUQQHY/RFHY7nYR2VFX
-Gyo04E8g0tbg77PcdMy6/lF++s+W3WGOWcvtS+ZPh6Rdh694qxVH0dlcytHs8xkAk14qZZeaiApk
-P2k6pQv47j1RiZfex/o/2KMK7ZCXQ9r+Eyf5xJyXklgXLTQvluOp4cFI/9UTock6BfeUrgpPhExn
-z2xlF4UV3DfysB4ZboRVJaJzFYUUkgdsjKzyE/MKFxB4QB+Y2YPhfgQPt4EA3sTSMeAPlKMHbyUN
-uAt3V0C+NpQD6xUpX/kEPtFrcxMet5XfLF2WG6tguQ==
-=I71y
------END PGP SIGNATURE-----
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index d35c29d322d8..d14aba548ff4 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -37,6 +37,8 @@ struct user_struct;
+ struct writeback_control;
+ struct bdi_writeback;
+ 
++extern int sysctl_page_lock_unfairness;
++
+ void init_mm_internals(void);
+ 
+ #ifndef CONFIG_NEED_MULTIPLE_NODES	/* Don't use mapnrs, do it properly */
+diff --git a/include/linux/wait.h b/include/linux/wait.h
+index 7d04c1b588c7..03bff85e365f 100644
+--- a/include/linux/wait.h
++++ b/include/linux/wait.h
+@@ -20,6 +20,8 @@ int default_wake_function(struct wait_queue_entry *wq_entry, unsigned mode, int
+ #define WQ_FLAG_EXCLUSIVE	0x01
+ #define WQ_FLAG_WOKEN		0x02
+ #define WQ_FLAG_BOOKMARK	0x04
++#define WQ_FLAG_CUSTOM		0x08
++#define WQ_FLAG_DONE		0x10
+ 
+ /*
+  * A single wait-queue entry structure:
+diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+index decabf5714c0..4f85f7ed42fc 100644
+--- a/kernel/sysctl.c
++++ b/kernel/sysctl.c
+@@ -1563,6 +1563,14 @@ static struct ctl_table vm_table[] = {
+ 		.proc_handler	= percpu_pagelist_fraction_sysctl_handler,
+ 		.extra1		= SYSCTL_ZERO,
+ 	},
++	{
++		.procname	= "page_lock_unfairness",
++		.data		= &sysctl_page_lock_unfairness,
++		.maxlen		= sizeof(sysctl_page_lock_unfairness),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec_minmax,
++		.extra1		= SYSCTL_ZERO,
++	},
+ #ifdef CONFIG_MMU
+ 	{
+ 		.procname	= "max_map_count",
+diff --git a/mm/filemap.c b/mm/filemap.c
+index adc27af737c6..f1ed0400c37c 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -1044,9 +1044,43 @@ struct wait_page_queue {
+ 	wait_queue_entry_t wait;
+ };
+ 
++/*
++ * The page wait code treats the "wait->flags" somewhat unusually, because
++ * we have multiple different kinds of waits, not just he usual "exclusive"
++ * one.
++ *
++ * We have:
++ *
++ *  (a) no special bits set:
++ *
++ *	We're just waiting for the bit to be released, and when a waker
++ *	calls the wakeup function, we set WQ_FLAG_WOKEN and wake it up,
++ *	and remove it from the wait queue.
++ *
++ *	Simple and straightforward.
++ *
++ *  (b) WQ_FLAG_EXCLUSIVE:
++ *
++ *	The waiter is waiting to get the lock, and only one waiter should
++ *	be woken up to avoid any thundering herd behavior. We'll set the
++ *	WQ_FLAG_WOKEN bit, wake it up, and remove it from the wait queue.
++ *
++ *	This is the traditional exclusive wait.
++ *
++ *  (b) WQ_FLAG_EXCLUSIVE | WQ_FLAG_CUSTOM:
++ *
++ *	The waiter is waiting to get the bit, and additionally wants the
++ *	lock to be transferred to it for fair lock behavior. If the lock
++ *	cannot be taken, we stop walking the wait queue without waking
++ *	the waiter.
++ *
++ *	This is the "fair lock handoff" case, and in addition to setting
++ *	WQ_FLAG_WOKEN, we set WQ_FLAG_DONE to let the waiter easily see
++ *	that it now has the lock.
++ */
+ static int wake_page_function(wait_queue_entry_t *wait, unsigned mode, int sync, void *arg)
+ {
+-	int ret;
++	unsigned int flags;
+ 	struct wait_page_key *key = arg;
+ 	struct wait_page_queue *wait_page
+ 		= container_of(wait, struct wait_page_queue, wait);
+@@ -1059,35 +1093,44 @@ static int wake_page_function(wait_queue_entry_t *wait, unsigned mode, int sync,
+ 		return 0;
+ 
+ 	/*
+-	 * If it's an exclusive wait, we get the bit for it, and
+-	 * stop walking if we can't.
+-	 *
+-	 * If it's a non-exclusive wait, then the fact that this
+-	 * wake function was called means that the bit already
+-	 * was cleared, and we don't care if somebody then
+-	 * re-took it.
++	 * If it's a lock handoff wait, we get the bit for it, and
++	 * stop walking (and do not wake it up) if we can't.
+ 	 */
+-	ret = 0;
+-	if (wait->flags & WQ_FLAG_EXCLUSIVE) {
+-		if (test_and_set_bit(key->bit_nr, &key->page->flags))
++	flags = wait->flags;
++	if (flags & WQ_FLAG_EXCLUSIVE) {
++		if (test_bit(key->bit_nr, &key->page->flags))
+ 			return -1;
+-		ret = 1;
++		if (flags & WQ_FLAG_CUSTOM) {
++			if (test_and_set_bit(key->bit_nr, &key->page->flags))
++				return -1;
++			flags |= WQ_FLAG_DONE;
++		}
+ 	}
+-	wait->flags |= WQ_FLAG_WOKEN;
+ 
++	/*
++	 * We are holding the wait-queue lock, but the waiter that
++	 * is waiting for this will be checking the flags without
++	 * any locking.
++	 *
++	 * So update the flags atomically, and wake up the waiter
++	 * afterwards to avoid any races. This store-release pairs
++	 * with the load-acquire in wait_on_page_bit_common().
++	 */
++	smp_store_release(&wait->flags, flags | WQ_FLAG_WOKEN);
+ 	wake_up_state(wait->private, mode);
+ 
+ 	/*
+ 	 * Ok, we have successfully done what we're waiting for,
+ 	 * and we can unconditionally remove the wait entry.
+ 	 *
+-	 * Note that this has to be the absolute last thing we do,
+-	 * since after list_del_init(&wait->entry) the wait entry
++	 * Note that this pairs with the "finish_wait()" in the
++	 * waiter, and has to be the absolute last thing we do.
++	 * After this list_del_init(&wait->entry) the wait entry
+ 	 * might be de-allocated and the process might even have
+ 	 * exited.
+ 	 */
+ 	list_del_init_careful(&wait->entry);
+-	return ret;
++	return (flags & WQ_FLAG_EXCLUSIVE) != 0;
+ }
+ 
+ static void wake_up_page_bit(struct page *page, int bit_nr)
+@@ -1167,8 +1210,8 @@ enum behavior {
+ };
+ 
+ /*
+- * Attempt to check (or get) the page bit, and mark the
+- * waiter woken if successful.
++ * Attempt to check (or get) the page bit, and mark us done
++ * if successful.
+  */
+ static inline bool trylock_page_bit_common(struct page *page, int bit_nr,
+ 					struct wait_queue_entry *wait)
+@@ -1179,13 +1222,17 @@ static inline bool trylock_page_bit_common(struct page *page, int bit_nr,
+ 	} else if (test_bit(bit_nr, &page->flags))
+ 		return false;
+ 
+-	wait->flags |= WQ_FLAG_WOKEN;
++	wait->flags |= WQ_FLAG_WOKEN | WQ_FLAG_DONE;
+ 	return true;
+ }
+ 
++/* How many times do we accept lock stealing from under a waiter? */
++int sysctl_page_lock_unfairness = 5;
++
+ static inline int wait_on_page_bit_common(wait_queue_head_t *q,
+ 	struct page *page, int bit_nr, int state, enum behavior behavior)
+ {
++	int unfairness = sysctl_page_lock_unfairness;
+ 	struct wait_page_queue wait_page;
+ 	wait_queue_entry_t *wait = &wait_page.wait;
+ 	bool thrashing = false;
+@@ -1203,11 +1250,18 @@ static inline int wait_on_page_bit_common(wait_queue_head_t *q,
+ 	}
+ 
+ 	init_wait(wait);
+-	wait->flags = behavior == EXCLUSIVE ? WQ_FLAG_EXCLUSIVE : 0;
+ 	wait->func = wake_page_function;
+ 	wait_page.page = page;
+ 	wait_page.bit_nr = bit_nr;
+ 
++repeat:
++	wait->flags = 0;
++	if (behavior == EXCLUSIVE) {
++		wait->flags = WQ_FLAG_EXCLUSIVE;
++		if (--unfairness < 0)
++			wait->flags |= WQ_FLAG_CUSTOM;
++	}
++
+ 	/*
+ 	 * Do one last check whether we can get the
+ 	 * page bit synchronously.
+@@ -1230,27 +1284,63 @@ static inline int wait_on_page_bit_common(wait_queue_head_t *q,
+ 
+ 	/*
+ 	 * From now on, all the logic will be based on
+-	 * the WQ_FLAG_WOKEN flag, and the and the page
+-	 * bit testing (and setting) will be - or has
+-	 * already been - done by the wake function.
++	 * the WQ_FLAG_WOKEN and WQ_FLAG_DONE flag, to
++	 * see whether the page bit testing has already
++	 * been done by the wake function.
+ 	 *
+ 	 * We can drop our reference to the page.
+ 	 */
+ 	if (behavior == DROP)
+ 		put_page(page);
+ 
++	/*
++	 * Note that until the "finish_wait()", or until
++	 * we see the WQ_FLAG_WOKEN flag, we need to
++	 * be very careful with the 'wait->flags', because
++	 * we may race with a waker that sets them.
++	 */
+ 	for (;;) {
++		unsigned int flags;
++
+ 		set_current_state(state);
+ 
+-		if (signal_pending_state(state, current))
++		/* Loop until we've been woken or interrupted */
++		flags = smp_load_acquire(&wait->flags);
++		if (!(flags & WQ_FLAG_WOKEN)) {
++			if (signal_pending_state(state, current))
++				break;
++
++			io_schedule();
++			continue;
++		}
++
++		/* If we were non-exclusive, we're done */
++		if (behavior != EXCLUSIVE)
+ 			break;
+ 
+-		if (wait->flags & WQ_FLAG_WOKEN)
++		/* If the waker got the lock for us, we're done */
++		if (flags & WQ_FLAG_DONE)
+ 			break;
+ 
+-		io_schedule();
++		/*
++		 * Otherwise, if we're getting the lock, we need to
++		 * try to get it ourselves.
++		 *
++		 * And if that fails, we'll have to retry this all.
++		 */
++		if (unlikely(test_and_set_bit(bit_nr, &page->flags)))
++			goto repeat;
++
++		wait->flags |= WQ_FLAG_DONE;
++		break;
+ 	}
+ 
++	/*
++	 * If a signal happened, this 'finish_wait()' may remove the last
++	 * waiter from the wait-queues, but the PageWaiters bit will remain
++	 * set. That's ok. The next wakeup will take care of it, and trying
++	 * to do it here would be difficult and prone to races.
++	 */
+ 	finish_wait(q, wait);
+ 
+ 	if (thrashing) {
+@@ -1260,12 +1350,20 @@ static inline int wait_on_page_bit_common(wait_queue_head_t *q,
+ 	}
+ 
+ 	/*
+-	 * A signal could leave PageWaiters set. Clearing it here if
+-	 * !waitqueue_active would be possible (by open-coding finish_wait),
+-	 * but still fail to catch it in the case of wait hash collision. We
+-	 * already can fail to clear wait hash collision cases, so don't
+-	 * bother with signals either.
++	 * NOTE! The wait->flags weren't stable until we've done the
++	 * 'finish_wait()', and we could have exited the loop above due
++	 * to a signal, and had a wakeup event happen after the signal
++	 * test but before the 'finish_wait()'.
++	 *
++	 * So only after the finish_wait() can we reliably determine
++	 * if we got woken up or not, so we can now figure out the final
++	 * return value based on that state without races.
++	 *
++	 * Also note that WQ_FLAG_WOKEN is sufficient for a non-exclusive
++	 * waiter, but an exclusive one requires WQ_FLAG_DONE.
+ 	 */
++	if (behavior == EXCLUSIVE)
++		return wait->flags & WQ_FLAG_DONE ? 0 : -EINTR;
+ 
+ 	return wait->flags & WQ_FLAG_WOKEN ? 0 : -EINTR;
+ }
+-- 
+2.40.1
 
---------------dXh4gafvuiQmFtCEUo0Ovfbq--
+
+
+
+Amazon Development Center Germany GmbH
+Krausenstr. 38
+10117 Berlin
+Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+Sitz: Berlin
+Ust-ID: DE 289 237 879
+
+
+
