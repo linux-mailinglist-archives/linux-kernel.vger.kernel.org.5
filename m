@@ -2,164 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06CFB785348
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 10:57:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99BED785320
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 10:54:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230483AbjHWI5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 04:57:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40686 "EHLO
+        id S234947AbjHWIyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 04:54:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234889AbjHWIpx (ORCPT
+        with ESMTP id S234986AbjHWIrA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 04:45:53 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 347DB2D67
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 01:42:28 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-37-v457HwcMNuOKYUb9WwIYpA-1; Wed, 23 Aug 2023 09:42:26 +0100
-X-MC-Unique: v457HwcMNuOKYUb9WwIYpA-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 23 Aug
- 2023 09:42:24 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Wed, 23 Aug 2023 09:42:24 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Linus Torvalds' <torvalds@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Andy Shevchenko" <andriy.shevchenko@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: RE: [PATCH next v3 0/5] minmax: Relax type checks in min() and max().
-Thread-Topic: [PATCH next v3 0/5] minmax: Relax type checks in min() and
- max().
-Thread-Index: AdnGwQ6IGYkn0IjZSjuTaOSyeQI0UwIK8m4AABl1+KABcxoeCQAeWbMw
-Date:   Wed, 23 Aug 2023 08:42:24 +0000
-Message-ID: <10b50bca86004232b28edf0143ce87fc@AcuMS.aculab.com>
-References: <01e3e09005e9434b8f558a893a47c053@AcuMS.aculab.com>
- <202308141416.89AC5C2@keescook>
- <2dd09c4033644239a314247e635fa735@AcuMS.aculab.com>
- <202308211113.4F49E73109@keescook>
- <CAHk-=whwEAc22wm8h9FESPB5X+P4bLDgv0erBQMa1buTNQW7tA@mail.gmail.com>
-In-Reply-To: <CAHk-=whwEAc22wm8h9FESPB5X+P4bLDgv0erBQMa1buTNQW7tA@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Wed, 23 Aug 2023 04:47:00 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18533268E
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 01:45:00 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-3ff1c397405so3324775e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 01:45:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=metaspace-dk.20221208.gappssmtp.com; s=20221208; t=1692780299; x=1693385099;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=q2cgmL0Oxi/Ka+T0qRkNIQGy3DlLEIQoGhbZx1wxXXg=;
+        b=LonQ0vsOr7GJ73NzxO39Rbo6xOcF//DSk5ReABLOrEGbN2SFKmP7QBQ3Ds70B7+HH2
+         vitmIRgQeu+cIR3Orv/AtwdGik94Po1BMx7mkzP7N/Dv2Rjpeo/Qp6+l/ABU0oO1WARc
+         pxTAYpdnShdK8D803xL7MlB75J2uVsQdUeIT2tdR8lTgRk1VZ1GfPlmQJjs29YXm/1L1
+         05VQ9rzA5MBCGPXA7ZYPQRunb8JkSD/STinlo/0a19Pvv8bvPzHHutMnEOZVomTEQS5a
+         EVJpfwqiixoiRJ33Q0t5h39VHlf3gdSVMPiNpb2sKsWhfv43cXU5c3zEK5ePMtiRHjzy
+         Fr5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692780299; x=1693385099;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=q2cgmL0Oxi/Ka+T0qRkNIQGy3DlLEIQoGhbZx1wxXXg=;
+        b=UhM0Bohnt0gcnZNUGjYXPbQbRblOPxp4ULFLqrcNH/N7QLZ0+Q2NpwzXd/aOczwaCg
+         I5abFkIfuNkcu5KeNcwCpL8KijVvyKGJMNJJps5fi1f/IMLgX5SiLkikfp2/aghuEq2A
+         rjjWH1H2c9hlhyXntaz/EPESPrmzGakwfni/L+mLDsrkxlEHvqTsdsUyI52hJKtdOPLB
+         Zzoog+UgxVviJxLeNopNKs1Wl7QUixV9xobYzMBiYQ/fWxD5I+0wC/1OrPSC/FncWgCc
+         yGHXKUOXL9h18YLQ+9W7SmPR6ysZzIFW5ayLzpyRot+0KQATyL9omn1ZyHAe/tw6fxVk
+         nfdQ==
+X-Gm-Message-State: AOJu0Yz35uzHLnQCsEWljqR9LMOTsFmpeAsn+iusrhWhC9qHkAT3LFu8
+        gex+7ftHrbBovXryjt1VdHQ2OQ==
+X-Google-Smtp-Source: AGHT+IHK4M5cW+ii2QsY9thF0YAboNVSBb0QymA/D8MSrbEEeJganwycbU58f5qGLuLuVPD1BN12nw==
+X-Received: by 2002:a7b:c3d0:0:b0:3f9:c0f2:e1a4 with SMTP id t16-20020a7bc3d0000000b003f9c0f2e1a4mr8835302wmj.34.1692780298570;
+        Wed, 23 Aug 2023 01:44:58 -0700 (PDT)
+Received: from localhost ([165.225.194.193])
+        by smtp.gmail.com with ESMTPSA id l11-20020a1c790b000000b003fbca942499sm21185071wme.14.2023.08.23.01.44.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Aug 2023 01:44:58 -0700 (PDT)
+References: <87r0octho8.fsf@metaspace.dk>
+ <20230822093154.3478754-1-aliceryhl@google.com>
+User-agent: mu4e 1.10.5; emacs 28.2.50
+From:   "Andreas Hindborg (Samsung)" <nmi@metaspace.dk>
+To:     Alice Ryhl <aliceryhl@google.com>
+Cc:     alex.gaynor@gmail.com, benno.lossin@proton.me,
+        bjorn3_gh@protonmail.com, boqun.feng@gmail.com, gary@garyguo.net,
+        linux-kernel@vger.kernel.org, ojeda@kernel.org,
+        patches@lists.linux.dev, rust-for-linux@vger.kernel.org,
+        wedsonaf@gmail.com
+Subject: Re: [PATCH v1] rust: add improved version of
+ `ForeignOwnable::borrow_mut`
+Date:   Wed, 23 Aug 2023 10:43:18 +0200
+In-reply-to: <20230822093154.3478754-1-aliceryhl@google.com>
+Message-ID: <87msyi406u.fsf@metaspace.dk>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogTGludXMgVG9ydmFsZHMNCj4gU2VudDogVHVlc2RheSwgQXVndXN0IDIyLCAyMDIzIDY6
-MzYgUE0NCj4gDQo+IE9uIE1vbiwgMjEgQXVnIDIwMjMgYXQgMTE6MjQsIEtlZXMgQ29vayA8a2Vl
-c2Nvb2tAY2hyb21pdW0ub3JnPiB3cm90ZToNCj4gPg0KPiA+IEl0IHNlZW1zIGxpa2UgdGhlIGZv
-b3QtZ3VuIHByb2JsZW1zIGFyZSB3aGVuIGEgdmFsdWUgZ2V0cyBjbGFtcGVkIGJ5IHRoZQ0KPiA+
-IGltcG9zZWQgdHlwZS4gQ2FuJ3Qgd2UganVzdCB3YXJuIGFib3V0IHRob3NlIGNhc2VzPw0KPiAN
-Cj4gSSB0aGluayB0aGF0IHRoZSBwcm9ibGVtIHdpdGggbWluX3QoKSBpcyB0aGF0IGl0IGlzIHVz
-ZWQgYXMgYSByYW5kb20NCj4gIndoZW4gbWluKCkgd2FybnMgYWJvdXQgZGlmZmVyZW50IHR5cGVz
-IiwgYW5kIHRoYXQgaXQgYmFzaWNhbGx5IGp1c3QNCj4gYWRkcyBhIGNhc3Qgd2l0aG91dCBhbnkg
-c2VtYW50aWMgbWVhbmluZy4NCj4gDQo+IEVuZCByZXN1bHQ6IHdlIGN1cnJlbnRseSBoYXZlIDQ1
-MDArIG9mIHRob3NlIGNhc2VzIChhbmQgYW5vdGhlciAxMzAwDQo+IHVzZXMgb2YgJ21heF90Jykg
-YW5kIEkgYmV0IHRoYXQgc2V2ZXJhbCBvZiB0aGVtIGFyZSB0aGUgbmFycm93aW5nDQo+IGtpbmQu
-IEFuZCBzb21lIGFyZSBwcm9iYWJseSB2YWxpZC4NCj4gDQo+IEFuZCBpZiB3ZSB0aWdodGVuIHVw
-ICJtaW5fdCgpIiB0eXBlIHJ1bGVzLCB3ZSdsbCBqdXN0IGhpdCB0aGUgKm5leHQqDQo+IHByb2Js
-ZW0gaW4gdGhlIHNlcmllcywgbmFtZWx5ICJ3aGF0IGFyZSBwZW9wbGUgZ29pbmcgdG8gZG8gbm93
-PyINCj4gDQo+IFdlIGRvbid0IHdhbnQgdG8ganVzdCBrZWVwIHB1c2hpbmcgdGhlIHByb2JsZW0g
-ZG93bi4NCj4gDQo+IFNvIEkgYWN0dWFsbHkgbW9zdGx5IGxpa2VkIGFsbCB0aGUgKm90aGVyKiBw
-YXRjaGVzIGluIERhdmlkJ3Mgc2VyaWVzOg0KPiB1c2luZyAnbWluX3Vuc2lnbmVkKCknIGFuZCBm
-cmllbmRzIGFkZHMgYSBuaWNlICpzZW1hbnRpYyogbGF5ZXIsIG5vdA0KPiBqdXN0IGEgY2FzdC4g
-QW5kIHJlbGF4aW5nIHRoZSBjaGVja2luZyBvZiBtaW4vbWF4IGRvZXNuJ3QgY2F1c2UgdGhlDQo+
-IHNhbWUgdGhlICJwdXNoIHByb2JsZW1zIGRvd24iIGlzc3VlLCBhcyBsb25nIGFzIHRoZSByZWxh
-eGluZyBpcw0KPiByZWFzb25hYmxlLg0KPiANCj4gKFNpZGUgbm90ZTogSSdtIG5vdCBjb252aW5j
-ZWQgJ21pbl91bnNpZ25lZCgpJyBpcyB0aGUgcmlnaHQgc3ludGF4Lg0KPiBXaGlsZSBJIGxpa2Ug
-dGhlIGNvbmNlcHQsIEkgdGhpbmsgJ21pbigpJyBpcyBvZnRlbiB1c2VkIGFzIGEgcGFydCBvZg0K
-PiBvdGhlciBleHByZXNzaW9ucywgYW5kICdtaW5fdW5zaWduZWQoKScgZW5kcyB1cCBtYWtpbmcg
-Zm9yIGEgdmVyeQ0KPiBpbGxlZ2libGUgbG9uZyBhbmQgY29tcGxleCB0aGluZy4gSSB0aGluayB3
-ZSBtaWdodCBhcyB3ZWxsIHVzZQ0KPiAndW1pbigpL3VtYXgoKScsIG1hdGNoaW5nIG91ciB0eXBl
-IHN5c3RlbSkuDQoNClBpY2tpbmcgYSBuYW1lIGlzIGxpa2UgcGFpbnRpbmcgdGhlIGJpa2Utc2hl
-ZCA6LSkNCg0KPiBJdCdzIGp1c3QgdGhhdCBJIHZlcnkgbXVjaCBkb24ndCB0aGluayBpdCdzIHJl
-YXNvbmFibGUgdG8gcmVsYXggIjIwdSINCj4gKG9yIC0gbW9yZSBjb21tb25seSAtIHNpemVvZikg
-dG8gYmUgYW55IHJhbmRvbSBjb25zdGFudCBzaWduZWQNCj4gaW50ZWdlciwgYW5kIGl0IHNob3Vs
-ZCAqbm90KiBjb21wYXJlIHdlbGwgd2l0aCBzaWduZWQgaW50ZWdlcnMgYW5kIG5vdA0KPiBzaWxl
-bnRseSBiZWNvbWUgYSBzaWduZWQgY29tcGFyZS4NCj4gDQo+IChCdXQgSSBkbyB0aGluayB0aGF0
-IGl0J3MgdmVyeSBvayB0byBnbyB0aGUgb3RoZXIgd2F5OiBjb21wYXJlIGENCj4gX3Vuc2lnbmVk
-XyB2YWx1ZSB3aXRoIGEgInNpZ25lZCIgY29uc3RhbnQgaW50ZWdlciBsaWtlIDIwLiBUaGUgdHdv
-DQo+IGNhc2VzIGFyZSBub3Qgc3ltbWV0cmljYWw6ICcyMCcgY2FuIGJlIGEgcGVyZmVjdGx5IGZp
-bmUgdW5zaWduZWQNCj4gdmFsdWUsIGJ1dCAnMjB1JyBjYW5ub3QgYmUgdHJlYXRlZCBzaWduZWQp
-Lg0KDQpJJ2xsIHJlYmFzZSB0aGUgcGF0Y2ggYWZ0ZXIgdGhlIG5leHQgLXJjMSBpcyBvdXQgd2l0
-aCB0aGF0IHJlbW92ZWQuIA0KDQo+IEFuZCB3aGlsZSBJIGRvbid0IGxpa2UgRGF2aWQncyBwYXRj
-aCB0byBzaWxlbnRseSB0dXJuIHVuc2lnbmVkDQo+IGNvbnN0YW50IHNpZ25lZCwgSSBkbyBhY2tu
-b3dsZWRnZSB0aGF0IHZlcnkgb2Z0ZW4gdGhlICpzb3VyY2UqIG9mIHRoZQ0KPiB1bnNpZ25lZG5l
-c3MgaXMgYSAnc2l6ZW9mKCknIGV4cHJlc3Npb24sIGFuZCB0aGVuIHlvdSBoYXZlIGFuIGludGVn
-ZXINCj4gdGhhdCBnZXRzIGNvbXBhcmVkIHRvIGEgc2l6ZSwgYW5kIHlvdSBlbmQgdXAgdXNpbmcg
-J21pbl90KCknLiBCdXQgSSBkbw0KPiAqTk9UKiB3YW50IHRvIGZpeCB0aG9zZSBjYXNlcyBieSBp
-Z25vcmluZyB0aGUgc2lnbmVkbmVzcy4NCj4gDQo+IEp1c3QgYSBxdWljayBncmVwIG9mDQo+IA0K
-PiAgICAgZ2l0IGdyZXAgJ21pbl90KHNpemVfdCcgfCB3Yw0KPiANCj4gc2hvd3MgdGhhdCBxdWl0
-ZSBhIGxvdCBvZiB0aGUgJ21pbl90KCknIGNhc2VzIGFyZSB0aGlzIGV4YWN0IGlzc3VlLg0KPiBC
-dXQgSSBhYnNvbHV0ZWx5IGRvICpub3QqIHRoaW5rIHRoZSBzb2x1dGlvbiBpcyB0byByZWxheCAn
-bWluKCknLg0KDQpzaXplX3QgaXMgYWN0dWFsbHkgYSBwcm9ibGVtIHdpdGggdW5zaWduZWQgY29u
-c3RhbnRzLg0KSXQgaXMgJ3Vuc2lnbmVkIGludCcgb24gMzJiaXQgYW5kICd1bnNpZ25lZCBsb25n
-JyBvbiA2NGJpdC4NCk1ha2luZyBpdCBoYXJkIHRvIHVzZSBhIGxpdGVyYWwuDQoNCj4gSSBzdXNw
-ZWN0IHRoZSBmaXggdG8gdGhvc2UgY2FzZXMgaXMgdG8gbXVjaCBtb3JlIGVhZ2VybHkgdXNlDQo+
-ICdjbGFtcCgpJy4gQWxtb3N0IGV2ZXJ5IHNpbmdsZSB0aW1lIHlvdSBkbyBhICJjb21wYXJlIHRv
-IGEgc2l6ZSIsIGl0DQo+IHJlYWxseSBpcyAibWFrZSBzdXJlIHRoZSBpbnRlZ2VyIGlzIHdpdGhp
-biB0aGUgc2l6ZSByYW5nZSIuIFNvIHdoaWxlDQo+IA0KPiAgICAgaW50IHZhbA0KPiAgICAuLi4N
-Cj4gICAgIHggPSBtaW4odmFsLHNpemVvZih4eXopKTsNCj4gDQo+IGlzIGhvcnJlbmRvdXNseSB3
-cm9uZyBhbmQgKnNob3VsZCogd2FybiwNCg0KVGhlIGRpZmZpY3VsdHkgaXMgZ2V0dGluZyBwZW9w
-bGUgdG8gY29ycmVjdCBpdCBieSBjaGFuZ2luZw0KdGhlIHR5cGUgb24gJ3ZhbCcgdG8gYmUgdW5z
-aWduZWQuDQpTb21ldGltZXMgaXQgaXMganVzdCBhIGxvY2FsIHZhcmlhYmxlLg0KT2Z0ZW4gaXQg
-anVzdCBjYW4ndCBldmVyIGJlIG5lZ2F0aXZlLCBvciB0aGVyZSBpcyBhbiBpbW1lZGlhdGVseQ0K
-cHJlY2VkaW5nIGNoZWNrLg0KDQpJbmRlZWQgaWYgaXQgaXMgbmVnYXRpdmUgdGhhdCBpcyBwcm9i
-YWJseSBhIGJ1Zy4NCihlZyBhIG1pc3NpbmcgZXJyb3IgY2hlY2sgZnJvbSBhbiBlYXJsaWVyIGNh
-bGwuKQ0KTm8gYW1vdW50IG9mIGNvbXBpbGUtdGltZSBjaGVja2luZyBpcyBnb2luZyB0byBoZWxw
-Lg0KQWJvdXQgdGhlIG9ubHkgdGhpbmcgdGhhdCB3b3VsZCBoZWxwIHdvdWxkIGJlIGEgcnVuLXRp
-bWUNCmNoZWNrIGFuZCBhICdnb3RvIGxhYmVsJyBpZiBuZWdhdGl2ZS4NCg0KVGhlcmUgYXJlIHBs
-ZW50eSBvZiBwbGFjZXMgd2hlcmUgYSAoc2hvcnQpIGJ1ZmZlciBsZW5ndGggaXMNCnBhc3NlZCB0
-byBhIGZ1bmN0aW9uIGFzICdpbnQnIC0gZXZlbiB0aG91Z2ggbmVnYXRpdmUgdmFsdWVzDQphcmUg
-Y29tcGxldGVseSBpbnZhbGlkLg0KSW4gcmVhbGl0eSB0aGUgdHlwZSBjaGFuZ2UgbmVlZHMgJ2No
-YXNpbmcgYmFjaycgdGhyb3VnaCB0bw0KYWxsIHRoZSBjYWxsZXJzLg0KDQo+IEkgdGhpbmsgZG9p
-bmcNCj4gDQo+ICAgIHggPSBjbGFtcCh2YWwsIDAsIHNpemVvZih4eXopKTsNCj4gDQo+IGlzIGEg
-Km11Y2gqIG5pY2VyIG1vZGVsLCBhbmQgc2hvdWxkIG5vdCB3YXJuIGV2ZW4gaWYgInZhbCIgYW5k
-IHRoZQ0KPiB1cHBlciBib3VuZCBkbyBub3QgYWdyZWUuIEluIHRoZSBhYm92ZSBraW5kIG9mIHNp
-dHVhdGlvbiwgc3VkZGVubHkgaXQNCj4gKmlzKiBvayB0byB0cmVhdCB0aGUgJ3NpemVvZigpJyBh
-cyBhIHNpZ25lZCBpbnRlZ2VyLCBidXQgb25seSBiZWNhdXNlDQo+IHdlIGhhdmUgdGhhdCBleHBs
-aWNpdCBsb3dlciBib3VuZCB0b28uDQoNClRoYXQgd291bGQgcmVxdWlyZSBtYWpvciByZXdvcmsg
-b24gY2xhbXAoKSA6LSkNCg0KSXQgd291bGQgYWxzbyBiZSBuaWNlIHRvIGdldCBjbGFtcCh1bnNp
-Z25lZF92YXIsIDB1LCAyMHUpIHRvDQpjb21waWxlIHdpdGhvdXQgdGhlIGFubm95aW5nIHdhcm5p
-bmcgZnJvbSB0aGUgY29tcGlsZXIuDQpJIHRoaW5rIHlvdSBoYXZlIHRvIHVzZToNCglidWlsdGlu
-X2Nob29zZV9leHByKHgsIHZhciwgMCkgPj0gYnVpbHRpbl9jaG9vc2VfZXhwcih4LCBsb3csIDAp
-DQoNCj4gSW4gb3RoZXIgd29yZHM6IHdlIHNob3VsZCBub3QgInRyeSB0byBmaXggdGhlIHR5cGVz
-Ii4gVGhhdCB3YXMgd2hhdA0KPiBjYXVzZWQgdGhlIHByb2JsZW0gaW4gdGhlIGZpcnN0IHBsYWNl
-LCB3aXRoICJtaW5fdCgpIiBqdXN0IHRyeWluZyB0bw0KPiBmaXggdGhlIHR5cGUgbWlzbWF0Y2gg
-d2l0aCBhIGNhc3QuIENhc3RzIGFyZSB3cm9uZywgYW5kIHdlIHNob3VsZCBoYXZlDQo+IGtub3du
-IHRoYXQuIFRoZSBlbmQgcmVzdWx0IGlzIGhvcnJlbmRvdXMsIGFuZCBJIGRvIGFncmVlIHdpdGgg
-RGF2aWQgb24NCj4gdGhhdCB0b28uDQoNClNvbWUgb2YgdGhlIHdvcnN0IGNhc3RzIGFyZSB0aGUg
-b25lcyB0aGF0IGFyZSBvbmx5IHRoZXJlIGZvciBzcGFyc2UuDQpUaGUgY29tcGlsZXIgc2VlcyAn
-KGZvcmNlIF9fYmUzMil2YXInIGFzICcodWludCl2YXInIHJhdGhlciB0aGFuICd2YXInLg0KVGhh
-dCByZWFsbHkgb3VnaHQgdG8gYWx3YXlzIGhhdmUgYmVlbiAnZm9yY2UoX19iZTMyLCB2YXIpJyBz
-byB0aGF0DQppdCBjYW4gYmUgbWFkZSB0cmFuc3BhcmVudCB0byB0aGUgY29tcGlsZXIuDQoNCj4g
-SSB0aGluayB3ZSBzaG91bGQgc3RyaXZlIHRvIGZpeCBpdCB3aXRoICJzZW1hbnRpYyIgZml4ZXMg
-aW5zdGVhZC4gTGlrZQ0KPiB0aGUgYWJvdmUgInVzZSBjbGFtcCgpIGluc3RlYWQgb2YgbWluKCks
-IGFuZCB0aGUgZnVuZGFtZW50YWwNCj4gc2lnbmVkbmVzcyBwcm9ibGVtIHNpbXBseSBnb2VzIGF3
-YXkgYmVjYXVzZSBpdCBoYXMgZW5vdWdoIHNlbWFudGljDQo+IG1lYW5pbmcgdG8gYmUgd2VsbC1k
-ZWZpbmVkIi4NCg0KVW5mb3J0dW5hdGVseSBpdCBhZGRzIGFuIGV4dHJhIGNvbXBhcmUgYW5kIGJy
-YW5jaCB0byBnZXQgbWlzLXByZWRpY3RlZC4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRk
-cmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBN
-SzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
+
+Alice Ryhl <aliceryhl@google.com> writes:
+
+> Andreas Hindborg <nmi@metaspace.dk> writes:
+>>> diff --git a/rust/kernel/sync/arc.rs b/rust/kernel/sync/arc.rs
+>>> index 172f563976a9..f152a562c9c3 100644
+>>> --- a/rust/kernel/sync/arc.rs
+>>> +++ b/rust/kernel/sync/arc.rs
+>>> @@ -232,26 +232,35 @@ pub fn ptr_eq(this: &Self, other: &Self) -> bool {
+>>>  
+>>>  impl<T: 'static> ForeignOwnable for Arc<T> {
+>>>      type Borrowed<'a> = ArcBorrow<'a, T>;
+>>> +    // Mutable access to the `Arc` does not give any extra abilities over
+>>> +    // immutable access.
+>>> +    type BorrowedMut<'a> = ArcBorrow<'a, T>;
+>>>  
+>>>      fn into_foreign(self) -> *const core::ffi::c_void {
+>>>          ManuallyDrop::new(self).ptr.as_ptr() as _
+>>>      }
+>>>  
+>>> -    unsafe fn borrow<'a>(ptr: *const core::ffi::c_void) -> ArcBorrow<'a, T> {
+>>> -        // SAFETY: By the safety requirement of this function, we know that `ptr` came from
+>>> -        // a previous call to `Arc::into_foreign`.
+>>> -        let inner = NonNull::new(ptr as *mut ArcInner<T>).unwrap();
+>>> -
+>>> -        // SAFETY: The safety requirements of `from_foreign` ensure that the object remains alive
+>>> -        // for the lifetime of the returned value.
+>>> -        unsafe { ArcBorrow::new(inner) }
+>>> -    }
+>>> -
+>>>      unsafe fn from_foreign(ptr: *const core::ffi::c_void) -> Self {
+>>>          // SAFETY: By the safety requirement of this function, we know that `ptr` came from
+>>>          // a previous call to `Arc::into_foreign`, which guarantees that `ptr` is valid and
+>>>          // holds a reference count increment that is transferrable to us.
+>>> -        unsafe { Self::from_inner(NonNull::new(ptr as _).unwrap()) }
+>>> +        unsafe { Self::from_inner(NonNull::new_unchecked(ptr as _)) }
+>>>      }
+>>> +
+>>> +    unsafe fn borrow<'a>(ptr: *const core::ffi::c_void) -> ArcBorrow<'a, T> {
+>>> +        // SAFETY: By the safety requirement of this function, we know that `ptr` came from
+>>> +        // a previous call to `Arc::into_foreign`.
+>>> +        let inner = unsafe { NonNull::new_unchecked(ptr as *mut ArcInner<T>) };
+>>> +
+>>> +        // SAFETY: The safety requirements ensure that we will not give up our
+>>> +        // foreign-owned refcount while the `ArcBorrow` is still live.
+>>> +        unsafe { ArcBorrow::new(inner) }
+>>> +    }
+>>> +
+>>> +    unsafe fn borrow_mut<'a>(ptr: *const core::ffi::c_void) -> ArcBorrow<'a, T> {
+>>> +        // SAFETY: The safety requirements for `borrow_mut` are a superset of the safety
+>>> +        // requirements for `borrow`.
+>>> +        unsafe { Self::borrow(ptr) }
+>>> +    }
+>>
+>> I am not sure this makes sense. How about splitting the trait in two,
+>> immutable and mutable and only implementing the immutable one or Arc?
+>
+> I used this design based on what would make sense for a linked list. The
+> idea is that we can have two different types of cursors for a linked
+> list: immutable and mutable. The immutable cursor lets you:
+>
+>  * move around the linked list
+>  * access the values using `borrow`
+>
+> The mutable cursor lets you:
+>
+>  * move around the linked list
+>  * delete or add items to the list
+>  * access the values using `borrow_mut`
+>
+> The mutable cursor gives you extra abilities beyond the `borrow` vs
+> `borrow_mut` distinction, so we want to provide both types of cursors
+> even if the pointer type is Arc. To do that, we need a trait that
+> defines what it means to have mutable access to an Arc.
+
+I don't see how that prevents this trait from being split in two?
+
+BR Andreas
 
