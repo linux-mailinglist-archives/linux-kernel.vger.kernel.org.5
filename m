@@ -2,138 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0700278591F
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 15:25:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 191B7785921
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 15:25:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235769AbjHWNZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 09:25:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34946 "EHLO
+        id S235789AbjHWNZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 09:25:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234330AbjHWNZ1 (ORCPT
+        with ESMTP id S235614AbjHWNZv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 09:25:27 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C00A10DB;
-        Wed, 23 Aug 2023 06:25:03 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-68a5457b930so2182823b3a.2;
-        Wed, 23 Aug 2023 06:25:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692797102; x=1693401902;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jFIWzJPis1mfey+szFArc1kyDCfuN66o9aTmELpPLx8=;
-        b=gP2CurR6oOivsDl6kiCnuEgYpEqRe1FUSVuFn/lN21ABeWjAPuOxLc+GimaALzIh52
-         kVq6Cv8vfiMNwxfe7ef+y45PmFAPiqf5Qn74ZwSKHJiktHPGSbNcMmo7YgdNocTr8QIG
-         oGghtjRh5NYwYqgu7tuUem1txaIhJnh0U9dvTx3Y3Rknjd1lV3yV1+TKOVi6xllbX65/
-         +q5j+LjA0yVYMjoM+/wfo2iAl9c3gqw9B3MLsU8WNiuwNUxbkuNkDrbYwhBAC6IIOW7v
-         XtI+f1QtpV+9PwFVp9H3WMDdPUvued/fZ1vVF8kQBvZoO96n32wXCTjVKUoaeBEg6YDS
-         w05g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692797102; x=1693401902;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jFIWzJPis1mfey+szFArc1kyDCfuN66o9aTmELpPLx8=;
-        b=MbyihtWXyNH00jjqqLVjvElsvTC1kZevBxFIiEQxL5+zV3RHtldYeIvCnPS/Ar62lU
-         tOlkMMP592LbL0eiPX954Jqh4K4piDMYmdO1jARUA7URuhh9rSHVUa4+T9ujpSyjKbdD
-         8pja5bZ73Y/Y+G/JNaEmnyaS7a1kVpYQoHc5lvpM1/Nj4JBL6nIbPwmmZ0wQ+BZWAyDG
-         S4aO9Wzoln9o2kKIQAl0suKT1fBrRAtRUHSWkwC1jn+58dg5zyOOUJ1AwsfYb91IQcLE
-         FQeAiCeMoCn9TCNOhzonu4EHp6kH5U/DNFoxynqOZvQqlsxtkTCHkPPtbLT2pzBu/FWS
-         FO4w==
-X-Gm-Message-State: AOJu0YyRxu2VLoQm2EfNIwqTd5+CS+FXMzPAElS1eYgqAl5dELIwJALj
-        9MStwiGSbD1G3nbuqQczJP551suiLvM=
-X-Google-Smtp-Source: AGHT+IFtT56ctITF2oXrv0/w1V2zUxggd05/jJW4eV5No+LgFqJcm5qo2/RU+ROhh4qqY9Q2b4bTjw==
-X-Received: by 2002:a05:6a00:1501:b0:66a:2ff1:dee2 with SMTP id q1-20020a056a00150100b0066a2ff1dee2mr11415588pfu.10.1692797102175;
-        Wed, 23 Aug 2023 06:25:02 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id 7-20020aa79207000000b00689f8dc26bdsm4117042pfo.109.2023.08.23.06.25.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Aug 2023 06:25:01 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 23 Aug 2023 06:25:00 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Badhri Jagan Sridharan <badhri@google.com>
-Cc:     gregkh@linuxfoundation.org, heikki.krogerus@linux.intel.com,
-        kyletso@google.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v1] tcpm: Avoid soft reset when partner does not support
- get_status
-Message-ID: <77194753-902e-4ef5-82c7-8b2428a59aec@roeck-us.net>
-References: <20230820044449.1005889-1-badhri@google.com>
+        Wed, 23 Aug 2023 09:25:51 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3235E10D0;
+        Wed, 23 Aug 2023 06:25:26 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4F65066287;
+        Wed, 23 Aug 2023 13:25:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 935BBC433C7;
+        Wed, 23 Aug 2023 13:25:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692797123;
+        bh=jEGoO/SIqTMm5IlTmQZnmSfRF3IDKY2mxs9mRNzX6OQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Q3o6S2BYEEa9SBrfzumW+pOFwcr5iOtKQfUWJjQhpoNvo1nmSJtXoz5NSjPigftJT
+         wAFCTme3aZwxqhJKiUrSc0uxM5/Q+Uq8Q7yRLdNVKY3i7kxobXjEqVQJ4UIqjkCY+f
+         2luu6xif70GQQt8NIOL7WSKCZ1wqkIroqghVVgE7CXC22HZmyfDCbBtuKKfSSF9zqn
+         NSUSCHPbY7TJAxOF7VIg51yLWJ0nalE10wMUXWmIG67xjTqO2fydd1p61KJUjYV1ZM
+         ztozSPc+4CL2Bz1bkOvhXLd3t1wjHdWgOXDJ16VOFd57HQomwsGMxAUTEPQlOaoBax
+         IJiUGdG0lC91g==
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-50078e52537so5787667e87.1;
+        Wed, 23 Aug 2023 06:25:23 -0700 (PDT)
+X-Gm-Message-State: AOJu0YzM3nRwBgno6Qoo5ZsH1DCNTSNcLn6JK/05RzB7CUB1GKdjjVeK
+        QUx9Q9MKbrNduMVUmPbvEPo2j4aoOLBDy5E9NiA=
+X-Google-Smtp-Source: AGHT+IGX9g86c71yNCwbKrv9G6HYy2Z2bkkDKT/Q72uRs//FLM6Cse0jXp/Uz7zyES9jM9n0j6gH9X/Tiqt0EwZbVxw=
+X-Received: by 2002:ac2:4d90:0:b0:4f8:5905:8e0a with SMTP id
+ g16-20020ac24d90000000b004f859058e0amr8355947lfe.6.1692797121470; Wed, 23 Aug
+ 2023 06:25:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230820044449.1005889-1-badhri@google.com>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+References: <028a21df-4397-80aa-c2a5-7c754560f595@gmail.com>
+ <20230818101630.000027f4@linux.intel.com> <b0488ff7-10c8-4b4e-28b8-01809133c297@linux.dev>
+ <CAPhsuW6cSLqwRVO_EpFyimvc7hgi1rb3T8-NA+stHdwrqrScBA@mail.gmail.com>
+ <20230822083923.00007fb6@linux.intel.com> <CAMz9Wg8KE1rDkSaQnUTJ5ikzH7YGGYbkLM3AcrVue3=JgK+14w@mail.gmail.com>
+ <35130b3f-c0fd-e2d6-e849-a5ceb6a2895f@linux.dev> <CAMz9Wg_zKSJ2vL=r2zAtLBOv4GSMT63+ZQGXfYTjVJsE+DLQGA@mail.gmail.com>
+In-Reply-To: <CAMz9Wg_zKSJ2vL=r2zAtLBOv4GSMT63+ZQGXfYTjVJsE+DLQGA@mail.gmail.com>
+From:   Song Liu <song@kernel.org>
+Date:   Wed, 23 Aug 2023 06:25:09 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW6W0XgFjH1zNC+EFYjujd4smEiWs+-nYCWQ+KaFmbuvkg@mail.gmail.com>
+Message-ID: <CAPhsuW6W0XgFjH1zNC+EFYjujd4smEiWs+-nYCWQ+KaFmbuvkg@mail.gmail.com>
+Subject: Re: Infiniate systemd loop when power off the machine with multiple
+ MD RAIDs
+To:     AceLan Kao <acelan@gmail.com>
+Cc:     Guoqing Jiang <guoqing.jiang@linux.dev>,
+        Mariusz Tkaczyk <mariusz.tkaczyk@linux.intel.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux RAID <linux-raid@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 20, 2023 at 04:44:48AM +0000, Badhri Jagan Sridharan wrote:
-> When partner does not support get_status message, tcpm right now
-> responds with soft reset message. This causes PD renegotiation to
-> happen and resets PPS link. Avoid soft resetting the link when
-> partner does not support get_status message to mitigate PPS resets.
-> 
-> [  208.926752] Setting voltage/current limit 9500 mV 2450 mA
-> [  208.930407] set_auto_vbus_discharge_threshold mode:3 pps_active:y vbus:9500 ret:0
-> [  208.930418] state change SNK_TRANSITION_SINK -> SNK_READY [rev3 POWER_NEGOTIATION]
-> [  208.930455] AMS POWER_NEGOTIATION finished
-> 
-> // ALERT message from the Source
-> [  213.948442] PD RX, header: 0x19a6 [1]
-> [  213.948451] state change SNK_READY -> GET_STATUS_SEND [rev3 GETTING_SOURCE_SINK_STATUS]
-> [  213.948457] PD TX, header: 0x492
-> [  213.950402] PD TX complete, status: 0
-> [  213.950427] pending state change GET_STATUS_SEND -> GET_STATUS_SEND_TIMEOUT @ 60 ms [rev3 GETTING_SOURCE_SINK_STATUS]
-> 
-> // NOT_SUPPORTED from the Source
-> [  213.959954] PD RX, header: 0xbb0 [1]
-> 
-> // sink sends SOFT_RESET
-> [  213.959958] state change GET_STATUS_SEND -> SNK_SOFT_RESET [rev3 GETTING_SOURCE_SINK_STATUS]
-> [  213.959962] AMS GETTING_SOURCE_SINK_STATUS finished
-> [  213.959964] AMS SOFT_RESET_AMS start
-> [  213.959966] state change SNK_SOFT_RESET -> AMS_START [rev3 SOFT_RESET_AMS]
-> [  213.959969] state change AMS_START -> SOFT_RESET_SEND [rev3 SOFT_RESET_AMS]
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 8dea75e11380 ("usb: typec: tcpm: Protocol Error handling")
-> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+Hi AceLan,
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+On Wed, Aug 23, 2023 at 1:03=E2=80=AFAM AceLan Kao <acelan@gmail.com> wrote=
+:
+>
+[...]
+> >
+> > My suggestion is delete the list node under this scenario, did you try
+> > above?
+> Still no luck, the patch doesn't work, the sympton is the same.
+[...]
+> >
+> > Is the issue still reproducible with remove below from cmd?
+> >
+> > echo "repair" | sudo tee /sys/class/block/md12?/md/sync_action
+> >
+> > Just want to know if resync thread is related with the issue or not.
+> Probably not, we can reproduce the issue without resync, just feel
+> it's easier to reproduce the issue, so I put the command in my script.
+>
 
-> ---
->  drivers/usb/typec/tcpm/tcpm.c | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index 5639b9a1e0bf..280ce1bd7b53 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -2753,6 +2753,13 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
->  			port->sink_cap_done = true;
->  			tcpm_set_state(port, ready_state(port), 0);
->  			break;
-> +		/*
-> +		 * Some port partners do not support GET_STATUS, avoid soft reset the link to
-> +		 * prevent redundant power re-negotiation
-> +		 */
-> +		case GET_STATUS_SEND:
-> +			tcpm_set_state(port, ready_state(port), 0);
-> +			break;
->  		case SRC_READY:
->  		case SNK_READY:
->  			if (port->vdm_state > VDM_STATE_READY) {
-> 
-> base-commit: bbb9e06d2c6435af9c62074ad7048910eeb2e7bc
-> -- 
-> 2.42.0.rc1.204.g551eb34607-goog
-> 
+Could you please run the follow two experiments?
+
+1. Confirm 12a6caf273240a triggers this. Specifically:
+   git checkout 12a6caf273240a =3D> repros
+   git checkout 12a6caf273240a~1 =3D> cannot repro
+
+2. Try with the following change (add debug messages), which hopefully
+   shows which command is holding a reference on mddev->openers.
+
+Thanks,
+Song
+
+diff --git i/drivers/md/md.c w/drivers/md/md.c
+index 78be7811a89f..3e9b718b32c1 100644
+--- i/drivers/md/md.c
++++ w/drivers/md/md.c
+@@ -7574,11 +7574,15 @@ static int md_ioctl(struct block_device *bdev,
+blk_mode_t mode,
+                if (mddev->pers && atomic_read(&mddev->openers) > 1) {
+                        mutex_unlock(&mddev->open_mutex);
+                        err =3D -EBUSY;
++                       pr_warn("%s return -EBUSY for %s with
+mddev->openers =3D %d\n",
++                               __func__, mdname(mddev),
+atomic_read(&mddev->openers));
+                        goto out;
+                }
+                if (test_and_set_bit(MD_CLOSING, &mddev->flags)) {
+                        mutex_unlock(&mddev->open_mutex);
+                        err =3D -EBUSY;
++                       pr_warn("%s return -EBUSY for %s with
+MD_CLOSING bit set\n",
++                               __func__, mdname(mddev));
+                        goto out;
+                }
+                did_set_md_closing =3D true;
+@@ -7789,6 +7793,8 @@ static int md_open(struct gendisk *disk, blk_mode_t m=
+ode)
+                goto out_unlock;
+
+        atomic_inc(&mddev->openers);
++       pr_info("%s:%s openers++ =3D %d by %s\n", __func__, mdname(mddev),
++               atomic_read(&mddev->openers), current->comm);
+        mutex_unlock(&mddev->open_mutex);
+
+        disk_check_media_change(disk);
+@@ -7807,6 +7813,8 @@ static void md_release(struct gendisk *disk)
+
+        BUG_ON(!mddev);
+        atomic_dec(&mddev->openers);
++       pr_info("%s:%s openers-- =3D %d by %s\n", __func__, mdname(mddev),
++               atomic_read(&mddev->openers), current->comm);
+        mddev_put(mddev);
+ }
