@@ -2,198 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 962A778591B
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 15:23:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0700278591F
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 15:25:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235767AbjHWNXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 09:23:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55718 "EHLO
+        id S235769AbjHWNZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 09:25:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230143AbjHWNXu (ORCPT
+        with ESMTP id S234330AbjHWNZ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 09:23:50 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DAD8E75;
-        Wed, 23 Aug 2023 06:23:18 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-317c3ac7339so4836248f8f.0;
-        Wed, 23 Aug 2023 06:23:18 -0700 (PDT)
+        Wed, 23 Aug 2023 09:25:27 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C00A10DB;
+        Wed, 23 Aug 2023 06:25:03 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-68a5457b930so2182823b3a.2;
+        Wed, 23 Aug 2023 06:25:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692796968; x=1693401768;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Pzn+5bTpnSMNwUuNyyowNMIJDQZpkAi+7c7mgKTYoME=;
-        b=r6cn6rzIz0BUUjfTlEntcGmnQ1emT1LcuHfH0giUjqFalgnkFVgfmPmYn4JnZIGvGd
-         8vq36GiD1N7HPhbhCHGX/Vxtvs65nKwerH03TLGgA3Jh5i1/nmPkBqtxZiXkbYi8oD6w
-         K1UDpRQ5E5lLyAgjOBLJlKxACcWjaQUsQW2UVrjreVK0Idl3G7ovSzSNA8ZESvKUFo0M
-         ecZOdNlHkEQ4Ydi6elupAad5t7dKX48Z6n1ZhtAKWKVyVA57ib5L1rjRAO57N1NXxj7E
-         p7WSuw7k1/I+LKkLYV9HyAAmeIPbanf8mZR+mwtRVA4R9Ttdiuz3m5nwzUIsTQZjLgj4
-         FRTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692796968; x=1693401768;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=gmail.com; s=20221208; t=1692797102; x=1693401902;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Pzn+5bTpnSMNwUuNyyowNMIJDQZpkAi+7c7mgKTYoME=;
-        b=TtCByPA6kzGkHy6R4HEjqHuLQAzA+YyJiTpd5DvuvXWzixhOctoIpGKFRtUgBmSXGL
-         JAqWTVdGPdXlNsmH0ms+sVmZV7DQqJvS2zngIwMQY9RKSP/IgTfmnPPuqKATBKyi+VFZ
-         opaHJTAbd0SCZEG/0JmRSXQV1I87wx91qZ9SphJvcF4Da/ec+a9+b1XyDSsY3Quqc/ug
-         ES39q88ik1oGfYe5kEj1Fi934heXIgIP8uZhQqXtvpOIbRDcR/jBQ1TVETALQykLmq04
-         VMO6RxtqnpzVYxbglZrvmDLAIHBj0AnOMX32fS2LNeStwSSw4xwub/8JpLVMRhCEikbB
-         +x1Q==
-X-Gm-Message-State: AOJu0YwIRFFj8MeN+m8Hm1DP/ZWbZu7eUu1KoHMGhPzZiKXb+VL/nvFs
-        LpOji0I6nGkYHAXqJgG1wRM=
-X-Google-Smtp-Source: AGHT+IE1gUkkpuMyRPjYkQSA46YH3/bOWjgb5ixYadB1u37Wfo9A/dssTd2q0MBm9JbD7/LteuPZ8g==
-X-Received: by 2002:a5d:4573:0:b0:315:ad1a:5abc with SMTP id a19-20020a5d4573000000b00315ad1a5abcmr9228900wrc.5.1692796967751;
-        Wed, 23 Aug 2023 06:22:47 -0700 (PDT)
-Received: from localhost ([37.174.115.23])
-        by smtp.gmail.com with ESMTPSA id p6-20020a5d68c6000000b00317f70240afsm19353163wrw.27.2023.08.23.06.22.47
+        bh=jFIWzJPis1mfey+szFArc1kyDCfuN66o9aTmELpPLx8=;
+        b=gP2CurR6oOivsDl6kiCnuEgYpEqRe1FUSVuFn/lN21ABeWjAPuOxLc+GimaALzIh52
+         kVq6Cv8vfiMNwxfe7ef+y45PmFAPiqf5Qn74ZwSKHJiktHPGSbNcMmo7YgdNocTr8QIG
+         oGghtjRh5NYwYqgu7tuUem1txaIhJnh0U9dvTx3Y3Rknjd1lV3yV1+TKOVi6xllbX65/
+         +q5j+LjA0yVYMjoM+/wfo2iAl9c3gqw9B3MLsU8WNiuwNUxbkuNkDrbYwhBAC6IIOW7v
+         XtI+f1QtpV+9PwFVp9H3WMDdPUvued/fZ1vVF8kQBvZoO96n32wXCTjVKUoaeBEg6YDS
+         w05g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692797102; x=1693401902;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jFIWzJPis1mfey+szFArc1kyDCfuN66o9aTmELpPLx8=;
+        b=MbyihtWXyNH00jjqqLVjvElsvTC1kZevBxFIiEQxL5+zV3RHtldYeIvCnPS/Ar62lU
+         tOlkMMP592LbL0eiPX954Jqh4K4piDMYmdO1jARUA7URuhh9rSHVUa4+T9ujpSyjKbdD
+         8pja5bZ73Y/Y+G/JNaEmnyaS7a1kVpYQoHc5lvpM1/Nj4JBL6nIbPwmmZ0wQ+BZWAyDG
+         S4aO9Wzoln9o2kKIQAl0suKT1fBrRAtRUHSWkwC1jn+58dg5zyOOUJ1AwsfYb91IQcLE
+         FQeAiCeMoCn9TCNOhzonu4EHp6kH5U/DNFoxynqOZvQqlsxtkTCHkPPtbLT2pzBu/FWS
+         FO4w==
+X-Gm-Message-State: AOJu0YyRxu2VLoQm2EfNIwqTd5+CS+FXMzPAElS1eYgqAl5dELIwJALj
+        9MStwiGSbD1G3nbuqQczJP551suiLvM=
+X-Google-Smtp-Source: AGHT+IFtT56ctITF2oXrv0/w1V2zUxggd05/jJW4eV5No+LgFqJcm5qo2/RU+ROhh4qqY9Q2b4bTjw==
+X-Received: by 2002:a05:6a00:1501:b0:66a:2ff1:dee2 with SMTP id q1-20020a056a00150100b0066a2ff1dee2mr11415588pfu.10.1692797102175;
+        Wed, 23 Aug 2023 06:25:02 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id 7-20020aa79207000000b00689f8dc26bdsm4117042pfo.109.2023.08.23.06.25.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Aug 2023 06:22:47 -0700 (PDT)
-From:   Raphael Gallais-Pou <rgallaispou@gmail.com>
-To:     Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Patrice Chotard <patrice.chotard@foss.st.com>
-Cc:     linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3] dt-bindings: phy: st: convert phy-stih407-usb to DT schema
-Date:   Wed, 23 Aug 2023 15:22:24 +0200
-Message-ID: <20230823132224.111326-1-rgallaispou@gmail.com>
-X-Mailer: git-send-email 2.41.0
+        Wed, 23 Aug 2023 06:25:01 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 23 Aug 2023 06:25:00 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Badhri Jagan Sridharan <badhri@google.com>
+Cc:     gregkh@linuxfoundation.org, heikki.krogerus@linux.intel.com,
+        kyletso@google.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v1] tcpm: Avoid soft reset when partner does not support
+ get_status
+Message-ID: <77194753-902e-4ef5-82c7-8b2428a59aec@roeck-us.net>
+References: <20230820044449.1005889-1-badhri@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230820044449.1005889-1-badhri@google.com>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the st,stih407-usb2-phy binding to DT schema format.
+On Sun, Aug 20, 2023 at 04:44:48AM +0000, Badhri Jagan Sridharan wrote:
+> When partner does not support get_status message, tcpm right now
+> responds with soft reset message. This causes PD renegotiation to
+> happen and resets PPS link. Avoid soft resetting the link when
+> partner does not support get_status message to mitigate PPS resets.
+> 
+> [  208.926752] Setting voltage/current limit 9500 mV 2450 mA
+> [  208.930407] set_auto_vbus_discharge_threshold mode:3 pps_active:y vbus:9500 ret:0
+> [  208.930418] state change SNK_TRANSITION_SINK -> SNK_READY [rev3 POWER_NEGOTIATION]
+> [  208.930455] AMS POWER_NEGOTIATION finished
+> 
+> // ALERT message from the Source
+> [  213.948442] PD RX, header: 0x19a6 [1]
+> [  213.948451] state change SNK_READY -> GET_STATUS_SEND [rev3 GETTING_SOURCE_SINK_STATUS]
+> [  213.948457] PD TX, header: 0x492
+> [  213.950402] PD TX complete, status: 0
+> [  213.950427] pending state change GET_STATUS_SEND -> GET_STATUS_SEND_TIMEOUT @ 60 ms [rev3 GETTING_SOURCE_SINK_STATUS]
+> 
+> // NOT_SUPPORTED from the Source
+> [  213.959954] PD RX, header: 0xbb0 [1]
+> 
+> // sink sends SOFT_RESET
+> [  213.959958] state change GET_STATUS_SEND -> SNK_SOFT_RESET [rev3 GETTING_SOURCE_SINK_STATUS]
+> [  213.959962] AMS GETTING_SOURCE_SINK_STATUS finished
+> [  213.959964] AMS SOFT_RESET_AMS start
+> [  213.959966] state change SNK_SOFT_RESET -> AMS_START [rev3 SOFT_RESET_AMS]
+> [  213.959969] state change AMS_START -> SOFT_RESET_SEND [rev3 SOFT_RESET_AMS]
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: 8dea75e11380 ("usb: typec: tcpm: Protocol Error handling")
+> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
 
-Signed-off-by: Raphael Gallais-Pou <rgallaispou@gmail.com>
----
-Changes in v2:
-  * Removed quotes surrounding $ref
-  * Removed quotes surrounding const properties
-  * Changed 'st,syscfg' $ref value to phandle-array
-  * Changed authorship to my oss email address
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-Changes in v3:
-  * Remove driver references
-  * Dropped obvious description
-  * Dropped label and set simpler node name
----
- .../bindings/phy/phy-stih407-usb.txt          | 24 -------
- .../bindings/phy/st,stih407-usb2-phy.yaml     | 63 +++++++++++++++++++
- 2 files changed, 63 insertions(+), 24 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/phy/phy-stih407-usb.txt
- create mode 100644 Documentation/devicetree/bindings/phy/st,stih407-usb2-phy.yaml
-
-diff --git a/Documentation/devicetree/bindings/phy/phy-stih407-usb.txt b/Documentation/devicetree/bindings/phy/phy-stih407-usb.txt
-deleted file mode 100644
-index 35f03df00130..000000000000
---- a/Documentation/devicetree/bindings/phy/phy-stih407-usb.txt
-+++ /dev/null
-@@ -1,24 +0,0 @@
--ST STiH407 USB PHY controller
--
--This file documents the dt bindings for the usb picoPHY driver which is the PHY for both USB2 and USB3
--host controllers (when controlling usb2/1.1 devices) available on STiH407 SoC family from STMicroelectronics.
--
--Required properties:
--- compatible		: should be "st,stih407-usb2-phy"
--- st,syscfg		: phandle of sysconfig bank plus integer array containing phyparam and phyctrl register offsets
--- resets		: list of phandle and reset specifier pairs. There should be two entries, one
--			  for the whole phy and one for the port
--- reset-names		: list of reset signal names. Should be "global" and "port"
--See: Documentation/devicetree/bindings/reset/st,stih407-powerdown.yaml
--See: Documentation/devicetree/bindings/reset/reset.txt
--
--Example:
--
--usb2_picophy0: usbpicophy@f8 {
--	compatible	= "st,stih407-usb2-phy";
--	#phy-cells	= <0>;
--	st,syscfg	= <&syscfg_core 0x100 0xf4>;
--	resets		= <&softreset STIH407_PICOPHY_SOFTRESET>,
--			  <&picophyreset STIH407_PICOPHY0_RESET>;
--	reset-names	= "global", "port";
--};
-diff --git a/Documentation/devicetree/bindings/phy/st,stih407-usb2-phy.yaml b/Documentation/devicetree/bindings/phy/st,stih407-usb2-phy.yaml
-new file mode 100644
-index 000000000000..e45cdd98aab2
---- /dev/null
-+++ b/Documentation/devicetree/bindings/phy/st,stih407-usb2-phy.yaml
-@@ -0,0 +1,63 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/phy/st,stih407-usb2-phy.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: STMicroelectronics STiH407 USB PHY controller
-+
-+maintainers:
-+  - Patrice Chotard <patrice.chotard@foss.st.com>
-+
-+description:
-+  The USB picoPHY device is the PHY for both USB2 and USB3 host controllers
-+  (when controlling usb2/1.1 devices) available on STiH407 SoC family from
-+  STMicroelectronics.
-+
-+properties:
-+  compatible:
-+    const: st,stih407-usb2-phy
-+
-+  st,syscfg:
-+    description: Phandle to the syscfg bank
-+    $ref: /schemas/types.yaml#/definitions/phandle-array
-+    items:
-+      - items:
-+          - description: phandle to syscfg
-+          - description: phyparam register offset
-+          - description: phyctrl register offset
-+
-+  resets:
-+    items:
-+      - description: Phandle and reset specifier pair for the whole phy.
-+      - description: Phandle and reset specifier pair for the port.
-+
-+  reset-names:
-+    items:
-+      - const: global
-+      - const: port
-+
-+  "#phy-cells":
-+    const: 0
-+
-+required:
-+  - compatible
-+  - st,syscfg
-+  - resets
-+  - reset-names
-+  - "#phy-cells"
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/reset/stih407-resets.h>
-+    usb-phy {
-+        compatible = "st,stih407-usb2-phy";
-+        #phy-cells = <0>;
-+        st,syscfg = <&syscfg_core 0x100 0xf4>;
-+        resets = <&softreset STIH407_PICOPHY_SOFTRESET>,
-+                 <&picophyreset STIH407_PICOPHY0_RESET>;
-+        reset-names = "global", "port";
-+    };
-+...
--- 
-2.41.0
-
+> ---
+>  drivers/usb/typec/tcpm/tcpm.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> index 5639b9a1e0bf..280ce1bd7b53 100644
+> --- a/drivers/usb/typec/tcpm/tcpm.c
+> +++ b/drivers/usb/typec/tcpm/tcpm.c
+> @@ -2753,6 +2753,13 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
+>  			port->sink_cap_done = true;
+>  			tcpm_set_state(port, ready_state(port), 0);
+>  			break;
+> +		/*
+> +		 * Some port partners do not support GET_STATUS, avoid soft reset the link to
+> +		 * prevent redundant power re-negotiation
+> +		 */
+> +		case GET_STATUS_SEND:
+> +			tcpm_set_state(port, ready_state(port), 0);
+> +			break;
+>  		case SRC_READY:
+>  		case SNK_READY:
+>  			if (port->vdm_state > VDM_STATE_READY) {
+> 
+> base-commit: bbb9e06d2c6435af9c62074ad7048910eeb2e7bc
+> -- 
+> 2.42.0.rc1.204.g551eb34607-goog
+> 
