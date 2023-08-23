@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4132078576E
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 14:04:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A203785767
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 14:04:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234823AbjHWMEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 08:04:48 -0400
+        id S234818AbjHWME2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 08:04:28 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234801AbjHWMEX (ORCPT
+        with ESMTP id S234671AbjHWMD5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 08:04:23 -0400
+        Wed, 23 Aug 2023 08:03:57 -0400
 Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC6981718;
-        Wed, 23 Aug 2023 05:04:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E4BAE7A
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 05:03:55 -0700 (PDT)
 Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RW4cy2gyGz4x2R;
-        Wed, 23 Aug 2023 22:04:02 +1000 (AEST)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RW4cp2Cddz4x2S;
+        Wed, 23 Aug 2023 22:03:54 +1000 (AEST)
 From:   Michael Ellerman <patch-notifications@ellerman.id.au>
-To:     Kajol Jain <kjain@linux.ibm.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, maddy@linux.ibm.com,
-        atrajeev@linux.vnet.ibm.com, disgoel@linux.ibm.com,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rdunlap@infradead.org
-In-Reply-To: <20230729073455.7918-1-kjain@linux.ibm.com>
-References: <20230729073455.7918-1-kjain@linux.ibm.com>
-Subject: Re: [PATCH v4 00/10] Add sysfs interface files to hv_gpci device to expose system information
-Message-Id: <169279175562.797584.14623659463630712570.b4-ty@ellerman.id.au>
+To:     Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+In-Reply-To: <b056c4e986a4a7707fc1994304c34f7bd15d6871.1691474658.git.christophe.leroy@csgroup.eu>
+References: <b056c4e986a4a7707fc1994304c34f7bd15d6871.1691474658.git.christophe.leroy@csgroup.eu>
+Subject: Re: [PATCH v1 1/6] powerpc/include: Remove unneeded #include <asm/fs_pd.h>
+Message-Id: <169279175564.797584.5057179018617962889.b4-ty@ellerman.id.au>
 Date:   Wed, 23 Aug 2023 21:55:55 +1000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -44,39 +42,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 29 Jul 2023 13:04:45 +0530, Kajol Jain wrote:
-> The hcall H_GET_PERF_COUNTER_INFO can be used to get data related to
-> chips, dimms and system topology, by passing different counter request
-> values.
-> Patchset adds sysfs files to "/sys/devices/hv_gpci/interface/"
-> of hv_gpci pmu driver, which will expose system topology information
-> using H_GET_PERF_COUNTER_INFO hcall. The added sysfs files are
-> available for power10 and above platforms and needs root access
-> to read the data.
+On Tue, 08 Aug 2023 08:04:38 +0200, Christophe Leroy wrote:
+> tqm8xx_setup.c and fs_enet.h don't use any items provided by fs_pd.h
 > 
-> [...]
+> Remove unneeded #include <asm/fs_pd.h>
+> 
+> 
 
 Applied to powerpc/next.
 
-[01/10] powerpc/hv_gpci: Add sysfs file inside hv_gpci device to show processor bus topology information
-        https://git.kernel.org/powerpc/c/71f1c39647d8c9d4d54a861ec81f1ff17544bcb6
-[02/10] docs: ABI: sysfs-bus-event_source-devices-hv_gpci: Document processor_bus_topology sysfs interface file
-        https://git.kernel.org/powerpc/c/9caf9e2b8bae58e39501f6fb1fc9189009538ccc
-[03/10] powerpc/hv_gpci: Add sysfs file inside hv_gpci device to show processor config information
-        https://git.kernel.org/powerpc/c/1a160c2a13c66c9ad47436e73c821f3d26818733
-[04/10] docs: ABI: sysfs-bus-event_source-devices-hv_gpci: Document processor_config sysfs interface file
-        https://git.kernel.org/powerpc/c/3255171d3e861b14e4248a5c676099819cadfb6d
-[05/10] powerpc/hv_gpci: Add sysfs file inside hv_gpci device to show affinity domain via virtual processor information
-        https://git.kernel.org/powerpc/c/71a7ccb478fcfe1495bcabf4972d859b24264df7
-[06/10] docs: ABI: sysfs-bus-event_source-devices-hv_gpci: Document affinity_domain_via_virtual_processor sysfs interface file
-        https://git.kernel.org/powerpc/c/cc89ff3491b61cebc90b3394eb6b36635173d0dd
-[07/10] powerpc/hv_gpci: Add sysfs file inside hv_gpci device to show affinity domain via domain information
-        https://git.kernel.org/powerpc/c/a69a57cac1ec8995bb0b571dfccc3fe2f046719a
-[08/10] docs: ABI: sysfs-bus-event_source-devices-hv_gpci: Document affinity_domain_via_domain sysfs interface file
-        https://git.kernel.org/powerpc/c/ab7e991286e729b0018722591c04eb2fd31771b0
-[09/10] powerpc/hv_gpci: Add sysfs file inside hv_gpci device to show affinity domain via partition information
-        https://git.kernel.org/powerpc/c/a15e0d6a6929e737f71578ed4b05531fed5a96e8
-[10/10] docs: ABI: sysfs-bus-event_source-devices-hv_gpci: Document affinity_domain_via_partition sysfs interface file
-        https://git.kernel.org/powerpc/c/8df99066940b6c82a0851f13adf653827dc524f7
+[1/6] powerpc/include: Remove unneeded #include <asm/fs_pd.h>
+      https://git.kernel.org/powerpc/c/60bc069c433fc89caa97927b1636401a0e647f67
+[2/6] powerpc/include: Declare mpc8xx_immr in 8xx_immap.h
+      https://git.kernel.org/powerpc/c/e6e077cb2aa4ffb8b320f9a1464f29a21986a901
+[3/6] powerpc/include: Remove mpc8260.h and m82xx_pci.h
+      https://git.kernel.org/powerpc/c/fecc436a97afed920486be609c3989e05547a384
+[4/6] powerpc: Remove CONFIG_PCI_8260
+      https://git.kernel.org/powerpc/c/cb888cdf741c958cae3e00b649fb7ed5c9bb2d49
+[5/6] powerpc/8xx: Remove immr_map() and immr_unmap()
+      https://git.kernel.org/powerpc/c/fbbf4280dae4c02d2f176a8fdac7a7d32fe76fc0
+[6/6] powerpc/cpm2: Remove cpm2_map() and cpm2_unmap()
+      https://git.kernel.org/powerpc/c/7768716d2f1906c9258ed4b39584da6317020594
 
 cheers
