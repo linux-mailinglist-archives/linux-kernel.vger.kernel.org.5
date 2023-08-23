@@ -2,75 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69729785C01
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 17:24:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF1AC785C05
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 17:25:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237175AbjHWPY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 11:24:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41906 "EHLO
+        id S237203AbjHWPZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 11:25:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237171AbjHWPYz (ORCPT
+        with ESMTP id S230048AbjHWPZh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 11:24:55 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CBF710FC;
-        Wed, 23 Aug 2023 08:24:33 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3A64366480;
-        Wed, 23 Aug 2023 15:24:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9AF7C433C9;
-        Wed, 23 Aug 2023 15:24:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1692804262;
-        bh=JFuHCyKtub3kOcwFFDhwPmV2t4hWRz5sfV+5kWTmhdM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WTNKDVJ2SyBfNSIx0sBJH/Hf9cc68a+n8z1wms/6tQ84bpOLqLglR1TCQ/jyun4kI
-         gJLABRZDzhAuTbq+ELRVrPTCG6OpMenUxchSlNilDo1wUe8t0Z4edPDNI736GRRcgM
-         yAC5aZrWiJAS9mHcmrdVM4bOZHKEERZwn97CACHQ=
-Date:   Wed, 23 Aug 2023 17:24:19 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Conor Dooley <conor.dooley@microchip.com>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-Subject: Re: [PATCH 6.1 000/194] 6.1.47-rc1 review
-Message-ID: <2023082308-obliged-protector-f04c@gregkh>
-References: <20230821194122.695845670@linuxfoundation.org>
- <20230823-washer-reemerge-a412d55f8214@wendy>
+        Wed, 23 Aug 2023 11:25:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B3FE1704
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 08:24:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692804274;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1G4m8nBsyvTIp6TI5Hlz0aw09qGLJzWflBRxUecCBwg=;
+        b=H+Vn+TUzndv+UHRdL4SipVZHfzhhCDSOF8wh2AN4SRO1JYsA8b0EqEVQMnILOZsielIz+9
+        IPfFASTrtdkZtVMV7PxGJ3hSrl9PzxexGWcfnIr44sOMdbFD/GYq9stNPyFPFsPPVzwyCj
+        uliqbZOFa3nOmhtRFt9PsPdQMRDiT/g=
+Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
+ [209.85.210.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-28-0tikpurnPPepdrrVsnSIfw-1; Wed, 23 Aug 2023 11:24:32 -0400
+X-MC-Unique: 0tikpurnPPepdrrVsnSIfw-1
+Received: by mail-ot1-f70.google.com with SMTP id 46e09a7af769-6bb0ba5fbcaso6185626a34.3
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 08:24:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692804272; x=1693409072;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1G4m8nBsyvTIp6TI5Hlz0aw09qGLJzWflBRxUecCBwg=;
+        b=Zw9TrhBxnFTXMXkdJ466WkM0EFF31KqUUug5HuzjqLCFwqFWvTwycIYPJD+acIIfCD
+         eqoreD8rWFYnrPLwq3UFITrTtkQ0eMJ8mXnn5OIqcqE4FWpZOxF9Xynl2FMAoAZgRhFV
+         pnHkRD2DgrEPUEK4BJxkZ4+uRlGTd3cTevZ/DcsPHSWmRnfrb5cTExEg7vauRQ0oAWPb
+         c56ZBK1Z+k9fM4Gym6Xtls/Yf03NVdzl9zMp7idBvqxUqq4IlFJ7rwj7gKHG7tjYjxj/
+         PW6WXJycGJbX27gIKObUdSwIpJEjCjzspeJjcYroEH7Y6aeof3TiOFbKkymAT86l9FWV
+         ncjQ==
+X-Gm-Message-State: AOJu0Ywp2mV4QSMHbEYcK3U7iDMzLyzyg5NMX5X+sqtdfzbaoqZluues
+        +nOnYpnYGcxwonlvCeQclODolYxZedSTuL1oVXDqob42DgaGhZm4X0WU61RqaeKqu6M/GgxXlwk
+        AHNPVjwxEMg6+Rt7pufRll7t4
+X-Received: by 2002:a05:6870:9122:b0:1c8:bf19:e1db with SMTP id o34-20020a056870912200b001c8bf19e1dbmr16834371oae.11.1692804272020;
+        Wed, 23 Aug 2023 08:24:32 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFPE5oTDv2BIKyAx5H2CS12AseN3vyzYSjgHXcPnazkhUeGsPnAz5qOppr3jXaHnBeKT7ElqQ==
+X-Received: by 2002:a05:6870:9122:b0:1c8:bf19:e1db with SMTP id o34-20020a056870912200b001c8bf19e1dbmr16834350oae.11.1692804271725;
+        Wed, 23 Aug 2023 08:24:31 -0700 (PDT)
+Received: from redhat.com ([38.15.60.12])
+        by smtp.gmail.com with ESMTPSA id t12-20020a0568301e2c00b006b8bf76174fsm5757731otr.21.2023.08.23.08.24.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Aug 2023 08:24:31 -0700 (PDT)
+Date:   Wed, 23 Aug 2023 09:24:29 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Ankit Agrawal <ankita@nvidia.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        "shameerali.kolothum.thodi@huawei.com" 
+        <shameerali.kolothum.thodi@huawei.com>,
+        "kevin.tian@intel.com" <kevin.tian@intel.com>,
+        Aniket Agashe <aniketa@nvidia.com>, Neo Jia <cjia@nvidia.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        "Tarun Gupta (SW-GPU)" <targupta@nvidia.com>,
+        Vikram Sethi <vsethi@nvidia.com>,
+        Andy Currid <acurrid@nvidia.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Dan Williams <danw@nvidia.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v7 1/1] vfio/nvgpu: Add vfio pci variant module for
+ grace hopper
+Message-ID: <20230823092429.643b4f7b.alex.williamson@redhat.com>
+In-Reply-To: <ZOYix7kFDYcvZ/gp@nvidia.com>
+References: <20230822202303.19661-1-ankita@nvidia.com>
+        <ZOYP92q1mDQgwnc9@nvidia.com>
+        <BY5PR12MB37639528FCF1CDB7D595B6FFB01CA@BY5PR12MB3763.namprd12.prod.outlook.com>
+        <20230823091407.0964bd3b.alex.williamson@redhat.com>
+        <ZOYix7kFDYcvZ/gp@nvidia.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.35; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230823-washer-reemerge-a412d55f8214@wendy>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 23, 2023 at 10:35:54AM +0100, Conor Dooley wrote:
-> On Mon, Aug 21, 2023 at 09:39:39PM +0200, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 6.1.47 release.
-> > There are 194 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
+On Wed, 23 Aug 2023 12:16:23 -0300
+Jason Gunthorpe <jgg@nvidia.com> wrote:
+
+> On Wed, Aug 23, 2023 at 09:14:07AM -0600, Alex Williamson wrote:
+> > On Wed, 23 Aug 2023 14:50:31 +0000
+> > Ankit Agrawal <ankita@nvidia.com> wrote:
+> >   
+> > > >> +     if (index == VFIO_PCI_BAR2_REGION_INDEX) {
+> > > >> +             if (!nvdev->opregion) {
+> > > >> +                     nvdev->opregion = memremap(nvdev->hpa, nvdev->mem_length, MEMREMAP_WB);
+> > > >> +                     if (!nvdev->opregion)
+> > > >> +                             return -ENOMEM;
+> > > >> +             }    
+> > > >
+> > > > [AW] Seems like this would be susceptible to concurrent accesses causing
+> > > > duplicate mappings.
+> > > >
+> > > > [JG] Needs some kind of locking on opregion    
+> > > 
+> > > Right, will add a new lock item in nvdev to control the access to opregion/memmap.
+> > > Please let me know if it is preferable to do memremap in open_device instead of
+> > > read/write.  
+> > 
+> > That's a valid option also, certainly avoids the locking and
+> > serialization per access.  Thanks,  
 > 
-> Fails to build for me with gcc-11/binutils 2.37 on RISC-V. The problematic
-> patch is "riscv: Handle zicsr/zifencei issue between gcc and binutils".
-> Can you drop that please, probably from all of your branches. It
-> certainly affects 6.4 too & I don't personally test anything older than
-> 6.1.
+> open_device is no good, that would waste large amounts of kernel
+> memory for page tables to support something we don't expect to be
+> used.
 
-I've dropped that patch now from all trees, thanks.
+A lock it is then, I guess this is a very large range of memory.  The
+contention/serialization is also not a priority, we expect access
+through the mmap for anything other than debug.  Thanks,
 
-greg k-h
+Alex
+
