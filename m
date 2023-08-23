@@ -2,92 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD0247853AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 11:19:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 885FB7853E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 11:29:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235151AbjHWJR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 05:17:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36858 "EHLO
+        id S235052AbjHWJ3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 05:29:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234969AbjHWJMJ (ORCPT
+        with ESMTP id S235382AbjHWJ0k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 05:12:09 -0400
-Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF3DFDB
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 02:04:57 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by domac.alu.hr (Postfix) with ESMTP id 5B0086016E;
-        Wed, 23 Aug 2023 11:04:50 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1692781490; bh=rPOJhDsc2bW9CC7RfKRCtGGJbCzOoollOF7pyYU9Mc4=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=key+Nqd2vMut6hHx110y+Ne4P3+HjgYH+f3L0FmiIOWVXzDAOPztp1zFMTzM7xhwN
-         vPa00kKe+MVA6akILiYu/1QnHQzz6AmkULo3bKsE7eFBtvBg6IkrRCVQCD51wn3WZI
-         aKb0qH6EqYd+1wOYtGKQlM9vX+buwYKJkiLbn/btgCA1BKkyyHFGM8UG/802lrmlCP
-         2A+mIJKxguP7RZ+vdke9BPtei5qtpzQ2enesgJ1ZwhU41Rckh+LGDVuCDTRGUG9bA7
-         k9rsvA7EU6H4Afwx+4kXd29rtcaFwamrqnDdFsYyZ7fUw0PqNYg0lQaz9hVUEErkyL
-         XTeFXeCc58I+g==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 8Djy6yN5OJ1w; Wed, 23 Aug 2023 11:04:48 +0200 (CEST)
-Received: from [192.168.1.6] (unknown [94.250.191.183])
-        by domac.alu.hr (Postfix) with ESMTPSA id DD0256015F;
-        Wed, 23 Aug 2023 11:04:44 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1692781488; bh=rPOJhDsc2bW9CC7RfKRCtGGJbCzOoollOF7pyYU9Mc4=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=TMb/hd3Hfdcp03JufiXp2tdbrZ1eKwgQ0P+B4leB3BEhK2krc9tXM4zXQ71RsNk4A
-         c1pFeckBLPmy6PUFdDjaz53t/GXh8SsM3yEvqKtiSfeQbpRE5WyXtw3icBX9FLOyrO
-         FMYy+1g7CHLktN4yVq7KI31z3kcXWNWLkv1J2luJ8mhWhXnd+SYh30pplG2l3hxgbc
-         eakcfryAV5HWm6gjnh7PKCwn5SswMJfWReKE3PdObvavyo0PcANvQ5y3mhsDgDQxdg
-         EFkVYZjCMcalU6cN3HC3oSkjrk929CDTYBcxXvYn7S4SyDKntTUPjoOOI52fciudh+
-         np1sd4wte5uCw==
-Message-ID: <12ceee3a-44ed-4e70-99f2-c082282dae12@alu.unizg.hr>
-Date:   Wed, 23 Aug 2023 11:04:44 +0200
+        Wed, 23 Aug 2023 05:26:40 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49DD82681
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 02:14:55 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-3ff5ddb4329so1951865e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 02:14:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=metaspace-dk.20221208.gappssmtp.com; s=20221208; t=1692782094; x=1693386894;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=qiZlM8QEOpDTpRFMe/2/zEZ6wsyKpsV1KUA2VGwkVqc=;
+        b=TZmuqPNeD3vmbShzj7gSb9+WRe+VS3qWdT9gRNdlIP9KZZgdfonNFTcwLwx5mRJt4q
+         ZN6MwyNgTnqxerFqVS838PDSa9SZahDI+0GrYqHbmOOI0lS1z9cmYY8xV/NJtu+8RZJo
+         6tQuut33WKBdRXsVpKVyM69X8LCHU2KjK3uJqfZjXbMlenzYj+FYyfvMDqZA33cydqgy
+         XTmSgGZeHwVcHBM5nX+9NbJetLEwqVrJOHnKcl3ZIwQavAH4RDuNakYzvfwbxEhH8/ET
+         ebPNY+1w72xFkKQFbxQILYIPWjBdxqGfbMHKXsQ+VYtIjpovbaEVa3H62hZEtJ8g71KQ
+         g0PA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692782094; x=1693386894;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qiZlM8QEOpDTpRFMe/2/zEZ6wsyKpsV1KUA2VGwkVqc=;
+        b=Epk0+saZvtuqoOu1tzHtT9AzfT/REbGVvCXqYC8EdsDkKFZkU+2+4Cton9CxUCbuMQ
+         hrPyzzCmAriIQSSpkCPN/EK8mjYyyUxVZvEtjPSU4rJBq7hkQwXrgT6Dkq7SuhHAaops
+         eFsqTy7/Rq77G6N7qscpTLcgtsCFWkQWljq9SUAlAINsP9hYfoUffjLrssvw6oBJyymy
+         nmLn+kvOfWG+7ZuC6F4D/vxBb8BWG7wg0e/OXRhPn4qT64FJy9gpK1eP82GHj54POSM7
+         ueevSQbyP0lfwFV7m+MlOkbmrO9dZ1ngOL0py6nLQPfQirbyuxxVWi7jilVxHgzE8cbl
+         0dTw==
+X-Gm-Message-State: AOJu0YzPPyMjwOoRAXOzjSBLqwRk//OXEwtbsTzYgIU251/th+ZkxFEN
+        pLdNlvOM/kpfXMUXILSxiuPrGw==
+X-Google-Smtp-Source: AGHT+IGmx49TcZyNIesZ0Y8hEQR3pLmQeKegxY8NL7lzkFIt1BTGvLiiowVfWMRULj4No2sYruY+WA==
+X-Received: by 2002:a05:600c:3007:b0:3fa:91d0:8ddb with SMTP id j7-20020a05600c300700b003fa91d08ddbmr9556489wmh.14.1692782093753;
+        Wed, 23 Aug 2023 02:14:53 -0700 (PDT)
+Received: from localhost ([165.225.194.205])
+        by smtp.gmail.com with ESMTPSA id n22-20020a1c7216000000b003fefe70ec9csm2536983wmc.10.2023.08.23.02.14.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Aug 2023 02:14:53 -0700 (PDT)
+References: <20230711093303.1433770-1-aliceryhl@google.com>
+ <20230711093303.1433770-7-aliceryhl@google.com>
+ <vyrVN334oIXneb9VWievGpPTOCy0irxvoG-mDR0sQX5-xN-TL2Hngl0cl_XrVUwjDB3rXkXfR9Mdjy_no6fzhe4yIf_c7xpKa5OURt43k9c=@proton.me>
+ <87msyisvmi.fsf@metaspace.dk>
+User-agent: mu4e 1.10.5; emacs 28.2.50
+From:   "Andreas Hindborg (Samsung)" <nmi@metaspace.dk>
+To:     Benno Lossin <benno.lossin@proton.me>
+Cc:     Alice Ryhl <aliceryhl@google.com>, rust-for-linux@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>, Miguel Ojeda <ojeda@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?utf-8?Q?Bj=C3=B6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+        linux-kernel@vger.kernel.org, patches@lists.linux.dev
+Subject: Re: [PATCH v3 6/9] rust: workqueue: add helper for defining
+ work_struct fields
+Date:   Wed, 23 Aug 2023 11:06:37 +0200
+In-reply-to: <87msyisvmi.fsf@metaspace.dk>
+Message-ID: <87il963ysz.fsf@metaspace.dk>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [BUG] KCSAN: data-race in process_one_work / process_one_work
-Content-Language: en-US
-To:     Tejun Heo <tj@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Lai Jiangshan <jiangshanlai@gmail.com>
-References: <6057c45f-d045-4772-db7c-3d706ada654f@alu.unizg.hr>
- <ZN6YVG114AZv9Yp8@slm.duckdns.org>
- <897214a4-ab16-a275-1023-4d38c3700b7d@alu.unizg.hr>
- <4ef130ef-b37b-2564-3cb3-6a930b2f729b@alu.unizg.hr>
- <ZOUR-Apz2Tws4d2c@slm.duckdns.org>
-From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-In-Reply-To: <ZOUR-Apz2Tws4d2c@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,T_SPF_TEMPERROR,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/22/23 21:52, Tejun Heo wrote:
-> On Fri, Aug 18, 2023 at 01:58:27PM +0200, Mirsad Todorovac wrote:
->> Just as an exercise, this seems to work, but it is probably not very clean and not very scalable:
-> 
-> pwq is already per-cpu. It's not strictly accessed per-cpu because workers
-> can go unbound but given that it's a stat counter, that doesn't really
-> matter all that much. Sounds like it should be marked so that kcsan ignores
-> it.
-> 
-> Thanks.
 
-Hi, Mr. Heo,
+"Andreas Hindborg (Samsung)" <nmi@metaspace.dk> writes:
 
-Not at all.
-  
-Thanks for your review. The patch closed the KCSAN report, so I thought something was happening.
+> Hi Benno,
+>
+> Benno Lossin <benno.lossin@proton.me> writes:
+>
+> ...
+>
+>>> +/// Links for a work item.
+>>> +///
+>>> +/// This struct contains a function pointer to the `run` function from the [`WorkItemPointer`]
+>>> +/// trait, and defines the linked list pointers necessary to enqueue a work item in a workqueue.
+>>> +///
+>>> +/// Wraps the kernel's C `struct work_struct`.
+>>> +///
+>>> +/// This is a helper type used to associate a `work_struct` with the [`WorkItem`] that uses it.
+>>> +#[repr(transparent)]
+>>> +pub struct Work<T: ?Sized, const ID: u64 = 0> {
+>>> +    work: Opaque<bindings::work_struct>,
+>>> +    _inner: PhantomData<T>,
+>>
+>> Should this really be `PhantomData<T>`? Are you dropping `T`s in the 
+>> destructor of `Work<T>`? I do not think so `PhantomData<fn() -> Box<T>>`
+>> should do the trick.
+>>
+>
+> Could you elaborate what is the issue in having `PhantomData<T>`?
 
-Kind regards,
-Mirsad Todorovac
+I played around with this and as far as I can tell, using
+`PhantomData<fn() -> Box<T>>` does not disable dropck for T. Thus,
+`PhantomData<T>` has the same effect as `PhantomData<fn() -> Box<T>`,
+which is covariance over T and dropck:
+
+```rust
+use std::marker::PhantomData;
+
+struct A<T> {
+    _marker: PhantomData<fn() -> Box<T>>,
+}
+
+//#[cfg(disable)]
+impl<T> Drop for A<T> {
+    fn drop(&mut self) {
+        todo!()
+    }
+}
+
+struct B {}
+
+fn main() {
+    let (_a, b);
+    b = B {};
+    _a = foo(&b);
+}
+
+fn foo<'a>(_b: &'a B) -> A<&'a B> {
+    let a: A<&'a B> = A {
+        _marker: PhantomData,
+    };
+    a
+}
+```
+
+This is a little surprising to me since nomicon [1] explicitly marks
+`PhantomData<T>` as "covariant (with drop check)" but only "covariant"
+for `PhantomData<fn() -> T>`.
+
+Not sure why you wanted the box?
+
+Best regards,
+Andreas
+
+
+[1] https://doc.rust-lang.org/nomicon/phantom-data.html#table-of-phantomdata-patterns
