@@ -2,65 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6356B78566E
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 13:08:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBF8278566F
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 13:08:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234313AbjHWLIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 07:08:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39962 "EHLO
+        id S234336AbjHWLIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 07:08:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234312AbjHWLIh (ORCPT
+        with ESMTP id S233181AbjHWLIp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 07:08:37 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6ABC10C7;
-        Wed, 23 Aug 2023 04:08:10 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-317716a4622so4850665f8f.1;
-        Wed, 23 Aug 2023 04:08:10 -0700 (PDT)
+        Wed, 23 Aug 2023 07:08:45 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F5FACEF
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 04:08:22 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-99bf8e5ab39so745351766b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 04:08:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692788889; x=1693393689;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=umv4AuAG3bVQsHLVJR21Xr732gEzM/i84SmQ/8lFvbs=;
-        b=jn3X8XVR0zll0GXEDWuEmfLw9HCNQ9cUWno72c+XRD8kJJ0GPkblFCv8zzlxIXPcMl
-         8S960EcpVXQFtDVAxrj2JlXfMaRzDFE3TkLH/2f6OVadoHWew5IhMmxbVV9NoKIjDvSv
-         +zGD6ZTH/o2r9S8RutvDGyCCQPBeE4TP7nt24FECuxRm/GvxycsbOOeI/TsaB9ZuDKXN
-         YLgmFcODv51olRRrB30V9gw48LHe2Osz/0B1wazBZAvo9Ib0CClGb/5aFBqJKYoeahkB
-         bBgSxKd49/+02o9dzbI0JfdDM7PgJt3JBGSxqlHijPNjGfsKACaUepmqrzlb98cL22cI
-         wJHQ==
+        d=linaro.org; s=google; t=1692788901; x=1693393701;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=13ZiGAbaPI1bJ6e405gOO4diSQC4pPB1YKTk8I5pazg=;
+        b=pEUttLFM9xcLVYRmZhUVb3fwHeOXyoJkqOjYQz6TgHgU8kswvgpe2wRvcocnFbFaiw
+         dajllE/4xQ/3UaYoW3jL5H/zrzwXu6KSBNbct5VIsAPRQBz8MDzUHrCQfhP697BKuz8o
+         pXUC7keQGXUiZffjVrBt691gOZrtHimGVcq8YaTpNUgIYnYj28VtX7bRxAC9wgZychg6
+         /rjopibEDPkuFaW9iTqvQutl7pB5rEAeL+Etsp1XitUC+w66Hd5GbGNp80tlu/WyH8NG
+         0qXWOCRu8xeHRpBiC2BwleSxLioxge/v1E8hkGCgzXPTMalyJaM9XJe8kwmWhat5UB8y
+         Otaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692788889; x=1693393689;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=umv4AuAG3bVQsHLVJR21Xr732gEzM/i84SmQ/8lFvbs=;
-        b=SGQRHUL34mlZ/+KHuyabWBDehszcDC/Icb9/CjhtfkRlgJ+/q2zGASPfmHE4aksHuE
-         QfgSVu9EW6RcOwtprckynm6W4W5ad47GBBAt6w4yehn5vfYIhQ2LdX7t75qOgrg0F/xk
-         HpAuiRrhiS125C35pILtiblBJd1MVndsV7reWPDvL46tA2lmQ6DxSGm7k9mjmxLdjVEw
-         0WoCVzeHJYKfV7aX18MCWoBtayH+BJXb3V3bi/yQqHNIjZcB6YYPH7/tfIWQyxvBhiZq
-         CoVnVk5qHx5fSoxnCxOPou+3ThLz8QM2VufEHhUU7vUj65Qdfkh7fcl4LFSGg8VYqdf0
-         JDkA==
-X-Gm-Message-State: AOJu0YytCaL3gkq+2Iqq3OIBco9l65wjN5P34fVRbJ3cK0dyiqShm+fl
-        8P30rEdej1OPJ5o59OwGvGFExJqKERQ=
-X-Google-Smtp-Source: AGHT+IGQtncKca/Nd75Qx8eaP1JiSmQ95Z73vSLMuyWe3lLG/NoNpgEO6RF3brGK6GHLqcncg4pYKw==
-X-Received: by 2002:adf:e946:0:b0:31a:d8be:d6f4 with SMTP id m6-20020adfe946000000b0031ad8bed6f4mr8870159wrn.10.1692788888666;
-        Wed, 23 Aug 2023 04:08:08 -0700 (PDT)
-Received: from localhost.localdomain ([92.85.190.61])
-        by smtp.gmail.com with ESMTPSA id o1-20020a5d62c1000000b0031ad2663ed0sm18426155wrv.66.2023.08.23.04.08.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Aug 2023 04:08:08 -0700 (PDT)
-From:   Andrei Coardos <aboutphysycs@gmail.com>
-To:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org
-Cc:     alex@shruggie.ro, herbert@gondor.apana.org.au, olivia@selenic.com,
-        Andrei Coardos <aboutphysycs@gmail.com>
-Subject: [PATCH] char: hw_random: ba431-rng: removed unneeded call to platform_set_drvdata()
-Date:   Wed, 23 Aug 2023 14:07:58 +0300
-Message-Id: <20230823110758.3462-1-aboutphysycs@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20221208; t=1692788901; x=1693393701;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=13ZiGAbaPI1bJ6e405gOO4diSQC4pPB1YKTk8I5pazg=;
+        b=VdGbAZuRbzDVDrQlS6JeyjKFWNFTqfL0YXkrA4Hx2NzLQUhgwb7WtXrVDCxjs0rxcb
+         I65hpydosiQVxGPlbFE6IXqfrOPNWR4/u/+iYHLbDjVv0YlnVEK4mlMXU+LU6WB5DNFE
+         36qziMtV88jaiwrvDnBAJTNvzMjRNWv8qB+Yd87uzVGHHC0UF5vvoyRcDpMmgi8FnkyN
+         oHF4dmAJlSTp+AIRDsrS0NM8lsR2+jNUfoTw6h4ptXvqvVKGbClTTcZNVEhjXja4FKAU
+         16h8og8apAi3hIAxdtHt6zlsEK0q65x0extPY7OcOCfsAoNGbQn5uC9Vic7pQyfyalXw
+         XyLA==
+X-Gm-Message-State: AOJu0Yw5OvA1pKPlTlH7G9eqPjMf7AcU4SROcbOdkY5Ts3rYszRrfzgD
+        fmXR4k7Qg7aREqjyrnGyBSJCmQ==
+X-Google-Smtp-Source: AGHT+IFPpc/M9qEHjj5tV+w9O5JQwtSamWghJvL0uJZa7j3GJ3omdOLx5vjTovj6fvUU6krRyeBONg==
+X-Received: by 2002:a17:906:24e:b0:99c:c8ec:bd4a with SMTP id 14-20020a170906024e00b0099cc8ecbd4amr10548084ejl.60.1692788900696;
+        Wed, 23 Aug 2023 04:08:20 -0700 (PDT)
+Received: from [192.168.0.22] ([77.252.47.198])
+        by smtp.gmail.com with ESMTPSA id hb13-20020a170906b88d00b0099de082442esm9656576ejb.70.2023.08.23.04.08.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Aug 2023 04:08:20 -0700 (PDT)
+Message-ID: <3506906f-7a89-c90c-c753-c330fd33d68c@linaro.org>
+Date:   Wed, 23 Aug 2023 13:08:19 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH net-next] net: dsa: use capital "OR" for multiple licenses
+ in SPDX
+Content-Language: en-US
+To:     Kurt Kanzenbach <kurt@linutronix.de>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>
+References: <20230823085632.116725-1-krzysztof.kozlowski@linaro.org>
+ <87h6oq9k9d.fsf@kurt> <601f8735-39ea-7579-0047-3d3358851339@linaro.org>
+ <87edju9ggi.fsf@kurt>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <87edju9ggi.fsf@kurt>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -69,29 +85,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This function call was found to be unnecessary as there is no equivalent
-platform_get_drvdata() call to access the private data of the driver. Also,
-the private data is defined in this driver, so there is no risk of it being
-accessed outside of this driver file.
+On 23/08/2023 12:54, Kurt Kanzenbach wrote:
+> On Wed Aug 23 2023, Krzysztof Kozlowski wrote:
+>> On 23/08/2023 11:32, Kurt Kanzenbach wrote:
+>>> On Wed Aug 23 2023, Krzysztof Kozlowski wrote:
+>>>> Documentation/process/license-rules.rst and checkpatch expect the SPDX
+>>>> identifier syntax for multiple licenses to use capital "OR".  Correct it
+>>>> to keep consistent format and avoid copy-paste issues.
+>>>>
+>>>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>>>
+>>> Reviewed-by: Kurt Kanzenbach <kurt@linutronix.de>
+>>>
+>>> Side note: The SPDX spec in section D.2 says: "License expression
+>>> operators (AND, OR and WITH) should be matched in a case-sensitive
+>>> manner.". Should is not must. So I assume checkpatch and spdxcheck
+>>> should handle both cases. Especially because:
+>>>
+>>> |linux (git)-[master] % git grep 'SPDX' | grep ' or ' | wc -l
+>>> |370
+>>>
+>>
+>> But "should" denotes preferred rule:
+> 
+> Yes, of course :).
+> 
+> You mentioned checkpatch. But checkpatch doesn't warn about it. Or does
+> it? 
+> 
+> |linux (git)-[master] % ./scripts/checkpatch.pl -- drivers/net/dsa/hirschmann/hellcreek.h
+> |total: 0 errors, 0 warnings, 0 checks, 321 lines checked
+> |
+> |drivers/net/dsa/hirschmann/hellcreek.h has no obvious style problems and
+> |is ready for submission.
 
-Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
----
- drivers/char/hw_random/ba431-rng.c | 2 --
- 1 file changed, 2 deletions(-)
+Checkpatch checks licenses of only some files, so maybe I should change
+description here (it's you know, copy-paste...).
 
-diff --git a/drivers/char/hw_random/ba431-rng.c b/drivers/char/hw_random/ba431-rng.c
-index 5b7ca0416490..b1518dd52a24 100644
---- a/drivers/char/hw_random/ba431-rng.c
-+++ b/drivers/char/hw_random/ba431-rng.c
-@@ -189,8 +189,6 @@ static int ba431_trng_probe(struct platform_device *pdev)
- 	ba431->rng.cleanup = ba431_trng_cleanup;
- 	ba431->rng.read = ba431_trng_read;
- 
--	platform_set_drvdata(pdev, ba431);
--
- 	ret = devm_hwrng_register(&pdev->dev, &ba431->rng);
- 	if (ret) {
- 		dev_err(&pdev->dev, "BA431 registration failed (%d)\n", ret);
--- 
-2.34.1
+Best regards,
+Krzysztof
 
