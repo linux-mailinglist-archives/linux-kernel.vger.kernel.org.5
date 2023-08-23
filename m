@@ -2,451 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F6BD78528A
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 10:16:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B700D785264
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 10:11:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233783AbjHWIQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 04:16:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44202 "EHLO
+        id S233697AbjHWILG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 04:11:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233818AbjHWIJm (ORCPT
+        with ESMTP id S233865AbjHWIIO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 04:09:42 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF19310F1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 01:08:52 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d7494be34f8so4032048276.2
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 01:08:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692778132; x=1693382932;
-        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sabfrVf+/H49KXlWfGTkb2aVXZBVdOPVhW4XlqabkW4=;
-        b=pUql4HrW8UvddlTCkXzzcPzucwZwUumflJ5ll12QQtykNgLCe5J+pnXppkBNI8LaaI
-         gmLIJ3a1oxi0ea2vnkd8WEFh/91BODVpMOOgXuCEjL/4ENGBNWwu2v9bX8NvrhFBGafA
-         OFneATmpg5HAXJgaWp61lT9Jbu2zRD5KQLQ4V2atvBQn8mVK9F7OFJpkIzaz6X8d1TZv
-         GM+DxTnhfA9yGTKvWBp+R1j4Wmwym34FDVVQlPkelQE2hoNUGP0ddySz2uVNpK0nJdwO
-         c6CjLxk5/OkbRSHX/05CbnzhkFzdkFMHz0gjZZlx0Yo9+fMrKkzvD7M2kEEtBue6pUe/
-         YRYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692778132; x=1693382932;
-        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sabfrVf+/H49KXlWfGTkb2aVXZBVdOPVhW4XlqabkW4=;
-        b=VyRB4kelGxyFR+sJ6Ww/sJt5k+g7dxXPj5Dr3RHmku7IKWOmcS/vgi/UHiNEU4FCak
-         V+mZiAIlI0MXOWzwW8nkxE2WslaxDtTadoyzF5FpuHNT3l4Sulr6OeTfqb7CF+9xQTOO
-         K02uqJEDBsOg0MaHIIOak1I44AloPQ0ETuadXZ3ydOuBHPuU5DjE4PTJKUDo7nAKxFiP
-         Nw47SoaC8/tc4n8D6KAYFVFR64L1Vlp2zPsCg5gFfC6qhqMjjgt3teOiX5Qo2OmU8cdZ
-         Gpn3dWy0Fn37wqgXjc3nGTWS1NUlIsQMaUi6TSL+GtVMDZtIgyutqLtvg4ZuCQgPuluj
-         m65w==
-X-Gm-Message-State: AOJu0YxIhNpQpvjW0QopGjLAHit6x0+HRtqlocaOoQo86mm6+UGO4esJ
-        PxVVnRo0zdXEkKxaNu+mtk7gMV3J3Pym
-X-Google-Smtp-Source: AGHT+IH9BbX5Hto4GKSE/bOYFzPSUuVeAAElLyjslxNr7MwWBKqZKC2rpWH2KROancXGtAFBu8a3dkf8E/YE
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:3971:e84:f508:9a36])
- (user=irogers job=sendgmr) by 2002:a05:6902:1141:b0:d58:6cea:84de with SMTP
- id p1-20020a056902114100b00d586cea84demr204699ybu.11.1692778132010; Wed, 23
- Aug 2023 01:08:52 -0700 (PDT)
-Date:   Wed, 23 Aug 2023 01:08:11 -0700
-In-Reply-To: <20230823080828.1460376-1-irogers@google.com>
-Message-Id: <20230823080828.1460376-9-irogers@google.com>
-Mime-Version: 1.0
-References: <20230823080828.1460376-1-irogers@google.com>
-X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
-Subject: [PATCH v1 08/25] perf pmu: Pass PMU rather than aliases and format
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        James Clark <james.clark@arm.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        John Garry <john.g.garry@oracle.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Jing Zhang <renyu.zj@linux.alibaba.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Rob Herring <robh@kernel.org>,
-        Gaosheng Cui <cuigaosheng1@huawei.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 23 Aug 2023 04:08:14 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4EBFE5C
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 01:08:10 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RVzHg3jg0z6K638;
+        Wed, 23 Aug 2023 16:03:43 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Wed, 23 Aug
+ 2023 09:08:08 +0100
+Date:   Wed, 23 Aug 2023 09:08:11 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Jijie Shao <shaojijie@huawei.com>
+CC:     <will@kernel.org>, <mark.rutland@arm.com>, <yangyicong@huawei.com>,
+        <chenhao418@huawei.com>, <shenjian15@huawei.com>,
+        <wangjie125@huawei.com>, <liuyonglong@huawei.com>,
+        <hejunhao3@huawei.com>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH drivers/perf: hisi:] drivers/perf: hisi: Update email
+ addresses of HISILICON_PMU driver maintainers.
+Message-ID: <20230823090811.00001f7f@Huawei.com>
+In-Reply-To: <20230822122812.2384393-1-shaojijie@huawei.com>
+References: <20230822122812.2384393-1-shaojijie@huawei.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml100004.china.huawei.com (7.191.162.219) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pass the pmu so the aliases and format list can be better abstracted
-and later lazily loaded.
+On Tue, 22 Aug 2023 20:28:12 +0800
+Jijie Shao <shaojijie@huawei.com> wrote:
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/tests/pmu-events.c | 47 ++++++++++--------------
- tools/perf/tests/pmu.c        |  2 +-
- tools/perf/util/pmu.c         | 69 +++++++++++++++++++----------------
- tools/perf/util/pmu.h         |  9 ++---
- 4 files changed, 62 insertions(+), 65 deletions(-)
+> Since Guangbin and Shaokun have left HiSilicon and will no longer
+> maintain the drivers, update the maintainer information and
+> thanks for their work.
+> 
+> Signed-off-by: Jijie Shao <shaojijie@huawei.com>
 
-diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
-index 64383fc34ef1..05d6e6e21c6f 100644
---- a/tools/perf/tests/pmu-events.c
-+++ b/tools/perf/tests/pmu-events.c
-@@ -496,26 +496,13 @@ static int test__pmu_event_table(struct test_suite *test __maybe_unused,
- 	return 0;
- }
- 
--static struct perf_pmu_alias *find_alias(const char *test_event, struct list_head *aliases)
--{
--	struct perf_pmu_alias *alias;
--
--	list_for_each_entry(alias, aliases, list)
--		if (!strcmp(test_event, alias->name))
--			return alias;
--
--	return NULL;
--}
--
- /* Verify aliases are as expected */
- static int __test_core_pmu_event_aliases(char *pmu_name, int *count)
- {
- 	struct perf_pmu_test_event const **test_event_table;
- 	struct perf_pmu *pmu;
--	LIST_HEAD(aliases);
- 	int res = 0;
- 	const struct pmu_events_table *table = find_core_events_table("testarch", "testcpu");
--	struct perf_pmu_alias *a, *tmp;
- 
- 	if (!table)
- 		return -1;
-@@ -526,14 +513,18 @@ static int __test_core_pmu_event_aliases(char *pmu_name, int *count)
- 	if (!pmu)
- 		return -1;
- 
--	pmu->name = pmu_name;
-+	INIT_LIST_HEAD(&pmu->format);
-+	INIT_LIST_HEAD(&pmu->aliases);
-+	INIT_LIST_HEAD(&pmu->caps);
-+	INIT_LIST_HEAD(&pmu->list);
-+	pmu->name = strdup(pmu_name);
- 
--	pmu_add_cpu_aliases_table(&aliases, pmu, table);
-+	pmu_add_cpu_aliases_table(pmu, table);
- 
- 	for (; *test_event_table; test_event_table++) {
- 		struct perf_pmu_test_event const *test_event = *test_event_table;
- 		struct pmu_event const *event = &test_event->event;
--		struct perf_pmu_alias *alias = find_alias(event->name, &aliases);
-+		struct perf_pmu_alias *alias = perf_pmu__find_alias(pmu, event->name);
- 
- 		if (!alias) {
- 			pr_debug("testing aliases core PMU %s: no alias, alias_table->name=%s\n",
-@@ -551,12 +542,8 @@ static int __test_core_pmu_event_aliases(char *pmu_name, int *count)
- 		pr_debug2("testing aliases core PMU %s: matched event %s\n",
- 			  pmu_name, alias->name);
- 	}
-+	perf_pmu__delete(pmu);
- 
--	list_for_each_entry_safe(a, tmp, &aliases, list) {
--		list_del(&a->list);
--		perf_pmu_free_alias(a);
--	}
--	free(pmu);
- 	return res;
- }
- 
-@@ -568,17 +555,16 @@ static int __test_uncore_pmu_event_aliases(struct perf_pmu_test_pmu *test_pmu)
- 	const char *pmu_name = pmu->name;
- 	struct perf_pmu_alias *a, *tmp, *alias;
- 	const struct pmu_events_table *events_table;
--	LIST_HEAD(aliases);
- 	int res = 0;
- 
- 	events_table = find_core_events_table("testarch", "testcpu");
- 	if (!events_table)
- 		return -1;
--	pmu_add_cpu_aliases_table(&aliases, pmu, events_table);
--	pmu_add_sys_aliases(&aliases, pmu);
-+	pmu_add_cpu_aliases_table(pmu, events_table);
-+	pmu_add_sys_aliases(pmu);
- 
- 	/* Count how many aliases we generated */
--	list_for_each_entry(alias, &aliases, list)
-+	list_for_each_entry(alias, &pmu->aliases, list)
- 		alias_count++;
- 
- 	/* Count how many aliases we expect from the known table */
-@@ -592,7 +578,7 @@ static int __test_uncore_pmu_event_aliases(struct perf_pmu_test_pmu *test_pmu)
- 		goto out;
- 	}
- 
--	list_for_each_entry(alias, &aliases, list) {
-+	list_for_each_entry(alias, &pmu->aliases, list) {
- 		bool matched = false;
- 
- 		for (table = &test_pmu->aliases[0]; *table; table++) {
-@@ -625,7 +611,7 @@ static int __test_uncore_pmu_event_aliases(struct perf_pmu_test_pmu *test_pmu)
- 	}
- 
- out:
--	list_for_each_entry_safe(a, tmp, &aliases, list) {
-+	list_for_each_entry_safe(a, tmp, &pmu->aliases, list) {
- 		list_del(&a->list);
- 		perf_pmu_free_alias(a);
- 	}
-@@ -732,8 +718,13 @@ static int test__aliases(struct test_suite *test __maybe_unused,
- 	}
- 
- 	for (i = 0; i < ARRAY_SIZE(test_pmus); i++) {
--		int res = __test_uncore_pmu_event_aliases(&test_pmus[i]);
-+		int res;
-+
-+		INIT_LIST_HEAD(&test_pmus[i].pmu.format);
-+		INIT_LIST_HEAD(&test_pmus[i].pmu.aliases);
-+		INIT_LIST_HEAD(&test_pmus[i].pmu.caps);
- 
-+		res = __test_uncore_pmu_event_aliases(&test_pmus[i]);
- 		if (res)
- 			return res;
- 	}
-diff --git a/tools/perf/tests/pmu.c b/tools/perf/tests/pmu.c
-index a4a43db76012..2c1c349a42e2 100644
---- a/tools/perf/tests/pmu.c
-+++ b/tools/perf/tests/pmu.c
-@@ -171,7 +171,7 @@ static int test__pmu(struct test_suite *test __maybe_unused, int subtest __maybe
- 	}
- 
- 	pmu->name = strdup("perf-pmu-test");
--	ret = perf_pmu__format_parse(fd, &pmu->format);
-+	ret = perf_pmu__format_parse(pmu, fd);
- 	if (ret)
- 		goto out;
- 
-diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-index 1839c3668ec5..42f3249994ab 100644
---- a/tools/perf/util/pmu.c
-+++ b/tools/perf/util/pmu.c
-@@ -58,7 +58,7 @@ struct perf_pmu_format {
-  * Parse & process all the sysfs attributes located under
-  * the directory specified in 'dir' parameter.
-  */
--int perf_pmu__format_parse(int dirfd, struct list_head *head)
-+int perf_pmu__format_parse(struct perf_pmu *pmu, int dirfd)
- {
- 	struct dirent *evt_ent;
- 	DIR *format_dir;
-@@ -96,7 +96,7 @@ int perf_pmu__format_parse(int dirfd, struct list_head *head)
- 		}
- 
- 		perf_pmu_set_in(file, scanner);
--		ret = perf_pmu_parse(head, name, scanner);
-+		ret = perf_pmu_parse(&pmu->format, name, scanner);
- 		perf_pmu_lex_destroy(scanner);
- 		fclose(file);
- 	}
-@@ -110,7 +110,7 @@ int perf_pmu__format_parse(int dirfd, struct list_head *head)
-  * located at:
-  * /sys/bus/event_source/devices/<dev>/format as sysfs group attributes.
-  */
--static int pmu_format(int dirfd, const char *name, struct list_head *format)
-+static int pmu_format(struct perf_pmu *pmu, int dirfd, const char *name)
- {
- 	int fd;
- 
-@@ -119,7 +119,7 @@ static int pmu_format(int dirfd, const char *name, struct list_head *format)
- 		return 0;
- 
- 	/* it'll close the fd */
--	if (perf_pmu__format_parse(fd, format))
-+	if (perf_pmu__format_parse(pmu, fd))
- 		return -1;
- 
- 	return 0;
-@@ -508,7 +508,7 @@ static int pmu_aliases_parse(int dirfd, struct list_head *head)
-  * Reading the pmu event aliases definition, which should be located at:
-  * /sys/bus/event_source/devices/<dev>/events as sysfs group attributes.
-  */
--static int pmu_aliases(int dirfd, const char *name, struct list_head *head)
-+static int pmu_aliases(struct perf_pmu *pmu, int dirfd, const char *name)
- {
- 	int fd;
- 
-@@ -517,7 +517,7 @@ static int pmu_aliases(int dirfd, const char *name, struct list_head *head)
- 		return 0;
- 
- 	/* it'll close the fd */
--	if (pmu_aliases_parse(fd, head))
-+	if (pmu_aliases_parse(fd, &pmu->aliases))
- 		return -1;
- 
- 	return 0;
-@@ -770,11 +770,10 @@ static int pmu_add_cpu_aliases_map_callback(const struct pmu_event *pe,
-  * From the pmu_events_table, find the events that correspond to the given
-  * PMU and add them to the list 'head'.
-  */
--void pmu_add_cpu_aliases_table(struct list_head *head, struct perf_pmu *pmu,
--			const struct pmu_events_table *table)
-+void pmu_add_cpu_aliases_table(struct perf_pmu *pmu, const struct pmu_events_table *table)
- {
- 	struct pmu_add_cpu_aliases_map_data data = {
--		.head = head,
-+		.head = &pmu->aliases,
- 		.default_pmu_name = perf_pmus__default_pmu_name(),
- 		.pmu = pmu,
- 	};
-@@ -783,7 +782,7 @@ void pmu_add_cpu_aliases_table(struct list_head *head, struct perf_pmu *pmu,
- 	free(data.default_pmu_name);
- }
- 
--static void pmu_add_cpu_aliases(struct list_head *head, struct perf_pmu *pmu)
-+static void pmu_add_cpu_aliases(struct perf_pmu *pmu)
- {
- 	const struct pmu_events_table *table;
- 
-@@ -791,7 +790,7 @@ static void pmu_add_cpu_aliases(struct list_head *head, struct perf_pmu *pmu)
- 	if (!table)
- 		return;
- 
--	pmu_add_cpu_aliases_table(head, pmu, table);
-+	pmu_add_cpu_aliases_table(pmu, table);
- }
- 
- struct pmu_sys_event_iter_data {
-@@ -821,10 +820,10 @@ static int pmu_add_sys_aliases_iter_fn(const struct pmu_event *pe,
- 	return 0;
- }
- 
--void pmu_add_sys_aliases(struct list_head *head, struct perf_pmu *pmu)
-+void pmu_add_sys_aliases(struct perf_pmu *pmu)
- {
- 	struct pmu_sys_event_iter_data idata = {
--		.head = head,
-+		.head = &pmu->aliases,
- 		.pmu = pmu,
- 	};
- 
-@@ -863,30 +862,33 @@ static int pmu_max_precise(int dirfd, struct perf_pmu *pmu)
- struct perf_pmu *perf_pmu__lookup(struct list_head *pmus, int dirfd, const char *lookup_name)
- {
- 	struct perf_pmu *pmu;
--	LIST_HEAD(format);
--	LIST_HEAD(aliases);
- 	__u32 type;
- 	char *name = pmu_find_real_name(lookup_name);
- 	char *alias_name;
- 
-+	pmu = zalloc(sizeof(*pmu));
-+	if (!pmu)
-+		return NULL;
-+
-+	INIT_LIST_HEAD(&pmu->format);
-+	INIT_LIST_HEAD(&pmu->aliases);
-+	INIT_LIST_HEAD(&pmu->caps);
- 	/*
- 	 * The pmu data we store & need consists of the pmu
- 	 * type value and format definitions. Load both right
- 	 * now.
- 	 */
--	if (pmu_format(dirfd, name, &format))
-+	if (pmu_format(pmu, dirfd, name)) {
-+		free(pmu);
- 		return NULL;
--
-+	}
- 	/*
- 	 * Check the aliases first to avoid unnecessary work.
- 	 */
--	if (pmu_aliases(dirfd, name, &aliases))
--		return NULL;
--
--	pmu = zalloc(sizeof(*pmu));
--	if (!pmu)
-+	if (pmu_aliases(pmu, dirfd, name)) {
-+		free(pmu);
- 		return NULL;
--
-+	}
- 	pmu->is_core = is_pmu_core(name);
- 	pmu->cpus = pmu_cpumask(dirfd, name, pmu->is_core);
- 	pmu->name = strdup(name);
-@@ -909,14 +911,8 @@ struct perf_pmu *perf_pmu__lookup(struct list_head *pmus, int dirfd, const char
- 	if (pmu->is_uncore)
- 		pmu->id = pmu_id(name);
- 	pmu->max_precise = pmu_max_precise(dirfd, pmu);
--	pmu_add_cpu_aliases(&aliases, pmu);
--	pmu_add_sys_aliases(&aliases, pmu);
--
--	INIT_LIST_HEAD(&pmu->format);
--	INIT_LIST_HEAD(&pmu->aliases);
--	INIT_LIST_HEAD(&pmu->caps);
--	list_splice(&format, &pmu->format);
--	list_splice(&aliases, &pmu->aliases);
-+	pmu_add_cpu_aliases(pmu);
-+	pmu_add_sys_aliases(pmu);
- 	list_add_tail(&pmu->list, pmus);
- 
- 	pmu->default_config = perf_pmu__get_default_config(pmu);
-@@ -1397,6 +1393,17 @@ int perf_pmu__check_alias(struct perf_pmu *pmu, struct list_head *head_terms,
- 	return 0;
- }
- 
-+struct perf_pmu_alias *perf_pmu__find_alias(struct perf_pmu *pmu, const char *event)
-+{
-+	struct perf_pmu_alias *alias;
-+
-+	list_for_each_entry(alias, &pmu->aliases, list)
-+		if (!strcmp(event, alias->name))
-+			return alias;
-+
-+	return NULL;
-+}
-+
- int perf_pmu__new_format(struct list_head *list, char *name,
- 			 int config, unsigned long *bits)
- {
-diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
-index 1249fca02ffd..c4268053c979 100644
---- a/tools/perf/util/pmu.h
-+++ b/tools/perf/util/pmu.h
-@@ -213,7 +213,7 @@ struct perf_pmu_alias {
- 	char *pmu_name;
- };
- 
--void pmu_add_sys_aliases(struct list_head *head, struct perf_pmu *pmu);
-+void pmu_add_sys_aliases(struct perf_pmu *pmu);
- int perf_pmu__config(struct perf_pmu *pmu, struct perf_event_attr *attr,
- 		     struct list_head *head_terms,
- 		     struct parse_events_error *error);
-@@ -225,12 +225,11 @@ __u64 perf_pmu__format_bits(struct perf_pmu *pmu, const char *name);
- int perf_pmu__format_type(struct perf_pmu *pmu, const char *name);
- int perf_pmu__check_alias(struct perf_pmu *pmu, struct list_head *head_terms,
- 			  struct perf_pmu_info *info);
--struct list_head *perf_pmu__alias(struct perf_pmu *pmu,
--				  struct list_head *head_terms);
-+struct perf_pmu_alias *perf_pmu__find_alias(struct perf_pmu *pmu, const char *event);
- 
- int perf_pmu__new_format(struct list_head *list, char *name,
- 			 int config, unsigned long *bits);
--int perf_pmu__format_parse(int dirfd, struct list_head *head);
-+int perf_pmu__format_parse(struct perf_pmu *pmu, int dirfd);
- bool perf_pmu__has_format(const struct perf_pmu *pmu, const char *name);
- 
- bool is_pmu_core(const char *name);
-@@ -255,7 +254,7 @@ bool perf_pmu__file_exists(struct perf_pmu *pmu, const char *name);
- int perf_pmu__test(void);
- 
- struct perf_event_attr *perf_pmu__get_default_config(struct perf_pmu *pmu);
--void pmu_add_cpu_aliases_table(struct list_head *head, struct perf_pmu *pmu,
-+void pmu_add_cpu_aliases_table(struct perf_pmu *pmu,
- 			       const struct pmu_events_table *table);
- 
- char *perf_pmu__getcpuid(struct perf_pmu *pmu);
--- 
-2.42.0.rc1.204.g551eb34607-goog
+Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+
+Best wishes and thanks to them both and thanks to yangyicong and
+shaojijie for stepping up.
+
+
+Bit late now, but with hindsight it might have been better
+to use the same wording for the HNS3 PMU as for HNS itself
+
+HISILICON NETWORK SUBSYSTEM 3 PMU Driver (HNS3 PMU)
+so that it would appear in the obviously place in MAINTAINERS
+rather than a few lines further up.  Probably not worth
+the noise of changing it however.
+
+Jonathan
+
+
+> ---
+>  MAINTAINERS | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 4171d3a102a9..a3109267a411 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -9305,7 +9305,7 @@ F:	drivers/crypto/hisilicon/hpre/hpre_crypto.c
+>  F:	drivers/crypto/hisilicon/hpre/hpre_main.c
+>  
+>  HISILICON HNS3 PMU DRIVER
+> -M:	Guangbin Huang <huangguangbin2@huawei.com>
+> +M:	Jijie Shao <shaojijie@huawei.com>
+>  S:	Supported
+>  F:	Documentation/admin-guide/perf/hns3-pmu.rst
+>  F:	drivers/perf/hisilicon/hns3_pmu.c
+> @@ -9343,7 +9343,7 @@ F:	Documentation/devicetree/bindings/net/hisilicon*.txt
+>  F:	drivers/net/ethernet/hisilicon/
+>  
+>  HISILICON PMU DRIVER
+> -M:	Shaokun Zhang <zhangshaokun@hisilicon.com>
+> +M:	Yicong Yang <yangyicong@hisilicon.com>
+>  M:	Jonathan Cameron <jonathan.cameron@huawei.com>
+>  S:	Supported
+>  W:	http://www.hisilicon.com
 
