@@ -2,243 +2,440 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DA117861E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 23:01:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A3277861EC
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 23:03:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236903AbjHWVAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 17:00:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39078 "EHLO
+        id S236964AbjHWVCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 17:02:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236565AbjHWVA2 (ORCPT
+        with ESMTP id S236966AbjHWVCI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 17:00:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A50C10D8;
-        Wed, 23 Aug 2023 14:00:26 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 10B2664D1D;
-        Wed, 23 Aug 2023 21:00:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35818C433CA;
-        Wed, 23 Aug 2023 21:00:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692824425;
-        bh=1GUjNlOG+KBoYDglAFVyksE2nk/O4gZ7mJ1bEw2jBKg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=IV+voB0G0KbhCnH8oRVzLlqIvelRo3Qb7aKgVDPeKPaa8nv7fDu3MqkuUPkU83dcs
-         tpNxr2/AmUv3cCJIri0fXXb+JCcgq5yOrehAwltyrx6yLSpx8q8JXkzujdzafUQG1Q
-         LrGFXCBxC6un/ITuRIxEBDWwWM30SraT9Xgzuk9UyfPzDEBfO8AC9u1NxYEdD1/L0A
-         kXIj4LaXef1NjDvg1spy3bzq5k175sbns4bgrxQl3UQqAllG1eKN+lT45nZSCg8QoI
-         tScY6blf2etQOseXJMVcQgAk/rA9qpR5oYzbz8BKTn8dUE9okWtk1GH1VoSIom3A8n
-         BexLh2bkWN1+A==
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2bb99fbaebdso94080021fa.0;
-        Wed, 23 Aug 2023 14:00:25 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yyvlc7SV3O/hHNRcpKinuI4ZrHiThRvMbK9IdXkxHKAZTkGmQQC
-        XHVyDia19SllgpytismLF5b5vLXW6Yk1/GQcFw==
-X-Google-Smtp-Source: AGHT+IFv6lCE+fGtNgK3kYv6M1ccl+19kAPfdjWlF3xtOGLzM78M6RmnVdbW3zISvtaBDaCWim7XM+3GGUisex3UtPE=
-X-Received: by 2002:a2e:a316:0:b0:2bc:c846:aa17 with SMTP id
- l22-20020a2ea316000000b002bcc846aa17mr6012102lje.41.1692824422953; Wed, 23
- Aug 2023 14:00:22 -0700 (PDT)
+        Wed, 23 Aug 2023 17:02:08 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5752510FC;
+        Wed, 23 Aug 2023 14:01:48 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-51e28cac164so482490a12.1;
+        Wed, 23 Aug 2023 14:01:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692824507; x=1693429307;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Sjrv2YBvklVPu6MWU/oxXyFZ5ZUR18lepWxyKNrHolo=;
+        b=ZACPKZ1jzG6HOjsJL6A644qhFrtkGDejXXcazkYavvl/wlkCNsaN8HhIgkv/q926cf
+         3LJrfycoG/e2VDPN/+O1ZhyZ85IL5VvXE2bagHmQ2nuL9P1GiEHfj4CfsYpPJmr65dpU
+         INID9DgIExHOmgkDHujLj7ZAMJb6wgWwBay8EaAWPwFa2ipDwVFajGsGC9qso+L4ZB3l
+         ReBjRw/UyM1yuzIM563yuVpL4cDjwk+7DTyhmYZroG8BzADLK4fDWUw+erXfvHtunYc5
+         G1LIwj5BSganjbDNdP8kTjSqWkHD4xOMqw8adYPsOcSnSljeQ4YSCobF5ySASxrMZ7zk
+         15fQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692824507; x=1693429307;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Sjrv2YBvklVPu6MWU/oxXyFZ5ZUR18lepWxyKNrHolo=;
+        b=VaXOSrxo+5Vev8yWG3uRA+I9xybVcYQlbXWEkSQzg/WD0xeEfHnEurjypQ3dTD9b/l
+         egSBtLDO9fhnC6Uw7qLIVHFkGyehkB9W9oPEprYtenjlmwObVHdQKAEq1A1tI9jdXOQQ
+         t1rSLjruOlCizZ3M1rMoGAs7b4fSm2DBFygks984M+AOZCkXq11Y/GEJMuz3hohKWHSa
+         Iz/CqEXeAwK1DvwTcaTYjZb4AiH4Gq+Qq3TmHQlDHVmGdVWQru0untP4Ud/auCO4ii38
+         IfusGdJ6TP12QQlaOBNRxtT+IZ+XKTTxTFbddVq2fp1riPQQ74wz788Wsfv8tgrW1J++
+         AaYw==
+X-Gm-Message-State: AOJu0YzfOTzS5KEJpoGQbQAh7x7UXNzz3K34aRD5aVkxxChSLByrSdrf
+        1tsVSp6aEG9953+myLcc2NbdtWKBc9btlcTYBXM=
+X-Google-Smtp-Source: AGHT+IGFYU9jAK55F8yqfPO6+MPCXYpKou6AHKLVHW0lg2k/rkNcnTlERZwG0clLBrcAzEuy4DjsFW+t8KMgvPmR5MM=
+X-Received: by 2002:a05:6402:339:b0:523:2e23:a0bf with SMTP id
+ q25-20020a056402033900b005232e23a0bfmr16588647edw.11.1692824506429; Wed, 23
+ Aug 2023 14:01:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230821194821.2961213-1-sjg@chromium.org> <CAL_Jsq+jYexj8CR86cktxeiXyo7X+8i35+Ao0GBMhinVPNUoEw@mail.gmail.com>
- <CAPnjgZ1iXoiByBPvBJfOa+q7qV5mvq4yGm483TmypzSKKy5PYg@mail.gmail.com>
-In-Reply-To: <CAPnjgZ1iXoiByBPvBJfOa+q7qV5mvq4yGm483TmypzSKKy5PYg@mail.gmail.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 23 Aug 2023 16:00:10 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqKCYvfme3UURPuukdmQ6BQHAPtF50vksJyQTtu7uc0cfQ@mail.gmail.com>
-Message-ID: <CAL_JsqKCYvfme3UURPuukdmQ6BQHAPtF50vksJyQTtu7uc0cfQ@mail.gmail.com>
-Subject: Re: [PATCH v2] schemas: Add a schema for memory map
-To:     Simon Glass <sjg@chromium.org>
-Cc:     devicetree@vger.kernel.org,
-        Lean Sheng Tan <sheng.tan@9elements.com>,
-        Tom Rini <trini@konsulko.com>,
-        lkml <linux-kernel@vger.kernel.org>, linux-acpi@vger.kernel.org,
-        Chiu Chasel <chasel.chiu@intel.com>,
-        U-Boot Mailing List <u-boot@lists.denx.de>,
-        Gua Guo <gua.guo@intel.com>
+References: <20230822180208.95556-1-robdclark@gmail.com> <20230822180208.95556-4-robdclark@gmail.com>
+ <CAJZ5v0jLzhhMM58EtyKaFOa8c=bE+XU5=OafvCx0vTBQpNZ0gQ@mail.gmail.com>
+In-Reply-To: <CAJZ5v0jLzhhMM58EtyKaFOa8c=bE+XU5=OafvCx0vTBQpNZ0gQ@mail.gmail.com>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Wed, 23 Aug 2023 14:01:34 -0700
+Message-ID: <CAF6AEGs17Pd4u=t6kpdwyvGrLTrZ9yRhn5co4zDndXnO5MNaKA@mail.gmail.com>
+Subject: Re: [PATCH v5 03/11] PM / QoS: Fix constraints alloc vs reclaim locking
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org,
+        Rob Clark <robdclark@chromium.org>,
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:HIBERNATION (aka Software Suspend, aka swsusp)" 
+        <linux-pm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 3:34=E2=80=AFPM Simon Glass <sjg@chromium.org> wrot=
-e:
+On Tue, Aug 22, 2023 at 11:48=E2=80=AFAM Rafael J. Wysocki <rafael@kernel.o=
+rg> wrote:
 >
-> Hi Rob,
->
-> On Tue, 22 Aug 2023 at 12:53, Rob Herring <robh@kernel.org> wrote:
+> On Tue, Aug 22, 2023 at 8:02=E2=80=AFPM Rob Clark <robdclark@gmail.com> w=
+rote:
 > >
-> > On Mon, Aug 21, 2023 at 2:48=E2=80=AFPM Simon Glass <sjg@chromium.org> =
-wrote:
-> > >
-> > > The Devicespec specification skips over handling of a logical view of
-> > > the memory map, pointing users to the UEFI specification.
+> > From: Rob Clark <robdclark@chromium.org>
 > >
-> > It's more that the DT spec defines what is not used with UEFI. If UEFI
-> > covers more than the DT Spec defined, then we should look at that.
+> > In the process of adding lockdep annotation for drm GPU scheduler's
+> > job_run() to detect potential deadlock against shrinker/reclaim, I hit
+> > this lockdep splat:
 > >
-> > I would look some into (IBM) PowerPC for any prior art in this area.
-> > Unfortunately, not publicly documented other than any users.
->
-> OK, but I'm not sure what you are looking for here. The DT (as
-> currently specified) is an incomplete description of memory, for
-> EFI-type firmware.
-
-I thought this was for non-EFI based systems. Confused.
-
-> I recall the ePAPR thing, but not much else. Any
-> pointers?
-
-ePAPR is the source of DT Spec. That was mainly FSL PPC, not IBM PPC.
-There's something called SPAPR, but no public spec. Otherwise, it's
-looking at arch/powerpc in the kernel.
-
-> > > It is common to split firmware into 'Platform Init', which does the
-> > > initial hardware setup and a "Payload" which selects the OS to be boo=
-ted.
-> > > Thus an handover interface is required between these two pieces.
-> > >
-> > > Where UEFI boot-time services are not available, but UEFI firmware is
-> > > present on either side of this interface, information about memory us=
-age
-> > > and attributes must be presented to the "Payload" in some form.
-> > >
-> > > This aims to provide an initial schema for this mapping.
-> > >
-> > > Note that this is separate from the existing /memory and /reserved-me=
-mory
-> > > nodes, since it is mostly concerned with what the memory is used for.=
- It
-> > > may cover only a small fraction of available memory, although it coul=
-d be
-> > > used to signal which area of memory has ECC.
-> > >
-> > > For now, no attempt is made to create an exhaustive binding, so there=
- are
-> > > some example types lists. This can be completed once this has passed
-> > > initial review.
+> >    =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D
+> >    WARNING: possible circular locking dependency detected
+> >    6.2.0-rc8-debug+ #558 Tainted: G        W
+> >    ------------------------------------------------------
+> >    ring0/125 is trying to acquire lock:
+> >    ffffffd6d6ce0f28 (dev_pm_qos_mtx){+.+.}-{3:3}, at: dev_pm_qos_update=
+_request+0x38/0x68
 > >
-> > I don't have much interest in picking this up unless there's some
-> > wider agreement. From the previously referenced discussion[1], it
-> > didn't seem like there was. But none of those folk are Cc'ed here.
->
-> Yes, Ron pointed me to that...although it isn't quite the same thing.
-> That is implementing a way to pass SMBIOS and ACPI tables through to
-> Linux, right? But it does mention memory types, so I'll send a new
-> version with those people on cc, in case they don't look at linux-acpi
-> much.
-
-Both are defining regions of memory to pass from one stage to the
-next. Isn't that the same thing?
-
-> But note, this is for *firmware* (on both sides of the interface).
-> Whether it is useful for Linux is another question. But in any case,
-> we should avoid having things in the DT which Linux cannot validate /
-> parse.
-
-Perhaps it is easiest if firmware removes its private stuff. You can
-put whatever you want into a DT and I don't care if it's not an ABI
-between the components. You may still want to document things and have
-a schema for other reasons.
-
-> > > ---
-> > >
-> > > Changes in v2:
-> > > - Reword commit message
-> > >
-> > >  dtschema/schemas/memory-map.yaml | 51 ++++++++++++++++++++++++++++++=
-++
-> > >  1 file changed, 51 insertions(+)
-> > >  create mode 100644 dtschema/schemas/memory-map.yaml
-> > >
-> > > diff --git a/dtschema/schemas/memory-map.yaml b/dtschema/schemas/memo=
-ry-map.yaml
-> > > new file mode 100644
-> > > index 0000000..97e531e
-> > > --- /dev/null
-> > > +++ b/dtschema/schemas/memory-map.yaml
-> > > @@ -0,0 +1,51 @@
-> > > +# SPDX-License-Identifier: BSD-2-Clause
-> > > +# Copyright 2023 Google LLC
-> > > +%YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/memory-map.yaml#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > +
-> > > +title: /memory-map nodes
-> > > +description: |
-> > > +  Common properties always required in /memory-map nodes. These node=
-s are
-> > > +  intended to resolve the nonchalant clause 3.4.1 ("/memory node and=
- UEFI")
-> > > +  in the Devicetree Specification.
-> > > +
-> > > +maintainers:
-> > > +  - Simon Glass <sjg@chromium.org>
-> > > +
-> > > +properties:
-> > > +  $nodename:
-> > > +    const: '/'
+> >    but task is already holding lock:
+> >    ffffff8087239208 (&gpu->active_lock){+.+.}-{3:3}, at: msm_gpu_submit=
++0xec/0x178
 > >
-> > This goes in the root node?
->
-> I suppose I'm just confused about how the schema is described. I think
-> it is better to have a /memory-map node with subnodes of that for each
-> region.
-
-What you need is $nodename should be "memory-map", not "/". There is
-not a way to say it has to be under the root node other than adding it
-to root-node.yaml.
-
-> > > +  usage:
-> > > +    $ref: /schemas/types.yaml#/definitions/string
-> > > +    description: |
-> > > +      Describes the usage of the memory region, e.g.:
-> > > +
-> > > +        "acpi-reclaim", "acpi-nvs", "bootcode", "bootdata", "bootdat=
-a",
-> > > +        "runtime-code", "runtime-data"
+> >    which lock already depends on the new lock.
 > >
-> > Can't these be covered by reserved-memory? The client is free to
-> > reclaim any regions if it knows what they are.
->
-> I don't see that in the schema, but given what you say, it is
-> definitely an option.
->
-> If the reserved-memory node hiding somewhere?
-
-The DT Spec. :)
-
-The schema is in the kernel currently in
-Documentation/devicetree/bindings/reserved-memory/reserved-memory.yaml.
-I need to move it out.
-
-> > > +  attr:
-> > > +    $ref: /schemas/types.yaml#/definitions/string-array
-> > > +    description: |
-> > > +      Attributes possessed by this memory region:
-> > > +
-> > > +        "single-bit-ecc" - supports single-bit ECC
-> > > +        "multi-bit-ecc" - supports multiple-bit ECC
-> > > +        "no-ecc" - non-ECC memory
+> >    the existing dependency chain (in reverse order) is:
 > >
-> > Isn't this pretty much a property of a memory region as a whole. IOW,
-> > couldn't it just go into /memory node(s)?
+> >    -> #4 (&gpu->active_lock){+.+.}-{3:3}:
+> >           __mutex_lock+0xcc/0x3c8
+> >           mutex_lock_nested+0x30/0x44
+> >           msm_gpu_submit+0xec/0x178
+> >           msm_job_run+0x78/0x150
+> >           drm_sched_main+0x290/0x370
+> >           kthread+0xf0/0x100
+> >           ret_from_fork+0x10/0x20
+> >
+> >    -> #3 (dma_fence_map){++++}-{0:0}:
+> >           __dma_fence_might_wait+0x74/0xc0
+> >           dma_resv_lockdep+0x1f4/0x2f4
+> >           do_one_initcall+0x104/0x2bc
+> >           kernel_init_freeable+0x344/0x34c
+> >           kernel_init+0x30/0x134
+> >           ret_from_fork+0x10/0x20
+> >
+> >    -> #2 (mmu_notifier_invalidate_range_start){+.+.}-{0:0}:
+> >           fs_reclaim_acquire+0x80/0xa8
+> >           slab_pre_alloc_hook.constprop.0+0x40/0x25c
+> >           __kmem_cache_alloc_node+0x60/0x1cc
+> >           __kmalloc+0xd8/0x100
+> >           topology_parse_cpu_capacity+0x8c/0x178
+> >           get_cpu_for_node+0x88/0xc4
+> >           parse_cluster+0x1b0/0x28c
+> >           parse_cluster+0x8c/0x28c
+> >           init_cpu_topology+0x168/0x188
+> >           smp_prepare_cpus+0x24/0xf8
+> >           kernel_init_freeable+0x18c/0x34c
+> >           kernel_init+0x30/0x134
+> >           ret_from_fork+0x10/0x20
+> >
+> >    -> #1 (fs_reclaim){+.+.}-{0:0}:
+> >           __fs_reclaim_acquire+0x3c/0x48
+> >           fs_reclaim_acquire+0x54/0xa8
+> >           slab_pre_alloc_hook.constprop.0+0x40/0x25c
+> >           __kmem_cache_alloc_node+0x60/0x1cc
+> >           kmalloc_trace+0x50/0xa8
+> >           dev_pm_qos_constraints_allocate+0x38/0x100
+> >           __dev_pm_qos_add_request+0xb0/0x1e8
+> >           dev_pm_qos_add_request+0x58/0x80
+> >           dev_pm_qos_expose_latency_limit+0x60/0x13c
+> >           register_cpu+0x12c/0x130
+> >           topology_init+0xac/0xbc
+> >           do_one_initcall+0x104/0x2bc
+> >           kernel_init_freeable+0x344/0x34c
+> >           kernel_init+0x30/0x134
+> >           ret_from_fork+0x10/0x20
+> >
+> >    -> #0 (dev_pm_qos_mtx){+.+.}-{3:3}:
+> >           __lock_acquire+0xe00/0x1060
+> >           lock_acquire+0x1e0/0x2f8
+> >           __mutex_lock+0xcc/0x3c8
+> >           mutex_lock_nested+0x30/0x44
+> >           dev_pm_qos_update_request+0x38/0x68
+> >           msm_devfreq_boost+0x40/0x70
+> >           msm_devfreq_active+0xc0/0xf0
+> >           msm_gpu_submit+0x10c/0x178
+> >           msm_job_run+0x78/0x150
+> >           drm_sched_main+0x290/0x370
+> >           kthread+0xf0/0x100
+> >           ret_from_fork+0x10/0x20
+> >
+> >    other info that might help us debug this:
+> >
+> >    Chain exists of:
+> >      dev_pm_qos_mtx --> dma_fence_map --> &gpu->active_lock
+> >
+> >     Possible unsafe locking scenario:
+> >
+> >           CPU0                    CPU1
+> >           ----                    ----
+> >      lock(&gpu->active_lock);
+> >                                   lock(dma_fence_map);
+> >                                   lock(&gpu->active_lock);
+> >      lock(dev_pm_qos_mtx);
+> >
+> >     *** DEADLOCK ***
+> >
+> >    3 locks held by ring0/123:
+> >     #0: ffffff8087251170 (&gpu->lock){+.+.}-{3:3}, at: msm_job_run+0x64=
+/0x150
+> >     #1: ffffffd00b0e57e8 (dma_fence_map){++++}-{0:0}, at: msm_job_run+0=
+x68/0x150
+> >     #2: ffffff8087251208 (&gpu->active_lock){+.+.}-{3:3}, at: msm_gpu_s=
+ubmit+0xec/0x178
+> >
+> >    stack backtrace:
+> >    CPU: 6 PID: 123 Comm: ring0 Not tainted 6.2.0-rc8-debug+ #559
+> >    Hardware name: Google Lazor (rev1 - 2) with LTE (DT)
+> >    Call trace:
+> >     dump_backtrace.part.0+0xb4/0xf8
+> >     show_stack+0x20/0x38
+> >     dump_stack_lvl+0x9c/0xd0
+> >     dump_stack+0x18/0x34
+> >     print_circular_bug+0x1b4/0x1f0
+> >     check_noncircular+0x78/0xac
+> >     __lock_acquire+0xe00/0x1060
+> >     lock_acquire+0x1e0/0x2f8
+> >     __mutex_lock+0xcc/0x3c8
+> >     mutex_lock_nested+0x30/0x44
+> >     dev_pm_qos_update_request+0x38/0x68
+> >     msm_devfreq_boost+0x40/0x70
+> >     msm_devfreq_active+0xc0/0xf0
+> >     msm_gpu_submit+0x10c/0x178
+> >     msm_job_run+0x78/0x150
+> >     drm_sched_main+0x290/0x370
+> >     kthread+0xf0/0x100
+> >     ret_from_fork+0x10/0x20
+> >
+> > The issue is that dev_pm_qos_mtx is held in the runpm suspend/resume (o=
+r
+> > freq change) path, but it is also held across allocations that could
+> > recurse into shrinker.
+> >
+> > Solve this by changing dev_pm_qos_constraints_allocate() into a functio=
+n
+> > that can be called unconditionally before the device qos object is
+> > needed and before aquiring dev_pm_qos_mtx.  This way the allocations ca=
+n
 >
-> Yes I think so. I wasn't sure if adding it there would break things,
-> but it seems not.
+> acquiring
+>
+> > be done without holding the mutex.  In the case that we raced with
+> > another thread to allocate the qos object, detect this *after* acquirin=
+g
+> > the dev_pm_qos_mtx and simply free the redundant allocations.
+> >
+> > Suggested-by: Rafael J. Wysocki <rafael@kernel.org>
+> > Signed-off-by: Rob Clark <robdclark@chromium.org>
+>
+> Please feel free to add
+>
+> Acked-by: Rafael J. Wysocki <rafael@kernel.org>
+>
+> to this patch and the next 2 PM QoS ones in this series.
 
-There's some precedence for other things already. The spec defines the
-"hotpluggable" property. lshw will parse some DIMM properties which I
-think date back to PowerMacs.
+btw, Georgi picked up the interconnect patches.  I think it is fine if
+you want to pick up the PM patches, as there are no dependencies
+between these and other patches in the series.  But lmk if you want to
+handle it in a different way
 
-Rob
+BR,
+-R
+
+> Thanks!
+>
+> > ---
+> >  drivers/base/power/qos.c | 76 +++++++++++++++++++++++++++++-----------
+> >  1 file changed, 56 insertions(+), 20 deletions(-)
+> >
+> > diff --git a/drivers/base/power/qos.c b/drivers/base/power/qos.c
+> > index 8e93167f1783..7e95760d16dc 100644
+> > --- a/drivers/base/power/qos.c
+> > +++ b/drivers/base/power/qos.c
+> > @@ -185,27 +185,33 @@ static int apply_constraint(struct dev_pm_qos_req=
+uest *req,
+> >  }
+> >
+> >  /*
+> > - * dev_pm_qos_constraints_allocate
+> > + * dev_pm_qos_constraints_allocate: Allocate and initializes qos const=
+raints
+> >   * @dev: device to allocate data for
+> >   *
+> > - * Called at the first call to add_request, for constraint data alloca=
+tion
+> > - * Must be called with the dev_pm_qos_mtx mutex held
+> > + * Called to allocate constraints before dev_pm_qos_mtx mutex is held.=
+  Should
+> > + * be matched with a call to dev_pm_qos_constraints_set() once dev_pm_=
+qos_mtx
+> > + * is held.
+> >   */
+> > -static int dev_pm_qos_constraints_allocate(struct device *dev)
+> > +static struct dev_pm_qos *dev_pm_qos_constraints_allocate(struct devic=
+e *dev)
+> >  {
+> >         struct dev_pm_qos *qos;
+> >         struct pm_qos_constraints *c;
+> >         struct blocking_notifier_head *n;
+> >
+> > -       qos =3D kzalloc(sizeof(*qos), GFP_KERNEL);
+> > +       /*
+> > +        * If constraints are already allocated, we can skip speculativ=
+ely
+> > +        * allocating a new one, as we don't have to work about qos tra=
+nsitioning
+> > +        * from non-null to null.  The constraints are only freed on de=
+vice
+> > +        * removal.
+> > +        */
+> > +       if (dev->power.qos)
+> > +               return NULL;
+> > +
+> > +       qos =3D kzalloc(sizeof(*qos) + 3 * sizeof(*n), GFP_KERNEL);
+> >         if (!qos)
+> > -               return -ENOMEM;
+> > +               return NULL;
+> >
+> > -       n =3D kzalloc(3 * sizeof(*n), GFP_KERNEL);
+> > -       if (!n) {
+> > -               kfree(qos);
+> > -               return -ENOMEM;
+> > -       }
+> > +       n =3D (struct blocking_notifier_head *)(qos + 1);
+> >
+> >         c =3D &qos->resume_latency;
+> >         plist_head_init(&c->list);
+> > @@ -227,11 +233,29 @@ static int dev_pm_qos_constraints_allocate(struct=
+ device *dev)
+> >
+> >         INIT_LIST_HEAD(&qos->flags.list);
+> >
+> > +       return qos;
+> > +}
+> > +
+> > +/*
+> > + * dev_pm_qos_constraints_set: Ensure dev->power.qos is set
+> > + *
+> > + * If dev->power.qos is already set, free the newly allocated qos cons=
+traints.
+> > + * Otherwise set dev->power.qos.  Must be called with dev_pm_qos_mtx h=
+eld.
+> > + *
+> > + * This split unsynchronized allocation and synchronized set moves all=
+ocation
+> > + * out from under dev_pm_qos_mtx, so that lockdep does does not get an=
+gry about
+> > + * drivers which use dev_pm_qos in paths related to shrinker/reclaim.
+> > + */
+> > +static void dev_pm_qos_constraints_set(struct device *dev, struct dev_=
+pm_qos *qos)
+> > +{
+> > +       if (dev->power.qos) {
+> > +               kfree(qos);
+> > +               return;
+> > +       }
+> > +
+> >         spin_lock_irq(&dev->power.lock);
+> >         dev->power.qos =3D qos;
+> >         spin_unlock_irq(&dev->power.lock);
+> > -
+> > -       return 0;
+> >  }
+> >
+> >  static void __dev_pm_qos_hide_latency_limit(struct device *dev);
+> > @@ -309,7 +333,6 @@ void dev_pm_qos_constraints_destroy(struct device *=
+dev)
+> >         dev->power.qos =3D ERR_PTR(-ENODEV);
+> >         spin_unlock_irq(&dev->power.lock);
+> >
+> > -       kfree(qos->resume_latency.notifiers);
+> >         kfree(qos);
+> >
+> >   out:
+> > @@ -341,7 +364,7 @@ static int __dev_pm_qos_add_request(struct device *=
+dev,
+> >         if (IS_ERR(dev->power.qos))
+> >                 ret =3D -ENODEV;
+> >         else if (!dev->power.qos)
+> > -               ret =3D dev_pm_qos_constraints_allocate(dev);
+> > +               ret =3D -ENOMEM;
+> >
+> >         trace_dev_pm_qos_add_request(dev_name(dev), type, value);
+> >         if (ret)
+> > @@ -388,9 +411,11 @@ static int __dev_pm_qos_add_request(struct device =
+*dev,
+> >  int dev_pm_qos_add_request(struct device *dev, struct dev_pm_qos_reque=
+st *req,
+> >                            enum dev_pm_qos_req_type type, s32 value)
+> >  {
+> > +       struct dev_pm_qos *qos =3D dev_pm_qos_constraints_allocate(dev)=
+;
+> >         int ret;
+> >
+> >         mutex_lock(&dev_pm_qos_mtx);
+> > +       dev_pm_qos_constraints_set(dev, qos);
+> >         ret =3D __dev_pm_qos_add_request(dev, req, type, value);
+> >         mutex_unlock(&dev_pm_qos_mtx);
+> >         return ret;
+> > @@ -535,14 +560,15 @@ EXPORT_SYMBOL_GPL(dev_pm_qos_remove_request);
+> >  int dev_pm_qos_add_notifier(struct device *dev, struct notifier_block =
+*notifier,
+> >                             enum dev_pm_qos_req_type type)
+> >  {
+> > +       struct dev_pm_qos *qos =3D dev_pm_qos_constraints_allocate(dev)=
+;
+> >         int ret =3D 0;
+> >
+> >         mutex_lock(&dev_pm_qos_mtx);
+> >
+> > +       dev_pm_qos_constraints_set(dev, qos);
+> > +
+> >         if (IS_ERR(dev->power.qos))
+> >                 ret =3D -ENODEV;
+> > -       else if (!dev->power.qos)
+> > -               ret =3D dev_pm_qos_constraints_allocate(dev);
+> >
+> >         if (ret)
+> >                 goto unlock;
+> > @@ -903,12 +929,22 @@ s32 dev_pm_qos_get_user_latency_tolerance(struct =
+device *dev)
+> >   */
+> >  int dev_pm_qos_update_user_latency_tolerance(struct device *dev, s32 v=
+al)
+> >  {
+> > -       int ret;
+> > +       struct dev_pm_qos *qos =3D dev_pm_qos_constraints_allocate(dev)=
+;
+> > +       int ret =3D 0;
+> >
+> >         mutex_lock(&dev_pm_qos_mtx);
+> >
+> > -       if (IS_ERR_OR_NULL(dev->power.qos)
+> > -           || !dev->power.qos->latency_tolerance_req) {
+> > +       dev_pm_qos_constraints_set(dev, qos);
+> > +
+> > +       if (IS_ERR(dev->power.qos))
+> > +               ret =3D -ENODEV;
+> > +       else if (!dev->power.qos)
+> > +               ret =3D -ENOMEM;
+> > +
+> > +       if (ret)
+> > +               goto out;
+> > +
+> > +       if (!dev->power.qos->latency_tolerance_req) {
+> >                 struct dev_pm_qos_request *req;
+> >
+> >                 if (val < 0) {
+> > --
+> > 2.41.0
+> >
