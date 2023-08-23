@@ -2,117 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8406D785C6C
+	by mail.lfdr.de (Postfix) with ESMTP id 3AC3A785C6B
 	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 17:46:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235938AbjHWPqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 11:46:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59090 "EHLO
+        id S237257AbjHWPqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 11:46:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234355AbjHWPqL (ORCPT
+        with ESMTP id S236949AbjHWPqN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 11:46:11 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A7551715
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 08:45:33 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id 3f1490d57ef6-d776e1f181bso2417986276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 08:45:33 -0700 (PDT)
+        Wed, 23 Aug 2023 11:46:13 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90C571717;
+        Wed, 23 Aug 2023 08:45:33 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1bf55a81eeaso26878265ad.0;
+        Wed, 23 Aug 2023 08:45:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692805520; x=1693410320;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4iKbrG16XTWsUCbJWiS608T9PjV3Jt5yTK3FHBeUP24=;
-        b=IPf20cyi0FZ0c6UuhQ3+JLKk55ADO1l+45wsHSpTLlTvq3ckWIrXbhNUR7JZa7Zamb
-         t01XQZM5BtWc68ovUcTiC2t7hwvC2EZco3jb3ds0twWrfv6GiIeBcOGF5pUwoNDvvozx
-         pigreBr3dq8AJmQym1mSGdasy6dEhXldyJtap5wiAcP0JaD0/cIDcU+EYLpTy/Aet7Z4
-         XhwoQua5mXMe3TytcNplOBUZWXQ9WUnR4rjan6WN8YnEPaPeI4Tmp3wZG6kluH33Aumc
-         XUBBW/u0MfT/rePeVVsciTPQPyvqkH2ZqhEdhUt66aNK/Hhxo4YbAGXit3PH/Mf/Au4N
-         vB4Q==
+        d=gmail.com; s=20221208; t=1692805522; x=1693410322;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rgyeGdbslhNv497sxSi9T9F8ibgrZruUJHbypuA4l6Y=;
+        b=jixuxBy6dLyqzAugK26aoYw0LHQTx9DCcGP9ZOAzYpSmA3crvbg6NPiyoC4P6lFTgU
+         R1w8rNe43s2U/PV3ehvtlmAeDWIE93dhMXJNiyRUmM8K6B7jp71JoTE3AMMXa/EojZr+
+         vGR3WY2zfn6q1ZOZVMfixe6WWpWpf6Pl+c+EFBx0GILy52cD4x3zaQUOQvwNs0nrhBbe
+         oku0F6PnEUZbaI8P3rhWH6XeZJ9FUhB+B7AidlpWhG0gpd1fNu3nhZZQgPaHgBG6u/jG
+         JLPeiKY3z7GfzEfSd4UKGr0AIsHoxbd1l9vX1V8It7YLtECvMoxBfUqu5oTCFp9YGfaB
+         TK6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692805520; x=1693410320;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1692805522; x=1693410322;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4iKbrG16XTWsUCbJWiS608T9PjV3Jt5yTK3FHBeUP24=;
-        b=hCONWYHMwQjvAGXks5qYKDEfD/5C/nYnEnVjQn6HAo/wLw2MVg7V5cnHXwpteJY/3M
-         gVlFCMH+R8KXSpQ66+NzZKdQiCj1yOuxzqCaEK2bQOQmj4a641W+TssFcFn5Stx5HXMR
-         6PiwzgisFBOv3cOweATkGTIc17Bcpp9+HLFdtyDb3gJqkRaIwWEXd+bNqoV5U+FNz14x
-         /Im0g8mchBDoOkRztOHHRwjPREtD03GdT2QjkwtRSgz/kut2n/yOYQbVmidoDxjbLvUB
-         ehx0o+O6B1FB1lNpFTB5n33VZh6AqgJNfmqR7IV07kNNdBjpCOOL+tcsOuu6zB2Dl70+
-         2YJQ==
-X-Gm-Message-State: AOJu0Yzmk71xvzDJvmY2NLjttCu42hCCtcmRVjT/S1XMJFfbqfD9Em78
-        UfSqcNAZHsdoHSxHNQD0+BXc6Jj3IFiTlv0l11Qwlg==
-X-Google-Smtp-Source: AGHT+IGby702gDui1jmV96AnJZ9nLoHS+SoEbHAh56x6IqrEiZQrO5jwJZucjzv3wNLoQqDHphe+yvFHz/qPdPo1RL8=
-X-Received: by 2002:a25:ae01:0:b0:d63:1d3b:9416 with SMTP id
- a1-20020a25ae01000000b00d631d3b9416mr12797135ybj.2.1692805520687; Wed, 23 Aug
- 2023 08:45:20 -0700 (PDT)
+        bh=rgyeGdbslhNv497sxSi9T9F8ibgrZruUJHbypuA4l6Y=;
+        b=LRVLsp6B7C/wRunb6NvQNioIWAEQ1rplyQhzlC6P9iWxMPxYVyFtNplBi4NU8VrxZU
+         4bnHUACq05gjoz/lqZZN5IgiHtGsPLQAyE2Wpb8RcKROu3iT84fwKlAhdu2gYJLtP+gD
+         zmh12XsHHqyq/h7RWp8n3dm4TkX69Di58uevfTSywMvH17eppHgSd58GWXT66MR+/M5B
+         ea0BNW0lKBGvC39Ev6tY36H9sDxbQeeCvKANze1TZSkRSjYy+nBrUBUIrd+uXPDZq9nk
+         DuhuT+k02jGWAaE/PJNSv8p62uZx7l6OFxeKDd/8pS5ofWnIGHgrfbiVM27UwAIhbGDa
+         hu9g==
+X-Gm-Message-State: AOJu0YynSDDiYIhWkDKhJMnnnx9lpFXXHXNfL21n9Kkaxmpug9quAy99
+        avrC3oQ/kJXz5nIYAZ/W5/8=
+X-Google-Smtp-Source: AGHT+IHoxUe6KTbUqRFXtM8YgfcSwLH7IdrqQeJIEYuWOh354lKGc750/NspA/0hl92k8FhJo7DrrQ==
+X-Received: by 2002:a17:902:b617:b0:1be:f76e:7664 with SMTP id b23-20020a170902b61700b001bef76e7664mr9480732pls.29.1692805522050;
+        Wed, 23 Aug 2023 08:45:22 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id e5-20020a170902744500b001bdc5023783sm11131773plt.179.2023.08.23.08.45.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Aug 2023 08:45:21 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 23 Aug 2023 08:45:20 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Robert Marko <robimarko@gmail.com>
+Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        wim@linux-watchdog.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        quic_saipraka@quicinc.com, linux-arm-msm@vger.kernel.org,
+        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Conor Dooley <conor.dooley@microchip.com>
+Subject: Re: [PATCH v2 1/2] dt-bindings: watchdog: qcom-wdt: document IPQ5018
+Message-ID: <79414186-3c5f-4166-a81a-6b346e544253@roeck-us.net>
+References: <20230816161455.3310629-1-robimarko@gmail.com>
 MIME-Version: 1.0
-References: <20230823040755.2217942-1-ajye_huang@compal.corp-partner.google.com>
- <dd6d51b0-cc60-4fb7-932d-1117143d1715@sirena.org.uk>
-In-Reply-To: <dd6d51b0-cc60-4fb7-932d-1117143d1715@sirena.org.uk>
-From:   Ajye Huang <ajye_huang@compal.corp-partner.google.com>
-Date:   Wed, 23 Aug 2023 23:45:09 +0800
-Message-ID: <CALprXBYxrwBW6HLP5MwYhFh1_Skei+pLbXd7yNAEuhLTQJLVPg@mail.gmail.com>
-Subject: Re: [PATCH v1] Revert "ASoC: Intel: Add rpl_nau8318_8825 driver"
-To:     Mark Brown <broonie@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Akihiko Odaki <akihiko.odaki@gmail.com>,
-        Yong Zhi <yong.zhi@intel.com>,
-        ye xingchen <ye.xingchen@zte.com.cn>,
-        "balamurugan . c" <balamurugan.c@intel.com>,
-        Libin Yang <libin.yang@intel.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        David Lin <CTLIN0@nuvoton.com>, Brent Lu <brent.lu@intel.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Terry Cheong <htcheong@chromium.org>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Gongjun Song <gongjun.song@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>, apoorv <apoorv@intel.com>,
-        alsa-devel@alsa-project.org, kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230816161455.3310629-1-robimarko@gmail.com>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 23, 2023 at 8:01=E2=80=AFPM Mark Brown <broonie@kernel.org> wro=
-te:
-> 6b8b6892e434 is not applied?
->
-> Please submit patches using subject lines reflecting the style for the
-> subsystem, this makes it easier for people to identify relevant patches.
-> Look at what existing commits in the area you're changing are doing and
-> make sure your subject lines visually resemble what they're doing.
-> There's no need to resubmit to fix this alone.
+On Wed, Aug 16, 2023 at 06:13:59PM +0200, Robert Marko wrote:
+> Document the IPQ5018 watchdog compatible.
+> 
+> Signed-off-by: Robert Marko <robimarko@gmail.com>
+> Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
-Dear Mark,
-Please allow me to explain in more detail.
-The 6b8b6892e434 should not be applied into file0yZ50U branch of broonie/ci=
-.git.
-Because the original commit 273bc8bf2227 ("ASoC: Intel: Add
-rpl_nau8318_8825 driver") was applied on 2023-08-14.
-But two days ago, 6b8b6892e434 tried to commit THE SAME patch again on
-2023-08-21, but it just only added a little part content from original
-273bc8bf2227.
-+static const struct snd_soc_acpi_codecs rpl_nau8318_amp =3D {
-+ .num_codecs =3D 1,
-+ .codecs =3D {"NVTN2012"}
-+};
-+
-It caused "rpl_nau8318_amp" to be redefined.
-This condition only happens at broonie/ci.git's file0yZ50U branch.
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-Could you check this one again?  thanks.
+> ---
+>  Documentation/devicetree/bindings/watchdog/qcom-wdt.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/watchdog/qcom-wdt.yaml b/Documentation/devicetree/bindings/watchdog/qcom-wdt.yaml
+> index 6d0fe6abd06a..5046dfa55f13 100644
+> --- a/Documentation/devicetree/bindings/watchdog/qcom-wdt.yaml
+> +++ b/Documentation/devicetree/bindings/watchdog/qcom-wdt.yaml
+> @@ -18,6 +18,7 @@ properties:
+>        - items:
+>            - enum:
+>                - qcom,kpss-wdt-ipq4019
+> +              - qcom,apss-wdt-ipq5018
+>                - qcom,apss-wdt-ipq5332
+>                - qcom,apss-wdt-ipq9574
+>                - qcom,apss-wdt-msm8994
