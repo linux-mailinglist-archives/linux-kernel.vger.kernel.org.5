@@ -2,38 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C4D7785775
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 14:05:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8030378577D
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 14:05:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231962AbjHWMFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 08:05:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34386 "EHLO
+        id S234707AbjHWMFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 08:05:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234771AbjHWMEn (ORCPT
+        with ESMTP id S230033AbjHWMFd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 08:04:43 -0400
+        Wed, 23 Aug 2023 08:05:33 -0400
 Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C25B1990;
-        Wed, 23 Aug 2023 05:04:13 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92433E76
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 05:05:07 -0700 (PDT)
 Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RW4d36fb2z4wy7;
-        Wed, 23 Aug 2023 22:04:07 +1000 (AEST)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RW4df0d2qz4x5l;
+        Wed, 23 Aug 2023 22:04:38 +1000 (AEST)
 From:   Michael Ellerman <patch-notifications@ellerman.id.au>
-To:     linuxppc-dev <linuxppc-dev@ozlabs.org>,
-        Mahesh Salgaonkar <mahesh@linux.ibm.com>
-Cc:     Tyrel Datwyler <tyreld@linux.ibm.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Linux Kernel <linux-kernel@vger.kernel.org>
-In-Reply-To: <169235811556.193557.1023625262204809514.stgit@jupiter>
-References: <169235811556.193557.1023625262204809514.stgit@jupiter>
-Subject: Re: [PATCH v9 1/2] powerpc/rtas: export rtas_error_rc() for reuse.
-Message-Id: <169279175579.797584.15043748481336876672.b4-ty@ellerman.id.au>
+To:     linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
+Cc:     kernel test robot <lkp@intel.com>,
+        Nayna Jain <nayna@linux.ibm.com>, linuxppc-dev@lists.ozlabs.org
+In-Reply-To: <20230810000740.23756-1-rdunlap@infradead.org>
+References: <20230810000740.23756-1-rdunlap@infradead.org>
+Subject: Re: [PATCH] powerpc/pseries: PLPKS: undo kernel-doc comment notation
+Message-Id: <169279175548.797584.6390624232158663005.b4-ty@ellerman.id.au>
 Date:   Wed, 23 Aug 2023 21:55:55 +1000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -47,17 +42,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Aug 2023 16:59:07 +0530, Mahesh Salgaonkar wrote:
-> Also, #define descriptive names for common rtas return codes and use it
-> instead of numeric values.
+On Wed, 09 Aug 2023 17:07:40 -0700, Randy Dunlap wrote:
+> Don't use kernel-doc "/**" comment format for non-kernel-doc comments.
+> This prevents a kernel-doc warning:
+> 
+>   arch/powerpc/platforms/pseries/plpks.c:186: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+>   * Label is combination of label attributes + name.
 > 
 > 
+> [...]
 
 Applied to powerpc/next.
 
-[1/2] powerpc/rtas: export rtas_error_rc() for reuse.
-      https://git.kernel.org/powerpc/c/e160bf64e2d3df7bf83ed41d09390a32490be6c5
-[2/2] PCI: rpaphp: Error out on busy status from get-sensor-state
-      https://git.kernel.org/powerpc/c/77583f77ed9b1452ac62caebf09b2206da10bbf9
+[1/1] powerpc/pseries: PLPKS: undo kernel-doc comment notation
+      https://git.kernel.org/powerpc/c/506e550a7da9e995bea3bd585db591068f98b2bf
 
 cheers
