@@ -2,114 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D61578563E
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 12:51:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 076B8785659
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 12:59:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234207AbjHWKv4 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 23 Aug 2023 06:51:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43012 "EHLO
+        id S234241AbjHWK7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 06:59:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234311AbjHWKvY (ORCPT
+        with ESMTP id S232105AbjHWK7H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 06:51:24 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA25A1980
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 03:49:45 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-309-dnwCdy7dN0qtUfFbZHofUA-1; Wed, 23 Aug 2023 11:49:43 +0100
-X-MC-Unique: dnwCdy7dN0qtUfFbZHofUA-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 23 Aug
- 2023 11:49:42 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Wed, 23 Aug 2023 11:49:42 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Jan Kara' <jack@suse.cz>, Mateusz Guzik <mjguzik@gmail.com>
-CC:     Dennis Zhou <dennis@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "tj@kernel.org" <tj@kernel.org>, "cl@linux.com" <cl@linux.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "shakeelb@google.com" <shakeelb@google.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
-Subject: RE: [PATCH 0/2] execve scalability issues, part 1
-Thread-Topic: [PATCH 0/2] execve scalability issues, part 1
-Thread-Index: AQHZ1aeVc0rzaxTOZkOyAPVlJjGUQ6/3shQw
-Date:   Wed, 23 Aug 2023 10:49:41 +0000
-Message-ID: <c5b9a025165a4c93aa10b462a40641dc@AcuMS.aculab.com>
-References: <20230821202829.2163744-1-mjguzik@gmail.com>
- <ZOPSEJTzrow8YFix@snowbird> <20230821213951.bx3yyqh7omdvpyae@f>
- <CAGudoHHJECp2-DfSr5hudooAdV6mivvSO+4mC9kwUrWnSiob5g@mail.gmail.com>
- <20230822095154.7cr5ofogw552z3jk@quack3>
- <CAGudoHHe5nzRTuj4G1fphD+JJ02TE5BnHEDwFm=-W6DoEj2qVQ@mail.gmail.com>
- <20230823094915.ggv3spzevgyoov6i@quack3>
-In-Reply-To: <20230823094915.ggv3spzevgyoov6i@quack3>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Wed, 23 Aug 2023 06:59:07 -0400
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCA7919A
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 03:59:03 -0700 (PDT)
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id B5B2C120009;
+        Wed, 23 Aug 2023 13:58:59 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru B5B2C120009
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
+        s=mail; t=1692788339;
+        bh=Jhlhui1u6bMKkD+jQX9ubOwaBqanSrcPAZGkwyaedVA=;
+        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
+        b=l9vqnGDPIf9enBfApcY6Q4z3ebwBXMuV9Ag6KmVWaQUUgXPudmK6VBRy2ioA5CtER
+         EnVCZYJbju4bXGvHUO7fUBYPMe4aoTrn7rzVWBlHkJ/SCN9RNyZzvkg8VRW0U6ZmlY
+         rE+vFiMOB8lXHIqkf4FZeoX4nYY9qma/gWU3q1F3Jvhu+iIjvDc22aa1stOy/W1zsc
+         g88IUqd3iuJUvWlO8hgQQMycg3ZurEoOSj/ZCxEdW1QymCXu5P0aqgToFhfEPmeSUG
+         lzsBNFq6VmYRq1LOqsiBYEONxyxe6JMCxU/p+AkMAbRFeD6XvToG7OD1+F4v3zjcCB
+         DBgrXK9wW2fgA==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Wed, 23 Aug 2023 13:58:59 +0300 (MSK)
+Received: from localhost.localdomain (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Wed, 23 Aug 2023 13:58:52 +0300
+From:   Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Arseniy Krasnov <AVKrasnov@sberdevices.ru>,
+        Johan Jonker <jbx6244@gmail.com>
+CC:     <oxffffaa@gmail.com>, <kernel@sberdevices.ru>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v1] mtd: rawnand: remove 'nand_exit_status_op()' prototype
+Date:   Wed, 23 Aug 2023 13:52:31 +0300
+Message-ID: <20230823105235.609069-1-AVKrasnov@sberdevices.ru>
+X-Mailer: git-send-email 2.35.0
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,PDS_BAD_THREAD_QP_64,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 179398 [Aug 23 2023]
+X-KSMG-AntiSpam-Version: 5.9.59.0
+X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 527 527 5bb611be2ca2baa31d984ccbf4ef4415504fc308, {Tracking_smtp_not_equal_from}, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;salutedevices.com:7.1.1;sberdevices.ru:5.0.1,7.1.1;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1, FromAlignment: n, {Tracking_smtp_domain_mismatch}, {Tracking_smtp_domain_2level_mismatch}, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/08/23 04:58:00 #21681850
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kara
-> Sent: Wednesday, August 23, 2023 10:49 AM
-....
-> > --- a/include/linux/mm_types.h
-> > +++ b/include/linux/mm_types.h
-> > @@ -737,7 +737,11 @@ struct mm_struct {
-> >
-> >                 unsigned long saved_auxv[AT_VECTOR_SIZE]; /* for
-> > /proc/PID/auxv */
-> >
-> > -               struct percpu_counter rss_stat[NR_MM_COUNTERS];
-> > +               union {
-> > +                       struct percpu_counter rss_stat[NR_MM_COUNTERS];
-> > +                       u64 *rss_stat_single;
-> > +               };
-> > +               bool    magic_flag_stuffed_elsewhere;
+This function is exported and its prototype is already placed in
+include/linux/mtd/rawnand.h.
 
-I wouldn't use a union to save a pointer - it is asking for trouble.
+Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+---
+ drivers/mtd/nand/raw/internals.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-> >
-> >                 struct linux_binfmt *binfmt;
-> >
-> >
-> > Then for single-threaded case an area is allocated for NR_MM_COUNTERS
-> > countes * 2 -- first set updated without any synchro by current
-> > thread. Second set only to be modified by others and protected with
-> > mm->arg_lock. The lock protects remote access to the union to begin
-> > with.
-> 
-> arg_lock seems a bit like a hack. How is it related to rss_stat? The scheme
-> with two counters is clever but I'm not 100% convinced the complexity is
-> really worth it. I'm not sure the overhead of always using an atomic
-> counter would really be measurable as atomic counter ops in local CPU cache
-> tend to be cheap. Did you try to measure the difference?
-
-A separate lock is worse than atomics.
-(Although some 32bit arch may have issues with 64bit atomics.)
-
-I think you'll be surprised just how slow atomic ops are.
-Even when present in the local cache.
-(Probably because any other copies have to be invalidated.)
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+diff --git a/drivers/mtd/nand/raw/internals.h b/drivers/mtd/nand/raw/internals.h
+index e9932da18bdd..b7162ced9efa 100644
+--- a/drivers/mtd/nand/raw/internals.h
++++ b/drivers/mtd/nand/raw/internals.h
+@@ -106,7 +106,6 @@ int nand_read_page_raw_notsupp(struct nand_chip *chip, u8 *buf,
+ 			       int oob_required, int page);
+ int nand_write_page_raw_notsupp(struct nand_chip *chip, const u8 *buf,
+ 				int oob_required, int page);
+-int nand_exit_status_op(struct nand_chip *chip);
+ int nand_read_param_page_op(struct nand_chip *chip, u8 page, void *buf,
+ 			    unsigned int len);
+ void nand_decode_ext_id(struct nand_chip *chip);
+-- 
+2.35.0
 
