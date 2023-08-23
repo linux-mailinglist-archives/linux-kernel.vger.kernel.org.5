@@ -2,156 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 200CA786366
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 00:30:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 633A078638D
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 00:47:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238638AbjHWWaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 18:30:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53614 "EHLO
+        id S238762AbjHWWqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 18:46:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238704AbjHWW37 (ORCPT
+        with ESMTP id S238752AbjHWWqm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 18:29:59 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5B6810F5;
-        Wed, 23 Aug 2023 15:29:52 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5514563668;
-        Wed, 23 Aug 2023 22:29:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D384C433C7;
-        Wed, 23 Aug 2023 22:29:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692829791;
-        bh=+BTa0iiOl5MKGJTbMH2NQ3i0H+h76fDQsRzTlmL2TKo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YXswDFyeMO4uQE4Pw332ov+8C9+dpiVGQW8cM87R4HVdqB1A5+sb+cw9RuA+iHCVu
-         jIDwYH5ghryTaHtIytaW/PgtKqcONMhvkAev+uAbCPA9NbnCCfiL5xlUA6H9Fj2CIJ
-         M2kY0a3TWsgYEtc1EZjyXvCnnCH7WvkCOdoHsykoKPa9BbGlkujy3nI+hTl5dn4UDi
-         5StPCp+2DfvisYvRShrobiPX82u6ah5dV3qDqO7VfMQmB/Og8j128w/nqYuRM/rSgD
-         lEA2bVIblYA2TtTO/SG/4xJ1yXrfyIuUbkbPM7t/6mn6K8FsuIwTAcUn6Zfi0Yu6NK
-         wpWwptCiGcVVA==
-Date:   Wed, 23 Aug 2023 16:30:51 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Brian Norris <briannorris@chromium.org>,
-        Kalle Valo <kvalo@kernel.org>,
-        Amitkumar Karwar <akarwar@marvell.com>,
-        Xinming Hu <huxm@marvell.com>, Dan Williams <dcbw@redhat.com>
-Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH 1/3] wifi: mwifiex: Fix tlv_buf_left calculation
-Message-ID: <698dc480d939e3ae490140db5c2f36eb84093594.1692829410.git.gustavoars@kernel.org>
-References: <cover.1692829410.git.gustavoars@kernel.org>
+        Wed, 23 Aug 2023 18:46:42 -0400
+X-Greylist: delayed 902 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 23 Aug 2023 15:46:40 PDT
+Received: from s1-ba86.socketlabs.email-od.com (s1-ba86.socketlabs.email-od.com [142.0.186.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F68DA8
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 15:46:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; d=email-od.com;i=@email-od.com;s=dkim;
+        c=relaxed/relaxed; q=dns/txt; t=1692830800; x=1695422800;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc:to:from:x-thread-info:subject:to:from:cc:reply-to;
+        bh=zSoy2eKylq3nOMR4MnNQX6r3SCc8r27eRGxcW46pl3g=;
+        b=g1fqYAv/CfGHLHiP5pjh9IdBNJNZwvWxLwqaAWzPcId5HuJ6Rg0FzCeq5kwWNQkki+5+NoHVaTSBLxBSpq7UBdELrZvh0hyHpvlJHprvxZOmX2QgZ0TMJ+Exba2hijccai9hLPG74+/gyi+jQGngssdjivxL00XSYdp0/PD9Sys=
+X-Thread-Info: NDUwNC4xMi4xNWZkOTAwMDE4MTM2OTkubGludXgta2VybmVsPXZnZXIua2VybmVsLm9yZw==
+Received: from r1.us-east-1.aws.in.socketlabs.com (r1.us-east-1.aws.in.socketlabs.com [142.0.191.1]) by mxrs4.email-od.com
+        with ESMTP(version=Tls12 cipher=Aes256 bits=256); Wed, 23 Aug 2023 18:31:37 -0400
+Received: from nalramli.com (d14-69-55-117.try.wideopenwest.com [69.14.117.55]) by r1.us-east-1.aws.in.socketlabs.com
+        with ESMTP; Wed, 23 Aug 2023 18:31:24 -0400
+Received: from localhost.localdomain (d14-69-55-117.try.wideopenwest.com [69.14.117.55])
+        by nalramli.com (Postfix) with ESMTPS id EEDA62CE0018;
+        Wed, 23 Aug 2023 18:31:23 -0400 (EDT)
+From:   "Nabil S. Alramli" <dev@nalramli.com>
+To:     netdev@vger.kernel.org, kuba@kernel.org, davem@davemloft.net,
+        saeedm@nvidia.com, tariqt@nvidia.com, linux-kernel@vger.kernel.org,
+        leon@kernel.org
+Cc:     jdamato@fastly.com, nalramli@fastly.com,
+        "Nabil S. Alramli" <dev@nalramli.com>
+Subject: [net-next RFC 0/1] mlx5: support per queue coalesce settings
+Date:   Wed, 23 Aug 2023 18:31:20 -0400
+Message-Id: <20230823223121.58676-1-dev@nalramli.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1692829410.git.gustavoars@kernel.org>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-13.3 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_IADB_DK,RCVD_IN_IADB_LISTED,
+        RCVD_IN_IADB_OPTIN,RCVD_IN_IADB_RDNS,RCVD_IN_IADB_SENDERID,
+        RCVD_IN_IADB_SPF,RCVD_IN_IADB_VOUCHED,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In a TLV encoding scheme, the Length part represents the length after
-the header containing the values for type and length. In this case,
-`tlv_len` should be:
+Hello,
 
-tlv_len == (sizeof(*tlv_rxba) - 1) - sizeof(tlv_rxba->header) + tlv_bitmap_len
+I am Submitting this as an RFC to get feedback and to find out if the fol=
+ks
+at Mellanox would accept this change.
 
-Notice that the `- 1` accounts for the one-element array `bitmap`, which
-1-byte size is already included in `sizeof(*tlv_rxba)`.
+Currently, only gobal coalescing configuration queries or changes are
+supported in the `mlx5` driver. However, per-queue operations are not, an=
+d
+result in `EOPNOTSUPP` errors when attempted with `ethtool`. This patch
+adds support for per-queue coalesce operations, with a caveat described
+below.
 
-So, if the above is correct, there is a double-counting of some members
-in `struct mwifiex_ie_types_rxba_sync`, when `tlv_buf_left` and `tmp`
-are calculated:
+Here's an example use case:
 
-968                 tlv_buf_left -= (sizeof(*tlv_rxba) + tlv_len);
-969                 tmp = (u8 *)tlv_rxba + tlv_len + sizeof(*tlv_rxba);
+- An mlx5 NIC is configured with 8 queues, each queue has its IRQ pinned
+  to a unique CPU.
+- Two custom RSS contexts are created: context 1 and context 2. Each
+  context has a different set of queues where flows are distributed. For
+  example, context 1 may distribute flows to queues 0-3, and context 2 ma=
+y
+  distribute flows to queues 4-7.
+- A series of ntuple filters are installed which direct matching flows to
+  RSS contexts. For example, perhaps port 80 is directed to context 1 and
+  port 443 to context 2.
+- Applications which receive network data associated with either context
+  are pinned to the CPUs where the queues in the matching context have
+  their IRQs pinned to maximize locality.
 
-in specific, members:
+The apps themselves, however, may have different requirements on latency =
+vs
+CPU usage and so setting the per queue IRQ coalesce values would be very
+helpful.
 
-drivers/net/wireless/marvell/mwifiex/fw.h:777
- 777         u8 mac[ETH_ALEN];
- 778         u8 tid;
- 779         u8 reserved;
- 780         __le16 seq_num;
- 781         __le16 bitmap_len;
+This patch would support this, with the caveat that DIM mode changes per
+queue are not supported. DIM mode can only be changed NIC-wide. This is
+because in the mlx5 driver, global operations that change the state of
+adaptive-ex or adaptive-tx require a reset. So in the case of per-queue, =
+we
+reject such requests. This was done in the interest of simplicity for thi=
+s
+RFC as setting the DIM mode per queue appears to require significant
+changes to mlx5 to be able to preserve the state of the indvidual channel=
+s
+through a reset.
 
-This is clearly wrong, and affects the subsequent decoding of data from
-`event_buf` through `tlv_rxba`:
+IMO, if a user is going to set per-queue coalesce settings it might be
+reasonable to assume that they will disable adaptive rx/tx NIC wide first
+and then go through and apply their desired per-queue settings.
 
-970                 tlv_rxba = (struct mwifiex_ie_types_rxba_sync *)tmp;
+Here's an example:
 
-Fix this by using `sizeof(tlv_rxba->header)` instead of `sizeof(*tlv_rxba)`
-in the calculation of `tlv_buf_left` and `tmp`.
+$ ethtool --per-queue eth0 queue_mask 0x4 --show-coalesce
+Queue: 2
+Adaptive RX: on  TX: on
+stats-block-usecs: 0
+sample-interval: 0
+pkt-rate-low: 0
+pkt-rate-high: 0
 
-This results in the following binary differences before/after changes:
+rx-usecs: 8
+rx-frames: 128
+...
 
-| drivers/net/wireless/marvell/mwifiex/11n_rxreorder.o
-| @@ -4698,11 +4698,11 @@
-|                 tlv_buf_left -= (sizeof(tlv_rxba->header) + tlv_len);
-| -    1da7:      lea    -0x11(%rbx),%edx
-| +    1da7:      lea    -0x4(%rbx),%edx
-|      1daa:      movzwl %bp,%eax
-|  drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c:969
-|                 tmp = (u8 *)tlv_rxba  + sizeof(tlv_rxba->header) + tlv_len;
-| -    1dad:      lea    0x11(%r15,%rbp,1),%r15
-| +    1dad:      lea    0x4(%r15,%rbp,1),%r15
-|  drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c:968
-|                 tlv_buf_left -= (sizeof(tlv_rxba->header) + tlv_len);
-|      1db2:      mov    %edx,%ebx
+Now, let's try to set adaptive-rx off rx-usecs 16 for queue 2:
 
-The above reflects the desired change: avoid counting 13 too bytes;
-which is the total size of the double-counted members in
-`struct mwifiex_ie_types_rxba_sync`:
+$ sudo ethtool --per-queue eth0 queue_mask 0x4 --coalesce adaptive-rx off=
+ \
+  rx-usecs 16
+Cannot set device per queue parameters: Operation not supported
 
-$ pahole -C mwifiex_ie_types_rxba_sync drivers/net/wireless/marvell/mwifiex/11n_rxreorder.o
-struct mwifiex_ie_types_rxba_sync {
-	struct mwifiex_ie_types_header header;           /*     0     4 */
+This is not supported; adaptive-rx must be disabled NIC wide first:
 
-     |-----------------------------------------------------------------------
-     |  u8                         mac[6];               /*     4     6 */  |
-     |	u8                         tid;                  /*    10     1 */  |
-     |  u8                         reserved;             /*    11     1 */  |
-     | 	__le16                     seq_num;              /*    12     2 */  |
-     | 	__le16                     bitmap_len;           /*    14     2 */  |
-     |  u8                         bitmap[1];            /*    16     1 */  |
-     |----------------------------------------------------------------------|
-								  | 13 bytes|
-								  -----------
+$ sudo ethtool -C eth0 adaptive-rx off
 
-	/* size: 17, cachelines: 1, members: 7 */
-	/* last cacheline: 17 bytes */
-} __attribute__((__packed__));
+And now, queue_mask 0x4 can be applied to set rx-usecs:
 
-Fixes: 99ffe72cdae4 ("mwifiex: process rxba_sync event")
-Cc: stable@vger.kernel.org
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+$ sudo ethtool --per-queue eth0 queue_mask 0x4 --coalesce rx-usecs 16
+$ ethtool --per-queue eth0 queue_mask 0x4 --show-coalesce
+Queue: 2
+Adaptive RX: off  TX: on
+stats-block-usecs: 0
+sample-interval: 0
+pkt-rate-low: 0
+pkt-rate-high: 0
 
-diff --git a/drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c b/drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c
-index 391793a16adc..d1d3632a3ed7 100644
---- a/drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c
-+++ b/drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c
-@@ -965,8 +965,8 @@ void mwifiex_11n_rxba_sync_event(struct mwifiex_private *priv,
- 			}
- 		}
- 
--		tlv_buf_left -= (sizeof(*tlv_rxba) + tlv_len);
--		tmp = (u8 *)tlv_rxba + tlv_len + sizeof(*tlv_rxba);
-+		tlv_buf_left -= (sizeof(tlv_rxba->header) + tlv_len);
-+		tmp = (u8 *)tlv_rxba  + sizeof(tlv_rxba->header) + tlv_len;
- 		tlv_rxba = (struct mwifiex_ie_types_rxba_sync *)tmp;
- 	}
- }
--- 
-2.34.1
+rx-usecs: 16
+rx-frames: 32
+...
+
+Previously a global `struct mlx5e_params` stored the options in
+`struct mlx5e_priv.channels.params`. That was preserved, but a channel-
+specific instance was added as well, in `struct mlx5e_channel.params`.
+
+Note that setting global coalescing options will set the individual
+channel settings to the same values as well.
+
+Is Mellanox open to this change? What would be needed to get something li=
+ke
+this accepted?
+
+Best Regards,
+
+Nabil S. Alramli (1):
+  mlx5: Add {get,set}_per_queue_coalesce()
+
+ drivers/net/ethernet/mellanox/mlx5/core/en.h  |   3 +-
+ .../ethernet/mellanox/mlx5/core/en_ethtool.c  | 212 ++++++++++++++----
+ .../net/ethernet/mellanox/mlx5/core/en_main.c |   4 +
+ 3 files changed, 173 insertions(+), 46 deletions(-)
+
+--=20
+2.35.1
 
