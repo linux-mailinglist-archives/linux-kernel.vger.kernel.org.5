@@ -2,210 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90C37785108
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 09:00:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A8F37850E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 08:55:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233079AbjHWHAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 03:00:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33080 "EHLO
+        id S233046AbjHWGzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 02:55:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230323AbjHWHAk (ORCPT
+        with ESMTP id S232983AbjHWGzy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 03:00:40 -0400
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F446E7;
-        Wed, 23 Aug 2023 00:00:35 -0700 (PDT)
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id A5AE710000E;
-        Wed, 23 Aug 2023 10:00:32 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru A5AE710000E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
-        s=mail; t=1692774032;
-        bh=SRJZujbowiyE4xrK91RwKf1qOYluLzScsl3Xa81A+dk=;
-        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-        b=BffrOigH5z4JgZW9GxRwHqrTqdiFOY9UMOPXHdXeZoQmrBL7PCdgk9cLxNDTj/M3/
-         9vvv6yyNgRR+GtStPHapPTzmCo5vT8Ot4J2RZakcVicaNAHkD7XwwtgIbQyd2wSypI
-         fyVUAq7wiFOgC3ljf/pT9JLAOeTjVMa5xPDGbVXJC7JcxbIjwKm0NUKY+b2ZjFR9eb
-         NfHzXvGkHUSq3lkp4+a4Rv80VZJGGKgTCfbRNjNIQ0XwPyq6Cec+phHaGUtfnv+POb
-         09SBHOSIeX4S+VBBW3eD84W+DkCkBTz9ZbhAe1tZ+OC+ARY0esgXG0nL8iW9ByVYnI
-         eP4xtaFdr/3pQ==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Wed, 23 Aug 2023 10:00:30 +0300 (MSK)
-Received: from [192.168.0.106] (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Wed, 23 Aug 2023 10:00:25 +0300
-Message-ID: <0e23cec7-0e9a-ac8d-e8b6-536a5c3d4b2e@sberdevices.ru>
-Date:   Wed, 23 Aug 2023 09:54:26 +0300
+        Wed, 23 Aug 2023 02:55:54 -0400
+Received: from mail-vs1-xe29.google.com (mail-vs1-xe29.google.com [IPv6:2607:f8b0:4864:20::e29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C35BE46
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 23:55:51 -0700 (PDT)
+Received: by mail-vs1-xe29.google.com with SMTP id ada2fe7eead31-447c7607b72so2140617137.1
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 23:55:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692773750; x=1693378550;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=PLfKs0vxuqFqgLcCcFNFpi2DXG8BlcoLy65tZmmHn4s=;
+        b=C9fd660wNdFLLdlS2TW0H+x8soH+wvy9kheDYuP5m9XABGCmyBn+reV7925EIRPp6a
+         7AXhimwLYPR08T0phs8tN2Be1X/caQvrUiIh7KJQkIVF3yNTS8uOcP+sLGxHyFyFBu8l
+         xU8E0DDwLqTKgfqqoQbFY5frZwkr5QbOO5pEBLxT48KoHVlD3ZFag8jq85yJXibiEzVQ
+         5qt6mpv/gxdaZ7JHHKfhk5u8rRIV7ejeu8wgLm+i9LqTSwJGwLcgtZ1JR7kNDaYgf3Kz
+         iC76tFy5F31ctUtAJwoBD6OExWePXojnDkc54iOiQVjbrf61yF8v3XHpwi3C3uXoO1Q7
+         9Spw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692773750; x=1693378550;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PLfKs0vxuqFqgLcCcFNFpi2DXG8BlcoLy65tZmmHn4s=;
+        b=IGzK3AkTySveOgMDQQgeXdjLj/LfpmVzWGazRri2BPrERNKp5qHUqULzH7RD9UVzTx
+         ZrXIDoeHzUmv9iL/hM+ch4j2vtiFHZhtPsFj6TCh7PHacMi3be23vGSGu1uVuZhvibLE
+         tXYjRfS9Hq9SduTWTrZ5MtslzEkhUQ/KWmpL+KShetBvfjkjum5pWlo4MQN9dlUADuXc
+         aH2Dqs9SSqyCgYzcmRanZ/EHIjj1FFyIErX3FxE/NsQ42bdG7/Oosc75CSG5AMJjUFwS
+         q+tqzV6JoKXRdcXw9kyyW0QXMJXESFYzsljpEAzUeGzOn/I2SNBlwE4Qbw7dYRgUJVqb
+         1QQw==
+X-Gm-Message-State: AOJu0YwL9USjDhjk0KG0rld/tUfxMXusgmQlVldE2m+G7kLNvVGwwlJz
+        DAk+5frl0+DY3SSXGsorePezm69qhaqMHjXYGXRQRlbM1kZPLXn9vMg=
+X-Google-Smtp-Source: AGHT+IHZ6wzYTYuJHshwpDW0Nk/qU4m6YVHI11y0vAqL8DLXYwnKrO6DRhb4Erf21/HfbRs2sqC1d+WekK+UVKjFJCE=
+X-Received: by 2002:a05:6102:354f:b0:447:55b0:bceb with SMTP id
+ e15-20020a056102354f00b0044755b0bcebmr10299298vss.0.1692773750399; Tue, 22
+ Aug 2023 23:55:50 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH net-next v6 2/4] vsock/virtio: support to send non-linear
- skb
-Content-Language: en-US
-To:     Paolo Abeni <pabeni@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>
-CC:     <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@sberdevices.ru>, <oxffffaa@gmail.com>
-References: <20230814212720.3679058-1-AVKrasnov@sberdevices.ru>
- <20230814212720.3679058-3-AVKrasnov@sberdevices.ru>
- <85ff931ea180e19ae3df83367cf1e7cac99fa0d8.camel@redhat.com>
-From:   Arseniy Krasnov <avkrasnov@sberdevices.ru>
-In-Reply-To: <85ff931ea180e19ae3df83367cf1e7cac99fa0d8.camel@redhat.com>
+References: <20230822112933.1550062-1-sumit.garg@linaro.org> <20230822125555.GA82256@rayden>
+In-Reply-To: <20230822125555.GA82256@rayden>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Wed, 23 Aug 2023 12:25:39 +0530
+Message-ID: <CAFA6WYPy=yxGg1HbT+ipWJFpxiJeUGK6BSgMhtRPd=zmKef-cw@mail.gmail.com>
+Subject: Re: [PATCH] KEYS: trusted: tee: Refactor register SHM usage
+To:     Jens Wiklander <jens.wiklander@linaro.org>
+Cc:     linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        jarkko@kernel.org, jejb@linux.ibm.com, zohar@linux.ibm.com,
+        sudeep.holla@arm.com, achin.gupta@arm.com,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 179391 [Aug 23 2023]
-X-KSMG-AntiSpam-Version: 5.9.59.0
-X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 527 527 5bb611be2ca2baa31d984ccbf4ef4415504fc308, {Tracking_smtp_not_equal_from}, {Tracking_from_domain_doesnt_match_to}, p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;sberdevices.ru:7.1.1,5.0.1;100.64.160.123:7.1.2;127.0.0.199:7.1.2;salutedevices.com:7.1.1, FromAlignment: n, {Tracking_smtp_domain_mismatch}, {Tracking_smtp_domain_2level_mismatch}, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/08/23 04:58:00 #21681850
-X-KSMG-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 22 Aug 2023 at 18:25, Jens Wiklander <jens.wiklander@linaro.org> wrote:
+>
+> On Tue, Aug 22, 2023 at 04:59:33PM +0530, Sumit Garg wrote:
+> > The OP-TEE driver using the old SMC based ABI permits overlapping shared
+> > buffers, but with the new FF-A based ABI each physical page may only
+> > be registered once.
+> >
+> > As the key and blob buffer are allocated adjancently, there is no need
+> > for redundant register shared memory invocation. Also, it is incompatibile
+> > with FF-A based ABI limitation. So refactor register shared memory
+> > implementation to use only single invocation to register both key and blob
+> > buffers.
+> >
+> > Fixes: 4615e5a34b95 ("optee: add FF-A support")
+> > Reported-by: Jens Wiklander <jens.wiklander@linaro.org>
+> > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> > ---
+> >  security/keys/trusted-keys/trusted_tee.c | 64 ++++++++----------------
+> >  1 file changed, 20 insertions(+), 44 deletions(-)
+> >
+> > diff --git a/security/keys/trusted-keys/trusted_tee.c b/security/keys/trusted-keys/trusted_tee.c
+> > index ac3e270ade69..aa3d477de6db 100644
+> > --- a/security/keys/trusted-keys/trusted_tee.c
+> > +++ b/security/keys/trusted-keys/trusted_tee.c
+> > @@ -65,24 +65,16 @@ static int trusted_tee_seal(struct trusted_key_payload *p, char *datablob)
+> >       int ret;
+> >       struct tee_ioctl_invoke_arg inv_arg;
+> >       struct tee_param param[4];
+> > -     struct tee_shm *reg_shm_in = NULL, *reg_shm_out = NULL;
+> > +     struct tee_shm *reg_shm = NULL;
+> >
+> >       memset(&inv_arg, 0, sizeof(inv_arg));
+> >       memset(&param, 0, sizeof(param));
+> >
+> > -     reg_shm_in = tee_shm_register_kernel_buf(pvt_data.ctx, p->key,
+> > -                                              p->key_len);
+> > -     if (IS_ERR(reg_shm_in)) {
+> > -             dev_err(pvt_data.dev, "key shm register failed\n");
+> > -             return PTR_ERR(reg_shm_in);
+> > -     }
+> > -
+> > -     reg_shm_out = tee_shm_register_kernel_buf(pvt_data.ctx, p->blob,
+> > -                                               sizeof(p->blob));
+> > -     if (IS_ERR(reg_shm_out)) {
+> > -             dev_err(pvt_data.dev, "blob shm register failed\n");
+> > -             ret = PTR_ERR(reg_shm_out);
+> > -             goto out;
+> > +     reg_shm = tee_shm_register_kernel_buf(pvt_data.ctx, p->key,
+> > +                                           sizeof(p->key) + sizeof(p->blob));
+>
+> This is somewhat fragile. What if struct trusted_key_payload has a small
+> unexpected change in layout?
 
+key and blob buffers are just two adjacent fixed sized byte arrays. So
+I am not worried here as long as they stay adjacent (which has been
+the case since trusted keys were introduced in the kernel).
 
-On 22.08.2023 11:16, Paolo Abeni wrote:
-> Hi,
-> 
-> I'm sorry for the long delay here. I was OoO in the past few weeks.
-> 
-> On Tue, 2023-08-15 at 00:27 +0300, Arseniy Krasnov wrote:
->> For non-linear skb use its pages from fragment array as buffers in
->> virtio tx queue. These pages are already pinned by 'get_user_pages()'
->> during such skb creation.
->>
->> Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
->> Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
->> ---
->>  Changelog:
->>  v2 -> v3:
->>   * Comment about 'page_to_virt()' is updated. I don't remove R-b,
->>     as this change is quiet small I guess.
->>
->>  net/vmw_vsock/virtio_transport.c | 41 +++++++++++++++++++++++++++-----
->>  1 file changed, 35 insertions(+), 6 deletions(-)
->>
->> diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
->> index e95df847176b..7bbcc8093e51 100644
->> --- a/net/vmw_vsock/virtio_transport.c
->> +++ b/net/vmw_vsock/virtio_transport.c
->> @@ -100,7 +100,9 @@ virtio_transport_send_pkt_work(struct work_struct *work)
->>  	vq = vsock->vqs[VSOCK_VQ_TX];
->>  
->>  	for (;;) {
->> -		struct scatterlist hdr, buf, *sgs[2];
->> +		/* +1 is for packet header. */
->> +		struct scatterlist *sgs[MAX_SKB_FRAGS + 1];
->> +		struct scatterlist bufs[MAX_SKB_FRAGS + 1];
-> 
-> Note that MAX_SKB_FRAGS depends on a config knob (CONFIG_MAX_SKB_FRAGS)
-> and valid/reasonable values are up to 45. The total stack usage can be
-> pretty large (~700 bytes).
-> 
-> As this is under the vsk tx lock, have you considered moving such data
-> in the virtio_vsock struct?
+-Sumit
 
-I think yes, there will be no problem if these temporary variables will be moved
-into this global struct. I'll add comment about this reason.
-
-> 
->>  		int ret, in_sg = 0, out_sg = 0;
->>  		struct sk_buff *skb;
->>  		bool reply;
->> @@ -111,12 +113,39 @@ virtio_transport_send_pkt_work(struct work_struct *work)
->>  
->>  		virtio_transport_deliver_tap_pkt(skb);
->>  		reply = virtio_vsock_skb_reply(skb);
->> +		sg_init_one(&bufs[out_sg], virtio_vsock_hdr(skb),
->> +			    sizeof(*virtio_vsock_hdr(skb)));
->> +		sgs[out_sg] = &bufs[out_sg];
->> +		out_sg++;
->> +
->> +		if (!skb_is_nonlinear(skb)) {
->> +			if (skb->len > 0) {
->> +				sg_init_one(&bufs[out_sg], skb->data, skb->len);
->> +				sgs[out_sg] = &bufs[out_sg];
->> +				out_sg++;
->> +			}
->> +		} else {
->> +			struct skb_shared_info *si;
->> +			int i;
->> +
->> +			si = skb_shinfo(skb);
-> 
-> This assumes that the paged skb does not carry any actual data in the
-> head buffer (only the header). Is that constraint enforced somewhere
-> else? Otherwise a
-> 
-> 	WARN_ON_ONCE(skb_headlen(skb) > sizeof(*virtio_vsock_hdr(skb))
-> 
-> could be helpful to catch early possible bugs.
-
-Yes, such skbs have data only in paged part, while linear buffer contains only
-header. Ok, let's add this warning here to prevent future bugs.
-
-Thanks, Arseniy
-
-> 
-> Thanks!
-> 
-> Paolo
-> 
->> +
->> +			for (i = 0; i < si->nr_frags; i++) {
->> +				skb_frag_t *skb_frag = &si->frags[i];
->> +				void *va;
->>  
->> -		sg_init_one(&hdr, virtio_vsock_hdr(skb), sizeof(*virtio_vsock_hdr(skb)));
->> -		sgs[out_sg++] = &hdr;
->> -		if (skb->len > 0) {
->> -			sg_init_one(&buf, skb->data, skb->len);
->> -			sgs[out_sg++] = &buf;
->> +				/* We will use 'page_to_virt()' for the userspace page
->> +				 * here, because virtio or dma-mapping layers will call
->> +				 * 'virt_to_phys()' later to fill the buffer descriptor.
->> +				 * We don't touch memory at "virtual" address of this page.
->> +				 */
->> +				va = page_to_virt(skb_frag->bv_page);
->> +				sg_init_one(&bufs[out_sg],
->> +					    va + skb_frag->bv_offset,
->> +					    skb_frag->bv_len);
->> +				sgs[out_sg] = &bufs[out_sg];
->> +				out_sg++;
->> +			}
->>  		}
->>  
->>  		ret = virtqueue_add_sgs(vq, sgs, out_sg, in_sg, skb, GFP_KERNEL);
-> 
+>
+> Thanks,
+> Jens
+>
+> > +     if (IS_ERR(reg_shm)) {
+> > +             dev_err(pvt_data.dev, "shm register failed\n");
+> > +             return PTR_ERR(reg_shm);
+> >       }
+> >
+> >       inv_arg.func = TA_CMD_SEAL;
+> > @@ -90,13 +82,13 @@ static int trusted_tee_seal(struct trusted_key_payload *p, char *datablob)
+> >       inv_arg.num_params = 4;
+> >
+> >       param[0].attr = TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_INPUT;
+> > -     param[0].u.memref.shm = reg_shm_in;
+> > +     param[0].u.memref.shm = reg_shm;
+> >       param[0].u.memref.size = p->key_len;
+> >       param[0].u.memref.shm_offs = 0;
+> >       param[1].attr = TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_OUTPUT;
+> > -     param[1].u.memref.shm = reg_shm_out;
+> > +     param[1].u.memref.shm = reg_shm;
+> >       param[1].u.memref.size = sizeof(p->blob);
+> > -     param[1].u.memref.shm_offs = 0;
+> > +     param[1].u.memref.shm_offs = sizeof(p->key);
+> >
+> >       ret = tee_client_invoke_func(pvt_data.ctx, &inv_arg, param);
+> >       if ((ret < 0) || (inv_arg.ret != 0)) {
+> > @@ -107,11 +99,7 @@ static int trusted_tee_seal(struct trusted_key_payload *p, char *datablob)
+> >               p->blob_len = param[1].u.memref.size;
+> >       }
+> >
+> > -out:
+> > -     if (reg_shm_out)
+> > -             tee_shm_free(reg_shm_out);
+> > -     if (reg_shm_in)
+> > -             tee_shm_free(reg_shm_in);
+> > +     tee_shm_free(reg_shm);
+> >
+> >       return ret;
+> >  }
+> > @@ -124,24 +112,16 @@ static int trusted_tee_unseal(struct trusted_key_payload *p, char *datablob)
+> >       int ret;
+> >       struct tee_ioctl_invoke_arg inv_arg;
+> >       struct tee_param param[4];
+> > -     struct tee_shm *reg_shm_in = NULL, *reg_shm_out = NULL;
+> > +     struct tee_shm *reg_shm = NULL;
+> >
+> >       memset(&inv_arg, 0, sizeof(inv_arg));
+> >       memset(&param, 0, sizeof(param));
+> >
+> > -     reg_shm_in = tee_shm_register_kernel_buf(pvt_data.ctx, p->blob,
+> > -                                              p->blob_len);
+> > -     if (IS_ERR(reg_shm_in)) {
+> > -             dev_err(pvt_data.dev, "blob shm register failed\n");
+> > -             return PTR_ERR(reg_shm_in);
+> > -     }
+> > -
+> > -     reg_shm_out = tee_shm_register_kernel_buf(pvt_data.ctx, p->key,
+> > -                                               sizeof(p->key));
+> > -     if (IS_ERR(reg_shm_out)) {
+> > -             dev_err(pvt_data.dev, "key shm register failed\n");
+> > -             ret = PTR_ERR(reg_shm_out);
+> > -             goto out;
+> > +     reg_shm = tee_shm_register_kernel_buf(pvt_data.ctx, p->key,
+> > +                                           sizeof(p->key) + sizeof(p->blob));
+> > +     if (IS_ERR(reg_shm)) {
+> > +             dev_err(pvt_data.dev, "shm register failed\n");
+> > +             return PTR_ERR(reg_shm);
+> >       }
+> >
+> >       inv_arg.func = TA_CMD_UNSEAL;
+> > @@ -149,11 +129,11 @@ static int trusted_tee_unseal(struct trusted_key_payload *p, char *datablob)
+> >       inv_arg.num_params = 4;
+> >
+> >       param[0].attr = TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_INPUT;
+> > -     param[0].u.memref.shm = reg_shm_in;
+> > +     param[0].u.memref.shm = reg_shm;
+> >       param[0].u.memref.size = p->blob_len;
+> > -     param[0].u.memref.shm_offs = 0;
+> > +     param[0].u.memref.shm_offs = sizeof(p->key);
+> >       param[1].attr = TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_OUTPUT;
+> > -     param[1].u.memref.shm = reg_shm_out;
+> > +     param[1].u.memref.shm = reg_shm;
+> >       param[1].u.memref.size = sizeof(p->key);
+> >       param[1].u.memref.shm_offs = 0;
+> >
+> > @@ -166,11 +146,7 @@ static int trusted_tee_unseal(struct trusted_key_payload *p, char *datablob)
+> >               p->key_len = param[1].u.memref.size;
+> >       }
+> >
+> > -out:
+> > -     if (reg_shm_out)
+> > -             tee_shm_free(reg_shm_out);
+> > -     if (reg_shm_in)
+> > -             tee_shm_free(reg_shm_in);
+> > +     tee_shm_free(reg_shm);
+> >
+> >       return ret;
+> >  }
+> > --
+> > 2.34.1
+> >
