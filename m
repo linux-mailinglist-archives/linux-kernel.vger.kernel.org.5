@@ -2,195 +2,296 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54DE378581B
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 14:53:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 149F378582F
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 14:56:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235201AbjHWMxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 08:53:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55662 "EHLO
+        id S235269AbjHWM4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 08:56:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232211AbjHWMxO (ORCPT
+        with ESMTP id S235230AbjHWMz7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 08:53:14 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0484AE47
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 05:53:13 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-56a3e6bce68so2004290a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 05:53:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692795192; x=1693399992;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=9bhZs1e5q1KWpzONagveUUIWGVxIIkKWBWmcf7t0PXI=;
-        b=lbFGqb76MbHiV3fYCPFXBp/EBcceku/rDW4uSg3/3+oDmJUEvqnUBAqY2Dt4o6hCko
-         7cjJEoznspMnVuspRRnh9lBXAJKK/OfL6jgsFggULNAiZaKSNyy50vAG74f9Pb04NZ6M
-         +4ODoHFqPXVZz2J8uRV/7/ADTTgAz0yfBOIWoDEQR/Ye8km2qij2vbWkdzOuoJdkDo4W
-         /xceDVgim7dfE/2ZDmjJ7qoN1xuxdI10Jh0MZcLbJgwI7vREjrCmrtx/6YMkm/K1rtpQ
-         xnQPiLu1xNO3Nhj2yd1+4lZxYv/+aHa4EbBUPLkU+WYS7xceW9uImh/k6m/I2vpMc0eS
-         TxWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692795192; x=1693399992;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9bhZs1e5q1KWpzONagveUUIWGVxIIkKWBWmcf7t0PXI=;
-        b=E6BCf74WSFmFfxd2/XCwDZEG/ndBtBsuOMPGnMTZxC7P5nab/Aasgur3nZYdnbRo4R
-         Pxy0G+uaUGVXzAaRE6Ujevs1SJ89iG/kV7rzP8Rxpmj1vHpu1UxKLlLuh2PTqVKF+Ybo
-         I7xPAYscykbBzgGkTIEqAVXKtD4Jt4xoz1/mr7B5MM5/fCyMMHD3YdQQi8zssImTmH6+
-         yFr8xdNTzyvCtNl2yhyEY+7fFuHMo5cMtcaNgvPZyw++43zP/f5lnjyl9juuTNhaurNa
-         4/wQ6if1BTCbdXVRIMvjBi7vEQzEReJtp5WJbfj6u0e3VcJBu5FX5M4KBtqwf32yRGhK
-         lsEg==
-X-Gm-Message-State: AOJu0YzrBBZ5B8VdHnQOcBZ1ZC6u3MOIypwuMJGEpdDhigJf2WXBsfiO
-        ElDrXoFIX+rFmdAcJnhUiuM3RRon7Tw=
-X-Google-Smtp-Source: AGHT+IFk2vhMke3lTfoMgYmxrcS833teoMLDPiChgJfNhJf7lvGeDbLw4sjXmkabTDM7eIzE43o/DQ==
-X-Received: by 2002:a17:90b:287:b0:268:b682:23da with SMTP id az7-20020a17090b028700b00268b68223damr9327465pjb.34.1692795192289;
-        Wed, 23 Aug 2023 05:53:12 -0700 (PDT)
-Received: from ubuntu.myguest.virtualbox.org ([122.162.51.13])
-        by smtp.gmail.com with ESMTPSA id t5-20020a17090a024500b00262e604724dsm12209797pje.50.2023.08.23.05.53.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Aug 2023 05:53:11 -0700 (PDT)
-Date:   Wed, 23 Aug 2023 18:23:07 +0530
-From:   Pavan Bobba <opensource206@gmail.com>
-To:     Forest Bond <forest@alittletooquiet.net>,
-        Michael Straube <straube.linux@gmail.com>,
-        Philipp Hortmann <philipp.g.hortmann@gmail.com>,
-        outreachy@lists.linux.dev
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] staging: vt6655: replace camel case by snake case
-Message-ID: <ZOYBM9t0agzTKWwz@ubuntu.myguest.virtualbox.org>
+        Wed, 23 Aug 2023 08:55:59 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2799CD2
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 05:55:56 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a02:8010:65b5:0:1ac0:4dff:feee:236a])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: alarumbe)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 210D0660719F;
+        Wed, 23 Aug 2023 13:55:55 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1692795355;
+        bh=lgOgN139uxXcjd6RNEem+LPADW5ZrfVkqlencwM/hcY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lwLLbsCR4KJ7AEjjSqtX/ExHd20yjSh20cvySWpzsgQXZS7LrpGdW3XZaAp0Ap2Mk
+         6kF/3slwW5h3hTA8V+RbiLLxPTvNbGxiq8Bd+fkdS+Uqp5xXS5K5w0vmDDKeu8LzTG
+         OpJKXw9HY+Zvv4yUo/Jdp/b354UTRvK9ybFQco8j42D4m7moeWgZVuq/qt72gVcwdX
+         0+1sIFk+apDOKiGUL7hfsDZny/HpwVBKSwcYkKXNA51u5+wJyuUqMmkc4rPCfPbbt+
+         3WA0nlvsUhccFfD/4d+gDduZ8vq1HTTFF4vs+brLizmwCfqBpo3zC+bc3jJm+SX6rp
+         4Dy7Iq/8Ah2dA==
+Date:   Wed, 23 Aug 2023 13:55:52 +0100
+From:   =?utf-8?Q?Adri=C3=A1n?= Larumbe <adrian.larumbe@collabora.com>
+To:     Steven Price <steven.price@arm.com>
+Cc:     robh@kernel.org, airlied@gmail.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, kernel@collabora.com,
+        linux-kernel@vger.kernel.org,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        healych@amazon.com
+Subject: Re: [PATCH 1/2] drm/panfrost: Add fdinfo support to Panfrost
+Message-ID: <6hxuw437w4vclpho2tekexj2bud55zvaduurjklg3x4lcpekch@ugroq7daqu5v>
+References: <20230808222240.1016623-1-adrian.larumbe@collabora.com>
+ <20230808222240.1016623-2-adrian.larumbe@collabora.com>
+ <bb52b872-e41b-3894-285e-b52cfc849782@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <bb52b872-e41b-3894-285e-b52cfc849782@arm.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-1.Conversion of formal argument names from camel case to snake case for below functions:
-      a.SROMvReadAllContents
-      b.SROMvReadEtherAddress
+Hi Steven, thanks for your feedback.
 
-2.Conversion of local variable names from camel case to snake case in function SROMvReadEtherAddress
+On 21.08.2023 16:56, Steven Price wrote:
+>> We calculate the amount of time the GPU spends on a job with ktime samples,
+>> and then add it to the cumulative total for the open DRM file, which is
+>> what will be eventually exposed through the 'fdinfo' DRM file descriptor.
+>> 
+>> Signed-off-by: Adrián Larumbe <adrian.larumbe@collabora.com>
+>> ---
+>>  drivers/gpu/drm/panfrost/panfrost_device.c | 12 ++++++++
+>>  drivers/gpu/drm/panfrost/panfrost_device.h | 10 +++++++
+>>  drivers/gpu/drm/panfrost/panfrost_drv.c    | 32 +++++++++++++++++++++-
+>>  drivers/gpu/drm/panfrost/panfrost_job.c    |  6 ++++
+>>  drivers/gpu/drm/panfrost/panfrost_job.h    |  3 ++
+>>  5 files changed, 62 insertions(+), 1 deletion(-)
+>> 
+>> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.c b/drivers/gpu/drm/panfrost/panfrost_device.c
+>> index fa1a086a862b..67a5e894d037 100644
+>> --- a/drivers/gpu/drm/panfrost/panfrost_device.c
+>> +++ b/drivers/gpu/drm/panfrost/panfrost_device.c
+>> @@ -401,6 +401,18 @@ void panfrost_device_reset(struct panfrost_device *pfdev)
+>>  	panfrost_job_enable_interrupts(pfdev);
+>>  }
+>>  
+>> +struct drm_info_gpu panfrost_device_get_counters(struct panfrost_device *pfdev,
+>> +						 struct panfrost_file_priv *panfrost_priv)
+>> +{
+>> +	struct drm_info_gpu gpu_info;
+>> +
+>> +	gpu_info.engine =  panfrost_priv->elapsed_ns;
+>> +	gpu_info.cycles =  panfrost_priv->elapsed_ns * clk_get_rate(pfdev->clock);
+>> +	gpu_info.maxfreq =  clk_get_rate(pfdev->clock);
+>
+>First, calling clk_get_rate() twice here is inefficient.
+>
+>Second, I'm not sure it's really worth producing these derived values.
+>As I understand it the purpose of cycles/maxfreq is to be able to
+>provide a utilisation value which accounts for DVFS. I.e. if the GPU is
+>clocked down the utilisation of cycles/maxfreq is low even if the GPU is
+>active for the whole sample period.
 
-Issue found by checkpatch
+>What we therefore need to report is the *maximum* frequency in
+>clk_get_rate(). Also rather than just multiplying elapsed_ns by the
+>current clock rate, we need to sum up cycles over time as the clock
+>frequency changes. Alternatively it might be possible to use the actual
+>GPU register (CYCLE_COUNT_LO/CYCLE_COUNT_HI at offset 0x90,0x94) -
+>although note that this is reset when the GPU is reset.
 
-Signed-off-by: Pavan Bobba <opensource206@gmail.com>
----
- v1 -> v2: encoding of type information in variable names dropped
- 
- drivers/staging/vt6655/srom.c | 48 +++++++++++++++++------------------
- 1 file changed, 24 insertions(+), 24 deletions(-)
+I've fixed this in a second version of the patch and now calculate the maximum
+operating frequency during the driver initialisation stage in the following way:
 
-diff --git a/drivers/staging/vt6655/srom.c b/drivers/staging/vt6655/srom.c
-index ee5ca4db74dc..9c13ad089d78 100644
---- a/drivers/staging/vt6655/srom.c
-+++ b/drivers/staging/vt6655/srom.c
-@@ -59,36 +59,36 @@
- unsigned char SROMbyReadEmbedded(void __iomem *iobase,
- 				 unsigned char byContntOffset)
- {
--	unsigned short wDelay, wNoACK;
--	unsigned char byWait;
--	unsigned char byData;
--	unsigned char byOrg;
-+	unsigned short delay, noack;
-+	unsigned char wait;
-+	unsigned char data;
-+	unsigned char org;
- 
--	byData = 0xFF;
--	byOrg = ioread8(iobase + MAC_REG_I2MCFG);
-+	data = 0xFF;
-+	org = ioread8(iobase + MAC_REG_I2MCFG);
- 	/* turn off hardware retry for getting NACK */
--	iowrite8(byOrg & (~I2MCFG_NORETRY), iobase + MAC_REG_I2MCFG);
--	for (wNoACK = 0; wNoACK < W_MAX_I2CRETRY; wNoACK++) {
-+	iowrite8(org & (~I2MCFG_NORETRY), iobase + MAC_REG_I2MCFG);
-+	for (noack = 0; noack < W_MAX_I2CRETRY; noack++) {
- 		iowrite8(EEP_I2C_DEV_ID, iobase + MAC_REG_I2MTGID);
- 		iowrite8(byContntOffset, iobase + MAC_REG_I2MTGAD);
- 
- 		/* issue read command */
- 		iowrite8(I2MCSR_EEMR, iobase + MAC_REG_I2MCSR);
- 		/* wait DONE be set */
--		for (wDelay = 0; wDelay < W_MAX_TIMEOUT; wDelay++) {
--			byWait = ioread8(iobase + MAC_REG_I2MCSR);
--			if (byWait & (I2MCSR_DONE | I2MCSR_NACK))
-+		for (delay = 0; delay < W_MAX_TIMEOUT; delay++) {
-+			wait = ioread8(iobase + MAC_REG_I2MCSR);
-+			if (wait & (I2MCSR_DONE | I2MCSR_NACK))
- 				break;
- 			udelay(CB_DELAY_LOOP_WAIT);
- 		}
--		if ((wDelay < W_MAX_TIMEOUT) &&
--		    (!(byWait & I2MCSR_NACK))) {
-+		if ((delay < W_MAX_TIMEOUT) &&
-+		    (!(wait & I2MCSR_NACK))) {
- 			break;
- 		}
- 	}
--	byData = ioread8(iobase + MAC_REG_I2MDIPT);
--	iowrite8(byOrg, iobase + MAC_REG_I2MCFG);
--	return byData;
-+	data = ioread8(iobase + MAC_REG_I2MDIPT);
-+	iowrite8(org, iobase + MAC_REG_I2MCFG);
-+	return data;
- }
- 
- /*
-@@ -98,20 +98,20 @@ unsigned char SROMbyReadEmbedded(void __iomem *iobase,
-  *  In:
-  *      iobase          - I/O base address
-  *  Out:
-- *      pbyEepromRegs   - EEPROM content Buffer
-+ *      eepromregs   - EEPROM content Buffer
-  *
-  * Return Value: none
-  *
-  */
--void SROMvReadAllContents(void __iomem *iobase, unsigned char *pbyEepromRegs)
-+void SROMvReadAllContents(void __iomem *iobase, unsigned char *eepromregs)
- {
- 	int     ii;
- 
- 	/* ii = Rom Address */
- 	for (ii = 0; ii < EEP_MAX_CONTEXT_SIZE; ii++) {
--		*pbyEepromRegs = SROMbyReadEmbedded(iobase,
-+		*eepromregs = SROMbyReadEmbedded(iobase,
- 						    (unsigned char)ii);
--		pbyEepromRegs++;
-+		eepromregs++;
- 	}
- }
- 
-@@ -122,19 +122,19 @@ void SROMvReadAllContents(void __iomem *iobase, unsigned char *pbyEepromRegs)
-  *  In:
-  *      iobase          - I/O base address
-  *  Out:
-- *      pbyEtherAddress - Ethernet Address buffer
-+ *      etheraddress - Ethernet Address buffer
-  *
-  * Return Value: none
-  *
-  */
- void SROMvReadEtherAddress(void __iomem *iobase,
--			   unsigned char *pbyEtherAddress)
-+			   unsigned char *etheraddress)
- {
- 	unsigned char ii;
- 
- 	/* ii = Rom Address */
- 	for (ii = 0; ii < ETH_ALEN; ii++) {
--		*pbyEtherAddress = SROMbyReadEmbedded(iobase, ii);
--		pbyEtherAddress++;
-+		*etheraddress = SROMbyReadEmbedded(iobase, ii);
-+		etheraddress++;
- 	}
- }
--- 
-2.34.1
+unsigned long freq = ULONG_MAX;
 
+/* Find the fastest defined rate  */
+opp = dev_pm_opp_find_freq_floor(dev, &freq);
+if (IS_ERR(opp))
+	return PTR_ERR(opp);
+pfdev->features.fast_rate = freq;
+
+dev_pm_opp_put(opp);
+
+Regarding the number of cycles, sampling CYCLE_COUNT would give us the most
+accurate figure, however fdinfo must return values that are relative to the file
+being queried, whereas that register would give us a raw count for all queues.
+
+There's also the problem of clock frequencies being variable over time because
+of DVFS. To get an accurate value for the number of cycles spent in a given
+job, we would have to store clock frequencies together with their timestamps
+every time there's a rate change, and then in the job deque function traverse
+it, find the interval intersection and multiply every frequency by its
+respective length. This sounds like too much work, so I think until I can come
+up with something less complex I'm going to drop reporting of the drm-cycles
+value altogether.
+
+Although come think of it, maybe I could sample the number of cycles both at
+the beginning and end of a job and add that to an overall per-file tally. 
+
+>Finally I doubt elapsed_ns is actually what user space is expecting. The
+>GPU has multiple job slots (3, but only 2 are used in almost all cases)
+>so can be running more than one job at a time. So there's going to be
+>some double counting going on here.
+>
+>Sorry to poke holes in this, I think this would be a good feature. But
+>if we're going to return information we want it to be at least
+>reasonably correct.
+
+Thanks for pointing this out, I hadn't thought about that the same file could
+have two simultaneous jobs running at the same time.
+
+I've checked what other drivers do for reporting these values, and they print a
+separate drm-engine value for each of their execution units (render, copy,
+compute, etc).  In our case, because there are 2 or 3 queues, perhaps we should
+do the same.
+
+>Thanks,
+>
+>Steve
+>
+>> +
+>> +	return gpu_info;
+>> +}
+>> +
+>>  static int panfrost_device_resume(struct device *dev)
+>>  {
+>>  	struct panfrost_device *pfdev = dev_get_drvdata(dev);
+>> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.h b/drivers/gpu/drm/panfrost/panfrost_device.h
+>> index b0126b9fbadc..4621a2ece1bb 100644
+>> --- a/drivers/gpu/drm/panfrost/panfrost_device.h
+>> +++ b/drivers/gpu/drm/panfrost/panfrost_device.h
+>> @@ -141,6 +141,14 @@ struct panfrost_file_priv {
+>>  	struct drm_sched_entity sched_entity[NUM_JOB_SLOTS];
+>>  
+>>  	struct panfrost_mmu *mmu;
+>> +
+>> +	uint64_t elapsed_ns;
+>> +};
+>> +
+>> +struct drm_info_gpu {
+>> +	unsigned long long engine;
+>> +	unsigned long long cycles;
+>> +	unsigned int maxfreq;
+>>  };
+>>  
+>>  static inline struct panfrost_device *to_panfrost_device(struct drm_device *ddev)
+>> @@ -172,6 +180,8 @@ int panfrost_unstable_ioctl_check(void);
+>>  int panfrost_device_init(struct panfrost_device *pfdev);
+>>  void panfrost_device_fini(struct panfrost_device *pfdev);
+>>  void panfrost_device_reset(struct panfrost_device *pfdev);
+>> +struct drm_info_gpu panfrost_device_get_counters(struct panfrost_device *pfdev,
+>> +						 struct panfrost_file_priv *panfrost_priv);
+>>  
+>>  extern const struct dev_pm_ops panfrost_pm_ops;
+>>  
+>> diff --git a/drivers/gpu/drm/panfrost/panfrost_drv.c b/drivers/gpu/drm/panfrost/panfrost_drv.c
+>> index a2ab99698ca8..65fdc0e4c7cb 100644
+>> --- a/drivers/gpu/drm/panfrost/panfrost_drv.c
+>> +++ b/drivers/gpu/drm/panfrost/panfrost_drv.c
+>> @@ -3,6 +3,7 @@
+>>  /* Copyright 2019 Linaro, Ltd., Rob Herring <robh@kernel.org> */
+>>  /* Copyright 2019 Collabora ltd. */
+>>  
+>> +#include "drm/drm_file.h"
+>>  #include <linux/module.h>
+>>  #include <linux/of.h>
+>>  #include <linux/pagemap.h>
+>> @@ -267,6 +268,7 @@ static int panfrost_ioctl_submit(struct drm_device *dev, void *data,
+>>  	job->requirements = args->requirements;
+>>  	job->flush_id = panfrost_gpu_get_latest_flush_id(pfdev);
+>>  	job->mmu = file_priv->mmu;
+>> +	job->priv = file_priv;
+>>  
+>>  	slot = panfrost_job_get_slot(job);
+>>  
+>> @@ -523,7 +525,34 @@ static const struct drm_ioctl_desc panfrost_drm_driver_ioctls[] = {
+>>  	PANFROST_IOCTL(MADVISE,		madvise,	DRM_RENDER_ALLOW),
+>>  };
+>>  
+>> -DEFINE_DRM_GEM_FOPS(panfrost_drm_driver_fops);
+>> +
+>> +static void panfrost_gpu_show_fdinfo(struct panfrost_device *pfdev,
+>> +				     struct panfrost_file_priv *panfrost_priv,
+>> +				     struct drm_printer *p)
+>> +{
+>> +	struct drm_info_gpu gpu_info;
+>> +
+>> +	gpu_info = panfrost_device_get_counters(pfdev, panfrost_priv);
+>> +
+>> +	drm_printf(p, "drm-engine-gpu:\t%llu ns\n", gpu_info.engine);
+>> +	drm_printf(p, "drm-cycles-gpu:\t%llu\n", gpu_info.cycles);
+>> +	drm_printf(p, "drm-maxfreq-gpu:\t%u Hz\n", gpu_info.maxfreq);
+>> +}
+>> +
+>> +static void panfrost_show_fdinfo(struct drm_printer *p, struct drm_file *file)
+>> +{
+>> +	struct drm_device *dev = file->minor->dev;
+>> +	struct panfrost_device *pfdev = dev->dev_private;
+>> +
+>> +	panfrost_gpu_show_fdinfo(pfdev, file->driver_priv, p);
+>> +
+>> +}
+>> +
+>> +static const struct file_operations panfrost_drm_driver_fops = {
+>> +	.owner = THIS_MODULE,
+>> +	DRM_GEM_FOPS,
+>> +	.show_fdinfo = drm_show_fdinfo,
+>> +};
+>>  
+>>  /*
+>>   * Panfrost driver version:
+>> @@ -535,6 +564,7 @@ static const struct drm_driver panfrost_drm_driver = {
+>>  	.driver_features	= DRIVER_RENDER | DRIVER_GEM | DRIVER_SYNCOBJ,
+>>  	.open			= panfrost_open,
+>>  	.postclose		= panfrost_postclose,
+>> +	.show_fdinfo		= panfrost_show_fdinfo,
+>>  	.ioctls			= panfrost_drm_driver_ioctls,
+>>  	.num_ioctls		= ARRAY_SIZE(panfrost_drm_driver_ioctls),
+>>  	.fops			= &panfrost_drm_driver_fops,
+>> diff --git a/drivers/gpu/drm/panfrost/panfrost_job.c b/drivers/gpu/drm/panfrost/panfrost_job.c
+>> index dbc597ab46fb..d0063cac9f72 100644
+>> --- a/drivers/gpu/drm/panfrost/panfrost_job.c
+>> +++ b/drivers/gpu/drm/panfrost/panfrost_job.c
+>> @@ -157,6 +157,11 @@ static struct panfrost_job *
+>>  panfrost_dequeue_job(struct panfrost_device *pfdev, int slot)
+>>  {
+>>  	struct panfrost_job *job = pfdev->jobs[slot][0];
+>> +	job->priv->elapsed_ns +=
+>> +		ktime_to_ns(ktime_sub(ktime_get(), job->start_time));
+>> +
+>> +	/* Reset in case the job has to be requeued */
+>> +	job->start_time = 0;
+>>  
+>>  	WARN_ON(!job);
+>>  	pfdev->jobs[slot][0] = pfdev->jobs[slot][1];
+>> @@ -233,6 +238,7 @@ static void panfrost_job_hw_submit(struct panfrost_job *job, int js)
+>>  	subslot = panfrost_enqueue_job(pfdev, js, job);
+>>  	/* Don't queue the job if a reset is in progress */
+>>  	if (!atomic_read(&pfdev->reset.pending)) {
+>> +		job->start_time = ktime_get();
+>>  		job_write(pfdev, JS_COMMAND_NEXT(js), JS_COMMAND_START);
+>>  		dev_dbg(pfdev->dev,
+>>  			"JS: Submitting atom %p to js[%d][%d] with head=0x%llx AS %d",
+>> diff --git a/drivers/gpu/drm/panfrost/panfrost_job.h b/drivers/gpu/drm/panfrost/panfrost_job.h
+>> index 8becc1ba0eb9..b4318e476694 100644
+>> --- a/drivers/gpu/drm/panfrost/panfrost_job.h
+>> +++ b/drivers/gpu/drm/panfrost/panfrost_job.h
+>> @@ -32,6 +32,9 @@ struct panfrost_job {
+>>  
+>>  	/* Fence to be signaled by drm-sched once its done with the job */
+>>  	struct dma_fence *render_done_fence;
+>> +
+>> +	struct panfrost_file_priv *priv;
+>> +	ktime_t start_time;
+>>  };
+>>  
+>>  int panfrost_job_init(struct panfrost_device *pfdev);
