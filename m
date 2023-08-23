@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0F6D785BCD
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 17:17:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C691785BCC
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 17:17:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237028AbjHWPR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 11:17:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34626 "EHLO
+        id S237021AbjHWPRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 11:17:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237015AbjHWPRt (ORCPT
+        with ESMTP id S237022AbjHWPRt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 23 Aug 2023 11:17:49 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 969A410C9;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C921F10FB;
         Wed, 23 Aug 2023 08:17:24 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 672EF65929;
-        Wed, 23 Aug 2023 15:17:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74894C433C8;
-        Wed, 23 Aug 2023 15:16:59 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 649D86101C;
+        Wed, 23 Aug 2023 15:17:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B611C433C8;
+        Wed, 23 Aug 2023 15:17:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692803823;
-        bh=HSJ8K/iEdi2nQ2WTLzit3GrsQpQ2UPYAXTJjDkiZDzI=;
+        s=k20201202; t=1692803834;
+        bh=Ylc3TSXa5ifgz7bjH+Ib7u/kImYYyrGh5B2vMyFRLTg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NA3LsibwzfMp3dlMzWwfKnecOG42Tqh+WNSoe5Dy90DAfrZYOo2Pf92LrJqqvQeNE
-         J+Mn/kZXIiTZKX22TwSTkOvqwTEuTrrzRh5qJrE/TcCwwa9IM07XkXZEOXA9aX11Ad
-         SR0VvTDzvZe/QfxMc6snhmCW0M0SqchieYdSZnJEEDjT61239XmV0+ZJn37RlZCOnK
-         9zXqc+4nbWaFJ4VTlsKV0j2xomPk9tdgd8Sse0XZRuzpGAbEbfUiTufxi+WvXg5+dO
-         73pUCpk0s7fgpdKQpQCZbYwJjjjdxtkgXpoAbyvJmQZxxJmr7J5THs60iNU5NPRlEV
-         gh3cu51HkirJQ==
+        b=QdaCZTMe1fTvB5F//p9urTbKVisS0r5vyJbMOt8UfyK47Y0TDyRf9fUAOtEaO07Hj
+         IABla5AdXYBqAIbwFWhkJB3zElvQhMeeBgT5Dzus6a5rawSTD0NEAZZQEogg96sMue
+         TCuw+1eTlKcrOruAulr9uXJJ9RVoVlBB2WyIMCDblgQ3COklM2O2PCfa6EFOM+1DAl
+         +OFL09Q04N3zSTOeFdbI31vipmVr7r3Ygz2thKSxrAzaTnmMTVRThxeFN9ls1dqDMw
+         RWBzdlwOCycGx/6g21G2nRRDYUdyIXS6UeKUrsl8rBmoRTzFzVOtz+NIgXG/mcTlyA
+         ooPvUYw3CIoqg==
 From:   "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
@@ -49,9 +49,9 @@ Cc:     linux-trace-kernel@vger.kernel.org,
         Mark Rutland <mark.rutland@arm.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH v4 8/9] Documentations: probes: Update fprobe document to use ftrace_regs
-Date:   Thu, 24 Aug 2023 00:16:57 +0900
-Message-Id: <169280381726.282662.9429943163047257398.stgit@devnote2>
+Subject: [PATCH v4 9/9] Documentation: tracing: Add a note about argument and retval access
+Date:   Thu, 24 Aug 2023 00:17:09 +0900
+Message-Id: <169280382895.282662.14910495061790007288.stgit@devnote2>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <169280372795.282662.9784422934484459769.stgit@devnote2>
 References: <169280372795.282662.9784422934484459769.stgit@devnote2>
@@ -71,46 +71,54 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-Update fprobe document so that the entry/exit handler uses ftrace_regs
-instead of pt_regs.
+Add a note about the argument and return value accecss will be best
+effort. Depending on the type, it will be passed via stack or a
+pair of the registers, but $argN and $retval only support the
+single register access.
 
+Suggested-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-Acked-by: Florent Revest <revest@chromium.org>
 ---
- Documentation/trace/fprobe.rst |   14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ Documentation/trace/fprobetrace.rst |    8 ++++++--
+ Documentation/trace/kprobetrace.rst |    8 ++++++--
+ 2 files changed, 12 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/trace/fprobe.rst b/Documentation/trace/fprobe.rst
-index 5851a14eb893..64ef522f7a64 100644
---- a/Documentation/trace/fprobe.rst
-+++ b/Documentation/trace/fprobe.rst
-@@ -91,9 +91,9 @@ The prototype of the entry/exit callback function are as follows:
+diff --git a/Documentation/trace/fprobetrace.rst b/Documentation/trace/fprobetrace.rst
+index 8e9bebcf0a2e..e35e6b18df40 100644
+--- a/Documentation/trace/fprobetrace.rst
++++ b/Documentation/trace/fprobetrace.rst
+@@ -59,8 +59,12 @@ Synopsis of fprobe-events
+                   and bitfield are supported.
  
- .. code-block:: c
+   (\*1) This is available only when BTF is enabled.
+-  (\*2) only for the probe on function entry (offs == 0).
+-  (\*3) only for return probe.
++  (\*2) only for the probe on function entry (offs == 0). Note, this argument access
++        is best effort, because depending on the argument type, it may be passed on
++        the stack. But this only support the arguments via registers.
++  (\*3) only for return probe. Note that this is also best effort. Depending on the
++        return value type, it might be passed via a pair of registers. But this only
++        accesses one register.
+   (\*4) this is useful for fetching a field of data structures.
+   (\*5) "u" means user-space dereference.
  
-- int entry_callback(struct fprobe *fp, unsigned long entry_ip, unsigned long ret_ip, struct pt_regs *regs, void *entry_data);
-+ int entry_callback(struct fprobe *fp, unsigned long entry_ip, unsigned long ret_ip, struct ftrace_regs *fregs, void *entry_data);
+diff --git a/Documentation/trace/kprobetrace.rst b/Documentation/trace/kprobetrace.rst
+index 8a2dfee38145..bf9cecb69fc9 100644
+--- a/Documentation/trace/kprobetrace.rst
++++ b/Documentation/trace/kprobetrace.rst
+@@ -61,8 +61,12 @@ Synopsis of kprobe_events
+ 		  (x8/x16/x32/x64), "char", "string", "ustring", "symbol", "symstr"
+                   and bitfield are supported.
  
-- void exit_callback(struct fprobe *fp, unsigned long entry_ip, unsigned long ret_ip, struct pt_regs *regs, void *entry_data);
-+ void exit_callback(struct fprobe *fp, unsigned long entry_ip, unsigned long ret_ip, struct ftrace_regs *fregs, void *entry_data);
+-  (\*1) only for the probe on function entry (offs == 0).
+-  (\*2) only for return probe.
++  (\*1) only for the probe on function entry (offs == 0). Note, this argument access
++        is best effort, because depending on the argument type, it may be passed on
++        the stack. But this only support the arguments via registers.
++  (\*2) only for return probe. Note that this is also best effort. Depending on the
++        return value type, it might be passed via a pair of registers. But this only
++        accesses one register.
+   (\*3) this is useful for fetching a field of data structures.
+   (\*4) "u" means user-space dereference. See :ref:`user_mem_access`.
  
- Note that the @entry_ip is saved at function entry and passed to exit handler.
- If the entry callback function returns !0, the corresponding exit callback will be cancelled.
-@@ -112,12 +112,10 @@ If the entry callback function returns !0, the corresponding exit callback will
-         This is the return address that the traced function will return to,
-         somewhere in the caller. This can be used at both entry and exit.
- 
--@regs
--        This is the `pt_regs` data structure at the entry and exit. Note that
--        the instruction pointer of @regs may be different from the @entry_ip
--        in the entry_handler. If you need traced instruction pointer, you need
--        to use @entry_ip. On the other hand, in the exit_handler, the instruction
--        pointer of @regs is set to the currect return address.
-+@fregs
-+        This is the `ftrace_regs` data structure at the entry and exit. Note that
-+        the instruction pointer of @fregs may be incorrect in entry handler and
-+        exit handler, so you have to use @entry_ip and @ret_ip instead.
- 
- @entry_data
-         This is a local storage to share the data between entry and exit handlers.
 
