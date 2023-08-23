@@ -2,103 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A16E785113
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 09:03:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03DCA78511A
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 09:06:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233117AbjHWHD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 03:03:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43904 "EHLO
+        id S233128AbjHWHGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 03:06:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233079AbjHWHDz (ORCPT
+        with ESMTP id S229581AbjHWHGW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 03:03:55 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55AC3185;
-        Wed, 23 Aug 2023 00:03:53 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D7C9564A86;
-        Wed, 23 Aug 2023 07:03:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DDF0C433C7;
-        Wed, 23 Aug 2023 07:03:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1692774232;
-        bh=CREXmtSVm3ElNVCBgi60/kP4BfR2bXJzoUJvCekaTJE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VGbhFAKGEzEoNxcW4EtllY/OrEfRIxobd2x5V0x80KncOeqwWe4hbtwrj07BQvtMJ
-         tVhaOqLyIo63cKtluc/YZW4nYqVAOaN2bF9zeotw9BrKXIy1SWdflrx34jVLW4mmlT
-         ejXL8m4yqtOBfvfTTgoW/Oh1c8DyswxkwVs+ZZgw=
-Date:   Wed, 23 Aug 2023 09:03:49 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-Subject: Re: [PATCH 6.1 000/194] 6.1.47-rc1 review
-Message-ID: <2023082309-veggie-unwoven-a7df@gregkh>
-References: <20230821194122.695845670@linuxfoundation.org>
- <991b93d2-9fde-4233-97d5-1133a9360d02@roeck-us.net>
+        Wed, 23 Aug 2023 03:06:22 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F9AA185;
+        Wed, 23 Aug 2023 00:06:20 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id 98e67ed59e1d1-26f7f71b9a7so1612340a91.0;
+        Wed, 23 Aug 2023 00:06:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692774379; x=1693379179;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7HurChyAGdIeZIEmXo40ae/GPpY2M43AtWuOafUdiH0=;
+        b=O/s997Q5PN56nEC2lwTbxkTiTnffL6a1EipTrBhTFMFFHRCVz/uMUW90Q1KeXO8dlN
+         NUQzLdNIakvBzbpCLFODGV+4MvJb/al7khbs5iIXQuu/EeAUfnFiIeiNnW8tfiR4w7+c
+         9REFASousRsf+/O7nhnqxiKzL9hw/nyo7iykm+AeJvBz9UvQvzTJpHDZE5/ydHjLjrcy
+         bGUTmZU0eprG9RFDDvP6d2+TKVZViYEVkRpi+aEj33zYSSycg+qIsmt4mjV1p0hg0Ey5
+         2G/VXpzsT4JOraLYI/E2RjpumFsWmJ1ToPAlK0f0+4f/PJQMsII27ggu0jVUJ6HIKAS/
+         u1QQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692774379; x=1693379179;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=7HurChyAGdIeZIEmXo40ae/GPpY2M43AtWuOafUdiH0=;
+        b=McCElIgDiKPgO/rQh1Fa6pfPAOmTJPobEh/XWx/ref4FyujufEJs5rqxG3gVHIjZn3
+         wVAI1LhJtagSeFZVwwKW9aG/fwCyFw7ZgKdKHHbYtPwoBisGvX2/mcJnOz+lRTbAwckv
+         As3SbEQjpLODxTTz2IgakpdCWPgpTi+ePDA1OzlsS7RYUNb7/p+/T/jW9ncZmHBOtEwa
+         lWisKWSnlzM7l7W61alLoS6ogiUmguDoQIBlGWEgQQBOZf+VFMzY1+X5PcapKfx/ZJrl
+         GO6jwLTSmFTzp7bcYy9t0Xx/ndXWZg0Q2NudOEzzJzp7eg2ta5IzcJ6Q1Uo+keuQzp/4
+         g7ZQ==
+X-Gm-Message-State: AOJu0YwNprlQblXjOSuPn4mRAaQb0uZuW8ONPuRQlq0fN2OAtQJQo1a8
+        qGEX6OrqH+NU9HbBea+vKuY=
+X-Google-Smtp-Source: AGHT+IEkoSYhjYhg28YfiIvQ6zxsm4pAFS3yRUCZgdMe9EYSmy8xC4XrwV9EpnILl5RHuwvgMB+J1g==
+X-Received: by 2002:a17:90a:db15:b0:263:2335:594e with SMTP id g21-20020a17090adb1500b002632335594emr10965283pjv.38.1692774379461;
+        Wed, 23 Aug 2023 00:06:19 -0700 (PDT)
+Received: from ?IPV6:2404:f801:0:5:8000::75b? ([2404:f801:9000:1a:efea::75b])
+        by smtp.gmail.com with ESMTPSA id a3-20020a17090a740300b0026b3a86b0d5sm8883044pjg.33.2023.08.23.00.06.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Aug 2023 00:06:17 -0700 (PDT)
+Message-ID: <6ba2366a-5a7a-839c-6b7a-3500a43c3d93@gmail.com>
+Date:   Wed, 23 Aug 2023 15:05:59 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <991b93d2-9fde-4233-97d5-1133a9360d02@roeck-us.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 2/9] x86/hyperv: Support hypercalls for fully enlightened
+ TDX guests
+To:     Dexuan Cui <decui@microsoft.com>, ak@linux.intel.com,
+        arnd@arndb.de, bp@alien8.de, brijesh.singh@amd.com,
+        dan.j.williams@intel.com, dave.hansen@intel.com,
+        dave.hansen@linux.intel.com, haiyangz@microsoft.com, hpa@zytor.com,
+        jane.chu@oracle.com, kirill.shutemov@linux.intel.com,
+        kys@microsoft.com, linux-hyperv@vger.kernel.org, luto@kernel.org,
+        mingo@redhat.com, peterz@infradead.org, rostedt@goodmis.org,
+        sathyanarayanan.kuppuswamy@linux.intel.com, seanjc@google.com,
+        tglx@linutronix.de, tony.luck@intel.com, wei.liu@kernel.org,
+        Jason@zx2c4.com, nik.borisov@suse.com, mikelley@microsoft.com
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, Tianyu.Lan@microsoft.com,
+        rick.p.edgecombe@intel.com, andavis@redhat.com, mheslin@redhat.com,
+        vkuznets@redhat.com, xiaoyao.li@intel.com
+References: <20230811221851.10244-1-decui@microsoft.com>
+ <20230811221851.10244-3-decui@microsoft.com>
+From:   Tianyu Lan <ltykernel@gmail.com>
+In-Reply-To: <20230811221851.10244-3-decui@microsoft.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 05:49:54PM -0700, Guenter Roeck wrote:
-> On Mon, Aug 21, 2023 at 09:39:39PM +0200, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 6.1.47 release.
-> > There are 194 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Wed, 23 Aug 2023 19:40:45 +0000.
-> > Anything received after that time might be too late.
-> > 
+On 8/12/2023 6:18 AM, Dexuan Cui wrote:
+> A fully enlightened TDX guest on Hyper-V (i.e. without the paravisor) only
+> uses the GHCI call rather than hv_hypercall_pg.
 > 
-> Build results:
-> 	total: 157 pass: 156 fail: 1
-> Failed builds:
-> 	m68k:sun3_defconfig
-> Qemu test results:
-> 	total: 521 pass: 519 fail: 2
-> Failed tests:
-> 	arm:fuji-bmc:aspeed_g5_defconfig:notests:mem1G:mtd128,0,8,1:net,nic:aspeed-bmc-facebook-fuji:f2fs
-> 	arm:bletchley-bmc,fmc-model=mt25qu02g,spi-model=mt25qu02g:aspeed_g5_defconfig:notests:mem1G:mtd256:net,nic:aspeed-bmc-facebook-bletchley:f2fs
+> In hv_do_hypercall(), Hyper-V requires that the input/output addresses
+> must have the cc_mask.
 > 
-> The m68k build failure is
+> Reviewed-by: Kuppuswamy Sathyanarayanan<sathyanarayanan.kuppuswamy@linux.intel.com>
+> Reviewed-by: Michael Kelley<mikelley@microsoft.com>
+> Signed-off-by: Dexuan Cui<decui@microsoft.com>
+> ---
+
+Reviewed-by: Tianyu Lan <tiala@microsoft.com>
+
+>   arch/x86/hyperv/hv_init.c       |  8 ++++++++
+>   arch/x86/hyperv/ivm.c           | 17 +++++++++++++++++
+>   arch/x86/include/asm/mshyperv.h | 15 +++++++++++++++
+>   drivers/hv/hv_common.c          | 10 ++++++++--
+>   include/asm-generic/mshyperv.h  |  1 +
+>   5 files changed, 49 insertions(+), 2 deletions(-)
 > 
-> Inconsistent kallsyms data
-> Try make KALLSYMS_EXTRA_PASS=1 as a workaround
-> 
-> I already have KALLSYMS_EXTRA_PASS=1 enabled, so that doesn't help.
-> Nothing to worry about. The f2fs crashes are still seen. They
-> also happen for other architectures, so it is not just an arm problem.
-> I'll probably just disable all f2fs testing going forward. If so I'll
-> send a note clarifying that the lack of reported test failures doesn't
-> mean that it works.
+> diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
+> index 547ebf6a03bc9..d8ea54663113c 100644
+> --- a/arch/x86/hyperv/hv_init.c
+> +++ b/arch/x86/hyperv/hv_init.c
+> @@ -481,6 +481,10 @@ void __init hyperv_init(void)
+>   	/* Hyper-V requires to write guest os id via ghcb in SNP IVM. */
+>   	hv_ghcb_msr_write(HV_X64_MSR_GUEST_OS_ID, guest_id);
+>   
+> +	/* A TDX guest uses the GHCI call rather than hv_hypercall_pg. */
+> +	if (hv_isolation_type_tdx())
+> +		goto skip_hypercall_pg_init;
+> +
 
-I'll look into this later this week, next week to resolve the f2fs
-stuff.  I wanted to get to the other known bug fixes first.
-
-> For x86 I get the same runtime warning as everyone else.
-
-Yeah, this is troubling...
-
-Is it clang only?  I'll dig into this today...
-
-thanks,
-
-greg k-h
+Nitpick:
+	Put hypercal page initialization code into a sepearate function and 
+skip the function in the tdx guest instead of adding the label.
