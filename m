@@ -2,115 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55AA47856D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 13:34:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB2A87856D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 13:35:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234430AbjHWLec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 07:34:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44256 "EHLO
+        id S234429AbjHWLf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 07:35:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234381AbjHWLeb (ORCPT
+        with ESMTP id S231717AbjHWLfz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 07:34:31 -0400
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D423CE5D
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 04:33:59 -0700 (PDT)
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 503B710000A;
-        Wed, 23 Aug 2023 14:33:58 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 503B710000A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
-        s=mail; t=1692790438;
-        bh=TDpe3788q389R8EkJoQ6JIPa/NOggFKINRwRuJg7hiU=;
-        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-        b=orXMlmKrWDRSfA1/C4rMIK7AAZP/aloBPXvAFlBAlSPtIbkYDdv89LcoqkREISM+L
-         4j6/UtcMucORmCHs1gu+lA/xllXne0d9U3y9fklEth/26J8g2oihAQUAa9DRRs9hLc
-         TgcrItc7qCSNJ9exMVT8IOE6sd+XLIHuk6RZyeChNiIyUjt0Fl0tkwnjcKsBVztgQj
-         DnQPPGKKXZOxM5NSbmAddcaSJGc2UDkazUxNj4V0K3Z2hByHFK50AROWas+VIb1SYl
-         sjTp1UmFZUtxV0b3lH8UAGQjGHbjCxsgqWZtzxT2iXdxfcL70stxpDn75jjjrEyxPn
-         +1aU4NqZ5xGmw==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Wed, 23 Aug 2023 07:35:55 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C239710FE;
+        Wed, 23 Aug 2023 04:35:20 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Wed, 23 Aug 2023 14:33:58 +0300 (MSK)
-Received: from [192.168.1.146] (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Wed, 23 Aug 2023 14:33:57 +0300
-Message-ID: <f873d775-cda9-302d-a651-0113c7c7dc84@sberdevices.ru>
-Date:   Wed, 23 Aug 2023 14:33:57 +0300
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 846F36604B;
+        Wed, 23 Aug 2023 11:34:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BA5CC433C7;
+        Wed, 23 Aug 2023 11:34:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692790486;
+        bh=X+mD8swD/B1r/WRr0uFCG3p2J8HJeLmr49XtjHrY3rg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FFiQ3GR2WJwIDQIqUsxJjDMCH2ORBgAT83hGsRoK5oPSChQPW4l3qR1YRM57zy4Op
+         yOEftZUgZsehgNUDUAYyh2WHGGUeIV7g8/9iuLQeSecG+YxnpDLvl/euLaf+SfeoSZ
+         XshcwZurmE9w6FKZbKQ83Ye3j2d5Jl8y+huK6lFwEhd7wmU6wObKp+r2xbjUuQmLDF
+         iFI+4WjWaTHI2miFjqnzKBughovclp7caSW2TjoQ8pM7aYEzu2ltABCv8SSHsfWRrr
+         PNkMUw2SmCnTTpSlUtkCz6vbPp4ypLGH03btzxdTVLp9XAsUhR2mEEYzYrD0W9iy+0
+         743CN/c2mv4sw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 09DBD40722; Wed, 23 Aug 2023 08:34:44 -0300 (-03)
+Date:   Wed, 23 Aug 2023 08:34:43 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+Subject: Re: [PATCH 2/2] perf test: Add perf record sample filtering test
+Message-ID: <ZOXu0xq7fgwsZ5Co@kernel.org>
+References: <20230811025822.3859771-1-namhyung@kernel.org>
+ <20230811025822.3859771-2-namhyung@kernel.org>
+ <ZNu2KrbgFPY69K2+@kernel.org>
+ <ZNu47CYXV0nuav+G@kernel.org>
+ <CAM9d7ciZaH1KkGannC=69FgtyOO7M_1opu-xgdDCkske+en1jg@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v2 2/2] mtd: spinand: micron: fixing the offset for OOB
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-CC:     Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
-        <kernel@sberdevices.ru>
-References: <20230822122534.872646-1-mmkurbanov@sberdevices.ru>
- <20230822122534.872646-3-mmkurbanov@sberdevices.ru>
- <20230822153556.630e65b9@xps-13>
- <01925ff8-1d19-a729-429a-89866fad319f@sberdevices.ru>
- <20230823104143.760cc5bc@xps-13>
-Content-Language: en-US
-From:   Martin Kurbanov <mmkurbanov@sberdevices.ru>
-In-Reply-To: <20230823104143.760cc5bc@xps-13>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 179399 [Aug 23 2023]
-X-KSMG-AntiSpam-Version: 5.9.59.0
-X-KSMG-AntiSpam-Envelope-From: mmkurbanov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 527 527 5bb611be2ca2baa31d984ccbf4ef4415504fc308, {Tracking_smtp_not_equal_from}, {Tracking_from_domain_doesnt_match_to}, p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;100.64.160.123:7.1.2;sberdevices.ru:5.0.1,7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1;127.0.0.199:7.1.2, FromAlignment: n, {Tracking_smtp_domain_mismatch}, {Tracking_smtp_domain_2level_mismatch}, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/08/23 04:58:00 #21681850
-X-KSMG-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAM9d7ciZaH1KkGannC=69FgtyOO7M_1opu-xgdDCkske+en1jg@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Miquel,
-
-On 23.08.2023 11:41, Miquel Raynal wrote:
-> Hi Martin,
->
-> I don't think the four bytes have any "bad block specific" meaning. In
-> practice, the datasheet states:
+Em Tue, Aug 22, 2023 at 05:50:26PM -0700, Namhyung Kim escreveu:
+> Hi Arnaldo,
 > 
-> 	Value programmed for bad block at the first byte of spare
-> 	area: 00h
+> On Tue, Aug 15, 2023 at 10:42 AM Arnaldo Carvalho de Melo
+> <acme@kernel.org> wrote:
+> >
+> > Em Tue, Aug 15, 2023 at 02:30:18PM -0300, Arnaldo Carvalho de Melo escreveu:
+> > > Em Thu, Aug 10, 2023 at 07:58:22PM -0700, Namhyung Kim escreveu:
+> > > >   $ sudo ./perf test 'sample filter' -v
+> > > >    94: perf record sample filtering (by BPF) tests                     :
+> > > >   --- start ---
+> > > >   test child forked, pid 3817527
+> > > >   Checking BPF-filter privilege
+> > > >   Basic bpf-filter test
+> > > >   Basic bpf-filter test [Success]
+> > > >   Failing bpf-filter test
+> > > >   Error: task-clock event does not have PERF_SAMPLE_CPU
+> > > >   Failing bpf-filter test [Success]
+> > > >   Group bpf-filter test
+> > > >   Error: task-clock event does not have PERF_SAMPLE_CPU
+> > > >   Error: task-clock event does not have PERF_SAMPLE_CODE_PAGE_SIZE
+> > > >   Group bpf-filter test [Success]
+> > > >   test child finished with 0
+> > > >   ---- end ----
+> > > >   perf record sample filtering (by BPF) tests: Ok
+> > >
+> > > [root@five ~]# perf test -v "by BPF"
+> > >  91: perf record sample filtering (by BPF) tests                     :
+> > > --- start ---
+> > > test child forked, pid 64165
+> > > Checking BPF-filter privilege
+> > > Basic bpf-filter test
+> > >  ffffffff97f4f688
+> > >  ffffffff97f73859
+> > >  ffffffff97412ce6
+> > >  ffffffff976da215
+> > >  ffffffff973a92bf
+> > >  ffffffff97376ad7
+> > >  ffffffff97f73859
+> > <SNIP
+> > >  ffffffff971fdca5
+> > >  ffffffff9737dbc4
+> > >  ffffffff971b4e04
+> > > Basic bpf-filter test [Failed invalid output]
+> > > test child finished with -1
+> > > ---- end ----
+> > > perf record sample filtering (by BPF) tests: FAILED!
+> > > [root@five ~]#
+> > >
+> > > [root@five ~]# uname -a
+> > > Linux five 6.2.15-100.fc36.x86_64 #1 SMP PREEMPT_DYNAMIC Thu May 11 16:51:53 UTC 2023 x86_64 x86_64 x86_64 GNU/Linux
+> > > [root@five ~]#
+> >
+> > Above was on a AMD Ryzen 5950X, the following was on a lenovo t480s,
+> > Intel notebook:
 > 
-> So only the first byte is used to mark the block bad, the rest is
-> probably marked "reserved" for simplicity. I believe we should keep the
-> current layout because it would otherwise break users for no real
-> reason.
+> Thanks for the test.  I think it's a matter of the kernel version
+> rather than the CPU vendor.  6.1 or before will fail the check
+> in the beginning but 6.2 kernel lacks a feature to set sample
+> flags for some fields and silently accept all samples.  IIRC it's
+> added in v6.3.
+> 
+> Probably I need to add a version check in the error path.
 
-I agree with you that this can break the work of users who use OOB.
-However, I believe it would be more appropriate to use an offset of 4,
-as the micron chip can use all 4 bytes for additional data about the
-bad block. So, there is a non-zero probability of losing OOB data in
-the reserved area (2 bytes) when the hardware chip attempts to mark
-the block as bad.
+Yeah, we need to do a wider testing of all things enabled
+BUILD_BPF_SKEL=1, in more kernels, architectures, distributions.
+
+Thanks for the feedback,
+
+- Arnaldo
+
+ 
+> Thanks,
+> Namhyung
+> 
+> >
+> > [root@quaco ~]# uname -a
+> > Linux quaco 6.4.7-200.fc38.x86_64 #1 SMP PREEMPT_DYNAMIC Thu Jul 27 20:01:18 UTC 2023 x86_64 GNU/Linux
+> > [root@quaco ~]# perf test "filter"
+> >  30: Filter hist entries                                             : Ok
+> >  36: Filter fds with revents mask in a fdarray                       : Ok
+> >  67: dlfilter C API                                                  : Ok
+> >  91: perf record sample filtering (by BPF) tests                     : Ok
+> > [root@quaco ~]# perf test -v "by BPF"
+> >  91: perf record sample filtering (by BPF) tests                     :
+> > --- start ---
+> > test child forked, pid 273609
+> > Checking BPF-filter privilege
+> > Basic bpf-filter test
+> > Basic bpf-filter test [Success]
+> > Failing bpf-filter test
+> > Error: task-clock event does not have PERF_SAMPLE_CPU
+> > Failing bpf-filter test [Success]
+> > Group bpf-filter test
+> > Error: task-clock event does not have PERF_SAMPLE_CPU
+> > Error: task-clock event does not have PERF_SAMPLE_CODE_PAGE_SIZE
+> > Group bpf-filter test [Success]
+> > test child finished with 0
+> > ---- end ----
+> > perf record sample filtering (by BPF) tests: Ok
+> > [root@quaco ~]#
 
 -- 
-Best Regards,
-Martin Kurbanov
+
+- Arnaldo
