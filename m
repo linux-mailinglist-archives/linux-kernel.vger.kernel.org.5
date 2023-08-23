@@ -2,92 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A96F77857EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 14:32:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D7F87857F2
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 14:39:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233476AbjHWMcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 08:32:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36714 "EHLO
+        id S234115AbjHWMjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 08:39:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231228AbjHWMcw (ORCPT
+        with ESMTP id S232906AbjHWMjO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 08:32:52 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFDA81A5
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 05:32:49 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-d73c595b558so5473394276.2
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 05:32:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692793969; x=1693398769;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zRSbIumIVyFQkg0diWCyawrsRoPJk8+z2O3TSnqCb2U=;
-        b=AGWjRcQm0x3IxZMlEk6xalXzphtnCaJT0mqn23RSti/hJnT3okeDjL32zQP5e0RPTm
-         56VqKbC7d5J3isYruH+IVO29+A8KGjiaJ2mcSdMzbg5YUdH/Pyy+baUY0WPv+icCP0Yn
-         GDXy1kXbHui6WPhwmNXRGDESkiwxBFk5JySiqTo4BoGWoXDCsTyLNbF9PeikGpkyfAhi
-         ixfNU6lnX94EuZwdNmfejVRTHVewRBOn3ktulkBkFzrLu7hD+w2xeK9f+bY4zjlYTPTk
-         I3p7/Ym173bBrLRsg4Xy34nXPLHlpwWLSxW2/oDNQdxXycgspMSZtxv7FRtJTuYWYsPQ
-         kBEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692793969; x=1693398769;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zRSbIumIVyFQkg0diWCyawrsRoPJk8+z2O3TSnqCb2U=;
-        b=Y+rB6CE8/6/7lpOwaJ8ygF9oBcBin4YnBxJnK766Wxgb5cg/gnDQhBQ7t1VbNRFbIR
-         huCUO11gLEW1wMg1ayuIAG3ZA9DOkyXdEV+z1ACOuM8L75nHcin1+cbRGT2s54kGaZoJ
-         ybp2Gttt83q9TVB1fYzgTWvNx9mK4m0cJl5LHXtDUV8H5ZZlAqvIRj2NtP8nyxNPyUl9
-         EW2FTimDdWn2DundJf7v/cbTnQgxDxYQxfYcGneca55y8HJvTD28px5dXAog316ltHoN
-         m/xuh/Z8MCNnqafGdlYyZa+3Y8Kb2/FQQMSImh+/QV2JYrp5sibu9jYfba8uw9wadPYw
-         95ZQ==
-X-Gm-Message-State: AOJu0Yyy6PutBoOeXFI5ExnY5Ox16Mp6FhqyHNgW54chkr6a4oS6FVcD
-        3zsgy7TBHc36NFlP37HnWSJ1haKWJIlve8kWcbORZfZjNt5R4khp
-X-Google-Smtp-Source: AGHT+IF0EL2CJ3/gfudLsQq6LqoM8zX8eYj3Mmo1Ay9E8vhJrJLisKFjPSYJHobDXVopQ0kW7dKtcl4/L0rgXUboI1o=
-X-Received: by 2002:a25:3622:0:b0:d12:d6e4:a08b with SMTP id
- d34-20020a253622000000b00d12d6e4a08bmr12334570yba.22.1692793969166; Wed, 23
- Aug 2023 05:32:49 -0700 (PDT)
+        Wed, 23 Aug 2023 08:39:14 -0400
+Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 840C3E40;
+        Wed, 23 Aug 2023 05:39:11 -0700 (PDT)
+Received: from i53875a83.versanet.de ([83.135.90.131] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <heiko@sntech.de>)
+        id 1qYn8T-0003UY-66; Wed, 23 Aug 2023 14:38:57 +0200
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Jakob Unterwurzacher <jakobunt@gmail.com>
+Cc:     jakob.unterwurzacher@theobroma-systems.com,
+        Ermin Sunj <ermin.sunj@theobroma-systems.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] TSD: arm64: dts: rockchip: use codec as clock master
+Date:   Wed, 23 Aug 2023 14:38:56 +0200
+Message-ID: <3763479.7s5MMGUR32@diego>
+In-Reply-To: <20230823122000.585787-1-jakob.unterwurzacher@theobroma-systems.com>
+References: <20230823122000.585787-1-jakob.unterwurzacher@theobroma-systems.com>
 MIME-Version: 1.0
-References: <20230823085546.116494-1-krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230823085546.116494-1-krzysztof.kozlowski@linaro.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 23 Aug 2023 14:32:37 +0200
-Message-ID: <CACRpkdYp4Gviev7ccUFeK-Gmx_ZYKsMrm4KxWcy5_-q+DJ-Zeg@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: use capital "OR" for multiple licenses in SPDX
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_PASS,T_SPF_HELO_TEMPERROR,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 23, 2023 at 10:55=E2=80=AFAM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
+Hi Jakob,
 
-> Documentation/process/license-rules.rst and checkpatch expect the SPDX
-> identifier syntax for multiple licenses to use capital "OR".  Correct it
-> to keep consistent format and avoid copy-paste issues.
->
-> Correct also the placement of SPDX identifier in pinctrl-meson-axg
-> files:
->
->   WARNING: Misplaced SPDX-License-Identifier tag - use line 1 instead
->
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+the change itself looks ok, but there are some logistic changes needed.
 
-Yeah... they are designed to be machine readable so patch applied.
+For one, please drop the local TSD prefix from patches submitted upstream.
+The patch subject should be something like
 
-Yours,
-Linus Walleij
+	arm64: dts: rockchip: use codec as clock master on px30-ringneck
+
+Am Mittwoch, 23. August 2023, 14:19:59 CEST schrieb Jakob Unterwurzacher:
+> From: Ermin Sunj <ermin.sunj@theobroma-systems.com>
+> 
+> If the codec is not the clock master, the MCLK needs to be
+> synchronous to both I2S_SCL ans I2S_LRCLK. We do not have that
+> on Haikou, causing distorted audio.
+> 
+> Before:
+> 
+>  Running audioloopback.py script on Ringneck, 1kHz
+>  output sine wave is not stable and shows distortion.
+> 
+> After:
+> 
+>  10h stress tests audioloopback.py failed only one time.
+>  That is 0.00014% failure rate.
+> 
+> Signed-off-by: Ermin Sunj <ermin.sunj@theobroma-systems.com>
+
+As sender of the patch you need to add another Signed-off-by line
+of your own. With this you indicate that you were allowed to submit
+the patch. So this needs two SOB-lines, one for Ermin as the original
+author and one for you as the submitter.
+
+Probably same for the second patch.
+
+
+Thanks
+Heiko
+
+> ---
+>  arch/arm64/boot/dts/rockchip/px30-ringneck-haikou.dts | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/boot/dts/rockchip/px30-ringneck-haikou.dts b/arch/arm64/boot/dts/rockchip/px30-ringneck-haikou.dts
+> index 3a447d03e2a8..dafeef0c2dab 100644
+> --- a/arch/arm64/boot/dts/rockchip/px30-ringneck-haikou.dts
+> +++ b/arch/arm64/boot/dts/rockchip/px30-ringneck-haikou.dts
+> @@ -68,8 +68,10 @@ i2s0-sound {
+>  		simple-audio-card,format = "i2s";
+>  		simple-audio-card,name = "Haikou,I2S-codec";
+>  		simple-audio-card,mclk-fs = <512>;
+> +		simple-audio-card,frame-master = <&sgtl5000_codec>;
+> +		simple-audio-card,bitclock-master = <&sgtl5000_codec>;
+>  
+> -		simple-audio-card,codec {
+> +		sgtl5000_codec: simple-audio-card,codec {
+>  			clocks = <&sgtl5000_clk>;
+>  			sound-dai = <&sgtl5000>;
+>  		};
+> 
+
+
+
+
