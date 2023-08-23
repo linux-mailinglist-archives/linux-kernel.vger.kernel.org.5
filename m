@@ -2,113 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8D59786208
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 23:16:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9F6D78620B
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 23:16:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237203AbjHWVPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 17:15:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39206 "EHLO
+        id S237247AbjHWVPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 17:15:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237188AbjHWVPc (ORCPT
+        with ESMTP id S237232AbjHWVPq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 17:15:32 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2E5610DA;
-        Wed, 23 Aug 2023 14:15:30 -0700 (PDT)
+        Wed, 23 Aug 2023 17:15:46 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 070D710C8;
+        Wed, 23 Aug 2023 14:15:45 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2D36D62208;
-        Wed, 23 Aug 2023 21:15:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1EA9C433C7;
-        Wed, 23 Aug 2023 21:15:28 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 94C7361884;
+        Wed, 23 Aug 2023 21:15:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D360CC433C7;
+        Wed, 23 Aug 2023 21:15:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692825329;
-        bh=IcpUDL+AZsElMu1Q8aXNP6o+Fagisx2ohUPc5dgBBvc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=W3pNZ+sJ1sJv3RjS0s7Y33dnG5lBWmLuhlD+PrtxQSl0JLQIKzzBDi7IkOj2E/vhK
-         fGQ7L4zB16ZVMt3VbFX5gk80pxeqETuN1qXt5IZ3Rd1AV6RDDQM+991OZDX5lG21sv
-         5lRiAsq9tZmyjZciB3Lmg/YNOQQoZIIAftLbzunG5cGdhl2DcIrlz358wkm79KQfFm
-         wyUF5HElco8JN5CxEPCtadR29bzi21HUT+6SB/6vkg1/Ri6QI8UdAL9gERUN/IDVWC
-         pO4XX5eV66R6ofBCsOX8Xa0O4Zd3iWKa9BjixIEBWmC7k1tkiCNsXuDSqp+BJvZyLV
-         uAUGaKdEMeNEg==
-Date:   Wed, 23 Aug 2023 23:15:25 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Patrick Rudolph <patrick.rudolph@9elements.com>
-Cc:     Peter Rosin <peda@axentia.se>, naresh.solanki@9elements.com,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v15 3/4] i2c: muxes: pca954x: Add MAX735x/MAX736x support
-Message-ID: <ZOZ27dnU0fAoMp3s@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Patrick Rudolph <patrick.rudolph@9elements.com>,
-        Peter Rosin <peda@axentia.se>, naresh.solanki@9elements.com,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230817071056.2125679-1-patrick.rudolph@9elements.com>
- <20230817071056.2125679-4-patrick.rudolph@9elements.com>
+        s=k20201202; t=1692825343;
+        bh=83cGWpzHR0LN7okDD8huiRI2qWgS27/vhv1D1BC7qU0=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=AJyy1mueW4a+L9lGMDYgLeIxe5ylHp6p41op4lb2gWTT1mhu1wOM6bETXOxQN0HdX
+         Key/Cdo1Jy1gWAcgO8MjifnsACPnmEh+6aXXIr5oLw0o5Wlz9nm1vFFlDPpyfD96YN
+         3vUo3QfsMs6esK1RSk1ufMcUguWSvDP6RdfYVBcqeuJRNCrJ3tgl4/ok00xZgzYfX7
+         Xpv2AvZJdOYbObYwfrsYH5EVjf9PDNErQoIjylM8JRd2LNS9M3qwAmqpK9UvxL1VdS
+         BhENVI71JK1FsXv4gYyueaKbskbz/I3bX+cvDesc4kXZZMDntrjs/66kUEcAL+oP/R
+         fx3uCbaiTLv9w==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 64C68CE02EE; Wed, 23 Aug 2023 14:15:43 -0700 (PDT)
+Date:   Wed, 23 Aug 2023 14:15:43 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     zhouzhouyi@gmail.com
+Cc:     rcu@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, lance@osuosl.org
+Subject: Re: [PATCH RFC] rcu: torture: shorten the time between
+ forward-progress tests
+Message-ID: <795ab1ed-de92-4f31-9483-b1800b597405@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <1683039962-15751-1-git-send-email-zhouzhouyi@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="fyHrRlVQjHV3Dqqi"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230817071056.2125679-4-patrick.rudolph@9elements.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <1683039962-15751-1-git-send-email-zhouzhouyi@gmail.com>
+X-Spam-Status: No, score=-7.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, May 02, 2023 at 11:06:02PM +0800, zhouzhouyi@gmail.com wrote:
+> From: Zhouyi Zhou <zhouzhouyi@gmail.com>
+> 
+> Currently, default time between rcu torture forward-progress tests is 60HZ,
+> Under this configuration, false positive caused by __stack_chk_fail [1] is
+> difficult to reproduce (needs average 5*420 seconds for SRCU-P),
+> which means one has to invoke [2] 5 times in average to make [1] appear.
+> 
+> With time between rcu torture forward-progress tests be 1 HZ, above
+> phenomenon will be reproduced within 3 minutes, which means we can
+> reproduce [1] everytime we invoke [2].
+> 
+> Although [1] is a false positive, this change will make possible future
+> true bugs easier to be discovered.            
+>                    
+> [1] Link: https://lore.kernel.org/lkml/CAABZP2yS5=ZUwEZQ7iHkV0wDm_HgO8K-TeAhyJrZhavzKDa44Q@mail.gmail.com/T/
+> [2] tools/testing/selftests/rcutorture/bin/torture.sh
+> 
+> Tested in PPC VM of Opensource Lab of Oregon State Univerisity.
+>         
+> Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>        
 
---fyHrRlVQjHV3Dqqi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Please accept my apologies for being ridiculously slow to reply!
 
-On Thu, Aug 17, 2023 at 09:10:52AM +0200, Patrick Rudolph wrote:
-> Add support for the following Maxim chips using the existing PCA954x
-> driver:
-> - MAX7356
-> - MAX7357
-> - MAX7358
-> - MAX7367
-> - MAX7368
-> - MAX7369
->=20
-> All added Maxim chips behave like the PCA954x, where a single SMBUS byte
-> write selects up to 8 channels to be bridged to the primary bus.
->=20
-> While the MAX7357/MAX7358 have interrupt support, they don't act as
-> interrupt controller like the PCA9545 does. Thus don't enable IRQ support
-> and handle them like the PCA9548.
->=20
-> Tested using the MAX7357.
->=20
-> Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
+In recent -rcu, module parameters such as this one that simply set a
+value can be overridden on the command line.  So you could get the effect
+(again, in recent kernels) in your testing by adding:
 
-Applied to for-next, thanks!
+	--bootargs "rcutorture.fwd_progress_holdoff=1"
 
+The reason that I am reluctant to accept this patch is that we sometimes
+have trouble with this forward-progress testing exhausting memory, and
+making in happen could therefore cause trouble with generic rcutorture
+testing.
 
---fyHrRlVQjHV3Dqqi
-Content-Type: application/pgp-signature; name="signature.asc"
+Or am I missing the point of this change?
 
------BEGIN PGP SIGNATURE-----
+							Thanx, Paul
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmTmdu0ACgkQFA3kzBSg
-KbZ3Kw//dDD3DIEV2jrCj8Qq5j2ByBaa43gEkg2Db4QIPb3bsXqC1PA/Ns/QmOp4
-2Q8PJ0xqqtgwSqm7uxbT/MWQM0dsgbOcC7s4Wqs6aYbA5aKBMN4EaACi/e1NxJUF
-bgCLwupfdOSIiRhRObF1dBAFA+cSfHFTEx3tIYtrWig7dcZ80sPcBFuUSff1eJQ9
-ea2FxUiPMQbcckUczFq722ir+iOn1NLXxrFKFkbl51B859d+E9dCICfbac6t8sZm
-OueG+iF1QT4O9h2Bi3uAiezxN6o0V99hWcmYXdLGJY5PJU57ERpuOCq6jLba4Jq3
-hqjHEGlI1m/6zrLrrOmvuHA/Tn9023w1HI2n5brPnYJDqDFu5VFrvzXADD9ySMm+
-FvmjegD3BOWCER/dmNCd2X6hAFGntU9TL8MElMymPnOfIJT3nzAMfYk/woDo4dSv
-sUMfRP2pAzHPLt791Op/ZbffmvhaGnRshQwA1d0SfaTsuBX/reBJzrfUdr3yqwuH
-OVTe9WGqaRNjsVKd04+p5h1QEDc1HRfdBk2HYmlfiKq7BM3WOszJdMDVUm2dSBDH
-FRAMvyqNzL9/U1ePuuSH2ODTk3xvUFzRdS0QXrF4T1M4UFfqwOEChHCwH1TprDWN
-SQepICrW0AXuNB26EwJXZlUvqRwJNcI/zzZivrTRoXSYixO/GE0=
-=GoVi
------END PGP SIGNATURE-----
-
---fyHrRlVQjHV3Dqqi--
+> ---
+>  tools/testing/selftests/rcutorture/configs/rcu/SRCU-N.boot  | 1 +
+>  tools/testing/selftests/rcutorture/configs/rcu/SRCU-P.boot  | 1 +
+>  tools/testing/selftests/rcutorture/configs/rcu/TRACE02.boot | 1 +
+>  tools/testing/selftests/rcutorture/configs/rcu/TREE02.boot  | 1 +
+>  tools/testing/selftests/rcutorture/configs/rcu/TREE10.boot  | 1 +
+>  5 files changed, 5 insertions(+)
+> 
+> diff --git a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-N.boot b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-N.boot
+> index ce0694fd9b92..982582bff041 100644
+> --- a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-N.boot
+> +++ b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-N.boot
+> @@ -1,2 +1,3 @@
+>  rcutorture.torture_type=srcu
+>  rcutorture.fwd_progress=3
+> +rcutorture.fwd_progress_holdoff=1
+> diff --git a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-P.boot b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-P.boot
+> index 2db39f298d18..18f5d7361d8a 100644
+> --- a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-P.boot
+> +++ b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-P.boot
+> @@ -1,4 +1,5 @@
+>  rcutorture.torture_type=srcud
+>  rcupdate.rcu_self_test=1
+>  rcutorture.fwd_progress=3
+> +rcutorture.fwd_progress_holdoff=1
+>  srcutree.big_cpu_lim=5
+> diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TRACE02.boot b/tools/testing/selftests/rcutorture/configs/rcu/TRACE02.boot
+> index c70b5db6c2ae..b86bc7df7603 100644
+> --- a/tools/testing/selftests/rcutorture/configs/rcu/TRACE02.boot
+> +++ b/tools/testing/selftests/rcutorture/configs/rcu/TRACE02.boot
+> @@ -1,2 +1,3 @@
+>  rcutorture.torture_type=tasks-tracing
+>  rcutorture.fwd_progress=2
+> +rcutorture.fwd_progress_holdoff=1
+> diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE02.boot b/tools/testing/selftests/rcutorture/configs/rcu/TREE02.boot
+> index dd914fa8f690..933302f885df 100644
+> --- a/tools/testing/selftests/rcutorture/configs/rcu/TREE02.boot
+> +++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE02.boot
+> @@ -1 +1,2 @@
+>  rcutorture.fwd_progress=2
+> +rcutorture.fwd_progress_holdoff=1
+> diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE10.boot b/tools/testing/selftests/rcutorture/configs/rcu/TREE10.boot
+> index dd914fa8f690..933302f885df 100644
+> --- a/tools/testing/selftests/rcutorture/configs/rcu/TREE10.boot
+> +++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE10.boot
+> @@ -1 +1,2 @@
+>  rcutorture.fwd_progress=2
+> +rcutorture.fwd_progress_holdoff=1
+> -- 
+> 2.34.1
+> 
