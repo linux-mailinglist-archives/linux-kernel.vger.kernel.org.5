@@ -2,222 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70738784DDF
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 02:36:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF74A784DE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 02:37:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231880AbjHWAgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 20:36:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50866 "EHLO
+        id S231887AbjHWAhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 20:37:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231285AbjHWAgW (ORCPT
+        with ESMTP id S231285AbjHWAhJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 20:36:22 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 363F6CF9;
-        Tue, 22 Aug 2023 17:36:20 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C559F60B58;
-        Wed, 23 Aug 2023 00:36:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CD2EC433C8;
-        Wed, 23 Aug 2023 00:36:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692750979;
-        bh=xNTKQwORwsCD8O9TsOJK6CO4peKiHi/Jma3poQjjDDY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=iBLisRyxZjunYu7v+KK7zXWuQ+BiRRMSZ3jRQEN5Uh4DplCxl6r3VWUeH4eIvYKLG
-         gM7SAXFQ4mG5QbhwGHlukcKuM6gw2BYbFcoQ4+beguMOe38bAmwBDELZt/JInsr8tf
-         pK7BoTENAIyYgzAStm1aYsELWvPr/dTNYM+pH1AT8VeLWz0BCCShly6bcHJDAtvgxH
-         1eWFHAifnX5a1rCsMDvec69goQmuX0F3Gokvo0pKtC23Rbs/iy9H2SA0uzriw6V8v8
-         yTMi+l2uKpNAXlqr5eS+4p94aMxSoDhuSuTK5kV6h+kfG7zQb1jls9ZM9WZ7ZUiEUU
-         G8vbUTqnG3C9Q==
-Date:   Wed, 23 Aug 2023 09:36:14 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Francis Laniel <flaniel@linux.microsoft.com>
-Cc:     linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        linux-trace-kernel@vger.kernel.org,
-        Song Liu <songliubraving@fb.com>, bpf@vger.kernel.org
-Subject: Re: [RFC PATCH v1 1/1] tracing/kprobe: Add multi-probe support for
- 'perf_kprobe' PMU
-Message-Id: <20230823093614.fd704a98387d0ba1d23a29fb@kernel.org>
-In-Reply-To: <2237127.iZASKD2KPV@pwmachine>
-References: <20230816163517.112518-1-flaniel@linux.microsoft.com>
-        <5702263.DvuYhMxLoT@pwmachine>
-        <20230819101105.b0c104ae4494a7d1f2eea742@kernel.org>
-        <2237127.iZASKD2KPV@pwmachine>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-8.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+        Tue, 22 Aug 2023 20:37:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C26A4CFF
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 17:36:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692750988;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=U2IL+cZp/0HHCpa5Ko71FJgAGVSdljaI2sGgMww+L4A=;
+        b=FBbzeja4mHHuACvtrAFC0m++jEZELNkq5mnNY3HVYk97ujEFlpXpYK4gH0opszR6cDm6qU
+        l65RbkHHXqPrZHVDK3zKgl0x9w/kR6pR2KS2YmbRf8baimVQprQZAlpHgtMZLakUL/qM4N
+        EEqXBOXekCc7CmK58eq+hDlnmzIvz6A=
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
+ [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-695--AkQ53xLP6-vyq2u2KxGIg-1; Tue, 22 Aug 2023 20:36:27 -0400
+X-MC-Unique: -AkQ53xLP6-vyq2u2KxGIg-1
+Received: by mail-lj1-f199.google.com with SMTP id 38308e7fff4ca-2bbbaa6001dso46192161fa.3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 17:36:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692750985; x=1693355785;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=U2IL+cZp/0HHCpa5Ko71FJgAGVSdljaI2sGgMww+L4A=;
+        b=Y9URvcsN8Z6fyMkYWtUJXPxYtX+qLD55dzN9R39AdLEJW9lBJN4WEILVAjNYds2uIl
+         z2jACrS66eeGXDy9V0wr9Ygg9MzEhjEkr0ZGzLgtlTy/2/D+4DcXFz5yTln5hb8D87CR
+         T38/iSmeYjVR3FvMbejTzTK9gJsBXYMOWhp8nDKzr2FRMuWZaqKdhUiQvA4aWYYo0kpS
+         sG7WJsVN2WNI8etKVOuPV4YYmLdiyykfXEFtzk7uHLXQCLG9lQMGo45GXXocUrtOZgif
+         4lIRiSV10HyeqcFT09YDbB0xLvxa+w2pcs8X5y4q1pcKSbjtnXUUWKS/NhRtt2O3GGEt
+         i6eA==
+X-Gm-Message-State: AOJu0YzkWk9HYX4O4Ng+OcXv/CFCCMFdkawNvGyF6Qd1YhgIJhTugJ8K
+        Lif2trXW3P4x7N4aXYdXhPBPMpTMS7vn84ljm4jkY7UVDVn7kXk2PpCll4KNRKewAVUU9SkZyeZ
+        DmsFEUnC+JYfzNmaP7WoUL2Qv0nRO0uz+9dg5SffBePUA8xyfALt1XQ==
+X-Received: by 2002:a2e:3607:0:b0:2b6:de52:357 with SMTP id d7-20020a2e3607000000b002b6de520357mr8028171lja.40.1692750985670;
+        Tue, 22 Aug 2023 17:36:25 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEEFPDsk5hA0Fn4R6rUDIO6eqwFcn1qxMxURYoc60s0yH3huA1vp9eXuhPoq72Mx9oKSgrLLDu1lRa2xVe/Epk=
+X-Received: by 2002:a2e:3607:0:b0:2b6:de52:357 with SMTP id
+ d7-20020a2e3607000000b002b6de520357mr8028163lja.40.1692750985367; Tue, 22 Aug
+ 2023 17:36:25 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230821142713.5062-1-feliu@nvidia.com>
+In-Reply-To: <20230821142713.5062-1-feliu@nvidia.com>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Wed, 23 Aug 2023 08:36:14 +0800
+Message-ID: <CACGkMEvbYCf-TsV+VtNT6iUiHM7s+MOnJ5UZz8yyw2MSifVT5Q@mail.gmail.com>
+Subject: Re: [PATCH net-next v3] virtio_net: Introduce skb_vnet_common_hdr to
+ avoid typecasting
+To:     Feng Liu <feliu@nvidia.com>
+Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Simon Horman <horms@kernel.org>,
+        Bodong Wang <bodong@nvidia.com>, Jiri Pirko <jiri@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Mon, 21 Aug 2023 14:55:14 +0200
-Francis Laniel <flaniel@linux.microsoft.com> wrote:
-
-> > Could you tell me how do you use this feature, for what perpose?
-> 
-> Sure (I think I detailed this in the cover letter but I only sent it to the 
-> "main" mailing list and not the tracing one, sorry for this inconvenience)!
-> 
-> Basically, I was adding NTFS tracing to an existing tool which monitors slow 
-> I/Os using BPF [1].
-> To test the tool, I compiled a kernel with both NTFS module built-in and 
-> figured out the write operations when done on ntfs3 were missing from the 
-> output of the tool.
-> The problem comes from the library I use in the tool which does not handle 
-> well when it exists different symbols with the same name.
-> Contrary to perf, which only handles kprobes through sysfs, the library 
-> handles it in both way (sysfs and PMU) with a preference for PMU when 
-> available [2].
-> 
-> After some discussion, I thought there could be a way to handle this 
-> automatically in the kernel when using PMU kprobes, hence this patch.
-> I totally understand the case I described above is really a corner one, but I 
-> thought this feature could be useful for other people.
-> In the case of the library itself, we could indeed find the address in /proc/
-> kallsyms but it would mean having CAP_SYS_ADMIN which is not forcefully 
-> something we want to enforce.
-> Also, if we need to read /boot/vmlinuz or /boot/System.map we also need to be 
-> root as these files often belong to root and cannot be read by others.
-> So, this patch solves the above problem while not needing specific capabilities 
-> as the kernel will solve it for us.
-
-Thanks for the explanation. I got the background, and still have some questions.
-
-- Is the analysis tool really necessary to be used by users other than
-  CAP_SYS_ADMIN? Even if it is useful, I still doubt CAP_PERFMON is safer
-  than CAP_SYS_ADMIN, because BPF program can access any kernel register.
-
-- My concern about this solution (enabling kprobe PMU on all symbols which
-  have the same name) makes it hard to run the same BPF program on it.
-  This is because symbols with the same name do not necessarily have the
-  same arguments (theoretically). Also, the BPF will trace unwanted symbols
-  at unwanted timing.
-
-- Can you expand that library to handle the same name symbols differently?
-  I think this should be done in the user space, or in the kallsyms like
-  storing symbols with source line information.
-
-I understand this demand, but solving that with probing *all* symbols seems
-like a brute force solution and may cause another problem later.
-
-But this is a good discussion item. Last month Alessandro sent a script which
-makes such symbols unique. Current problem is that the numbering is not enough
-to identify which one is from which source code.
-
-https://lore.kernel.org/all/20230714150326.1152359-1-alessandro.carminati@gmail.com/ 
-
-> 
-> > If you just need to trace/profile a specific function which has the same
-> > name symbols, you might be better to use `perf probe` +
-> > `/sys/kernel/tracing` or `perf record -e EVENT`.
-> > 
-> > Or if you need to run it with CAP_PERFMON, without CAP_SYS_ADMIN,
-> > we need to change a userspace tool to find the correct address and
-> > pass it to the perf_event_open().
-> > 
-> > > > > Added new events:
-> > > > >   probe:ntfs_file_write_iter (on ntfs_file_write_iter)
-> > > > >   probe:ntfs_file_write_iter (on ntfs_file_write_iter)
-> > > > > 
-> > > > > You can now use it in all perf tools, such as:
-> > > > >         perf record -e probe:ntfs_file_write_iter -aR sleep 1
-> > > > > 
-> > > > > root@vm-amd64:~# cat /sys/kernel/tracing/kprobe_events
-> > > > > p:probe/ntfs_file_write_iter _text+5088544
-> > > > > p:probe/ntfs_file_write_iter _text+5278560
-> > > > > 
-> > > > > > Thought?
-> > > > > 
-> > > > > This contribution is basically here to sort of mimic what perf does
-> > > > > but
-> > > > > with PMU kprobes, as this is not possible to write in a sysfs file
-> > > > > with
-> > > > > this type of probe.
-> > > > 
-> > > > OK, I see it is for BPF only. Maybe BPF program can filter correct one
-> > > > to access the argument etc.
-> > > 
-> > > I am not sure I understand, can you please precise?
-> > > The eBPF program will be run when the kprobe will be triggered, so if the
-> > > kprobe is armed for the function (e.g. old ntfs_file_write_iter()), the
-> > > eBPF program will never be called.
-> > 
-> > As I said above, it is userspace BPF loader issue, because it has to specify
-> > the correct address via unique symbol + offset, instead of attaching all of
-> > them. I think that will be more side-effects.
-> > 
-> > But anyway, thanks for pointing this issue. I should fix kprobe event to
-> > reject the symbols which is not unique. That should be pointed by other
-> > unique symbols.
-> 
-> You are welcome and I thank you for the discussion.
-> Can you please precise more what you think about "reject the symbols which is 
-> not unique"?
-> Basically something like this:
-
-Yes, that's what I said.
-
-> struct trace_event_call *
-> create_local_trace_kprobe(char *func, void *addr, unsigned long offs,
-> 			  bool is_return)
+On Mon, Aug 21, 2023 at 10:27=E2=80=AFPM Feng Liu <feliu@nvidia.com> wrote:
+>
+> The virtio_net driver currently deals with different versions and types
+> of virtio net headers, such as virtio_net_hdr_mrg_rxbuf,
+> virtio_net_hdr_v1_hash, etc. Due to these variations, the code relies
+> on multiple type casts to convert memory between different structures,
+> potentially leading to bugs when there are changes in these structures.
+>
+> Introduces the "struct skb_vnet_common_hdr" as a unifying header
+> structure using a union. With this approach, various virtio net header
+> structures can be converted by accessing different members of this
+> structure, thus eliminating the need for type casting and reducing the
+> risk of potential bugs.
+>
+> For example following code:
+> static struct sk_buff *page_to_skb(struct virtnet_info *vi,
+>                 struct receive_queue *rq,
+>                 struct page *page, unsigned int offset,
+>                 unsigned int len, unsigned int truesize,
+>                 unsigned int headroom)
 > {
-> 	...
-> 	if (!addr && func) {
-
-if (func) {  /* because anyway if user specify "func" we have to solve
- the symbol address */
-
-> 		array.addrs = NULL;
-> 		array.size = 0;
-> 		ret = kallsyms_on_each_match_symbol(add_addr, func, &array);
-> 		if (ret)
-> 			goto error_free;
-> 
-> 		if (array.size != 1) {
-> 			/* 
-> 			 * Function name corresponding to several symbols must
-> 			 * be passed by address only.
-> 			 */
-> 			return -EINVAL;
-
-This case may return a unique error code so that the caller can notice
-the problem.
-
-Thank you,
-
-> 		}
-> 	}
-
-
-
-> 	...
+> [...]
+>         struct virtio_net_hdr_mrg_rxbuf *hdr;
+> [...]
+>         hdr_len =3D vi->hdr_len;
+> [...]
+> ok:
+>         hdr =3D skb_vnet_hdr(skb);
+>         memcpy(hdr, hdr_p, hdr_len);
+> [...]
 > }
-> ?
-> If my understanding is correct, I think I can write a patch to achieve this.
-> 
+>
+> When VIRTIO_NET_F_HASH_REPORT feature is enabled, hdr_len =3D 20
+> But the sizeof(*hdr) is 12,
+> memcpy(hdr, hdr_p, hdr_len); will copy 20 bytes to the hdr,
+> which make a potential risk of bug. And this risk can be avoided by
+> introducing struct skb_vnet_common_hdr.
+>
+> Change log
+> v1->v2
+> feedback from Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+> feedback from Simon Horman <horms@kernel.org>
+> 1. change to use net-next tree.
+> 2. move skb_vnet_common_hdr inside kernel file instead of the UAPI header=
+.
+>
+> v2->v3
+> feedback from Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+> 1. fix typo in commit message.
+> 2. add original struct virtio_net_hdr into union
+> 3. remove virtio_net_hdr_mrg_rxbuf variable in receive_buf;
+>
+> Signed-off-by: Feng Liu <feliu@nvidia.com>
+> Reviewed-by: Jiri Pirko <jiri@nvidia.com>
 
-> 
-> Best regards.
+Acked-by: Jason Wang <jasowang@redhat.com>
+
+Thanks
+
 > ---
-> [1]: https://github.com/inspektor-gadget/inspektor-gadget/pull/1879
-> [2]: https://github.com/cilium/ebpf/blob/
-> 270c859894bd38cdd0c7783317b16343409e4df8/link/kprobe.go#L165-L191
-> 
-> 
+>  drivers/net/virtio_net.c | 27 ++++++++++++++++++---------
+>  1 file changed, 18 insertions(+), 9 deletions(-)
+>
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index 8e9f4cfe941f..8c74bc8cfe68 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -303,6 +303,14 @@ struct padded_vnet_hdr {
+>         char padding[12];
+>  };
+>
+> +struct virtio_net_common_hdr {
+> +       union {
+> +               struct virtio_net_hdr hdr;
+> +               struct virtio_net_hdr_mrg_rxbuf mrg_hdr;
+> +               struct virtio_net_hdr_v1_hash hash_v1_hdr;
+> +       };
+> +};
+> +
+>  static void virtnet_rq_free_unused_buf(struct virtqueue *vq, void *buf);
+>  static void virtnet_sq_free_unused_buf(struct virtqueue *vq, void *buf);
+>
+> @@ -344,9 +352,10 @@ static int rxq2vq(int rxq)
+>         return rxq * 2;
+>  }
+>
+> -static inline struct virtio_net_hdr_mrg_rxbuf *skb_vnet_hdr(struct sk_bu=
+ff *skb)
+> +static inline struct virtio_net_common_hdr *
+> +skb_vnet_common_hdr(struct sk_buff *skb)
+>  {
+> -       return (struct virtio_net_hdr_mrg_rxbuf *)skb->cb;
+> +       return (struct virtio_net_common_hdr *)skb->cb;
+>  }
+>
+>  /*
+> @@ -469,7 +478,7 @@ static struct sk_buff *page_to_skb(struct virtnet_inf=
+o *vi,
+>                                    unsigned int headroom)
+>  {
+>         struct sk_buff *skb;
+> -       struct virtio_net_hdr_mrg_rxbuf *hdr;
+> +       struct virtio_net_common_hdr *hdr;
+>         unsigned int copy, hdr_len, hdr_padded_len;
+>         struct page *page_to_free =3D NULL;
+>         int tailroom, shinfo_size;
+> @@ -554,7 +563,7 @@ static struct sk_buff *page_to_skb(struct virtnet_inf=
+o *vi,
+>                 give_pages(rq, page);
+>
+>  ok:
+> -       hdr =3D skb_vnet_hdr(skb);
+> +       hdr =3D skb_vnet_common_hdr(skb);
+>         memcpy(hdr, hdr_p, hdr_len);
+>         if (page_to_free)
+>                 put_page(page_to_free);
+> @@ -966,7 +975,7 @@ static struct sk_buff *receive_small_build_skb(struct=
+ virtnet_info *vi,
+>                 return NULL;
+>
+>         buf +=3D header_offset;
+> -       memcpy(skb_vnet_hdr(skb), buf, vi->hdr_len);
+> +       memcpy(skb_vnet_common_hdr(skb), buf, vi->hdr_len);
+>
+>         return skb;
+>  }
+> @@ -1577,7 +1586,7 @@ static void receive_buf(struct virtnet_info *vi, st=
+ruct receive_queue *rq,
+>  {
+>         struct net_device *dev =3D vi->dev;
+>         struct sk_buff *skb;
+> -       struct virtio_net_hdr_mrg_rxbuf *hdr;
+> +       struct virtio_net_common_hdr *hdr;
+>
+>         if (unlikely(len < vi->hdr_len + ETH_HLEN)) {
+>                 pr_debug("%s: short packet %i\n", dev->name, len);
+> @@ -1597,9 +1606,9 @@ static void receive_buf(struct virtnet_info *vi, st=
+ruct receive_queue *rq,
+>         if (unlikely(!skb))
+>                 return;
+>
+> -       hdr =3D skb_vnet_hdr(skb);
+> +       hdr =3D skb_vnet_common_hdr(skb);
+>         if (dev->features & NETIF_F_RXHASH && vi->has_rss_hash_report)
+> -               virtio_skb_set_hash((const struct virtio_net_hdr_v1_hash =
+*)hdr, skb);
+> +               virtio_skb_set_hash(&hdr->hash_v1_hdr, skb);
+>
+>         if (hdr->hdr.flags & VIRTIO_NET_HDR_F_DATA_VALID)
+>                 skb->ip_summed =3D CHECKSUM_UNNECESSARY;
+> @@ -2105,7 +2114,7 @@ static int xmit_skb(struct send_queue *sq, struct s=
+k_buff *skb)
+>         if (can_push)
+>                 hdr =3D (struct virtio_net_hdr_mrg_rxbuf *)(skb->data - h=
+dr_len);
+>         else
+> -               hdr =3D skb_vnet_hdr(skb);
+> +               hdr =3D &skb_vnet_common_hdr(skb)->mrg_hdr;
+>
+>         if (virtio_net_hdr_from_skb(skb, &hdr->hdr,
+>                                     virtio_is_little_endian(vi->vdev), fa=
+lse,
+> --
+> 2.37.1 (Apple Git-137.1)
+>
 
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
