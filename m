@@ -2,78 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A27AD785DE2
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 18:50:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 062F4785DED
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 18:54:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236430AbjHWQuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 12:50:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53280 "EHLO
+        id S236777AbjHWQyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 12:54:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234897AbjHWQuv (ORCPT
+        with ESMTP id S234205AbjHWQyC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 12:50:51 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B184ECD5;
-        Wed, 23 Aug 2023 09:50:49 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1bdbbede5d4so46360305ad.2;
-        Wed, 23 Aug 2023 09:50:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692809449; x=1693414249;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=D1rJRywRerSHpKN9caLA2gQ8y2MlCgXj2iqPjlxyJ44=;
-        b=ZbJqUYDB3GH7o2Dm2wwcpAzSQT4h22XkwlJbjDjyNNmOncay379skFsmRHmELyV4/R
-         IgvA/cow2ZAkGqAh8APe6+AMtAb++uacUJvIA93GQV4mOxDUWB9jdP0L72ojG5vy4Cz1
-         Wn8Awn3qs5GETBGRhRcqXZn2Bcd5g64xf1uf27MO3ib51XXDXEW+D0SFd0cuFzfBmD6F
-         hzCzycyvMwyLh91/WxMAGwZHNqvlKgsIA0iUTqsdsn6ZibQr/TSJHH8leGDrghxKdjni
-         nP8M180gNQeFRMpuDop737u0V8M2LfgRBGae3AZyJW3luesgnrnM7dCqjBoGFTZdTrcM
-         Jzog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692809449; x=1693414249;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=D1rJRywRerSHpKN9caLA2gQ8y2MlCgXj2iqPjlxyJ44=;
-        b=GR5IAmB5ycEohXdmnfqBXzuAUztLdgWf+alHruX2cKQQ+EDamtXO1fKUfn49DfAslW
-         ZdruYxWWMl80GBtr98geLHsRTHeP8/NMavz+kE1+SPlhLB/pNsvlOd79Ev3J8willXHt
-         5VoJ57Dmc2AtC679C2wq/EciuBbEhSptgpLRBlNPpbnYTLXWkqYreD9sT296/0MBaJOd
-         9aR3Msynq1n9VKmfR+TRTEoZHE/FBAlun3Ck3VhcMLRk+0zXQ5B2+lao9FESAV14jmF6
-         Ro2YLnHzAffBhq7ElLHaNgCshPvQclIRYyaPItymDcP1f2J3o6jqh0Ei0Y6pUn2HeJxz
-         yeJw==
-X-Gm-Message-State: AOJu0Ywnq/fQzmJq80sRbNVHT8rtDSDpjEUlkZFWdP7+t7eT7MfPgUN8
-        oVMv/duVlOSN4yVOECYcwdau/yGY2zc=
-X-Google-Smtp-Source: AGHT+IGJ4zPUahe+I8pV4fKp97GwuTJ5+jKETKiilPbd2CcbtxsDMr1YLovxtT0fLpMFWDJ1Tyo4Og==
-X-Received: by 2002:a17:903:25d4:b0:1bd:bbc3:c87b with SMTP id jc20-20020a17090325d400b001bdbbc3c87bmr11857518plb.41.1692809449014;
-        Wed, 23 Aug 2023 09:50:49 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id s15-20020a170902ea0f00b001bbc8d65de0sm11221936plg.67.2023.08.23.09.50.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Aug 2023 09:50:48 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 23 Aug 2023 09:50:47 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>,
-        Benson Leung <bleung@chromium.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        John Stultz <jstultz@google.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-rtc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Brian Norris <briannorris@chromium.org>
-Subject: Re: [PATCH v2 1/7] rtc: Add support for limited alarm timer offsets
-Message-ID: <b07b19ce-7f04-409c-bcb9-6deba059f57a@roeck-us.net>
-References: <20230817225537.4053865-1-linux@roeck-us.net>
- <20230817225537.4053865-2-linux@roeck-us.net>
+        Wed, 23 Aug 2023 12:54:02 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE1A6E60
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 09:54:00 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8663061179
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 16:54:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDCC8C433CA
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 16:53:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692809639;
+        bh=/m05BVbbhQZnGWMzyHejK0jy+8hkwws6SLURxTv+C+0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=GbBF13jpMAeUmmoDQzy+MrwetggJPOT1eNSZ5hSqKN09aeN7Zj/IeRSav5ecCBSNF
+         L79TwTNdMS6GjnoFL2GRFp/tWpq6Oqi1uH7wr7RxvlQQ3Jh44y34t952yjzZNuR4/g
+         l1KPFL5LG/t54V14X6Nuyxdr6G8cawSXhNyqvkfG7w5Bt4v8RNwOKYJfaeiEESf24Y
+         CaG2vAaoA0m7fP3WmFqDmFU+vsj/XoNd0q8yMSBiykUQT6Nt1/VJi9i2Sb8vjDwimJ
+         tfn6hp/VQfBE8xMMJfeJzdWiWgt8ooWECZaWDWEEzA0uxL6wHA+ZvvKVlGmWzOrl9x
+         d49O10AqXEjyQ==
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2bcc4347d2dso45390791fa.0
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 09:53:59 -0700 (PDT)
+X-Gm-Message-State: AOJu0YxqGxc1cKE96/EPLbQL+uTRt7asFlPyMpBxxhjl+8CClMx+t5ye
+        q9VqofovmoKBfe9PuOONTWrK23k8/1YceFqrYA==
+X-Google-Smtp-Source: AGHT+IGbifS+z9ypvOM3QS2TueX9lmSydCFDxyBTCG6BEav5VPtVfvFlAFwUY9R7Id2EAEzfBRCBV+XMI/5ZMeM/zKc=
+X-Received: by 2002:a2e:8914:0:b0:2b9:3db7:322f with SMTP id
+ d20-20020a2e8914000000b002b93db7322fmr10770700lji.18.1692809637712; Wed, 23
+ Aug 2023 09:53:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230817225537.4053865-2-linux@roeck-us.net>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+References: <20230717225610.3214029-1-robh@kernel.org> <169028492642.1718138.9430735746671016845.b4-ty@ti.com>
+ <CAL_JsqKAuLJwBiKjLFd03C89ZRr0P+URyOh3t-7oqKv3vQzBdw@mail.gmail.com> <20230822230307.hps2zhd3acdjy7r3@emptiness>
+In-Reply-To: <20230822230307.hps2zhd3acdjy7r3@emptiness>
+From:   Rob Herring <robh@kernel.org>
+Date:   Wed, 23 Aug 2023 11:53:45 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJaYubxFHN6TEqTNicW-pdbBP=GQx70Sx-_0Po=p2d0ng@mail.gmail.com>
+Message-ID: <CAL_JsqJaYubxFHN6TEqTNicW-pdbBP=GQx70Sx-_0Po=p2d0ng@mail.gmail.com>
+Subject: Re: [PATCH] ARM: keystone: Drop unused includes
+To:     Nishanth Menon <nm@ti.com>
+Cc:     Santosh Shilimkar <ssantosh@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,54 +66,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alexandre,
+On Tue, Aug 22, 2023 at 6:03=E2=80=AFPM Nishanth Menon <nm@ti.com> wrote:
+>
+> On 17:28-20230822, Rob Herring wrote:
+> > On Tue, Jul 25, 2023 at 6:35=E2=80=AFAM Nishanth Menon <nm@ti.com> wrot=
+e:
+> > >
+> > > Hi Rob Herring,
+> > >
+> > > On Mon, 17 Jul 2023 16:56:09 -0600, Rob Herring wrote:
+> > > > Several includes are not needed, so drop them.
+> > > >
+> > > > of_platform.h is not needed, but it implicitly includes platform_de=
+vice.h
+> > > > (for now) which is needed.
+> > > >
+> > > >
+> > >
+> > > I have applied the following to branch ti-keystone-next on [1].
+> > > Thank you!
+> > >
+> > > [1/1] ARM: keystone: Drop unused includes
+> > >       commit: 630c191b3396c6aaccab1234f8834848a2c42e8a
+> >
+> > Did you really? Doesn't look like this is in linux-next.
+>
+> Seems to have been there for a while?
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git/log/?h=3Dti-=
+keystone-next
+>
+> https://patchwork.kernel.org/project/linux-soc/patch/20230814160702.6l2fc=
+ujbx33eogap@junction/
+>
+> $ git tag --contains 630c191b3396c6aaccab1234f8834848a2c42e8a
+> next-20230801
+> next-20230802
+> next-20230804
+> next-20230807
+> next-20230808
+> next-20230809
+> next-20230816
+> next-20230817
+> next-20230818
+> next-20230821
+> next-20230822
+> ti-keystone-soc-for-v6.6
+>
+>
+> Did I miss something?
 
-On Thu, Aug 17, 2023 at 03:55:31PM -0700, Guenter Roeck wrote:
-> Some alarm timers are based on time offsets, not on absolute times.
-> In some situations, the amount of time that can be scheduled in the
-> future is limited. This may result in a refusal to suspend the system,
-> causing substantial battery drain.
-> 
-> Some RTC alarm drivers remedy the situation by setting the alarm time
-> to the maximum supported time if a request for an out-of-range timeout
-> is made. This is not really desirable since it may result in unexpected
-> early wakeups.
-> 
-> To reduce the impact of this problem, let RTC drivers report the maximum
-> supported alarm timer offset. The code setting alarm timers can then
-> decide if it wants to reject setting alarm timers to a larger value, if it
-> wants to implement recurring alarms until the actually requested alarm
-> time is met, or if it wants to accept the limited alarm time.
-> 
-> Only introduce the necessary variable into struct rtc_device.
-> Code to set and use the variable will follow with subsequent patches.
-> 
-> Cc: Brian Norris <briannorris@chromium.org>
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Sorry, I sent the davinci changes also with 'keystone' in the subject
+by mistake and confused myself...
 
-I guess it is a bit late to get the series into v6.6, but would it be
-possible to apply it to a -next branch to get some more test coverage ?
-
-Either case, do you have any additional comments / feedback ?
-
-Thanks,
-Guenter
-
-> ---
-> v2: Rename range_max_offset -> alarm_offset_max
-> 
->  include/linux/rtc.h | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/include/linux/rtc.h b/include/linux/rtc.h
-> index 1fd9c6a21ebe..4c0bcbeb1f00 100644
-> --- a/include/linux/rtc.h
-> +++ b/include/linux/rtc.h
-> @@ -146,6 +146,7 @@ struct rtc_device {
->  
->  	time64_t range_min;
->  	timeu64_t range_max;
-> +	timeu64_t alarm_offset_max;
->  	time64_t start_secs;
->  	time64_t offset_secs;
->  	bool set_start_time;
+Rob
