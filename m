@@ -2,168 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06C28785525
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 12:15:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5710278553C
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 12:18:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233475AbjHWKPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 06:15:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49838 "EHLO
+        id S230141AbjHWKRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 06:17:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233559AbjHWKO5 (ORCPT
+        with ESMTP id S233208AbjHWKR2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 06:14:57 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BE8510CE
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 03:14:39 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1692785678;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to; bh=xHAy/sMONweUS/DhPb0E5JyPCBTL0TCK63jYWN/GUBw=;
-        b=MaFU7WgNJNXbv+VAo2Ng2Saag+bl1U9CuHPLj50Ck68lWbxm4reFqSyROvCqCDrmTn5cUV
-        JoHseGcrvoB2S31sfk2KzqAmgL3KTDHeo2tedg0xOS36DHh5JHjKoLwUjQSvhc5Z5x6I3h
-        +rPYXfz/HU+SVZmpHmf6FJ8hmVYdPPilvyahj9bIlFr1O0AD6GU5EgdKCf6UtDazx0TmQs
-        Lpw+07jJ6UppqUPQHlvM+B9FwNseFFt3Hc9Ox405GrNV5Es+Ky030KD/b7ooLMawM7LL/S
-        Zz+8lMF8BkJOUVsyTET0odZyhEvhbqJ2uV3UgAudIFAUzLcwM+6ESEmrf8Oatw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1692785678;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to; bh=xHAy/sMONweUS/DhPb0E5JyPCBTL0TCK63jYWN/GUBw=;
-        b=w0rJPPoPOb77vzsk69ycDWLo+QBz9XjT5hbA++ZEMKdeZRboIEOl81UoCSTPT2Qb6OXs2j
-        G+hoLOhgRc5QXhAg==
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Xiongfeng Wang <wangxiongfeng2@huawei.com>, vschneid@redhat.com,
-        Phil Auld <pauld@redhat.com>, vdonnefort@google.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Wei Li <liwei391@huawei.com>,
-        "liaoyu (E)" <liaoyu15@huawei.com>, zhangqiao22@huawei.com,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: Re: [Question] report a race condition between CPU hotplug state
- machine and hrtimer 'sched_cfs_period_timer' for cfs bandwidth throttling
-In-Reply-To: <CAKfTPtBSx7h1caR9g8wEK5GG2JMfSBRqSzLgjRUjrnp1Zc-ssg@mail.gmail.com>
-Date:   Wed, 23 Aug 2023 12:14:37 +0200
-Message-ID: <87h6oqdq0i.ffs@tglx>
+        Wed, 23 Aug 2023 06:17:28 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE545CFE
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 03:16:58 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-52a069edca6so4351958a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 03:16:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692785793; x=1693390593;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PkhmhhTWHkeRQp2PPUUxTCXWp1T0OTe7aVdp4fg5upo=;
+        b=LO6EWlz79jJJ9v/UQCg4OZKmPJO9+j6QHM1tngs1xZjP73VY2yTNyozqbCEjmHkgOJ
+         /I25kU9siRPAlFrz9dpUhrfTb7C4hK1nJcapsvmczx4ZFMRu+Id4skeNROqiKQ5j7fC1
+         ZyyN0rEkpFnovXZ/Y9YFpI+20NzFPUlKW8oib55lhQS8AfgOyDR1cSStWeGIk4mOE/f8
+         e8jk+ITZo8/vSFO72g6rBQt9NS7/HQQrfF/hlcYS6bEX+Ay7j17UK9K0sHHCYLh/aFQD
+         moxfheS5gy+jsjw+9CZRAFxsIYJOD76OVSKpIkrcpc8QGv+VCkZ89LVZ+6AtV/ge1cjC
+         e99w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692785793; x=1693390593;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PkhmhhTWHkeRQp2PPUUxTCXWp1T0OTe7aVdp4fg5upo=;
+        b=DJKO7motHQSKgaBvK1efQObL7oVqdMrdZ8EVX/HlQJFzgkA8LBc6lChktN4N4I5Em0
+         V86P30G789QBOKOv733ZRN8wd7o78YdzEN7mAhLRga52axfjPU82yfhVAMEUGOafCDp+
+         875jGYGIjd3uP8JfkdBwb65+K3+DFi7DteGB94wU1gvgAi6Pc4QeyicoSKQPpnn56AFd
+         xoWlEI/jcdIzTGnRL7eA6np+emOW+wxgvfLgfqIupee2MhYjxu+8qTtOiF18dR4LoX8/
+         lqR4NE9gcxt1RCQgaY6AueHELN8aM+scNdLizD7JiqEEuioTPyrx1Go7nYhAj5dy22ND
+         XPsQ==
+X-Gm-Message-State: AOJu0YzwWojKhlRVq96jPN6gIAR5bSISrjvVW0xWUtigH5/sDmqk99XY
+        9Vg1gKDKK18/mdSVjjBBrQe4iQ==
+X-Google-Smtp-Source: AGHT+IG4cl/3Fz/QSS2cl3WXZt2VKfaSb/kNTKY6FTxfUyaMgKaOK/vEjbIWyu1Ae6CwwBgVchcQyg==
+X-Received: by 2002:a05:6402:1614:b0:522:1e2f:fa36 with SMTP id f20-20020a056402161400b005221e2ffa36mr8763754edv.28.1692785793520;
+        Wed, 23 Aug 2023 03:16:33 -0700 (PDT)
+Received: from [192.168.0.22] ([77.252.47.198])
+        by smtp.gmail.com with ESMTPSA id i15-20020a50fc0f000000b0051e1660a34esm9063699edr.51.2023.08.23.03.16.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Aug 2023 03:16:32 -0700 (PDT)
+Message-ID: <61b9e036-7864-65c6-d43b-463fff896ddc@linaro.org>
+Date:   Wed, 23 Aug 2023 12:16:28 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v3 29/42] dt-bindings: rtc: Add ST M48T86
+Content-Language: en-US
+To:     nikita.shubin@maquefel.me,
+        Hartley Sweeten <hsweeten@visionengravers.com>,
+        Lennert Buytenhek <kernel@wantstofly.org>,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Lukasz Majewski <lukma@denx.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Sebastian Reichel <sre@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Mark Brown <broonie@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Vinod Koul <vkoul@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        soc@kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Andy Shevchenko <andy@kernel.org>,
+        Michael Peters <mpeters@embeddedTS.com>,
+        Kris Bahnsen <kris@embeddedTS.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-rtc@vger.kernel.org,
+        linux-watchdog@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-spi@vger.kernel.org,
+        netdev@vger.kernel.org, dmaengine@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org,
+        linux-input@vger.kernel.org, alsa-devel@alsa-project.org
+References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
+ <20230605-ep93xx-v3-29-3d63a5f1103e@maquefel.me>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230605-ep93xx-v3-29-3d63a5f1103e@maquefel.me>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 29 2023 at 10:30, Vincent Guittot wrote:
-> On Thu, 29 Jun 2023 at 00:01, Thomas Gleixner <tglx@linutronix.de> wrote:
->>  int cpu_device_down(struct device *dev)
->>  {
->> -       return cpu_down(dev->id, CPUHP_OFFLINE);
->> +       unsigned int cpu = cpumask_any_but(cpu_online_mask, dev->id);
->> +
->> +       if (cpu >= nr_cpu_ids)
->> +               return -EBUSY;
->> +
->> +       return work_on_cpu(cpu, __cpu_device_down, dev);
->
-> The comment for work_on_cpu :
->
->  * It is up to the caller to ensure that the cpu doesn't go offline.
->  * The caller must not hold any locks which would prevent @fn from completing.
->
-> make me wonder if this should be done only once the hotplug lock is
-> taken so the selected cpu will not go offline
+On 20/07/2023 13:29, Nikita Shubin via B4 Relay wrote:
+> From: Nikita Shubin <nikita.shubin@maquefel.me>
+> 
+> Add YAML bindings for ST M48T86 / Dallas DS12887 RTC.
+> 
+> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
 
-That makes sense. Updated and again untested patch below.
 
-Thanks,
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-        tglx
----
-Subject: cpu/hotplug: Prevent self deadlock on CPU hot-unplug
-From: Thomas Gleixner <tglx@linutronix.de>
-Date: Wed, 23 Aug 2023 10:47:02 +0200
+Best regards,
+Krzysztof
 
-Xiongfeng reported and debugged a self deadlock of the task which initiates
-and controls a CPU hot-unplug operation vs. the CFS bandwidth timer.
-
-    CPU1      			                 	 CPU2
-
-T1 sets cfs_quota
-   starts hrtimer cfs_bandwidth 'period_timer'
-T1 is migrated to CPU2				
-						T1 initiates offlining of CPU1
-Hotplug operation starts
-  ...
-'period_timer' expires and is re-enqueued on CPU1
-  ...
-take_cpu_down()
-  CPU1 shuts down and does not handle timers
-  anymore. They have to be migrated in the
-  post dead hotplug steps by the control task.
-
-						T1 runs the post dead offline operation
-					      	T1 is scheduled out
-						T1 waits for 'period_timer' to expire
-
-T1 waits there forever if it is scheduled out before it can execute the hrtimer
-offline callback hrtimers_dead_cpu().
-
-Cure this by delegating the hotplug control operation to a worker thread on
-an online CPU. This takes the initiating user space task, which might be
-affected by the bandwidth timer, completely out of the picture.
-
-Reported-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/lkml/8e785777-03aa-99e1-d20e-e956f5685be6@huawei.com
----
- kernel/cpu.c |   24 +++++++++++++++++++++++-
- 1 file changed, 23 insertions(+), 1 deletion(-)
-
---- a/kernel/cpu.c
-+++ b/kernel/cpu.c
-@@ -1467,8 +1467,22 @@ static int __ref _cpu_down(unsigned int
- 	return ret;
- }
- 
-+struct cpu_down_work {
-+	unsigned int		cpu;
-+	enum cpuhp_state	target;
-+};
-+
-+static long __cpu_down_maps_locked(void *arg)
-+{
-+	struct cpu_down_work *work = arg;
-+
-+	return _cpu_down(work->cpu, 0, work->target);
-+}
-+
- static int cpu_down_maps_locked(unsigned int cpu, enum cpuhp_state target)
- {
-+	struct cpu_down_work work = { .cpu = cpu, .target = target, };
-+
- 	/*
- 	 * If the platform does not support hotplug, report it explicitly to
- 	 * differentiate it from a transient offlining failure.
-@@ -1477,7 +1491,15 @@ static int cpu_down_maps_locked(unsigned
- 		return -EOPNOTSUPP;
- 	if (cpu_hotplug_disabled)
- 		return -EBUSY;
--	return _cpu_down(cpu, 0, target);
-+
-+	/*
-+	 * Ensure that the control task does not run on the to be offlined
-+	 * CPU to prevent a deadlock against cfs_b->period_timer.
-+	 */
-+	cpu = cpumask_any_but(cpu_online_mask, cpu);
-+	if (cpu >= nr_cpu_ids)
-+		return -EBUSY;
-+	return work_on_cpu(cpu, __cpu_down_maps_locked, &work);
- }
- 
- static int cpu_down(unsigned int cpu, enum cpuhp_state target)
