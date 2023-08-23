@@ -2,123 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C691785BCC
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 17:17:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 903D9785BD3
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 17:18:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237021AbjHWPRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 11:17:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34532 "EHLO
+        id S237117AbjHWPSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 11:18:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237022AbjHWPRt (ORCPT
+        with ESMTP id S237074AbjHWPSG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 11:17:49 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C921F10FB;
-        Wed, 23 Aug 2023 08:17:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 649D86101C;
-        Wed, 23 Aug 2023 15:17:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B611C433C8;
-        Wed, 23 Aug 2023 15:17:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692803834;
-        bh=Ylc3TSXa5ifgz7bjH+Ib7u/kImYYyrGh5B2vMyFRLTg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QdaCZTMe1fTvB5F//p9urTbKVisS0r5vyJbMOt8UfyK47Y0TDyRf9fUAOtEaO07Hj
-         IABla5AdXYBqAIbwFWhkJB3zElvQhMeeBgT5Dzus6a5rawSTD0NEAZZQEogg96sMue
-         TCuw+1eTlKcrOruAulr9uXJJ9RVoVlBB2WyIMCDblgQ3COklM2O2PCfa6EFOM+1DAl
-         +OFL09Q04N3zSTOeFdbI31vipmVr7r3Ygz2thKSxrAzaTnmMTVRThxeFN9ls1dqDMw
-         RWBzdlwOCycGx/6g21G2nRRDYUdyIXS6UeKUrsl8rBmoRTzFzVOtz+NIgXG/mcTlyA
-         ooPvUYw3CIoqg==
-From:   "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Florent Revest <revest@chromium.org>
-Cc:     linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH v4 9/9] Documentation: tracing: Add a note about argument and retval access
-Date:   Thu, 24 Aug 2023 00:17:09 +0900
-Message-Id: <169280382895.282662.14910495061790007288.stgit@devnote2>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <169280372795.282662.9784422934484459769.stgit@devnote2>
-References: <169280372795.282662.9784422934484459769.stgit@devnote2>
-User-Agent: StGit/0.19
+        Wed, 23 Aug 2023 11:18:06 -0400
+Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id 49D2B1988
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 08:17:46 -0700 (PDT)
+Received: (qmail 187319 invoked by uid 1000); 23 Aug 2023 11:17:14 -0400
+Date:   Wed, 23 Aug 2023 11:17:14 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: dwc3: unusual handling of setup requests with wLength == 0
+Message-ID: <5d5973b9-d590-4567-b1d6-4b5f8aeca68b@rowland.harvard.edu>
+References: <CA+fCnZcQSYy63ichdivAH5-fYvN2UMzTtZ--h=F6nK0jfVou3Q@mail.gmail.com>
+ <20230818010815.4kcue67idma5yguf@synopsys.com>
+ <bb470c47-c9dc-4dae-ae3f-c7d4736ee7e9@rowland.harvard.edu>
+ <20230818031045.wovf5tj2un7nwf72@synopsys.com>
+ <cfc7ae18-140b-4223-9cc2-7ee4b9ddea28@rowland.harvard.edu>
+ <20230818194922.ys26zrqc4pocqq7q@synopsys.com>
+ <45d9ef53-e2be-4740-a93a-d36f18a49b39@rowland.harvard.edu>
+ <20230819000643.7mddkitzr4aqjsms@synopsys.com>
+ <e63ba783-f5a4-4442-8736-987a3b134e7f@rowland.harvard.edu>
+ <20230823021429.rlgixqehry4rsqmm@synopsys.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230823021429.rlgixqehry4rsqmm@synopsys.com>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+On Wed, Aug 23, 2023 at 02:14:32AM +0000, Thinh Nguyen wrote:
+> On Sun, Aug 20, 2023, Alan Stern wrote:
+> > On Sat, Aug 19, 2023 at 12:06:53AM +0000, Thinh Nguyen wrote:
+> > > On Fri, Aug 18, 2023, Alan Stern wrote:
+> > > > Actually I agree with you.  When a new SETUP packet arrives before the 
+> > > > old control transfer has finished, the UDC driver should cancel all 
+> > > > pending requests and then invoke the ->setup() callback.  (I don't think 
+> > > > there is a standard error code for the cancelled requests; net2280 seems 
+> > > > to use -EPROTO whereas dummy-hcd seems to use -EOVERFLOW.)
+> > > 
+> > > Those are very odd choice of error codes for cancelled request. Even
+> > > though the gadget side doesn't have very defined error codes, I try to
+> > > follow the equivalent doc from the host side
+> > > (driver-api/usb/error-codes.rst), which is -ECONNRESET.
+> > > 
+> > > Whenever I see -EPROTO, I associate that to a specific host error:
+> > > transaction error. For -EOVERFLOW, I think of babble errors.
+> > 
+> > Do you have a suggestion for an error code that all the UDCs should use 
+> > in this situation?  -ECONNRESET is currently being used for requests 
+> > that were cancelled by usb_ep_dequeue().  Would -EREMOTEIO be more 
+> > suitable for requests attached to an aborted control transfer?
+> > 
+> 
+> That works. It would be great if we can document the usb error codes for
+> gadget side and keep them consistent across UDC drivers. I think there
+> are only a few common errors:
+> 
+> * Request aborted
+> * Request dequeued
+> * STALL
+> * Data dropped (isoc only)
+> 
+> Any other?
 
-Add a note about the argument and return value accecss will be best
-effort. Depending on the type, it will be passed via stack or a
-pair of the registers, but $argN and $retval only support the
-single register access.
+* Overflow
 
-Suggested-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
----
- Documentation/trace/fprobetrace.rst |    8 ++++++--
- Documentation/trace/kprobetrace.rst |    8 ++++++--
- 2 files changed, 12 insertions(+), 4 deletions(-)
+STALL is not a valid status for usb_requests on the gadget side; it 
+applies only on the host side (the host doesn't halt its endpoints).
 
-diff --git a/Documentation/trace/fprobetrace.rst b/Documentation/trace/fprobetrace.rst
-index 8e9bebcf0a2e..e35e6b18df40 100644
---- a/Documentation/trace/fprobetrace.rst
-+++ b/Documentation/trace/fprobetrace.rst
-@@ -59,8 +59,12 @@ Synopsis of fprobe-events
-                   and bitfield are supported.
- 
-   (\*1) This is available only when BTF is enabled.
--  (\*2) only for the probe on function entry (offs == 0).
--  (\*3) only for return probe.
-+  (\*2) only for the probe on function entry (offs == 0). Note, this argument access
-+        is best effort, because depending on the argument type, it may be passed on
-+        the stack. But this only support the arguments via registers.
-+  (\*3) only for return probe. Note that this is also best effort. Depending on the
-+        return value type, it might be passed via a pair of registers. But this only
-+        accesses one register.
-   (\*4) this is useful for fetching a field of data structures.
-   (\*5) "u" means user-space dereference.
- 
-diff --git a/Documentation/trace/kprobetrace.rst b/Documentation/trace/kprobetrace.rst
-index 8a2dfee38145..bf9cecb69fc9 100644
---- a/Documentation/trace/kprobetrace.rst
-+++ b/Documentation/trace/kprobetrace.rst
-@@ -61,8 +61,12 @@ Synopsis of kprobe_events
- 		  (x8/x16/x32/x64), "char", "string", "ustring", "symbol", "symstr"
-                   and bitfield are supported.
- 
--  (\*1) only for the probe on function entry (offs == 0).
--  (\*2) only for return probe.
-+  (\*1) only for the probe on function entry (offs == 0). Note, this argument access
-+        is best effort, because depending on the argument type, it may be passed on
-+        the stack. But this only support the arguments via registers.
-+  (\*2) only for return probe. Note that this is also best effort. Depending on the
-+        return value type, it might be passed via a pair of registers. But this only
-+        accesses one register.
-   (\*3) this is useful for fetching a field of data structures.
-   (\*4) "u" means user-space dereference. See :ref:`user_mem_access`.
- 
+Requests can be aborted for two different reasons:
 
+	The endpoint is being disabled, either by an config/altsetting
+	change or because of a disconnect
+
+	The request was for an aborted control transfer
+
+Putting this together, I get the following status codes:
+
+-ESHUTDOWN	Request aborted because ep was disabled
+-EREMOTEIO	Request was for an aborted control transfer
+-ECONNRESET	Request was cancelled by usb_ep_dequeue()
+-EXDEV		Data dropped (isoc only)
+-EOVERFLOW	The host sent more data than the request wanted
+		(will never happen if the request's length is a
+		nonzero multiple of the maxpacket size)
+
+This applies only to the .status field of struct usb_request.  Calls to 
+usb_ep_queue() may return different error codes.
+
+How does that sound?
+
+Alan Stern
