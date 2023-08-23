@@ -2,144 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08E187851DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 09:44:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C16F7851E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 09:44:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233523AbjHWHoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 03:44:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47878 "EHLO
+        id S233533AbjHWHoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 03:44:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233510AbjHWHoA (ORCPT
+        with ESMTP id S233510AbjHWHon (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 03:44:00 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88E71E52;
-        Wed, 23 Aug 2023 00:43:54 -0700 (PDT)
+        Wed, 23 Aug 2023 03:44:43 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91AA1CF1;
+        Wed, 23 Aug 2023 00:44:26 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1306D6511C;
-        Wed, 23 Aug 2023 07:43:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DABBDC433C7;
-        Wed, 23 Aug 2023 07:43:42 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 20F296510D;
+        Wed, 23 Aug 2023 07:44:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 068AFC433C9;
+        Wed, 23 Aug 2023 07:44:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692776633;
-        bh=oK3yV228DJKbwbTXFb4RHff/R+/hOvYP/LBJ/ZoSh30=;
+        s=k20201202; t=1692776665;
+        bh=+U+2mzuQDP2kSHpIE7UVl09rKO6H/eEHTtGTAsPiD5M=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kAzSuLjKrRLBN4VfR9xeAelF/xpKdHk+wzqKwaO/hba0tM4UzeZkHmiHxLx6D0gQL
-         /DICzsBbMFRC16rjQw+IOXs5Fu3Mxcbw/6k0xFX6fVTqimBOlQH8ioTTbhWPorP5eF
-         HVJo5EZc3Pc7m6l8r8t5X8F0q2XObe7kWmblm0WiIVKhJbDvCWhG+uWr9YaTvL65N9
-         cEByENw8+lfaSkDzJPhJTH5ffX4yFI6ap7iqgKvtKX7pCFU1I94cjn4KQGPeQEKpOO
-         JxhimQjOmUoz1vBwWdHVMRtkYew6NlkoTQvs/PZBX7OmGZslAoSNA2Gb66GN+DLLJp
-         XbREhkVVlIc9w==
-Date:   Wed, 23 Aug 2023 13:13:30 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Jim Quinlan <jim2101024@gmail.com>
-Cc:     linux-pci@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Cyril Brulebois <kibi@debian.org>,
-        Phil Elwell <phil@raspberrypi.com>,
-        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 1/5] dt-bindings: PCI: brcmstb: Add brcm,enable-l1ss
- property
-Message-ID: <20230823074330.GF3737@thinkpad>
-References: <20230508220126.16241-1-jim2101024@gmail.com>
- <20230508220126.16241-2-jim2101024@gmail.com>
+        b=SeLwcM76i4y4k6ZRvQzD0Oc8M5UdeEoXR7zNJ8UISApOpTMJxhErbhWJnnYBC3pIZ
+         bcwbjWYz73QI9adYAYo3Cc5yB+NeXT9sQ5Ap2x5GUYLp8b00mm3lC33rIlD7VeuAjC
+         /GongcmYGUeYxkAcjk35MtLWybYU2DwLoaILQkxfR+7zm/T8JkoasTrwSy4Q/K6m/Y
+         jjWpFyEPuBkh4m7QVdjpEgsMIEmYVB2AHdhF7HbD1h6ZwsdIQxlwIW5nEU2XxTGDke
+         sPo2nS7TSZZBgWAF3U1XVyvolOT7lrwHZ+deDYa2GdqJidA9UlmGa+6Qvy0pt210nJ
+         1fHF3+z26odIQ==
+Date:   Wed, 23 Aug 2023 09:44:22 +0200
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Rahul Rameshbabu <rrameshbabu@nvidia.com>
+Cc:     syzbot <syzbot+3a0ebe8a52b89c63739d@syzkaller.appspotmail.com>,
+        davidgow@google.com, dmitry.torokhov@gmail.com,
+        gregkh@linuxfoundation.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rydberg@bitmath.org,
+        syzkaller-bugs@googlegroups.com, benjamin.tissoires@redhat.com
+Subject: Re: [syzbot] [input?] KASAN: slab-use-after-free Read in
+ input_dev_uevent
+Message-ID: <nqrdxdcvuhvcs2syjfhcp5fbk4ckgzibc3izxknvsrka3kres6@ae65hqx67c4u>
+References: <00000000000035beba060371a468@google.com>
+ <ijh2qmdtj452nq3idu2tohkrmfwr2qhbhrnyqzxjkkw2lrby53@v2dffcqdohsx>
+ <878ra3m5my.fsf@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="pjf7pgig5r35thxi"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230508220126.16241-2-jim2101024@gmail.com>
+In-Reply-To: <878ra3m5my.fsf@nvidia.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 08, 2023 at 06:01:21PM -0400, Jim Quinlan wrote:
-> This commit adds the boolean "brcm,enable-l1ss" property:
-> 
->   The Broadcom STB/CM PCIe HW -- a core that is also used by RPi SOCs --
->   requires the driver probe() to deliberately place the HW one of three
->   CLKREQ# modes:
-> 
->   (a) CLKREQ# driven by the RC unconditionally
->   (b) CLKREQ# driven by the EP for ASPM L0s, L1
->   (c) Bidirectional CLKREQ#, as used for L1 Substates (L1SS).
-> 
->   The HW+driver can tell the difference between downstream devices that
->   need (a) and (b), but does not know when to configure (c).  All devices
->   should work fine when the driver chooses (a) or (b), but (c) may be
->   desired to realize the extra power savings that L1SS offers.  So we
->   introduce the boolean "brcm,enable-l1ss" property to inform the driver
->   that (c) is desired.  Setting this property only makes sense when the
->   downstream device is L1SS-capable and the OS is configured to activate
->   this mode (e.g. policy==powersupersave).
-> 
->   This property is already present in the Raspian version of Linux, but the
->   upstream driver implementation that follows adds more details and
->   discerns between (a) and (b).
-> 
-> Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> ---
->  Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml b/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
-> index 7e15aae7d69e..8b61c2179608 100644
-> --- a/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
-> +++ b/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
-> @@ -64,6 +64,15 @@ properties:
->  
->    aspm-no-l0s: true
->  
-> +  brcm,enable-l1ss:
-> +    description: Indicates that PCIe L1SS power savings
-> +      are desired, the downstream device is L1SS-capable, and the
-> +      OS has been configured to enable this mode.  For boards
-> +      using a mini-card connector, this mode may not meet the
-> +      TCRLon maximum time of 400ns, as specified in 3.2.5.2.2
-> +      of the PCI Express Mini CEM 2.0 specification.
 
-As Lorenzo said, this property doesn't belong in DT. DT is supposed to specify
-the hardware capability and not system/OS behavior. If this flag specifies
-whether the PCIe controller supports L1SS or not, then it is fine but apparantly
-this specifies that all downstream devices are L1SS capable which you cannot
-guarantee unless you poke into their LNKCAP during runtime.
+--pjf7pgig5r35thxi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-You should handle this in the driver itself.
+Hi Rahul,
 
-- Mani
+On Tue, Aug 22, 2023 at 08:57:41AM -0700, Rahul Rameshbabu wrote:
+> On Tue, 22 Aug, 2023 11:12:28 +0200 Maxime Ripard <mripard@kernel.org> wr=
+ote:
+> > Hi,
+> >
+> > So, we discussed it this morning with Benjamin, and I think the culprit
+> > is that the uclogic driver will allocate a char array with devm_kzalloc
+> > in uclogic_input_configured()
+> > (https://elixir.bootlin.com/linux/latest/source/drivers/hid/hid-uclogic=
+-core.c#L149),
+> > and will assign input_dev->name to that pointer.
+> >
+> > When the device is removed, the devm-allocated array is freed, and the
+> > input framework will send a uevent in input_dev_uevent() using the
+> > input_dev->name field:
+> >
+> > https://elixir.bootlin.com/linux/latest/source/drivers/input/input.c#L1=
+688
+> >
+> > So it's a classic dangling pointer situation.
+> >
+> > And even though it was revealed by that patch, I think the issue is
+> > unrelated. The fundamental issue seems to be that the usage of devm in
+> > that situation is wrong.
+> >
+> > input_dev->name is accessed by input_dev_uevent, which for KOBJ_UNBIND
+> > and KOBJ_REMOVE will be called after remove.
+> >
+> > For example, in __device_release_driver() (with the driver remove hook
+> > being called in device_remove() and devres_release_all() being called in
+> > device_unbind_cleanup()):
+> > https://elixir.bootlin.com/linux/latest/source/drivers/base/dd.c#L1278
+> >
+> > So, it looks to me that, with or without the patch we merged recently,
+> > the core has always sent uevent after device-managed resources were
+> > freed. Thus, the uclogic (and any other input driver) was wrong in
+> > allocating its input_dev name with devm_kzalloc (or the phys and uniq
+> > fields in that struct).
+> >
+> > Note that freeing input_dev->name in remove would have been just as bad.
+> >
+> > Looking at the code quickly, at least hid-playstation,
+> > hid-nvidia-shield, hid-logitech-hidpp, mms114 and tsc200x seem to be
+> > affected by the same issue.
+>=20
+> I agree with this analysis overall. At least in hid-nvidia-shield, I can
+> not use devm for allocating the input name string and explicitly free it
+> after calling input_unregister_device. In this scenario, the name string
+> would have been freed explicitly after input_put_device was called
+> (since the input device is not devres managed). input_put_device would
+> drop the reference count to zero and the device would be cleaned up at
+> that point triggering KOBJ_REMOVE and firing off that final
+> input_dev_uevent.
+>=20
+> I think this can be done for a number of the drivers as a workaround
+> till this issue is properly resolved. If this seems appropriate, I can
+> send out a series later in the day. This is just a workaround till the
+> discussion below converges (which I am interested in).
 
-> +    type: boolean
-> +
->    brcm,scb-sizes:
->      description: u64 giving the 64bit PCIe memory
->        viewport size of a memory controller.  There may be up to
-> -- 
-> 2.17.1
-> 
+I'm sorry, I don't know the input framework well enough to understand
+what you had in mind exactly. Could you send a patch with your
+suggestion for the hid-nvidia-shield so we can discuss this further?
 
--- 
-மணிவண்ணன் சதாசிவம்
+That being said, I think that the current design around name, phys and
+uniq is fairly treacherous to drivers and we should aim for a solution
+that prevents that issue from being possible at all.
+
+I was inclined to go for a char array for each to get rid of the pointer
+entirely, but Benjamin raised some concerns over the structure size so
+it's probably not a great solution.
+
+Maxime
+
+--pjf7pgig5r35thxi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZOW41gAKCRDj7w1vZxhR
+xXKJAQCEK1rAjPxsdcZgi34c4OKKkP/gqsHvgTjxIM7DY8rajgD+N66a5hAibrZ0
+O6fjdXZLVoMouFCKcA34BpggpyVFGws=
+=pBNd
+-----END PGP SIGNATURE-----
+
+--pjf7pgig5r35thxi--
