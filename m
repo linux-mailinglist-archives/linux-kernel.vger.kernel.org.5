@@ -2,152 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D366785382
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 11:09:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60586785388
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 11:10:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234998AbjHWJJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 05:09:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43786 "EHLO
+        id S235125AbjHWJKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 05:10:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235127AbjHWJHV (ORCPT
+        with ESMTP id S235303AbjHWJHx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 05:07:21 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C6723C38;
-        Wed, 23 Aug 2023 02:01:33 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-3fe24dd8898so50769865e9.2;
-        Wed, 23 Aug 2023 02:01:33 -0700 (PDT)
+        Wed, 23 Aug 2023 05:07:53 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62C561BEF
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 02:02:02 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9a1681fa868so646957266b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 02:02:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692781291; x=1693386091;
-        h=content-disposition:mime-version:message-id:subject:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=yLx9XDCNsbFYXBmD+uBtB7HRdyTRS+WlWpDKsyMdL1E=;
-        b=DpwWqSFb0bQw+2R5W+Uew/uVxwByp+AqpC3gGsgIVhQg5c2+qq/KK8OUgCtDg7NWCq
-         1yJduA40xzLq3JW3WkE2gJebJjrKhrP6r/W+veFQNFCJwOSwUPjcRCMHAtS+DERRE/BR
-         eEIst91qxpgIu/0cpd7C5PqYmSSsw1Fbpsbmo3tWNDCRzdCgSMoBxYMgF7B1Lki9ehYC
-         BOaFLQMjq0jTuemRiXSbkJF7fGws0ucTvbwp+fL5m3qGZTlVFck8eUIJGIBYXrE9GsHE
-         8mH3hOOppj0CzpLbYZCNW7jV1tMbuNdMr079YscZ4/RaonQA+KiQ2CBVGnxMd/Ak/emv
-         QVKQ==
+        d=szeredi.hu; s=google; t=1692781314; x=1693386114;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=htSMjdk85wELugVDXAhr8cuhpjEm2Q5vyQ8twDUxEyk=;
+        b=hG3ilkGGJUfAI8sRdQkgGVOuFHUn22bI04fyKmmYAttiVJlkyoYN3afCusCr4PMbkA
+         pNfZSGNZXoSy2v14RslrgQtlmPD00F52wpUwPUo+INhkkkDq8S5TgiTaX1OmH6cwxhvM
+         K+2F0DAHY0lZgmYME1PI3mNPKJN0EmsDIGstw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692781291; x=1693386091;
-        h=content-disposition:mime-version:message-id:subject:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yLx9XDCNsbFYXBmD+uBtB7HRdyTRS+WlWpDKsyMdL1E=;
-        b=Ib7Wcfnrr/qDkBFmv53m1CZisIyoXBcxJrAjnV+Btkw6+PCq5e7mBa3hiVAEcU0OEl
-         yhl6w1D3Uvthfgy/BARy5sf8c27pQu+Y9BOl9LIW1pd4m72vWcTyOJY4VjQRQCIKhCrO
-         qxL+L5HZSUQvj3SnxJMQsjr75CAAqJWuzbFu6FMZ/ATyPk1xcSWuhXNhEoW0DIJ5l2BD
-         RqOKmS182kuV+c2TfLexQlCRXITrJm26X1R1Eso5QdFUP/Oj3Hb7ybbG61jcHjCiWHDO
-         1Af9GVrLiB2My79EYFfzUpuaUoleFsNejlOPGmCs3uluVGCyDB3PtvW9A99vAskc6c7s
-         RgtA==
-X-Gm-Message-State: AOJu0Yxza/++iQPdWfdXx4qtvSxshp0dDyXEwuuHqushrE4Kt2TNnbuT
-        e+IwZRuSShngTOiBc1mGHCA=
-X-Google-Smtp-Source: AGHT+IGhBKF2fmiTeu/Au6Wa/EzH9tRes18Uz+k3DqagOIXozC1iGux44PZGoaHIvoa0H4+6MkuePA==
-X-Received: by 2002:a7b:c7d4:0:b0:3fa:93b0:a69c with SMTP id z20-20020a7bc7d4000000b003fa93b0a69cmr9070579wmk.24.1692781291197;
-        Wed, 23 Aug 2023 02:01:31 -0700 (PDT)
-Received: from khadija-virtual-machine ([124.29.208.67])
-        by smtp.gmail.com with ESMTPSA id p6-20020a5d68c6000000b00317f70240afsm18541644wrw.27.2023.08.23.02.01.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Aug 2023 02:01:30 -0700 (PDT)
-Date:   Wed, 23 Aug 2023 14:01:28 +0500
-From:   Khadija Kamran <kamrankhadijadj@gmail.com>
-To:     Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>, selinux@vger.kernel.org,
-        ztarkhani@microsoft.com, alison.schofield@intel.com
-Subject: [PATCH] lsm: constify 'sb' parameter in security_sb_kern_mount()
-Message-ID: <ZOXK6MywWFIdUTsr@gmail.com>
+        d=1e100.net; s=20221208; t=1692781314; x=1693386114;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=htSMjdk85wELugVDXAhr8cuhpjEm2Q5vyQ8twDUxEyk=;
+        b=gd8kVSSGugo0aGGj++6KSjvStTHOmGpuO3CQBDc9UY0g3FI5NeoBLPHxVp065FX/wF
+         +YQvDAGmqcZQ6uO8AjoYfae7MwNCHSCVlA0U4rMb0rLp+CPc44J1NBBr850cYXkzbXYv
+         f/WwOVOQDed7XB6g3h1Ov0Ru/10rS9uzPZGeiGom+re+5JTSs1hytrNOzrv5xOamfBdf
+         MjzZlqdmki6Z3F6FYwBxf++ZbUebzAPsilq1t6v8Y5ppntMINy28nVcxfdZJg7kXOe6S
+         ZEIUzHUQx4mkhl3BcGd3v9Iu+O53mVSGsaJ5lX90UOluGep6v+gACk9rzhaTNPmkBCpl
+         iopg==
+X-Gm-Message-State: AOJu0YzXVy+R0EyQBV0N70st1E/2YYDu153BBPslay+ySRQ4SguNTMwe
+        vwxvQPPI1uw2Y8Iqu7OoE3WCTeBl5cbwSnKxvXbccA==
+X-Google-Smtp-Source: AGHT+IETRpv9wXDM4ZeEVu1LHXQq7WY3Gxn4hHYL3/vW0KawK2WFCTMwX7ltbe/FKT2CNlG4aOJ/vzL7dF8Br1Y5zzw=
+X-Received: by 2002:a17:906:1d9:b0:991:b554:e64b with SMTP id
+ 25-20020a17090601d900b00991b554e64bmr10551621ejj.54.1692781313930; Wed, 23
+ Aug 2023 02:01:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20230711043405.66256-1-zhangjiachen.jaycee@bytedance.com> <20230711043405.66256-4-zhangjiachen.jaycee@bytedance.com>
+In-Reply-To: <20230711043405.66256-4-zhangjiachen.jaycee@bytedance.com>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Wed, 23 Aug 2023 11:01:42 +0200
+Message-ID: <CAJfpegtocWjfqVUpdnct-1-pq_DYJXUuvkBWey2N5q6+K=pL_w@mail.gmail.com>
+Subject: Re: [PATCH 3/5] fuse: add FOPEN_INVAL_ATTR
+To:     Jiachen Zhang <zhangjiachen.jaycee@bytedance.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>, linux-fsdevel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        me@jcix.top
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The "sb_kern_mount" hook has implementation registered in SELinux.
-Looking at the function implementation we observe that the "sb"
-parameter is not changing.
+On Tue, 11 Jul 2023 at 06:36, Jiachen Zhang
+<zhangjiachen.jaycee@bytedance.com> wrote:
+>
+> Add FOPEN_INVAL_ATTR so that the fuse daemon can ask kernel to invalidate
+> the attr cache on file open.
+>
+> The fi->attr_version should be increased when handling FOPEN_INVAL_ATTR.
+> Because if a FUSE request returning attributes (getattr, setattr, lookup,
+> and readdirplus) starts before a FUSE_OPEN replying FOPEN_INVAL_ATTR, but
+> finishes after the FUSE_OPEN, staled attributes will be set to the inode
+> and falsely clears the inval_mask.
+>
+> Signed-off-by: Jiachen Zhang <zhangjiachen.jaycee@bytedance.com>
+> ---
+>  fs/fuse/file.c            | 10 ++++++++++
+>  include/uapi/linux/fuse.h |  2 ++
+>  2 files changed, 12 insertions(+)
+>
+> diff --git a/fs/fuse/file.c b/fs/fuse/file.c
+> index de37a3a06a71..412824a11b7b 100644
+> --- a/fs/fuse/file.c
+> +++ b/fs/fuse/file.c
+> @@ -215,6 +215,16 @@ void fuse_finish_open(struct inode *inode, struct file *file)
+>                 file_update_time(file);
+>                 fuse_invalidate_attr_mask(inode, FUSE_STATX_MODSIZE);
+>         }
+> +
+> +       if (ff->open_flags & FOPEN_INVAL_ATTR) {
+> +               struct fuse_inode *fi = get_fuse_inode(inode);
+> +
+> +               spin_lock(&fi->lock);
+> +               fi->attr_version = atomic64_inc_return(&fc->attr_version);
 
-Mark the "sb" parameter of LSM hook security_sb_kern_mount() as "const"
-since it will not be changing in the LSM hook.
+No need to add locking or change fi->attr_version.  This will be done
+next time the attributes are updated.
 
-Signed-off-by: Khadija Kamran <kamrankhadijadj@gmail.com>
----
- include/linux/lsm_hook_defs.h | 2 +-
- include/linux/security.h      | 2 +-
- security/security.c           | 2 +-
- security/selinux/hooks.c      | 4 ++--
- 4 files changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
-index 6bb55e61e8e8..f38491b77616 100644
---- a/include/linux/lsm_hook_defs.h
-+++ b/include/linux/lsm_hook_defs.h
-@@ -65,7 +65,7 @@ LSM_HOOK(void, LSM_RET_VOID, sb_free_mnt_opts, void *mnt_opts)
- LSM_HOOK(int, 0, sb_eat_lsm_opts, char *orig, void **mnt_opts)
- LSM_HOOK(int, 0, sb_mnt_opts_compat, struct super_block *sb, void *mnt_opts)
- LSM_HOOK(int, 0, sb_remount, struct super_block *sb, void *mnt_opts)
--LSM_HOOK(int, 0, sb_kern_mount, struct super_block *sb)
-+LSM_HOOK(int, 0, sb_kern_mount, const struct super_block *sb)
- LSM_HOOK(int, 0, sb_show_options, struct seq_file *m, struct super_block *sb)
- LSM_HOOK(int, 0, sb_statfs, struct dentry *dentry)
- LSM_HOOK(int, 0, sb_mount, const char *dev_name, const struct path *path,
-diff --git a/include/linux/security.h b/include/linux/security.h
-index e2734e9e44d5..38f3ae6f25c2 100644
---- a/include/linux/security.h
-+++ b/include/linux/security.h
-@@ -302,7 +302,7 @@ void security_free_mnt_opts(void **mnt_opts);
- int security_sb_eat_lsm_opts(char *options, void **mnt_opts);
- int security_sb_mnt_opts_compat(struct super_block *sb, void *mnt_opts);
- int security_sb_remount(struct super_block *sb, void *mnt_opts);
--int security_sb_kern_mount(struct super_block *sb);
-+int security_sb_kern_mount(const struct super_block *sb);
- int security_sb_show_options(struct seq_file *m, struct super_block *sb);
- int security_sb_statfs(struct dentry *dentry);
- int security_sb_mount(const char *dev_name, const struct path *path,
-diff --git a/security/security.c b/security/security.c
-index d5ff7ff45b77..5b21b4c61acb 100644
---- a/security/security.c
-+++ b/security/security.c
-@@ -1304,7 +1304,7 @@ EXPORT_SYMBOL(security_sb_remount);
-  *
-  * Return: Returns 0 if permission is granted.
-  */
--int security_sb_kern_mount(struct super_block *sb)
-+int security_sb_kern_mount(const struct super_block *sb)
- {
- 	return call_int_hook(sb_kern_mount, 0, sb);
- }
-diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
-index 79b4890e9936..2708c5b5ecd7 100644
---- a/security/selinux/hooks.c
-+++ b/security/selinux/hooks.c
-@@ -1886,7 +1886,7 @@ static inline int may_rename(struct inode *old_dir,
- 
- /* Check whether a task can perform a filesystem operation. */
- static int superblock_has_perm(const struct cred *cred,
--			       struct super_block *sb,
-+			       const struct super_block *sb,
- 			       u32 perms,
- 			       struct common_audit_data *ad)
- {
-@@ -2670,7 +2670,7 @@ static int selinux_sb_remount(struct super_block *sb, void *mnt_opts)
- 	return -EINVAL;
- }
- 
--static int selinux_sb_kern_mount(struct super_block *sb)
-+static int selinux_sb_kern_mount(const struct super_block *sb)
- {
- 	const struct cred *cred = current_cred();
- 	struct common_audit_data ad;
--- 
-2.34.1
-
+Thanks,
+Miklos
