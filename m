@@ -2,118 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D09CE785C20
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 17:30:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B4C6785C24
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 17:31:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237230AbjHWPaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 11:30:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34446 "EHLO
+        id S233497AbjHWPbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 11:31:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236012AbjHWP37 (ORCPT
+        with ESMTP id S235792AbjHWPbc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 11:29:59 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 137BDCEF
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 08:29:57 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-99bcf2de59cso751238366b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 08:29:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692804595; x=1693409395;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ri9cgA1PiCU6du3dgZZGBozLYOkCK1hmpsIStPWqOXw=;
-        b=4iVGNXXiBWOb9z6ygfEgopQKgtjz/ArlqeOIHwCCa/5HrFRqcdkbL/B0k4sFHBO1k4
-         Eg1bl7/uU37OwC7NsikD+jNiX9ImSC6a/lYPt8cooDBXForLZnqPxR/cYv4nWicYXfke
-         A3r/tvU9OZ3Q9XPQLgWMi/OV2FCvfrfWL1nz+l42yojLn7TATXXxvZIeO4U6KWgdao41
-         Lo+wjmL5LNqoWRr44aX9H57Lihc2x3PKwGSMAD616I37GXzf54uBCUK2ac/wZ2S47XDk
-         pY90bs1cRDWtt1y7RWKZ0WClLg37X7BnHlRXwYd274I4jnLCaiakgMeL4SnMcxnxgQUl
-         M/oA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692804595; x=1693409395;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ri9cgA1PiCU6du3dgZZGBozLYOkCK1hmpsIStPWqOXw=;
-        b=cz9Jz6KQ7qOpX/12lLOhg+I/jgCWk0z/MQZos29atbyDamr6rrkO3DmFzrCLtYyhFt
-         3wWnX7TfxhEm14+bDp19MqPyauCQW2HRtc8lbUf5wI0x3RAB1BRn4j6M0QKeYreQSvhd
-         SibXcyLAHUYuP7nXYkHenuFcWWbKeWAxiS429w3RnGkwNs4sm2SafAmCQ9tFnlWDTR+J
-         bR0juuKRw5E0koH7VQx9bDOMNQKjn59GSeEaWCp8d0e5gTxdv0ZAItR4/8w9V8YwRLLn
-         qUCrlA326tOxLOz/iOg6IPJGUL+H7W0rYeW4X9f3zsvEXiR8B7WWWlif0iCFeD++mb07
-         jVyQ==
-X-Gm-Message-State: AOJu0YzwU/fVbCC6UE338onzBqvwxsMS2bYnCIihOX2hZAe0KuK+Z/g6
-        Q/m/nELf2DFqMWnwbGkX8PGuSIFDpDYZmYMDQ2bCeQ==
-X-Google-Smtp-Source: AGHT+IEZaQ6xoK+wL+FTFe5ZpmCpytg9fJm9EC7fze3OpW4v6X0QBX3ZGnlc8r2H85GNS4dvw3oYg++1Ab++LcjnmOs=
-X-Received: by 2002:a17:906:530e:b0:999:37ff:be94 with SMTP id
- h14-20020a170906530e00b0099937ffbe94mr11243713ejo.71.1692804595358; Wed, 23
- Aug 2023 08:29:55 -0700 (PDT)
+        Wed, 23 Aug 2023 11:31:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E141DCFE
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 08:30:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692804645;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=BiPg1CR7QhpEos1y8wjGxBQSx510OyL+G2I/cKhPLW8=;
+        b=IX5/uW27hcYKBBuVoJEmexjVClY4KH7+mSGM5SUt5+ZQpreNzg7zvfu3NaygkEgTq036II
+        aRjXWwuSIzOMyHmlVZXlVuQ9qSbFc5Pt6oPuJI2qEvGOgEuRz1MCdKBXpogvVkruVLoZG3
+        6EG6XPl3/DXfPaf5jaYf2V06zdjiBWw=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-473-8NWu1HKwP7-2Q0-vJASG5Q-1; Wed, 23 Aug 2023 11:30:40 -0400
+X-MC-Unique: 8NWu1HKwP7-2Q0-vJASG5Q-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 25F0B85D083;
+        Wed, 23 Aug 2023 15:30:38 +0000 (UTC)
+Received: from laptop.redhat.com (unknown [10.39.193.143])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 15181C15BAE;
+        Wed, 23 Aug 2023 15:30:35 +0000 (UTC)
+From:   Eric Auger <eric.auger@redhat.com>
+To:     eric.auger.pro@gmail.com, eric.auger@redhat.com, elic@nvidia.com,
+        mail@anirudhrb.com, jasowang@redhat.com, mst@redhat.com,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        kvmarm@lists.cs.columbia.edu, netdev@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: [PATCH] vhost: Allow null msg.size on VHOST_IOTLB_INVALIDATE
+Date:   Wed, 23 Aug 2023 17:30:32 +0200
+Message-ID: <20230823153032.239304-1-eric.auger@redhat.com>
 MIME-Version: 1.0
-References: <20230822024901.2412520-1-liushixin2@huawei.com>
- <CAJD7tkZkYsopuqGH_Lo=kE4=HO33wmvK6mXhuq4p_KZ6pYuXtw@mail.gmail.com>
- <50c49baf-d04a-f1e3-0d0e-7bb8e22c3889@huawei.com> <ZOYFydIp3q8BNrEa@dhcp22.suse.cz>
-In-Reply-To: <ZOYFydIp3q8BNrEa@dhcp22.suse.cz>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Wed, 23 Aug 2023 08:29:19 -0700
-Message-ID: <CAJD7tkYivogrRtAx8a+EPfjRqQNgoOZFZyG8rC91E_hW6pdTEw@mail.gmail.com>
-Subject: Re: [PATCH v2] mm: vmscan: reclaim anon pages if there are swapcache pages
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Liu Shixin <liushixin2@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        wangkefeng.wang@huawei.com, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 23, 2023 at 6:12=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrot=
-e:
->
-> On Wed 23-08-23 10:00:58, Liu Shixin wrote:
-> >
-> >
-> > On 2023/8/23 0:35, Yosry Ahmed wrote:
-> > > On Mon, Aug 21, 2023 at 6:54=E2=80=AFPM Liu Shixin <liushixin2@huawei=
-.com> wrote:
-> > >> When spaces of swap devices are exhausted, only file pages can be re=
-claimed.
-> > >> But there are still some swapcache pages in anon lru list. This can =
-lead
-> > >> to a premature out-of-memory.
-> > >>
-> > >> This problem can be fixed by checking number of swapcache pages in
-> > >> can_reclaim_anon_pages(). For memcg v2, there are swapcache stat tha=
-t can
-> > >> be used directly. For memcg v1, use total_swapcache_pages() instead,=
- which
-> > >> may not accurate but can solve the problem.
-> > > Interesting find. I wonder if we really don't have any handling of
-> > > this situation.
-> > I have alreadly test this problem and can confirm that it is a real pro=
-blem.
-> > With 9MB swap space and 10MB mem_cgroup limit=EF=BC=8Cwhen allocate 15M=
-B memory,
-> > there is a probability that OOM occurs.
->
-> Could you be more specific about the test and the oom report?
+Commit e2ae38cf3d91 ("vhost: fix hung thread due to erroneous iotlb
+entries") Forbade vhost iotlb msg with null size to prevent entries
+with size = start = 0 and last = ULONG_MAX to end up in the iotlb.
 
-I actually couldn't reproduce it using 9MB of zram and a cgroup with a
-10MB limit trying to allocate 15MB of tmpfs, no matter how many
-repetitions I do.
+Then commit 95932ab2ea07 ("vhost: allow batching hint without size")
+only applied the check for VHOST_IOTLB_UPDATE and VHOST_IOTLB_INVALIDATE
+message types to fix a regression observed with batching hit.
 
->
-> --
-> Michal Hocko
-> SUSE Labs
+Still, the introduction of that check introduced a regression for
+some users attempting to invalidate the whole ULONG_MAX range by
+setting the size to 0. This is the case with qemu/smmuv3/vhost
+integration which does not work anymore. It Looks safe to partially
+revert the original commit and allow VHOST_IOTLB_INVALIDATE messages
+with null size. vhost_iotlb_del_range() will compute a correct end
+iova. Same for vhost_vdpa_iotlb_unmap().
+
+Signed-off-by: Eric Auger <eric.auger@redhat.com>
+Fixes: e2ae38cf3d91 ("vhost: fix hung thread due to erroneous iotlb entries")
+---
+ drivers/vhost/vhost.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
+index c71d573f1c94..e0c181ad17e3 100644
+--- a/drivers/vhost/vhost.c
++++ b/drivers/vhost/vhost.c
+@@ -1458,9 +1458,7 @@ ssize_t vhost_chr_write_iter(struct vhost_dev *dev,
+ 		goto done;
+ 	}
+ 
+-	if ((msg.type == VHOST_IOTLB_UPDATE ||
+-	     msg.type == VHOST_IOTLB_INVALIDATE) &&
+-	     msg.size == 0) {
++	if (msg.type == VHOST_IOTLB_UPDATE && msg.size == 0) {
+ 		ret = -EINVAL;
+ 		goto done;
+ 	}
+-- 
+2.41.0
+
