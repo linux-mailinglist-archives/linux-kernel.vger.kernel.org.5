@@ -2,114 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 143F77860CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 21:41:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C2BC7860DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 21:43:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238338AbjHWTkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 15:40:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46276 "EHLO
+        id S238363AbjHWTmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 15:42:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238348AbjHWTkd (ORCPT
+        with ESMTP id S238377AbjHWTmW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 15:40:33 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6507EE6E;
-        Wed, 23 Aug 2023 12:40:30 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-3fee8b78097so38840875e9.0;
-        Wed, 23 Aug 2023 12:40:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692819629; x=1693424429;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SZSBOiLjL7l4F5q6riFKLA/ZyFchhCDJyrcaJS20FpE=;
-        b=Q7c+th06liDrGKX59Uzi5rXxttPg1iqISxM15+Jq+aB0TfOeh4bkBa2ZLINqjE7wWX
-         jCNS0fAxlK1BQvlLtPDPOYVxFHLOCtEw2y51RwVfRaDWJWGsJx1IhZTYZliINrNXV1yU
-         RTWRAT5xEfOgO96iBgkdvT2Ovhd/rTrLH0MNCJN08op1yL0yhfqtC6gJMaLjxgdurNSh
-         FrJGFt5IakrtZJZ+zS3pOETgKN4f5uyvYNJ/yUrv6XSQyKQvsl2fmUPuZ8RGj75dJa/Z
-         juGJHUwVpfpSWhJfXUha7lIDJtPl0V5In9oz6iLERTSi/czSVBdKPN+7HZC5OtUdK1g6
-         P0Fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692819629; x=1693424429;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SZSBOiLjL7l4F5q6riFKLA/ZyFchhCDJyrcaJS20FpE=;
-        b=SeVwLHRc2ljd7sLqgyfsdNSTMiuxidT8xJGWII5ZtgrmVgUmtfO9WbP3oSex5RAj+J
-         xZpUrFLcmTUKBaMBeIQZ7aoe1Dtf0D4m27fkoprf7rSumflZ8VuBzKQkckK4VbrPv8yQ
-         /HOpPEjxVdXIybLSg13ARys0Si82yejQ3dtUdt0bUM+lCBM1Rs2rVM4fEjbVxgBAQm5S
-         jEgKBJf2ReQ/yLwkUszeT0Aql2wTQN76MWfgyNRNkIXIA77MZZQ9VeolzpgfP3A7iuMW
-         Y7tqOzVJLLurnb3aoOU+QL8EUDNFaZPd29g18tDFKH3UvB1fnQE5mQMYsoSk6mJhvKYR
-         OjyA==
-X-Gm-Message-State: AOJu0YwSKJVcfujzSsd96q6N53zbKdgW1VLmgqBuXJUbdrosVZ0pgwgD
-        DafMzeaA88XHPOOG/Ohr7VI=
-X-Google-Smtp-Source: AGHT+IFzQqUZNW2Ms4UX0ii01iwiE4BupQm9WH+y8SjsIil3cZMc3ISo746anHc7lRrm7ibTKpTnyA==
-X-Received: by 2002:a05:600c:d8:b0:3fe:e812:4709 with SMTP id u24-20020a05600c00d800b003fee8124709mr9585282wmm.12.1692819628516;
-        Wed, 23 Aug 2023 12:40:28 -0700 (PDT)
-Received: from mmaatuq-HP-Laptop-15-dy2xxx ([2001:8f8:1163:806e:99f3:c946:a43c:e1e3])
-        by smtp.gmail.com with ESMTPSA id m20-20020a7bca54000000b003fe3674bb39sm503196wml.2.2023.08.23.12.40.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Aug 2023 12:40:28 -0700 (PDT)
-Date:   Wed, 23 Aug 2023 23:40:23 +0400
-From:   Mahmoud Matook <mahmoudmatook.mm@gmail.com>
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kuba@kernel.org, netdev@vger.kernel.org, davem@davemloft.net,
-        pabeni@redhat.com, edumazet@google.com, shuah@kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH 2/2] selftests/net: replace ternary operator with
- min()/max()
-Message-ID: <20230823194023.zc3p6g2atwjz6hbp@mmaatuq-HP-Laptop-15-dy2xxx>
-Mail-Followup-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kuba@kernel.org, netdev@vger.kernel.org, davem@davemloft.net,
-        pabeni@redhat.com, edumazet@google.com, shuah@kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-References: <20230819195005.99387-1-mahmoudmatook.mm@gmail.com>
- <20230819195005.99387-3-mahmoudmatook.mm@gmail.com>
- <64e22ce99cfa6_35801629446@willemb.c.googlers.com.notmuch>
+        Wed, 23 Aug 2023 15:42:22 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D5CDE6E;
+        Wed, 23 Aug 2023 12:42:20 -0700 (PDT)
+Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37NHxWPW031929;
+        Wed, 23 Aug 2023 19:42:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2023-03-30; bh=vmKNLJDuNsAz30h05ydMQimPh1tgOAbfXHtIErZ3kXg=;
+ b=g6eb7F/0bGbQlgbbcecF19lnUDmOewLvh6/tt7swaDuPyLFTb5wSXbfr+FG/EFI2Vhdz
+ 7C0gYakB05WMj6JjLPC4fUs19n/GcTjpg1xFyDoeZ1m0BAp/DD1QuNJ6z6D4wJjownJr
+ rfBcw2e1wDtFM8W6Gi6uR3j5QNKXlPZLsDciqnSTj37vkuuwK/B6xKInxJG+r+e6hjZb
+ NJoyEY57WqoD3FBCmyaO4IMPEg7SRv+YwHnOgW8xmiFbz7OII5ytv5AZlWMhxGQNRCQr
+ I0boZAnHZALpqUsZmoeMibQYgNUzVazgO0lAlIkVL+jL4B3z8cpJNfFkiNxTh/OI89fO bQ== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3sn1yu2q6v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 23 Aug 2023 19:42:09 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 37NIwQWN033197;
+        Wed, 23 Aug 2023 19:42:08 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3sn1yvhj2h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 23 Aug 2023 19:42:08 +0000
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37NJg8Kr024393;
+        Wed, 23 Aug 2023 19:42:08 GMT
+Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.129.136.47])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3sn1yvhj15-1;
+        Wed, 23 Aug 2023 19:42:08 +0000
+From:   Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+To:     dmitry.baryshkov@linaro.org,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Liao Chang <liaochang1@huawei.com>,
+        Todor Tomov <todor.too@gmail.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>, Wolfram Sang <wsa@kernel.org>,
+        linux-i2c@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     dan.carpenter@linaro.org, kernel-janitors@vger.kernel.org,
+        error27@gmail.com, harshit.m.mogalapalli@oracle.com,
+        vegard.nossum@oracle.com
+Subject: [PATCH next] i2c: qcom-cci: Fix error checking in cci_probe()
+Date:   Wed, 23 Aug 2023 12:42:02 -0700
+Message-ID: <20230823194202.2280957-1-harshit.m.mogalapalli@oracle.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <64e22ce99cfa6_35801629446@willemb.c.googlers.com.notmuch>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-23_14,2023-08-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0 bulkscore=0
+ suspectscore=0 mlxscore=0 malwarescore=0 adultscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2308230179
+X-Proofpoint-GUID: CUfOwl5W092Su6ntIrYGo2rTnOFimzJl
+X-Proofpoint-ORIG-GUID: CUfOwl5W092Su6ntIrYGo2rTnOFimzJl
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/20, Willem de Bruijn wrote:
+devm_clk_bulk_get_all() can return zero when no clocks are obtained.
+Passing zero to dev_err_probe() is a success which is incorrect.
 
-> Mahmoud Maatuq wrote:
-> > Fix the following coccicheck warning:
-> > tools/testing/selftests/net/udpgso_bench_tx.c:297:18-19: WARNING opportunity for min()
-> > tools/testing/selftests/net/udpgso_bench_tx.c:354:27-28: WARNING opportunity for min()
-> > tools/testing/selftests/net/so_txtime.c:129:24-26: WARNING opportunity for max()
-> > tools/testing/selftests/net/so_txtime.c:96:30-31: WARNING opportunity for max()
-> > 
-> > Signed-off-by: Mahmoud Maatuq <mahmoudmatook.mm@gmail.com>
-> > ---
-> >  tools/testing/selftests/net/Makefile          | 2 ++
-> >  tools/testing/selftests/net/so_txtime.c       | 7 ++++---
-> >  tools/testing/selftests/net/udpgso_bench_tx.c | 6 +++---
-> >  3 files changed, 9 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/tools/testing/selftests/net/Makefile b/tools/testing/selftests/net/Makefile
-> > index 7f3ab2a93ed6..a06cc25489f9 100644
-> > --- a/tools/testing/selftests/net/Makefile
-> > +++ b/tools/testing/selftests/net/Makefile
-> > @@ -3,6 +3,8 @@
-> >  
-> >  CFLAGS =  -Wall -Wl,--no-as-needed -O2 -g
-> >  CFLAGS += -I../../../../usr/include/ $(KHDR_INCLUDES)
-> > +# Additional include paths needed by kselftest.h
-> > +CFLAGS += -I../
-> 
-> Why this, instead of the existing include with relative path?
->
-no big reason other than that version was added in a previous patch that was accepted 
-https://lore.kernel.org/all/168972782004.15840.17484255346823026.git-patchwork-notify@kernel.org/#r
+Fixes: 605efbf43813 ("i2c: qcom-cci: Use dev_err_probe in probe function")
+Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+---
+Only compile tested, found by static analysis with smatch.
+
+https://lore.kernel.org/all/CAA8EJprTOjbOy7N5+8NiJaNNhK+_btdUUFcpHKPkMuCZj5umMA@mail.gmail.com/
+^^ I reported initially here, Dmitry suggested we need to fix it in a
+different patch.
+
+the Fixes commit used above pointed this bug, but the real fixes tag is this:
+Fixes: e517526195de ("i2c: Add Qualcomm CCI I2C driver")
+---
+ drivers/i2c/busses/i2c-qcom-cci.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/i2c/busses/i2c-qcom-cci.c b/drivers/i2c/busses/i2c-qcom-cci.c
+index cf13abec05f1..414882c57d7f 100644
+--- a/drivers/i2c/busses/i2c-qcom-cci.c
++++ b/drivers/i2c/busses/i2c-qcom-cci.c
+@@ -588,8 +588,10 @@ static int cci_probe(struct platform_device *pdev)
+ 	/* Clocks */
+ 
+ 	ret = devm_clk_bulk_get_all(dev, &cci->clocks);
+-	if (ret < 1)
++	if (ret < 0)
+ 		return dev_err_probe(dev, ret, "failed to get clocks\n");
++	else if (!ret)
++		return dev_err_probe(dev, -EINVAL, "not enough clocks in DT\n");
+ 	cci->nclocks = ret;
+ 
+ 	/* Retrieve CCI clock rate */
+-- 
+2.39.3
+
