@@ -2,55 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A17F478572D
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 13:51:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B45078573B
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 13:53:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234593AbjHWLv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 07:51:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41070 "EHLO
+        id S234600AbjHWLxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 07:53:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234596AbjHWLvW (ORCPT
+        with ESMTP id S234595AbjHWLxR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 07:51:22 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5129410F4;
-        Wed, 23 Aug 2023 04:51:10 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CB8B2660A4;
-        Wed, 23 Aug 2023 11:51:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 879EEC433C8;
-        Wed, 23 Aug 2023 11:51:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692791469;
-        bh=Qxv/8a7cbDHGce4PkpsCd77nqaf021G/M1emjTuC+4E=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tx0ESURFqrHydXrybxmIpYZTIhJEuAsKNs3bhXCl9l7/vaNAslvhvZNWOwaVAommV
-         HEGWCH2RqW2QflFgnOx4jqY9i4KAmar4UE2HvNfOn4KYG0ZctUdntPF1MfbrOH5Z4g
-         GrtgVDXhYrOHkHJQmiKxcVwGxDoodpqmSaRzD+BYliYjoJIMROmJ2iNoRoO1JDNOqq
-         nDs6ziyZtaxn4iwXwqAdtkj7Ps4J3G4y1fE6qksLkN9UcwTs3HmsT9sQAgC2Wv53cf
-         dLxUJgXUMRHQZrgJ0WvmbGwuHi3pvPSjLbcXDicYD1EGTu0yKz5dyiXL/z5qR51XrO
-         s/OjwihEqusig==
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>
-Subject: [PATCH 8/8] kbuild: support modules_sign for external modules as well
-Date:   Wed, 23 Aug 2023 20:50:48 +0900
-Message-Id: <20230823115048.823011-8-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230823115048.823011-1-masahiroy@kernel.org>
-References: <20230823115048.823011-1-masahiroy@kernel.org>
+        Wed, 23 Aug 2023 07:53:17 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E85DAE70;
+        Wed, 23 Aug 2023 04:52:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1692791577; x=1724327577;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=P+msHyqhyTgIowePgGmJTm4oqKwwJ9h/OkrOjGnPZWA=;
+  b=MF0mXjyA81p3vfJrmdSm6l1l1jJVvbl/YCYVVtWa9HLCp8JG2tYLroXE
+   TlWZ9iqS7D2XtUuBivViVbbEbCwyV4TbPtqlcxQ8KHD2J/BtqrVXpnQ1F
+   CLSCbcRwtN8VUzomKcqarfT+5orykWAIk0gtUhOGPvJJ2neENRXqLgwOo
+   NFpPCcRlluClL2LQVKd/p+e40Ptb2UMiJv2NxkshIDNEqUEvYD0wSDtXP
+   8/31NAWKuUXtgYp3r4zdyJz6kzw2uo8yKWpOIgG31FMviqrCZyIMs+jtO
+   Dxdbfo2c/2igftMjAuZquWLTO11yTMaeQwEAQLlUxHZsLGIHtyC7+Cqf9
+   A==;
+X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
+   d="asc'?scan'208";a="231293047"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Aug 2023 04:52:56 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Wed, 23 Aug 2023 04:51:57 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex01.mchp-main.com (10.10.85.143)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Wed, 23 Aug 2023 04:51:54 -0700
+Date:   Wed, 23 Aug 2023 12:51:13 +0100
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     <patchwork-bot+linux-riscv@kernel.org>
+CC:     Mingzheng Xing <xingmingzheng@iscas.ac.cn>,
+        <linux-riscv@lists.infradead.org>, <conor@kernel.org>,
+        <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
+        <aou@eecs.berkeley.edu>, <nathan@kernel.org>,
+        <ndesaulniers@google.com>, <trix@redhat.com>, <bmeng@tinylab.org>,
+        <guoren@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <llvm@lists.linux.dev>, <stable@vger.kernel.org>
+Subject: Re: [PATCH v5] riscv: Handle zicsr/zifencei issue between gcc and
+ binutils
+Message-ID: <20230823-captive-abdomen-befd942a4a73@wendy>
+References: <20230809165648.21071-1-xingmingzheng@iscas.ac.cn>
+ <169228562484.20811.14246462375671910714.git-patchwork-notify@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="W7NS5WMbXWdulCbP"
+Content-Disposition: inline
+In-Reply-To: <169228562484.20811.14246462375671910714.git-patchwork-notify@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,92 +73,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The modules_sign target is currently only available for in-tree modules,
-but it actually works for external modules as well.
+--W7NS5WMbXWdulCbP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Move the modules_sign rule to the common part.
+On Thu, Aug 17, 2023 at 03:20:24PM +0000, patchwork-bot+linux-riscv@kernel.=
+org wrote:
+> Hello:
+>=20
+> This patch was applied to riscv/linux.git (fixes)
+> by Palmer Dabbelt <palmer@rivosinc.com>:
+>=20
+> On Thu, 10 Aug 2023 00:56:48 +0800 you wrote:
+> > Binutils-2.38 and GCC-12.1.0 bumped[0][1] the default ISA spec to the n=
+ewer
+> > 20191213 version which moves some instructions from the I extension to =
+the
+> > Zicsr and Zifencei extensions. So if one of the binutils and GCC exceeds
+> > that version, we should explicitly specifying Zicsr and Zifencei via -m=
+arch
+> > to cope with the new changes. but this only occurs when binutils >=3D 2=
+=2E36
+> > and GCC >=3D 11.1.0. It's a different story when binutils < 2.36.
+> >=20
+> > [...]
+>=20
+> Here is the summary with links:
+>   - [v5] riscv: Handle zicsr/zifencei issue between gcc and binutils
+>     https://git.kernel.org/riscv/c/ca09f772ccca
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+*sigh* so this breaks the build for gcc-11 & binutils 2.37 w/
+	Assembler messages:
+	Error: cannot find default versions of the ISA extension `zicsr'
+	Error: cannot find default versions of the ISA extension `zifencei'
 
- Makefile                 | 32 ++++++++++++++++----------------
- scripts/Makefile.modinst |  4 ++--
- 2 files changed, 18 insertions(+), 18 deletions(-)
+I'll have a poke later.
 
-diff --git a/Makefile b/Makefile
-index 82d22debf6c9..87a9eef3fb4b 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1461,20 +1461,6 @@ modules: modules_prepare
- modules_prepare: prepare
- 	$(Q)$(MAKE) $(build)=scripts scripts/module.lds
- 
--export modules_sign_only :=
--
--ifeq ($(CONFIG_MODULE_SIG),y)
--PHONY += modules_sign
--modules_sign: modules_install
--	@:
--
--# modules_sign is a subset of modules_install.
--# 'make modules_install modules_sign' is equivalent to 'make modules_install'.
--ifeq ($(filter modules_install,$(MAKECMDGOALS)),)
--modules_sign_only := y
--endif
--endif
--
- endif # CONFIG_MODULES
- 
- ###
-@@ -1833,10 +1819,24 @@ endif # KBUILD_EXTMOD
- # ---------------------------------------------------------------------------
- # Modules
- 
--PHONY += modules modules_install modules_prepare
-+PHONY += modules modules_install modules_sign modules_prepare
- 
- modules_install:
--	$(Q)$(MAKE) -f $(srctree)/scripts/Makefile.modinst
-+	$(Q)$(MAKE) -f $(srctree)/scripts/Makefile.modinst \
-+	sign-only=$(if $(filter modules_install,$(MAKECMDGOALS)),,y)
-+
-+ifeq ($(CONFIG_MODULE_SIG),y)
-+# modules_sign is a subset of modules_install.
-+# 'make modules_install modules_sign' is equivalent to 'make modules_install'.
-+modules_sign: modules_install
-+	@:
-+else
-+modules_sign:
-+	@echo >&2 '***'
-+	@echo >&2 '*** CONFIG_MODULE_SIG is disabled. You cannot sign modules.'
-+	@echo >&2 '***'
-+	@false
-+endif
- 
- ifdef CONFIG_MODULES
- 
-diff --git a/scripts/Makefile.modinst b/scripts/Makefile.modinst
-index 33d424a3f265..459cb1fed223 100644
---- a/scripts/Makefile.modinst
-+++ b/scripts/Makefile.modinst
-@@ -13,7 +13,7 @@ install-y :=
- 
- PHONY += prepare
- 
--ifeq ($(KBUILD_EXTMOD)$(modules_sign_only),)
-+ifeq ($(KBUILD_EXTMOD)$(sign-only),)
- 
- # Install more files for in-tree modules_install
- 
-@@ -115,7 +115,7 @@ quiet_cmd_sign = SIGN    $@
-       cmd_sign = scripts/sign-file $(CONFIG_MODULE_SIG_HASH) "$(sig-key)" certs/signing_key.x509 $@ \
-                  $(if $(KBUILD_EXTMOD),|| true)
- 
--ifeq ($(modules_sign_only),)
-+ifeq ($(sign-only),)
- 
- # During modules_install, modules are signed only when CONFIG_MODULE_SIG_ALL=y.
- ifndef CONFIG_MODULE_SIG_ALL
--- 
-2.39.2
+--W7NS5WMbXWdulCbP
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZOXysQAKCRB4tDGHoIJi
+0umKAPsHfU8Vxgef4+lOhFoGQMmuEDZ660fUifAWXoqFaCjwlQD/dLrrEsJhYReV
+cosGU4uWW2+SuNH9+QHMozew2ttVyAk=
+=9H5F
+-----END PGP SIGNATURE-----
+
+--W7NS5WMbXWdulCbP--
