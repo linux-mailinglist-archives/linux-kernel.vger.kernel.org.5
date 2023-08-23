@@ -2,331 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55014785B9D
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 17:12:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3C6A785B9F
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 17:13:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236860AbjHWPMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 11:12:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56204 "EHLO
+        id S236114AbjHWPNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 11:13:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236905AbjHWPMp (ORCPT
+        with ESMTP id S236859AbjHWPNI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 11:12:45 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 185AEEC
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 08:12:43 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-99de884ad25so768149066b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 08:12:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692803561; x=1693408361;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vpoAy4jnvOK1xW6jFL+0DmNbwXzcQEUlVeR2jyjxQ1A=;
-        b=W5i1r1gIPpq7njhCQ839rCz/rmhoPQ98F/D86/DYZROi14613JsrXcVrCCQL7CY+Pa
-         YR2JiftWJqLyVLfnxbacHoN6P9eJjYRm6T0BgPK7WLs6W/iO6RWEmpnYKtTsMYNTXwmC
-         ilr0e+XcXUfZ4u49neUSHfNjO6XHf0AohNg+5MStLyYTQEZV17fSocFIgdUWTLsP/tz2
-         sOzj0bl3TAQ1H6tgIua/ZuMLnytj6Au7zgQ/7DBeUMxx4bFQXwTQHjzfE2aMEla7ovMR
-         JWOf9NmVQJg+OLCGnKAzrrHjJTekZVaVzktNWgrjVKfEjcRJRawUf/6tsvIgQuzvdXOI
-         N2jw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692803561; x=1693408361;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vpoAy4jnvOK1xW6jFL+0DmNbwXzcQEUlVeR2jyjxQ1A=;
-        b=ElT5PEVEOauuhq7RLqhmOSXCrrLaSubCf8v0nVEYLOYi16juhMX4rOFFDq1NVv0G15
-         qwmpmq0yBjODvVBF/nwCwzDnekgG5CUnTa/qkWdEwrF4RU8BSe6ML10Z9F2QqmDqooe6
-         kulucOMt+klXsss3BPa0kn6CRG24ukrRJjVMpem/azrTA8MVVtDx00NTzn1deND+CBbc
-         bUVGREpfefbPm8mioGbYwhg0veLtCwtqfWczBvyDnH1VdzetIrgoPARkDBizVIH6LZYl
-         xAiWUj/oTtyRy7XDI9Th+CUDIoAw9wLMw5MUr7bJhylUjENpMkdlO75EeJipfH6eoaDq
-         OHJA==
-X-Gm-Message-State: AOJu0Yx4PUlQAq80j1pGCspIPEHijVatDaa9e6piNV/KWoQ0BdOLGtdy
-        otdRcprI4CfuzC2UlUFwuc5nkd44kHp4ia7tJ5zW5Q==
-X-Google-Smtp-Source: AGHT+IEKeKdtIHQh5mZfaEHRRPX3jGpU0RqmjPEr4eDQfl7Gcd2SKTSFMl3JnY6Axip7ScrNd8RUJLaXRfHLgQg2XyU=
-X-Received: by 2002:a17:906:9d2:b0:99e:39d:4fa7 with SMTP id
- r18-20020a17090609d200b0099e039d4fa7mr9787481eje.22.1692803561333; Wed, 23
- Aug 2023 08:12:41 -0700 (PDT)
+        Wed, 23 Aug 2023 11:13:08 -0400
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A429CEE;
+        Wed, 23 Aug 2023 08:13:06 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mFSRINREr6Z1Q2uLccdyvUhUGAb+4OZVy0x0F2Bzk5I2s+/1mhxkYVKWVCkDf5eOf8+7ojDwrCsrznSLOwW80bAN8W9r/H5RPpzPf5CKBpgk367VZQ81iYuKSQryNdHditRCussQumRQBgn68WA1hA587hvVzlH9jbPqKHQv8RakuEYtiD5C69O3wDfAsf0z0/5DgzCuk9YE7tLPAHrkUlcaxtkiIftRUbXpIHMe8Wq9Og5Z9ISCA5BgOLqMv0FSgXEUuFsGt0mDfRA2FfKEs+4IrWcgCIMq3AR0iJXLjwQL+2BR1BqREqhvJizY39NUlNR0HEmYcQBU1bugXJ4Zrg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=c7vxKkfbS8CATb9F04KQ+WJkxKbrg+RQCr898MdMrQ0=;
+ b=eEw/lytW+fwcszMjh1GOY+obNKipLfvXVO71pA+PA7Wgt9c2XrWxAEWQpg4t0OG836NosFZy9PcydDQpn0dFOVh8/g8W7e3ORarFxfnbHIREzRpoLaTUkoy39XusPEjlS5ckprJCGzjtHj25MUxdLdDPt14+UYbMLAbyhhAIMnBKgbPoi1u/1DJh/EZVzV4vWWqldAsWQ4eJq5AYcZLpWXvVXUh0ul3UGd3+9nb6jeXnhQAyqvd1mk0q/S22EKVNK5eLgzF7QWRyJTLRPmvlMUCLYxY4eULnBl9epMWZ6pdNLkFymcatI5JN9fOPNI7GI7rrOVGwssTbYnVspYnDWA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=c7vxKkfbS8CATb9F04KQ+WJkxKbrg+RQCr898MdMrQ0=;
+ b=ITTWlJp5n9sKJjYzIQXWEqcN/4Xfo6bDN1FUwl0md4fNQfdQD8yhSCIrv6v9uLRwZzETwFf3bMh0UncmLAhdmtfaWVciPGI0lez7FLLT9wTumejXafsCJASv3WxzhmEIwrgVrO4cRjhNS/7Ugr9kEK+AHPM7DqO64GzwwDlL3Y0=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MW3PR12MB4553.namprd12.prod.outlook.com (2603:10b6:303:2c::19)
+ by CH2PR12MB4150.namprd12.prod.outlook.com (2603:10b6:610:a6::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.26; Wed, 23 Aug
+ 2023 15:13:04 +0000
+Received: from MW3PR12MB4553.namprd12.prod.outlook.com
+ ([fe80::fbfe:ec9c:b106:437e]) by MW3PR12MB4553.namprd12.prod.outlook.com
+ ([fe80::fbfe:ec9c:b106:437e%5]) with mapi id 15.20.6699.026; Wed, 23 Aug 2023
+ 15:13:04 +0000
+Message-ID: <9f40d321-392f-5cf4-a3d0-df9c05500f50@amd.com>
+Date:   Wed, 23 Aug 2023 10:12:58 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Reply-To: babu.moger@amd.com
+Subject: Re: [PATCH v8 0/8] x86/resctrl: Miscellaneous resctrl features
+To:     "Shaopeng Tan (Fujitsu)" <tan.shaopeng@fujitsu.com>,
+        "'corbet@lwn.net'" <corbet@lwn.net>,
+        "'reinette.chatre@intel.com'" <reinette.chatre@intel.com>,
+        "'tglx@linutronix.de'" <tglx@linutronix.de>,
+        "'mingo@redhat.com'" <mingo@redhat.com>,
+        "'bp@alien8.de'" <bp@alien8.de>
+Cc:     "'fenghua.yu@intel.com'" <fenghua.yu@intel.com>,
+        "'dave.hansen@linux.intel.com'" <dave.hansen@linux.intel.com>,
+        "'x86@kernel.org'" <x86@kernel.org>,
+        "'hpa@zytor.com'" <hpa@zytor.com>,
+        "'paulmck@kernel.org'" <paulmck@kernel.org>,
+        "'akpm@linux-foundation.org'" <akpm@linux-foundation.org>,
+        "'quic_neeraju@quicinc.com'" <quic_neeraju@quicinc.com>,
+        "'rdunlap@infradead.org'" <rdunlap@infradead.org>,
+        "'damien.lemoal@opensource.wdc.com'" 
+        <damien.lemoal@opensource.wdc.com>,
+        "'songmuchun@bytedance.com'" <songmuchun@bytedance.com>,
+        "'peterz@infradead.org'" <peterz@infradead.org>,
+        "'jpoimboe@kernel.org'" <jpoimboe@kernel.org>,
+        "'pbonzini@redhat.com'" <pbonzini@redhat.com>,
+        "'chang.seok.bae@intel.com'" <chang.seok.bae@intel.com>,
+        "'pawan.kumar.gupta@linux.intel.com'" 
+        <pawan.kumar.gupta@linux.intel.com>,
+        "'jmattson@google.com'" <jmattson@google.com>,
+        "'daniel.sneddon@linux.intel.com'" <daniel.sneddon@linux.intel.com>,
+        "'sandipan.das@amd.com'" <sandipan.das@amd.com>,
+        "'tony.luck@intel.com'" <tony.luck@intel.com>,
+        "'james.morse@arm.com'" <james.morse@arm.com>,
+        "'linux-doc@vger.kernel.org'" <linux-doc@vger.kernel.org>,
+        "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
+        "'bagasdotme@gmail.com'" <bagasdotme@gmail.com>,
+        "'eranian@google.com'" <eranian@google.com>,
+        "'christophe.leroy@csgroup.eu'" <christophe.leroy@csgroup.eu>,
+        "'jarkko@kernel.org'" <jarkko@kernel.org>,
+        "'adrian.hunter@intel.com'" <adrian.hunter@intel.com>,
+        "'quic_jiles@quicinc.com'" <quic_jiles@quicinc.com>,
+        "'peternewman@google.com'" <peternewman@google.com>
+References: <20230821233048.434531-1-babu.moger@amd.com>
+ <TYAPR01MB63301926FB80440DB2BA1C058B1CA@TYAPR01MB6330.jpnprd01.prod.outlook.com>
+Content-Language: en-US
+From:   "Moger, Babu" <babu.moger@amd.com>
+In-Reply-To: <TYAPR01MB63301926FB80440DB2BA1C058B1CA@TYAPR01MB6330.jpnprd01.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SA0PR11CA0099.namprd11.prod.outlook.com
+ (2603:10b6:806:d1::14) To MW3PR12MB4553.namprd12.prod.outlook.com
+ (2603:10b6:303:2c::19)
 MIME-Version: 1.0
-References: <20230821160849.531668-1-david@redhat.com> <20230821160849.531668-2-david@redhat.com>
-In-Reply-To: <20230821160849.531668-2-david@redhat.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Wed, 23 Aug 2023 08:12:05 -0700
-Message-ID: <CAJD7tkYbHUVbg8LexkBsC9rLFBRrBSQYgOZ1tPKTDGEcWrAghQ@mail.gmail.com>
-Subject: Re: [PATCH mm-unstable v1 1/4] mm/swap: stop using page->private on
- tail pages for THP_SWAP
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-arm-kernel@lists.infradead.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Peter Xu <peterx@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Hugh Dickins <hughd@google.com>,
-        Seth Jennings <sjenning@redhat.com>,
-        Dan Streetman <ddstreet@ieee.org>,
-        Vitaly Wool <vitaly.wool@konsulko.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW3PR12MB4553:EE_|CH2PR12MB4150:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1539b693-e988-4dcd-715f-08dba3eb727d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: jUvXA+qlKkMtWOn8Sx2w06Ym4pNxDlQ83Zte6vAr+1gEINfeNwXtlMVVKExK8M73V5CNF17b9BnkEsKbrg941Wi9y1xhqgxu82y2z5svSCE7UU8I4xJkttreLykQ1HCzPjpLmy9gouoAWY/5F5QIK75unmidZbg/8pVbH7aVXUy/IQlW1nVb1riJX1NkhURQ2cVhBaSAxAei1xnK9ZfLbKTfFQo8gAxqcRpZbGZQU5ssHLSYcvTbD0MmtMYxVKs0Ibj75klQ9z7c7BHWsQr3hxafLXvyDVZCv2ln6qH9xcLq5KWlzDVIPNdWKyojPFK0+oHbBZ4jRLi2ZCMwepurkdBY07SKOPOHd3BCP4XSJrDn+5EzM2ks3nKW1tVup3HJLVUjm0XPzvOPDoj6MDa3fl9OVFu135k5EWJwwUeHZ75J4rWELU5mR2BeQYb6i/ABXw49ocsl3Ah0pgyuWJ9vBq//tTqAefSRLuoFFJUVaunF3eb6bK642MaLGD4qg9eBwDYY5BdNxp3QdtTQg4EcXKZT6en4uTt898uZrJqB+xB6mVd54ouPHE/rQ2UDlRMvne+xnFVcHBLEGoDXluYwKjghubw45hnfrX0cN9vN2n4KRXxDL9i3UzaUWnK3f7/jd/7JEvu8fdpGyq6kSklnvVi/ZS6+d5DR1XQ1nwHUJcY=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4553.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(366004)(396003)(136003)(39860400002)(451199024)(186009)(1800799009)(3450700001)(7406005)(7416002)(2906002)(316002)(6486002)(6506007)(66556008)(66476007)(54906003)(53546011)(6666004)(110136005)(66946007)(478600001)(86362001)(558084003)(36756003)(31686004)(5660300002)(26005)(2616005)(38100700002)(41300700001)(31696002)(6512007)(8676002)(8936002)(4326008)(491001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OE9NK2tLT3Q4dmJLVyszMmphM3k2aUc1VVpEOHJSTGhEMnNYZzM0SDlDOWVO?=
+ =?utf-8?B?K3Rza0xzM3lValB3OXhXemQrbC95ZUxYQk5WUng2bmQ4eVQvZitQc3d2ZDJ5?=
+ =?utf-8?B?OFlQYnNjWlNGTllWbjlNaDFhZmdvamJGQVliM1FKdVlhL1lsZC9vOVRxcG9o?=
+ =?utf-8?B?WUdvcjJ2K0RwREJEOHQ4cGxwU3RLZ05hMERLVUxQa0N4Zk4wNEpXaTlQMlV3?=
+ =?utf-8?B?d1Y5OUdUajdBK3g0VjdMYS93a1VGaDJlRjJoU1RzT0o1cnlBZzV3WnRRRXdG?=
+ =?utf-8?B?bHZpVVhKOW1id1NqTGRPRS9wTER3KzhUSk5Ga3BPbmVpYVJOcElhS0FCNTZH?=
+ =?utf-8?B?SVMvTGpCc2tnY1pSNWZxalVZbWtJNkRMTW9EWUpwanI5NytCanB5alQrYXpi?=
+ =?utf-8?B?OWhlTy92cWswUUhQdTQ5Z1hDcGpnNEVwWXZLcEEyZVQrQkpkYXdoRjVkbEpR?=
+ =?utf-8?B?UExmTDBFNXpwRGMydnhhcjVCSHc3YnZuUTduMUErS1UrZHBLcFYySjhmSlhH?=
+ =?utf-8?B?S0NkekVQckNNQjR4RjlDVUNGd3kreUhIcDlUWTRiMEFIaVBlbStNamozeHRa?=
+ =?utf-8?B?V1dBenk5ZGR4bjlYMURJblNFcU9UeWtYU05xdmJVUjdPM3gvK05vWWpqK1BP?=
+ =?utf-8?B?VEdNY2xPOVhiN2pVVmxxNWlGM0hLVWFsVW82aEFvSSt1Z3g4TS84MlN4YlZG?=
+ =?utf-8?B?bzdCYzdra2RTNWNwUDZmYjNXZm5tQXFVemlqaElMTnpQb3NNbUNMTExqNHl6?=
+ =?utf-8?B?MURYYnpzdzN5d2pXUmhJZ09uQkcveFpkTHlvMU5SMHZYR2hpcThucXZhV3lz?=
+ =?utf-8?B?Q3pLQmZjblI0NVp1UmZUYnlvdkFGVjBhdXlrNUhKUGMxbFhxbEdPWURITlpG?=
+ =?utf-8?B?cWUrNitsOEpLa0tkWWNTN2FCVjNnbW1LdGNldWcvbXJMTXZVYjVuZkFKbTMx?=
+ =?utf-8?B?YlVmaHNEdkdhQUNYT0V2QkxRaXp0Rit5cmZMVGRGVEpSdzV6Ykd4NGhCRlFC?=
+ =?utf-8?B?MGRFS09GMk5uVVNHTEx5dUlzelZSRWZoYXoyYVlpblNyVU1uSUcwVWhQZ0lG?=
+ =?utf-8?B?R2ZPdmRWbGZhM1hNc2RnNFA1WkJtd2pPM0l0QzBNeXdaalZiY0J3RitjZUgx?=
+ =?utf-8?B?N1ZiSktEUlFuMnZJNFMxUERCSFh2TmxTT2VxbnhDeGpqQUtycUxpSksveDdG?=
+ =?utf-8?B?ek9tWXRBcTUwNmxZUTVlNVoxODlqVXJpeGN5T1dwWi9mS2dQYThkb1RvWkYv?=
+ =?utf-8?B?MHlpK1AxNDZ0ZjhiQTFZTVF6aDRDbml5dm1zODBzRU5zaTNOcmlNdTY4bjFM?=
+ =?utf-8?B?aDl0N3RTMzNvUDZiMTRCcThaZUxIUDEzYys3Y250a3FMaVU1WW5uWG5FOXNR?=
+ =?utf-8?B?K21JTlllakEyTWdKY3RhZmVwdXdsSU9icVFKU0FMOFhFZHZ2aFBVTy9MTVgy?=
+ =?utf-8?B?djFiTTBWVlFlSXBHQW5RQkVXNWdiZW5PYmxaSlduMER3c3U4U1AydDZmcTNw?=
+ =?utf-8?B?TGdmbnlERjdNQXFISGNDQmpyeG9YUHhTb2lYelFMMmxTdXQxWmZJanRYem12?=
+ =?utf-8?B?cEtjQUtHeExZc05SSkEwRWlHVWtEeTFXbndHR0xORlV1dGVRaEhDWHA2TWZ0?=
+ =?utf-8?B?NGpCdFhxdkVIeTJVU2t2LytLM1RqN2VQSXpLa0t2NE5GOTZwMkpvdUp0b0No?=
+ =?utf-8?B?aG1pSVBiK3VUUTMwTGdVUXdWVVFlbWhTNnNsRml0bmlyNkdNWUkwN2J6NmpX?=
+ =?utf-8?B?VFpkSmZoMUZLRFVSTUtqVXdLV3ZJekFFcmJqcTJCSThsODJ6a1N0c1JGMjNs?=
+ =?utf-8?B?RXEreTUvZG9scXkwQzNvZTYrc2NqQ3duQThNa0QyQTQ5Q2toWk5mUUJkYXkr?=
+ =?utf-8?B?alBpZzY4WklkQnFNNWk2ak9vc2V4Wm8rTjh3U2VlVjFjcmhyajNRSVBrQkJR?=
+ =?utf-8?B?UXdCWE1KUUhaanlWRDJOWFhjVHlnbjM0SnZSa1RseU50ZkF2bWpybmhOL2dh?=
+ =?utf-8?B?eTIvTmlnamFKdHFybHM5bEJLamVXbUFLZk9XVDBENkNUNHRKWjlmV1A3VjJ6?=
+ =?utf-8?B?Wjd5aFhQb0pKbzF6VTMwVVMxYTR0Wkg0UkppSVpmSXIzRGpWaUhGR01jdXhn?=
+ =?utf-8?Q?hFik=3D?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1539b693-e988-4dcd-715f-08dba3eb727d
+X-MS-Exchange-CrossTenant-AuthSource: MW3PR12MB4553.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Aug 2023 15:13:03.9892
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: bYH9zTVp45Z1PycsNXDRHzezIbQ39MJvUSS8HjZeV/tEklUQxHmXRIHasIjdPpE7
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4150
+X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 21, 2023 at 9:09=E2=80=AFAM David Hildenbrand <david@redhat.com=
-> wrote:
->
-> Let's stop using page->private on tail pages, making it possible to
-> just unconditionally reuse that field in the tail pages of large folios.
->
-> The remaining usage of the private field for THP_SWAP is in the THP
-> splitting code (mm/huge_memory.c), that we'll handle separately later.
->
-> Update the THP_SWAP documentation and sanity checks in mm_types.h and
-> __split_huge_page_tail().
->
-> Signed-off-by: David Hildenbrand <david@redhat.com>
+Hi Shaopeng,
 
-The mm part looks good to me (with the added fixup):
+On 8/23/23 02:06, Shaopeng Tan (Fujitsu) wrote:
+> Hi Babu,
+> 
+> I tested these features and ran the selftests/resctrl test set,
+> and there is no problem.
+> 
+> <Reviewed-by:tan.shaopeng@jp.fujitsu.com>
+> <Tested-by:tan.shaopeng@jp.fujitsu.com>
 
-Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
-
-Minor nit below, not worth a respin, but perhaps if you respin anyway
-for something else.
-> ---
->  arch/arm64/mm/mteswap.c  |  5 +++--
->  include/linux/mm_types.h | 12 +-----------
->  include/linux/swap.h     |  9 +++++++++
->  mm/huge_memory.c         | 15 ++++++---------
->  mm/memory.c              |  2 +-
->  mm/rmap.c                |  2 +-
->  mm/swap_state.c          |  5 +++--
->  mm/swapfile.c            |  4 ++--
->  8 files changed, 26 insertions(+), 28 deletions(-)
->
-> diff --git a/arch/arm64/mm/mteswap.c b/arch/arm64/mm/mteswap.c
-> index cd508ba80ab1..a31833e3ddc5 100644
-> --- a/arch/arm64/mm/mteswap.c
-> +++ b/arch/arm64/mm/mteswap.c
-> @@ -33,8 +33,9 @@ int mte_save_tags(struct page *page)
->
->         mte_save_page_tags(page_address(page), tag_storage);
->
-> -       /* page_private contains the swap entry.val set in do_swap_page *=
-/
-> -       ret =3D xa_store(&mte_pages, page_private(page), tag_storage, GFP=
-_KERNEL);
-> +       /* lookup the swap entry.val from the page */
-> +       ret =3D xa_store(&mte_pages, page_swap_entry(page).val, tag_stora=
-ge,
-> +                      GFP_KERNEL);
->         if (WARN(xa_is_err(ret), "Failed to store MTE tags")) {
->                 mte_free_tag_storage(tag_storage);
->                 return xa_err(ret);
-> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-> index b9b6c88875b9..61361f1750c3 100644
-> --- a/include/linux/mm_types.h
-> +++ b/include/linux/mm_types.h
-> @@ -333,11 +333,8 @@ struct folio {
->                         atomic_t _pincount;
->  #ifdef CONFIG_64BIT
->                         unsigned int _folio_nr_pages;
-> -                       /* 4 byte gap here */
-> -       /* private: the union with struct page is transitional */
-> -                       /* Fix THP_SWAP to not use tail->private */
-> -                       unsigned long _private_1;
->  #endif
-> +       /* private: the union with struct page is transitional */
->                 };
->                 struct page __page_1;
->         };
-> @@ -358,9 +355,6 @@ struct folio {
->         /* public: */
->                         struct list_head _deferred_list;
->         /* private: the union with struct page is transitional */
-> -                       unsigned long _avail_2a;
-> -                       /* Fix THP_SWAP to not use tail->private */
-> -                       unsigned long _private_2a;
->                 };
->                 struct page __page_2;
->         };
-> @@ -385,9 +379,6 @@ FOLIO_MATCH(memcg_data, memcg_data);
->                         offsetof(struct page, pg) + sizeof(struct page))
->  FOLIO_MATCH(flags, _flags_1);
->  FOLIO_MATCH(compound_head, _head_1);
-> -#ifdef CONFIG_64BIT
-> -FOLIO_MATCH(private, _private_1);
-> -#endif
->  #undef FOLIO_MATCH
->  #define FOLIO_MATCH(pg, fl)                                            \
->         static_assert(offsetof(struct folio, fl) =3D=3D                  =
-   \
-> @@ -396,7 +387,6 @@ FOLIO_MATCH(flags, _flags_2);
->  FOLIO_MATCH(compound_head, _head_2);
->  FOLIO_MATCH(flags, _flags_2a);
->  FOLIO_MATCH(compound_head, _head_2a);
-> -FOLIO_MATCH(private, _private_2a);
->  #undef FOLIO_MATCH
->
->  /**
-> diff --git a/include/linux/swap.h b/include/linux/swap.h
-> index bb5adc604144..84fe0e94f5cd 100644
-> --- a/include/linux/swap.h
-> +++ b/include/linux/swap.h
-> @@ -339,6 +339,15 @@ static inline swp_entry_t folio_swap_entry(struct fo=
-lio *folio)
->         return entry;
->  }
->
-> +static inline swp_entry_t page_swap_entry(struct page *page)
-> +{
-> +       struct folio *folio =3D page_folio(page);
-> +       swp_entry_t entry =3D folio_swap_entry(folio);
-> +
-> +       entry.val +=3D page - &folio->page;
-> +       return entry;
-> +}
-> +
->  static inline void folio_set_swap_entry(struct folio *folio, swp_entry_t=
- entry)
->  {
->         folio->private =3D (void *)entry.val;
-> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> index cc2f65f8cc62..c04702ae71d2 100644
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -2446,18 +2446,15 @@ static void __split_huge_page_tail(struct page *h=
-ead, int tail,
->         page_tail->index =3D head->index + tail;
->
->         /*
-> -        * page->private should not be set in tail pages with the excepti=
-on
-> -        * of swap cache pages that store the swp_entry_t in tail pages.
-> -        * Fix up and warn once if private is unexpectedly set.
-> -        *
-> -        * What of 32-bit systems, on which folio->_pincount overlays
-> -        * head[1].private?  No problem: THP_SWAP is not enabled on 32-bi=
-t, and
-> -        * pincount must be 0 for folio_ref_freeze() to have succeeded.
-> +        * page->private should not be set in tail pages. Fix up and warn=
- once
-> +        * if private is unexpectedly set.
->          */
-> -       if (!folio_test_swapcache(page_folio(head))) {
-> -               VM_WARN_ON_ONCE_PAGE(page_tail->private !=3D 0, page_tail=
-);
-> +       if (unlikely(page_tail->private)) {
-> +               VM_WARN_ON_ONCE_PAGE(true, page_tail);
->                 page_tail->private =3D 0;
->         }
-
-Could probably save a couple of lines here:
-
-if (VM_WARN_ON_ONCE_PAGE(page_tail->private !=3D 0, page_tail))
-
-       page_tail->private =3D 0;
-
-> +       if (PageSwapCache(head))
-> +               set_page_private(page_tail, (unsigned long)head->private =
-+ tail);
->
->         /* Page flags must be visible before we make the page non-compoun=
-d. */
->         smp_wmb();
-> diff --git a/mm/memory.c b/mm/memory.c
-> index d003076b218d..ff13242c1589 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -3882,7 +3882,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
->                  * changed.
->                  */
->                 if (unlikely(!folio_test_swapcache(folio) ||
-> -                            page_private(page) !=3D entry.val))
-> +                            page_swap_entry(page).val !=3D entry.val))
->                         goto out_page;
->
->                 /*
-> diff --git a/mm/rmap.c b/mm/rmap.c
-> index 1f04debdc87a..ec7f8e6c9e48 100644
-> --- a/mm/rmap.c
-> +++ b/mm/rmap.c
-> @@ -1647,7 +1647,7 @@ static bool try_to_unmap_one(struct folio *folio, s=
-truct vm_area_struct *vma,
->                          */
->                         dec_mm_counter(mm, mm_counter(&folio->page));
->                 } else if (folio_test_anon(folio)) {
-> -                       swp_entry_t entry =3D { .val =3D page_private(sub=
-page) };
-> +                       swp_entry_t entry =3D page_swap_entry(subpage);
->                         pte_t swp_pte;
->                         /*
->                          * Store the swap location in the pte.
-> diff --git a/mm/swap_state.c b/mm/swap_state.c
-> index 01f15139b7d9..2f2417810052 100644
-> --- a/mm/swap_state.c
-> +++ b/mm/swap_state.c
-> @@ -100,6 +100,7 @@ int add_to_swap_cache(struct folio *folio, swp_entry_=
-t entry,
->
->         folio_ref_add(folio, nr);
->         folio_set_swapcache(folio);
-> +       folio_set_swap_entry(folio, entry);
->
->         do {
->                 xas_lock_irq(&xas);
-> @@ -113,7 +114,6 @@ int add_to_swap_cache(struct folio *folio, swp_entry_=
-t entry,
->                                 if (shadowp)
->                                         *shadowp =3D old;
->                         }
-> -                       set_page_private(folio_page(folio, i), entry.val =
-+ i);
->                         xas_store(&xas, folio);
->                         xas_next(&xas);
->                 }
-> @@ -154,9 +154,10 @@ void __delete_from_swap_cache(struct folio *folio,
->         for (i =3D 0; i < nr; i++) {
->                 void *entry =3D xas_store(&xas, shadow);
->                 VM_BUG_ON_PAGE(entry !=3D folio, entry);
-> -               set_page_private(folio_page(folio, i), 0);
->                 xas_next(&xas);
->         }
-> +       entry.val =3D 0;
-> +       folio_set_swap_entry(folio, entry);
->         folio_clear_swapcache(folio);
->         address_space->nrpages -=3D nr;
->         __node_stat_mod_folio(folio, NR_FILE_PAGES, -nr);
-> diff --git a/mm/swapfile.c b/mm/swapfile.c
-> index d46933adf789..bd9d904671b9 100644
-> --- a/mm/swapfile.c
-> +++ b/mm/swapfile.c
-> @@ -3369,7 +3369,7 @@ struct swap_info_struct *swp_swap_info(swp_entry_t =
-entry)
->
->  struct swap_info_struct *page_swap_info(struct page *page)
->  {
-> -       swp_entry_t entry =3D { .val =3D page_private(page) };
-> +       swp_entry_t entry =3D page_swap_entry(page);
->         return swp_swap_info(entry);
->  }
->
-> @@ -3384,7 +3384,7 @@ EXPORT_SYMBOL_GPL(swapcache_mapping);
->
->  pgoff_t __page_file_index(struct page *page)
->  {
-> -       swp_entry_t swap =3D { .val =3D page_private(page) };
-> +       swp_entry_t swap =3D page_swap_entry(page);
->         return swp_offset(swap);
->  }
->  EXPORT_SYMBOL_GPL(__page_file_index);
-> --
-> 2.41.0
->
->
+Thank you
+Babu Moger
