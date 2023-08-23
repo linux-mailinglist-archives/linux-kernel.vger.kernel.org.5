@@ -2,108 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 211D778586B
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 14:59:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8C1578586F
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 14:59:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235167AbjHWM7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 08:59:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53794 "EHLO
+        id S235397AbjHWM7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 08:59:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232492AbjHWM7E (ORCPT
+        with ESMTP id S235374AbjHWM7h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 08:59:04 -0400
-Received: from icts-p-cavspool-1.kulnet.kuleuven.be (icts-p-cavspool-1.kulnet.kuleuven.be [IPv6:2a02:2c40:0:c0::25:194])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41EE01705;
-        Wed, 23 Aug 2023 05:58:12 -0700 (PDT)
-Received: from icts-p-cavuit-4.kulnet.kuleuven.be (icts-p-cavuit-4.kulnet.kuleuven.be [IPv6:2a02:2c40:0:c0::25:134])
-        by icts-p-cavspool-1.kulnet.kuleuven.be (Postfix) with ESMTP id 69E0C2952;
-        Wed, 23 Aug 2023 14:58:07 +0200 (CEST)
-X-KULeuven-Envelope-From: jo.vanbulck@cs.kuleuven.be
-X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        Wed, 23 Aug 2023 08:59:37 -0400
+Received: from forwardcorp1b.mail.yandex.net (forwardcorp1b.mail.yandex.net [178.154.239.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05F36E69
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 05:59:17 -0700 (PDT)
+Received: from mail-nwsmtp-smtp-corp-canary-81.sas.yp-c.yandex.net (mail-nwsmtp-smtp-corp-canary-81.sas.yp-c.yandex.net [IPv6:2a02:6b8:c08:ac00:0:640:e1b9:0])
+        by forwardcorp1b.mail.yandex.net (Yandex) with ESMTP id AE35C62949;
+        Wed, 23 Aug 2023 15:58:43 +0300 (MSK)
+Received: from valesini-ubuntu.yandex-team.ru (unknown [2a02:6b8:b081:b70f::1:a])
+        by mail-nwsmtp-smtp-corp-canary-81.sas.yp-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id YwJHT20OemI0-XRKp3HB1;
+        Wed, 23 Aug 2023 15:58:42 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
+        t=1692795523; bh=/1rKbXnBz+yTs1krmTUupXhwl3EiyzeAym2M7KAwKJc=;
+        h=Message-Id:Date:In-Reply-To:Cc:Subject:References:To:From;
+        b=Sdalz47a+aU9YWokdbO0O6tXWcY3bGvjbN44ls4BflFKhc6X7KUikuHpoEmW6/Nto
+         lSrSXCyHAsuCfV4cLY8TC7aV871L1u8Roh4O8p09215EmagwvYjvy8ZmxLEuNgTsSE
+         clnqzxvdDmX8twzED9WChSkPRlQDD3VW87kE9Jds=
+Authentication-Results: mail-nwsmtp-smtp-corp-canary-81.sas.yp-c.yandex.net; dkim=pass header.i=@yandex-team.ru
+From:   Valentine Sinitsyn <valesini@yandex-team.ru>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v5 1/2] kernfs: sysfs: support custom llseek method for sysfs entries
+Date:   Wed, 23 Aug 2023 17:58:33 +0500
+Message-Id: <20230823125834.492298-1-valesini@yandex-team.ru>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <202308230126.O8xXYkdt-lkp@intel.com>
+References: <202308230126.O8xXYkdt-lkp@intel.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
-X-KULeuven-Scanned: Found to be clean
-X-KULeuven-ID: 1E13151.AF512
-X-KULeuven-Information: Katholieke Universiteit Leuven
-Received: from icts-p-ceifnet-smtps-1.kuleuven.be (icts-p-ceifnet-smtps.service.icts.svcd [IPv6:2a02:2c40:0:51:132:242:ac11:16])
-        by icts-p-cavuit-4.kulnet.kuleuven.be (Postfix) with ESMTP id 1E13151;
-        Wed, 23 Aug 2023 14:57:46 +0200 (CEST)
-BCmilterd-Mark-Subject: no
-BCmilterd-Errors: 
-BCmilterd-Report: SA-HVU#DKIM_SIGNED#0.00,SA-HVU#DKIM_VALID#0.00,SA-HVU#DKIM_VALID_AU#0.00
-X-CAV-Cluster: smtps
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cs.kuleuven.be;
-        s=cav; t=1692795466;
-        bh=XLJ9oEsCm2dJliTwA4R+B1kkN/Uf4BYwyIvpoBcqa6M=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=g9mTYT4UR2iae7hS7IBjMyDVHORonS5LI6IQFx2ZIGq+60PKq5dRnljL7U3UAfKb9
-         g8dEEn2BpCFGqhAqRKBkNhI9C3tL+km6lmynYeAkR1I5MH3ThdP4zWIr76IXDkpdBx
-         xdr1UTr59+qOj9A8iut3jH0tWvwLDzqMn25AXgiE=
-Received: from [IPV6:2a02:1811:d31:8b00:6a8c:3ab2:9886:5378] (ptr-82s0fs797m4gxnd4pko.18120a2.ip6.access.telenet.be [IPv6:2a02:1811:d31:8b00:6a8c:3ab2:9886:5378])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by icts-p-ceifnet-smtps-1.kuleuven.be (Postfix) with ESMTPSA id D6034D4EBA1A7;
-        Wed, 23 Aug 2023 14:57:45 +0200 (CEST)
-Message-ID: <819a5450-127b-ecd2-ac01-c58e848fba1d@cs.kuleuven.be>
-Date:   Wed, 23 Aug 2023 14:57:48 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 9/9] selftests/sgx: Specify freestanding environment
- for enclave compilation
-Content-Language: en-US
-To:     Jarkko Sakkinen <jarkko@kernel.org>, kai.huang@intel.com,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     dave.hansen@linux.intel.com
-References: <20230819094332.8535-1-jo.vanbulck@cs.kuleuven.be>
- <20230819094332.8535-10-jo.vanbulck@cs.kuleuven.be>
- <CUYZSZWSDUHC.2QB1Z9GD76HF6@suppilovahvero>
-X-Kuleuven: This mail passed the K.U.Leuven mailcluster
-From:   Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
-In-Reply-To: <CUYZSZWSDUHC.2QB1Z9GD76HF6@suppilovahvero>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.08.23 12:14, Jarkko Sakkinen wrote:
-> Do you still need nostdfiles and nostartfiles with freestanding?
+As of now, seeking in sysfs files is handled by generic_file_llseek().
+There are situations where one may want to customize seeking logic:
 
-Thanks, good question. I tested that compiling with only -ffreestanding 
-yields:
+- Many sysfs entries are fixed files while generic_file_llseek() accepts
+  past-the-end positions. Not only being useless by itself, this
+  also means a bug in userspace code will trigger not at lseek(), but at
+  some later point making debugging harder.
+- generic_file_llseek() relies on f_mapping->host to get the file size
+  which might not be correct for all sysfs entries.
+  See commit 636b21b50152 ("PCI: Revoke mappings like devmem") as an example.
 
-/* snipped */
-/usr/local/bin/ld: 
-/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/rcrt1.o: in 
-function `_start':
-(.text+0x24): undefined reference to `main'
-/* snipped */
+Implement llseek method to override this behavior at sysfs attribute
+level. The method is optional, and if it is absent,
+generic_file_llseek() is called to preserve backwards compatibility.
 
-So we definitely still need -nostartfiles to prevent the compiler/linker 
-from introducing the standard system startup functions. However, in my 
-understanding, -nostdlib (which is what I assume you mean with 
-nostdfiles) already implies the individual options -nodefaultlibs and 
--nostartfiles.
+Cc: stable@vger.kernel.org
+Signed-off-by: Valentine Sinitsyn <valesini@yandex-team.ru>
+---
+v5:
+        - Fix builds without PCI mmap support (e.g. Alpha)
+v4:
+        - Fix builds which #define HAVE_PCI_LEGACY (e.g. PowerPC)
+v3:
+        - Grammar fixes
+        - Add base-patch: and prerequisite-patch-id: to make kernel test
+          robot happy
+v2:
+        - Add infrastructure to customize llseek per sysfs entry type
+        - Override llseek for PCI sysfs entries with fixed_file_llseek()
+ fs/kernfs/file.c       | 14 +++++++++++++-
+ fs/sysfs/file.c        | 13 +++++++++++++
+ include/linux/kernfs.h |  1 +
+ include/linux/sysfs.h  |  2 ++
+ 4 files changed, 29 insertions(+), 1 deletion(-)
 
-Thus, we definitely still need -nostartfiles and I'm not 100% sure we 
-don't need -nostdlib (though it compiles fine for me with only 
--nostartfiles). Gcc only specifies:
+diff --git a/fs/kernfs/file.c b/fs/kernfs/file.c
+index 180906c36f51..6166bf74d5b8 100644
+--- a/fs/kernfs/file.c
++++ b/fs/kernfs/file.c
+@@ -903,6 +903,18 @@ static __poll_t kernfs_fop_poll(struct file *filp, poll_table *wait)
+ 	return ret;
+ }
+ 
++static loff_t kernfs_fop_llseek(struct file *file, loff_t offset, int whence)
++{
++	struct kernfs_open_file *of = kernfs_of(file);
++	const struct kernfs_ops *ops;
++
++	ops = kernfs_ops(of->kn);
++	if (ops->llseek)
++		return ops->llseek(of, offset, whence);
++	else
++		return generic_file_llseek(file, offset, whence);
++}
++
+ static void kernfs_notify_workfn(struct work_struct *work)
+ {
+ 	struct kernfs_node *kn;
+@@ -1005,7 +1017,7 @@ EXPORT_SYMBOL_GPL(kernfs_notify);
+ const struct file_operations kernfs_file_fops = {
+ 	.read_iter	= kernfs_fop_read_iter,
+ 	.write_iter	= kernfs_fop_write_iter,
+-	.llseek		= generic_file_llseek,
++	.llseek		= kernfs_fop_llseek,
+ 	.mmap		= kernfs_fop_mmap,
+ 	.open		= kernfs_fop_open,
+ 	.release	= kernfs_fop_release,
+diff --git a/fs/sysfs/file.c b/fs/sysfs/file.c
+index a12ac0356c69..6b7652fb8050 100644
+--- a/fs/sysfs/file.c
++++ b/fs/sysfs/file.c
+@@ -167,6 +167,18 @@ static int sysfs_kf_bin_mmap(struct kernfs_open_file *of,
+ 	return battr->mmap(of->file, kobj, battr, vma);
+ }
+ 
++static loff_t sysfs_kf_bin_llseek(struct kernfs_open_file *of, loff_t offset,
++				  int whence)
++{
++	struct bin_attribute *battr = of->kn->priv;
++	struct kobject *kobj = of->kn->parent->priv;
++
++	if (battr->llseek)
++		return battr->llseek(of->file, kobj, battr, offset, whence);
++	else
++		return generic_file_llseek(of->file, offset, whence);
++}
++
+ static int sysfs_kf_bin_open(struct kernfs_open_file *of)
+ {
+ 	struct bin_attribute *battr = of->kn->priv;
+@@ -249,6 +261,7 @@ static const struct kernfs_ops sysfs_bin_kfops_mmap = {
+ 	.write		= sysfs_kf_bin_write,
+ 	.mmap		= sysfs_kf_bin_mmap,
+ 	.open		= sysfs_kf_bin_open,
++	.llseek		= sysfs_kf_bin_llseek,
+ };
+ 
+ int sysfs_add_file_mode_ns(struct kernfs_node *parent,
+diff --git a/include/linux/kernfs.h b/include/linux/kernfs.h
+index 73f5c120def8..9ed535930259 100644
+--- a/include/linux/kernfs.h
++++ b/include/linux/kernfs.h
+@@ -316,6 +316,7 @@ struct kernfs_ops {
+ 			 struct poll_table_struct *pt);
+ 
+ 	int (*mmap)(struct kernfs_open_file *of, struct vm_area_struct *vma);
++	loff_t (*llseek)(struct kernfs_open_file *of, loff_t offset, int whence);
+ };
+ 
+ /*
+diff --git a/include/linux/sysfs.h b/include/linux/sysfs.h
+index fd3fe5c8c17f..b717a70219f6 100644
+--- a/include/linux/sysfs.h
++++ b/include/linux/sysfs.h
+@@ -181,6 +181,8 @@ struct bin_attribute {
+ 			char *, loff_t, size_t);
+ 	ssize_t (*write)(struct file *, struct kobject *, struct bin_attribute *,
+ 			 char *, loff_t, size_t);
++	loff_t (*llseek)(struct file *, struct kobject *, struct bin_attribute *,
++			 loff_t, int);
+ 	int (*mmap)(struct file *, struct kobject *, struct bin_attribute *attr,
+ 		    struct vm_area_struct *vma);
+ };
 
--ffreestanding
-Assert that compilation targets a freestanding environment.  This 
-implies -fno-builtin. A freestanding environment is one in which the 
-standard library may not exist, and program startup may not necessarily 
-be at "main".
-
-Bottom line: I suggest to keep -nostdlib to be sure and remove 
--nostartfiles (as it is redundant). I'll include this in the next  patch 
-iteration.
-
-Best,
-Jo
+base-commit: 89bf6209cad66214d3774dac86b6bbf2aec6a30d
+-- 
+2.34.1
 
