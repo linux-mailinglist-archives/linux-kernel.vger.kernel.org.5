@@ -2,156 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CF727852A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 10:26:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9FC57852B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 10:31:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234278AbjHWI0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 04:26:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41754 "EHLO
+        id S233871AbjHWIbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 04:31:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234822AbjHWIV5 (ORCPT
+        with ESMTP id S233756AbjHWI32 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 04:21:57 -0400
-Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2192726AA
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 01:17:52 -0700 (PDT)
-Received: by mail-ua1-x92e.google.com with SMTP id a1e0cc1a2514c-79414715edeso1377148241.0
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 01:17:52 -0700 (PDT)
+        Wed, 23 Aug 2023 04:29:28 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFD922701;
+        Wed, 23 Aug 2023 01:18:06 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id 98e67ed59e1d1-26f9521de4cso942865a91.0;
+        Wed, 23 Aug 2023 01:18:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692778671; x=1693383471;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Nqe7mkEGHT7NgyOQeDLsG/n1Ckgqsp5wMv1XT9TA+F0=;
-        b=hXhyKxRAa/XqLCTxuoqAArYlj9eqorGXCeup5cOmCN9mkKInNpCyyi8s9jF4kKRgHq
-         FaZOyNg3gNOdj2ioyF+sv8XvT/Fnr53rI3SYlqnHBOgMxe79HPLV5lAXW0FNkAbGrRoS
-         zY2qhPEayqE2RlGeFgxLI2KwuTkI3zoGCUuLKWPWxH95mvyOOQOV7INPOW3Q/NI9PSQF
-         5eVEJ35yBMg+9nrPS4AbQvoIKUxl7QvSirKvzztNEIFwdPNxfqTdIeigsn+G9uZ/yFbB
-         B5DS83W8cBn4mq8mjwbov6SPwvUQqh4LtUOZH1GO9aq+QiwpuBOaHlC376MacfVOp9Bb
-         5emw==
+        d=gmail.com; s=20221208; t=1692778686; x=1693383486;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=J8aHxB2kz2NVsCyn+YWPwHA5DwGbi4gw2OrktjdJz4Q=;
+        b=r7987ylOfBbjvEL6e+i2Ye+X8gZhHAYwxYncNKkTivMsQ1I0G/x3tRa20Q6IkCor24
+         DhhxxEaLbAi4bZwv433Wh/SfmkJ238T/ua9Oi3rlqolPTqLGHHl8CtpLEJM+IhD3KWXa
+         x0YJOB28U+yvFROZhAM0djqw3p5aQwfcjOvHpEyy+vYwcvLuOOdXyWoBLPZ5O4DUUIvY
+         RqcmetNnYJoUcC+ameTZ5vbhBz4D53KBTI1w6OYcC80tVvG0kb70hdVZWvXDUAVEtFye
+         lUP1ZoXO8fJ3kPKWiuuhI4qrEhjhNft0P0vKC+0lXHsmDwvJpiN05Nlv/Cl5UFryU2F2
+         TJ5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692778671; x=1693383471;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Nqe7mkEGHT7NgyOQeDLsG/n1Ckgqsp5wMv1XT9TA+F0=;
-        b=lQv05Vp39ka5sFY4uv+g0gnmnsYyAJ2VwNUZEfbCdF/CHRo2QXoUr6sI3X8o8yd4Um
-         kVlbSoDStnul9BSln/fql1oYHVTgmtG9o8pkCOQUeGEHwBvGp4LcgGaBPxCxyJey7iEM
-         sVg7AHJZJwiM4e06+9CuJFj8/RGqMI6vRCpdleqo/AvYbcNGdOtr+EqF8jEYHNka6Cuf
-         89fQu/69VZyHVfr9idqOOh8YaBeliqHJ5/loyA9+rYMjJwuTLCEqX9SWLc6/zjldaBjx
-         MRko74/085/1H8KIaK7X6wM+p2xg6fa1YyiKcIrWQmFdkmvPPH9GW29s/BUOjmtv79v1
-         ExLg==
-X-Gm-Message-State: AOJu0YxFkTgqEUbxOqo+IllAG6CbnBP+WGYFdp1DnDJA+cqMpgpmwkV1
-        KOJgIvHujfPd2BgQ4e2cSgr6OYNiSanO60URfvR1eA==
-X-Google-Smtp-Source: AGHT+IHSgU62Q6R+8iOJxv7mKFz8zOjUZr5Tp7B2zIBJp9mM3XkHYJsE5kmt1bfZn81x6p3V6xFkkvMxAmVTWuEkcTs=
-X-Received: by 2002:a67:fd0f:0:b0:44a:c20a:ebb1 with SMTP id
- f15-20020a67fd0f000000b0044ac20aebb1mr6941151vsr.13.1692778671115; Wed, 23
- Aug 2023 01:17:51 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692778686; x=1693383486;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=J8aHxB2kz2NVsCyn+YWPwHA5DwGbi4gw2OrktjdJz4Q=;
+        b=KAGsJsdfnnElq8hclTiZxi91pbfTWhCsYQf6LbrhFpAQCH10n5N4nnTi15UgzK97AW
+         qh5CJZZdnVwXf22rE0BYM/4aaQp8+eQvT30ZgHHCERaxd7UKeUmMZQ4ABt5QPbmxLAqn
+         qLRa2Zk7exLFSHbNFPM2pkAJEkM7g//yvdZ2G1gJ/NKDjmqU+EpnZXgA6s3qupu7Q4z3
+         VKkcLbphelagTqv7Xs4qBTkLDnlguInIbVdGp3f+Jp5/zDui5wWVUTu8W+ax2gqze9oT
+         nHN44ffcU9izajJhsSP/CI/9Mvz/oagdR4Aq7XxlMTWENwRJqVXJn+OBOhOLceQwqA1O
+         7k8A==
+X-Gm-Message-State: AOJu0YwePK9LecaV4oRHbe77PmwQ2htxg7tZCr5HxQAErJn4150edIgi
+        vwnT4h2y8cX+pbgqInLQB0s=
+X-Google-Smtp-Source: AGHT+IHAaGAmIl6NEEBmFcn3UDDJwD0Ictdip7Zj+i5dYacoeYXGOZ3fshWe4waklTy8ZhsKdv81NA==
+X-Received: by 2002:a17:90a:558f:b0:26b:4e40:7be8 with SMTP id c15-20020a17090a558f00b0026b4e407be8mr8533815pji.12.1692778686048;
+        Wed, 23 Aug 2023 01:18:06 -0700 (PDT)
+Received: from ?IPV6:2404:f801:0:5:8000::75b? ([2404:f801:9000:1a:efea::75b])
+        by smtp.gmail.com with ESMTPSA id e7-20020a17090a804700b0026b4d215627sm9100385pjw.21.2023.08.23.01.17.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Aug 2023 01:18:05 -0700 (PDT)
+Message-ID: <13e03561-eff6-a90f-902f-05252e1b8949@gmail.com>
+Date:   Wed, 23 Aug 2023 16:17:54 +0800
 MIME-Version: 1.0
-References: <20230821194122.695845670@linuxfoundation.org> <991b93d2-9fde-4233-97d5-1133a9360d02@roeck-us.net>
- <2023082309-veggie-unwoven-a7df@gregkh>
-In-Reply-To: <2023082309-veggie-unwoven-a7df@gregkh>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 23 Aug 2023 13:47:39 +0530
-Message-ID: <CA+G9fYvwxuVpSn24YvtdNXaofg2JtZDREatOpDsKTVJX+nFN3Q@mail.gmail.com>
-Subject: Re: [PATCH 6.1 000/194] 6.1.47-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>, stable@vger.kernel.org,
-        patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 4/9] x86/hyperv: Fix serial console interrupts for fully
+ enlightened TDX guests
+To:     Dexuan Cui <decui@microsoft.com>, ak@linux.intel.com,
+        arnd@arndb.de, bp@alien8.de, brijesh.singh@amd.com,
+        dan.j.williams@intel.com, dave.hansen@intel.com,
+        dave.hansen@linux.intel.com, haiyangz@microsoft.com, hpa@zytor.com,
+        jane.chu@oracle.com, kirill.shutemov@linux.intel.com,
+        kys@microsoft.com, linux-hyperv@vger.kernel.org, luto@kernel.org,
+        mingo@redhat.com, peterz@infradead.org, rostedt@goodmis.org,
+        sathyanarayanan.kuppuswamy@linux.intel.com, seanjc@google.com,
+        tglx@linutronix.de, tony.luck@intel.com, wei.liu@kernel.org,
+        Jason@zx2c4.com, nik.borisov@suse.com, mikelley@microsoft.com
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, Tianyu.Lan@microsoft.com,
+        rick.p.edgecombe@intel.com, andavis@redhat.com, mheslin@redhat.com,
+        vkuznets@redhat.com, xiaoyao.li@intel.com
+References: <20230811221851.10244-1-decui@microsoft.com>
+ <20230811221851.10244-5-decui@microsoft.com>
+From:   Tianyu Lan <ltykernel@gmail.com>
+In-Reply-To: <20230811221851.10244-5-decui@microsoft.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 23 Aug 2023 at 12:33, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Tue, Aug 22, 2023 at 05:49:54PM -0700, Guenter Roeck wrote:
-> > On Mon, Aug 21, 2023 at 09:39:39PM +0200, Greg Kroah-Hartman wrote:
-> > > This is the start of the stable review cycle for the 6.1.47 release.
-> > > There are 194 patches in this series, all will be posted as a response
-> > > to this one.  If anyone has any issues with these being applied, please
-> > > let me know.
-> > >
-> > > Responses should be made by Wed, 23 Aug 2023 19:40:45 +0000.
-> > > Anything received after that time might be too late.
-> > >
-> >
-> > Build results:
-> >       total: 157 pass: 156 fail: 1
-> > Failed builds:
-> >       m68k:sun3_defconfig
-> > Qemu test results:
-> >       total: 521 pass: 519 fail: 2
-> > Failed tests:
-> >       arm:fuji-bmc:aspeed_g5_defconfig:notests:mem1G:mtd128,0,8,1:net,nic:aspeed-bmc-facebook-fuji:f2fs
-> >       arm:bletchley-bmc,fmc-model=mt25qu02g,spi-model=mt25qu02g:aspeed_g5_defconfig:notests:mem1G:mtd256:net,nic:aspeed-bmc-facebook-bletchley:f2fs
-> >
-> > The m68k build failure is
-> >
-> > Inconsistent kallsyms data
-> > Try make KALLSYMS_EXTRA_PASS=1 as a workaround
-> >
-> > I already have KALLSYMS_EXTRA_PASS=1 enabled, so that doesn't help.
-> > Nothing to worry about. The f2fs crashes are still seen. They
-> > also happen for other architectures, so it is not just an arm problem.
-> > I'll probably just disable all f2fs testing going forward. If so I'll
-> > send a note clarifying that the lack of reported test failures doesn't
-> > mean that it works.
->
-> I'll look into this later this week, next week to resolve the f2fs
-> stuff.  I wanted to get to the other known bug fixes first.
->
-> > For x86 I get the same runtime warning as everyone else.
->
-> Yeah, this is troubling...
->
-> Is it clang only?  I'll dig into this today...
+On 8/12/2023 6:18 AM, Dexuan Cui wrote:
+> When a fully enlightened TDX guest runs on Hyper-V, the UEFI firmware sets
+> the HW_REDUCED flag and consequently ttyS0 interrupts can't work. Fix the
+> issue by overriding x86_init.acpi.reduced_hw_early_init().
+> 
+> Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+> Signed-off-by: Dexuan Cui <decui@microsoft.com>
 
-It is seen with gcc-13 and clang-17 with few extra configs.
-We are not booting defconfig.
-
-The Kconfigs are enabled with KFENCE.
-
-I see this from lore
-"
-This is from overnight testing that hit this only in the KCSAN runs.
-The KASAN and non-debug runs had no trouble.
-
-Thanx, Paul
-
-"
-
-steps to reproduce:
--------------------
-tuxmake --runtime podman --target-arch x86_64 --toolchain gcc-13
---kconfig https://storage.tuxsuite.com/public/linaro/lkft/builds/2UJAv99Wwi6YMltFjlQD5XRO5x4/config
-
-
-Here is the links to details and build details,
-[1]
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.1.y/build/v6.1.46-195-g5165f4e9738c/testrun/19256276/suite/log-parser-boot/test/check-kernel-exception/details/
-
-[2]
-https://storage.tuxsuite.com/public/linaro/lkft/builds/2UJAv99Wwi6YMltFjlQD5XRO5x4/
-
-[3]
-https://storage.tuxsuite.com/public/linaro/lkft/builds/2UJAv99Wwi6YMltFjlQD5XRO5x4/config
-
-- Naresh
-
-
->
-> thanks,
->
-> greg k-h
+Reviewed-by: Tianyu Lan <tiala@microsoft.com>
+> ---
+>   arch/x86/kernel/cpu/mshyperv.c | 22 ++++++++++++++++++++++
+>   1 file changed, 22 insertions(+)
+> 
+> diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
+> index 507df0f64ae18..b4214e37e9124 100644
+> --- a/arch/x86/kernel/cpu/mshyperv.c
+> +++ b/arch/x86/kernel/cpu/mshyperv.c
+> @@ -324,6 +324,26 @@ static void __init hv_smp_prepare_cpus(unsigned int max_cpus)
+>   }
+>   #endif
+>   
+> +/*
+> + * When a fully enlightened TDX VM runs on Hyper-V, the firmware sets the
+> + * HW_REDUCED flag: refer to acpi_tb_create_local_fadt(). Consequently ttyS0
+> + * interrupts can't work because request_irq() -> ... -> irq_to_desc() returns
+> + * NULL for ttyS0. This happens because mp_config_acpi_legacy_irqs() sees a
+> + * nr_legacy_irqs() of 0, so it doesn't initialize the array 'mp_irqs[]', and
+> + * later setup_IO_APIC_irqs() -> find_irq_entry() fails to find the legacy irqs
+> + * from the array and hence doesn't create the necessary irq description info.
+> + *
+> + * Clone arch/x86/kernel/acpi/boot.c: acpi_generic_reduced_hw_init() here,
+> + * except don't change 'legacy_pic', which keeps its default value
+> + * 'default_legacy_pic'. This way, mp_config_acpi_legacy_irqs() sees a non-zero
+> + * nr_legacy_irqs() and eventually serial console interrupts works properly.
+> + */
+> +static void __init reduced_hw_init(void)
+> +{
+> +	x86_init.timers.timer_init	= x86_init_noop;
+> +	x86_init.irqs.pre_vector_init	= x86_init_noop;
+> +}
+> +
+>   static void __init ms_hyperv_init_platform(void)
+>   {
+>   	int hv_max_functions_eax;
+> @@ -442,6 +462,8 @@ static void __init ms_hyperv_init_platform(void)
+>   
+>   				/* Don't trust Hyper-V's TLB-flushing hypercalls. */
+>   				ms_hyperv.hints &= ~HV_X64_REMOTE_TLB_FLUSH_RECOMMENDED;
+> +
+> +				x86_init.acpi.reduced_hw_early_init = reduced_hw_init;
+>   			}
+>   		}
+>   	}
