@@ -2,121 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A18367854BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 11:58:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0726C7854B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 11:56:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235169AbjHWJ6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 05:58:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32872 "EHLO
+        id S236153AbjHWJ45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 05:56:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236089AbjHWJz5 (ORCPT
+        with ESMTP id S232347AbjHWJ4c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 05:55:57 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCAC21FEB
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 02:53:59 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-99de884ad25so724755866b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 02:53:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692784438; x=1693389238;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=snyW6QooaPXxRKq026Bpqwbivey9Dhp9wOAD4tTxaMM=;
-        b=JhXVDWs3XswyJo84RMqihcUmZtWcGYewSOz3Ew/Leb8e0w/FeAsxS/y8N1HLPvHRLd
-         gNnfUE9ZoiBmpfHTIWdqAlZpGoxIIp9D+XgrtFc865nMWes3h7XWvYDvBKvW82qdRGvo
-         E0u6bt45VhUdzCe4nZ0gZbTxQkO5ScaE84EJP8V38xGOcqYEUgqqR2zm5h0zvkV8XcNi
-         ly2HHZbHq2Y+Ae89nPuUnqu0gNRXVzHmJZaX6y/jfw4bLubPo9FN+th2jjddDI03ogzF
-         572jIhTTpKB/dUQzBTY3Nd5M1TTI+Ceulg0tpSGTmY8uKwaOrF9AqnwjCLjMBfGFNfLA
-         rr2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692784438; x=1693389238;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=snyW6QooaPXxRKq026Bpqwbivey9Dhp9wOAD4tTxaMM=;
-        b=JMzFq5g+FQw0AyfDUDdP0NL+JbUChcyLwxBdoFXzrN3G2RFR5mMJZsUKf8lDZlu+WZ
-         Kymhcvhs4SygPfTOoiS6pWxMoGM4Qyc3E7W8GqyjTc0Y+aVt2mzySLr+mjP8c7crXEGX
-         2O2cYlsS3O9aWJnFvfxDVtBnlNKokoH7uviMmsHSR9wquXEeOBpmxbu4kmr0vSFnHjKi
-         Qcn9p3t1FaR46eHu5l0oXiPFgSaWa9a6OUEQCzJAo1wM7TZ6wB9GxfhGhS6hbyLCeAGf
-         qolV2g/37bMGS9mCrlv7mhFhENnen4ndiXZ7hvUIKco6bLQro1j7BnbLGg4oP1AxFjRx
-         xESw==
-X-Gm-Message-State: AOJu0YyAM0CO0VdMCh6429/7LXWpZgHlcHncJRcIWgyUHBcRqx2c9OPJ
-        5qFnNWx/WhEOvcjtVrIQy5t6bQ==
-X-Google-Smtp-Source: AGHT+IFD76c4FCTBYsFBDjJ4/evxGKRAuH6eb0Ylbul3hf6RYEUkGvi2jH6NKTEN/9TGRqlQYHdctQ==
-X-Received: by 2002:a17:906:2d0:b0:9a1:cb3c:ba5c with SMTP id 16-20020a17090602d000b009a1cb3cba5cmr2244200ejk.68.1692784438286;
-        Wed, 23 Aug 2023 02:53:58 -0700 (PDT)
-Received: from [192.168.0.22] ([77.252.47.198])
-        by smtp.gmail.com with ESMTPSA id w20-20020a170906b19400b0098f33157e7dsm9562610ejy.82.2023.08.23.02.53.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Aug 2023 02:53:57 -0700 (PDT)
-Message-ID: <32667691-ec7f-0dd3-b3ba-fdcd40f1fbca@linaro.org>
-Date:   Wed, 23 Aug 2023 11:53:56 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v3 2/3] dt-bindings: display: novatek,nt35950: define
- ports
-Content-Language: en-US
-To:     Rob Herring <robh@kernel.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        dri-devel@lists.freedesktop.org, David Airlie <airlied@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-kernel@vger.kernel.org, Sam Ravnborg <sam@ravnborg.org>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Del Regno <angelogioacchino.delregno@somainline.org>,
-        devicetree@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
-        Jianhua Lu <lujianhua000@gmail.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>
-References: <20230823081500.84005-1-krzysztof.kozlowski@linaro.org>
- <20230823081500.84005-2-krzysztof.kozlowski@linaro.org>
- <169278171739.1524810.6441506448861500441.robh@kernel.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <169278171739.1524810.6441506448861500441.robh@kernel.org>
+        Wed, 23 Aug 2023 05:56:32 -0400
+Received: from jari.cn (unknown [218.92.28.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 26FDD10B
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 02:56:27 -0700 (PDT)
+Received: from chenxuebing$jari.cn ( [125.70.163.142] ) by
+ ajax-webmail-localhost.localdomain (Coremail) ; Wed, 23 Aug 2023 17:56:02
+ +0800 (GMT+08:00)
+X-Originating-IP: [125.70.163.142]
+Date:   Wed, 23 Aug 2023 17:56:02 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   "XueBing Chen" <chenxuebing@jari.cn>
+To:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/amdgpu: Clean up errors in gfx_v6_0.c
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version 2023.1-cmXT6 build
+ 20230419(ff23bf83) Copyright (c) 2002-2023 www.mailtech.cn
+ mispb-4e503810-ca60-4ec8-a188-7102c18937cf-zhkzyfz.cn
+Content-Transfer-Encoding: base64
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+MIME-Version: 1.0
+Message-ID: <2d0c6301.62b.18a21d2920f.Coremail.chenxuebing@jari.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: AQAAfwDHZD+y1+Vk53aQAA--.478W
+X-CM-SenderInfo: hfkh05pxhex0nj6mt2flof0/1tbiAQAMCmTl1A4AAgADsd
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
+X-Spam-Status: No, score=2.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_PBL,RDNS_NONE,T_SPF_HELO_PERMERROR,T_SPF_PERMERROR,XPRIO
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/08/2023 11:08, Rob Herring wrote:
-> 
-> On Wed, 23 Aug 2023 10:14:59 +0200, Krzysztof Kozlowski wrote:
->> The panel-common schema does not define what "ports" property is, so
->> bring the definition by referencing the panel-common-dual.yaml. Panels
->> can be single- or dual-link, thus require only one port@0.
->>
->> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->>
->> ---
->>
->> Changes since v2:
->> 1. Use panel-common-dual
->>
->> Changes since v1:
->> 1. Rework to add ports to device schema, not to panel-common.
->> ---
->>  .../devicetree/bindings/display/panel/novatek,nt35950.yaml     | 3 ++-
->>  1 file changed, 2 insertions(+), 1 deletion(-)
->>
-> 
-> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-> on your patch (DT_CHECKER_FLAGS is new in v5.13):
-> 
-> yamllint warnings/errors:
-
-Previous patch seems to be missing in Patchwork, thus this error.
-
-https://patchwork.ozlabs.org/project/devicetree-bindings/list/?submitter=83726&archive=both&state=*
-
-Best regards,
-Krzysztof
-
+Rml4IHRoZSBmb2xsb3dpbmcgZXJyb3JzIHJlcG9ydGVkIGJ5IGNoZWNrcGF0Y2g6CgpFUlJPUjog
+dGhhdCBvcGVuIGJyYWNlIHsgc2hvdWxkIGJlIG9uIHRoZSBwcmV2aW91cyBsaW5lCkVSUk9SOiBz
+cGFjZSBwcm9oaWJpdGVkIGJlZm9yZSB0aGF0ICcrKycgKGN0eDpXeE8pCkVSUk9SOiBzcGFjZSBy
+ZXF1aXJlZCBiZWZvcmUgdGhlIG9wZW4gYnJhY2UgJ3snCkVSUk9SOiB0cmFpbGluZyBzdGF0ZW1l
+bnRzIHNob3VsZCBiZSBvbiBuZXh0IGxpbmUKClNpZ25lZC1vZmYtYnk6IFh1ZUJpbmcgQ2hlbiA8
+Y2hlbnh1ZWJpbmdAamFyaS5jbj4KLS0tCiBkcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS9nZnhf
+djZfMC5jIHwgMTMgKysrKysrLS0tLS0tLQogMSBmaWxlIGNoYW5nZWQsIDYgaW5zZXJ0aW9ucygr
+KSwgNyBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGdw
+dS9nZnhfdjZfMC5jIGIvZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvZ2Z4X3Y2XzAuYwppbmRl
+eCBkYTZjYWZmNzhjMjIuLjM2ZDAyYzdiOWM4YyAxMDA2NDQKLS0tIGEvZHJpdmVycy9ncHUvZHJt
+L2FtZC9hbWRncHUvZ2Z4X3Y2XzAuYworKysgYi9kcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS9n
+ZnhfdjZfMC5jCkBAIC04Niw4ICs4Niw3IEBAIHN0YXRpYyB2b2lkIGdmeF92Nl8wX2luaXRfcGco
+c3RydWN0IGFtZGdwdV9kZXZpY2UgKmFkZXYpOwogI2RlZmluZSBNQUNST19USUxFX0FTUEVDVCh4
+KQkJCQkoKHgpIDw8IDE4KQogI2RlZmluZSBOVU1fQkFOS1MoeCkJCQkJCSgoeCkgPDwgMjApCiAK
+LXN0YXRpYyBjb25zdCB1MzIgdmVyZGVfcmxjX3NhdmVfcmVzdG9yZV9yZWdpc3Rlcl9saXN0W10g
+PQoteworc3RhdGljIGNvbnN0IHUzMiB2ZXJkZV9ybGNfc2F2ZV9yZXN0b3JlX3JlZ2lzdGVyX2xp
+c3RbXSA9IHsKIAkoMHg4MDAwIDw8IDE2KSB8ICgweDk4ZjQgPj4gMiksCiAJMHgwMDAwMDAwMCwK
+IAkoMHg4MDQwIDw8IDE2KSB8ICgweDk4ZjQgPj4gMiksCkBAIC0zMzQsNyArMzMzLDggQEAgc3Rh
+dGljIGludCBnZnhfdjZfMF9pbml0X21pY3JvY29kZShzdHJ1Y3QgYW1kZ3B1X2RldmljZSAqYWRl
+dikKIAljYXNlIENISVBfSEFJTkFOOgogCQljaGlwX25hbWUgPSAiaGFpbmFuIjsKIAkJYnJlYWs7
+Ci0JZGVmYXVsdDogQlVHKCk7CisJZGVmYXVsdDoKKwkJQlVHKCk7CiAJfQogCiAJc25wcmludGYo
+ZndfbmFtZSwgc2l6ZW9mKGZ3X25hbWUpLCAiYW1kZ3B1LyVzX3BmcC5iaW4iLCBjaGlwX25hbWUp
+OwpAQCAtMzIyMiw3ICszMjIyLDcgQEAgc3RhdGljIHZvaWQgZ2Z4X3Y2XzBfc2V0X2NvbXB1dGVf
+ZW9wX2ludGVycnVwdF9zdGF0ZShzdHJ1Y3QgYW1kZ3B1X2RldmljZSAqYWRldiwKIAkJCQkJCSAg
+ICAgZW51bSBhbWRncHVfaW50ZXJydXB0X3N0YXRlIHN0YXRlKQogewogCXUzMiBjcF9pbnRfY250
+bDsKLQlzd2l0Y2ggKHN0YXRlKXsKKwlzd2l0Y2ggKHN0YXRlKSB7CiAJY2FzZSBBTURHUFVfSVJR
+X1NUQVRFX0RJU0FCTEU6CiAJCWlmIChyaW5nID09IDApIHsKIAkJCWNwX2ludF9jbnRsID0gUlJF
+RzMyKG1tQ1BfSU5UX0NOVExfUklORzEpOwpAQCAtMzU4Myw3ICszNTgzLDcgQEAgc3RhdGljIHZv
+aWQgZ2Z4X3Y2XzBfZ2V0X2N1X2luZm8oc3RydWN0IGFtZGdwdV9kZXZpY2UgKmFkZXYpCiAJCQkJ
+aWYgKGJpdG1hcCAmIG1hc2spIHsKIAkJCQkJaWYgKGNvdW50ZXIgPCBhb19jdV9udW0pCiAJCQkJ
+CQlhb19iaXRtYXAgfD0gbWFzazsKLQkJCQkJY291bnRlciArKzsKKwkJCQkJY291bnRlcisrOwog
+CQkJCX0KIAkJCQltYXNrIDw8PSAxOwogCQkJfQpAQCAtMzYwMSw4ICszNjAxLDcgQEAgc3RhdGlj
+IHZvaWQgZ2Z4X3Y2XzBfZ2V0X2N1X2luZm8oc3RydWN0IGFtZGdwdV9kZXZpY2UgKmFkZXYpCiAJ
+Y3VfaW5mby0+YW9fY3VfbWFzayA9IGFvX2N1X21hc2s7CiB9CiAKLWNvbnN0IHN0cnVjdCBhbWRn
+cHVfaXBfYmxvY2tfdmVyc2lvbiBnZnhfdjZfMF9pcF9ibG9jayA9Ci17Citjb25zdCBzdHJ1Y3Qg
+YW1kZ3B1X2lwX2Jsb2NrX3ZlcnNpb24gZ2Z4X3Y2XzBfaXBfYmxvY2sgPSB7CiAJLnR5cGUgPSBB
+TURfSVBfQkxPQ0tfVFlQRV9HRlgsCiAJLm1ham9yID0gNiwKIAkubWlub3IgPSAwLAotLSAKMi4x
+Ny4xCg==
