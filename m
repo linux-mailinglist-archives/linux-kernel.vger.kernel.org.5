@@ -2,126 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A57E97858A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 15:15:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E335D7858BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 15:16:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235554AbjHWNO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 09:14:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46650 "EHLO
+        id S235629AbjHWNQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 09:16:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235534AbjHWNOu (ORCPT
+        with ESMTP id S235619AbjHWNQJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 09:14:50 -0400
-Received: from mail-pg1-f207.google.com (mail-pg1-f207.google.com [209.85.215.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28EF410EA
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 06:14:41 -0700 (PDT)
-Received: by mail-pg1-f207.google.com with SMTP id 41be03b00d2f7-5646e695ec1so7435817a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 06:14:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692796480; x=1693401280;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RFApB1Y2v2rveRjo6nnTdcFEwXfzQreGSzlC+r9Qk20=;
-        b=H3+/Aqzd1T3+duv1r3lvuyYmJt4k9hu4mTD+BMZJIYOiESRTwVddqMxl067RY6n3R1
-         uCcbIAA4Y9DsreKgmd47WHlDYApsCjfGOkSPEKImJRe/Gvwf6dvb3+gdZHFlttvEhnjB
-         TAdtK24h4cqzQ+Av4pBvf4ZiBhXTQsAcCKrZvILYRnkibPBWdHBGzTzGCSz+eB3w5Ftj
-         3dBN01jGvQjY53kDW9vq0bp3JHDWRxMesOiYuwHnufoQzX0er9T9LZ2TKTZPSEwSITdU
-         GwEnGxu8PVGXDDV9iOOo9cOi5zmkpg2dE/o+3U3z40wdHzDbL1I9UmZhr0W1NZLdBVoU
-         893g==
-X-Gm-Message-State: AOJu0Yx6PCpA4kav2KANqcvKP1xMg6iCLqfjbyr2xaScHMxC7f1TvmwG
-        jRvsi+5/EKOVZ96M26TxTdVdzH/br4+CaX8nSG8ZlxeCGLIT
-X-Google-Smtp-Source: AGHT+IEX1yqAYhiEN1pueWO1LpFxWdmeDTE28VzHBsnz4BeGwdO3pqmg1pnm5QXJ79UtLgqPj9IJbjT/KmqHF23jlB6WpQP7/VJR
+        Wed, 23 Aug 2023 09:16:09 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4461E58
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 06:15:41 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5D90266219
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 13:15:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96869C433C9
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 13:15:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692796521;
+        bh=ITiJW3pew9ske5WY6kVIe2IstP+LoVkUUlpTWStaXq0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=h7vhpCA5AFJLhJRvAyKHmUbxcT9PcThTSGwi6zf2AbLwEoFjb08jOgSa0YxL/29I0
+         x2cn9lVPkteBoSiVwY/KMP4IJ1PMVWP/Nbsi/vOi2GLyfnvrvDUuwGmwIjgJgGuXSK
+         PG+JTS0qVvRsrv3KZo3QSSuv7c2u3umaZZmbVIl/uylPbBDHuvB+CRc7xprL27+pMt
+         0r1o1FMqnGTOfrESAGGsJrmwpX9Nckojm1OFX8yjEpM7FQSZqf2QQDguOLEoNZMe/C
+         0rq3XJyAut25FrOTMOOP0K+HPYuM7tMBxPxU8RP2WzB539XsWlVNxUgApwzKVNGM7b
+         dP/tcWvijHmoQ==
+Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-565403bda57so3203429a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 06:15:21 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yxkv2cSGwwy0iFrbrgP1DkHit5AWxsjAAK7vXyVebRLDAlZ7ksM
+        Htaxq2cSboOgOxGP33om5XB7hV4ollcehROk0NWyOA==
+X-Google-Smtp-Source: AGHT+IG/2lCn3UCoPUMzbblVb6t98DntYQj2ckCtGDHkgKfGgOYcfr9y25dpVx3OcXP1WI8Nmon6ksgJboKH2pjL29g=
+X-Received: by 2002:a17:90b:108d:b0:267:fc61:5a37 with SMTP id
+ gj13-20020a17090b108d00b00267fc615a37mr9367966pjb.39.1692796520714; Wed, 23
+ Aug 2023 06:15:20 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a17:90a:ea07:b0:26d:43f3:eef1 with SMTP id
- w7-20020a17090aea0700b0026d43f3eef1mr3215711pjy.7.1692796480428; Wed, 23 Aug
- 2023 06:14:40 -0700 (PDT)
-Date:   Wed, 23 Aug 2023 06:14:40 -0700
-In-Reply-To: <0000000000006f098a06000d10a5@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e4a538060396e4e9@google.com>
-Subject: Re: [syzbot] [ntfs3?] UBSAN: array-index-out-of-bounds in truncate_inode_pages_final
-From:   syzbot <syzbot+e295147e14b474e4ad70@syzkaller.appspotmail.com>
-To:     almaz.alexandrovich@paragon-software.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, nathan@kernel.org, ndesaulniers@google.com,
-        ntfs3@lists.linux.dev, syzkaller-bugs@googlegroups.com,
-        trix@redhat.com
+References: <20230821160849.531668-1-david@redhat.com> <20230821160849.531668-3-david@redhat.com>
+In-Reply-To: <20230821160849.531668-3-david@redhat.com>
+From:   Chris Li <chrisl@kernel.org>
+Date:   Wed, 23 Aug 2023 06:15:08 -0700
+X-Gmail-Original-Message-ID: <CAF8kJuP9E0AmWQ3_-ay_rt0NxhCihTDA+hvx+YLnWeuY=kp+uw@mail.gmail.com>
+Message-ID: <CAF8kJuP9E0AmWQ3_-ay_rt0NxhCihTDA+hvx+YLnWeuY=kp+uw@mail.gmail.com>
+Subject: Re: [PATCH mm-unstable v1 2/4] mm/swap: use dedicated entry for swap
+ in folio
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-arm-kernel@lists.infradead.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Peter Xu <peterx@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Hugh Dickins <hughd@google.com>,
+        Seth Jennings <sjenning@redhat.com>,
+        Dan Streetman <ddstreet@ieee.org>,
+        Vitaly Wool <vitaly.wool@konsulko.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+Reviewed-by: Chris Li <chrisl@kernel.org>
 
-HEAD commit:    35e2132122ba Merge branch 'for-next/core' into for-kernelci
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=16924717a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4f6a8d3c0bd07f11
-dashboard link: https://syzkaller.appspot.com/bug?extid=e295147e14b474e4ad70
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16a2eeb0680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12224553a80000
+Chris
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/6808a9c4c8df/disk-35e21321.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/85a6cfc7b474/vmlinux-35e21321.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/a3958fe16b1c/Image-35e21321.gz.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/b81535b17c61/mount_1.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e295147e14b474e4ad70@syzkaller.appspotmail.com
-
-================================================================================
-UBSAN: array-index-out-of-bounds in ./include/linux/pagevec.h:74:2
-index 255 is out of range for type 'struct folio *[15]'
-CPU: 1 PID: 12841 Comm: syz-executor402 Not tainted 6.5.0-rc7-syzkaller-g35e2132122ba #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-Call trace:
- dump_backtrace+0x1b8/0x1e4 arch/arm64/kernel/stacktrace.c:233
- show_stack+0x2c/0x44 arch/arm64/kernel/stacktrace.c:240
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd0/0x124 lib/dump_stack.c:106
- dump_stack+0x1c/0x28 lib/dump_stack.c:113
- ubsan_epilogue lib/ubsan.c:217 [inline]
- __ubsan_handle_out_of_bounds+0xfc/0x148 lib/ubsan.c:348
- folio_batch_add include/linux/pagevec.h:74 [inline]
- find_lock_entries+0x8fc/0xd84 mm/filemap.c:2089
- truncate_inode_pages_range+0x1b0/0xf74 mm/truncate.c:364
- truncate_inode_pages mm/truncate.c:449 [inline]
- truncate_inode_pages_final+0x90/0xc0 mm/truncate.c:484
- ntfs_evict_inode+0x20/0x48 fs/ntfs3/inode.c:1790
- evict+0x260/0x68c fs/inode.c:664
- iput_final fs/inode.c:1788 [inline]
- iput+0x734/0x818 fs/inode.c:1814
- ntfs_fill_super+0x3648/0x3f90 fs/ntfs3/super.c:1420
- get_tree_bdev+0x378/0x570 fs/super.c:1318
- ntfs_fs_get_tree+0x28/0x38 fs/ntfs3/super.c:1647
- vfs_get_tree+0x90/0x274 fs/super.c:1519
- do_new_mount+0x25c/0x8c8 fs/namespace.c:3335
- path_mount+0x590/0xe04 fs/namespace.c:3662
- do_mount fs/namespace.c:3675 [inline]
- __do_sys_mount fs/namespace.c:3884 [inline]
- __se_sys_mount fs/namespace.c:3861 [inline]
- __arm64_sys_mount+0x45c/0x594 fs/namespace.c:3861
- __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
- el0_svc+0x58/0x16c arch/arm64/kernel/entry-common.c:678
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
-================================================================================
-
-
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+On Mon, Aug 21, 2023 at 9:09=E2=80=AFAM David Hildenbrand <david@redhat.com=
+> wrote:
+>
+> From: Matthew Wilcox <willy@infradead.org>
+>
+> Let's stop working on the private field and use an explicit swap field.
+> We have to move the swp_entry_t typedef.
+>
+> Signed-off-by: Matthew Wilcox <willy@infradead.org>
+> Signed-off-by: David Hildenbrand <david@redhat.com>
+> ---
+>  include/linux/mm_types.h | 23 +++++++++++++----------
+>  include/linux/swap.h     |  5 ++---
+>  2 files changed, 15 insertions(+), 13 deletions(-)
+>
+> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+> index 61361f1750c3..438a07854f8c 100644
+> --- a/include/linux/mm_types.h
+> +++ b/include/linux/mm_types.h
+> @@ -259,6 +259,14 @@ static inline struct page *encoded_page_ptr(struct e=
+ncoded_page *page)
+>   */
+>  #define  TAIL_MAPPING_REUSED_MAX  (2)
+>
+> +/*
+> + * A swap entry has to fit into a "unsigned long", as the entry is hidde=
+n
+> + * in the "index" field of the swapper address space.
+> + */
+> +typedef struct {
+> +       unsigned long val;
+> +} swp_entry_t;
+> +
+>  /**
+>   * struct folio - Represents a contiguous set of bytes.
+>   * @flags: Identical to the page flags.
+> @@ -269,7 +277,7 @@ static inline struct page *encoded_page_ptr(struct en=
+coded_page *page)
+>   * @index: Offset within the file, in units of pages.  For anonymous mem=
+ory,
+>   *    this is the index from the beginning of the mmap.
+>   * @private: Filesystem per-folio data (see folio_attach_private()).
+> - *    Used for swp_entry_t if folio_test_swapcache().
+> + * @swap: Used for swp_entry_t if folio_test_swapcache().
+>   * @_mapcount: Do not access this member directly.  Use folio_mapcount()=
+ to
+>   *    find out how many times this folio is mapped by userspace.
+>   * @_refcount: Do not access this member directly.  Use folio_ref_count(=
+)
+> @@ -312,7 +320,10 @@ struct folio {
+>                         };
+>                         struct address_space *mapping;
+>                         pgoff_t index;
+> -                       void *private;
+> +                       union {
+> +                               void *private;
+> +                               swp_entry_t swap;
+> +                       };
+>                         atomic_t _mapcount;
+>                         atomic_t _refcount;
+>  #ifdef CONFIG_MEMCG
+> @@ -1220,14 +1231,6 @@ enum tlb_flush_reason {
+>         NR_TLB_FLUSH_REASONS,
+>  };
+>
+> - /*
+> -  * A swap entry has to fit into a "unsigned long", as the entry is hidd=
+en
+> -  * in the "index" field of the swapper address space.
+> -  */
+> -typedef struct {
+> -       unsigned long val;
+> -} swp_entry_t;
+> -
+>  /**
+>   * enum fault_flag - Fault flag definitions.
+>   * @FAULT_FLAG_WRITE: Fault was a write fault.
+> diff --git a/include/linux/swap.h b/include/linux/swap.h
+> index 84fe0e94f5cd..82859a1944f5 100644
+> --- a/include/linux/swap.h
+> +++ b/include/linux/swap.h
+> @@ -335,8 +335,7 @@ struct swap_info_struct {
+>
+>  static inline swp_entry_t folio_swap_entry(struct folio *folio)
+>  {
+> -       swp_entry_t entry =3D { .val =3D page_private(&folio->page) };
+> -       return entry;
+> +       return folio->swap;
+>  }
+>
+>  static inline swp_entry_t page_swap_entry(struct page *page)
+> @@ -350,7 +349,7 @@ static inline swp_entry_t page_swap_entry(struct page=
+ *page)
+>
+>  static inline void folio_set_swap_entry(struct folio *folio, swp_entry_t=
+ entry)
+>  {
+> -       folio->private =3D (void *)entry.val;
+> +       folio->swap =3D entry;
+>  }
+>
+>  /* linux/mm/workingset.c */
+> --
+> 2.41.0
+>
+>
