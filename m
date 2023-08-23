@@ -2,33 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FAAA785766
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 14:04:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C4D7785775
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 14:05:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234812AbjHWME0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 08:04:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43272 "EHLO
+        id S231962AbjHWMFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 08:05:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234661AbjHWMD4 (ORCPT
+        with ESMTP id S234771AbjHWMEn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 08:03:56 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8EE4E68
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 05:03:54 -0700 (PDT)
+        Wed, 23 Aug 2023 08:04:43 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C25B1990;
+        Wed, 23 Aug 2023 05:04:13 -0700 (PDT)
 Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RW4cn3m1rz4x2P;
-        Wed, 23 Aug 2023 22:03:53 +1000 (AEST)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RW4d36fb2z4wy7;
+        Wed, 23 Aug 2023 22:04:07 +1000 (AEST)
 From:   Michael Ellerman <patch-notifications@ellerman.id.au>
-To:     Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-In-Reply-To: <f1d4a15da70190f8c2fcddb377bbc1e09827242c.1687343857.git.christophe.leroy@csgroup.eu>
-References: <f1d4a15da70190f8c2fcddb377bbc1e09827242c.1687343857.git.christophe.leroy@csgroup.eu>
-Subject: Re: [PATCH] powerpc/step: Mark __copy_mem_out() and __emulate_dcbz() __always_inline
-Message-Id: <169279175564.797584.4721586858055546179.b4-ty@ellerman.id.au>
+To:     linuxppc-dev <linuxppc-dev@ozlabs.org>,
+        Mahesh Salgaonkar <mahesh@linux.ibm.com>
+Cc:     Tyrel Datwyler <tyreld@linux.ibm.com>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Oliver O'Halloran <oohall@gmail.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Linux Kernel <linux-kernel@vger.kernel.org>
+In-Reply-To: <169235811556.193557.1023625262204809514.stgit@jupiter>
+References: <169235811556.193557.1023625262204809514.stgit@jupiter>
+Subject: Re: [PATCH v9 1/2] powerpc/rtas: export rtas_error_rc() for reuse.
+Message-Id: <169279175579.797584.15043748481336876672.b4-ty@ellerman.id.au>
 Date:   Wed, 23 Aug 2023 21:55:55 +1000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -42,20 +47,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 21 Jun 2023 12:38:10 +0200, Christophe Leroy wrote:
-> objtool reports two folliwng warnings:
->   arch/powerpc/lib/sstep.o: warning: objtool: copy_mem_out+0x3c
->     (.text+0x30c): call to __copy_mem_out() with UACCESS enabled
->   arch/powerpc/lib/sstep.o: warning: objtool: emulate_dcbz+0x70
->     (.text+0x4dc): call to __emulate_dcbz() with UACCESS enabled
+On Fri, 18 Aug 2023 16:59:07 +0530, Mahesh Salgaonkar wrote:
+> Also, #define descriptive names for common rtas return codes and use it
+> instead of numeric values.
 > 
-> Mark __copy_mem_out() and __emulate_dcbz() __always_inline
 > 
-> [...]
 
 Applied to powerpc/next.
 
-[1/1] powerpc/step: Mark __copy_mem_out() and __emulate_dcbz() __always_inline
-      https://git.kernel.org/powerpc/c/0d5769f9503d9a88661b82fee6a320e711f8b01a
+[1/2] powerpc/rtas: export rtas_error_rc() for reuse.
+      https://git.kernel.org/powerpc/c/e160bf64e2d3df7bf83ed41d09390a32490be6c5
+[2/2] PCI: rpaphp: Error out on busy status from get-sensor-state
+      https://git.kernel.org/powerpc/c/77583f77ed9b1452ac62caebf09b2206da10bbf9
 
 cheers
