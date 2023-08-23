@@ -2,103 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE4A7785AC9
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 16:35:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA8B9785ACF
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 16:36:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234563AbjHWOfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 10:35:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57824 "EHLO
+        id S236101AbjHWOgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 10:36:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231512AbjHWOfp (ORCPT
+        with ESMTP id S235712AbjHWOgb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 10:35:45 -0400
+        Wed, 23 Aug 2023 10:36:31 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1555FE57
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 07:35:44 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1E0FE5F
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 07:36:28 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9F02D60AC7
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 14:35:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7191DC433C7;
-        Wed, 23 Aug 2023 14:35:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1692801342;
-        bh=UZMPb//A5ndrvDvpyvFG9ouistZ2n2Y4FuC2QbzrgAo=;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7AB8765295
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 14:36:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AFEE6C433C9;
+        Wed, 23 Aug 2023 14:36:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692801387;
+        bh=eRT5wpPzE2dG8Htf1U5WjVNZWKMJy4q5xPRnCCdw3jg=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xXtCq5gZrpPYe6TuvIHqH5ZGo+xwSlFlbjoLWbgCWHKSaHT/imM2sk9wsM6YfMIaz
-         muwIsfoHOUCo9ZnqGqGJNhhoRsMvmegJyMggsZXqBj7ei8/ILf0AT6OJjsxe6BSG7j
-         56CPkNMIzbuRcdzu3QexF6agETGFXxdbE8cLtl1M=
-Date:   Wed, 23 Aug 2023 16:35:40 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     srinivas.kandagatla@linaro.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 00/22] nvmem: patches for v6.6
-Message-ID: <2023082329-impotence-escalator-61c5@gregkh>
-References: <20230823132744.350618-1-srinivas.kandagatla@linaro.org>
+        b=qZLsHVOkbIOn1hjfAmB+/RmDZAks8n7X+JQRAlO5qAuHYIP46RoFCPzYnCoKGUCnp
+         Z2eOolqYNWZV2PQW9dxB5jwJjrxvWjHMjcWQtBg6xoG5DnSZS3dLDyUW24EKCuekIt
+         rE3ZlfKpkUcQWNZjx9XGhO1bcpy+0l32Ltl0ool76uPBNsu1p0FqWRuwQ0BbNthHo1
+         2HKVGbgx5xwA/uU2bQh39yGp62AvxtIPtjuNc/t8C0INMsDxg9IpMOo37BomlTdeKu
+         U0m1dojN3+E1f6F0fzWD6pVPmj4x8qVJoBDNEZ9SlNduy3drMmWNFVfpjWB/fNfVkk
+         DkmwDwJ584Ajw==
+Date:   Wed, 23 Aug 2023 15:35:56 +0100
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Liam Ni <zhiguangni01@gmail.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        loongarch@lists.linux.dev, zhoubinbin@loongson.cn,
+        chenfeiyang@loongson.cn, jiaxun.yang@flygoat.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>, peterz@infradead.org,
+        luto@kernel.org, Dave Hansen <dave.hansen@linux.intel.com>,
+        kernel@xen0n.name, chenhuacai@kernel.org
+Subject: Re: [RESEND PATCH V3] NUMA:Improve the efficiency of calculating
+ pages loss
+Message-ID: <20230823143556.GA188089@kernel.org>
+References: <CACZJ9cUXiWxDb6hF4JFhWe7Np82k6LopVQ+_AoGFOccN4kjJqA@mail.gmail.com>
+ <20230814155911.GN2607694@kernel.org>
+ <CACZJ9cU5g5wD=qEg7tbr-Gk4EADDORSG-=U1_c7nq=fO9XhJ0Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230823132744.350618-1-srinivas.kandagatla@linaro.org>
+In-Reply-To: <CACZJ9cU5g5wD=qEg7tbr-Gk4EADDORSG-=U1_c7nq=fO9XhJ0Q@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 23, 2023 at 02:27:22PM +0100, srinivas.kandagatla@linaro.org wrote:
-> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+On Tue, Aug 22, 2023 at 07:49:05PM +0800, Liam Ni wrote:
+> On Tue, 15 Aug 2023 at 00:00, Mike Rapoport <rppt@kernel.org> wrote:
+> >
+> > On Fri, Aug 04, 2023 at 11:32:51PM +0800, Liam Ni wrote:
+> > > Optimize the way of calculating missing pages.
+> > >
+> > > In the previous implementation, We calculate missing pages as follows:
+> > > 1. calculate numaram by traverse all the numa_meminfo's and for each of
+> > > them traverse all the regions in memblock.memory to prepare for
+> > > counting missing pages.
+> > >
+> > > 2. Traverse all the regions in memblock.memory again to get e820ram.
+> > >
+> > > 3. the missing page is (e820ram - numaram )
+> > >
+> > > But,it's enough to count memory in ‘memblock.memory’ that doesn't have
+> > > the node assigned.
+> > >
+> > > V2:https://lore.kernel.org/all/20230619075315.49114-1-zhiguangni01@gmail.com/
+> > > V1:https://lore.kernel.org/all/20230615142016.419570-1-zhiguangni01@gmail.com/
+> > >
+> > > Signed-off-by: Liam Ni <zhiguangni01@gmail.com>
+> > > ---
+> > >  arch/loongarch/kernel/numa.c | 23 ++++++++---------------
+> > >  arch/x86/mm/numa.c           | 26 +++++++-------------------
+> > >  include/linux/mm.h           |  1 +
+> > >  mm/mm_init.c                 | 20 ++++++++++++++++++++
+> > >  4 files changed, 36 insertions(+), 34 deletions(-)
+> > >
+> > > diff --git a/arch/loongarch/kernel/numa.c b/arch/loongarch/kernel/numa.c
+> > > index 708665895b47..0239891e4d19 100644
+> > > --- a/arch/loongarch/kernel/numa.c
+> > > +++ b/arch/loongarch/kernel/numa.c
+> > > @@ -262,25 +262,18 @@ static void __init node_mem_init(unsigned int node)
+> > >   * Sanity check to catch more bad NUMA configurations (they are amazingly
+> > >   * common).  Make sure the nodes cover all memory.
+> > >   */
+> > > -static bool __init numa_meminfo_cover_memory(const struct numa_meminfo *mi)
+> > > +static bool __init memblock_validate_numa_coverage(const u64 limit)
+> >
+> > There is no need to have arch specific memblock_validate_numa_coverage().
+> > You can add this function to memblock and call it from NUMA initialization
+> > instead of numa_meminfo_cover_memory().
 > 
-> Here are some nvmem patches slightly more than usual for 6.6 that includes
-> 
-> - Support for NXP eFuse, qcom secure qfprom, QCM2290 nvmem providers
-> - core level cleanup around error handling and layout creation.
-> - few minor cleanups across providers drivers to use better
->   apis and a typo fix.
-> 
-> Can you please queue them up for 6.6.
+> Remove implementation of numa_meminfo_cover_memory function?
+ 
+Yes, that's the idea.
 
-Better, but I don't have your gpg key, is it in the kernel keyring?
+> > The memblock_validate_numa_coverage() will count all the pages without node
+> > ID set and compare to the threshold provided by the architectures.
+> >
+> > >  {
+> > > -       int i;
+> > > -       u64 numaram, biosram;
+> > > +       u64 lo_pg;
+> > >
+> > > -       numaram = 0;
+> > > -       for (i = 0; i < mi->nr_blks; i++) {
+> > > -               u64 s = mi->blk[i].start >> PAGE_SHIFT;
+> > > -               u64 e = mi->blk[i].end >> PAGE_SHIFT;
+> > > +       lo_pg = max_pfn - calculate_without_node_pages_in_range();
+> > >
+> > > -               numaram += e - s;
+> > > -               numaram -= __absent_pages_in_range(mi->blk[i].nid, s, e);
+> > > -               if ((s64)numaram < 0)
+> > > -                       numaram = 0;
+> > > +       /* We seem to lose 3 pages somewhere. Allow 1M of slack. */
+> > > +       if (lo_pg >= limit) {
+> > > +               pr_err("NUMA: We lost 1m size page.\n");
+> > > +               return false;
+> > >         }
+> > > -       max_pfn = max_low_pfn;
+> > > -       biosram = max_pfn - absent_pages_in_range(0, max_pfn);
+> > >
+> > > -       BUG_ON((s64)(biosram - numaram) >= (1 << (20 - PAGE_SHIFT)));
+> > >         return true;
+> > >  }
+> > >
+> > > @@ -428,7 +421,7 @@ int __init init_numa_memory(void)
+> > >                 return -EINVAL;
+> > >
+> > >         init_node_memblock();
+> > > -       if (numa_meminfo_cover_memory(&numa_meminfo) == false)
+> > > +       if (memblock_validate_numa_coverage(SZ_1M) == false)
+> > >                 return -EINVAL;
+> > >
+> > >         for_each_node_mask(node, node_possible_map) {
+> > > diff --git a/arch/x86/mm/numa.c b/arch/x86/mm/numa.c
+> > > index 2aadb2019b4f..14feec144675 100644
+> > > --- a/arch/x86/mm/numa.c
+> > > +++ b/arch/x86/mm/numa.c
+> > > @@ -451,30 +451,18 @@ EXPORT_SYMBOL(__node_distance);
+> > >   * Sanity check to catch more bad NUMA configurations (they are amazingly
+> > >   * common).  Make sure the nodes cover all memory.
+> > >   */
+> > > -static bool __init numa_meminfo_cover_memory(const struct numa_meminfo *mi)
+> > > +static bool __init memblock_validate_numa_coverage(const u64 limit)
+> > >  {
+> > > -       u64 numaram, e820ram;
+> > > -       int i;
+> > > +       u64 lo_pg;
+> > >
+> > > -       numaram = 0;
+> > > -       for (i = 0; i < mi->nr_blks; i++) {
+> > > -               u64 s = mi->blk[i].start >> PAGE_SHIFT;
+> > > -               u64 e = mi->blk[i].end >> PAGE_SHIFT;
+> > > -               numaram += e - s;
+> > > -               numaram -= __absent_pages_in_range(mi->blk[i].nid, s, e);
+> > > -               if ((s64)numaram < 0)
+> > > -                       numaram = 0;
+> > > -       }
+> > > -
+> > > -       e820ram = max_pfn - absent_pages_in_range(0, max_pfn);
+> > > +       lo_pg = max_pfn - calculate_without_node_pages_in_range();
+> > >
+> > >         /* We seem to lose 3 pages somewhere. Allow 1M of slack. */
+> > > -       if ((s64)(e820ram - numaram) >= (1 << (20 - PAGE_SHIFT))) {
+> > > -               printk(KERN_ERR "NUMA: nodes only cover %LuMB of your
+> > > %LuMB e820 RAM. Not used.\n",
+> > > -                      (numaram << PAGE_SHIFT) >> 20,
+> > > -                      (e820ram << PAGE_SHIFT) >> 20);
+> > > +       if (lo_pg >= limit) {
+> > > +               pr_err("NUMA: We lost 1m size page.\n");
+> > >                 return false;
+> > >         }
+> > > +
+> > >         return true;
+> > >  }
+> > >
+> > > @@ -583,7 +571,7 @@ static int __init numa_register_memblks(struct
+> > > numa_meminfo *mi)
+> > >                         return -EINVAL;
+> > >                 }
+> > >         }
+> > > -       if (!numa_meminfo_cover_memory(mi))
+> > > +       if (!memblock_validate_numa_coverage(SZ_1M))
+> > >                 return -EINVAL;
+> > >
+> > >         /* Finally register nodes. */
+> > > diff --git a/include/linux/mm.h b/include/linux/mm.h
+> > > index 0daef3f2f029..b32457ad1ae3 100644
+> > > --- a/include/linux/mm.h
+> > > +++ b/include/linux/mm.h
+> > > @@ -3043,6 +3043,7 @@ unsigned long __absent_pages_in_range(int nid,
+> > > unsigned long start_pfn,
+> > >                                                 unsigned long end_pfn);
+> > >  extern unsigned long absent_pages_in_range(unsigned long start_pfn,
+> > >                                                 unsigned long end_pfn);
+> > > +extern unsigned long calculate_without_node_pages_in_range(void);
+> > >  extern void get_pfn_range_for_nid(unsigned int nid,
+> > >                         unsigned long *start_pfn, unsigned long *end_pfn);
+> > >
+> > > diff --git a/mm/mm_init.c b/mm/mm_init.c
+> > > index 3ddd18a89b66..13a4883787e3 100644
+> > > --- a/mm/mm_init.c
+> > > +++ b/mm/mm_init.c
+> > > @@ -1132,6 +1132,26 @@ static void __init
+> > > adjust_zone_range_for_zone_movable(int nid,
+> > >         }
+> > >  }
+> > >
+> > > +/**
+> > > + * @start_pfn: The start PFN to start searching for holes
+> > > + * @end_pfn: The end PFN to stop searching for holes
+> > > + *
+> > > + * Return: Return the number of page frames without node assigned
+> > > within a range.
+> > > + */
+> > > +unsigned long __init calculate_without_node_pages_in_range(void)
+> > > +{
+> > > +       unsigned long num_pages;
+> > > +       unsigned long start_pfn, end_pfn;
+> > > +       int nid, i;
+> > > +
+> > > +       for_each_mem_pfn_range(i, MAX_NUMNODES, &start_pfn, &end_pfn, &nid) {
+> > > +               if (nid == NUMA_NO_NODE)
+> > > +                       num_pages += end_pfn - start_pfn;
+> > > +       }
+> > > +
+> > > +       return num_pages;
+> > > +}
+> > > +
+> > >  /*
+> > >   * Return the number of holes in a range on a node. If nid is MAX_NUMNODES,
+> > >   * then all holes in the requested range will be accounted for.
+> > > --
+> > > 2.25.1
+> >
+> > --
+> > Sincerely yours,
+> > Mike.
 
-Grabbing thread from lore.kernel.org/all/20230823132744.350618-1-srinivas.kandagatla@linaro.org/t.mbox.gz
-Analyzing 23 messages in the thread
-Checking attestation on all messages, may take a moment...
----
-  ✗ [PATCH v2 1/22] dt-bindings: nvmem: fixed-cell: add compatible for MAC cells
-  ✗ [PATCH v2 2/22] nvmem: sunxi_sid: Convert to devm_platform_ioremap_resource()
-  ✗ [PATCH v2 3/22] nvmem: brcm_nvram: Use devm_platform_get_and_ioremap_resource()
-  ✗ [PATCH v2 4/22] nvmem: lpc18xx_otp: Convert to devm_platform_ioremap_resource()
-  ✗ [PATCH v2 5/22] nvmem: meson-mx-efuse: Convert to devm_platform_ioremap_resource()
-  ✗ [PATCH v2 6/22] nvmem: rockchip-efuse: Use devm_platform_get_and_ioremap_resource()
-  ✗ [PATCH v2 7/22] nvmem: stm32-romem: Use devm_platform_get_and_ioremap_resource()
-  ✗ [PATCH v2 8/22] nvmem: qfprom: do some cleanup
-  ✗ [PATCH v2 9/22] nvmem: uniphier: Use devm_platform_get_and_ioremap_resource()
-  ✗ [PATCH v2 10/22] dt-bindings: nvmem: qfprom: Add compatible for MSM8226
-  ✗ [PATCH v2 11/22] dt-bindings: nvmem: Add t1023-sfp efuse support
-  ✗ [PATCH v2 12/22] nvmem: add new NXP QorIQ eFuse driver
-  ✗ [PATCH v2 13/22] nvmem: Explicitly include correct DT includes
-  ✗ [PATCH v2 14/22] nvmem: Kconfig: Fix typo "drive" -> "driver"
-  ✗ [PATCH v2 15/22] dt-bindings: nvmem: Add compatible for QCM2290
-  ✗ [PATCH v2 16/22] dt-bindings: nvmem: sec-qfprom: Add bindings for secure qfprom
-  ✗ [PATCH v2 17/22] nvmem: sec-qfprom: Add Qualcomm secure QFPROM support
-  ✗ [PATCH v2 18/22] nvmem: u-boot-env:: Replace zero-length array with DECLARE_FLEX_ARRAY() helper
-  ✗ [PATCH v2 19/22] nvmem: core: Create all cells before adding the nvmem device
-  ✗ [PATCH v2 20/22] nvmem: core: Return NULL when no nvmem layout is found
-  ✗ [PATCH v2 21/22] nvmem: core: Do not open-code existing functions
-  ✗ [PATCH v2 22/22] nvmem: core: Notify when a new layout is registered
-  ---
-  ✗ BADSIG: openpgp/srinivas.kandagatla@linaro.org
-  ✓ Signed: DKIM/linaro.org
-
-At least DKIM passes :)
-
-Anyway, all now queued up, they pass my local build tests, thanks for
-fixing that up.
-
-greg k-h
+-- 
+Sincerely yours,
+Mike.
