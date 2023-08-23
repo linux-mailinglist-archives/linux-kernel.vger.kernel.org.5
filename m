@@ -2,128 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E7C2785893
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 15:13:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F28797859EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 16:01:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235490AbjHWNNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 09:13:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59138 "EHLO
+        id S235953AbjHWOBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 10:01:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231472AbjHWNNk (ORCPT
+        with ESMTP id S236007AbjHWN1i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 09:13:40 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1A56E4E;
-        Wed, 23 Aug 2023 06:13:38 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6A14365663;
-        Wed, 23 Aug 2023 13:13:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE786C433C8;
-        Wed, 23 Aug 2023 13:13:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692796417;
-        bh=DaGglQshpU9aTm/Tv91gnQQDys7dUA7tLk3NwPkPRFE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MsPaOqQ+kqB2t/YvmWau52gagC8bfE45jMsvBQnlroxNCZYsBR5PJBhBCc77d10We
-         R3gRHOTSVZom8xz6+Ojn4fSqbgZ0BMreYCIM3zSTszk9NhHhaViyCDsCkeJXaXWII6
-         ydUKJ/3yzfTPSUN1foUMOz44KC2K/4HlcCa5lKFOaDF1FA9SNjSr13HJQuFCiF2Ixp
-         +woHAjlR1Add2jN6/FQFaFCjHvNN8lF0/+HJl2iXAJfeBuP+JIx3SF0XOpWYZ81c/Z
-         f5UiMfKsJAFfxO/5UUpOBKwSFeiXVQJha3FTLJ9ND2ihND+V01vbZHsLTxz2ZrykJV
-         0RjttZkHtsEKw==
-Received: (nullmailer pid 2148592 invoked by uid 1000);
-        Wed, 23 Aug 2023 13:13:34 -0000
-Date:   Wed, 23 Aug 2023 08:13:34 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Billy Tsai <billy_tsai@aspeedtech.com>
-Cc:     jdelvare@suse.com, linux@roeck-us.net,
-        krzysztof.kozlowski+dt@linaro.org, joel@jms.id.au, andrew@aj.id.au,
-        corbet@lwn.net, thierry.reding@gmail.com,
-        u.kleine-koenig@pengutronix.de, p.zabel@pengutronix.de,
-        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-pwm@vger.kernel.org,
-        BMC-SW@aspeedtech.com, patrick@stwcx.xyz
-Subject: Re: [PATCH v7 1/2] dt-bindings: hwmon: Support Aspeed g6 PWM TACH
- Control
-Message-ID: <20230823131334.GA2059582-robh@kernel.org>
-References: <20230817120029.221484-1-billy_tsai@aspeedtech.com>
- <20230817120029.221484-2-billy_tsai@aspeedtech.com>
+        Wed, 23 Aug 2023 09:27:38 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 548CE10CA;
+        Wed, 23 Aug 2023 06:27:05 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C95B2168F;
+        Wed, 23 Aug 2023 06:17:03 -0700 (PDT)
+Received: from e121798.cable.virginm.net (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B4A793F740;
+        Wed, 23 Aug 2023 06:16:16 -0700 (PDT)
+From:   Alexandru Elisei <alexandru.elisei@arm.com>
+To:     catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
+        maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
+        yuzenghui@huawei.com, arnd@arndb.de, akpm@linux-foundation.org,
+        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, mhiramat@kernel.org,
+        rppt@kernel.org, hughd@google.com
+Cc:     pcc@google.com, steven.price@arm.com, anshuman.khandual@arm.com,
+        vincenzo.frascino@arm.com, david@redhat.com, eugenis@google.com,
+        kcc@google.com, hyesoo.yu@samsung.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-trace-kernel@vger.kernel.org
+Subject: [PATCH RFC 21/37] mm: khugepaged: Handle metadata-enabled VMAs
+Date:   Wed, 23 Aug 2023 14:13:34 +0100
+Message-Id: <20230823131350.114942-22-alexandru.elisei@arm.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230823131350.114942-1-alexandru.elisei@arm.com>
+References: <20230823131350.114942-1-alexandru.elisei@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230817120029.221484-2-billy_tsai@aspeedtech.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 08:00:28PM +0800, Billy Tsai wrote:
-> Document the compatible for aspeed,ast2600-pwm-tach device, which can
-> support upto 16 PWM outputs and 16 fan tach input.
-> 
-> Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
-> ---
->  .../bindings/hwmon/aspeed,g6-pwm-tach.yaml    | 57 +++++++++++++++++++
->  1 file changed, 57 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/hwmon/aspeed,g6-pwm-tach.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/hwmon/aspeed,g6-pwm-tach.yaml b/Documentation/devicetree/bindings/hwmon/aspeed,g6-pwm-tach.yaml
-> new file mode 100644
-> index 000000000000..1666304d0b0f
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/hwmon/aspeed,g6-pwm-tach.yaml
-> @@ -0,0 +1,57 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +# Copyright (C) 2021 Aspeed, Inc.
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/hwmon/aspeed,g6-pwm-tach.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: ASPEED G6 PWM and Fan Tach controller device driver
-> +
-> +maintainers:
-> +  - Billy Tsai <billy_tsai@aspeedtech.com>
-> +
-> +description: |
-> +  The ASPEED PWM controller can support upto 16 PWM outputs.
-> +  The ASPEED Fan Tacho controller can support upto 16 fan tach input.
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - aspeed,ast2600-pwm-tach
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  resets:
-> +    maxItems: 1
-> +
-> +  "#pwm-cells":
-> +    const: 3
-> +
-> +  aspeed,fan-tach-ch:
-> +    description: Specify the Fan tach input channels.
-> +    $ref: "/schemas/types.yaml#/definitions/uint8-array"
+Both madvise(MADV_COLLAPSE) and khugepaged can collapse a contiguous
+THP-sized memory region mapped as PTEs into a THP. If metadata is enabled for
+the VMA where the PTEs are mapped, make sure to allocate metadata storage for
+the compound page that will be replacing them.
 
-This property is already defined in aspeed-pwm-tacho.txt as a single u8 
-that goes in a fan node. You can't redefine its type and location here.
+Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
+---
+ arch/arm64/include/asm/memory_metadata.h | 7 +++++++
+ include/asm-generic/memory_metadata.h    | 4 ++++
+ mm/khugepaged.c                          | 7 +++++++
+ 3 files changed, 18 insertions(+)
 
-To repeat what I've said in previous versions, work with others to 
-define a common fan and fan controller binding. Otherwise, anything new 
-with fan related properties is simply going to be rejected.
+diff --git a/arch/arm64/include/asm/memory_metadata.h b/arch/arm64/include/asm/memory_metadata.h
+index 1b18e3217dd0..ade37331a5c8 100644
+--- a/arch/arm64/include/asm/memory_metadata.h
++++ b/arch/arm64/include/asm/memory_metadata.h
+@@ -5,6 +5,8 @@
+ #ifndef __ASM_MEMORY_METADATA_H
+ #define __ASM_MEMORY_METADATA_H
+ 
++#include <linux/mm.h>
++
+ #include <asm-generic/memory_metadata.h>
+ 
+ #include <asm/mte.h>
+@@ -40,6 +42,11 @@ static inline int reserve_metadata_storage(struct page *page, int order, gfp_t g
+ static inline void free_metadata_storage(struct page *page, int order)
+ {
+ }
++
++static inline bool vma_has_metadata(struct vm_area_struct *vma)
++{
++	return vma && (vma->vm_flags & VM_MTE);
++}
+ #endif /* CONFIG_MEMORY_METADATA */
+ 
+ #endif /* __ASM_MEMORY_METADATA_H  */
+diff --git a/include/asm-generic/memory_metadata.h b/include/asm-generic/memory_metadata.h
+index 111d6edc0997..35a0d6a8b5fc 100644
+--- a/include/asm-generic/memory_metadata.h
++++ b/include/asm-generic/memory_metadata.h
+@@ -35,6 +35,10 @@ static inline bool folio_has_metadata(struct folio *folio)
+ {
+ 	return false;
+ }
++static inline bool vma_has_metadata(struct vm_area_struct *vma)
++{
++	return false;
++}
+ #endif /* !CONFIG_MEMORY_METADATA */
+ 
+ #endif /* __ASM_GENERIC_MEMORY_METADATA_H */
+diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+index 78c8d5d8b628..174710d941c2 100644
+--- a/mm/khugepaged.c
++++ b/mm/khugepaged.c
+@@ -20,6 +20,7 @@
+ #include <linux/swapops.h>
+ #include <linux/shmem_fs.h>
+ 
++#include <asm/memory_metadata.h>
+ #include <asm/tlb.h>
+ #include <asm/pgalloc.h>
+ #include "internal.h"
+@@ -96,6 +97,7 @@ static struct kmem_cache *mm_slot_cache __read_mostly;
+ 
+ struct collapse_control {
+ 	bool is_khugepaged;
++	bool has_metadata;
+ 
+ 	/* Num pages scanned per node */
+ 	u32 node_load[MAX_NUMNODES];
+@@ -1069,6 +1071,9 @@ static int alloc_charge_hpage(struct page **hpage, struct mm_struct *mm,
+ 	int node = hpage_collapse_find_target_node(cc);
+ 	struct folio *folio;
+ 
++	if (cc->has_metadata)
++		gfp |= __GFP_TAGGED;
++
+ 	if (!hpage_collapse_alloc_page(hpage, gfp, node, &cc->alloc_nmask))
+ 		return SCAN_ALLOC_HUGE_PAGE_FAIL;
+ 
+@@ -2497,6 +2502,7 @@ static unsigned int khugepaged_scan_mm_slot(unsigned int pages, int *result,
+ 		if (khugepaged_scan.address < hstart)
+ 			khugepaged_scan.address = hstart;
+ 		VM_BUG_ON(khugepaged_scan.address & ~HPAGE_PMD_MASK);
++		cc->has_metadata = vma_has_metadata(vma);
+ 
+ 		while (khugepaged_scan.address < hend) {
+ 			bool mmap_locked = true;
+@@ -2838,6 +2844,7 @@ int madvise_collapse(struct vm_area_struct *vma, struct vm_area_struct **prev,
+ 	if (!cc)
+ 		return -ENOMEM;
+ 	cc->is_khugepaged = false;
++	cc->has_metadata = vma_has_metadata(vma);
+ 
+ 	mmgrab(mm);
+ 	lru_add_drain_all();
+-- 
+2.41.0
 
-Rob
