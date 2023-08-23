@@ -2,137 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14014784F0A
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 05:02:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E306A784F0E
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 05:03:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229824AbjHWDCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 23:02:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48520 "EHLO
+        id S232377AbjHWDDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 23:03:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231223AbjHWDCR (ORCPT
+        with ESMTP id S231223AbjHWDDg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 23:02:17 -0400
-Received: from 167-179-156-38.a7b39c.syd.nbn.aussiebb.net (167-179-156-38.a7b39c.syd.nbn.aussiebb.net [167.179.156.38])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E200E47;
-        Tue, 22 Aug 2023 20:02:12 -0700 (PDT)
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-        by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-        id 1qYe6H-006o9O-CL; Wed, 23 Aug 2023 11:00:06 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Wed, 23 Aug 2023 11:00:06 +0800
-Date:   Wed, 23 Aug 2023 11:00:06 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Corentin Labbe <clabbe.montjoie@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Neal Liu <neal_liu@aspeedtech.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Tudor Ambarus <tudor.ambarus@linaro.org>,
-        Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>,
-        Pankaj Gupta <pankaj.gupta@nxp.com>,
-        Gaurav Jain <gaurav.jain@nxp.com>,
-        Gilad Ben-Yossef <gilad@benyossef.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
-        Declan Murphy <declan.murphy@intel.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Jia Jie Ho <jiajie.ho@starfivetech.com>,
-        William Qiu <william.qiu@starfivetech.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Michal Simek <michal.simek@amd.com>,
-        Harsha <harsha.harsha@amd.com>, devicetree@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-amlogic@lists.infradead.org, linux-aspeed@lists.ozlabs.org,
-        linux-samsung-soc@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com
-Subject: Re: [PATCH] crypto: Explicitly include correct DT includes
-Message-ID: <ZOV2Nn4o8Ldy9P1i@gondor.apana.org.au>
-References: <20230714174421.4054194-1-robh@kernel.org>
- <CAL_JsqL_CvroupJEFwrjt8WOq=4WBxvE3sOTMnY8hEuBAMG=1g@mail.gmail.com>
+        Tue, 22 Aug 2023 23:03:36 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E35FE93;
+        Tue, 22 Aug 2023 20:03:33 -0700 (PDT)
+Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RVrY91nrfzNmYd;
+        Wed, 23 Aug 2023 10:59:57 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Wed, 23 Aug
+ 2023 11:03:31 +0800
+Subject: Re: [PATCH net-next v7 1/6] page_pool: frag API support for 32-bit
+ arch with 64-bit DMA
+To:     Jakub Kicinski <kuba@kernel.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>
+CC:     Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Mina Almasry <almasrymina@google.com>, <davem@davemloft.net>,
+        <pabeni@redhat.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Liang Chen <liangchen.linux@gmail.com>,
+        Alexander Lobakin <aleksander.lobakin@intel.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>
+References: <20230816100113.41034-1-linyunsheng@huawei.com>
+ <20230816100113.41034-2-linyunsheng@huawei.com>
+ <CAC_iWjJd8Td_uAonvq_89WquX9wpAx0EYYxYMbm3TTxb2+trYg@mail.gmail.com>
+ <20230817091554.31bb3600@kernel.org>
+ <CAC_iWjJQepZWVrY8BHgGgRVS1V_fTtGe-i=r8X5z465td3TvbA@mail.gmail.com>
+ <20230817165744.73d61fb6@kernel.org>
+ <CAC_iWjL4YfCOffAZPUun5wggxrqAanjd+8SgmJQN0yyWsvb3sg@mail.gmail.com>
+ <20230818145145.4b357c89@kernel.org>
+ <1b8e2681-ccd6-81e0-b696-8b6c26e31f26@huawei.com>
+ <20230821113543.536b7375@kernel.org>
+ <5bd4ba5d-c364-f3f6-bbeb-903d71102ea2@huawei.com>
+ <20230822083821.58d5d26c@kernel.org>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <79a49ccd-b0c0-0b99-4b4d-c4a416d7e327@huawei.com>
+Date:   Wed, 23 Aug 2023 11:03:31 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL_JsqL_CvroupJEFwrjt8WOq=4WBxvE3sOTMnY8hEuBAMG=1g@mail.gmail.com>
-X-Spam-Status: No, score=2.7 required=5.0 tests=BAYES_00,HELO_DYNAMIC_IPADDR2,
-        PDS_RDNS_DYNAMIC_FP,RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,
-        SPF_PASS,TVD_RCVD_IP,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: **
+In-Reply-To: <20230822083821.58d5d26c@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 05:40:57PM -0500, Rob Herring wrote:
-> On Fri, Jul 14, 2023 at 12:44 PM Rob Herring <robh@kernel.org> wrote:
-> >
-> > The DT of_device.h and of_platform.h date back to the separate
-> > of_platform_bus_type before it as merged into the regular platform bus.
-> > As part of that merge prepping Arm DT support 13 years ago, they
-> > "temporarily" include each other. They also include platform_device.h
-> > and of.h. As a result, there's a pretty much random mix of those include
-> > files used throughout the tree. In order to detangle these headers and
-> > replace the implicit includes with struct declarations, users need to
-> > explicitly include the correct includes.
-> >
-> > Signed-off-by: Rob Herring <robh@kernel.org>
-> > ---
-> >  drivers/crypto/allwinner/sun4i-ss/sun4i-ss-core.c   | 1 -
-> >  drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c   | 1 -
-> >  drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c   | 1 -
-> >  drivers/crypto/amlogic/amlogic-gxl-core.c           | 1 -
-> >  drivers/crypto/aspeed/aspeed-acry.c                 | 3 ---
-> >  drivers/crypto/atmel-aes.c                          | 6 ++----
-> >  drivers/crypto/atmel-ecc.c                          | 2 +-
-> >  drivers/crypto/atmel-sha.c                          | 6 ++----
-> >  drivers/crypto/atmel-tdes.c                         | 6 ++----
-> >  drivers/crypto/bcm/cipher.c                         | 3 +--
-> >  drivers/crypto/caam/ctrl.c                          | 1 +
-> >  drivers/crypto/caam/jr.c                            | 1 +
-> >  drivers/crypto/caam/qi.c                            | 1 +
-> >  drivers/crypto/ccree/cc_driver.c                    | 1 -
-> >  drivers/crypto/exynos-rng.c                         | 2 +-
-> >  drivers/crypto/gemini/sl3516-ce-core.c              | 1 -
-> >  drivers/crypto/img-hash.c                           | 4 ++--
-> >  drivers/crypto/intel/keembay/keembay-ocs-hcu-core.c | 3 ++-
-> >  drivers/crypto/n2_core.c                            | 2 +-
-> >  drivers/crypto/omap-aes.c                           | 1 -
-> >  drivers/crypto/omap-des.c                           | 2 --
-> >  drivers/crypto/omap-sham.c                          | 1 -
-> >  drivers/crypto/rockchip/rk3288_crypto.c             | 1 -
-> >  drivers/crypto/s5p-sss.c                            | 1 -
-> >  drivers/crypto/sa2ul.c                              | 3 ++-
-> >  drivers/crypto/sahara.c                             | 1 -
-> >  drivers/crypto/starfive/jh7110-cryp.c               | 2 +-
-> >  drivers/crypto/starfive/jh7110-hash.c               | 1 -
-> >  drivers/crypto/stm32/stm32-cryp.c                   | 2 +-
-> >  drivers/crypto/stm32/stm32-hash.c                   | 2 +-
-> >  drivers/crypto/talitos.c                            | 4 ++--
-> >  drivers/crypto/xilinx/zynqmp-aes-gcm.c              | 2 +-
-> >  drivers/crypto/xilinx/zynqmp-sha.c                  | 1 -
-> >  33 files changed, 25 insertions(+), 45 deletions(-)
+On 2023/8/22 23:38, Jakub Kicinski wrote:
+> On Tue, 22 Aug 2023 17:21:35 +0800 Yunsheng Lin wrote:
+>>> .. we should also add a:
+>>>
+>>> 	WARN_ONCE(1, "misaligned DMA address, please report to netdev@");  
+>>
+>> As the CONFIG_PHYS_ADDR_T_64BIT seems to used widely in x86/arm/mips/powerpc,
+>> I am not sure if we can really make the above assumption.
+>>
+>> https://elixir.free-electrons.com/linux/v6.4-rc6/K/ident/CONFIG_PHYS_ADDR_T_64BIT
 > 
-> Ping!
+> Huh, it's actually used a lot less than I anticipated!
+> 
+> None of the x86/arm/mips/powerpc systems matter IMHO - the only _real_
 
-Sorry, I misfiled this one.  I'll get onto it now.
+Is there any particular reason that you think that the above systems does
+not really matter?
 
-Thanks,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+As we have made a similar wrong assumption about those arches before, I am
+really trying to be more cautious about it.
+
+I searched through the web, some seems to be claiming that "32-bits is DEAD",
+I am not sure if there is some common agreement among the kernel community,
+is there any previous discussion about that?
