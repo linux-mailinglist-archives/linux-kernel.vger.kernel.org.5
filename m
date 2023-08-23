@@ -2,103 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F31A785D1A
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 18:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3F13785D1F
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 18:18:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237117AbjHWQRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 12:17:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54998 "EHLO
+        id S237508AbjHWQSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 12:18:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232131AbjHWQRU (ORCPT
+        with ESMTP id S232131AbjHWQSn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 12:17:20 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 998C5E74
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 09:17:18 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id d75a77b69052e-40fed08b990so37581491cf.2
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 09:17:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692807438; x=1693412238;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8Sb+MR/Lt+uikyl1c75o5pU9syq5jGmJBTY3hwwDWFw=;
-        b=gnZ6gP/4kTK+Ozb5yJMZy8i97A7/By1IZQU3ZwcZlBiZWZNcES/FqIsOCIOGvPn7Fs
-         7IHIqcUD9ACXWOfqxUErkeIT7h7np3gUa7vFuLXjxwnQw42/Q4+ntjqSBKLaeKdJ8zvS
-         yTIzREC1nDLJo5bq+0Dvl0QwhQWtQfh1ak/Eh5Fm5ApSuKxVjJXSwqZX/C8w3UKMxRNk
-         OjM4Bd7JbcmPFNIPtrFNAfsZFdseUVwMs24TW5WGtm3mj6yU/RRFzMkyQpaCWUU6S/B6
-         jehBYVsKrEKjCjhTYgDOcgeWZfZrshXe30Gto3PC6lNMG4/uxzgZHIliPpgDDSwkVnV2
-         0EEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692807438; x=1693412238;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8Sb+MR/Lt+uikyl1c75o5pU9syq5jGmJBTY3hwwDWFw=;
-        b=H/4uzRlyEEWlMxYWP3SWleHRWV7zrFS2v9Cw6hPtTlqq8OzfHUznQRGLbJHFygwFb3
-         MCkd+AvONapTyRHtiVc2m9mK4SGuRbHbmGFW7f+rxtRRE9Py9na2addm3dm3lglmmagM
-         xwZ/2cpGLYVVDZYebnU9XBIucLmUmE76EBsK9QM8tW60ebVXIytA5qmh1RtQPJgSfOhj
-         HhKM3TiXapdpcjRxJ+N4tqHZsNkkjn/6JDPvRnZuavdQHyAX6D66mx7+NgEvTjkeqehx
-         X+6QLigPMjL+fSd31z7U+bN9NMniuhdoZIW0G4jX02EaGZJY047JY2WpDTdL49N9zmS3
-         etEw==
-X-Gm-Message-State: AOJu0YwNK3hg28b4KyNAsZrzmS1e8V1Ueaw0tbBqhg8xBQF+i3oQwwDY
-        fOIOGz8DlgGxFL/MUxls1X4WhreKKL0=
-X-Google-Smtp-Source: AGHT+IEAfeIP+ECkRHM/ZnJvfacEMrbMzK3qL6v0mlT6M71nKJPK8Q9PhjD640mqIfNytSoJqju+Pw==
-X-Received: by 2002:a05:622a:4c7:b0:410:92f3:8ede with SMTP id q7-20020a05622a04c700b0041092f38edemr14158882qtx.9.1692807437671;
-        Wed, 23 Aug 2023 09:17:17 -0700 (PDT)
-Received: from alolivei-thinkpadt480s.gru.csb ([2804:14c:bf20:82ea:8c7c:b784:3f92:988a])
-        by smtp.gmail.com with ESMTPSA id d14-20020ac8614e000000b00410ab3c78efsm450829qtm.11.2023.08.23.09.17.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Aug 2023 09:17:17 -0700 (PDT)
-Date:   Wed, 23 Aug 2023 13:17:13 -0300
-From:   Alexon Oliveira <alexondunkan@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     martyn@welchs.me.uk, manohar.vanga@gmail.com,
-        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
-Subject: [PATCH] staging: vme_user: fix check misspellings
-Message-ID: <ZOYxCQlCd04HHFZ+@alolivei-thinkpadt480s.gru.csb>
+        Wed, 23 Aug 2023 12:18:43 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE14210C7;
+        Wed, 23 Aug 2023 09:18:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692807511; x=1724343511;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=vWB7hPu7u+MNP+Ouru9SsOGj48S3oHS9sUrc6394ds8=;
+  b=eiEs12qJPIxudSKBhNjVK6JhZDdzIhRnr2Q2AD38YFc8pqYca2GiZ4A8
+   z+rqWKa5sNPM/b/lV1tgmARx7nyRsYMALnJfnYpkhn9100mBUAg6CPXOH
+   nKcZC4cmqOXGCoOLY972VGPm+D8ooR/ubavSMs28tf0SFKKeX73zDlIt4
+   AkarNE017tzqiD6WEur+IdooKH60AwqoEs0TLcsQ8HGAo1kAL5Ny2T3kb
+   4It1/6IrNoiKlo0GnqtapCNMWcC9mL2LL2oxnQitr/0y40pBkQ3OUEXms
+   qGwdOI0Nur5DZ57l1QfWbgs/UIpwAHhg09t27jNh7OH6FNvXzRTDFAOma
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="460570758"
+X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
+   d="scan'208";a="460570758"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2023 09:17:33 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="730260372"
+X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
+   d="scan'208";a="730260372"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga007.jf.intel.com with ESMTP; 23 Aug 2023 09:17:32 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qYqXy-00F05D-1Q;
+        Wed, 23 Aug 2023 19:17:30 +0300
+Date:   Wed, 23 Aug 2023 19:17:30 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Angel Iglesias <ang.iglesiasg@gmail.com>
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH v2 1/3] iio: pressure: bmp280: Use uint8 to store chip ids
+Message-ID: <ZOYxGhZxpTDUpURQ@smile.fi.intel.com>
+References: <cover.1692805377.git.ang.iglesiasg@gmail.com>
+ <cf08dd2fab1fd91ca7ed0724d1f50435c8c2914b.1692805377.git.ang.iglesiasg@gmail.com>
+ <ZOYveUBg3rKK+ZQ9@smile.fi.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <ZOYveUBg3rKK+ZQ9@smile.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed all CHECK: 'specificed' may be misspelled - perhaps 'specified'?
-as reported by checkpatch to adhere to the Linux kernel
-coding-style guidelines.
+On Wed, Aug 23, 2023 at 07:10:33PM +0300, Andy Shevchenko wrote:
+> On Wed, Aug 23, 2023 at 05:58:05PM +0200, Angel Iglesias wrote:
+> > Represent the device id reg values using uint8 to optimize memory use.
+> 
+> This doesn't correspond to the code, in the code you used uint8_t.
 
-Signed-off-by: Alexon Oliveira <alexondunkan@gmail.com>
----
- drivers/staging/vme_user/vme.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+...
 
-diff --git a/drivers/staging/vme_user/vme.c b/drivers/staging/vme_user/vme.c
-index ac98b3da6bed..1e11047acf54 100644
---- a/drivers/staging/vme_user/vme.c
-+++ b/drivers/staging/vme_user/vme.c
-@@ -1620,7 +1620,7 @@ EXPORT_SYMBOL(vme_lm_get);
-  * @callback: Pointer to callback function called when triggered.
-  * @data: Generic pointer that will be passed to the callback function.
-  *
-- * Attach a callback to the specificed offset into the location monitors
-+ * Attach a callback to the specified offset into the location monitors
-  * monitored addresses. A generic pointer is provided to allow data to be
-  * passed to the callback when called.
-  *
-@@ -1655,7 +1655,7 @@ EXPORT_SYMBOL(vme_lm_attach);
-  * @resource: Pointer to VME location monitor resource.
-  * @monitor: Offset to which callback should be removed.
-  *
-- * Remove the callback associated with the specificed offset into the
-+ * Remove the callback associated with the specified offset into the
-  * location monitors monitored addresses.
-  *
-  * Return: Zero on success, -EINVAL when provided with an invalid location
+> >  struct bmp280_chip_info {
+> >  	unsigned int id_reg;
+> > -	const unsigned int chip_id;
+> > +	uint8_t chip_id;
+> 
+> While this will compile and even work properly in kernel we use uXX types,
+> here u8.
+
+Actually this patch doesn't optimize memory use. The alignment will create
+a gap anyway.
+
+That said, this patch is simply redundant.
+
 -- 
-2.41.0
+With Best Regards,
+Andy Shevchenko
+
 
