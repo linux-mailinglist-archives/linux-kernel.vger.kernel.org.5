@@ -2,150 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9786A784DFF
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 03:01:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA0E4784E04
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 03:06:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230100AbjHWBBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 21:01:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33988 "EHLO
+        id S231936AbjHWBGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 21:06:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231909AbjHWBA7 (ORCPT
+        with ESMTP id S231453AbjHWBGM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 21:00:59 -0400
-Received: from DM6FTOPR00CU001.outbound.protection.outlook.com (mail-centralusazon11020016.outbound.protection.outlook.com [52.101.61.16])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C785CE3;
-        Tue, 22 Aug 2023 18:00:58 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AyyTw4qQG15LydeL0E2GMquvzrXLs11UZHqd2+5yMrmgoSlEPRNoUeukf2Pf2RvxJ0V3KtqKnLLyT/IBlwDmvMoCwq/JWZQNOf8Rzeou01Jdtp9FnAueLmhC284uYJFEV7oiUMc8EMkcmJccGi8ieh5YtOeIIK8ofID2bPYKhdixwU/hMPDWehRaWd/eWBoucj//RDP8jwXvldQ8BZOfR5wYN7UhRZoe1ji3iVDsQcXCLnA4+8h5kncH7PtsQe7DwhcBRWhw9Y9aTs921ui99AXTjepWAgVR6ERgHT784NxWCWl8c9UD9NbVBVi0Shm2chQAyxllOj4SO1I5kZ/k2Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Ng35rwXMfy0qh2OVz0/aGiaTbrhjxI5N+cturx1cxqE=;
- b=PUaEAEdNsj4nEHCE8OBKVxRXKj8SLvoMaTSTiEegE7V28ayHY3QvBMpg74UkpFJSxNKiF83f+lPNxzA6zDjXq2wn4K7hjbO4R8TDpaT5FzORqlS5E7Z6yuizJydQ9g90GkSK7kSmHIv1GELkt6+L4g1SO/a95VrNT8a1DCpipbIf9LInfmokqqmNjbu5VzbP2MI64MC04G+n82AeScY5gkJBlA/S9w2X6fgx8sqWQ7OwwqDV54+nMGncIR0z1tx4uH8Y/qQ85+sjEEgDJFeaLe31yb4dRQsVS7oFKThZDy837PcCb/BRIAfhWHAH28nVSQYkTEU2MorQfOOTVXlXwg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ng35rwXMfy0qh2OVz0/aGiaTbrhjxI5N+cturx1cxqE=;
- b=cUMY9+zzEtMpvIKmCFLz8yGORYZKN7mLeVf4bXClRBH5VcheJz2Sp2cWhdchLuPya8A5ju+t7ELgq8QH/RFm4DoIEESG5Whb/ALV3mMmcWXE3ELKCYpDJhDlFcMHiVJ8khr/lczO5i0coIU6qoXg7FMnV3PBvipL6D2eENlrhmE=
-Received: from SA1PR21MB1335.namprd21.prod.outlook.com (2603:10b6:806:1f2::11)
- by BL1PR21MB3208.namprd21.prod.outlook.com (2603:10b6:208:395::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.5; Wed, 23 Aug
- 2023 01:00:55 +0000
-Received: from SA1PR21MB1335.namprd21.prod.outlook.com
- ([fe80::b05:d4ac:60ff:3b3f]) by SA1PR21MB1335.namprd21.prod.outlook.com
- ([fe80::b05:d4ac:60ff:3b3f%5]) with mapi id 15.20.6745.001; Wed, 23 Aug 2023
- 01:00:55 +0000
-From:   Dexuan Cui <decui@microsoft.com>
-To:     Nathan Chancellor <nathan@kernel.org>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
-CC:     "x86@kernel.org" <x86@kernel.org>,
-        "Michael Kelley (LINUX)" <mikelley@microsoft.com>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "patches@lists.linux.dev" <patches@lists.linux.dev>
-Subject: RE: [PATCH] x86/hyperv: Add missing 'inline' to hv_snp_boot_ap() stub
-Thread-Topic: [PATCH] x86/hyperv: Add missing 'inline' to hv_snp_boot_ap()
- stub
-Thread-Index: AQHZ1SYcbxT92R5nv0CfAidrNqp7eK/3D+tA
-Date:   Wed, 23 Aug 2023 01:00:55 +0000
-Message-ID: <SA1PR21MB1335C1D74D05A582D90EA1A9BF1CA@SA1PR21MB1335.namprd21.prod.outlook.com>
-References: <20230822-hv_snp_boot_ap-missing-inline-v1-1-e712dcb2da0f@kernel.org>
-In-Reply-To: <20230822-hv_snp_boot_ap-missing-inline-v1-1-e712dcb2da0f@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=2730ef0d-6baf-48ab-a2f5-dc1032df3237;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-08-23T00:59:45Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SA1PR21MB1335:EE_|BL1PR21MB3208:EE_
-x-ms-office365-filtering-correlation-id: 1251281f-2496-4ef7-cd5b-08dba374679a
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: iXb2en7tHhN04VQ/B/mYkKl5FJV0NgCCZA6X/TtoS+8Ml5Cr4QAr2xLNQcYxe9kBBGf4XQC00PY7Oh4DXNBr+YY6iJ7+V94t0FOOSiBcEQy3RPoFkLpex/KK1c7ejJ8MF0aoMx3sc6LUDURseZOulGvlWi7YIICgjREZchUBec+XmiIqRGCtI+NNwd5PiumTpirV4qXUHVOBZVD4rUgpq72sSkG/Rawb+f1w0z2qoL7yvUdDzIpFevGdVmU9y82WWPAUIERUSmYWKV3RfteN9g6eU5kHRvtZccvs2/5B9pxgHFESzE52ck0qrtnzw7tnrwpRm6EiX/5V9BfGJzGUPXbun/Kc4hswnN5NZSrBo3x0VuAfKU9zNfU9UKKrk57Z/8PduiSaxdnU7igWvgzVQAYbHGorQzFghWd36lp9KIudYKLJCkfTJTGPlApcbse/4P0rcB+WjXir5M9nkQUUSCE2+U2j6zfzJlpGRyAidQKNkwZaqBaLR0JFBiVrfaH60zeHzt5YQ5AhVJBrkusapLOx9S2k62cNqQY20uAyNixLpm7JZ3GgFYuX6s96xZBiBalBO2Hq+72C0OUuTSaHYfY5oabwuA4PI/Ow1hl+j9Z+DjULRphRfWTGlE7/R7k7tIJwIrCtTxFyoSXNp9WQVdDHSPMbmiEA1XDaLiMiIQ/sDRpyqgEN4clWecr11WOd
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR21MB1335.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(376002)(396003)(346002)(136003)(451199024)(1800799009)(186009)(41300700001)(110136005)(9686003)(10290500003)(478600001)(55016003)(66946007)(66556008)(66476007)(66446008)(64756008)(71200400001)(6506007)(7696005)(76116006)(54906003)(316002)(4326008)(52536014)(8676002)(8936002)(5660300002)(33656002)(12101799020)(86362001)(4744005)(83380400001)(26005)(122000001)(38100700002)(38070700005)(82950400001)(82960400001)(2906002)(8990500004);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Y0NKemdFTUp4RStPL2hMVlRHSHgwMkxKQnEvcnMyTlQycVN3T3p6T0JnWUZJ?=
- =?utf-8?B?Rk1UK05qcmxsbEhKdDk5TnhUd2tBQXFDZEdLcXg4SzZmSU9DZkcrY1FzTUNn?=
- =?utf-8?B?RGhacC90T1N4bDlSMDhtN0JoR1lEMTJNaU9PSVRTTEhHMXF5NHlkK1JJTmhx?=
- =?utf-8?B?NWJDUjU3MFlxSjRYTGc4eW82OXQyY2dnY2NPTitveWp6djI5elJIRzBqSExK?=
- =?utf-8?B?Wi8rSWZCSnhYbVUvQ1A2S0FKN2swMkp5N1pqVGRHdUlUaHhyOFdLeHhGQmxD?=
- =?utf-8?B?ZlU3NGpHNFZnTW42M2hCcm9HU3lkd0F3T1MwZjFTTHh2ckVNZ0preGRod1dO?=
- =?utf-8?B?Q0d3elVkeUtIUjlONkdSbjFsVE01MFZsTDZ2L1RpWmIwak1rWEl5eVpKTy9H?=
- =?utf-8?B?VkZmRDRJS3NFcytacCtHenhGT1VvMTlOTXF3UW4veWpnUnJLaW9SeUx0T2Js?=
- =?utf-8?B?OFVDWGZPZ0czM1RKaFkyMmx1YWQ0T1pWbENTQkR4SWRYcFppendibUZsQi9h?=
- =?utf-8?B?MGtQTnIvVStkZmhFQXhlS3YzZmEzNkxodjVaMjhUZWJEaWNaUHlRaVpHRWs0?=
- =?utf-8?B?QnpjSkIyd084eHNQaHlGbkdqRGs4VmJHMFZ4ZUljL1FSTVZ5ZG5TaUdid3g4?=
- =?utf-8?B?SWs2WjBsdmdBSTF0YlQvZTJ6VFA2azVhNGZTS1h6SUsyRzVEYW5USHhlTFJr?=
- =?utf-8?B?WkZDU244MklOYXBXc2J1Nm1IR0hJZmpWWWpPbjhIeFFIdGJDUDVmdUh3dFl0?=
- =?utf-8?B?Ty9aYlhCU0YvTkQrczhTL3FtSS9CQVBENzVaTktudzFFeHl2UWZTOUlGa0RL?=
- =?utf-8?B?dHgzN2x2ZU9qOER3L0pCQWRaeU9Xclh5R0FlOHRXVW4vcEJHanAxTGcvT2U4?=
- =?utf-8?B?ZlBBeG9HdGlFNFk3TjJmb1p1THhYdFJJVlpFZzBmeEl5UTNHQ0RSSW1WN1NK?=
- =?utf-8?B?b0Q1NDZVdjM2S1kvTytQdUpwOWYvL3FCeUVOb3RpTHRNR0JLaCtGZ0RMVWNj?=
- =?utf-8?B?OGsvcTRNVEJPb1k1VkFiUXR5LzhXemtOZHFmKzkyM2tVM0l6RzhwT1Q3Z3Zv?=
- =?utf-8?B?NjNBSlZsY25WYmt3N1ZXRDBSY1NoM0VSRlV5TWJGaWZzZ3lEc0FVekIxeEpH?=
- =?utf-8?B?TFIyeVlwRnhqVUQvUHNkaVZJd0FwTmM3T0ZhREVuc3J4ejFaRFBuVW9RcldW?=
- =?utf-8?B?YzA0TTI2YVhVY0M5NnRwRndHOUt2aFlrcWdGVkhlRzZMVlY2N0pNbDFvVmY3?=
- =?utf-8?B?Y2llNitlVzhIb080anpsQW8vQ3VTT1NPRWcrQ1pMZmIzT0hyS3N5NVpheXVY?=
- =?utf-8?B?SVg2d0RzWkhZRlZLeS9RdExjNXNVbDR4RDZBKzBZbk9XUFNHNFFTN3B2Z2M2?=
- =?utf-8?B?SGk5ek1OblM3M0dzOWRFY0VFS3YyMmVrTXlQTUxTZnJoRDlRU3RpeTZaVkF4?=
- =?utf-8?B?Tk1HR3U2b0RETStBT3BIeS9ScGIzWjV0NDM3YmpCeTZDdm5GYTQ2TFljeUkw?=
- =?utf-8?B?djBKS0dwTm5hM2tJcVNlR3psajV4QmErbGFjeEU5N3FhOWluZGlUV2F1MWV0?=
- =?utf-8?B?TDBRQ2o3Y1JoTFJLV0hUb252MXJnV05MdHUwYkFSTDFpc2E0dWx1S2E4UHRM?=
- =?utf-8?B?VkowU2syNDJSLzdlWUVXVFZ4RmU5SmZLVGdOc1VKd1VseUY4NzFLUVFhRy9r?=
- =?utf-8?B?OXdZVjVHODhURC9lQmp1Mm1mbHBmRnVad3FvTlQ4d0dLc1NabVJWV2NJU2pp?=
- =?utf-8?B?QkFXQ2xLRWNJMEcyY2lpZWcxZHBMc2NKT1pUYktONFFvZTMva3I0TDVkdHBl?=
- =?utf-8?B?bUZYdE02OC9MYTVPWEpqY0R0cUlDVlJHZGZFU2JFNzVnZ1VPRG1KdEhOSVV1?=
- =?utf-8?B?WktvZVJjcFNJTEFDNWkzSjlXa2k5NjJ0NkE4bHNxRzRDbFdsWHRqVkpSNzBS?=
- =?utf-8?B?Nkd4Zzc5V3FaOWM3NlRlem5adGgrNlIrNUJEd1NnMkJYZEV5QklCUXZ1Rk02?=
- =?utf-8?B?WGJTcUFXQU9zbS93Nk1hYzhnckJYSVlIcVZockovTk5OMHJud1RtRFFsZWtk?=
- =?utf-8?B?dllad1dtUTZYUm9nd0g0MHRaTCtuaG1nZmVBUkFWVkZsY2llZEZzRnNmWFRN?=
- =?utf-8?Q?rXuNaLXVsqAB132xjMJ74xgm8?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Tue, 22 Aug 2023 21:06:12 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 572F0CD1;
+        Tue, 22 Aug 2023 18:06:10 -0700 (PDT)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37MNDtuj000561;
+        Wed, 23 Aug 2023 01:06:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
+ cc : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=qcppdkim1; bh=4aXrqKlZTt7Yh2jQnv5VHpr/3pqlm0C6Kg/qY923u0A=;
+ b=Y1HisRqcoo8jovBIotc2C9DxGS4/JFlaA3Sxo8mGhPFDc1rD+CkliV1Uj19OqUUEpGln
+ +R28Zsb5zYc0+0wkjaUsxDjLtC5PT+NyRwCmyfFUYBZaxynrB2dXx+2g+VmPOlwyf5sZ
+ Lk9Dwda6dMK0IbDybXZF1hAec60X8GaHpthpxDPdO/RiNivyjOVh9qTRkWfH0+J0Z6eR
+ fPrOYJuq7smPkNkCaA+0I8NJ/4v9CbNAAdOWpe1J5Y5Y6Zz3w/oB7fVv087eQuosVnlb
+ XbSC78jH6p1KuDVJ1elfjIkaiUeIeoY6/X0MxpSRPiKQf2hMUhReUfZ7iH2PCccFhx0P kg== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sn25vgpj9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 23 Aug 2023 01:06:00 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37N160xs022351
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 23 Aug 2023 01:06:00 GMT
+Received: from hu-pkondeti-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Tue, 22 Aug 2023 18:05:55 -0700
+Date:   Wed, 23 Aug 2023 06:35:51 +0530
+From:   Pavan Kondeti <quic_pkondeti@quicinc.com>
+To:     Krishna chaitanya chundru <quic_krichai@quicinc.com>
+CC:     <manivannan.sadhasivam@linaro.org>, <helgaas@kernel.org>,
+        <linux-pci@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_vbadigan@quicinc.com>,
+        <quic_nitegupt@quicinc.com>, <quic_skananth@quicinc.com>,
+        <quic_ramkri@quicinc.com>, <quic_parass@quicinc.com>,
+        <krzysztof.kozlowski@linaro.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        "Nishanth Menon" <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        "open list:OPERATING PERFORMANCE POINTS (OPP)" 
+        <linux-pm@vger.kernel.org>
+Subject: Re: [PATCH v4 3/4] OPP: Add api to retrieve opps which is at most
+ the provided level
+Message-ID: <20c40635-0ad9-4de3-b18b-ccbcc2fd3779@quicinc.com>
+References: <1692717141-32743-1-git-send-email-quic_krichai@quicinc.com>
+ <1692717141-32743-4-git-send-email-quic_krichai@quicinc.com>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR21MB1335.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1251281f-2496-4ef7-cd5b-08dba374679a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Aug 2023 01:00:55.2660
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: npN66ZfQ5J+1wID9zqTdYqy8tXJh7Ja2y3MfJ8VyVbm5pkVIyYBuiD5nsYR7L7iYYr/pSy1qGzbvu8XWnQNG/g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR21MB3208
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <1692717141-32743-4-git-send-email-quic_krichai@quicinc.com>
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: eD3X0klzD_2hZd2UoDA4ibu_zSeJ_U8R
+X-Proofpoint-GUID: eD3X0klzD_2hZd2UoDA4ibu_zSeJ_U8R
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-22_22,2023-08-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 mlxlogscore=999
+ phishscore=0 adultscore=0 clxscore=1015 malwarescore=0 suspectscore=0
+ bulkscore=0 impostorscore=0 priorityscore=1501 lowpriorityscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308230008
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBGcm9tOiBOYXRoYW4gQ2hhbmNlbGxvciA8bmF0aGFuQGtlcm5lbC5vcmc+DQo+IFNlbnQ6IFR1
-ZXNkYXksIEF1Z3VzdCAyMiwgMjAyMyAxMToyNiBBTQ0KPiBbLi4uXQ0KPiBXaGVuIGJ1aWxkaW5n
-IHdpdGhvdXQgQ09ORklHX0FNRF9NRU1fRU5DUllQVCwgdGhlcmUgYXJlIHNldmVyYWwNCj4gcmVw
-ZWF0ZWQgaW5zdGFuY2VzIG9mIC1XdW51c2VkLWZ1bmN0aW9uIGR1ZSB0byBtaXNzaW5nICdpbmxp
-bmUnIG9uDQo+IHRoZSBzdHViIG9mIGh5X3NucF9ib290X2FwKCk6DQo+IA0KPiAgIEluIGZpbGUg
-aW5jbHVkZWQgZnJvbSBkcml2ZXJzL2h2L2h2X2NvbW1vbi5jOjI5Og0KPiAgIC4vYXJjaC94ODYv
-aW5jbHVkZS9hc20vbXNoeXBlcnYuaDoyNzI6MTI6IGVycm9yOiAnaHZfc25wX2Jvb3RfYXAnDQo+
-IGRlZmluZWQgYnV0IG5vdCB1c2VkIFstV2Vycm9yPXVudXNlZC1mdW5jdGlvbl0NCj4gICAgIDI3
-MiB8IHN0YXRpYyBpbnQgaHZfc25wX2Jvb3RfYXAoaW50IGNwdSwgdW5zaWduZWQgbG9uZyBzdGFy
-dF9pcCkgeyByZXR1cm4NCj4gMDsgfQ0KPiAgICAgICAgIHwgICAgICAgICAgICBefn5+fn5+fn5+
-fn5+fg0KPiAgIGNjMTogYWxsIHdhcm5pbmdzIGJlaW5nIHRyZWF0ZWQgYXMgZXJyb3JzDQo+IA0K
-PiBBZGQgJ2lubGluZScgdG8gZml4IHRoZSB3YXJuaW5ncy4NCj4gDQo+IEZpeGVzOiA0NDY3NmJi
-OWQ1NjYgKCJ4ODYvaHlwZXJ2OiBBZGQgc21wIHN1cHBvcnQgZm9yIFNFVi1TTlAgZ3Vlc3QiKQ0K
-PiBTaWduZWQtb2ZmLWJ5OiBOYXRoYW4gQ2hhbmNlbGxvciA8bmF0aGFuQGtlcm5lbC5vcmc+DQoN
-ClJldmlld2VkLWJ5OiBEZXh1YW4gQ3VpIDxkZWN1aUBtaWNyb3NvZnQuY29tPg0K
+On Tue, Aug 22, 2023 at 08:42:20PM +0530, Krishna chaitanya chundru wrote:
+> Add dev_pm_opp_find_level_floor() for searching a lesser match or
+> operating on OPP in the order of decreasing level.
+> 
+
+"OPP: Add api to retrieve opps which is at most the provided level". Pls
+change this to "opp: Add dev_pm_opp_find_level_floor()". The API name
+conveys the message.
+
+In the description, you can give a use case. i.e voting for the max
+level during initialization of a driver.
+
+
+> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+> ---
+>  drivers/opp/core.c     | 26 ++++++++++++++++++++++++++
+>  include/linux/pm_opp.h |  4 ++++
+>  2 files changed, 30 insertions(+)
+> 
+> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+> index 954c948..e668cf2 100644
+> --- a/drivers/opp/core.c
+> +++ b/drivers/opp/core.c
+> @@ -727,6 +727,32 @@ struct dev_pm_opp *dev_pm_opp_find_level_ceil(struct device *dev,
+>  }
+>  EXPORT_SYMBOL_GPL(dev_pm_opp_find_level_ceil);
+>  
+> +
+> +/**
+> + * dev_pm_opp_find_level_floor() - Search for a rounded floor freq
+> + * @dev:	device for which we do this operation
+> + * @freq:	Start level
+> + *
+
+%s/freq/level
+
+Run make W=1 so that kerneldoc is tested.
+
+> + * Search for the matching floor *available* OPP from a starting level
+> + * for a device.
+> + *
+> + * Return: matching *opp and refreshes *level accordingly, else returns
+> + * ERR_PTR in case of error and should be handled using IS_ERR. Error return
+> + * values can be:
+
+What do you mean by refresh here?
+
+> + * EINVAL:	for bad pointer
+> + * ERANGE:	no match found for search
+> + * ENODEV:	if device not found in list of registered devices
+> + *
+> + * The callers are required to call dev_pm_opp_put() for the returned OPP after
+> + * use.
+> + */
+> +struct dev_pm_opp *dev_pm_opp_find_level_floor(struct device *dev,
+> +					      unsigned long *level)
+> +{
+> +	return _find_key_floor(dev, level, 0, true, _read_level, NULL);
+> +}
+> +EXPORT_SYMBOL_GPL(dev_pm_opp_find_level_floor);
+> +
+>  /**
+>   * dev_pm_opp_find_bw_ceil() - Search for a rounded ceil bandwidth
+>   * @dev:	device for which we do this operation
+> diff --git a/include/linux/pm_opp.h b/include/linux/pm_opp.h
+> index dc1fb58..a3bc386 100644
+> --- a/include/linux/pm_opp.h
+> +++ b/include/linux/pm_opp.h
+> @@ -128,6 +128,8 @@ struct dev_pm_opp *dev_pm_opp_find_level_exact(struct device *dev,
+>  					       unsigned int level);
+>  struct dev_pm_opp *dev_pm_opp_find_level_ceil(struct device *dev,
+>  					      unsigned int *level);
+> +struct dev_pm_opp *dev_pm_opp_find_level_floor(struct device *dev,
+> +					      unsigned long *level);
+>  
+>  struct dev_pm_opp *dev_pm_opp_find_freq_ceil(struct device *dev,
+>  					     unsigned long *freq);
+> @@ -285,6 +287,8 @@ static inline struct dev_pm_opp *dev_pm_opp_find_bw_ceil(struct device *dev,
+>  
+>  static inline struct dev_pm_opp *dev_pm_opp_find_bw_floor(struct device *dev,
+>  					unsigned int *bw, int index)
+> +static inline struct dev_pm_opp *dev_pm_opp_find_level_floor(struct device *dev,
+> +					unsigned long *level)
+>  {
+>  	return ERR_PTR(-EOPNOTSUPP);
+>  }
+> 
+Please run ./scripts/checkpatch.pl --strict <your patch> and fix the
+indentation warnings from this patch.
+
+Thanks,
+Pavan
