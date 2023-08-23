@@ -2,153 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DACC67861F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 23:08:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 433947861FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 23:13:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236705AbjHWVIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 17:08:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42176 "EHLO
+        id S236966AbjHWVMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 17:12:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236964AbjHWVH7 (ORCPT
+        with ESMTP id S236964AbjHWVMP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 17:07:59 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91AB010D8;
-        Wed, 23 Aug 2023 14:07:57 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1DA1C62CDE;
-        Wed, 23 Aug 2023 21:07:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 335CBC433C7;
-        Wed, 23 Aug 2023 21:07:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692824876;
-        bh=/PuuXO/QYD9GC1BSe9gvQM/Dq5frWY05/UE9gYxUQXU=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=mfVNycNXBof/osoyaRgWxI/Tt0rulVbPmqSG0t5kiXk7KtVPr5GWVhl+067X9PQHR
-         FaSw6b09QLneiKJ3ByXhsXU2e/fU+DMnWoyOXVJwjZ46L1ax6+ljts5tNLIQOKFwch
-         DA0ML2/xiV0qRmskJq3Ap4j1X15Wnn/WIbxewgBMMeGkgAtcD85cYBaeQnJDZqAkgk
-         iT7Q1R9tHXXxRfB0eVrJU1t0JwGvsM9/eXwLn/B+A5Qci5BFLOrYNgMYj9JatBlsrK
-         ueBmS4YQnKNopdnHaKgFlPamf0U2KSl6v/evDgnkP8xOFYhQosBvCSettc9QRRT0+d
-         SvgvYDkENGQjQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id C8E2CCE02EE; Wed, 23 Aug 2023 14:07:55 -0700 (PDT)
-Date:   Wed, 23 Aug 2023 14:07:55 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, Davidlohr Bueso <dave@stgolabs.net>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org
-Subject: Re: [PATCH] rcutorture: Replace schedule_timeout*() 1 jiffie waits
- with HZ/20
-Message-ID: <530be59f-96a9-4b2b-8be3-af837d7cbe3a@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230816204913.450457-1-joel@joelfernandes.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230816204913.450457-1-joel@joelfernandes.org>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 23 Aug 2023 17:12:15 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E938B10C8
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 14:12:12 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-53ff4f39c0fso6777180a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 14:12:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692825132; x=1693429932;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=127o1e2ZxsfTG2EW1SJhGDYnNf5Ml57qeq2/F35dzqE=;
+        b=Ive9zZUHDErpdUQi2NZvd6G1ojNJJRonif+ER4gKq0Z60ZAKPb3ovWD1JrhoM5YWpk
+         wao8ZZecanMqLgoy/OcYOnNMyqBzXZp85ZhYv1XG6GmgwvrPykOplgFdUfLMq0mNmpOf
+         TXbjvr7kRNoR+wtw9yhOlIxmXtJwPwkgSQQghWl3KSb6o20zlTmrDc7/EOWNulmK8TMH
+         A0RFIsZABC3en1rQoynj0/hE4rXzhdQdaJI6mrpx8E/E9r2YOo8T4bIuoGWKuL7NXQ+H
+         2433+oYlogtPt8qMuLdz52mNYRl3jjhPgcfgKlEOpfPYQl28hugcvsXbQuGKpbu8cKSC
+         c5Iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692825132; x=1693429932;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=127o1e2ZxsfTG2EW1SJhGDYnNf5Ml57qeq2/F35dzqE=;
+        b=ebhb6DtXBnI6BBsjUSJ4mxSZDqGvMBYJ8e4KX4JR/ky4cuNitGj/dfRF/66Fxq/v0B
+         dtYQKvKiblsGzq8Y2YUsER9zI69ymGOao13qHA5JnWcfmqi6N8/fmKstFIHDAmFl0PcO
+         7QmbssOc15k0nPS1WOjuD9I87UgKQhQ8tDe2/Hb4ahKNlGtv+0SrHfCLKJC6YeFedpkE
+         ZA70r+Isub+y20gTvthVtE1lqRQt4mGZl7uctr5Jim2yFC0s4DMT1ViCkPPmR2LyInpJ
+         3cYTf3Y1ViYRQwg9nmpvjzSdN6imBqy7aBtV3U/58ISB3PaI+SdZnrxgLBWrcp11zgMc
+         5p/g==
+X-Gm-Message-State: AOJu0YwS4WXILzViGh0tT+M7fQvEWRaHPlyxtAZl0xx+DJRwQt2QGxAB
+        LzyMHWPmbzDTwnTEUJ73qfg2giSl56k=
+X-Google-Smtp-Source: AGHT+IEOss0Pqtl4PPt4AL02nTNq+RY7yG3+ZKLTb8MX+cqCzI2w6NaZCir+UlgaC4j8SMKGhG1++5XbElw=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a63:3409:0:b0:569:50e1:5469 with SMTP id
+ b9-20020a633409000000b0056950e15469mr2183757pga.9.1692825132353; Wed, 23 Aug
+ 2023 14:12:12 -0700 (PDT)
+Date:   Wed, 23 Aug 2023 14:12:10 -0700
+In-Reply-To: <bc6a9c1f-d41e-ef81-3029-04c2938b300c@amd.com>
+Mime-Version: 1.0
+References: <20230810234919.145474-1-seanjc@google.com> <bf3af7eb-f4ce-b733-08d4-6ab7f106d6e6@amd.com>
+ <ZOTQ6izCUfrBh2oj@google.com> <d183c3f2-d94d-5f22-184d-eab80f9d0fe8@amd.com>
+ <ZOZmFe7MT7zwrf/c@google.com> <bc6a9c1f-d41e-ef81-3029-04c2938b300c@amd.com>
+Message-ID: <ZOZ2KqCIcleJxrTz@google.com>
+Subject: Re: [PATCH 0/2] KVM: SVM: Fix unexpected #UD on INT3 in SEV guests
+From:   Sean Christopherson <seanjc@google.com>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Wu Zongyo <wuzongyo@mail.ustc.edu.cn>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023 at 08:49:12PM +0000, Joel Fernandes (Google) wrote:
-> In the past, we see that spinning on schedule_timeout* with a wait of 1
-> jiffie can hang the kernel. See d52d3a2bf408 ("torture: Fix hang during
-> kthread shutdown phase").
+On Wed, Aug 23, 2023, Tom Lendacky wrote:
+> On 8/23/23 15:03, Sean Christopherson wrote:
+> > I think the best option is to add a "temporary" patch so that the fix for @stable
+> > is short, sweet, and safe, and then do the can_emulate_instruction() cleanup that
+> > I was avoiding.
+> > 
+> > E.g. this as patch 2/4 (or maybe 2/5) of this series:
 > 
-> Recently again it showed up in torture's stutter code as well. The behavior is
-> the the function may instantly return and never go to sleep preempting whatever
-> was running under it.
-> 
-> To prevent future issues, apply the same fix mentioned in the above
-> commit d52d3a2bf408 to more places.
-> 
-> I took care to only apply it to places where I thought it made sense.
-> 
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> 2/4 or 2/5? Do you mean 2/3 since there were only 2 patches in the series?
 
-Hearing no objections, I applied this for further review and testing.
+I am planning on adding more patches in v2 to cleanup the hack-a-fix. But after
+writing the code, I think it's best to sqaush the hack-a-fix in with patch 1
+(new full patch at the bottom, though it should be the same result as the earlier
+delta patch).
 
-In the future, should some of these become hrtimers?
+> I'll apply the below patch in between patches 1 and 2 and re-test. Should
+> have results in a week :)
 
-						Thanx, Paul
+Heh, maybe if we send enough emails we can get Wu's feedback before then :-)
 
-> ---
->  kernel/rcu/rcutorture.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-> index 8dd52ea78b52..a31297f32a2a 100644
-> --- a/kernel/rcu/rcutorture.c
-> +++ b/kernel/rcu/rcutorture.c
-> @@ -1153,7 +1153,7 @@ static int rcu_torture_boost(void *arg)
->  				mutex_unlock(&boost_mutex);
->  				break;
->  			}
-> -			schedule_timeout_uninterruptible(1);
-> +			schedule_timeout_uninterruptible(HZ / 20);
->  		}
->  
->  		/* Go do the stutter. */
-> @@ -1164,7 +1164,7 @@ checkwait:	if (stutter_wait("rcu_torture_boost"))
->  	/* Clean up and exit. */
->  	while (!kthread_should_stop()) {
->  		torture_shutdown_absorb("rcu_torture_boost");
-> -		schedule_timeout_uninterruptible(1);
-> +		schedule_timeout_uninterruptible(HZ / 20);
->  	}
->  	torture_kthread_stopping("rcu_torture_boost");
->  	return 0;
-> @@ -1187,7 +1187,7 @@ rcu_torture_fqs(void *arg)
->  		fqs_resume_time = jiffies + fqs_stutter * HZ;
->  		while (time_before(jiffies, fqs_resume_time) &&
->  		       !kthread_should_stop()) {
-> -			schedule_timeout_interruptible(1);
-> +			schedule_timeout_interruptible(HZ / 20);
->  		}
->  		fqs_burst_remaining = fqs_duration;
->  		while (fqs_burst_remaining > 0 &&
-> @@ -2903,7 +2903,7 @@ static int rcu_torture_fwd_prog(void *args)
->  			WRITE_ONCE(rcu_fwd_seq, rcu_fwd_seq + 1);
->  		} else {
->  			while (READ_ONCE(rcu_fwd_seq) == oldseq && !torture_must_stop())
-> -				schedule_timeout_interruptible(1);
-> +				schedule_timeout_interruptible(HZ / 20);
->  			oldseq = READ_ONCE(rcu_fwd_seq);
->  		}
->  		pr_alert("%s: Starting forward-progress test %d\n", __func__, rfp->rcu_fwd_id);
-> @@ -3204,7 +3204,7 @@ static int rcu_torture_read_exit_child(void *trsp_in)
->  	set_user_nice(current, MAX_NICE);
->  	// Minimize time between reading and exiting.
->  	while (!kthread_should_stop())
-> -		schedule_timeout_uninterruptible(1);
-> +		schedule_timeout_uninterruptible(HZ / 20);
->  	(void)rcu_torture_one_read(trsp, -1);
->  	return 0;
->  }
-> @@ -3252,7 +3252,7 @@ static int rcu_torture_read_exit(void *unused)
->  	smp_mb(); // Store before wakeup.
->  	wake_up(&read_exit_wq);
->  	while (!torture_must_stop())
-> -		schedule_timeout_uninterruptible(1);
-> +		schedule_timeout_uninterruptible(HZ / 20);
->  	torture_kthread_stopping("rcu_torture_read_exit");
->  	return 0;
->  }
-> -- 
-> 2.41.0.694.ge786442a9b-goog
-> 
+One idea to make the original bug repro on every run would be to constantly
+toggle nx_huge_pages between "off" and "force" while the guest is booting.  Toggling
+nx_huge_pages should force KVM to rebuild the SPTEs and all but guarantee trying
+to deliver the #BP will hit a #NPF.
+
+--
+From: Sean Christopherson <seanjc@google.com>
+Date: Tue, 8 Aug 2023 17:18:42 -0700
+Subject: [PATCH 1/4] KVM: SVM: Don't inject #UD if KVM attempts to skip SEV
+ guest insn
+
+Don't inject a #UD if KVM attempts to "emulate" to skip an instruction
+for an SEV guest, and instead resume the guest and hope that it can make
+forward progress.  When commit 04c40f344def ("KVM: SVM: Inject #UD on
+attempted emulation for SEV guest w/o insn buffer") added the completely
+arbitrary #UD behavior, there were no known scenarios where a well-behaved
+guest would induce a VM-Exit that triggered emulation, i.e. it was thought
+that injecting #UD would be helpful.
+
+However, now that KVM (correctly) attempts to re-inject INT3/INTO, e.g. if
+a #NPF is encountered when attempting to deliver the INT3/INTO, an SEV
+guest can trigger emulation without a buffer, through no fault of its own.
+Resuming the guest and retrying the INT3/INTO is architecturally wrong,
+e.g. the vCPU will incorrectly re-hit code #DBs, but for SEV guests there
+is literally no other option that has a chance of making forward progress.
+
+Drop the #UD injection for all "skip" emulation, not just those related to
+INT3/INTO, even though that means that the guest will likely end up in an
+infinite loop instead of getting a #UD (the vCPU may also crash, e.g. if
+KVM emulated everything about an instruction except for advancing RIP).
+There's no evidence that suggests that an unexpected #UD is actually
+better than hanging the vCPU, e.g. a soft-hung vCPU can still respond to
+IRQs and NMIs to generate a backtrace.
+
+Reported-by: Wu Zongyo <wuzongyo@mail.ustc.edu.cn>
+Closes: https://lore.kernel.org/all/8eb933fd-2cf3-d7a9-32fe-2a1d82eac42a@mail.ustc.edu.cn
+Fixes: 6ef88d6e36c2 ("KVM: SVM: Re-inject INT3/INTO instead of retrying the instruction")
+Cc: stable@vger.kernel.org
+Cc: Tom Lendacky <thomas.lendacky@amd.com>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
+ arch/x86/kvm/svm/svm.c | 35 +++++++++++++++++++++++++++--------
+ 1 file changed, 27 insertions(+), 8 deletions(-)
+
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index 212706d18c62..f6adc43b315a 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -364,6 +364,8 @@ static void svm_set_interrupt_shadow(struct kvm_vcpu *vcpu, int mask)
+ 		svm->vmcb->control.int_state |= SVM_INTERRUPT_SHADOW_MASK;
+ 
+ }
++static bool svm_can_emulate_instruction(struct kvm_vcpu *vcpu, int emul_type,
++					void *insn, int insn_len);
+ 
+ static int __svm_skip_emulated_instruction(struct kvm_vcpu *vcpu,
+ 					   bool commit_side_effects)
+@@ -384,6 +386,14 @@ static int __svm_skip_emulated_instruction(struct kvm_vcpu *vcpu,
+ 	}
+ 
+ 	if (!svm->next_rip) {
++		/*
++		 * FIXME: Drop this when kvm_emulate_instruction() does the
++		 * right thing and treats "can't emulate" as outright failure
++		 * for EMULTYPE_SKIP.
++		 */
++		if (!svm_can_emulate_instruction(vcpu, EMULTYPE_SKIP, NULL, 0))
++			return 0;
++
+ 		if (unlikely(!commit_side_effects))
+ 			old_rflags = svm->vmcb->save.rflags;
+ 
+@@ -4725,16 +4735,25 @@ static bool svm_can_emulate_instruction(struct kvm_vcpu *vcpu, int emul_type,
+ 	 * and cannot be decrypted by KVM, i.e. KVM would read cyphertext and
+ 	 * decode garbage.
+ 	 *
+-	 * Inject #UD if KVM reached this point without an instruction buffer.
+-	 * In practice, this path should never be hit by a well-behaved guest,
+-	 * e.g. KVM doesn't intercept #UD or #GP for SEV guests, but this path
+-	 * is still theoretically reachable, e.g. via unaccelerated fault-like
+-	 * AVIC access, and needs to be handled by KVM to avoid putting the
+-	 * guest into an infinite loop.   Injecting #UD is somewhat arbitrary,
+-	 * but its the least awful option given lack of insight into the guest.
++	 * If KVM is NOT trying to simply skip an instruction, inject #UD if
++	 * KVM reached this point without an instruction buffer.  In practice,
++	 * this path should never be hit by a well-behaved guest, e.g. KVM
++	 * doesn't intercept #UD or #GP for SEV guests, but this path is still
++	 * theoretically reachable, e.g. via unaccelerated fault-like AVIC
++	 * access, and needs to be handled by KVM to avoid putting the guest
++	 * into an infinite loop.   Injecting #UD is somewhat arbitrary, but
++	 * its the least awful option given lack of insight into the guest.
++	 *
++	 * If KVM is trying to skip an instruction, simply resume the guest.
++	 * If a #NPF occurs while the guest is vectoring an INT3/INTO, then KVM
++	 * will attempt to re-inject the INT3/INTO and skip the instruction.
++	 * In that scenario, retrying the INT3/INTO and hoping the guest will
++	 * make forward progress is the only option that has a chance of
++	 * success (and in practice it will work the vast majority of the time).
+ 	 */
+ 	if (unlikely(!insn)) {
+-		kvm_queue_exception(vcpu, UD_VECTOR);
++		if (!(emul_type & EMULTYPE_SKIP))
++			kvm_queue_exception(vcpu, UD_VECTOR);
+ 		return false;
+ 	}
+ 
+
+base-commit: 240f736891887939571854bd6d734b6c9291f22e
+-- 
+
