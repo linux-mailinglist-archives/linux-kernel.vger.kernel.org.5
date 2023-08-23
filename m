@@ -2,85 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C34F7785184
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 09:29:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12248785185
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 09:30:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233301AbjHWH3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 03:29:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42186 "EHLO
+        id S233300AbjHWHaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 03:30:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233300AbjHWH3v (ORCPT
+        with ESMTP id S233313AbjHWHaC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 03:29:51 -0400
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77C7BE6E
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 00:29:18 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id 367B15C00CB;
-        Wed, 23 Aug 2023 03:28:58 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Wed, 23 Aug 2023 03:28:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ljones.dev; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1692775738; x=1692862138; bh=Wv
-        3RiRy2ETYZlnTID86lefuVr+j4C6g6cSewTgQCYEc=; b=OB9EJ9dazC09WveDic
-        EKxTLUvlADYE33Vb1UT7NkmXKqctSaKTM2kGztwz4tEUiM3MdfoH6JqEj2IWx2nA
-        XONZHg+v524al0ENYsnExheGpTio8vvPn3y78Zj53jiK/kpbviu0gIngUe+LcN5d
-        4ypwDe2VrDAuivRTp1XrVIZwQIN7GKdTwH4NxxlGw3VodH1bu4BCycMKI/frapW4
-        wzXln/kH1SaT1oFOPFcdBhgJxh30J3ALdTWiQj/a3gBRRfiMZD1yVTmhOe5zdpxP
-        Jtcapt/O2/cY46yycwuPpRtw7Sd4JQ+VW6xpQZ2Y/XzcblMtlNkBx1iUOsDdmj0p
-        WPjg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1692775738; x=1692862138; bh=Wv3RiRy2ETYZl
-        nTID86lefuVr+j4C6g6cSewTgQCYEc=; b=FKs+woQ/MHGcrpvzEDAfT7nhE8wIu
-        Rsrdqj76EfAdxAHGw+u8xuaRiYauRwPlVqREmbvMKN4Aa1VpJYtVmDGwuHbcseOm
-        xdoSfXBkx0xlKeZdSnSRIs10B189mCYBtMACwltUhQ/wApKw7KPrqFWJFu20G80d
-        ABamTcRCxCFzjval0Cu8StPNCTxjtgEEQxar1rvlI+GWozWB1xTvYfSKgHVE4X1q
-        ZYygli2g1MFOUNOiS1zJCxvIEr9BhFnv6bN75K4O4IuLUm4VWsQdFDLlGnJvG/lK
-        Zb/NvPyPExl0mMCurqZmfy0Qv054+A9G1s0K2z9Sds7cYXXlIswY4bWXg==
-X-ME-Sender: <xms:ObXlZCUyCiQuIMLfP1G80rddM02e497INbmo931r9YU1wf52HNn7VA>
-    <xme:ObXlZOmzdhlh94_UeS-vlHEjo1OxuQVyANme2ZLM2QUzmn5uOUPbi6vB1lKxCjME3
-    A6BXqQKxEYrt0KU2pU>
-X-ME-Received: <xmr:ObXlZGZIWl2WAZ9hFR6uF6NtDoEJEvTNkTjhWACVY6cFHGw-NVsnhvj3ZUeb2NTjNNfY0YmX>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedruddvfedgtdekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhuffvvefkjghfofggtgesthdtredtredtvdenucfhrhhomhepnfhukhgv
-    ucflohhnvghsuceolhhukhgvsehljhhonhgvshdruggvvheqnecuggftrfgrthhtvghrnh
-    epvddvgeeltdehfeeijefgveegfeeihfdtveetfeetudfhvedtfeeltefhteegledunecu
-    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheplhhukhgvse
-    hljhhonhgvshdruggvvh
-X-ME-Proxy: <xmx:ObXlZJXjZ1PN9M68ZnxzaKV510sD2xP4o2j0N4KOfDR_VkJFNjsMXg>
-    <xmx:ObXlZMmIUxlE-41SxnPXHCJClICpGS7Qywf3KXnPja7eM8kZkBvw6A>
-    <xmx:ObXlZOdvqL2nWMA_iECXL_v3DnB-oaNWCkrXkW_rVOt_uu7jwUTYQw>
-    <xmx:OrXlZLsQ-7lGNt1SiWz7p6kyju1IynoOKW8jIGKz92tne1rS0wJAPw>
-Feedback-ID: i5ec1447f:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 23 Aug 2023 03:28:52 -0400 (EDT)
-Date:   Wed, 23 Aug 2023 19:28:39 +1200
-From:   Luke Jones <luke@ljones.dev>
-Subject: Re: [PATCH] ALSA: hda: cs35l41: Support ASUS 2023 laptops with
- missing DSD
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     tiwai@suse.com, james.schulman@cirrus.com, david.rhodes@cirrus.com,
-        rf@opensource.cirrus.com, linux-kernel@vger.kernel.org,
-        sbinding@opensource.cirrus.com, Jonathan LoBue <jlobue10@gmail.com>
-Message-Id: <R32UZR.6AQKQL1J6UQI3@ljones.dev>
-In-Reply-To: <87v8d6cm30.wl-tiwai@suse.de>
-References: <20230823011008.13146-1-luke@ljones.dev>
-        <87v8d6cm30.wl-tiwai@suse.de>
-X-Mailer: geary/44.1
+        Wed, 23 Aug 2023 03:30:02 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E239410DE
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 00:29:28 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-26f4bc74131so2178277a91.1
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 00:29:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=monstr-eu.20221208.gappssmtp.com; s=20221208; t=1692775768; x=1693380568;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rQyRJaLJ0Vdq482Vz1CbhnNMe+eNXMe7OHL5O4+mSs0=;
+        b=QAZxJ6pGQmtcqioPpzn/4WblexT0U8AYg/55rmaWGER3ByUumRMTiKAfj2AT/MSK/b
+         R1tqcaHwEvM+S5PQlsr7dz5psJc3gswh5CeTKBRE1ZT4wyVg2PrjF19oeQpBA7503wfH
+         yzeOhN3K2VdVZkxay6kMmwQBNarMwfTZE6TuuUZdTFHP3+v7/iJZB3NoRK2/HXVFuDY2
+         YDfGkhEdZgqFsd4EEiA/Fz4m+3EyP/gFKii7ZMptSJ+QdJqJGiSyiPYtJuRIfNO3vLd6
+         YEE2bb7RWeTwUzKIhVHiF7+uCrfv348eECbc36/P2nLRWvU0Ic2DGYcgF65Yt6ryL4tj
+         gjDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692775768; x=1693380568;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rQyRJaLJ0Vdq482Vz1CbhnNMe+eNXMe7OHL5O4+mSs0=;
+        b=gmT6aRdogG6WG7pF6+ryb5ODtc7ijHfWM6jYAcImseSHkfHCA18dfjB3fXOeeDjMpT
+         9IHKBPS8qoGkvxuFO7h3hvW+Ggu9F08Y5DXKjsoNswzc5wq8N/dA22Y1Mha3muv6QsH5
+         qGrFaK4pYsysQ88ckQZ0JtngiNc0KWrZUxKcY962U2ac6VKHQ74FJFPm1cSXsu8hOGfP
+         mIF+RDPoZynu4fdurGzkU9kz7VNwh/OJImiltA/bCTZsh21FObU8c0xXGupodR3ctPak
+         ZMo1U6R9HoDDT6RVHhrTtFr9phdVwMcD4g7TDTspMXBQToDAkf9QNreEBdbUj6H1F/eV
+         l+fA==
+X-Gm-Message-State: AOJu0YyZhZMisnohxMAYYubTDFaJlVNgXBUge7jK1NVVnAIk0LFTWb9a
+        jG2TwEZcoYzK8JhihySweEIh/g==
+X-Google-Smtp-Source: AGHT+IG2fwoJAgUq1yrPjRJnc6/Lp+FnQ0nBgjxV0+tv4HFMZAWtfXTO7ZfyJZa658JYP1HyfSBr/Q==
+X-Received: by 2002:a17:90b:1b49:b0:26d:4d1c:5395 with SMTP id nv9-20020a17090b1b4900b0026d4d1c5395mr17562346pjb.18.1692775768345;
+        Wed, 23 Aug 2023 00:29:28 -0700 (PDT)
+Received: from [192.168.137.2] ([149.199.80.128])
+        by smtp.gmail.com with ESMTPSA id t5-20020a17090a024500b00262e604724dsm11585407pje.50.2023.08.23.00.29.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Aug 2023 00:29:27 -0700 (PDT)
+Message-ID: <47834714-1a9b-90f0-cebb-229d5dfcf31b@monstr.eu>
+Date:   Wed, 23 Aug 2023 09:29:25 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH] microblaze: Make virt_to_pfn() a static inline
+Content-Language: en-US
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     linux-kernel@vger.kernel.org
+References: <20230808-virt-to-phys-microblaze-v1-1-e6df710fe0a1@linaro.org>
+From:   Michal Simek <monstr@monstr.eu>
+In-Reply-To: <20230808-virt-to-phys-microblaze-v1-1-e6df710fe0a1@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -89,146 +75,97 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On Wed, Aug 23 2023 at 08:24:51 +02:00:00, Takashi Iwai <tiwai@suse.de> 
-wrote:
-> On Wed, 23 Aug 2023 03:10:08 +0200,
-> Luke D. Jones wrote:
->> 
->>  Support adding the missing DSD properties required  for ASUS ROG 
->> 2023
->>  laptops and other ASUS laptops to properly utilise the cs35l41.
->> 
->>  This support includes both I2C and SPI connected amps.
->> 
->>  The SPI connected amps may be required to use an external DSD patch
->>  to fix or add the "cs-gpios" property.
->> 
->>  Co-developed-by: Jonathan LoBue <jlobue10@gmail.com>
->>  Signed-off-by: Jonathan LoBue <jlobue10@gmail.com>
->>  Co-developed-by: Luke D. Jones <luke@ljones.dev>
->>  Signed-off-by: Luke D. Jones <luke@ljones.dev>
->>  ---
->>   sound/pci/hda/cs35l41_hda_property.c | 26 
->> ++++++++++++++++++++++++++
->>   1 file changed, 26 insertions(+)
->> 
->>  diff --git a/sound/pci/hda/cs35l41_hda_property.c 
->> b/sound/pci/hda/cs35l41_hda_property.c
->>  index 673f23257a09..69879ab57918 100644
->>  --- a/sound/pci/hda/cs35l41_hda_property.c
->>  +++ b/sound/pci/hda/cs35l41_hda_property.c
->>  @@ -43,6 +43,31 @@ static int lenovo_legion_no_acpi(struct 
->> cs35l41_hda *cs35l41, struct device *phy
->>   	return 0;
->>   }
->> 
->>  +/*
->>  + * The CSC3551 is used in almost the entire ASUS ROG laptop range 
->> in 2023, this is likely to
->>  + * also include many non ROG labelled laptops. It is also used 
->> with either I2C connection or
->>  + * SPI connection. The SPI connected versions may be missing a 
->> chip select GPIO and require
->>  + * an DSD table patch.
->>  + */
->>  +static int asus_rog_2023_no_acpi(struct cs35l41_hda *cs35l41, 
->> struct device *physdev, int id,
->>  +				const char *hid)
->>  +{
->>  +	struct cs35l41_hw_cfg *hw_cfg = &cs35l41->hw_cfg;
->>  +
->>  +	/* check SPI or I2C address to assign the index */
->>  +	cs35l41->index = (id == 0 || id == 0x40) ? 0 : 1;
->>  +	cs35l41->channel_index = 0;
->>  +	cs35l41->reset_gpio = gpiod_get_index(physdev, NULL, 0, 
->> GPIOD_OUT_HIGH);
->>  +	cs35l41->speaker_id = cs35l41_get_speaker_id(physdev, 0, 0, 2);
->>  +	hw_cfg->spk_pos = cs35l41->index;
->>  +	hw_cfg->gpio2.func = CS35L41_INTERRUPT;
->>  +	hw_cfg->gpio2.valid = true;
->>  +	hw_cfg->bst_type = CS35L41_EXT_BOOST_NO_VSPK_SWITCH;
->>  +	hw_cfg->valid = true;
->>  +
->>  +	return 0;
->>  +}
->>  +
->>   struct cs35l41_prop_model {
->>   	const char *hid;
->>   	const char *ssid;
->>  @@ -53,6 +78,7 @@ struct cs35l41_prop_model {
->>   const struct cs35l41_prop_model cs35l41_prop_model_table[] = {
->>   	{ "CLSA0100", NULL, lenovo_legion_no_acpi },
->>   	{ "CLSA0101", NULL, lenovo_legion_no_acpi },
->>  +	{ "CSC3551", NULL, asus_rog_2023_no_acpi },
+On 8/8/23 10:40, Linus Walleij wrote:
+> Making virt_to_pfn() a static inline taking a strongly typed
+> (const void *) makes the contract of a passing a pointer of that
+> type to the function explicit and exposes any misuse of the
+> macro virt_to_pfn() acting polymorphic and accepting many types
+> such as (void *), (unitptr_t) or (unsigned long) as arguments
+> without warnings.
 > 
-> I believe this breaks things badly.  cs35l41_add_dsd_properties() is
-> always called no matter whether _DSD is found or not.  So this will
-> override the setup of all machines with CSC3551 even if it has a
-> proper _DSD.
-
-These are the entries I know of so far since they definitely had to be 
-added and have a DSD patch:
-
-- SPI_2
-    - 0x1043, 0x1473, "ASUS GU604V"
-    - 0x1043, 0x1483, "ASUS GU603V"
-    - 0x1043, 0x1493, "ASUS GV601V"
-    - 0x1043, 0x1573, "ASUS GZ301V"
-    - 0x1043, 0x1c9f, "ASUS G614JI"
-- SPI_4
-    - 0x1043, 0x1caf, "ASUS G634JYR/JZR"
-- I2C_2
-    - 0x1043, 0x1d1f, "ASUS ROG Strix G17
-    - 0x1043, 0x1463, "Asus GA402X"
-    - 0x1043, 0x1433, "ASUS GX650P"
-    - ROG ALLY
-
-You can see the variants are V, J, X, and P. A grep through the DSL 
-dumps I have collected reveals that these machines are all indeed 
-missing DSD entries. These are a mix of I2C and SPI.
-
-The patch I submitted was based on Stefan's work only, and tested on 3 
-SPI machines plus 2 I2C machines with no issues except the SPI machines 
-needing a chipselect DSD patch.
-
-It's worth stating that the DSD patches people were using all followed 
-the exact same template except for the SPI number, or speaker ID.
-
-I'd wager it being a safe bet to assume that every one of the ASUS 
-laptops this year using the CSC3551 will be missing the required DSD 
-entries given the trend so far.
-
-> The existing entries of CLSA0100 and CLSA0101 are OK since
-> (supposedly) those never had _DSD.  The current code is a bit
-> misleading as if it's applicable easily, though.
+> Move the function down in the file so __pa() exists in our
+> scope, and it compiles. This in turn requires moving __pa()
+> as it depends on __virt_to_phys() that was below. (Lazy macro
+> evaluation conflicts with strict function ordering.)
 > 
-> That said, we have to apply the setup only conditionally for each
-> specific device.  One easy thing would be to move the function call
-> after _DSD check.  But, I *guess* that Stefan applied the function at
-> the top so that it may cover the all cases including incorrect _DSD
-> properties.
-
-Given the trend of what I've seen this seems like a reasonable 
-assumption and desired.
-
-> And, the question is how to be specific to each device.  This can be
-> messy, as the sub-codec driver is probed independently from Realtek
-> codec driver, hence you can't pass any flag from Realtek to CS driver
-> at the probe time.  In the end, we might need to keep another table of
-> IDs (either the same SSID or DMI) to distinguish which machine needs
-> which properties.
-
-Is there some other ID we can use? I see:
-[   13.569242] cs35l41-hda spi0-CSC3551:00-cs35l41-hda.1: Cirrus Logic 
-CS35L41 (35a40), Revision: B2
-and I'd assume that 35a40 is unique? A bit of searching on my discord 
-reveals that all the machines I listed that require the same patch also 
-have this identifier (including a ProArt laptop).
-
-I can get a fairly large test base if required.
+> Make a symmetric change to pfn_to_virt() so we have type
+> checking both ways.
 > 
-Cheers,
-Luke.
+> Due to this the <asm/page.h> file being included into some
+> assembly files, some further inclusion guards are needed
+> to make sure assembly keeps compiling.
+> 
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+> ---
+>   arch/microblaze/include/asm/page.h | 27 +++++++++++++++++++--------
+>   1 file changed, 19 insertions(+), 8 deletions(-)
+> 
+> diff --git a/arch/microblaze/include/asm/page.h b/arch/microblaze/include/asm/page.h
+> index 337f23eabc71..86a4ce07c192 100644
+> --- a/arch/microblaze/include/asm/page.h
+> +++ b/arch/microblaze/include/asm/page.h
+> @@ -99,9 +99,6 @@ extern int page_is_ram(unsigned long pfn);
+>   # define phys_to_pfn(phys)	(PFN_DOWN(phys))
+>   # define pfn_to_phys(pfn)	(PFN_PHYS(pfn))
+>   
+> -# define virt_to_pfn(vaddr)	(phys_to_pfn((__pa(vaddr))))
+> -# define pfn_to_virt(pfn)	__va(pfn_to_phys((pfn)))
+> -
+>   #  define virt_to_page(kaddr)	(pfn_to_page(__pa(kaddr) >> PAGE_SHIFT))
+>   #  define page_to_virt(page)   __va(page_to_pfn(page) << PAGE_SHIFT)
+>   #  define page_to_phys(page)     (page_to_pfn(page) << PAGE_SHIFT)
+> @@ -109,11 +106,6 @@ extern int page_is_ram(unsigned long pfn);
+>   #  define ARCH_PFN_OFFSET	(memory_start >> PAGE_SHIFT)
+>   # endif /* __ASSEMBLY__ */
+>   
+> -#define	virt_addr_valid(vaddr)	(pfn_valid(virt_to_pfn(vaddr)))
+> -
+> -# define __pa(x)	__virt_to_phys((unsigned long)(x))
+> -# define __va(x)	((void *)__phys_to_virt((unsigned long)(x)))
+> -
+>   /* Convert between virtual and physical address for MMU. */
+>   /* Handle MicroBlaze processor with virtual memory. */
+>   #define __virt_to_phys(addr) \
+> @@ -125,6 +117,25 @@ extern int page_is_ram(unsigned long pfn);
+>   #define tovirt(rd, rs) \
+>   	addik rd, rs, (CONFIG_KERNEL_START - CONFIG_KERNEL_BASE_ADDR)
+>   
+> +#ifndef __ASSEMBLY__
+> +
+> +# define __pa(x)	__virt_to_phys((unsigned long)(x))
+> +# define __va(x)	((void *)__phys_to_virt((unsigned long)(x)))
+> +
+> +static inline unsigned long virt_to_pfn(const void *vaddr)
+> +{
+> +	return phys_to_pfn(__pa(vaddr));
+> +}
+> +
+> +static inline const void *pfn_to_virt(unsigned long pfn)
+> +{
+> +	return __va(pfn_to_phys((pfn)));
+> +}
+> +
+> +#define	virt_addr_valid(vaddr)	(pfn_valid(virt_to_pfn(vaddr)))
+> +
+> +#endif /* __ASSEMBLY__ */
+> +
+>   #define TOPHYS(addr)  __virt_to_phys(addr)
+>   
+>   #endif /* __KERNEL__ */
+> 
+> ---
+> base-commit: 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5
+> change-id: 20230808-virt-to-phys-microblaze-4afdf2bcf96c
+> 
+> Best regards,
 
+Applied.
+M
 
-
+-- 
+Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
+w: www.monstr.eu p: +42-0-721842854
+Maintainer of Linux kernel - Xilinx Microblaze
+Maintainer of Linux kernel - Xilinx Zynq ARM and ZynqMP/Versal ARM64 SoCs
+U-Boot custodian - Xilinx Microblaze/Zynq/ZynqMP/Versal/Versal NET SoCs
+TF-A maintainer - Xilinx ZynqMP/Versal/Versal NET SoCs
