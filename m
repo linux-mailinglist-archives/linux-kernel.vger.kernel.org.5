@@ -2,67 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C37357853AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 11:19:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D92A67853B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 11:20:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235595AbjHWJT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 05:19:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48400 "EHLO
+        id S235113AbjHWJU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 05:20:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235174AbjHWJQU (ORCPT
+        with ESMTP id S235575AbjHWJSo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 05:16:20 -0400
-Received: from jari.cn (unknown [218.92.28.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AE66A1996
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 02:07:19 -0700 (PDT)
-Received: from chenxuebing$jari.cn ( [125.70.163.142] ) by
- ajax-webmail-localhost.localdomain (Coremail) ; Wed, 23 Aug 2023 17:06:54
- +0800 (GMT+08:00)
-X-Originating-IP: [125.70.163.142]
-Date:   Wed, 23 Aug 2023 17:06:54 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   "XueBing Chen" <chenxuebing@jari.cn>
-To:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/amdgpu: Clean up errors in atombios_i2c.h
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version 2023.1-cmXT6 build
- 20230419(ff23bf83) Copyright (c) 2002-2023 www.mailtech.cn
- mispb-4e503810-ca60-4ec8-a188-7102c18937cf-zhkzyfz.cn
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Wed, 23 Aug 2023 05:18:44 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02C7835BF
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 02:07:57 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-991c786369cso715294566b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 02:07:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google; t=1692781676; x=1693386476;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=FVP76RlJvsBtkWhgLM8vBQOXDlj8GhxoiyPHARb5l/E=;
+        b=LyVvis7zYm4I0vHCuioQM5J/LFAGr8OOXZdZExDQl1j63nfL3buqPv+l98yd2v5szd
+         jHpvj83SgKtnEhzrOVuPxK5trCmzk3MTUj9bjTKTnTEsumPlkRp3eyCrkrT0cP2thv2s
+         RuWwL1qDO4NABN0w6oGYhhPHwC9GvDmrDNS0w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692781676; x=1693386476;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FVP76RlJvsBtkWhgLM8vBQOXDlj8GhxoiyPHARb5l/E=;
+        b=KNyn/UrvS1wN16O1H3+YMqC/IxxwnASZFLMdxnrxFwqxXvnqVLSBzQqyCMBFRRVRMb
+         RdCbv4WIyxUli+Q4GYkMEmHgansPPXnh0K+cwcc4xiLhjqu5d4dLNCo4Smz4R0gi+KzO
+         AsdLdcKYPU7YzDfkNNKS0Y5eu1XrA0/EV8NryClUCIYeHWIS6IU1+8+LwMuqM3EBpazb
+         /gBfbch7gp5oDf4G4h6/zeI8FLFLLTAEvpH2+tVRoMJpma6DEEPPLxyEqwN5l5+viWww
+         2ToYQlHbdD2AnL7yeHb2KaysPZA5lFfitoLk/fj3ec4O3Rr54PNUSt7OmoOznK7LLReD
+         GAxg==
+X-Gm-Message-State: AOJu0YzFIdQBBRc70BjeuxbBqRMUc6NzmRhB+KCQ2oRk58NrHVHnsm5y
+        s6zo+hcxKhYFXhg8PIX+vQbGvWvIfeZkMEhlqFwDwvdkADfJn8mBcJw=
+X-Google-Smtp-Source: AGHT+IFz8/brK1bWJ5bvmYypjGCFsAX9p1Z8B5AoZJZ+Gg/CamQ6zFRzZR72NtZl0GOitVFch3eYVledp8ZGP9aC53Y=
+X-Received: by 2002:a17:906:cc0b:b0:99b:499d:4635 with SMTP id
+ ml11-20020a170906cc0b00b0099b499d4635mr9408127ejb.75.1692781676219; Wed, 23
+ Aug 2023 02:07:56 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <611f7008.622.18a21a596c6.Coremail.chenxuebing@jari.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: AQAAfwD3lD8uzOVkf2KQAA--.477W
-X-CM-SenderInfo: hfkh05pxhex0nj6mt2flof0/1tbiAQAMCmTkgo0ATgAEsC
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
-X-Spam-Status: No, score=2.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_PBL,RDNS_NONE,T_SPF_HELO_PERMERROR,T_SPF_PERMERROR,XPRIO
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: **
+References: <20230711043405.66256-1-zhangjiachen.jaycee@bytedance.com> <20230711043405.66256-5-zhangjiachen.jaycee@bytedance.com>
+In-Reply-To: <20230711043405.66256-5-zhangjiachen.jaycee@bytedance.com>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Wed, 23 Aug 2023 11:07:44 +0200
+Message-ID: <CAJfpegtqJo78wqT0EY0=1xfoSROsJogg9BNC_xJv6id9J1Oa+g@mail.gmail.com>
+Subject: Re: [PATCH 4/5] fuse: writeback_cache consistency enhancement (writeback_cache_v2)
+To:     Jiachen Zhang <zhangjiachen.jaycee@bytedance.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>, linux-fsdevel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        me@jcix.top
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rml4IHRoZSBmb2xsb3dpbmcgZXJyb3JzIHJlcG9ydGVkIGJ5IGNoZWNrcGF0Y2g6CgpFUlJPUjog
-ImZvbyogYmFyIiBzaG91bGQgYmUgImZvbyAqYmFyIgoKU2lnbmVkLW9mZi1ieTogWHVlQmluZyBD
-aGVuIDxjaGVueHVlYmluZ0BqYXJpLmNuPgotLS0KIGRyaXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1
-L2F0b21iaW9zX2kyYy5oIHwgMiArLQogMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAx
-IGRlbGV0aW9uKC0pCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvYXRv
-bWJpb3NfaTJjLmggYi9kcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS9hdG9tYmlvc19pMmMuaApp
-bmRleCAyNTFhYWY0MWY2NWQuLjFjZmJmY2YxMDA5OSAxMDA2NDQKLS0tIGEvZHJpdmVycy9ncHUv
-ZHJtL2FtZC9hbWRncHUvYXRvbWJpb3NfaTJjLmgKKysrIGIvZHJpdmVycy9ncHUvZHJtL2FtZC9h
-bWRncHUvYXRvbWJpb3NfaTJjLmgKQEAgLTI3LDcgKzI3LDcgQEAKIGludCBhbWRncHVfYXRvbWJp
-b3NfaTJjX3hmZXIoc3RydWN0IGkyY19hZGFwdGVyICppMmNfYWRhcCwKIAkJICAgICAgc3RydWN0
-IGkyY19tc2cgKm1zZ3MsIGludCBudW0pOwogdTMyIGFtZGdwdV9hdG9tYmlvc19pMmNfZnVuYyhz
-dHJ1Y3QgaTJjX2FkYXB0ZXIgKmFkYXApOwotdm9pZCBhbWRncHVfYXRvbWJpb3NfaTJjX2NoYW5u
-ZWxfdHJhbnMoc3RydWN0IGFtZGdwdV9kZXZpY2UqIGFkZXYsCit2b2lkIGFtZGdwdV9hdG9tYmlv
-c19pMmNfY2hhbm5lbF90cmFucyhzdHJ1Y3QgYW1kZ3B1X2RldmljZSAqYWRldiwKIAkJdTggc2xh
-dmVfYWRkciwgdTggbGluZV9udW1iZXIsIHU4IG9mZnNldCwgdTggZGF0YSk7CiAKICNlbmRpZgot
-LSAKMi4xNy4xCg==
+On Tue, 11 Jul 2023 at 06:36, Jiachen Zhang
+<zhangjiachen.jaycee@bytedance.com> wrote:
+>
+> Some users may want both the high performance of the writeback_cahe mode
+> and a little bit more consistency among FUSE mounts. Current
+> writeback_cache mode never updates attributes from server, so can never
+> see the file attributes changed by other FUSE mounts, which means
+> 'zero-consisteny'.
+>
+> This commit introduces writeback_cache_v2 mode, which allows the attributes
+> to be updated from server to kernel when the inode is clean and no
+> writeback is in-progressing. FUSE daemons can select this mode by the
+> FUSE_WRITEBACK_CACHE_V2 init flag.
+>
+> In writeback_cache_v2 mode, the server generates official attributes.
+> Therefore,
+>
+>     1. For the cmtime, the cmtime generated by kernel are just temporary
+>     values that are never flushed to server by fuse_write_inode(), and they
+>     could be eventually updated by the official server cmtime. The
+>     mtime-based revalidation of the fc->auto_inval_data mode is also
+>     skipped, as the kernel-generated temporary cmtime are likely not equal
+>     to the offical server cmtime.
+>
+>     2. For the file size, we expect server updates its file size on
+>     FUSE_WRITEs. So we increase fi->attr_version in fuse_writepage_end() to
+>     check the staleness of the returning file size.
+>
+> Together with FOPEN_INVAL_ATTR, a FUSE daemon is able to implement
+> close-to-open (CTO) consistency like NFS client implementations.
+
+What I'd prefer is mode similar to NFS: getattr flushes pending writes
+so that server ctime/mtime are always in sync with client.  FUSE
+probably should have done that from the beginning, but at that time I
+wasn't aware of the NFS solution.
+
+Thanks,
+Miklos
