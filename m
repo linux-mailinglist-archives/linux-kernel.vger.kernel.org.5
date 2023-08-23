@@ -2,134 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF1AC785C05
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 17:25:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA497785C07
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 17:25:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237203AbjHWPZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 11:25:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41874 "EHLO
+        id S237206AbjHWPZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 11:25:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230048AbjHWPZh (ORCPT
+        with ESMTP id S237207AbjHWPZv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 11:25:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B3FE1704
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 08:24:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692804274;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1G4m8nBsyvTIp6TI5Hlz0aw09qGLJzWflBRxUecCBwg=;
-        b=H+Vn+TUzndv+UHRdL4SipVZHfzhhCDSOF8wh2AN4SRO1JYsA8b0EqEVQMnILOZsielIz+9
-        IPfFASTrtdkZtVMV7PxGJ3hSrl9PzxexGWcfnIr44sOMdbFD/GYq9stNPyFPFsPPVzwyCj
-        uliqbZOFa3nOmhtRFt9PsPdQMRDiT/g=
-Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
- [209.85.210.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-28-0tikpurnPPepdrrVsnSIfw-1; Wed, 23 Aug 2023 11:24:32 -0400
-X-MC-Unique: 0tikpurnPPepdrrVsnSIfw-1
-Received: by mail-ot1-f70.google.com with SMTP id 46e09a7af769-6bb0ba5fbcaso6185626a34.3
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 08:24:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692804272; x=1693409072;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1G4m8nBsyvTIp6TI5Hlz0aw09qGLJzWflBRxUecCBwg=;
-        b=Zw9TrhBxnFTXMXkdJ466WkM0EFF31KqUUug5HuzjqLCFwqFWvTwycIYPJD+acIIfCD
-         eqoreD8rWFYnrPLwq3UFITrTtkQ0eMJ8mXnn5OIqcqE4FWpZOxF9Xynl2FMAoAZgRhFV
-         pnHkRD2DgrEPUEK4BJxkZ4+uRlGTd3cTevZ/DcsPHSWmRnfrb5cTExEg7vauRQ0oAWPb
-         c56ZBK1Z+k9fM4Gym6Xtls/Yf03NVdzl9zMp7idBvqxUqq4IlFJ7rwj7gKHG7tjYjxj/
-         PW6WXJycGJbX27gIKObUdSwIpJEjCjzspeJjcYroEH7Y6aeof3TiOFbKkymAT86l9FWV
-         ncjQ==
-X-Gm-Message-State: AOJu0Ywp2mV4QSMHbEYcK3U7iDMzLyzyg5NMX5X+sqtdfzbaoqZluues
-        +nOnYpnYGcxwonlvCeQclODolYxZedSTuL1oVXDqob42DgaGhZm4X0WU61RqaeKqu6M/GgxXlwk
-        AHNPVjwxEMg6+Rt7pufRll7t4
-X-Received: by 2002:a05:6870:9122:b0:1c8:bf19:e1db with SMTP id o34-20020a056870912200b001c8bf19e1dbmr16834371oae.11.1692804272020;
-        Wed, 23 Aug 2023 08:24:32 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFPE5oTDv2BIKyAx5H2CS12AseN3vyzYSjgHXcPnazkhUeGsPnAz5qOppr3jXaHnBeKT7ElqQ==
-X-Received: by 2002:a05:6870:9122:b0:1c8:bf19:e1db with SMTP id o34-20020a056870912200b001c8bf19e1dbmr16834350oae.11.1692804271725;
-        Wed, 23 Aug 2023 08:24:31 -0700 (PDT)
-Received: from redhat.com ([38.15.60.12])
-        by smtp.gmail.com with ESMTPSA id t12-20020a0568301e2c00b006b8bf76174fsm5757731otr.21.2023.08.23.08.24.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Aug 2023 08:24:31 -0700 (PDT)
-Date:   Wed, 23 Aug 2023 09:24:29 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Ankit Agrawal <ankita@nvidia.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        "shameerali.kolothum.thodi@huawei.com" 
-        <shameerali.kolothum.thodi@huawei.com>,
-        "kevin.tian@intel.com" <kevin.tian@intel.com>,
-        Aniket Agashe <aniketa@nvidia.com>, Neo Jia <cjia@nvidia.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        "Tarun Gupta (SW-GPU)" <targupta@nvidia.com>,
-        Vikram Sethi <vsethi@nvidia.com>,
-        Andy Currid <acurrid@nvidia.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Dan Williams <danw@nvidia.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v7 1/1] vfio/nvgpu: Add vfio pci variant module for
- grace hopper
-Message-ID: <20230823092429.643b4f7b.alex.williamson@redhat.com>
-In-Reply-To: <ZOYix7kFDYcvZ/gp@nvidia.com>
-References: <20230822202303.19661-1-ankita@nvidia.com>
-        <ZOYP92q1mDQgwnc9@nvidia.com>
-        <BY5PR12MB37639528FCF1CDB7D595B6FFB01CA@BY5PR12MB3763.namprd12.prod.outlook.com>
-        <20230823091407.0964bd3b.alex.williamson@redhat.com>
-        <ZOYix7kFDYcvZ/gp@nvidia.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.35; x86_64-redhat-linux-gnu)
+        Wed, 23 Aug 2023 11:25:51 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15F7CCFE
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 08:25:35 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8ABB1612E7
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 15:25:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0828CC433C8;
+        Wed, 23 Aug 2023 15:25:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692804333;
+        bh=KEPHfyKB9dhGJ6q8QlmUUhxO7CUxAWlkhe1aFTi9XcQ=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=kfWflLKZYqhdg+s6/ycK27d0p+oNcB1h/hTqSIm57KWJxLyvQRoFK9tWA/AlT9phR
+         MNT1h2Cxah1tZSgSLSVuZ+DQ5q4F6cymQDKP/xn4EoJ0giKhDm7382G2Qpm7lkc8se
+         aKRGIjm9ryTmpr1VvUDPGuAXqEFtYhCiu4F0Nbh4m2Av+ub4lmOytVGdIfv1ob5Y/y
+         lpGd6G5j7wgleoKIy9jpmepvB5kQBYs3JVza9TOPrS5xf45esr70TqhasqXBM3gFJP
+         omDtKQJEygyNpfK3JqTessFvHCfs4j3Elba+pPgrGvFZ81F2aOfdVZXox7yRQxNU6m
+         O7ZNqBKWbVCzQ==
+Message-ID: <90280d3c-c3d0-0ef0-3a75-97b609fd4299@kernel.org>
+Date:   Wed, 23 Aug 2023 23:25:30 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [v2] erofs: don't warn dedupe and fragments features anymore
+Content-Language: en-US
+To:     Gao Xiang <hsiangkao@linux.alibaba.com>,
+        sunshijie <sunshijie@xiaomi.com>, xiang@kernel.org,
+        huyue2@coolpad.com, jefflexu@linux.alibaba.com
+Cc:     linux-erofs@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <20230821041737.2673401-1-sunshijie@xiaomi.com>
+ <3a107c60-532a-dbc9-d899-40cfcaf9327a@linux.alibaba.com>
+From:   Chao Yu <chao@kernel.org>
+In-Reply-To: <3a107c60-532a-dbc9-d899-40cfcaf9327a@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 23 Aug 2023 12:16:23 -0300
-Jason Gunthorpe <jgg@nvidia.com> wrote:
-
-> On Wed, Aug 23, 2023 at 09:14:07AM -0600, Alex Williamson wrote:
-> > On Wed, 23 Aug 2023 14:50:31 +0000
-> > Ankit Agrawal <ankita@nvidia.com> wrote:
-> >   
-> > > >> +     if (index == VFIO_PCI_BAR2_REGION_INDEX) {
-> > > >> +             if (!nvdev->opregion) {
-> > > >> +                     nvdev->opregion = memremap(nvdev->hpa, nvdev->mem_length, MEMREMAP_WB);
-> > > >> +                     if (!nvdev->opregion)
-> > > >> +                             return -ENOMEM;
-> > > >> +             }    
-> > > >
-> > > > [AW] Seems like this would be susceptible to concurrent accesses causing
-> > > > duplicate mappings.
-> > > >
-> > > > [JG] Needs some kind of locking on opregion    
-> > > 
-> > > Right, will add a new lock item in nvdev to control the access to opregion/memmap.
-> > > Please let me know if it is preferable to do memremap in open_device instead of
-> > > read/write.  
-> > 
-> > That's a valid option also, certainly avoids the locking and
-> > serialization per access.  Thanks,  
+On 2023/8/21 12:22, Gao Xiang wrote:
 > 
-> open_device is no good, that would waste large amounts of kernel
-> memory for page tables to support something we don't expect to be
-> used.
+> The subject should be:
+> [PATCH v2] erofs: don't warn dedupe and fragments features anymore
+> 
+> but it's not really needed to resend.
+> 
+> On 2023/8/21 12:17, sunshijie wrote:
+>> The `dedupe` and `fragments` features have been merged for a year.  They are
+>> mostly stable now.
+>>
+>> Signed-off-by: sunshijie <sunshijie@xiaomi.com>
+> 
+> Reviewed-by: Gao Xiang <hsiangkao@linux.alibaba.com>
 
-A lock it is then, I guess this is a very large range of memory.  The
-contention/serialization is also not a priority, we expect access
-through the mmap for anything other than debug.  Thanks,
+Reviewed-by: Chao Yu <chao@kernel.org>
 
-Alex
+Thanks,
 
+> 
+> Thanks,
+> Gao Xiang
