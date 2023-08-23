@@ -2,75 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70BC8785915
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 15:22:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14BED785917
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 15:23:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235491AbjHWNWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 09:22:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37518 "EHLO
+        id S235476AbjHWNXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 09:23:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233253AbjHWNWB (ORCPT
+        with ESMTP id S233253AbjHWNXP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 09:22:01 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2FF3E4E;
-        Wed, 23 Aug 2023 06:21:36 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 963F566278;
-        Wed, 23 Aug 2023 13:20:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6EEB5C433C8;
-        Wed, 23 Aug 2023 13:20:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692796808;
-        bh=f0rbuJKzxJUmE0jONDg4fsgdN5yoz/A4HK/gD16iZJI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FeTlxarsXj63zuQXvhKyHBN3p+r/9c2+xWXOUG678UNedAmUsTY0h/UKiCrlstEvr
-         uEgrnaLYLiVsS0N5DGkVwAy9CkvhRcO6GFXlyuWb2DYRVo+zg9LSCDOjD2zkUpQUe+
-         UsBkv6P/3HYyK/4ZuW0xVc+1yMauNjcNosZ3//e91rBst3Kn2XXlEQtwqxwstdG5g5
-         eXByjRwRdwNE4z3D0ZssIP2i0HTTffbe8eHTMBe7B8XZ5rukgxFIwyT3P3G+irHCVg
-         ixFl/Oi7eKrSFjP1YQzTzP6avt/+vH/BgwzklyVx+t8exXy9G7dINJeR39+HhAY6rI
-         yINPtptmANx9Q==
-Received: (nullmailer pid 2204416 invoked by uid 1000);
-        Wed, 23 Aug 2023 13:20:06 -0000
-Date:   Wed, 23 Aug 2023 08:20:06 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Aniket <aniketmaurya@google.com>
-Cc:     manugautam@google.com, linux-i3c@lists.infradead.org,
-        Conor Dooley <conor+dt@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        joychakr@google.com,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: i3c: Fix description for assigned-address
-Message-ID: <169279680573.2204361.10063597911204356200.robh@kernel.org>
-References: <20230822051209.2837818-1-aniketmaurya@google.com>
+        Wed, 23 Aug 2023 09:23:15 -0400
+Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com [209.85.216.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59EFAE7E
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 06:22:45 -0700 (PDT)
+Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-26f3bf964feso4129048a91.1
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 06:22:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692796891; x=1693401691;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YkD+ET12GvFFq92I3vBMEeqpb/MjJII6UkACFiaNiGk=;
+        b=M+y0evJMZjGiNa/9kiL/SBLp+17TXas54kwAVq+PzP5g1D/j0iGKEfJuX9cOlB68Tv
+         s7PzQjBB/za1ckjTKFByqGIuBdWjp1VNGl43r6AAvF/6zd9OEnwAB5TV1sYJ1N7YRNIp
+         Niy00A47oWV62c1yCX5h53AACBzR+CnrfoHcOWaqgkZ1OnItNpfFqG8CtLLO/7zX81w+
+         XQYzs1KmIBpYSPlTWLc64rhWUbQKRLGGqrQ0zv2QN0gbgH4LV3T+syRvRdhuEiEsPFya
+         WhB3DpOHJAMwJp2nUFkWB0KLrpsWg0mlncckma16kxUX9YRlVlbpn9hSCvkiZETGZRHq
+         eBqg==
+X-Gm-Message-State: AOJu0YxEhYx/79m1A4KNaRD+liDLCyKtJFxNc+iu4Qp+OleEEE/FDrod
+        gEBcp4zw1ZLK5Mjfn6Wkgvndo28ihNhQCXTdhXwRNN5bw7OS
+X-Google-Smtp-Source: AGHT+IGBFQL4/YKfLA3ElUTS+VySEuP29IPeOxhdUY2Mm/BE4S5kN0W9gwiTrJViGYASzkYbMjKpWimrPOEBmaX688p8FlIJHuM6
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230822051209.2837818-1-aniketmaurya@google.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:90a:ca16:b0:262:f6f4:7173 with SMTP id
+ x22-20020a17090aca1600b00262f6f47173mr3243007pjt.5.1692796891540; Wed, 23 Aug
+ 2023 06:21:31 -0700 (PDT)
+Date:   Wed, 23 Aug 2023 06:21:31 -0700
+In-Reply-To: <20230823124507.2837-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000065b3f2060396fded@google.com>
+Subject: Re: [syzbot] [batman?] WARNING in call_netdevice_notifiers_info
+From:   syzbot <syzbot+f8812454d9b3ac00d282@syzkaller.appspotmail.com>
+To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
-On Tue, 22 Aug 2023 05:12:09 +0000, Aniket wrote:
-> assigned-address is a valid property for I3C device with or without
-> static address. Fix the description and an example for the same.
-> 
-> Signed-off-by: Aniket <aniketmaurya@google.com>
-> ---
->  Documentation/devicetree/bindings/i3c/i3c.yaml | 15 +++++++++++----
->  1 file changed, 11 insertions(+), 4 deletions(-)
-> 
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-Acked-by: Rob Herring <robh@kernel.org>
+Reported-and-tested-by: syzbot+f8812454d9b3ac00d282@syzkaller.appspotmail.com
 
+Tested on:
+
+commit:         d44036ca net: dsa: felix: fix oversize frame dropping ..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=17e4c10fa80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=aa796b6080b04102
+dashboard link: https://syzkaller.appspot.com/bug?extid=f8812454d9b3ac00d282
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=145e0d90680000
+
+Note: testing is done by a robot and is best-effort only.
