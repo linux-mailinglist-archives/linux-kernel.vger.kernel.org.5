@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE2E4784E49
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 03:37:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74D11784E4E
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 03:40:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232054AbjHWBh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 21:37:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54936 "EHLO
+        id S232067AbjHWBkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 21:40:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230025AbjHWBhz (ORCPT
+        with ESMTP id S230025AbjHWBkU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 21:37:55 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 037BEE46
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 18:37:54 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id af79cd13be357-76d92a5e652so302134485a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 18:37:53 -0700 (PDT)
+        Tue, 22 Aug 2023 21:40:20 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AAC5E4A
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 18:40:18 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id d75a77b69052e-40f0b412b78so33049481cf.3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 18:40:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692754673; x=1693359473;
+        d=gmail.com; s=20221208; t=1692754817; x=1693359617;
         h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :from:to:cc:subject:date:message-id:reply-to;
         bh=zraoR6noj6EHn4OxAsMlxddazRXBRd6htkpsGGslKZU=;
-        b=K2F1f6F5NV6yWhcUB4eipqri8/M+alccOsCDQojhqAzNeJTioZeToDOplHkwDBxogM
-         HOqfCXF2QiKC6Hv79y3LsFgI3IRRkWbP+lakXdpoG+wPkVHiXyrpkeAKX5FgcMw9Ez8z
-         l9ETtSrsqI55m3C+VgqGAtmeuh5gAA/utlp5PFzIG4ywdZtYCXnbMw+vfxw1u71LdbrI
-         QHN5eFjFW69TcN3+ORtjwsOlyEh8KlUs1cb8sUPkoYAXo4Rvdb3CKtCudksgGMJd/JYR
-         vdnc+AWryCmHRqeBjhbBXWoTSpmKwSdnT0C2DXReXCO1NXziTOPmoNoEAI2yuHiVZuId
-         MCKw==
+        b=fWg0LeIFzL2SjtZ/Zs08cqTOtvQLhPzigv0rCgI0QES9ET0nvcE3j9xRxQGjTfDjeu
+         56W7LVAGAZN1MrSpR/9D9ssPgKTXKpC2dSA5RKkfBLbKbpBX+6klmsZzSiK6Oj6YyzGA
+         hOqTm8Rvq52+cyZkX8cDkskknPAkVLKKt4B0rfPAGMgLzq2uDBvuvgvro9dB+TtRQDtd
+         ChJRbb+uRdRjNlqVUsUn3EqLerZi+gDAU9+mzFmuZ8z6o0WrncX08N6cbqrB/E4IX5gK
+         ENYmhROjLyFBFdbt83U2hMByqlFM8rh8oj3iAGWzz+bt9NNLsPNLcyqFHjfTCrwNbKIh
+         dLxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692754673; x=1693359473;
+        d=1e100.net; s=20221208; t=1692754817; x=1693359617;
         h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
         bh=zraoR6noj6EHn4OxAsMlxddazRXBRd6htkpsGGslKZU=;
-        b=c0Sf4LyCRsDHo3UHIFc4Wkiqw/5nqgJL4/OJmtcDBEHxLp7BVLWFo2E8Fz/Fbjf7h4
-         sUsrffzlz9ZXreP4NiL+833hD69kqwV9qAQnfu322vILFD/GOBRshxkta+kTl384sxJd
-         41rv+FZj90x9Wc/wXPu88epS0OICB3XmGvRdAVXdOcyIajTcw8jP5MdtqKuf6HPOg7in
-         V0yZxoLs/uNsedqvzA4B7RpZEx3X3z99sL24+4DtIfuTgZD5W/i++falk/OoaDXrb0z6
-         Dp6qsIiJ5mP7Z2rzN4QMyOPnhDg7Q9fzXUAsDPhgvZpXQvo/Dp01KQRFTKTfgsEVf1er
-         74rQ==
-X-Gm-Message-State: AOJu0YwZ6pDXfZZyQZuP3pX/vBCDQZHQyNZIi0x68KNLFI6T1+ZXfoHt
-        EuAxC9TY0Im5Et2QwpjKyZV1LPNLfkU=
-X-Google-Smtp-Source: AGHT+IEFnJmxAy1A6K2ykvxgVt1zMpjpe2n8UH/M1oai/FvYg42sxPZS3DhfOIQlGUv0K6m8eDqtdw==
-X-Received: by 2002:a05:622a:1049:b0:403:b869:9d37 with SMTP id f9-20020a05622a104900b00403b8699d37mr16290637qte.0.1692754673007;
-        Tue, 22 Aug 2023 18:37:53 -0700 (PDT)
+        b=HJsxGYB+ScTPjP05Nb16YgCkKBuV7RdlR+hbMUMqM8Tls7N2LYlVRKdtcbsP4A6XZx
+         LEq8nNVujLzKvbRm7jiVVSRJjuC3zPlWk/x22eGshcJawQuQMjK3St8Oofqeo2hKkgfR
+         V7ya9vJkWIhmp4HVfvSTvmVT5Cz3jgeZz3MzU3KotpChl/ARCrdtlTgSvJD9B/U4dRAF
+         ouSmAMXxUmmqyaYB9b26tZntBLQTVQtgpqXUGcOt2lPdajgtOmHSVjXwBaWSARumxpw9
+         ImfeiEuXipV6kGlpCxPXSQK+N5ofvK6I3tc7MJx4c8fspcGTueTX5fDnhkUUZkj1v99I
+         eBWA==
+X-Gm-Message-State: AOJu0YytO83+4038TUolp84OxvYNcIlIGFgNkQ1RdzjUEzEp9Qtq462q
+        YnlUTqQQl2qWilB0e6CIN7s=
+X-Google-Smtp-Source: AGHT+IEehiBC36QHK7hjy0nsRp/qMs3yoSpmxdLVVILKewOE5Gvwq/5sDUAMm3sNn1wuiqhAhMaSwg==
+X-Received: by 2002:ac8:57d0:0:b0:403:a91f:7b79 with SMTP id w16-20020ac857d0000000b00403a91f7b79mr16650881qta.20.1692754817432;
+        Tue, 22 Aug 2023 18:40:17 -0700 (PDT)
 Received: from alolivei-thinkpadt480s.gru.csb ([2804:14c:bf20:86d6:7871:f7e9:8a15:865a])
-        by smtp.gmail.com with ESMTPSA id oo23-20020a05620a531700b0076c98dad91dsm3609665qkn.120.2023.08.22.18.37.51
+        by smtp.gmail.com with ESMTPSA id t5-20020a05622a148500b004116b082feesm40149qtx.75.2023.08.22.18.40.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Aug 2023 18:37:52 -0700 (PDT)
-Date:   Tue, 22 Aug 2023 22:37:48 -0300
+        Tue, 22 Aug 2023 18:40:17 -0700 (PDT)
+Date:   Tue, 22 Aug 2023 22:40:12 -0300
 From:   Alexon Oliveira <alexondunkan@gmail.com>
 To:     gregkh@linuxfoundation.org
-Cc:     artyn@welchs.me.uk, manohar.vanga@gmail.com,
+Cc:     martyn@welchs.me.uk, manohar.vanga@gmail.com,
         linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
 Subject: [PATCH] staging: vme_user: fix check unbalaced braces and
  misspellings
-Message-ID: <ZOVi7BC4J1PeIjpN@alolivei-thinkpadt480s.gru.csb>
+Message-ID: <ZOVjfKUWsSAkbpZG@alolivei-thinkpadt480s.gru.csb>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
