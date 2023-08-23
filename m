@@ -2,92 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3FFC784DA1
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 02:08:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EE81784DA3
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 02:08:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231418AbjHWAId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 20:08:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51000 "EHLO
+        id S231604AbjHWAI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 20:08:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230484AbjHWAIc (ORCPT
+        with ESMTP id S230484AbjHWAI4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 20:08:32 -0400
-Received: from mail-oa1-x30.google.com (mail-oa1-x30.google.com [IPv6:2001:4860:4864:20::30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D64B2184
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 17:08:30 -0700 (PDT)
-Received: by mail-oa1-x30.google.com with SMTP id 586e51a60fabf-1a2dd615ddcso939766fac.0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 17:08:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1692749310; x=1693354110;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6voCTFbL0lNbz7y0IRbENmmss3++8RsYIaK/hukXzZI=;
-        b=sJY6ArUvu8a+wfwuZZ9xumV/iTUHXJUytEikIUOyu8NcO9k72WRic/FXlS76gq6rqG
-         fCIulukOrg6Cj+6lEDbwH9u5/8bUfv5lwq8JNzH1FkZ6wF8soVd+C9aFfND9J1u5Zkbr
-         frTgrlmcMI1YGlsYtB1RqSdSOYBOZLkJE2PNDAQrDFnZCFnlb6MIyxP2LcfyMx1SMQOQ
-         0WGmTs8jaLsOojY4OJznrTu3ccaEJ8H4H2A+hfa/WHlTF9yo7h3U7YMeczONp1bfS2NC
-         5y+o/aivcbB8+r2Yfs88Z4akJyiSnl5j8c4xayW4CDcadqvoLIaZ2EUUGf+bKz5tYECj
-         QTUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692749310; x=1693354110;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6voCTFbL0lNbz7y0IRbENmmss3++8RsYIaK/hukXzZI=;
-        b=Uyr6EBkh+kVFsnF3LPvMFuIQ50JegkS1hlL2x8yPdHbeaA3HD6P6X8ff567QxDUyoA
-         yLRcKTABQ9mppSGEWU3SNrNYF3w6crp9AHja/Ns02AWQiccPAWJa52cHBuUtsIQ7s/cP
-         YyJXtGVCgm7b50IdvdbFkYgqPSVCjeg6Hxzhro4BlmryUMFyzHLnbMTAt7NO5bJGI/Hm
-         b1a/S2gqB2Y1v0DFGivtxn8LlPVJviLGFMBEXl0gTqHCYAvpKrUzbZR5M4D7vMLEdxb7
-         Ub0fMH5eDgl2GKEPYJvrmSnnICfml+t1hr0iVDWT0tI+pPjmdq6QlzYingiRYxl+CYC9
-         hOkQ==
-X-Gm-Message-State: AOJu0Yw7DkqO3As54ExXc7IeTp4NhuNTsDh/8bU9kehaTNUI11OI1NfZ
-        Adxl9EvdoSQTaXA8/MOpBPntwyGlURyJ3nZ7V64=
-X-Google-Smtp-Source: AGHT+IEsT7YDa/7c6bzW0F46+sq8eU5YKhnMY8iy6qpz38n7aoD6dI8tILwNZhuh50G4IT3oEZTqgA==
-X-Received: by 2002:a05:6870:330a:b0:1bf:9fa2:bfa3 with SMTP id x10-20020a056870330a00b001bf9fa2bfa3mr12503886oae.1.1692749310072;
-        Tue, 22 Aug 2023 17:08:30 -0700 (PDT)
-Received: from [127.0.0.1] ([198.8.77.157])
-        by smtp.gmail.com with ESMTPSA id bg23-20020a17090b0d9700b002680b2d2ab6sm10149127pjb.19.2023.08.22.17.08.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Aug 2023 17:08:29 -0700 (PDT)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     yang.yang29@zte.com.cn
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        xu.panda@zte.com.cn
-In-Reply-To: <202212031422587503771@zte.com.cn>
-References: <202212031422587503771@zte.com.cn>
-Subject: Re: [PATCH linux-next] block: use strscpy() to instead of
- strncpy()
-Message-Id: <169274930900.113062.17637182584523326020.b4-ty@kernel.dk>
+        Tue, 22 Aug 2023 20:08:56 -0400
+Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75FF3184;
+        Tue, 22 Aug 2023 17:08:52 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id D32223200961;
+        Tue, 22 Aug 2023 20:08:49 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Tue, 22 Aug 2023 20:08:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+        :content-transfer-encoding:content-type:date:date:from:from
+        :in-reply-to:message-id:mime-version:reply-to:sender:subject
+        :subject:to:to; s=fm3; t=1692749329; x=1692835729; bh=ElmqIHyLQj
+        N5GfSxGvXyXp9lQjutb3ygeQl4KNzMCT8=; b=CHGns7qv427DQoRJwYnml3AjT3
+        Xk1Q+g8ATOOQabaPRqOWsygwQmllcbSAIjOVXprYsr+my7REVox5+NjPtV4beptf
+        OlHXRzN9kgmJQXAT8FNVIqDAE5KHGr3psuouQbpdeum1RF5NuSPU6pfGZGbqMigd
+        egKoepBiUV9pJUsh2RU2TqX5M88MvZOccE+Qhabbwh1rJt17gyiWZkFOJE7O8v19
+        kpwNZXFSac7Y4WSt/d7yh1LgkHTYYwoFeyruDrMyoKjdi6pFwG1Vy0dHM2N3Zrcv
+        KTQMK7kSmQyYKSnVKivFI+5Oci5rC+Y/kiDqXBEif2NsfNIA87L/qaL7rS1Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:date:feedback-id:feedback-id:from:from:in-reply-to
+        :message-id:mime-version:reply-to:sender:subject:subject:to:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm1; t=1692749329; x=1692835729; bh=ElmqIHyLQjN5GfSxGvXyXp9lQjut
+        b3ygeQl4KNzMCT8=; b=o+QLoJJm2FYYteCTxt76IIi/GqPJKg5Sa4kTSUQc4nmm
+        9qQbttNTFRjgQAvSuIdmNdj1feH438kp36ARFnKE6SQzeBT/FbYOU74r1qFoIVop
+        Q0uYdYV5HhaIGHTs2gaF++y+yUa34cBqvSmgHuHSAjk2ydEtFBRyIhbnrR8KvGCz
+        RFXv8nggHq6cxN50WBZP4mXpfQadrCCTmLS1p3FGVvlS5SD5eMPyaukv1Gz953py
+        UkaXl8P/38DxyuUTcLkxMoxyTsvCHiYejZAWsDXKbH2z+zH+3QyVVJpSKKv7MTl3
+        4YCUyiLYbi7E2jDVL6bWTi5hl5IK6jLlz2Nc5yW/BQ==
+X-ME-Sender: <xms:EU7lZOMdNgkG53H_r3lseIq5tBlhLdFRG3p8VrNT9-Ar9EalXEHa7Q>
+    <xme:EU7lZM_HHjoHk1C3WUToRguiXc3-uKQRHM8W1N3bZmwZYHpdXBymdxuRyjMkF62Hj
+    TgGoAGlzBY3PiE-4g>
+X-ME-Received: <xmr:EU7lZFRl0xK1iWw_bjaItp9qAZAHqXE0p0iwF3XVgLVQxV6Cwhrxg1MG50JsZewqecsjBNpFlisQGztwVyrorroVtIFbjvS6duBGy0qHedoyeA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedruddvvddgfeduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdlfeehmdenucfjughrpefhvf
+    fufffkofgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihu
+    segugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpeffffegjeduheelgfdtudekie
+    ejgfegheehjefgieejveevteeiveeukefgheekjeenucffohhmrghinhepghhithhhuhgs
+    rdgtohhmnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    epugiguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:EU7lZOsIX3dwuXvVBhdub_38iikmt_su2NLLCIym2m60ErgQdEnzAg>
+    <xmx:EU7lZGeyYXQhKETSDcgDs72Us6sDln2y4IfgvRzleTZdaB3q4TAO8w>
+    <xmx:EU7lZC0cvJ3xmVsdS2g6KkmVuVX1CUR6QijmpHMcduHxcU-kwJ5QdA>
+    <xmx:EU7lZKEmGMTLE0Ovs1yBM63iBSBfWCbbj5pwZXorq8nxZ4DHofTVRw>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 22 Aug 2023 20:08:48 -0400 (EDT)
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [RFC PATCH bpf-next 0/2] Improve prog array uref semantics
 Date:   Tue, 22 Aug 2023 18:08:29 -0600
+Message-ID: <cover.1692748902.git.dxu@dxuuu.xyz>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-034f2
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patchset changes the behavior of TC and XDP hooks during attachment
+such that any BPF_MAP_TYPE_PROG_ARRAY that the prog uses has an extra
+uref taken.
 
-On Sat, 03 Dec 2022 14:22:58 +0800, yang.yang29@zte.com.cn wrote:
-> The implementation of strscpy() is more robust and safer.
-> That's now the recommended way to copy NUL terminated strings.
-> 
-> 
+The goal behind this change is to try and prevent confusion for the
+majority of use cases. The current behavior where when the last uref is
+dropped the prog array map is emptied is quite confusing. Confusing
+enough for there to be multiple references to it in ebpf-go [0][1].
 
-Applied, thanks!
+Completely solving the problem is difficult. As stated in c9da161c6517
+("bpf: fix clearing on persistent program array maps"), it is
+difficult-to-impossible to walk the full dependency graph b/c it is too
+dynamic.
 
-[1/1] block: use strscpy() to instead of strncpy()
-      commit: 146afeb235ccec10c17ad8ea26327c0c79dbd968
+However in practice, I've found that all progs in a tailcall chain
+share the same prog array map. Knowing that, if we take a uref on any
+used prog array map when the program is attached, we can simplify the
+majority use case and make it more ergonomic.
 
-Best regards,
+I'll be the first to admit this is not a very clean solution. It does
+not fully solve the problem. Nor does it make overall logic any simpler.
+But I do think it makes a pretty big usability hole slightly smaller.
+
+I've done some basic testing using a repro program [3] I wrote to debug
+the original issue that eventually led me to this patchset. If we wanna
+move forward with this approach, I'll resend with selftests.
+
+[0]: https://github.com/cilium/ebpf/blob/01ebd4c1e2b9f8b3dd4fd2382aa1092c3c9bfc9d/doc.go#L22-L24
+[1]: https://github.com/cilium/ebpf/blob/d1a52333f2c0fed085f8d742a5a3c164795d8492/collection.go#L320-L321
+[2]: https://github.com/danobi/tc_tailcall_repro
+
+
+Daniel Xu (2):
+  net: bpf: Make xdp and cls_bpf use bpf_prog_put_dev()
+  bpf: Take a uref on BPF_MAP_TYPE_PROG_ARRAY maps during dev attachment
+
+ include/linux/bpf.h  |  1 +
+ kernel/bpf/devmap.c  |  8 ++++----
+ kernel/bpf/syscall.c | 46 +++++++++++++++++++++++++++++++++++++++++++-
+ net/core/dev.c       | 16 +++++++--------
+ net/sched/cls_bpf.c  |  4 ++--
+ 5 files changed, 60 insertions(+), 15 deletions(-)
+
 -- 
-Jens Axboe
-
-
+2.41.0
 
