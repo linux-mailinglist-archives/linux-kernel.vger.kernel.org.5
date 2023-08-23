@@ -2,159 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB5A078622E
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 23:18:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7741C78623B
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 23:22:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237628AbjHWVRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 17:17:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34354 "EHLO
+        id S237108AbjHWVVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 17:21:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237751AbjHWVRT (ORCPT
+        with ESMTP id S232359AbjHWVVO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 17:17:19 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04E4910DC;
-        Wed, 23 Aug 2023 14:17:04 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-51a52a7d859so538167a12.0;
-        Wed, 23 Aug 2023 14:17:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692825422; x=1693430222;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=b4xPfqps2kKEKFbrOYaDnemOvZUFi29nYUJXxM/0N8g=;
-        b=rcHQ8V/pu5bK6VOXZiKCId45KBijfddk8/Fbbkqutben4eE2vkqmE9K4AoRNH4DDxT
-         83da+YSanyY3qgwUQ/XeKdizn1ISPaFhcrtjf7wytmtfpDoqzNWDizTifayv9eZe1BJv
-         tl3xFmIfnpq6OAH3CEEaaGuAqiyxGzr8jN0tU+MCue3YT8P/vHAHU7hoN1iioCiYNU4i
-         bJaiUf43ZbjkwNRF3k0hIU71DFpTVNFAvJemv35r+igVNWUKKTs7O99l5OiqBRWWeLgC
-         OZ+LtxNFGlkFRmV+rQJNHb909emSJz2rSmIN3znrfKnrtyWFUZDwkhljzJdT2a+p0DG4
-         uvrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692825422; x=1693430222;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=b4xPfqps2kKEKFbrOYaDnemOvZUFi29nYUJXxM/0N8g=;
-        b=OjUeYdV2iintPHlxxDGq4hGY4bMIe4qsDp89kugc9lQ7cZrS69nE7UE/H/k9m8aoOB
-         WbEI3oktdur5x+WbVekTivftlJ+7kcWWYyWC+KjTChf0WXQoBDnVDN5Kv/2vAM07Oy8M
-         fpCnE02gLNqoDXo5JPyw7tsV3DxGqI6hb524p/MscLqDM5ewiliBwzO+wDX5dHEIZaUm
-         dxNkG4cUs9KcKG0U2LwNczn6z/19PK669M0QwAvb02eqWzjXMIMnGfOrcHKX4CO8sMfE
-         EhPchTGrdZWnGPYFn19rAZqqOLyTGHWMKJD280x4DGJcrxOvRtx6nbqCJIInwKuCNoLL
-         fUJA==
-X-Gm-Message-State: AOJu0YxhQC/WEGituESHdqAOfLStozdzmVnSrAVJsTmALN5ayZ289Vui
-        FhVmzgHfaX6vZUbdy/UQb6ULKADedV/+m7AhPFw=
-X-Google-Smtp-Source: AGHT+IGlayHDuH/bcetJTem6VlbHoKIKsGHPh0Z1A0hTyqKwrjXGaOpzXcn5M7AwfnWObKpTApe9XEjF37+fHdypWRU=
-X-Received: by 2002:a50:fa87:0:b0:525:8124:20fe with SMTP id
- w7-20020a50fa87000000b00525812420femr16840038edr.18.1692825422232; Wed, 23
- Aug 2023 14:17:02 -0700 (PDT)
-MIME-Version: 1.0
-References: <aeb83832ae61bbf463e1b2e39c1e30c3b227f5a5.1692769396.git.dxu@dxuuu.xyz>
- <CAEf4BzbGhhOyeWLuP95K20344aZnQ61TjiQ=scd5TKz_fiP_AQ@mail.gmail.com> <gu4eynktnim7l2oln4i4sgmziluhdfmzgcbbukfebv5bo57g5r@5kxyfar7tlzv>
-In-Reply-To: <gu4eynktnim7l2oln4i4sgmziluhdfmzgcbbukfebv5bo57g5r@5kxyfar7tlzv>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 23 Aug 2023 14:16:50 -0700
-Message-ID: <CAEf4BzayCLQxmzgWkAzU-vzD9K+iDvBHkLYSx8w=da-o9dW75w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: Add bpf_object__unpin()
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
-        martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
+        Wed, 23 Aug 2023 17:21:14 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49A411728;
+        Wed, 23 Aug 2023 14:20:47 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 139CD6347C;
+        Wed, 23 Aug 2023 21:20:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A609C433C8;
+        Wed, 23 Aug 2023 21:20:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692825622;
+        bh=nI2OhOTb1Qgbc6HkfkkxCJRA1rkPKJZ6GYyJIF0MLi0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ASWqsq/ibrWBtDSg/O9H1EqcUOKsVqZkpoOgz/yAk+q/cUMuhNBYYXH6Y72jHv7Tf
+         +dqZpSxT5gUInuUTkxkjS5UjKoCPu6UlLUrti+PLlSKSiRnlq8Kr24/DRYkKGJS3Uq
+         KmfQk8TontWl2O6YbdOt/qRdbUSi+cTTGpHziNpxvqtu9/gL6ohbLgs8Tft5pHkbpR
+         ShnuVgWjZIuAXlBvhvl9AJV7Q4rc/XKft7goa+zgZdlGHt4bqarMIn6R3oFk0MAA25
+         /byZ+tJfUyQaf9FxyAjNy6gVdOL22kI0RVej+zEXirvL7OeFLyFw/3HQ/SDDKweYxJ
+         mBpo+RUcjj8+A==
+Date:   Wed, 23 Aug 2023 23:20:18 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Patrick Rudolph <patrick.rudolph@9elements.com>
+Cc:     Peter Rosin <peda@axentia.se>, naresh.solanki@9elements.com,
+        Andi Shyti <andi.shyti@kernel.org>, linux-i2c@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v15 4/4] i2c: muxes: pca954x: Add regulator support
+Message-ID: <ZOZ4Es6inxxC/1+Q@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Patrick Rudolph <patrick.rudolph@9elements.com>,
+        Peter Rosin <peda@axentia.se>, naresh.solanki@9elements.com,
+        Andi Shyti <andi.shyti@kernel.org>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230817071056.2125679-1-patrick.rudolph@9elements.com>
+ <20230817071056.2125679-5-patrick.rudolph@9elements.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ccRFqxw5gulr/hp0"
+Content-Disposition: inline
+In-Reply-To: <20230817071056.2125679-5-patrick.rudolph@9elements.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 23, 2023 at 11:43=E2=80=AFAM Daniel Xu <dxu@dxuuu.xyz> wrote:
->
-> On Wed, Aug 23, 2023 at 10:19:10AM -0700, Andrii Nakryiko wrote:
-> > On Tue, Aug 22, 2023 at 10:44=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz> wrot=
-e:
-> > >
-> > > For bpf_object__pin_programs() there is bpf_object__unpin_programs().
-> > > Likewise bpf_object__unpin_maps() for bpf_object__pin_maps().
-> > >
-> > > But no bpf_object__unpin() for bpf_object__pin(). Adding the former a=
-dds
-> > > symmetry to the API.
-> > >
-> > > It's also convenient for cleanup in application code. It's an API I
-> > > would've used if it was available for a repro I was writing earlier.
-> > >
-> > > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> > > ---
-> > >  tools/lib/bpf/libbpf.c   | 15 +++++++++++++++
-> > >  tools/lib/bpf/libbpf.h   |  1 +
-> > >  tools/lib/bpf/libbpf.map |  1 +
-> > >  3 files changed, 17 insertions(+)
-> > >
-> > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > > index 4c3967d94b6d..96ff1aa4bf6a 100644
-> > > --- a/tools/lib/bpf/libbpf.c
-> > > +++ b/tools/lib/bpf/libbpf.c
-> > > @@ -8376,6 +8376,21 @@ int bpf_object__pin(struct bpf_object *obj, co=
-nst char *path)
-> > >         return 0;
-> > >  }
-> > >
-> > > +int bpf_object__unpin(struct bpf_object *obj, const char *path)
-> > > +{
-> > > +       int err;
-> > > +
-> > > +       err =3D bpf_object__unpin_programs(obj, path);
-> > > +       if (err)
-> > > +               return libbpf_err(err);
-> > > +
-> > > +       err =3D bpf_object__unpin_maps(obj, path);
-> > > +       if (err)
-> > > +               return libbpf_err(err);
-> > > +
-> > > +       return 0;
-> > > +}
-> > > +
-> >
-> > pin APIs predate me, and I barely ever use them, but I wonder if
-> > people feel fine with the fact that if any single unpin fails, all the
-> > other programs/maps will not be unpinned? I also wonder if the best
-> > effort unpinning of everything (while propagating first/last error) is
-> > more practical? Looking at bpf_object__pin_programs, we try unpin
-> > everything, even if some unpins fail.
-> >
-> > Any thoughts or preferences?
->
-> Yeah, I noticed bpf_object__pin_programs() tries to simulate some
-> transactionality. However, bpf_object__unpin_programs() and
-> bpf_object__unpin_maps() both do not try rollbacks and have already been
-> exposed as public API. So I thought it would be best to stay consistent.
 
-yep, makes sense. I guess if I were to rely heavily on
-pinning/unpinning, I always have an option to pin/unpin individually.
-Ok, please address the other feedback and resubmit.
+--ccRFqxw5gulr/hp0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->
-> I also figured it's unlikely only a single unpin() fails. For pin(), you
-> could have name collisions. But not for unpin(). I suppose the main
-> error case is if some 3rd party (or yourself) comes in and messes with
-> your objects in bpffs.
->
-> In general, though, there are other places where transactionality would
-> be a nice property. For example, if I have a TC prog that I want to
-> attach to, say, _all_ ethernet interfaces, I have to be careful about
-> rollbacks in the event of failure on a single iface.
->
-> It would be really nice if the kernel  had a general way to provide
-> atomicity w.r.t. multiple operations. But I suppose that's a hard
-> problem.
->
-> [...]
->
-> Thanks,
-> Daniel
+On Thu, Aug 17, 2023 at 09:10:53AM +0200, Patrick Rudolph wrote:
+> Add a vdd regulator and enable it for boards that have the
+> mux powered off by default.
+>=20
+> Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
+> Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
+
+There is devm_regulator_get_enable() which maybe simplifies the code
+here. But we can do this incrementally. Thank you for keeping at it!
+
+Applied to for-next, thanks!
+
+
+--ccRFqxw5gulr/hp0
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmTmeBIACgkQFA3kzBSg
+KbbqEg/7BraWaS+vBbXE9L/AX95Y0r0S/zjtbQrL4KxBIWElHWBUx7qoSqFmYTKx
+m29MG7j5+zXloLOJm+ONt92fo8fCma+GV6YvtjxouzhuTOwlBA4Dwju+U+Li63fo
+fKqFSeHMWeG3On5IjXxV+ccBGiyoGarO8ucWgf1IMuGctTapeaCp7DMK50Vh3MFk
+CEGhy+Y2WgIQwQxviRtznj2iv0blrLAhvqY/20is2Pj4E4M/IVm8KiRTVBh+3ZNb
+0w2jRQHHgozPlYFYnUJynQ57HX1sGNieIt8Lh3/nmTO+Z2zLBnTKDYPwbLFlnK4/
+QekzrlfgpAcCpdkOqlQyG3Ydb07t7b/uw2xBz5sbd7yTxv6GoZdf11ahqgR8Wh/K
+aswxCjDuBLduLUk312l3C0rQak6e4Ee4kk5zyios+5rkoLm0wWUZZrGjFH/9rXhk
+sbab1sdJgVa9uhfAVJZ+L9cpVMC7ROmlTtiohLq8QggnyPRPJCa0AuJ9k29NJBkv
+7gIevjQHeHvvYYABuSozc66tDgKZuK/lW0C4bAGthho2d7tnlmNmb4T4jLahdssN
+90O8kPp2oNFj0XyhRLcKzUOzMZEgdfDW40WstmM75qS2bQI7AGiTZ6ve+cyN9iQO
+6ZgKxqNCH9U60aJSPM/ugLoOwSkZzmq73mxnwpVlR4/yfyuIDdw=
+=j2+o
+-----END PGP SIGNATURE-----
+
+--ccRFqxw5gulr/hp0--
