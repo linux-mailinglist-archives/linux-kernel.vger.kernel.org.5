@@ -2,94 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B03BB7860B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 21:36:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B0BC7860BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 21:37:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238314AbjHWTgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 15:36:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58166 "EHLO
+        id S238323AbjHWThZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 15:37:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238305AbjHWTfy (ORCPT
+        with ESMTP id S238317AbjHWTg6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 15:35:54 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18B59E5F;
-        Wed, 23 Aug 2023 12:35:53 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3fef34c33d6so29078865e9.3;
-        Wed, 23 Aug 2023 12:35:53 -0700 (PDT)
+        Wed, 23 Aug 2023 15:36:58 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9F59E5E;
+        Wed, 23 Aug 2023 12:36:55 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2b9f0b7af65so91678971fa.1;
+        Wed, 23 Aug 2023 12:36:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692819351; x=1693424151;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bp6bqfxHSQpdkJRolDmXvKb/3Pn3dAeE7ceDWHWRWDA=;
-        b=Pz5GxaNuZRWinCrudpRM+C6sPFDBxK+ivZHBISs3ftAuYHWoN/CiGfoZc3wneRFyzr
-         YOE35feW/4E6p/qBo5AoobnPCdphf3sLAR3NhBjOVkSc/7lGfk4AvZo+l3ZGeqELWAua
-         dXi2R9F+coHLxhqBXa8ijVNVaNr1REcetkiGtSue7Djan5z7k2M1N0NjITTzPEtZmBLv
-         a1OUCSn4uGpnx16Pe+edGOSJWNbUSTF4swUW9sMK2jV6ecXzu9om6ZR+uaoL/C5OIFg4
-         CQD7XievlNqaf42X8hksPc6AzRdhOQHaSXG8iByc0qI6mVQnri+yg0KPkdO3u37L+VIG
-         L/+w==
+        d=gmail.com; s=20221208; t=1692819414; x=1693424214;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7XseqOE+hrW2j1mbiFEeFoJsIauOkD7dow7NanYEiT8=;
+        b=Kft/HoItEBfX/gA5eGlgeAkK7GnSL6fuOyiIN1iL/tsUG4Q/3M1VEkLwg4UTHuglGE
+         x3wnrm+/yrsVs0RuFq5y8SsyTt9CduXxGmM2kkq41TC++M2w0mtXmUZ0RlhRLMLdDwyF
+         OcAnRIMTRex0rHE5IKq35VzvjzOD2boCrTenHGv5WO2E1fMZNJcvVIWyQb/H+JCRUN3C
+         jei7nMhB/7+t+5Sn9vvne0uztfOfdHqaqIXFyVV2SVwBNDkigi5qhWZCCTMO1ExetObK
+         KYYTf0w7NITLBszeBLnbsaLwJ8FlxsYUA+bmyMY2UySxaTBBQjMxpercv/15ucIugMUR
+         Ti3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692819351; x=1693424151;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bp6bqfxHSQpdkJRolDmXvKb/3Pn3dAeE7ceDWHWRWDA=;
-        b=K0Jf1jgiim+MuZL5eJ/Z18KElHd6DCH2RpsVKff9UJvG+dvu0d+g/TJMCnVdCCP/26
-         wAgVdI1u+uf/8ba+JmBGpoAd2nNa4zgKKJsNexJlFrKOhNiU+CGn5Uf8ph5FnYhbWt4x
-         1hnt0CxHPIzkoTnH/+AK6mbQYt6XhFoiVuJjyluqJk4QyyLS6AjF9OMbGelrIn5d/WBi
-         /HBODeO+1glgKzQX8iyR6fuCiTmHtzzS0CS1qRc+Qx5lDAoYYhisN6VOkZojzNlzk+Cw
-         /VYL2nYS0hUn1qP0wQDCldOXRKliFvQ24/63zYZ43vmPkxKoG/n9Yqg3KO6oQsyGUq4x
-         ohTQ==
-X-Gm-Message-State: AOJu0YyEuUsnMLgkELVp3dCvac5oReJ6u3GrzJweCYfCy8L62xaw3hiJ
-        5XuLv3v0vis8BD/plP0kOZZ6YkgZ1JaQMg==
-X-Google-Smtp-Source: AGHT+IE/pM8ndpJGoLUlBS3tuaqhUZ8RbNcGhFz69gcMjVcaQK1oUzA23JffSfe6yWFdi+iqNFaCAg==
-X-Received: by 2002:adf:f3cd:0:b0:319:6ce2:e5a3 with SMTP id g13-20020adff3cd000000b003196ce2e5a3mr10674485wrp.26.1692819351220;
-        Wed, 23 Aug 2023 12:35:51 -0700 (PDT)
-Received: from mmaatuq-HP-Laptop-15-dy2xxx ([2001:8f8:1163:806e:99f3:c946:a43c:e1e3])
-        by smtp.gmail.com with ESMTPSA id p6-20020a5d68c6000000b00317f70240afsm20336320wrw.27.2023.08.23.12.35.47
+        d=1e100.net; s=20221208; t=1692819414; x=1693424214;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7XseqOE+hrW2j1mbiFEeFoJsIauOkD7dow7NanYEiT8=;
+        b=jJ3OMQUz50Ptrx3LuaPRvEWK592ZpKL5qgBBCHW4QyAJSz0DQaaoSWGl7rbg593gHX
+         OBSiF+LKD6SnemFe7/VQK99QYHF5uJemU/ktA58ZxVYcOAuc/QXzmaqWokMMx5i1DG1M
+         EccIb0A2DHl86uiDYrrustJAX4MAjbjcpncOICYHoFI3dB8qeDP5gvDwTFgwDrmp0rUw
+         bQAgP/oGDIE1px7V3dbu0WMXx749HYLq/s9j3y1QoPSIWfsbW4TvU7FbHcPZYO+H4ipF
+         zUgT/i4XoKgMD+4axpPaDTtMxbDMmJuBvszhBQ53oLb6SZBk88l6PT+2ig9wC5/L/Fhh
+         89aQ==
+X-Gm-Message-State: AOJu0Ywc1LQUIRAAE8psLdGytd72HVuh/FzGCK611O0Xo7RI+a//xDOR
+        a/84mBd9lLGA7ik+7zPaqPo=
+X-Google-Smtp-Source: AGHT+IEag43atiZQRGzFMqHQ4Knh0z6BzGKYlRrJOybchcj/oRn0svYRxmL4xbMLG9fqUNS87csexQ==
+X-Received: by 2002:a2e:a201:0:b0:2b5:9d78:213e with SMTP id h1-20020a2ea201000000b002b59d78213emr9825308ljm.22.1692819413752;
+        Wed, 23 Aug 2023 12:36:53 -0700 (PDT)
+Received: from jernej-laptop.localnet (82-149-12-148.dynamic.telemach.net. [82.149.12.148])
+        by smtp.gmail.com with ESMTPSA id y6-20020a170906070600b0099cadcf13cesm10074851ejb.66.2023.08.23.12.36.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Aug 2023 12:35:50 -0700 (PDT)
-Date:   Wed, 23 Aug 2023 23:35:45 +0400
-From:   Mahmoud Matook <mahmoudmatook.mm@gmail.com>
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     'Willem de Bruijn' <willemdebruijn.kernel@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "linux-kernel-mentees@lists.linuxfoundation.org" 
-        <linux-kernel-mentees@lists.linuxfoundation.org>
-Subject: Re: [PATCH 1/2] selftests: Provide local define of min() and max()
-Message-ID: <20230823193545.nrzlbsa32hm4os4k@mmaatuq-HP-Laptop-15-dy2xxx>
-Mail-Followup-To: David Laight <David.Laight@ACULAB.COM>,
-        'Willem de Bruijn' <willemdebruijn.kernel@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "linux-kernel-mentees@lists.linuxfoundation.org" <linux-kernel-mentees@lists.linuxfoundation.org>
-References: <20230819195005.99387-1-mahmoudmatook.mm@gmail.com>
- <20230819195005.99387-2-mahmoudmatook.mm@gmail.com>
- <64e22df53d1e6_3580162945b@willemb.c.googlers.com.notmuch>
- <7e8c2597c71647f38cd4672cbef53a66@AcuMS.aculab.com>
- <CAF=yD-+6cWTiDgpsu=hUV+OvzDFRaT2ZUmtQo9qTrCB9i-+7ng@mail.gmail.com>
- <d33fbb24119c4d09864e79ea9dfbb881@AcuMS.aculab.com>
+        Wed, 23 Aug 2023 12:36:53 -0700 (PDT)
+From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Samuel Holland <samuel@sholland.org>,
+        Kees Cook <keescook@chromium.org>,
+        Tony Luck <tony.luck@intel.com>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Jarrah Gosbell <kernel@undef.tools>,
+        Arnaud Ferraris <arnaud.ferraris@collabora.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Andrey Skvortsov <andrej.skvortzov@gmail.com>
+Cc:     Andrey Skvortsov <andrej.skvortzov@gmail.com>
+Subject: Re: [PATCH v2] arm64: dts: pinephone: Add pstore support for PinePhone A64
+Date:   Wed, 23 Aug 2023 21:36:51 +0200
+Message-ID: <2235209.iZASKD2KPV@jernej-laptop>
+In-Reply-To: <20230822092358.309835-1-andrej.skvortzov@gmail.com>
+References: <20230821160817.GA2227@bug>
+ <20230822092358.309835-1-andrej.skvortzov@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d33fbb24119c4d09864e79ea9dfbb881@AcuMS.aculab.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -97,57 +86,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/22, David Laight wrote:
+Hi Andrey,
 
-> ...
-> > > That typecheck() is horrid.
-> > > It may well have caused more bugs due to incorrect casts that
-> > > it actually detected.
-> > >
-> > > I'd suggest the version that just avoids multiple evaluations.
-> > > Or just error signed v unsigned comparisons.
-> > > See  https://lore.kernel.org/all/b4ce9dad748e489f9314a2dc95615033@AcuMS.aculab.com/
-> > > for an example patch set.
-> > 
-> > Interesting, thanks. That is also simpler.
-> > 
-> > Also, the existing patch is no worse than the open coded code today,
-> > so even without code to avoid multiple evaluations, I guess it's okay
-> > to merge.
-> > 
-> > The coccinelle warnings are arguably false positives, using checks for
-> > kernel code, but being run against userspace code that has no access
-> > to those helpers. But fine to silence them.
-> 
-> You can't use is_constexpr() unless 'sizeof *(void *)' is valid.
-> And builtin_constant() isn't good enough for builtin_choose_expr().
-> 
-> That might be ok for selftests and tools, but not for generaluserspace.
-> 
-> 	David
-> 
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> Registration No: 1397386 (Wales)
-I tried to use the relaxed version provided in the shared patchset link 
-besides not able to use is_constexpr(), I'm not able to use
-__UNIQUE_ID() also. It's definded inside include/linux/compiler-gcc.h
-and it uses another macro __PASTE() which is defined inside
-include/linux/compiler_types.h. 
-not sure what to do next
-- bring those macros definitions to able to use the relaxed version.
-- if the most important point for min/max defines inside selftests is to
-  avoid multiple evaluation is the below version acceptable?
-  /*
-  #define min(x, y) ({ \
-    typeof(x) _x = (x); \
-    typeof(y) _y = (y); \
-    _x < _y ? _x : _y; \
-})
+send new revision as standalone e-mail, not as reply to old discussion.
 
-#define max(x, y) ({ \
-    typeof(x) _x = (x); \
-    typeof(y) _y = (y); \
-    _x > _y ? _x : _y; \
-})
-*/
+Dne torek, 22. avgust 2023 ob 11:23:58 CEST je Andrey Skvortsov napisal(a):
+> This patch reserves some memory in the DTS and sets up a
+> pstore device tree node to enable pstore support.
+> 
+> In general any DRAM address, that isn't overwritten during a boot is
+> suitable for pstore.
+> 
+> Range from 0x40000000 - 0x50000000 is heavily used by u-boot for
+> internal use and to load kernel, fdt, fdto, scripts, pxefile and ramdisk
+> later in the boot process. Ramdisk start address is 0x4FF00000,
+> initramfs for kernel with some hacking features and debug info enabled
+> can take more than 100Mb and final address will be around 0x58000000.
+> Address 0x61000000 will most likely not overlap with that.
+
+There are other bootloaders as U-Boot, especially on PinePhone. Are you sure 
+it works there too? What about U-Boot configuration, will those addresses still 
+be used if configuration is changed?
+
+Best regards,
+Jernej
+
+> 
+> Signed-off-by: Andrey Skvortsov <andrej.skvortzov@gmail.com>
+> ---
+> 
+> Changes in v2:
+>  - Update commit description with information about why this base address is
+> used.
+> 
+>  .../boot/dts/allwinner/sun50i-a64-pinephone.dtsi | 16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
+> b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi index
+> 87847116ab6d..84f9410b0b70 100644
+> --- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
+> +++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
+> @@ -19,6 +19,22 @@ aliases {
+>  		serial0 = &uart0;
+>  	};
+> 
+> +	reserved-memory {
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		ranges;
+> +
+> +		pstore_mem: ramoops@61000000 {
+> +			compatible = "ramoops";
+> +			reg = <0x61000000 0x100000>;
+> +			record-size = <0x20000>;
+> +			console-size = <0x20000>;
+> +			ftrace-size = <0x20000>;
+> +			pmsg-size = <0x20000>;
+> +			ecc-size = <16>;
+> +		};
+> +	};
+> +
+>  	backlight: backlight {
+>  		compatible = "pwm-backlight";
+>  		pwms = <&r_pwm 0 50000 PWM_POLARITY_INVERTED>;
+
+
+
+
