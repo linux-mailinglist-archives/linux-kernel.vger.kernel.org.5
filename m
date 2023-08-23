@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F8DC785280
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 10:15:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F6BD78528A
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 10:16:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233876AbjHWIPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 04:15:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34550 "EHLO
+        id S233783AbjHWIQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 04:16:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233817AbjHWIJm (ORCPT
+        with ESMTP id S233818AbjHWIJm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 23 Aug 2023 04:09:42 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B3DB10E7
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 01:08:50 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-58fb9323a27so50516607b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 01:08:50 -0700 (PDT)
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF19310F1
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 01:08:52 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d7494be34f8so4032048276.2
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 01:08:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692778129; x=1693382929;
+        d=google.com; s=20221208; t=1692778132; x=1693382932;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=OGsb2LJqZ8wAIRiG/qrlIeUwXu2dut6icoftip7LD1w=;
-        b=t7YWKvAyigj8U88vk9f3zOUQnRe0+b3J74n4CDXzBteW3I6pYJXXR3X4wv9hcSCGPK
-         HdLYN1nTnmFe57Yb0PNC7k4jNp63jzNq8DXg95C6tZsPRVzQ+8UjQF0O3Md3Hy6WFbeX
-         v5ruAEg3gWg6ml7nI2MFuQ8cNC+CWl4ukTlx/uGz7efHl6GCm6X//Rs9ldYMbS+xJ057
-         7F+4xnc6BAObK0Ud5VIGYQBumNhm76UAe6RWs1pGhPeW2fREfsNwRybKcSZjNRVGtRn5
-         INunjtywsNnnGa3c4T8LhOdkVicDIFucaS74sMk6Wi6CN6Es+bP+zvplupFsEHzJcCKy
-         EK/g==
+        bh=sabfrVf+/H49KXlWfGTkb2aVXZBVdOPVhW4XlqabkW4=;
+        b=pUql4HrW8UvddlTCkXzzcPzucwZwUumflJ5ll12QQtykNgLCe5J+pnXppkBNI8LaaI
+         gmLIJ3a1oxi0ea2vnkd8WEFh/91BODVpMOOgXuCEjL/4ENGBNWwu2v9bX8NvrhFBGafA
+         OFneATmpg5HAXJgaWp61lT9Jbu2zRD5KQLQ4V2atvBQn8mVK9F7OFJpkIzaz6X8d1TZv
+         GM+DxTnhfA9yGTKvWBp+R1j4Wmwym34FDVVQlPkelQE2hoNUGP0ddySz2uVNpK0nJdwO
+         c6CjLxk5/OkbRSHX/05CbnzhkFzdkFMHz0gjZZlx0Yo9+fMrKkzvD7M2kEEtBue6pUe/
+         YRYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692778129; x=1693382929;
+        d=1e100.net; s=20221208; t=1692778132; x=1693382932;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OGsb2LJqZ8wAIRiG/qrlIeUwXu2dut6icoftip7LD1w=;
-        b=MG2mWNAmb+Ek3fRzU1DvE2g2uGc/GPvKbPHuRXvZGGvoUZ7t5dvI2KAZLTPkBJXblP
-         BdtMCPwXWQUrY5V/K+oZAODmE4sC2KUtUGQavxEiwBskPoAaYysyOcc4Ik6+dZO4CmPQ
-         UEHLwRfALcuoLMgAgMFW2vzpJP4sQBmXIuZhzGTMSjHTQbKTnlquU/uBUZvvw5RRWuAQ
-         rUpS0dA4T+afVBmhF+aTnziwG6Vnsf8hN7kEGHU9AUtALHDoNIPs5ttcUXaGctneeq1H
-         5qxNUyWNhZOO+SoApcMO15xSXHwX/UwYd+KnQmE99/kET8spAeAnWsk2YdYmzuAiFN0S
-         WsbA==
-X-Gm-Message-State: AOJu0YzAME+ZWaQI3FKBmhaB2UWHhTFJ0wSlc4MLjd9IZcnjgWmLNdJG
-        49HquXJCAI6wLSHf0xW7F4FGwj2ZcAK/
-X-Google-Smtp-Source: AGHT+IFXZyc0ktV2s4ZqpFXnx//sQPxDg35HOEfPLbOvB8QvWhBnjMa0znczpxLSbhGfW7nZZyGA5vrNKAeR
+        bh=sabfrVf+/H49KXlWfGTkb2aVXZBVdOPVhW4XlqabkW4=;
+        b=VyRB4kelGxyFR+sJ6Ww/sJt5k+g7dxXPj5Dr3RHmku7IKWOmcS/vgi/UHiNEU4FCak
+         V+mZiAIlI0MXOWzwW8nkxE2WslaxDtTadoyzF5FpuHNT3l4Sulr6OeTfqb7CF+9xQTOO
+         K02uqJEDBsOg0MaHIIOak1I44AloPQ0ETuadXZ3ydOuBHPuU5DjE4PTJKUDo7nAKxFiP
+         Nw47SoaC8/tc4n8D6KAYFVFR64L1Vlp2zPsCg5gFfC6qhqMjjgt3teOiX5Qo2OmU8cdZ
+         Gpn3dWy0Fn37wqgXjc3nGTWS1NUlIsQMaUi6TSL+GtVMDZtIgyutqLtvg4ZuCQgPuluj
+         m65w==
+X-Gm-Message-State: AOJu0YxIhNpQpvjW0QopGjLAHit6x0+HRtqlocaOoQo86mm6+UGO4esJ
+        PxVVnRo0zdXEkKxaNu+mtk7gMV3J3Pym
+X-Google-Smtp-Source: AGHT+IH9BbX5Hto4GKSE/bOYFzPSUuVeAAElLyjslxNr7MwWBKqZKC2rpWH2KROancXGtAFBu8a3dkf8E/YE
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:3971:e84:f508:9a36])
- (user=irogers job=sendgmr) by 2002:a81:4318:0:b0:57a:141f:b4f7 with SMTP id
- q24-20020a814318000000b0057a141fb4f7mr150466ywa.6.1692778129476; Wed, 23 Aug
- 2023 01:08:49 -0700 (PDT)
-Date:   Wed, 23 Aug 2023 01:08:10 -0700
+ (user=irogers job=sendgmr) by 2002:a05:6902:1141:b0:d58:6cea:84de with SMTP
+ id p1-20020a056902114100b00d586cea84demr204699ybu.11.1692778132010; Wed, 23
+ Aug 2023 01:08:52 -0700 (PDT)
+Date:   Wed, 23 Aug 2023 01:08:11 -0700
 In-Reply-To: <20230823080828.1460376-1-irogers@google.com>
-Message-Id: <20230823080828.1460376-8-irogers@google.com>
+Message-Id: <20230823080828.1460376-9-irogers@google.com>
 Mime-Version: 1.0
 References: <20230823080828.1460376-1-irogers@google.com>
 X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
-Subject: [PATCH v1 07/25] perf pmu: Avoid passing format list to perf_pmu__format_bits
+Subject: [PATCH v1 08/25] perf pmu: Pass PMU rather than aliases and format
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -83,100 +83,370 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pass the pmu so the format list can be better abstracted and later
-lazily loaded.
+Pass the pmu so the aliases and format list can be better abstracted
+and later lazily loaded.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/arch/x86/util/intel-pt.c | 7 +++----
- tools/perf/util/parse-events.c      | 2 +-
- tools/perf/util/pmu.c               | 6 +++---
- tools/perf/util/pmu.h               | 2 +-
- 4 files changed, 8 insertions(+), 9 deletions(-)
+ tools/perf/tests/pmu-events.c | 47 ++++++++++--------------
+ tools/perf/tests/pmu.c        |  2 +-
+ tools/perf/util/pmu.c         | 69 +++++++++++++++++++----------------
+ tools/perf/util/pmu.h         |  9 ++---
+ 4 files changed, 62 insertions(+), 65 deletions(-)
 
-diff --git a/tools/perf/arch/x86/util/intel-pt.c b/tools/perf/arch/x86/util/intel-pt.c
-index 0da76f848cbc..27944c15ac14 100644
---- a/tools/perf/arch/x86/util/intel-pt.c
-+++ b/tools/perf/arch/x86/util/intel-pt.c
-@@ -122,7 +122,7 @@ static int intel_pt_read_config(struct perf_pmu *intel_pt_pmu, const char *str,
- 
- 	*res = 0;
- 
--	mask = perf_pmu__format_bits(&intel_pt_pmu->format, str);
-+	mask = perf_pmu__format_bits(intel_pt_pmu, str);
- 	if (!mask)
- 		return -EINVAL;
- 
-@@ -346,8 +346,7 @@ static int intel_pt_info_fill(struct auxtrace_record *itr,
- 	intel_pt_parse_terms(intel_pt_pmu, "tsc", &tsc_bit);
- 	intel_pt_parse_terms(intel_pt_pmu, "noretcomp", &noretcomp_bit);
- 	intel_pt_parse_terms(intel_pt_pmu, "mtc", &mtc_bit);
--	mtc_freq_bits = perf_pmu__format_bits(&intel_pt_pmu->format,
--					      "mtc_period");
-+	mtc_freq_bits = perf_pmu__format_bits(intel_pt_pmu, "mtc_period");
- 	intel_pt_parse_terms(intel_pt_pmu, "cyc", &cyc_bit);
- 
- 	intel_pt_tsc_ctc_ratio(&tsc_ctc_ratio_n, &tsc_ctc_ratio_d);
-@@ -502,7 +501,7 @@ static int intel_pt_val_config_term(struct perf_pmu *intel_pt_pmu, int dirfd,
- 
- 	valid |= 1;
- 
--	bits = perf_pmu__format_bits(&intel_pt_pmu->format, name);
-+	bits = perf_pmu__format_bits(intel_pt_pmu, name);
- 
- 	config &= bits;
- 
-diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-index 8ede27089766..7d9d687d9191 100644
---- a/tools/perf/util/parse-events.c
-+++ b/tools/perf/util/parse-events.c
-@@ -1162,7 +1162,7 @@ static int get_config_chgs(struct perf_pmu *pmu, struct list_head *head_config,
- 			type = perf_pmu__format_type(pmu, term->config);
- 			if (type != PERF_PMU_FORMAT_VALUE_CONFIG)
- 				continue;
--			bits |= perf_pmu__format_bits(&pmu->format, term->config);
-+			bits |= perf_pmu__format_bits(pmu, term->config);
- 			break;
- 		case PARSE_EVENTS__TERM_TYPE_CONFIG:
- 			bits = ~(u64)0;
-diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-index 96189afe54b0..1839c3668ec5 100644
---- a/tools/perf/util/pmu.c
-+++ b/tools/perf/util/pmu.c
-@@ -1000,7 +1000,7 @@ void evsel__set_config_if_unset(struct perf_pmu *pmu, struct evsel *evsel,
- 	if (term)
- 		user_bits = term->val.cfg_chg;
- 
--	bits = perf_pmu__format_bits(&pmu->format, config_name);
-+	bits = perf_pmu__format_bits(pmu, config_name);
- 
- 	/* Do nothing if the user changed the value */
- 	if (bits & user_bits)
-@@ -1023,9 +1023,9 @@ pmu_find_format(struct list_head *formats, const char *name)
- 	return NULL;
+diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
+index 64383fc34ef1..05d6e6e21c6f 100644
+--- a/tools/perf/tests/pmu-events.c
++++ b/tools/perf/tests/pmu-events.c
+@@ -496,26 +496,13 @@ static int test__pmu_event_table(struct test_suite *test __maybe_unused,
+ 	return 0;
  }
  
--__u64 perf_pmu__format_bits(struct list_head *formats, const char *name)
-+__u64 perf_pmu__format_bits(struct perf_pmu *pmu, const char *name)
+-static struct perf_pmu_alias *find_alias(const char *test_event, struct list_head *aliases)
+-{
+-	struct perf_pmu_alias *alias;
+-
+-	list_for_each_entry(alias, aliases, list)
+-		if (!strcmp(test_event, alias->name))
+-			return alias;
+-
+-	return NULL;
+-}
+-
+ /* Verify aliases are as expected */
+ static int __test_core_pmu_event_aliases(char *pmu_name, int *count)
  {
--	struct perf_pmu_format *format = pmu_find_format(formats, name);
-+	struct perf_pmu_format *format = pmu_find_format(&pmu->format, name);
- 	__u64 bits = 0;
- 	int fbit;
+ 	struct perf_pmu_test_event const **test_event_table;
+ 	struct perf_pmu *pmu;
+-	LIST_HEAD(aliases);
+ 	int res = 0;
+ 	const struct pmu_events_table *table = find_core_events_table("testarch", "testcpu");
+-	struct perf_pmu_alias *a, *tmp;
  
+ 	if (!table)
+ 		return -1;
+@@ -526,14 +513,18 @@ static int __test_core_pmu_event_aliases(char *pmu_name, int *count)
+ 	if (!pmu)
+ 		return -1;
+ 
+-	pmu->name = pmu_name;
++	INIT_LIST_HEAD(&pmu->format);
++	INIT_LIST_HEAD(&pmu->aliases);
++	INIT_LIST_HEAD(&pmu->caps);
++	INIT_LIST_HEAD(&pmu->list);
++	pmu->name = strdup(pmu_name);
+ 
+-	pmu_add_cpu_aliases_table(&aliases, pmu, table);
++	pmu_add_cpu_aliases_table(pmu, table);
+ 
+ 	for (; *test_event_table; test_event_table++) {
+ 		struct perf_pmu_test_event const *test_event = *test_event_table;
+ 		struct pmu_event const *event = &test_event->event;
+-		struct perf_pmu_alias *alias = find_alias(event->name, &aliases);
++		struct perf_pmu_alias *alias = perf_pmu__find_alias(pmu, event->name);
+ 
+ 		if (!alias) {
+ 			pr_debug("testing aliases core PMU %s: no alias, alias_table->name=%s\n",
+@@ -551,12 +542,8 @@ static int __test_core_pmu_event_aliases(char *pmu_name, int *count)
+ 		pr_debug2("testing aliases core PMU %s: matched event %s\n",
+ 			  pmu_name, alias->name);
+ 	}
++	perf_pmu__delete(pmu);
+ 
+-	list_for_each_entry_safe(a, tmp, &aliases, list) {
+-		list_del(&a->list);
+-		perf_pmu_free_alias(a);
+-	}
+-	free(pmu);
+ 	return res;
+ }
+ 
+@@ -568,17 +555,16 @@ static int __test_uncore_pmu_event_aliases(struct perf_pmu_test_pmu *test_pmu)
+ 	const char *pmu_name = pmu->name;
+ 	struct perf_pmu_alias *a, *tmp, *alias;
+ 	const struct pmu_events_table *events_table;
+-	LIST_HEAD(aliases);
+ 	int res = 0;
+ 
+ 	events_table = find_core_events_table("testarch", "testcpu");
+ 	if (!events_table)
+ 		return -1;
+-	pmu_add_cpu_aliases_table(&aliases, pmu, events_table);
+-	pmu_add_sys_aliases(&aliases, pmu);
++	pmu_add_cpu_aliases_table(pmu, events_table);
++	pmu_add_sys_aliases(pmu);
+ 
+ 	/* Count how many aliases we generated */
+-	list_for_each_entry(alias, &aliases, list)
++	list_for_each_entry(alias, &pmu->aliases, list)
+ 		alias_count++;
+ 
+ 	/* Count how many aliases we expect from the known table */
+@@ -592,7 +578,7 @@ static int __test_uncore_pmu_event_aliases(struct perf_pmu_test_pmu *test_pmu)
+ 		goto out;
+ 	}
+ 
+-	list_for_each_entry(alias, &aliases, list) {
++	list_for_each_entry(alias, &pmu->aliases, list) {
+ 		bool matched = false;
+ 
+ 		for (table = &test_pmu->aliases[0]; *table; table++) {
+@@ -625,7 +611,7 @@ static int __test_uncore_pmu_event_aliases(struct perf_pmu_test_pmu *test_pmu)
+ 	}
+ 
+ out:
+-	list_for_each_entry_safe(a, tmp, &aliases, list) {
++	list_for_each_entry_safe(a, tmp, &pmu->aliases, list) {
+ 		list_del(&a->list);
+ 		perf_pmu_free_alias(a);
+ 	}
+@@ -732,8 +718,13 @@ static int test__aliases(struct test_suite *test __maybe_unused,
+ 	}
+ 
+ 	for (i = 0; i < ARRAY_SIZE(test_pmus); i++) {
+-		int res = __test_uncore_pmu_event_aliases(&test_pmus[i]);
++		int res;
++
++		INIT_LIST_HEAD(&test_pmus[i].pmu.format);
++		INIT_LIST_HEAD(&test_pmus[i].pmu.aliases);
++		INIT_LIST_HEAD(&test_pmus[i].pmu.caps);
+ 
++		res = __test_uncore_pmu_event_aliases(&test_pmus[i]);
+ 		if (res)
+ 			return res;
+ 	}
+diff --git a/tools/perf/tests/pmu.c b/tools/perf/tests/pmu.c
+index a4a43db76012..2c1c349a42e2 100644
+--- a/tools/perf/tests/pmu.c
++++ b/tools/perf/tests/pmu.c
+@@ -171,7 +171,7 @@ static int test__pmu(struct test_suite *test __maybe_unused, int subtest __maybe
+ 	}
+ 
+ 	pmu->name = strdup("perf-pmu-test");
+-	ret = perf_pmu__format_parse(fd, &pmu->format);
++	ret = perf_pmu__format_parse(pmu, fd);
+ 	if (ret)
+ 		goto out;
+ 
+diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+index 1839c3668ec5..42f3249994ab 100644
+--- a/tools/perf/util/pmu.c
++++ b/tools/perf/util/pmu.c
+@@ -58,7 +58,7 @@ struct perf_pmu_format {
+  * Parse & process all the sysfs attributes located under
+  * the directory specified in 'dir' parameter.
+  */
+-int perf_pmu__format_parse(int dirfd, struct list_head *head)
++int perf_pmu__format_parse(struct perf_pmu *pmu, int dirfd)
+ {
+ 	struct dirent *evt_ent;
+ 	DIR *format_dir;
+@@ -96,7 +96,7 @@ int perf_pmu__format_parse(int dirfd, struct list_head *head)
+ 		}
+ 
+ 		perf_pmu_set_in(file, scanner);
+-		ret = perf_pmu_parse(head, name, scanner);
++		ret = perf_pmu_parse(&pmu->format, name, scanner);
+ 		perf_pmu_lex_destroy(scanner);
+ 		fclose(file);
+ 	}
+@@ -110,7 +110,7 @@ int perf_pmu__format_parse(int dirfd, struct list_head *head)
+  * located at:
+  * /sys/bus/event_source/devices/<dev>/format as sysfs group attributes.
+  */
+-static int pmu_format(int dirfd, const char *name, struct list_head *format)
++static int pmu_format(struct perf_pmu *pmu, int dirfd, const char *name)
+ {
+ 	int fd;
+ 
+@@ -119,7 +119,7 @@ static int pmu_format(int dirfd, const char *name, struct list_head *format)
+ 		return 0;
+ 
+ 	/* it'll close the fd */
+-	if (perf_pmu__format_parse(fd, format))
++	if (perf_pmu__format_parse(pmu, fd))
+ 		return -1;
+ 
+ 	return 0;
+@@ -508,7 +508,7 @@ static int pmu_aliases_parse(int dirfd, struct list_head *head)
+  * Reading the pmu event aliases definition, which should be located at:
+  * /sys/bus/event_source/devices/<dev>/events as sysfs group attributes.
+  */
+-static int pmu_aliases(int dirfd, const char *name, struct list_head *head)
++static int pmu_aliases(struct perf_pmu *pmu, int dirfd, const char *name)
+ {
+ 	int fd;
+ 
+@@ -517,7 +517,7 @@ static int pmu_aliases(int dirfd, const char *name, struct list_head *head)
+ 		return 0;
+ 
+ 	/* it'll close the fd */
+-	if (pmu_aliases_parse(fd, head))
++	if (pmu_aliases_parse(fd, &pmu->aliases))
+ 		return -1;
+ 
+ 	return 0;
+@@ -770,11 +770,10 @@ static int pmu_add_cpu_aliases_map_callback(const struct pmu_event *pe,
+  * From the pmu_events_table, find the events that correspond to the given
+  * PMU and add them to the list 'head'.
+  */
+-void pmu_add_cpu_aliases_table(struct list_head *head, struct perf_pmu *pmu,
+-			const struct pmu_events_table *table)
++void pmu_add_cpu_aliases_table(struct perf_pmu *pmu, const struct pmu_events_table *table)
+ {
+ 	struct pmu_add_cpu_aliases_map_data data = {
+-		.head = head,
++		.head = &pmu->aliases,
+ 		.default_pmu_name = perf_pmus__default_pmu_name(),
+ 		.pmu = pmu,
+ 	};
+@@ -783,7 +782,7 @@ void pmu_add_cpu_aliases_table(struct list_head *head, struct perf_pmu *pmu,
+ 	free(data.default_pmu_name);
+ }
+ 
+-static void pmu_add_cpu_aliases(struct list_head *head, struct perf_pmu *pmu)
++static void pmu_add_cpu_aliases(struct perf_pmu *pmu)
+ {
+ 	const struct pmu_events_table *table;
+ 
+@@ -791,7 +790,7 @@ static void pmu_add_cpu_aliases(struct list_head *head, struct perf_pmu *pmu)
+ 	if (!table)
+ 		return;
+ 
+-	pmu_add_cpu_aliases_table(head, pmu, table);
++	pmu_add_cpu_aliases_table(pmu, table);
+ }
+ 
+ struct pmu_sys_event_iter_data {
+@@ -821,10 +820,10 @@ static int pmu_add_sys_aliases_iter_fn(const struct pmu_event *pe,
+ 	return 0;
+ }
+ 
+-void pmu_add_sys_aliases(struct list_head *head, struct perf_pmu *pmu)
++void pmu_add_sys_aliases(struct perf_pmu *pmu)
+ {
+ 	struct pmu_sys_event_iter_data idata = {
+-		.head = head,
++		.head = &pmu->aliases,
+ 		.pmu = pmu,
+ 	};
+ 
+@@ -863,30 +862,33 @@ static int pmu_max_precise(int dirfd, struct perf_pmu *pmu)
+ struct perf_pmu *perf_pmu__lookup(struct list_head *pmus, int dirfd, const char *lookup_name)
+ {
+ 	struct perf_pmu *pmu;
+-	LIST_HEAD(format);
+-	LIST_HEAD(aliases);
+ 	__u32 type;
+ 	char *name = pmu_find_real_name(lookup_name);
+ 	char *alias_name;
+ 
++	pmu = zalloc(sizeof(*pmu));
++	if (!pmu)
++		return NULL;
++
++	INIT_LIST_HEAD(&pmu->format);
++	INIT_LIST_HEAD(&pmu->aliases);
++	INIT_LIST_HEAD(&pmu->caps);
+ 	/*
+ 	 * The pmu data we store & need consists of the pmu
+ 	 * type value and format definitions. Load both right
+ 	 * now.
+ 	 */
+-	if (pmu_format(dirfd, name, &format))
++	if (pmu_format(pmu, dirfd, name)) {
++		free(pmu);
+ 		return NULL;
+-
++	}
+ 	/*
+ 	 * Check the aliases first to avoid unnecessary work.
+ 	 */
+-	if (pmu_aliases(dirfd, name, &aliases))
+-		return NULL;
+-
+-	pmu = zalloc(sizeof(*pmu));
+-	if (!pmu)
++	if (pmu_aliases(pmu, dirfd, name)) {
++		free(pmu);
+ 		return NULL;
+-
++	}
+ 	pmu->is_core = is_pmu_core(name);
+ 	pmu->cpus = pmu_cpumask(dirfd, name, pmu->is_core);
+ 	pmu->name = strdup(name);
+@@ -909,14 +911,8 @@ struct perf_pmu *perf_pmu__lookup(struct list_head *pmus, int dirfd, const char
+ 	if (pmu->is_uncore)
+ 		pmu->id = pmu_id(name);
+ 	pmu->max_precise = pmu_max_precise(dirfd, pmu);
+-	pmu_add_cpu_aliases(&aliases, pmu);
+-	pmu_add_sys_aliases(&aliases, pmu);
+-
+-	INIT_LIST_HEAD(&pmu->format);
+-	INIT_LIST_HEAD(&pmu->aliases);
+-	INIT_LIST_HEAD(&pmu->caps);
+-	list_splice(&format, &pmu->format);
+-	list_splice(&aliases, &pmu->aliases);
++	pmu_add_cpu_aliases(pmu);
++	pmu_add_sys_aliases(pmu);
+ 	list_add_tail(&pmu->list, pmus);
+ 
+ 	pmu->default_config = perf_pmu__get_default_config(pmu);
+@@ -1397,6 +1393,17 @@ int perf_pmu__check_alias(struct perf_pmu *pmu, struct list_head *head_terms,
+ 	return 0;
+ }
+ 
++struct perf_pmu_alias *perf_pmu__find_alias(struct perf_pmu *pmu, const char *event)
++{
++	struct perf_pmu_alias *alias;
++
++	list_for_each_entry(alias, &pmu->aliases, list)
++		if (!strcmp(event, alias->name))
++			return alias;
++
++	return NULL;
++}
++
+ int perf_pmu__new_format(struct list_head *list, char *name,
+ 			 int config, unsigned long *bits)
+ {
 diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
-index 1ea78d2fa531..1249fca02ffd 100644
+index 1249fca02ffd..c4268053c979 100644
 --- a/tools/perf/util/pmu.h
 +++ b/tools/perf/util/pmu.h
-@@ -221,7 +221,7 @@ int perf_pmu__config_terms(struct perf_pmu *pmu,
- 			   struct perf_event_attr *attr,
- 			   struct list_head *head_terms,
- 			   bool zero, struct parse_events_error *error);
--__u64 perf_pmu__format_bits(struct list_head *formats, const char *name);
-+__u64 perf_pmu__format_bits(struct perf_pmu *pmu, const char *name);
+@@ -213,7 +213,7 @@ struct perf_pmu_alias {
+ 	char *pmu_name;
+ };
+ 
+-void pmu_add_sys_aliases(struct list_head *head, struct perf_pmu *pmu);
++void pmu_add_sys_aliases(struct perf_pmu *pmu);
+ int perf_pmu__config(struct perf_pmu *pmu, struct perf_event_attr *attr,
+ 		     struct list_head *head_terms,
+ 		     struct parse_events_error *error);
+@@ -225,12 +225,11 @@ __u64 perf_pmu__format_bits(struct perf_pmu *pmu, const char *name);
  int perf_pmu__format_type(struct perf_pmu *pmu, const char *name);
  int perf_pmu__check_alias(struct perf_pmu *pmu, struct list_head *head_terms,
  			  struct perf_pmu_info *info);
+-struct list_head *perf_pmu__alias(struct perf_pmu *pmu,
+-				  struct list_head *head_terms);
++struct perf_pmu_alias *perf_pmu__find_alias(struct perf_pmu *pmu, const char *event);
+ 
+ int perf_pmu__new_format(struct list_head *list, char *name,
+ 			 int config, unsigned long *bits);
+-int perf_pmu__format_parse(int dirfd, struct list_head *head);
++int perf_pmu__format_parse(struct perf_pmu *pmu, int dirfd);
+ bool perf_pmu__has_format(const struct perf_pmu *pmu, const char *name);
+ 
+ bool is_pmu_core(const char *name);
+@@ -255,7 +254,7 @@ bool perf_pmu__file_exists(struct perf_pmu *pmu, const char *name);
+ int perf_pmu__test(void);
+ 
+ struct perf_event_attr *perf_pmu__get_default_config(struct perf_pmu *pmu);
+-void pmu_add_cpu_aliases_table(struct list_head *head, struct perf_pmu *pmu,
++void pmu_add_cpu_aliases_table(struct perf_pmu *pmu,
+ 			       const struct pmu_events_table *table);
+ 
+ char *perf_pmu__getcpuid(struct perf_pmu *pmu);
 -- 
 2.42.0.rc1.204.g551eb34607-goog
 
