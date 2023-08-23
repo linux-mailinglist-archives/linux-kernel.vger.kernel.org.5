@@ -2,200 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 433947861FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 23:13:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DC217861FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 23:14:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236966AbjHWVMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 17:12:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58318 "EHLO
+        id S237129AbjHWVNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 17:13:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236964AbjHWVMP (ORCPT
+        with ESMTP id S237158AbjHWVNQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 17:12:15 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E938B10C8
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 14:12:12 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-53ff4f39c0fso6777180a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 14:12:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692825132; x=1693429932;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=127o1e2ZxsfTG2EW1SJhGDYnNf5Ml57qeq2/F35dzqE=;
-        b=Ive9zZUHDErpdUQi2NZvd6G1ojNJJRonif+ER4gKq0Z60ZAKPb3ovWD1JrhoM5YWpk
-         wao8ZZecanMqLgoy/OcYOnNMyqBzXZp85ZhYv1XG6GmgwvrPykOplgFdUfLMq0mNmpOf
-         TXbjvr7kRNoR+wtw9yhOlIxmXtJwPwkgSQQghWl3KSb6o20zlTmrDc7/EOWNulmK8TMH
-         A0RFIsZABC3en1rQoynj0/hE4rXzhdQdaJI6mrpx8E/E9r2YOo8T4bIuoGWKuL7NXQ+H
-         2433+oYlogtPt8qMuLdz52mNYRl3jjhPgcfgKlEOpfPYQl28hugcvsXbQuGKpbu8cKSC
-         c5Iw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692825132; x=1693429932;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=127o1e2ZxsfTG2EW1SJhGDYnNf5Ml57qeq2/F35dzqE=;
-        b=ebhb6DtXBnI6BBsjUSJ4mxSZDqGvMBYJ8e4KX4JR/ky4cuNitGj/dfRF/66Fxq/v0B
-         dtYQKvKiblsGzq8Y2YUsER9zI69ymGOao13qHA5JnWcfmqi6N8/fmKstFIHDAmFl0PcO
-         7QmbssOc15k0nPS1WOjuD9I87UgKQhQ8tDe2/Hb4ahKNlGtv+0SrHfCLKJC6YeFedpkE
-         ZA70r+Isub+y20gTvthVtE1lqRQt4mGZl7uctr5Jim2yFC0s4DMT1ViCkPPmR2LyInpJ
-         3cYTf3Y1ViYRQwg9nmpvjzSdN6imBqy7aBtV3U/58ISB3PaI+SdZnrxgLBWrcp11zgMc
-         5p/g==
-X-Gm-Message-State: AOJu0YwS4WXILzViGh0tT+M7fQvEWRaHPlyxtAZl0xx+DJRwQt2QGxAB
-        LzyMHWPmbzDTwnTEUJ73qfg2giSl56k=
-X-Google-Smtp-Source: AGHT+IEOss0Pqtl4PPt4AL02nTNq+RY7yG3+ZKLTb8MX+cqCzI2w6NaZCir+UlgaC4j8SMKGhG1++5XbElw=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a63:3409:0:b0:569:50e1:5469 with SMTP id
- b9-20020a633409000000b0056950e15469mr2183757pga.9.1692825132353; Wed, 23 Aug
- 2023 14:12:12 -0700 (PDT)
-Date:   Wed, 23 Aug 2023 14:12:10 -0700
-In-Reply-To: <bc6a9c1f-d41e-ef81-3029-04c2938b300c@amd.com>
-Mime-Version: 1.0
-References: <20230810234919.145474-1-seanjc@google.com> <bf3af7eb-f4ce-b733-08d4-6ab7f106d6e6@amd.com>
- <ZOTQ6izCUfrBh2oj@google.com> <d183c3f2-d94d-5f22-184d-eab80f9d0fe8@amd.com>
- <ZOZmFe7MT7zwrf/c@google.com> <bc6a9c1f-d41e-ef81-3029-04c2938b300c@amd.com>
-Message-ID: <ZOZ2KqCIcleJxrTz@google.com>
-Subject: Re: [PATCH 0/2] KVM: SVM: Fix unexpected #UD on INT3 in SEV guests
-From:   Sean Christopherson <seanjc@google.com>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Wu Zongyo <wuzongyo@mail.ustc.edu.cn>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        Wed, 23 Aug 2023 17:13:16 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D40910E5
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 14:13:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692825193; x=1724361193;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=defJ4soWaA1pNiXr8MEpc33gCgleHCb3i8oy08Xij0k=;
+  b=YY2cMkGDZ2MizRJt9npcIzOKwXOALJpxFLLU6nFXqBs8EQGOGro0K6WL
+   mCExtmFI0WySPdaSaUg8SASit+u+eaPDPGQ6Ajv1Bc4X6FfV3+Hv7tUG2
+   Of9IuhyLtg2VQZrRIPrKZXKsNup6N0IbTx0AVZU88dehFSdGg5h3dpDbL
+   RUzTLUI8YZn63AhMImdzuSFgSWKkFq3QFEVsXYz0SdUJ/KUyZsWV8Ezqo
+   zJkSziM1tcR9dIHtTvqj+SWehG/xKauYtTfo/mrPmdTpxu+KGEdFlxxSA
+   FtnES4sIBL3qqtLK/6GrZJoexT3BMwm02ncex4w7UhmpZ+8zT1Fk3wOj6
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="353819303"
+X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
+   d="scan'208";a="353819303"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2023 14:13:13 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="851197932"
+X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
+   d="scan'208";a="851197932"
+Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 23 Aug 2023 14:13:07 -0700
+Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qYvA2-0001Vq-0c;
+        Wed, 23 Aug 2023 21:13:06 +0000
+Date:   Thu, 24 Aug 2023 05:12:11 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     John Stultz <jstultz@google.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, John Stultz <jstultz@google.com>,
+        Joel Fernandes <joelaf@google.com>,
+        Qais Yousef <qyousef@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Zimuzo Ezeozue <zezeozue@google.com>,
+        Youssef Esmat <youssefesmat@google.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>, kernel-team@android.com
+Subject: Re: [PATCH v5 13/19] sched: Split out __sched() deactivate task
+ logic into a helper
+Message-ID: <202308240439.2aDXO6Ks-lkp@intel.com>
+References: <20230819060915.3001568-14-jstultz@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230819060915.3001568-14-jstultz@google.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 23, 2023, Tom Lendacky wrote:
-> On 8/23/23 15:03, Sean Christopherson wrote:
-> > I think the best option is to add a "temporary" patch so that the fix for @stable
-> > is short, sweet, and safe, and then do the can_emulate_instruction() cleanup that
-> > I was avoiding.
-> > 
-> > E.g. this as patch 2/4 (or maybe 2/5) of this series:
-> 
-> 2/4 or 2/5? Do you mean 2/3 since there were only 2 patches in the series?
+Hi John,
 
-I am planning on adding more patches in v2 to cleanup the hack-a-fix. But after
-writing the code, I think it's best to sqaush the hack-a-fix in with patch 1
-(new full patch at the bottom, though it should be the same result as the earlier
-delta patch).
+kernel test robot noticed the following build warnings:
 
-> I'll apply the below patch in between patches 1 and 2 and re-test. Should
-> have results in a week :)
+[auto build test WARNING on tip/locking/core]
+[also build test WARNING on linus/master tip/auto-latest v6.5-rc7]
+[cannot apply to tip/sched/core tip/master next-20230823]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Heh, maybe if we send enough emails we can get Wu's feedback before then :-)
+url:    https://github.com/intel-lab-lkp/linux/commits/John-Stultz/sched-Unify-runtime-accounting-across-classes/20230821-121604
+base:   tip/locking/core
+patch link:    https://lore.kernel.org/r/20230819060915.3001568-14-jstultz%40google.com
+patch subject: [PATCH v5 13/19] sched: Split out __sched() deactivate task logic into a helper
+config: riscv-allnoconfig (https://download.01.org/0day-ci/archive/20230824/202308240439.2aDXO6Ks-lkp@intel.com/config)
+compiler: riscv64-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20230824/202308240439.2aDXO6Ks-lkp@intel.com/reproduce)
 
-One idea to make the original bug repro on every run would be to constantly
-toggle nx_huge_pages between "off" and "force" while the guest is booting.  Toggling
-nx_huge_pages should force KVM to rebuild the SPTEs and all but guarantee trying
-to deliver the #BP will hit a #NPF.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308240439.2aDXO6Ks-lkp@intel.com/
 
---
-From: Sean Christopherson <seanjc@google.com>
-Date: Tue, 8 Aug 2023 17:18:42 -0700
-Subject: [PATCH 1/4] KVM: SVM: Don't inject #UD if KVM attempts to skip SEV
- guest insn
+All warnings (new ones prefixed by >>):
 
-Don't inject a #UD if KVM attempts to "emulate" to skip an instruction
-for an SEV guest, and instead resume the guest and hope that it can make
-forward progress.  When commit 04c40f344def ("KVM: SVM: Inject #UD on
-attempted emulation for SEV guest w/o insn buffer") added the completely
-arbitrary #UD behavior, there were no known scenarios where a well-behaved
-guest would induce a VM-Exit that triggered emulation, i.e. it was thought
-that injecting #UD would be helpful.
+>> kernel/sched/core.c:6565:6: warning: no previous prototype for 'try_to_deactivate_task' [-Wmissing-prototypes]
+    6565 | bool try_to_deactivate_task(struct rq *rq, struct task_struct *p, unsigned long state)
+         |      ^~~~~~~~~~~~~~~~~~~~~~
 
-However, now that KVM (correctly) attempts to re-inject INT3/INTO, e.g. if
-a #NPF is encountered when attempting to deliver the INT3/INTO, an SEV
-guest can trigger emulation without a buffer, through no fault of its own.
-Resuming the guest and retrying the INT3/INTO is architecturally wrong,
-e.g. the vCPU will incorrectly re-hit code #DBs, but for SEV guests there
-is literally no other option that has a chance of making forward progress.
 
-Drop the #UD injection for all "skip" emulation, not just those related to
-INT3/INTO, even though that means that the guest will likely end up in an
-infinite loop instead of getting a #UD (the vCPU may also crash, e.g. if
-KVM emulated everything about an instruction except for advancing RIP).
-There's no evidence that suggests that an unexpected #UD is actually
-better than hanging the vCPU, e.g. a soft-hung vCPU can still respond to
-IRQs and NMIs to generate a backtrace.
+vim +/try_to_deactivate_task +6565 kernel/sched/core.c
 
-Reported-by: Wu Zongyo <wuzongyo@mail.ustc.edu.cn>
-Closes: https://lore.kernel.org/all/8eb933fd-2cf3-d7a9-32fe-2a1d82eac42a@mail.ustc.edu.cn
-Fixes: 6ef88d6e36c2 ("KVM: SVM: Re-inject INT3/INTO instead of retrying the instruction")
-Cc: stable@vger.kernel.org
-Cc: Tom Lendacky <thomas.lendacky@amd.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/svm/svm.c | 35 +++++++++++++++++++++++++++--------
- 1 file changed, 27 insertions(+), 8 deletions(-)
+  6564	
+> 6565	bool try_to_deactivate_task(struct rq *rq, struct task_struct *p, unsigned long state)
+  6566	{
+  6567		if (signal_pending_state(state, p)) {
+  6568			WRITE_ONCE(p->__state, TASK_RUNNING);
+  6569		} else {
+  6570			p->sched_contributes_to_load =
+  6571				(state & TASK_UNINTERRUPTIBLE) &&
+  6572				!(state & TASK_NOLOAD) &&
+  6573				!(state & TASK_FROZEN);
+  6574	
+  6575			if (p->sched_contributes_to_load)
+  6576				rq->nr_uninterruptible++;
+  6577	
+  6578			/*
+  6579			 * __schedule()			ttwu()
+  6580			 *   prev_state = prev->state;    if (p->on_rq && ...)
+  6581			 *   if (prev_state)		    goto out;
+  6582			 *     p->on_rq = 0;		  smp_acquire__after_ctrl_dep();
+  6583			 *				  p->state = TASK_WAKING
+  6584			 *
+  6585			 * Where __schedule() and ttwu() have matching control dependencies.
+  6586			 *
+  6587			 * After this, schedule() must not care about p->state any more.
+  6588			 */
+  6589			deactivate_task(rq, p, DEQUEUE_SLEEP | DEQUEUE_NOCLOCK);
+  6590	
+  6591			if (p->in_iowait) {
+  6592				atomic_inc(&rq->nr_iowait);
+  6593				delayacct_blkio_start();
+  6594			}
+  6595			return true;
+  6596		}
+  6597		return false;
+  6598	}
+  6599	
 
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 212706d18c62..f6adc43b315a 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -364,6 +364,8 @@ static void svm_set_interrupt_shadow(struct kvm_vcpu *vcpu, int mask)
- 		svm->vmcb->control.int_state |= SVM_INTERRUPT_SHADOW_MASK;
- 
- }
-+static bool svm_can_emulate_instruction(struct kvm_vcpu *vcpu, int emul_type,
-+					void *insn, int insn_len);
- 
- static int __svm_skip_emulated_instruction(struct kvm_vcpu *vcpu,
- 					   bool commit_side_effects)
-@@ -384,6 +386,14 @@ static int __svm_skip_emulated_instruction(struct kvm_vcpu *vcpu,
- 	}
- 
- 	if (!svm->next_rip) {
-+		/*
-+		 * FIXME: Drop this when kvm_emulate_instruction() does the
-+		 * right thing and treats "can't emulate" as outright failure
-+		 * for EMULTYPE_SKIP.
-+		 */
-+		if (!svm_can_emulate_instruction(vcpu, EMULTYPE_SKIP, NULL, 0))
-+			return 0;
-+
- 		if (unlikely(!commit_side_effects))
- 			old_rflags = svm->vmcb->save.rflags;
- 
-@@ -4725,16 +4735,25 @@ static bool svm_can_emulate_instruction(struct kvm_vcpu *vcpu, int emul_type,
- 	 * and cannot be decrypted by KVM, i.e. KVM would read cyphertext and
- 	 * decode garbage.
- 	 *
--	 * Inject #UD if KVM reached this point without an instruction buffer.
--	 * In practice, this path should never be hit by a well-behaved guest,
--	 * e.g. KVM doesn't intercept #UD or #GP for SEV guests, but this path
--	 * is still theoretically reachable, e.g. via unaccelerated fault-like
--	 * AVIC access, and needs to be handled by KVM to avoid putting the
--	 * guest into an infinite loop.   Injecting #UD is somewhat arbitrary,
--	 * but its the least awful option given lack of insight into the guest.
-+	 * If KVM is NOT trying to simply skip an instruction, inject #UD if
-+	 * KVM reached this point without an instruction buffer.  In practice,
-+	 * this path should never be hit by a well-behaved guest, e.g. KVM
-+	 * doesn't intercept #UD or #GP for SEV guests, but this path is still
-+	 * theoretically reachable, e.g. via unaccelerated fault-like AVIC
-+	 * access, and needs to be handled by KVM to avoid putting the guest
-+	 * into an infinite loop.   Injecting #UD is somewhat arbitrary, but
-+	 * its the least awful option given lack of insight into the guest.
-+	 *
-+	 * If KVM is trying to skip an instruction, simply resume the guest.
-+	 * If a #NPF occurs while the guest is vectoring an INT3/INTO, then KVM
-+	 * will attempt to re-inject the INT3/INTO and skip the instruction.
-+	 * In that scenario, retrying the INT3/INTO and hoping the guest will
-+	 * make forward progress is the only option that has a chance of
-+	 * success (and in practice it will work the vast majority of the time).
- 	 */
- 	if (unlikely(!insn)) {
--		kvm_queue_exception(vcpu, UD_VECTOR);
-+		if (!(emul_type & EMULTYPE_SKIP))
-+			kvm_queue_exception(vcpu, UD_VECTOR);
- 		return false;
- 	}
- 
-
-base-commit: 240f736891887939571854bd6d734b6c9291f22e
 -- 
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
