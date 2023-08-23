@@ -2,258 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C446785F6D
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 20:17:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECEF3785F6A
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 20:17:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238078AbjHWSRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 14:17:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35690 "EHLO
+        id S238072AbjHWSRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 14:17:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238074AbjHWSRJ (ORCPT
+        with ESMTP id S229864AbjHWSRE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 14:17:09 -0400
+        Wed, 23 Aug 2023 14:17:04 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B363ACD1;
-        Wed, 23 Aug 2023 11:17:07 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25637CC7;
+        Wed, 23 Aug 2023 11:17:03 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 42D2D6251E;
-        Wed, 23 Aug 2023 18:17:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C6EAC433C8;
-        Wed, 23 Aug 2023 18:17:00 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A6A1463D52;
+        Wed, 23 Aug 2023 18:17:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03400C433C7;
+        Wed, 23 Aug 2023 18:16:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692814626;
-        bh=v5gbbKQx580NwsJPzLlKgg+HN23Z3nlcACK/+A05KDI=;
+        s=k20201202; t=1692814621;
+        bh=z4aynHRzkI+QjbnRFX6g1vVxQ5ejtsIbs5rrGfHFHGE=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oRtgDNZtR0b3nGM0E6dijQnhJ/iVvKerQl5ziYWo2zFvA3fGoFyyg3LEsIVspVX8t
-         MkGE0IoVIZf/z3jbvcgr4IICa1ibWtN3OPprNEl+1XAW02aySxe6sCthUrx85+txMl
-         nHlfgrDXvQVEcGL/WLjv8eITez0VEzXkQgEwzArte4qamDGd1NZRBpWFJmubVeNKLF
-         FymAiAl0uq2bBVM48W/c2j5qGQRWNTv4rCeJYoli5egOHUKnOgdyFHzFYjjdZ4bRZk
-         ueL/Nf+CDHumwyQA7b9eBci8rwMKrq10gW1nC4uwPdg/I1O16WEuQKKpO0sowq9cRd
-         xXpwNOX487obg==
-Date:   Wed, 23 Aug 2023 23:46:50 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Jim Quinlan <james.quinlan@broadcom.com>
-Cc:     Jim Quinlan <jim2101024@gmail.com>, linux-pci@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Cyril Brulebois <kibi@debian.org>,
-        Phil Elwell <phil@raspberrypi.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 1/5] dt-bindings: PCI: brcmstb: Add brcm,enable-l1ss
- property
-Message-ID: <20230823181650.GL3737@thinkpad>
-References: <20230508220126.16241-1-jim2101024@gmail.com>
- <20230508220126.16241-2-jim2101024@gmail.com>
- <20230823074330.GF3737@thinkpad>
- <CA+-6iNwP+NbAdm0kNxZ5GwyPdTQyOjq7E2O-+mCU4fG-94BKBA@mail.gmail.com>
+        b=vOmP4hLKyqUTY4Rpo3iF4nxe1oNnRDDYIYRbZ/skZ0s1Z1rqv3ybf1aNIxyXlfoZi
+         XzisYoLx7TaoSyRzhpiq5y79KygxbLW8f3Y0aJffZZZK7hn134I1xclZvmJl/advUK
+         FV3HcydgfFsNEx1mO4o6fk/h0jrhMpmi1nPkkVh+mPt1TaLdb9rJOn2FjvFo2V5SVn
+         0YorKgoH/DUEFkI5en//P98Di0z8jX8gihJYc5+yYn8tQilGMhbF79vDUmtEfqzTPE
+         LDNRjNI1lzg8m7cs4daU/NrYVTQWUoyjFGUHdKTLpL2Geei5FDlJv0IUpwuMr4GMxk
+         ZGPH+S1BybA6w==
+Date:   Wed, 23 Aug 2023 19:16:52 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Szabolcs Nagy <Szabolcs.Nagy@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Shuah Khan <shuah@kernel.org>,
+        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
+        Deepak Gupta <debug@rivosinc.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        "H.J. Lu" <hjl.tools@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v4 03/36] arm64/gcs: Document the ABI for Guarded Control
+ Stacks
+Message-ID: <ef7272d2-d807-428f-9915-6fc9febadb5c@sirena.org.uk>
+References: <ZNOhjrYleGBR6Pbs@arm.com>
+ <f4cec4b3-c386-4873-aa1d-90528e062f2a@sirena.org.uk>
+ <ZN+qki9EaZ6f9XNi@arm.com>
+ <aaea542c-929c-4c9b-8caa-ca67e0eb9c1e@sirena.org.uk>
+ <ZOTnL1SDJWZjHPUW@arm.com>
+ <43ec219d-bf20-47b8-a5f8-32bc3b64d487@sirena.org.uk>
+ <ZOXa98SqwYPwxzNP@arm.com>
+ <227e6552-353c-40a9-86c1-280587a40e3c@sirena.org.uk>
+ <ZOY3lz+Zyhd5ZyQ9@arm.com>
+ <ZOZEmO6WGyVAcOqK@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="eccODu5HN5W02WFY"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+-6iNwP+NbAdm0kNxZ5GwyPdTQyOjq7E2O-+mCU4fG-94BKBA@mail.gmail.com>
+In-Reply-To: <ZOZEmO6WGyVAcOqK@arm.com>
+X-Cookie: Some optional equipment shown.
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 23, 2023 at 09:09:25AM -0400, Jim Quinlan wrote:
-> On Wed, Aug 23, 2023 at 3:43 AM Manivannan Sadhasivam <mani@kernel.org> wrote:
-> >
-> > On Mon, May 08, 2023 at 06:01:21PM -0400, Jim Quinlan wrote:
-> > > This commit adds the boolean "brcm,enable-l1ss" property:
-> > >
-> > >   The Broadcom STB/CM PCIe HW -- a core that is also used by RPi SOCs --
-> > >   requires the driver probe() to deliberately place the HW one of three
-> > >   CLKREQ# modes:
-> > >
-> > >   (a) CLKREQ# driven by the RC unconditionally
-> > >   (b) CLKREQ# driven by the EP for ASPM L0s, L1
-> > >   (c) Bidirectional CLKREQ#, as used for L1 Substates (L1SS).
-> > >
-> > >   The HW+driver can tell the difference between downstream devices that
-> > >   need (a) and (b), but does not know when to configure (c).  All devices
-> > >   should work fine when the driver chooses (a) or (b), but (c) may be
-> > >   desired to realize the extra power savings that L1SS offers.  So we
-> > >   introduce the boolean "brcm,enable-l1ss" property to inform the driver
-> > >   that (c) is desired.  Setting this property only makes sense when the
-> > >   downstream device is L1SS-capable and the OS is configured to activate
-> > >   this mode (e.g. policy==powersupersave).
-> > >
-> > >   This property is already present in the Raspian version of Linux, but the
-> > >   upstream driver implementation that follows adds more details and
-> > >   discerns between (a) and (b).
-> > >
-> > > Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
-> > > Reviewed-by: Rob Herring <robh@kernel.org>
-> > > ---
-> > >  Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml | 9 +++++++++
-> > >  1 file changed, 9 insertions(+)
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml b/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
-> > > index 7e15aae7d69e..8b61c2179608 100644
-> > > --- a/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
-> > > +++ b/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
-> > > @@ -64,6 +64,15 @@ properties:
-> > >
-> > >    aspm-no-l0s: true
-> > >
-> > > +  brcm,enable-l1ss:
-> > > +    description: Indicates that PCIe L1SS power savings
-> > > +      are desired, the downstream device is L1SS-capable, and the
-> > > +      OS has been configured to enable this mode.  For boards
-> > > +      using a mini-card connector, this mode may not meet the
-> > > +      TCRLon maximum time of 400ns, as specified in 3.2.5.2.2
-> > > +      of the PCI Express Mini CEM 2.0 specification.
-> >
-> > As Lorenzo said, this property doesn't belong in DT. DT is supposed to specify
-> > the hardware capability and not system/OS behavior.
-> 
-> The "brcm,enable-l1ss" does NOT configure the OS behavior.
-> It sets or not a mode bit to enable l1SS HW, whether or not the OS is
-> configured for L1SS.
-> It compensates for a problem in the PCIe core: the HW is not capable
-> of dynamically
-> switching between ASPM modes powersave and superpowersave.  I am actively
-> advocating for our HW to change but that will take years.
-> 
 
-Okay, then I would say that the property name and commit message were a bit
-misleading. 
+--eccODu5HN5W02WFY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I had briefly gone through the driver patch now. As per my understanding, you
-have 2 modes in hw:
+On Wed, Aug 23, 2023 at 06:40:40PM +0100, Szabolcs Nagy wrote:
 
-1. Clock PM - Refclk will be turned off by the host if CLKREQ# is deasserted by
-the device (driving high) when the link is in L1.
+> i don't know if we can allow disabled gcs thread creation with locked
+> gcs state. (i can see arguments both ways, so further prctl flag may
+> be needed which may be another divergence from x86)
 
-2. L1SS - CLKREQ# will be used to decide L1SS entry and exit by the host.
+I think that if we do add a new flag that'd just be new functionality,
+the divergence would be in allowing configuration via clone3() rather
+than the flag.  TBH I'm not sure I see a use case for locking but
+providing a mechanism for getting out of the lock, that seems very
+questionable.
 
-Till now the driver only supported Clock PM through mode (1) but for supporting
-L1SS you need to enable mode (2). And you are using this property to select mode
-(2) when the L1SS supported devices are connected to the slot. Also, by
-selecting this mode, you are loosing the benefit of mode (1) as both are not
-compatible.
+--eccODu5HN5W02WFY
+Content-Type: application/pgp-signature; name="signature.asc"
 
-My suggestion would be to just drop mode (1) and use mode (2) in the driver as
-most of the recent devices should support L1SS (ofc there are exemptions).
+-----BEGIN PGP SIGNATURE-----
 
-But moving that decision to DT still doesn't seem right to me as the hardware
-supports both modes and you are (ab)using DT to choose one or the other.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTmTRMACgkQJNaLcl1U
+h9AFoAf/Rmp/X+zsA/zDX+bXBUla+v8qz72JS4cU/67DmXv5Fb8FKCj4nY5j/OnZ
+3G9+lHZYYRFTA8sdQH2qULPo0S6QafNbebM0WxsjYuiCw8CKuztE1jOm+l6aVyf7
+G/h5YxEOQBb4ChLezEXXQWZC0wR/S+7bf34IxDycvRh6Y0700VL4eZ7pu4fc8WDu
+rHrMeB82zAlQCr3fdUgu5FzPQFUiY4dbDzPrJHpuVIq+Vnpk7RK7b1vkYZa4fo5o
+2YB87p19ylZBQa0LvKdA+RkgDNvExeujREoO1O+WrBVa1bdtKw80kGgvXJC3oy0f
+P8bazSIfrut0e41Y3agZotCijYwTlg==
+=JX+L
+-----END PGP SIGNATURE-----
 
-- Mani
-
-> If this flag specifies
-> > whether the PCIe controller supports L1SS or not, then it is fine but apparantly
-> > this specifies that all downstream devices are L1SS capable which you cannot
-> > guarantee unless you poke into their LNKCAP during runtime.
-> Not true at all.  This setting affects only RC and whatever device is
-> connected to its single downstream
-> port.
-> 
-> >
-> > You should handle this in the driver itself.
-> 
-> The driver has no way of knowing if the PCI subsystem is going from power_save
-> to power_supersave or vice-versa -- there is no notification chain for this.  So
-> what you say is not currently possible from the driver's perspective.
-> 
-> Perhaps you would be happy if we changed it to "l1ss-support" in the
-> spirit of the
-> existing "clkreq-support" PCI parameter?
-> 
-> Regards,
-> Jim Quinlan
-> Broadcom STB/CMi
-> 
-> >
-> > - Mani
-> >
-> > > +    type: boolean
-> > > +
-> > >    brcm,scb-sizes:
-> > >      description: u64 giving the 64bit PCIe memory
-> > >        viewport size of a memory controller.  There may be up to
-> > > --
-> > > 2.17.1
-> > >
-> >
-> > --
-> > மணிவண்ணன் சதாசிவம்
-
-> Date: Tue, 22 Aug 2023 21:01:47 +0000 (UTC)
-> From: Florian Fainelli <messenger@webex.com>
-> To: james.quinlan@broadcom.com
-> Subject: Join me now in my Personal Room
-> 
-> Hello,
-> 
-> Join me now in my Personal Room. 
-> 
-> JOIN WEBEX MEETING
-> https://broadcom.webex.com/join/florian.fainelli  |  490 282 179
-> 
-> 
-> JOIN FROM A VIDEO CONFERENCING SYSTEM OR APPLICATION
-> Dial sip:florian.fainelli@broadcom.webex.com
-> You can also dial 173.243.2.68 and enter your meeting number.
-> 
-> 
-> 
-> Can't join the meeting?
-> https://help.webex.com/docs/DOC-5412
-> 
-> PHONE DIALING GUIDELINES:
->         - Use Call Me when you are using office phone or Jabber.
->         - Use Call Using Computer when you are at home or traveling.
-> 
-> In Office Calls:
-> 	- From Broadcom Office: 1-MEETING (1-6338464)
-> 
-> Offsite Numbers Toll (Local) Calls:
-> 	- Canada, Richmond: +1-778-308-4007
-> 	- China: +86-400-819-1044
-> 	- Germany, Munich: +49-892-312-9611
->         - Germany, Regensburg: +49-(9)419-923-5940
->         - India: 00-080-0050-1631
-> 	- Israel: +97-239-786-477
->         - Japan, Tokyo: +81-366-344-937
->         - Malaysia: +603-2053-5189
-> 	- Singapore: +65-6349-2439
-> 	- South Korea, Seoul: +82-70-4732-0218
-> 	- Taiwan, Taipei: +886-277-047-765
-> 	- US, Denver: +1-720-726-9995
->         - US, Los Angeles: +1-310-616-5312
->         - US, Philadelphia: +1-215-305-7603
-> 	- UK, London: +44-207-660-8897
->         - UK, Manchester: +44-161-619-8089
-> 
-> IMPORTANT NOTICE: Please note that this Webex service allows audio and other information sent during the session to be recorded, which may be discoverable in a legal matter. By joining this session, you automatically consent to such recordings. If you do not consent to being recorded, discuss your concerns with the host or do not join the session.
-
-
-
-
-
--- 
-மணிவண்ணன் சதாசிவம்
+--eccODu5HN5W02WFY--
