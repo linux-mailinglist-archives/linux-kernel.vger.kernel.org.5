@@ -2,130 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0795785687
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 13:13:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9559378568A
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 13:13:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234317AbjHWLNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 07:13:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39772 "EHLO
+        id S234364AbjHWLNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 07:13:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233669AbjHWLNH (ORCPT
+        with ESMTP id S234338AbjHWLNc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 07:13:07 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB587184
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 04:12:46 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-68a3ced3ec6so2850357b3a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 04:12:46 -0700 (PDT)
+        Wed, 23 Aug 2023 07:13:32 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7E18E52
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 04:13:29 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3fef56f7248so22193705e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 04:13:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1692789166; x=1693393966;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9l/C/Em55hDWEZsHiOtUwvmf9bvizEENoPNvEct/EfI=;
-        b=KP1ChHFNfM0e8toOlV+hECyU3u1mwZA4fCDAIuIBoDsCINkYYwUNx/uyNtnzVS1X+W
-         tLlWGrw4f31BtIWSLy/MKwD2LysTeZPQjA/pvFNsf4aOGaM2IiJuIx6O8vmDU48DTSeR
-         aWmZwfKSZy8U5Nh/LRsbJvk7BdR8IE8HWUiPt3xWoyH9dH0psaU9LfYkVVMyLtqX6lEw
-         En7Yz8R7yFeGrv1l0UxpDPS5An2HvGCgplhkvNEZ3w1ILVNL/DQSEMxbtTqLS3F0+gqk
-         exBdyVgu/fMj9G7MQym2TQ1KNBlSOsYu30fxLGZC13pgE6zCjt/8oL4uO9nCN7o/tgDq
-         hLpQ==
+        d=linaro.org; s=google; t=1692789208; x=1693394008;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=nbYjS/cBWGkU59BDMZfwvb2Rj3H4QCmMH5/xqbbwdFU=;
+        b=hpHpmPxdO1YBXgCk5vQndP3QSjpee+96UDmt1vUmlJDzx6hF3G1VD3XvrhXQDnBx4x
+         IxuTyichE/GGifVVtaqKKKpT+8Xyl2IsXVluQrH4nMEjDlkgNcenmc7bkkV+xaYqngnk
+         jXU+z1dKB6HXdEdF9wzYXI+fejgG9uHMWxHNphHEJINclbvc7yQhTzRlCpDpGI/upy/G
+         Fe4l3UeunUexPHzzNFN+WKa0gQiyrOivGzqIpFazTXfY0Wl6MMDnmHoeT0dSsy2Kni2b
+         59dGrY/MayR0ZGxoWHMdBBl5o5VN6a3iN/S4i4/Tz+DN4PAMkmfv4yOtaD5sYgBLCqYe
+         5HRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692789166; x=1693393966;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=9l/C/Em55hDWEZsHiOtUwvmf9bvizEENoPNvEct/EfI=;
-        b=k1Pq6kBku0WcaCmIo6CKJsW07LBuPhDSvpnHZEGGwSP1e5kuy4SmSzd++Se9T3jIRA
-         4R2K8o+GWUwDqmBGjqV2ZM0VAX7rlUGepvKPh1k7gCw/SpKWGRfEQqTNTa4+OcGgofKb
-         h3CJIxWRXlufI5fuo/O1/ysuGxP74ujYXfrjqUYzYbmPxZVHRKD98wZhg05deJBcNn+l
-         3wYo4XFyJSkPtGRv0yB5aJ+52ID64zXUQX91Wb3Ck9DdSXZVrtS535pwRsrshs98Zypr
-         Ayw8E3bo0ICbwhXdFJ4xSQV75hcu4giDGBiOkidncBFfUYW4B6HORZgRiOMWcl+pGz83
-         7i1A==
-X-Gm-Message-State: AOJu0YwBlSwSXAHQ7XfuIm0a16W42uDfKAhIaRETHmVeGT3N/R/xmszg
-        K7xHHEShc8HESBlRqtWGz8HONvwYuLhJiBYFduo=
-X-Google-Smtp-Source: AGHT+IH6qjCXnJXfdTQcWKr9U/NGAmqaIa6a51NYKXyh+nsa4CDocmJi35FlCNTOYm6GU3g0v8EN1g==
-X-Received: by 2002:a05:6a21:3d8b:b0:132:ef90:1d1d with SMTP id bj11-20020a056a213d8b00b00132ef901d1dmr13871845pzc.0.1692789166350;
-        Wed, 23 Aug 2023 04:12:46 -0700 (PDT)
-Received: from [10.255.208.99] ([139.177.225.251])
-        by smtp.gmail.com with ESMTPSA id r21-20020a170902ea5500b001bb99e188fcsm10702619plg.194.2023.08.23.04.12.43
+        d=1e100.net; s=20221208; t=1692789208; x=1693394008;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nbYjS/cBWGkU59BDMZfwvb2Rj3H4QCmMH5/xqbbwdFU=;
+        b=ZH8yntxCYCOCuVTANJcv8LdgmJ1tlgjVxl41Tm7NYFcMNNuzLCzE1+1kj268xFw83s
+         KqCmKTGbnJDRMsk86exP+MNp6IwyEF5uVSL6PbAXqZW7pmy9IFPqul4Lcqeeh4NXsXaZ
+         AJXMNQ+JpiJEcdtqTEam4m1wfDYvxJ280OtgBhy8UDLHoMabcPeZvOlZlI6oWR2RdTDS
+         U3kKvArTBkG5XPHJK21oQ4onilmI/fLgAy/PtfwCvqEkgfDg5QOsH5JaK3PkgIYm6a89
+         T0sivXTRsCXnUATspwgIQJ6hkTKyFsX+v55Vw3+1giDVcamjDRH8SLgM1SUKEueLW6bD
+         efvg==
+X-Gm-Message-State: AOJu0Yz6Kvl++bbiqoFnyjMB0S0P5LsnfunNlzd3DdlBPbi5n1VoU1vZ
+        o6OxSgNKTfCLIoe8UEYVppGPKg==
+X-Google-Smtp-Source: AGHT+IFLogCBvxIPJfiavbOMDUod3X1ur9veAQdK8t5D/OcSVmFHxFwHLi/a6fmaLDbJytPOL5BZlg==
+X-Received: by 2002:a1c:7403:0:b0:3fe:687a:abb8 with SMTP id p3-20020a1c7403000000b003fe687aabb8mr9400967wmc.7.1692789208193;
+        Wed, 23 Aug 2023 04:13:28 -0700 (PDT)
+Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
+        by smtp.gmail.com with ESMTPSA id t23-20020a7bc3d7000000b003fe1fe56202sm18704980wmj.33.2023.08.23.04.13.27
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Aug 2023 04:12:45 -0700 (PDT)
-Message-ID: <446c65f1-e5e9-4f99-467f-a64654bcf131@bytedance.com>
-Date:   Wed, 23 Aug 2023 19:12:41 +0800
+        Wed, 23 Aug 2023 04:13:27 -0700 (PDT)
+Message-ID: <350efa30-ee31-d030-38e1-20899f785c64@linaro.org>
+Date:   Wed, 23 Aug 2023 12:13:26 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.14.0
-Subject: Re: [PATCH 3/5] fuse: add FOPEN_INVAL_ATTR
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Jonathan Corbet <corbet@lwn.net>, linux-fsdevel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        me@jcix.top
-References: <20230711043405.66256-1-zhangjiachen.jaycee@bytedance.com>
- <20230711043405.66256-4-zhangjiachen.jaycee@bytedance.com>
- <CAJfpegtocWjfqVUpdnct-1-pq_DYJXUuvkBWey2N5q6+K=pL_w@mail.gmail.com>
-From:   Jiachen Zhang <zhangjiachen.jaycee@bytedance.com>
-In-Reply-To: <CAJfpegtocWjfqVUpdnct-1-pq_DYJXUuvkBWey2N5q6+K=pL_w@mail.gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH] usb: typec: qcom: check regulator enable status before
+ disabling it
+Content-Language: en-US
+To:     hui liu <quic_huliu@quicinc.com>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, quic_fenglinw@quicinc.com,
+        subbaram@quicinc.com
+References: <20230823-qcom-tcpc-v1-1-fa81a09ca056@quicinc.com>
+ <64b2a748-ea86-f804-9f8a-881b0dcc7050@linaro.org>
+ <d376686c-b700-407c-9a88-88942ef3e776@quicinc.com>
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <d376686c-b700-407c-9a88-88942ef3e776@quicinc.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/23 17:01, Miklos Szeredi wrote:
-> On Tue, 11 Jul 2023 at 06:36, Jiachen Zhang
-> <zhangjiachen.jaycee@bytedance.com> wrote:
->>
->> Add FOPEN_INVAL_ATTR so that the fuse daemon can ask kernel to invalidate
->> the attr cache on file open.
->>
->> The fi->attr_version should be increased when handling FOPEN_INVAL_ATTR.
->> Because if a FUSE request returning attributes (getattr, setattr, lookup,
->> and readdirplus) starts before a FUSE_OPEN replying FOPEN_INVAL_ATTR, but
->> finishes after the FUSE_OPEN, staled attributes will be set to the inode
->> and falsely clears the inval_mask.
->>
->> Signed-off-by: Jiachen Zhang <zhangjiachen.jaycee@bytedance.com>
->> ---
->>   fs/fuse/file.c            | 10 ++++++++++
->>   include/uapi/linux/fuse.h |  2 ++
->>   2 files changed, 12 insertions(+)
->>
->> diff --git a/fs/fuse/file.c b/fs/fuse/file.c
->> index de37a3a06a71..412824a11b7b 100644
->> --- a/fs/fuse/file.c
->> +++ b/fs/fuse/file.c
->> @@ -215,6 +215,16 @@ void fuse_finish_open(struct inode *inode, struct file *file)
->>                  file_update_time(file);
->>                  fuse_invalidate_attr_mask(inode, FUSE_STATX_MODSIZE);
->>          }
->> +
->> +       if (ff->open_flags & FOPEN_INVAL_ATTR) {
->> +               struct fuse_inode *fi = get_fuse_inode(inode);
->> +
->> +               spin_lock(&fi->lock);
->> +               fi->attr_version = atomic64_inc_return(&fc->attr_version);
+On 23/08/2023 12:06, hui liu wrote:
+> Hi Bryan:
 > 
-> No need to add locking or change fi->attr_version.  This will be done
-> next time the attributes are updated.
-> 
-> Thanks,
-> Miklos
+> This change is used to fix a real bug.
 
-Hi Miklos,
+okie dokie
 
-Thanks for the review! As said in the commit message, increasing the
-attr version here is to prevent the attr updated by staled operations. 
-If such cases happen, inval_mask will be falsely cleared, and 
-FOPEN_INVAL_ATTR takes no effect from the user's point of view.
+Could you please repost a v2 with a
 
-The increasing of attr_version here can also be explained as the
-attr has been updated from the server side.
+Fixes: a4422ff22142 ("usb: typec: qcom: Add Qualcomm PMIC Type-C driver")
 
-Thanks,
-Jiachen
+Cc: stable@vger.kernel.org
+
+And please add my
+
+Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+
+---
+bod
