@@ -2,40 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E35278575D
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 14:04:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 037ED78574D
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 13:59:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234710AbjHWMEF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 08:04:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43176 "EHLO
+        id S234618AbjHWL7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 07:59:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234634AbjHWMDu (ORCPT
+        with ESMTP id S232284AbjHWL7C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 08:03:50 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 433A2E63
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 05:03:49 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RW4cf19WWz4x1S;
-        Wed, 23 Aug 2023 22:03:46 +1000 (AEST)
-From:   Michael Ellerman <patch-notifications@ellerman.id.au>
-To:     Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Arnd Bergmann <arnd@arndb.de>
-In-Reply-To: <830923f0e0375a14609204246d302c7476a8f948.1692279855.git.christophe.leroy@csgroup.eu>
-References: <830923f0e0375a14609204246d302c7476a8f948.1692279855.git.christophe.leroy@csgroup.eu>
-Subject: Re: [PATCH] powerpc/4xx: Remove pika_dtm_[un]register_shutdown() to fix no previous prototype
-Message-Id: <169279175575.797584.12867145459460437286.b4-ty@ellerman.id.au>
-Date:   Wed, 23 Aug 2023 21:55:55 +1000
+        Wed, 23 Aug 2023 07:59:02 -0400
+Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3556AE5E;
+        Wed, 23 Aug 2023 04:59:01 -0700 (PDT)
+Received: from martin by viti.kaiser.cx with local (Exim 4.89)
+        (envelope-from <martin@viti.kaiser.cx>)
+        id 1qYmVl-0006ur-8N; Wed, 23 Aug 2023 13:58:57 +0200
+Date:   Wed, 23 Aug 2023 13:58:57 +0200
+From:   Martin Kaiser <lists@kaiser.cx>
+To:     Andrei Coardos <aboutphysycs@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rpi-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        alex@shruggie.ro, Jason@zx2c4.com,
+        bcm-kernel-feedback-list@broadcom.com, sbranden@broadcom.com,
+        rjui@broadcom.com, florian.fainelli@broadcom.com,
+        herbert@gondor.apana.org.au, olivia@selenic.com
+Subject: Re: [PATCH] char: hw_random: bcm2835-rng: removed call to
+ platform_set_drvdata()
+Message-ID: <20230823115857.qi44xa77doimlare@viti.kaiser.cx>
+References: <20230823111555.3734-1-aboutphysycs@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230823111555.3734-1-aboutphysycs@gmail.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
+Sender: Martin Kaiser <martin@viti.kaiser.cx>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -43,22 +46,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Aug 2023 15:44:26 +0200, Christophe Leroy wrote:
-> ppc4xx_defconfig with W=1 results in:
-> 
->   CC      arch/powerpc/platforms/44x/warp.o
-> arch/powerpc/platforms/44x/warp.c:369:5: error: no previous prototype for 'pika_dtm_register_shutdown' [-Werror=missing-prototypes]
->   369 | int pika_dtm_register_shutdown(void (*func)(void *arg), void *arg)
->       |     ^~~~~~~~~~~~~~~~~~~~~~~~~~
-> arch/powerpc/platforms/44x/warp.c:374:5: error: no previous prototype for 'pika_dtm_unregister_shutdown' [-Werror=missing-prototypes]
->   374 | int pika_dtm_unregister_shutdown(void (*func)(void *arg), void *arg)
->       |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> [...]
+Andrei Coardos (aboutphysycs@gmail.com) wrote:
 
-Applied to powerpc/next.
+> This function call was found to be unnecessary as there is no equivalent
+> platform_get_drvdata() call to access the private data of the driver. Also,
+> the private data is defined in this driver, so there is no risk of it being
+> accessed outside of this driver file.
 
-[1/1] powerpc/4xx: Remove pika_dtm_[un]register_shutdown() to fix no previous prototype
-      https://git.kernel.org/powerpc/c/81554d10b22a211e4598a067a0f84b6e9e492669
+You're right. The platform_get_drvdata call was removed in 
+4c04b3729 ("hwrng: bcm2835 - Use device managed helpers").
 
-cheers
+Reviewed-by: Martin Kaiser <martin@kaiser.cx>
