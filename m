@@ -2,134 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4881A785969
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 15:33:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCB6B785970
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 15:35:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236017AbjHWNdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 09:33:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48280 "EHLO
+        id S236097AbjHWNfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 09:35:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236037AbjHWNde (ORCPT
+        with ESMTP id S233141AbjHWNfR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 09:33:34 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 876E3E4A
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 06:33:08 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-68a3f0a7092so3108054b3a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 06:33:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692797565; x=1693402365;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xv5eVKePCA5KFSpA2pd5w6RyWeOWdv6lLQse6vIRw0g=;
-        b=d0rgYS8Y+6I1+6cozNjw+GCbqT2zjh8JbBLG+5cUq6a7l8pa16P7H7MhNGEeYzzkOm
-         l4owq0Keli6qT4oZNQX5IDcU/SrmoNm85FbK+7kl2MSMZJczgQC0MOS6NOElJ4Vligka
-         LQ5XQKtSN07khtSl7L+wx0+27mqT6nH0NCIiKh7OfyDFr7A+whwjzWmXU1QzfmrLIVL1
-         tdvZdaamBtkdSXIMRjB4ubOddSASK1EU5lhzV9T6Ko0MhnWtaiEgwiKD5WcA6hDeOt47
-         oC2jHxemd/cNAi+BqwrNVD8MNZp4CQtXwamK3h5qSyx8e8X1RFTiGjapTB/ACvAmoBLZ
-         HEEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692797565; x=1693402365;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xv5eVKePCA5KFSpA2pd5w6RyWeOWdv6lLQse6vIRw0g=;
-        b=TdhlnPMdZb+huUTPVWWEhMwWD5UcF2JvKolXnLmzZMwoie6+A/eumVN3/9p/O/tgna
-         rJ64ZpzdqdyJ06LMAcDTKEExf8zKuCNxLcyScEN0vGf4QtQXRMdhCZ03v3zQdO8uV4mM
-         umQ/dUpC84HqxYOjGUaKLgs49NjiRdjJo2LhNhuYLkLR58szPnGN3AbuDPyjlZhsjOdB
-         hElRV6ePFhAvxx2XJTvh2n3isDjY1L2S5VAKnmv2WDPGUdFbd3ADTJsyX2iJvbzyOh+U
-         C7iHtyOiF1dMById9+ff9BMZOQY2ph9j3uxzjYdxsPdAL9yju20cs/0umdreW01AbZdE
-         0M0Q==
-X-Gm-Message-State: AOJu0YylwGw8/mhDpROSrjF0yFyl3oQvcY+DOeiDp9YA/B1gltp1nPJw
-        ky8c//cOBB9mA38BhpnputU=
-X-Google-Smtp-Source: AGHT+IE81MW+dSvaXdO6AZ/Q5CDuianMLXm+d6NIWse2tOCvqLNqSdjiZ2QP2U/ORRuxCdQJXu3NOA==
-X-Received: by 2002:a05:6a00:2d08:b0:688:45a0:eb22 with SMTP id fa8-20020a056a002d0800b0068845a0eb22mr13346538pfb.1.1692797565242;
-        Wed, 23 Aug 2023 06:32:45 -0700 (PDT)
-Received: from ubuntu.myguest.virtualbox.org ([122.162.51.13])
-        by smtp.gmail.com with ESMTPSA id a21-20020aa780d5000000b00689f10adef9sm9569926pfn.67.2023.08.23.06.32.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Aug 2023 06:32:44 -0700 (PDT)
-Date:   Wed, 23 Aug 2023 19:02:40 +0530
-From:   Pavan Bobba <opensource206@gmail.com>
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     Forest Bond <forest@alittletooquiet.net>,
-        Michael Straube <straube.linux@gmail.com>,
-        Philipp Hortmann <philipp.g.hortmann@gmail.com>,
-        outreachy@lists.linux.dev, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] staging: vt6655: replace camel case by snake case
-Message-ID: <ZOYKePdysbxp8lDy@ubuntu.myguest.virtualbox.org>
-References: <ZOYBM9t0agzTKWwz@ubuntu.myguest.virtualbox.org>
- <alpine.DEB.2.22.394.2308231457310.3210@hadrien>
+        Wed, 23 Aug 2023 09:35:17 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EDAC8CDF;
+        Wed, 23 Aug 2023 06:35:00 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4B3361042;
+        Wed, 23 Aug 2023 06:35:41 -0700 (PDT)
+Received: from pluto (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A3CF73F740;
+        Wed, 23 Aug 2023 06:34:58 -0700 (PDT)
+Date:   Wed, 23 Aug 2023 14:34:55 +0100
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     AKASHI Takahiro <takahiro.akashi@linaro.org>,
+        Oleksii Moisieiev <Oleksii_Moisieiev@epam.com>,
+        "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>
+Subject: Re: [PATCH v4 3/4] pinctrl: Implementation of the generic
+ scmi-pinctrl driver
+Message-ID: <ZOYK_x6yc59pDwzA@pluto>
+References: <cover.1691518313.git.oleksii_moisieiev@epam.com>
+ <a6cefa60500cd46313ad6cda4f13f4985c0f5237.1691518314.git.oleksii_moisieiev@epam.com>
+ <ZOWHWLVtKXwRug+Z@octopus>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.22.394.2308231457310.3210@hadrien>
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ZOWHWLVtKXwRug+Z@octopus>
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 23, 2023 at 02:58:38PM +0200, Julia Lawall wrote:
+On Wed, Aug 23, 2023 at 01:13:12PM +0900, AKASHI Takahiro wrote:
+> Hi Oleksii,
 > 
-> >  		}
-> > -		if ((wDelay < W_MAX_TIMEOUT) &&
-> > -		    (!(byWait & I2MCSR_NACK))) {
-> > +		if ((delay < W_MAX_TIMEOUT) &&
-> 
-> Maybe the W_ should also be dropped?
-even non staging driver have this
-https://elixir.bootlin.com/linux/v6.5-rc7/source/drivers/net/ethernet/via/via-velocity.h#L959
 
-> >   *  Out:
-> > - *      pbyEepromRegs   - EEPROM content Buffer
-> > + *      eepromregs   - EEPROM content Buffer
-> 
-> Here you could add some spaces to get the - EEPROM to line up with the
-> rest.  Likewise later.
-> 
-> julia
+Hi AKASHI, Oleksii,
 
-ok 
+> On Tue, Aug 08, 2023 at 06:25:35PM +0000, Oleksii Moisieiev wrote:
+> > scmi-pinctrl driver implements pinctrl driver interface and using
+> > SCMI protocol to redirect messages from pinctrl subsystem SDK to
+> > SCMI platform firmware, which does the changes in HW.
+> > 
+> > Signed-off-by: Oleksii Moisieiev <oleksii_moisieiev@epam.com>
 
-> >   *
-> >   * Return Value: none
-> >   *
-> >   */
-> > -void SROMvReadAllContents(void __iomem *iobase, unsigned char *pbyEepromRegs)
-> > +void SROMvReadAllContents(void __iomem *iobase, unsigned char *eepromregs)
-> >  {
-> >  	int     ii;
-> >
-> >  	/* ii = Rom Address */
-> >  	for (ii = 0; ii < EEP_MAX_CONTEXT_SIZE; ii++) {
-> > -		*pbyEepromRegs = SROMbyReadEmbedded(iobase,
-> > +		*eepromregs = SROMbyReadEmbedded(iobase,
-> >  						    (unsigned char)ii);
-> > -		pbyEepromRegs++;
-> > +		eepromregs++;
-> >  	}
-> >  }
-> >
-> > @@ -122,19 +122,19 @@ void SROMvReadAllContents(void __iomem *iobase, unsigned char *pbyEepromRegs)
-> >   *  In:
-> >   *      iobase          - I/O base address
-> >   *  Out:
-> > - *      pbyEtherAddress - Ethernet Address buffer
-> > + *      etheraddress - Ethernet Address buffer
-> >   *
-> >   * Return Value: none
-> >   *
-> >   */
-> >  	}
-> >  }
-> > --
-> > 2.34.1
-> >
-> >
-> >
+[snip]
+
+> > +static int pinctrl_scmi_pinconf_get(struct pinctrl_dev *pctldev, unsigned int _pin,
+> > +				    unsigned long *config)
+> > +{
+> > +	int ret;
+> > +	struct scmi_pinctrl *pmx = pinctrl_dev_get_drvdata(pctldev);
+> > +	enum pin_config_param config_type;
+> > +	unsigned long config_value;
+> > +
+> > +	if (!config)
+> > +		return -EINVAL;
+> > +
+> > +	config_type = pinconf_to_config_param(*config);
+> > +
+> > +	ret = pinctrl_ops->config_get(pmx->ph, _pin, PIN_TYPE, config_type, &config_value);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	*config = pinconf_to_config_packed(config_type, config_value);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int pinctrl_scmi_pinconf_set(struct pinctrl_dev *pctldev,
+> > +				    unsigned int _pin,
+> > +				    unsigned long *configs,
+> > +				    unsigned int num_configs)
+> > +{
+> > +	int i, ret;
+> > +	struct scmi_pinctrl *pmx = pinctrl_dev_get_drvdata(pctldev);
+> > +	enum pin_config_param config_type;
+> > +	unsigned long config_value;
+> > +
+> > +	if (!configs || num_configs == 0)
+> > +		return -EINVAL;
+> > +
+> > +	for (i = 0; i < num_configs; i++) {
+> > +		config_type = pinconf_to_config_param(configs[i]);
+> > +		config_value = pinconf_to_config_argument(configs[i]);
+> 
+> The generic pinconf parameters defined as "enum pin_config_param"
+> do not exactly match with a set of SCMI's configuration types defined
+> in Table 23 in the section 4.11.2.6 "PINCTRL_CONFIG_GET".
+> pinconf_to_config_param() simply masks the lowest 8 bits of the input
+> value, but doesn't convert anything.
+
+Indeed the SCMI Types table and the Linux Pinctrl subsystem types are
+similar but not really the same; some kind of conversion/mapping will be
+needed.
+
+Some trivial conversion layer will be needed also in order to address
+here any of the possible future changes in the Linux pinctrl subsystem
+definitions without having to change the SCMI server side
+(that typically is fw...and that anyway is bound to the SCMI spec)
+
+Thanks,
+Cristian
+
