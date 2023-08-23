@@ -2,99 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DF67785CBC
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 17:55:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8815F785CC0
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 17:56:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237352AbjHWPzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 11:55:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38384 "EHLO
+        id S237354AbjHWP4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 11:56:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234786AbjHWPzK (ORCPT
+        with ESMTP id S235629AbjHWP4g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 11:55:10 -0400
-Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3943E5F
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 08:55:08 -0700 (PDT)
-Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-58ca499456dso62876277b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 08:55:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692806108; x=1693410908;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=D5pfJtYALrOy10ugSYtWsWCb+1mVFN7xrMWbS1+dIm4=;
-        b=jTx2Xoca2FNIefIIdk2CZzjW+bIp4mr/uyVEEXrvtSC417hepEwvHBm8tboVAb8D4s
-         nvAQavxRZyjuEgGB0uX1maRV3bpfT699xM2sC4tEPIGgoTO9f/fgk/PSUJrv7a9gnHAc
-         b/628CUCMFZPE9YQdcMfV4kn9JgJxOT23rIGI8MYv2XQh7jwq8GMG6xGodcrDNBP2uI8
-         Z2FCAi2A1nIzCbSpJP/R8kXV4C7lrx2vxmvYJ1GoKz+q6JyDOMUGB0YQMLvz7HPsHc65
-         X6KNrMzsvPxPhfzamcdHG/f2yt068mUzvo6VIw/Il2j2xn7HsA+QmV3sQO4OZmJUSwel
-         fJdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692806108; x=1693410908;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=D5pfJtYALrOy10ugSYtWsWCb+1mVFN7xrMWbS1+dIm4=;
-        b=Z8fLB6UXys7t/C/rGg5C1NwMkGOL6514VY+9LDDQ/p0wvKoHYJcaqySEHyOTP5P8zb
-         YoPrPFPM8fkCOuSg1JPMQrt7+dEAd58tI8GL5trMjSQ+b+3ykBBKQSdLyyjHvvkZdsqY
-         ZOGydqfPsHmzGnVxK2sJ1FloRT5o73bXobwkXXYHbUuYJl9nPHhiZgg5g1h5tZuPWYpQ
-         u2AJn15kkRhOoFXY7Gmws4h9TR0yggHYGJIFXF7pezRtU/9sxYhSiSbYH7lLO0CRI0aA
-         8UbVDaUiTMRdniOrLTiRM177u6bZkyS4gJQUYrBsAlvT/vA6/XndTwZtvLMx3ATsAmWj
-         xZ8g==
-X-Gm-Message-State: AOJu0YyNTZNEIThuT8IYxdm7/aIGJqEzOZdeV1F9EBZ5FNbZ4qztBycM
-        YIcQFH9wwvAGvUO1cMlpUHZRLO+RensA7hhca8MOtw==
-X-Google-Smtp-Source: AGHT+IHPwTFcG8Rs5xra2L8n7+FakwWLs/CKLvB8qkq4zWmOeDPeZ0NHII3jC8pM+SwB+djmNeGRuRx60ihwEoaOA+Q=
-X-Received: by 2002:a81:c211:0:b0:579:9cae:e0ee with SMTP id
- z17-20020a81c211000000b005799caee0eemr13494444ywc.20.1692806108154; Wed, 23
- Aug 2023 08:55:08 -0700 (PDT)
+        Wed, 23 Aug 2023 11:56:36 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2B69E5F;
+        Wed, 23 Aug 2023 08:56:33 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6B56E61593;
+        Wed, 23 Aug 2023 15:56:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B302C433C8;
+        Wed, 23 Aug 2023 15:56:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692806192;
+        bh=7gJ7d9y1sm6DjvQXX2n3/E/aVkpRumzZXdYTZT5fhL0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FbCLrkv3ZJ61R3+6pkRxoC/KgZ08r4IgXUsgiuYSB0U69lRQfDEop3d5foqyryTJq
+         duGpE+TBMZwSviWCr9Samz0R0NdZBDUaDnOzBW3St38sqLg2m69wWTjFAY6VMT17pf
+         NsfsM6CQQm9ia2EVCcSOmtN0/eU1ut5boQB3QlrpbXhmr3IOvCBI5dSJuBoNy+lLnO
+         aZcHZFJtD/++zE9aQg5JYy34A/SsSuTs2MJSOxZD0t3NUmw4gYi5VNS7B6uWz8eCIa
+         k3HnKXBMcOpI4YRBN+kbLqtoVZt1rrIgE5OjUpEKzWSdisTNprkzhQnRt8LY5CgeA6
+         rmHtZv0nsKwaw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 6F18240722; Wed, 23 Aug 2023 12:56:29 -0300 (-03)
+Date:   Wed, 23 Aug 2023 12:56:29 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        James Clark <james.clark@arm.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        John Garry <john.g.garry@oracle.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Jing Zhang <renyu.zj@linux.alibaba.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Rob Herring <robh@kernel.org>,
+        Gaosheng Cui <cuigaosheng1@huawei.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 00/25] Lazily load PMU data
+Message-ID: <ZOYsLZi44G84IWFk@kernel.org>
+References: <20230823080828.1460376-1-irogers@google.com>
 MIME-Version: 1.0
-References: <20230823040755.2217942-1-ajye_huang@compal.corp-partner.google.com>
- <dd6d51b0-cc60-4fb7-932d-1117143d1715@sirena.org.uk> <CALprXBYxrwBW6HLP5MwYhFh1_Skei+pLbXd7yNAEuhLTQJLVPg@mail.gmail.com>
- <2ebbcb7a-bc0d-4f62-9f4b-706f0270b71a@sirena.org.uk>
-In-Reply-To: <2ebbcb7a-bc0d-4f62-9f4b-706f0270b71a@sirena.org.uk>
-From:   Ajye Huang <ajye_huang@compal.corp-partner.google.com>
-Date:   Wed, 23 Aug 2023 23:54:56 +0800
-Message-ID: <CALprXBYEqAoj5H3n+wszocmhRQ96vLq5d2tYhBOdJnCbs_YY-w@mail.gmail.com>
-Subject: Re: [PATCH v1] Revert "ASoC: Intel: Add rpl_nau8318_8825 driver"
-To:     Mark Brown <broonie@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Akihiko Odaki <akihiko.odaki@gmail.com>,
-        Yong Zhi <yong.zhi@intel.com>,
-        ye xingchen <ye.xingchen@zte.com.cn>,
-        "balamurugan . c" <balamurugan.c@intel.com>,
-        Libin Yang <libin.yang@intel.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        David Lin <CTLIN0@nuvoton.com>, Brent Lu <brent.lu@intel.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Terry Cheong <htcheong@chromium.org>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Gongjun Song <gongjun.song@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>, apoorv <apoorv@intel.com>,
-        alsa-devel@alsa-project.org, kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230823080828.1460376-1-irogers@google.com>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 23, 2023 at 11:51=E2=80=AFPM Mark Brown <broonie@kernel.org> wr=
-ote:
->
-> That's my CI tree, things in there aren't going anywhere unless they
-> pass testing.
+Em Wed, Aug 23, 2023 at 01:08:03AM -0700, Ian Rogers escreveu:
+> Lazily load PMU data both from sysfs and json files. Reorganize
+> json data to be more PMU oriented to facilitate this, for
+> example, json data is now sorted into arrays for their PMU.
+> 
+> In refactoring the code some changes were made to get rid of maximum
+> encoding sizes for events (256 bytes), with input files being directly
+> passed to the lex generated code. There is also a small event parse
+> error message improvement.
+> 
+> Some results from an Intel tigerlake laptop running Debian:
+> 
+> Binary size reduction of 1.4% or 143,264 bytes because the PMU
+> name no longer appears in the string.
+> 
+> stat -e cpu/cycles/ minor faults reduced from 1733 to 1667, open calls reduced
+> from 171 to 94.
+> 
+> stat default minor faults reduced from 1085 to 1727, open calls reduced
+> from 654 to 343.
+> 
+> Average PMU scanning reduced from 4720.641usec to 2927.293usec.
+> Average core PMU scanning reduced from 1004.658usec to 232.668usec
+> (4.3x faster).
 
-Hi, Mark,
+I'm now chasing this one when building it on ubuntu arm64
 
-Thank you for your explanation.
+  CC      /tmp/build/perf/util/env.o
+arch/arm64/util/../../arm/util/cs-etm.c: In function 'cs_etm_validate_context_id':
+arch/arm64/util/../../arm/util/cs-etm.c:82:26: error: passing argument 1 of 'perf_pmu__format_bits' from incompatible pointer type [-Werror=incompatible-pointer-types]
+   (perf_pmu__format_bits(&cs_etm_pmu->format, "contextid") |
+                          ^
+In file included from arch/arm64/util/../../arm/util/../../../util/header.h:13:0,
+                 from arch/arm64/util/../../arm/util/../../../util/session.h:7,
+                 from arch/arm64/util/../../arm/util/cs-etm.c:31:
+arch/arm64/util/../../arm/util/../../../util/pmu.h:224:7: note: expected 'struct perf_pmu *' but argument is of type 'struct list_head *'
+ __u64 perf_pmu__format_bits(struct perf_pmu *pmu, const char *name);
+       ^~~~~~~~~~~~~~~~~~~~~
+arch/arm64/util/../../arm/util/cs-etm.c:83:26: error: passing argument 1 of 'perf_pmu__format_bits' from incompatible pointer type [-Werror=incompatible-pointer-types]
+    perf_pmu__format_bits(&cs_etm_pmu->format, "contextid1") |
+                          ^
+In file included from arch/arm64/util/../../arm/util/../../../util/header.h:13:0,
+                 from arch/arm64/util/../../arm/util/../../../util/session.h:7,
+                 from arch/arm64/util/../../arm/util/cs-etm.c:31:
+arch/arm64/util/../../arm/util/../../../util/pmu.h:224:7: note: expected 'struct perf_pmu *' but argument is of type 'struct list_head *'
+ __u64 perf_pmu__format_bits(struct perf_pmu *pmu, const char *name);
+       ^~~~~~~~~~~~~~~~~~~~~
+arch/arm64/util/../../arm/util/cs-etm.c:84:26: error: passing argument 1 of 'perf_pmu__format_bits' from incompatible pointer type [-Werror=incompatible-pointer-types]
+    perf_pmu__format_bits(&cs_etm_pmu->format, "contextid2"));
+                          ^
+In file included from arch/arm64/util/../../arm/util/../../../util/header.h:13:0,
+                 from arch/arm64/util/../../arm/util/../../../util/session.h:7,
+                 from arch/arm64/util/../../arm/util/cs-etm.c:31:
+arch/arm64/util/../../arm/util/../../../util/pmu.h:224:7: note: expected 'struct perf_pmu *' but argument is of type 'struct list_head *'
+ __u64 perf_pmu__format_bits(struct perf_pmu *pmu, const char *name);
+       ^~~~~~~~~~~~~~~~~~~~~
+arch/arm64/util/../../arm/util/cs-etm.c:109:28: error: passing argument 1 of 'perf_pmu__format_bits' from incompatible pointer type [-Werror=incompatible-pointer-types]
+      perf_pmu__format_bits(&cs_etm_pmu->format, "contextid1")) {
+                            ^
+In file included from arch/arm64/util/../../arm/util/../../../util/header.h:13:0,
+                 from arch/arm64/util/../../arm/util/../../../util/session.h:7,
+                 from arch/arm64/util/../../arm/util/cs-etm.c:31:
+arch/arm64/util/../../arm/util/../../../util/pmu.h:224:7: note: expected 'struct perf_pmu *' but argument is of type 'struct list_head *'
+ __u64 perf_pmu__format_bits(struct perf_pmu *pmu, const char *name);
+       ^~~~~~~~~~~~~~~~~~~~~
+arch/arm64/util/../../arm/util/cs-etm.c:125:28: error: passing argument 1 of 'perf_pmu__format_bits' from incompatible pointer type [-Werror=incompatible-pointer-types]
+      perf_pmu__format_bits(&cs_etm_pmu->format, "contextid2")) {
+                            ^
+In file included from arch/arm64/util/../../arm/util/../../../util/header.h:13:0,
+                 from arch/arm64/util/../../arm/util/../../../util/session.h:7,
+                 from arch/arm64/util/../../arm/util/cs-etm.c:31:
+arch/arm64/util/../../arm/util/../../../util/pmu.h:224:7: note: expected 'struct perf_pmu *' but argument is of type 'struct list_head *'
+ __u64 perf_pmu__format_bits(struct perf_pmu *pmu, const char *name);
+       ^~~~~~~~~~~~~~~~~~~~~
+  CC      /tmp/build/perf/bench/epoll-ctl.o
+arch/arm64/util/../../arm/util/cs-etm.c: In function 'cs_etm_validate_timestamp':
+arch/arm64/util/../../arm/util/cs-etm.c:154:30: error: passing argument 1 of 'perf_pmu__format_bits' from incompatible pointer type [-Werror=incompatible-pointer-types]
+        perf_pmu__format_bits(&cs_etm_pmu->format, "timestamp")))
+                              ^
+In file included from arch/arm64/util/../../arm/util/../../../util/header.h:13:0,
+                 from arch/arm64/util/../../arm/util/../../../util/session.h:7,
+                 from arch/arm64/util/../../arm/util/cs-etm.c:31:
+arch/arm64/util/../../arm/util/../../../util/pmu.h:224:7: note: expected 'struct perf_pmu *' but argument is of type 'struct list_head *'
+ __u64 perf_pmu__format_bits(struct perf_pmu *pmu, const char *name);
+       ^~~~~~~~~~~~~~~~~~~~~
+  CC      /tmp/build/perf/tests/vmlinux-kallsyms.o
+  CC      /tmp/build/perf/arch/arm64/util/mem-events.o
+  CC      /tmp/build/perf/bench/synthesize.o
+  CC      /tmp/build/perf/tests/perf-record.o
+  CC      /tmp/build/perf/bench/kallsyms-parse.o
+arch/arm64/util/arm-spe.c: In function 'arm_spe_recording_options':
+arch/arm64/util/arm-spe.c:233:30: error: passing argument 1 of 'perf_pmu__format_bits' from incompatible pointer type [-Werror=incompatible-pointer-types]
+  bit = perf_pmu__format_bits(&arm_spe_pmu->format, "pa_enable");
+                              ^
+In file included from arch/arm64/util/../../../util/header.h:13:0,
+                 from arch/arm64/util/../../../util/session.h:7,
+                 from arch/arm64/util/arm-spe.c:19:
+arch/arm64/util/../../../util/pmu.h:224:7: note: expected 'struct perf_pmu *' but argument is of type 'struct list_head *'
+ __u64 perf_pmu__format_bits(struct perf_pmu *pmu, const char *name);
+       ^~~~~~~~~~~~~~~~~~~~~
+  CC      /tmp/build/perf/bench/find-bit-bench.o
+  CC      /tmp/build/perf/tests/evsel-roundtrip-name.o
+  CC      /tmp/build/perf/bench/inject-buildid.o
+  CC      /tmp/build/perf/util/event.o
+
