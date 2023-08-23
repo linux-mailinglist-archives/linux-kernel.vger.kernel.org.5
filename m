@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8587785277
+	by mail.lfdr.de (Postfix) with ESMTP id 77F42785275
 	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 10:13:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234028AbjHWINr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 04:13:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34542 "EHLO
+        id S233870AbjHWIM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 04:12:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233783AbjHWIJX (ORCPT
+        with ESMTP id S233730AbjHWIJ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 04:09:23 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA06710C1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 01:08:40 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-58cb845f2f2so72838757b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 01:08:40 -0700 (PDT)
+        Wed, 23 Aug 2023 04:09:28 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB16010C7
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 01:08:42 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-58f9db8bc1dso67671387b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 01:08:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692778119; x=1693382919;
+        d=google.com; s=20221208; t=1692778122; x=1693382922;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=zbOd4cktnqwY3C7uOx37I8EsWOiY3ojcBmbOEcOxtrg=;
-        b=TVjeVQycUPbwnNb2TI5vTuU5hq4DhJNEjTYI2IlQgwLqdO0PCxXIn80etXfjCr0Gqy
-         rdwS4hbhtA2laZE8pKKUgf/kJFKIIeJw3hbft9tSjDTb0uwa7XoLsoTCDIRTkd/ws75T
-         s1zftdfnQCEfbkM8ssjC0CLnqkw3+HL9h10VbX3wxWp3qC+03Uct6bmSXDHtYt68W97+
-         vfDrIfUxFdXIDl8LvxYwMz5NxFe2Qwu3QFTLH2UmCHGlIsUhsO3302gdoqMCVq2dECDZ
-         dI8TUMAN3/XgCynHdQU8HN344ydOkFVTKj5ZXaZhEQUsU/WSg551gtpZa4nKIAxkSCU0
-         6DKQ==
+        bh=sPnFmXeyFkpH92acmVYaB7s7M5HAfFjCQ+0LeXyrC8o=;
+        b=erD6se6wWYNxMRNnxpJKT+CkcnlF9rW5mxGvW3Hrljaky28uFZPiEaO6MslqXK5AOc
+         SVMP3UixpegWhIQIlqbDZs2YOqCJmckqAwLVUWg80OWPflbvvijJeU2tInQGtCCprqrM
+         nF97qa8HGpZjowMwWZI3ydfAH9IJ+0c9epGVA7OlgMnu8HvdPBv1Xc/Klp3ewjXGjZZy
+         Kzc4gVOmYwrJ27ycdR1G0TBREz7yaFJcBjeVj+jRRU14tc9ThkBcmuzv8Pj8IitmmBv8
+         vq2e0gsecECUiHPr+/FNa6bvqpE55N/yDk8JqlvCndNnbUWZSg3I0SCoy0WhixbhhDI2
+         YzPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692778119; x=1693382919;
+        d=1e100.net; s=20221208; t=1692778122; x=1693382922;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zbOd4cktnqwY3C7uOx37I8EsWOiY3ojcBmbOEcOxtrg=;
-        b=j44oL4Q/Qjg8kV3RHAAG0rfn+KywSsFdQo9Ebh9F9cTpiAU7brSErXhSsLYYZaiuqU
-         xcCxHyEv7gNocXk10JLA6xrsXXVR3O6lj2dgcWgSr60zq//mgTWUJmf7wxKGXnfLUjdu
-         Z9HZ/9QCBvbudrMm4n/fs7McUgntSqldNSOmUxrZevMW+oA4tGFjQDEU52Lx/Bu1p776
-         uBpC0z91vSbCOXEispI1MYIQNdftdKyFInvKfGC1DurNVYXvkWpdz3a5inmuN4qz+Zwi
-         ofCkt3EORWNZFBZtjDQl5ZFc/EyKR1e+hJPbgDu5GNg+sTTUtxLOjwBJ5wK/5mPR6Szs
-         TZSw==
-X-Gm-Message-State: AOJu0YyQltjvB3jgI/l/Z0McPs1QXx1C5wsQDscQ/o6+bBA91HNckohE
-        zegt/jErOVlNovVSclyuwJunvXEIgId4
-X-Google-Smtp-Source: AGHT+IGXKT84Ue6RywhJHDK9fqe7aLr7VA0C6SOXlI2DXTTcq1jLdX9D5qIv5tM8tI38bPx1mkTkKSHNVhmo
+        bh=sPnFmXeyFkpH92acmVYaB7s7M5HAfFjCQ+0LeXyrC8o=;
+        b=kLDHHHlCtSgPZrJZLhzTKvfEQMqiH6JTvF/JIaY+xsbjN8FM+OLIiMKJZKcE2sk086
+         kwXT/3LKnvAG92NcEl3inOfJoxnwWl9x7bbCoFRhCmFD8NEkCw0WpZ0ZXUK2ZwF5MM4/
+         1WbUJPFfNXFHN3WuScot/E5BovmHIbGGLnt7NMQ33JpHCk/Vmk9/Q64ZGS+abpZKK+LC
+         0FhWxoBFqv+vpKTKSBseH5TarIGOcKCPTskrZ55CXnEeJvuNgR/4oKuCVDivvv29XR1p
+         0yst9YUBgxqvQAMgWTsJy1/IE7kM14H38uWiXC0qNFTkE01gme/wQBKar239eHIc0GYr
+         k2xw==
+X-Gm-Message-State: AOJu0YzZhucUhekzG+z5dTdO2bVYZ4fR2Jd1Z0nfwW1s8ctdxa39STHD
+        1zjaYAZnIQ+Yg4BYEoN8tV83ZiXNnYS8
+X-Google-Smtp-Source: AGHT+IFtJ3nG1pLmJ6VyeysdGuexhwYFJCPbmdMqMcV4rPcyeYllKmisw8+apKwTOg7hrLiSw+0oVAHvOB1/
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:3971:e84:f508:9a36])
- (user=irogers job=sendgmr) by 2002:a25:e70e:0:b0:d74:6a19:f91b with SMTP id
- e14-20020a25e70e000000b00d746a19f91bmr126206ybh.3.1692778119481; Wed, 23 Aug
- 2023 01:08:39 -0700 (PDT)
-Date:   Wed, 23 Aug 2023 01:08:06 -0700
+ (user=irogers job=sendgmr) by 2002:a05:690c:368b:b0:589:dbc8:3d11 with SMTP
+ id fu11-20020a05690c368b00b00589dbc83d11mr169092ywb.9.1692778121920; Wed, 23
+ Aug 2023 01:08:41 -0700 (PDT)
+Date:   Wed, 23 Aug 2023 01:08:07 -0700
 In-Reply-To: <20230823080828.1460376-1-irogers@google.com>
-Message-Id: <20230823080828.1460376-4-irogers@google.com>
+Message-Id: <20230823080828.1460376-5-irogers@google.com>
 Mime-Version: 1.0
 References: <20230823080828.1460376-1-irogers@google.com>
 X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
-Subject: [PATCH v1 03/25] perf pmu: Move perf_pmu__set_format to pmu.y
+Subject: [PATCH v1 04/25] perf pmu: Reduce scope of perf_pmu_error
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -83,74 +83,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Avoid having the function in the C and header file, as it is only used
-locally by pmu.y.
+Move declaration from header file to pmu.y and make static.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/pmu.c | 12 ------------
- tools/perf/util/pmu.h |  1 -
- tools/perf/util/pmu.y | 12 ++++++++++++
- 3 files changed, 12 insertions(+), 13 deletions(-)
+ tools/perf/util/pmu.h | 1 -
+ tools/perf/util/pmu.y | 4 +++-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-index 7683c6749d66..40999e1fab8f 100644
---- a/tools/perf/util/pmu.c
-+++ b/tools/perf/util/pmu.c
-@@ -1417,18 +1417,6 @@ int perf_pmu__new_format(struct list_head *list, char *name,
- 	return 0;
- }
- 
--void perf_pmu__set_format(unsigned long *bits, long from, long to)
--{
--	long b;
--
--	if (!to)
--		to = from;
--
--	memset(bits, 0, BITS_TO_BYTES(PERF_PMU_FORMAT_BITS));
--	for (b = from; b <= to; b++)
--		__set_bit(b, bits);
--}
--
- void perf_pmu__del_formats(struct list_head *formats)
- {
- 	struct perf_pmu_format *fmt, *tmp;
 diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
-index 7ff925224165..9c9ea40b9c71 100644
+index 9c9ea40b9c71..5394c85d20b9 100644
 --- a/tools/perf/util/pmu.h
 +++ b/tools/perf/util/pmu.h
-@@ -231,7 +231,6 @@ void perf_pmu_error(struct list_head *list, char *name, void *scanner, char cons
+@@ -227,7 +227,6 @@ int perf_pmu__check_alias(struct perf_pmu *pmu, struct list_head *head_terms,
+ 			  struct perf_pmu_info *info);
+ struct list_head *perf_pmu__alias(struct perf_pmu *pmu,
+ 				  struct list_head *head_terms);
+-void perf_pmu_error(struct list_head *list, char *name, void *scanner, char const *msg);
  
  int perf_pmu__new_format(struct list_head *list, char *name,
  			 int config, unsigned long *bits);
--void perf_pmu__set_format(unsigned long *bits, long from, long to);
- int perf_pmu__format_parse(int dirfd, struct list_head *head);
- void perf_pmu__del_formats(struct list_head *formats);
- bool perf_pmu__has_format(const struct perf_pmu *pmu, const char *name);
 diff --git a/tools/perf/util/pmu.y b/tools/perf/util/pmu.y
-index 3d46cca3bb94..9bd9e30791ff 100644
+index 9bd9e30791ff..d861a5bfa3bd 100644
 --- a/tools/perf/util/pmu.y
 +++ b/tools/perf/util/pmu.y
-@@ -21,6 +21,18 @@ do { \
+@@ -21,6 +21,8 @@ do { \
                  YYABORT; \
  } while (0)
  
-+static void perf_pmu__set_format(unsigned long *bits, long from, long to)
-+{
-+	long b;
++static void perf_pmu_error(struct list_head *list, char *name, void *scanner, char const *msg);
 +
-+	if (!to)
-+		to = from;
-+
-+	memset(bits, 0, BITS_TO_BYTES(PERF_PMU_FORMAT_BITS));
-+	for (b = from; b <= to; b++)
-+		__set_bit(b, bits);
-+}
-+
- %}
+ static void perf_pmu__set_format(unsigned long *bits, long from, long to)
+ {
+ 	long b;
+@@ -93,7 +95,7 @@ PP_VALUE
  
- %token PP_CONFIG
+ %%
+ 
+-void perf_pmu_error(struct list_head *list __maybe_unused,
++static void perf_pmu_error(struct list_head *list __maybe_unused,
+ 		    char *name __maybe_unused,
+ 		    void *scanner __maybe_unused,
+ 		    char const *msg __maybe_unused)
 -- 
 2.42.0.rc1.204.g551eb34607-goog
 
