@@ -2,97 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 065FA785A2A
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 16:15:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A88E6785A33
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 16:16:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236220AbjHWOPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 10:15:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46586 "EHLO
+        id S234732AbjHWOQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 10:16:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236188AbjHWOPc (ORCPT
+        with ESMTP id S234648AbjHWOP7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 10:15:32 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 461CAE57;
-        Wed, 23 Aug 2023 07:15:30 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1692800128;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tC3legbKEgh6GaaSn5yn0aimdQy2CL6olThV+is3i/s=;
-        b=sRRyH1OEK1xpWU6ptY+xbUO0aV2vsPkBsmcJa6O4urXCbLGekvw7terr9WvATbiptHdkYf
-        xt5yWFn6vPnZq61Oavlx5zIoX5KaSiqyIs6Trxn8rgn92dCTQRxKggCCP/J5flumSc2Mlf
-        UBG6H4x1lwJMdidZ3o46qeqI6iHDlkPUG2F8TiH024VrILCJaBrQ1XMOVfK7x0uX7tDNHD
-        DAbWJ5FL7R4vsisj4BwPYbO2yHkCPoofEKtxnx8fl5ZX9u4xtulo5QrAy4g9ofv6dFyKzE
-        XkcWxyh5s22ZANx57zn1FadqYzi85hQRjRHxU9vHQV/l37T3PmTAvD9bkf5TBA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1692800128;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tC3legbKEgh6GaaSn5yn0aimdQy2CL6olThV+is3i/s=;
-        b=MavnPf9nYe9evfczAehjxfX9HzO8oe/uGl9hyapHj2jdVIqagf2I/DQx6+MNEOJdt5Fmw2
-        eVxr+alc9JcjDhDw==
-To:     =?utf-8?B?6buE5bCR5rOi?= <huangshaobo3@xiaomi.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Ahmed S. Darwish" <darwi@linutronix.de>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Kevin Tian <kevin.tian@intel.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     =?utf-8?B?5p2O6auY6bmP?= <chenwei29@xiaomi.com>,
-        =?utf-8?B?5qKB5Lyf?= =?utf-8?B?6bmP?= <weipengliang@xiaomi.com>,
-        =?utf-8?B?57+B6YeR6aOe?= <wengjinfei@xiaomi.com>,
-        =?utf-8?B?54aK5Lqu?= <xiongliang@xiaomi.com>
-Subject: Re: Subject: [PATCH] pci/msi: remove redundant calculation in
- msi_setup_msi_desc
-In-Reply-To: <3ebf5d8032ad418da4f24516cd23406e@xiaomi.com>
-References: <3ebf5d8032ad418da4f24516cd23406e@xiaomi.com>
-Date:   Wed, 23 Aug 2023 16:15:27 +0200
-Message-ID: <87bkexetfk.ffs@tglx>
+        Wed, 23 Aug 2023 10:15:59 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED44AE74;
+        Wed, 23 Aug 2023 07:15:53 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 769A365578;
+        Wed, 23 Aug 2023 14:15:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADC97C433C7;
+        Wed, 23 Aug 2023 14:15:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692800152;
+        bh=A5t7oKsaIFF6FaZ2i4bS5BdT5O+At3AAk1Cjr/ElblA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=K0Sv6LHl3X/RIfE4CoF2ftmMsisRJKONOECbcErxas0HY8QfdLwsXN30Ev50cHvR5
+         /w4LcH+ko8ibR2eoWHC9X6Q4gfVyAGKw3soHtjsYtJKdoyd02tNkcBzskWBu6ift2O
+         z1mlROrJ1owhpnlxoxbXP7olo9pWwkbN13Uv/peaSnFBU1Js+rdSvatarIo7WdTsAx
+         D5X0JCZIl3RNIe9YuUhnIWdz7S78vL7q2mf7WPv22aKpE0mTlOePksEJC8D7hu1gIj
+         xR9wZ7JOZa4tzLBnCJkjEuc9NzTKmbLxjULw0s5EMJUo4UInk9ryYgkPoWxMhMaO4i
+         To3CXROgRp+Sg==
+Date:   Wed, 23 Aug 2023 16:15:47 +0200
+From:   Andi Shyti <andi.shyti@kernel.org>
+To:     Patrick Rudolph <patrick.rudolph@9elements.com>
+Cc:     Peter Rosin <peda@axentia.se>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        naresh.solanki@9elements.com,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [v16 2/4] dt-bindings: i2c: Add Maxim MAX735x/MAX736x variants
+Message-ID: <20230823141547.w33ieqnu4oshkhld@intel.intel>
+References: <20230821062027.2631725-1-patrick.rudolph@9elements.com>
+ <20230821062027.2631725-3-patrick.rudolph@9elements.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230821062027.2631725-3-patrick.rudolph@9elements.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18 2023 at 07:26, =E9=BB=84=E5=B0=91=E6=B3=A2 wrote:
+Hi Patrick,
 
-Your patch is corrupt:
+On Mon, Aug 21, 2023 at 08:20:22AM +0200, Patrick Rudolph wrote:
+> Update the pca954x bindings to add support for the Maxim MAX735x/MAX736x
+> chips. The functionality will be provided by the existing pca954x driver.
+> 
+> For chips that are powered off by default add a regulator called vdd-supply.
+> 
+> Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
- Applying: Subject: [PATCH] pci/msi: remove redundant calculation in msi_se=
-tup_msi_desc
- error: corrupt patch at line 12
+you forgot:
 
-It's DOS mangled and whitespace damaged.
+Acked-by: Peter Rosin <peda@axentia.se>
 
-> Whether to support 64-bit address status has been calculated before,
-> and the calculation result can be used directly afterwards, so use
-> msi_attrib.is_64 to avoid double calculation.
-
-I'm not seeing what this solves:
-
-> -       if (control & PCI_MSI_FLAGS_64BIT)
-> +       if (desc.pci.msi_attrib.is_64)
-
-Both variants resolve to a test of a bit and a conditional instruction
-on the result. It's exactly zero difference in terms of "calculation".
-
-So all this does is change the memory location to test. Not more not
-less. It does not generate better code and does not save anything.
+Adding it for b4 and patchwork.
 
 Thanks,
-
-        tglx
-
+Andi
