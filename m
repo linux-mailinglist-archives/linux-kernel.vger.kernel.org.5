@@ -2,84 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9FC57852B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 10:31:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 496147852AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 10:27:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233871AbjHWIbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 04:31:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54426 "EHLO
+        id S234271AbjHWI1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 04:27:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233756AbjHWI32 (ORCPT
+        with ESMTP id S234266AbjHWI0W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 04:29:28 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFD922701;
-        Wed, 23 Aug 2023 01:18:06 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id 98e67ed59e1d1-26f9521de4cso942865a91.0;
-        Wed, 23 Aug 2023 01:18:06 -0700 (PDT)
+        Wed, 23 Aug 2023 04:26:22 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E88B31FDC
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 01:23:07 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-d6b0c2cca0aso5177417276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 01:23:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692778686; x=1693383486;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+        d=linaro.org; s=google; t=1692778987; x=1693383787;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=J8aHxB2kz2NVsCyn+YWPwHA5DwGbi4gw2OrktjdJz4Q=;
-        b=r7987ylOfBbjvEL6e+i2Ye+X8gZhHAYwxYncNKkTivMsQ1I0G/x3tRa20Q6IkCor24
-         DhhxxEaLbAi4bZwv433Wh/SfmkJ238T/ua9Oi3rlqolPTqLGHHl8CtpLEJM+IhD3KWXa
-         x0YJOB28U+yvFROZhAM0djqw3p5aQwfcjOvHpEyy+vYwcvLuOOdXyWoBLPZ5O4DUUIvY
-         RqcmetNnYJoUcC+ameTZ5vbhBz4D53KBTI1w6OYcC80tVvG0kb70hdVZWvXDUAVEtFye
-         lUP1ZoXO8fJ3kPKWiuuhI4qrEhjhNft0P0vKC+0lXHsmDwvJpiN05Nlv/Cl5UFryU2F2
-         TJ5Q==
+        bh=KZ77g28iu8cqX740PqcHv95tx/jb6oTcL4UNhuP2mP4=;
+        b=Swc4/RscuplUt5mV4OFAT14r21B5P6RH+ekNA1rUQivpVtFeqSuuw6fgo83EQ3P/Np
+         DZ3fun8/fcBRZGkaj1yt6u8r+F5gsX1O69mSqUESGMiqbm6B/WW80g1AR9j81O+g2F6b
+         Suh59omsyRyCG03pe5m8Z25HnXIlYeGsDLsSSyQSHkxT93Ys32g77SawXSSAJVAfwkpc
+         ai7V6kCxnN9oj92HUGg0ZCT7ftiO6LrrH4jegYapZWI43t0H6W3YAxX2gYE0Sq+UEtZj
+         5J/T1T+53vmRc4TyENHBa8+OoPgFxZmFvwwrDVb5KfrdRoMQg+uuEhkqLtT69USBM+CM
+         wAMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692778686; x=1693383486;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=J8aHxB2kz2NVsCyn+YWPwHA5DwGbi4gw2OrktjdJz4Q=;
-        b=KAGsJsdfnnElq8hclTiZxi91pbfTWhCsYQf6LbrhFpAQCH10n5N4nnTi15UgzK97AW
-         qh5CJZZdnVwXf22rE0BYM/4aaQp8+eQvT30ZgHHCERaxd7UKeUmMZQ4ABt5QPbmxLAqn
-         qLRa2Zk7exLFSHbNFPM2pkAJEkM7g//yvdZ2G1gJ/NKDjmqU+EpnZXgA6s3qupu7Q4z3
-         VKkcLbphelagTqv7Xs4qBTkLDnlguInIbVdGp3f+Jp5/zDui5wWVUTu8W+ax2gqze9oT
-         nHN44ffcU9izajJhsSP/CI/9Mvz/oagdR4Aq7XxlMTWENwRJqVXJn+OBOhOLceQwqA1O
-         7k8A==
-X-Gm-Message-State: AOJu0YwePK9LecaV4oRHbe77PmwQ2htxg7tZCr5HxQAErJn4150edIgi
-        vwnT4h2y8cX+pbgqInLQB0s=
-X-Google-Smtp-Source: AGHT+IHAaGAmIl6NEEBmFcn3UDDJwD0Ictdip7Zj+i5dYacoeYXGOZ3fshWe4waklTy8ZhsKdv81NA==
-X-Received: by 2002:a17:90a:558f:b0:26b:4e40:7be8 with SMTP id c15-20020a17090a558f00b0026b4e407be8mr8533815pji.12.1692778686048;
-        Wed, 23 Aug 2023 01:18:06 -0700 (PDT)
-Received: from ?IPV6:2404:f801:0:5:8000::75b? ([2404:f801:9000:1a:efea::75b])
-        by smtp.gmail.com with ESMTPSA id e7-20020a17090a804700b0026b4d215627sm9100385pjw.21.2023.08.23.01.17.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Aug 2023 01:18:05 -0700 (PDT)
-Message-ID: <13e03561-eff6-a90f-902f-05252e1b8949@gmail.com>
-Date:   Wed, 23 Aug 2023 16:17:54 +0800
+        d=1e100.net; s=20221208; t=1692778987; x=1693383787;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KZ77g28iu8cqX740PqcHv95tx/jb6oTcL4UNhuP2mP4=;
+        b=OEJRABbSLkzk0U+8Y5SvDG02aVAneXr1p9Q/mvQI+yl1KVK390h83rsEhdzEDSMdI1
+         EsJYzlObUrLOtwE1Wpk+JrYOLB6u4qiO+0WwgAw2N3UByQ2k4ViisqDtDr19GtSKerKF
+         Jt49enf8t1oFQAIQXzI3CcWtymJdoQ9F4JU7k09QODNKtIfqcPP97BZFHMZSgW/h1uMR
+         B17grNHkoL6N1LUkRXAZjuARDSA9GWoBgovYLY2/acoz3pCBI/FgyJLjNc9OtAgqjPHl
+         m5nNj73Fo9lUbny8jUp0qwIpgzjLhNQwMC5SD7UdG1AqLVu8spD3bez/kYAVGVC5vfWO
+         NhPw==
+X-Gm-Message-State: AOJu0Yw408lLsjLPRZeSiXxxqKg6wLFc/x5pZbyvdvwjnEfVm3bi+pTI
+        56napIIHGpS9MqmKWnnNJiTK3G/weFMk1+qlqkvFfw==
+X-Google-Smtp-Source: AGHT+IEgOqtH7KZfrpwWJmSzqs3NDM3mGFUb9MH0eyNEGXIkXQgb7oqjTM5Y1OQ/fhXuGhP63RqGSta5EWs4EreOteM=
+X-Received: by 2002:a25:cc4f:0:b0:d74:4739:3e7b with SMTP id
+ l76-20020a25cc4f000000b00d7447393e7bmr12589370ybf.29.1692778987058; Wed, 23
+ Aug 2023 01:23:07 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 4/9] x86/hyperv: Fix serial console interrupts for fully
- enlightened TDX guests
-To:     Dexuan Cui <decui@microsoft.com>, ak@linux.intel.com,
-        arnd@arndb.de, bp@alien8.de, brijesh.singh@amd.com,
-        dan.j.williams@intel.com, dave.hansen@intel.com,
-        dave.hansen@linux.intel.com, haiyangz@microsoft.com, hpa@zytor.com,
-        jane.chu@oracle.com, kirill.shutemov@linux.intel.com,
-        kys@microsoft.com, linux-hyperv@vger.kernel.org, luto@kernel.org,
-        mingo@redhat.com, peterz@infradead.org, rostedt@goodmis.org,
-        sathyanarayanan.kuppuswamy@linux.intel.com, seanjc@google.com,
-        tglx@linutronix.de, tony.luck@intel.com, wei.liu@kernel.org,
-        Jason@zx2c4.com, nik.borisov@suse.com, mikelley@microsoft.com
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, Tianyu.Lan@microsoft.com,
-        rick.p.edgecombe@intel.com, andavis@redhat.com, mheslin@redhat.com,
-        vkuznets@redhat.com, xiaoyao.li@intel.com
-References: <20230811221851.10244-1-decui@microsoft.com>
- <20230811221851.10244-5-decui@microsoft.com>
-From:   Tianyu Lan <ltykernel@gmail.com>
-In-Reply-To: <20230811221851.10244-5-decui@microsoft.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20230821023928.3324283-1-peng.fan@oss.nxp.com>
+In-Reply-To: <20230821023928.3324283-1-peng.fan@oss.nxp.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 23 Aug 2023 10:22:55 +0200
+Message-ID: <CACRpkdaxtfDiTjms_JXCsymPu50rO7POZs5noTKqDz9qQryLrw@mail.gmail.com>
+Subject: Re: [PATCH V3 1/2] amba: bus: fix refcount leak
+To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, frowand.list@gmail.com,
+        andriy.shevchenko@linux.intel.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        linux@armlinux.org.uk, arnd@arndb.de, jeremy.kerr@canonical.com,
+        isaacmanjarres@google.com, hdegoede@redhat.com,
+        ulf.hansson@linaro.org, rafael@kernel.org,
+        grant.likely@secretlab.ca, Peng Fan <peng.fan@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,56 +75,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/12/2023 6:18 AM, Dexuan Cui wrote:
-> When a fully enlightened TDX guest runs on Hyper-V, the UEFI firmware sets
-> the HW_REDUCED flag and consequently ttyS0 interrupts can't work. Fix the
-> issue by overriding x86_init.acpi.reduced_hw_early_init().
-> 
-> Reviewed-by: Michael Kelley <mikelley@microsoft.com>
-> Signed-off-by: Dexuan Cui <decui@microsoft.com>
+On Mon, Aug 21, 2023 at 4:34=E2=80=AFAM Peng Fan (OSS) <peng.fan@oss.nxp.co=
+m> wrote:
 
-Reviewed-by: Tianyu Lan <tiala@microsoft.com>
-> ---
->   arch/x86/kernel/cpu/mshyperv.c | 22 ++++++++++++++++++++++
->   1 file changed, 22 insertions(+)
-> 
-> diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
-> index 507df0f64ae18..b4214e37e9124 100644
-> --- a/arch/x86/kernel/cpu/mshyperv.c
-> +++ b/arch/x86/kernel/cpu/mshyperv.c
-> @@ -324,6 +324,26 @@ static void __init hv_smp_prepare_cpus(unsigned int max_cpus)
->   }
->   #endif
->   
-> +/*
-> + * When a fully enlightened TDX VM runs on Hyper-V, the firmware sets the
-> + * HW_REDUCED flag: refer to acpi_tb_create_local_fadt(). Consequently ttyS0
-> + * interrupts can't work because request_irq() -> ... -> irq_to_desc() returns
-> + * NULL for ttyS0. This happens because mp_config_acpi_legacy_irqs() sees a
-> + * nr_legacy_irqs() of 0, so it doesn't initialize the array 'mp_irqs[]', and
-> + * later setup_IO_APIC_irqs() -> find_irq_entry() fails to find the legacy irqs
-> + * from the array and hence doesn't create the necessary irq description info.
-> + *
-> + * Clone arch/x86/kernel/acpi/boot.c: acpi_generic_reduced_hw_init() here,
-> + * except don't change 'legacy_pic', which keeps its default value
-> + * 'default_legacy_pic'. This way, mp_config_acpi_legacy_irqs() sees a non-zero
-> + * nr_legacy_irqs() and eventually serial console interrupts works properly.
-> + */
-> +static void __init reduced_hw_init(void)
-> +{
-> +	x86_init.timers.timer_init	= x86_init_noop;
-> +	x86_init.irqs.pre_vector_init	= x86_init_noop;
-> +}
-> +
->   static void __init ms_hyperv_init_platform(void)
->   {
->   	int hv_max_functions_eax;
-> @@ -442,6 +462,8 @@ static void __init ms_hyperv_init_platform(void)
->   
->   				/* Don't trust Hyper-V's TLB-flushing hypercalls. */
->   				ms_hyperv.hints &= ~HV_X64_REMOTE_TLB_FLUSH_RECOMMENDED;
-> +
-> +				x86_init.acpi.reduced_hw_early_init = reduced_hw_init;
->   			}
->   		}
->   	}
+> From: Peng Fan <peng.fan@nxp.com>
+>
+> commit 5de1540b7bc4 ("drivers/amba: create devices from device tree")
+> increases the refcount of of_node, but not releases it in
+> amba_device_release, so there is refcount leak. By using of_node_put
+> to avoid refcount leak.
+>
+> Fixes: 5de1540b7bc4 ("drivers/amba: create devices from device tree")
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+
+Makes sense.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+
+Yours,
+Linus Walleij
