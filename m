@@ -2,106 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9559378568A
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 13:13:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8307978568F
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 13:14:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234364AbjHWLNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 07:13:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47316 "EHLO
+        id S231893AbjHWLOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 07:14:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234338AbjHWLNc (ORCPT
+        with ESMTP id S229940AbjHWLOO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 07:13:32 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7E18E52
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 04:13:29 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3fef56f7248so22193705e9.3
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 04:13:29 -0700 (PDT)
+        Wed, 23 Aug 2023 07:14:14 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F2E2E47;
+        Wed, 23 Aug 2023 04:14:12 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1bf0b24d925so35946915ad.3;
+        Wed, 23 Aug 2023 04:14:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692789208; x=1693394008;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=nbYjS/cBWGkU59BDMZfwvb2Rj3H4QCmMH5/xqbbwdFU=;
-        b=hpHpmPxdO1YBXgCk5vQndP3QSjpee+96UDmt1vUmlJDzx6hF3G1VD3XvrhXQDnBx4x
-         IxuTyichE/GGifVVtaqKKKpT+8Xyl2IsXVluQrH4nMEjDlkgNcenmc7bkkV+xaYqngnk
-         jXU+z1dKB6HXdEdF9wzYXI+fejgG9uHMWxHNphHEJINclbvc7yQhTzRlCpDpGI/upy/G
-         Fe4l3UeunUexPHzzNFN+WKa0gQiyrOivGzqIpFazTXfY0Wl6MMDnmHoeT0dSsy2Kni2b
-         59dGrY/MayR0ZGxoWHMdBBl5o5VN6a3iN/S4i4/Tz+DN4PAMkmfv4yOtaD5sYgBLCqYe
-         5HRA==
+        d=gmail.com; s=20221208; t=1692789251; x=1693394051;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4qBzTYpIaY0eNPOXEfLhPS1Eq02rOoxrsLBeQtRmQkI=;
+        b=R/mEGaiawMIbszpvQxLNPN68CM1+qQNzewkt3WGF8+56pXjm/OzuAXNhQ7uf/5ArUS
+         kDlkW7/jybJUdp5VQgCgtIu96diGeTiBlxW1oFSFqImLtDfVIOaJVaE4kfU+G6quW6pJ
+         shs64jHufCYLfV2naz7xMrn+EWzjOfYWhFcwz8A45h4MTUqtwHuWxJSwoWTWsJWnLzQ9
+         0LmpjQtOCZ6aiIoBvPMLuQMzDPhbZr1ql3lOeN8UiguziWnAk06Ye7lnlrtj/JXxLG0D
+         RJBa6mz2O0z8Li2ERBkHUoV0fXU2mdlNC731frugQ925YcFbGIj9QeAYX6m2HLHoul93
+         x+tQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692789208; x=1693394008;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nbYjS/cBWGkU59BDMZfwvb2Rj3H4QCmMH5/xqbbwdFU=;
-        b=ZH8yntxCYCOCuVTANJcv8LdgmJ1tlgjVxl41Tm7NYFcMNNuzLCzE1+1kj268xFw83s
-         KqCmKTGbnJDRMsk86exP+MNp6IwyEF5uVSL6PbAXqZW7pmy9IFPqul4Lcqeeh4NXsXaZ
-         AJXMNQ+JpiJEcdtqTEam4m1wfDYvxJ280OtgBhy8UDLHoMabcPeZvOlZlI6oWR2RdTDS
-         U3kKvArTBkG5XPHJK21oQ4onilmI/fLgAy/PtfwCvqEkgfDg5QOsH5JaK3PkgIYm6a89
-         T0sivXTRsCXnUATspwgIQJ6hkTKyFsX+v55Vw3+1giDVcamjDRH8SLgM1SUKEueLW6bD
-         efvg==
-X-Gm-Message-State: AOJu0Yz6Kvl++bbiqoFnyjMB0S0P5LsnfunNlzd3DdlBPbi5n1VoU1vZ
-        o6OxSgNKTfCLIoe8UEYVppGPKg==
-X-Google-Smtp-Source: AGHT+IFLogCBvxIPJfiavbOMDUod3X1ur9veAQdK8t5D/OcSVmFHxFwHLi/a6fmaLDbJytPOL5BZlg==
-X-Received: by 2002:a1c:7403:0:b0:3fe:687a:abb8 with SMTP id p3-20020a1c7403000000b003fe687aabb8mr9400967wmc.7.1692789208193;
-        Wed, 23 Aug 2023 04:13:28 -0700 (PDT)
-Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
-        by smtp.gmail.com with ESMTPSA id t23-20020a7bc3d7000000b003fe1fe56202sm18704980wmj.33.2023.08.23.04.13.27
+        d=1e100.net; s=20221208; t=1692789251; x=1693394051;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=4qBzTYpIaY0eNPOXEfLhPS1Eq02rOoxrsLBeQtRmQkI=;
+        b=CpVEIJRTjLvIFwcuoqp3OkC6+qAWGw2ZRSu1bAi65WiJfSJvbmfW/OgELAvSuodjR9
+         ntQD6LNmzAXr0qwUZhezO/HSODK/Rmyx6iU+C3Mf2DRu1j5yd2WKdu0afRpMS7Xi3vo3
+         tqyw8QHiySzB4sx4lpVU2zemuP1793Et/9r58SAcfyGqq3zCtrZ5pq0zE5+5UxuphgTi
+         3O+SLMm77IjM4+H7nE4hBdI/PrfTVVYr4jcVka54KVsfuuW+dFINCvPFjpngTX1n4muY
+         tpNVH0rpClAzvTbaJ7OveUyRx2jVZ2FS2Z/ENV0nFr2AbCD5///hzcyeLAc3l/3l8tCl
+         iJ+w==
+X-Gm-Message-State: AOJu0YweCpuRpwKwqzjXPPW1mG4+ZiAMQ9SRUPOb+v38lkLxtAzejOwx
+        IX7yOZk0FNxp4aLku7OnZDY=
+X-Google-Smtp-Source: AGHT+IFQ4GfEQHwFW5B3P9gxyx57bQiXP0/ODLLyX8/UN4QA56F0uCMfoyrIu93LoDEqTbavxCLKDg==
+X-Received: by 2002:a17:902:d705:b0:1bb:1523:b311 with SMTP id w5-20020a170902d70500b001bb1523b311mr8326641ply.41.1692789251390;
+        Wed, 23 Aug 2023 04:14:11 -0700 (PDT)
+Received: from [192.168.0.105] ([103.124.138.83])
+        by smtp.gmail.com with ESMTPSA id 4-20020a170902c24400b001bf10059251sm10611051plg.239.2023.08.23.04.14.08
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Aug 2023 04:13:27 -0700 (PDT)
-Message-ID: <350efa30-ee31-d030-38e1-20899f785c64@linaro.org>
-Date:   Wed, 23 Aug 2023 12:13:26 +0100
+        Wed, 23 Aug 2023 04:14:10 -0700 (PDT)
+Message-ID: <d9255749-bf1e-c498-ace6-048d36fa962f@gmail.com>
+Date:   Wed, 23 Aug 2023 18:14:03 +0700
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH] usb: typec: qcom: check regulator enable status before
- disabling it
+ Thunderbird/102.14.0
 Content-Language: en-US
-To:     hui liu <quic_huliu@quicinc.com>,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_fenglinw@quicinc.com,
-        subbaram@quicinc.com
-References: <20230823-qcom-tcpc-v1-1-fa81a09ca056@quicinc.com>
- <64b2a748-ea86-f804-9f8a-881b0dcc7050@linaro.org>
- <d376686c-b700-407c-9a88-88942ef3e776@quicinc.com>
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <d376686c-b700-407c-9a88-88942ef3e776@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Chuck Lever <chuck.lever@oracle.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>, greg@greg.net.au
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux Network File System <linux-nfs@vger.kernel.org>
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+Subject: Fwd: kernel 6.4/6.5 nfs 4.1 unresponsive
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/08/2023 12:06, hui liu wrote:
-> Hi Bryan:
+Hi,
+
+I notice a regression report on Bugzilla [1]. Quoting from it:
+
+> I have two Synology Disk station NAS devices with NFS mounts present on Gentoo servers with the following fstab mount configuration:
 > 
-> This change is used to fix a real bug.
+> 10.200.1.247:/volume1/filer02-sata      /mnt/filer02-sata       nfs     vers=4.1,tcp,rsize=32768,wsize=32768,nolock,noatime,nodiratime,hard,timeo=60,retry=6,retrans=6,nconnect=4 0 0
+> 10.200.1.247:/volume1/filer03-sata      /mnt/filer03-sata       nfs     vers=4.1,tcp,rsize=32768,wsize=32768,nolock,noatime,nodiratime,hard,timeo=60,retry=6,retrans=6,nconnect=4 0 0
+> 10.200.1.246:/volume1/filer04-sata      /mnt/filer04-sata       nfs     vers=4.1,tcp,rsize=32768,wsize=32768,nolock,noatime,nodiratime,hard,timeo=60,retry=6,retrans=6,nconnect=4 0 0
+> 
+> 
+> On Linux Kernel 6.3.6 these work perfectly fine.
+> 
+> As soon as I upgrade to 6.4 (tested 6.4.7 through 6.4.11) or 6.5-rc7 NFS mounts randomly hang and block system operation with high load times eventually resulting in a system freeze.
+> 
+> dmesg/syslog:
+> 
+> Aug 22 18:13:49 sjc-www2 kernel: nfs: server 10.200.1.247 OK
+> Aug 22 18:13:49 sjc-www2 kernel: nfs: server 10.200.1.247 OK
+> Aug 22 18:13:49 sjc-www2 kernel: nfs: server 10.200.1.247 OK
+> Aug 22 18:13:49 sjc-www2 kernel: nfs: server 10.200.1.247 OK
+> Aug 22 18:14:35 sjc-www2 kernel: nfs: server 10.200.1.247 not responding, still trying
+> Aug 22 18:14:35 sjc-www2 kernel: nfs: server 10.200.1.247 not responding, still trying
+> Aug 22 18:14:35 sjc-www2 kernel: nfs: server 10.200.1.247 not responding, still trying
+> Aug 22 18:14:35 sjc-www2 kernel: nfs: server 10.200.1.247 not responding, still trying
+> Aug 22 18:14:35 sjc-www2 kernel: nfs: server 10.200.1.247 not responding, still trying
+> Aug 22 18:14:35 sjc-www2 kernel: nfs: server 10.200.1.247 not responding, still trying
+> Aug 22 18:14:35 sjc-www2 kernel: nfs: server 10.200.1.247 not responding, still trying
+> Aug 22 18:14:35 sjc-www2 kernel: nfs: server 10.200.1.247 not responding, still trying
+> Aug 22 18:14:35 sjc-www2 kernel: nfs: server 10.200.1.247 not responding, still trying
+> Aug 22 18:14:35 sjc-www2 kernel: nfs: server 10.200.1.247 not responding, still trying
+> Aug 22 18:15:23 sjc-www2 kernel: nfs: server 10.200.1.247 OK
+> Aug 22 18:15:23 sjc-www2 kernel: nfs: server 10.200.1.247 OK
+> Aug 22 18:15:23 sjc-www2 kernel: nfs: server 10.200.1.247 OK
+> Aug 22 18:15:23 sjc-www2 kernel: nfs: server 10.200.1.247 OK
+> Aug 22 18:15:23 sjc-www2 kernel: nfs: server 10.200.1.247 OK
+> Aug 22 18:15:23 sjc-www2 kernel: nfs: server 10.200.1.247 OK
+> Aug 22 18:15:23 sjc-www2 kernel: nfs: server 10.200.1.247 OK
+> Aug 22 18:15:23 sjc-www2 kernel: nfs: server 10.200.1.247 OK
+> Aug 22 18:15:23 sjc-www2 kernel: nfs: server 10.200.1.247 OK
+> Aug 22 18:15:23 sjc-www2 kernel: nfs: server 10.200.1.247 OK
+> Aug 22 18:16:05 sjc-www2 kernel: nfs: server 10.200.1.247 not responding, still trying
+> Aug 22 18:16:05 sjc-www2 kernel: nfs: server 10.200.1.247 not responding, still trying
+> Aug 22 18:16:05 sjc-www2 kernel: nfs: server 10.200.1.247 not responding, still trying
+> Aug 22 18:16:05 sjc-www2 kernel: nfs: server 10.200.1.247 not responding, still trying
+> Aug 22 18:16:05 sjc-www2 kernel: nfs: server 10.200.1.247 not responding, still trying
+> Aug 22 18:16:05 sjc-www2 kernel: nfs: server 10.200.1.247 not responding, still trying
+> Aug 22 18:16:05 sjc-www2 kernel: nfs: server 10.200.1.247 not responding, still trying
+> Aug 22 18:16:05 sjc-www2 kernel: nfs: server 10.200.1.247 not responding, still trying
+> Aug 22 18:16:05 sjc-www2 kernel: nfs: server 10.200.1.247 not responding, still trying
+> Aug 22 18:16:05 sjc-www2 kernel: nfs: server 10.200.1.247 not responding, still trying
+> Aug 22 18:16:54 sjc-www2 kernel: nfs: server 10.200.1.247 OK
+> Aug 22 18:16:54 sjc-www2 kernel: nfs: server 10.200.1.247 OK
+> Aug 22 18:16:54 sjc-www2 kernel: nfs: server 10.200.1.247 OK
+> Aug 22 18:16:54 sjc-www2 kernel: nfs: server 10.200.1.247 OK
+> Aug 22 18:16:54 sjc-www2 kernel: nfs: server 10.200.1.247 OK
+> Aug 22 18:16:54 sjc-www2 kernel: nfs: server 10.200.1.247 OK
+> Aug 22 18:16:54 sjc-www2 kernel: nfs: server 10.200.1.247 OK
+> Aug 22 18:16:54 sjc-www2 kernel: nfs: server 10.200.1.247 OK
+> Aug 22 18:16:54 sjc-www2 kernel: nfs: server 10.200.1.247 OK
+> Aug 22 18:16:54 sjc-www2 kernel: nfs: server 10.200.1.247 OK
+> 
+> 
+> The box in question i have been testing the kernel upgrades on has 1 x 10G NIC set with MTU 9000 for NFS volumes and i can successfully ping the nfs host with 9000 byte packets:
+> 
+> sjc-www2 ~ # ping -4 -s 9000 10.200.1.247
+> PING 10.200.1.247 (10.200.1.247) 9000(9028) bytes of data.
+> 9008 bytes from 10.200.1.247: icmp_seq=1 ttl=64 time=0.205 ms
+> 9008 bytes from 10.200.1.247: icmp_seq=2 ttl=64 time=0.279 ms
+> 9008 bytes from 10.200.1.247: icmp_seq=3 ttl=64 time=0.402 ms
 
-okie dokie
+See Bugzilla for the full thread.
 
-Could you please repost a v2 with a
+Anyway, I'm adding this regression to be tracked by regzbot:
 
-Fixes: a4422ff22142 ("usb: typec: qcom: Add Qualcomm PMIC Type-C driver")
+#regzbot introduced: v6.3..v6.4 https://bugzilla.kernel.org/show_bug.cgi?id=217815
+#regzbot title: nfs server not responding loop on Synology NAS devices
 
-Cc: stable@vger.kernel.org
+Thanks.
 
-And please add my
+[1]: https://bugzilla.kernel.org/show_bug.cgi?id=217815
 
-Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-
----
-bod
+-- 
+An old man doll... just what I always wanted! - Clara
