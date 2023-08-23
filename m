@@ -2,123 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B72C27855CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 12:46:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D61578563E
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 12:51:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234145AbjHWKqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 06:46:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59374 "EHLO
+        id S234207AbjHWKv4 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 23 Aug 2023 06:51:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234128AbjHWKpi (ORCPT
+        with ESMTP id S234311AbjHWKvY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 06:45:38 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEEFA10E0
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 03:45:09 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-31ad779e6b3so4567400f8f.2
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 03:45:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692787508; x=1693392308;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FIu4eWCkEOSVtI8FoLJRLwwONGivM5mrULXtY5Z5HVI=;
-        b=iR1HQqxeBsupmS+Favm4zTSidm2aT6bx7ajaAl8rBuLII87IivTUcR2VWpznpsDE+R
-         MCfdnWtCmOsEpUaFAl5mFZdQSr8nzotudFoQksQixrFdAXdx+r+oGFa8gWcd6vfaQqsH
-         cVvlFANnHEouAyGGiZvq3xN0gruYNTynKcNGRwn4atmVlAZ8QnqQypDcdx2Qqc2Z0EWz
-         RjY67jKMvacBJSfoIgHgxlCjphiFK106NYNXL14qgECQ67n5RjKd9cLiE7X+L30ngvis
-         eil+bTCkEjRUoc1+IzIpjGuQFZp/chrfKSJ2Q6nrTaVUdpR94GxUzhjg/lx22O4He6hQ
-         rQww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692787508; x=1693392308;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FIu4eWCkEOSVtI8FoLJRLwwONGivM5mrULXtY5Z5HVI=;
-        b=kmnmuxRhIC0dOrUz8PO311TI5hrgabvdY8EAiuQFc+rbgUEhDCWUZ0fhWmp47+BDst
-         FHYJyRymp+fZC1ilKQ71GzCuAeaL4ZV/gGV1gw7EOv90TwXXNkxtQWAShKXYEfGUnbpu
-         mhgLDSTLqMnviQubv4SMJSh9DebpFbILp4NigPgygwMs9BZZG468rDag+ky9RI94JL01
-         kCEiTLjhuLIheSXNLJdUqeHurnQRq87u881io39fST9RJiigvYjcTFsgtz6yx7T3yaWK
-         rRErbQnWhXkRzxmSezLAXhTrd4DiUwecCA/pSYseaQwlm8h0j4+IE3yHPThnUUjbJcTn
-         QPuQ==
-X-Gm-Message-State: AOJu0YyjUVnnMlz4f5dJDaM3OmpypTdXr6wboYyBn/NKWBO7fU91VjFS
-        7O99kSERK3BNVi3QVyXkfrNLcg==
-X-Google-Smtp-Source: AGHT+IETgiaFMcrE1JfWFkGdddTyYkNG6PjtSRuCyiFhrM+u1c/VD06R+stwPw8nbB17oeoE3yvOFQ==
-X-Received: by 2002:a5d:6949:0:b0:319:7471:2965 with SMTP id r9-20020a5d6949000000b0031974712965mr9485144wrw.21.1692787508218;
-        Wed, 23 Aug 2023 03:45:08 -0700 (PDT)
-Received: from sagittarius-a.chello.ie (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
-        by smtp.gmail.com with ESMTPSA id n4-20020a5d4204000000b0031c5dda3aedsm6281213wrq.95.2023.08.23.03.45.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Aug 2023 03:45:07 -0700 (PDT)
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-To:     rfoss@kernel.org, todor.too@gmail.com, bryan.odonoghue@linaro.org,
-        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
-        laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com,
-        andrey.konovalov@linaro.org
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 15/15] media: qcom: camss: Comment CSID dt_id field
-Date:   Wed, 23 Aug 2023 11:44:44 +0100
-Message-ID: <20230823104444.1954663-16-bryan.odonoghue@linaro.org>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230823104444.1954663-1-bryan.odonoghue@linaro.org>
-References: <20230823104444.1954663-1-bryan.odonoghue@linaro.org>
+        Wed, 23 Aug 2023 06:51:24 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA25A1980
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 03:49:45 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-309-dnwCdy7dN0qtUfFbZHofUA-1; Wed, 23 Aug 2023 11:49:43 +0100
+X-MC-Unique: dnwCdy7dN0qtUfFbZHofUA-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 23 Aug
+ 2023 11:49:42 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Wed, 23 Aug 2023 11:49:42 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Jan Kara' <jack@suse.cz>, Mateusz Guzik <mjguzik@gmail.com>
+CC:     Dennis Zhou <dennis@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "tj@kernel.org" <tj@kernel.org>, "cl@linux.com" <cl@linux.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "shakeelb@google.com" <shakeelb@google.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>
+Subject: RE: [PATCH 0/2] execve scalability issues, part 1
+Thread-Topic: [PATCH 0/2] execve scalability issues, part 1
+Thread-Index: AQHZ1aeVc0rzaxTOZkOyAPVlJjGUQ6/3shQw
+Date:   Wed, 23 Aug 2023 10:49:41 +0000
+Message-ID: <c5b9a025165a4c93aa10b462a40641dc@AcuMS.aculab.com>
+References: <20230821202829.2163744-1-mjguzik@gmail.com>
+ <ZOPSEJTzrow8YFix@snowbird> <20230821213951.bx3yyqh7omdvpyae@f>
+ <CAGudoHHJECp2-DfSr5hudooAdV6mivvSO+4mC9kwUrWnSiob5g@mail.gmail.com>
+ <20230822095154.7cr5ofogw552z3jk@quack3>
+ <CAGudoHHe5nzRTuj4G1fphD+JJ02TE5BnHEDwFm=-W6DoEj2qVQ@mail.gmail.com>
+ <20230823094915.ggv3spzevgyoov6i@quack3>
+In-Reply-To: <20230823094915.ggv3spzevgyoov6i@quack3>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,PDS_BAD_THREAD_QP_64,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Digging into the documentation we find that the DT_ID bitfield is used to
-map the six bit DT to a two bit ID code. This value is concatenated to the
-VC bitfield to create a CID value. DT_ID is the two least significant bits
-of CID and VC the most significant bits.
+From: Jan Kara
+> Sent: Wednesday, August 23, 2023 10:49 AM
+....
+> > --- a/include/linux/mm_types.h
+> > +++ b/include/linux/mm_types.h
+> > @@ -737,7 +737,11 @@ struct mm_struct {
+> >
+> >                 unsigned long saved_auxv[AT_VECTOR_SIZE]; /* for
+> > /proc/PID/auxv */
+> >
+> > -               struct percpu_counter rss_stat[NR_MM_COUNTERS];
+> > +               union {
+> > +                       struct percpu_counter rss_stat[NR_MM_COUNTERS];
+> > +                       u64 *rss_stat_single;
+> > +               };
+> > +               bool    magic_flag_stuffed_elsewhere;
 
-Originally we set dt_id = vc * 4 in and then subsequently set dt_id = vc.
+I wouldn't use a union to save a pointer - it is asking for trouble.
 
-commit 3c4ed72a16bc ("media: camss: sm8250: Virtual channels for CSID")
-silently fixed the multiplication by four which would give a better
-value for the generated CID without mentioning what was being done or why.
+> >
+> >                 struct linux_binfmt *binfmt;
+> >
+> >
+> > Then for single-threaded case an area is allocated for NR_MM_COUNTERS
+> > countes * 2 -- first set updated without any synchro by current
+> > thread. Second set only to be modified by others and protected with
+> > mm->arg_lock. The lock protects remote access to the union to begin
+> > with.
+> 
+> arg_lock seems a bit like a hack. How is it related to rss_stat? The scheme
+> with two counters is clever but I'm not 100% convinced the complexity is
+> really worth it. I'm not sure the overhead of always using an atomic
+> counter would really be measurable as atomic counter ops in local CPU cache
+> tend to be cheap. Did you try to measure the difference?
 
-Next up I haplessly changed the value back to "dt_id = vc * 4" since there
-didn't appear to be any logic behind it.
+A separate lock is worse than atomics.
+(Although some 32bit arch may have issues with 64bit atomics.)
 
-Hans asked what the change was for and I honestly couldn't remember the
-provenance of it, so I dug in.
+I think you'll be surprised just how slow atomic ops are.
+Even when present in the local cache.
+(Probably because any other copies have to be invalidated.)
 
-Link: https://lore.kernel.org/linux-arm-msm/edd4bf9b-0e1b-883c-1a4d-50f4102c3924@xs4all.nl/
+	David
 
-Add a comment so the next hapless programmer doesn't make this same
-mistake.
-
-Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
----
- drivers/media/platform/qcom/camss/camss-csid-gen2.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/drivers/media/platform/qcom/camss/camss-csid-gen2.c b/drivers/media/platform/qcom/camss/camss-csid-gen2.c
-index 6ba2b10326444..cee50fc87e9de 100644
---- a/drivers/media/platform/qcom/camss/camss-csid-gen2.c
-+++ b/drivers/media/platform/qcom/camss/camss-csid-gen2.c
-@@ -352,6 +352,11 @@ static void __csid_configure_stream(struct csid_device *csid, u8 enable, u8 vc)
- 		phy_sel = csid->phy.csiphy_id;
- 
- 	if (enable) {
-+		/*
-+		 * A value caled 'CID' gets generated internal to CAMSS logic
-+		 * which is a concatenation of [vc:6 | dt_id:2] hence we reuse
-+		 * the least significant two bits of the VC to 'stuff' the CID value.
-+		 */
- 		u8 dt_id = vc;
- 
- 		if (tg->enabled) {
--- 
-2.41.0
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
