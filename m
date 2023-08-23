@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA19678575C
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 14:04:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77053785759
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 14:03:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234697AbjHWMED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 08:04:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43162 "EHLO
+        id S234648AbjHWMDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 08:03:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234633AbjHWMDu (ORCPT
+        with ESMTP id S234512AbjHWMDt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 08:03:50 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 431A6E62
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 05:03:49 -0700 (PDT)
+        Wed, 23 Aug 2023 08:03:49 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16AB8E66
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 05:03:46 -0700 (PDT)
 Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RW4cg0fXrz4x2F;
-        Wed, 23 Aug 2023 22:03:47 +1000 (AEST)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RW4cc4jj5z4wy9;
+        Wed, 23 Aug 2023 22:03:44 +1000 (AEST)
 From:   Michael Ellerman <patch-notifications@ellerman.id.au>
 To:     Nicholas Piggin <npiggin@gmail.com>,
         Christophe Leroy <christophe.leroy@csgroup.eu>
 Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         Arnd Bergmann <arnd@arndb.de>
-In-Reply-To: <38fe1078eb403eef74dc8f29387636fd7ecdf43c.1692276041.git.christophe.leroy@csgroup.eu>
-References: <38fe1078eb403eef74dc8f29387636fd7ecdf43c.1692276041.git.christophe.leroy@csgroup.eu>
-Subject: Re: [PATCH] powerpc/4xx: Remove WatchdogHandler() to fix no previous prototype error
-Message-Id: <169279175575.797584.15357260120526935864.b4-ty@ellerman.id.au>
+In-Reply-To: <e89d9927c926044e54fd056a849785f526c6414f.1692282340.git.christophe.leroy@csgroup.eu>
+References: <e89d9927c926044e54fd056a849785f526c6414f.1692282340.git.christophe.leroy@csgroup.eu>
+Subject: Re: [PATCH] powerpc/47x: Add prototype for mmu_init_secondary()
+Message-Id: <169279175576.797584.4374265621871502219.b4-ty@ellerman.id.au>
 Date:   Wed, 23 Aug 2023 21:55:55 +1000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -43,19 +43,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Aug 2023 14:40:49 +0200, Christophe Leroy wrote:
-> Building ppc40x_defconfig throws the following error:
+On Thu, 17 Aug 2023 16:25:49 +0200, Christophe Leroy wrote:
+> A W=1 build of 44x/iss476-smp_defconfig gives:
 > 
->   CC      arch/powerpc/kernel/traps.o
-> arch/powerpc/kernel/traps.c:2232:29: warning: no previous prototype for 'WatchdogHandler' [-Wmissing-prototypes]
->  2232 | void __attribute__ ((weak)) WatchdogHandler(struct pt_regs *regs)
->       |                             ^~~~~~~~~~~~~~~
+> arch/powerpc/mm/nohash/44x.c:220:13: error: no previous prototype for 'mmu_init_secondary' [-Werror=missing-prototypes]
+>   220 | void __init mmu_init_secondary(int cpu)
+>       |             ^~~~~~~~~~~~~~~~~~
+> 
+> That function is called from head_4xx.S
 > 
 > [...]
 
 Applied to powerpc/next.
 
-[1/1] powerpc/4xx: Remove WatchdogHandler() to fix no previous prototype error
-      https://git.kernel.org/powerpc/c/ca13c130a43fe3ab625d22ada0a61e5c0b612229
+[1/1] powerpc/47x: Add prototype for mmu_init_secondary()
+      https://git.kernel.org/powerpc/c/b27c1a0a4e62af1fd9d2688bf8156a5d546e4227
 
 cheers
