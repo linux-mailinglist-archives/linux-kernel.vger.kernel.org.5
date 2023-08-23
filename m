@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52885785292
+	by mail.lfdr.de (Postfix) with ESMTP id 089E2785291
 	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 10:22:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234375AbjHWITe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 04:19:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34550 "EHLO
+        id S234273AbjHWISs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 04:18:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231626AbjHWIMb (ORCPT
+        with ESMTP id S233705AbjHWIMc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 04:12:31 -0400
+        Wed, 23 Aug 2023 04:12:32 -0400
 Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97CE6173F
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 01:09:33 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-58ee4df08fbso73789267b3.3
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 01:09:33 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0677B1982
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 01:09:35 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-58fb9323a27so50522167b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 01:09:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692778173; x=1693382973;
+        d=google.com; s=20221208; t=1692778175; x=1693382975;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=2qaJRxBCyklSMWuPm+izeLXJoqyCIVuwmc1TFOmlkgI=;
-        b=HYbuLJFmM89qjJvmBl3tRTcMNf1fLI3hJZEAeKXBIo84IZ5crxB9gYYh99GOFyv1E2
-         IExozTzs9hWyqs5K7X6i6Dqj8+JK+abPaMjSnOIlCNU8DFgUq+QUOZSn0Wpc4ulaMUkn
-         +lDYufL22mW0iEVm5peGIBsBp3Zt7eIeftICgATUgukRUH1eC42oN4H1P0pbzTbC5XA1
-         O7wJttqhKEgm4qGt9mjeX1qjs3/uKiYN8KLqNm7EAvQ+qOqx9J9IcLxhvILqcNYzgaxR
-         wroF2Q9peXqhmmUdSgfwi6nvIij1E+qUA5SO3lnrGIP83PTOh1Ggk/wYXAej36fKxVCX
-         Yzog==
+        bh=7+7xUX+eQzSie7iWr2Aj1jLiysTzidRjiqSjjI4y5Nk=;
+        b=KGzB2PREcs7owuua9gpo5mr9UCgvODDN4jNmDXQ31zJ8kKkY+8Xr/3r2UoXwLjOePS
+         K995kBSDC+RJdR30h2eK8/iNLOhSKskdWyoLgfI1S6WWIvjlf26gpbWQAnUWXcJRJNfY
+         /QCrLJ3LrQQ2lux2AtnVKQDte0QQl/LSPc0RJ7G/8jTqwBphx3j+BkaorZ8qNnEsuVRH
+         ld7PdetckaI4CSGfsLHt67Mn96NdZS2yYrIWZKCiXcojQNNV/rRqZ1MyWvQAvnVSnNDj
+         KVBTNy0H+WpKvBG1L0x8Fw5LdWroU+bq7lBqO+YDy/xx38C09qEmo6l1CzAtNUvAS0/Z
+         +XKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692778173; x=1693382973;
+        d=1e100.net; s=20221208; t=1692778175; x=1693382975;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2qaJRxBCyklSMWuPm+izeLXJoqyCIVuwmc1TFOmlkgI=;
-        b=aCb/ZmwGjpuzrxG8AcKRW26pkNHrSp7EJaY5AUNbpVcqsE8jbzMCXfeaz05UJMwg7E
-         Fth8n79X1OUqE1jOpgyA3KBru6l8gKZ+Ig2ZdQQ83bBjByRFa+SUbCQLp3V9uLCczYJ6
-         CuheBRsaf6exaNAA+zqW8vOYWZxIxfHZhLfJMtmcox29SA7TWf3Epo+p3ajYdpLhW+Ny
-         5KMskrIHsgycpZ28x2PFhePUC2XSaKhfijtpTJJECeY3xyhNunB42hE1za4FX397KLHr
-         VsextRU4F5mh8TjhDQL2iTJPyPrH0lJjjjvU+Ln/OcwKIB9YzwIdClV9zvPcO9iqYLdD
-         xa7A==
-X-Gm-Message-State: AOJu0YwXuL/uoIHklSwtBCR5GGk9SJUP9rVoXr9j2VFO5XO0yUwvJHgH
-        puQvDCiv8fNfx8FJ6IfHNWfJ6FhaWEHQ
-X-Google-Smtp-Source: AGHT+IFEwGkpQOFrN5AJCbgmqj0oTABtx0SRmjN2OR1zrYEY5KKUgeFpToIA4RVOwawMiSdD1KbEnU9gqbtJ
+        bh=7+7xUX+eQzSie7iWr2Aj1jLiysTzidRjiqSjjI4y5Nk=;
+        b=Z+PAPf1qVvnTMnWmU9zJBpWcEA5z6242CxzNhnbAVrVsbxXPjcpyVuLNd+NuuB2dok
+         oD/DrL/HPQm9Xh4R5qdWDz4B3VdP3RkpfJ8WhYYhfTCJhEwtkXxGwvzWYp1P8ud5dWl5
+         Um5SUJFinVtozL8nnxzG6KiuJGgDgFeVrWUeoZqpML6lf5YeAGLvfCg9UNH/HT8DSxqU
+         MOH4+7KfyZjmXQw59qeLGE7+bXF0YnFxG00yDBtwwhtjOcuhPix4GSpHeOrfqrN9t82/
+         tHjISFsImKoPOWZbho9tq5uzGiInCQoyRaqrcGR+13AAhskr/kyqVi8jKhdHFa2SjnPb
+         XgYw==
+X-Gm-Message-State: AOJu0YzFXuDfz3jfqowiY5MBRy7f26lKR69/RdCNq1vXIvy+P20OmV+u
+        hAFy9afMOf6q/BoAoUtwgTrtFZ/K0YBF
+X-Google-Smtp-Source: AGHT+IGtVayvCY/26FeTbSge7z228B5Rx9Dif54L8QiVcNmurVKbVuktSmELWXGjAL3aqdwmXD23+nueZQhm
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:3971:e84:f508:9a36])
- (user=irogers job=sendgmr) by 2002:a81:b724:0:b0:583:a3c1:6b5a with SMTP id
- v36-20020a81b724000000b00583a3c16b5amr140584ywh.4.1692778172847; Wed, 23 Aug
- 2023 01:09:32 -0700 (PDT)
-Date:   Wed, 23 Aug 2023 01:08:27 -0700
+ (user=irogers job=sendgmr) by 2002:a0d:ec05:0:b0:586:b332:8619 with SMTP id
+ q5-20020a0dec05000000b00586b3328619mr150399ywn.7.1692778175150; Wed, 23 Aug
+ 2023 01:09:35 -0700 (PDT)
+Date:   Wed, 23 Aug 2023 01:08:28 -0700
 In-Reply-To: <20230823080828.1460376-1-irogers@google.com>
-Message-Id: <20230823080828.1460376-25-irogers@google.com>
+Message-Id: <20230823080828.1460376-26-irogers@google.com>
 Mime-Version: 1.0
 References: <20230823080828.1460376-1-irogers@google.com>
 X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
-Subject: [PATCH v1 24/25] perf pmu: Lazily load sysfs aliases
+Subject: [PATCH v1 25/25] perf jevents: Sort strings in the big C string to
+ reduce faults
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -75,230 +76,95 @@ To:     Peter Zijlstra <peterz@infradead.org>,
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Don't load sysfs aliases for a PMU when the PMU is first created,
-defer until an alias needs to be found. For the pmu-scan benchmark,
-average core PMU scanning is reduced by 30.8%, and average PMU
-scanning by 12.6%.
+Sort the strings within the big C string based on whether they were
+for a metric and then by when they were added. This helps group
+related strings and reduce minor faults by approximately 10 in 1740,
+about 0.57%.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/tests/pmu-events.c |  2 +
- tools/perf/util/pmu.c         | 81 ++++++++++++++++++-----------------
- tools/perf/util/pmu.h         |  2 +
- 3 files changed, 46 insertions(+), 39 deletions(-)
+ tools/perf/pmu-events/jevents.py | 31 +++++++++++++++++++++++--------
+ 1 file changed, 23 insertions(+), 8 deletions(-)
 
-diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
-index 9ac893ae5f0d..3dc1ebee4d9f 100644
---- a/tools/perf/tests/pmu-events.c
-+++ b/tools/perf/tests/pmu-events.c
-@@ -547,6 +547,7 @@ static int __test_core_pmu_event_aliases(char *pmu_name, int *count)
- 	pmu->events_table = table;
- 	pmu_add_cpu_aliases_table(pmu, table);
- 	pmu->cpu_aliases_added = true;
-+	pmu->sysfs_aliases_loaded = true;
+diff --git a/tools/perf/pmu-events/jevents.py b/tools/perf/pmu-events/jevents.py
+index 01335a452e70..e5bce57f5688 100755
+--- a/tools/perf/pmu-events/jevents.py
++++ b/tools/perf/pmu-events/jevents.py
+@@ -113,13 +113,24 @@ class BigCString:
+   strings: Set[str]
+   big_string: Sequence[str]
+   offsets: Dict[str, int]
++  insert_number: int
++  insert_point: Dict[str, int]
++  metrics: Set[str]
  
- 	res = pmu_events_table__find_event(table, pmu, "bp_l1_btb_correct", NULL, NULL);
- 	if (res != 0) {
-@@ -588,6 +589,7 @@ static int __test_uncore_pmu_event_aliases(struct perf_pmu_test_pmu *test_pmu)
- 	pmu->events_table = events_table;
- 	pmu_add_cpu_aliases_table(pmu, events_table);
- 	pmu->cpu_aliases_added = true;
-+	pmu->sysfs_aliases_loaded = true;
- 	pmu_add_sys_aliases(pmu);
+   def __init__(self):
+     self.strings = set()
++    self.insert_number = 0;
++    self.insert_point = {}
++    self.metrics = set()
  
- 	/* Count how many aliases we generated */
-diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-index c547fe607f9f..fb437b50443f 100644
---- a/tools/perf/util/pmu.c
-+++ b/tools/perf/util/pmu.c
-@@ -115,6 +115,8 @@ struct perf_pmu_format {
- 	bool loaded;
- };
+-  def add(self, s: str) -> None:
++  def add(self, s: str, metric: bool) -> None:
+     """Called to add to the big string."""
+-    self.strings.add(s)
++    if s not in self.strings:
++      self.strings.add(s)
++      self.insert_point[s] = self.insert_number
++      self.insert_number += 1
++      if metric:
++        self.metrics.add(s)
  
-+static int pmu_aliases_parse(struct perf_pmu *pmu);
+   def compute(self) -> None:
+     """Called once all strings are added to compute the string and offsets."""
+@@ -160,8 +171,11 @@ class BigCString:
+     self.big_string = []
+     self.offsets = {}
+ 
++    def string_cmp_key(s: str) -> Tuple[bool, int, str]:
++      return (s in self.metrics, self.insert_point[s], s)
 +
- static struct perf_pmu_format *perf_pmu__new_format(struct list_head *list, char *name)
- {
- 	struct perf_pmu_format *format;
-@@ -416,10 +418,15 @@ static void perf_pmu__del_aliases(struct perf_pmu *pmu)
- 	}
- }
+     # Emit all strings that aren't folded in a sorted manner.
+-    for s in sorted(self.strings):
++    for s in sorted(self.strings, key=string_cmp_key):
+       if s not in folded_strings:
+         self.offsets[s] = big_string_offset
+         self.big_string.append(f'/* offset={big_string_offset} */ "')
+@@ -574,19 +588,20 @@ def preprocess_one_file(parents: Sequence[str], item: os.DirEntry) -> None:
+       assert len(mgroup) > 1, parents
+       description = f"{metricgroup_descriptions[mgroup]}\\000"
+       mgroup = f"{mgroup}\\000"
+-      _bcs.add(mgroup)
+-      _bcs.add(description)
++      _bcs.add(mgroup, metric=True)
++      _bcs.add(description, metric=True)
+       _metricgroups[mgroup] = description
+     return
  
--static struct perf_pmu_alias *perf_pmu__find_alias(const struct perf_pmu *pmu, const char *name)
-+static struct perf_pmu_alias *perf_pmu__find_alias(struct perf_pmu *pmu,
-+						   const char *name,
-+						   bool load)
- {
- 	struct perf_pmu_alias *alias;
+   topic = get_topic(item.name)
+   for event in read_json_events(item.path, topic):
+     pmu_name = f"{event.pmu}\\000"
+-    _bcs.add(pmu_name)
+     if event.name:
+-      _bcs.add(event.build_c_string(metric=False))
++      _bcs.add(pmu_name, metric=False)
++      _bcs.add(event.build_c_string(metric=False), metric=False)
+     if event.metric_name:
+-      _bcs.add(event.build_c_string(metric=True))
++      _bcs.add(pmu_name, metric=True)
++      _bcs.add(event.build_c_string(metric=True), metric=True)
  
-+	if (load && !pmu->sysfs_aliases_loaded)
-+		pmu_aliases_parse(pmu);
-+
- 	list_for_each_entry(alias, &pmu->aliases, list) {
- 		if (!strcasecmp(alias->name, name))
- 			return alias;
-@@ -501,7 +508,7 @@ static int perf_pmu__new_alias(struct perf_pmu *pmu, const char *name,
- 	const char *long_desc = NULL, *topic = NULL, *unit = NULL, *pmu_name = NULL;
- 	bool deprecated = false, perpkg = false;
- 
--	if (perf_pmu__find_alias(pmu, name)) {
-+	if (perf_pmu__find_alias(pmu, name, /*load=*/ false)) {
- 		/* Alias was already created/loaded. */
- 		return 0;
- 	}
-@@ -607,18 +614,33 @@ static inline bool pmu_alias_info_file(char *name)
- }
- 
- /*
-- * Process all the sysfs attributes located under the directory
-- * specified in 'dir' parameter.
-+ * Reading the pmu event aliases definition, which should be located at:
-+ * /sys/bus/event_source/devices/<dev>/events as sysfs group attributes.
-  */
--static int pmu_aliases_parse(struct perf_pmu *pmu, int dirfd)
-+static int pmu_aliases_parse(struct perf_pmu *pmu)
- {
-+	char path[PATH_MAX];
- 	struct dirent *evt_ent;
- 	DIR *event_dir;
--	int fd;
-+	size_t len;
-+	int fd, dir_fd;
- 
--	event_dir = fdopendir(dirfd);
--	if (!event_dir)
-+	len = perf_pmu__event_source_devices_scnprintf(path, sizeof(path));
-+	if (!len)
-+		return 0;
-+	scnprintf(path + len, sizeof(path) - len, "%s/events", pmu->name);
-+
-+	dir_fd = open(path, O_DIRECTORY);
-+	if (dir_fd == -1) {
-+		pmu->sysfs_aliases_loaded = true;
-+		return 0;
-+	}
-+
-+	event_dir = fdopendir(dir_fd);
-+	if (!event_dir){
-+		close (dir_fd);
- 		return -EINVAL;
-+	}
- 
- 	while ((evt_ent = readdir(event_dir))) {
- 		char *name = evt_ent->d_name;
-@@ -633,7 +655,7 @@ static int pmu_aliases_parse(struct perf_pmu *pmu, int dirfd)
- 		if (pmu_alias_info_file(name))
- 			continue;
- 
--		fd = openat(dirfd, name, O_RDONLY);
-+		fd = openat(dir_fd, name, O_RDONLY);
- 		if (fd == -1) {
- 			pr_debug("Cannot open %s\n", name);
- 			continue;
-@@ -651,25 +673,8 @@ static int pmu_aliases_parse(struct perf_pmu *pmu, int dirfd)
- 	}
- 
- 	closedir(event_dir);
--	return 0;
--}
--
--/*
-- * Reading the pmu event aliases definition, which should be located at:
-- * /sys/bus/event_source/devices/<dev>/events as sysfs group attributes.
-- */
--static int pmu_aliases(struct perf_pmu *pmu, int dirfd, const char *name)
--{
--	int fd;
--
--	fd = perf_pmu__pathname_fd(dirfd, name, "events", O_DIRECTORY);
--	if (fd < 0)
--		return 0;
--
--	/* it'll close the fd */
--	if (pmu_aliases_parse(pmu, fd))
--		return -1;
--
-+	close (dir_fd);
-+	pmu->sysfs_aliases_loaded = true;
- 	return 0;
- }
- 
-@@ -1013,13 +1018,6 @@ struct perf_pmu *perf_pmu__lookup(struct list_head *pmus, int dirfd, const char
- 		free(pmu);
- 		return NULL;
- 	}
--	/*
--	 * Check the aliases first to avoid unnecessary work.
--	 */
--	if (pmu_aliases(pmu, dirfd, name)) {
--		free(pmu);
--		return NULL;
--	}
- 	pmu->is_core = is_pmu_core(name);
- 	pmu->cpus = pmu_cpumask(dirfd, name, pmu->is_core);
- 
-@@ -1434,7 +1432,7 @@ static struct perf_pmu_alias *pmu_find_alias(struct perf_pmu *pmu,
- 		return NULL;
- 	}
- 
--	alias = perf_pmu__find_alias(pmu, name);
-+	alias = perf_pmu__find_alias(pmu, name, /*load=*/ true);
- 	if (alias || pmu->cpu_aliases_added)
- 		return alias;
- 
-@@ -1443,7 +1441,7 @@ static struct perf_pmu_alias *pmu_find_alias(struct perf_pmu *pmu,
- 	    pmu_events_table__find_event(pmu->events_table, pmu, name,
- 				         pmu_add_cpu_aliases_map_callback,
- 				         pmu) == 0) {
--		alias = perf_pmu__find_alias(pmu, name);
-+		alias = perf_pmu__find_alias(pmu, name, /*load=*/ false);
- 	}
- 	return alias;
- }
-@@ -1616,7 +1614,7 @@ bool perf_pmu__auto_merge_stats(const struct perf_pmu *pmu)
- 
- bool perf_pmu__have_event(struct perf_pmu *pmu, const char *name)
- {
--	if (perf_pmu__find_alias(pmu, name) != NULL)
-+	if (perf_pmu__find_alias(pmu, name, /*load=*/ true) != NULL)
- 		return true;
- 	if (pmu->cpu_aliases_added || !pmu->events_table)
- 		return false;
-@@ -1625,7 +1623,12 @@ bool perf_pmu__have_event(struct perf_pmu *pmu, const char *name)
- 
- size_t perf_pmu__num_events(struct perf_pmu *pmu)
- {
--	size_t nr = pmu->sysfs_aliases;
-+	size_t nr;
-+
-+	if (!pmu->sysfs_aliases_loaded)
-+		pmu_aliases_parse(pmu);
-+
-+	nr = pmu->sysfs_aliases;
- 
- 	if (pmu->cpu_aliases_added)
- 		 nr += pmu->loaded_json_aliases;
-diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
-index 288d2908382a..bae0de3ed7a5 100644
---- a/tools/perf/util/pmu.h
-+++ b/tools/perf/util/pmu.h
-@@ -122,6 +122,8 @@ struct perf_pmu {
- 	uint32_t sysfs_aliases;
- 	/** @sysfs_aliases: Number of json event aliases loaded. */
- 	uint32_t loaded_json_aliases;
-+	/** @sysfs_aliases_loaded: Are sysfs aliases loaded from disk? */
-+	bool sysfs_aliases_loaded;
- 	/**
- 	 * @cpu_aliases_added: Have all json events table entries for the PMU
- 	 * been added?
+ def process_one_file(parents: Sequence[str], item: os.DirEntry) -> None:
+   """Process a JSON file during the main walk."""
 -- 
 2.42.0.rc1.204.g551eb34607-goog
 
