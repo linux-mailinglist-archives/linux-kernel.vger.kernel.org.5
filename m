@@ -2,154 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34A0C78608D
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 21:20:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40A00786092
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 21:23:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238276AbjHWTUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 15:20:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38326 "EHLO
+        id S238137AbjHWTXV convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 23 Aug 2023 15:23:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238335AbjHWTTu (ORCPT
+        with ESMTP id S237409AbjHWTXC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 15:19:50 -0400
-Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id 721E410CB
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 12:19:48 -0700 (PDT)
-Received: (qmail 196398 invoked by uid 1000); 23 Aug 2023 15:19:47 -0400
-Date:   Wed, 23 Aug 2023 15:19:47 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: dwc3: unusual handling of setup requests with wLength == 0
-Message-ID: <08a3759d-4c6b-4034-8516-685e4d96a41e@rowland.harvard.edu>
-References: <bb470c47-c9dc-4dae-ae3f-c7d4736ee7e9@rowland.harvard.edu>
- <20230818031045.wovf5tj2un7nwf72@synopsys.com>
- <cfc7ae18-140b-4223-9cc2-7ee4b9ddea28@rowland.harvard.edu>
- <20230818194922.ys26zrqc4pocqq7q@synopsys.com>
- <45d9ef53-e2be-4740-a93a-d36f18a49b39@rowland.harvard.edu>
- <20230819000643.7mddkitzr4aqjsms@synopsys.com>
- <e63ba783-f5a4-4442-8736-987a3b134e7f@rowland.harvard.edu>
- <20230823021429.rlgixqehry4rsqmm@synopsys.com>
- <5d5973b9-d590-4567-b1d6-4b5f8aeca68b@rowland.harvard.edu>
- <20230823175903.bpumanwv5fkpwc44@synopsys.com>
+        Wed, 23 Aug 2023 15:23:02 -0400
+Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F06B0E50;
+        Wed, 23 Aug 2023 12:23:00 -0700 (PDT)
+Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6bcde3d8657so976630a34.0;
+        Wed, 23 Aug 2023 12:23:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692818580; x=1693423380;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UTrH4o5ux4AfIjhNwUonXXt16pkl+RCpCrneQG4XR6k=;
+        b=bmuiIdnvOGR88TP4MMAQXWCHenmT2Kc6fDb8K6MUej+/xxcUr6TIA2jFa5BfFwJCyj
+         pdHXfrg+RvN88vEZPDTEzjJ4xkcErQfeC0Sc+KipVb1Y9vMEO1KM7m5/ZQMWSi1n8kls
+         n5KDs0otVKpTe8H0GGhTywFCxU8Lr8ZdCByvwFiTETfCxsjA5W1pw9jz+MmkUjyeRF4G
+         6dtamN/nNzRcjI+DhPAdSWC/HKnBuwzbJSYQcC64rpAurbyzRUyNUiAkStzWjm+ngmGN
+         Ay8p6sdpXL+moEK6FTqSe5pbi36Um9GHAeXxGPwbBHo6Y4lPwEc2aIhX9U1fAbKN57J1
+         nNOQ==
+X-Gm-Message-State: AOJu0YxeKsIQhapB63hnxo0mjP1bAYwj5APOKOvtFxVo2AVQU8dvFDqy
+        3qwwlb+icDhjOgnx9/a5xFBvXiUTpiB124UPLWf6YLgp
+X-Google-Smtp-Source: AGHT+IEDvX+ecDZ1RwPEufppWxoRbprGo8Soq3d6K9vgfOzxnTKsqRCM9rpZnGomGtUUbEiybgCcgQ6zjBvUuebKFcs=
+X-Received: by 2002:a4a:37c3:0:b0:570:cad0:fce9 with SMTP id
+ r186-20020a4a37c3000000b00570cad0fce9mr9352284oor.1.1692818580204; Wed, 23
+ Aug 2023 12:23:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230823175903.bpumanwv5fkpwc44@synopsys.com>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_PASS,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+References: <20230823191831.476579-1-helgaas@kernel.org>
+In-Reply-To: <20230823191831.476579-1-helgaas@kernel.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 23 Aug 2023 21:22:49 +0200
+Message-ID: <CAJZ5v0hAw7fB3YuQ2SGNccV_tPhr0GTYAEkv5NpMxgSuUUVXxw@mail.gmail.com>
+Subject: Re: [PATCH] PCI: Tidy save/restore config messages
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 23, 2023 at 05:59:07PM +0000, Thinh Nguyen wrote:
-> On Wed, Aug 23, 2023, Alan Stern wrote:
-> > STALL is not a valid status for usb_requests on the gadget side; it 
-> > applies only on the host side (the host doesn't halt its endpoints).
-> 
-> The host can send a CLEAR_FEATURE(halt_ep). This will reset the data
-> sequence of the endpoint. In xhci spec (section 4.6.8), it suggests to
-> send this when the endpoint is reset. The endpoint is reset typically
-> when there's a transaction error.
+On Wed, Aug 23, 2023 at 9:19 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>
+> From: Bjorn Helgaas <bhelgaas@google.com>
+>
+> Update config space save/restore debug messages so they line up better.
+> Previously:
+>
+>   nvme 0000:05:00.0: saving config space at offset 0x4 (reading 0x20100006)
+>   nvme 0000:05:00.0: saving config space at offset 0x8 (reading 0x1080200)
+>   nvme 0000:05:00.0: saving config space at offset 0xc (reading 0x0)
+>
+>   nvme 0000:05:00.0: restoring config space at offset 0x4 (was 0x0, writing 0x20100006)
+>
+> Now:
+>
+>   nvme 0000:05:00.0: save config 0x04: 0x20100006
+>   nvme 0000:05:00.0: save config 0x08: 0x01080200
+>   nvme 0000:05:00.0: save config 0x0c: 0x00000000
+>
+>   nvme 0000:05:00.0: restore config 0x04: 0x00000000 -> 0x20100006
+>
+> No functional change intended.  Enable these messages by setting
+> CONFIG_DYNAMIC_DEBUG=y and adding 'dyndbg="file drivers/pci/* +p"'
+> to kernel parameters.
+>
+> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 
-It's important to be careful about the distinction between an actual 
-endpoint in the gadget and the logical representation of an endpoint 
-inside a host controller.  The host cannot reset the first; it can only 
-reset the second.
+Acked-by: Rafael J. Wysocki <rafael@kernel.org>
 
-So yes, the usb_clear_halt() routine on the host does a 
-CLEAR_FEATURE(HALT) control transfer and then calls 
-usb_reset_endpoint(), which calls usb_hcd_reset_endpoint().
-
-> The problem here is that typical protocol spec like MSC/UVC don't
-> specify how to handle CLEAR_FEATURE(halt_ep).
-
-MSC does specify this.  I don't know about UVC.
-
-> For Windows MSC driver, when the host recovers from the transaction
-> error, it sends CLEAR_FEATURE(halt_ep) and expects the transfer to be
-> cancelled. To synchronize with the host, the gadget driver needs to
-> cancel the request. Dwc3 needs to notify the gadget driver of this.
-
-No, that's not what happens in the Mass Storage Class.
-
-For the Bulk-Only Transport version of MSC, when a Windows or Linux host 
-detects a transaction error, it performs a USB port reset.  This clears 
-all the state on the gadget.  The gadget gets re-enumerated, and the 
-host proceeds to re-issue the MSC command.  The gadget driver doesn't 
-need any special notifications; outstanding requests get cancelled as a 
-normal part of the reset handling.
-
-(In fact, this is not what the BOT spec says to do.  It says that when 
-the host detects a transaction error, it should a Bulk-Only Mass Storage 
-Reset -- this is a special class-specific control transfer.  In 
-response, the gadget driver is supposed to reset its internal state and 
-cancel all of its outstanding requests.  Then the host issues 
-CLEAR_FEATURE(HALT) to both the bulk-IN and bulk-OUT endpoints and 
-proceeds to issue its next MSC command.  A lot of MSC devices don't 
-handle this properly, probably because Windows didn't use this 
-approach.)
-
-In the UAS version of MSC, the endpoints never halt.  If there's a 
-transaction error, the host simply re-issues the transaction.  If that 
-fails too, error recovery is started by the SCSI layer; it involves a 
-USB port reset.
-
-But as you can see, in each case the UDC driver doesn't have to cancel 
-anything in particular when it gets a Clear-Halt.
-
-> For other class driver, it may expect the transfer to resume after data
-> sequence reset.
-
-Indeed.  In which case, the UDC driver shouldn't cancel anything.
-
-> As a result, for an endpoint that's STALL (or not), and if the host
-> sends CLEAR_FEATURE(halt_ep), the dwc3 returns the request with some
-> status code and let the gadget driver handle it. If the gadget driver
-> wants to cancel the transfer, it can drop the transfer. If the gadget
-> driver wants to resume, it can requeue the same requests with the saved
-> status to resume where it left off.
-
-The UDC driver should not dequeue a request merely because the endpoint 
-is halted.  The gadget driver can take care of everything necessary.  
-After all, it knows when an endpoint gets halted, because the gadget 
-driver is what calls usb_ep_set_halt() or usb_ep_set_wedge() in the 
-first place.
-
-As for handling CLEAR_FEATURE(HALT), all the UDC driver needs to do is 
-clear the HALT feature for the endpoint.  (Although if the endpoint is 
-wedged, the HALT feature should not be cleared.)  It doesn't need to 
-cancel any outstanding requests or inform the gadget driver in any way.
-
-(Again, this is something that a lot of USB devices don't handle 
-properly.  They get very confused if the host sends a Clear-Halt 
-transfer for an endpoint that isn't halted.)
-
-> > Putting this together, I get the following status codes:
-> > 
-> > -ESHUTDOWN	Request aborted because ep was disabled
-> > -EREMOTEIO	Request was for an aborted control transfer
-> > -ECONNRESET	Request was cancelled by usb_ep_dequeue()
-> > -EXDEV		Data dropped (isoc only)
-> > -EOVERFLOW	The host sent more data than the request wanted
-> > 		(will never happen if the request's length is a
-> > 		nonzero multiple of the maxpacket size)
-> > 
-> > This applies only to the .status field of struct usb_request.  Calls to 
-> > usb_ep_queue() may return different error codes.
-> > 
-> > How does that sound?
-> > 
-> 
-> That looks great!
-
-At some point I'll write a patch adding this to the documentation.
-
-Alan Stern
+> ---
+>  drivers/pci/pci.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> index 60230da957e0..920c161575d4 100644
+> --- a/drivers/pci/pci.c
+> +++ b/drivers/pci/pci.c
+> @@ -1681,7 +1681,7 @@ int pci_save_state(struct pci_dev *dev)
+>         /* XXX: 100% dword access ok here? */
+>         for (i = 0; i < 16; i++) {
+>                 pci_read_config_dword(dev, i * 4, &dev->saved_config_space[i]);
+> -               pci_dbg(dev, "saving config space at offset %#x (reading %#x)\n",
+> +               pci_dbg(dev, "save config %#04x: %#010x\n",
+>                         i * 4, dev->saved_config_space[i]);
+>         }
+>         dev->state_saved = true;
+> @@ -1712,7 +1712,7 @@ static void pci_restore_config_dword(struct pci_dev *pdev, int offset,
+>                 return;
+>
+>         for (;;) {
+> -               pci_dbg(pdev, "restoring config space at offset %#x (was %#x, writing %#x)\n",
+> +               pci_dbg(pdev, "restore config %#04x: %#010x -> %#010x\n",
+>                         offset, val, saved_val);
+>                 pci_write_config_dword(pdev, offset, saved_val);
+>                 if (retry-- <= 0)
+> --
+> 2.34.1
+>
