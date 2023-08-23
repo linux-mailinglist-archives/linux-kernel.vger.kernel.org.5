@@ -2,94 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A984D785EBD
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 19:37:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF59B785EC7
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 19:39:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237548AbjHWRhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 13:37:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39414 "EHLO
+        id S237858AbjHWRjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 13:39:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236177AbjHWRg7 (ORCPT
+        with ESMTP id S236177AbjHWRjA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 13:36:59 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AA9EFB;
-        Wed, 23 Aug 2023 10:36:57 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 1B97A2216E;
-        Wed, 23 Aug 2023 17:36:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1692812216; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0mGoyVdhe07nIruGTIsfRG7pAPcIOn+S23DzxQvPcN0=;
-        b=iFkpG/UqOQuBN3F/2OisVy7AxfadSIXjbGO5ToPKFYcruO2BtpJQ1QweflqdVAA04Mocm1
-        zZFQMah5bP9Rj1LGJl84ubUT+OE6pL8ZVo2GKOJZyjhjrNSyjlRA+gQ8up+uIdJ8zUq6ZQ
-        T747QgTmhFFMsbsQ9DundtkkxVajpm4=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F37D613458;
-        Wed, 23 Aug 2023 17:36:55 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id fxCROrdD5mREYgAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Wed, 23 Aug 2023 17:36:55 +0000
-Date:   Wed, 23 Aug 2023 19:36:54 +0200
-From:   Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To:     Michal =?utf-8?B?U3VjaMOhbmVr?= <msuchanek@suse.de>
-Cc:     linux-kernel@vger.kernel.org, linux-modules@vger.kernel.org,
-        linux-kbuild@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: Re: [PATCH] depmod: Remove version parsing hack
-Message-ID: <lroeqntgmtuuijs7m7vcey3tmhfy3pku3cupydupult62hdvlf@obv46zblj2w7>
-References: <20230823170632.14377-1-mkoutny@suse.com>
- <20230823173120.GP8826@kitsune.suse.cz>
+        Wed, 23 Aug 2023 13:39:00 -0400
+Received: from exchange.fintech.ru (exchange.fintech.ru [195.54.195.159])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50547E5A
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 10:38:56 -0700 (PDT)
+Received: from Ex16-01.fintech.ru (10.0.10.18) by exchange.fintech.ru
+ (195.54.195.159) with Microsoft SMTP Server (TLS) id 14.3.498.0; Wed, 23 Aug
+ 2023 20:38:53 +0300
+Received: from localhost (10.0.253.138) by Ex16-01.fintech.ru (10.0.10.18)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Wed, 23 Aug
+ 2023 20:38:52 +0300
+From:   Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>
+CC:     Nikita Zhandarovich <n.zhandarovich@fintech.ru>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, <wireguard@lists.zx2c4.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        syzbot <syzkaller@googlegroups.com>,
+        <lvc-project@linuxtesting.org>,
+        <syzbot+d1de830e4ecdaac83d89@syzkaller.appspotmail.com>
+Subject: [PATCH net] wireguard: receive: fix data-race around receiving_counter.counter
+Date:   Wed, 23 Aug 2023 10:38:39 -0700
+Message-ID: <20230823173839.43938-1-n.zhandarovich@fintech.ru>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="savtmz3n5xpx2hup"
-Content-Disposition: inline
-In-Reply-To: <20230823173120.GP8826@kitsune.suse.cz>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.0.253.138]
+X-ClientProxiedBy: Ex16-02.fintech.ru (10.0.10.19) To Ex16-01.fintech.ru
+ (10.0.10.18)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Syzkaller with KCSAN identified a data-race issue when accessing
+keypair->receiving_counter.counter.
 
---savtmz3n5xpx2hup
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This patch uses READ_ONCE() and WRITE_ONCE() annotations to fix the
+problem.
 
-On Wed, Aug 23, 2023 at 07:31:20PM +0200, Michal Such=E1nek <msuchanek@suse=
-=2Ede> wrote:
-> As far as I can tell this is already merged as
-> 4d15c9fa058e6dee09324cfc93f48858d4296019 in
-> https://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git
+Fixes: a9e90d9931f3 ("wireguard: noise: separate receive counter from send counter")
+Reported-by: syzbot+d1de830e4ecdaac83d89@syzkaller.appspotmail.com
+Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+---
+ drivers/net/wireguard/receive.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-I assume this is heading to v6.6-rc1.
-Perfect, thanks! (It even handles dead cleanup part better than mine.)
+diff --git a/drivers/net/wireguard/receive.c b/drivers/net/wireguard/receive.c
+index 0b3f0c843550..b5232ffa8bc7 100644
+--- a/drivers/net/wireguard/receive.c
++++ b/drivers/net/wireguard/receive.c
+@@ -251,7 +251,7 @@ static bool decrypt_packet(struct sk_buff *skb, struct noise_keypair *keypair)
+ 
+ 	if (unlikely(!READ_ONCE(keypair->receiving.is_valid) ||
+ 		  wg_birthdate_has_expired(keypair->receiving.birthdate, REJECT_AFTER_TIME) ||
+-		  keypair->receiving_counter.counter >= REJECT_AFTER_MESSAGES)) {
++		  READ_ONCE(keypair->receiving_counter.counter) >= REJECT_AFTER_MESSAGES)) {
+ 		WRITE_ONCE(keypair->receiving.is_valid, false);
+ 		return false;
+ 	}
+@@ -318,7 +318,7 @@ static bool counter_validate(struct noise_replay_counter *counter, u64 their_cou
+ 		for (i = 1; i <= top; ++i)
+ 			counter->backtrack[(i + index_current) &
+ 				((COUNTER_BITS_TOTAL / BITS_PER_LONG) - 1)] = 0;
+-		counter->counter = their_counter;
++		WRITE_ONCE(counter->counter, their_counter);
+ 	}
+ 
+ 	index &= (COUNTER_BITS_TOTAL / BITS_PER_LONG) - 1;
+-- 
+2.25.1
 
-Michal
-
---savtmz3n5xpx2hup
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZOZDtAAKCRAGvrMr/1gc
-jpFGAQCnx049CvE5NfEeN6WAi+ygIWnmuUpKYs1iQDNRLfh4QQD+PRdr2w8TLpBl
-/q9wzp2Wsp/eriQ3MeAsR/IWSL2owAk=
-=aY4I
------END PGP SIGNATURE-----
-
---savtmz3n5xpx2hup--
