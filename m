@@ -2,74 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2F0A7854EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 12:10:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A2427854E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 12:08:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232095AbjHWKKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 06:10:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34010 "EHLO
+        id S232069AbjHWKIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 06:08:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234801AbjHWIpM (ORCPT
+        with ESMTP id S232594AbjHWKHo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 04:45:12 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 983E32D50
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 01:41:26 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2bb8a12e819so83123041fa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 01:41:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=metaspace-dk.20221208.gappssmtp.com; s=20221208; t=1692780085; x=1693384885;
-        h=content-transfer-encoding:mime-version:message-id:in-reply-to:date
-         :subject:cc:to:from:user-agent:references:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ADGGDbtG9VdwETdTI9uegT/TDj/LK9Ermf0BY1pyan4=;
-        b=VERXx5a/FY1g4cz7TNxBlxrADguo1odfx5FgYGuY006LuXOwj/qZPXH1nawUFDan2y
-         hK9e8O9WyBzghs23+Sef0NmsuolkfM9L2pZXsMWAmJvKqsxx2lG6FKFDLEWj9iv7GDqk
-         a0dpWxwl8z0dLaTnZMMo+jpKzpp1dc1++Cj/fPs1Gv62juEgGIW6Nf0ezcydOHNhx0yf
-         bPgSRpoXWJMyXGPkYsf351zm1pBzkzFbdPD8gBaluL/fmRI/KQ8PcW2S4Xn7KFCCpuH7
-         2/VbVnLoCaT6eZI/AuuMy0FlPcjgnRybOQKDDk7IxWYbzJqtAS9OvhtpmczK14OOpHIg
-         3X+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692780085; x=1693384885;
-        h=content-transfer-encoding:mime-version:message-id:in-reply-to:date
-         :subject:cc:to:from:user-agent:references:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ADGGDbtG9VdwETdTI9uegT/TDj/LK9Ermf0BY1pyan4=;
-        b=YF7zanFCsBJXSUDfNnT9jm2WZQTBgsBPH9reBSBCprCoiFUs6dOa5YMblpTfO6OYTu
-         7K2d/4hFW8eGiHKaGkLZ3zCpTW8CELVLU/YzNgVPWqlcldi2djd21Rd11iwuLEAO9XAh
-         V3cGSfAc0XsJoyvRwgaR13lgVfNp6Gz7uom41nDDV3tkg7EYDOApNIQueUjmCEivrPdN
-         zGw/qlyHhhwXxsXdikY5FqiUGtCsPBy2RiCfwG2TMv0OamflLU4xsQZGH1H1f0f845c0
-         YWjekhdoE/Mk1qd14iGixlLDxPemPkRNTGaDKp6jxgfOb9N9H0iCsnJ0xVktTyv+mh8t
-         kaxA==
-X-Gm-Message-State: AOJu0Ywb4ymu0vuln2DX/zy1GEVrG3fibLAzX6OSF8YbNDOmFAauYabr
-        5l3xTrKIB7+oCEyXxcXooTCjkw==
-X-Google-Smtp-Source: AGHT+IGVBY8vfYuHN9oZfC4KA6gsilfYQ6t93muUcdurvOZg0uLZ9V3ryMaF2bhwTVHGjV80+3pk9Q==
-X-Received: by 2002:a2e:95c6:0:b0:2b9:eb0f:c733 with SMTP id y6-20020a2e95c6000000b002b9eb0fc733mr9069250ljh.35.1692780084435;
-        Wed, 23 Aug 2023 01:41:24 -0700 (PDT)
-Received: from localhost ([165.225.194.205])
-        by smtp.gmail.com with ESMTPSA id l3-20020a1ced03000000b003fe1a96845bsm21520804wmh.2.2023.08.23.01.41.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Aug 2023 01:41:23 -0700 (PDT)
-References: <87r0octho8.fsf@metaspace.dk>
- <20230822093148.3478340-1-aliceryhl@google.com>
-User-agent: mu4e 1.10.5; emacs 28.2.50
-From:   "Andreas Hindborg (Samsung)" <nmi@metaspace.dk>
-To:     Alice Ryhl <aliceryhl@google.com>
-Cc:     alex.gaynor@gmail.com, benno.lossin@proton.me,
-        bjorn3_gh@protonmail.com, boqun.feng@gmail.com, gary@garyguo.net,
-        linux-kernel@vger.kernel.org, ojeda@kernel.org,
-        patches@lists.linux.dev, rust-for-linux@vger.kernel.org,
-        wedsonaf@gmail.com
-Subject: Re: [PATCH v1] rust: add improved version of
- `ForeignOwnable::borrow_mut`
-Date:   Wed, 23 Aug 2023 10:40:54 +0200
-In-reply-to: <20230822093148.3478340-1-aliceryhl@google.com>
-Message-ID: <87r0nu40cs.fsf@metaspace.dk>
+        Wed, 23 Aug 2023 06:07:44 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FCB146BF;
+        Wed, 23 Aug 2023 02:03:33 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CCF2965957;
+        Wed, 23 Aug 2023 09:03:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id ED780C433C7;
+        Wed, 23 Aug 2023 09:03:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692781412;
+        bh=cBA8LS1Y1PWRmdPmwFWha1Slu8mL5WLDumH/lb3Wq00=;
+        h=From:Subject:Date:To:Cc:Reply-To:From;
+        b=p7ERIvaGwsPAgIB7Ug9zMNgrNdzS2de6l6WnOo4Uc8hogma7QNcpFDbKvxfQeg9Hg
+         Xriz5lqt+MO8nbtsIDOkoXzTuGTO1mecOZCFQ+cZXfW6vwIoCVp4mEv7g0dXqAgNz0
+         yNZFR9JXpWYo2TE6y6NLsLV5X0gkAKhQm8FqfGObbu4H6bFtMZ9QMdh0fN5DEltv/s
+         olHRGlFG+NMEC1MGOCcmz04ftmcrFUBdUtvG/ZUc4prq/1VBbN6LYM6k+k3kYhMCUK
+         KqfDt1sSg4byhG/Zh2VJLmsVXGVlIXoSvU6xmULNZYQWUtCWHgmJ5YQbISG7xbtU3W
+         wcctWwvm7+L7w==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by smtp.lore.kernel.org (Postfix) with ESMTP id C5A0CEE49B2;
+        Wed, 23 Aug 2023 09:03:31 +0000 (UTC)
+From:   Nikita Shubin via B4 Relay 
+        <devnull+nikita.shubin.maquefel.me@kernel.org>
+Subject: [PATCH 0/2] device tree support for ST M48T86
+Date:   Wed, 23 Aug 2023 12:03:13 +0300
+Message-Id: <20230823-m48t86_device_tree-v1-0-240023b435ac@maquefel.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAFHL5WQC/x2N0QqDMBAEf0XuuQEbRWN/pRQ547beg2m5C6Ug/
+ nujj8PssBsZVGB0qzZSfMXknQpcLxXFhdMLTubC5Gvf1ME3bm1DDt04l23EmBVw3Hsw+6Hth0A
+ lnNjgJuUUlyNd2TL0EB/FU37n2/2x73+1k/ArfQAAAA==
+To:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Nikita Shubin <nikita.shubin@maquefel.me>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>
+X-Mailer: b4 0.12.1
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1692781413; l=702;
+ i=nikita.shubin@maquefel.me; s=20230718; h=from:subject:message-id;
+ bh=cBA8LS1Y1PWRmdPmwFWha1Slu8mL5WLDumH/lb3Wq00=; =?utf-8?q?b=3DLXAbPcv1J0we?=
+ =?utf-8?q?kD7/fEVbVWnPffGhP0mOmiNjuWFhlj2AFOPjtkZNN/bX43+mISssLNFXFj0z4Ou7?=
+ goLNQ4sQCyGjIKQFMnYzGxq5JuHMbCqGiM5FgElvV56j7TNIPedg
+X-Developer-Key: i=nikita.shubin@maquefel.me; a=ed25519;
+ pk=vqf5YIUJ7BJv3EJFaNNxWZgGuMgDH6rwufTLflwU9ac=
+X-Endpoint-Received: by B4 Relay for nikita.shubin@maquefel.me/20230718 with auth_id=65
+X-Original-From: Nikita Shubin <nikita.shubin@maquefel.me>
+Reply-To: <nikita.shubin@maquefel.me>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,54 +78,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add device tree support for ST M48T86.
 
-Alice Ryhl <aliceryhl@google.com> writes:
+The reason it can't go to trivial-rtc.yaml, is that it has 2 registers
+instead of a single one. The registers are 1 byte wide.
 
-> Andreas Hindborg <nmi@metaspace.dk> writes:
->>> +    /// Borrows a foreign-owned object mutably.
->>> +    ///
->>> +    /// This method provides a way to access a foreign-owned value fro=
-m Rust mutably. It provides
->>> +    /// you with exactly the same abilities as an `&mut Self` when the=
- value is Rust-owned, except
->>> +    /// that this method does not let you swap the foreign-owned objec=
-t for another. (That is, it
->>> +    /// does not let you change the address of the void pointer that t=
-he foreign code is storing.)
->>=20
->> How about this:
->>=20
->> "For a smart pointer P<T> this method provides mutable access to T if
->> &mut P<T> would allow mutable access to T. Otherwise it provides
->> immutable access to T."
->>=20
->> The point is that the method provides access to the pointee, not the
->> smart pointer itself. In fact it is perfectly fine to do a mem::swawp()
->> for the pointee in the case of Box and depending on interpretation the
->> sentence "does not let you swap the foreign-owned object for another" is
->> confusing.
->
-> Yeah, I agree that the phrasing is somewhat confusing.
->
-> How about this:
->
-> /// This method provides a way to access a foreign-owned value from Rust =
-mutably. It provides
-> /// you with exactly the same abilities as an `&mut Self` when the value =
-is Rust-owned, except
-> /// that the address of the object must not be changed.
-> ///
-> /// Note that for types like [`Arc`], an `&mut Arc<T>` only gives you imm=
-utable access to the
-> /// inner value, so this method also only provides immutable access in th=
-at case.
-> ///
-> /// In the case of `Box<T>`, this method gives you the ability to modify =
-the inner `T`, but it
-> /// does not let you change the box itself. That is, you cannot change wh=
-ich allocation the box
-> /// points at.
+Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+---
+Nikita Shubin (2):
+      dt-bindings: rtc: Add ST M48T86
+      rtc: m48t86: add DT support for m48t86
 
-Sounds good =F0=9F=91=8D
+ .../devicetree/bindings/rtc/st,m48t86.yaml         | 38 ++++++++++++++++++++++
+ drivers/rtc/rtc-m48t86.c                           |  8 +++++
+ 2 files changed, 46 insertions(+)
+---
+base-commit: 89bf6209cad66214d3774dac86b6bbf2aec6a30d
+change-id: 20230823-m48t86_device_tree-a72eaa294798
 
-BR Andreas
+Best regards,
+-- 
+Nikita Shubin <nikita.shubin@maquefel.me>
+
