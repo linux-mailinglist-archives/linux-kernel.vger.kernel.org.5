@@ -2,131 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 575387852C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 10:35:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22A4D7852ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 10:45:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234102AbjHWIeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 04:34:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57164 "EHLO
+        id S234181AbjHWIox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 04:44:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233887AbjHWIbn (ORCPT
+        with ESMTP id S234691AbjHWIcQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 04:31:43 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 709D71FED;
-        Wed, 23 Aug 2023 01:26:54 -0700 (PDT)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37N8G1e2011553;
-        Wed, 23 Aug 2023 08:26:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=GlyOkSbeWlPKEVbbjapYJOUhwXIA4m7w8RYHyH7iTvM=;
- b=LWiFG7EzMWWlHsaEGW+zpfFZrI+VmWrtpxwqKDf3al4cEAC91KKRQTCsG5LNT6JywUxy
- rqVWe+yU/DTe5cPTdqnJAPQ8T8q422rCx1CUT7+uB/97CkIl9CBo+xiOBX7ooW5QRPXt
- eCdltUJsmUvlFKxQ0doQz7Xi9esXsKNXfx9FroaePk6ujPsF4xJQc+H2RfvhD3sHOkRz
- O8VtKcpy6q744dlKz+ZVe1hqzWz40297EidCEY3n1l9Tips2PEtQFCsv3hVsIHXZDQFi
- 7tgg/+DZTOUK5/QtZQHSEU9oXbpntI2YrWQYsukD5k3HZfE6vbbuBVmktnw9bU0NQyKl kA== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sn2t41eey-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 23 Aug 2023 08:25:59 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37N8PxlF014549
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 23 Aug 2023 08:25:59 GMT
-Received: from [10.217.198.224] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Wed, 23 Aug
- 2023 01:25:56 -0700
-Message-ID: <dcf0cddc-2a35-2ddb-1912-465e29413b9c@quicinc.com>
-Date:   Wed, 23 Aug 2023 13:55:53 +0530
+        Wed, 23 Aug 2023 04:32:16 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A4792117;
+        Wed, 23 Aug 2023 01:27:49 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 42D306162C;
+        Wed, 23 Aug 2023 08:27:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E052DC433C8;
+        Wed, 23 Aug 2023 08:27:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1692779268;
+        bh=69PE5gQJiEYod7ui+fX3bPowl/3d8H9a0vbiN23RpbU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=F6B+Q51Ark3YyhyQYI+f5ShRZBV6Eb14sfSF9c4jRk1K4blvwvkKmjlavHJ7ZZ5lk
+         otCmJqhcRJuWT0woMWMAbfXanaF2N99Oi6BxHG3PfimciuxANrvk39zlShnpPIM6O5
+         9qAGW+cXpHzX9KpJOUHnHvaS/P7i3Dd3eV5GpBi0=
+Date:   Wed, 23 Aug 2023 10:27:45 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>, stable@vger.kernel.org,
+        patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+Subject: Re: [PATCH 6.1 000/194] 6.1.47-rc1 review
+Message-ID: <2023082357-doing-throwback-c9f0@gregkh>
+References: <20230821194122.695845670@linuxfoundation.org>
+ <991b93d2-9fde-4233-97d5-1133a9360d02@roeck-us.net>
+ <2023082309-veggie-unwoven-a7df@gregkh>
+ <CA+G9fYvwxuVpSn24YvtdNXaofg2JtZDREatOpDsKTVJX+nFN3Q@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v2] irqchip/qcom-pdc: add support for v3.2 HW
-Content-Language: en-US
-To:     <neil.armstrong@linaro.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20230822-topic-sm8x50-upstream-pdc-ver-v2-1-3035b8d388f7@linaro.org>
- <5d5ad774-3269-232a-db15-751726742460@quicinc.com>
- <543b1f3d-60b6-44fd-bddf-eb35cc163e10@linaro.org>
-From:   "Maulik Shah (mkshah)" <quic_mkshah@quicinc.com>
-In-Reply-To: <543b1f3d-60b6-44fd-bddf-eb35cc163e10@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: UcN1_dw_aWnKY9423VQWx1YxiwGHUqsO
-X-Proofpoint-ORIG-GUID: UcN1_dw_aWnKY9423VQWx1YxiwGHUqsO
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-23_06,2023-08-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 spamscore=0
- clxscore=1015 phishscore=0 suspectscore=0 impostorscore=0
- lowpriorityscore=0 adultscore=0 malwarescore=0 priorityscore=1501
- mlxscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2308230076
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYvwxuVpSn24YvtdNXaofg2JtZDREatOpDsKTVJX+nFN3Q@mail.gmail.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Aug 23, 2023 at 01:47:39PM +0530, Naresh Kamboju wrote:
+> On Wed, 23 Aug 2023 at 12:33, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Tue, Aug 22, 2023 at 05:49:54PM -0700, Guenter Roeck wrote:
+> > > On Mon, Aug 21, 2023 at 09:39:39PM +0200, Greg Kroah-Hartman wrote:
+> > > > This is the start of the stable review cycle for the 6.1.47 release.
+> > > > There are 194 patches in this series, all will be posted as a response
+> > > > to this one.  If anyone has any issues with these being applied, please
+> > > > let me know.
+> > > >
+> > > > Responses should be made by Wed, 23 Aug 2023 19:40:45 +0000.
+> > > > Anything received after that time might be too late.
+> > > >
+> > >
+> > > Build results:
+> > >       total: 157 pass: 156 fail: 1
+> > > Failed builds:
+> > >       m68k:sun3_defconfig
+> > > Qemu test results:
+> > >       total: 521 pass: 519 fail: 2
+> > > Failed tests:
+> > >       arm:fuji-bmc:aspeed_g5_defconfig:notests:mem1G:mtd128,0,8,1:net,nic:aspeed-bmc-facebook-fuji:f2fs
+> > >       arm:bletchley-bmc,fmc-model=mt25qu02g,spi-model=mt25qu02g:aspeed_g5_defconfig:notests:mem1G:mtd256:net,nic:aspeed-bmc-facebook-bletchley:f2fs
+> > >
+> > > The m68k build failure is
+> > >
+> > > Inconsistent kallsyms data
+> > > Try make KALLSYMS_EXTRA_PASS=1 as a workaround
+> > >
+> > > I already have KALLSYMS_EXTRA_PASS=1 enabled, so that doesn't help.
+> > > Nothing to worry about. The f2fs crashes are still seen. They
+> > > also happen for other architectures, so it is not just an arm problem.
+> > > I'll probably just disable all f2fs testing going forward. If so I'll
+> > > send a note clarifying that the lack of reported test failures doesn't
+> > > mean that it works.
+> >
+> > I'll look into this later this week, next week to resolve the f2fs
+> > stuff.  I wanted to get to the other known bug fixes first.
+> >
+> > > For x86 I get the same runtime warning as everyone else.
+> >
+> > Yeah, this is troubling...
+> >
+> > Is it clang only?  I'll dig into this today...
+> 
+> It is seen with gcc-13 and clang-17 with few extra configs.
+> We are not booting defconfig.
+> 
+> The Kconfigs are enabled with KFENCE.
+> 
+> I see this from lore
+> "
+> This is from overnight testing that hit this only in the KCSAN runs.
+> The KASAN and non-debug runs had no trouble.
+> 
+> Thanx, Paul
+> 
+> "
 
-On 8/23/2023 1:16 PM, Neil Armstrong wrote:
-> Hi,
->
-> On 23/08/2023 07:35, Maulik Shah (mkshah) wrote:
->> Hi Neil,
->>
->> @@ -142,8 +163,17 @@ static int qcom_pdc_gic_set_type(struct irq_data 
->> *d, unsigned int type)
->>>           return -EINVAL;
->>>       }
->>> -    old_pdc_type = pdc_reg_read(IRQ_i_CFG, d->hwirq);
->>> -    pdc_reg_write(IRQ_i_CFG, d->hwirq, pdc_type);
->>> +    if (pdc_version < PDC_VERSION_3_2) {
->>> +        old_pdc_type = pdc_reg_read(IRQ_i_CFG, d->hwirq);
->>> +        pdc_reg_write(IRQ_i_CFG, d->hwirq, pdc_type);
->>> +    } else {
->>> +        u32 val;
->>> +
->>> +        val = pdc_reg_read(IRQ_i_CFG, d->hwirq);
->>> +        old_pdc_type = val & IRQ_i_CFG_TYPE_MASK;
->>> +        pdc_reg_write(IRQ_i_CFG, d->hwirq,
->>> +                  pdc_type | (val & IRQ_i_CFG_IRQ_ENABLE));
->>> +    }
->> While above is correct, i don't think we need version check in 
->> qcom_pdc_gic_set_type() as bits 0-2 are always for the type in 
->> old/new version as mentioned in v1.
->>
->> Adding one line after reading old_pdc_type should be good enough.
->
-> Yes I understood, but while looking at the IRQ_i_CFG bits, I wanted to 
-> keep the original
-> driver behavior intact by setting remaining bits to 0.
->
-> Adding this single line changes that behavior and keeps bits 3-31
-> to the default register value, which may have some consequences.
->
-> If you consider it's an ok change, then I'll reduce it to this single 
-> line.
-Yes this ok change to have single line and should not have  any 
-consequences.
+Ok, that's good, it's not going to hit "normal" users...  :)
 
-Thanks,
-Maulik
+> 
+> steps to reproduce:
+> -------------------
+> tuxmake --runtime podman --target-arch x86_64 --toolchain gcc-13
+> --kconfig https://storage.tuxsuite.com/public/linaro/lkft/builds/2UJAv99Wwi6YMltFjlQD5XRO5x4/config
+> 
+> 
+> Here is the links to details and build details,
+> [1]
+> https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.1.y/build/v6.1.46-195-g5165f4e9738c/testrun/19256276/suite/log-parser-boot/test/check-kernel-exception/details/
+> 
+> [2]
+> https://storage.tuxsuite.com/public/linaro/lkft/builds/2UJAv99Wwi6YMltFjlQD5XRO5x4/
+> 
+> [3]
+> https://storage.tuxsuite.com/public/linaro/lkft/builds/2UJAv99Wwi6YMltFjlQD5XRO5x4/config
 
+You are going to force me to use tuxmake again, aren't you...
+
+I'll dig into this after lunch.
+
+greg k-h
