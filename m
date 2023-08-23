@@ -2,141 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5608E785582
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 12:36:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C6D678558C
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 12:37:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233904AbjHWKgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 06:36:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53712 "EHLO
+        id S233913AbjHWKhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 06:37:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233723AbjHWKgF (ORCPT
+        with ESMTP id S233723AbjHWKhc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 06:36:05 -0400
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5430CE46;
-        Wed, 23 Aug 2023 03:35:51 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 1E5735C00DE;
-        Wed, 23 Aug 2023 06:35:48 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Wed, 23 Aug 2023 06:35:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.fm; h=
-        cc:cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
-        1692786948; x=1692873348; bh=oSYs/vkLjyBO5XlBO2MdH1veNO85674mMk1
-        aIBQ7n/Q=; b=G2ToborH/0dndh9CdhHciY57dwM8XyNU6sHUEeg/yLjum05hSbj
-        oLgJ7uTavmUbwD/KMiW8zeSVyII7F822N29wuioTUAOFcdj/f0m58hhDRE4t19XF
-        2KBc4t0ebB3L6Hb5D63BtjfI8ddiGuC9nCqapk0vkrIzYYZhzsSGzG2rV7nxTviq
-        clrpkS34HDklHFfnSwOGpURTFkkZwbSK2ghaXBSl+UnZ96h9uBPe58EzqNb+hEsu
-        2iyfHVw1eJwGSz3y/oJb65E2DkARfTJh0DFR5qN4TBmkHL3WgPf6FqCScmEQaYJB
-        HPKaNaQrxfZdFnMWRbNvrea/EWORwbbyVYg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-        1692786948; x=1692873348; bh=oSYs/vkLjyBO5XlBO2MdH1veNO85674mMk1
-        aIBQ7n/Q=; b=k/JCpqt59Pz9EYR6jQy1UHA4TwRQwIaqFcy/4wHnfsNOMEUXn3q
-        uvIIyePAtW0S31qiDXO1LoajO/MLuiQR7P2nxgCxHSUVUZjXSwlWtb+wn3DEDnp5
-        zIVlV0Im+C+7OKuHUA6HKHi53/QWKXV7MDaIzjeEI6OCMp7BvLJhl5GN7MGLsNZI
-        wBAWhO7g4v+jPde2C1gHw1GVUUSny47o9TbxsqkzN6/gE/ltdyzU3gtoTvtn1oB+
-        Qy28WXacFZB/9+EXjBeaMaqddrbf3F8nWTHpw4QK/LVMpm2GnJDJI3tRKjXUnIwH
-        zzzsZ5Uie/HVk2iPw88Qna3U8L/uW49QV7Q==
-X-ME-Sender: <xms:AuHlZFkaG6y1zAZTnSdbZD3m9lkf39MUo3y8QAuIG2L5qD9sQGH2Nw>
-    <xme:AuHlZA1KOGHYT7UYZdckBGbPEUZq1lnrlOIFlAlgopx9e4RbW4iQsrbTilCmW5OTd
-    oQ67zPNo7Q5pv9F>
-X-ME-Received: <xmr:AuHlZLqN23gnhX9G9VMJ4obtxKsUV1cwD6hu9zra6GGf-FRUEb5jVfJfxgwIruGk-B1gwUuKF1jamfHaZLy2ba0eZMV0h5hW0bUid3QhQN7aCtuUyBVO>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedruddvgedgvdelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepkfffgggfuffvvehfhfgjtgfgsehtjeertddtfeejnecuhfhrohhmpeeuvghr
-    nhguucfutghhuhgsvghrthcuoegsvghrnhgurdhstghhuhgsvghrthesfhgrshhtmhgrih
-    hlrdhfmheqnecuggftrfgrthhtvghrnhepkeehveekleekkeejhfehgeeftdffuddujeej
-    ieehheduueelleeghfeukeefvedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
-    hmpehmrghilhhfrhhomhepsggvrhhnugdrshgthhhusggvrhhtsehfrghsthhmrghilhdr
-    fhhm
-X-ME-Proxy: <xmx:A-HlZFngK--R-CmuZkT0s7MHyPAFK7gx7o_k_M2tNmeem4Wzr2vOlg>
-    <xmx:A-HlZD1Ajn3mkZhd7cfnt_E9rMu10NkBERhBo4b7T9NuxVgjt25Rkw>
-    <xmx:A-HlZEvEauLDyZ0eV8eoylN4SuqOn0Qdn6WDp7h0ItrnR2gncEHClw>
-    <xmx:BOHlZD-yvfIWm6Z8KTnx4zt4xP090HAmZ-6XfwxbvLhTaDYNq4sj3w>
-Feedback-ID: id8a24192:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 23 Aug 2023 06:35:45 -0400 (EDT)
-Message-ID: <699673a6-ff82-8968-6310-9a0b1c429be3@fastmail.fm>
-Date:   Wed, 23 Aug 2023 12:35:44 +0200
+        Wed, 23 Aug 2023 06:37:32 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3C88DB;
+        Wed, 23 Aug 2023 03:37:30 -0700 (PDT)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37N7EHov021159;
+        Wed, 23 Aug 2023 10:37:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=mvWYy01RsxAg0AJNiuOS2h/QmuSlFlwkOY2ZNs76GeA=;
+ b=GtK7KzkZoxzE2jWh8lCwxczfQLgJrVbHVvI8XhCvhw2VUcv3RDWLe4FNrsPSxZ8pg3bx
+ fF/W9KzMFwiaP675s3TEPNhfB8/KGlK0xXsO21U6FnN7KpaXNDJshth/eETwS4dRi9tH
+ tAvDqk9bxaXMrZ3QeRZOtbRHvQ2JRRe/v3H/8NhLFCobJmfoc+/yXSAwE3DvhzVGqb6h
+ E+ZLWXhjsys+S8oOjEnwamwy06rCyo8HmlEeITVPBkwp1o+VLYSIT+WL1EMolfPWntWB
+ 9rtZXjW/9DqdHLidZDSf0INHdguErB1uxoKwRShZkkCIEptcjjqUsc4lE3UwARSA02L0 Ew== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sn2cm1nah-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 23 Aug 2023 10:37:21 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37NAbKMH012186
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 23 Aug 2023 10:37:20 GMT
+Received: from [10.253.13.101] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 23 Aug
+ 2023 03:37:16 -0700
+Message-ID: <f4e1f615-658c-541b-f322-d21ba97724a0@quicinc.com>
+Date:   Wed, 23 Aug 2023 18:37:14 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
  Thunderbird/102.14.0
-Subject: Re: [PATCH 4/5] fuse: writeback_cache consistency enhancement
- (writeback_cache_v2)
-To:     Miklos Szeredi <miklos@szeredi.hu>,
-        Jiachen Zhang <zhangjiachen.jaycee@bytedance.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>, linux-fsdevel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        me@jcix.top
-References: <20230711043405.66256-1-zhangjiachen.jaycee@bytedance.com>
- <20230711043405.66256-5-zhangjiachen.jaycee@bytedance.com>
- <CAJfpegtqJo78wqT0EY0=1xfoSROsJogg9BNC_xJv6id9J1Oa+g@mail.gmail.com>
-Content-Language: en-US, de-DE
-From:   Bernd Schubert <bernd.schubert@fastmail.fm>
-In-Reply-To: <CAJfpegtqJo78wqT0EY0=1xfoSROsJogg9BNC_xJv6id9J1Oa+g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH v5 2/4] dt-bindings: clock: add qca8386/qca8084 clock and
+ reset definitions
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        <andersson@kernel.org>, <agross@kernel.org>,
+        <konrad.dybcio@linaro.org>, <mturquette@baylibre.com>,
+        <sboyd@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <catalin.marinas@arm.com>, <will@kernel.org>,
+        <p.zabel@pengutronix.de>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_srichara@quicinc.com>
+References: <20230823085031.27252-1-quic_luoj@quicinc.com>
+ <20230823085031.27252-3-quic_luoj@quicinc.com>
+ <692b7775-eeda-3c5b-cc24-c5dbdbb38c71@linaro.org>
+ <7eaca76f-e7ad-cb1c-5a1d-5a2b68357e9c@quicinc.com>
+ <715b3a1e-a7bb-6ca7-e402-05b0e09dbe42@linaro.org>
+From:   Jie Luo <quic_luoj@quicinc.com>
+In-Reply-To: <715b3a1e-a7bb-6ca7-e402-05b0e09dbe42@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: mptchh7G9OnMyHTsMMeZPHdJJGgrkvFx
+X-Proofpoint-GUID: mptchh7G9OnMyHTsMMeZPHdJJGgrkvFx
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-23_06,2023-08-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ bulkscore=0 suspectscore=0 phishscore=0 spamscore=0 malwarescore=0
+ clxscore=1015 mlxlogscore=696 adultscore=0 priorityscore=1501 mlxscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308230096
 X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/23/23 11:07, Miklos Szeredi wrote:
-> On Tue, 11 Jul 2023 at 06:36, Jiachen Zhang
-> <zhangjiachen.jaycee@bytedance.com> wrote:
->>
->> Some users may want both the high performance of the writeback_cahe mode
->> and a little bit more consistency among FUSE mounts. Current
->> writeback_cache mode never updates attributes from server, so can never
->> see the file attributes changed by other FUSE mounts, which means
->> 'zero-consisteny'.
->>
->> This commit introduces writeback_cache_v2 mode, which allows the attributes
->> to be updated from server to kernel when the inode is clean and no
->> writeback is in-progressing. FUSE daemons can select this mode by the
->> FUSE_WRITEBACK_CACHE_V2 init flag.
->>
->> In writeback_cache_v2 mode, the server generates official attributes.
->> Therefore,
->>
->>      1. For the cmtime, the cmtime generated by kernel are just temporary
->>      values that are never flushed to server by fuse_write_inode(), and they
->>      could be eventually updated by the official server cmtime. The
->>      mtime-based revalidation of the fc->auto_inval_data mode is also
->>      skipped, as the kernel-generated temporary cmtime are likely not equal
->>      to the offical server cmtime.
->>
->>      2. For the file size, we expect server updates its file size on
->>      FUSE_WRITEs. So we increase fi->attr_version in fuse_writepage_end() to
->>      check the staleness of the returning file size.
->>
->> Together with FOPEN_INVAL_ATTR, a FUSE daemon is able to implement
->> close-to-open (CTO) consistency like NFS client implementations.
+
+
+On 8/23/2023 6:28 PM, Krzysztof Kozlowski wrote:
+> On 23/08/2023 12:24, Jie Luo wrote:
+>>>> Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
+>>>
+>>> You ignored tag, so I wrote you friendly reminder. You responded:
+>>>
+>>> "Okay, got it, thanks Krzysztof for the reminder."
+>>>
+>>> so again you ignored the tag?
+>>>
+>>> No, come on. Doing mistakes is fine. Doing the same mistakes over and
+>>> over is not fine.
+>>>
+>>> Best regards,
+>>> Krzysztof
+>>>
+>> oh, sorry for missed stating the reason for the tag removed, this patch
+>> is updated, i forget to state the reason that the register address is
+>> changed from 24 to 0x10, i will keep this in mind and add this info in
+>> the next patch set.
 > 
-> What I'd prefer is mode similar to NFS: getattr flushes pending writes
-> so that server ctime/mtime are always in sync with client.  FUSE
-> probably should have done that from the beginning, but at that time I
-> wasn't aware of the NFS solution.
+> That's not really a reason for dropping the tag.
+> 
+> Best regards,
+> Krzysztof
+> 
 
-
-I think it would be good to have flush-on-getattr configurable - systems 
-with a distributed lock manager (DLM) and notifications from 
-server/daemon to kernel should not need it.
-
-
-Thanks,
-Bernd
+okay, Krzysztof, understand it, i will follow up this.
