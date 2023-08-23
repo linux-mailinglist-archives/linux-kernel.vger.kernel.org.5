@@ -2,111 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96BD5785448
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 11:34:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B564785424
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 11:32:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235492AbjHWJeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 05:34:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45316 "EHLO
+        id S235347AbjHWJcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 05:32:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235506AbjHWJ2X (ORCPT
+        with ESMTP id S235116AbjHWJbQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 05:28:23 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CD5A4EC2;
-        Wed, 23 Aug 2023 02:15:59 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BC20861FCE;
-        Wed, 23 Aug 2023 09:15:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id EB187C433C7;
-        Wed, 23 Aug 2023 09:15:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692782158;
-        bh=be/C8m+z+Od5rOnUlwnva1yDeuaE30t+Hcjy24kPcJk=;
-        h=From:Date:Subject:To:Cc:Reply-To:From;
-        b=NlPnwTz2fJqAG2DoYUFrG2gnnxjeqRhJsMevsyaoQQHDYnQRZoq36ibcFW34fWsUa
-         W5H3U6OnZ4xmgpYl8MEJOfV+e0y90T2jUJdSJV75erSHrt5c82ECabaWXr/U+miwh+
-         roqm1eUL29Kwm1XX+8EKeO3msL2Df2AsULwVcJkJxkN4IyFi05W6tbc8G+VBI1mKc/
-         j/Z/y4k/n+Pn5qGM0hs5SJLkC0nYOWMlsu/jcHMXZIMcDTlwn5zbTgZpZ3AOgFHyy9
-         80ZYDG080Fl8sLIaBGFfrjvkIYtTXe0gpws7BdMG4+EbrE2roX6yPoUZEWmBfEae6G
-         zdcOuEmnkuLFQ==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by smtp.lore.kernel.org (Postfix) with ESMTP id CC171EE4993;
-        Wed, 23 Aug 2023 09:15:57 +0000 (UTC)
-From:   Hui Liu via B4 Relay <devnull+quic_huliu.quicinc.com@kernel.org>
-Date:   Wed, 23 Aug 2023 17:15:53 +0800
-Subject: [PATCH] usb: typec: qcom: check regulator enable status before
- disabling it
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230823-qcom-tcpc-v1-1-fa81a09ca056@quicinc.com>
-X-B4-Tracking: v=1; b=H4sIAEnO5WQC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI2MDCyMj3cLk/FzdkuSCZN0UE0NLU5PEZDPTtEQloPqCotS0zAqwWdGxtbU
- AqbU6oVsAAAA=
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_fenglinw@quicinc.com,
-        subbaram@quicinc.com, Hui Liu <quic_huliu@quicinc.com>
-X-Mailer: b4 0.13-dev-83828
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1692782156; l=1109;
- i=quic_huliu@quicinc.com; s=20230823; h=from:subject:message-id;
- bh=Eq7q1VhxzBMiiLW046ihxgswENpgBh2pfv7VGXtEKDE=;
- b=7tSyma7eOKcwSWhtFR3YWbPboVUNtB1aFtgl+IJz8Z5x79QAvbVQgQRdLLt4yr2C5EQp28ApZ
- +uFnUcgg7SYADBTV3R07hBfaXnBJsVtbi3JZo7lHwWYqkzHNvz5R+5u
-X-Developer-Key: i=quic_huliu@quicinc.com; a=ed25519;
- pk=1z+A50UnTuKe/FdQv2c0W3ajDsJOYddwIHo2iivhTTA=
-X-Endpoint-Received: by B4 Relay for quic_huliu@quicinc.com/20230823 with auth_id=80
-X-Original-From: Hui Liu <quic_huliu@quicinc.com>
-Reply-To: <quic_huliu@quicinc.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 23 Aug 2023 05:31:16 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6224461B4;
+        Wed, 23 Aug 2023 02:18:16 -0700 (PDT)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37N7Mmwf019703;
+        Wed, 23 Aug 2023 09:18:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id; s=qcppdkim1;
+ bh=regJct096Fmi2bn8PvXQq0GlUsAVo2IwLQJ1kIczaD4=;
+ b=a/horabiDg00k2PDk2Bh6h38I0LMhJh/wQvfla3YOxh423sPlxp0G9KRLQkM+uJygjig
+ F9uhpzHsiBzIxucsfgHycuokOotXqUuZVgIF7qzP3A2hKQhYHvIKEkXKYUuMxNbZ1DHE
+ cxGHEiIwMWOVx3q1muhC3e19Dyubt5flrLVJHVXKxTENWzlKhtyxoj0z/6hKWc9DXl7n
+ IdHfaiGS4edCfp7t9h7VpIFCfMrwsQZVKyQ8p2mEG/leG6abPq8hTk/7f9fKhyJXa3Nn
+ UwJe1Pw5hizGOJn3LCusxJvCyxE9y/Y3aOworDyaWvCZ70qEMLWUc1dGC/VLffljD/kl Bg== 
+Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sn25vhn08-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 23 Aug 2023 09:18:04 +0000
+Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+        by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 37N9I0pO018288;
+        Wed, 23 Aug 2023 09:18:00 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3sjptkpxt4-1;
+        Wed, 23 Aug 2023 09:18:00 +0000
+Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37N9I0fJ018283;
+        Wed, 23 Aug 2023 09:18:00 GMT
+Received: from hu-maiyas-hyd.qualcomm.com (hu-nitirawa-hyd.qualcomm.com [10.213.109.152])
+        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 37N9Hxdw018282;
+        Wed, 23 Aug 2023 09:18:00 +0000
+Received: by hu-maiyas-hyd.qualcomm.com (Postfix, from userid 2342877)
+        id 355535000AA; Wed, 23 Aug 2023 14:47:59 +0530 (+0530)
+From:   Nitin Rawat <quic_nitirawa@quicinc.com>
+To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        vkoul@kernel.org, kishon@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Nitin Rawat <quic_nitirawa@quicinc.com>
+Subject: [PATCH V3 0/2] Add Phy Configuration support for SC7280
+Date:   Wed, 23 Aug 2023 14:47:55 +0530
+Message-Id: <20230823091757.31311-1-quic_nitirawa@quicinc.com>
+X-Mailer: git-send-email 2.17.1
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: hdGhXtUqK1Bbj9kPlU9cH3ASHLT4a0s4
+X-Proofpoint-GUID: hdGhXtUqK1Bbj9kPlU9cH3ASHLT4a0s4
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-23_06,2023-08-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 mlxlogscore=920
+ phishscore=0 adultscore=0 clxscore=1015 malwarescore=0 suspectscore=0
+ bulkscore=0 impostorscore=0 priorityscore=1501 lowpriorityscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308230084
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hui Liu <quic_huliu@quicinc.com>
+This patch adds Phy configuration support for Qualcomm SC7280 SOC.
 
-Check regulator enable status before disabling it to avoid
-unbalanced regulator disable warnings.
+Changes from V2:
+- Addressed Vinod comment to replace upper case character with lower case
 
-Signed-off-by: Hui Liu <quic_huliu@quicinc.com>
----
- drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Changes from V1:
+- Addressed dmitry's comment to align sc7280 register arrays in sorted order
+- Addressed konrad & vinod's comment to align phy compatible in sorted order
 
-diff --git a/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c b/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c
-index bb0b8479d80f..ca616b17b5b6 100644
---- a/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c
-+++ b/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c
-@@ -422,7 +422,8 @@ static int qcom_pmic_typec_pdphy_disable(struct pmic_typec_pdphy *pmic_typec_pdp
- 	ret = regmap_write(pmic_typec_pdphy->regmap,
- 			   pmic_typec_pdphy->base + USB_PDPHY_EN_CONTROL_REG, 0);
- 
--	regulator_disable(pmic_typec_pdphy->vdd_pdphy);
-+	if (regulator_is_enabled(pmic_typec_pdphy->vdd_pdphy))
-+		regulator_disable(pmic_typec_pdphy->vdd_pdphy);
- 
- 	return ret;
- }
+Nitin Rawat (2):
+  dt-bindings: phy: Add QMP UFS PHY comptible for SC7280
+  phy: qcom-qmp-ufs: Add Phy Configuration support for SC7280
 
----
-base-commit: bbb9e06d2c6435af9c62074ad7048910eeb2e7bc
-change-id: 20230822-qcom-tcpc-d41954ac65fa
+ .../phy/qcom,sc8280xp-qmp-ufs-phy.yaml        |   2 +
+ drivers/phy/qualcomm/phy-qcom-qmp-ufs.c       | 142 ++++++++++++++++++
+ 2 files changed, 144 insertions(+)
 
-Best regards,
--- 
-Hui Liu <quic_huliu@quicinc.com>
+--
+2.17.1
 
