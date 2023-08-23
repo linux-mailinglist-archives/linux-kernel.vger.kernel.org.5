@@ -2,108 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 401EE785C8E
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 17:51:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C148785CA5
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 17:51:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237262AbjHWPvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 11:51:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38606 "EHLO
+        id S237324AbjHWPvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 11:51:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233338AbjHWPvQ (ORCPT
+        with ESMTP id S233338AbjHWPvt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 11:51:16 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA9BA10C7
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 08:51:11 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 797A76210D
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 15:51:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5236C433C8;
-        Wed, 23 Aug 2023 15:51:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692805870;
-        bh=ADd7oP1/d6c3aMgL14nq5nf0xJcSv5Z92YrLo2vXc+0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=D0Nn8KkX888lKSilqWK8lqv0YMZVwtNhyxd5E4r9zzLidxs9n0j9WZruAB3jWJYk/
-         sy+wnYP2VA6UnkdZabC3WwRhIrBTTzPFjz2eTNSolzH4a/XbWhNOZw6reQsUBmpMqH
-         aeOb2Nm4hLDHybFqD1sdMoB55lAbl/t51fgyc3cE2PyB7iDadIw7AajUVJyyLlKCdJ
-         HLo+305rjRj94qQbddu33zj/xlfB6X1LvVbfBAt/OEkAxvoj04f+7w98UFTQofBmt7
-         FOXIs6pTXQSJvEEyPr3v247l69Cay3XDuqCSo1ufbicFYsYUQKM9j5w8e13flHrGiH
-         gMMiRiUlw3kng==
-Date:   Wed, 23 Aug 2023 16:51:01 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Ajye Huang <ajye_huang@compal.corp-partner.google.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Akihiko Odaki <akihiko.odaki@gmail.com>,
-        Yong Zhi <yong.zhi@intel.com>,
-        ye xingchen <ye.xingchen@zte.com.cn>,
-        "balamurugan . c" <balamurugan.c@intel.com>,
-        Libin Yang <libin.yang@intel.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        David Lin <CTLIN0@nuvoton.com>, Brent Lu <brent.lu@intel.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Terry Cheong <htcheong@chromium.org>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Gongjun Song <gongjun.song@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>, apoorv <apoorv@intel.com>,
-        alsa-devel@alsa-project.org, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v1] Revert "ASoC: Intel: Add rpl_nau8318_8825 driver"
-Message-ID: <2ebbcb7a-bc0d-4f62-9f4b-706f0270b71a@sirena.org.uk>
-References: <20230823040755.2217942-1-ajye_huang@compal.corp-partner.google.com>
- <dd6d51b0-cc60-4fb7-932d-1117143d1715@sirena.org.uk>
- <CALprXBYxrwBW6HLP5MwYhFh1_Skei+pLbXd7yNAEuhLTQJLVPg@mail.gmail.com>
+        Wed, 23 Aug 2023 11:51:49 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF7FECD1;
+        Wed, 23 Aug 2023 08:51:46 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37NFpXt4038893;
+        Wed, 23 Aug 2023 10:51:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1692805893;
+        bh=W6V1upOtSdkrnnJgAfZkngCMorV465U5MgquJbm+CBM=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=rgEnzlZVRAsltvaxt2Lw7e/JB5pIwgDNJ5z7gXFgyTUlUozLCmPbcUZz1Z4Gz9aUw
+         qG/NHPERxiLA3KBo63RsXCv8xQf8UrKAaJioXhw084Sqf3/VUWZgfxhcrueSTdcJZC
+         xcua6yH55WJ4ueFYP69Qxw1TRXVvRBnh9MyTY0a0=
+Received: from DLEE111.ent.ti.com (dlee111.ent.ti.com [157.170.170.22])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37NFpXeC055323
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 23 Aug 2023 10:51:33 -0500
+Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 23
+ Aug 2023 10:51:33 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 23 Aug 2023 10:51:33 -0500
+Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37NFpXj6008149;
+        Wed, 23 Aug 2023 10:51:33 -0500
+Date:   Wed, 23 Aug 2023 10:51:33 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     Bjorn Andersson <andersson@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-remoteproc@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Robert Nelson <robertcnelson@gmail.com>,
+        Kevin Cahalan <kevinacahalan@gmail.com>
+Subject: Re: [PATCH] remoteproc: core: Honor device tree /alias entries when
+ assigning IDs
+Message-ID: <20230823155133.v7r3uddautivowps@frail>
+References: <20230807140247.956255-1-nm@ti.com>
+ <ZOULmFR51C+9kEhZ@p14s>
+ <20230822201205.4csoj4kym2yhuyrf@decrease>
+ <ZOYkVec/aQSiCWxh@p14s>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="gs3xv5excqw7RFrX"
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <CALprXBYxrwBW6HLP5MwYhFh1_Skei+pLbXd7yNAEuhLTQJLVPg@mail.gmail.com>
-X-Cookie: Some optional equipment shown.
+In-Reply-To: <ZOYkVec/aQSiCWxh@p14s>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 09:23-20230823, Mathieu Poirier wrote:
+> On Tue, Aug 22, 2023 at 03:12:05PM -0500, Nishanth Menon wrote:
+> > On 13:25-20230822, Mathieu Poirier wrote:
+> > > Hi Nishanth,
+> > > 
+> > > On Mon, Aug 07, 2023 at 09:02:47AM -0500, Nishanth Menon wrote:
+> > > > On many platforms, such as Beaglebone-AI64 with many remote
+> > > > processors, firmware configurations provided by the distributions can
+> > > > vary substantially depending on the distribution build's functionality
+> > > > and the specific remote cores enabled in that variant. Ensuring
+> > > > consistent udev rules mapping remoteproc nodes to constant remote
+> > > > proc device indices across distributions (yocto, ubuntu, debian and
+> > > > it's variants, ...) on a board basis can be challenging due to the
+> > > > various functions of these distributions. Varied device node paths
+> > > > create challenges for applications that operate on remote processors,
+> > > > especially in minimal embedded systems(initrd like) that may not
+> > > > have udev-like capabilities and rely on a more straightforward bare
+> > > > filesystem. This challenge is similar to that faced by I2C, RTC or the
+> > > > GPIO subsystems.
+> > > >
+> > > 
+> > > I'm puzzled by this patch.  I can see how using an alias can help in boards with
+> > > various HW configuration.  That said, and as written above, FW files for remote
+> > > processors can vary based on the build's functionality.  As such "remoteproc3"
+> > > will reference the same HW device on all distributions but the functionality
+> > > enacted by the FW may be different.  As such I don't see how an alias can help
+> > > here.  Can you provide a concrete example that highlights the benefits?
+> > 
+> > Correct - *if* remoteproc3 is the constant node reference.
+> > 
+> > To take a trivial example: We ran into this issue with:
+> > https://github.com/kaofishy/bbai64_cortex-r5_example/blob/main/Makefile#L28
+> > 
+> > remoteproc18 apparently changed numbering in a different build.
+> > 
+> 
+> We are going around in circles.  In the above link using an alias will
+> guarantee that "remoteproc18" is available but won't guarantee the
+> functionality enacted by the FW loaded in that remote processor, which is distro
+> dependent.
 
---gs3xv5excqw7RFrX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Apologies, but I am trying to comprehend the relationship and probably
+am failing to see the linkage. Let me try:
 
-On Wed, Aug 23, 2023 at 11:45:09PM +0800, Ajye Huang wrote:
+If I understand you correctly, you are concerned that distros do not
+have a mechanism to provide consistent firmware to the correct remote
+proc for a specific functionality..
 
-> Please allow me to explain in more detail.
-> The 6b8b6892e434 should not be applied into file0yZ50U branch of broonie/ci.git.
+if so, distro loads / provides the requisite firmware. How
+the package distribution scheme works to distribute the firmware
+and versioning provided varies - One typical pattern has been to use
+linux-firmware repo[1] (at least in other domains - say GPU, wlink or
+the likes) and provide package distribution. The other pattern could
+be build and deploy based on tag (this would be no different from any
+other package deployment).
 
-That's my CI tree, things in there aren't going anywhere unless they
-pass testing.
+On the other hand, If we are looking at the fact that there can be
+different types of firmware that could be loaded to a remoteproc
+providing different functionality - that is correct, and at least in
+case of TI processors very valid - something like openAMP endpoint
+solutions probably help?
 
---gs3xv5excqw7RFrX
-Content-Type: application/pgp-signature; name="signature.asc"
+Let me know if I am off-track here..
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTmKuUACgkQJNaLcl1U
-h9Aj7Qf+OO9n7pFmDLqmTaZ+TUXsgXxHBU7c2buA+pHaL6GdSYX9Z4BSey6nKNpY
-Byr0X9nXoDSeVReO9AhK3aPz1FwlkR8oyI8OQgg1tvSm5eF8rvs7KXtBnwA1xvaA
-spaEizonya+TtLhmESmTyQPpxDXqdfscAwEDOgJh4I/lf6rQpcUPknPFrWXYaVJC
-9DScI9v70bDXBdEiM01pOe/59gtnfxoWtLu6svNGRNaRIJtLsrf5YZP4I1pquUIN
-U0dn9g2I9S0qL/g92/k+DgPszGBpKTzlRWUICmejKyqtjRJuxhdJorU3NArd0L4+
-DAXGQbW0vkxQyRszEJ2O4mjYJBnpLw==
-=Kv8M
------END PGP SIGNATURE-----
-
---gs3xv5excqw7RFrX--
+[1] https://git.ti.com/cgit/processor-firmware/ti-linux-firmware/tree/ti-ipc?h=ti-linux-firmware
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
