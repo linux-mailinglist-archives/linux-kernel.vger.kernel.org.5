@@ -2,142 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57E8E785095
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 08:25:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4025785093
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 08:24:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232917AbjHWGZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 02:25:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45660 "EHLO
+        id S232910AbjHWGY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 02:24:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232913AbjHWGZA (ORCPT
+        with ESMTP id S231514AbjHWGY4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 02:25:00 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10A7CE51;
-        Tue, 22 Aug 2023 23:24:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692771899; x=1724307899;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=slejTqpOWghte6frBzPjO8NSTtKM/rpyG5Defl6tOVY=;
-  b=BkCe4lyT2k9+DTEBHaS9ACCLz1ad+ES7x4uMSVLpiuGlxmVthtJU1YqO
-   RlmwO5apRm5/wBWuazsLrnr3pHarkny3m/yVWp6xFtjmZ+VkVHuSkXRXd
-   wzY+WVekkBZpQfHDip0Y0qyZvJ8g0eVUElynBvqlzv9fvLCB9rxvusnaZ
-   feuWar+Gb7WkdCf8MN31SupsG3OoeA5g/M2NO10q07z5V1At+js3EUeQw
-   vZsWWI55X7ktWveg7nThzYgB2UojGumS0ZcERounNReUomeIcvskJ5lGW
-   qu1Zt/aGZExp2Gm29E0W9z3XTAGmKLk9wRVfY3OrPV9FXYMBmvcyFmo3R
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10810"; a="359062876"
-X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
-   d="scan'208";a="359062876"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2023 23:24:57 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10810"; a="739642598"
-X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
-   d="scan'208";a="739642598"
-Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.93.6.77]) ([10.93.6.77])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2023 23:24:54 -0700
-Message-ID: <498ee0c4-4736-68a7-7cbf-12e54f6a0d22@intel.com>
-Date:   Wed, 23 Aug 2023 14:24:51 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.14.0
-Subject: Re: [PATCH] kvm: x86: emulate MSR_PLATFORM_INFO msr bits
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>,
-        Hao Xiang <hao.xiang@linux.alibaba.com>
-Cc:     Chao Gao <chao.gao@intel.com>, kvm@vger.kernel.org,
-        shannon.zhao@linux.alibaba.com, pbonzini@redhat.com,
-        linux-kernel@vger.kernel.org, Aaron Lewis <aaronlewis@google.com>
-References: <1692588392-58155-1-git-send-email-hao.xiang@linux.alibaba.com>
- <ZOMWM+YmScUG3U5W@chao-email>
- <6d10dcf7-7912-25a2-8d8e-ef7d71a4ce83@linux.alibaba.com>
- <ZOM/8IVsRf3esyQ1@chao-email>
- <33f0e9bb-da79-6f32-f1c3-816eb37daea6@linux.alibaba.com>
- <ZOOMwvPd/Cz/cEmv@google.com>
-From:   Xiaoyao Li <xiaoyao.li@intel.com>
-In-Reply-To: <ZOOMwvPd/Cz/cEmv@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 23 Aug 2023 02:24:56 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86A0EE50
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 23:24:54 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 9E50E2231B;
+        Wed, 23 Aug 2023 06:24:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1692771892; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lEgJXlO8sTBxHyumU0Ih7T9Ur4XdTMb3+ZQZaRhBvTw=;
+        b=YrEmdOdEPJA2eITf0MLHdNAuRaeI7i6PMgxgsSkFaHH1lKeTA+s/6VGYH1G/nfwjVPWHM6
+        Lo36HmTeIZI6ZwNin79fpJjtg5htezOGkHvlMNk8gjee1kUSY/RT13K6LBvP744OeHfKT0
+        OcgAc6lqloUH94Sf0Q+mNiWEedCNkHI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1692771892;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lEgJXlO8sTBxHyumU0Ih7T9Ur4XdTMb3+ZQZaRhBvTw=;
+        b=3FaRtag+VV/xsPPvZZ54Klo6gpxklYLAgPM5n58TSL5RASJsjdB/E4UtcF5lkvonVw8TPF
+        4fw2CeuOZhqojCDg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 67DCF13458;
+        Wed, 23 Aug 2023 06:24:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id G5JZGDSm5WRTJAAAMHmgww
+        (envelope-from <tiwai@suse.de>); Wed, 23 Aug 2023 06:24:52 +0000
+Date:   Wed, 23 Aug 2023 08:24:51 +0200
+Message-ID: <87v8d6cm30.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     "Luke D. Jones" <luke@ljones.dev>
+Cc:     tiwai@suse.com, james.schulman@cirrus.com, david.rhodes@cirrus.com,
+        rf@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+        sbinding@opensource.cirrus.com, Jonathan LoBue <jlobue10@gmail.com>
+Subject: Re: [PATCH] ALSA: hda: cs35l41: Support ASUS 2023 laptops with missing DSD
+In-Reply-To: <20230823011008.13146-1-luke@ljones.dev>
+References: <20230823011008.13146-1-luke@ljones.dev>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/22/2023 12:11 AM, Sean Christopherson wrote:
-> +Aaron
+On Wed, 23 Aug 2023 03:10:08 +0200,
+Luke D. Jones wrote:
 > 
-> When resending a patch, e.g. to change To: or Cc:, tag it RESEND.  I got three
-> copies of this...
+> Support adding the missing DSD properties required  for ASUS ROG 2023
+> laptops and other ASUS laptops to properly utilise the cs35l41.
 > 
-> On Mon, Aug 21, 2023, Hao Xiang wrote:
->>
->>
->> On 2023/8/21 18:44, Chao Gao wrote:
->>> On Mon, Aug 21, 2023 at 05:11:16PM +0800, Hao Xiang wrote:
->>>> For reason that,
->>>>
->>>> The turbo frequency info depends on specific machine type. And the msr value
->>>> of MSR_PLATFORM_INFO may be diferent on diffrent generation machine.
->>>>
->>>> Get following msr bits (needed by turbostat on intel platform) by rdmsr
->>>> MSR_PLATFORM_INFO directly in KVM is more reasonable. And set these msr bits
->>>> as vcpu->arch.msr_platform_info default value.
->>>> -bit 15:8, Maximum Non-Turbo Ratio (MAX_NON_TURBO_LIM_RATIO)
->>>> -bit 47:40, Maximum Efficiency Ratio (MAX_EFFICIENCY_RATIO)
->>>
->>> I don't get why QEMU cannot do this with the existing interface, e.g.,
->>> KVM_SET_MSRS.
->>>
->>> will the MSR value be migrated during VM migration?
->>>
->>> looks we are in a dilemma. on one side, if the value is migrated, the value can
->>> become inconsisntent with hardware value. On the other side, changing the ratio
->>> bits at runtime isn't the architectural behavior.
->>>
->>> And the MSR is per-socket. In theory, a system can have two sockets with
->>> different values of the MSR. what if a vCPU is created on a socket and then
->>> later runs on the other socket?
->>>
->>
->> Set these msr bits (needed by turbostat on intel platform) in KVM by
->> default.
->> Of cource, QEMU can also set MSR value by need. It does not conflict.
+> This support includes both I2C and SPI connected amps.
 > 
-> It doesn't conflict per se, but it's still problematic.  By stuffing a default
-> value, KVM _forces_ userspace to override the MSR to align with the topology and
-> CPUID defined by userspace.  
+> The SPI connected amps may be required to use an external DSD patch
+> to fix or add the "cs-gpios" property.
+> 
+> Co-developed-by: Jonathan LoBue <jlobue10@gmail.com>
+> Signed-off-by: Jonathan LoBue <jlobue10@gmail.com>
+> Co-developed-by: Luke D. Jones <luke@ljones.dev>
+> Signed-off-by: Luke D. Jones <luke@ljones.dev>
+> ---
+>  sound/pci/hda/cs35l41_hda_property.c | 26 ++++++++++++++++++++++++++
+>  1 file changed, 26 insertions(+)
+> 
+> diff --git a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/cs35l41_hda_property.c
+> index 673f23257a09..69879ab57918 100644
+> --- a/sound/pci/hda/cs35l41_hda_property.c
+> +++ b/sound/pci/hda/cs35l41_hda_property.c
+> @@ -43,6 +43,31 @@ static int lenovo_legion_no_acpi(struct cs35l41_hda *cs35l41, struct device *phy
+>  	return 0;
+>  }
+>  
+> +/*
+> + * The CSC3551 is used in almost the entire ASUS ROG laptop range in 2023, this is likely to
+> + * also include many non ROG labelled laptops. It is also used with either I2C connection or
+> + * SPI connection. The SPI connected versions may be missing a chip select GPIO and require
+> + * an DSD table patch.
+> + */
+> +static int asus_rog_2023_no_acpi(struct cs35l41_hda *cs35l41, struct device *physdev, int id,
+> +				const char *hid)
+> +{
+> +	struct cs35l41_hw_cfg *hw_cfg = &cs35l41->hw_cfg;
+> +
+> +	/* check SPI or I2C address to assign the index */
+> +	cs35l41->index = (id == 0 || id == 0x40) ? 0 : 1;
+> +	cs35l41->channel_index = 0;
+> +	cs35l41->reset_gpio = gpiod_get_index(physdev, NULL, 0, GPIOD_OUT_HIGH);
+> +	cs35l41->speaker_id = cs35l41_get_speaker_id(physdev, 0, 0, 2);
+> +	hw_cfg->spk_pos = cs35l41->index;
+> +	hw_cfg->gpio2.func = CS35L41_INTERRUPT;
+> +	hw_cfg->gpio2.valid = true;
+> +	hw_cfg->bst_type = CS35L41_EXT_BOOST_NO_VSPK_SWITCH;
+> +	hw_cfg->valid = true;
+> +
+> +	return 0;
+> +}
+> +
+>  struct cs35l41_prop_model {
+>  	const char *hid;
+>  	const char *ssid;
+> @@ -53,6 +78,7 @@ struct cs35l41_prop_model {
+>  const struct cs35l41_prop_model cs35l41_prop_model_table[] = {
+>  	{ "CLSA0100", NULL, lenovo_legion_no_acpi },
+>  	{ "CLSA0101", NULL, lenovo_legion_no_acpi },
+> +	{ "CSC3551", NULL, asus_rog_2023_no_acpi },
 
-I don't understand how this MSR is related to topology and CPUID?
+I believe this breaks things badly.  cs35l41_add_dsd_properties() is
+always called no matter whether _DSD is found or not.  So this will
+override the setup of all machines with CSC3551 even if it has a
+proper _DSD.
 
-> And if userspace uses KVM's "default" CPUID, or lack
-> thereof, using the underlying values from hardware are all but guaranteed to be
-> wrong.
+The existing entries of CLSA0100 and CLSA0101 are OK since
+(supposedly) those never had _DSD.  The current code is a bit
+misleading as if it's applicable easily, though.
 
-Could you please elaborate?
+That said, we have to apply the setup only conditionally for each
+specific device.  One easy thing would be to move the function call
+after _DSD check.  But, I *guess* that Stefan applied the function at
+the top so that it may cover the all cases including incorrect _DSD
+properties.
 
-> The existing code that sets MSR_PLATFORM_INFO_CPUID_FAULT really should not exist,
-> i.e. KVM shouldn't shouldn't assume userspace wants to expose CPUID faulting to
-> the guest.  That particular one probably isn't worth trying to retroactively fix.
-> 
-> Ditto for setting MSR_IA32_ARCH_CAPABILITIES; KVM is overstepping, but doing so
-> likely doesn't cause problems.
-> 
-> MSR_IA32_PERF_CAPABILITIES is a different story.  Setting a non-zero default value
-> is blatantly wrong, as KVM will advertise vPMU features even if userspace doesn't
-> advertise.  Aaron is planning on sending a patch for this one (I'm hoping we can
-> get away with retroactively dropping the code without having to add a quirk).
-> 
-> *If* we need KVM to expose the ratios to userspace, then the correct way to do so
-> is handle turbo and efficiency ratio information is to by implementing support in
-> kvm_get_msr_feature(), i.e. KVM_GET_MSRS on /dev/kvm.  Emphasis on "if", because
-> I would prefer to do nothing in KVM if that information is already surfaced to
-> userspace through other mechanisms in the kernel.
+And, the question is how to be specific to each device.  This can be
+messy, as the sub-codec driver is probed independently from Realtek
+codec driver, hence you can't pass any flag from Realtek to CS driver
+at the probe time.  In the end, we might need to keep another table of
+IDs (either the same SSID or DMI) to distinguish which machine needs
+which properties.
 
+
+thanks,
+
+Takashi
