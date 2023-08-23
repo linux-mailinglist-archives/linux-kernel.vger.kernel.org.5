@@ -2,126 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B08A978536E
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 11:05:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EFC178538B
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 11:11:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235223AbjHWJDV convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 23 Aug 2023 05:03:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46510 "EHLO
+        id S235146AbjHWJLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 05:11:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235137AbjHWI4Q (ORCPT
+        with ESMTP id S235235AbjHWJHn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 04:56:16 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 440EC2100
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 01:52:27 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-253-4plRHwIrPLObDoLYHSMUZw-1; Wed, 23 Aug 2023 09:52:24 +0100
-X-MC-Unique: 4plRHwIrPLObDoLYHSMUZw-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 23 Aug
- 2023 09:52:23 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Wed, 23 Aug 2023 09:52:23 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Kees Cook' <keescook@chromium.org>
-CC:     "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
-        "'Andy Shevchenko'" <andriy.shevchenko@linux.intel.com>,
-        'Andrew Morton' <akpm@linux-foundation.org>,
-        "'Matthew Wilcox (Oracle)'" <willy@infradead.org>,
-        'Christoph Hellwig' <hch@infradead.org>,
-        "'Jason A. Donenfeld'" <Jason@zx2c4.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: RE: [PATCH next v3 0/5] minmax: Relax type checks in min() and max().
-Thread-Topic: [PATCH next v3 0/5] minmax: Relax type checks in min() and
- max().
-Thread-Index: AdnGwQ6IGYkn0IjZSjuTaOSyeQI0UwIK8m4AABl1+KABQGc+AAAmLwYw
-Date:   Wed, 23 Aug 2023 08:52:23 +0000
-Message-ID: <acf8a7389d1f47a5ac55390b7ea76692@AcuMS.aculab.com>
-References: <01e3e09005e9434b8f558a893a47c053@AcuMS.aculab.com>
- <202308141416.89AC5C2@keescook>
- <2dd09c4033644239a314247e635fa735@AcuMS.aculab.com>
- <202308211113.4F49E73109@keescook>
-In-Reply-To: <202308211113.4F49E73109@keescook>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Wed, 23 Aug 2023 05:07:43 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D23C31B0
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 01:52:43 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-51e28cac164so13104846a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 01:52:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692780762; x=1693385562;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=aMAzBQ2JWtyTS8mD8e3Fxmu2d91tt0ITlswZAkxTIh4=;
+        b=OxEp5de1cW3arQOc7FTUhnrwD2M3065uhbMylGGIzlaSBIYnfSpA2ScRQUycl3Fn2I
+         6HQpegZ5L6O93HqxZhbsUxzYXnwfwPusJEGQqvIt+JzP/r9Wl3gCKmrQMqUK6kLf3iwP
+         02Df7eU/vgdF4o97ikufrsUegyIy3efwxfLmZ0a1j3QZWMpNOnoBOG+RcljTrKWtyy3i
+         P6sfFz+3NjFugVMhVprxslhMJXJt20YozDgBAmr37O8iVlowk5LSPo3f3pLZw3ke6qmI
+         Vn3ctXAiQKF8eawIwY5SOok00/fIvlpDXFETu2pLpx6jJKE+wSA3CE+Q4auY6vkqU3nP
+         Ymwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692780762; x=1693385562;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=aMAzBQ2JWtyTS8mD8e3Fxmu2d91tt0ITlswZAkxTIh4=;
+        b=DLij1wGe54bJC+CG6RRPTGWO6lrMPmM3Ydng9Mir1QOfUznYE1W7tLauAlm2Rr0+m/
+         7kAZm7yiQaEvG3nhDUEroLcQp8wwfSqgI7nunPjFcWAGnOa/kXnlBDukeExa610c9TRc
+         q6jMxb1jWe5TUaLqtioS9xV3wJipegB8i+8uiBg2ampQwyeIYreEZIyfh0deF66lSxmg
+         3WQVQe23A3rZEWHno+CxTAZ6MK7CigZSZYY3ds8zJN8rfXJH07lJAXMqF2F/bQhz5NDc
+         FxfXwdLAo12pAewSq434w1rCFQL1B7PanQHGqB1yXBvmCuosT/f6PYQIZCiyPoKS117v
+         fiQQ==
+X-Gm-Message-State: AOJu0YzQ/Rb9Tsk6FCElqcArEme1/gWNe0yBCqH0WOf+Y/u4xiOY2tVK
+        B3I1tFd53JqR1PIS/RR5IOxpbA==
+X-Google-Smtp-Source: AGHT+IEZWFRQo+JFnpF1qlyr688eDH49YjAZuwvCYmHF+GBS3mKDm8CMK03WV266B3Bq58Lqb+bM7g==
+X-Received: by 2002:a17:906:28c:b0:99d:fcb7:60db with SMTP id 12-20020a170906028c00b0099dfcb760dbmr14077749ejf.16.1692780762254;
+        Wed, 23 Aug 2023 01:52:42 -0700 (PDT)
+Received: from krzk-bin.. ([77.252.47.198])
+        by smtp.gmail.com with ESMTPSA id l9-20020a1709066b8900b009a168ab6ee2sm8665633ejr.164.2023.08.23.01.52.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Aug 2023 01:52:41 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH] riscv: dts: use capital "OR" for multiple licenses in SPDX
+Date:   Wed, 23 Aug 2023 10:52:38 +0200
+Message-Id: <20230823085238.113642-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
-> Sent: Monday, August 21, 2023 7:24 PM
-....
-> > > It seems like the existing type_max/type_min macros could be used to
-> > > figure out that the args are safe to appropriately automatically cast,
-> > > etc. e.g. type_max(u16) <= type_max(unsigned int) && type_min(u16) >=
-> > > type_min(unsigned int) ...
-> >
-> > That doesn't really help; min(a,b) is ok if any of:
-> > 1) is_signed(a) == is_signed(b).
-> > 2) is_signed(a + 0) == is_signed(b + 0)  // Converts char/short to int.
-> > 3) a or b is a constant between 0 and MAXINT and is cast to int.
-> >
-> > The one you found passes (1) - both types are unsigned.
-> > min(len, sizeof (int)) passes (3) and is converted to
-> > min(len, (int)sizeof (int)) and can still return the expected negatives.
-> 
-> It seems like the foot-gun problems are when a value gets clamped by the
-> imposed type. Can't we just warn about those cases?
+Documentation/process/license-rules.rst and checkpatch expect the SPDX
+identifier syntax for multiple licenses to use capital "OR".  Correct it
+to keep consistent format and avoid copy-paste issues.
 
-Also when -1 gets converted to 0xffffffff.
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-...
-> But this is also unsafe:
-> 
-> 	unsigned int a = ...;
->         u16 b = ...;
-> 	unsigned int c = min_t(u16, a, b);
-> 
-> Both are unsigned, but "a > U16_MAX" still goes sideways.
+---
 
-Right, this is one reason why min_t() is broken.
-If min() allowed that - no reason why it shouldn't - then it wouldn't
-get written in the first place.
+Rebased on next-20230822, so might not apply cleanly.  What does not
+apply, can be skipped and I will fix it after next RC.
+---
+ arch/riscv/boot/dts/allwinner/sun20i-common-regulators.dtsi     | 2 +-
+ arch/riscv/boot/dts/allwinner/sun20i-d1-dongshan-nezha-stu.dts  | 2 +-
+ .../boot/dts/allwinner/sun20i-d1-lichee-rv-86-panel-480p.dts    | 2 +-
+ .../boot/dts/allwinner/sun20i-d1-lichee-rv-86-panel-720p.dts    | 2 +-
+ arch/riscv/boot/dts/allwinner/sun20i-d1-lichee-rv-86-panel.dtsi | 2 +-
+ arch/riscv/boot/dts/allwinner/sun20i-d1-lichee-rv-dock.dts      | 2 +-
+ arch/riscv/boot/dts/allwinner/sun20i-d1-lichee-rv.dts           | 2 +-
+ arch/riscv/boot/dts/allwinner/sun20i-d1-mangopi-mq-pro.dts      | 2 +-
+ arch/riscv/boot/dts/allwinner/sun20i-d1-nezha.dts               | 2 +-
+ arch/riscv/boot/dts/allwinner/sun20i-d1.dtsi                    | 2 +-
+ arch/riscv/boot/dts/allwinner/sun20i-d1s-mangopi-mq.dts         | 2 +-
+ arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi                   | 2 +-
+ arch/riscv/boot/dts/allwinner/sunxi-d1-t113.dtsi                | 2 +-
+ arch/riscv/boot/dts/allwinner/sunxi-d1s-t113.dtsi               | 2 +-
+ 14 files changed, 14 insertions(+), 14 deletions(-)
 
-> I worry that weakening the min/max() type checking gets into silent errors:
-> 
-> 	unsigned int a = ...;
->         u16 b = ...;
-> 	u16 c = max(a, b);
-> 
-> when "a > U16_MAX".
-
-Nothing can be done on the RHS to detect invalid narrowing in assignments.
-And you don't want the compiler to complain because that will just cause
-explicit casts be added making the code harder to read and (probably)
-adding more bugs.
-
-> Looking at warning about clamped types on min_t(), though I see tons of
-> int vs unsigned int issue. (e.g. dealing with PAGE_SIZE vs an int).
-
-Linus doesn't like me silently converting unsigned constants
-to signed.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+diff --git a/arch/riscv/boot/dts/allwinner/sun20i-common-regulators.dtsi b/arch/riscv/boot/dts/allwinner/sun20i-common-regulators.dtsi
+index 9b03fca2444c..ed7b12e65a10 100644
+--- a/arch/riscv/boot/dts/allwinner/sun20i-common-regulators.dtsi
++++ b/arch/riscv/boot/dts/allwinner/sun20i-common-regulators.dtsi
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: (GPL-2.0+ or MIT)
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+ // Copyright (C) 2021-2022 Samuel Holland <samuel@sholland.org>
+ 
+ / {
+diff --git a/arch/riscv/boot/dts/allwinner/sun20i-d1-dongshan-nezha-stu.dts b/arch/riscv/boot/dts/allwinner/sun20i-d1-dongshan-nezha-stu.dts
+index 8785de3c9224..3a2c3281eb88 100644
+--- a/arch/riscv/boot/dts/allwinner/sun20i-d1-dongshan-nezha-stu.dts
++++ b/arch/riscv/boot/dts/allwinner/sun20i-d1-dongshan-nezha-stu.dts
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: (GPL-2.0+ or MIT)
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+ // Copyright (C) 2022 Samuel Holland <samuel@sholland.org>
+ 
+ #include <dt-bindings/gpio/gpio.h>
+diff --git a/arch/riscv/boot/dts/allwinner/sun20i-d1-lichee-rv-86-panel-480p.dts b/arch/riscv/boot/dts/allwinner/sun20i-d1-lichee-rv-86-panel-480p.dts
+index 4df8ffb71561..711450ffb602 100644
+--- a/arch/riscv/boot/dts/allwinner/sun20i-d1-lichee-rv-86-panel-480p.dts
++++ b/arch/riscv/boot/dts/allwinner/sun20i-d1-lichee-rv-86-panel-480p.dts
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: (GPL-2.0+ or MIT)
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+ // Copyright (C) 2022 Samuel Holland <samuel@sholland.org>
+ 
+ #include "sun20i-d1-lichee-rv-86-panel.dtsi"
+diff --git a/arch/riscv/boot/dts/allwinner/sun20i-d1-lichee-rv-86-panel-720p.dts b/arch/riscv/boot/dts/allwinner/sun20i-d1-lichee-rv-86-panel-720p.dts
+index 1874fc05359f..b217799e6166 100644
+--- a/arch/riscv/boot/dts/allwinner/sun20i-d1-lichee-rv-86-panel-720p.dts
++++ b/arch/riscv/boot/dts/allwinner/sun20i-d1-lichee-rv-86-panel-720p.dts
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: (GPL-2.0+ or MIT)
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+ // Copyright (C) 2022 Samuel Holland <samuel@sholland.org>
+ 
+ #include "sun20i-d1-lichee-rv-86-panel.dtsi"
+diff --git a/arch/riscv/boot/dts/allwinner/sun20i-d1-lichee-rv-86-panel.dtsi b/arch/riscv/boot/dts/allwinner/sun20i-d1-lichee-rv-86-panel.dtsi
+index 6cc7dd0c1ae2..10116fb3935a 100644
+--- a/arch/riscv/boot/dts/allwinner/sun20i-d1-lichee-rv-86-panel.dtsi
++++ b/arch/riscv/boot/dts/allwinner/sun20i-d1-lichee-rv-86-panel.dtsi
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: (GPL-2.0+ or MIT)
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+ // Copyright (C) 2022 Samuel Holland <samuel@sholland.org>
+ 
+ #include "sun20i-d1-lichee-rv.dts"
+diff --git a/arch/riscv/boot/dts/allwinner/sun20i-d1-lichee-rv-dock.dts b/arch/riscv/boot/dts/allwinner/sun20i-d1-lichee-rv-dock.dts
+index 52b91e1affed..08cf716328a0 100644
+--- a/arch/riscv/boot/dts/allwinner/sun20i-d1-lichee-rv-dock.dts
++++ b/arch/riscv/boot/dts/allwinner/sun20i-d1-lichee-rv-dock.dts
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: (GPL-2.0+ or MIT)
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+ // Copyright (C) 2022 Jisheng Zhang <jszhang@kernel.org>
+ // Copyright (C) 2022 Samuel Holland <samuel@sholland.org>
+ 
+diff --git a/arch/riscv/boot/dts/allwinner/sun20i-d1-lichee-rv.dts b/arch/riscv/boot/dts/allwinner/sun20i-d1-lichee-rv.dts
+index d60a0562a8b1..204da82a5dc6 100644
+--- a/arch/riscv/boot/dts/allwinner/sun20i-d1-lichee-rv.dts
++++ b/arch/riscv/boot/dts/allwinner/sun20i-d1-lichee-rv.dts
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: (GPL-2.0+ or MIT)
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+ // Copyright (C) 2022 Jisheng Zhang <jszhang@kernel.org>
+ // Copyright (C) 2022 Samuel Holland <samuel@sholland.org>
+ 
+diff --git a/arch/riscv/boot/dts/allwinner/sun20i-d1-mangopi-mq-pro.dts b/arch/riscv/boot/dts/allwinner/sun20i-d1-mangopi-mq-pro.dts
+index f2e07043afb3..e2bb6bc16c13 100644
+--- a/arch/riscv/boot/dts/allwinner/sun20i-d1-mangopi-mq-pro.dts
++++ b/arch/riscv/boot/dts/allwinner/sun20i-d1-mangopi-mq-pro.dts
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: (GPL-2.0+ or MIT)
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+ // Copyright (C) 2022 Samuel Holland <samuel@sholland.org>
+ 
+ #include <dt-bindings/gpio/gpio.h>
+diff --git a/arch/riscv/boot/dts/allwinner/sun20i-d1-nezha.dts b/arch/riscv/boot/dts/allwinner/sun20i-d1-nezha.dts
+index 4ed33c1e7c9c..8dbe717c79ce 100644
+--- a/arch/riscv/boot/dts/allwinner/sun20i-d1-nezha.dts
++++ b/arch/riscv/boot/dts/allwinner/sun20i-d1-nezha.dts
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: (GPL-2.0+ or MIT)
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+ // Copyright (C) 2021-2022 Samuel Holland <samuel@sholland.org>
+ 
+ /*
+diff --git a/arch/riscv/boot/dts/allwinner/sun20i-d1.dtsi b/arch/riscv/boot/dts/allwinner/sun20i-d1.dtsi
+index 97e7cbb32597..b18f368e06e0 100644
+--- a/arch/riscv/boot/dts/allwinner/sun20i-d1.dtsi
++++ b/arch/riscv/boot/dts/allwinner/sun20i-d1.dtsi
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: (GPL-2.0+ or MIT)
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+ // Copyright (C) 2021-2022 Samuel Holland <samuel@sholland.org>
+ 
+ #include "sun20i-d1s.dtsi"
+diff --git a/arch/riscv/boot/dts/allwinner/sun20i-d1s-mangopi-mq.dts b/arch/riscv/boot/dts/allwinner/sun20i-d1s-mangopi-mq.dts
+index e6d924f671fd..1a7d6ef33f17 100644
+--- a/arch/riscv/boot/dts/allwinner/sun20i-d1s-mangopi-mq.dts
++++ b/arch/riscv/boot/dts/allwinner/sun20i-d1s-mangopi-mq.dts
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: (GPL-2.0+ or MIT)
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+ // Copyright (C) 2022 Samuel Holland <samuel@sholland.org>
+ 
+ #include <dt-bindings/gpio/gpio.h>
+diff --git a/arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi b/arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi
+index 8275630af977..450387265469 100644
+--- a/arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi
++++ b/arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: (GPL-2.0+ or MIT)
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+ // Copyright (C) 2021-2022 Samuel Holland <samuel@sholland.org>
+ 
+ #define SOC_PERIPHERAL_IRQ(nr)	(nr + 16)
+diff --git a/arch/riscv/boot/dts/allwinner/sunxi-d1-t113.dtsi b/arch/riscv/boot/dts/allwinner/sunxi-d1-t113.dtsi
+index b7156123df54..3b077dc086ab 100644
+--- a/arch/riscv/boot/dts/allwinner/sunxi-d1-t113.dtsi
++++ b/arch/riscv/boot/dts/allwinner/sunxi-d1-t113.dtsi
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: (GPL-2.0+ or MIT)
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+ // Copyright (C) 2021-2022 Samuel Holland <samuel@sholland.org>
+ 
+ / {
+diff --git a/arch/riscv/boot/dts/allwinner/sunxi-d1s-t113.dtsi b/arch/riscv/boot/dts/allwinner/sunxi-d1s-t113.dtsi
+index 822f022eec2d..5a9d7f5a75b4 100644
+--- a/arch/riscv/boot/dts/allwinner/sunxi-d1s-t113.dtsi
++++ b/arch/riscv/boot/dts/allwinner/sunxi-d1s-t113.dtsi
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: (GPL-2.0+ or MIT)
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+ // Copyright (C) 2021-2022 Samuel Holland <samuel@sholland.org>
+ 
+ #include <dt-bindings/clock/sun6i-rtc.h>
+-- 
+2.34.1
 
