@@ -2,276 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 000EC78523A
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 10:04:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00E8378523B
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 10:04:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233587AbjHWIEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 04:04:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41606 "EHLO
+        id S233607AbjHWIE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 04:04:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233616AbjHWICj (ORCPT
+        with ESMTP id S233707AbjHWIDI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 04:02:39 -0400
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C08D4CE6
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 01:02:31 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 8D22D5C017E;
-        Wed, 23 Aug 2023 04:02:30 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Wed, 23 Aug 2023 04:02:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ljones.dev; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1692777750; x=1692864150; bh=Ks
-        pnrO/hJz9B/Aks6XA9C4uLuHsQNJaS2cFJWD9z3Ko=; b=gXBOnJRQcxrqKOPmVQ
-        251O2mwfudcKkEqbw5W1FWBhHK5nICKaYyKIro7uGENzM7oGEe1HvOOJJdtIoUi4
-        JLnI/lEtjJV25sQHrhEY936ppq3QVlYSxUbD07nQUPXnT2sZIb/wG38gFVpo/hVQ
-        kEDIuOyIXXUiDpjrOjDh3Jmnac8m2ILqaq5gAtDj3I6oPgctt7MZKpDdbp8eb9pz
-        3pgi9a2iAeAz5ZtWx/THD4ffmG0CeKadZ/Op4sRlviQAcUAZhjzXuDPqk1EpPOvC
-        uYky53SewovNAQG2x42gPGRVjRuqTAVk7rSfqwKgS6E2/pKyYaYBJvgCqXuYVYql
-        0zaQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1692777750; x=1692864150; bh=KspnrO/hJz9B/
-        Aks6XA9C4uLuHsQNJaS2cFJWD9z3Ko=; b=lreKHrdmE90QrP/5ylCeoet/2wKpc
-        zjJeyLENmC9HRFK62dV3sGctTJIblsEQX16gEci6l4c4xqbMSj+2GZJryHd7Ze5U
-        C9hf4jJ0oowB2lO/taLJfq3LuvzRrniKs/mvg0NhvCqb8Dr53NLBcfApDtILcVB2
-        mYPl5KzyqAkwHnQmNr3MyHM7+shpnYXdBYXcpAstNGd5KwODTe4Lq6Bdw2HKdtOj
-        Zl+GIqLxwyAwAb+w32MAe9Yzv7fToYmJFWoQcWJD6vETGLphw882we3vt5EqAQNd
-        pCim8fXYCYrh7sJW/l1k9Joq+oFi9txWnhRHHfC5PIT1ICT7dq24yq12A==
-X-ME-Sender: <xms:Fr3lZPtSs2ltFQNATm52jW45khx5FN2bdVbKjtSZg05PoDsnzCjVVQ>
-    <xme:Fr3lZAfzQY-LAgKr6RmqxmsGsEZmENV2Waag66d06GX4aBCIK6kJXK9SmZEjndNNz
-    JWfZzTUOZ2g4i5cyWc>
-X-ME-Received: <xmr:Fr3lZCwcQVNe0TDy5D9JaH1_1LT_DHx5AQy1l_emViB9O2Praz8oGUvG_aki6bAr_vcWeH_A>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedruddvfedgudefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhuffvvefkjghfofggtgesthdtredtredtvdenucfhrhhomhepnfhukhgv
-    ucflohhnvghsuceolhhukhgvsehljhhonhgvshdruggvvheqnecuggftrfgrthhtvghrnh
-    epvddvgeeltdehfeeijefgveegfeeihfdtveetfeetudfhvedtfeeltefhteegledunecu
-    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheplhhukhgvse
-    hljhhonhgvshdruggvvh
-X-ME-Proxy: <xmx:Fr3lZOPye1fJMk4d_kUvN8lGLnmtlrmXMHxAQolVwMhAG8rDblRLTw>
-    <xmx:Fr3lZP8ghpuwlU5qWqzJGzT4sBzsqAWCyolzy11pV5MlsKe73stFBw>
-    <xmx:Fr3lZOXCu8ebQ2k_yOZdFUsGDZco37tIHF891t1oc-iluosaZsHSlQ>
-    <xmx:Fr3lZKleUTdsOAb8Qce0ZMTxXoKDHSL-WkJMGSJ7C-8t4fG2aqqQPQ>
-Feedback-ID: i5ec1447f:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 23 Aug 2023 04:02:25 -0400 (EDT)
-Date:   Wed, 23 Aug 2023 20:02:11 +1200
-From:   Luke Jones <luke@ljones.dev>
-Subject: Re: [PATCH] ALSA: hda: cs35l41: Support ASUS 2023 laptops with
- missing DSD
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     tiwai@suse.com, james.schulman@cirrus.com, david.rhodes@cirrus.com,
-        rf@opensource.cirrus.com, linux-kernel@vger.kernel.org,
-        sbinding@opensource.cirrus.com, Jonathan LoBue <jlobue10@gmail.com>
-Message-Id: <NN3UZR.VNYA824H66Q8@ljones.dev>
-In-Reply-To: <87lee2ciqj.wl-tiwai@suse.de>
-References: <20230823011008.13146-1-luke@ljones.dev>
-        <87v8d6cm30.wl-tiwai@suse.de> <R32UZR.6AQKQL1J6UQI3@ljones.dev>
-        <87lee2ciqj.wl-tiwai@suse.de>
-X-Mailer: geary/44.1
+        Wed, 23 Aug 2023 04:03:08 -0400
+Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7606E54;
+        Wed, 23 Aug 2023 01:02:59 -0700 (PDT)
+Received: by mail-oo1-xc2f.google.com with SMTP id 006d021491bc7-570f6c17c55so863167eaf.2;
+        Wed, 23 Aug 2023 01:02:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692777779; x=1693382579;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=g14GglRm7VWRbdV00ofdv6PJGfaBY+quP/bNcyeNtZs=;
+        b=ZXMCyqJDKk6L53d/N6CGdv5riZzpGlsffdUMNyQ7N3qffZGrPRpGeZ34Btf3tchQ6Q
+         slUCPHIzYyrD1WVPs/OOzZz1+e3GSj4R53eVSspHZSPOEIZiMrpJbkGySP1LcK+g1VAV
+         f8VJ18t5cLTbxJ2zL+Xhn6VH3MwjDCtJ1/dcyDILUer09yfxS9u8SMIPtCDnBfrfndVQ
+         ADaPE8OKrBXI97U09DYkUlSKPGHbCXVGa+j8CAFuq4ia2YM9UL0oyyQyvPCcVD8z65JO
+         g/MTanfbOo/Ec6lQYMFY2mwhWCH/vX2r1+82KQL3W8Ghhdhdj71tnnzgAGt4EnEMSPSj
+         DzLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692777779; x=1693382579;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=g14GglRm7VWRbdV00ofdv6PJGfaBY+quP/bNcyeNtZs=;
+        b=fLTeJc+gQlXDPLCkOSm7OqTC+m0aQG0jXy0+rHwoY8G/5QUX2P3xjiQnhyZTzLvHia
+         M92nDJ6cZdiooRWUMy71dOQR/CqPqYke8HTfWisyOwGhnBFo9rFA24dm9jz3snXFDSqe
+         oWRVq6SkCQC1ckX3dkiTsOkg1aAjHxuOI96Rq+1dq7573LugATr+9+kotZpdjM/tTvrD
+         mO3sj0SRwUsXVc4r0CnCGXiZwQNetDRgvP4UI7ojRsLEB6OZi9j49HCabbRR10w2tMU/
+         X0ZCT8AECbuXDWfJ6Ogd937UfMY3jnsZa5NnQAcNR7kXX/g4I0Tnw/D/Yt7XjjLTwCNy
+         FPCg==
+X-Gm-Message-State: AOJu0YyItD81dU6OPeIQLQpl3YL3b9Puh1KxjqtrmDfFjrmc/UczD2Mw
+        FESE+hBkagV8gDBQA5uK5b1JK1B5tKfrnXjn6KXsoQT1Fb9eMw==
+X-Google-Smtp-Source: AGHT+IFsMZGkUbmqLpb9ZAXeV1hCzx/oldxSzXIqnl+HAsiT96HvVdH9Lgaaaz1J+sJmoKWz6b2jJoG6XO5YEzGJ1bQ=
+X-Received: by 2002:a05:6870:ac24:b0:1bf:cb11:c97e with SMTP id
+ kw36-20020a056870ac2400b001bfcb11c97emr13187264oab.52.1692777779092; Wed, 23
+ Aug 2023 01:02:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+References: <028a21df-4397-80aa-c2a5-7c754560f595@gmail.com>
+ <20230818101630.000027f4@linux.intel.com> <b0488ff7-10c8-4b4e-28b8-01809133c297@linux.dev>
+ <CAPhsuW6cSLqwRVO_EpFyimvc7hgi1rb3T8-NA+stHdwrqrScBA@mail.gmail.com>
+ <20230822083923.00007fb6@linux.intel.com> <CAMz9Wg8KE1rDkSaQnUTJ5ikzH7YGGYbkLM3AcrVue3=JgK+14w@mail.gmail.com>
+ <35130b3f-c0fd-e2d6-e849-a5ceb6a2895f@linux.dev>
+In-Reply-To: <35130b3f-c0fd-e2d6-e849-a5ceb6a2895f@linux.dev>
+From:   AceLan Kao <acelan@gmail.com>
+Date:   Wed, 23 Aug 2023 16:02:46 +0800
+Message-ID: <CAMz9Wg_zKSJ2vL=r2zAtLBOv4GSMT63+ZQGXfYTjVJsE+DLQGA@mail.gmail.com>
+Subject: Re: Infiniate systemd loop when power off the machine with multiple
+ MD RAIDs
+To:     Guoqing Jiang <guoqing.jiang@linux.dev>
+Cc:     Song Liu <song@kernel.org>,
+        Mariusz Tkaczyk <mariusz.tkaczyk@linux.intel.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux RAID <linux-raid@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Guoqing,
+
+Guoqing Jiang <guoqing.jiang@linux.dev> =E6=96=BC 2023=E5=B9=B48=E6=9C=8822=
+=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=888:41=E5=AF=AB=E9=81=93=EF=BC=
+=9A
+>
+> Hi Acelan,
+>
+> On 8/22/23 16:13, AceLan Kao wrote:
+> >>>>> Hello,
+> >>>>> The issue is reproducible with IMSM metadata too, around 20% of reb=
+oot
+> >>>>> hangs. I will try to raise the priority in the bug because it is va=
+lid
+> >>>>> high- the base functionality of the system is affected.
+> >>>> Since it it reproducible from your side, is it possible to turn the
+> >>>> reproduce steps into a test case
+> >>>> given the importance?
+> >> I didn't try to reproduce it locally yet because customer was able to
+> >> bisect the regression and it pointed them to the same patch so I conne=
+cted it
+> >> and asked author to take a look first. At a first glance, I wanted to =
+get
+> >> community voice to see if it is not something obvious.
+> >>
+> >> So far I know, customer is creating 3 IMSM raid arrays, one is the sys=
+tem
+> >> volume and do a reboot and it sporadically fails (around 20%). That is=
+ all.
+> >>
+> >>>> I guess If all arrays are set with MD_DELETED flag, then reboot migh=
+t
+> >>>> hang, not sure whether
+> >>>> below (maybe need to flush wq as well  before list_del) helps or not=
+,
+> >>>> just FYI.
+> >>>>
+> >>>> @@ -9566,8 +9566,10 @@ static int md_notify_reboot(struct notifier_b=
+lock
+> >>>> *this,
+> >>>>
+> >>>>           spin_lock(&all_mddevs_lock);
+> >>>>           list_for_each_entry_safe(mddev, n, &all_mddevs, all_mddevs=
+) {
+> >>>> -               if (!mddev_get(mddev))
+> >>>> +               if (!mddev_get(mddev)) {
+> >>>> +                       list_del(&mddev->all_mddevs);
+> >>>>                           continue;
+> >>>> +               }
+>
+> My suggestion is delete the list node under this scenario, did you try
+> above?
+Still no luck, the patch doesn't work, the sympton is the same.
+
+>
+> >>> I am still not able to reproduce this, probably due to differences in=
+ the
+> >>> timing. Maybe we only need something like:
+> >>>
+> >>> diff --git i/drivers/md/md.c w/drivers/md/md.c
+> >>> index 5c3c19b8d509..ebb529b0faf8 100644
+> >>> --- i/drivers/md/md.c
+> >>> +++ w/drivers/md/md.c
+> >>> @@ -9619,8 +9619,10 @@ static int md_notify_reboot(struct notifier_bl=
+ock
+> >>> *this,
+> >>>
+> >>>          spin_lock(&all_mddevs_lock);
+> >>>          list_for_each_entry_safe(mddev, n, &all_mddevs, all_mddevs) =
+{
+> >>> -               if (!mddev_get(mddev))
+> >>> +               if (!mddev_get(mddev)) {
+> >>> +                       need_delay =3D 1;
+> >>>                          continue;
+> >>> +               }
+> >>>                  spin_unlock(&all_mddevs_lock);
+> >>>                  if (mddev_trylock(mddev)) {
+> >>>                          if (mddev->pers)
+> >>>
+> >>>
+> >>> Thanks,
+> >>> Song
+> >> I will try to reproduce issue at Intel lab to check this.
+> >>
+> >> Thanks,
+> >> Mariusz
+> > Hi Guoqing,
+> >
+> > Here is the command how I trigger the issue, have to do it around 10
+> > times to make sure the issue is reproducible
+> >
+> > echo "repair" | sudo tee /sys/class/block/md12?/md/sync_action && sudo
+> > grub-reboot "Advanced options for Ubuntu>Ubuntu, with Linux 6.5.0-rc77
+> > 06a74159504-dirty" && head -c 1G < /dev/urandom > myfile1 && sleep 180
+> > && head -c 1G < /dev/urandom > myfile2 && sleep 1 && cat /proc/mdstat
+> > && sleep 1 && rm myfile1 &&
+> > sudo reboot
+>
+> Is the issue still reproducible with remove below from cmd?
+>
+> echo "repair" | sudo tee /sys/class/block/md12?/md/sync_action
+>
+> Just want to know if resync thread is related with the issue or not.
+Probably not, we can reproduce the issue without resync, just feel
+it's easier to reproduce the issue, so I put the command in my script.
+
+>
+> > And the patch to add need_delay doesn't work.
+>
+> My assumption is that mddev_get always returns NULL, so set need_delay
+> wouldn't help.
+>
+> Thanks,
+> Guoqing
 
 
-On Wed, Aug 23 2023 at 09:37:08 +02:00:00, Takashi Iwai <tiwai@suse.de> 
-wrote:
-> On Wed, 23 Aug 2023 09:28:39 +0200,
-> Luke Jones wrote:
->> 
->> 
->> 
->>  On Wed, Aug 23 2023 at 08:24:51 +02:00:00, Takashi Iwai
->>  <tiwai@suse.de> wrote:
->>  > On Wed, 23 Aug 2023 03:10:08 +0200,
->>  > Luke D. Jones wrote:
->>  >>
->>  >>  Support adding the missing DSD properties required  for ASUS ROG
->>  >> 2023
->>  >>  laptops and other ASUS laptops to properly utilise the cs35l41.
->>  >>
->>  >>  This support includes both I2C and SPI connected amps.
->>  >>
->>  >>  The SPI connected amps may be required to use an external DSD 
->> patch
->>  >>  to fix or add the "cs-gpios" property.
->>  >>
->>  >>  Co-developed-by: Jonathan LoBue <jlobue10@gmail.com>
->>  >>  Signed-off-by: Jonathan LoBue <jlobue10@gmail.com>
->>  >>  Co-developed-by: Luke D. Jones <luke@ljones.dev>
->>  >>  Signed-off-by: Luke D. Jones <luke@ljones.dev>
->>  >>  ---
->>  >>   sound/pci/hda/cs35l41_hda_property.c | 26
->>  >> ++++++++++++++++++++++++++
->>  >>   1 file changed, 26 insertions(+)
->>  >>
->>  >>  diff --git a/sound/pci/hda/cs35l41_hda_property.c
->>  >> b/sound/pci/hda/cs35l41_hda_property.c
->>  >>  index 673f23257a09..69879ab57918 100644
->>  >>  --- a/sound/pci/hda/cs35l41_hda_property.c
->>  >>  +++ b/sound/pci/hda/cs35l41_hda_property.c
->>  >>  @@ -43,6 +43,31 @@ static int lenovo_legion_no_acpi(struct
->>  >> cs35l41_hda *cs35l41, struct device *phy
->>  >>   	return 0;
->>  >>   }
->>  >>
->>  >>  +/*
->>  >>  + * The CSC3551 is used in almost the entire ASUS ROG laptop 
->> range
->>  >> in 2023, this is likely to
->>  >>  + * also include many non ROG labelled laptops. It is also used
->>  >> with either I2C connection or
->>  >>  + * SPI connection. The SPI connected versions may be missing a
->>  >> chip select GPIO and require
->>  >>  + * an DSD table patch.
->>  >>  + */
->>  >>  +static int asus_rog_2023_no_acpi(struct cs35l41_hda *cs35l41,
->>  >> struct device *physdev, int id,
->>  >>  +				const char *hid)
->>  >>  +{
->>  >>  +	struct cs35l41_hw_cfg *hw_cfg = &cs35l41->hw_cfg;
->>  >>  +
->>  >>  +	/* check SPI or I2C address to assign the index */
->>  >>  +	cs35l41->index = (id == 0 || id == 0x40) ? 0 : 1;
->>  >>  +	cs35l41->channel_index = 0;
->>  >>  +	cs35l41->reset_gpio = gpiod_get_index(physdev, NULL, 0,
->>  >> GPIOD_OUT_HIGH);
->>  >>  +	cs35l41->speaker_id = cs35l41_get_speaker_id(physdev, 0, 0, 
->> 2);
->>  >>  +	hw_cfg->spk_pos = cs35l41->index;
->>  >>  +	hw_cfg->gpio2.func = CS35L41_INTERRUPT;
->>  >>  +	hw_cfg->gpio2.valid = true;
->>  >>  +	hw_cfg->bst_type = CS35L41_EXT_BOOST_NO_VSPK_SWITCH;
->>  >>  +	hw_cfg->valid = true;
->>  >>  +
->>  >>  +	return 0;
->>  >>  +}
->>  >>  +
->>  >>   struct cs35l41_prop_model {
->>  >>   	const char *hid;
->>  >>   	const char *ssid;
->>  >>  @@ -53,6 +78,7 @@ struct cs35l41_prop_model {
->>  >>   const struct cs35l41_prop_model cs35l41_prop_model_table[] = {
->>  >>   	{ "CLSA0100", NULL, lenovo_legion_no_acpi },
->>  >>   	{ "CLSA0101", NULL, lenovo_legion_no_acpi },
->>  >>  +	{ "CSC3551", NULL, asus_rog_2023_no_acpi },
->>  >
->>  > I believe this breaks things badly.  cs35l41_add_dsd_properties() 
->> is
->>  > always called no matter whether _DSD is found or not.  So this 
->> will
->>  > override the setup of all machines with CSC3551 even if it has a
->>  > proper _DSD.
->> 
->>  These are the entries I know of so far since they definitely had to 
->> be
->>  added and have a DSD patch:
->> 
->>  - SPI_2
->>     - 0x1043, 0x1473, "ASUS GU604V"
->>     - 0x1043, 0x1483, "ASUS GU603V"
->>     - 0x1043, 0x1493, "ASUS GV601V"
->>     - 0x1043, 0x1573, "ASUS GZ301V"
->>     - 0x1043, 0x1c9f, "ASUS G614JI"
->>  - SPI_4
->>     - 0x1043, 0x1caf, "ASUS G634JYR/JZR"
->>  - I2C_2
->>     - 0x1043, 0x1d1f, "ASUS ROG Strix G17
->>     - 0x1043, 0x1463, "Asus GA402X"
->>     - 0x1043, 0x1433, "ASUS GX650P"
->>     - ROG ALLY
->> 
->>  You can see the variants are V, J, X, and P. A grep through the DSL
->>  dumps I have collected reveals that these machines are all indeed
->>  missing DSD entries. These are a mix of I2C and SPI.
->> 
->>  The patch I submitted was based on Stefan's work only, and tested 
->> on 3
->>  SPI machines plus 2 I2C machines with no issues except the SPI
->>  machines needing a chipselect DSD patch.
->> 
->>  It's worth stating that the DSD patches people were using all 
->> followed
->>  the exact same template except for the SPI number, or speaker ID.
->> 
->>  I'd wager it being a safe bet to assume that every one of the ASUS
->>  laptops this year using the CSC3551 will be missing the required DSD
->>  entries given the trend so far.
-> 
-> Yes, I know that there are tons of such devices that need the
-> workaround for missing _DSD.  My point is, however, that your patch
-> breaks the devices that *do have* _DSD, because the function always
-> overrides.
 
-Ah, because CSC3551 is not unique at all. I see.
-
-> 
->>  > The existing entries of CLSA0100 and CLSA0101 are OK since
->>  > (supposedly) those never had _DSD.  The current code is a bit
->>  > misleading as if it's applicable easily, though.
->>  >
->>  > That said, we have to apply the setup only conditionally for each
->>  > specific device.  One easy thing would be to move the function 
->> call
->>  > after _DSD check.  But, I *guess* that Stefan applied the 
->> function at
->>  > the top so that it may cover the all cases including incorrect 
->> _DSD
->>  > properties.
->> 
->>  Given the trend of what I've seen this seems like a reasonable
->>  assumption and desired.
-> 
-> ... and it's not enough.  That's another point.  The parameters aren't
-> always same for all devices but may vary.  That is, it must have some
-> check of devices and models to identify which parameters may be used.
-> 
->>  > And, the question is how to be specific to each device.  This can 
->> be
->>  > messy, as the sub-codec driver is probed independently from 
->> Realtek
->>  > codec driver, hence you can't pass any flag from Realtek to CS 
->> driver
->>  > at the probe time.  In the end, we might need to keep another 
->> table of
->>  > IDs (either the same SSID or DMI) to distinguish which machine 
->> needs
->>  > which properties.
->> 
->>  Is there some other ID we can use? I see:
->>  [   13.569242] cs35l41-hda spi0-CSC3551:00-cs35l41-hda.1: Cirrus 
->> Logic
->>  CS35L41 (35a40), Revision: B2
->>  and I'd assume that 35a40 is unique? A bit of searching on my 
->> discord
->>  reveals that all the machines I listed that require the same patch
->>  also have this identifier (including a ProArt laptop).
-> 
-> That's not unique to each *device* (not the chip model).  Say, we want
-> to distinguish ASUS GU604V and ASUS G64JYR.  They may have different
-> setups.
-> 
-> I guess only DMI is suitable at the time of probing this driver.
-
-Oh, I'm sorry I should have paid more attention the first time. I can 
-match against acpi_subsystem_id which would be for example 10431caf yes?
-
-I'll begin working on a patch series for each.
-
-
+--=20
+Chia-Lin Kao(AceLan)
+http://blog.acelan.idv.tw/
+E-Mail: acelan.kaoATcanonical.com (s/AT/@/)
