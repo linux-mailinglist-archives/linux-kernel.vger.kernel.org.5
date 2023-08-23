@@ -2,256 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4826F78551F
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 12:14:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F74378550D
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 12:13:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232892AbjHWKOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 06:14:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36084 "EHLO
+        id S233341AbjHWKNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 06:13:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234091AbjHWISZ (ORCPT
+        with ESMTP id S234136AbjHWISa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 04:18:25 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE95E10D0;
-        Wed, 23 Aug 2023 01:13:58 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4A58865456;
-        Wed, 23 Aug 2023 08:13:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ECED7C433C8;
-        Wed, 23 Aug 2023 08:13:50 +0000 (UTC)
-Date:   Wed, 23 Aug 2023 13:43:39 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Krishna chaitanya chundru <quic_krichai@quicinc.com>
-Cc:     helgaas@kernel.org, linux-pci@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        quic_vbadigan@quicinc.com, quic_nitegupt@quicinc.com,
-        quic_skananth@quicinc.com, quic_ramkri@quicinc.com,
-        quic_parass@quicinc.com, krzysztof.kozlowski@linaro.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH v1] PCI: qcom: Add sysfs entry to change link speed
- dynamically
-Message-ID: <20230823081339.GK3737@thinkpad>
-References: <1692239684-12697-1-git-send-email-quic_krichai@quicinc.com>
+        Wed, 23 Aug 2023 04:18:30 -0400
+Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5B0019A6
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 01:14:08 -0700 (PDT)
+Received: by mail-vs1-xe33.google.com with SMTP id ada2fe7eead31-44d3db0f56cso1353787137.2
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 01:14:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1692778448; x=1693383248;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9BqnoaQrc+k/EGaIhjvlmrLzZhJHDQjGpktA3aeLEYU=;
+        b=Lxd1xBz4QhTQBil+19Nth+mmfytAAWGErXLm7pP3QMD3JbyPH3q26Ux4lJypdghqNH
+         wpPkhIsgoio8g/OPXqHrBJrUgkHCPJiS2PZTvqcPEKcG5hWADioTJakWZiBDgoI1VfSn
+         pHP+eXlPlWLoG3z4MfdhtQYtGBI4nflQCHOjY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692778448; x=1693383248;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9BqnoaQrc+k/EGaIhjvlmrLzZhJHDQjGpktA3aeLEYU=;
+        b=Pu0KrEAKkvu2Y/s1DOuqqV59zYLbwmmORJSWwKVxFo9aNJTN4asktv/PyPlt0WtlPM
+         EMiZzECx29udENz0rGIQebmhjHlks8phSAhw37nXnw4e2lhrU/I5KL/CCHdLUjfy28bo
+         9yPOKHxjoHr8B89S2TVp8pI/JyvAKbEYbNqVfUIOmKU6j+y53XMHPWLsKd974+VGsPk/
+         eDM3+2g9WEBSB30i0WtWp8TlGZEwgaEnp+nWhkLoffUMReT9fEd6TErnic8ByWhDzqTb
+         r6Os+smAmb+ke2X8a+z/NF0phCHNdmUhMCTX5S5HUKS4JAQXjC+jUckS80LMPa7YuPKE
+         3Kow==
+X-Gm-Message-State: AOJu0YyoHqxMMwbdBVomtWOfpWqy7UudM/zmu4SNsToMHDffJ39Jx9y8
+        TaV1mBI/H5t3Xzo9NyqWDOnMEmQZZ9F4IxX6qNfhtg==
+X-Google-Smtp-Source: AGHT+IH4+6ztIqeKvjoE4Y07evhyiEKAgLnuWl8fEl2206g85MjP70+R3xLs9H41CAsIZm89sGQsPoMer8AWCZBvYeQ=
+X-Received: by 2002:a05:6102:18c:b0:44d:3ba7:b617 with SMTP id
+ r12-20020a056102018c00b0044d3ba7b617mr7906256vsq.32.1692778447964; Wed, 23
+ Aug 2023 01:14:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1692239684-12697-1-git-send-email-quic_krichai@quicinc.com>
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <20230822084520.564937-1-wenst@chromium.org> <20230822084520.564937-4-wenst@chromium.org>
+ <5ad5ff92-1367-ba96-b126-da80511a2769@linaro.org> <CAGXv+5Gc+R-hUJi5gm8an+dkq3JMD2JGwP4kDakKaHbAX2P0gQ@mail.gmail.com>
+ <e1c69599-a894-4cc8-123b-f4654b08412d@linaro.org>
+In-Reply-To: <e1c69599-a894-4cc8-123b-f4654b08412d@linaro.org>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Wed, 23 Aug 2023 16:13:57 +0800
+Message-ID: <CAGXv+5GL+Ltn-X-Hzxj7Wz_ztPVkCfo=WV6XdXGw_-j6ZhCF6w@mail.gmail.com>
+Subject: Re: [PATCH v2 03/11] regulator: dt-bindings: mt6358: Convert to DT schema
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Mark Brown <broonie@kernel.org>,
+        Zhiyong Tao <zhiyong.tao@mediatek.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 08:04:43AM +0530, Krishna chaitanya chundru wrote:
-> PCIe can operate on lower GEN speed if client decided based upon
-> the bandwidth & latency requirements. To support dynamic GEN speed
-> switch adding this sysfs support.
-> 
-> To change the GEN speed the link should be in L0, so first disable
-> L0s & L1.
-> 
-> L0s needs to be disabled at both RC & EP because L0s entry is
-> independent. For enabling L0s both ends of the link needs to support
-> it, so first check if L0s is supported on both ends and then enable
-> L0s.
-> 
-> This patch is dependent on "PCI: qcom: Add support for OPP"
-> https://lore.kernel.org/linux-arm-msm/1692192264-18515-1-git-send-email-quic_krichai@quicinc.com/T/#t
-> 
+On Wed, Aug 23, 2023 at 1:48=E2=80=AFPM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> On 23/08/2023 05:54, Chen-Yu Tsai wrote:
+> >>> +
+> >>> +    regulator {
+> >>> +        compatible =3D "mediatek,mt6358-regulator";
+> >>> +
+> >>> +        buck_vgpu {
+> >>> +            regulator-name =3D "vgpu";
+> >>> +            regulator-min-microvolt =3D <625000>;
+> >>> +            regulator-max-microvolt =3D <900000>;
+> >>> +            regulator-ramp-delay =3D <6250>;
+> >>> +            regulator-enable-ramp-delay =3D <200>;
+> >>> +            regulator-allowed-modes =3D <MT6397_BUCK_MODE_AUTO
+> >>
+> >> mt6397?
+> >>
+> >> Both cases look a bit confusing.
+> >
+> > There's only two regulator binding header files, mt6397 and mt6360.
+> > They seem to correspond to the two classes of PMICs that MediaTek has.
+> > I believe the two header files and thus the macros are meant to be
+> > shared?
+>
+> Defines have specific model name, so they do not look like meant to be
+> shared. If all the values of the binding match, they can be shared, but
+> then this should be mentioned in the binding plus it should be used in
+> the driver. I don't see your driver patches add include of this header.
 
-There is also an ongoing proposal to add PCIe bandwidth controller driver [1]
-which more or less does the same thing. Check if you can make use of it.
+Indeed. AFAICT the original raw values 0 and 1 just map directly to the
+register bitfield values. And those are common across the series of PMICs.
+I'll look into cleaning it up.
 
-- Mani
+ChenYu
 
-[1] https://lore.kernel.org/linux-pci/20230817121708.53213-1-ilpo.jarvinen@linux.intel.com/
-
-> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
-> ---
->  drivers/pci/controller/dwc/pcie-qcom.c | 141 +++++++++++++++++++++++++++++++++
->  1 file changed, 141 insertions(+)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-> index 831d158..ad67d17 100644
-> --- a/drivers/pci/controller/dwc/pcie-qcom.c
-> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
-> @@ -241,10 +241,150 @@ struct qcom_pcie {
->  	const struct qcom_pcie_cfg *cfg;
->  	struct dentry *debugfs;
->  	bool suspended;
-> +	bool l0s_supported;
->  };
->  
->  #define to_qcom_pcie(x)		dev_get_drvdata((x)->dev)
->  
-> +static void qcom_pcie_icc_update(struct qcom_pcie *pcie);
-> +static void qcom_pcie_opp_update(struct qcom_pcie *pcie);
-> +
-> +static int qcom_pcie_disable_l0s(struct pci_dev *pdev, void *userdata)
-> +{
-> +	int lnkctl;
-> +
-> +	pci_read_config_dword(pdev, pci_pcie_cap(pdev) + PCI_EXP_LNKCTL, &lnkctl);
-> +	lnkctl &= ~(PCI_EXP_LNKCTL_ASPM_L0S);
-> +	pci_write_config_word(pdev, pci_pcie_cap(pdev) + PCI_EXP_LNKCTL, lnkctl);
-> +
-> +	return 0;
-> +}
-> +
-> +static int qcom_pcie_check_l0s_support(struct pci_dev *pdev, void *userdata)
-> +{
-> +	struct pci_dev *parent = pdev->bus->self;
-> +	struct qcom_pcie *pcie = userdata;
-> +	struct dw_pcie *pci = pcie->pci;
-> +	int lnkcap;
-> +
-> +	 /* check parent supports L0s */
-> +	if (parent) {
-> +		dev_err(pci->dev, "parent\n");
-> +		pci_read_config_dword(parent, pci_pcie_cap(parent) + PCI_EXP_LNKCAP,
-> +				  &lnkcap);
-> +		if (!(lnkcap & PCI_EXP_LNKCAP_ASPM_L0S)) {
-> +			dev_info(pci->dev, "Parent does not support L0s\n");
-> +			pcie->l0s_supported = false;
-> +			return 0;
-> +		}
-> +	}
-> +
-> +	pci_read_config_dword(pdev, pci_pcie_cap(pdev) + PCI_EXP_LNKCAP,
-> +			  &lnkcap);
-> +	dev_err(pci->dev, "child %x\n", lnkcap);
-> +	if (!(lnkcap & PCI_EXP_LNKCAP_ASPM_L0S)) {
-> +		dev_info(pci->dev, "Device does not support L0s\n");
-> +		pcie->l0s_supported = false;
-> +		return 0;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int qcom_pcie_enable_l0s(struct pci_dev *pdev, void *userdata)
-> +{
-> +	int lnkctl;
-> +
-> +	pci_read_config_dword(pdev, pci_pcie_cap(pdev) + PCI_EXP_LNKCTL, &lnkctl);
-> +	lnkctl |= (PCI_EXP_LNKCTL_ASPM_L0S);
-> +	pci_write_config_word(pdev, pci_pcie_cap(pdev) + PCI_EXP_LNKCTL, lnkctl);
-> +
-> +	return 0;
-> +}
-> +
-> +static ssize_t qcom_pcie_speed_change_store(struct device *dev,
-> +			       struct device_attribute *attr,
-> +			       const char *buf,
-> +			       size_t count)
-> +{
-> +	unsigned int current_speed, target_speed, max_speed;
-> +	struct qcom_pcie *pcie = dev_get_drvdata(dev);
-> +	struct pci_bus *child, *root_bus = NULL;
-> +	struct dw_pcie_rp *pp = &pcie->pci->pp;
-> +	struct dw_pcie *pci = pcie->pci;
-> +	struct pci_dev *pdev;
-> +	u16 offset;
-> +	u32 val;
-> +	int ret;
-> +
-> +	list_for_each_entry(child, &pp->bridge->bus->children, node) {
-> +		if (child->parent == pp->bridge->bus) {
-> +			root_bus = child;
-> +			break;
-> +		}
-> +	}
-> +
-> +	pdev = root_bus->self;
-> +
-> +	offset = dw_pcie_find_capability(pci, PCI_CAP_ID_EXP);
-> +
-> +	val = readl(pci->dbi_base + offset + PCI_EXP_LNKCAP);
-> +	max_speed = FIELD_GET(PCI_EXP_LNKCAP_SLS, val);
-> +
-> +	val = readw(pci->dbi_base + offset + PCI_EXP_LNKSTA);
-> +	current_speed = FIELD_GET(PCI_EXP_LNKSTA_CLS, val);
-> +
-> +	ret = kstrtouint(buf, 10, &target_speed);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (target_speed > max_speed)
-> +		return -EINVAL;
-> +
-> +	if (current_speed == target_speed)
-> +		return count;
-> +
-> +	pci_walk_bus(pp->bridge->bus, qcom_pcie_disable_l0s, pcie);
-> +
-> +	/* Disable L1 */
-> +	val = dw_pcie_readl_dbi(pci, offset + PCI_EXP_LNKCTL);
-> +	val &= ~(PCI_EXP_LNKCTL_ASPM_L1);
-> +	dw_pcie_writel_dbi(pci, offset + PCI_EXP_LNKCTL, val);
-> +
-> +	/* Set target GEN speed */
-> +	val = dw_pcie_readl_dbi(pci, offset + PCI_EXP_LNKCTL2);
-> +	val &= ~PCI_EXP_LNKCTL2_TLS;
-> +	dw_pcie_writel_dbi(pci, offset + PCI_EXP_LNKCTL2, val | target_speed);
-> +
-> +	ret = pcie_retrain_link(pdev, true);
-> +	if (ret)
-> +		dev_err(dev, "Link retrain failed %d\n", ret);
-> +
-> +	/* Enable L1 */
-> +	val = dw_pcie_readl_dbi(pci, offset + PCI_EXP_LNKCTL);
-> +	val |= (PCI_EXP_LNKCTL_ASPM_L1);
-> +	dw_pcie_writel_dbi(pci, offset + PCI_EXP_LNKCTL, val);
-> +
-> +	pcie->l0s_supported = true;
-> +	pci_walk_bus(pp->bridge->bus, qcom_pcie_check_l0s_support, pcie);
-> +
-> +	if (pcie->l0s_supported)
-> +		pci_walk_bus(pp->bridge->bus, qcom_pcie_enable_l0s, pcie);
-> +
-> +	qcom_pcie_icc_update(pcie);
-> +
-> +	qcom_pcie_opp_update(pcie);
-> +
-> +	return count;
-> +}
-> +static DEVICE_ATTR_WO(qcom_pcie_speed_change);
-> +
-> +static struct attribute *qcom_pcie_attrs[] = {
-> +	&dev_attr_qcom_pcie_speed_change.attr,
-> +	NULL,
-> +};
-> +ATTRIBUTE_GROUPS(qcom_pcie);
-> +
->  static void qcom_ep_reset_assert(struct qcom_pcie *pcie)
->  {
->  	gpiod_set_value_cansleep(pcie->reset, 1);
-> @@ -1716,6 +1856,7 @@ static struct platform_driver qcom_pcie_driver = {
->  		.of_match_table = qcom_pcie_match,
->  		.pm = &qcom_pcie_pm_ops,
->  		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
-> +		.dev_groups = qcom_pcie_groups,
->  	},
->  };
->  builtin_platform_driver(qcom_pcie_driver);
-> -- 
-> 2.7.4
-> 
-
--- 
-மணிவண்ணன் சதாசிவம்
+> > MT6397 and co refer to their AP PMICs, i.e. PMICs that are companion
+> > chips to the SoC and provide most of the power rails a system needs,
+> > along with things like RTC, audio codecs, etc.. The MT6358 and MT6366
+> > belong to this class.
+> >
+> > MT6360 and possibly others refer to their charger PMICs, which integrat=
+e
+> > a battery charger, USB type-C PD stuff, LED drivers, and a handful of
+> > regulators.
+>
+>
+> Best regards,
+> Krzysztof
+>
