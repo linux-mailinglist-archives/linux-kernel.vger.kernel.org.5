@@ -2,263 +2,449 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96D65785238
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 10:03:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5BAF785267
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 10:11:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233668AbjHWICw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 04:02:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50020 "EHLO
+        id S233671AbjHWILW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 04:11:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233263AbjHWICN (ORCPT
+        with ESMTP id S233778AbjHWIGA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 04:02:13 -0400
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6C8CCE6
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 01:02:08 -0700 (PDT)
-Received: by mail-qv1-xf32.google.com with SMTP id 6a1803df08f44-64c1d487e72so27704896d6.0
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 01:02:08 -0700 (PDT)
+        Wed, 23 Aug 2023 04:06:00 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F1CACDA
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 01:04:55 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-3fee7b7689dso34336815e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 01:04:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692777728; x=1693382528;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6BSjtokwFpqc/G+xGehpwaT4EtO60DWjc8ZrclKikoE=;
-        b=NUv0XojToaQWV2XEJ0LjEaacdyesICYdKEdEtsWLVR+gLnOK6GvLf9w9JxEI+NHpdX
-         rZdNIUEDcW2bSKm3pWjw8CGZcxG64UPzGCHsUOxNUCofQHdspxVGdkjyLHEvw9Hw0hwC
-         Hcw3hZ+24CtPsXqxEI6L8j7lSHggn6dtC/Zaf4Yg46OYOYD8s9ovcvizJKZ0TugHqOa0
-         iBUzb6U6/4Zl9XxzB6/iIfxif5I9V1Kgofp1aU2ZGAw1SATOLa+gxihRyiweB7AJR2Y9
-         y5lUYJPtjsd8mnfqbf6czlhVih7QoVzDlC5bmVoV5lZWvGyt3HeBs7Z3VipaUQtNAa4X
-         K7WA==
+        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1692777894; x=1693382694;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=sqLfjXwKIs0qnRsyMrOd7p9W6SVZeZZMJuGHy1Im3jQ=;
+        b=YwH2DRF2Z6K1JOkeac8qjLEmkwwo1oKHEob5F+U+SifRBeFaktHbLwPU/HNjnmOn3a
+         Nic+RHstXaqPzRW0fETxGVjH/6mlUq5I8t5FDnYfHZHUZUlfp4qaNUfRD+bH15b42Z5k
+         Ki6UdDg4agcIjk1/cTzOaGfiB2qexjjhkNRc5oHmlfXU7WcSsYTTQYu+KZowcqqVosuN
+         TIyhJCbUKMRQq1fk6jJP9QQh304QcaxMV/xP1dnJPs/ubfeCkK/3+zTM6fsAh3rFv5AQ
+         yR/RRndI7cbMELfFcsAo2l0Z2h5TEii0SnANXyDD45syccqrYYc8JK1x0RzkhAIQ8F5G
+         P/Mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692777728; x=1693382528;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6BSjtokwFpqc/G+xGehpwaT4EtO60DWjc8ZrclKikoE=;
-        b=Cgga3c3lu6djXtqcvmQne2aBIZBQWrAzaSAQDW4FmC+WxeX9hl0axPowjTkLut+MTp
-         vmdMlFjdbLA7DmVY1LAubC2U0uJarhQrjUpMNxAog+m5qIPloUKzN4ilQIj1OsbK1N7Q
-         gFNDD0MvgSruyIqMWr5AvrwEWTIv5IKFzSWqof+aniFNpkUr/ilWBG3St6KzePBHgP3F
-         IigbEZ3ogmCr+IcNDVt4D/u+cDkFErmOSDCRmTxtMl4mg8o4xCHC1B514ReS3kjZ1oA2
-         MV24e0zOR9ipU1ujgKXxlRHKxE+iSUYaXv1xihw9SO8d7uo03vw7Et+rUzDSJElHAL4l
-         CsCQ==
-X-Gm-Message-State: AOJu0Yx6/Zui0ObnCEJy2OYOCjUESvmtxOfFdGD9rWo9g7kGEkxAQEHk
-        D3MkAdP8WNEOLbz1nkhWcaE7q656EyrRKc+8V6LLujUBqwcgmQVp
-X-Google-Smtp-Source: AGHT+IHCXW+5AvKIH5eH5zGGQo7Y2etowbNPiVhAZnAi25/ajgJmtsE/jx/8U3q4/SWOYOX/1wCO3kPrZQDPY2IF2Us=
-X-Received: by 2002:a0c:f910:0:b0:647:248b:3614 with SMTP id
- v16-20020a0cf910000000b00647248b3614mr11654949qvn.4.1692777727944; Wed, 23
- Aug 2023 01:02:07 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692777894; x=1693382694;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sqLfjXwKIs0qnRsyMrOd7p9W6SVZeZZMJuGHy1Im3jQ=;
+        b=dburOhRu29YeqVtUmjtcZdnFrvbKDGurYWXJOWl/XjGHOr1JYR7uTQuPyzOxvbK62N
+         lY0NFErpF9+zSY7zPO3FpQ3jJRBI0p9cA7LMRE3thEHuTi3Heu4zpt3MheYUo7nMqeA2
+         ZbNvfpRBwRXGl+hxS01WdMze0aArUkfG0nXAkQQhSyJnBbvg/vTeKUKFhIxAWwS9gWS6
+         rUjq6mVXLQdzt/swAnJIM+0r4RWsD4pCv/zlR4/wdiaQrgvEYJCGGszJt74tfhu/deYW
+         IlOuPdPaEzclGk1mn7h5O6qxWi5ZejjUlp5uBqw0RCtTzKs14epwzaUVbxMQHxmRK0lq
+         wigA==
+X-Gm-Message-State: AOJu0YxqhDMJNiUX1TWc1YNW8GItppfmPerAnieJYQk2fn/89MLu16s8
+        b0TQ1K2gFg/rNK9E9xBqs3gwZg==
+X-Google-Smtp-Source: AGHT+IGdnOEr7lWzHcx+caM2WgK8xvqtWENpLZtE2My5Y5tl5K1ZE8UKupOLdpX5dlPBmWDxE8VfxA==
+X-Received: by 2002:a1c:6a16:0:b0:3fe:4900:dba0 with SMTP id f22-20020a1c6a16000000b003fe4900dba0mr8862265wmc.16.1692777893950;
+        Wed, 23 Aug 2023 01:04:53 -0700 (PDT)
+Received: from localhost ([2a01:e0a:3c5:5fb1:c128:6cb5:cc63:7cbe])
+        by smtp.gmail.com with ESMTPSA id f23-20020a7bcd17000000b003fef5e76f2csm608761wmj.0.2023.08.23.01.04.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Aug 2023 01:04:53 -0700 (PDT)
+References: <20230822082750.27633-1-yu.tu@amlogic.com>
+ <20230822082750.27633-3-yu.tu@amlogic.com>
+User-agent: mu4e 1.8.13; emacs 28.2
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Yu Tu <yu.tu@amlogic.com>, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     kelvin.zhang@amlogic.com, qi.duan@amlogic.com
+Subject: Re: [PATCH V10 2/4] dt-bindings: clock: document Amlogic S4 SoC
+ peripherals clock controller
+Date:   Wed, 23 Aug 2023 10:01:57 +0200
+In-reply-to: <20230822082750.27633-3-yu.tu@amlogic.com>
+Message-ID: <1jbkey9obf.fsf@starbuckisacylon.baylibre.com>
 MIME-Version: 1.0
-References: <20230822112933.1550062-1-sumit.garg@linaro.org>
- <20230822125555.GA82256@rayden> <CAFA6WYPy=yxGg1HbT+ipWJFpxiJeUGK6BSgMhtRPd=zmKef-cw@mail.gmail.com>
-In-Reply-To: <CAFA6WYPy=yxGg1HbT+ipWJFpxiJeUGK6BSgMhtRPd=zmKef-cw@mail.gmail.com>
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-Date:   Wed, 23 Aug 2023 10:01:56 +0200
-Message-ID: <CAHUa44G9jCeHcRq=AZeieaTPWN_tpOVKeJNY=777QAh-bw1QNg@mail.gmail.com>
-Subject: Re: [PATCH] KEYS: trusted: tee: Refactor register SHM usage
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        jarkko@kernel.org, jejb@linux.ibm.com, zohar@linux.ibm.com,
-        sudeep.holla@arm.com, achin.gupta@arm.com,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 23, 2023 at 8:55=E2=80=AFAM Sumit Garg <sumit.garg@linaro.org> =
-wrote:
->
-> On Tue, 22 Aug 2023 at 18:25, Jens Wiklander <jens.wiklander@linaro.org> =
-wrote:
-> >
-> > On Tue, Aug 22, 2023 at 04:59:33PM +0530, Sumit Garg wrote:
-> > > The OP-TEE driver using the old SMC based ABI permits overlapping sha=
-red
-> > > buffers, but with the new FF-A based ABI each physical page may only
-> > > be registered once.
-> > >
-> > > As the key and blob buffer are allocated adjancently, there is no nee=
-d
-> > > for redundant register shared memory invocation. Also, it is incompat=
-ibile
-> > > with FF-A based ABI limitation. So refactor register shared memory
-> > > implementation to use only single invocation to register both key and=
- blob
-> > > buffers.
-> > >
-> > > Fixes: 4615e5a34b95 ("optee: add FF-A support")
-> > > Reported-by: Jens Wiklander <jens.wiklander@linaro.org>
-> > > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> > > ---
-> > >  security/keys/trusted-keys/trusted_tee.c | 64 ++++++++--------------=
---
-> > >  1 file changed, 20 insertions(+), 44 deletions(-)
-> > >
-> > > diff --git a/security/keys/trusted-keys/trusted_tee.c b/security/keys=
-/trusted-keys/trusted_tee.c
-> > > index ac3e270ade69..aa3d477de6db 100644
-> > > --- a/security/keys/trusted-keys/trusted_tee.c
-> > > +++ b/security/keys/trusted-keys/trusted_tee.c
-> > > @@ -65,24 +65,16 @@ static int trusted_tee_seal(struct trusted_key_pa=
-yload *p, char *datablob)
-> > >       int ret;
-> > >       struct tee_ioctl_invoke_arg inv_arg;
-> > >       struct tee_param param[4];
-> > > -     struct tee_shm *reg_shm_in =3D NULL, *reg_shm_out =3D NULL;
-> > > +     struct tee_shm *reg_shm =3D NULL;
-> > >
-> > >       memset(&inv_arg, 0, sizeof(inv_arg));
-> > >       memset(&param, 0, sizeof(param));
-> > >
-> > > -     reg_shm_in =3D tee_shm_register_kernel_buf(pvt_data.ctx, p->key=
-,
-> > > -                                              p->key_len);
-> > > -     if (IS_ERR(reg_shm_in)) {
-> > > -             dev_err(pvt_data.dev, "key shm register failed\n");
-> > > -             return PTR_ERR(reg_shm_in);
-> > > -     }
-> > > -
-> > > -     reg_shm_out =3D tee_shm_register_kernel_buf(pvt_data.ctx, p->bl=
-ob,
-> > > -                                               sizeof(p->blob));
-> > > -     if (IS_ERR(reg_shm_out)) {
-> > > -             dev_err(pvt_data.dev, "blob shm register failed\n");
-> > > -             ret =3D PTR_ERR(reg_shm_out);
-> > > -             goto out;
-> > > +     reg_shm =3D tee_shm_register_kernel_buf(pvt_data.ctx, p->key,
-> > > +                                           sizeof(p->key) + sizeof(p=
-->blob));
-> >
-> > This is somewhat fragile. What if struct trusted_key_payload has a smal=
-l
-> > unexpected change in layout?
->
-> key and blob buffers are just two adjacent fixed sized byte arrays. So
-> I am not worried here as long as they stay adjacent (which has been
-> the case since trusted keys were introduced in the kernel).
 
-Yeah, that was my point, but fine if you don't believe it's an issue.
+On Tue 22 Aug 2023 at 16:27, Yu Tu <yu.tu@amlogic.com> wrote:
 
-Thanks,
-Jens
+> Add the S4 peripherals clock controller dt-bindings in the S4 SoC
+> family.
+>
+> Signed-off-by: Yu Tu <yu.tu@amlogic.com>
+> ---
+>  .../clock/amlogic,s4-peripherals-clkc.yaml    |  96 +++++++
+>  .../clock/amlogic,s4-peripherals-clkc.h       | 236 ++++++++++++++++++
+>  2 files changed, 332 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/clock/amlogic,s4-peripherals-clkc.yaml
+>  create mode 100644 include/dt-bindings/clock/amlogic,s4-peripherals-clkc.h
+>
+> diff --git a/Documentation/devicetree/bindings/clock/amlogic,s4-peripherals-clkc.yaml b/Documentation/devicetree/bindings/clock/amlogic,s4-peripherals-clkc.yaml
+> new file mode 100644
+> index 000000000000..e166563e7b14
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/clock/amlogic,s4-peripherals-clkc.yaml
+> @@ -0,0 +1,96 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +# Copyright (C) 2022-2023 Amlogic, Inc. All rights reserved
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/clock/amlogic,s4-peripherals-clkc.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Amlogic S4 Peripherals Clock Controller
+> +
+> +maintainers:
+> +  - Yu Tu <yu.tu@amlogic.com>
+> +
+> +properties:
+> +  compatible:
+> +    const: amlogic,s4-peripherals-clkc
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    items:
+> +      - description: input fixed pll div2
+> +      - description: input fixed pll div2p5
+> +      - description: input fixed pll div3
+> +      - description: input fixed pll div4
+> +      - description: input fixed pll div5
+> +      - description: input fixed pll div7
+> +      - description: input hifi pll
+> +      - description: input gp0 pll
+> +      - description: input mpll0
+> +      - description: input mpll1
+> +      - description: input mpll2
+> +      - description: input mpll3
+> +      - description: input hdmi pll
+> +      - description: input oscillator (usually at 24MHz)
+> +      - description: input external 32kHz reference (optional)
 
->
-> -Sumit
->
-> >
-> > Thanks,
-> > Jens
-> >
-> > > +     if (IS_ERR(reg_shm)) {
-> > > +             dev_err(pvt_data.dev, "shm register failed\n");
-> > > +             return PTR_ERR(reg_shm);
-> > >       }
-> > >
-> > >       inv_arg.func =3D TA_CMD_SEAL;
-> > > @@ -90,13 +82,13 @@ static int trusted_tee_seal(struct trusted_key_pa=
-yload *p, char *datablob)
-> > >       inv_arg.num_params =3D 4;
-> > >
-> > >       param[0].attr =3D TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_INPUT;
-> > > -     param[0].u.memref.shm =3D reg_shm_in;
-> > > +     param[0].u.memref.shm =3D reg_shm;
-> > >       param[0].u.memref.size =3D p->key_len;
-> > >       param[0].u.memref.shm_offs =3D 0;
-> > >       param[1].attr =3D TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_OUTPUT;
-> > > -     param[1].u.memref.shm =3D reg_shm_out;
-> > > +     param[1].u.memref.shm =3D reg_shm;
-> > >       param[1].u.memref.size =3D sizeof(p->blob);
-> > > -     param[1].u.memref.shm_offs =3D 0;
-> > > +     param[1].u.memref.shm_offs =3D sizeof(p->key);
-> > >
-> > >       ret =3D tee_client_invoke_func(pvt_data.ctx, &inv_arg, param);
-> > >       if ((ret < 0) || (inv_arg.ret !=3D 0)) {
-> > > @@ -107,11 +99,7 @@ static int trusted_tee_seal(struct trusted_key_pa=
-yload *p, char *datablob)
-> > >               p->blob_len =3D param[1].u.memref.size;
-> > >       }
-> > >
-> > > -out:
-> > > -     if (reg_shm_out)
-> > > -             tee_shm_free(reg_shm_out);
-> > > -     if (reg_shm_in)
-> > > -             tee_shm_free(reg_shm_in);
-> > > +     tee_shm_free(reg_shm);
-> > >
-> > >       return ret;
-> > >  }
-> > > @@ -124,24 +112,16 @@ static int trusted_tee_unseal(struct trusted_ke=
-y_payload *p, char *datablob)
-> > >       int ret;
-> > >       struct tee_ioctl_invoke_arg inv_arg;
-> > >       struct tee_param param[4];
-> > > -     struct tee_shm *reg_shm_in =3D NULL, *reg_shm_out =3D NULL;
-> > > +     struct tee_shm *reg_shm =3D NULL;
-> > >
-> > >       memset(&inv_arg, 0, sizeof(inv_arg));
-> > >       memset(&param, 0, sizeof(param));
-> > >
-> > > -     reg_shm_in =3D tee_shm_register_kernel_buf(pvt_data.ctx, p->blo=
-b,
-> > > -                                              p->blob_len);
-> > > -     if (IS_ERR(reg_shm_in)) {
-> > > -             dev_err(pvt_data.dev, "blob shm register failed\n");
-> > > -             return PTR_ERR(reg_shm_in);
-> > > -     }
-> > > -
-> > > -     reg_shm_out =3D tee_shm_register_kernel_buf(pvt_data.ctx, p->ke=
-y,
-> > > -                                               sizeof(p->key));
-> > > -     if (IS_ERR(reg_shm_out)) {
-> > > -             dev_err(pvt_data.dev, "key shm register failed\n");
-> > > -             ret =3D PTR_ERR(reg_shm_out);
-> > > -             goto out;
-> > > +     reg_shm =3D tee_shm_register_kernel_buf(pvt_data.ctx, p->key,
-> > > +                                           sizeof(p->key) + sizeof(p=
-->blob));
-> > > +     if (IS_ERR(reg_shm)) {
-> > > +             dev_err(pvt_data.dev, "shm register failed\n");
-> > > +             return PTR_ERR(reg_shm);
-> > >       }
-> > >
-> > >       inv_arg.func =3D TA_CMD_UNSEAL;
-> > > @@ -149,11 +129,11 @@ static int trusted_tee_unseal(struct trusted_ke=
-y_payload *p, char *datablob)
-> > >       inv_arg.num_params =3D 4;
-> > >
-> > >       param[0].attr =3D TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_INPUT;
-> > > -     param[0].u.memref.shm =3D reg_shm_in;
-> > > +     param[0].u.memref.shm =3D reg_shm;
-> > >       param[0].u.memref.size =3D p->blob_len;
-> > > -     param[0].u.memref.shm_offs =3D 0;
-> > > +     param[0].u.memref.shm_offs =3D sizeof(p->key);
-> > >       param[1].attr =3D TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_OUTPUT;
-> > > -     param[1].u.memref.shm =3D reg_shm_out;
-> > > +     param[1].u.memref.shm =3D reg_shm;
-> > >       param[1].u.memref.size =3D sizeof(p->key);
-> > >       param[1].u.memref.shm_offs =3D 0;
-> > >
-> > > @@ -166,11 +146,7 @@ static int trusted_tee_unseal(struct trusted_key=
-_payload *p, char *datablob)
-> > >               p->key_len =3D param[1].u.memref.size;
-> > >       }
-> > >
-> > > -out:
-> > > -     if (reg_shm_out)
-> > > -             tee_shm_free(reg_shm_out);
-> > > -     if (reg_shm_in)
-> > > -             tee_shm_free(reg_shm_in);
-> > > +     tee_shm_free(reg_shm);
-> > >
-> > >       return ret;
-> > >  }
-> > > --
-> > > 2.34.1
-> > >
+The bindings described here does not make this last clock optional, but
+requires it. This is going to be a problem since most platforms won't
+have this clock.
+
+You are missing minItems.
+Same below
+
+> +
+> +  clock-names:
+> +    items:
+> +      - const: fclk_div2
+> +      - const: fclk_div2p5
+> +      - const: fclk_div3
+> +      - const: fclk_div4
+> +      - const: fclk_div5
+> +      - const: fclk_div7
+> +      - const: hifi_pll
+> +      - const: gp0_pll
+> +      - const: mpll0
+> +      - const: mpll1
+> +      - const: mpll2
+> +      - const: mpll3
+> +      - const: hdmi_pll
+> +      - const: xtal
+> +      - const: ext_32k
+> +
+> +  "#clock-cells":
+> +    const: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - clock-names
+> +  - "#clock-cells"
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/amlogic,s4-peripherals-clkc.h>
+> +
+> +    clkc_periphs: clock-controller@fe000000 {
+> +      compatible = "amlogic,s4-peripherals-clkc";
+> +      reg = <0xfe000000 0x49c>;
+> +      clocks = <&clkc_pll 3>,
+> +              <&clkc_pll 13>,
+> +              <&clkc_pll 5>,
+> +              <&clkc_pll 7>,
+> +              <&clkc_pll 9>,
+> +              <&clkc_pll 11>,
+> +              <&clkc_pll 17>,
+> +              <&clkc_pll 15>,
+> +              <&clkc_pll 25>,
+> +              <&clkc_pll 27>,
+> +              <&clkc_pll 29>,
+> +              <&clkc_pll 31>,
+> +              <&clkc_pll 20>,
+> +              <&xtal>,
+> +              <&ext_32k>;
+> +      clock-names = "fclk_div2", "fclk_div2p5", "fclk_div3", "fclk_div4",
+> +                    "fclk_div5", "fclk_div7", "hifi_pll", "gp0_pll",
+> +                    "mpll0", "mpll1", "mpll2", "mpll3", "hdmi_pll", "xtal",
+> +                    "ext_32k";
+> +      #clock-cells = <1>;
+> +    };
+> +...
+> diff --git a/include/dt-bindings/clock/amlogic,s4-peripherals-clkc.h b/include/dt-bindings/clock/amlogic,s4-peripherals-clkc.h
+> new file mode 100644
+> index 000000000000..861a331963ac
+> --- /dev/null
+> +++ b/include/dt-bindings/clock/amlogic,s4-peripherals-clkc.h
+> @@ -0,0 +1,236 @@
+> +/* SPDX-License-Identifier: (GPL-2.0-only OR MIT) */
+> +/*
+> + * Copyright (c) 2022-2023 Amlogic, Inc. All rights reserved.
+> + * Author: Yu Tu <yu.tu@amlogic.com>
+> + */
+> +
+> +#ifndef _DT_BINDINGS_CLOCK_AMLOGIC_S4_PERIPHERALS_CLKC_H
+> +#define _DT_BINDINGS_CLOCK_AMLOGIC_S4_PERIPHERALS_CLKC_H
+> +
+> +#define CLKID_RTC_32K_CLKIN		0
+> +#define CLKID_RTC_32K_DIV		1
+> +#define CLKID_RTC_32K_SEL		2
+> +#define CLKID_RTC_32K_XATL		3
+> +#define CLKID_RTC			4
+> +#define CLKID_SYS_CLK_B_SEL		5
+> +#define CLKID_SYS_CLK_B_DIV		6
+> +#define CLKID_SYS_CLK_B			7
+> +#define CLKID_SYS_CLK_A_SEL		8
+> +#define CLKID_SYS_CLK_A_DIV		9
+> +#define CLKID_SYS_CLK_A			10
+> +#define CLKID_SYS			11
+> +#define CLKID_CECA_32K_CLKIN		12
+> +#define CLKID_CECA_32K_DIV		13
+> +#define CLKID_CECA_32K_SEL_PRE		14
+> +#define CLKID_CECA_32K_SEL		15
+> +#define CLKID_CECA_32K_CLKOUT		16
+> +#define CLKID_CECB_32K_CLKIN		17
+> +#define CLKID_CECB_32K_DIV		18
+> +#define CLKID_CECB_32K_SEL_PRE		19
+> +#define CLKID_CECB_32K_SEL		20
+> +#define CLKID_CECB_32K_CLKOUT		21
+> +#define CLKID_SC_CLK_SEL		22
+> +#define CLKID_SC_CLK_DIV		23
+> +#define CLKID_SC			24
+> +#define CLKID_12_24M			25
+> +#define CLKID_12M_CLK_DIV		26
+> +#define CLKID_12_24M_CLK_SEL		27
+> +#define CLKID_VID_PLL_DIV		28
+> +#define CLKID_VID_PLL_SEL		29
+> +#define CLKID_VID_PLL			30
+> +#define CLKID_VCLK_SEL			31
+> +#define CLKID_VCLK2_SEL			32
+> +#define CLKID_VCLK_INPUT		33
+> +#define CLKID_VCLK2_INPUT		34
+> +#define CLKID_VCLK_DIV			35
+> +#define CLKID_VCLK2_DIV			36
+> +#define CLKID_VCLK			37
+> +#define CLKID_VCLK2			38
+> +#define CLKID_VCLK_DIV1			39
+> +#define CLKID_VCLK_DIV2_EN		40
+> +#define CLKID_VCLK_DIV4_EN		41
+> +#define CLKID_VCLK_DIV6_EN		42
+> +#define CLKID_VCLK_DIV12_EN		43
+> +#define CLKID_VCLK2_DIV1		44
+> +#define CLKID_VCLK2_DIV2_EN		45
+> +#define CLKID_VCLK2_DIV4_EN		46
+> +#define CLKID_VCLK2_DIV6_EN		47
+> +#define CLKID_VCLK2_DIV12_EN		48
+> +#define CLKID_VCLK_DIV2			49
+> +#define CLKID_VCLK_DIV4			50
+> +#define CLKID_VCLK_DIV6			51
+> +#define CLKID_VCLK_DIV12		52
+> +#define CLKID_VCLK2_DIV2		53
+> +#define CLKID_VCLK2_DIV4		54
+> +#define CLKID_VCLK2_DIV6		55
+> +#define CLKID_VCLK2_DIV12		56
+> +#define CLKID_CTS_ENCI_SEL		57
+> +#define CLKID_CTS_ENCP_SEL		58
+> +#define CLKID_CTS_VDAC_SEL		59
+> +#define CLKID_HDMI_TX_SEL		60
+> +#define CLKID_CTS_ENCI			61
+> +#define CLKID_CTS_ENCP			62
+> +#define CLKID_CTS_VDAC			63
+> +#define CLKID_HDMI_TX			64
+> +#define CLKID_HDMI_SEL			65
+> +#define CLKID_HDMI_DIV			66
+> +#define CLKID_HDMI			67
+> +#define CLKID_TS_CLK_DIV		68
+> +#define CLKID_TS			69
+> +#define CLKID_MALI_0_SEL		70
+> +#define CLKID_MALI_0_DIV		71
+> +#define CLKID_MALI_0			72
+> +#define CLKID_MALI_1_SEL		73
+> +#define CLKID_MALI_1_DIV		74
+> +#define CLKID_MALI_1			75
+> +#define CLKID_MALI_SEL			76
+> +#define CLKID_VDEC_P0_SEL		77
+> +#define CLKID_VDEC_P0_DIV		78
+> +#define CLKID_VDEC_P0			79
+> +#define CLKID_VDEC_P1_SEL		80
+> +#define CLKID_VDEC_P1_DIV		81
+> +#define CLKID_VDEC_P1			82
+> +#define CLKID_VDEC_SEL			83
+> +#define CLKID_HEVCF_P0_SEL		84
+> +#define CLKID_HEVCF_P0_DIV		85
+> +#define CLKID_HEVCF_P0			86
+> +#define CLKID_HEVCF_P1_SEL		87
+> +#define CLKID_HEVCF_P1_DIV		88
+> +#define CLKID_HEVCF_P1			89
+> +#define CLKID_HEVCF_SEL			90
+> +#define CLKID_VPU_0_SEL			91
+> +#define CLKID_VPU_0_DIV			92
+> +#define CLKID_VPU_0			93
+> +#define CLKID_VPU_1_SEL			94
+> +#define CLKID_VPU_1_DIV			95
+> +#define CLKID_VPU_1			96
+> +#define CLKID_VPU			97
+> +#define CLKID_VPU_CLKB_TMP_SEL		98
+> +#define CLKID_VPU_CLKB_TMP_DIV		99
+> +#define CLKID_VPU_CLKB_TMP		100
+> +#define CLKID_VPU_CLKB_DIV		101
+> +#define CLKID_VPU_CLKB			102
+> +#define CLKID_VPU_CLKC_P0_SEL		103
+> +#define CLKID_VPU_CLKC_P0_DIV		104
+> +#define CLKID_VPU_CLKC_P0		105
+> +#define CLKID_VPU_CLKC_P1_SEL		106
+> +#define CLKID_VPU_CLKC_P1_DIV		107
+> +#define CLKID_VPU_CLKC_P1		108
+> +#define CLKID_VPU_CLKC_SEL		109
+> +#define CLKID_VAPB_0_SEL		110
+> +#define CLKID_VAPB_0_DIV		111
+> +#define CLKID_VAPB_0			112
+> +#define CLKID_VAPB_1_SEL		113
+> +#define CLKID_VAPB_1_DIV		114
+> +#define CLKID_VAPB_1			115
+> +#define CLKID_VAPB			116
+> +#define CLKID_GE2D			117
+> +#define CLKID_VDIN_MEAS_SEL		118
+> +#define CLKID_VDIN_MEAS_DIV		119
+> +#define CLKID_VDIN_MEAS			120
+> +#define CLKID_SD_EMMC_C_CLK_SEL		121
+> +#define CLKID_SD_EMMC_C_CLK_DIV		122
+> +#define CLKID_SD_EMMC_C			123
+> +#define CLKID_SD_EMMC_A_CLK_SEL		124
+> +#define CLKID_SD_EMMC_A_CLK_DIV		125
+> +#define CLKID_SD_EMMC_A			126
+> +#define CLKID_SD_EMMC_B_CLK_SEL		127
+> +#define CLKID_SD_EMMC_B_CLK_DIV		128
+> +#define CLKID_SD_EMMC_B			129
+> +#define CLKID_SPICC0_SEL		130
+> +#define CLKID_SPICC0_DIV		131
+> +#define CLKID_SPICC0_EN			132
+> +#define CLKID_PWM_A_SEL			133
+> +#define CLKID_PWM_A_DIV			134
+> +#define CLKID_PWM_A			135
+> +#define CLKID_PWM_B_SEL			136
+> +#define CLKID_PWM_B_DIV			137
+> +#define CLKID_PWM_B			138
+> +#define CLKID_PWM_C_SEL			139
+> +#define CLKID_PWM_C_DIV			140
+> +#define CLKID_PWM_C			141
+> +#define CLKID_PWM_D_SEL			142
+> +#define CLKID_PWM_D_DIV			143
+> +#define CLKID_PWM_D			144
+> +#define CLKID_PWM_E_SEL			145
+> +#define CLKID_PWM_E_DIV			146
+> +#define CLKID_PWM_E			147
+> +#define CLKID_PWM_F_SEL			148
+> +#define CLKID_PWM_F_DIV			149
+> +#define CLKID_PWM_F			150
+> +#define CLKID_PWM_G_SEL			151
+> +#define CLKID_PWM_G_DIV			152
+> +#define CLKID_PWM_G			153
+> +#define CLKID_PWM_H_SEL			154
+> +#define CLKID_PWM_H_DIV			155
+> +#define CLKID_PWM_H			156
+> +#define CLKID_PWM_I_SEL			157
+> +#define CLKID_PWM_I_DIV			158
+> +#define CLKID_PWM_I			159
+> +#define CLKID_PWM_J_SEL			160
+> +#define CLKID_PWM_J_DIV			161
+> +#define CLKID_PWM_J			162
+> +#define CLKID_SARADC_SEL		163
+> +#define CLKID_SARADC_DIV		164
+> +#define CLKID_SARADC			165
+> +#define CLKID_GEN_SEL			166
+> +#define CLKID_GEN_DIV			167
+> +#define CLKID_GEN			168
+> +#define CLKID_DDR			169
+> +#define CLKID_DOS			170
+> +#define CLKID_ETHPHY			171
+> +#define CLKID_MALI			172
+> +#define CLKID_AOCPU			173
+> +#define CLKID_AUCPU			174
+> +#define CLKID_CEC			175
+> +#define CLKID_SDEMMC_A			176
+> +#define CLKID_SDEMMC_B			177
+> +#define CLKID_NAND			178
+> +#define CLKID_SMARTCARD			179
+> +#define CLKID_ACODEC			180
+> +#define CLKID_SPIFC			181
+> +#define CLKID_MSR			182
+> +#define CLKID_IR_CTRL			183
+> +#define CLKID_AUDIO			184
+> +#define CLKID_ETH			185
+> +#define CLKID_UART_A			186
+> +#define CLKID_UART_B			187
+> +#define CLKID_UART_C			188
+> +#define CLKID_UART_D			189
+> +#define CLKID_UART_E			190
+> +#define CLKID_AIFIFO			191
+> +#define CLKID_TS_DDR			192
+> +#define CLKID_TS_PLL			193
+> +#define CLKID_G2D			194
+> +#define CLKID_SPICC0			195
+> +#define CLKID_SPICC1			196
+> +#define CLKID_USB			197
+> +#define CLKID_I2C_M_A			198
+> +#define CLKID_I2C_M_B			199
+> +#define CLKID_I2C_M_C			200
+> +#define CLKID_I2C_M_D			201
+> +#define CLKID_I2C_M_E			202
+> +#define CLKID_HDMITX_APB		203
+> +#define CLKID_I2C_S_A			204
+> +#define CLKID_USB1_TO_DDR		205
+> +#define CLKID_HDCP22			206
+> +#define CLKID_MMC_APB			207
+> +#define CLKID_RSA			208
+> +#define CLKID_CPU_DEBUG			209
+> +#define CLKID_VPU_INTR			210
+> +#define CLKID_DEMOD			211
+> +#define CLKID_SAR_ADC			212
+> +#define CLKID_GIC			213
+> +#define CLKID_PWM_AB			214
+> +#define CLKID_PWM_CD			215
+> +#define CLKID_PWM_EF			216
+> +#define CLKID_PWM_GH			217
+> +#define CLKID_PWM_IJ			218
+> +#define CLKID_HDCP22_ESMCLK_SEL		219
+> +#define CLKID_HDCP22_ESMCLK_DIV		220
+> +#define CLKID_HDCP22_ESMCLK		221
+> +#define CLKID_HDCP22_SKPCLK_SEL		222
+> +#define CLKID_HDCP22_SKPCLK_DIV		223
+> +#define CLKID_HDCP22_SKPCLK		224
+> +
+> +#endif /* _DT_BINDINGS_CLOCK_AMLOGIC_S4_PERIPHERALS_CLKC_H */
+
