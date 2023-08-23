@@ -2,79 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F29B9785D42
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 18:29:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11F16785D4D
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 18:30:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237554AbjHWQ3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 12:29:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50302 "EHLO
+        id S237595AbjHWQak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 12:30:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236790AbjHWQ3S (ORCPT
+        with ESMTP id S237603AbjHWQah (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 12:29:18 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5128E68;
-        Wed, 23 Aug 2023 09:29:16 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5F2E9665AF;
-        Wed, 23 Aug 2023 16:29:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D07BC433C7;
-        Wed, 23 Aug 2023 16:29:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692808155;
-        bh=Zi4bGB1nlQ9h1YzG/CseWbSGhx/AV/hdXwf5BexuN+E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XtrHyHT+hjH8UsOMycKo8Zv6o2hy19qGD1QpBG5qfA0mAhLbvp2cMYrunhYovjQ2a
-         viB+QzcYg0ZxmfGpdHVWCam8ygbf+cq8vTb0eIZ3wPXaH/88yMUoRsJUV92TPHuC0m
-         KUsX3qkJgqkVV0hiWw+UTKeDcIfgK2gfKI/E8E/+13DrjUcE86GtPeOoENCKNxRMD6
-         Qcp+brVEfYwN3Unt+G/cTRCTSW2IBD+X2AEbG3B/5fE5z7+J32r5jqynIiNmXbXjp8
-         MYNRLsZmfRwYMgfvtZBDbmXHku7WSAops8Upy1yT8ceINU5GEBJPgm1K9LQJdiI5WF
-         iBhKx1N9GztIA==
-Date:   Wed, 23 Aug 2023 18:29:08 +0200
-From:   Lorenzo Pieralisi <lpieralisi@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Jim Quinlan <james.quinlan@broadcom.com>,
-        linux-pci@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Cyril Brulebois <kibi@debian.org>,
-        Phil Elwell <phil@raspberrypi.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Jim Quinlan <jim2101024@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "moderated list:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v6 1/5] dt-bindings: PCI: brcmstb: Add brcm,enable-l1ss
- property
-Message-ID: <ZOYz1BSwSb6NTPUr@lpieralisi>
-References: <20230623144100.34196-1-james.quinlan@broadcom.com>
- <20230623144100.34196-2-james.quinlan@broadcom.com>
- <ZON43rPGJGzjTTj/@lpieralisi>
- <CA+-6iNwRGsnRsT9R=iEzaJNCTLu_pQNG4x+noE8bqLYCRm_PHQ@mail.gmail.com>
- <ZOOFrqkAdW5d6WIj@lpieralisi>
- <CA+-6iNzZCFs_gQGqa8KAcBM6etFc=vAFoqFmde=xru2-O+F3_w@mail.gmail.com>
- <ZOW1qDmTdy+8KODt@lpieralisi>
- <CAL_JsqJSfKa=9nqzpdv0TVcik73_xTJ-LtBycDfFZiGkz2mDNQ@mail.gmail.com>
+        Wed, 23 Aug 2023 12:30:37 -0400
+Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBA2710DE
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 09:30:31 -0700 (PDT)
+Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-58d41109351so87247b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 09:30:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692808231; x=1693413031;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=4WIeojozpIxmSsF2RUkSADK15h44qyPJk1IVXM4MnWY=;
+        b=Pu5Erh9xwx/lQn4Yx0iCKh67FrGE57frhfQDch/1OFADRsQOGh5Tb2CyOl2JR7cl6I
+         DHnbwWAtv+5rE3tyPfD64HFtCJt0uAsdDzpsNqDf97AQNSrpL3Ea06uvIoiSV+71t8ZN
+         gRwio5PvFC5Is9BiwKqEWbuXnqSS6wmi1C1ZHs9quxWKdLlhGq75dVk9RqRBUeocUMxT
+         iOe27RGnMxWOSJJImCnYeXGRVPHcWA00X1BMXcQ0j9KsDFhhkJI1v5/43zvbgwVLODbS
+         9LK0fhv8lMh0KKXtWt61f9G/LVF9cjAVqaWOtjAgSb/VdQDEiuvcGLdyckOPugpnS5Y6
+         8nGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692808231; x=1693413031;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4WIeojozpIxmSsF2RUkSADK15h44qyPJk1IVXM4MnWY=;
+        b=HuNgOj9soBOUwMl7ChwHinPPDXlFYDOCq9s1y8LKN8Z01tniOW0Ji6RzjdlGIqbrwd
+         +61DiwlJllRFSB/uwef64/3pi5boLze0uLsSzAcak2h94C5/igvCoMhBjVNTfq6FCKnr
+         MVO7WX/PduwLXvs3xNZj1nxEpwdNAXAJqacubldiwh2P5xa0kCbmANdb3A8INd0kdloR
+         Rt/uS85ZkySyCx1zt1k4a4VeiC53TntZcRi0mKrYXopqR71G6vFcSvLGZW3w58ySeiHA
+         BBkikDmgHH3xfElHaIQFNPJJPUlUia37gCirQB7UNB9Dwkj5MXYRVQGd+nKX3kZp/7bN
+         r1QA==
+X-Gm-Message-State: AOJu0YyXC1m4naOJMnrMy/ayIvmL0brNtCV+ApB31D3w2hTAKzNYZGtd
+        21tScU4Ny9bSQq0CkpXB5005T+gSshS/qy0ofsyXUw==
+X-Google-Smtp-Source: AGHT+IEFMaChi60GbWv1LIlg+iMC6f7cYJT9GtZocEwDYoF2oFcl6/SrVGhJNWWR0qft+CZ3NygJYygRyr91mW2mtWA=
+X-Received: by 2002:a81:4f49:0:b0:56c:f0c7:7d72 with SMTP id
+ d70-20020a814f49000000b0056cf0c77d72mr10962983ywb.4.1692808231002; Wed, 23
+ Aug 2023 09:30:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL_JsqJSfKa=9nqzpdv0TVcik73_xTJ-LtBycDfFZiGkz2mDNQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20230823114528.3677667-1-abel.vesa@linaro.org>
+In-Reply-To: <20230823114528.3677667-1-abel.vesa@linaro.org>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 23 Aug 2023 18:29:55 +0200
+Message-ID: <CAPDyKFqjN9aJsvbcmp=iUSvMAqnkpFZ50aueDrs-xtsGt1BwwA@mail.gmail.com>
+Subject: Re: [PATCH v3 0/5] PM: domains: Add control for switching back and
+ forth to HW control
+To:     Abel Vesa <abel.vesa@linaro.org>, Stephen Boyd <sboyd@kernel.org>
+Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Len Brown <len.brown@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Mike Turquette <mturquette@baylibre.com>,
+        Taniya Das <tdas@qti.qualcomm.com>, linux-pm@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,137 +77,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 23, 2023 at 09:48:40AM -0500, Rob Herring wrote:
-> On Wed, Aug 23, 2023 at 2:30 AM Lorenzo Pieralisi <lpieralisi@kernel.org> wrote:
-> >
-> > On Mon, Aug 21, 2023 at 12:01:50PM -0400, Jim Quinlan wrote:
-> > > On Mon, Aug 21, 2023 at 11:41 AM Lorenzo Pieralisi
-> > > <lpieralisi@kernel.org> wrote:
-> > > >
-> > > > On Mon, Aug 21, 2023 at 11:25:11AM -0400, Jim Quinlan wrote:
-> > > > > On Mon, Aug 21, 2023 at 10:47 AM Lorenzo Pieralisi
-> > > > > <lpieralisi@kernel.org> wrote:
-> > > > > >
-> > > > > > On Fri, Jun 23, 2023 at 10:40:54AM -0400, Jim Quinlan wrote:
-> > > > > > > This commit adds the boolean "brcm,enable-l1ss" property:
-> > > > > > >
-> > > > > > >   The Broadcom STB/CM PCIe HW -- a core that is also used by RPi SOCs --
-> > > > > > >   requires the driver probe() to deliberately place the HW one of three
-> > > > > > >   CLKREQ# modes:
-> > > > > > >
-> > > > > > >   (a) CLKREQ# driven by the RC unconditionally
-> > > > > > >   (b) CLKREQ# driven by the EP for ASPM L0s, L1
-> > > > > > >   (c) Bidirectional CLKREQ#, as used for L1 Substates (L1SS).
-> > > > > > >
-> > > > > > >   The HW+driver can tell the difference between downstream devices that
-> > > > > > >   need (a) and (b), but does not know when to configure (c).  All devices
-> > > > > > >   should work fine when the driver chooses (a) or (b), but (c) may be
-> > > > > > >   desired to realize the extra power savings that L1SS offers.  So we
-> > > > > > >   introduce the boolean "brcm,enable-l1ss" property to inform the driver
-> > > > > > >   that (c) is desired.  Setting this property only makes sense when the
-> > > > > > >   downstream device is L1SS-capable and the OS is configured to activate
-> > > > > > >   this mode (e.g. policy==powersupersave).
-> > > > > > >
-> > > > > > >   This property is already present in the Raspian version of Linux, but the
-> > > > > > >   upstream driver implementation that follows adds more details and
-> > > > > > >   discerns between (a) and (b).
-> > > > > > >
-> > > > > > > Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
-> > > > > > > Reviewed-by: Rob Herring <robh@kernel.org>
-> > > > > > > ---
-> > > > > > >  Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml | 9 +++++++++
-> > > > > > >  1 file changed, 9 insertions(+)
-> > > > > > >
-> > > > > > > diff --git a/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml b/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
-> > > > > > > index 7e15aae7d69e..8b61c2179608 100644
-> > > > > > > --- a/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
-> > > > > > > +++ b/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
-> > > > > > > @@ -64,6 +64,15 @@ properties:
-> > > > > > >
-> > > > > > >    aspm-no-l0s: true
-> > > > > > >
-> > > > > > > +  brcm,enable-l1ss:
-> > > > > > > +    description: Indicates that PCIe L1SS power savings
-> > > > > > > +      are desired, the downstream device is L1SS-capable, and the
-> > > > > > > +      OS has been configured to enable this mode.  For boards
-> > > > > >
-> > > > > > What does this mean ? I don't think DT properties are supposed
-> > > > > > to carry information related to how the OS is configured.
-> > > > >
-> > > > > The DT setting in question is unrelated to the statement "and the OS
-> > > > > has been configured to
-> > > > > enable this mode".
-> > > > >
-> > > > > This is merely saying that even if you enable "brcm,l1ss-enable"
-> > > > > that you may not get L1SS power savings w/o setting
-> > > > > "CONFIG_PCIEASPM_POWER_SUPERSAVE=y".
-> > > > > I mentioned that exact term but a reviewer nakked it because
-> > > > > apparently DT descriptions should not be OS specific.
-> 
-> Yeah, probably the OS part should be dropped.
+On Wed, 23 Aug 2023 at 13:45, Abel Vesa <abel.vesa@linaro.org> wrote:
+>
+> The v2 can be found here:
+> https://lore.kernel.org/lkml/20230816145741.1472721-1-abel.vesa@linaro.org/
+>
+> Changes since v2:
+>  * 5th patch has been squashed in the 4th one
+>
+> Further details about other changes are found in each patch.
+>
+> Abel Vesa (1):
+>   PM: domains: Add the domain HW-managed mode to the summary
+>
+> Jagadeesh Kona (3):
+>   clk: qcom: gdsc: Add set and get hwmode callbacks to switch GDSC mode
+>   clk: qcom: Use HW_CTRL_TRIGGER flag to switch video GDSC to HW mode
+>   venus: pm_helpers: Use dev_pm_genpd_set_hwmode to switch GDSC mode
+>
+> Ulf Hansson (1):
+>   PM: domains: Allow devices attached to genpd to be managed by HW
+>
+>  drivers/base/power/domain.c                   | 84 ++++++++++++++++++-
+>  drivers/clk/qcom/gdsc.c                       | 32 +++++++
+>  drivers/clk/qcom/gdsc.h                       |  1 +
+>  drivers/clk/qcom/videocc-sc7180.c             |  2 +-
+>  drivers/clk/qcom/videocc-sc7280.c             |  2 +-
+>  drivers/clk/qcom/videocc-sdm845.c             |  4 +-
+>  drivers/clk/qcom/videocc-sm8250.c             |  4 +-
+>  drivers/clk/qcom/videocc-sm8550.c             |  4 +-
+>  drivers/media/platform/qcom/venus/core.c      |  4 +
+>  drivers/media/platform/qcom/venus/core.h      |  1 +
+>  .../media/platform/qcom/venus/pm_helpers.c    | 47 +++++------
+>  include/linux/pm_domain.h                     | 17 ++++
+>  12 files changed, 165 insertions(+), 37 deletions(-)
+>
 
-I will drop it - if you don't mind.
+I guess this series is best funneled via the clk tree? Stephen, I am
+fine with patch 1 and patch2, but I guess you may need an ack for the
+others too.
 
-> > > > > I am actually open for this to be a command-line option but I wanted to honor
-> > > > > what the Raspian OS folks have already done.  RaspianOS already has
-> > > > > "brcm,enable-l1ss"
-> > > > > set in their DTS files.
-> > > >
-> > > > This is about the mainline kernel, I don't have any visibility into
-> > > > downstream kernels (where that property management was added without DT
-> > > > and PCI maintainers supervision).
-> > > >
-> > > > Raspian OS folks' choice is theirs but it can't and it shouldn't override
-> > > > the mainline review process even though I understand the position you
-> > > > are in.
-> 
-> Sure, but we shouldn't change things just to be different from
-> downstream. If we're only discussing the color of the shed, then no
-> point changing it.
-
-Sure, no problem.
-
-> > > Understood, but using the command line has its warts as well; I now recall the
-> > > discussion Bjorn and I  had regarding this option.  I'm pretty sure
-> > > that upstreaam will not allow the following
-> > > possible command line kernel params:
-> > >
-> > >     brcm,enable-l1ss
-> > >     pci=brcm,entable-l1ss
-> > >
-> > > Bjorn suggested using the  documented but (IMO) obscure  and  rarely
-> > > used  format
-> > >
-> > >     pci=[<domain>:]<bus>:<dev>.<func>[/<dev>.<func>]*pci:<vendor>:<device>[:<subvendor>:<subdevice>]
-> > >
-> > > but this is just going in the wrong direction; here's why.  Using the
-> > > above iformat s completely dependent on the
-> > > PCI "linux-domaiin"  property,  a non-HW related DT property I  might
-> > > add.  Since "linux-domain" is already
-> > > a valid and well-used  DT property, and the value of  the above
-> > > command line format is dependent
-> > > on the value of the "linux-domain", why not be consistent and let
-> > > "brcm,enable-l1ss" be a Broadcom specific property?
-> >
-> > I am just asking to add a module_param to the host controller driver.
-> 
-> FWIW, gregkh pretty much always nacks new module parameters.
-
-Fine by me.
-
-> > Anyway - time is running out for v6.6, I need Rob's feedback, if I don't
-> > hear from him today I will merge the last three patches and postpone the
-> > discussion.
-> 
-> You've already got my reviewed-by. If you aren't happy with this, then
-> fine. I don't know enough about L1SS to comment further. Is it
-> normally always supported or discoverable? If so, then I'd think we'd
-> want it default enabled with a disable override flag. Maybe it should
-> be generic?
-
-It is not that I am not happy with it - we asked questions to understand
-what this property was for, I think that's normal.
-
-I will merge this series as-is.
-
-Lorenzo
+Kind regards
+Uffe
