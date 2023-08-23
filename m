@@ -2,478 +2,419 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E8EA78638C
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 00:47:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BDFB78636D
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 00:32:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238755AbjHWWqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 18:46:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43012 "EHLO
+        id S238663AbjHWWcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 18:32:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238753AbjHWWqn (ORCPT
+        with ESMTP id S238676AbjHWWcC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 18:46:43 -0400
-X-Greylist: delayed 902 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 23 Aug 2023 15:46:41 PDT
-Received: from s1-ba86.socketlabs.email-od.com (s1-ba86.socketlabs.email-od.com [142.0.186.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5189ECF1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 15:46:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; d=email-od.com;i=@email-od.com;s=dkim;
-        c=relaxed/relaxed; q=dns/txt; t=1692830801; x=1695422801;
-        h=content-transfer-encoding:mime-version:references:in-reply-to:message-id:date:subject:cc:to:from:x-thread-info:subject:to:from:cc:reply-to;
-        bh=3g2JrsnOZXgLW4qZJY2N1Md1glpQ8oXzTDMqeHFzXQg=;
-        b=wmXo9ScZY3Y/2CTlUjQFaj45UvX8+uMgcMKg28nHiJD+rvhxZPUduVvFzcYMV1uNcuHwb2yKjcvHNWHu3vUGo4bS0HnYPbLgTkEdEY7HKW+dwOP16p7tgqucOD/9V7XImppNjVn9U9na0m+3Yg0IX2FZg+ZAyllqoKwuVEpJ/Fo=
-X-Thread-Info: NDUwNC4xMi4xNWZkOTAwMDE4MTM2NGUubGludXgta2VybmVsPXZnZXIua2VybmVsLm9yZw==
-Received: from r3.us-east-1.aws.in.socketlabs.com (r3.us-east-1.aws.in.socketlabs.com [142.0.191.3]) by mxrs4.email-od.com
-        with ESMTP(version=Tls12 cipher=Aes256 bits=256); Wed, 23 Aug 2023 18:31:35 -0400
-Received: from nalramli.com (d14-69-55-117.try.wideopenwest.com [69.14.117.55]) by r3.us-east-1.aws.in.socketlabs.com
-        with ESMTP; Wed, 23 Aug 2023 18:31:25 -0400
-Received: from localhost.localdomain (d14-69-55-117.try.wideopenwest.com [69.14.117.55])
-        by nalramli.com (Postfix) with ESMTPS id CD5D92CE0018;
-        Wed, 23 Aug 2023 18:31:24 -0400 (EDT)
-From:   "Nabil S. Alramli" <dev@nalramli.com>
-To:     netdev@vger.kernel.org, kuba@kernel.org, davem@davemloft.net,
-        saeedm@nvidia.com, tariqt@nvidia.com, linux-kernel@vger.kernel.org,
-        leon@kernel.org
-Cc:     jdamato@fastly.com, nalramli@fastly.com,
-        "Nabil S. Alramli" <dev@nalramli.com>
-Subject: [net-next RFC 1/1] mlx5: Add {get,set}_per_queue_coalesce()
-Date:   Wed, 23 Aug 2023 18:31:21 -0400
-Message-Id: <20230823223121.58676-2-dev@nalramli.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20230823223121.58676-1-dev@nalramli.com>
-References: <20230823223121.58676-1-dev@nalramli.com>
+        Wed, 23 Aug 2023 18:32:02 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 084DFE6F
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 15:32:00 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6F90F62E8E
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 22:31:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 950EFC433C7
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 22:31:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692829918;
+        bh=VJ3FDsQLtsFaOLutSkEya6nnUp0/Yr92VbJ58AMjlYA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=TiJ+GeT2zHLkW9BxDewhBXBBJDBzavNvIUEx6zH5a+BIxA+ITd0H7dCS/I2tUBIAm
+         Ecj/vLfSomicgNzhyiNtU6EMrjoZl0WVDxJRR67gS7TnQQVeWQ9T+1ajbQrUGiYGoz
+         CLRLVyp045BkO8IQ6TasM06YiUDZOrsyNfzgoqOaGTenaqT+lFQh4xszJyVXnG59Qy
+         XJRGdRyI74N6PeGdkS15PBQwQrzkPxmFebbvl5iQMVBxiFSFeb27m/9E+DLwo/+4mY
+         JsriJC6hJiiCJ6q9a4rsoo7aM+50d8tp/fF1YZy3fUF06/RCuBXafQdEMFYwpDxCJj
+         V469zb7xjPYgw==
+Received: by mail-oa1-f53.google.com with SMTP id 586e51a60fabf-1a28de15c8aso4112859fac.2
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 15:31:58 -0700 (PDT)
+X-Gm-Message-State: AOJu0YzYdtGEHXZhCxrfFSiaJ1V0QTTAgePLd1S09McqsXw7g63A9MiG
+        WNPrURgmJ5sc3GSs7736pyOSFOv/QMLmSh1+D5w=
+X-Google-Smtp-Source: AGHT+IEs+NFuXPKug7C2Ca+pWt4iWIo18bHwzImDfHMzO3mGxeBhyfkg+YTyOjiyfHbBUG73zNlMJi21/sZPlejk86k=
+X-Received: by 2002:a05:6870:2155:b0:1be:f311:4a2b with SMTP id
+ g21-20020a056870215500b001bef3114a2bmr18319535oae.24.1692829917725; Wed, 23
+ Aug 2023 15:31:57 -0700 (PDT)
 MIME-Version: 1.0
+References: <20230816082531.164695-1-sarah.walker@imgtec.com>
+In-Reply-To: <20230816082531.164695-1-sarah.walker@imgtec.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 24 Aug 2023 07:31:21 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARQZjudwHe=u-Q1_y4HwpeamL-RiMnJ3fcPy93gaeQefA@mail.gmail.com>
+Message-ID: <CAK7LNARQZjudwHe=u-Q1_y4HwpeamL-RiMnJ3fcPy93gaeQefA@mail.gmail.com>
+Subject: Re: [PATCH v5 00/17] Imagination Technologies PowerVR DRM driver
+To:     Sarah Walker <sarah.walker@imgtec.com>
+Cc:     dri-devel@lists.freedesktop.org, frank.binns@imgtec.com,
+        donald.robson@imgtec.com, boris.brezillon@collabora.com,
+        faith.ekstrand@collabora.com, airlied@gmail.com, daniel@ffwll.ch,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, afd@ti.com, hns@goldelico.com,
+        matthew.brost@intel.com, christian.koenig@amd.com,
+        luben.tuikov@amd.com, dakr@redhat.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-13.3 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_IADB_DK,RCVD_IN_IADB_LISTED,
-        RCVD_IN_IADB_OPTIN,RCVD_IN_IADB_RDNS,RCVD_IN_IADB_SENDERID,
-        RCVD_IN_IADB_SPF,RCVD_IN_IADB_VOUCHED,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The mlx-5 driver currently only implements querying or modifying coalesce
-configurations globally. It does not allow per-queue operations. This
-patch is to implement per-queue coalesce operations in the driver.
+On Fri, Aug 18, 2023 at 4:35=E2=80=AFAM Sarah Walker <sarah.walker@imgtec.c=
+om> wrote:
+>
+> This patch series adds the initial DRM driver for Imagination Technologie=
+s PowerVR
+> GPUs, starting with those based on our Rogue architecture. It's worth poi=
+nting
+> out that this is a new driver, written from the ground up, rather than a
+> refactored version of our existing downstream driver (pvrsrvkm).
+>
+> This new DRM driver supports:
+> - GEM shmem allocations
+> - dma-buf / PRIME
+> - Per-context userspace managed virtual address space
+> - DRM sync objects (binary and timeline)
+> - Power management suspend / resume
+> - GPU job submission (geometry, fragment, compute, transfer)
+> - META firmware processor
+> - MIPS firmware processor
+> - GPU hang detection and recovery
+>
+> Currently our main focus is on the AXE-1-16M GPU. Testing so far has been=
+ done
+> using a TI SK-AM62 board (AXE-1-16M GPU). Firmware for the AXE-1-16M can =
+be
+> found here:
+> https://gitlab.freedesktop.org/frankbinns/linux-firmware/-/tree/powervr
+>
+> A Vulkan driver that works with our downstream kernel driver has already =
+been
+> merged into Mesa [1][2]. Support for this new DRM driver is being maintai=
+ned in
+> a merge request [3], with the branch located here:
+> https://gitlab.freedesktop.org/frankbinns/mesa/-/tree/powervr-winsys
+>
+> Job stream formats are documented at:
+> https://gitlab.freedesktop.org/mesa/mesa/-/blob/f8d2b42ae65c2f16f36a43e0a=
+e39d288431e4263/src/imagination/csbgen/rogue_kmd_stream.xml
+>
+> The Vulkan driver is progressing towards Vulkan 1.0. We're code complete,=
+ and
+> are working towards passing conformance. The current combination of this =
+kernel
+> driver with the Mesa Vulkan driver (powervr-mesa-next branch) achieves 88=
+.3% conformance.
+>
+> The code in this patch series, along with some of its history, can also b=
+e found here:
+> https://gitlab.freedesktop.org/frankbinns/powervr/-/tree/powervr-next
+>
+> This patch series has dependencies on a number of patches not yet merged.=
+ They
+> are listed below :
+>
+> drm/sched: Convert drm scheduler to use a work queue rather than kthread:
+>   https://lore.kernel.org/dri-devel/20230404002211.3611376-2-matthew.bros=
+t@intel.com/
+> drm/sched: Move schedule policy to scheduler / entity:
+>   https://lore.kernel.org/dri-devel/20230404002211.3611376-3-matthew.bros=
+t@intel.com/
+> drm/sched: Add DRM_SCHED_POLICY_SINGLE_ENTITY scheduling policy:
+>   https://lore.kernel.org/dri-devel/20230404002211.3611376-4-matthew.bros=
+t@intel.com/
+> drm/sched: Start run wq before TDR in drm_sched_start:
+>   https://lore.kernel.org/dri-devel/20230404002211.3611376-6-matthew.bros=
+t@intel.com/
+> drm/sched: Submit job before starting TDR:
+>   https://lore.kernel.org/dri-devel/20230404002211.3611376-7-matthew.bros=
+t@intel.com/
+> drm/sched: Add helper to set TDR timeout:
+>   https://lore.kernel.org/dri-devel/20230404002211.3611376-8-matthew.bros=
+t@intel.com/
+>
+> [1] https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/15243
+> [2] https://gitlab.freedesktop.org/mesa/mesa/-/tree/main/src/imagination/=
+vulkan
+> [3] https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/15507
+>
+> High level summary of changes:
+>
+> v5:
+> * Retrieve GPU device information from firmware image header
+> * Address issues with DT binding and example DTS
+> * Update VM code for upstream GPU VA manager
+> * BOs are always zeroed on allocation
+> * Update copyright
+>
+> v4:
+> * Implemented hang recovery via firmware hard reset
+> * Add support for partial render jobs
+> * Move to a threaded IRQ
+> * Remove unnecessary read/write and clock helpers
+> * Remove device tree elements not relevant to AXE-1-16M
+> * Clean up resource acquisition
+> * Remove unused DT binding attributes
+>
+> v3:
+> * Use drm_sched for scheduling
+> * Use GPU VA manager
+> * Use runtime PM
+> * Use drm_gem_shmem
+> * GPU watchdog and device loss handling
+> * DT binding changes: remove unused attributes, add additionProperties:fa=
+lse
+>
+> v2:
+> * Redesigned and simplified UAPI based on RFC feedback from XDC 2022
+> * Support for transfer and partial render jobs
+> * Support for timeline sync objects
+>
+> RFC v1: https://lore.kernel.org/dri-devel/20220815165156.118212-1-sarah.w=
+alker@imgtec.com/
+>
+> RFC v2: https://lore.kernel.org/dri-devel/20230413103419.293493-1-sarah.w=
+alker@imgtec.com/
+>
+> v3: https://lore.kernel.org/dri-devel/20230613144800.52657-1-sarah.walker=
+@imgtec.com/
+>
+> v4: https://lore.kernel.org/dri-devel/20230714142355.111382-1-sarah.walke=
+r@imgtec.com/
+>
+> Matt Coster (1):
+>   sizes.h: Add entries between 32G and 64T
+>
+> Sarah Walker (16):
+>   dt-bindings: gpu: Add Imagination Technologies PowerVR GPU
+>   drm/imagination/uapi: Add PowerVR driver UAPI
+>   drm/imagination: Add skeleton PowerVR driver
+>   drm/imagination: Get GPU resources
+>   drm/imagination: Add GPU register and FWIF headers
+>   drm/imagination: Add GPU ID parsing and firmware loading
+>   drm/imagination: Add GEM and VM related code
+>   drm/imagination: Implement power management
+>   drm/imagination: Implement firmware infrastructure and META FW support
+>   drm/imagination: Implement MIPS firmware processor and MMU support
+>   drm/imagination: Implement free list and HWRT create and destroy
+>     ioctls
+>   drm/imagination: Implement context creation/destruction ioctls
+>   drm/imagination: Implement job submission and scheduling
+>   drm/imagination: Add firmware trace to debugfs
+>   drm/imagination: Add driver documentation
+>   arm64: dts: ti: k3-am62-main: Add GPU device node [DO NOT MERGE]
 
-Signed-off-by: Nabil S. Alramli <dev@nalramli.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/en.h  |   3 +-
- .../ethernet/mellanox/mlx5/core/en_ethtool.c  | 212 ++++++++++++++----
- .../net/ethernet/mellanox/mlx5/core/en_main.c |   4 +
- 3 files changed, 173 insertions(+), 46 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en.h b/drivers/net/e=
-thernet/mellanox/mlx5/core/en.h
-index c1deb04ba7e8..e61c2fb9bc55 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
-@@ -783,6 +783,7 @@ struct mlx5e_channel {
- 	DECLARE_BITMAP(state, MLX5E_CHANNEL_NUM_STATES);
- 	int                        ix;
- 	int                        cpu;
-+	struct mlx5e_params        params; /* channel specific params */
- 	/* Sync between icosq recovery and XSK enable/disable. */
- 	struct mutex               icosq_recovery_lock;
- };
-@@ -793,7 +794,7 @@ struct mlx5e_channels {
- 	struct mlx5e_channel **c;
- 	struct mlx5e_ptp      *ptp;
- 	unsigned int           num;
--	struct mlx5e_params    params;
-+	struct mlx5e_params    params; /* global params */
- };
-=20
- struct mlx5e_channel_stats {
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c b/drive=
-rs/net/ethernet/mellanox/mlx5/core/en_ethtool.c
-index dff02434ff45..7296ccfc0825 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
-@@ -513,33 +513,55 @@ static int mlx5e_set_channels(struct net_device *de=
-v,
- 	return mlx5e_ethtool_set_channels(priv, ch);
- }
-=20
--int mlx5e_ethtool_get_coalesce(struct mlx5e_priv *priv,
--			       struct ethtool_coalesce *coal,
--			       struct kernel_ethtool_coalesce *kernel_coal)
-+static int mlx5e_ethtool_get_per_queue_coalesce(struct mlx5e_priv *priv,
-+						int queue,
-+						struct ethtool_coalesce *coal,
-+						struct kernel_ethtool_coalesce *kernel_coal)
- {
- 	struct dim_cq_moder *rx_moder, *tx_moder;
-+	struct mlx5e_params *params;
-=20
- 	if (!MLX5_CAP_GEN(priv->mdev, cq_moderation))
- 		return -EOPNOTSUPP;
-=20
--	rx_moder =3D &priv->channels.params.rx_cq_moderation;
-+	if (queue !=3D -1 && queue >=3D priv->channels.num) {
-+		netdev_err(priv->netdev, "%s: Invalid queue ID [%d]",
-+			   __func__, queue);
-+		return -EINVAL;
-+	}
-+
-+	if (queue =3D=3D -1)
-+		params =3D &priv->channels.params;
-+	else
-+		params =3D &priv->channels.c[queue]->params;
-+
-+	rx_moder =3D &params->rx_cq_moderation;
- 	coal->rx_coalesce_usecs		=3D rx_moder->usec;
- 	coal->rx_max_coalesced_frames	=3D rx_moder->pkts;
--	coal->use_adaptive_rx_coalesce	=3D priv->channels.params.rx_dim_enabled=
-;
-+	coal->use_adaptive_rx_coalesce	=3D params->rx_dim_enabled;
-=20
--	tx_moder =3D &priv->channels.params.tx_cq_moderation;
-+	tx_moder =3D &params->tx_cq_moderation;
- 	coal->tx_coalesce_usecs		=3D tx_moder->usec;
- 	coal->tx_max_coalesced_frames	=3D tx_moder->pkts;
--	coal->use_adaptive_tx_coalesce	=3D priv->channels.params.tx_dim_enabled=
-;
-+	coal->use_adaptive_tx_coalesce	=3D params->tx_dim_enabled;
-=20
--	kernel_coal->use_cqe_mode_rx =3D
--		MLX5E_GET_PFLAG(&priv->channels.params, MLX5E_PFLAG_RX_CQE_BASED_MODER=
-);
--	kernel_coal->use_cqe_mode_tx =3D
--		MLX5E_GET_PFLAG(&priv->channels.params, MLX5E_PFLAG_TX_CQE_BASED_MODER=
-);
-+	if (kernel_coal) {
-+		kernel_coal->use_cqe_mode_rx =3D
-+			MLX5E_GET_PFLAG(&priv->channels.params, MLX5E_PFLAG_RX_CQE_BASED_MODE=
-R);
-+		kernel_coal->use_cqe_mode_tx =3D
-+			MLX5E_GET_PFLAG(&priv->channels.params, MLX5E_PFLAG_TX_CQE_BASED_MODE=
-R);
-+	}
-=20
- 	return 0;
- }
-=20
-+int mlx5e_ethtool_get_coalesce(struct mlx5e_priv *priv,
-+			       struct ethtool_coalesce *coal,
-+			       struct kernel_ethtool_coalesce *kernel_coal)
-+{
-+	return mlx5e_ethtool_get_per_queue_coalesce(priv, -1, coal, kernel_coal=
-);
-+}
-+
- static int mlx5e_get_coalesce(struct net_device *netdev,
- 			      struct ethtool_coalesce *coal,
- 			      struct kernel_ethtool_coalesce *kernel_coal,
-@@ -550,36 +572,76 @@ static int mlx5e_get_coalesce(struct net_device *ne=
-tdev,
- 	return mlx5e_ethtool_get_coalesce(priv, coal, kernel_coal);
- }
-=20
-+/**
-+ * mlx5e_get_per_queue_coalesce - gets coalesce settings for particular =
-queue
-+ * @netdev: netdev structure
-+ * @coal: ethtool's coalesce settings
-+ * @queue: the particular queue to read
-+ *
-+ * Reads a specific queue's coalesce settings
-+ **/
-+static int mlx5e_get_per_queue_coalesce(struct net_device *netdev,
-+					u32 queue,
-+					struct ethtool_coalesce *coal)
-+{
-+	struct mlx5e_priv *priv =3D netdev_priv(netdev);
-+
-+	return mlx5e_ethtool_get_per_queue_coalesce(priv, queue, coal, NULL);
-+}
-+
- #define MLX5E_MAX_COAL_TIME		MLX5_MAX_CQ_PERIOD
- #define MLX5E_MAX_COAL_FRAMES		MLX5_MAX_CQ_COUNT
-=20
- static void
--mlx5e_set_priv_channels_tx_coalesce(struct mlx5e_priv *priv, struct etht=
-ool_coalesce *coal)
-+mlx5e_set_priv_channels_tx_coalesce(struct mlx5e_priv *priv,
-+				    int queue,
-+				    struct ethtool_coalesce *coal)
- {
- 	struct mlx5_core_dev *mdev =3D priv->mdev;
- 	int tc;
- 	int i;
-=20
--	for (i =3D 0; i < priv->channels.num; ++i) {
--		struct mlx5e_channel *c =3D priv->channels.c[i];
-+	if (queue =3D=3D -1) {
-+		for (i =3D 0; i < priv->channels.num; ++i) {
-+			struct mlx5e_channel *c =3D priv->channels.c[i];
-+
-+			for (tc =3D 0; tc < c->num_tc; tc++) {
-+				mlx5_core_modify_cq_moderation(mdev,
-+							       &c->sq[tc].cq.mcq,
-+							       coal->tx_coalesce_usecs,
-+							       coal->tx_max_coalesced_frames);
-+			}
-+		}
-+	} else {
-+		struct mlx5e_channel *c =3D priv->channels.c[queue];
-=20
- 		for (tc =3D 0; tc < c->num_tc; tc++) {
- 			mlx5_core_modify_cq_moderation(mdev,
--						&c->sq[tc].cq.mcq,
--						coal->tx_coalesce_usecs,
--						coal->tx_max_coalesced_frames);
-+						       &c->sq[tc].cq.mcq,
-+						       coal->tx_coalesce_usecs,
-+						       coal->tx_max_coalesced_frames);
- 		}
- 	}
- }
-=20
- static void
--mlx5e_set_priv_channels_rx_coalesce(struct mlx5e_priv *priv, struct etht=
-ool_coalesce *coal)
-+mlx5e_set_priv_channels_rx_coalesce(struct mlx5e_priv *priv,
-+				    int queue,
-+				    struct ethtool_coalesce *coal)
- {
- 	struct mlx5_core_dev *mdev =3D priv->mdev;
- 	int i;
-=20
--	for (i =3D 0; i < priv->channels.num; ++i) {
--		struct mlx5e_channel *c =3D priv->channels.c[i];
-+	if (queue =3D=3D -1) {
-+		for (i =3D 0; i < priv->channels.num; ++i) {
-+			struct mlx5e_channel *c =3D priv->channels.c[i];
-+
-+			mlx5_core_modify_cq_moderation(mdev, &c->rq.cq.mcq,
-+						       coal->rx_coalesce_usecs,
-+						       coal->rx_max_coalesced_frames);
-+		}
-+	} else {
-+		struct mlx5e_channel *c =3D priv->channels.c[queue];
-=20
- 		mlx5_core_modify_cq_moderation(mdev, &c->rq.cq.mcq,
- 					       coal->rx_coalesce_usecs,
-@@ -596,15 +658,17 @@ static int cqe_mode_to_period_mode(bool val)
- 	return val ? MLX5_CQ_PERIOD_MODE_START_FROM_CQE : MLX5_CQ_PERIOD_MODE_S=
-TART_FROM_EQE;
- }
-=20
--int mlx5e_ethtool_set_coalesce(struct mlx5e_priv *priv,
--			       struct ethtool_coalesce *coal,
--			       struct kernel_ethtool_coalesce *kernel_coal,
--			       struct netlink_ext_ack *extack)
-+static int mlx5e_ethtool_set_per_queue_coalesce(struct mlx5e_priv *priv,
-+						int queue,
-+						struct ethtool_coalesce *coal,
-+						struct kernel_ethtool_coalesce *kernel_coal,
-+						struct netlink_ext_ack *extack)
- {
- 	struct dim_cq_moder *rx_moder, *tx_moder;
- 	struct mlx5_core_dev *mdev =3D priv->mdev;
--	struct mlx5e_params new_params;
--	bool reset_rx, reset_tx;
-+	bool reset_rx =3D false, reset_tx =3D false;
-+	struct mlx5e_params new_params =3D {0};
-+	struct mlx5e_params *old_params;
- 	bool reset =3D true;
- 	u8 cq_period_mode;
- 	int err =3D 0;
-@@ -626,14 +690,29 @@ int mlx5e_ethtool_set_coalesce(struct mlx5e_priv *p=
-riv,
- 		return -ERANGE;
- 	}
-=20
--	if ((kernel_coal->use_cqe_mode_rx || kernel_coal->use_cqe_mode_tx) &&
--	    !MLX5_CAP_GEN(priv->mdev, cq_period_start_from_cqe)) {
--		NL_SET_ERR_MSG_MOD(extack, "cqe_mode_rx/tx is not supported on this de=
-vice");
--		return -EOPNOTSUPP;
-+	if (kernel_coal) {
-+		if ((kernel_coal->use_cqe_mode_rx || kernel_coal->use_cqe_mode_tx) &&
-+		    !MLX5_CAP_GEN(priv->mdev, cq_period_start_from_cqe)) {
-+			NL_SET_ERR_MSG_MOD(extack,
-+					   "cqe_mode_rx/tx is not supported on this device");
-+			return -EOPNOTSUPP;
-+		}
-+	}
-+
-+	if (queue !=3D -1 && queue >=3D priv->channels.num) {
-+		netdev_err(priv->netdev, "%s: Invalid queue ID [%d]",
-+			   __func__, queue);
-+		return -EINVAL;
- 	}
-=20
- 	mutex_lock(&priv->state_lock);
--	new_params =3D priv->channels.params;
-+
-+	if (queue =3D=3D -1)
-+		old_params =3D &priv->channels.params;
-+	else
-+		old_params =3D &priv->channels.c[queue]->params;
-+
-+	new_params =3D *old_params;
-=20
- 	rx_moder          =3D &new_params.rx_cq_moderation;
- 	rx_moder->usec    =3D coal->rx_coalesce_usecs;
-@@ -645,19 +724,21 @@ int mlx5e_ethtool_set_coalesce(struct mlx5e_priv *p=
-riv,
- 	tx_moder->pkts    =3D coal->tx_max_coalesced_frames;
- 	new_params.tx_dim_enabled =3D !!coal->use_adaptive_tx_coalesce;
-=20
--	reset_rx =3D !!coal->use_adaptive_rx_coalesce !=3D priv->channels.param=
-s.rx_dim_enabled;
--	reset_tx =3D !!coal->use_adaptive_tx_coalesce !=3D priv->channels.param=
-s.tx_dim_enabled;
-+	reset_rx =3D !!coal->use_adaptive_rx_coalesce !=3D old_params->rx_dim_e=
-nabled;
-+	reset_tx =3D !!coal->use_adaptive_tx_coalesce !=3D old_params->tx_dim_e=
-nabled;
-=20
--	cq_period_mode =3D cqe_mode_to_period_mode(kernel_coal->use_cqe_mode_rx=
-);
--	if (cq_period_mode !=3D rx_moder->cq_period_mode) {
--		mlx5e_set_rx_cq_mode_params(&new_params, cq_period_mode);
--		reset_rx =3D true;
--	}
-+	if (kernel_coal) {
-+		cq_period_mode =3D cqe_mode_to_period_mode(kernel_coal->use_cqe_mode_r=
-x);
-+		if (cq_period_mode !=3D rx_moder->cq_period_mode) {
-+			mlx5e_set_rx_cq_mode_params(&new_params, cq_period_mode);
-+			reset_rx =3D true;
-+		}
-=20
--	cq_period_mode =3D cqe_mode_to_period_mode(kernel_coal->use_cqe_mode_tx=
-);
--	if (cq_period_mode !=3D tx_moder->cq_period_mode) {
--		mlx5e_set_tx_cq_mode_params(&new_params, cq_period_mode);
--		reset_tx =3D true;
-+		cq_period_mode =3D cqe_mode_to_period_mode(kernel_coal->use_cqe_mode_t=
-x);
-+		if (cq_period_mode !=3D tx_moder->cq_period_mode) {
-+			mlx5e_set_tx_cq_mode_params(&new_params, cq_period_mode);
-+			reset_tx =3D true;
-+		}
- 	}
-=20
- 	if (reset_rx) {
-@@ -678,18 +759,40 @@ int mlx5e_ethtool_set_coalesce(struct mlx5e_priv *p=
-riv,
- 	 */
- 	if (!reset_rx && !reset_tx && test_bit(MLX5E_STATE_OPENED, &priv->state=
-)) {
- 		if (!coal->use_adaptive_rx_coalesce)
--			mlx5e_set_priv_channels_rx_coalesce(priv, coal);
-+			mlx5e_set_priv_channels_rx_coalesce(priv, queue, coal);
- 		if (!coal->use_adaptive_tx_coalesce)
--			mlx5e_set_priv_channels_tx_coalesce(priv, coal);
-+			mlx5e_set_priv_channels_tx_coalesce(priv, queue, coal);
- 		reset =3D false;
- 	}
-=20
--	err =3D mlx5e_safe_switch_params(priv, &new_params, NULL, NULL, reset);
-+	if (queue =3D=3D -1) {
-+		err =3D mlx5e_safe_switch_params(priv, &new_params, NULL, NULL, reset)=
-;
-+	} else {
-+		if (reset) {
-+			netdev_err(priv->netdev, "%s: Per-queue adaptive-rx / adaptive-tx ope=
-rations are not supported",
-+				   __func__);
-+			err =3D -EOPNOTSUPP;
-+		} else {
-+			/* Since preactivate is NULL and we are not doing reset we just copy =
-the
-+			 * params here instead of calling mlx5e_safe_switch_params() to avoid
-+			 * having to pass the queue to it.
-+			 */
-+			priv->channels.c[queue]->params =3D new_params;
-+		}
-+	}
-=20
- 	mutex_unlock(&priv->state_lock);
- 	return err;
- }
-=20
-+int mlx5e_ethtool_set_coalesce(struct mlx5e_priv *priv,
-+			       struct ethtool_coalesce *coal,
-+			       struct kernel_ethtool_coalesce *kernel_coal,
-+			       struct netlink_ext_ack *extack)
-+{
-+	return mlx5e_ethtool_set_per_queue_coalesce(priv, -1, coal, kernel_coal=
-, extack);
-+}
-+
- static int mlx5e_set_coalesce(struct net_device *netdev,
- 			      struct ethtool_coalesce *coal,
- 			      struct kernel_ethtool_coalesce *kernel_coal,
-@@ -700,6 +803,23 @@ static int mlx5e_set_coalesce(struct net_device *net=
-dev,
- 	return mlx5e_ethtool_set_coalesce(priv, coal, kernel_coal, extack);
- }
-=20
-+/**
-+ * mlx5e_set_per_queue_coalesce - set specific queue's coalesce settings
-+ * @netdev: the netdev to change
-+ * @coal: ethtool's coalesce settings
-+ * @queue: the queue to change
-+ *
-+ * Sets the specified queue's coalesce settings.
-+ **/
-+static int mlx5e_set_per_queue_coalesce(struct net_device *netdev,
-+					u32 queue,
-+					struct ethtool_coalesce *coal)
-+{
-+	struct mlx5e_priv *priv =3D netdev_priv(netdev);
-+
-+	return mlx5e_ethtool_set_per_queue_coalesce(priv, queue, coal, NULL, NU=
-LL);
-+}
-+
- static void ptys2ethtool_supported_link(struct mlx5_core_dev *mdev,
- 					unsigned long *supported_modes,
- 					u32 eth_proto_cap)
-@@ -2434,6 +2554,8 @@ const struct ethtool_ops mlx5e_ethtool_ops =3D {
- 	.flash_device      =3D mlx5e_flash_device,
- 	.get_priv_flags    =3D mlx5e_get_priv_flags,
- 	.set_priv_flags    =3D mlx5e_set_priv_flags,
-+	.get_per_queue_coalesce	=3D mlx5e_get_per_queue_coalesce,
-+	.set_per_queue_coalesce	=3D mlx5e_set_per_queue_coalesce,
- 	.self_test         =3D mlx5e_self_test,
- 	.get_fec_stats     =3D mlx5e_get_fec_stats,
- 	.get_fecparam      =3D mlx5e_get_fecparam,
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/=
-net/ethernet/mellanox/mlx5/core/en_main.c
-index a2ae791538ed..4fce06ca57bc 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@ -3043,6 +3043,7 @@ int mlx5e_safe_switch_params(struct mlx5e_priv *pri=
-v,
- {
- 	struct mlx5e_channels *new_chs;
- 	int err;
-+	int i;
-=20
- 	reset &=3D test_bit(MLX5E_STATE_OPENED, &priv->state);
- 	if (!reset)
-@@ -3059,6 +3060,9 @@ int mlx5e_safe_switch_params(struct mlx5e_priv *pri=
-v,
- 	if (err)
- 		goto err_cancel_selq;
-=20
-+	for (i =3D 0; i < new_chs->num; ++i)
-+		new_chs->c[i]->params =3D *params;
-+
- 	err =3D mlx5e_switch_priv_channels(priv, new_chs, preactivate, context)=
-;
- 	if (err)
- 		goto err_close;
+
+
+
+
+I failed to compile this patch set.
+
+I applied this series to linux next-20230822 and set CONFIG_DRM_POWERVR=3Dm=
+.
+
+
+I got this error.
+
+  CC [M]  drivers/gpu/drm/imagination/pvr_ccb.o
+In file included from drivers/gpu/drm/imagination/pvr_ccb.c:4:
+drivers/gpu/drm/imagination/pvr_ccb.h:7:10: fatal error:
+pvr_rogue_fwif.h: No such file or directory
+    7 | #include "pvr_rogue_fwif.h"
+      |          ^~~~~~~~~~~~~~~~~~
+compilation terminated.
+
+
+
+Did you forget to do 'git add' or am I missing something?
+
+
+I do not see pvr_rogue_fwif.h
+in the following diff stat.
+
+
+>  .../devicetree/bindings/gpu/img,powervr.yaml  |   75 +
+>  Documentation/gpu/drivers.rst                 |    2 +
+>  Documentation/gpu/imagination/index.rst       |   14 +
+>  Documentation/gpu/imagination/uapi.rst        |  174 +
+>  .../gpu/imagination/virtual_memory.rst        |  462 ++
+>  MAINTAINERS                                   |   10 +
+>  arch/arm64/boot/dts/ti/k3-am62-main.dtsi      |    9 +
+>  drivers/gpu/drm/Kconfig                       |    2 +
+>  drivers/gpu/drm/Makefile                      |    1 +
+>  drivers/gpu/drm/imagination/Kconfig           |   16 +
+>  drivers/gpu/drm/imagination/Makefile          |   35 +
+>  drivers/gpu/drm/imagination/pvr_ccb.c         |  641 ++
+>  drivers/gpu/drm/imagination/pvr_ccb.h         |   71 +
+>  drivers/gpu/drm/imagination/pvr_cccb.c        |  267 +
+>  drivers/gpu/drm/imagination/pvr_cccb.h        |  109 +
+>  drivers/gpu/drm/imagination/pvr_context.c     |  460 ++
+>  drivers/gpu/drm/imagination/pvr_context.h     |  205 +
+>  drivers/gpu/drm/imagination/pvr_debugfs.c     |   53 +
+>  drivers/gpu/drm/imagination/pvr_debugfs.h     |   29 +
+>  drivers/gpu/drm/imagination/pvr_device.c      |  651 ++
+>  drivers/gpu/drm/imagination/pvr_device.h      |  704 ++
+>  drivers/gpu/drm/imagination/pvr_device_info.c |  253 +
+>  drivers/gpu/drm/imagination/pvr_device_info.h |  185 +
+>  drivers/gpu/drm/imagination/pvr_drv.c         | 1515 ++++
+>  drivers/gpu/drm/imagination/pvr_drv.h         |  129 +
+>  drivers/gpu/drm/imagination/pvr_free_list.c   |  625 ++
+>  drivers/gpu/drm/imagination/pvr_free_list.h   |  195 +
+>  drivers/gpu/drm/imagination/pvr_fw.c          | 1470 ++++
+>  drivers/gpu/drm/imagination/pvr_fw.h          |  508 ++
+>  drivers/gpu/drm/imagination/pvr_fw_info.h     |  135 +
+>  drivers/gpu/drm/imagination/pvr_fw_meta.c     |  554 ++
+>  drivers/gpu/drm/imagination/pvr_fw_meta.h     |   14 +
+>  drivers/gpu/drm/imagination/pvr_fw_mips.c     |  250 +
+>  drivers/gpu/drm/imagination/pvr_fw_mips.h     |   38 +
+>  .../gpu/drm/imagination/pvr_fw_startstop.c    |  301 +
+>  .../gpu/drm/imagination/pvr_fw_startstop.h    |   13 +
+>  drivers/gpu/drm/imagination/pvr_fw_trace.c    |  515 ++
+>  drivers/gpu/drm/imagination/pvr_fw_trace.h    |   78 +
+>  drivers/gpu/drm/imagination/pvr_gem.c         |  396 ++
+>  drivers/gpu/drm/imagination/pvr_gem.h         |  184 +
+>  drivers/gpu/drm/imagination/pvr_hwrt.c        |  549 ++
+>  drivers/gpu/drm/imagination/pvr_hwrt.h        |  165 +
+>  drivers/gpu/drm/imagination/pvr_job.c         |  770 ++
+>  drivers/gpu/drm/imagination/pvr_job.h         |  161 +
+>  drivers/gpu/drm/imagination/pvr_mmu.c         | 2523 +++++++
+>  drivers/gpu/drm/imagination/pvr_mmu.h         |  108 +
+>  drivers/gpu/drm/imagination/pvr_params.c      |  147 +
+>  drivers/gpu/drm/imagination/pvr_params.h      |   72 +
+>  drivers/gpu/drm/imagination/pvr_power.c       |  421 ++
+>  drivers/gpu/drm/imagination/pvr_power.h       |   39 +
+>  drivers/gpu/drm/imagination/pvr_queue.c       | 1455 ++++
+>  drivers/gpu/drm/imagination/pvr_queue.h       |  179 +
+>  .../gpu/drm/imagination/pvr_rogue_cr_defs.h   | 6193 +++++++++++++++++
+>  .../imagination/pvr_rogue_cr_defs_client.h    |  159 +
+>  drivers/gpu/drm/imagination/pvr_rogue_defs.h  |  179 +
+>  drivers/gpu/drm/imagination/pvr_rogue_fwif.h  | 2208 ++++++
+>  .../drm/imagination/pvr_rogue_fwif_check.h    |  491 ++
+>  .../drm/imagination/pvr_rogue_fwif_client.h   |  371 +
+>  .../imagination/pvr_rogue_fwif_client_check.h |  133 +
+>  .../drm/imagination/pvr_rogue_fwif_common.h   |   60 +
+>  .../drm/imagination/pvr_rogue_fwif_dev_info.h |  112 +
+>  .../pvr_rogue_fwif_resetframework.h           |   28 +
+>  .../gpu/drm/imagination/pvr_rogue_fwif_sf.h   | 1648 +++++
+>  .../drm/imagination/pvr_rogue_fwif_shared.h   |  258 +
+>  .../imagination/pvr_rogue_fwif_shared_check.h |  108 +
+>  .../drm/imagination/pvr_rogue_fwif_stream.h   |   78 +
+>  .../drm/imagination/pvr_rogue_heap_config.h   |  113 +
+>  drivers/gpu/drm/imagination/pvr_rogue_meta.h  |  356 +
+>  drivers/gpu/drm/imagination/pvr_rogue_mips.h  |  335 +
+>  .../drm/imagination/pvr_rogue_mips_check.h    |   58 +
+>  .../gpu/drm/imagination/pvr_rogue_mmu_defs.h  |  136 +
+>  drivers/gpu/drm/imagination/pvr_stream.c      |  285 +
+>  drivers/gpu/drm/imagination/pvr_stream.h      |   75 +
+>  drivers/gpu/drm/imagination/pvr_stream_defs.c |  351 +
+>  drivers/gpu/drm/imagination/pvr_stream_defs.h |   16 +
+>  drivers/gpu/drm/imagination/pvr_sync.c        |  287 +
+>  drivers/gpu/drm/imagination/pvr_sync.h        |   84 +
+>  drivers/gpu/drm/imagination/pvr_vm.c          |  906 +++
+>  drivers/gpu/drm/imagination/pvr_vm.h          |   60 +
+>  drivers/gpu/drm/imagination/pvr_vm_mips.c     |  208 +
+>  drivers/gpu/drm/imagination/pvr_vm_mips.h     |   22 +
+>  include/linux/sizes.h                         |    9 +
+>  include/uapi/drm/pvr_drm.h                    | 1303 ++++
+>  83 files changed, 34567 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/gpu/img,powervr.yam=
+l
+>  create mode 100644 Documentation/gpu/imagination/index.rst
+>  create mode 100644 Documentation/gpu/imagination/uapi.rst
+>  create mode 100644 Documentation/gpu/imagination/virtual_memory.rst
+>  create mode 100644 drivers/gpu/drm/imagination/Kconfig
+>  create mode 100644 drivers/gpu/drm/imagination/Makefile
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_ccb.c
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_ccb.h
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_cccb.c
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_cccb.h
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_context.c
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_context.h
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_debugfs.c
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_debugfs.h
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_device.c
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_device.h
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_device_info.c
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_device_info.h
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_drv.c
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_drv.h
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_free_list.c
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_free_list.h
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_fw.c
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_fw.h
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_fw_info.h
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_fw_meta.c
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_fw_meta.h
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_fw_mips.c
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_fw_mips.h
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_fw_startstop.c
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_fw_startstop.h
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_fw_trace.c
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_fw_trace.h
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_gem.c
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_gem.h
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_hwrt.c
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_hwrt.h
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_job.c
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_job.h
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_mmu.c
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_mmu.h
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_params.c
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_params.h
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_power.c
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_power.h
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_queue.c
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_queue.h
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_cr_defs.h
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_cr_defs_client.=
+h
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_defs.h
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_fwif.h
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_fwif_check.h
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_fwif_client.h
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_fwif_client_che=
+ck.h
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_fwif_common.h
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_fwif_dev_info.h
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_fwif_resetframe=
+work.h
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_fwif_sf.h
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_fwif_shared.h
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_fwif_shared_che=
+ck.h
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_fwif_stream.h
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_heap_config.h
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_meta.h
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_mips.h
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_mips_check.h
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_mmu_defs.h
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_stream.c
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_stream.h
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_stream_defs.c
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_stream_defs.h
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_sync.c
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_sync.h
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_vm.c
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_vm.h
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_vm_mips.c
+>  create mode 100644 drivers/gpu/drm/imagination/pvr_vm_mips.h
+>  create mode 100644 include/uapi/drm/pvr_drm.h
+>
+> --
+> 2.41.0
+>
+
+
 --=20
-2.35.1
-
+Best Regards
+Masahiro Yamada
