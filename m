@@ -2,149 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 191B7785921
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 15:25:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 405FE785933
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 15:27:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235789AbjHWNZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 09:25:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59474 "EHLO
+        id S235915AbjHWN1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 09:27:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235614AbjHWNZv (ORCPT
+        with ESMTP id S235833AbjHWN1I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 09:25:51 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3235E10D0;
-        Wed, 23 Aug 2023 06:25:26 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4F65066287;
-        Wed, 23 Aug 2023 13:25:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 935BBC433C7;
-        Wed, 23 Aug 2023 13:25:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692797123;
-        bh=jEGoO/SIqTMm5IlTmQZnmSfRF3IDKY2mxs9mRNzX6OQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Q3o6S2BYEEa9SBrfzumW+pOFwcr5iOtKQfUWJjQhpoNvo1nmSJtXoz5NSjPigftJT
-         wAFCTme3aZwxqhJKiUrSc0uxM5/Q+Uq8Q7yRLdNVKY3i7kxobXjEqVQJ4UIqjkCY+f
-         2luu6xif70GQQt8NIOL7WSKCZ1wqkIroqghVVgE7CXC22HZmyfDCbBtuKKfSSF9zqn
-         NSUSCHPbY7TJAxOF7VIg51yLWJ0nalE10wMUXWmIG67xjTqO2fydd1p61KJUjYV1ZM
-         ztozSPc+4CL2Bz1bkOvhXLd3t1wjHdWgOXDJ16VOFd57HQomwsGMxAUTEPQlOaoBax
-         IJiUGdG0lC91g==
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-50078e52537so5787667e87.1;
-        Wed, 23 Aug 2023 06:25:23 -0700 (PDT)
-X-Gm-Message-State: AOJu0YzM3nRwBgno6Qoo5ZsH1DCNTSNcLn6JK/05RzB7CUB1GKdjjVeK
-        QUx9Q9MKbrNduMVUmPbvEPo2j4aoOLBDy5E9NiA=
-X-Google-Smtp-Source: AGHT+IGX9g86c71yNCwbKrv9G6HYy2Z2bkkDKT/Q72uRs//FLM6Cse0jXp/Uz7zyES9jM9n0j6gH9X/Tiqt0EwZbVxw=
-X-Received: by 2002:ac2:4d90:0:b0:4f8:5905:8e0a with SMTP id
- g16-20020ac24d90000000b004f859058e0amr8355947lfe.6.1692797121470; Wed, 23 Aug
- 2023 06:25:21 -0700 (PDT)
+        Wed, 23 Aug 2023 09:27:08 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E06D10FC
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 06:26:44 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-991c786369cso749287966b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 06:26:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692797202; x=1693402002;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FegUU4ad3bNa0M2oa4ub/QTdyOF5+IqE39ddtHoPMWo=;
+        b=qSz7hr2ovv6zjfjn7Whwq0PjB0NYdF8ObICTeD6kq2a5zpjdEma08N9a0IvprtMbrf
+         rWGd+ogzPf9b0PWzyVPQTwRVO54yTkYMc61Opn3ibzihFjFrM7YUL3+sG5TsYVs3AaTr
+         OyLls8SzCkcSpU/0Dh5DRy8fLzR2RhXyYMfpliNprjOo+MbkXwpAkDfBsS7WuGYs6970
+         qL5VFB1drU+FSA7fm9t/qRFAr4HxfelOKCPb28/bBUJDrvmVpvkVMkuiNTT681tSaJZN
+         nTojmyWFoLPfbgtvBZSnAOfYGwj067e3U0YuPmLFzxS+lU+Pj9Dl1mG+gmY/R1vGStR3
+         L/kw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692797202; x=1693402002;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FegUU4ad3bNa0M2oa4ub/QTdyOF5+IqE39ddtHoPMWo=;
+        b=YBAHCUoYOtOG1JQmzqnfKofJoy/2Ki9KZrQKhGaf1QTkkVfrSl16jro9ZXeL1LTQ0B
+         XyamXllyKJ7pOBVVYKTRjv/V+XB65MLK38UNJlZnWpX+vb/dcXBevimJRxhHEwCF1/Ne
+         SbA8/cxtxbPjQ2EeJD4eASCa7xZsxGp5gbpve+o3ZqbKgS6ME9OBqISUdCQvRa/gM4WI
+         v3bDxZJMxispxNyxh6Bsp7m9qssRBgNUG4c2/AKJGXRFvN2L+jUiNZiumIJQQGEW117c
+         ExKn9mCLxA/V1ma+Jx/vkGK6MWsfjaN1alRns24M7eKTkN7+n1YNmfH9gIFYG3SDYTBm
+         TRAQ==
+X-Gm-Message-State: AOJu0Yx6sg8jHTbk/P/oktfNKWXJwe4L8KhOAQBn/U1LiBDAf4rK7qaw
+        FVW5o1FrlVp1jFIcFbRoL60rog==
+X-Google-Smtp-Source: AGHT+IF6KeOfFQ9Fws+2+hH7VsfJon8Bi62N30oYOXOPn9AzIKVtUsngiCFkWx99mukh96xzXE2nCA==
+X-Received: by 2002:a17:907:60c7:b0:99c:da06:bca with SMTP id hv7-20020a17090760c700b0099cda060bcamr8988022ejc.4.1692797202257;
+        Wed, 23 Aug 2023 06:26:42 -0700 (PDT)
+Received: from [192.168.1.195] ([5.133.47.210])
+        by smtp.googlemail.com with ESMTPSA id um6-20020a170906cf8600b0098d2f703408sm9818212ejb.118.2023.08.23.06.26.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Aug 2023 06:26:41 -0700 (PDT)
+Message-ID: <1abdb67b-6efd-474c-ef50-abd8cebe3803@linaro.org>
+Date:   Wed, 23 Aug 2023 14:26:41 +0100
 MIME-Version: 1.0
-References: <028a21df-4397-80aa-c2a5-7c754560f595@gmail.com>
- <20230818101630.000027f4@linux.intel.com> <b0488ff7-10c8-4b4e-28b8-01809133c297@linux.dev>
- <CAPhsuW6cSLqwRVO_EpFyimvc7hgi1rb3T8-NA+stHdwrqrScBA@mail.gmail.com>
- <20230822083923.00007fb6@linux.intel.com> <CAMz9Wg8KE1rDkSaQnUTJ5ikzH7YGGYbkLM3AcrVue3=JgK+14w@mail.gmail.com>
- <35130b3f-c0fd-e2d6-e849-a5ceb6a2895f@linux.dev> <CAMz9Wg_zKSJ2vL=r2zAtLBOv4GSMT63+ZQGXfYTjVJsE+DLQGA@mail.gmail.com>
-In-Reply-To: <CAMz9Wg_zKSJ2vL=r2zAtLBOv4GSMT63+ZQGXfYTjVJsE+DLQGA@mail.gmail.com>
-From:   Song Liu <song@kernel.org>
-Date:   Wed, 23 Aug 2023 06:25:09 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW6W0XgFjH1zNC+EFYjujd4smEiWs+-nYCWQ+KaFmbuvkg@mail.gmail.com>
-Message-ID: <CAPhsuW6W0XgFjH1zNC+EFYjujd4smEiWs+-nYCWQ+KaFmbuvkg@mail.gmail.com>
-Subject: Re: Infiniate systemd loop when power off the machine with multiple
- MD RAIDs
-To:     AceLan Kao <acelan@gmail.com>
-Cc:     Guoqing Jiang <guoqing.jiang@linux.dev>,
-        Mariusz Tkaczyk <mariusz.tkaczyk@linux.intel.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux RAID <linux-raid@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 00/22] nvmem: patches for v6.6
+Content-Language: en-US
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org
+References: <20230814165252.93422-1-srinivas.kandagatla@linaro.org>
+ <2023082217-banter-craftwork-281a@gregkh>
+ <6e3b58d0-4017-9051-9337-7d86a6be55de@linaro.org>
+ <2023082220-cavalry-litigate-9fe3@gregkh>
+ <a2cd120c-f09e-de58-b3a6-beaadb199ae4@linaro.org>
+ <2023082305-nutlike-omen-13ca@gregkh>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+In-Reply-To: <2023082305-nutlike-omen-13ca@gregkh>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi AceLan,
 
-On Wed, Aug 23, 2023 at 1:03=E2=80=AFAM AceLan Kao <acelan@gmail.com> wrote=
-:
->
-[...]
-> >
-> > My suggestion is delete the list node under this scenario, did you try
-> > above?
-> Still no luck, the patch doesn't work, the sympton is the same.
-[...]
-> >
-> > Is the issue still reproducible with remove below from cmd?
-> >
-> > echo "repair" | sudo tee /sys/class/block/md12?/md/sync_action
-> >
-> > Just want to know if resync thread is related with the issue or not.
-> Probably not, we can reproduce the issue without resync, just feel
-> it's easier to reproduce the issue, so I put the command in my script.
->
 
-Could you please run the follow two experiments?
+On 23/08/2023 09:59, Greg KH wrote:
+> On Wed, Aug 23, 2023 at 09:54:04AM +0100, Srinivas Kandagatla wrote:
+>>
+>>
+>> On 22/08/2023 18:37, Greg KH wrote:
+>>> On Tue, Aug 22, 2023 at 06:29:54PM +0100, Srinivas Kandagatla wrote:
+>>>>
+>>>>
+>>>> On 22/08/2023 15:34, Greg KH wrote:
+>>>>> On Mon, Aug 14, 2023 at 05:52:30PM +0100, Srinivas Kandagatla wrote:
+>>>>>> Here are some nvmem patches slightly more than usual for 6.6 that includes
+>>>>>>
+>>>>>> - Support for NXP eFuse, qcom secure qfprom, QCM2290 nvmem providers
+>>>>>> - core level cleanup around error handling and layout creation.
+>>>>>> - few minor cleanups across providers drivers to use better
+>>>>>>      apis and a typo fix.
+>>>>>>
+>>>>>> Can you please queue them up for 6.6.
+>>>>>
+>>>>> I did, thanks, but your email system needs to be fixed:
+>>>>
+>>>>
+>>>> Do you mean Attestation failing part or something else?
+>>>
+>>> Yes:
+>>>
+>> I did not setup patatt in my workflow yet, which is why this is failing
+>> attestation.
+> 
+> No, this is not for patatt (which would be good to have, I agree.)  This
+> is due to Linaro, or you, not setting up DKIM properly.
+> 
+> As this works for other Linaro developers, you might want to ask them
+> how they resolved it.
+> 
+some interestingly results.
 
-1. Confirm 12a6caf273240a triggers this. Specifically:
-   git checkout 12a6caf273240a =3D> repros
-   git checkout 12a6caf273240a~1 =3D> cannot repro
+I tried to validate DKIM using https://dkimvalidator.com which passes 
+the validation.
 
-2. Try with the following change (add debug messages), which hopefully
-   shows which command is holding a reference on mddev->openers.
+Also checked my older patches mboxes which also passes DKIM.
 
-Thanks,
-Song
+Am not sure what went wrong with the previous patches.
 
-diff --git i/drivers/md/md.c w/drivers/md/md.c
-index 78be7811a89f..3e9b718b32c1 100644
---- i/drivers/md/md.c
-+++ w/drivers/md/md.c
-@@ -7574,11 +7574,15 @@ static int md_ioctl(struct block_device *bdev,
-blk_mode_t mode,
-                if (mddev->pers && atomic_read(&mddev->openers) > 1) {
-                        mutex_unlock(&mddev->open_mutex);
-                        err =3D -EBUSY;
-+                       pr_warn("%s return -EBUSY for %s with
-mddev->openers =3D %d\n",
-+                               __func__, mdname(mddev),
-atomic_read(&mddev->openers));
-                        goto out;
-                }
-                if (test_and_set_bit(MD_CLOSING, &mddev->flags)) {
-                        mutex_unlock(&mddev->open_mutex);
-                        err =3D -EBUSY;
-+                       pr_warn("%s return -EBUSY for %s with
-MD_CLOSING bit set\n",
-+                               __func__, mdname(mddev));
-                        goto out;
-                }
-                did_set_md_closing =3D true;
-@@ -7789,6 +7793,8 @@ static int md_open(struct gendisk *disk, blk_mode_t m=
-ode)
-                goto out_unlock;
+Am hoping that the issue is fixed given that https://dkimvalidator.com 
+seems to indicate that DKIM is passing, I will send v2 patches.
 
-        atomic_inc(&mddev->openers);
-+       pr_info("%s:%s openers++ =3D %d by %s\n", __func__, mdname(mddev),
-+               atomic_read(&mddev->openers), current->comm);
-        mutex_unlock(&mddev->open_mutex);
 
-        disk_check_media_change(disk);
-@@ -7807,6 +7813,8 @@ static void md_release(struct gendisk *disk)
+thanks,
+Srini
 
-        BUG_ON(!mddev);
-        atomic_dec(&mddev->openers);
-+       pr_info("%s:%s openers-- =3D %d by %s\n", __func__, mdname(mddev),
-+               atomic_read(&mddev->openers), current->comm);
-        mddev_put(mddev);
- }
+> thanks,
+> 
+> greg k-h
