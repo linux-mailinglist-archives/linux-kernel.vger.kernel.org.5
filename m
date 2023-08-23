@@ -2,63 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 554847856B5
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 13:30:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DBD77856BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 13:32:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233297AbjHWLaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 07:30:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38276 "EHLO
+        id S234019AbjHWLcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 07:32:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232030AbjHWLaV (ORCPT
+        with ESMTP id S232030AbjHWLcN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 07:30:21 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63C51E5A
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 04:30:20 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DCD2564B89
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 11:30:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C49EC433CB;
-        Wed, 23 Aug 2023 11:30:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692790219;
-        bh=ocMOqMFIRxCZnfit4c+vYjFQkOP48/pihHlNEinXJ4k=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=QnT1NUNn12Oh+uOwffF/QoFL+nff4jL2uH47lv1WY3yBI5ZxVp4JwTURcutMGhkkD
-         Q7TmTf55NtL777GYObBeSldiZd8V/RLykvNAyiF3Jy2KvGMbiKNhh1GpjorMJdM4f/
-         jRzvCWc83bLhbh8Cvg5fSHDgxsBP911nBZ9vy21b2pmtOC9N6uHmsmcOsz+V+kbFei
-         VBUSkHvMixVRaKU1h6QjL1wIB8mnCxYrYCSnINwGjWmUEnVz4vBn9VSnr6dvHXQA/H
-         mEZ9+ZTZAhw3yCkhp5CeB2AKmWiV2k7u4srW3LnsTZaXuG74PcWlOSWYvjC2fGlOiA
-         fU53gd2Rxp6bA==
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-50078e52537so5600783e87.1;
-        Wed, 23 Aug 2023 04:30:18 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yz7Y/wZ8JlKRZ9lqqWN71d0HU/nct+qxepf0d6ighX/EAEFmD0X
-        zjdTgCT6Iewv0k7/YcbGQfjvw2tEAdOXLvEKQ6I=
-X-Google-Smtp-Source: AGHT+IEA441BYks449EZXyfNUxuJ6Rhk4Q5nWkAfern6IdvVfBkfO93pPi7+xr9WUgVoLsvv/fZEnJTWVTjTTJATYTc=
-X-Received: by 2002:a19:5f5e:0:b0:4fb:8bea:f5f6 with SMTP id
- a30-20020a195f5e000000b004fb8beaf5f6mr8269267lfj.34.1692790217014; Wed, 23
- Aug 2023 04:30:17 -0700 (PDT)
+        Wed, 23 Aug 2023 07:32:13 -0400
+Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F4FEE5A;
+        Wed, 23 Aug 2023 04:32:11 -0700 (PDT)
+Received: by mail-oo1-xc30.google.com with SMTP id 006d021491bc7-5711f6dff8cso140523eaf.3;
+        Wed, 23 Aug 2023 04:32:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692790331; x=1693395131;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BESIYsoydvZiBIe9fSP1rmQvOVRq1L1S9N0ieUFEhq4=;
+        b=ss8a1Oo9Rij/yq7kt5hv/6q+mnEJZqhsFQ9PzskBglvzR2EIZWu6VaaOTSifB63qmi
+         hVh+7EfC40vYUQDm2K2gpmQo7tbBikyQVBg7rhLj5tls9u3XZNrI9yFbpY4b5bdDun41
+         2mc7qH10Vb+ft+s20M9+Cwab/HDJVIPrXcGbwvI4tZyXvkjBdeNB4UN9hjNyhYOfURyK
+         /Snk/ju45H0jdegNGD9uMfFyxzvXXZXi8E1d4lJ4ZrwCgEy/PpY/KQ1KMkd+tdlPS/H/
+         iAGihiowcxoA9YH+ynxA4bCrLXm0xD/rAXhIktro7jPge3CeSxm+nn6dz/8vVBaMMoIg
+         Ikxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692790331; x=1693395131;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BESIYsoydvZiBIe9fSP1rmQvOVRq1L1S9N0ieUFEhq4=;
+        b=iT+jrbef0VR2G6RrEl80cV9yw0NwEe9FNAo1ZnQY6SHar/uOrHmEkCgAp7X+bWcQ2C
+         QSOa0jUV1NXiM8cvai9qJV4FyzS6VBBTPeF2/QY55/xrudnc6k+ARUhNrjgXVNQTD6ZH
+         V7RpRq1FsYblO8CIrkgoQ9EROvxO+7gfwCLgC/sFNwSPK3DDo40vUsibiPTk6pQOWNVT
+         D7yYMKmK5DPF0wNhYwEbXSV9+mrQwoC87JCnbJnJTzJ13Nh5EAeq9Gyl466fdefrBb/d
+         sw3amYL7f8MLEPtgRSLl6mDi68k5uHyO5NRFzkniNN2dGTg9c6Bn2VrWkeVIURXa/yCs
+         L1gg==
+X-Gm-Message-State: AOJu0YyjNvGX8yZjHYeXR4pWN4vrp71LUzOCSxUPhBlkI01Cc2UOimaR
+        S9nJd8Utf2ere8Xq1FN8E4oi0399X+v75tSdViPpZqGrSLpGLg==
+X-Google-Smtp-Source: AGHT+IG6rFbjqA4R3FXmRn0GW7RP1j0BHun38i1fbHL1hrlaMoXT9zLIqp0TAUthZYck+p+HjViAPpJpMYhW8mdpUrE=
+X-Received: by 2002:a4a:275b:0:b0:56c:e856:8b2c with SMTP id
+ w27-20020a4a275b000000b0056ce8568b2cmr10832032oow.9.1692790330668; Wed, 23
+ Aug 2023 04:32:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <aeb83832ae61bbf463e1b2e39c1e30c3b227f5a5.1692769396.git.dxu@dxuuu.xyz>
-In-Reply-To: <aeb83832ae61bbf463e1b2e39c1e30c3b227f5a5.1692769396.git.dxu@dxuuu.xyz>
-From:   Song Liu <song@kernel.org>
-Date:   Wed, 23 Aug 2023 04:30:04 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW7YtQsLbB0jSeRaZnm5d5a+ZCJ3Px46DjF0g_agAQh6Gg@mail.gmail.com>
-Message-ID: <CAPhsuW7YtQsLbB0jSeRaZnm5d5a+ZCJ3Px46DjF0g_agAQh6Gg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: Add bpf_object__unpin()
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
-        martin.lau@linux.dev, yonghong.song@linux.dev,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
+References: <20230823085258.113701-1-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230823085258.113701-1-krzysztof.kozlowski@linaro.org>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 23 Aug 2023 14:31:34 +0300
+Message-ID: <CAHp75VdSaZTT8a-QFmiqPLYH-nK6ycZzV10CFFdv_LS3BVG_5w@mail.gmail.com>
+Subject: Re: [PATCH] gpio: mlxbf3: use capital "OR" for multiple licenses in SPDX
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andy@kernel.org>, linux-gpio@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -67,17 +71,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 10:44=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz> wrote:
+On Wed, Aug 23, 2023 at 11:53=E2=80=AFAM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
 >
-> For bpf_object__pin_programs() there is bpf_object__unpin_programs().
-> Likewise bpf_object__unpin_maps() for bpf_object__pin_maps().
->
-> But no bpf_object__unpin() for bpf_object__pin(). Adding the former adds
-> symmetry to the API.
->
-> It's also convenient for cleanup in application code. It's an API I
-> would've used if it was available for a repro I was writing earlier.
->
-> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> Documentation/process/license-rules.rst and checkpatch expect the SPDX
+> identifier syntax for multiple licenses to use capital "OR".  Correct it
+> to keep consistent format and avoid copy-paste issues.
 
-Reviewed-by: Song Liu <song@kernel.org>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+
+--=20
+With Best Regards,
+Andy Shevchenko
