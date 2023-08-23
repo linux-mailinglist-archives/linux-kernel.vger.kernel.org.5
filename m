@@ -2,64 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0691C785907
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 15:19:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 064657858CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 15:16:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235930AbjHWNTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 09:19:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34476 "EHLO
+        id S235656AbjHWNQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 09:16:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235837AbjHWNSf (ORCPT
+        with ESMTP id S235646AbjHWNQf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 09:18:35 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6466E7E;
-        Wed, 23 Aug 2023 06:18:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692796688; x=1724332688;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=oRlFczXdGPrJp80F+cCGAtbDxrW1dtYTOhi0Lf/UmN4=;
-  b=hYkXsNYF5IUe4DCpiuZeQ9vKTcW3qj9LBJ/URKNsKmpAAeNKLDDbsiRP
-   3cIBazHmQFc2ejn4BmwOpb2iQ28CRYvMOqla0St4N1h4scz6ibBUT/7+S
-   effami7F6JWoZNH6JDAdE/pHdK0trXTb2eD1rdeNoZmW9QRRYexVlAYP2
-   m5CvMPa48iJqKpG6e5OO/5Ly31nZK4BkPzEbMedwUnW03AZ4p6yANEPL6
-   EG0VWJtSt+1dJcvGP9R+hqv+nh/hUdgvkrAd/GEipa3oRAqUcufSPj8Gc
-   NKqf97NepGtoLdJ8GL6jBtK/kGtamg5K2hNGGT0ObSA7Kyj4LP2QUGTfQ
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="373044077"
-X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
-   d="scan'208";a="373044077"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2023 06:16:40 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="713572897"
-X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
-   d="scan'208";a="713572897"
-Received: from amangalo-mobl4.ger.corp.intel.com (HELO ijarvine-mobl2.ger.corp.intel.com) ([10.252.55.236])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2023 06:16:36 -0700
-From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Reinette Chatre <reinette.chatre@intel.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
-        Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
-Cc:     Fenghua Yu <fenghua.yu@intel.com>, Babu Moger <babu.moger@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
-        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Subject: [PATCH v3 7/7] selftests/resctrl: Cleanup benchmark argument parsing
-Date:   Wed, 23 Aug 2023 16:15:56 +0300
-Message-Id: <20230823131556.27617-8-ilpo.jarvinen@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230823131556.27617-1-ilpo.jarvinen@linux.intel.com>
-References: <20230823131556.27617-1-ilpo.jarvinen@linux.intel.com>
+        Wed, 23 Aug 2023 09:16:35 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 550B91725;
+        Wed, 23 Aug 2023 06:16:11 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7B66E66166;
+        Wed, 23 Aug 2023 13:16:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EB12C433C8;
+        Wed, 23 Aug 2023 13:16:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692796564;
+        bh=WSfj7/+wS0WuFR/h+zkA9CBdRrEotaBU5asv8QGK0S0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CW5gZjyMZ8lON3FRU1vFb4jmeLtpn7xEpDL7Rve7qeujST6mlTLGglXVWUCMJ5FLD
+         XPje++LNqhr4A27IH0ts17s8g9loZ+Dl7XmDtSyc7plNpNwwvxwbKUqngnGhoT5lFj
+         UxsgrL518l8npfDMfvtnRltos7+862EvhTC2emhb1P/hADdYkILj6VkrRiFq5aN7Px
+         6Ub7bze/WRjh5OH1j8xkyNY0jesE6VZOBu8fS77JZOlYw5eprmYrm8JlPzYEqdTKQB
+         PJ6OIoPymhKACbvFwSr5ZY3HySOsTSaDuvAs3gkXe3Ua8vgpE9DUNVzEbjQpjXanHZ
+         gsueOfDuJoJyQ==
+Date:   Wed, 23 Aug 2023 15:16:02 +0200
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Rahul Rameshbabu <rrameshbabu@nvidia.com>,
+        syzbot <syzbot+3a0ebe8a52b89c63739d@syzkaller.appspotmail.com>,
+        davidgow@google.com, gregkh@linuxfoundation.org,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rydberg@bitmath.org, syzkaller-bugs@googlegroups.com,
+        benjamin.tissoires@redhat.com
+Subject: Re: [syzbot] [input?] KASAN: slab-use-after-free Read in
+ input_dev_uevent
+Message-ID: <y3hfjc227wouzraa4hyltyfd4athig5rmna2uwjqy6v23yzkad@wdmzmochmsve>
+References: <00000000000035beba060371a468@google.com>
+ <ijh2qmdtj452nq3idu2tohkrmfwr2qhbhrnyqzxjkkw2lrby53@v2dffcqdohsx>
+ <878ra3m5my.fsf@nvidia.com>
+ <nqrdxdcvuhvcs2syjfhcp5fbk4ckgzibc3izxknvsrka3kres6@ae65hqx67c4u>
+ <ZOYAtI5KttKQnLWs@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="fesvofqg4mtrcfjd"
+Content-Disposition: inline
+In-Reply-To: <ZOYAtI5KttKQnLWs@google.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,125 +65,144 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Benchmark argument is handled by custom argument parsing code which is
-more complicated than it needs to be.
 
-Process benchmark argument within the normal getopt() handling and drop
-entirely unnecessary ben_ind and has_ben variables. If -b is not given,
-setup the default benchmark command right after the switch statement
-and make -b to goto over it while it terminates the getopt() loop.
+--fesvofqg4mtrcfjd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
----
- .../testing/selftests/resctrl/resctrl_tests.c | 71 ++++++++++---------
- 1 file changed, 36 insertions(+), 35 deletions(-)
+Hi Dmitry,
 
-diff --git a/tools/testing/selftests/resctrl/resctrl_tests.c b/tools/testing/selftests/resctrl/resctrl_tests.c
-index 94516d1f4307..ae9001ef7b0a 100644
---- a/tools/testing/selftests/resctrl/resctrl_tests.c
-+++ b/tools/testing/selftests/resctrl/resctrl_tests.c
-@@ -169,28 +169,35 @@ static void run_cat_test(int cpu_no, int no_of_bits)
- 
- int main(int argc, char **argv)
- {
--	bool has_ben = false, mbm_test = true, mba_test = true, cmt_test = true;
--	int c, cpu_no = 1, argc_new = argc, i, no_of_bits = 0;
-+	bool mbm_test = true, mba_test = true, cmt_test = true;
-+	int c, cpu_no = 1, i, no_of_bits = 0;
- 	const char *benchmark_cmd[BENCHMARK_ARGS];
--	int ben_ind, tests = 0;
- 	char *span_str = NULL;
- 	bool cat_test = true;
- 	char *skip_reason;
-+	int tests = 0;
- 	int ret;
- 
--	for (i = 0; i < argc; i++) {
--		if (strcmp(argv[i], "-b") == 0) {
--			ben_ind = i + 1;
--			argc_new = ben_ind - 1;
--			has_ben = true;
--			break;
--		}
--	}
--
--	while ((c = getopt(argc_new, argv, "ht:b:n:p:")) != -1) {
-+	while ((c = getopt(argc, argv, "ht:b:n:p:")) != -1) {
- 		char *token;
- 
- 		switch (c) {
-+		case 'b':
-+			/*
-+			 * First move optind back to the (first) optarg and
-+			 * then build the benchmark command using the
-+			 * remaining arguments.
-+			 */
-+			optind--;
-+			if (argc - optind >= BENCHMARK_ARGS - 1)
-+				ksft_exit_fail_msg("Too long benchmark command");
-+
-+			/* Extract benchmark command from command line. */
-+			for (i = 0; i < argc - optind; i++)
-+				benchmark_cmd[i] = argv[i + optind];
-+			benchmark_cmd[i] = NULL;
-+
-+			goto last_arg;
- 		case 't':
- 			token = strtok(optarg, ",");
- 
-@@ -240,6 +247,19 @@ int main(int argc, char **argv)
- 		}
- 	}
- 
-+	/* If no benchmark is given by "-b" argument, use fill_buf. */
-+	benchmark_cmd[0] = "fill_buf";
-+	ret = asprintf(&span_str, "%u", DEFAULT_SPAN);
-+	if (ret < 0)
-+		ksft_exit_fail_msg("Out of memory!\n");
-+	benchmark_cmd[1] = span_str;
-+	benchmark_cmd[2] = "1";
-+	benchmark_cmd[3] = "0";
-+	benchmark_cmd[4] = "false";
-+	benchmark_cmd[5] = NULL;
-+
-+last_arg:
-+
- 	ksft_print_header();
- 
- 	/*
-@@ -247,28 +267,9 @@ int main(int argc, char **argv)
- 	 * 1. We write to resctrl FS
- 	 * 2. We execute perf commands
- 	 */
--	if (geteuid() != 0)
--		return ksft_exit_skip("Not running as root. Skipping...\n");
--
--	if (has_ben) {
--		if (argc - ben_ind >= BENCHMARK_ARGS - 1)
--			ksft_exit_fail_msg("Too long benchmark command.\n");
--
--		/* Extract benchmark command from command line. */
--		for (i = 0; i < argc - ben_ind; i++)
--			benchmark_cmd[i] = argv[i + ben_ind];
--		benchmark_cmd[i] = NULL;
--	} else {
--		/* If no benchmark is given by "-b" argument, use fill_buf. */
--		benchmark_cmd[0] = "fill_buf";
--		ret = asprintf(&span_str, "%u", DEFAULT_SPAN);
--		if (ret < 0)
--			ksft_exit_fail_msg("Out of memory!\n");
--		benchmark_cmd[1] = span_str;
--		benchmark_cmd[2] = "1";
--		benchmark_cmd[3] = "0";
--		benchmark_cmd[4] = "false";
--		benchmark_cmd[5] = NULL;
-+	if (geteuid() != 0) {
-+		skip_reason = "Not running as root. Skipping...\n";
-+		goto free_span;
- 	}
- 
- 	if (!check_resctrlfs_support()) {
--- 
-2.30.2
+On Wed, Aug 23, 2023 at 05:51:00AM -0700, Dmitry Torokhov wrote:
+> On Wed, Aug 23, 2023 at 09:44:22AM +0200, Maxime Ripard wrote:
+> > On Tue, Aug 22, 2023 at 08:57:41AM -0700, Rahul Rameshbabu wrote:
+> > > On Tue, 22 Aug, 2023 11:12:28 +0200 Maxime Ripard <mripard@kernel.org=
+> wrote:
+> > > > Hi,
+> > > >
+> > > > So, we discussed it this morning with Benjamin, and I think the cul=
+prit
+> > > > is that the uclogic driver will allocate a char array with devm_kza=
+lloc
+> > > > in uclogic_input_configured()
+> > > > (https://elixir.bootlin.com/linux/latest/source/drivers/hid/hid-ucl=
+ogic-core.c#L149),
+> > > > and will assign input_dev->name to that pointer.
+> > > >
+> > > > When the device is removed, the devm-allocated array is freed, and =
+the
+> > > > input framework will send a uevent in input_dev_uevent() using the
+> > > > input_dev->name field:
+> > > >
+> > > > https://elixir.bootlin.com/linux/latest/source/drivers/input/input.=
+c#L1688
+> > > >
+> > > > So it's a classic dangling pointer situation.
+> > > >
+> > > > And even though it was revealed by that patch, I think the issue is
+> > > > unrelated. The fundamental issue seems to be that the usage of devm=
+ in
+> > > > that situation is wrong.
+> > > >
+> > > > input_dev->name is accessed by input_dev_uevent, which for KOBJ_UNB=
+IND
+> > > > and KOBJ_REMOVE will be called after remove.
+> > > >
+> > > > For example, in __device_release_driver() (with the driver remove h=
+ook
+> > > > being called in device_remove() and devres_release_all() being call=
+ed in
+> > > > device_unbind_cleanup()):
+> > > > https://elixir.bootlin.com/linux/latest/source/drivers/base/dd.c#L1=
+278
+> > > >
+> > > > So, it looks to me that, with or without the patch we merged recent=
+ly,
+> > > > the core has always sent uevent after device-managed resources were
+> > > > freed. Thus, the uclogic (and any other input driver) was wrong in
+> > > > allocating its input_dev name with devm_kzalloc (or the phys and un=
+iq
+> > > > fields in that struct).
+> > > >
+> > > > Note that freeing input_dev->name in remove would have been just as=
+ bad.
+> > > >
+> > > > Looking at the code quickly, at least hid-playstation,
+> > > > hid-nvidia-shield, hid-logitech-hidpp, mms114 and tsc200x seem to be
+> > > > affected by the same issue.
+> > >=20
+> > > I agree with this analysis overall. At least in hid-nvidia-shield, I =
+can
+> > > not use devm for allocating the input name string and explicitly free=
+ it
+> > > after calling input_unregister_device. In this scenario, the name str=
+ing
+> > > would have been freed explicitly after input_put_device was called
+> > > (since the input device is not devres managed). input_put_device would
+> > > drop the reference count to zero and the device would be cleaned up at
+> > > that point triggering KOBJ_REMOVE and firing off that final
+> > > input_dev_uevent.
+> > >=20
+> > > I think this can be done for a number of the drivers as a workaround
+> > > till this issue is properly resolved. If this seems appropriate, I can
+> > > send out a series later in the day. This is just a workaround till the
+> > > discussion below converges (which I am interested in).
+> >=20
+> > I'm sorry, I don't know the input framework well enough to understand
+> > what you had in mind exactly. Could you send a patch with your
+> > suggestion for the hid-nvidia-shield so we can discuss this further?
+> >=20
+> > That being said, I think that the current design around name, phys and
+> > uniq is fairly treacherous to drivers and we should aim for a solution
+> > that prevents that issue from being possible at all.
+> >=20
+> > I was inclined to go for a char array for each to get rid of the pointer
+> > entirely, but Benjamin raised some concerns over the structure size so
+> > it's probably not a great solution.
+>=20
+> I think everything is much simpler, with uclogic driver being in the
+> wrong here: devm resource needs to be attached to the right device
+> (instance of HID) rather than to the input device itself (which should
+> never have any driver resources attached since it never has a driver).
+> Something like this:
+>=20
+> diff --git a/drivers/hid/hid-uclogic-core.c b/drivers/hid/hid-uclogic-cor=
+e.c
+> index f67835f9ed4c..f234a7c97360 100644
+> --- a/drivers/hid/hid-uclogic-core.c
+> +++ b/drivers/hid/hid-uclogic-core.c
+> @@ -148,7 +148,7 @@ static int uclogic_input_configured(struct hid_device=
+ *hdev,
+> =20
+>  	if (suffix) {
+>  		len =3D strlen(hdev->name) + 2 + strlen(suffix);
+> -		name =3D devm_kzalloc(&hi->input->dev, len, GFP_KERNEL);
+> +		name =3D devm_kzalloc(&hdev->dev, len, GFP_KERNEL);
+>  		if (name) {
+>  			snprintf(name, len, "%s %s", hdev->name, suffix);
+>  			hi->input->name =3D name;
+>=20
+> In general, drivers should attach devm resources they allocate to the
+> instance of device they are binding to, and nothing else.
 
+I'm not sure that's enough unfortunately. The fundamental issue here
+seems to be that input_dev_uevent follows a pointer that can be
+allocated by the driver, and will be free'd before the last call to
+input_dev_uevent.
+
+And I think that's true for both devices here
+
+Maxime
+
+--fesvofqg4mtrcfjd
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZOYGjQAKCRDj7w1vZxhR
+xY0kAQDDufdm0rCPjr7R5v1KwfviXaH0Yk7OBZZKHQMJRjzLQAEA80nTsnKu6rLm
+0IQSf98Lt4EnRnMjYGlBM3RxFz6dJws=
+=fCrs
+-----END PGP SIGNATURE-----
+
+--fesvofqg4mtrcfjd--
