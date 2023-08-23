@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 366087853A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 11:16:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8222978538E
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 11:11:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234102AbjHWJQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 05:16:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48520 "EHLO
+        id S235022AbjHWJLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 05:11:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235389AbjHWJJi (ORCPT
+        with ESMTP id S235376AbjHWJJT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 05:09:38 -0400
-Received: from smtp-fw-52002.amazon.com (smtp-fw-52002.amazon.com [52.119.213.150])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1191421D;
-        Wed, 23 Aug 2023 02:02:26 -0700 (PDT)
+        Wed, 23 Aug 2023 05:09:19 -0400
+Received: from smtp-fw-2101.amazon.com (smtp-fw-2101.amazon.com [72.21.196.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C6932698;
+        Wed, 23 Aug 2023 02:02:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.es; i=@amazon.es; q=dns/txt; s=amazon201209;
-  t=1692781354; x=1724317354;
+  t=1692781350; x=1724317350;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=ZbwE+Ic9l946zgKm/AQ+R0y+kw0Btu3iq0hfOsHfm5M=;
-  b=Dq17aceB9+uto3+dyHWwOMFjavO8jgjUIRFYwN0wHlKD7YchomKFJmYT
-   eaiqFxApc82ZHXsV2rsGdFGORPg5tqEoX8FgGw+7E3IUW5L6DHKM2w2Fb
-   DkUhsyc7A/j0fgCIysxN74MPVgFKnlxrkXINaHamG6nQNxYHaq3lmWA05
-   U=;
+  bh=oI7WaSSzBnMsKCyZ9Y7kcnjkBrkJZzum167IBrJQx+M=;
+  b=GyVF6tvnhEkwbadaDFSnyryOu81K5/akWuXR2VoJo+80jvGwGt0C8zsI
+   86kcYrtsa4ZknQ0YuKGtT8SYAz5o+6D/9DzIu0MSgTlkeYNwYb728GNon
+   dDTLMyNh9l9Vdu7q9jEhAcmiOaK0CSM16IfNyo8MRrynFvmGVhJUZrCfJ
+   c=;
 X-IronPort-AV: E=Sophos;i="6.01,195,1684800000"; 
-   d="scan'208";a="579376605"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-pdx-2c-m6i4x-dc7c3f8b.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-52002.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2023 09:01:31 +0000
-Received: from EX19D016EUA002.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-pdx-2c-m6i4x-dc7c3f8b.us-west-2.amazon.com (Postfix) with ESMTPS id E4325A004C;
-        Wed, 23 Aug 2023 09:01:28 +0000 (UTC)
+   d="scan'208";a="346953253"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-pdx-2b-m6i4x-7fa2de02.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-2101.iad2.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2023 09:01:36 +0000
+Received: from EX19D016EUA004.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-pdx-2b-m6i4x-7fa2de02.us-west-2.amazon.com (Postfix) with ESMTPS id 81EF740D9C;
+        Wed, 23 Aug 2023 09:01:34 +0000 (UTC)
 Received: from EX19D037EUB003.ant.amazon.com (10.252.61.119) by
- EX19D016EUA002.ant.amazon.com (10.252.50.57) with Microsoft SMTP Server
+ EX19D016EUA004.ant.amazon.com (10.252.50.4) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Wed, 23 Aug 2023 09:01:26 +0000
+ 15.2.1118.37; Wed, 23 Aug 2023 09:01:33 +0000
 Received: from f4d4887fdcfb.ant.amazon.com (10.1.212.9) by
  EX19D037EUB003.ant.amazon.com (10.252.61.119) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Wed, 23 Aug 2023 09:01:20 +0000
+ 15.2.1118.37; Wed, 23 Aug 2023 09:01:27 +0000
 From:   Babis Chalios <bchalios@amazon.es>
 To:     Olivia Mackall <olivia@selenic.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
@@ -52,21 +52,21 @@ To:     Olivia Mackall <olivia@selenic.com>,
         <virtualization@lists.linux-foundation.org>
 CC:     <bchalios@amazon.es>, <graf@amazon.de>, <xmarcalx@amazon.co.uk>,
         <aams@amazon.de>, <dwmw@amazon.co.uk>, <gregkh@linuxfoundation.org>
-Subject: [RFC PATCH 1/2] random: emit reseed notifications for PRNGs
-Date:   Wed, 23 Aug 2023 11:01:05 +0200
-Message-ID: <20230823090107.65749-2-bchalios@amazon.es>
+Subject: [RFC PATCH 2/2] virtio-rng: implement entropy leak feature
+Date:   Wed, 23 Aug 2023 11:01:06 +0200
+Message-ID: <20230823090107.65749-3-bchalios@amazon.es>
 X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 In-Reply-To: <20230823090107.65749-1-bchalios@amazon.es>
 References: <20230823090107.65749-1-bchalios@amazon.es>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 X-Originating-IP: [10.1.212.9]
 X-ClientProxiedBy: EX19D040UWA004.ant.amazon.com (10.13.139.93) To
  EX19D037EUB003.ant.amazon.com (10.252.61.119)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,T_SPF_PERMERROR,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -75,299 +75,289 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sometimes, PRNGs need to reseed. For example, on a regular timer
-interval, to ensure nothing consumes a random value for longer than e.g.
-5 minutes, or when VMs get cloned, to ensure seeds don't leak in to
-clones.
+Implement the virtio-rng entropy leak feature that allows the guest
+driver to request from the device to perform certain operations in the
+event of an "entropy leak", such as when taking a VM snapshot. The guest
+can request one of two operations: (i) fill a buffer with random bytes,
+or (ii) perform a memory copy between two buffers.
 
-The notification happens through a 32bit epoch value that changes every
-time cached entropy is no longer valid, hence PRNGs need to reseed. User
-space applications can get hold of a pointer to this value through
-/dev/(u)random. We introduce a new ioctl() that returns an anonymous
-file descriptor. From this file descriptor we can mmap() a single page
-which includes the epoch at offset 0.
+The feature is similar to Microsoft's Virtual Machine Generation ID and
+it can be used to (1) avoid the race-condition that exists in our
+current VMGENID implementation, between the time vcpus are resumed and
+the ACPI notification is being handled and (2) propagate these events to
+user space through the random.c epoch mechanism.
 
-random.c maintains the epoch value in a global shared page. It exposes
-a registration API for kernel subsystems that are able to notify when
-reseeding is needed. Notifiers register with random.c and receive a
-unique 8bit ID and a pointer to the epoch. When they need to report a
-reseeding event they write a new epoch value which includes the
-notifier ID in the first 8 bits and an increasing counter value in the
-remaining 24 bits:
-
-              RNG epoch
-*-------------*---------------------*
-| notifier id | epoch counter value |
-*-------------*---------------------*
-     8 bits           24 bits
-
-Like this, different notifiers always write different values in the
-epoch.
+This commit implements the protocol between guest and device.
+Moreover, it makes sure that there is always a request from random bytes
+in flight. It uses these bytes as fresh entropy upon a snapshot.
+Finally, it programs the device to bump the random.c epoch when a
+snapshot occurs.
 
 Signed-off-by: Babis Chalios <bchalios@amazon.es>
 ---
- drivers/char/random.c       | 147 ++++++++++++++++++++++++++++++++++++
- include/linux/random.h      |  28 +++++++
- include/uapi/linux/random.h |  11 +++
- 3 files changed, 186 insertions(+)
+ drivers/char/hw_random/virtio-rng.c | 189 +++++++++++++++++++++++++++-
+ include/uapi/linux/virtio_rng.h     |   3 +
+ 2 files changed, 187 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/char/random.c b/drivers/char/random.c
-index 3cb37760dfec..72b524099b60 100644
---- a/drivers/char/random.c
-+++ b/drivers/char/random.c
-@@ -54,6 +54,8 @@
- #include <linux/suspend.h>
- #include <linux/siphash.h>
- #include <linux/sched/isolation.h>
-+#include "linux/anon_inodes.h"
-+#include "linux/bitmap.h"
- #include <crypto/chacha.h>
- #include <crypto/blake2s.h>
- #include <asm/archrandom.h>
-@@ -206,6 +208,7 @@ enum {
- static struct {
- 	u8 key[CHACHA_KEY_SIZE] __aligned(__alignof__(long));
- 	unsigned long generation;
-+	u32 cached_epoch;
- 	spinlock_t lock;
- } base_crng = {
- 	.lock = __SPIN_LOCK_UNLOCKED(base_crng.lock)
-@@ -242,6 +245,138 @@ static unsigned int crng_reseed_interval(void)
- 	return CRNG_RESEED_INTERVAL;
- }
+diff --git a/drivers/char/hw_random/virtio-rng.c b/drivers/char/hw_random/virtio-rng.c
+index e41a84e6b4b5..469e0c522dbf 100644
+--- a/drivers/char/hw_random/virtio-rng.c
++++ b/drivers/char/hw_random/virtio-rng.c
+@@ -13,12 +13,29 @@
+ #include <linux/virtio_rng.h>
+ #include <linux/module.h>
+ #include <linux/slab.h>
++#include <linux/random.h>
  
-+/*
-+ * Tracking moments in time that PRNGs (ours and user-space) need to reseed
-+ * due to an "entropy leak".
-+ *
-+ * We call the time period between two "entropy leak" events an "epoch".
-+ * Epoch is a 32-bit unsigned value that lives in a dedicated global page.
-+ * Systems that want to report entropy leaks will get an 1-byte notifier id
-+ * (up to 256 notifiers) and the address of the epoch.
-+ *
-+ * Each notifier will write epochs in the form:
-+ *
-+ *      1 byte                  3 bytes
-+ * +---------------+-------------------------------+
-+ * |  notifier id  |    next epoch counter value   |
-+ * +---------------+-------------------------------+
-+ *
-+ * This way, epochs are namespaced per notifier, so no two different
-+ * notifiers will ever write the same epoch value.
-+ */
-+
-+static struct {
-+	struct rand_epoch_data *epoch;
-+	DECLARE_BITMAP(notifiers, RNG_EPOCH_NOTIFIER_NR_BITS);
-+	spinlock_t lock;
-+} epoch_data = {
-+	.lock = __SPIN_LOCK_UNLOCKED(epoch_data.lock),
+ static DEFINE_IDA(rng_index_ida);
+ 
++struct virtrng_leak_queue {
++	/* The underlying virtqueue of this leak queue */
++	struct virtqueue *vq;
++	/* The next epoch value the device should write through this leak queue */
++	struct rand_epoch_data next_epoch;
 +};
 +
-+static int epoch_mmap(struct file *filep, struct vm_area_struct *vma)
++struct virtrng_leak_queue;
++
+ struct virtrng_info {
+ 	struct hwrng hwrng;
+ 	struct virtqueue *vq;
++
++	/* Leak queues */
++	bool has_leakqs;
++	struct virtrng_leak_queue leakq[2];
++	int active_leakq;
++	struct rng_epoch_notifier epoch_notifier;
++
+ 	char name[25];
+ 	int index;
+ 	bool hwrng_register_done;
+@@ -30,11 +47,118 @@ struct virtrng_info {
+ 	/* minimal size returned by rng_buffer_size() */
+ #if SMP_CACHE_BYTES < 32
+ 	u8 data[32];
++	u8 leak_data[32];
+ #else
+ 	u8 data[SMP_CACHE_BYTES];
++	u8 leak_data[SMP_CACHE_BYTES];
+ #endif
+ };
+ 
++static struct virtrng_leak_queue *vq_to_leakq(struct virtrng_info *vi,
++		struct virtqueue *vq)
 +{
-+	if (vma->vm_pgoff || vma_pages(vma) > 1)
-+		return -EINVAL;
-+
-+	if (vma->vm_flags & VM_WRITE)
-+		return -EPERM;
-+
-+	/* Don't allow growing the region with mremap(). */
-+	vm_flags_set(vma, VM_DONTEXPAND);
-+	/* Don't allow mprotect() to make this writeable in the future */
-+	vm_flags_clear(vma, VM_MAYWRITE);
-+
-+	return vm_insert_page(vma, vma->vm_start, virt_to_page(epoch_data.epoch));
++	return &vi->leakq[vq->index - 1];
 +}
 +
-+static const struct file_operations rng_epoch_fops = {
-+	.mmap = epoch_mmap,
-+	.llseek = noop_llseek,
-+};
-+
-+static int create_epoch_fd(void)
++/*
++ * Swaps the queues and returns the new active leak queue.
++ * It assumes that the leak queues' lock is being held
++ */
++static void swap_leakqs(struct virtrng_info *vi)
 +{
-+	unsigned long flags;
-+	int ret = -ENOTTY;
++	vi->active_leakq = 1 - vi->active_leakq;
++}
 +
-+	spin_lock_irqsave(&epoch_data.lock, flags);
-+	if (bitmap_empty(epoch_data.notifiers, RNG_EPOCH_NOTIFIER_NR_BITS))
-+		goto out;
-+	spin_unlock_irqrestore(&epoch_data.lock, flags);
++static struct virtrng_leak_queue *get_active_leakq(struct virtrng_info *vi)
++{
++	return &vi->leakq[vi->active_leakq];
++}
 +
-+	return anon_inode_getfd("rand:epoch", &rng_epoch_fops, &epoch_data, O_RDONLY | O_CLOEXEC);
-+out:
-+	spin_unlock_irqrestore(&epoch_data.lock, flags);
++/*
++ * Create the next epoch value that we will write through the leak queue.
++ *
++ * Subsequent epoch values will be written through alternate leak queues,
++ * so the next epoch value for each queue will be:
++ *
++ * *-------------*----------------------------------------------*
++ * | notifier_id | (current_epoch + 2) & RNG_EPOCH_COUNTER_MASK |
++ * *-------------*----------------------------------------------*
++ */
++static void prepare_next_epoch(struct virtrng_info *vi, struct virtrng_leak_queue *leakq)
++{
++	leakq->next_epoch.data = ((leakq->next_epoch.data + 2) & RNG_EPOCH_COUNTER_MASK) |
++		 (vi->epoch_notifier.id << RNG_EPOCH_ID_SHIFT);
++}
++
++static int do_fill_on_leak_request(struct virtrng_info *vi, struct virtqueue *vq, void *data,
++				    size_t len)
++{
++	struct scatterlist sg;
++
++	sg_init_one(&sg, data, len);
++	return virtqueue_add_inbuf(vq, &sg, 1, data, GFP_KERNEL);
++}
++
++static int do_copy_on_leak_request(struct virtrng_info *vi, struct virtqueue *vq,
++				   void *to, void *from, size_t len)
++{
++	struct scatterlist out, in, *sgs[2];
++
++	sg_init_one(&out, from, len);
++	sgs[0] = &out;
++	sg_init_one(&in, to, len);
++	sgs[1] = &in;
++
++	return virtqueue_add_sgs(vq, sgs, 1, 1, to, GFP_KERNEL);
++}
++
++static int add_entropy_leak_requests(struct virtrng_info *vi, struct virtrng_leak_queue *leakq)
++{
++	do_fill_on_leak_request(vi, leakq->vq, &vi->leak_data, sizeof(vi->leak_data));
++	/* Make sure the device writes the next valid epoch value */
++	do_copy_on_leak_request(vi, leakq->vq, vi->epoch_notifier.epoch, &leakq->next_epoch,
++			sizeof(u32));
++
++	return 0;
++}
++
++static void entropy_leak_detected(struct virtqueue *vq)
++{
++	struct virtrng_info *vi = vq->vdev->priv;
++	struct virtrng_leak_queue *activeq = get_active_leakq(vi);
++	struct virtrng_leak_queue *leakq = vq_to_leakq(vi, vq);
++	unsigned int len;
++	void *buffer;
++
++	/*
++	 * The first time we see a used buffer in the active leak queue we swap queues
++	 * so that new commands are added in the new active leak queue.
++	 */
++	if (vq == activeq->vq) {
++		pr_info("%s: entropy leak detected!", vi->name);
++		swap_leakqs(vi);
++	}
++
++	/* Drain all the used buffers from the queue */
++	while ((buffer = virtqueue_get_buf(vq, &len)) != NULL) {
++		if (buffer == vi->leak_data) {
++			add_device_randomness(vi->leak_data, sizeof(vi->leak_data));
++
++			/*
++			 * Ensure we always have a pending request for random bytes on entropy
++			 * leak. Do it here, after we have swapped leak queues, so it gets handled
++			 * with the next entropy leak event.
++			 */
++			do_fill_on_leak_request(vi, vq, &vi->leak_data, sizeof(vi->leak_data));
++		} else if (buffer == &vi->epoch_notifier.epoch->data) {
++			/* Also, ensure we always have a pending request for bumping the epoch */
++			prepare_next_epoch(vi, leakq);
++			do_copy_on_leak_request(vi, vq, &vi->epoch_notifier.epoch->data,
++					&leakq->next_epoch, sizeof(leakq->next_epoch));
++		}
++	}
++}
++
+ static void random_recv_done(struct virtqueue *vq)
+ {
+ 	struct virtrng_info *vi = vq->vdev->priv;
+@@ -126,6 +250,51 @@ static void virtio_cleanup(struct hwrng *rng)
+ 	complete(&vi->have_data);
+ }
+ 
++static int init_virtqueues(struct virtrng_info *vi, struct virtio_device *vdev)
++{
++	int ret, vqs_nr = 1;
++	struct virtqueue *vqs[3];
++	const char *names[3];
++	vq_callback_t *callbacks[3];
++
++	callbacks[0] = random_recv_done;
++	names[0] = "input";
++
++	if (vi->has_leakqs) {
++		vqs_nr = 3;
++		vi->active_leakq = 0;
++
++		/* Register with random.c to get epoch info */
++		ret = rng_register_epoch_notifier(&vi->epoch_notifier);
++		if (ret)
++			goto err_register_epoch;
++
++		callbacks[1] = entropy_leak_detected;
++		names[1] = "leakq.1";
++		callbacks[2] = entropy_leak_detected;
++		names[2] = "leakq.2";
++	}
++
++	ret = virtio_find_vqs(vdev, vqs_nr, vqs, callbacks, names, NULL);
++	if (ret)
++		goto err_find_vqs;
++
++	vi->vq = vqs[0];
++	if (vi->has_leakqs) {
++		vi->leakq[0].vq = vqs[1];
++		vi->leakq[0].next_epoch.data = 1;
++		vi->leakq[1].vq = vqs[2];
++		vi->leakq[1].next_epoch.data = 2;
++	}
++
++	return 0;
++
++err_find_vqs:
++	rng_unregister_epoch_notifier(&vi->epoch_notifier);
++err_register_epoch:
 +	return ret;
 +}
 +
-+/*
-+ * Get the current epoch. If nobody has subscribed, this will always return 0.
-+ */
-+static unsigned long get_epoch(void)
-+{
-+	u32 epoch = 0;
-+
-+	if (likely(epoch_data.epoch))
-+		epoch = epoch_data.epoch->data;
-+
-+	return epoch;
-+}
-+
-+/*
-+ * Register an epoch notifier
-+ *
-+ * Allocate a notifier ID and provide the address to the epoch. If the address
-+ * has not being allocated yet (this is the first call to register a notifier)
-+ * this will allocate the page holding the epoch. If we have reached the limit
-+ * of notifiers it will fail.
-+ */
-+int rng_register_epoch_notifier(struct rng_epoch_notifier *notifier)
-+{
-+	unsigned long flags;
-+	u8 new_id;
-+
-+	if (!notifier)
-+		return -EINVAL;
-+
-+	spin_lock_irqsave(&epoch_data.lock, flags);
-+	new_id = bitmap_find_free_region(epoch_data.notifiers, RNG_EPOCH_NOTIFIER_NR_BITS, 0);
-+	if (new_id < 0)
-+		goto err_no_id;
-+	spin_unlock_irqrestore(&epoch_data.lock, flags);
-+
-+	notifier->id = new_id;
-+	notifier->epoch = epoch_data.epoch;
-+	return 0;
-+
-+err_no_id:
-+	spin_unlock_irqrestore(&epoch_data.lock, flags);
-+	return -ENOMEM;
-+}
-+EXPORT_SYMBOL_GPL(rng_register_epoch_notifier);
-+
-+/*
-+ * Unregister an epoch notifier
-+ *
-+ * This will release the notifier ID previously allocated through
-+ * `rng_register_epoch_notifier`.
-+ */
-+int rng_unregister_epoch_notifier(struct rng_epoch_notifier *notifier)
-+{
-+	unsigned long flags;
-+
-+	if (!notifier)
-+		return -EINVAL;
-+
-+	spin_lock_irqsave(&epoch_data.lock, flags);
-+	bitmap_clear(epoch_data.notifiers, notifier->id, 1);
-+	spin_unlock_irqrestore(&epoch_data.lock, flags);
-+
-+	notifier->epoch = NULL;
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(rng_unregister_epoch_notifier);
-+
- /* Used by crng_reseed() and crng_make_state() to extract a new seed from the input pool. */
- static void extract_entropy(void *buf, size_t len);
+ static int probe_common(struct virtio_device *vdev)
+ {
+ 	int err, index;
+@@ -151,18 +320,22 @@ static int probe_common(struct virtio_device *vdev)
+ 	};
+ 	vdev->priv = vi;
  
-@@ -344,6 +479,14 @@ static void crng_make_state(u32 chacha_state[CHACHA_STATE_WORDS],
- 			return;
- 	}
+-	/* We expect a single virtqueue. */
+-	vi->vq = virtio_find_single_vq(vdev, random_recv_done, "input");
+-	if (IS_ERR(vi->vq)) {
+-		err = PTR_ERR(vi->vq);
++	vi->has_leakqs = virtio_has_feature(vdev, VIRTIO_RNG_F_LEAK);
++	err = init_virtqueues(vi, vdev);
++	if (err)
+ 		goto err_find;
+-	}
  
-+	/*
-+	 * If the epoch has changed we reseed.
-+	 */
-+	if (unlikely(READ_ONCE(base_crng.cached_epoch) != get_epoch())) {
-+		WRITE_ONCE(base_crng.cached_epoch, get_epoch());
-+		crng_reseed(NULL);
+ 	virtio_device_ready(vdev);
+ 
+ 	/* we always have a pending entropy request */
+ 	request_entropy(vi);
+ 
++	if (vi->has_leakqs) {
++		/* we always have entropy-leak requests pending */
++		add_entropy_leak_requests(vi, &vi->leakq[0]);
++		add_entropy_leak_requests(vi, &vi->leakq[1]);
 +	}
 +
- 	local_lock_irqsave(&crngs.lock, flags);
- 	crng = raw_cpu_ptr(&crngs);
+ 	return 0;
  
-@@ -888,6 +1031,8 @@ void __init random_init(void)
- 	_mix_pool_bytes(&entropy, sizeof(entropy));
- 	add_latent_entropy();
+ err_find:
+@@ -245,7 +418,13 @@ static const struct virtio_device_id id_table[] = {
+ 	{ 0 },
+ };
  
-+	epoch_data.epoch = (struct rand_epoch_data *)get_zeroed_page(GFP_KERNEL);
-+
- 	/*
- 	 * If we were initialized by the cpu or bootloader before jump labels
- 	 * are initialized, then we should enable the static branch here, where
-@@ -1528,6 +1673,8 @@ static long random_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
- 			return -ENODATA;
- 		crng_reseed(NULL);
- 		return 0;
-+	case RNDEPOCH:
-+		return create_epoch_fd();
- 	default:
- 		return -EINVAL;
- 	}
-diff --git a/include/linux/random.h b/include/linux/random.h
-index b0a940af4fff..0fdacf4ee8aa 100644
---- a/include/linux/random.h
-+++ b/include/linux/random.h
-@@ -161,4 +161,32 @@ int random_online_cpu(unsigned int cpu);
- extern const struct file_operations random_fops, urandom_fops;
- #endif
- 
-+
-+/*
-+ * Constants that define the format of the epoch value.
-+ *
-+ * Currently we use a 8/24 split for epoch values. The lower 24 bits are used
-+ * for the epoch counter and the 8 remaining are used for the notifier ID.
-+ */
-+#define RNG_EPOCH_NOTIFIER_NR_BITS 8
-+#define RNG_EPOCH_COUNTER_SHIFT 0
-+#define RNG_EPOCH_COUNTER_MASK GENMASK(23, 0)
-+#define RNG_EPOCH_ID_SHIFT 24
-+#define RNG_EPOCH_ID_MASK GENMASK(31, 24)
-+
-+/*
-+ * An epoch notifier is a system that can report entropy leak events.
-+ * Notifiers receive a unique identifier and the address where they will write
-+ * a new epoch when an entropy leak happens.
-+ */
-+struct rng_epoch_notifier {
-+	/* unique ID of the notifier */
-+	u8 id;
-+	/* pointer to epoch data */
-+	struct rand_epoch_data *epoch;
++static unsigned int features[] = {
++	VIRTIO_RNG_F_LEAK,
 +};
 +
-+int rng_register_epoch_notifier(struct rng_epoch_notifier *notifier);
-+int rng_unregister_epoch_notifier(struct rng_epoch_notifier *notifier);
-+
- #endif /* _LINUX_RANDOM_H */
-diff --git a/include/uapi/linux/random.h b/include/uapi/linux/random.h
-index e744c23582eb..f79d93820bdd 100644
---- a/include/uapi/linux/random.h
-+++ b/include/uapi/linux/random.h
-@@ -38,6 +38,9 @@
- /* Reseed CRNG.  (Superuser only.) */
- #define RNDRESEEDCRNG	_IO( 'R', 0x07 )
+ static struct virtio_driver virtio_rng_driver = {
++	.feature_table = features,
++	.feature_table_size = ARRAY_SIZE(features),
+ 	.driver.name =	KBUILD_MODNAME,
+ 	.driver.owner =	THIS_MODULE,
+ 	.id_table =	id_table,
+diff --git a/include/uapi/linux/virtio_rng.h b/include/uapi/linux/virtio_rng.h
+index c4d5de896f0c..d9774951547e 100644
+--- a/include/uapi/linux/virtio_rng.h
++++ b/include/uapi/linux/virtio_rng.h
+@@ -5,4 +5,7 @@
+ #include <linux/virtio_ids.h>
+ #include <linux/virtio_config.h>
  
-+/* Get a file descriptor for the RNG generation page. */
-+#define RNDEPOCH	_IO('R', 0x08)
++/* The feature bitmap for virtio entropy device */
++#define VIRTIO_RNG_F_LEAK 0
 +
- struct rand_pool_info {
- 	int	entropy_count;
- 	int	buf_size;
-@@ -55,4 +58,12 @@ struct rand_pool_info {
- #define GRND_RANDOM	0x0002
- #define GRND_INSECURE	0x0004
- 
-+/*
-+ * The epoch type exposed through /dev/(u)random to notify user-space
-+ * PRNGs that need to re-seed
-+ */
-+struct rand_epoch_data {
-+	__u32 data;
-+};
-+
- #endif /* _UAPI_LINUX_RANDOM_H */
+ #endif /* _LINUX_VIRTIO_RNG_H */
 -- 
 2.40.1
 
