@@ -2,120 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 836327859AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 15:45:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD59D7859B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 15:49:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236291AbjHWNpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 09:45:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58916 "EHLO
+        id S235936AbjHWNtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 09:49:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236283AbjHWNpg (ORCPT
+        with ESMTP id S230357AbjHWNtI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 09:45:36 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 618EFCDF;
-        Wed, 23 Aug 2023 06:45:30 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-68a529e1974so2418587b3a.3;
-        Wed, 23 Aug 2023 06:45:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692798330; x=1693403130;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Qqdn+eOwDUqSX9HrghP3tS5DzqU2avN1+WRRwdx99Js=;
-        b=hLJpuKTtjaONqbib32Jk9AKS4bEsu90BjNMcRCBCALCCDiXJJ6f/QApHOHP4pdA6za
-         RkwcUjmdj9A/+GiWCo+Pcp5PpMuXHlPXUIV5YsHb5/UPvrs03FFfummHqI6laWILo8ZI
-         WBLHLeZjt0aJBCowoV1hphfhH0sL4biT1q40I+/vLazZWFC6oVyZeDwc36Cs25WF5gWY
-         +cz218TOqpbtzqTR5vikezBoc41cniCnLm+ZeAXeT5BeV6U424j0I4VUp6Yk6r9uEWmF
-         Egz+mk+f0+Rydbmu5zMNLWG+vwx3/TqbbemZeK065uSCvZF5rjb3dnMAJLcGEAuTAXeQ
-         fUgA==
+        Wed, 23 Aug 2023 09:49:08 -0400
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75EB519A;
+        Wed, 23 Aug 2023 06:49:03 -0700 (PDT)
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-523b066d7ceso6980283a12.2;
+        Wed, 23 Aug 2023 06:49:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692798330; x=1693403130;
+        d=1e100.net; s=20221208; t=1692798542; x=1693403342;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Qqdn+eOwDUqSX9HrghP3tS5DzqU2avN1+WRRwdx99Js=;
-        b=JLosluxucioQhD9DUg7HS4xGqnPyLprAP5EGGYuC5KP/5MLnZ7AdKGeAKK4DPvtyeR
-         JelGAgsGnMlxnc42n/KEgd3rLspWzoPMFxIbFE+rj64/qgs09JhYx25QrmciwGon2Yv4
-         CQXDfK9B10T8OoxM3Smx06AxU3E2lSIIq7dh4CjYQ2igtB4EBvSVIenm/ALjP/KloPk2
-         HhYa3hOPvo1ONj/0Lwo5Pk75a2ToW9LLn6ThMqeiaarTcSfLaqIiUnWJ23pwk+w6BfUH
-         mNwXqxDTnTrSVVWvbngZTLtnzP8s2F9Cn+e1Dlqwgo7ghVkUpKrHCTARrvC8x+djBL+s
-         KXeg==
-X-Gm-Message-State: AOJu0YwcGsMpdwrYRiTqNUQfJstEClLN2Mp53iNwcYSGQMBnrZ61cSuv
-        HB6A4LI9Dijvbj8K9mCv9v0=
-X-Google-Smtp-Source: AGHT+IE+ty57Edcmaz1RstJ5Tca3n71GgSn53PxAW5EcMatyag/vRjKbAoWbWHlWnvympXNgFwUCog==
-X-Received: by 2002:a05:6a00:b55:b0:68b:a137:373f with SMTP id p21-20020a056a000b5500b0068ba137373fmr3914064pfo.33.1692798329675;
-        Wed, 23 Aug 2023 06:45:29 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id n15-20020aa78a4f000000b00682a27905b9sm6003348pfa.13.2023.08.23.06.45.28
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8HVeMF2i6Eu6fNCP7qdp68KyRQC3Cd1eZ1vG5fM2PLY=;
+        b=Pebi1r6Wjo1oGUHsZ+sUedx/YCVC2nX3BDach1wOr1Nw/L220u2Bjuu60XPSQ5uAHE
+         lAiJReqfwztBwHhrcL9s2yufeNq4AxpbQzg6ZVwK25zOvNqV5huFiVwgbPe5kdrn2XHh
+         bWJF2f31RV2b4+LCFaxfMcchMXdA79uG3K2tUqMGS94VHF/MXYP4V2l61W+eh2cfjuDv
+         8cH0zGQ+Wq11euee3i8dZjMH/AykK1ysTZXtPXgWK+M3njS0mbAziWYAfvPGOFBZRQRa
+         0tG6wQBXJ2ouERGlzNuuU3kEfeRhCdVysBZEsYWlwU34bjkYoxrbEH/fMi9wFmMiYYFB
+         YasQ==
+X-Gm-Message-State: AOJu0YxytPYgK5En0HFYaTGWJdpiSTwwU3qGsYcddkXimxBkKJu0Mbw2
+        dcpneAWU/Sj03jlojKD250A=
+X-Google-Smtp-Source: AGHT+IGpOg7sJlI/rEq2t0qmOj+PEzxbPvOFJibDR6ujnw/tubbxpv33784EHtRDeE4uTjaM2562xg==
+X-Received: by 2002:a05:6402:1657:b0:529:fa63:ef80 with SMTP id s23-20020a056402165700b00529fa63ef80mr8682360edx.28.1692798541666;
+        Wed, 23 Aug 2023 06:49:01 -0700 (PDT)
+Received: from gmail.com (fwdproxy-cln-000.fbsv.net. [2a03:2880:31ff::face:b00c])
+        by smtp.gmail.com with ESMTPSA id y2-20020aa7d502000000b00529fb5fd3b9sm7565236edq.80.2023.08.23.06.49.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Aug 2023 06:45:29 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 23 Aug 2023 06:45:28 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     quic_huliu@quicinc.com
-Cc:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_fenglinw@quicinc.com,
-        subbaram@quicinc.com
-Subject: Re: [PATCH] usb: typec: qcom: check regulator enable status before
- disabling it
-Message-ID: <84beb263-306e-4b93-8bf4-291085584e06@roeck-us.net>
-References: <20230823-qcom-tcpc-v1-1-fa81a09ca056@quicinc.com>
+        Wed, 23 Aug 2023 06:49:01 -0700 (PDT)
+Date:   Wed, 23 Aug 2023 06:48:59 -0700
+From:   Breno Leitao <leitao@debian.org>
+To:     Gabriel Krisman Bertazi <krisman@suse.de>
+Cc:     sdf@google.com, axboe@kernel.dk, asml.silence@gmail.com,
+        willemdebruijn.kernel@gmail.com, martin.lau@linux.dev,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, io-uring@vger.kernel.org, kuba@kernel.org,
+        pabeni@redhat.com
+Subject: Re: [PATCH v3 8/9] io_uring/cmd: BPF hook for getsockopt cmd
+Message-ID: <ZOYOS87mCmcYurkR@gmail.com>
+References: <20230817145554.892543-1-leitao@debian.org>
+ <20230817145554.892543-9-leitao@debian.org>
+ <87pm3l32rk.fsf@suse.de>
+ <ZOMrD1DHeys0nFwt@gmail.com>
+ <875y58nx9v.fsf@suse.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230823-qcom-tcpc-v1-1-fa81a09ca056@quicinc.com>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+In-Reply-To: <875y58nx9v.fsf@suse.de>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
         FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 23, 2023 at 05:15:53PM +0800, Hui Liu via B4 Relay wrote:
-> From: Hui Liu <quic_huliu@quicinc.com>
+On Mon, Aug 21, 2023 at 01:03:08PM -0400, Gabriel Krisman Bertazi wrote:
+> Breno Leitao <leitao@debian.org> writes:
 > 
-> Check regulator enable status before disabling it to avoid
-> unbalanced regulator disable warnings.
+> > On Thu, Aug 17, 2023 at 03:08:47PM -0400, Gabriel Krisman Bertazi wrote:
+> >> Breno Leitao <leitao@debian.org> writes:
+> >> 
+> >> > Add BPF hook support for getsockopts io_uring command. So, BPF cgroups
+> >> > programs can run when SOCKET_URING_OP_GETSOCKOPT command is executed
+> >> > through io_uring.
+> >> >
+> >> > This implementation follows a similar approach to what
+> >> > __sys_getsockopt() does, but, using USER_SOCKPTR() for optval instead of
+> >> > kernel pointer.
+> >> >
+> >> > Signed-off-by: Breno Leitao <leitao@debian.org>
+> >> > ---
+> >> >  io_uring/uring_cmd.c | 18 +++++++++++++-----
+> >> >  1 file changed, 13 insertions(+), 5 deletions(-)
+> >> >
+> >> > diff --git a/io_uring/uring_cmd.c b/io_uring/uring_cmd.c
+> >> > index a567dd32df00..9e08a14760c3 100644
+> >> > --- a/io_uring/uring_cmd.c
+> >> > +++ b/io_uring/uring_cmd.c
+> >> > @@ -5,6 +5,8 @@
+> >> >  #include <linux/io_uring.h>
+> >> >  #include <linux/security.h>
+> >> >  #include <linux/nospec.h>
+> >> > +#include <linux/compat.h>
+> >> > +#include <linux/bpf-cgroup.h>
+> >> >  
+> >> >  #include <uapi/linux/io_uring.h>
+> >> >  #include <uapi/asm-generic/ioctls.h>
+> >> > @@ -184,17 +186,23 @@ static inline int io_uring_cmd_getsockopt(struct socket *sock,
+> >> >  	if (err)
+> >> >  		return err;
+> >> >  
+> >> > -	if (level == SOL_SOCKET) {
+> >> > +	err = -EOPNOTSUPP;
+> >> > +	if (level == SOL_SOCKET)
+> >> >  		err = sk_getsockopt(sock->sk, level, optname,
+> >> >  				    USER_SOCKPTR(optval),
+> >> >  				    KERNEL_SOCKPTR(&optlen));
+> >> > -		if (err)
+> >> > -			return err;
+> >> >  
+> >> > +	if (!(issue_flags & IO_URING_F_COMPAT))
+> >> > +		err = BPF_CGROUP_RUN_PROG_GETSOCKOPT(sock->sk, level,
+> >> > +						     optname,
+> >> > +						     USER_SOCKPTR(optval),
+> >> > +						     KERNEL_SOCKPTR(&optlen),
+> >> > +						     optlen, err);
+> >> > +
+> >> > +	if (!err)
+> >> >  		return optlen;
+> >> > -	}
+> >> 
+> >> Shouldn't you call sock->ops->getsockopt for level!=SOL_SOCKET prior to
+> >> running the hook?
+> >> Before this patch, it would bail out with EOPNOTSUPP,
+> >> but now the bpf hook gets called even for level!=SOL_SOCKET, which
+> >> doesn't fit __sys_getsockopt. Am I misreading the code?
+> >
+> > Not really, sock->ops->getsockopt() does not suport sockptr_t, but
+> > __user addresses, differently from setsockopt()
+> >
+> >           int             (*setsockopt)(struct socket *sock, int level,
+> >                                         int optname, sockptr_t optval,
+> >                                         unsigned int optlen);
+> >           int             (*getsockopt)(struct socket *sock, int level,
+> >                                         int optname, char __user *optval, int __user *optlen);
+> >
+> > In order to be able to call sock->ops->getsockopt(), the callback
+> > function will need to accepted sockptr.
 > 
-> Signed-off-by: Hui Liu <quic_huliu@quicinc.com>
+> So, it seems you won't support !SOL_SOCKETs here.  Then, I think you
+> shouldn't call the hook for those sockets. My main concern is that we
+> remain compatible to __sys_getsockopt when invoking the hook.
+> 
+> I think you should just have the following as the very first thing in
+> the function (but after the security_ check).
+> 
+> if (level != SOL_SOCKET)
+>    return -EOPNOTSUPP;
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-
-> ---
->  drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c b/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c
-> index bb0b8479d80f..ca616b17b5b6 100644
-> --- a/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c
-> +++ b/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c
-> @@ -422,7 +422,8 @@ static int qcom_pmic_typec_pdphy_disable(struct pmic_typec_pdphy *pmic_typec_pdp
->  	ret = regmap_write(pmic_typec_pdphy->regmap,
->  			   pmic_typec_pdphy->base + USB_PDPHY_EN_CONTROL_REG, 0);
->  
-> -	regulator_disable(pmic_typec_pdphy->vdd_pdphy);
-> +	if (regulator_is_enabled(pmic_typec_pdphy->vdd_pdphy))
-> +		regulator_disable(pmic_typec_pdphy->vdd_pdphy);
->  
->  	return ret;
->  }
-> 
-> ---
-> base-commit: bbb9e06d2c6435af9c62074ad7048910eeb2e7bc
-> change-id: 20230822-qcom-tcpc-d41954ac65fa
-> 
-> Best regards,
-> -- 
-> Hui Liu <quic_huliu@quicinc.com>
-> 
+Gotcha. I will update. Thanks!
