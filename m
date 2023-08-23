@@ -2,56 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C26B785F14
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 20:01:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5A97785F1C
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 20:03:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237991AbjHWSBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 14:01:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55794 "EHLO
+        id S236964AbjHWSDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 14:03:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236766AbjHWSBX (ORCPT
+        with ESMTP id S237993AbjHWSDe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 14:01:23 -0400
+        Wed, 23 Aug 2023 14:03:34 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7040F10CC;
-        Wed, 23 Aug 2023 11:01:21 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0890AE59;
+        Wed, 23 Aug 2023 11:03:32 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0359D61493;
-        Wed, 23 Aug 2023 18:01:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 171C7C433CB;
-        Wed, 23 Aug 2023 18:01:20 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9376465113;
+        Wed, 23 Aug 2023 18:03:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65C5FC433C9;
+        Wed, 23 Aug 2023 18:03:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692813680;
-        bh=e6v4G4jDId6hSaMFJ0Kx8OgZafHgAdprexUAH84vTj4=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=dFsqugUGl0tq8Gl4euWZzkD93IAHJBfTd6WBCPx6rBdtKFjNK6oU+7ieeF09hHwh6
-         NiJtkPHDdoObFrFepffIOZOsHVHGuNgFXnnCFspcKmtCwklnMlJsxtR5/TXdQUnLMk
-         cJcbHeXlucaD9eXCQb+aBC38vu5xQcrjDDQ2jpEkwgUGrDIRQSrJkP0Gy5gL6uFZZB
-         tYuPa2l/kZzaH9PrL12pHbMbTq70I4qfYguOyB6GGNSAXFAeggM5UgzmOrqiHOqEnS
-         YlHQhCn+VHHFOqE6/Sb/S1wYzxefYWtN4ni2vu9cx7KfYxqzyhQzsgecmrkMTWPoiB
-         oG4Af56/cKiow==
-Message-ID: <a14cdd584283d32a3642658aaed6c98c.sboyd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1692813810;
+        bh=cLsrdluLa3UfuSk6odVJcvVGoDHlOfLYgy6k8Inaock=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pR6SyvVWfeSZvt4t3tidZtFCY5Hddij8mUCsXhVyVkVrrdzlh4RzEO6iLGs6ba2fq
+         +OaYOx4a0wl1FDBByC8VK0kLuqydjUp5bE4jvUUEN9QYl4b4OW2I50sFgidaw0AWNE
+         jZHDNVc06rdj1Ydo5ypA8xKOBtO9Wj+Jqn5tl5sXeRlYeaJyu/ydaybjMblmUb/U9C
+         lJTbFvrcvCJhfGLLM74z/kS0w+YzMxIvvFUP95wsVG6NJnKyrinQ1HHR4io1b/5k/o
+         Sy80REl/zqSP2gjFVnKO68B2TEmt3aXoQBeVANHmWk1ZkNSdFVEkoiL88pHBI1OtT9
+         YT23EIt8+FJ1w==
+Date:   Wed, 23 Aug 2023 14:03:28 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     "Deucher, Alexander" <Alexander.Deucher@amd.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "Kuehling, Felix" <Felix.Kuehling@amd.com>,
+        "Koenig, Christian" <Christian.Koenig@amd.com>,
+        Mike Lothian <mike@fireburn.co.uk>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        "airlied@gmail.com" <airlied@gmail.com>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
+Subject: Re: [PATCH AUTOSEL 6.4 09/11] drm/amdkfd: ignore crat by default
+Message-ID: <ZOZJ8LmPgd5PqQgf@sashalap>
+References: <20230822113553.3551206-1-sashal@kernel.org>
+ <20230822113553.3551206-9-sashal@kernel.org>
+ <BN9PR12MB5146FBE3E3940F3AB59EA79DF71FA@BN9PR12MB5146.namprd12.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <ZOXLNliOogkNyJYQ@e120937-lin>
-References: <20230811161446.636253-1-cristian.marussi@arm.com> <20230811161446.636253-2-cristian.marussi@arm.com> <17bd83d833b59fd4f64eec433589fa55.sboyd@kernel.org> <ZOXLNliOogkNyJYQ@e120937-lin>
-Subject: Re: [PATCH 1/6] firmware: arm_scmi: Simplify enable/disable Clock operations
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        sudeep.holla@arm.com, james.quinlan@broadcom.com,
-        f.fainelli@gmail.com, vincent.guittot@linaro.org,
-        etienne.carriere@linaro.org, peng.fan@oss.nxp.com,
-        chuck.cannon@nxp.com, souvik.chakravarty@arm.com,
-        nicola.mazzucato@arm.com,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-clk@vger.kernel.org
-To:     Cristian Marussi <cristian.marussi@arm.com>
-Date:   Wed, 23 Aug 2023 11:01:17 -0700
-User-Agent: alot/0.10
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <BN9PR12MB5146FBE3E3940F3AB59EA79DF71FA@BN9PR12MB5146.namprd12.prod.outlook.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -62,91 +65,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Cristian Marussi (2023-08-23 02:02:46)
-> On Tue, Aug 22, 2023 at 01:17:15PM -0700, Stephen Boyd wrote:
-> > Quoting Cristian Marussi (2023-08-11 09:14:41)
-> > > Add a param to Clock enable/disable operation to ask for atomic opera=
-tion
-> > > and remove _atomic version of such operations.
-> >=20
->=20
-> Hi,
+On Tue, Aug 22, 2023 at 03:41:17PM +0000, Deucher, Alexander wrote:
+>[Public]
+>
+>> -----Original Message-----
+>> From: Sasha Levin <sashal@kernel.org>
+>> Sent: Tuesday, August 22, 2023 7:36 AM
+>> To: linux-kernel@vger.kernel.org; stable@vger.kernel.org
+>> Cc: Deucher, Alexander <Alexander.Deucher@amd.com>; Kuehling, Felix
+>> <Felix.Kuehling@amd.com>; Koenig, Christian <Christian.Koenig@amd.com>;
+>> Mike Lothian <mike@fireburn.co.uk>; Sasha Levin <sashal@kernel.org>; Pan,
+>> Xinhui <Xinhui.Pan@amd.com>; airlied@gmail.com; daniel@ffwll.ch; amd-
+>> gfx@lists.freedesktop.org; dri-devel@lists.freedesktop.org
+>> Subject: [PATCH AUTOSEL 6.4 09/11] drm/amdkfd: ignore crat by default
+>>
+>> From: Alex Deucher <alexander.deucher@amd.com>
+>>
+>> [ Upstream commit a6dea2d64ff92851e68cd4e20a35f6534286e016 ]
+>>
+>> We are dropping the IOMMUv2 path, so no need to enable this.
+>> It's often buggy on consumer platforms anyway.
+>>
+>
+>This is not needed for stable.
 
-Yo
+I'll drop all the patches you've pointed out, thanks!
 
->=20
-> > Why?
-> >=20
->=20
-> :D, given that the 2 flavours of SCMI enable/disable ops (and the upcoming
-> state_get) just differ in their operating mode (atomic or not) and the
-> Clock framework in turn wrap such calls into 4 related and explicitly
-> named clk_ops (scmi_clock_enable/scmi_clock_atomic_enable etc) that hint
-> at what is being done, seemed to me reasonable to reduce the churn and
-> remove a bit of code wrappers in favour of a param.
-
-Please add these extra details to the commit text about why we're making
-the change.
-
->=20
-> > >=20
-> > > No functional change.
-> > >=20
-> > > CC: Michael Turquette <mturquette@baylibre.com>
-> > > CC: Stephen Boyd <sboyd@kernel.org>
-> > > CC: linux-clk@vger.kernel.org
-> > > Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
-> > > ---
-> > >  drivers/clk/clk-scmi.c            |  8 ++++----
-> > >  drivers/firmware/arm_scmi/clock.c | 24 ++++++------------------
-> > >  include/linux/scmi_protocol.h     |  9 ++++-----
-> > >  3 files changed, 14 insertions(+), 27 deletions(-)
-> > >=20
-> > > diff --git a/drivers/clk/clk-scmi.c b/drivers/clk/clk-scmi.c
-> > > index 2c7a830ce308..ff003083e592 100644
-> > > --- a/drivers/clk/clk-scmi.c
-> > > +++ b/drivers/clk/clk-scmi.c
-> > > @@ -78,28 +78,28 @@ static int scmi_clk_enable(struct clk_hw *hw)
-> > >  {
-> > >         struct scmi_clk *clk =3D to_scmi_clk(hw);
-> > > =20
-> > > -       return scmi_proto_clk_ops->enable(clk->ph, clk->id);
-> > > +       return scmi_proto_clk_ops->enable(clk->ph, clk->id, false);
-> > >  }
-> > > =20
-> > >  static void scmi_clk_disable(struct clk_hw *hw)
-> > >  {
-> > >         struct scmi_clk *clk =3D to_scmi_clk(hw);
-> > > =20
-> > > -       scmi_proto_clk_ops->disable(clk->ph, clk->id);
-> > > +       scmi_proto_clk_ops->disable(clk->ph, clk->id, false);
-> >=20
-> > I enjoyed how it was before because I don't know what 'false' means
-> > without looking at the ops now.
-> >=20
->=20
-> Yes indeed, I can drop this and rework if you prefer to maintain the old
-> API calls, but this would mean that whenever we'll add new atomic
-> flavour to some new SCMI clk operations we'll have to add 2 ops instead
-> of a parametrized one...this is what would happen also in this series
-> with state_get (and what really triggered this refactor)
->=20
-> (and please consider that on the SCMI side, for testing purposes, I would
-> prefer to expose always both atomic and non-atomic flavours even if NOT
-> both actively used by the Clock framework...like state_get() that can only
-> be atomic for Clock frmwk...)
->=20
-
-Perhaps we need a local variable to make it more readable.
-
-	static int scmi_clk_enable(struct clk_hw *hw)
-	{
-	       bool can_sleep =3D false;
-	       struct scmi_clk *clk =3D to_scmi_clk(hw);
-
-	       return scmi_proto_clk_ops->enable(clk->ph, clk->id, can_sleep);
-	}
-
-This let's the reader quickly understand what the parameter means. I'm
-OK with adding the function parameter, but a plain 'true' or 'false'
-doesn't help with clarity.
+-- 
+Thanks,
+Sasha
