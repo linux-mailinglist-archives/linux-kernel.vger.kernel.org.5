@@ -2,151 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 930A7784E45
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 03:36:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE2E4784E49
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 03:37:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232046AbjHWBg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 21:36:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37330 "EHLO
+        id S232054AbjHWBh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 21:37:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230025AbjHWBgZ (ORCPT
+        with ESMTP id S230025AbjHWBhz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 21:36:25 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 997BCE45;
-        Tue, 22 Aug 2023 18:36:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692754582; x=1724290582;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=3VidKf/oV/xeJfywrfMmJnZGabtP4bZ552VU4txec74=;
-  b=QpkFfBwyrkDVTZCROyl5xpQwULZW3yZ9+yDD6FUGu1CGxli+mgpYBomU
-   H1umy4ZGFdiUJzF91tir5l2BuSTf5EIjhqAXsHZFbbdLP5GazdWabuQpJ
-   Z5asIb3s/Om8ezJUBTzFIMcXOYLh4jXeeRUM145GDDHuR0JPAtIZp/nzA
-   oWwScKBJ/qd68ZLfHcclRjMUN/pHMHwx9UcZhiiZPnBkhl/SGkdyyHvNq
-   6Gv25P256RdDOAOBeLpL1k9BOnEeziT5Bvhp9W5JFAxjfs+EkSyA5chNh
-   0SLs9OnXzVldj6kOUIM02BUIOomlPYCBJgdch98fdv8iKPnwq4iB/ypJL
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10810"; a="364218626"
-X-IronPort-AV: E=Sophos;i="6.01,194,1684825200"; 
-   d="scan'208";a="364218626"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2023 18:36:22 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10810"; a="806496697"
-X-IronPort-AV: E=Sophos;i="6.01,194,1684825200"; 
-   d="scan'208";a="806496697"
-Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 22 Aug 2023 18:36:16 -0700
-Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qYcn9-0000iP-1O;
-        Wed, 23 Aug 2023 01:36:15 +0000
-Date:   Wed, 23 Aug 2023 09:35:50 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Tao Zhang <quic_taozha@quicinc.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Konrad Dybcio <konradybcio@gmail.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        Tao Zhang <quic_taozha@quicinc.com>,
-        Jinlong Mao <quic_jinlmao@quicinc.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Tingwei Zhang <quic_tingweiz@quicinc.com>,
-        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
-        Trilok Soni <quic_tsoni@quicinc.com>,
-        Hao Zhang <quic_hazha@quicinc.com>,
-        linux-arm-msm@vger.kernel.org, andersson@kernel.org
-Subject: Re: [PATCH v8 04/13] coresight-tpda: Add DSB dataset support
-Message-ID: <202308230927.JBX1uKOE-lkp@intel.com>
-References: <1692681973-20764-5-git-send-email-quic_taozha@quicinc.com>
+        Tue, 22 Aug 2023 21:37:55 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 037BEE46
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 18:37:54 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id af79cd13be357-76d92a5e652so302134485a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 18:37:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692754673; x=1693359473;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zraoR6noj6EHn4OxAsMlxddazRXBRd6htkpsGGslKZU=;
+        b=K2F1f6F5NV6yWhcUB4eipqri8/M+alccOsCDQojhqAzNeJTioZeToDOplHkwDBxogM
+         HOqfCXF2QiKC6Hv79y3LsFgI3IRRkWbP+lakXdpoG+wPkVHiXyrpkeAKX5FgcMw9Ez8z
+         l9ETtSrsqI55m3C+VgqGAtmeuh5gAA/utlp5PFzIG4ywdZtYCXnbMw+vfxw1u71LdbrI
+         QHN5eFjFW69TcN3+ORtjwsOlyEh8KlUs1cb8sUPkoYAXo4Rvdb3CKtCudksgGMJd/JYR
+         vdnc+AWryCmHRqeBjhbBXWoTSpmKwSdnT0C2DXReXCO1NXziTOPmoNoEAI2yuHiVZuId
+         MCKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692754673; x=1693359473;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zraoR6noj6EHn4OxAsMlxddazRXBRd6htkpsGGslKZU=;
+        b=c0Sf4LyCRsDHo3UHIFc4Wkiqw/5nqgJL4/OJmtcDBEHxLp7BVLWFo2E8Fz/Fbjf7h4
+         sUsrffzlz9ZXreP4NiL+833hD69kqwV9qAQnfu322vILFD/GOBRshxkta+kTl384sxJd
+         41rv+FZj90x9Wc/wXPu88epS0OICB3XmGvRdAVXdOcyIajTcw8jP5MdtqKuf6HPOg7in
+         V0yZxoLs/uNsedqvzA4B7RpZEx3X3z99sL24+4DtIfuTgZD5W/i++falk/OoaDXrb0z6
+         Dp6qsIiJ5mP7Z2rzN4QMyOPnhDg7Q9fzXUAsDPhgvZpXQvo/Dp01KQRFTKTfgsEVf1er
+         74rQ==
+X-Gm-Message-State: AOJu0YwZ6pDXfZZyQZuP3pX/vBCDQZHQyNZIi0x68KNLFI6T1+ZXfoHt
+        EuAxC9TY0Im5Et2QwpjKyZV1LPNLfkU=
+X-Google-Smtp-Source: AGHT+IEFnJmxAy1A6K2ykvxgVt1zMpjpe2n8UH/M1oai/FvYg42sxPZS3DhfOIQlGUv0K6m8eDqtdw==
+X-Received: by 2002:a05:622a:1049:b0:403:b869:9d37 with SMTP id f9-20020a05622a104900b00403b8699d37mr16290637qte.0.1692754673007;
+        Tue, 22 Aug 2023 18:37:53 -0700 (PDT)
+Received: from alolivei-thinkpadt480s.gru.csb ([2804:14c:bf20:86d6:7871:f7e9:8a15:865a])
+        by smtp.gmail.com with ESMTPSA id oo23-20020a05620a531700b0076c98dad91dsm3609665qkn.120.2023.08.22.18.37.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Aug 2023 18:37:52 -0700 (PDT)
+Date:   Tue, 22 Aug 2023 22:37:48 -0300
+From:   Alexon Oliveira <alexondunkan@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     artyn@welchs.me.uk, manohar.vanga@gmail.com,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: [PATCH] staging: vme_user: fix check unbalaced braces and
+ misspellings
+Message-ID: <ZOVi7BC4J1PeIjpN@alolivei-thinkpadt480s.gru.csb>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1692681973-20764-5-git-send-email-quic_taozha@quicinc.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tao,
+Fixed all CHECK: Unbalanced braces around else statement,
+CHECK: braces {} should be used on all arms of this statement,
+and CHECK: 'specificed' may be misspelled - perhaps 'specified'?
+as reported by checkpatch to adhere to the Linux kernel
+coding-style guidelines.
 
-kernel test robot noticed the following build warnings:
+Signed-off-by: Alexon Oliveira <alexondunkan@gmail.com>
+---
+ drivers/staging/vme_user/vme.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-[auto build test WARNING on robh/for-next]
-[also build test WARNING on linus/master v6.5-rc7 next-20230822]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Tao-Zhang/coresight-tpdm-Remove-the-unnecessary-lock/20230822-132946
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
-patch link:    https://lore.kernel.org/r/1692681973-20764-5-git-send-email-quic_taozha%40quicinc.com
-patch subject: [PATCH v8 04/13] coresight-tpda: Add DSB dataset support
-config: arm64-randconfig-r031-20230823 (https://download.01.org/0day-ci/archive/20230823/202308230927.JBX1uKOE-lkp@intel.com/config)
-compiler: clang version 15.0.7 (https://github.com/llvm/llvm-project.git 8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)
-reproduce: (https://download.01.org/0day-ci/archive/20230823/202308230927.JBX1uKOE-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308230927.JBX1uKOE-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> drivers/hwtracing/coresight/coresight-tpda.c:168:6: warning: variable 'ret' is used uninitialized whenever 'if' condition is false [-Wsometimes-uninitialized]
-           if (atomic_read(&in->dest_refcnt) == 0) {
-               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/hwtracing/coresight/coresight-tpda.c:177:9: note: uninitialized use occurs here
-           return ret;
-                  ^~~
-   drivers/hwtracing/coresight/coresight-tpda.c:168:2: note: remove the 'if' if its condition is always true
-           if (atomic_read(&in->dest_refcnt) == 0) {
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/hwtracing/coresight/coresight-tpda.c:165:9: note: initialize the variable 'ret' to silence this warning
-           int ret;
-                  ^
-                   = 0
-   1 warning generated.
-
-
-vim +168 drivers/hwtracing/coresight/coresight-tpda.c
-
-   159	
-   160	static int tpda_enable(struct coresight_device *csdev,
-   161			       struct coresight_connection *in,
-   162			       struct coresight_connection *out)
-   163	{
-   164		struct tpda_drvdata *drvdata = dev_get_drvdata(csdev->dev.parent);
-   165		int ret;
-   166	
-   167		spin_lock(&drvdata->spinlock);
- > 168		if (atomic_read(&in->dest_refcnt) == 0) {
-   169			ret = __tpda_enable(drvdata, in->dest_port);
-   170			if (!ret) {
-   171				atomic_inc(&in->dest_refcnt);
-   172				dev_dbg(drvdata->dev, "TPDA inport %d enabled.\n", in->dest_port);
-   173			}
-   174		}
-   175	
-   176		spin_unlock(&drvdata->spinlock);
-   177		return ret;
-   178	}
-   179	
-
+diff --git a/drivers/staging/vme_user/vme.c b/drivers/staging/vme_user/vme.c
+index d0366dd3f2b1..1e11047acf54 100644
+--- a/drivers/staging/vme_user/vme.c
++++ b/drivers/staging/vme_user/vme.c
+@@ -1620,7 +1620,7 @@ EXPORT_SYMBOL(vme_lm_get);
+  * @callback: Pointer to callback function called when triggered.
+  * @data: Generic pointer that will be passed to the callback function.
+  *
+- * Attach a callback to the specificed offset into the location monitors
++ * Attach a callback to the specified offset into the location monitors
+  * monitored addresses. A generic pointer is provided to allow data to be
+  * passed to the callback when called.
+  *
+@@ -1655,7 +1655,7 @@ EXPORT_SYMBOL(vme_lm_attach);
+  * @resource: Pointer to VME location monitor resource.
+  * @monitor: Offset to which callback should be removed.
+  *
+- * Remove the callback associated with the specificed offset into the
++ * Remove the callback associated with the specified offset into the
+  * location monitors monitored addresses.
+  *
+  * Return: Zero on success, -EINVAL when provided with an invalid location
+@@ -1866,8 +1866,9 @@ static int __vme_register_driver_bus(struct vme_driver *drv,
+ 		if (vdev->dev.platform_data) {
+ 			list_add_tail(&vdev->drv_list, &drv->devices);
+ 			list_add_tail(&vdev->bridge_list, &bridge->devices);
+-		} else
++		} else {
+ 			device_unregister(&vdev->dev);
++		}
+ 	}
+ 	return 0;
+ 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.41.0
+
