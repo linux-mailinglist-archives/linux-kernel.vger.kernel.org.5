@@ -2,157 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7AD8785E72
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 19:19:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3687B785E75
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 19:20:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237797AbjHWRT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 13:19:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46538 "EHLO
+        id S237801AbjHWRU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 13:20:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237791AbjHWRT0 (ORCPT
+        with ESMTP id S237109AbjHWRU4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 13:19:26 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27555E7E;
-        Wed, 23 Aug 2023 10:19:24 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-51e28cac164so108754a12.1;
-        Wed, 23 Aug 2023 10:19:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692811162; x=1693415962;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=smBNS46SHfccBsCDweoV6A2fiGS6o0dTFw9e1IdcIlY=;
-        b=af6PX9W371+Gy+INbzK5y3ZlkgyS2hrzS6JC0G5vfdXCX53eaDeP5BVAoD+dRoePCU
-         Wo6PG0WZNfg+j9bQlIwPZGvJ9WWTVZReK2LWu9PDu1wgVvGQ+fRFpGu4d/G1f+Sd7h9p
-         eWzD2cgRfL014VR0zFfP0SZfxE7OIlmPwwmlE8NnxVZ+H5xnDGf0mtzQmtkaQ+pZJFtT
-         LDybIoes8XXWMOAi4mEiioChb3SvRke7dNNLcpHtIn2XjVctZhqSXP2QEF0mOsloeHc7
-         kQTisNk6sv22NcPGk4KJpAEJRuzn5HB07s7g9V4ESCCxQksTh5b2sTsxZHcY/HVeVJPT
-         StTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692811162; x=1693415962;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=smBNS46SHfccBsCDweoV6A2fiGS6o0dTFw9e1IdcIlY=;
-        b=EZ4m6SpixbDIU6DgbeuKkcIdanXennknBDz6E9GGsY32haQ2hODclsq4aJhVH0Go2e
-         RwpC3VALyy5qYKXcQjYu0kRvZTzmoALC+RMf2jaTcO2JsnSrF9oUUPL4AQYcls3OZFYT
-         8FukB2RpjyQ3I8vcf/ET6S8a5m613mFRfRTJuKIP5BnjH5zffyU2xX4hLzL+rgqKZimK
-         fH1s0+NhjAZZ0I8+l+fHzRmGNzu7RXU3v1kp3cMCzGP3s6Zusw3sbU8NgrOEIplr3eWP
-         yblzduNsifgipCvA+8yykGkCy2FaOGDSl2+H/UKnLIa5ecKmpJXD4i5y1Ip19QnVu4Sn
-         duYg==
-X-Gm-Message-State: AOJu0YxoHoSnn36W5liwI9vVI+JGQBe2ClZJ/txpznu4/Zf+XwmGSZc6
-        IIpHZj/UHCIzPnZ4slsV6Sqo5sfUU9sNHZrcEws=
-X-Google-Smtp-Source: AGHT+IFxFebLDqOGGbsvZ7f2aTF0WXlhVRnL30siCMn9A7OevM/8iw7zRw5ga73NmRDOCpCxwW3JeaNPxGNqLdknz4M=
-X-Received: by 2002:a05:6402:440f:b0:525:4696:336d with SMTP id
- y15-20020a056402440f00b005254696336dmr16241440eda.8.1692811162423; Wed, 23
- Aug 2023 10:19:22 -0700 (PDT)
+        Wed, 23 Aug 2023 13:20:56 -0400
+Received: from smtp.smtpout.orange.fr (smtp-19.smtpout.orange.fr [80.12.242.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56375E6A
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 10:20:55 -0700 (PDT)
+Received: from [192.168.1.18] ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id YrXFq32vGOQiUYrXFqJe0n; Wed, 23 Aug 2023 19:20:53 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1692811253;
+        bh=YilPLjsAWAxMFRuKLpbH+AIhWQZHyzpkkkrXHbp8NnU=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=p1eGtxNYAJtWoXIYRNkuQU2TmowPauX7I20RNz9Q0sQNKAEiiYqVRh+uyxkR02v1P
+         2hqB5ZgknXzE7eI1sOp75WRgi0oFbp3tTo5StkC2KiMY8hk60RvfuYCqI2HZ5+6Dly
+         5IF7Axj20dlTXNj0OWWU69i6tZow0qvfoQf8a945gCIpq5TqqpTzFZBEpzBwIcHzZ3
+         8T+Blv999CcFiX4vkhvamkGzrNf8q1Ngy7fLkp7f//eKw4G8YslB0sQi86F+VhyaNQ
+         ZIPZjIsuaRBaA4TN+25zUcXsuEUCcVqiQY+Vu9gXN/w5y6Pjf5w4HeFBvvLg+NqRlU
+         9fjuPnoj3lbuQ==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Wed, 23 Aug 2023 19:20:53 +0200
+X-ME-IP: 86.243.2.178
+Message-ID: <ddc14926-45d8-9b20-9523-0fb6afa499b3@wanadoo.fr>
+Date:   Wed, 23 Aug 2023 19:20:49 +0200
 MIME-Version: 1.0
-References: <aeb83832ae61bbf463e1b2e39c1e30c3b227f5a5.1692769396.git.dxu@dxuuu.xyz>
-In-Reply-To: <aeb83832ae61bbf463e1b2e39c1e30c3b227f5a5.1692769396.git.dxu@dxuuu.xyz>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 23 Aug 2023 10:19:10 -0700
-Message-ID: <CAEf4BzbGhhOyeWLuP95K20344aZnQ61TjiQ=scd5TKz_fiP_AQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: Add bpf_object__unpin()
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
-        martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] ALSA: ac97: Fix possible error value of *rac97
+Content-Language: fr
+To:     Su Hui <suhui@nfschina.com>, perex@perex.cz, tiwai@suse.com
+Cc:     arnd@arndb.de, robert.jarzmik@free.fr, yangyingliang@huawei.com,
+        maciej.szmigiero@oracle.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+References: <20230823025212.1000961-1-suhui@nfschina.com>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20230823025212.1000961-1-suhui@nfschina.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 10:44=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz> wrote:
->
-> For bpf_object__pin_programs() there is bpf_object__unpin_programs().
-> Likewise bpf_object__unpin_maps() for bpf_object__pin_maps().
->
-> But no bpf_object__unpin() for bpf_object__pin(). Adding the former adds
-> symmetry to the API.
->
-> It's also convenient for cleanup in application code. It's an API I
-> would've used if it was available for a repro I was writing earlier.
->
-> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+Le 23/08/2023 à 04:52, Su Hui a écrit :
+> Before committing 79597c8bf64c, *rac97 always be NULL if there is
+> an error. When error happens, make sure *rac97 is NULL is safer.
+> 
+> For examble, in snd_vortex_mixer():
+> 	err = snd_ac97_mixer(pbus, &ac97, &vortex->codec);
+> 	vortex->isquad = ((vortex->codec == NULL) ?
+> 		0 : (vortex->codec->ext_id&0x80));
+> If error happened but vortex->codec isn't NULL, this may cause some
+> problems.
+> 
+> Move the judgement order to be clearer and better.
+> 
+> Fixes: 79597c8bf64c ("ALSA: ac97: Fix possible NULL dereference in snd_ac97_mixer")
+> Suggested-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> Signed-off-by: Su Hui <suhui@nfschina.com>
 > ---
->  tools/lib/bpf/libbpf.c   | 15 +++++++++++++++
->  tools/lib/bpf/libbpf.h   |  1 +
->  tools/lib/bpf/libbpf.map |  1 +
->  3 files changed, 17 insertions(+)
->
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 4c3967d94b6d..96ff1aa4bf6a 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -8376,6 +8376,21 @@ int bpf_object__pin(struct bpf_object *obj, const =
-char *path)
->         return 0;
->  }
->
-> +int bpf_object__unpin(struct bpf_object *obj, const char *path)
-> +{
-> +       int err;
-> +
-> +       err =3D bpf_object__unpin_programs(obj, path);
-> +       if (err)
-> +               return libbpf_err(err);
-> +
-> +       err =3D bpf_object__unpin_maps(obj, path);
-> +       if (err)
-> +               return libbpf_err(err);
-> +
-> +       return 0;
-> +}
-> +
+>   sound/pci/ac97/ac97_codec.c | 5 ++---
+>   1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/sound/pci/ac97/ac97_codec.c b/sound/pci/ac97/ac97_codec.c
+> index 80a65b8ad7b9..25f93e56cfc7 100644
+> --- a/sound/pci/ac97/ac97_codec.c
+> +++ b/sound/pci/ac97/ac97_codec.c
+> @@ -2069,10 +2069,9 @@ int snd_ac97_mixer(struct snd_ac97_bus *bus, struct snd_ac97_template *template,
+>   		.dev_disconnect =	snd_ac97_dev_disconnect,
+>   	};
+>   
+> -	if (!rac97)
+> -		return -EINVAL;
+> -	if (snd_BUG_ON(!bus || !template))
+> +	if (snd_BUG_ON(!bus || !template || !rac97))
+>   		return -EINVAL;
+> +	*rac97 = NULL;
+>   	if (snd_BUG_ON(template->num >= 4))
+>   		return -EINVAL;
+>   	if (bus->codec[template->num])
 
-pin APIs predate me, and I barely ever use them, but I wonder if
-people feel fine with the fact that if any single unpin fails, all the
-other programs/maps will not be unpinned? I also wonder if the best
-effort unpinning of everything (while propagating first/last error) is
-more practical? Looking at bpf_object__pin_programs, we try unpin
-everything, even if some unpins fail.
+FWIW,
 
-Any thoughts or preferences?
+Acked-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
->  static void bpf_map__destroy(struct bpf_map *map)
->  {
->         if (map->inner_map) {
-> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> index 2e3eb3614c40..0e52621cba43 100644
-> --- a/tools/lib/bpf/libbpf.h
-> +++ b/tools/lib/bpf/libbpf.h
-> @@ -266,6 +266,7 @@ LIBBPF_API int bpf_object__pin_programs(struct bpf_ob=
-ject *obj,
->  LIBBPF_API int bpf_object__unpin_programs(struct bpf_object *obj,
->                                           const char *path);
->  LIBBPF_API int bpf_object__pin(struct bpf_object *object, const char *pa=
-th);
-> +LIBBPF_API int bpf_object__unpin(struct bpf_object *object, const char *=
-path);
->
->  LIBBPF_API const char *bpf_object__name(const struct bpf_object *obj);
->  LIBBPF_API unsigned int bpf_object__kversion(const struct bpf_object *ob=
-j);
-> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-> index 841a2f9c6fef..abf8fea3988e 100644
-> --- a/tools/lib/bpf/libbpf.map
-> +++ b/tools/lib/bpf/libbpf.map
-> @@ -399,4 +399,5 @@ LIBBPF_1.3.0 {
->                 bpf_program__attach_netfilter;
->                 bpf_program__attach_tcx;
->                 bpf_program__attach_uprobe_multi;
-> +               bpf_object__unpin;
->  } LIBBPF_1.2.0;
-> --
-> 2.41.0
->
+CJ
