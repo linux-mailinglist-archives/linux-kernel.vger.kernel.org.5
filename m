@@ -2,151 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A515785A66
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 16:25:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21616785A6B
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 16:25:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236375AbjHWOZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 10:25:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40540 "EHLO
+        id S236366AbjHWOZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 10:25:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235384AbjHWOZS (ORCPT
+        with ESMTP id S235683AbjHWOZ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 10:25:18 -0400
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2040.outbound.protection.outlook.com [40.107.92.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8144E52;
-        Wed, 23 Aug 2023 07:25:16 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WigXYXGmeBUGURws0Wrw3fHTKkFHTmvSv4O6yCgnYryrTeW3qP6ZBv+xgWJUImU8obC5gO6gvY+vC7lH8xnMKf19IhS4qBNIdmIJQDISWOERjMb+BooP1bOJ3FQUZI6CrhNv/vayP7M9K6HNQQz2lqPPvRtPHGU74guYBO6IpZCMatRCmr8VWZ5eyvcdciZnlg5Eg4GysyMONGj6/rojafdltsrO5i1g/dHXd885/fiUn8XC1M1ndG5IVKWWJAazEVuNCHvl0BmPBwJyR4csbScdwYpOTh1ZXMenpS1k+cWMnuV2ZnYa0tLFjQ3rpn/BgbAli6aHBqYsh+yLTVwwDA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7mjNnhaNpaaIAEx1aRq3czPGjaf9NAEvyg+AgThChYI=;
- b=ONmLmgyTxfJ06z5d4w9qrqDYxuFzWGiUihj8n/eHTvSBEMicOo3UrHVuX3zhmVKKfkG8qNTG/SxXgPbXRUz4b7ITyohtP+1y/Kw8qZWCT8sNNTXI+E0x49tKQzYLugLa+X1HXxoHe46WspmK2FwokNjpllgeBI8lClGkHa4yIpTRQCzGoFI/rwalULSn/IvcT12OwCn/3tBt0sdAdUe6dCJkciJvKW8ntr87Iggt7yrrLOP4tjASkOZSK1HFcNI46WGloYn7j3Xm/c5vTVtNQiiYISM2uFQhFWhwcZ/IVZjjwvqUWACpwsiyeXycoaDnJauDGWtswyG7aTyrmgbrBQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7mjNnhaNpaaIAEx1aRq3czPGjaf9NAEvyg+AgThChYI=;
- b=PBxMq8eH0Gw67tlwUlraBFN3uhpcViKvH0kpKVo8WhPPjhBP5I8qMJyUaEbskHWDVpCpYTurk0BKymhC4RjhUrIu9CzN7wNQ8we83+4WczfIsE05th/jgLKlyZIDuOQjdebGQUvzSbX7xZ9YoQu7OKfleh0pAsAUyFazH11RpuCQeit05NPlutNNfw1Db+zDkwYJUZzxBbT++OC6Cr9J8XJgCOULo69naP+qrJi+U0CeB2t3O703NkN/ikVozvGpcKIiza46rg4rHoqFtAv+WVPgD8d2ZKy0L6uQN32REaJJNnIlq0g+T81iHjwVoYumQw1hGnfe/HXTv5136uN2PA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by MW4PR12MB6729.namprd12.prod.outlook.com (2603:10b6:303:1ed::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.24; Wed, 23 Aug
- 2023 14:25:14 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::5111:16e8:5afe:1da1]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::5111:16e8:5afe:1da1%6]) with mapi id 15.20.6699.020; Wed, 23 Aug 2023
- 14:25:14 +0000
-Date:   Wed, 23 Aug 2023 11:25:11 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Ankit Agrawal <ankita@nvidia.com>
-Cc:     "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        "shameerali.kolothum.thodi@huawei.com" 
-        <shameerali.kolothum.thodi@huawei.com>,
-        "kevin.tian@intel.com" <kevin.tian@intel.com>,
-        Aniket Agashe <aniketa@nvidia.com>, Neo Jia <cjia@nvidia.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        "Tarun Gupta (SW-GPU)" <targupta@nvidia.com>,
-        Vikram Sethi <vsethi@nvidia.com>,
-        Andy Currid <acurrid@nvidia.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Dan Williams <danw@nvidia.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v7 1/1] vfio/nvgpu: Add vfio pci variant module for grace
- hopper
-Message-ID: <ZOYWx+ny0bCJYtbD@nvidia.com>
-References: <20230822202303.19661-1-ankita@nvidia.com>
- <ZOYP92q1mDQgwnc9@nvidia.com>
- <BY5PR12MB37635FB280AECC6A4CF59431B01CA@BY5PR12MB3763.namprd12.prod.outlook.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BY5PR12MB37635FB280AECC6A4CF59431B01CA@BY5PR12MB3763.namprd12.prod.outlook.com>
-X-ClientProxiedBy: SJ0PR13CA0007.namprd13.prod.outlook.com
- (2603:10b6:a03:2c0::12) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        Wed, 23 Aug 2023 10:25:57 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1033AE68
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 07:25:55 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8F24D615BF
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 14:25:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0599EC433C9;
+        Wed, 23 Aug 2023 14:25:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692800753;
+        bh=YxgrXikt9Lvvqkt6X1fJSal7MTHblE3Cq8OOJIBxl6M=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=hHphIuUnFB5bZjd3v1ZkPUtFfDrS0R4UvfnnOHZEkvNrRZHMqCNzwQMrXnDoQ9myM
+         DmOPMilKIV38h3aJ54GOiXu0Nl4/yHb4ZgFkxMUuLPUGUmdBhB3fe+U94tMFrPJPd1
+         /NIG9V9tf3p6GDF9iY0gzQdGuQdyhP4ScpANHmbmtDhPvHP/fvHhkJkY+Vl4CMUBc5
+         IOVOp/2xlkOBVasDvIAsxcxiWr6uxEU83MqJjTHZZ9laMXSh7rGeHhe4JsDSMeHA1T
+         0MaL7GFlv1arHSlGAYj3JEiKVKuvn2UzRPJj8eejhqVn0WNcEevQXp3+gMcYQsDe5a
+         D/+q6z/qQTYhA==
+Date:   Wed, 23 Aug 2023 07:25:52 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     Alexander Duyck <alexander.duyck@gmail.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Mina Almasry <almasrymina@google.com>, <davem@davemloft.net>,
+        <pabeni@redhat.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Liang Chen <liangchen.linux@gmail.com>,
+        Alexander Lobakin <aleksander.lobakin@intel.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>
+Subject: Re: [PATCH net-next v7 1/6] page_pool: frag API support for 32-bit
+ arch with 64-bit DMA
+Message-ID: <20230823072552.044d13b3@kernel.org>
+In-Reply-To: <79a49ccd-b0c0-0b99-4b4d-c4a416d7e327@huawei.com>
+References: <20230816100113.41034-1-linyunsheng@huawei.com>
+        <20230816100113.41034-2-linyunsheng@huawei.com>
+        <CAC_iWjJd8Td_uAonvq_89WquX9wpAx0EYYxYMbm3TTxb2+trYg@mail.gmail.com>
+        <20230817091554.31bb3600@kernel.org>
+        <CAC_iWjJQepZWVrY8BHgGgRVS1V_fTtGe-i=r8X5z465td3TvbA@mail.gmail.com>
+        <20230817165744.73d61fb6@kernel.org>
+        <CAC_iWjL4YfCOffAZPUun5wggxrqAanjd+8SgmJQN0yyWsvb3sg@mail.gmail.com>
+        <20230818145145.4b357c89@kernel.org>
+        <1b8e2681-ccd6-81e0-b696-8b6c26e31f26@huawei.com>
+        <20230821113543.536b7375@kernel.org>
+        <5bd4ba5d-c364-f3f6-bbeb-903d71102ea2@huawei.com>
+        <20230822083821.58d5d26c@kernel.org>
+        <79a49ccd-b0c0-0b99-4b4d-c4a416d7e327@huawei.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|MW4PR12MB6729:EE_
-X-MS-Office365-Filtering-Correlation-Id: 438ea4eb-0a68-4016-921a-08dba3e4c428
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: nYE1fnGCdcSQ7Rr+vferFoBHeRwh2byBMzyRdAN5W4wQJlixXRAd3hvG67Gctgsl6MBUt5Ljl4MoY+37Dpcdks9DHTnVL7+2/A6Jfc0n0y2vbVTz9Agltbon5aILSvykksTwvL3+A+tVsKP3GMEMPAu55PA3hcvztKKiMN826mbxTuPtzsk52pz75wkPbNgwVwLaP99QQC0FG9tYMCYQVpNdN/j8luHkACq6XQMWqQ2PwqwbaF44/St0t01V74UxvmCCc9TZ+S/5+pOPyoSVrNTvIovKpQM3CaZP4ckX3dbgsN2X30NyNF+sA32Ffo74BQT/6uijPPMzyKgGN55w02p4UQxMCte3T/9hexVJWWgEc/wHOPhp9YfLwFL0M9IoP3ApAMtRjzptwtKYMNNuzAjgDB8X1dy5Qp6YLlY/1qorBq3yrGmmcpUvL9L7u8b46wL3E5QxpMmElpwKW28gm3FtnfWWood1iLJ8kLg3EfIy24ygwDR5R6T4X7+hKqS9CEdwJ5BTDa7Fp2D4XJqMsk7qwAawIH/a7U0dAaAdUCA1OPeDN3isB1v+gcXtvkYlSkvelBUG0Ijndkl3+zDeJg8FyhBSHOa6qWYs+VeAxtc=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(136003)(346002)(366004)(376002)(1800799009)(186009)(451199024)(66476007)(66556008)(54906003)(37006003)(6512007)(316002)(8676002)(4326008)(2616005)(6862004)(8936002)(6636002)(41300700001)(36756003)(478600001)(66946007)(6666004)(38100700002)(6486002)(6506007)(2906002)(4744005)(83380400001)(86362001)(5660300002)(26005)(67856001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?+iWyLBgdxJQyaWmi2u4Sf8YfuJqrLUUB5zZd4ygaiRjJx7aWPJMOM5CWEHWg?=
- =?us-ascii?Q?GTTRxi9VwMKfFqcX3ViL6zRc4oZvf0r+sebtBT/3HtNv9yiwysa8YDxKiZu8?=
- =?us-ascii?Q?Nec4CDvvKGCnpTYOXfX2QwKGYa0xnyE+zMvAgrMWeanWdXrcTHgrPgzVJSam?=
- =?us-ascii?Q?+mQXroOI73MizhyeAI0Npa/6byblOhSAVrRoH5/7btxNbaaOKgX1zZiQkIVd?=
- =?us-ascii?Q?gQDsXj9zK1oPn3eInRkLPx9D8dPTp7IHCiC14Rie2C6kFjVm6taiB2FbJQdv?=
- =?us-ascii?Q?Y/pJuYR+c1neHVIIgYIG6GOxslvsgfbYIEzJXXlg6vj9Sh71eOfQzeUfPx6O?=
- =?us-ascii?Q?y80lpEbt5bjm2keUd+UGnHOTQ3G0L7RZLEflMoRR9gSzWHQ/Bam1rv2/tf53?=
- =?us-ascii?Q?FO5jfeqBf6OgeWMI15SHvrXzaxm061B5w3RlR04YQ+wByPm5Ushre5sUbpTv?=
- =?us-ascii?Q?tB90wOnqiZG6tkJkA3cyuLco09yGJ5SGOoXOyOC7RbqqZCS7YfM2dIC/Id7c?=
- =?us-ascii?Q?UZ49KSUSGRW2J6yOCllZhuM5LYouiYpAOzM8UKCAe4cKcCGPkYbqnBDkS38r?=
- =?us-ascii?Q?jPneBZpTU4k/8OZtG74o+nc4vwy1pMFMh0lBboFho5KB1bxenunIKF0GtG8U?=
- =?us-ascii?Q?DQbwAK2XxFoLofqrFrJtHGgHX2gMG6lVhUhmsKm7bIWSeOF1H5HbDPywDIL0?=
- =?us-ascii?Q?7Qm5HLg+nTh06KVbBUxKm+S9PuHfgvykiHbngR4wuZg9w+La3ND/Aro5x2wf?=
- =?us-ascii?Q?2v5qmJJ45hQigwHICuoGmgC2X/GhG82LU0v32CeaJ2DJ9uvUkX6SQwnJdPi5?=
- =?us-ascii?Q?nHIBOP2BXaKNojbRREEQ53MmIJep0JC4rXVadU+SeEcPcwgP1PQcD7sGxFvl?=
- =?us-ascii?Q?seGY4feyyiJK9oBhUJfV54LPfgQXZJ+gZVez47QHTkssEj3hFpIVceGsgXVd?=
- =?us-ascii?Q?AnxS90hI2i6TyryG0kcSNRfoYQTy05Fck8xkVBiT1M0+rF8jj8PURV4H5kOb?=
- =?us-ascii?Q?oTsIW/O9auLvbda53J4Djna2R8eHNESWwydZAlHH8tVFOpm18F7JGAa/uaSd?=
- =?us-ascii?Q?e4ItMI9d7J79ii+atr6/4aAm+ZHfdBa8RB934rLuVxD0fbajblK8SyBmc/aP?=
- =?us-ascii?Q?DLtmCadi482iJweR48OPqIe/SuvgdSqZ/2IpQ/KGngncrBFcy75cxVwR7Nlm?=
- =?us-ascii?Q?AYKfMwRy2Wmgv+DRY8ncG/5FPgBg8dmWhYy/uUYeUy2M0VRvsBfsP2+FV2Hx?=
- =?us-ascii?Q?F452PlxayBalqmiXwpHw6EJZDIE0vKdBwnOQpvQvoDOl4cjNUEjRPnpKqapM?=
- =?us-ascii?Q?6OmJnBxMYIQt6K6brn2sjk4J54pWuB54a80Teebu/hHqT2Vm/zfmkN+KEia3?=
- =?us-ascii?Q?YCOnbMZlS/QYTHAxdeoD58D3LccDRinbWzQDvgHQqgn5m0tNS8Yzoo709jMD?=
- =?us-ascii?Q?W7ePRmyZ1x/tOzXc2012vy0ZQ111i0yHOz7y2ez7uqviTg+YWLjInDIG11b1?=
- =?us-ascii?Q?N/Hs6aXG25mzFXKz4cwzpzlGlHqt19x8loRw+5/jlXyYshssCIO69j3Qqlv6?=
- =?us-ascii?Q?1PvZ3fi7BL45D/W2gVmQhtRxuMq9YifxNMT0PAIb?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 438ea4eb-0a68-4016-921a-08dba3e4c428
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Aug 2023 14:25:14.3563
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: LVJyN6PTbAG/V3tGcmzA4+QKuCWYBQCcabL2SlxRfUl+KXG3UB3YwYlhFgn25i5m
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB6729
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 23, 2023 at 02:18:52PM +0000, Ankit Agrawal wrote:
-> >> +
-> >> +     /*
-> >> +      * Handle read on the BAR2 region. Map to the target device memory
-> >> +      * physical address and copy to the request read buffer.
-> >> +      */
-> >> +     if (copy_to_user(buf, (u8 *)addr + offset, read_count))
-> >> +             return -EFAULT;
-> >
-> > Just to verify, does this memory allow access of arbitrary alignment
-> > and size?
+On Wed, 23 Aug 2023 11:03:31 +0800 Yunsheng Lin wrote:
+> On 2023/8/22 23:38, Jakub Kicinski wrote:
+> > On Tue, 22 Aug 2023 17:21:35 +0800 Yunsheng Lin wrote:  
+> >> As the CONFIG_PHYS_ADDR_T_64BIT seems to used widely in x86/arm/mips/powerpc,
+> >> I am not sure if we can really make the above assumption.
+> >>
+> >> https://elixir.free-electrons.com/linux/v6.4-rc6/K/ident/CONFIG_PHYS_ADDR_T_64BIT  
+> > 
+> > Huh, it's actually used a lot less than I anticipated!
+> > 
+> > None of the x86/arm/mips/powerpc systems matter IMHO - the only _real_  
 > 
-> Please correct me if I'm wrong, but based on following gdb dump data on
-> the corresponding MemoryRegion->ops, unaligned access isn't supported, and
-> a read of size upto 8 may be done.
+> Is there any particular reason that you think that the above systems does
+> not really matter?
 
-Regardless, you used MEMREMAP_WB which is equivalent to normal system
-memory. It supports all accesses, including atomics, and doesn't
-require __iomem accessors.
+Not the systems themselves but the combination of a 32b arch with 
+an address space >16TB. All those arches have 64b equivalent, seems
+logical to use the 64b version for a system with a large address space.
+If we're talking about a system which ends up running Linux.
 
-Jason
+> As we have made a similar wrong assumption about those arches before, I am
+> really trying to be more cautious about it.
+> 
+> I searched through the web, some seems to be claiming that "32-bits is DEAD",
+> I am not sure if there is some common agreement among the kernel community,
+> is there any previous discussion about that?
+
+My suspicion/claim is that 32 + PAGE_SHIFT should be enough bits for
+any 32b platform.
