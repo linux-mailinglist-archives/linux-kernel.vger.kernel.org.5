@@ -2,100 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D1C5785D67
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 18:42:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27559785D65
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 18:41:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237321AbjHWQmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 12:42:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49190 "EHLO
+        id S237262AbjHWQlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 12:41:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231450AbjHWQl7 (ORCPT
+        with ESMTP id S234628AbjHWQlU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 12:41:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35B15CE
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 09:41:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692808868;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Wed, 23 Aug 2023 12:41:20 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CFC9A8
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 09:41:18 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id C0E182095B;
+        Wed, 23 Aug 2023 16:41:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1692808876; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=YW0EDZCY0m8+/dZecu2djclRs+GAoB7p8AH+s2fFlNo=;
-        b=CZDKvRWzrcWocFds9vYM9TNtm3r/Is5wMXYrcd7V6MgBpP5rj+rkzrJJWKuluK3sJ+f9IV
-        o7FW6YevIrEHFIVhGx9Vyzv2sM8vUSUg/10J0fL4+jxEo8FVA9b7Ndb0Z+nqZkGGy5p+10
-        QJSSUiRlVhvEbIZ7IsIGIgGx+G8qZGg=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-518-AFwa0AN6PKepvU3wlzhGlQ-1; Wed, 23 Aug 2023 12:41:04 -0400
-X-MC-Unique: AFwa0AN6PKepvU3wlzhGlQ-1
-Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-63d2b88325bso13913856d6.1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 09:41:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692808864; x=1693413664;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YW0EDZCY0m8+/dZecu2djclRs+GAoB7p8AH+s2fFlNo=;
-        b=k92jVmlZX1TYPIeA89CpuqiwTqs4ElKaPrIn22tGjhtziFIvgCXLu5CFAO4jOOQBOh
-         lQW/79TXVmMysfwsJvY2wnJ1ZdIthyl1vTs1UlQq34yXQIltB+61JWprIJPo1GYQWCMA
-         s7DJ0YNmCx6IQdTAEINqFsO94lCQ4giLwvcdV3ynq6O0GwUad0lm1U/+oHu/SrUdjdak
-         obw9jQsj/m0k2EhtMTSun3qMvwwa0l90J4mx4exwzsGPZ3E2lJfKKnnjZ92E20Ey3oAl
-         HaosNYRcOFHlXzea5+RCLF7aw8JDNTkIBoIBR9rEcYLvfxj7Wp74/eM7/f5COtAoS39V
-         ZUzQ==
-X-Gm-Message-State: AOJu0Yx3NClMqyjyaAS3g+JKnI0rGpIkpK/uKq8DTZU9v0/zZ6ZWPNCP
-        dCjMJ9c/4YHvxsYOGq0/UK2iJf94+eOOOSei1cp9/1H7KWkANjjMlZg1mtHoikcy4y+cLp4OmS4
-        bbJApNIBJ1NRvhp5Admto5TSv
-X-Received: by 2002:ad4:5c63:0:b0:645:3c6:56ab with SMTP id i3-20020ad45c63000000b0064503c656abmr15349101qvh.1.1692808864537;
-        Wed, 23 Aug 2023 09:41:04 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGY59trkyfeqoHva+BRsUTu+ef1zBDxPgp/+hPFtlZY7Syl2yVvoX/z+RQuT4WgRq8pYA809Q==
-X-Received: by 2002:ad4:5c63:0:b0:645:3c6:56ab with SMTP id i3-20020ad45c63000000b0064503c656abmr15349095qvh.1.1692808864306;
-        Wed, 23 Aug 2023 09:41:04 -0700 (PDT)
-Received: from x1n (cpe5c7695f3aee0-cm5c7695f3aede.cpe.net.cable.rogers.com. [99.254.144.39])
-        by smtp.gmail.com with ESMTPSA id j26-20020a0cae9a000000b0064f3d5cbbb6sm2926202qvd.114.2023.08.23.09.41.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Aug 2023 09:41:03 -0700 (PDT)
-Date:   Wed, 23 Aug 2023 12:41:00 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Edward Liaw <edliaw@google.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH mm-hotfixes-unstable] shmem: fix smaps BUG sleeping while
- atomic
-Message-ID: <ZOY2nMjTOVe2ozIS@x1n>
-References: <6fe3b3ec-abdf-332f-5c23-6a3b3a3b11a9@google.com>
+        bh=BW7dUoeev2xy4pTa2DwHGhHYblYyga+z5up7jx4hMt8=;
+        b=L+lhDXJTTwCjMnG1V3E8gPKdXlku9RCyowfjssYcX58/OxnSEaxu35BVxRT4wl82O7Cy2N
+        D9zVsbT0YDJtFQpHjSvDDoKf9kSHDDVCjbNv3og9plp+CPG5WbkGAsTpB1NlKPhnwURq3F
+        vuxdo5Lr/RESWXMBFjVLO0lyxZvLIVs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1692808876;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BW7dUoeev2xy4pTa2DwHGhHYblYyga+z5up7jx4hMt8=;
+        b=l6FtSgNtSu23pB9LUXqChxXGNFyWm31qFn1Mh8QUjcegmIHdODp/WnFX/kLzYrGhlTSbJY
+        bIBl/ak1MpkljpDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AC0661351F;
+        Wed, 23 Aug 2023 16:41:16 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id t5z4Kaw25mRwSgAAMHmgww
+        (envelope-from <jack@suse.cz>); Wed, 23 Aug 2023 16:41:16 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 24FE3A0774; Wed, 23 Aug 2023 18:41:16 +0200 (CEST)
+Date:   Wed, 23 Aug 2023 18:41:16 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Mateusz Guzik <mjguzik@gmail.com>
+Cc:     Jan Kara <jack@suse.cz>, Dennis Zhou <dennis@kernel.org>,
+        linux-kernel@vger.kernel.org, tj@kernel.org, cl@linux.com,
+        akpm@linux-foundation.org, shakeelb@google.com, linux-mm@kvack.org
+Subject: Re: [PATCH 0/2] execve scalability issues, part 1
+Message-ID: <20230823164116.aqjl6f5m2o3rwyxe@quack3>
+References: <20230821202829.2163744-1-mjguzik@gmail.com>
+ <ZOPSEJTzrow8YFix@snowbird>
+ <20230821213951.bx3yyqh7omdvpyae@f>
+ <CAGudoHHJECp2-DfSr5hudooAdV6mivvSO+4mC9kwUrWnSiob5g@mail.gmail.com>
+ <20230822095154.7cr5ofogw552z3jk@quack3>
+ <CAGudoHHe5nzRTuj4G1fphD+JJ02TE5BnHEDwFm=-W6DoEj2qVQ@mail.gmail.com>
+ <20230823094915.ggv3spzevgyoov6i@quack3>
+ <CAGudoHFFt5wvYWrwNkz813KaXBmROJ7YJ67s1h3_CBgcoV2fCA@mail.gmail.com>
+ <20230823154728.rpkw6fpwvwqbnnh3@quack3>
+ <CAGudoHFvGwcQ+8JOjwR3B=KtHiVqC1=eiNgGv33z29443VJdFg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6fe3b3ec-abdf-332f-5c23-6a3b3a3b11a9@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAGudoHFvGwcQ+8JOjwR3B=KtHiVqC1=eiNgGv33z29443VJdFg@mail.gmail.com>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_SOFTFAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 10:14:47PM -0700, Hugh Dickins wrote:
-> smaps_pte_hole_lookup() is calling shmem_partial_swap_usage() with page
-> table lock held: but shmem_partial_swap_usage() does cond_resched_rcu()
-> if need_resched(): "BUG: sleeping function called from invalid context".
+On Wed 23-08-23 18:10:29, Mateusz Guzik wrote:
+> On 8/23/23, Jan Kara <jack@suse.cz> wrote:
+> > I didn't express myself well. Sure atomics are expensive compared to plain
+> > arithmetic operations. But I wanted to say - we had atomics for RSS
+> > counters before commit f1a7941243 ("mm: convert mm's rss stats into
+> > percpu_counter") and people seemed happy with it until there were many CPUs
+> > contending on the updates. So maybe RSS counters aren't used heavily enough
+> > for the difference to practically matter? Probably operation like faulting
+> > in (or unmapping) tmpfs file has the highest chance of showing the cost of
+> > rss accounting compared to the cost of the remainder of the operation...
+> >
 > 
-> Since shmem_partial_swap_usage() is designed to count across a range, but
-> smaps_pte_hole_lookup() only calls it for a single page slot, just break
-> out of the loop on the last or only page, before checking need_resched().
+> These stats used to be decentralized by storing them in task_struct,
+> the commit complains about values deviating too much.
 > 
-> Fixes: 230100321518 ("mm/smaps: simplify shmem handling of pte holes")
-> Signed-off-by: Hugh Dickins <hughd@google.com>
-> Cc: stable@vger.kernel.org # 5.16+
+> The value would get synced every 64 uses, from the diff:
+> -/* sync counter once per 64 page faults */
+> -#define TASK_RSS_EVENTS_THRESH (64)
+> -static void check_sync_rss_stat(struct task_struct *task)
+> -{
+> -       if (unlikely(task != current))
+> -               return;
+> -       if (unlikely(task->rss_stat.events++ > TASK_RSS_EVENTS_THRESH))
+> -               sync_mm_rss(task->mm);
+> -}
+> 
+> other than that it was a non-atomic update in struct thread.
+> 
+> -static void add_mm_counter_fast(struct mm_struct *mm, int member, int val)
+> -{
+> -       struct task_struct *task = current;
+> -
+> -       if (likely(task->mm == mm))
+> -               task->rss_stat.count[member] += val;
+> -       else
+> -               add_mm_counter(mm, member, val);
+> -}
 
-Oops.. thanks Hugh.
+Ah, I see. I already forgot these details since I was checking the
+regression back in spring. Now I've just seen the atomic_long_t counters in
+task_struct and forgot there used to be also these per-thread ones. Thanks
+for refreshing my memory!
 
-Acked-by: Peter Xu <peterx@redhat.com>
+> So the question is how much does this matter. My personal approach is
+> that avoidable slowdowns (like atomics here) only facilitate further
+> avoidable slowdowns as people can claim there is a minuscule change in
+> % to baseline. But if the baseline is already slow....
+
+I get your point but over the years I've also learned that premature
+optimization isn't good either as we will be dragging the maintenance
+burden for a long time ;) It's a balance.
+
+								Honza
 
 -- 
-Peter Xu
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
