@@ -2,66 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA06B7856DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 13:41:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 178A37856FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 13:45:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234359AbjHWLlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 07:41:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58832 "EHLO
+        id S234464AbjHWLpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 07:45:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231717AbjHWLlB (ORCPT
+        with ESMTP id S234460AbjHWLpt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 07:41:01 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 483CDCD0
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 04:41:00 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-68a3f0a7092so3017790b3a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 04:41:00 -0700 (PDT)
+        Wed, 23 Aug 2023 07:45:49 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62960E5E
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 04:45:38 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3ff006454fdso6519705e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 04:45:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692790860; x=1693395660;
+        d=linaro.org; s=google; t=1692791137; x=1693395937;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Su+EU8s5DmANSaG1XE16qDS9/XMEfX9gISNXjzq27Sw=;
-        b=fchnrp14aPW5vsHdbdWYZ7o0T7l0cHhD4iWuO0jpSGcX6Vdi6tjgpttzFEzPdPpXk/
-         3brjhEorRO66Mp5CG4uGHRB+0mpTcdxglnBtyA+moHaqv/s4OUYU0ZHvb2TgxeCN6T51
-         qbCvcqdwsfsQGPK9Rfv0neIMThfDZ+/Q2oMT8aRri21hSPVhG24aeidLGFjt5HReZDob
-         aRWKJImae7+y8Lsa5/Vc380OGzTdloM1Z357Nlsq3TacgdksKLtS2+LN8CfyEGnry5bz
-         XXcxjmRvDyd3OPZYh5X+YmBjLuOc2O71yGi42jomiGXss0boiDljMgu+aYk8dF164dq0
-         sXfA==
+        bh=wYNMwPCVAxQo8Fju1tV2lSExHAZaHMk/4PNFZ6xjKKM=;
+        b=GgjcvVcjWtf2v2e2WJ17My4zktiQjEepK5t1G84vS4+SO/CWiKMsE9BqGM8W1xqibT
+         dU2MDa0GEHGyaOzpFTvGK3PEIIWyL+4olqF1FbXoUyjAAQ+tT4IM9K0wUanOtKf8GBiw
+         ArZv4YbHHjwEdqEREh1szGQpizxr/xz+cjDw99e2fMwuYExUIVSOCwkxVT3TKdpeOEsE
+         YghZAcAfKsSFqFHRrVQALuJEUgSMMoseqZyUbKQ3UJMdlhE500t6KErmgM6cGBg6NYxn
+         yYQjpULVoNJMl/8l2eC0OZHYMJkJ/MScSMf18Dj4SRBusCCeoXaZQMkiSlv4dwhMvJFm
+         OFMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692790860; x=1693395660;
+        d=1e100.net; s=20221208; t=1692791137; x=1693395937;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Su+EU8s5DmANSaG1XE16qDS9/XMEfX9gISNXjzq27Sw=;
-        b=JNi3D3g0fNOZZnQ6usy4FFSydZRNFcZ39ydL3aa6gcBz8NsDNlnmQtpYMnGEi570Nj
-         R2PyQgxXYs3OfGevLZYoo7HQbGJWQ8PpUmUF89WlKpwFV+m5+U1LStZ59hx3usc2bY20
-         DSYLzasie8QWdIl1SjGjpQYg8mUzzPl5vUnnYvhYt8F+gvSBl+3tgqDJaRfyD8OkHgGb
-         K3kkp2WaasBmQUeeFeOR7zpxOH8cVpgpkhrpVC04p7OQdNAdDts1KnFKpkKbUDwJULuu
-         qeQKRt1YnixTU1jTlmQ/qSAKEeXTWHN/9j1Db1lFpTCw8ahRs1GggN2+ZlxSws4pqi0T
-         O43w==
-X-Gm-Message-State: AOJu0YynxUmtUIaOIH5zr2oMVrkLCewIkARuG2S0/7bK/FN3q0uIwiaH
-        ScAeI8Kgv3/pvZW+qkhMuTA=
-X-Google-Smtp-Source: AGHT+IHua33zuGAafhWe6RdBA0W5BIQr58Rl41OKq+EqR/CvCx1kr0fIn34fM95VoyE5EwyQpWmSVg==
-X-Received: by 2002:a05:6a21:6d9b:b0:14a:b444:dcce with SMTP id wl27-20020a056a216d9b00b0014ab444dccemr2544075pzb.4.1692790859703;
-        Wed, 23 Aug 2023 04:40:59 -0700 (PDT)
-Received: from localhost.localdomain ([110.46.146.116])
-        by smtp.gmail.com with ESMTPSA id z25-20020aa785d9000000b0068783a2dfdasm4589293pfn.104.2023.08.23.04.40.57
+        bh=wYNMwPCVAxQo8Fju1tV2lSExHAZaHMk/4PNFZ6xjKKM=;
+        b=MEdHaswaGV20YZZiMvKBlQDomQ+27UscWxECfhVj84dxxCHL35uAQjy78EXCcDUcls
+         6FdYHeG9Ga2wAcjK/+Jz4UB+Uc/ADAO6STXcMbO1wtXhoq8iR5xp3pQWx/mlKR3v9y5u
+         9Ef3WIpaVHpNzR2zkBWYNzEgGEirkrze0oASXm8ySm0SAxLk/hX/Lgwd7gimfmSVcT12
+         DBuLzXNzDM13K+qFt61mtSDigqPdbZ9LFhTxB+fBKDoWONFyNkK3uByAbC4E3DWOQCuK
+         JgBjUGRcMPR+CKhj47zoIi5RPfrfUAh9HxjbAoLwCS2cqhrN0y50bYElFgRgM12VENAZ
+         It0w==
+X-Gm-Message-State: AOJu0YzdviV/YCFoYgLe6wZBR5GxjFSPtkOqSpU2wknVAXVW27YE+3Oz
+        KY3XooHaPZZkR+ntyazcXG/H+w==
+X-Google-Smtp-Source: AGHT+IF+iPZGP6zi4OdO/qFyRFpITH5Z5LemNkk6wP5uZU8gzhs4arjrMW+CSFMYI9biEocwo8WUyg==
+X-Received: by 2002:a1c:7413:0:b0:400:2dc5:2006 with SMTP id p19-20020a1c7413000000b004002dc52006mr799179wmc.36.1692791136844;
+        Wed, 23 Aug 2023 04:45:36 -0700 (PDT)
+Received: from hackbox.lan ([84.232.191.92])
+        by smtp.gmail.com with ESMTPSA id m18-20020a7bce12000000b003fbc0a49b57sm18503577wmc.6.2023.08.23.04.45.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Aug 2023 04:40:59 -0700 (PDT)
-From:   SungHwan Jung <onenowy@gmail.com>
-To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc:     SungHwan Jung <onenowy@gmail.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ALSA: hda/realtek: Add quirk for HP Victus 16-d1xxx to enable mute LED
-Date:   Wed, 23 Aug 2023 20:40:51 +0900
-Message-ID: <20230823114051.3921-1-onenowy@gmail.com>
-X-Mailer: git-send-email 2.42.0
+        Wed, 23 Aug 2023 04:45:36 -0700 (PDT)
+From:   Abel Vesa <abel.vesa@linaro.org>
+To:     "Rafael J . Wysocki" <rafael@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Mike Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Taniya Das <tdas@qti.qualcomm.com>
+Cc:     linux-pm@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm@vger.kernel.org
+Subject: [PATCH v3 0/5]  PM: domains: Add control for switching back and forth to HW control
+Date:   Wed, 23 Aug 2023 14:45:23 +0300
+Message-Id: <20230823114528.3677667-1-abel.vesa@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,68 +80,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This quirk enables mute LED on HP Victus 16-d1xxx (8A25) laptops, which
-use ALC245 codec.
+The v2 can be found here:
+https://lore.kernel.org/lkml/20230816145741.1472721-1-abel.vesa@linaro.org/
 
-Signed-off-by: SungHwan Jung <onenowy@gmail.com>
----
- sound/pci/hda/patch_realtek.c | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+Changes since v2:
+ * 5th patch has been squashed in the 4th one
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index dc7b7a407..d8865f467 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -4639,6 +4639,22 @@ static void alc236_fixup_hp_mute_led_coefbit2(struct hda_codec *codec,
- 	}
- }
- 
-+static void alc245_fixup_hp_mute_led_coefbit(struct hda_codec *codec,
-+					  const struct hda_fixup *fix,
-+					  int action)
-+{
-+	struct alc_spec *spec = codec->spec;
-+
-+	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
-+		spec->mute_led_polarity = 0;
-+		spec->mute_led_coef.idx = 0x0b;
-+		spec->mute_led_coef.mask = 3 << 2;
-+		spec->mute_led_coef.on = 2 << 2;
-+		spec->mute_led_coef.off = 1 << 2;
-+		snd_hda_gen_add_mute_led_cdev(codec, coef_mute_led_set);
-+	}
-+}
-+
- /* turn on/off mic-mute LED per capture hook by coef bit */
- static int coef_micmute_led_set(struct led_classdev *led_cdev,
- 				enum led_brightness brightness)
-@@ -7231,6 +7247,7 @@ enum {
- 	ALC295_FIXUP_DELL_INSPIRON_TOP_SPEAKERS,
- 	ALC236_FIXUP_DELL_DUAL_CODECS,
- 	ALC287_FIXUP_CS35L41_I2C_2_THINKPAD_ACPI,
-+	ALC245_FIXUP_HP_MUTE_LED_COEFBIT,
- };
- 
- /* A special fixup for Lenovo C940 and Yoga Duet 7;
-@@ -9309,6 +9326,10 @@ static const struct hda_fixup alc269_fixups[] = {
- 		.chained = true,
- 		.chain_id = ALC269_FIXUP_THINKPAD_ACPI,
- 	},
-+	[ALC245_FIXUP_HP_MUTE_LED_COEFBIT] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc245_fixup_hp_mute_led_coefbit,
-+	},
- };
- 
- static const struct snd_pci_quirk alc269_fixup_tbl[] = {
-@@ -9582,6 +9603,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x103c, 0x89c6, "Zbook Fury 17 G9", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x89ca, "HP", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
- 	SND_PCI_QUIRK(0x103c, 0x89d3, "HP EliteBook 645 G9 (MB 89D2)", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
-+	SND_PCI_QUIRK(0x103c, 0x8a25, "HP Victus 16-d1xxx (MB 8A25)", ALC245_FIXUP_HP_MUTE_LED_COEFBIT),
- 	SND_PCI_QUIRK(0x103c, 0x8a78, "HP Dev One", ALC285_FIXUP_HP_LIMIT_INT_MIC_BOOST),
- 	SND_PCI_QUIRK(0x103c, 0x8aa0, "HP ProBook 440 G9 (MB 8A9E)", ALC236_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8aa3, "HP ProBook 450 G9 (MB 8AA1)", ALC236_FIXUP_HP_GPIO_LED),
+Further details about other changes are found in each patch.
+
+Abel Vesa (1):
+  PM: domains: Add the domain HW-managed mode to the summary
+
+Jagadeesh Kona (3):
+  clk: qcom: gdsc: Add set and get hwmode callbacks to switch GDSC mode
+  clk: qcom: Use HW_CTRL_TRIGGER flag to switch video GDSC to HW mode
+  venus: pm_helpers: Use dev_pm_genpd_set_hwmode to switch GDSC mode
+
+Ulf Hansson (1):
+  PM: domains: Allow devices attached to genpd to be managed by HW
+
+ drivers/base/power/domain.c                   | 84 ++++++++++++++++++-
+ drivers/clk/qcom/gdsc.c                       | 32 +++++++
+ drivers/clk/qcom/gdsc.h                       |  1 +
+ drivers/clk/qcom/videocc-sc7180.c             |  2 +-
+ drivers/clk/qcom/videocc-sc7280.c             |  2 +-
+ drivers/clk/qcom/videocc-sdm845.c             |  4 +-
+ drivers/clk/qcom/videocc-sm8250.c             |  4 +-
+ drivers/clk/qcom/videocc-sm8550.c             |  4 +-
+ drivers/media/platform/qcom/venus/core.c      |  4 +
+ drivers/media/platform/qcom/venus/core.h      |  1 +
+ .../media/platform/qcom/venus/pm_helpers.c    | 47 +++++------
+ include/linux/pm_domain.h                     | 17 ++++
+ 12 files changed, 165 insertions(+), 37 deletions(-)
+
 -- 
-2.42.0
+2.34.1
 
