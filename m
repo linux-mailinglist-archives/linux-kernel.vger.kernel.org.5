@@ -2,184 +2,308 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D107C786128
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 22:04:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2790F78612B
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 22:05:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232935AbjHWUDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 16:03:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34766 "EHLO
+        id S235192AbjHWUFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 16:05:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232907AbjHWUDh (ORCPT
+        with ESMTP id S235336AbjHWUE2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 16:03:37 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8B1610C2
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 13:03:35 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d7493fcd829so4487362276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 13:03:35 -0700 (PDT)
+        Wed, 23 Aug 2023 16:04:28 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C7A710CC
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 13:04:24 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-51e28cac164so393943a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 13:04:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692821015; x=1693425815;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=th8e6TC9xPZYrxbPJ5js0VMFWDqZ8UUtFj8+USRPgoI=;
-        b=KCBjUZIREew2qLlMaVEPsMoTNz7fqXclZ0+diA9i2OdkxNNfuM5G0hzFNgFvUtLbco
-         OflvTxoEHiAnGJ+8nt6pRXOJyv2QXaM2Ao39UFXLArgXoPRuqGko/p3213UpIgHN+4Qi
-         bd26EeMwGRJxvNiyYiNy9aTsiIo44trKPfVqD5LsJ1xwwbxhvL3x47bTBVxXJis40Rb6
-         5cn2Qkp4vA0tPwGjWaEnSMaznVCI8voqljc78Xy/zfO26AzWDmc7EHDad5Wrg/CcSHen
-         rh/0eRVs9EqByM1pg/tvksBqIMs7t9jqVs1u+k/YHltNV/rPi0rTh+Up5dReBa+ndHXX
-         973w==
+        d=chromium.org; s=google; t=1692821062; x=1693425862;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=mbNGjy7zX9g+WJW97/AU37/Lm90Tn7R9l3Tj2bMGc18=;
+        b=F4wOBbseRiVjpbDrTHSFdiu7aS8clVWte3lx2jqucjj+QSjkjxiR4dxhwcoeqwLTvV
+         cpV9GHLpSf80jOH8Gw4Dsuvs0zYy5dzc9foLe7c1lr6mKhjBuV8k1rotMjoFutNoLmaC
+         BN8ONzMiFx/UUbieNBZlNr1K9qv6ndCynIGSQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692821015; x=1693425815;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=th8e6TC9xPZYrxbPJ5js0VMFWDqZ8UUtFj8+USRPgoI=;
-        b=Zl+cMxyQbH5uXLDWDblyZwDUMmkkLwovorrzxYxpL/hfG+5RZsNz2XK0Kh5B2rCMpm
-         ALrGbcx8Rra37QxV+aw49ZJXFPW230mZk80mLj4lA+C0X/RIjeqJq6YnY9SJJkrhXuIV
-         UxgTtQwteHDLyDTHNzBPsbCTiB0EVKwEcpG8vsCJk7+9glJ/EHZKmQgDUyC2tkh/kUWG
-         MCjSXSbgIZ55QVfNJM5UcHbzO23a+om1R2UwUVLMiZJHXL5rR9LIBBHXryLVJvPwBekH
-         UCCPsQ27a9pKStdx3/TQtSA5q+ESYpu1RBPBt9y586fOhzr5P1aJ4dlhGMcejjXH8oK/
-         TWRA==
-X-Gm-Message-State: AOJu0YxKWoWuQltfa+qLNmCbk5BHJv3WWliAc4bgA7DMOrEcEd3+goFT
-        CKORJN3RFoYJRMHRk9ridAZVsGS2L5E=
-X-Google-Smtp-Source: AGHT+IE9EnnUWhfDP3f20K5tnvhxXMR1COyQM+6+OK6NQluLLFrs1u7AFy7wyWl468re/JPl8d2ipvCLrFY=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:12c6:b0:d77:bcce:eb11 with SMTP id
- j6-20020a05690212c600b00d77bcceeb11mr87510ybu.10.1692821014935; Wed, 23 Aug
- 2023 13:03:34 -0700 (PDT)
-Date:   Wed, 23 Aug 2023 13:03:33 -0700
-In-Reply-To: <d183c3f2-d94d-5f22-184d-eab80f9d0fe8@amd.com>
-Mime-Version: 1.0
-References: <20230810234919.145474-1-seanjc@google.com> <bf3af7eb-f4ce-b733-08d4-6ab7f106d6e6@amd.com>
- <ZOTQ6izCUfrBh2oj@google.com> <d183c3f2-d94d-5f22-184d-eab80f9d0fe8@amd.com>
-Message-ID: <ZOZmFe7MT7zwrf/c@google.com>
-Subject: Re: [PATCH 0/2] KVM: SVM: Fix unexpected #UD on INT3 in SEV guests
-From:   Sean Christopherson <seanjc@google.com>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Wu Zongyo <wuzongyo@mail.ustc.edu.cn>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1692821062; x=1693425862;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mbNGjy7zX9g+WJW97/AU37/Lm90Tn7R9l3Tj2bMGc18=;
+        b=EBp5+sBK4pleP2X59E2bR/wa/n/Q/YEFk0QpAbhEpdPmvArJLYB9dLrASlm9LcaMD9
+         /aviVXZiwczUgQAfMqE51jS6StfKoohwJiUoUa+GN2+eSOoe//Fo/sRqeM53WbqXXd+8
+         2gZOy0sSTFbGAiUHjhgjQBl8wy607+t3Nc+l69K5JNb/7/NMmcdEr1ocudTmuXeYd6Do
+         jvJ+0LsOYcpoaCGXvk070iI92WLiOx7JAt40guZpiIqLT6qAucCbZt+YZ87OngDXkq8L
+         yAtnibrWvpsv0w86JGY8QVvr5q9wUOX0Vjr5Ewgo8+pO3aZUoDBKdTz+OQbZYcmL2IXE
+         o+2A==
+X-Gm-Message-State: AOJu0Yx4ZiDgWgdHScJzPf+bZec1XLyF32937tPNchqavHi+LFbQcYbS
+        QwoNFWHFCHfTVBevuBrovlHQU3m9/cJxoemkMZlVTA==
+X-Google-Smtp-Source: AGHT+IFJY3KXPDLQhJJTyqi58QXqh+TZuzYefqKWmN30vLkuxUEYHA5cDTOIlkGSEYQRpwD4bXdmfPW9Siw5UNXU32U=
+X-Received: by 2002:a05:6402:34cf:b0:51d:b184:efd with SMTP id
+ w15-20020a05640234cf00b0051db1840efdmr14823948edc.20.1692821062414; Wed, 23
+ Aug 2023 13:04:22 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230822203446.4111742-1-sjg@chromium.org> <ZOXKTrC_dzN_hUkY@FVFF77S0Q05N>
+ <CAMj1kXEHpRjk_YKOm4czCnnpjqgahj2jV8MMfGLx7b1RdnBnVw@mail.gmail.com>
+In-Reply-To: <CAMj1kXEHpRjk_YKOm4czCnnpjqgahj2jV8MMfGLx7b1RdnBnVw@mail.gmail.com>
+From:   Simon Glass <sjg@chromium.org>
+Date:   Wed, 23 Aug 2023 14:04:11 -0600
+Message-ID: <CAPnjgZ1S8G=7eCBF9PcDk4H5sk3AcxSSWXO575jK8SjA9dR8qw@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] schemas: Add a schema for memory map
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+        Rob Herring <robh@kernel.org>,
+        Chiu Chasel <chasel.chiu@intel.com>,
+        U-Boot Mailing List <u-boot@lists.denx.de>,
+        Gua Guo <gua.guo@intel.com>, linux-acpi@vger.kernel.org,
+        lkml <linux-kernel@vger.kernel.org>,
+        Yunhui Cui <cuiyunhui@bytedance.com>,
+        ron minnich <rminnich@gmail.com>,
+        Tom Rini <trini@konsulko.com>,
+        Lean Sheng Tan <sheng.tan@9elements.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+        USER_IN_DEF_SPF_WL autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 23, 2023, Tom Lendacky wrote:
-> On 8/22/23 10:14, Sean Christopherson wrote:
-> > On Tue, Aug 22, 2023, Tom Lendacky wrote:
-> > > On 8/10/23 18:49, Sean Christopherson wrote:
-> > > > Fix a bug where KVM injects a bogus #UD for SEV guests when trying to skip
-> > > > an INT3 as part of re-injecting the associated #BP that got kinda sorta
-> > > > intercepted due to a #NPF occuring while vectoring/delivering the #BP.
-> > > > 
-> > > > I haven't actually confirmed that patch 1 fixes the bug, as it's a
-> > > > different change than what I originally proposed.  I'm 99% certain it will
-> > > > work, but I definitely need verification that it fixes the problem
-> > > > 
-> > > > Patch 2 is a tangentially related cleanup to make NRIPS a requirement for
-> > > > enabling SEV, e.g. so that we don't ever get "bug" reports of SEV guests
-> > > > not working when NRIPS is disabled.
-> > > > 
-> > > > Sean Christopherson (2):
-> > > >     KVM: SVM: Don't inject #UD if KVM attempts emulation of SEV guest w/o
-> > > >       insn
-> > > >     KVM: SVM: Require nrips support for SEV guests (and beyond)
-> > > > 
-> > > >    arch/x86/kvm/svm/sev.c |  2 +-
-> > > >    arch/x86/kvm/svm/svm.c | 37 ++++++++++++++++++++-----------------
-> > > >    arch/x86/kvm/svm/svm.h |  1 +
-> > > >    3 files changed, 22 insertions(+), 18 deletions(-)
-> > > 
-> > > We ran some stress tests against a version of the kernel without this fix
-> > > and we're able to reproduce the issue, but not reliably, after a few hours.
-> > > With this patch, it has not reproduced after running for a week.
-> > > 
-> > > Not as reliable a scenario as the original reporter, but this looks like it
-> > > resolves the issue.
-> > 
-> > Thanks Tom!  I'll apply this for v6.6, that'll give us plenty of time to change
-> > course if necessary.
-> 
-> I may have spoke to soon...  When the #UD was triggered it was here:
-> 
-> [    0.118524] Spectre V2 : Enabling Restricted Speculation for firmware calls
-> [    0.118524] Spectre V2 : mitigation: Enabling conditional Indirect Branch Prediction Barrier
-> [    0.118524] Speculative Store Bypass: Mitigation: Speculative Store Bypass disabled via prctl
-> [    0.118524] invalid opcode: 0000 [#1] PREEMPT SMP NOPTI
-> [    0.118524] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 6.2.2-amdsos-build50-ubuntu-20.04+ #1
-> [    0.118524] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
-> [    0.118524] RIP: 0010:int3_selftest_ip+0x0/0x60
-> [    0.118524] Code: b9 25 05 00 00 48 c7 c2 e8 7c 80 b0 48 c7 c6 fe 1c d3 b0 48 c7 c7 f0 7d da b0 e8 4c 2c 0b ff e8 75 da 15 ff 0f 0b 48 8d 7d f4 <cc> 90 90 90 90 83 7d f4 01 74 2f 80 3d 39 7f a8 00 00 74 24 b9 34
-> 
-> 
-> Now (after about a week) we've encountered a hang here:
-> 
-> [    0.106216] Spectre V2 : Enabling Restricted Speculation for firmware calls
-> [    0.106216] Spectre V2 : mitigation: Enabling conditional Indirect Branch Prediction Barrier
-> [    0.106216] Speculative Store Bypass: Mitigation: Speculative Store Bypass disabled via prctl
-> 
-> It is in the very same spot and so I wonder if the return false (without
-> queuing a #UD) is causing an infinite loop here that appears as a guest
-> hang. Whereas, we have some systems running the first patch that you
-> created that have not hit this hang.
-> 
-> But I'm not sure why or how this patch could cause the guest hang. I
-> would think that the retry of the instruction would resolve everything
-> and the guest would continue. Unfortunately, the guest was killed, so I'll
-> try to reproduce and get a dump or trace points of the VM to see what is
-> going on.
+Hi,
 
-Gah, it's because x86_emulate_instruction() returns '1' and not '0' when
-svm_can_emulate_instruction() returns false.  svm_update_soft_interrupt_rip()
-would then continue with the injection, i.e. inject #BP on the INT3 RIP, not on
-the RIP following the INT3, which would cause this check to fail
+On Wed, 23 Aug 2023 at 08:24, Ard Biesheuvel <ardb@kernel.org> wrote:
+>
+> On Wed, 23 Aug 2023 at 10:59, Mark Rutland <mark.rutland@arm.com> wrote:
+> >
+> > On Tue, Aug 22, 2023 at 02:34:42PM -0600, Simon Glass wrote:
+> > > The Devicetree specification skips over handling of a logical view of
+> > > the memory map, pointing users to the UEFI specification.
+> > >
+> > > It is common to split firmware into 'Platform Init', which does the
+> > > initial hardware setup and a "Payload" which selects the OS to be booted.
+> > > Thus an handover interface is required between these two pieces.
+> > >
+> > > Where UEFI boot-time services are not available, but UEFI firmware is
+> > > present on either side of this interface, information about memory usage
+> > > and attributes must be presented to the "Payload" in some form.
+>
+> Not quite.
+>
+> This seems to be intended for consumption by Linux booting in ACPI
+> mode, but not via UEFI, right?
 
-	if (regs->ip - INT3_INSN_SIZE != selftest)
-		return NOTIFY_DONE;
+Actually, this is for consumption by firmware. The goal is to allow
+edk2 to boot into U-Boot and vice versa, i.e. provide some
+interoperability between firmware projects. I will use the "Platform
+Init" and "Payload" terminology here too.
 
-and eventually send do_trap_no_signal() to die().
+> Some proposed changes to support that
+> were rejected on the basis that ACPI on non-x86 is strictly tied to
+> ACPI boot, not only because the ACPI root table (rsdp) can only be
+> discovered via UEFI, but also because the ACPI subsystem in Linux
+> cross-references any memory mappings created from AML code against the
+> UEFI memory map.
+>
+> Unfortunately, having a vague, non-exhaustive approximation of the
+> UEFI memory map is unlikely to be sufficient here. The existing logic
+> assumes that addresses not covered by the UEFI memory map are MMIO,
+> which means that either a) the UEFI memory map needs to describe all
+> RAM exhaustively or b) the existing logic needs to be modified to take
+> memblock or other information sources into account as well in order to
+> reason about whether a certain address requires device or normal
+> memory attributes.
+>
+> Note that the ACPI spec only lists EFI as a valid way to obtain the
+> root table pointer on architectures other than x86. If other ways are
+> needed, they should be contributed to the spec, rather than being
+> added to Linux as an ad hoc workaround for bootloaders that have
+> trouble implementing the spec as is.
 
-I distinctly remember seeing the return value problem when writing the patch, but
-missed that it would result in KVM injecting the unexpected #BP.
+There is no intent to implement the UEFI spec, here. It is simply that
+some payloads (EDK2) are used to having this information.
 
-I punted on trying to properly fix this by having can_emulate_instruction()
-differentiate between "retry insn" and "inject exception", because that change
-is painfully invasive and I though I could get away with the simple fix.  Drat.
+Imagine splitting EDK2 into two parts, one of which does platform init
+and the other which (the payload) boots the OS. The payload wants
+information from Platform Init and it needs to be in a devicetree,
+since that is what we have chosen for this interface. So to some
+extent this is unrelated to whether you have EFI boot services. We
+just need to be able to pass the information across the interface.
+Note that the user can (without recompilation, etc.) replace the
+second part with U-Boot (for example) and it must still work.
 
-I think the best option is to add a "temporary" patch so that the fix for @stable
-is short, sweet, and safe, and then do the can_emulate_instruction() cleanup that
-I was avoiding.
+>
+> >
+> > Today Linux does that by passing:
+> >
+> >   /chosen/linux,uefi-mmap-start
+> >   /chosen/linux,uefi-mmap-size
+> >   /chosen/linux,uefi-mmap-desc-size
+> >   /chosen/linux,uefi-mmap-desc-ver
+> >
+> > ... or /chosen/xen,* variants of those.
+> >
+> > Can't we document / genericise that?
 
-E.g. this as patch 2/4 (or maybe 2/5) of this series:
+That seems to me to be the fields from the EFI memory-map call, but
+where is the actual content? I looked in the kernel but it seems to be
+an internal interface (between the stub and the kernel)?
 
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 7cb5ef5835c2..8457a36b44c1 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -364,6 +364,8 @@ static void svm_set_interrupt_shadow(struct kvm_vcpu *vcpu, int mask)
-                svm->vmcb->control.int_state |= SVM_INTERRUPT_SHADOW_MASK;
- 
- }
-+static bool svm_can_emulate_instruction(struct kvm_vcpu *vcpu, int emul_type,
-+                                       void *insn, int insn_len);
- 
- static int __svm_skip_emulated_instruction(struct kvm_vcpu *vcpu,
-                                           bool commit_side_effects)
-@@ -384,6 +386,14 @@ static int __svm_skip_emulated_instruction(struct kvm_vcpu *vcpu,
-        }
- 
-        if (!svm->next_rip) {
-+               /*
-+                * FIXME: Drop this when kvm_emulate_instruction() does the
-+                * right thing and treats "can't emulate" as outright failure
-+                * for EMULTYPE_SKIP.
-+                */
-+               if (!svm_can_emulate_instruction(vcpu, EMULTYPE_SKIP, NULL, 0))
-+                       return 0;
-+
-                if (unlikely(!commit_side_effects))
-                        old_rflags = svm->vmcb->save.rflags;
+> >
+>
+> Given the ACPI angle, promoting this to external ABI would introduce a
+> DT dependency to ACPI boot. So we'll at least have to be very clear
+> about which takes precedence, or maybe disregard everything except the
+> /chosen node when doing ACPI boot?
+>
+> This also argues for not creating an ordinary binding for this (i.e.,
+> describing it as part of the platform topology), but putting it under
+> /chosen as a Linux-only boot tweak.
+>
+> > Pointing to that rather than re-encoding it in DT means that it stays in-sync
+> > with the EFI spec and we won't back ourselves into a corner where we cannot
+> > encode something due to a structural difference. I don't think it's a good idea
+> > to try to re-encode it, or we're just setting ourselves up for futher pain.
+> >
+>
+> What I would prefer is to formalize pseudo-EFI boot and define the
+> bare required minimum (system table + memory map + config tables) in
+> an arch-agnostic manner. That way, the only thing that needs to be
+> passed via DT/boot_params/etc is the (pseudo-)EFI system table
+> address, and everything else (SMBIOS, ACPI as well as the EFI memory
+> map and even the initrd) can be passed via config tables as usual, all
+> of which is already supported in (mostly) generic kernel code.
+>
+> This means that booting via the EFI stub would not be required, nor is
+> implementing boot services or runtime services or any of the other
+> things that people appear to hate with such a passion.
+>
+> I'd actually prefer not to use those /chosen DT nodes, but pass the
+> memory map via a config table. This, however, requires* that the
+> runtime services memory regions are mapped 1:1 so it is not something
+> we can do for all currently supported systems. But for pseudo-EFI
+> boot, stipulating 1:1 runtime mappings is fine (or no runtime mappings
+> at all if the firmware does not expose runtime services)
+>
+> * SetVirtualAddressMap() relocates the config table array, and without
+> a memory map, it is not possible to convert those address back to
+> physical. SetVirtualAddressMap() is evil and needs to die, but this is
+> off-topic for the thread at hand.
+
+Here I believe you are talking about booting the kernel in EFI mode,
+but that is not the intent of this patch. This is all about things
+happening in firmware. Now, if the payload (second) part of the
+firmware decides it wants to offer EFI boot services and boot the
+kernel via the EFI stub, then it may very well pack this information
+(with a few changes) into a system table and make it available to the
+kernel stub. But by then this FDT binding is irrelevant, since it has
+served its purpose (which, to reiterate, is to facilitate information
+passage from platform init to 'payload').
+
+>
+> > >
+> > > This aims to provide an initial schema for this mapping.
+> > >
+> > > Note that this is separate from the existing /memory and /reserved-memory
+> > > nodes, since it is mostly concerned with what the memory is used for. It
+> > > may cover only a small fraction of available memory.
+> > >
+> > > For now, no attempt is made to create an exhaustive binding, so there are
+> > > some example types listed. This can be completed once this has passed
+> > > initial review.
+> > >
+> > > This binding does not include a binding for the memory 'attribute'
+> > > property, defined by EFI_BOOT_SERVICES.GetMemoryMap(). It may be useful
+> > > to have that as well, but perhaps not as a bit mask.
+> > >
+> > > Signed-off-by: Simon Glass <sjg@chromium.org>
+> > > ---
+> > >
+> > > Changes in v3:
+> > > - Reword commit message again
+> > > - cc a lot more people, from the FFI patch
+> > > - Split out the attributes into the /memory nodes
+> > >
+> > > Changes in v2:
+> > > - Reword commit message
+> > >
+> > >  dtschema/schemas/memory-map.yaml | 61 ++++++++++++++++++++++++++++++++
+> > >  1 file changed, 61 insertions(+)
+> > >  create mode 100644 dtschema/schemas/memory-map.yaml
+> > >
+> > > diff --git a/dtschema/schemas/memory-map.yaml b/dtschema/schemas/memory-map.yaml
+> > > new file mode 100644
+> > > index 0000000..4b06583
+> > > --- /dev/null
+> > > +++ b/dtschema/schemas/memory-map.yaml
+> > > @@ -0,0 +1,61 @@
+> > > +# SPDX-License-Identifier: BSD-2-Clause
+> > > +# Copyright 2023 Google LLC
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/memory-map.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: /memory-map nodes
+> > > +description: |
+> > > +  Common properties always required in /memory-map nodes. These nodes are
+> > > +  intended to resolve the nonchalant clause 3.4.1 ("/memory node and UEFI")
+> > > +  in the Devicetree Specification.
+> > > +
+> > > +maintainers:
+> > > +  - Simon Glass <sjg@chromium.org>
+> > > +
+> > > +properties:
+> > > +  $nodename:
+> > > +    const: 'memory-map'
+> > > +
+> > > +patternProperties:
+> > > +  "^([a-z][a-z0-9\\-]+@[0-9a-f]+)?$":
+> > > +    type: object
+> > > +    additionalProperties: false
+> > > +
+> > > +    properties:
+> > > +      reg:
+> > > +        minItems: 1
+> > > +        maxItems: 1024
+> > > +
+> > > +      usage:
+> > > +        $ref: /schemas/types.yaml#/definitions/string
+> > > +        description: |
+> > > +          Describes the usage of the memory region, e.g.:
+> > > +
+> > > +            "acpi-reclaim", "acpi-nvs", "bootcode", "bootdata", "bootdata",
+> > > +            "runtime-code", "runtime-data".
+> > > +
+> > > +            See enum EFI_MEMORY_TYPE in "Unified Extensible Firmware Interface
+> > > +            (UEFI) Specification" for all the types. For now there are not
+> > > +            listed here.
+> > > +
+> > > +    required:
+> > > +      - reg
+> > > +
+> > > +additionalProperties: false
+> > > +
+> > > +examples:
+> > > +  - |
+> > > +    memory-map {
+> > > +        acpi@f0000 {
+> > > +            reg = <0xf0000 0x4000>;
+> > > +            usage = "acpi-reclaim";
+> > > +        };
+> > > +
+> > > +        runtime@12300000 {
+> > > +            reg = <0x12300000 0x28000>;
+> > > +            usage = "runtime-code";
+> > > +        };
+> > > +    };
+> > > +...
+> > > --
+> > > 2.42.0.rc1.204.g551eb34607-goog
+> > >
+
+Regards,
+Simon
