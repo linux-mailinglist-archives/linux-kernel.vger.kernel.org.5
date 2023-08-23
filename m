@@ -2,101 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B4C6785C24
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 17:31:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D75B785C25
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 17:31:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233497AbjHWPbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 11:31:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59528 "EHLO
+        id S237246AbjHWPb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 11:31:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235792AbjHWPbc (ORCPT
+        with ESMTP id S235792AbjHWPb4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 11:31:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E141DCFE
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 08:30:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692804645;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=BiPg1CR7QhpEos1y8wjGxBQSx510OyL+G2I/cKhPLW8=;
-        b=IX5/uW27hcYKBBuVoJEmexjVClY4KH7+mSGM5SUt5+ZQpreNzg7zvfu3NaygkEgTq036II
-        aRjXWwuSIzOMyHmlVZXlVuQ9qSbFc5Pt6oPuJI2qEvGOgEuRz1MCdKBXpogvVkruVLoZG3
-        6EG6XPl3/DXfPaf5jaYf2V06zdjiBWw=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-473-8NWu1HKwP7-2Q0-vJASG5Q-1; Wed, 23 Aug 2023 11:30:40 -0400
-X-MC-Unique: 8NWu1HKwP7-2Q0-vJASG5Q-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 25F0B85D083;
-        Wed, 23 Aug 2023 15:30:38 +0000 (UTC)
-Received: from laptop.redhat.com (unknown [10.39.193.143])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 15181C15BAE;
-        Wed, 23 Aug 2023 15:30:35 +0000 (UTC)
-From:   Eric Auger <eric.auger@redhat.com>
-To:     eric.auger.pro@gmail.com, eric.auger@redhat.com, elic@nvidia.com,
-        mail@anirudhrb.com, jasowang@redhat.com, mst@redhat.com,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        kvmarm@lists.cs.columbia.edu, netdev@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: [PATCH] vhost: Allow null msg.size on VHOST_IOTLB_INVALIDATE
-Date:   Wed, 23 Aug 2023 17:30:32 +0200
-Message-ID: <20230823153032.239304-1-eric.auger@redhat.com>
+        Wed, 23 Aug 2023 11:31:56 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5251CDF
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 08:31:54 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-99bed101b70so746841866b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 08:31:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692804713; x=1693409513;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BYrf2GpbGdlf7lCTIqcEvi/XXKloMRjnbxsd20jVdbA=;
+        b=FVFTR6zIZBCtNSVzEXQTnf6c+xo9f1ttBG/opfKcx6YFOgEw5AMtTB/0/nrJw2ZNha
+         FqwIi/uJ0cop/dlfSSI5uiZDqRzj7jHartyg5x6GRdhCxtR3ovWY82hmBTT4UZHN1zxS
+         zq5sFGmV/ZRLssqN3aaHWnVo5weRQ23UijbtBAdwtQb+TkqsRT1OWNolgEpwqeW0JSdo
+         TZiTLxFWAY3nuqKsrZ3ENiSB5/mIKTOdo6a5BTRN9UchCwPawnmGK7g1Uy9NuhqX1mLy
+         AJ9t3SEZz+s1MoExy1IqrMIx236qpmUvHyngxPUkJCKlByF0SGYNtqJh3K4B71uajEhS
+         m5fw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692804713; x=1693409513;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BYrf2GpbGdlf7lCTIqcEvi/XXKloMRjnbxsd20jVdbA=;
+        b=MpYw2y6LtYUGm0wps6o++X4U+vR+AidzvwcPAwowh45+mZGMERymeqMKwNtPWeCSkn
+         fSqxkaiWTWBCJUwuPILS9y3RRLK90goe0ADwDXweb3BTiiOr1NqkiCBdMW+A7UHPw4Aw
+         zM0lifv49QaJiOwf9Q99qBg5HP+TR3Zh9n19XdxNy495wpj9ziSVm1kv/JT90VHzOFMA
+         LVMhoUxxNtkdlmbpKwQcHEsFjnPwg9MKk8nfCiPZEu5XylLbv06yzz5WD13oHVnJEEzi
+         MZBh5kJOCY/x6uZ6gFu83kdiipCUNDflSrQEJr+VYQHzCq0f9Zd3+X9ldOijnXsWxNCj
+         zrew==
+X-Gm-Message-State: AOJu0Yzghf0OuW/emYZ1vf698vtHgoJVy6X3McWGvaFE8xw5Ecy5kSv9
+        01yLUJhG6g0oqneh1uLSYllDGiXqqJsQEj55xUg5/w==
+X-Google-Smtp-Source: AGHT+IHhEhVQAm8bllNWnfvIrsbzwpalLHvKYZWfHuErDCbPhelT3wHAcn8MfG+cIeuWsS4XHaFk0nd4eZX2ohR1ycs=
+X-Received: by 2002:a17:906:31c1:b0:99d:a6b9:fd04 with SMTP id
+ f1-20020a17090631c100b0099da6b9fd04mr9893550ejf.46.1692804713226; Wed, 23 Aug
+ 2023 08:31:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20230821160849.531668-1-david@redhat.com> <20230821160849.531668-2-david@redhat.com>
+ <CAJD7tkYbHUVbg8LexkBsC9rLFBRrBSQYgOZ1tPKTDGEcWrAghQ@mail.gmail.com>
+ <b00e2d3a-8601-924c-241c-4373b9dea0cb@redhat.com> <CAJD7tkbjPdk8xSGJG_BGaiNyPdh0-A58vwt7TwjsB4Mjh6RscA@mail.gmail.com>
+ <ab9f4179-fb40-c920-ccb5-42c111012b15@redhat.com>
+In-Reply-To: <ab9f4179-fb40-c920-ccb5-42c111012b15@redhat.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Wed, 23 Aug 2023 08:31:16 -0700
+Message-ID: <CAJD7tkbHp5tJYb3T0Y_yGcqwkAimPrdQ2SAgSNwVaMFbBFK8BA@mail.gmail.com>
+Subject: Re: [PATCH mm-unstable v1 1/4] mm/swap: stop using page->private on
+ tail pages for THP_SWAP
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-arm-kernel@lists.infradead.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Peter Xu <peterx@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Hugh Dickins <hughd@google.com>,
+        Seth Jennings <sjenning@redhat.com>,
+        Dan Streetman <ddstreet@ieee.org>,
+        Vitaly Wool <vitaly.wool@konsulko.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit e2ae38cf3d91 ("vhost: fix hung thread due to erroneous iotlb
-entries") Forbade vhost iotlb msg with null size to prevent entries
-with size = start = 0 and last = ULONG_MAX to end up in the iotlb.
+On Wed, Aug 23, 2023 at 8:26=E2=80=AFAM David Hildenbrand <david@redhat.com=
+> wrote:
+>
+> On 23.08.23 17:21, Yosry Ahmed wrote:
+> > On Wed, Aug 23, 2023 at 8:17=E2=80=AFAM David Hildenbrand <david@redhat=
+.com> wrote:
+> >>
+> >> On 23.08.23 17:12, Yosry Ahmed wrote:
+> >>> On Mon, Aug 21, 2023 at 9:09=E2=80=AFAM David Hildenbrand <david@redh=
+at.com> wrote:
+> >>>>
+> >>>> Let's stop using page->private on tail pages, making it possible to
+> >>>> just unconditionally reuse that field in the tail pages of large fol=
+ios.
+> >>>>
+> >>>> The remaining usage of the private field for THP_SWAP is in the THP
+> >>>> splitting code (mm/huge_memory.c), that we'll handle separately late=
+r.
+> >>>>
+> >>>> Update the THP_SWAP documentation and sanity checks in mm_types.h an=
+d
+> >>>> __split_huge_page_tail().
+> >>>>
+> >>>> Signed-off-by: David Hildenbrand <david@redhat.com>
+> >>>
+> >>> The mm part looks good to me (with the added fixup):
+> >>>
+> >>> Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
+> >>
+> >> Thanks!
+> >>
+> >>>>    /**
+> >>>> diff --git a/include/linux/swap.h b/include/linux/swap.h
+> >>>> index bb5adc604144..84fe0e94f5cd 100644
+> >>>> --- a/include/linux/swap.h
+> >>>> +++ b/include/linux/swap.h
+> >>>> @@ -339,6 +339,15 @@ static inline swp_entry_t folio_swap_entry(stru=
+ct folio *folio)
+> >>>>           return entry;
+> >>>>    }
+> >>>>
+> >>>> +static inline swp_entry_t page_swap_entry(struct page *page)
+> >>>> +{
+> >>>> +       struct folio *folio =3D page_folio(page);
+> >>>> +       swp_entry_t entry =3D folio_swap_entry(folio);
+> >>>> +
+> >>>> +       entry.val +=3D page - &folio->page;
+> >>>> +       return entry;
+> >>>> +}
+> >>>> +
+> >>>>    static inline void folio_set_swap_entry(struct folio *folio, swp_=
+entry_t entry)
+> >>>>    {
+> >>>>           folio->private =3D (void *)entry.val;
+> >>>> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> >>>> index cc2f65f8cc62..c04702ae71d2 100644
+> >>>> --- a/mm/huge_memory.c
+> >>>> +++ b/mm/huge_memory.c
+> >>>> @@ -2446,18 +2446,15 @@ static void __split_huge_page_tail(struct pa=
+ge *head, int tail,
+> >>>>           page_tail->index =3D head->index + tail;
+> >>>>
+> >>>>           /*
+> >>>> -        * page->private should not be set in tail pages with the ex=
+ception
+> >>>> -        * of swap cache pages that store the swp_entry_t in tail pa=
+ges.
+> >>>> -        * Fix up and warn once if private is unexpectedly set.
+> >>>> -        *
+> >>>> -        * What of 32-bit systems, on which folio->_pincount overlay=
+s
+> >>>> -        * head[1].private?  No problem: THP_SWAP is not enabled on =
+32-bit, and
+> >>>> -        * pincount must be 0 for folio_ref_freeze() to have succeed=
+ed.
+> >>>> +        * page->private should not be set in tail pages. Fix up and=
+ warn once
+> >>>> +        * if private is unexpectedly set.
+> >>>>            */
+> >>>> -       if (!folio_test_swapcache(page_folio(head))) {
+> >>>> -               VM_WARN_ON_ONCE_PAGE(page_tail->private !=3D 0, page=
+_tail);
+> >>>> +       if (unlikely(page_tail->private)) {
+> >>>> +               VM_WARN_ON_ONCE_PAGE(true, page_tail);
+> >>>>                   page_tail->private =3D 0;
+> >>>>           }
+> >>>
+> >>> Could probably save a couple of lines here:
+> >>>
+> >>> if (VM_WARN_ON_ONCE_PAGE(page_tail->private !=3D 0, page_tail))
+> >>>
+> >>>          page_tail->private =3D 0;
+> >>>
+> >>
+> >> That would mean that we eventually compile out the runtime check
+> >>
+> >> #define VM_WARN_ON_ONCE_PAGE(cond, page)  BUILD_BUG_ON_INVALID(cond)
+> >
+> > I thought the warning would be compiled out but not the check, my bad.
+>
+> I even remembered that VM_WARN_ON_ONCE and friends could/should not be
+> used in conditionals.
+>
+> But we do seem to have two users now:
+>
+>   $ git grep "if (VM_WARN_ON"
+> mm/mmap.c:              if (VM_WARN_ON_ONCE_MM(vma->vm_end !=3D vmi_end, =
+mm))
+> mm/mmap.c:              if (VM_WARN_ON_ONCE_MM(vma->vm_start !=3D vmi_sta=
+rt, mm))
+>
+> But they only do warning-related action, to dump the stack, the vma, ...
+>
+> So if the warnings get compiled out, also all the other stuff gets compil=
+ed out as well,
+> which makes sense here.
 
-Then commit 95932ab2ea07 ("vhost: allow batching hint without size")
-only applied the check for VHOST_IOTLB_UPDATE and VHOST_IOTLB_INVALIDATE
-message types to fix a regression observed with batching hit.
+Funny enough, I did the same grep and immediately thought that since
+we have users of that, then it's okay (i.e the check wouldn't be
+compiled out). I wasn't thorough enough to actually check what they
+are doing :)
 
-Still, the introduction of that check introduced a regression for
-some users attempting to invalidate the whole ULONG_MAX range by
-setting the size to 0. This is the case with qemu/smmuv3/vhost
-integration which does not work anymore. It Looks safe to partially
-revert the original commit and allow VHOST_IOTLB_INVALIDATE messages
-with null size. vhost_iotlb_del_range() will compute a correct end
-iova. Same for vhost_vdpa_iotlb_unmap().
-
-Signed-off-by: Eric Auger <eric.auger@redhat.com>
-Fixes: e2ae38cf3d91 ("vhost: fix hung thread due to erroneous iotlb entries")
----
- drivers/vhost/vhost.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
-index c71d573f1c94..e0c181ad17e3 100644
---- a/drivers/vhost/vhost.c
-+++ b/drivers/vhost/vhost.c
-@@ -1458,9 +1458,7 @@ ssize_t vhost_chr_write_iter(struct vhost_dev *dev,
- 		goto done;
- 	}
- 
--	if ((msg.type == VHOST_IOTLB_UPDATE ||
--	     msg.type == VHOST_IOTLB_INVALIDATE) &&
--	     msg.size == 0) {
-+	if (msg.type == VHOST_IOTLB_UPDATE && msg.size == 0) {
- 		ret = -EINVAL;
- 		goto done;
- 	}
--- 
-2.41.0
-
+>
+> --
+> Cheers,
+>
+> David / dhildenb
+>
