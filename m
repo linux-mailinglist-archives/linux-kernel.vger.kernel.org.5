@@ -2,127 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A410178510E
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 09:02:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0C2F785111
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 09:03:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233095AbjHWHCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 03:02:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45924 "EHLO
+        id S233108AbjHWHDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 03:03:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233090AbjHWHCn (ORCPT
+        with ESMTP id S233106AbjHWHDA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 03:02:43 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B8BECE8;
-        Wed, 23 Aug 2023 00:02:40 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DAA3464982;
-        Wed, 23 Aug 2023 07:02:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86C11C433C7;
-        Wed, 23 Aug 2023 07:02:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1692774159;
-        bh=GA8OiRBj8V4niqfWdyzMuban8l3H8iUS+3bcTCjZzJ4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lys1sm1gp/HmfpCprl8w8lst1MQRZK8lZUXzbUUWDghJla0YZGpqyuLJQfkd9/fwV
-         sg9U79OrJ1bozUcZDlES6Y4kf5wSIOQQDSArLgZP3/pX85hPTA1AP6HtOMK9Lijz66
-         7Xrr9zFZM/GPoW9oi0HkxDz78+5/pxUDS67eU0xk=
-Date:   Wed, 23 Aug 2023 09:02:36 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Alistair Francis <alistair23@gmail.com>
-Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
-        Jonathan.Cameron@huawei.com, lukas@wunner.de,
-        alex.williamson@redhat.com, christian.koenig@amd.com,
-        kch@nvidia.com, logang@deltatee.com, linux-kernel@vger.kernel.org,
-        chaitanyak@nvidia.com, rdunlap@infradead.org,
-        Alistair Francis <alistair.francis@wdc.com>
-Subject: Re: [PATCH v6 2/3] sysfs: Add a attr_is_visible function to
- attribute_group
-Message-ID: <2023082325-cognitive-dispose-1180@gregkh>
-References: <20230817235810.596458-1-alistair.francis@wdc.com>
- <20230817235810.596458-2-alistair.francis@wdc.com>
- <2023081959-spinach-cherisher-b025@gregkh>
- <CAKmqyKM+DNTF1f0FvDEda_db792Ta4w_uAKNTZ6E3NkYoVcPFQ@mail.gmail.com>
+        Wed, 23 Aug 2023 03:03:00 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89E39E65;
+        Wed, 23 Aug 2023 00:02:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692774176; x=1724310176;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=q5D2ljU2JGIhPaZ1OlS467jEnnsJpuDAECJw5x3ZlBo=;
+  b=WUFbsjQwmK5KY2QmfYLG3MnB0LCrO72V9V14nq65zmnzXHWnLYYxfOj2
+   rblJWGFDw3Ect53mD9hTaR9fyKFYoL52XDmdMb5F7ExOdXw31zT0bFsH8
+   7UR11ZyjBdsH5cNsW2EcUhiOP/sB2U5tjoUess4CmVF7JZyQUEnfr1Z4t
+   7PoHMrafFvxxMtzlXcb4eGP9mRryna+A0jlAGOUY0SGepWLG0325ZeF5P
+   kZOQPc6MDCYKGj0sRR9k73bBioGdRdj7p0C5TbUMm1eygBsvDX6An6M17
+   RlBklyECC60V8mqzwbfHZ+ZzeGOnKN2jNnfUEwChl5GtIZVEfwrnn2Ryc
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10810"; a="359071539"
+X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
+   d="scan'208";a="359071539"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2023 00:02:55 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
+   d="scan'208";a="880293467"
+Received: from kuha.fi.intel.com ([10.237.72.185])
+  by fmsmga001.fm.intel.com with SMTP; 23 Aug 2023 00:02:56 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 23 Aug 2023 10:02:51 +0300
+Date:   Wed, 23 Aug 2023 10:02:51 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Abdel Alkuor <alkuor@gmail.com>
+Cc:     devicetree@vger.kernel.org, gregkh@linuxfoundation.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, abdelalkuor@geotab.com,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH v4 0/2] Add support for TPS25750
+Message-ID: <ZOWvG1MQw37IOHcM@kuha.fi.intel.com>
+References: <cover.1692559293.git.alkuor@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKmqyKM+DNTF1f0FvDEda_db792Ta4w_uAKNTZ6E3NkYoVcPFQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <cover.1692559293.git.alkuor@gmail.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 04:20:06PM -0400, Alistair Francis wrote:
-> On Sat, Aug 19, 2023 at 6:57 AM Greg KH <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Thu, Aug 17, 2023 at 07:58:09PM -0400, Alistair Francis wrote:
-> > > The documentation for sysfs_merge_group() specifically says
-> > >
-> > >     This function returns an error if the group doesn't exist or any of the
-> > >     files already exist in that group, in which case none of the new files
-> > >     are created.
-> > >
-> > > So just not adding the group if it's empty doesn't work, at least not
-> > > with the code we currently have. The code can be changed to support
-> > > this, but it is difficult to determine how this will affect existing use
-> > > cases.
-> >
-> > Did you try?  I'd really really really prefer we do it this way as it's
-> > much simpler overall to have the sysfs core "do the right thing
-> > automatically" than to force each and every bus/subsystem to have to
-> > manually add this type of attribute.
-> >
-> > Also, on a personal level, I want this function to work as it will allow
-> > us to remove some code in some busses that don't really need to be there
-> > (dynamic creation of some device attributes), which will then also allow
-> > me to remove some apis in the driver core that should not be used at all
-> > anymore (but keep creeping back in as there is still a few users.)
-> >
-> > So I'll be selfish here and say "please try to get my proposed change to
-> > work, it's really the correct thing to do here."
+On Sun, Aug 20, 2023 at 03:32:25PM -0400, Abdel Alkuor wrote:
+> TPS25750 is USB Type-C and PD controller. The device is
+> highly configurable using App Customization online Tool 
+> developed by TI to generate loadable binary.
 > 
-> I did try!
+> TPS25750 supports three modes; PTCH, APP, and BOOT. A configuration
+> can only be applied when the controller is on PTCH mode.
 > 
-> This is an attempt:
-> https://github.com/alistair23/linux/commit/56b55756a2d7a66f7b6eb8a5692b1b5e2f81a9a9
+> The controller attempts to load a configuration from EEPROM on
+> I2Cm bus. If no EEPROM is detected, then the driver tries to load
+> a configuration on I2Cs bus using a firmware file defined
+> in DT.
 > 
-> It is based on your original patch with a bunch of:
+> The driver implements the binary loading sequence which 
+> can be found on pg.53 in TPS25750 Host Interface Technical
+> Reference Manual (Rev. A) https://tinyurl.com/y9rkhu8a
 > 
-> if (!parent) {
->     parent = kernfs_create_dir_ns(kobj->sd, grp->name,
->                   S_IRWXU | S_IRUGO | S_IXUGO,
->                   uid, gid, kobj, NULL);
->     ...
->     }
+> The driver only supports resume pm callback as power management is
+> automatically controlled by the device. See pg.47 in TPS25750
+> datasheet https://tinyurl.com/3vfd2k43
 > 
+> v4:
+>  - PATCH 1: No change
+>  - PATCH 2: Fix comments style and drop of_match_ptr
+> v3:
+>  - PATCH 1: Fix node name
+>  - PATCH 2: Upload tps25750 driver patch
+> v2:
+>  - PATCH 1: General properties clean up
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 > 
-> added throughout the code base.
+> Abdel Alkuor (2):
+>   dt-bindings: usb: Add ti,tps25750
+>   USB: typec: Add TI TPS25750 USB Type-C controller
 > 
-> Very basic testing shows that it does what I need it to do and I don't
-> see any kernel oops on boot.
+>  .../devicetree/bindings/usb/ti,tps25750.yaml  |   81 ++
+>  drivers/usb/typec/Kconfig                     |   13 +
+>  drivers/usb/typec/Makefile                    |    1 +
+>  drivers/usb/typec/tps25750.c                  | 1077 +++++++++++++++++
+>  drivers/usb/typec/tps25750.h                  |  162 +++
+>  5 files changed, 1334 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/usb/ti,tps25750.yaml
+>  create mode 100644 drivers/usb/typec/tps25750.c
+>  create mode 100644 drivers/usb/typec/tps25750.h
 
-Nice!
+TPS25750 has the same host interface as TI TPS65xxx controllers, no?
+The register offsets at least are exactly the same.
 
-Mind if I take it and clean it up a bit and test with it here?  Again, I
-need this functionality for other stuff as well, so getting it merged
-for your feature is fine with me.
-
-> I prefer the approach I have in this mailing list patch. But if you
-> like the commit mentioned above I can tidy and clean it up and then
-> use that instead
-
-I would rather do it this way.  I can work on this on Friday if you want
-me to.
+You need to first try to incorporate support for TI25750 support into
+the existing tipd driver (drivers/usb/typec/tipd/).
 
 thanks,
 
-greg k-h
+-- 
+heikki
