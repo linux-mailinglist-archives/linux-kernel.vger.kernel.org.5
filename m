@@ -2,147 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A0FF7863FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 01:34:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9096786403
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 01:44:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238831AbjHWXeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 19:34:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50770 "EHLO
+        id S238831AbjHWXnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 19:43:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238838AbjHWXds (ORCPT
+        with ESMTP id S231812AbjHWXnX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 19:33:48 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDEBB10E4
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 16:33:45 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id d75a77b69052e-40a47e8e38dso77211cf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 16:33:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692833625; x=1693438425;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=T1HwbLZ/6UV9m41vB7ZrxTzft0HTfsy78CUD/KThJ0A=;
-        b=xeuxGL/9dKhoAvf3Mz/shV3SUeCL0DPU8983yQ+TyZcBbh9hio4DVLuI48wY3MMXag
-         ztnyAZ0F68Vka1gZozNY3TIQNB7Hgk2lSjUna4ynNwCkgjCPUhYqbQu0k3aQwbwqbAoG
-         /rwBYj9OtyzeJj9sQcvtAZhYlZGp6OTBkHpYN1wuvVNugRSg70bh+pA4+N2ACyN6UC60
-         sDreUwL+PJwg/b5zEw/ZvbD3/aiRlhpyjLFrKXyCrcJS3FswUrpZnMQJGdiAIAiQJ+6B
-         uDd2xKzvyMf8TwNNmTtW7gkeY5LDUueW+SekFqO6FWqLbTNVkLefGpv+ntwZrjDfjA7W
-         pVgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692833625; x=1693438425;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=T1HwbLZ/6UV9m41vB7ZrxTzft0HTfsy78CUD/KThJ0A=;
-        b=HttOMeUi+QNJlDFCyHEmyU3DZZhDOl9NlnDDVJOQeD1VU/tBNVj56hRJ/NDBqK+qZr
-         wgPXtVWD3mmjSwGqGmaDR3BsYtGE2Yf3CHr8l2vdMJQZSENlEZIYiqggmeO6w96Xt1Kz
-         GjxOkvMzCBPEbsmopQ6GzOo3hbQV+EAOi22Uazw25H7XS1wkbPKqCoC056W5tgAOXJh4
-         iZPjeCaz3hlE/2Ozo0mw4s0an4Bw1Rup+hmReElg4cGgZQlfXJ0ebDxzeEbMgve01f2M
-         rEKQ97ypgdMrOz3PIidBT5dY2J3qTsnUjTBymGfVfenPNw4hYyxVFsA0/YieRkkvwC2z
-         CVzg==
-X-Gm-Message-State: AOJu0YzcV0MIL94gwyh/imYe1ld3Rof6GPioTHXq/F2zMBfLk6z/9lsu
-        YtqdKwwQzY0MfHJ+GsguOO18W0s9ToHDEWhTxQRv1w==
-X-Google-Smtp-Source: AGHT+IGhV/FfTJmHqD/C1LVCF6/AF9o56MKA5cHfS07QQtJwi6EHjelrKHAQmmucd9xYKxUW7Sj4CFAc2Q4N3gsIkoU=
-X-Received: by 2002:a05:622a:1746:b0:410:8ba3:21c7 with SMTP id
- l6-20020a05622a174600b004108ba321c7mr666485qtk.18.1692833624856; Wed, 23 Aug
- 2023 16:33:44 -0700 (PDT)
+        Wed, 23 Aug 2023 19:43:23 -0400
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2050.outbound.protection.outlook.com [40.107.100.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2067710CA;
+        Wed, 23 Aug 2023 16:43:21 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EiCS525cqKxDxO//7zf1orOBqCI1LXxOYvPP9QUlfdaBM7clRQdytFc/aWc0foIW4XyUG+H23kipaQilysqtcEVgNAd1mTNXa7uwgMTAQS2yzuH+mGopxl++OO05lNBTo5J4mTlcWVXzIWqzoOwOE8XCufmOCQ9PQxSuPTtugLrrG9y7I0jA3haEWoov5XXMwc2JiVCNwMiogfs1b2AQzyqVLo9dmKvWpvI0TQgcQofbb4/DS96MfFvYP75SgmT+2DL84HoZiPmkPQn1myZkSszCyoXo6BxpJ+t4RluihDZZdGTPDrtcHrNWsVjfCQbLZ2lqAprKO9axp+pYlH/VBw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=641DbmTm3KLt3NEeDq/Xm42pfHAFTS5YSw4UG45sHmk=;
+ b=krjJDHChg4sNbky1nMFxK4nMxxrap3RoBAkVGrNS/qzvqHDYl7k4m5mbzzDhDIBgU7kNzIUFMT3hUG7vmvv9S8gDGyl/TUyHW1q7Z91mY8r/kd8l4mW4wUphlWi8jMVbuak3rPR5Ad/yNf9J5W13mzuogONbGTact3xihSleii1tsg2xj9vq6y6yZ7295vEZaymIWzkx0vir9vW6ECepAWRBGBMl8ytT2lR+jFOnQ9s/8iSYlW6IBJpE4iCOeOn9L96ZpbCy23qbE17+Q+K0fjpQ7AgdUyDexc7aZGWFlRR4HT+/SeKwQm4a0iAecqMMlA9yh0dznfCls6ew9yLaBw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=641DbmTm3KLt3NEeDq/Xm42pfHAFTS5YSw4UG45sHmk=;
+ b=C/yGwkRkxcgOB7818WzC1bVpo8cnKWVNNH5BGl2A3/cwEbirXAZU8F7blJprSFGdw1golF3p4re4PMnR9Uis99MqkYqOz4oPbNYXx1k8A6rBlD0hf8LgvMnW67e/64IQ2EU6X05VdjHjWoksVOqiYs9U6M88b2BzRz3en3XtU4w=
+Received: from CYXPR02CA0086.namprd02.prod.outlook.com (2603:10b6:930:ce::23)
+ by LV3PR12MB9143.namprd12.prod.outlook.com (2603:10b6:408:19e::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.24; Wed, 23 Aug
+ 2023 23:43:18 +0000
+Received: from CY4PEPF0000E9D7.namprd05.prod.outlook.com
+ (2603:10b6:930:ce:cafe::25) by CYXPR02CA0086.outlook.office365.com
+ (2603:10b6:930:ce::23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.27 via Frontend
+ Transport; Wed, 23 Aug 2023 23:43:18 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CY4PEPF0000E9D7.mail.protection.outlook.com (10.167.241.78) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6699.14 via Frontend Transport; Wed, 23 Aug 2023 23:43:18 +0000
+Received: from ethanolx50f7host.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 23 Aug
+ 2023 18:43:17 -0500
+From:   Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+To:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-cxl@vger.kernel.org>
+CC:     Bjorn Helgaas <bhelgaas@google.com>, <oohall@gmail.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
+        Alison Schofield <alison.schofield@intel.com>,
+        "Vishal Verma" <vishal.l.verma@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        "Ben Widawsky" <bwidawsk@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        Yazen Ghannam <yazen.ghannam@amd.com>,
+        Terry Bowman <terry.bowman@amd.com>,
+        Robert Richter <rrichter@amd.com>,
+        Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+Subject: [PATCH v4 0/3] PCI/AER, CXL: Fix appropriate _OSC check for CXL RAS Cap
+Date:   Wed, 23 Aug 2023 23:43:02 +0000
+Message-ID: <20230823234305.27333-1-Smita.KoralahalliChannabasappa@amd.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20230814163757.3077138-1-irogers@google.com>
-In-Reply-To: <20230814163757.3077138-1-irogers@google.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Wed, 23 Aug 2023 16:33:33 -0700
-Message-ID: <CAP-5=fVCxjQei-Jcg5OmOR2LTN2QwCqmmy=xixCamS0RsBtGOw@mail.gmail.com>
-Subject: Re: [PATCH v3 0/3] perf list: Remove duplicate PMUs
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        John Garry <john.g.garry@oracle.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9D7:EE_|LV3PR12MB9143:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3a166060-e4be-4517-2824-08dba432ba6e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ewZL7ItUfZVdmxMfPgBzAltwfSQBfBgRpy+L3lcgqyMZoqF/+krwyFUTDIF3s31J0twWjGh3kZTs0v71mJuAJDqrYJgsCZwplbB6aqktCxqWxKiNcWHR0e5PPOWHoP+T+rEMWd8tVjCdhTIloWNwa4JwnPSonkxDkm4xaOcDGRTS/L+GPl4n4XRG/d/baysnoXKJpU74P7mGQA5eph3mD91fVMLO82+bViEjYs39M+l2WIFK3WQ5mdPWpKzfuX1CknOnNOtGnDYnFDafnZQlJjR1dUcbMiItf/fwkKU8Eq6vKWVnsyBtPgYjtRTb1Ch0MP+3uzBDISu5NfP3vD3HggbHV3xsQ4FqLrIioUgtBYOmV/WSdP7q9m7VBim6nN7UhVlD0nxNqV1Fp+Cj/uk5urepoEQawIYGCjAYUkvsjQ4lpbbok63t/WHPJSnTOKJlH4F20Ft56D1SotK3wblhr2jOWGzUWQd7mtNwAkGPGHMR8uWZ/f6Znl5sF+h8Hf5+lo/xmJM62OkSl3X42cHH0HrXisjQXn45JuFrjdHZ1HE9gS9YvxAmbiztuNhUTIQpPLxzjm5/crO+uIxT8YT5dhHRKp9+C92sDvPGqOJobxdrQw+d0G2AYyV7lSJmTzwn7LQ4YMF4nsFD0XD4e4ZtV4V2V5ONSTCyTO/tara597A3IYJ+DPSZkwtCQzYkp7I+FJGdEgKe/67Ft7o6BOBUC9e4S82e+VuM/i8ijQmmJAvyU6MJ+mu43JdRkIsXvnUg
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(396003)(39860400002)(376002)(346002)(186009)(1800799009)(451199024)(82310400011)(46966006)(36840700001)(40470700004)(54906003)(70586007)(316002)(70206006)(110136005)(8676002)(8936002)(2616005)(966005)(4326008)(36756003)(40460700003)(41300700001)(1076003)(356005)(82740400003)(81166007)(478600001)(6666004)(40480700001)(83380400001)(7416002)(4744005)(2906002)(47076005)(7696005)(36860700001)(86362001)(426003)(336012)(5660300002)(16526019)(26005)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Aug 2023 23:43:18.5064
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3a166060-e4be-4517-2824-08dba432ba6e
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000E9D7.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR12MB9143
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 14, 2023 at 9:38=E2=80=AFAM Ian Rogers <irogers@google.com> wro=
-te:
->
-> When there are multiple PMUs, differing by ordered suffixes, by
-> default only display one. This avoids repeated listing of events, in
-> particular when there are 10s of uncore PMUs. If "-v" is passed to
-> "perf list" then still list all PMUs.
->
-> Listing fewer PMU/event combinations helps speed the all PMU event
-> tests.
->
-> Before:
-> ```
-> $ perf list
-> ...
->   uncore_imc_free_running_0/data_read/               [Kernel PMU event]
->   uncore_imc_free_running_0/data_total/              [Kernel PMU event]
->   uncore_imc_free_running_0/data_write/              [Kernel PMU event]
->   uncore_imc_free_running_1/data_read/               [Kernel PMU event]
->   uncore_imc_free_running_1/data_total/              [Kernel PMU event]
->   uncore_imc_free_running_1/data_write/              [Kernel PMU event]
-> ```
->
-> After:
-> ```
-> $ perf list
-> ...
->   uncore_imc_free_running/data_read/                 [Kernel PMU event]
->   uncore_imc_free_running/data_total/                [Kernel PMU event]
->   uncore_imc_free_running/data_write/                [Kernel PMU event]
-> ...
-> $ perf list -v
-> ...
->   uncore_imc_free_running_0/data_read/               [Kernel PMU event]
->   uncore_imc_free_running_0/data_total/              [Kernel PMU event]
->   uncore_imc_free_running_0/data_write/              [Kernel PMU event]
->   uncore_imc_free_running_1/data_read/               [Kernel PMU event]
->   uncore_imc_free_running_1/data_total/              [Kernel PMU event]
->   uncore_imc_free_running_1/data_write/              [Kernel PMU event]
-> ...
-> ```
->
-> The PMUs are sorted by name then suffix as a part of this change.
->
-> v3: Add detail to patch 1 sorting commit message about the suffix and
->     why sorting is necessary.
-> v2: List all PMUs when "-v" is passed as suggested by John Garry
->     <john.g.garry@oracle.com>.
->
-> Ian Rogers (3):
->   perf pmus: Sort pmus by name then suffix
->   perf pmus: Add scan that ignores duplicates, use for perf list
->   perf pmus: Don't print duplicate PMU suffix in list by default
+This series of patches fixes the appropriate _OSC check for CXL RAS
+registers.
 
-Ping. Thanks,
-Ian
+First patch addresses the _OSC check.
 
->  tools/perf/builtin-list.c      |   8 +++
->  tools/perf/util/pmus.c         | 120 +++++++++++++++++++++++++++++++--
->  tools/perf/util/print-events.h |   1 +
->  3 files changed, 122 insertions(+), 7 deletions(-)
->
-> --
-> 2.41.0.640.ga95def55d0-goog
->
+Second patch moves around pcie_aer_is_native() function declaration to a
+common location to be used by cxl/pci module and third patch reuses
+pcie_aer_is_native() in cxl/pci module.
+
+Link to v3:
+https://lore.kernel.org/all/20230803230129.127590-1-Smita.KoralahalliChannabasappa@amd.com
+
+Smita Koralahalli (3):
+  cxl/pci: Fix appropriate checking for _OSC while handling CXL RAS
+    registers
+  PCI/AER: Export pcie_aer_is_native()
+  cxl/pci: Replace host_bridge->native_aer with pcie_aer_is_native()
+
+ drivers/cxl/pci.c          | 7 +++----
+ drivers/pci/pcie/aer.c     | 1 +
+ drivers/pci/pcie/portdrv.h | 2 --
+ include/linux/aer.h        | 2 ++
+ 4 files changed, 6 insertions(+), 6 deletions(-)
+
+-- 
+2.17.1
+
