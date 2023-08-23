@@ -2,212 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6F0B784FFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 07:26:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1BC3784FFF
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 07:35:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232689AbjHWF0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 01:26:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34458 "EHLO
+        id S232691AbjHWFdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 01:33:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232660AbjHWF0U (ORCPT
+        with ESMTP id S231474AbjHWFdf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 01:26:20 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFFCEE54;
-        Tue, 22 Aug 2023 22:26:18 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Wed, 23 Aug 2023 01:33:35 -0400
+Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B0FBE54;
+        Tue, 22 Aug 2023 22:33:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1692768812; x=1724304812;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=yBYwYVHS5gWIc2cCB6gU+GXiV6MN/VGyE43zIRurjpM=;
+  b=OBzo5EksCJlo5S8pi+P8sKLqidBc7qHgwXO0zS/o9MC3KQ6+eOJcyQX4
+   jAZDcVaE+qcCO6iSiTBgCluwAswRge/Q1B867O10xZbKDyO5Y5ttY5Mqm
+   /zDuTOhvFt+f7kcpv7StU12SzNkMLD2vHk6bf3H4+AFnAw6MNHcb1XoAJ
+   NFbC+6jgzdYlqEAzcW2KToXKkUfxaffqQ8MzhZvgaiISAPi8kz0rSFhOe
+   paTAX9rTsUCm15cThqP+lqQ0soOYrQYwih/3BeKR+ZLdbbq700r+M0YEY
+   eMqItabO6FPn/f8Al37L0Vg8ITT0JRnYD8PD0v5YPhx//rIR0gsgim5zY
+   A==;
+X-IronPort-AV: E=Sophos;i="6.01,194,1684792800"; 
+   d="scan'208";a="32575160"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 23 Aug 2023 07:33:30 +0200
+Received: from steina-w.localnet (steina-w.tq-net.de [10.123.53.21])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6FAE761507;
-        Wed, 23 Aug 2023 05:26:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A7A1C433CB;
-        Wed, 23 Aug 2023 05:26:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692768377;
-        bh=BBwZpX/GgoL6l6P+HgxREh074ABE6q6co7ZigJJSIOs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=JcuEDjOuWMVrG7FQ3Xc00YUIU1/4CglEVneCb7SvnmaIvhgpACI9dz/B53dhdLh7J
-         RKp4YBoTE6+Ad8HFDBNtFIxeQSafkGUVuPrVXC2d+Gzu+LwmRnuf88Of/eFRdH74L8
-         gq6qmcWd09qNPv0qy7I1j+XNdxuPElNn9k1IL0r6CTRa94cYh3v1GOvaCW56AHPVZ5
-         P5T/dV+GFX3eKTy3OYWGX7UJQQOH9fMhID8HG3WJ2au9Uk3BmDLizqIYFHs6rGUu86
-         N+gDoZnSaxrN4Tccp6LaSEntZCJiiIFdgrXcvg/GRIFYiyq2bHBvKKTcNtpvRXzpVm
-         oofP6o53nbS4g==
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-4fe11652b64so7989718e87.0;
-        Tue, 22 Aug 2023 22:26:17 -0700 (PDT)
-X-Gm-Message-State: AOJu0YwTXXKKNYQbY/UbwyU192kxnS6QsOCmb9l8+DvgxD+F0nj6EwUS
-        HOVEhCzDvD6dnEDgjKk7JqlKX/8IXdB3d5JB1jg=
-X-Google-Smtp-Source: AGHT+IHmbsWO2ByPVoKPKaeVR8PpuAL7K8TN3cDSqRTEkeZrnzlZbwnNLGeNVZjkyssmCvYH/aoUtQh4oNz+EJLATEg=
-X-Received: by 2002:a05:6512:477:b0:4ff:8f12:c4d7 with SMTP id
- x23-20020a056512047700b004ff8f12c4d7mr8673269lfd.31.1692768375519; Tue, 22
- Aug 2023 22:26:15 -0700 (PDT)
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id A6917280075;
+        Wed, 23 Aug 2023 07:33:30 +0200 (CEST)
+From:   Alexander Stein <alexander.stein@ew.tq-group.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Martin Kaiser <martin@kaiser.cx>,
+        Martin Kaiser <martin@kaiser.cx>
+Subject: Re: [PATCH 3/3] hwrng: imx-rngc - use polling to wait for end of seeding
+Date:   Wed, 23 Aug 2023 07:33:30 +0200
+Message-ID: <5662754.31r3eYUQgx@steina-w>
+Organization: TQ-Systems GmbH
+In-Reply-To: <20230822152553.190858-4-martin@kaiser.cx>
+References: <20230822152553.190858-1-martin@kaiser.cx> <20230822152553.190858-4-martin@kaiser.cx>
 MIME-Version: 1.0
-References: <20230820090949.2874537-1-yukuai1@huaweicloud.com>
- <20230820090949.2874537-7-yukuai1@huaweicloud.com> <CAPhsuW74MEFjNTNErYfOT1gX+BUdbDwaV1oTmmcz=_76Ym3ZuA@mail.gmail.com>
- <c7a82fb2-cf4b-2095-e813-84aed2418ff0@huaweicloud.com> <2766d001-f618-d224-f8a9-ec38ed1dc2a7@huaweicloud.com>
-In-Reply-To: <2766d001-f618-d224-f8a9-ec38ed1dc2a7@huaweicloud.com>
-From:   Song Liu <song@kernel.org>
-Date:   Tue, 22 Aug 2023 22:26:03 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW6JQX7ujeO77NVTme8t0DvzVBrsXRHmayVnp4fwWoYhZg@mail.gmail.com>
-Message-ID: <CAPhsuW6JQX7ujeO77NVTme8t0DvzVBrsXRHmayVnp4fwWoYhZg@mail.gmail.com>
-Subject: Re: [PATCH -next v3 6/7] md: factor out a helper rdev_addable() from remove_and_add_spares()
-To:     Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     xni@redhat.com, mariusz.tkaczyk@linux.intel.com,
-        linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com, yangerkun@huawei.com,
-        "yukuai (C)" <yukuai3@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="iso-8859-1"
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 8:04=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.com> w=
-rote:
->
-> Hi,
->
-> =E5=9C=A8 2023/08/22 10:17, Yu Kuai =E5=86=99=E9=81=93:
-> > Hi,
-> >
-> > =E5=9C=A8 2023/08/22 7:22, Song Liu =E5=86=99=E9=81=93:
-> >> On Sun, Aug 20, 2023 at 2:13=E2=80=AFAM Yu Kuai <yukuai1@huaweicloud.c=
-om> wrote:
-> >>>
-> >>> From: Yu Kuai <yukuai3@huawei.com>
-> >>>
-> >>> There are no functional changes, just to make the code simpler and
-> >>> prepare to delay remove_and_add_spares() to md_start_sync().
-> >>>
-> >>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> >>> ---
-> >>>   drivers/md/md.c | 28 ++++++++++++++++------------
-> >>>   1 file changed, 16 insertions(+), 12 deletions(-)
-> >>>
-> >>> diff --git a/drivers/md/md.c b/drivers/md/md.c
-> >>> index 11d27c934fdd..cdc361c521d4 100644
-> >>> --- a/drivers/md/md.c
-> >>> +++ b/drivers/md/md.c
-> >>> @@ -9177,6 +9177,20 @@ static bool rdev_is_spare(struct md_rdev *rdev=
-)
-> >>>                 !test_bit(Faulty, &rdev->flags);
-> >>>   }
-> >>>
-> >>> +static bool rdev_addable(struct md_rdev *rdev)
-> >>> +{
-> >>> +       if (test_bit(Candidate, &rdev->flags) || rdev->raid_disk >=3D=
- 0 ||
-> >>> +           test_bit(Faulty, &rdev->flags))
-> >>> +               return false;
-> >>> +
-> >>> +       if (!test_bit(Journal, &rdev->flags) &&
-> >>> !md_is_rdwr(rdev->mddev) &&
-> >>
-> >> Instead of straightforward refactoring, I hope we can make these rdev_=
-*
-> >> helpers more meaningful, and hopefullly reusable. For example, let's
-> >> define
-> >> the meaning of "addable", and write the function to match that
-> >> meaning. In
-> >> this case, I think we shouldn't check md_is_rdwr() inside rdev_addable=
-().
-> >>
-> >> Does this make sense?
-> >
-> > Yes, this make sense, rdev can be added to read-only array.
-> >
-> > There are total three callers of pers->hot_add_sisk, I'll try to find i=
-f
-> > they have common conditions.
->
-> Unfortunately, the conditions is quite different, and It's difficult to
-> factor out a common helper for them to use.
->
-> In this case, !md_is_rdwr() is one of the four conditions, which means
-> if the array is read-only, there is a special case that rdev can't be
-> added to the configuration. Perhaps it's okay to keep this?
+Am Dienstag, 22. August 2023, 17:25:53 CEST schrieb Martin Kaiser:
+> Use polling to wait until the imx-rngc is properly seeded.
 
-My main concern is that rdev_addable() is not making the code easier to
-understand. We have a few different cases at this point:
+What is the benefit of burning CPU cycles while waiting for hardware?
 
-1. rdev is not suitable for add (Faulty, raid_disk>=3D0, Candidate);
-2. rdev is Journal;
-3. Re-add rdev to RO array;
-4. Non-re-add rdev to RO array;
-5. Other cases.
+> We do this only in the init function when the imx-rngc becomes active.
+> Polling is ok at this time, there's nothing else we could do while
+> we're waiting.
+>=20
+> We can now remove the code for the interrupt and the completion.
 
-Current rdev_addable() handles more or less all of this, which is
-confusing. Maybe we can do something along similar to the
-following (not tested). Does this look more clear?
+Please split the change to polling and IRQ removal into two patches.
 
-Thanks,
-Song
+> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
+> ---
+>  drivers/char/hw_random/imx-rngc.c | 81 ++++---------------------------
+>  1 file changed, 9 insertions(+), 72 deletions(-)
+>=20
+> diff --git a/drivers/char/hw_random/imx-rngc.c
+> b/drivers/char/hw_random/imx-rngc.c index d2df468fd460..7ab9aada72d0 1006=
+44
+> --- a/drivers/char/hw_random/imx-rngc.c
+> +++ b/drivers/char/hw_random/imx-rngc.c
+> @@ -63,12 +63,6 @@ struct imx_rngc {
+>  	struct clk		*clk;
+>  	void __iomem		*base;
+>  	struct hwrng		rng;
+> -	struct completion	rng_op_done;
+> -	/*
+> -	 * err_reg is written only by the irq handler and read only
+> -	 * when interrupts are masked, we need no spinlock
+> -	 */
+> -	u32			err_reg;
+>  };
+>=20
+>=20
+> @@ -91,15 +85,6 @@ static inline void imx_rngc_irq_mask_clear(struct
+> imx_rngc *rngc) writel(cmd, rngc->base + RNGC_COMMAND);
+>  }
+>=20
+> -static inline void imx_rngc_irq_unmask(struct imx_rngc *rngc)
+> -{
+> -	u32 ctrl;
+> -
+> -	ctrl =3D readl(rngc->base + RNGC_CONTROL);
+> -	ctrl &=3D ~(RNGC_CTRL_MASK_DONE | RNGC_CTRL_MASK_ERROR);
+> -	writel(ctrl, rngc->base + RNGC_CONTROL);
+> -}
+> -
+>  static int imx_rngc_self_test(struct imx_rngc *rngc)
+>  {
+>  	u32 cmd, status;
+> @@ -143,56 +128,32 @@ static int imx_rngc_read(struct hwrng *rng, void
+> *data, size_t max, bool wait) return retval ? retval : -EIO;
+>  }
+>=20
+> -static irqreturn_t imx_rngc_irq(int irq, void *priv)
+> -{
+> -	struct imx_rngc *rngc =3D (struct imx_rngc *)priv;
+> -	u32 status;
+> -
+> -	/*
+> -	 * clearing the interrupt will also clear the error register
+> -	 * read error and status before clearing
+> -	 */
+> -	status =3D readl(rngc->base + RNGC_STATUS);
+> -	rngc->err_reg =3D readl(rngc->base + RNGC_ERROR);
+> -
+> -	imx_rngc_irq_mask_clear(rngc);
+> -
+> -	if (status & (RNGC_STATUS_SEED_DONE | RNGC_STATUS_ST_DONE))
+> -		complete(&rngc->rng_op_done);
+> -
+> -	return IRQ_HANDLED;
+> -}
+> -
+>  static int imx_rngc_init(struct hwrng *rng)
+>  {
+>  	struct imx_rngc *rngc =3D container_of(rng, struct imx_rngc, rng);
+> -	u32 cmd, ctrl;
+> +	u32 cmd, ctrl, status, err_reg;
+>  	int ret;
+>=20
+>  	/* clear error */
+>  	cmd =3D readl(rngc->base + RNGC_COMMAND);
+>  	writel(cmd | RNGC_CMD_CLR_ERR, rngc->base + RNGC_COMMAND);
+>=20
+> -	imx_rngc_irq_unmask(rngc);
+> -
+>  	/* create seed, repeat while there is some statistical error */
+>  	do {
+>  		/* seed creation */
+>  		cmd =3D readl(rngc->base + RNGC_COMMAND);
+>  		writel(cmd | RNGC_CMD_SEED, rngc->base + RNGC_COMMAND);
+>=20
+> -		ret =3D wait_for_completion_timeout(&rngc->rng_op_done,
+> msecs_to_jiffies(RNGC_TIMEOUT)); -		if (!ret) {
+> -			ret =3D -ETIMEDOUT;
+> -			goto err;
+> -		}
+> +		ret =3D readl_poll_timeout(rngc->base + RNGC_STATUS, status,
+> +					 status &=20
+RNGC_STATUS_SEED_DONE, 1000, RNGC_TIMEOUT * 1000);
 
-diff --git i/drivers/md/md.c w/drivers/md/md.c
-index 78be7811a89f..8cb855d03e0a 100644
---- i/drivers/md/md.c
-+++ w/drivers/md/md.c
-@@ -9117,6 +9117,20 @@ void md_do_sync(struct md_thread *thread)
- }
- EXPORT_SYMBOL_GPL(md_do_sync);
+So you want to poll for up to 3s?
 
-+static bool rdev_addable(struct md_rdev *rdev)
-+{
-+       if (test_bit(Candidate, &rdev->flags) || rdev->raid_disk >=3D 0 ||
-+           test_bit(Faulty, &rdev->flags))
-+               return false;
-+       return true;
-+}
-+
-+static bool rdev_is_readd(struct md_rdev *rdev)
-+{
-+       return rdev->saved_raid_disk >=3D 0 ||
-+               !test_bit(Bitmap_sync, &rdev->flags);
-+}
-+
- static int remove_and_add_spares(struct mddev *mddev,
-                                 struct md_rdev *this)
- {
-@@ -9176,25 +9190,24 @@ static int remove_and_add_spares(struct mddev *mdde=
-v,
-        rdev_for_each(rdev, mddev) {
-                if (this && this !=3D rdev)
-                        continue;
--               if (test_bit(Candidate, &rdev->flags))
--                       continue;
-                if (rdev->raid_disk >=3D 0 &&
-                    !test_bit(In_sync, &rdev->flags) &&
-                    !test_bit(Journal, &rdev->flags) &&
-                    !test_bit(Faulty, &rdev->flags))
-                        spares++;
--               if (rdev->raid_disk >=3D 0)
-+
-+               if (!rdev_addable(rdev))
-                        continue;
--               if (test_bit(Faulty, &rdev->flags))
-+
-+               if (test_bit(Journal, &rdev->flags))
-+                       goto hot_add_disk;
-+
-+               if (!md_is_rdwr(mddev) && !rdev_is_readd(rdev))
-                        continue;
--               if (!test_bit(Journal, &rdev->flags)) {
--                       if (!md_is_rdwr(mddev) &&
--                           !(rdev->saved_raid_disk >=3D 0 &&
--                             !test_bit(Bitmap_sync, &rdev->flags)))
--                               continue;
+Best regards,
+Alexander
 
--                       rdev->recovery_offset =3D 0;
--               }
-+               rdev->recovery_offset =3D 0;
-+
-+       hot_add_disk:
-                if (mddev->pers->hot_add_disk(mddev, rdev) =3D=3D 0) {
-                        /* failure here is OK */
-                        sysfs_link_rdev(mddev, rdev);
+> +		if (ret < 0)
+> +			return ret;
+>=20
+> -	} while (rngc->err_reg =3D=3D RNGC_ERROR_STATUS_STAT_ERR);
+> +		err_reg =3D readl(rngc->base + RNGC_ERROR);
+> +	} while (err_reg =3D=3D RNGC_ERROR_STATUS_STAT_ERR);
+>=20
+> -	if (rngc->err_reg) {
+> -		ret =3D -EIO;
+> -		goto err;
+> -	}
+> +	if (err_reg)
+> +		return -EIO;
+>=20
+>  	/*
+>  	 * enable automatic seeding, the rngc creates a new seed=20
+automatically
+> @@ -202,23 +163,7 @@ static int imx_rngc_init(struct hwrng *rng)
+>  	ctrl |=3D RNGC_CTRL_AUTO_SEED;
+>  	writel(ctrl, rngc->base + RNGC_CONTROL);
+>=20
+> -	/*
+> -	 * if initialisation was successful, we keep the interrupt
+> -	 * unmasked until imx_rngc_cleanup is called
+> -	 * we mask the interrupt ourselves if we return an error
+> -	 */
+>  	return 0;
+> -
+> -err:
+> -	imx_rngc_irq_mask_clear(rngc);
+> -	return ret;
+> -}
+> -
+> -static void imx_rngc_cleanup(struct hwrng *rng)
+> -{
+> -	struct imx_rngc *rngc =3D container_of(rng, struct imx_rngc, rng);
+> -
+> -	imx_rngc_irq_mask_clear(rngc);
+>  }
+>=20
+>  static int __init imx_rngc_probe(struct platform_device *pdev)
+> @@ -254,12 +199,9 @@ static int __init imx_rngc_probe(struct platform_dev=
+ice
+> *pdev) if (rng_type !=3D RNGC_TYPE_RNGC && rng_type !=3D RNGC_TYPE_RNGB)
+>  		return -ENODEV;
+>=20
+> -	init_completion(&rngc->rng_op_done);
+> -
+>  	rngc->rng.name =3D pdev->name;
+>  	rngc->rng.init =3D imx_rngc_init;
+>  	rngc->rng.read =3D imx_rngc_read;
+> -	rngc->rng.cleanup =3D imx_rngc_cleanup;
+>  	rngc->rng.quality =3D 19;
+>=20
+>  	rngc->dev =3D &pdev->dev;
+> @@ -267,11 +209,6 @@ static int __init imx_rngc_probe(struct platform_dev=
+ice
+> *pdev)
+>=20
+>  	imx_rngc_irq_mask_clear(rngc);
+>=20
+> -	ret =3D devm_request_irq(&pdev->dev,
+> -			irq, imx_rngc_irq, 0, pdev->name, (void *)rngc);
+> -	if (ret)
+> -		return dev_err_probe(&pdev->dev, ret, "Can't get interrupt=20
+working.\n");
+> -
+>  	if (self_test) {
+>  		ret =3D imx_rngc_self_test(rngc);
+>  		if (ret)
+
+
+=2D-=20
+TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
+Amtsgericht M=FCnchen, HRB 105018
+Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
+http://www.tq-group.com/
+
+
