@@ -2,250 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7F497862D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 23:57:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C1227862D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 23:58:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238531AbjHWV4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 17:56:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33454 "EHLO
+        id S238541AbjHWV6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 17:58:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237931AbjHWV4Q (ORCPT
+        with ESMTP id S238556AbjHWV5z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 17:56:16 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09D02E52;
-        Wed, 23 Aug 2023 14:56:15 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id 98e67ed59e1d1-26d2b3860daso4199579a91.1;
-        Wed, 23 Aug 2023 14:56:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692827774; x=1693432574;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=U38bdq29Dgw0wCI6R6HBdmbsK4pnEF7143GlmYr1GwQ=;
-        b=Mrp6jmUu4GpWFoHogKWjjzeO8Ax1IMjdXWlBJAyGzSAElDqk5H7ZtCmITp4Sqe+vny
-         j6iUs/esYyj3bXbRkTT5SbVQoqkrYQZGOpsIQmhySD/rpljYsfMrd3tkYpMNDvMYTAZi
-         WACdRZ/DJll+s+LvToCsB45E+xQdGvQvDwb12Q8C1Clo9AHvrlgUgzF1YHeCvhEe2Lom
-         jdsyFO7ARX169jOQOcId8oFe7lZthRfWJ+IBIL5H/BA3QmypSNyccRSmpjPsxibGsX2e
-         cz+DNLYhO8WlbsPY2NMwrso3/OTGR+Mi4kLoSqMSO3al8DTWJgpU2Ct8I4vLXXQJxLhy
-         AqSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692827774; x=1693432574;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=U38bdq29Dgw0wCI6R6HBdmbsK4pnEF7143GlmYr1GwQ=;
-        b=KqhgvTlHqRXZXTk280a9aMFhTxZ0dTadtLPEnKAUH0Mb4Ec8OOpPAnNavcVbPFni2A
-         FlUKDU4ubpR6RvhV4zyY0hnIeCg9fU1GUUUdsZcjPC6PoMGwFAHSdtwdsrm4YeYk+5to
-         20lvMOoURk8M6yLpTD2bqjr+ZVV0oYxIigjutq7uF0yBQLgMUiSGFIoj08cy9NhBn++/
-         N/+uxD0Kq9byZVYPwYooZwA/255MrprvM5UCxXJQJwT2LhiOizPwTak95Eu1eS3wTp5K
-         7reHRnRbUBiv3xMrUqQA4SPuFRov7tkc0ZVmIypVB3xL/3yZYvNk7qqBmfVbHuWztHrh
-         +FmQ==
-X-Gm-Message-State: AOJu0YzQoXeItAXbzm+kbO6C2jF/M+MOI3CTHw4qVxr6TRvbF+d97HoB
-        wbi/P14ufq5aZMYKp57AbcM=
-X-Google-Smtp-Source: AGHT+IEK9f5kg8gg9H6xaZEI7BweoTyMRpa0VDsD1a1KvfcF409tN8lu1SQutdkpLIAzoxCQZvZB/A==
-X-Received: by 2002:a17:90a:bc98:b0:268:b682:23de with SMTP id x24-20020a17090abc9800b00268b68223demr13483090pjr.28.1692827774403;
-        Wed, 23 Aug 2023 14:56:14 -0700 (PDT)
-Received: from localhost ([2a00:79e1:abd:4a00:6c80:7c10:75a0:44f4])
-        by smtp.gmail.com with ESMTPSA id 23-20020a17090a1a1700b00263e4dc33aasm271029pjk.11.2023.08.23.14.56.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Aug 2023 14:56:13 -0700 (PDT)
-From:   Rob Clark <robdclark@gmail.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     freedreno@lists.freedesktop.org, Xaver Hugl <xaver.hugl@gmail.com>,
-        Rob Clark <robdclark@chromium.org>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Pekka Paalanen <pekka.paalanen@collabora.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Gustavo Padovan <gustavo@padovan.org>,
-        linux-media@vger.kernel.org (open list:SYNC FILE FRAMEWORK),
-        linaro-mm-sig@lists.linaro.org (moderated list:DMA BUFFER SHARING
-        FRAMEWORK), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v9 3/3] dma-buf/sw_sync: Add fence deadline support
-Date:   Wed, 23 Aug 2023 14:54:56 -0700
-Message-ID: <20230823215458.203366-4-robdclark@gmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230823215458.203366-1-robdclark@gmail.com>
-References: <20230823215458.203366-1-robdclark@gmail.com>
+        Wed, 23 Aug 2023 17:57:55 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 073F71735;
+        Wed, 23 Aug 2023 14:57:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692827846; x=1724363846;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=jmOzwFjkvQ1zr3bWRNoXSZIkw0+/fNbuzLpsAQQVuS0=;
+  b=Y67ZI3nP1Dz41Wp2JaL0NXuffJwp5VBnkyDrIeI+G61q5hhitjCmTsam
+   uA4T3FxCy3l564mJwu/U0EJqrzj8y9pZLZIYUWukSsiGEnEH9mGuPdp1e
+   8mrn17KGUmXvY3rQw/PBeItkhpkhqg/Xx7QeX6O5pEvK3G0SLCfHXbQiA
+   D1rHLOe5D79QnQw0PlYSYwimfDluiRKUfwxkHtSviLQzWjn7JbQHTf60U
+   5n6am0sVcIZvlBWTTj91yJmcktOOGmvAmmKz7sa20/wilLwU/GRLkmUpZ
+   Ayu52FLDx6CVYd7S/nU5xkTiKc9u0kU4sS4nS9cWU57xrIAyPE4Rxj7Yk
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="373166841"
+X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
+   d="scan'208";a="373166841"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2023 14:57:25 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="686620412"
+X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
+   d="scan'208";a="686620412"
+Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 23 Aug 2023 14:57:20 -0700
+Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qYvqp-0001XI-2f;
+        Wed, 23 Aug 2023 21:57:19 +0000
+Date:   Thu, 24 Aug 2023 05:56:17 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Kyle Meyer <kyle.meyer@hpe.com>, seanjc@google.com,
+        pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@intel.com, x86@kernel.org, hpa@zytor.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        vkuznets@redhat.com, dmatlack@google.com
+Cc:     oe-kbuild-all@lists.linux.dev, russ.anderson@hpe.com,
+        dimitri.sivanich@hpe.com, steve.wahl@hpe.com,
+        Kyle Meyer <kyle.meyer@hpe.com>
+Subject: Re: [PATCH v2] KVM: x86: Add CONFIG_KVM_MAX_NR_VCPUS
+Message-ID: <202308240540.9fQYjHB2-lkp@intel.com>
+References: <20230823193842.2544394-1-kyle.meyer@hpe.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230823193842.2544394-1-kyle.meyer@hpe.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Clark <robdclark@chromium.org>
+Hi Kyle,
 
-This consists of simply storing the most recent deadline, and adding an
-ioctl to retrieve the deadline.  This can be used in conjunction with
-the SET_DEADLINE ioctl on a fence fd for testing.  Ie. create various
-sw_sync fences, merge them into a fence-array, set deadline on the
-fence-array and confirm that it is propagated properly to each fence.
+kernel test robot noticed the following build errors:
 
-v2: Switch UABI to express deadline as u64
-v3: More verbose UAPI docs, show how to convert from timespec
-v4: Better comments, track the soonest deadline, as a normal fence
-    implementation would, return an error if no deadline set.
+[auto build test ERROR on kvm/queue]
+[also build test ERROR on linus/master v6.5-rc7 next-20230823]
+[cannot apply to kvm/linux-next]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Signed-off-by: Rob Clark <robdclark@chromium.org>
-Reviewed-by: Christian König <christian.koenig@amd.com>
-Acked-by: Pekka Paalanen <pekka.paalanen@collabora.com>
----
- drivers/dma-buf/sw_sync.c    | 82 ++++++++++++++++++++++++++++++++++++
- drivers/dma-buf/sync_debug.h |  2 +
- 2 files changed, 84 insertions(+)
+url:    https://github.com/intel-lab-lkp/linux/commits/Kyle-Meyer/KVM-x86-Add-CONFIG_KVM_MAX_NR_VCPUS/20230824-034224
+base:   https://git.kernel.org/pub/scm/virt/kvm/kvm.git queue
+patch link:    https://lore.kernel.org/r/20230823193842.2544394-1-kyle.meyer%40hpe.com
+patch subject: [PATCH v2] KVM: x86: Add CONFIG_KVM_MAX_NR_VCPUS
+config: i386-tinyconfig (https://download.01.org/0day-ci/archive/20230824/202308240540.9fQYjHB2-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20230824/202308240540.9fQYjHB2-lkp@intel.com/reproduce)
 
-diff --git a/drivers/dma-buf/sw_sync.c b/drivers/dma-buf/sw_sync.c
-index f0a35277fd84..c353029789cf 100644
---- a/drivers/dma-buf/sw_sync.c
-+++ b/drivers/dma-buf/sw_sync.c
-@@ -52,12 +52,33 @@ struct sw_sync_create_fence_data {
- 	__s32	fence; /* fd of new fence */
- };
- 
-+/**
-+ * struct sw_sync_get_deadline - get the deadline hint of a sw_sync fence
-+ * @deadline_ns: absolute time of the deadline
-+ * @pad:	must be zero
-+ * @fence_fd:	the sw_sync fence fd (in)
-+ *
-+ * Return the earliest deadline set on the fence.  The timebase for the
-+ * deadline is CLOCK_MONOTONIC (same as vblank).  If there is no deadline
-+ * set on the fence, this ioctl will return -ENOENT.
-+ */
-+struct sw_sync_get_deadline {
-+	__u64	deadline_ns;
-+	__u32	pad;
-+	__s32	fence_fd;
-+};
-+
- #define SW_SYNC_IOC_MAGIC	'W'
- 
- #define SW_SYNC_IOC_CREATE_FENCE	_IOWR(SW_SYNC_IOC_MAGIC, 0,\
- 		struct sw_sync_create_fence_data)
- 
- #define SW_SYNC_IOC_INC			_IOW(SW_SYNC_IOC_MAGIC, 1, __u32)
-+#define SW_SYNC_GET_DEADLINE		_IOWR(SW_SYNC_IOC_MAGIC, 2, \
-+		struct sw_sync_get_deadline)
-+
-+
-+#define SW_SYNC_HAS_DEADLINE_BIT	DMA_FENCE_FLAG_USER_BITS
- 
- static const struct dma_fence_ops timeline_fence_ops;
- 
-@@ -171,6 +192,22 @@ static void timeline_fence_timeline_value_str(struct dma_fence *fence,
- 	snprintf(str, size, "%d", parent->value);
- }
- 
-+static void timeline_fence_set_deadline(struct dma_fence *fence, ktime_t deadline)
-+{
-+	struct sync_pt *pt = dma_fence_to_sync_pt(fence);
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(fence->lock, flags);
-+	if (test_bit(SW_SYNC_HAS_DEADLINE_BIT, &fence->flags)) {
-+		if (ktime_before(deadline, pt->deadline))
-+			pt->deadline = deadline;
-+	} else {
-+		pt->deadline = deadline;
-+		__set_bit(SW_SYNC_HAS_DEADLINE_BIT, &fence->flags);
-+	}
-+	spin_unlock_irqrestore(fence->lock, flags);
-+}
-+
- static const struct dma_fence_ops timeline_fence_ops = {
- 	.get_driver_name = timeline_fence_get_driver_name,
- 	.get_timeline_name = timeline_fence_get_timeline_name,
-@@ -179,6 +216,7 @@ static const struct dma_fence_ops timeline_fence_ops = {
- 	.release = timeline_fence_release,
- 	.fence_value_str = timeline_fence_value_str,
- 	.timeline_value_str = timeline_fence_timeline_value_str,
-+	.set_deadline = timeline_fence_set_deadline,
- };
- 
- /**
-@@ -387,6 +425,47 @@ static long sw_sync_ioctl_inc(struct sync_timeline *obj, unsigned long arg)
- 	return 0;
- }
- 
-+static int sw_sync_ioctl_get_deadline(struct sync_timeline *obj, unsigned long arg)
-+{
-+	struct sw_sync_get_deadline data;
-+	struct dma_fence *fence;
-+	unsigned long flags;
-+	struct sync_pt *pt;
-+	int ret = 0;
-+
-+	if (copy_from_user(&data, (void __user *)arg, sizeof(data)))
-+		return -EFAULT;
-+
-+	if (data.deadline_ns || data.pad)
-+		return -EINVAL;
-+
-+	fence = sync_file_get_fence(data.fence_fd);
-+	if (!fence)
-+		return -EINVAL;
-+
-+	pt = dma_fence_to_sync_pt(fence);
-+	if (!pt)
-+		return -EINVAL;
-+
-+	spin_lock_irqsave(fence->lock, flags);
-+	if (test_bit(SW_SYNC_HAS_DEADLINE_BIT, &fence->flags)) {
-+		data.deadline_ns = ktime_to_ns(pt->deadline);
-+	} else {
-+		ret = -ENOENT;
-+	}
-+	spin_unlock_irqrestore(fence->lock, flags);
-+
-+	dma_fence_put(fence);
-+
-+	if (ret)
-+		return ret;
-+
-+	if (copy_to_user((void __user *)arg, &data, sizeof(data)))
-+		return -EFAULT;
-+
-+	return 0;
-+}
-+
- static long sw_sync_ioctl(struct file *file, unsigned int cmd,
- 			  unsigned long arg)
- {
-@@ -399,6 +478,9 @@ static long sw_sync_ioctl(struct file *file, unsigned int cmd,
- 	case SW_SYNC_IOC_INC:
- 		return sw_sync_ioctl_inc(obj, arg);
- 
-+	case SW_SYNC_GET_DEADLINE:
-+		return sw_sync_ioctl_get_deadline(obj, arg);
-+
- 	default:
- 		return -ENOTTY;
- 	}
-diff --git a/drivers/dma-buf/sync_debug.h b/drivers/dma-buf/sync_debug.h
-index 6176e52ba2d7..a1bdd62efccd 100644
---- a/drivers/dma-buf/sync_debug.h
-+++ b/drivers/dma-buf/sync_debug.h
-@@ -55,11 +55,13 @@ static inline struct sync_timeline *dma_fence_parent(struct dma_fence *fence)
-  * @base: base fence object
-  * @link: link on the sync timeline's list
-  * @node: node in the sync timeline's tree
-+ * @deadline: the earliest fence deadline hint
-  */
- struct sync_pt {
- 	struct dma_fence base;
- 	struct list_head link;
- 	struct rb_node node;
-+	ktime_t deadline;
- };
- 
- extern const struct file_operations sw_sync_debugfs_fops;
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308240540.9fQYjHB2-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   In file included from include/vdso/const.h:5,
+                    from include/linux/const.h:4,
+                    from include/uapi/linux/kernel.h:6,
+                    from include/linux/cache.h:5,
+                    from include/linux/slab.h:15,
+                    from arch/x86/events/intel/core.c:14:
+>> arch/x86/include/asm/kvm_host.h:42:23: error: 'CONFIG_KVM_MAX_NR_VCPUS' undeclared here (not in a function)
+      42 | #define KVM_MAX_VCPUS CONFIG_KVM_MAX_NR_VCPUS
+         |                       ^~~~~~~~~~~~~~~~~~~~~~~
+   include/uapi/linux/const.h:34:40: note: in definition of macro '__KERNEL_DIV_ROUND_UP'
+      34 | #define __KERNEL_DIV_ROUND_UP(n, d) (((n) + (d) - 1) / (d))
+         |                                        ^
+   arch/x86/include/asm/kvm_host.h:1120:33: note: in expansion of macro 'BITS_TO_LONGS'
+    1120 |         unsigned long poll_mask[BITS_TO_LONGS(KVM_MAX_VCPUS)];
+         |                                 ^~~~~~~~~~~~~
+   arch/x86/include/asm/kvm_host.h:1120:47: note: in expansion of macro 'KVM_MAX_VCPUS'
+    1120 |         unsigned long poll_mask[BITS_TO_LONGS(KVM_MAX_VCPUS)];
+         |                                               ^~~~~~~~~~~~~
+
+
+vim +/CONFIG_KVM_MAX_NR_VCPUS +42 arch/x86/include/asm/kvm_host.h
+
+    41	
+  > 42	#define KVM_MAX_VCPUS CONFIG_KVM_MAX_NR_VCPUS
+    43	
+
 -- 
-2.41.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
