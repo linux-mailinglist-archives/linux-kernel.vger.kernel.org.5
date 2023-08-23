@@ -2,49 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B04E3785D2F
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 18:26:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF185785D2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 18:26:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237542AbjHWQ0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 12:26:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34822 "EHLO
+        id S237548AbjHWQ0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 12:26:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237454AbjHWQ0V (ORCPT
+        with ESMTP id S235835AbjHWQ03 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 12:26:21 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB93D10C3
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 09:26:19 -0700 (PDT)
+        Wed, 23 Aug 2023 12:26:29 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1197B10F1;
+        Wed, 23 Aug 2023 09:26:25 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 83406620ED
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 16:26:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35593C433C8;
-        Wed, 23 Aug 2023 16:26:17 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8CDEF646FD;
+        Wed, 23 Aug 2023 16:26:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E06AC433C7;
+        Wed, 23 Aug 2023 16:26:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692807978;
-        bh=FnuarZnFAyUqPz7jr69MFRBMZfNtqK9XZFNFPqeSp+g=;
+        s=k20201202; t=1692807983;
+        bh=qECGWHKOobEzMxHuX8r68lcnknGzvl9J0XZxy3E5EV0=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=aK3vrOi4K8xD9Psm4va2dwSihu6CwTQJsD5ATzCRXvDmv5wpzj3RBmUxviHiW5UEN
-         hG5pppSmtc7Tq6AT3ch0uVTakTZ5VKsDHakn/YR8rm627/TQ8QfL/XQ2Ko7VgKh/R3
-         4j/USHgKHmbCp3v3Do1FBrHDs45SSvSyUjCtp4B/rXbOD4oclvScxe6YKVP2L8JpHy
-         nRNydlkEWigrijcMe3KHurpOjS05N1c5Ttp0o4HOsH7XZyBBPvjcwy8JlaUyTPOVfs
-         6Xy0Kka+Ud6U8MwmMPb6kjpVAC8qf1lb5nK26GsnZVyOye+tetQYIXCpthr0plXo6y
-         uSmkMrsRmZDZg==
+        b=bf/8ucgpTSoUFaso5roJFNIgYAH9KpnXiC/ZNs3wi/AINC54uiHRcPnH3fEX15bsy
+         b2XFJU1S4tBOH2VMg9e7De3DEA+/F0k0G9dpIuiOVnm3nL0sdDhWvsernsld5x2OzQ
+         xGz5qnvBRUxORlLczRKYtEW6PIqtGMnhKgZPbFnFvZYzHDL2Kx9C0NKoZYAdFHbJEl
+         R8J8gth3skepTKFP6NSRfysIsi7iG9/3y57DcbCcBHbRPdgLvbMcoS2kHvIDNB/JL6
+         A/W+PxjF6PbbBKUUw7+qAGyo6R3uAU/HYjXGBfB8jc+5wJ0cpbox4RRd/Gf1PHhjU1
+         yWz6v1M9Bj86w==
 From:   Mark Brown <broonie@kernel.org>
-To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-In-Reply-To: <20230822-delete-l3-v2-1-b3ffc07348af@linaro.org>
-References: <20230822-delete-l3-v2-1-b3ffc07348af@linaro.org>
-Subject: Re: [PATCH v2] ASoC: Delete UDA134x/L3 audio codec
-Message-Id: <169280797694.53791.13283678720134616535.b4-ty@kernel.org>
-Date:   Wed, 23 Aug 2023 17:26:16 +0100
+To:     Seven Lee <wtli@nuvoton.com>
+Cc:     lgirdwood@gmail.com, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        robh+dt@kernel.org, conor+dt@kernel.org, YHCHuang@nuvoton.com,
+        KCHSU0@nuvoton.com, CTLIN0@nuvoton.com, SJLIN0@nuvoton.com,
+        scott6986@gmail.com, supercraig0719@gmail.com, dardar923@gmail.com
+In-Reply-To: <20230823071244.1861487-1-wtli@nuvoton.com>
+References: <20230823071244.1861487-1-wtli@nuvoton.com>
+Subject: Re: [PATCH 1/2] ASoC: dt-bindings: nau8821: Add single-ended input
+ feature
+Message-Id: <169280798077.53791.13745062802650648258.b4-ty@kernel.org>
+Date:   Wed, 23 Aug 2023 17:26:20 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -59,9 +60,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 22 Aug 2023 22:55:44 +0200, Linus Walleij wrote:
-> This codec was used by the deleted S3C board
-> sound/soc/samsung/s3c24xx_uda134x.c.
+On Wed, 23 Aug 2023 15:12:43 +0800, Seven Lee wrote:
+> Add input with single-ended control.
 > 
 > 
 
@@ -71,8 +71,10 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: Delete UDA134x/L3 audio codec
-      commit: 6dd11b945951315ba4986844f20e83a0c27c1d38
+[1/2] ASoC: dt-bindings: nau8821: Add single-ended input feature
+      commit: 91e28d0b51f994c5968aee2a941e9f62bc9e15d7
+[2/2] ASoC: nau8821: Improve AMIC recording performance.
+      commit: 014ee0692f29da8b08fed5da0fa14e04698a50f7
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
