@@ -2,70 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D46378595A
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 15:29:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56F01785959
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 15:29:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236213AbjHWN3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 09:29:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54744 "EHLO
+        id S236170AbjHWN3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 09:29:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236093AbjHWN3I (ORCPT
+        with ESMTP id S235980AbjHWN3F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 09:29:08 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E71E3E7F
+        Wed, 23 Aug 2023 09:29:05 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F304010C1
         for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 06:28:45 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-99bdcade7fbso711755866b.1
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-977e0fbd742so711504566b.2
         for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 06:28:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692797298; x=1693402098;
+        d=linaro.org; s=google; t=1692797299; x=1693402099;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=n4VOdQ2+Ao+ekB1JFBvNQB0H78lSGJ9EZdf+PWj6TOY=;
-        b=gILCvwDGfzItGitSj/gZqHvAZ9FgqtMkmmmKlx5xMTFGvRVCEK+9G373o9UO7m0dpQ
-         eBIpRJZ1xumU03g0rrGhdytsZiP8QZvY3McDtCHeshncg09EucSHhRAza2O3aTOkBn4g
-         XBm4peW61xiHnf90XsK4KCBF1mjF0Dl8cFJd4kp4r7CNHc/8AlbDA4PUnE6hHxtZtQMf
-         ZdREW0ChYZ4Kd7MbjyMSDmcZv3O8/QHmy5aeJcZwW+RNWOxWnvlPQ8O0/lh1vj1XyfhV
-         TKn7Jtd31TqgE8fxSvMi2zYXA6qJ421jgr1kJG+Pszw5i+4VzAewbY2/X4lWRA/7Y4yN
-         6xUA==
+        bh=wIvDC1RQQDdB76emFuds/bRYMDd6MDnA3Z/g/2DlsAI=;
+        b=lGDs7kLv4Kfe8ii2b0Dj1LtrzBn8Ir6ToUd2Yh4wI0W/xCbdVrhnmT7CWjD1FvfyG9
+         Xb063v/ErJTsYBaJ6tdMAv3weg/q+ekcH0xvMwfeaOnizGBKkRiXtztszrUSby3sD4+A
+         O6wYlg7yFdq3P5pzMGI5sgrLxjNai49ve6jDWrDWAw0o+1ACGTqZOTKP4hE6EYYvSGI3
+         KCCjsIk6p2OZtEUwjL0L5TuVecB8hBE3+ABe0wIX47TUNMGlRO/gW60b/ysg83cgqNZH
+         0HmsA41C3hlxYe1Yy4oDxu9gzPNQdTtjhbZKJp1uPK9J1GMWee2q+o1+ZccOdl9MKP4v
+         qBLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692797298; x=1693402098;
+        d=1e100.net; s=20221208; t=1692797299; x=1693402099;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=n4VOdQ2+Ao+ekB1JFBvNQB0H78lSGJ9EZdf+PWj6TOY=;
-        b=DHaaSh2QaJYJdoXGEIAAlK6OpCcebdK/r1lwA/OjtKHF5aE+XWqFDZXKZ4RbFSQeNx
-         +AgNBxAqKJKgTjbbT0C/wsa6enx9Tq41FygJNaRPiZcwipCyoKddS8wKSvwtBq5uZZr0
-         7Ot2Y0rgiU8CmiWkDQlV9C8afDA/Myv/jG9ppMz9Qy/6KFVcjl/c6f3aWvJkGndFHhvk
-         iQ8/fHQ1Kv3jHOtxg14XoL74SzkOfVk1i6o++P1Z61ugMLgo9wR1nAQXC0lN3LH3E0Jd
-         peOM+lRuxxZXaxCISBqx07Q/3Cn1djHBBTJ7a9RHMXTyH9SsMELVdGIEExSrsjJIAYDO
-         Q+gQ==
-X-Gm-Message-State: AOJu0YyB3ThXPETDQ2XcZhDx+gikO9aHaMXG3tDHTnQhYqpnEGda+07J
-        Q+p7sx/6GCmcA/JNL0egsg0ItA==
-X-Google-Smtp-Source: AGHT+IFWbWLIaooEswcBpFue5dxlNZf+pV3TIjoIKl4VWXhDOgZPY0W75+4tHEthGovi68ifAbxmVQ==
-X-Received: by 2002:a17:907:b11:b0:99e:1e9:fea4 with SMTP id h17-20020a1709070b1100b0099e01e9fea4mr9849599ejl.51.1692797298516;
-        Wed, 23 Aug 2023 06:28:18 -0700 (PDT)
+        bh=wIvDC1RQQDdB76emFuds/bRYMDd6MDnA3Z/g/2DlsAI=;
+        b=LO15FJXufZFLoRmsLR1+7ukhd6YeA5RDIIH9sOCq+hai0ygjAC6QXOmB+MVVGLNxEf
+         99g8S2Z8nsMeDHojtCTHDwMW7h9aQYw0zq8HH/c0dg1TamdsI1WsR7XdOEgZEJnyeyPs
+         UZm1jEjX7vDcsQOVvnMgPxiZMR0scFr9GaPvEqrTxP+3XyP/vE743C1DxSwlLrCxav7C
+         SPnViJkv4/0EdH9Jy8wXRaVwGUvAE5KOIph9r2RS3z2mVheZxvctuN41oUcs3TPj7TVP
+         EHJrTlD0aQLQ61GE5RSb67YfnkdJnwbCm7TIX0y9Hfk214o4jbT4cIK+17S2iuo2kDtg
+         jtQQ==
+X-Gm-Message-State: AOJu0YwNNWKIy62MEpS/oeUgDssfacZ+vS3SDrwF6XG2QD3OZ2VQOUAo
+        gKns7Z6R4UZ9uUCknNjvZOEhCA==
+X-Google-Smtp-Source: AGHT+IEyl5QNmU+IDBlS7NwM7BMrRpIvaSS2hp6aPckvMO3tc+mlC8k3gJcWNmCZ7LvbT1eIOmEIPg==
+X-Received: by 2002:a17:906:9be3:b0:993:d75b:63ea with SMTP id de35-20020a1709069be300b00993d75b63eamr10350922ejc.16.1692797299687;
+        Wed, 23 Aug 2023 06:28:19 -0700 (PDT)
 Received: from localhost.localdomain ([5.133.47.210])
-        by smtp.gmail.com with ESMTPSA id l9-20020a1709066b8900b009a168ab6ee2sm8918202ejr.164.2023.08.23.06.28.17
+        by smtp.gmail.com with ESMTPSA id l9-20020a1709066b8900b009a168ab6ee2sm8918202ejr.164.2023.08.23.06.28.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Aug 2023 06:28:17 -0700 (PDT)
+        Wed, 23 Aug 2023 06:28:18 -0700 (PDT)
 From:   srinivas.kandagatla@linaro.org
 To:     gregkh@linuxfoundation.org
 Cc:     linux-kernel@vger.kernel.org,
         Miquel Raynal <miquel.raynal@bootlin.com>,
-        kernel test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
         Michael Walle <michael@walle.cc>,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v2 20/22] nvmem: core: Return NULL when no nvmem layout is found
-Date:   Wed, 23 Aug 2023 14:27:42 +0100
-Message-Id: <20230823132744.350618-21-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 21/22] nvmem: core: Do not open-code existing functions
+Date:   Wed, 23 Aug 2023 14:27:43 +0100
+Message-Id: <20230823132744.350618-22-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230823132744.350618-1-srinivas.kandagatla@linaro.org>
 References: <20230823132744.350618-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1498; i=srinivas.kandagatla@linaro.org; h=from:subject; bh=BoZNOrDNjdXu5QHSoe17fPZxRgh0XuK1bafndIgFVaI=; b=owEBbQGS/pANAwAKAXqh/VnHNFU3AcsmYgBk5glJ+CXTdAdw8D3jnuqh8he37SRJuv2kMK6OE mmh3VcPM8WJATMEAAEKAB0WIQQi509axvzi9vce3Y16of1ZxzRVNwUCZOYJSQAKCRB6of1ZxzRV Nz0jCACeaCTEbWcy1Dpu4IdiCi4POouWUcx4AQIhlZtMmqHy5rEih5G3aFVro7ucDMSXmta1yJR WPYtpnd7roZ8UpUvw0yrEnpZGCi9IRbgvl22ZE9EYwpMCqdcZwM2tJ9nlkeotqwfAYY4i3N/lA5 DzNNKYM0kc7LXMQUh3HC+5cZ88/8LwZpoLBI05+wGp9pYeWAGSGF76gug5bxwd4t0SqWnmuTN1d hKle7mYk+n2AAig6x2RaossGCQqp9xhX6mkd2f5FxguLjSBS5VCFN11X8INx56dI8LXYHkEmlNC hEIFwnpHHTEwVnfp49BgTyWfADblr/zUwlvx53R6TB3lZ883
+X-Developer-Signature: v=1; a=openpgp-sha256; l=952; i=srinivas.kandagatla@linaro.org; h=from:subject; bh=vco5aA3gxE/siVz4GE3hjfmbsR8BAexpxsK1E2G+ZEo=; b=owEBbQGS/pANAwAKAXqh/VnHNFU3AcsmYgBk5glKLW0DHOxk5WDEAePV3zp/DgG6uvB81yUcb Z/HiCvhGQiJATMEAAEKAB0WIQQi509axvzi9vce3Y16of1ZxzRVNwUCZOYJSgAKCRB6of1ZxzRV NzO3B/9CoSCOB20SbqjDijORfnC+dlG5Devd/uw7XQOBEB2wHQuhtpUck0sgs4EhzYuPvgsiyLL ehgerHxpw2ororNfcZJ/Eq6VMdQKR/Pf1W2s+HdCyTM/tqAiNz9YQif2ZXa/2HPFquuLL9aXFlX x/7cjVBhvdtectN9OjgJZA8rU7wcwDX3C0OFK7p2GEuoOIegf5q1KSY6Zcc/J8mEkqvlhWetKpT TDCr5VJD+FDMtoiHOA02ic4+khKxifQ3GoPqBUWZ1XapcLYNGOmINpaM3NoqN+wC5Bk9fOcQcXL IaRF4K+zmK5xy2p9BL3vjAeoChwsh6UYe3wqEifZtR5ScPkD
 X-Developer-Key: i=srinivas.kandagatla@linaro.org; a=openpgp; fpr=ED6472765AB36EC43B3EF97AD77E3FC0562560D6
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -81,37 +79,31 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 
-Currently, of_nvmem_layout_get_container() returns NULL on error, or an
-error pointer if either CONFIG_NVMEM or CONFIG_OF is turned off. We
-should likely avoid this kind of mix for two reasons: to clarify the
-intend and anyway fix the !CONFIG_OF which will likely always if we use
-this helper somewhere else. Let's just return NULL when no layout is
-found, we don't need an error value here.
+Use of_nvmem_layout_get_container() instead of hardcoding it.
 
-Link: https://staticthinking.wordpress.com/2022/08/01/mixing-error-pointers-and-null/
-Fixes: 266570f496b9 ("nvmem: core: introduce NVMEM layouts")
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-Closes: https://lore.kernel.org/r/202308030002.DnSFOrMB-lkp@intel.com/
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 Reviewed-by: Michael Walle <michael@walle.cc>
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- include/linux/nvmem-consumer.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/nvmem/core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/nvmem-consumer.h b/include/linux/nvmem-consumer.h
-index fa030d93b768..27373024856d 100644
---- a/include/linux/nvmem-consumer.h
-+++ b/include/linux/nvmem-consumer.h
-@@ -256,7 +256,7 @@ static inline struct nvmem_device *of_nvmem_device_get(struct device_node *np,
- static inline struct device_node *
- of_nvmem_layout_get_container(struct nvmem_device *nvmem)
+diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
+index bc7ea001a446..12d05aea0b41 100644
+--- a/drivers/nvmem/core.c
++++ b/drivers/nvmem/core.c
+@@ -785,10 +785,10 @@ EXPORT_SYMBOL_GPL(nvmem_layout_unregister);
+ 
+ static struct nvmem_layout *nvmem_layout_get(struct nvmem_device *nvmem)
  {
--	return ERR_PTR(-EOPNOTSUPP);
-+	return NULL;
- }
- #endif /* CONFIG_NVMEM && CONFIG_OF */
+-	struct device_node *layout_np, *np = nvmem->dev.of_node;
++	struct device_node *layout_np;
+ 	struct nvmem_layout *l, *layout = ERR_PTR(-EPROBE_DEFER);
+ 
+-	layout_np = of_get_child_by_name(np, "nvmem-layout");
++	layout_np = of_nvmem_layout_get_container(nvmem);
+ 	if (!layout_np)
+ 		return NULL;
  
 -- 
 2.25.1
