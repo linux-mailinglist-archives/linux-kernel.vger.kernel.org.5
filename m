@@ -2,97 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83706784DF4
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 02:50:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D1C8784DF6
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 02:51:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231916AbjHWAuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 20:50:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48024 "EHLO
+        id S231924AbjHWAu7 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 22 Aug 2023 20:50:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231909AbjHWAut (ORCPT
+        with ESMTP id S231909AbjHWAu6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 20:50:49 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A72F5E63;
-        Tue, 22 Aug 2023 17:50:27 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id 41be03b00d2f7-565403bda57so2909846a12.3;
-        Tue, 22 Aug 2023 17:50:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692751827; x=1693356627;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VM43A4/DK/17xUvga8Gmv1Q0UBVziYLS6+8xmcTLaUI=;
-        b=CodYmXiWIj+5nfcp0Fcj7nsBX3UzYQo43LtC7Cyn0wioHPrSAgEXdL1Eizd5bFEmK9
-         HRW09Ntbny+l4MiMT2PB/KEq10DP6qYr2OP88OA6STJSrTvii/HQuJsvcCNKB7sYPcBe
-         ZoZt06eCosFPqKp+/U+iP1I6vLL1fiifEy2ZzFI0f41t6SeK7VP7sO5noevJc1aGOU8U
-         YOGZiL1HLpjpmjWHRGoRo1UzQziBkl+vrdRRbZdnibDj8lcl+a3h894tCHriSxlzNxZX
-         da38wSrsqFhdnay3MHrsaDXC+CRz3h0Y+EQHKVFWtwq4vKsaap8Yj/LKpJOy89+Wa+XW
-         L7tA==
+        Tue, 22 Aug 2023 20:50:58 -0400
+Received: from mail-vk1-f172.google.com (mail-vk1-f172.google.com [209.85.221.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04821E66;
+        Tue, 22 Aug 2023 17:50:39 -0700 (PDT)
+Received: by mail-vk1-f172.google.com with SMTP id 71dfb90a1353d-48d0dbd62fbso1085774e0c.0;
+        Tue, 22 Aug 2023 17:50:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692751827; x=1693356627;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1692751838; x=1693356638;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=VM43A4/DK/17xUvga8Gmv1Q0UBVziYLS6+8xmcTLaUI=;
-        b=KRwZK1CzKvC/vMozvh3H6zQiuJpQOb4BpMBD26yEPcrKS4o0XGtL07flQEhrBrKNhF
-         MLJXuu4NYzEe0Qq4Irm7Te1OhwJ8a12euHdwDWKYgHsTF7ADGm75VeF4hCuwaRZ+EVzR
-         phJvABPG+MqqP1j+su387b3V4otg9HnCJkjoyoEVAUhWCE6ej3tuyVlVjvQr4PWefseW
-         OTyNX7zdF+RVeQrynMN0AHSpUL+tH5LaDM9QmpZbiw5dm0uQU7ZkYnVmiEGRpYiDVPl4
-         r2GMoVHE2+Zuq8i78kNJ6BMXaD/wDkOxzDqpVPbij32uLON/PSG3E028vvN5UDpCFjCr
-         n2Qg==
-X-Gm-Message-State: AOJu0Yy1gXIMVZSBwBgsbJgNhsasFeZx0Z9SKhi09bQasZBxYGlZvtx2
-        VoV45s2MBQlJ/axG+JjGvsQ=
-X-Google-Smtp-Source: AGHT+IH5TO05VVkBG2tZH5Ys414AcYHnwfJRxTfvVCLNNLXlabNNJweDWr7XIxo6v4GYqVcbnx0d9Q==
-X-Received: by 2002:a17:90a:ca16:b0:263:fc45:4091 with SMTP id x22-20020a17090aca1600b00263fc454091mr8151185pjt.15.1692751826886;
-        Tue, 22 Aug 2023 17:50:26 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id fu4-20020a17090ad18400b002694da8a9cdsm8398306pjb.48.2023.08.22.17.50.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Aug 2023 17:50:26 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 22 Aug 2023 17:50:25 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-Subject: Re: [PATCH 6.4 000/234] 6.4.12-rc1 review
-Message-ID: <5ffac837-e992-4ed0-b2a3-7324ff1a8489@roeck-us.net>
-References: <20230821194128.754601642@linuxfoundation.org>
+        bh=PyMgRhYU9G+QtE8w0+IVqsL5N0OkKQo9/1AmARUv6+8=;
+        b=hP3qFmKEVVCZ4+wPxWwQip8CCSldf/EfrzNoiidG2TZerBgOzJh9awSezAL14KRN2a
+         eX36c6j2+GMk3ev9KDFAiQOM5fb11hAqWGkgGxFP/hJ/HzlakB9KW+4rpO11s9cUK9ia
+         DFqDwPlxkzpbNLYJ/QJr/t2FsEF687eXkCtHSzUBagaicXf12be2tHr9xqJKF7bgAGL2
+         xTWRBzSYXYoR9ICY6pwU0ODe7cCGRr87bSXyIroIsa9uXAS1HvX7svjQFV+dW3+ZXiAc
+         olcrAUq/Z9St9NDXMuK4gonZVa9sc1B63rsy1xMYo5fmoOaZEUgxLdK0la2DY6b2zwem
+         iO4Q==
+X-Gm-Message-State: AOJu0Yz/lRvN5fB5WmR1gsGKdeOLlX5s68SZHPgiziOl5wkDltqe83tv
+        E3F+9Hlf3wTg2CZmg+uXmtK/5Mdj4WHTGqtwdIpw4iTU
+X-Google-Smtp-Source: AGHT+IF+q9chTK36QO/Yr/CDvZNxTbY8y5o2yQIG5ifA3m+Qtu13ER3+8ZnhDuOyyaWwB281Ou/V/EXGCSdX8WvlTW0=
+X-Received: by 2002:a05:6122:4083:b0:48f:8891:5ecd with SMTP id
+ cb3-20020a056122408300b0048f88915ecdmr4053883vkb.8.1692751837929; Tue, 22 Aug
+ 2023 17:50:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230821194128.754601642@linuxfoundation.org>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+References: <20230811025822.3859771-1-namhyung@kernel.org> <20230811025822.3859771-2-namhyung@kernel.org>
+ <ZNu2KrbgFPY69K2+@kernel.org> <ZNu47CYXV0nuav+G@kernel.org>
+In-Reply-To: <ZNu47CYXV0nuav+G@kernel.org>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Tue, 22 Aug 2023 17:50:26 -0700
+Message-ID: <CAM9d7ciZaH1KkGannC=69FgtyOO7M_1opu-xgdDCkske+en1jg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] perf test: Add perf record sample filtering test
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
         FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 21, 2023 at 09:39:23PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.4.12 release.
-> There are 234 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 23 Aug 2023 19:40:45 +0000.
-> Anything received after that time might be too late.
-> 
+Hi Arnaldo,
 
-Build results:
-	total: 157 pass: 157 fail: 0
-Qemu test results:
-	total: 522 pass: 522 fail: 0
+On Tue, Aug 15, 2023 at 10:42 AM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
+>
+> Em Tue, Aug 15, 2023 at 02:30:18PM -0300, Arnaldo Carvalho de Melo escreveu:
+> > Em Thu, Aug 10, 2023 at 07:58:22PM -0700, Namhyung Kim escreveu:
+> > >   $ sudo ./perf test 'sample filter' -v
+> > >    94: perf record sample filtering (by BPF) tests                     :
+> > >   --- start ---
+> > >   test child forked, pid 3817527
+> > >   Checking BPF-filter privilege
+> > >   Basic bpf-filter test
+> > >   Basic bpf-filter test [Success]
+> > >   Failing bpf-filter test
+> > >   Error: task-clock event does not have PERF_SAMPLE_CPU
+> > >   Failing bpf-filter test [Success]
+> > >   Group bpf-filter test
+> > >   Error: task-clock event does not have PERF_SAMPLE_CPU
+> > >   Error: task-clock event does not have PERF_SAMPLE_CODE_PAGE_SIZE
+> > >   Group bpf-filter test [Success]
+> > >   test child finished with 0
+> > >   ---- end ----
+> > >   perf record sample filtering (by BPF) tests: Ok
+> >
+> > [root@five ~]# perf test -v "by BPF"
+> >  91: perf record sample filtering (by BPF) tests                     :
+> > --- start ---
+> > test child forked, pid 64165
+> > Checking BPF-filter privilege
+> > Basic bpf-filter test
+> >  ffffffff97f4f688
+> >  ffffffff97f73859
+> >  ffffffff97412ce6
+> >  ffffffff976da215
+> >  ffffffff973a92bf
+> >  ffffffff97376ad7
+> >  ffffffff97f73859
+> <SNIP
+> >  ffffffff971fdca5
+> >  ffffffff9737dbc4
+> >  ffffffff971b4e04
+> > Basic bpf-filter test [Failed invalid output]
+> > test child finished with -1
+> > ---- end ----
+> > perf record sample filtering (by BPF) tests: FAILED!
+> > [root@five ~]#
+> >
+> > [root@five ~]# uname -a
+> > Linux five 6.2.15-100.fc36.x86_64 #1 SMP PREEMPT_DYNAMIC Thu May 11 16:51:53 UTC 2023 x86_64 x86_64 x86_64 GNU/Linux
+> > [root@five ~]#
+>
+> Above was on a AMD Ryzen 5950X, the following was on a lenovo t480s,
+> Intel notebook:
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+Thanks for the test.  I think it's a matter of the kernel version
+rather than the CPU vendor.  6.1 or before will fail the check
+in the beginning but 6.2 kernel lacks a feature to set sample
+flags for some fields and silently accept all samples.  IIRC it's
+added in v6.3.
 
-Guenter
+Probably I need to add a version check in the error path.
+
+Thanks,
+Namhyung
+
+>
+> [root@quaco ~]# uname -a
+> Linux quaco 6.4.7-200.fc38.x86_64 #1 SMP PREEMPT_DYNAMIC Thu Jul 27 20:01:18 UTC 2023 x86_64 GNU/Linux
+> [root@quaco ~]# perf test "filter"
+>  30: Filter hist entries                                             : Ok
+>  36: Filter fds with revents mask in a fdarray                       : Ok
+>  67: dlfilter C API                                                  : Ok
+>  91: perf record sample filtering (by BPF) tests                     : Ok
+> [root@quaco ~]# perf test -v "by BPF"
+>  91: perf record sample filtering (by BPF) tests                     :
+> --- start ---
+> test child forked, pid 273609
+> Checking BPF-filter privilege
+> Basic bpf-filter test
+> Basic bpf-filter test [Success]
+> Failing bpf-filter test
+> Error: task-clock event does not have PERF_SAMPLE_CPU
+> Failing bpf-filter test [Success]
+> Group bpf-filter test
+> Error: task-clock event does not have PERF_SAMPLE_CPU
+> Error: task-clock event does not have PERF_SAMPLE_CODE_PAGE_SIZE
+> Group bpf-filter test [Success]
+> test child finished with 0
+> ---- end ----
+> perf record sample filtering (by BPF) tests: Ok
+> [root@quaco ~]#
