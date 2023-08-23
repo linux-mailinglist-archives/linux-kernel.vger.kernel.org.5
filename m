@@ -2,139 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 402667857E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 14:29:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 850E87857ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 14:32:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234904AbjHWM3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 08:29:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52464 "EHLO
+        id S234958AbjHWMcF convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 23 Aug 2023 08:32:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231228AbjHWM3n (ORCPT
+        with ESMTP id S231228AbjHWMcD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 08:29:43 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 233EBCEE
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 05:29:38 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-bcb6dbc477eso5189441276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 05:29:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692793777; x=1693398577;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vM2mBO0PFbPREfV6y5utVh2uALzEkEsaG8Xoi0Qft/g=;
-        b=Cd9OYG6UG81jfau+T3IdehXTKw4ReKMw2IoJPnYZzAxGGzKNAFti+ubPYfRZQXe2lV
-         9cyH7NPPn5nY+3gJsPyUCPZwcnor6ws79981VjqYLlmK9E6BpewaCHc6rXMn7xxen4sS
-         rR5Z9EikHYKIzTdu2Cq7KxgROwodbpvbtPWT8e9R+GgMcWIEdYdTyutJLzWJ9me4fEFh
-         8pP18HFTdKaMMbrbtVcw+WkbiBrRnXJSvmbz6gbM98Mn7QvEp8gyQyymj+2XI+Buyf0L
-         Cj8xBkAUJXgCU1tN8JXdssrj48IPPEwDQAnm/x7n9jIwESLqINE8C2vQNBX3FSl5g4Kt
-         Lcig==
+        Wed, 23 Aug 2023 08:32:03 -0400
+Received: from mail-oo1-f45.google.com (mail-oo1-f45.google.com [209.85.161.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA373E9;
+        Wed, 23 Aug 2023 05:31:57 -0700 (PDT)
+Received: by mail-oo1-f45.google.com with SMTP id 006d021491bc7-56cae50792fso556699eaf.1;
+        Wed, 23 Aug 2023 05:31:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692793777; x=1693398577;
+        d=1e100.net; s=20221208; t=1692793917; x=1693398717;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=vM2mBO0PFbPREfV6y5utVh2uALzEkEsaG8Xoi0Qft/g=;
-        b=CcGBoTXgYj8Q11/OGXOhnzPgnI6H41ARtgofGwIKvY1s1vJPHlFX4gDxAmuCKSkhWg
-         E1BEnvpqWzHNoalIGFF6t2odpioW8FeWzGQ8YsAyU4Y1wTSJiArqMg0bfgyn7D8M9R3X
-         1luC/cYWmT3h9iiox0XUCRKYB9x7ujSKMyCpXjsNOoqGcefiqY41MX6Ad0AtCvEsqhLl
-         3NXE1qLclSF+c/3+jy2EVXls+KON8vFTe643dYIp9HFKXW/w87H/OORrr5Z0GECq9/oG
-         LAU/gSfnOW7yebFIj7zKEsNBWFbonI6nWuT1MgW4SIuKahq+ha6HlK2vhMeh816Ha/jK
-         EW4w==
-X-Gm-Message-State: AOJu0Yw22YIGMViM8/7l2JU+HoiPWNyjYVQrqX7QfSEvXvdsUfsSStoK
-        0XupGqN0M8Kampf/xDgq7WVg5wzDoX7tuvsOMY+WfA==
-X-Google-Smtp-Source: AGHT+IFFKP6YhXlKwTz5rGZpalkEJfHxEFdkjbdXxEPEMXoQfAsKDqn6fiAmTAPzSUrq8396Ku0mZMSONe0jbpZGYXQ=
-X-Received: by 2002:a25:3757:0:b0:d35:9a48:51b0 with SMTP id
- e84-20020a253757000000b00d359a4851b0mr11184274yba.7.1692793777291; Wed, 23
- Aug 2023 05:29:37 -0700 (PDT)
+        bh=3ApOaAU2C11Pn2qOxjg2kIqTJJ7VnWEqUmde/1TenZQ=;
+        b=HbLSFAH43YyJbbYXXS/ISjhnvojwIyX6slvWg94dQSOAa3rH2uS42FdLcTSKlixrCM
+         RPkgnQlrnSIPwScAwHM51Z4j0g7DFoC2aILVZ7wR/PVLWb+djoPBmubnaWLhmXg15x9l
+         hZOeR08y2O9oNGvml0MEwRwCWA/S64cPy6g8CeFAPzInJj2OBm0Wjzpo4i26KRCqdmOa
+         u3LciQ2WrvThH19spCzdu0NI93iWLR6XTZ+Wi59l0dOQh/vrJSK9lYjKDiC1eRoM/ngl
+         LXaulvMIFuxxa4pCp4QQ0el2fNEJ6SwNR1Wf18o65artX3cCCWEjk1T6jX4YB1QboqBH
+         eG6w==
+X-Gm-Message-State: AOJu0Yy9Hfaj7zk3hn9obuwFZZjSFDCdADn+WayGedmU6K3dUlOls0iw
+        b4FX+u/TRJojWLCprfyp/BKfQ2p7nT7C2ORDHq4=
+X-Google-Smtp-Source: AGHT+IHhMwKmKIBwwvi/YmGkSAgu5efCUMytt4QejM22SViosU4j5VAi4fORzp0+24y420UMM8bLIkI7yh9A1hX+wbo=
+X-Received: by 2002:a4a:e741:0:b0:56e:94ed:c098 with SMTP id
+ n1-20020a4ae741000000b0056e94edc098mr12003584oov.0.1692793917062; Wed, 23 Aug
+ 2023 05:31:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230823033427.23072-1-zhuyinbo@loongson.cn> <20230823033427.23072-3-zhuyinbo@loongson.cn>
-In-Reply-To: <20230823033427.23072-3-zhuyinbo@loongson.cn>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 23 Aug 2023 14:29:25 +0200
-Message-ID: <CACRpkdZJVjwOCGYhmzaPLWbcX0rgrDD-d2OX=TnmYs0F56fGug@mail.gmail.com>
-Subject: Re: [PATCH v4 2/2] gpio: loongson: add more gpio chip support
-To:     Yinbo Zhu <zhuyinbo@loongson.cn>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jianmin Lv <lvjianmin@loongson.cn>, wanghongliang@loongson.cn,
-        loongson-kernel@lists.loongnix.cn
+References: <20230714175008.4064592-1-robh@kernel.org> <CAJZ5v0i-OByOSjpxrj5d9S9QHRySK-MEUo+bK_J_4ihsCBmnSg@mail.gmail.com>
+ <CAL_JsqLy22S5bTFu-ZKXhSMtMPPq9z1Gdb5kJMVmhui55miDsQ@mail.gmail.com>
+ <CAJZ5v0hM63nVphwkYK1bL4uf_dXSew2+LBuG9kuhvvLdrhLxAw@mail.gmail.com> <CAL_JsqJGoDPLKgu8awJfuWpqzg8HOuruDa1z4s-Swb7Cm5OaJw@mail.gmail.com>
+In-Reply-To: <CAL_JsqJGoDPLKgu8awJfuWpqzg8HOuruDa1z4s-Swb7Cm5OaJw@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 23 Aug 2023 14:31:44 +0200
+Message-ID: <CAJZ5v0j2psZUYF1gYTK3G=+MdrLOg1QhOxENhSvWbvGcjzLizg@mail.gmail.com>
+Subject: Re: [PATCH] thermal: Explicitly include correct DT includes
+To:     Rob Herring <robh@kernel.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Guillaume La Roque <glaroque@baylibre.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Markus Mayer <mmayer@broadcom.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Thara Gopinath <thara.gopinath@gmail.com>,
+        =?UTF-8?Q?Niklas_S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
+        Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Vasily Khoruzhick <anarsoul@gmail.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yinbo,
-
-thanks for the new patch, it's starting to look really good!
-The main point with offsets in the match data is very nice.
-
-On Wed, Aug 23, 2023 at 5:34=E2=80=AFAM Yinbo Zhu <zhuyinbo@loongson.cn> wr=
-ote:
-
-> This patch was to add loongson 2k0500, 2k2000 and 3a5000 gpio chip
-> driver support.
+On Wed, Aug 23, 2023 at 12:38 AM Rob Herring <robh@kernel.org> wrote:
 >
-> Signed-off-by: Yinbo Zhu <zhuyinbo@loongson.cn>
-(...)
+> On Thu, Jul 20, 2023 at 1:50 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> >
+> > On Fri, Jul 14, 2023 at 9:53 PM Rob Herring <robh@kernel.org> wrote:
+> > >
+> > > On Fri, Jul 14, 2023 at 12:54 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > > >
+> > > > On Fri, Jul 14, 2023 at 7:51 PM Rob Herring <robh@kernel.org> wrote:
+> > > > >
+> > > > > The DT of_device.h and of_platform.h date back to the separate
+> > > > > of_platform_bus_type before it as merged into the regular platform bus.
+> > > > > As part of that merge prepping Arm DT support 13 years ago, they
+> > > > > "temporarily" include each other. They also include platform_device.h
+> > > > > and of.h. As a result, there's a pretty much random mix of those include
+> > > > > files used throughout the tree. In order to detangle these headers and
+> > > > > replace the implicit includes with struct declarations, users need to
+> > > > > explicitly include the correct includes.
+> > > > >
+> > > > > Signed-off-by: Rob Herring <robh@kernel.org>
+> > > >
+> > > > Acked-by: Rafael J. Wysocki <rafael@kernel.org>
+> > > >
+> > > > or please let me know if you want me to pick this up.
+> > >
+> > > Single patch in your subsystem with no dependencies. Please pick it up.
+> >
+> > Done, thanks!
+>
+> I'm not seeing this in linux-next.
 
+f6a756e8fb12 thermal: Explicitly include correct DT includes
 
->  static int loongson_gpio_to_irq(struct gpio_chip *chip, unsigned int off=
-set)
->  {
-> +       unsigned int u;
->         struct platform_device *pdev =3D to_platform_device(chip->parent)=
-;
-> +       struct loongson_gpio_chip *lgpio =3D to_loongson_gpio_chip(chip);
-> +
-> +       if (lgpio->chip_data->mode =3D=3D BIT_CTRL_MODE) {
-> +               u =3D readl(lgpio->reg_base + lgpio->chip_data->inten_off=
-set + offset / 32 * 4);
-> +               u |=3D BIT(offset % 32);
-> +               writel(u, lgpio->reg_base + lgpio->chip_data->inten_offse=
-t + offset / 32 * 4);
-
-This offset / 32 * 4 is really hard to read.
-What about
-
-/* Get the register index from offset then multiply by bytes per register *=
-/
-(offset / 32) * 4
-
->         lgpio->reg_base =3D reg_base;
-> +       if (device_property_read_u32(dev, "ngpios", &ngpios) || !ngpios)
-> +               return -EINVAL;
-> +
-> +       ret =3D DIV_ROUND_UP(ngpios, 8);
-> +       switch (ret) {
-> +       case 1 ... 2:
-> +               io_width =3D ret;
-> +               break;
-> +       case 3 ... 4:
-> +               io_width =3D 0x4;
-> +               break;
-> +       case 5 ... 8:
-> +               io_width =3D 0x8;
-> +               break;
-> +       default:
-> +               dev_err(dev, "unsupported io width\n");
-> +               return -EINVAL;
-> +       }
-
-Is it really a good idea to infer the register width from ngpios?
-
-What about just putting this into the struct loongson_gpio_chip_data
-as well? Certainly it will be fixed for a certain device.
-
-Yours,
-Linus Walleij
+It's there in my linux-next branch (and in my thermal branch) and it
+should be there in linux-next too.
