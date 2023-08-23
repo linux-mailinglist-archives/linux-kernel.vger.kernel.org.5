@@ -2,107 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 556AA7860A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 21:33:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 995BE7860AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 21:34:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238294AbjHWTcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 15:32:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34400 "EHLO
+        id S238303AbjHWTdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 15:33:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238276AbjHWTcR (ORCPT
+        with ESMTP id S238328AbjHWTdN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 15:32:17 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2457E6E;
-        Wed, 23 Aug 2023 12:32:15 -0700 (PDT)
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37NILVIM009687;
-        Wed, 23 Aug 2023 19:32:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=suEvO7+ABHAjuQwapVJ52LY01lBYq7RJdxxWaP+OpSw=;
- b=PvjogdxCSzSb9xmzso4fsYxIQPRb2GjfvPY0OXDlMTHSaVtT/deaouAjbn5D+GvwD+WQ
- E2NEz1UU3lrUcQZ75gbpEOT5B1wjdR1yTZEmpcyFl3g8nBW1CI1moqBSPyBheQvVAb13
- Xr8W6n6jYMttsct3m01S7RmNyzQFyPuvmk8R1t1u4SSP5KFY+GBpuitfT6OisgNeQEEJ
- DoMmbzsnj3ABid1sL4Hf0FMgYIrp440J+TGYEL1uP3+3wDivNJBfzHTdMqpvtyEEa6sx
- ieXNuy5tt5cFGfdqfVJClHNt5+BTDfKU93+6uUT6g0arJrJ+L8FjS3yx3dqpyiF9RAVO qg== 
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sn2extt3t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 23 Aug 2023 19:32:12 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37NJWBf8001196
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 23 Aug 2023 19:32:11 GMT
-Received: from [10.110.124.126] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Wed, 23 Aug
- 2023 12:32:07 -0700
-Message-ID: <272adfa0-c053-f737-5714-cbeac706dc76@quicinc.com>
-Date:   Wed, 23 Aug 2023 12:32:06 -0700
+        Wed, 23 Aug 2023 15:33:13 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 058AF10D7;
+        Wed, 23 Aug 2023 12:33:11 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 85F0464435;
+        Wed, 23 Aug 2023 19:33:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1E36C433C8;
+        Wed, 23 Aug 2023 19:33:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692819189;
+        bh=6pf3VF1Kgo0mcPrrysd6vBhLB10Rq2QlHpXmFT+u/Uk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=qzGbRtFvr9LW4E9nW+OJkavZSGZh8r1RNdCw7rL4R2sexFBX7MOwOh3oRDwz2m84H
+         2bRrJcHBmYtbebEnm2BE85DD8POPQ+Y9nZ9PerTKxme7xuq17kaoNJbUMC/n1ci82h
+         xiFkQA4OjJGo6+7e1O2Z8O7OXwfsoU+qDxNSh7v/+MGEb4lYdLgKdUtlESBnCdnG9p
+         oy4TFVee+wio54v6uIrDgx06HNGS7w5aLtqRh70q7NEofT0QbqWmZalu85aIJUBsgD
+         IVFIsx95GJDlQyc/k7anq1tggB4qLl3+d0rE7n2z9bMhtSAEPUekx/Pcdp8zbL0fFj
+         w+CvQV+sDEWZQ==
+Received: (nullmailer pid 2759435 invoked by uid 1000);
+        Wed, 23 Aug 2023 19:33:07 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: allwinner: h5/h6: Drop spurious 'clock-latency-ns' properties
+Date:   Wed, 23 Aug 2023 14:32:27 -0500
+Message-Id: <20230823193239.2758505-1-robh@kernel.org>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [RFC PATCH 1/1] soc: qcom: Add driver to read secondary
- bootloader (XBL) log
-Content-Language: en-US
-To:     Ninad Naik <quic_ninanaik@quicinc.com>, <agross@kernel.org>,
-        <andersson@kernel.org>, <konrad.dybcio@linaro.org>
-CC:     <psodagud@quicinc.com>, <quic_ppareek@quicinc.com>,
-        <quic_kprasan@quicinc.com>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <kernel@quicinc.com>
-References: <20230822121512.8631-1-quic_ninanaik@quicinc.com>
- <20230822121512.8631-2-quic_ninanaik@quicinc.com>
- <06cb9718-ed64-8604-0bde-fff6d56ef3dd@quicinc.com>
- <08803101-5c26-449e-a142-927ec5304be2@quicinc.com>
-From:   Trilok Soni <quic_tsoni@quicinc.com>
-In-Reply-To: <08803101-5c26-449e-a142-927ec5304be2@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: ek31lOTpxagQwH8-g_0u75PzkU6JSkKv
-X-Proofpoint-ORIG-GUID: ek31lOTpxagQwH8-g_0u75PzkU6JSkKv
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-23_13,2023-08-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxlogscore=719
- mlxscore=0 lowpriorityscore=0 priorityscore=1501 impostorscore=0
- malwarescore=0 suspectscore=0 adultscore=0 phishscore=0 bulkscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2308230176
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/23/2023 4:16 AM, Ninad Naik wrote:
->>>   ret = map_addr_range(&parent, "uefi-log", xbl_data);
->>
->> Here you are calling it as uefi-log. Is it xbl-log or uefi-log? Please 
->> decide first.
->>
->>
-> The reason for using "uefi-log" here is because this node name is in 
-> accordance to the sa8775p.dtsi as seen in [2]
-> 
-> [2] 
-> https://github.com/torvalds/linux/blob/master/arch/arm64/boot/dts/qcom/sa8775p.dtsi#L354
-> 
-> So, in the next revision while adding the device tree bindings and 
-> corresponding compatible string, should this node name be changed as well?
+'clock-latency-ns' is not a valid property for CPU nodes. It belongs in
+OPP table (which has it). Drop them from the CPU nodes.
 
-Yes, please keep it consistent.
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+ arch/arm64/boot/dts/allwinner/sun50i-h5.dtsi | 4 ----
+ arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi | 4 ----
+ 2 files changed, 8 deletions(-)
 
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h5.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h5.dtsi
+index a56fae761a1f..939f1c0a5eaa 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h5.dtsi
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h5.dtsi
+@@ -16,7 +16,6 @@ cpu0: cpu@0 {
+ 			reg = <0>;
+ 			enable-method = "psci";
+ 			clocks = <&ccu CLK_CPUX>;
+-			clock-latency-ns = <244144>; /* 8 32k periods */
+ 			#cooling-cells = <2>;
+ 		};
+ 
+@@ -26,7 +25,6 @@ cpu1: cpu@1 {
+ 			reg = <1>;
+ 			enable-method = "psci";
+ 			clocks = <&ccu CLK_CPUX>;
+-			clock-latency-ns = <244144>; /* 8 32k periods */
+ 			#cooling-cells = <2>;
+ 		};
+ 
+@@ -36,7 +34,6 @@ cpu2: cpu@2 {
+ 			reg = <2>;
+ 			enable-method = "psci";
+ 			clocks = <&ccu CLK_CPUX>;
+-			clock-latency-ns = <244144>; /* 8 32k periods */
+ 			#cooling-cells = <2>;
+ 		};
+ 
+@@ -46,7 +43,6 @@ cpu3: cpu@3 {
+ 			reg = <3>;
+ 			enable-method = "psci";
+ 			clocks = <&ccu CLK_CPUX>;
+-			clock-latency-ns = <244144>; /* 8 32k periods */
+ 			#cooling-cells = <2>;
+ 		};
+ 	};
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
+index ca1d287a0a01..3b56beed6fee 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
+@@ -27,7 +27,6 @@ cpu0: cpu@0 {
+ 			reg = <0>;
+ 			enable-method = "psci";
+ 			clocks = <&ccu CLK_CPUX>;
+-			clock-latency-ns = <244144>; /* 8 32k periods */
+ 			#cooling-cells = <2>;
+ 		};
+ 
+@@ -37,7 +36,6 @@ cpu1: cpu@1 {
+ 			reg = <1>;
+ 			enable-method = "psci";
+ 			clocks = <&ccu CLK_CPUX>;
+-			clock-latency-ns = <244144>; /* 8 32k periods */
+ 			#cooling-cells = <2>;
+ 		};
+ 
+@@ -47,7 +45,6 @@ cpu2: cpu@2 {
+ 			reg = <2>;
+ 			enable-method = "psci";
+ 			clocks = <&ccu CLK_CPUX>;
+-			clock-latency-ns = <244144>; /* 8 32k periods */
+ 			#cooling-cells = <2>;
+ 		};
+ 
+@@ -57,7 +54,6 @@ cpu3: cpu@3 {
+ 			reg = <3>;
+ 			enable-method = "psci";
+ 			clocks = <&ccu CLK_CPUX>;
+-			clock-latency-ns = <244144>; /* 8 32k periods */
+ 			#cooling-cells = <2>;
+ 		};
+ 	};
 -- 
----Trilok Soni
+2.40.1
 
