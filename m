@@ -2,62 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60CEA7860E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 21:44:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 693987860E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 21:45:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238365AbjHWTo0 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 23 Aug 2023 15:44:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45148 "EHLO
+        id S238369AbjHWTpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 15:45:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233413AbjHWTnx (ORCPT
+        with ESMTP id S238338AbjHWTon (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 15:43:53 -0400
-Received: from relay02.th.seeweb.it (relay02.th.seeweb.it [5.144.164.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7121610CB
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 12:43:51 -0700 (PDT)
-Received: from [192.168.2.144] (bband-dyn125.178-40-246.t-com.sk [178.40.246.125])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 48BE1203FB;
-        Wed, 23 Aug 2023 21:43:46 +0200 (CEST)
-Date:   Wed, 23 Aug 2023 21:43:40 +0200
-From:   Martin Botka <martin.botka@somainline.org>
-Subject: Re: [PATCH v2 2/3] thermal: sun8i: Add support for H616 THS
- controller
-To:     Jernej =?iso-8859-2?q?=A9krabec?= <jernej.skrabec@gmail.com>
-Cc:     Vasily Khoruzhick <anarsoul@gmail.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Samuel Holland <samuel@sholland.org>, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Andre Przywara <andre.przywara@arm.com>,
-        Alan Ma <tech@biqu3d.com>,
-        Luke Harrison <bttuniversity@biqu3d.com>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Martin Botka <martin@biqu3d.com>
-Message-Id: <S40VZR.495H1PJ1FSZO3@somainline.org>
-In-Reply-To: <21986607.EfDdHjke4D@jernej-laptop>
-References: <20230821-ths-h616-v2-0-cda60d556798@somainline.org>
-        <20230821-ths-h616-v2-2-cda60d556798@somainline.org>
-        <21986607.EfDdHjke4D@jernej-laptop>
-X-Mailer: geary/43.0
+        Wed, 23 Aug 2023 15:44:43 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39D96E57;
+        Wed, 23 Aug 2023 12:44:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692819882; x=1724355882;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=pzhmvrP1iIv1GGZkP4MzlikNF6uGeM0RKGukrmeSwyU=;
+  b=YDIsw+0fCWgV7VKuvEIrcJz4wBvFBxn6Nua4i1/r08oMOppk59ORBpAW
+   M8SjER0nPaQIXxUVKn+ykop5P4FGxiMX+/D/ig8CxITjClBZOQ/8LK8oX
+   9k9jx85VLB3xq9e0Wc86Th9Lpy1EopXbSOl9XA0490yXGPh9DKPhLVVYl
+   ZXB3Ukg0X5ofwGf/5J8NYkgGLFo6THmmgptBeU2XegPJgynQ/Iq2+q0jb
+   XlO2IfsIiN+Earkwz7sZz9qF7cI4ZY/N1u/C93ZaI/O4L06kY/Rl1Wjiq
+   RT3OR9CzSWTWWuAYIp4zohp5fhNdZlwIgsSaiuxTq3PZwziy2GWCySOPG
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="373141851"
+X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
+   d="scan'208";a="373141851"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2023 12:44:41 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="713704467"
+X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
+   d="scan'208";a="713704467"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orsmga006.jf.intel.com with ESMTP; 23 Aug 2023 12:44:41 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 23 Aug 2023 12:44:40 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 23 Aug 2023 12:44:40 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Wed, 23 Aug 2023 12:44:40 -0700
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.57.42) by
+ edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Wed, 23 Aug 2023 12:44:39 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hf5j6LbgW9Nj52yyEzilbk9q7mACWO3mjTRqFZ4uEsUVj5gyf00erb0JoFKRpG5dN4O1xBHakJ+F4nSCR7HjuSfnBfGUxjak0I817y+xG1lpfoJAWMB2Aw5nJ6pVwR8u+4xaIt8uFUP5JHVzSXPqDz4HJdT2Ee9IhJ23mMF55XNwWqJ4w/MY4PTrqLMS7shIk1bW7Rug1N8j53L85a7sG4qt6qtdc4Cy5AMmQ6K9YiPkUvhqRRlB/VFuOpcNt8LITxZhEn45xJ8wYmxpZQ9DYhBD1pWOVDQW0MzqH2u896eqzRFb0LFOsBTaUvJ3MZDu5SJLZnFiSZYGrQWlvyl0kw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=vPCTOX36epMCUJU6AIglQlUi5WySyLLS1//zzJWFvYo=;
+ b=PuDT3JkMfbuaOf+4We2rZBosDUqKeNpX2juJ/ArWrp5XdS0db1jedRh98IJgNcPheULUCAU7NuSSacPiZm7Ld4uN7KHq0219PN0s7Ibi3zl14FDlEg3HybWOErh/306W9L69FCdcUSzTH2ewO1FHbC/+4h+oQaMFa2Wht9X03aN5D0/4MfFKOSjHuyVXmmsJFdmp+cQQsH0nRyNcGeDf1WXfOk7BLSxw5JJ6lzUo+5yPf/YWdSavBiaWXYvsitwRO4Dg1zCqLRRPzDc6kSWg+3iAe7EPpQggTUeHX3ucBQNIaEfwvR9IpVeia3Yr51xFjVtHXAX0Ft5ScrmFQEA0HA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from CO1PR11MB5089.namprd11.prod.outlook.com (2603:10b6:303:9b::16)
+ by SJ2PR11MB7454.namprd11.prod.outlook.com (2603:10b6:a03:4cc::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.25; Wed, 23 Aug
+ 2023 19:44:38 +0000
+Received: from CO1PR11MB5089.namprd11.prod.outlook.com
+ ([fe80::6a23:786d:65f7:ef0b]) by CO1PR11MB5089.namprd11.prod.outlook.com
+ ([fe80::6a23:786d:65f7:ef0b%6]) with mapi id 15.20.6699.022; Wed, 23 Aug 2023
+ 19:44:30 +0000
+Message-ID: <f6a026c5-d86d-6016-c0f2-b14e801016ac@intel.com>
+Date:   Wed, 23 Aug 2023 12:44:28 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH net-next] net: fec: add exception tracing for XDP
+Content-Language: en-US
+To:     Wei Fang <wei.fang@nxp.com>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <ast@kernel.org>, <daniel@iogearbox.net>, <hawk@kernel.org>,
+        <john.fastabend@gmail.com>, <shenwei.wang@nxp.com>,
+        <xiaoning.wang@nxp.com>, <netdev@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-imx@nxp.com>
+References: <20230822065255.606739-1-wei.fang@nxp.com>
+From:   Jacob Keller <jacob.e.keller@intel.com>
+In-Reply-To: <20230822065255.606739-1-wei.fang@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MW4P222CA0001.NAMP222.PROD.OUTLOOK.COM
+ (2603:10b6:303:114::6) To CO1PR11MB5089.namprd11.prod.outlook.com
+ (2603:10b6:303:9b::16)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2; format=flowed
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1PR11MB5089:EE_|SJ2PR11MB7454:EE_
+X-MS-Office365-Filtering-Correlation-Id: f9422069-006f-46b4-f9b4-08dba4115e56
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: OBfNFjMyozQhUNk7sYZbuFNMLiKG8df/7tatMnsBAaPEZ3+f5c4ErwSSQjcNmqLnYQO4euhLSHBqicqU10VG1iaPIoQrNymBIirY90tGJmcgkdQWvYxYArVCBYzwdxER9mQEjw3HUWsqnreTpu7wwO7EJSRldhSjyZeTw2TLuobHjg7tpC/3VZLeo4LEB4EiKnBpcnK4dWe+9tc4y9Drwz4BYYr8VA68gtI9Pg6HSVbQ7Zuwz62ZEGE0XWCXn5D1rSunUtAGUA41vkOlmVGyvgjrnSkqVh8mbgZxCxCXnufIzPSXOFb68Fzxkc+kLtExQ19SrZ3SNMqf5hgXjvPQjjv0KWLvhcmkPKFtpSQex3snzeB7oFSLYDDZ0Jm4GL8iwL5aij9qof+VUjH5Su7k3ElXkkzQD0EiaoeW9rfm9mnmjQXqFGf/r2cP9Z7SbPHN5b3aQQUTdL+EPYh9wlOuCM40H0VlysB4jAAjQodq7lT7OusEoj6NZgrhpy9Jgk+LrKenurExp1Tb0Qemg+js9iC1tDYKQlevRWT1vSXsDUMVNLzbdT+LlEfv5C7hUVcDDH8HKQInkEWgKiv50G4Lj44zhMgyrae4LxrKIvgXAylKUiiknpDk50jDYykmwB/7Mzf1+vxCv9mJRED482DxEQ2z+iVX4i90pPd4mI27SnA=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB5089.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(376002)(136003)(346002)(396003)(1800799009)(186009)(451199024)(82960400001)(478600001)(6486002)(6506007)(6512007)(2616005)(2906002)(41300700001)(7416002)(8936002)(26005)(4326008)(86362001)(316002)(5660300002)(53546011)(8676002)(66946007)(36756003)(31696002)(66476007)(66556008)(38100700002)(83380400001)(921005)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QjRxU0hqNWt4OWVPelpiWEJ5R0dsUWR6Nnh6MnBFUTlEQmpjN2NlSlExTnVK?=
+ =?utf-8?B?c2NlSnc4VlBrdWtQRy9IV0NMc1hxbTlJbE5ZZ3JnU3NIdU1Xc3VQOElUWHRx?=
+ =?utf-8?B?VlJ0V2hzK3A4U1JxaVNTRGpNWk9FYm8xeUIyUzVyeEIrd0NpMm5HcWdOQzBL?=
+ =?utf-8?B?SitscS96REF3RVVKNThxeHVHbWdKS3ZUZ092OHplT0pFWk9rcitYUE95bGlQ?=
+ =?utf-8?B?Z3l6N0xvaVdKcElCRUxmZGJwS1VLYkszcGFVSkxlRVltbUpYYXhRR1Era1JD?=
+ =?utf-8?B?TTZnR3pJTERCWmhsQ2l0VkovSEVGY01Sb2llQWRhdTJZUTZRTnhlWnU2dlZP?=
+ =?utf-8?B?T1FhNzJoVFVLNEZSSXVYcS9BNjVCdGRRSmRJcGIzQ2hzSlR1MUxvb2FzRFdk?=
+ =?utf-8?B?eERuWmRCemtPZ096OGVKSWIvVjhENzlsWnVZWkIydk9UVk9XeGljOG1WZnJx?=
+ =?utf-8?B?c0xTTzNPMVpJUitDNEdKQXlYQTFHWVBISm90aytjWEh1dDJoRjF6czcyMXB4?=
+ =?utf-8?B?WUJIT0JBbTJ1NmRzRHcza1RMYXdyWUEvaFlXb0plYXc5OE9VNEJZK3RXbURO?=
+ =?utf-8?B?aVBFUHdiNHp5ZkFWMVRZaTdKYVRqdmxQYmZCNzRiNEZoUmZZLzhrNnZtdzVU?=
+ =?utf-8?B?TEVkVWxZNXhZS25ZR2pncko3dlZYMDNDMXVMRjBNWVdvODVWSmNrSkNHKzNz?=
+ =?utf-8?B?Q3djc09YQ3dEdDg4azNiWDdtK0toSmE2WTlUVDhBb1J6LzVWWUdUZTI5eEcr?=
+ =?utf-8?B?UWdtbXl2YW1DYkVCMkJKdVJaYnJ2L0ZpbHo2SWlQUjlTcGxiYXZXUEFUSVJE?=
+ =?utf-8?B?Ykp1cEwxaWMzM3J0NEFScDVMSVFaMU42NzBLLzJPTk4ycjhRYXV3TnN5YTlz?=
+ =?utf-8?B?SFRQRzI2TWlJakFLUUFDS1VXT3ZVT1gwOEdZUzFuejA3WnczOG1XMVNYdGVj?=
+ =?utf-8?B?ODFEYm9NUEhBbDVqeTAxaEhtZmU1b2JFVDh3cHhITmF1Q1FlVXJlMThFZ0tE?=
+ =?utf-8?B?L2V4dDRFVWZuR2Q5YTN0ak1ld1IxZ295RjJhRlZxbVhFWWVxc0tKeThJcFNw?=
+ =?utf-8?B?MjNOaERVQnE3amVSYmZweGNpZGp5WnZHaU9NQWFFbHVyZDBtVlAyREFqQ1J3?=
+ =?utf-8?B?ZEgybmtLQ2FQemNqdzI5WGRlQ3hhd0xsUzkwbkp0K3lWa2poTTFZajNpTHFX?=
+ =?utf-8?B?bnRqdmYxN2hKNG13eWgzd3RhWE5Cc0FSK3hTK0JrZUxxMENrWFpORGxtTVhY?=
+ =?utf-8?B?ZFJhU1VkZFJQUTNvUGE5V01lbmlSZEVGUUFSNEYrUFdoSUpwNVhMYkJtbHdD?=
+ =?utf-8?B?UzdaRWdUUzI0WUJhcmZYZ1AxUnQwM1l4Tm9lUG5ySXhzWnZZd2ZqZTNlZGdj?=
+ =?utf-8?B?Z1FNZ0h0My9rdjhWZ1E1Ti9PelFxQ1BjNkxiRnYxcG1pWlc4U3NGSXBhRmg5?=
+ =?utf-8?B?WUNEMXVyN2RWa0x0a0EzNC9QODdHZHRIYU5XRGN4OHFjTjNRVDhLaGtBY01Q?=
+ =?utf-8?B?Z2s2ZnJwdDN0T3BGM05TMjFJNnpYYWNQdmZOejlLV0RQdk81aWJHWXVnVWND?=
+ =?utf-8?B?anMwY01aa3lPeEQ1QWtLMTZCMmx2eStrY05sOGhZdldXWW9JMXE4RmhKVUEw?=
+ =?utf-8?B?bGRpcm9ZQjQ2WjdnT2tsZ0VUQjl3QVh0Z3RkQ1d6RDE0YmZ6dEJuamlYaHdt?=
+ =?utf-8?B?WFM1TFE0amp2YXNJZ2U4RU9BOGlicmlrRHo2djFobWdiNE9FR2l3TkxwL0RR?=
+ =?utf-8?B?WHlhUDFSN0ErVWF0YUJ4OHVvMGk3Qm1ObXNRMG8yL3FrcEthMG00TTRZZW1y?=
+ =?utf-8?B?bmNZMnMwcktCNDhnQUdUR2xudDF5amJZdWJ5UGpYYlpXcTFVa3BEbU1TbDFh?=
+ =?utf-8?B?TjRubXQvbjUyNnJ3TjBmY2ZxelZudVY4NmZPRVV2M29mL2xnQ0VCT2xOaXJq?=
+ =?utf-8?B?cGJCZTBHaGRHTFhDS2pFb0tsclJ6ZmxPRzdRWm8rTU10QnNOSWdtaUtjckZm?=
+ =?utf-8?B?VVJjalFTcTRYM2tRNHFzWnZXSEs2UHF1QzZkZThNUkRmVlFqZU81aURLdnNu?=
+ =?utf-8?B?R0tCVzM3eDd0Zld3bUhmRVVrSVdhWGMyOUNiQklXb0VrSjBjMjhSTFV5NTBs?=
+ =?utf-8?B?Zk1xZS9zU1dnMlY3cm44Umd5V2NhOVdSVzVyUm16UXYvcVNxWkNxMEFOQmh4?=
+ =?utf-8?B?UVE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: f9422069-006f-46b4-f9b4-08dba4115e56
+X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB5089.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Aug 2023 19:44:30.8160
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Co0v+Egars3iX6iJE8a5RRD9wNknVrNnZX0KYrPqmzvxO/n2T1rUEXs09jnlY8LCFjR5TIUes8pELkvUfSsO77aO3URAd1UkoAsra4T70Qg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR11MB7454
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,145 +167,74 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On Wed, Aug 23 2023 at 09:38:30 PM +02:00:00, Jernej ©krabec 
-<jernej.skrabec@gmail.com> wrote:
-> Dne ponedeljek, 21. avgust 2023 ob 16:03:47 CEST je Martin Botka 
-> napisal(a):
->>  Add support for the thermal sensor found in H616 SoC
->>  which slightly resembles the H6 thermal sensor
->>  controller with few changes like 4 sensors.
->> 
->>  Signed-off-by: Martin Botka <martin.botka@somainline.org>
->>  ---
->>   drivers/thermal/sun8i_thermal.c | 74
->>  +++++++++++++++++++++++++++++++++++++++++ 1 file changed, 74 
->> insertions(+)
->> 
->>  diff --git a/drivers/thermal/sun8i_thermal.c
->>  b/drivers/thermal/sun8i_thermal.c index 195f3c5d0b38..cf96ab6a445b 
->> 100644
->>  --- a/drivers/thermal/sun8i_thermal.c
->>  +++ b/drivers/thermal/sun8i_thermal.c
->>  @@ -278,6 +278,66 @@ static int sun50i_h6_ths_calibrate(struct 
->> ths_device
->>  *tmdev, return 0;
->>   }
->> 
->>  +static int sun50i_h616_ths_calibrate(struct ths_device *tmdev,
->>  +				     u16 *caldata, int callen)
->>  +{
->>  +	struct device *dev = tmdev->dev;
->>  +	int i, ft_temp;
->>  +
->>  +	if (!caldata[0])
->>  +		return -EINVAL;
->>  +
->>  +	/*
->>  +	 * h616 efuse THS calibration data layout:
->>  +	 *
->>  +	 * 0      11  16     27   32     43   48    57
->>  +	 * +----------+-----------+-----------+-----------+
->>  +	 * |  temp |  |sensor0|   |sensor1|   |sensor2|   |
->>  +	 * +----------+-----------+-----------+-----------+
->>  +	 *                      ^           ^           ^
->>  +	 *                      |           |           |
->>  +	 *                      |           |           sensor3[11:8]
->>  +	 *                      |           sensor3[7:4]
->>  +	 *                      sensor3[3:0]
->>  +	 *
->>  +	 * The calibration data on the H616 is the ambient temperature and
->>  +	 * sensor values that are filled during the factory test stage.
->>  +	 *
->>  +	 * The unit of stored FT temperature is 0.1 degree celsius.
->>  +	 */
->>  +	ft_temp = caldata[0] & FT_TEMP_MASK;
->>  +
->>  +	for (i = 0; i < tmdev->chip->sensor_num; i++) {
->>  +		int delta, cdata, offset, reg;
->>  +
->>  +		if (i == 3)
->>  +			reg = (caldata[1] >> 12)
->>  +			      | ((caldata[2] >> 12) << 4)
->>  +			      | ((caldata[3] >> 12) << 8);
->>  +		else
->>  +			reg = (int)caldata[i + 1] & TEMP_CALIB_MASK;
->>  +
->>  +		int sensor_temp = tmdev->chip->calc_temp(tmdev, i, reg);
+On 8/21/2023 11:52 PM, Wei Fang wrote:
+> As we already added the exception tracing for XDP_TX, I think it is
+> necessary to add the exception tracing for other XDP actions, such
+> as XDP_REDIRECT, XDP_ABORTED and unknown error actions.
 > 
-> Variable declaration should be done at the beginning of code block.
-Hello Jernej,
+> Signed-off-by: Wei Fang <wei.fang@nxp.com>
+> Suggested-by: Jakub Kicinski <kuba@kernel.org>
+> ---
 
-Indeed. Will fix in next revision :)
+Makes sense to me, and it ends up being a bit less code.
 
-Cheers,
-Martin
-> 
-> Best regards,
-> Jernej
-> 
->>  +
->>  +		delta = (sensor_temp - ft_temp * 100) * 10;
->>  +		delta /= tmdev->chip->scale;
->>  +		cdata = CALIBRATE_DEFAULT - delta;
->>  +		if (cdata & ~TEMP_CALIB_MASK) {
->>  +			dev_warn(dev, "sensor%d is not calibrated.
-> \n", i);
->>  +
->>  +			continue;
->>  +		}
->>  +
->>  +		offset = (i % 2) * 16;
->>  +		regmap_update_bits(tmdev->regmap,
->>  +				   SUN50I_H6_THS_TEMP_CALIB + (i /
-> 2 * 4),
->>  +				   TEMP_CALIB_MASK << offset,
->>  +				   cdata << offset);
->>  +	}
->>  +
->>  +	return 0;
->>  +}
->>  +
->>   static int sun8i_ths_calibrate(struct ths_device *tmdev)
->>   {
->>   	struct nvmem_cell *calcell;
->>  @@ -608,6 +668,19 @@ static const struct ths_thermal_chip 
->> sun50i_h6_ths = {
->>   	.calc_temp = sun8i_ths_calc_temp,
->>   };
->> 
->>  +static const struct ths_thermal_chip sun50i_h616_ths = {
->>  +	.sensor_num = 4,
->>  +	.has_bus_clk_reset = true,
->>  +	.ft_deviation = 8000,
->>  +	.offset = 263655,
->>  +	.scale = 810,
->>  +	.temp_data_base = SUN50I_H6_THS_TEMP_DATA,
->>  +	.calibrate = sun50i_h616_ths_calibrate,
->>  +	.init = sun50i_h6_thermal_init,
->>  +	.irq_ack = sun50i_h6_irq_ack,
->>  +	.calc_temp = sun8i_ths_calc_temp,
->>  +};
->>  +
->>   static const struct of_device_id of_ths_match[] = {
->>   	{ .compatible = "allwinner,sun8i-a83t-ths", .data =
-> &sun8i_a83t_ths },
->>   	{ .compatible = "allwinner,sun8i-h3-ths", .data = &sun8i_h3_ths },
->>  @@ -616,6 +689,7 @@ static const struct of_device_id of_ths_match[] 
->> = {
->>   	{ .compatible = "allwinner,sun50i-a100-ths", .data =
-> &sun50i_a100_ths },
->>   	{ .compatible = "allwinner,sun50i-h5-ths", .data = &sun50i_h5_ths
-> },
->>   	{ .compatible = "allwinner,sun50i-h6-ths", .data = &sun50i_h6_ths
-> },
->>  +	{ .compatible = "allwinner,sun50i-h616-ths", .data =
-> &sun50i_h616_ths },
->>   	{ /* sentinel */ },
->>   };
->>   MODULE_DEVICE_TABLE(of, of_ths_match);
-> 
-> 
-> 
-> 
+Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
 
+>  drivers/net/ethernet/freescale/fec_main.c | 26 ++++++++++-------------
+>  1 file changed, 11 insertions(+), 15 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
+> index e23a55977183..8909899e9a31 100644
+> --- a/drivers/net/ethernet/freescale/fec_main.c
+> +++ b/drivers/net/ethernet/freescale/fec_main.c
+> @@ -1583,25 +1583,18 @@ fec_enet_run_xdp(struct fec_enet_private *fep, struct bpf_prog *prog,
+>  	case XDP_REDIRECT:
+>  		rxq->stats[RX_XDP_REDIRECT]++;
+>  		err = xdp_do_redirect(fep->netdev, xdp, prog);
+> -		if (!err) {
+> -			ret = FEC_ENET_XDP_REDIR;
+> -		} else {
+> -			ret = FEC_ENET_XDP_CONSUMED;
+> -			page = virt_to_head_page(xdp->data);
+> -			page_pool_put_page(rxq->page_pool, page, sync, true);
+> -		}
+> +		if (unlikely(err))
+> +			goto xdp_err;
+> +
+> +		ret = FEC_ENET_XDP_REDIR;
+>  		break;
+>  
+>  	case XDP_TX:
+>  		err = fec_enet_xdp_tx_xmit(fep, cpu, xdp, sync);
+> -		if (unlikely(err)) {
+> -			ret = FEC_ENET_XDP_CONSUMED;
+> -			page = virt_to_head_page(xdp->data);
+> -			page_pool_put_page(rxq->page_pool, page, sync, true);
+> -			trace_xdp_exception(fep->netdev, prog, act);
+> -		} else {
+> -			ret = FEC_ENET_XDP_TX;
+> -		}
+> +		if (unlikely(err))
+> +			goto xdp_err;
+> +
+> +		ret = FEC_ENET_XDP_TX;
+>  		break;
+>  
+>  	default:
+> @@ -1613,9 +1606,12 @@ fec_enet_run_xdp(struct fec_enet_private *fep, struct bpf_prog *prog,
+>  
+>  	case XDP_DROP:
+>  		rxq->stats[RX_XDP_DROP]++;
+> +xdp_err:
+>  		ret = FEC_ENET_XDP_CONSUMED;
+>  		page = virt_to_head_page(xdp->data);
+>  		page_pool_put_page(rxq->page_pool, page, sync, true);
 
+Ok, so we handle the cleaning up of the page and such here, which is
+shared for both paths now. Nice!
+
+> +		if (act != XDP_DROP)
+> +			trace_xdp_exception(fep->netdev, prog, act);
+>  		break;
+>  	}
+>  
