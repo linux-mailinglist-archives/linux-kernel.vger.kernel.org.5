@@ -2,77 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A58C5786142
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 22:15:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 878E6786149
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 22:18:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235792AbjHWUOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 16:14:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46494 "EHLO
+        id S236007AbjHWUST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 16:18:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235704AbjHWUOo (ORCPT
+        with ESMTP id S235963AbjHWURt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 16:14:44 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E96A10D2;
-        Wed, 23 Aug 2023 13:14:42 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-68bec3a1c0fso218807b3a.1;
-        Wed, 23 Aug 2023 13:14:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692821682; x=1693426482;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ENARu/aPypvUKijJ61BaG061fO+rJyQYL9bbexKiSJQ=;
-        b=DOwyH1+0wwzV7UVglk3+hbfFVcvdl7t/vbjnXO6S7kGoAuA7C7QfSFHqWWaJtI9fcQ
-         8Npa8la2Wc5nooTvzLzSrM2Gt2s6wivswGWt5O0bi/XRrkSjN+KwmVBUynvEqp33eish
-         UKi3abUGp+7Oiu6lZ1j4P8QWF2EncAoB/HM9sWncYCkB/YzW/VWU38ksd9OlxQqqaFQ3
-         /JDenatfe2z1NCGJrmeiybri2Fb3Xgqx/FsYfOWnO/uLjFf2On8vhwg2jjstEuSbWzGX
-         mGBvNYCvmGSthkkwb4EO2xYjrU+A0H9ziMi6vjf/HY2Qd8fYWPliOjJV2WjZHug8WiJY
-         da3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692821682; x=1693426482;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ENARu/aPypvUKijJ61BaG061fO+rJyQYL9bbexKiSJQ=;
-        b=YHex7i+GzPnQtd64LeFH8/rsMTfMA5sHQQkMwC39LoHL6X42M9a54hfp7RxNSsKRAQ
-         a1cduv+AKsyq6vK38N3ogOkvBRtnMpOcdpqVjnR/ZjZPuswTgPa94K+4dMJxl3LY5Wka
-         ZKLDswc/LfoUQWzD3erCPqkElC2k1Rp7a+wsWly8/VgK0bQsZNqe7Yn0ZzhjoxZ5qBPL
-         XJXdJqnyH7Vd+gXdCntSxdx6x3Cn5qiE93jV/QNYtBxUaUzZv44G48nanWBuagY/E9lu
-         rUF6/vUgJUQ4kpaGytGubQ2KfeDCipb/Ak0YRvV3OtFGET8gkgKiytz+ReFCmRR5t9JG
-         +Y/g==
-X-Gm-Message-State: AOJu0Yz4nQPYB/u/BadBFxAKD1Yzi6GxxFKDafvt9xhyZl9bnZBFoDwA
-        4fcFweSmBUfyTZmMEE+KXhT5MNMDB2U=
-X-Google-Smtp-Source: AGHT+IHuoCBRBpvaTtL0zg2ATZOSsX9vVOCtLY8ej1KK9HqDGq1zRIVqpbNPesPonujmRCazLjSryA==
-X-Received: by 2002:a05:6a20:4310:b0:149:2149:9491 with SMTP id h16-20020a056a20431000b0014921499491mr10020989pzk.43.1692821681631;
-        Wed, 23 Aug 2023 13:14:41 -0700 (PDT)
-Received: from [192.168.1.3] (ip72-194-116-95.oc.oc.cox.net. [72.194.116.95])
-        by smtp.gmail.com with ESMTPSA id j24-20020aa79298000000b0068a077847c7sm8219980pfa.135.2023.08.23.13.14.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Aug 2023 13:14:40 -0700 (PDT)
-Message-ID: <5a4fedbd-ee1e-9413-2022-a155a098fe4d@gmail.com>
-Date:   Wed, 23 Aug 2023 13:14:38 -0700
+        Wed, 23 Aug 2023 16:17:49 -0400
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 729DB10D2;
+        Wed, 23 Aug 2023 13:17:40 -0700 (PDT)
+Received: from leknes.fjasle.eu ([46.142.48.46]) by mrelayeu.kundenserver.de
+ (mreue109 [212.227.15.183]) with ESMTPSA (Nemesis) id
+ 1M9npT-1qcVC81pQ5-005mNr; Wed, 23 Aug 2023 22:17:13 +0200
+Received: by leknes.fjasle.eu (Postfix, from userid 1000)
+        id 1BFF23F8EE; Wed, 23 Aug 2023 22:17:08 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fjasle.eu; s=mail;
+        t=1692821829; bh=9Y6GJu22Mm4w6kt+Z0QIvpKJSKBxuDbHBUcn5zJ/y9o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=yj02GCgiR3PvhGLJmxabMp6B6qVfAQEcuXyxrGiBE4kqg4Wjum3ZcfMekOr1Xsl1Z
+         77Wmanpqa6sgQpFSklstNBGTwDrNEuQSdKVmTEKtGwm/4zOFQpn/3RXAnUV0dr+rbe
+         4PtsIa6ICBXu9lS1fLbILiNAAvcBRPT8/KO3r4l0=
+Date:   Wed, 23 Aug 2023 22:17:08 +0200
+From:   Nicolas Schier <nicolas@fjasle.eu>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [PATCH 4/8] kbuild: remove $(MODLIB)/source symlink
+Message-ID: <ZOZpRMu6a47kkzrZ@fjasle.eu>
+References: <20230823115048.823011-1-masahiroy@kernel.org>
+ <20230823115048.823011-4-masahiroy@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Subject: Re: [PATCH 6.4 000/234] 6.4.12-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-References: <20230821194128.754601642@linuxfoundation.org>
-Content-Language: en-US
-In-Reply-To: <20230821194128.754601642@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="DcjO63GeeJJAWHOK"
+Content-Disposition: inline
+In-Reply-To: <20230823115048.823011-4-masahiroy@kernel.org>
+X-Provags-ID: V03:K1:ll3xFyBhpy4a0AlZdxB9cPcqKQBqov2zQCy4UJiib3Y4zzjC7Ie
+ cnSJ3HXSJ1U8sX8k+vsiJodRc/SgN706zg55Omixf1Q6CUP6srvGFx/nFzUgPh3VUHeIadt
+ 3W2StLvjpCf5mhmvp/mOOj23fCUeHGAnnb6vP+efxQuxBXwBvpHzWOrOVF1jdRBH5b/uJpc
+ pi94LtCscvW0/bTTX5w8w==
+UI-OutboundReport: notjunk:1;M01:P0:OOrOpK7oFSQ=;OZr6uQt6rOTcYU3cYDKM0PoO+N7
+ OGCCRuPEF5RbTE+YyFmR/xlIO+92GpStmtfNswVsBs7OeJR9fjzgsloEQ7aLEktcqfvCP9BZJ
+ UqL8RHiXVle8Sq6iRxb+/1LhAUa3PxLtUmwhFk0SClq50fXKYhghAOU8xCKw9KzaW6QHz6+ul
+ M8FAT15LPM72nKtmCmj61u0YhenBwJTkkdjaWrEVoS9NBDBEJJllrkwUFB4vMrxbABvGGUbkk
+ 6x6BHpGrr1Uou4RtL8wCr1bVAJFonvcW5aFfZKtOYZ9ablzgwBYJR1RRW3VZn/CNu6DyWb84/
+ 1yfYgwgxLhdaeFKFO4P42kifjL4XROH68vQNecGyejuJOTi/SHQSsO7/pDsDOpFpO3vfzOC/+
+ t93KOTCRfa9A4XMzTkDGJb/SZre3c47f3mV5BwCZcBbU/T+eJhw/O3Mom+j1E7gpn54IAfA4Q
+ ifmhdk4KszED6lSl+py8ylT8+dEFN5I7siNv3Mg0RXgpq1lhQ1+YTRXkSiZqr0W6l+PlrVkkY
+ RUG0pjBfizc3JeqCQEKruAEPFsQjkhPXBqBbFzvHfn1T3Lf7kjx7WGyYUBFRrG/hkUhgqAVT9
+ iKG8J+WSSKnyh2KVK8vnOuZ2u3Yuz/MhO0d58nCNH2Qeo+9emmyirNG65ryL237DL21cP0yhc
+ WPKNv7c39pzsjK47OIcLWzQaEXfkKeUZhylnHiAkmNnhkbzadfhtY/EwdznHqLM33a8qpj8Ep
+ EIsmgTG4ALw6TF6zATkBeNeXVmljKyK2MUK94ofyUtr1ZYcQA4HQK0JCWKy/7DO5T3PtegECq
+ ZGkJtEmelix++AClxXYlGIly2zYyBYciHUuBaWnhDzaFkWkdnao0PgwD3OzPo8rZq3uIAkEm/
+ jIUyFbeNmpt49pw==
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,29 +69,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/21/23 12:39, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.4.12 release.
-> There are 234 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 23 Aug 2023 19:40:45 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.4.12-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
-BMIPS_GENERIC:
+--DcjO63GeeJJAWHOK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
+On Wed, Aug 23, 2023 at 08:50:44PM +0900 Masahiro Yamada wrote:
+> This reverts the old commit "kbuild: Introduce source symlink in
+> /lib/modules/.../". [1]
+>=20
+> The current Kbuild does not require $(MODLIB)/source. If the kernel was
+> built in a separate output directory, $(MODLIB)/build/Makefile wraps
+> the Makefile in the source tree. It is enough for building external
+> modules.
+>=20
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/history/history.git/c=
+ommit/?id=3De09e58867154b8aae0a3ac26a9b1c05962f5a355
+>=20
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+>=20
+>  Makefile | 8 ++------
+>  1 file changed, 2 insertions(+), 6 deletions(-)
+>=20
+> diff --git a/Makefile b/Makefile
+> index c9c8019e4720..7d9cab3d2186 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -1486,14 +1486,10 @@ modules_install: $(modinst_pre)
+>  PHONY +=3D __modinst_pre
+>  __modinst_pre:
+>  	@rm -rf $(MODLIB)/kernel
+> -	@rm -f $(MODLIB)/source
+> +	@rm -f $(MODLIB)/build
+>  	@mkdir -p $(MODLIB)
+>  ifdef CONFIG_MODULES
+> -	@ln -s $(abspath $(srctree)) $(MODLIB)/source
+> -	@if [ ! $(objtree) -ef  $(MODLIB)/build ]; then \
+> -		rm -f $(MODLIB)/build ; \
+> -		ln -s $(CURDIR) $(MODLIB)/build ; \
+> -	fi
+> +	@ln -s $(CURDIR) $(MODLIB)/build
+>  	@sed 's:^\(.*\)\.o$$:kernel/\1.ko:' modules.order > $(MODLIB)/modules.o=
+rder
+>  endif
+>  	@cp -f modules.builtin $(MODLIB)/
+> --=20
+> 2.39.2
 
+Reviewed-by: Nicolas Schier <nicolas@fjasle.eu>
+
+--DcjO63GeeJJAWHOK
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEh0E3p4c3JKeBvsLGB1IKcBYmEmkFAmTmaUMACgkQB1IKcBYm
+Emmesw//TfQqTYlQpo5Q6nIDiISOZuUlcP3EsHZ7GcIngKh4TQA/FkQGMS8Nn6pc
+a/3zc8JM4AyTZvLJbWnrStttY84DxN9Ugt4D/a1gwQZVx3XbFijRN/rD/hThSliW
+mt57E+/2bdixYNsNjJB9Jy4PIH65Q/SZTrSPNlV5iCoStlYc3QrAAEQT4OWUahNB
+9O+m42T1UIe06rd/GreUr1vBI4q1e4U22q01UjJep598dieNCeQMXUrae5woDM+P
+0ZFE9dTaYH3ZxrEN5M2Z72LTRND5sMR6LSvEHfsDwZ3gMARG4oQ8aZNbtkOcf9+4
+zRiD1E3p1ICcbMzMCCUKhp3bdxExNQaSur2naXFzOyeze87x4Mb6tCJc4Wp5D7kn
+SIgJfJstTRdLWE+L39cY9q9heh7BF66BH9RATvx9C3q9miKQhKQ1uWQyXfftMsYi
+CNynIny5PUoqJovdy0OcvVvT3R6zWDYCv8kseEhhy9DLeroIIotzl1YXGlT/JVY+
+0COQ2C6vOaCaOZYh4CY7yDtMEPP54+ia6yjUVx1s+VzBEIhipe3M0DdyugzcWxoL
+POURAifOp1eL/G/dgERBmFiVe980ekw0ImUTRwrqHtHdk0pcBMttESQYiCn6w92R
+aNLnq7x6gb/+ESP9ee1gHHWsgaab8lRmtfQOXqsLHeWJDbjSMVk=
+=AzOZ
+-----END PGP SIGNATURE-----
+
+--DcjO63GeeJJAWHOK--
