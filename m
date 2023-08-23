@@ -2,127 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5B08785499
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 11:50:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6B377854A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 11:52:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231289AbjHWJun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 05:50:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43400 "EHLO
+        id S236247AbjHWJwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 05:52:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236163AbjHWJtd (ORCPT
+        with ESMTP id S236028AbjHWJvT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 05:49:33 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B23E810B;
-        Wed, 23 Aug 2023 02:47:39 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Wed, 23 Aug 2023 05:51:19 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36A1419A2
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 02:49:17 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4B73062A5D;
-        Wed, 23 Aug 2023 09:47:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 81AC4C433CB;
-        Wed, 23 Aug 2023 09:47:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692784058;
-        bh=BgJoy5WrNNunfZnzqn99cjCrMrRRSaZhBdRfquCyX+U=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-        b=hbOwMTX30a6QoY4/iBxfF/gRUOFRxyy3ybKtYSzn9U2JsVO+o3De8I/TQ+ElEoBXU
-         lbp148Kb9bFkQ9KlnLFfZqQvBuYAI04LAnwRnslTA9RMOQzVEcMjwEhsvzvoclXeZQ
-         CPSmSRZOk5v9sW1h4ZTlqQVVZJiWNyYXbtvlSWiDMOZOh7suIORflgdIQAnZ9gm01p
-         fITuV1gi2SzipF9d6AZqLIZ0NEtTVuMtEb5bUen2ql2Zdsb1K1A2HtmvKIOZlc4NsP
-         Tjk+4EOZ5tzIkNnC+0x34EJmkmRtsuMiYr+KhpXivW9x2XhmFWgV3x9Wc7d9SQeEMG
-         PIj1t95/5NoQg==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by smtp.lore.kernel.org (Postfix) with ESMTP id 5709CEE49B5;
-        Wed, 23 Aug 2023 09:47:38 +0000 (UTC)
-From:   Nikita Shubin via B4 Relay 
-        <devnull+nikita.shubin.maquefel.me@kernel.org>
-Date:   Wed, 23 Aug 2023 12:47:28 +0300
-Subject: [PATCH 2/2] ata: pata_ep93xx: use soc_device_match for UDMA modes
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 3B633206DC;
+        Wed, 23 Aug 2023 09:49:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1692784156; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4GjdQhvLncocPUD0b4/2+sQgriwrt6/5GAl9fl5WMTg=;
+        b=FRwGjs2udpK2CtBtGeUGei8V/DAWUWbAZK8eV9EdyCbgwJaOf/oAeO3MNTNLnervtA3dmL
+        H8M9Uyga2Qf7xz+9l/CW6A7jEW2HUwqbgJxZxmNbcQb6ihGEEHawIU6/XE+XP7GU4/XnWj
+        1HLBkH4mWqGxi0Q//c6Wk2BS9AzNKJs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1692784156;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4GjdQhvLncocPUD0b4/2+sQgriwrt6/5GAl9fl5WMTg=;
+        b=H1ArurLnCezyyF9pCX4HMluCKPJy9YQoR7FL+W+C2qLdFTFozdErSDHwn4yPmT8Gtl73oi
+        LbdHJNYGZGF6XPBw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2D8791351F;
+        Wed, 23 Aug 2023 09:49:16 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id /14QCxzW5WRqBAAAMHmgww
+        (envelope-from <jack@suse.cz>); Wed, 23 Aug 2023 09:49:16 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id A3C29A0774; Wed, 23 Aug 2023 11:49:15 +0200 (CEST)
+Date:   Wed, 23 Aug 2023 11:49:15 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Mateusz Guzik <mjguzik@gmail.com>
+Cc:     Jan Kara <jack@suse.cz>, Dennis Zhou <dennis@kernel.org>,
+        linux-kernel@vger.kernel.org, tj@kernel.org, cl@linux.com,
+        akpm@linux-foundation.org, shakeelb@google.com, linux-mm@kvack.org
+Subject: Re: [PATCH 0/2] execve scalability issues, part 1
+Message-ID: <20230823094915.ggv3spzevgyoov6i@quack3>
+References: <20230821202829.2163744-1-mjguzik@gmail.com>
+ <ZOPSEJTzrow8YFix@snowbird>
+ <20230821213951.bx3yyqh7omdvpyae@f>
+ <CAGudoHHJECp2-DfSr5hudooAdV6mivvSO+4mC9kwUrWnSiob5g@mail.gmail.com>
+ <20230822095154.7cr5ofogw552z3jk@quack3>
+ <CAGudoHHe5nzRTuj4G1fphD+JJ02TE5BnHEDwFm=-W6DoEj2qVQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230823-ep93xx_pata_fixes-v1-2-d7e7229be148@maquefel.me>
-References: <20230823-ep93xx_pata_fixes-v1-0-d7e7229be148@maquefel.me>
-In-Reply-To: <20230823-ep93xx_pata_fixes-v1-0-d7e7229be148@maquefel.me>
-To:     Sergey Shtylyov <s.shtylyov@omp.ru>,
-        Damien Le Moal <dlemoal@kernel.org>
-Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Nikita Shubin <nikita.shubin@maquefel.me>
-X-Mailer: b4 0.12.1
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1692784059; l=1745;
- i=nikita.shubin@maquefel.me; s=20230718; h=from:subject:message-id;
- bh=S/mHeNOqmdky76OBBe9mnLniUEhK/mD6hu3snL8cYnQ=; =?utf-8?q?b=3DZh3hEy1066mg?=
- =?utf-8?q?5eGLVabyipHBoWgKlB/mlIUlnn3UXSC5kJzVHxfeCrDPtloT6CVJEy6typOP/Xr/?=
- dVZGid7DB4vtZGfpF9FlFskH0r6PPnwSJwFO0y+J3BDXN2HhVqMM
-X-Developer-Key: i=nikita.shubin@maquefel.me; a=ed25519;
- pk=vqf5YIUJ7BJv3EJFaNNxWZgGuMgDH6rwufTLflwU9ac=
-X-Endpoint-Received: by B4 Relay for nikita.shubin@maquefel.me/20230718 with auth_id=65
-X-Original-From: Nikita Shubin <nikita.shubin@maquefel.me>
-Reply-To: <nikita.shubin@maquefel.me>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGudoHHe5nzRTuj4G1fphD+JJ02TE5BnHEDwFm=-W6DoEj2qVQ@mail.gmail.com>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_SOFTFAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nikita Shubin <nikita.shubin@maquefel.me>
+On Tue 22-08-23 16:24:56, Mateusz Guzik wrote:
+> On 8/22/23, Jan Kara <jack@suse.cz> wrote:
+> > On Tue 22-08-23 00:29:49, Mateusz Guzik wrote:
+> >> On 8/21/23, Mateusz Guzik <mjguzik@gmail.com> wrote:
+> >> > True Fix(tm) is a longer story.
+> >> >
+> >> > Maybe let's sort out this patchset first, whichever way. :)
+> >> >
+> >>
+> >> So I found the discussion around the original patch with a perf
+> >> regression report.
+> >>
+> >> https://lore.kernel.org/linux-mm/20230608111408.s2minsenlcjow7q3@quack3/
+> >>
+> >> The reporter suggests dodging the problem by only allocating per-cpu
+> >> counters when the process is going multithreaded. Given that there is
+> >> still plenty of forever single-threaded procs out there I think that's
+> >> does sound like a great plan regardless of what happens with this
+> >> patchset.
+> >>
+> >> Almost all access is already done using dedicated routines, so this
+> >> should be an afternoon churn to sort out, unless I missed a
+> >> showstopper. (maybe there is no good place to stuff a flag/whatever
+> >> other indicator about the state of counters?)
+> >>
+> >> That said I'll look into it some time this or next week.
+> >
+> > Good, just let me know how it went, I also wanted to start looking into
+> > this to come up with some concrete patches :). What I had in mind was that
+> > we could use 'counters == NULL' as an indication that the counter is still
+> > in 'single counter mode'.
+> >
+> 
+> In the current state there are only pointers to counters in mm_struct
+> and there is no storage for them in task_struct. So I don't think
+> merely null-checking the per-cpu stuff is going to cut it -- where
+> should the single-threaded counters land?
 
-Replace ep93xx_chip_revision() with soc_device_match(), so
-ep93xx_chip_revision() can be safetly dropped from exported functions.
+I think you misunderstood. What I wanted to do it to provide a new flavor
+of percpu_counter (sharing most of code and definitions) which would have
+an option to start as simple counter (indicated by pcc->counters == NULL
+and using pcc->count for counting) and then be upgraded by a call to real
+percpu thing. Because I think such counters would be useful also on other
+occasions than as rss counters.
 
-Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
----
- drivers/ata/pata_ep93xx.c | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+> Bonus problem, non-current can modify these counters and this needs to
+> be safe against current playing with them at the same time. (and it
+> would be a shame to require current to use atomic on them)
 
-diff --git a/drivers/ata/pata_ep93xx.c b/drivers/ata/pata_ep93xx.c
-index 4ce0f37c7a89..3f91b6cff353 100644
---- a/drivers/ata/pata_ep93xx.c
-+++ b/drivers/ata/pata_ep93xx.c
-@@ -40,6 +40,7 @@
- #include <linux/ata.h>
- #include <linux/libata.h>
- #include <linux/platform_device.h>
-+#include <linux/sys_soc.h>
- #include <linux/delay.h>
- #include <linux/dmaengine.h>
- #include <linux/ktime.h>
-@@ -910,6 +911,12 @@ static struct ata_port_operations ep93xx_pata_port_ops = {
- 	.port_start		= ep93xx_pata_port_start,
- };
- 
-+static const struct soc_device_attribute ep93xx_soc_table[] = {
-+	{ .revision = "E1", .data = (void *)ATA_UDMA3 },
-+	{ .revision = "E2", .data = (void *)ATA_UDMA4 },
-+	{ /* sentinel */ }
-+};
-+
- static int ep93xx_pata_probe(struct platform_device *pdev)
- {
- 	struct ep93xx_pata_data *drv_data;
-@@ -976,12 +983,11 @@ static int ep93xx_pata_probe(struct platform_device *pdev)
- 	 * so this driver supports only UDMA modes.
- 	 */
- 	if (drv_data->dma_rx_channel && drv_data->dma_tx_channel) {
--		int chip_rev = ep93xx_chip_revision();
-+		const struct soc_device_attribute *match;
- 
--		if (chip_rev == EP93XX_CHIP_REV_E1)
--			ap->udma_mask = ATA_UDMA3;
--		else if (chip_rev == EP93XX_CHIP_REV_E2)
--			ap->udma_mask = ATA_UDMA4;
-+		match = soc_device_match(ep93xx_soc_table);
-+		if (match)
-+			ap->udma_mask = (unsigned int) match->data;
- 		else
- 			ap->udma_mask = ATA_UDMA2;
- 	}
+Hum, I didn't realize that. Indeed I can see that e.g. khugepaged can be
+modifying the counters for other processes. Thanks for pointing this out.
 
+> That said, my initial proposal adds a union:
+> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+> index 5e74ce4a28cd..ea70f0c08286 100644
+> --- a/include/linux/mm_types.h
+> +++ b/include/linux/mm_types.h
+> @@ -737,7 +737,11 @@ struct mm_struct {
+> 
+>                 unsigned long saved_auxv[AT_VECTOR_SIZE]; /* for
+> /proc/PID/auxv */
+> 
+> -               struct percpu_counter rss_stat[NR_MM_COUNTERS];
+> +               union {
+> +                       struct percpu_counter rss_stat[NR_MM_COUNTERS];
+> +                       u64 *rss_stat_single;
+> +               };
+> +               bool    magic_flag_stuffed_elsewhere;
+> 
+>                 struct linux_binfmt *binfmt;
+> 
+> 
+> Then for single-threaded case an area is allocated for NR_MM_COUNTERS
+> countes * 2 -- first set updated without any synchro by current
+> thread. Second set only to be modified by others and protected with
+> mm->arg_lock. The lock protects remote access to the union to begin
+> with.
+
+arg_lock seems a bit like a hack. How is it related to rss_stat? The scheme
+with two counters is clever but I'm not 100% convinced the complexity is
+really worth it. I'm not sure the overhead of always using an atomic
+counter would really be measurable as atomic counter ops in local CPU cache
+tend to be cheap. Did you try to measure the difference?
+
+If the second counter proves to be worth it, we could make just that one
+atomic to avoid the need for abusing some spinlock.
+
+> Transition to per-CPU operation sets the magic flag (there is plenty
+> of spare space in mm_struct, I'll find a good home for it without
+> growing the struct). It would be a one-way street -- a process which
+> gets a bunch of threads and goes back to one stays with per-CPU.
+
+Agreed with switching to be a one-way street.
+
+> Then you get the true value of something by adding both counters.
+> 
+> arg_lock is sparingly used, so remote ops are not expected to contend
+> with anything. In fact their cost is going to go down since percpu
+> summation takes a spinlock which also disables interrupts.
+> 
+> Local ops should be about the same in cost as they are right now.
+> 
+> I might have missed some detail in the above description, but I think
+> the approach is decent.
+
+								Honza
 -- 
-2.39.2
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
