@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7978B785371
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 11:05:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81AB97853E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 11:28:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232427AbjHWJFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 05:05:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52902 "EHLO
+        id S235438AbjHWJ2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 05:28:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235069AbjHWIxl (ORCPT
+        with ESMTP id S235070AbjHWIxl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 23 Aug 2023 04:53:41 -0400
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B01471BF3;
-        Wed, 23 Aug 2023 01:51:09 -0700 (PDT)
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37N79CcG028861;
-        Wed, 23 Aug 2023 08:50:58 GMT
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B007A1BF2;
+        Wed, 23 Aug 2023 01:51:10 -0700 (PDT)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37N7EHlW021159;
+        Wed, 23 Aug 2023 08:51:02 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=qcppdkim1;
- bh=iW5JrOC1YQW/pJrddy1rYFptRArjo3CS53FyfQ1uQHM=;
- b=RjfITr4+GiPymyaUihIiBGXjAS5+KCWykQfyZxAaehCVj4A70+JPFviMciSA7D892tmG
- i9cbnpdSeeSAIMJxCPzaXvpfqrRH/UXXUIZjQdHnftYnOT1gZ6L/sDaVZNbGDhl7GZSs
- F1SfgVXUvpuI6Zc+XBsegtH6uJ0z4aSFNqPzXpQ29j1qaI+QQ0YzqwCl16a2XnAPCaeZ
- 7D6BeCtc93BMH898wzAADLzHFPwJNUvpu0dAyvImqoW3xZJC5xPfZ1zEB0a9XJvXefq3
- 1GE+fEfO8b+vzBZnI6KddBJu4OVYypkhaYlQ8DSO2xSKh6nguqeXaTDF9Kelde+hoeZK uA== 
+ bh=BP1DOUq95oLxbEBOBZlC44MJpmfSzzOp6pDyghoUD7Q=;
+ b=KHo9oE/mSfX/5WVcJ1lI+1W9mZp8XxkgRxOJCYnHBlayHhQkCKxk26b9OxYm+Rz8b4ca
+ XXNqvIVsxayIHhDDpWOi5mzWDlItwAlh3XXeILAOIzLCPXM9MidXPFr6u1WAsURDw/Up
+ 6ePtTAzYpgDOCvwItNgaSZdVang16AF4HC6Koo/ZiQ5ED8zlpIXXHOsQWzWt+XHA2MWZ
+ 2mN5Db/xW4Zsook2BVnUCyEd/Kpafc1gRbjfLLkwlJ3ii9vk9N3EptCajDL+zTNrqNLT
+ +d6PgE9wa0lx73SRLGvCzAwaagMYcA2IBuRAuZyg+cI/9W1360MZUagfcvLDzeiNLAmY 4A== 
 Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sn2exscce-1
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sn2cm1ea8-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 23 Aug 2023 08:50:58 +0000
+        Wed, 23 Aug 2023 08:51:01 +0000
 Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37N8ouEa003305
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37N8p03O003319
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 23 Aug 2023 08:50:56 GMT
+        Wed, 23 Aug 2023 08:51:00 GMT
 Received: from akronite-sh-dev02.qualcomm.com (10.80.80.8) by
  nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Wed, 23 Aug 2023 01:50:53 -0700
+ 15.2.1118.30; Wed, 23 Aug 2023 01:50:56 -0700
 From:   Luo Jie <quic_luoj@quicinc.com>
 To:     <andersson@kernel.org>, <agross@kernel.org>,
         <konrad.dybcio@linaro.org>, <mturquette@baylibre.com>,
@@ -49,9 +49,9 @@ To:     <andersson@kernel.org>, <agross@kernel.org>,
 CC:     <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <quic_srichara@quicinc.com>
-Subject: [PATCH v5 1/4] clk: qcom: branch: Add clk_branch2_mdio_ops
-Date:   Wed, 23 Aug 2023 16:50:28 +0800
-Message-ID: <20230823085031.27252-2-quic_luoj@quicinc.com>
+Subject: [PATCH v5 2/4] dt-bindings: clock: add qca8386/qca8084 clock and reset definitions
+Date:   Wed, 23 Aug 2023 16:50:29 +0800
+Message-ID: <20230823085031.27252-3-quic_luoj@quicinc.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20230823085031.27252-1-quic_luoj@quicinc.com>
 References: <20230823085031.27252-1-quic_luoj@quicinc.com>
@@ -62,15 +62,15 @@ X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
  nalasex01c.na.qualcomm.com (10.47.97.35)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: qYFs-SrUI_osTXn6RoFsju5_3EhuzfFm
-X-Proofpoint-ORIG-GUID: qYFs-SrUI_osTXn6RoFsju5_3EhuzfFm
+X-Proofpoint-ORIG-GUID: DpQ5Nd22AmLfabvTMj3CBNSejdDXhME_
+X-Proofpoint-GUID: DpQ5Nd22AmLfabvTMj3CBNSejdDXhME_
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
  definitions=2023-08-23_06,2023-08-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxlogscore=924
- mlxscore=0 lowpriorityscore=0 priorityscore=1501 impostorscore=0
- malwarescore=0 suspectscore=0 adultscore=0 phishscore=0 bulkscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ bulkscore=0 suspectscore=0 phishscore=0 spamscore=0 malwarescore=0
+ clxscore=1015 mlxlogscore=999 adultscore=0 priorityscore=1501 mlxscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2308100000 definitions=main-2308230079
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
@@ -81,47 +81,293 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the clk_branch2_mdio_ops for supporting clock controller
-where the hardware register is accessed by MDIO bus, and the
-spin lock can't be used because of sleep during the MDIO
-operation.
-
-The clock is enabled by the .prepare instead of .enable when
-the clk_branch2_mdio_ops is used.
+QCA8386/QCA8084 includes the clock & reset controller that is
+accessed by MDIO bus. Two work modes are supported, qca8386 works
+as switch mode, qca8084 works as PHY mode.
 
 Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
 ---
- drivers/clk/qcom/clk-branch.c | 7 +++++++
- drivers/clk/qcom/clk-branch.h | 1 +
- 2 files changed, 8 insertions(+)
+ .../bindings/clock/qcom,qca8k-nsscc.yaml      |  79 ++++++++++++++
+ include/dt-bindings/clock/qcom,qca8k-nsscc.h  | 101 ++++++++++++++++++
+ include/dt-bindings/reset/qcom,qca8k-nsscc.h  |  75 +++++++++++++
+ 3 files changed, 255 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/qcom,qca8k-nsscc.yaml
+ create mode 100644 include/dt-bindings/clock/qcom,qca8k-nsscc.h
+ create mode 100644 include/dt-bindings/reset/qcom,qca8k-nsscc.h
 
-diff --git a/drivers/clk/qcom/clk-branch.c b/drivers/clk/qcom/clk-branch.c
-index fc4735f74f0f..5e08c026ca4a 100644
---- a/drivers/clk/qcom/clk-branch.c
-+++ b/drivers/clk/qcom/clk-branch.c
-@@ -153,3 +153,10 @@ const struct clk_ops clk_branch_simple_ops = {
- 	.is_enabled = clk_is_enabled_regmap,
- };
- EXPORT_SYMBOL_GPL(clk_branch_simple_ops);
+diff --git a/Documentation/devicetree/bindings/clock/qcom,qca8k-nsscc.yaml b/Documentation/devicetree/bindings/clock/qcom,qca8k-nsscc.yaml
+new file mode 100644
+index 000000000000..7466c80c6c56
+--- /dev/null
++++ b/Documentation/devicetree/bindings/clock/qcom,qca8k-nsscc.yaml
+@@ -0,0 +1,79 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/clock/qcom,qca8k-nsscc.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+const struct clk_ops clk_branch2_mdio_ops = {
-+	.prepare = clk_branch2_enable,
-+	.unprepare = clk_branch2_disable,
-+	.is_prepared = clk_is_enabled_regmap,
-+};
-+EXPORT_SYMBOL_GPL(clk_branch2_mdio_ops);
-diff --git a/drivers/clk/qcom/clk-branch.h b/drivers/clk/qcom/clk-branch.h
-index 0cf800b9d08d..4b006e8eec5e 100644
---- a/drivers/clk/qcom/clk-branch.h
-+++ b/drivers/clk/qcom/clk-branch.h
-@@ -85,6 +85,7 @@ extern const struct clk_ops clk_branch_ops;
- extern const struct clk_ops clk_branch2_ops;
- extern const struct clk_ops clk_branch_simple_ops;
- extern const struct clk_ops clk_branch2_aon_ops;
-+extern const struct clk_ops clk_branch2_mdio_ops;
- 
- #define to_clk_branch(_hw) \
- 	container_of(to_clk_regmap(_hw), struct clk_branch, clkr)
++title: Qualcomm NSS Clock & Reset Controller on QCA8386/QCA8084
++
++maintainers:
++  - Bjorn Andersson <andersson@kernel.org>
++  - Luo Jie <quic_luoj@quicinc.com>
++
++description: |
++  Qualcomm NSS clock control module provides the clocks and resets
++  on QCA8386(switch mode)/QCA8084(PHY mode)
++
++  See also::
++    include/dt-bindings/clock/qcom,qca8k-nsscc.h
++    include/dt-bindings/reset/qcom,qca8k-nsscc.h
++
++properties:
++  compatible:
++    oneOf:
++      - const: qcom,qca8084-nsscc
++      - items:
++          - enum:
++              - qcom,qca8082-nsscc
++              - qcom,qca8085-nsscc
++              - qcom,qca8384-nsscc
++              - qcom,qca8385-nsscc
++              - qcom,qca8386-nsscc
++          - const: qcom,qca8084-nsscc
++
++  clocks:
++    items:
++      - description: Chip XO source
++      - description: UNIPHY0 RX 312P5M/125M clock source
++      - description: UNIPHY0 TX 312P5M/125M clock source
++      - description: UNIPHY1 RX 312P5M/125M clock source
++      - description: UNIPHY1 TX 312P5M/125M clock source
++      - description: UNIPHY1 RX 312P5M clock source
++      - description: UNIPHY1 TX 312P5M clock source
++
++  reg:
++    items:
++      - description: MDIO bus address for Clock & Reset Controller register
++
++required:
++  - compatible
++  - clocks
++  - reg
++
++allOf:
++  - $ref: qcom,gcc.yaml#
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    mdio {
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      clock-controller@10 {
++        compatible = "qcom,qca8084-nsscc";
++        reg = <0x10>;
++        clocks = <&qca8k_xo>,
++                 <&qca8k_uniphy0_rx>,
++                 <&qca8k_uniphy0_tx>,
++                 <&qca8k_uniphy1_rx>,
++                 <&qca8k_uniphy1_tx>,
++                 <&qca8k_uniphy1_rx312p5m>,
++                 <&qca8k_uniphy1_tx312p5m>;
++        #clock-cells = <1>;
++        #reset-cells = <1>;
++        #power-domain-cells = <1>;
++      };
++    };
++...
+diff --git a/include/dt-bindings/clock/qcom,qca8k-nsscc.h b/include/dt-bindings/clock/qcom,qca8k-nsscc.h
+new file mode 100644
+index 000000000000..0d271e73aea3
+--- /dev/null
++++ b/include/dt-bindings/clock/qcom,qca8k-nsscc.h
+@@ -0,0 +1,101 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
++/*
++ * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
++ */
++
++#ifndef _DT_BINDINGS_CLK_QCOM_QCA8K_NSS_CC_H
++#define _DT_BINDINGS_CLK_QCOM_QCA8K_NSS_CC_H
++
++#define NSS_CC_SWITCH_CORE_CLK_SRC				0
++#define NSS_CC_SWITCH_CORE_CLK					1
++#define NSS_CC_APB_BRIDGE_CLK					2
++#define NSS_CC_MAC0_TX_CLK_SRC					3
++#define NSS_CC_MAC0_TX_DIV_CLK_SRC				4
++#define NSS_CC_MAC0_TX_CLK					5
++#define NSS_CC_MAC0_TX_SRDS1_CLK				6
++#define NSS_CC_MAC0_RX_CLK_SRC					7
++#define NSS_CC_MAC0_RX_DIV_CLK_SRC				8
++#define NSS_CC_MAC0_RX_CLK					9
++#define NSS_CC_MAC0_RX_SRDS1_CLK				10
++#define NSS_CC_MAC1_TX_CLK_SRC					11
++#define NSS_CC_MAC1_TX_DIV_CLK_SRC				12
++#define NSS_CC_MAC1_SRDS1_CH0_XGMII_RX_DIV_CLK_SRC		13
++#define NSS_CC_MAC1_SRDS1_CH0_RX_CLK				14
++#define NSS_CC_MAC1_TX_CLK					15
++#define NSS_CC_MAC1_GEPHY0_TX_CLK				16
++#define NSS_CC_MAC1_SRDS1_CH0_XGMII_RX_CLK			17
++#define NSS_CC_MAC1_RX_CLK_SRC					18
++#define NSS_CC_MAC1_RX_DIV_CLK_SRC				19
++#define NSS_CC_MAC1_SRDS1_CH0_XGMII_TX_DIV_CLK_SRC		20
++#define NSS_CC_MAC1_SRDS1_CH0_TX_CLK				21
++#define NSS_CC_MAC1_RX_CLK					22
++#define NSS_CC_MAC1_GEPHY0_RX_CLK				23
++#define NSS_CC_MAC1_SRDS1_CH0_XGMII_TX_CLK			24
++#define NSS_CC_MAC2_TX_CLK_SRC					25
++#define NSS_CC_MAC2_TX_DIV_CLK_SRC				26
++#define NSS_CC_MAC2_SRDS1_CH1_XGMII_RX_DIV_CLK_SRC		27
++#define NSS_CC_MAC2_SRDS1_CH1_RX_CLK				28
++#define NSS_CC_MAC2_TX_CLK					29
++#define NSS_CC_MAC2_GEPHY1_TX_CLK				30
++#define NSS_CC_MAC2_SRDS1_CH1_XGMII_RX_CLK			31
++#define NSS_CC_MAC2_RX_CLK_SRC					32
++#define NSS_CC_MAC2_RX_DIV_CLK_SRC				33
++#define NSS_CC_MAC2_SRDS1_CH1_XGMII_TX_DIV_CLK_SRC		34
++#define NSS_CC_MAC2_SRDS1_CH1_TX_CLK				35
++#define NSS_CC_MAC2_RX_CLK					36
++#define NSS_CC_MAC2_GEPHY1_RX_CLK				37
++#define NSS_CC_MAC2_SRDS1_CH1_XGMII_TX_CLK			38
++#define NSS_CC_MAC3_TX_CLK_SRC					39
++#define NSS_CC_MAC3_TX_DIV_CLK_SRC				40
++#define NSS_CC_MAC3_SRDS1_CH2_XGMII_RX_DIV_CLK_SRC		41
++#define NSS_CC_MAC3_SRDS1_CH2_RX_CLK				42
++#define NSS_CC_MAC3_TX_CLK					43
++#define NSS_CC_MAC3_GEPHY2_TX_CLK				44
++#define NSS_CC_MAC3_SRDS1_CH2_XGMII_RX_CLK			45
++#define NSS_CC_MAC3_RX_CLK_SRC					46
++#define NSS_CC_MAC3_RX_DIV_CLK_SRC				47
++#define NSS_CC_MAC3_SRDS1_CH2_XGMII_TX_DIV_CLK_SRC		48
++#define NSS_CC_MAC3_SRDS1_CH2_TX_CLK				49
++#define NSS_CC_MAC3_RX_CLK					50
++#define NSS_CC_MAC3_GEPHY2_RX_CLK				51
++#define NSS_CC_MAC3_SRDS1_CH2_XGMII_TX_CLK			52
++#define NSS_CC_MAC4_TX_CLK_SRC					53
++#define NSS_CC_MAC4_TX_DIV_CLK_SRC				54
++#define NSS_CC_MAC4_SRDS1_CH2_XGMII_RX_DIV_CLK_SRC		55
++#define NSS_CC_MAC4_SRDS1_CH3_RX_CLK				56
++#define NSS_CC_MAC4_TX_CLK					57
++#define NSS_CC_MAC4_GEPHY3_TX_CLK				58
++#define NSS_CC_MAC4_SRDS1_CH3_XGMII_RX_CLK			59
++#define NSS_CC_MAC4_RX_CLK_SRC					60
++#define NSS_CC_MAC4_RX_DIV_CLK_SRC				61
++#define NSS_CC_MAC4_SRDS1_CH2_XGMII_TX_DIV_CLK_SRC		62
++#define NSS_CC_MAC4_SRDS1_CH3_TX_CLK				63
++#define NSS_CC_MAC4_RX_CLK					64
++#define NSS_CC_MAC4_GEPHY3_RX_CLK				65
++#define NSS_CC_MAC4_SRDS1_CH3_XGMII_TX_CLK			66
++#define NSS_CC_MAC5_TX_CLK_SRC					67
++#define NSS_CC_MAC5_TX_DIV_CLK_SRC				68
++#define NSS_CC_MAC5_TX_SRDS0_CLK				69
++#define NSS_CC_MAC5_TX_CLK					70
++#define NSS_CC_MAC5_RX_CLK_SRC					71
++#define NSS_CC_MAC5_RX_DIV_CLK_SRC				72
++#define NSS_CC_MAC5_RX_SRDS0_CLK				73
++#define NSS_CC_MAC5_RX_CLK					74
++#define NSS_CC_MAC5_TX_SRDS0_CLK_SRC				75
++#define NSS_CC_MAC5_RX_SRDS0_CLK_SRC				76
++#define NSS_CC_AHB_CLK_SRC					77
++#define NSS_CC_AHB_CLK						78
++#define NSS_CC_SEC_CTRL_AHB_CLK					79
++#define NSS_CC_TLMM_CLK						80
++#define NSS_CC_TLMM_AHB_CLK					81
++#define NSS_CC_CNOC_AHB_CLK					82
++#define NSS_CC_MDIO_AHB_CLK					83
++#define NSS_CC_MDIO_MASTER_AHB_CLK				84
++#define NSS_CC_SYS_CLK_SRC					85
++#define NSS_CC_SRDS0_SYS_CLK					86
++#define NSS_CC_SRDS1_SYS_CLK					87
++#define NSS_CC_GEPHY0_SYS_CLK					88
++#define NSS_CC_GEPHY1_SYS_CLK					89
++#define NSS_CC_GEPHY2_SYS_CLK					90
++#define NSS_CC_GEPHY3_SYS_CLK					91
++#endif
+diff --git a/include/dt-bindings/reset/qcom,qca8k-nsscc.h b/include/dt-bindings/reset/qcom,qca8k-nsscc.h
+new file mode 100644
+index 000000000000..79121a513823
+--- /dev/null
++++ b/include/dt-bindings/reset/qcom,qca8k-nsscc.h
+@@ -0,0 +1,75 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
++/*
++ * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
++ */
++
++#ifndef _DT_BINDINGS_RESET_QCOM_QCA8K_NSS_CC_H
++#define _DT_BINDINGS_RESET_QCOM_QCA8K_NSS_CC_H
++
++#define NSS_CC_SWITCH_CORE_ARES				1
++#define NSS_CC_APB_BRIDGE_ARES				2
++#define NSS_CC_MAC0_TX_ARES				3
++#define NSS_CC_MAC0_TX_SRDS1_ARES			4
++#define NSS_CC_MAC0_RX_ARES				5
++#define NSS_CC_MAC0_RX_SRDS1_ARES			6
++#define NSS_CC_MAC1_SRDS1_CH0_RX_ARES			7
++#define NSS_CC_MAC1_TX_ARES				8
++#define NSS_CC_MAC1_GEPHY0_TX_ARES			9
++#define NSS_CC_MAC1_SRDS1_CH0_XGMII_RX_ARES		10
++#define NSS_CC_MAC1_SRDS1_CH0_TX_ARES			11
++#define NSS_CC_MAC1_RX_ARES				12
++#define NSS_CC_MAC1_GEPHY0_RX_ARES			13
++#define NSS_CC_MAC1_SRDS1_CH0_XGMII_TX_ARES		14
++#define NSS_CC_MAC2_SRDS1_CH1_RX_ARES			15
++#define NSS_CC_MAC2_TX_ARES				16
++#define NSS_CC_MAC2_GEPHY1_TX_ARES			17
++#define NSS_CC_MAC2_SRDS1_CH1_XGMII_RX_ARES		18
++#define NSS_CC_MAC2_SRDS1_CH1_TX_ARES			19
++#define NSS_CC_MAC2_RX_ARES				20
++#define NSS_CC_MAC2_GEPHY1_RX_ARES			21
++#define NSS_CC_MAC2_SRDS1_CH1_XGMII_TX_ARES		22
++#define NSS_CC_MAC3_SRDS1_CH2_RX_ARES			23
++#define NSS_CC_MAC3_TX_ARES				24
++#define NSS_CC_MAC3_GEPHY2_TX_ARES			25
++#define NSS_CC_MAC3_SRDS1_CH2_XGMII_RX_ARES		26
++#define NSS_CC_MAC3_SRDS1_CH2_TX_ARES			27
++#define NSS_CC_MAC3_RX_ARES				28
++#define NSS_CC_MAC3_GEPHY2_RX_ARES			29
++#define NSS_CC_MAC3_SRDS1_CH2_XGMII_TX_ARES		30
++#define NSS_CC_MAC4_SRDS1_CH3_RX_ARES			31
++#define NSS_CC_MAC4_TX_ARES				32
++#define NSS_CC_MAC4_GEPHY3_TX_ARES			33
++#define NSS_CC_MAC4_SRDS1_CH3_XGMII_RX_ARES		34
++#define NSS_CC_MAC4_SRDS1_CH3_TX_ARES			35
++#define NSS_CC_MAC4_RX_ARES				36
++#define NSS_CC_MAC4_GEPHY3_RX_ARES			37
++#define NSS_CC_MAC4_SRDS1_CH3_XGMII_TX_ARES		38
++#define NSS_CC_MAC5_TX_ARES				39
++#define NSS_CC_MAC5_TX_SRDS0_ARES			40
++#define NSS_CC_MAC5_RX_ARES				41
++#define NSS_CC_MAC5_RX_SRDS0_ARES			42
++#define NSS_CC_AHB_ARES					43
++#define NSS_CC_SEC_CTRL_AHB_ARES			44
++#define NSS_CC_TLMM_ARES				45
++#define NSS_CC_TLMM_AHB_ARES				46
++#define NSS_CC_CNOC_AHB_ARES				47
++#define NSS_CC_MDIO_AHB_ARES				48
++#define NSS_CC_MDIO_MASTER_AHB_ARES			49
++#define NSS_CC_SRDS0_SYS_ARES				50
++#define NSS_CC_SRDS1_SYS_ARES				51
++#define NSS_CC_GEPHY0_SYS_ARES				52
++#define NSS_CC_GEPHY1_SYS_ARES				53
++#define NSS_CC_GEPHY2_SYS_ARES				54
++#define NSS_CC_GEPHY3_SYS_ARES				55
++#define NSS_CC_SEC_CTRL_ARES				56
++#define NSS_CC_SEC_CTRL_SENSE_ARES			57
++#define NSS_CC_SLEEP_ARES				58
++#define NSS_CC_DEBUG_ARES				59
++#define NSS_CC_GEPHY0_ARES				60
++#define NSS_CC_GEPHY1_ARES				61
++#define NSS_CC_GEPHY2_ARES				62
++#define NSS_CC_GEPHY3_ARES				63
++#define NSS_CC_DSP_ARES					64
++#define NSS_CC_GLOBAL_ARES				65
++#define NSS_CC_XPCS_ARES				66
++#endif
 -- 
 2.17.1
 
