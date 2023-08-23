@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F681785727
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 13:51:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66E2E785729
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 13:51:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234551AbjHWLvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 07:51:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60346 "EHLO
+        id S234568AbjHWLvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 07:51:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234556AbjHWLvG (ORCPT
+        with ESMTP id S234579AbjHWLvM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 07:51:06 -0400
+        Wed, 23 Aug 2023 07:51:12 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAF31E5E;
-        Wed, 23 Aug 2023 04:51:04 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74D49E7C;
+        Wed, 23 Aug 2023 04:51:06 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4BBF1657A1;
-        Wed, 23 Aug 2023 11:51:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06A59C433C8;
-        Wed, 23 Aug 2023 11:51:01 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0301864B5F;
+        Wed, 23 Aug 2023 11:51:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F39E8C433C9;
+        Wed, 23 Aug 2023 11:51:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692791463;
-        bh=37LRz30ny/2YtsWajTxwFgePE/bkcRu4z9qqVGYU0fw=;
+        s=k20201202; t=1692791465;
+        bh=wFUASYLi3QguTEkF0la7u7GiwBTMM+3rNu1Qw/Z6zxI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gASx3gsERnDseTFtIvf6L+RZKnriMxcsLx4fT++ZCeuPubUkRzOAQMbuHwJnjd/yF
-         59iFq70WIRzWHW7tTzI8upycG1vSzXDw6ajx+/lTWBSFbyj8bp4Tk9HuZG09Ylh8xT
-         azmqOIzbn6ke44rNtBbyXoItg7iv3ipp/ltods8cXsP9itCBzHTkvUSzaawfacVgRD
-         nJQVP6B/s/0J02nSZO8RKMvF8k6DgRKDd9fBqOnvfiG3+6yrs2W0x0Cqdy3TtyV7Ig
-         6BRiugtjqUXfGqtyVmckGysdW71jFtBwdV9ea/efGqd1BBdgrQANG+fmRVqTCAEelc
-         S7RfKfg8PsUzA==
+        b=C4Kx9V4+sIMX88xrczTyop2w+DSwwF0R9aJVWzO3tODOykestZcECIYKTJEsNm3Bg
+         U9yxJmIqcZ4Xju47rDyTJFcBZMkMYYuvD34N93BGjZWfJZ24fZpQVf4EtvfCuGJbB/
+         XJA9C/1wh+JODoqWOSiS1g8Cn1KyGMWhW7d0yjzMO1eWck+3tlCo77sUBxVbz216TQ
+         aG7iCAMRWxPXa0HS49X5DOyk4xquNQfZtb848XhHyIaDd9ABwFy1rXdLSI47G9zNer
+         6+0uCGSEV1gwvffzBnp3ANka8ccyjE+wD7QfCal0WOz8QG5CYlrnah1bChXtQ93Pk1
+         m9Br/qS6OARvA==
 From:   Masahiro Yamada <masahiroy@kernel.org>
 To:     linux-kbuild@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -40,9 +40,9 @@ Cc:     linux-kernel@vger.kernel.org,
         Nathan Chancellor <nathan@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
         Nicolas Schier <nicolas@fjasle.eu>
-Subject: [PATCH 5/8] kbuild: reduce the number of mkdir calls during modules_install
-Date:   Wed, 23 Aug 2023 20:50:45 +0900
-Message-Id: <20230823115048.823011-5-masahiroy@kernel.org>
+Subject: [PATCH 6/8] kbuild: move more module installation code to scripts/Makefile.modinst
+Date:   Wed, 23 Aug 2023 20:50:46 +0900
+Message-Id: <20230823115048.823011-6-masahiroy@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230823115048.823011-1-masahiroy@kernel.org>
 References: <20230823115048.823011-1-masahiroy@kernel.org>
@@ -58,60 +58,166 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Calling 'mkdir' for every module results in redundant syscalls.
-
-Use $(sort ...) to drop the duplicated directories.
+Move more relevant code to scripts/Makefile.modinst.
 
 Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
 
- scripts/Makefile.modinst | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ Makefile                 | 34 +++++++--------------------------
+ scripts/Makefile.modinst | 41 +++++++++++++++++++++++++++++++++++++---
+ 2 files changed, 45 insertions(+), 30 deletions(-)
 
+diff --git a/Makefile b/Makefile
+index 7d9cab3d2186..82d22debf6c9 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1477,24 +1477,6 @@ endif
+ 
+ endif # CONFIG_MODULES
+ 
+-modinst_pre :=
+-ifneq ($(filter modules_install,$(MAKECMDGOALS)),)
+-modinst_pre := __modinst_pre
+-endif
+-
+-modules_install: $(modinst_pre)
+-PHONY += __modinst_pre
+-__modinst_pre:
+-	@rm -rf $(MODLIB)/kernel
+-	@rm -f $(MODLIB)/build
+-	@mkdir -p $(MODLIB)
+-ifdef CONFIG_MODULES
+-	@ln -s $(CURDIR) $(MODLIB)/build
+-	@sed 's:^\(.*\)\.o$$:kernel/\1.ko:' modules.order > $(MODLIB)/modules.order
+-endif
+-	@cp -f modules.builtin $(MODLIB)/
+-	@cp -f $(objtree)/modules.builtin.modinfo $(MODLIB)/
+-
+ ###
+ # Cleaning is done on three levels.
+ # make clean     Delete most generated files
+@@ -1836,12 +1818,15 @@ help:
+ 	@echo  '  clean           - remove generated files in module directory only'
+ 	@echo  ''
+ 
++ifndef CONFIG_MODULES
++modules modules_install: __external_modules_error
+ __external_modules_error:
+ 	@echo >&2 '***'
+ 	@echo >&2 '*** The present kernel disabled CONFIG_MODULES.'
+ 	@echo >&2 '*** You cannot build or install external modules.'
+ 	@echo >&2 '***'
+ 	@false
++endif
+ 
+ endif # KBUILD_EXTMOD
+ 
+@@ -1850,6 +1835,9 @@ endif # KBUILD_EXTMOD
+ 
+ PHONY += modules modules_install modules_prepare
+ 
++modules_install:
++	$(Q)$(MAKE) -f $(srctree)/scripts/Makefile.modinst
++
+ ifdef CONFIG_MODULES
+ 
+ $(MODORDER): $(build-dir)
+@@ -1866,17 +1854,9 @@ PHONY += modules_check
+ modules_check: $(MODORDER)
+ 	$(Q)$(CONFIG_SHELL) $(srctree)/scripts/modules-check.sh $<
+ 
+-modules_install:
+-	$(Q)$(MAKE) -f $(srctree)/scripts/Makefile.modinst
+-
+ else # CONFIG_MODULES
+ 
+-# Modules not configured
+-# ---------------------------------------------------------------------------
+-
+-PHONY += __external_modules_error
+-
+-modules modules_install: __external_modules_error
++modules:
+ 	@:
+ 
+ KBUILD_MODULES :=
 diff --git a/scripts/Makefile.modinst b/scripts/Makefile.modinst
-index 7a64ece9b826..5d687a453d90 100644
+index 5d687a453d90..dc7c54669082 100644
 --- a/scripts/Makefile.modinst
 +++ b/scripts/Makefile.modinst
-@@ -9,6 +9,13 @@ __modinst:
- include include/config/auto.conf
- include $(srctree)/scripts/Kbuild.include
+@@ -13,9 +13,41 @@ install-y :=
  
-+install-y :=
+ PHONY += prepare
+ 
++ifeq ($(KBUILD_EXTMOD)$(modules_sign_only),)
 +
-+PHONY += prepare
++# Install more files for in-tree modules_install
 +
 +prepare:
++	$(Q)rm -fr $(MODLIB)/kernel $(MODLIB)/build
 +	$(Q)mkdir -p $(sort $(dir $(install-y)))
++
++install-$(CONFIG_MODULES) += $(addprefix $(MODLIB)/, build modules.order)
++
++$(MODLIB)/build: FORCE
++	$(call cmd,symlink)
++
++quiet_cmd_symlink = SYMLINK $@
++      cmd_symlink = ln -s $(CURDIR) $@
++
++$(MODLIB)/modules.order: modules.order FORCE
++	$(call cmd,install_modorder)
++
++quiet_cmd_install_modorder = INSTALL $@
++      cmd_install_modorder = sed 's:^\(.*\)\.o$$:kernel/\1.ko:' $< > $@
++
++# Install modules.builtin(.modinfo) even when CONFIG_MODULES is disabled.
++install-y += $(addprefix $(MODLIB)/, modules.builtin modules.builtin.modinfo)
++
++$(addprefix $(MODLIB)/, modules.builtin modules.builtin.modinfo): $(MODLIB)/%: % FORCE
++	$(call cmd,install)
++
++else
++
+ prepare:
+ 	$(Q)mkdir -p $(sort $(dir $(install-y)))
+ 
++endif
 +
  modules := $(call read-file, $(MODORDER))
  
  ifeq ($(KBUILD_EXTMOD),)
-@@ -27,6 +34,7 @@ suffix-$(CONFIG_MODULE_COMPRESS_XZ)	:= .xz
+@@ -34,9 +66,10 @@ suffix-$(CONFIG_MODULE_COMPRESS_XZ)	:= .xz
  suffix-$(CONFIG_MODULE_COMPRESS_ZSTD)	:= .zst
  
  modules := $(patsubst $(extmod_prefix)%.o, $(dst)/%.ko$(suffix-y), $(modules))
-+install-y += $(modules)
+-install-y += $(modules)
  
- __modinst: $(modules)
+-__modinst: $(modules)
++install-$(CONFIG_MODULES) += $(modules)
++
++__modinst: $(install-y)
  	@:
-@@ -35,7 +43,7 @@ __modinst: $(modules)
- # Installation
- #
- quiet_cmd_install = INSTALL $@
--      cmd_install = mkdir -p $(dir $@); cp $< $@
-+      cmd_install = cp $< $@
  
- # Strip
  #
-@@ -95,6 +103,8 @@ depmod: $(modules)
+@@ -94,14 +127,16 @@ $(dst)/%.ko: $(extmod_prefix)%.ko FORCE
+ 	$(call cmd,strip)
+ 	$(call cmd,sign)
+ 
++ifdef CONFIG_MODULES
+ __modinst: depmod
+ 
+ PHONY += depmod
+-depmod: $(modules)
++depmod: $(install-y)
+ 	$(call cmd,depmod)
+ 
  quiet_cmd_depmod = DEPMOD  $(MODLIB)
        cmd_depmod = $(srctree)/scripts/depmod.sh $(KERNELRELEASE)
++endif
  
-+$(install-y): prepare
-+
- else
+ $(install-y): prepare
  
- $(dst)/%.ko: FORCE
 -- 
 2.39.2
 
