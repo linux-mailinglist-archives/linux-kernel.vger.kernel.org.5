@@ -2,73 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 993E1784F7A
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 05:54:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2182F784F8E
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 06:18:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232500AbjHWDym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 23:54:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57454 "EHLO
+        id S232526AbjHWESB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 00:18:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232496AbjHWDyl (ORCPT
+        with ESMTP id S232529AbjHWER7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 23:54:41 -0400
-Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 113ACE51
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 20:54:39 -0700 (PDT)
-Received: by mail-ua1-x935.google.com with SMTP id a1e0cc1a2514c-79a31d66002so1691387241.3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 20:54:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1692762878; x=1693367678;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PpgSyn7xJbJ2ia+L5enewNstSLbJUwgFsy1ZDAGcYqY=;
-        b=ZaVctbrBfkzXLNwJzOUDXAG923TLvSVpZLakRz0pr87hUdv3ji43rI6flITSmVn97s
-         0GsVe/Bj2jtCJC1ibxYAtWWaPjKmPDS6WT+EQnbC9bLNSFtRNODixcCs3CAYj0egtFUl
-         1o/DOg8zT1NKQxs8r2OgoanlufkClIcNRlH8E=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692762878; x=1693367678;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PpgSyn7xJbJ2ia+L5enewNstSLbJUwgFsy1ZDAGcYqY=;
-        b=RsPThTf3QDOaR+d0YjBoBafw2/TI7k60RLbyz0MhGQ5We1X/lI0M0yZlVgKTs5LJtH
-         I6jm+WpcNDymgw5Rbw77gNk+OL3FY/wwpApC43xeSntXtRWsLBykg3q+slD1WV0zaKfo
-         CBcyZ9YqKKatpfyf4QdGLHxWVofxiTYO5/3Xck8bQZIXqrcXw0AxhQ1UtmwVNgF27HkT
-         Nv0CW3fR/IB/Kb3ct9f0YpjBoVLTC0yTAm5arOdKLFDzBEOKNDlAUCfh0RDbsfNQjRa8
-         F5PPFDukfxos+0PN7mUnBfXs346/UqFKNbz8oyiIw9WlY3diAbEl4NREQNS3rXjfDVv5
-         ituA==
-X-Gm-Message-State: AOJu0YxJDBCqPZ3pcMKFeFP8hVIlN8GEfGUprdjJeCC9EKZ12sBPVgOE
-        pn1Ev+B6nC86zSq9mdOcIjZE0US4OgFm5tFUjF0m/w==
-X-Google-Smtp-Source: AGHT+IGeb5cnr2HQwWpeveiYpAoaqUO+M9ALIglCvEP4e2MermSqivcFXfRWShboeciowdTOYhCl/FeBH0LwVp27qHI=
-X-Received: by 2002:a67:de06:0:b0:44d:3c1b:2dc0 with SMTP id
- q6-20020a67de06000000b0044d3c1b2dc0mr8182225vsk.26.1692762878173; Tue, 22 Aug
- 2023 20:54:38 -0700 (PDT)
+        Wed, 23 Aug 2023 00:17:59 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B87AE56
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 21:17:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692764277; x=1724300277;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=gde8+Me9mAhkHv6ln8PbeGxW9veh4ia2XPcgBnZZSPw=;
+  b=eYfUwVx6gOzSdfstv3V4dtHbAbPiL2MzwG/902bRGLGLA/ovxfovU5wR
+   uPK9O3sw/RkYRQsQMWdsO56b8ppz9yrZC/1FqrfojOqUA3l+o94ALbMYE
+   3G/Z4bokTMaGKalwMzPWKP3Hz3OfFSoAXbZWz7sShYZeK2C8nD4riv2wL
+   dkaTGYj/3IWIIHh+YqxKupylNY09hFyFTOuceo67419w8C2j4lpOiWwe6
+   n+hUH/kVj00Uv5YWy98umsg5ZJKP0DoGEUq37gARe44i4pS27PXIPC5o8
+   4XZOb5M+rfiVVFq0iLOx4YUoxEb2ZoklN5QDoQTM3/Fc7X5ZswhewsvIt
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10810"; a="372950113"
+X-IronPort-AV: E=Sophos;i="6.01,194,1684825200"; 
+   d="scan'208";a="372950113"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2023 21:06:31 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10810"; a="771569513"
+X-IronPort-AV: E=Sophos;i="6.01,194,1684825200"; 
+   d="scan'208";a="771569513"
+Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 22 Aug 2023 21:06:27 -0700
+Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qYf8U-0000pY-2O;
+        Wed, 23 Aug 2023 04:06:26 +0000
+Date:   Wed, 23 Aug 2023 12:05:42 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Mateusz Guzik <mjguzik@gmail.com>, linux-kernel@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, dennis@kernel.org, tj@kernel.org,
+        cl@linux.com, akpm@linux-foundation.org, shakeelb@google.com,
+        linux-mm@kvack.org, Mateusz Guzik <mjguzik@gmail.com>
+Subject: Re: [PATCH v2 2/2] fork: group allocation of per-cpu counters for mm
+ struct
+Message-ID: <202308231154.SM8fedb1-lkp@intel.com>
+References: <20230822184152.2194558-3-mjguzik@gmail.com>
 MIME-Version: 1.0
-References: <20230822084520.564937-1-wenst@chromium.org> <20230822084520.564937-4-wenst@chromium.org>
- <5ad5ff92-1367-ba96-b126-da80511a2769@linaro.org>
-In-Reply-To: <5ad5ff92-1367-ba96-b126-da80511a2769@linaro.org>
-From:   Chen-Yu Tsai <wenst@chromium.org>
-Date:   Wed, 23 Aug 2023 11:54:27 +0800
-Message-ID: <CAGXv+5Gc+R-hUJi5gm8an+dkq3JMD2JGwP4kDakKaHbAX2P0gQ@mail.gmail.com>
-Subject: Re: [PATCH v2 03/11] regulator: dt-bindings: mt6358: Convert to DT schema
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Mark Brown <broonie@kernel.org>,
-        Zhiyong Tao <zhiyong.tao@mediatek.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230822184152.2194558-3-mjguzik@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,85 +67,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 23, 2023 at 3:47=E2=80=AFAM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> On 22/08/2023 10:45, Chen-Yu Tsai wrote:
-> > Convert this from the old style text based binding to the new DT schema
-> > style. This will make adding the MT6366 portion easier.
-> >
-> > The examples have been trimmed down considerably, and the remaining
-> > entries now match what is seen in actual device trees.
->
-> ...
->
-> > +---
-> > +$id: http://devicetree.org/schemas/regulator/mediatek,mt6358-regulator=
-.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: MediaTek MT6358 Regulator
-> > +
-> > +maintainers:
-> > +  - Zhiyong Tao <zhiyong.tao@mediatek.com>
-> > +
-> > +description: |
->
-> Do not need '|' unless you need to preserve formatting.
+Hi Mateusz,
 
-Ack.
+kernel test robot noticed the following build errors:
 
-> > +  Regulator node of the PMIC. This node should under the PMIC's device=
- node.
-> > +  All voltage regulators provided by the PMIC are described as sub-nod=
-es of
-> > +  this node.
-> > +
-> > +properties:
-> > +  compatible:
-> > +    const: mediatek,mt6358-regulator
-> > +
-> ...
->
->
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    #include <dt-bindings/regulator/mediatek,mt6397-regulator.h>
->
-> mt6397?
->
-> > +
-> > +    regulator {
-> > +        compatible =3D "mediatek,mt6358-regulator";
-> > +
-> > +        buck_vgpu {
-> > +            regulator-name =3D "vgpu";
-> > +            regulator-min-microvolt =3D <625000>;
-> > +            regulator-max-microvolt =3D <900000>;
-> > +            regulator-ramp-delay =3D <6250>;
-> > +            regulator-enable-ramp-delay =3D <200>;
-> > +            regulator-allowed-modes =3D <MT6397_BUCK_MODE_AUTO
->
-> mt6397?
->
-> Both cases look a bit confusing.
+[auto build test ERROR on dennis-percpu/for-next]
+[also build test ERROR on linus/master v6.5-rc7 next-20230822]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-There's only two regulator binding header files, mt6397 and mt6360.
-They seem to correspond to the two classes of PMICs that MediaTek has.
-I believe the two header files and thus the macros are meant to be
-shared?
+url:    https://github.com/intel-lab-lkp/linux/commits/Mateusz-Guzik/pcpcntr-add-group-allocation-free/20230823-024312
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/dennis/percpu.git for-next
+patch link:    https://lore.kernel.org/r/20230822184152.2194558-3-mjguzik%40gmail.com
+patch subject: [PATCH v2 2/2] fork: group allocation of per-cpu counters for mm struct
+config: arm-randconfig-r005-20230823 (https://download.01.org/0day-ci/archive/20230823/202308231154.SM8fedb1-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20230823/202308231154.SM8fedb1-lkp@intel.com/reproduce)
 
-MT6397 and co refer to their AP PMICs, i.e. PMICs that are companion
-chips to the SoC and provide most of the power rails a system needs,
-along with things like RTC, audio codecs, etc.. The MT6358 and MT6366
-belong to this class.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308231154.SM8fedb1-lkp@intel.com/
 
-MT6360 and possibly others refer to their charger PMICs, which integrate
-a battery charger, USB type-C PD stuff, LED drivers, and a handful of
-regulators.
+All errors (new ones prefixed by >>):
+
+   kernel/fork.c: In function '__mmdrop':
+>> kernel/fork.c:926:9: error: implicit declaration of function 'percpu_counter_destroy_many'; did you mean 'percpu_counter_destroy'? [-Werror=implicit-function-declaration]
+     926 |         percpu_counter_destroy_many(mm->rss_stat, NR_MM_COUNTERS);
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+         |         percpu_counter_destroy
+   kernel/fork.c: In function 'mm_init':
+>> kernel/fork.c:1299:13: error: implicit declaration of function 'percpu_counter_init_many'; did you mean 'percpu_counter_init'? [-Werror=implicit-function-declaration]
+    1299 |         if (percpu_counter_init_many(mm->rss_stat, 0, GFP_KERNEL_ACCOUNT, NR_MM_COUNTERS))
+         |             ^~~~~~~~~~~~~~~~~~~~~~~~
+         |             percpu_counter_init
+   cc1: some warnings being treated as errors
 
 
-ChenYu
+vim +926 kernel/fork.c
+
+   904	
+   905	/*
+   906	 * Called when the last reference to the mm
+   907	 * is dropped: either by a lazy thread or by
+   908	 * mmput. Free the page directory and the mm.
+   909	 */
+   910	void __mmdrop(struct mm_struct *mm)
+   911	{
+   912		BUG_ON(mm == &init_mm);
+   913		WARN_ON_ONCE(mm == current->mm);
+   914	
+   915		/* Ensure no CPUs are using this as their lazy tlb mm */
+   916		cleanup_lazy_tlbs(mm);
+   917	
+   918		WARN_ON_ONCE(mm == current->active_mm);
+   919		mm_free_pgd(mm);
+   920		destroy_context(mm);
+   921		mmu_notifier_subscriptions_destroy(mm);
+   922		check_mm(mm);
+   923		put_user_ns(mm->user_ns);
+   924		mm_pasid_drop(mm);
+   925		mm_destroy_cid(mm);
+ > 926		percpu_counter_destroy_many(mm->rss_stat, NR_MM_COUNTERS);
+   927	
+   928		free_mm(mm);
+   929	}
+   930	EXPORT_SYMBOL_GPL(__mmdrop);
+   931	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
