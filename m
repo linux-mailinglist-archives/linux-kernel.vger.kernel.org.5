@@ -2,162 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7120C784F37
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 05:21:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76F82784F3C
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 05:25:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232176AbjHWDVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 23:21:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60382 "EHLO
+        id S232278AbjHWDZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 23:25:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229952AbjHWDV3 (ORCPT
+        with ESMTP id S231816AbjHWDZM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 23:21:29 -0400
-Received: from DM5PR00CU002.outbound.protection.outlook.com (mail-centralusazon11021027.outbound.protection.outlook.com [52.101.62.27])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8AF4CDA;
-        Tue, 22 Aug 2023 20:21:26 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FPAEUofFiRpGxan4j3EFpivbTC1tPhJqubmB7V9QryLm99myOK9tCs7kAjfUxx04IQ3pMxEQ3RycTXPItzW/qEnVA+RC04wpg/rC4lRLKHPgRJKrDHTBPBKijhhFp+IRhXnV/UWzLQ6sNYmRVdlFxJWw0v7oXm/j6NIKSeiRWpZPSU3Wcjo9aYSncc9nQ/mheDe9LeGgfAUbL9unJJWcE6gebynuxRfR1SJ2hFpgPCo8lp3dVo/d47GBLMm8CWK9vyF4IsZAfQfKpaQVkMIY4V3bb0rp1XgG3Ji/Z2i0YIgK2DO5q0q9dN2oV9D+lBCPR5H0YAqxP+gUZzzQS8UtRg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=i4MU/idsLDY5yWI/3BgHoxdQiGd04oS/zEIrFpGe87o=;
- b=PetEhPPVkS+0TX/5b8Zm0YQ6yGBgg/LpWpKnoUGyx9KcfKAm65AyhN0zvV8wahcEuMFPBtSSdMtdhowM9DCILoXeWjfDfpm5thP6OshkbhGsyivDAlS2RmOmm0rmyjLOhWoE7fcME8UkebV2r7mpqcanGeQrjngdQoqET+tW5Rpa2CUJAh9fPjxIBHdvopBg9Ac4wcw9t9hhQlkLGpwW2ZjshtBnO1zikjkgOH/pHKwdOolsdxrU9ExLrenULpQJCMj8K4VblQC/vGGquOoTeEQ4t1GhPACg06cgaJWya5IIf2PBx502YNYvOukEe1c8P6a/sUjFoiFSbj+UUJKyZA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=i4MU/idsLDY5yWI/3BgHoxdQiGd04oS/zEIrFpGe87o=;
- b=HeC7x/1ZnfOHeJawW2merlZP1VofwU/yssZVv/dDpQ8zX9CPA0CVWOoEm1rU2nefulDrLi3GwBqQFDS5kcHRZnL4y6MPJnIX279lzkrvmzfSdkUXQKGpxE77VJlrv+jIiGRxFyWwD7/zaeXaETJec2aVyMVBIp/XRnie6KXHxxI=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-Received: from BL0PR2101MB1092.namprd21.prod.outlook.com
- (2603:10b6:207:30::23) by SA1PR21MB2018.namprd21.prod.outlook.com
- (2603:10b6:806:1b5::10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.4; Wed, 23 Aug
- 2023 03:21:24 +0000
-Received: from BL0PR2101MB1092.namprd21.prod.outlook.com
- ([fe80::b3df:a8e9:52dd:dfad]) by BL0PR2101MB1092.namprd21.prod.outlook.com
- ([fe80::b3df:a8e9:52dd:dfad%5]) with mapi id 15.20.6745.005; Wed, 23 Aug 2023
- 03:21:24 +0000
-From:   Dexuan Cui <decui@microsoft.com>
-To:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, linux-hyperv@vger.kernel.org,
-        mikelley@microsoft.com, tiala@microsoft.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-        hpa@zytor.com, thomas.lendacky@amd.com
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: [PATCH] x86/hyperv: Fix undefined reference to isolation_type_en_snp without CONFIG_HYPERV
-Date:   Tue, 22 Aug 2023 20:20:08 -0700
-Message-Id: <20230823032008.18186-1-decui@microsoft.com>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-ClientProxiedBy: MW4PR03CA0357.namprd03.prod.outlook.com
- (2603:10b6:303:dc::32) To BL0PR2101MB1092.namprd21.prod.outlook.com
- (2603:10b6:207:30::23)
+        Tue, 22 Aug 2023 23:25:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C31C8CEE
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 20:24:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692761064;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SnQ+N+1/jGHTpLOSLvg0zVfzIC9bNsC+FTYOKHkdiUg=;
+        b=TiG9fiKqJDizYyQWY90ERYwEZuUZTGs5hx+yG+gjycy2TR+BEhUd8CdtlCjkwXXx1jxzX9
+        eonz+cIKwshZMd3u5l7A9KrKPDVIiFoAnu+l2AAl/Y9VVPhaJIw6C9yS8h38jAzk1e0kw7
+        tANVek9o3JSXfC3XYTty7NrxiDavGB8=
+Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com
+ [209.85.167.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-602-QMv0KMY_NbieOW_qfnPAlg-1; Tue, 22 Aug 2023 23:24:22 -0400
+X-MC-Unique: QMv0KMY_NbieOW_qfnPAlg-1
+Received: by mail-oi1-f198.google.com with SMTP id 5614622812f47-3a7292a2a72so6441128b6e.1
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 20:24:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692761062; x=1693365862;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SnQ+N+1/jGHTpLOSLvg0zVfzIC9bNsC+FTYOKHkdiUg=;
+        b=ZMYI5zEaTRoKgXBs6dMDJu1Ev+3TPoL3lhAkZ43lErlfMn5b08ftGjQdQKB3gKs4Lk
+         mbXnOSoEavMquwW/OgNtNzS2DH7cwYo1sKHVZISTsXroseF4rnSyRf8oM/vSE/+ZUOv3
+         ep5PSCUAPHyCvskVlQB5HiWtQ77JVnLjEhSvxAavuKlN67bH2fRrr3XbWQ30nGsse6oy
+         P5Ee/nQJ94PsiKRvrtHVLiiHxs3iWnNt+cxreC3REuEYwkyc/ZTqNLuiFosoVdIc7bj1
+         lNnzNI28zP8FxBE9VUrTnjt+c/KSnL4n80a6k+rgzjilUFnieMos54O/ReMo9sqRF9Vx
+         TvoA==
+X-Gm-Message-State: AOJu0Yzy/7iUqDGPiFm01p7bKHnCwuuFzvq/Fmf/9g1+oKzZ192RbngW
+        X9SD3pEPEE0DoFBY64clnd26niO4AbSfA9TaJvFaaBfu7dSoXf/XMIiX4ek8Arg6nPPS9h8AWTr
+        LeCgqw5tlw9bglSMmlujmtZe1qDx2JmcR+3I6SGVR
+X-Received: by 2002:a05:6808:4097:b0:3a7:3ce0:1ad7 with SMTP id db23-20020a056808409700b003a73ce01ad7mr11785869oib.20.1692761061987;
+        Tue, 22 Aug 2023 20:24:21 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH3BvmEA+Fq04AGrvCF1QWh/VASudRFeyrJzHuSDWKoUq7hCy4S3UK5FrAyIIwcu5F9t+fu87Z79/a6R7XW0t4=
+X-Received: by 2002:a05:6808:4097:b0:3a7:3ce0:1ad7 with SMTP id
+ db23-20020a056808409700b003a73ce01ad7mr11785854oib.20.1692761061761; Tue, 22
+ Aug 2023 20:24:21 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL0PR2101MB1092:EE_|SA1PR21MB2018:EE_
-X-MS-Office365-Filtering-Correlation-Id: bc2dc644-7fc3-4533-4f18-08dba3880688
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: nBopzEUwAjvhgVcDj42+t1Hz9aooUWVg2xu91meqrqrycx6PtKR7Jbi6dcCvPd05Tc3s4sasqNVqYnUqDUW+iHfowdBj/G1z16pFTax53U3ZzuaZeAGWpZJZMioi2REyw12doKMAMjTVJwSCJp7MdcNOuKwZLF1a1l0mKaXddqrUrvl4SFE2i4nBGjL6ma2p6iNcTPhLnKwN64NDyJ6hc64LkstD1YHhyEvfjBclFkB3X+8IFHSesoBtp6mfdw/cLv4015uRPNsrQhrRtm4M56XTbqTuSJjBMLDXPo6dFH67ilmD+9sPpZYuV1hiSaPgtBxA7v2BkjKqsPvgRg1r2ph2cWikRguZGqhYICZ6HoG3FoznhXKCc+P1pJyDYCtplYEdaN2VNxAW/XEekG6E/PiyiXAbICPp4IFWDX8zfAnRqUklfDxw4fGl/TZgkxpszhxdxGrscEYhuKCNMD+POlBT7dK5sJj6D6c6JD8aQnGmhcL8P3bphjtu9MlfML03Q0HW+Y60UfFjBUORRPol55CFvQA1Q4m/0aAGulVT/oVfRTCBaSIzGeN0IEHCjLuLc4fdw0LvPOGxnuhqbfLsYJKcxgR6d9egJSoMNWPSu4gKKvcRHb5GTTnvb7YkZoqVg6mmi2Ijg6BATKQlzShNSy6gfprI2hqDxnEvqczAQBE=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR2101MB1092.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(346002)(366004)(376002)(39860400002)(451199024)(186009)(1800799009)(5660300002)(12101799020)(921005)(6512007)(6486002)(6666004)(6506007)(52116002)(36756003)(86362001)(82950400001)(82960400001)(38100700002)(7416002)(1076003)(2616005)(2906002)(83380400001)(966005)(478600001)(8936002)(8676002)(10290500003)(41300700001)(4326008)(66476007)(66556008)(66946007)(316002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Rj6Dx5FsM5Hxan7CKsviTfqOCZ31AtsZf7nPvMk0bTAmOOeemA0aWCZUfbvL?=
- =?us-ascii?Q?fQipD9JxXfSu8lDa8tM9akeChUrQ1yHSwKqowV81ym9q9NjknCz96QnZQtjG?=
- =?us-ascii?Q?LxKCdLpzQJTcYD+QW9nwjqdfJzF7EUQT/aZugRWngju/Uyp1g8ie3pvZI6KK?=
- =?us-ascii?Q?T81JOEcA9NyKcsa9hIQxsc7YVXG+d5nZiScynr3mRVEi/MvG/EW8g8+NYtlc?=
- =?us-ascii?Q?doUp6AKS3xNkUTHUk2qIU2T+Zv7ZzCfrfZ1crk6e1MIkQeG7ct5nJk7ptOXA?=
- =?us-ascii?Q?bcRBrCBBI3dPGkRY02QJKonwDAjLlumLO06Zdv8D5ZxJqWoy4EsLSH9gUtSv?=
- =?us-ascii?Q?sth4hbo+dM7MnlUb0frA2GfdNXeFmX8/Crbp2X6VsgKx0V8NGppK31GMDSUH?=
- =?us-ascii?Q?xS4Wmtj+FsdJZeOSfhBMGqHAnhAGoKvDfvz/8RkC9vcc3qDDGkRsM6XjqvhR?=
- =?us-ascii?Q?QsWXBHOx9RgR6NE2rHttiOKgpiOrJAFw/Hezz8KoetUGmRKJw747i1R+CDZ6?=
- =?us-ascii?Q?dzuwx0vOy0uc9JrdIIJkm9BczHLu6dD/1sQOAhqtUlHLmeaXMpq4ArH2Sgq+?=
- =?us-ascii?Q?dMgaMPjn6CYx812ubnV/F4YIZ23kxcqtulod7vFlF3IcskVDJydYqQYF7z2T?=
- =?us-ascii?Q?GykX2yGLb3Q22ltS3rZYGwWZOJUyJGwvPSveyutNDsaiYsH1miREY2iipwo6?=
- =?us-ascii?Q?5PlrKhVkbeIzMSzzuXrcdwy0Cbeg3KOo3HUt6d7wwODzbUmutopAmdgzNDpt?=
- =?us-ascii?Q?f7gY1Uqrko58gt7eZPe2ojRAtjKAKReSvXIBG+k9JfRxJl+8rfmZBcHFT1Ld?=
- =?us-ascii?Q?ZJLUvf6vcpyJdED6aLMRtSFoAr+9PFYbSK4fSMUtqJQymlqpNUDUYUWnk2EU?=
- =?us-ascii?Q?RIA64fo/dOtlvBMX05xQAKUMGy2qb2AeEZXeHn/2AfkL6gtw4+4HrqbcT/+q?=
- =?us-ascii?Q?59+YO6w1b0KrbkOj69FFc16Elf6CuVJeduuV8BA4021UjRpLZ2CKvfhb8NiC?=
- =?us-ascii?Q?mO919RpXpvxhszPPPheLVxDzosSAastskDtNQwiry9S/LcSpsus2sKSEoROB?=
- =?us-ascii?Q?Se1ZWjtK5ycBfO+FZobLyeWeLCxLmr4DMPO1kY7ZWWSIUOTQhDBw7dI87bD6?=
- =?us-ascii?Q?DRleaA1bKpNSg+BlnO/IIdpDRKDu116LsHp3Yy8VffJ64X9bbVBli4unJMXq?=
- =?us-ascii?Q?/AZ5H397GF6J5uEdXG8ztKnXJYty/F962z1WrpfurM5WKuvXD28sttWG869K?=
- =?us-ascii?Q?shMV5EKMjHoMZei+FF6q1p3BiNhdYYEhSP6oRQp7yTz3oBy+4/PHZeGFEqXE?=
- =?us-ascii?Q?WCzdS1DcgytwxXC/Ov4ddFeoyp49TmWN30uHvi9URB053Ta2zo0zUC1DdoQp?=
- =?us-ascii?Q?URW4Mn1y4GraMmsSA3pnMfLBNIvhPRNAflxwV93dqNNShF6x9ZMhCgcttCAR?=
- =?us-ascii?Q?VJiem3GG0OT6mRUNJXTD8jPgmDLO1gL77n2yN0tW/EKLzXnMPiV+3aHcDvNk?=
- =?us-ascii?Q?nhU1hYrTF2PsHxDaQE57lt6/l6ibqnWXnUq9pokrS0CFjw2iAMFapM75grvQ?=
- =?us-ascii?Q?V7ZYbV6cF9/5gW8L19s+S8gByf9dGmBUhiFWXAdx6NvLK3SKnqJJdM5mdjV9?=
- =?us-ascii?Q?OamdckLr7BGCXsZ+LHcKfCLAdHOwTTMIiPmLw12GNJzw?=
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bc2dc644-7fc3-4533-4f18-08dba3880688
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR2101MB1092.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Aug 2023 03:21:23.8022
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ORaDcYif+HAxxgeZZWOKehmY4DKnjMxphLYg1UAy1UZmwTdbmH0EOMGss2jLdnBc6EfVrKeNZP1rQP4v0EAuzQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR21MB2018
+References: <20230820090949.2874537-1-yukuai1@huaweicloud.com> <20230820090949.2874537-8-yukuai1@huaweicloud.com>
+In-Reply-To: <20230820090949.2874537-8-yukuai1@huaweicloud.com>
+From:   Xiao Ni <xni@redhat.com>
+Date:   Wed, 23 Aug 2023 11:24:10 +0800
+Message-ID: <CALTww2_=-q5r0+XsDiHBHFMovD0002dYoa3gL2w3DPbruJpEOQ@mail.gmail.com>
+Subject: Re: [PATCH -next v3 7/7] md: delay remove_and_add_spares() for read
+ only array to md_start_sync()
+To:     Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     song@kernel.org, mariusz.tkaczyk@linux.intel.com,
+        linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yukuai3@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When CONFIG_HYPERV is not set, arch/x86/hyperv/ivm.c is not built (see
-arch/x86/Kbuild), so 'isolation_type_en_snp' in the ivm.c is not defined,
-and this failure happens:
+On Sun, Aug 20, 2023 at 5:13=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.com> w=
+rote:
+>
+> From: Yu Kuai <yukuai3@huawei.com>
+>
+> Before this patch, for read-only array:
+>
+> md_check_recovery() check that 'MD_RECOVERY_NEEDED' is set, then it will
+> call remove_and_add_spares() directly to try to remove and add rdevs
+> from array.
+>
+> After this patch:
+>
+> 1) md_check_recovery() check that 'MD_RECOVERY_NEEDED' is set, and the
+>    worker 'sync_work' is not pending, and there are rdevs can be added
+>    or removed, then it will queue new work md_start_sync();
+> 2) md_start_sync() will call remove_and_add_spares() and exist;
+>
+> This change make sure that array reconfiguration is independent from
+> daemon, and it'll be much easier to synchronize it with io, consier
+> that io may rely on daemon thread to be done.
+>
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> ---
+>  drivers/md/md.c | 43 +++++++++++++++++++++++++++++++++----------
+>  1 file changed, 33 insertions(+), 10 deletions(-)
+>
+> diff --git a/drivers/md/md.c b/drivers/md/md.c
+> index cdc361c521d4..f08b683f724f 100644
+> --- a/drivers/md/md.c
+> +++ b/drivers/md/md.c
+> @@ -4866,6 +4866,7 @@ action_store(struct mddev *mddev, const char *page,=
+ size_t len)
+>                 /* A write to sync_action is enough to justify
+>                  * canceling read-auto mode
+>                  */
+> +               flush_work(&mddev->sync_work);
+>                 mddev->ro =3D MD_RDWR;
+>                 md_wakeup_thread(mddev->sync_thread);
+>         }
+> @@ -7638,6 +7639,10 @@ static int md_ioctl(struct block_device *bdev, blk=
+_mode_t mode,
+>                 mutex_unlock(&mddev->open_mutex);
+>                 sync_blockdev(bdev);
+>         }
+> +
+> +       if (!md_is_rdwr(mddev))
+> +               flush_work(&mddev->sync_work);
+> +
+>         err =3D mddev_lock(mddev);
+>         if (err) {
+>                 pr_debug("md: ioctl lock interrupted, reason %d, cmd %d\n=
+",
+> @@ -8562,6 +8567,7 @@ bool md_write_start(struct mddev *mddev, struct bio=
+ *bi)
+>         BUG_ON(mddev->ro =3D=3D MD_RDONLY);
+>         if (mddev->ro =3D=3D MD_AUTO_READ) {
+>                 /* need to switch to read/write */
+> +               flush_work(&mddev->sync_work);
+>                 mddev->ro =3D MD_RDWR;
+>                 set_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
+>                 md_wakeup_thread(mddev->thread);
+> @@ -9191,6 +9197,16 @@ static bool rdev_addable(struct md_rdev *rdev)
+>         return true;
+>  }
+>
+> +static bool md_spares_need_change(struct mddev *mddev)
+> +{
+> +       struct md_rdev *rdev;
+> +
+> +       rdev_for_each(rdev, mddev)
+> +               if (rdev_removeable(rdev) || rdev_addable(rdev))
+> +                       return true;
+> +       return false;
+> +}
+> +
+>  static int remove_and_add_spares(struct mddev *mddev,
+>                                  struct md_rdev *this)
+>  {
+> @@ -9311,6 +9327,12 @@ static void md_start_sync(struct work_struct *ws)
+>
+>         mddev_lock_nointr(mddev);
+>
+> +       if (!md_is_rdwr(mddev)) {
+> +               remove_and_add_spares(mddev, NULL);
+> +               mddev_unlock(mddev);
+> +               return;
+> +       }
+> +
+>         if (!md_choose_sync_action(mddev, &spares))
+>                 goto not_running;
+>
+> @@ -9405,7 +9427,8 @@ void md_check_recovery(struct mddev *mddev)
+>         }
+>
+>         if (!md_is_rdwr(mddev) &&
+> -           !test_bit(MD_RECOVERY_NEEDED, &mddev->recovery))
+> +           (!test_bit(MD_RECOVERY_NEEDED, &mddev->recovery) ||
+> +            work_pending(&mddev->sync_work)))
+>                 return;
+>         if ( ! (
+>                 (mddev->sb_flags & ~ (1<<MD_SB_CHANGE_PENDING)) ||
+> @@ -9433,15 +9456,8 @@ void md_check_recovery(struct mddev *mddev)
+>                                  */
+>                                 rdev_for_each(rdev, mddev)
+>                                         clear_bit(Blocked, &rdev->flags);
+> -                       /* On a read-only array we can:
+> -                        * - remove failed devices
+> -                        * - add already-in_sync devices if the array its=
+elf
+> -                        *   is in-sync.
+> -                        * As we only add devices that are already in-syn=
+c,
+> -                        * we can activate the spares immediately.
+> -                        */
 
-ld: arch/x86/kernel/cpu/mshyperv.o: in function `ms_hyperv_init_platform':
-arch/x86/kernel/cpu/mshyperv.c:417: undefined reference to `isolation_type_en_snp'
+Can we keep those comments?
 
-Fix the failure by testing hv_get_isolation_type() and
-ms_hyperv.paravisor_present for a fully enlightened SNP VM: when
-CONFIG_HYPERV is not set, hv_get_isolation_type() is defined as a
-static inline function that always returns HV_ISOLATION_TYPE_NONE
-(see include/asm-generic/mshyperv.h), so the compiler won't generate any
-code for the ms_hyperv.paravisor_present and static_branch_enable().
+> -                       remove_and_add_spares(mddev, NULL);
+> -                       /* There is no thread, but we need to call
+> +                       /*
+> +                        * There is no thread, but we need to call
+>                          * ->spare_active and clear saved_raid_disk
+>                          */
+>                         set_bit(MD_RECOVERY_INTR, &mddev->recovery);
+> @@ -9449,6 +9465,13 @@ void md_check_recovery(struct mddev *mddev)
+>                         clear_bit(MD_RECOVERY_RECOVER, &mddev->recovery);
+>                         clear_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
+>                         clear_bit(MD_SB_CHANGE_PENDING, &mddev->sb_flags)=
+;
+> +
+> +                       /*
+> +                        * Let md_start_sync() to remove and add rdevs to=
+ the
+> +                        * array.
+> +                        */
+> +                       if (md_spares_need_change(mddev))
+> +                               queue_work(md_misc_wq, &mddev->sync_work)=
+;
+>                         goto unlock;
+>                 }
+>
+> --
+> 2.39.2
+>
 
-Reported-by: Tom Lendacky <thomas.lendacky@amd.com>
-Closes: https://lore.kernel.org/lkml/b4979997-23b9-0c43-574e-e4a3506500ff@amd.com/
-Fixes: d6e2d6524437 ("x86/hyperv: Add sev-snp enlightened guest static key")
-Signed-off-by: Dexuan Cui <decui@microsoft.com>
----
- arch/x86/kernel/cpu/mshyperv.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
-index 26b9fcabd7d95..c8d3ca2b0e0ee 100644
---- a/arch/x86/kernel/cpu/mshyperv.c
-+++ b/arch/x86/kernel/cpu/mshyperv.c
-@@ -413,10 +413,11 @@ static void __init ms_hyperv_init_platform(void)
- 			ms_hyperv.isolation_config_a, ms_hyperv.isolation_config_b);
- 
- 
--		if (cc_platform_has(CC_ATTR_GUEST_SEV_SNP)) {
--			static_branch_enable(&isolation_type_en_snp);
--		} else if (hv_get_isolation_type() == HV_ISOLATION_TYPE_SNP) {
--			static_branch_enable(&isolation_type_snp);
-+		if (hv_get_isolation_type() == HV_ISOLATION_TYPE_SNP) {
-+			if (ms_hyperv.paravisor_present)
-+				static_branch_enable(&isolation_type_snp);
-+			else
-+				static_branch_enable(&isolation_type_en_snp);
- 		}
- 	}
- 
--- 
-2.25.1
+Reviewed-by: Xiao Ni <xni@redhat.com>
 
