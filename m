@@ -2,143 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E783785C4B
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 17:38:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFCAB785C5C
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 17:44:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237299AbjHWPiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 11:38:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38542 "EHLO
+        id S235835AbjHWPob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 11:44:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237291AbjHWPiS (ORCPT
+        with ESMTP id S232038AbjHWPo1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 11:38:18 -0400
-Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a02:c205:3004:2154::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A023710CC;
-        Wed, 23 Aug 2023 08:38:15 -0700 (PDT)
-Received: from p5dcc3441.dip0.t-ipconnect.de ([93.204.52.65] helo=aktux)
-        by mail.andi.de1.cc with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <andreas@kemnade.info>)
-        id 1qYpvt-002xI2-3t; Wed, 23 Aug 2023 17:38:09 +0200
-Date:   Wed, 23 Aug 2023 17:38:07 +0200
-From:   Andreas Kemnade <andreas@kemnade.info>
-To:     Rob Herring <robh@kernel.org>
-Cc:     mturquette@baylibre.com, sboyd@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        bcousson@baylibre.com, tony@atomide.com, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org
-Subject: Re: [PATCH 1/3] dt-bindings: clock: add TWL6032 32K clocks
-Message-ID: <20230823173807.0b80a70a@aktux>
-In-Reply-To: <20230821205745.GA2270173-robh@kernel.org>
-References: <20230819134147.456060-1-andreas@kemnade.info>
-        <20230819134147.456060-2-andreas@kemnade.info>
-        <20230821205745.GA2270173-robh@kernel.org>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.37; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 23 Aug 2023 11:44:27 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F015E70;
+        Wed, 23 Aug 2023 08:44:26 -0700 (PDT)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37NDDXgW012456;
+        Wed, 23 Aug 2023 15:44:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id; s=qcppdkim1;
+ bh=MHjQtJmdnklgfC97Z+9qIdhrLaowKL2QnIkLQkzJl7o=;
+ b=YaPeytV9JEyP2aGwlqXUrjEui1Sh+L+xdcNTGogtu/ECuOTy52uKKk5jrKtlZ/YUi7gS
+ 0NNu1ZhMN9OpIZsfut/MZx3+NkL6ljt5IyLxaluyYN3WdM9FxO/OyZKazwgv/juu/J0F
+ RYEFE2PnlH+lfiTxo2zv+8AZmO50MlP17Gwi35izCbv1mlFZ3qCfRPs+RqPBOR4NG7N0
+ 4O9ZoywfMjX/CvS1Hu3KyhkiNmfXwvvirAI7GPwW+OlScnkfcVoOotFWFhSaeN0h5DdT
+ ozbqrypNjfXXkl4l/kaQ135gYH9W8mpOnvX3s+/mIh/B76lU/qWdBuUkQLEw7/gESlvw PQ== 
+Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sn2ext9ns-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 23 Aug 2023 15:44:19 +0000
+Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+        by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 37NFiGuj029184;
+        Wed, 23 Aug 2023 15:44:16 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 3sjptm3qdf-1;
+        Wed, 23 Aug 2023 15:44:16 +0000
+Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37NFiGKq029178;
+        Wed, 23 Aug 2023 15:44:16 GMT
+Received: from hu-maiyas-hyd.qualcomm.com (hu-nitirawa-hyd.qualcomm.com [10.213.109.152])
+        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 37NFiG7o029177;
+        Wed, 23 Aug 2023 15:44:16 +0000
+Received: by hu-maiyas-hyd.qualcomm.com (Postfix, from userid 2342877)
+        id 576B35000AA; Wed, 23 Aug 2023 21:14:15 +0530 (+0530)
+From:   Nitin Rawat <quic_nitirawa@quicinc.com>
+To:     mani@kernel.org, agross@kernel.org, andersson@kernel.org,
+        konrad.dybcio@linaro.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com
+Cc:     quic_cang@quicinc.com, quic_nguyenb@quicinc.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Nitin Rawat <quic_nitirawa@quicinc.com>
+Subject: [PATCH V5 0/6] scsi: ufs: qcom: Align programming sequence as per HW spec
+Date:   Wed, 23 Aug 2023 21:14:07 +0530
+Message-Id: <20230823154413.23788-1-quic_nitirawa@quicinc.com>
+X-Mailer: git-send-email 2.17.1
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 4bRYYtqvE5LG8IHvEqPo65NhqpwjjGHP
+X-Proofpoint-ORIG-GUID: 4bRYYtqvE5LG8IHvEqPo65NhqpwjjGHP
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-23_09,2023-08-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxlogscore=720
+ mlxscore=0 lowpriorityscore=0 priorityscore=1501 impostorscore=0
+ malwarescore=0 suspectscore=0 adultscore=0 phishscore=0 bulkscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308230142
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 21 Aug 2023 15:57:45 -0500
-Rob Herring <robh@kernel.org> wrote:
+This patch aligns programming sequence as per Qualcomm UFS
+hardware specification.
 
-> On Sat, Aug 19, 2023 at 03:41:45PM +0200, Andreas Kemnade wrote:
-> > To be able to be referenced from a future yaml-version of
-> > mfd/twl-family.txt depending on toplevel compatible have a separate
-> > file for the 6032  
-> 
-> Really, the parent needs to be done first...
-> 
-well, for some other subdevices, a yaml is already in the tree
-and Krzysztof recently added a R-By to another one.
+Changes from v4:
+- Addressed bjorn comment to split single patch to multiple patches.
 
-But if the clocks should not have a node, then it is obvious.
-What would be the route to conversion here: Is a conversion
-of mfd/twl-family.txt without specifying subnodes ok for the first step,
-maybe with additionalProperties: yes?
+Changes from v3:
+-Addressed bjorn comment to update commit msg to capture change details.
 
+Changes from v2:
+- Addressed bao comment, removed duplicate clock timer cfg API call
 
-> > Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
-> > ---
-> >  .../bindings/clock/ti,twl6032-clk.yaml        | 38
-> > +++++++++++++++++++ 1 file changed, 38 insertions(+)
-> >  create mode 100644
-> > Documentation/devicetree/bindings/clock/ti,twl6032-clk.yaml
-> > 
-> > diff --git
-> > a/Documentation/devicetree/bindings/clock/ti,twl6032-clk.yaml
-> > b/Documentation/devicetree/bindings/clock/ti,twl6032-clk.yaml new
-> > file mode 100644 index 0000000000000..aebd9f8d761a2 --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/clock/ti,twl6032-clk.yaml
-> > @@ -0,0 +1,38 @@
-> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/clock/ti,twl6032-clk.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Clocks of the TWL6032 PMIC
-> > +
-> > +maintainers:
-> > +  - Andreas Kemnade <andreas@kemnade.info>
-> > +
-> > +description:
-> > +  The TWL6032 has some 32Khz clock outputs which can be
-> > controlled.  
-> 
-> outputs? Seems like only 1 with no clock cells to specify which one.
-> 
-> > +
-> > +properties:
-> > +  compatible:
-> > +    enum:
-> > +      - ti,twl6032-clk32kaudio
-> > +      - ti,twl6032-clk32kg  
-> 
-> Or is it 1 output per compatible? I hope not.
-> 
-yes, it is. It was inspired by the clk-palmas driver:
-$ grep palmas.*32 arch/arm/boot/dts/ti/omap/omap5-*
-arch/arm/boot/dts/ti/omap/omap5-board-common.dtsi:
-clk32kgaudio: palmas_clk32k@1 {
-arch/arm/boot/dts/ti/omap/omap5-board-common.dtsi:
-	compatible = "ti,palmas-clk32kgaudio";
+Changes from v1:
+- Addressed bao comment, removed wrapper function
+- Tab alignment
 
-Well, we have the CLK_IGNORE_UNUSED, so if we use #clock-cells = 1,
-an unused clock will not be touched by the kernel, right?
+Nitin Rawat (6):
+  scsi: ufs: qcom: Update offset for core_clk_1us_cycles
+  scsi: ufs: qcom: Configure PA_VS_CORE_CLK_40NS_CYCLES for Unipro core
+    clk
+  scsi: ufs: qcom: Add multiple frequency support for unipro clk
+    attributes
+  scsi: ufs: qcom: Align unipro clk attributes as per Hardware
+    specification
+  scsi: ufs: qcom: Refactor ufs_qcom_cfg_timers function.
+  scsi: ufs: qcom: Handle unipro clk HW division based on scaling
+    conditions.
 
-> > +
-> > +  '#clock-cells':
-> > +    const: 0
-> > +
-> > +required:
-> > +  - compatible
-> > +  - '#clock-cells'
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    twl {
-> > +        clk32kaudio {
-> > +            compatible = "ti,twl6032-clk32kaudio";
-> > +            #clock-cells = <0>;
-> > +        };  
-> 
-> You don't need a child node to be a clock provider. Just add 
-> #clock-cells to the parent node.
-> 
-hmm, we have child nodes there for every subdevice in that family,
-even if I doubt it is totally technically required.
-So why should the clk device be an exception? 
+ drivers/ufs/host/ufs-qcom.c | 239 +++++++++++++++++++++++++++---------
+ drivers/ufs/host/ufs-qcom.h |  15 ++-
+ 2 files changed, 197 insertions(+), 57 deletions(-)
 
-Regards,
-Andreas
+--
+2.17.1
+
