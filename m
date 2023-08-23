@@ -2,126 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDDC4784EE8
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 04:54:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C748784EF9
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 04:59:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232346AbjHWCyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 22:54:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57686 "EHLO
+        id S230231AbjHWC7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 22:59:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231502AbjHWCyH (ORCPT
+        with ESMTP id S232349AbjHWC7w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 22:54:07 -0400
-Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C1201A5;
-        Tue, 22 Aug 2023 19:54:05 -0700 (PDT)
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37MI5m7M027509;
-        Tue, 22 Aug 2023 19:53:35 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=pfpt0220; bh=SYit5M8LMLasjmEi/Xn9GaH/ScQROSPBnBHY1wbIy4E=;
- b=SYAfWTDL0LOosPUnfMq4g2CWa65VccV/VflxG28AndaVh0UMLnopYz25pEARZeK9QROi
- HHSHzHTVlLJcv2jImTadItfVHPfV9E6MMHPAGDIEkzxQajRSx5/86m1cTQserxCVPI7c
- ftsMDwhsNXaiz0NJeSd77iaqME02lEIhhz/3jVFNaQmqT/ZLfU2awiwXDTcW5p2RMfc/
- PLtmqp6lS/OuIoHsn9ZDa6W+1Xusa1ixc1afSQCxRLCl/kVq9JmTYqoTOwUgZVtVbkzS
- rG5xrOcZvDm/Rx4jyVbw6XwA3goChRIE3Qz04tcG58kXLlmoVWHWi9F3ZEJ+omad3bw4 wA== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3sn20b1ccr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 22 Aug 2023 19:53:35 -0700
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 22 Aug
- 2023 19:53:33 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Tue, 22 Aug 2023 19:53:33 -0700
-Received: from marvell-OptiPlex-7090.marvell.com (unknown [10.28.36.165])
-        by maili.marvell.com (Postfix) with ESMTP id 70A183F7087;
-        Tue, 22 Aug 2023 19:53:28 -0700 (PDT)
-From:   Ratheesh Kannoth <rkannoth@marvell.com>
-To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <sgoutham@marvell.com>, <gakula@marvell.com>,
-        <sbhatta@marvell.com>, <hkelam@marvell.com>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <rkannoth@marvell.com>, <hawk@kernel.org>,
-        <alexander.duyck@gmail.com>, <ilias.apalodimas@linaro.org>,
-        <linyunsheng@huawei.com>,
-        Alexander Lobakin <aleksander.lobakin@intel.com>
-Subject: [PATCH v2 net] octeontx2-pf: fix page_pool creation fail for rings > 32k
-Date:   Wed, 23 Aug 2023 08:23:25 +0530
-Message-ID: <20230823025325.2499289-1-rkannoth@marvell.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 22 Aug 2023 22:59:52 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9CD31BE
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 19:59:48 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1befe39630bso9174965ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 19:59:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1692759588; x=1693364388;
+        h=content-transfer-encoding:in-reply-to:cc:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bhgEqLuvf9ApSnTvUwn1L76c2o2W1Ei/QD6yE6yt7Vo=;
+        b=RzbIwpF/0rWWCHIbil/kmvbYsiH+zzV8cteo0NeX4iqS5Th3aMObOrBBZ5QIYYiYNO
+         EzLvxXnwaU3C6HJ66DVx0SYeH6DBUUXE/parOT0tZRTGaLZHY6BYCVv0BWvKsae2+Z4V
+         HEkSBtQA++hJt6hjIX8coUzQJXYdSMU0EhPZnC3wJk9rsU5aMcdQM2J2gdrxRnnAl7ZG
+         8NIlks8SUC7HZyd+TSNVs6GUNYerNVLSzTLDuAq02G7Vh6n7NQtQV5W2S/tTxnIxqdnK
+         Yk0AUrfOj+V8sxulrYV9L4sfBNDgKCkzUecP9KTfiIS3EGmzpdtRXoZ4mpHHvApm3vtv
+         04iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692759588; x=1693364388;
+        h=content-transfer-encoding:in-reply-to:cc:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bhgEqLuvf9ApSnTvUwn1L76c2o2W1Ei/QD6yE6yt7Vo=;
+        b=Cj4rBZqxYcv+0htdxUA3IPDpv2E/AQck6K64iaCXIouAPhjBtIiKsTQT0RqY1QOhPV
+         cVZU4P6hWIk67B9UYX7NjTVWFK+0CMLGp+Rg1ILCS6u6i9xmv+x5dtyo+Yy62k25n1wD
+         azrLl2kET2v3FM40vlCfKRqN+Sd6yEqxhTqj+fnH8PNhz3CwVfWpqjIccZWJohKRxzNP
+         VqW1GcRjPVXEdPVpa7RupYVxN/EMOcoCFSQsFWCHFNRYI5Qk1xCvTI0FtfXZ+yO8YJtM
+         mmkUxbXUTpI0ZM/rAdFBhGQ1dnHXyOXX67t05/iBLtPu4WYWfdFy/HoeC9XwbcA879XC
+         fhrg==
+X-Gm-Message-State: AOJu0YzGz5faLgAa2QK3SKZAEhRGimiVH7mEKStSebZRoDZuCiGavQVN
+        PxtdceA3M4zCnwuhpECSW65E+g==
+X-Google-Smtp-Source: AGHT+IEfrTZGJtg+pRH2EfLUkWhGiT4SJbELosEEcEbXeeoUMWHqtsVXqJsCto+j1ri8qfTaL4v/sQ==
+X-Received: by 2002:a17:90a:2f41:b0:26d:4ade:fcf0 with SMTP id s59-20020a17090a2f4100b0026d4adefcf0mr10521410pjd.4.1692759588304;
+        Tue, 22 Aug 2023 19:59:48 -0700 (PDT)
+Received: from ?IPV6:fdbd:ff1:ce00:1c25:884:3ed:e1db:b610? ([2408:8000:b001:1:1f:58ff:f102:103])
+        by smtp.gmail.com with ESMTPSA id z2-20020a17090a1fc200b00262ca945cecsm11045048pjz.54.2023.08.22.19.59.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Aug 2023 19:59:47 -0700 (PDT)
+Message-ID: <63dc1d86-2a15-6b7e-f63a-63fccb25eae2@bytedance.com>
+Date:   Wed, 23 Aug 2023 10:59:34 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: jpdeneK5LLVMBytHKUFOulOm0RDZfxu6
-X-Proofpoint-GUID: jpdeneK5LLVMBytHKUFOulOm0RDZfxu6
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-22_22,2023-08-22_01,2023-05-22_02
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [PATCH v4 43/48] drm/ttm: introduce pool_shrink_rwsem
+Content-Language: en-US
+To:     daniel@ffwll.ch
+References: <20230807110936.21819-1-zhengqi.arch@bytedance.com>
+ <20230807110936.21819-44-zhengqi.arch@bytedance.com>
+ <ZOS+g51Yx9PsYkGU@phenom.ffwll.local>
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+Cc:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
+        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
+        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
+        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
+        yujie.liu@intel.com, gregkh@linuxfoundation.org,
+        muchun.song@linux.dev, simon.horman@corigine.com,
+        dlemoal@kernel.org, kvm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
+        dm-devel@redhat.com, linux-mtd@lists.infradead.org, x86@kernel.org,
+        cluster-devel@redhat.com, xen-devel@lists.xenproject.org,
+        linux-ext4@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        rcu@vger.kernel.org, linux-bcache@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>,
+        linux-raid@vger.kernel.org, linux-nfs@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+        linux-btrfs@vger.kernel.org, daniel.vetter@ffwll.ch
+In-Reply-To: <ZOS+g51Yx9PsYkGU@phenom.ffwll.local>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-octeontx2 driver calls page_pool_create() during driver probe()
-and fails if queue size > 32k. Page pool infra uses these buffers
-as shock absorbers for burst traffic. These pages are pinned down
-over time as working sets varies, due to the recycling nature
-of page pool, given page pool (currently) don't have a shrinker
-mechanism, the pages remain pinned down in ptr_ring.
-Instead of clamping page_pool size to 32k at
-most, limit it even more to 2k to avoid wasting memory.
+Hi Daniel,
 
-This have been tested on octeontx2 CN10KA hardware.
-TCP and UDP tests using iperf shows no performance regressions.
+On 2023/8/22 21:56, Daniel Vetter wrote:
+> On Mon, Aug 07, 2023 at 07:09:31PM +0800, Qi Zheng wrote:
+>> Currently, the synchronize_shrinkers() is only used by TTM pool. It only
+>> requires that no shrinkers run in parallel.
+>>
+>> After we use RCU+refcount method to implement the lockless slab shrink,
+>> we can not use shrinker_rwsem or synchronize_rcu() to guarantee that all
+>> shrinker invocations have seen an update before freeing memory.
+>>
+>> So we introduce a new pool_shrink_rwsem to implement a private
+>> synchronize_shrinkers(), so as to achieve the same purpose.
+>>
+>> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+>> Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+> 
+> On the 5 drm patches (I counted 2 ttm and 3 drivers) for merging through
+> some other tree (since I'm assuming that's how this will land):
 
-Fixes: b2e3406a38f0 ("octeontx2-pf: Add support for page pool")
-Suggested-by: Alexander Lobakin <aleksander.lobakin@intel.com>
-Reviewed-by: Sunil Goutham <sgoutham@marvell.com>
-Signed-off-by: Ratheesh Kannoth <rkannoth@marvell.com>
----
+Yeah, there are 5 drm patches: PATCH v4 07/48 23/48 24/48 25/48 43/48.
 
-ChangeLogs:
+> 
+> Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
 
-v1->v2: Commit message changes and typo fixes
-v0->v1: Commit message changes.
----
- drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c | 2 +-
- drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h | 2 ++
- 2 files changed, 3 insertions(+), 1 deletion(-)
+Thanks for your review!
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-index 77c8f650f7ac..3e1c70c74622 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-@@ -1432,7 +1432,7 @@ int otx2_pool_init(struct otx2_nic *pfvf, u16 pool_id,
- 	}
- 
- 	pp_params.flags = PP_FLAG_PAGE_FRAG | PP_FLAG_DMA_MAP;
--	pp_params.pool_size = numptrs;
-+	pp_params.pool_size = min(OTX2_PAGE_POOL_SZ, numptrs);
- 	pp_params.nid = NUMA_NO_NODE;
- 	pp_params.dev = pfvf->dev;
- 	pp_params.dma_dir = DMA_FROM_DEVICE;
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
-index ba8091131ec0..f6fea43617ff 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
-@@ -30,6 +30,8 @@
- #include <rvu_trace.h>
- #include "qos.h"
- 
-+#define OTX2_PAGE_POOL_SZ 2048
-+
- /* IPv4 flag more fragment bit */
- #define IPV4_FLAG_MORE				0x20
- 
--- 
-2.25.1
+Qi
 
+> 
+>> ---
+>>   drivers/gpu/drm/ttm/ttm_pool.c | 15 +++++++++++++++
+>>   include/linux/shrinker.h       |  2 --
+>>   mm/shrinker.c                  | 15 ---------------
+>>   3 files changed, 15 insertions(+), 17 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/ttm/ttm_pool.c b/drivers/gpu/drm/ttm/ttm_pool.c
+>> index c9c9618c0dce..38b4c280725c 100644
+>> --- a/drivers/gpu/drm/ttm/ttm_pool.c
+>> +++ b/drivers/gpu/drm/ttm/ttm_pool.c
+>> @@ -74,6 +74,7 @@ static struct ttm_pool_type global_dma32_uncached[MAX_ORDER + 1];
+>>   static spinlock_t shrinker_lock;
+>>   static struct list_head shrinker_list;
+>>   static struct shrinker *mm_shrinker;
+>> +static DECLARE_RWSEM(pool_shrink_rwsem);
+>>   
+>>   /* Allocate pages of size 1 << order with the given gfp_flags */
+>>   static struct page *ttm_pool_alloc_page(struct ttm_pool *pool, gfp_t gfp_flags,
+>> @@ -317,6 +318,7 @@ static unsigned int ttm_pool_shrink(void)
+>>   	unsigned int num_pages;
+>>   	struct page *p;
+>>   
+>> +	down_read(&pool_shrink_rwsem);
+>>   	spin_lock(&shrinker_lock);
+>>   	pt = list_first_entry(&shrinker_list, typeof(*pt), shrinker_list);
+>>   	list_move_tail(&pt->shrinker_list, &shrinker_list);
+>> @@ -329,6 +331,7 @@ static unsigned int ttm_pool_shrink(void)
+>>   	} else {
+>>   		num_pages = 0;
+>>   	}
+>> +	up_read(&pool_shrink_rwsem);
+>>   
+>>   	return num_pages;
+>>   }
+>> @@ -572,6 +575,18 @@ void ttm_pool_init(struct ttm_pool *pool, struct device *dev,
+>>   }
+>>   EXPORT_SYMBOL(ttm_pool_init);
+>>   
+>> +/**
+>> + * synchronize_shrinkers - Wait for all running shrinkers to complete.
+>> + *
+>> + * This is useful to guarantee that all shrinker invocations have seen an
+>> + * update, before freeing memory, similar to rcu.
+>> + */
+>> +static void synchronize_shrinkers(void)
+>> +{
+>> +	down_write(&pool_shrink_rwsem);
+>> +	up_write(&pool_shrink_rwsem);
+>> +}
+>> +
+>>   /**
+>>    * ttm_pool_fini - Cleanup a pool
+>>    *
+>> diff --git a/include/linux/shrinker.h b/include/linux/shrinker.h
+>> index c55c07c3f0cb..025c8070dd86 100644
+>> --- a/include/linux/shrinker.h
+>> +++ b/include/linux/shrinker.h
+>> @@ -103,8 +103,6 @@ struct shrinker *shrinker_alloc(unsigned int flags, const char *fmt, ...);
+>>   void shrinker_register(struct shrinker *shrinker);
+>>   void shrinker_free(struct shrinker *shrinker);
+>>   
+>> -extern void synchronize_shrinkers(void);
+>> -
+>>   #ifdef CONFIG_SHRINKER_DEBUG
+>>   extern int __printf(2, 3) shrinker_debugfs_rename(struct shrinker *shrinker,
+>>   						  const char *fmt, ...);
+>> diff --git a/mm/shrinker.c b/mm/shrinker.c
+>> index 3ab301ff122d..a27779ed3798 100644
+>> --- a/mm/shrinker.c
+>> +++ b/mm/shrinker.c
+>> @@ -650,18 +650,3 @@ void shrinker_free(struct shrinker *shrinker)
+>>   	kfree(shrinker);
+>>   }
+>>   EXPORT_SYMBOL_GPL(shrinker_free);
+>> -
+>> -/**
+>> - * synchronize_shrinkers - Wait for all running shrinkers to complete.
+>> - *
+>> - * This is equivalent to calling unregister_shrink() and register_shrinker(),
+>> - * but atomically and with less overhead. This is useful to guarantee that all
+>> - * shrinker invocations have seen an update, before freeing memory, similar to
+>> - * rcu.
+>> - */
+>> -void synchronize_shrinkers(void)
+>> -{
+>> -	down_write(&shrinker_rwsem);
+>> -	up_write(&shrinker_rwsem);
+>> -}
+>> -EXPORT_SYMBOL(synchronize_shrinkers);
+>> -- 
+>> 2.30.2
+>>
+> 
