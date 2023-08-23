@@ -2,104 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71A6B785D6F
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 18:45:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A27AD785DE2
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 18:50:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237627AbjHWQpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 12:45:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58106 "EHLO
+        id S236430AbjHWQuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 12:50:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231450AbjHWQp3 (ORCPT
+        with ESMTP id S234897AbjHWQuv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 12:45:29 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3183A11F;
-        Wed, 23 Aug 2023 09:45:27 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B31066487E;
-        Wed, 23 Aug 2023 16:45:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 676D7C433C7;
-        Wed, 23 Aug 2023 16:45:15 +0000 (UTC)
-Date:   Wed, 23 Aug 2023 17:45:11 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Shuah Khan <shuah@kernel.org>,
-        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
-        Deepak Gupta <debug@rivosinc.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        "H.J. Lu" <hjl.tools@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v4 03/36] arm64/gcs: Document the ABI for Guarded Control
- Stacks
-Message-ID: <ZOY3lz+Zyhd5ZyQ9@arm.com>
-References: <20230807-arm64-gcs-v4-0-68cfa37f9069@kernel.org>
- <20230807-arm64-gcs-v4-3-68cfa37f9069@kernel.org>
- <ZNOhjrYleGBR6Pbs@arm.com>
- <f4cec4b3-c386-4873-aa1d-90528e062f2a@sirena.org.uk>
- <ZN+qki9EaZ6f9XNi@arm.com>
- <aaea542c-929c-4c9b-8caa-ca67e0eb9c1e@sirena.org.uk>
- <ZOTnL1SDJWZjHPUW@arm.com>
- <43ec219d-bf20-47b8-a5f8-32bc3b64d487@sirena.org.uk>
- <ZOXa98SqwYPwxzNP@arm.com>
- <227e6552-353c-40a9-86c1-280587a40e3c@sirena.org.uk>
+        Wed, 23 Aug 2023 12:50:51 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B184ECD5;
+        Wed, 23 Aug 2023 09:50:49 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1bdbbede5d4so46360305ad.2;
+        Wed, 23 Aug 2023 09:50:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692809449; x=1693414249;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=D1rJRywRerSHpKN9caLA2gQ8y2MlCgXj2iqPjlxyJ44=;
+        b=ZbJqUYDB3GH7o2Dm2wwcpAzSQT4h22XkwlJbjDjyNNmOncay379skFsmRHmELyV4/R
+         IgvA/cow2ZAkGqAh8APe6+AMtAb++uacUJvIA93GQV4mOxDUWB9jdP0L72ojG5vy4Cz1
+         Wn8Awn3qs5GETBGRhRcqXZn2Bcd5g64xf1uf27MO3ib51XXDXEW+D0SFd0cuFzfBmD6F
+         hzCzycyvMwyLh91/WxMAGwZHNqvlKgsIA0iUTqsdsn6ZibQr/TSJHH8leGDrghxKdjni
+         nP8M180gNQeFRMpuDop737u0V8M2LfgRBGae3AZyJW3luesgnrnM7dCqjBoGFTZdTrcM
+         Jzog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692809449; x=1693414249;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=D1rJRywRerSHpKN9caLA2gQ8y2MlCgXj2iqPjlxyJ44=;
+        b=GR5IAmB5ycEohXdmnfqBXzuAUztLdgWf+alHruX2cKQQ+EDamtXO1fKUfn49DfAslW
+         ZdruYxWWMl80GBtr98geLHsRTHeP8/NMavz+kE1+SPlhLB/pNsvlOd79Ev3J8willXHt
+         5VoJ57Dmc2AtC679C2wq/EciuBbEhSptgpLRBlNPpbnYTLXWkqYreD9sT296/0MBaJOd
+         9aR3Msynq1n9VKmfR+TRTEoZHE/FBAlun3Ck3VhcMLRk+0zXQ5B2+lao9FESAV14jmF6
+         Ro2YLnHzAffBhq7ElLHaNgCshPvQclIRYyaPItymDcP1f2J3o6jqh0Ei0Y6pUn2HeJxz
+         yeJw==
+X-Gm-Message-State: AOJu0Ywnq/fQzmJq80sRbNVHT8rtDSDpjEUlkZFWdP7+t7eT7MfPgUN8
+        oVMv/duVlOSN4yVOECYcwdau/yGY2zc=
+X-Google-Smtp-Source: AGHT+IGJ4zPUahe+I8pV4fKp97GwuTJ5+jKETKiilPbd2CcbtxsDMr1YLovxtT0fLpMFWDJ1Tyo4Og==
+X-Received: by 2002:a17:903:25d4:b0:1bd:bbc3:c87b with SMTP id jc20-20020a17090325d400b001bdbbc3c87bmr11857518plb.41.1692809449014;
+        Wed, 23 Aug 2023 09:50:49 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id s15-20020a170902ea0f00b001bbc8d65de0sm11221936plg.67.2023.08.23.09.50.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Aug 2023 09:50:48 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 23 Aug 2023 09:50:47 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Alessandro Zummo <a.zummo@towertech.it>,
+        Benson Leung <bleung@chromium.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        John Stultz <jstultz@google.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-rtc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Brian Norris <briannorris@chromium.org>
+Subject: Re: [PATCH v2 1/7] rtc: Add support for limited alarm timer offsets
+Message-ID: <b07b19ce-7f04-409c-bcb9-6deba059f57a@roeck-us.net>
+References: <20230817225537.4053865-1-linux@roeck-us.net>
+ <20230817225537.4053865-2-linux@roeck-us.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <227e6552-353c-40a9-86c1-280587a40e3c@sirena.org.uk>
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20230817225537.4053865-2-linux@roeck-us.net>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 23, 2023 at 01:51:35PM +0100, Mark Brown wrote:
-> On Wed, Aug 23, 2023 at 11:09:59AM +0100, Szabolcs Nagy wrote:
-> > The 08/22/2023 18:53, Mark Brown wrote:
-> > > My sense is that they deployment story is going to be smoother with
-> > > defaults being provided since it avoids dealing with the issue of what
-> > > to do if userspace creates a thread without a GCS in a GCS enabled
-> > > process but like I say I'd be totally happy to extend clone3().  I will
-> > > put some patches together for that (probably once the x86 stuff lands).
-> > > Given the size of this series it might be better split out for
-> > > manageability if nothing else.
-> 
-> > i would make thread without gcs to implicitly disable gcs, since
-> > that's what's bw compat with clones outside of libc (the libc can
-> > guarantee gcs allocation when gcs is enabled).
-> 
-> That'd create a pretty substantial divergence with the x86 patches if
-> they land this time around, there's not enough time to rework them now -
-> I suppose it'd mainly bite people implementing libc type stuff but
-> still, doesn't feel great.
+Hi Alexandre,
 
-I don't mind the divergence in this area if the libc folks are ok with
-it. x86 can eventually use the clone3() interface if they want more
-flexibility, they'll just have to continue supporting the old one. I
-think we already diverge around the prctl().
+On Thu, Aug 17, 2023 at 03:55:31PM -0700, Guenter Roeck wrote:
+> Some alarm timers are based on time offsets, not on absolute times.
+> In some situations, the amount of time that can be scheduled in the
+> future is limited. This may result in a refusal to suspend the system,
+> causing substantial battery drain.
+> 
+> Some RTC alarm drivers remedy the situation by setting the alarm time
+> to the maximum supported time if a request for an out-of-range timeout
+> is made. This is not really desirable since it may result in unexpected
+> early wakeups.
+> 
+> To reduce the impact of this problem, let RTC drivers report the maximum
+> supported alarm timer offset. The code setting alarm timers can then
+> decide if it wants to reject setting alarm timers to a larger value, if it
+> wants to implement recurring alarms until the actually requested alarm
+> time is met, or if it wants to accept the limited alarm time.
+> 
+> Only introduce the necessary variable into struct rtc_device.
+> Code to set and use the variable will follow with subsequent patches.
+> 
+> Cc: Brian Norris <briannorris@chromium.org>
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 
--- 
-Catalin
+I guess it is a bit late to get the series into v6.6, but would it be
+possible to apply it to a -next branch to get some more test coverage ?
+
+Either case, do you have any additional comments / feedback ?
+
+Thanks,
+Guenter
+
+> ---
+> v2: Rename range_max_offset -> alarm_offset_max
+> 
+>  include/linux/rtc.h | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/include/linux/rtc.h b/include/linux/rtc.h
+> index 1fd9c6a21ebe..4c0bcbeb1f00 100644
+> --- a/include/linux/rtc.h
+> +++ b/include/linux/rtc.h
+> @@ -146,6 +146,7 @@ struct rtc_device {
+>  
+>  	time64_t range_min;
+>  	timeu64_t range_max;
+> +	timeu64_t alarm_offset_max;
+>  	time64_t start_secs;
+>  	time64_t offset_secs;
+>  	bool set_start_time;
