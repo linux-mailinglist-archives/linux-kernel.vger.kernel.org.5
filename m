@@ -2,152 +2,361 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CF10785650
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 12:56:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4B00785651
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 12:57:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234194AbjHWK4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 06:56:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46512 "EHLO
+        id S234209AbjHWK5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 06:57:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232161AbjHWK4G (ORCPT
+        with ESMTP id S232161AbjHWK5S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 06:56:06 -0400
-Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A8ECCD5;
-        Wed, 23 Aug 2023 03:56:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:Content-Type:MIME-Version:
-        Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=A0IfQ3GE4OZYWrbHk+XuRIci+HdUerkCEp4gSqVg1CY=; b=ixH5wEv23MRgT8EdKOFC+2XcBq
-        Zbr7ojt4TgC3mlPHt2/nt3SiGzNEazg42Cm44GEOB2TOaMgeDHAGmOMzdnAcYYj4XOWG4xyH+QT+s
-        NxJBkOZlXDI2vwhZK1crUAzDdVN7gzmeAr+sJIW6bG+YRljNivIfIZ0Do5zoH6H80rayAz0r0ndFb
-        gzNul1mtpWANTsi6QBCsBQfG9lQvPaBiAa6fdlqY34Kgm2a+VtJ80jyDf7y18eQJsJj+NuN7T5rP0
-        cF3wLemJJxsr4m3IOFlnM7AKX6w04ziNtyja2TNm56Nh6yjqG+WrAhk9qZJ5qeDTmZfD5RsKbY+Xr
-        9on7KwXw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55524)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qYlWU-0002dt-13;
-        Wed, 23 Aug 2023 11:55:38 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qYlWQ-0006l0-4y; Wed, 23 Aug 2023 11:55:34 +0100
-Date:   Wed, 23 Aug 2023 11:55:34 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Serge Semin <fancer.lancer@gmail.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Rohan G Thomas <rohan.g.thomas@intel.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Conor Dooley <conor.dooley@microchip.com>
-Subject: Synopsis XLGMII MAC, IEEE 802.3 and XLGMII interfaces
-Message-ID: <ZOXlpkbcAZ4okric@shell.armlinux.org.uk>
+        Wed, 23 Aug 2023 06:57:18 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF234FB
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 03:57:15 -0700 (PDT)
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 37NAieQV024828;
+        Wed, 23 Aug 2023 05:57:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        from:to:cc:references:in-reply-to:subject:date:message-id
+        :mime-version:content-type:content-transfer-encoding; s=
+        PODMain02222019; bh=VMv+RPE4jRGUP0nFqNA27OuALDFKASEjInLTT97+DJ0=; b=
+        gcNos8suS6pSauHDjgyRTpcib4qH58K4LrtlBa1CaYm88PY+goJDyT6b1tKpimJO
+        3eTOjObhpxdTRmxvwXFboJ89c+FBMBbmyQSH8/KosKKHnL5IFE9qJLkHV7/H9/93
+        9IVFFg74CciM9ov82x1RubwbZvPh234YkE3EBhm98Tr0ChwxI+1SVqgmiGcWk4u9
+        ukACH/1fxOlqzRgibAqpXLpO4orOhwRAJi80aRtkqU0Grb45wMNqvEERfiJfUCQZ
+        Y06dWOCZeMI4aLEWrRHSbOBdgwdPrMMZRuQXSP+C1l4rwbX0E58aI5sjXUof5vXV
+        9ltkz4gM6ykG0vhQDKY3UA==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3sn1y1gphy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 23 Aug 2023 05:57:06 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 23 Aug
+ 2023 11:57:04 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.30 via Frontend
+ Transport; Wed, 23 Aug 2023 11:57:04 +0100
+Received: from LONN2DGDQ73 (LONN2DGDQ73.ad.cirrus.com [198.61.64.167])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 76CAD2A9;
+        Wed, 23 Aug 2023 10:57:04 +0000 (UTC)
+From:   Stefan Binding <sbinding@opensource.cirrus.com>
+To:     'Takashi Iwai' <tiwai@suse.de>, 'Luke Jones' <luke@ljones.dev>
+CC:     <tiwai@suse.com>, <james.schulman@cirrus.com>,
+        <david.rhodes@cirrus.com>, <rf@opensource.cirrus.com>,
+        <linux-kernel@vger.kernel.org>,
+        'Jonathan LoBue' <jlobue10@gmail.com>,
+        <patches@opensource.cirrus.com>
+References: <20230823011008.13146-1-luke@ljones.dev>    <87v8d6cm30.wl-tiwai@suse.de>   <R32UZR.6AQKQL1J6UQI3@ljones.dev>       <87lee2ciqj.wl-tiwai@suse.de>   <NN3UZR.VNYA824H66Q8@ljones.dev> <87il96cfnb.wl-tiwai@suse.de>
+In-Reply-To: <87il96cfnb.wl-tiwai@suse.de>
+Subject: RE: [PATCH] ALSA: hda: cs35l41: Support ASUS 2023 laptops with missing DSD
+Date:   Wed, 23 Aug 2023 11:57:04 +0100
+Message-ID: <000601d9d5b0$8d6817f0$a83847d0$@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Content-Language: en-gb
+Thread-Index: AQDVr/niKkW5lcSfWGj/lSgcr+XYNgFZazb0AnhovUgC3lvciQFtQrAvAZcLqMWxslVaQA==
+X-Proofpoint-GUID: 7iBn0kmVJqjPcBq7-luvJM1NUExdAPb7
+X-Proofpoint-ORIG-GUID: 7iBn0kmVJqjPcBq7-luvJM1NUExdAPb7
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-Okay, I think it's time to get to the bottom of this, and below are my
-ramblings so far.
 
-According to IEEE 802.3 80.1.3, XLGMII is the 40 Gb/s MII and CGMII
-is the 100 Gb/s MII. 81.1 goes on to state:
+> -----Original Message-----
+> From: Takashi Iwai <tiwai@suse.de>
+> Sent: Wednesday, August 23, 2023 9:44 AM
+> To: Luke Jones <luke@ljones.dev>
+> Cc: Takashi Iwai <tiwai@suse.de>; tiwai@suse.com;
+> james.schulman@cirrus.com; david.rhodes@cirrus.com;
+> rf@opensource.cirrus.com; linux-kernel@vger.kernel.org;
+> sbinding@opensource.cirrus.com; Jonathan LoBue <jlobue10@gmail.com>
+> Subject: Re: [PATCH] ALSA: hda: cs35l41: Support ASUS 2023 laptops
+with
+> missing DSD
+> 
+> On Wed, 23 Aug 2023 10:02:11 +0200,
+> Luke Jones wrote:
+> >
+> >
+> >
+> > On Wed, Aug 23 2023 at 09:37:08 +02:00:00, Takashi Iwai
+> > <tiwai@suse.de> wrote:
+> > > On Wed, 23 Aug 2023 09:28:39 +0200,
+> > > Luke Jones wrote:
+> > >>
+> > >>
+> > >>
+> > >>  On Wed, Aug 23 2023 at 08:24:51 +02:00:00, Takashi Iwai
+> > >>  <tiwai@suse.de> wrote:
+> > >>  > On Wed, 23 Aug 2023 03:10:08 +0200,
+> > >>  > Luke D. Jones wrote:
+> > >>  >>
+> > >>  >>  Support adding the missing DSD properties required  for
+ASUS
+> ROG
+> > >>  >> 2023
+> > >>  >>  laptops and other ASUS laptops to properly utilise the
+cs35l41.
+> > >>  >>
+> > >>  >>  This support includes both I2C and SPI connected amps.
+> > >>  >>
+> > >>  >>  The SPI connected amps may be required to use an external
+DSD
+> > >> patch
+> > >>  >>  to fix or add the "cs-gpios" property.
+> > >>  >>
+> > >>  >>  Co-developed-by: Jonathan LoBue <jlobue10@gmail.com>
+> > >>  >>  Signed-off-by: Jonathan LoBue <jlobue10@gmail.com>
+> > >>  >>  Co-developed-by: Luke D. Jones <luke@ljones.dev>
+> > >>  >>  Signed-off-by: Luke D. Jones <luke@ljones.dev>
+> > >>  >>  ---
+> > >>  >>   sound/pci/hda/cs35l41_hda_property.c | 26
+> > >>  >> ++++++++++++++++++++++++++
+> > >>  >>   1 file changed, 26 insertions(+)
+> > >>  >>
+> > >>  >>  diff --git a/sound/pci/hda/cs35l41_hda_property.c
+> > >>  >> b/sound/pci/hda/cs35l41_hda_property.c
+> > >>  >>  index 673f23257a09..69879ab57918 100644
+> > >>  >>  --- a/sound/pci/hda/cs35l41_hda_property.c
+> > >>  >>  +++ b/sound/pci/hda/cs35l41_hda_property.c
+> > >>  >>  @@ -43,6 +43,31 @@ static int lenovo_legion_no_acpi(struct
+> > >>  >> cs35l41_hda *cs35l41, struct device *phy
+> > >>  >>   	return 0;
+> > >>  >>   }
+> > >>  >>
+> > >>  >>  +/*
+> > >>  >>  + * The CSC3551 is used in almost the entire ASUS ROG
+laptop
+> > >> range
+> > >>  >> in 2023, this is likely to
+> > >>  >>  + * also include many non ROG labelled laptops. It is also
+used
+> > >>  >> with either I2C connection or
+> > >>  >>  + * SPI connection. The SPI connected versions may be
+missing a
+> > >>  >> chip select GPIO and require
+> > >>  >>  + * an DSD table patch.
+> > >>  >>  + */
+> > >>  >>  +static int asus_rog_2023_no_acpi(struct cs35l41_hda
+*cs35l41,
+> > >>  >> struct device *physdev, int id,
+> > >>  >>  +				const char *hid)
+> > >>  >>  +{
+> > >>  >>  +	struct cs35l41_hw_cfg *hw_cfg = &cs35l41->hw_cfg;
+> > >>  >>  +
+> > >>  >>  +	/* check SPI or I2C address to assign the index */
+> > >>  >>  +	cs35l41->index = (id == 0 || id == 0x40) ? 0 : 1;
+> > >>  >>  +	cs35l41->channel_index = 0;
+> > >>  >>  +	cs35l41->reset_gpio = gpiod_get_index(physdev, NULL,
+0,
+> > >>  >> GPIOD_OUT_HIGH);
+> > >>  >>  +	cs35l41->speaker_id = cs35l41_get_speaker_id(physdev,
+> > >> 0, 0, 2);
+> > >>  >>  +	hw_cfg->spk_pos = cs35l41->index;
+> > >>  >>  +	hw_cfg->gpio2.func = CS35L41_INTERRUPT;
+> > >>  >>  +	hw_cfg->gpio2.valid = true;
+> > >>  >>  +	hw_cfg->bst_type =
+> CS35L41_EXT_BOOST_NO_VSPK_SWITCH;
+> > >>  >>  +	hw_cfg->valid = true;
+> > >>  >>  +
+> > >>  >>  +	return 0;
+> > >>  >>  +}
+> > >>  >>  +
+> > >>  >>   struct cs35l41_prop_model {
+> > >>  >>   	const char *hid;
+> > >>  >>   	const char *ssid;
+> > >>  >>  @@ -53,6 +78,7 @@ struct cs35l41_prop_model {
+> > >>  >>   const struct cs35l41_prop_model
+cs35l41_prop_model_table[] =
+> {
+> > >>  >>   	{ "CLSA0100", NULL, lenovo_legion_no_acpi },
+> > >>  >>   	{ "CLSA0101", NULL, lenovo_legion_no_acpi },
+> > >>  >>  +	{ "CSC3551", NULL, asus_rog_2023_no_acpi },
+> > >>  >
+> > >>  > I believe this breaks things badly.
+> > >> cs35l41_add_dsd_properties() is
+> > >>  > always called no matter whether _DSD is found or not.  So
+this
+> > >> will
+> > >>  > override the setup of all machines with CSC3551 even if it
+has a
+> > >>  > proper _DSD.
+> > >>
+> > >>  These are the entries I know of so far since they definitely
+had
+> > >> to be
+> > >>  added and have a DSD patch:
+> > >>
+> > >>  - SPI_2
+> > >>     - 0x1043, 0x1473, "ASUS GU604V"
+> > >>     - 0x1043, 0x1483, "ASUS GU603V"
+> > >>     - 0x1043, 0x1493, "ASUS GV601V"
+> > >>     - 0x1043, 0x1573, "ASUS GZ301V"
+> > >>     - 0x1043, 0x1c9f, "ASUS G614JI"
+> > >>  - SPI_4
+> > >>     - 0x1043, 0x1caf, "ASUS G634JYR/JZR"
+> > >>  - I2C_2
+> > >>     - 0x1043, 0x1d1f, "ASUS ROG Strix G17
+> > >>     - 0x1043, 0x1463, "Asus GA402X"
+> > >>     - 0x1043, 0x1433, "ASUS GX650P"
+> > >>     - ROG ALLY
+> > >>
+> > >>  You can see the variants are V, J, X, and P. A grep through
+the DSL
+> > >>  dumps I have collected reveals that these machines are all
+indeed
+> > >>  missing DSD entries. These are a mix of I2C and SPI.
+> > >>
+> > >>  The patch I submitted was based on Stefan's work only, and
+tested
+> > >> on 3
+> > >>  SPI machines plus 2 I2C machines with no issues except the SPI
+> > >>  machines needing a chipselect DSD patch.
+> > >>
+> > >>  It's worth stating that the DSD patches people were using all
+> > >> followed
+> > >>  the exact same template except for the SPI number, or speaker
+ID.
+> > >>
+> > >>  I'd wager it being a safe bet to assume that every one of the
+ASUS
+> > >>  laptops this year using the CSC3551 will be missing the
+required DSD
+> > >>  entries given the trend so far.
+> > >
+> > > Yes, I know that there are tons of such devices that need the
+> > > workaround for missing _DSD.  My point is, however, that your
+patch
+> > > breaks the devices that *do have* _DSD, because the function
+always
+> > > overrides.
+> >
+> > Ah, because CSC3551 is not unique at all. I see.
+> >
+> > >
+> > >>  > The existing entries of CLSA0100 and CLSA0101 are OK since
+> > >>  > (supposedly) those never had _DSD.  The current code is a
+bit
+> > >>  > misleading as if it's applicable easily, though.
+> > >>  >
+> > >>  > That said, we have to apply the setup only conditionally for
+each
+> > >>  > specific device.  One easy thing would be to move the
+function
+> > >> call
+> > >>  > after _DSD check.  But, I *guess* that Stefan applied the
+> > >> function at
+> > >>  > the top so that it may cover the all cases including
+incorrect
+> > >> _DSD
+> > >>  > properties.
+> > >>
+> > >>  Given the trend of what I've seen this seems like a reasonable
+> > >>  assumption and desired.
+> > >
+> > > ... and it's not enough.  That's another point.  The parameters
+aren't
+> > > always same for all devices but may vary.  That is, it must have
+some
+> > > check of devices and models to identify which parameters may be
+> used.
+> > >
+> > >>  > And, the question is how to be specific to each device.
+This
+> > >> can be
+> > >>  > messy, as the sub-codec driver is probed independently from
+> > >> Realtek
+> > >>  > codec driver, hence you can't pass any flag from Realtek to
+CS
+> > >> driver
+> > >>  > at the probe time.  In the end, we might need to keep
+another
+> > >> table of
+> > >>  > IDs (either the same SSID or DMI) to distinguish which
+machine
+> > >> needs
+> > >>  > which properties.
+> > >>
+> > >>  Is there some other ID we can use? I see:
+> > >>  [   13.569242] cs35l41-hda spi0-CSC3551:00-cs35l41-hda.1:
+Cirrus
+> > >> Logic
+> > >>  CS35L41 (35a40), Revision: B2
+> > >>  and I'd assume that 35a40 is unique? A bit of searching on my
+> > >> discord
+> > >>  reveals that all the machines I listed that require the same
+patch
+> > >>  also have this identifier (including a ProArt laptop).
+> > >
+> > > That's not unique to each *device* (not the chip model).  Say,
+we want
+> > > to distinguish ASUS GU604V and ASUS G64JYR.  They may have
+> different
+> > > setups.
+> > >
+> > > I guess only DMI is suitable at the time of probing this driver.
+> >
+> > Oh, I'm sorry I should have paid more attention the first time. I
+can
+> > match against acpi_subsystem_id which would be for example
+10431caf
+> > yes?
 
-The XLGMII/CGMII has the following characteristics:
+The second member variable in cs35l41_prop_model_table is the SSID to
+match against.
+The Lenovo laptops in the initial patch didn't have different SSIDs so
+the entry was set to NULL for those.
+Future entries using CSC3551 MUST always have an accompanying SSID
+with this entry.
+Takashi was correct, the implementation is intended to also be used to
+patch incorrect DSD.
 
-  a)    The XLGMII supports a speed of 40 Gb/s.
-  b)    The CGMII supports a speed of 100 Gb/s.
-  c)    Data and delimiters are synchronous to a clock reference.
-  d)    It provides independent 64-bit wide transmit and receive data paths.
-  e)    It supports full duplex operation only.
+We have a potential solution to workaround the SPI cs-gpios issue
+inside here,
+though the drawback for that is that it only works for laptops with 2
+SPI amps.
 
-That seems very clear.
+I also took a look at the function for applying DSD properties for the
+2023 ROG laptops.
+Unfortunately the one-size-fits-all approach will not work, some of
+these laptops are i2c
+and some are SPI, meaning the GPIO indexes are different for different
+laptops.
+Some of the laptops do no have Speaker IDs.
+Also, no laptop other than the 2 I added already should ever use
+CS35L41_EXT_BOOST_NO_VSPK_SWITCH (in fact I believe all these laptops
+are internal
+boost anyway).
 
-According to
-https://www.synopsys.com/dw/ipdir.php?ds=dwc_ether_enterprise_mac
-XLGMII operates at 25 Gb/s, 40 Gb/s, 50 Gb/s and 100 Gb/s. This
-appears to "disagree" with IEEE 802.3.
+We are currently working internally on adding support for the 2023 ROG
+laptops, so we
+ask for you guys to hold off on trying to upstream support for these
+laptops.
 
-It appears, at least to me, that CGMII and XLGMII are physically
-similar interfaces, the only difference seems to be the speed of
-operation, so it would be entirely possible to have a MAC that
-can operate at both speeds - or indeed at other speeds such as
-Synopsys' "XLGMII" MAC.
+Thanks,
+Stefan Binding
 
-Now, the problem is... phylink interprets PHY_INTERFACE_MODE_XLGMII
-to mean the IEEE 802.3 defined 40 Gb/s mode - in that it _only_
-supports 40 Gb/s over that interface mode. Clearly, that's the right
-thing to be doing, because this is what IEEE defines and vendor
-stuff doesn't apply for generic code.
+> 
+> I believe many other drivers match with vendor name, product name,
+or
+> whatever strings.
+> 
+> > I'll begin working on a patch series for each.
+> 
+> Thanks!
+> 
+> 
+> Takashi
 
-phylib hasn't defined PHY_INTERFACE_MODE_CGMII yet, so phylink doesn't
-provide that (maybe it should.) However, when it does, phylink will
-then allow 100 Gb/s over CGMII.
-
-Are there other standards that define 25 and 50 Gb/s over an XLGMII-
-like link?
-
-Given the way things are at present, it means that the switch statement
-in stmmac_mac_link_up() for PHY_INTERFACE_MODE_XLGMII, only one case
-will ever be used - SPEED_40000. I'm guessing this isn't a problem as
-no one has reported any problems.
-
-Then... there's the inclusion of 10G, 2.5G and 1G in the XLGMII switch.
-The above link to Synopsys website suggests that XGMII is used for 10G
-and GMII for 1G.
-
-Given that this is just the MAC, and we would normally have a PCS after
-it (which may be XPCS), the interface used between the MAC and PCS isn't
-all that relevant, since PHY_INTERFACE_MODE_xxx primerily defines the
-interface to any PHY that is connected, and as a secondary function the
-interface to fiber (since [MAC - PCS - Serdes] - PHY - media and
-[MAC - PCS - Serdes] - media are common, it has made sense to use the
-PHY interface mode to define the protocol used on that part of the
-link that a PHY _could_ be connected to.)
-
-So, I'm not convinced that the fact that this MAC core uses XLGMII,
-XGMII and GMII has any relevance to the PHY_INTERFACE_MODE_ passed
-by phylink into functions such as stmmac_mac_link_up(), _unless_ a
-PHY is connected directly to the MAC.
-
-If XPCS is connected, that interface mode would be whatever XPCS is
-using to talk to the "outside world" not what the connection is
-between the MAC and XPCS. If we want to know what that is, then
-stmmac needs to be asking XPCS for that information (and maybe
-phylink needs to get that from its PCS on behalf of the MAC driver.)
-
-I think there's a lot that needs to be thought about here.
-
-Part 2 of this will be USXGMII... which I'll do as a separate email.
-
-Thanks.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
