@@ -2,95 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 292B1785D38
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 18:27:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52539785D3A
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 18:27:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237565AbjHWQ04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 12:26:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44804 "EHLO
+        id S235877AbjHWQ1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 12:27:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237554AbjHWQ0y (ORCPT
+        with ESMTP id S230288AbjHWQ1u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 12:26:54 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C933B10CB;
-        Wed, 23 Aug 2023 09:26:36 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5903565B5F;
-        Wed, 23 Aug 2023 16:26:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9647C433C9;
-        Wed, 23 Aug 2023 16:26:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692807995;
-        bh=Al2E1druB0P3ejb2/nbyyV1nrydyUGxUz/KKinqoeXw=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=Wnav+mQ7zbUlOMYQy6oS6fixkqGNt2FlLDc2v8vrglE5YyJQ1a7GiUs7OjmqDvMvw
-         DDsNUIHB59d38kmDd/eNN0329fmotS9z4R3p15rnukg5qco5x2ptral36+D1mtKR5e
-         rxM4XGvYEzzvMHp3qaJCU8PM5UUZkshIWQ5WhrqQyVr6IaL2B1126H+3f7Gfh5CPzi
-         k6r2szuFPGlrQwoioGiJW2SvIzdZsrezVjzWZnypry1U2Blw4N53XGEQ/KE3lARmqu
-         /SHFtjpVIi83YKv68phgAGTj2+0sB8xr2c9tI+1qswmnitl6lkFEyHszkozr17ElRu
-         fcf4MqhhApPfw==
-From:   Mark Brown <broonie@kernel.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Abel Vesa <abel.vesa@linaro.org>
-Cc:     Rajendra Nayak <quic_rjendra@quicinc.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-arm-msm@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-In-Reply-To: <20230801095702.2891127-1-abel.vesa@linaro.org>
-References: <20230801095702.2891127-1-abel.vesa@linaro.org>
-Subject: Re: [PATCH] regulator: qcom-rpmh: Fix LDO 12 regulator for PM8550
-Message-Id: <169280799363.53966.9265296180737310826.b4-ty@kernel.org>
-Date:   Wed, 23 Aug 2023 17:26:33 +0100
+        Wed, 23 Aug 2023 12:27:50 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D99F1706;
+        Wed, 23 Aug 2023 09:27:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692808052; x=1724344052;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=c/AoVJfF4PYu5efh5pY08Ha8ys/5etCoS/t6ukRs3Pg=;
+  b=mJ+fNMg33FTXDn9fF8HR2CFlAZjdrAtClmBnxzEovJf0kcMolMIMxjMc
+   Mhtjt7d0Wg4zC+M5lROlbGWdBemkdWHV9+tu6PivsyJz6zXzfPt93TMeH
+   TZ7+oxCNn9j761ctEa4Zy9JgAvKxjQUlIaQMEaaF2vyge9QbNeUMxANWl
+   wHLO3bEo0B+KGANtfAnw86UphLcNh+WUXgCkhrTzzLz7wm9YGg3n6xWfF
+   22Hl59R7mHc/eSI6VWugsxAh8WtTYS+cd9Ka+NGf4nR1w3VB7j79DCSlr
+   ZbLYkMqZAgZtPOW1pj/P1eGOjkirTwyY/SSaZM1jbU1Lyhsfthi7VgUsw
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="405209560"
+X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
+   d="scan'208";a="405209560"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2023 09:27:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="851100500"
+X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
+   d="scan'208";a="851100500"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP; 23 Aug 2023 09:27:06 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qYqhE-00FJdC-1o;
+        Wed, 23 Aug 2023 19:27:04 +0300
+Date:   Wed, 23 Aug 2023 19:27:04 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Angel Iglesias <ang.iglesiasg@gmail.com>
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH v2 3/3] iio: pressure: bmp280: Add support for BMP390
+Message-ID: <ZOYzWD3YIHCq5lq2@smile.fi.intel.com>
+References: <cover.1692805377.git.ang.iglesiasg@gmail.com>
+ <52adecef119e65e145669925e4a355a84e7f84d9.1692805377.git.ang.iglesiasg@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-034f2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <52adecef119e65e145669925e4a355a84e7f84d9.1692805377.git.ang.iglesiasg@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 01 Aug 2023 12:57:02 +0300, Abel Vesa wrote:
-> The LDO 12 is NLDO 515 low voltage type, so fix accordingly.
-> 
-> 
+On Wed, Aug 23, 2023 at 05:58:07PM +0200, Angel Iglesias wrote:
+> Adds BMP390 device id to the supported ids on bmp380 sensor family
 
-Applied to
+Add
+ID
+IDs
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Thanks!
-
-[1/1] regulator: qcom-rpmh: Fix LDO 12 regulator for PM8550
-      commit: fb0db7f2d010e41fceffe801b2fb254e83785165
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
 
