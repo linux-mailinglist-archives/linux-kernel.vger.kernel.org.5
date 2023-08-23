@@ -2,183 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E335D7858BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 15:16:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 297F57858C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 15:16:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235629AbjHWNQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 09:16:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54618 "EHLO
+        id S235636AbjHWNQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 09:16:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235619AbjHWNQJ (ORCPT
+        with ESMTP id S235644AbjHWNQQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 09:16:09 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4461E58
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 06:15:41 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5D90266219
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 13:15:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96869C433C9
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 13:15:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692796521;
-        bh=ITiJW3pew9ske5WY6kVIe2IstP+LoVkUUlpTWStaXq0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=h7vhpCA5AFJLhJRvAyKHmUbxcT9PcThTSGwi6zf2AbLwEoFjb08jOgSa0YxL/29I0
-         x2cn9lVPkteBoSiVwY/KMP4IJ1PMVWP/Nbsi/vOi2GLyfnvrvDUuwGmwIjgJgGuXSK
-         PG+JTS0qVvRsrv3KZo3QSSuv7c2u3umaZZmbVIl/uylPbBDHuvB+CRc7xprL27+pMt
-         0r1o1FMqnGTOfrESAGGsJrmwpX9Nckojm1OFX8yjEpM7FQSZqf2QQDguOLEoNZMe/C
-         0rq3XJyAut25FrOTMOOP0K+HPYuM7tMBxPxU8RP2WzB539XsWlVNxUgApwzKVNGM7b
-         dP/tcWvijHmoQ==
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-565403bda57so3203429a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 06:15:21 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yxkv2cSGwwy0iFrbrgP1DkHit5AWxsjAAK7vXyVebRLDAlZ7ksM
-        Htaxq2cSboOgOxGP33om5XB7hV4ollcehROk0NWyOA==
-X-Google-Smtp-Source: AGHT+IG/2lCn3UCoPUMzbblVb6t98DntYQj2ckCtGDHkgKfGgOYcfr9y25dpVx3OcXP1WI8Nmon6ksgJboKH2pjL29g=
-X-Received: by 2002:a17:90b:108d:b0:267:fc61:5a37 with SMTP id
- gj13-20020a17090b108d00b00267fc615a37mr9367966pjb.39.1692796520714; Wed, 23
- Aug 2023 06:15:20 -0700 (PDT)
+        Wed, 23 Aug 2023 09:16:16 -0400
+Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BAC9E7B
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 06:15:47 -0700 (PDT)
+Received: by mail-vs1-xe2c.google.com with SMTP id ada2fe7eead31-44d38d91885so1571743137.1
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 06:15:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1692796530; x=1693401330;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/G4PBhoXP1LYQ2AlkCcJ3ZNZ43XaQmRKac+McL4CLhE=;
+        b=USkM1wPnbKAO9A1ucEyk5mzrVyjGOHAlWrDkX0ej6NRS7PXcnImyFy/ipTLZcBeEof
+         AzJNhc0fciwjeA/z6TiZe6ecKZQy4PGEEXAe2JWSSQ+0pZmZkizYS+GKwbfDLg6/ggCd
+         NuwXkw+aDJxq4kFi8yqGWIwKjLSL3Y52/MREo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692796530; x=1693401330;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/G4PBhoXP1LYQ2AlkCcJ3ZNZ43XaQmRKac+McL4CLhE=;
+        b=JWSzgHh28B/FC3xwqI6crQ0Mp1ydQGyl5twx18x62QdqXEyTY1pHGqpPq20o6WCAzk
+         JWSI8PPI+0cCibqr0cqf1HfyKK1TiiVGQvw22LyWT5hQGg6uRsvB74bZgsIrFmHvkH5p
+         x631RnNueHjpoC2FScGz2OH4KHpvyNja5sKVOq5+YvvfJvlZCLtVXH8Rb+yW1G7Rm8CF
+         Va6JbCua8lULoK8CAtc5+1cQGArXBFynF6Lr5xwaFkKM31eNPEA+H8S0L7lSVmEvRoFy
+         EKHpXutKM4Wsd/HLmUlDvjJtKGuaFzuuQ/5wZOAEa7pkP3A+a2t3GNAvHL6lLPb7LmW9
+         UH4g==
+X-Gm-Message-State: AOJu0YwxKusn40xMl96u8m/wMFDGyyuTYq7hJKUEiJb6ZMTa69yg5y2l
+        CHwQbi3Z3Zr4IU5xfMZErmtvce9LCwXsMXyMo3dq8g==
+X-Google-Smtp-Source: AGHT+IGswrIKMeuUjx0qcEG1z4icpZzIuxUqM1DelFFnxP8pCOMZoCQ6Q+hkwkEFOO4FBfLKGF8oRQ==
+X-Received: by 2002:a67:ec50:0:b0:44d:3bc0:f0bf with SMTP id z16-20020a67ec50000000b0044d3bc0f0bfmr10656551vso.8.1692796530073;
+        Wed, 23 Aug 2023 06:15:30 -0700 (PDT)
+Received: from mail-vs1-f53.google.com (mail-vs1-f53.google.com. [209.85.217.53])
+        by smtp.gmail.com with ESMTPSA id e28-20020ab031dc000000b0079b3282b5f5sm1955158uan.2.2023.08.23.06.15.29
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Aug 2023 06:15:29 -0700 (PDT)
+Received: by mail-vs1-f53.google.com with SMTP id ada2fe7eead31-44d4c3fa6a6so1403482137.0
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 06:15:29 -0700 (PDT)
+X-Received: by 2002:a67:f988:0:b0:44d:63a3:4be4 with SMTP id
+ b8-20020a67f988000000b0044d63a34be4mr4337218vsq.29.1692796528899; Wed, 23 Aug
+ 2023 06:15:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230821160849.531668-1-david@redhat.com> <20230821160849.531668-3-david@redhat.com>
-In-Reply-To: <20230821160849.531668-3-david@redhat.com>
-From:   Chris Li <chrisl@kernel.org>
-Date:   Wed, 23 Aug 2023 06:15:08 -0700
-X-Gmail-Original-Message-ID: <CAF8kJuP9E0AmWQ3_-ay_rt0NxhCihTDA+hvx+YLnWeuY=kp+uw@mail.gmail.com>
-Message-ID: <CAF8kJuP9E0AmWQ3_-ay_rt0NxhCihTDA+hvx+YLnWeuY=kp+uw@mail.gmail.com>
-Subject: Re: [PATCH mm-unstable v1 2/4] mm/swap: use dedicated entry for swap
- in folio
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-arm-kernel@lists.infradead.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Peter Xu <peterx@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Hugh Dickins <hughd@google.com>,
-        Seth Jennings <sjenning@redhat.com>,
-        Dan Streetman <ddstreet@ieee.org>,
-        Vitaly Wool <vitaly.wool@konsulko.com>
+References: <029b982f-da62-4fa8-66c4-ab11a515574a@synaptics.com>
+ <CAAFQd5CqAvr7ZUdDSYPEOWSgvbttTBjHa0YWDomxJJSaiZxGog@mail.gmail.com> <f8a168e8-1a23-c6b3-0f68-baa73396d594@synaptics.com>
+In-Reply-To: <f8a168e8-1a23-c6b3-0f68-baa73396d594@synaptics.com>
+From:   Tomasz Figa <tfiga@chromium.org>
+Date:   Wed, 23 Aug 2023 22:15:11 +0900
+X-Gmail-Original-Message-ID: <CAAFQd5A3YKjt03zLQBRvw1QNNqbCyhVzHNo+2mG6uhXJvGv-Wg@mail.gmail.com>
+Message-ID: <CAAFQd5A3YKjt03zLQBRvw1QNNqbCyhVzHNo+2mG6uhXJvGv-Wg@mail.gmail.com>
+Subject: Re: [RFC]: shmem fd for non-DMA buffer sharing cross drivers
+To:     Hsia-Jun Li <Randy.Li@synaptics.com>
+Cc:     linux-mm@kvack.org, dri-devel@lists.freedesktop.org,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        hughd@google.com, akpm@linux-foundation.org,
+        Simon Ser <contact@emersion.fr>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>, daniels@collabora.com,
+        ayaka <ayaka@soulik.info>, linux-kernel@vger.kernel.org,
+        Nicolas Dufresne <nicolas@ndufresne.ca>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Chris Li <chrisl@kernel.org>
-
-Chris
-
-On Mon, Aug 21, 2023 at 9:09=E2=80=AFAM David Hildenbrand <david@redhat.com=
+On Wed, Aug 23, 2023 at 4:11=E2=80=AFPM Hsia-Jun Li <Randy.Li@synaptics.com=
 > wrote:
 >
-> From: Matthew Wilcox <willy@infradead.org>
 >
-> Let's stop working on the private field and use an explicit swap field.
-> We have to move the swp_entry_t typedef.
 >
-> Signed-off-by: Matthew Wilcox <willy@infradead.org>
-> Signed-off-by: David Hildenbrand <david@redhat.com>
-> ---
->  include/linux/mm_types.h | 23 +++++++++++++----------
->  include/linux/swap.h     |  5 ++---
->  2 files changed, 15 insertions(+), 13 deletions(-)
+> On 8/23/23 12:46, Tomasz Figa wrote:
+> > CAUTION: Email originated externally, do not click links or open attach=
+ments unless you recognize the sender and know the content is safe.
+> >
+> >
+> > Hi Hsia-Jun,
+> >
+> > On Tue, Aug 22, 2023 at 8:14=E2=80=AFPM Hsia-Jun Li <Randy.Li@synaptics=
+.com> wrote:
+> >>
+> >> Hello
+> >>
+> >> I would like to introduce a usage of SHMEM slimier to DMA-buf, the maj=
+or
+> >> purpose of that is sharing metadata or just a pure container for cross
+> >> drivers.
+> >>
+> >> We need to exchange some sort of metadata between drivers, likes dynam=
+ic
+> >> HDR data between video4linux2 and DRM.
+> >
+> > If the metadata isn't too big, would it be enough to just have the
+> > kernel copy_from_user() to a kernel buffer in the ioctl code?
+> >
+> >> Or the graphics frame buffer is
+> >> too complex to be described with plain plane's DMA-buf fd.
+> >> An issue between DRM and V4L2 is that DRM could only support 4 planes
+> >> while it is 8 for V4L2. It would be pretty hard for DRM to expend its
+> >> interface to support that 4 more planes which would lead to revision o=
+f
+> >> many standard likes Vulkan, EGL.
+> >
+> > Could you explain how a shmem buffer could be used to support frame
+> > buffers with more than 4 planes?
+> > If you are asking why we need this:
+
+I'm asking how your proposal to use shmem FD solves the problem for those c=
+ases.
+
+> 1. metadata likes dynamic HDR tone data
+> 2. DRM also challenges with this problem, let me quote what sima said:
+> "another trick that we iirc used for afbc is that sometimes the planes
+> have a fixed layout
+> like nv12
+> and so logically it's multiple planes, but you only need one plane slot
+> to describe the buffer
+> since I think afbc had the "we need more than 4 planes" issue too"
 >
-> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-> index 61361f1750c3..438a07854f8c 100644
-> --- a/include/linux/mm_types.h
-> +++ b/include/linux/mm_types.h
-> @@ -259,6 +259,14 @@ static inline struct page *encoded_page_ptr(struct e=
-ncoded_page *page)
->   */
->  #define  TAIL_MAPPING_REUSED_MAX  (2)
+> Unfortunately, there are vendor pixel formats are not fixed layout.
 >
-> +/*
-> + * A swap entry has to fit into a "unsigned long", as the entry is hidde=
-n
-> + * in the "index" field of the swapper address space.
-> + */
-> +typedef struct {
-> +       unsigned long val;
-> +} swp_entry_t;
-> +
->  /**
->   * struct folio - Represents a contiguous set of bytes.
->   * @flags: Identical to the page flags.
-> @@ -269,7 +277,7 @@ static inline struct page *encoded_page_ptr(struct en=
-coded_page *page)
->   * @index: Offset within the file, in units of pages.  For anonymous mem=
-ory,
->   *    this is the index from the beginning of the mmap.
->   * @private: Filesystem per-folio data (see folio_attach_private()).
-> - *    Used for swp_entry_t if folio_test_swapcache().
-> + * @swap: Used for swp_entry_t if folio_test_swapcache().
->   * @_mapcount: Do not access this member directly.  Use folio_mapcount()=
- to
->   *    find out how many times this folio is mapped by userspace.
->   * @_refcount: Do not access this member directly.  Use folio_ref_count(=
-)
-> @@ -312,7 +320,10 @@ struct folio {
->                         };
->                         struct address_space *mapping;
->                         pgoff_t index;
-> -                       void *private;
-> +                       union {
-> +                               void *private;
-> +                               swp_entry_t swap;
-> +                       };
->                         atomic_t _mapcount;
->                         atomic_t _refcount;
->  #ifdef CONFIG_MEMCG
-> @@ -1220,14 +1231,6 @@ enum tlb_flush_reason {
->         NR_TLB_FLUSH_REASONS,
->  };
+> 3. Secure(REE, trusted video piepline) info.
 >
-> - /*
-> -  * A swap entry has to fit into a "unsigned long", as the entry is hidd=
-en
-> -  * in the "index" field of the swapper address space.
-> -  */
-> -typedef struct {
-> -       unsigned long val;
-> -} swp_entry_t;
-> -
->  /**
->   * enum fault_flag - Fault flag definitions.
->   * @FAULT_FLAG_WRITE: Fault was a write fault.
-> diff --git a/include/linux/swap.h b/include/linux/swap.h
-> index 84fe0e94f5cd..82859a1944f5 100644
-> --- a/include/linux/swap.h
-> +++ b/include/linux/swap.h
-> @@ -335,8 +335,7 @@ struct swap_info_struct {
+> For how to assign such metadata data.
+> In case with a drm fb_id, it is simple, we just add a drm plane property
+> for it. The V4L2 interface is not flexible, we could only leave into
+> CAPTURE request_fd as a control.
+> >>
+> >> Also, there is no reason to consume a device's memory for the content
+> >> that device can't read it, or wasting an entry of IOMMU for such data.
+> >
+> > That's right, but DMA-buf doesn't really imply any of those. DMA-buf
+> > is just a kernel object with some backing memory. It's up to the
+> > allocator to decide how the backing memory is allocated and up to the
+> > importer on whether it would be mapped into an IOMMU.
+> >
+> I just want to say it can't be allocated at the same place which was for
+> those DMA bufs(graphics or compressed bitstream).
+> This also could be answer for your first question, if we place this kind
+> of buffer in a plane for DMABUF(importing) in V4L2, V4L2 core would try
+> to prepare it, which could map it into IOMMU.
 >
->  static inline swp_entry_t folio_swap_entry(struct folio *folio)
->  {
-> -       swp_entry_t entry =3D { .val =3D page_private(&folio->page) };
-> -       return entry;
-> +       return folio->swap;
->  }
+
+V4L2 core will prepare it according to the struct device that is given
+to it. For the planes that don't have to go to the hardware a struct
+device could be given that doesn't require any DMA mapping. Also you
+can check how the uvcvideo driver handles it. It doesn't use the vb2
+buffers directly, but always writes to them using CPU (due to how the
+UVC protocol is designed).
+
+> >> Usually, such a metadata would be the value should be written to a
+> >> hardware's registers, a 4KiB page would be 1024 items of 32 bits regis=
+ters.
+> >>
+> >> Still, I have some problems with SHMEM:
+> >> 1. I don't want the userspace modify the context of the SHMEM allocate=
+d
+> >> by the kernel, is there a way to do so?
+> >
+> > This is generally impossible without doing any of the two:
+> > 1) copying the contents to an internal buffer not accessible to the
+> > userspace, OR
+> > 2) modifying any of the buffer mappings to read-only
+> >
+> > 2) can actually be more costly than 1) (depending on the architecture,
+> > data size, etc.), so we shouldn't just discard the option of a simple
+> > copy_from_user() in the ioctl.
+> >
+> I don't want the userspace access it at all. So that won't be a problem.
+
+In this case, wouldn't it be enough to have a DMA-buf exporter that
+doesn't provide the mmap op?
+
+> >> 2. Should I create a helper function for installing the SHMEM file as =
+a fd?
+> >
+> > We already have the udmabuf device [1] to turn a memfd into a DMA-buf,
+> > so maybe that would be enough?
+> >
+> > [1] https://elixir.bootlin.com/linux/v6.5-rc7/source/drivers/dma-buf/ud=
+mabuf.c
+> >
+> It is the kernel driver that allocate this buffer. For example, v4l2
+> CAPTURE allocate a buffer for metadata when VIDIOC_REQBUFS.
+> Or GBM give you a fd which is assigned with a surface.
 >
->  static inline swp_entry_t page_swap_entry(struct page *page)
-> @@ -350,7 +349,7 @@ static inline swp_entry_t page_swap_entry(struct page=
- *page)
+> So we need a kernel interface.
+
+Sorry, I'm confused. If we're talking about buffers allocated by the
+specific allocators like V4L2 or GBM, why do we need SHMEM at all?
+
+Best,
+Tomasz
+
+> > Best,
+> > Tomasz
+> >
+> >>
+> >> --
+> >> Hsia-Jun(Randy) Li
 >
->  static inline void folio_set_swap_entry(struct folio *folio, swp_entry_t=
- entry)
->  {
-> -       folio->private =3D (void *)entry.val;
-> +       folio->swap =3D entry;
->  }
->
->  /* linux/mm/workingset.c */
 > --
-> 2.41.0
->
->
+> Hsia-Jun(Randy) Li
