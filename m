@@ -2,119 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B5B27854BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 11:59:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A18367854BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 11:58:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233097AbjHWJ67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 05:58:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55578 "EHLO
+        id S235169AbjHWJ6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 05:58:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236085AbjHWJz4 (ORCPT
+        with ESMTP id S236089AbjHWJz5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 05:55:56 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE0BA1FE0
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 02:53:50 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-3197808bb08so4902433f8f.2
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 02:53:50 -0700 (PDT)
+        Wed, 23 Aug 2023 05:55:57 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCAC21FEB
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 02:53:59 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-99de884ad25so724755866b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 02:53:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692784429; x=1693389229;
+        d=linaro.org; s=google; t=1692784438; x=1693389238;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=ugKvoqdI/BmY4Giag4IKW/muxrtUDZuFO0D6hrnFrDk=;
-        b=M5lfefuiIsg0SQSt8WfuTyX1Byhk6R/yNfUZH+SF06PKDGH0xSO8vQ+gvvV+GOPgxq
-         dify01zYmDAvfTjP1sFwciHBhFD1tEd75ciPLLlFjNhRufYhKLaSyuZz4NMJwvlUbAUc
-         6YVBxcKeBJmFLcP9JZVzeFbjsA0+QJrhrYYKfAf1brXGiwWYhnuOvFp1uskYr3Levxnq
-         aETtM5iv4wA3P+F9k8PbDaeUzpReHd5wUryBtri6NuCn7lf7nd/SYcyJ1P9gPSpVhBu/
-         qv/1puOfwgZkntE6rb8IPPir4Y0NeWWgrKoTFAG/45pMjLEUU94JOfDplcP83qsSMBUc
-         UQ8A==
+        bh=snyW6QooaPXxRKq026Bpqwbivey9Dhp9wOAD4tTxaMM=;
+        b=JhXVDWs3XswyJo84RMqihcUmZtWcGYewSOz3Ew/Leb8e0w/FeAsxS/y8N1HLPvHRLd
+         gNnfUE9ZoiBmpfHTIWdqAlZpGoxIIp9D+XgrtFc865nMWes3h7XWvYDvBKvW82qdRGvo
+         E0u6bt45VhUdzCe4nZ0gZbTxQkO5ScaE84EJP8V38xGOcqYEUgqqR2zm5h0zvkV8XcNi
+         ly2HHZbHq2Y+Ae89nPuUnqu0gNRXVzHmJZaX6y/jfw4bLubPo9FN+th2jjddDI03ogzF
+         572jIhTTpKB/dUQzBTY3Nd5M1TTI+Ceulg0tpSGTmY8uKwaOrF9AqnwjCLjMBfGFNfLA
+         rr2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692784429; x=1693389229;
+        d=1e100.net; s=20221208; t=1692784438; x=1693389238;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ugKvoqdI/BmY4Giag4IKW/muxrtUDZuFO0D6hrnFrDk=;
-        b=GqHPibvcx0GVkMocTJ8O+kwwFMz567RTlGv4fALK5uGXt0DpkWWgK0RVv4XFuEOPr6
-         jia8tCh+VOhXVE45IsQFCrXOc6KxiNhfG4j/3fxbQmA0NkAmsEiWPmvBKHpO76lZ/A8r
-         pBzqJr1bOj1zuWuheTZRiQb6IrgX7fF6N6PiHLHOgKNBzEJ23PXu75K1kXwv8/Jyz61b
-         d3X8acjbtsbIGoSDHsAyYoyCtjZnfUlGUqaWi3Z0pVJgXoTLL9zw8svvJaXpPcGkb82N
-         I90NEw2RPzbqRf7oPHDvAQwE9pEswJXXuszvh5Z8w41ImPNU8v9GTXHshhdCEOomKB1E
-         50cA==
-X-Gm-Message-State: AOJu0Yy3jpaXjJX0nYI2Fun1EsYK7LYv1xjiLmcZ9M+Vqo0GSoLELQrZ
-        mVsm4CSNfZu+H0tcjtoYaf9pdA==
-X-Google-Smtp-Source: AGHT+IEdsAnZq7NTAmTKSRMK4+oYDZue8c8UITI9cJ78mOPBaDZeztCK+DBG4DVJP4A1NzGwA1ziQQ==
-X-Received: by 2002:adf:ce8f:0:b0:31a:ddb3:32da with SMTP id r15-20020adfce8f000000b0031addb332damr10552730wrn.22.1692784429464;
-        Wed, 23 Aug 2023 02:53:49 -0700 (PDT)
-Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
-        by smtp.gmail.com with ESMTPSA id k12-20020adfe3cc000000b0031ad5470f89sm18537560wrm.18.2023.08.23.02.53.48
+        bh=snyW6QooaPXxRKq026Bpqwbivey9Dhp9wOAD4tTxaMM=;
+        b=JMzFq5g+FQw0AyfDUDdP0NL+JbUChcyLwxBdoFXzrN3G2RFR5mMJZsUKf8lDZlu+WZ
+         Kymhcvhs4SygPfTOoiS6pWxMoGM4Qyc3E7W8GqyjTc0Y+aVt2mzySLr+mjP8c7crXEGX
+         2O2cYlsS3O9aWJnFvfxDVtBnlNKokoH7uviMmsHSR9wquXEeOBpmxbu4kmr0vSFnHjKi
+         Qcn9p3t1FaR46eHu5l0oXiPFgSaWa9a6OUEQCzJAo1wM7TZ6wB9GxfhGhS6hbyLCeAGf
+         qolV2g/37bMGS9mCrlv7mhFhENnen4ndiXZ7hvUIKco6bLQro1j7BnbLGg4oP1AxFjRx
+         xESw==
+X-Gm-Message-State: AOJu0YyAM0CO0VdMCh6429/7LXWpZgHlcHncJRcIWgyUHBcRqx2c9OPJ
+        5qFnNWx/WhEOvcjtVrIQy5t6bQ==
+X-Google-Smtp-Source: AGHT+IFD76c4FCTBYsFBDjJ4/evxGKRAuH6eb0Ylbul3hf6RYEUkGvi2jH6NKTEN/9TGRqlQYHdctQ==
+X-Received: by 2002:a17:906:2d0:b0:9a1:cb3c:ba5c with SMTP id 16-20020a17090602d000b009a1cb3cba5cmr2244200ejk.68.1692784438286;
+        Wed, 23 Aug 2023 02:53:58 -0700 (PDT)
+Received: from [192.168.0.22] ([77.252.47.198])
+        by smtp.gmail.com with ESMTPSA id w20-20020a170906b19400b0098f33157e7dsm9562610ejy.82.2023.08.23.02.53.57
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Aug 2023 02:53:48 -0700 (PDT)
-Message-ID: <64b2a748-ea86-f804-9f8a-881b0dcc7050@linaro.org>
-Date:   Wed, 23 Aug 2023 10:53:47 +0100
+        Wed, 23 Aug 2023 02:53:57 -0700 (PDT)
+Message-ID: <32667691-ec7f-0dd3-b3ba-fdcd40f1fbca@linaro.org>
+Date:   Wed, 23 Aug 2023 11:53:56 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH] usb: typec: qcom: check regulator enable status before
- disabling it
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v3 2/3] dt-bindings: display: novatek,nt35950: define
+ ports
 Content-Language: en-US
-To:     quic_huliu@quicinc.com, Guenter Roeck <linux@roeck-us.net>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_fenglinw@quicinc.com,
-        subbaram@quicinc.com
-References: <20230823-qcom-tcpc-v1-1-fa81a09ca056@quicinc.com>
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <20230823-qcom-tcpc-v1-1-fa81a09ca056@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Rob Herring <robh@kernel.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        dri-devel@lists.freedesktop.org, David Airlie <airlied@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-kernel@vger.kernel.org, Sam Ravnborg <sam@ravnborg.org>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Del Regno <angelogioacchino.delregno@somainline.org>,
+        devicetree@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
+        Jianhua Lu <lujianhua000@gmail.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>
+References: <20230823081500.84005-1-krzysztof.kozlowski@linaro.org>
+ <20230823081500.84005-2-krzysztof.kozlowski@linaro.org>
+ <169278171739.1524810.6441506448861500441.robh@kernel.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <169278171739.1524810.6441506448861500441.robh@kernel.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/08/2023 10:15, Hui Liu via B4 Relay wrote:
-> From: Hui Liu <quic_huliu@quicinc.com>
+On 23/08/2023 11:08, Rob Herring wrote:
 > 
-> Check regulator enable status before disabling it to avoid
-> unbalanced regulator disable warnings.
+> On Wed, 23 Aug 2023 10:14:59 +0200, Krzysztof Kozlowski wrote:
+>> The panel-common schema does not define what "ports" property is, so
+>> bring the definition by referencing the panel-common-dual.yaml. Panels
+>> can be single- or dual-link, thus require only one port@0.
+>>
+>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>>
+>> ---
+>>
+>> Changes since v2:
+>> 1. Use panel-common-dual
+>>
+>> Changes since v1:
+>> 1. Rework to add ports to device schema, not to panel-common.
+>> ---
+>>  .../devicetree/bindings/display/panel/novatek,nt35950.yaml     | 3 ++-
+>>  1 file changed, 2 insertions(+), 1 deletion(-)
+>>
 > 
-> Signed-off-by: Hui Liu <quic_huliu@quicinc.com>
-> ---
->   drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
+> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+> on your patch (DT_CHECKER_FLAGS is new in v5.13):
 > 
-> diff --git a/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c b/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c
-> index bb0b8479d80f..ca616b17b5b6 100644
-> --- a/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c
-> +++ b/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c
-> @@ -422,7 +422,8 @@ static int qcom_pmic_typec_pdphy_disable(struct pmic_typec_pdphy *pmic_typec_pdp
->   	ret = regmap_write(pmic_typec_pdphy->regmap,
->   			   pmic_typec_pdphy->base + USB_PDPHY_EN_CONTROL_REG, 0);
->   
-> -	regulator_disable(pmic_typec_pdphy->vdd_pdphy);
-> +	if (regulator_is_enabled(pmic_typec_pdphy->vdd_pdphy))
-> +		regulator_disable(pmic_typec_pdphy->vdd_pdphy);
->   
->   	return ret;
->   }
-> 
-> ---
-> base-commit: bbb9e06d2c6435af9c62074ad7048910eeb2e7bc
-> change-id: 20230822-qcom-tcpc-d41954ac65fa
-> 
-> Best regards,
+> yamllint warnings/errors:
 
-Is this a fix for a real bug you've seen or a hypothetical use-case fix ?
+Previous patch seems to be missing in Patchwork, thus this error.
 
----
-bod
+https://patchwork.ozlabs.org/project/devicetree-bindings/list/?submitter=83726&archive=both&state=*
+
+Best regards,
+Krzysztof
+
