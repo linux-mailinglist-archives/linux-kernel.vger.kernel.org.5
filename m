@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 121DE78629C
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 23:37:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D94A786299
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 23:37:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238506AbjHWVhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 17:37:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58486 "EHLO
+        id S238487AbjHWVhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 17:37:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238371AbjHWVgu (ORCPT
+        with ESMTP id S238399AbjHWVgv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 17:36:50 -0400
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12844CEE;
+        Wed, 23 Aug 2023 17:36:51 -0400
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF73010DC;
         Wed, 23 Aug 2023 14:36:49 -0700 (PDT)
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 04E1F120012;
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id C1AF7100010;
         Thu, 24 Aug 2023 00:36:47 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 04E1F120012
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru C1AF7100010
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
         s=mail; t=1692826607;
-        bh=RZV2x2Fm6sMaZLIrXEMaB169G60Invj10bY355QwLBs=;
+        bh=i7i/Gzc4BaBkRp+dnOnJl5xhubiDba/Bt5ZZ6eNZVaQ=;
         h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-        b=KGseryjtcpX9DaiiP2tcoi0hrwLo0BdCnjUoP2puGc2D2DZQ+PUAUX/bm4TFwv3Cc
-         647P68zgbgP4ExDYz9sOZsdWqvvfWo1cUeviu2MRwACBmxkZpEo5Iw54lNr7BlYjmO
-         CE3acwRaNAUbyCTXwx2+VUudlT4ksm7SDM2f5cyiA//7Suj4/oJstMyM8D53yVZh6O
-         O8Svz/gdup6SGsc44lcw+lswsFy8veq1XcR0jxeW934z/EiO/b/NvV0ZfgPnpniJ8d
-         3TbgGu4n0FfgdvEpLXB39xUZvYj5HH348dv6OlZ2j6dGGw844uIm8S1XcdIOeOWsLR
-         8+9rZxhhekuJw==
+        b=c9ON7cqc0sQOa2RnN3Q9HG6sA1d+FjgvWmie9iRmymjOye0T2zRSzhgYspcnDleRf
+         y8IcWqdsvNwmCA9eL6qZkOdPxDL7i+UFrSEzSi2s7buarY2TbIcs+czk1w9ag/iL2h
+         ReDg7GTmWgbtF3ehnPj/JgbniV6NFvBYo+N+enAHXdwjrgM8nCxvN6eFj4ceiekMtD
+         MapPKN+slChA0G2Xfl8nBAEkSwHsL4GbNCv853TgQx8tU/MjLfzxi3tLNp6U1XDM11
+         Z+od/p2J2moS4lm+MOsS7QMR7se1/i1u42UQm5kPe0n+JxYnkCC+DscmNYQaZrPkc7
+         7sCWr9kK3Z68w==
 Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
         by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Thu, 24 Aug 2023 00:36:46 +0300 (MSK)
+        Thu, 24 Aug 2023 00:36:47 +0300 (MSK)
 Received: from localhost.localdomain (100.64.160.123) by
  p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Thu, 24 Aug 2023 00:36:42 +0300
+ 15.2.1118.30; Thu, 24 Aug 2023 00:36:43 +0300
 From:   Dmitry Rokosov <ddrokosov@sberdevices.ru>
 To:     <neil.armstrong@linaro.org>, <jbrunet@baylibre.com>,
         <mturquette@baylibre.com>, <sboyd@kernel.org>,
@@ -49,11 +49,11 @@ CC:     <kernel@sberdevices.ru>, <sdfw_system_team@sberdevices.ru>,
         <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
-        George Stark <GNStark@sberdevices.ru>,
+        Alexey Romanov <avromanov@sberdevices.ru>,
         Dmitry Rokosov <ddrokosov@sberdevices.ru>
-Subject: [PATCH v2 11/15] arm64: dts: meson: a1: add saradc definition
-Date:   Thu, 24 Aug 2023 00:36:26 +0300
-Message-ID: <20230823213630.12936-12-ddrokosov@sberdevices.ru>
+Subject: [PATCH v2 12/15] arm64: dts: meson: a1: add hw rng node
+Date:   Thu, 24 Aug 2023 00:36:27 +0300
+Message-ID: <20230823213630.12936-13-ddrokosov@sberdevices.ru>
 X-Mailer: git-send-email 2.36.0
 In-Reply-To: <20230823213630.12936-1-ddrokosov@sberdevices.ru>
 References: <20230823213630.12936-1-ddrokosov@sberdevices.ru>
@@ -72,7 +72,7 @@ X-KSMG-AntiSpam-Rate: 0
 X-KSMG-AntiSpam-Status: not_detected
 X-KSMG-AntiSpam-Method: none
 X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 527 527 5bb611be2ca2baa31d984ccbf4ef4415504fc308, {Tracking_smtp_not_equal_from}, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;sberdevices.ru:7.1.1,5.0.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;100.64.160.123:7.1.2;salutedevices.com:7.1.1, FromAlignment: n, {Tracking_smtp_domain_mismatch}, {Tracking_smtp_domain_2level_mismatch}, ApMailHostAddress: 100.64.160.123
+X-KSMG-AntiSpam-Info: LuaCore: 527 527 5bb611be2ca2baa31d984ccbf4ef4415504fc308, {Tracking_smtp_not_equal_from}, {Tracking_from_domain_doesnt_match_to}, salutedevices.com:7.1.1;sberdevices.ru:7.1.1,5.0.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;100.64.160.123:7.1.2, FromAlignment: n, {Tracking_smtp_domain_mismatch}, {Tracking_smtp_domain_2level_mismatch}, ApMailHostAddress: 100.64.160.123
 X-MS-Exchange-Organization-SCL: -1
 X-KSMG-AntiSpam-Interceptor-Info: scan successful
 X-KSMG-AntiPhishing: Clean
@@ -89,44 +89,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: George Stark <GNStark@sberdevices.ru>
+From: Alexey Romanov <avromanov@sberdevices.ru>
 
-Add saradc node to Amlogic Meson A1 SoC main dtsi. Saradc is
-Successive Approximation Register (SAR) A/D Converter.
+Add hardware number generator node. HWRNG access requires OTP power
+domain being enabled.
 
-Signed-off-by: George Stark <GNStark@sberdevices.ru>
+Signed-off-by: Alexey Romanov <avromanov@sberdevices.ru>
 Signed-off-by: Dmitry Rokosov <ddrokosov@sberdevices.ru>
 ---
- arch/arm64/boot/dts/amlogic/meson-a1.dtsi | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ arch/arm64/boot/dts/amlogic/meson-a1.dtsi | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/amlogic/meson-a1.dtsi b/arch/arm64/boot/dts/amlogic/meson-a1.dtsi
-index 6968fbd33348..59ca1f1360fd 100644
+index 59ca1f1360fd..edadddacfee0 100644
 --- a/arch/arm64/boot/dts/amlogic/meson-a1.dtsi
 +++ b/arch/arm64/boot/dts/amlogic/meson-a1.dtsi
-@@ -215,6 +215,22 @@ uart_AO_B: serial@2000 {
- 				status = "disabled";
+@@ -242,6 +242,12 @@ usb2_phy1: phy@4000 {
+ 				power-domains = <&pwrc PWRC_USB_ID>;
  			};
  
-+			saradc: adc@2c00 {
-+				compatible = "amlogic,meson-g12a-saradc",
-+					"amlogic,meson-saradc";
-+				reg = <0x0 0x2c00 0x0 0x48>;
-+				#io-channel-cells = <1>;
-+				power-domains = <&pwrc PWRC_I2C_ID>;
-+				interrupts = <GIC_SPI 35 IRQ_TYPE_EDGE_RISING>;
-+				clocks = <&xtal>,
-+					<&clkc_periphs CLKID_SARADC_EN>,
-+					<&clkc_periphs CLKID_SARADC>,
-+					<&clkc_periphs CLKID_SARADC_SEL>;
-+				clock-names = "clkin", "core",
-+					"adc_clk", "adc_sel";
-+				status = "disabled";
++			hwrng: rng@5118 {
++				compatible = "amlogic,meson-rng";
++				reg = <0x0 0x5118 0x0 0x4>;
++				power-domains = <&pwrc PWRC_OTP_ID>;
 +			};
 +
- 			usb2_phy1: phy@4000 {
- 				compatible = "amlogic,a1-usb2-phy";
- 				clocks = <&clkc_periphs CLKID_USB_PHY_IN>;
+ 			clkc_pll: pll-clock-controller@7c80 {
+ 				compatible = "amlogic,a1-pll-clkc";
+ 				reg = <0 0x7c80 0 0x18c>;
 -- 
 2.36.0
 
