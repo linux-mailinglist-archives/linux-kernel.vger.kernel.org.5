@@ -2,77 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75C9F785C7A
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 17:49:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32DEC785C82
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 17:50:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237321AbjHWPsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 11:48:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57238 "EHLO
+        id S236827AbjHWPu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 11:50:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232155AbjHWPsn (ORCPT
+        with ESMTP id S237324AbjHWPuW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 11:48:43 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AB04E70;
-        Wed, 23 Aug 2023 08:48:41 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1bf092a16c9so45228965ad.0;
-        Wed, 23 Aug 2023 08:48:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692805721; x=1693410521;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8RVO8QqpSGvwCTtzSEj1vfVHlrvdmi9jWM0i/g4wXFg=;
-        b=pFLPKKwwMuUPRgUdp4DrC6Adp1yFskvPhC81gUI0SfmHdYwuaQ3Zc0rtitfPoqHiU2
-         Ow7Nd4FKMzDl98iOvlNKlpwIJDxZ1wYtVmo9M7WTy+XmtlH7Z9quUIjsumGpRU4KzF1C
-         15pAaCCUy0CDetch15cjXjH+rwQ+iiQO7hqJr4fmcMRylFV1YbHIfJqT+cqxPPrQZOLt
-         GojFmYTP7VwCn6koRRlrorAxUMKqEyQkzOiy5O2IEOUus2YvaMtD3VDgiV+5Jphj9e3L
-         oXpAQvYirKWho7zdxOSOJGdNDrTqfYCRGOx0uoASHqDSRWiv8okkCpYcXxN5ybn0ITrX
-         czLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692805721; x=1693410521;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8RVO8QqpSGvwCTtzSEj1vfVHlrvdmi9jWM0i/g4wXFg=;
-        b=NlmTFbwziGF1BV8tbWI5ShoN28tN0kOvzWwEkxtHKbuaUG5CaWiAsRO7PwwBvAFiyx
-         2e+efncQCoTyBJz7l7MsTPFlJAX9faWzRN216h/sXZkYJsmxFSBSVccE+bjPDz06m6uX
-         3OcXsyXZTUCJzEgubeaumlrlh//S371wTI69ekAWIJJWlxoIAX4Yf8tgiNTyjvkp7K4C
-         R3EQA2jhhjz8vzMsrqOaWKSg2MBhETeXRm6nzbEKk9N5+ZSZ1/R+ti5IoyXOSNXOvEeM
-         dooUzNFP8FdrUnlSUASY2f+FwYFH90zmvNk5JdI/KKcE2Y4dCckLhPFbFfwZdOrUaIFN
-         Hssg==
-X-Gm-Message-State: AOJu0YxNqz3WmzpzPv9ffZfMIMUjINada6056Otg3vVs/OFv02MfjOn6
-        b3jEUnF23hnxrKfoNuEKWUE=
-X-Google-Smtp-Source: AGHT+IHC16OTLZ0+ivhmKDzK81Q3Wf6FkNYZuDjC80GdNQmrIoepiTGx2xDRTvxp8HL6cwI0AwNAug==
-X-Received: by 2002:a17:902:c943:b0:1bf:25a0:f874 with SMTP id i3-20020a170902c94300b001bf25a0f874mr15655824pla.65.1692805720977;
-        Wed, 23 Aug 2023 08:48:40 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id 13-20020a170902ee4d00b001b8a3e2c241sm11144912plo.14.2023.08.23.08.48.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Aug 2023 08:48:40 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 23 Aug 2023 08:48:39 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Huqiang Qin <huqiang.qin@amlogic.com>
-Cc:     wim@linux-watchdog.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        neil.armstrong@linaro.org, khilman@baylibre.com,
-        jbrunet@baylibre.com, martin.blumenstingl@googlemail.com,
-        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2 3/4] watchdog: Add support for Amlogic-T7 SoCs
-Message-ID: <ceabbef7-e952-4e74-af10-e49946cb9c62@roeck-us.net>
-References: <20230802033222.4024946-1-huqiang.qin@amlogic.com>
- <20230802033222.4024946-4-huqiang.qin@amlogic.com>
+        Wed, 23 Aug 2023 11:50:22 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45160E70;
+        Wed, 23 Aug 2023 08:50:21 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D0FEA66551;
+        Wed, 23 Aug 2023 15:50:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1268FC433C7;
+        Wed, 23 Aug 2023 15:50:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692805820;
+        bh=LfSPyFOC3BjWg0Lc12kxGpYZXTpAJDmnKm0+E48fsYA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JXxYB3+fT0UVF4Njt8TKpmeByoZkbsjd3n/9P3Snic8g9RaQqf8z9/1pAOMPSfemQ
+         Y9j9vhDsu5y69cyAbfuDB83yGakcbvooWW6sYOU+Rpn6rnfgd6jhycZmd5MwPkAey9
+         R/8WjmfnlXliw9apZxQ4dXU84G0pXh4oScGsRUdqq/NLv5BvG+lDtanGz3Qii+HgqF
+         AdTJ6+Yywsuf55Jjh+2jDj/MQPRZoAJorkwc4Da/nqn+B25d4cDvqEJmH+OSk9x917
+         +rI2H7D87DCVOHmkcb8R18WVGIDXoCwWYwvwnOpIIGT5cEuC8VMxE5zVxbsUFeak9i
+         fekkLTSaiJdxg==
+Date:   Wed, 23 Aug 2023 16:50:10 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Shuah Khan <shuah@kernel.org>,
+        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
+        Deepak Gupta <debug@rivosinc.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        "H.J. Lu" <hjl.tools@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v4 03/36] arm64/gcs: Document the ABI for Guarded Control
+ Stacks
+Message-ID: <b6b654d6-9f77-463e-bbe9-58e8135536ff@sirena.org.uk>
+References: <20230807-arm64-gcs-v4-0-68cfa37f9069@kernel.org>
+ <20230807-arm64-gcs-v4-3-68cfa37f9069@kernel.org>
+ <ZNOhjrYleGBR6Pbs@arm.com>
+ <f4cec4b3-c386-4873-aa1d-90528e062f2a@sirena.org.uk>
+ <ZN+qki9EaZ6f9XNi@arm.com>
+ <aaea542c-929c-4c9b-8caa-ca67e0eb9c1e@sirena.org.uk>
+ <ZOTnL1SDJWZjHPUW@arm.com>
+ <43ec219d-bf20-47b8-a5f8-32bc3b64d487@sirena.org.uk>
+ <ZOXa98SqwYPwxzNP@arm.com>
+ <ZOYFazB1gYjzDRdA@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="xcjBCIAjiMPyRAnv"
 Content-Disposition: inline
-In-Reply-To: <20230802033222.4024946-4-huqiang.qin@amlogic.com>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+In-Reply-To: <ZOYFazB1gYjzDRdA@arm.com>
+X-Cookie: Some optional equipment shown.
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,37 +89,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 02, 2023 at 11:32:21AM +0800, Huqiang Qin wrote:
-> Compared with the previous Amlogic-GXBB, the watchdog of Amlogic-T7
-> has a different reset enable bit.
-> 
-> Signed-off-by: Huqiang Qin <huqiang.qin@amlogic.com>
-> Reviewed-by: Dmitry Rokosov <ddrokosov@sberdevices.ru>
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+--xcjBCIAjiMPyRAnv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> ---
-> 
-> V1 -> V2: Use the BIT() macro to build rst initial value.
-> 
->  drivers/watchdog/meson_gxbb_wdt.c | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/drivers/watchdog/meson_gxbb_wdt.c b/drivers/watchdog/meson_gxbb_wdt.c
-> index 18180d91543e..a48622d11ad7 100644
-> --- a/drivers/watchdog/meson_gxbb_wdt.c
-> +++ b/drivers/watchdog/meson_gxbb_wdt.c
-> @@ -147,8 +147,13 @@ static const struct wdt_params gxbb_params = {
->  	.rst = BIT(21),
->  };
->  
-> +static const struct wdt_params t7_params = {
-> +	.rst = BIT(22),
-> +};
-> +
->  static const struct of_device_id meson_gxbb_wdt_dt_ids[] = {
->  	 { .compatible = "amlogic,meson-gxbb-wdt", .data = &gxbb_params, },
-> +	 { .compatible = "amlogic,t7-wdt", .data = &t7_params, },
->  	 { /* sentinel */ },
->  };
->  MODULE_DEVICE_TABLE(of, meson_gxbb_wdt_dt_ids);
+On Wed, Aug 23, 2023 at 02:11:07PM +0100, Catalin Marinas wrote:
+
+> Yes, this should work. Any invocation of clone() or clone3() without a
+> shadow stack would disable GCS. What about the reverse, should GCS be
+> enabled for a thread even if the clone3() caller has GCS disabled? I
+> guess we shouldn't since GCS enabling depends on the prctl() state set
+> previously.
+
+It has a fairly obvious intended meaning so we could do it easily enough
+but OTOH allowing it opens up the idea of people wanting to specify GCS
+flags which starts to seem like more trouble than it's worth compared to
+just having them do the prctl() in the new thread.
+
+--xcjBCIAjiMPyRAnv
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTmKrIACgkQJNaLcl1U
+h9Drbgf/ZBUIo14hOU/3qkdtGyzuQHFus+mYzjU/uobIdprMeuTN+xOA0/oVAhlk
+taPZwtMKHYyCkcXbZYxy6jKqDlM4zT3mz9WnCHkYtdQdCkyue/ftcKMF1SaZS4nk
+Bzily68XoSg2VhZJTZQie/MqOXcwCDJcDHfBX42qmEhLXJZAblCcvtnu2KLwgSFp
+nFmK1EGeH/+y6nXB/zoUYMDrWrzdpnZ4LJB8lwXMQHctPGJDyJIkZ+exBKubOR6H
+ebKadj+npJxy9L4oLx2VRZ5AOjzR34+qZlQIuTPf8WokNrmtz4xQwPz7F1xBjcgN
+jd3C7SSBR98L0uw+V3/L3WK8PKh2Lw==
+=CE8H
+-----END PGP SIGNATURE-----
+
+--xcjBCIAjiMPyRAnv--
