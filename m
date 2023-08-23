@@ -2,71 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01A987852AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 10:31:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 575387852C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 10:35:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231626AbjHWIbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 04:31:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53978 "EHLO
+        id S234102AbjHWIeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 04:34:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234803AbjHWI2u (ORCPT
+        with ESMTP id S233887AbjHWIbn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 04:28:50 -0400
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87C77358E
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 01:26:35 -0700 (PDT)
-X-UUID: a3a48036418e11ee9cb5633481061a41-20230823
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=6jPHQ8/ihfSwFIDrR+mTFdxoHGqeLjAmqmbiTOz4wI0=;
-        b=q2zF0Ad9Jp2yPa2T8m9TLMmbPs5rVu6Zu/SAXzv1hTYoaHVL8oSnSSkDFc9rC9DfbvjbgdnBTB+qLnLOeatej9W/ZAICFLoJotDAqfmFoAh3UOGvjhnTMDndKqnYpmmBXCsrydPu9WguGJcHM+vsxZC+0rKFGm/2C+61AwGhkiY=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.31,REQID:91ff13b9-a71f-43c7-a5c7-a3ae5f334473,IP:0,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-        :release,TS:95
-X-CID-INFO: VERSION:1.1.31,REQID:91ff13b9-a71f-43c7-a5c7-a3ae5f334473,IP:0,URL
-        :0,TC:0,Content:0,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Spam_GS981B3D,ACTION
-        :quarantine,TS:95
-X-CID-META: VersionHash:0ad78a4,CLOUDID:37f0a71f-33fd-4aaa-bb43-d3fd68d9d5ae,B
-        ulkID:230823162540Y05U1C5O,BulkQuantity:0,Recheck:0,SF:38|29|28|17|19|48,T
-        C:nil,Content:0,EDM:-3,IP:nil,URL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,CO
-        L:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_SDM,TF_CID_SPAM_ASC,TF_CID_SPAM_FAS,
-        TF_CID_SPAM_FSD,TF_CID_SPAM_ULN
-X-UUID: a3a48036418e11ee9cb5633481061a41-20230823
-Received: from mtkmbs13n1.mediatek.inc [(172.21.101.193)] by mailgw01.mediatek.com
-        (envelope-from <shuijing.li@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 245059849; Wed, 23 Aug 2023 16:25:38 +0800
-Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Wed, 23 Aug 2023 16:25:36 +0800
-Received: from mszsdhlt06.gcn.mediatek.inc (10.16.6.206) by
- mtkmbs13n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Wed, 23 Aug 2023 16:25:36 +0800
-From:   Shuijing Li <shuijing.li@mediatek.com>
-To:     <chunkuang.hu@kernel.org>, <p.zabel@pengutronix.de>,
-        <airlied@gmail.com>, <daniel@ffwll.ch>, <matthias.bgg@gmail.com>,
-        <angelogioacchino.delregno@collabora.com>
-CC:     <dri-devel@lists.freedesktop.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        <jitao.shi@mediatek.com>, Shuijing Li <shuijing.li@mediatek.com>
-Subject: [PATCH] drm/mediatek: Support IGT in dp driver
-Date:   Wed, 23 Aug 2023 16:25:49 +0800
-Message-ID: <20230823082549.24756-1-shuijing.li@mediatek.com>
-X-Mailer: git-send-email 2.40.1
+        Wed, 23 Aug 2023 04:31:43 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 709D71FED;
+        Wed, 23 Aug 2023 01:26:54 -0700 (PDT)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37N8G1e2011553;
+        Wed, 23 Aug 2023 08:26:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=GlyOkSbeWlPKEVbbjapYJOUhwXIA4m7w8RYHyH7iTvM=;
+ b=LWiFG7EzMWWlHsaEGW+zpfFZrI+VmWrtpxwqKDf3al4cEAC91KKRQTCsG5LNT6JywUxy
+ rqVWe+yU/DTe5cPTdqnJAPQ8T8q422rCx1CUT7+uB/97CkIl9CBo+xiOBX7ooW5QRPXt
+ eCdltUJsmUvlFKxQ0doQz7Xi9esXsKNXfx9FroaePk6ujPsF4xJQc+H2RfvhD3sHOkRz
+ O8VtKcpy6q744dlKz+ZVe1hqzWz40297EidCEY3n1l9Tips2PEtQFCsv3hVsIHXZDQFi
+ 7tgg/+DZTOUK5/QtZQHSEU9oXbpntI2YrWQYsukD5k3HZfE6vbbuBVmktnw9bU0NQyKl kA== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sn2t41eey-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 23 Aug 2023 08:25:59 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37N8PxlF014549
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 23 Aug 2023 08:25:59 GMT
+Received: from [10.217.198.224] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Wed, 23 Aug
+ 2023 01:25:56 -0700
+Message-ID: <dcf0cddc-2a35-2ddb-1912-465e29413b9c@quicinc.com>
+Date:   Wed, 23 Aug 2023 13:55:53 +0530
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v2] irqchip/qcom-pdc: add support for v3.2 HW
+Content-Language: en-US
+To:     <neil.armstrong@linaro.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20230822-topic-sm8x50-upstream-pdc-ver-v2-1-3035b8d388f7@linaro.org>
+ <5d5ad774-3269-232a-db15-751726742460@quicinc.com>
+ <543b1f3d-60b6-44fd-bddf-eb35cc163e10@linaro.org>
+From:   "Maulik Shah (mkshah)" <quic_mkshah@quicinc.com>
+In-Reply-To: <543b1f3d-60b6-44fd-bddf-eb35cc163e10@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-MTK:  N
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,T_SPF_TEMPERROR,UNPARSEABLE_RELAY,URIBL_BLOCKED
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: UcN1_dw_aWnKY9423VQWx1YxiwGHUqsO
+X-Proofpoint-ORIG-GUID: UcN1_dw_aWnKY9423VQWx1YxiwGHUqsO
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-23_06,2023-08-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 spamscore=0
+ clxscore=1015 phishscore=0 suspectscore=0 impostorscore=0
+ lowpriorityscore=0 adultscore=0 malwarescore=0 priorityscore=1501
+ mlxscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308230076
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,51 +84,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support IGT (Intel GPU Tools) in Mediatek DisplayPort driver
+Hi,
 
-Signed-off-by: Shuijing Li <shuijing.li@mediatek.com>
----
- drivers/gpu/drm/mediatek/mtk_dsi.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+On 8/23/2023 1:16 PM, Neil Armstrong wrote:
+> Hi,
+>
+> On 23/08/2023 07:35, Maulik Shah (mkshah) wrote:
+>> Hi Neil,
+>>
+>> @@ -142,8 +163,17 @@ static int qcom_pdc_gic_set_type(struct irq_data 
+>> *d, unsigned int type)
+>>>           return -EINVAL;
+>>>       }
+>>> -    old_pdc_type = pdc_reg_read(IRQ_i_CFG, d->hwirq);
+>>> -    pdc_reg_write(IRQ_i_CFG, d->hwirq, pdc_type);
+>>> +    if (pdc_version < PDC_VERSION_3_2) {
+>>> +        old_pdc_type = pdc_reg_read(IRQ_i_CFG, d->hwirq);
+>>> +        pdc_reg_write(IRQ_i_CFG, d->hwirq, pdc_type);
+>>> +    } else {
+>>> +        u32 val;
+>>> +
+>>> +        val = pdc_reg_read(IRQ_i_CFG, d->hwirq);
+>>> +        old_pdc_type = val & IRQ_i_CFG_TYPE_MASK;
+>>> +        pdc_reg_write(IRQ_i_CFG, d->hwirq,
+>>> +                  pdc_type | (val & IRQ_i_CFG_IRQ_ENABLE));
+>>> +    }
+>> While above is correct, i don't think we need version check in 
+>> qcom_pdc_gic_set_type() as bits 0-2 are always for the type in 
+>> old/new version as mentioned in v1.
+>>
+>> Adding one line after reading old_pdc_type should be good enough.
+>
+> Yes I understood, but while looking at the IRQ_i_CFG bits, I wanted to 
+> keep the original
+> driver behavior intact by setting remaining bits to 0.
+>
+> Adding this single line changes that behavior and keeps bits 3-31
+> to the default register value, which may have some consequences.
+>
+> If you consider it's an ok change, then I'll reduce it to this single 
+> line.
+Yes this ok change to have single line and should not have  any 
+consequences.
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediatek/mtk_dsi.c
-index 7d5250351193..a494e04f0ddf 100644
---- a/drivers/gpu/drm/mediatek/mtk_dsi.c
-+++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
-@@ -806,6 +806,25 @@ static void mtk_dsi_bridge_atomic_post_disable(struct drm_bridge *bridge,
- 	mtk_dsi_poweroff(dsi);
- }
- 
-+static enum drm_mode_status
-+mtk_dsi_bridge_mode_valid(struct drm_bridge *bridge,
-+			  const struct drm_display_info *info,
-+			  const struct drm_display_mode *mode)
-+{
-+	struct mtk_dsi *dsi = bridge_to_dsi(bridge);
-+	u32 bpp;
-+
-+	if (dsi->format == MIPI_DSI_FMT_RGB565)
-+		bpp = 16;
-+	else
-+		bpp = 24;
-+
-+	if (mode->clock * bpp / dsi->lanes > 1500000)
-+		return MODE_CLOCK_HIGH;
-+
-+	return MODE_OK;
-+}
-+
- static const struct drm_bridge_funcs mtk_dsi_bridge_funcs = {
- 	.attach = mtk_dsi_bridge_attach,
- 	.atomic_destroy_state = drm_atomic_helper_bridge_destroy_state,
-@@ -815,6 +834,7 @@ static const struct drm_bridge_funcs mtk_dsi_bridge_funcs = {
- 	.atomic_pre_enable = mtk_dsi_bridge_atomic_pre_enable,
- 	.atomic_post_disable = mtk_dsi_bridge_atomic_post_disable,
- 	.atomic_reset = drm_atomic_helper_bridge_reset,
-+	.mode_valid = mtk_dsi_bridge_mode_valid,
- 	.mode_set = mtk_dsi_bridge_mode_set,
- };
- 
--- 
-2.40.1
+Thanks,
+Maulik
 
