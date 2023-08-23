@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F59D78528F
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 10:22:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BDBE785290
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 10:22:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234027AbjHWISO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 04:18:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46176 "EHLO
+        id S234094AbjHWIS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 04:18:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233789AbjHWIKp (ORCPT
+        with ESMTP id S233790AbjHWIKp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 23 Aug 2023 04:10:45 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAF881712
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 01:09:07 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-58cf42a3313so68004117b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 01:09:07 -0700 (PDT)
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 223061BE
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 01:09:10 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d7496b91389so6212718276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 01:09:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692778147; x=1693382947;
+        d=google.com; s=20221208; t=1692778149; x=1693382949;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=2BhHz8yEC3pLTHC5QxPQtooiXn41z8hQeFyuHW+faxU=;
-        b=HU8CMnAAS/RziILAg1+V2MuiV7wt756cyZBZvpvQQBvwc4jKJgrWKYRZHwYUZSMSAo
-         NmxcfyQGcfrwMnDoxtigjRv7aJi2XO1CuPwiPoAuIG+fJbvYpKHxRGRjoViIi4S86uqN
-         NrBpUPbak9vXU12UBuWxSRiLArx0Dr+yaZ4TXr8ovBXdGTkcYVk3Rq4ozIfLAmkjnyJ0
-         R7RyTiXoci56hBq7QoUaHY6E3iVJwo8XVU8TxCN6zTurtsHZ03IuSaZpsZpXiC5fiO8g
-         2x2dCBXG0IcrqxVC7m/ScNLEo7Ax2EajwvjNAtI2cDV3txn8b8Jhr9d2mDfXaNcbTw9N
-         cJCQ==
+        bh=hTctRXvCXjE3QcZJ1hsp4OH2mXVNnHQp5p4RQcP/Djg=;
+        b=5ifKsNQnfZySr7XTQldnZ06K/BDGMqawhA7oZp0g+3d94s42d+D/ueA+DTYpu05zVy
+         hbIO+BdaZiG6lYL6JYtXfaK7yiUdbxdEr8X9JP+2haRp00oxRxZzry/oy3/fesyIfX/w
+         8unhuvM5QFScUResmxDUtqzBJd9SMkK9vmA1HsumR2GGhLp+Xx3kV9dl2rqzqGGLyB4K
+         Bod9T4fRvJbuFI8xyu2pyaLpNgWUKEW3OpPqYMj9hbdR8pVcZp4QN4eb1q0ZL46wCwhI
+         zJf+aTskW65PxLTqtNjkYmK14RmQY1b/fV4iNlUv2qWbjkGkERIK+IVyaA4f8pj3FXIL
+         zthg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692778147; x=1693382947;
+        d=1e100.net; s=20221208; t=1692778149; x=1693382949;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2BhHz8yEC3pLTHC5QxPQtooiXn41z8hQeFyuHW+faxU=;
-        b=DVYTcb+AlGYsbi4K6zVYDVxbvSpBJ/7AmbAJlul2M3n6ec5pCadyueecEQygcQnqtW
-         lbX0Xum9UNPomuvMcHq4zeSkMWKq1IfEA9Bq0Z62bFM5yZyAndCbHDnpDOgCPemoP3n5
-         7nYUXH3VZ/F+nLbMYWLyU2pfDLf8st2v4smrhJ7EGFZhyI71B6QupqYd8L0KQWPkHuH3
-         ZnLZeBjDXixovoZvnK6jzPx4eRCD/26pWw5t5LejurSZsoh4C1ZgwL30uUi4ejykBUZN
-         qnlW35GiuDhlZFqwI2UsBjnvnoDaL7+OpfqEqQQzRw1cBsKrU1z4Cj5B2IG6a1tNJ2tL
-         wKBA==
-X-Gm-Message-State: AOJu0Yxky7EuTCJblIVaDSzuPUkbLqe5wv6cgNqbXsjEQv3uw3FO9lsy
-        vXyJ7MpCLJqBP+N9MDCSxdXHgMTNZikd
-X-Google-Smtp-Source: AGHT+IHvEGLSuiJK2HNeck85ZiiHP2D3xStux0XexeC+vrw08E08DpocMMf1g+zZgw+G5QzS6QJtJ0hHQQFS
+        bh=hTctRXvCXjE3QcZJ1hsp4OH2mXVNnHQp5p4RQcP/Djg=;
+        b=KLisBnYXsBa1qOKdrUf7y9RSJkqfcsAxMow/9s36thUP3n2Gc6m+4W9sYAQTmCSzdr
+         LkRxNUlfp9xDAwH+4Oj8dKBssIK2RWKOy6+QprFpgZ4GdqvoWh7WDu29YJf58ZRSca5c
+         2k6aYJLOb5EoUj3d9G1SeFIg6jzgm6Z2ayXLxeqbdfwHnO0hjxavXsDzQkT8NuDk7IKI
+         WR9LWyWQ6A4CayL3LZg8eOZlY+lH45C5sUMzPRnxGRK1yesHdk9uImykujS7nJOSAzLd
+         k4BFVxJXYTE7x2uLLNHnY7afEyBF5CxIcVjZngEAxZd5VMn+VxRAam2kQ6T/15Am4FXB
+         bcSA==
+X-Gm-Message-State: AOJu0YxQ6Skvb4vNvKiGz4/sA9HS3OJgkVByR6c2A3tv9CFv5i+z+9cy
+        FbhwJXIR/GX+pJMnb8kAdR3kPyHC8RWq
+X-Google-Smtp-Source: AGHT+IEXOY3eyUqMIhYlpovQXqhyextxMTfaS7NEseV+dMLLIZwG/jnQ+fqU5QGb1WycaoOp+2ltz2eIwsUV
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:3971:e84:f508:9a36])
- (user=irogers job=sendgmr) by 2002:a81:af0e:0:b0:58c:6ddd:d27c with SMTP id
- n14-20020a81af0e000000b0058c6dddd27cmr154296ywh.6.1692778147209; Wed, 23 Aug
- 2023 01:09:07 -0700 (PDT)
-Date:   Wed, 23 Aug 2023 01:08:17 -0700
+ (user=irogers job=sendgmr) by 2002:a25:7483:0:b0:d72:a54d:4ab with SMTP id
+ p125-20020a257483000000b00d72a54d04abmr205011ybc.3.1692778149424; Wed, 23 Aug
+ 2023 01:09:09 -0700 (PDT)
+Date:   Wed, 23 Aug 2023 01:08:18 -0700
 In-Reply-To: <20230823080828.1460376-1-irogers@google.com>
-Message-Id: <20230823080828.1460376-15-irogers@google.com>
+Message-Id: <20230823080828.1460376-16-irogers@google.com>
 Mime-Version: 1.0
 References: <20230823080828.1460376-1-irogers@google.com>
 X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
-Subject: [PATCH v1 14/25] perf s390 s390_cpumcfdg_dump: Don't scan all PMUs
+Subject: [PATCH v1 15/25] perf pmu-events: Reduce processed events by passing PMU
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -75,151 +75,235 @@ To:     Peter Zijlstra <peterz@infradead.org>,
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rather than scanning all PMUs for a counter name, scan the PMU
-associated with the evsel of the sample. This is done to remove a
-dependence on pmu-events.h.
+Pass the PMU to pmu_events_table__for_each_event so that entries that
+don't match don't need to be processed by callback. If a NULL PMU is
+passed then all PMUs are processed. perf bench internals pmu-scan
+"Average PMU scanning" performance is reduced by about 5% on an Intel
+tigerlake.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/s390-sample-raw.c | 50 ++++++++++++++++---------------
- 1 file changed, 26 insertions(+), 24 deletions(-)
+ tools/perf/pmu-events/empty-pmu-events.c | 15 ++++++----
+ tools/perf/pmu-events/jevents.py         | 18 ++++++++----
+ tools/perf/pmu-events/pmu-events.h       |  4 ++-
+ tools/perf/tests/pmu-events.c            |  6 ++--
+ tools/perf/util/pmu.c                    | 35 +++++++-----------------
+ tools/perf/util/pmu.h                    |  1 +
+ 6 files changed, 41 insertions(+), 38 deletions(-)
 
-diff --git a/tools/perf/util/s390-sample-raw.c b/tools/perf/util/s390-sample-raw.c
-index 91330c874170..dc1ed3e95d4d 100644
---- a/tools/perf/util/s390-sample-raw.c
-+++ b/tools/perf/util/s390-sample-raw.c
-@@ -27,7 +27,7 @@
- #include "color.h"
- #include "sample-raw.h"
- #include "s390-cpumcf-kernel.h"
--#include "pmu-events/pmu-events.h"
-+#include "util/pmu.h"
- #include "util/sample.h"
- 
- static size_t ctrset_size(struct cf_ctrset_entry *set)
-@@ -132,56 +132,57 @@ static int get_counterset_start(int setnr)
- 
- struct get_counter_name_data {
- 	int wanted;
--	const char *result;
-+	char *result;
+diff --git a/tools/perf/pmu-events/empty-pmu-events.c b/tools/perf/pmu-events/empty-pmu-events.c
+index 807f2e55c17c..2d6f748280ac 100644
+--- a/tools/perf/pmu-events/empty-pmu-events.c
++++ b/tools/perf/pmu-events/empty-pmu-events.c
+@@ -266,12 +266,16 @@ static const struct pmu_sys_events pmu_sys_event_tables[] = {
+ 	},
  };
  
--static int get_counter_name_callback(const struct pmu_event *evp,
--				     const struct pmu_events_table *table __maybe_unused,
--				     void *vdata)
-+static int get_counter_name_callback(void *vdata, struct pmu_event_info *info)
+-int pmu_events_table__for_each_event(const struct pmu_events_table *table, pmu_event_iter_fn fn,
+-				    void *data)
++int pmu_events_table__for_each_event(const struct pmu_events_table *table, struct perf_pmu *pmu,
++				     pmu_event_iter_fn fn, void *data)
  {
- 	struct get_counter_name_data *data = vdata;
- 	int rc, event_nr;
-+	const char *event_str;
+ 	for (const struct pmu_event *pe = &table->entries[0]; pe->name; pe++) {
+-		int ret = fn(pe, table, data);
++		int ret;
  
--	if (evp->name == NULL || evp->event == NULL)
-+	if (info->str == NULL)
- 		return 0;
--	rc = sscanf(evp->event, "event=%x", &event_nr);
++                if (pmu && !pmu__name_match(pmu, pe->pmu))
++                        continue;
 +
-+	event_str = strstr(info->str, "event=");
-+	if (!event_str)
-+		return 0;
-+
-+	rc = sscanf(event_str, "event=%x", &event_nr);
- 	if (rc == 1 && event_nr == data->wanted) {
--		data->result = evp->name;
-+		data->result = strdup(info->name);
- 		return 1; /* Terminate the search. */
++		ret = fn(pe, table, data);
+ 		if (ret)
+ 			return ret;
  	}
+@@ -371,7 +375,8 @@ const struct pmu_metrics_table *find_core_metrics_table(const char *arch, const
+ int pmu_for_each_core_event(pmu_event_iter_fn fn, void *data)
+ {
+ 	for (const struct pmu_events_map *tables = &pmu_events_map[0]; tables->arch; tables++) {
+-		int ret = pmu_events_table__for_each_event(&tables->event_table, fn, data);
++		int ret = pmu_events_table__for_each_event(&tables->event_table,
++							   /*pmu=*/ NULL, fn, data);
+ 
+ 		if (ret)
+ 			return ret;
+@@ -408,7 +413,7 @@ int pmu_for_each_sys_event(pmu_event_iter_fn fn, void *data)
+ 	for (const struct pmu_sys_events *tables = &pmu_sys_event_tables[0];
+ 	     tables->name;
+ 	     tables++) {
+-		int ret = pmu_events_table__for_each_event(&tables->table, fn, data);
++		int ret = pmu_events_table__for_each_event(&tables->table, /*pmu=*/ NULL, fn, data);
+ 
+ 		if (ret)
+ 			return ret;
+diff --git a/tools/perf/pmu-events/jevents.py b/tools/perf/pmu-events/jevents.py
+index 1ad20140114c..396af53e0e45 100755
+--- a/tools/perf/pmu-events/jevents.py
++++ b/tools/perf/pmu-events/jevents.py
+@@ -826,14 +826,20 @@ static int pmu_events_table__for_each_event_pmu(const struct pmu_events_table *t
+  }
+ 
+ int pmu_events_table__for_each_event(const struct pmu_events_table *table,
++                                    struct perf_pmu *pmu,
+                                     pmu_event_iter_fn fn,
+                                     void *data)
+ {
+         for (size_t i = 0; i < table->num_pmus; i++) {
+-                int ret = pmu_events_table__for_each_event_pmu(table, &table->pmus[i],
+-                                                               fn, data);
++                const struct pmu_table_entry *table_pmu = &table->pmus[i];
++                const char *pmu_name = &big_c_string[table_pmu->pmu_name.offset];
++                int ret;
+ 
+-                if (ret)
++                if (pmu && !pmu__name_match(pmu, pmu_name))
++                        continue;
++
++                ret = pmu_events_table__for_each_event_pmu(table, table_pmu, fn, data);
++                if (pmu || ret)
+                         return ret;
+         }
+         return 0;
+@@ -955,7 +961,8 @@ int pmu_for_each_core_event(pmu_event_iter_fn fn, void *data)
+         for (const struct pmu_events_map *tables = &pmu_events_map[0];
+              tables->arch;
+              tables++) {
+-                int ret = pmu_events_table__for_each_event(&tables->event_table, fn, data);
++                int ret = pmu_events_table__for_each_event(&tables->event_table,
++                                                           /*pmu=*/ NULL, fn, data);
+ 
+                 if (ret)
+                         return ret;
+@@ -992,7 +999,8 @@ int pmu_for_each_sys_event(pmu_event_iter_fn fn, void *data)
+         for (const struct pmu_sys_events *tables = &pmu_sys_event_tables[0];
+              tables->name;
+              tables++) {
+-                int ret = pmu_events_table__for_each_event(&tables->event_table, fn, data);
++                int ret = pmu_events_table__for_each_event(&tables->event_table,
++                                                           /*pmu=*/ NULL, fn, data);
+ 
+                 if (ret)
+                         return ret;
+diff --git a/tools/perf/pmu-events/pmu-events.h b/tools/perf/pmu-events/pmu-events.h
+index 6557381b7de1..c0303ba42e97 100644
+--- a/tools/perf/pmu-events/pmu-events.h
++++ b/tools/perf/pmu-events/pmu-events.h
+@@ -77,7 +77,9 @@ typedef int (*pmu_metric_iter_fn)(const struct pmu_metric *pm,
+ 				  const struct pmu_metrics_table *table,
+ 				  void *data);
+ 
+-int pmu_events_table__for_each_event(const struct pmu_events_table *table, pmu_event_iter_fn fn,
++int pmu_events_table__for_each_event(const struct pmu_events_table *table,
++				    struct perf_pmu *pmu,
++				    pmu_event_iter_fn fn,
+ 				    void *data);
+ int pmu_metrics_table__for_each_metric(const struct pmu_metrics_table *table, pmu_metric_iter_fn fn,
+ 				     void *data);
+diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
+index 0b6efabc3d20..92d1f6f0e666 100644
+--- a/tools/perf/tests/pmu-events.c
++++ b/tools/perf/tests/pmu-events.c
+@@ -483,12 +483,14 @@ static int test__pmu_event_table(struct test_suite *test __maybe_unused,
+ 	if (!table || !sys_event_table)
+ 		return -1;
+ 
+-	err = pmu_events_table__for_each_event(table, test__pmu_event_table_core_callback,
++	err = pmu_events_table__for_each_event(table, /*pmu=*/ NULL,
++					      test__pmu_event_table_core_callback,
+ 					      &map_events);
+ 	if (err)
+ 		return err;
+ 
+-	err = pmu_events_table__for_each_event(sys_event_table, test__pmu_event_table_sys_callback,
++	err = pmu_events_table__for_each_event(sys_event_table, /*pmu=*/ NULL,
++					      test__pmu_event_table_sys_callback,
+ 					      &map_events);
+ 	if (err)
+ 		return err;
+diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+index 0036e41f6baf..284962c133b3 100644
+--- a/tools/perf/util/pmu.c
++++ b/tools/perf/util/pmu.c
+@@ -855,28 +855,14 @@ static bool pmu_uncore_alias_match(const char *pmu_name, const char *name)
+ 	return res;
+ }
+ 
+-struct pmu_add_cpu_aliases_map_data {
+-	/* List being added to. */
+-	struct list_head *head;
+-	/* If a pmu_event lacks a given PMU the default used. */
+-	char *default_pmu_name;
+-	/* The PMU that we're searching for events for. */
+-	struct perf_pmu *pmu;
+-};
+-
+ static int pmu_add_cpu_aliases_map_callback(const struct pmu_event *pe,
+ 					const struct pmu_events_table *table __maybe_unused,
+ 					void *vdata)
+ {
+-	struct pmu_add_cpu_aliases_map_data *data = vdata;
+-	const char *pname = pe->pmu ?: data->default_pmu_name;
++	struct list_head *head = vdata;
+ 
+-	if (!strcmp(pname, data->pmu->name) ||
+-	    (data->pmu->is_uncore && pmu_uncore_alias_match(pname, data->pmu->name))) {
+-		/* need type casts to override 'const' */
+-		__perf_pmu__new_alias(data->head, -1, (char *)pe->name, (char *)pe->desc,
+-				      (char *)pe->event, pe);
+-	}
++	/* need type casts to override 'const' */
++	__perf_pmu__new_alias(head, -1, (char *)pe->name, (char *)pe->desc, (char *)pe->event, pe);
  	return 0;
  }
  
--/* Scan the PMU table and extract the logical name of a counter from the
-- * PMU events table. Input is the counter set and counter number with in the
-- * set. Construct the event number and use this as key. If they match return
-- * the name of this counter.
-+/* Scan the PMU and extract the logical name of a counter from the event. Input
-+ * is the counter set and counter number with in the set. Construct the event
-+ * number and use this as key. If they match return the name of this counter.
-  * If no match is found a NULL pointer is returned.
+@@ -886,14 +872,7 @@ static int pmu_add_cpu_aliases_map_callback(const struct pmu_event *pe,
   */
--static const char *get_counter_name(int set, int nr, const struct pmu_events_table *table)
-+static char *get_counter_name(int set, int nr, struct perf_pmu *pmu)
+ void pmu_add_cpu_aliases_table(struct perf_pmu *pmu, const struct pmu_events_table *table)
  {
- 	struct get_counter_name_data data = {
- 		.wanted = get_counterset_start(set) + nr,
- 		.result = NULL,
- 	};
- 
--	if (!table)
-+	if (!pmu)
- 		return NULL;
- 
--	pmu_events_table__for_each_event(table, get_counter_name_callback, &data);
-+	perf_pmu__for_each_event(pmu, &data, get_counter_name_callback);
- 	return data.result;
+-	struct pmu_add_cpu_aliases_map_data data = {
+-		.head = &pmu->aliases,
+-		.default_pmu_name = perf_pmus__default_pmu_name(),
+-		.pmu = pmu,
+-	};
+-
+-	pmu_events_table__for_each_event(table, pmu_add_cpu_aliases_map_callback, &data);
+-	free(data.default_pmu_name);
++	pmu_events_table__for_each_event(table, pmu, pmu_add_cpu_aliases_map_callback, &pmu->aliases);
  }
  
--static void s390_cpumcfdg_dump(struct perf_sample *sample)
-+static void s390_cpumcfdg_dump(struct perf_pmu *pmu, struct perf_sample *sample)
- {
- 	size_t i, len = sample->raw_size, offset = 0;
- 	unsigned char *buf = sample->raw_data;
- 	const char *color = PERF_COLOR_BLUE;
- 	struct cf_ctrset_entry *cep, ce;
--	const struct pmu_events_table *table;
- 	u64 *p;
- 
--	table = pmu_events_table__find();
- 	while (offset < len) {
- 		cep = (struct cf_ctrset_entry *)(buf + offset);
- 
-@@ -199,11 +200,12 @@ static void s390_cpumcfdg_dump(struct perf_sample *sample)
- 		color_fprintf(stdout, color, "    [%#08zx] Counterset:%d"
- 			      " Counters:%d\n", offset, ce.set, ce.ctr);
- 		for (i = 0, p = (u64 *)(cep + 1); i < ce.ctr; ++i, ++p) {
--			const char *ev_name = get_counter_name(ce.set, i, table);
-+			char *ev_name = get_counter_name(ce.set, i, pmu);
- 
- 			color_fprintf(stdout, color,
- 				      "\tCounter:%03d %s Value:%#018lx\n", i,
- 				      ev_name ?: "<unknown>", be64_to_cpu(*p));
-+			free(ev_name);
- 		}
- 		offset += ctrset_size(&ce);
- 	}
-@@ -216,14 +218,14 @@ static void s390_cpumcfdg_dump(struct perf_sample *sample)
-  */
- void evlist__s390_sample_raw(struct evlist *evlist, union perf_event *event, struct perf_sample *sample)
- {
--	struct evsel *ev_bc000;
-+	struct evsel *evsel;
- 
- 	if (event->header.type != PERF_RECORD_SAMPLE)
- 		return;
- 
--	ev_bc000 = evlist__event2evsel(evlist, event);
--	if (ev_bc000 == NULL ||
--	    ev_bc000->core.attr.config != PERF_EVENT_CPUM_CF_DIAG)
-+	evsel = evlist__event2evsel(evlist, event);
-+	if (evsel == NULL ||
-+	    evsel->core.attr.config != PERF_EVENT_CPUM_CF_DIAG)
- 		return;
- 
- 	/* Display raw data on screen */
-@@ -231,5 +233,5 @@ void evlist__s390_sample_raw(struct evlist *evlist, union perf_event *event, str
- 		pr_err("Invalid counter set data encountered\n");
- 		return;
- 	}
--	s390_cpumcfdg_dump(sample);
-+	s390_cpumcfdg_dump(evsel->pmu, sample);
+ static void pmu_add_cpu_aliases(struct perf_pmu *pmu)
+@@ -1709,6 +1688,12 @@ int perf_pmu__for_each_event(const struct perf_pmu *pmu, void *state, pmu_event_
+ 	return ret;
  }
+ 
++bool pmu__name_match(const struct perf_pmu *pmu, const char *pmu_name)
++{
++	return !strcmp(pmu->name, pmu_name) ||
++		(pmu->is_uncore && pmu_uncore_alias_match(pmu_name, pmu->name));
++}
++
+ bool perf_pmu__is_software(const struct perf_pmu *pmu)
+ {
+ 	if (pmu->is_core || pmu->is_uncore || pmu->auxtrace)
+diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
+index 03211de345c1..2b1730152bc0 100644
+--- a/tools/perf/util/pmu.h
++++ b/tools/perf/util/pmu.h
+@@ -198,6 +198,7 @@ bool perf_pmu__auto_merge_stats(const struct perf_pmu *pmu);
+ bool perf_pmu__have_event(const struct perf_pmu *pmu, const char *name);
+ size_t perf_pmu__num_events(const struct perf_pmu *pmu);
+ int perf_pmu__for_each_event(const struct perf_pmu *pmu, void *state, pmu_event_callback cb);
++bool pmu__name_match(const struct perf_pmu *pmu, const char *pmu_name);
+ 
+ /**
+  * perf_pmu_is_software - is the PMU a software PMU as in it uses the
 -- 
 2.42.0.rc1.204.g551eb34607-goog
 
