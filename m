@@ -2,149 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9F6D78620B
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 23:16:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 414F9786218
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 23:17:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237247AbjHWVPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 17:15:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43164 "EHLO
+        id S237355AbjHWVQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 17:16:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237232AbjHWVPq (ORCPT
+        with ESMTP id S237851AbjHWVQr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 17:15:46 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 070D710C8;
-        Wed, 23 Aug 2023 14:15:45 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 94C7361884;
-        Wed, 23 Aug 2023 21:15:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D360CC433C7;
-        Wed, 23 Aug 2023 21:15:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692825343;
-        bh=83cGWpzHR0LN7okDD8huiRI2qWgS27/vhv1D1BC7qU0=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=AJyy1mueW4a+L9lGMDYgLeIxe5ylHp6p41op4lb2gWTT1mhu1wOM6bETXOxQN0HdX
-         Key/Cdo1Jy1gWAcgO8MjifnsACPnmEh+6aXXIr5oLw0o5Wlz9nm1vFFlDPpyfD96YN
-         3vUo3QfsMs6esK1RSk1ufMcUguWSvDP6RdfYVBcqeuJRNCrJ3tgl4/ok00xZgzYfX7
-         Xpv2AvZJdOYbObYwfrsYH5EVjf9PDNErQoIjylM8JRd2LNS9M3qwAmqpK9UvxL1VdS
-         BhENVI71JK1FsXv4gYyueaKbskbz/I3bX+cvDesc4kXZZMDntrjs/66kUEcAL+oP/R
-         fx3uCbaiTLv9w==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 64C68CE02EE; Wed, 23 Aug 2023 14:15:43 -0700 (PDT)
-Date:   Wed, 23 Aug 2023 14:15:43 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     zhouzhouyi@gmail.com
-Cc:     rcu@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, lance@osuosl.org
-Subject: Re: [PATCH RFC] rcu: torture: shorten the time between
- forward-progress tests
-Message-ID: <795ab1ed-de92-4f31-9483-b1800b597405@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <1683039962-15751-1-git-send-email-zhouzhouyi@gmail.com>
+        Wed, 23 Aug 2023 17:16:47 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 083791719
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 14:16:34 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id 3f1490d57ef6-d746d030a86so4837654276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 14:16:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692825394; x=1693430194;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iEpTjrnLVqxen66G7Uvz7Jyy/E11cVlVrjCW6/VyKj8=;
+        b=ZDmv2BjJU3fBSftYGcNM3tb+ILU/d9+cLODcLN7bJx5jE0GqvFKrPnlSYGlL0k9kWu
+         m0bch7za38IJ+CLWsWjflpljG/O8F9HEsNE/VWjVNStBDOBq3iJDnH2eTLO/dJEAtALA
+         zbXY+4ZWcbcUYtwqB7UctSATyz1sDYmgfZ/uZj88iB4dhaAHsNB4lm1XJShf+lSlTUF4
+         q1mw8cBg/PsTLqlxfYRQ9OdT1JyBSqfrgsLuehUHu9V36ypWdR+RMX9JIQmW7yxqcnfx
+         Bu1+6uVlgAFqvayOjaJa8cEpXa7Hm+cDiofeMeKPmewLASFqzTHTuUzB1cC9zTcv8uzK
+         +bQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692825394; x=1693430194;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iEpTjrnLVqxen66G7Uvz7Jyy/E11cVlVrjCW6/VyKj8=;
+        b=Nkj1TMnHQoVEmKTaB/5R/GBeLAMZoY8uTafHtYMQZ7Aehg8k7UPKl80Bjg9qJCZB0M
+         G3GTJd+npPhaOoXTzNvmg0+cCVjBjzQ81BjX0G96lDAd11wsNLv/GTvqiyrIrKVRsvHd
+         SpXSC9Z+0B7qYrZ0WvFpOXGQsmDfLf16V8oBDxktM8dsEKYnquqdMfllNpuY1FxC4SBL
+         apMD98p9WlG1FvfLzw3ALUrlRhY63V8ZxneCdxx6vJjU1GiDcrkK56dn6QfU/MPtmmwv
+         5vVgO0qzH9XF5s9PkgvDwR7IFHK+Z2KGqzWkdqGprljLDK+v091XAE8KEre25yYzK7kZ
+         XXig==
+X-Gm-Message-State: AOJu0Yyx5osJLk+MK+l4F88S0C5CSucQMGgcZ3/J/zEcHRARHg8LyXc9
+        jCIXX1Y5SEvsnqSgkK0m82bFkXD/HGV8orqfm/Q8ow==
+X-Google-Smtp-Source: AGHT+IGU5hlAbzjKR6dHf8nG7wjH+gLTIhLdkOAR0BQZYCAzmvxO+0vsobrLpwu8+6G8uJRZXAov+P50unjaO9+ZE7g=
+X-Received: by 2002:a25:c08f:0:b0:d09:f39b:cecf with SMTP id
+ c137-20020a25c08f000000b00d09f39bcecfmr12862557ybf.9.1692825393910; Wed, 23
+ Aug 2023 14:16:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1683039962-15751-1-git-send-email-zhouzhouyi@gmail.com>
-X-Spam-Status: No, score=-7.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20230823183749.2609013-1-robh@kernel.org>
+In-Reply-To: <20230823183749.2609013-1-robh@kernel.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 23 Aug 2023 23:16:22 +0200
+Message-ID: <CACRpkdbuB-NotnMXc9vZj-byjk7spCSkZ+Dx=R_eOqoSV5CdTA@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: Drop remaining unneeded quotes
+To:     Rob Herring <robh@kernel.org>
+Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        James Clark <james.clark@arm.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andy@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>, Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Corey Minyard <minyard@acm.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        M ark Brown <broonie@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-i3c@lists.infradead.org,
+        linux-iio@vger.kernel.org,
+        openipmi-developer@lists.sourceforge.net,
+        linux-media@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
+        alsa-devel@alsa-project.org, linux-scsi@vger.kernel.org,
+        linux-watchdog@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 02, 2023 at 11:06:02PM +0800, zhouzhouyi@gmail.com wrote:
-> From: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> 
-> Currently, default time between rcu torture forward-progress tests is 60HZ,
-> Under this configuration, false positive caused by __stack_chk_fail [1] is
-> difficult to reproduce (needs average 5*420 seconds for SRCU-P),
-> which means one has to invoke [2] 5 times in average to make [1] appear.
-> 
-> With time between rcu torture forward-progress tests be 1 HZ, above
-> phenomenon will be reproduced within 3 minutes, which means we can
-> reproduce [1] everytime we invoke [2].
-> 
-> Although [1] is a false positive, this change will make possible future
-> true bugs easier to be discovered.            
->                    
-> [1] Link: https://lore.kernel.org/lkml/CAABZP2yS5=ZUwEZQ7iHkV0wDm_HgO8K-TeAhyJrZhavzKDa44Q@mail.gmail.com/T/
-> [2] tools/testing/selftests/rcutorture/bin/torture.sh
-> 
-> Tested in PPC VM of Opensource Lab of Oregon State Univerisity.
->         
-> Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>        
+On Wed, Aug 23, 2023 at 8:38=E2=80=AFPM Rob Herring <robh@kernel.org> wrote=
+:
 
-Please accept my apologies for being ridiculously slow to reply!
+> Cleanup bindings dropping the last remaining unneeded quotes. With this,
+> the check for this can be enabled in yamllint.
+>
+> Signed-off-by: Rob Herring <robh@kernel.org>
 
-In recent -rcu, module parameters such as this one that simply set a
-value can be overridden on the command line.  So you could get the effect
-(again, in recent kernels) in your testing by adding:
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-	--bootargs "rcutorture.fwd_progress_holdoff=1"
-
-The reason that I am reluctant to accept this patch is that we sometimes
-have trouble with this forward-progress testing exhausting memory, and
-making in happen could therefore cause trouble with generic rcutorture
-testing.
-
-Or am I missing the point of this change?
-
-							Thanx, Paul
-
-> ---
->  tools/testing/selftests/rcutorture/configs/rcu/SRCU-N.boot  | 1 +
->  tools/testing/selftests/rcutorture/configs/rcu/SRCU-P.boot  | 1 +
->  tools/testing/selftests/rcutorture/configs/rcu/TRACE02.boot | 1 +
->  tools/testing/selftests/rcutorture/configs/rcu/TREE02.boot  | 1 +
->  tools/testing/selftests/rcutorture/configs/rcu/TREE10.boot  | 1 +
->  5 files changed, 5 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-N.boot b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-N.boot
-> index ce0694fd9b92..982582bff041 100644
-> --- a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-N.boot
-> +++ b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-N.boot
-> @@ -1,2 +1,3 @@
->  rcutorture.torture_type=srcu
->  rcutorture.fwd_progress=3
-> +rcutorture.fwd_progress_holdoff=1
-> diff --git a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-P.boot b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-P.boot
-> index 2db39f298d18..18f5d7361d8a 100644
-> --- a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-P.boot
-> +++ b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-P.boot
-> @@ -1,4 +1,5 @@
->  rcutorture.torture_type=srcud
->  rcupdate.rcu_self_test=1
->  rcutorture.fwd_progress=3
-> +rcutorture.fwd_progress_holdoff=1
->  srcutree.big_cpu_lim=5
-> diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TRACE02.boot b/tools/testing/selftests/rcutorture/configs/rcu/TRACE02.boot
-> index c70b5db6c2ae..b86bc7df7603 100644
-> --- a/tools/testing/selftests/rcutorture/configs/rcu/TRACE02.boot
-> +++ b/tools/testing/selftests/rcutorture/configs/rcu/TRACE02.boot
-> @@ -1,2 +1,3 @@
->  rcutorture.torture_type=tasks-tracing
->  rcutorture.fwd_progress=2
-> +rcutorture.fwd_progress_holdoff=1
-> diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE02.boot b/tools/testing/selftests/rcutorture/configs/rcu/TREE02.boot
-> index dd914fa8f690..933302f885df 100644
-> --- a/tools/testing/selftests/rcutorture/configs/rcu/TREE02.boot
-> +++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE02.boot
-> @@ -1 +1,2 @@
->  rcutorture.fwd_progress=2
-> +rcutorture.fwd_progress_holdoff=1
-> diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE10.boot b/tools/testing/selftests/rcutorture/configs/rcu/TREE10.boot
-> index dd914fa8f690..933302f885df 100644
-> --- a/tools/testing/selftests/rcutorture/configs/rcu/TREE10.boot
-> +++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE10.boot
-> @@ -1 +1,2 @@
->  rcutorture.fwd_progress=2
-> +rcutorture.fwd_progress_holdoff=1
-> -- 
-> 2.34.1
-> 
+Yours,
+Linus Walleij
