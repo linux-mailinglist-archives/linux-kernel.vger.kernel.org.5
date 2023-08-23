@@ -2,116 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40A00786092
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 21:23:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4C6D786096
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 21:27:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238137AbjHWTXV convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 23 Aug 2023 15:23:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49434 "EHLO
+        id S238170AbjHWT0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 15:26:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237409AbjHWTXC (ORCPT
+        with ESMTP id S237409AbjHWT0I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 15:23:02 -0400
-Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F06B0E50;
-        Wed, 23 Aug 2023 12:23:00 -0700 (PDT)
-Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6bcde3d8657so976630a34.0;
-        Wed, 23 Aug 2023 12:23:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692818580; x=1693423380;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UTrH4o5ux4AfIjhNwUonXXt16pkl+RCpCrneQG4XR6k=;
-        b=bmuiIdnvOGR88TP4MMAQXWCHenmT2Kc6fDb8K6MUej+/xxcUr6TIA2jFa5BfFwJCyj
-         pdHXfrg+RvN88vEZPDTEzjJ4xkcErQfeC0Sc+KipVb1Y9vMEO1KM7m5/ZQMWSi1n8kls
-         n5KDs0otVKpTe8H0GGhTywFCxU8Lr8ZdCByvwFiTETfCxsjA5W1pw9jz+MmkUjyeRF4G
-         6dtamN/nNzRcjI+DhPAdSWC/HKnBuwzbJSYQcC64rpAurbyzRUyNUiAkStzWjm+ngmGN
-         Ay8p6sdpXL+moEK6FTqSe5pbi36Um9GHAeXxGPwbBHo6Y4lPwEc2aIhX9U1fAbKN57J1
-         nNOQ==
-X-Gm-Message-State: AOJu0YxeKsIQhapB63hnxo0mjP1bAYwj5APOKOvtFxVo2AVQU8dvFDqy
-        3qwwlb+icDhjOgnx9/a5xFBvXiUTpiB124UPLWf6YLgp
-X-Google-Smtp-Source: AGHT+IEDvX+ecDZ1RwPEufppWxoRbprGo8Soq3d6K9vgfOzxnTKsqRCM9rpZnGomGtUUbEiybgCcgQ6zjBvUuebKFcs=
-X-Received: by 2002:a4a:37c3:0:b0:570:cad0:fce9 with SMTP id
- r186-20020a4a37c3000000b00570cad0fce9mr9352284oor.1.1692818580204; Wed, 23
- Aug 2023 12:23:00 -0700 (PDT)
+        Wed, 23 Aug 2023 15:26:08 -0400
+Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C3F210C8;
+        Wed, 23 Aug 2023 12:26:06 -0700 (PDT)
+Received: from [192.168.0.2] (ip5f5ae831.dynamic.kabel-deutschland.de [95.90.232.49])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id DDABA61E5FE01;
+        Wed, 23 Aug 2023 21:25:02 +0200 (CEST)
+Message-ID: <3a9bf7a1-1664-401d-8cff-3a5d553bdd77@molgen.mpg.de>
+Date:   Wed, 23 Aug 2023 21:24:50 +0200
 MIME-Version: 1.0
-References: <20230823191831.476579-1-helgaas@kernel.org>
-In-Reply-To: <20230823191831.476579-1-helgaas@kernel.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 23 Aug 2023 21:22:49 +0200
-Message-ID: <CAJZ5v0hAw7fB3YuQ2SGNccV_tPhr0GTYAEkv5NpMxgSuUUVXxw@mail.gmail.com>
-Subject: Re: [PATCH] PCI: Tidy save/restore config messages
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: checkpatch complains about Reported-by block (was: [PATCH v3] tpm:
+ Enable hwrng only for Pluton on AMD CPUs)
+To:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Andy Whitcroft <apw@canonical.com>,
+        Joe Perches <joe@perches.com>
+Cc:     linux-integrity@vger.kernel.org,
+        Jerry Snitselaar <jsnitsel@redhat.com>, stable@vger.kernel.org,
+        Todd Brandt <todd.e.brandt@intel.com>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        linux-kernel@vger.kernel.org, Patrick Steinhardt <ps@pks.im>,
+        Ronan Pigott <ronan@rjp.ie>,
+        Raymond Jay Golo <rjgolo@gmail.com>
+References: <20230822231510.2263255-1-jarkko@kernel.org>
+ <705b9769-4132-450b-bd47-2423c419db2a@molgen.mpg.de>
+ <CV03X3OEI7RE.3NI1QJ6MBJSHA@suppilovahvero>
+Content-Language: en-US
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+In-Reply-To: <CV03X3OEI7RE.3NI1QJ6MBJSHA@suppilovahvero>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 23, 2023 at 9:19 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
->
-> From: Bjorn Helgaas <bhelgaas@google.com>
->
-> Update config space save/restore debug messages so they line up better.
-> Previously:
->
->   nvme 0000:05:00.0: saving config space at offset 0x4 (reading 0x20100006)
->   nvme 0000:05:00.0: saving config space at offset 0x8 (reading 0x1080200)
->   nvme 0000:05:00.0: saving config space at offset 0xc (reading 0x0)
->
->   nvme 0000:05:00.0: restoring config space at offset 0x4 (was 0x0, writing 0x20100006)
->
-> Now:
->
->   nvme 0000:05:00.0: save config 0x04: 0x20100006
->   nvme 0000:05:00.0: save config 0x08: 0x01080200
->   nvme 0000:05:00.0: save config 0x0c: 0x00000000
->
->   nvme 0000:05:00.0: restore config 0x04: 0x00000000 -> 0x20100006
->
-> No functional change intended.  Enable these messages by setting
-> CONFIG_DYNAMIC_DEBUG=y and adding 'dyndbg="file drivers/pci/* +p"'
-> to kernel parameters.
->
-> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+[Cc: +Andy, +Joe]
 
-Acked-by: Rafael J. Wysocki <rafael@kernel.org>
 
-> ---
->  drivers/pci/pci.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> index 60230da957e0..920c161575d4 100644
-> --- a/drivers/pci/pci.c
-> +++ b/drivers/pci/pci.c
-> @@ -1681,7 +1681,7 @@ int pci_save_state(struct pci_dev *dev)
->         /* XXX: 100% dword access ok here? */
->         for (i = 0; i < 16; i++) {
->                 pci_read_config_dword(dev, i * 4, &dev->saved_config_space[i]);
-> -               pci_dbg(dev, "saving config space at offset %#x (reading %#x)\n",
-> +               pci_dbg(dev, "save config %#04x: %#010x\n",
->                         i * 4, dev->saved_config_space[i]);
->         }
->         dev->state_saved = true;
-> @@ -1712,7 +1712,7 @@ static void pci_restore_config_dword(struct pci_dev *pdev, int offset,
->                 return;
->
->         for (;;) {
-> -               pci_dbg(pdev, "restoring config space at offset %#x (was %#x, writing %#x)\n",
-> +               pci_dbg(pdev, "restore config %#04x: %#010x -> %#010x\n",
->                         offset, val, saved_val);
->                 pci_write_config_dword(pdev, offset, saved_val);
->                 if (retry-- <= 0)
-> --
-> 2.34.1
->
+Dear Jarkko, dear Andy, dear Joe,
+
+
+Am 23.08.23 um 19:40 schrieb Jarkko Sakkinen:
+> On Wed Aug 23, 2023 at 11:23 AM EEST, Paul Menzel wrote:
+
+>> Am 23.08.23 um 01:15 schrieb Jarkko Sakkinen:
+>>> The vendor check introduced by commit 554b841d4703 ("tpm: Disable RNG for
+>>> all AMD fTPMs") doesn't work properly on a number of Intel fTPMs.  On the
+>>> reported systems the TPM doesn't reply at bootup and returns back the
+>>> command code. This makes the TPM fail probe.
+>>>
+>>> Since only Microsoft Pluton is the only known combination of AMD CPU and
+>>> fTPM from other vendor, disable hwrng otherwise. In order to make sysadmin
+>>> aware of this, print also info message to the klog.
+>>>
+>>> Cc: stable@vger.kernel.org
+>>> Fixes: 554b841d4703 ("tpm: Disable RNG for all AMD fTPMs")
+>>> Reported-by: Todd Brandt <todd.e.brandt@intel.com>
+>>> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=217804
+>>> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+>>
+>> Mario’s patch also had the three reporters below listed:
+>>
+>> Reported-by: Patrick Steinhardt <ps@pks.im>
+>> Reported-by: Ronan Pigott <ronan@rjp.ie>
+>> Reported-by: Raymond Jay Golo <rjgolo@gmail.com>
+> 
+> The problem here is that checkpatch throws three warnings:
+> 
+> WARNING: Reported-by: should be immediately followed by Closes: with a URL to the report
+> #19:
+> Reported-by: Patrick Steinhardt <ps@pks.im>
+> Reported-by: Ronan Pigott <ronan@rjp.ie>
+> 
+> WARNING: Reported-by: should be immediately followed by Closes: with a URL to the report
+> #20:
+> Reported-by: Ronan Pigott <ronan@rjp.ie>
+> Reported-by: Raymond Jay Golo <rjgolo@gmail.com>
+> 
+> WARNING: Reported-by: should be immediately followed by Closes: with a URL to the report
+> #21:
+> Reported-by: Raymond Jay Golo <rjgolo@gmail.com>
+> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> 
+> Since bugzilla is not part of the documented process afaik, I used this
+> field as the guideline:
+> 
+> Reported:	2023-08-17 20:59 UTC by Todd Brandt
+> 
+> How otherwise I should interpret kernel bugzilla?
+
+How is the proper process to add more than one reporter (so they are 
+noted and also added to CC), so that checkpatch.pl does not complain?
+
+
+Kind regards,
+
+Paul
+
+
+> In any case new version is still needed as the commit message must
+> contain a mention of "Lenovo Legion Y540" as the stimulus for doing
+> this code change in the first place.
+> 
+> BR, Jarkko
