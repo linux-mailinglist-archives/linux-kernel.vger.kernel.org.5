@@ -2,180 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 580BE785BEF
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 17:22:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26B82785BF5
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 17:23:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237128AbjHWPW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 11:22:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41846 "EHLO
+        id S237132AbjHWPXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 11:23:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237113AbjHWPWZ (ORCPT
+        with ESMTP id S234642AbjHWPXV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 11:22:25 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 992931711
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 08:22:02 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9a1de3417acso145398866b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 08:22:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692804098; x=1693408898;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Bhg/e4LS8bNfiVgkrr4EWQYAPV9fIVBY5JtlZm2jayY=;
-        b=Q1+BATEl4MgihwvjeH3zMhM/2EzkuflMMWwziDhCxRNcGhTM83mMQYqYEV5bPfYt1k
-         CG0JrYqgLqW4jFOn+jBGo2s5sLD7cOcgDQ6EwNrkef7z8UxNVbA7mR8X09qAnlZbXwOq
-         NZBJlvYMfNnRhwx1VyzycL81YKjYeMVazRVw4B2wkXW08BOzUsSgz1yPBdsmyhLGJEkm
-         rD8sRehHnYO6V/Ft04JB+UgoxVh+TdXlGt0dwGafMcyHcjmpWnpBWNusC2oHlz6aYOPV
-         gKr5LLt4rc3yvzkPbXyIVjGqgQBs7r702WLfPyVuY1fRZNIo1q2zjUyxH4FvWNyBGMaE
-         +jjQ==
+        Wed, 23 Aug 2023 11:23:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9025410CE
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 08:22:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692804088;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=b9aQoG5wWYtUNwiG1wbJ/D0OR4T6nTWAl0MOhHXNNrY=;
+        b=jC3M+d8jCC3nUIbTYQqhnrAKnfHE9ZGSFENJgbXt+uC+GUzLqDH5EpjlrnLxY6oZr6Y1Ei
+        Bu277bQSyCt6iay3Szd9wwUR8iqL+dopXC0dnlkN8+ObA0aZROYuONJfOlgZVBGkxno6gA
+        7RI9jGabysuscp+60ZpkeJrfMGrNScI=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-398-88UbKJY6Mm61okzbbbZluA-1; Wed, 23 Aug 2023 11:21:26 -0400
+X-MC-Unique: 88UbKJY6Mm61okzbbbZluA-1
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-99388334de6so401262766b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 08:21:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692804098; x=1693408898;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Bhg/e4LS8bNfiVgkrr4EWQYAPV9fIVBY5JtlZm2jayY=;
-        b=XTKhTw4Lmh92WlVA9h8HkmFR0CbdN320dRYtI/naLUuzifgj0ajmB3wlK1tL/O8BrK
-         7Q/ugRRwVUfwRTcO2AScyAdVlxYtG4aQIyS+TjT1nGRMIOGF7Tu6rAh1Tn0+JYdYeHLs
-         GVRayrPfKMt8VdQTcEaGOCWHC2s10CLJrPhmmcfnZU/EyK6SFXqlV1jk16djq+GTgGto
-         ziGIWP+aLqorzE7BWyOv04Q+k6DkhsuHJpnTsCsPuRcp0QwlmoDCsaH1MzSX8lEEYzhd
-         RpZaTg+nXXYeqc+Y8ftMwKPKnToPZTKVSPGFNMyUojG0AXQGKazZfF+2LenvpJwNuV8V
-         3e2A==
-X-Gm-Message-State: AOJu0YycTB8/T4aZQfRnukDqDUP0n6VqUXBRi+Os88zO/uTm+Zr+M2s2
-        RWNjaSMIXTJptXfoaewHkOGzc6sehUu2FicLR8C6nA==
-X-Google-Smtp-Source: AGHT+IFrKHsEM0IbDz6KXhTtMrBoA3+G+4T1xLCzShT8Dr+GOMGHAxHvfHH3ebiSuGNwpxt6NcQA95vhMPtVoo2z7ms=
-X-Received: by 2002:a17:907:7e8c:b0:978:8979:c66c with SMTP id
- qb12-20020a1709077e8c00b009788979c66cmr15323509ejc.18.1692804098061; Wed, 23
- Aug 2023 08:21:38 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692804085; x=1693408885;
+        h=content-transfer-encoding:content-language:cc:to:subject:from
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=b9aQoG5wWYtUNwiG1wbJ/D0OR4T6nTWAl0MOhHXNNrY=;
+        b=MRhmNuLEfkqlvuOaRwl87lmwTIQPfDUl35jNRE1QIP8123BnSe8XYIoSv7zCuq+b8i
+         dYzZWaH4ZIOGcckm0U1MGgcgoW41//4wjqBSSNIoTUZnaFb8VNjyCc3Sk2cw51+WwYlz
+         KyaulW9IS0E0lRKEUQRExHG5lGy0Q1TLZYDLh7AbH/j/lCf6E7BWR+i6hr7kdVshPJYA
+         96Ow7O7sR4ODpJEhdAOx4GKYt634wyvskm6+PKmBzzD1Eg1Y0pD19rpAG6yezkj2K2ZQ
+         wxhf1qwD03oZ2wNCVWgAQatMW3asYPP4IaT9Z7oahseDiSX6Jl4VOo++0BIsj4NjzzVU
+         B8wQ==
+X-Gm-Message-State: AOJu0Yz4WFagUPCmQoZw5E5gbIzOuZOsQoXOe1hXGcrnZB4jDU6G9W5A
+        kpdcOSBeh4/6v+u7rU7vlAlQqupgsavt2cVF+3P4A0chI17Rds1ZOFEvaZkPYiwovrgFVR41n1T
+        ttSVOn5BCJDYItIdI9T0rDdhK
+X-Received: by 2002:a17:907:784f:b0:99d:fc8f:5a34 with SMTP id lb15-20020a170907784f00b0099dfc8f5a34mr10205469ejc.36.1692804084908;
+        Wed, 23 Aug 2023 08:21:24 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEWSO2lRijfORc4RMAemUB1OnH+ySoDK7/sfLkj/ZRBS5w/mSp9VeB2uhbEgJw1pi5Z5zJm5g==
+X-Received: by 2002:a17:907:784f:b0:99d:fc8f:5a34 with SMTP id lb15-20020a170907784f00b0099dfc8f5a34mr10205458ejc.36.1692804084661;
+        Wed, 23 Aug 2023 08:21:24 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id t23-20020a170906269700b00992b50fbbe9sm9950205ejc.90.2023.08.23.08.21.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Aug 2023 08:21:24 -0700 (PDT)
+Message-ID: <1526d93d-c4bb-579b-daea-f3581d8a6b71@redhat.com>
+Date:   Wed, 23 Aug 2023 17:21:23 +0200
 MIME-Version: 1.0
-References: <20230821160849.531668-1-david@redhat.com> <20230821160849.531668-2-david@redhat.com>
- <CAJD7tkYbHUVbg8LexkBsC9rLFBRrBSQYgOZ1tPKTDGEcWrAghQ@mail.gmail.com> <b00e2d3a-8601-924c-241c-4373b9dea0cb@redhat.com>
-In-Reply-To: <b00e2d3a-8601-924c-241c-4373b9dea0cb@redhat.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Wed, 23 Aug 2023 08:21:01 -0700
-Message-ID: <CAJD7tkbjPdk8xSGJG_BGaiNyPdh0-A58vwt7TwjsB4Mjh6RscA@mail.gmail.com>
-Subject: Re: [PATCH mm-unstable v1 1/4] mm/swap: stop using page->private on
- tail pages for THP_SWAP
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-arm-kernel@lists.infradead.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Peter Xu <peterx@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Hugh Dickins <hughd@google.com>,
-        Seth Jennings <sjenning@redhat.com>,
-        Dan Streetman <ddstreet@ieee.org>,
-        Vitaly Wool <vitaly.wool@konsulko.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+From:   Hans de Goede <hdegoede@redhat.com>
+Subject: [GIT PULL] platform-drivers-x86 for 6.5-5
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org,
+        =?UTF-8?Q?Ilpo_J=c3=a4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Content-Language: en-US, nl
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 23, 2023 at 8:17=E2=80=AFAM David Hildenbrand <david@redhat.com=
-> wrote:
->
-> On 23.08.23 17:12, Yosry Ahmed wrote:
-> > On Mon, Aug 21, 2023 at 9:09=E2=80=AFAM David Hildenbrand <david@redhat=
-.com> wrote:
-> >>
-> >> Let's stop using page->private on tail pages, making it possible to
-> >> just unconditionally reuse that field in the tail pages of large folio=
-s.
-> >>
-> >> The remaining usage of the private field for THP_SWAP is in the THP
-> >> splitting code (mm/huge_memory.c), that we'll handle separately later.
-> >>
-> >> Update the THP_SWAP documentation and sanity checks in mm_types.h and
-> >> __split_huge_page_tail().
-> >>
-> >> Signed-off-by: David Hildenbrand <david@redhat.com>
-> >
-> > The mm part looks good to me (with the added fixup):
-> >
-> > Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
->
-> Thanks!
->
-> >>   /**
-> >> diff --git a/include/linux/swap.h b/include/linux/swap.h
-> >> index bb5adc604144..84fe0e94f5cd 100644
-> >> --- a/include/linux/swap.h
-> >> +++ b/include/linux/swap.h
-> >> @@ -339,6 +339,15 @@ static inline swp_entry_t folio_swap_entry(struct=
- folio *folio)
-> >>          return entry;
-> >>   }
-> >>
-> >> +static inline swp_entry_t page_swap_entry(struct page *page)
-> >> +{
-> >> +       struct folio *folio =3D page_folio(page);
-> >> +       swp_entry_t entry =3D folio_swap_entry(folio);
-> >> +
-> >> +       entry.val +=3D page - &folio->page;
-> >> +       return entry;
-> >> +}
-> >> +
-> >>   static inline void folio_set_swap_entry(struct folio *folio, swp_ent=
-ry_t entry)
-> >>   {
-> >>          folio->private =3D (void *)entry.val;
-> >> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> >> index cc2f65f8cc62..c04702ae71d2 100644
-> >> --- a/mm/huge_memory.c
-> >> +++ b/mm/huge_memory.c
-> >> @@ -2446,18 +2446,15 @@ static void __split_huge_page_tail(struct page=
- *head, int tail,
-> >>          page_tail->index =3D head->index + tail;
-> >>
-> >>          /*
-> >> -        * page->private should not be set in tail pages with the exce=
-ption
-> >> -        * of swap cache pages that store the swp_entry_t in tail page=
-s.
-> >> -        * Fix up and warn once if private is unexpectedly set.
-> >> -        *
-> >> -        * What of 32-bit systems, on which folio->_pincount overlays
-> >> -        * head[1].private?  No problem: THP_SWAP is not enabled on 32=
--bit, and
-> >> -        * pincount must be 0 for folio_ref_freeze() to have succeeded=
-.
-> >> +        * page->private should not be set in tail pages. Fix up and w=
-arn once
-> >> +        * if private is unexpectedly set.
-> >>           */
-> >> -       if (!folio_test_swapcache(page_folio(head))) {
-> >> -               VM_WARN_ON_ONCE_PAGE(page_tail->private !=3D 0, page_t=
-ail);
-> >> +       if (unlikely(page_tail->private)) {
-> >> +               VM_WARN_ON_ONCE_PAGE(true, page_tail);
-> >>                  page_tail->private =3D 0;
-> >>          }
-> >
-> > Could probably save a couple of lines here:
-> >
-> > if (VM_WARN_ON_ONCE_PAGE(page_tail->private !=3D 0, page_tail))
-> >
-> >         page_tail->private =3D 0;
-> >
->
-> That would mean that we eventually compile out the runtime check
->
-> #define VM_WARN_ON_ONCE_PAGE(cond, page)  BUILD_BUG_ON_INVALID(cond)
+Hi Linus,
 
-I thought the warning would be compiled out but not the check, my bad.
+Here is one last pull-request for 6.5 with 3 small fixes.
 
->
-> --
-> Cheers,
->
-> David / dhildenb
->
+Regards,
+
+Hans
+
+
+The following changes since commit 2b6aa6610dc9690f79d305ca938abfb799a4f766:
+
+  platform/x86: lenovo-ymc: Only bind on machines with a convertible DMI chassis-type (2023-08-13 14:50:25 +0200)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git tags/platform-drivers-x86-v6.5-5
+
+for you to fetch changes up to 0848cab765c634597636810bf76d0934003cce28:
+
+  platform/mellanox: Fix mlxbf-tmfifo not handling all virtio CONSOLE notifications (2023-08-23 17:13:36 +0200)
+
+----------------------------------------------------------------
+platform-drivers-x86 for v6.5-5
+
+Final set of pdx86 fixes for 6.5.
+
+The following is an automated git shortlog grouped by driver:
+
+ideapad-laptop:
+ -  Add support for new hotkeys found on ThinkBook 14s Yoga ITL
+
+lenovo-ymc:
+ -  Add Lenovo Yoga 7 14ACN6 to ec_trigger_quirk_dmi_table
+
+platform/mellanox:
+ -  Fix mlxbf-tmfifo not handling all virtio CONSOLE notifications
+
+----------------------------------------------------------------
+André Apitzsch (1):
+      platform/x86: ideapad-laptop: Add support for new hotkeys found on ThinkBook 14s Yoga ITL
+
+Shih-Yi Chen (1):
+      platform/mellanox: Fix mlxbf-tmfifo not handling all virtio CONSOLE notifications
+
+Swapnil Devesh (1):
+      platform/x86: lenovo-ymc: Add Lenovo Yoga 7 14ACN6 to ec_trigger_quirk_dmi_table
+
+ drivers/platform/mellanox/mlxbf-tmfifo.c | 1 +
+ drivers/platform/x86/ideapad-laptop.c    | 5 +++++
+ drivers/platform/x86/lenovo-ymc.c        | 7 +++++++
+ 3 files changed, 13 insertions(+)
+
