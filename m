@@ -2,133 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5181785BA1
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 17:14:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C29A4785BB5
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 17:15:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236601AbjHWPOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 11:14:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43692 "EHLO
+        id S235730AbjHWPPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 11:15:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233188AbjHWPOB (ORCPT
+        with ESMTP id S233322AbjHWPPG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 11:14:01 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F0CE101;
-        Wed, 23 Aug 2023 08:13:59 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2EF6A6535D;
-        Wed, 23 Aug 2023 15:13:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D356C433C7;
-        Wed, 23 Aug 2023 15:13:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692803638;
-        bh=kNFrTQhI01h19gYOwtJD/GeHDhHsvbsDC366A4mng78=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=X/Q0e7ggjVi1dgCJnjI4M6W1K0uVdSEpz26+75bi29cxyWjTWNDFJJqFiQJA8vAWO
-         vDifMqTI2EQ3TYcA0mLmh1yOVhYqehlq6L88UxgHwnOPp7E0OEZWXvC7+b1lfb9gtF
-         peRSdcPtJfl65CfiN4sB6zwwtmvp42qZakUq1plfWX1QP0gl5yCtvHisANQNZUFKp6
-         BOK38di3x0rV8WwXtgLvN6bh76/ZX3WyMgxzKPZNPJUlK64KfpFjm5EIN3RkqXmv3u
-         p4eT5AYXgmGKRoBc3ZVpJ0CQ18qNFDfJysBlKMLObD3SFtJnrh/vfTQQDmFRKqJpO0
-         n2TuSWB2v7aFQ==
-Date:   Wed, 23 Aug 2023 16:13:54 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Gregor Herburger <gregor.herburger@ew.tq-group.com>
-Cc:     Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux@ew.tq-group.com
-Subject: Re: [PATCH 2/6] dt-bindings: arm: fsl: Add TQ-Systems
- LS1043A/LS1046A based boards
-Message-ID: <20230823-negotiate-pyromania-1185ac037695@spud>
-References: <20230823120952.317740-1-gregor.herburger@ew.tq-group.com>
- <20230823120952.317740-3-gregor.herburger@ew.tq-group.com>
+        Wed, 23 Aug 2023 11:15:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A80910C3
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 08:14:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692803651;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nmWOJ3PgLNwb6XXHu+pQh+YNRDsU+vDPGbdwEescA6k=;
+        b=bYx3ixCNWZGCONUrDDYABMa62gIYOzJBc9DHnISg78YLHUq8uWdVrGlGYCT+p1YOHhCxG9
+        nvZt3Ry/mPlSWXtcvCNW8kaxHx/2m6h6H35QktX2ZbsN3SAmDmpN0xfP6E35X/79Hl6ccc
+        FFZ2VEXIep3aq+45JpEAVwaXSX9nNE8=
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com
+ [209.85.166.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-156-gS-6UN-BO-yfxa_p3z5Yjg-1; Wed, 23 Aug 2023 11:14:10 -0400
+X-MC-Unique: gS-6UN-BO-yfxa_p3z5Yjg-1
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-786d9d4d9a6so539221739f.2
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 08:14:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692803649; x=1693408449;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nmWOJ3PgLNwb6XXHu+pQh+YNRDsU+vDPGbdwEescA6k=;
+        b=WBDNd/tpVO5L7WpHWMFL9Il+HxzkUTV8CHwiLYJpE5xRWeuNK5uLWR/4HKcFyGB0xi
+         A+wm3adInh9BC+KCQDZDIKJixpPmo+OIDvwc8t5t1wv+lHR/YTfliBQ7c+6H8Wx+OS75
+         J6Tl9sQ3Ukwgh3diL7IgDg3x8/75cMuuRAsZFQzKt6Kop6mhb/bmCkI+RQ60S+yf+quJ
+         G3DgHvNh1qzkpkDxOydv5Rai/DBzGdlA/9DZfT7ALvwCI3Lpm0pdZP+TIXzKqDxXvAbh
+         kiojhA9Q5gMGq8MKDUC6Ig+NViI3zxEfi+ayDXNGQuSbMt6erQrhVREJ/pjkB71l+du6
+         NroQ==
+X-Gm-Message-State: AOJu0YxlifW+sUNPRGS8QRi1hsjBGhKYmPYbzeDXHE8jMnJmOCkXtWCr
+        FwDS3QVEHaB3sqhhwEHnrHMwqzHWNtTFE8GdGiT2jRodrpQE8k3iscA6H5QMvBfoju2eh0clXdS
+        a+vdvbNHa/xqfGAeMrj63G3S9
+X-Received: by 2002:a5e:8b04:0:b0:790:a23b:1dfc with SMTP id g4-20020a5e8b04000000b00790a23b1dfcmr3307542iok.9.1692803649368;
+        Wed, 23 Aug 2023 08:14:09 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH1ejXlq1DobE4s847LmD8hNlB4ek7rEulj4rPQgyLGwQUjlN1C1W1HdguCPBUX33+sS3zvSg==
+X-Received: by 2002:a5e:8b04:0:b0:790:a23b:1dfc with SMTP id g4-20020a5e8b04000000b00790a23b1dfcmr3307519iok.9.1692803649184;
+        Wed, 23 Aug 2023 08:14:09 -0700 (PDT)
+Received: from redhat.com ([38.15.60.12])
+        by smtp.gmail.com with ESMTPSA id s24-20020a02ad18000000b00430a69ea278sm3821226jan.167.2023.08.23.08.14.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Aug 2023 08:14:08 -0700 (PDT)
+Date:   Wed, 23 Aug 2023 09:14:07 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Ankit Agrawal <ankita@nvidia.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        "shameerali.kolothum.thodi@huawei.com" 
+        <shameerali.kolothum.thodi@huawei.com>,
+        "kevin.tian@intel.com" <kevin.tian@intel.com>,
+        Aniket Agashe <aniketa@nvidia.com>, Neo Jia <cjia@nvidia.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        "Tarun Gupta (SW-GPU)" <targupta@nvidia.com>,
+        Vikram Sethi <vsethi@nvidia.com>,
+        Andy Currid <acurrid@nvidia.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Dan Williams <danw@nvidia.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v7 1/1] vfio/nvgpu: Add vfio pci variant module for
+ grace hopper
+Message-ID: <20230823091407.0964bd3b.alex.williamson@redhat.com>
+In-Reply-To: <BY5PR12MB37639528FCF1CDB7D595B6FFB01CA@BY5PR12MB3763.namprd12.prod.outlook.com>
+References: <20230822202303.19661-1-ankita@nvidia.com>
+        <ZOYP92q1mDQgwnc9@nvidia.com>
+        <BY5PR12MB37639528FCF1CDB7D595B6FFB01CA@BY5PR12MB3763.namprd12.prod.outlook.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.35; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="0wiGOiHK2OaEQY0M"
-Content-Disposition: inline
-In-Reply-To: <20230823120952.317740-3-gregor.herburger@ew.tq-group.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 23 Aug 2023 14:50:31 +0000
+Ankit Agrawal <ankita@nvidia.com> wrote:
 
---0wiGOiHK2OaEQY0M
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> >> +     if (index == VFIO_PCI_BAR2_REGION_INDEX) {
+> >> +             if (!nvdev->opregion) {
+> >> +                     nvdev->opregion = memremap(nvdev->hpa, nvdev->mem_length, MEMREMAP_WB);
+> >> +                     if (!nvdev->opregion)
+> >> +                             return -ENOMEM;
+> >> +             }  
+> >
+> > [AW] Seems like this would be susceptible to concurrent accesses causing
+> > duplicate mappings.
+> >
+> > [JG] Needs some kind of locking on opregion  
+> 
+> Right, will add a new lock item in nvdev to control the access to opregion/memmap.
+> Please let me know if it is preferable to do memremap in open_device instead of
+> read/write.
 
-On Wed, Aug 23, 2023 at 02:09:48PM +0200, Gregor Herburger wrote:
-> TQMLS1043A and TQMLS1046A use the LS1043A LS1046A SOC on a common
-> layout.
-> MBLS10XXA is a starterkit baseboard usable for both SOMs.
->=20
-> Signed-off-by: Gregor Herburger <gregor.herburger@ew.tq-group.com>
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+That's a valid option also, certainly avoids the locking and
+serialization per access.  Thanks,
 
-Thanks,
-Conor.
+Alex
 
-> ---
->  Documentation/devicetree/bindings/arm/fsl.yaml | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentati=
-on/devicetree/bindings/arm/fsl.yaml
-> index 9450b2c8a678..55e8279d834b 100644
-> --- a/Documentation/devicetree/bindings/arm/fsl.yaml
-> +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
-> @@ -1389,6 +1389,13 @@ properties:
->                - fsl,ls1043a-qds
->            - const: fsl,ls1043a
-> =20
-> +      - description: TQ-Systems LS1043A based Boards
-> +        items:
-> +          - enum:
-> +              - tq,ls1043a-tqmls1043a-mbls10xxa
-> +          - const: tq,ls1043a-tqmls1043a
-> +          - const: fsl,ls1043a
-> +
->        - description: LS1046A based Boards
->          items:
->            - enum:
-> @@ -1397,6 +1404,13 @@ properties:
->                - fsl,ls1046a-rdb
->            - const: fsl,ls1046a
-> =20
-> +      - description: TQ-Systems LS1046A based Boards
-> +        items:
-> +          - enum:
-> +              - tq,ls1046a-tqmls1046a-mbls10xxa
-> +          - const: tq,ls1046a-tqmls1046a
-> +          - const: fsl,ls1046a
-> +
->        - description: LS1088A based Boards
->          items:
->            - enum:
-> --=20
-> 2.34.1
->=20
-
---0wiGOiHK2OaEQY0M
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZOYiMQAKCRB4tDGHoIJi
-0lDPAP4xEPIQe7SYG7idcSMesMhkCpYcqDXyfz+OZAo9y36gMQEA1/xripnLlq7v
-MkEQQAe9S0oZBDagIidd1+kwUIkBrwo=
-=Gq/w
------END PGP SIGNATURE-----
-
---0wiGOiHK2OaEQY0M--
