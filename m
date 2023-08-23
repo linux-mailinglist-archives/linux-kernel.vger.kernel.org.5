@@ -2,62 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A750785FB2
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 20:32:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30702785FB5
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 20:33:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238167AbjHWScT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 14:32:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49142 "EHLO
+        id S238170AbjHWSdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 14:33:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236748AbjHWScS (ORCPT
+        with ESMTP id S232847AbjHWSdC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 14:32:18 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1A431A5;
-        Wed, 23 Aug 2023 11:32:16 -0700 (PDT)
+        Wed, 23 Aug 2023 14:33:02 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F13EFD
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 11:33:00 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4659A64451;
-        Wed, 23 Aug 2023 18:32:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B732C433C7;
-        Wed, 23 Aug 2023 18:32:12 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EA0796208B
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 18:32:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07B58C433C7;
+        Wed, 23 Aug 2023 18:32:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692815535;
-        bh=0HciKpHlZdcEls9dwEmiX8R3O/Qz43F/7YetXm6Ud+U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hn7VJd7DbJNKsOH2mQAyRhbqxgq67b9B/p57jy10h3L3I9/uas8P+eVDtDH+DDsRg
-         NpBOOlQ7Lf2YMphhCQ7yq2SKuuG356vI8xNzfdUZllNczZluj6rLezBRqI5J51R6PK
-         ckImsNF8haWZlTintYXlsEPd8hsx2PKwd7mdHgnSF81cgsFLOv1QqkEfM4rHPe79g9
-         fMNVj7OVgX2w7WKQuFqjjmUWfAmA4x+91tvq4pww8TXQCiGjTEkYMJWRxnAjFzlt3X
-         cYXLFLpjDDqDjk5gYxPr/Ay8vM74sIhX8NwKDUGOTdTj0noQQ25vbPa5J7KI12noya
-         dtMzpAE7Aw+tA==
-Date:   Wed, 23 Aug 2023 19:32:10 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Sheng-Liang Pan <sheng-liang.pan@quanta.corp-partner.google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v4 1/2] dt-bindings: arm: qcom: add sc7180-lazor board
- bindings
-Message-ID: <20230823-obnoxious-subtext-722c5a692aaa@spud>
-References: <20230822094414.123162-1-sheng-liang.pan@quanta.corp-partner.google.com>
- <20230822174101.v4.1.I26e017b00a341e7a5a2e94a83596923713408817@changeid>
- <20230823-raving-either-fb7bdb98b846@spud>
- <CAD=FV=U2kHPu2coSniUXfDJH8gYMV6115NKkyS7Rt4mEx4fzew@mail.gmail.com>
- <20230823-panoramic-frying-e31a5a10f764@spud>
+        s=k20201202; t=1692815579;
+        bh=7WSLAdWSCJ4baK4IhgkjUanLQjLQJoatnEMew7d1GVc=;
+        h=Date:From:To:Cc:Subject:From;
+        b=jDXP9gv20HXWZi8btLX27uoifDkz9/IFIrdWACIxkzEWxzcxqOQGK1bsVWDDRiSNU
+         fOqj95LF7iKUomJDFh9WWQcVhFURgFCbd3BXzeLO2C9TNhcnbka3y02fH9MBAGJXoC
+         F+rXP89X0KlXhzTbaakw/6E+xQpc7ZuaU7f7HVgpW6RhgOzmH09DF/CJ4Id8sk9WTP
+         w6Uuh/nrjh/qXd6Y8ZyF/BikC9lGBv05sG4AKXfLLh0ugizGFDsWi/XkVMjXBIQVPV
+         RsooTRGXslNy6IdGinCFlz963xFxVLNo1fFh6kplQu1GXSJB7zyyuZU5AoH99Dgv/Y
+         WQKiejHPUvFWQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 4673840722; Wed, 23 Aug 2023 15:32:56 -0300 (-03)
+Date:   Wed, 23 Aug 2023 15:32:56 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Guilherme Amadio <amadio@gentoo.org>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [PATCH 1/1] perf build: Allow customization of clang options for BPF
+ target
+Message-ID: <ZOZQ2LDA+3Wg8x2T@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="RXzpR42FBKGFoejL"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230823-panoramic-frying-e31a5a10f764@spud>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -68,57 +58,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fixed it up to apply to current source tree.
 
---RXzpR42FBKGFoejL
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+- Arnaldo
 
-On Wed, Aug 23, 2023 at 07:29:33PM +0100, Conor Dooley wrote:
-> On Wed, Aug 23, 2023 at 10:17:17AM -0700, Doug Anderson wrote:
-> > Hi,
-> >=20
-> > On Wed, Aug 23, 2023 at 8:11=E2=80=AFAM Conor Dooley <conor@kernel.org>=
- wrote:
-> > >
-> > > On Tue, Aug 22, 2023 at 05:44:13PM +0800, Sheng-Liang Pan wrote:
-> > > > Introduce more sc7180-lazor sku and board version configuration,
-> > > > add no-eSIM SKU 10 for Lazor, no-eSIM SKU 15 and 18 for Limozeen,
-> > > > add new board version 10 for audio codec ALC5682i-VS.
-> > > >
-> > > > Signed-off-by: Sheng-Liang Pan <sheng-liang.pan@quanta.corp-partner=
-=2Egoogle.com>
-> > > > Reviewed-by: Douglas Anderson <dianders@chromium.org>
-> > >
-> > > Acked-by: Conor Dooley <conor.dooley@microchip.com>
-> >=20
-> > Conor: any chance you could reply to v6 (instead of v4) and add your Ac=
-k?
->=20
-> People need to relax! This seems only to have been sent yesterday?!?
->=20
-> > https://lore.kernel.org/all/20230823151005.v6.1.I26e017b00a341e7a5a2e94=
-a83596923713408817@changeid/
-> >=20
-> > I _think_ the v6 patch series is in good shape so I don't expect
-> > Sheng-Liang to have to send a v7. I'm worried that your Ack will be
-> > lost if it's not sent in response to the v6 patch.
+From: Guilherme Amadio <amadio@gentoo.org>
 
-And I must have deleted the v6 w/o reading even really reading it as it
-has an R-b from Krzysztof. My ack is therefore not needed anyway, so who
-cares if it gets lost :)
+This also puts an unconditional -Werror under control of WERROR. The
+clang includes added during the build can lead to a warning that may be
+turned into an error. In addition, hardened clang produces a warning
+about lack of support for -fstack-protector* options for the BPF target:
 
+  clang -g -O2 -target bpf -Wall -Werror -Ilinux/tools/perf/util/bpf_skel/.tmp/.. \
+    -I -idirafter /usr/lib/llvm/16/bin/../../../../lib/clang/16/include -idirafter /usr/local/include \
+    -idirafter /usr/include  -Ilinux/tools/include/uapi -c util/bpf_skel/bperf_follower.bpf.c \
+    -o linux/tools/perf/util/bpf_skel/.tmp/bperf_follower.bpf.o && llvm-strip -g linux/tools/perf/util/bpf_skel/.tmp/bperf_follower.bpf.o
+  clang-16: error: /usr/lib/llvm/16/bin/../../../../lib/clang/16/include: 'linker' input unused [-Werror,-Wunused-command-line-argument]
+  clang-16: error: ignoring '-fstack-protector-strong' option as it is not currently supported for target 'bpf' [-Werror,-Woption-ignored]
+  make[1]: *** [Makefile.perf:1082: linux/tools/perf/util/bpf_skel/.tmp/bpf_prog_profiler.bpf.o] Error 1
 
+Signed-off-by: Guilherme Amadio <amadio@gentoo.org>
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Ian Rogers <irogers@google.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Link: https://lore.kernel.org/lkml/
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+---
+ tools/perf/Makefile.perf | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
---RXzpR42FBKGFoejL
-Content-Type: application/pgp-signature; name="signature.asc"
+diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+index a5dd1ba0fb5f1f17..37af6df7b978de27 100644
+--- a/tools/perf/Makefile.perf
++++ b/tools/perf/Makefile.perf
+@@ -1056,10 +1056,15 @@ ifneq ($(CROSS_COMPILE),)
+ CLANG_TARGET_ARCH = --target=$(notdir $(CROSS_COMPILE:%-=%))
+ endif
+ 
++CLANG_OPTIONS = -Wall
+ CLANG_SYS_INCLUDES = $(call get_sys_includes,$(CLANG),$(CLANG_TARGET_ARCH))
+ BPF_INCLUDE := -I$(SKEL_TMP_OUT)/.. -I$(LIBBPF_INCLUDE) $(CLANG_SYS_INCLUDES)
+ TOOLS_UAPI_INCLUDE := -I$(srctree)/tools/include/uapi
+ 
++ifneq ($(WERROR),0)
++  CLANG_OPTIONS += -Werror
++endif
++
+ $(BPFTOOL): | $(SKEL_TMP_OUT)
+ 	$(Q)CFLAGS= $(MAKE) -C ../bpf/bpftool \
+ 		OUTPUT=$(SKEL_TMP_OUT)/ bootstrap
+@@ -1101,7 +1106,7 @@ else
+ endif
+ 
+ $(SKEL_TMP_OUT)/%.bpf.o: util/bpf_skel/%.bpf.c $(LIBBPF) $(SKEL_OUT)/vmlinux.h | $(SKEL_TMP_OUT)
+-	$(QUIET_CLANG)$(CLANG) -g -O2 --target=bpf -Wall -Werror $(BPF_INCLUDE) $(TOOLS_UAPI_INCLUDE) \
++	$(QUIET_CLANG)$(CLANG) -g -O2 --target=bpf $(CLANG_OPTIONS) $(BPF_INCLUDE) $(TOOLS_UAPI_INCLUDE) \
+ 	  -c $(filter util/bpf_skel/%.bpf.c,$^) -o $@
+ 
+ $(SKEL_OUT)/%.skel.h: $(SKEL_TMP_OUT)/%.bpf.o | $(BPFTOOL)
+-- 
+2.37.1
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZOZQqgAKCRB4tDGHoIJi
-0jbtAQDfUNR8wN3amM6Ch0WKkxzG3tjYvjG/oDlrTaAMZitFDQEAliNeMM6hj9q6
-UBmS3jwFOdRDRIpXbqPXYnNfBMZ69g8=
-=KeCv
------END PGP SIGNATURE-----
-
---RXzpR42FBKGFoejL--
