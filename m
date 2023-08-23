@@ -2,137 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62ABB784E73
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 03:56:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C6A0784E7A
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 04:01:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232130AbjHWB4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 21:56:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46428 "EHLO
+        id S232138AbjHWCBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 22:01:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231277AbjHWB4c (ORCPT
+        with ESMTP id S232133AbjHWCBH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 21:56:32 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 765E4E4B
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 18:56:30 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id af79cd13be357-76df3d8fb4eso10264385a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 18:56:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692755789; x=1693360589;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=FPwz2guvxWTesYeLbnBS+USxZkPGmHJTAv/y5EAHQAk=;
-        b=b5gS2nUC9aWd0EeUq+33K1BU99UQqM8ro/2+mYrVyE8dZyrCBEwjLVg+dp2OljOE6j
-         4lKYWDQAjfF1pdFFz0xeahWCZd7r6b9enub479JBwJXQvwxT9p8nWg001yJ+1A3j1Sce
-         4wbapIAI0BbC9gnJke0t+na4N7tGA2mxku9vuwFNOqxRc89YMYjRB+MaHEnxnDbZrWnt
-         N2IPv6K0FPK5MIymqeUA/k5wIiEVrvvJwTQn9OQ/QtQHcbX2FmnOUXRJkLlxHGsV3imh
-         4otLb1OyRTpP/LxfrhnIu6PNDr7Tcb+vqG8VMstkN9l59BMtLyYrfp6+hB67pM/l8//R
-         HBqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692755789; x=1693360589;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FPwz2guvxWTesYeLbnBS+USxZkPGmHJTAv/y5EAHQAk=;
-        b=UEw/90UbeC3o4kI9/uLSNKk7jKjSShG5h+722YjQCJJW1UAim8XjqlECpwUKN3fqqM
-         CDZ9laeB4TlBGHPxPFF14Uk0z9CsdwMccxT4dp8XsCdPrpZYl5wMdjl1lkxJ8Fn0aUvu
-         dvnr5CUqId5aUscXqoUTk0SYf611Ue9rtladSPH700o/RP7sIeHWLG5qTrDxUQyHc6Gw
-         F2M2TdZ9Aht7TIdiyEnRVspYF66ogNrwBYGtj8mPbRWRrbCbX+C9XHML1QziXcvftmiO
-         glD8J9A9M/PsCEiddmsgbQCkYdCDW0QYw8b/BY8Zvx6/R57G0NetnBm+ABxdJQqOTEPl
-         DmRQ==
-X-Gm-Message-State: AOJu0Yx38h4MiA4BX9IdUicwN9St8zn8h+cTuNyai73IYdyJKMIVNu9/
-        6uNF4vMvorquSBHHmy5LFbw=
-X-Google-Smtp-Source: AGHT+IH75JtFZGYpnxBHGghNjPBBSqygdG8Cgt9jf5ZT1uJY6FfVjZA+xHfFgG04YyNGB9zW9DVcgg==
-X-Received: by 2002:a0c:f484:0:b0:64f:4e7a:bc3a with SMTP id i4-20020a0cf484000000b0064f4e7abc3amr4030453qvm.26.1692755789584;
-        Tue, 22 Aug 2023 18:56:29 -0700 (PDT)
-Received: from alolivei-thinkpadt480s.gru.csb ([2804:14c:bf20:86d6:7871:f7e9:8a15:865a])
-        by smtp.gmail.com with ESMTPSA id d22-20020a05620a141600b00767f00a9c67sm3580020qkj.95.2023.08.22.18.56.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Aug 2023 18:56:29 -0700 (PDT)
-Date:   Tue, 22 Aug 2023 22:56:25 -0300
-From:   Alexon Oliveira <alexondunkan@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     martyn@welchs.me.uk, manohar.vanga@gmail.com,
-        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
-Subject: [PATCH] staging: vme_user: fix check alignment to match open
- parenthesis
-Message-ID: <ZOVnSXle3bYYQD27@alolivei-thinkpadt480s.gru.csb>
+        Tue, 22 Aug 2023 22:01:07 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5726AE4A;
+        Tue, 22 Aug 2023 19:01:01 -0700 (PDT)
+Received: from dggpemm500009.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RVq9066kJzNnDv;
+        Wed, 23 Aug 2023 09:57:24 +0800 (CST)
+Received: from [10.174.179.24] (10.174.179.24) by
+ dggpemm500009.china.huawei.com (7.185.36.225) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Wed, 23 Aug 2023 10:00:58 +0800
+Subject: Re: [PATCH v2] mm: vmscan: reclaim anon pages if there are swapcache
+ pages
+To:     Yosry Ahmed <yosryahmed@google.com>
+References: <20230822024901.2412520-1-liushixin2@huawei.com>
+ <CAJD7tkZkYsopuqGH_Lo=kE4=HO33wmvK6mXhuq4p_KZ6pYuXtw@mail.gmail.com>
+CC:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        <wangkefeng.wang@huawei.com>, <linux-kernel@vger.kernel.org>,
+        <cgroups@vger.kernel.org>, <linux-mm@kvack.org>
+From:   Liu Shixin <liushixin2@huawei.com>
+Message-ID: <50c49baf-d04a-f1e3-0d0e-7bb8e22c3889@huawei.com>
+Date:   Wed, 23 Aug 2023 10:00:58 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <CAJD7tkZkYsopuqGH_Lo=kE4=HO33wmvK6mXhuq4p_KZ6pYuXtw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.24]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500009.china.huawei.com (7.185.36.225)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed all CHECK: Alignment should match open parenthesis
-as reported by checkpatch to adhere to the Linux kernel
-coding-style guidelines.
 
-Signed-off-by: Alexon Oliveira <alexondunkan@gmail.com>
----
- drivers/staging/vme_user/vme.h | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/staging/vme_user/vme.h b/drivers/staging/vme_user/vme.h
-index faa9816046a9..5e2744d0de08 100644
---- a/drivers/staging/vme_user/vme.h
-+++ b/drivers/staging/vme_user/vme.h
-@@ -130,7 +130,7 @@ struct vme_driver {
- 
- void *vme_alloc_consistent(struct vme_resource *, size_t, dma_addr_t *);
- void vme_free_consistent(struct vme_resource *, size_t,  void *,
--	dma_addr_t);
-+			 dma_addr_t);
- 
- size_t vme_get_size(struct vme_resource *);
- int vme_check_window(u32 aspace, unsigned long long vme_base,
-@@ -138,20 +138,20 @@ int vme_check_window(u32 aspace, unsigned long long vme_base,
- 
- struct vme_resource *vme_slave_request(struct vme_dev *, u32, u32);
- int vme_slave_set(struct vme_resource *, int, unsigned long long,
--	unsigned long long, dma_addr_t, u32, u32);
-+		  unsigned long long, dma_addr_t, u32, u32);
- int vme_slave_get(struct vme_resource *, int *, unsigned long long *,
--	unsigned long long *, dma_addr_t *, u32 *, u32 *);
-+		  unsigned long long *, dma_addr_t *, u32 *, u32 *);
- void vme_slave_free(struct vme_resource *);
- 
- struct vme_resource *vme_master_request(struct vme_dev *, u32, u32, u32);
- int vme_master_set(struct vme_resource *, int, unsigned long long,
--	unsigned long long, u32, u32, u32);
-+		   unsigned long long, u32, u32, u32);
- int vme_master_get(struct vme_resource *, int *, unsigned long long *,
--	unsigned long long *, u32 *, u32 *, u32 *);
-+		   unsigned long long *, u32 *, u32 *, u32 *);
- ssize_t vme_master_read(struct vme_resource *, void *, size_t, loff_t);
- ssize_t vme_master_write(struct vme_resource *, void *, size_t, loff_t);
- unsigned int vme_master_rmw(struct vme_resource *, unsigned int, unsigned int,
--	unsigned int, loff_t);
-+			    unsigned int, loff_t);
- int vme_master_mmap(struct vme_resource *resource, struct vm_area_struct *vma);
- void vme_master_free(struct vme_resource *);
- 
-@@ -162,13 +162,13 @@ struct vme_dma_attr *vme_dma_pci_attribute(dma_addr_t);
- struct vme_dma_attr *vme_dma_vme_attribute(unsigned long long, u32, u32, u32);
- void vme_dma_free_attribute(struct vme_dma_attr *);
- int vme_dma_list_add(struct vme_dma_list *, struct vme_dma_attr *,
--	struct vme_dma_attr *, size_t);
-+		     struct vme_dma_attr *, size_t);
- int vme_dma_list_exec(struct vme_dma_list *);
- int vme_dma_list_free(struct vme_dma_list *);
- int vme_dma_free(struct vme_resource *);
- 
- int vme_irq_request(struct vme_dev *, int, int,
--	void (*callback)(int, int, void *), void *);
-+		    void (*callback)(int, int, void *), void *);
- void vme_irq_free(struct vme_dev *, int, int);
- int vme_irq_generate(struct vme_dev *, int, int);
- 
--- 
-2.41.0
+On 2023/8/23 0:35, Yosry Ahmed wrote:
+> On Mon, Aug 21, 2023 at 6:54 PM Liu Shixin <liushixin2@huawei.com> wrote:
+>> When spaces of swap devices are exhausted, only file pages can be reclaimed.
+>> But there are still some swapcache pages in anon lru list. This can lead
+>> to a premature out-of-memory.
+>>
+>> This problem can be fixed by checking number of swapcache pages in
+>> can_reclaim_anon_pages(). For memcg v2, there are swapcache stat that can
+>> be used directly. For memcg v1, use total_swapcache_pages() instead, which
+>> may not accurate but can solve the problem.
+> Interesting find. I wonder if we really don't have any handling of
+> this situation.
+I have alreadly test this problem and can confirm that it is a real problem.
+With 9MB swap space and 10MB mem_cgroup limit，when allocate 15MB memory,
+there is a probability that OOM occurs.
+>
+>> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+>> ---
+>>  include/linux/swap.h |  6 ++++++
+>>  mm/memcontrol.c      |  8 ++++++++
+>>  mm/vmscan.c          | 12 ++++++++----
+>>  3 files changed, 22 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/include/linux/swap.h b/include/linux/swap.h
+>> index 456546443f1f..0318e918bfa4 100644
+>> --- a/include/linux/swap.h
+>> +++ b/include/linux/swap.h
+>> @@ -669,6 +669,7 @@ static inline void mem_cgroup_uncharge_swap(swp_entry_t entry, unsigned int nr_p
+>>  }
+>>
+>>  extern long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg);
+>> +extern long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg);
+>>  extern bool mem_cgroup_swap_full(struct folio *folio);
+>>  #else
+>>  static inline void mem_cgroup_swapout(struct folio *folio, swp_entry_t entry)
+>> @@ -691,6 +692,11 @@ static inline long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg)
+>>         return get_nr_swap_pages();
+>>  }
+>>
+>> +static inline long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg)
+>> +{
+>> +       return total_swapcache_pages();
+>> +}
+>> +
+>>  static inline bool mem_cgroup_swap_full(struct folio *folio)
+>>  {
+>>         return vm_swap_full();
+>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+>> index e8ca4bdcb03c..3e578f41023e 100644
+>> --- a/mm/memcontrol.c
+>> +++ b/mm/memcontrol.c
+>> @@ -7567,6 +7567,14 @@ long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg)
+>>         return nr_swap_pages;
+>>  }
+>>
+>> +long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg)
+>> +{
+>> +       if (mem_cgroup_disabled() || do_memsw_account())
+>> +               return total_swapcache_pages();
+>> +
+>> +       return memcg_page_state(memcg, NR_SWAPCACHE);
+>> +}
+> Is there a reason why we cannot use NR_SWAPCACHE for cgroup v1? Isn't
+> that being maintained regardless of cgroup version? It is not exposed
+> in cgroup v1's memory.stat, but I don't think there is a reason we
+> can't do that -- if only to document that it is being used with cgroup
+> v1.
+Thanks for your advice, it is more appropriate to use NR_SWAPCACH.
+>
+>
+>> +
+>>  bool mem_cgroup_swap_full(struct folio *folio)
+>>  {
+>>         struct mem_cgroup *memcg;
+>> diff --git a/mm/vmscan.c b/mm/vmscan.c
+>> index 7c33c5b653ef..bcb6279cbae7 100644
+>> --- a/mm/vmscan.c
+>> +++ b/mm/vmscan.c
+>> @@ -609,13 +609,17 @@ static inline bool can_reclaim_anon_pages(struct mem_cgroup *memcg,
+>>         if (memcg == NULL) {
+>>                 /*
+>>                  * For non-memcg reclaim, is there
+>> -                * space in any swap device?
+>> +                * space in any swap device or swapcache pages?
+>>                  */
+>> -               if (get_nr_swap_pages() > 0)
+>> +               if (get_nr_swap_pages() + total_swapcache_pages() > 0)
+>>                         return true;
+>>         } else {
+>> -               /* Is the memcg below its swap limit? */
+>> -               if (mem_cgroup_get_nr_swap_pages(memcg) > 0)
+>> +               /*
+>> +                * Is the memcg below its swap limit or is there swapcache
+>> +                * pages can be freed?
+>> +                */
+>> +               if (mem_cgroup_get_nr_swap_pages(memcg) +
+>> +                   mem_cgroup_get_nr_swapcache_pages(memcg) > 0)
+>>                         return true;
+>>         }
+> I wonder if it would be more efficient to set a bit in struct
+> scan_control if we only are out of swap spaces but have swap cache
+> pages, and only isolate anon pages that are in the swap cache, instead
+> of isolating random anon pages. We may end up isolating pages that are
+> not in the swap cache for a few iterations and wasting cycles.
+Good idea. Thanks.
+>
+>> --
+>> 2.25.1
+>>
+> .
+>
 
