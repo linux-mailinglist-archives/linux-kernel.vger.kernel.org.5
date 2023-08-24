@@ -2,176 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48917786E13
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 13:36:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CFA3786E14
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 13:37:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241025AbjHXLfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 07:35:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38040 "EHLO
+        id S236664AbjHXLgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 07:36:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241193AbjHXLfE (ORCPT
+        with ESMTP id S241166AbjHXLgd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 07:35:04 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36F212115
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 04:34:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692876882; x=1724412882;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=CrnoNF/qGMXjiWOVC2r0bJQWdRM/pmr5B5MUn/sQ93Q=;
-  b=Jg2knqxIQx5Wlbfay/W6Sr2MWdBqe3Sm5MxrcZyUeYkBgsiS2Ltv7Ruo
-   kMDaKbMHNxnUvO3BRnUeIAIShwfNdjddYll4IdsxDOKwRNSNLYkMv0xju
-   ISSFqvUysV1oW2b3dAGGaA9VHkxCkvp1Mas9iQRjCU5Re2MfC1sJUqhDr
-   HOSNY/sLo/3CmV0h541mKnP3lWdpCOUZ5tLbFULzwfQUquM4hFVXj71Dv
-   3viY0DYGu1s+6oWuq2N3PrFfWG+waZUQBBV8r4mpQNLl0ll/+/Wgc4oWd
-   /UFksm9UuUyO587gsQP/8o60KPoXXYn1gjXIyuu0prPd4xWzcoRUsWLLt
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="460771723"
-X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
-   d="scan'208";a="460771723"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 04:34:39 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
-   d="scan'208";a="880770237"
-Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
-  by fmsmga001.fm.intel.com with ESMTP; 24 Aug 2023 04:34:39 -0700
-Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qZ8be-0001zY-0M;
-        Thu, 24 Aug 2023 11:34:30 +0000
-Date:   Thu, 24 Aug 2023 19:34:28 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     John Stultz <jstultz@google.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, John Stultz <jstultz@google.com>,
-        Joel Fernandes <joelaf@google.com>,
-        Qais Yousef <qyousef@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Zimuzo Ezeozue <zezeozue@google.com>,
-        Youssef Esmat <youssefesmat@google.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, kernel-team@android.com
-Subject: Re: [PATCH v5 15/19] sched: Add proxy deactivate helper
-Message-ID: <202308241905.goxohVDL-lkp@intel.com>
-References: <20230819060915.3001568-16-jstultz@google.com>
+        Thu, 24 Aug 2023 07:36:33 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7F3E1FD8
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 04:36:02 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id 98e67ed59e1d1-26f9521de4cso1726172a91.0
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 04:36:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692876961; x=1693481761;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=F6ppMC27jC5/97XtY+LPAAYgejWVCICqeBOmzOSX+qU=;
+        b=G8oi7VDU+awttb/a+wbj78hIbEJrYiR9A6DeUMd0Szx4K7SbLf8qmbab1BRYQnkIrw
+         h5dSFPjlex2na3H7LK2wdst9HuoEs1B5mlSZmwdC4tZlW4TLfKh7ifnjqm7ufdIq7sPV
+         WcRYbH6f01SmF9REQ3y08VzIFQOCK5Nc0o+sIq1Agzs4VeeR7+3bN9ipTTJ2Muc0HIi8
+         uwa5MBU28XllhSV+BgL0xUH4Sc3AEP+xnIOmam8k4HTIJY78eGFcHVEGYGjrQeWz6KJh
+         FpSFY6WeK8qy7SO1CFATaxy+9Q0DxIwC+c6/fC/Jioy9YNiLl4dU27r0t303nPJmr+gE
+         qK0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692876961; x=1693481761;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=F6ppMC27jC5/97XtY+LPAAYgejWVCICqeBOmzOSX+qU=;
+        b=Q8LlzMOIFXbfx2phZtn8ZMi7IMW6l+jdP1YB6Hc8wXJK0Hx6L3cWi+YInY6JfvJYtG
+         mxqAQcKaUWumpkc+ZikYbD5sgvhdF6iTDgItNpws0yBRnxHArtdVx1xsicI8UwKBVD+X
+         ZhxdXNpCi+jbKjvnLFOvvdLlEXtm/ZS56p0b6pb941PjfAdfGpVRpbZEIAPRZGKtF7fy
+         MDmh5gwCkBnFH9zKsldCyPB4bfDzkbdnccsdXrfeqCSY1NBGM0b+rF4wHiP5jeoQqLTU
+         aDyfbQegZnCyHKfbLwwwFsoaq8YQFE6OE8dMw+gHXhZKUjpD3xMHRUdCNfjDCYqty+en
+         QAUA==
+X-Gm-Message-State: AOJu0YwQyeQXlLltYYqxx/n+l8pjLSMawDK8UDSK79sSj421nW30F85y
+        jeaMB2JtMV8Y45iMLFIUfWo=
+X-Google-Smtp-Source: AGHT+IG1cFdB08iSSOiFfXjVuG0FBeFvKxOsSN8w3zTAmFSnn81tC1eCmxKYJVj3zhhTNFPCmuCJ6A==
+X-Received: by 2002:a17:90b:1911:b0:26d:2b42:cdae with SMTP id mp17-20020a17090b191100b0026d2b42cdaemr11146587pjb.3.1692876961196;
+        Thu, 24 Aug 2023 04:36:01 -0700 (PDT)
+Received: from VERNHAO-MC1.tencent.com ([103.7.29.31])
+        by smtp.gmail.com with ESMTPSA id m6-20020a17090a34c600b00263b4b1255esm1479189pjf.51.2023.08.24.04.35.59
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Thu, 24 Aug 2023 04:36:00 -0700 (PDT)
+From:   Xin Hao <haoxing990@gmail.com>
+X-Google-Original-From: Xin Hao <haoxing990gmail.com>
+To:     yuzhao@google.com
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, haoxing990@gmail.com,
+        Vern Hao <vernhao@tencent.com>
+Subject: [PATCH] mm: multi-gen LRU: Optimize some duplicate codes
+Date:   Thu, 24 Aug 2023 19:35:38 +0800
+Message-ID: <20230824113538.5160-1-user@VERNHAO-MC1>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230819060915.3001568-16-jstultz@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi John,
+From: Vern Hao <vernhao@tencent.com>
 
-kernel test robot noticed the following build warnings:
+In lru_gen_look_around() and walk_pte_range(), there are too many
+similarities between them, so there add a common function
+lru_gen_folio_status_check() to simplify these part of duplicate codes.
 
-[auto build test WARNING on tip/locking/core]
-[also build test WARNING on linus/master tip/auto-latest v6.5-rc7]
-[cannot apply to tip/sched/core tip/master next-20230824]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Signed-off-by: Vern Hao <vernhao@tencent.com>
+---
+ mm/vmscan.c | 125 ++++++++++++++++++++++++----------------------------
+ 1 file changed, 57 insertions(+), 68 deletions(-)
 
-url:    https://github.com/intel-lab-lkp/linux/commits/John-Stultz/sched-Unify-runtime-accounting-across-classes/20230821-121604
-base:   tip/locking/core
-patch link:    https://lore.kernel.org/r/20230819060915.3001568-16-jstultz%40google.com
-patch subject: [PATCH v5 15/19] sched: Add proxy deactivate helper
-config: loongarch-allmodconfig (https://download.01.org/0day-ci/archive/20230824/202308241905.goxohVDL-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20230824/202308241905.goxohVDL-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308241905.goxohVDL-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   kernel/sched/core.c:6565:6: warning: no previous prototype for 'try_to_deactivate_task' [-Wmissing-prototypes]
-    6565 | bool try_to_deactivate_task(struct rq *rq, struct task_struct *p,
-         |      ^~~~~~~~~~~~~~~~~~~~~~
->> kernel/sched/core.c:6603:6: warning: no previous prototype for 'proxy_deactivate' [-Wmissing-prototypes]
-    6603 | bool proxy_deactivate(struct rq *rq, struct task_struct *next)
-         |      ^~~~~~~~~~~~~~~~
-
-
-vim +/proxy_deactivate +6603 kernel/sched/core.c
-
-  6564	
-> 6565	bool try_to_deactivate_task(struct rq *rq, struct task_struct *p,
-  6566				    unsigned long state, bool deactivate_cond)
-  6567	{
-  6568		if (signal_pending_state(state, p)) {
-  6569			WRITE_ONCE(p->__state, TASK_RUNNING);
-  6570		} else if (deactivate_cond) {
-  6571			p->sched_contributes_to_load =
-  6572				(state & TASK_UNINTERRUPTIBLE) &&
-  6573				!(state & TASK_NOLOAD) &&
-  6574				!(state & TASK_FROZEN);
-  6575	
-  6576			if (p->sched_contributes_to_load)
-  6577				rq->nr_uninterruptible++;
-  6578	
-  6579			/*
-  6580			 * __schedule()			ttwu()
-  6581			 *   prev_state = prev->state;    if (p->on_rq && ...)
-  6582			 *   if (prev_state)		    goto out;
-  6583			 *     p->on_rq = 0;		  smp_acquire__after_ctrl_dep();
-  6584			 *				  p->state = TASK_WAKING
-  6585			 *
-  6586			 * Where __schedule() and ttwu() have matching control dependencies.
-  6587			 *
-  6588			 * After this, schedule() must not care about p->state any more.
-  6589			 */
-  6590			deactivate_task(rq, p, DEQUEUE_SLEEP | DEQUEUE_NOCLOCK);
-  6591	
-  6592			if (p->in_iowait) {
-  6593				atomic_inc(&rq->nr_iowait);
-  6594				delayacct_blkio_start();
-  6595			}
-  6596			return true;
-  6597		}
-  6598		return false;
-  6599	}
-  6600	
-  6601	#ifdef CONFIG_PROXY_EXEC
-  6602	
-> 6603	bool proxy_deactivate(struct rq *rq, struct task_struct *next)
-  6604	{
-  6605		unsigned long state = READ_ONCE(next->__state);
-  6606	
-  6607		/* Don't deactivate if the state has been changed to TASK_RUNNING */
-  6608		if (!state)
-  6609			return false;
-  6610		if (!try_to_deactivate_task(rq, next, state, true))
-  6611			return false;
-  6612		put_prev_task(rq, next);
-  6613		rq_set_selected(rq, rq->idle);
-  6614		resched_curr(rq);
-  6615		return true;
-  6616	}
-  6617	
-
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index 6f13394b112e..2b5d61eeb039 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -4000,6 +4000,52 @@ static bool suitable_to_scan(int total, int young)
+ 	return young * n >= total;
+ }
+ 
++static bool lru_gen_folio_status_check(pte_t *pte, struct vm_area_struct *vma,
++				       struct pglist_data *pgdat,
++				       unsigned long addr, int new_gen, int *old_count,
++				       struct lru_gen_mm_walk *walk, struct mem_cgroup *memcg)
++{
++	struct folio *folio;
++	int old_gen;
++	unsigned long pfn;
++	pte_t ptent = ptep_get(pte);
++
++	pfn = get_pte_pfn(ptent, vma, addr);
++	if (pfn == -1)
++		return false;
++
++	if (!pte_young(ptent)) {
++		(*old_count)++;
++		return false;
++	}
++
++	folio = get_pfn_folio(pfn, memcg, pgdat, !walk || walk->can_swap);
++	if (!folio)
++		return false;
++
++	if (!ptep_test_and_clear_young(vma, addr, pte))
++		VM_WARN_ON_ONCE(true);
++
++	if (pte_dirty(ptent) && !folio_test_dirty(folio) &&
++	    !(folio_test_anon(folio) && folio_test_swapbacked(folio) &&
++	      !folio_test_swapcache(folio)))
++		folio_mark_dirty(folio);
++
++	if (walk) {
++		old_gen = folio_update_gen(folio, new_gen);
++		if (old_gen >= 0 && old_gen != new_gen)
++			update_batch_size(walk, folio, old_gen, new_gen);
++		return true;
++	} else {
++		old_gen = folio_lru_gen(folio);
++		if (old_gen < 0)
++			folio_set_referenced(folio);
++		else if (old_gen != new_gen)
++			folio_activate(folio);
++	}
++	return false;
++}
++
+ static bool walk_pte_range(pmd_t *pmd, unsigned long start, unsigned long end,
+ 			   struct mm_walk *args)
+ {
+@@ -4012,7 +4058,8 @@ static bool walk_pte_range(pmd_t *pmd, unsigned long start, unsigned long end,
+ 	struct lru_gen_mm_walk *walk = args->private;
+ 	struct mem_cgroup *memcg = lruvec_memcg(walk->lruvec);
+ 	struct pglist_data *pgdat = lruvec_pgdat(walk->lruvec);
+-	int old_gen, new_gen = lru_gen_from_seq(walk->max_seq);
++	int new_gen = lru_gen_from_seq(walk->max_seq);
++	int old_count = 0;
+ 
+ 	pte = pte_offset_map_nolock(args->mm, pmd, start & PMD_MASK, &ptl);
+ 	if (!pte)
+@@ -4025,41 +4072,15 @@ static bool walk_pte_range(pmd_t *pmd, unsigned long start, unsigned long end,
+ 	arch_enter_lazy_mmu_mode();
+ restart:
+ 	for (i = pte_index(start), addr = start; addr != end; i++, addr += PAGE_SIZE) {
+-		unsigned long pfn;
+-		struct folio *folio;
+-		pte_t ptent = ptep_get(pte + i);
+-
+ 		total++;
+-		walk->mm_stats[MM_LEAF_TOTAL]++;
+-
+-		pfn = get_pte_pfn(ptent, args->vma, addr);
+-		if (pfn == -1)
+-			continue;
+-
+-		if (!pte_young(ptent)) {
+-			walk->mm_stats[MM_LEAF_OLD]++;
+-			continue;
+-		}
+-
+-		folio = get_pfn_folio(pfn, memcg, pgdat, walk->can_swap);
+-		if (!folio)
++		if (!lru_gen_folio_status_check(pte + i, args->vma, pgdat,
++						addr, new_gen, &old_count, walk, memcg))
+ 			continue;
+-
+-		if (!ptep_test_and_clear_young(args->vma, addr, pte + i))
+-			VM_WARN_ON_ONCE(true);
+-
+ 		young++;
+-		walk->mm_stats[MM_LEAF_YOUNG]++;
+-
+-		if (pte_dirty(ptent) && !folio_test_dirty(folio) &&
+-		    !(folio_test_anon(folio) && folio_test_swapbacked(folio) &&
+-		      !folio_test_swapcache(folio)))
+-			folio_mark_dirty(folio);
+-
+-		old_gen = folio_update_gen(folio, new_gen);
+-		if (old_gen >= 0 && old_gen != new_gen)
+-			update_batch_size(walk, folio, old_gen, new_gen);
+ 	}
++	walk->mm_stats[MM_LEAF_TOTAL] += total;
++	walk->mm_stats[MM_LEAF_YOUNG] += young;
++	walk->mm_stats[MM_LEAF_OLD] += old_count;
+ 
+ 	if (i < PTRS_PER_PTE && get_next_vma(PMD_MASK, PAGE_SIZE, args, &start, &end))
+ 		goto restart;
+@@ -4662,7 +4683,8 @@ void lru_gen_look_around(struct page_vma_mapped_walk *pvmw)
+ 	struct pglist_data *pgdat = folio_pgdat(folio);
+ 	struct lruvec *lruvec = mem_cgroup_lruvec(memcg, pgdat);
+ 	DEFINE_MAX_SEQ(lruvec);
+-	int old_gen, new_gen = lru_gen_from_seq(max_seq);
++	int new_gen = lru_gen_from_seq(max_seq);
++	int old_count = 0;
+ 
+ 	lockdep_assert_held(pvmw->ptl);
+ 	VM_WARN_ON_ONCE_FOLIO(folio_test_lru(folio), folio);
+@@ -4696,43 +4718,10 @@ void lru_gen_look_around(struct page_vma_mapped_walk *pvmw)
+ 	pte -= (addr - start) / PAGE_SIZE;
+ 
+ 	for (i = 0, addr = start; addr != end; i++, addr += PAGE_SIZE) {
+-		unsigned long pfn;
+-		pte_t ptent = ptep_get(pte + i);
+-
+-		pfn = get_pte_pfn(ptent, pvmw->vma, addr);
+-		if (pfn == -1)
+-			continue;
+-
+-		if (!pte_young(ptent))
++		if (!lru_gen_folio_status_check(pte + i, pvmw->vma, pgdat,
++						addr, new_gen, &old_count, walk, memcg))
+ 			continue;
+-
+-		folio = get_pfn_folio(pfn, memcg, pgdat, can_swap);
+-		if (!folio)
+-			continue;
+-
+-		if (!ptep_test_and_clear_young(pvmw->vma, addr, pte + i))
+-			VM_WARN_ON_ONCE(true);
+-
+ 		young++;
+-
+-		if (pte_dirty(ptent) && !folio_test_dirty(folio) &&
+-		    !(folio_test_anon(folio) && folio_test_swapbacked(folio) &&
+-		      !folio_test_swapcache(folio)))
+-			folio_mark_dirty(folio);
+-
+-		if (walk) {
+-			old_gen = folio_update_gen(folio, new_gen);
+-			if (old_gen >= 0 && old_gen != new_gen)
+-				update_batch_size(walk, folio, old_gen, new_gen);
+-
+-			continue;
+-		}
+-
+-		old_gen = folio_lru_gen(folio);
+-		if (old_gen < 0)
+-			folio_set_referenced(folio);
+-		else if (old_gen != new_gen)
+-			folio_activate(folio);
+ 	}
+ 
+ 	arch_leave_lazy_mmu_mode();
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.41.0
+
