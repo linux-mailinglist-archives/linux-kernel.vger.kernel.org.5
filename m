@@ -2,203 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39311786C61
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 11:57:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78B2E786C70
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 11:59:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240762AbjHXJ5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 05:57:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44308 "EHLO
+        id S240563AbjHXJ7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 05:59:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239510AbjHXJ4n (ORCPT
+        with ESMTP id S240692AbjHXJ7A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 05:56:43 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4C081980;
-        Thu, 24 Aug 2023 02:56:41 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 62EA66145F;
-        Thu, 24 Aug 2023 09:56:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75D22C433C8;
-        Thu, 24 Aug 2023 09:56:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692871000;
-        bh=zsEzdj4jNIpbU5B5GHL0RXLo+9JE86jUG5stKApaQU8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=T9XESszoLo2bkOi87DCGsc0IBEanLft2t92W3tDiJG0yY9cAtRyU0X3Ae6Q6R6Ngx
-         olxppAulMvPoIPc3xtq8tXLvJfLBpX/+rwr4b2QchwTLQ8vfXwOU8ICABm1C/OoeT+
-         u0bFk0Uumgc7w+DVlKOZDZmbIstgasezycb7/oG0HIb+Q+frPVx4rx7eRklipVsNF1
-         e+ZhBY44dQuHk9FlhksrIj/cPxp+jFYTilL0xVY8FXlKbak24fg+yIvtDc+Kqh9NW6
-         2DBxWNmkLn7fsgl3z3shlBmTLUjz24Tg5gj2ECenN01LV0kPYE+piObicDAtUMcOPT
-         kulyT/YLIJSFg==
-Date:   Thu, 24 Aug 2023 11:56:38 +0200
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Guenter Roeck <linux@roeck-us.net>,
-        kernel test robot <yujie.liu@intel.com>,
-        kunit-dev@googlegroups.com
-Subject: Re: [PATCH 0/2] clk: kunit: Fix the lockdep warnings
-Message-ID: <62acjjvghvezxhg5u25f6kg53c6qhbcaee4ra5muyg5rmrokis@yntvznfi5hix>
-References: <20230721-clk-fix-kunit-lockdep-v1-0-32cdba4c8fc1@kernel.org>
- <088cc246369820d5a426bc8823c85c8e.sboyd@kernel.org>
- <6534e4c349253da8ee467ffeda8221ed.sboyd@kernel.org>
- <krg4m5nckoaunsqounzehm4oyubblticfifgvpxrnbf5xf65xq@ignx6g2eqtev>
- <981e3c291fefcb8234219550e012bbad.sboyd@kernel.org>
+        Thu, 24 Aug 2023 05:59:00 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79088198B
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 02:58:57 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-4ff8f2630e3so10424107e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 02:58:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692871136; x=1693475936;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=+rgGXJccAfkTrnZz6NIgq7I9ljKkcGeoshX/sfo7ve8=;
+        b=O+z9N81X1nCXDBq77cUhSfXaGs/bib5UnA/uiRXY5P+b0MDCRujTaeq2j5ZP22Tsfw
+         1dXJnMLhDQM8TPXtlJ4xnqDHuF8tOLkYP8pxIon0nPXLNRwxWE+LWTXc0cZK6rNalU+j
+         0MAUF2zSfK9VbJX8XsQtNvS5rQQzDL27H3AA/TdxvEJKZ/51XgJFRs5nxaH4LtJfaUJ1
+         Q1poXKzo+ifYp1mev1PvilWrxIU4HdILrqyNhfDdhANj93AX4gtNWWqUzOj5+hkJcMe8
+         kdG3eFfASoXzmw81O9e+geeG+4HIj6RIHpMoqEINaSYcyQAyCa1vVRthmXpPvMh/eMUF
+         aXRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692871136; x=1693475936;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+rgGXJccAfkTrnZz6NIgq7I9ljKkcGeoshX/sfo7ve8=;
+        b=a9ptRqxjB3BDTITNkq+ygwpXiL1cj4o1RtfhjlgYUrLv4z+hyN4bDcNQ88AU/0DCvM
+         ss8Ao4MbxmnBG8iMYCsoL72vcfWKJnI58w+3iC7BtCEvLmYIthB2i3cX5APVVJnCsQAo
+         aZifPdQz+teOF+XusvW+ypKrZngom/ApIu4IEuszCiBzf3Ews9aMAgc5vav5VW661diW
+         vSGImcwOL7IterIphdSuEY+VX4pB8A2nuGstm24Bh5JJLuu5cl3U95BgfwKRveQqvYmk
+         I4Gn8YhDZdZNkEnH8j8dQJv76ZOnT7/h4j87oNRxcbjULzkCxnr571WwDzEzh1S64S6C
+         FOsA==
+X-Gm-Message-State: AOJu0YxVEVgbvMR9WyTBAc+frjkdJtcD/3/BLkd2BE8AmZ2uTyHH1kT1
+        5C3U+ETaVIdKmDw5izpfOd39ik0o1GqQmd2DPePHNg==
+X-Google-Smtp-Source: AGHT+IHiEtzPRzEqtzTr3QMxhsTvinjjaVpctIY0pcsZrD5AxaMvrORiBuYQNGt4RjSIZR6bcSemUA==
+X-Received: by 2002:a05:6512:2354:b0:4fb:9168:1fce with SMTP id p20-20020a056512235400b004fb91681fcemr11352216lfu.59.1692871135696;
+        Thu, 24 Aug 2023 02:58:55 -0700 (PDT)
+Received: from [10.167.154.1] ([2a00:f41:4882:ba34:4490:938b:eab4:c5ef])
+        by smtp.gmail.com with ESMTPSA id y2-20020a197502000000b0050096712dc8sm712301lfe.277.2023.08.24.02.58.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Aug 2023 02:58:55 -0700 (PDT)
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Subject: [PATCH 0/3] SDM845 Xperia GPIO names
+Date:   Thu, 24 Aug 2023 11:58:51 +0200
+Message-Id: <20230824-topic-tama_gpio-v1-0-014e9d198dce@linaro.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="bndqdpalpffkyi5m"
-Content-Disposition: inline
-In-Reply-To: <981e3c291fefcb8234219550e012bbad.sboyd@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIANsp52QC/x2N0QqDMAwAf0XybKCtCrJfEZHYRQ24trRuCOK/L
+ /h4B8ddUDgLF3hVF2T+SZEYFGxdgd8orIzyVgZnXGN61+IRk3g86EPTmiSiI7K2W2xPnQGtZiq
+ Mc6bgN+3Cd99VpsyLnM9mGO/7D0Ce6Lx2AAAA
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Konrad Dybcio <konrad.dybcio@linaro.org>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1692871134; l=941;
+ i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
+ bh=2YbtpY8jgHbBjLwLVzQhDKpuyuDuG/PyOKpPMHiNpck=;
+ b=iZmM5iLrEn4rbcMeTkbrqtPzoBCozJ4pa6AOAUeN1cuOYzlemr7PsJygaEmvEvoTE5iUdyB9O
+ 9gELL6YjX18Dmp15XH1MgQn+Vz+VJ0UfsoLlOK+xqqOXdxv6BgyDHoy
+X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
+ pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Sony provides the actual GPIO line names for most of the pins.
+Use them!
 
---bndqdpalpffkyi5m
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+(and prepare camera GPIO regulators as a bonus)
 
-Hi Stephen,
+Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+---
+Konrad Dybcio (3):
+      arm64: dts: qcom: sdm845-tama: Add GPIO line names for TLMM
+      arm64: dts: qcom: sdm845-tama: Add GPIO line names for PMIC GPIOs
+      arm64: dts: qcom: sdm845-tama: Add camera GPIO regulators
 
-On Wed, Aug 23, 2023 at 12:50:46PM -0700, Stephen Boyd wrote:
-> Quoting Maxime Ripard (2023-08-21 04:16:12)
-> > Hi Stephen,
-> >=20
-> > On Wed, Aug 09, 2023 at 06:37:30PM -0700, Stephen Boyd wrote:
-> > > Quoting Stephen Boyd (2023-08-09 16:21:50)
-> > > > +kunit-dev
-> > > >=20
-> > > > Quoting Maxime Ripard (2023-07-21 00:09:31)
-> > > > > Hi,
-> > > > >=20
-> > > > > Here's a small series to address the lockdep warning we have when
-> > > > > running the clk kunit tests with lockdep enabled.
-> > > > >=20
-> > > > > For the record, it can be tested with:
-> > > > >=20
-> > > > > $ ./tools/testing/kunit/kunit.py run \
-> > > > >     --kunitconfig=3Ddrivers/clk \
-> > > > >     --cross_compile aarch64-linux-gnu- --arch arm64 \
-> > > > >     --kconfig_add CONFIG_DEBUG_KERNEL=3Dy \
-> > > > >     --kconfig_add CONFIG_PROVE_LOCKING=3Dy
-> > > > >=20
-> > > > > Let me know what you think,
-> > > >=20
-> > > > Thanks for doing this. I want to roll these helpers into the clk_ku=
-nit.c
-> > > > file that I had created for some other clk tests[1]. That's mostly
-> > > > because clk.c is already super long and adding kunit code there mak=
-es
-> > > > that problem worse. I'll try to take that patch out of the rest of =
-the
-> > > > series and then add this series on top and resend.
-> > > >=20
-> > > > I don't know what to do about the case where CONFIG_KUNIT=3Dm thoug=
-h. We
-> > > > have to export clk_prepare_lock/unlock()? I really don't want to do=
- that
-> > > > even if kunit is enabled (see EXPORT_SYMBOL_IF_KUNIT). Maybe if the=
-re
-> > > > was a GPL version of that, so proprietary modules can't get at kern=
-el
-> > > > internals on kunit enabled kernels.
-> > > >=20
-> > > > But I also like the approach taken here of adding a small stub arou=
-nd
-> > > > the call to make sure a test is running. Maybe I'll make a kunit
-> > > > namespaced exported gpl symbol that bails if a test isn't running a=
-nd
-> > > > calls the clk_prepare_lock/unlock functions inside clk.c and then m=
-ove
-> > > > the rest of the code to clk_kunit.c to get something more strict.
-> > > >=20
-> > >=20
-> > > What if we don't try to do any wrapper or export symbols and test
-> > > __clk_determine_rate() how it is called from the clk framework? The
-> > > downside is the code is not as simple because we have to check things
-> > > from within the clk_ops::determine_rate(), but the upside is that we =
-can
-> > > avoid exporting internal clk APIs or wrap them so certain preconditio=
-ns
-> > > are met like requiring them to be called from within a clk_op.
-> >=20
-> > The main reason for that test was linked to commit 262ca38f4b6e ("clk:
-> > Stop forwarding clk_rate_requests to the parent"). Prior to it, if a
-> > clock had CLK_SET_RATE_PARENT, we could end up with its parent's parent
-> > hw struct and rate in best_parent_*.
-> >=20
-> > So that test was mostly about making sure that __clk_determine_rate will
-> > properly set the best_parent fields to match the clock's parent.
-> >=20
-> > If we do a proper clock that uses __clk_determine_rate, we lose the
-> > ability to check the content of the clk_rate_request returned by
-> > __clk_determine_rate. It's up to you to tell whether it's a bad thing or
-> > not :)
->=20
-> I'm a little confused here. Was the test trying to check the changed
-> lines in clk_core_round_rate_nolock() that were made in commit
-> 262ca38f4b6e under the CLK_SET_RATE_PARENT condition?
+ .../dts/qcom/sdm845-sony-xperia-tama-akari.dts     | 170 +++++++++++++++++++++
+ .../dts/qcom/sdm845-sony-xperia-tama-akatsuki.dts  | 168 ++++++++++++++++++++
+ .../dts/qcom/sdm845-sony-xperia-tama-apollo.dts    | 170 +++++++++++++++++++++
+ .../boot/dts/qcom/sdm845-sony-xperia-tama.dtsi     |  91 +++++++++++
+ 4 files changed, 599 insertions(+)
+---
+base-commit: 2b3bd393093b04d4882152398019cbb96b0440ff
+change-id: 20230824-topic-tama_gpio-2aa115f18a50
 
-That's what I was trying to test, yeah. Not necessarily this function in
-particular (there's several affected), but at least we would get
-something sane in a common case.
+Best regards,
+-- 
+Konrad Dybcio <konrad.dybcio@linaro.org>
 
-> From what I can tell that doesn't get tested here.
->=20
-> Instead, the test calls __clk_determine_rate() that calls
-> clk_core_round_rate_nolock() which falls into the clk_core_can_round()
-> condition because the hw has clk_dummy_single_parent_ops which has
-> .determine_rate op set to __clk_mux_determine_rate_closest(). Once we
-> find that the clk can round, we call __clk_mux_determine_rate_closest().
-
-clk_mux_determine_rate_flags was also affected by the same issue.
-
-> This patch still calls __clk_mux_determine_rate_closest() like
-> __clk_determine_rate() was doing in the test, and checks that the
-> request structure has the expected parent in the req->best_parent_hw.
->=20
-> If we wanted to test the changed lines in clk_core_round_rate_nolock()
-> we should have called __clk_determine_rate() on a clk_hw that didn't
-> have a .determine_rate or .round_rate clk_op. Then it would have fallen
-> into the if (core->flags & CLK_SET_RATE_PARENT) condition in
-> clk_core_round_rate_nolock() and made sure that the request structure
-> returned was properly forwarded to the parent.
->
-> We can still do that by making a child of the leaf, set clk_ops on that
-> to be this new determine_rate clk op that calls to the parent (the leaf
-> today), and make that leaf clk not have any determine_rate clk_op. Then
-> we will fall into the CLK_SET_RATE_PARENT condition and can make sure
-> the request structure returned points at the parent instead of the mux.
-
-But you're right clk_core_round_rate_nolock() wasn't properly tested. I
-guess, if we find it worth it, we should add a test for that one too?
-
-clk_mux_determine_rate_flags with multiple parents and
-CLK_SET_RATE_PARENT was also affected and fixed in the commit mentioned
-above.
-
-Maxime
-
---bndqdpalpffkyi5m
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZOcpVgAKCRDj7w1vZxhR
-xe2tAP4sO1fRwk9HD3riMEIBUXzb5NL14nsmVupsFkt0r7i85AD9HYpRp15vQkk9
-HA78nl7n2yMabQeBU7ncU6ZhmuU0nA8=
-=fxA0
------END PGP SIGNATURE-----
-
---bndqdpalpffkyi5m--
