@@ -2,264 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45BBF787719
+	by mail.lfdr.de (Postfix) with ESMTP id 8EEB778771A
 	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 19:31:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242734AbjHXRbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 13:31:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46636 "EHLO
+        id S242823AbjHXRbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 13:31:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241753AbjHXRau (ORCPT
+        with ESMTP id S242863AbjHXRbO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 13:30:50 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8D1E19B7
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 10:30:48 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id d75a77b69052e-40c72caec5cso29081cf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 10:30:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692898248; x=1693503048;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HDtFsCYiPtYGuYS00Y/xeOXoK2jucfntj3ZgX5bDuvM=;
-        b=c4djqPDHjs65tcuH0ozHki3xhUng9o/FciaAQNEBTxcZbNYpHP3rfaaGUwl8pg1yJZ
-         A6JJ0hYfyenar7xpTnjZUyinFFbNJqZNxx1NU53y9grppmSvgD+BtyUzS3bWaXQw4Gka
-         fVNgZtbuCYkFqfrciV4PVwdPyXQXj2gqOobrWmsHSIDOmoSvH77RhemnF8F7OSoI8pGK
-         t19ynB+TxzWdfOpKH0btp+ZXrxNf75Euo173aYai1BhrETy1Z+W2F6fpDDCwy4MS9OeA
-         YyydXTai3xkX6W1ZH9nTsQn7TnA7bXjXxnyKAb/iat8ge/ovNkFS+rEk6koNJpHWJjAw
-         ES3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692898248; x=1693503048;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HDtFsCYiPtYGuYS00Y/xeOXoK2jucfntj3ZgX5bDuvM=;
-        b=ghMT0zz9T5rGv9YB/VBcuGbEmaFiezsghPF3mQmXE7PjdSoxKnm/bW+QUFNzd3Yr10
-         cHQsolwkQPZ9tRm1qOb0dhQ+SdYyeBIHdIgE+jJsM3QbKK5XCqnbIDWhSw/gZHL5EO/v
-         OmL5oyT4i2aJtq/KKzbfz9sTfi6CMWmuGCnB2gqdkzgz31jFgmlepZLiLvd9vi4hBJOC
-         7P3BuKEgnWwZAHCNc0vzobVfoc1UN8NLgaZlLkiRWSLVOIvb3Zc9yjTyKCi6QwjynUjs
-         2/9Gl5cKqgZ8+K8kac741qHgSHiHpU4RWE4T5gqK+m5nm/ZBnXVAE5kHsaMmX8bosIHw
-         Wmbw==
-X-Gm-Message-State: AOJu0YxqXZybKOVphhST4IabHN7HIJI/P3WyCBHgp9AprWki5NYSNXrb
-        6k2nA/svd+6FtM3F4FB97C6U9VCzCcd4cRakTtkebQ==
-X-Google-Smtp-Source: AGHT+IF9iqlXaxuxA5IYTVpvYJxsxiuR6AR+CVu6XtfUJaq86nTC8bBYw1FdlL2B8EgZkNknvc4BBxnPcbhJfUjwguU=
-X-Received: by 2002:a05:622a:4d2:b0:410:4c49:1aeb with SMTP id
- q18-20020a05622a04d200b004104c491aebmr11636qtx.7.1692898247662; Thu, 24 Aug
- 2023 10:30:47 -0700 (PDT)
+        Thu, 24 Aug 2023 13:31:14 -0400
+Received: from cstnet.cn (smtp84.cstnet.cn [159.226.251.84])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E046E19B5;
+        Thu, 24 Aug 2023 10:31:07 -0700 (PDT)
+Received: from [192.168.0.107] (unknown [111.197.209.91])
+        by APP-05 (Coremail) with SMTP id zQCowACXnGC8k+dkhsHRBA--.2541S2;
+        Fri, 25 Aug 2023 01:30:36 +0800 (CST)
+Message-ID: <4177c0c5-4d36-75e1-84e2-c6ac82b74e50@iscas.ac.cn>
+Date:   Fri, 25 Aug 2023 01:30:36 +0800
 MIME-Version: 1.0
-References: <20230814163757.3077138-1-irogers@google.com> <20230814163757.3077138-3-irogers@google.com>
- <6913f6d8-7f01-f132-5375-e82b8aa2e0b9@linux.intel.com>
-In-Reply-To: <6913f6d8-7f01-f132-5375-e82b8aa2e0b9@linux.intel.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Thu, 24 Aug 2023 10:30:36 -0700
-Message-ID: <CAP-5=fX3_dpxGU1qp2kisHQ13i1+tEO9B2KGi1Z7z3+nqigfRw@mail.gmail.com>
-Subject: Re: [PATCH v3 2/3] perf pmus: Add scan that ignores duplicates, use
- for perf list
-To:     "Liang, Kan" <kan.liang@linux.intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        John Garry <john.g.garry@oracle.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v5] riscv: Handle zicsr/zifencei issue between gcc and
+ binutils
+Content-Language: en-US
+From:   Mingzheng Xing <xingmingzheng@iscas.ac.cn>
+To:     Conor Dooley <conor@kernel.org>,
+        Conor Dooley <conor.dooley@microchip.com>
+Cc:     patchwork-bot+linux-riscv@kernel.org,
+        linux-riscv@lists.infradead.org, paul.walmsley@sifive.com,
+        palmer@dabbelt.com, aou@eecs.berkeley.edu, nathan@kernel.org,
+        ndesaulniers@google.com, trix@redhat.com, bmeng@tinylab.org,
+        guoren@kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, stable@vger.kernel.org
+References: <20230809165648.21071-1-xingmingzheng@iscas.ac.cn>
+ <169228562484.20811.14246462375671910714.git-patchwork-notify@kernel.org>
+ <20230823-captive-abdomen-befd942a4a73@wendy>
+ <20230823-facelift-ovary-41f2eb4d9eac@spud>
+ <4677fc33-6e76-21e6-2a7f-f12670bc1ce2@iscas.ac.cn>
+Organization: ISCAS
+In-Reply-To: <4677fc33-6e76-21e6-2a7f-f12670bc1ce2@iscas.ac.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: zQCowACXnGC8k+dkhsHRBA--.2541S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxXFWrWF4xWryktFWxKFWxZwb_yoWrKF4kp3
+        4rGF17GrWUJr18Jwn7tr1jqryjyrWUJ34UXrn8JF1UJryDWr1jqF1xXryY9r1DtF4rGr18
+        Ar1UGF1xZr1DJrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvlb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4
+        A2jsIEc7CjxVAFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l
+        c7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJV
+        W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
+        1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
+        IIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvE
+        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
+        DU0xZFpf9x07beAp5UUUUU=
+X-Originating-IP: [111.197.209.91]
+X-CM-SenderInfo: 50lqwzhlqj6xxhqjqxpvfd2hldfou0/1tbiAxMNCmTnYidivAAAsP
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 7:01=E2=80=AFAM Liang, Kan <kan.liang@linux.intel.c=
-om> wrote:
+On 8/24/23 19:32, Mingzheng Xing wrote:
+> On 8/23/23 21:31, Conor Dooley wrote:
+>> On Wed, Aug 23, 2023 at 12:51:13PM +0100, Conor Dooley wrote:
+>>> On Thu, Aug 17, 2023 at 03:20:24PM +0000, 
+>>> patchwork-bot+linux-riscv@kernel.org wrote:
+>>>> Hello:
+>>>>
+>>>> This patch was applied to riscv/linux.git (fixes)
+>>>> by Palmer Dabbelt <palmer@rivosinc.com>:
+>>>>
+>>>> On Thu, 10 Aug 2023 00:56:48 +0800 you wrote:
+>>>>> Binutils-2.38 and GCC-12.1.0 bumped[0][1] the default ISA spec to 
+>>>>> the newer
+>>>>> 20191213 version which moves some instructions from the I 
+>>>>> extension to the
+>>>>> Zicsr and Zifencei extensions. So if one of the binutils and GCC 
+>>>>> exceeds
+>>>>> that version, we should explicitly specifying Zicsr and Zifencei 
+>>>>> via -march
+>>>>> to cope with the new changes. but this only occurs when binutils 
+>>>>> >= 2.36
+>>>>> and GCC >= 11.1.0. It's a different story when binutils < 2.36.
+>>>>>
+>>>>> [...]
+>>>> Here is the summary with links:
+>>>>    - [v5] riscv: Handle zicsr/zifencei issue between gcc and binutils
+>>>>      https://git.kernel.org/riscv/c/ca09f772ccca
+>>> *sigh* so this breaks the build for gcc-11 & binutils 2.37 w/
+>>>     Assembler messages:
+>>>     Error: cannot find default versions of the ISA extension `zicsr'
+>>>     Error: cannot find default versions of the ISA extension `zifencei'
+>>>
+>>> I'll have a poke later.
+>> So uh, are we sure that this should not be:
+>> -       depends on (CC_IS_CLANG && CLANG_VERSION < 170000) || 
+>> (CC_IS_GCC && GCC_VERSION < 110100)
+>> +       depends on (CC_IS_CLANG && CLANG_VERSION < 170000) || 
+>> (CC_IS_GCC && GCC_VERSION <= 110100)
+>>
+>> My gcc-11.1 + binutils 2.37 toolchain built from riscv-gnu-toolchain
+>> doesn't have the default versions & the above diff fixes the build.
 >
+> I reproduced the error, the combination of gcc-11.1 and
+> binutils 2.37 does cause errors. What a surprise, since binutils
+> 2.36 and 2.38 are fine.
 >
+> I used git bisect to locate this commit[1] for binutils.
+> I'll test this diff in more detail later. Thanks!
 >
-> On 2023-08-14 12:37 p.m., Ian Rogers wrote:
-> > When there are multiple PMUs that differ only by suffix, by default
-> > just list the first one and skip all others. As the PMUs are sorted,
-> > the scan routine checks that the PMU names match and the numbers are
-> > consecutive.
+> [1] 
+> https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=f0bae2552db1dd4f1995608fbf6648fcee4e9e0c
 >
-> The suffix number may not be consecutive, especially for SPR and later
-> platforms. Because the IDs are from the discovery table now, which is
-> assigned by the HW. The physic IDs are not guaranteed to be consecutive.
->
-> I don't think there is a plan to change it to logical IDs. Because
-> sometimes people want to know the physic IDs. So they can locate the
-> specific unit quickly.
 
-Thanks Kan,
+Hi, Conor.
+The above error does originate from link[1] mentioned above, which was
+resolved in gcc-12.1.0[2], and gcc-11.3.0 made the backport[3].
+So gcc-11.2.0 combined with binutils 2.37 produces the same error.
+I think we should do the following diff to fix it:
+-       depends on (CC_IS_CLANG && CLANG_VERSION < 170000) || (CC_IS_GCC 
+&& GCC_VERSION < 110100)
++       depends on (CC_IS_CLANG && CLANG_VERSION < 170000) || (CC_IS_GCC 
+&& GCC_VERSION < 110300)
 
-I think this could lead to perf list merging some PMUs into one name
-and not doing this for others. We could keep the existing behavior by
-checking the numbers are consecutive but it'd come with some
-complexity and runtime cost. We could just ignore the consecutive
-property. We could just not try to solve the problem. What do you
-think is the right strategy?
+Then below are my test results after the fix:
 
-On other architectures they encode these numbers in different places
-but generally with no underscore, so this change has no impact for
-them. I'm keen to solve this problem as we're seeing large numbers of
-PMUs that cause perf list to be spammy and the all PMU events test to
-run for too long.
+gcc        binutils
+
+10.5.0     2.35            ok
+10.5.0     2.36            ok
+10.5.0     2.37            ok
+10.5.0     2.38            ok
+
+11.1.0     2.35            ok
+11.1.0     2.36            ok
+11.1.0     2.37            ok
+11.1.0     2.38            ok
+
+11.2.0     2.35            ok
+11.2.0     2.36            ok
+11.2.0     2.37            ok
+11.2.0     2.38            ok
+
+11.3.0     2.35            ok
+11.3.0     2.36            ok
+11.3.0     2.37            ok
+11.3.0     2.38            ok
+
+11.4.0     2.35            ok
+11.4.0     2.36            ok
+11.4.0     2.37            ok
+11.4.0     2.38            ok
+
+12.1.0     2.35            ok
+12.1.0     2.36            ok
+12.1.0     2.37            ok
+12.1.0     2.38            ok
+
+12.2.0     2.35            ok
+12.2.0     2.36            ok
+12.2.0     2.37            ok
+12.2.0     2.38            ok
+
+[1] 
+https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=f0bae2552db1dd4f1995608fbf6648fcee4e9e0c
+[2] 
+https://gcc.gnu.org/git/?p=gcc.git;a=commit;h=ca2bbb88f999f4d3cc40e89bc1aba712505dd598
+[3] 
+https://gcc.gnu.org/git/?p=gcc.git;a=commit;h=d29f5d6ab513c52fd872f532c492e35ae9fd6671
 
 Thanks,
-Ian
+Mingzheng.
 
-> Thanks,
-> Kan
+>>
+>> Thanks,
+>> Conor.
 >
-> > If "-v" is passed to "perf list" then list all PMUs.
-> >
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> > ---
-> >  tools/perf/builtin-list.c      |  8 +++++
-> >  tools/perf/util/pmus.c         | 54 ++++++++++++++++++++++++++++++++--
-> >  tools/perf/util/print-events.h |  1 +
-> >  3 files changed, 61 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/tools/perf/builtin-list.c b/tools/perf/builtin-list.c
-> > index 7fec2cca759f..8fe4ddf02c14 100644
-> > --- a/tools/perf/builtin-list.c
-> > +++ b/tools/perf/builtin-list.c
-> > @@ -423,6 +423,13 @@ static void json_print_metric(void *ps __maybe_unu=
-sed, const char *group,
-> >       strbuf_release(&buf);
-> >  }
-> >
-> > +static bool default_skip_duplicate_pmus(void *ps)
-> > +{
-> > +     struct print_state *print_state =3D ps;
-> > +
-> > +     return !print_state->long_desc;
-> > +}
-> > +
-> >  int cmd_list(int argc, const char **argv)
-> >  {
-> >       int i, ret =3D 0;
-> > @@ -434,6 +441,7 @@ int cmd_list(int argc, const char **argv)
-> >               .print_end =3D default_print_end,
-> >               .print_event =3D default_print_event,
-> >               .print_metric =3D default_print_metric,
-> > +             .skip_duplicate_pmus =3D default_skip_duplicate_pmus,
-> >       };
-> >       const char *cputype =3D NULL;
-> >       const char *unit_name =3D NULL;
-> > diff --git a/tools/perf/util/pmus.c b/tools/perf/util/pmus.c
-> > index 3581710667b0..5073843aca19 100644
-> > --- a/tools/perf/util/pmus.c
-> > +++ b/tools/perf/util/pmus.c
-> > @@ -275,6 +275,50 @@ struct perf_pmu *perf_pmus__scan_core(struct perf_=
-pmu *pmu)
-> >       return NULL;
-> >  }
-> >
-> > +static struct perf_pmu *perf_pmus__scan_skip_duplicates(struct perf_pm=
-u *pmu)
-> > +{
-> > +     bool use_core_pmus =3D !pmu || pmu->is_core;
-> > +     int last_pmu_name_len =3D 0;
-> > +     unsigned long last_pmu_num =3D 0;
-> > +     const char *last_pmu_name =3D (pmu && pmu->name) ? pmu->name : ""=
-;
-> > +
-> > +     if (!pmu) {
-> > +             pmu_read_sysfs(/*core_only=3D*/false);
-> > +             pmu =3D list_prepare_entry(pmu, &core_pmus, list);
-> > +     } else
-> > +             last_pmu_name_len =3D pmu_name_len_no_suffix(pmu->name ?:=
- "", &last_pmu_num);
-> > +
-> > +     if (use_core_pmus) {
-> > +             list_for_each_entry_continue(pmu, &core_pmus, list) {
-> > +                     unsigned long pmu_num =3D 0;
-> > +                     int pmu_name_len =3D pmu_name_len_no_suffix(pmu->=
-name ?: "", &pmu_num);
-> > +
-> > +                     if (last_pmu_name_len =3D=3D pmu_name_len &&
-> > +                         (last_pmu_num + 1 =3D=3D pmu_num) &&
-> > +                         !strncmp(last_pmu_name, pmu->name ?: "", pmu_=
-name_len)) {
-> > +                             last_pmu_num++;
-> > +                             continue;
-> > +                     }
-> > +                     return pmu;
-> > +             }
-> > +             pmu =3D NULL;
-> > +             pmu =3D list_prepare_entry(pmu, &other_pmus, list);
-> > +     }
-> > +     list_for_each_entry_continue(pmu, &other_pmus, list) {
-> > +             unsigned long pmu_num =3D 0;
-> > +             int pmu_name_len =3D pmu_name_len_no_suffix(pmu->name ?: =
-"", &pmu_num);
-> > +
-> > +             if (last_pmu_name_len =3D=3D pmu_name_len &&
-> > +                 (last_pmu_num + 1 =3D=3D pmu_num) &&
-> > +                 !strncmp(last_pmu_name, pmu->name ?: "", pmu_name_len=
-)) {
-> > +                     last_pmu_num++;
-> > +                     continue;
-> > +             }
-> > +             return pmu;
-> > +     }
-> > +     return NULL;
-> > +}
-> > +
-> >  const struct perf_pmu *perf_pmus__pmu_for_pmu_filter(const char *str)
-> >  {
-> >       struct perf_pmu *pmu =3D NULL;
-> > @@ -429,10 +473,16 @@ void perf_pmus__print_pmu_events(const struct pri=
-nt_callbacks *print_cb, void *p
-> >       int printed =3D 0;
-> >       int len, j;
-> >       struct sevent *aliases;
-> > +     struct perf_pmu *(*scan_fn)(struct perf_pmu *);
-> > +
-> > +     if (print_cb->skip_duplicate_pmus(print_state))
-> > +             scan_fn =3D perf_pmus__scan_skip_duplicates;
-> > +     else
-> > +             scan_fn =3D perf_pmus__scan;
-> >
-> >       pmu =3D NULL;
-> >       len =3D 0;
-> > -     while ((pmu =3D perf_pmus__scan(pmu)) !=3D NULL) {
-> > +     while ((pmu =3D scan_fn(pmu)) !=3D NULL) {
-> >               list_for_each_entry(event, &pmu->aliases, list)
-> >                       len++;
-> >               if (pmu->selectable)
-> > @@ -445,7 +495,7 @@ void perf_pmus__print_pmu_events(const struct print=
-_callbacks *print_cb, void *p
-> >       }
-> >       pmu =3D NULL;
-> >       j =3D 0;
-> > -     while ((pmu =3D perf_pmus__scan(pmu)) !=3D NULL) {
-> > +     while ((pmu =3D scan_fn(pmu)) !=3D NULL) {
-> >               bool is_cpu =3D pmu->is_core;
-> >
-> >               list_for_each_entry(event, &pmu->aliases, list) {
-> > diff --git a/tools/perf/util/print-events.h b/tools/perf/util/print-eve=
-nts.h
-> > index d7fab411e75c..bf4290bef0cd 100644
-> > --- a/tools/perf/util/print-events.h
-> > +++ b/tools/perf/util/print-events.h
-> > @@ -26,6 +26,7 @@ struct print_callbacks {
-> >                       const char *expr,
-> >                       const char *threshold,
-> >                       const char *unit);
-> > +     bool (*skip_duplicate_pmus)(void *print_state);
-> >  };
-> >
-> >  /** Print all events, the default when no options are specified. */
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
+
