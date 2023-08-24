@@ -2,451 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 102C1786DE4
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 13:33:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71AF3786DF9
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 13:34:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240994AbjHXLdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 07:33:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52024 "EHLO
+        id S241052AbjHXLd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 07:33:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240510AbjHXLcw (ORCPT
+        with ESMTP id S240980AbjHXLda (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 07:32:52 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8770B10FC;
-        Thu, 24 Aug 2023 04:32:49 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id 3f1490d57ef6-d650a22abd7so6478702276.3;
-        Thu, 24 Aug 2023 04:32:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692876768; x=1693481568;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sFzuk6LjNd6O3SJJcDHZwMhSOEnjaTo2LUY1fJylIvY=;
-        b=iQNdyhF+GnMTD3X9aPCAsEjySzRqLMQmpDyKFky61tmbtE8s29lGC+bqlrRnHvHzo2
-         L1bQj5qTAkug8xnWRnQoCzQNEMtHaCnt22LlnFe+FxCKe8d+lSlMUa2oHKvwUdJC1eVv
-         W2pYkt8q2W9BiKuZBzNcfPFI/eCoaAh0jZBzch3FWtuFV4cyKVeIB8Ss7jrg39rWU6o/
-         k+T1DjpG296DMhtF+hnbzWKbXb3bEqlpg2SWsZuNhnFO9aFkc9KEQztlRO8orkAS9uon
-         rdhHV9T2l5UoGayO9R+o4ZPmuxDPVWJs+wakBZ8b/BMMgy2XjeU2CdfaZ99t0qb7uwm8
-         iavQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692876768; x=1693481568;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sFzuk6LjNd6O3SJJcDHZwMhSOEnjaTo2LUY1fJylIvY=;
-        b=EixIA9XfaaULLxcZUXFxJMjhH+n2A+ld4xuvDP0QMs3zEYUPG+525kayCJHWE5w/lQ
-         JjIwlsrGmuT5BMTEKWfnJzix85PpJyjxkXxMWtY8N6tGxBPhgaBHbQOE12tFD7Fia7d2
-         PyfnVqORHmktGtvAuQ53fykoOpy2FP4BXPbQPWOJtxoAomvzgxSo6qhTkKyoelmNR2XO
-         hdeqgzK1LOdqFgKtPHfsXhUyZxfkLdAbwFnvPALXysygQFhFrALPQ0tj3lAxTr4PGbZC
-         nOsZs/za1vVx+8p6owex+u9TNljl4G90JL88b8AnNRzWU7d95rkOW/Lpltmp6JvyO7SE
-         qeKA==
-X-Gm-Message-State: AOJu0YykSlHUD366WTxB/VkfMx+2ZsGe+oVf3sN2sak1ID8QbVsjRXHA
-        nEIcsg2bpx2jA4Jl64MFbqWqDS884N96dZ48zng=
-X-Google-Smtp-Source: AGHT+IEn8aX0Ghqxzi2g8EaeBYAiNIRZKT80Gmb0Nz9tRlI2YyrtbNPuIBXaV4jh4+DIBUvVEDYqBkMyUujAPQqm/Tg=
-X-Received: by 2002:a81:8882:0:b0:55a:3ce9:dc3d with SMTP id
- y124-20020a818882000000b0055a3ce9dc3dmr15016049ywf.13.1692876768535; Thu, 24
- Aug 2023 04:32:48 -0700 (PDT)
+        Thu, 24 Aug 2023 07:33:30 -0400
+Received: from cstnet.cn (smtp84.cstnet.cn [159.226.251.84])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B2B51987;
+        Thu, 24 Aug 2023 04:33:27 -0700 (PDT)
+Received: from [192.168.0.107] (unknown [111.197.209.91])
+        by APP-05 (Coremail) with SMTP id zQCowABHTPzXP+dkeCOzBA--.28393S2;
+        Thu, 24 Aug 2023 19:32:39 +0800 (CST)
+Message-ID: <4677fc33-6e76-21e6-2a7f-f12670bc1ce2@iscas.ac.cn>
+Date:   Thu, 24 Aug 2023 19:32:39 +0800
 MIME-Version: 1.0
-References: <20230821061315.3416836-1-zhoubinbin@loongson.cn>
- <e62185ca-cdf6-bde9-ad46-f4150db9ed6d@linaro.org> <CAMpQs4JhfuB4=s9VFc+xmw_+8h5u2EwPdM_0x2vO_=SYabAAxw@mail.gmail.com>
- <6ba31912-6738-6156-d5f4-3c8d3a3ca7bc@linaro.org>
-In-Reply-To: <6ba31912-6738-6156-d5f4-3c8d3a3ca7bc@linaro.org>
-From:   Binbin Zhou <zhoubb.aaron@gmail.com>
-Date:   Thu, 24 Aug 2023 19:32:36 +0800
-Message-ID: <CAMpQs4+GiExt9uMmV1pf8gg8rFwWxbLkx9mdW7hY9xxXDOza3Q@mail.gmail.com>
-Subject: Re: [PATCH v2] dt-bindings: interrupt-controller: loongson,liointc:
- Fix warnings about liointc-2.0
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Binbin Zhou <zhoubinbin@loongson.cn>,
-        Huacai Chen <chenhuacai@loongson.cn>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        loongson-kernel@lists.loongnix.cn, devicetree@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-mips@vger.kernel.org, diasyzhang@tencent.com,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v5] riscv: Handle zicsr/zifencei issue between gcc and
+ binutils
+Content-Language: en-US
+To:     Conor Dooley <conor@kernel.org>,
+        Conor Dooley <conor.dooley@microchip.com>
+Cc:     patchwork-bot+linux-riscv@kernel.org,
+        linux-riscv@lists.infradead.org, paul.walmsley@sifive.com,
+        palmer@dabbelt.com, aou@eecs.berkeley.edu, nathan@kernel.org,
+        ndesaulniers@google.com, trix@redhat.com, bmeng@tinylab.org,
+        guoren@kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, stable@vger.kernel.org
+References: <20230809165648.21071-1-xingmingzheng@iscas.ac.cn>
+ <169228562484.20811.14246462375671910714.git-patchwork-notify@kernel.org>
+ <20230823-captive-abdomen-befd942a4a73@wendy>
+ <20230823-facelift-ovary-41f2eb4d9eac@spud>
+From:   Mingzheng Xing <xingmingzheng@iscas.ac.cn>
+Organization: ISCAS
+In-Reply-To: <20230823-facelift-ovary-41f2eb4d9eac@spud>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: zQCowABHTPzXP+dkeCOzBA--.28393S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7AF1kKF48ZFy8uryxZrW5Jrb_yoW8ur45pa
+        yfKF9FkF4kXw48J3s7tr1jq3WYvw4ftryrXr1qyryjy3s8uF90qF92krWa9FyDZFWfCr40
+        kr4ruasxuw1qyaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvCb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4
+        vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
+        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xK
+        xwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r
+        1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CE
+        b7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0x
+        vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAI
+        cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kf
+        nxnUUI43ZEXa7IU56c_DUUUUU==
+X-Originating-IP: [111.197.209.91]
+X-CM-SenderInfo: 50lqwzhlqj6xxhqjqxpvfd2hldfou0/1tbiAxANCmTnMS822AAAsn
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof:
-
-Thanks for your detailed reply.
-
-On Tue, Aug 22, 2023 at 4:30=E2=80=AFPM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
+On 8/23/23 21:31, Conor Dooley wrote:
+> On Wed, Aug 23, 2023 at 12:51:13PM +0100, Conor Dooley wrote:
+>> On Thu, Aug 17, 2023 at 03:20:24PM +0000, patchwork-bot+linux-riscv@kernel.org wrote:
+>>> Hello:
+>>>
+>>> This patch was applied to riscv/linux.git (fixes)
+>>> by Palmer Dabbelt <palmer@rivosinc.com>:
+>>>
+>>> On Thu, 10 Aug 2023 00:56:48 +0800 you wrote:
+>>>> Binutils-2.38 and GCC-12.1.0 bumped[0][1] the default ISA spec to the newer
+>>>> 20191213 version which moves some instructions from the I extension to the
+>>>> Zicsr and Zifencei extensions. So if one of the binutils and GCC exceeds
+>>>> that version, we should explicitly specifying Zicsr and Zifencei via -march
+>>>> to cope with the new changes. but this only occurs when binutils >= 2.36
+>>>> and GCC >= 11.1.0. It's a different story when binutils < 2.36.
+>>>>
+>>>> [...]
+>>> Here is the summary with links:
+>>>    - [v5] riscv: Handle zicsr/zifencei issue between gcc and binutils
+>>>      https://git.kernel.org/riscv/c/ca09f772ccca
+>> *sigh* so this breaks the build for gcc-11 & binutils 2.37 w/
+>> 	Assembler messages:
+>> 	Error: cannot find default versions of the ISA extension `zicsr'
+>> 	Error: cannot find default versions of the ISA extension `zifencei'
+>>
+>> I'll have a poke later.
+> So uh, are we sure that this should not be:
+> -       depends on (CC_IS_CLANG && CLANG_VERSION < 170000) || (CC_IS_GCC && GCC_VERSION < 110100)
+> +       depends on (CC_IS_CLANG && CLANG_VERSION < 170000) || (CC_IS_GCC && GCC_VERSION <= 110100)
 >
-> On 22/08/2023 10:13, Binbin Zhou wrote:
-> > Hi Krzysztof:
-> >
-> > Thanks for your detailed reply.
-> >
-> > On Tue, Aug 22, 2023 at 1:44=E2=80=AFPM Krzysztof Kozlowski
-> > <krzysztof.kozlowski@linaro.org> wrote:
-> >>
-> >> On 21/08/2023 08:13, Binbin Zhou wrote:
-> >>> Since commit f4dee5d8e1fa ("dt-bindings: interrupt-controller: Add
-> >>> Loongson-2K1000 LIOINTC"), the loongson liointc supports configuring
-> >>> routes for 64-bit interrupt sources.
-> >>>
-> >>> For liointc-2.0, we need to define two liointc nodes in dts, one for
-> >>> "0-31" interrupt sources and the other for "32-63" interrupt sources.
-> >>> This applies to mips Loongson-2K1000.
-> >>>
-> >>> Unfortunately, there are some warnings about "loongson,liointc-2.0":
-> >>> 1. "interrupt-names" should be "required", the driver gets the parent
-> >>> interrupts through it.
-> >>
-> >> No, why? Parent? This does not make sense.
-> >
-> > This was noted in the v1 patch discussion. The liointc driver now gets
-> > the parent interrupt via of_irq_get_byname(), so I think the
-> > "interrupt-names" should be "required".
->
-> of_irq_get_byname() does not give you parent interrupt, but the
-> interrupt. Why do you need parent interrupt and what is it?
->
-> >
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
-/drivers/irqchip/irq-loongson-liointc.c?h=3Dv6.5-rc6#n345
-> >
-> > static const char *const parent_names[] =3D {"int0", "int1", "int2", "i=
-nt3"};
-> >
-> >         for (i =3D 0; i < LIOINTC_NUM_PARENT; i++) {
-> >                 parent_irq[i] =3D of_irq_get_byname(node, parent_names[=
-i]);
-> >                 if (parent_irq[i] > 0)
-> >                         have_parent =3D TRUE;
-> >         }
-> >         if (!have_parent)
-> >                 return -ENODEV;
->
-> How requiring parents interrupt is related to other changes in this
-> file? One logical change, one patch.
+> My gcc-11.1 + binutils 2.37 toolchain built from riscv-gnu-toolchain
+> doesn't have the default versions & the above diff fixes the build.
 
-Yes, that was my mistake, whether or not the interrupt-names need to
-be "required" is another issue. It does not cause a check warning.
-I'll think about it some more.
->
-> Anyway why did you do it and take it by names? Names here are basically
-> useless if they match indices, so just get interrupt by indices.
+I reproduced the error, the combination of gcc-11.1 and
+binutils 2.37 does cause errors. What a surprise, since binutils
+2.36 and 2.38 are fine.
 
-There is a match between interrupts, interrupt names and interrupt maps:
+I used git bisect to locate this commit[1] for binutils.
+I'll test this diff in more detail later. Thanks!
 
-interrupt->interrupt name->interrupt map
-2->int0->int_map[0]
-3->int1->int_map[1]
-4->int2->int_map[2]
-5->int3->int_map[3]
+[1] 
+https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=f0bae2552db1dd4f1995608fbf6648fcee4e9e0c
 
-As part of the 2k1000 liointc1 node:
-
-                liointc1: interrupt-controller@1fe11440 {
-....
-                        interrupt-parent =3D <&cpuintc>;
-                        interrupts =3D <3>;
-                        interrupt-names =3D "int1";
-
-                        loongson,parent_int_map =3D <0x00000000>, /* int0 *=
-/
-                                                <0xffffffff>, /* int1 */
-                                                <0x00000000>, /* int2 */
-                                                <0x00000000>; /* int3 */
-                };
-
-To ensure this mapping relationship, the interrupt name becomes the
-intermediate bridge.
+Best Regards,
+Mingzheng.
 
 >
-> >
-> >>
-> >>>
-> >>> 2. Since not all CPUs are multicore, e.g. Loongson-2K0500 is a
-> >>> single-core CPU, there is no core1-related registers. So "reg" and
-> >>> "reg-names" should be set to "minItems 2".
-> >>>
-> >>> 3. Routing interrupts from "int0" is a common solution in practice, b=
-ut
-> >>> theoretically there is no such requirement, as long as conflicts are
-> >>> avoided. So "interrupt-names" should be defined by "pattern".
-> >>
-> >> Why? What the pattern has to do with anything in routing or not routin=
-g
-> >> something?
-> >
-> > First of all, interrupt routing is configurable and each intx handles
-> > up to 32 interrupt sources. int0-int3 you can choose a single one or a
-> > combination of multiple ones, as long as the intx chosen matches the
-> > parent interrupt and is not duplicated:
-> > Parent interrupt --> intx
-> > 2-->int0
-> > 3-->int1
-> > 4-->int2
-> > 5-->int3
-> >
-> > As:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
-/arch/mips/boot/dts/loongson/loongson64g-package.dtsi?h=3Dv6.5-rc6#n24
-> >
-> > In addition, if there are 64 interrupt sources, such as the mips
-> > Loongson-2K1000, and we need two dts nodes to describe the interrupt
-> > routing, then there is bound to be a node without "int0".
-> >
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
-/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi?h=3Dv6.5-rc6#n60
->
-> All of them start from 0, so why do you want to allow here starting from =
-3?
+> Thanks,
+> Conor.
 
-Actually now we are all starting at int0.
-Since the 2K1000 has 64 interrupt sources, we need two nodes to route
-the interrupts. Usually liointc0 (handle 0-31 interrupts sources )uses
-int0 and liointc1 (handle 32-63 interrupts sources ) uses int1.
-As follows:
-
-                liointc0: interrupt-controller@1fe11400 {
-.....
-                        interrupt-parent =3D <&cpuintc>;
-                        interrupts =3D <2>;
-                        interrupt-names =3D "int0";
-
-                        loongson,parent_int_map =3D <0xffffffff>, /* int0 *=
-/
-                                                <0x00000000>, /* int1 */
-                                                <0x00000000>, /* int2 */
-                                                <0x00000000>; /* int3 */
-                };
-
-                liointc1: interrupt-controller@1fe11440 {
-....
-                        interrupt-parent =3D <&cpuintc>;
-                        interrupts =3D <3>;
-                        interrupt-names =3D "int1";
-
-                        loongson,parent_int_map =3D <0x00000000>, /* int0 *=
-/
-                                                <0xffffffff>, /* int1 */
-                                                <0x00000000>, /* int2 */
-                                                <0x00000000>; /* int3 */
-                };
-
-At this point, liointc1 will be warned that it is not starting from
-int0, and that int0 is actually being used by liointc0.
-
->
-> >
-> > According to the current dt-binding rule, if the node does not have
-> > "int0", there will be a dts_check warning, which is not in line with
-> > our original intention.
->
-> Why DT node would not have int0? Provide proper upstreamed Linux kernel
-> source proving this, not some imaginary code.
->
-> >
-> >>
-> >>>
-> >>> This fixes dtbs_check warning:
-> >>>
-> >>> DTC_CHK arch/mips/boot/dts/loongson/loongson64_2core_2k1000.dtb
-> >>> arch/mips/boot/dts/loongson/loongson64_2core_2k1000.dtb: interrupt-co=
-ntroller@1fe11440: interrupt-names:0: 'int0' was expected
-> >>>       From schema: Documentation/devicetree/bindings/interrupt-contro=
-ller/loongson,liointc.yaml
-> >>> arch/mips/boot/dts/loongson/loongson64_2core_2k1000.dtb: interrupt-co=
-ntroller@1fe11440: Unevaluated properties are not allowed ('interrupt-names=
-' was unexpected)
-> >>>       From schema: Documentation/devicetree/bindings/interrupt-contro=
-ller/loongson,liointc.yaml
-> >>>
-> >>> Fixes: f4dee5d8e1fa ("dt-bindings: interrupt-controller: Add Loongson=
--2K1000 LIOINTC")
-> >>> Signed-off-by: Binbin Zhou <zhoubinbin@loongson.cn>
-> >>> ---
-> >>> V2:
-> >>> 1. Update commit message;
-> >>> 2. "interruprt-names" should be "required", the driver gets the paren=
-t
-> >>> interrupts through it;
-> >>> 3. Add more descriptions to explain the rationale for multiple nodes;
-> >>> 4. Rewrite if-else statements.
-> >>>
-> >>> Link to V1:
-> >>> https://lore.kernel.org/all/20230815084713.1627520-1-zhoubinbin@loong=
-son.cn/
-> >>>
-> >>>  .../loongson,liointc.yaml                     | 74 +++++++++--------=
---
-> >>>  1 file changed, 37 insertions(+), 37 deletions(-)
-> >>>
-> >>> diff --git a/Documentation/devicetree/bindings/interrupt-controller/l=
-oongson,liointc.yaml b/Documentation/devicetree/bindings/interrupt-controll=
-er/loongson,liointc.yaml
-> >>> index 00b570c82903..f695d3a75ddf 100644
-> >>> --- a/Documentation/devicetree/bindings/interrupt-controller/loongson=
-,liointc.yaml
-> >>> +++ b/Documentation/devicetree/bindings/interrupt-controller/loongson=
-,liointc.yaml
-> >>> @@ -11,11 +11,11 @@ maintainers:
-> >>>
-> >>>  description: |
-> >>>    This interrupt controller is found in the Loongson-3 family of chi=
-ps and
-> >>> -  Loongson-2K1000 chip, as the primary package interrupt controller =
-which
-> >>> +  Loongson-2K series chips, as the primary package interrupt control=
-ler which
-> >>>    can route local I/O interrupt to interrupt lines of cores.
-> >>> -
-> >>> -allOf:
-> >>> -  - $ref: /schemas/interrupt-controller.yaml#
-> >>> +  In particular, the Loongson-2K1000/2K0500 has 64 interrupt sources=
- that we
-> >>> +  need to describe with two dts nodes. One for interrupt sources "0-=
-31" and
-> >>> +  the other for interrupt sources "32-63".
-> >>>
-> >>>  properties:
-> >>>    compatible:
-> >>> @@ -24,15 +24,9 @@ properties:
-> >>>        - loongson,liointc-1.0a
-> >>>        - loongson,liointc-2.0
-> >>>
-> >>> -  reg:
-> >>> -    minItems: 1
-> >>> -    minItems: 3
-> >>> +  reg: true
-> >>
-> >> No. Constraints must be here.
-> >
-> > May I ask a question:
-> > Since different compatibles require different minItems/minItems for
->
-> You don't have this case here. I don't see any device asking for 4 regs.
->
-> > the attribute, this writeup of defining the attribute to be true first
-> > and then defining the specific value in an if-else statement is not
-> > recommended?
->
-> The top-level defines widest constraints and if:else: narrows them per
-> each variant.
->
-> ...
->
-> >>> +        reg-names:
-> >>> +          minItems: 2
-> >>> +          items:
-> >>> +            - const: main
-> >>> +            - const: isr0
-> >>> +            - const: isr1
-> >>
-> >> Srsly, why this is moved here from the top? It does not make sense.
-> >
-> > In liointc-2.0, we need to deal with two dts nodes, and the setting
-> > and routing registers are not contiguous, so the driver needs
-> > "reg-names" to get the corresponding register mapping. So I put all
-> > this in the liointc-2.0 section.
-> >
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
-/drivers/irqchip/irq-loongson-liointc.c?h=3Dv6.5-rc6#n225
->
-> This is driver. You need to show the DTS, not driver.
->
-> >
-> >         if (revision > 1) {
-> >                 for (i =3D 0; i < LIOINTC_NUM_CORES; i++) {
-> >                         int index =3D of_property_match_string(node,
-> >                                         "reg-names", core_reg_names[i])=
-;
-> >
-> >                         if (index < 0)
-> >                                 continue;
-> >
-> >                         priv->core_isr[i] =3D of_iomap(node, index);
-> >                 }
-> >
-> >                 if (!priv->core_isr[0])
-> >                         goto out_iounmap;
-> >         }
-> >
-> >
-> > I referenced other dt-binding writeups and thought this would be cleare=
-r.
-> >
-> > Is this if-else style not recommended? Should I keep the v1 patch write=
-up?
-> > https://lore.kernel.org/all/20230815084713.1627520-1-zhoubinbin@loongso=
-n.cn/
->
-> if:else: is recommended, we do not discuss it. Your v1 was making
-> everything totally loose, so incorrect. Explain - why the reg-names are
-> not correct for the other variant? We expect just to have maxItems for
-> the other variant... unless reg-names are not correct, then they can be
-> made false - which you didn't.
->
-This is mainly due to discontinuities in register definitions.
-
-Interrupt routing configuration involves two aspects of registers (32 bits)=
-:
-1. interrupt configuration registers: including interrupt enable,
-interrupt status, etc;
-2. the CORE routing register: indicating which CORE to route to.
-
-First of all, for liointc-1.0, e.g. Loongson-3A, they are contiguous
-and we only need a set of register definitions, so reg-names are not
-needed.
-
-                liointc: interrupt-controller@3ff01400 {
-                        compatible =3D "loongson,liointc-1.0";
-                        reg =3D <0 0x3ff01400 0x64>;
-...........
-                };
-
-However, for liointc-2.0, e.g. Loongson-2K1000, they are not
-contiguous and we can only define them separately (main/isr0/isr1).
-
-                liointc0: interrupt-controller@1fe11400 {
-                        compatible =3D "loongson,liointc-2.0";
-                        reg =3D <0 0x1fe11400 0 0x40>,
-                                <0 0x1fe11040 0 0x8>,
-                                <0 0x1fe11140 0 0x8>;
-                        reg-names =3D "main", "isr0", "isr1";
-..........
-                };
-
-
-Unfortunately, the Loongson-2K0500 is again special in that it is a
-single-core CPU. therefore the core1 routing register (isr1) does not
-exist.
-
-                liointc0: interrupt-controller@1fe11400 {
-                        compatible =3D "loongson,liointc-2.0";
-                        reg =3D <0x0 0x1fe11400 0x0 0x40>,
-                              <0x0 0x1fe11040 0x0 0x8>;
-                        reg-names =3D "main", "isr0";
-......
-                };
-
-So I would like to set the minItems of reg-names to 2 (main/isr0).
-
-Thanks.
-Binbin
-
->
-> Best regards,
-> Krzysztof
->
