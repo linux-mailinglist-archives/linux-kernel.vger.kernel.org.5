@@ -2,143 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFD64787793
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 20:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E382F7877B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 20:22:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243000AbjHXSQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 14:16:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58326 "EHLO
+        id S243027AbjHXSVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 14:21:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242948AbjHXSQ1 (ORCPT
+        with ESMTP id S243008AbjHXSVV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 14:16:27 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E86D31BE5
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 11:16:24 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2ba1e9b1fa9so911261fa.3
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 11:16:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692900983; x=1693505783;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7V339yE8bPMm+KmAAdyGZ6ExwOtcmP76lDiycvZ+QhM=;
-        b=P7byTXhX2Ze5Ua+2lm2QhtKtc3P56x6cahDM1celc3QwjF0+Ix+nBD+S1+b0WJDZCI
-         6IxZTNq5SGvVmyLTnhZ8Bo1bXlPtpi7L/5qqwTm0JgNJJxJmI8jfnwNCEIB6gnl1srAD
-         tNC/V8X0CKXn4FEpmR2LSJeRRvVvKMDXOH9IWAGqEYCCyY9tIALrfOlZHSbRgHOaIqPm
-         WeWyljfyHCv8gpRcPCZV5ImGaxPPJyqn8uSXCGLdjtXxtYRmprRbyyI+qBrAvmt8lqmg
-         Qwyss28dCn8v2XA2KpRopKuaZuXDNde1+NZ+p6/slJ6Lluyf6LCArRlnwV0XKXMAPKrS
-         Pong==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692900983; x=1693505783;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7V339yE8bPMm+KmAAdyGZ6ExwOtcmP76lDiycvZ+QhM=;
-        b=i1P3O81tR+kNvCrYAtKUlyogZq73xbKQEAv9YUKquHLzV10057wsnpgBss/oxKuAA/
-         taRiQvqHjEMCRrUCuNP472gsxW70D9JfGb30FI83lcXCYX4xLtSqikEeHPHoXN9WLWWw
-         /6FRJ0JZApjKHdqKEyaLr1eWlCaWQfKQPd3GYAHiDRfLxMNifYsobxmFN/mk1/orCDYt
-         JBYmAZtPNW6PHvA32wvLoaUBadvne2xVJJUajrZwHL+0KLW7bvG2IH6Dxb+lIBimpdit
-         c+aGgx2Qsu2w+Nw2+NgORFH72BOInXzZU78nxkagv6csU5XPQVeq5pVvmDmuIeOmp3sH
-         G2Qg==
-X-Gm-Message-State: AOJu0Yzukhzd7SqN4/OX3vx0UUKC0c0eXSIjawniX/IhZF42O2zrUWV6
-        SCErYX0lBmZpxpPJ8F06/jUPAWkEOMbbUm9bJSKRZQ==
-X-Google-Smtp-Source: AGHT+IECNuJjCUDHAbVkXcrjqS3Bj6d3JaKHEw0JOGYScAGMdiPhJmizveJJgIi+tQXrkfH46aZeiQvAlOl6fbb4ins=
-X-Received: by 2002:a2e:6e0c:0:b0:2b9:ef0a:7d4b with SMTP id
- j12-20020a2e6e0c000000b002b9ef0a7d4bmr12177646ljc.31.1692900982999; Thu, 24
- Aug 2023 11:16:22 -0700 (PDT)
+        Thu, 24 Aug 2023 14:21:21 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F11391BEB;
+        Thu, 24 Aug 2023 11:21:19 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37OILAZf119095;
+        Thu, 24 Aug 2023 13:21:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1692901270;
+        bh=YBXfK1ffDRuuw2ZjihAgBCtqcWGidH+IMIvNmqD53/8=;
+        h=From:To:CC:Subject:Date;
+        b=yIREnAI9X+ZuUAEpYkqFXuVo7Ultu4Z8rH5Ge1rZkuN0wKgpBjQH12Mh/fn0KYodE
+         I2YGvHW8wi0m5rTYJa1+NOeox7uzrRFchtBzL9SmKv+0fIe7b9SLr+JkD65EORfaVJ
+         yhMJUWqTaNEMFw9DHhPxysh5JRIYHr/EREDkR16w=
+Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37OILAJv019000
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 24 Aug 2023 13:21:10 -0500
+Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 24
+ Aug 2023 13:21:09 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 24 Aug 2023 13:21:09 -0500
+Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37OIL9qJ075286;
+        Thu, 24 Aug 2023 13:21:09 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>
+CC:     <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <bpf@vger.kernel.org>,
+        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>,
+        Mattijs Korpershoek <mkorpershoek@baylibre.com>,
+        Simon Glass <sjg@chromium.org>, Tom Rini <trini@konsulko.com>,
+        Neha Francis <n-francis@ti.com>, Nishanth Menon <nm@ti.com>
+Subject: [PATCH 0/2] Documentation: sphinx: Add sphinx-prompt
+Date:   Thu, 24 Aug 2023 13:21:05 -0500
+Message-ID: <20230824182107.3702766-1-nm@ti.com>
+X-Mailer: git-send-email 2.40.0
 MIME-Version: 1.0
-References: <20230821205458.1764662-1-yosryahmed@google.com>
- <20230821205458.1764662-4-yosryahmed@google.com> <ZOR6eyYfJYlxdMet@dhcp22.suse.cz>
- <CAJD7tka13M-zVZTyQJYL1iUAYvuQ1fcHbCjcOBZcz6POYTV-4g@mail.gmail.com>
- <ZOW2PZN8Sgqq6uR2@dhcp22.suse.cz> <CAJD7tka34WjtwBWfkTu8ZCEUkLm7h-AyCXpw=h34n4RZ5qBVwA@mail.gmail.com>
- <ZOcDLD/1WaOwWis9@dhcp22.suse.cz>
-In-Reply-To: <ZOcDLD/1WaOwWis9@dhcp22.suse.cz>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Thu, 24 Aug 2023 11:15:46 -0700
-Message-ID: <CAJD7tkZby2enWa8_Js8joHqFx_tHB=aRqHOizaSiXMUjvEei4g@mail.gmail.com>
-Subject: Re: [PATCH 3/3] mm: memcg: use non-unified stats flushing for
- userspace reads
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 12:13=E2=80=AFAM Michal Hocko <mhocko@suse.com> wro=
-te:
->
-> On Wed 23-08-23 07:55:40, Yosry Ahmed wrote:
-> > On Wed, Aug 23, 2023 at 12:33=E2=80=AFAM Michal Hocko <mhocko@suse.com>=
- wrote:
-> > >
-> > > On Tue 22-08-23 08:30:05, Yosry Ahmed wrote:
-> > > > On Tue, Aug 22, 2023 at 2:06=E2=80=AFAM Michal Hocko <mhocko@suse.c=
-om> wrote:
-> > > > >
-> > > > > On Mon 21-08-23 20:54:58, Yosry Ahmed wrote:
-> > > [...]
-> > > > So to answer your question, I don't think a random user can really
-> > > > affect the system in a significant way by constantly flushing. In
-> > > > fact, in the test script (which I am now attaching, in case you're
-> > > > interested), there are hundreds of threads that are reading stats o=
-f
-> > > > different cgroups every 1s, and I don't see any negative effects on
-> > > > in-kernel flushers in this case (reclaimers).
-> > >
-> > > I suspect you have missed my point.
-> >
-> > I suspect you are right :)
-> >
-> >
-> > > Maybe I am just misunderstanding
-> > > the code but it seems to me that the lock dropping inside
-> > > cgroup_rstat_flush_locked effectivelly allows unbounded number of
-> > > contenders which is really dangerous when it is triggerable from the
-> > > userspace. The number of spinners at a moment is always bound by the
-> > > number CPUs but depending on timing many potential spinners might be
-> > > cond_rescheded and the worst time latency to complete can be really
-> > > high. Makes more sense?
-> >
-> > I think I understand better now. So basically because we might drop
-> > the lock and resched, there can be nr_cpus spinners + other spinners
-> > that are currently scheduled away, so these will need to wait to be
-> > scheduled and then start spinning on the lock. This may happen for one
-> > reader multiple times during its read, which is what can cause a high
-> > worst case latency.
-> >
-> > I hope I understood you correctly this time. Did I?
->
-> Yes. I would just add that this could also influence the worst case
-> latency for a different reader - so an adversary user can stall others.
+Hi,
+Discussion started off in u-boot documentation[1] and Heinrich
+suggested[2] getting something similar done for kernel as well.
 
-I can add that for v2 to the commit log, thanks.
+https://youtu.be/ItjdVa59jjE shows how this change helps.
 
-> Exposing a shared global lock in uncontrolable way over generally
-> available user interface is not really a great idea IMHO.
+I have picked just a trivial file to show the impact, but it can
+probably get done for other files as well.
 
-I think that's how it was always meant to be when it was designed. The
-global rstat lock has always existed and was always available to
-userspace readers. The memory controller took a different path at some
-point with unified flushing, but that was mainly because of high
-concurrency from in-kernel flushers, not because userspace readers
-caused a problem. Outside of memcg, the core cgroup code has always
-exercised this global lock when reading cpu.stat since rstat's
-introduction. I assume there hasn't been any problems since it's still
-there. I was hoping Tejun would confirm/deny this.
+NOTE: I am a sphinx noob, so, there might be better approaches.
+Suggestions welcome.
+
+Nishanth Menon (2):
+  Documentation: sphinx: Add sphinx-prompt
+  Documentation: bpf: Use sphinx-prompt
+
+ Documentation/bpf/libbpf/libbpf_build.rst | 20 ++++++++++----------
+ Documentation/conf.py                     |  2 +-
+ Documentation/sphinx/requirements.txt     |  1 +
+ 3 files changed, 12 insertions(+), 11 deletions(-)
+
+[1] https://lore.kernel.org/all/87fs48rgto.fsf@baylibre.com/
+[2] https://lore.kernel.org/r/Datecc5d8c56-546a-4cd7-6a78-1206e9675555@canonical.com
+-- 
+2.40.0
+
