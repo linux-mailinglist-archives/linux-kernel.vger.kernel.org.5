@@ -2,223 +2,334 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2E66786FC6
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 14:57:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B376786FC3
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 14:56:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232504AbjHXM5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 08:57:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44656 "EHLO
+        id S237211AbjHXM4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 08:56:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233577AbjHXM4d (ORCPT
+        with ESMTP id S241400AbjHXMzj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 08:56:33 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07606CD0
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 05:56:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692881791; x=1724417791;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=WchCVHcquPopaM2xXvJm7NMGY+0W0sobFwO3R856VXM=;
-  b=fSw/gjfPBp1dVvfpn5wQlJsdINebm8gV73FwooDtGcbH7dUay4TBl6LL
-   FpSZsbOtWzJ9uDVq3BvoWb3O3kXh7vxfyoId1qQXADtw5lNsvJ8+pvruw
-   bpFwi4Nx9mnyg1Of1cZbRi4R90q6rYlN1s6RebiAbZnejJpdquzDPMgjK
-   eumbOKDtgflK1LZWXkUSSgKGlRDc7H7CoMLCp6nLW7PlGZFlMlCihRo3S
-   bCkqudkwVXC/iklzitTSPxC58y8+ST/3CiTv5d7YBfoFmu0lXlaUjzJCG
-   M/3n1gG4zsaqpM5eWG8wGh9B1NVT2rjMTrFJXPM0cuq6CPgMrGWn4OmDj
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="364603797"
-X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
-   d="scan'208";a="364603797"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 05:56:30 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="983689896"
-X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
-   d="scan'208";a="983689896"
-Received: from abedekar-mobl1.ger.corp.intel.com ([10.251.213.29])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 05:56:28 -0700
-Date:   Thu, 24 Aug 2023 15:56:25 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     "Wieczor-Retman, Maciej" <maciej.wieczor-retman@intel.com>
-cc:     LKML <linux-kernel@vger.kernel.org>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        fenghua.yu@intel.com
-Subject: Re: [PATCH 2/3] selftests/resctrl: Move run_benchmark() to a more
- fitting file
-In-Reply-To: <69a1ed7c06c3c34a2e39b50ffcceb9774967203a.1692880423.git.maciej.wieczor-retman@intel.com>
-Message-ID: <3978b8f7-1d80-d7-926a-72b2cfd923bd@linux.intel.com>
-References: <cover.1692880423.git.maciej.wieczor-retman@intel.com> <69a1ed7c06c3c34a2e39b50ffcceb9774967203a.1692880423.git.maciej.wieczor-retman@intel.com>
+        Thu, 24 Aug 2023 08:55:39 -0400
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E51741980
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 05:55:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+        s=smtpout1; t=1692881730;
+        bh=AtxAWQ5MRPH6kTMLKlMtaybrvlKjwi4eU8vR6mHZXRo=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=qXpxfW1ryY2ZPvC2xts2ee5305ODvPwedIvi8DCHfwjNjqwCkFRyOyEv/VQY3Lirx
+         StLRBSU/lsF+sR8lDI8Wm4YxSQ/s3s8XUiBXOcac6xc2aU80izvc9OhIGFkjiXSgn7
+         gdS2IpZjlBRZf6YD9GJWTdNwOQnPVEv0LvrmaxGPHjUEy5bxLdYK4urztRfgebbg2S
+         e18wtdxKrsZ6mKOOLjUG80Wf61CGUBXBA/P70/fCmgBeyZm0JjzK8pUObZeWCVCYuN
+         KfVpdjXqmQjxT5xjSingSV9ZvtSi/CKQXmiDvZo4QIya/6VKaCfo4d9JxIhu0neNZo
+         ZIV2+DpKSV7Fg==
+Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4RWjjt3FZ5z1M5m;
+        Thu, 24 Aug 2023 08:55:30 -0400 (EDT)
+Message-ID: <2192e838-48d1-9dec-5769-74a4a048f3c2@efficios.com>
+Date:   Thu, 24 Aug 2023 08:56:40 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 1/1] sched/fair: ratelimit update to tg->load_avg
+Content-Language: en-US
+To:     Aaron Lu <aaron.lu@intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Tim Chen <tim.c.chen@intel.com>,
+        Nitin Tekchandani <nitin.tekchandani@intel.com>,
+        Yu Chen <yu.c.chen@intel.com>,
+        Waiman Long <longman@redhat.com>,
+        Deng Pan <pan.deng@intel.com>,
+        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
+        David Vernet <void@manifault.com>, linux-kernel@vger.kernel.org
+References: <20230823060832.454842-1-aaron.lu@intel.com>
+ <20230823060832.454842-2-aaron.lu@intel.com>
+ <fd568884-9df4-2990-7b81-655fc7f63a4a@efficios.com>
+ <20230824080142.GB459974@ziqianlu-dell>
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <20230824080142.GB459974@ziqianlu-dell>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Aug 2023, Wieczor-Retman, Maciej wrote:
-
-Thanks for this patch, the new location is much more appropriate and 
-logical (more than once I've tried to look for this from the wrong file).
-
-> Resctrlfs.c file contains mostly functions that interact in some way
-> with resctrl FS entries while functions inside resctrl_val.c deal with
-> measurements and benchmarking
+On 8/24/23 04:01, Aaron Lu wrote:
+> On Wed, Aug 23, 2023 at 10:05:31AM -0400, Mathieu Desnoyers wrote:
+>> On 8/23/23 02:08, Aaron Lu wrote:
+>>> When using sysbench to benchmark Postgres in a single docker instance
+>>> with sysbench's nr_threads set to nr_cpu, it is observed there are times
+>>> update_cfs_group() and update_load_avg() shows noticeable overhead on
+>>> a 2sockets/112core/224cpu Intel Sapphire Rapids(SPR):
+>>>
+>>>       13.75%    13.74%  [kernel.vmlinux]           [k] update_cfs_group
+>>>       10.63%    10.04%  [kernel.vmlinux]           [k] update_load_avg
+>>>
+>>> Annotate shows the cycles are mostly spent on accessing tg->load_avg
+>>> with update_load_avg() being the write side and update_cfs_group() being
+>>> the read side. tg->load_avg is per task group and when different tasks
+>>> of the same taskgroup running on different CPUs frequently access
+>>> tg->load_avg, it can be heavily contended.
+>>>
+>>> E.g. when running postgres_sysbench on a 2sockets/112cores/224cpus Intel
+>>> Sappire Rapids, during a 5s window, the wakeup number is 14millions and
+>>> migration number is 11millions and with each migration, the task's load
+>>> will transfer from src cfs_rq to target cfs_rq and each change involves
+>>> an update to tg->load_avg. Since the workload can trigger as many wakeups
+>>> and migrations, the access(both read and write) to tg->load_avg can be
+>>> unbound. As a result, the two mentioned functions showed noticeable
+>>> overhead. With netperf/nr_client=nr_cpu/UDP_RR, the problem is worse:
+>>> during a 5s window, wakeup number is 21millions and migration number is
+>>> 14millions; update_cfs_group() costs ~25% and update_load_avg() costs ~16%.
+>>>
+>>> Reduce the overhead by limiting updates to tg->load_avg to at most once
+>>> per ms. After this change, the cost of accessing tg->load_avg is greatly
+>>> reduced and performance improved. Detailed test results below.
+>>
+>> By applying your patch on top of my patchset at:
+>>
+>> https://lore.kernel.org/lkml/20230822113133.643238-1-mathieu.desnoyers@efficios.com/
+>>
+>> The combined hackbench results look very promising:
+>>
+>> (hackbench -g 32 -f 20 --threads --pipe -l 480000 -s 100)
+>> (192 cores AMD EPYC 9654 96-Core Processor (over 2 sockets), with hyperthreading)
+>>
+>> Baseline:                                       49s
+>> With L2-ttwu-queue-skip:                        34s (30% speedup)
+>> With L2-ttwu-queue-skip + ratelimit-load-avg:   26s (46% speedup)
+>>
+>> Feel free to apply my:
+>>
+>> Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+>> Tested-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 > 
-> Run_benchmark() function is located in resctrlfs.c file even though it's
-> purpose is not interacting with the resctrl FS but to execute cache
-> checking logic
+> Thanks a lot for running this and reviewing the patch.
+> I'll add your number and tag in the changelog when sending a new
+> version.
+
+Now that I come to think of it, I have comment: why use 
+sched_clock_cpu() rather than just read the jiffies value ? AFAIR, 
+sched_clock can be slower than needed when read from a "remote" cpu on 
+architectures that have an unsynchronized tsc.
+
+Considering that you only need a time reference more or less accurate at 
+the millisecond level, I suspect that jiffies is what you are looking 
+for here. This is what the NUMA balance code and rseq mm_cid use to 
+execute work every N milliseconds.
+
+Thanks,
+
+Mathieu
+
 > 
-> Move run_benchmark() to resctrl_val.c just before resctrl_val() function
-> that makes use of run_benchmark()
-
-Please terminate your sentences in changelog with . like in normal 
-writing.
-
-> Signed-off-by: Wieczor-Retman, Maciej <maciej.wieczor-retman@intel.com>
-> ---
->  tools/testing/selftests/resctrl/resctrl_val.c | 52 +++++++++++++++++++
->  tools/testing/selftests/resctrl/resctrlfs.c   | 52 -------------------
->  2 files changed, 52 insertions(+), 52 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/resctrl/resctrl_val.c b/tools/testing/selftests/resctrl/resctrl_val.c
-> index f0f6c5f6e98b..667542c084eb 100644
-> --- a/tools/testing/selftests/resctrl/resctrl_val.c
-> +++ b/tools/testing/selftests/resctrl/resctrl_val.c
-> @@ -621,6 +621,58 @@ measure_vals(struct resctrl_val_param *param, unsigned long *bw_resc_start)
->  	return 0;
->  }
->  
-> +/*
-> + * run_benchmark - Run a specified benchmark or fill_buf (default benchmark)
-> + *		   in specified signal. Direct benchmark stdio to /dev/null.
-> + * @signum:	signal number
-> + * @info:	signal info
-> + * @ucontext:	user context in signal handling
-> + *
-> + * Return: void
-
-This Return: void feels waste of screen space as if it wouldn't be 
-obvious from the function signature.
-
-> + */
-> +void run_benchmark(int signum, siginfo_t *info, void *ucontext)
-> +{
-> +	int operation, ret, memflush;
-> +	char **benchmark_cmd;
-> +	size_t span;
-> +	bool once;
-> +	FILE *fp;
-> +
-> +	benchmark_cmd = info->si_ptr;
-> +
-> +	/*
-> +	 * Direct stdio of child to /dev/null, so that only parent writes to
-> +	 * stdio (console)
-> +	 */
-> +	fp = freopen("/dev/null", "w", stdout);
-> +	if (!fp)
-> +		PARENT_EXIT("Unable to direct benchmark status to /dev/null");
-> +
-> +	if (strcmp(benchmark_cmd[0], "fill_buf") == 0) {
-> +		/* Execute default fill_buf benchmark */
-> +		span = strtoul(benchmark_cmd[1], NULL, 10);
-> +		memflush =  atoi(benchmark_cmd[2]);
-> +		operation = atoi(benchmark_cmd[3]);
-> +		if (!strcmp(benchmark_cmd[4], "true"))
-> +			once = true;
-> +		else if (!strcmp(benchmark_cmd[4], "false"))
-> +			once = false;
-> +		else
-> +			PARENT_EXIT("Invalid once parameter");
-> +
-> +		if (run_fill_buf(span, memflush, operation, once))
-> +			fprintf(stderr, "Error in running fill buffer\n");
-> +	} else {
-> +		/* Execute specified benchmark */
-> +		ret = execvp(benchmark_cmd[0], benchmark_cmd);
-> +		if (ret)
-> +			perror("wrong\n");
-> +	}
-> +
-> +	fclose(stdout);
-> +	PARENT_EXIT("Unable to run specified benchmark");
-> +}
-> +
->  /*
->   * resctrl_val:	execute benchmark and measure memory bandwidth on
->   *			the benchmark
-> diff --git a/tools/testing/selftests/resctrl/resctrlfs.c b/tools/testing/selftests/resctrl/resctrlfs.c
-> index a6d0b632cbc6..e3c94614c086 100644
-> --- a/tools/testing/selftests/resctrl/resctrlfs.c
-> +++ b/tools/testing/selftests/resctrl/resctrlfs.c
-> @@ -291,58 +291,6 @@ int taskset_benchmark(pid_t bm_pid, int cpu_no)
->  	return 0;
->  }
->  
-> -/*
-> - * run_benchmark - Run a specified benchmark or fill_buf (default benchmark)
-> - *		   in specified signal. Direct benchmark stdio to /dev/null.
-> - * @signum:	signal number
-> - * @info:	signal info
-> - * @ucontext:	user context in signal handling
-> - *
-> - * Return: void
-> - */
-> -void run_benchmark(int signum, siginfo_t *info, void *ucontext)
-> -{
-> -	int operation, ret, memflush;
-> -	char **benchmark_cmd;
-> -	size_t span;
-> -	bool once;
-> -	FILE *fp;
-> -
-> -	benchmark_cmd = info->si_ptr;
-> -
-> -	/*
-> -	 * Direct stdio of child to /dev/null, so that only parent writes to
-> -	 * stdio (console)
-> -	 */
-> -	fp = freopen("/dev/null", "w", stdout);
-> -	if (!fp)
-> -		PARENT_EXIT("Unable to direct benchmark status to /dev/null");
-> -
-> -	if (strcmp(benchmark_cmd[0], "fill_buf") == 0) {
-> -		/* Execute default fill_buf benchmark */
-> -		span = strtoul(benchmark_cmd[1], NULL, 10);
-> -		memflush =  atoi(benchmark_cmd[2]);
-> -		operation = atoi(benchmark_cmd[3]);
-> -		if (!strcmp(benchmark_cmd[4], "true"))
-> -			once = true;
-> -		else if (!strcmp(benchmark_cmd[4], "false"))
-> -			once = false;
-> -		else
-> -			PARENT_EXIT("Invalid once parameter");
-> -
-> -		if (run_fill_buf(span, memflush, operation, once))
-> -			fprintf(stderr, "Error in running fill buffer\n");
-> -	} else {
-> -		/* Execute specified benchmark */
-> -		ret = execvp(benchmark_cmd[0], benchmark_cmd);
-> -		if (ret)
-> -			perror("wrong\n");
-> -	}
-> -
-> -	fclose(stdout);
-> -	PARENT_EXIT("Unable to run specified benchmark");
-> -}
-> -
->  /*
->   * create_grp - Create a group only if one doesn't exist
->   * @grp_name:	Name of the group
-> 
+> Regards,
+> Aaron
+>   
+>>>
+>>> ==============================
+>>> postgres_sysbench on SPR:
+>>> 25%
+>>> base:   42382±19.8%
+>>> patch:  50174±9.5%  (noise)
+>>>
+>>> 50%
+>>> base:   67626±1.3%
+>>> patch:  67365±3.1%  (noise)
+>>>
+>>> 75%
+>>> base:   100216±1.2%
+>>> patch:  112470±0.1% +12.2%
+>>>
+>>> 100%
+>>> base:    93671±0.4%
+>>> patch:  113563±0.2% +21.2%
+>>>
+>>> ==============================
+>>> hackbench on ICL:
+>>> group=1
+>>> base:    114912±5.2%
+>>> patch:   117857±2.5%  (noise)
+>>>
+>>> group=4
+>>> base:    359902±1.6%
+>>> patch:   361685±2.7%  (noise)
+>>>
+>>> group=8
+>>> base:    461070±0.8%
+>>> patch:   491713±0.3% +6.6%
+>>>
+>>> group=16
+>>> base:    309032±5.0%
+>>> patch:   378337±1.3% +22.4%
+>>>
+>>> =============================
+>>> hackbench on SPR:
+>>> group=1
+>>> base:    100768±2.9%
+>>> patch:   103134±2.9%  (noise)
+>>>
+>>> group=4
+>>> base:    413830±12.5%
+>>> patch:   378660±16.6% (noise)
+>>>
+>>> group=8
+>>> base:    436124±0.6%
+>>> patch:   490787±3.2% +12.5%
+>>>
+>>> group=16
+>>> base:    457730±3.2%
+>>> patch:   680452±1.3% +48.8%
+>>>
+>>> ============================
+>>> netperf/udp_rr on ICL
+>>> 25%
+>>> base:    114413±0.1%
+>>> patch:   115111±0.0% +0.6%
+>>>
+>>> 50%
+>>> base:    86803±0.5%
+>>> patch:   86611±0.0%  (noise)
+>>>
+>>> 75%
+>>> base:    35959±5.3%
+>>> patch:   49801±0.6% +38.5%
+>>>
+>>> 100%
+>>> base:    61951±6.4%
+>>> patch:   70224±0.8% +13.4%
+>>>
+>>> ===========================
+>>> netperf/udp_rr on SPR
+>>> 25%
+>>> base:   104954±1.3%
+>>> patch:  107312±2.8%  (noise)
+>>>
+>>> 50%
+>>> base:    55394±4.6%
+>>> patch:   54940±7.4%  (noise)
+>>>
+>>> 75%
+>>> base:    13779±3.1%
+>>> patch:   36105±1.1% +162%
+>>>
+>>> 100%
+>>> base:     9703±3.7%
+>>> patch:   28011±0.2% +189%
+>>>
+>>> ==============================================
+>>> netperf/tcp_stream on ICL (all in noise range)
+>>> 25%
+>>> base:    43092±0.1%
+>>> patch:   42891±0.5%
+>>>
+>>> 50%
+>>> base:    19278±14.9%
+>>> patch:   22369±7.2%
+>>>
+>>> 75%
+>>> base:    16822±3.0%
+>>> patch:   17086±2.3%
+>>>
+>>> 100%
+>>> base:    18216±0.6%
+>>> patch:   18078±2.9%
+>>>
+>>> ===============================================
+>>> netperf/tcp_stream on SPR (all in noise range)
+>>> 25%
+>>> base:    34491±0.3%
+>>> patch:   34886±0.5%
+>>>
+>>> 50%
+>>> base:    19278±14.9%
+>>> patch:   22369±7.2%
+>>>
+>>> 75%
+>>> base:    16822±3.0%
+>>> patch:   17086±2.3%
+>>>
+>>> 100%
+>>> base:    18216±0.6%
+>>> patch:   18078±2.9%
+>>>
+>>> Reported-by: Nitin Tekchandani <nitin.tekchandani@intel.com>
+>>> Suggested-by: Vincent Guittot <vincent.guittot@linaro.org>
+>>> Signed-off-by: Aaron Lu <aaron.lu@intel.com>
+>>> Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+>>> ---
+>>>    kernel/sched/fair.c  | 13 ++++++++++++-
+>>>    kernel/sched/sched.h |  1 +
+>>>    2 files changed, 13 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+>>> index c28206499a3d..a5462d1fcc48 100644
+>>> --- a/kernel/sched/fair.c
+>>> +++ b/kernel/sched/fair.c
+>>> @@ -3664,7 +3664,8 @@ static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
+>>>     */
+>>>    static inline void update_tg_load_avg(struct cfs_rq *cfs_rq)
+>>>    {
+>>> -	long delta = cfs_rq->avg.load_avg - cfs_rq->tg_load_avg_contrib;
+>>> +	long delta;
+>>> +	u64 now;
+>>>    	/*
+>>>    	 * No need to update load_avg for root_task_group as it is not used.
+>>> @@ -3672,9 +3673,19 @@ static inline void update_tg_load_avg(struct cfs_rq *cfs_rq)
+>>>    	if (cfs_rq->tg == &root_task_group)
+>>>    		return;
+>>> +	/*
+>>> +	 * For migration heavy workload, access to tg->load_avg can be
+>>> +	 * unbound. Limit the update rate to at most once per ms.
+>>> +	 */
+>>> +	now = sched_clock_cpu(cpu_of(rq_of(cfs_rq)));
+>>> +	if (now - cfs_rq->last_update_tg_load_avg < NSEC_PER_MSEC)
+>>> +		return;
+>>> +
+>>> +	delta = cfs_rq->avg.load_avg - cfs_rq->tg_load_avg_contrib;
+>>>    	if (abs(delta) > cfs_rq->tg_load_avg_contrib / 64) {
+>>>    		atomic_long_add(delta, &cfs_rq->tg->load_avg);
+>>>    		cfs_rq->tg_load_avg_contrib = cfs_rq->avg.load_avg;
+>>> +		cfs_rq->last_update_tg_load_avg = now;
+>>>    	}
+>>>    }
+>>> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+>>> index 6a8b7b9ed089..52ee7027def9 100644
+>>> --- a/kernel/sched/sched.h
+>>> +++ b/kernel/sched/sched.h
+>>> @@ -593,6 +593,7 @@ struct cfs_rq {
+>>>    	} removed;
+>>>    #ifdef CONFIG_FAIR_GROUP_SCHED
+>>> +	u64			last_update_tg_load_avg;
+>>>    	unsigned long		tg_load_avg_contrib;
+>>>    	long			propagate;
+>>>    	long			prop_runnable_sum;
+>>
+>> -- 
+>> Mathieu Desnoyers
+>> EfficiOS Inc.
+>> https://www.efficios.com
+>>
 
 -- 
- i.
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
 
