@@ -2,137 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 482FC786C13
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 11:34:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A33C0786C18
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 11:36:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239985AbjHXJeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 05:34:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38944 "EHLO
+        id S239324AbjHXJgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 05:36:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240664AbjHXJdm (ORCPT
+        with ESMTP id S236558AbjHXJfw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 05:33:42 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96BC310FA;
-        Thu, 24 Aug 2023 02:33:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692869618; x=1724405618;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version:content-transfer-encoding;
-  bh=2vFCU4cKjzROt9iNRAPD3gq42jmR3vOwCKOXq570yeM=;
-  b=JIBfTkpBHIsA37slPaUluFSeNaKkcXJNDzLpgOwCfo8vzzymvZyQPDyZ
-   iu//EPqpfGzPAXovKZcb4X2CCfWQaCTNGBpj2rejgUEVKVLCdj044WXkP
-   RVNzg8canes5Ri9OZnZp/IXD8/A+JMPRNI9bOvpbpu5iQqeRvMXPDeZNV
-   LnCuEaZ9m3Y4JWHDFtyS04MWWSLvnHVUkoguNOhaXFNlEqsF+hXnOkJry
-   Vr40I8apGoMn05d8Y2TwOpUy785XcT6zRleLGvxKS0hsKJTVPhxB45CFJ
-   tKz2cGRRZIaz1rHce7UciL/jdz8Iv2HE5qHIVMQOXVVPa2lIoG9vz3hPA
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="353934196"
-X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
-   d="scan'208";a="353934196"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 02:33:38 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="730548687"
-X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
-   d="scan'208";a="730548687"
-Received: from andrzejk-mobl.ger.corp.intel.com (HELO localhost) ([10.252.46.90])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 02:33:35 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Lee Jones <lee@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-tegra@vger.kernel.org,
-        Mikko Perttunen <mperttunen@nvidia.com>
-Subject: Re: [PATCH 15/20] drm/tegra/hub: Increase buffer size to ensure all
- possible values can be stored
-In-Reply-To: <ZOciEaJlHhp4xnFv@orome>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20230824073710.2677348-1-lee@kernel.org>
- <20230824073710.2677348-16-lee@kernel.org> <ZOciEaJlHhp4xnFv@orome>
-Date:   Thu, 24 Aug 2023 12:33:33 +0300
-Message-ID: <87r0ns4weq.fsf@intel.com>
+        Thu, 24 Aug 2023 05:35:52 -0400
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96C9E10DA
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 02:35:49 -0700 (PDT)
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 4CE60120003;
+        Thu, 24 Aug 2023 12:35:47 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 4CE60120003
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
+        s=mail; t=1692869747;
+        bh=NHDNbRQIlPTKyaRRc+wW6R4gs+0+yGK7A4phKQJ1MWA=;
+        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
+        b=VZDiEolif31ql1D4sRsRyUHIACUkUpeoABHCWHVEbcPhk+0oMrydGfJlNthwcTaa0
+         OrVMhNKDpbN27dEWxHdDqPgvXuP2SSdQqTfMxavLm0Co/IJ2SflVQMl2oYlpO3SwGS
+         UqcNpTPu0xaNIp9y5l+qK3VwUw3CUUUewAt8fHA4Y0jpzSqUV/W73c+D5361Q/oxWU
+         enAEsK2tafLwGMcZaRysKoEo3X0MdxUy+O5THNrny8A9i2ldrgraE64fuHVfWi3OGH
+         juwx9EUfSb0bPkLua5WuVQiJhnvhekKHyACprfy1Z5ksvZl8ntJn2d8oJTc0VRA4oK
+         v9RUU3BDw7uSg==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Thu, 24 Aug 2023 12:35:47 +0300 (MSK)
+Received: from [192.168.1.146] (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Thu, 24 Aug 2023 12:35:39 +0300
+Message-ID: <ccf3099f-0e10-a87c-be83-4a414f01dca7@sberdevices.ru>
+Date:   Thu, 24 Aug 2023 12:35:46 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v2 2/2] mtd: spinand: micron: fixing the offset for OOB
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+CC:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+        <kernel@sberdevices.ru>
+References: <20230822122534.872646-1-mmkurbanov@sberdevices.ru>
+ <20230822122534.872646-3-mmkurbanov@sberdevices.ru>
+ <20230822153556.630e65b9@xps-13>
+ <01925ff8-1d19-a729-429a-89866fad319f@sberdevices.ru>
+ <20230823104143.760cc5bc@xps-13>
+ <f873d775-cda9-302d-a651-0113c7c7dc84@sberdevices.ru>
+ <20230823133956.0a505a20@xps-13>
+Content-Language: en-US
+From:   Martin Kurbanov <mmkurbanov@sberdevices.ru>
+In-Reply-To: <20230823133956.0a505a20@xps-13>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 179420 [Aug 24 2023]
+X-KSMG-AntiSpam-Version: 5.9.59.0
+X-KSMG-AntiSpam-Envelope-From: mmkurbanov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 527 527 5bb611be2ca2baa31d984ccbf4ef4415504fc308, {Tracking_smtp_not_equal_from}, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;sberdevices.ru:7.1.1,5.0.1;100.64.160.123:7.1.2;salutedevices.com:7.1.1;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1, FromAlignment: n, {Tracking_smtp_domain_mismatch}, {Tracking_smtp_domain_2level_mismatch}, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/08/24 05:32:00 #21694618
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Aug 2023, Thierry Reding <thierry.reding@gmail.com> wrote:
-> On Thu, Aug 24, 2023 at 08:37:00AM +0100, Lee Jones wrote:
->> When converting from int to string, we must allow for up to 10-chars (21=
-47483647).
->>=20
->> Fixes the following W=3D1 kernel build warning(s):
->>=20
->>  drivers/gpu/drm/tegra/hub.c: In function =E2=80=98tegra_display_hub_pro=
-be=E2=80=99:
->>  drivers/gpu/drm/tegra/hub.c:1106:47: warning: =E2=80=98%u=E2=80=99 dire=
-ctive output may be truncated writing between 1 and 10 bytes into a region =
-of size 4 [-Wformat-truncation=3D]
->>  drivers/gpu/drm/tegra/hub.c:1106:42: note: directive argument in the ra=
-nge [0, 4294967294]
->>  drivers/gpu/drm/tegra/hub.c:1106:17: note: =E2=80=98snprintf=E2=80=99 o=
-utput between 6 and 15 bytes into a destination of size 8
->
-> I wish there was (perhaps there is?) a better way to annotate that i
-> will always be within a given range. In practice this is always going to
-> be smaller than 10 and even in future hardware I wouldn't expect this to
-> ever exceed anything like 32 or 64, so 8 characters is already generous.
 
-I assume you could do
 
-	snprintf(id, sizeof(id), "wgrp%u", (unsigned char)i);
+On 23.08.2023 14:39, Miquel Raynal wrote:
+> Hi Martin,
+> 
+> mmkurbanov@sberdevices.ru wrote on Wed, 23 Aug 2023 14:33:57 +0300:
+> 
+>> Hi Miquel,
+>>
+>> On 23.08.2023 11:41, Miquel Raynal wrote:
+>>> Hi Martin,
+>>>
+>>> I don't think the four bytes have any "bad block specific" meaning. In
+>>> practice, the datasheet states:
+>>>
+>>> 	Value programmed for bad block at the first byte of spare
+>>> 	area: 00h
+>>>
+>>> So only the first byte is used to mark the block bad, the rest is
+>>> probably marked "reserved" for simplicity. I believe we should keep the
+>>> current layout because it would otherwise break users for no real
+>>> reason.  
+>>
+>> I agree with you that this can break the work of users who use OOB.
+>> However, I believe it would be more appropriate to use an offset of 4,
+>> as the micron chip can use all 4 bytes for additional data about the
+>> bad block. So, there is a non-zero probability of losing OOB data in
+>> the reserved area (2 bytes) when the hardware chip attempts to mark
+>> the block as bad.
+> 
+> Is this really a process the chip can do? Aren't bad blocks factory
+> marked only?
 
-but it's perhaps less obvious than just increasing the size of the
-buffer.
+Actually, there is my understanding, I’m not sure exactly.
 
-BR,
-Jani.
-
->
-> Thierry
->
->>=20
->> Signed-off-by: Lee Jones <lee@kernel.org>
->> ---
->> Cc: Thierry Reding <thierry.reding@gmail.com>
->> Cc: Mikko Perttunen <mperttunen@nvidia.com>
->> Cc: David Airlie <airlied@gmail.com>
->> Cc: Daniel Vetter <daniel@ffwll.ch>
->> Cc: Jonathan Hunter <jonathanh@nvidia.com>
->> Cc: Philipp Zabel <p.zabel@pengutronix.de>
->> Cc: dri-devel@lists.freedesktop.org
->> Cc: linux-tegra@vger.kernel.org
->> ---
->>  drivers/gpu/drm/tegra/hub.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>=20
->> diff --git a/drivers/gpu/drm/tegra/hub.c b/drivers/gpu/drm/tegra/hub.c
->> index 1af5f8318d914..f21e57e8599ee 100644
->> --- a/drivers/gpu/drm/tegra/hub.c
->> +++ b/drivers/gpu/drm/tegra/hub.c
->> @@ -1101,7 +1101,7 @@ static int tegra_display_hub_probe(struct platform=
-_device *pdev)
->>=20=20
->>  	for (i =3D 0; i < hub->soc->num_wgrps; i++) {
->>  		struct tegra_windowgroup *wgrp =3D &hub->wgrps[i];
->> -		char id[8];
->> +		char id[16];
->>=20=20
->>  		snprintf(id, sizeof(id), "wgrp%u", i);
->>  		mutex_init(&wgrp->lock);
->> --=20
->> 2.42.0.rc1.204.g551eb34607-goog
->>=20
-
---=20
-Jani Nikula, Intel Open Source Graphics Center
+-- 
+Best Regards,
+Martin Kurbanov
