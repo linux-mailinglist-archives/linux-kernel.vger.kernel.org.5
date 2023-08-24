@@ -2,334 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B376786FC3
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 14:56:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01CF9786FCB
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 15:00:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237211AbjHXM4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 08:56:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49220 "EHLO
+        id S235870AbjHXM7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 08:59:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241400AbjHXMzj (ORCPT
+        with ESMTP id S234135AbjHXM7g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 08:55:39 -0400
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E51741980
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 05:55:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-        s=smtpout1; t=1692881730;
-        bh=AtxAWQ5MRPH6kTMLKlMtaybrvlKjwi4eU8vR6mHZXRo=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=qXpxfW1ryY2ZPvC2xts2ee5305ODvPwedIvi8DCHfwjNjqwCkFRyOyEv/VQY3Lirx
-         StLRBSU/lsF+sR8lDI8Wm4YxSQ/s3s8XUiBXOcac6xc2aU80izvc9OhIGFkjiXSgn7
-         gdS2IpZjlBRZf6YD9GJWTdNwOQnPVEv0LvrmaxGPHjUEy5bxLdYK4urztRfgebbg2S
-         e18wtdxKrsZ6mKOOLjUG80Wf61CGUBXBA/P70/fCmgBeyZm0JjzK8pUObZeWCVCYuN
-         KfVpdjXqmQjxT5xjSingSV9ZvtSi/CKQXmiDvZo4QIya/6VKaCfo4d9JxIhu0neNZo
-         ZIV2+DpKSV7Fg==
-Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4RWjjt3FZ5z1M5m;
-        Thu, 24 Aug 2023 08:55:30 -0400 (EDT)
-Message-ID: <2192e838-48d1-9dec-5769-74a4a048f3c2@efficios.com>
-Date:   Thu, 24 Aug 2023 08:56:40 -0400
+        Thu, 24 Aug 2023 08:59:36 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82CA7CEE;
+        Thu, 24 Aug 2023 05:59:33 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1826261306;
+        Thu, 24 Aug 2023 12:59:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78E36C433C8;
+        Thu, 24 Aug 2023 12:59:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692881972;
+        bh=snPHD4c7d2aIY4YhqIfb16ZC3nzuCX0tPCe/yD5ges8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=d/NVLj8nUYJGrpEJA1MYjylU33H+a4UPR4J+0mPcRIOPmFsNAIn/qCq01ZJwbvT0O
+         CGBhRtGmZiuTD3IiHc+CEXNG+lW+Sb4yXcfPvqd9PqcNXozH9g72maBcpZ5m6SEj2d
+         0q8jG96UrIQCsglJ4E90AYk+lCzGlG/j1p7VgraXWorSfrF3BLDJ0bEtdtPS4O5ipn
+         XaJ2nSzbqz7/TeSUkowi+9B5QzmUbFefPdRVbO8bc2MQ141aFNZFgA+QrVqvlmDnX3
+         xx8ro0LeKFpvvWsl/hy/KO4UHoe/u15u7j+2Py9kNB+TLj8oo6vqnL7VImxPlgxUlE
+         mIwHFXOs5Mklg==
+Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2b95d5ee18dso102818481fa.1;
+        Thu, 24 Aug 2023 05:59:32 -0700 (PDT)
+X-Gm-Message-State: AOJu0YyOsZV4SceovcWdv0NIZp0RpP/WhdWbhYSroX71XcPwYiEqx60Z
+        IvuF1hDPPDxH7RBwibxFYk3k/ICNoGr/gtdzgw==
+X-Google-Smtp-Source: AGHT+IE26VdDO97jXusJ/BKAY46cdvlJP4w8205Z5cvIeq2QmJkb2CsQmCLK1upTBH90qdJx0zQQO+LdL8jCa8DGBro=
+X-Received: by 2002:a2e:7008:0:b0:2bc:d8fd:13df with SMTP id
+ l8-20020a2e7008000000b002bcd8fd13dfmr4641558ljc.41.1692881970476; Thu, 24 Aug
+ 2023 05:59:30 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 1/1] sched/fair: ratelimit update to tg->load_avg
-Content-Language: en-US
-To:     Aaron Lu <aaron.lu@intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Tim Chen <tim.c.chen@intel.com>,
-        Nitin Tekchandani <nitin.tekchandani@intel.com>,
-        Yu Chen <yu.c.chen@intel.com>,
-        Waiman Long <longman@redhat.com>,
-        Deng Pan <pan.deng@intel.com>,
-        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
-        David Vernet <void@manifault.com>, linux-kernel@vger.kernel.org
-References: <20230823060832.454842-1-aaron.lu@intel.com>
- <20230823060832.454842-2-aaron.lu@intel.com>
- <fd568884-9df4-2990-7b81-655fc7f63a4a@efficios.com>
- <20230824080142.GB459974@ziqianlu-dell>
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <20230824080142.GB459974@ziqianlu-dell>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <202308241628.feb8dbbf-oliver.sang@intel.com>
+In-Reply-To: <202308241628.feb8dbbf-oliver.sang@intel.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Thu, 24 Aug 2023 07:59:17 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqKFhsEMO9=rTRDiO=3CD1jOK4QuUDnKM+bSDgrYHSZHNA@mail.gmail.com>
+Message-ID: <CAL_JsqKFhsEMO9=rTRDiO=3CD1jOK4QuUDnKM+bSDgrYHSZHNA@mail.gmail.com>
+Subject: Re: [linus:master] [of] 74df14cd30: WARNING:at_lib/refcount.c:#refcount_warn_saturate
+To:     kernel test robot <oliver.sang@intel.com>
+Cc:     Frank Rowand <frowand.list@gmail.com>, oe-lkp@lists.linux.dev,
+        lkp@intel.com, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/24/23 04:01, Aaron Lu wrote:
-> On Wed, Aug 23, 2023 at 10:05:31AM -0400, Mathieu Desnoyers wrote:
->> On 8/23/23 02:08, Aaron Lu wrote:
->>> When using sysbench to benchmark Postgres in a single docker instance
->>> with sysbench's nr_threads set to nr_cpu, it is observed there are times
->>> update_cfs_group() and update_load_avg() shows noticeable overhead on
->>> a 2sockets/112core/224cpu Intel Sapphire Rapids(SPR):
->>>
->>>       13.75%    13.74%  [kernel.vmlinux]           [k] update_cfs_group
->>>       10.63%    10.04%  [kernel.vmlinux]           [k] update_load_avg
->>>
->>> Annotate shows the cycles are mostly spent on accessing tg->load_avg
->>> with update_load_avg() being the write side and update_cfs_group() being
->>> the read side. tg->load_avg is per task group and when different tasks
->>> of the same taskgroup running on different CPUs frequently access
->>> tg->load_avg, it can be heavily contended.
->>>
->>> E.g. when running postgres_sysbench on a 2sockets/112cores/224cpus Intel
->>> Sappire Rapids, during a 5s window, the wakeup number is 14millions and
->>> migration number is 11millions and with each migration, the task's load
->>> will transfer from src cfs_rq to target cfs_rq and each change involves
->>> an update to tg->load_avg. Since the workload can trigger as many wakeups
->>> and migrations, the access(both read and write) to tg->load_avg can be
->>> unbound. As a result, the two mentioned functions showed noticeable
->>> overhead. With netperf/nr_client=nr_cpu/UDP_RR, the problem is worse:
->>> during a 5s window, wakeup number is 21millions and migration number is
->>> 14millions; update_cfs_group() costs ~25% and update_load_avg() costs ~16%.
->>>
->>> Reduce the overhead by limiting updates to tg->load_avg to at most once
->>> per ms. After this change, the cost of accessing tg->load_avg is greatly
->>> reduced and performance improved. Detailed test results below.
->>
->> By applying your patch on top of my patchset at:
->>
->> https://lore.kernel.org/lkml/20230822113133.643238-1-mathieu.desnoyers@efficios.com/
->>
->> The combined hackbench results look very promising:
->>
->> (hackbench -g 32 -f 20 --threads --pipe -l 480000 -s 100)
->> (192 cores AMD EPYC 9654 96-Core Processor (over 2 sockets), with hyperthreading)
->>
->> Baseline:                                       49s
->> With L2-ttwu-queue-skip:                        34s (30% speedup)
->> With L2-ttwu-queue-skip + ratelimit-load-avg:   26s (46% speedup)
->>
->> Feel free to apply my:
->>
->> Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
->> Tested-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> 
-> Thanks a lot for running this and reviewing the patch.
-> I'll add your number and tag in the changelog when sending a new
-> version.
+On Thu, Aug 24, 2023 at 3:42=E2=80=AFAM kernel test robot <oliver.sang@inte=
+l.com> wrote:
+>
+>
+>
+> Hello,
+>
+> kernel test robot noticed "WARNING:at_lib/refcount.c:#refcount_warn_satur=
+ate" on:
+>
+> commit: 74df14cd301a1433947077e79ce2c610654a32e7 ("of: unittest: add node=
+ lifecycle tests")
 
-Now that I come to think of it, I have comment: why use 
-sched_clock_cpu() rather than just read the jiffies value ? AFAIR, 
-sched_clock can be slower than needed when read from a "remote" cpu on 
-architectures that have an unsynchronized tsc.
+Perhaps that is the unittest which has a test to generate the WARN?
+Not enough context from the log. It should be preceded by EXPECT
+statements.
 
-Considering that you only need a time reference more or less accurate at 
-the millisecond level, I suspect that jiffies is what you are looking 
-for here. This is what the NUMA balance code and rseq mm_cid use to 
-execute work every N milliseconds.
-
-Thanks,
-
-Mathieu
-
-> 
-> Regards,
-> Aaron
->   
->>>
->>> ==============================
->>> postgres_sysbench on SPR:
->>> 25%
->>> base:   42382±19.8%
->>> patch:  50174±9.5%  (noise)
->>>
->>> 50%
->>> base:   67626±1.3%
->>> patch:  67365±3.1%  (noise)
->>>
->>> 75%
->>> base:   100216±1.2%
->>> patch:  112470±0.1% +12.2%
->>>
->>> 100%
->>> base:    93671±0.4%
->>> patch:  113563±0.2% +21.2%
->>>
->>> ==============================
->>> hackbench on ICL:
->>> group=1
->>> base:    114912±5.2%
->>> patch:   117857±2.5%  (noise)
->>>
->>> group=4
->>> base:    359902±1.6%
->>> patch:   361685±2.7%  (noise)
->>>
->>> group=8
->>> base:    461070±0.8%
->>> patch:   491713±0.3% +6.6%
->>>
->>> group=16
->>> base:    309032±5.0%
->>> patch:   378337±1.3% +22.4%
->>>
->>> =============================
->>> hackbench on SPR:
->>> group=1
->>> base:    100768±2.9%
->>> patch:   103134±2.9%  (noise)
->>>
->>> group=4
->>> base:    413830±12.5%
->>> patch:   378660±16.6% (noise)
->>>
->>> group=8
->>> base:    436124±0.6%
->>> patch:   490787±3.2% +12.5%
->>>
->>> group=16
->>> base:    457730±3.2%
->>> patch:   680452±1.3% +48.8%
->>>
->>> ============================
->>> netperf/udp_rr on ICL
->>> 25%
->>> base:    114413±0.1%
->>> patch:   115111±0.0% +0.6%
->>>
->>> 50%
->>> base:    86803±0.5%
->>> patch:   86611±0.0%  (noise)
->>>
->>> 75%
->>> base:    35959±5.3%
->>> patch:   49801±0.6% +38.5%
->>>
->>> 100%
->>> base:    61951±6.4%
->>> patch:   70224±0.8% +13.4%
->>>
->>> ===========================
->>> netperf/udp_rr on SPR
->>> 25%
->>> base:   104954±1.3%
->>> patch:  107312±2.8%  (noise)
->>>
->>> 50%
->>> base:    55394±4.6%
->>> patch:   54940±7.4%  (noise)
->>>
->>> 75%
->>> base:    13779±3.1%
->>> patch:   36105±1.1% +162%
->>>
->>> 100%
->>> base:     9703±3.7%
->>> patch:   28011±0.2% +189%
->>>
->>> ==============================================
->>> netperf/tcp_stream on ICL (all in noise range)
->>> 25%
->>> base:    43092±0.1%
->>> patch:   42891±0.5%
->>>
->>> 50%
->>> base:    19278±14.9%
->>> patch:   22369±7.2%
->>>
->>> 75%
->>> base:    16822±3.0%
->>> patch:   17086±2.3%
->>>
->>> 100%
->>> base:    18216±0.6%
->>> patch:   18078±2.9%
->>>
->>> ===============================================
->>> netperf/tcp_stream on SPR (all in noise range)
->>> 25%
->>> base:    34491±0.3%
->>> patch:   34886±0.5%
->>>
->>> 50%
->>> base:    19278±14.9%
->>> patch:   22369±7.2%
->>>
->>> 75%
->>> base:    16822±3.0%
->>> patch:   17086±2.3%
->>>
->>> 100%
->>> base:    18216±0.6%
->>> patch:   18078±2.9%
->>>
->>> Reported-by: Nitin Tekchandani <nitin.tekchandani@intel.com>
->>> Suggested-by: Vincent Guittot <vincent.guittot@linaro.org>
->>> Signed-off-by: Aaron Lu <aaron.lu@intel.com>
->>> Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
->>> ---
->>>    kernel/sched/fair.c  | 13 ++++++++++++-
->>>    kernel/sched/sched.h |  1 +
->>>    2 files changed, 13 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
->>> index c28206499a3d..a5462d1fcc48 100644
->>> --- a/kernel/sched/fair.c
->>> +++ b/kernel/sched/fair.c
->>> @@ -3664,7 +3664,8 @@ static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
->>>     */
->>>    static inline void update_tg_load_avg(struct cfs_rq *cfs_rq)
->>>    {
->>> -	long delta = cfs_rq->avg.load_avg - cfs_rq->tg_load_avg_contrib;
->>> +	long delta;
->>> +	u64 now;
->>>    	/*
->>>    	 * No need to update load_avg for root_task_group as it is not used.
->>> @@ -3672,9 +3673,19 @@ static inline void update_tg_load_avg(struct cfs_rq *cfs_rq)
->>>    	if (cfs_rq->tg == &root_task_group)
->>>    		return;
->>> +	/*
->>> +	 * For migration heavy workload, access to tg->load_avg can be
->>> +	 * unbound. Limit the update rate to at most once per ms.
->>> +	 */
->>> +	now = sched_clock_cpu(cpu_of(rq_of(cfs_rq)));
->>> +	if (now - cfs_rq->last_update_tg_load_avg < NSEC_PER_MSEC)
->>> +		return;
->>> +
->>> +	delta = cfs_rq->avg.load_avg - cfs_rq->tg_load_avg_contrib;
->>>    	if (abs(delta) > cfs_rq->tg_load_avg_contrib / 64) {
->>>    		atomic_long_add(delta, &cfs_rq->tg->load_avg);
->>>    		cfs_rq->tg_load_avg_contrib = cfs_rq->avg.load_avg;
->>> +		cfs_rq->last_update_tg_load_avg = now;
->>>    	}
->>>    }
->>> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
->>> index 6a8b7b9ed089..52ee7027def9 100644
->>> --- a/kernel/sched/sched.h
->>> +++ b/kernel/sched/sched.h
->>> @@ -593,6 +593,7 @@ struct cfs_rq {
->>>    	} removed;
->>>    #ifdef CONFIG_FAIR_GROUP_SCHED
->>> +	u64			last_update_tg_load_avg;
->>>    	unsigned long		tg_load_avg_contrib;
->>>    	long			propagate;
->>>    	long			prop_runnable_sum;
->>
->> -- 
->> Mathieu Desnoyers
->> EfficiOS Inc.
->> https://www.efficios.com
->>
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
-
+> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+>
+> [test failed on linux-next/master e3f80d3eae76c3557b3c9b5938ad01c0e6cf25e=
+c]
+>
+> in testcase: boot
+>
+> compiler: gcc-7
+> test machine: qemu-system-i386 -enable-kvm -cpu SandyBridge -smp 2 -m 4G
+>
+> (please refer to attached dmesg/kmsg for entire log/backtrace)
+>
+>
+>
+> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
+ion of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <oliver.sang@intel.com>
+> | Closes: https://lore.kernel.org/oe-lkp/202308241628.feb8dbbf-oliver.san=
+g@intel.com
+>
+>
+> [   70.442557][    T1] ------------[ cut here ]------------
+> [   70.443874][    T1] refcount_t: addition on 0; use-after-free.
+> [ 70.445250][ T1] WARNING: CPU: 1 PID: 1 at lib/refcount.c:25 refcount_wa=
+rn_saturate (lib/refcount.c:25 (discriminator 3))
+> [   70.447754][    T1] Modules linked in:
+> [   70.448750][    T1] CPU: 1 PID: 1 Comm: swapper/0 Tainted: G          =
+      TN 6.2.0-rc1-00057-g74df14cd301a #1 fcca16d7341229f468256f53411c1bbb3=
+612d6fc
+> [   70.451836][    T1] Hardware name: QEMU Standard PC (i440FX + PIIX, 19=
+96), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+> [ 70.454292][ T1] EIP: refcount_warn_saturate (lib/refcount.c:25 (discrim=
+inator 3))
+> [ 70.455655][ T1] Code: c6 05 3e 40 ed c3 01 e8 5d 62 97 ff 0f 0b eb 76 8=
+0 3d 3d 40 ed c3 00 75 6e 68 f0 5a 54 c3 c6 05 3d 40 ed c3 01 e8 3f 62 97 f=
+f <0f> 0b eb 58 80 3d 3c 40 ed c3 00 75 50 68 1c 5b 54 c3 c6 05 3c 40
+> All code
+> =3D=3D=3D=3D=3D=3D=3D=3D
+>    0:   c6 05 3e 40 ed c3 01    movb   $0x1,-0x3c12bfc2(%rip)        # 0x=
+ffffffffc3ed4045
+>    7:   e8 5d 62 97 ff          callq  0xffffffffff976269
+>    c:   0f 0b                   ud2
+>    e:   eb 76                   jmp    0x86
+>   10:   80 3d 3d 40 ed c3 00    cmpb   $0x0,-0x3c12bfc3(%rip)        # 0x=
+ffffffffc3ed4054
+>   17:   75 6e                   jne    0x87
+>   19:   68 f0 5a 54 c3          pushq  $0xffffffffc3545af0
+>   1e:   c6 05 3d 40 ed c3 01    movb   $0x1,-0x3c12bfc3(%rip)        # 0x=
+ffffffffc3ed4062
+>   25:   e8 3f 62 97 ff          callq  0xffffffffff976269
+>   2a:*  0f 0b                   ud2             <-- trapping instruction
+>   2c:   eb 58                   jmp    0x86
+>   2e:   80 3d 3c 40 ed c3 00    cmpb   $0x0,-0x3c12bfc4(%rip)        # 0x=
+ffffffffc3ed4071
+>   35:   75 50                   jne    0x87
+>   37:   68 1c 5b 54 c3          pushq  $0xffffffffc3545b1c
+>   3c:   c6                      .byte 0xc6
+>   3d:   05                      .byte 0x5
+>   3e:   3c 40                   cmp    $0x40,%al
+>
+> Code starting with the faulting instruction
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>    0:   0f 0b                   ud2
+>    2:   eb 58                   jmp    0x5c
+>    4:   80 3d 3c 40 ed c3 00    cmpb   $0x0,-0x3c12bfc4(%rip)        # 0x=
+ffffffffc3ed4047
+>    b:   75 50                   jne    0x5d
+>    d:   68 1c 5b 54 c3          pushq  $0xffffffffc3545b1c
+>   12:   c6                      .byte 0xc6
+>   13:   05                      .byte 0x5
+>   14:   3c 40                   cmp    $0x40,%al
+> [   70.460090][    T1] EAX: 0000002a EBX: edf25dfc ECX: 00000000 EDX: 000=
+00001
+> [   70.461715][    T1] ESI: ffffffff EDI: edf20140 EBP: c5803c98 ESP: c58=
+03c94
+> [   70.463395][    T1] DS: 007b ES: 007b FS: 00d8 GS: 0000 SS: 0068 EFLAG=
+S: 00010082
+> [   70.465280][    T1] CR0: 80050033 CR2: 00000000 CR3: 04312000 CR4: 000=
+406f0
+> [   70.466949][    T1] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 000=
+00000
+> [   70.468627][    T1] DR6: fffe0ff0 DR7: 00000400
+> [   70.469791][    T1] Call Trace:
+> [ 70.470624][ T1] kobject_get (lib/kobject.c:630)
+> [ 70.471657][ T1] of_node_get (drivers/of/dynamic.c:37)
+> [ 70.472723][ T1] of_fwnode_get (drivers/of/property.c:866 (discriminator=
+ 4))
+> [ 70.473833][ T1] fwnode_handle_get (drivers/base/property.c:822)
+> [ 70.475019][ T1] fwnode_get_nth_parent (drivers/base/property.c:686)
+> [ 70.476273][ T1] fwnode_full_name_string (lib/vsprintf.c:2091 (discrimin=
+ator 3))
+> [ 70.477560][ T1] device_node_string (lib/vsprintf.c:2143)
+> [ 70.478752][ T1] ? sched_clock_cpu (kernel/sched/clock.c:364)
+> [ 70.479932][ T1] ? __lock_acquire (kernel/locking/lockdep.c:3746 kernel/=
+locking/lockdep.c:3799 kernel/locking/lockdep.c:5055)
+> [ 70.481114][ T1] pointer (lib/vsprintf.c:2452)
+> [ 70.482112][ T1] vsnprintf (lib/vsprintf.c:2800)
+> [ 70.483212][ T1] vprintk_store (kernel/printk/printk.c:2241)
+> [ 70.484369][ T1] ? kvm_sched_clock_read (arch/x86/kernel/kvmclock.c:91)
+> [ 70.485663][ T1] ? sched_clock (arch/x86/kernel/tsc.c:254)
+> [ 70.486742][ T1] vprintk_emit (kernel/printk/printk.c:2338)
+> [ 70.487814][ T1] vprintk_default (kernel/printk/printk.c:2369)
+> [ 70.488983][ T1] vprintk (kernel/printk/printk_safe.c:51)
+> [ 70.489980][ T1] _printk (kernel/printk/printk.c:2382)
+> [ 70.490957][ T1] of_node_release (drivers/of/dynamic.c:343)
+> [ 70.492067][ T1] kobject_release (lib/kobject.c:677 lib/kobject.c:704)
+> [ 70.493179][ T1] kobject_put (include/linux/kref.h:65 lib/kobject.c:721)
+> [ 70.494272][ T1] of_node_put (drivers/of/dynamic.c:49)
+> [ 70.495302][ T1] of_unittest (drivers/of/unittest.c:3060 drivers/of/unit=
+test.c:3650)
+> [ 70.496497][ T1] ? of_unittest_changeset (drivers/of/unittest.c:3605)
+> [ 70.497818][ T1] do_one_initcall (init/main.c:1306)
+> [ 70.498945][ T1] ? rcu_read_lock_sched_held (kernel/rcu/update.c:125)
+> [ 70.500257][ T1] ? trace_initcall_level (include/trace/events/initcall.h=
+:10)
+> [ 70.501552][ T1] ? kernel_init_freeable (init/main.c:1378 init/main.c:13=
+95 init/main.c:1414 init/main.c:1634)
+> [ 70.502817][ T1] kernel_init_freeable (init/main.c:1378 init/main.c:1395=
+ init/main.c:1414 init/main.c:1634)
+> [ 70.504101][ T1] ? rest_init (init/main.c:1514)
+> [ 70.505225][ T1] kernel_init (init/main.c:1524)
+> [ 70.506294][ T1] ret_from_fork (arch/x86/entry/entry_32.S:770)
+> [   70.507381][    T1] irq event stamp: 2968680
+> [ 70.508481][ T1] hardirqs last enabled at (2968679): kmem_cache_free (ar=
+ch/x86/include/asm/irqflags.h:29 arch/x86/include/asm/irqflags.h:70 arch/x8=
+6/include/asm/irqflags.h:130 mm/slab.c:3581 mm/slab.c:3605)
+> [ 70.510605][ T1] hardirqs last disabled at (2968680): vprintk_store (arc=
+h/x86/include/asm/preempt.h:27 (discriminator 3) kernel/printk/printk.c:206=
+1 (discriminator 3) kernel/printk/printk.c:2221 (discriminator 3))
+> [ 70.512664][ T1] softirqs last enabled at (2968660): __do_softirq (arch/=
+x86/include/asm/preempt.h:27 kernel/softirq.c:415 kernel/softirq.c:600)
+> [ 70.514774][ T1] softirqs last disabled at (2968651): do_softirq_own_sta=
+ck (arch/x86/kernel/irq_32.c:57 arch/x86/kernel/irq_32.c:147)
+> [   70.516984][    T1] ---[ end trace 0000000000000000 ]---
+>
+>
+> The kernel config and materials to reproduce are available at:
+> https://download.01.org/0day-ci/archive/20230824/202308241628.feb8dbbf-ol=
+iver.sang@intel.com
+>
+>
+>
+> --
+> 0-DAY CI Kernel Test Service
+> https://github.com/intel/lkp-tests/wiki
+>
