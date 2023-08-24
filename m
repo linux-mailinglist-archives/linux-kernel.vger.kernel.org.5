@@ -2,159 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FF23787399
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 17:06:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB4777873CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 17:16:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240506AbjHXPGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 11:06:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54826 "EHLO
+        id S242086AbjHXPP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 11:15:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240038AbjHXPFy (ORCPT
+        with ESMTP id S238083AbjHXPPG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 11:05:54 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 132FFFD;
-        Thu, 24 Aug 2023 08:05:52 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B5679D75;
-        Thu, 24 Aug 2023 08:06:31 -0700 (PDT)
-Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B82353F762;
-        Thu, 24 Aug 2023 08:05:48 -0700 (PDT)
-Message-ID: <cbd34ed6-3220-3c0c-74bc-46a2baa744e5@arm.com>
-Date:   Thu, 24 Aug 2023 16:05:47 +0100
+        Thu, 24 Aug 2023 11:15:06 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7052199D;
+        Thu, 24 Aug 2023 08:15:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692890104; x=1724426104;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=j3s15fzbY21jU7a4dXxI63BSMfPORjJ31zoaNT3reHQ=;
+  b=kTo9V4K29VBikhgon2i3l+sW6YS176ojdecd0rK0vcvwPtRXHvZfzE1x
+   WHPXzPsGKowwGKi7xRRZ3l3ghOR3a5MUeLaDHrvnvaIsRKI5Md2dMGwu8
+   xYQ9MErdqr0fkZHDbSDZp6BIEVJxCrjQNPQ5lckx4liiqMZB1l9HSW3Qr
+   DhugodGlclgWUkhlLg4YpLP7k7KUJzDX/QFKUo+PVQZXZxe3oW4Iuc6Cr
+   oYI6QXL3tWyucJYk8/m2WTLK1zKSNSrI10CCY34IjJh1CVtC6sDbz0adZ
+   vhgirUpZQVz/xT5orEHoi7WllG5V7YubCBA+CmJVP0OTDPg70mEmfYBkE
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="374433212"
+X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
+   d="scan'208";a="374433212"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 08:07:00 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
+   d="scan'208";a="880838364"
+Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
+  by fmsmga001.fm.intel.com with ESMTP; 24 Aug 2023 08:06:58 -0700
+Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qZBv5-0002me-0p;
+        Thu, 24 Aug 2023 15:06:49 +0000
+Date:   Thu, 24 Aug 2023 23:06:07 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jisheng Zhang <jszhang@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [PATCH net-next 3/3] net: stmmac: add glue layer for T-HEAD
+ TH1520 SoC
+Message-ID: <202308242250.G39QxvdR-lkp@intel.com>
+References: <20230820120213.2054-4-jszhang@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v7 1/8] perf pmu: "Compat" supports matching multiple
- identifiers
-Content-Language: en-GB
-To:     Jing Zhang <renyu.zj@linux.alibaba.com>,
-        John Garry <john.g.garry@oracle.com>,
-        Ian Rogers <irogers@google.com>
-Cc:     Will Deacon <will@kernel.org>, James Clark <james.clark@arm.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-doc@vger.kernel.org,
-        Zhuo Song <zhuo.song@linux.alibaba.com>,
-        Shuai Xue <xueshuai@linux.alibaba.com>
-References: <1692606977-92009-1-git-send-email-renyu.zj@linux.alibaba.com>
- <1692606977-92009-2-git-send-email-renyu.zj@linux.alibaba.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <1692606977-92009-2-git-send-email-renyu.zj@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230820120213.2054-4-jszhang@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/08/2023 9:36 am, Jing Zhang wrote:
-> The jevent "Compat" is used for uncore PMU alias or metric definitions.
-> 
-> The same PMU driver has different PMU identifiers due to different
-> hardware versions and types, but they may have some common PMU event.
-> Since a Compat value can only match one identifier, when adding the
-> same event alias to PMUs with different identifiers, each identifier
-> needs to be defined once, which is not streamlined enough.
-> 
-> So let "Compat" supports matching multiple identifiers for uncore PMU
-> alias. For example, the Compat value {43401;436*} can match the PMU
-> identifier "43401", that is, CMN600_r0p0, and the PMU identifier with
-> the prefix "436", that is, all CMN650, where "*" is a wildcard.
-> Tokens in Unit field are delimited by ';' with no spaces.
+Hi Jisheng,
 
-I wonder is there any possibility of supporting multiple values as a 
-JSON array, rather than a single delimited string? Otherwise, if we're 
-putting restrictions on what characters a driver can expose as an 
-identifier, then I think that really wants explicitly documenting. 
-AFAICT there's currently not even any documentation of the de-facto ABI 
-that it's expected to be a free-form string rather than completely 
-arbitrary binary data.
+kernel test robot noticed the following build warnings:
 
-Thanks,
-Robin.
+[auto build test WARNING on net-next/main]
 
-> Signed-off-by: Jing Zhang <renyu.zj@linux.alibaba.com>
-> Reviewed-by: John Garry <john.g.garry@oracle.com>
-> ---
->   tools/perf/util/pmu.c | 33 +++++++++++++++++++++++++++++++--
->   tools/perf/util/pmu.h |  1 +
->   2 files changed, 32 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-> index ad209c8..6402423 100644
-> --- a/tools/perf/util/pmu.c
-> +++ b/tools/perf/util/pmu.c
-> @@ -776,6 +776,35 @@ static bool pmu_uncore_alias_match(const char *pmu_name, const char *name)
->   	return res;
->   }
->   
-> +bool pmu_uncore_identifier_match(const char *id, const char *compat)
-> +{
-> +	char *tmp = NULL, *tok, *str;
-> +	bool res;
-> +	int n;
-> +
-> +	/*
-> +	 * The strdup() call is necessary here because "compat" is a const str*
-> +	 * type and cannot be used as an argument to strtok_r().
-> +	 */
-> +	str = strdup(compat);
-> +	if (!str)
-> +		return false;
-> +
-> +	tok = strtok_r(str, ";", &tmp);
-> +	for (; tok; tok = strtok_r(NULL, ";", &tmp)) {
-> +		n = strlen(tok);
-> +		if ((tok[n - 1] == '*' && !strncmp(id, tok, n - 1)) ||
-> +		    !strcmp(id, tok)) {
-> +			res = true;
-> +			goto out;
-> +		}
-> +	}
-> +	res = false;
-> +out:
-> +	free(str);
-> +	return res;
-> +}
-> +
->   struct pmu_add_cpu_aliases_map_data {
->   	struct list_head *head;
->   	const char *name;
-> @@ -847,8 +876,8 @@ static int pmu_add_sys_aliases_iter_fn(const struct pmu_event *pe,
->   	if (!pe->compat || !pe->pmu)
->   		return 0;
->   
-> -	if (!strcmp(pmu->id, pe->compat) &&
-> -	    pmu_uncore_alias_match(pe->pmu, pmu->name)) {
-> +	if (pmu_uncore_alias_match(pe->pmu, pmu->name) &&
-> +	    pmu_uncore_identifier_match(pmu->id, pe->compat)) {
->   		__perf_pmu__new_alias(idata->head, -1,
->   				      (char *)pe->name,
->   				      (char *)pe->desc,
-> diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
-> index b9a02de..9d4385d 100644
-> --- a/tools/perf/util/pmu.h
-> +++ b/tools/perf/util/pmu.h
-> @@ -241,6 +241,7 @@ void pmu_add_cpu_aliases_table(struct list_head *head, struct perf_pmu *pmu,
->   char *perf_pmu__getcpuid(struct perf_pmu *pmu);
->   const struct pmu_events_table *pmu_events_table__find(void);
->   const struct pmu_metrics_table *pmu_metrics_table__find(void);
-> +bool pmu_uncore_identifier_match(const char *id, const char *compat);
->   void perf_pmu_free_alias(struct perf_pmu_alias *alias);
->   
->   int perf_pmu__convert_scale(const char *scale, char **end, double *sval);
+url:    https://github.com/intel-lab-lkp/linux/commits/Jisheng-Zhang/dt-bindings-net-snps-dwmac-allow-dwmac-3-70a-to-set-pbl-properties/20230821-114902
+base:   net-next/main
+patch link:    https://lore.kernel.org/r/20230820120213.2054-4-jszhang%40kernel.org
+patch subject: [PATCH net-next 3/3] net: stmmac: add glue layer for T-HEAD TH1520 SoC
+config: arm64-allyesconfig (https://download.01.org/0day-ci/archive/20230824/202308242250.G39QxvdR-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce: (https://download.01.org/0day-ci/archive/20230824/202308242250.G39QxvdR-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308242250.G39QxvdR-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/net/ethernet/stmicro/stmmac/dwmac-thead.c:151:3: warning: variable 'div' is used uninitialized whenever switch default is taken [-Wsometimes-uninitialized]
+     151 |                 default:
+         |                 ^~~~~~~
+   drivers/net/ethernet/stmicro/stmmac/dwmac-thead.c:156:50: note: uninitialized use occurs here
+     156 |                                    GMAC_PLLCLK_DIV_MASK, GMAC_PLLCLK_DIV_NUM(div));
+         |                                                                              ^~~
+   drivers/net/ethernet/stmicro/stmmac/dwmac-thead.c:40:68: note: expanded from macro 'GMAC_PLLCLK_DIV_NUM'
+      40 | #define  GMAC_PLLCLK_DIV_NUM(x)         FIELD_PREP(GMAC_PLLCLK_DIV_MASK, (x))
+         |                                                                           ^
+   include/linux/bitfield.h:114:33: note: expanded from macro 'FIELD_PREP'
+     114 |                 __BF_FIELD_CHECK(_mask, 0ULL, _val, "FIELD_PREP: ");    \
+         |                                               ^~~~
+   include/linux/bitfield.h:68:41: note: expanded from macro '__BF_FIELD_CHECK'
+      68 |                 BUILD_BUG_ON_MSG(__builtin_constant_p(_val) ?           \
+         |                                                       ^~~~
+   note: (skipping 1 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
+   include/linux/compiler_types.h:397:22: note: expanded from macro 'compiletime_assert'
+     397 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |                             ^~~~~~~~~
+   include/linux/compiler_types.h:385:23: note: expanded from macro '_compiletime_assert'
+     385 |         __compiletime_assert(condition, msg, prefix, suffix)
+         |                              ^~~~~~~~~
+   include/linux/compiler_types.h:377:9: note: expanded from macro '__compiletime_assert'
+     377 |                 if (!(condition))                                       \
+         |                       ^~~~~~~~~
+   drivers/net/ethernet/stmicro/stmmac/dwmac-thead.c:121:9: note: initialize the variable 'div' to silence this warning
+     121 |         u32 div;
+         |                ^
+         |                 = 0
+   1 warning generated.
+
+
+vim +/div +151 drivers/net/ethernet/stmicro/stmmac/dwmac-thead.c
+
+   115	
+   116	static void thead_dwmac_fix_speed(void *priv, unsigned int speed, unsigned int mode)
+   117	{
+   118		struct thead_dwmac *dwmac = priv;
+   119		struct plat_stmmacenet_data *plat = dwmac->plat;
+   120		unsigned long rate;
+   121		u32 div;
+   122	
+   123		switch (plat->interface) {
+   124		/* For MII, rxc/txc is provided by phy */
+   125		case PHY_INTERFACE_MODE_MII:
+   126			return;
+   127	
+   128		case PHY_INTERFACE_MODE_RGMII:
+   129		case PHY_INTERFACE_MODE_RGMII_ID:
+   130		case PHY_INTERFACE_MODE_RGMII_RXID:
+   131		case PHY_INTERFACE_MODE_RGMII_TXID:
+   132			rate = clk_get_rate(plat->stmmac_clk);
+   133			if (!rate || rate % GMAC_GMII_RGMII_RATE != 0 ||
+   134			    rate % GMAC_MII_RATE != 0) {
+   135				dev_err(dwmac->dev, "invalid gmac rate %ld\n", rate);
+   136				return;
+   137			}
+   138	
+   139			regmap_update_bits(dwmac->apb_regmap, GMAC_PLLCLK_DIV, GMAC_PLLCLK_DIV_EN, 0);
+   140	
+   141			switch (speed) {
+   142			case SPEED_1000:
+   143				div = rate / GMAC_GMII_RGMII_RATE;
+   144				break;
+   145			case SPEED_100:
+   146				div = rate / GMAC_MII_RATE;
+   147				break;
+   148			case SPEED_10:
+   149				div = rate * 10 / GMAC_MII_RATE;
+   150				break;
+ > 151			default:
+   152				dev_err(dwmac->dev, "invalid speed %u\n", speed);
+   153				break;
+   154			}
+   155			regmap_update_bits(dwmac->apb_regmap, GMAC_PLLCLK_DIV,
+   156					   GMAC_PLLCLK_DIV_MASK, GMAC_PLLCLK_DIV_NUM(div));
+   157	
+   158			regmap_update_bits(dwmac->apb_regmap, GMAC_PLLCLK_DIV,
+   159					   GMAC_PLLCLK_DIV_EN, GMAC_PLLCLK_DIV_EN);
+   160			break;
+   161		default:
+   162			dev_err(dwmac->dev, "unsupported phy interface %d\n",
+   163				plat->interface);
+   164			return;
+   165		}
+   166	}
+   167	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
