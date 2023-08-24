@@ -2,145 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21DAE786777
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 08:27:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B304E78677A
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 08:28:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240066AbjHXG1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 02:27:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47298 "EHLO
+        id S240092AbjHXG1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 02:27:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240051AbjHXG0b (ORCPT
+        with ESMTP id S240072AbjHXG1F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 02:26:31 -0400
-Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3EFA137
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 23:26:28 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R411e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0VqSeeXB_1692858383;
-Received: from 30.97.48.68(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VqSeeXB_1692858383)
-          by smtp.aliyun-inc.com;
-          Thu, 24 Aug 2023 14:26:24 +0800
-Message-ID: <b5a75def-521f-0d0b-6054-d71f56d4e1ad@linux.alibaba.com>
-Date:   Thu, 24 Aug 2023 14:26:25 +0800
+        Thu, 24 Aug 2023 02:27:05 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F90E137
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 23:27:01 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-5256d74dab9so7951450a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 23:27:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692858420; x=1693463220;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PNCdYqQUps0lM4Vetry0zqGJRLv4Xo41z8z74LlzZb4=;
+        b=Xo5tYdr4AOaUWBl9YgA2xLc+5vPD866bVqitEfg1TfsSsnS56D0YlqbwLQ8cSBZA0f
+         LDLgSKlNH8dcTXg7IUj0IE9C2PUDygKYV+c37UHVkaTxJ2Tlja9VxXo/LEx6Q86eDht1
+         fDtYy6b1x4Dimjwd21qkx0UclkRmsvzcsQhQU6W/R2CRmDFixrI6JxhD7iJrA7gZIQv2
+         Rdcj7Cznd7ofiATaoPg4XQfw/jFOj+yw50ZmNEZS3MAAslBmMKJSPTchpxPQo4w2ewlQ
+         JfPH6fvGIWDVJIuVkl2Ibbtq8K0hpctiQQScEAklaft/snw+V9KkQ9zKQtWdMVU4wXfQ
+         mzGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692858420; x=1693463220;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PNCdYqQUps0lM4Vetry0zqGJRLv4Xo41z8z74LlzZb4=;
+        b=RrAuYV+YUhFqNNWIUQz1YdJMBJivbW+2sqTzZwFRSZZynvFLYzY8SqpBkGY8pL9jNx
+         ullmSsI1d8OEfCer1eZ0n2RN6uA05g7MDf5jTB7wpcDqCyKLBCwzM1eKWvCpv9q8Z14X
+         aqLHx1oo5yA+belsUcNJVxio4Aj0N9nWSwuPYb63Hdf8oNrE8l1ISF1IMUvoVN8W4gnh
+         V2iPk8ce5utkIOCvlhbKdnOSY0l2WrIEZh1n1TGFpWcHF2WyT//vkPo89t4iBCK87q0w
+         u62U/hLpwc1QBN+Z/WxoC4kRj1wg/E4nFh5Un+vc8S5vdhHaL+cnugrYAtOiW0PevXzc
+         Ac3A==
+X-Gm-Message-State: AOJu0YzwPuLDMMu7LxP3FQpHwl8oO1ZEsZtzE/fe8tC2hVAuLYQI7pkV
+        zvgFacUJRKVxWn/zCQT1PuPJuQ==
+X-Google-Smtp-Source: AGHT+IFaKPL1GVeABrkF8YiNtStdFGw2o9uVH285QObhdfvwGKEaqB3vttmpLJpDTcJl19n6m4VyTw==
+X-Received: by 2002:aa7:d5c5:0:b0:523:1410:b611 with SMTP id d5-20020aa7d5c5000000b005231410b611mr11092414eds.25.1692858419763;
+        Wed, 23 Aug 2023 23:26:59 -0700 (PDT)
+Received: from [192.168.0.22] ([77.252.47.198])
+        by smtp.gmail.com with ESMTPSA id p6-20020aa7d306000000b0052574ef0da1sm9966034edq.28.2023.08.23.23.26.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Aug 2023 23:26:59 -0700 (PDT)
+Message-ID: <50ce8e71-613e-1ef5-0c23-67a2f6f78949@linaro.org>
+Date:   Thu, 24 Aug 2023 08:26:58 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.14.0
-Subject: Re: [PATCH v2 0/4] Extend migrate_misplaced_page() to support batch
- migration
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
-        shy828301@gmail.com, david@redhat.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1692665449.git.baolin.wang@linux.alibaba.com>
- <87pm3fbxos.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <fc31bade-e15a-3cbf-7ed8-5b322374afe8@linux.alibaba.com>
- <87zg2h9h5c.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <87zg2h9h5c.fsf@yhuang6-desk2.ccr.corp.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-12.6 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v1 2/2] dt-bindings: extcon: Add Realtek DHC RTD SoC
+ Type-C
+To:     =?UTF-8?B?U3RhbmxleSBDaGFuZ1vmmIzogrLlvrdd?= 
+        <stanley_chang@realtek.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>
+Cc:     Chanwoo Choi <cw00.choi@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+References: <20230822102846.4683-1-stanley_chang@realtek.com>
+ <20230822102846.4683-2-stanley_chang@realtek.com>
+ <1e0632d6-73e9-4633-a709-bf9140f2fd32@linaro.org>
+ <ca406c19e59145fd9e7e035ea5ad3eeb@realtek.com>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <ca406c19e59145fd9e7e035ea5ad3eeb@realtek.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/24/2023 12:51 PM, Huang, Ying wrote:
-> Baolin Wang <baolin.wang@linux.alibaba.com> writes:
+On 24/08/2023 08:03, Stanley Chang[昌育德] wrote:
+> Hi Krzysztof,
 > 
->> On 8/22/2023 10:47 AM, Huang, Ying wrote:
->>> Baolin Wang <baolin.wang@linux.alibaba.com> writes:
+>> On 22/08/2023 12:28, Stanley Chang wrote:
+>>> Document the device-tree bindings for Realtek SoCs Type-C.
+>>> Realtek DHC (digital home center) RTD SoCs support a Type-C module.
 >>>
->>>> Hi,
->>>>
->>>> Currently, on our ARM servers with NUMA enabled, we found the cross-die latency
->>>> is a little larger that will significantly impact the workload's performance.
->>>> So on ARM servers we will rely on the NUMA balancing to avoid the cross-die
->>>> accessing. And I posted a patchset[1] to support speculative numa fault to
->>>> improve the NUMA balancing's performance according to the principle of data
->>>> locality. Moreover, thanks to Huang Ying's patchset[2], which introduced batch
->>>> migration as a way to reduce the cost of TLB flush, and it will also benefit
->>>> the migration of multiple pages all at once during NUMA balancing.
->>>>
->>>> So we plan to continue to support batch migration in do_numa_page() to improve
->>>> the NUMA balancing's performance, but before adding complicated batch migration
->>>> algorithm for NUMA balancing, some cleanup and preparation work need to do firstly,
->>>> which are done in this patch set. In short, this patchset extends the
->>>> migrate_misplaced_page() interface to support batch migration, and no functional
->>>> changes intended.
->>>>
->>>> In addition, these cleanup can also benefit the compound page's NUMA balancing,
->>>> which was discussed in previous thread[3]. IIUC, for the compound page's NUMA
->>>> balancing, it is possible that partial pages were successfully migrated, so it is
->>>> necessary to return the number of pages that were successfully migrated from
->>>> migrate_misplaced_page().
->>> But I don't find the return number is used except as bool now.
+>>> Signed-off-by: Stanley Chang <stanley_chang@realtek.com>
+>>> ---
+>>>  .../bindings/extcon/extcon-rtk-type-c.yaml    | 77 +++++++++++++++++++
+>>>  1 file changed, 77 insertions(+)
+>>>  create mode 100644
+>>> Documentation/devicetree/bindings/extcon/extcon-rtk-type-c.yaml
 >>
->> As I said above, this is a preparation for batch migration and
->> compound page NUMA balancing in future.
->>
->> In addition, after looking into the THP' NUMA migration, I found this
->> change is necessary for THP migration. Since it is possible that
->> partial subpages were successfully migrated if the THP is split, so
->> below THP numa fault statistics is not always correct:
->>
->> if (page_nid != NUMA_NO_NODE)
->> 	task_numa_fault(last_cpupid, page_nid, HPAGE_PMD_NR,
->> 				flags);
->>
->> I will try to fix this in next version.
+>> Filename like compatible.
 > 
-> IIUC, THP will not be split for NUMA balancing.  Please check the
-> nosplit logic in migrate_pages_batch().
+> I will rename.
 > 
-> 	bool nosplit = (reason == MR_NUMA_MISPLACED);
-
-Yes, I overlooked this. Thanks for reminding.
-
-> 
->>> Per my understanding, I still don't find much value of the changes
->>> except as preparation for batch migration in NUMA balancing.  So I still
->>
->> IMO, only patch 3 is just a preparation for batch migration, but other
->> patches are some cleanups for migrate_misplaced_page(). I can drop the
->> preparation patches in this series and revise the commit message.
->>
->>> think it's better to wait for the whole series.  Where we can check why
->>> these changes are necessary for batch migration.  And I think that you
->>> will provide some number to justify the batch migration, including pros
->>> and cons.
->>> --
->>> Best Regards,
->>> Huang, Ying
 >>>
->>>> This series is based on the latest mm-unstable(d226b59b30cc).
->>>>
->>>> [1] https://lore.kernel.org/lkml/cover.1639306956.git.baolin.wang@linux.alibaba.com/t/#mc45929849b5d0e29b5fdd9d50425f8e95b8f2563
->>>> [2] https://lore.kernel.org/all/20230213123444.155149-1-ying.huang@intel.com/T/#u
->>>> [3] https://lore.kernel.org/all/f8d47176-03a8-99bf-a813-b5942830fd73@arm.com/
->>>>
->>>> Changes from v1:
->>>>    - Move page validation into a new function suggested by Huang Ying.
->>>>    - Change numamigrate_isolate_page() to boolean type.
->>>>    - Update some commit message.
->>>>
->>>> Baolin Wang (4):
->>>>     mm: migrate: factor out migration validation into
->>>>       numa_page_can_migrate()
->>>>     mm: migrate: move the numamigrate_isolate_page() into do_numa_page()
->>>>     mm: migrate: change migrate_misplaced_page() to support multiple pages
->>>>       migration
->>>>     mm: migrate: change to return the number of pages migrated
->>>>       successfully
->>>>
->>>>    include/linux/migrate.h | 15 +++++++---
->>>>    mm/huge_memory.c        | 23 +++++++++++++--
->>>>    mm/internal.h           |  1 +
->>>>    mm/memory.c             | 43 ++++++++++++++++++++++++++-
->>>>    mm/migrate.c            | 64 +++++++++--------------------------------
->>>>    5 files changed, 88 insertions(+), 58 deletions(-)
+>>> diff --git
+>>> a/Documentation/devicetree/bindings/extcon/extcon-rtk-type-c.yaml
+>>> b/Documentation/devicetree/bindings/extcon/extcon-rtk-type-c.yaml
+>>> new file mode 100644
+>>> index 000000000000..d14b9ee544b9
+>>> --- /dev/null
+>>> +++ b/Documentation/devicetree/bindings/extcon/extcon-rtk-type-c.yaml
+>>> @@ -0,0 +1,77 @@
+>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) # Copyright
+>>> +2023 Realtek Semiconductor Corporation %YAML 1.2
+>>> +---
+>>> +$id: http://devicetree.org/schemas/extcon/extcon-rtk-type-c.yaml#
+>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>>> +
+>>> +title: Realtek DHC RTD SoCs USB Type-C detection
+>>
+>> Type-c usually go to usb directory.
+> 
+> This binding is not for a type-c controller.
+> It is an extcon device for type-c connector detection.
+> So I put it at extcon directory.
+
+If this is not a type-c controller, then what is it? Explain me please
+what is an "extcon device" without using any Linux subsystem naming.
+
+> 
+> And I will add “connector” to the title.
+> title: Realtek DHC RTD SoCs USB Type-C Connector detection
+
+So usb...
+
+
+>>
+>>> +
+>>> +  realtek,rd-ctrl-gpio:
+>>> +    description: The gpio node to control external Rd on board.
+>>
+>> The names are always "gpios".
+> 
+> Do you mean "realtek,rd-ctrl-gpios" ?
+
+Yes, like all of such properties in DTS and bindings. Everywhere.
+
+>>
+>>> +    maxItems: 1
+>>> +
+>>
+>> You miss here connector. Probably also VBUS supply and other supplies.
+>>
+> Ok, I will add connector.
+> 
+>>> +required:
+>>> +  - compatible
+>>> +  - reg
+>>> +  - interrupts
+>>> +
+>>> +additionalProperties: false
+>>> +
+>>> +examples:
+>>> +  - |
+>>> +    type-c@7220 {
+>>> +        compatible = "realtek,rtd1619b-type-c";
+>>> +        reg = <0x7220 0x20>;
+>>> +        interrupts = <0 60 4>;
+>>
+>> Use proper defines for common constants.
+> 
+> Ok, I will revise this.
+> 
+>>> +
+>>> +        pinctrl-names = "default";
+>>> +        pinctrl-0 = <&usb_cc1_pins>, <&usb_cc2_pins>;
+> 
+> You mention that the property of pinctrl not need in doc.
+> Do I need to add the property of pintrl in example?
+
+Does not matter.
+
+Best regards,
+Krzysztof
+
