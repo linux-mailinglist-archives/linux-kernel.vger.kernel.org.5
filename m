@@ -2,104 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C0E67873B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 17:09:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29C267873B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 17:09:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242120AbjHXPJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 11:09:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43248 "EHLO
+        id S242083AbjHXPJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 11:09:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242155AbjHXPJA (ORCPT
+        with ESMTP id S242141AbjHXPIw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 11:09:00 -0400
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02EA519B7
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 08:08:56 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:3c6b:f703:5ab5:f36d])
-        by baptiste.telenet-ops.be with bizsmtp
-        id dT8t2A00A01sfPQ01T8tZX; Thu, 24 Aug 2023 17:08:53 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtp (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qZBwx-001dhM-Hn;
-        Thu, 24 Aug 2023 17:08:53 +0200
-Received: from geert by rox.of.borg with local (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qZBx7-000Vz0-77;
-        Thu, 24 Aug 2023 17:08:53 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Javier Martinez Canillas <javierm@redhat.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2 5/8] drm/client: Convert drm_client_buffer_addfb() to drm_mode_addfb2()
-Date:   Thu, 24 Aug 2023 17:08:43 +0200
-Message-Id: <50762fd1694d3b5f6df1bdfa482564adb2ee7f36.1692888745.git.geert@linux-m68k.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1692888745.git.geert@linux-m68k.org>
-References: <cover.1692888745.git.geert@linux-m68k.org>
+        Thu, 24 Aug 2023 11:08:52 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18D23C7;
+        Thu, 24 Aug 2023 08:08:51 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9FC2D66FFF;
+        Thu, 24 Aug 2023 15:08:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B097C433C8;
+        Thu, 24 Aug 2023 15:08:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692889730;
+        bh=EGWLDuNzqq6PTrj2iWCVL1umx9FxMsqgeHIS5IJ9B64=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=h+CXwreJozjcwmarpEJoD90bP+zN7XpuelIOwjuwvVsyNd0fu/Ld2aUvRtXyxHv5O
+         08UQmFj+VgHpOGvYMqFfEHB4UYKI4W0hJz4p0F4CtYPgxkTQAlnIjI2aIEXSafbVPu
+         W362gQ9pia3KeXy1YGo6eQ2B2cclvyytyufC6Q7flHCGevJ5CX3kg030xNNjUAGmOJ
+         hOqZF3+LWP1lYMe11CQ3C3PSr6Xz8j6MB3gOEQQhphVTSZmCOgVNEUVr8Rm8Gytkkc
+         tahrPf99RoIvIJ7I4pXSrR2e7QngDUZErsT+cBdIRfvusItRgh89Gd+L20vcp2eGj/
+         oUVQe+BLS1DTQ==
+Date:   Thu, 24 Aug 2023 16:08:44 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Dmitry Rokosov <ddrokosov@sberdevices.ru>
+Cc:     neil.armstrong@linaro.org, jbrunet@baylibre.com,
+        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, khilman@baylibre.com,
+        martin.blumenstingl@googlemail.com, conor+dt@kernel.org,
+        kernel@sberdevices.ru, sdfw_system_team@sberdevices.ru,
+        rockosov@gmail.com, linux-amlogic@lists.infradead.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 15/15] dt-bindings: arm: amlogic: add Amlogic AD402
+ bindings
+Message-ID: <20230824-postbox-refueling-3bccc959d82b@spud>
+References: <20230823213630.12936-1-ddrokosov@sberdevices.ru>
+ <20230823213630.12936-16-ddrokosov@sberdevices.ru>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="IeP/KGlIXWB7S8Lk"
+Content-Disposition: inline
+In-Reply-To: <20230823213630.12936-16-ddrokosov@sberdevices.ru>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently drm_client_buffer_addfb() uses the legacy drm_mode_addfb(),
-which uses bpp and depth to guess the wanted buffer format.
-However, drm_client_buffer_addfb() already knows the exact buffer
-format, so there is no need to convert back and forth between buffer
-format and bpp/depth, and the function can just call drm_mode_addfb2()
-directly instead.
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
-Tested-by: Javier Martinez Canillas <javierm@redhat.com>
----
-v2:
-  - Add Reviewed-by, Tested-by,
-  - s/drm_mode_create_dumb/drm_client_buffer_addfb/ in one-line summary.
----
- drivers/gpu/drm/drm_client.c | 13 +++++--------
- 1 file changed, 5 insertions(+), 8 deletions(-)
+--IeP/KGlIXWB7S8Lk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/gpu/drm/drm_client.c b/drivers/gpu/drm/drm_client.c
-index 037e36f2049c1793..0ced189befebae12 100644
---- a/drivers/gpu/drm/drm_client.c
-+++ b/drivers/gpu/drm/drm_client.c
-@@ -395,19 +395,16 @@ static int drm_client_buffer_addfb(struct drm_client_buffer *buffer,
- 				   u32 handle)
- {
- 	struct drm_client_dev *client = buffer->client;
--	struct drm_mode_fb_cmd fb_req = { };
--	const struct drm_format_info *info;
-+	struct drm_mode_fb_cmd2 fb_req = { };
- 	int ret;
- 
--	info = drm_format_info(format);
--	fb_req.bpp = drm_format_info_bpp(info, 0);
--	fb_req.depth = info->depth;
- 	fb_req.width = width;
- 	fb_req.height = height;
--	fb_req.handle = handle;
--	fb_req.pitch = buffer->pitch;
-+	fb_req.pixel_format = format;
-+	fb_req.handles[0] = handle;
-+	fb_req.pitches[0] = buffer->pitch;
- 
--	ret = drm_mode_addfb(client->dev, &fb_req, client->file);
-+	ret = drm_mode_addfb2(client->dev, &fb_req, client->file);
- 	if (ret)
- 		return ret;
- 
--- 
-2.34.1
+On Thu, Aug 24, 2023 at 12:36:30AM +0300, Dmitry Rokosov wrote:
+> Add the compatible for the Amlogic A1 Based AD402 board.
+>=20
+> Signed-off-by: Dmitry Rokosov <ddrokosov@sberdevices.ru>
 
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+
+Thanks,
+Conor.
+
+> ---
+>  Documentation/devicetree/bindings/arm/amlogic.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/arm/amlogic.yaml b/Documen=
+tation/devicetree/bindings/arm/amlogic.yaml
+> index 08d59842655c..15880abb7261 100644
+> --- a/Documentation/devicetree/bindings/arm/amlogic.yaml
+> +++ b/Documentation/devicetree/bindings/arm/amlogic.yaml
+> @@ -203,6 +203,7 @@ properties:
+>          items:
+>            - enum:
+>                - amlogic,ad401
+> +              - amlogic,ad402
+>            - const: amlogic,a1
+> =20
+>        - description: Boards with the Amlogic C3 C302X/C308L SoC
+> --=20
+> 2.36.0
+>=20
+
+--IeP/KGlIXWB7S8Lk
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZOdyfAAKCRB4tDGHoIJi
+0oIXAQCxCYiJcSXauX/bC1ncL/pW/vgEoxuRCEB1sACDgGlzXgEA5fo4ZywiPR9i
+5bRB7njZo+PmtnYhAyMqk7b0KV7YJwQ=
+=Twj5
+-----END PGP SIGNATURE-----
+
+--IeP/KGlIXWB7S8Lk--
