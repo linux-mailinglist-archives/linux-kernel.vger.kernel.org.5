@@ -2,62 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CA25787653
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 19:03:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C57E9787656
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 19:03:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230004AbjHXRCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 13:02:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40308 "EHLO
+        id S242833AbjHXRDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 13:03:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242695AbjHXRCe (ORCPT
+        with ESMTP id S242827AbjHXRDS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 13:02:34 -0400
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E11041B0;
-        Thu, 24 Aug 2023 10:02:32 -0700 (PDT)
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-689f9576babso90921b3a.0;
-        Thu, 24 Aug 2023 10:02:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692896552; x=1693501352;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MO7O1kGOwFS/EawXS/x6fpyq+z0MGjgPDj7Ob5YzAfo=;
-        b=PAog45iQqHFoFCMzvY/6N7lD7430+3nKfIT3QT3daIY0QIE8U1EX9lCGYL6W1pSrsC
-         /uIc8OaKt+ut+buwzyq3XHQ7aW8icpQTHauB0x8R67cE6KNba+GSvRppd+E51JTKLhH4
-         V9cgkpfpiQTNk63y5rVvMCBO8NLhgMScjghXyh7Z2QUITmloIClP2lpy6bWeWaAWwpus
-         2STCwTZJOzunysEzZTqZdiNC0WRaxYnG4ORt3xJkhG8pfW/XYFZ1/wyVGL7JbZXwwEGn
-         Sd/Jbgmm1XtyC2AL68fnzzFTghTxXpR4bazI8K2tIcqGZ9BlPzfatF+ZyrLtkai4P7Or
-         L5Yg==
-X-Gm-Message-State: AOJu0YzWZwL3M2NZ5ih++rn/5LRg6FTamyrd5kk3PbxRtYw4gxiy5Hrt
-        HG/aj/AvzwaABUu57kUlxeI=
-X-Google-Smtp-Source: AGHT+IF3ln2fx6jVdhLG2TITnTUr0jZ9VXG2QusjVA6MG79oOYp0rA5bKlVvBkyv1SqOK12SertYnQ==
-X-Received: by 2002:a05:6a20:8e01:b0:13e:b7e9:1a71 with SMTP id y1-20020a056a208e0100b0013eb7e91a71mr17005086pzj.14.1692896552070;
-        Thu, 24 Aug 2023 10:02:32 -0700 (PDT)
-Received: from ?IPV6:2620:15c:211:201:e6ec:4683:972:2d78? ([2620:15c:211:201:e6ec:4683:972:2d78])
-        by smtp.gmail.com with ESMTPSA id r15-20020a62e40f000000b006887037cde6sm1499780pfh.60.2023.08.24.10.02.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Aug 2023 10:02:31 -0700 (PDT)
-Message-ID: <e4701e0e-57a3-6ee3-8686-6b1d3750c124@acm.org>
-Date:   Thu, 24 Aug 2023 10:02:30 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Subject: Re: [PATCH 0/6] blk-mq: optimize the queue_rqs() support
-Content-Language: en-US
-To:     chengming.zhou@linux.dev, axboe@kernel.dk, hch@lst.de,
-        ming.lei@redhat.com, kbusch@kernel.org
-Cc:     mst@redhat.com, sagi@grimberg.me, damien.lemoal@opensource.wdc.com,
-        kch@nvidia.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, zhouchengming@bytedance.com
-References: <20230824144403.2135739-1-chengming.zhou@linux.dev>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20230824144403.2135739-1-chengming.zhou@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        Thu, 24 Aug 2023 13:03:18 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC82710F9;
+        Thu, 24 Aug 2023 10:03:11 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 9112622088;
+        Thu, 24 Aug 2023 17:03:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1692896590; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jrAG7m96VPC1mkTaluLxh7W982yxT13Stt9OhGrTnBs=;
+        b=WrjeBYzEG/Pn5m6AeyEiknOSIMqtAdDqClNOS/3SjpN58WUjMFzLtjWQPgshHDcl79tLiI
+        pxGoPHEF3b0DYnskNcEh8VSmQw6Xa2qWdmmlc4u5l1QWP7QDLGB92Bk0sKT8MxcMJxZcIx
+        44n9rZ7Dpuf3fD+u1C6AVuwrd/5ldKo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1692896590;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jrAG7m96VPC1mkTaluLxh7W982yxT13Stt9OhGrTnBs=;
+        b=P0cx/WiwaKOXPVf85RzezDUPaF9gG2B68rMGFZe+R6tSPL2WBYVwB1RO8q432Pfsjn6t3C
+        sMP+sAcwlmMjXFDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2AAA11336F;
+        Thu, 24 Aug 2023 17:03:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 7QA8CU6N52Q8bgAAMHmgww
+        (envelope-from <tiwai@suse.de>); Thu, 24 Aug 2023 17:03:10 +0000
+Date:   Thu, 24 Aug 2023 19:03:09 +0200
+Message-ID: <87wmxk8jaq.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Shengjiu Wang <shengjiu.wang@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>, Hans Verkuil <hverkuil@xs4all.nl>,
+        Shengjiu Wang <shengjiu.wang@nxp.com>, sakari.ailus@iki.fi,
+        tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xiubo.Lee@gmail.com, festevam@gmail.com, nicoleotsuka@gmail.com,
+        lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+        alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [RFC PATCH v2 0/7] Add audio support in v4l2 framework
+In-Reply-To: <CAA+D8AN34-NVrgksRAG014PuHGUssTm0p-KR-HYGe+Pt8Yejxg@mail.gmail.com>
+References: <1690265540-25999-1-git-send-email-shengjiu.wang@nxp.com>
+        <47d66c28-1eb2-07f5-d6f9-779d675aefe8@xs4all.nl>
+        <87il9xu1ro.wl-tiwai@suse.de>
+        <CAA+D8ANmBKMp_L2GS=Lp-saMQKja6L4E6No3yP-e=a5YQBD_jQ@mail.gmail.com>
+        <87il9xoddo.wl-tiwai@suse.de>
+        <CAA+D8AOVEpGxO0YNeS1p+Ym86k6VP-CNQB3JmbeT7mPKg0R99A@mail.gmail.com>
+        <844ef9b6-d5e2-46a9-b7a5-7ee86a2e449c@sirena.org.uk>
+        <CAA+D8AOnsx+7t3MrWm42waxtetL07nbKURLsh1hBx39LUDm+Zg@mail.gmail.com>
+        <CAA+D8AMriHO60SD2OqQSDMmi7wm=0MkoW6faR5nyve-j2Q5AEQ@mail.gmail.com>
+        <CAA+D8AN34-NVrgksRAG014PuHGUssTm0p-KR-HYGe+Pt8Yejxg@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,41 +85,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/24/23 07:43, chengming.zhou@linux.dev wrote:
-> From: Chengming Zhou <zhouchengming@bytedance.com>
+On Wed, 23 Aug 2023 16:33:19 +0200,
+Shengjiu Wang wrote:
 > 
-> The current queue_rqs() support has limitation that it can't work on
-> shared tags queue, which is resolved by patch 1-3. We move the account
-> of active requests to where we really allocate the driver tag.
+> On Fri, Aug 11, 2023 at 7:05 PM Shengjiu Wang <shengjiu.wang@gmail.com> wrote:
+> >
+> > Hi Mark, Takashi
+> >
+> > On Thu, Aug 3, 2023 at 9:11 PM Shengjiu Wang <shengjiu.wang@gmail.com> wrote:
+> > >
+> > > On Thu, Aug 3, 2023 at 1:28 AM Mark Brown <broonie@kernel.org> wrote:
+> > > >
+> > > > On Wed, Aug 02, 2023 at 10:41:43PM +0800, Shengjiu Wang wrote:
+> > > >
+> > > > > Currently the ASRC in ALSA is to connect to another I2S device as
+> > > > > a sound card.  But we'd like to the ASRC can be used by user space directly
+> > > > > that user space application can get the output after conversion from ASRC.
+> > > >
+> > > > That sort of use case would be handled via DPCM at the minute, though
+> > > > persuading it to connect two front ends together might be fun (which is
+> > > > the sort of reason why we want to push digital information down into
+> > > > DAPM and make everything a component).
+> > >
+> > > Thanks.
+> > >
+> > > ASRC M2M case needs to run as fast as possible, no sync clock control.
+> > > If use sound card to handle ASRC M2M case,  the user application
+> > > should be aplay/arecord, then we need to consider xrun issue, buffer
+> > > may timeout, sync between aplay and arecord,  these should't be
+> > > considered by pure memory to memory operation.
+> > >
+> > > DPCM may achitect all the audio things in components and sound
+> > > card,  it is good. but for the M2M case, it is complcated. not sure
+> > > it is doable.
+> > >
+> >
+> > Beside the concern in previous mail,
+> >
+> > DPCM needs to separate ASRC to be two substreams (playback and capture).
+> >
+> > But the ASRC needs the sample rate & format of input and output first
+> > then start conversion.
+> >
+> > If the playback controls the rate & format of input,  capture substream
+> > controls the rate & format of output,  as a result
+> > one substream needs to get information(dma buffer address, size...
+> > rate, format) from another substream, then start both substreams in the
+> > last substream. How to synchronize these two substreams is a problem.
+> > One stream can be released but another stream doesn't know .
+> >
+> > So I don't think it is a good idea to use DPCM for pure M2M case.
+> >
+> > So can I persuade you to consider the V4L2 solution?
+> >
 > 
-> This is clearer and matched with the unaccount side which now happen
-> when we put the driver tag. And we can remove RQF_MQ_INFLIGHT, which
-> was used to avoid double account problem of flush request.
+> Just a summary:
 > 
-> Another problem is that the driver that support queue_rqs() has to
-> set inflight request table by itself, which is resolved in patch 4.
+> Basic M2M conversion can work with DPCM, I have tried with some
+> workaround to make it work.
 > 
-> The patch 5 fixes a potential race problem which may cause false
-> timeout because of the reorder of rq->state and rq->deadline.
-> 
-> The patch 6 add support queue_rqs() for null_blk, which showed a
-> 3.6% IOPS improvement in fio/t/io_uring benchmark on my test VM.
-> And we also use it for testing queue_rqs() on shared tags queue.
+> But there are several issues:
+> 1. Need to create sound cards.  ASRC module support multi instances, then
+> need to create multi sound cards for each instance.
 
-Hi Jens and Christoph,
+Hm, why can't it be multiple PCM instances instead?
 
-This patch series would be simplified significantly if the code for
-fair tag allocation would be removed first
-(https://lore.kernel.org/linux-block/20230103195337.158625-1-bvanassche@acm.org/, 
-January 2023).
-It has been proposed to improve fair tag sharing but the complexity of
-the proposed alternative is scary
-(https://lore.kernel.org/linux-block/20230618160738.54385-1-yukuai1@huaweicloud.com/, 
-June 2023).
-  Does everyone agree with removing the code for fair tag sharing - code
-that significantly hurts performance of UFS devices and code that did
-not exist in the legacy block layer?
+> 2. The ASRC is an entirety but with DPCM we need to separate input port and
+> output port to playback substream and capture stream. Synchronous between
+> playback substream and capture substream is a problem.
+> How to start them and stop them at the same time.
 
-Thanks,
+This could be done by enforcing the full duplex and linking the both
+PCM streams, I suppose.
 
-Bart.
+> 3. How to handle the xrun issue. pause or resume. which are brought by ALSA.
+
+Doesn't V4L2 handle the overrun/underrun at all?  Also, no resume
+support?
+
+Pause and resume are optional in ALSA frame work, you don't need to
+implement them unless you want/need.
+
+> So shall we make the decision that we can go to the V4L2 solution?
+
+Honestly speaking, I don't mind much whether it's implemented in V2L4
+or not -- at least for the kernel part, we can reorganize / refactor
+things internally.  But, the biggest remaining question to me is
+whether this user-space interface is the most suitable one.  Is it
+well defined, usable and maintained for the audio applications?  Or
+is it meant to be a stop-gap for a specific use case?
+
+
+thanks,
+
+Takashi
