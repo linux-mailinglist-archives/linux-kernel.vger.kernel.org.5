@@ -2,149 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 014CE786CE1
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 12:38:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5125F786CE2
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 12:38:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238002AbjHXKho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 06:37:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49680 "EHLO
+        id S239360AbjHXKiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 06:38:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236975AbjHXKhM (ORCPT
+        with ESMTP id S236975AbjHXKhy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 06:37:12 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F0C71991
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 03:37:09 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-d656d5e8265so6384483276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 03:37:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692873428; x=1693478228;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=f+t+6Jj4c8OD+E4DqAHyvyhb2KIFsqFvRqrnhgqjYgc=;
-        b=nTeAP+kMD6HeAXh5/js1gdtYeek/dko2c5WLeifxOkkPBAiSejtAnTIWSOYZD/XbfT
-         LmAkcHegepMUKPFJwkYfYpxbgLdTGpgN4O0uVmUVzCsyxx0lu0lklX5nWtxo1/p+z3kp
-         bdUq6BdTTEEKaLhu+dT21WnEciKIqNKN7OoRbVIRLUMDOpc1OhY4ZfZxQhbjyGNwjilE
-         p/ktvjCYlMiIPjCVTg4a3DeTa9KHzQY3QkZnAOkg/HLhP5wWOGbSD43b6ajo1+MryYN3
-         dzz3cLMF5VmbUpqz+nqmyhkzNb36NjJHxVshkpf7J0zEmwLwKy8YOxlvBkmso/sNZS32
-         1MMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692873428; x=1693478228;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=f+t+6Jj4c8OD+E4DqAHyvyhb2KIFsqFvRqrnhgqjYgc=;
-        b=S8vRyMZBMwEThoRqEQUm9PAL1wPrbeefid+W5Gi+EnJgU5oowCCaI3kjCWUbVQzLYR
-         Tbr8X3JmwY8I6h8LnavBUcRpOmDOVCvsba50LX/ACcIkizduAbFdx/tOxOpfSR25jHUG
-         fI2JqS33+jnbkA07JCkC6aP8bkNMkmJXgYK5GmW6a7IiEo5nMJE3vCoP8iwcqiZ630vA
-         cPlTWdw+1741RrUfjMT/uRembQoCR5jf2GtNxWWMhWx+QUMNBhZefToDylmpnUfUb6pp
-         IW/okMyXLnQCsG4gb+0L18JIoglrQBZ7cbcxdeR+lbOQZ5qNlMGPBFVm+g9/cYyHKiXk
-         i9aA==
-X-Gm-Message-State: AOJu0YwrR/fZDmBoWw81X5237NlNH5276bgjOR5Qsf5UyeRX+6c1ExOM
-        8sY2l2tvOAQTYKJ4Ddda06ZdbLQsKQPl9HgLbuKl1w==
-X-Google-Smtp-Source: AGHT+IGgT1fs4cb+csCKFpIcm/YjFDyRo/O88UP51BgIw2jkGgaEUESazYPERGYE/mOk11GEYXLJuz94B+/M7DEvjBI=
-X-Received: by 2002:a05:690c:3693:b0:592:8909:10f0 with SMTP id
- fu19-20020a05690c369300b00592890910f0mr710256ywb.28.1692873428556; Thu, 24
- Aug 2023 03:37:08 -0700 (PDT)
+        Thu, 24 Aug 2023 06:37:54 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 911EA1991;
+        Thu, 24 Aug 2023 03:37:52 -0700 (PDT)
+Received: from pwmachine.numericable.fr (85-170-34-233.rev.numericable.fr [85.170.34.233])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 26A162127C7E;
+        Thu, 24 Aug 2023 03:37:50 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 26A162127C7E
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1692873472;
+        bh=6Gcd6o6yCvK6LU4/BD30fXY+HhV4TCpzMPE/nJIAPn0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=hlIC6Xb0rNxnXnw747PebvtX33iog/TfwU5+JEpuqnndtkpEJ8B1HUaaqwhUKnyWM
+         LPM736jLbfXys8HXNndmnnY0EwwrNDpOXKPWJjwI3wpOTJo9CWhIiEu7CM2NwaeWs2
+         VcGEM1C2LYY1/RjJF/QOPgj9gA+JNy1O2Wlluxw8=
+From:   Francis Laniel <flaniel@linux.microsoft.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-trace-kernel@vger.kernel.org,
+        Francis Laniel <flaniel@linux.microsoft.com>
+Subject: [RFC PATCH v2 0/1] Return EADDRNOTAVAIL when func matches several symbols during kprobe creation
+Date:   Thu, 24 Aug 2023 12:37:33 +0200
+Message-Id: <20230824103734.53453-1-flaniel@linux.microsoft.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20230823061734.27479-1-wenchao.chen@unisoc.com> <20230823061734.27479-3-wenchao.chen@unisoc.com>
-In-Reply-To: <20230823061734.27479-3-wenchao.chen@unisoc.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 24 Aug 2023 12:36:32 +0200
-Message-ID: <CAPDyKFriZ_uu-WACjqXK5um1bYJSDaHsghOMGwwPJXM8pYCoGw@mail.gmail.com>
-Subject: Re: [PATCH V2 2/2] mmc: hsq: dynamic adjustment of hsq->depth
-To:     Wenchao Chen <wenchao.chen@unisoc.com>
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wenchao.chen666@gmail.com, zhenxiong.lai@unisoc.com,
-        yuelin.tang@unisoc.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 23 Aug 2023 at 08:18, Wenchao Chen <wenchao.chen@unisoc.com> wrote:
->
-> Increasing hsq_depth improves random write performance.
->
-> Signed-off-by: Wenchao Chen <wenchao.chen@unisoc.com>
-> ---
->  drivers/mmc/host/mmc_hsq.c | 26 ++++++++++++++++++++++++++
->  drivers/mmc/host/mmc_hsq.h |  2 ++
->  2 files changed, 28 insertions(+)
->
-> diff --git a/drivers/mmc/host/mmc_hsq.c b/drivers/mmc/host/mmc_hsq.c
-> index 8556cacb21a1..8682a3d16a76 100644
-> --- a/drivers/mmc/host/mmc_hsq.c
-> +++ b/drivers/mmc/host/mmc_hsq.c
-> @@ -21,6 +21,30 @@ static void mmc_hsq_retry_handler(struct work_struct *work)
->         mmc->ops->request(mmc, hsq->mrq);
->  }
->
-> +static void mmc_hsq_modify_threshold(struct mmc_hsq *hsq)
-> +{
-> +       struct mmc_host *mmc = hsq->mmc;
-> +       struct mmc_request *mrq;
-> +       struct hsq_slot *slot;
-> +       int need_change = 0;
-> +       int tag;
-> +
-> +       for (tag = 0; tag < HSQ_NUM_SLOTS; tag++) {
-> +               slot = &hsq->slot[tag];
-> +               mrq = slot->mrq;
-> +               if (mrq && mrq->data && (mrq->data->blocks == HSQ_DATA_IS_4K)
+Hi.
 
-This assumes mrq->data->blksz is 512 (which at least for now is always
-the case), but perhaps better to compute the request size instead?
-Hence:
 
-"mrq->data->blksz * mrq->data->blocks == 4096"
+In the kernel source code, it exists different functions which share the same
+name but which have, of course, different addresses as they can be defined in
+different modules:
+# Kernel was compiled with CONFIG_NTFS_FS and CONFIG_NTFS3_FS as built-in.
+root@vm-amd64:~# grep ntfs_file_write_iter /proc/kallsyms
+ffffffff814ce3c0 t __pfx_ntfs_file_write_iter
+ffffffff814ce3d0 t ntfs_file_write_iter
+ffffffff814fc8a0 t __pfx_ntfs_file_write_iter
+ffffffff814fc8b0 t ntfs_file_write_iter
+This can be source of troubles when you create a PMU kprobe for such a function,
+as it will only install one for the first address (e.g. 0xffffffff814ce3d0 in
+the above).
+This could lead to some troubles were BPF based tools does not report any event
+because the second function is not called:
+root@vm-amd64:/mnt# mount | grep /mnt
+/foo.img on /mnt type ntfs3 (rw,relatime,uid=0,gid=0,iocharset=utf8)
+# ig is a tool which installs a PMU kprobe on ntfs_file_write_iter().
+root@vm-amd64:/mnt# ig trace fsslower -m 0 -f ntfs3 --host &> /tmp/foo &
+[1] 207
+root@vm-amd64:/mnt# dd if=./foo of=./bar count=3
+3+0 records in
+3+0 records out
+1536 bytes (1.5 kB, 1.5 KiB) copied, 0.00543323 s, 283 kB/s
+root@vm-amd64:/mnt# fg
+ig trace fsslower -m 0 -f ntfs3 --host &> /tmp/foo
+^Croot@vm-amd64:/mnt# more /tmp/foo
+RUNTIME.CONTAINERNAME          RUNTIME.CONTAIN… PID              COMM
+  T      BYTES     OFFSET        LAT FILE
+                                                214              dd
+  R        512          0        766 foo
+                                                214              dd
+  R        512        512          9 foo
+                                                214              dd
+As you can see in the above, only read events are reported and no write because
+the kprobe is installed for the old ntfs_file_write_iter() and not the ntfs3
+one.
+The same behavior occurs with sysfs kprobe:
+root@vm-amd64:/# echo 'p:probe/ntfs_file_write_iter ntfs_file_write_iter' > /sys/kernel/tracing/kprobe_events
+root@vm-amd64:/# cat /sys/kernel/tracing/kprobe_events
+p:probe/ntfs_file_write_iter ntfs_file_write_iter
+root@vm-amd64:/# mount | grep /mnt
+/foo.img on /mnt type ntfs3 (rw,relatime,uid=0,gid=0,iocharset=utf8)
+root@vm-amd64:/# perf record -e probe:ntfs_file_write_iter &
+[1] 210
+root@vm-amd64:/# cd /mnt/
+root@vm-amd64:/mnt# dd if=./foo of=./bar count=3
+3+0 records in
+3+0 records out
+1536 bytes (1.5 kB, 1.5 KiB) copied, 0.00234793 s, 654 kB/s
+root@vm-amd64:/mnt# cd -
+/
+root@vm-amd64:/# fg
+perf record -e probe:ntfs_file_write_iter
+^C[ perf record: Woken up 1 times to write data ]
+[ perf record: Captured and wrote 0.056 MB perf.data ]
 
-> +                               && (mrq->data->flags & MMC_DATA_WRITE))
-> +                       need_change++;
-> +               else
-> +                       break;
-> +       }
-> +
-> +       if (need_change > 1)
-> +               mmc->hsq_depth = HSQ_PERFORMANCE_DEPTH;
-> +       else
-> +               mmc->hsq_depth = HSQ_NORMAL_DEPTH;
-> +}
-> +
->  static void mmc_hsq_pump_requests(struct mmc_hsq *hsq)
->  {
->         struct mmc_host *mmc = hsq->mmc;
-> @@ -42,6 +66,8 @@ static void mmc_hsq_pump_requests(struct mmc_hsq *hsq)
->                 return;
->         }
->
-> +       mmc_hsq_modify_threshold(hsq);
-> +
->         slot = &hsq->slot[hsq->next_tag];
->         hsq->mrq = slot->mrq;
->         hsq->qcnt--;
-> diff --git a/drivers/mmc/host/mmc_hsq.h b/drivers/mmc/host/mmc_hsq.h
-> index aa5c4543b55f..fc031e38f1e0 100644
-> --- a/drivers/mmc/host/mmc_hsq.h
-> +++ b/drivers/mmc/host/mmc_hsq.h
-> @@ -10,6 +10,8 @@
->   * flight to avoid a long latency.
->   */
->  #define HSQ_NORMAL_DEPTH       2
-> +#define HSQ_PERFORMANCE_DEPTH  5
-> +#define HSQ_DATA_IS_4K 8
+root@vm-amd64:/# perf report
+Error:
+The perf.data data has no samples!
+# To display the perf.data header info, please use --header/--header-only optio>
+#
 
-Perhaps re-phrase the comment a few lines above to explain why/when
-'5' can be good too.
+In this contribution, I modified the functions creating sysfs and PMU kprobes to
+test if the function name given as argument matches several symbols.
+In this case, these functions return EADDRNOTAVAIL to indicate the user to use
+addr and offs to remove this ambiguity.
+So, when the above BPF tool is run, the following error message is printed:
+root@vm-amd64:~# ig trace fsslower -m 0 -f ntfs3 --host &> /tmp/foo &
+[1] 228
+root@vm-amd64:~# more /tmp/foo
+RUNTIME.CONTAINERNAME          RUNTIME.CONTAIN… PID              COMM
+  T      BYTES     OFFSET        LAT FILE
+Error: running gadget: running gadget: installing tracer: attaching kprobe: crea
+ting perf_kprobe PMU (arch-specific fallback for "ntfs_file_write_iter"): token
+ntfs_file_write_iter: opening perf event: cannot assign requested address
+And the same with sysfs kprobe:
+root@vm-amd64:/# echo 'p:probe/ntfs_file_write_iter ntfs_file_write_iter' > /sys/kernel/tracing/kprobe_events
+-bash: echo: write error: Cannot assign requested address
+Note that, this does not influence perf as it installs kprobes as offset on
+_text:
+root@vm-amd64:/# perf probe --add ntfs_file_write_iter
+Added new events:
+  probe:ntfs_file_write_iter (on ntfs_file_write_iter)
+  probe:ntfs_file_write_iter (on ntfs_file_write_iter)
+...
+root@vm-amd64:/# cat /sys/kernel/tracing/kprobe_events
+p:probe/ntfs_file_write_iter _text+5039088
+p:probe/ntfs_file_write_iter _text+5228752
 
->
->  struct hsq_slot {
->         struct mmc_request *mrq;
+Note that, this contribution is the conclusion of a previous RFC which intended
+to install a PMU kprobe for all matching symbols [1, 2].
 
-Kind regards
-Uffe
+If you see any way to improve this contribution, particularly if you have an
+idea to add tests or documentation for this behavior, please share your
+feedback.
+
+Changes since:
+ v1:
+  * Use EADDRNOTAVAIL instead of adding a new error code.
+  * Correct also this behavior for sysfs kprobe.
+
+Francis Laniel (1):
+  tracing/kprobes: Return EADDRNOTAVAIL when func matches several
+    symbols
+
+ kernel/trace/trace_kprobe.c | 42 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 42 insertions(+)
+
+
+Best regards and thank you in advance.
+---
+[1]: https://lore.kernel.org/lkml/20230816163517.112518-1-flaniel@linux.microsoft.com/
+[2]: https://lore.kernel.org/lkml/20230819101105.b0c104ae4494a7d1f2eea742@kernel.org/
+--
+2.34.1
+
