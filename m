@@ -2,66 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34341786BB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 11:27:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D4AE786BB2
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 11:26:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238766AbjHXJ0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 05:26:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48744 "EHLO
+        id S238161AbjHXJ0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 05:26:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234715AbjHXJ0F (ORCPT
+        with ESMTP id S240543AbjHXJZp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 05:26:05 -0400
-Received: from jari.cn (unknown [218.92.28.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E792C199F
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 02:25:59 -0700 (PDT)
-Received: from chenxuebing$jari.cn ( [125.70.163.142] ) by
- ajax-webmail-localhost.localdomain (Coremail) ; Thu, 24 Aug 2023 17:25:32
- +0800 (GMT+08:00)
-X-Originating-IP: [125.70.163.142]
-Date:   Thu, 24 Aug 2023 17:25:32 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   "XueBing Chen" <chenxuebing@jari.cn>
-To:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/amdgpu: Clean up errors in vcn_v2_0.c
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version 2023.1-cmXT6 build
- 20230419(ff23bf83) Copyright (c) 2002-2023 www.mailtech.cn
- mispb-4e503810-ca60-4ec8-a188-7102c18937cf-zhkzyfz.cn
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Thu, 24 Aug 2023 05:25:45 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DBBA10FA;
+        Thu, 24 Aug 2023 02:25:41 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-52a250aa012so2305351a12.3;
+        Thu, 24 Aug 2023 02:25:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692869140; x=1693473940;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tyUSHoKWbQNIsBIxmqoVCWEQRbWDMFnOFy94iKbdUak=;
+        b=pwXWOpQe8/E9m6HQlMGOjH3MuNJBr6IwSmzWg+5BI3PHGP4ZXxVLaeFqME4LW5qUFY
+         qqDZ1Yu8YbTjN+gsgF5tH8BD+JvBabWLWIrfeI+mK/EqwtzwETnRka6ewOb+IBb0Ujl0
+         MN0k+evM4hrwqHfisY9A+VEf89qiYEuoy1kxZCXpN+DQUvrnVdatiUEehFAPB+gYj4Fl
+         JG3Py2WQP0YwOw8wfW/pE2efdGf1d5qq1/+QYUVt9GCXxLWaO6Ae+JvhdgSB2ATwj9Uy
+         ie/5Asl6bvhp53V3NWU3/yokBgXn0SILVpetp7fh7X0Oky+CpJBd1ljp5YNgDuaXhmde
+         YXkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692869140; x=1693473940;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tyUSHoKWbQNIsBIxmqoVCWEQRbWDMFnOFy94iKbdUak=;
+        b=kAxfLKMcqaEFGxZRtGzNxQUuLMucMuNuH1h4Tnxb2jImT08OuKSiVcWVys5dZlpXOI
+         ckH7f2fibfTbUHkRQlK4boEHGH04ACCIbFawJug6r6RgrrKl1iSHCkfYXT0SbW6Sjal3
+         OiJsqpPyy+dZCGVy6y7eKrYhrIBcRNM9+XdC/hbGnvjhbnGNvGB8gRfO8zPbuL0srlSD
+         FNkWBGLuuqcM9rVlllffPTIb+yibO1wpTDNjM2JPb3WGKmhiF/Th2uTs12XSq0dUHzIW
+         aPNPWLNgq+ndNKRBOjR13LUOhbaXArcHLw0JO73hcy7ewb6184nNFDT+tOWIh3osBMyP
+         Putw==
+X-Gm-Message-State: AOJu0YxLVSRofQcqUywi/GCZzi2qSjiHLDAkQ5iEvrn09azMYEKjEK73
+        nAe7wKY4WBg1j4X2vscEv2I=
+X-Google-Smtp-Source: AGHT+IF11KMC8N7YlmdtLz0MNq7kFFR0fNws82JxXsYKp4o8hZNtASoE5WWHzb82ZVmM01q8qwDPwg==
+X-Received: by 2002:aa7:c648:0:b0:525:7e46:940 with SMTP id z8-20020aa7c648000000b005257e460940mr12734565edr.24.1692869139822;
+        Thu, 24 Aug 2023 02:25:39 -0700 (PDT)
+Received: from orome (p200300e41f1bd600f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f1b:d600:f22f:74ff:fe1f:3a53])
+        by smtp.gmail.com with ESMTPSA id u2-20020a056402110200b005231e3d89efsm10401474edv.31.2023.08.24.02.25.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Aug 2023 02:25:39 -0700 (PDT)
+Date:   Thu, 24 Aug 2023 11:25:37 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Lee Jones <lee@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH 15/20] drm/tegra/hub: Increase buffer size to ensure all
+ possible values can be stored
+Message-ID: <ZOciEaJlHhp4xnFv@orome>
+References: <20230824073710.2677348-1-lee@kernel.org>
+ <20230824073710.2677348-16-lee@kernel.org>
 MIME-Version: 1.0
-Message-ID: <6fbca6c3.649.18a26dd0269.Coremail.chenxuebing@jari.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: AQAAfwD3lD8MIudkdFiSAA--.487W
-X-CM-SenderInfo: hfkh05pxhex0nj6mt2flof0/1tbiAQANCmTl1A4AUgADsM
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
-X-Spam-Status: No, score=2.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_PBL,RDNS_NONE,T_SPF_HELO_PERMERROR,T_SPF_PERMERROR,XPRIO
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: **
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="/e521ON4/AmmvfkF"
+Content-Disposition: inline
+In-Reply-To: <20230824073710.2677348-16-lee@kernel.org>
+User-Agent: Mutt/2.2.10 (2023-03-25)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rml4IHRoZSBmb2xsb3dpbmcgZXJyb3JzIHJlcG9ydGVkIGJ5IGNoZWNrcGF0Y2g6CgpFUlJPUjog
-dGhhdCBvcGVuIGJyYWNlIHsgc2hvdWxkIGJlIG9uIHRoZSBwcmV2aW91cyBsaW5lCgpTaWduZWQt
-b2ZmLWJ5OiBYdWVCaW5nIENoZW4gPGNoZW54dWViaW5nQGphcmkuY24+Ci0tLQogZHJpdmVycy9n
-cHUvZHJtL2FtZC9hbWRncHUvdmNuX3YyXzAuYyB8IDMgKy0tCiAxIGZpbGUgY2hhbmdlZCwgMSBp
-bnNlcnRpb24oKyksIDIgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJt
-L2FtZC9hbWRncHUvdmNuX3YyXzAuYyBiL2RyaXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1L3Zjbl92
-Ml8wLmMKaW5kZXggMTg3OTQzOTRjNWEwLi5iMzBhZTU2NGI0MGYgMTAwNjQ0Ci0tLSBhL2RyaXZl
-cnMvZ3B1L2RybS9hbWQvYW1kZ3B1L3Zjbl92Ml8wLmMKKysrIGIvZHJpdmVycy9ncHUvZHJtL2Ft
-ZC9hbWRncHUvdmNuX3YyXzAuYwpAQCAtMjA5Niw4ICsyMDk2LDcgQEAgc3RhdGljIHZvaWQgdmNu
-X3YyXzBfc2V0X2lycV9mdW5jcyhzdHJ1Y3QgYW1kZ3B1X2RldmljZSAqYWRldikKIAlhZGV2LT52
-Y24uaW5zdC0+aXJxLmZ1bmNzID0gJnZjbl92Ml8wX2lycV9mdW5jczsKIH0KIAotY29uc3Qgc3Ry
-dWN0IGFtZGdwdV9pcF9ibG9ja192ZXJzaW9uIHZjbl92Ml8wX2lwX2Jsb2NrID0KLXsKK2NvbnN0
-IHN0cnVjdCBhbWRncHVfaXBfYmxvY2tfdmVyc2lvbiB2Y25fdjJfMF9pcF9ibG9jayA9IHsKIAkJ
-LnR5cGUgPSBBTURfSVBfQkxPQ0tfVFlQRV9WQ04sCiAJCS5tYWpvciA9IDIsCiAJCS5taW5vciA9
-IDAsCi0tIAoyLjE3LjEKCg==
+
+--/e521ON4/AmmvfkF
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Aug 24, 2023 at 08:37:00AM +0100, Lee Jones wrote:
+> When converting from int to string, we must allow for up to 10-chars (214=
+7483647).
+>=20
+> Fixes the following W=3D1 kernel build warning(s):
+>=20
+>  drivers/gpu/drm/tegra/hub.c: In function =E2=80=98tegra_display_hub_prob=
+e=E2=80=99:
+>  drivers/gpu/drm/tegra/hub.c:1106:47: warning: =E2=80=98%u=E2=80=99 direc=
+tive output may be truncated writing between 1 and 10 bytes into a region o=
+f size 4 [-Wformat-truncation=3D]
+>  drivers/gpu/drm/tegra/hub.c:1106:42: note: directive argument in the ran=
+ge [0, 4294967294]
+>  drivers/gpu/drm/tegra/hub.c:1106:17: note: =E2=80=98snprintf=E2=80=99 ou=
+tput between 6 and 15 bytes into a destination of size 8
+
+I wish there was (perhaps there is?) a better way to annotate that i
+will always be within a given range. In practice this is always going to
+be smaller than 10 and even in future hardware I wouldn't expect this to
+ever exceed anything like 32 or 64, so 8 characters is already generous.
+
+Thierry
+
+>=20
+> Signed-off-by: Lee Jones <lee@kernel.org>
+> ---
+> Cc: Thierry Reding <thierry.reding@gmail.com>
+> Cc: Mikko Perttunen <mperttunen@nvidia.com>
+> Cc: David Airlie <airlied@gmail.com>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Jonathan Hunter <jonathanh@nvidia.com>
+> Cc: Philipp Zabel <p.zabel@pengutronix.de>
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-tegra@vger.kernel.org
+> ---
+>  drivers/gpu/drm/tegra/hub.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/gpu/drm/tegra/hub.c b/drivers/gpu/drm/tegra/hub.c
+> index 1af5f8318d914..f21e57e8599ee 100644
+> --- a/drivers/gpu/drm/tegra/hub.c
+> +++ b/drivers/gpu/drm/tegra/hub.c
+> @@ -1101,7 +1101,7 @@ static int tegra_display_hub_probe(struct platform_=
+device *pdev)
+> =20
+>  	for (i =3D 0; i < hub->soc->num_wgrps; i++) {
+>  		struct tegra_windowgroup *wgrp =3D &hub->wgrps[i];
+> -		char id[8];
+> +		char id[16];
+> =20
+>  		snprintf(id, sizeof(id), "wgrp%u", i);
+>  		mutex_init(&wgrp->lock);
+> --=20
+> 2.42.0.rc1.204.g551eb34607-goog
+>=20
+
+--/e521ON4/AmmvfkF
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmTnIhEACgkQ3SOs138+
+s6GK6w/9EagL8i/CuGUrZbOmpLZ0O/tWA4R2yxVjK5cDlFwSvCj1PjnoZJsOY/cr
+WXRhT8GwbRv6ZFaCX4IB7Xs/m2GhTKCGcU8TlGX6mAPGyRFoBdicUI2SWGvQ3bAj
+PM/3rEwujtTnzK+T3lZekjUIkgy1JTUHtYqt/naNOY8dyX/fsPZlCDxM+OsekshX
+7yyjzj3rJtKBeB9aV/aicTrLHqYwsN4Igjk7d5t1hHoZOpPGxlEkeZfe3vCchyIF
+ACRnwljDVFhr1yBumOliB2Ir7ZjQNt7HLzVXwf7wNNTwbLdTHxdchMWnHyCPeE0E
+dbgCEGVGQp/jcU7pZNWcBUxGcwfmD03zoRg7dprKMzbK/iX69goOZr7LVjeRhNaN
+sALjfX9cBQ/csylEvuZMdUYh9CzHYK1irMpQKp1Kbl1Vrq2y9mQBTwH7rzyJIjnh
+vOXf+7w2UnmbrEpcbP8JTPEfRxulmSAlmXrTSrdYk5vUO6R5qv0KacxaGDpJqQ4o
+opc8bJeiopJEaZBIYM1MU0M4efjuSBYmIeJVIIroUe9EleClPNhI0pRZeh/nTRLc
+fExRVKi1tzXEQqgBMl+93V6ZdVH9VpJU/104/u+k2TNc5GJtwX1An353zGTgxYR3
+g1rPG3XsxnrWb+5pOkht44A+TfJ35HTH/TNZBA7Jky62dQnpbQU=
+=NzIn
+-----END PGP SIGNATURE-----
+
+--/e521ON4/AmmvfkF--
