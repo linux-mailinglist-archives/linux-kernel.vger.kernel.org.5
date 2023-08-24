@@ -2,107 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6E6578784C
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 20:59:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CECF78784F
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 21:00:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237609AbjHXS6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 14:58:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32930 "EHLO
+        id S242103AbjHXS7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 14:59:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230079AbjHXS6P (ORCPT
+        with ESMTP id S243170AbjHXS7g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 14:58:15 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B218E1BD1;
-        Thu, 24 Aug 2023 11:58:13 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id 46e09a7af769-6bd3317144fso150825a34.1;
-        Thu, 24 Aug 2023 11:58:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692903493; x=1693508293;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cTx6IU2Ceazpc05DJ3qYtLFFrnEetHYitYmMRZqMriU=;
-        b=WOLiJcE+SWGGX95VXh8H5Gr76E5LwURu/6NJSn5hiS9LCJOGs5VrS5QEi5bLxScIFd
-         34lnY0cKM6IJd1QNEnC8gDaZsz1LkpI8F/e7jk+DeMBC7utnS1U2mHjU3vq3SlTWgqP5
-         GrhBFTetM2eHXydSnonip/+IXf5G+ZaA3epaYiDZEUOmSihNzeE8BACiRaTvSD99gvex
-         PLGJ126FYShxKGXA5FgdFOfjlwvnJIP4RhnDDwcNwgTzyZFlgOo/GgujQgPdDG0HDarh
-         YSS4iJ/q6zH6qNzIAoSAcjLy639IE/p9vuKv4QCkzzKtIiGud1/J0SxNqE56+Drlvezt
-         2wsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692903493; x=1693508293;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cTx6IU2Ceazpc05DJ3qYtLFFrnEetHYitYmMRZqMriU=;
-        b=ky5oxam+F9Aq8cZ4ZtENsRklq4tGhi+qatvGkizh6B6BG3FX5JRIr5Utz4hQlwcGAY
-         r2vvTDn7wwN7O1aZagFUmYneue4g2I+kdAfWgh/1B7E7GdM4DZ/LdoX4nIHFeLyWiUF0
-         eTWJ43pYAvAEepcghy1Ad9hMi31rUujbWLILJDaBoc07QfBZi+15O/37OEW0DrDMaYhX
-         rVSF6BIzbxQSioUv5ot/34WjjlaBzypJF/myYwumhlaxKD3BKixONegb+b1I0u+lyfOJ
-         7Pk3LSFOp4V1/XH7vlZtLNIpDkTDpqWh8+i4T3VHvweUpjJOYw7RkmuWTvIzuBOhTbAA
-         JvTg==
-X-Gm-Message-State: AOJu0Yyp48xJ6PKHIeqfWWD8RXNtd8OjfEMGCPr2SmoiX1n98TFutese
-        incJIkRCfXI+sc5JBb8iY8s=
-X-Google-Smtp-Source: AGHT+IGIdGYFpUdJfRknf/yomB3a+RSBgDVRGmkaCdT3LuYrH7cKx5fAD4wFRuW3ARgGvn7lLsDbbw==
-X-Received: by 2002:a9d:63c1:0:b0:6bc:cace:c07 with SMTP id e1-20020a9d63c1000000b006bccace0c07mr3417604otl.18.1692903492877;
-        Thu, 24 Aug 2023 11:58:12 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id jr16-20020a05622a801000b00407906a4c6fsm25855qtb.71.2023.08.24.11.57.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Aug 2023 11:58:12 -0700 (PDT)
-Message-ID: <286fcd22-35a6-54f3-4abd-9bfb415defdb@gmail.com>
-Date:   Thu, 24 Aug 2023 11:57:53 -0700
+        Thu, 24 Aug 2023 14:59:36 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A5FE1BE9;
+        Thu, 24 Aug 2023 11:59:33 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 20D436453A;
+        Thu, 24 Aug 2023 18:59:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3098AC433C8;
+        Thu, 24 Aug 2023 18:59:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692903572;
+        bh=tDc6KZfrRI2QPNEn3yvTRshL5wqKtC4JJ7mmZOARMZw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qcQk8pNFSflZQejLZ8htmq0gKxvnx2wkybB144Wn1rPdnIZEvhIsbiRjdg5A/ZTDJ
+         wVunYywEhWyawr/Cnq78ae+j9JhnHGfEIktYCkfySij7WmMujM7mRnDMQcwueAI+Y5
+         EDqzld8m36EoQjoo42d7S1eFra6VwOLcoih1skmSffQo80St5r6V2N9ONG4L+losHr
+         uQpYjPgvibGjxV7Qc4jNI976V1yuWilcBu0N0ahbE2S+A6FuspjjnUxUsFwZzq018x
+         gc0BqmJjTs1H+vSuM1U5fKTi2LBbxNibrtBoM9LXSi5asgd3KBZW6mCdt5MgdxB8WD
+         CG6fEX9FLV7cg==
+Date:   Thu, 24 Aug 2023 11:59:30 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>
+Subject: Re: [PATCH] kbuild: get lib-y objects back to static library
+Message-ID: <20230824185930.GA2025001@dev-arch.thelio-3990X>
+References: <20230823120816.824352-1-masahiroy@kernel.org>
+ <20230823202040.GA2236267@dev-arch.thelio-3990X>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 5.10 000/135] 5.10.192-rc1 review
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-References: <20230824170617.074557800@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20230824170617.074557800@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230823202040.GA2236267@dev-arch.thelio-3990X>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/24/23 10:07, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.192 release.
-> There are 135 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Wed, Aug 23, 2023 at 01:20:42PM -0700, Nathan Chancellor wrote:
+> Hi Masahiro,
 > 
-> Responses should be made by Sat, 26 Aug 2023 17:05:50 +0000.
-> Anything received after that time might be too late.
+> On Wed, Aug 23, 2023 at 09:08:16PM +0900, Masahiro Yamada wrote:
+> > Revert the following two commits:
+> > 
+> >  - 7273ad2b08f8 ("kbuild: link lib-y objects to vmlinux forcibly when CONFIG_MODULES=y")
+> >  - 7f2084fa55e6 ("[kbuild] handle exports in lib-y objects reliably")
+> > 
+> > Now, lib-y is back to static library again, and the link order is
+> > consistent w/wo CONFIG_MODULES.
+> > 
+> > Since commit ddb5cdbafaaa ("kbuild: generate KSYMTAB entries by
+> > modpost"), .vmlinux.export.c contains references to exported symbols.
+> > If a symbol in a lib-y object is exported, that object is always linked
+> > even without any explicit user in vmlinux.
+> > 
+> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> > ---
+> > 
+> >  Makefile | 5 -----
+> >  1 file changed, 5 deletions(-)
+> > 
+> > diff --git a/Makefile b/Makefile
+> > index 87a9eef3fb4b..71e9c65d9eae 100644
+> > --- a/Makefile
+> > +++ b/Makefile
+> > @@ -1113,12 +1113,7 @@ export ARCH_DRIVERS	:= $(drivers-y) $(drivers-m)
+> >  # Externally visible symbols (used by link-vmlinux.sh)
+> >  
+> >  KBUILD_VMLINUX_OBJS := ./built-in.a
+> > -ifdef CONFIG_MODULES
+> > -KBUILD_VMLINUX_OBJS += $(patsubst %/, %/lib.a, $(filter %/, $(libs-y)))
+> > -KBUILD_VMLINUX_LIBS := $(filter-out %/, $(libs-y))
+> > -else
+> >  KBUILD_VMLINUX_LIBS := $(patsubst %/,%/lib.a, $(libs-y))
+> > -endif
+> >  
+> >  export KBUILD_VMLINUX_LIBS
+> >  export KBUILD_LDS          := arch/$(SRCARCH)/kernel/vmlinux.lds
+> > -- 
+> > 2.39.2
+> > 
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.192-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
+> The build error that prompted 7273ad2b08f8 from [1] appears to return
+> with this patch, for example:
 > 
-> thanks,
+> $ make -skj"$(nproc)" ARCH=arm64 LLVM=1 O=build mrproper virtconfig all
+> ...
+> ERROR: modpost: "__memcat_p" [drivers/hwtracing/stm/stm_core.ko] undefined!
+> ...
 > 
-> greg k-h
+> [1]: https://github.com/ClangBuiltLinux/linux/issues/515
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
-BMIPS_GENERIC:
+One thing I forgot to note with this is this occurs when targeting arm,
+arm64, hexagon, i386, powerpc, s390, and x86_64 with various in-tree
+configurations (I can provide a list if necessary).
 
-Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
-
+Cheers,
+Nathan
