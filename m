@@ -2,91 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 107B27874C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 18:00:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55C857874CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 18:01:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242336AbjHXP7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 11:59:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51606 "EHLO
+        id S242342AbjHXQAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 12:00:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242370AbjHXP7Z (ORCPT
+        with ESMTP id S242386AbjHXQAQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 11:59:25 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 03BD6E50
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 08:59:24 -0700 (PDT)
-Received: by linux.microsoft.com (Postfix, from userid 1127)
-        id 84E4A2127C80; Thu, 24 Aug 2023 08:59:23 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 84E4A2127C80
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1692892763;
-        bh=5A6FZVB5eWnbymKWXkBlkAfvCxZWBI2ubxpE/eKsggA=;
+        Thu, 24 Aug 2023 12:00:16 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E5B51BDA;
+        Thu, 24 Aug 2023 09:00:13 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DB04966D9E;
+        Thu, 24 Aug 2023 16:00:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49742C433C7;
+        Thu, 24 Aug 2023 16:00:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692892812;
+        bh=w6DubEnHWITnA7qJDewRABFVLEud1owzihxV+3GqNWU=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TwCdcqDYbmfy3tXa+hOMp0G8tW+yi0DwODKEN7zViHTLeLHXItPL6dMndLrZ/VBzi
-         7t9P5vEZjryF0oL78oTv5+jG3B23coluxAQeMMWei7V51TxRqIFKyKoZHpxN0u24Kb
-         J62PSVVDO0YGMJ7q12YJ4KO1SRuNzeIhHDuPovS8=
-Date:   Thu, 24 Aug 2023 08:59:23 -0700
-From:   Saurabh Singh Sengar <ssengar@linux.microsoft.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-        x86@kernel.org, hpa@zytor.com, luto@kernel.org,
-        peterz@infradead.org, mikelley@microsoft.com,
+        b=RUubxuYNkgz8hcnusxaaLoHC9qXut7slmskPsbpolndJ0dNazO/qeu38Cch3IEJ+x
+         TrjTfsGasJD5psBGlvGf5Pd9BZSRdHkzieGjavkSZVRL1xWouTD75Li3hkkgzZW+ga
+         M8knQq6K6fHAK3MW/3Jj3qVr1XMxaFchB2dax/T7tsy2MbWrbxSYXLLU+nCIwKuPOp
+         3zydWWS6KTaTUMhGg4dCiiG+XmpUw4HwtnlDD7zmXtSoyC1Qn6TjbaMIgTgulRVav1
+         jv1fQpqFslo2Y0T2BUyWqggVYaLO/PRvndwQe3evZZcu0xU/zYcxEdOXNVq8VjQIV1
+         a88BiDNUvOTFg==
+Date:   Thu, 24 Aug 2023 18:00:06 +0200
+From:   Andi Shyti <andi.shyti@kernel.org>
+To:     Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>
+Cc:     linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>, linux-i2c@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/numa: Add Devicetree support
-Message-ID: <20230824155923.GA19733@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1687850882-22554-1-git-send-email-ssengar@linux.microsoft.com>
- <87edjscvdm.ffs@tglx>
+Subject: Re: [PATCH 07/14] I2C: ali15x3: Do PCI error checks on own line
+Message-ID: <20230824160006.ahcv2twl4c4q5cd5@intel.intel>
+References: <20230824132832.78705-1-ilpo.jarvinen@linux.intel.com>
+ <20230824132832.78705-8-ilpo.jarvinen@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <87edjscvdm.ffs@tglx>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Spam-Status: No, score=-18.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230824132832.78705-8-ilpo.jarvinen@linux.intel.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 05:28:37PM +0200, Thomas Gleixner wrote:
-> On Tue, Jun 27 2023 at 00:28, Saurabh Sengar wrote:
-> > Hyper-V has usecases where it need to fetch NUMA information from
-> > Devicetree. Currently, it is not possible to extract the NUMA
-> > information from Devicetree for x86 arch.
-> >
-> > Add support for Devicetree in the x86_numa_init function, allowing
-> > the retrieval of NUMA node information from the Devicetree.
-> >
-> > Additionally, relocate the x86_dtb_init function before initmem_init
-> > to ensure the Devicetree initialization prior to its utilization in
-> > x86_numa_init.
-> 
-> Moving dtb_init() is not really a good idea. The APIC/IO-APIC
-> enumeration is post initmem_init() on purpose and the ongoing rework of
-> the topology evaluation relies on that.
-> 
-> What you really want is to split dtb_init() into two parts:
-> 
->    1) x86_flattree_get_config() which can be invoked before initmem init
->       like ACPI has an early init part so SRAT parsing can be done in
->       the numa initialization.
-> 
->    2) The APIC/IOAPIC registration part, which stays where it is.
-> 
-> This split wants to be a seperate change.
+Hi Ilpo,
 
-Thanks for the review, I will send the v2 with suggested modifications.
+On Thu, Aug 24, 2023 at 04:28:25PM +0300, Ilpo Järvinen wrote:
+> Instead of if conditions with line splits, use the usual error handling
+> pattern with a separate variable to improve readability.
+> 
+> No functional changes intended.
+> 
+> Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> ---
+>  drivers/i2c/busses/i2c-ali15x3.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/i2c/busses/i2c-ali15x3.c b/drivers/i2c/busses/i2c-ali15x3.c
+> index cc58feacd082..6fedecef9df3 100644
+> --- a/drivers/i2c/busses/i2c-ali15x3.c
+> +++ b/drivers/i2c/busses/i2c-ali15x3.c
+> @@ -122,6 +122,7 @@ static int ali15x3_setup(struct pci_dev *ALI15X3_dev)
+>  {
+>  	u16 a;
+>  	unsigned char temp;
+> +	int ret;
 
-- Saurabh
+can you please add this ret declaration inside the
+"if (force_addr)"?
 
+Andi
+
+>  
+>  	/* Check the following things:
+>  		- SMB I/O address is initialized
+> @@ -167,12 +168,11 @@ static int ali15x3_setup(struct pci_dev *ALI15X3_dev)
+>  	if(force_addr) {
+>  		dev_info(&ALI15X3_dev->dev, "forcing ISA address 0x%04X\n",
+>  			ali15x3_smba);
+> -		if (PCIBIOS_SUCCESSFUL != pci_write_config_word(ALI15X3_dev,
+> -								SMBBA,
+> -								ali15x3_smba))
+> +		ret = pci_write_config_word(ALI15X3_dev, SMBBA, ali15x3_smba);
+> +		if (ret != PCIBIOS_SUCCESSFUL)
+>  			goto error;
+> -		if (PCIBIOS_SUCCESSFUL != pci_read_config_word(ALI15X3_dev,
+> -								SMBBA, &a))
+> +		ret = pci_read_config_word(ALI15X3_dev, SMBBA, &a);
+> +		if (ret != PCIBIOS_SUCCESSFUL)
+>  			goto error;
+>  		if ((a & ~(ALI15X3_SMB_IOSIZE - 1)) != ali15x3_smba) {
+>  			/* make sure it works */
+> -- 
+> 2.30.2
 > 
-> Thanks,
-> 
->         tglx
-> 
-> 
-> 
->    
