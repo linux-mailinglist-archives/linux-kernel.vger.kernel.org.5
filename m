@@ -2,76 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B94F78783F
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 20:51:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2DC1787843
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 20:52:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243128AbjHXSvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 14:51:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49554 "EHLO
+        id S243135AbjHXSwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 14:52:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243168AbjHXSvA (ORCPT
+        with ESMTP id S243210AbjHXSwD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 14:51:00 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9303D1BCE;
-        Thu, 24 Aug 2023 11:50:58 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id 5614622812f47-3a7e68f4214so122655b6e.1;
-        Thu, 24 Aug 2023 11:50:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692903058; x=1693507858;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=aqVyJ9RUVtyyFKnwGC2cT2NgtLaSYlYeieCEq7zLn7A=;
-        b=jM2PVtsKTwXStWBeVP6L5ykfpTvweRpjc4p4hUENOU2hL4/fi6HiXK0WPdeHx9nasP
-         IjNijML+zxv3996HI4Do+YQ7xsu80s6ojONy/72S3AQEAjpitUNe4dRtGXcdmN5dG9h8
-         1+e1uvLLM7TUnO/jFTaW71Y0r2QKzFW4iEXfQadzjM2yPR0sp9nYsiOvlTssFTR0oNn0
-         SD3D+OOsfC4V9Qs0sIcG+JH4rKfPS0lxADSJrx3rvJk5PKwqNM+RyF4g540Ja4bN5YqY
-         5b6MYRRkFEQn2PFwz/5vuO4Uv4YovXzsDv6S3iPoFHevO2nVEFIEDwZ+gcTFc3rzKUn5
-         gk2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692903058; x=1693507858;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aqVyJ9RUVtyyFKnwGC2cT2NgtLaSYlYeieCEq7zLn7A=;
-        b=ltFWeCa/Q3lUTOua4vcyRjgfVD8u+zNH2X+nJR0A3rn5kpkp4My3b01ICk5/b7GIVB
-         MGnQJypJYumiTAGfQKHYMYsU6yVUVCHgZsMbq+kRZGoRMoU5pnq26z/DfTFgNFW1Rvu/
-         9kDECemxzYdHwmpX8i3VW7ABU+stehE3yBGSEAp/BiCBwxMInodrI5+rIIX3/sN2Mrtb
-         g5GTsirgwj9KkCvTP1r+vR4YFQetdemVHCh/D4Gj0b5d+Tqjp2pGDW/n6MFE6iZi1YFW
-         DJgA5eTd0xy/7Eeblws4KdxZGZSb9uuElqEcsR+DDel71p9m4XITc6nnRQfHu0YzXPSa
-         zhXw==
-X-Gm-Message-State: AOJu0YwUFWle6AAQGBI9TWhL98qFABCiogQoHPpxMY3mA8XB/6QsGq41
-        XEz3SNPOnS2G3P7eFDaiyMGW8VeeFIdVbns/
-X-Google-Smtp-Source: AGHT+IFccbnP2QFsXt4xG63svj36Lg9j5RsmEKqyuRIdBVB6l8Uws8JJF0le51SOlq/ZRpUmOwnCbg==
-X-Received: by 2002:a05:6358:429d:b0:134:c984:ab74 with SMTP id s29-20020a056358429d00b00134c984ab74mr14817501rwc.9.1692903057794;
-        Thu, 24 Aug 2023 11:50:57 -0700 (PDT)
-Received: from shaak (modemcable063.135-226-192.mc.videotron.ca. [192.226.135.63])
-        by smtp.gmail.com with ESMTPSA id a10-20020ac8434a000000b004109d386323sm22148qtn.66.2023.08.24.11.50.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Aug 2023 11:50:57 -0700 (PDT)
-Date:   Thu, 24 Aug 2023 14:50:54 -0400
-From:   Liam Beguin <liambeguin@gmail.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH 3/3] dt-bindings: iio: adc: add lltc,ltc2309 bindings
-Message-ID: <20230824185054.GA3659959@shaak>
-References: <20230824-ltc2309-v1-0-b87b4eb8030c@gmail.com>
- <20230824-ltc2309-v1-3-b87b4eb8030c@gmail.com>
- <e54273c7-4728-7577-f053-b15307d3a083@linaro.org>
+        Thu, 24 Aug 2023 14:52:03 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C83CC1BE9
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 11:52:01 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 66F3164EBB
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 18:52:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF58EC433C8;
+        Thu, 24 Aug 2023 18:52:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692903120;
+        bh=F9KFzp3RIyYz1hSGj9sFsAsINDZWmj2HmYc1rwDFU4E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hhf7ihMJj2jCYtSAQXqyoolpxtXAy2heKNfDoFZ7KjrJBXoX7XOCd8sHXM1E0Zf3r
+         0AXt9LJ1tugA4inWVs/Osc2lOuI//uHv6VyMD7fwIaFcTPOkR0g2CsrItdSrQ72bGT
+         0dnbvQe+Z8ApCaDcvozkOo5jAvzKrq/gF3JxtloXbrtQY+WBlPPhRMQI+V4Lr2FWW4
+         KfSXcfz/8wmt96q/MRtYE7+jXqvisnQ2htsRNdCSBXnRBRzOWOJU83GH+vWCiM49A8
+         ok2rX1mjCFytqaOIYgS9GE5CCSmCUDnLP+htNbNEndNA1wyjiolIy3PuES8q3Db1MZ
+         YHAYOZOowhedg==
+Date:   Thu, 24 Aug 2023 11:51:59 -0700
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     "Nabil S. Alramli" <dev@nalramli.com>
+Cc:     netdev@vger.kernel.org, kuba@kernel.org, davem@davemloft.net,
+        saeedm@nvidia.com, tariqt@nvidia.com, linux-kernel@vger.kernel.org,
+        leon@kernel.org, jdamato@fastly.com, nalramli@fastly.com
+Subject: Re: [net-next RFC 0/1] mlx5: support per queue coalesce settings
+Message-ID: <ZOemz1HLp95aGXXQ@x130>
+References: <20230823223121.58676-1-dev@nalramli.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <e54273c7-4728-7577-f053-b15307d3a083@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+In-Reply-To: <20230823223121.58676-1-dev@nalramli.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -80,98 +56,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 07:56:29PM +0200, Krzysztof Kozlowski wrote:
-> On 24/08/2023 18:55, Liam Beguin wrote:
-> > Add devicetree bindings for the Linear Technology LTC2309 ADC driver.
-> > 
-> > Signed-off-by: Liam Beguin <liambeguin@gmail.com>
-> 
-> Thank you for your patch. There is something to discuss/improve.
-> 
-> > +++ b/Documentation/devicetree/bindings/iio/adc/lltc,ltc2309.yaml
-> > @@ -0,0 +1,52 @@
-> > +# SPDX-License-Identifier: GPL-2.0
-> 
-> Wrong license. Run checkpatch before sending patches.
-> 
+On 23 Aug 18:31, Nabil S. Alramli wrote:
+>Hello,
+>
+>I am Submitting this as an RFC to get feedback and to find out if the folks
+>at Mellanox would accept this change.
+>
+>Currently, only gobal coalescing configuration queries or changes are
+>supported in the `mlx5` driver. However, per-queue operations are not, and
+>result in `EOPNOTSUPP` errors when attempted with `ethtool`. This patch
+>adds support for per-queue coalesce operations, with a caveat described
+>below.
+>
+>Here's an example use case:
+>
+>- An mlx5 NIC is configured with 8 queues, each queue has its IRQ pinned
+>  to a unique CPU.
+>- Two custom RSS contexts are created: context 1 and context 2. Each
+>  context has a different set of queues where flows are distributed. For
+>  example, context 1 may distribute flows to queues 0-3, and context 2 may
+>  distribute flows to queues 4-7.
+>- A series of ntuple filters are installed which direct matching flows to
+>  RSS contexts. For example, perhaps port 80 is directed to context 1 and
+>  port 443 to context 2.
+>- Applications which receive network data associated with either context
+>  are pinned to the CPUs where the queues in the matching context have
+>  their IRQs pinned to maximize locality.
+>
+>The apps themselves, however, may have different requirements on latency vs
+>CPU usage and so setting the per queue IRQ coalesce values would be very
+>helpful.
+>
+>This patch would support this, with the caveat that DIM mode changes per
+>queue are not supported. DIM mode can only be changed NIC-wide. This is
+>because in the mlx5 driver, global operations that change the state of
+>adaptive-ex or adaptive-tx require a reset. So in the case of per-queue, we
+>reject such requests. This was done in the interest of simplicity for this
+>RFC as setting the DIM mode per queue appears to require significant
+>changes to mlx5 to be able to preserve the state of the indvidual channels
+>through a reset.
+>
+>IMO, if a user is going to set per-queue coalesce settings it might be
+>reasonable to assume that they will disable adaptive rx/tx NIC wide first
+>and then go through and apply their desired per-queue settings.
+>
 
-Sorry about that, I ran it through checkpatch but it didn't flag
-anything.
+DIM is already per channel, so I don't think it's that difficult to have
+mix support of DIM and static config per channel. Yes the code will need
+some refactoring, but with a quick glance at the code provided here, such
+refactoring is already required IMO.
 
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/iio/adc/lltc,ltc2309.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Linear Technology / Analog Devices LTC2309 ADC
-> > +
-> > +maintainers:
-> > +  - Liam Beguin <liambeguin@gmail.com>
-> > +
-> > +properties:
-> > +  compatible:
-> > +    enum:
-> > +      - lltc,ltc2309
-> > +
-> > +  refcomp-supply:
-> > +    description: Power supply for the reference voltage
-> 
-> refcomp is not a supply. It is called "Reference Buffer Output.". You
+>Here's an example:
+>
+>$ ethtool --per-queue eth0 queue_mask 0x4 --show-coalesce
+>Queue: 2
+>Adaptive RX: on  TX: on
+>stats-block-usecs: 0
+>sample-interval: 0
+>pkt-rate-low: 0
+>pkt-rate-high: 0
+>
+>rx-usecs: 8
+>rx-frames: 128
+>...
+>
+>Now, let's try to set adaptive-rx off rx-usecs 16 for queue 2:
+>
+>$ sudo ethtool --per-queue eth0 queue_mask 0x4 --coalesce adaptive-rx off \
+>  rx-usecs 16
+>Cannot set device per queue parameters: Operation not supported
+>
+>This is not supported; adaptive-rx must be disabled NIC wide first:
+>
+>$ sudo ethtool -C eth0 adaptive-rx off
+>
+>And now, queue_mask 0x4 can be applied to set rx-usecs:
+>
+>$ sudo ethtool --per-queue eth0 queue_mask 0x4 --coalesce rx-usecs 16
+>$ ethtool --per-queue eth0 queue_mask 0x4 --show-coalesce
+>Queue: 2
+>Adaptive RX: off  TX: on
+>stats-block-usecs: 0
+>sample-interval: 0
+>pkt-rate-low: 0
+>pkt-rate-high: 0
+>
+>rx-usecs: 16
+>rx-frames: 32
+>...
+>
+>Previously a global `struct mlx5e_params` stored the options in
+>`struct mlx5e_priv.channels.params`. That was preserved, but a channel-
+>specific instance was added as well, in `struct mlx5e_channel.params`.
+>
+>Note that setting global coalescing options will set the individual
+>channel settings to the same values as well.
+>
+>Is Mellanox open to this change? What would be needed to get something like
+>this accepted?
+>
 
-That makes sense, I was going for the PIN name from the datasheet.
+Sure, we just need to pass review and few testing cycles.
 
-> probably wanted vref-supply, which suggests you should just add it to
-> ltc2497 bindings. I don't see any differences.
-> 
+Thanks,
+Saeed.
 
-I hadn't thought of reusing an existing bindings file for a different
-driver. I'll update ltc2497.yaml instead since it avoids duplicating the
-whole file.
-
-> > +
-> > +  reg:
-> > +    enum:
-> > +      - 0x08
-> > +      - 0x09
-> > +      - 0x0a
-> > +      - 0x0b
-> > +      - 0x18
-> > +      - 0x19
-> > +      - 0x1a
-> > +      - 0x1b
-> > +      - 0x28
-> > +
-> > +  "#io-channel-cells":
-> > +    const: 1
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +
-> > +unevaluatedProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    i2c {
-> > +        #address-cells = <1>;
-> > +        #size-cells = <0>;
-> > +
-> > +        adc@28 {
-> > +            #io-channel-cells = <1>;
-> > +            compatible = "lltc,ltc2309";
-> > +            reg = <0x28>;
-> 
-> If the example stays, then order is compatible first, then reg, then the
-> rest. Also add the supply to make example complete.
-
-Thanks for pointing out the proper order.
-
-> But I think this should be squashed with other binding so no need for
-> the example.
-> 
-> Best regards,
-> Krzysztof
-> 
-
-Thanks for your time!
-Liam
