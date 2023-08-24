@@ -2,142 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 965FB786EA9
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 14:03:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5119786EB4
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 14:08:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241257AbjHXMD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 08:03:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49346 "EHLO
+        id S241268AbjHXMIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 08:08:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241268AbjHXMC5 (ORCPT
+        with ESMTP id S232697AbjHXMHt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 08:02:57 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 416E41993;
-        Thu, 24 Aug 2023 05:02:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692878566; x=1724414566;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=7l+45aZuDPCBqNHBG172GCHD6wE4+ZCgsf7zR7CryYw=;
-  b=Twdgx734olgG1bPRJiIc1bk5APn/d09ORdV3f+EPmZNPI70f6qYLSWII
-   jltp59JcNKf7KGMxytU8t+ZMU1Tr9STjVWgRoKnedqm3WawxwDRdWC/z9
-   AqqdU/e/m7W/POFxDt7MWXDOYWeG+/ynQ95SoVdSOLdnQW2vVSgl3L6eV
-   IACTDdF7hqxd51dwadVC1pArKIfnRDa74xwsQHs8WsvgvJ2eivL0Xm3K5
-   XEk4Vu3+HTB0lQOhluNaHY7VIqW4q2hl0YMNlzCFDMhuflZWTCoZMYAki
-   oiBt3XwtQg1+xH/y44+wmD/MZbJIqc3P9le22P1GmSijyTy7qEOYqnY3K
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="371825530"
-X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
-   d="scan'208";a="371825530"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 05:02:35 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="1067796099"
-X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
-   d="scan'208";a="1067796099"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga005.fm.intel.com with ESMTP; 24 Aug 2023 05:02:33 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qZ92l-002OWW-1H;
-        Thu, 24 Aug 2023 15:02:31 +0300
-Date:   Thu, 24 Aug 2023 15:02:31 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Mehdi Djait <mehdi.djait.k@gmail.com>
-Cc:     jic23@kernel.org, mazziesaccount@gmail.com,
-        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
-        lars@metafoo.de, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v8 7/7] iio: accel: Add support for Kionix/ROHM
- KX132-1211 accelerometer
-Message-ID: <ZOdG1wFo892bJU53@smile.fi.intel.com>
-References: <cover.1692824815.git.mehdi.djait.k@gmail.com>
- <c41ed69af6432298cbd82896328333f31d41dda0.1692824815.git.mehdi.djait.k@gmail.com>
+        Thu, 24 Aug 2023 08:07:49 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41F1CE7D;
+        Thu, 24 Aug 2023 05:07:47 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D206A64348;
+        Thu, 24 Aug 2023 12:07:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 493D8C433C8;
+        Thu, 24 Aug 2023 12:07:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692878866;
+        bh=XGcUYxKeus/elTOoo1TjZur2p/AUG6A2tJIcsd6tkeY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rsSVe7TgROYG1eWOt5xc+RTZFGzWVP57WTUrt7RVc1v7xwhiWcgSchrbaVPEI+2tI
+         n1Rh4UbOh+Ln4e6fL5ZMoOetp8KgWCwOiMLCOs+IylzDhL8RApvllbJXgiZ3GdpL8U
+         i1Z2IbTVQmipwBnz/wmvTxRx68NKj7igKU3SNfFwkoxeaMxIB+khZboENPg/rHmz9K
+         GBDYsOifsqOPM6DfahgDS1+TmELqmdew1kTvyVkejTiq4r9p540lLTO3unNGYRWzdT
+         clXGNzTBHyFZYghbE3br+BXurpvs1+DgMi3cDunaFl0t2ZI2Kh5D2hn+HiySfUC00i
+         pLn15gYif2/8g==
+Date:   Thu, 24 Aug 2023 13:07:35 +0100
+From:   Lee Jones <lee@kernel.org>
+To:     Jani Nikula <jani.nikula@linux.intel.com>
+Cc:     Karol Herbst <kherbst@redhat.com>, nouveau@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        =?iso-8859-1?Q?Ma=EDra?= Canal <mairacanal@riseup.net>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Shashank Sharma <shashank.sharma@amd.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        amd-gfx@lists.freedesktop.org,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Luben Tuikov <luben.tuikov@amd.com>,
+        Danilo Krummrich <dakr@redhat.com>,
+        Ben Skeggs <bskeggs@redhat.com>, linux-media@vger.kernel.org,
+        Stanley Yang <Stanley.Yang@amd.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        linaro-mm-sig@lists.linaro.org, linux-tegra@vger.kernel.org,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Hyun Kwon <hyun.kwon@xilinx.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>, linux-kernel@vger.kernel.org,
+        Jerome Glisse <glisse@freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Gourav Samaiya <gsamaiya@nvidia.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Hawking Zhang <Hawking.Zhang@amd.com>
+Subject: Re: [PATCH (set 1) 00/20] Rid W=1 warnings from GPU
+Message-ID: <20230824120735.GS1380343@google.com>
+References: <20230824073710.2677348-1-lee@kernel.org>
+ <87wmxk4xt3.fsf@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <c41ed69af6432298cbd82896328333f31d41dda0.1692824815.git.mehdi.djait.k@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <87wmxk4xt3.fsf@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 23, 2023 at 11:16:41PM +0200, Mehdi Djait wrote:
-> Kionix KX132-1211 is a tri-axis 16-bit accelerometer that can support
-> ranges from ±2G to ±16G, digital output through I≤C/SPI.
-> Add support for basic accelerometer features such as reading acceleration
-> via IIO using raw reads, triggered buffer (data-ready), or the WMI IRQ.
+On Thu, 24 Aug 2023, Jani Nikula wrote:
 
-...
+> On Thu, 24 Aug 2023, Lee Jones <lee@kernel.org> wrote:
+> > This set is part of a larger effort attempting to clean-up W=1
+> > kernel builds, which are currently overwhelmingly riddled with
+> > niggly little warnings.
+> 
+> The next question is, how do we keep it W=1 clean going forward?
 
->  	help
-> -	  Enable support for the Kionix KX022A digital tri-axis
-> -	  accelerometer connected to I2C interface.
-> +	  Enable support for the Kionix KX022A, KX132-1211 digital tri-axis
-> +	  accelerometers connected to SPI interface.
+My plan was to fix them all, then move each warning to W=0.
 
-I know I have given a tag, but since it most likely require a new version,
-this can be amended for the better maintenance as
+Arnd recently submitted a set doing just that for a bunch of them.
 
-	  Enable support for the Kionix digital tri-axis accelerometers
-	  connected to SPI interface. Supported devices are:
-	    KX022A, KX132-1211
+https://lore.kernel.org/all/20230811140327.3754597-1-arnd@kernel.org/
 
-...
+I like to think a bunch of this is built on top of my previous efforts.
 
->  	help
-> -	  Enable support for the Kionix KX022A digital tri-axis
-> -	  accelerometer connected to I2C interface.
-> +	  Enable support for the Kionix KX022A, KX132-1211 digital tri-axis
-> +	  accelerometers connected to I2C interface.
+GPU is a particularly tricky though - the warnings seem to come in faster
+than I can squash them.  Maybe the maintainers can find a way to test
+new patches on merge?
 
-Ditto.
+> Most people don't use W=1 because it's too noisy, so it's a bit of a
+> catch-22.
+> 
+> In i915, we enable a lot of W=1 warnings using subdir-ccflags-y in our
+> Makefile. For CI/developer use we also enable kernel-doc warnings by
+> default.
+> 
+> Should we start enabling some of those warning flags in drm/Makefile to
+> to keep the entire subsystem warning free?
 
-...
-
-> +static const struct regmap_access_table kx132_volatile_regs = {
-> +	.yes_ranges = &kx132_volatile_ranges[0],
-
-
-This should be the same as
-
-	.yes_ranges = kx132_volatile_ranges,
-
-> +	.n_yes_ranges = ARRAY_SIZE(kx132_volatile_ranges),
-> +};
-
-Ditto for the following.
-
-> +static const struct regmap_access_table kx132_precious_regs = {
-> +	.yes_ranges = &kx132_precious_ranges[0],
-> +	.n_yes_ranges = ARRAY_SIZE(kx132_precious_ranges),
-> +};
-
-> +static const struct regmap_access_table kx132_ro_regs = {
-> +	.no_ranges = &kx132_read_only_ranges[0],
-> +	.n_no_ranges = ARRAY_SIZE(kx132_read_only_ranges),
-> +};
-
-> +static const struct regmap_access_table kx132_wo_regs = {
-> +	.no_ranges = &kx132_write_only_ranges[0],
-> +	.n_no_ranges = ARRAY_SIZE(kx132_write_only_ranges),
-> +};
-
-> +static const struct regmap_access_table kx132_nir_regs = {
-> +	.yes_ranges = &kx132_noinc_read_ranges[0],
-> +	.n_yes_ranges = ARRAY_SIZE(kx132_noinc_read_ranges),
-> +};
+That would we awesome!  We'd just need buy-in.
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Lee Jones [ÊùéÁêºÊñØ]
