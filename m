@@ -2,77 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1F36787BA4
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 00:48:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F66C787BA6
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 00:49:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243934AbjHXWq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 18:46:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58770 "EHLO
+        id S243959AbjHXWsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 18:48:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243933AbjHXWqi (ORCPT
+        with ESMTP id S243961AbjHXWsd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 18:46:38 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43D351BF7
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 15:46:35 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4fe2d152f62so501705e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 15:46:35 -0700 (PDT)
+        Thu, 24 Aug 2023 18:48:33 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E2A91BF8
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 15:48:31 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id d75a77b69052e-40a47e8e38dso44591cf.1
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 15:48:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1692917193; x=1693521993;
+        d=google.com; s=20221208; t=1692917310; x=1693522110; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=OCYNyYJU7vy6f7+4m3Y1Z8s/5IyvH+iRHdLo0oYTHwQ=;
-        b=RhSm8Ww1H4fdAzH92XRAPITF5WO8VuxzhR6L+9bzkQ/vN5ImXhCszgR0zS+XBTP0CZ
-         zOECgGy6mkfeldcWXNpGKsTAkoEFGOdKoM+y46Y5Sy/zQRhiFoCmt3EfDRYN2LL9RZIq
-         zLuprtdJhaOPh05ZgQfhmfHMWSSZc/tsIVmm46WgoQgYItqZX/Fz0/MdpDY/vvP7omPY
-         ZnSLMQrc5NeFH6md7KKi61m15Q5jzqQPTv7kSEug9Sai7CyhUANZvhl/ag30Vmx3RUHc
-         YoAf5KSwAbnyyvC/LiJTPUtNocux6fQss2iiGY6eehyp124iFOp+SHdw4mBY3TI9Cm4k
-         rg6w==
+        bh=vb9AfcF55mcoZGPO2dmvc9+6EX0/259C9jrBF6CbU4o=;
+        b=JrE8u60dB1+q08qf9STEKBtPPddw8AVaiN5Biq1SOcxcDB6xhDH+oOnhHGGAZ/QRDN
+         +NlQdqx10TEw72SSdBzj66XIrV1sLpJCGjS8eGB60Hy/ZKVVcmreSfedkCvbte+PRw3V
+         SePlMjrc6+JY4QjjfG1iOk6CMMxn54xgflkZUbSC3Ys2v7reEJ+NnqaOR/M9cELzVZFp
+         2DgDaqVBMyhmbUuDLrva8f+kkUSIA1H6tiuQi0qq46YyqG/i/J8mVR9fM9aSTRAyEV3J
+         C7Ui23tvA/x5nXXKnrLSMPr2NVSKqNnJ/j9s0gVSItWG4L5R05jahzHxY/Erz7qWYDuY
+         jJew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692917193; x=1693521993;
+        d=1e100.net; s=20221208; t=1692917310; x=1693522110;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=OCYNyYJU7vy6f7+4m3Y1Z8s/5IyvH+iRHdLo0oYTHwQ=;
-        b=PvMWc69Nrs39AZ24O72bl+mnRP/sonzpww7gc06jVe7vGlSpuM6UcPce9vDEtDEMk2
-         kxJVESXU1r7xi7X2cIFG0K/a3aq3s0XMJsPHDjc0XKotuD6heJdAfKXa480dV8+11A5H
-         jQwYBgaPeZxh+wXK2l1iT7OcdzQyBDK9ckgE6NoiIXZfdohbPbZvm9q/D/Io4Qayv4ol
-         ueau60yzT8HuDR3TEVb+BmkaKOVrLoS8kUfjpWLUZ+/I0zD3HiCycTrP/B41by/p07zS
-         dHVLj6M6746xacbV8cWEQCHvC2tOEs1Um5Svy36VgyZVsjvJUoXXLsH5pkTniM0YONvU
-         fcTg==
-X-Gm-Message-State: AOJu0Yx+ve3tti0Vt/TaVY6rhBYLrZq45SVAFJRrCckO8hJNwjMRCXMX
-        QRcQq41JBa10+rS4Occ5K4bppVrcNEeMvB7Py4SpSA==
-X-Google-Smtp-Source: AGHT+IGjUvhXZF3UrB6wnTyiM21PdNuE5x48UmMtDL6ByEOKmcfwpNgwI1gzumwtML5+FjMz1Rb3BQyPCujzqOLacIc=
-X-Received: by 2002:ac2:4c92:0:b0:4f4:dbcc:54da with SMTP id
- d18-20020ac24c92000000b004f4dbcc54damr10170585lfl.27.1692917193533; Thu, 24
- Aug 2023 15:46:33 -0700 (PDT)
+        bh=vb9AfcF55mcoZGPO2dmvc9+6EX0/259C9jrBF6CbU4o=;
+        b=Xj5NgCxpaOXSDCY3cfGowS7e7q2f0T/vL8vpxoIINGcfMNMCTcDAtWfylSC3NeJFjb
+         B4YkCnCGVkgeTtx0Zw+Mw8Afvmlx9xnLBUsj+5u6M4eFb0JcFviDfuRqthKCmJpn0RtB
+         hVh2u+Q1HG3BWXTCdYvWoQOXJuTY6lvPI/Fxsf1rz6LkWi1xQof6BoE9Hg7yGomvkODx
+         K4eSIjIA6dnPh9PE/2cxDaIXgFEKCiVsCgqYJXIU1p8jAgIQLUXq3PJYfVcpQn9FSNBx
+         WxgtOECJq+a9TT1wHfaZm4Byu1WDZrrH5yOiHHzV4WQv20Amg7c8h9k/hl85mA9LtqGQ
+         x3Lg==
+X-Gm-Message-State: AOJu0YxB3SWUzqjNq5MYyg2SYm3Virw39tMu54F1PeZS+wJLI0Lj5uLH
+        OzEfDJEtseUpMb8x/25GJOFtWls1YtuAnxFO7a8pBg==
+X-Google-Smtp-Source: AGHT+IGUi2btJyqhZwjI0swl1m7dj321OGKdIIYEKxQYvbRMpMhGCU304BgGWP9IHvXqT69giR0E0fo1t3jC1JH77mg=
+X-Received: by 2002:a05:622a:24f:b0:403:b6ff:c0b with SMTP id
+ c15-20020a05622a024f00b00403b6ff0c0bmr112968qtx.6.1692917310180; Thu, 24 Aug
+ 2023 15:48:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230711201831.2695097-1-evan@rivosinc.com> <20230824-factual-jawed-2dddd2cf2bdd@wendy>
- <CALs-Hss51fQE1yxe1Y1T86X+OfjPaAd386vosQ8gzRm=Njm1gw@mail.gmail.com>
- <20230824-exploit-spectacle-ecedd91e9075@spud> <CALs-HssqaOjvUOdBVn=oN+uzkkmjguys2UttTYgdcqJwJB0HnQ@mail.gmail.com>
- <20230824-sizing-booth-e1068c6d033f@spud>
-In-Reply-To: <20230824-sizing-booth-e1068c6d033f@spud>
-From:   Evan Green <evan@rivosinc.com>
-Date:   Thu, 24 Aug 2023 15:45:57 -0700
-Message-ID: <CALs-HsuA+g+YA707hPHwvTk8Tn6D9iwu8EmkM-f75gqTeum-5g@mail.gmail.com>
-Subject: Re: [PATCH v4] RISC-V: Show accurate per-hart isa in /proc/cpuinfo
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Conor Dooley <conor.dooley@microchip.com>,
-        Anup Patel <apatel@ventanamicro.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-riscv@lists.infradead.org,
-        Heiko Stuebner <heiko.stuebner@vrull.eu>,
-        Andrew Jones <ajones@ventanamicro.com>
+References: <20230824223731.2055016-1-srutherford@google.com>
+In-Reply-To: <20230824223731.2055016-1-srutherford@google.com>
+From:   Ben Hillier <bhillier@google.com>
+Date:   Thu, 24 Aug 2023 15:48:18 -0700
+Message-ID: <CAFn7gfRibD3YCBdXgtHuR0hMzJb+MYBNWHN5h+KJ1wJGzfL1sg@mail.gmail.com>
+Subject: Re: [PATCH v3] x86/sev: Make enc_dec_hypercall() accept a size
+ instead of npages
+To:     Steve Rutherford <srutherford@google.com>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>, thomas.lendacky@amd.com,
+        pankaj.gupta@amd.com, Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H . Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, David.Kaplan@amd.com,
+        jacobhxu@google.com, patelsvishal@google.com,
+        stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,120 +80,143 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 3:28=E2=80=AFPM Conor Dooley <conor@kernel.org> wro=
-te:
+On Thu, Aug 24, 2023 at 3:37=E2=80=AFPM Steve Rutherford <srutherford@googl=
+e.com> wrote:
 >
-> On Thu, Aug 24, 2023 at 03:06:53PM -0700, Evan Green wrote:
-> > On Thu, Aug 24, 2023 at 10:29=E2=80=AFAM Conor Dooley <conor@kernel.org=
-> wrote:
-> > > On Thu, Aug 24, 2023 at 09:18:16AM -0700, Evan Green wrote:
-> > > > On Thu, Aug 24, 2023 at 5:20=E2=80=AFAM Conor Dooley <conor.dooley@=
-microchip.com> wrote:
-> > > > > On Tue, Jul 11, 2023 at 01:18:30PM -0700, Evan Green wrote:
+> enc_dec_hypercall() accepted a page count instead of a size, which
+> forced its callers to round up. As a result, non-page aligned
+> vaddrs caused pages to be spuriously marked as decrypted via the
+> encryption status hypercall, which in turn caused consistent
+> corruption of pages during live migration. Live migration requires
+> accurate encryption status information to avoid migrating pages
+> from the wrong perspective.
 >
-> > > > > > +"isa" vs "hart isa" lines in /proc/cpuinfo
-> > > > > > +------------------------------------------
-> > > > > > +
-> > > > > > +The "isa" line in /proc/cpuinfo describes the lowest common de=
-nominator of
-> > > > > > +RISC-V ISA extensions understood by the kernel and implemented=
- on all harts. The
-> > > > > > +"hart isa" line, in contrast, describes the set of extensions =
-understood by the
-> > > > > > +kernel on the particular hart being described, even if those e=
-xtensions may not
-> > > > > > +be present on all harts in the system. The "hart isa" line is =
-consistent with
-> > > > > > +what's returned by __riscv_hwprobe() when querying for that sp=
-ecific CPU.
-> > > > >
-> > > > > Thinking about this again, I don't think this is true. hwprobe us=
-es
-> > > > > has_fpu(), has_vector() etc that interact with Kconfig options bu=
-t the
-> > > > > percpu isa bitmap isn't affected by these.
-> > > >
-> > > > Ugh yeah it's kind of a mishmash isn't it. hwprobe_isa_ext0() uses =
-the
-> > > > lowest common denominator for FD, C, V, but per-hart info for
-> > > > Zba,Zbb,Zbs. Given the interface, per-hart info seems like what we
-> > > > should have done there, and the FD, C, and V were my bad. The good
-> > > > news is we can define new bits that do the right thing, though mayb=
-e
-> > > > we should wait until someone actually wants them. For this patch we
-> > > > should just remove this sentence. We can also correct the
-> > > > documentation in hwprobe to mention the shortcoming in FD,C,V.
-> > >
-> > > I'm not really sure it's all that much of a shortcoming for V or FD,
-> > > since without the kernel support you shouldn't be using those extensi=
-ons
-> > > anyway. A hwprobe thing for that sounds like a footgun to me & I thin=
-k
-> > > the current behaviour is how it should be for these extensions.
-> > > It not being per-cpu is arguably a bug I suppose? But I would contend
-> >
-> > Yeah it was mostly the not being per-cpu I was pointing to in my previo=
-us email.
-> >
-> > > that we are conveying support for the extension on a per-hart level,
-> > > with it then also gated by the kernel supporting V or FD, which is on=
- a
-> > > system-wide basis.
-> > > Any other extensions that require Kconfig-gated kernel support should
-> > > also not report via hwprobe that the extension is supported when the
-> > > Kconfig option is disabled. It just so happens that the set of
-> > > extensions that hwprobe supports that are Kconfig-gated and those tha=
-t
-> > > require all-hart support are one and the same right now, so we can ki=
-nda
-> > > just conflate the two & use has_vector() et al that handles both
-> > > kconfig-gating and all-hart support. Until something comes along that=
- needs
-> > > anything different, I'd leave well enough alone for hwprobe...
-> >
-> > Sounds good.
-> >
-> > >
-> > > > Palmer, do you want a spin of this patch or a followup on top to
-> > > > remove the above sentence?
-> > >
-> > > It's not actually been applied yet, right?
-> > >
-> > > Do you want to have this new thing in cpuinfo tell the user "this har=
-t
-> > > has xyz extensions that are supported by a kernel, but maybe not this
-> > > kernel" or to tell the user "this hart has xyz extensions that are
-> > > supported by this kernel"? Your text above says "understood by the
-> > > kernel", but I think that's a poor definition that needs to be improv=
-ed
-> > > to spell out exactly what you mean. IOW does "understood" mean the
-> > > kernel will parse them into a structure, or does it mean "yes you can
-> > > use this extension on this particular hart".
-> >
-> > I'm imagining /proc/cpuinfo being closer to "the CPU has it and the
-> > kernel at least vaguely understands it, but may not have full support
-> > for it enabled". I'm assuming /proc/cpuinfo is mostly used by 1)
-> > humans wanting to know if they have hardware support for a feature,
-> > and 2) administrators collecting telemetry to manage fleets (ie do I
-> > have any hardware deployed that supports X). Programmers looking to
-> > see "is the kernel support for this feature ready right now" would
-> > ideally not be parsing /proc/cpuinfo text, as more direct mechanisms
-> > like specific hwprobe bits for "am I fully ready to go" would be
-> > easier to work with. Feel free to yell at me if this overall vision
-> > seems flawed.
-> >
-> > I tried to look to see if there was consensus among the other
-> > architectures. Aarch64 seems to go with "supported and fully enabled",
-> > as their cpu_has_feature() directly tests elf_hwcap, and elements in
-> > arm64_elf_hwcaps[] are Kconfig gated. X86 is complicated, but IIRC is
-> > more along the lines of "hardware has it". They have two macros,
-> > cpu_has() for "raw capability" and cpu_feature_enabled() for "kernel
-> > can do it too", and they use cpu_has() for /proc/cpuinfo flags.
+> Cc: stable@vger.kernel.org
+> Fixes: 064ce6c550a0 ("mm: x86: Invoke hypercall when page encryption stat=
+us is changed")
+> Signed-off-by: Steve Rutherford <srutherford@google.com>
+> Reviewed-by: Tom Lendacky <thomas.lendacky@amd.com>
+> Reviewed-by: Pankaj Gupta <pankaj.gupta@amd.com>
+Ran test comparing the c-bit status in the guest page tables to the
+host perspective. Before the patch, there was a c-bit status mismatch.
+Adding the patch fixed these mismatched c-bits.
+Tested-by: Ben Hillier <bhillier@google.com>
+> ---
+>  arch/x86/include/asm/mem_encrypt.h |  6 +++---
+>  arch/x86/kernel/kvm.c              |  4 +---
+>  arch/x86/mm/mem_encrypt_amd.c      | 13 ++++++-------
+>  3 files changed, 10 insertions(+), 13 deletions(-)
 >
-> I'm fine with the per-cpu stuff meaning "the hardware has it and a kernel=
-,
-> but not necessarily this one, supports it" - just please make the
-> documentation clear about it.
-
-Sounds good, will spin.
--Evan
+> diff --git a/arch/x86/include/asm/mem_encrypt.h b/arch/x86/include/asm/me=
+m_encrypt.h
+> index 7f97a8a97e24..473b16d73b47 100644
+> --- a/arch/x86/include/asm/mem_encrypt.h
+> +++ b/arch/x86/include/asm/mem_encrypt.h
+> @@ -50,8 +50,8 @@ void __init sme_enable(struct boot_params *bp);
+>
+>  int __init early_set_memory_decrypted(unsigned long vaddr, unsigned long=
+ size);
+>  int __init early_set_memory_encrypted(unsigned long vaddr, unsigned long=
+ size);
+> -void __init early_set_mem_enc_dec_hypercall(unsigned long vaddr, int npa=
+ges,
+> -                                           bool enc);
+> +void __init early_set_mem_enc_dec_hypercall(unsigned long vaddr,
+> +                                           unsigned long size, bool enc)=
+;
+>
+>  void __init mem_encrypt_free_decrypted_mem(void);
+>
+> @@ -85,7 +85,7 @@ early_set_memory_decrypted(unsigned long vaddr, unsigne=
+d long size) { return 0;
+>  static inline int __init
+>  early_set_memory_encrypted(unsigned long vaddr, unsigned long size) { re=
+turn 0; }
+>  static inline void __init
+> -early_set_mem_enc_dec_hypercall(unsigned long vaddr, int npages, bool en=
+c) {}
+> +early_set_mem_enc_dec_hypercall(unsigned long vaddr, unsigned long size,=
+ bool enc) {}
+>
+>  static inline void mem_encrypt_free_decrypted_mem(void) { }
+>
+> diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
+> index 6a36db4f79fd..b8ab9ee5896c 100644
+> --- a/arch/x86/kernel/kvm.c
+> +++ b/arch/x86/kernel/kvm.c
+> @@ -966,10 +966,8 @@ static void __init kvm_init_platform(void)
+>                  * Ensure that _bss_decrypted section is marked as decryp=
+ted in the
+>                  * shared pages list.
+>                  */
+> -               nr_pages =3D DIV_ROUND_UP(__end_bss_decrypted - __start_b=
+ss_decrypted,
+> -                                       PAGE_SIZE);
+>                 early_set_mem_enc_dec_hypercall((unsigned long)__start_bs=
+s_decrypted,
+> -                                               nr_pages, 0);
+> +                                               __end_bss_decrypted - __s=
+tart_bss_decrypted, 0);
+>
+>                 /*
+>                  * If not booted using EFI, enable Live migration support=
+.
+> diff --git a/arch/x86/mm/mem_encrypt_amd.c b/arch/x86/mm/mem_encrypt_amd.=
+c
+> index 54bbd5163e8d..6faea41e99b6 100644
+> --- a/arch/x86/mm/mem_encrypt_amd.c
+> +++ b/arch/x86/mm/mem_encrypt_amd.c
+> @@ -288,11 +288,10 @@ static bool amd_enc_cache_flush_required(void)
+>         return !cpu_feature_enabled(X86_FEATURE_SME_COHERENT);
+>  }
+>
+> -static void enc_dec_hypercall(unsigned long vaddr, int npages, bool enc)
+> +static void enc_dec_hypercall(unsigned long vaddr, unsigned long size, b=
+ool enc)
+>  {
+>  #ifdef CONFIG_PARAVIRT
+> -       unsigned long sz =3D npages << PAGE_SHIFT;
+> -       unsigned long vaddr_end =3D vaddr + sz;
+> +       unsigned long vaddr_end =3D vaddr + size;
+>
+>         while (vaddr < vaddr_end) {
+>                 int psize, pmask, level;
+> @@ -342,7 +341,7 @@ static bool amd_enc_status_change_finish(unsigned lon=
+g vaddr, int npages, bool e
+>                 snp_set_memory_private(vaddr, npages);
+>
+>         if (!cc_platform_has(CC_ATTR_HOST_MEM_ENCRYPT))
+> -               enc_dec_hypercall(vaddr, npages, enc);
+> +               enc_dec_hypercall(vaddr, npages << PAGE_SHIFT, enc);
+>
+>         return true;
+>  }
+> @@ -466,7 +465,7 @@ static int __init early_set_memory_enc_dec(unsigned l=
+ong vaddr,
+>
+>         ret =3D 0;
+>
+> -       early_set_mem_enc_dec_hypercall(start, PAGE_ALIGN(size) >> PAGE_S=
+HIFT, enc);
+> +       early_set_mem_enc_dec_hypercall(start, size, enc);
+>  out:
+>         __flush_tlb_all();
+>         return ret;
+> @@ -482,9 +481,9 @@ int __init early_set_memory_encrypted(unsigned long v=
+addr, unsigned long size)
+>         return early_set_memory_enc_dec(vaddr, size, true);
+>  }
+>
+> -void __init early_set_mem_enc_dec_hypercall(unsigned long vaddr, int npa=
+ges, bool enc)
+> +void __init early_set_mem_enc_dec_hypercall(unsigned long vaddr, unsigne=
+d long size, bool enc)
+>  {
+> -       enc_dec_hypercall(vaddr, npages, enc);
+> +       enc_dec_hypercall(vaddr, size, enc);
+>  }
+>
+>  void __init sme_early_init(void)
+> --
+> 2.42.0.rc1.204.g551eb34607-goog
+>
