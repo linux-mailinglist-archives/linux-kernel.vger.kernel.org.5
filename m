@@ -2,207 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DC68786B76
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 11:21:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28BB4786B79
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 11:21:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237278AbjHXJUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 05:20:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38202 "EHLO
+        id S239241AbjHXJVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 05:21:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240716AbjHXJUa (ORCPT
+        with ESMTP id S240705AbjHXJUx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 05:20:30 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FDB219A0
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 02:19:59 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 665C522D43;
-        Thu, 24 Aug 2023 09:19:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1692868797; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/RGP9xeav/e3xVesZmYKSwuX1TjnqIVlXGjw9+5yUF0=;
-        b=1JIHW9nydfiEN87mKuDeM/2onAxv3w6VzwVB4kz0YQtV9FLdnj+zEWgQ0TWOhpXuaxzgaw
-        dtDGQdcopESva3h/gaUGp1hYDD1o5uNxpR6/c9jHgIz/KO0rNzJ+28Ei4nSuaDQqujG6u1
-        81YFi0XVK6lPjGJ3enJ/7ldLr+XtXxg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1692868797;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/RGP9xeav/e3xVesZmYKSwuX1TjnqIVlXGjw9+5yUF0=;
-        b=2eEqiSkDdoa256MB0dclCNlzp37VVhXaRkQg8BqhmwDYcl3CxBgg4mY9r656Gy/I1sofCh
-        1j3srpdHXZzAG7CQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 52038132F2;
-        Thu, 24 Aug 2023 09:19:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 9kP5E70g52QLEgAAMHmgww
-        (envelope-from <jack@suse.cz>); Thu, 24 Aug 2023 09:19:57 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id CCF15A0774; Thu, 24 Aug 2023 11:19:56 +0200 (CEST)
-Date:   Thu, 24 Aug 2023 11:19:56 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Dennis Zhou <dennis@kernel.org>
-Cc:     Jan Kara <jack@suse.cz>, Mateusz Guzik <mjguzik@gmail.com>,
-        linux-kernel@vger.kernel.org, tj@kernel.org, cl@linux.com,
-        akpm@linux-foundation.org, shakeelb@google.com, linux-mm@kvack.org
-Subject: Re: [PATCH 0/2] execve scalability issues, part 1
-Message-ID: <20230824091956.drn6ucixj4qbxwa7@quack3>
-References: <20230821202829.2163744-1-mjguzik@gmail.com>
- <ZOPSEJTzrow8YFix@snowbird>
- <20230821213951.bx3yyqh7omdvpyae@f>
- <CAGudoHHJECp2-DfSr5hudooAdV6mivvSO+4mC9kwUrWnSiob5g@mail.gmail.com>
- <20230822095154.7cr5ofogw552z3jk@quack3>
- <CAGudoHHe5nzRTuj4G1fphD+JJ02TE5BnHEDwFm=-W6DoEj2qVQ@mail.gmail.com>
- <20230823094915.ggv3spzevgyoov6i@quack3>
- <ZOZrzG/MgL8vw+lI@snowbird>
+        Thu, 24 Aug 2023 05:20:53 -0400
+Received: from jari.cn (unknown [218.92.28.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4C18FE67
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 02:20:46 -0700 (PDT)
+Received: from chenxuebing$jari.cn ( [125.70.163.142] ) by
+ ajax-webmail-localhost.localdomain (Coremail) ; Thu, 24 Aug 2023 17:20:17
+ +0800 (GMT+08:00)
+X-Originating-IP: [125.70.163.142]
+Date:   Thu, 24 Aug 2023 17:20:17 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   "XueBing Chen" <chenxuebing@jari.cn>
+To:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/amdgpu/sdma: Clean up errors in sdma_v3_0.c
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version 2023.1-cmXT6 build
+ 20230419(ff23bf83) Copyright (c) 2002-2023 www.mailtech.cn
+ mispb-4e503810-ca60-4ec8-a188-7102c18937cf-zhkzyfz.cn
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZOZrzG/MgL8vw+lI@snowbird>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
-        version=3.4.6
+Message-ID: <662fba8d.647.18a26d833dc.Coremail.chenxuebing@jari.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: AQAAfwC3VUDRIOdkwFeSAA--.475W
+X-CM-SenderInfo: hfkh05pxhex0nj6mt2flof0/1tbiAQANCmTl1A4APAAIsp
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
+X-Spam-Status: No, score=2.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_PBL,RDNS_NONE,T_SPF_HELO_PERMERROR,T_SPF_PERMERROR,XPRIO
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 23-08-23 13:27:56, Dennis Zhou wrote:
-> On Wed, Aug 23, 2023 at 11:49:15AM +0200, Jan Kara wrote:
-> > On Tue 22-08-23 16:24:56, Mateusz Guzik wrote:
-> > > On 8/22/23, Jan Kara <jack@suse.cz> wrote:
-> > > > On Tue 22-08-23 00:29:49, Mateusz Guzik wrote:
-> > > >> On 8/21/23, Mateusz Guzik <mjguzik@gmail.com> wrote:
-> > > >> > True Fix(tm) is a longer story.
-> > > >> >
-> > > >> > Maybe let's sort out this patchset first, whichever way. :)
-> > > >> >
-> > > >>
-> > > >> So I found the discussion around the original patch with a perf
-> > > >> regression report.
-> > > >>
-> > > >> https://lore.kernel.org/linux-mm/20230608111408.s2minsenlcjow7q3@quack3/
-> > > >>
-> > > >> The reporter suggests dodging the problem by only allocating per-cpu
-> > > >> counters when the process is going multithreaded. Given that there is
-> > > >> still plenty of forever single-threaded procs out there I think that's
-> > > >> does sound like a great plan regardless of what happens with this
-> > > >> patchset.
-> > > >>
-> > > >> Almost all access is already done using dedicated routines, so this
-> > > >> should be an afternoon churn to sort out, unless I missed a
-> > > >> showstopper. (maybe there is no good place to stuff a flag/whatever
-> > > >> other indicator about the state of counters?)
-> > > >>
-> > > >> That said I'll look into it some time this or next week.
-> > > >
-> > > > Good, just let me know how it went, I also wanted to start looking into
-> > > > this to come up with some concrete patches :). What I had in mind was that
-> > > > we could use 'counters == NULL' as an indication that the counter is still
-> > > > in 'single counter mode'.
-> > > >
-> > > 
-> > > In the current state there are only pointers to counters in mm_struct
-> > > and there is no storage for them in task_struct. So I don't think
-> > > merely null-checking the per-cpu stuff is going to cut it -- where
-> > > should the single-threaded counters land?
-> > 
-> > I think you misunderstood. What I wanted to do it to provide a new flavor
-> > of percpu_counter (sharing most of code and definitions) which would have
-> > an option to start as simple counter (indicated by pcc->counters == NULL
-> > and using pcc->count for counting) and then be upgraded by a call to real
-> > percpu thing. Because I think such counters would be useful also on other
-> > occasions than as rss counters.
-> > 
-> 
-> Kent wrote something similar and sent it out last year [1]. However, the
-> case slightly differs from what we'd want here, 1 -> 2 threads becomes
-> percpu vs update rate which a single thread might be able to trigger?
-
-Thanks for the pointer but that version of counters is not really suitable
-here as is (but we could factor out some common bits if that work is
-happening). 1 thread can easily do 10000 RSS updates per second.
-
-> [1] https://lore.kernel.org/lkml/20230501165450.15352-8-surenb@google.com/
-
-								Honza
-
-> > > Bonus problem, non-current can modify these counters and this needs to
-> > > be safe against current playing with them at the same time. (and it
-> > > would be a shame to require current to use atomic on them)
-> > 
-> > Hum, I didn't realize that. Indeed I can see that e.g. khugepaged can be
-> > modifying the counters for other processes. Thanks for pointing this out.
-> > 
-> > > That said, my initial proposal adds a union:
-> > > diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-> > > index 5e74ce4a28cd..ea70f0c08286 100644
-> > > --- a/include/linux/mm_types.h
-> > > +++ b/include/linux/mm_types.h
-> > > @@ -737,7 +737,11 @@ struct mm_struct {
-> > > 
-> > >                 unsigned long saved_auxv[AT_VECTOR_SIZE]; /* for
-> > > /proc/PID/auxv */
-> > > 
-> > > -               struct percpu_counter rss_stat[NR_MM_COUNTERS];
-> > > +               union {
-> > > +                       struct percpu_counter rss_stat[NR_MM_COUNTERS];
-> > > +                       u64 *rss_stat_single;
-> > > +               };
-> > > +               bool    magic_flag_stuffed_elsewhere;
-> > > 
-> > >                 struct linux_binfmt *binfmt;
-> > > 
-> > > 
-> > > Then for single-threaded case an area is allocated for NR_MM_COUNTERS
-> > > countes * 2 -- first set updated without any synchro by current
-> > > thread. Second set only to be modified by others and protected with
-> > > mm->arg_lock. The lock protects remote access to the union to begin
-> > > with.
-> > 
-> > arg_lock seems a bit like a hack. How is it related to rss_stat? The scheme
-> > with two counters is clever but I'm not 100% convinced the complexity is
-> > really worth it. I'm not sure the overhead of always using an atomic
-> > counter would really be measurable as atomic counter ops in local CPU cache
-> > tend to be cheap. Did you try to measure the difference?
-> > 
-> > If the second counter proves to be worth it, we could make just that one
-> > atomic to avoid the need for abusing some spinlock.
-> > 
-> > > Transition to per-CPU operation sets the magic flag (there is plenty
-> > > of spare space in mm_struct, I'll find a good home for it without
-> > > growing the struct). It would be a one-way street -- a process which
-> > > gets a bunch of threads and goes back to one stays with per-CPU.
-> > 
-> > Agreed with switching to be a one-way street.
-> > 
-> > > Then you get the true value of something by adding both counters.
-> > > 
-> > > arg_lock is sparingly used, so remote ops are not expected to contend
-> > > with anything. In fact their cost is going to go down since percpu
-> > > summation takes a spinlock which also disables interrupts.
-> > > 
-> > > Local ops should be about the same in cost as they are right now.
-> > > 
-> > > I might have missed some detail in the above description, but I think
-> > > the approach is decent.
-> > 
-> > 								Honza
-> > -- 
-> > Jan Kara <jack@suse.com>
-> > SUSE Labs, CR
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Rml4IHRoZSBmb2xsb3dpbmcgZXJyb3JzIHJlcG9ydGVkIGJ5IGNoZWNrcGF0Y2g6CgpFUlJPUjog
+dGhhdCBvcGVuIGJyYWNlIHsgc2hvdWxkIGJlIG9uIHRoZSBwcmV2aW91cyBsaW5lCkVSUk9SOiB0
+cmFpbGluZyBzdGF0ZW1lbnRzIHNob3VsZCBiZSBvbiBuZXh0IGxpbmUKClNpZ25lZC1vZmYtYnk6
+IFh1ZUJpbmcgQ2hlbiA8Y2hlbnh1ZWJpbmdAamFyaS5jbj4KLS0tCiBkcml2ZXJzL2dwdS9kcm0v
+YW1kL2FtZGdwdS9zZG1hX3YzXzAuYyB8IDQyICsrKysrKysrKy0tLS0tLS0tLS0tLS0tLS0tCiAx
+IGZpbGUgY2hhbmdlZCwgMTUgaW5zZXJ0aW9ucygrKSwgMjcgZGVsZXRpb25zKC0pCgpkaWZmIC0t
+Z2l0IGEvZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvc2RtYV92M18wLmMgYi9kcml2ZXJzL2dw
+dS9kcm0vYW1kL2FtZGdwdS9zZG1hX3YzXzAuYwppbmRleCAzNDQyMDI4NzBhZWIuLjJlNzBlMmNh
+YTM1MyAxMDA2NDQKLS0tIGEvZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvc2RtYV92M18wLmMK
+KysrIGIvZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvc2RtYV92M18wLmMKQEAgLTcxLDE0ICs3
+MSwxMiBAQCBNT0RVTEVfRklSTVdBUkUoImFtZGdwdS92ZWdhbV9zZG1hLmJpbiIpOwogTU9EVUxF
+X0ZJUk1XQVJFKCJhbWRncHUvdmVnYW1fc2RtYTEuYmluIik7CiAKIAotc3RhdGljIGNvbnN0IHUz
+MiBzZG1hX29mZnNldHNbU0RNQV9NQVhfSU5TVEFOQ0VdID0KLXsKK3N0YXRpYyBjb25zdCB1MzIg
+c2RtYV9vZmZzZXRzW1NETUFfTUFYX0lOU1RBTkNFXSA9IHsKIAlTRE1BMF9SRUdJU1RFUl9PRkZT
+RVQsCiAJU0RNQTFfUkVHSVNURVJfT0ZGU0VUCiB9OwogCi1zdGF0aWMgY29uc3QgdTMyIGdvbGRl
+bl9zZXR0aW5nc190b25nYV9hMTFbXSA9Ci17CitzdGF0aWMgY29uc3QgdTMyIGdvbGRlbl9zZXR0
+aW5nc190b25nYV9hMTFbXSA9IHsKIAltbVNETUEwX0NISUNLRU5fQklUUywgMHhmYzkxMDAwNywg
+MHgwMDgxMDAwNywKIAltbVNETUEwX0NMS19DVFJMLCAweGZmMDAwZmZmLCAweDAwMDAwMDAwLAog
+CW1tU0RNQTBfR0ZYX0lCX0NOVEwsIDB4ODAwZjAxMTEsIDB4MDAwMDAxMDAsCkBAIC05MSwxNCAr
+ODksMTIgQEAgc3RhdGljIGNvbnN0IHUzMiBnb2xkZW5fc2V0dGluZ3NfdG9uZ2FfYTExW10gPQog
+CW1tU0RNQTFfUkxDMV9JQl9DTlRMLCAweDgwMGYwMTExLCAweDAwMDAwMTAwLAogfTsKIAotc3Rh
+dGljIGNvbnN0IHUzMiB0b25nYV9tZ2NnX2NnY2dfaW5pdFtdID0KLXsKK3N0YXRpYyBjb25zdCB1
+MzIgdG9uZ2FfbWdjZ19jZ2NnX2luaXRbXSA9IHsKIAltbVNETUEwX0NMS19DVFJMLCAweGZmMDAw
+ZmYwLCAweDAwMDAwMTAwLAogCW1tU0RNQTFfQ0xLX0NUUkwsIDB4ZmYwMDBmZjAsIDB4MDAwMDAx
+MDAKIH07CiAKLXN0YXRpYyBjb25zdCB1MzIgZ29sZGVuX3NldHRpbmdzX2ZpamlfYTEwW10gPQot
+eworc3RhdGljIGNvbnN0IHUzMiBnb2xkZW5fc2V0dGluZ3NfZmlqaV9hMTBbXSA9IHsKIAltbVNE
+TUEwX0NISUNLRU5fQklUUywgMHhmYzkxMDAwNywgMHgwMDgxMDAwNywKIAltbVNETUEwX0dGWF9J
+Ql9DTlRMLCAweDgwMGYwMTExLCAweDAwMDAwMTAwLAogCW1tU0RNQTBfUkxDMF9JQl9DTlRMLCAw
+eDgwMGYwMTExLCAweDAwMDAwMTAwLApAQCAtMTA5LDE0ICsxMDUsMTIgQEAgc3RhdGljIGNvbnN0
+IHUzMiBnb2xkZW5fc2V0dGluZ3NfZmlqaV9hMTBbXSA9CiAJbW1TRE1BMV9STEMxX0lCX0NOVEws
+IDB4ODAwZjAxMTEsIDB4MDAwMDAxMDAsCiB9OwogCi1zdGF0aWMgY29uc3QgdTMyIGZpamlfbWdj
+Z19jZ2NnX2luaXRbXSA9Ci17CitzdGF0aWMgY29uc3QgdTMyIGZpamlfbWdjZ19jZ2NnX2luaXRb
+XSA9IHsKIAltbVNETUEwX0NMS19DVFJMLCAweGZmMDAwZmYwLCAweDAwMDAwMTAwLAogCW1tU0RN
+QTFfQ0xLX0NUUkwsIDB4ZmYwMDBmZjAsIDB4MDAwMDAxMDAKIH07CiAKLXN0YXRpYyBjb25zdCB1
+MzIgZ29sZGVuX3NldHRpbmdzX3BvbGFyaXMxMV9hMTFbXSA9Ci17CitzdGF0aWMgY29uc3QgdTMy
+IGdvbGRlbl9zZXR0aW5nc19wb2xhcmlzMTFfYTExW10gPSB7CiAJbW1TRE1BMF9DSElDS0VOX0JJ
+VFMsIDB4ZmM5MTAwMDcsIDB4MDA4MTAwMDcsCiAJbW1TRE1BMF9DTEtfQ1RSTCwgMHhmZjAwMGZm
+ZiwgMHgwMDAwMDAwMCwKIAltbVNETUEwX0dGWF9JQl9DTlRMLCAweDgwMGYwMTExLCAweDAwMDAw
+MTAwLApAQCAtMTI5LDggKzEyMyw3IEBAIHN0YXRpYyBjb25zdCB1MzIgZ29sZGVuX3NldHRpbmdz
+X3BvbGFyaXMxMV9hMTFbXSA9CiAJbW1TRE1BMV9STEMxX0lCX0NOVEwsIDB4ODAwZjAxMTEsIDB4
+MDAwMDAxMDAsCiB9OwogCi1zdGF0aWMgY29uc3QgdTMyIGdvbGRlbl9zZXR0aW5nc19wb2xhcmlz
+MTBfYTExW10gPQoteworc3RhdGljIGNvbnN0IHUzMiBnb2xkZW5fc2V0dGluZ3NfcG9sYXJpczEw
+X2ExMVtdID0gewogCW1tU0RNQTBfQ0hJQ0tFTl9CSVRTLCAweGZjOTEwMDA3LCAweDAwODEwMDA3
+LAogCW1tU0RNQTBfQ0xLX0NUUkwsIDB4ZmYwMDBmZmYsIDB4MDAwMDAwMDAsCiAJbW1TRE1BMF9H
+RlhfSUJfQ05UTCwgMHg4MDBmMDExMSwgMHgwMDAwMDEwMCwKQEAgLTE0Myw4ICsxMzYsNyBAQCBz
+dGF0aWMgY29uc3QgdTMyIGdvbGRlbl9zZXR0aW5nc19wb2xhcmlzMTBfYTExW10gPQogCW1tU0RN
+QTFfUkxDMV9JQl9DTlRMLCAweDgwMGYwMTExLCAweDAwMDAwMTAwLAogfTsKIAotc3RhdGljIGNv
+bnN0IHUzMiBjel9nb2xkZW5fc2V0dGluZ3NfYTExW10gPQoteworc3RhdGljIGNvbnN0IHUzMiBj
+el9nb2xkZW5fc2V0dGluZ3NfYTExW10gPSB7CiAJbW1TRE1BMF9DSElDS0VOX0JJVFMsIDB4ZmM5
+MTAwMDcsIDB4MDA4MTAwMDcsCiAJbW1TRE1BMF9DTEtfQ1RSTCwgMHhmZjAwMGZmZiwgMHgwMDAw
+MDAwMCwKIAltbVNETUEwX0dGWF9JQl9DTlRMLCAweDAwMDAwMTAwLCAweDAwMDAwMTAwLApAQCAt
+MTU5LDIyICsxNTEsMTkgQEAgc3RhdGljIGNvbnN0IHUzMiBjel9nb2xkZW5fc2V0dGluZ3NfYTEx
+W10gPQogCW1tU0RNQTFfUkxDMV9JQl9DTlRMLCAweDAwMDAwMTAwLCAweDAwMDAwMTAwLAogfTsK
+IAotc3RhdGljIGNvbnN0IHUzMiBjel9tZ2NnX2NnY2dfaW5pdFtdID0KLXsKK3N0YXRpYyBjb25z
+dCB1MzIgY3pfbWdjZ19jZ2NnX2luaXRbXSA9IHsKIAltbVNETUEwX0NMS19DVFJMLCAweGZmMDAw
+ZmYwLCAweDAwMDAwMTAwLAogCW1tU0RNQTFfQ0xLX0NUUkwsIDB4ZmYwMDBmZjAsIDB4MDAwMDAx
+MDAKIH07CiAKLXN0YXRpYyBjb25zdCB1MzIgc3RvbmV5X2dvbGRlbl9zZXR0aW5nc19hMTFbXSA9
+Ci17CitzdGF0aWMgY29uc3QgdTMyIHN0b25leV9nb2xkZW5fc2V0dGluZ3NfYTExW10gPSB7CiAJ
+bW1TRE1BMF9HRlhfSUJfQ05UTCwgMHgwMDAwMDEwMCwgMHgwMDAwMDEwMCwKIAltbVNETUEwX1BP
+V0VSX0NOVEwsIDB4MDAwMDA4MDAsIDB4MDAwM2M4MDAsCiAJbW1TRE1BMF9STEMwX0lCX0NOVEws
+IDB4MDAwMDAxMDAsIDB4MDAwMDAxMDAsCiAJbW1TRE1BMF9STEMxX0lCX0NOVEwsIDB4MDAwMDAx
+MDAsIDB4MDAwMDAxMDAsCiB9OwogCi1zdGF0aWMgY29uc3QgdTMyIHN0b25leV9tZ2NnX2NnY2df
+aW5pdFtdID0KLXsKK3N0YXRpYyBjb25zdCB1MzIgc3RvbmV5X21nY2dfY2djZ19pbml0W10gPSB7
+CiAJbW1TRE1BMF9DTEtfQ1RSTCwgMHhmZmZmZmZmZiwgMHgwMDAwMDEwMCwKIH07CiAKQEAgLTMw
+MCw3ICsyODksOCBAQCBzdGF0aWMgaW50IHNkbWFfdjNfMF9pbml0X21pY3JvY29kZShzdHJ1Y3Qg
+YW1kZ3B1X2RldmljZSAqYWRldikKIAljYXNlIENISVBfU1RPTkVZOgogCQljaGlwX25hbWUgPSAi
+c3RvbmV5IjsKIAkJYnJlYWs7Ci0JZGVmYXVsdDogQlVHKCk7CisJZGVmYXVsdDoKKwkJQlVHKCk7
+CiAJfQogCiAJZm9yIChpID0gMDsgaSA8IGFkZXYtPnNkbWEubnVtX2luc3RhbmNlczsgaSsrKSB7
+CkBAIC0xNzAyLDggKzE2OTIsNyBAQCBzdGF0aWMgdm9pZCBzZG1hX3YzXzBfc2V0X3ZtX3B0ZV9m
+dW5jcyhzdHJ1Y3QgYW1kZ3B1X2RldmljZSAqYWRldikKIAlhZGV2LT52bV9tYW5hZ2VyLnZtX3B0
+ZV9udW1fc2NoZWRzID0gYWRldi0+c2RtYS5udW1faW5zdGFuY2VzOwogfQogCi1jb25zdCBzdHJ1
+Y3QgYW1kZ3B1X2lwX2Jsb2NrX3ZlcnNpb24gc2RtYV92M18wX2lwX2Jsb2NrID0KLXsKK2NvbnN0
+IHN0cnVjdCBhbWRncHVfaXBfYmxvY2tfdmVyc2lvbiBzZG1hX3YzXzBfaXBfYmxvY2sgPSB7CiAJ
+LnR5cGUgPSBBTURfSVBfQkxPQ0tfVFlQRV9TRE1BLAogCS5tYWpvciA9IDMsCiAJLm1pbm9yID0g
+MCwKQEAgLTE3MTEsOCArMTcwMCw3IEBAIGNvbnN0IHN0cnVjdCBhbWRncHVfaXBfYmxvY2tfdmVy
+c2lvbiBzZG1hX3YzXzBfaXBfYmxvY2sgPQogCS5mdW5jcyA9ICZzZG1hX3YzXzBfaXBfZnVuY3Ms
+CiB9OwogCi1jb25zdCBzdHJ1Y3QgYW1kZ3B1X2lwX2Jsb2NrX3ZlcnNpb24gc2RtYV92M18xX2lw
+X2Jsb2NrID0KLXsKK2NvbnN0IHN0cnVjdCBhbWRncHVfaXBfYmxvY2tfdmVyc2lvbiBzZG1hX3Yz
+XzFfaXBfYmxvY2sgPSB7CiAJLnR5cGUgPSBBTURfSVBfQkxPQ0tfVFlQRV9TRE1BLAogCS5tYWpv
+ciA9IDMsCiAJLm1pbm9yID0gMSwKLS0gCjIuMTcuMQo=
