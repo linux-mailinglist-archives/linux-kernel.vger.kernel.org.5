@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 131CD78762E
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 18:57:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21846787631
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 18:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242800AbjHXQ43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 12:56:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54084 "EHLO
+        id S237601AbjHXQ46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 12:56:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242787AbjHXQ4H (ORCPT
+        with ESMTP id S242755AbjHXQ4W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 12:56:07 -0400
+        Thu, 24 Aug 2023 12:56:22 -0400
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 262CF19B0
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 09:56:05 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 79DE11989
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 09:56:20 -0700 (PDT)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 25AD91007;
-        Thu, 24 Aug 2023 09:56:45 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 834AE1007;
+        Thu, 24 Aug 2023 09:57:00 -0700 (PDT)
 Received: from [10.1.197.60] (eglon.cambridge.arm.com [10.1.197.60])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D0F1C3F740;
-        Thu, 24 Aug 2023 09:56:01 -0700 (PDT)
-Message-ID: <5f5c2ca9-4a27-616f-1838-0740ced4525f@arm.com>
-Date:   Thu, 24 Aug 2023 17:55:51 +0100
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6B4173F740;
+        Thu, 24 Aug 2023 09:56:17 -0700 (PDT)
+Message-ID: <b842c00b-7537-a14a-1a2a-a9a17b98bbce@arm.com>
+Date:   Thu, 24 Aug 2023 17:56:10 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
  Thunderbird/102.11.0
-Subject: Re: [PATCH v5 12/24] x86/resctrl: Make resctrl_arch_rmid_read() retry
- when it is interrupted
+Subject: Re: [PATCH v5 14/24] x86/resctrl: Allow resctrl_arch_rmid_read() to
+ sleep
 Content-Language: en-GB
 To:     Reinette Chatre <reinette.chatre@intel.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
@@ -45,10 +45,10 @@ Cc:     Fenghua Yu <fenghua.yu@intel.com>,
         Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
         dfustini@baylibre.com
 References: <20230728164254.27562-1-james.morse@arm.com>
- <20230728164254.27562-13-james.morse@arm.com>
- <192aa189-8b08-c8c1-15dc-722e196493f4@intel.com>
+ <20230728164254.27562-15-james.morse@arm.com>
+ <4a0f777e-5dec-296e-c326-61e3630c3608@intel.com>
 From:   James Morse <james.morse@arm.com>
-In-Reply-To: <192aa189-8b08-c8c1-15dc-722e196493f4@intel.com>
+In-Reply-To: <4a0f777e-5dec-296e-c326-61e3630c3608@intel.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
@@ -62,114 +62,146 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi Reinette,
 
-On 09/08/2023 23:35, Reinette Chatre wrote:
+On 09/08/2023 23:36, Reinette Chatre wrote:
 > On 7/28/2023 9:42 AM, James Morse wrote:
->> resctrl_arch_rmid_read() could be called by resctrl in process context,
->> and then called by the PMU driver from irq context on the same CPU.
-> 
-> The changelog is written as a bug report of current behavior.
-> This does not seem to describe current but instead planned future behavior.
-
-I pulled this patch from much later in the tree as it's about to be a problem in this
-series. I haven't yet decided if its an existing bug in resctrl....
-
-... it doesn't look like this can affect the path through mon_event_read(), as
-generic_exec_single() masks interrupts.
-But an incoming IPI from mon_event_read can corrupt the values for the limbo worker, which
-at the worst would result in early re-use. And the MBM overflow worker ... which would
-corrupt the value seen by user-space.
-free_rmid() is equally affected, the outcome for limbo is the same spurious delay or early
-re-use.
-
-
-I'll change the commit messages to describe that, and float this earlier in the series.
-The backport will be a problem. This applies cleanly to v6.1.46, but for v5.15.127 there
-are at least 13 dependencies ... its probably not worth trying to fix as chances are
-no-one is seeing this happen in reality.
-
-
->> This could cause struct arch_mbm_state's prev_msr value to go backwards,
->> leading to the chunks value being incremented multiple times.
+>> MPAM's cache occupancy counters can take a little while to settle once
+>> the monitor has been configured. The maximum settling time is described
+>> to the driver via a firmware table. The value could be large enough
+>> that it makes sense to sleep. To avoid exposing this to resctrl, it
+>> should be hidden behind MPAM's resctrl_arch_rmid_read().
 >>
->> The struct arch_mbm_state holds both the previous msr value, and a count
->> of the number of chunks. These two fields need to be updated atomically.
->> Similarly __rmid_read() must write to one MSR and read from another,
->> this must be proteted from re-entrance.
-> 
-> proteted -> protected
-> 
+>> resctrl_arch_rmid_read() may be called via IPI meaning it is unable
+>> to sleep. In this case resctrl_arch_rmid_read() should return an error
+>> if it needs to sleep. This will only affect MPAM platforms where
+>> the cache occupancy counter isn't available immediately, nohz_full is
+>> in use, and there are there are no housekeeping CPUs in the necessary
+>> domain.
 >>
->> Read the prev_msr before accessing the hardware, and cmpxchg() the value
->> back. If the value has changed, the whole thing is re-attempted. To protect
->> the MSR, __rmid_read() will retry reads for QM_CTR if QM_EVTSEL has changed
->> from the selected value.
+>> There are three callers of resctrl_arch_rmid_read():
+>> __mon_event_count() and __check_limbo() are both called from a
+>> non-migrateable context. mon_event_read() invokes __mon_event_count()
+>> using smp_call_on_cpu(), which adds work to the target CPUs workqueue.
+>> rdtgroup_mutex() is held, meaning this cannot race with the resctrl
+>> cpuhp callback. __check_limbo() is invoked via schedule_delayed_work_on()
+>> also adds work to a per-cpu workqueue.
+>>
+>> The remaining call is add_rmid_to_limbo() which is called in response
+>> to a user-space syscall that frees an RMID. This opportunistically
+>> reads the LLC occupancy counter on the current domain to see if the
+>> RMID is over the dirty threshold. This has to disable preemption to
+>> avoid reading the wrong domain's value. Disabling pre-emption here
+>> prevents resctrl_arch_rmid_read() from sleeping.
+>>
+>> add_rmid_to_limbo() walks each domain, but only reads the counter
+>> on one domain. If the system has more than one domain, the RMID will
+>> always be added to the limbo list. If the RMIDs usage was not over the
+>> threshold, it will be removed from the list when __check_limbo() runs.
+>> Make this the default behaviour. Free RMIDs are always added to the
+>> limbo list for each domain.
+>>
+>> The user visible effect of this is that a clean RMID is not available
+>> for re-allocation immediately after 'rmdir()' completes, this behaviour
+>> was never portable as it never happened on a machine with multiple
+>> domains.
+>>
+>> Removing this path allows resctrl_arch_rmid_read() to sleep if its called
+>> with interrupts unmasked. Document this is the expected behaviour, and
+>> add a might_sleep() annotation to catch changes that won't work on arm64.
+
+
+>> diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
+>> index 660752406174..f7311102e94c 100644
+>> --- a/include/linux/resctrl.h
+>> +++ b/include/linux/resctrl.h
+>> @@ -236,7 +236,12 @@ void resctrl_offline_domain(struct rdt_resource *r, struct rdt_domain *d);
+>>   * @eventid:		eventid to read, e.g. L3 occupancy.
+>>   * @val:		result of the counter read in bytes.
+>>   *
+>> - * Call from process context on a CPU that belongs to domain @d.
+>> + * Some architectures need to sleep when first programming some of the counters.
+>> + * (specifically: arm64's MPAM cache occupancy counters can return 'not ready'
+>> + *  for a short period of time). Call from a non-migrateable process context on
+>> + * a CPU that belongs to domain @d. e.g. use smp_call_on_cpu() or
+>> + * schedule_work_on(). This function can be called with interrupts masked,
+>> + * e.g. using smp_call_function_any(), but may consistently return an error.
 > 
-> The latter part of the sentence does not seem to match with what the
-> patch does.
+> Considering that smp_call_function_any() explicitly disables preemption I
+> would like to learn more about why did you chose to word as "interrupts masked" vs
+> "preemption disabled"?
+
+smp_call_function_any() while it works out which CPU to run on, which may be this CPU. It
+can't be migrated once it has picked the CPU to run on. But actually doing the work is
+done by generic_exec_single(). This masks interrupts if calling locally, or invokes
+__smp_call_single_queue() to raise the IPI. Obviously the other end of an IPI is running
+with interrupts masked.
+
+(If you wanted to schedule work on a remote CPU, that would be smp_call_on_cpu())
 
 
->> diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
->> index f0670795b446..62350bbd23e0 100644
->> --- a/arch/x86/kernel/cpu/resctrl/monitor.c
->> +++ b/arch/x86/kernel/cpu/resctrl/monitor.c
->> @@ -266,23 +279,35 @@ int resctrl_arch_rmid_read(struct rdt_resource *r, struct rdt_domain *d,
->>  {
->>  	struct rdt_hw_resource *hw_res = resctrl_to_arch_res(r);
->>  	struct rdt_hw_domain *hw_dom = resctrl_to_arch_dom(d);
->> +	u64 start_msr_val, old_msr_val, msr_val, chunks;
->>  	struct arch_mbm_state *am;
->> -	u64 msr_val, chunks;
->> -	int ret;
->> +	int ret = 0;
+>>   *
+>>   * Return:
+>>   * 0 on success, or -EIO, -EINVAL etc on error.
+>> @@ -245,6 +250,17 @@ int resctrl_arch_rmid_read(struct rdt_resource *r, struct rdt_domain *d,
+>>  			   u32 closid, u32 rmid, enum resctrl_event_id eventid,
+>>  			   u64 *val);
 >>  
->>  	if (!cpumask_test_cpu(smp_processor_id(), &d->cpu_mask))
->>  		return -EINVAL;
->>  
->> +interrupted:
->> +	am = get_arch_mbm_state(hw_dom, rmid, eventid);
->> +	if (am)
->> +		start_msr_val = atomic64_read(&am->prev_msr);
->> +
->>  	ret = __rmid_read(rmid, eventid, &msr_val);
->>  	if (ret)
->>  		return ret;
->>  
->>  	am = get_arch_mbm_state(hw_dom, rmid, eventid);
->>  	if (am) {
->> -		am->chunks += mbm_overflow_count(am->prev_msr, msr_val,
->> -						 hw_res->mbm_width);
->> -		chunks = get_corrected_mbm_count(rmid, am->chunks);
->> -		am->prev_msr = msr_val;
->> +		old_msr_val = atomic64_cmpxchg(&am->prev_msr, start_msr_val,
->> +					       msr_val);
->> +		if (old_msr_val != start_msr_val)
->> +			goto interrupted;
->> +
+>> +/**
+>> + * resctrl_arch_rmid_read_context_check()  - warn about invalid contexts
+>> + *
+>> + * When built with CONFIG_DEBUG_ATOMIC_SLEEP generate a warning when
+>> + * resctrl_arch_rmid_read() is called with preemption disabled.
+>> + */
+>> +static inline void resctrl_arch_rmid_read_context_check(void)
+>> +{
+>> +	if (!irqs_disabled())
+>> +		might_sleep();
+>> +}
 
-> hmmm ... what if interruption occurs here? 
+> Apologies but even after rereading the patch as well as your response to
+> the previous patch version several times I am not able to understand why the
+> code is looking like above. If, like according to the comment above, a
+> warning should be generated with preemption disabled, then should it not
+> just be "might_sleep()" without the "!irqs_disabled()" check?
 
-This is after the MSR write/read, so this function can't get a torn value from the
-hardware. (e.g. reads the wrong RMID). The operations on struct arch_mbm_state are atomic,
-so are still safe if the function becomes re-entrant.
+This would be simpler. But for NOHZ_FULL you wanted to keep the IPI, so the contract with
+resctrl_arch_rmid_read() is that if interrupts are unmasked, it can sleep.
 
-If the re-entrant call accessed the same RMID and the same counter, its atomic64_add()
-would be based on the prev_msr value this call read - because the above cmpxchg succeeded.
+If it needs to sleep, the arch code has to check.
+A bare might_sleep() would fire when called via IPI when NOHZ_FULL is enabled.
 
-(put another way:)
-The interrupting call returns a lower value, consistent with the first call not having
-finished yet. The interrupted call returns the correct value, which is larger than it
-read, because it completed after the interrupting call.
+This check is about ensuring all code paths get checked for this condition, as it doesn't
+matter for x86.
 
 
->> +		chunks = mbm_overflow_count(start_msr_val, msr_val,
->> +					    hw_res->mbm_width);
->> +		atomic64_add(chunks, &am->chunks);
->> +
->> +		chunks = get_corrected_mbm_count(rmid,
->> +						 atomic64_read(&am->chunks));
->>  	} else {
->>  		chunks = msr_val;
->>  	}
+This results in MPAM's implementation of resctrl_arch_rmid_read() checking if interrupts
+are masked before sending an IPI when it has to read the counters from a set of CPUs. In
+the NOHZ_FULL case it can't do this, so it will always return an error.
+Platforms needing this should be few and far between, I'm hoping people running NOHZ_FULL
+on them is even rarer... they'd need to carefully select their housekeeping CPUs to make
+this work.
+
+
+> I understand how for MPAM you want its code to be called in two different
+> contexts so I assume that the MPAM code would have two different paths,
+> one that can sleep and the other that cannot, both valid. It thus sounds
+> as though you want the x86 code to have context checks so that any issues
+> that could impact arm can be caught on x86? In that case, should the
+> x86 code also rather have two paths (one unused and the other has the
+> context check)?
+
+I did toy with having resctrl_arch_rmid_read_nosleep() and resctrl_arch_rmid_read(). But
+this resulted in more code for both architectures, I felt it was simpler to just document
+this requirement with this check. It's what resctrl is already doing.
+
+resctrl_arch_rmid_read_nosleep() could be called from irq context.
+resctrl_arch_rmid_read() can sleep.
+
+On x86 resctrl_arch_rmid_read() would call resctrl_arch_rmid_read_nosleep() ... and on
+arm64 the exact same thing would happen as the interrupts_disabled() check is buried deep
+in the mpam driver, the resctrl glue code doesn't need to check for this.
+
+The split approach would be simpler to document - but much more confusing as both
+architectures call one helper from the other.
 
 
 Thanks,
