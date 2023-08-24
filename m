@@ -2,82 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFAD37866EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 06:54:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A64527866F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 06:56:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239418AbjHXEy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 00:54:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51490 "EHLO
+        id S239569AbjHXEzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 00:55:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239268AbjHXEyF (ORCPT
+        with ESMTP id S239413AbjHXEzS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 00:54:05 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCE3D10F0
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 21:54:03 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-173-48-116-73.bstnma.fios.verizon.net [173.48.116.73])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 37O4rkT2029636
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 24 Aug 2023 00:53:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1692852829; bh=kvoN+3YJOl1TeKxLM4dCwghZZyomFfwZlX8kVct6Ioc=;
-        h=From:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=G6oDtSFqvdv4/Br4Zlx6hG+3SG2ZLsBtmCRzgpg4sQtA960Ajm1Vni8xj0ll+RvhO
-         kzwZHwSJvsFQs3AfZ3OhiNDWqh286FPSrZ/UOTCJA9ah9Zj5DapgsQlDVvC6Gnq9VD
-         WDGoIVx3A9690TorvwEB48K6xH6+g+HOpaITiy1IyvdNG1SRoOh2le+ZBGCUzOr3hk
-         6NaoZEseJ6KoVGD6Fsp2G0vKi0XgDQKRgcnoqp6VZBaFp/RJLuIxr10fJOhahxxlzc
-         qDyvvTh73LYCneqh8sqjrWiwa0sPpS9SXTZzwSxuqbAfFOIR6GWdb8R2JOYwxEfqj0
-         6ouhoQNe5EJHg==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 5F5AB15C04D7; Thu, 24 Aug 2023 00:53:46 -0400 (EDT)
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     adilger.kernel@dilger.ca, jack@suse.cz,
-        Liu Song <liusong@linux.alibaba.com>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, joseph.qi@linux.alibaba.com
-Subject: Re: [PATCH v2] ext4: do not mark inode dirty every time in delalloc append write scenario
-Date:   Thu, 24 Aug 2023 00:53:42 -0400
-Message-Id: <169285281339.4146427.13867368474882584364.b4-ty@mit.edu>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20230810154333.84921-1-liusong@linux.alibaba.com>
-References: <20230810154333.84921-1-liusong@linux.alibaba.com>
+        Thu, 24 Aug 2023 00:55:18 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [5.9.137.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 282E01702
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 21:55:04 -0700 (PDT)
+Received: from nazgul.tnic (unknown [78.130.214.203])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 461AB1EC014A;
+        Thu, 24 Aug 2023 06:55:03 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1692852903;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=O+ueU8rToZviomdXW6WPY/SINTgDG7dQWhSOJWeZoEQ=;
+        b=hqRFJYhUYcs+GwpjTpTnZhIKuAsqCUAx+ZxaVyUiaSgsPehM+BtmxMDSF5RBhSGEWjrTMQ
+        T7V56Qw14777nDtpLmFEUYi4IjTwF4PfdLloIo9llFM5sw1DpRuJ1e57cO9TAL53xzhQ4k
+        N9d/95QOgehrDGEttiggKws8vOw1MPM=
+Date:   Thu, 24 Aug 2023 06:55:15 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Josh Poimboeuf <jpoimboe@kernel.org>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Babu Moger <babu.moger@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>, David.Kaplan@amd.com,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Nikolay Borisov <nik.borisov@suse.com>,
+        gregkh@linuxfoundation.org, Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 11/22] x86/srso: Slight simplification
+Message-ID: <20230824045515.GEZObisz++bg1CabRj@fat_crate.local>
+References: <cover.1692580085.git.jpoimboe@kernel.org>
+ <18b18b8709b72625b60156545a705b052646667c.1692580085.git.jpoimboe@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <18b18b8709b72625b60156545a705b052646667c.1692580085.git.jpoimboe@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Aug 20, 2023 at 06:19:08PM -0700, Josh Poimboeuf wrote:
+> Subject: Re: [PATCH 11/22] x86/srso: Slight simplification
 
-On Thu, 10 Aug 2023 23:43:33 +0800, Liu Song wrote:
-> In the delalloc append write scenario, if inode's i_size is extended due
-> to buffer write, there are delalloc writes pending in the range up to
-> i_size, and no need to touch i_disksize since writeback will push
-> i_disksize up to i_size eventually. Offers significant performance
-> improvement in high-frequency append write scenarios.
-> 
-> I conducted tests in my 32-core environment by launching 32 concurrent
-> threads to append write to the same file. Each write operation had a
-> length of 1024 bytes and was repeated 100000 times. Without using this
-> patch, the test was completed in 7705 ms. However, with this patch, the
-> test was completed in 5066 ms, resulting in a performance improvement of
-> 34%.
-> 
-> [...]
+Commit title needs a verb and a more descriptive title.
 
-Applied, thanks!
+Strictly speaking, we should use the IBPB selected as the retbleed
+mitigation for SRSO only when the SRSO microcode has been applied so
+moving this inside the "has_microcode" branch makes sense.
 
-[1/1] ext4: do not mark inode dirty every time in delalloc append write scenario
-      commit: 40b14c55e3d0496c5db7dd60b90a5c30933ac033
+But even if it is outside that branch, we will still say "no microcode"
+so basically it boils down to the same thing.
 
-Best regards,
+But sure, ok, slight simplification. :)
+
 -- 
-Theodore Ts'o <tytso@mit.edu>
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
