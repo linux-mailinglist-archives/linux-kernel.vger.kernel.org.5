@@ -2,95 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D9B4787884
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 21:32:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38582787885
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 21:33:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243218AbjHXTcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 15:32:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53490 "EHLO
+        id S243255AbjHXTct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 15:32:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241374AbjHXTbp (ORCPT
+        with ESMTP id S241374AbjHXTc0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 15:31:45 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0498A1BDF
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 12:31:42 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1692905501;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=n8yDla5pLPlOBoH9R5UIcl3zdGCQ45eLIUaoUZiqZRg=;
-        b=ejX/5GLtjhWI5JeO1TOp5d81z6CBY7R1PnpW7jcjwnR38L2IWffvKTfybh4kHhlsIQfSMr
-        FTHxlG1pKcqZc4tPisqaN1Gg0yDXlUMCS9Ami3l9iWFSYmSKTNABt6n7uzpUOOOq72WesW
-        92OZ+qRM04nVUPu/ocGZdxkK9sJ5gxXl1n07ACwK7pZokxBw2ATffuBdFkDMakyaoziYhC
-        s+MjyyQ8lWRacuIuy58aYKpapQUP0owAPi4o91kFLOeSFZM9K5EHgA2vI/0q125Zw5X1GS
-        N5OevJcxtgueqJHelTkkG+wRYkNo79P2CVz0bUG0LAyM6mcRztVf33bXofA7xg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1692905501;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=n8yDla5pLPlOBoH9R5UIcl3zdGCQ45eLIUaoUZiqZRg=;
-        b=Uisgrkt/WrXB8xZZz2J41MLgpatWcrSm2tVY5eG8pt8YpjaLyLBnQACE7TBiS0AeUqfoAP
-        jfK9dcm1Kxn1b7Bg==
-To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>
-Cc:     Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        Jun Nakajima <jun.nakajima@intel.com>, x86@kernel.org,
-        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH] x86/tdx: Mark TSC reliable
-In-Reply-To: <20230808200111.nz74tmschph435ri@box>
-References: <20230808162320.27297-1-kirill.shutemov@linux.intel.com>
- <ecc11d54-6aaa-f755-9436-ae15b94fb627@intel.com>
- <20230808200111.nz74tmschph435ri@box>
-Date:   Thu, 24 Aug 2023 21:31:39 +0200
-Message-ID: <878ra0ck4k.ffs@tglx>
+        Thu, 24 Aug 2023 15:32:26 -0400
+Received: from thorn.bewilderbeest.net (thorn.bewilderbeest.net [IPv6:2605:2700:0:5::4713:9cab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBCD31BE2
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 12:32:24 -0700 (PDT)
+Received: from hatter.bewilderbeest.net (unknown [IPv6:2602:3f:e471:aa00::2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: zev)
+        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 285DE3FE;
+        Thu, 24 Aug 2023 12:32:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
+        s=thorn; t=1692905544;
+        bh=ht7+AxhAtjZz6jkzzOwitUf5rEs0+O2PY7QBAk/RXrI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aBF+UcIy1EH5t9CZnMocxz+BA54MN4B1ZCQ/u1FG/9VWsyTM/SpI9UGCqbt36wk3W
+         BYnPoC0t1isvVJE7y9paPkMqN2teb3PL4FapOvLRb2i5yOrOZOSrnzGx7fj5KhkfUn
+         kVTdkJn+plvYV8cm8w6UYSJMBh/c/NH/VTKy0AyE=
+Date:   Thu, 24 Aug 2023 12:32:22 -0700
+From:   Zev Weiss <zev@bewilderbeest.net>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Naresh Solanki <naresh.solanki@9elements.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] regulator: userspace-consumer: Use atomic operation
+Message-ID: <e1416ea3-9e20-4662-b394-bc9f842bfccb@hatter.bewilderbeest.net>
+References: <20230823141558.957526-1-Naresh.Solanki@9elements.com>
+ <61279ff7-c1ad-446c-aa5e-4222a5cbd9fb@sirena.org.uk>
+ <CABqG17gQEa70kEDVVhNkOeM2SYdZ6-gkYfYJUNV+=NzyogK_PA@mail.gmail.com>
+ <ZOeLjbN8i4i+/kd+@finisterre.sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <ZOeLjbN8i4i+/kd+@finisterre.sirena.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 08 2023 at 23:01, Kirill A. Shutemov wrote:
-> On Tue, Aug 08, 2023 at 10:13:05AM -0700, Dave Hansen wrote:
->> On 8/8/23 09:23, Kirill A. Shutemov wrote:
->> ...
->> > On the other hand, other clock sources (such as HPET, ACPI timer,
->> > APIC, etc.) necessitate VM exits to implement, resulting in more 
->> > fluctuating measurements compared to TSC. Thus, those clock sources
->> > are not effective for calibrating TSC.
->> 
->> Do we need to do anything to _those_ to mark them as slightly stinky?
+On Thu, Aug 24, 2023 at 09:55:41AM PDT, Mark Brown wrote:
+>On Thu, Aug 24, 2023 at 04:34:05PM +0530, Naresh Solanki wrote:
+>> On Wed, 23 Aug 2023 at 20:41, Mark Brown <broonie@kernel.org> wrote:
+>> > On Wed, Aug 23, 2023 at 04:15:57PM +0200, Naresh Solanki wrote:
 >
-> I don't know what the rules here. As far as I can see, all other clock
-> sources relevant for TDX guest have lower rating. I guess we are fine?
+>> > > Replace mutexes with atomic operations.
+>
+>> > Why?  Generally atomics are more complicated and hard to understand and
+>> > get right.
+>
+>> Since the operations involved here are simple & short & can be managed by
+>> atomic operation.
+>
+>Unless there's a strong positive reason to specifically use atomics it
+>seems better to avoid them, like I say they're full of landmines with
+>unexpeted behaviours and therefore something that sets off alarm bells
+>about needing careful study, the mutex is going to be less preformant
+>but is also much more clearly correct.
 
-Ideally they are not enumerated in the first place, which prevents the
-kernel from trying.
+I assume this patch was posted as a result of a comment I made on the 
+original patch [1], but in hindsight I probably shouldn't have suggested 
+it as it's a relatively minor issue either way -- I think the other 
+things brought up in that email are much more significant concerns.  
+Honestly I don't think that patch should be applied in its present form, 
+though I see it's still present in the regulator/for-next and 
+regulator/for-6.6 branches -- Mark, do you intend to include it as-is in 
+your pull request to Linus for the 6.6 merge window?
 
-> There's notable exception to the rating order is kvmclock which is higher
-> than tsc.
+[1] https://lore.kernel.org/lkml/d3ea0fe2-00bb-493b-aca7-ba7a31bd3c78@hatter.bewilderbeest.net/
 
-Which is silly aside of TDX.
 
-> It has to be disabled, but it is not clear to me how. This topic
-> is related to how we are going to filter allowed devices/drivers, so I
-> would postpone the decision until we settle on wider filtering schema.
+Zev
 
-TDX aside it might be useful to have a mechanism to select TSC over KVM
-clock in general.
-
-Thanks,
-
-        tglx
