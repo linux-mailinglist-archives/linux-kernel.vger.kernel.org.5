@@ -2,119 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 11DC7786AC6
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 10:54:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D64C2786ACA
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 10:56:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235626AbjHXIy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 04:54:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46876 "EHLO
+        id S232333AbjHXI4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 04:56:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240569AbjHXIyM (ORCPT
+        with ESMTP id S236723AbjHXIzw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 04:54:12 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CD34171F
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 01:53:54 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E8B946489C
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 08:53:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12631C433C7;
-        Thu, 24 Aug 2023 08:53:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692867233;
-        bh=qWBfAY/syTaBh0XOs7U/kFl7+ZFgl//it3TsuYVk3Js=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=a3HtM/Myu/NikqDjIvsJhKNZhK8eMdJPnf3zEnGOVX8l44HmR0MT0K20ousjFOr/P
-         xAw/MQqXWBgZ2mJ1+51R8Yds05yXPGUDOJjnPEA34oSTBSPSB8RK9AR6hq741bEisf
-         PqRo/bVaOGLCJiE/FWvALh0m+iwGwC4w4Y/mEXE/dDaJNea61V/TD396RH3DYz+pqZ
-         u6Gb4Ym8ofa7voDr9Sfb8JjFnfg8EECLcP5n2hpBwD163HJUbXL4rQ8N6Pm0c1tHe8
-         036vsL6OvKv6UY7rMT4/tUrs9K2nEbKFDx6gNnJ7uQuqyvEv/FzUiYiUGS4S+TgUot
-         tagDftE9FADOA==
-Date:   Thu, 24 Aug 2023 10:53:50 +0200
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Lee Jones <lee@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        =?utf-8?B?TWHDrXJh?= Canal <mairacanal@riseup.net>,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH 13/20] drm/tests/drm_kunit_helpers: Correct possible
- double-entry typo in 'ddrm_kunit_helper_acquire_ctx_alloc'
-Message-ID: <b67sjdnlltxlg5qjeebbocgmpdsxv6qvyzpjwjqy5pkyeovaiv@76snvdcewxmo>
-References: <20230824073710.2677348-1-lee@kernel.org>
- <20230824073710.2677348-14-lee@kernel.org>
+        Thu, 24 Aug 2023 04:55:52 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4460610FB
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 01:55:50 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-4ff9abf18f9so9996957e87.2
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 01:55:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1692867348; x=1693472148;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=+6GA2aSSzjMIpYzS9IyphBftmr15QYQINEEJHnRuPlg=;
+        b=HK5OHNsjOXmSg54H0vmXIKUU7xtCKB+PI5mVI5O/uyeRX63OQyA+8DPXQZ+FNNAwzA
+         gtWVJ7avEWjCii8rWu6w6setTlOCjfrSm/whPNgMQ4Ruo2tpODLw38yjDX5KICc2nclg
+         vlYreC/HHRndRHqcMimZ5VDXNhtvOaZ6sDfgkssWiVC41F8+inal5xt0ksEjWC7LcGlF
+         NJyrNo0hSat6YaS9FeoVMOUcaolrpZQNqLJaLSeXCxb4iPkcCWGtIgZXmKnkHtkproWY
+         bxDEyGRy6XJclv9PaSohpDMXu/+jONicNtjGSNyC9s+IlLTqL6II3UfnSom7vUTML6D4
+         t+1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692867348; x=1693472148;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+6GA2aSSzjMIpYzS9IyphBftmr15QYQINEEJHnRuPlg=;
+        b=deZwETNjhWrQK+mY81Wf5Hvy/2Ni97sbwDO3bHKVuFtZWAo4GzaeeUDNtKgDMnYCZ/
+         TdkQoAzRFIxyDvyB8/nx9A8t0sAfKn5Op0dj6MJmQ6fqK5O9juTKksQ7Rqf1VOW+7lLQ
+         JvD0Jn3LGKys9Y7XhrkhMZ1xRlyDOmkuplB8ReLTcNogs7yZVU6S2y6655fj8my2nEyC
+         8b9Ud2IWhBr8pc0MYjRh5PN+HtX+F9tHDQdxkS5nRiLP1PNX3HhDOLSVhD168WsJvy+F
+         wcn5pgTeoH6V2wTKgpF5MWAR7WHhN9sGXTg2m7uUEXmTs43smNLBvTdg5kdjnGmud0e5
+         O3ig==
+X-Gm-Message-State: AOJu0Yw1uIvGAENXG88jcuGUq0wwY5F2XSwYEwRwsyBysRGEVJOtcBWL
+        Mymo/o/r1cbkqYOT7t8GbHrLxQ==
+X-Google-Smtp-Source: AGHT+IFWXDT3TqF+psIqd+hSiyZ6asUmU93AmVQQUGQ0Oc5a8zhMSy2rP+ao4X3JpENaKqIPqsym/w==
+X-Received: by 2002:a05:6512:3e9:b0:4ff:95c:e158 with SMTP id n9-20020a05651203e900b004ff095ce158mr8804640lfq.64.1692867347584;
+        Thu, 24 Aug 2023 01:55:47 -0700 (PDT)
+Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:2a30:8709:b99d:e2bd])
+        by smtp.gmail.com with ESMTPSA id o10-20020a1c750a000000b003fe29dc0ff2sm2021347wmc.21.2023.08.24.01.55.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Aug 2023 01:55:47 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kent Gibson <warthog618@gmail.com>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: [PATCH v2] gpiolib: notify user-space about line state changes triggered by kernel
+Date:   Thu, 24 Aug 2023 10:55:44 +0200
+Message-Id: <20230824085544.110417-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="vir4vd3mpfmkkxjr"
-Content-Disposition: inline
-In-Reply-To: <20230824073710.2677348-14-lee@kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
---vir4vd3mpfmkkxjr
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+We currently only emit CHANGED_CONFIG events when the user-space changes
+GPIO config. We won't be notified if changes come from in-kernel. Let's
+call the notifier chain whenever kernel users change direction or any of
+the active-low, debounce or consumer name settings. We don't notify the
+user-space about the persistence as the uAPI has no notion of it.
 
-Hi,
+Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+---
+v1 -> v2:
+- use the gpiod_line_state_notify() helper
+- reorder the code in gpiod_set_debounce() for better readability
 
-On Thu, Aug 24, 2023 at 08:36:58AM +0100, Lee Jones wrote:
-> Fixes the following W=3D1 kernel build warning(s):
->=20
->  drivers/gpu/drm/tests/drm_kunit_helpers.c:172: warning: expecting protot=
-ype for ddrm_kunit_helper_acquire_ctx_alloc(). Prototype was for drm_kunit_=
-helper_acquire_ctx_alloc() instead
->=20
-> Signed-off-by: Lee Jones <lee@kernel.org>
-> ---
-> Cc: David Airlie <airlied@gmail.com>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Maxime Ripard <mripard@kernel.org>
-> Cc: "Ma=EDra Canal" <mairacanal@riseup.net>
-> Cc: dri-devel@lists.freedesktop.org
-> ---
->  drivers/gpu/drm/tests/drm_kunit_helpers.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/gpu/drm/tests/drm_kunit_helpers.c b/drivers/gpu/drm/=
-tests/drm_kunit_helpers.c
-> index f102c23eee1dd..c1dfbfcaa0001 100644
-> --- a/drivers/gpu/drm/tests/drm_kunit_helpers.c
-> +++ b/drivers/gpu/drm/tests/drm_kunit_helpers.c
-> @@ -156,7 +156,7 @@ static void action_drm_release_context(void *ptr)
->  }
-> =20
->  /**
-> - * ddrm_kunit_helper_acquire_ctx_alloc - Allocates an acquire context
-> + * drm_kunit_helper_acquire_ctx_alloc - Allocates an acquire context
->   * @test: The test context object
->   *
->   * Allocates and initializes a modeset acquire context.
+ drivers/gpio/gpiolib.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
-The typo was added by your patch 9.
+diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+index 40a0022ea719..1cb7731550ca 100644
+--- a/drivers/gpio/gpiolib.c
++++ b/drivers/gpio/gpiolib.c
+@@ -2439,6 +2439,7 @@ int gpiod_direction_input(struct gpio_desc *desc)
+ 	}
+ 	if (ret == 0) {
+ 		clear_bit(FLAG_IS_OUT, &desc->flags);
++		gpiod_line_state_notify(desc, GPIO_V2_LINE_CHANGED_CONFIG);
+ 		ret = gpio_set_bias(desc);
+ 	}
+ 
+@@ -2484,8 +2485,10 @@ static int gpiod_direction_output_raw_commit(struct gpio_desc *desc, int value)
+ 		gc->set(gc, gpio_chip_hwgpio(desc), val);
+ 	}
+ 
+-	if (!ret)
++	if (!ret) {
+ 		set_bit(FLAG_IS_OUT, &desc->flags);
++		gpiod_line_state_notify(desc, GPIO_V2_LINE_CHANGED_CONFIG);
++	}
+ 	trace_gpio_value(desc_to_gpio(desc), 0, val);
+ 	trace_gpio_direction(desc_to_gpio(desc), 0, ret);
+ 	return ret;
+@@ -2672,9 +2675,16 @@ EXPORT_SYMBOL_GPL(gpiod_set_config);
+ int gpiod_set_debounce(struct gpio_desc *desc, unsigned int debounce)
+ {
+ 	unsigned long config;
++	int ret;
+ 
+ 	config = pinconf_to_config_packed(PIN_CONFIG_INPUT_DEBOUNCE, debounce);
+-	return gpiod_set_config(desc, config);
++	ret = gpiod_set_config(desc, config);
++	if (ret)
++		return ret;
++
++	gpiod_line_state_notify(desc, GPIO_V2_LINE_CHANGED_CONFIG);
++
++	return 0;
+ }
+ EXPORT_SYMBOL_GPL(gpiod_set_debounce);
+ 
+@@ -2723,6 +2733,7 @@ void gpiod_toggle_active_low(struct gpio_desc *desc)
+ {
+ 	VALIDATE_DESC_VOID(desc);
+ 	change_bit(FLAG_ACTIVE_LOW, &desc->flags);
++	gpiod_line_state_notify(desc, GPIO_V2_LINE_CHANGED_CONFIG);
+ }
+ EXPORT_SYMBOL_GPL(gpiod_toggle_active_low);
+ 
+@@ -3330,6 +3341,7 @@ int gpiod_set_consumer_name(struct gpio_desc *desc, const char *name)
+ 
+ 	kfree_const(desc->label);
+ 	desc_set_label(desc, name);
++	gpiod_line_state_notify(desc, GPIO_V2_LINE_CHANGED_CONFIG);
+ 
+ 	return 0;
+ }
+-- 
+2.39.2
 
-I've applied and squashed them both
-
-Maxime
-
---vir4vd3mpfmkkxjr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZOcangAKCRDj7w1vZxhR
-xapKAQDJgAtGJxi7Oa75js6tCobx04IEkX4GiDBAlghE/1LpTwD+N9eWXmGWC8Oq
-hncke8txx2Wdo0/ownwXK744E0ArxwM=
-=g15R
------END PGP SIGNATURE-----
-
---vir4vd3mpfmkkxjr--
