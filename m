@@ -2,102 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0C267879CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 23:02:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2E957879D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 23:02:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243267AbjHXVB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 17:01:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47174 "EHLO
+        id S243333AbjHXVCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 17:02:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231290AbjHXVB1 (ORCPT
+        with ESMTP id S236126AbjHXVBn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 17:01:27 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D87719BF;
-        Thu, 24 Aug 2023 14:01:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=Fl4eLz5lzAqdsfi+t5jmV/ItDNikXzAC07w0ACaPhec=; b=GPHn5098lZiSjTzuo3IGsOnJNk
-        qP73ttw0VHgGqMzH/iIiNBWV+fcJuQPZH8dPNTH5XtAVh81T480f6FuXpviXDeibvvf2UZns0RZx9
-        sDNPS1KjlXrZdxhkluzYLuUzhPUCZJFAiJA0iAROcD0JTfGWi9+ejji9Elr1a7IDnfqwQF9BlKVGx
-        7Aned0DSUddatLZ53TBpwtaH+FaO9PCZsRnckMiYdNwv9yohkH+gPiDieFCol1jT8pSxeHTFm8N5B
-        IN0NURRkb7LuBfrWH3sY/aX/3aZuOh9J49Um9ZflAREyXb9tpyW4Y4zK22JZ5JjAlorIlaLykoVYQ
-        vpkm+lpg==;
-Received: from [2601:1c2:980:9ec0::2764]
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qZHSG-003n2q-0r;
-        Thu, 24 Aug 2023 21:01:24 +0000
-Message-ID: <b1c5ba0d-748f-ae2e-4a5f-e1e853161d16@infradead.org>
-Date:   Thu, 24 Aug 2023 14:01:20 -0700
+        Thu, 24 Aug 2023 17:01:43 -0400
+Received: from mail.mutex.one (mail.mutex.one [62.77.152.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2F851BD8
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 14:01:41 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.mutex.one (Postfix) with ESMTP id C780E16C004E;
+        Fri, 25 Aug 2023 00:01:39 +0300 (EEST)
+X-Virus-Scanned: Debian amavisd-new at mail.mutex.one
+Received: from mail.mutex.one ([127.0.0.1])
+        by localhost (mail.mutex.one [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id l2wbuo6xYTas; Fri, 25 Aug 2023 00:01:38 +0300 (EEST)
+From:   Marian Postevca <posteuca@mutex.one>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mutex.one; s=default;
+        t=1692910898; bh=6T2scqYit3D9spXNYhaJ1FM2bv2gPNeQev13zZjEi60=;
+        h=From:To:Cc:Subject:Date:From;
+        b=a8pNy9XqdK1KCXgqErE1o2Z08p2cOvKnAJZuW2VBoN3XsxXu6RDaQegxzWAdbbSIO
+         D4Waqh5jo1DfhmzzTSmzaTflI0X13PaZpB74XAgGn7BBnFTzAiurKUErezUqDXrDZo
+         vIJLrJBmNFg6YwkiIdQVJfQ7itX6sRFkiFtv/6+E=
+To:     Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Marian Postevca <posteuca@mutex.one>
+Subject: [PATCH v2 0/4] ASoC: amd: acp: Add sound support for a line of HUAWEI laptops
+Date:   Fri, 25 Aug 2023 00:01:31 +0300
+Message-ID: <20230824210135.19303-1-posteuca@mutex.one>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v3 1/1] MAINTAINERS: Add entries for NXP(Freescale) eDMA
- drivers
-Content-Language: en-US
-To:     Frank Li <Frank.Li@nxp.com>
-Cc:     dmaengine@vger.kernel.org, imx@lists.linux.dev, joy.zou@nxp.com,
-        linux-kernel@vger.kernel.org, peng.fan@nxp.com,
-        shenwei.wang@nxp.com, vkoul@kernel.org
-References: <20230824145834.2825847-1-Frank.Li@nxp.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20230824145834.2825847-1-Frank.Li@nxp.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SORTED_RECIPS,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series adds support for a line of HUAWEI laptops with
+AMD CPUs that connect using the ACP3x module to a ES8336 CODEC.
 
+The CODEC driver must be extended to support the S32 LE format
+and the MCLK div by 2 option. MCLK div by 2 is needed for one specific
+SKU, which uses a 48Mhz MCLK, which seems to be too high of a frequency
+for the CODEC and must be divided by 2.
 
-On 8/24/23 07:58, Frank Li wrote:
-> Add the MAINTAINERS entries for NXP(Freescale) eDMA drivers
-> 
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+The acp legacy driver must also be extended by using callbacks so that
+the more complicated handling of this specific CODEC can be moved
+outside the more generic ACP code.
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Changes in v2:
 
-Thanks for fixing. :)
+- Removed patch 4: "ASoC: amd: acp: Improve support for speaker
+  power events". May be resubmitted separately.
+- Split the first commit that enabled support for S32 LE format and
+  the MCLK div by 2 option into two separate commits.
+- Removed the MCLK div by 2 DT property that was previously enabled by
+  the machine driver. Now it's enabled by the CODEC driver if the MCLK
+  frequency is equal or greater than 48Mhz.
+- Used normal conditional statements.
+- Removed constraint rates from the machine driver, the CODEC should be
+  able to set them.
+- Moved the DAI format configuration.
+- Uncoupled the speaker and headphone GPIOs. Now they can be handled
+  independently
 
-> ---
-> 
-> Notes:
->     Change from v2 to v3
->     - Again, fixed order
->     
->     Change from v1 to v2
->     - alphabetical order
-> 
->  MAINTAINERS | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 23eafda02056..c1c7a9ae244f 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -8236,6 +8236,14 @@ F:	Documentation/devicetree/bindings/spi/spi-fsl-dspi.txt
->  F:	drivers/spi/spi-fsl-dspi.c
->  F:	include/linux/spi/spi-fsl-dspi.h
->  
-> +FREESCALE eDMA DRIVER
-> +M:	Frank Li <Frank.Li@nxp.com>
-> +L:	imx@lists.linux.dev
-> +L:	dmaengine@vger.kernel.org
-> +S:	Maintained
-> +F:	Documentation/devicetree/bindings/dma/fsl,edma.yaml
-> +F:	drivers/dma/fsl-edma*.*
-> +
->  FREESCALE ENETC ETHERNET DRIVERS
->  M:	Claudiu Manoil <claudiu.manoil@nxp.com>
->  M:	Vladimir Oltean <vladimir.oltean@nxp.com>
+Marian Postevca (4):
+  ASoC: es8316: Enable support for S32 LE format
+  ASoC: es8316: Enable support for MCLK div by 2
+  ASoC: amd: acp: Add support for splitting the codec specific code from
+    the ACP driver
+  ASoC: amd: acp: Add machine driver that enables sound for systems with
+    a ES8336 codec
+
+ sound/soc/amd/acp-config.c                    |  70 +++
+ sound/soc/amd/acp/Makefile                    |   2 +-
+ sound/soc/amd/acp/acp-legacy-mach.c           | 102 +++-
+ sound/soc/amd/acp/acp-mach-common.c           |   8 +
+ sound/soc/amd/acp/acp-mach.h                  |  67 +++
+ sound/soc/amd/acp/acp-renoir.c                |   4 +
+ sound/soc/amd/acp/acp3x-es83xx/acp3x-es83xx.c | 449 ++++++++++++++++++
+ sound/soc/amd/acp/acp3x-es83xx/acp3x-es83xx.h |  12 +
+ sound/soc/codecs/es8316.c                     |  22 +-
+ sound/soc/codecs/es8316.h                     |   3 +
+ 10 files changed, 724 insertions(+), 15 deletions(-)
+ create mode 100644 sound/soc/amd/acp/acp3x-es83xx/acp3x-es83xx.c
+ create mode 100644 sound/soc/amd/acp/acp3x-es83xx/acp3x-es83xx.h
 
 -- 
-~Randy
+2.41.0
+
