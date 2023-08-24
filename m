@@ -2,139 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24CAF786C96
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 12:12:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37008786C9E
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 12:14:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238876AbjHXKLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 06:11:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40816 "EHLO
+        id S239428AbjHXKNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 06:13:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238407AbjHXKLp (ORCPT
+        with ESMTP id S240830AbjHXKNH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 06:11:45 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1BC381985;
-        Thu, 24 Aug 2023 03:11:43 -0700 (PDT)
-Received: from [192.168.2.41] (77-166-152-30.fixed.kpn.net [77.166.152.30])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 4D11C2127C7C;
-        Thu, 24 Aug 2023 03:11:41 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4D11C2127C7C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1692871902;
-        bh=wTL4n6RO/pSWsfS18SzRvJJMqeO2s4ooiItSpkg0MWQ=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=EizwWg/LJoesLN5ikB/qxJIqjQ/Rce8ZK1aEeTK1iZUhDOJrgvZwzjDSPhmeljdXS
-         x16eJuz2y9rq+c8IpzQRmrlag1YECBsIPgqlzzkuqtc33gCMgfonlhkLWfJrxvEg/R
-         fY0cY+aBpI6cSCPtVOO3UHrFj1sDY7J5nC1TSJQM=
-Message-ID: <06070c5d-c236-46a6-a2c1-f6d6c332b06d@linux.microsoft.com>
-Date:   Thu, 24 Aug 2023 12:11:39 +0200
+        Thu, 24 Aug 2023 06:13:07 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0573198A;
+        Thu, 24 Aug 2023 03:13:04 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5AB6C64415;
+        Thu, 24 Aug 2023 10:13:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF4E3C433C8;
+        Thu, 24 Aug 2023 10:12:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692871983;
+        bh=4UDSCTf4UzQ5mpd8+4A0j7OY2qBf4OTnvs5eIzuBsHQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IbOV1urTSkudunwOCH1Ibv38fRYfnw7bT5+LQfIchxJd71hR54VeyBEWuAyr6RM/f
+         bk6awpjFKXaodurv1iBhrMk4svkdySvBiy5AbOgaINsks5l4zUfvD9BF4W4wvaSWyE
+         Pgk9rYiGHiIwI+DLyEUVWbWXZ9X+VWCoR4aviSQMzDxjgriFkjjmFNC33ap+Th7zOa
+         qKzznRR8T+7j1RPvNCqQuOruCIJcvv2QS80pgjuN0xlSDd1M1riQUO3HbfKBD9gFPS
+         M6f3AGQAWUfv1a8OR5mdxezWZ3iFWgzdb0eBxV239XplNc8viCDyiE0dMUnn3+vYbG
+         s6SgWI5Kj+2YA==
+Date:   Thu, 24 Aug 2023 12:12:55 +0200
+From:   Lorenzo Pieralisi <lpieralisi@kernel.org>
+To:     Manivannan Sadhasivam <mani@kernel.org>
+Cc:     Jim Quinlan <james.quinlan@broadcom.com>,
+        Jim Quinlan <jim2101024@gmail.com>, linux-pci@vger.kernel.org,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Cyril Brulebois <kibi@debian.org>,
+        Phil Elwell <phil@raspberrypi.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 1/5] dt-bindings: PCI: brcmstb: Add brcm,enable-l1ss
+ property
+Message-ID: <ZOctJ3t1/UPc4kPj@lpieralisi>
+References: <20230508220126.16241-1-jim2101024@gmail.com>
+ <20230508220126.16241-2-jim2101024@gmail.com>
+ <20230823074330.GF3737@thinkpad>
+ <CA+-6iNwP+NbAdm0kNxZ5GwyPdTQyOjq7E2O-+mCU4fG-94BKBA@mail.gmail.com>
+ <20230823181650.GL3737@thinkpad>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5.15] Revert "KVM: x86: enable TDP MMU by default"
-To:     Sean Christopherson <seanjc@google.com>, stable@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Mathias Krause <minipli@grsecurity.net>
-References: <20230824010512.2714931-1-seanjc@google.com>
- <ZOavFlKo2/sixUTk@google.com>
-Content-Language: en-US
-From:   Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
-In-Reply-To: <ZOavFlKo2/sixUTk@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230823181650.GL3737@thinkpad>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/24/2023 3:15 AM, Sean Christopherson wrote:
-> +Jeremi and Mathias, my scripts for sending patches to stable don't auto-cc :-/
+On Wed, Aug 23, 2023 at 11:46:50PM +0530, Manivannan Sadhasivam wrote:
+> On Wed, Aug 23, 2023 at 09:09:25AM -0400, Jim Quinlan wrote:
+> > On Wed, Aug 23, 2023 at 3:43 AM Manivannan Sadhasivam <mani@kernel.org> wrote:
+> > >
+> > > On Mon, May 08, 2023 at 06:01:21PM -0400, Jim Quinlan wrote:
+> > > > This commit adds the boolean "brcm,enable-l1ss" property:
+> > > >
+> > > >   The Broadcom STB/CM PCIe HW -- a core that is also used by RPi SOCs --
+> > > >   requires the driver probe() to deliberately place the HW one of three
+> > > >   CLKREQ# modes:
+> > > >
+> > > >   (a) CLKREQ# driven by the RC unconditionally
+> > > >   (b) CLKREQ# driven by the EP for ASPM L0s, L1
+> > > >   (c) Bidirectional CLKREQ#, as used for L1 Substates (L1SS).
+> > > >
+> > > >   The HW+driver can tell the difference between downstream devices that
+> > > >   need (a) and (b), but does not know when to configure (c).  All devices
+> > > >   should work fine when the driver chooses (a) or (b), but (c) may be
+> > > >   desired to realize the extra power savings that L1SS offers.  So we
+> > > >   introduce the boolean "brcm,enable-l1ss" property to inform the driver
+> > > >   that (c) is desired.  Setting this property only makes sense when the
+> > > >   downstream device is L1SS-capable and the OS is configured to activate
+> > > >   this mode (e.g. policy==powersupersave).
+> > > >
+> > > >   This property is already present in the Raspian version of Linux, but the
+> > > >   upstream driver implementation that follows adds more details and
+> > > >   discerns between (a) and (b).
+> > > >
+> > > > Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
+> > > > Reviewed-by: Rob Herring <robh@kernel.org>
+> > > > ---
+> > > >  Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml | 9 +++++++++
+> > > >  1 file changed, 9 insertions(+)
+> > > >
+> > > > diff --git a/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml b/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
+> > > > index 7e15aae7d69e..8b61c2179608 100644
+> > > > --- a/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
+> > > > +++ b/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
+> > > > @@ -64,6 +64,15 @@ properties:
+> > > >
+> > > >    aspm-no-l0s: true
+> > > >
+> > > > +  brcm,enable-l1ss:
+> > > > +    description: Indicates that PCIe L1SS power savings
+> > > > +      are desired, the downstream device is L1SS-capable, and the
+> > > > +      OS has been configured to enable this mode.  For boards
+> > > > +      using a mini-card connector, this mode may not meet the
+> > > > +      TCRLon maximum time of 400ns, as specified in 3.2.5.2.2
+> > > > +      of the PCI Express Mini CEM 2.0 specification.
+> > >
+> > > As Lorenzo said, this property doesn't belong in DT. DT is supposed to specify
+> > > the hardware capability and not system/OS behavior.
+> > 
+> > The "brcm,enable-l1ss" does NOT configure the OS behavior.
+> > It sets or not a mode bit to enable l1SS HW, whether or not the OS is
+> > configured for L1SS.
+> > It compensates for a problem in the PCIe core: the HW is not capable
+> > of dynamically
+> > switching between ASPM modes powersave and superpowersave.  I am actively
+> > advocating for our HW to change but that will take years.
+> > 
 > 
-> On Wed, Aug 23, 2023, Sean Christopherson wrote:
->> Disable the TDP MMU by default in v5.15 kernels to "fix" several severe
->> performance bugs that have since been found and fixed in the TDP MMU, but
->> are unsuitable for backporting to v5.15.
->>
->> The problematic bugs are fixed by upstream commit edbdb43fc96b ("KVM:
->> x86: Preserve TDP MMU roots until they are explicitly invalidated") and
->> commit 01b31714bd90 ("KVM: x86: Do not unload MMU roots when only toggling
->> CR0.WP with TDP enabled").  Both commits fix scenarios where KVM will
->> rebuild all TDP MMU page tables in paths that are frequently hit by
->> certain guest workloads.  While not exactly common, the guest workloads
->> are far from rare.  The fallout of rebuilding TDP MMU page tables can be
->> so severe in some cases that it induces soft lockups in the guest.
->>
->> Commit edbdb43fc96b would require _significant_ effort and churn to
->> backport due it depending on a major rework that was done in v5.18.
->>
->> Commit 01b31714bd90 has far fewer direct conflicts, but has several subtle
->> _known_ dependencies, and it's unclear whether or not there are more
->> unknown dependencies that have been missed.
->>
->> Lastly, disabling the TDP MMU in v5.15 kernels also fixes a lurking train
->> wreck started by upstream commit a955cad84cda ("KVM: x86/mmu: Retry page
->> fault if root is invalidated by memslot update").  That commit was tagged
->> for stable to fix a memory leak, but didn't cherry-pick cleanly and was
->> never backported to v5.15.  Which is extremely fortunate, as it introduced
->> not one but two bugs, one of which was fixed by upstream commit
->> 18c841e1f411 ("KVM: x86: Retry page fault if MMU reload is pending and
->> root has no sp"), while the other was unknowingly fixed by upstream
->> commit ba6e3fe25543 ("KVM: x86/mmu: Grab mmu_invalidate_seq in
->> kvm_faultin_pfn()") in v6.3 (a one-off fix will be made for v6.1 kernels,
->> which did receive a backport for a955cad84cda).  Disabling the TDP MMU
->> by default reduces the probability of breaking v5.15 kernels by
->> backporting only a subset of the fixes.
->>
->> As far as what is lost by disabling the TDP MMU, the main selling point of
->> the TDP MMU is its ability to service page fault VM-Exits in parallel,
->> i.e. the main benefactors of the TDP MMU are deployments of large VMs
->> (hundreds of vCPUs), and in particular delployments that live-migrate such
->> VMs and thus need to fault-in huge amounts of memory on many vCPUs after
->> restarting the VM after migration.
->>
->> Smaller VMs can see performance improvements, but nowhere enough to make
->> up for the TDP MMU (in v5.15) absolutely cratering performance for some
->> workloads.  And practically speaking, anyone that is deploying and
->> migrating VMs with hundreds of vCPUs is likely rolling their own kernel,
->> not using a stock v5.15 series kernel.
->>
->> This reverts commit 71ba3f3189c78f756a659568fb473600fd78f207.
->>
->> Link: https://lore.kernel.org/all/ZDmEGM+CgYpvDLh6@google.com
->> Link: https://lore.kernel.org/all/f023d927-52aa-7e08-2ee5-59a2fbc65953@gameservers.com
->> Cc: Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
->> Cc: Mathias Krause <minipli@grsecurity.net>
->> Signed-off-by: Sean Christopherson <seanjc@google.com>
->> ---
->>  arch/x86/kvm/mmu/tdp_mmu.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
->> index 6c2bb60ccd88..7a64fb238044 100644
->> --- a/arch/x86/kvm/mmu/tdp_mmu.c
->> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
->> @@ -10,7 +10,7 @@
->>  #include <asm/cmpxchg.h>
->>  #include <trace/events/kvm.h>
->>  
->> -static bool __read_mostly tdp_mmu_enabled = true;
->> +static bool __read_mostly tdp_mmu_enabled = false;
->>  module_param_named(tdp_mmu, tdp_mmu_enabled, bool, 0644);
->>  
->>  /* Initializes the TDP MMU for the VM, if enabled. */
->>
->> base-commit: f6f7927ac664ba23447f8dd3c3dfe2f4ee39272f
->> -- 
->> 2.42.0.rc2.253.gd59a3bf2b4-goog
->>
+> Okay, then I would say that the property name and commit message were a bit
+> misleading. 
+> 
+> I had briefly gone through the driver patch now. As per my understanding, you
+> have 2 modes in hw:
+> 
+> 1. Clock PM - Refclk will be turned off by the host if CLKREQ# is deasserted by
+> the device (driving high) when the link is in L1.
+> 
+> 2. L1SS - CLKREQ# will be used to decide L1SS entry and exit by the host.
+> 
+> Till now the driver only supported Clock PM through mode (1) but for supporting
+> L1SS you need to enable mode (2). And you are using this property to select mode
+> (2) when the L1SS supported devices are connected to the slot. Also, by
+> selecting this mode, you are loosing the benefit of mode (1) as both are not
+> compatible.
+> 
+> My suggestion would be to just drop mode (1) and use mode (2) in the driver as
+> most of the recent devices should support L1SS (ofc there are exemptions).
+> 
+> But moving that decision to DT still doesn't seem right to me as the hardware
+> supports both modes and you are (ab)using DT to choose one or the other.
 
-Thanks, I've been meaning to poke you about this again but things got in the way.
-Have my ack:
+Jim ? We need to queue this series as soon as possible, if we don't
+reach consensus by this evening I will queue the last three patches
+only.
 
-Acked-by: Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
+Lorenzo
+
+> - Mani
+> 
+> > If this flag specifies
+> > > whether the PCIe controller supports L1SS or not, then it is fine but apparantly
+> > > this specifies that all downstream devices are L1SS capable which you cannot
+> > > guarantee unless you poke into their LNKCAP during runtime.
+> > Not true at all.  This setting affects only RC and whatever device is
+> > connected to its single downstream
+> > port.
+> > 
+> > >
+> > > You should handle this in the driver itself.
+> > 
+> > The driver has no way of knowing if the PCI subsystem is going from power_save
+> > to power_supersave or vice-versa -- there is no notification chain for this.  So
+> > what you say is not currently possible from the driver's perspective.
+> > 
+> > Perhaps you would be happy if we changed it to "l1ss-support" in the
+> > spirit of the
+> > existing "clkreq-support" PCI parameter?
+> > 
+> > Regards,
+> > Jim Quinlan
+> > Broadcom STB/CMi
+> > 
+> > >
+> > > - Mani
+> > >
+> > > > +    type: boolean
+> > > > +
+> > > >    brcm,scb-sizes:
+> > > >      description: u64 giving the 64bit PCIe memory
+> > > >        viewport size of a memory controller.  There may be up to
+> > > > --
+> > > > 2.17.1
+> > > >
+> > >
+> > > --
+> > > மணிவண்ணன் சதாசிவம்
+> 
+> > Date: Tue, 22 Aug 2023 21:01:47 +0000 (UTC)
+> > From: Florian Fainelli <messenger@webex.com>
+> > To: james.quinlan@broadcom.com
+> > Subject: Join me now in my Personal Room
+> > 
+> > Hello,
+> > 
+> > Join me now in my Personal Room. 
+> > 
+> > JOIN WEBEX MEETING
+> > https://broadcom.webex.com/join/florian.fainelli  |  490 282 179
+> > 
+> > 
+> > JOIN FROM A VIDEO CONFERENCING SYSTEM OR APPLICATION
+> > Dial sip:florian.fainelli@broadcom.webex.com
+> > You can also dial 173.243.2.68 and enter your meeting number.
+> > 
+> > 
+> > 
+> > Can't join the meeting?
+> > https://help.webex.com/docs/DOC-5412
+> > 
+> > PHONE DIALING GUIDELINES:
+> >         - Use Call Me when you are using office phone or Jabber.
+> >         - Use Call Using Computer when you are at home or traveling.
+> > 
+> > In Office Calls:
+> > 	- From Broadcom Office: 1-MEETING (1-6338464)
+> > 
+> > Offsite Numbers Toll (Local) Calls:
+> > 	- Canada, Richmond: +1-778-308-4007
+> > 	- China: +86-400-819-1044
+> > 	- Germany, Munich: +49-892-312-9611
+> >         - Germany, Regensburg: +49-(9)419-923-5940
+> >         - India: 00-080-0050-1631
+> > 	- Israel: +97-239-786-477
+> >         - Japan, Tokyo: +81-366-344-937
+> >         - Malaysia: +603-2053-5189
+> > 	- Singapore: +65-6349-2439
+> > 	- South Korea, Seoul: +82-70-4732-0218
+> > 	- Taiwan, Taipei: +886-277-047-765
+> > 	- US, Denver: +1-720-726-9995
+> >         - US, Los Angeles: +1-310-616-5312
+> >         - US, Philadelphia: +1-215-305-7603
+> > 	- UK, London: +44-207-660-8897
+> >         - UK, Manchester: +44-161-619-8089
+> > 
+> > IMPORTANT NOTICE: Please note that this Webex service allows audio and other information sent during the session to be recorded, which may be discoverable in a legal matter. By joining this session, you automatically consent to such recordings. If you do not consent to being recorded, discuss your concerns with the host or do not join the session.
+> 
+> 
+> 
+> 
+> 
+> -- 
+> மணிவண்ணன் சதாசிவம்
