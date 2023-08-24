@@ -2,107 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F05D787910
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 22:06:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07C40787914
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 22:07:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243405AbjHXUFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 16:05:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48974 "EHLO
+        id S243411AbjHXUHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 16:07:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243392AbjHXUFE (ORCPT
+        with ESMTP id S243410AbjHXUGq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 16:05:04 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D5DB170F
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 13:05:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E53D16750C
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 20:05:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6581CC433C7;
-        Thu, 24 Aug 2023 20:05:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692907501;
-        bh=uneaeEIfe52K8fhY4nb4K1HqCi+MybMD+IC/Fil8QHI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QE0AktSJFv6ACmLwjhoj2pG7ZpevtM+Dxy4RJJziAPjWzPQV4+WhMApRwlatT8GBp
-         g3+EQYcl8romgTC+NfCGGVTVH4DKhOx0R1IVK8TPGMNWdVMMmELZcCMXECPz3u+INM
-         +DNa2czaA0rAo5A1GmxWvtG5JnLsJCh7eDoQtu9avreIjHHerP1knL5bC3KrfkB8V8
-         Ka8WENVLoh5yP2BMAMiR8NInzgq+1G93adGeVdcerrXOZUg6Lmf/5N3hTYekfouGFV
-         7rrU3yUi3SWA5dI0Nr7ip9xFkRZG4pq1Ryp7VEsKsAZPOy6Px0W69tsqjo0PP0VqR2
-         Iw1W9BgQjlCtw==
-Date:   Thu, 24 Aug 2023 21:04:56 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com
-Subject: Re: [PATCH] ASoC: soc-core.c: Do not error if a DAI link component
- is not found
-Message-ID: <ZOe36EyxNQuz08qt@finisterre.sirena.org.uk>
-References: <20230824193837.369761-1-cristian.ciocaltea@collabora.com>
+        Thu, 24 Aug 2023 16:06:46 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 695FC170F
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 13:06:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692907604; x=1724443604;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=IQfaHD+DuyVsbsv8z1qkTOosiOK8pcjMsTTt+TvyONE=;
+  b=W6+buFcjIu5VeAo7PmV5kF3cxV6s5UW2bD02sQYH/CwNO8EIK7lEeOiM
+   hOgpcj750/eBheYI5PwrWOiXLf4YeB3FL+dTtu5CBZxIMtQ1QE+AgaX5N
+   HgkYMfGM51io7ZK1u7/ToHPXsIqNYfiVY0N43uzlQuhOJ+udvB6YuyXin
+   UlA64+rz9wP9v3tw6J4Ndt4ot6mD9vgKWR1A+UdrZYRyNQm2Ovk2X/fjV
+   PiNej8x1W2Qf44uDJcWwCNrgyvsnbCGuIiszjxGSpPO7nbgJyRmLEKGhR
+   lg3/hR+exCVivRTNt748VaXxaQ83itMXRNgFEPiFLGNP6WgyV7GISFxdt
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="373422294"
+X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
+   d="scan'208";a="373422294"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 13:06:26 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="1067965430"
+X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
+   d="scan'208";a="1067965430"
+Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
+  by fmsmga005.fm.intel.com with ESMTP; 24 Aug 2023 13:06:25 -0700
+Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qZGb2-0002wa-1G;
+        Thu, 24 Aug 2023 20:06:24 +0000
+Date:   Fri, 25 Aug 2023 04:05:44 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Uros Bizjak <ubizjak@gmail.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: test_set_error_stamp: rm
+ /kbuild/obj/consumer/parisc-randconfig-r016-20230825/.reduce_errors/drivers-mtd-nand-raw-nand_base.c:internal-compiler-error:in-maybe_record_trace_start-at-dwarf2cfi.cc
+Message-ID: <202308250338.Upxr6yeb-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ItHhBaPHFpS47p4h"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230824193837.369761-1-cristian.ciocaltea@collabora.com>
-X-Cookie: Give him an evasive answer.
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,WEIRD_PORT autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   b5cc3833f13ace75e26e3f7b51cd7b6da5e9cf17
+commit: 43c249ea0b1e10baac4a1264a25d69723ce5d2c2 compiler-gcc.h: remove ancient workaround for gcc PR 58670
+date:   1 year, 1 month ago
+config: parisc-randconfig-r016-20230825 (https://download.01.org/0day-ci/archive/20230825/202308250338.Upxr6yeb-lkp@intel.com/config)
+compiler: hppa-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20230825/202308250338.Upxr6yeb-lkp@intel.com/reproduce)
 
---ItHhBaPHFpS47p4h
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308250338.Upxr6yeb-lkp@intel.com/
 
-On Thu, Aug 24, 2023 at 10:38:37PM +0300, Cristian Ciocaltea wrote:
-> A recent cleanup of soc_dai_link_sanity_check() is responsible for
-> generating lots of confusing errors before returning -EPROBE_DEFER:
->=20
->   acp5x_mach acp5x_mach.0: ASoC: Component acp5x_i2s_dma.0 not found for =
-link acp5x-8821-play
->   [...]
->   acp5x_mach acp5x_mach.0: ASoC: Component spi-VLV1776:00 not found for l=
-ink acp5x-CS35L41-Stereo
->   [...]
->   acp5x_mach acp5x_mach.0: ASoC: Component spi-VLV1776:01 not found for l=
-ink acp5x-CS35L41-Stereo
->=20
-> Switch back to the initial behaviour of logging those messages on
-> KERN_DEBUG level instead of KERN_ERR.
->=20
-> While at it, use the correct form of the verb in 'component_not_find'
-> label.
+All errors (new ones prefixed by >>):
 
-Don't include random extra stuff in patches unless there is substantial
-overlap, send one change per patch.
+   during RTL pass: dwarf2
+   drivers/mtd/nand/raw/nand_base.c: In function 'nand_do_write_ops':
+>> drivers/mtd/nand/raw/nand_base.c:4370:1: internal compiler error: in maybe_record_trace_start, at dwarf2cfi.cc:2539
+    4370 | }
+         | ^
+   0x788517 maybe_record_trace_start
+   	/tmp/build-crosstools-gcc-13.2.0-binutils-2.41/gcc/gcc-13.2.0/gcc/dwarf2cfi.cc:2539
+   0x788a5a create_trace_edges
+   	/tmp/build-crosstools-gcc-13.2.0-binutils-2.41/gcc/gcc-13.2.0/gcc/dwarf2cfi.cc:2687
+   0x788d8e scan_trace
+   	/tmp/build-crosstools-gcc-13.2.0-binutils-2.41/gcc/gcc-13.2.0/gcc/dwarf2cfi.cc:2911
+   0x789127 create_cfi_notes
+   	/tmp/build-crosstools-gcc-13.2.0-binutils-2.41/gcc/gcc-13.2.0/gcc/dwarf2cfi.cc:2938
+   0x789127 execute_dwarf2_frame
+   	/tmp/build-crosstools-gcc-13.2.0-binutils-2.41/gcc/gcc-13.2.0/gcc/dwarf2cfi.cc:3309
+   0x789127 execute
+   	/tmp/build-crosstools-gcc-13.2.0-binutils-2.41/gcc/gcc-13.2.0/gcc/dwarf2cfi.cc:3799
+   Please submit a full bug report, with preprocessed source (by using -freport-bug).
+   Please include the complete backtrace with any bug report.
+   See <https://gcc.gnu.org/bugs/> for instructions.
 
---ItHhBaPHFpS47p4h
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTnt+cACgkQJNaLcl1U
-h9DpeQf/fLcMo5TgYtpEMm6QZe8+SsXOWe83/GL7qiWA20/UaeCiVe8f1HRgxisw
-wsqs106dScSNu7HawAwXYukM7lX0mGuXrbZBYVzh9zsIMnE4LXvr8urhKR+QXGmg
-/ZUzdgHwQ/dgz113XQJml0kbsh0aJC1RR+4tObciFjmNiHpMgt3KT1qlaceM8m9o
-DRQk8KtCZnOsY3UNGwA+KQ4pPxbdsy2Sd/r7V/KBHetkJXzQazF8FCdu5dcx33oD
-uorFZW9byRlZkXVfcvdEwEAzHL139W/rAt430zVst3Vu1Ld7+ROn3ct1ezwlMuGh
-3bqWD7yAleCg8KX4b8pOrO9Gx+CPWg==
-=5OX0
------END PGP SIGNATURE-----
-
---ItHhBaPHFpS47p4h--
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
