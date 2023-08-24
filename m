@@ -2,101 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0A617871AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 16:34:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C7277871BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 16:37:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241679AbjHXOeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 10:34:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55004 "EHLO
+        id S238054AbjHXOg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 10:36:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241769AbjHXOdo (ORCPT
+        with ESMTP id S241737AbjHXOgg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 10:33:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DACD193
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 07:32:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692887576;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/9R4uLDmVq3SZUrV7oyvoIl0ePP/hBf7OCHweYTv794=;
-        b=NL7BcJIduPJ3Hk3Xy7GJYlvVye9bOSIsiVZ+hZAwTf6u9DvUs3jvFXrFeFesibaXMi8Dsn
-        NwwU/pNY/I3dgufuYVKaYKn97NF80TqrSjgcDcJnwudHLwyz2OKiuE9Tn2VLmUa3el80W3
-        nrJ4UdsEDywJJxwSsYeTfbuUH64HAh8=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-106-cVgN4S5PN1CUhvLzwSybrw-1; Thu, 24 Aug 2023 10:32:53 -0400
-X-MC-Unique: cVgN4S5PN1CUhvLzwSybrw-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 41A9128237C3;
-        Thu, 24 Aug 2023 14:32:50 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.43])
-        by smtp.corp.redhat.com (Postfix) with SMTP id C76994A9005;
-        Thu, 24 Aug 2023 14:32:48 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Thu, 24 Aug 2023 16:32:03 +0200 (CEST)
-Date:   Thu, 24 Aug 2023 16:32:01 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        peterz@redhat.com, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] change next_thread() to use __next_thread() ?:
- group_leader
-Message-ID: <20230824143201.GB31222@redhat.com>
-References: <20230824143112.GA31208@redhat.com>
+        Thu, 24 Aug 2023 10:36:36 -0400
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 568391FF1;
+        Thu, 24 Aug 2023 07:36:17 -0700 (PDT)
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-68a4bcf8a97so3454698b3a.1;
+        Thu, 24 Aug 2023 07:36:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692887777; x=1693492577;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=EtlLPQ4XkMFpJySjQ9OXycirNX1t9e/eOV9xbgj8ih0=;
+        b=aVUWLIkQVv4H0GnuQoc12swNgvWH3LBbmlavY7yGnOT8zdUEIROuiAFnX2WfpMZONV
+         u+HCm0XRag9BZdx7d3cXrn8NBX4ScvITMLMebJUeMzFOMvqeRvH9MZhrl7Mzrov7lgVz
+         l5P1YCFnTIxWcvLwCwmIByasa4vg/wadSFtEtlOQkIGuFNGG4Bh7l99JkoDiXZCmyYHU
+         DX4VioMvAapUtMlAddUlzqRySpAkGZUv9xpqf2bSL/Vy/nyfgTalkI2cz0ROujUIABKz
+         Ii03ZHxKfXpBp7y2Dw/f0NfTxclLhKNZWnA8wbSVPSs7KyLYJIK1SlWb9Gy/SwE3YP5e
+         LUbQ==
+X-Gm-Message-State: AOJu0Yya2EQsUheTWM1MD90XSOfKS2uw7TQjTb701zo+Bu7jg/kHtmbQ
+        58bGeT0DMTxi3oERxAvOkVc=
+X-Google-Smtp-Source: AGHT+IFhh/yEEq8jK9/1mUwkjtgL9PDsZzGFDBhhP31JIt8DlZgc7qS60r6ZxJZj+KRAPFQGufVKHQ==
+X-Received: by 2002:a05:6a00:1406:b0:682:4ef7:9b17 with SMTP id l6-20020a056a00140600b006824ef79b17mr15252022pfu.32.1692887776574;
+        Thu, 24 Aug 2023 07:36:16 -0700 (PDT)
+Received: from ?IPV6:2620:15c:211:201:e6ec:4683:972:2d78? ([2620:15c:211:201:e6ec:4683:972:2d78])
+        by smtp.gmail.com with ESMTPSA id z12-20020aa791cc000000b00682c864f35bsm11533887pfa.140.2023.08.24.07.36.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Aug 2023 07:36:16 -0700 (PDT)
+Message-ID: <7b5fc500-afeb-7edf-383c-0cdda77b3cf6@acm.org>
+Date:   Thu, 24 Aug 2023 07:36:12 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230824143112.GA31208@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.1
+Subject: Re: [PATCH blktests v3 3/3] nvme: introduce
+ nvmet_target_{setup/cleanup} common code
+Content-Language: en-US
+To:     Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+        Daniel Wagner <dwagner@suse.de>
+Cc:     "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        Chaitanya Kulkarni <kch@nvidia.com>,
+        Hannes Reinecke <hare@suse.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+References: <20230822083812.24612-1-dwagner@suse.de>
+ <20230822083812.24612-4-dwagner@suse.de>
+ <fbyacmtpqfhfb763s7utwbt4kdbr3pli4rp7prj7jlklq2tit6@mkkjzy73r3a3>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <fbyacmtpqfhfb763s7utwbt4kdbr3pli4rp7prj7jlklq2tit6@mkkjzy73r3a3>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This relies on fact that group leader is always the 1st entry in the
-signal->thread_head list.
+On 8/23/23 20:09, Shinichiro Kawasaki wrote:
+> CC+: Bart,
+> 
+> This patch makes shellcheck unhappy:
+> 
+> tests/nvme/003:26:2: note: Use _nvmet_target_setup "$@" if function's $1 should mean script's $1. [SC2119]
+> tests/nvme/004:26:2: note: Use _nvmet_target_setup "$@" if function's $1 should mean script's $1. [SC2119]
+> tests/nvme/005:26:2: note: Use _nvmet_target_setup "$@" if function's $1 should mean script's $1. [SC2119]
+> tests/nvme/006:24:2: note: Use _nvmet_target_setup "$@" if function's $1 should mean script's $1. [SC2119]
+> tests/nvme/008:25:2: note: Use _nvmet_target_setup "$@" if function's $1 should mean script's $1. [SC2119]
+> tests/nvme/010:25:2: note: Use _nvmet_target_setup "$@" if function's $1 should mean script's $1. [SC2119]
+> tests/nvme/012:29:2: note: Use _nvmet_target_setup "$@" if function's $1 should mean script's $1. [SC2119]
+> tests/nvme/014:28:2: note: Use _nvmet_target_setup "$@" if function's $1 should mean script's $1. [SC2119]
+> tests/nvme/018:26:2: note: Use _nvmet_target_setup "$@" if function's $1 should mean script's $1. [SC2119]
+> tests/nvme/019:27:2: note: Use _nvmet_target_setup "$@" if function's $1 should mean script's $1. [SC2119]
+> tests/nvme/023:25:2: note: Use _nvmet_target_setup "$@" if function's $1 should mean script's $1. [SC2119]
+> 
+> But I think the warn SC2119 is false-positive and we should suppress it. In the
+> past, blktests had suppressed it until the recent commit 26664dff17b6 ("Do not
+> suppress any shellcheck warnings"). I think this commit should be reverted
+> together with this series.
+Please do not revert commit 26664dff17b6 because it produces useful
+warnings. Do you agree that the above warnings are easy to suppress,
+e.g. by changing "_nvmet_target_setup" into
+"_nvmet_target_setup ignored_argument"?
 
-With or without this change, if the lockless next_thread(last_thread)
-races with exec it can return the old or the new leader.
+Thanks,
 
-We are almost ready to kill task->thread_group, after this change its
-only user is thread_group_empty().
-
-Signed-off-by: Oleg Nesterov <oleg@redhat.com>
----
- include/linux/sched/signal.h | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/include/linux/sched/signal.h b/include/linux/sched/signal.h
-index 7fb34b8cda54..cffc882d367f 100644
---- a/include/linux/sched/signal.h
-+++ b/include/linux/sched/signal.h
-@@ -726,10 +726,9 @@ static inline struct task_struct *__next_thread(struct task_struct *p)
- 					thread_node);
- }
- 
--static inline struct task_struct *next_thread(const struct task_struct *p)
-+static inline struct task_struct *next_thread(struct task_struct *p)
- {
--	return list_entry_rcu(p->thread_group.next,
--			      struct task_struct, thread_group);
-+	return __next_thread(p) ?: p->group_leader;
- }
- 
- static inline int thread_group_empty(struct task_struct *p)
--- 
-2.25.1.362.g51ebf55
-
-
+Bart.
