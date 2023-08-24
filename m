@@ -2,159 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EA23786C99
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 12:12:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24CAF786C96
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 12:12:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239313AbjHXKLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 06:11:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53744 "EHLO
+        id S238876AbjHXKLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 06:11:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238544AbjHXKLv (ORCPT
+        with ESMTP id S238407AbjHXKLp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 06:11:51 -0400
-Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 296C3198A
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 03:11:49 -0700 (PDT)
-Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-59231a1ca9eso37533187b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 03:11:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692871908; x=1693476708;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Bl1Q50iBdvCe5yXtMKZeggNf2z/kDCkF0CSNbFHkckI=;
-        b=MWPeZiaV94eD0r+5t0wdUz9wReNqAYmRAENUMMJEkml4RH2wlEoFqGlDit+EWODwQA
-         5ZG4ehZHT9fkISlrVp95oFTdEQwKHpkGxTsn/Oa+djoo1naBWG+DRNh9KZDx+x0uUyNL
-         lkgk5aqZ8GpuvHQlymX/f19ZkYdlftRtLDWyBc2HBVNRqCi+JMwmsMdBG92IUaMytyH2
-         3npp5YsqUIzJjVXp2INqN26cid6g95//+SeEsv8EuIN4g9PPEIXfjxEPPW9IYbA/V/GO
-         Z6vgS6WlFMnff9hs2GXybOmJyjrcaMeF6EA4eF7cRWk/oVE7DabMtnx6g14lhoCR6srH
-         zVQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692871908; x=1693476708;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Bl1Q50iBdvCe5yXtMKZeggNf2z/kDCkF0CSNbFHkckI=;
-        b=Fh07aY3Ju3I7g3KzmBsN+Ij5lWcga+xluLSw5dYDizvGbPlV0AmtMkPlf4u6xICa42
-         QTBV7Al2tkzz/1SqxAV05MD9YmkN8uKsNDa0+ozri5q4Xmk4Lk5VZjhfJgi/TgOK2siP
-         k9t7P0YKvlOHHx0Vk1sgnYVwpjVHqzJ1s+cfpeoQBUShUzFRQOTdJPmU6c2IqJPfyIdG
-         uwrsbGwIV/1Qf02n+vLnmMXR3Zh7/R86oBF65/NGPP12FWPfDXBq2xNRypUxkyhlwIa7
-         bLdP+VwnBulqKDUAThhh12dQAyi//UtBDPH9Sxvu5uzyA/STO1Q1ry1pREbLLDYdi8kE
-         mhKQ==
-X-Gm-Message-State: AOJu0YxOBtjt4x5T0soqnSPnSGdkS8ZIVrRvkRuUUWCsOt4CIRAJmPxP
-        KH/7wZ+7IUU9lWA72oicsb+iQIi7dyVFaaSpqRseIQ==
-X-Google-Smtp-Source: AGHT+IGvSXY7+rdDaIUHF9HjDvskEigToneQarxKPoW1CYKgFy0fTTrMflFl3uOlx1h55l1O4xnlqO1ip0o2IVD4ULk=
-X-Received: by 2002:a0d:e692:0:b0:565:c21d:8ec6 with SMTP id
- p140-20020a0de692000000b00565c21d8ec6mr14885752ywe.6.1692871908391; Thu, 24
- Aug 2023 03:11:48 -0700 (PDT)
+        Thu, 24 Aug 2023 06:11:45 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1BC381985;
+        Thu, 24 Aug 2023 03:11:43 -0700 (PDT)
+Received: from [192.168.2.41] (77-166-152-30.fixed.kpn.net [77.166.152.30])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 4D11C2127C7C;
+        Thu, 24 Aug 2023 03:11:41 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4D11C2127C7C
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1692871902;
+        bh=wTL4n6RO/pSWsfS18SzRvJJMqeO2s4ooiItSpkg0MWQ=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=EizwWg/LJoesLN5ikB/qxJIqjQ/Rce8ZK1aEeTK1iZUhDOJrgvZwzjDSPhmeljdXS
+         x16eJuz2y9rq+c8IpzQRmrlag1YECBsIPgqlzzkuqtc33gCMgfonlhkLWfJrxvEg/R
+         fY0cY+aBpI6cSCPtVOO3UHrFj1sDY7J5nC1TSJQM=
+Message-ID: <06070c5d-c236-46a6-a2c1-f6d6c332b06d@linux.microsoft.com>
+Date:   Thu, 24 Aug 2023 12:11:39 +0200
 MIME-Version: 1.0
-References: <20230815014057.13589-1-wenchao.chen@unisoc.com> <20230815014057.13589-2-wenchao.chen@unisoc.com>
-In-Reply-To: <20230815014057.13589-2-wenchao.chen@unisoc.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 24 Aug 2023 12:11:12 +0200
-Message-ID: <CAPDyKFphAPOSj5L6Q8tdmD0S3EkxTW8EfMyXKsoUU2jqLydx=g@mail.gmail.com>
-Subject: Re: [PATCH V2 1/2] mmc: core: Add host specific tuning support for SD
- HS mode
-To:     Wenchao Chen <wenchao.chen@unisoc.com>
-Cc:     adrian.hunter@intel.com, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, wenchao.chen666@gmail.com,
-        zhenxiong.lai@unisoc.com, chunyan.zhang@unisoc.com,
-        yuelin.tang@unisoc.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5.15] Revert "KVM: x86: enable TDP MMU by default"
+To:     Sean Christopherson <seanjc@google.com>, stable@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Mathias Krause <minipli@grsecurity.net>
+References: <20230824010512.2714931-1-seanjc@google.com>
+ <ZOavFlKo2/sixUTk@google.com>
+Content-Language: en-US
+From:   Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
+In-Reply-To: <ZOavFlKo2/sixUTk@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Aug 2023 at 03:41, Wenchao Chen <wenchao.chen@unisoc.com> wrote:
->
-> Added .prepare_hs_tuning and .execute_hs_tuning host callbacks to
-> support host-specific tuning for SD high speed mode.
+On 8/24/2023 3:15 AM, Sean Christopherson wrote:
+> +Jeremi and Mathias, my scripts for sending patches to stable don't auto-cc :-/
+> 
+> On Wed, Aug 23, 2023, Sean Christopherson wrote:
+>> Disable the TDP MMU by default in v5.15 kernels to "fix" several severe
+>> performance bugs that have since been found and fixed in the TDP MMU, but
+>> are unsuitable for backporting to v5.15.
+>>
+>> The problematic bugs are fixed by upstream commit edbdb43fc96b ("KVM:
+>> x86: Preserve TDP MMU roots until they are explicitly invalidated") and
+>> commit 01b31714bd90 ("KVM: x86: Do not unload MMU roots when only toggling
+>> CR0.WP with TDP enabled").  Both commits fix scenarios where KVM will
+>> rebuild all TDP MMU page tables in paths that are frequently hit by
+>> certain guest workloads.  While not exactly common, the guest workloads
+>> are far from rare.  The fallout of rebuilding TDP MMU page tables can be
+>> so severe in some cases that it induces soft lockups in the guest.
+>>
+>> Commit edbdb43fc96b would require _significant_ effort and churn to
+>> backport due it depending on a major rework that was done in v5.18.
+>>
+>> Commit 01b31714bd90 has far fewer direct conflicts, but has several subtle
+>> _known_ dependencies, and it's unclear whether or not there are more
+>> unknown dependencies that have been missed.
+>>
+>> Lastly, disabling the TDP MMU in v5.15 kernels also fixes a lurking train
+>> wreck started by upstream commit a955cad84cda ("KVM: x86/mmu: Retry page
+>> fault if root is invalidated by memslot update").  That commit was tagged
+>> for stable to fix a memory leak, but didn't cherry-pick cleanly and was
+>> never backported to v5.15.  Which is extremely fortunate, as it introduced
+>> not one but two bugs, one of which was fixed by upstream commit
+>> 18c841e1f411 ("KVM: x86: Retry page fault if MMU reload is pending and
+>> root has no sp"), while the other was unknowingly fixed by upstream
+>> commit ba6e3fe25543 ("KVM: x86/mmu: Grab mmu_invalidate_seq in
+>> kvm_faultin_pfn()") in v6.3 (a one-off fix will be made for v6.1 kernels,
+>> which did receive a backport for a955cad84cda).  Disabling the TDP MMU
+>> by default reduces the probability of breaking v5.15 kernels by
+>> backporting only a subset of the fixes.
+>>
+>> As far as what is lost by disabling the TDP MMU, the main selling point of
+>> the TDP MMU is its ability to service page fault VM-Exits in parallel,
+>> i.e. the main benefactors of the TDP MMU are deployments of large VMs
+>> (hundreds of vCPUs), and in particular delployments that live-migrate such
+>> VMs and thus need to fault-in huge amounts of memory on many vCPUs after
+>> restarting the VM after migration.
+>>
+>> Smaller VMs can see performance improvements, but nowhere enough to make
+>> up for the TDP MMU (in v5.15) absolutely cratering performance for some
+>> workloads.  And practically speaking, anyone that is deploying and
+>> migrating VMs with hundreds of vCPUs is likely rolling their own kernel,
+>> not using a stock v5.15 series kernel.
+>>
+>> This reverts commit 71ba3f3189c78f756a659568fb473600fd78f207.
+>>
+>> Link: https://lore.kernel.org/all/ZDmEGM+CgYpvDLh6@google.com
+>> Link: https://lore.kernel.org/all/f023d927-52aa-7e08-2ee5-59a2fbc65953@gameservers.com
+>> Cc: Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
+>> Cc: Mathias Krause <minipli@grsecurity.net>
+>> Signed-off-by: Sean Christopherson <seanjc@google.com>
+>> ---
+>>  arch/x86/kvm/mmu/tdp_mmu.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+>> index 6c2bb60ccd88..7a64fb238044 100644
+>> --- a/arch/x86/kvm/mmu/tdp_mmu.c
+>> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+>> @@ -10,7 +10,7 @@
+>>  #include <asm/cmpxchg.h>
+>>  #include <trace/events/kvm.h>
+>>  
+>> -static bool __read_mostly tdp_mmu_enabled = true;
+>> +static bool __read_mostly tdp_mmu_enabled = false;
+>>  module_param_named(tdp_mmu, tdp_mmu_enabled, bool, 0644);
+>>  
+>>  /* Initializes the TDP MMU for the VM, if enabled. */
+>>
+>> base-commit: f6f7927ac664ba23447f8dd3c3dfe2f4ee39272f
+>> -- 
+>> 2.42.0.rc2.253.gd59a3bf2b4-goog
+>>
 
-Please clarify this is entirely optional, host specific - and that
-there is nothing in the SD spec that mentions this.
+Thanks, I've been meaning to poke you about this again but things got in the way.
+Have my ack:
 
->
-> Signed-off-by: Wenchao Chen <wenchao.chen@unisoc.com>
-> ---
->  drivers/mmc/core/sd.c    | 12 ++++++++++++
->  include/linux/mmc/host.h |  6 ++++++
->  2 files changed, 18 insertions(+)
->
-> diff --git a/drivers/mmc/core/sd.c b/drivers/mmc/core/sd.c
-> index 246ce027ae0a..ac2da8f2fbce 100644
-> --- a/drivers/mmc/core/sd.c
-> +++ b/drivers/mmc/core/sd.c
-> @@ -1518,6 +1518,12 @@ static int mmc_sd_init_card(struct mmc_host *host, u32 ocr,
->                  */
->                 mmc_set_clock(host, mmc_sd_get_max_clock(card));
->
-> +               if (host->ops->prepare_hs_tuning) {
-
-Shouldn't we check if we actually succeeded to enable MMC_TIMING_SD_HS
-before invoking this callback?
-
-> +                       err = host->ops->prepare_hs_tuning(host, card);
-> +                       if (err)
-> +                               goto free_card;
-> +               }
-> +
->                 /*
->                  * Switch to wider bus (if supported).
->                  */
-> @@ -1529,6 +1535,12 @@ static int mmc_sd_init_card(struct mmc_host *host, u32 ocr,
->
->                         mmc_set_bus_width(host, MMC_BUS_WIDTH_4);
->                 }
-> +
-> +               if (host->ops->execute_hs_tuning) {
-
-Ditto.
-
-> +                       err = host->ops->execute_hs_tuning(host, card);
-> +                       if (err)
-> +                               goto free_card;
-> +               }
->         }
->  cont:
->         if (!oldcard) {
-> diff --git a/include/linux/mmc/host.h b/include/linux/mmc/host.h
-> index 461d1543893b..13cf894b9e3c 100644
-> --- a/include/linux/mmc/host.h
-> +++ b/include/linux/mmc/host.h
-> @@ -184,6 +184,12 @@ struct mmc_host_ops {
->         /* Execute HS400 tuning depending host driver */
->         int     (*execute_hs400_tuning)(struct mmc_host *host, struct mmc_card *card);
->
-> +       /* Prepare HS tuning depending host driver */
-
-How about rephrasing this into something along the lines of "Optional
-callback to prepare for SD high-speed tuning"
-
-> +       int     (*prepare_hs_tuning)(struct mmc_host *host, struct mmc_card *card);
-
-To make it more clear this if for SD high-speed, maybe we should
-rename the callback into:
-
-"prepare_sd_hs_tuning"
-
-> +
-> +       /* Execute HS tuning depending host driver */
-
-How about rephrasing this to something along the lines of "Optional
-callback to execute SD high-speed tuning"
-
-> +       int     (*execute_hs_tuning)(struct mmc_host *host, struct mmc_card *card);
-
-Maybe execute_sd_hs_tuning instead?
-
-> +
->         /* Prepare switch to DDR during the HS400 init sequence */
->         int     (*hs400_prepare_ddr)(struct mmc_host *host);
->
-
-Kind regards
-Uffe
+Acked-by: Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
