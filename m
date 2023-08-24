@@ -2,80 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BE8D786FB4
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 14:54:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2E66786FC6
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 14:57:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241311AbjHXMx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 08:53:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36790 "EHLO
+        id S232504AbjHXM5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 08:57:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241409AbjHXMxm (ORCPT
+        with ESMTP id S233577AbjHXM4d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 08:53:42 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C74DF1BCD;
-        Thu, 24 Aug 2023 05:53:17 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-522dd6b6438so8333394a12.0;
-        Thu, 24 Aug 2023 05:53:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692881596; x=1693486396;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=a0dA5RBeqQfeg878QxKWVqpPWMWAEfr+8oDDT8byqQI=;
-        b=RF9ui2WSjGQ6tmIHflrg+sz4KTW/5vgSY49OnreCxBuh47WCh2TVPJN2SWvHan34x6
-         7dMRs5M2Zwk1kUYgd0htxegkIac+deoicYBbw/Ae6dinHTXopD3TeHHrzG1Ofd9SWh9m
-         eJsySo1U5huPIruN039gIwHmO1969eNLjH0MgilRVMsTrKwA2zEgn1qOPixVDif3Uy7Q
-         Ece8Ux/sbUttbFOlbjkczeYSZ/eI7wYNEjJxI+OZS8b9jZHN9j/ckQYKmU+MGUb7bVIq
-         Uc3xpWczTuQQfIDWKXPjpclTztR0waA6/9RTQlQjCLt+oDEPRcBviiTdVdUSaCJGmFrX
-         /PRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692881596; x=1693486396;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=a0dA5RBeqQfeg878QxKWVqpPWMWAEfr+8oDDT8byqQI=;
-        b=IyU4MHuRRledJQpNtckcriXQdkwXtZZp4fcA1XVBxN27CPubtWL1+PEOLJ5cUGLWB/
-         d6y69tVPnlGy+3rx3NlzGi8FzLjXJKBooFjHjeNxShekKvBYxoPyVG0tj1XWZJFnWYvM
-         eO52euJtd2dfQ6oRc6L+laF6eEiZaNf3YtYPGYRX85CefOLe07afgTfaES8PbhNobuia
-         Cb2KszCnDp2SzDEVkM/AbPnPPa+p4n8xyQKjaiUs/Frbf3aPbiRjoq98fPJ1tV2Wx/Zx
-         RD9fItaSXC7kHHmxWq4Y42Dyd21N8Ok6KVgkeQ+McUemCNDTZrsWOoHLQ3ObhkI5zrpN
-         j4ag==
-X-Gm-Message-State: AOJu0Ywx7gm/SeavgUz3MUILuvtIN0jicgleDyctLoKfdOukbYGzeLMy
-        moMh5RHlNX+hPLDyY1DXMjA=
-X-Google-Smtp-Source: AGHT+IHv0X6KM0uXkODlETxpSedIundnk78PbDvW0KmpO6HfL0/XBwc9GqUwPP4VLqm9gGglEBBxLg==
-X-Received: by 2002:aa7:dd47:0:b0:523:ad6e:7d00 with SMTP id o7-20020aa7dd47000000b00523ad6e7d00mr9713493edw.6.1692881595960;
-        Thu, 24 Aug 2023 05:53:15 -0700 (PDT)
-Received: from fedora ([85.93.123.158])
-        by smtp.gmail.com with ESMTPSA id v14-20020a056402184e00b0052a3edff5c3sm1362554edy.87.2023.08.24.05.53.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Aug 2023 05:53:15 -0700 (PDT)
-Date:   Thu, 24 Aug 2023 14:53:13 +0200
-From:   Martin =?utf-8?B?WmHFpW92acSN?= <m.zatovic1@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linus.walleij@linaro.org, quic_jhugo@quicinc.com,
-        nipun.gupta@amd.com, tzimmermann@suse.de, ogabbay@kernel.org,
-        mathieu.poirier@linaro.org, axboe@kernel.dk,
-        damien.lemoal@opensource.wdc.com, linux@zary.sk, arnd@arndb.de,
-        yangyicong@hisilicon.com, benjamin.tissoires@redhat.com,
-        masahiroy@kernel.org, jacek.lawrynowicz@linux.intel.com,
-        geert+renesas@glider.be, devicetree@vger.kernel.org,
-        andriy.shevchenko@intel.com
-Subject: Re: [PATCHv5 2/4] wiegand: add Wiegand bus driver
-Message-ID: <ZOdSudrhg/9u3a9N@fedora>
-References: <20230824111015.57765-1-m.zatovic1@gmail.com>
- <20230824111015.57765-3-m.zatovic1@gmail.com>
- <2023082420-quaking-barley-47b4@gregkh>
+        Thu, 24 Aug 2023 08:56:33 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07606CD0
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 05:56:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692881791; x=1724417791;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=WchCVHcquPopaM2xXvJm7NMGY+0W0sobFwO3R856VXM=;
+  b=fSw/gjfPBp1dVvfpn5wQlJsdINebm8gV73FwooDtGcbH7dUay4TBl6LL
+   FpSZsbOtWzJ9uDVq3BvoWb3O3kXh7vxfyoId1qQXADtw5lNsvJ8+pvruw
+   bpFwi4Nx9mnyg1Of1cZbRi4R90q6rYlN1s6RebiAbZnejJpdquzDPMgjK
+   eumbOKDtgflK1LZWXkUSSgKGlRDc7H7CoMLCp6nLW7PlGZFlMlCihRo3S
+   bCkqudkwVXC/iklzitTSPxC58y8+ST/3CiTv5d7YBfoFmu0lXlaUjzJCG
+   M/3n1gG4zsaqpM5eWG8wGh9B1NVT2rjMTrFJXPM0cuq6CPgMrGWn4OmDj
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="364603797"
+X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
+   d="scan'208";a="364603797"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 05:56:30 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="983689896"
+X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
+   d="scan'208";a="983689896"
+Received: from abedekar-mobl1.ger.corp.intel.com ([10.251.213.29])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 05:56:28 -0700
+Date:   Thu, 24 Aug 2023 15:56:25 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     "Wieczor-Retman, Maciej" <maciej.wieczor-retman@intel.com>
+cc:     LKML <linux-kernel@vger.kernel.org>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        fenghua.yu@intel.com
+Subject: Re: [PATCH 2/3] selftests/resctrl: Move run_benchmark() to a more
+ fitting file
+In-Reply-To: <69a1ed7c06c3c34a2e39b50ffcceb9774967203a.1692880423.git.maciej.wieczor-retman@intel.com>
+Message-ID: <3978b8f7-1d80-d7-926a-72b2cfd923bd@linux.intel.com>
+References: <cover.1692880423.git.maciej.wieczor-retman@intel.com> <69a1ed7c06c3c34a2e39b50ffcceb9774967203a.1692880423.git.maciej.wieczor-retman@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2023082420-quaking-barley-47b4@gregkh>
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,39 +62,163 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 01:40:35PM +0200, Greg KH wrote:
-> On Thu, Aug 24, 2023 at 01:10:13PM +0200, Martin Zaťovič wrote:
-> > +static inline void wiegand_controller_put(void *ptr)
-> 
-> Why is this a void *?  It should be "struct wiegand_controller *"
+On Thu, 24 Aug 2023, Wieczor-Retman, Maciej wrote:
 
-It is a void* because it is being passed to devm_add_action_or_reset()
-and this function only accepts a pointer to a function that accepts a void*
-parameter. I am not sure if there is a way around it.
+Thanks for this patch, the new location is much more appropriate and 
+logical (more than once I've tried to look for this from the wrong file).
 
+> Resctrlfs.c file contains mostly functions that interact in some way
+> with resctrl FS entries while functions inside resctrl_val.c deal with
+> measurements and benchmarking
 > 
-> Please never use void * if at all possible.
+> Run_benchmark() function is located in resctrlfs.c file even though it's
+> purpose is not interacting with the resctrl FS but to execute cache
+> checking logic
 > 
-> > +static inline void wiegand_unregister_driver(struct wiegand_driver *wdrv)
-> > +{
-> > +	if (wdrv)
-> 
-> How could this ever be true?
-> 
-> > +		driver_unregister(&wdrv->driver);
-> > +}
-> > +
-> > +static inline struct wiegand_driver *to_wiegand_driver(struct device_driver *drv)
-> > +{
-> > +	return drv ? container_of(drv, struct wiegand_driver, driver) : NULL;
-> 
-> How could drv be NULL?
-> 
-> And you should make this a const *, right?
+> Move run_benchmark() to resctrl_val.c just before resctrl_val() function
+> that makes use of run_benchmark()
 
-Will fix the other issues. Thank you!
+Please terminate your sentences in changelog with . like in normal 
+writing.
 
+> Signed-off-by: Wieczor-Retman, Maciej <maciej.wieczor-retman@intel.com>
+> ---
+>  tools/testing/selftests/resctrl/resctrl_val.c | 52 +++++++++++++++++++
+>  tools/testing/selftests/resctrl/resctrlfs.c   | 52 -------------------
+>  2 files changed, 52 insertions(+), 52 deletions(-)
 > 
-> thanks,
+> diff --git a/tools/testing/selftests/resctrl/resctrl_val.c b/tools/testing/selftests/resctrl/resctrl_val.c
+> index f0f6c5f6e98b..667542c084eb 100644
+> --- a/tools/testing/selftests/resctrl/resctrl_val.c
+> +++ b/tools/testing/selftests/resctrl/resctrl_val.c
+> @@ -621,6 +621,58 @@ measure_vals(struct resctrl_val_param *param, unsigned long *bw_resc_start)
+>  	return 0;
+>  }
+>  
+> +/*
+> + * run_benchmark - Run a specified benchmark or fill_buf (default benchmark)
+> + *		   in specified signal. Direct benchmark stdio to /dev/null.
+> + * @signum:	signal number
+> + * @info:	signal info
+> + * @ucontext:	user context in signal handling
+> + *
+> + * Return: void
+
+This Return: void feels waste of screen space as if it wouldn't be 
+obvious from the function signature.
+
+> + */
+> +void run_benchmark(int signum, siginfo_t *info, void *ucontext)
+> +{
+> +	int operation, ret, memflush;
+> +	char **benchmark_cmd;
+> +	size_t span;
+> +	bool once;
+> +	FILE *fp;
+> +
+> +	benchmark_cmd = info->si_ptr;
+> +
+> +	/*
+> +	 * Direct stdio of child to /dev/null, so that only parent writes to
+> +	 * stdio (console)
+> +	 */
+> +	fp = freopen("/dev/null", "w", stdout);
+> +	if (!fp)
+> +		PARENT_EXIT("Unable to direct benchmark status to /dev/null");
+> +
+> +	if (strcmp(benchmark_cmd[0], "fill_buf") == 0) {
+> +		/* Execute default fill_buf benchmark */
+> +		span = strtoul(benchmark_cmd[1], NULL, 10);
+> +		memflush =  atoi(benchmark_cmd[2]);
+> +		operation = atoi(benchmark_cmd[3]);
+> +		if (!strcmp(benchmark_cmd[4], "true"))
+> +			once = true;
+> +		else if (!strcmp(benchmark_cmd[4], "false"))
+> +			once = false;
+> +		else
+> +			PARENT_EXIT("Invalid once parameter");
+> +
+> +		if (run_fill_buf(span, memflush, operation, once))
+> +			fprintf(stderr, "Error in running fill buffer\n");
+> +	} else {
+> +		/* Execute specified benchmark */
+> +		ret = execvp(benchmark_cmd[0], benchmark_cmd);
+> +		if (ret)
+> +			perror("wrong\n");
+> +	}
+> +
+> +	fclose(stdout);
+> +	PARENT_EXIT("Unable to run specified benchmark");
+> +}
+> +
+>  /*
+>   * resctrl_val:	execute benchmark and measure memory bandwidth on
+>   *			the benchmark
+> diff --git a/tools/testing/selftests/resctrl/resctrlfs.c b/tools/testing/selftests/resctrl/resctrlfs.c
+> index a6d0b632cbc6..e3c94614c086 100644
+> --- a/tools/testing/selftests/resctrl/resctrlfs.c
+> +++ b/tools/testing/selftests/resctrl/resctrlfs.c
+> @@ -291,58 +291,6 @@ int taskset_benchmark(pid_t bm_pid, int cpu_no)
+>  	return 0;
+>  }
+>  
+> -/*
+> - * run_benchmark - Run a specified benchmark or fill_buf (default benchmark)
+> - *		   in specified signal. Direct benchmark stdio to /dev/null.
+> - * @signum:	signal number
+> - * @info:	signal info
+> - * @ucontext:	user context in signal handling
+> - *
+> - * Return: void
+> - */
+> -void run_benchmark(int signum, siginfo_t *info, void *ucontext)
+> -{
+> -	int operation, ret, memflush;
+> -	char **benchmark_cmd;
+> -	size_t span;
+> -	bool once;
+> -	FILE *fp;
+> -
+> -	benchmark_cmd = info->si_ptr;
+> -
+> -	/*
+> -	 * Direct stdio of child to /dev/null, so that only parent writes to
+> -	 * stdio (console)
+> -	 */
+> -	fp = freopen("/dev/null", "w", stdout);
+> -	if (!fp)
+> -		PARENT_EXIT("Unable to direct benchmark status to /dev/null");
+> -
+> -	if (strcmp(benchmark_cmd[0], "fill_buf") == 0) {
+> -		/* Execute default fill_buf benchmark */
+> -		span = strtoul(benchmark_cmd[1], NULL, 10);
+> -		memflush =  atoi(benchmark_cmd[2]);
+> -		operation = atoi(benchmark_cmd[3]);
+> -		if (!strcmp(benchmark_cmd[4], "true"))
+> -			once = true;
+> -		else if (!strcmp(benchmark_cmd[4], "false"))
+> -			once = false;
+> -		else
+> -			PARENT_EXIT("Invalid once parameter");
+> -
+> -		if (run_fill_buf(span, memflush, operation, once))
+> -			fprintf(stderr, "Error in running fill buffer\n");
+> -	} else {
+> -		/* Execute specified benchmark */
+> -		ret = execvp(benchmark_cmd[0], benchmark_cmd);
+> -		if (ret)
+> -			perror("wrong\n");
+> -	}
+> -
+> -	fclose(stdout);
+> -	PARENT_EXIT("Unable to run specified benchmark");
+> -}
+> -
+>  /*
+>   * create_grp - Create a group only if one doesn't exist
+>   * @grp_name:	Name of the group
 > 
-> greg k-h
+
+-- 
+ i.
+
