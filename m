@@ -2,89 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4951A7870E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 15:54:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BF1C7870FA
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 16:01:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240808AbjHXNyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 09:54:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54234 "EHLO
+        id S241092AbjHXOAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 10:00:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241300AbjHXNx5 (ORCPT
+        with ESMTP id S237974AbjHXOAK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 09:53:57 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6D2FA8;
-        Thu, 24 Aug 2023 06:53:51 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2b9f0b7af65so102953251fa.1;
-        Thu, 24 Aug 2023 06:53:51 -0700 (PDT)
+        Thu, 24 Aug 2023 10:00:10 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2835419BA
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 07:00:08 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-521e046f6c7so10608a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 07:00:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692885230; x=1693490030;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=5LYpTKXg3FZey1/Sx1CuzIbt0+XrBzCQETNfbb8Zj50=;
-        b=DN73H0Au+zeKlQ/SNDV6ZPc9sqSdbcTrTVKA8EKfKm1iaxY21dA8TKMPEEgoQPsmyX
-         ig615V4/j0biqjWMjKwPqgSkX/hKeLZdweth/uoPv1vxxBq32yCeyAvs7Y5D5JvPD+de
-         MUCcahsaMShuJhkfkiJJfP5dWt06dHMsrADe2y0ivjjotIm7U3HK+rysIGclcNVVZPo2
-         fb04lQ83XwNLhKMBbW6qZqkXFseYHFZPsN1AyKT9kTSQmeXbhvR+ADeCToIW7KQ8VYvA
-         07F2q9EtxikWELTtXf9eBqroKysJaUIpkB0WoeqQBmJO+NwN+WS2IXZFn698DsRPrz1K
-         Y2BQ==
+        d=google.com; s=20221208; t=1692885606; x=1693490406;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WkV40uqGUGl5dpsyEnO1MhpakKM+GSDF+knK2yDE5VM=;
+        b=0xtfVAIt9X3PBZ7W+ieKFzpRgHm2ts6Ik89s7fWIYlrCDWnDnRBqUzXVq6ytDPs4qA
+         cetr4u8d4bY7ogbBFfWaneL23yrKj0lZQjzHPIvEwZVfGpcuHRgC3nY0obM1F1W4LXQf
+         qxPj8IJGj5pQjl606QYsA5+08zlmzqMYVNcNL7+BZPTtOMRP5fHtbQPQJsSQ08OucM5u
+         jC7IEhIY3PGP0e4b0o+BFdXMocst/XA4u2bODDwbCj+F2bNGTy5XE6LVyWeYYZQwTeet
+         5LHCnJY1/la3897lADLmZE5Pw43r0yVBx1+m7Qr7g912nAj+9Oo62xsUVDwejsu2+bWw
+         TzOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692885230; x=1693490030;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5LYpTKXg3FZey1/Sx1CuzIbt0+XrBzCQETNfbb8Zj50=;
-        b=H86wPFmqHYlsC1y6p4aR2/tI0WEe/HkMutPr6RN8lKO8aI/c9npQSrIwYMIzGJaJld
-         79Mi2WcVKG4sFN2qdQ2N1DkYqkJS7QK8FS/cSur81ZeNZPc4pVVLJvW7c3C8/SnNkWSY
-         XiZg6NR3aCDkCbzkFVoSXkUXeaZuDrXvmRxJTxTUSeQJ7Rj7/cnEKJXDVE88DbDAFSeZ
-         c8OfTOhrXjs20lJxNMOcE/kpieRenoxYYfveciMF/hZfOBKHwFdWITD3FPELEnV52PZu
-         8upSBjKIIugyzpiF8kcuBN1oVH2kMO8bCs9I0jEJvX+qukzgImhYRxlRCDw3OO2t4tfy
-         gj0g==
-X-Gm-Message-State: AOJu0YwBZOvFOsJaydj0l+niHMUyigU4xoYQ9DsREfLloKD3EgvqVZBz
-        cw8L9NoB1ekVZZ2OE+0Yb+wX76X0MD9kLmT4
-X-Google-Smtp-Source: AGHT+IEefotIFfjeuslW/NyPnOv1al/whlGKNiU+Okhol05ME3LSn5l6OfI7GK7mwS6vyDa9APZYrw==
-X-Received: by 2002:a2e:b164:0:b0:2bb:bfa5:b72c with SMTP id a4-20020a2eb164000000b002bbbfa5b72cmr10493041ljm.15.1692885229450;
-        Thu, 24 Aug 2023 06:53:49 -0700 (PDT)
-Received: from [192.168.20.89] (83-233-6-197.cust.bredband2.com. [83.233.6.197])
-        by smtp.gmail.com with ESMTPSA id p15-20020a2e9a8f000000b002bcdbfe36a1sm857498lji.84.2023.08.24.06.53.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Aug 2023 06:53:48 -0700 (PDT)
-From:   Marcus Folkesson <marcus.folkesson@gmail.com>
-Date:   Thu, 24 Aug 2023 15:55:50 +0200
-Subject: [PATCH] input: docs: pxrc: remove reference to phoenix-sim
+        d=1e100.net; s=20221208; t=1692885606; x=1693490406;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WkV40uqGUGl5dpsyEnO1MhpakKM+GSDF+knK2yDE5VM=;
+        b=ETI8TxTCU3kuJ11fnztfLO/nyNJIFu6mM9cr/hUfdPnTKJH5XNiTHnJrwej3HFn5f1
+         B/CyTQFMXdck/h1mYLX3xU16VKtJ1ozvjHHJtridFytTe4j8sq72GSac1l5fSoqLtBVj
+         4ZmEf0idWAjcVPQIexxWmpFnF+QCMsPJsdHOCzTcByJ9lgZ6wWO+WfrJ8r58MMNFLjMP
+         /4dy/82VtE96vGIW0ge76oNjukxW8gqCki9/lqSPDhginCVwmJlu/pA9sPI68VGKpdvG
+         o4vT3ZZ7FgrJEM2DUnxyHnC5+8qwr+xV6qQSSLuGZ4u51lQJQaXkop7jyK3TtIwWQQhg
+         MDFg==
+X-Gm-Message-State: AOJu0YzkqrlDVKOP/MgBVfVj9TDHBMboobh53Pgss+7JWmm7jBLB//PQ
+        S3UeXzh1mSDQWcczXHFql9sat2IWQ38W0F2bhHWPVQ==
+X-Google-Smtp-Source: AGHT+IHiiz5QrZnui68a1y/y8CWM+QocPYRyCNwuKkv+7h/M2kvsuIqgu/ctnn4/w+ncpxK+M+ilBLBwHcyXyqKykRM=
+X-Received: by 2002:a50:8d16:0:b0:523:caae:d6ee with SMTP id
+ s22-20020a508d16000000b00523caaed6eemr461390eds.2.1692885606420; Thu, 24 Aug
+ 2023 07:00:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230824-pxrc-doc-v1-1-038b75a2ef05@gmail.com>
-X-B4-Tracking: v=1; b=H4sIAGVh52QC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI2MDCyMT3YKKomTdlPxkXcPElJSkxEQjI1ODNCWg8oKi1LTMCrBR0bG1tQA
- AEEX8WgAAAA==
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-input@vger.kernel.org, linux-doc@vger.kernel.org,
+References: <20230821234844.699818-1-zokeefe@google.com> <37c2b525-5c2c-d400-552c-9ccb91f4d7bf@redhat.com>
+In-Reply-To: <37c2b525-5c2c-d400-552c-9ccb91f4d7bf@redhat.com>
+From:   "Zach O'Keefe" <zokeefe@google.com>
+Date:   Thu, 24 Aug 2023 06:59:26 -0700
+Message-ID: <CAAa6QmSHF6-9aFa68WDcb+WATh2Yz=wXyp8VBLDNv6yPp2SS5Q@mail.gmail.com>
+Subject: Re: [PATCH v3] mm/thp: fix "mm: thp: kill __transhuge_page_enabled()"
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-mm@kvack.org, Yang Shi <shy828301@gmail.com>,
         linux-kernel@vger.kernel.org,
-        Marcus Folkesson <marcus.folkesson@gmail.com>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1501;
- i=marcus.folkesson@gmail.com; h=from:subject:message-id;
- bh=gfPdoZJ8VqVP1ME7IqsQu+o/zRkAyUXKN51ex5LYZ+Q=;
- b=owEBbQKS/ZANAwAIAYiATm9ZXVIyAcsmYgBk52F/TGpSKHPMSR+AnOnRcktJokJeDTpjV6ckL
- nJMFaco50aJAjMEAAEIAB0WIQQFUaLotmy1TWTBLGWIgE5vWV1SMgUCZOdhfwAKCRCIgE5vWV1S
- MqnFD/0Wa8toMqQSoAU20Ebtgi6FPbWgY+nmcCod45Y0sQM9+oGlCQ0pGBeNDo2YwX3Flu6aDla
- JvnBoki8hIEWlXk0cR5rsXk9Zz4u1P0lb/3IDZjRRtZadK6HbDVnU3WzaLGwgDnNxSs3SL/eMTy
- CRZ/NtGu9QeXLhqSpqZjzkPozE1iDk5Bhx4pWyyjEbEA9uRH8kC0tOVSClcbSk0+ZlAmtrnpRgL
- b1yw5D/vAjOpJXtIBF5SYo5Any4uMzkipkWf1ac9tOtRfPEYLPmPn/yaeghuMIIDsVFpfWitxiX
- sXjl+shem38L6AwEQIBnGu0cxNHz74Of6uDHmDOXopphbs6t4kML9kXP9+3IRu6tivlwg83p3em
- qYp4PdzNQsIw42tP42d+NO9quZHP0jkBc75MDe6y1ZbrrHZ/xRbJxziOb7VSD96N9AnZ27ZJdO1
- YyVqKS3LlKp9pUR6gjJzOGyiOH/0zxgIHAHbxFUrwMt1PLOhY1TM0mruC+jyirxnwElMUIZ7egz
- IMmLNV+alFNxiLJLUHihfpPDrSIBBxJCDy2R2TuA5KMFrr/gmwjOVudXwLLHi7UoutxdNAIAHTc
- bK0Jx6x5uXoCV5LkPBSOYJdp0cmsZFRMRTKW09610TDkRKZpOmOYNqqNEf4qa9YvrKRcV6XWBZc
- TC7m10qXXPTrl7w==
-X-Developer-Key: i=marcus.folkesson@gmail.com; a=openpgp;
- fpr=AB91D46C7E0F6E6FB2AB640EC0FE25D598F6C127
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Saurabh Singh Sengar <ssengar@microsoft.com>,
+        Greg KH <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -92,49 +72,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The reference undeniably points to something unrelated nowadays.
-Remove it.
+On Thu, Aug 24, 2023 at 12:39=E2=80=AFAM David Hildenbrand <david@redhat.co=
+m> wrote:
+>
+> On 22.08.23 01:48, Zach O'Keefe wrote:
+> > The 6.0 commits:
+> >
+> > commit 9fec51689ff6 ("mm: thp: kill transparent_hugepage_active()")
+> > commit 7da4e2cb8b1f ("mm: thp: kill __transhuge_page_enabled()")
+> >
+> > merged "can we have THPs in this VMA?" logic that was previously done
+> > separately by fault-path, khugepaged, and smaps "THPeligible" checks.
+> >
+> > During the process, the semantics of the fault path check changed in tw=
+o
+> > ways:
+> >
+> > 1) A VM_NO_KHUGEPAGED check was introduced (also added to smaps path).
+> > 2) We no longer checked if non-anonymous memory had a vm_ops->huge_faul=
+t
+> >     handler that could satisfy the fault.  Previously, this check had b=
+een
+> >     done in create_huge_pud() and create_huge_pmd() routines, but after
+> >     the changes, we never reach those routines.
+> >
+> > During the review of the above commits, it was determined that in-tree
+> > users weren't affected by the change; most notably, since the only rele=
+vant
+> > user (in terms of THP) of VM_MIXEDMAP or ->huge_fault is DAX, which is
+> > explicitly approved early in approval logic.  However, there is at leas=
+t
+> > one occurrence where an out-of-tree driver that used
+> > VM_HUGEPAGE|VM_MIXEDMAP with a vm_ops->huge_fault handler, was broken.
+>
+> ... so all we did is break an arbitrary out-of-tree driver? Sorry to
+> say, but why should we care?
+>
+> Is there any in-tree code affected and needs a "Fixes:" ?
 
-Signed-off-by: Marcus Folkesson <marcus.folkesson@gmail.com>
----
- Documentation/input/devices/pxrc.rst | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+The in-tree code was taken care of during the rework .. but I didn't
+know about the possibility of a driver hooking in here.
 
-diff --git a/Documentation/input/devices/pxrc.rst b/Documentation/input/devices/pxrc.rst
-index ca11f646bae8..5a86df4ad079 100644
---- a/Documentation/input/devices/pxrc.rst
-+++ b/Documentation/input/devices/pxrc.rst
-@@ -5,7 +5,7 @@ pxrc - PhoenixRC Flight Controller Adapter
- :Author: Marcus Folkesson <marcus.folkesson@gmail.com>
- 
- This driver let you use your own RC controller plugged into the
--adapter that comes with PhoenixRC [1]_ or other compatible adapters.
-+adapter that comes with PhoenixRC or other compatible adapters.
- 
- The adapter supports 7 analog channels and 1 digital input switch.
- 
-@@ -41,7 +41,7 @@ Manual Testing
- ==============
- 
- To test this driver's functionality you may use `input-event` which is part of
--the `input layer utilities` suite [2]_.
-+the `input layer utilities` suite [1]_.
- 
- For example::
- 
-@@ -53,5 +53,4 @@ To print all input events from input `devnr`.
- References
- ==========
- 
--.. [1] http://www.phoenix-sim.com/
--.. [2] https://www.kraxel.org/cgit/input/
-+.. [1] https://www.kraxel.org/cgit/input/
+I don't know what the normal policy / stance here is, but I figured
+the change was simple enough that it was worth helping out.
 
----
-base-commit: 7214161111af87aeee721ab1b2808fcb4421aff7
-change-id: 20230824-pxrc-doc-1addbaa2250f
+For both VM_MIXEDMAP and !DAX ->huge_fault, there is some argument to
+be made that they are unnecessarily restrictive anyways.
 
-Best regards,
--- 
-Marcus Folkesson <marcus.folkesson@gmail.com>
-
+> --
+> Cheers,
+>
+> David / dhildenb
+>
