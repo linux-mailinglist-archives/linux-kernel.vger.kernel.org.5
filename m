@@ -2,136 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C28878667E
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 06:11:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC13D786684
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 06:13:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239697AbjHXEKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 00:10:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37166 "EHLO
+        id S239706AbjHXENT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 00:13:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239932AbjHXEKZ (ORCPT
+        with ESMTP id S239455AbjHXENJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 00:10:25 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B22B10C4;
-        Wed, 23 Aug 2023 21:10:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1692850216;
-        bh=7KoZN98JmSo+SAci6EI9ZRUGXtPbnTFUP1z/hpL229U=;
-        h=Date:From:To:Cc:Subject:From;
-        b=DW1NwQayhHPWnHNJ+DmyuPKgZq/rVW/v3L678O8gwW55/UBq1IeoCmyfTNM7H6yiO
-         wgM6AcB2m/aIPqpd9JCoClhTsSRxC3c6/Iu1INs2ApupEAF/eDVTDapEOTwVXUE/PM
-         CP03hm2i6nBG25fLg6ihsZhTfCsYB0ES5XINZZ7daf+QAgmMDed500mxAuqYc3yOBx
-         UPLIkG9j3bybJXIlQs6GzfoZIuWfyiaDs1yq/4m8v+fGLH2NDItKdiBhe37cBsB8Ws
-         CUqj9ooDlLzTNwBese5gyUbpLEyjBJHWGRW0iBtipnF1J/kCtMeiHW8CZbUba677ev
-         XIfnFRTCHM25A==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RWV3l1H29z4wb8;
-        Thu, 24 Aug 2023 14:10:11 +1000 (AEST)
-Date:   Thu, 24 Aug 2023 14:10:08 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Shuah Khan <skhan@linuxfoundation.org>, Willy Tarreau <w@1wt.eu>,
-        Thomas =?UTF-8?B?V2Vpw59zY2h1aA==?= <thomas@t-8ch.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Christian Brauner <brauner@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Thomas =?UTF-8?B?V2Vpw59zY2h1?= =?UTF-8?B?aA==?= 
-        <linux@weissschuh.net>, Zhangjin Wu <falcon@tinylab.org>
-Subject: linux-next: manual merge of the nolibc tree with the vfs-brauner
- tree
-Message-ID: <20230824141008.27f7270b@canb.auug.org.au>
+        Thu, 24 Aug 2023 00:13:09 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F1CDE4B;
+        Wed, 23 Aug 2023 21:13:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692850387; x=1724386387;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=8DGmYpo5e1+4XY98tv7NyzBwr148Xio3UFlCxazJQUg=;
+  b=J3P3KGmprcF25yhDR4it+Md4M/roNOdMq0rgLbIyiOg7Ss4djbxTelCE
+   jEI0L5bsG6EXOQc5e6b+eKAJwmNzf4SBaKf7E67QGlSYPblPijvI6xmcT
+   ttBG//wSjZWnFLBg38Gw/TFR7dhaEwaira8TR9je2gXkX5mBwIQBQXFKr
+   chIUnXu52mcHmkBThDNZgC7j49qImahlX4m0c6buWinF0AI8Hw9uYNQrF
+   TWHgWNlVftUPyd3oVSKz3d1H0oIrArnolgNAf8VS2pjTOYxtYB67HLG+v
+   KGJcv9mK1h7hPE48J+cLB6GyQlDVGuKtDKuF8g5TRa/1rxL7LnBGKsiUf
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="353883743"
+X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
+   d="scan'208";a="353883743"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2023 21:13:06 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="851313291"
+X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
+   d="scan'208";a="851313291"
+Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 23 Aug 2023 21:13:01 -0700
+Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qZ1iP-0001ke-08;
+        Thu, 24 Aug 2023 04:13:01 +0000
+Date:   Thu, 24 Aug 2023 12:12:47 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     =?iso-8859-1?Q?Adri=E1n?= Larumbe <adrian.larumbe@collabora.com>,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+        robdclark@gmail.com, quic_abhinavk@quicinc.com,
+        dmitry.baryshkov@linaro.org, sean@poorly.run,
+        marijn.suijten@somainline.org, robh@kernel.org,
+        steven.price@arm.com
+Cc:     oe-kbuild-all@lists.linux.dev, linux-arm-msm@vger.kernel.org,
+        adrian.larumbe@collabora.com, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, healych@amazon.com,
+        kernel@collabora.com, freedreno@lists.freedesktop.org
+Subject: Re: [PATCH v2 2/6] drm/panfrost: Add fdinfo support GPU load metrics
+Message-ID: <202308241240.ngAywBMr-lkp@intel.com>
+References: <20230824013604.466224-3-adrian.larumbe@collabora.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/zvpK2mmdN4DBbtKv2zqL.tO";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230824013604.466224-3-adrian.larumbe@collabora.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/zvpK2mmdN4DBbtKv2zqL.tO
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Adrián,
 
-Hi all,
+kernel test robot noticed the following build warnings:
 
-Today's linux-next merge of the nolibc tree got a conflict in:
+[auto build test WARNING on drm-misc/drm-misc-next]
+[also build test WARNING on linus/master v6.5-rc7 next-20230823]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-  tools/testing/selftests/nolibc/nolibc-test.c
+url:    https://github.com/intel-lab-lkp/linux/commits/Adri-n-Larumbe/drm-panfrost-Add-cycle-count-GPU-register-definitions/20230824-093848
+base:   git://anongit.freedesktop.org/drm/drm-misc drm-misc-next
+patch link:    https://lore.kernel.org/r/20230824013604.466224-3-adrian.larumbe%40collabora.com
+patch subject: [PATCH v2 2/6] drm/panfrost: Add fdinfo support GPU load metrics
+config: alpha-allyesconfig (https://download.01.org/0day-ci/archive/20230824/202308241240.ngAywBMr-lkp@intel.com/config)
+compiler: alpha-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20230824/202308241240.ngAywBMr-lkp@intel.com/reproduce)
 
-between commit:
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308241240.ngAywBMr-lkp@intel.com/
 
-  49319832de90 ("selftests/nolibc: drop test chmod_net")
+All warnings (new ones prefixed by >>):
 
-from the vfs-brauner tree and commit:
+   drivers/gpu/drm/panfrost/panfrost_drv.c: In function 'panfrost_gpu_show_fdinfo':
+>> drivers/gpu/drm/panfrost/panfrost_drv.c:551:50: warning: format '%u' expects argument of type 'unsigned int', but argument 4 has type 'long unsigned int' [-Wformat=]
+     551 |                 drm_printf(p, "drm-curfreq-%s:\t%u Hz\n",
+         |                                                 ~^
+         |                                                  |
+         |                                                  unsigned int
+         |                                                 %lu
+     552 |                            ei->name, pfdev->pfdevfreq.current_frequency);
+         |                                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         |                                                      |
+         |                                                      long unsigned int
 
-  148e9718e2a2 ("selftests/nolibc: add chmod_argv0 test")
 
-from the nolibc tree.
+vim +551 drivers/gpu/drm/panfrost/panfrost_drv.c
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
+   534	
+   535	
+   536	static void panfrost_gpu_show_fdinfo(struct panfrost_device *pfdev,
+   537					     struct panfrost_file_priv *panfrost_priv,
+   538					     struct drm_printer *p)
+   539	{
+   540		int i;
+   541	
+   542		for (i = 0; i < NUM_JOB_SLOTS - 1; i++) {
+   543			struct engine_info *ei = &panfrost_priv->fdinfo.engines[i];
+   544	
+   545			drm_printf(p, "drm-engine-%s:\t%llu ns\n",
+   546				   ei->name, ei->elapsed_ns);
+   547			drm_printf(p, "drm-cycles-%s:\t%llu\n",
+   548				   ei->name, ei->cycles);
+   549			drm_printf(p, "drm-maxfreq-%s:\t%u Hz\n",
+   550				   ei->name, panfrost_priv->fdinfo.maxfreq);
+ > 551			drm_printf(p, "drm-curfreq-%s:\t%u Hz\n",
+   552				   ei->name, pfdev->pfdevfreq.current_frequency);
+   553		}
+   554	}
+   555	
 
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc tools/testing/selftests/nolibc/nolibc-test.c
-index 970df9e55131,e2b70641a1e7..000000000000
---- a/tools/testing/selftests/nolibc/nolibc-test.c
-+++ b/tools/testing/selftests/nolibc/nolibc-test.c
-@@@ -572,11 -857,14 +857,13 @@@ int run_syscall(int min, int max
-  		CASE_TEST(kill_0);            EXPECT_SYSZR(1, kill(getpid(), 0)); break;
-  		CASE_TEST(kill_CONT);         EXPECT_SYSZR(1, kill(getpid(), 0)); break;
-  		CASE_TEST(kill_BADPID);       EXPECT_SYSER(1, kill(INT_MAX, 0), -1, ESR=
-CH); break;
-+ 		CASE_TEST(sbrk_0);            EXPECT_PTRNE(1, sbrk(0), (void *)-1); bre=
-ak;
-  		CASE_TEST(sbrk);              if ((p1 =3D p2 =3D sbrk(4096)) !=3D (void=
- *)-1) p2 =3D sbrk(-4096); EXPECT_SYSZR(1, (p2 =3D=3D (void *)-1) || p2 =3D=
-=3D p1); break;
-  		CASE_TEST(brk);               EXPECT_SYSZR(1, brk(sbrk(0))); break;
-- 		CASE_TEST(chdir_root);        EXPECT_SYSZR(1, chdir("/")); break;
-+ 		CASE_TEST(chdir_root);        EXPECT_SYSZR(1, chdir("/")); chdir(getenv=
-("PWD")); break;
-  		CASE_TEST(chdir_dot);         EXPECT_SYSZR(1, chdir(".")); break;
-  		CASE_TEST(chdir_blah);        EXPECT_SYSER(1, chdir("/blah"), -1, ENOEN=
-T); break;
-+ 		CASE_TEST(chmod_argv0);       EXPECT_SYSZR(1, chmod(argv0, 0555)); brea=
-k;
- -		CASE_TEST(chmod_net);         EXPECT_SYSZR(proc, chmod("/proc/self/net"=
-, 0555)); break;
-  		CASE_TEST(chmod_self);        EXPECT_SYSER(proc, chmod("/proc/self", 05=
-55), -1, EPERM); break;
-  		CASE_TEST(chown_self);        EXPECT_SYSER(proc, chown("/proc/self", 0,=
- 0), -1, EPERM); break;
-  		CASE_TEST(chroot_root);       EXPECT_SYSZR(euid0, chroot("/")); break;
-
---Sig_/zvpK2mmdN4DBbtKv2zqL.tO
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTm2CAACgkQAVBC80lX
-0Gz/wwgAnUQ5Z3PuFF1pV0jT1A1JVtBfr5TLLCkxCN2gTf4RWtV3kC28/ofCZIpE
-1yr8Ow9lTkn0lHaMvgzfIhGRE/hBitQL1Hhw5EZixDifdaKbraQcijGk537wRM8R
-fHxpjfHMAHrTDhAVVdd8qvKw0wACCfSE7o6cvqkB/wSKoh2x23/QFkCERgmhdgFb
-5pwlmlJoB4zWN7VVkpV0KpTbKAUPwWpyfrHRi6xVwRGKQg4ALZLp+W/Ebxmo/tq8
-GJHf+V+uA/R7qm079TZEKb+xDpAx29MtCuqY2hmSyN14QuyLfPEe7kc56mt7Bb1v
-cqDv0y1WP79MxSCMgZHjpBP2ABjlrw==
-=O0Rz
------END PGP SIGNATURE-----
-
---Sig_/zvpK2mmdN4DBbtKv2zqL.tO--
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
