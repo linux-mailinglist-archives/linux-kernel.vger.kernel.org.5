@@ -2,72 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5EF77867DE
+	by mail.lfdr.de (Postfix) with ESMTP id EF1D27867DF
 	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 08:53:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240216AbjHXGwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 02:52:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37544 "EHLO
+        id S240229AbjHXGwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 02:52:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240002AbjHXGwN (ORCPT
+        with ESMTP id S240217AbjHXGwe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 02:52:13 -0400
-Received: from jari.cn (unknown [218.92.28.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B3603101
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 23:52:10 -0700 (PDT)
-Received: from chenxuebing$jari.cn ( [125.70.163.142] ) by
- ajax-webmail-localhost.localdomain (Coremail) ; Thu, 24 Aug 2023 14:51:38
- +0800 (GMT+08:00)
-X-Originating-IP: [125.70.163.142]
-Date:   Thu, 24 Aug 2023 14:51:38 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   "XueBing Chen" <chenxuebing@jari.cn>
-To:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/amdgpu/df: Clean up errors in df_v1_7.h
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version 2023.1-cmXT6 build
- 20230419(ff23bf83) Copyright (c) 2002-2023 www.mailtech.cn
- mispb-4e503810-ca60-4ec8-a188-7102c18937cf-zhkzyfz.cn
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Thu, 24 Aug 2023 02:52:34 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 844EEE59
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 23:52:31 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9a19bf6ab66so479702766b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 23:52:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692859950; x=1693464750;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=tec2kZ0UKM8W+HhApP5ewEurz9N6NjLpNOz2ZhRdTI0=;
+        b=y4ZL8J/hT/4lhwdW1JUK1rVUuPaCA6ziZUrBMqPLtCfiko/o1x47nAFofn/Sf2FQV3
+         a9VCbPYrOpgf+5G5PRLhYyUVkv2853dYRke2aAFL0kQayHW5iyUlBmZccAZKv5ZCuQYp
+         vPZ0N0daHWZ0InXx6Y53eIqCD41jxKMvz5b51jxcn+y5h0Ti9QCH3c0UEZyVpjJyySna
+         vQRs2DAQFEmQwOA2L8GViFdF+1khWa3P5r3FGjmFlQACnBhrNtRHw9W590aNoaaX+G1o
+         8HXxJfX3msHrqRJyILRE7S3ahy5TNH237lEO3Fvf1JWx67xJDML9yqD6yA2MgjVRXdN8
+         GjoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692859950; x=1693464750;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tec2kZ0UKM8W+HhApP5ewEurz9N6NjLpNOz2ZhRdTI0=;
+        b=i1P28QowZyguSLW7KecYC2i5LXm4wEuDJYYlSs+HrejcZl1Sj3X2TukXb8YNa1YIjC
+         7xsyAVcswEXKqw0r81NDP78b1wMAIgkB6XvotXYFIx0CMmC1CpbpU7huBzsBQxJua2Yu
+         1QEaARD6qkKSgz1N8BfXNsHHpp55UmWWS+x42Rj8GacYEEOpIrBzUfYnnSocq3urk7NH
+         8MgBm3/7C1RK6e8Pbrt7Pfe5+NGQ9m0mc7NQL3hvmWYiT2o99BWNIGNNG6xWFRrCh5sg
+         cNW+uc3J8767YjWkXD+0hmEdkkAHY0oFmi33XyY9cbdpt9q9gNm6btmf04ycZc3TMiVV
+         gTVw==
+X-Gm-Message-State: AOJu0Yz8bFQ8cRJ8Ur3/2LMRZdo83wRcjwtPBKkGddPgZRn53y/NeEsm
+        JFjRfn8W2EfpSnDN9zvCxHXYVA==
+X-Google-Smtp-Source: AGHT+IF8mGk66KD1/hFdUuDrD7JYFjxRsc7Z6C/GO3AEZx1GBNE0jZUAwcxYLUKpOcCH3vti2NmJAA==
+X-Received: by 2002:a17:906:2219:b0:9a1:c3ae:b014 with SMTP id s25-20020a170906221900b009a1c3aeb014mr4417705ejs.20.1692859949947;
+        Wed, 23 Aug 2023 23:52:29 -0700 (PDT)
+Received: from [192.168.0.22] ([77.252.47.198])
+        by smtp.gmail.com with ESMTPSA id p25-20020a17090628d900b0098963eb0c3dsm10564592ejd.26.2023.08.23.23.52.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Aug 2023 23:52:29 -0700 (PDT)
+Message-ID: <97445129-3cb6-d0bb-b1f8-dea997408ac4@linaro.org>
+Date:   Thu, 24 Aug 2023 08:52:28 +0200
 MIME-Version: 1.0
-Message-ID: <3f93eab5.639.18a26501c55.Coremail.chenxuebing@jari.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: AQAAfwD3lD_7_eZkni2SAA--.482W
-X-CM-SenderInfo: hfkh05pxhex0nj6mt2flof0/1tbiAQANCmTl1A4ANAACsr
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
-X-Spam-Status: No, score=2.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_PBL,RDNS_NONE,T_SPF_HELO_PERMERROR,T_SPF_PERMERROR,XPRIO
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: **
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [EXTERNAL] Re: [PATCH v6 2/5] dt-bindings: net: Add IEP property
+ in ICSSG
+Content-Language: en-US
+To:     Md Danish Anwar <a0501179@ti.com>,
+        MD Danish Anwar <danishanwar@ti.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Roger Quadros <rogerq@kernel.org>,
+        Simon Horman <simon.horman@corigine.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     nm@ti.com, srk@ti.com, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, netdev@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20230823113254.292603-1-danishanwar@ti.com>
+ <20230823113254.292603-3-danishanwar@ti.com>
+ <1326776f-2592-f231-2056-a231729da50a@linaro.org>
+ <78d315b9-f8b1-0012-ceb9-5c3c5034c7dc@ti.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <78d315b9-f8b1-0012-ceb9-5c3c5034c7dc@ti.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rml4IHRoZSBmb2xsb3dpbmcgZXJyb3JzIHJlcG9ydGVkIGJ5IGNoZWNrcGF0Y2g6CgpFUlJPUjog
-c3BhY2VzIHJlcXVpcmVkIGFyb3VuZCB0aGF0ICc9JyAoY3R4Old4VikKRVJST1I6IG9wZW4gYnJh
-Y2UgJ3snIGZvbGxvd2luZyBlbnVtIGdvIG9uIHRoZSBzYW1lIGxpbmUKClNpZ25lZC1vZmYtYnk6
-IFh1ZUJpbmcgQ2hlbiA8Y2hlbnh1ZWJpbmdAamFyaS5jbj4KLS0tCiBkcml2ZXJzL2dwdS9kcm0v
-YW1kL2FtZGdwdS9kZl92MV83LmggfCAxMyArKysrKystLS0tLS0tCiAxIGZpbGUgY2hhbmdlZCwg
-NiBpbnNlcnRpb25zKCspLCA3IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1
-L2RybS9hbWQvYW1kZ3B1L2RmX3YxXzcuaCBiL2RyaXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1L2Rm
-X3YxXzcuaAppbmRleCA3NDYyMTEwNGM0ODcuLjIyYjNkNjZjNGY2NiAxMDA2NDQKLS0tIGEvZHJp
-dmVycy9ncHUvZHJtL2FtZC9hbWRncHUvZGZfdjFfNy5oCisrKyBiL2RyaXZlcnMvZ3B1L2RybS9h
-bWQvYW1kZ3B1L2RmX3YxXzcuaApAQCAtMjUsMTQgKzI1LDEzIEBACiAjZGVmaW5lIF9fREZfVjFf
-N19IX18KIAogI2luY2x1ZGUgInNvYzE1X2NvbW1vbi5oIgotZW51bSBERl9WMV83X01HQ0cKLXsK
-K2VudW0gREZfVjFfN19NR0NHIHsKIAlERl9WMV83X01HQ0dfRElTQUJMRSA9IDAsCi0JREZfVjFf
-N19NR0NHX0VOQUJMRV8wMF9DWUNMRV9ERUxBWSA9MSwKLQlERl9WMV83X01HQ0dfRU5BQkxFXzAx
-X0NZQ0xFX0RFTEFZID0yLAotCURGX1YxXzdfTUdDR19FTkFCTEVfMTVfQ1lDTEVfREVMQVkgPTEz
-LAotCURGX1YxXzdfTUdDR19FTkFCTEVfMzFfQ1lDTEVfREVMQVkgPTE0LAotCURGX1YxXzdfTUdD
-R19FTkFCTEVfNjNfQ1lDTEVfREVMQVkgPTE1CisJREZfVjFfN19NR0NHX0VOQUJMRV8wMF9DWUNM
-RV9ERUxBWSA9IDEsCisJREZfVjFfN19NR0NHX0VOQUJMRV8wMV9DWUNMRV9ERUxBWSA9IDIsCisJ
-REZfVjFfN19NR0NHX0VOQUJMRV8xNV9DWUNMRV9ERUxBWSA9IDEzLAorCURGX1YxXzdfTUdDR19F
-TkFCTEVfMzFfQ1lDTEVfREVMQVkgPSAxNCwKKwlERl9WMV83X01HQ0dfRU5BQkxFXzYzX0NZQ0xF
-X0RFTEFZID0gMTUKIH07CiAKIGV4dGVybiBjb25zdCBzdHJ1Y3QgYW1kZ3B1X2RmX2Z1bmNzIGRm
-X3YxXzdfZnVuY3M7Ci0tIAoyLjE3LjEK
+On 24/08/2023 08:51, Md Danish Anwar wrote:
+> On 24/08/23 12:15 pm, Krzysztof Kozlowski wrote:
+>> On 23/08/2023 13:32, MD Danish Anwar wrote:
+>>> Add IEP property in ICSSG hardware DT binding document.
+>>> ICSSG uses IEP (Industrial Ethernet Peripheral) to support timestamping
+>>> of ethernet packets, PTP and PPS.
+>>>
+>>> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+>>
+>> Where? Please provide link.
+>>
+> 
+> https://lore.kernel.org/all/20230814-quarters-cahoots-1fbd583baad9@spud/
+> 
+>>> Reviewed-by: Roger Quadros <rogerq@kernel.org>
+>>
+>> Where? Please provide link.
+> 
+> https://lore.kernel.org/all/5d077342-435f-2829-ba2a-cdf763b6b8e1@kernel.org/
+> 
+>>
+>>> Reviewed-by: Simon Horman <horms@kernel.org>
+>>
+>> Where? Please provide link.
+> 
+> https://lore.kernel.org/all/ZN9aSTUOT+SKESQS@vergenet.net/
+> 
+>>
+>> Otherwise all of them look like fake ways to sneak patches into the
+>> kernel. Our work here depends a lot on the trust. Trust once lost, is
+>> tricky to get back.
+>>
+> 
+> It's not fake. They provided they RB tags, after that while preparing next
+> revision I use b4 to get all the tags and apply to applicable patches. I know
+> trust is important and I won't do such things like faking tags. They gave their
+> tags in v4 and v5, you must have missed those probably.
+> 
+
+Yes, I missed that while searching. Sorry for the noise and questions.
+Thank you for providing the links.
+
+Best regards,
+Krzysztof
+
