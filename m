@@ -2,258 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6825F786E55
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 13:47:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD9E2786E53
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 13:47:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241181AbjHXLrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 07:47:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40550 "EHLO
+        id S241173AbjHXLrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 07:47:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241185AbjHXLrG (ORCPT
+        with ESMTP id S241184AbjHXLrE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 07:47:06 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 539561736;
-        Thu, 24 Aug 2023 04:47:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692877624; x=1724413624;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=qHoKoLKO/0YJo/mDA5gVCccZ1A4ufMlOaXW0F6Ph7LQ=;
-  b=T299j48Z2eXdeMcWfrDFnb+kJDZt5Ociq7nFV55axDfAFvoLDFAGI8K7
-   wBbJimW/wUmmMB/z+13Im9qXeRrRBgx5it+HNnUn+WBAiGP/KBV3neKE5
-   pwrYO7SDV9lN6Wd4RjsC7lwaWmXnV3QLtBtRQzvNIh/0l1HKDmBIPkpnk
-   1P1fNIDAkQi+uchgODIEJycb3WslDbluvtJ6ydTjj1oFH09AZUW8Am1t1
-   RscNMc0lND9lU8ggAwLlRXhH91BBogZb2GUm92cjW4CwTmZDgtCBGV4sW
-   rO7Dhhxx9yTjjZ/alO9bHBXWVNitclsdbmhXUV5UQd4J1o9qqK3OqZ2AQ
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="405422673"
-X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
-   d="scan'208";a="405422673"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 04:47:03 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="740150009"
-X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
-   d="scan'208";a="740150009"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.251.212.187])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 04:47:00 -0700
-Message-ID: <e22c4a5f-c592-7121-7173-eef669ebdf89@intel.com>
-Date:   Thu, 24 Aug 2023 14:46:55 +0300
+        Thu, 24 Aug 2023 07:47:04 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BD0B1736;
+        Thu, 24 Aug 2023 04:47:03 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9D957641B6;
+        Thu, 24 Aug 2023 11:47:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C23DC433CD;
+        Thu, 24 Aug 2023 11:47:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1692877622;
+        bh=ujlrD4Sp8quQd5NmAy54IKaq5mtGExATpmzJqrhMpfo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SZASipakVIkRDiJc9gemQoyx1PJon9fy172p5VL6liXqmP2xTcHuiMEaVLnpZM222
+         QPHoiHVcCWNmAuEPE1k6EBija3gacj7Jaf1+PBHgLUTcS0nZhbe7UG9fNdMreflVz8
+         QKdJF5+dZSEbxZMA1xZ0bnnrMPD7OEgS614eN7hM=
+Date:   Thu, 24 Aug 2023 13:46:59 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     coolrrsh@gmail.com
+Cc:     hverkuil@xs4all.nl, mchehab@kernel.org, slark_xiao@163.com,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+e27f3dbdab04e43b9f73@syzkaller.appspotmail.com
+Subject: Re: [PATCH v3] media: gspca: UBSAN: shift-out-of-bounds in
+ set_flicker
+Message-ID: <2023082406-vascular-unroasted-077a@gregkh>
+References: <20230824085731.9930-1-coolrrsh@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.14.0
-Subject: Re: [PATCH v2] mmc: sdhci-pci-gli: fix LPM negotiation so x86/S0ix
- SoCs can suspend
-Content-Language: en-US
-To:     Sven van Ashbrook <svenva@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>, ulf.hansson@linaro.org
-Cc:     jason.lai@genesyslogic.com.tw, skardach@google.com,
-        Renius Chen <reniuschengl@gmail.com>,
-        linux-mmc@vger.kernel.org, greg.tu@genesyslogic.com.tw,
-        jasonlai.genesyslogic@gmail.com, SeanHY.chen@genesyslogic.com.tw,
-        ben.chuang@genesyslogic.com.tw, victor.shih@genesyslogic.com.tw,
-        stable@vger.kernel.org
-References: <20230823174134.v2.1.I7ed1ca09797be2dd76ca914c57d88b32d24dac88@changeid>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <20230823174134.v2.1.I7ed1ca09797be2dd76ca914c57d88b32d24dac88@changeid>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230824085731.9930-1-coolrrsh@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
-
-Looks OK - a few minor comments below
-
-On 23/08/23 20:41, Sven van Ashbrook wrote:
-> To improve the r/w performance of GL9763E, the current driver inhibits LPM
-> negotiation while the device is active.
+On Thu, Aug 24, 2023 at 02:27:31PM +0530, coolrrsh@gmail.com wrote:
+> From: Rajeshwar R Shinde <coolrrsh@gmail.com>
 > 
-> This prevents a large number of SoCs from suspending, notably x86 systems
+> Syzkaller reported the following issue:
+> 							
+> UBSAN: shift-out-of-bounds in drivers/media/usb/gspca/cpia1.c:1031:27 
+> shift exponent 245 is too large for 32-bit type 'int'
+> 						
+> When the value of the variable "sd->params.exposure.gain" exceeds the 
+> number of bits in an int, a shift-out-of-bounds error occurs. The error is 
+> generated when the variable "currentexp" is left-shifted by more than 31 
+> bits. In order to confirm the range is valid, the conditional expression 
+> was added.
+> 				
+> Reported-by: syzbot+e27f3dbdab04e43b9f73@syzkaller.appspotmail.com
+> Closes: https://lore.kernel.org/all/20230818164522.12806-1-coolrrsh@gmail.com
+> Link: https://syzkaller.appspot.com/bug?extid=e27f3dbdab04e43b9f73
+> Signed-off-by: Rajeshwar R Shinde <coolrrsh@gmail.com>							
 
-If possible, can you give example of which SoCs / products
-
-> which use S0ix as the suspend mechanism:
-> 1. Userspace initiates s2idle suspend (e.g. via writing to
->    /sys/power/state)
-> 2. This switches the runtime_pm device state to active, which disables
->    LPM negotiation, then calls the "regular" suspend callback
-> 3. With LPM negotiation disabled, the bus cannot enter low-power state
-> 4. On a large number of SoCs, if the bus not in a low-power state, S0ix
->    cannot be entered, which in turn prevents the SoC from entering
->    suspend.
-> 
-> Fix by re-enabling LPM negotiation in the device's suspend callback.
-> 
-> Suggested-by: Stanislaw Kardach <skardach@google.com>
-> Fixes: f9e5b33934ce ("mmc: host: Improve I/O read/write performance for GL9763E")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Sven van Ashbrook <svenva@chromium.org>
->      # on gladios device
->      # on 15590.0.0 with v5.10 and upstream (v6.4) kernels
-> 
-
-3 extraneous lines here - please remove
+You have loads of trailing whitespace, please fix your editor to not do
+that.
 
 > ---
+> v1->v2			
+> Changed the patch
+
+In what way?  Be specific.
+
+> v2->v3				
+> Changed the commit message	
+
+Again, be specific please.  Otherwise all changes could be listed with
+these two sentances and that helps none of us out :(
+
+> ---
+>  drivers/media/usb/gspca/cpia1.c | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> Changes in v2:
-> - improved symmetry and error path in s2idle suspend callback (internal review)
-> 
->  drivers/mmc/host/sdhci-pci-gli.c | 102 +++++++++++++++++++------------
->  1 file changed, 64 insertions(+), 38 deletions(-)
-> 
-> diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhci-pci-gli.c
-> index 1792665c9494a..19f577cc8bceb 100644
-> --- a/drivers/mmc/host/sdhci-pci-gli.c
-> +++ b/drivers/mmc/host/sdhci-pci-gli.c
-> @@ -745,42 +745,6 @@ static u32 sdhci_gl9750_readl(struct sdhci_host *host, int reg)
->  	return value;
->  }
->  
-> -#ifdef CONFIG_PM_SLEEP
-> -static int sdhci_pci_gli_resume(struct sdhci_pci_chip *chip)
-> -{
-> -	struct sdhci_pci_slot *slot = chip->slots[0];
-> -
-> -	pci_free_irq_vectors(slot->chip->pdev);
-> -	gli_pcie_enable_msi(slot);
-> -
-> -	return sdhci_pci_resume_host(chip);
-> -}
-> -
-> -static int sdhci_cqhci_gli_resume(struct sdhci_pci_chip *chip)
-> -{
-> -	struct sdhci_pci_slot *slot = chip->slots[0];
-> -	int ret;
-> -
-> -	ret = sdhci_pci_gli_resume(chip);
-> -	if (ret)
-> -		return ret;
-> -
-> -	return cqhci_resume(slot->host->mmc);
-> -}
-> -
-> -static int sdhci_cqhci_gli_suspend(struct sdhci_pci_chip *chip)
-> -{
-> -	struct sdhci_pci_slot *slot = chip->slots[0];
-> -	int ret;
-> -
-> -	ret = cqhci_suspend(slot->host->mmc);
-> -	if (ret)
-> -		return ret;
-> -
-> -	return sdhci_suspend_host(slot->host);
-> -}
-> -#endif
-> -
->  static void gl9763e_hs400_enhanced_strobe(struct mmc_host *mmc,
->  					  struct mmc_ios *ios)
->  {
-> @@ -1029,6 +993,68 @@ static int gl9763e_runtime_resume(struct sdhci_pci_chip *chip)
->  }
->  #endif
->  
-> +#ifdef CONFIG_PM_SLEEP
-> +static int sdhci_pci_gli_resume(struct sdhci_pci_chip *chip)
-> +{
-> +	struct sdhci_pci_slot *slot = chip->slots[0];
-> +
-> +	pci_free_irq_vectors(slot->chip->pdev);
-> +	gli_pcie_enable_msi(slot);
-> +
-> +	return sdhci_pci_resume_host(chip);
-> +}
-> +
-> +static int gl9763e_resume(struct sdhci_pci_chip *chip)
-> +{
-> +	struct sdhci_pci_slot *slot = chip->slots[0];
-> +	int ret;
-> +
-> +	ret = sdhci_pci_gli_resume(chip);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = cqhci_resume(slot->host->mmc);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* Disable LPM negotiation to bring device back in sync
-> +	 * with its runtime_pm state.
-> +	 */
+> diff --git a/drivers/media/usb/gspca/cpia1.c b/drivers/media/usb/gspca/cpia1.c
+> index 46ed95483e22..dafc522d5e7b 100644
+> --- a/drivers/media/usb/gspca/cpia1.c
+> +++ b/drivers/media/usb/gspca/cpia1.c
+> @@ -1028,6 +1028,8 @@ static int set_flicker(struct gspca_dev *gspca_dev, int on, int apply)
+>  			sd->params.exposure.expMode = 2;
+>  			sd->exposure_status = EXPOSURE_NORMAL;
+>  		}
+> +		if (sd->params.exposure.gain > 31)
+> +			return -1;
 
-I would prefer the comment style:
+Why is this still -1?
 
-	/*
-	 * Blah, blah ...
-	 * Blah, blah, blah.
-	 */
-
-> +	gl9763e_set_low_power_negotiation(slot, false);
-> +
-> +	return 0;
-> +}
-> +
-> +static int gl9763e_suspend(struct sdhci_pci_chip *chip)
-> +{
-> +	struct sdhci_pci_slot *slot = chip->slots[0];
-> +	int ret;
-> +
-> +	/* Certain SoCs can suspend only with the bus in low-
-
-Ditto re comment style
-
-> +	 * power state, notably x86 SoCs when using S0ix.
-> +	 * Re-enable LPM negotiation to allow entering L1 state
-> +	 * and entering system suspend.
-> +	 */
-> +	gl9763e_set_low_power_negotiation(slot, true);
-
-Couldn't this be at the end of the function, save
-an error path
-
-> +
-> +	ret = cqhci_suspend(slot->host->mmc);
-> +	if (ret)
-> +		goto err_suspend;
-> +
-> +	ret = sdhci_suspend_host(slot->host);
-> +	if (ret)
-> +		goto err_suspend_host;
-> +
-> +	return 0;
-> +
-> +err_suspend_host:
-> +	cqhci_resume(slot->host->mmc);
-> +err_suspend:
-> +	gl9763e_set_low_power_negotiation(slot, false);
-> +	return ret;
-> +}
-> +#endif
-> +
->  static int gli_probe_slot_gl9763e(struct sdhci_pci_slot *slot)
->  {
->  	struct pci_dev *pdev = slot->chip->pdev;
-> @@ -1113,8 +1139,8 @@ const struct sdhci_pci_fixes sdhci_gl9763e = {
->  	.probe_slot	= gli_probe_slot_gl9763e,
->  	.ops            = &sdhci_gl9763e_ops,
->  #ifdef CONFIG_PM_SLEEP
-> -	.resume		= sdhci_cqhci_gli_resume,
-> -	.suspend	= sdhci_cqhci_gli_suspend,
-> +	.resume		= gl9763e_resume,
-> +	.suspend	= gl9763e_suspend,
->  #endif
->  #ifdef CONFIG_PM
->  	.runtime_suspend = gl9763e_runtime_suspend,
-
+greg k-h
