@@ -2,329 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36E15786CF1
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 12:40:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E00C5786CF5
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 12:42:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240730AbjHXKjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 06:39:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48430 "EHLO
+        id S240660AbjHXKmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 06:42:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240814AbjHXKj2 (ORCPT
+        with ESMTP id S240384AbjHXKly (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 06:39:28 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AF67719AE;
-        Thu, 24 Aug 2023 03:39:18 -0700 (PDT)
-Received: from pwmachine.localnet (85-170-34-233.rev.numericable.fr [85.170.34.233])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 12D3F2127C7E;
-        Thu, 24 Aug 2023 03:39:14 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 12D3F2127C7E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1692873558;
-        bh=sADkn8tyKPEO16o0GbANLDuNQfMjSQjCtM0kk6kWOiQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aZMTuurF26Asywaf/muB6/j1rBzPEOkfaKVzO1h/B5VAU6i2Ndv4Ac/KhfBRsopVV
-         DZApvoOfhFdgvY3KSQVOCLzXbMNz4g79KxuvCEt7bf7isr7pAZ17fsl6KSQa2jRopr
-         Ypj2lftkw5V/JRfJK+uGkYtXpTh8KitNBT0nNmls=
-From:   Francis Laniel <flaniel@linux.microsoft.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-trace-kernel@vger.kernel.org,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-arch@vger.kernel.org
-Subject: Re: [RFC PATCH v1 1/1] tracing/kprobes: Return ENAMESVRLSYMS when func matches several symbols
-Date:   Thu, 24 Aug 2023 12:39:12 +0200
-Message-ID: <2695869.mvXUDI8C0e@pwmachine>
-In-Reply-To: <20230824085355.4fdd6215f71b0fa5f443d76d@kernel.org>
-References: <20230823161410.103489-1-flaniel@linux.microsoft.com> <20230823161410.103489-2-flaniel@linux.microsoft.com> <20230824085355.4fdd6215f71b0fa5f443d76d@kernel.org>
+        Thu, 24 Aug 2023 06:41:54 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29E3F1991
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 03:41:53 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1bdc19b782aso45183835ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 03:41:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1692873712; x=1693478512;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=A/I5taWqYocU0OpThCzxV/acNgUnkDEENY3xVb7wNfc=;
+        b=lFjArl4n/ZcVrdCFJS0q4L0NJTCnLVp9Ig2zjEjsYqkNjmafnMaHjD4iOwjtcS2Jy7
+         jFJtBo9q6C5RKuSUAbV8J/W3jSs9v2yZJyDWL0gN7UCBhh9C3X4iSdM3GcihiLaqZ75y
+         SlxwBbOXIUIF5AN7UafZJsT2wIb5QaxB2wJwM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692873712; x=1693478512;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=A/I5taWqYocU0OpThCzxV/acNgUnkDEENY3xVb7wNfc=;
+        b=eM7xI7TpjT9rFiucZYdo0qJQeKgwkZq8XYPBe6CdlD2hmXqrqG0jYGef7QlJRMSbNB
+         iRkv5RR1kDTy+8iAZhog0a9odx0csPfZ9AwZkqFk+hP5CnctXOhEMETtdsWm+9xnf0dt
+         zeNHpbtEP2FwCwcdFUnyRsPNNfTjvr5FfLcB5PnYaRLVc1Gqv76W6Ecd871ExHLTBH05
+         HQfPie2bgnqXPamQyVmzgzuobRtRjP/NxkXAdrld1q6DAmudzd01fRhp6OlooPtN3uWp
+         zEpGG5O7XTuzpP6cOp9h2yByzIjTjSW0SQGZHGYibeZh57aI6SYNLiO7MsjBe2G89GLg
+         1n8A==
+X-Gm-Message-State: AOJu0YzxK9TJlUPRTJns5UEP4KUIgcmYBbso+mtceU3w/vsl54GF/Kzt
+        Za72Q1f73rasp6ijUaqOno+dxg==
+X-Google-Smtp-Source: AGHT+IEz6LdCYMosyZ5GXgijBrljcB9v//RQ3p4COqu2hVs6APjaJVb3ECJXw5jyUglsTIDBX4leOw==
+X-Received: by 2002:a17:903:491:b0:1b6:6b90:7c2f with SMTP id jj17-20020a170903049100b001b66b907c2fmr10968815plb.55.1692873712648;
+        Thu, 24 Aug 2023 03:41:52 -0700 (PDT)
+Received: from fshao-p620.tpe.corp.google.com ([2401:fa00:1:10:ed6d:42e3:a23:8316])
+        by smtp.gmail.com with ESMTPSA id q2-20020a170902dac200b001b5247cac3dsm12524645plx.110.2023.08.24.03.41.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Aug 2023 03:41:52 -0700 (PDT)
+From:   Fei Shao <fshao@chromium.org>
+To:     Stephen Boyd <sboyd@kernel.org>, Chen-Yu Tsai <wenst@chromium.org>
+Cc:     linux-mediatek@lists.infradead.org, Fei Shao <fshao@chromium.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/5] spmi: Add and use managed resource helpers
+Date:   Thu, 24 Aug 2023 18:40:07 +0800
+Message-ID: <20230824104101.4083400-1-fshao@chromium.org>
+X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi.
+Hi,
 
-Le jeudi 24 ao=FBt 2023, 01:53:55 CEST Masami Hiramatsu a =E9crit :
-> Hi Francis,
->=20
-> On Wed, 23 Aug 2023 18:14:10 +0200
->=20
-> Francis Laniel <flaniel@linux.microsoft.com> wrote:
-> > Previously to this commit, if func matches several symbols, a PMU kprobe
-> > would be installed for the first matching address.
-> > This could lead to some misunderstanding when some BPF code was never
-> > called because it was attached to a function which was indeed not call,
-> > because the effectively called one has no kprobes.
-> >=20
-> > So, this commit introduces ENAMESVRLSYMS which is returned when func
-> > matches several symbols.
->=20
-> The trace_kprobe part looks good to me.
-> But sorry, I mislead you. I meant using an existing error code as a
-> metaphor. EINVAL is used everywhere, so choose another error code, e.g.
-> EADDRNOTAVAIL.
+This series adds and converts to the devm_* helpers in the SPMI driver,
+based on the suggestion in [1].
 
-No problem, I was a bit in doubt regarding adding a new error code, but at=
-=20
-least I learnt how to do it if one day I need to do so!
-But yes, for this case, better to use an existing one!
+While at it, I have some patches fixing other minor issues as well, like
+reordering the remove sequence in spmi-mtk-pmif and using proper error
+return code etc.
 
-> Also, can you add this check in __trace_kprobe_create()?
-> I think right before below code, at that point, 'symbol' has the symbol
-> name.
->=20
->         trace_probe_log_set_index(0);
->         if (event) {
->                 ret =3D traceprobe_parse_event_name(&event, &group, gbuf,
->                                                   event - argv[0]);
->                 if (ret)
->                         goto parse_error;
->         }
+This patch is based on next-20230824 and [2] which is not yet applied,
+in order to avoid potential conflicts.
 
-Addressed in v2, thank you!
+[1]: https://lore.kernel.org/all/20230821033532.GA21555@google.com/
+[2]: https://lore.kernel.org/all/20230717173934.1.If004a6e055a189c7f2d0724fa814422c26789839@changeid/
 
->=20
-> Thank you,
->=20
-> > This way, user needs to use addr to remove the ambiguity.
-> >=20
-> > Suggested-by: Masami Hiramatsu <mhiramat@kernel.org>
-> > Signed-off-by: Francis Laniel <flaniel@linux.microsoft.com>
-> > Link:
-> > https://lore.kernel.org/lkml/20230819101105.b0c104ae4494a7d1f2eea742@ke=
-rn
-> > el.org/ ---
-> >=20
-> >  arch/alpha/include/uapi/asm/errno.h        |  2 ++
-> >  arch/mips/include/uapi/asm/errno.h         |  2 ++
-> >  arch/parisc/include/uapi/asm/errno.h       |  2 ++
-> >  arch/sparc/include/uapi/asm/errno.h        |  2 ++
-> >  include/uapi/asm-generic/errno.h           |  2 ++
-> >  kernel/trace/trace_kprobe.c                | 26 ++++++++++++++++++++++
-> >  tools/arch/alpha/include/uapi/asm/errno.h  |  2 ++
-> >  tools/arch/mips/include/uapi/asm/errno.h   |  2 ++
-> >  tools/arch/parisc/include/uapi/asm/errno.h |  2 ++
-> >  tools/arch/sparc/include/uapi/asm/errno.h  |  2 ++
-> >  tools/include/uapi/asm-generic/errno.h     |  2 ++
-> >  11 files changed, 46 insertions(+)
-> >=20
-> > diff --git a/arch/alpha/include/uapi/asm/errno.h
-> > b/arch/alpha/include/uapi/asm/errno.h index 3d265f6babaf..3d9686d915f9
-> > 100644
-> > --- a/arch/alpha/include/uapi/asm/errno.h
-> > +++ b/arch/alpha/include/uapi/asm/errno.h
-> > @@ -125,4 +125,6 @@
-> >=20
-> >  #define EHWPOISON	139	/* Memory page has hardware error */
-> >=20
-> > +#define ENAMESVRLSYMS	140	/* Name correspond to several symbols */
-> > +
-> >=20
-> >  #endif
-> >=20
-> > diff --git a/arch/mips/include/uapi/asm/errno.h
-> > b/arch/mips/include/uapi/asm/errno.h index 2fb714e2d6d8..1fd64ee7b629
-> > 100644
-> > --- a/arch/mips/include/uapi/asm/errno.h
-> > +++ b/arch/mips/include/uapi/asm/errno.h
-> > @@ -124,6 +124,8 @@
-> >=20
-> >  #define EHWPOISON	168	/* Memory page has hardware error */
-> >=20
-> > +#define ENAMESVRLSYMS	169	/* Name correspond to several symbols */
-> > +
-> >=20
-> >  #define EDQUOT		1133	/* Quota exceeded */
-> >=20
-> > diff --git a/arch/parisc/include/uapi/asm/errno.h
-> > b/arch/parisc/include/uapi/asm/errno.h index 87245c584784..c7845ceece26
-> > 100644
-> > --- a/arch/parisc/include/uapi/asm/errno.h
-> > +++ b/arch/parisc/include/uapi/asm/errno.h
-> > @@ -124,4 +124,6 @@
-> >=20
-> >  #define EHWPOISON	257	/* Memory page has hardware error */
-> >=20
-> > +#define ENAMESVRLSYMS	258	/* Name correspond to several symbols */
-> > +
-> >=20
-> >  #endif
-> >=20
-> > diff --git a/arch/sparc/include/uapi/asm/errno.h
-> > b/arch/sparc/include/uapi/asm/errno.h index 81a732b902ee..1ed065943bab
-> > 100644
-> > --- a/arch/sparc/include/uapi/asm/errno.h
-> > +++ b/arch/sparc/include/uapi/asm/errno.h
-> > @@ -115,4 +115,6 @@
-> >=20
-> >  #define EHWPOISON	135	/* Memory page has hardware error */
-> >=20
-> > +#define ENAMESVRLSYMS	136	/* Name correspond to several symbols */
-> > +
-> >=20
-> >  #endif
-> >=20
-> > diff --git a/include/uapi/asm-generic/errno.h
-> > b/include/uapi/asm-generic/errno.h index cf9c51ac49f9..3d5d5740c8da
-> > 100644
-> > --- a/include/uapi/asm-generic/errno.h
-> > +++ b/include/uapi/asm-generic/errno.h
-> > @@ -120,4 +120,6 @@
-> >=20
-> >  #define EHWPOISON	133	/* Memory page has hardware error */
-> >=20
-> > +#define ENAMESVRLSYMS	134	/* Name correspond to several symbols */
-> > +
-> >=20
-> >  #endif
-> >=20
-> > diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-> > index 23dba01831f7..53b66db1ff53 100644
-> > --- a/kernel/trace/trace_kprobe.c
-> > +++ b/kernel/trace/trace_kprobe.c
-> > @@ -1699,6 +1699,16 @@ static int unregister_kprobe_event(struct
-> > trace_kprobe *tk)>=20
-> >  }
-> > =20
-> >  #ifdef CONFIG_PERF_EVENTS
-> >=20
-> > +
-> > +static int count_symbols(void *data, unsigned long unused)
-> > +{
-> > +	unsigned int *count =3D data;
-> > +
-> > +	(*count)++;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> >=20
-> >  /* create a trace_kprobe, but don't add it to global lists */
-> >  struct trace_event_call *
-> >  create_local_trace_kprobe(char *func, void *addr, unsigned long offs,
-> >=20
-> > @@ -1709,6 +1719,22 @@ create_local_trace_kprobe(char *func, void *addr,
-> > unsigned long offs,>=20
-> >  	int ret;
-> >  	char *event;
-> >=20
-> > +	/*
-> > +	 * If user specifies func, we check that the function name does not
-> > +	 * correspond to several symbols.
-> > +	 * If this is the case, we return with error code ENAMESVRLSYMS to
-> > +	 * indicate the user he/she should use addr and offs rather than func=
-=20
-to
-> > +	 * remove the ambiguity.
-> > +	 */
-> > +	if (func) {
-> > +		unsigned int count;
-> > +
-> > +		count =3D 0;
-> > +		kallsyms_on_each_match_symbol(count_symbols, func, &count);
-> > +		if (count > 1)
-> > +			return ERR_PTR(-ENAMESVRLSYMS);
-> > +	}
-> > +
-> >=20
-> >  	/*
-> >  =09
-> >  	 * local trace_kprobes are not added to dyn_event, so they are never
-> >  	 * searched in find_trace_kprobe(). Therefore, there is no concern of
-> >=20
-> > diff --git a/tools/arch/alpha/include/uapi/asm/errno.h
-> > b/tools/arch/alpha/include/uapi/asm/errno.h index
-> > 3d265f6babaf..3d9686d915f9 100644
-> > --- a/tools/arch/alpha/include/uapi/asm/errno.h
-> > +++ b/tools/arch/alpha/include/uapi/asm/errno.h
-> > @@ -125,4 +125,6 @@
-> >=20
-> >  #define EHWPOISON	139	/* Memory page has hardware error */
-> >=20
-> > +#define ENAMESVRLSYMS	140	/* Name correspond to several symbols */
-> > +
-> >=20
-> >  #endif
-> >=20
-> > diff --git a/tools/arch/mips/include/uapi/asm/errno.h
-> > b/tools/arch/mips/include/uapi/asm/errno.h index
-> > 2fb714e2d6d8..1fd64ee7b629 100644
-> > --- a/tools/arch/mips/include/uapi/asm/errno.h
-> > +++ b/tools/arch/mips/include/uapi/asm/errno.h
-> > @@ -124,6 +124,8 @@
-> >=20
-> >  #define EHWPOISON	168	/* Memory page has hardware error */
-> >=20
-> > +#define ENAMESVRLSYMS	169	/* Name correspond to several symbols */
-> > +
-> >=20
-> >  #define EDQUOT		1133	/* Quota exceeded */
-> >=20
-> > diff --git a/tools/arch/parisc/include/uapi/asm/errno.h
-> > b/tools/arch/parisc/include/uapi/asm/errno.h index
-> > 87245c584784..c7845ceece26 100644
-> > --- a/tools/arch/parisc/include/uapi/asm/errno.h
-> > +++ b/tools/arch/parisc/include/uapi/asm/errno.h
-> > @@ -124,4 +124,6 @@
-> >=20
-> >  #define EHWPOISON	257	/* Memory page has hardware error */
-> >=20
-> > +#define ENAMESVRLSYMS	258	/* Name correspond to several symbols */
-> > +
-> >=20
-> >  #endif
-> >=20
-> > diff --git a/tools/arch/sparc/include/uapi/asm/errno.h
-> > b/tools/arch/sparc/include/uapi/asm/errno.h index
-> > 81a732b902ee..1ed065943bab 100644
-> > --- a/tools/arch/sparc/include/uapi/asm/errno.h
-> > +++ b/tools/arch/sparc/include/uapi/asm/errno.h
-> > @@ -115,4 +115,6 @@
-> >=20
-> >  #define EHWPOISON	135	/* Memory page has hardware error */
-> >=20
-> > +#define ENAMESVRLSYMS	136	/* Name correspond to several symbols */
-> > +
-> >=20
-> >  #endif
-> >=20
-> > diff --git a/tools/include/uapi/asm-generic/errno.h
-> > b/tools/include/uapi/asm-generic/errno.h index cf9c51ac49f9..3d5d5740c8=
-da
-> > 100644
-> > --- a/tools/include/uapi/asm-generic/errno.h
-> > +++ b/tools/include/uapi/asm-generic/errno.h
-> > @@ -120,4 +120,6 @@
-> >=20
-> >  #define EHWPOISON	133	/* Memory page has hardware error */
-> >=20
-> > +#define ENAMESVRLSYMS	134	/* Name correspond to several symbols */
-> > +
-> >=20
-> >  #endif
-> >=20
-> > --
-> > 2.34.1
 
-Best regards.
+Fei Shao (5):
+  spmi: Introduce device-managed functions
+  spmi: Use devm_spmi_controller_alloc()
+  spmi: mtk-pmif: Reorder driver remove sequence
+  spmi: hisi-spmi-controller: Use devm_spmi_controller_add()
+  spmi: Return meaningful errors in spmi_controller_alloc()
 
+ drivers/spmi/Makefile               |  2 +-
+ drivers/spmi/devres.c               | 61 ++++++++++++++++++++
+ drivers/spmi/hisi-spmi-controller.c | 32 +++--------
+ drivers/spmi/spmi-mtk-pmif.c        | 28 ++++------
+ drivers/spmi/spmi-pmic-arb.c        | 87 ++++++++++-------------------
+ drivers/spmi/spmi.c                 |  6 +-
+ include/linux/spmi.h                |  3 +
+ 7 files changed, 116 insertions(+), 103 deletions(-)
+ create mode 100644 drivers/spmi/devres.c
+
+-- 
+2.42.0.rc1.204.g551eb34607-goog
 
