@@ -2,130 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6D597879CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 23:00:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FC6D7879D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 23:02:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243640AbjHXU7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 16:59:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49606 "EHLO
+        id S243306AbjHXVCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 17:02:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242778AbjHXU7W (ORCPT
+        with ESMTP id S239558AbjHXVBf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 16:59:22 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E1121BC2;
-        Thu, 24 Aug 2023 13:59:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692910760; x=1724446760;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=8DEArnJeuB0FcMiUzS3W+pvVFOIM+/0b2Mg5YZ+yJ4U=;
-  b=guvVqkeo3qgQ3vwQEg6ygBNtHfhMX/8rSEeMomXqnJAwEtAfNbzUtx5/
-   0aGPrVyv2aHfzPJ9OzViEbPrcuMNqLk2R6lYAiQM6If+C1FsKUbEvctOe
-   wEccIPkfceTJZnpvO/SKDZbJL6B9MNk/MjQo6lAUTMRzo4HPGFrr6moay
-   xTv1mMmPH3xCgUzkWz52F/EEd4/9QYgDQoayeBojJ6LQFCTa8JfCz68Uy
-   q5sLI9Lp4c0MIGPy6vjoHHubXMIoLAbTj1Yo0TNCo0Y0edNEXJGvFLyiH
-   e+Rp6vY/v8aPUL+YJwyK1zoGdtc7ZEa8X3PS0fQAnfPbxSc6NiuVRf4j8
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="374535716"
-X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
-   d="scan'208";a="374535716"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 13:59:19 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="766702088"
-X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
-   d="scan'208";a="766702088"
-Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 24 Aug 2023 13:59:15 -0700
-Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qZHQA-0002xc-1L;
-        Thu, 24 Aug 2023 20:59:14 +0000
-Date:   Fri, 25 Aug 2023 04:59:06 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Rob Herring <robh@kernel.org>, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Len Brown <lenb@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Peng Fan <peng.fan@nxp.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v1 1/1] amba: bus: balance firmware node reference
- counting
-Message-ID: <202308250458.VwjoWF3t-lkp@intel.com>
-References: <20230824162654.2890992-1-andriy.shevchenko@linux.intel.com>
+        Thu, 24 Aug 2023 17:01:35 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8970C19BF;
+        Thu, 24 Aug 2023 14:01:33 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EB33F65A01;
+        Thu, 24 Aug 2023 21:01:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5AE2CC433C9;
+        Thu, 24 Aug 2023 21:01:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692910892;
+        bh=WGXHNtjJ66mhm3BLfcNPr1ycpu/FNmeQ5wDC88aJEOs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Cx/rJ4TeM/azbfhhz7SusjQ2InJvIltI1bQyMDdZPXivo3+IEXDhtz2N7MBk+ddDd
+         cVq6URWjonWju9Vv7rrj6x+5jSTqH8fnAt0Fs5oSxPJ0mwMvL6Y2fTKLZ6dmJU4lfP
+         fwZTNlIK+HlnNRXszpWpOG5TW853v+wvNmgz/ITsW+/T23IPn/R3HADi5ql3c30wXG
+         vsU9xtW6W5OrZGgiPfnu1M2Tuo8cIIzUuN4cthSWVpOmm+Gw7nG20v6uHTSMO8dT4S
+         CbOao11Y+wpicGiLoKxYKBRACCfuvfede1rJv/8a8iv629niJnv+vBOhUi4dQopajN
+         tSrcxjUKJVdGA==
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2bba6fc4339so3133361fa.2;
+        Thu, 24 Aug 2023 14:01:32 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yxetia3+JZchZoSCey2ABgftyMA1GOmUrN9NZm6Gyi29W4boj9j
+        zfBK5sCnts4zVWJy9Pmfy4pJrMmFaIRSFKx/7g==
+X-Google-Smtp-Source: AGHT+IFB4HRVgVCVcRCVMRatDK7jbxYiJ5diUhw6T0+q0k8bf/tRBqjNA2zJPlMlWuRUnFKYafUWURWsbxCHyaGdHhw=
+X-Received: by 2002:a2e:b0f4:0:b0:2bc:e827:a4f9 with SMTP id
+ h20-20020a2eb0f4000000b002bce827a4f9mr2094050ljl.30.1692910890338; Thu, 24
+ Aug 2023 14:01:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230824162654.2890992-1-andriy.shevchenko@linux.intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <1692120000-46900-1-git-send-email-lizhi.hou@amd.com>
+ <1692120000-46900-5-git-send-email-lizhi.hou@amd.com> <2aae84b8-41f9-3c24-bac9-8f882d2211b@linux-m68k.org>
+ <2d2efa50-43b2-242c-028b-76554ed30962@amd.com>
+In-Reply-To: <2d2efa50-43b2-242c-028b-76554ed30962@amd.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Thu, 24 Aug 2023 16:01:18 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqLQEramXrpevb_SkD0yRSLGu8Zv82ww+RN9swqSBrpE+w@mail.gmail.com>
+Message-ID: <CAL_JsqLQEramXrpevb_SkD0yRSLGu8Zv82ww+RN9swqSBrpE+w@mail.gmail.com>
+Subject: Re: [PATCH V13 4/5] of: overlay: Extend of_overlay_fdt_apply() to
+ specify the target node
+To:     Lizhi Hou <lizhi.hou@amd.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, max.zhen@amd.com,
+        sonal.santan@amd.com, stefano.stabellini@xilinx.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+On Thu, Aug 24, 2023 at 1:40=E2=80=AFPM Lizhi Hou <lizhi.hou@amd.com> wrote=
+:
+>
+> Hi Geert,
+>
+> Thanks for reviewing the patch. I add my comment in-line.
+>
+> On 8/24/23 01:31, Geert Uytterhoeven wrote:
+> >     Hi Lizhi,
+> >
+> > On Tue, 15 Aug 2023, Lizhi Hou wrote:
+> >> Currently, in an overlay fdt fragment, it needs to specify the exact
+> >> location in base DT. In another word, when the fdt fragment is
+> >> generated,
+> >> the base DT location for the fragment is already known.
+> >>
+> >> There is new use case that the base DT location is unknown when fdt
+> >> fragment is generated. For example, the add-on device provide a fdt
+> >> overlay with its firmware to describe its downstream devices. Because =
+it
+> >> is add-on device which can be plugged to different systems, its firmwa=
+re
+> >> will not be able to know the overlay location in base DT. Instead, the
+> >> device driver will load the overlay fdt and apply it to base DT at
+> >> runtime.
+> >> In this case, of_overlay_fdt_apply() needs to be extended to specify
+> >> the target node for device driver to apply overlay fdt.
+> >>    int overlay_fdt_apply(..., struct device_node *base);
+> >>
+> >> Signed-off-by: Lizhi Hou <lizhi.hou@amd.com>
+> >
+> > Thanks for your patch, which is now commit 47284862bfc7fd56 ("of:
+> > overlay: Extend of_overlay_fdt_apply() in dt-rh/for-next.
+> >
+> >> --- a/drivers/of/overlay.c
+> >> +++ b/drivers/of/overlay.c
+> >> @@ -715,6 +730,7 @@ static struct device_node *find_target(struct
+> >> device_node *info_node)
+> >> /**
+> >>  * init_overlay_changeset() - initialize overlay changeset from
+> >> overlay tree
+> >>  * @ovcs:        Overlay changeset to build
+> >> + * @target_base:    Point to the target node to apply overlay
+> >>  *
+> >>  * Initialize @ovcs.  Populate @ovcs->fragments with node information
+> >> from
+> >>  * the top level of @overlay_root.  The relevant top level nodes are t=
+he
+> >
+> > As an overlay can contain one or more fragments, this means the
+> > base (when specified) will be applied to all fragments, and will thus
+> > override the target-path properties in all fragments.
+> >
+> > However, for the use case of an overlay that you can plug into
+> > a random location (and of which there can be multiple instances),
+> > there can really be only a single fragment.  Even nodes that typically
+> > live at the root level (e.g. gpio-leds or gpio-keys) must be inserted
+> > below the specified location, to avoid conflicts.
 
-kernel test robot noticed the following build errors:
+It's not a random location, but a location where the full path and/or
+unit-address are not known. What we should know is the node's base
+name and compatible.
 
-[auto build test ERROR on next-20230824]
-[cannot apply to rafael-pm/linux-next robh/for-next soc/for-next linus/master v6.5-rc7 v6.5-rc6 v6.5-rc5 v6.5-rc7]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+I think we can assume for this kind of usecase, that adding nodes only
+under a defined base node is allowed. This is also just the
+restriction I've asked for every time more general support of applying
+overlays by the kernel is requested. The add-on card, hat, cape, etc.
+usecases should all be applied downstream of some node.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Andy-Shevchenko/amba-bus-balance-firmware-node-reference-counting/20230825-003007
-base:   next-20230824
-patch link:    https://lore.kernel.org/r/20230824162654.2890992-1-andriy.shevchenko%40linux.intel.com
-patch subject: [PATCH v1 1/1] amba: bus: balance firmware node reference counting
-config: arm-randconfig-001-20230825 (https://download.01.org/0day-ci/archive/20230825/202308250458.VwjoWF3t-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce: (https://download.01.org/0day-ci/archive/20230825/202308250458.VwjoWF3t-lkp@intel.com/reproduce)
+> >
+> > Hence:
+> >   1. Should init_overlay_changeset() return -EINVAL if target_base is
+> >      specified, and there is more than one fragment?
+>
+> Maybe allowing more than one fragment make the interface more generic?
+> For example, it could support the use case that multiple fragments share
+> the same base node.
+>
+> Currently, the fragment overlay path is "base node path" + "fragment
+> target path". Thus, for the structure:
+>
+> /a/b/c/fragment0
+>
+> /a/b/d/fagment1
+>
+> It can be two fragments in one fdt by using
+>
+>    base node path =3D /a/b
+>
+>    fragment0 target path =3D /c
+>
+>    fragment1 target path =3D /d
+>
+> I am not sure if there will be this kind of use case or not. And I think
+> it would not be hurt to allow that.
+>
+> >
+> >   2. Should there be a convention about the target-path property's
+> >      contents in the original overlay?
+> >      drivers/of/unittest-data/overlay_pci_node.dtso in "[PATCH V13 5/5]
+> >      of: unittest: Add pci_dt_testdrv pci driver" uses
+> >
+> >          target-path=3D"";
+> >
+> >      which cannot be represented when using sugar syntax.
+> >      "/" should work fine, though.
+>
+> Because the fragment overlay path is "base node path" + "fragment target
+> path", I may add code to check if "fragment target patch is '/' and
+> ignore it. I think that would support sugar syntax with only '/' specifie=
+d.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308250458.VwjoWF3t-lkp@intel.com/
+Note that "/" is also a valid target path. I think it would be better
+to have a form that's obviously not a fixed path. I think what's
+needed is to be able to specify just the nodename with or without the
+unit-address. I don't know if dtc will accept that.
 
-All errors (new ones prefixed by >>):
+As labels are part of the ABI with overlays, a target label could also
+work. Though the kernel would have to learn to add new labels or get a
+label path from another source as a label doesn't exist on a generated
+node.
 
->> drivers/amba/bus.c:532:39: error: expected ')'
-     532 |         fwnode_handle_put(dev_fwnode(&d->dev);
-         |                                              ^
-   drivers/amba/bus.c:532:19: note: to match this '('
-     532 |         fwnode_handle_put(dev_fwnode(&d->dev);
-         |                          ^
-   1 error generated.
-
-
-vim +532 drivers/amba/bus.c
-
-   527	
-   528	static void amba_device_release(struct device *dev)
-   529	{
-   530		struct amba_device *d = to_amba_device(dev);
-   531	
- > 532		fwnode_handle_put(dev_fwnode(&d->dev);
-   533		if (d->res.parent)
-   534			release_resource(&d->res);
-   535		mutex_destroy(&d->periphid_lock);
-   536		kfree(d);
-   537	}
-   538	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Rob
