@@ -2,123 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C52CF787995
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 22:50:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 073A97879A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 22:52:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243592AbjHXUtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 16:49:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47794 "EHLO
+        id S243599AbjHXUwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 16:52:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243596AbjHXUtN (ORCPT
+        with ESMTP id S243613AbjHXUwJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 16:49:13 -0400
-Received: from mail-io1-xd4a.google.com (mail-io1-xd4a.google.com [IPv6:2607:f8b0:4864:20::d4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E126C1989
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 13:49:11 -0700 (PDT)
-Received: by mail-io1-xd4a.google.com with SMTP id ca18e2360f4ac-791c4ecd5d6so17228739f.3
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 13:49:11 -0700 (PDT)
+        Thu, 24 Aug 2023 16:52:09 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48F5E1989
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 13:52:08 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-26d4e1ba2dbso152066a91.1
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 13:52:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692910151; x=1693514951;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=BpHJy0xtUCv2a8+NkW5PB2F6J+9bq70l3+n1crasXPg=;
-        b=4LHD+g3Hs93NzyV+bQ21E+6npsJl1j6DyiILpZfa70xOL04NtrcgcxNja0HiixFg41
-         PrTf4UfUdQDU/V8mg2ZFUmRgb2Zuc2OlF7y62wISBC8uCLbBJ4zZqSGeFYa/2SXlIgki
-         ExYfzJAfwP3q2slB97qIUwuNJpv1nNtAZQMa0M+MmshbAJsQABzZGYIDI0y6usSMbPMY
-         i8rfAcFb3FpVcq9qLYzgBsC0A/7+J+Vrti+dWuRWP0moLpOHVrI/LnzkcV08mqagQXVq
-         YoEmujrR1+DBOcTFF+TKf4ZrbsOuHkTinvqyXSDIWx9ImqIm94NhIr5gIvIMDoK5edfs
-         BDBA==
+        d=chromium.org; s=google; t=1692910328; x=1693515128;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=WkgAkzmNzUul7+4VgInIuDX0DKPGv7dGSQvEsL/Tlso=;
+        b=Ts3iXctWYE/25qlkNAS9UaQol0lI2gmph9BUtF5lYFzOvUS9wExVj6Ha68dD/GUIN/
+         qHDJz5zyZbYySARDheNK66yH0bpWF1+Ro0dtHyLvsLdhIbKr52/NRPK3oCpUES2Etvqv
+         Y0qsbafjgkkMejKctuSMSOMt2jXLxSAapMk+g=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692910151; x=1693514951;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=BpHJy0xtUCv2a8+NkW5PB2F6J+9bq70l3+n1crasXPg=;
-        b=RiBQoS7RUduf9ydA8gNWlrv6Gz5kWrGO3QAq+sdGs8pHx+emOd7dIw0m3cbFyJ7YMs
-         mkDy2WkJ5mg4+uuFf/UyrEawYG690wSbHTfK1947r9vsrMa0RNsp7o5cIoe8GMSoqnmM
-         pbQwM7SW1G5qoSdgKKoc8kIy5f7fSQjw15fREOIy1JSYdzr7YsTVu83og5cE/4aQv+nb
-         CwTrbDL3V59n+a2joWZ7inuX+9/HWrGfJBbgqLplSo47a37ZErfx5+2F0kg4azx8XBbA
-         Spgi3zSrFScH10mndN7oKhEH5D9aLIhGeXDUMk4r0mXw6JtC6mqNGi5Vnmq90WMf/QJZ
-         Gyww==
-X-Gm-Message-State: AOJu0YzmyVtDFE2bq0YglsdsNCSzoTFWicRSbC7en+hMWcokmdTg0d4Y
-        Qh9kMl03QRQtWEEbYrzSesNAbgDtzVkN7HTuYw==
-X-Google-Smtp-Source: AGHT+IGCzg9T12M4d/3pwncQLdGrc6I6tVfup/nIVd1cLf8n14WecMd5Gd812VnV/4jZSw+Sf0ueKAW2eYw3EjxUhw==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a02:a155:0:b0:42b:a220:a32d with SMTP
- id m21-20020a02a155000000b0042ba220a32dmr202775jah.2.1692910151324; Thu, 24
- Aug 2023 13:49:11 -0700 (PDT)
-Date:   Thu, 24 Aug 2023 20:49:11 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAEbC52QC/yWNQQqDQAxFryJZNzBNLZVepXQRY6oBGSUpooh37
- 2A3D97i/b9DqJsGPKsdXBcLm3KR66UCGTj3itYVB0p0Sw3VGF/PMm/YuS3qgSyiIw7ccuaR28B +2vgPQeJ0ZyqtPBook7Prx9bz7vU+jh82xQlvfgAAAA==
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1692910150; l=1804;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=q9RFqzuzSf+JWcxuWQQn2bXUpH2CiQm1RQ706+wRDyY=; b=JHfQP3Jmi2+KwCdCuR3S3FvUV4fZkP336jFiB4R4SLBE4/A58qQuTS/kDapIjztNdiYDiiYxh
- 3SvAzyQcFyJBJyFXWRGaxHRr7ZkcwaenKRdNvQPuN/mBtNP3AXUA0E9
-X-Mailer: b4 0.12.3
-Message-ID: <20230824-strncpy-drivers-accel-habanalabs-goya-goya-c-v1-1-b81d5639e7a3@google.com>
-Subject: [PATCH] habanalabs/goya: refactor deprecated strncpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     Oded Gabbay <ogabbay@kernel.org>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=1e100.net; s=20221208; t=1692910328; x=1693515128;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WkgAkzmNzUul7+4VgInIuDX0DKPGv7dGSQvEsL/Tlso=;
+        b=iUNOvc1EXFVNRyoE3dvxZmAynBhxZMr5y06Ku15UfkHXrCHgjwx41WC5A/TAz8kc+V
+         Ehhrzr53piXtgkYLldx4FGZ9fZIzedumkNeTLgGC1A2JM2YEVKjvdvExQyqIPKZn2Sf6
+         P8GELOJjzxVPaF+CZgm7D4vgYK/FdhLRM31HtEF03ciC7CLkjsCBQcJfl5NYIXfkexYs
+         oEnTEY//BATDpyLk7XEpvyjuYbJ/vX0MncL1uUaleOqViltub6CSB8NEeY2QpOMM6flT
+         xF3rpQUvPpzFjRKLXq98mUfKYd4VQO/LFTWlKO9aF2ABHC7Fg6uKE/Ui9yyhftoyLLad
+         7OsQ==
+X-Gm-Message-State: AOJu0Yx/6LBjs3YJyQlFsTXMPuDZrU4EGd3Q966pdxwQm71DU0R/Va5s
+        A56+5V4HIPzM1kgg+wUcb+7P7g==
+X-Google-Smtp-Source: AGHT+IEjtBiHPtNVLZT2gtMXvB9U83RhiwJfuikZH5BTPX+/cK58qVsSMrLFEnwlOTZelEg/vyUwqA==
+X-Received: by 2002:a17:90a:a615:b0:263:4305:4e82 with SMTP id c21-20020a17090aa61500b0026343054e82mr12727466pjq.6.1692910327753;
+        Thu, 24 Aug 2023 13:52:07 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id 23-20020a17090a01d700b0026fb228fafasm2156603pjd.18.2023.08.24.13.52.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Aug 2023 13:52:07 -0700 (PDT)
+Date:   Thu, 24 Aug 2023 13:52:06 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Yonghong Song <yhs@meta.com>
+Cc:     kernel test robot <oliver.sang@intel.com>,
+        "oe-lkp@lists.linux.dev" <oe-lkp@lists.linux.dev>,
+        "lkp@intel.com" <lkp@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Song Liu <song@kernel.org>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [linus:master] [kallsyms]  8cc32a9bbf:
+ Kernel_panic-not_syncing:stack-protector:Kernel_stack_is_corrupted_in:test_entry
+Message-ID: <202308241351.E3467F14@keescook>
+References: <202308232200.1c932a90-oliver.sang@intel.com>
+ <202308241323.ABBE0B09B@keescook>
+ <SN6PR1501MB2064F8313A3AD64E6F69C2D5CA1DA@SN6PR1501MB2064.namprd15.prod.outlook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <SN6PR1501MB2064F8313A3AD64E6F69C2D5CA1DA@SN6PR1501MB2064.namprd15.prod.outlook.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-`strncpy` is deprecated for use on NUL-terminated destination strings [1].
+On Thu, Aug 24, 2023 at 08:41:03PM +0000, Yonghong Song wrote:
+> Debugging now. I already made some progress. Should be able to send a patch soon.
 
-A suitable replacement is `strscpy` [2] due to the fact that it
-guarantees NUL-termination on its destination buffer argument which is
-_not_ the case for `strncpy`!
+Great; thanks!
 
-Link: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings[1]
-Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Note: build-tested only.
----
- drivers/accel/habanalabs/goya/goya.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+-Kees
 
-diff --git a/drivers/accel/habanalabs/goya/goya.c b/drivers/accel/habanalabs/goya/goya.c
-index 7c685e6075f6..d0ac7065f3d7 100644
---- a/drivers/accel/habanalabs/goya/goya.c
-+++ b/drivers/accel/habanalabs/goya/goya.c
-@@ -466,7 +466,7 @@ int goya_set_fixed_properties(struct hl_device *hdev)
- 	prop->pcie_dbi_base_address = mmPCIE_DBI_BASE;
- 	prop->pcie_aux_dbi_reg_addr = CFG_BASE + mmPCIE_AUX_DBI;
- 
--	strncpy(prop->cpucp_info.card_name, GOYA_DEFAULT_CARD_NAME,
-+	strscpy(prop->cpucp_info.card_name, GOYA_DEFAULT_CARD_NAME,
- 		CARD_NAME_MAX_LEN);
- 
- 	prop->max_pending_cs = GOYA_MAX_PENDING_CS;
-@@ -5122,7 +5122,7 @@ int goya_cpucp_info_get(struct hl_device *hdev)
- 	}
- 
- 	if (!strlen(prop->cpucp_info.card_name))
--		strncpy(prop->cpucp_info.card_name, GOYA_DEFAULT_CARD_NAME,
-+		strscpy(prop->cpucp_info.card_name, GOYA_DEFAULT_CARD_NAME,
- 				CARD_NAME_MAX_LEN);
- 
- 	return 0;
-
----
-base-commit: f9604036a3fb6149badf346994b46b03f9292db7
-change-id: 20230824-strncpy-drivers-accel-habanalabs-goya-goya-c-2a05a2202c78
-
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
-
+-- 
+Kees Cook
