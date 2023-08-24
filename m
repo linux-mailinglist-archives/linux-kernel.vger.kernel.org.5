@@ -2,167 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD7C878719A
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 16:33:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A487C7871AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 16:34:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241645AbjHXOcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 10:32:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54510 "EHLO
+        id S241714AbjHXOd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 10:33:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241638AbjHXOcV (ORCPT
+        with ESMTP id S241689AbjHXOdV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 10:32:21 -0400
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F0A61BCD;
-        Thu, 24 Aug 2023 07:32:14 -0700 (PDT)
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 37OBiqaW023544;
-        Thu, 24 Aug 2023 09:31:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding:content-type; s=
-        PODMain02222019; bh=apFZUiv/LQzmZkIh3gfQBJPkTCIxnb28cnxmeLVv+vw=; b=
-        RoNtxWD/zyQM8qwDHHr1VnJKPao4zmbL6IAyVpRU3x0YrcEGtp3WT6cp+o3EImaP
-        wL+ADEzakbiT8JxiqrFjdLN56jpYU2C+D/fTbPVU3BpkyofS0wcX4SdSytdrrOKQ
-        VH8Mp2Pw9+FjoclJXiVkoC5xGaVcWx6/m9jytLmn52vxAeuSOh1GZEHG85W/jHL8
-        l2t/nM0JgZm+ze3hw95Cii0aCe8Gc1FahALMnJxh4scXwzs9YvEaPz5nE1OExCoB
-        h1t1KGq/p39au+D06BavXoWGNFN0XPKF9e5e9mM/N7v3br3eWk6po27QmsxYRFhm
-        PZuT7hLRFqLgBscdjNQBHA==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3sp1w8geq3-6
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 24 Aug 2023 09:31:34 -0500 (CDT)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 24 Aug
- 2023 15:31:30 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.30 via Frontend Transport; Thu, 24 Aug 2023 15:31:30 +0100
-Received: from edi-sw-dsktp-006.ad.cirrus.com (edi-sw-dsktp-006.ad.cirrus.com [198.90.251.75])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 49695357D;
-        Thu, 24 Aug 2023 14:31:30 +0000 (UTC)
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-To:     <brendan.higgins@linux.dev>, <davidgow@google.com>,
-        <rmoar@google.com>
-CC:     <linux-kselftest@vger.kernel.org>, <kunit-dev@googlegroups.com>,
-        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
-        "Richard Fitzgerald" <rf@opensource.cirrus.com>
-Subject: [PATCH v5 10/10] kunit: string-stream: Test performance of string_stream
-Date:   Thu, 24 Aug 2023 15:31:29 +0100
-Message-ID: <20230824143129.1957914-11-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230824143129.1957914-1-rf@opensource.cirrus.com>
-References: <20230824143129.1957914-1-rf@opensource.cirrus.com>
+        Thu, 24 Aug 2023 10:33:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABA2C19A2
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 07:32:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692887556;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dsOC4rI50hliPoJPpoEGUZrHCXo+EFetwI6VyN7asjY=;
+        b=Eluo/8UdbH2yDhildmvNl7uQNO3l9hsP2mhtADqb9cKdHb7H0lMHeYZWIGn80ktFz16mrw
+        MZkfFM584MspRbyE+hKqTeaeNJYgnVS+oN6VdTipDF4H4pqHjPaOL8V9Pz85Ub8TpFgOem
+        9PPmLkJPqG6WEEDrjB3Xs/dXpXAlSyg=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-475-HN5FZ4ihN3mjj4wADRLsDw-1; Thu, 24 Aug 2023 10:32:32 -0400
+X-MC-Unique: HN5FZ4ihN3mjj4wADRLsDw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B2A923C1350E;
+        Thu, 24 Aug 2023 14:32:31 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.43])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 44C011121315;
+        Thu, 24 Aug 2023 14:32:30 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Thu, 24 Aug 2023 16:31:45 +0200 (CEST)
+Date:   Thu, 24 Aug 2023 16:31:42 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        peterz@redhat.com, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] introduce __next_thread(), fix next_tid() vs exec() race
+Message-ID: <20230824143142.GA31222@redhat.com>
+References: <20230824143112.GA31208@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: n0zQEES2T07w8f8pVv8BnxNVrpXHaODx
-X-Proofpoint-ORIG-GUID: n0zQEES2T07w8f8pVv8BnxNVrpXHaODx
-X-Proofpoint-Spam-Reason: safe
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230824143112.GA31208@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a test of the speed and memory use of string_stream.
+next_tid(start) does:
 
-string_stream_performance_test() doesn't actually "test" anything (it
-cannot fail unless the system has run out of allocatable memory) but it
-measures the speed and memory consumption of the string_stream and reports
-the result.
+	rcu_read_lock();
+	if (pid_alive(start)) {
+		pos = next_thread(start);
+		if (thread_group_leader(pos))
+			pos = NULL;
+		else
+			get_task_struct(pos);
 
-This allows changes in the string_stream implementation to be compared.
+it should return pos = NULL when next_thread() wraps to the 1st thread
+in the thread group, group leader, and the thread_group_leader() check
+tries to detect this case.
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+But this can race with exec. To simplify, suppose we have a main thread
+M and a single sub-thread T, next_tid(T) should return NULL.
+
+Now suppose that T execs. If next_tid(T) is called after T changes the
+leadership and before it does release_task() which removes the old leader
+from list, then next_thread() returns M and thread_group_leader(M) = F.
+
+Lockless use of next_thread() should be avoided. After this change only
+task_group_seq_get_next() does this, and I believe it should be changed
+as well.
+
+Signed-off-by: Oleg Nesterov <oleg@redhat.com>
 ---
- lib/kunit/string-stream-test.c | 54 ++++++++++++++++++++++++++++++++++
- 1 file changed, 54 insertions(+)
+ fs/proc/base.c               |  6 ++----
+ include/linux/sched/signal.h | 11 +++++++++++
+ 2 files changed, 13 insertions(+), 4 deletions(-)
 
-diff --git a/lib/kunit/string-stream-test.c b/lib/kunit/string-stream-test.c
-index 6897c57e0db7..7d81d139b8f8 100644
---- a/lib/kunit/string-stream-test.c
-+++ b/lib/kunit/string-stream-test.c
-@@ -8,7 +8,9 @@
- 
- #include <kunit/static_stub.h>
- #include <kunit/test.h>
-+#include <linux/ktime.h>
- #include <linux/slab.h>
-+#include <linux/timekeeping.h>
- 
- #include "string-stream.h"
- 
-@@ -437,6 +439,57 @@ static void string_stream_auto_newline_test(struct kunit *test)
- 			   "One\nTwo\nThree\nFour\nFive\nSix\nSeven\n\nEight\n");
+diff --git a/fs/proc/base.c b/fs/proc/base.c
+index 69dbb03ad55b..b9fb36cd5e9c 100644
+--- a/fs/proc/base.c
++++ b/fs/proc/base.c
+@@ -3838,10 +3838,8 @@ static struct task_struct *next_tid(struct task_struct *start)
+ 	struct task_struct *pos = NULL;
+ 	rcu_read_lock();
+ 	if (pid_alive(start)) {
+-		pos = next_thread(start);
+-		if (thread_group_leader(pos))
+-			pos = NULL;
+-		else
++		pos = __next_thread(start);
++		if (pos)
+ 			get_task_struct(pos);
+ 	}
+ 	rcu_read_unlock();
+diff --git a/include/linux/sched/signal.h b/include/linux/sched/signal.h
+index 0014d3adaf84..7fb34b8cda54 100644
+--- a/include/linux/sched/signal.h
++++ b/include/linux/sched/signal.h
+@@ -715,6 +715,17 @@ bool same_thread_group(struct task_struct *p1, struct task_struct *p2)
+ 	return p1->signal == p2->signal;
  }
  
 +/*
-+ * This doesn't actually "test" anything. It reports time taken
-+ * and memory used for logging a large number of lines.
++ * returns NULL if p is the last thread in the thread group
 + */
-+static void string_stream_performance_test(struct kunit *test)
++static inline struct task_struct *__next_thread(struct task_struct *p)
 +{
-+	struct string_stream_fragment *frag_container;
-+	struct string_stream *stream;
-+	char test_line[101];
-+	ktime_t start_time, end_time;
-+	size_t len, bytes_requested, actual_bytes_used, total_string_length;
-+	int offset, i;
-+
-+	stream = kunit_alloc_string_stream(test, GFP_KERNEL);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, stream);
-+
-+	memset(test_line, 'x', sizeof(test_line) - 1);
-+	test_line[sizeof(test_line) - 1] = '\0';
-+
-+	start_time = ktime_get();
-+	for (i = 0; i < 10000; i++) {
-+		offset = i % (sizeof(test_line) - 1);
-+		string_stream_add(stream, "%s: %d\n", &test_line[offset], i);
-+	}
-+	end_time = ktime_get();
-+
-+	/*
-+	 * Calculate memory used. This doesn't include invisible
-+	 * overhead due to kernel allocator fragment size rounding.
-+	 */
-+	bytes_requested = sizeof(*stream);
-+	actual_bytes_used = ksize(stream);
-+	total_string_length = 0;
-+
-+	list_for_each_entry(frag_container, &stream->fragments, node) {
-+		bytes_requested += sizeof(*frag_container);
-+		actual_bytes_used += ksize(frag_container);
-+
-+		len = strlen(frag_container->fragment);
-+		total_string_length += len;
-+		bytes_requested += len + 1; /* +1 for '\0' */
-+		actual_bytes_used += ksize(frag_container->fragment);
-+	}
-+
-+	kunit_info(test, "Time elapsed:           %lld us\n",
-+		   ktime_us_delta(end_time, start_time));
-+	kunit_info(test, "Total string length:    %zu\n", total_string_length);
-+	kunit_info(test, "Bytes requested:        %zu\n", bytes_requested);
-+	kunit_info(test, "Actual bytes allocated: %zu\n", actual_bytes_used);
++	return list_next_or_null_rcu(&p->signal->thread_head,
++					&p->thread_node,
++					struct task_struct,
++					thread_node);
 +}
 +
- static int string_stream_test_init(struct kunit *test)
+ static inline struct task_struct *next_thread(const struct task_struct *p)
  {
- 	struct string_stream_test_priv *priv;
-@@ -462,6 +515,7 @@ static struct kunit_case string_stream_test_cases[] = {
- 	KUNIT_CASE(string_stream_append_empty_string_test),
- 	KUNIT_CASE(string_stream_no_auto_newline_test),
- 	KUNIT_CASE(string_stream_auto_newline_test),
-+	KUNIT_CASE(string_stream_performance_test),
- 	{}
- };
- 
+ 	return list_entry_rcu(p->thread_group.next,
 -- 
-2.30.2
+2.25.1.362.g51ebf55
+
 
