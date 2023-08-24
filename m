@@ -2,55 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA832787493
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 17:49:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62BB7787495
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 17:49:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242304AbjHXPtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 11:49:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46854 "EHLO
+        id S242316AbjHXPtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 11:49:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242310AbjHXPs4 (ORCPT
+        with ESMTP id S242332AbjHXPtI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 11:48:56 -0400
-Received: from phobos.denx.de (phobos.denx.de [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D18411BCC;
-        Thu, 24 Aug 2023 08:48:52 -0700 (PDT)
-Received: from localhost.localdomain (85-222-111-42.dynamic.chello.pl [85.222.111.42])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: lukma@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id 1C433865A6;
-        Thu, 24 Aug 2023 17:48:51 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1692892131;
-        bh=gP8UNuwoakIxdCMV5z1WU/b9JBiDLXA9aRP8LRKsjdw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=glTtxJ2Y9ahB6VC8n56U4h8Yv4aLeK/VP4Rw7n4goI0S2/Y6mdUCcDl9iSXVtz59x
-         7H9b6jAsKtUgsEiBx8o05Dqj1m4oSx1xug7/8uS6brEPLooU9o1rsy7xgtQ/M4HSjP
-         6mRhvtAKXCsfVMZMIcqjokzlt2bfeaSm9PUsHc7YXGKctaBjiW4Tf2O6wfLBC9m+Yg
-         3lMTfqY2nCT30CtqHfpAKsZ47QCBJo/+CYHwHxcJHthdZ3FAxJMXjnEcaljtWAjzT0
-         fga4xmTmMKfLdJgdelyy1KST4kKyTKsrzfiSefOXszoVjNPRdgnETE+d3pY70/FaNk
-         +tggM73F5UaUA==
-From:   Lukasz Majewski <lukma@denx.de>
-To:     Woojung Huh <woojung.huh@microchip.com>,
-        UNGLinuxDriver@microchip.com
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>, davem@davemloft.net,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Lukasz Majewski <lukma@denx.de>
-Subject: [PATCH 2/2] net: dsa: microchip: Provide Module 4 KSZ9477 errata (DS80000754C)
-Date:   Thu, 24 Aug 2023 17:48:27 +0200
-Message-Id: <20230824154827.166274-2-lukma@denx.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230824154827.166274-1-lukma@denx.de>
-References: <20230824154827.166274-1-lukma@denx.de>
+        Thu, 24 Aug 2023 11:49:08 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31E2019A3
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 08:49:07 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1692892145;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=km71JZdPEneG2hyb5yjpKibchTWDGBjqCksdxoHBWus=;
+        b=pEVOz96ceBu2FdCJll9tSqYX+nK/THiLfa9PjpotPw7A3ANHjaBjsjZyOiZ84Nnonc9q+K
+        zs/eF2icRGJjQ4T0D6PAm+R94Fhumr7L2cQgJ7a0uITDYfwf/QuI91QRe/nGrVfs8pLWr1
+        aKSsljIHVDAdkoluJOgqP7ink8YK+Ky1JON1+d0afXvsNtd/0UuIVudTILgkrda8Z06igh
+        R9ND9k/My8IMFFc+eIeHa9Thw6P6PAtxicEBOTdA4N4wGBh3AD5GpYT/6fkuboMir2IaWk
+        SHDmr4DeS3BlaJlKKianq7Cio4XQatopWJRe6cg7j2WbeKiqf8N/Fhx+hP7opw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1692892145;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=km71JZdPEneG2hyb5yjpKibchTWDGBjqCksdxoHBWus=;
+        b=AFYl1uaN2QcvqPzOgyJwUtVz1nHiB7tpKSWhiI3j1/SdycnZlEwYABrKkNhB4TqOTN5aBj
+        dmBmMgfgzGdDIwDA==
+To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>
+Cc:     Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        Jun Nakajima <jun.nakajima@intel.com>, x86@kernel.org,
+        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/tdx: Mark TSC reliable
+In-Reply-To: <20230808200111.nz74tmschph435ri@box>
+References: <20230808162320.27297-1-kirill.shutemov@linux.intel.com>
+ <ecc11d54-6aaa-f755-9436-ae15b94fb627@intel.com>
+ <20230808200111.nz74tmschph435ri@box>
+Date:   Thu, 24 Aug 2023 17:49:05 +0200
+Message-ID: <87bkewcufi.ffs@tglx>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
-X-Virus-Status: Clean
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -60,75 +61,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The KSZ9477 errata points out the link up/down problem when EEE is enabled
-in the device to which the KSZ9477 tries to auto negotiate.
+On Tue, Aug 08 2023 at 23:01, Kirill A. Shutemov wrote:
+> On Tue, Aug 08, 2023 at 10:13:05AM -0700, Dave Hansen wrote:
+>> I take it this is carved in stone in the TDX specs somewhere.  A
+>> reference would be nice.
+>
+> TDX Module 1.0 spec:
+>
+> 	5.3.5. Time Stamp Counter (TSC)
+>
+> 	TDX provides a trusted virtual TSC to the guest TDs. TSC value is
+> 	monotonously incrementing, starting from 0 on TD initialization by the
+> 	host VMM. The deviation between virtual TSC values read by each VCPU is
+> 	small.
 
-The suggested workaround is to clear advertisement EEE registers
-(accessed as per port MMD one).
+Nice weasel wording. What's the definition of "small"?
 
-Signed-off-by: Lukasz Majewski <lukma@denx.de>
----
- drivers/net/dsa/microchip/ksz9477.c | 40 ++++++++++++++++++++++++++++-
- 1 file changed, 39 insertions(+), 1 deletion(-)
+Any OS needs a guarantee that vCPUs cannot observe time going backwards,
+which is obviously possible when the deviation is not small enough.
 
-diff --git a/drivers/net/dsa/microchip/ksz9477.c b/drivers/net/dsa/microchip/ksz9477.c
-index cb6aa7c668a8..563f497ba656 100644
---- a/drivers/net/dsa/microchip/ksz9477.c
-+++ b/drivers/net/dsa/microchip/ksz9477.c
-@@ -1128,6 +1128,44 @@ int ksz9477_enable_stp_addr(struct ksz_device *dev)
- 	return 0;
- }
- 
-+static int ksz9477_errata(struct dsa_switch *ds)
-+{
-+	struct ksz_device *dev = ds->priv;
-+	u16 val;
-+	int p;
-+
-+	/* KSZ9477 Errata DS80000754C
-+	 *
-+	 * Module 4: Energy Efficient Ethernet (EEE) feature select must be
-+	 * manually disabled
-+	 *   The EEE feature is enabled by default, but it is not fully
-+	 *   operational. It must be manually disabled through register
-+	 *   controls. If not disabled, the PHY ports can auto-negotiate
-+	 *   to enable EEE, and this feature can cause link drops when linked
-+	 *   to another device supporting EEE.
-+	 *
-+	 *   Only PHY ports (dsa user) [0-4] need to have the EEE advertisement
-+	 *   bits cleared.
-+	 */
-+
-+	for (p = 0; p < ds->num_ports; p++) {
-+		if (!dsa_is_user_port(ds, p))
-+			continue;
-+
-+		ksz9477_port_mmd_read(dev, p, MMD_DEVICE_ID_EEE_ADV,
-+				      MMD_EEE_ADV, &val, 1);
-+
-+		pr_err("%s: PORT: %d val: 0x%x pc: %d\n", __func__, p, val,
-+		       ds->num_ports);
-+
-+		val &= ~(EEE_ADV_100MBIT | EEE_ADV_1GBIT);
-+		ksz9477_port_mmd_write(dev, p, MMD_DEVICE_ID_EEE_ADV,
-+				       MMD_EEE_ADV, &val, 1);
-+	}
-+
-+	return 0;
-+}
-+
- int ksz9477_setup(struct dsa_switch *ds)
- {
- 	struct ksz_device *dev = ds->priv;
-@@ -1157,7 +1195,7 @@ int ksz9477_setup(struct dsa_switch *ds)
- 	/* enable global MIB counter freeze function */
- 	ksz_cfg(dev, REG_SW_MAC_CTRL_6, SW_MIB_COUNTER_FREEZE, true);
- 
--	return 0;
-+	return ksz9477_errata(ds);
- }
- 
- u32 ksz9477_get_port_addr(int port, int offset)
--- 
-2.20.1
+> Wording in the spec looks okay to me. We can only hope that implementation
+> going to be sane.
 
+Hope dies last :)
