@@ -2,206 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95CF9787715
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 19:29:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45BBF787719
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 19:31:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242600AbjHXR3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 13:29:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52692 "EHLO
+        id S242734AbjHXRbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 13:31:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241792AbjHXR3M (ORCPT
+        with ESMTP id S241753AbjHXRau (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 13:29:12 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E45D019B7;
-        Thu, 24 Aug 2023 10:29:09 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7601264E79;
-        Thu, 24 Aug 2023 17:29:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29445C433C8;
-        Thu, 24 Aug 2023 17:29:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692898148;
-        bh=ghRdRcGD6Zug4JH4WZSKpEnQQeHP4GXO2/WksfI2krQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=J/EPbYoEUukL4BdYBq8IJzC8snLgg1+7uk0faFESOje7l8YnEN9NJ6HfYGr3H0087
-         ATFdN2I0Qv22jdHVILcsKKExKUoT/EE88YRt4Hw/p/QSyr84ygLqPBzHf4gPTydti0
-         /O2acf/KS1j4w4gEKtiWJsCeJ+8/42Rtookpt5vUMhi838ZtG4py8JYSv7ubtobLs+
-         fp65THK0H2QNX20DQXrf+EXBKYKmNWaH1pvaKk8PFtYh+e4B/Pcx8LTaRJuAfF1Zcz
-         Hb1F6wSAJQBpX8G3bhEskeKSgFM/1xSJUU9uVwS0MlxXAT46yjxOl5J0E6POhQDc22
-         2rr6R/j/U89JA==
-Date:   Thu, 24 Aug 2023 18:29:03 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Evan Green <evan@rivosinc.com>
-Cc:     Conor Dooley <conor.dooley@microchip.com>,
-        Anup Patel <apatel@ventanamicro.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-riscv@lists.infradead.org,
-        Heiko Stuebner <heiko.stuebner@vrull.eu>,
-        Andrew Jones <ajones@ventanamicro.com>
-Subject: Re: [PATCH v4] RISC-V: Show accurate per-hart isa in /proc/cpuinfo
-Message-ID: <20230824-exploit-spectacle-ecedd91e9075@spud>
-References: <20230711201831.2695097-1-evan@rivosinc.com>
- <20230824-factual-jawed-2dddd2cf2bdd@wendy>
- <CALs-Hss51fQE1yxe1Y1T86X+OfjPaAd386vosQ8gzRm=Njm1gw@mail.gmail.com>
+        Thu, 24 Aug 2023 13:30:50 -0400
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8D1E19B7
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 10:30:48 -0700 (PDT)
+Received: by mail-qt1-x829.google.com with SMTP id d75a77b69052e-40c72caec5cso29081cf.0
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 10:30:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692898248; x=1693503048;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HDtFsCYiPtYGuYS00Y/xeOXoK2jucfntj3ZgX5bDuvM=;
+        b=c4djqPDHjs65tcuH0ozHki3xhUng9o/FciaAQNEBTxcZbNYpHP3rfaaGUwl8pg1yJZ
+         A6JJ0hYfyenar7xpTnjZUyinFFbNJqZNxx1NU53y9grppmSvgD+BtyUzS3bWaXQw4Gka
+         fVNgZtbuCYkFqfrciV4PVwdPyXQXj2gqOobrWmsHSIDOmoSvH77RhemnF8F7OSoI8pGK
+         t19ynB+TxzWdfOpKH0btp+ZXrxNf75Euo173aYai1BhrETy1Z+W2F6fpDDCwy4MS9OeA
+         YyydXTai3xkX6W1ZH9nTsQn7TnA7bXjXxnyKAb/iat8ge/ovNkFS+rEk6koNJpHWJjAw
+         ES3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692898248; x=1693503048;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HDtFsCYiPtYGuYS00Y/xeOXoK2jucfntj3ZgX5bDuvM=;
+        b=ghMT0zz9T5rGv9YB/VBcuGbEmaFiezsghPF3mQmXE7PjdSoxKnm/bW+QUFNzd3Yr10
+         cHQsolwkQPZ9tRm1qOb0dhQ+SdYyeBIHdIgE+jJsM3QbKK5XCqnbIDWhSw/gZHL5EO/v
+         OmL5oyT4i2aJtq/KKzbfz9sTfi6CMWmuGCnB2gqdkzgz31jFgmlepZLiLvd9vi4hBJOC
+         7P3BuKEgnWwZAHCNc0vzobVfoc1UN8NLgaZlLkiRWSLVOIvb3Zc9yjTyKCi6QwjynUjs
+         2/9Gl5cKqgZ8+K8kac741qHgSHiHpU4RWE4T5gqK+m5nm/ZBnXVAE5kHsaMmX8bosIHw
+         Wmbw==
+X-Gm-Message-State: AOJu0YxqXZybKOVphhST4IabHN7HIJI/P3WyCBHgp9AprWki5NYSNXrb
+        6k2nA/svd+6FtM3F4FB97C6U9VCzCcd4cRakTtkebQ==
+X-Google-Smtp-Source: AGHT+IF9iqlXaxuxA5IYTVpvYJxsxiuR6AR+CVu6XtfUJaq86nTC8bBYw1FdlL2B8EgZkNknvc4BBxnPcbhJfUjwguU=
+X-Received: by 2002:a05:622a:4d2:b0:410:4c49:1aeb with SMTP id
+ q18-20020a05622a04d200b004104c491aebmr11636qtx.7.1692898247662; Thu, 24 Aug
+ 2023 10:30:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="A0HvG2oTz26T9fPz"
-Content-Disposition: inline
-In-Reply-To: <CALs-Hss51fQE1yxe1Y1T86X+OfjPaAd386vosQ8gzRm=Njm1gw@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230814163757.3077138-1-irogers@google.com> <20230814163757.3077138-3-irogers@google.com>
+ <6913f6d8-7f01-f132-5375-e82b8aa2e0b9@linux.intel.com>
+In-Reply-To: <6913f6d8-7f01-f132-5375-e82b8aa2e0b9@linux.intel.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Thu, 24 Aug 2023 10:30:36 -0700
+Message-ID: <CAP-5=fX3_dpxGU1qp2kisHQ13i1+tEO9B2KGi1Z7z3+nqigfRw@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] perf pmus: Add scan that ignores duplicates, use
+ for perf list
+To:     "Liang, Kan" <kan.liang@linux.intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        John Garry <john.g.garry@oracle.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Aug 24, 2023 at 7:01=E2=80=AFAM Liang, Kan <kan.liang@linux.intel.c=
+om> wrote:
+>
+>
+>
+> On 2023-08-14 12:37 p.m., Ian Rogers wrote:
+> > When there are multiple PMUs that differ only by suffix, by default
+> > just list the first one and skip all others. As the PMUs are sorted,
+> > the scan routine checks that the PMU names match and the numbers are
+> > consecutive.
+>
+> The suffix number may not be consecutive, especially for SPR and later
+> platforms. Because the IDs are from the discovery table now, which is
+> assigned by the HW. The physic IDs are not guaranteed to be consecutive.
+>
+> I don't think there is a plan to change it to logical IDs. Because
+> sometimes people want to know the physic IDs. So they can locate the
+> specific unit quickly.
 
---A0HvG2oTz26T9fPz
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks Kan,
 
-On Thu, Aug 24, 2023 at 09:18:16AM -0700, Evan Green wrote:
-> On Thu, Aug 24, 2023 at 5:20=E2=80=AFAM Conor Dooley <conor.dooley@microc=
-hip.com> wrote:
-> >
-> > On Tue, Jul 11, 2023 at 01:18:30PM -0700, Evan Green wrote:
-> > > In /proc/cpuinfo, most of the information we show for each processor =
-is
-> > > specific to that hart: marchid, mvendorid, mimpid, processor, hart,
-> > > compatible, and the mmu size. But the ISA string gets filtered throug=
-h a
-> > > lowest common denominator mask, so that if one CPU is missing an ISA
-> > > extension, no CPUs will show it.
-> > >
-> > > Now that we track the ISA extensions for each hart, let's report ISA
-> > > extension info accurately per-hart in /proc/cpuinfo. We cannot change
-> > > the "isa:" line, as usermode may be relying on that line to show only
-> > > the common set of extensions supported across all harts. Add a new "h=
-art
-> > > isa" line instead, which reports the true set of extensions for that
-> > > hart. This matches what is returned in riscv_hwprobe() when querying a
-> > > given hart.
-> > >
-> > > Signed-off-by: Evan Green <evan@rivosinc.com>
-> > > Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
-> > > Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-> > >
-> > > ---
-> > >
-> > > Changes in v4:
-> > >  - Documentation: Made the underline match the text line (Conor)
-> > >  - Documentation: hanged "in question" to "being described" (Andrew)
-> > >
-> > > Changes in v3:
-> > >  - Add some documentation (Conor)
-> > >
-> > > Changes in v2:
-> > >  - Added new "hart isa" line rather than altering behavior of existing
-> > >    "isa" line (Conor, Palmer)
-> > >
-> > >
-> > > I based this series on top of Conor's riscv-extensions-strings branch
-> > > from July 3rd, since otherwise this change gets hopelessly entangled
-> > > with that series.
-> > >
-> > > ---
-> > >  Documentation/riscv/uabi.rst | 10 ++++++++++
-> > >  arch/riscv/kernel/cpu.c      | 22 ++++++++++++++++++----
-> > >  2 files changed, 28 insertions(+), 4 deletions(-)
-> > >
-> > > diff --git a/Documentation/riscv/uabi.rst b/Documentation/riscv/uabi.=
-rst
-> > > index 8960fac42c40..afdda580e5a2 100644
-> > > --- a/Documentation/riscv/uabi.rst
-> > > +++ b/Documentation/riscv/uabi.rst
-> > > @@ -42,6 +42,16 @@ An example string following the order is::
-> > >
-> > >     rv64imadc_zifoo_zigoo_zafoo_sbar_scar_zxmbaz_xqux_xrux
-> > >
-> > > +"isa" vs "hart isa" lines in /proc/cpuinfo
-> > > +------------------------------------------
-> > > +
-> > > +The "isa" line in /proc/cpuinfo describes the lowest common denomina=
-tor of
-> > > +RISC-V ISA extensions understood by the kernel and implemented on al=
-l harts. The
-> > > +"hart isa" line, in contrast, describes the set of extensions unders=
-tood by the
-> > > +kernel on the particular hart being described, even if those extensi=
-ons may not
-> > > +be present on all harts in the system. The "hart isa" line is consis=
-tent with
-> > > +what's returned by __riscv_hwprobe() when querying for that specific=
- CPU.
-> >
-> > Thinking about this again, I don't think this is true. hwprobe uses
-> > has_fpu(), has_vector() etc that interact with Kconfig options but the
-> > percpu isa bitmap isn't affected by these.
->=20
-> Ugh yeah it's kind of a mishmash isn't it. hwprobe_isa_ext0() uses the
-> lowest common denominator for FD, C, V, but per-hart info for
-> Zba,Zbb,Zbs. Given the interface, per-hart info seems like what we
-> should have done there, and the FD, C, and V were my bad. The good
-> news is we can define new bits that do the right thing, though maybe
-> we should wait until someone actually wants them. For this patch we
-> should just remove this sentence. We can also correct the
-> documentation in hwprobe to mention the shortcoming in FD,C,V.
+I think this could lead to perf list merging some PMUs into one name
+and not doing this for others. We could keep the existing behavior by
+checking the numbers are consecutive but it'd come with some
+complexity and runtime cost. We could just ignore the consecutive
+property. We could just not try to solve the problem. What do you
+think is the right strategy?
 
-I'm not really sure it's all that much of a shortcoming for V or FD,
-since without the kernel support you shouldn't be using those extensions
-anyway. A hwprobe thing for that sounds like a footgun to me & I think
-the current behaviour is how it should be for these extensions.
-It not being per-cpu is arguably a bug I suppose? But I would contend
-that we are conveying support for the extension on a per-hart level,
-with it then also gated by the kernel supporting V or FD, which is on a
-system-wide basis.
-Any other extensions that require Kconfig-gated kernel support should
-also not report via hwprobe that the extension is supported when the
-Kconfig option is disabled. It just so happens that the set of
-extensions that hwprobe supports that are Kconfig-gated and those that
-require all-hart support are one and the same right now, so we can kinda
-just conflate the two & use has_vector() et al that handles both
-kconfig-gating and all-hart support. Until something comes along that needs
-anything different, I'd leave well enough alone for hwprobe...
-
-> Palmer, do you want a spin of this patch or a followup on top to
-> remove the above sentence?
-
-It's not actually been applied yet, right?
-
-Do you want to have this new thing in cpuinfo tell the user "this hart
-has xyz extensions that are supported by a kernel, but maybe not this
-kernel" or to tell the user "this hart has xyz extensions that are
-supported by this kernel"? Your text above says "understood by the
-kernel", but I think that's a poor definition that needs to be improved
-to spell out exactly what you mean. IOW does "understood" mean the
-kernel will parse them into a structure, or does it mean "yes you can
-use this extension on this particular hart".
+On other architectures they encode these numbers in different places
+but generally with no underscore, so this change has no impact for
+them. I'm keen to solve this problem as we're seeing large numbers of
+PMUs that cause perf list to be spammy and the all PMU events test to
+run for too long.
 
 Thanks,
-Conor.
+Ian
 
---A0HvG2oTz26T9fPz
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZOeTXwAKCRB4tDGHoIJi
-0orLAP4kzJ6Q9T5h9rycveczuufvHYqgBrGPMezLQOxqGBxxIQD+PBIa9CJdSnD/
-DLfjGDpw20OddIa0bsIJXxWBKRnhRA8=
-=NcS1
------END PGP SIGNATURE-----
-
---A0HvG2oTz26T9fPz--
+> Thanks,
+> Kan
+>
+> > If "-v" is passed to "perf list" then list all PMUs.
+> >
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> > ---
+> >  tools/perf/builtin-list.c      |  8 +++++
+> >  tools/perf/util/pmus.c         | 54 ++++++++++++++++++++++++++++++++--
+> >  tools/perf/util/print-events.h |  1 +
+> >  3 files changed, 61 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/tools/perf/builtin-list.c b/tools/perf/builtin-list.c
+> > index 7fec2cca759f..8fe4ddf02c14 100644
+> > --- a/tools/perf/builtin-list.c
+> > +++ b/tools/perf/builtin-list.c
+> > @@ -423,6 +423,13 @@ static void json_print_metric(void *ps __maybe_unu=
+sed, const char *group,
+> >       strbuf_release(&buf);
+> >  }
+> >
+> > +static bool default_skip_duplicate_pmus(void *ps)
+> > +{
+> > +     struct print_state *print_state =3D ps;
+> > +
+> > +     return !print_state->long_desc;
+> > +}
+> > +
+> >  int cmd_list(int argc, const char **argv)
+> >  {
+> >       int i, ret =3D 0;
+> > @@ -434,6 +441,7 @@ int cmd_list(int argc, const char **argv)
+> >               .print_end =3D default_print_end,
+> >               .print_event =3D default_print_event,
+> >               .print_metric =3D default_print_metric,
+> > +             .skip_duplicate_pmus =3D default_skip_duplicate_pmus,
+> >       };
+> >       const char *cputype =3D NULL;
+> >       const char *unit_name =3D NULL;
+> > diff --git a/tools/perf/util/pmus.c b/tools/perf/util/pmus.c
+> > index 3581710667b0..5073843aca19 100644
+> > --- a/tools/perf/util/pmus.c
+> > +++ b/tools/perf/util/pmus.c
+> > @@ -275,6 +275,50 @@ struct perf_pmu *perf_pmus__scan_core(struct perf_=
+pmu *pmu)
+> >       return NULL;
+> >  }
+> >
+> > +static struct perf_pmu *perf_pmus__scan_skip_duplicates(struct perf_pm=
+u *pmu)
+> > +{
+> > +     bool use_core_pmus =3D !pmu || pmu->is_core;
+> > +     int last_pmu_name_len =3D 0;
+> > +     unsigned long last_pmu_num =3D 0;
+> > +     const char *last_pmu_name =3D (pmu && pmu->name) ? pmu->name : ""=
+;
+> > +
+> > +     if (!pmu) {
+> > +             pmu_read_sysfs(/*core_only=3D*/false);
+> > +             pmu =3D list_prepare_entry(pmu, &core_pmus, list);
+> > +     } else
+> > +             last_pmu_name_len =3D pmu_name_len_no_suffix(pmu->name ?:=
+ "", &last_pmu_num);
+> > +
+> > +     if (use_core_pmus) {
+> > +             list_for_each_entry_continue(pmu, &core_pmus, list) {
+> > +                     unsigned long pmu_num =3D 0;
+> > +                     int pmu_name_len =3D pmu_name_len_no_suffix(pmu->=
+name ?: "", &pmu_num);
+> > +
+> > +                     if (last_pmu_name_len =3D=3D pmu_name_len &&
+> > +                         (last_pmu_num + 1 =3D=3D pmu_num) &&
+> > +                         !strncmp(last_pmu_name, pmu->name ?: "", pmu_=
+name_len)) {
+> > +                             last_pmu_num++;
+> > +                             continue;
+> > +                     }
+> > +                     return pmu;
+> > +             }
+> > +             pmu =3D NULL;
+> > +             pmu =3D list_prepare_entry(pmu, &other_pmus, list);
+> > +     }
+> > +     list_for_each_entry_continue(pmu, &other_pmus, list) {
+> > +             unsigned long pmu_num =3D 0;
+> > +             int pmu_name_len =3D pmu_name_len_no_suffix(pmu->name ?: =
+"", &pmu_num);
+> > +
+> > +             if (last_pmu_name_len =3D=3D pmu_name_len &&
+> > +                 (last_pmu_num + 1 =3D=3D pmu_num) &&
+> > +                 !strncmp(last_pmu_name, pmu->name ?: "", pmu_name_len=
+)) {
+> > +                     last_pmu_num++;
+> > +                     continue;
+> > +             }
+> > +             return pmu;
+> > +     }
+> > +     return NULL;
+> > +}
+> > +
+> >  const struct perf_pmu *perf_pmus__pmu_for_pmu_filter(const char *str)
+> >  {
+> >       struct perf_pmu *pmu =3D NULL;
+> > @@ -429,10 +473,16 @@ void perf_pmus__print_pmu_events(const struct pri=
+nt_callbacks *print_cb, void *p
+> >       int printed =3D 0;
+> >       int len, j;
+> >       struct sevent *aliases;
+> > +     struct perf_pmu *(*scan_fn)(struct perf_pmu *);
+> > +
+> > +     if (print_cb->skip_duplicate_pmus(print_state))
+> > +             scan_fn =3D perf_pmus__scan_skip_duplicates;
+> > +     else
+> > +             scan_fn =3D perf_pmus__scan;
+> >
+> >       pmu =3D NULL;
+> >       len =3D 0;
+> > -     while ((pmu =3D perf_pmus__scan(pmu)) !=3D NULL) {
+> > +     while ((pmu =3D scan_fn(pmu)) !=3D NULL) {
+> >               list_for_each_entry(event, &pmu->aliases, list)
+> >                       len++;
+> >               if (pmu->selectable)
+> > @@ -445,7 +495,7 @@ void perf_pmus__print_pmu_events(const struct print=
+_callbacks *print_cb, void *p
+> >       }
+> >       pmu =3D NULL;
+> >       j =3D 0;
+> > -     while ((pmu =3D perf_pmus__scan(pmu)) !=3D NULL) {
+> > +     while ((pmu =3D scan_fn(pmu)) !=3D NULL) {
+> >               bool is_cpu =3D pmu->is_core;
+> >
+> >               list_for_each_entry(event, &pmu->aliases, list) {
+> > diff --git a/tools/perf/util/print-events.h b/tools/perf/util/print-eve=
+nts.h
+> > index d7fab411e75c..bf4290bef0cd 100644
+> > --- a/tools/perf/util/print-events.h
+> > +++ b/tools/perf/util/print-events.h
+> > @@ -26,6 +26,7 @@ struct print_callbacks {
+> >                       const char *expr,
+> >                       const char *threshold,
+> >                       const char *unit);
+> > +     bool (*skip_duplicate_pmus)(void *print_state);
+> >  };
+> >
+> >  /** Print all events, the default when no options are specified. */
