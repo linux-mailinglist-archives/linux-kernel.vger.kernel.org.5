@@ -2,131 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB0C5787B6A
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 00:20:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75BE9787B7C
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 00:28:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243879AbjHXWUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 18:20:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48230 "EHLO
+        id S243883AbjHXW1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 18:27:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243877AbjHXWUB (ORCPT
+        with ESMTP id S238015AbjHXW1W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 18:20:01 -0400
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2070.outbound.protection.outlook.com [40.107.93.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8CC41BE9;
-        Thu, 24 Aug 2023 15:19:59 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oFwgPY9EgTZ46ncLdSgDmnb3VQaoWAxV8EfU9oLtJCD2MytnTqAC3fQ1YdHo2/1YPx7CLqq6KG/yVrATCQfnWh29nkSd8q/in46mfXOYdOO5BKDnGb2bgOxmojNSOJhLACZFKZkpc2k4sKf9d7MmYA9kGpbyS6+3qAYPEnNpJQM2WG9XiubdruApuhCY1SfiFhTdYhrjCVCkEAroWAEJ1tMwhDCO1Mwiv2gLulayMLy0zWkQPDz2jI2WgPpJ2p1RMQc2I3E2juVf9ltU0y9c3HL1OHsTTV3BHLG+K/3HNIN1Utlm2K3iy2fkdeysob+EA9uwmU8stykMB0al0ZuszA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+KJtETMXXi9N6QnRqMc6+9uYEkEdp6jX/xna7WGUSKU=;
- b=BcfGUq9sVNNkiqGpdv4fYXS7con+PJc681ocJ+E7MrAxPepfzY5J3LCD4oRogP8kjZ3aqxhkGYaBQGDAnOvlEa3ptyejimOcaY2uVBkg2XaZ0CNMcWDec8DUZArsCr/aaLfOTQFbU5U+jskVHHl38sDuNtfXuhvJuPdEVVVPaTawQ1MoKfjdAVzwQsfbWRfhSBR/yfdhBBNokE9nCLZ9JN9FePM6jTcGd5QEW6epppak2yL/bWGBVcaQ+S4lvSFL8iSRDIK698003w34OxorZT/j+zxcMFJvTTM9LLF/f5aeXuR1v6AHrwQVuPQuT6D0YMwSkdIjfBYYlHphUcgyzg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=gondor.apana.org.au smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+KJtETMXXi9N6QnRqMc6+9uYEkEdp6jX/xna7WGUSKU=;
- b=H6K+IA7KhnSHgyQA7x01w+k/jRAjh8hpjByKT8YAbmXQCnT5xpry7eFdfNUEv7jYexRtKrF02NAxwEpqQdgOSdTGBFfG4wTjVz6NL1Qvww2yO+cuVVjdJ8EwXEhjO7hHV2kSDloDiWjwTC2CyofyOLQkbvuRcXi7MOEXtPnefzs=
-Received: from DM6PR06CA0017.namprd06.prod.outlook.com (2603:10b6:5:120::30)
- by BL3PR12MB6644.namprd12.prod.outlook.com (2603:10b6:208:3b1::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.26; Thu, 24 Aug
- 2023 22:19:57 +0000
-Received: from CY4PEPF0000EE35.namprd05.prod.outlook.com
- (2603:10b6:5:120:cafe::51) by DM6PR06CA0017.outlook.office365.com
- (2603:10b6:5:120::30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.27 via Frontend
- Transport; Thu, 24 Aug 2023 22:19:57 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CY4PEPF0000EE35.mail.protection.outlook.com (10.167.242.41) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6699.15 via Frontend Transport; Thu, 24 Aug 2023 22:19:56 +0000
-Received: from AUS-P9-MLIMONCI.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 24 Aug
- 2023 17:19:54 -0500
-From:   Mario Limonciello <mario.limonciello@amd.com>
-To:     <thomas.lendacky@amd.com>, <herbert@gondor.apana.org.au>
-CC:     <john.allen@amd.com>, <davem@davemloft.net>,
-        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "Mario Limonciello" <mario.limonciello@amd.com>
-Subject: [PATCH v2 2/2] crypto: ccp: Get a free page to use while fetching initial nonce
-Date:   Thu, 24 Aug 2023 17:19:32 -0500
-Message-ID: <20230824221932.2807-2-mario.limonciello@amd.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230824221932.2807-1-mario.limonciello@amd.com>
-References: <20230824221932.2807-1-mario.limonciello@amd.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE35:EE_|BL3PR12MB6644:EE_
-X-MS-Office365-Filtering-Correlation-Id: 41ff0bfa-d0de-4885-e880-08dba4f03f95
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: C9xmz1cZ4KPikVLMybtMNMr3ADLxSHkXE9KTQuzQETKW2ycVBlHTgd25svFcbDxOwUUYZhD0OvEmucnvVf6M2IHXD3G1x2LFltsDUPCylSCoAl6EPk9DTr8zAkq1MTeJgbk5T/61t6bFGaVOhqv9hYK1D6ZpjXOP2ROCGmvGEdd0NaWUJq++Vy4SakgLFqCqHxs+Uw03HCsAFMSphovyh7zAwP99A3aQj1V95VCn8Be2xb1NsvTejcRLPAx2hta0pxMhMU/ozL8bk7FroovoHFRhto3ivoL49IhN3KqOdw9dz0vIlLfbQkqgfzw9rFcN+MQf1XKnJaiZ480zTG24QLCcYriPwufwMgNi5iu/8d/lW/TULU7oh/rPjVDf8VsHr7lpiNTEYb/de8Dys6isKXvJrJXJZHekrzdU/9lA7+D4SkeKBNpmw5Is6Y8krd3VL9aD6827n099rotXwTbs+htUL0J6Bh5jOQMCGnvsLn8+dcktpUFrUVSvaTs3KELwD88qs0xjwZiRn5hKPtquWtaG/JnfdP/IYlAEjef0MwxrdcmMcFmBYg8ydAA49Az8KynY9sAZ/6VL3uxdZEqFVud105AyHXpjEvk/qDKDyk4p+L03sV1Rxxcdmj8A4WZO71I++Z2Nnh2yXPr5He+zi6W7QrNOXlZQRWah5VICHk3pWNBjCGYMYc57y8I2aGN72tw9re/TJ52JP3B6gIH7JhjZRgey+dl4gPVbOFSNOXEsEZXzhl2iz6ffyv9w82J+nO1H+lbNQGxXrN0KwCKA0g==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(396003)(136003)(376002)(39860400002)(186009)(1800799009)(82310400011)(451199024)(36840700001)(40470700004)(46966006)(82740400003)(356005)(6666004)(40460700003)(81166007)(7696005)(40480700001)(336012)(1076003)(36860700001)(16526019)(26005)(47076005)(36756003)(83380400001)(426003)(2616005)(41300700001)(2906002)(316002)(8676002)(70586007)(70206006)(54906003)(110136005)(44832011)(5660300002)(4326008)(8936002)(86362001)(478600001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Aug 2023 22:19:56.8014
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 41ff0bfa-d0de-4885-e880-08dba4f03f95
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000EE35.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR12MB6644
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+        Thu, 24 Aug 2023 18:27:22 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C06F1BEB
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 15:27:20 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-58d9e327d3aso4484407b3.3
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 15:27:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692916039; x=1693520839;
+        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=qxbbdEcf8OWbRWmq4wU3iFPZpMe4/3EUR64PUokKaeQ=;
+        b=K5K3vWoQU44G5bC69Sm9jvmBWdgzCRotqzYQrfHbdkFvxhkE5wNz+aMTCE19y8jxQ+
+         5pUi4Jup1DuJr91sBlcVDkLE0UXfxuK8/u1eeupHi9u91mLEUSUK2RrppRZTOQ84yMdc
+         AftR5gLU/Hs18plXw6k1A+//bdMc39xt6z3PcqzmFMcJY4q0u5eZ4LJyxkb/s/5TUlF7
+         bNxQlLhyzJBpFhYXYkROROGPAUxLLzamk1lIo5C+A65rkn5ocGCvXXmkvgyXJ8gUggE3
+         /h/vTZabWfkZ/d0rhU+6Auq7TP7SypzClKxzqUSJgF/ba4sptwxoRchgWVa4yJ5qiFOV
+         q52w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692916039; x=1693520839;
+        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=qxbbdEcf8OWbRWmq4wU3iFPZpMe4/3EUR64PUokKaeQ=;
+        b=OdiQNTLu3z5bnFgOfCpDjHukYjqnelZT3CoNZklhgsZ407HTQ8sAFrrM6IkN3Q/v/E
+         BELS+sUyd/oiBcwy8unIxYvlaamCj9Z9pdA70eEfugrqGosJiCLeaWrj1QHwwV/bIJGd
+         a4WrvDN2qWPtLT7rzwCL1sY2pw8ucr3PNSBnGIFSMknghqw1n+sMK58TwC13rHFyoda/
+         88tLmo1QrsudTnqCCeD7hZ5WbsWMZOcsrwa1IpSmiWbDpewc7ef7snfcGfgi0qjf9/dQ
+         J9mUbCsVWifuxTtyfOQu7ebkDTNgaH2Nq7UAcjlmJykgDU97uhdDDTEBqIrvW36MCJaj
+         sqAg==
+X-Gm-Message-State: AOJu0YyXQq4r1jsC1IZW5brIUOhORQ29zF3MYkmcjfRH3nle4X7kGWDM
+        TuZ3OhtbpiT4e8gQ256vc+v+BA40Jz0U
+X-Google-Smtp-Source: AGHT+IHe7Ds6ZF7L4QrZRwMtXnxYwvFQA2MHBAnwCxktSH7oYgWN0lOhnsmmRWQIyQ0JlBwTkBIsVIiBoBcF
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:fbb9:d9e7:7405:2651])
+ (user=irogers job=sendgmr) by 2002:a25:ac82:0:b0:d77:e43d:6e80 with SMTP id
+ x2-20020a25ac82000000b00d77e43d6e80mr128415ybi.6.1692916039527; Thu, 24 Aug
+ 2023 15:27:19 -0700 (PDT)
+Date:   Thu, 24 Aug 2023 15:27:14 -0700
+Message-Id: <20230824222716.553982-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.rc2.253.gd59a3bf2b4-goog
+Subject: [PATCH v4 0/2] perf list: Remove duplicate PMUs
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        John Garry <john.g.garry@oracle.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dbc_dev_init() gets a free page from `GFP_KERNEL`, but if that page has
-any data in it the first nonce request will fail.
-This prevents dynamic boost control from probing. To fix this, explicitly
-request a zeroed page with `__GFP_ZERO` to ensure first nonce fetch works.
+When there are multiple PMUs, differing by ordered suffixes, by
+default only display one. This avoids repeated listing of events, in
+particular when there are 10s of uncore PMUs. If "-v" is passed to
+"perf list" then still list all PMUs.
 
-Fixes: c04cf9e14f10 ("crypto: ccp - Add support for fetching a nonce for dynamic boost control")
-Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
----
-v1->v2:
- * Use GFP_KERNEL | __GFP_ZERO to ensure accounting works properly
+Listing fewer PMU/event combinations helps speed the all PMU event
+tests.
 
- drivers/crypto/ccp/dbc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Before:
+```
+$ perf list
+...
+  uncore_imc_free_running_0/data_read/               [Kernel PMU event]
+  uncore_imc_free_running_0/data_total/              [Kernel PMU event]
+  uncore_imc_free_running_0/data_write/              [Kernel PMU event]
+  uncore_imc_free_running_1/data_read/               [Kernel PMU event]
+  uncore_imc_free_running_1/data_total/              [Kernel PMU event]
+  uncore_imc_free_running_1/data_write/              [Kernel PMU event]
+```
 
-diff --git a/drivers/crypto/ccp/dbc.c b/drivers/crypto/ccp/dbc.c
-index 839ea14b9a85..a99b8f02153a 100644
---- a/drivers/crypto/ccp/dbc.c
-+++ b/drivers/crypto/ccp/dbc.c
-@@ -205,7 +205,7 @@ int dbc_dev_init(struct psp_device *psp)
- 		return -ENOMEM;
- 
- 	BUILD_BUG_ON(sizeof(union dbc_buffer) > PAGE_SIZE);
--	dbc_dev->mbox = (void *)devm_get_free_pages(dev, GFP_KERNEL, 0);
-+	dbc_dev->mbox = (void *)devm_get_free_pages(dev, GFP_KERNEL | __GFP_ZERO, 0);
- 	if (!dbc_dev->mbox) {
- 		ret = -ENOMEM;
- 		goto cleanup_dev;
+After:
+```
+$ perf list
+...
+  uncore_imc_free_running/data_read/                 [Kernel PMU event]
+  uncore_imc_free_running/data_total/                [Kernel PMU event]
+  uncore_imc_free_running/data_write/                [Kernel PMU event]
+...
+$ perf list -v
+...
+  uncore_imc_free_running_0/data_read/               [Kernel PMU event]
+  uncore_imc_free_running_0/data_total/              [Kernel PMU event]
+  uncore_imc_free_running_0/data_write/              [Kernel PMU event]
+  uncore_imc_free_running_1/data_read/               [Kernel PMU event]
+  uncore_imc_free_running_1/data_total/              [Kernel PMU event]
+  uncore_imc_free_running_1/data_write/              [Kernel PMU event]
+...
+```
+
+The PMUs are sorted by name then suffix as a part of this change.
+
+v4: Rebase on top of lazy PMU changes. Ignore numeric ordering due to
+    gaps, suggested by Kan Liang <kan.liang@linux.intel.com>. Fold
+    patches 2 & 3 as suggested by John Garry <john.g.garry@oracle.com>
+    (done by accident as part of rebasing).
+v3: Add detail to patch 1 sorting commit message about the suffix and
+    why sorting is necessary.
+v2: List all PMUs when "-v" is passed as suggested by John Garry
+    <john.g.garry@oracle.com>.
+
+Ian Rogers (2):
+  perf pmus: Sort pmus by name then suffix
+  perf pmus: Skip duplicate PMUs and don't print list suffix by default
+
+ tools/perf/builtin-list.c         |   8 +++
+ tools/perf/util/pmu.c             |  17 +++--
+ tools/perf/util/pmu.h             |   3 +-
+ tools/perf/util/pmus.c            | 102 +++++++++++++++++++++++++++++-
+ tools/perf/util/pmus.h            |   2 +
+ tools/perf/util/print-events.h    |   1 +
+ tools/perf/util/s390-sample-raw.c |   3 +-
+ 7 files changed, 126 insertions(+), 10 deletions(-)
+
 -- 
-2.34.1
+2.42.0.rc2.253.gd59a3bf2b4-goog
 
