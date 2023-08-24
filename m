@@ -2,134 +2,278 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D072787575
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 18:33:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59687787579
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 18:35:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242588AbjHXQdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 12:33:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34216 "EHLO
+        id S241522AbjHXQev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 12:34:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242575AbjHXQdN (ORCPT
+        with ESMTP id S242594AbjHXQeW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 12:33:13 -0400
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2080.outbound.protection.outlook.com [40.107.92.80])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E5DCE5E;
-        Thu, 24 Aug 2023 09:33:11 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gnBXSaf5JxM1v0ilyuNW4/pNyf14R6E+mrxXYFI+IB0/aUuamTLyV68+H3iOxRHHYN6PsrfO+REkp7xoG4DyifF10CnRPbW3k2jmSWkbxx1vSURe3hZvKu7/uUssQE/8S0GQ350wbvYBsEhmc0QkyB1qNfxYzLcX0NsG7dJur8Vm9bDH9r4z+eywMjgluqzeSfPK0lQKwFC2CEN2kmFQB0cVUHyZmfrCY7Gjg+wMyclsb+TRi9tT1Ww3FxAal3uUYR57rw0L3SB0/CDT3pVe41yxuOZrVaLfVjQIbC9HMU9rHIBozLNIfA/VUnC3ywfCbTe1Z+UaB6CJmEKM3bZOJw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FXQDKGVxewLqdoLdOxi8Ou8xuVe/F8ye7SoSoy99QMY=;
- b=IaUZqoyf8ZKNUMkcZ80Lhw9wOz6v+G85lsB6soFisPn/QheX3hRO02zkr2TXh2hwhhZIFS5toZAx131zTie4C27Iy+Po5iUHOw+nh9NX2EgahcUic9wsIuOOhlMmIuD6wRFZH3eLBT/OvtQO62b9X06aW87efY+ok3sulI9JYxZ/2u7Hduar7OUR0YhGMD8AhEQi0hjc2FCO7GtocIUBi4NyajFR4m3H8hqromClaHrV6zJEd7B1frnoznZCtb3waS/dvkDpcUbQrgCkr3g6nxFajeDT5dEHS0uoxvlMgKFULsXWL66BO+i46eTxOcWxTC6TdL5bvUyzov0i7b8Aqg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FXQDKGVxewLqdoLdOxi8Ou8xuVe/F8ye7SoSoy99QMY=;
- b=eub2BmkwmTOdDJB1p1hte1fWwGJtyf1H+eXyZ3C4dygBoJmKF0maZNYYRqpvCREPmWJatFZZI1pW2j4wQ5BjLXpH6e+9Kr5F+3LMoAqm08gJhEewg6r120wXEveZVA8HbX+WcEaaAQmw40iZAqpqaKQcruCDyKOthm36qtzfKBpxRS7Ij1td28Ogd+0C67f4tnt+iFXnBVX0w60d976VUwvCE1K3uNSIwH4viSGuhmD+WG4LvASl4p+4zg+msMkoi+kmUTdgiKjIJAkk0H6tlPL2TMC0d8gIIG6t9Sz4IEqk9ZjnFXRla3JCWxmfdedQ5oSLC98Fy0GarZ3fysq5tQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by DS7PR12MB8324.namprd12.prod.outlook.com (2603:10b6:8:ec::9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6699.27; Thu, 24 Aug 2023 16:33:09 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::5111:16e8:5afe:1da1]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::5111:16e8:5afe:1da1%6]) with mapi id 15.20.6699.027; Thu, 24 Aug 2023
- 16:33:09 +0000
-Date:   Thu, 24 Aug 2023 13:33:06 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Reinette Chatre <reinette.chatre@intel.com>
-Cc:     yishaih@nvidia.com, shameerali.kolothum.thodi@huawei.com,
-        kevin.tian@intel.com, alex.williamson@redhat.com,
-        kvm@vger.kernel.org, dave.jiang@intel.com, jing2.liu@intel.com,
-        ashok.raj@intel.com, fenghua.yu@intel.com,
-        tom.zanussi@linux.intel.com, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 2/3] vfio/ims: Support emulated interrupts
-Message-ID: <ZOeGQrRCqf87Joec@nvidia.com>
-References: <cover.1692892275.git.reinette.chatre@intel.com>
- <7a08c41e1825095814f8c35854d3938c084b2368.1692892275.git.reinette.chatre@intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7a08c41e1825095814f8c35854d3938c084b2368.1692892275.git.reinette.chatre@intel.com>
-X-ClientProxiedBy: BYAPR08CA0043.namprd08.prod.outlook.com
- (2603:10b6:a03:117::20) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        Thu, 24 Aug 2023 12:34:22 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89E4E1FC4;
+        Thu, 24 Aug 2023 09:34:04 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0E51966346;
+        Thu, 24 Aug 2023 16:34:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B783C433C7;
+        Thu, 24 Aug 2023 16:34:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692894843;
+        bh=PJ6Gx1h2AHQyzLM7RTHQj8zRPqXX05bgRWMeI7Je9Fk=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=CtU6yZ0sUohVDy9Z8AddYTDA3TRnli3TrC/xAdZ0rQhOjL4tCt9un1MAHbNIJZnDy
+         o0FQdqGT09SW/h8c5jyMRI5X5SKOH/8HAja1+mAtN0nTBWtzSvoFHhmkDQfQ7mraaW
+         m59z5wk0J8GYqt2NJcIJk/1cltJVB1B9uvvrkz8pyzma67SQ/IylDEzy6wHcj4pHWK
+         lulpEqUpp8p0bGhbCwb4DFwaAi+Jz73n104ZahqJgark3oPH+LikA9Le5w5mJEAbK0
+         0tDpUKLlQQS3udKvvMxJ0DIBAcAguCY/9Dzza+bMuzBGhSr7YsUkBV/6ysocUrw9lk
+         iaWejQ+ZPWhFA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 04FA8CE00C8; Thu, 24 Aug 2023 09:34:03 -0700 (PDT)
+Date:   Thu, 24 Aug 2023 09:34:02 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Huacai Chen <chenhuacai@kernel.org>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Z qiang <qiang.zhang1211@gmail.com>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        John Stultz <jstultz@google.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Binbin Zhou <zhoubinbin@loongson.cn>
+Subject: Re: [PATCH V4 2/2] rcu: Update jiffies in rcu_cpu_stall_reset()
+Message-ID: <a0b30aa4-7007-436e-9f89-e60fd54f0964@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <CAAhV-H6ejw=8afS0jmmQvKUrCw=qZm_P6SA0A+tuvvb8bsq4-Q@mail.gmail.com>
+ <5777BD82-2C8D-4BAB-BDD3-C2C003DC57FB@joelfernandes.org>
+ <CAAhV-H58OpQJapV7LDNjZ-vM7nNJrwdkBiPjFcCutO1yRsUshQ@mail.gmail.com>
+ <87ttspct76.ffs@tglx>
+ <03fe7084-0509-45fa-87ee-8f8705a221a6@paulmck-laptop>
+ <CAAhV-H5Z3s=2_OyA_AJ1-NqXBtNrcs-EmsqYcrjc+qXmJ=SitQ@mail.gmail.com>
+ <16827b4e-9823-456d-a6be-157fbfae64c3@paulmck-laptop>
+ <20230824130942.GA3810470@google.com>
+ <69b47bd2-307d-41ae-ae5f-e18c7a6f0379@paulmck-laptop>
+ <CAAhV-H7PSR-3Xi84uz0cs4yojVxODPJnFo_G3BTQK+cHDxx-ww@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|DS7PR12MB8324:EE_
-X-MS-Office365-Filtering-Correlation-Id: cec1fe30-9d56-48d3-cad6-08dba4bfcd03
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: kMlxn58Gg+bbHlekXacwZkJodMOEcS2kFShuabp9tGOX7xrGuywgS1noyFxqNWZtimH8jPAFfbywuOOtxkutWwGJN1ceUyCv5vazKp/QJWfQHLjak81tiOvwXuyISygYNWvJLeccH71/ySSZ49igSHLdMFBjeyMYipqEiIIZt+BSA/SMNGyw7WJaLejzQpZ9lf/BlnEBmi4ZnWZwPbIV/HNp7Iz3BWGcwZrXH9bQWAAI999egVdztFjy3M36FQRBMyaBUa0gCxnkF3oGso+q02SIBuV8PswRLAlgLAfNTfg/2RnFNI8n6lNw3HoClIfIvlnBXII1N2c+JARbMpZGGdOzVdwvBXdk6K12gZcGbpRsmz6Tq4Vs1dFP7k9L64qXv4p+1LkEJSI5/QaYdx5LJrG+M70wmYjPrm3v/NN0LG/wCGVqphe6jKFgvFvTcEbk330tugqb891ZAn7LyxidlY4xRTaIxnINtczfjkPJ6ZKs5z7Y6/0qEBi4oAzlIw3aFZePgUHMFaaAAA4owKPby2GsVHyYHQCYz1To/lvi+NFHqKn3c6srdg9LG5WttaHt
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(136003)(39860400002)(366004)(376002)(1800799009)(186009)(451199024)(2616005)(8936002)(4326008)(8676002)(83380400001)(5660300002)(4744005)(36756003)(7416002)(26005)(6666004)(38100700002)(66946007)(66556008)(66476007)(6916009)(316002)(478600001)(41300700001)(2906002)(6512007)(6506007)(6486002)(86362001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?hu1GyGLJGyi2Ql41EiuT5yTDQ/gNjzYOkieee5SvrM/oyXUNbOu6yfPPW/DX?=
- =?us-ascii?Q?/v0Vm33cSL4HBADBrL7znjSygV4yd/CBxGJtnkDPgsV1I34/1/2NBsf3CcLb?=
- =?us-ascii?Q?5JxqHu+4SbY69mm/iVZB4KpfRbP7NcXdiCcjrc/n9R4P0xF2JEtEKq92SbmU?=
- =?us-ascii?Q?bE1hGAXfFsU0s8stvkFvrdv6Yh+MwlnITQsKVEv2sIIN2HIP8SFW9GYZrW3l?=
- =?us-ascii?Q?9dnYINSU3ufomymKhKCNIoH5gTVQXvqTiCyTuBXzAQjjvOcw4O6tm7KoHpJh?=
- =?us-ascii?Q?zCsqYo//foB4roaXL1Tfr6RLF6YXwtDrPcvTr6viz2mdI+mIf4Bin9NzgEQl?=
- =?us-ascii?Q?j+Fob/VR+DIzM0dM1lA2Atf6iKlMbgjcc2xnqBKapeyIlmm2PeY/mY5LBOSA?=
- =?us-ascii?Q?CNAGB1QA4iBjHPeiRKiZdK+OnaHr4mQWpcto/F9abHf77c54MY0PuHSpEJ/8?=
- =?us-ascii?Q?VZ09ku0/bZ123A3BeGjG7SjK7uEDxp+FqFUO3KowNhnFFO50nzoioPoAgN/I?=
- =?us-ascii?Q?wZzOXthjywMIcl0kSLpgpkFFe1vM1q4nZBSKtAo31pw5IECPmzPJI2c7/AcW?=
- =?us-ascii?Q?3zRF51EWOm6AX6cjbg4vaAYe/PydNRJCCtIBeYUijD+X9H/yc0x755sDOuoI?=
- =?us-ascii?Q?N8mqkjA9ms5VsyJD6Uj4HHee2iiA9CLqsz8/qz/4ewX1wmHVihqBpO+xVoyf?=
- =?us-ascii?Q?Xx+ogmTppRyn+eRcZ44zBtBKXBUHNinYPsSrtCNs9IYt9n9Xco9W5rhr2ms+?=
- =?us-ascii?Q?DM54bDIkCR2bV5QF+PeZwO2odzjez9pLwAi8Zmcw0LZHgQI9AN2d+Fb0TZ1f?=
- =?us-ascii?Q?Ma0DG9IaMYYoyoI504tNeR+XAn+HqM/HiEE5Uca6+dClez9eXAHIZdM6KLC7?=
- =?us-ascii?Q?1cKUcRtFnHOhjJ3xqpcHfv7PjRJ5wSCAYEob1IKLBHaElD1K/32yyAZr0HyE?=
- =?us-ascii?Q?dJWoUJdDN6otZDprY0GZgYNKdcg7bvCumLseW2l6U5FiPIsQ+alpP+ds5LdB?=
- =?us-ascii?Q?oYt+94ojGn9lhNW+9BU7Fg7UP1oYw3s9Bx1ZLyiVeuJtE6W3GC1CW1PCVy56?=
- =?us-ascii?Q?N8YNwnB024V2vEzUl3EycgUX5y8kfUNw5qxrfnUi4s0UGS+uLtmMrARv3lMX?=
- =?us-ascii?Q?w6MzjX5a49RTHKnlze4whvqx2ToFeDNRrPQFZqwxf/aqppSfNNqcsd816Esa?=
- =?us-ascii?Q?Q/1dpHv5cxP1BCyNbzGk1jAJqRIsQ+KuaVp6chSwhxj6KneIOC7oVNTJzy+j?=
- =?us-ascii?Q?eQpJ+GhhihwG7eLSLywxVTPEkwEQD8EMwJ1WKhTmFgkLvKtkZK9p6DFEt1Bq?=
- =?us-ascii?Q?NN1YS4a5MvAt+nqxyNVP5Sx5+O9zQUMBJoDnigG8DSXPOvRlYdt8lBujyG3Q?=
- =?us-ascii?Q?Hl1Vuii4mPYejLb/i3o4svJ94vyNdVj12/oGJ3w5BC070J1DGxQQxQTE2Vik?=
- =?us-ascii?Q?mb9vaCHZ+x6QJrz+wvEK1C+bba/YvHIwWAs/wOs6+6GSj7gTN3se4Nd2AhVD?=
- =?us-ascii?Q?au6mxFtngLTrtKsvPCgtz8+iUKMX6CkcKpvY2/zMXlmXpotRkkZ15SdiwxxX?=
- =?us-ascii?Q?53IFEpVxMeuvccHO1k0y+zVEpMBn6SbJ8YdKnSp5?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cec1fe30-9d56-48d3-cad6-08dba4bfcd03
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Aug 2023 16:33:09.0123
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2zWPGpW3GiyyeKavLIjuoujwJocR81osG6eiTS9s+mgEmZNwMFvELmvPmgZONw9w
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB8324
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAAhV-H7PSR-3Xi84uz0cs4yojVxODPJnFo_G3BTQK+cHDxx-ww@mail.gmail.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 09:15:21AM -0700, Reinette Chatre wrote:
-> Access from a guest to a virtual device may be either 'direct-path',
-> where the guest interacts directly with the underlying hardware,
-> or 'intercepted path' where the virtual device emulates operations.
+On Fri, Aug 25, 2023 at 12:03:31AM +0800, Huacai Chen wrote:
+> Hi, Paul,
 > 
-> Support emulated interrupts that can be used to handle 'intercepted
-> path' operations. For example, a virtual device may use 'intercepted
-> path' for configuration. Doing so, configuration requests intercepted
-> by the virtual device driver are handled within the virtual device
-> driver with completion signaled to the guest without interacting with
-> the underlying hardware.
+> On Thu, Aug 24, 2023 at 9:28 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > On Thu, Aug 24, 2023 at 01:09:42PM +0000, Joel Fernandes wrote:
+> > > On Thu, Aug 24, 2023 at 04:40:42AM -0700, Paul E. McKenney wrote:
+> > > > On Thu, Aug 24, 2023 at 10:50:41AM +0800, Huacai Chen wrote:
+> > > > > Hi, Paul,
+> > > > >
+> > > > > On Thu, Aug 24, 2023 at 6:41 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+> > > > > >
+> > > > > > On Thu, Aug 24, 2023 at 12:03:25AM +0200, Thomas Gleixner wrote:
+> > > > > > > On Thu, Aug 17 2023 at 16:06, Huacai Chen wrote:
+> > > > > > > > On Thu, Aug 17, 2023 at 3:27 AM Joel Fernandes <joel@joelfernandes.org> wrote:
+> > > > > > > >> > If  do_update_jiffies_64() cannot be used in NMI context,
+> > > > > > > >>
+> > > > > > > >> Can you not make the jiffies update conditional on whether it is
+> > > > > > > >> called within NMI context?
+> > > > > > >
+> > > > > > > Which solves what? If KGDB has a breakpoint in the jiffies lock held
+> > > > > > > region then you still dead lock.
+> > > > > > >
+> > > > > > > >> I dislike that..
+> > > > > > > > Is this acceptable?
+> > > > > > > >
+> > > > > > > > void rcu_cpu_stall_reset(void)
+> > > > > > > > {
+> > > > > > > >         unsigned long delta;
+> > > > > > > >
+> > > > > > > >         delta = nsecs_to_jiffies(ktime_get_ns() - ktime_get_coarse_ns());
+> > > > > > > >
+> > > > > > > >         WRITE_ONCE(rcu_state.jiffies_stall,
+> > > > > > > >                    jiffies + delta + rcu_jiffies_till_stall_check());
+> > > > > > > > }
+> > > > > > > >
+> > > > > > > > This can update jiffies_stall without updating jiffies (but has the
+> > > > > > > > same effect).
+> > > > > > >
+> > > > > > > Now you traded the potential dead lock on jiffies lock for a potential
+> > > > > > > live lock vs. tk_core.seq. Not really an improvement, right?
+> > > > > > >
+> > > > > > > The only way you can do the above is something like the incomplete and
+> > > > > > > uncompiled below. NMI safe and therefore livelock proof time interfaces
+> > > > > > > exist for a reason.
+> > > > > >
+> > > > > > Just for completeness, another approach, with its own advantages
+> > > > > > and disadvantage, is to add something like ULONG_MAX/4 to
+> > > > > > rcu_state.jiffies_stall, but also set a counter indicating that this
+> > > > > > has been done.  Then RCU's force-quiescent processing could decrement
+> > > > > > that counter (if non-zero) and reset rcu_state.jiffies_stall when it
+> > > > > > does reach zero.
+> > > > > >
+> > > > > > Setting the counter to three should cover most cases, but "live by the
+> > > > > > heuristic, die by the heuristic".  ;-)
+> > > > > >
+> > > > > > It would be good to have some indication when gdb exited, but things
+> > > > > > like the gdb "next" command can make that "interesting" when applied to
+> > > > > > a long-running function.
+> > > > >
+> > > > > The original code is adding ULONG_MAX/2, so adding ULONG_MAX/4 may
+> > > > > make no much difference? The simplest way is adding 300*HZ, but Joel
+> > > > > dislikes that.
+> > > >
+> > > > I am not seeing the ULONG_MAX/2, so could you please point me to that
+> > > > original code?
+> > > >
+> > > > The advantage of ULONG_MAX/4 over ULONG_MAX/2 is that the time_after()
+> > > > and time_before() macros have ULONG_MAX/4 slop in either direction
+> > > > before giving you the wrong answer.  You can get nearly the same result
+> > > > using ULONG_MAX/2, but it requires a bit more care.  And even on 32-bit
+> > > > HZ=1000 systems, ULONG_MAX/4 gets you more than 12 days of gdb session
+> > > > or jiffies-update delay before you start getting false positives.
+> > > >
+> > > > Then things can be reset after (say) 3 calls to rcu_gp_fqs() and
+> > > > also the current reset at the beginning of a grace period, which
+> > > > is in record_gp_stall_check_time().
+> > >
+> > > I like Paul's suggestion a lot except that if someone sets a breakpoint right
+> > > when the jiffies is being reset, so then we have to come back to doing
+> > > Thomas's suggestion.
+> >
+> > Please note that ULONG_MAX / 4 allows for jiffies not having been reset
+> > for more than 10 days on 32-bit systems and for many millions of years
+> > on 64-bit systems.  ;-)
+> >
+> > > So maybe a combination of Paul's and Thomas's suggestions (of using
+> > > last_jiffies_update with the NMI-safe timestamp read) may work.
+> >
+> > I am absolutely not a fan of reworking all of the RCU CPU stall-warning
+> > code to use some other timebase, at least not without a very important
+> > reason to do so.  Nothing mentioned in this thread even comes close to
+> > that level of importance.
+> >
+> > > > It would be better if RCU could get notified at both ends of the debug
+> > > > session, but given gdb commands such as "next", along with Thomas's
+> > > > point about gdb breakpoints being pretty much anywhere, this might or
+> > > > might not be so helpful in real life.  But worth looking into.
+> > >
+> > > True, I was curious if rcu_cpu_stall_reset() can be called on a tickless
+> > > kernel as well before jiffies gets a chance to update, in which case I think
+> > > your suggestion of biasing the stall time and later resetting it would help a
+> > > lot for such situations.
+> >
+> > What code path can possibly invoke rcu_cpu_stall_reset() after an
+> > extended full-system nohz_full time period without first doing at least
+> > one context switch on the CPU that invokes rcu_cpu_stall_reset()?
+> 
+> In my commit message, the "KGDB initial breakpoint" means the
+> automatic call to kgdb_initial_breakpoint() at system boot. In my
+> test:
+> 1, the "stall timeout" is 21s;
+> 2, when I use "continue" to exit kgdb, the "total jiffies delayed
+> time" is ~40s (of course it will cause stall warning);
+> 3, the "irq disabled time" (nearly the same as execution time of
+> kgdb_cpu_enter()) is ~12s;
+> 4, this means the "jiffies delayed time" due to the tickless mechanism is ~28s.
+> 
+> So, at least in this case, the tickless mechanism contributes much for
+> the jiffies delay.
 
-Why does this have anything to do with IMS? I thought the point here
-was that IMS was some back end to the MSI-X emulation - should a
-purely emulated interrupt logically be part of the MSI code, not IMS?
+Checking kgdb_initial_breakpoint() call points:
 
-Jason
+o	From start_kernel():  This is before interrupts have been enabled
+	on the boot CPU, and so is before the first RCU grace period has
+	started.  Also before any CPU is able to enter nohz_full mode.
+	So this is presumably not the code path you are hitting.
+
+o	From opt_kgdb_wait():  This is an early_param() function, thus
+	also invoked before interrupts have been enabled on the boot CPU.
+
+o	From kgdb_register_io_module(): I don't have a good handle
+	on this set of code paths, but I am guessing that this is
+	where you are hitting your breakpoint.
+
+And in the post-boot cases, if there is no RCU grace period in flight,
+there will be no RCU CPU stall warning.  Otherwise, the RCU grace-period
+kthread should have been running every few jiffies for the duration of
+the grace period.  If it wasn't, for example, due to being starved by
+the nohz_full user processes running at real-time priority, you would
+get RCU CPU stall warnings anyway.
+
+If the RCU grace-period kthread is running, then the system is not in pure
+system-wide nohz_full mode, and the jiffies updates should be happening.
+This means that even if you were running in this mode for many weeks on
+a 32-bit system, the jiffies value should be sane.
+
+Which in turn should mean that this should be fixable by adding
+ULONG_MAX/4 to rcu_state.jiffies_stall in rcu_cpu_stall_reset(), along
+with a reset via rcu_jiffies_till_stall_check() after a few calls to
+rcu_gp_fqs().
+
+Or am I missing something subtle here?
+
+							Thanx, Paul
+
+> Huacai
+> 
+> >
+> >                                                         Thanx, Paul
+> >
+> > > thanks,
+> > >
+> > >  - Joel
+> > >
+> > >
+> > > >                                                     Thanx, Paul
+> > > >
+> > > > > Huacai
+> > > > >
+> > > > > >
+> > > > > >                                                         Thanx, Paul
+> > > > > >
+> > > > > > > Thanks,
+> > > > > > >
+> > > > > > >         tglx
+> > > > > > > ---
+> > > > > > > --- a/kernel/time/tick-sched.c
+> > > > > > > +++ b/kernel/time/tick-sched.c
+> > > > > > > @@ -51,6 +51,13 @@ struct tick_sched *tick_get_tick_sched(i
+> > > > > > >   */
+> > > > > > >  static ktime_t last_jiffies_update;
+> > > > > > >
+> > > > > > > +unsigned long tick_estimate_stale_jiffies(void)
+> > > > > > > +{
+> > > > > > > +     ktime_t delta = ktime_get_mono_fast_ns() - READ_ONCE(last_jiffies_update);
+> > > > > > > +
+> > > > > > > +     return delta < 0 ? 0 : div_s64(delta, TICK_NSEC);
+> > > > > > > +}
+> > > > > > > +
+> > > > > > >  /*
+> > > > > > >   * Must be called with interrupts disabled !
+> > > > > > >   */
+> > > > > > >
+> > > > > > >
