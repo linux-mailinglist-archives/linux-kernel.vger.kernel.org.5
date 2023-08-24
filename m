@@ -2,282 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABF33786C7F
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 12:00:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93F23786C84
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 12:01:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238407AbjHXKAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 06:00:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53118 "EHLO
+        id S237352AbjHXKB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 06:01:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240823AbjHXJ75 (ORCPT
+        with ESMTP id S239006AbjHXKA5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 05:59:57 -0400
-Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4144A19AC
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 02:59:54 -0700 (PDT)
-Received: by mail-vs1-xe2e.google.com with SMTP id ada2fe7eead31-44d3666c6cfso2251761137.3
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 02:59:54 -0700 (PDT)
+        Thu, 24 Aug 2023 06:00:57 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58B7C1BFB
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 03:00:29 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-99bed101b70so851509666b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 03:00:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=9elements.com; s=google; t=1692871193; x=1693475993;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=V7niQIdqSj3magIfw0G01bTXlocxuig+rGg0t1RLnPI=;
-        b=C5BvWEElzmVaLi3cV54p5/i8FW778qAxWD9nFjCP0HiuGe14kHcl6rc0AU8J1bSel0
-         49EVN2tnPl8yfcb55s0jTqCC8R40L03kpYQIh+WT0P2cLz72Ftzqpr6NGiBmo56mhHu3
-         ePOSegiMCGy84M8G42wxfg6F4zd0+gg3+jSW7YQzVnACDL9ohE358uK5H2hxHMAueQsy
-         RZu8/ZLa5uH4q/GLnhmB0RZlzfIEl3cVjrWoD1n0SpCjMdZ2kY62v2OGr+w70gXdNRQC
-         Ki2dxSpcILTlsXaRwZWJFxUZ6nxXTFJDxcAe5XeGBjvo2hO3DPgPsiagvd/aO1uYbTGW
-         HXoQ==
+        d=tuxon.dev; s=google; t=1692871227; x=1693476027;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jKnkFU4cj38+MIuwqAfBBskvg69vCe9QhbSaiCRs2HU=;
+        b=h0qusRSUEEBdiAvR19pmhPN+SinHeiZYOO2HIusQEtVd79XJFkjK+KZeFVIk9vOtdE
+         hlC/04bo/wXq3/zz0iXhkz0YzS0CWf3K8hRrwsfbHkZKCDlPEhcFM0x3LG7ziq9hf320
+         06jSMwrsJNKwEdEBPqGp2i0iELy+/E5MZCjw/VZz7SsV/INm0vJ1fIjEqMaNxvi2kVTU
+         QqxnpYVw9G9Z6f5q5vbFXfCPAxYjBYVF/pODRbI93uqkzQDohL26YZLjojQB7SEypJpj
+         eHIKwOPrVHJtjrMZYvH8zBA1PvgWWq/FgeZHnhWqO8hST4hHY/dSVWXVarU+eYAyPV66
+         muHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692871193; x=1693475993;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=V7niQIdqSj3magIfw0G01bTXlocxuig+rGg0t1RLnPI=;
-        b=bh13bDSsuJHuCwX4Yav5HN2M+gnLU404aoMxHQdYdo1QURdQ+ITBz/qcEOGnwugrIr
-         ealeuecWZf+P4VWvr1fbpFOYmtzIxQFKntqylqZfQpFeJnnakEjjb2k9JdG7TLaKcOtK
-         VtkR3N4p2NiWq5anCHhi6ggptIRT+LED60OzEekM4KHpETwvKe9ggWGLFP9C0XzYYhbl
-         Lgq4cnIWMIoPY71D8pPWviu0qupM5ENILbgiF3Tzvz3qPpPrXJTLeAxPePap/vYoHcUS
-         DJH5Qj0LQQ3SbiZ23kh3JfM2UZ5J5lVqF6LeEAXxt8421S4INsKVmuvRAjrFfHGGPB/a
-         xw5g==
-X-Gm-Message-State: AOJu0YyqX9s6jsxGd+xPTMwYwqc3VtD7Cshdb/N4l9TZgmPNLcJs26CS
-        8MLs3AibNCLkAKwYQ6xyhf9AhWLsgQ7cPo2BLWYi1w==
-X-Google-Smtp-Source: AGHT+IFlFmaKIQY3uhB1FHb6+wPlSD4qLwrBUIOYv06tzHYykeBLUaHHx05TmdlJzO4TB8afpemqIKGVEeiaiJ3ipIY=
-X-Received: by 2002:a05:6102:c4:b0:44d:5c61:e475 with SMTP id
- u4-20020a05610200c400b0044d5c61e475mr7500689vsp.32.1692871193345; Thu, 24 Aug
- 2023 02:59:53 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692871227; x=1693476027;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jKnkFU4cj38+MIuwqAfBBskvg69vCe9QhbSaiCRs2HU=;
+        b=J08maEzF2cLFFhxgmUwiay5tqW1Ejo5U8kC4W7OoWnkYyODt11mG+5pNYpqiap20R8
+         XOQq5QYazcwxggwti72bdP+vT7z6uHMik9Yt3den9KILinnAS8LwPNMAUJHEcKnxnBxs
+         CUHZnXA5zLrdY9eoQ+bqgPq2JJQTWTFbOy3WsYG4iyNQOGe4YeqjD6LR0md76WG822jI
+         GWCWsp5TSzqjyWJPNJffUpkZDSAfncuOnAoZZ0rCNiScWyiADg2DzTYGSggM/HFlu4xh
+         iJsbBIlpdWszXy+6A9x8OaGdF6mvhZ2ICKBkyqcUJm2JJ/YJWrjT0S5m0EMweMJ622bt
+         U73A==
+X-Gm-Message-State: AOJu0YzP5Bwwbpx9tO5KaZ8aNJ8hnQY6t4GX+gLgLdP1akBalCqkVPJE
+        u5DGaUyQUcK9JiVHMgcNpY1OIQ==
+X-Google-Smtp-Source: AGHT+IHic+3v6nUdmcVlrJmXtfk1We8CUWU7iAskZC7w3ZUBrxa0tjb2FB9LW8Wm7Y5LO8bBnF9xyA==
+X-Received: by 2002:a17:907:7617:b0:9a1:d79a:4193 with SMTP id jx23-20020a170907761700b009a1d79a4193mr3425473ejc.23.1692871227483;
+        Thu, 24 Aug 2023 03:00:27 -0700 (PDT)
+Received: from [192.168.32.2] ([82.78.167.1])
+        by smtp.gmail.com with ESMTPSA id jw11-20020a17090776ab00b0099d0a8ccb5fsm10754605ejc.152.2023.08.24.03.00.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Aug 2023 03:00:27 -0700 (PDT)
+Message-ID: <e7136b58-f48b-ff9a-8831-57a905bc0465@tuxon.dev>
+Date:   Thu, 24 Aug 2023 13:00:25 +0300
 MIME-Version: 1.0
-References: <20230823212309.1463769-1-Naresh.Solanki@9elements.com>
-In-Reply-To: <20230823212309.1463769-1-Naresh.Solanki@9elements.com>
-From:   Patrick Rudolph <patrick.rudolph@9elements.com>
-Date:   Thu, 24 Aug 2023 11:59:42 +0200
-Message-ID: <CALNFmy0H2pg_hJvvNPrq7XkqUS2rDbMnpfFMEC4jOG-Ghhj3zQ@mail.gmail.com>
-Subject: Re: [PATCH] leds: max5970: Add support for max5970
-To:     Naresh Solanki <naresh.solanki@9elements.com>
-Cc:     Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] ARM: dts: at91: ksz9477_evb: Add tx-internal-delay-ps
+ property for port5
+Content-Language: en-US
+To:     Lukasz Majewski <lukma@denx.de>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+Cc:     devicetree@vger.kernel.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20230727080656.3828397-1-lukma@denx.de>
+ <20230824111702.1a034801@wsk>
+From:   claudiu beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <20230824111702.1a034801@wsk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 23, 2023 at 11:23=E2=80=AFPM Naresh Solanki
-<naresh.solanki@9elements.com> wrote:
->
-> From: Patrick Rudolph <patrick.rudolph@9elements.com>
->
-> The MAX5970 is hot swap controller and has 4 indication LED.
->
-> Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
-> Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
-> ---
->  drivers/leds/Kconfig        |  11 +++
->  drivers/leds/Makefile       |   1 +
->  drivers/leds/leds-max5970.c | 129 ++++++++++++++++++++++++++++++++++++
->  3 files changed, 141 insertions(+)
->  create mode 100644 drivers/leds/leds-max5970.c
->
-> diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
-> index b92208eccdea..03ef527cc545 100644
-> --- a/drivers/leds/Kconfig
-> +++ b/drivers/leds/Kconfig
-> @@ -637,6 +637,17 @@ config LEDS_ADP5520
->           To compile this driver as a module, choose M here: the module w=
-ill
->           be called leds-adp5520.
->
-> +config LEDS_MAX5970
-> +       tristate "LED Support for Maxim 5970"
-> +       depends on LEDS_CLASS
-> +       depends on MFD_MAX5970
-> +       help
-> +         This option enables support for the Maxim MAX5970 & MAX5978 sma=
-rt
-> +         switch indication LEDs via the I2C bus.
-> +
-> +         To compile this driver as a module, choose M here: the module w=
-ill
-> +         be called leds-max5970.
-> +
->  config LEDS_MC13783
->         tristate "LED Support for MC13XXX PMIC"
->         depends on LEDS_CLASS
-> diff --git a/drivers/leds/Makefile b/drivers/leds/Makefile
-> index d7348e8bc019..6eaee0a753c6 100644
-> --- a/drivers/leds/Makefile
-> +++ b/drivers/leds/Makefile
-> @@ -56,6 +56,7 @@ obj-$(CONFIG_LEDS_LP8501)             +=3D leds-lp8501.=
-o
->  obj-$(CONFIG_LEDS_LP8788)              +=3D leds-lp8788.o
->  obj-$(CONFIG_LEDS_LP8860)              +=3D leds-lp8860.o
->  obj-$(CONFIG_LEDS_LT3593)              +=3D leds-lt3593.o
-> +obj-$(CONFIG_LEDS_MAX5970)             +=3D leds-max5970.o
->  obj-$(CONFIG_LEDS_MAX77650)            +=3D leds-max77650.o
->  obj-$(CONFIG_LEDS_MAX8997)             +=3D leds-max8997.o
->  obj-$(CONFIG_LEDS_MC13783)             +=3D leds-mc13783.o
-> diff --git a/drivers/leds/leds-max5970.c b/drivers/leds/leds-max5970.c
-> new file mode 100644
-> index 000000000000..5be1b927f39e
-> --- /dev/null
-> +++ b/drivers/leds/leds-max5970.c
-> @@ -0,0 +1,129 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Device driver for leds in MAX5970 and MAX5978 IC
-> + *
-> + * Copyright (c) 2022 9elements GmbH
-> + *
-> + * Author: Patrick Rudolph <patrick.rudolph@9elements.com>
-> + */
-> +
-> +#include <linux/leds.h>
-> +#include <linux/mfd/max5970.h>
-> +#include <linux/of.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/regmap.h>
-> +
-> +#define ldev_to_maxled(c)       container_of(c, struct max5970_led, cdev=
-)
-> +
-> +struct max5970_led {
-> +       struct device *dev;
-> +       struct regmap *regmap;
-> +       struct led_classdev cdev;
-> +       unsigned int index;
-> +};
-> +
-> +static int max5970_led_set_brightness(struct led_classdev *cdev,
-> +                                     enum led_brightness brightness)
-> +{
-> +       struct max5970_led *ddata =3D ldev_to_maxled(cdev);
-> +       int ret, val;
-> +
-> +       if (!ddata->regmap)
-> +               return -ENODEV;
-Can this ever happen? Looks like this conditions is always false.
+Hi, Lukasz,
 
-> +
-> +       /* Set/clear corresponding bit for given led index */
-> +       val =3D !brightness ? BIT(ddata->index) : 0;
-> +
-> +       ret =3D regmap_update_bits(ddata->regmap, MAX5970_REG_LED_FLASH, =
-BIT(ddata->index), val);
-> +       if (ret < 0)
-> +               dev_err(cdev->dev, "failed to set brightness %d", ret);
-> +
-> +       return ret;
-> +}
-> +
-> +static int max5970_setup_led(struct max5970_led *ddata, struct regmap *r=
-egmap,
-> +                            struct device_node *nc, u32 reg)
-> +{
-regmap and reg is not used within this function.
-I don't see the need for this function, just add those 8 lines in the
-loop below.
+On 8/24/23 12:17, Lukasz Majewski wrote:
+> Dear Community,
+> 
+>> Without this change the KSZ9477 Evaluation board's Linux (v6.5-rc1)
+>> shows following device warning:
+>>
+>> 'ksz-switch spi1.0: Port 5 interpreting RGMII delay settings based on
+>> "phy-mode" property, please update device tree to specify
+>> "rx-internal-delay-ps" and "tx-internal-delay-ps"'
+>>
+>> This is not critical, as KSZ driver by itself assigns default value of
+>> tx delay to 2000 ps (as 'rgmii-txid' is set as PHY mode).
+>>
+>> However, to avoid extra warnings in logs - the missing
+>> 'tx-internal-delay-ps' has been specified with the default value of
+>> 2000 ps.
+>>
+> 
+> Gentle ping on this patch.
+> 
+> Claudiu, could you pick it as well?
 
-> +       int ret;
-> +
-> +       if (of_property_read_string(nc, "label", &ddata->cdev.name))
-> +               ddata->cdev.name =3D nc->name;
-> +
-> +       ddata->cdev.max_brightness =3D 1;
-> +       ddata->cdev.brightness_set_blocking =3D max5970_led_set_brightnes=
-s;
-> +       ddata->cdev.default_trigger =3D "none";
-> +
-> +       ret =3D devm_led_classdev_register(ddata->dev, &ddata->cdev);
-> +       if (ret)
-> +               dev_err(ddata->dev, "Error initializing LED %s", ddata->c=
-dev.name);
-> +
-> +       return ret;
-> +}
-> +
-> +static int max5970_led_probe(struct platform_device *pdev)
-> +{
-> +       struct device *dev =3D &pdev->dev;
-> +       struct device_node *np =3D dev_of_node(dev->parent);
-> +       struct regmap *regmap;
-> +       struct device_node *led_node;
-> +       struct device_node *child;
-> +       struct max5970_led *ddata[MAX5970_NUM_LEDS];
-> +       int ret =3D -ENODEV, num_leds =3D 0;
-> +
-> +       regmap =3D dev_get_regmap(pdev->dev.parent, NULL);
-> +       if (!regmap)
-> +               return -EPROBE_DEFER;
-> +
-> +       led_node =3D of_get_child_by_name(np, "leds");
-> +       if (!led_node)
-> +               return -ENODEV;
-> +
-> +       for_each_available_child_of_node(led_node, child) {
-> +               u32 reg;
-> +
-> +               if (of_property_read_u32(child, "reg", &reg))
-> +                       continue;
-> +
-> +               if (reg >=3D MAX5970_NUM_LEDS) {
-> +                       dev_err(dev, "invalid LED (%u >=3D %d)\n", reg, M=
-AX5970_NUM_LEDS);
-> +                       continue;
-> +               }
-> +
-> +               ddata[num_leds] =3D devm_kzalloc(dev, sizeof(struct max59=
-70_led), GFP_KERNEL);
-> +               if (!ddata[num_leds]) {
-> +                       ret =3D -ENOMEM;
-> +                       goto exit;
-> +               }
-> +
-> +               ddata[num_leds]->index =3D reg;
-> +               ddata[num_leds]->regmap =3D regmap;
-> +               ddata[num_leds]->dev =3D dev;
-> +
-> +               ret =3D max5970_setup_led(ddata[num_leds], regmap, child,=
- reg);
-> +               if (ret < 0) {
-> +                       dev_err(dev, "Failed to initialize LED %u\n", reg=
-);
-> +                       goto exit;
-> +               }
-> +               num_leds++;
-> +       }
-> +
-> +       return ret;
-> +
-> +exit:
-> +       for (int j =3D 0; j < num_leds; j++)
-> +               devm_led_classdev_unregister(dev, &ddata[j]->cdev);
-> +
-> +       return ret;
-> +}
-> +
-> +static struct platform_driver max5970_led_driver =3D {
-> +       .driver =3D {
-> +               .name =3D "max5970-led",
-> +       },
-> +       .probe =3D max5970_led_probe,
-> +};
-> +
-> +module_platform_driver(max5970_led_driver);
-> +MODULE_AUTHOR("Patrick Rudolph <patrick.rudolph@9elements.com>");
+It's already in arm-soc:
 
-You might want to put your name here, as you've rewritten the complete
-driver code.
-
-> +MODULE_DESCRIPTION("MAX5970_hot-swap controller LED driver");
-> +MODULE_LICENSE("GPL");
->
-> base-commit: baca986e1f2c31f8e4b2a6d99d47c3bc844033e8
-> --
-> 2.41.0
->
+https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git/log/arch/arm/boot/dts/microchip?h=for-next
