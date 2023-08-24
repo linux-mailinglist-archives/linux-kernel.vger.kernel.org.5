@@ -2,72 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F671787266
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 16:54:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 071D1787283
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 16:55:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241833AbjHXOxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 10:53:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38226 "EHLO
+        id S241844AbjHXOyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 10:54:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241882AbjHXOxS (ORCPT
+        with ESMTP id S241873AbjHXOyQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 10:53:18 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A38419A9
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 07:53:12 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id 46e09a7af769-6bd0425ad4fso4818217a34.2
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 07:53:12 -0700 (PDT)
+        Thu, 24 Aug 2023 10:54:16 -0400
+Received: from mail-oa1-x32.google.com (mail-oa1-x32.google.com [IPv6:2001:4860:4864:20::32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5689D1995;
+        Thu, 24 Aug 2023 07:54:14 -0700 (PDT)
+Received: by mail-oa1-x32.google.com with SMTP id 586e51a60fabf-1cc87405650so2806042fac.2;
+        Thu, 24 Aug 2023 07:54:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692888791; x=1693493591;
+        d=gmail.com; s=20221208; t=1692888853; x=1693493653;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=KEgAJuBvB5RrueW913Bvc0IDd42WONx4EX0C4ngeyAc=;
-        b=cvzc/Ma42+/EH5GnV6gaAnBXY5rYSiYhq4y7y1CG0RIlz3m5ivrGOqHDG9qJYtccXi
-         CtNva/9uHFWsO5lCrNmZ+QsUe3y1P/ANtqnuJdTfI46L+8TecVzb9Sgj4KkjQDT4pmKp
-         TMtmCnIHMqlVovR/5d96sRjp2QDxVVxGOTXbs8RaciNESp00L0YrG0IlVztW+P1EL7sY
-         hN9k2rc34EvMEV1xZ8+wa+TAfvX05EEwHA22eg0XHr+n4KZcJaiQLru90PKsOqzwFXqu
-         qLl6cOCDlS5BfpT8K/ATHjsxe+xEvExHpSvTUv9lmd0hxNu7M5KMmldvJaiuL2LMFzgM
-         X2wA==
+        bh=Uq2Rz/w+UiLDK0KSC/5EPK5xtKDfT2UzyQDOd90+rl8=;
+        b=r/u41aDOlFvgovHMmxhiPpcEp8F3dJl8NxdLPxd0RxgM7IeYIS2+Y1e22SXn2H4JK9
+         wAAj07E/4rQfvEHH78dkNfzgCtH8kkUhQ/+e1oEUwY9SAawpg7of/CSO1oMJJ4tBJQoN
+         32yY0NGzLKwGIBxObrFeqoO6/fFyk3DmUiI6RzHZQDiYGTYIk4033+rCnWnXwzBHaPwv
+         eDa2wI4zP9HwCaZrxWax2aFgAEQiwoOVvI790S2dd2iPQABKg3DvytsQ3hnfosUuLv8X
+         Lot58yYxx9ceTIJw7VJqNmkroxkti/8y949toMoaUOgtm1A1DSdd4Pc+yWWedC3nAom9
+         +c2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692888791; x=1693493591;
+        d=1e100.net; s=20221208; t=1692888853; x=1693493653;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=KEgAJuBvB5RrueW913Bvc0IDd42WONx4EX0C4ngeyAc=;
-        b=A7li0FlpUgwlndHVablaPGhpNCcWarBTQ/YqMpmDnIFZgob7nvye+U+8AyQZLGD5xQ
-         MQSF48We5S0VQM9TJ2I38gtFl1U+sVItNHlm8LGnw1f1jLwTa3CdxsX4nqYhm/AOJwVl
-         //3Xont5CLc2Qg96CNy3HqPZY6trau2SZ+OPmdR1EZEvvJxUVbv8JbYZcNUIIvKhbXyq
-         xeJR798hwjuTcQ5EtM40TmIRjFv0dSseQPcFkqtcwaqNbfY9OFc1MuSSZIWQOBWhLSlf
-         h3yU+dwBXkXAWCq+wPr7I0vPVmZidkhNB10cYMFqxcQ1fwe+z+YiyPWNQFSLsk5XHulH
-         SmIg==
-X-Gm-Message-State: AOJu0YwEKIjXl+aw0JuDLwssAPgYtj1BgbgKP1W+YfGzpT9m7P1tZ2P4
-        DojzJssA/pBGIJlXMT/Zgrj4Kdw9eSBXH4lf6ak=
-X-Google-Smtp-Source: AGHT+IHkkjwf7Pf1Rx/dcEiwdD8uFdhQ76ZVl2mt75hB4yRbeXBGdMKP9T/bACPndUFjk98cNFZLiNjyEpjNR0fqUuY=
-X-Received: by 2002:a05:6870:9722:b0:1b7:4521:14b6 with SMTP id
- n34-20020a056870972200b001b7452114b6mr19020700oaq.5.1692888791355; Thu, 24
- Aug 2023 07:53:11 -0700 (PDT)
+        bh=Uq2Rz/w+UiLDK0KSC/5EPK5xtKDfT2UzyQDOd90+rl8=;
+        b=geNpATnCn8kd5c3Ptxf3lNxI+2sUOWgaS5aAvz95vaJ23RJnEQY7k6zI3RwRSpnw01
+         /Qp5SavgAosTeAgqyrsWCciwEeLL5vgAdpm6F/evEGEPi6rr2E5hCAqNV7A4Z0PN2LUR
+         6we6RyhWE9IGvnik+rZwLpzwdcYOF7xYWNL6stsxpx6hpUVBkRvnhxFmegWK8CI2Dsxa
+         VFGa2rqkhuYm6kuuQAC4MoK8H4dbQJ56b3jcU6qurMXk8uY+IQaagjWl5+EC4BcCztPd
+         csxQHNEuQakWdSigOG/LKDrVNKbSlsiDAOgbgtH/R3i2X0Yw1Q4nctqAU5sS8jY4OlR3
+         rBmQ==
+X-Gm-Message-State: AOJu0YxDwfFgEPUCsOL7oueyazfTzG1QMFHoZkn88zpJb/JdiClC8MLY
+        UBgAWaNlOIjtwcEGGiFiCdT3MglxE/qJZLuIi2zr3UUM
+X-Google-Smtp-Source: AGHT+IHUyRZ/s5Z6miDsZM4/btsiHyGcD5fOaPP18HwdLud7Ptz241jKPAZW2574frmcEqtpe95tmk35JGOaA0yWEFY=
+X-Received: by 2002:a05:6870:702a:b0:1b3:54b5:ac6e with SMTP id
+ u42-20020a056870702a00b001b354b5ac6emr19528580oae.50.1692888853662; Thu, 24
+ Aug 2023 07:54:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230824073710.2677348-1-lee@kernel.org> <20230824073710.2677348-8-lee@kernel.org>
-In-Reply-To: <20230824073710.2677348-8-lee@kernel.org>
+References: <20230824073710.2677348-1-lee@kernel.org> <20230824073710.2677348-13-lee@kernel.org>
+In-Reply-To: <20230824073710.2677348-13-lee@kernel.org>
 From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Thu, 24 Aug 2023 10:53:00 -0400
-Message-ID: <CADnq5_O7m7QPEOi8Fgr5a4V6HcLNUyOuYO23Y=sGYtbnF6r_CQ@mail.gmail.com>
-Subject: Re: [PATCH 07/20] drm/radeon/radeon_ttm: Remove unused variable 'rbo'
- from radeon_bo_move()
+Date:   Thu, 24 Aug 2023 10:54:02 -0400
+Message-ID: <CADnq5_MHVEyxf0-xnbWq7q83OPVmp-0os+Fekaa6BEpXijA_xw@mail.gmail.com>
+Subject: Re: [PATCH 12/20] drm/amd/amdgpu/amdgpu_device: Provide suitable
+ description for param 'xcc_id'
 To:     Lee Jones <lee@kernel.org>
 Cc:     "Pan, Xinhui" <Xinhui.Pan@amd.com>, linux-kernel@vger.kernel.org,
         amd-gfx@lists.freedesktop.org,
-        Jerome Glisse <glisse@freedesktop.org>,
-        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        linaro-mm-sig@lists.linaro.org, dri-devel@lists.freedesktop.org,
+        Daniel Vetter <daniel@ffwll.ch>,
         Alex Deucher <alexander.deucher@amd.com>,
         David Airlie <airlied@gmail.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        linux-media@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,14 +79,12 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Applied.  Thanks!
 
-On Thu, Aug 24, 2023 at 3:37=E2=80=AFAM Lee Jones <lee@kernel.org> wrote:
+On Thu, Aug 24, 2023 at 3:38=E2=80=AFAM Lee Jones <lee@kernel.org> wrote:
 >
 > Fixes the following W=3D1 kernel build warning(s):
 >
->  drivers/gpu/drm/radeon/radeon_ttm.c: In function =E2=80=98radeon_bo_move=
-=E2=80=99:
->  drivers/gpu/drm/radeon/radeon_ttm.c:201:27: warning: variable =E2=80=98r=
-bo=E2=80=99 set but not used [-Wunused-but-set-variable]
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_device.c:516: warning: Function parame=
+ter or member 'xcc_id' not described in 'amdgpu_mm_wreg_mmio_rlc'
 >
 > Signed-off-by: Lee Jones <lee@kernel.org>
 > ---
@@ -93,36 +93,28 @@ bo=E2=80=99 set but not used [-Wunused-but-set-variable]
 > Cc: "Pan, Xinhui" <Xinhui.Pan@amd.com>
 > Cc: David Airlie <airlied@gmail.com>
 > Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Jerome Glisse <glisse@freedesktop.org>
+> Cc: Sumit Semwal <sumit.semwal@linaro.org>
 > Cc: amd-gfx@lists.freedesktop.org
 > Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-media@vger.kernel.org
+> Cc: linaro-mm-sig@lists.linaro.org
 > ---
->  drivers/gpu/drm/radeon/radeon_ttm.c | 2 --
->  1 file changed, 2 deletions(-)
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 1 +
+>  1 file changed, 1 insertion(+)
 >
-> diff --git a/drivers/gpu/drm/radeon/radeon_ttm.c b/drivers/gpu/drm/radeon=
-/radeon_ttm.c
-> index 4eb83ccc4906a..de4e6d78f1e12 100644
-> --- a/drivers/gpu/drm/radeon/radeon_ttm.c
-> +++ b/drivers/gpu/drm/radeon/radeon_ttm.c
-> @@ -197,7 +197,6 @@ static int radeon_bo_move(struct ttm_buffer_object *b=
-o, bool evict,
->  {
->         struct ttm_resource *old_mem =3D bo->resource;
->         struct radeon_device *rdev;
-> -       struct radeon_bo *rbo;
->         int r;
->
->         if (new_mem->mem_type =3D=3D TTM_PL_TT) {
-> @@ -210,7 +209,6 @@ static int radeon_bo_move(struct ttm_buffer_object *b=
-o, bool evict,
->         if (r)
->                 return r;
->
-> -       rbo =3D container_of(bo, struct radeon_bo, tbo);
->         rdev =3D radeon_get_rdev(bo->bdev);
->         if (!old_mem || (old_mem->mem_type =3D=3D TTM_PL_SYSTEM &&
->                          bo->ttm =3D=3D NULL)) {
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm=
+/amd/amdgpu/amdgpu_device.c
+> index e77f048c99d85..d4f0e4327dd3f 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+> @@ -507,6 +507,7 @@ void amdgpu_device_wreg(struct amdgpu_device *adev,
+>   * @adev: amdgpu_device pointer
+>   * @reg: mmio/rlc register
+>   * @v: value to write
+> + * @xcc_id: xcc accelerated compute core id
+>   *
+>   * this function is invoked only for the debugfs register access
+>   */
 > --
 > 2.42.0.rc1.204.g551eb34607-goog
 >
