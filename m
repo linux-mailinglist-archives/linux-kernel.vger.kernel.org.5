@@ -2,169 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FC32786428
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 01:55:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62C81786434
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 02:05:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238885AbjHWXyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 19:54:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44424 "EHLO
+        id S238890AbjHXAB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 20:01:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238858AbjHWXyY (ORCPT
+        with ESMTP id S238894AbjHXAB1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 19:54:24 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53C0A10E5
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 16:54:21 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id d75a77b69052e-407db3e9669so79431cf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 16:54:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692834860; x=1693439660;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0rb211/84XCj5s3qEzxk41sOs/W0hEXnv4lzDGpZ7/s=;
-        b=plbFCExLt7v0bXnBw3cmP4n1wGJJqGxlyRSmARMOdqM05KwnEmugCrxnLnjuFilEfI
-         aprcBHJICWxmjszuyFDlJjN2LTyCvLa5BFaA+vKzTStDt5+Bl5Ye8jWrC+/IEZXap8g/
-         z37xQNdBT2QOwsEl5W5fqMY+8ncpLqDSWscJqKavU2MGCnVdy3fI5WsphXKOrKhMzpgr
-         v+o+e/4Lixge/lNpsz3cCpwSPh4jlmdvn0POb/dT82goAx/MntTe2pxQjh1mjJmttUKQ
-         YEnKjg7SlkkkOr27Z5hssaRFyIYl0kC+CVpCcH2PWI08W+Sin00Jr+4NoNK2glP3T71f
-         JerQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692834860; x=1693439660;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0rb211/84XCj5s3qEzxk41sOs/W0hEXnv4lzDGpZ7/s=;
-        b=TR/TcB9dVMAZhkpan/Zm89gTkEEL9zBw1KHic+6U33qQPjjQ55XaMq+b4echsF/YLv
-         z9Ituk1ADxtF/TSjQkCmi1ZQ5v9DkS7pR1mRXxloL+s2O+e4YD5CoAyA2fEoiuJwrHih
-         urg0YCVkXGHX3/3/jhiYS2ahRMDioMtIYX8aEIS67Kifr7taQWx7rogx07DMcrYaceOI
-         kKmBlsvV1OPNPpoQ35vl8ViGxYKPsmR7VHz2qgdt20Oya7jwsnH8a2DPl2eBcI3AWLq/
-         1aTiqdYLk0By1LeoEoPQnlUyzetdVJkYLu8dGvn9F3XBh3RUCNSga7BfkJKGecWz8cPN
-         mvUg==
-X-Gm-Message-State: AOJu0YzCQSA5ezyvCni9rgcfZGy6zGCrUMJARHpsB64qKCHJMoNYd5pn
-        fIKGt7pW8wejKyh9xMwQNAm5CI/gkcyTeSFtb8duhA==
-X-Google-Smtp-Source: AGHT+IFdBZ4akZ1jbijZBu76p8cAnEURgS1ppfDWsN/o5PqPBeHSAZ6IvKEh2bsJ9rSoshR8QaEDOtbQee7NLvkpkWQ=
-X-Received: by 2002:a05:622a:19a0:b0:3f8:8c06:c53b with SMTP id
- u32-20020a05622a19a000b003f88c06c53bmr761620qtc.0.1692834860332; Wed, 23 Aug
- 2023 16:54:20 -0700 (PDT)
+        Wed, 23 Aug 2023 20:01:27 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9021910E4
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 17:01:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692835285; x=1724371285;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=nhyqneDoLJjZ/M+Loz6bMRFomtPYuD47bFXLTP1ffc0=;
+  b=CANAgcWrKv0+Mf05SatpLjPCycT+HFXYqY9xbLkqIpy0x8DfQl8Xllls
+   CYQdkGN7lg+LAz8S8ZLYLK6nfpm5S8WM8Wm6vb3XS2+5TXN36TP2Oxp3y
+   pRAgSq9uf6rQLIk3S31LBCjWbIri9YHxHZo5B+QJGfx9L4OMAuiZsvu5O
+   fxA3NIY0AYAV8mVcvIBFHqw/3+XFT5QCLRzA0FMVNCZjRgrjLLRQjgU/L
+   xxWJlap3gjbmBkef9V+v5N22ryITFKOKjmAD9XVCd+Ieg2kZvY0z7Vv2q
+   mwuKvxhtWFab34xe+dtSX9B9DILpGHTYodlHXDIOVYwwkQIotYkqhockT
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="364477166"
+X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
+   d="scan'208";a="364477166"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2023 17:01:22 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="771905331"
+X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
+   d="scan'208";a="771905331"
+Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 23 Aug 2023 17:01:16 -0700
+Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qYxmm-0001bA-16;
+        Thu, 24 Aug 2023 00:01:16 +0000
+Date:   Thu, 24 Aug 2023 08:00:56 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     John Stultz <jstultz@google.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        John Stultz <jstultz@google.com>,
+        Joel Fernandes <joelaf@google.com>,
+        Qais Yousef <qyousef@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Zimuzo Ezeozue <zezeozue@google.com>,
+        Youssef Esmat <youssefesmat@google.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>, kernel-team@android.com
+Subject: Re: [PATCH v5 13/19] sched: Split out __sched() deactivate task
+ logic into a helper
+Message-ID: <202308240712.RzqTiO81-lkp@intel.com>
+References: <20230819060915.3001568-14-jstultz@google.com>
 MIME-Version: 1.0
-References: <20230822065256.163660-1-denik@chromium.org> <20230822174835.253469-1-denik@chromium.org>
- <CAFP8O3KunP9CzT_U2cj1_oysojTxCNJRWX_kvvu_wOx4tbYHug@mail.gmail.com>
- <CAK7LNASstNj2HEfJHcRzqt7hay65T-yEgzaAuXbEQPuCS+yC6w@mail.gmail.com> <CADDJ8CWdm+cWt4UBTae0sCQ8ZDWhbMuozqqq59R+EtvMHere0g@mail.gmail.com>
-In-Reply-To: <CADDJ8CWdm+cWt4UBTae0sCQ8ZDWhbMuozqqq59R+EtvMHere0g@mail.gmail.com>
-From:   Fangrui Song <maskray@google.com>
-Date:   Wed, 23 Aug 2023 16:54:10 -0700
-Message-ID: <CAFP8O3+3++awDi9uZueFC_xi+KAud0Ds3k3vdd_ruVngOEOKiw@mail.gmail.com>
-Subject: Re: [PATCH v2] modpost: Skip .llvm.call-graph-profile section check
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Denis Nikitin <denik@chromium.org>, linux-kbuild@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nicolas Schier <nicolas@fjasle.eu>, Tom Rix <trix@redhat.com>,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        Douglas Anderson <dianders@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230819060915.3001568-14-jstultz@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 23, 2023 at 4:13=E2=80=AFPM Denis Nikitin <denik@chromium.org> =
-wrote:
->
-> On Wed, Aug 23, 2023 at 4:02=E2=80=AFPM Masahiro Yamada <masahiroy@kernel=
-.org> wrote:
-> >
-> > On Wed, Aug 23, 2023 at 3:00=E2=80=AFAM Fangrui Song <maskray@google.co=
-m> wrote:
-> > >
-> > > On Tue, Aug 22, 2023 at 10:49=E2=80=AFAM Denis Nikitin <denik@chromiu=
-m.org> wrote:
-> > > >
-> > > > .llvm.call-graph-profile section is added by clang when the kernel =
-is
-> > > > built with profiles (e.g. -fprofile-sample-use=3D or -fprofile-use=
-=3D).
-> > > >
-> > > > The section contains edge information derived from text sections,
-> > > > so .llvm.call-graph-profile itself doesn't need more analysis as
-> > > > the text sections have been analyzed.
-> > > >
-> > > > This change fixes the kernel build with clang and a sample profile
-> > > > which currently fails with:
-> > > >
-> > > > "FATAL: modpost: Please add code to calculate addend for this archi=
-tecture"
-> >
-> >
-> > Curious.
-> >
-> > This message is only displayed for REL.
-> >
-> > (Please not it is located in section_rel() function)
-> >
-> >
-> > I think modern architectures use RELA instead of REL.
-> > Which architecture are we talking about?
->
-> Aarch64. There was also a report on x86-64 but the error message could be
-> different there.
+Hi John,
 
-Regarding REL:
+kernel test robot noticed the following build warnings:
 
-The original format of .llvm.call-graph-profile
-(SHT_LLVM_CALL_GRAPH_PROFILE=3D0x6fff4c02) used symbol indices without
-relocations and could be corrupted by symbol table change.
-https://github.com/llvm/llvm-project/commit/a224c5199b327ed0efcdcd87b6dbf95=
-0cf4d9ee1
-(2021) changed the format to represent call edge information with
-R_*_NONE and changed SHT_LLVM_CALL_GRAPH_PROFILE to 0x6fff4c09.
+[auto build test WARNING on tip/locking/core]
+[also build test WARNING on linus/master tip/auto-latest v6.5-rc7]
+[cannot apply to tip/sched/core tip/master next-20230823]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-We don't use the addend field of R_*_NONE relocations, so I proposed
-that we use REL for all targets.
-My https://github.com/llvm/llvm-project/commit/ca3bdb57fa1ac98b711a735de048=
-c12b5fdd8086
-selected REL for .llvm.call-graph-profile
+url:    https://github.com/intel-lab-lkp/linux/commits/John-Stultz/sched-Unify-runtime-accounting-across-classes/20230821-121604
+base:   tip/locking/core
+patch link:    https://lore.kernel.org/r/20230819060915.3001568-14-jstultz%40google.com
+patch subject: [PATCH v5 13/19] sched: Split out __sched() deactivate task logic into a helper
+config: um-allnoconfig (https://download.01.org/0day-ci/archive/20230824/202308240712.RzqTiO81-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce: (https://download.01.org/0day-ci/archive/20230824/202308240712.RzqTiO81-lkp@intel.com/reproduce)
 
-aaelf64 says:
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308240712.RzqTiO81-lkp@intel.com/
 
-> A binary file may use ``REL`` or ``RELA`` relocations or a mixture of the=
- two (but multiple relocations of the same place must use only one type).
+All warnings (new ones prefixed by >>):
 
-Other psABI documents may be more vague on how REL is used, but as
-long as the tool that needs to process it (currently just lld and
-readelf like tools) supports it, it's fine.
-binutils seems to support REL for all ELF targets, even if its
-objcopy/strip may unintentionally convert REL to RELA. lld can consume
-RELA SHT_LLVM_CALL_GRAPH_PROFILE.
+   In file included from kernel/sched/core.c:9:
+   In file included from include/linux/highmem.h:12:
+   In file included from include/linux/hardirq.h:11:
+   In file included from arch/um/include/asm/hardirq.h:5:
+   In file included from include/asm-generic/hardirq.h:17:
+   In file included from include/linux/irq.h:20:
+   In file included from include/linux/io.h:13:
+   In file included from arch/um/include/asm/io.h:24:
+   include/asm-generic/io.h:547:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     547 |         val = __raw_readb(PCI_IOBASE + addr);
+         |                           ~~~~~~~~~~ ^
+   include/asm-generic/io.h:560:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     560 |         val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
+         |                                                         ~~~~~~~~~~ ^
+   include/uapi/linux/byteorder/little_endian.h:37:51: note: expanded from macro '__le16_to_cpu'
+      37 | #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
+         |                                                   ^
+   In file included from kernel/sched/core.c:9:
+   In file included from include/linux/highmem.h:12:
+   In file included from include/linux/hardirq.h:11:
+   In file included from arch/um/include/asm/hardirq.h:5:
+   In file included from include/asm-generic/hardirq.h:17:
+   In file included from include/linux/irq.h:20:
+   In file included from include/linux/io.h:13:
+   In file included from arch/um/include/asm/io.h:24:
+   include/asm-generic/io.h:573:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     573 |         val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
+         |                                                         ~~~~~~~~~~ ^
+   include/uapi/linux/byteorder/little_endian.h:35:51: note: expanded from macro '__le32_to_cpu'
+      35 | #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
+         |                                                   ^
+   In file included from kernel/sched/core.c:9:
+   In file included from include/linux/highmem.h:12:
+   In file included from include/linux/hardirq.h:11:
+   In file included from arch/um/include/asm/hardirq.h:5:
+   In file included from include/asm-generic/hardirq.h:17:
+   In file included from include/linux/irq.h:20:
+   In file included from include/linux/io.h:13:
+   In file included from arch/um/include/asm/io.h:24:
+   include/asm-generic/io.h:584:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     584 |         __raw_writeb(value, PCI_IOBASE + addr);
+         |                             ~~~~~~~~~~ ^
+   include/asm-generic/io.h:594:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     594 |         __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
+         |                                                       ~~~~~~~~~~ ^
+   include/asm-generic/io.h:604:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     604 |         __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
+         |                                                       ~~~~~~~~~~ ^
+   include/asm-generic/io.h:692:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     692 |         readsb(PCI_IOBASE + addr, buffer, count);
+         |                ~~~~~~~~~~ ^
+   include/asm-generic/io.h:700:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     700 |         readsw(PCI_IOBASE + addr, buffer, count);
+         |                ~~~~~~~~~~ ^
+   include/asm-generic/io.h:708:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     708 |         readsl(PCI_IOBASE + addr, buffer, count);
+         |                ~~~~~~~~~~ ^
+   include/asm-generic/io.h:717:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     717 |         writesb(PCI_IOBASE + addr, buffer, count);
+         |                 ~~~~~~~~~~ ^
+   include/asm-generic/io.h:726:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     726 |         writesw(PCI_IOBASE + addr, buffer, count);
+         |                 ~~~~~~~~~~ ^
+   include/asm-generic/io.h:735:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     735 |         writesl(PCI_IOBASE + addr, buffer, count);
+         |                 ~~~~~~~~~~ ^
+>> kernel/sched/core.c:6565:6: warning: no previous prototype for function 'try_to_deactivate_task' [-Wmissing-prototypes]
+    6565 | bool try_to_deactivate_task(struct rq *rq, struct task_struct *p, unsigned long state)
+         |      ^
+   kernel/sched/core.c:6565:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+    6565 | bool try_to_deactivate_task(struct rq *rq, struct task_struct *p, unsigned long state)
+         | ^
+         | static 
+   kernel/sched/core.c:3697:20: warning: unused function 'rq_has_pinned_tasks' [-Wunused-function]
+    3697 | static inline bool rq_has_pinned_tasks(struct rq *rq)
+         |                    ^
+   kernel/sched/core.c:5834:20: warning: unused function 'sched_tick_start' [-Wunused-function]
+    5834 | static inline void sched_tick_start(int cpu) { }
+         |                    ^
+   kernel/sched/core.c:5835:20: warning: unused function 'sched_tick_stop' [-Wunused-function]
+    5835 | static inline void sched_tick_stop(int cpu) { }
+         |                    ^
+   kernel/sched/core.c:6535:20: warning: unused function 'sched_core_cpu_starting' [-Wunused-function]
+    6535 | static inline void sched_core_cpu_starting(unsigned int cpu) {}
+         |                    ^
+   kernel/sched/core.c:6536:20: warning: unused function 'sched_core_cpu_deactivate' [-Wunused-function]
+    6536 | static inline void sched_core_cpu_deactivate(unsigned int cpu) {}
+         |                    ^
+   kernel/sched/core.c:6537:20: warning: unused function 'sched_core_cpu_dying' [-Wunused-function]
+    6537 | static inline void sched_core_cpu_dying(unsigned int cpu) {}
+         |                    ^
+   19 warnings generated.
 
-> >
-> >
-> > What does the output of this command look like?
-> >
-> > $ llvm-readelf -S vmlinux.o | grep  .llvm.call-graph-profile
-> >
-> >
-> > Is it REL?
-> >
->
->   [119] .llvm.call-graph-profile LLVM_CALL_GRAPH_PROFILE 0000000000000000
-> 1c74a458 0104c8 08   E  0   0  1
->   [120] .rel.llvm.call-graph-profile REL 0000000000000000 1c75a920 041320=
- 10
-> I 26090 119  8
->
-> Thanks,
-> Denis
 
+vim +/try_to_deactivate_task +6565 kernel/sched/core.c
 
+  6564	
+> 6565	bool try_to_deactivate_task(struct rq *rq, struct task_struct *p, unsigned long state)
+  6566	{
+  6567		if (signal_pending_state(state, p)) {
+  6568			WRITE_ONCE(p->__state, TASK_RUNNING);
+  6569		} else {
+  6570			p->sched_contributes_to_load =
+  6571				(state & TASK_UNINTERRUPTIBLE) &&
+  6572				!(state & TASK_NOLOAD) &&
+  6573				!(state & TASK_FROZEN);
+  6574	
+  6575			if (p->sched_contributes_to_load)
+  6576				rq->nr_uninterruptible++;
+  6577	
+  6578			/*
+  6579			 * __schedule()			ttwu()
+  6580			 *   prev_state = prev->state;    if (p->on_rq && ...)
+  6581			 *   if (prev_state)		    goto out;
+  6582			 *     p->on_rq = 0;		  smp_acquire__after_ctrl_dep();
+  6583			 *				  p->state = TASK_WAKING
+  6584			 *
+  6585			 * Where __schedule() and ttwu() have matching control dependencies.
+  6586			 *
+  6587			 * After this, schedule() must not care about p->state any more.
+  6588			 */
+  6589			deactivate_task(rq, p, DEQUEUE_SLEEP | DEQUEUE_NOCLOCK);
+  6590	
+  6591			if (p->in_iowait) {
+  6592				atomic_inc(&rq->nr_iowait);
+  6593				delayacct_blkio_start();
+  6594			}
+  6595			return true;
+  6596		}
+  6597		return false;
+  6598	}
+  6599	
 
---=20
-=E5=AE=8B=E6=96=B9=E7=9D=BF
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
