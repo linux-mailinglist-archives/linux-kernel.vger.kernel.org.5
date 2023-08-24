@@ -2,652 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50DB0786BA8
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 11:25:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F40F786BB0
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 11:26:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234633AbjHXJZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 05:25:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60264 "EHLO
+        id S234882AbjHXJZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 05:25:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240847AbjHXJY7 (ORCPT
+        with ESMTP id S238195AbjHXJZH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 05:24:59 -0400
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E25D1BEB;
-        Thu, 24 Aug 2023 02:24:35 -0700 (PDT)
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37NKx9BQ026218;
-        Thu, 24 Aug 2023 09:23:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2023-03-30; bh=Q5He6M0LuPcD7KK4RsR7XSRC3IhU7xfpjiWLK1Q7ZIU=;
- b=xU/ceaXddrmk1UBRE1wQh+URJctUKnlSio1u1bDUjxmqoiZTHicU0mvBTB2v/6kKxAgf
- 6hdTYO1cpayuV4rkDw0LbSbQKu9BNcZ9MXffLm9jL3s+cc5WUN4fs13yv1yHb5kq6k7m
- 5nS1XFxCFsB3+2mUBN5AelkbGRvjeLlnLLZOYIOa5PDfSQzr2OgzhvPDSYGLcA3IwFoz
- in0AKhdyB86nw3tM6qfsEFB8h4XmcsTFiESfWcX50cSUDXKk5IGNVgDgTpJ1jlD269qX
- w5++c2IvNGnAC52oSqOd+RfD9P49SiaAQq8ElayaWICCkuaHtfnl286YBK5YSbqRp7hg FA== 
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3sn1yvunyu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 24 Aug 2023 09:23:51 +0000
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 37O86DaF036111;
-        Thu, 24 Aug 2023 09:23:50 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3sn1yvqtsn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 24 Aug 2023 09:23:50 +0000
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37O9Nl8G013318;
-        Thu, 24 Aug 2023 09:23:48 GMT
-Received: from localhost (vnossum-instance-20230622-1349.allregionaliads.osdevelopmeniad.oraclevcn.com [100.100.250.16])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3sn1yvqtfb-1;
-        Thu, 24 Aug 2023 09:23:46 +0000
-From:   Vegard Nossum <vegard.nossum@oracle.com>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, backports@vger.kernel.org,
-        Vegard Nossum <vegard.nossum@oracle.com>,
-        Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        "Jason A . Donenfeld" <Jason@zx2c4.com>,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-Subject: [PATCH v2] docs: add backporting and conflict resolution document
-Date:   Thu, 24 Aug 2023 09:23:25 +0000
-Message-Id: <20230824092325.1464227-1-vegard.nossum@oracle.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 24 Aug 2023 05:25:07 -0400
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BA150E7F;
+        Thu, 24 Aug 2023 02:24:46 -0700 (PDT)
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 37O9NQdzC010181, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
+        by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 37O9NQdzC010181
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 24 Aug 2023 17:23:26 +0800
+Received: from RTEXDAG01.realtek.com.tw (172.21.6.100) by
+ RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.17; Thu, 24 Aug 2023 17:23:49 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXDAG01.realtek.com.tw (172.21.6.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.7; Thu, 24 Aug 2023 17:23:48 +0800
+Received: from RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d]) by
+ RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d%5]) with mapi id
+ 15.01.2375.007; Thu, 24 Aug 2023 17:23:48 +0800
+From:   =?utf-8?B?U3RhbmxleSBDaGFuZ1vmmIzogrLlvrdd?= 
+        <stanley_chang@realtek.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>
+CC:     Chanwoo Choi <cw00.choi@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Subject: RE: [PATCH v1 2/2] dt-bindings: extcon: Add Realtek DHC RTD SoC Type-C
+Thread-Topic: [PATCH v1 2/2] dt-bindings: extcon: Add Realtek DHC RTD SoC
+ Type-C
+Thread-Index: AQHZ1ONxPQNQ8ikjYkmsM4V64Zamr6/17aQAgAMBw+D//4itAIAAj2Mw//+WrQCAAIcBcA==
+Date:   Thu, 24 Aug 2023 09:23:48 +0000
+Message-ID: <7e34f4bfd15244ac95e68ee2372ac0de@realtek.com>
+References: <20230822102846.4683-1-stanley_chang@realtek.com>
+ <20230822102846.4683-2-stanley_chang@realtek.com>
+ <1e0632d6-73e9-4633-a709-bf9140f2fd32@linaro.org>
+ <ca406c19e59145fd9e7e035ea5ad3eeb@realtek.com>
+ <50ce8e71-613e-1ef5-0c23-67a2f6f78949@linaro.org>
+ <1390ad28e50f493fa72209fe29b7f3f4@realtek.com>
+ <5894c8db-4b85-e7dd-e894-33aa8a448153@linaro.org>
+In-Reply-To: <5894c8db-4b85-e7dd-e894-33aa8a448153@linaro.org>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.21.190.159]
+x-kse-serverinfo: RTEXDAG01.realtek.com.tw, 9
+x-kse-antispam-interceptor-info: fallback
+x-kse-antivirus-interceptor-info: fallback
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-24_06,2023-08-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0
- malwarescore=0 spamscore=0 phishscore=0 mlxlogscore=999 adultscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2308240076
-X-Proofpoint-ORIG-GUID: ryAR3_SgqlyUobpYYtce0c1PnF3Odsm3
-X-Proofpoint-GUID: ryAR3_SgqlyUobpYYtce0c1PnF3Odsm3
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a new document based on my 2022 blog post:
-
-  https://blogs.oracle.com/linux/post/backporting-patches-using-git
-
-Although this is aimed at stable contributors and distro maintainers,
-it does also contain useful tips and tricks for anybody who needs to
-resolve merge conflicts.
-
-By adding this to the kernel as documentation we can more easily point
-to it e.g. from stable emails about failed backports, as well as allow
-the community to modify it over time if necessary.
-
-I've added this under process/ since it also has
-process/applying-patches.rst. Another interesting document is
-maintainer/rebasing-and-merging.rst which maybe should eventually refer
-to this one, but I'm leaving that as a future cleanup.
-
-Thanks to Harshit Mogalapalli for helping with the original blog post
-as well as this updated document and Bagas Sanjaya for providing
-thoughtful feedback.
-
-v2: fixed heading style, link style, placeholder style, other comments
-
-Link: https://lore.kernel.org/linux-doc/20230303162553.17212-1-vegard.nossum@oracle.com/
-Cc: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-Cc: Bagas Sanjaya <bagasdotme@gmail.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Jason A. Donenfeld <Jason@zx2c4.com>
-Cc: Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
----
- Documentation/process/backporting.rst | 514 ++++++++++++++++++++++++++
- Documentation/process/index.rst       |   1 +
- 2 files changed, 515 insertions(+)
- create mode 100644 Documentation/process/backporting.rst
-
-diff --git a/Documentation/process/backporting.rst b/Documentation/process/backporting.rst
-new file mode 100644
-index 0000000000000..7593980af9659
---- /dev/null
-+++ b/Documentation/process/backporting.rst
-@@ -0,0 +1,514 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+===================================
-+Backporting and conflict resolution
-+===================================
-+
-+:Author: Vegard Nossum <vegard.nossum@oracle.com>
-+
-+.. contents::
-+    :local:
-+    :depth: 3
-+    :backlinks: none
-+
-+Introduction
-+============
-+
-+Some developers may never really have to deal with backporting patches,
-+merging branches, or resolving conflicts in their day-to-day work, so
-+when a merge conflict does pop up, it can be daunting. Luckily,
-+resolving conflicts is a skill like any other, and there are many useful
-+techniques you can use to make the process smoother and increase your
-+confidence in the result.
-+
-+This document aims to be a comprehensive, step-by-step guide to
-+backporting and conflict resolution.
-+
-+Applying the patch to a tree
-+============================
-+
-+Sometimes the patch you are backporting already exists as a git commit,
-+in which case you just cherry-pick it directly using
-+``git cherry-pick``. However, if the patch comes from an email, as it
-+often does for the Linux kernel, you will need to apply it to a tree
-+using ``git am``.
-+
-+If you've ever used ``git am``, you probably already know that it is
-+quite picky about the patch applying perfectly to your source tree. In
-+fact, you've probably had nightmares about ``.rej`` files and trying to
-+edit the patch to make it apply.
-+
-+It is strongly recommended to instead find an appropriate base version
-+where the patch applies cleanly and *then* cherry-pick it over to your
-+destination tree, as this will make git output conflict markers and let
-+you resolve conflicts with the help of git and any other conflict
-+resolution tools you might prefer to use. For example, if you want to
-+apply a patch that just arrived on LKML to an older stable kernel, you
-+can apply it to the most recent mainline kernel and then cherry-pick it
-+to your older stable branch.
-+
-+It's generally better to use the exact same base as the one the patch
-+was generated from, but it doesn't really matter that much as long as it
-+applies cleanly and isn't too far from the original base. The only
-+problem with applying the patch to the "wrong" base is that it may pull
-+in more unrelated changes in the context of the diff when cherry-picking
-+it to the older branch.
-+
-+If you are using `b4`_. and you are applying the patch directly from an
-+email, you can use ``b4 am`` with the options ``-g``/``--guess-base``
-+and ``-3``/``--prep-3way`` to do some of this automatically (see the
-+`b4 presentation`_ for more information). However, the rest of this
-+article will assume that you are doing a plain ``git cherry-pick``.
-+
-+.. _b4: https://people.kernel.org/monsieuricon/introducing-b4-and-patch-attestation
-+.. _b4 presentation: https://youtu.be/mF10hgVIx9o?t=2996
-+
-+Once you have the patch in git, you can go ahead and cherry-pick it into
-+your source tree. Don't forget to cherry-pick with ``-x`` if you want a
-+written record of where the patch came from!
-+
-+Note that if you are submiting a patch for stable, the format is
-+slightly different; the first line after the subject line needs tobe
-+either::
-+
-+    commit <upstream commit> upstream
-+
-+or::
-+
-+    [ Upstream commit <upstream commit> ]
-+
-+Resolving conflicts
-+===================
-+
-+Uh-oh; the cherry-pick failed with a vaguely threatening message::
-+
-+    CONFLICT (content): Merge conflict
-+
-+What to do now?
-+
-+In general, conflicts appear when the context of the patch (i.e., the
-+lines being changed and/or the lines surrounding the changes) doesn't
-+match what's in the tree you are trying to apply the patch *to*.
-+
-+For backports, what likely happened was that the branch you are
-+backporting from contains patches not in the branch you are backporting
-+to. However, the reverse is also possible. In any case, the result is a
-+conflict that needs to be resolved.
-+
-+If your attempted cherry-pick fails with a conflict, git automatically
-+edits the files to include so-called conflict markers showing you where
-+the conflict is and how the two branches have diverged. Resolving the
-+conflict typically means editing the end result in such a way that it
-+takes into account these other commits.
-+
-+Resolving the conflict can be done either by hand in a regular text
-+editor or using a dedicated conflict resolution tool.
-+
-+Many people prefer to use their regular text editor and edit the
-+conflict directly, as it may be easier to understand what you're doing
-+and to control the final result. There are definitely pros and cons to
-+each method, and sometimes there's value in using both.
-+
-+We will not cover using dedicated merge tools here beyond providing some
-+pointers to various tools that you could use:
-+
-+-  `vimdiff/gvimdiff <https://linux.die.net/man/1/vimdiff>`__
-+-  `KDiff3 <http://kdiff3.sourceforge.net/>`__
-+-  `TortoiseMerge <https://tortoisesvn.net/TortoiseMerge.html>`__
-+-  `Meld <https://meldmerge.org/help/>`__
-+-  `P4Merge <https://www.perforce.com/products/helix-core-apps/merge-diff-tool-p4merge>`__
-+-  `Beyond Compare <https://www.scootersoftware.com/>`__
-+-  `IntelliJ <https://www.jetbrains.com/help/idea/resolve-conflicts.html>`__
-+-  `VSCode <https://code.visualstudio.com/docs/editor/versioncontrol>`__
-+
-+To configure git to work with these, see ``git mergetool --help`` or
-+the official `git-mergetool documentation`_.
-+
-+.. _git-mergetool documentation: https://git-scm.com/docs/git-mergetool
-+
-+Prerequisite patches
-+--------------------
-+
-+Most conflicts happen because the branch you are backporting to is
-+missing some patches compared to the branch you are backporting *from*.
-+In the more general case (such as merging two independent branches),
-+development could have happened on either branch, or the branches have
-+simply diverged -- perhaps your older branch had some other backports
-+applied to it that themselves needed conflict resolutions, causing a
-+divergence.
-+
-+It's important to always identify the commit or commits that caused the
-+conflict, as otherwise you cannot be confident in the correctness of
-+your resolution. As an added bonus, especially if the patch is in an
-+area you're not that famliar with, the changelogs of these commits will
-+often give you the context to understand the code and potential problems
-+or pitfalls with your conflict resolution.
-+
-+git log
-+~~~~~~~
-+
-+A good first step is to look at ``git log`` for the file that has the
-+conflict -- this is usually sufficient when there aren't a lot of
-+patches to the file, but may get confusing if the file is big and
-+frequently patched. You should run ``git log`` on the range of commits
-+between your currently checked-out branch (``HEAD``) and the parent of
-+the patch you are picking (``<commit>``), i.e.::
-+
-+    git log HEAD..<commit>^ -- <path>
-+
-+Even better, if you want to restrict this output to a single function
-+(because that's where the conflict appears), you can use the following
-+syntax::
-+
-+    git log -L:'\<function\>':<path> HEAD..<commit>^
-+
-+.. note::
-+     The ``\<`` and ``\>`` around the function name ensure that the
-+     matches are anchored on a word boundary. This is important, as this
-+     part is actually a regex and git only follows the first match, so
-+     if you use ``-L:thread_stack:kernel/fork.c`` it may only give you
-+     results for the function ``try_release_thread_stack_to_cache`` even
-+     though there are many other functions in that file containing the
-+     string ``thread_stack`` in their names.
-+
-+Another useful option for ``git log`` is ``-G``, which allows you to
-+filter on certain strings appearing in the diffs of the commits you are
-+listing::
-+
-+    git log -G'regex' HEAD..<commit>^ -- <path>
-+
-+This can also be a handy way to quickly find when something (e.g. a
-+function call or a variable) was changed, added, or removed. The search
-+string is a regular expression, which means you can potentially search
-+for more specific things like assignments to a specific struct member::
-+
-+    git log -G'\->index\>.*='
-+
-+git blame
-+~~~~~~~~~
-+
-+Another way to find prerequisite commits (albeit only the most recent
-+one for a given conflict) is to run ``git blame``. In this case, you
-+need to run it against the parent commit of the patch you are
-+cherry-picking and the file where the conflict appared, i.e.::
-+
-+    git blame <commit>^ -- <path>
-+
-+This command also accepts the ``-L`` argument (for restricting the
-+output to a single function), but in this case you specify the filename
-+at the end of the command as usual::
-+
-+    git blame -L:'\<function\>' <commit>^ -- <path>
-+
-+Navigate to the place where the conflict occurred. The first column of
-+the blame output is the commit ID of the patch that added a given line
-+of code.
-+
-+It might be a good idea to ``git show`` these commits and see if they
-+look like they might be the source of the conflict. Sometimes there will
-+be more than one of these commits, either because multiple commits
-+changed different lines of the same conflict area *or* because multiple
-+subsequent patches changed the same line (or lines) multiple times. In
-+the latter case, you may have to run ``git blame`` again and specify the
-+older version of the file to look at in order to dig further back in
-+the history of the file.
-+
-+Prerequisite vs. incidental patches
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+Having found the patch that caused the conflict, you need to determine
-+whether it is a prerequisite for the patch you are backporting or
-+whether it is just incidental and can be skipped. An incidental patch
-+would be one that touches the same code as the patch you are
-+backporting, but does not change the semantics of the code in any
-+material way. For example, a whitespace cleanup patch is completely
-+incidental -- likewise, a patch that simply renames a function or a
-+variable would be incidental as well. On the other hand, if the function
-+being changed does not even exist in your current branch then this would
-+not be incidental at all and you need to carefully consider whether the
-+patch adding the function should be cherry-picked first.
-+
-+If you find that there is a necessary prerequisite patch, then you need
-+to stop and cherry-pick that instead. If you've already resolved some
-+conflicts in a different file and don't want to do it again, you can
-+create a temporary copy of that file.
-+
-+To abort the current cherry-pick, go ahead and run
-+``git cherry-pick --abort``, then restart the cherry-picking process
-+with the commit ID of the prerequisite patch instead.
-+
-+Understanding conflict markers
-+------------------------------
-+
-+Combined diffs
-+~~~~~~~~~~~~~~
-+
-+Let's say you've decided against picking (or reverting) additional
-+patches and you just want to resolve the conflict. Git will have
-+inserted conflict markers into your file. Out of the box, this will look
-+something like::
-+
-+    <<<<<<< HEAD
-+    this is what's in your current tree before cherry-picking
-+    =======
-+    this is what the patch wants it to be after cherry-picking
-+    >>>>>>> <commit>... title
-+
-+This is what you would see if you opened the file in your editor.
-+However, if you were to run run ``git diff`` without any arguments, the
-+output would look something like this::
-+
-+    $ git diff
-+    [...]
-+    ++<<<<<<<< HEAD
-+     +this is what's in your current tree before cherry-picking
-+    ++========
-+    + this is what the patch wants it to be after cherry-picking
-+    ++>>>>>>>> <commit>... title
-+
-+When you are resolving a conflict, the behavior of ``git diff`` differs
-+from its normal behavior. Notice the two columns of diff markers
-+instead of the usual one; this is a so-called "`combined diff`_", here
-+showing the 3-way diff (or diff-of-diffs) between
-+
-+#. the current branch (before cherry-picking) and the current working
-+   directory, and
-+#. the current branch (before cherry-picking) and the file as it looks
-+   after the original patch has been applied.
-+
-+.. _combined diff: https://git-scm.com/docs/diff-format#_combined_diff_format
-+
-+
-+Better diffs
-+~~~~~~~~~~~~
-+
-+3-way combined diffs include all the other changes that happened to the
-+file between your current branch and the branch you are cherry-picking
-+from. While this is useful for spotting other changes that you need to
-+take into account, this also makes the output of ``git diff`` somewhat
-+intimidating and difficult to read. You may instead prefer to run
-+``git diff HEAD`` (or ``git diff --ours``) which shows only the diff
-+between the current branch before cherry-picking and the current working
-+directory. It looks like this::
-+
-+    $ git diff HEAD
-+    [...]
-+    +<<<<<<<< HEAD
-+     this is what's in your current tree before cherry-picking
-+    +========
-+    +this is what the patch wants it to be after cherry-picking
-+    +>>>>>>>> <commit>... title
-+
-+As you can see, this reads just like any other diff and makes it clear
-+which lines are in the current branch and which lines are being added
-+because they are part of the merge conflict or the patch being
-+cherry-picked.
-+
-+Merge styles and diff3
-+~~~~~~~~~~~~~~~~~~~~~~
-+
-+The default conflict marker style shown above is known as the ``merge``
-+style. There is also another style available, known as the ``diff3``
-+style, which looks like this::
-+
-+    <<<<<<< HEAD
-+    this is what is in your current tree before cherry-picking
-+    ||||||| parent of <commit> (title)
-+    this is what the patch expected to find there
-+    =======
-+    this is what the patch wants it to be after being applied
-+    >>>>>>> <commit> (title)
-+
-+As you can see, this has 3 parts instead of 2, and includes what git
-+expected to find there but didn't. Some people vastly prefer this style
-+as it makes it much clearer what the patch actually changed; i.e., it
-+allows you to compare the before-and-after versions of the file for the
-+commit you are cherry-picking. This allows you to make better decisions
-+about how to resolve the conflict.
-+
-+To change conflict marker styles, you can use the following command::
-+
-+    git config merge.conflictStyle diff3
-+
-+There is a third option, ``zdiff3``, introduced in `Git 2.35`_,
-+which has the same 3 sections as ``diff3``, but where common lines have
-+been trimmed off, making the conflict area smaller in some cases.
-+
-+.. _Git 2.35: https://github.blog/2022-01-24-highlights-from-git-2-35/
-+
-+Iterating on conflict resolutions
-+---------------------------------
-+
-+The first step in any conflict resolution process is to understand the
-+patch you are backporting. For the Linux kernel this is especially
-+important, since an incorrect change can lead to the whole system
-+crashing -- or worse, an undetected security vulnerability.
-+
-+Understanding the patch can be easy or difficult depending on the patch
-+itself, the changelog, and your familiarity with the code being changed.
-+However, a good question for every change (or every hunk of the patch)
-+might be: "Why is this hunk in the patch?" The answers to these
-+questions will inform your conflict resolution.
-+
-+Resolution process
-+~~~~~~~~~~~~~~~~~~
-+
-+Sometimes the easiest thing to do is to just remove all but the first
-+part of the conflict, leaving the file essentially unchanged, and apply
-+the changes by hand. Perhaps the patch is changing a function call
-+argument from ``0`` to ``1`` while a conflicting change added an
-+entirely new (and insignificant) parameter to the end of the parameter
-+list; in that case, it's easy enough to change the argument from ``0``
-+to ``1`` by hand and leave the rest of the arguments alone. This
-+technique of manually applying changes is mostly useful if the conflict
-+pulled in a lot of unrelated context that you don't really need to care
-+about.
-+
-+For particularly nasty conflicts with many conflict markers, you can use
-+``git add`` or ``git add -i`` to selectively stage your resolutions to
-+get them out of the way; this also lets you use ``git diff HEAD`` to
-+always see what remains to be resolved or ``git diff --cached`` to see
-+what your patch looks like so far.
-+
-+Function arguments
-+~~~~~~~~~~~~~~~~~~
-+
-+Pay attention to changing function arguments! It's easy to gloss over
-+details and think that two lines are the same but actually they differ
-+in some small detail like which variable was passed as an argument
-+(especially if the two variables are both a single character that look
-+the same, like i and j).
-+
-+Error handling
-+~~~~~~~~~~~~~~
-+
-+If you cherry-pick a patch that includes a ``goto`` statement (typically
-+for error handling), it is absolutely imperative to double check that
-+the target label is still correct in the branch you are backporting to.
-+Error handling is typically located at the bottom of the function, so it
-+may not be part of the conflict even though could have been changed by
-+other patches.
-+
-+A good way to ensure that you review the error paths is to always use
-+``git diff -W`` and ``git show -W`` (AKA ``--function-context``) when
-+inspecting your changes.  For C code, this will show you the whole
-+function that's being changed in a patch. One of the things that often
-+go wrong during backports is that something else in the function changed
-+on either of the branches that you're backporting from or to. By
-+including the whole function in the diff you get more context and can
-+more easily spot problems that might otherwise go unnoticed.
-+
-+Dealing with file renames
-+~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+One of the most annoying things that can happen while backporting a
-+patch is discovering that one of the files being patched has been
-+renamed, as that typically means git won't even put in conflict markers,
-+but will just throw up its hands and say (paraphrased): "Unmerged path!
-+You do the work..."
-+
-+There are generally a few ways to deal with this. If the patch to the
-+renamed file is small, like a one-line change, the easiest thing is to
-+just go ahead and apply the change by hand and be done with it. On the
-+other hand, if the change is big or complicated, you definitely don't
-+want to do it by hand.
-+
-+Sometimes the right thing to do will be to also backport the patch that
-+did the rename, but that's definitely not the most common case. Instead,
-+what you can do is to temporarily rename the file in the branch you're
-+backporting to (using ``git mv`` and committing the result), restart the
-+attempt to cherry-pick the patch, rename the file back (``git mv`` and
-+committing again), and finally squash the result using ``git rebase -i``
-+(see the `rebase tutorial`_) so it appears as a single commit when you
-+are done.
-+
-+.. _rebase tutorial: https://medium.com/@slamflipstrom/a-beginners-guide-to-squashing-commits-with-git-rebase-8185cf6e62ec
-+
-+Verifying the result
-+====================
-+
-+colordiff
-+---------
-+
-+Having committed a conflict-free new patch, you can now compare your
-+patch to the original patch. It is highly recommended that you use a
-+tool such as `colordiff`_ that can show two files side by side and color
-+them according to the changes between them::
-+
-+    colordiff -yw -W 200 <(git diff -W <upstream commit>^-) <(git diff -W HEAD^-) | less -SR
-+
-+.. _colordiff: https://www.colordiff.org/
-+
-+Here, ``-y`` means to do a side-by-side comparison; ``-w`` ignores
-+whitespace, and ``-W 200`` sets the width of the output (as otherwise it
-+will use 130 by default, which is often a bit too little).
-+
-+The ``rev^-`` syntax is a handy shorthand for ``rev^..rev``, essentially
-+giving you just the diff for that single commit; also see
-+the official `git rev-parse documentation`_.
-+
-+.. _git rev-parse documentation: https://git-scm.com/docs/git-rev-parse#_other_rev_parent_shorthand_notations
-+
-+Again, note the inclusion of ``-W`` for ``git diff``; this ensures that
-+you will see the full function for any function that has changed.
-+
-+One incredibly important thing that colordiff does is to highlight lines
-+that are different. For example, if an error-handling ``goto`` has
-+changed labels between the original and backported patch, colordiff will
-+show these side-by-side but highlighted in a different color.  Thus, it
-+is easy to see that the two ``goto`` statements are jumping to different
-+labels. Likewise, lines that were not modified by either patch but
-+differ in the context will also be highlighted and thus stand out during
-+a manual inspection.
-+
-+Of course, this is just a visual inspection; the real test is building
-+and running the patched kernel (or program).
-+
-+Build testing
-+-------------
-+
-+We won't cover runtime testing here, but it can be a good idea to build
-+just the files touched by the patch as a quick sanity check. For the
-+Linux kernel you can build single files like this, assuming you have the
-+``.config`` and build environment set up correctly::
-+
-+    make path/to/file.o
-+
-+Note that this won't discover linker errors, so you should still do a
-+full build after verifying that the single file compiles. By compiling
-+the single file first you can avoid having to wait for a full build *in
-+case* there are compiler errors in any of the files you've changed.
-+
-+Runtime testing
-+---------------
-+
-+Even a successful build or boot test is not necessarily enough to rule
-+out a missing dependency somewhere. Even though the chances are small,
-+there could be code changes where two independent changes to the same
-+file result in no conflicts, no compile-time errors, and runtime errors
-+only in exceptional cases.
-+
-+One concrete example of this was a pair of patches to the system call
-+entry code where the first patch saved/restored a register and a later
-+patch made use of the same register somewhere in the middle of this
-+sequence. Since there was no overlap between the changes, one could
-+cherry-pick the second patch, have no conflicts, and believe that
-+everything was fine, when in fact the code was now scribbling over an
-+unsaved register.
-+
-+Although the vast majority of errors will be caught during compilation
-+or by superficially exercising the code, the only way to *really* verify
-+a backport is to review the final patch with the same level of scrutiny
-+as you would (or should) give to any other patch. Having unit tests and
-+regression tests or other types of automatic testing can help increase
-+the confidence in the correctness of a backport.
-+
-+Examples
-+========
-+
-+The above shows roughly the idealized process of backporting a patch.
-+For a more concrete example, see this video tutorial where two patches
-+are backported from mainline to stable:
-+`Backporting Linux Kernel Patches`_.
-+
-+.. _Backporting Linux Kernel Patches: https://youtu.be/sBR7R1V2FeA
-diff --git a/Documentation/process/index.rst b/Documentation/process/index.rst
-index b501cd977053f..13e522752f880 100644
---- a/Documentation/process/index.rst
-+++ b/Documentation/process/index.rst
-@@ -66,6 +66,7 @@ lack of a better place.
-    :maxdepth: 1
- 
-    applying-patches
-+   backporting
-    adding-syscalls
-    magic-number
-    volatile-considered-harmful
--- 
-2.25.1
-
+SGkgS3J6eXN6dG9mLA0KDQoNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9t
+OiBLcnp5c3p0b2YgS296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+DQo+
+IFNlbnQ6IFRodXJzZGF5LCBBdWd1c3QgMjQsIDIwMjMgNDo0MyBQTQ0KPiBUbzogU3RhbmxleSBD
+aGFuZ1vmmIzogrLlvrddIDxzdGFubGV5X2NoYW5nQHJlYWx0ZWsuY29tPjsgTXl1bmdKb28gSGFt
+DQo+IDxteXVuZ2pvby5oYW1Ac2Ftc3VuZy5jb20+DQo+IENjOiBDaGFud29vIENob2kgPGN3MDAu
+Y2hvaUBzYW1zdW5nLmNvbT47IFJvYiBIZXJyaW5nDQo+IDxyb2JoK2R0QGtlcm5lbC5vcmc+OyBL
+cnp5c3p0b2YgS296bG93c2tpDQo+IDxrcnp5c3p0b2Yua296bG93c2tpK2R0QGxpbmFyby5vcmc+
+OyBDb25vciBEb29sZXkgPGNvbm9yK2R0QGtlcm5lbC5vcmc+Ow0KPiBsaW51eC1rZXJuZWxAdmdl
+ci5rZXJuZWwub3JnOyBkZXZpY2V0cmVlQHZnZXIua2VybmVsLm9yZw0KPiBTdWJqZWN0OiBSZTog
+W1BBVENIIHYxIDIvMl0gZHQtYmluZGluZ3M6IGV4dGNvbjogQWRkIFJlYWx0ZWsgREhDIFJURCBT
+b0MNCj4gVHlwZS1DDQo+IA0KPiANCj4gRXh0ZXJuYWwgbWFpbC4NCj4gDQo+IA0KPiANCj4gT24g
+MjQvMDgvMjAyMyAwOToyMywgU3RhbmxleSBDaGFuZ1vmmIzogrLlvrddIHdyb3RlOg0KPiA+IEhp
+IEtyenlzenRvZiwNCj4gPg0KPiA+Pj4+PiArDQo+ID4+Pj4+ICt0aXRsZTogUmVhbHRlayBESEMg
+UlREIFNvQ3MgVVNCIFR5cGUtQyBkZXRlY3Rpb24NCj4gPj4+Pg0KPiA+Pj4+IFR5cGUtYyB1c3Vh
+bGx5IGdvIHRvIHVzYiBkaXJlY3RvcnkuDQo+ID4+Pg0KPiA+Pj4gVGhpcyBiaW5kaW5nIGlzIG5v
+dCBmb3IgYSB0eXBlLWMgY29udHJvbGxlci4NCj4gPj4+IEl0IGlzIGFuIGV4dGNvbiBkZXZpY2Ug
+Zm9yIHR5cGUtYyBjb25uZWN0b3IgZGV0ZWN0aW9uLg0KPiA+Pj4gU28gSSBwdXQgaXQgYXQgZXh0
+Y29uIGRpcmVjdG9yeS4NCj4gPj4NCj4gPj4gSWYgdGhpcyBpcyBub3QgYSB0eXBlLWMgY29udHJv
+bGxlciwgdGhlbiB3aGF0IGlzIGl0PyBFeHBsYWluIG1lDQo+ID4+IHBsZWFzZSB3aGF0IGlzIGFu
+ICJleHRjb24gZGV2aWNlIiB3aXRob3V0IHVzaW5nIGFueSBMaW51eCBzdWJzeXN0ZW0NCj4gbmFt
+aW5nLg0KPiA+DQo+ID4gU29ycnkuICJleHRjb24gZGV2aWNlIiBtYXkgYmUgdGhlIHdyb25nIG5h
+bWUgSSdtIHVzaW5nLg0KPiA+DQo+ID4gQXMgZmFyIGFzIEkga25vdywgdHlwZS1jIGNvbnRyb2xs
+ZXIgc3VwcG9ydHMgUEQgZGV0ZWN0aW9uLCByb2xlIGRldGVjdGlvbiwgcm9sZQ0KPiBzd2FwIGFu
+ZCBjYyBjb25maWd1cmF0aW9uLg0KPiA+IEJ1dCBpbiBvdXIgU29DLCB0eXBlIGMgbW9kdWxlIG9u
+bHkgc3VwcG9ydHMgcm9sZSBkZXRlY3Rpb24uDQo+ID4gU28gSSBkb24ndCB0aGluayBpdCdzIGEg
+dHlwZS1jIGNvbnRyb2xsZXIuDQo+IA0KPiBTbyBtb2R1bGUgaGFuZGxpbmcgc29tZSBwYXJ0cyBv
+ZiAiVHlwZS1DIiBpcyBub3QgYSAiVHlwZS1DIGNvbnRyb2xsZXIiDQo+IGJ1dCBpZiBzdWNoIG1v
+ZHVsZSBoYW5kbGVzIGEgYml0IG1vcmUsIGl0IGJlY29tZXMgVHlwZS1DPw0KDQpEdWUgdG8gaGFy
+ZHdhcmUgZnVuY3Rpb24gbGltaXRhdGlvbiwgaXQgY2FuJ3QgaGFuZGxlIHRoZSBmdWxsIGZ1bmN0
+aW9uIG9mIHR5cGUtYy4NCg0KPiA+DQo+ID4gSSBmb3VuZCBhIHNpbWlsYXIgZHJpdmVyIGF0DQo+
+ID4gZHJpdmVycy9leHRjb24vZXh0Y29uLXVzYmMtY3Jvcy1lYy5jDQo+ID4gSXQgYmVsb25ncyB0
+byBFeHRlcm5hbCBDb25uZWN0b3IsIHdoaWNoIGNhbiBkZXRlY3QgVVNCIFR5cGUgQyBjYWJsZXMu
+DQo+IA0KPiBUaGF0J3MgYSBkcml2ZXIsIG5vdCBhIGJpbmRpbmcuLi4NCj4gDQo+ID4NCj4gPiBT
+byBvdXIgZHJpdmVyIGlzIGFuIGV4dGVybmFsIGNvbm5lY3RvciBkcml2ZXIuDQo+IA0KPiBEcml2
+ZXIgeWVzLCBub3QgYmluZGluZy4NCj4gDQo+ID4NCj4gPj4+DQo+ID4+PiBBbmQgSSB3aWxsIGFk
+ZCDigJxjb25uZWN0b3LigJ0gdG8gdGhlIHRpdGxlLg0KPiA+Pj4gdGl0bGU6IFJlYWx0ZWsgREhD
+IFJURCBTb0NzIFVTQiBUeXBlLUMgQ29ubmVjdG9yIGRldGVjdGlvbg0KPiA+Pg0KPiA+PiBTbyB1
+c2IuLi4NCj4gPg0KPiA+IEkgcmVmZXIgdG8gdGhpcyBiaW5kaW5nLCBhbmQgaXQgaXMgaW4gZm9s
+ZGVyIGJpbmRpbmdzL2V4dGNvbi4NCj4gPiBkb2NzL2RldmljZXRyZWUvYmluZGluZ3MvZXh0Y29u
+L2V4dGNvbi11c2JjLWNyb3MtZWMueWFtbA0KPiA+IFRpdGxlOiBDaHJvbWVPUyBFQyBVU0IgVHlw
+ZS1DIENhYmxlIGFuZCBBY2Nlc3NvcnkgRGV0ZWN0aW9uDQo+IA0KPiBTbyBtYXliZSBpdCBzaG91
+bGQgYmUgbW92ZWQgYXMgd2VsbD8NCj4gDQo+IGV4dGNvbiBpcyBhIExpbnV4IGZyYW1ld29yay4g
+SWYgeW91IHRoaW5rIGV4dGNvbiBpcyBhIHR5cGUgb2YgaGFyZHdhcmUsIHRoZW4NCj4gcGxlYXNl
+IHRlbGwgbWUgd2hhdCBpdCBpcyBleGFjdGx5LiBQbGVhc2UgZGVmaW5lIGl0LiBBbmQgdGhlbiBJ
+IHdvbmRlciB3aHkgdGhlDQo+IG5hbWUgImV4dGNvbiIgaXMgYW55aG93IGNvbm5lY3RlZCB0byBU
+eXBlLUMgVVNCLg0KPiANCg0KV2VsbCwgZnJvbSBteSBwb2ludCBvZiB2aWV3LiBleHRjb24gc3Rh
+bmRzIGZvciBFeHRlcm5hbCBDb25uZWN0b3IuDQpIRE1JIGNvbm5lY3RvciwgbWljcm8gVVNCIGNv
+bm5lY3RvciwgdHlwZS1jIGNvbm5lY3RvciBhcmUgYWxsIGEga2luZCBvZiBoYXJkd2FyZSwgdGhl
+eSBhcmUgZXh0ZXJuYWwgY29ubmVjdG9ycy4NCkkgdGhpbmsgdGhlIFR5cGUtQyBjb25uZWN0b3Ig
+aXMgYSBraW5kIG9mIGV4dGNvbi4NCk9mIGNvdXJzZSwgSSBhZ3JlZSB0aGF0IFR5cGUtQyBpcyBw
+YXJ0IG9mIFVTQi4NCg0KU28gdGhpcyBiaW5kaW5nIGNhbiBiZSB1c2Igb3IgZXh0Y29uLCBJIGRv
+bid0IHRoaW5rIGl0IGlzIHN0cmljdGx5IHJlc3RyaWN0ZWQuDQoNClRoYW5rcywNClN0YW5sZXkN
+Cg0K
