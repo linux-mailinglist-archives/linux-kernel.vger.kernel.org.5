@@ -2,53 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 703877867C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 08:48:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7A317867BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 08:48:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240199AbjHXGsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 02:48:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32936 "EHLO
+        id S240186AbjHXGsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 02:48:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240212AbjHXGr4 (ORCPT
+        with ESMTP id S240207AbjHXGrr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 02:47:56 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BCBE1AD;
-        Wed, 23 Aug 2023 23:47:53 -0700 (PDT)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37O6lSBk028331;
-        Thu, 24 Aug 2023 01:47:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1692859648;
-        bh=+IA2pl+lG56MbJeQoZlwP7IgF4PHZJTAaXqBzsq5h04=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=o1LZ0iqjQUE9GpjGxnzHMgbttC2jH15qq7WyTi5mNk2peVqs8i8rmrQjpmXE9RCZb
-         Bi8dG/cWhCey5t9TPVsvWtgXt2teFJd021K1odnNcCzO7of63OhrYaZb96sLduK75c
-         QpQUy+lseeajh1Dz6CUvwp3Cn0QhubFwA3bevFUc=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37O6lSUP025908
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 24 Aug 2023 01:47:28 -0500
-Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 24
- Aug 2023 01:47:28 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 24 Aug 2023 01:47:28 -0500
-Received: from [172.24.227.35] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37O6lKmu087746;
-        Thu, 24 Aug 2023 01:47:21 -0500
-Message-ID: <a91e7db9-e442-acff-befd-2fa63e209b0a@ti.com>
-Date:   Thu, 24 Aug 2023 12:17:20 +0530
+        Thu, 24 Aug 2023 02:47:47 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B03E9E4B
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 23:47:44 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9a19bf6ab66so479258366b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 23:47:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692859663; x=1693464463;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rWyCqPmgJ3hv088pfINrZgnv5A96Iv0KRz5jP4Vn3gE=;
+        b=Q1YxpQjwCSojzu8J7+jwEuQ5tsa8M8oZ/+fvYjx8tgyKlcSZKO1lJZAFcjvoM1qP7B
+         YWGXCzpqecdVLPDMIfxvovI6TgUmHg+AZfaarnDtkhGHEYwHNLnZiQPOBWF/1ENdHUyQ
+         2XjKvZVXv1XvXbx4xN0Sf3kp6r3muB35cVXIni3qM+o/6ipGnJPvAjuDS5hnIyUFT2H7
+         Haq9br+D7bFShH/PrPIu2fEDb9mUcZ8dyNkEqOh4iV+91xcMzLkMqboRXHt/5e3N02la
+         rpcHvpTLkZ32A48bPvzRmY+eqQFr4wGLscI2XdERPtvtRaIGrefupRoFbjFpxborNAN/
+         P2jw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692859663; x=1693464463;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rWyCqPmgJ3hv088pfINrZgnv5A96Iv0KRz5jP4Vn3gE=;
+        b=aP6Hq0aZJtD3HY9FYP5gOYVEKfJY7s6jUGXr3NuinIzBYaWByvB2xgGnrOcQRfIlDE
+         Bqnmtay9A2iFn9sA1GPrt5/qsAR8PJ718c5FYBk7j/c4BT3kw9dedMA+6RBcTpYDV0o9
+         dwxpYdY5sU6kx94JReVgeQ9Epcn4sSf8cEJxE3jVGCh2Dd8Ma6yIA3epfrvHZzfnH9W2
+         InC1bq2bZ3bg+c8lX5FvEx34EQtSFWGfF27R2Vt0joOYJB0kIP/YIr8OnFBPRFF8qy9I
+         j2CLIFwehLZgUlyenDALZcN8H/QLC8M1D4980EmIxEP/GW2olmUcxOB42H34yzkr6vNb
+         zkrg==
+X-Gm-Message-State: AOJu0YyqSQJyJRud5TjtcmIZ8pjahfZ88X3Rc9OQM/C38d3YmU9Fx0hj
+        +c77r/4OemgHfZRln/kmbYeWKg==
+X-Google-Smtp-Source: AGHT+IHfYRd2GZMGltUOIDuVqHLml+WqQhUAkxEy8QUA1nMKr5wWj9DOhrwgjT4jD06tdPeXmUeVIA==
+X-Received: by 2002:a17:906:53d9:b0:9a1:aa7b:482e with SMTP id p25-20020a17090653d900b009a1aa7b482emr5956781ejo.26.1692859663054;
+        Wed, 23 Aug 2023 23:47:43 -0700 (PDT)
+Received: from [192.168.0.22] ([77.252.47.198])
+        by smtp.gmail.com with ESMTPSA id i12-20020a1709061ccc00b00991e2b5a27dsm10595780ejh.37.2023.08.23.23.47.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Aug 2023 23:47:42 -0700 (PDT)
+Message-ID: <d07213a9-6cf5-3577-a2c7-d0f2773a8247@linaro.org>
+Date:   Thu, 24 Aug 2023 08:47:41 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [EXTERNAL] Re: [PATCH v6 1/5] dt-bindings: net: Add ICSS IEP
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v6 4/5] net: ti: icssg-prueth: add packet timestamping and
+ ptp support
 Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        MD Danish Anwar <danishanwar@ti.com>,
+To:     MD Danish Anwar <danishanwar@ti.com>,
         Randy Dunlap <rdunlap@infradead.org>,
         Roger Quadros <rogerq@kernel.org>,
         Simon Horman <simon.horman@corigine.com>,
@@ -62,22 +72,18 @@ To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
         Jakub Kicinski <kuba@kernel.org>,
         Eric Dumazet <edumazet@google.com>,
         "David S. Miller" <davem@davemloft.net>
-CC:     <nm@ti.com>, <srk@ti.com>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
+Cc:     nm@ti.com, srk@ti.com, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, netdev@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 References: <20230823113254.292603-1-danishanwar@ti.com>
- <20230823113254.292603-2-danishanwar@ti.com>
- <d5a343c8-c384-6eea-94bf-e0c4f96e5fb0@linaro.org>
-From:   Md Danish Anwar <a0501179@ti.com>
-Organization: Texas Instruments
-In-Reply-To: <d5a343c8-c384-6eea-94bf-e0c4f96e5fb0@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+ <20230823113254.292603-5-danishanwar@ti.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230823113254.292603-5-danishanwar@ti.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,104 +91,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+On 23/08/2023 13:32, MD Danish Anwar wrote:
+> From: Roger Quadros <rogerq@ti.com>
+> 
+> Add packet timestamping TS and PTP PHC clock support.
+> 
+> For AM65x and AM64x:
+>  - IEP1 is not used
+>  - IEP0 is configured in shadow mode with 1ms cycle and shared between
+> Linux and FW. It provides time and TS in number cycles, so special
+> conversation in ns is required.
+>  - IEP0 shared between PRUeth ports.
+>  - IEP0 supports PPS, periodic output.
+>  - IEP0 settime() and enabling PPS required FW interraction.
+>  - RX TS provided with each packet in CPPI5 descriptor.
+>  - TX TS returned through separate ICSSG hw queues for each port. TX TS
+> readiness is signaled by INTC IRQ. Only one packet at time can be requested
+> for TX TS.
+> 
+> Signed-off-by: Roger Quadros <rogerq@ti.com>
+> Co-developed-by: Grygorii Strashko <grygorii.strashko@ti.com>
+> Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+> Reviewed-by: Roger Quadros <rogerq@kernel.org>
 
-On 24/08/23 12:13 pm, Krzysztof Kozlowski wrote:
-> On 23/08/2023 13:32, MD Danish Anwar wrote:
->> Add a DT binding document for the ICSS Industrial Ethernet Peripheral(IEP)
->> hardware. IEP supports packet timestamping, PTP and PPS.
->>
->> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-> 
-> Really? Where?
+How patch author could review or not review its own code? How does it
+even work? I write a patch and for example judge - oh no, it is wrong,
+but I will still send it, just without my review. Or I write a patch -
+oh, I like it, I wrote excellent code, let me add review tag for my own
+code!
 
-Conor gave his RB tag for patch 1 and 2 in v4
-https://lore.kernel.org/all/20230814-quarters-cahoots-1fbd583baad9@spud/
-> 
->> Reviewed-by: Roger Quadros <rogerq@kernel.org>
-> 
-> Now you are making things up. Please stop faking tags.
+> Reviewed-by: Simon Horman <horms@kernel.org>
 
-Roger provided his RB tag in v5 for all the patches
-https://lore.kernel.org/all/5d077342-435f-2829-ba2a-cdf763b6b8e1@kernel.org/
-> 
->> Reviewed-by: Simon Horman <horms@kernel.org>
-> 
-> Where?
-> 
+Where?
 
-Simon gave his RB tag for all the patches of this series in v5
-https://lore.kernel.org/all/ZN9aSTUOT+SKESQS@vergenet.net/
 
->> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
->> ---
->>  .../devicetree/bindings/net/ti,icss-iep.yaml  | 61 +++++++++++++++++++
->>  1 file changed, 61 insertions(+)
->>  create mode 100644 Documentation/devicetree/bindings/net/ti,icss-iep.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/net/ti,icss-iep.yaml b/Documentation/devicetree/bindings/net/ti,icss-iep.yaml
->> new file mode 100644
->> index 000000000000..75668bea8614
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/net/ti,icss-iep.yaml
->> @@ -0,0 +1,61 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/net/ti,icss-iep.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Texas Instruments ICSS Industrial Ethernet Peripheral (IEP) module
->> +
->> +maintainers:
->> +  - Md Danish Anwar <danishanwar@ti.com>
->> +
->> +properties:
->> +  compatible:
->> +    oneOf:
->> +      - items:
->> +          - enum:
->> +              - ti,am642-icss-iep
->> +              - ti,j721e-icss-iep
->> +          - const: ti,am654-icss-iep
->> +
->> +      - const: ti,am654-icss-iep
->> +
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +  clocks:
->> +    maxItems: 1
->> +    description: phandle to the IEP source clock
->> +
->> +required:
->> +  - compatible
->> +  - reg
->> +  - clocks
->> +
->> +additionalProperties: false
->> +
->> +examples:
->> +  - |
->> +
-> 
-> Drop stray blank line
-> 
->> +    /* AM65x */
->> +    icssg0_iep0: iep@2e000 {
->> +        compatible = "ti,am654-icss-iep";
->> +        reg = <0x2e000 0x1000>;
->> +        clocks = <&icssg0_iepclk_mux>;
->> +    };
-> 
-> Choose one example.
-> 
-> 
-> Best regards,
-> Krzysztof
-> 
+Best regards,
+Krzysztof
 
--- 
-Thanks and Regards,
-Danish.
