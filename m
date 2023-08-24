@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8903078760F
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 18:53:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7294D787615
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 18:54:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242737AbjHXQwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 12:52:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47190 "EHLO
+        id S242739AbjHXQxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 12:53:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242731AbjHXQwI (ORCPT
+        with ESMTP id S242757AbjHXQxR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 12:52:08 -0400
+        Thu, 24 Aug 2023 12:53:17 -0400
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1725DE51
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 09:52:06 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 959391BD2
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 09:53:14 -0700 (PDT)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 14A661007;
-        Thu, 24 Aug 2023 09:52:46 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 88AAD1007;
+        Thu, 24 Aug 2023 09:53:54 -0700 (PDT)
 Received: from [10.1.197.60] (eglon.cambridge.arm.com [10.1.197.60])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 04C733F740;
-        Thu, 24 Aug 2023 09:52:02 -0700 (PDT)
-Message-ID: <86658d9d-0d8b-d39c-2245-8614b0efc2bc@arm.com>
-Date:   Thu, 24 Aug 2023 17:52:01 +0100
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2BA2F3F740;
+        Thu, 24 Aug 2023 09:53:11 -0700 (PDT)
+Message-ID: <20b566d9-448b-5367-b4db-593466e7a2f8@arm.com>
+Date:   Thu, 24 Aug 2023 17:53:03 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
  Thunderbird/102.11.0
-Subject: Re: [PATCH v5 04/24] x86/resctrl: Move rmid allocation out of
- mkdir_rdt_prepare()
+Subject: Re: [PATCH v5 06/24] x86/resctrl: Track the number of dirty RMID a
+ CLOSID has
 Content-Language: en-GB
-To:     Fenghua Yu <fenghua.yu@intel.com>, x86@kernel.org,
+To:     Reinette Chatre <reinette.chatre@intel.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     Reinette Chatre <reinette.chatre@intel.com>,
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         H Peter Anvin <hpa@zytor.com>,
@@ -45,12 +45,12 @@ Cc:     Reinette Chatre <reinette.chatre@intel.com>,
         Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
         dfustini@baylibre.com
 References: <20230728164254.27562-1-james.morse@arm.com>
- <20230728164254.27562-5-james.morse@arm.com>
- <beb61f8e-636f-a0cd-73b4-6294f90092eb@intel.com>
+ <20230728164254.27562-7-james.morse@arm.com>
+ <03cd7ac4-b58d-c7a8-7cb9-ebcc770d21f0@intel.com>
 From:   James Morse <james.morse@arm.com>
-In-Reply-To: <beb61f8e-636f-a0cd-73b4-6294f90092eb@intel.com>
+In-Reply-To: <03cd7ac4-b58d-c7a8-7cb9-ebcc770d21f0@intel.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
@@ -60,48 +60,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Fenghua,
+Hi Reinette,
 
-On 15/08/2023 01:50, Fenghua Yu wrote:
-> On 7/28/23 09:42, James Morse wrote:
->> RMID are allocated for each monitor or control group directory, because
->> each of these needs its own RMID. For control groups,
->> rdtgroup_mkdir_ctrl_mon() later goes on to allocate the CLOSID.
->>
->> MPAM's equivalent of RMID is not an independent number, so can't be
->> allocated until the CLOSID is known. An RMID allocation for one CLOSID
->> may fail, whereas another may succeed depending on how many monitor
->> groups a control group has.
->>
->> The RMID allocation needs to move to be after the CLOSID has been
->> allocated.
->>
->> Move the RMID allocation out of mkdir_rdt_prepare() to occur in its caller,
->> after the mkdir_rdt_prepare() call. This allows the RMID allocator to
->> know the CLOSID.
-
->> diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
->> b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
->> index e7178bbbd30f..7c5cfb373d03 100644
->> --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
->> +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
->> @@ -3336,10 +3344,17 @@ static int rdtgroup_mkdir_ctrl_mon(struct kernfs_node *parent_kn,
->>       ret = 0;
->>         rdtgrp->closid = closid;
->> -    ret = rdtgroup_init_alloc(rdtgrp);
->> -    if (ret < 0)
+On 09/08/2023 23:33, Reinette Chatre wrote:
+> On 7/28/2023 9:42 AM, James Morse wrote:
+>> diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
+>> index de91ca781d9f..44addc0126fc 100644
+>> --- a/arch/x86/kernel/cpu/resctrl/monitor.c
+>> +++ b/arch/x86/kernel/cpu/resctrl/monitor.c
+>> @@ -43,6 +43,13 @@ struct rmid_entry {
+>>   */
+>>  static LIST_HEAD(rmid_free_lru);
+>>  
+>> +/**
+>> + * @closid_num_dirty_rmid    The number of dirty RMID each CLOSID has.
+>> + * Only allocated when CONFIG_RESCTRL_RMID_DEPENDS_ON_CLOSID is defined.
+>> + * Indexed by CLOSID. Protected by rdtgroup_mutex.
+>> + */
+>> +static int *closid_num_dirty_rmid;
 >> +
->> +    ret = mkdir_rdt_prepare_rmid_alloc(rdtgrp);
->> +    if (ret)
->>           goto out_id_free;
 > 
-> Is it better to change "out_id_free" to "out_closid_free"?
-> It's not confused to name it "out_id_free" because only closid is freed.
-> But this patch introduces new "rmid" free. So it's better to rename the label to
-> "out_closid_free" and it matches the following "out_rmid_free" as well.
+> Will the values ever be negative?
 
-Yup, makes sense. I only left the existing code alone to avoid too much churn. This way is
-much more readable.
+Nope, int is just fewer keystrokes. I'll change it to unsigned int.
+
+
+>>  /**
+>>   * @rmid_limbo_count     count of currently unused but (potentially)
+>>   *     dirty RMIDs.
+
+
+>> @@ -782,13 +802,28 @@ void mbm_setup_overflow_handler(struct rdt_domain *dom, unsigned long delay_ms)
+>>  static int dom_data_init(struct rdt_resource *r)
+>>  {
+>>  	u32 idx_limit = resctrl_arch_system_num_rmid_idx();
+>> +	u32 num_closid = resctrl_arch_get_num_closid(r);
+>>  	struct rmid_entry *entry = NULL;
+>>  	u32 idx;
+>>  	int i;
+>>  
+>> +	if (IS_ENABLED(CONFIG_RESCTRL_RMID_DEPENDS_ON_CLOSID)) {
+>> +		int *tmp;
+>> +
+>> +		tmp = kcalloc(num_closid, sizeof(int), GFP_KERNEL);
+>> +		if (!tmp)
+>> +			return -ENOMEM;
+>> +
+>> +		mutex_lock(&rdtgroup_mutex);
+>> +		closid_num_dirty_rmid = tmp;
+>> +		mutex_unlock(&rdtgroup_mutex);
+>> +	}
+>> +
+> 
+> It does no harm but I cannot see why the mutex is needed here. 
+
+It's belt-and-braces to ensure that all accesses to that global variable are protected by
+that lock. This avoids giving me a memory ordering headache.
+rmid_ptrs and the call to __rmid_entry() that dereferences it should probably get the same
+treatment.
+
+I'll move the locking to the caller as the least-churny way of covering both.
+
+
+>>  	rmid_ptrs = kcalloc(idx_limit, sizeof(struct rmid_entry), GFP_KERNEL);
+>> -	if (!rmid_ptrs)
+>> +	if (!rmid_ptrs) {
+>> +		kfree(closid_num_dirty_rmid);
+>>  		return -ENOMEM;
+>> +	}
+>>  
+>>  	for (i = 0; i < idx_limit; i++) {
+>>  		entry = &rmid_ptrs[i];
+> 
+> How will this new memory be freed? Actually I cannot find where
+> rmid_ptrs is freed either .... is a "dom_data_free()" needed?
+
+Oh that's not deliberate? :P
+
+rmid_ptrs has been immortal since the beginning. The good news is resctrl_exit() goes in
+the exitcall section, which is in the DISCARDS section of the linker script as resctrl
+can't be built as a module. It isn't possible to tear resctrl down, so no-one will notice
+this leak.
+
+Something on my eternal-todo-list is to make the filesystem parts of resctrl a loadable
+module (if Tony doesn't get there first!). That would flush this sort of thing out.
+Last time I triggered resctrl_exit() manually not all of the files got cleaned up - I
+haven't investigated it further.
+
+
+I agree it should probably have a kfree() call somewhere under rdtgroup_exit(), as its
+only the L3 that needs any of this, I'll add resctrl_exit_mon_l3_config() for
+rdtgroup_exit() to call.
+
+Another option is to rip out all the __exit text as its discarded anyway. But if loadable
+modules is the direction of travel, it probably make more sense to fix it.
 
 
 Thanks,
