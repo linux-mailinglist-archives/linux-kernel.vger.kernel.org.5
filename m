@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0700786545
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 04:23:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EBB578653A
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 04:23:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239392AbjHXCTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 22:19:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40736 "EHLO
+        id S239330AbjHXCTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 22:19:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239301AbjHXCSd (ORCPT
+        with ESMTP id S239292AbjHXCSd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 23 Aug 2023 22:18:33 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 576AA10C7
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5839110D0
         for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 19:18:31 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CE45B64A3B
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E54D664AB2
         for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 02:18:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D2B8C433CD;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55FDEC433CC;
         Thu, 24 Aug 2023 02:18:30 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.96)
         (envelope-from <rostedt@goodmis.org>)
-        id 1qYzvu-001hQg-2w;
-        Wed, 23 Aug 2023 22:18:50 -0400
-Message-ID: <20230824021850.726268959@goodmis.org>
+        id 1qYzvv-001hRE-0N;
+        Wed, 23 Aug 2023 22:18:51 -0400
+Message-ID: <20230824021850.933540258@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Wed, 23 Aug 2023 22:18:14 -0400
+Date:   Wed, 23 Aug 2023 22:18:15 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
@@ -42,13 +42,13 @@ Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
         Leonardo Bras <leobras@redhat.com>,
         Frederic Weisbecker <frederic@kernel.org>,
         Valentin Schneider <vschneid@redhat.com>
-Subject: [for-next][PATCH 02/14] tracing/filters: Enable filtering a cpumask field by another cpumask
+Subject: [for-next][PATCH 03/14] tracing/filters: Enable filtering a scalar field by a cpumask
 References: <20230824021812.938245293@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -57,22 +57,21 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Valentin Schneider <vschneid@redhat.com>
 
-The recently introduced ipi_send_cpumask trace event contains a cpumask
-field, but it currently cannot be used in filter expressions.
+Several events use a scalar field to denote a CPU:
+o sched_wakeup.target_cpu
+o sched_migrate_task.orig_cpu,dest_cpu
+o sched_move_numa.src_cpu,dst_cpu
+o ipi_send_cpu.cpu
+o ...
 
-Make event filtering aware of cpumask fields, and allow these to be
-filtered by a user-provided cpumask.
+Filtering these currently requires using arithmetic comparison functions,
+which can be tedious when dealing with interleaved SMT or NUMA CPU ids.
 
-The user-provided cpumask is to be given in cpulist format and wrapped as:
-"CPUS{$cpulist}". The use of curly braces instead of parentheses is to
-prevent predicate_parse() from parsing the contents of CPUS{...} as a
-full-fledged predicate subexpression.
+Allow these to be filtered by a user-provided cpumask, which enables e.g.:
 
-This enables e.g.:
+$ trace-cmd record -e 'sched_wakeup' -f 'target_cpu & CPUS{2,4,6,8-32}'
 
-$ trace-cmd record -e 'ipi_send_cpumask' -f 'cpumask & CPUS{2,4,6,8-32}'
-
-Link: https://lkml.kernel.org/r/20230707172155.70873-3-vschneid@redhat.com
+Link: https://lkml.kernel.org/r/20230707172155.70873-4-vschneid@redhat.com
 
 Cc: Masami Hiramatsu <mhiramat@kernel.org>
 Cc: Jonathan Corbet <corbet@lwn.net>
@@ -84,80 +83,41 @@ Cc: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Valentin Schneider <vschneid@redhat.com>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- include/linux/trace_events.h       |  1 +
- kernel/trace/trace_events_filter.c | 97 +++++++++++++++++++++++++++++-
- 2 files changed, 96 insertions(+), 2 deletions(-)
+ kernel/trace/trace_events_filter.c | 92 ++++++++++++++++++++++++++----
+ 1 file changed, 81 insertions(+), 11 deletions(-)
 
-diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
-index c17623c78029..1600aeb8e1a3 100644
---- a/include/linux/trace_events.h
-+++ b/include/linux/trace_events.h
-@@ -808,6 +808,7 @@ enum {
- 	FILTER_RDYN_STRING,
- 	FILTER_PTR_STRING,
- 	FILTER_TRACE_FN,
-+	FILTER_CPUMASK,
- 	FILTER_COMM,
- 	FILTER_CPU,
- 	FILTER_STACKTRACE,
 diff --git a/kernel/trace/trace_events_filter.c b/kernel/trace/trace_events_filter.c
-index 91fc9990107f..cb1863dfa280 100644
+index cb1863dfa280..1e14f801685a 100644
 --- a/kernel/trace/trace_events_filter.c
 +++ b/kernel/trace/trace_events_filter.c
-@@ -64,6 +64,7 @@ enum filter_pred_fn {
- 	FILTER_PRED_FN_PCHAR_USER,
- 	FILTER_PRED_FN_PCHAR,
- 	FILTER_PRED_FN_CPU,
-+	FILTER_PRED_FN_CPUMASK,
- 	FILTER_PRED_FN_FUNCTION,
- 	FILTER_PRED_FN_,
- 	FILTER_PRED_TEST_VISITED,
-@@ -71,6 +72,7 @@ enum filter_pred_fn {
- 
- struct filter_pred {
- 	struct regex		*regex;
-+	struct cpumask          *mask;
- 	unsigned short		*ops;
- 	struct ftrace_event_field *field;
- 	u64			val;
-@@ -94,6 +96,8 @@ struct filter_pred {
- 	C(TOO_MANY_OPEN,	"Too many '('"),			\
- 	C(TOO_MANY_CLOSE,	"Too few '('"),				\
- 	C(MISSING_QUOTE,	"Missing matching quote"),		\
-+	C(MISSING_BRACE_OPEN,   "Missing '{'"),				\
-+	C(MISSING_BRACE_CLOSE,  "Missing '}'"),				\
- 	C(OPERAND_TOO_LONG,	"Operand too long"),			\
- 	C(EXPECT_STRING,	"Expecting string field"),		\
- 	C(EXPECT_DIGIT,		"Expecting numeric field"),		\
-@@ -103,6 +107,7 @@ struct filter_pred {
- 	C(BAD_SUBSYS_FILTER,	"Couldn't find or set field in one of a subsystem's events"), \
- 	C(TOO_MANY_PREDS,	"Too many terms in predicate expression"), \
- 	C(INVALID_FILTER,	"Meaningless filter expression"),	\
-+	C(INVALID_CPULIST,	"Invalid cpulist"),	\
- 	C(IP_FIELD_ONLY,	"Only 'ip' field is supported for function trace"), \
- 	C(INVALID_VALUE,	"Invalid value (did you forget quotes)?"), \
- 	C(NO_FUNCTION,		"Function not found"),			\
-@@ -190,6 +195,7 @@ static void free_predicate(struct filter_pred *pred)
- {
- 	if (pred) {
- 		kfree(pred->regex);
-+		kfree(pred->mask);
- 		kfree(pred);
- 	}
- }
-@@ -877,6 +883,26 @@ static int filter_pred_cpu(struct filter_pred *pred, void *event)
- 	}
+@@ -46,15 +46,19 @@ static const char * ops[] = { OPS };
+ enum filter_pred_fn {
+ 	FILTER_PRED_FN_NOP,
+ 	FILTER_PRED_FN_64,
++	FILTER_PRED_FN_64_CPUMASK,
+ 	FILTER_PRED_FN_S64,
+ 	FILTER_PRED_FN_U64,
+ 	FILTER_PRED_FN_32,
++	FILTER_PRED_FN_32_CPUMASK,
+ 	FILTER_PRED_FN_S32,
+ 	FILTER_PRED_FN_U32,
+ 	FILTER_PRED_FN_16,
++	FILTER_PRED_FN_16_CPUMASK,
+ 	FILTER_PRED_FN_S16,
+ 	FILTER_PRED_FN_U16,
+ 	FILTER_PRED_FN_8,
++	FILTER_PRED_FN_8_CPUMASK,
+ 	FILTER_PRED_FN_S8,
+ 	FILTER_PRED_FN_U8,
+ 	FILTER_PRED_FN_COMM,
+@@ -643,6 +647,39 @@ predicate_parse(const char *str, int nr_parens, int nr_preds,
+ 	return ERR_PTR(ret);
  }
  
-+/* Filter predicate for cpumask field vs user-provided cpumask */
-+static int filter_pred_cpumask(struct filter_pred *pred, void *event)
++static inline int
++do_filter_cpumask(int op, const struct cpumask *mask, const struct cpumask *cmp)
 +{
-+	u32 item = *(u32 *)(event + pred->offset);
-+	int loc = item & 0xffff;
-+	const struct cpumask *mask = (event + loc);
-+	const struct cpumask *cmp = pred->mask;
-+
-+	switch (pred->op) {
++	switch (op) {
 +	case OP_EQ:
 +		return cpumask_equal(mask, cmp);
 +	case OP_NE:
@@ -169,100 +129,142 @@ index 91fc9990107f..cb1863dfa280 100644
 +	}
 +}
 +
++/* Optimisation of do_filter_cpumask() for scalar fields */
++static inline int
++do_filter_scalar_cpumask(int op, unsigned int cpu, const struct cpumask *mask)
++{
++	switch (op) {
++	case OP_EQ:
++		return cpumask_test_cpu(cpu, mask) &&
++			cpumask_nth(1, mask) >= nr_cpu_ids;
++	case OP_NE:
++		return !cpumask_test_cpu(cpu, mask) ||
++			cpumask_nth(1, mask) < nr_cpu_ids;
++	case OP_BAND:
++		return cpumask_test_cpu(cpu, mask);
++	default:
++		return 0;
++	}
++}
++
+ enum pred_cmp_types {
+ 	PRED_CMP_TYPE_NOP,
+ 	PRED_CMP_TYPE_LT,
+@@ -686,6 +723,18 @@ static int filter_pred_##type(struct filter_pred *pred, void *event)	\
+ 	}								\
+ }
+ 
++#define DEFINE_CPUMASK_COMPARISON_PRED(size)					\
++static int filter_pred_##size##_cpumask(struct filter_pred *pred, void *event)	\
++{										\
++	u##size *addr = (u##size *)(event + pred->offset);			\
++	unsigned int cpu = *addr;						\
++										\
++	if (cpu >= nr_cpu_ids)							\
++		return 0;							\
++										\
++	return do_filter_scalar_cpumask(pred->op, cpu, pred->mask);		\
++}
++
+ #define DEFINE_EQUALITY_PRED(size)					\
+ static int filter_pred_##size(struct filter_pred *pred, void *event)	\
+ {									\
+@@ -707,6 +756,11 @@ DEFINE_COMPARISON_PRED(u16);
+ DEFINE_COMPARISON_PRED(s8);
+ DEFINE_COMPARISON_PRED(u8);
+ 
++DEFINE_CPUMASK_COMPARISON_PRED(64);
++DEFINE_CPUMASK_COMPARISON_PRED(32);
++DEFINE_CPUMASK_COMPARISON_PRED(16);
++DEFINE_CPUMASK_COMPARISON_PRED(8);
++
+ DEFINE_EQUALITY_PRED(64);
+ DEFINE_EQUALITY_PRED(32);
+ DEFINE_EQUALITY_PRED(16);
+@@ -891,16 +945,7 @@ static int filter_pred_cpumask(struct filter_pred *pred, void *event)
+ 	const struct cpumask *mask = (event + loc);
+ 	const struct cpumask *cmp = pred->mask;
+ 
+-	switch (pred->op) {
+-	case OP_EQ:
+-		return cpumask_equal(mask, cmp);
+-	case OP_NE:
+-		return !cpumask_equal(mask, cmp);
+-	case OP_BAND:
+-		return cpumask_intersects(mask, cmp);
+-	default:
+-		return 0;
+-	}
++	return do_filter_cpumask(pred->op, mask, cmp);
+ }
+ 
  /* Filter predicate for COMM. */
- static int filter_pred_comm(struct filter_pred *pred, void *event)
- {
-@@ -1244,8 +1270,12 @@ static void filter_free_subsystem_filters(struct trace_subsystem_dir *dir,
+@@ -1351,24 +1396,32 @@ static int filter_pred_fn_call(struct filter_pred *pred, void *event)
+ 	switch (pred->fn_num) {
+ 	case FILTER_PRED_FN_64:
+ 		return filter_pred_64(pred, event);
++	case FILTER_PRED_FN_64_CPUMASK:
++		return filter_pred_64_cpumask(pred, event);
+ 	case FILTER_PRED_FN_S64:
+ 		return filter_pred_s64(pred, event);
+ 	case FILTER_PRED_FN_U64:
+ 		return filter_pred_u64(pred, event);
+ 	case FILTER_PRED_FN_32:
+ 		return filter_pred_32(pred, event);
++	case FILTER_PRED_FN_32_CPUMASK:
++		return filter_pred_32_cpumask(pred, event);
+ 	case FILTER_PRED_FN_S32:
+ 		return filter_pred_s32(pred, event);
+ 	case FILTER_PRED_FN_U32:
+ 		return filter_pred_u32(pred, event);
+ 	case FILTER_PRED_FN_16:
+ 		return filter_pred_16(pred, event);
++	case FILTER_PRED_FN_16_CPUMASK:
++		return filter_pred_16_cpumask(pred, event);
+ 	case FILTER_PRED_FN_S16:
+ 		return filter_pred_s16(pred, event);
+ 	case FILTER_PRED_FN_U16:
+ 		return filter_pred_u16(pred, event);
+ 	case FILTER_PRED_FN_8:
+ 		return filter_pred_8(pred, event);
++	case FILTER_PRED_FN_8_CPUMASK:
++		return filter_pred_8_cpumask(pred, event);
+ 	case FILTER_PRED_FN_S8:
+ 		return filter_pred_s8(pred, event);
+ 	case FILTER_PRED_FN_U8:
+@@ -1606,6 +1659,7 @@ static int parse_pred(const char *str, void *data,
  
- int filter_assign_type(const char *type)
- {
--	if (strstr(type, "__data_loc") && strstr(type, "char"))
--		return FILTER_DYN_STRING;
-+	if (strstr(type, "__data_loc")) {
-+		if (strstr(type, "char"))
-+			return FILTER_DYN_STRING;
-+		if (strstr(type, "cpumask_t"))
-+			return FILTER_CPUMASK;
+ 		switch (field->filter_type) {
+ 		case FILTER_CPUMASK:
++		case FILTER_OTHER:
+ 			break;
+ 		default:
+ 			parse_error(pe, FILT_ERR_ILLEGAL_FIELD_OP, pos + i);
+@@ -1658,8 +1712,24 @@ static int parse_pred(const char *str, void *data,
+ 
+ 		/* Move along */
+ 		i++;
+-		if (field->filter_type == FILTER_CPUMASK)
++		if (field->filter_type == FILTER_CPUMASK) {
+ 			pred->fn_num = FILTER_PRED_FN_CPUMASK;
++		} else {
++			switch (field->size) {
++			case 8:
++				pred->fn_num = FILTER_PRED_FN_64_CPUMASK;
++				break;
++			case 4:
++				pred->fn_num = FILTER_PRED_FN_32_CPUMASK;
++				break;
++			case 2:
++				pred->fn_num = FILTER_PRED_FN_16_CPUMASK;
++				break;
++			case 1:
++				pred->fn_num = FILTER_PRED_FN_8_CPUMASK;
++				break;
++			}
 +		}
  
- 	if (strstr(type, "__rel_loc") && strstr(type, "char"))
- 		return FILTER_RDYN_STRING;
-@@ -1357,6 +1387,8 @@ static int filter_pred_fn_call(struct filter_pred *pred, void *event)
- 		return filter_pred_pchar(pred, event);
- 	case FILTER_PRED_FN_CPU:
- 		return filter_pred_cpu(pred, event);
-+	case FILTER_PRED_FN_CPUMASK:
-+		return filter_pred_cpumask(pred, event);
- 	case FILTER_PRED_FN_FUNCTION:
- 		return filter_pred_function(pred, event);
- 	case FILTER_PRED_TEST_VISITED:
-@@ -1568,6 +1600,67 @@ static int parse_pred(const char *str, void *data,
- 		strncpy(pred->regex->pattern, str + s, len);
- 		pred->regex->pattern[len] = 0;
- 
-+	} else if (!strncmp(str + i, "CPUS", 4)) {
-+		unsigned int maskstart;
-+		char *tmp;
-+
-+		switch (field->filter_type) {
-+		case FILTER_CPUMASK:
-+			break;
-+		default:
-+			parse_error(pe, FILT_ERR_ILLEGAL_FIELD_OP, pos + i);
-+			goto err_free;
-+		}
-+
-+		switch (op) {
-+		case OP_EQ:
-+		case OP_NE:
-+		case OP_BAND:
-+			break;
-+		default:
-+			parse_error(pe, FILT_ERR_ILLEGAL_FIELD_OP, pos + i);
-+			goto err_free;
-+		}
-+
-+		/* Skip CPUS */
-+		i += 4;
-+		if (str[i++] != '{') {
-+			parse_error(pe, FILT_ERR_MISSING_BRACE_OPEN, pos + i);
-+			goto err_free;
-+		}
-+		maskstart = i;
-+
-+		/* Walk the cpulist until closing } */
-+		for (; str[i] && str[i] != '}'; i++);
-+		if (str[i] != '}') {
-+			parse_error(pe, FILT_ERR_MISSING_BRACE_CLOSE, pos + i);
-+			goto err_free;
-+		}
-+
-+		if (maskstart == i) {
-+			parse_error(pe, FILT_ERR_INVALID_CPULIST, pos + i);
-+			goto err_free;
-+		}
-+
-+		/* Copy the cpulist between { and } */
-+		tmp = kmalloc((i - maskstart) + 1, GFP_KERNEL);
-+		strscpy(tmp, str + maskstart, (i - maskstart) + 1);
-+
-+		pred->mask = kzalloc(cpumask_size(), GFP_KERNEL);
-+		if (!pred->mask)
-+			goto err_mem;
-+
-+		/* Now parse it */
-+		if (cpulist_parse(tmp, pred->mask)) {
-+			parse_error(pe, FILT_ERR_INVALID_CPULIST, pos + i);
-+			goto err_free;
-+		}
-+
-+		/* Move along */
-+		i++;
-+		if (field->filter_type == FILTER_CPUMASK)
-+			pred->fn_num = FILTER_PRED_FN_CPUMASK;
-+
  	/* This is either a string, or an integer */
  	} else if (str[i] == '\'' || str[i] == '"') {
- 		char q = str[i];
 -- 
 2.40.1
