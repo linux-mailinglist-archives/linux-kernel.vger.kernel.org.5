@@ -2,266 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A62F787744
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 19:48:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D9F2787747
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 19:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242909AbjHXRre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 13:47:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46464 "EHLO
+        id S242915AbjHXRrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 13:47:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242918AbjHXRrP (ORCPT
+        with ESMTP id S240215AbjHXRrY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 13:47:15 -0400
-Received: from domac.alu.hr (domac.alu.unizg.hr [IPv6:2001:b68:2:2800::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86AF81BD8;
-        Thu, 24 Aug 2023 10:47:11 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by domac.alu.hr (Postfix) with ESMTP id 2096C60171;
-        Thu, 24 Aug 2023 19:46:57 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1692899217; bh=SG8+mKVbEcgfNLKMD3sTfdrvi0Bs6j4sRHXdbO+MZaA=;
-        h=Date:To:Cc:References:From:Subject:In-Reply-To:From;
-        b=jsNVjOuA+thOmIkJoCZqrk7Fgxi3+6dfVy8XT2l3rEKff5o8ZHEdUWHVR7WM5UGYb
-         J+Tg9/80+YAuArMEjAk/sQOm14bipM7Ai0TwumGMprBTIrn9wDZVn1j3NXc8hscBZw
-         QBl4ThGLNAih/GgZvV4WWPFt5iTlPqKVLo7aLBS8G56S+e2aqxBPWJCmo4QNA8wDsJ
-         u7bF559fwOs57XSGsB/tJxqU+kQ2ZghG4+dv9O68+Uok1aCUiwrvl8rstifzA3ZkQE
-         SJFH3NXXXYjz1+banKHrf5xQkgspJ46DY5yh4Xm/nGDaS6WsHjhi2qJJJArsngZS3t
-         3dpvdCuT4sLaA==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id c7Usz9UDj_WJ; Thu, 24 Aug 2023 19:46:53 +0200 (CEST)
-Received: from [192.168.1.4] (unknown [94.250.191.183])
-        by domac.alu.hr (Postfix) with ESMTPSA id 7CBF16016E;
-        Thu, 24 Aug 2023 19:46:52 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1692899213; bh=SG8+mKVbEcgfNLKMD3sTfdrvi0Bs6j4sRHXdbO+MZaA=;
-        h=Date:To:Cc:References:From:Subject:In-Reply-To:From;
-        b=d2AYoWmp+bqpu7SmlCsnaN1zRVvEVJucfWqgLjijCFy4Yolci0UGAWySBoj47Yh+x
-         JbpqAABKx2Xl4HKFMZiKFYJrzE7uzX/ORunWCfAAoVrnQ/HI02ZWvvohOwaQXgCtwm
-         UDG7ks7MrsRyKSVv61dTe3VRjhXd/Ix6lx6zCps3C5XFAfF1ImQ8ErslDtWnCuNzpz
-         Kjjv8N/m8m309IhYEqRo3Xta7nltkELA2mT1GWd4MOp97QhE/G3NIoo6nxsAsusOnh
-         cQYmM7fwLMIpJIIQnvXyWK1e59M9SHOzf1AzHPBkeDSIgPy2e4/qcRe0f2mDMRBpP9
-         Y84yoKrtNDc2w==
-Message-ID: <52eb519d-2cb1-2036-65af-0737714967f0@alu.unizg.hr>
-Date:   Thu, 24 Aug 2023 19:46:52 +0200
+        Thu, 24 Aug 2023 13:47:24 -0400
+Received: from cstnet.cn (smtp84.cstnet.cn [159.226.251.84])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B7001BD8;
+        Thu, 24 Aug 2023 10:47:22 -0700 (PDT)
+Received: from [192.168.0.107] (unknown [111.197.209.91])
+        by APP-05 (Coremail) with SMTP id zQCowAAnQgmTl+dkmArTBA--.2605S2;
+        Fri, 25 Aug 2023 01:47:00 +0800 (CST)
+Message-ID: <3ba51c81-7eca-b1b5-c89d-47b292b65641@iscas.ac.cn>
+Date:   Fri, 25 Aug 2023 01:46:59 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v5] riscv: Handle zicsr/zifencei issue between gcc and
+ binutils
 Content-Language: en-US
-To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Luben Tuikov <luben.tuikov@amd.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org
-References: <43668e49-c2c0-9979-9de3-b4904c2a8f82@alu.unizg.hr>
- <36b4e667-c287-1614-fe1f-5e772850d1fb@alu.unizg.hr>
- <b74a5cc3-8174-67f3-17ab-2e8a7d8fa1a6@amd.com>
- <5d83d59a-3c49-aae7-61ca-de9c2f3ba9c9@alu.unizg.hr>
- <d321918e-6f3b-4984-9163-427b579dc57e@amd.com>
-From:   Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
-Organization: Academy of Fine Arts, University of Zagreb
-Subject: Re: [BUG] KCSAN: data-race in drm_sched_entity_is_ready [gpu_sched] /
- drm_sched_entity_push_job [gpu_sched]
-In-Reply-To: <d321918e-6f3b-4984-9163-427b579dc57e@amd.com>
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Conor Dooley <conor.dooley@microchip.com>,
+        patchwork-bot+linux-riscv@kernel.org,
+        linux-riscv@lists.infradead.org, paul.walmsley@sifive.com,
+        palmer@dabbelt.com, aou@eecs.berkeley.edu, nathan@kernel.org,
+        ndesaulniers@google.com, trix@redhat.com, bmeng@tinylab.org,
+        guoren@kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, stable@vger.kernel.org
+References: <20230809165648.21071-1-xingmingzheng@iscas.ac.cn>
+ <169228562484.20811.14246462375671910714.git-patchwork-notify@kernel.org>
+ <20230823-captive-abdomen-befd942a4a73@wendy>
+ <20230823-facelift-ovary-41f2eb4d9eac@spud>
+ <4677fc33-6e76-21e6-2a7f-f12670bc1ce2@iscas.ac.cn>
+ <4177c0c5-4d36-75e1-84e2-c6ac82b74e50@iscas.ac.cn>
+ <20230824-stick-neutron-839dfdfa0538@spud>
+From:   Mingzheng Xing <xingmingzheng@iscas.ac.cn>
+Organization: ISCAS
+In-Reply-To: <20230824-stick-neutron-839dfdfa0538@spud>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URI_LONG_REPEAT autolearn=ham
-        autolearn_force=no version=3.4.6
+X-CM-TRANSID: zQCowAAnQgmTl+dkmArTBA--.2605S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxGw48Xw47WFy3ArW5WFWDtwb_yoW5ZFyxpa
+        yrKFyDKrWUXr48Jrn7tr1UX3Wjyr4ft34rXr1DJrW5Jr909F1FqFykZr1j9F9rZr4rCr40
+        yr45WasrZr1qyaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvlb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4
+        A2jsIEc7CjxVAFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l
+        c7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJV
+        W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
+        1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
+        IIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvE
+        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
+        DU0xZFpf9x07beAp5UUUUU=
+X-Originating-IP: [111.197.209.91]
+X-CM-SenderInfo: 50lqwzhlqj6xxhqjqxpvfd2hldfou0/1tbiCQYNCmTnYihoYAAAsJ
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thank you, Christian.
-
-Glad to hear about that.
-
-However, I guess this assumes that this piece of code between
-
------<>-----
-      preempt_disable();
-
-      tail = (struct spsc_node **)atomic_long_xchg(&queue->tail, (long)&node->next);
-      WRITE_ONCE(*tail, node);
-      atomic_inc(&queue->job_count);
-
-      /*
-       * In case of first element verify new node will be visible to the consumer
-       * thread when we ping the kernel thread that there is new work to do.
-       */
-      smp_wmb();
-
-      preempt_enable();
------<>-----
-
-... executes only on one CPU/core/thread?
-
-I understood that preempt_disable() disables only interrupts on one core/CPU:
-
-https://kernelnewbies.kernelnewbies.narkive.com/6LTlgsAe/preempt-disable-disables-preemption-on-all-processors
-
-So, we might have a race in theory between WRITE_ONCE() and atomic_inc().
-
-Kind regards,
-Mirsad
-
-
-On 8/21/2023 8:22 PM, Christian König wrote:
-> I'm not sure about that.
-> 
-> On the one hand it might generate some noise. I know tons of cases where logic is: Ok if we see the updated value immediately it will optimize things, but if not it's unproblematic because there is another check after the next memory barrier.
-> 
-> On the other hand we probably have cases where this is not correctly implemented. So double checking those would most like be good idea.
-> 
-> Regards,
-> Christian.
-> 
-> Am 21.08.23 um 16:28 schrieb Mirsad Todorovac:
->> Hi Christian,
->>
->> Thank you for the update.
->>
->> Should I continue reporting what KCSAN gives? I will try to filter these to save your time for
->> evaluation ...
->>
->> Kind regards,
->> Mirsad
->>
->> On 8/21/23 15:20, Christian König wrote:
->>> Hi Mirsad,
+On 8/25/23 01:33, Conor Dooley wrote:
+> On Fri, Aug 25, 2023 at 01:30:36AM +0800, Mingzheng Xing wrote:
+>> On 8/24/23 19:32, Mingzheng Xing wrote:
+>>> On 8/23/23 21:31, Conor Dooley wrote:
+>>>> On Wed, Aug 23, 2023 at 12:51:13PM +0100, Conor Dooley wrote:
+>>>>> On Thu, Aug 17, 2023 at 03:20:24PM +0000,
+>>>>> patchwork-bot+linux-riscv@kernel.org wrote:
+>>>>>> Hello:
+>>>>>>
+>>>>>> This patch was applied to riscv/linux.git (fixes)
+>>>>>> by Palmer Dabbelt <palmer@rivosinc.com>:
+>>>>>>
+>>>>>> On Thu, 10 Aug 2023 00:56:48 +0800 you wrote:
+>>>>>>> Binutils-2.38 and GCC-12.1.0 bumped[0][1] the default
+>>>>>>> ISA spec to the newer
+>>>>>>> 20191213 version which moves some instructions from the
+>>>>>>> I extension to the
+>>>>>>> Zicsr and Zifencei extensions. So if one of the binutils
+>>>>>>> and GCC exceeds
+>>>>>>> that version, we should explicitly specifying Zicsr and
+>>>>>>> Zifencei via -march
+>>>>>>> to cope with the new changes. but this only occurs when
+>>>>>>> binutils >= 2.36
+>>>>>>> and GCC >= 11.1.0. It's a different story when binutils < 2.36.
+>>>>>>>
+>>>>>>> [...]
+>>>>>> Here is the summary with links:
+>>>>>>     - [v5] riscv: Handle zicsr/zifencei issue between gcc and binutils
+>>>>>>       https://git.kernel.org/riscv/c/ca09f772ccca
+>>>>> *sigh* so this breaks the build for gcc-11 & binutils 2.37 w/
+>>>>>      Assembler messages:
+>>>>>      Error: cannot find default versions of the ISA extension `zicsr'
+>>>>>      Error: cannot find default versions of the ISA extension `zifencei'
+>>>>>
+>>>>> I'll have a poke later.
+>>>> So uh, are we sure that this should not be:
+>>>> -       depends on (CC_IS_CLANG && CLANG_VERSION < 170000) ||
+>>>> (CC_IS_GCC && GCC_VERSION < 110100)
+>>>> +       depends on (CC_IS_CLANG && CLANG_VERSION < 170000) ||
+>>>> (CC_IS_GCC && GCC_VERSION <= 110100)
+>>>>
+>>>> My gcc-11.1 + binutils 2.37 toolchain built from riscv-gnu-toolchain
+>>>> doesn't have the default versions & the above diff fixes the build.
+>>> I reproduced the error, the combination of gcc-11.1 and
+>>> binutils 2.37 does cause errors. What a surprise, since binutils
+>>> 2.36 and 2.38 are fine.
 >>>
->>> well this is a false positive.
+>>> I used git bisect to locate this commit[1] for binutils.
+>>> I'll test this diff in more detail later. Thanks!
 >>>
->>> That drm_sched_entity_is_ready() doesn't see the data written by drm_sched_entity_push_job() is part of the logic here.
+>>> [1] https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=f0bae2552db1dd4f1995608fbf6648fcee4e9e0c
 >>>
->>> Regards,
->>> Christian.
->>>
->>> Am 18.08.23 um 15:44 schrieb Mirsad Todorovac:
->>>> On 8/17/23 21:54, Mirsad Todorovac wrote:
->>>>> Hi,
->>>>>
->>>>> This is your friendly bug reporter.
->>>>>
->>>>> The environment is vanilla torvalds tree kernel on Ubuntu 22.04 LTS and a Ryzen 7950X box.
->>>>>
->>>>> Please find attached the complete dmesg output from the ring buffer and lshw output.
->>>>>
->>>>> NOTE: The kernel reports tainted kernel, but to my knowledge there are no proprietary (G) modules,
->>>>>        but this taint is turned on by the previous bugs.
->>>>>
->>>>> dmesg excerpt:
->>>>>
->>>>> [ 8791.864576] ==================================================================
->>>>> [ 8791.864648] BUG: KCSAN: data-race in drm_sched_entity_is_ready [gpu_sched] / drm_sched_entity_push_job [gpu_sched]
->>>>>
->>>>> [ 8791.864776] write (marked) to 0xffff9b74491b7c40 of 8 bytes by task 3807 on cpu 18:
->>>>> [ 8791.864788]  drm_sched_entity_push_job+0xf4/0x2a0 [gpu_sched]
->>>>> [ 8791.864852]  amdgpu_cs_ioctl+0x3888/0x3de0 [amdgpu]
->>>>> [ 8791.868731]  drm_ioctl_kernel+0x127/0x210 [drm]
->>>>> [ 8791.869222]  drm_ioctl+0x38f/0x6f0 [drm]
->>>>> [ 8791.869711]  amdgpu_drm_ioctl+0x7e/0xe0 [amdgpu]
->>>>> [ 8791.873660]  __x64_sys_ioctl+0xd2/0x120
->>>>> [ 8791.873676]  do_syscall_64+0x58/0x90
->>>>> [ 8791.873688]  entry_SYSCALL_64_after_hwframe+0x73/0xdd
->>>>>
->>>>> [ 8791.873710] read to 0xffff9b74491b7c40 of 8 bytes by task 1119 on cpu 27:
->>>>> [ 8791.873722]  drm_sched_entity_is_ready+0x16/0x50 [gpu_sched]
->>>>> [ 8791.873786]  drm_sched_select_entity+0x1c7/0x220 [gpu_sched]
->>>>> [ 8791.873849]  drm_sched_main+0xd2/0x500 [gpu_sched]
->>>>> [ 8791.873912]  kthread+0x18b/0x1d0
->>>>> [ 8791.873924]  ret_from_fork+0x43/0x70
->>>>> [ 8791.873939]  ret_from_fork_asm+0x1b/0x30
->>>>>
->>>>> [ 8791.873955] value changed: 0x0000000000000000 -> 0xffff9b750ebcfc00
->>>>>
->>>>> [ 8791.873971] Reported by Kernel Concurrency Sanitizer on:
->>>>> [ 8791.873980] CPU: 27 PID: 1119 Comm: gfx_0.0.0 Tainted: G             L 6.5.0-rc6-net-cfg-kcsan-00038-g16931859a650 #35
->>>>> [ 8791.873994] Hardware name: ASRock X670E PG Lightning/X670E PG Lightning, BIOS 1.21 04/26/2023
->>>>> [ 8791.874002] ==================================================================
->>>>
->>>> P.S.
->>>>
->>>> According to Mr. Heo's instructions, I am adding the unwound trace here:
->>>>
->>>> [ 1879.706518] ==================================================================
->>>> [ 1879.706616] BUG: KCSAN: data-race in drm_sched_entity_is_ready [gpu_sched] / drm_sched_entity_push_job [gpu_sched]
->>>>
->>>> [ 1879.706737] write (marked) to 0xffff8f3672748c40 of 8 bytes by task 4087 on cpu 10:
->>>> [ 1879.706748] drm_sched_entity_push_job (./include/drm/spsc_queue.h:74 drivers/gpu/drm/scheduler/sched_entity.c:574) gpu_sched
->>>> [ 1879.706808] amdgpu_cs_ioctl (drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c:1375 drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c:1469) amdgpu
->>>> [ 1879.710589] drm_ioctl_kernel (drivers/gpu/drm/drm_ioctl.c:788) drm
->>>> [ 1879.711068] drm_ioctl (drivers/gpu/drm/drm_ioctl.c:892) drm
->>>> [ 1879.711551] amdgpu_drm_ioctl (drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c:2748) amdgpu
->>>> [ 1879.715319] __x64_sys_ioctl (fs/ioctl.c:51 fs/ioctl.c:870 fs/ioctl.c:856 fs/ioctl.c:856)
->>>> [ 1879.715334] do_syscall_64 (arch/x86/entry/common.c:50 arch/x86/entry/common.c:80)
->>>> [ 1879.715345] entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:120)
->>>>
->>>> [ 1879.715365] read to 0xffff8f3672748c40 of 8 bytes by task 1098 on cpu 11:
->>>> [ 1879.715376] drm_sched_entity_is_ready (drivers/gpu/drm/scheduler/sched_entity.c:134) gpu_sched
->>>> [ 1879.715435] drm_sched_select_entity (drivers/gpu/drm/scheduler/sched_main.c:248 drivers/gpu/drm/scheduler/sched_main.c:893) gpu_sched
->>>> [ 1879.715495] drm_sched_main (drivers/gpu/drm/scheduler/sched_main.c:1019) gpu_sched
->>>> [ 1879.715554] kthread (kernel/kthread.c:389)
->>>> [ 1879.715563] ret_from_fork (arch/x86/kernel/process.c:145)
->>>> [ 1879.715575] ret_from_fork_asm (arch/x86/entry/entry_64.S:312)
->>>>
->>>> [ 1879.715590] value changed: 0x0000000000000000 -> 0xffff8f360663dc00
->>>>
->>>> [ 1879.715604] Reported by Kernel Concurrency Sanitizer on:
->>>> [ 1879.715612] CPU: 11 PID: 1098 Comm: gfx_0.0.0 Tainted: G             L     6.5.0-rc6+ #47
->>>> [ 1879.715624] Hardware name: ASRock X670E PG Lightning/X670E PG Lightning, BIOS 1.21 04/26/2023
->>>> [ 1879.715631] ==================================================================
->>>>
->>>> It seems that the line in question might be:
->>>>
->>>>     first = spsc_queue_push(&entity->job_queue, &sched_job->queue_node);
->>>>
->>>> which expands to:
->>>>
->>>> static inline bool spsc_queue_push(struct spsc_queue *queue, struct spsc_node *node)
->>>> {
->>>>     struct spsc_node **tail;
->>>>
->>>>     node->next = NULL;
->>>>
->>>>     preempt_disable();
->>>>
->>>>     tail = (struct spsc_node **)atomic_long_xchg(&queue->tail, (long)&node->next);
->>>>     WRITE_ONCE(*tail, node);
->>>>     atomic_inc(&queue->job_count);
->>>>
->>>>     /*
->>>>      * In case of first element verify new node will be visible to the consumer
->>>>      * thread when we ping the kernel thread that there is new work to do.
->>>>      */
->>>>     smp_wmb();
->>>>
->>>>     preempt_enable();
->>>>
->>>>     return tail == &queue->head;
->>>> }
->>>>
->>>> According to the manual, preempt_disable() only guaranteed exclusion on a single CPU/core/thread, so
->>>> we might be plagued with the slow, old fashioned locking unless anyone had a better idea.
->>>>
->>>> Best regards,
->>>> Mirsad Todorovac
+>> Hi, Conor.
+>> The above error does originate from link[1] mentioned above, which was
+>> resolved in gcc-12.1.0[2], and gcc-11.3.0 made the backport[3].
+>> So gcc-11.2.0 combined with binutils 2.37 produces the same error.
+>> I think we should do the following diff to fix it:
+>> -       depends on (CC_IS_CLANG && CLANG_VERSION < 170000) || (CC_IS_GCC &&
+>> GCC_VERSION < 110100)
+>> +       depends on (CC_IS_CLANG && CLANG_VERSION < 170000) || (CC_IS_GCC &&
+>> GCC_VERSION < 110300)
+> That sounds good to me. Can you make that a real patch please?
 
--- 
-Mirsad Todorovac
-Sistem inženjer
-Grafički fakultet | Akademija likovnih umjetnosti
-Sveučilište u Zagrebu
+Okey.
+Just a question, I see that the previous patch has been merged
+into 6.5-rc7, and now a new fix patch should be sent out based
+on that, right?
 
-System engineer
-Faculty of Graphic Arts | Academy of Fine Arts
-University of Zagreb, Republic of Croatia
-tel. +385 (0)1 3711 451
-mob. +385 91 57 88 355
+
+Best Regards,
+Mingzheng.
+
+>
+> Thanks for working on it :)
+
