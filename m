@@ -2,152 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71303786A55
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 10:42:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1949B786A5E
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 10:43:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234446AbjHXIl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 04:41:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49332 "EHLO
+        id S240594AbjHXInH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 04:43:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240550AbjHXIlr (ORCPT
+        with ESMTP id S235420AbjHXImk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 04:41:47 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBF2F1727
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 01:41:44 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-99c3c8adb27so843544266b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 01:41:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692866503; x=1693471303;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Wq0ip0Gqdvj6brH2crnHRblQCGLzB23cq73iMEAyaAA=;
-        b=NWFF63qQ/S1kdVdK9DGciU4Ny9ilkHD9sSJ1BgedzuuADOJSJTzrSs1xLOvNO3LGGr
-         XelkBJVXTSJFvZUd4WAJryHiCckUtV6qxrNS4yKbN/Uh2dIKDw3CXpB0BXaoGDmDNTuL
-         ZnoMMBbhT1FXoc+uGpBCBz7u/JTjAP2vsimXzKOAi7flufghAc6bGRpKGBHAt76HFbW8
-         zL0BUKpiOGxNr+dxqsVH0BodGHZnxs93ouj3Jv5L1YG9IJVCJNxYKbJcpy4gBuL6ZtsX
-         KVqJDbbV9aWEnbAvcdUI1heAPfMCYGFWRjizxmWv+5T7J/NWw63AcMumWofgV+bSkoMf
-         FACw==
+        Thu, 24 Aug 2023 04:42:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06C151709
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 01:42:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692866523;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=IsB/rgE71MKRCAfugQoyX1VTNTlOQvUYEhfYQX7N874=;
+        b=JlN/3UFfr9XQLohJBMtabr5wjyjLIc7UZrZK4A0uZ20uWy6GSWlJwFrUDMNwIzmNT8A4Fe
+        8NhuoXWumtYqRTusoROZT/oQoZvSoCH1S9iUFWt5pE8p80QD1vu3EDu/hT0XMWZviqdjpd
+        SsSjUR+odpRlJyid/95Mdg9N+MiYb64=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-302-HYmbCOsxNuuGjj2XnVH6ag-1; Thu, 24 Aug 2023 04:41:57 -0400
+X-MC-Unique: HYmbCOsxNuuGjj2XnVH6ag-1
+Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2b9d5bc6161so14250151fa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 01:41:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692866503; x=1693471303;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Wq0ip0Gqdvj6brH2crnHRblQCGLzB23cq73iMEAyaAA=;
-        b=I2gPjDF3DFR1FD2onVkoXabaZCcAvr9s3mjhw6YfCsMZOYX3BtJhKQ78KgnkE3a3yR
-         6TfMaYmq4nLHtR30LWZ72ckcH9/owFv1HOQwPIr9A1ITSLRxPvWLQaqthGSz5JPt10t6
-         BzFSckrB9nNyD6o3HXAXujEDkZJmzhyEN+HMx5CIwHJSNKyZgj2KmPxExli9lIYPRYHU
-         M0jSHhPAmnYdMZaytDblHwC30Xz3UccHioOWkyjtLiq0OyTbDmD20XcEE1VBN5hQHaV6
-         OdxB+BBtGuze2JXFNqiBSQcNXvSwKKp15xqEYfktb/3a7mPXPk4qYcDHozK2hXqSliEV
-         nsOA==
-X-Gm-Message-State: AOJu0YzLAGu4xzPKBgQqbldwe9TdiEr9VDPtGmgyXjzjSKAG/eUoiIO1
-        bb2nU55R+XRkSwE4QfAFHTSUNQ==
-X-Google-Smtp-Source: AGHT+IG4nIn8vVWb1lv02CMNTQ6rhDxNZrC5TOgJ583puuk+b5ZooIuUGJdS10m8Ww6z/lu2PNwFMw==
-X-Received: by 2002:a17:906:255a:b0:99c:47a:8bcd with SMTP id j26-20020a170906255a00b0099c047a8bcdmr10123732ejb.67.1692866503250;
-        Thu, 24 Aug 2023 01:41:43 -0700 (PDT)
-Received: from [192.168.2.107] ([79.115.63.239])
-        by smtp.gmail.com with ESMTPSA id jw11-20020a17090776ab00b0099d0a8ccb5fsm10672470ejc.152.2023.08.24.01.41.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Aug 2023 01:41:42 -0700 (PDT)
-Message-ID: <a6dc9a8e-5225-3768-08f4-0cf7800aa438@linaro.org>
-Date:   Thu, 24 Aug 2023 09:41:41 +0100
+        d=1e100.net; s=20221208; t=1692866516; x=1693471316;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IsB/rgE71MKRCAfugQoyX1VTNTlOQvUYEhfYQX7N874=;
+        b=lr6yXUlDhy2Mi/cSAV1N5cZ3iGv/1ml0DVYInq8OwRJI7LAcTbkCQa67vlp/OPcE9w
+         kt3UPeIm8SCC43H0eiMskJsaqSdbvGJrWLD6UrdUenX5wf9lMGU0iEiZuZYlAN53XJjx
+         0EhlRByWpi/zH/w7/1H1k4Ur2GwD7mirUTtd4NFWqyVDxK+pRTYisyX0pR9oW0IRMC6W
+         XvU/RHjA7toNEsZdL/52yjV82AWXManLAizI1p9NopVt99veuzHEhNLLfle1rZcjluiz
+         cxgfiHYvb1eU2dmSOj9mO8SbyZU8y9b+zx/LpeTXmnuxgMDrkea7eNiFOdzuecF1a5D5
+         0g7A==
+X-Gm-Message-State: AOJu0YyfOzYU5xUokS4//j/s/IOQPg9oKytffU75fk/JD3URUi+1X+7f
+        kCQEuVFbOG56lpiMQHz1n218TYEKuOr607Zyw+GPCMj7vJlpNVNd7Xl0Sz2eK3vQo1Hels2b9um
+        /tMivBCucnI3jcjryes7+TJl1YdWyIUKZL6KyEifF
+X-Received: by 2002:a2e:a795:0:b0:2b6:7c3a:6adc with SMTP id c21-20020a2ea795000000b002b67c3a6adcmr12550898ljf.5.1692866516043;
+        Thu, 24 Aug 2023 01:41:56 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFZUHPWZDKgvC3dNDa3Zh4y3brX0dAkFwoJfBWqG0XeVgAinujTjApQBRr3j9aCYGGyak4hQCHpLkui5aRtbIw=
+X-Received: by 2002:a2e:a795:0:b0:2b6:7c3a:6adc with SMTP id
+ c21-20020a2ea795000000b002b67c3a6adcmr12550879ljf.5.1692866515666; Thu, 24
+ Aug 2023 01:41:55 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Subject: Re: [PATCH v2 07/41] mtd: spi-nor: store .n_banks in struct
- spi_nor_flash_parameter
-Content-Language: en-US
-To:     Michael Walle <mwalle@kernel.org>,
-        Pratyush Yadav <pratyush@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-References: <20230807-mtd-flash-info-db-rework-v2-0-291a0f39f8d8@kernel.org>
- <20230807-mtd-flash-info-db-rework-v2-7-291a0f39f8d8@kernel.org>
-From:   Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20230807-mtd-flash-info-db-rework-v2-7-291a0f39f8d8@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230824073710.2677348-1-lee@kernel.org> <20230824073710.2677348-5-lee@kernel.org>
+In-Reply-To: <20230824073710.2677348-5-lee@kernel.org>
+From:   Karol Herbst <kherbst@redhat.com>
+Date:   Thu, 24 Aug 2023 10:41:44 +0200
+Message-ID: <CACO55tvZ+mv7xxRB4hbM7ttTnJznbyVAs41fn1Dq-rEeLUWYyg@mail.gmail.com>
+Subject: Re: [PATCH 04/20] drm/nouveau/nvkm/subdev/volt/gk20a: Demote
+ kerneldoc abuses
+To:     Lee Jones <lee@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
+        Lyude Paul <lyude@redhat.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/22/23 08:09, Michael Walle wrote:
-> First, fixups might want to replace the n_banks parameter, thus we need
-> it in the (writable) parameter struct. Secondly, this way we can have a
-> default in the core and just skip setting the n_banks in the flash_info
-> database. Most of the flashes doesn't have more than one bank.
-> 
-> Signed-off-by: Michael Walle <mwalle@kernel.org>
-> Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
-
-Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
-
+On Thu, Aug 24, 2023 at 9:37=E2=80=AFAM Lee Jones <lee@kernel.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/nouveau/nvkm/subdev/volt/gk20a.c:49: warning: This comme=
+nt starts with '/**', but isn't a kernel-doc comment. Refer Documentation/d=
+oc-guide/kernel-doc.rst
+>  drivers/gpu/drm/nouveau/nvkm/subdev/volt/gk20a.c:62: warning: This comme=
+nt starts with '/**', but isn't a kernel-doc comment. Refer Documentation/d=
+oc-guide/kernel-doc.rst
+>
+> Signed-off-by: Lee Jones <lee@kernel.org>
 > ---
->  drivers/mtd/spi-nor/core.c | 7 ++++---
->  drivers/mtd/spi-nor/core.h | 2 ++
->  2 files changed, 6 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index d27ad1295ee0..e27f1323fa0b 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -2862,7 +2862,7 @@ static void spi_nor_init_flags(struct spi_nor *nor)
->  	if (flags & NO_CHIP_ERASE)
->  		nor->flags |= SNOR_F_NO_OP_CHIP_ERASE;
->  
-> -	if (flags & SPI_NOR_RWW && nor->info->n_banks > 1 &&
-> +	if (flags & SPI_NOR_RWW && nor->params->n_banks > 1 &&
->  	    !nor->controller_ops)
->  		nor->flags |= SNOR_F_RWW;
+> Cc: Ben Skeggs <bskeggs@redhat.com>
+> Cc: Karol Herbst <kherbst@redhat.com>
+> Cc: Lyude Paul <lyude@redhat.com>
+> Cc: David Airlie <airlied@gmail.com>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: nouveau@lists.freedesktop.org
+> ---
+>  drivers/gpu/drm/nouveau/nvkm/subdev/volt/gk20a.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/volt/gk20a.c b/drivers/g=
+pu/drm/nouveau/nvkm/subdev/volt/gk20a.c
+> index 8c2faa9645111..ccac88da88648 100644
+> --- a/drivers/gpu/drm/nouveau/nvkm/subdev/volt/gk20a.c
+> +++ b/drivers/gpu/drm/nouveau/nvkm/subdev/volt/gk20a.c
+> @@ -45,7 +45,7 @@ static const struct cvb_coef gk20a_cvb_coef[] =3D {
+>         /* 852 */ { 1608418, -21643, -269,     0,    763,  -48},
+>  };
+>
+> -/**
+> +/*
+>   * cvb_mv =3D ((c2 * speedo / s_scale + c1) * speedo / s_scale + c0)
+>   */
+>  static inline int
+> @@ -58,7 +58,7 @@ gk20a_volt_get_cvb_voltage(int speedo, int s_scale, con=
+st struct cvb_coef *coef)
+>         return mv;
 >  }
-> @@ -2926,8 +2926,8 @@ static int spi_nor_late_init_params(struct spi_nor *nor)
->  	if (nor->flags & SNOR_F_HAS_LOCK && !nor->params->locking_ops)
->  		spi_nor_init_default_locking_ops(nor);
->  
-> -	if (nor->info->n_banks > 1)
-> -		params->bank_size = div64_u64(params->size, nor->info->n_banks);
-> +	if (params->n_banks > 1)
-> +		params->bank_size = div64_u64(params->size, params->n_banks);
->  
->  	return 0;
->  }
-> @@ -2997,6 +2997,7 @@ static void spi_nor_init_default_params(struct spi_nor *nor)
->  	params->size = info->size;
->  	params->bank_size = params->size;
->  	params->page_size = info->page_size ?: SPI_NOR_DEFAULT_PAGE_SIZE;
-> +	params->n_banks = info->n_banks;
->  
->  	if (!(info->flags & SPI_NOR_NO_FR)) {
->  		/* Default to Fast Read for DT and non-DT platform devices. */
-> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-> index 25bc18197614..2fc999f2787c 100644
-> --- a/drivers/mtd/spi-nor/core.h
-> +++ b/drivers/mtd/spi-nor/core.h
-> @@ -358,6 +358,7 @@ struct spi_nor_otp {
->   *			in octal DTR mode.
->   * @rdsr_addr_nbytes:	dummy address bytes needed for Read Status Register
->   *			command in octal DTR mode.
-> + * @n_banks:		number of banks.
->   * @n_dice:		number of dice in the flash memory.
->   * @vreg_offset:	volatile register offset for each die.
->   * @hwcaps:		describes the read and page program hardware
-> @@ -394,6 +395,7 @@ struct spi_nor_flash_parameter {
->  	u8				addr_mode_nbytes;
->  	u8				rdsr_dummy;
->  	u8				rdsr_addr_nbytes;
-> +	u8				n_banks;
->  	u8				n_dice;
->  	u32				*vreg_offset;
->  
-> 
+>
+> -/**
+> +/*
+>   * cvb_t_mv =3D
+>   * ((c2 * speedo / s_scale + c1) * speedo / s_scale + c0) +
+>   * ((c3 * speedo / s_scale + c4 + c5 * T / t_scale) * T / t_scale)
+> --
+> 2.42.0.rc1.204.g551eb34607-goog
+>
+
+Reviewed-by: Karol Herbst <kherbst@redhat.com>
+
