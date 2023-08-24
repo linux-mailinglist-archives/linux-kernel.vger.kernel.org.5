@@ -2,138 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7B6B786951
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 10:04:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EFA378697D
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 10:06:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234547AbjHXIE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 04:04:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34826 "EHLO
+        id S239392AbjHXIGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 04:06:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240440AbjHXIEV (ORCPT
+        with ESMTP id S240401AbjHXIFj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 04:04:21 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EE9C199B
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 01:03:36 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2b9a2033978so99115911fa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 01:03:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1692864202; x=1693469002;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FwL3iE/sigInGebDo7+XC2zrCJyIJXwWg9T7XgYdvUo=;
-        b=gxvA/c6f/mD+SfAn3i79Fac49CIYCfuEAc0NJXFLYFB579Htuh0raSgmo5mwINjJKP
-         6mZXPbJVoLaq/tx8bw95ips+dNfMElarUiEFePbfy6xKS2dz4ss1ZXXCCdNYMwI1jeLf
-         17LTOViCbmKzZvWJJEazhuc9QUFLtiG02+szQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692864202; x=1693469002;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FwL3iE/sigInGebDo7+XC2zrCJyIJXwWg9T7XgYdvUo=;
-        b=TPvZ9qOOo7afQ6FBDQKlkYwDhCsBtuqVBHoJpYCFW63izDsGxG83RKqjwOKPt/OFJn
-         R+kVJMvvHVcvCBlky+ZuuKyV7P6mlplBSC5js4JkWKdd0p1OAPspuMmhnGesWmCw3uAm
-         ROeNzFzsYF+OVYhRNrdA1YGD4wZ/dAzlDGvNcCwwRXOUjieUHNVwUrVuLbGgjoDo8jEn
-         C+RiFWPuMMeWJHz2nZiiKkFfZn33sEAtqnXk0MFWrfLDDYFLaTGgaMKpNRtfb97oyO7r
-         Fb1uMog4rGTczehJR2N3jJZndvqAZSM5efuZYsET9qmyBH+aG5vwqR9nimTKsvTX6avP
-         vTXA==
-X-Gm-Message-State: AOJu0YxrnaMKNq6ismLYmUacoJh2C5bKUNp2W5U5OWzoL/qxX0/O40Hj
-        cPDxqdbiWbudXSj3aT8MvfOkE2xJn3PrwPQZmo+1Vg==
-X-Google-Smtp-Source: AGHT+IEJrvoCh3YeHUxATo9a8VY8kdH7uwNLYGWpcGp3BdwVjU+SPGgyEkpIPGghrgwO/hJ/muX8oz01uFd1YWIRnOA=
-X-Received: by 2002:a2e:8e97:0:b0:2bb:aaab:b42f with SMTP id
- z23-20020a2e8e97000000b002bbaaabb42fmr10476719ljk.49.1692864202467; Thu, 24
- Aug 2023 01:03:22 -0700 (PDT)
+        Thu, 24 Aug 2023 04:05:39 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 977D1198E
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 01:05:02 -0700 (PDT)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37O81TSp028258;
+        Thu, 24 Aug 2023 08:04:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=IgtOcm4rENQZENZQzaZU/dkds05wpAQNREcodI3KFSI=;
+ b=T0DMmliK7mD6izN+s0K/Iz8gI0j0p+V4kePnQQun0mRKorg3ED6OBHUCDW9h/R0LQwe7
+ b6pHXshKQnJIG0Z53PnqWeSvlq4w7mXpyqXUIawNxlfZecKIxrlwPFCVdEHwr7g1MAnQ
+ I/ZTHrgweJxbB0PXmNiVoLK1URMrmMMG70kK1BQjt73iiLDjwuv9JByMwylRlnS9722J
+ Fl4BIEfez5Kw/x8Et0t8SwvNdz7Q6sAJKApIc+E17B2JajTGYyG/Cz6wz+n3cdz0Y4Bw
+ CsBNJdFalMV+Vhs4O/Zy0SNrPsUYLTrvAeiQSzcOSmHQ/TwJFW/2cQ/SCW5/wdtoPu1/ PA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sp3b5g2d7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 24 Aug 2023 08:04:21 +0000
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37O83f0w004023;
+        Thu, 24 Aug 2023 08:04:20 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sp3b5g2c7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 24 Aug 2023 08:04:20 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37O7C4SZ010383;
+        Thu, 24 Aug 2023 08:04:19 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3sn21swdj5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 24 Aug 2023 08:04:19 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37O84H0w17236520
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 24 Aug 2023 08:04:18 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C7BDD2004B;
+        Thu, 24 Aug 2023 08:04:17 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C65FA20071;
+        Thu, 24 Aug 2023 08:04:15 +0000 (GMT)
+Received: from li-c1fdab4c-355a-11b2-a85c-ef242fe9efb4.in.ibm.com (unknown [9.109.201.126])
+        by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Thu, 24 Aug 2023 08:04:15 +0000 (GMT)
+From:   Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
+To:     peterz@infradead.org, vincent.guittot@linaro.org, mingo@redhat.com
+Cc:     sshegde@linux.vnet.ibm.com, srikar@linux.vnet.ibm.com,
+        linux-kernel@vger.kernel.org, dietmar.eggemann@arm.com,
+        mingo@kernel.org, lukasz.luba@arm.com, claudio@evidence.eu.com
+Subject: [PATCH] sched/Documentation: Modify the knob to base_slice_ns
+Date:   Thu, 24 Aug 2023 13:33:42 +0530
+Message-Id: <20230824080342.543396-1-sshegde@linux.vnet.ibm.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20230704075054.3344915-1-stevensd@google.com> <20230704075054.3344915-5-stevensd@google.com>
- <20230706015449.GB3894444@ls.amr.corp.intel.com>
-In-Reply-To: <20230706015449.GB3894444@ls.amr.corp.intel.com>
-From:   David Stevens <stevensd@chromium.org>
-Date:   Thu, 24 Aug 2023 17:03:11 +0900
-Message-ID: <CAD=HUj43RG6M5_TEKBjv+Aioj8rZXKZFN_R8dinjhcpnN219hg@mail.gmail.com>
-Subject: Re: [PATCH v7 4/8] KVM: x86/mmu: Migrate to __kvm_follow_pfn
-To:     Isaku Yamahata <isaku.yamahata@gmail.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Peter Xu <peterx@redhat.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: xqUf3Ny6UkcKsEQh173Polmb_CP_6zEP
+X-Proofpoint-GUID: qwg08eDKWlEtP4yxoiuGGUSC5dwQaHtY
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-24_05,2023-08-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
+ phishscore=0 spamscore=0 suspectscore=0 mlxlogscore=999 priorityscore=1501
+ malwarescore=0 impostorscore=0 clxscore=1011 adultscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308240061
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 6, 2023 at 10:54=E2=80=AFAM Isaku Yamahata <isaku.yamahata@gmai=
-l.com> wrote:
->
-> On Tue, Jul 04, 2023 at 04:50:49PM +0900,
-> David Stevens <stevensd@chromium.org> wrote:
->
-> > From: David Stevens <stevensd@chromium.org>
-> >
-> > Migrate from __gfn_to_pfn_memslot to __kvm_follow_pfn.
-> >
-> > Signed-off-by: David Stevens <stevensd@chromium.org>
-> > ---
-> >  arch/x86/kvm/mmu/mmu.c | 35 +++++++++++++++++++++++++----------
-> >  1 file changed, 25 insertions(+), 10 deletions(-)
-> >
-> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> > index ec169f5c7dce..e44ab512c3a1 100644
-> > --- a/arch/x86/kvm/mmu/mmu.c
-> > +++ b/arch/x86/kvm/mmu/mmu.c
-> > @@ -4296,7 +4296,12 @@ void kvm_arch_async_page_ready(struct kvm_vcpu *=
-vcpu, struct kvm_async_pf *work)
-> >  static int __kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fa=
-ult *fault)
-> >  {
-> >       struct kvm_memory_slot *slot =3D fault->slot;
-> > -     bool async;
-> > +     struct kvm_follow_pfn foll =3D {
-> > +             .slot =3D slot,
-> > +             .gfn =3D fault->gfn,
-> > +             .flags =3D FOLL_GET | (fault->write ? FOLL_WRITE : 0),
-> > +             .allow_write_mapping =3D true,
-> > +     };
-> >
-> >       /*
-> >        * Retry the page fault if the gfn hit a memslot that is being de=
-leted
-> > @@ -4325,12 +4330,14 @@ static int __kvm_faultin_pfn(struct kvm_vcpu *v=
-cpu, struct kvm_page_fault *fault
-> >                       return RET_PF_EMULATE;
-> >       }
-> >
-> > -     async =3D false;
-> > -     fault->pfn =3D __gfn_to_pfn_memslot(slot, fault->gfn, false, fals=
-e, &async,
-> > -                                       fault->write, &fault->map_writa=
-ble,
-> > -                                       &fault->hva);
-> > -     if (!async)
-> > -             return RET_PF_CONTINUE; /* *pfn has correct page already =
-*/
-> > +     foll.flags |=3D FOLL_NOWAIT;
-> > +     fault->pfn =3D __kvm_follow_pfn(&foll);
-> > +
-> > +     if (!is_error_noslot_pfn(fault->pfn))
->
-> We have pfn in struct kvm_follow_pfn as output. Can we make __kvm_follow_=
-pfn()
-> return int instead of kvm_pfn_t?  KVM_PFN_* seems widely used, though.
+After committing scheduler to EEVDF, since
+commit e4ec3318a17f ("sched/debug: Rename sysctl_sched_min_granularity
+to sysctl_sched_base_slice") sysctl has been changed. In the documentation
+its mentioned that its one of the central tunable available for feed into
+the scheduler. This changes the doc as well.
 
-Switching __kvm_follow_pfn to return an int isn't difficult, but doing
-is cleanly would require reworking the kvm_pfn_t/KVM_PFN_ERR_* api,
-which as you said is quite widely used. That's a bit larger scope than
-I want to do in this patch series.
+Fixes: e4ec3318a17f ("sched/debug: Rename sysctl_sched_min_granularity to sysctl_sched_base_slice")
+Signed-off-by: Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
+---
+ Documentation/scheduler/sched-design-CFS.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
--David
+diff --git a/Documentation/scheduler/sched-design-CFS.rst b/Documentation/scheduler/sched-design-CFS.rst
+index 03db55504515..f68919800f05 100644
+--- a/Documentation/scheduler/sched-design-CFS.rst
++++ b/Documentation/scheduler/sched-design-CFS.rst
+@@ -94,7 +94,7 @@ other HZ detail.  Thus the CFS scheduler has no notion of "timeslices" in the
+ way the previous scheduler had, and has no heuristics whatsoever.  There is
+ only one central tunable (you have to switch on CONFIG_SCHED_DEBUG):
+
+-   /sys/kernel/debug/sched/min_granularity_ns
++   /sys/kernel/debug/sched/base_slice_ns
+
+ which can be used to tune the scheduler from "desktop" (i.e., low latencies) to
+ "server" (i.e., good batching) workloads.  It defaults to a setting suitable
+--
+2.31.1
+
