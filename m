@@ -2,313 +2,316 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4653A787836
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 20:48:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3381578783B
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 20:50:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243087AbjHXSs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 14:48:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54888 "EHLO
+        id S243119AbjHXSta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 14:49:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243102AbjHXSsO (ORCPT
+        with ESMTP id S243155AbjHXStR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 14:48:14 -0400
-Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com [209.85.167.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B3141BCD
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 11:48:11 -0700 (PDT)
-Received: by mail-oi1-f173.google.com with SMTP id 5614622812f47-3a7d7e5fb03so110174b6e.3
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 11:48:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692902890; x=1693507690;
-        h=user-agent:in-reply-to:content-transfer-encoding
-         :content-disposition:mime-version:references:message-id:subject:cc
-         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZUvI6CU9c0j6C8Mgz85WkGeA6Ridh+7alzDfu1qS1xg=;
-        b=anRALwsdCfrh/1Y8eJhn+9PBnQMyqLv5msprEEh6MeWGPfM1BiF6gzhDSRURiJPz08
-         rjHgRvnfeCIUqG6HccdjOOYdeIfkXxRwwkYZTEXPW5+8yLX+Kd0v+YzUS8qCXqAGmlrz
-         P7bun/bsndM4747Qma4qN1HNVd/zTf0ILZukVj4NqK2A5ze2Rti0wtvdCoKbbskQLvrp
-         5j4ma4qKj8xH7lwWuDdJEeeBRf/5kwIcSp3gHaNE93iSutA3wOuUBTcn+6f6cX4erxYJ
-         vp6TslEE81bhXcholoh8I9cQglr8EK8gZLOQVr40SjZ5eRYL7s3XDfKzl89IgBOrsgff
-         F0DQ==
-X-Gm-Message-State: AOJu0YzVvqAi/9yy5fAL/CRzJiRdUkoUptxzo3ozCX0mi6B0plEfIMeI
-        t7wjgG6ykazUU+KrRhhv4yM=
-X-Google-Smtp-Source: AGHT+IFaegcnn2+z30m4QPiXlGuidbBErshfFJx2gAYqVe3FJfDUAQP4FFE6v2raiXgUXIPgk6kJLQ==
-X-Received: by 2002:a05:6358:248b:b0:132:d42f:8e19 with SMTP id m11-20020a056358248b00b00132d42f8e19mr16307531rwc.31.1692902890298;
-        Thu, 24 Aug 2023 11:48:10 -0700 (PDT)
-Received: from maniforge ([2620:10d:c091:400::5:1df8])
-        by smtp.gmail.com with ESMTPSA id q5-20020ac87345000000b00400a99b8b38sm18757qtp.78.2023.08.24.11.48.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Aug 2023 11:48:09 -0700 (PDT)
-Date:   Thu, 24 Aug 2023 13:48:07 -0500
-From:   David Vernet <void@manifault.com>
-To:     Aaron Lu <aaron.lu@intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Tim Chen <tim.c.chen@intel.com>,
-        Nitin Tekchandani <nitin.tekchandani@intel.com>,
-        Yu Chen <yu.c.chen@intel.com>,
-        Waiman Long <longman@redhat.com>,
-        Deng Pan <pan.deng@intel.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] sched/fair: ratelimit update to tg->load_avg
-Message-ID: <20230824184807.GA6119@maniforge>
-References: <20230823060832.454842-1-aaron.lu@intel.com>
- <20230823060832.454842-2-aaron.lu@intel.com>
+        Thu, 24 Aug 2023 14:49:17 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEAC11BEC;
+        Thu, 24 Aug 2023 11:49:13 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7F9C6654B0;
+        Thu, 24 Aug 2023 18:49:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1834FC433C8;
+        Thu, 24 Aug 2023 18:49:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692902952;
+        bh=94vHtzPsl9oXrZlsH6lhNF4M/HFIYPrHAJF+1ksp+4M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Lo2p0YLEphwm81d0oEgKNUMWoi9EGZKDjywJpM0QIYalPJJPssihFctVwmeYRtJ5Q
+         18geKR2i7iFshvzeQVl3PmzfSDe2tZOYPPMhqJHSqv6YeW2euZ28hFnCXOnCA5GyCe
+         QiuSBID5B3QcMnq9Eezlfj/+vieaWvjfJ60Nes9EXBBVAyulrogt3jGS8s9miJasD2
+         /OQDMaLT5IYVxI7xnoQ7JpTz8fzD8PZUr13TMxQ6U/uz3krBbzSK6ZrZmoLRfo4tvv
+         lBfjrQTj15G66QHjXqP9lzHlouSZOcsBiKFpo46yKreAMW1hz9f8bWxtw9QJOskzWk
+         lfsi1MFba79TA==
+Date:   Thu, 24 Aug 2023 11:49:10 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     ndesaulniers@google.com
+Cc:     Masahiro Yamada <masahiroy@kernel.org>, Tom Rix <trix@redhat.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, llvm@lists.linux.dev,
+        linux-kbuild@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Subject: Re: [PATCH] Documentation/llvm: refresh docs
+Message-ID: <20230824184910.GA2015748@dev-arch.thelio-3990X>
+References: <20230824-docs-v1-1-67e061278b8f@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230823060832.454842-2-aaron.lu@intel.com>
-User-Agent: Mutt/2.2.10 (2023-03-25)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20230824-docs-v1-1-67e061278b8f@google.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 23, 2023 at 02:08:32PM +0800, Aaron Lu wrote:
-> When using sysbench to benchmark Postgres in a single docker instance
-> with sysbench's nr_threads set to nr_cpu, it is observed there are times
-> update_cfs_group() and update_load_avg() shows noticeable overhead on
-> a 2sockets/112core/224cpu Intel Sapphire Rapids(SPR):
+On Thu, Aug 24, 2023 at 11:03:17AM -0700, ndesaulniers@google.com wrote:
+> Recent fixes for an embargoed hardware security vulnerability failed to
+> link with ld.lld (LLVM's linker).  [0]  To be fair, our documentation
+> mentions ``CC=clang`` foremost with ``LLVM=1`` being buried "below the
+> fold."
 > 
->     13.75%    13.74%  [kernel.vmlinux]           [k] update_cfs_group
->     10.63%    10.04%  [kernel.vmlinux]           [k] update_load_avg
+> We want to encourage the use of ``LLVM=1`` rather than just
+> ``CC=clang``. Make that sugguestion "above the fold" and "front and
+> center" in our docs.
 > 
-> Annotate shows the cycles are mostly spent on accessing tg->load_avg
-> with update_load_avg() being the write side and update_cfs_group() being
-> the read side. tg->load_avg is per task group and when different tasks
-> of the same taskgroup running on different CPUs frequently access
-> tg->load_avg, it can be heavily contended.
+> While here, the following additional changes were made:
+> - remove the bit about CROSS_COMPILE setting --target=, that's no longer
+>   true.
+> - Add ARCH=loongarch to the list of maintained targets (though we're
+>   still working on getting defconfig building cleanly at the moment;
+>   we're pretty close).
+> - Promote ARCH=riscv from being Maintained to being Supported. Android
+>   is working towards supporting RISC-V, and we have excellent support
+>   from multiple companies in this regard.
+> - Note that the toolchain distribution on kernel.org has been built with
+>   profile data from kernel builds.
 > 
-> E.g. when running postgres_sysbench on a 2sockets/112cores/224cpus Intel
-> Sappire Rapids, during a 5s window, the wakeup number is 14millions and
-> migration number is 11millions and with each migration, the task's load
-> will transfer from src cfs_rq to target cfs_rq and each change involves
-> an update to tg->load_avg. Since the workload can trigger as many wakeups
-> and migrations, the access(both read and write) to tg->load_avg can be
-> unbound. As a result, the two mentioned functions showed noticeable
-> overhead. With netperf/nr_client=nr_cpu/UDP_RR, the problem is worse:
-> during a 5s window, wakeup number is 21millions and migration number is
-> 14millions; update_cfs_group() costs ~25% and update_load_avg() costs ~16%.
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1907 [0]
+> ---
 > 
-> Reduce the overhead by limiting updates to tg->load_avg to at most once
-> per ms. After this change, the cost of accessing tg->load_avg is greatly
-> reduced and performance improved. Detailed test results below.
 > 
-> ==============================
-> postgres_sysbench on SPR:
-> 25%
-> base:   42382±19.8%
-> patch:  50174±9.5%  (noise)
-> 
-> 50%
-> base:   67626±1.3%
-> patch:  67365±3.1%  (noise)
-> 
-> 75%
-> base:   100216±1.2%
-> patch:  112470±0.1% +12.2%
-> 
-> 100%
-> base:    93671±0.4%
-> patch:  113563±0.2% +21.2%
-> 
-> ==============================
-> hackbench on ICL:
-> group=1
-> base:    114912±5.2%
-> patch:   117857±2.5%  (noise)
-> 
-> group=4
-> base:    359902±1.6%
-> patch:   361685±2.7%  (noise)
-> 
-> group=8
-> base:    461070±0.8%
-> patch:   491713±0.3% +6.6%
-> 
-> group=16
-> base:    309032±5.0%
-> patch:   378337±1.3% +22.4%
-> 
-> =============================
-> hackbench on SPR:
-> group=1
-> base:    100768±2.9%
-> patch:   103134±2.9%  (noise)
-> 
-> group=4
-> base:    413830±12.5%
-> patch:   378660±16.6% (noise)
-> 
-> group=8
-> base:    436124±0.6%
-> patch:   490787±3.2% +12.5%
-> 
-> group=16
-> base:    457730±3.2%
-> patch:   680452±1.3% +48.8%
-> 
-> ============================
-> netperf/udp_rr on ICL
-> 25%
-> base:    114413±0.1%
-> patch:   115111±0.0% +0.6%
-> 
-> 50%
-> base:    86803±0.5%
-> patch:   86611±0.0%  (noise)
-> 
-> 75%
-> base:    35959±5.3%
-> patch:   49801±0.6% +38.5%
-> 
-> 100%
-> base:    61951±6.4%
-> patch:   70224±0.8% +13.4%
-> 
-> ===========================
-> netperf/udp_rr on SPR
-> 25%
-> base:   104954±1.3%
-> patch:  107312±2.8%  (noise)
-> 
-> 50%
-> base:    55394±4.6%
-> patch:   54940±7.4%  (noise)
-> 
-> 75%
-> base:    13779±3.1%
-> patch:   36105±1.1% +162%
-> 
-> 100%
-> base:     9703±3.7%
-> patch:   28011±0.2% +189%
-> 
-> ==============================================
-> netperf/tcp_stream on ICL (all in noise range)
-> 25%
-> base:    43092±0.1%
-> patch:   42891±0.5%
-> 
-> 50%
-> base:    19278±14.9%
-> patch:   22369±7.2%
-> 
-> 75%
-> base:    16822±3.0%
-> patch:   17086±2.3%
-> 
-> 100%
-> base:    18216±0.6%
-> patch:   18078±2.9%
-> 
-> ===============================================
-> netperf/tcp_stream on SPR (all in noise range)
-> 25%
-> base:    34491±0.3%
-> patch:   34886±0.5%
-> 
-> 50%
-> base:    19278±14.9%
-> patch:   22369±7.2%
-> 
-> 75%
-> base:    16822±3.0%
-> patch:   17086±2.3%
-> 
-> 100%
-> base:    18216±0.6%
-> patch:   18078±2.9%
-> 
-> Reported-by: Nitin Tekchandani <nitin.tekchandani@intel.com>
-> Suggested-by: Vincent Guittot <vincent.guittot@linaro.org>
-> Signed-off-by: Aaron Lu <aaron.lu@intel.com>
-> Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 
-Hey Aaron,
+Nit: Your signed-off-by ended up below the fold, was it in your cover
+letter commit rather than your actual commit?
 
-Thanks for working on this. It LGTM modulo two small nits. Feel free to
-add my Reviewed-by if you'd like regardless:
+Aside from the relatively minor comments below, this looks like a really
+good improvement to the documentation to me. It feels like it is more
+targeting users or non-kbuild folks now, which I think is great.
 
-Reviewed-by: David Vernet <void@manifault.com>
+I trust you to address my comments as you see fit, so please carry
+forward:
+
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
 
 > ---
->  kernel/sched/fair.c  | 13 ++++++++++++-
->  kernel/sched/sched.h |  1 +
->  2 files changed, 13 insertions(+), 1 deletion(-)
+>  Documentation/kbuild/llvm.rst | 102 +++++++++++++++++++++++-------------------
+>  1 file changed, 55 insertions(+), 47 deletions(-)
 > 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index c28206499a3d..a5462d1fcc48 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -3664,7 +3664,8 @@ static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
->   */
->  static inline void update_tg_load_avg(struct cfs_rq *cfs_rq)
->  {
-> -	long delta = cfs_rq->avg.load_avg - cfs_rq->tg_load_avg_contrib;
-> +	long delta;
-> +	u64 now;
+> diff --git a/Documentation/kbuild/llvm.rst b/Documentation/kbuild/llvm.rst
+> index c3851fe1900d..00b26a0a6bf1 100644
+> --- a/Documentation/kbuild/llvm.rst
+> +++ b/Documentation/kbuild/llvm.rst
+> @@ -25,50 +25,38 @@ objects <https://www.aosabook.org/en/llvm.html>`_. Clang is a front-end to LLVM
+>  that supports C and the GNU C extensions required by the kernel, and is
+>  pronounced "klang," not "see-lang."
 >  
->  	/*
->  	 * No need to update load_avg for root_task_group as it is not used.
-> @@ -3672,9 +3673,19 @@ static inline void update_tg_load_avg(struct cfs_rq *cfs_rq)
->  	if (cfs_rq->tg == &root_task_group)
->  		return;
+> -Clang
+> ------
+> -
+> -The compiler used can be swapped out via ``CC=`` command line argument to ``make``.
+> -``CC=`` should be set when selecting a config and during a build. ::
+> -
+> -	make CC=clang defconfig
+> +Building with LLVM
+> +------------------
 >  
-> +	/*
-> +	 * For migration heavy workload, access to tg->load_avg can be
+> -	make CC=clang
+> -
+> -Cross Compiling
+> ----------------
+> +Invoke ``make`` via::
+>  
+> -A single Clang compiler binary will typically contain all supported backends,
+> -which can help simplify cross compiling. ::
+> -
+> -	make ARCH=arm64 CC=clang CROSS_COMPILE=aarch64-linux-gnu-
+> +	make LLVM=1
+>  
+> -``CROSS_COMPILE`` is not used to prefix the Clang compiler binary, instead
+> -``CROSS_COMPILE`` is used to set a command line flag: ``--target=<triple>``. For
+> -example: ::
+> +to compile for the host target. For cross compiling::
+>  
+> -	clang --target=aarch64-linux-gnu foo.c
+> +	make LLVM=1 ARCH=arm64
+>  
+> -LLVM Utilities
+> +The LLVM= argument
+>  --------------
 
-s/workload/workloads
+I see a few new kernel-doc warnings from not adjusting the underlines to
+match the new length of the title:
 
-> +	 * unbound. Limit the update rate to at most once per ms.
+  Documentation/kbuild/llvm.rst:40: WARNING: Title underline too short.
 
-Can we describe either here or in the commit summary how we arrived at
-1ms? I'm fine with hard-coded heuristics like this (just like the
-proposed 6-core shard size in the shared_runq patchset), but it would
-also be ideal to give a bit more color on how we arrived here, because
-we'll forget immediately otherwise.
+  The LLVM= argument
+  --------------
+  Documentation/kbuild/llvm.rst:40: WARNING: Title underline too short.
 
-> +	 */
-> +	now = sched_clock_cpu(cpu_of(rq_of(cfs_rq)));
-> +	if (now - cfs_rq->last_update_tg_load_avg < NSEC_PER_MSEC)
-> +		return;
+  The LLVM= argument
+  --------------
+  Documentation/kbuild/llvm.rst:102: WARNING: Title underline too short.
+
+  The LLVM_IAS= argument
+  -----------------
+  Documentation/kbuild/llvm.rst:102: WARNING: Title underline too short.
+
+  The LLVM_IAS= argument
+  -----------------
+
+>  
+> -LLVM has substitutes for GNU binutils utilities. They can be enabled individually.
+> -The full list of supported make variables::
+> +LLVM has substitutes for GNU binutils utilities. They can be enabled
+> +individually. The full list of supported make variables::
+>  
+>  	make CC=clang LD=ld.lld AR=llvm-ar NM=llvm-nm STRIP=llvm-strip \
+>  	  OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump READELF=llvm-readelf \
+>  	  HOSTCC=clang HOSTCXX=clang++ HOSTAR=llvm-ar HOSTLD=ld.lld
+>  
+> -To simplify the above command, Kbuild supports the ``LLVM`` variable::
+> -
+> -	make LLVM=1
+> +``LLVM=1`` expands to the above.
+>  
+>  If your LLVM tools are not available in your PATH, you can supply their
+>  location using the LLVM variable with a trailing slash::
+>  
+>  	make LLVM=/path/to/llvm/
+>  
+> -which will use ``/path/to/llvm/clang``, ``/path/to/llvm/ld.lld``, etc.
+> +which will use ``/path/to/llvm/clang``, ``/path/to/llvm/ld.lld``, etc. The
+> +following may also be used::
 > +
-> +	delta = cfs_rq->avg.load_avg - cfs_rq->tg_load_avg_contrib;
->  	if (abs(delta) > cfs_rq->tg_load_avg_contrib / 64) {
->  		atomic_long_add(delta, &cfs_rq->tg->load_avg);
->  		cfs_rq->tg_load_avg_contrib = cfs_rq->avg.load_avg;
-> +		cfs_rq->last_update_tg_load_avg = now;
->  	}
->  }
+> +	PATH=/path/to/llvm:$PATH make LLVM=1
 >  
-> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> index 6a8b7b9ed089..52ee7027def9 100644
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -593,6 +593,7 @@ struct cfs_rq {
->  	} removed;
+>  If your LLVM tools have a version suffix and you want to test with that
+>  explicit version rather than the unsuffixed executables like ``LLVM=1``, you
+> @@ -78,31 +66,46 @@ can pass the suffix using the ``LLVM`` variable::
 >  
->  #ifdef CONFIG_FAIR_GROUP_SCHED
-> +	u64			last_update_tg_load_avg;
->  	unsigned long		tg_load_avg_contrib;
->  	long			propagate;
->  	long			prop_runnable_sum;
-> -- 
-> 2.41.0
-> 
+>  which will use ``clang-14``, ``ld.lld-14``, etc.
+>  
+> -``LLVM=0`` is not the same as omitting ``LLVM`` altogether, it will behave like
+> -``LLVM=1``. If you only wish to use certain LLVM utilities, use their respective
+> -make variables.
+> +To support combinations of out of tree paths with version suffixes, we
+> +recommend::
+> +
+> +	PATH=/path/to/llvm/:$PATH make LLVM=-14
+>  
+> -The integrated assembler is enabled by default. You can pass ``LLVM_IAS=0`` to
+> -disable it.
+> +``LLVM=0`` is not the same as omitting ``LLVM`` altogether, it will behave like
+> +``LLVM=1``. If you only wish to use certain LLVM utilities, use their
+> +respective make variables.
+>  
+> -Omitting CROSS_COMPILE
+> -----------------------
+> +The same value used for ``LLVM=`` should be set for each invocation of ``make``
+> +if configuring and building via distinct commands. ``LLVM=`` should also be set
+> +as an environment variable when running scripts that will eventually run
+> +``make``.
+>  
+> -As explained above, ``CROSS_COMPILE`` is used to set ``--target=<triple>``.
+> +Cross Compiling
+> +---------------
+>  
+> -If ``CROSS_COMPILE`` is not specified, the ``--target=<triple>`` is inferred
+> -from ``ARCH``.
+> +A single Clang compiler binary (and corresponding LLVM utilities) will
+> +typically contain all supported backends, which can help simplify cross
+> +compiling especially when ``LLVM=1`` is used. If you use only LLVM tools,
+> +``CROSS_COMPILE`` becomes unnecessary.
+>  
+> -That means if you use only LLVM tools, ``CROSS_COMPILE`` becomes unnecessary.
+> +As an example, for a target like ``ARCH=s390`` which does not yet have
+> +``ld.lld`` support, you could invoke ``make`` via::
+>  
+> -For example, to cross-compile the arm64 kernel::
+> +	make LLVM=1 LD=ld.bfd CROSS_COMPILE=s390x-linux-gnu-
+
+This should probably have ARCH=s390?
+
+> -	make ARCH=arm64 LLVM=1
+> +``CROSS_COMPILE`` is not used to prefix the Clang compiler binary (or
+> +corresponding LLVM utilities), but it will be for any GNU toolchain utilities.
+> +This example will invoke ``s390x-linux-gnu-ld.bfd`` as the linker, so ensure
+> +that is reachable in your ``$PATH``.
+
+I like the example as I feel like it addresses some of the fear I have had
+around recommending LLVM=1 as the initial build suggestion but 'LLVM=1
+LD=ld.bfd CROSS_COMPILE=s390x-linux-gnu-' does not compose as you describe here
+because $(LD) is not prefixed with $(CROSS_COMPILE) anywhere in Makefile. The
+non-$(LLVM) default assignment of $(LD) is '$(CROSS_COMPILE)ld' and that is
+overridden by 'LD=ld.bfd' on the command line.
+
+In other words, this should be
+
+  make ARCH=s390 LLVM=1 LD=s390x-linux-gnu-ld.bfd
+
+and have the note about CROSS_COMPILE prefixing any GNU toolchain utilities
+removed. It should problably have OBJCOPY and OBJDUMP too, as those are
+required due to https://github.com/ClangBuiltLinux/linux/issues/859 and
+https://github.com/ClangBuiltLinux/linux/issues/1530.
+
+> -If ``LLVM_IAS=0`` is specified, ``CROSS_COMPILE`` is also used to derive
+> -``--prefix=<path>`` to search for the GNU assembler and linker. ::
+> +The LLVM_IAS= argument
+> +-----------------
+>  
+> -	make ARCH=arm64 LLVM=1 LLVM_IAS=0 CROSS_COMPILE=aarch64-linux-gnu-
+> +Clang can assemble assembler code. You can pass ``LLVM_IAS=0`` to disable this
+> +behavior and have Clang invoke the system assembler instead (or the assembler
+> +based on ``CROSS_COMPILE``). ``CROSS_COMPILE`` is necessary when ``LLVM_IAS=0``
+> +is set when cross compiling in order to set ``--prefix=`` for the compiler to
+> +find the corresponding non-integrated assembler.
+
+Thanks a lot for documenting this behavior, it is one of the most common
+issues I run into myself (adding LLVM_IAS=0 without CROSS_COMPILE) and
+maybe this note will be what I need in order to remember :)
+
+>  Supported Architectures
+>  -----------------------
+> @@ -135,14 +138,17 @@ yet. Bug reports are always welcome at the issue tracker below!
+>     * - hexagon
+>       - Maintained
+>       - ``LLVM=1``
+> +   * - loongarch
+> +     - Maintained
+> +     - ``LLVM=1``
+>     * - mips
+>       - Maintained
+>       - ``LLVM=1``
+>     * - powerpc
+>       - Maintained
+> -     - ``CC=clang``
+> +     - ``LLVM=1``
+>     * - riscv
+> -     - Maintained
+> +     - Supported
+>       - ``LLVM=1``
+>     * - s390
+>       - Maintained
+> @@ -171,9 +177,11 @@ Getting Help
+>  Getting LLVM
+>  -------------
+>  
+> -We provide prebuilt stable versions of LLVM on `kernel.org <https://kernel.org/pub/tools/llvm/>`_.
+> -Below are links that may be useful for building LLVM from source or procuring
+> -it through a distribution's package manager.
+> +We provide prebuilt stable versions of LLVM on `kernel.org
+> +<https://kernel.org/pub/tools/llvm/>`_. These have been optimized with profile
+> +data for building Linux kernels. Below are links that may be useful for
+
+Maybe make a note of why this matters? ", which should lower kernel
+build times compared to non-optimized LLVM toolchains."?
+
+Cheers,
+Nathan
