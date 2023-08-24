@@ -2,166 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66C05787008
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 15:14:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CECCE786FFA
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 15:14:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240933AbjHXNOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 09:14:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47668 "EHLO
+        id S238046AbjHXNNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 09:13:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240691AbjHXNNy (ORCPT
+        with ESMTP id S240397AbjHXNNl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 09:13:54 -0400
-Received: from luna.linkmauve.fr (82-65-109-163.subs.proxad.net [82.65.109.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83D7519A9;
-        Thu, 24 Aug 2023 06:13:52 -0700 (PDT)
-Received: by luna.linkmauve.fr (Postfix, from userid 1000)
-        id 49E5A8CC65D; Thu, 24 Aug 2023 15:13:51 +0200 (CEST)
-From:   Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
-Cc:     Alexandre Courbot <acourbot@nvidia.com>,
-        Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>,
-        azkali <a.ffcc7@gmail.com>, CTCaer <ctcaer@gmail.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/3] power: supply: bq24190_charger: Export current regulator
-Date:   Thu, 24 Aug 2023 15:13:31 +0200
-Message-ID: <20230824131342.206784-4-linkmauve@linkmauve.fr>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230824131342.206784-1-linkmauve@linkmauve.fr>
-References: <20230824112741.201353-1-linkmauve@linkmauve.fr>
- <20230824131342.206784-1-linkmauve@linkmauve.fr>
+        Thu, 24 Aug 2023 09:13:41 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DE98198A;
+        Thu, 24 Aug 2023 06:13:39 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BF6026269E;
+        Thu, 24 Aug 2023 13:13:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A422AC433C7;
+        Thu, 24 Aug 2023 13:13:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1692882818;
+        bh=SfeSvLlzV/QIsfQI6lGrqzROvKL38Kvs5ty/5yOH31A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZhJLIz8BGyAb2ivMZw6rmCdfIOYmFrT9z8ODxNAAJEQ85enR0GfFmnfIbFsFmArtl
+         FXYOynVSVtLEblhukepFVPKrJuXATUHOsl0w7G192F+Dh01gV5/rU18iIZ1iZF5rBy
+         bA5+n8aGEXbZtIfZb49YeDS5zo5cbYTnS7/mUOWs=
+Date:   Thu, 24 Aug 2023 15:13:35 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Alexandra Diupina <adiupina@astralinux.ru>
+Cc:     Joerg Roedel <joro@8bytes.org>, stable@vger.kernel.org,
+        Will Deacon <will@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] [PATCH 5.10] iommu/mediatek: remove redundant comparison
+Message-ID: <2023082458-mongrel-catlike-b73d@gregkh>
+References: <20230824130954.29688-1-adiupina@astralinux.ru>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,PDS_RDNS_DYNAMIC_FP,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SORBS_DUL,RDNS_DYNAMIC,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230824130954.29688-1-adiupina@astralinux.ru>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexandre Courbot <acourbot@nvidia.com>
+On Thu, Aug 24, 2023 at 04:09:54PM +0300, Alexandra Diupina wrote:
+> iommu_device_register always returns 0 in 4.11-5.12, so
 
-This prevents the charger from ever going over the current limit.
+What do you mean by "4.11-5.12"?
 
-Signed-off-by: Alexandre Courbot <acourbot@nvidia.com>
-Signed-off-by: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
----
- drivers/power/supply/bq24190_charger.c | 82 ++++++++++++++++++++++++++
- 1 file changed, 82 insertions(+)
+> we need to remove redundant comparison with 0
 
-diff --git a/drivers/power/supply/bq24190_charger.c b/drivers/power/supply/bq24190_charger.c
-index a56122b39687..cc1bd87f4982 100644
---- a/drivers/power/supply/bq24190_charger.c
-+++ b/drivers/power/supply/bq24190_charger.c
-@@ -530,6 +530,79 @@ static int bq24190_set_otg_vbus(struct bq24190_dev_info *bdi, bool enable)
- }
- 
- #ifdef CONFIG_REGULATOR
-+static int bq24190_set_charging_current(struct regulator_dev *dev,
-+			int min_uA, int max_uA)
-+{
-+	struct bq24190_dev_info *bdi = rdev_get_drvdata(dev);
-+	u8 ss_reg;
-+	int in_current_limit;
-+	int ret = 0;
-+
-+	ret = bq24190_read(bdi, BQ24190_REG_SS, &ss_reg);
-+	if (ret < 0)
-+		goto error;
-+
-+	if (max_uA == 0 && ss_reg != 0)
-+		return ret;
-+
-+	if (!(ss_reg & BQ24190_REG_SS_VBUS_STAT_MASK))
-+		in_current_limit = 500;
-+	else
-+		in_current_limit = max_uA / 1000;
-+
-+	return bq24190_set_field_val(bdi, BQ24190_REG_ISC,
-+			BQ24190_REG_ISC_IINLIM_MASK,
-+			BQ24190_REG_ISC_IINLIM_SHIFT,
-+			bq24190_isc_iinlim_values,
-+			ARRAY_SIZE(bq24190_isc_iinlim_values),
-+			in_current_limit);
-+error:
-+	dev_err(bdi->dev, "Charger enable failed, err = %d\n", ret);
-+	return ret;
-+}
-+
-+static const struct regulator_ops bq24190_chrg_ops = {
-+	.set_current_limit = bq24190_set_charging_current,
-+};
-+
-+static const struct regulator_desc bq24190_chrg_desc = {
-+	.name = "charger",
-+	.of_match = "charger",
-+	.type = REGULATOR_CURRENT,
-+	.owner = THIS_MODULE,
-+	.ops = &bq24190_chrg_ops,
-+};
-+
-+static const struct regulator_init_data bq24190_chrg_init_data = {
-+	.constraints = {
-+		.valid_ops_mask = REGULATOR_CHANGE_STATUS | REGULATOR_CHANGE_CURRENT,
-+		.min_uA = 0,
-+		.max_uA = 3000000,
-+	},
-+};
-+
-+static int bq24190_register_chrg_regulator(struct bq24190_dev_info *bdi)
-+{
-+	struct bq24190_platform_data *pdata = bdi->dev->platform_data;
-+	struct regulator_config cfg = { };
-+	struct regulator_dev *reg;
-+	int ret = 0;
-+
-+	cfg.dev = bdi->dev;
-+	if (pdata && pdata->regulator_init_data)
-+		cfg.init_data = pdata->regulator_init_data;
-+	else
-+		cfg.init_data = &bq24190_chrg_init_data;
-+	cfg.driver_data = bdi;
-+	reg = devm_regulator_register(bdi->dev, &bq24190_chrg_desc, &cfg);
-+	if (IS_ERR(reg)) {
-+		ret = PTR_ERR(reg);
-+		dev_err(bdi->dev, "Can't register regulator: %d\n", ret);
-+	}
-+
-+	return ret;
-+}
-+
- static int bq24190_vbus_enable(struct regulator_dev *dev)
- {
- 	return bq24190_set_otg_vbus(rdev_get_drvdata(dev), true);
-@@ -611,6 +684,11 @@ static int bq24190_register_vbus_regulator(struct bq24190_dev_info *bdi)
- 	return ret;
- }
- #else
-+static int bq24190_register_chrg_regulator(struct bq24190_dev_info *bdi)
-+{
-+	return 0;
-+}
-+
- static int bq24190_register_vbus_regulator(struct bq24190_dev_info *bdi)
- {
- 	return 0;
-@@ -1879,6 +1957,10 @@ static int bq24190_probe(struct i2c_client *client)
- 		goto out_charger;
- 	}
- 
-+	ret = bq24190_register_chrg_regulator(bdi);
-+	if (ret < 0)
-+		goto out_charger;
-+
- 	ret = bq24190_register_vbus_regulator(bdi);
- 	if (ret < 0)
- 		goto out_charger;
--- 
-2.42.0
+Why?
 
+> 
+> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> 
+> Fixes: b16c0170b53c ("iommu/mediatek: Make use of iommu_device_register interface")
+
+How is this a fix if it isn't actually changing the code at all?
+
+> Signed-off-by: Alexandra Diupina <adiupina@astralinux.ru>
+> ---
+>  drivers/iommu/mtk_iommu.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
+> index 051815c9d2bb..208c47218b75 100644
+> --- a/drivers/iommu/mtk_iommu.c
+> +++ b/drivers/iommu/mtk_iommu.c
+> @@ -748,9 +748,7 @@ static int mtk_iommu_probe(struct platform_device *pdev)
+>  	iommu_device_set_ops(&data->iommu, &mtk_iommu_ops);
+>  	iommu_device_set_fwnode(&data->iommu, &pdev->dev.of_node->fwnode);
+>  
+> -	ret = iommu_device_register(&data->iommu);
+> -	if (ret)
+> -		return ret;
+> +	iommu_device_register(&data->iommu);
+
+This is obviously incorrect, please fix your "tool" that is telling you
+to make such a broken change.
+
+Unless your tool wants to create buggy code?  If so, it's succeeding
+very well.
+
+greg k-h
