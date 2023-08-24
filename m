@@ -2,129 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D0AD787086
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 15:41:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 041887870C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 15:46:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241379AbjHXNkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 09:40:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50512 "EHLO
+        id S241412AbjHXNqD convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 24 Aug 2023 09:46:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241367AbjHXNkT (ORCPT
+        with ESMTP id S241572AbjHXNpo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 09:40:19 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C13C5C7;
-        Thu, 24 Aug 2023 06:40:17 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5507D66CAF;
-        Thu, 24 Aug 2023 13:40:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3512C433C8;
-        Thu, 24 Aug 2023 13:40:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692884416;
-        bh=A8J2LnxJra5d1H9UVsWjdPJ1mHs82MiMsF4YKN8vTlE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DoCQXFEZDQ40KQBPRUAP7rCq5+r0a5PswtY/0sJzcOa4HJtiXKcZM/bKP6x6gwtEB
-         Ejos7WLn+2Z0DJ5lnl899JUF5adg3tPYSDRcmWwZeUZ+XypqqyIBoXdcMOgw/Umn3g
-         M7ezZ7w9LMP+i1BaeMpYkKKbfL3s1/nC7AZB08kcapQian/izxW1T2ZU4KgVsJNBuf
-         JwJ9xBssenm2pwz3VXGGkm++HfPyF7/Ae/9aOpP0XF2QRvGnZlbMHCMUUBBmoQRu4Y
-         saZAzeUzzOMvjJrvwo+ntbBdTaN1owZyAd8I1sB5fV1ibDJWN5WFAZE84OgSNPUqiS
-         DHwk24Gq27oHQ==
-Received: (nullmailer pid 674275 invoked by uid 1000);
-        Thu, 24 Aug 2023 13:40:13 -0000
-Date:   Thu, 24 Aug 2023 08:40:13 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Martin =?utf-8?B?WmHFpW92acSN?= <m.zatovic1@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, gregkh@linuxfoundation.org,
-        linus.walleij@linaro.org, quic_jhugo@quicinc.com,
-        nipun.gupta@amd.com, tzimmermann@suse.de, ogabbay@kernel.org,
-        mathieu.poirier@linaro.org, axboe@kernel.dk,
-        damien.lemoal@opensource.wdc.com, linux@zary.sk, arnd@arndb.de,
-        yangyicong@hisilicon.com, benjamin.tissoires@redhat.com,
-        masahiroy@kernel.org, jacek.lawrynowicz@linux.intel.com,
-        geert+renesas@glider.be, devicetree@vger.kernel.org,
-        andriy.shevchenko@intel.com
-Subject: Re: [PATCHv5 3/4] dt-bindings: wiegand: add GPIO bitbanged Wiegand
- controller
-Message-ID: <20230824134013.GB649032-robh@kernel.org>
-References: <20230824111015.57765-1-m.zatovic1@gmail.com>
- <20230824111015.57765-4-m.zatovic1@gmail.com>
+        Thu, 24 Aug 2023 09:45:44 -0400
+Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CFC51FDD;
+        Thu, 24 Aug 2023 06:45:28 -0700 (PDT)
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.95)
+          with esmtps (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1qZAd5-002K93-PJ; Thu, 24 Aug 2023 15:44:07 +0200
+Received: from p57bd925a.dip0.t-ipconnect.de ([87.189.146.90] helo=[192.168.178.81])
+          by inpost2.zedat.fu-berlin.de (Exim 4.95)
+          with esmtpsa (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1qZAd5-0034gd-9F; Thu, 24 Aug 2023 15:44:07 +0200
+Message-ID: <41c52315484c6ba60db0be5a19128a6d78ffd02d.camel@physik.fu-berlin.de>
+Subject: Re: [PATCH 03/14] sh: pci: Do PCI error check on own line
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To:     Ilpo =?ISO-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 24 Aug 2023 15:44:06 +0200
+In-Reply-To: <20230824132832.78705-4-ilpo.jarvinen@linux.intel.com>
+References: <20230824132832.78705-1-ilpo.jarvinen@linux.intel.com>
+         <20230824132832.78705-4-ilpo.jarvinen@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.48.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230824111015.57765-4-m.zatovic1@gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 87.189.146.90
+X-ZEDAT-Hint: PO
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 01:10:14PM +0200, Martin Zaťovič wrote:
-> GPIO bitbanged Wiegand controller requires definitions of GPIO lines to be
-> used on top of the common Wiegand properties. Wiegand utilizes two such
-> lines - DATA0(low data line) and DATA1(high data line).
+On Thu, 2023-08-24 at 16:28 +0300, Ilpo Järvinen wrote:
+> Instead of a if condition with a line split, use the usual error
+> handling pattern with a separate variable to improve readability.
 > 
-> Acked-by: Linus Walleij <linus.walleij@linaro.org>
-> Signed-off-by: Martin Zaťovič <m.zatovic1@gmail.com>
+> No functional changes intended.
+> 
+> Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 > ---
->  .../bindings/wiegand/wiegand-gpio.yaml        | 46 +++++++++++++++++++
->  MAINTAINERS                                   |  5 ++
->  2 files changed, 51 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/wiegand/wiegand-gpio.yaml
+>  arch/sh/drivers/pci/common.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/wiegand/wiegand-gpio.yaml b/Documentation/devicetree/bindings/wiegand/wiegand-gpio.yaml
-> new file mode 100644
-> index 000000000000..cf2cb938de02
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/wiegand/wiegand-gpio.yaml
-> @@ -0,0 +1,46 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/wiegand/wiegand-gpio.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: GPIO bitbanged Wiegand interface properties
-> +
-> +maintainers:
-> +  - Martin Zaťovič <m.zatovic1@gmail.com>
-> +
-> +description:
-> +  This represents the GPIO lines used for bit-banged Wiegand on dedicated GPIO
-> +  lines.
-> +
-> +allOf:
-> +  - $ref: /schemas/wiegand/wiegand-controller.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    const: wiegand-gpio
-> +
-> +  data-gpios:
-> +    description: GPIOs used as Wiegand data lines, DATA0 and DATA1 respectivelly.
-> +    maxItems: 2
-> +
-> +required:
-> +  - compatible
-> +  - data-gpios
-> +
-> +unevaluatedProperties: false
+> diff --git a/arch/sh/drivers/pci/common.c b/arch/sh/drivers/pci/common.c
+> index 2fd2b77e12ce..f59e5b9a6a80 100644
+> --- a/arch/sh/drivers/pci/common.c
+> +++ b/arch/sh/drivers/pci/common.c
+> @@ -53,15 +53,16 @@ int __init pci_is_66mhz_capable(struct pci_channel *hose,
+>  	unsigned short vid;
+>  	int cap66 = -1;
+>  	u16 stat;
+> +	int ret;
+>  
+>  	pr_info("PCI: Checking 66MHz capabilities...\n");
+>  
+>  	for (pci_devfn = 0; pci_devfn < 0xff; pci_devfn++) {
+>  		if (PCI_FUNC(pci_devfn))
+>  			continue;
+> -		if (early_read_config_word(hose, top_bus, current_bus,
+> -					   pci_devfn, PCI_VENDOR_ID, &vid) !=
+> -		    PCIBIOS_SUCCESSFUL)
+> +		ret = early_read_config_word(hose, top_bus, current_bus,
+> +					     pci_devfn, PCI_VENDOR_ID, &vid);
+> +		if (ret != PCIBIOS_SUCCESSFUL)
+>  			continue;
+>  		if (vid == 0xffff)
+>  			continue;
 
-You'll find this fails if you add an actual child node. Assuming you go 
-with only 1 child node allowed, then you need:
+Acked-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
 
-unevaluatedProperties:
-  type: object
-
-(There's not any way to say only 1 child, but multiple would have 
-constraints in the common binding as I explained.)
-
-Rob
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
