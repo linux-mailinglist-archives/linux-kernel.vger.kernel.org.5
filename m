@@ -2,88 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55C40787869
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 21:17:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A04D078786D
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 21:19:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243150AbjHXTRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 15:17:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45678 "EHLO
+        id S243162AbjHXTSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 15:18:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243136AbjHXTRA (ORCPT
+        with ESMTP id S243181AbjHXTSd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 15:17:00 -0400
-Received: from cstnet.cn (smtp84.cstnet.cn [159.226.251.84])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70C6B1BCE;
-        Thu, 24 Aug 2023 12:16:58 -0700 (PDT)
-Received: from [192.168.0.107] (unknown [111.197.209.91])
-        by APP-05 (Coremail) with SMTP id zQCowAAHIQiRrOdkRMvbBA--.23396S2;
-        Fri, 25 Aug 2023 03:16:33 +0800 (CST)
-Message-ID: <23096d55-63bf-687d-8790-ec05403e3b23@iscas.ac.cn>
-Date:   Fri, 25 Aug 2023 03:16:33 +0800
+        Thu, 24 Aug 2023 15:18:33 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD45A1BE2;
+        Thu, 24 Aug 2023 12:18:31 -0700 (PDT)
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37OJEJ9u009509;
+        Thu, 24 Aug 2023 19:17:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2023-03-30; bh=ie1xPRR4qBkUMu82YM5u8Hszy21ND7rb5N7h4LosZ3w=;
+ b=v/FwLPmha//ef1DvHp9NjK4HEv9WfLz61mK2SZon+H86+5y6Qazgr7YzRTtRoJJr2SZO
+ UNDWEwQa4av38dLLIYqhcsmoJ00vCjNRjBy2t0wamZt5L06a0zcTkjC94saHztCKvNBT
+ gdkFCCDx+E/p8USePUOo7uxX5elyj0k33kM3ugReRg9MT627VgkULXYOKG+l3ySj/ijm
+ UZrpsqZsD40xMbTqb/FXSqzqPakwrXTlGuaLdu1kwUKk6PFrXGoWsnGyTxb4slg8eDdi
+ kj3HelVx8+xNTve5WX6QWwDUphv29y5nqmfBxyZWWat5SEE84KeP7pmKDhWbK+UF6o9p GQ== 
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3sn1ytvwwk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 24 Aug 2023 19:17:34 +0000
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 37OHjGq9036111;
+        Thu, 24 Aug 2023 19:17:34 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3sn1ywcs3b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 24 Aug 2023 19:17:34 +0000
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37OJEu7s015687;
+        Thu, 24 Aug 2023 19:17:33 GMT
+Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.129.136.47])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3sn1ywcs25-1;
+        Thu, 24 Aug 2023 19:17:33 +0000
+From:   Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Weidong Wang <wangweidong.a@awinic.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc:     dan.carpenter@linaro.org, kernel-janitors@vger.kernel.org,
+        error27@gmail.com, kernel test robot <lkp@intel.com>
+Subject: [PATCH next] ASoC: codecs: Fix error code in aw88261_i2c_probe()
+Date:   Thu, 24 Aug 2023 12:17:10 -0700
+Message-ID: <20230824191722.2701215-1-harshit.m.mogalapalli@oracle.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v5] riscv: Handle zicsr/zifencei issue between gcc and
- binutils
-Content-Language: en-US
-To:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Conor Dooley <conor@kernel.org>
-Cc:     Conor Dooley <conor.dooley@microchip.com>,
-        patchwork-bot+linux-riscv@kernel.org,
-        linux-riscv@lists.infradead.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, nathan@kernel.org, ndesaulniers@google.com,
-        trix@redhat.com, bmeng@tinylab.org, guoren@kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        stable@vger.kernel.org
-References: <mhng-a2e62840-6065-4435-a82d-b09054e8f254@palmer-ri-x1c9a>
-From:   Mingzheng Xing <xingmingzheng@iscas.ac.cn>
-Organization: ISCAS
-In-Reply-To: <mhng-a2e62840-6065-4435-a82d-b09054e8f254@palmer-ri-x1c9a>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: zQCowAAHIQiRrOdkRMvbBA--.23396S2
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYf7k0a2IF6FyUM7kC6x804xWl14x267AK
-        xVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGw
-        A2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26r1j
-        6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j6F4UM28EF7xvwVC2z280aVAFwI0_Gr
-        0_Cr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAa
-        Y2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4
-        A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY
-        1x02628vn2kIc2xKxwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s
-        026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_
-        JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14
-        v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xva
-        j40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JV
-        W8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU85GYPUUUUU==
-X-Originating-IP: [111.197.209.91]
-X-CM-SenderInfo: 50lqwzhlqj6xxhqjqxpvfd2hldfou0/1tbiCgcNCmTnYiSKZgAAsj
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-24_15,2023-08-24_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0
+ malwarescore=0 spamscore=0 phishscore=0 mlxlogscore=999 adultscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308240165
+X-Proofpoint-ORIG-GUID: 8ZmfQOOK_gXxcNqu5Djc4-zMwMTqRWbY
+X-Proofpoint-GUID: 8ZmfQOOK_gXxcNqu5Djc4-zMwMTqRWbY
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/25/23 02:29, Palmer Dabbelt wrote:
-> On Thu, 24 Aug 2023 11:05:13 PDT (-0700), Conor Dooley wrote:
->> On Fri, Aug 25, 2023 at 01:46:59AM +0800, Mingzheng Xing wrote:
->>
->>> Just a question, I see that the previous patch has been merged
->>> into 6.5-rc7, and now a new fix patch should be sent out based
->>> on that, right?
->>
->> yes
->
-> Ideally ASAP, it's very late in the cycle.  I have something for 
-> tomorrow morning, but this will need time to test...
+Passing zero to dev_err_probe is a success which is incorrect when
+i2c_check_functionality() fails.
 
-I sent a new patch here:
-https://lore.kernel.org/all/20230824190852.45470-1-xingmingzheng@iscas.ac.cn
+Fix this by passing -ENXIO instead of zero to dev_err_probe().
 
+Fixes: 028a2ae25691 ("ASoC: codecs: Add aw88261 amplifier driver")
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <error27@gmail.com>
+Closes: https://lore.kernel.org/r/202308150315.CvOTIOKm-lkp@intel.com/
+Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+---
+This is only compile tested.
+---
+ sound/soc/codecs/aw88261.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Best Regards,
-Mingzheng.
+diff --git a/sound/soc/codecs/aw88261.c b/sound/soc/codecs/aw88261.c
+index 6e2266b71386..a697b5006b45 100644
+--- a/sound/soc/codecs/aw88261.c
++++ b/sound/soc/codecs/aw88261.c
+@@ -1245,7 +1245,7 @@ static int aw88261_i2c_probe(struct i2c_client *i2c)
+ 
+ 	ret = i2c_check_functionality(i2c->adapter, I2C_FUNC_I2C);
+ 	if (!ret)
+-		return dev_err_probe(&i2c->dev, ret, "check_functionality failed");
++		return dev_err_probe(&i2c->dev, -ENXIO, "check_functionality failed");
+ 
+ 	aw88261 = devm_kzalloc(&i2c->dev, sizeof(*aw88261), GFP_KERNEL);
+ 	if (!aw88261)
+-- 
+2.39.3
 
