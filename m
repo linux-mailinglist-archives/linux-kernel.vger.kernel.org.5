@@ -2,147 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29B10786DC8
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 13:25:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81E7B786DCA
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 13:27:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238945AbjHXLYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 07:24:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48252 "EHLO
+        id S235685AbjHXL0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 07:26:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234603AbjHXLYU (ORCPT
+        with ESMTP id S237244AbjHXL0d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 07:24:20 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D03B010FA;
-        Thu, 24 Aug 2023 04:24:18 -0700 (PDT)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37O9vOaD011109;
-        Thu, 24 Aug 2023 11:24:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=2Dz1+hAiDbVufNU3Br/8pVgbKQsoS6jl9qrvTruWUIk=;
- b=L1IX3zJWLeCPAv23/fCw26uSN95XD9jk0GVb8W5OaMLhvMwAFmn9ecisEUTsvhZM256E
- DlVpLqajjoBg4tczYSzZJQ/T7SHWpIolZd7HsQQNKKHbzZkS6ww9SiEV1Lb8gwYTfe+5
- OKaCo8nN0TNLYh0GKSSfg2zJtLavY/8RVhpXTfnaR+i0o+v6gqAOBoynyGSlHmFLZWOQ
- FLdF6RdDFNjsGqTZqmnHD8Wu/NlQuPdF+tToEjUySGviuDFDctUGRuOcjeDbo8MFsvRC
- MZdTUJjrI0EWwkbWfj6U8RfhAHxalb6/OLihMpLSwWtkIvThnuNPXeQ4TwXCs9vusm7w YA== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3snkumt5xw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 24 Aug 2023 11:24:12 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37OBOBUm022309
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 24 Aug 2023 11:24:11 GMT
-Received: from [10.216.60.202] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Thu, 24 Aug
- 2023 04:24:04 -0700
-Message-ID: <389f9df4-bcdb-4ec4-57d0-978b03fa862b@quicinc.com>
-Date:   Thu, 24 Aug 2023 16:53:59 +0530
+        Thu, 24 Aug 2023 07:26:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78C8810FE
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 04:25:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692876346;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Pf8km5Wwirj+Pp5xkmndF+gQtFmnTLNzQCBzwGFpVXg=;
+        b=gi7+Zs1UUG7jluEeIMMs+Rr+gAC6N0mIMTlqCZ6eB10TLgoHy3qr+ootiH8TnlAKu7DSWK
+        RTAQdD/XCK2bS4Wmcj6yFXrgITP/VBxl/8mJsHQiG5jXwl9ue+UbQTcI0RFoW4w56d/fTo
+        4N03mZKsiWZ8mEcoKlY1kLmPIjMeDxQ=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-270-vdy9oqG3NSCV-RpVVZIs7g-1; Thu, 24 Aug 2023 07:25:45 -0400
+X-MC-Unique: vdy9oqG3NSCV-RpVVZIs7g-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-3fee53cd697so35861205e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 04:25:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692876344; x=1693481144;
+        h=content-transfer-encoding:in-reply-to:subject:organization
+         :references:cc:to:from:content-language:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Pf8km5Wwirj+Pp5xkmndF+gQtFmnTLNzQCBzwGFpVXg=;
+        b=BOTB7FSXLMYxHUiC2Zlpn6nME0mNn3ohu9xkgqLrtCpvKqg4YPo0b9U/uIAzTuMkvX
+         Nyb4Fq9qsSxYwS8vbAuzt89T2Bnilbdx+Eyn95yQJH23JYWp7uijZ35cjWC6fNVodK28
+         DvdDVPysUZfrci8+wCiTCuBdlxeUKTgPunWQVTAmKN9xeCS/cVW3yL4LbxLA4sD6VCgY
+         X2B3MrZgvxf4GGyoOKrSdFgW7fZA+gV9KWl389ydvQIcdBg/vDmpSFweOKBxe+CJrdCc
+         Tbt+vEmow/nHkfyPzHRuxEal3yEB64M8EeK197B933La5Gx0w0L1nFJb36VOTjW7xJMm
+         dtWQ==
+X-Gm-Message-State: AOJu0YxIdyWLyOAsB+heYUZTStxX2MO2aKopsIsEKTEC1t8ZBjVsbwDz
+        dwZE8hgpk+Wh0vIhxvY2a0kt2WcZ284I9ap5MzXG7fsGaNlHYy7++nHYxkabdtELFc3wKwx26cu
+        /h4zlwoQxZkNppAbccRoNSO/g
+X-Received: by 2002:adf:f291:0:b0:319:8333:9052 with SMTP id k17-20020adff291000000b0031983339052mr12256629wro.26.1692876344004;
+        Thu, 24 Aug 2023 04:25:44 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEjgoZLvCXmRzs+SoRsWPKHZfVBXeQL7A57Cia6xx3CKAJ6M8J1WZ44nBdXmrWG3mqys2wyvg==
+X-Received: by 2002:adf:f291:0:b0:319:8333:9052 with SMTP id k17-20020adff291000000b0031983339052mr12256571wro.26.1692876343532;
+        Thu, 24 Aug 2023 04:25:43 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c709:6200:16ba:af70:999d:6a1a? (p200300cbc709620016baaf70999d6a1a.dip0.t-ipconnect.de. [2003:cb:c709:6200:16ba:af70:999d:6a1a])
+        by smtp.gmail.com with ESMTPSA id c3-20020adfe703000000b0031773a8e5c4sm21950229wrm.37.2023.08.24.04.25.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Aug 2023 04:25:43 -0700 (PDT)
+Message-ID: <0b9c122a-c05a-b3df-c69f-85f520294adc@redhat.com>
+Date:   Thu, 24 Aug 2023 13:25:41 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.1
-Subject: Re: [PATCH 2/2] arm64: dts: qcom: Enable tsens and thermal for
- sa8775p SoC
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
 Content-Language: en-US
-To:     Konrad Dybcio <konradybcio@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Thara Gopinath <thara.gopinath@gmail.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_manafm@quicinc.com>
-References: <20230821112928.19284-1-quic_priyjain@quicinc.com>
- <20230821112928.19284-3-quic_priyjain@quicinc.com>
- <ac153c9b-f698-47f4-9d52-b3ea5c9ba213@kernel.org>
-From:   Priyansh Jain <quic_priyjain@quicinc.com>
-In-Reply-To: <ac153c9b-f698-47f4-9d52-b3ea5c9ba213@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+From:   David Hildenbrand <david@redhat.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Alexandru Elisei <alexandru.elisei@arm.com>, will@kernel.org,
+        oliver.upton@linux.dev, maz@kernel.org, james.morse@arm.com,
+        suzuki.poulose@arm.com, yuzenghui@huawei.com, arnd@arndb.de,
+        akpm@linux-foundation.org, mingo@redhat.com, peterz@infradead.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+        mhiramat@kernel.org, rppt@kernel.org, hughd@google.com,
+        pcc@google.com, steven.price@arm.com, anshuman.khandual@arm.com,
+        vincenzo.frascino@arm.com, eugenis@google.com, kcc@google.com,
+        hyesoo.yu@samsung.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev,
+        linux-fsdevel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org
+References: <20230823131350.114942-1-alexandru.elisei@arm.com>
+ <33def4fe-fdb8-6388-1151-fabd2adc8220@redhat.com> <ZOc0fehF02MohuWr@arm.com>
+ <ebd3f142-43cc-dc92-7512-8f1c99073fce@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH RFC 00/37] Add support for arm64 MTE dynamic tag storage
+ reuse
+In-Reply-To: <ebd3f142-43cc-dc92-7512-8f1c99073fce@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: QtilqEFlvBBJQg9hBqzSiOSUPzXNtoXS
-X-Proofpoint-ORIG-GUID: QtilqEFlvBBJQg9hBqzSiOSUPzXNtoXS
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-24_07,2023-08-24_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxlogscore=768
- spamscore=0 suspectscore=0 adultscore=0 clxscore=1011 priorityscore=1501
- impostorscore=0 lowpriorityscore=0 phishscore=0 mlxscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
- definitions=main-2308240092
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Konrad,
+On 24.08.23 13:06, David Hildenbrand wrote:
+> On 24.08.23 12:44, Catalin Marinas wrote:
+>> On Thu, Aug 24, 2023 at 09:50:32AM +0200, David Hildenbrand wrote:
+>>> after re-reading it 2 times, I still have no clue what your patch set is
+>>> actually trying to achieve. Probably there is a way to describe how user
+>>> space intents to interact with this feature, so to see which value this
+>>> actually has for user space -- and if we are using the right APIs and
+>>> allocators.
+>>
+>> I'll try with an alternative summary, hopefully it becomes clearer (I
+>> think Alex is away until the end of the week, may not reply
+>> immediately). If this still doesn't work, maybe we should try a
+>> different implementation ;).
+>>
+>> The way MTE is implemented currently is to have a static carve-out of
+>> the DRAM to store the allocation tags (a.k.a. memory colour). This is
+>> what we call the tag storage. Each 16 bytes have 4 bits of tags, so this
+>> means 1/32 of the DRAM, roughly 3% used for the tag storage. This is
+>> done transparently by the hardware/interconnect (with firmware setup)
+>> and normally hidden from the OS. So a checked memory access to location
+>> X generates a tag fetch from location Y in the carve-out and this tag is
+>> compared with the bits 59:56 in the pointer. The correspondence from X
+>> to Y is linear (subject to a minimum block size to deal with some
+>> address interleaving). The software doesn't need to know about this
+>> correspondence as we have specific instructions like STG/LDG to location
+>> X that lead to a tag store/load to Y.
+>>
+>> Now, not all memory used by applications is tagged (mmap(PROT_MTE)).
+>> For example, some large allocations may not use PROT_MTE at all or only
+>> for the first and last page since initialising the tags takes time. The
+>> side-effect is that of these 3% DRAM, only part, say 1% is effectively
+>> used. Some people want the unused tag storage to be released for normal
+>> data usage (i.e. give it to the kernel page allocator).
+>>
+>> So the first complication is that a PROT_MTE page allocation at address
+>> X will need to reserve the tag storage at location Y (and migrate any
+>> data in that page if it is in use).
+>>
+>> To make things worse, pages in the tag storage/carve-out range cannot
+>> use PROT_MTE themselves on current hardware, so this adds the second
+>> complication - a heterogeneous memory layout. The kernel needs to know
+>> where to allocate a PROT_MTE page from or migrate a current page if it
+>> becomes PROT_MTE (mprotect()) and the range it is in does not support
+>> tagging.
+>>
+>> Some other complications are arm64-specific like cache coherency between
+>> tags and data accesses. There is a draft architecture spec which will be
+>> released soon, detailing how the hardware behaves.
+>>
+>> To your question about user APIs/ABIs, that's entirely transparent. As
+>> with the current kernel (without this dynamic tag storage), a user only
+>> needs to ask for PROT_MTE mappings to get tagged pages.
+> 
+> Thanks, that clarifies things a lot.
+> 
+> So it sounds like you might want to provide that tag memory using CMA.
+> 
+> That way, only movable allocations can end up on that CMA memory area,
+> and you can allocate selected tag pages on demand (similar to the
+> alloc_contig_range() use case).
+> 
+> That also solves the issue that such tag memory must not be longterm-pinned.
+> 
+> Regarding one complication: "The kernel needs to know where to allocate
+> a PROT_MTE page from or migrate a current page if it becomes PROT_MTE
+> (mprotect()) and the range it is in does not support tagging.",
+> simplified handling would be if it's in a MIGRATE_CMA pageblock, it
+> doesn't support tagging. You have to migrate to a !CMA page (for
+> example, not specifying GFP_MOVABLE as a quick way to achieve that).
+> 
 
-On 8/21/2023 5:25 PM, Konrad Dybcio wrote:
-> On 21.08.2023 13:29, Priyansh Jain wrote:
->> Add tsens and thermal devicetree node for sa8775p SoC.
->>
->> Signed-off-by: Priyansh Jain <quic_priyjain@quicinc.com>
->> ---
->>   arch/arm64/boot/dts/qcom/sa8775p.dtsi | 1096 +++++++++++++++++++++++++
->>   1 file changed, 1096 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/sa8775p.dtsi b/arch/arm64/boot/dts/qcom/sa8775p.dtsi
->> index b130136acffe..b9c622b3bf7e 100644
->> --- a/arch/arm64/boot/dts/qcom/sa8775p.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sa8775p.dtsi
->> @@ -2306,6 +2306,1102 @@
->>   
->>   			#freq-domain-cells = <1>;
->>   		};
->> +
->> +		tsens0: thermal-sensor@c222000 {
->> +			compatible = "qcom,sa8775p-tsens", "qcom,tsens-v2";
->> +			reg = <0x0C263000 0x1ff>,  /* TM */
->> +				<0x0C222000 0x1ff>; /* SROT */
-> 1. Test your patches. This will obviously not work due to the
->     #address/size-cells values of /soc@0.
-Yes this needs to be updated, Will update in the next revision.
-> 
-> 2. Use lowercase hex.
-Sure will update in next revision.
-> 3. Align subsequent entries for a property with the previous line
-> 
-Sure will update in next revision.
-> 4. Are you sure SROT is 0x1ff-long?
-> 
-Yes it can be updated to 0x8 , will update in next revision.
-> 5. The usefulness of these comments is questionable, many DTs have
->     them because of copypasta but I think it's time to stop that.
-> 
-Yes will remove them in next revision.
-> 6. No pdc wake-capable interrupts?
-Yes they don't need to be pdc wakeup capable.
-> 
->> +			#qcom,sensors = <12>;
->> +			interrupts = <GIC_SPI 506 IRQ_TYPE_LEVEL_HIGH>,
->> +				<GIC_SPI 508 IRQ_TYPE_LEVEL_HIGH>;
->> +			interrupt-names = "uplow","critical";
-> Missing space after the comma
-Yes will update in next revision.
-> 
-> Please move interrupt properties right after 'reg'.
-Sure will update in next revision.
-> Konrad
+Okay, I now realize that this patch set effectively duplicates some CMA 
+behavior using a new migrate-type. Yeah, that's probably not what we 
+want just to identify if memory is taggable or not.
+
+Maybe there is a way to just keep reusing most of CMA instead.
+
+
+Another simpler idea to get started would be to just intercept the first 
+PROT_MTE, and allocate all CMA memory. In that case, systems that don't 
+ever use PROT_MTE can have that additional 3% of memory.
+
+You probably know better how frequent it is that only a handful of 
+applications use PROT_MTE, such that there is still a significant 
+portion of tag memory to be reused (and if it's really worth optimizing 
+for that scenario).
+
+-- 
+Cheers,
+
+David / dhildenb
+
