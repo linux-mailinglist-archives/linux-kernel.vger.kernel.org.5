@@ -2,65 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BE217875C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 18:43:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F01B7875C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 18:44:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242694AbjHXQn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 12:43:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47258 "EHLO
+        id S236401AbjHXQn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 12:43:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242783AbjHXQnW (ORCPT
+        with ESMTP id S242750AbjHXQnj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 12:43:22 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DABAE1FC7
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 09:42:57 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1bf7423ef3eso788005ad.3
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 09:42:57 -0700 (PDT)
+        Thu, 24 Aug 2023 12:43:39 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A4001BFA
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 09:43:22 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2bcb0b973a5so81012921fa.3
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 09:43:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1692895377; x=1693500177;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=WKAEvxLjTVn245O1vlngwoyLqQ4EnTwo2ZEykgaML2g=;
-        b=DTP5sck+hGp4VP5P4OlaLrCHznJq05pkiacow+ru2IdytwcD6TCx+G+BwEVflu89iA
-         KILLkjFtMxqtX6vyS2aLmMb8pum0K4IsPYJaMMu67nY4hS+SCRDZhYeQWc9QQTP1F/Jq
-         9gh9Ol/ahssEpbcTfWIMPkNLxG37AgXwhnkCI=
+        d=linaro.org; s=google; t=1692895400; x=1693500200;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MhNikzhh9eyMrDoIEuRkwpx1JH9DFmpQLb9Zaw13Qy0=;
+        b=PDjoFLERmxIiohisUaSL6+3gzt3DAVcvCSfU+4Kk+INBbN1VhCkpmAgGL3i4tr/sTe
+         0T9p+F3BFITd33UsV+z2Su7H0N4dpwumQXIiGRhl7BRgVbLiJpKv7roXVYzwuVxn8+AF
+         T1yP1U6JwXwk3tkvvQV/+1PRoQTk5eC4aNyg1oCM+v7xvICYl9uCD/pleJVojDKM2dUD
+         u46d0HSd78nc1KTR6AwfEuI83txDBhELpYo1Jv4wXdrlGyzDwBd06UHR7YITsw6HNTBQ
+         yqSOO2BNTuU9z6bYXzl/Tnsx5p/sUe+4SBaUtTUFPIp3mD3NWxKm2C7/Thy2vVEkhjK0
+         TRew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692895377; x=1693500177;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WKAEvxLjTVn245O1vlngwoyLqQ4EnTwo2ZEykgaML2g=;
-        b=h4iVhC4fNwTn1PsbXqAPb6SQfZD3yafyuduY3PKwhG8LTISSKCxyDrFl0aULfBymyq
-         TEoy5DvSH9pMoUWMvmmFiDU67EGSaA02y3hwcbrt8xS/cB3mLgA3MJTniIxWtmtLJYvf
-         0zP+noMIUFR+hw3B+8bGOncPBkV5ZuXsXPULnTZ64U5bL5+ylUUKivHcO2ig9pWWo7p4
-         MTbRB2Ogtf3aaTDMW+YA4Ex3Gv8rnkm6HNgb3Q/ETVIn82iKjdCMNjHGf2IdNI+BDakY
-         Okv4jqKjnuuNdPRClCEvasWye7eZkOS8AN5XymPag281NoZeK1XS1QvkxSA5vDZFR8EB
-         YCRA==
-X-Gm-Message-State: AOJu0YwBiY5i2qnC0Pun/9KWq73n8qlck1WAX2CNSUyh4PvT6oDy/Zm3
-        O63gulzM6AwHcYmJ9SV3Ehg0TQ==
-X-Google-Smtp-Source: AGHT+IGltQ5W+Uo9QcdF+cHDC1x/LHmjvCbvq4IbIxBFvEkViKPvnsLfajUquv6YGdXxKJJvuG3JwQ==
-X-Received: by 2002:a17:903:4283:b0:1bf:4859:53df with SMTP id ju3-20020a170903428300b001bf485953dfmr12655931plb.0.1692895377295;
-        Thu, 24 Aug 2023 09:42:57 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id d2-20020a170903230200b001bdb8c0b578sm12966988plh.192.2023.08.24.09.42.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Aug 2023 09:42:56 -0700 (PDT)
-Date:   Thu, 24 Aug 2023 09:42:56 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Li zeming <zeming@nfschina.com>
-Cc:     luto@amacapital.net, wad@chromium.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] seccomp: Remove =?utf-8?Q?unne?=
- =?utf-8?B?Y2Vzc2FyeSDigJhOVUxM4oCZ?= values from prepared
-Message-ID: <202308240941.E3CC7885E@keescook>
-References: <20230825184348.6870-1-zeming@nfschina.com>
+        d=1e100.net; s=20221208; t=1692895400; x=1693500200;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MhNikzhh9eyMrDoIEuRkwpx1JH9DFmpQLb9Zaw13Qy0=;
+        b=h/BYyjZUM47ADXALv5vOCWC8xcwjW2iHlrWrSOK4JLI+F6Jbx3B96bVMiHX2ABeMcZ
+         x4y0cGh9QQrL56Mq3s7y22ZsMRNxci0W3mutUQUeWCUwyOB+O+NpWJlkXh6//ekF7Y3p
+         bngqjHBdzeoEL/E6V3j2yx++8H0uYYQ30Awq0x2mbTBQMUS3gv0kEw5eV3QDg5eLDgYN
+         XPFInegNQpNnLAx105owDHZgXMTBFSvzwhBmfa6AbCtGYkj+CnNEuEPXH1qfs1v0sUul
+         jtXGeUT7zHD+uGE3dNsPXOcQIlXAdSjWSiPIhQRenRaYIaMcdinOCJaPYjliuA8hpXm7
+         5PvA==
+X-Gm-Message-State: AOJu0YzupDKCD4DVpTWKI40Jmih4Tl0xbAoKwJUNi3qw3FZ6zHDeDGyy
+        WlvSHgpC3W64zlDqTXnCv1f4BQ==
+X-Google-Smtp-Source: AGHT+IEUCWFeSlki8RwvSQkR7uTgoukotEH1DBXjt3MQ0tdHbYwZNDakkUYgqZ8EKbxOphgoG97j2Q==
+X-Received: by 2002:a05:6512:3e9:b0:4fb:8de9:ac0e with SMTP id n9-20020a05651203e900b004fb8de9ac0emr9588579lfq.1.1692895400332;
+        Thu, 24 Aug 2023 09:43:20 -0700 (PDT)
+Received: from [192.168.0.22] ([77.252.47.198])
+        by smtp.gmail.com with ESMTPSA id o15-20020aa7dd4f000000b0051dd19d6d6esm10781906edw.73.2023.08.24.09.43.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Aug 2023 09:43:19 -0700 (PDT)
+Message-ID: <c9ede9cd-282a-37b9-4fbb-5b27fb276247@linaro.org>
+Date:   Thu, 24 Aug 2023 18:43:18 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230825184348.6870-1-zeming@nfschina.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v2 1/3] arm64: dts: imx93: add edma1 and edma2
+Content-Language: en-US
+To:     Frank Li <Frank.Li@nxp.com>, festevam@gmail.com
+Cc:     clin@suse.com, conor+dt@kernel.org, devicetree@vger.kernel.org,
+        eagle.zhou@nxp.com, imx@lists.linux.dev, joy.zou@nxp.com,
+        kernel@pengutronix.de, krzysztof.kozlowski+dt@linaro.org,
+        leoyang.li@nxp.com, linux-arm-kernel@lists.infradead.org,
+        linux-imx@nxp.com, linux-kernel@vger.kernel.org,
+        pierre.gondois@arm.com, robh+dt@kernel.org, s.hauer@pengutronix.de,
+        shawnguo@kernel.org, shenwei.wang@nxp.com, sherry.sun@nxp.com
+References: <20230824163922.2952403-1-Frank.Li@nxp.com>
+ <20230824163922.2952403-2-Frank.Li@nxp.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230824163922.2952403-2-Frank.Li@nxp.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,15 +81,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 26, 2023 at 02:43:48AM +0800, Li zeming wrote:
-> prepared is assigned first, so it does not need to initialize the 
-> assignment.
+On 24/08/2023 18:39, Frank Li wrote:
+> Add edma<n> nodes.
+> 
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> ---
+>  arch/arm64/boot/dts/freescale/imx93.dtsi | 116 +++++++++++++++++++++++
+>  1 file changed, 116 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/freescale/imx93.dtsi b/arch/arm64/boot/dts/freescale/imx93.dtsi
+> index 6f85a05ee7e1..acdca18673b7 100644
+> --- a/arch/arm64/boot/dts/freescale/imx93.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/imx93.dtsi
+> @@ -185,6 +185,46 @@ aips1: bus@44000000 {
+>  			#size-cells = <1>;
+>  			ranges;
+>  
+> +			edma1: dma-controller@44000000{
 
-I prefer to explicitly initialize variables so that later changes in
-the code cannot suddenly leave a variable in a surprise state. :) The
-compiler will do a good job removing redundant and dead stores.
+Missing space. In other places as well.
 
--Kees
+> +				compatible = "fsl,imx93-edma3";
+> +				reg = <0x44000000 0x200000>;
+> +				#dma-cells = <3>;
+> +				dma-channels = <31>;
 
--- 
-Kees Cook
+
+...
+
+> +				clocks = <&clk IMX93_CLK_EDMA2_GATE>;
+> +				clock-names = "dma";
+> +				fsl,edma-axi;
+> +				status = "okay";
+
+Drop.
+
+> +			};
+> +
+>  			wakeupmix_gpr: syscon@42420000 {
+>  				compatible = "fsl,imx93-wakeupmix-syscfg", "syscon";
+>  				reg = <0x42420000 0x1000>;
+
+Best regards,
+Krzysztof
+
