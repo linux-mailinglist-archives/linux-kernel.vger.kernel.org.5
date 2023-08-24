@@ -2,77 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C226786DD7
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 13:30:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B07E786DDE
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 13:31:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238672AbjHXL30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 07:29:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60974 "EHLO
+        id S240990AbjHXLbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 07:31:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240990AbjHXL3R (ORCPT
+        with ESMTP id S240980AbjHXLar (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 07:29:17 -0400
-Received: from s1.sapience.com (s1.sapience.com [72.84.236.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DE7810FE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 04:29:12 -0700 (PDT)
-Authentication-Results: dkim-srvy7; dkim=pass (Good ed25519-sha256 
-   signature) header.d=sapience.com header.i=@sapience.com 
-   header.a=ed25519-sha256; dkim=pass (Good 2048 bit rsa-sha256 signature) 
-   header.d=sapience.com header.i=@sapience.com header.a=rsa-sha256
-Received: from srv8.prv.sapience.com (srv8.prv.sapience.com [x.x.x.x])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
-        (No client certificate requested)
-        by s1.sapience.com (Postfix) with ESMTPS id 93BDA480A94;
-        Thu, 24 Aug 2023 07:29:11 -0400 (EDT)
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=sapience.com;
- i=@sapience.com; q=dns/txt; s=dk-ed25519-220413; t=1692876551;
- h=message-id : date : mime-version : subject : to : cc : references :
- from : in-reply-to : content-type : content-transfer-encoding : from;
- bh=rZ2he4Mdtq8h71/ckeBbMY4eP2beNycVRu9+nDI/LtI=;
- b=DrfrxhNWjnzMfrCoWg2Dk1FFavXmVuyhT2QiUVrVf1OK2SSTQO3gRKFoVsVNGEpWbdQfB
- zB22vg5xXthZ2UTAA==
-ARC-Seal: i=1; a=rsa-sha256; d=sapience.com; s=arc6-rsa-220412; t=1692876551;
-        cv=none; b=gzNGUBgNNvaWOc+LXN3p/iXArc6vIGM4jW04i0+a+KjAE7mNEuYLxxMlbnSi1EPOhJe2hDUUFWI9bVMFSIAHFEBPPOBJn1+pPam7iTtvrn3sz9CgyTQuBd6iLJ0pTzYxc8H56YcsTIV+ys69tV1COeMFnFPdNQ+3JmPM0gYlMKx+toIpuDKybVF2k5EcS9GaP99yn0HiH9JYXYJNZYDlz3Uc7sBigA7/Xz3DOko0/e3EnM8CjwrvTCO4YLFs0UdPfhAP2/A1qzgIxcwqEC6ehZ5R1dqrM5LXR5XWW2qaiW0mAcEItw6kFToDHgY0SUKe0uXpvgxg2WGiRcELg4YUug==
-ARC-Message-Signature: i=1; a=rsa-sha256; d=sapience.com; s=arc6-rsa-220412;
-        t=1692876551; c=relaxed/simple;
-        bh=Nx1A+sRwHAGlgn7Xne833IH4vtwjiO7q6mIStrHv0c4=;
-        h=DKIM-Signature:DKIM-Signature:Message-ID:Date:MIME-Version:
-         User-Agent:Subject:Content-Language:To:Cc:References:From:
-         In-Reply-To:Content-Type:Content-Transfer-Encoding; b=unSXKCTynNKYf6G63Eo2da8ucVZlmCEsuSd5QzcD/L5YMOAw9JNxhxEkU26LCe1kpUPyxNvEq7AXOZDkH09wccjAJJ/uEgkkTWErem335CxZOMZZlDjGZR9DWZMNu6WpyjYUDjOJJfXGmLTiOzs1cR3+ZLpVILuRCVwj8Cejk0dU+mdVzL/SbkpIRLJ2gkwMf6Be8+NLo5Yt5NcWv0qvuTHJfTyrU/1eTQGUAkjJzC9KSkAW/aMZIa8JqGMo7YW6XGMl2r4mN9eFh3nXe0K0Da6/oYGiYuhU3oo2NrAo1ZXeB8IU9/isMkvea00mmHqI8PB1d933BntgXY+7Zp0NVw==
-ARC-Authentication-Results: i=1; arc-srv8.sapience.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sapience.com;
- i=@sapience.com; q=dns/txt; s=dk-rsa-220413; t=1692876551;
- h=message-id : date : mime-version : subject : to : cc : references :
- from : in-reply-to : content-type : content-transfer-encoding : from;
- bh=rZ2he4Mdtq8h71/ckeBbMY4eP2beNycVRu9+nDI/LtI=;
- b=ni41ligdeHxPrnyUVg36yLtjJ9UWdETxXi4kyPfLEKTlear0+2dysffJKfdRZxAS7fgnv
- 3zC6My6IJrA2QqCO6pY1QIj7qb7YLiAB2OKjfFWIV9ud0FQY9uOzGsfo+94g3lqw36oznwW
- 9Pi832aRf6nj2BZTuA42qhFUdr8MMesJVL9fZeSrd08O2seF8pA1GmO/Hfh6ldxaO/Fnetl
- qEUnAZP1x9+jFf19v5oJoQ/htlEOlrg/s8w6Lq+o0WbjROJLQSQSTkzSq7eM6zFZPn7+kVV
- qsC6QYjzAAfTjWLAHyS/AbMj0TMcNllO2dDhKnPKRmiEf531LBtFnaBGMfFg==
-Message-ID: <b622dbe4-9b18-4406-b82d-942e3ec01ff2@sapience.com>
-Date:   Thu, 24 Aug 2023 07:29:10 -0400
+        Thu, 24 Aug 2023 07:30:47 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F95910FA
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 04:30:45 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id 2adb3069b0e04-50078eba7afso7523340e87.0
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 04:30:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692876643; x=1693481443;
+        h=mime-version:references:in-reply-to:message-id:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ASyf3JC5XyPQVGDixUt3RWgAOAA8jJHFRroqWQwv3RY=;
+        b=qpWZxM2Qjloj1a+cMHGM3pQr4DDwiArvbnTdwZyhVNpDspv2WeRdlce6m4AaLzGtvY
+         6CaLulniYcF0RtAdGImuUE7nj71aI1BQqSevZFdcR1X8sdoMwiLAoJF8JJJMjpCjPr/H
+         Q0g1F9+VJ9woK7K1P6luuzJmMO5e5CrMNkOgcf6mJdIDyi1VTVkzz72wP4e/3ezipNdR
+         qo2d1LWOEOB48ZKO8TIZ5xdNGuEKYqEIsCox+oyOh2YuI4J/4n3BIQUPpX7v30NV5kxJ
+         rmE97TYM7CNRd8bdwHdqgCk6pGpVsUw4XCM6jAQSH33vPy3kAUQMr/3dEkgoRRyPskFh
+         i0AA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692876643; x=1693481443;
+        h=mime-version:references:in-reply-to:message-id:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ASyf3JC5XyPQVGDixUt3RWgAOAA8jJHFRroqWQwv3RY=;
+        b=g0doQuUQ/WCs1JIIuqiX7o0bHGwzvdh3tK6sUgwMSkMywl+EDXwyD/MHbvjVeoXbxx
+         A89Oy2Ast/GqSQak5Nsddk5i4O0wqhtwdShMqzcRk/ZHODXhzddbX3JL0+m2tPfjPLwY
+         9Kg3+TM8V/Kn3gkvURdXhYMlOWH+5Zh8rRi2fznXyk7Pi+nM7PSIlFyV1WhCtAkAo1rn
+         aT8/jUzjsEYSjoe58uCyx853lMeliX7aqsU7yQmBPj+rl75CR9rqY5i3iGLbPD4TALKq
+         u+pmEBteoNpx0P7jYPW35za65SnljEVHhczxumfDbSiWyXHMTmTgRrxsspw5ZHYZbExo
+         bPhA==
+X-Gm-Message-State: AOJu0YxAH5zR18veKSXWWfqm//ouZGVT5Yv1kfW2x2kNQFptfzZ98UPc
+        RU06jthes8ryVrnUl+Nn/bA=
+X-Google-Smtp-Source: AGHT+IH4D6GfK5xg3N8hhq7h5mDdx+ATwxZUuYfEAtXL/l0B4+m8CCj/sEqnZt/7cbA9Fbt6O63yXw==
+X-Received: by 2002:a05:6512:b94:b0:4ff:8c0f:a745 with SMTP id b20-20020a0565120b9400b004ff8c0fa745mr12988582lfv.54.1692876642771;
+        Thu, 24 Aug 2023 04:30:42 -0700 (PDT)
+Received: from eldfell ([194.136.85.206])
+        by smtp.gmail.com with ESMTPSA id v17-20020ac25611000000b004fe4ab686b4sm3110828lfd.167.2023.08.24.04.30.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Aug 2023 04:30:42 -0700 (PDT)
+Date:   Thu, 24 Aug 2023 14:30:32 +0300
+From:   Pekka Paalanen <ppaalanen@gmail.com>
+To:     =?UTF-8?B?QW5kcsOp?= Almeida <andrealmeid@igalia.com>
+Cc:     dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, kernel-dev@igalia.com,
+        alexander.deucher@amd.com, christian.koenig@amd.com,
+        pierre-eric.pelloux-prayer@amd.com,
+        Simon Ser <contact@emersion.fr>,
+        Rob Clark <robdclark@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Daniel Stone <daniel@fooishbar.org>,
+        'Marek =?UTF-8?B?T2zFocOhayc=?= <maraeo@gmail.com>,
+        Dave Airlie <airlied@gmail.com>,
+        Michel =?UTF-8?B?RMOkbnplcg==?= <michel.daenzer@mailbox.org>,
+        Samuel Pitoiset <samuel.pitoiset@gmail.com>,
+        Timur =?UTF-8?B?S3Jpc3TDs2Y=?= <timur.kristof@gmail.com>,
+        Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH v7] drm/doc: Document DRM device reset expectations
+Message-ID: <20230824143032.65d7e74a@eldfell>
+In-Reply-To: <20230818200642.276735-1-andrealmeid@igalia.com>
+References: <20230818200642.276735-1-andrealmeid@igalia.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.37; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Possible nvme regression in 6.4.11
-Content-Language: en-US
-To:     Keith Busch <kbusch@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, axboe@kernel.dk, sagi@grimberg.me,
-        linux-nvme@lists.infradead.org, hch@lst.de, arnd@arndb.de,
-        ricky_wu@realtek.com, gregkh@linuxfoundation.org
-References: <5f968b95-6b1c-4d6f-aac7-5d54f66834a8@sapience.com>
- <ZN050TFnKZ54LJ5v@kbusch-mbp.dhcp.thefacebook.com>
- <30b69186-5a6e-4f53-b24c-2221926fc3b4@sapience.com>
- <570d465a-7500-4b58-98f0-fd781c8740cc@sapience.com>
- <ZOZEwafA8+tknJNT@kbusch-mbp.dhcp.thefacebook.com>
-From:   Genes Lists <lists@sapience.com>
-In-Reply-To: <ZOZEwafA8+tknJNT@kbusch-mbp.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/I4PIBoGe6NF2KXplXhCJGSP";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,76 +84,199 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/23/23 13:41, Keith Busch wrote:
-> On Thu, Aug 17, 2023 at 05:16:01AM -0400, Genes Lists wrote:
->>> ----------------------------------------------------------------
->>> 69304c8d285b77c9a56d68f5ddb2558f27abf406 is the first bad commit
->>> commit 69304c8d285b77c9a56d68f5ddb2558f27abf406
->>> Author: Ricky WU <ricky_wu@realtek.com>
->>> Date:   Tue Jul 25 09:10:54 2023 +0000
->>>
->>>       misc: rtsx: judge ASPM Mode to set PETXCFG Reg
->>>
->>>       commit 101bd907b4244a726980ee67f95ed9cafab6ff7a upstream.
->>>
->>>       ASPM Mode is ASPM_MODE_CFG need to judge the value of clkreq_0
->>>       to set HIGH or LOW, if the ASPM Mode is ASPM_MODE_REG
->>>       always set to HIGH during the initialization.
->>>
->>>       Cc: stable@vger.kernel.org
->>>       Signed-off-by: Ricky Wu <ricky_wu@realtek.com>
->>>       Link:
->>> https://lore.kernel.org/r/52906c6836374c8cb068225954c5543a@realtek.com
->>>       Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->>>
->>>    drivers/misc/cardreader/rts5227.c  |  2 +-
->>>    drivers/misc/cardreader/rts5228.c  | 18 ------------------
->>>    drivers/misc/cardreader/rts5249.c  |  3 +--
->>>    drivers/misc/cardreader/rts5260.c  | 18 ------------------
->>>    drivers/misc/cardreader/rts5261.c  | 18 ------------------
->>>    drivers/misc/cardreader/rtsx_pcr.c |  5 ++++-
->>>    6 files changed, 6 insertions(+), 58 deletions(-)
->>>
->>> ------------------------------------------------------
->>>
->>> And the machine does have this hardware:
->>>
->>> 03:00.0 Unassigned class [ff00]: Realtek Semiconductor Co., Ltd. RTS525A
->>> PCI Express Card Reader (rev 01)
->>>           Subsystem: Dell RTS525A PCI Express Card Reader
->>>           Physical Slot: 1
->>>           Flags: bus master, fast devsel, latency 0, IRQ 141
->>>           Memory at ed100000 (32-bit, non-prefetchable) [size=4K]
->>>           Capabilities: [80] Power Management version 3
->>>           Capabilities: [90] MSI: Enable+ Count=1/1 Maskable- 64bit+
->>>           Capabilities: [b0] Express Endpoint, MSI 00
->>>           Kernel driver in use: rtsx_pci
->>>           Kernel modules: rtsx_pci
->>>
->>>
->>>
->>
->>
->> Adding to CC list since bisect landed on
->>
->>     drivers/misc/cardreader/rtsx_pcr.c
->>
->> Thread starts here: https://lkml.org/lkml/2023/8/16/1154
-> 
-> I realize you can work around this by blacklisting the rtsx_pci, but
-> that's not a pleasant solution. With only a few days left in 6.5, should
-> the commit just be reverted?
+--Sig_/I4PIBoGe6NF2KXplXhCJGSP
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, 18 Aug 2023 17:06:42 -0300
+Andr=C3=A9 Almeida <andrealmeid@igalia.com> wrote:
+
+> Create a section that specifies how to deal with DRM device resets for
+> kernel and userspace drivers.
+>=20
+> Signed-off-by: Andr=C3=A9 Almeida <andrealmeid@igalia.com>
+>=20
+> ---
+>=20
+> v7 changes:
+>  - s/application/graphical API contex/ in the robustness part (Michel)
+>  - Grammar fixes (Randy)
+>=20
+> v6: https://lore.kernel.org/lkml/20230815185710.159779-1-andrealmeid@igal=
+ia.com/
+>=20
+> v6 changes:
+>  - Due to substantial changes in the content, dropped Pekka's Acked-by
+>  - Grammar fixes (Randy)
+>  - Add paragraph about disabling device resets
+>  - Add note about integrating reset tracking in drm/sched
+>  - Add note that KMD should return failure for contexts affected by
+>    resets and UMD should check for this
+>  - Add note about lack of consensus around what to do about non-robust
+>    apps
+>=20
+> v5: https://lore.kernel.org/dri-devel/20230627132323.115440-1-andrealmeid=
+@igalia.com/
+> ---
+>  Documentation/gpu/drm-uapi.rst | 77 ++++++++++++++++++++++++++++++++++
+>  1 file changed, 77 insertions(+)
+
+Acked-by: Pekka Paalanen <pekka.paalanen@collabora.com>
+
+It's a good introduction, even if answers to the most interesting
+questions were not found yet.
+
+Does it still answer the questions you had originally that you set out
+to document?
 
 
-Looks like here are more people having same problem than I was aware of 
-earlier [1].
+Thanks,
+pq
 
-My recommendation now is to revert this.
+> diff --git a/Documentation/gpu/drm-uapi.rst b/Documentation/gpu/drm-uapi.=
+rst
+> index 65fb3036a580..3694bdb977f5 100644
+> --- a/Documentation/gpu/drm-uapi.rst
+> +++ b/Documentation/gpu/drm-uapi.rst
+> @@ -285,6 +285,83 @@ for GPU1 and GPU2 from different vendors, and a thir=
+d handler for
+>  mmapped regular files. Threads cause additional pain with signal
+>  handling as well.
+> =20
+> +Device reset
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +
+> +The GPU stack is really complex and is prone to errors, from hardware bu=
+gs,
+> +faulty applications and everything in between the many layers. Some erro=
+rs
+> +require resetting the device in order to make the device usable again. T=
+his
+> +section describes the expectations for DRM and usermode drivers when a
+> +device resets and how to propagate the reset status.
+> +
+> +Device resets can not be disabled without tainting the kernel, which can=
+ lead to
+> +hanging the entire kernel through shrinkers/mmu_notifiers. Userspace rol=
+e in
+> +device resets is to propagate the message to the application and apply a=
+ny
+> +special policy for blocking guilty applications, if any. Corollary is th=
+at
+> +debugging a hung GPU context require hardware support to be able to pree=
+mpt such
+> +a GPU context while it's stopped.
+> +
+> +Kernel Mode Driver
+> +------------------
+> +
+> +The KMD is responsible for checking if the device needs a reset, and to =
+perform
+> +it as needed. Usually a hang is detected when a job gets stuck executing=
+. KMD
+> +should keep track of resets, because userspace can query any time about =
+the
+> +reset status for a specific context. This is needed to propagate to the =
+rest of
+> +the stack that a reset has happened. Currently, this is implemented by e=
+ach
+> +driver separately, with no common DRM interface. Ideally this should be =
+properly
+> +integrated at DRM scheduler to provide a common ground for all drivers. =
+After a
+> +reset, KMD should reject new command submissions for affected contexts.
+> +
+> +User Mode Driver
+> +----------------
+> +
+> +After command submission, UMD should check if the submission was accepte=
+d or
+> +rejected. After a reset, KMD should reject submissions, and UMD can issu=
+e an
+> +ioctl to the KMD to check the reset status, and this can be checked more=
+ often
+> +if the UMD requires it. After detecting a reset, UMD will then proceed t=
+o report
+> +it to the application using the appropriate API error code, as explained=
+ in the
+> +section below about robustness.
+> +
+> +Robustness
+> +----------
+> +
+> +The only way to try to keep a graphical API context working after a rese=
+t is if
+> +it complies with the robustness aspects of the graphical API that it is =
+using.
+> +
+> +Graphical APIs provide ways to applications to deal with device resets. =
+However,
+> +there is no guarantee that the app will use such features correctly, and=
+ a
+> +userspace that doesn't support robust interfaces (like a non-robust
+> +OpenGL context or API without any robustness support like libva) leave t=
+he
+> +robustness handling entirely to the userspace driver. There is no strong
+> +community consensus on what the userspace driver should do in that case,
+> +since all reasonable approaches have some clear downsides.
+> +
+> +OpenGL
+> +~~~~~~
+> +
+> +Apps using OpenGL should use the available robust interfaces, like the
+> +extension ``GL_ARB_robustness`` (or ``GL_EXT_robustness`` for OpenGL ES)=
+. This
+> +interface tells if a reset has happened, and if so, all the context stat=
+e is
+> +considered lost and the app proceeds by creating new ones. There's no co=
+nsensus
+> +on what to do to if robustness is not in use.
+> +
+> +Vulkan
+> +~~~~~~
+> +
+> +Apps using Vulkan should check for ``VK_ERROR_DEVICE_LOST`` for submissi=
+ons.
+> +This error code means, among other things, that a device reset has happe=
+ned and
+> +it needs to recreate the contexts to keep going.
+> +
+> +Reporting causes of resets
+> +--------------------------
+> +
+> +Apart from propagating the reset through the stack so apps can recover, =
+it's
+> +really useful for driver developers to learn more about what caused the =
+reset in
+> +the first place. DRM devices should make use of devcoredump to store rel=
+evant
+> +information about the reset, so this information can be added to user bug
+> +reports.
+> +
+>  .. _drm_driver_ioctl:
+> =20
+>  IOCTL Support on Device Nodes
 
-thanks
 
-gene
+--Sig_/I4PIBoGe6NF2KXplXhCJGSP
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-[1] https://bugs.archlinux.org/task/79439#comment221262
+-----BEGIN PGP SIGNATURE-----
 
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmTnP1gACgkQI1/ltBGq
+qqd+qQ/9Ef0rbYI8EH7+wyhquOWEi9zaZmc/CzTCRL+XDkjUjSiw3mxvV3VIoyny
+Uv17w/6y0yX9+Yd0XwgYgeIYRtNTYVGJzPyFKBeOeGLutCj1w5OZcOMrui47O91z
+BEksXg2ihmB7LWIaX2nR8XLICKXOIn7rPgh4RuB8rltmX23grJm+tLVvd6VFVwNd
+VddO79s7k/ouwgK6gqMJG5ERPc5FTM8mFvwSXnc0UrivcuBNSUdOW2Jk2bRDc8hg
+n7WDQSK7jZHVf8swQoKj7YlDY4No7YqPORCNxgsUCWtmHFhINk/mvX5Ws0KSCDa4
+rGUqJQSfzYpy4H3QRtbwBiCTwD8NeVZmaj8JLgbEPMWzYUy9zmsPcHJogbt0V+dc
+UcWrlkqpbNUGVT3PSd2K9640GNu4noo3SlrIO34AYwN1byStUOTYQSiGI0LSYgBt
+aatt00CkGFR2AAp2+nH2Wk8JB1/BiNuPmO9KnyVhx3/6kv5ZqEYz+8Yzr+uo6M+H
+yF5FNEnuUh8RN2srWLfbBF4D7MrsRnbXD2BFkqLImTPrfbrMii5kjIulOnpfgMXP
+bpMO4hyl7jRoQoLC+Ef0To6Nf4V5SyNniczBuU2rfrN+VJroyXbPZFMWTR6zOnx7
+OOgkO3ggWbpbGiile5nb2fy5G1nRoXrG/0o29Vz/Lcnf4OUCh/o=
+=jaoU
+-----END PGP SIGNATURE-----
 
+--Sig_/I4PIBoGe6NF2KXplXhCJGSP--
