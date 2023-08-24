@@ -2,81 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF905786C44
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 11:48:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 758E4786C45
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 11:49:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240783AbjHXJr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 05:47:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49008 "EHLO
+        id S238775AbjHXJs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 05:48:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240675AbjHXJrs (ORCPT
+        with ESMTP id S240824AbjHXJsX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 05:47:48 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 161D710C7;
-        Thu, 24 Aug 2023 02:47:36 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Thu, 24 Aug 2023 05:48:23 -0400
+Received: from s1.sapience.com (s1.sapience.com [72.84.236.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F18DA10C7
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 02:48:21 -0700 (PDT)
+Authentication-Results: dkim-srvy7; dkim=pass (Good ed25519-sha256 
+   signature) header.d=sapience.com header.i=@sapience.com 
+   header.a=ed25519-sha256; dkim=pass (Good 2048 bit rsa-sha256 signature) 
+   header.d=sapience.com header.i=@sapience.com header.a=rsa-sha256
+Received: from srv8.prv.sapience.com (srv8.prv.sapience.com [x.x.x.x])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A2B286431B;
-        Thu, 24 Aug 2023 09:47:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87AA9C433C7;
-        Thu, 24 Aug 2023 09:47:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692870455;
-        bh=jpIcgpyOmQBzytNpmhA45q0sBknQ9noZJX6C0UvzR4E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PQH56xIeRfV6F2rA9n/tCd1UEoKryH/JWeMK7zcwllISQnpd1I+3U7YpvYq2WTyhB
-         5AuKGAaeu3vqXvBIdxKm3uBAoMnWmrlBdpBVGRKLtsFVl0+xZfT+vFog/A/xSYivIO
-         eZznYwXL0dLIiNsY0jKAV62+8llPViJjf2iM+d6le+vW18pCV8c3zsqSYY/9zjzj5N
-         bXIs9BlFtrHBRpS6ueidHHwfKlIqnhH2GGrocbXLgVkY5oiCAaDJEMgOfJzYXHxYmm
-         uM9hEzYC1I1EbZxhGBcx1ybfmrs9SH4tW6iawSKgq87r+J2dbL83i+XOWEkZsLv+rf
-         EA4K/6fa0Y3DQ==
-Date:   Thu, 24 Aug 2023 11:47:32 +0200
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Ying Liu <victor.liu@nxp.com>
-Cc:     "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "airlied@gmail.com" <airlied@gmail.com>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "maarten.lankhorst@linux.intel.com" 
-        <maarten.lankhorst@linux.intel.com>,
-        "tzimmermann@suse.de" <tzimmermann@suse.de>,
-        Guido =?utf-8?Q?G=C3=BCnther?= <guido.gunther@puri.sm>,
-        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
-        "Laurentiu Palcu (OSS)" <laurentiu.palcu@oss.nxp.com>,
-        "robh@kernel.org" <robh@kernel.org>
-Subject: Re: [PATCH v14 RESEND 1/6] dt-bindings: display: imx: Add
- i.MX8qxp/qm DPU binding
-Message-ID: <2k3cc3yfwqlpquxrdmzmaafz55b3lnqomzxjsvtetfriliqj3k@tv6uh7dzc2ea>
-References: <20230822085949.816844-1-victor.liu@nxp.com>
- <20230822085949.816844-2-victor.liu@nxp.com>
- <scbtbu4cdjlsmbr6ugkpqslvfywidvbuqyekxuttfe4rmbp2st@lev2zfqe4h62>
- <AM7PR04MB70469E94D5FCFC46F51A72F3981CA@AM7PR04MB7046.eurprd04.prod.outlook.com>
- <64bpiz5nt3xgboxya26gcdh6d7nyyflm2m56orgjwwwibh52n7@yk4ogdcierho>
- <AM7PR04MB7046E8DD816FC99193B07E07981CA@AM7PR04MB7046.eurprd04.prod.outlook.com>
+        by s1.sapience.com (Postfix) with ESMTPS id 33C18480AD7;
+        Thu, 24 Aug 2023 05:48:21 -0400 (EDT)
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=sapience.com;
+ i=@sapience.com; q=dns/txt; s=dk-ed25519-220413; t=1692870501;
+ h=message-id : date : mime-version : subject : to : cc : references :
+ from : in-reply-to : content-type : content-transfer-encoding : from;
+ bh=DH+2hxPtncvNxefGoVKSbMNn+tUkPE31WVZ7cQnz3uM=;
+ b=elXfSiHKv+C9D0FuyBc7c4iEIMwFkXo5xHhmFfPuhFwOb+uJKDR2+LYosPnHKYZgQ08Fb
+ ddnxTr+J+0GX03RAQ==
+ARC-Seal: i=1; a=rsa-sha256; d=sapience.com; s=arc6-rsa-220412; t=1692870501;
+        cv=none; b=SZpail3ei3u0Nj3lfSfttHYH8ahVk1ZJuHQP0Q//kOz/lT3FwWGGdFrQ30+CB78sjy72dk4BhkjyYPpa+xLfFyYi9cr1KOJIOtBylnYtjU8DwujzhXHf8sfeQaoD0hvVvbguf2aBh4hjgX1ivYXH4XhqRGlvLso7looigZQcafGXtVitDe7cZdEvT2AfTIxWJ9juYXxjESw6ZQw67eL/YkjaZwIPpV3k7Agrfupw8K5nk7M7TZ5dkvVfYIySiY1d3eaWOuz2i1mGzcjAF1jShaBzlmd00hCVcYa3amDXfZMWFObDK3aUbGloELQaFnreNg7JbY8lV2cumxLHPGu7UA==
+ARC-Message-Signature: i=1; a=rsa-sha256; d=sapience.com; s=arc6-rsa-220412;
+        t=1692870501; c=relaxed/simple;
+        bh=Zaj1r2D/y9d6w3HtH46woGegOcwHSMooJRyRFEO2cBU=;
+        h=DKIM-Signature:DKIM-Signature:Message-ID:Date:MIME-Version:
+         User-Agent:Subject:Content-Language:To:Cc:References:From:
+         In-Reply-To:Content-Type:Content-Transfer-Encoding; b=agmVIBlWB1zpRPX/6cz/KUX6gq8IDc21uNFGLwaxv6VwZKpLNJXEFjpAGj98l1B02YqNY6bmwK7BnVExTedVZSVX0EyAqdG5++C7Sg75TN1XrB2AUdalm5r5Eon+rZOI7L7uHoRgCt6WNDeYyVoghAkKa7IzK9iXCLfi+oRkSkjkXbijBDrZgGqSBHqzMBRbufse1dTvhH9UeAuLiD+s0dCvHfrwr3S4vRGfAly44c9UUj4pZNCBNsNiWOzoK8RJQzxx1og6LRdYsEFRqLHVNugio2FArRP+aQgWzfwuy04w4+bWBf/MHi+mX5ObqDdlHiCxSdvSZJzLSgJKShBfKQ==
+ARC-Authentication-Results: i=1; arc-srv8.sapience.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sapience.com;
+ i=@sapience.com; q=dns/txt; s=dk-rsa-220413; t=1692870501;
+ h=message-id : date : mime-version : subject : to : cc : references :
+ from : in-reply-to : content-type : content-transfer-encoding : from;
+ bh=DH+2hxPtncvNxefGoVKSbMNn+tUkPE31WVZ7cQnz3uM=;
+ b=P3HtSFYvDtEkexs5noFljLJ/gp2UQS3pOnCATCOJsAdlk12H3Vydh4CWQCZITbe6yLN0q
+ Hr6/1/o+h+OxVHFFKIJ/paNUgyEhPZ/YMyLPomY+wuw0kU4af9Z03xt+UJ07OI+VwRhnbou
+ TSG3UrmAp6UyZBooCd+QmhszKng994MAqVenHwL9Os9CSPn8boPOlj3MgKTFidwDSlpT/Jz
+ UiaURf/N+Ra6ujozpUq0SpXgqKy42r5GMSjuFwA3fFf44oK6lR4CiOg9zZ8d2zFkSV6U7L/
+ s7K0BekI23PORNUyLJjRCODEW94WiK60aisPGuxUGNUIdgIcdE5LtkqMH0qg==
+Message-ID: <903830f8-9f9a-4071-9ced-761a55018c5a@sapience.com>
+Date:   Thu, 24 Aug 2023 05:48:20 -0400
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="6rb56x6m6vahizvh"
-Content-Disposition: inline
-In-Reply-To: <AM7PR04MB7046E8DD816FC99193B07E07981CA@AM7PR04MB7046.eurprd04.prod.outlook.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: Possible nvme regression in 6.4.11
+Content-Language: en-US
+To:     Ricky WU <ricky_wu@realtek.com>, Keith Busch <kbusch@kernel.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "sagi@grimberg.me" <sagi@grimberg.me>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "hch@lst.de" <hch@lst.de>, "arnd@arndb.de" <arnd@arndb.de>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+References: <5f968b95-6b1c-4d6f-aac7-5d54f66834a8@sapience.com>
+ <ZN050TFnKZ54LJ5v@kbusch-mbp.dhcp.thefacebook.com>
+ <30b69186-5a6e-4f53-b24c-2221926fc3b4@sapience.com>
+ <570d465a-7500-4b58-98f0-fd781c8740cc@sapience.com>
+ <ZOZEwafA8+tknJNT@kbusch-mbp.dhcp.thefacebook.com>
+ <7cf188d0-77b4-4e80-8da6-2045a7f29866@sapience.com>
+ <180a2bbd2c314ede8f6c4c16cc4603bf@realtek.com>
+From:   Genes Lists <lists@sapience.com>
+In-Reply-To: <180a2bbd2c314ede8f6c4c16cc4603bf@realtek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,54 +85,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 8/23/23 22:44, Ricky WU wrote:
+> Hi Gene,
+> 
+> I can't reproduce this issue on my side...
+> 
+> So if you only revert this patch (69304c8d285b77c9a56d68f5ddb2558f27abf406) can work fine?
+> This patch only do is pull our clock request to HIGH if HOST need also can pull to LOW, and this only do on our device
+> I don’t think this will affect other ports...
+> 
+> BR,
+> Ricky
 
---6rb56x6m6vahizvh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks Ricky - I will test revering just that commit and report back.  I 
+wont be able to get to it till later today (sometime after 2pm EDT) but 
+I will do it today.
 
-On Wed, Aug 23, 2023 at 08:47:51AM +0000, Ying Liu wrote:
-> > > This dt-binding just follows generic dt-binding rule to describe the =
-DPU IP
-> > > hardware, not the software implementation.  DPU internal units do not
-> > > constitute separate devices.
-> >=20
-> > I mean, your driver does split them into separate devices so surely it
-> > constitutes separate devices.
->=20
-> My driver treats them as DPU internal units, especially not Linux devices.
->=20
-> Let's avoid Linuxisms when implementing this dt-binding and just be simple
-> to describe necessary stuff exposing to DPU's embodying system/SoC, like
-> reg, interrupts, clocks and power-domains.
+FYI, i see one mpre report of someone experiencing same problem [1]
 
-Let's focus the conversation here, because it's redundant with the rest.
+gene
 
-Your driver registers two additional devices, that have a different
-register space, different clocks, different interrupts, different power
-domains, etc. That has nothing to do with Linux, it's hardware
-properties.
+  [1] https://bugs.archlinux.org/task/79439
 
-That alone is a very good indication to me that these devices should be
-modeled as such. And your driver agrees.
 
-Whether or not the other internal units need to be described as separate
-devices, I can't really tell, I don't have the datasheet.
-
-But at least the CRTC and the interrupt controller should be split away,
-or explained and detailed far better than "well it's just convenient".
-
-Maxime
-
---6rb56x6m6vahizvh
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZOcnNAAKCRDj7w1vZxhR
-xbJhAQDZaTkwwHUSQvHmPGZpRlOyyyziNVb6jv9YxbU1HZ0pywD/WigGDCjifkiR
-8nfYBdnZbrK5UeFqdTRPOCdu3I0hEgw=
-=X+lc
------END PGP SIGNATURE-----
-
---6rb56x6m6vahizvh--
