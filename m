@@ -2,199 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B62E57870D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 15:49:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BD197870DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 15:52:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241278AbjHXNsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 09:48:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49340 "EHLO
+        id S240972AbjHXNvz convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 24 Aug 2023 09:51:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238758AbjHXNse (ORCPT
+        with ESMTP id S238297AbjHXNvc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 09:48:34 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8A9B128;
-        Thu, 24 Aug 2023 06:48:31 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6A95066D46;
-        Thu, 24 Aug 2023 13:48:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDE0EC433C8;
-        Thu, 24 Aug 2023 13:48:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692884910;
-        bh=8fxc/BIlwezL6vOn3Kkvna2hc1WrAKRczerXKpLFxrE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lbn2BI9NV/piImyIta+KBYlI3hz081EbhqLWgpyRuYbVVVkBzvfwuEz/G0es9IHXw
-         p9s5bk8XXIcj+c5xEB86PGMB308a4q1+qXkeQQO46aRg54PcThEL+BouQtubqBKbEB
-         UHJSd8brVIABHtaZPoV4ynoGjsy81vuFOjxUJoExmuguHqP2NWi/S5SXvxWNJlWRQF
-         dpYUGkv2bL6kuPRX9mVRFc+yiRAYP7rhnfpV5MuiiZjPKuFqiH568RLpfAhjz1j134
-         4NEWF11y1BeuldM5s2qRw1XsVwBajxKK2rZWOxWHdiJXEC/eVkiruRTD4akg61xr6Z
-         UzACwC72A7yng==
-Received: (nullmailer pid 686612 invoked by uid 1000);
-        Thu, 24 Aug 2023 13:48:28 -0000
-Date:   Thu, 24 Aug 2023 08:48:28 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Raphael Gallais-Pou <rgallaispou@gmail.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
+        Thu, 24 Aug 2023 09:51:32 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B54EEA8;
+        Thu, 24 Aug 2023 06:51:29 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4FA2E1007;
+        Thu, 24 Aug 2023 06:52:09 -0700 (PDT)
+Received: from slackpad.lan (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BB0603F762;
+        Thu, 24 Aug 2023 06:51:26 -0700 (PDT)
+Date:   Thu, 24 Aug 2023 14:50:25 +0100
+From:   Andre Przywara <andre.przywara@arm.com>
+To:     Andrey Skvortsov <andrej.skvortzov@gmail.com>
+Cc:     Jernej =?UTF-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Conor Dooley <conor.dooley@microchip.com>
-Subject: Re: [PATCH v3] dt-bindings: irqchip: convert st,stih407-irq-syscfg
- to DT schema
-Message-ID: <20230824134828.GA683810-robh@kernel.org>
-References: <20230823224453.126963-1-rgallaispou@gmail.com>
+        Chen-Yu Tsai <wens@csie.org>,
+        Samuel Holland <samuel@sholland.org>,
+        Kees Cook <keescook@chromium.org>,
+        Tony Luck <tony.luck@intel.com>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Jarrah Gosbell <kernel@undef.tools>,
+        Arnaud Ferraris <arnaud.ferraris@collabora.com>,
+        Pavel Machek <pavel@ucw.cz>
+Subject: Re: [PATCH v2] arm64: dts: pinephone: Add pstore support for
+ PinePhone A64
+Message-ID: <20230824144952.5b908649@slackpad.lan>
+In-Reply-To: <2235209.iZASKD2KPV@jernej-laptop>
+References: <20230821160817.GA2227@bug>
+        <20230822092358.309835-1-andrej.skvortzov@gmail.com>
+        <2235209.iZASKD2KPV@jernej-laptop>
+Organization: Arm Ltd.
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.31; x86_64-slackware-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230823224453.126963-1-rgallaispou@gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 12:44:53AM +0200, Raphael Gallais-Pou wrote:
-> Convert deprecated format to DT schema format.
-> 
-> Signed-off-by: Raphael Gallais-Pou <rgallaispou@gmail.com>
-> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-> ---
-> Changes in v2:
-> 	- Added Conor's r-by
-> 	- Removed quotes surrounding $refs
-> 	- Hardcoded 'st,invert-ext' possible values
-> 
-> Changes in v3:
-> 	- Fixed enum syntax warnings
-> 	- Removed reference to driver in favor of device
-> ---
->  .../st,sti-irq-syscfg.txt                     | 30 ---------
->  .../st,stih407-irq-syscfg.yaml                | 64 +++++++++++++++++++
->  2 files changed, 64 insertions(+), 30 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/interrupt-controller/st,sti-irq-syscfg.txt
->  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/st,stih407-irq-syscfg.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/interrupt-controller/st,sti-irq-syscfg.txt b/Documentation/devicetree/bindings/interrupt-controller/st,sti-irq-syscfg.txt
-> deleted file mode 100644
-> index 977d7ed3670e..000000000000
-> --- a/Documentation/devicetree/bindings/interrupt-controller/st,sti-irq-syscfg.txt
-> +++ /dev/null
-> @@ -1,30 +0,0 @@
-> -STMicroelectronics STi System Configuration Controlled IRQs
-> ------------------------------------------------------------
-> -
-> -On STi based systems; External, CTI (Core Sight), PMU (Performance Management),
-> -and PL310 L2 Cache IRQs are controlled using System Configuration registers.
-> -This driver is used to unmask them prior to use.
-> -
-> -Required properties:
-> -- compatible	: Should be "st,stih407-irq-syscfg"
-> -- st,syscfg	: Phandle to Cortex-A9 IRQ system config registers
-> -- st,irq-device	: Array of IRQs to enable - should be 2 in length
-> -- st,fiq-device	: Array of FIQs to enable - should be 2 in length
-> -
-> -Optional properties:
-> -- st,invert-ext	: External IRQs can be inverted at will.  This property inverts
-> -		  these IRQs using bitwise logic.  A number of defines have been
-> -		  provided for convenience:
-> -			ST_IRQ_SYSCFG_EXT_1_INV
-> -			ST_IRQ_SYSCFG_EXT_2_INV
-> -			ST_IRQ_SYSCFG_EXT_3_INV
-> -Example:
-> -
-> -irq-syscfg {
-> -	compatible    = "st,stih407-irq-syscfg";
-> -	st,syscfg     = <&syscfg_cpu>;
-> -	st,irq-device = <ST_IRQ_SYSCFG_PMU_0>,
-> -			<ST_IRQ_SYSCFG_PMU_1>;
-> -	st,fiq-device = <ST_IRQ_SYSCFG_DISABLED>,
-> -			<ST_IRQ_SYSCFG_DISABLED>;
-> -};
-> diff --git a/Documentation/devicetree/bindings/interrupt-controller/st,stih407-irq-syscfg.yaml b/Documentation/devicetree/bindings/interrupt-controller/st,stih407-irq-syscfg.yaml
-> new file mode 100644
-> index 000000000000..985fa281f027
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/interrupt-controller/st,stih407-irq-syscfg.yaml
-> @@ -0,0 +1,64 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/interrupt-controller/st,stih407-irq-syscfg.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: STMicroelectronics STi System Configuration Controlled IRQs
-> +
-> +maintainers:
-> +  - Patrice Chotard <patrice.chotard@foss.st.com>
-> +
-> +description:
-> +  On STi based systems; External, CTI (Core Sight), PMU (Performance
-> +  Management), and PL310 L2 Cache IRQs are controlled using System
-> +  Configuration registers.  This device is used to unmask them prior to use.
-> +
-> +properties:
-> +  compatible:
-> +    const: st,stih407-irq-syscfg
-> +
-> +  st,syscfg:
-> +    description: Phandle to Cortex-A9 IRQ system config registers
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +
-> +  st,irq-device:
-> +    description: Array of IRQs to enable.
-> +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> +    items:
-> +      - description: Enable the IRQ of the channel one.
-> +      - description: Enable the IRQ of the channel two.
-> +
-> +  st,fiq-device:
-> +    description: Array of FIQs to enable.
-> +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> +    items:
-> +      - description: Enable the IRQ of the channel one.
-> +      - description: Enable the IRQ of the channel two.
-> +
-> +  st,invert-ext:
-> +    description: External IRQs can be inverted at will. This property inverts
-> +      these IRQs using bitwise logic.
+On Wed, 23 Aug 2023 21:36:51 +0200
+Jernej Škrabec <jernej.skrabec@gmail.com> wrote:
 
-So this is a mask?
 
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    enum: [ 1, 2, 4]
+Hi Andrey,
 
-If so, then this is wrong if you want to set more than 1 bit.
-
-> +
-> +required:
-> +  - compatible
-> +  - st,syscfg
-> +  - st,irq-device
-> +  - st,fiq-device
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/irq-st.h>
-> +    irq-syscfg {
-> +        compatible    = "st,stih407-irq-syscfg";
-> +        st,syscfg     = <&syscfg_cpu>;
-> +        st,irq-device = <ST_IRQ_SYSCFG_PMU_0>,
-> +                        <ST_IRQ_SYSCFG_PMU_1>;
-> +        st,fiq-device = <ST_IRQ_SYSCFG_DISABLED>,
-> +                        <ST_IRQ_SYSCFG_DISABLED>;
-> +    };
-> +...
-> -- 
-> 2.41.0
+> send new revision as standalone e-mail, not as reply to old discussion.
 > 
+> Dne torek, 22. avgust 2023 ob 11:23:58 CEST je Andrey Skvortsov napisal(a):
+> > This patch reserves some memory in the DTS and sets up a
+> > pstore device tree node to enable pstore support.
+> > 
+> > In general any DRAM address, that isn't overwritten during a boot is
+> > suitable for pstore.
+> > 
+> > Range from 0x40000000 - 0x50000000 is heavily used by u-boot for
+> > internal use and to load kernel, fdt, fdto, scripts, pxefile and ramdisk
+> > later in the boot process. Ramdisk start address is 0x4FF00000,
+> > initramfs for kernel with some hacking features and debug info enabled
+> > can take more than 100Mb and final address will be around 0x58000000.
+> > Address 0x61000000 will most likely not overlap with that.  
+> 
+> There are other bootloaders as U-Boot, especially on PinePhone. Are you sure 
+> it works there too? What about U-Boot configuration, will those addresses still 
+> be used if configuration is changed?
+
+Also going along with what Pavel said (that's it more a policy
+decision, not a device property), I feel like this node should be added
+by the bootloader then. And indeed U-Boot has support for that already.
+From skimming over the code in cmd/pstore.c: if you enable
+CONFIG_CMD_PSTORE and set CONFIG_CMD_PSTORE_MEM_ADDR to your chosen
+address, then the U-Boot code will insert a reserved memory node on the
+fly. Would that solve your problem?
+
+Cheers,
+Andre
+
+> Best regards,
+> Jernej
+> 
+> > 
+> > Signed-off-by: Andrey Skvortsov <andrej.skvortzov@gmail.com>
+> > ---
+> > 
+> > Changes in v2:
+> >  - Update commit description with information about why this base address is
+> > used.
+> > 
+> >  .../boot/dts/allwinner/sun50i-a64-pinephone.dtsi | 16 ++++++++++++++++
+> >  1 file changed, 16 insertions(+)
+> > 
+> > diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
+> > b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi index
+> > 87847116ab6d..84f9410b0b70 100644
+> > --- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
+> > +++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
+> > @@ -19,6 +19,22 @@ aliases {
+> >  		serial0 = &uart0;
+> >  	};
+> > 
+> > +	reserved-memory {
+> > +		#address-cells = <1>;
+> > +		#size-cells = <1>;
+> > +		ranges;
+> > +
+> > +		pstore_mem: ramoops@61000000 {
+> > +			compatible = "ramoops";
+> > +			reg = <0x61000000 0x100000>;
+> > +			record-size = <0x20000>;
+> > +			console-size = <0x20000>;
+> > +			ftrace-size = <0x20000>;
+> > +			pmsg-size = <0x20000>;
+> > +			ecc-size = <16>;
+> > +		};
+> > +	};
+> > +
+> >  	backlight: backlight {
+> >  		compatible = "pwm-backlight";
+> >  		pwms = <&r_pwm 0 50000 PWM_POLARITY_INVERTED>;  
+> 
+> 
+> 
+> 
+> 
+
