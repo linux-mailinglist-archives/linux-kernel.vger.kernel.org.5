@@ -2,84 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CFAC786BC5
+	by mail.lfdr.de (Postfix) with ESMTP id D5980786BC7
 	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 11:28:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238744AbjHXJ1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 05:27:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37084 "EHLO
+        id S240586AbjHXJ1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 05:27:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240761AbjHXJ1J (ORCPT
+        with ESMTP id S240726AbjHXJ10 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 05:27:09 -0400
-Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9291910F9
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 02:27:05 -0700 (PDT)
-Received: from dlp.unisoc.com ([10.29.3.86])
-        by SHSQR01.spreadtrum.com with ESMTP id 37O9QTJA049400;
-        Thu, 24 Aug 2023 17:26:29 +0800 (+08)
-        (envelope-from zhifeng.tang@unisoc.com)
-Received: from SHDLP.spreadtrum.com (shmbx04.spreadtrum.com [10.0.1.214])
-        by dlp.unisoc.com (SkyGuard) with ESMTPS id 4RWd1w0m3Sz2Q1xTT;
-        Thu, 24 Aug 2023 17:24:04 +0800 (CST)
-Received: from xm9614pcu.spreadtrum.com (10.13.2.29) by shmbx04.spreadtrum.com
- (10.0.1.214) with Microsoft SMTP Server (TLS) id 15.0.1497.23; Thu, 24 Aug
- 2023 17:26:27 +0800
-From:   Zhifeng Tang <zhifeng.tang@unisoc.com>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Zhifeng Tang <zhifeng.tang@unisoc.com>,
-        Cixi Geng <cixi.geng1@unisoc.com>
-CC:     <linux-clk@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Zhifeng Tang <zhifeng.tang23@gmail.com>,
-        Wenming Wu <wenming.wu@unisoc.com>
-Subject: [PATCH V2] clk: sprd: Fix thm_parents incorrect configuration
-Date:   Thu, 24 Aug 2023 17:26:24 +0800
-Message-ID: <20230824092624.20020-1-zhifeng.tang@unisoc.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 24 Aug 2023 05:27:26 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A28A619A2
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 02:27:22 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-4fe15bfb1adso9927704e87.0
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 02:27:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692869241; x=1693474041;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=6zPKzgSts8Q/FDkxiHJwwyN2uApuU5now1q6IOWDgHw=;
+        b=wtAtorKCE6qSqEMpx/IVho0A+zLc2LjVI8bPp+aOUVWNRGnEYzmuiOwMf3I161jd8D
+         /7qw59rojPVLbPwqz5Em3IhABcUPPiNZ8NyDCwKqE48O/x6t9zaNnR1xhIO9atTucrDh
+         KB/XzB6uXxtniiNfCuRhPBfy/sVixshuc5MzE1IskLKiCypMd7XUuGg9VDSAqS13bkgg
+         s9cY6iAV5zQdLy5QRjmr//eyUTxd9OnF+AENihBTxiM08a/uAkHRj/zUNa+iIeGF12wj
+         4CJK5upo2GCu/qWJArWGZorDNgl3iLq1iHapMx8DdUW6FiMnTM6cZ7t3PT5rNz1Tk866
+         EAAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692869241; x=1693474041;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6zPKzgSts8Q/FDkxiHJwwyN2uApuU5now1q6IOWDgHw=;
+        b=DiKPnj+yxd5x1ZmnP4B/VpzLqf4y/gdgLY5ePDQH4bWMtP35Q71TipIulusalzzzLn
+         dqq2X57dworhsLEt/KB/MBZ/XYNFvQw4qxlDL4Er+NmA0/fRXLLLvaDaP116KazDON9p
+         5EF+B9wLHusLMwsV/DpOQGlPbzDv6zQQ4Yxv5QtMgBoMIMgvq0uTDrAUD8xeNSfPtfb0
+         RplYJ+opjdRSFKR9e9mSPr6a0Yn8u1QNwtCFrh1QUp9O8C7/lKqDoy101/7FjIlBLynK
+         Ap6a6hkwzO7KI9g0WDME4+PWXn2viIHBFdJWUDRXkm7xdub+DLltsngqHIoIiYnxb3G9
+         NUag==
+X-Gm-Message-State: AOJu0YzReqF2HdbCDOn4wWs0F+1J5HaDEtFkZfEQYh243uXaGd31psM2
+        cfnTXXQoT0nRabg1cTqBabHpQoDl7xVnyKuoBRi95g==
+X-Google-Smtp-Source: AGHT+IGyQSRppeHoZcGDkVVB4Dg2v0mdSsMwHodWyyPfVktwb2GR3M4IIKB/jlE5Y8cxDpxSY2H4r6LpW0WzSY7hy/4=
+X-Received: by 2002:a05:6512:39c1:b0:4ff:8b28:7b22 with SMTP id
+ k1-20020a05651239c100b004ff8b287b22mr10749853lfu.68.1692869240834; Thu, 24
+ Aug 2023 02:27:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.13.2.29]
-X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
- shmbx04.spreadtrum.com (10.0.1.214)
-X-MAIL: SHSQR01.spreadtrum.com 37O9QTJA049400
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+References: <20230818153446.1076027-1-shenwei.wang@nxp.com>
+In-Reply-To: <20230818153446.1076027-1-shenwei.wang@nxp.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 24 Aug 2023 11:26:42 +0200
+Message-ID: <CAPDyKFqsn6kVjPFUdVyRxNDiOaHO9hq=9c+6eAK4N-v-LVWUPw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] dt-bindings: power: Add regulator-pd yaml file
+To:     Shenwei Wang <shenwei.wang@nxp.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, imx@lists.linux.dev,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-imx@nxp.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The thm*_clk have two clock sources 32k and 250k,excluding 32m.
+On Fri, 18 Aug 2023 at 17:35, Shenwei Wang <shenwei.wang@nxp.com> wrote:
+>
+> Documenting the regulator power domain properties and usage examples.
 
-Fixes: af3bd36573e3 ("clk: sprd: Add clocks support for UMS512")
-Signed-off-by: Zhifeng Tang <zhifeng.tang@unisoc.com>
-Acked-by: Chunyan Zhang <zhang.lyra@gmail.com>
-Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
----
-V2: add Fixes tag.
----
- drivers/clk/sprd/ums512-clk.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+As Rob and Krzysztof already pointed out, I agree that this binding
+looks a bit questionable.
 
-diff --git a/drivers/clk/sprd/ums512-clk.c b/drivers/clk/sprd/ums512-clk.c
-index fc25bdd85e4e..f43bb10bd5ae 100644
---- a/drivers/clk/sprd/ums512-clk.c
-+++ b/drivers/clk/sprd/ums512-clk.c
-@@ -800,7 +800,7 @@ static SPRD_MUX_CLK_DATA(uart1_clk, "uart1-clk", uart_parents,
- 			 0x250, 0, 3, UMS512_MUX_FLAG);
- 
- static const struct clk_parent_data thm_parents[] = {
--	{ .fw_name = "ext-32m" },
-+	{ .fw_name = "ext-32k" },
- 	{ .hw = &clk_250k.hw  },
- };
- static SPRD_MUX_CLK_DATA(thm0_clk, "thm0-clk", thm_parents,
--- 
-2.17.1
+Rather than adding a new DT binding, why can't we just use the
+existing way of describing a platform specific power-domain provider?
+This still looks platform specific to me.
 
+Kind regards
+Uffe
+
+>
+> Signed-off-by: Shenwei Wang <shenwei.wang@nxp.com>
+> ---
+>  .../bindings/power/regulator-pd.yaml          | 71 +++++++++++++++++++
+>  1 file changed, 71 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/power/regulator-pd.yaml
+>
+> diff --git a/Documentation/devicetree/bindings/power/regulator-pd.yaml b/Documentation/devicetree/bindings/power/regulator-pd.yaml
+> new file mode 100644
+> index 000000000000..181d2fa83f8a
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/power/regulator-pd.yaml
+> @@ -0,0 +1,71 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/power/regulator-pd.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Regulator Power Domain
+> +
+> +maintainers:
+> +  - Shenwei Wang <shenwei.wang@nxp.com>
+> +
+> +description: |
+> +  This describes a power domain which manages a group of regulators.
+> +
+> +allOf:
+> +  - $ref: power-domain.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - const: regulator-power-domain
+> +
+> +  '#power-domain-cells':
+> +    const: 1
+> +
+> +  regulator-number:
+> +    minimum: 1
+> +    maximum: 100
+> +    description: The count of regulator to be managed by this power domain
+> +
+> +patternProperties:
+> +  "regulator-[0-99]-supply$":
+> +    description: The regulator supply phandle to be managed by this power domain
+> +
+> +required:
+> +  - compatible
+> +  - '#power-domain-cells'
+> +  - regulator-number
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +
+> +    reg1: regulator-1 {
+> +       compatible = "regulator-fixed";
+> +       regulator-name = "REG1";
+> +       regulator-min-microvolt = <3000000>;
+> +       regulator-max-microvolt = <3000000>;
+> +       gpio = <&lsio_gpio4 19 GPIO_ACTIVE_HIGH>;
+> +       enable-active-high;
+> +    };
+> +
+> +    reg2: regulator-2 {
+> +       compatible = "regulator-fixed";
+> +       regulator-name = "REG2";
+> +       regulator-min-microvolt = <3000000>;
+> +       regulator-max-microvolt = <3000000>;
+> +       gpio = <&lsio_gpio4 20 GPIO_ACTIVE_HIGH>;
+> +       enable-active-high;
+> +    };
+> +
+> +    power-controller {
+> +        compatible = "regulator-power-domain";
+> +        #power-domain-cells = <1>;
+> +
+> +        regulator-number = <2>;
+> +        regulator-0-supply = <&reg1>;
+> +        regulator-1-supply = <&reg2>;
+> +    };
+> --
+> 2.34.1
+>
