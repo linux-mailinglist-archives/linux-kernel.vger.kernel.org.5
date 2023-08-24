@@ -2,183 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCACF786853
+	by mail.lfdr.de (Postfix) with ESMTP id 794C9786852
 	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 09:30:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240351AbjHXH3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 03:29:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39570 "EHLO
+        id S240344AbjHXH3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 03:29:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240337AbjHXH3F (ORCPT
+        with ESMTP id S240341AbjHXH3F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 24 Aug 2023 03:29:05 -0400
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2061.outbound.protection.outlook.com [40.107.94.61])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF36010F0;
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C583410F3;
         Thu, 24 Aug 2023 00:29:02 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hNadpNeBfjv2c4X22gopoiKoluNmBCVXlbJRV3XrS9z//JwhemKfOuSKzlHCzOJGO5XsmsrDU+Z8SeCFn4bPS53m8/KZuBqFQ+rlzCqTNe5gOiB4JJP2GkhmUN9kYqzR+WaDlbZWduAwZgqWe6uSfUvfV3Aa4BIbgaYKilndhOMURVSyDtAptnyY78KFx1vUuETpiisHPtIsREIP9dORT6mEfG5liujvqxoD/maJnXWOhD50TMjblTxMCzZFgVgBHsS+tFdtQKenQ0s8sBuoTbCsWu/V/Yw83VwqXwdbQiGITu2YuzhREoe0yXSLhLxTR4T6a/uHsXcz4KijchaW/A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=fZBITAc+CgZ6VIUX/b6hjVcK5HADETNXwnZGZQyduEE=;
- b=Sh2mZ878a5DojpItY0ja4nc+vqgZ2M3dRrHNUf9C2JMM9Guo++vE2Sjc1EDzDPOZUAsrs589xHSR0Hzcc8aZI61lFKC+sKvgIExVI1pkQ9m5+rG9KUZZYUHvSw6riSpte0KvpUZxqVXcd5OXT1HrXe7LS0E20oiT6rNMi9bzLmLMQh7/ZcPNu3i5nMXhCyCNEkeUdYwupUnecFTEgSBV7Ygnjves52gmiDLE/3Cu71lVa4VMfEffhwaK/3JT4MozPkmc6tdwwH4KGrTLNRCpRvZdwRRpiLNiBAyc362ItQaSBlqGiJt2sCE+PtJd1p2IpRKknmkLLjxwF74Ld6K4Xg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=intel.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fZBITAc+CgZ6VIUX/b6hjVcK5HADETNXwnZGZQyduEE=;
- b=YSpFqTQvnfLNkIkWR6YBerrgDRIZmnESZQHD3ekVWLF/ps6KFWbvGfKvugaWNT0zdF5Tubqtcsi/jO2y8dcCheTViPbhGI353ZatlQCEMHtsoJkfJvKqm89TSGZz9V7+roQvGhj9wN2VTACVOgCepQE7CPVDrlp9GHJuqehRd6M=
-Received: from DM6PR03CA0062.namprd03.prod.outlook.com (2603:10b6:5:100::39)
- by IA0PR12MB7555.namprd12.prod.outlook.com (2603:10b6:208:43d::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.27; Thu, 24 Aug
- 2023 07:28:59 +0000
-Received: from CY4PEPF0000E9D5.namprd05.prod.outlook.com
- (2603:10b6:5:100:cafe::a8) by DM6PR03CA0062.outlook.office365.com
- (2603:10b6:5:100::39) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.26 via Frontend
- Transport; Thu, 24 Aug 2023 07:28:59 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CY4PEPF0000E9D5.mail.protection.outlook.com (10.167.241.76) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6699.15 via Frontend Transport; Thu, 24 Aug 2023 07:28:58 +0000
-Received: from BLR-5CG13462PL.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 24 Aug
- 2023 02:28:53 -0500
-From:   Wyes Karny <wyes.karny@amd.com>
-To:     Meng Li <li.meng@amd.com>
-CC:     Wyes Karny <wyes.karny@amd.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Huang Rui <ray.huang@amd.com>, <linux-pm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <x86@kernel.org>,
-        <linux-acpi@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        <linux-kselftest@vger.kernel.org>,
-        Nathan Fontenot <nathan.fontenot@amd.com>,
-        Deepak Sharma <deepak.sharma@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Shimmer Huang <shimmer.huang@amd.com>,
-        Perry Yuan <Perry.Yuan@amd.com>,
-        Xiaojian Du <Xiaojian.Du@amd.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Borislav Petkov <bp@alien8.de>
-Subject: Re: [PATCH V3 2/7] acpi: cppc: Add get the highest performance cppc control
-Date:   Thu, 24 Aug 2023 12:58:39 +0530
-Message-ID: <20230824072644.gysm34qtqq2acw5k@BLR-5CG13462PL.amd.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230824021249.271946-3-li.meng@amd.com>
-References: <20230824021249.271946-1-li.meng@amd.com> <20230824021249.271946-3-li.meng@amd.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692862142; x=1724398142;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=T5+gLDFeDpKHHJjBk6Pc68AyrOLuoiZ/CnvfLypnNnM=;
+  b=YO3JVT1lF+gZShn+62O3PuAcw1AnB0zsIfDQGp5RT/BcWETDEPJxgBQS
+   ng9UWAOvNdpHPto8UrIoeTG09GCISWaaNow+PMNT3J1dbsMRCygVVjbuU
+   NwqlTzhb23WN0003GznBHDuqH0YJ1ez8iSxH8bb5DaF5NNrZRr/wpD9E7
+   DyxbXijsOIXcbgJ3QSDA4mDnvqjzYlO/HU6B7LwCu3QInEIJnyMqmAyHs
+   9/hbJnbv6sq1XZIk5j6AFrOeZy8WL0cM/S+IIjTdyueZsJw+0C31pA6nc
+   yeiLU/K0HQLyj1lLhqYvo/sAMzn+xMMWLrSYIE6TV1IvYS5YXYIlfCvVw
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="364540973"
+X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
+   d="scan'208";a="364540973"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 00:29:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="802443973"
+X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
+   d="scan'208";a="802443973"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.251.212.187])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 00:28:59 -0700
+Message-ID: <32616176-f56e-c234-cebb-f4b1c6f92181@intel.com>
+Date:   Thu, 24 Aug 2023 10:28:50 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9D5:EE_|IA0PR12MB7555:EE_
-X-MS-Office365-Filtering-Correlation-Id: d905b10b-66dd-43aa-7286-08dba473c82a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: FgxbFP9Dlq4bSLEYxn1knP/NNHBD6GKmogUF4a5QVpc90DwbLwfjS6NzoGOshcgiKltdJhh0LiQO3AYwMsEpfMRKj4ozVuUwPMPY43tUe2QaDLdx7SfrUH/fNO7nI8/68rGdbCcOxwz5K6CH+9GbA39kSTVLDoG4bBKA0/rZP/e3QAtfP1TMhROCe+Dbi/dtEuBe+qxDJBL+kj9RHx6NBXYCSFjKCJXuKfny2NGJTWv1OYMdpRcc+AoGQrA+sqmAdW5Ii6yllU+bFyavIERjUOWEZMsSZSE7QXc7jmp9ahHYpZF+CIardHgEayWOFmNvCN5K4tlLqxMcHDW3H/dKzKDau3uq1Azh8St0zsU4Os3KUXgarjvzewa2Zb3V6fdyBP9bg2thBCRFB6V5cm0MV/yNeDbGwsKFYyA97JO5zPiEj/20vp5I+yEZEuW7+lfy9aPnk+pDY7aBjYyBLP9zJD+IWGCXLY7eXcEPEjyjb+EHuvQWo3rx1BLmWFm2wpF+zVnC/iM8aysWLsLvhiZ6SwNR331myJBbhZeWwzj9XYW+yLb9FDNh+Z+CopW+uOiNLJkFTGxN9NuD4niSz8JdCTzJplYlXzwR+2h/SaVfR3fdh/bBln0ZZvyw8NjvYuPOqS0qU6USi0cq8Zt0bmdjSeA7CiYy93ACGOQis1pIG8jpJz5jDXTxcYkkHtFWp1Rako2g9IxVN4BT3Nr3+WhKjQxHbEMjHJ+Auiy/9hadNRrTpLgc2zJhmdd2ATnvZgNFgypAyAhBmQbrWCDmuc1u0/Ccgt7YvwRWyUFjSriGagw=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(39860400002)(396003)(136003)(346002)(186009)(1800799009)(82310400011)(451199024)(40470700004)(36840700001)(46966006)(1076003)(40460700003)(5660300002)(4326008)(6862004)(8676002)(8936002)(336012)(426003)(47076005)(44832011)(36860700001)(55016003)(26005)(16526019)(40480700001)(82740400003)(356005)(6666004)(81166007)(70206006)(70586007)(54906003)(6636002)(316002)(478600001)(966005)(41300700001)(2906002)(7696005)(86362001)(15583001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Aug 2023 07:28:58.8382
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: d905b10b-66dd-43aa-7286-08dba473c82a
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000E9D5.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB7555
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.14.0
+Subject: Re: [PATCH v10 2/2] This commit implements the runtime PM operations
+ to disable eMMC card clock when idle.
+Content-Language: en-US
+To:     Liming Sun <limings@nvidia.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        David Thompson <davthompson@nvidia.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <79137159a833c164ea8ea3f05d8d6d9537db2f42.1683747334.git.limings@nvidia.com>
+ <20230822195929.168552-2-limings@nvidia.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <20230822195929.168552-2-limings@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24 Aug 10:12, Meng Li wrote:
-> Add support for getting the highest performance to the
-> generic CPPC driver. This enables downstream drivers
-> such as amd-pstate to discover and use these values.
-> 
-> Please refer to the ACPI_Spec for details on continuous
-> performance control of CPPC.
-> 
-> Signed-off-by: Meng Li <li.meng@amd.com>
-> Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
-Reviewed-by: Wyes Karny <wyes.karny@amd.com>
+On 22/08/23 22:59, Liming Sun wrote:
+> Reviewed-by: David Thompson <davthompson@nvidia.com>
+> Signed-off-by: Liming Sun <limings@nvidia.com>
 
-> Link: https://uefi.org/specs/ACPI/6.5/08_Processor_Configuration_and_Control.html?highlight=cppc#cpc-continuous-performance-control
+Seem the subject line got lost (it was OK in v9), and the description
+is in the subject line.
+
+Apart from that:
+
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+
 > ---
->  drivers/acpi/cppc_acpi.c | 13 +++++++++++++
->  include/acpi/cppc_acpi.h |  5 +++++
->  2 files changed, 18 insertions(+)
+> v9->v10:
+>     - Simplify the changes with pm_runtime_resume() in
+>       dwcmshc_suspend().
+> v8->v9:
+>     - Address Adrian's comment to do the pm_runtime_put() in
+>       dwcmshc_resume() instead; Error path changes not included yet.
+> v7->v8:
+>     - Address Ulf's comment (option-1);
+>     - Updates for Adrian's comment to remove the force_suspend/resume
+>       in dwcmshc_resume()/dwcmshc_suspend(); Add comments for
+>       dwcmshc_resume()/dwcmshc_suspend();
+> v6->v7:
+>     - Address Ulf's comment;
+> v5->v6:
+>     - Address Adrian's more comments and add coordination between
+>       runtime PM and system PM;
+> v4->v5:
+>     - Address Adrian's comment to move the pm_enable to the end to
+>       avoid race;
+> v3->v4:
+>     - Fix compiling reported by 'kernel test robot';
+> v2->v3:
+>     - Revise the commit message;
+> v1->v2:
+>     Updates for comments from Ulf:
+>     - Make the runtime PM logic generic for sdhci-of-dwcmshc;
+> v1: Initial version.
+> ---
+>  drivers/mmc/host/sdhci-of-dwcmshc.c | 64 ++++++++++++++++++++++++++++-
+>  1 file changed, 62 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-> index 7ff269a78c20..ad388a0e8484 100644
-> --- a/drivers/acpi/cppc_acpi.c
-> +++ b/drivers/acpi/cppc_acpi.c
-> @@ -1154,6 +1154,19 @@ int cppc_get_nominal_perf(int cpunum, u64 *nominal_perf)
->  	return cppc_get_perf(cpunum, NOMINAL_PERF, nominal_perf);
->  }
+> diff --git a/drivers/mmc/host/sdhci-of-dwcmshc.c b/drivers/mmc/host/sdhci-of-dwcmshc.c
+> index bc332a035032..3a3bae6948a8 100644
+> --- a/drivers/mmc/host/sdhci-of-dwcmshc.c
+> +++ b/drivers/mmc/host/sdhci-of-dwcmshc.c
+> @@ -15,6 +15,7 @@
+>  #include <linux/module.h>
+>  #include <linux/of.h>
+>  #include <linux/platform_device.h>
+> +#include <linux/pm_runtime.h>
+>  #include <linux/reset.h>
+>  #include <linux/sizes.h>
 >  
-> +/**
-> + * cppc_get_highest_perf - Get the highest performance register value.
-> + * @cpunum: CPU from which to get highest performance.
-> + * @highest_perf: Return address.
-> + *
-> + * Return: 0 for success, -EIO otherwise.
-> + */
-> +int cppc_get_highest_perf(int cpunum, u64 *highest_perf)
-> +{
-> +	return cppc_get_perf(cpunum, HIGHEST_PERF, highest_perf);
-> +}
-> +EXPORT_SYMBOL_GPL(cppc_get_highest_perf);
+> @@ -548,9 +549,13 @@ static int dwcmshc_probe(struct platform_device *pdev)
+>  
+>  	host->mmc->caps |= MMC_CAP_WAIT_WHILE_BUSY;
+>  
+> +	pm_runtime_get_noresume(dev);
+> +	pm_runtime_set_active(dev);
+> +	pm_runtime_enable(dev);
 > +
->  /**
->   * cppc_get_epp_perf - Get the epp register value.
->   * @cpunum: CPU from which to get epp preference value.
-> diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
-> index 6126c977ece0..c0b69ffe7bdb 100644
-> --- a/include/acpi/cppc_acpi.h
-> +++ b/include/acpi/cppc_acpi.h
-> @@ -139,6 +139,7 @@ struct cppc_cpudata {
->  #ifdef CONFIG_ACPI_CPPC_LIB
->  extern int cppc_get_desired_perf(int cpunum, u64 *desired_perf);
->  extern int cppc_get_nominal_perf(int cpunum, u64 *nominal_perf);
-> +extern int cppc_get_highest_perf(int cpunum, u64 *highest_perf);
->  extern int cppc_get_perf_ctrs(int cpu, struct cppc_perf_fb_ctrs *perf_fb_ctrs);
->  extern int cppc_set_perf(int cpu, struct cppc_perf_ctrls *perf_ctrls);
->  extern int cppc_set_enable(int cpu, bool enable);
-> @@ -165,6 +166,10 @@ static inline int cppc_get_nominal_perf(int cpunum, u64 *nominal_perf)
->  {
->  	return -ENOTSUPP;
+>  	err = sdhci_setup_host(host);
+>  	if (err)
+> -		goto err_clk;
+> +		goto err_rpm;
+>  
+>  	if (rk_priv)
+>  		dwcmshc_rk35xx_postinit(host, priv);
+> @@ -559,10 +564,15 @@ static int dwcmshc_probe(struct platform_device *pdev)
+>  	if (err)
+>  		goto err_setup_host;
+>  
+> +	pm_runtime_put(dev);
+> +
+>  	return 0;
+>  
+>  err_setup_host:
+>  	sdhci_cleanup_host(host);
+> +err_rpm:
+> +	pm_runtime_disable(dev);
+> +	pm_runtime_put_noidle(dev);
+>  err_clk:
+>  	clk_disable_unprepare(pltfm_host->clk);
+>  	clk_disable_unprepare(priv->bus_clk);
+> @@ -600,6 +610,8 @@ static int dwcmshc_suspend(struct device *dev)
+>  	struct rk35xx_priv *rk_priv = priv->priv;
+>  	int ret;
+>  
+> +	pm_runtime_resume(dev);
+> +
+>  	ret = sdhci_suspend_host(host);
+>  	if (ret)
+>  		return ret;
+> @@ -659,7 +671,55 @@ static int dwcmshc_resume(struct device *dev)
 >  }
-> +static inline int cppc_get_highest_perf(int cpunum, u64 *highest_perf)
+>  #endif
+>  
+> -static SIMPLE_DEV_PM_OPS(dwcmshc_pmops, dwcmshc_suspend, dwcmshc_resume);
+> +#ifdef CONFIG_PM
+> +
+> +static void dwcmshc_enable_card_clk(struct sdhci_host *host)
 > +{
-> +	return -ENOTSUPP;
+> +	u16 ctrl;
+> +
+> +	ctrl = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
+> +	if ((ctrl & SDHCI_CLOCK_INT_EN) && !(ctrl & SDHCI_CLOCK_CARD_EN)) {
+> +		ctrl |= SDHCI_CLOCK_CARD_EN;
+> +		sdhci_writew(host, ctrl, SDHCI_CLOCK_CONTROL);
+> +	}
 > +}
->  static inline int cppc_get_perf_ctrs(int cpu, struct cppc_perf_fb_ctrs *perf_fb_ctrs)
->  {
->  	return -ENOTSUPP;
-> -- 
-> 2.34.1
-> 
+> +
+> +static void dwcmshc_disable_card_clk(struct sdhci_host *host)
+> +{
+> +	u16 ctrl;
+> +
+> +	ctrl = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
+> +	if (ctrl & SDHCI_CLOCK_CARD_EN) {
+> +		ctrl &= ~SDHCI_CLOCK_CARD_EN;
+> +		sdhci_writew(host, ctrl, SDHCI_CLOCK_CONTROL);
+> +	}
+> +}
+> +
+> +static int dwcmshc_runtime_suspend(struct device *dev)
+> +{
+> +	struct sdhci_host *host = dev_get_drvdata(dev);
+> +
+> +	dwcmshc_disable_card_clk(host);
+> +
+> +	return 0;
+> +}
+> +
+> +static int dwcmshc_runtime_resume(struct device *dev)
+> +{
+> +	struct sdhci_host *host = dev_get_drvdata(dev);
+> +
+> +	dwcmshc_enable_card_clk(host);
+> +
+> +	return 0;
+> +}
+> +
+> +#endif
+> +
+> +static const struct dev_pm_ops dwcmshc_pmops = {
+> +	SET_SYSTEM_SLEEP_PM_OPS(dwcmshc_suspend, dwcmshc_resume)
+> +	SET_RUNTIME_PM_OPS(dwcmshc_runtime_suspend,
+> +			   dwcmshc_runtime_resume, NULL)
+> +};
+>  
+>  static struct platform_driver sdhci_dwcmshc_driver = {
+>  	.driver	= {
+
