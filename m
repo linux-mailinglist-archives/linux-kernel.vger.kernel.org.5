@@ -2,311 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32E2878666C
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 05:53:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1DDB78666F
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 05:56:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240007AbjHXDxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 23:53:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48490 "EHLO
+        id S240011AbjHXDze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 23:55:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239885AbjHXDw3 (ORCPT
+        with ESMTP id S240168AbjHXDzA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 23:52:29 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67C782105
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 20:50:57 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id 5614622812f47-3a84c94f8ebso490928b6e.1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 20:50:57 -0700 (PDT)
+        Wed, 23 Aug 2023 23:55:00 -0400
+Received: from smtp-fw-52005.amazon.com (smtp-fw-52005.amazon.com [52.119.213.156])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CBF21FD9;
+        Wed, 23 Aug 2023 20:53:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1692849022; x=1693453822;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eu0WK6VzHgaMcegFu4ppWK6A3eF2qt3htkac+PCZB8E=;
-        b=W5sRxdM+rsh+oajbFagtG/NArz5lC7ZueZPGHNOIABdikrecbQo1jrzqW9UDqyLoTv
-         TzgvihpvjWTWKJ+1fy992y96S5aNZpN2J9j+w5LSQdltHZCCPvU26E7vwSD0NURE42NC
-         Jz9M3A9q7+eGjsTVvnX5ny+7W7SkEPJsWldwqaDKkSIzb+u07ktNINRkYE/41WYwrn/+
-         klevBbkzy/VqDZw1AidA4VZQ+3yrZ3HDycykgqXFzDsJiIHQOIeqcsFxXMWk6sTDFmCM
-         gvOSA+RzdkNkYlFXo+ktc17fS4qpzpi1Gg9cGrETSFTrVyvItsj3pbvSN3IX/cRqwFmf
-         6n0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692849022; x=1693453822;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eu0WK6VzHgaMcegFu4ppWK6A3eF2qt3htkac+PCZB8E=;
-        b=El+p7KRUBOBKXyhq42iZSojOesgMBMHLUV5wWpA5O4U79r/UpHcZ/iryblw+MGfRSI
-         Qc8hBnh68LOE8y1bkJi0bdtRUXF7TosbTg25Uu0PzMI8iaGFyyXkL4uY7JDY1aPMScJ9
-         fjk9fIu88KRaLl/epqamDQngy+aBS5weMjZs5nlA7iANevSB9Li3syZUrlZA+wx1Gdbx
-         HBmQ6mY4TtiGwQ2LGWzEfk9Cs7bx/r/YSkjEfaZ9z2lnFlnS5CcP8QPLcqUIpm+ZAtrt
-         AWtowyyoR4eIkg+nqHeDOTQwSXUHR5Xep/tZjazE39W4DymLIyWMHtFKRqrgCK4YMRty
-         dxMw==
-X-Gm-Message-State: AOJu0YzKr039bQE6Z+4Ty10JCNcUEiS1te2zQwqGrxuW3o5I6UlxLR+M
-        Gu3H1QKfpzrD+pyv403UEktQzQ==
-X-Google-Smtp-Source: AGHT+IEwP9zlDJi1bkp8oOvqLZKY28k5hZ0rjRWVV6uh9Jv5QU9lxKle/By/IFJpG61G1qev+ytTMQ==
-X-Received: by 2002:a05:6808:448d:b0:3a7:56a6:bd2b with SMTP id eq13-20020a056808448d00b003a756a6bd2bmr15350556oib.4.1692849022667;
-        Wed, 23 Aug 2023 20:50:22 -0700 (PDT)
-Received: from C02DW0BEMD6R.bytedance.net ([203.208.167.146])
-        by smtp.gmail.com with ESMTPSA id t6-20020a63b246000000b005579f12a238sm10533157pgo.86.2023.08.23.20.50.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Aug 2023 20:50:22 -0700 (PDT)
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-To:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
-        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
-        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
-        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
-        yujie.liu@intel.com, gregkh@linuxfoundation.org,
-        muchun.song@linux.dev
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org,
-        Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: [PATCH v5 45/45] mm: shrinker: convert shrinker_rwsem to mutex
-Date:   Thu, 24 Aug 2023 11:43:04 +0800
-Message-Id: <20230824034304.37411-46-zhengqi.arch@bytedance.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
-In-Reply-To: <20230824034304.37411-1-zhengqi.arch@bytedance.com>
-References: <20230824034304.37411-1-zhengqi.arch@bytedance.com>
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1692849226; x=1724385226;
+  h=from:to:cc:date:message-id:references:in-reply-to:
+   content-transfer-encoding:mime-version:subject;
+  bh=L6yr3F5rphRUMJexgvXXRSdT/PI8QQQWbd95l5gki+Q=;
+  b=L1W8/aEr2XKKJuOTUp1nbei8B0NFM73DiT9oy4bqMgPaI0Q+l1OuOvyz
+   AihpR1m6NO/iZ3MfzYes70GUYClCgZdYJTD6J3jccZBXO22h2aQMvUOfq
+   ZZdW4eTPqR3dKm3kbyw6I99YwgBQW4oaZ4+fXg1HgcTm/h4eJdjLqEDOX
+   o=;
+X-IronPort-AV: E=Sophos;i="6.01,195,1684800000"; 
+   d="scan'208";a="600451668"
+Subject: RE: Tasks stuck jbd2 for a long time
+Thread-Topic: Tasks stuck jbd2 for a long time
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1a-m6i4x-47cc8a4c.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-52005.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 03:52:08 +0000
+Received: from EX19MTAUWA002.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+        by email-inbound-relay-iad-1a-m6i4x-47cc8a4c.us-east-1.amazon.com (Postfix) with ESMTPS id F1C4D169A84;
+        Thu, 24 Aug 2023 03:52:05 +0000 (UTC)
+Received: from EX19D002UWC002.ant.amazon.com (10.13.138.166) by
+ EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Thu, 24 Aug 2023 03:52:04 +0000
+Received: from EX19D017UWC003.ant.amazon.com (10.13.139.227) by
+ EX19D002UWC002.ant.amazon.com (10.13.138.166) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.37; Thu, 24 Aug 2023 03:52:04 +0000
+Received: from EX19D017UWC003.ant.amazon.com ([fe80::f6d2:d06:a0ec:a97e]) by
+ EX19D017UWC003.ant.amazon.com ([fe80::f6d2:d06:a0ec:a97e%6]) with mapi id
+ 15.02.1118.037; Thu, 24 Aug 2023 03:52:04 +0000
+From:   "Lu, Davina" <davinalu@amazon.com>
+To:     Theodore Ts'o <tytso@mit.edu>
+CC:     "Bhatnagar, Rishabh" <risbhat@amazon.com>, Jan Kara <jack@suse.cz>,
+        "jack@suse.com" <jack@suse.com>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Park, SeongJae" <sjpark@amazon.com>
+Thread-Index: AQHZ0T0hyB578WffgkKt4A53/u6dQa/vMecAgAAmqwCABI99MIABMumAgAO8f9A=
+Date:   Thu, 24 Aug 2023 03:52:04 +0000
+Message-ID: <70943eab978e4482b9fa4f68119bc8ea@amazon.com>
+References: <17b6398c-859e-4ce7-b751-8688a7288b47@amazon.com>
+ <20230816145310.giogco2nbzedgak2@quack3>
+ <e716473e-7251-7a81-fa5e-6bf6ba34e49f@amazon.com>
+ <20230816215227.jlvmqasfbc73asi4@quack3>
+ <7f687907-8982-3be6-54ee-f55aae2f4692@amazon.com>
+ <20230817104917.bs46doo6duo7utlm@quack3>
+ <f8b8e655-7485-ef11-e151-7118b1531f16@amazon.com>
+ <d82df68eb8514951a7f7acc923132796@amazon.com>
+ <20230818024144.GD3464136@mit.edu>
+ <099884899291490caf6c529929339e50@amazon.com> <ZOOvOT4dL1SCHQDz@mit.edu>
+In-Reply-To: <ZOOvOT4dL1SCHQDz@mit.edu>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.43.143.137]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now there are no readers of shrinker_rwsem, so we can simply replace it
-with mutex lock.
 
-Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
----
- drivers/md/dm-cache-metadata.c |  2 +-
- fs/super.c                     |  2 +-
- mm/shrinker.c                  | 28 ++++++++++++++--------------
- mm/shrinker_debug.c            | 14 +++++++-------
- 4 files changed, 23 insertions(+), 23 deletions(-)
+CAUTION: This email originated from outside of the organization. Do not cli=
+ck links or open attachments unless you can confirm the sender and know the=
+ content is safe.
 
-diff --git a/drivers/md/dm-cache-metadata.c b/drivers/md/dm-cache-metadata.c
-index acffed750e3e..9e0c69958587 100644
---- a/drivers/md/dm-cache-metadata.c
-+++ b/drivers/md/dm-cache-metadata.c
-@@ -1828,7 +1828,7 @@ int dm_cache_metadata_abort(struct dm_cache_metadata *cmd)
- 	 * Replacement block manager (new_bm) is created and old_bm destroyed outside of
- 	 * cmd root_lock to avoid ABBA deadlock that would result (due to life-cycle of
- 	 * shrinker associated with the block manager's bufio client vs cmd root_lock).
--	 * - must take shrinker_rwsem without holding cmd->root_lock
-+	 * - must take shrinker_mutex without holding cmd->root_lock
- 	 */
- 	new_bm = dm_block_manager_create(cmd->bdev, DM_CACHE_METADATA_BLOCK_SIZE << SECTOR_SHIFT,
- 					 CACHE_MAX_CONCURRENT_LOCKS);
-diff --git a/fs/super.c b/fs/super.c
-index 5ce0c51bb445..b7a914f3ac5c 100644
---- a/fs/super.c
-+++ b/fs/super.c
-@@ -178,7 +178,7 @@ static void super_wake(struct super_block *sb, unsigned int flag)
-  * One thing we have to be careful of with a per-sb shrinker is that we don't
-  * drop the last active reference to the superblock from within the shrinker.
-  * If that happens we could trigger unregistering the shrinker from within the
-- * shrinker path and that leads to deadlock on the shrinker_rwsem. Hence we
-+ * shrinker path and that leads to deadlock on the shrinker_mutex. Hence we
-  * take a passive reference to the superblock to avoid this from occurring.
-  */
- static unsigned long super_cache_scan(struct shrinker *shrink,
-diff --git a/mm/shrinker.c b/mm/shrinker.c
-index b8cb9d2f5dbf..a174d1d4b08d 100644
---- a/mm/shrinker.c
-+++ b/mm/shrinker.c
-@@ -8,7 +8,7 @@
- #include "internal.h"
- 
- LIST_HEAD(shrinker_list);
--DECLARE_RWSEM(shrinker_rwsem);
-+DEFINE_MUTEX(shrinker_mutex);
- 
- #ifdef CONFIG_MEMCG
- static int shrinker_nr_max;
-@@ -80,7 +80,7 @@ int alloc_shrinker_info(struct mem_cgroup *memcg)
- 	int nid, ret = 0;
- 	int array_size = 0;
- 
--	down_write(&shrinker_rwsem);
-+	mutex_lock(&shrinker_mutex);
- 	array_size = shrinker_unit_size(shrinker_nr_max);
- 	for_each_node(nid) {
- 		info = kvzalloc_node(sizeof(*info) + array_size, GFP_KERNEL, nid);
-@@ -91,7 +91,7 @@ int alloc_shrinker_info(struct mem_cgroup *memcg)
- 			goto err;
- 		rcu_assign_pointer(memcg->nodeinfo[nid]->shrinker_info, info);
- 	}
--	up_write(&shrinker_rwsem);
-+	mutex_unlock(&shrinker_mutex);
- 
- 	return ret;
- 
-@@ -104,7 +104,7 @@ static struct shrinker_info *shrinker_info_protected(struct mem_cgroup *memcg,
- 						     int nid)
- {
- 	return rcu_dereference_protected(memcg->nodeinfo[nid]->shrinker_info,
--					 lockdep_is_held(&shrinker_rwsem));
-+					 lockdep_is_held(&shrinker_mutex));
- }
- 
- static int expand_one_shrinker_info(struct mem_cgroup *memcg, int new_size,
-@@ -154,7 +154,7 @@ static int expand_shrinker_info(int new_id)
- 	if (!root_mem_cgroup)
- 		goto out;
- 
--	lockdep_assert_held(&shrinker_rwsem);
-+	lockdep_assert_held(&shrinker_mutex);
- 
- 	new_size = shrinker_unit_size(new_nr_max);
- 	old_size = shrinker_unit_size(shrinker_nr_max);
-@@ -217,7 +217,7 @@ static int shrinker_memcg_alloc(struct shrinker *shrinker)
- 	if (mem_cgroup_disabled())
- 		return -ENOSYS;
- 
--	down_write(&shrinker_rwsem);
-+	mutex_lock(&shrinker_mutex);
- 	id = idr_alloc(&shrinker_idr, shrinker, 0, 0, GFP_KERNEL);
- 	if (id < 0)
- 		goto unlock;
-@@ -231,7 +231,7 @@ static int shrinker_memcg_alloc(struct shrinker *shrinker)
- 	shrinker->id = id;
- 	ret = 0;
- unlock:
--	up_write(&shrinker_rwsem);
-+	mutex_unlock(&shrinker_mutex);
- 	return ret;
- }
- 
-@@ -241,7 +241,7 @@ static void shrinker_memcg_remove(struct shrinker *shrinker)
- 
- 	BUG_ON(id < 0);
- 
--	lockdep_assert_held(&shrinker_rwsem);
-+	lockdep_assert_held(&shrinker_mutex);
- 
- 	idr_remove(&shrinker_idr, id);
- }
-@@ -292,7 +292,7 @@ void reparent_shrinker_deferred(struct mem_cgroup *memcg)
- 		parent = root_mem_cgroup;
- 
- 	/* Prevent from concurrent shrinker_info expand */
--	down_write(&shrinker_rwsem);
-+	mutex_lock(&shrinker_mutex);
- 	for_each_node(nid) {
- 		child_info = shrinker_info_protected(memcg, nid);
- 		parent_info = shrinker_info_protected(parent, nid);
-@@ -305,7 +305,7 @@ void reparent_shrinker_deferred(struct mem_cgroup *memcg)
- 			}
- 		}
- 	}
--	up_write(&shrinker_rwsem);
-+	mutex_unlock(&shrinker_mutex);
- }
- #else
- static int shrinker_memcg_alloc(struct shrinker *shrinker)
-@@ -734,11 +734,11 @@ void shrinker_register(struct shrinker *shrinker)
- 		return;
- 	}
- 
--	down_write(&shrinker_rwsem);
-+	mutex_lock(&shrinker_mutex);
- 	list_add_tail_rcu(&shrinker->list, &shrinker_list);
- 	shrinker->flags |= SHRINKER_REGISTERED;
- 	shrinker_debugfs_add(shrinker);
--	up_write(&shrinker_rwsem);
-+	mutex_unlock(&shrinker_mutex);
- 
- 	init_completion(&shrinker->done);
- 	/*
-@@ -778,7 +778,7 @@ void shrinker_free(struct shrinker *shrinker)
- 		wait_for_completion(&shrinker->done);
- 	}
- 
--	down_write(&shrinker_rwsem);
-+	mutex_lock(&shrinker_mutex);
- 	if (shrinker->flags & SHRINKER_REGISTERED) {
- 		/*
- 		 * Now we can safely remove it from the shrinker_list and then
-@@ -793,7 +793,7 @@ void shrinker_free(struct shrinker *shrinker)
- 
- 	if (shrinker->flags & SHRINKER_MEMCG_AWARE)
- 		shrinker_memcg_remove(shrinker);
--	up_write(&shrinker_rwsem);
-+	mutex_unlock(&shrinker_mutex);
- 
- 	if (debugfs_entry)
- 		shrinker_debugfs_remove(debugfs_entry, debugfs_id);
-diff --git a/mm/shrinker_debug.c b/mm/shrinker_debug.c
-index 38452f539f40..c80fd124f605 100644
---- a/mm/shrinker_debug.c
-+++ b/mm/shrinker_debug.c
-@@ -9,7 +9,7 @@
- #include "internal.h"
- 
- /* defined in vmscan.c */
--extern struct rw_semaphore shrinker_rwsem;
-+extern struct mutex shrinker_mutex;
- extern struct list_head shrinker_list;
- 
- static DEFINE_IDA(shrinker_debugfs_ida);
-@@ -165,7 +165,7 @@ int shrinker_debugfs_add(struct shrinker *shrinker)
- 	char buf[128];
- 	int id;
- 
--	lockdep_assert_held(&shrinker_rwsem);
-+	lockdep_assert_held(&shrinker_mutex);
- 
- 	/* debugfs isn't initialized yet, add debugfs entries later. */
- 	if (!shrinker_debugfs_root)
-@@ -222,7 +222,7 @@ int shrinker_debugfs_rename(struct shrinker *shrinker, const char *fmt, ...)
- 	if (!new)
- 		return -ENOMEM;
- 
--	down_write(&shrinker_rwsem);
-+	mutex_lock(&shrinker_mutex);
- 
- 	old = shrinker->name;
- 	shrinker->name = new;
-@@ -240,7 +240,7 @@ int shrinker_debugfs_rename(struct shrinker *shrinker, const char *fmt, ...)
- 			shrinker->debugfs_entry = entry;
- 	}
- 
--	up_write(&shrinker_rwsem);
-+	mutex_unlock(&shrinker_mutex);
- 
- 	kfree_const(old);
- 
-@@ -253,7 +253,7 @@ struct dentry *shrinker_debugfs_detach(struct shrinker *shrinker,
- {
- 	struct dentry *entry = shrinker->debugfs_entry;
- 
--	lockdep_assert_held(&shrinker_rwsem);
-+	lockdep_assert_held(&shrinker_mutex);
- 
- 	shrinker_debugfs_name_free(shrinker);
- 
-@@ -281,14 +281,14 @@ static int __init shrinker_debugfs_init(void)
- 	shrinker_debugfs_root = dentry;
- 
- 	/* Create debugfs entries for shrinkers registered at boot */
--	down_write(&shrinker_rwsem);
-+	mutex_lock(&shrinker_mutex);
- 	list_for_each_entry(shrinker, &shrinker_list, list)
- 		if (!shrinker->debugfs_entry) {
- 			ret = shrinker_debugfs_add(shrinker);
- 			if (ret)
- 				break;
- 		}
--	up_write(&shrinker_rwsem);
-+	mutex_unlock(&shrinker_mutex);
- 
- 	return ret;
- }
--- 
-2.30.2
+> Thanks for the details.  This is something that am interested in trying t=
+o potentially to merge, since for a sufficiently coversion-heavy workload (=
+assuming the conversion is happening=20
+> across multiple inodes, and not just a huge number of random writes into =
+a single fallocated file), limiting the number of kernel threads to one CPU=
+ isn't always going to be the right thing. =20
+>The reason why we had done this way was because at the time, the only choi=
+ces that we had was between a single kernel thread, or spawning a kernel th=
+read for every single CPU --=20
+>which for a very high-core-count system, consumed a huge amount of system =
+resources.  This is no longer the case with the new Concurrency Managed Wor=
+kqueue (cmwq), but we never=20
+>did the experiment to make sure cmwq didn't have surprising gotchas.
 
+Thank you for the detailed explanation.=20
+
+
+> I won't have time to look at this before the next merge window, but what =
+I'm hoping to look at is your patch at [2], with two changes:
+> a)  Drop the _WQ_ORDERED flag, since it is an internal flag.
+> b) Just pass in 0 for max_active instead of "num_active_cpus() > 1 ?
+ > num_active_cpus() : 1", for two reasons.  Num_active_cpus() doesn't
+ >  take into account CPU hotplugs (for example, if you have a
+  > dynmically adjustable VM shape where the number of active CPU's
+  > might change over time).  Is there a reason why we need to set that
+  > limit?
+
+> Do you see any potential problem with these changes?
+
+Sorry for the late response, after the internal discussion, I can continue =
+on this patch. These 2 points are easy to change, I will also do some xfste=
+st for EXT4 and run BMS on RDS environment to do a quick verify.  We can ch=
+ange num_active_cpus() to 0. Why adding that: just because during fio test,=
+ the max active number goes to ~50 we won't see this issue. But this is not=
+ necessary. I will see what's Oleg's opinion later offline.
+
+Thanks,
+Davina
+                                            =20
