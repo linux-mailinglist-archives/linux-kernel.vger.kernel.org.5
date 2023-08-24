@@ -2,244 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 241897877D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 20:29:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C655E7877D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 20:30:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237545AbjHXS3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 14:29:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55878 "EHLO
+        id S243033AbjHXS35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 14:29:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243049AbjHXS3A (ORCPT
+        with ESMTP id S230090AbjHXS3d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 14:29:00 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDCAA1BE9;
-        Thu, 24 Aug 2023 11:28:58 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3F66864A6B;
-        Thu, 24 Aug 2023 18:28:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 962EBC433C7;
-        Thu, 24 Aug 2023 18:28:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692901737;
-        bh=FhkH9fnJGurvTDrNbkKE/R5D3iEvw6DvTByG4OxWKzk=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=CQjEkZNGbN7bbV9OIV3h7cBE7vzXE5B5PEyd8QeLS5jJQaaYU+L0o0Q1bWgGxKReH
-         wb7QKNRtZVS+j8vJXF0UGp2nZHXTgDeKNiZ1aAQhwZh2MMACIeUECt3KeanHM9Qjrr
-         TqL7wTS9lsIMSMGJFrEOrRXeTZ5egdxM08rzCng4awTC0hwHPQM7gDh5y1OfYBQ6Jb
-         iOhOHBMeYEArAC9j4WqJ6gvxzKe8qZjDa6SSaX00BZoieOXa30RAc9kZID5rrFVMek
-         YIuq5GjTEz6AG/JTqF1EIp8xpJt/7g39/DtgQ0QyJV5xZagnjJFTuT9+Ozl/z/IErW
-         SUuq2/AZ34HBQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 1FFADCE072F; Thu, 24 Aug 2023 11:28:57 -0700 (PDT)
-Date:   Thu, 24 Aug 2023 11:28:57 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Huacai Chen <chenhuacai@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Z qiang <qiang.zhang1211@gmail.com>,
-        Huacai Chen <chenhuacai@loongson.cn>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        John Stultz <jstultz@google.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Binbin Zhou <zhoubinbin@loongson.cn>
-Subject: Re: [PATCH V4 2/2] rcu: Update jiffies in rcu_cpu_stall_reset()
-Message-ID: <24e34f50-32d2-4b67-8ec0-1034c984d035@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <CAAhV-H6ejw=8afS0jmmQvKUrCw=qZm_P6SA0A+tuvvb8bsq4-Q@mail.gmail.com>
- <5777BD82-2C8D-4BAB-BDD3-C2C003DC57FB@joelfernandes.org>
- <CAAhV-H58OpQJapV7LDNjZ-vM7nNJrwdkBiPjFcCutO1yRsUshQ@mail.gmail.com>
- <87ttspct76.ffs@tglx>
- <03fe7084-0509-45fa-87ee-8f8705a221a6@paulmck-laptop>
- <CAAhV-H5Z3s=2_OyA_AJ1-NqXBtNrcs-EmsqYcrjc+qXmJ=SitQ@mail.gmail.com>
- <16827b4e-9823-456d-a6be-157fbfae64c3@paulmck-laptop>
- <CAAhV-H7uXA=r-w1nN7sBpRTba3LjjZs+wasJfGo7VZ6D9eMBAw@mail.gmail.com>
- <8792da20-a58e-4cc0-b3d2-231d5ade2242@paulmck-laptop>
- <CAAhV-H5BNPX8Eo3Xdy-jcYY97=xazGU+VVqoDy7qEH+VpVWFJA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+        Thu, 24 Aug 2023 14:29:33 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2916F19BF
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 11:29:31 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id 98e67ed59e1d1-26d50a832a9so51453a91.3
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 11:29:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20221208.gappssmtp.com; s=20221208; t=1692901770; x=1693506570;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/1YcSecukI/DFCrztrORLNsZGL+keJIV6eV7Ksjr9Gk=;
+        b=BOqwKncfGAv7/sk10fo5h2uyW0w/tgq6WrtbnuolTn8KoRL9jeuPUXIby9JnccqFq3
+         CJHaRQTUzGjOy+/HSYJSbQnHhhApCmRk9X1EKYcx4HgrRH3HCGU/GL9P21pxsMRmJQ+e
+         TxS+zIrVgqZmXS/K7OWgaxaH4QqkwdK6noTPb+IYTTDrjjPT2rFT7IpfzZOsP2FJkWld
+         QmJ8/Yi7gahlB5c723fPBLLGaWi6WHhe+LvqlXg+XcXjTuoGQApRIyLCY/6hyoAi/iKg
+         hMw+8S8hD2PiK4OJg103GUAMSZ9Q7OK40HoX4dQ3i19KF0D7DDW6EwiwC4eG86/Kd/TU
+         AftQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692901770; x=1693506570;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/1YcSecukI/DFCrztrORLNsZGL+keJIV6eV7Ksjr9Gk=;
+        b=GlfCuADTfVBTp7jjsy7nzH/pwNdGKuJ95p2Tprlg2J6xHukAzfxJxojgYmK2nuzMOw
+         ZloZYnQep6w1PiqaGeqVp2DzcpIA/ptdGOxkatVWIR1Rpqw/oWRbAauwLRNwUGF7oTL7
+         iyJGAe8Pcv9rO06PUSox2tWXXU+sBvnsej/a8zLrxLWiVq9JaIHyxVn2cNpAYlODWYlt
+         zd3Mfk8Y2ewenum9zNYOLsfbmyUI7IqWK3+MULSxM1h9lSKdM7Grciy7uGKg1YEtOjg4
+         8MUko3mf21DYaXD5ABVOcC/i6nb99VHsRyTHy7BEBw/RXhV3TZQ4iqA7ls4b46hdskfg
+         8oFQ==
+X-Gm-Message-State: AOJu0YzRpS/3CEbojeyfz1sHgmqtSSjyKFEBL+GJ81JtPsL0i9hlGoba
+        7sfD0ihk+h1/d9QDLDPgyyY7uccNQL6lRREXBKc=
+X-Google-Smtp-Source: AGHT+IEj3DSxzNiMBroPsK0WsOrwhwhGUAIwXhWz1yAAmXCG0m396XZ+r/VKHLDvYZfeoEJd6N/nvg==
+X-Received: by 2002:a17:90a:dc05:b0:268:a691:412f with SMTP id i5-20020a17090adc0500b00268a691412fmr12818362pjv.39.1692901770550;
+        Thu, 24 Aug 2023 11:29:30 -0700 (PDT)
+Received: from localhost ([50.221.140.188])
+        by smtp.gmail.com with ESMTPSA id q9-20020a17090a68c900b0026b3773043dsm46714pjj.22.2023.08.24.11.29.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Aug 2023 11:29:29 -0700 (PDT)
+Date:   Thu, 24 Aug 2023 11:29:29 -0700 (PDT)
+X-Google-Original-Date: Thu, 24 Aug 2023 11:29:28 PDT (-0700)
+Subject:     Re: [PATCH v5] riscv: Handle zicsr/zifencei issue between gcc and binutils
+In-Reply-To: <20230824-cortex-mobilize-8b94e059e130@spud>
+CC:     xingmingzheng@iscas.ac.cn,
+        Conor Dooley <conor.dooley@microchip.com>,
+        patchwork-bot+linux-riscv@kernel.org,
+        linux-riscv@lists.infradead.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, nathan@kernel.org, ndesaulniers@google.com,
+        trix@redhat.com, bmeng@tinylab.org, guoren@kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        stable@vger.kernel.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     Conor Dooley <conor@kernel.org>
+Message-ID: <mhng-a2e62840-6065-4435-a82d-b09054e8f254@palmer-ri-x1c9a>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAAhV-H5BNPX8Eo3Xdy-jcYY97=xazGU+VVqoDy7qEH+VpVWFJA@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 11:43:04PM +0800, Huacai Chen wrote:
-> Hi, Paul,
-> 
-> On Thu, Aug 24, 2023 at 9:24 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Thu, Aug 24, 2023 at 08:40:00PM +0800, Huacai Chen wrote:
-> > > Hi, Paul,
-> > > On Thu, Aug 24, 2023 at 7:40 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > > On Thu, Aug 24, 2023 at 10:50:41AM +0800, Huacai Chen wrote:
-> > > > > Hi, Paul,
-> > > > > On Thu, Aug 24, 2023 at 6:41 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > > > > On Thu, Aug 24, 2023 at 12:03:25AM +0200, Thomas Gleixner wrote:
-> > > > > > > On Thu, Aug 17 2023 at 16:06, Huacai Chen wrote:
-> > > > > > > > On Thu, Aug 17, 2023 at 3:27 AM Joel Fernandes <joel@joelfernandes.org> wrote:
-> > > > > > > >> > If  do_update_jiffies_64() cannot be used in NMI context,
-> > > > > > > >>
-> > > > > > > >> Can you not make the jiffies update conditional on whether it is
-> > > > > > > >> called within NMI context?
-> > > > > > >
-> > > > > > > Which solves what? If KGDB has a breakpoint in the jiffies lock held
-> > > > > > > region then you still dead lock.
-> > > > > > >
-> > > > > > > >> I dislike that..
-> > > > > > > > Is this acceptable?
-> > > > > > > >
-> > > > > > > > void rcu_cpu_stall_reset(void)
-> > > > > > > > {
-> > > > > > > >         unsigned long delta;
-> > > > > > > >
-> > > > > > > >         delta = nsecs_to_jiffies(ktime_get_ns() - ktime_get_coarse_ns());
-> > > > > > > >
-> > > > > > > >         WRITE_ONCE(rcu_state.jiffies_stall,
-> > > > > > > >                    jiffies + delta + rcu_jiffies_till_stall_check());
-> > > > > > > > }
-> > > > > > > >
-> > > > > > > > This can update jiffies_stall without updating jiffies (but has the
-> > > > > > > > same effect).
-> > > > > > >
-> > > > > > > Now you traded the potential dead lock on jiffies lock for a potential
-> > > > > > > live lock vs. tk_core.seq. Not really an improvement, right?
-> > > > > > >
-> > > > > > > The only way you can do the above is something like the incomplete and
-> > > > > > > uncompiled below. NMI safe and therefore livelock proof time interfaces
-> > > > > > > exist for a reason.
-> > > > > >
-> > > > > > Just for completeness, another approach, with its own advantages
-> > > > > > and disadvantage, is to add something like ULONG_MAX/4 to
-> > > > > > rcu_state.jiffies_stall, but also set a counter indicating that this
-> > > > > > has been done.  Then RCU's force-quiescent processing could decrement
-> > > > > > that counter (if non-zero) and reset rcu_state.jiffies_stall when it
-> > > > > > does reach zero.
-> > > > > >
-> > > > > > Setting the counter to three should cover most cases, but "live by the
-> > > > > > heuristic, die by the heuristic".  ;-)
-> > > > > >
-> > > > > > It would be good to have some indication when gdb exited, but things
-> > > > > > like the gdb "next" command can make that "interesting" when applied to
-> > > > > > a long-running function.
-> > > > >
-> > > > > The original code is adding ULONG_MAX/2, so adding ULONG_MAX/4 may
-> > > > > make no much difference? The simplest way is adding 300*HZ, but Joel
-> > > > > dislikes that.
-> > > >
-> > > > I am not seeing the ULONG_MAX/2, so could you please point me to that
-> > > > original code?
-> > >
-> > > Maybe I misunderstand something, I say the original code means code
-> > > before commit a80be428fbc1f1f3bc9ed924 ("rcu: Do not disable GP stall
-> > > detection in rcu_cpu_stall_reset()").
-> >
-> > Yes, my suggestion would essentially revert that patch.  It would
-> > compensate by resetting rcu_state.jiffies_stall after a few calls
-> > to rcu_gp_fqs().
-> >
-> > Alternatively, we could simply provide a way for gdb users to manually
-> > disable RCU CPU stall warnings at the beginning of their debug sessions
-> > and to manually re-enable them when they are done.
-> 
-> This problem is not KGDB-specific (though it is firstly found in the
-> KGDB case), so I want to fix it in the rcu code rather than in the
-> kgdb code.
+On Thu, 24 Aug 2023 11:05:13 PDT (-0700), Conor Dooley wrote:
+> On Fri, Aug 25, 2023 at 01:46:59AM +0800, Mingzheng Xing wrote:
+>
+>> Just a question, I see that the previous patch has been merged
+>> into 6.5-rc7, and now a new fix patch should be sent out based
+>> on that, right?
+>
+> yes
 
-Sure, for example, there is also PowerPC XMON.
-
-But this problem also is not RCU-specific.  There are also hardlockups,
-softlockups, workqueue lockups, networking timeouts, and who knows what
-all else.
-
-Plus, and again to Thomas's point, gdb breakpoints can happen anywhere.
-For example, immediately after RCU computes the RCU CPU stall time for
-a new grace period, and right before it stores it.  The gdb callout
-updates rcu_state.jiffies_stall, but that update is overwritten with a
-stale value as soon as the system starts back up.
-
-Low probabillity, to be sure, but there are quite a few places in
-the kernel right after a read from some timebase or another, and many
-(perhaps all) of these can see similar stale-time-use problems.
-
-The only way I know of to avoid these sorts of false positives is for
-the user to manually suppress all timeouts (perhaps using a kernel-boot
-parameter for your early-boot case), do the gdb work, and then unsuppress
-all stalls.  Even that won't work for networking, because the other
-system's clock will be running throughout.
-
-In other words, from what I know now, there is no perfect solution.
-Therefore, there are sharp limits to the complexity of any solution that
-I will be willing to accept.
-
-							Thanx, Paul
-
-> Huacai
-> >
-> >                                                         Thanx, Paul
-> >
-> > > Huacai
-> > > >
-> > > > The advantage of ULONG_MAX/4 over ULONG_MAX/2 is that the time_after()
-> > > > and time_before() macros have ULONG_MAX/4 slop in either direction
-> > > > before giving you the wrong answer.  You can get nearly the same result
-> > > > using ULONG_MAX/2, but it requires a bit more care.  And even on 32-bit
-> > > > HZ=1000 systems, ULONG_MAX/4 gets you more than 12 days of gdb session
-> > > > or jiffies-update delay before you start getting false positives.
-> > > >
-> > > > Then things can be reset after (say) 3 calls to rcu_gp_fqs() and
-> > > > also the current reset at the beginning of a grace period, which
-> > > > is in record_gp_stall_check_time().
-> > > >
-> > > > It would be better if RCU could get notified at both ends of the debug
-> > > > session, but given gdb commands such as "next", along with Thomas's
-> > > > point about gdb breakpoints being pretty much anywhere, this might or
-> > > > might not be so helpful in real life.  But worth looking into.
-> > > >
-> > > >                                                         Thanx, Paul
-> > > >
-> > > > > Huacai
-> > > > >
-> > > > > >
-> > > > > >                                                         Thanx, Paul
-> > > > > >
-> > > > > > > Thanks,
-> > > > > > >
-> > > > > > >         tglx
-> > > > > > > ---
-> > > > > > > --- a/kernel/time/tick-sched.c
-> > > > > > > +++ b/kernel/time/tick-sched.c
-> > > > > > > @@ -51,6 +51,13 @@ struct tick_sched *tick_get_tick_sched(i
-> > > > > > >   */
-> > > > > > >  static ktime_t last_jiffies_update;
-> > > > > > >
-> > > > > > > +unsigned long tick_estimate_stale_jiffies(void)
-> > > > > > > +{
-> > > > > > > +     ktime_t delta = ktime_get_mono_fast_ns() - READ_ONCE(last_jiffies_update);
-> > > > > > > +
-> > > > > > > +     return delta < 0 ? 0 : div_s64(delta, TICK_NSEC);
-> > > > > > > +}
-> > > > > > > +
-> > > > > > >  /*
-> > > > > > >   * Must be called with interrupts disabled !
-> > > > > > >   */
-> > > > > > >
-> > > > > > >
+Ideally ASAP, it's very late in the cycle.  I have something for 
+tomorrow morning, but this will need time to test...
