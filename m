@@ -2,127 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65714787B99
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 00:44:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00EA3787B9F
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 00:47:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243937AbjHXWns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 18:43:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45198 "EHLO
+        id S243950AbjHXWoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 18:44:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243928AbjHXWnJ (ORCPT
+        with ESMTP id S243908AbjHXWnq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 18:43:09 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7DD21BF8
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 15:43:06 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-4009fdc224dso13555e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 15:43:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692916985; x=1693521785; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VYY7zeS6H0LscRj1UYTAyR5LbxEggzxBKjCvWYSphbU=;
-        b=P0l+Iqb8/QF2i3GPACES8JGrjBGsLdBALscrrNHD7cmRWuHDjaOXyYQMujUDZr1nCd
-         dKN4HYrB7IqH0wmmB4EGULkdOFzf68NCUTf3J+FIAPpqP3cCiS9kMk3KxLttt5iahuvW
-         7spsLofp4FOqEDmKE3pHh19orJLw8t9KBX+ainqy+DputmqhbuDENh8pZWaDaAEi8nIq
-         DqIiFmsxWsRvVA2ag9+a/mXTS0G60T8wKby7kJYT8k8PUVq51Bx/EaXkEuNOfbV3HSza
-         SKxCwgmGEO6eN7pW5L42Fd+gAFW9SRnUW/IiDKPUNqFF4zM8MrQ//8sLvm7u75ydn/1M
-         1HXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692916985; x=1693521785;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VYY7zeS6H0LscRj1UYTAyR5LbxEggzxBKjCvWYSphbU=;
-        b=PJmzRQDpIWQd/lxc5w8vSKpUAxbghQDb2Bwahp1ovFAeMZ4DpCG3HtdaVT63KL+FA3
-         TblQ9tVXgRch1iL3FT1l7vjRr8xrto/B23HUyBUXGzePp6x1POuY1X+8HB7h4g4epW7R
-         aCFIs6NOWRmqncmLCOteZdBbgnUJYgVytZAkmMoNekjFYrlPr8GmjqUoXe83DvAckgdz
-         KH/4qd4Pc/vFA5Dcq3dDqyIPg+a3NdGwLWZtUpFNi6xuIGlgAZG6b6AhJn7ImeylSc/x
-         JlQlCcTD31VqsKq0cyPE+7aJfdfCPrIyqcv9EiJfqIqzc1U0JqvW7GdEBZ5F6nswKiQP
-         YwCA==
-X-Gm-Message-State: AOJu0Ywi81hHBpZXvy586vrGq8qTngHmm7YQfZ0cXFE5vGmdpOJmxSgS
-        RouaK2iauzyOXcOdef9tZcYn9Prbgpv0Mja7ZdCGUA==
-X-Google-Smtp-Source: AGHT+IENQ0J+O9MZQ1uKDf3m+oG2k+/EUkGyMzbdhYbKXTTbzl1j0pYJBXe1lg/1ZH8NhyY5LoWG5ewbOtz5W5oU7V8=
-X-Received: by 2002:a05:600c:600b:b0:3f6:f4b:d4a6 with SMTP id
- az11-20020a05600c600b00b003f60f4bd4a6mr42207wmb.7.1692916985130; Thu, 24 Aug
- 2023 15:43:05 -0700 (PDT)
+        Thu, 24 Aug 2023 18:43:46 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A93B1BF1;
+        Thu, 24 Aug 2023 15:43:36 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0A1F06370C;
+        Thu, 24 Aug 2023 22:43:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4231C433C8;
+        Thu, 24 Aug 2023 22:43:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692917015;
+        bh=hQ1fgLiWLR8trUuCaYLEOSHIOYHu6hkDSCVcbXCSY+k=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=rrZfqM18bVtzaiGaUuKP9b7xmnkXs8g8c3wSLjDJ9HzgvNmH1i2m8emrAWI22C21D
+         FHYQa5K/Xvxz9/lDO7HHXUlWLdV4vvrN94IQYKumiqfmDGWUwd2FRaogmS2/L1lAyi
+         /tjXD+/k1vOAQnMppF2o5IP53a9TV3sg6ePYqRXorT/qChWJ7NDY6HbXzwUDBLrvST
+         E9uKOIjPBXdr59q5RMQ4zTSCflL+vR7vf98eVvLDQWmMa9ieWWehqU5DUZKQc7WHUH
+         iOQYoLdmjWSg9RSQtPTAiQZ4EETCktewKG8lTbcdwEkJRUNOdtKrYgvLHhLL2M2sbt
+         qPvBqcszAOpEA==
+From:   Mark Brown <broonie@kernel.org>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Weidong Wang <wangweidong.a@awinic.com>,
+        Arnd Bergmann <arnd@arndb.de>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org,
+        Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+Cc:     dan.carpenter@linaro.org, kernel-janitors@vger.kernel.org,
+        error27@gmail.com, kernel test robot <lkp@intel.com>
+In-Reply-To: <20230824191722.2701215-1-harshit.m.mogalapalli@oracle.com>
+References: <20230824191722.2701215-1-harshit.m.mogalapalli@oracle.com>
+Subject: Re: [PATCH next] ASoC: codecs: Fix error code in
+ aw88261_i2c_probe()
+Message-Id: <169291701152.2997200.14506800052724539808.b4-ty@kernel.org>
+Date:   Thu, 24 Aug 2023 23:43:31 +0100
 MIME-Version: 1.0
-References: <20230824143129.1957914-1-rf@opensource.cirrus.com> <20230824143129.1957914-2-rf@opensource.cirrus.com>
-In-Reply-To: <20230824143129.1957914-2-rf@opensource.cirrus.com>
-From:   Rae Moar <rmoar@google.com>
-Date:   Thu, 24 Aug 2023 18:42:53 -0400
-Message-ID: <CA+GJov5QG=nRU_e6LSG0rXNcigTXP6zP19ZOm5aPt7Q4GsYMtw@mail.gmail.com>
-Subject: Re: [PATCH v5 01/10] kunit: string-stream: Don't create a fragment
- for empty strings
-To:     Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc:     brendan.higgins@linux.dev, davidgow@google.com,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-099c9
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 10:32=E2=80=AFAM 'Richard Fitzgerald' via KUnit
-Development <kunit-dev@googlegroups.com> wrote:
->
-> If the result of the formatted string is an empty string just return
-> instead of creating an empty fragment.
->
-> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+On Thu, 24 Aug 2023 12:17:10 -0700, Harshit Mogalapalli wrote:
+> Passing zero to dev_err_probe is a success which is incorrect when
+> i2c_check_functionality() fails.
+> 
+> Fix this by passing -ENXIO instead of zero to dev_err_probe().
+> 
+> 
 
-This looks good to me!
+Applied to
 
-Reviewed-by: Rae Moar <rmoar@google.com>
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
 Thanks!
 
--Rae
+[1/1] ASoC: codecs: Fix error code in aw88261_i2c_probe()
+      commit: 8886e1b03669c498f7a24bc5e483f46db5e81f82
 
-> ---
->  lib/kunit/string-stream.c | 10 ++++++++--
->  1 file changed, 8 insertions(+), 2 deletions(-)
->
-> diff --git a/lib/kunit/string-stream.c b/lib/kunit/string-stream.c
-> index cc32743c1171..ed24d86af9f5 100644
-> --- a/lib/kunit/string-stream.c
-> +++ b/lib/kunit/string-stream.c
-> @@ -50,11 +50,17 @@ int string_stream_vadd(struct string_stream *stream,
->         /* Make a copy because `vsnprintf` could change it */
->         va_copy(args_for_counting, args);
->
-> -       /* Need space for null byte. */
-> -       len =3D vsnprintf(NULL, 0, fmt, args_for_counting) + 1;
-> +       /* Evaluate length of formatted string */
-> +       len =3D vsnprintf(NULL, 0, fmt, args_for_counting);
->
->         va_end(args_for_counting);
->
-> +       if (len =3D=3D 0)
-> +               return 0;
-> +
-> +       /* Need space for null byte. */
-> +       len++;
-> +
->         frag_container =3D alloc_string_stream_fragment(stream->test,
->                                                       len,
->                                                       stream->gfp);
-> --
-> 2.30.2
->
-> --
-> You received this message because you are subscribed to the Google Groups=
- "KUnit Development" group.
-> To unsubscribe from this group and stop receiving emails from it, send an=
- email to kunit-dev+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgi=
-d/kunit-dev/20230824143129.1957914-2-rf%40opensource.cirrus.com.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
