@@ -2,131 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 356DE786EFD
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 14:25:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64324786F3A
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 14:37:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234623AbjHXMYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 08:24:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37540 "EHLO
+        id S237167AbjHXMgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 08:36:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233306AbjHXMYO (ORCPT
+        with ESMTP id S236957AbjHXMg0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 08:24:14 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C886E10EF;
-        Thu, 24 Aug 2023 05:24:12 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6654063388;
-        Thu, 24 Aug 2023 12:24:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC2CBC433C7;
-        Thu, 24 Aug 2023 12:24:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692879851;
-        bh=rXHeHAFXjN/zA3rYC/1HhA1l11PWkd2Qvj22VCRsCGs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CqOlaS/QfUs5XXJTiSG68eVAETcwld0Oyyw2XmGw3vbPcDbOEpspeApsyEBSY0lzY
-         BJl4NEsEvECi0Fn66tjoluhCVVSbj/3Fe3eaBPUimBzycU6Ew02hPKbed/8je8CkRf
-         1+WsWnIyZzbwSlIn/6j5RP45+CkV50Bn18C+mlY07Wd9kkPeHC9Xv+VQYWAGMT8iqG
-         LXQzMPYXHDBPiYetArnubErS0XhVoCULd5vNPc0T7OZ+5eZRVXxQpCJkyh5R3oVYEa
-         qX2bk7/9/M9K5EutOOlmwBQ30zkp0qc/t1PRSgiuL+KJDx47ih8QPQIzlYGQ4Wflwi
-         HyIl1AsJiWaIg==
-Date:   Thu, 24 Aug 2023 13:24:01 +0100
-From:   Lee Jones <lee@kernel.org>
-To:     Hamza Mahfooz <hamza.mahfooz@amd.com>
-Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Karol Herbst <kherbst@redhat.com>,
-        nouveau@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        =?iso-8859-1?Q?Ma=EDra?= Canal <mairacanal@riseup.net>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Shashank Sharma <shashank.sharma@amd.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        amd-gfx@lists.freedesktop.org,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Luben Tuikov <luben.tuikov@amd.com>,
-        Danilo Krummrich <dakr@redhat.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Stanley Yang <Stanley.Yang@amd.com>,
+        Thu, 24 Aug 2023 08:36:26 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0556C1711;
+        Thu, 24 Aug 2023 05:36:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692880584; x=1724416584;
+  h=date:from:to:subject:message-id:references:mime-version:
+   in-reply-to;
+  bh=h2/3qkQJA1p3QI2y816NduJfSiyRPzj4RaZqFsPLusM=;
+  b=Eop8YOC7Na5q6WxoYr4JStie27r6xvPnhz51mcG6NQnn4vIoObMqQJsc
+   TuJd8V2L5DgTHhxl3M8u3QKONlEWSrAnZg1RsIFw/aEikb0jxKiAbNVyb
+   cRfYKS6Jh7iEOB7mpG4c+fgOO6jbkovdEGYyHTiEUuf1zno7htQd4iL3R
+   PMEyUeAk78bINAEjKpzHvIW17EZ3lxwwwJwHWgfQoXeegqW8+by7dLmJh
+   OQJiO9Q0NoRKx8oB7bKBR5yoM5vC/VUul4tbcQW3ErosoMC0a5nV32ua9
+   GAj6J6piQpALHw/4birPft1R2UACZ4tA/uwrBXPUgepPAlNkwH4HK6jIK
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="378181006"
+X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
+   d="scan'208";a="378181006"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 05:36:23 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
+   d="scan'208";a="880788602"
+Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 05:36:24 -0700
+Received: from kekkonen.localdomain (localhost [127.0.0.1])
+        by kekkonen.fi.intel.com (Postfix) with SMTP id 2AA1011FAB1;
+        Thu, 24 Aug 2023 15:26:42 +0300 (EEST)
+Date:   Thu, 24 Aug 2023 12:26:42 +0000
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Hugues Fruchet <hugues.fruchet@foss.st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-media@vger.kernel.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        linaro-mm-sig@lists.linaro.org, linux-tegra@vger.kernel.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Hyun Kwon <hyun.kwon@xilinx.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>, linux-kernel@vger.kernel.org,
-        Hawking Zhang <Hawking.Zhang@amd.com>,
-        Jerome Glisse <glisse@freedesktop.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Gourav Samaiya <gsamaiya@nvidia.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Mario Limonciello <mario.limonciello@amd.com>
-Subject: Re: [PATCH (set 1) 00/20] Rid W=1 warnings from GPU
-Message-ID: <20230824122401.GY1380343@google.com>
-References: <20230824073710.2677348-1-lee@kernel.org>
- <87wmxk4xt3.fsf@intel.com>
- <20230824120735.GS1380343@google.com>
- <a3c4c781-2f74-4b09-9db4-7b947897ef5a@amd.com>
+        linux-stm32@st-md-mailman.stormreply.com,
+        Philippe CORNU <philippe.cornu@foss.st.com>,
+        Dan Scally <dan.scally@ideasonboard.com>,
+        laurent.pinchart@ideasonboard.com
+Subject: Re: [PATCH v1 3/5] media: stm32-dcmipp: STM32 DCMIPP camera
+ interface driver
+Message-ID: <ZOdMghQXfNgKZ6cN@kekkonen.localdomain>
+References: <20220910144010.34272-1-hugues.fruchet@foss.st.com>
+ <20220910144010.34272-4-hugues.fruchet@foss.st.com>
+ <ZNC5k3PynnEWL/ou@kekkonen.localdomain>
+ <20230824110934.GA18226@gnbcxd0016.gnb.st.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <a3c4c781-2f74-4b09-9db4-7b947897ef5a@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230824110934.GA18226@gnbcxd0016.gnb.st.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Aug 2023, Hamza Mahfooz wrote:
+Hi Alanin,
 
+On Thu, Aug 24, 2023 at 01:09:34PM +0200, Alain Volmat wrote:
+> Hi Sakari,
 > 
-> On 8/24/23 08:07, Lee Jones wrote:
-> > On Thu, 24 Aug 2023, Jani Nikula wrote:
-> > 
-> > > On Thu, 24 Aug 2023, Lee Jones <lee@kernel.org> wrote:
-> > > > This set is part of a larger effort attempting to clean-up W=1
-> > > > kernel builds, which are currently overwhelmingly riddled with
-> > > > niggly little warnings.
-> > > 
-> > > The next question is, how do we keep it W=1 clean going forward?
-> > 
-> > My plan was to fix them all, then move each warning to W=0.
-> > 
-> > Arnd recently submitted a set doing just that for a bunch of them.
-> > 
-> > https://lore.kernel.org/all/20230811140327.3754597-1-arnd@kernel.org/
-> > 
-> > I like to think a bunch of this is built on top of my previous efforts.
-> > 
-> > GPU is a particularly tricky though - the warnings seem to come in faster
-> > than I can squash them.  Maybe the maintainers can find a way to test
-> > new patches on merge?
+> thanks a lot for the review.  I've already taken care of the comments I got
+> from Dan and will also add fixes for your comments as well before
+> pushing the v2.  Before going into that I thought I'd better clarify the
+> framerate part which seems the most tricky part.
 > 
-> I guess on that note, do you know if there is a way to run
-> `scripts/kernel-doc` on patches instead of whole files? That would make
-> much easier to block new kernel-doc issues from appearing.
+> On Mon, Aug 07, 2023 at 09:29:55AM +0000, Sakari Ailus wrote:
 
-Not off hand.
+...
 
-When I run builds on patches I author, I run them twice concurrently.
-Once on the commit I'm basing on and once on the HEAD of my patchset.  I
-then diff the two.  So as long as the number of errors and warnings stay
-the same or reduce, we're golden.
+> > > +static int dcmipp_byteproc_g_frame_interval(struct v4l2_subdev *sd,
+> > > +					    struct v4l2_subdev_frame_interval *fi)
+> > > +{
+> > > +	struct dcmipp_byteproc_device *byteproc = v4l2_get_subdevdata(sd);
+> > > +
+> > > +	if (IS_SINK(fi->pad))
+> > > +		fi->interval = byteproc->sink_interval;
+> > > +	else
+> > > +		fi->interval = byteproc->src_interval;
+> > > +
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +static int dcmipp_byteproc_s_frame_interval(struct v4l2_subdev *sd,
+> > > +					    struct v4l2_subdev_frame_interval *fi)
+> > > +{
+> > > +	struct dcmipp_byteproc_device *byteproc = v4l2_get_subdevdata(sd);
+> > > +
+> > > +	mutex_lock(&byteproc->lock);
+> > > +
+> > > +	if (byteproc->streaming) {
+> > > +		mutex_unlock(&byteproc->lock);
+> > > +		return -EBUSY;
+> > > +	}
+> > > +
+> > > +	if (fi->interval.numerator == 0 || fi->interval.denominator == 0)
+> > > +		fi->interval = byteproc->sink_interval;
+> > > +
+> > > +	if (IS_SINK(fi->pad)) {
+> > > +		/*
+> > > +		 * Setting sink frame interval resets frame skipping.
+> > > +		 * Sink frame interval is propagated to src.
+> > > +		 */
+> > > +		byteproc->frate = 0;
+> > > +		byteproc->sink_interval = fi->interval;
+> > > +		byteproc->src_interval = byteproc->sink_interval;
+> > 
+> > Is this used for anything else than configure skipping?
+> > 
+> > I think I'd just have a control for it in that case.
+> > 
+> > I don't think exposing frame interval configuration is necessarily even
+> > meaningful for a device that just processes data but does not produce it.
+> 
+> The DCMIPP is able to perform frame drop, 1/2, 1/4, 1/8 basically.
+> As Dan pointed me out, indeed setting frame interval as we did on both
+> sink and source pad isn't a defined behavior.  I first thought that
+> using the frame interval was the proper way to do that but that is
+> indeed only used on producers such as sensors ....
+> Which ctrl would you propose in such case ?
 
-Perhaps the same method could be used with `kernel-doc`?
+We don't have one, AFAIK, and I think it may be unlikely this will be
+needed elsewhere. So I'd use a private control.
+
+I wonder what others think. Cc Laurent as well.
 
 -- 
-Lee Jones [李琼斯]
+Regards,
+
+Sakari Ailus
