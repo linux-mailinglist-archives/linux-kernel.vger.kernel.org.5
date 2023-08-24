@@ -2,177 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 916BB788183
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 10:03:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BF3D788205
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 10:27:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243328AbjHYID1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 04:03:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44298 "EHLO
+        id S239288AbjHYI0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 04:26:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243371AbjHYIDT (ORCPT
+        with ESMTP id S242831AbjHYI0W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 04:03:19 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 342491FEF;
-        Fri, 25 Aug 2023 01:03:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692950598; x=1724486598;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=5RGmZPlu1kvFTqyRilV/7fBBHobbYjrpym84DLYd0FE=;
-  b=S/+nc+uLRKA1X+MK697Z9RA/+HN8D3AWpmGrSJHuxmMxNyAUF4uhoCWz
-   creWS6IRvCN8e0aQSDipIEOF508OgYhjJytdRzCk13GLM/vZqT86w4SGd
-   XbjT7d5/0ZDTGGKV0JJ04V84qkTtSzvDx3vC7LwPtqks4b8gV0HS0wE6f
-   o8slsoh2xTirHgOZxEow9lLVWlEOrdm5f5wr1pnTvQYsaLKpIf68c3wi2
-   IFjbOkXWWw9fr7p/ewXdhGGpz9h+zLbGpNhTgZ158it6o0LOkOGC9rY3p
-   Gsha4zMPGl/55iUVz+mIanlbVH/fesANBxW+gmav7bQrKjWV7FzfCNj+g
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="354188550"
-X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
-   d="scan'208";a="354188550"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2023 01:03:17 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="984021241"
-X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
-   d="scan'208";a="984021241"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmsmga006.fm.intel.com with ESMTP; 25 Aug 2023 01:03:14 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Fri, 25 Aug 2023 01:03:14 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Fri, 25 Aug 2023 01:03:14 -0700
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (104.47.74.44) by
- edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Fri, 25 Aug 2023 01:03:13 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BtRp/5QlM47p3qnJA2jmO8lo4QVT6tJCfYG78SB6lTEqIAc65m7rVvJ0OK+LtVPgAGWI00Zf+PHC8YXIerXlp2yY9qRTVWSH6xiGV+5eFsqO7IEcNB9VzixPXCSPJIw2ZjadtJTCs8eGjC2k3O66/C+8BrqDoKrKOgqYuIDlU4qDOCf/T2UMi8oRtXtc9XZkKBZ84clS8PjeLEyydEW1BKbWcD1OkD8tme4Wcc3eIMC8wc5W09uF4OrzDrmb1YFD7yz1TOilGp2K8c5Cd3IZLVhEFbCvVAwv/njiSDlcc9xcIl9NfqLeYuZVsd7PKX3eO3XPvpMA7gk/I3KaA8cbkg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cOKjjfOkLnSLJhaFsMGQ/neNWRXss6k6xlQM8pXkVqM=;
- b=guNNg2Oyuj/NzJn8d/BgM80n7QQEngUVfXaf3Ny7XXyH6F48g64/zNPvN391hddSLGuFBUJusNURHZetq61hmpAOa3Dr/yhL0PNIUi2BfVy6Gq20fbS9RDuJsQwVvr7ofpI3NSvhqEBiHeU+esRTssFWPhPIBhxxKmuWTGNjjp99xJsFk1IzFUv4ppX332LOy6PJogYNf1ESjoIeC+xF6zKpPCyFqDHSgLFmfL9HktSeg3/PfOWr5TO6QDgCuILa4FT/vFl0D4Lx7lYXgwbRTusu3l94v4og6oYj9Jo58lpxjmntLCQ2qas51smDMm1Bd9uyoKz+4qm8j+6EhXCqVA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
- by DS7PR11MB6037.namprd11.prod.outlook.com (2603:10b6:8:74::5) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6699.27; Fri, 25 Aug 2023 08:03:11 +0000
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::dcf3:7bac:d274:7bed]) by BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::dcf3:7bac:d274:7bed%4]) with mapi id 15.20.6699.028; Fri, 25 Aug 2023
- 08:03:11 +0000
-From:   "Tian, Kevin" <kevin.tian@intel.com>
-To:     Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "Will Deacon" <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "Jason Gunthorpe" <jgg@ziepe.ca>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Nicolin Chen <nicolinc@nvidia.com>
-CC:     "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v4 07/10] iommu: Merge iommu_fault_event and iopf_fault
-Thread-Topic: [PATCH v4 07/10] iommu: Merge iommu_fault_event and iopf_fault
-Thread-Index: AQHZ1vywN5WR0Q7gIEmdloJ1HEFD3a/6prsA
-Date:   Fri, 25 Aug 2023 08:03:11 +0000
-Message-ID: <BN9PR11MB5276E342E0E774CABA484B258CE3A@BN9PR11MB5276.namprd11.prod.outlook.com>
-References: <20230825023026.132919-1-baolu.lu@linux.intel.com>
- <20230825023026.132919-8-baolu.lu@linux.intel.com>
-In-Reply-To: <20230825023026.132919-8-baolu.lu@linux.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|DS7PR11MB6037:EE_
-x-ms-office365-filtering-correlation-id: 6f4c2c54-4b8e-417b-9854-08dba541b9da
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Ww+lsYVKKEvCEYpjs10o58mf4Ob5/dYjAhrpfKZo/tFIhFnIf0O8njaVmZTkI70Mir8ptwza1sNa5DWDFWzY1FZH0wjZDSc9ZlzfKdY4qQ7AeLhcT1WywH6U+3ppMCmZCjU4xxFUibMJI0g3yaVi527UDUwMSLEuWssXyXNBMiRU7Z8/pKXPgPNkhunNXjyBWW+UFrHIO3oYyx0rdonihkOTZn3SalIMUK/MztBFjzYfKWvV7zhMxA4qFNKqXlMWXhKlRHeaKjkk/WdUhkWfak8QcmBBfjuqK6tUPRzwrUYyN9lO2XtNzCr4DgmVGko4yVhnMlwL2O9HjO1Wi3ZgIm3XTzY4w34rNKkKTL97TD0vak6HZP2bfR9w26OAacs2UPVN0BH5X6cJAbJMVZqaZ946reTE5y2xDMRrHgfPvJSfovx1uOO0zMbTihmdnuLiWT2HCIPUYDBmfXpLS5akbPVfgYIrkUFeyJu35WQrpfbVzVMwZpxq2AW0EbQ/N1A3mJHBC91Bw5Rm9CWz3TJugXXAhFZtsSUh4EcPZ37+9tlTWLK3Rp2hs6+qUrw2ZuZIAu6qlEiVnBc97/lhPSEp+9KFaVypMI13bOJSaJuFcfMznmI2a53Y7a7k0uYxhjrc
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(39860400002)(396003)(136003)(366004)(186009)(1800799009)(451199024)(52536014)(5660300002)(4326008)(8676002)(8936002)(4744005)(83380400001)(7416002)(33656002)(55016003)(26005)(71200400001)(38100700002)(38070700005)(82960400001)(122000001)(76116006)(66556008)(66476007)(64756008)(54906003)(7696005)(66446008)(66946007)(316002)(110136005)(478600001)(41300700001)(9686003)(2906002)(6506007)(86362001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?kD2Z8LqYrCeVqqH+HXHDNULavviJOeucQqMqh2ThAlwsEd/0MmF2lKuwb/pG?=
- =?us-ascii?Q?XdVTirA4aaoq4ZiafWrXxdoVVoUFbekjrTnAANevhfbG0CSJ407KwNmbAF+5?=
- =?us-ascii?Q?8expu9g9+sb7VynbcBOBMkkBSDYgE96mTD5BnoljdLtEion8VhLaPMYHdD5Q?=
- =?us-ascii?Q?S6ZRuZERS0kefr5PtVWvDqMrhptXkfa39kNzpb/hhHPDqMUel25ylO7wN8ZL?=
- =?us-ascii?Q?2OMJO8Vdj16j+PzjwldjuiN5cOfL32t+XgTyueOnXGNKC4eOB4aAsLUTQBST?=
- =?us-ascii?Q?c8GoyXIlxelWOJYzWOekhJJ1AwZx4oqWZIOv5hDAcunubOTgbFB7tpK7NhsI?=
- =?us-ascii?Q?0eTUSXV5q9dLWchCIJGEu1YpYNF96eii6KwqoEbenRnhFOGRpxrc7hRutjTc?=
- =?us-ascii?Q?jhzgZEXFwqjJOwJ8shjcp0Yd4c3OenyNN1y+7t4bhqqRH2pt1irOvTg12l59?=
- =?us-ascii?Q?sCKytgv7CGW88noRgrRrcgE/nlcgQN3jnEPX7NeIeUObKXmUmuVDTmIE3KlG?=
- =?us-ascii?Q?fyr5C9kTae+mMaQrcrouOZUmODJkxRY1zvj/6C2XBSJHRtSUS7gMpfohAh7F?=
- =?us-ascii?Q?GQx3jbtgq05sVcrtzts1aOCk7hLfoXfPMBapp0JfcXihzXAqOPGC2H9gsLQn?=
- =?us-ascii?Q?nJbzr7Qo2Q3fs65W9X5mkLWb0rEV/8qN/dXYR0dG+/7P10jlwyQSiOam6NHL?=
- =?us-ascii?Q?tJwe3jglemRhMyKgux00CGMlXayMzqH0znN5AAAGPphH7PialnlQg8Ouk9lf?=
- =?us-ascii?Q?i5574oLugQVwyW0ekWEppNkrQc3qVOirJaXUcV3kuSWuX46xqkpmNZRU+KLC?=
- =?us-ascii?Q?oIpn9HY1KghEMTZndQl6KMCLeiUKnPfoIL+3LdXQjKojz7BtTjDOzzug8Bco?=
- =?us-ascii?Q?psrZtE4ONY29OFXFhQIy4I9lkp1nPryvYJhb+wKO7g+W8N0ipLNyADo56AYv?=
- =?us-ascii?Q?j21e0q2TBM5/le7nLrH1UIq1JywTY1kwp5d6HHnikziLjFyJ0IvMwAGgpx7v?=
- =?us-ascii?Q?qYeRy2RfsulBwX5eMMwcsIl7BwLYZy+9X3bjRDwyjpKt0o5kqIlWhpYjBb0a?=
- =?us-ascii?Q?08MsorVi9LYIqaoybWZAVd0AooZjQAnnrubbqlr5SaLYzcnsVXz/PM1nArgK?=
- =?us-ascii?Q?lEpzF4qkBNmR5Kt9YKhYc75dmYc6gZGGq18KzJf5pPdoSjnbpOsTyVxxO79/?=
- =?us-ascii?Q?XpzYK8h6wwIHRr38Xkyz2r5buyPg6hud8rlxml+LCPq4sUEMiEFFfCWfKouY?=
- =?us-ascii?Q?Kxb9/Y2Y1MZb2pIhx3vE4hcss8gEyQ0jFKMiwEJXUhqOIcx2DP4IKEwq5McH?=
- =?us-ascii?Q?khHvYIdJDCc8LTRqf1DM4kfy9MKt50YUnZbbxMF+z4O3fLMEyYor6gO9sOiI?=
- =?us-ascii?Q?Jgc7FSghprj4/V95R4UrMJt+OMwsek+gCkBz5ZlZlRGaxZ4Bj8Z2xP7ntBeA?=
- =?us-ascii?Q?4dvqEOKiQJB/1HHdY4QsxZW2q/5D0sGh+5H/QYchrPvzB7KveTqL61CCa8Kk?=
- =?us-ascii?Q?lUeoqbc62nQE6lJf/AxtJupnEzq1wE3L5YoaOEWCaHDOzkWR9niWKKbl/2ly?=
- =?us-ascii?Q?yfT5/IxtfsmwqhibweHkPnNc7a/k5LBSq8xuklPj?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Fri, 25 Aug 2023 04:26:22 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34FF519AD;
+        Fri, 25 Aug 2023 01:26:20 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BF44B62450;
+        Fri, 25 Aug 2023 08:26:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5F02C433C8;
+        Fri, 25 Aug 2023 08:26:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1692951979;
+        bh=ts5HB3fsEAvz/IHDvRXzAguzRjGtOKEZeGKIr2Jrr1c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ctm6F/jH3AqMWKu0TLsONGa9iQ2O+BSpeT3Z11mO4oibVN5lJU+BJSsMWxjfLO9+y
+         SXvYWgibzLj085+QV9NveefiiipdZ+80gLYhnvt9D03Rj8lUFDCoVCZ0A7XRyBN7U6
+         YpR36vh+tgOB2CCSRSYy7KOWzkP/4eBXmG1xKYfg=
+Date:   Thu, 24 Aug 2023 21:22:18 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Simon Arlott <simon@octiron.net>
+Cc:     Oliver Neukum <oneukum@suse.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-serial@vger.kernel.org
+Subject: Re: [PATCH] USB: cdc-acm: expose serial close_delay and closing_wait
+ in sysfs
+Message-ID: <2023082442-arose-jitters-00bb@gregkh>
+References: <ea1a13ad-a1e0-540a-e97a-4c44f6d2d33b@0882a8b5-c6c3-11e9-b005-00805fc181fe.uuid.home.arpa>
+ <2023082403-masculine-scuttle-f0ad@gregkh>
+ <d313a1a9-833e-981e-b9d7-920989458d37@0882a8b5-c6c3-11e9-b005-00805fc181fe.uuid.home.arpa>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6f4c2c54-4b8e-417b-9854-08dba541b9da
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Aug 2023 08:03:11.2501
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 1NvHWBCiwqseh1tDtKCnj0xtuT2KQkqkkplUGYjDbxC9xI2G1abXq8sylCO9DCliu/RL8OcyQhBpZ8VUnyVZrg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR11MB6037
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d313a1a9-833e-981e-b9d7-920989458d37@0882a8b5-c6c3-11e9-b005-00805fc181fe.uuid.home.arpa>
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DATE_IN_PAST_12_24,
+        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Lu Baolu <baolu.lu@linux.intel.com>
-> Sent: Friday, August 25, 2023 10:30 AM
->=20
-> -/**
-> - * struct iommu_fault_event - Generic fault event
-> - *
-> - * Can represent recoverable faults such as a page requests or
-> - * unrecoverable faults such as DMA or IRQ remapping faults.
-> - *
-> - * @fault: fault descriptor
-> - * @list: pending fault event list, used for tracking responses
-> - */
-> -struct iommu_fault_event {
-> -	struct iommu_fault fault;
-> -	struct list_head list;
-> -};
-> -
+On Thu, Aug 24, 2023 at 07:02:40PM +0100, Simon Arlott wrote:
+> On 24/08/2023 15:48, Greg Kroah-Hartman wrote:
+> > On Wed, Aug 23, 2023 at 09:37:45PM +0100, Simon Arlott wrote:
+> >> This can happen with the ESP32-H2/ESP32-C6 USB serial interface. Instead of
+> >> changing all userspace applications to flush (discard) their output in this
+> >> specific scenario it would be easier to adjust the closing_wait timeout
+> >> with udev rules but the only available interface is the TIOCGSERIAL ioctl.
+> > 
+> > Then why not use that?
+> 
+> It's not practical to use TIOCGSERIAL from a udev rule. Instead of a
+> sysfs attribute (that udev has built-in support for writing) it would
+> require a separate compiled process or other non-trivial dependencies
+> (e.g. Python) to modify the closing_wait value. There's no shell script
+> support for read-modify-write of a complex ioctl struct.
 
-iommu_fault_event is more forward-looking if unrecoverable fault
-will be supported in future. From this angle it might make more
-sense to keep it to replace iopf_fault.
+It's this way for all serial ports, cdc-acm is not "special" here,
+sorry.
+
+> The ioctl can't be used without opening and closing the tty, which has
+> side effects. On open() it'll raise DTR/RTS and activate it. For cdc-acm
+> that will indicate to the device that the serial port has been opened
+> which will be visible to the software running on the USB device. On
+> close() it'll be delayed by the close_delay if any process is currently
+> doing a blocking open() and there's no carrier, then the closing_wait
+> time if there's been any incomplete transmitted data (by any process).
+> 
+> I want to be able to automatically set close_delay to 0 and closing_wait
+> to 65535 ("no waiting") on all USB serial devices without these kind of
+> side effects. I'm sure these have a purpose when connected to a real tty
+> but forcing a process to wait 30 seconds before it can close the port
+> (or exit) if the USB device isn't reading data properly is inconvenient.
+> 
+> Those two values require CAP_SYS_ADMIN to modify (which is separately
+> enforced by many of the tty drivers) so user applications can't change
+> them even if they're aware of them.
+
+So this looks like you feel there should be a way to modify serial port
+values without the ioctl api.  That's good, maybe we do need to do this,
+but then, if so, it needs to happen for all serial ports, not just one
+single device type.
+
+Note that the tty api is really really old, so modifications and
+enhancements need to be done carefully.  And be sure that there isn't
+already another way to do this.  The open/close DTR/RTS issue has been
+brought up many times, and I thought that there was ways to prevent it
+already, are you sure that modern tools don't already take this into
+consideration?
+
+Or better yet, don't make any change until you actually open the port
+for access.  Why wory about these values until you need to use it?  Why
+insist on doing it from a udev rule when there is no real user of the
+port yet?  Who are you setting the port up for, and why can't they do it
+when they open and set the other values that they want?
+
+> > If any apis are needed, let's make them for all tty devices, through the
+> > existing ioctl api, so they work for all devices and userspace doesn't
+> > have to try to figure out just exactly what type of tty/serial device it
+> > is talking to (as that will not scale and is exactly the opposite of
+> > what common apis are for.)
+> 
+> Are you ok with adding the same two attributes to sysfs for all ttys?
+
+Why just these attributes, why not tty settings?  :)
+
+> I'd use a different name (appending "_centisecs") because serial_core
+> already uses those names on the tty device and I think it's better to
+> define "infinite wait" and "no wait" as -1 and 0 instead of 0 and 65535.
+
+Ah, so this already is an api?  Or is it a different one?
+
+confused,
+
+greg k-h
