@@ -2,80 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CA897865D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 05:27:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6190E7865D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 05:32:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239607AbjHXD06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 23:26:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57688 "EHLO
+        id S239610AbjHXDbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 23:31:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239605AbjHXD0c (ORCPT
+        with ESMTP id S235523AbjHXDbZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 23:26:32 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9B6010F1;
-        Wed, 23 Aug 2023 20:26:30 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1c0bae4da38so3667965ad.0;
-        Wed, 23 Aug 2023 20:26:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692847590; x=1693452390;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xcGYMXgYpBCElk15uP8fPMKVPYLlXf+c4KnubixoY38=;
-        b=Ja3ruaOEx42FX4oWcwYW8o+k7SGSonhpx4/aUpiyENJIdiSAlCH7gUUHLESD/X5aZh
-         ItmWGcEXgPyelRoEVx32YRXYtnLXTWaX5jBlFGIuABNaer1krh0K25cV9LGERdmOMZSE
-         7LwLL9bDFxgeCfrNionwPQjys6pU4k2nLiMIeMlK6WehkH2WWcDPmVc0CxBAzSM+HoiQ
-         d6IaEG1J+QSYxImtjlHYpqNlfnX4/ZTHGIUMOdinWEcMxU4MvvfBT1+ABz54kWRgxAiI
-         69HqNTWy5uTnSpy7/LbZQN8CgKtbA7ERpSe6hqY+ZZWhinBrkCtRbPngYlMWDqv3boZH
-         Vrhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692847590; x=1693452390;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xcGYMXgYpBCElk15uP8fPMKVPYLlXf+c4KnubixoY38=;
-        b=StWEUbE8GYXEwcOboTDqKp62xmP3Ezv9xi5FDaGrFXiWT6jl7qOll4yK9/+jgjYPv8
-         85Fpk508GkMWJIstke1ps7WXmTzPloCCkfvUpuJYRBRF953WNV7ry/+uoDqf+IzD94G7
-         aVDkFVH4xkck1cTmimGzrtx+MsuWmSPzbJ125284SHL0ZbRx4DV8LOG8JUu60qZbhl6C
-         zYSSk+MeeKnEPUTMhF7tyfvq/OUkONP1ENwQlbR9yLa6Kp77oTM45tdsueV71i9x9v1B
-         Hwz3x59cRH+rvumE39Fl6C3IrUAQv706psg8fiDr4sZQonccxS7Wv0FCAa4v/WUlle4b
-         nfOw==
-X-Gm-Message-State: AOJu0YzOCIo7ILmZlaw3louBWjYGgDxLI2lMCUJMU+eSSfJbz6sIFrXA
-        2KoqyvFHmeKtBm2RZgSNAtXw3ArQ84Y=
-X-Google-Smtp-Source: AGHT+IErqcMwHCEEqaldyOuOPE7uGxuESre3Uf1mw3uVdjhqCo7r2j6gc/vsySNkdhSz+Xk6wRDTTA==
-X-Received: by 2002:a17:902:db09:b0:1bf:8132:d19f with SMTP id m9-20020a170902db0900b001bf8132d19fmr17569128plx.27.1692847590065;
-        Wed, 23 Aug 2023 20:26:30 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id d2-20020a170903230200b001bc6536051bsm11560801plh.184.2023.08.23.20.26.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Aug 2023 20:26:29 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 23 Aug 2023 20:26:28 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>,
-        Benson Leung <bleung@chromium.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        John Stultz <jstultz@google.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-rtc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Brian Norris <briannorris@chromium.org>
-Subject: Re: [PATCH v2 1/7] rtc: Add support for limited alarm timer offsets
-Message-ID: <65119fd3-59e6-44c9-9fe0-85e9270b3a48@roeck-us.net>
-References: <20230817225537.4053865-1-linux@roeck-us.net>
- <20230817225537.4053865-2-linux@roeck-us.net>
- <b07b19ce-7f04-409c-bcb9-6deba059f57a@roeck-us.net>
- <20230823225129d2bc7dcd@mail.local>
+        Wed, 23 Aug 2023 23:31:25 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC770E7B
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 20:31:23 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 805D263363
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 03:31:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70D95C433C7;
+        Thu, 24 Aug 2023 03:31:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692847882;
+        bh=2MxDhV6CHEltlY23Xu4O5PADIqsFvP60GAhGKOsthbM=;
+        h=Date:Subject:To:References:From:In-Reply-To:From;
+        b=Ind9fMCZOuF0I/Zri5pudAvh2EZZ2MqNKvNno6SYRbtDwJuQw2Wn6TaU2ergX2AP3
+         c0Ngv0sIvTN8Zi/a7Lgb2SW3GZsy5DN5qvAZVgtK6YrOodWk8YkzlxnrE7fZtf9X3N
+         rrkyRuGjeXCh22ckIKaAUc0I7S19PZpv9K3PMYqOg0F2UgvaLd/zn8z+3i+3wB0Ha3
+         ZNk3usAGueU6+nr42Tw+lFBdviThU8sD5OnZgwaEOTG4j7sQ4Nj/HHdZ6p1p5+xKpE
+         ZwlhlUkFYVi+njp9/b0nfKm2MJ0sFZ9mWZ+gVO7CJJwWyz5+6PeeZJ4yCHHWifTu+o
+         N6vQl8Rgpp/PA==
+Message-ID: <90a27f82-ff90-f8ce-ccf3-e1d8909b744d@kernel.org>
+Date:   Wed, 23 Aug 2023 20:31:21 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230823225129d2bc7dcd@mail.local>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [PATCH v3 1/1] gro: decrease size of CB
+Content-Language: en-US
+To:     Gal Pressman <gal@nvidia.com>,
+        Richard Gobert <richardbgobert@gmail.com>, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        aleksander.lobakin@intel.com, lixiaoyan@google.com,
+        lucien.xin@gmail.com, alexanderduyck@fb.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230601160924.GA9194@debian> <20230601161407.GA9253@debian>
+ <f83d79d6-f8d7-a229-941a-7d7427975160@nvidia.com>
+ <fe5c86d1-1fd5-c717-e40c-c9cc102624ed@kernel.org>
+ <b3908ce2-43e1-b56d-5d1d-48a932a2a016@nvidia.com>
+ <b45cedc6-3dbe-5cbb-1938-5c33cf9fc70d@kernel.org>
+ <d4cc1576-f4c3-a074-9bf4-937cdd3ff56d@nvidia.com>
+From:   David Ahern <dsahern@kernel.org>
+In-Reply-To: <d4cc1576-f4c3-a074-9bf4-937cdd3ff56d@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,114 +66,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 12:51:29AM +0200, Alexandre Belloni wrote:
-> Hello,
+On 8/23/23 7:43 AM, Gal Pressman wrote:
+>> With veth and namespaces I expect up to 25-30G performance levels,
+>> depending on the test. When something fundamental breaks like this patch
+>> a drop to < 1G would be a red flag, so there is value to the test.
+> Circling back to this, I believe such test already exists:
+> tools/testing/selftests/net/udpgro_fwd.sh
 > 
-> On 23/08/2023 09:50:47-0700, Guenter Roeck wrote:
-> > Hi Alexandre,
-> > 
-> > On Thu, Aug 17, 2023 at 03:55:31PM -0700, Guenter Roeck wrote:
-> > > Some alarm timers are based on time offsets, not on absolute times.
-> > > In some situations, the amount of time that can be scheduled in the
-> > > future is limited. This may result in a refusal to suspend the system,
-> > > causing substantial battery drain.
-> > > 
-> > > Some RTC alarm drivers remedy the situation by setting the alarm time
-> > > to the maximum supported time if a request for an out-of-range timeout
-> > > is made. This is not really desirable since it may result in unexpected
-> > > early wakeups.
-> > > 
-> > > To reduce the impact of this problem, let RTC drivers report the maximum
-> > > supported alarm timer offset. The code setting alarm timers can then
-> > > decide if it wants to reject setting alarm timers to a larger value, if it
-> > > wants to implement recurring alarms until the actually requested alarm
-> > > time is met, or if it wants to accept the limited alarm time.
-> > > 
-> > > Only introduce the necessary variable into struct rtc_device.
-> > > Code to set and use the variable will follow with subsequent patches.
-> > > 
-> > > Cc: Brian Norris <briannorris@chromium.org>
-> > > Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-> > 
-> > I guess it is a bit late to get the series into v6.6, but would it be
-> > possible to apply it to a -next branch to get some more test coverage ?
-> > 
+> And it indeed fails before Richard's fix.
 > 
-> I'm probably going to take 1 and 3-7 for 6.6 once I get a reliable
-> internet access. I can't take 2/7 without a review or ack from the time
-> maintainers.
-> 
-Ok, makes sense.
+> I guess all that's left is to actually run these tests 😄?
 
-> > Either case, do you have any additional comments / feedback ?
-> > 
-> 
-> The main issue that remains is that after 2/7, the rtc_device structure
-> is not opaque anymore to its user as alarmtimer_suspend now directly
-> accesses one of the members. But I'd have to find which RTCs have an
-> absolute limit so we can design a proper API. I may also decide that it
-> is good enough to require that the alarm range must cover the registered
-> RTC range.
-> 
-What exactly do you have in mind ? For our use case, we need
-alarmtimer_suspend() to either sleep for the requested time, or as long
-as possible. Would an API function returning the alarm limit address
-your concerns ?
+hmmm... if that is the case, the Makefile shows:
 
-Regarding relative/absolute, it is a mixed bag. Below is what I found
-for the alphabetically first ~40 drivers. Note that "absolute" in the
-configuration column means that the alarm time is specified as absolute
-value (e.g, at 1am), not that the limit is absolute or relative to the
-current time. The limit column gives a hint if the limit is relative
-or absolute. In many cases the alarm is configured as absolute value
-but limited to day/week/month/year in the future.
+TEST_PROGS += udpgro_fwd.sh
 
-On a side note, struct rtc_device isn't exactly opaque even today.
-Both alarmtimer.c and ntp.c already access some of its members.
-
-Thanks,
-Guenter
-
----
-driver			configuration	limit		comments
-rtc-88pm80x.c           relative        24 hours        silently adjusted
-rtc-88pm860x.c          relative        32 bit seconds  unchecked
-rtc-ab8500.c            absolute        ~2032           unchecked
-rtc-ab-b5ze-s3.c        relative        1 month         -EINVAL
-rtc-ab-eoz9.c           absolute        1 month         month & year ignored (1 month + 1 day -> fires after 1 day)
-rtc-abx80x.c            absolute        1 year          year ignored (1 year + 1 day -> fires after 1 day)
-rtc-ac100.c             absolute        2069            -EINVAL
-rtc-armada38x.c         absolute        2106            unchecked
-rtc-as3722.c            absolute        unlimited       unchecked
-rtc-asm9260.c           absolute        unlimited       unchecked
-rtc-at91rm9200.c        absolute        1 year          year ignored (1 year + 1 day -> fires after 1 day)
-rtc-at91sam9.c          relative        32 bit seconds  unchecked
-rtc-bd70528.c           absolute        2099            unchecked
-rtc-brcmstb-waketimer.c absolute        2106            unchecked
-rtc-cadence.c           absolute        2999            unchecked
-rtc-cmos.c              absolute        day/month/year  -EINVAL if out of range
-rtc-cpcap.c             absolute        ~2059           in days since 1970, day masked, unchecked (2060 -> 1971)
-rtc-cros-ec.c           relative        24h or max      -EINVAL
-rtc-da9052.c            absolute        2063            unchecked, year masked
-rtc-da9055.c            absolute        2133 ?          unchecked, year masked
-rtc-da9063.c            absolute        2063            unchecked, year masked
-rtc-digicolor.c         relative        32-bit seconds  unchecked
-rtc-ds1286.c            absolute        24 hours        unchecked, month & year ignored
-rtc-ds1305.c            absolute        24 hours        -EINVAL
-rtc-ds1307.c            absolute        1 year          unchecked, year ignored
-rtc-ds1343.c            absolute        1 month         unchecked, month / year ignored
-rtc-ds1374.c            relative        ~194 days       unchecked, masked (195 days -> fires after 1 day)
-rtc-ds1511.c            absolute        1 month         unchecked, month/year ignored
-rtc-ds1553.c            absolute        1 month         unchecked, month/year ignored
-rtc-ds1685.c            absolute        1 month         unchecked, month/year ignored
-rtc-ds3232.c            absolute        1 month         unchecked, month/year ignored
-rtc-efi.c               absolute        not specified   several years
-rtc-fm3130.c            absolute        1 year          year ignored
-rtc-fsl-ftm-alarm.c     relative        262 seconds     -ERANGE
-rtc-goldfish.c          absolute        ~500 years      unchecked
-rtc-hym8563.c           absolute        1 month         unchecked, month/year ignored
-rtc-imxdi.c             abolute         2106            unchecked (32 bit seconds since 1970)
-rtc-imx-sc.c            absolute        unknown         Value passed to SCU which determines if valid
-rtc-isl1208.c           absolute        1 year          unchecked, year ignored
-rtc-jz4740.c            absolute        2106            unchecked (32 bit seconds since 1970)
-
+so it should be run. I wonder why one of the many bots did not flag it.
