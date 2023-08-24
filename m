@@ -2,185 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F7BB7874E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 18:06:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CD307874DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 18:06:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242377AbjHXQGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 12:06:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34880 "EHLO
+        id S242368AbjHXQGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 12:06:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242379AbjHXQFn (ORCPT
+        with ESMTP id S242378AbjHXQFm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 12:05:43 -0400
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 374031996;
-        Thu, 24 Aug 2023 09:05:41 -0700 (PDT)
-Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 37O9XXte014368;
-        Thu, 24 Aug 2023 18:05:15 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=selector1; bh=eLiR4Yrg36nAV4ckmGB/w
-        PqPu3zC6LLXLH1wrY+CNaU=; b=h2xwuEgTlLpBZLHDUaSTHwZaDlK7vH1OD82I4
-        JyjnAbVQWc/q2mIgUNm7PT6BUemn7EbWduZ0f+Yg98mtuA/NzvID3P/2gB0M9vAb
-        LBJ1e49L6XMVvzAJM2jiE4B74Yxyq0roj+uv3vKr77KneJf+Xl3AiXDJSzH2Kpeg
-        Aqj14FSIlp6cZq8wwk8gXchg7HSAcL2y6wB1Z8tNr44Ezx+svkYg8yk+LpeWvhkd
-        Pp6NHAQJRZpS265j1t6LSlbMGZzbuqdgZqyhZh3v5Ji5ba8Enyu0p8l+dbPdb2m1
-        Pl4dU6wgXIiujhQmE7b8WCxFhdF7KuvTUjdI5ixvgi16TS7kg==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3sn1y5rhjf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 24 Aug 2023 18:05:15 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id DBBAE100059;
-        Thu, 24 Aug 2023 18:05:13 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id CA001252239;
-        Thu, 24 Aug 2023 18:05:13 +0200 (CEST)
-Received: from gnbcxd0016.gnb.st.com (10.129.178.213) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Thu, 24 Aug
- 2023 18:05:13 +0200
-Date:   Thu, 24 Aug 2023 18:05:06 +0200
-From:   Alain Volmat <alain.volmat@foss.st.com>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-CC:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        <devicetree@vger.kernel.org>,
-        Hugues Fruchet <hugues.fruchet@foss.st.com>,
-        <linux-kernel@vger.kernel.org>, Hans Verkuil <hverkuil@xs4all.nl>,
-        Rob Herring <robh+dt@kernel.org>,
-        Dan Scally <dan.scally@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-media@vger.kernel.org>
-Subject: Re: [Linux-stm32] [PATCH v1 3/5] media: stm32-dcmipp: STM32 DCMIPP
- camera interface driver
-Message-ID: <20230824160506.GA21560@gnbcxd0016.gnb.st.com>
-Mail-Followup-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        devicetree@vger.kernel.org,
-        Hugues Fruchet <hugues.fruchet@foss.st.com>,
-        linux-kernel@vger.kernel.org, Hans Verkuil <hverkuil@xs4all.nl>,
-        Rob Herring <robh+dt@kernel.org>,
-        Dan Scally <dan.scally@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
-References: <20220910144010.34272-1-hugues.fruchet@foss.st.com>
- <20220910144010.34272-4-hugues.fruchet@foss.st.com>
- <ZNC5k3PynnEWL/ou@kekkonen.localdomain>
- <20230824110934.GA18226@gnbcxd0016.gnb.st.com>
- <ZOdMghQXfNgKZ6cN@kekkonen.localdomain>
- <20230824130432.GB27092@pendragon.ideasonboard.com>
+        Thu, 24 Aug 2023 12:05:42 -0400
+Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A91F4E50;
+        Thu, 24 Aug 2023 09:05:40 -0700 (PDT)
+Received: from [10.10.2.52] (unknown [10.10.2.52])
+        by mail.ispras.ru (Postfix) with ESMTPSA id 1FF5840F1DE3;
+        Thu, 24 Aug 2023 16:05:36 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru 1FF5840F1DE3
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
+        s=default; t=1692893136;
+        bh=caqsQ+c8XbhPmlQ5KZRGIo7T9OsOQPmeBRjdvjOtl3k=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=K7MyNx8Ik/O9d7LXuyLVLJL355ADYuFNMCAxtQtAi78K6IjMeaiGBxZX65EJltK/v
+         7kUsdZONsuAN5CDyCq2COSNroAjqql6u6//fZrXoH1NsPyZqGVcuU4g0CXLpFbwgc9
+         wa4cpjNavkPym3FL9Wt4WOueA0cX6Osu1Wnf0bRs=
+Subject: Re: [PATCH 5.10 000/135] 5.10.191-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+References: <20230824145027.008282920@linuxfoundation.org>
+From:   Alexey Khoroshilov <khoroshilov@ispras.ru>
+Autocrypt: addr=khoroshilov@ispras.ru; prefer-encrypt=mutual; keydata=
+ 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
+ kK2E04Fb+Zk1eJvHYRc=
+Message-ID: <e722f48c-2032-8898-84ed-994a4457c62b@ispras.ru>
+Date:   Thu, 24 Aug 2023 19:05:35 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230824130432.GB27092@pendragon.ideasonboard.com>
-X-Disclaimer: ce message est personnel / this message is private
-X-Originating-IP: [10.129.178.213]
-X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-24_12,2023-08-24_01,2023-05-22_02
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230824145027.008282920@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: ru-RU
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent,
+On 24.08.2023 17:49, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.191 release.
 
-On Thu, Aug 24, 2023 at 04:04:32PM +0300, Laurent Pinchart wrote:
-> On Thu, Aug 24, 2023 at 12:26:42PM +0000, Sakari Ailus wrote:
-> > On Thu, Aug 24, 2023 at 01:09:34PM +0200, Alain Volmat wrote:
-> > > Hi Sakari,
-> > > 
-> > > thanks a lot for the review.  I've already taken care of the comments I got
-> > > from Dan and will also add fixes for your comments as well before
-> > > pushing the v2.  Before going into that I thought I'd better clarify the
-> > > framerate part which seems the most tricky part.
-> > > 
-> > > On Mon, Aug 07, 2023 at 09:29:55AM +0000, Sakari Ailus wrote:
-> > 
-> > ...
-> > 
-> > > > > +static int dcmipp_byteproc_g_frame_interval(struct v4l2_subdev *sd,
-> > > > > +					    struct v4l2_subdev_frame_interval *fi)
-> > > > > +{
-> > > > > +	struct dcmipp_byteproc_device *byteproc = v4l2_get_subdevdata(sd);
-> > > > > +
-> > > > > +	if (IS_SINK(fi->pad))
-> > > > > +		fi->interval = byteproc->sink_interval;
-> > > > > +	else
-> > > > > +		fi->interval = byteproc->src_interval;
-> > > > > +
-> > > > > +	return 0;
-> > > > > +}
-> > > > > +
-> > > > > +static int dcmipp_byteproc_s_frame_interval(struct v4l2_subdev *sd,
-> > > > > +					    struct v4l2_subdev_frame_interval *fi)
-> > > > > +{
-> > > > > +	struct dcmipp_byteproc_device *byteproc = v4l2_get_subdevdata(sd);
-> > > > > +
-> > > > > +	mutex_lock(&byteproc->lock);
-> > > > > +
-> > > > > +	if (byteproc->streaming) {
-> > > > > +		mutex_unlock(&byteproc->lock);
-> > > > > +		return -EBUSY;
-> > > > > +	}
-> > > > > +
-> > > > > +	if (fi->interval.numerator == 0 || fi->interval.denominator == 0)
-> > > > > +		fi->interval = byteproc->sink_interval;
-> > > > > +
-> > > > > +	if (IS_SINK(fi->pad)) {
-> > > > > +		/*
-> > > > > +		 * Setting sink frame interval resets frame skipping.
-> > > > > +		 * Sink frame interval is propagated to src.
-> > > > > +		 */
-> > > > > +		byteproc->frate = 0;
-> > > > > +		byteproc->sink_interval = fi->interval;
-> > > > > +		byteproc->src_interval = byteproc->sink_interval;
-> > > > 
-> > > > Is this used for anything else than configure skipping?
-> > > > 
-> > > > I think I'd just have a control for it in that case.
-> > > > 
-> > > > I don't think exposing frame interval configuration is necessarily even
-> > > > meaningful for a device that just processes data but does not produce it.
-> > > 
-> > > The DCMIPP is able to perform frame drop, 1/2, 1/4, 1/8 basically.
-> > > As Dan pointed me out, indeed setting frame interval as we did on both
-> > > sink and source pad isn't a defined behavior.  I first thought that
-> > > using the frame interval was the proper way to do that but that is
-> > > indeed only used on producers such as sensors ....
-> > > Which ctrl would you propose in such case ?
-> > 
-> > We don't have one, AFAIK, and I think it may be unlikely this will be
-> > needed elsewhere. So I'd use a private control.
-> > 
-> > I wonder what others think. Cc Laurent as well.
-> 
-> What are the use cases for this feature ?
+Do you mean 5.10.192 release?
 
-This is basically to allow reducing the framerate of the
-captured stream when this is not possible at the producer
-(sensor) level and we need to lower down the stress on elements down the
-pipeline.
-
-Regards,
-Alain
-
-> 
-> -- 
-> Regards,
-> 
-> Laurent Pinchart
-> _______________________________________________
-> Linux-stm32 mailing list
-> Linux-stm32@st-md-mailman.stormreply.com
-> https://st-md-mailman.stormreply.com/mailman/listinfo/linux-stm32
+--
+Alexey
