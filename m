@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A2B77877B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 20:22:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17C7F7877B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 20:22:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243022AbjHXSVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 14:21:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48482 "EHLO
+        id S243016AbjHXSVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 14:21:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237746AbjHXSVV (ORCPT
+        with ESMTP id S243004AbjHXSVV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 24 Aug 2023 14:21:21 -0400
 Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FB601BE9;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FA941BE3;
         Thu, 24 Aug 2023 11:21:19 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37OILAa6130187;
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37OILAw0130191;
         Thu, 24 Aug 2023 13:21:10 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
         s=ti-com-17Q1; t=1692901270;
-        bh=29ZAGUFfTvoDgh18sncsggcW+sW03zKhCPzpLwmnsKY=;
+        bh=0AfiQjed5ChtkdXYwfP+W9d+uQPzKKcTCI0+Tp0FZMQ=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=srM3I9UgYqF1B5+XpKCeIn+FhKCHYfyOKd0CTSB1CFMvrZEfhzE7QVSbjHdVy930M
-         rarMfAY/77L9x88p0xZQY4z1qjOh/cRru+yDnA8fIUNzYPqBMIElzk0+rvsUd4Qvhc
-         Z7M7aei1CApBCrP77IpRzSlEvm1WkTUWg8n8T56o=
-Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37OILAcA018998
+        b=cUMhX+ChvpIIetEiw6PiJjIw83Ga9QfZVpvitBijc8o+pn9XlDw2mv+PG8rfF7Gkb
+         SJokPIfw7uMghj/ndio/PBNtwzJyU/Isv3GU740bZ4JoDXmC8qVgQ7CiQGX+KTm0Ap
+         m5VaFdz/yJI0DuDLH7+fQqUf6xutvxzEeuNWwznU=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37OILA7u088748
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
         Thu, 24 Aug 2023 13:21:10 -0500
-Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 24
- Aug 2023 13:21:09 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ Aug 2023 13:21:10 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
  Frontend Transport; Thu, 24 Aug 2023 13:21:10 -0500
 Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37OIL9Of054532;
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37OILAUN029180;
         Thu, 24 Aug 2023 13:21:10 -0500
 From:   Nishanth Menon <nm@ti.com>
 To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
@@ -49,9 +49,9 @@ CC:     <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
         Mattijs Korpershoek <mkorpershoek@baylibre.com>,
         Simon Glass <sjg@chromium.org>, Tom Rini <trini@konsulko.com>,
         Neha Francis <n-francis@ti.com>, Nishanth Menon <nm@ti.com>
-Subject: [PATCH 1/2] Documentation: sphinx: Add sphinx-prompt
-Date:   Thu, 24 Aug 2023 13:21:06 -0500
-Message-ID: <20230824182107.3702766-2-nm@ti.com>
+Subject: [PATCH 2/2] Documentation: bpf: Use sphinx-prompt
+Date:   Thu, 24 Aug 2023 13:21:07 -0500
+Message-ID: <20230824182107.3702766-3-nm@ti.com>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <20230824182107.3702766-1-nm@ti.com>
 References: <20230824182107.3702766-1-nm@ti.com>
@@ -69,46 +69,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sphinx-prompt[1] helps bring-in '.. prompt::' option that allows a
-better rendered documentation, yet be able to copy paste without
-picking up the prompt from the rendered documentation.
+Use Sphinx-prompt to generate a better rendered documentation that is
+easier for copy-paste.
 
-[1] https://pypi.org/project/sphinx-prompt/
-Link: https://lore.kernel.org/all/87fs48rgto.fsf@baylibre.com/
-Suggested-by: Mattijs Korpershoek <mkorpershoek@baylibre.com>
-Suggested-by: Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
 Signed-off-by: Nishanth Menon <nm@ti.com>
 ---
-I would have added Reported-by for Simon, since he reported the issue in
-the first place.. but it was for the u-boot documentation, so skipping
-here.
+ Documentation/bpf/libbpf/libbpf_build.rst | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
- Documentation/conf.py                 | 2 +-
- Documentation/sphinx/requirements.txt | 1 +
- 2 files changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/conf.py b/Documentation/conf.py
-index d4fdf6a3875a..2eff713c4728 100644
---- a/Documentation/conf.py
-+++ b/Documentation/conf.py
-@@ -55,7 +55,7 @@ needs_sphinx = '1.7'
- extensions = ['kerneldoc', 'rstFlatTable', 'kernel_include',
-               'kfigure', 'sphinx.ext.ifconfig', 'automarkup',
-               'maintainers_include', 'sphinx.ext.autosectionlabel',
--              'kernel_abi', 'kernel_feat']
-+              'kernel_abi', 'kernel_feat', 'sphinx-prompt']
+diff --git a/Documentation/bpf/libbpf/libbpf_build.rst b/Documentation/bpf/libbpf/libbpf_build.rst
+index 8e8c23e8093d..2b94e5778702 100644
+--- a/Documentation/bpf/libbpf/libbpf_build.rst
++++ b/Documentation/bpf/libbpf/libbpf_build.rst
+@@ -13,25 +13,25 @@ setting NO_PKG_CONFIG=1 when calling make.
  
- if major >= 3:
-     if (major > 3) or (minor > 0 or patch >= 2):
-diff --git a/Documentation/sphinx/requirements.txt b/Documentation/sphinx/requirements.txt
-index 335b53df35e2..24a59ceda582 100644
---- a/Documentation/sphinx/requirements.txt
-+++ b/Documentation/sphinx/requirements.txt
-@@ -1,3 +1,4 @@
- # jinja2>=3.1 is not compatible with Sphinx<4.0
- jinja2<3.1
- Sphinx==2.4.4
-+sphinx-prompt==1.5.0
+ To build both static libbpf.a and shared libbpf.so:
+ 
+-.. code-block:: bash
++.. prompt:: bash $
+ 
+-    $ cd src
+-    $ make
++    cd src
++    make
+ 
+ To build only static libbpf.a library in directory build/ and install them
+ together with libbpf headers in a staging directory root/:
+ 
+-.. code-block:: bash
++.. prompt:: bash $
+ 
+-    $ cd src
+-    $ mkdir build root
+-    $ BUILD_STATIC_ONLY=y OBJDIR=build DESTDIR=root make install
++    cd src
++    mkdir build root
++    BUILD_STATIC_ONLY=y OBJDIR=build DESTDIR=root make install
+ 
+ To build both static libbpf.a and shared libbpf.so against a custom libelf
+ dependency installed in /build/root/ and install them together with libbpf
+ headers in a build directory /build/root/:
+ 
+-.. code-block:: bash
++.. prompt:: bash $
+ 
+-    $ cd src
+-    $ PKG_CONFIG_PATH=/build/root/lib64/pkgconfig DESTDIR=/build/root make
+\ No newline at end of file
++    cd src
++    PKG_CONFIG_PATH=/build/root/lib64/pkgconfig DESTDIR=/build/root make
 -- 
 2.40.0
 
