@@ -2,199 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9983786820
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 09:10:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F174E786828
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 09:14:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240266AbjHXHKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 03:10:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50708 "EHLO
+        id S240303AbjHXHO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 03:14:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240302AbjHXHJ3 (ORCPT
+        with ESMTP id S240266AbjHXHOV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 03:09:29 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F832E59
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 00:09:26 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-991c786369cso854987066b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 00:09:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692860964; x=1693465764;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2jPyWvXn53+Ri3DMXwy23u6DWod2sy7gyH7yQg33cwQ=;
-        b=z722U1KJ+xYzP/H4uwgNt+mpwlr2QKVRGOIvXwWWhRPxKCfPUxq9eh2cpXuC+Y/9JJ
-         jELUwcFvGfOs8kPi3oMnsYJ3rYzKxnLpRlhK/d2rC3FEPXV/2o41xAsB65wStyO+eKqf
-         OW9nYu0EWsCsH5JFcyltZbYP9pdUYViBq3TP6DNRyDNu+U93nwnxmbswAFf4ZyUMJFIn
-         ZBenrEANRQRH4cXkNOy869Kq4EXC2E48gtGgj53PgKXNh8qk3K9njLUGlPP/bFmJfzb+
-         hQTynSHUyh+H6bQ29fRvgvIdMba5cAEOSl7EXFJBdJs8ysrTDoegQF9ZoBfD7v/c5ja3
-         acYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692860964; x=1693465764;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2jPyWvXn53+Ri3DMXwy23u6DWod2sy7gyH7yQg33cwQ=;
-        b=inEKy2lSte/l9XZSMlq1nFUSNwjn23bZRaM5KiYrcaOKjO53FGFhqaghYGIuPqQgaq
-         XnkgqziUwXTrpNvIXRFZRdGF2ECU4rJauEM3caMa0jGF5vNogszYfM7ZH0vyxkPHpZxn
-         avGl6EPp5hGfDlpw7a+b8ZhdMKMh3AlNni+YzG5oC7WsCbuJI+kk/73KE6pP0rmvlUEb
-         5Li1M/2Ru41fBt6tuF5GEVIu8MhJdAPU9TFJWJ4q+8clxQW3CLUO1If2CKAmjx0HkDjV
-         S2BIPWGKz6K1a1xNPZRlRO7fWpZTOpoOm8YHVuNqQpKHmuzVds/NJrH3YQWjABlvTkfY
-         ILgg==
-X-Gm-Message-State: AOJu0YzouyZnlwDlce7wgV1l0r2HCvooOpxFCT/oaEiVWMuqEfpB+kSu
-        ACn7KCOUb1xq7FTXXGeEQVW4LQ==
-X-Google-Smtp-Source: AGHT+IErz7N1ky2M5rOVizPYGZ7g0DYRQMGtp5g0kTurjLC9ZcaXYSTRIs4+x32FgOE8Xn3OZpwZyg==
-X-Received: by 2002:a17:907:7715:b0:9a1:f21e:cdfe with SMTP id kw21-20020a170907771500b009a1f21ecdfemr2417857ejc.58.1692860964425;
-        Thu, 24 Aug 2023 00:09:24 -0700 (PDT)
-Received: from [192.168.0.22] ([77.252.47.198])
-        by smtp.gmail.com with ESMTPSA id v8-20020a1709060b4800b0099bc8db97bcsm10529998ejg.131.2023.08.24.00.09.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Aug 2023 00:09:23 -0700 (PDT)
-Message-ID: <429b8559-c539-d60e-fb68-bfc3f8a58fbf@linaro.org>
-Date:   Thu, 24 Aug 2023 09:09:22 +0200
+        Thu, 24 Aug 2023 03:14:21 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBC48E4E;
+        Thu, 24 Aug 2023 00:14:18 -0700 (PDT)
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37O79t9V007786;
+        Thu, 24 Aug 2023 07:12:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=WlYEZfZCf0ozJ1tZc7MZf5FbLW/t+nxFBsciNbifwtA=;
+ b=Oi4TfOxu6Sxi9puD2LucXhSgcaGmYR6GxEyyMnZWXYCm72n/s5LX8UoY6gPT8kwSjsi0
+ djDZlZcNPPZa8NP2I/NdX09KVld0f+c//v1W72ER5tNZS7lcVMQDnEjC/r7iQKcLlxos
+ 2bc9EnBcQGdO9+Q64ihV9S+dDR4fwsifhCvOY5R0yQZtg0sECyhba0kTqzSOEZyKQIvN
+ NQYLG0DzsapLaDTEyvB2uUuVuBkxL0n81D1HYhWBDGiPMS+UmOavGUyrPYJyJdqpfPiQ
+ zS8zT7UmJIDKtW1K8r8o3g2wfNzWMOtX0eQjC8BC5Rh7YzS3U5XpbPnNkMSWv7gaLJx2 wg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sp2ba09ak-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 24 Aug 2023 07:12:55 +0000
+Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37O7B3NX013367;
+        Thu, 24 Aug 2023 07:12:54 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sp2ba09a0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 24 Aug 2023 07:12:54 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37O4MerU016435;
+        Thu, 24 Aug 2023 07:12:52 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3sn227w42u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 24 Aug 2023 07:12:52 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37O7Cnei9896518
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 24 Aug 2023 07:12:49 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3B2B020043;
+        Thu, 24 Aug 2023 07:12:49 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 39CD720040;
+        Thu, 24 Aug 2023 07:12:47 +0000 (GMT)
+Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.171.83.96])
+        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Thu, 24 Aug 2023 07:12:47 +0000 (GMT)
+Date:   Thu, 24 Aug 2023 09:12:45 +0200
+From:   Alexander Gordeev <agordeev@linux.ibm.com>
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        surenb@google.com, willy@infradead.org,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        loongarch@lists.linux.dev, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org
+Subject: Re: [PATCH rfc v2 01/10] mm: add a generic VMA lock-based page fault
+ handler
+Message-ID: <ZOcC7RsYy5yJLgNb@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+References: <20230821123056.2109942-1-wangkefeng.wang@huawei.com>
+ <20230821123056.2109942-2-wangkefeng.wang@huawei.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 1/3] dt-bindings: clock: add TWL6032 32K clocks
-Content-Language: en-US
-To:     Andreas Kemnade <andreas@kemnade.info>,
-        Rob Herring <robh@kernel.org>
-Cc:     mturquette@baylibre.com, sboyd@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        bcousson@baylibre.com, tony@atomide.com, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org
-References: <20230819134147.456060-1-andreas@kemnade.info>
- <20230819134147.456060-2-andreas@kemnade.info>
- <20230821205745.GA2270173-robh@kernel.org> <20230823173807.0b80a70a@aktux>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230823173807.0b80a70a@aktux>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230821123056.2109942-2-wangkefeng.wang@huawei.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: XRoDdEmpcV5g5_mmP6WT_85M4g4eI751
+X-Proofpoint-ORIG-GUID: RuEgWxQsYQ1DVXl1GZzqprjH3NxBC5KY
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-24_03,2023-08-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
+ priorityscore=1501 impostorscore=0 bulkscore=0 clxscore=1011
+ suspectscore=0 mlxlogscore=456 mlxscore=0 spamscore=0 malwarescore=0
+ lowpriorityscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2308100000 definitions=main-2308240057
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/08/2023 17:38, Andreas Kemnade wrote:
-> On Mon, 21 Aug 2023 15:57:45 -0500
-> Rob Herring <robh@kernel.org> wrote:
+On Mon, Aug 21, 2023 at 08:30:47PM +0800, Kefeng Wang wrote:
+
+Hi Kefeng,
+
+> The ARCH_SUPPORTS_PER_VMA_LOCK are enabled by more and more architectures,
+> eg, x86, arm64, powerpc and s390, and riscv, those implementation are very
+> similar which results in some duplicated codes, let's add a generic VMA
+> lock-based page fault handler try_to_vma_locked_page_fault() to eliminate
+> them, and which also make us easy to support this on new architectures.
 > 
->> On Sat, Aug 19, 2023 at 03:41:45PM +0200, Andreas Kemnade wrote:
->>> To be able to be referenced from a future yaml-version of
->>> mfd/twl-family.txt depending on toplevel compatible have a separate
->>> file for the 6032  
->>
->> Really, the parent needs to be done first...
->>
-> well, for some other subdevices, a yaml is already in the tree
-> and Krzysztof recently added a R-By to another one.
-
-Yep, but I am not checking every possible parent-child relationship. It
-would not be even possible...
-
+> Since different architectures use different way to check vma whether is
+> accessable or not, the struct pt_regs, page fault error code and vma flags
+> are added into struct vm_fault, then, the architecture's page fault code
+> could re-use struct vm_fault to record and check vma accessable by each
+> own implementation.
 > 
-> But if the clocks should not have a node, then it is obvious.
-> What would be the route to conversion here: Is a conversion
-> of mfd/twl-family.txt without specifying subnodes ok for the first step,
-> maybe with additionalProperties: yes?
-
-Yes.
-
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> ---
+>  include/linux/mm.h       | 17 +++++++++++++++++
+>  include/linux/mm_types.h |  2 ++
+>  mm/memory.c              | 39 +++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 58 insertions(+)
 > 
-> 
->>> Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
->>> ---
->>>  .../bindings/clock/ti,twl6032-clk.yaml        | 38
->>> +++++++++++++++++++ 1 file changed, 38 insertions(+)
->>>  create mode 100644
->>> Documentation/devicetree/bindings/clock/ti,twl6032-clk.yaml
->>>
->>> diff --git
->>> a/Documentation/devicetree/bindings/clock/ti,twl6032-clk.yaml
->>> b/Documentation/devicetree/bindings/clock/ti,twl6032-clk.yaml new
->>> file mode 100644 index 0000000000000..aebd9f8d761a2 --- /dev/null
->>> +++ b/Documentation/devicetree/bindings/clock/ti,twl6032-clk.yaml
->>> @@ -0,0 +1,38 @@
->>> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
->>> +%YAML 1.2
->>> +---
->>> +$id: http://devicetree.org/schemas/clock/ti,twl6032-clk.yaml#
->>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>> +
->>> +title: Clocks of the TWL6032 PMIC
->>> +
->>> +maintainers:
->>> +  - Andreas Kemnade <andreas@kemnade.info>
->>> +
->>> +description:
->>> +  The TWL6032 has some 32Khz clock outputs which can be
->>> controlled.  
->>
->> outputs? Seems like only 1 with no clock cells to specify which one.
->>
->>> +
->>> +properties:
->>> +  compatible:
->>> +    enum:
->>> +      - ti,twl6032-clk32kaudio
->>> +      - ti,twl6032-clk32kg  
->>
->> Or is it 1 output per compatible? I hope not.
->>
-> yes, it is. It was inspired by the clk-palmas driver:
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index 3f764e84e567..22a6f4c56ff3 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -512,9 +512,12 @@ struct vm_fault {
+>  		pgoff_t pgoff;			/* Logical page offset based on vma */
+>  		unsigned long address;		/* Faulting virtual address - masked */
+>  		unsigned long real_address;	/* Faulting virtual address - unmasked */
+> +		unsigned long fault_code;	/* Faulting error code during page fault */
+> +		struct pt_regs *regs;		/* The registers stored during page fault */
+>  	};
+>  	enum fault_flag flags;		/* FAULT_FLAG_xxx flags
+>  					 * XXX: should really be 'const' */
+> +	vm_flags_t vm_flags;		/* VMA flags to be used for access checking */
+>  	pmd_t *pmd;			/* Pointer to pmd entry matching
+>  					 * the 'address' */
+>  	pud_t *pud;			/* Pointer to pud entry matching
+> @@ -774,6 +777,9 @@ static inline void assert_fault_locked(struct vm_fault *vmf)
+>  struct vm_area_struct *lock_vma_under_rcu(struct mm_struct *mm,
+>  					  unsigned long address);
+>  
+> +bool arch_vma_access_error(struct vm_area_struct *vma, struct vm_fault *vmf);
+> +vm_fault_t try_vma_locked_page_fault(struct vm_fault *vmf);
+> +
+>  #else /* CONFIG_PER_VMA_LOCK */
+>  
+>  static inline bool vma_start_read(struct vm_area_struct *vma)
+> @@ -801,6 +807,17 @@ static inline void assert_fault_locked(struct vm_fault *vmf)
+>  	mmap_assert_locked(vmf->vma->vm_mm);
+>  }
+>  
+> +static inline struct vm_area_struct *lock_vma_under_rcu(struct mm_struct *mm,
+> +		unsigned long address)
+> +{
+> +	return NULL;
+> +}
+> +
+> +static inline vm_fault_t try_vma_locked_page_fault(struct vm_fault *vmf)
+> +{
+> +	return VM_FAULT_NONE;
+> +}
+> +
+>  #endif /* CONFIG_PER_VMA_LOCK */
+>  
+>  extern const struct vm_operations_struct vma_dummy_vm_ops;
+> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+> index f5ba5b0bc836..702820cea3f9 100644
+> --- a/include/linux/mm_types.h
+> +++ b/include/linux/mm_types.h
+> @@ -1119,6 +1119,7 @@ typedef __bitwise unsigned int vm_fault_t;
+>   * fault. Used to decide whether a process gets delivered SIGBUS or
+>   * just gets major/minor fault counters bumped up.
+>   *
+> + * @VM_FAULT_NONE:		Special case, not starting to handle fault
+>   * @VM_FAULT_OOM:		Out Of Memory
+>   * @VM_FAULT_SIGBUS:		Bad access
+>   * @VM_FAULT_MAJOR:		Page read from storage
+> @@ -1139,6 +1140,7 @@ typedef __bitwise unsigned int vm_fault_t;
+>   *
+>   */
+>  enum vm_fault_reason {
+> +	VM_FAULT_NONE		= (__force vm_fault_t)0x000000,
+>  	VM_FAULT_OOM            = (__force vm_fault_t)0x000001,
+>  	VM_FAULT_SIGBUS         = (__force vm_fault_t)0x000002,
+>  	VM_FAULT_MAJOR          = (__force vm_fault_t)0x000004,
+> diff --git a/mm/memory.c b/mm/memory.c
+> index 3b4aaa0d2fff..60fe35db5134 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -5510,6 +5510,45 @@ struct vm_area_struct *lock_vma_under_rcu(struct mm_struct *mm,
+>  	count_vm_vma_lock_event(VMA_LOCK_ABORT);
+>  	return NULL;
+>  }
+> +
+> +#ifdef CONFIG_PER_VMA_LOCK
+> +bool __weak arch_vma_access_error(struct vm_area_struct *vma, struct vm_fault *vmf)
+> +{
+> +	return (vma->vm_flags & vmf->vm_flags) == 0;
+> +}
+> +#endif
+> +
+> +vm_fault_t try_vma_locked_page_fault(struct vm_fault *vmf)
+> +{
+> +	vm_fault_t fault = VM_FAULT_NONE;
+> +	struct vm_area_struct *vma;
+> +
+> +	if (!(vmf->flags & FAULT_FLAG_USER))
+> +		return fault;
+> +
+> +	vma = lock_vma_under_rcu(current->mm, vmf->real_address);
+> +	if (!vma)
+> +		return fault;
+> +
+> +	if (arch_vma_access_error(vma, vmf)) {
+> +		vma_end_read(vma);
+> +		return fault;
+> +	}
+> +
+> +	fault = handle_mm_fault(vma, vmf->real_address,
+> +				vmf->flags | FAULT_FLAG_VMA_LOCK, vmf->regs);
+> +
+> +	if (!(fault & (VM_FAULT_RETRY | VM_FAULT_COMPLETED)))
+> +		vma_end_read(vma);
 
-Creating nodes for single clocks is rather antipattern. Also, many early
-designs of drivers and bindings assumed mapping 1-to-1 between driver
-and DT nodes. This is also considered an antipattern now.
+Could you please explain how vma_end_read() call could be conditional?
 
-> $ grep palmas.*32 arch/arm/boot/dts/ti/omap/omap5-*
-> arch/arm/boot/dts/ti/omap/omap5-board-common.dtsi:
-> clk32kgaudio: palmas_clk32k@1 {
-> arch/arm/boot/dts/ti/omap/omap5-board-common.dtsi:
-> 	compatible = "ti,palmas-clk32kgaudio";
-> 
-> Well, we have the CLK_IGNORE_UNUSED, so if we use #clock-cells = 1,
-> an unused clock will not be touched by the kernel, right?
-
-I don't understand what OS flag has anything to do with clock-cells...
-
-> 
->>> +
->>> +  '#clock-cells':
->>> +    const: 0
->>> +
->>> +required:
->>> +  - compatible
->>> +  - '#clock-cells'
->>> +
->>> +additionalProperties: false
->>> +
->>> +examples:
->>> +  - |
->>> +    twl {
->>> +        clk32kaudio {
->>> +            compatible = "ti,twl6032-clk32kaudio";
->>> +            #clock-cells = <0>;
->>> +        };  
->>
->> You don't need a child node to be a clock provider. Just add 
->> #clock-cells to the parent node.
->>
-> hmm, we have child nodes there for every subdevice in that family,
-> even if I doubt it is totally technically required.
-> So why should the clk device be an exception? 
-
-There is no rule of having nodes for subdevices, thus there cannot be
-such exception. The rule is nodes are created when needed, not to match
-some consistency of Linux drivers.
-
-
-Best regards,
-Krzysztof
-
+> +
+> +	if (fault & VM_FAULT_RETRY)
+> +		count_vm_vma_lock_event(VMA_LOCK_RETRY);
+> +	else
+> +		count_vm_vma_lock_event(VMA_LOCK_SUCCESS);
+> +
+> +	return fault;
+> +}
+> +
+>  #endif /* CONFIG_PER_VMA_LOCK */
+>  
+>  #ifndef __PAGETABLE_P4D_FOLDED
