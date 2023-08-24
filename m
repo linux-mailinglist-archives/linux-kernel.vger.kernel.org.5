@@ -2,42 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 972BE786544
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 04:23:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C20AB78653B
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 04:23:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239397AbjHXCTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 22:19:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40820 "EHLO
+        id S239407AbjHXCTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 22:19:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239332AbjHXCSf (ORCPT
+        with ESMTP id S239335AbjHXCSg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 22:18:35 -0400
+        Wed, 23 Aug 2023 22:18:36 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FE0510C4
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 19:18:33 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3893CE6D
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 19:18:35 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7FFA364AB2
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 02:18:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F000DC433C9;
-        Thu, 24 Aug 2023 02:18:32 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C590B633C6
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 02:18:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 462E0C433C8;
+        Thu, 24 Aug 2023 02:18:34 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.96)
         (envelope-from <rostedt@goodmis.org>)
-        id 1qYzvx-001hWH-00;
+        id 1qYzvx-001hWq-0g;
         Wed, 23 Aug 2023 22:18:53 -0400
-Message-ID: <20230824021852.814428025@goodmis.org>
+Message-ID: <20230824021853.022987766@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Wed, 23 Aug 2023 22:18:24 -0400
+Date:   Wed, 23 Aug 2023 22:18:25 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Beau Belgrave <beaub@linux.microsoft.com>,
-        Eric Vaughn <ervaughn@linux.microsoft.com>
-Subject: [for-next][PATCH 12/14] tracing/user_events: Optimize safe list traversals
+        Sishuai Gong <sishuai.system@gmail.com>
+Subject: [for-next][PATCH 13/14] tracefs: Avoid changing i_mode to a temp value
 References: <20230824021812.938245293@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -50,88 +49,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Vaughn <ervaughn@linux.microsoft.com>
+From: Sishuai Gong <sishuai.system@gmail.com>
 
-Several of the list traversals in the user_events facility use safe list
-traversals where they could be using the unsafe versions instead.
+Right now inode->i_mode is updated twice to reach the desired value
+in tracefs_apply_options(). Because there is no lock protecting the two
+writes, other threads might read the intermediate value of inode->i_mode.
 
-Replace these safe traversals with their unsafe counterparts in the
-interest of optimization.
+Thread-1			Thread-2
+// tracefs_apply_options()	//e.g., acl_permission_check
+inode->i_mode &= ~S_IALLUGO;
+				unsigned int mode = inode->i_mode;
+inode->i_mode |= opts->mode;
 
-Link: https://lore.kernel.org/linux-trace-kernel/20230810194337.695983-1-ervaughn@linux.microsoft.com
+I think there is no need to introduce a lock but it is better to
+only update inode->i_mode ONCE, so the readers will either see the old
+or latest value, rather than an intermediate/temporary value.
 
-Suggested-by: Beau Belgrave <beaub@linux.microsoft.com>
-Signed-off-by: Eric Vaughn <ervaughn@linux.microsoft.com>
-Acked-by: Beau Belgrave <beaub@linux.microsoft.com>
+Note, the race is not a security concern as the intermediate value is more
+locked down than either the start or end version. This is more just to do
+the conversion cleanly.
+
+Link: https://lore.kernel.org/linux-trace-kernel/AB5B0A1C-75D9-4E82-A7F0-CF7D0715587B@gmail.com
+
+Signed-off-by: Sishuai Gong <sishuai.system@gmail.com>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- kernel/trace/trace_events_user.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+ fs/tracefs/inode.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
-index 33cb6af31f39..6f046650e527 100644
---- a/kernel/trace/trace_events_user.c
-+++ b/kernel/trace/trace_events_user.c
-@@ -1328,14 +1328,14 @@ static int user_field_set_string(struct ftrace_event_field *field,
+diff --git a/fs/tracefs/inode.c b/fs/tracefs/inode.c
+index bb6de89eb446..c7a10f965602 100644
+--- a/fs/tracefs/inode.c
++++ b/fs/tracefs/inode.c
+@@ -310,6 +310,7 @@ static int tracefs_apply_options(struct super_block *sb, bool remount)
+ 	struct tracefs_fs_info *fsi = sb->s_fs_info;
+ 	struct inode *inode = d_inode(sb->s_root);
+ 	struct tracefs_mount_opts *opts = &fsi->mount_opts;
++	umode_t tmp_mode;
  
- static int user_event_set_print_fmt(struct user_event *user, char *buf, int len)
- {
--	struct ftrace_event_field *field, *next;
-+	struct ftrace_event_field *field;
- 	struct list_head *head = &user->fields;
- 	int pos = 0, depth = 0;
- 	const char *str_func;
+ 	/*
+ 	 * On remount, only reset mode/uid/gid if they were provided as mount
+@@ -317,8 +318,9 @@ static int tracefs_apply_options(struct super_block *sb, bool remount)
+ 	 */
  
- 	pos += snprintf(buf + pos, LEN_OR_ZERO, "\"");
+ 	if (!remount || opts->opts & BIT(Opt_mode)) {
+-		inode->i_mode &= ~S_IALLUGO;
+-		inode->i_mode |= opts->mode;
++		tmp_mode = READ_ONCE(inode->i_mode) & ~S_IALLUGO;
++		tmp_mode |= opts->mode;
++		WRITE_ONCE(inode->i_mode, tmp_mode);
+ 	}
  
--	list_for_each_entry_safe_reverse(field, next, head, link) {
-+	list_for_each_entry_reverse(field, head, link) {
- 		if (depth != 0)
- 			pos += snprintf(buf + pos, LEN_OR_ZERO, " ");
- 
-@@ -1347,7 +1347,7 @@ static int user_event_set_print_fmt(struct user_event *user, char *buf, int len)
- 
- 	pos += snprintf(buf + pos, LEN_OR_ZERO, "\"");
- 
--	list_for_each_entry_safe_reverse(field, next, head, link) {
-+	list_for_each_entry_reverse(field, head, link) {
- 		if (user_field_is_dyn_string(field->type, &str_func))
- 			pos += snprintf(buf + pos, LEN_OR_ZERO,
- 					", %s(%s)", str_func, field->name);
-@@ -1732,7 +1732,7 @@ static int user_event_create(const char *raw_command)
- static int user_event_show(struct seq_file *m, struct dyn_event *ev)
- {
- 	struct user_event *user = container_of(ev, struct user_event, devent);
--	struct ftrace_event_field *field, *next;
-+	struct ftrace_event_field *field;
- 	struct list_head *head;
- 	int depth = 0;
- 
-@@ -1740,7 +1740,7 @@ static int user_event_show(struct seq_file *m, struct dyn_event *ev)
- 
- 	head = trace_get_fields(&user->call);
- 
--	list_for_each_entry_safe_reverse(field, next, head, link) {
-+	list_for_each_entry_reverse(field, head, link) {
- 		if (depth == 0)
- 			seq_puts(m, " ");
- 		else
-@@ -1816,13 +1816,14 @@ static bool user_field_match(struct ftrace_event_field *field, int argc,
- static bool user_fields_match(struct user_event *user, int argc,
- 			      const char **argv)
- {
--	struct ftrace_event_field *field, *next;
-+	struct ftrace_event_field *field;
- 	struct list_head *head = &user->fields;
- 	int i = 0;
- 
--	list_for_each_entry_safe_reverse(field, next, head, link)
-+	list_for_each_entry_reverse(field, head, link) {
- 		if (!user_field_match(field, argc, argv, &i))
- 			return false;
-+	}
- 
- 	if (i != argc)
- 		return false;
+ 	if (!remount || opts->opts & BIT(Opt_uid))
 -- 
 2.40.1
