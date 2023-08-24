@@ -2,122 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EA3B787396
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 17:06:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FF23787399
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 17:06:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235853AbjHXPFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 11:05:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34914 "EHLO
+        id S240506AbjHXPGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 11:06:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242108AbjHXPFb (ORCPT
+        with ESMTP id S240038AbjHXPFy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 11:05:31 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 414741BD8
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 08:05:20 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id 98e67ed59e1d1-26f57f02442so2622500a91.0
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 08:05:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692889520; x=1693494320;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7JiozmI8Cx83SGOqAUTYb4WjbXbJdSTEwcACCqiQMyg=;
-        b=DFkNxQ2WgmD00dI+dYPj6aE6ODh7ejj6kD+vD3el3amYTH5/aqAi6LIefmDra2QWFf
-         WIPQFnWG+TnkrMJGuo1EP8EuLxynObez14ViP3GVRDW4gajcSRV2WRHwi/EcggRd/gSQ
-         v94d9M0Tw33Sc+2qlQBkyi32xC1g1cMNPVfr3Yju+IP2EBGVbQOnThpeRc8eCRU4GBjF
-         Kv6wG3qXiqIIX7G1CGmzbXd5mLRiwJ8zpUVLtsPZyibPAnzmCS6SnCAde6venbGQWJDH
-         nG+QfDEqUJ44Q2JVbO2d6WWcdGjFnmOH84/OsadDF0Su4O3W6HRe2KFPbWhPvGEIlBpA
-         71GA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692889520; x=1693494320;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7JiozmI8Cx83SGOqAUTYb4WjbXbJdSTEwcACCqiQMyg=;
-        b=HV7LDdNak9ukGudwH1YGVZMUItIQnz+C3J09KW9V7cY8Pd2jWmkUtHb7D9aAHRKEsn
-         0bzdN/22ES73uxnlRJJ6m1cirVcitvsW4tcgn6LygUS91tgF0SQQGQwnBJsS5vskHA5I
-         wk7LJY0fLOLUht76YMvwQYzXeN6u1o4tvyiMCiGL4ju9IN/ZKpic2TibUV5IcwMTeLvo
-         0PlU8GTKFXgIirKCbkfSCldOKan7xeNhixor8VFXL1Wj3GlvKwq6/emwZRQGAaZpckdT
-         JGfOVBXK3irQ62u1btRZQ2VDKC/S9X9RQ8e3VQYpUbGT3oevTfqgXNPwFoCWI9IQoGZc
-         giSg==
-X-Gm-Message-State: AOJu0YzZ0ghDt5ymFPG79tICf+B6xbk+iMOPd3lfGL4dy5V73KENkpGS
-        l5HIqUp3Q7HU1JJNOtynLlSrjXfx4BPiZDXlum8=
-X-Google-Smtp-Source: AGHT+IEjVuaz2eBKTKtrJkva7vLQeVw9T1ELZG1C3oRrHlp4p/OLPld9I1byQD6LgbSAjXrJO+2zBZG3/2fPSYGj+GI=
-X-Received: by 2002:a17:90b:124f:b0:26c:f6d2:2694 with SMTP id
- gx15-20020a17090b124f00b0026cf6d22694mr12373747pjb.12.1692889519611; Thu, 24
- Aug 2023 08:05:19 -0700 (PDT)
+        Thu, 24 Aug 2023 11:05:54 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 132FFFD;
+        Thu, 24 Aug 2023 08:05:52 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B5679D75;
+        Thu, 24 Aug 2023 08:06:31 -0700 (PDT)
+Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B82353F762;
+        Thu, 24 Aug 2023 08:05:48 -0700 (PDT)
+Message-ID: <cbd34ed6-3220-3c0c-74bc-46a2baa744e5@arm.com>
+Date:   Thu, 24 Aug 2023 16:05:47 +0100
 MIME-Version: 1.0
-References: <MN0PR12MB59538822AA264031D0CAE468B70DA@MN0PR12MB5953.namprd12.prod.outlook.com>
- <ZNL14lnrHvzbpRQu@MiWiFi-R3L-srv> <MN0PR12MB59535434E071499DDE439B08B710A@MN0PR12MB5953.namprd12.prod.outlook.com>
- <ZNogKKZCp12Q92jh@MiWiFi-R3L-srv> <MN0PR12MB5953FFB655A208BD4FA32EE4B71EA@MN0PR12MB5953.namprd12.prod.outlook.com>
- <CACBYKvRJL_WmZUN7BH_TjxX+TC2O1gjsudkh1GtRyB3WifjMJA@mail.gmail.com> <MN0PR12MB59532ABFAF131AC84F36B73FB71CA@MN0PR12MB5953.namprd12.prod.outlook.com>
-In-Reply-To: <MN0PR12MB59532ABFAF131AC84F36B73FB71CA@MN0PR12MB5953.namprd12.prod.outlook.com>
-From:   Alexander Kamensky <alexander.kamensky42@gmail.com>
-Date:   Thu, 24 Aug 2023 08:05:08 -0700
-Message-ID: <CACBYKvT6AzupfrHZ58BYM8xi8TDLeppqD+Lt=rf9hfmSew+nmQ@mail.gmail.com>
-Subject: Re: kexec reports "Cannot get kernel _text symbol address" on arm64 platform
-To:     "Pandey, Radhey Shyam" <radhey.shyam.pandey@amd.com>
-Cc:     "bhe@redhat.com" <bhe@redhat.com>,
-        "piliu@redhat.com" <piliu@redhat.com>,
-        "kexec@lists.infradead.org" <kexec@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Sarangi, Anirudha" <anirudha.sarangi@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v7 1/8] perf pmu: "Compat" supports matching multiple
+ identifiers
+Content-Language: en-GB
+To:     Jing Zhang <renyu.zj@linux.alibaba.com>,
+        John Garry <john.g.garry@oracle.com>,
+        Ian Rogers <irogers@google.com>
+Cc:     Will Deacon <will@kernel.org>, James Clark <james.clark@arm.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-doc@vger.kernel.org,
+        Zhuo Song <zhuo.song@linux.alibaba.com>,
+        Shuai Xue <xueshuai@linux.alibaba.com>
+References: <1692606977-92009-1-git-send-email-renyu.zj@linux.alibaba.com>
+ <1692606977-92009-2-git-send-email-renyu.zj@linux.alibaba.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <1692606977-92009-2-git-send-email-renyu.zj@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 23, 2023 at 12:09=E2=80=AFPM Pandey, Radhey Shyam
-<radhey.shyam.pandey@amd.com> wrote:
->
-> > -----Original Message-----
-> > From: Alexander Kamensky <alexander.kamensky42@gmail.com>
-> > Sent: Tuesday, August 22, 2023 9:24 AM
-> > To: Pandey, Radhey Shyam <radhey.shyam.pandey@amd.com>
-> > Cc: bhe@redhat.com; piliu@redhat.com; kexec@lists.infradead.org; linux-
-> > kernel@vger.kernel.org; Sarangi, Anirudha <anirudha.sarangi@amd.com>
-> > Subject: Re: kexec reports "Cannot get kernel _text symbol address" on
-> > arm64 platform
-> >
-> > Hi All,
-> >
-> > Sorry for the top post, but I believe that I might have posted a fix fo=
-r this
-> > issue a couple days ago.
-> >
-> > Please check and see if it helps
-> > https://lore.kernel.org/kexec/20230819191119.975299-1-
-> > alexander.kamensky42@gmail.com/T/#u
-> >
-> > Explanation for the issue I observed with a similar secondary kernel
-> > traceback on arm64 is in the commit message.
->
-> I fetched latest kexec sources (777ca453ca69e46f7376b07ba6727bd261ec97ef)
-> and applied above patch, a bit improved but still vmcore size is huge.
->
-> / # ls -lrth /proc/vmcore
-> -r--------    1 root     root       15.5G Aug 23 18:55 /proc/vmcore
->
-How big is your system memory? If it is 16G then the above is normal.
+On 21/08/2023 9:36 am, Jing Zhang wrote:
+> The jevent "Compat" is used for uncore PMU alias or metric definitions.
+> 
+> The same PMU driver has different PMU identifiers due to different
+> hardware versions and types, but they may have some common PMU event.
+> Since a Compat value can only match one identifier, when adding the
+> same event alias to PMUs with different identifiers, each identifier
+> needs to be defined once, which is not streamlined enough.
+> 
+> So let "Compat" supports matching multiple identifiers for uncore PMU
+> alias. For example, the Compat value {43401;436*} can match the PMU
+> identifier "43401", that is, CMN600_r0p0, and the PMU identifier with
+> the prefix "436", that is, all CMN650, where "*" is a wildcard.
+> Tokens in Unit field are delimited by ';' with no spaces.
 
-The most important thing is can your secondary kernel read it? For example
-
-cat /proc/vmcore > /dev/null
-
-If you want to capture only kernel core out of /proc/vmcore you need
-to use makedumpfile
-to filter out the rest of the memory.
+I wonder is there any possibility of supporting multiple values as a 
+JSON array, rather than a single delimited string? Otherwise, if we're 
+putting restrictions on what characters a driver can expose as an 
+identifier, then I think that really wants explicitly documenting. 
+AFAICT there's currently not even any documentation of the de-facto ABI 
+that it's expected to be a free-form string rather than completely 
+arbitrary binary data.
 
 Thanks,
-Alexander
+Robin.
 
-> Thanks,
-> Radhey
+> Signed-off-by: Jing Zhang <renyu.zj@linux.alibaba.com>
+> Reviewed-by: John Garry <john.g.garry@oracle.com>
+> ---
+>   tools/perf/util/pmu.c | 33 +++++++++++++++++++++++++++++++--
+>   tools/perf/util/pmu.h |  1 +
+>   2 files changed, 32 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+> index ad209c8..6402423 100644
+> --- a/tools/perf/util/pmu.c
+> +++ b/tools/perf/util/pmu.c
+> @@ -776,6 +776,35 @@ static bool pmu_uncore_alias_match(const char *pmu_name, const char *name)
+>   	return res;
+>   }
+>   
+> +bool pmu_uncore_identifier_match(const char *id, const char *compat)
+> +{
+> +	char *tmp = NULL, *tok, *str;
+> +	bool res;
+> +	int n;
+> +
+> +	/*
+> +	 * The strdup() call is necessary here because "compat" is a const str*
+> +	 * type and cannot be used as an argument to strtok_r().
+> +	 */
+> +	str = strdup(compat);
+> +	if (!str)
+> +		return false;
+> +
+> +	tok = strtok_r(str, ";", &tmp);
+> +	for (; tok; tok = strtok_r(NULL, ";", &tmp)) {
+> +		n = strlen(tok);
+> +		if ((tok[n - 1] == '*' && !strncmp(id, tok, n - 1)) ||
+> +		    !strcmp(id, tok)) {
+> +			res = true;
+> +			goto out;
+> +		}
+> +	}
+> +	res = false;
+> +out:
+> +	free(str);
+> +	return res;
+> +}
+> +
+>   struct pmu_add_cpu_aliases_map_data {
+>   	struct list_head *head;
+>   	const char *name;
+> @@ -847,8 +876,8 @@ static int pmu_add_sys_aliases_iter_fn(const struct pmu_event *pe,
+>   	if (!pe->compat || !pe->pmu)
+>   		return 0;
+>   
+> -	if (!strcmp(pmu->id, pe->compat) &&
+> -	    pmu_uncore_alias_match(pe->pmu, pmu->name)) {
+> +	if (pmu_uncore_alias_match(pe->pmu, pmu->name) &&
+> +	    pmu_uncore_identifier_match(pmu->id, pe->compat)) {
+>   		__perf_pmu__new_alias(idata->head, -1,
+>   				      (char *)pe->name,
+>   				      (char *)pe->desc,
+> diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
+> index b9a02de..9d4385d 100644
+> --- a/tools/perf/util/pmu.h
+> +++ b/tools/perf/util/pmu.h
+> @@ -241,6 +241,7 @@ void pmu_add_cpu_aliases_table(struct list_head *head, struct perf_pmu *pmu,
+>   char *perf_pmu__getcpuid(struct perf_pmu *pmu);
+>   const struct pmu_events_table *pmu_events_table__find(void);
+>   const struct pmu_metrics_table *pmu_metrics_table__find(void);
+> +bool pmu_uncore_identifier_match(const char *id, const char *compat);
+>   void perf_pmu_free_alias(struct perf_pmu_alias *alias);
+>   
+>   int perf_pmu__convert_scale(const char *scale, char **end, double *sval);
