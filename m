@@ -2,132 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AD9B786844
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 09:26:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D23DA786848
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 09:29:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240339AbjHXH0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 03:26:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54554 "EHLO
+        id S237622AbjHXH2c convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 24 Aug 2023 03:28:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238047AbjHXHZv (ORCPT
+        with ESMTP id S240223AbjHXH2V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 03:25:51 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF390E6F;
-        Thu, 24 Aug 2023 00:25:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692861949; x=1724397949;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=juolVYIQ1gfOJHvCrPHmvtw4yBzTq6cZVINgyiQcExk=;
-  b=ihh6+2qB+RiDG38xmxzhtSXCtaoTwq+a5zux7cajpI5PHNEWlxjFEjiZ
-   DF5EFJMFa4hZ7ypNkpgcT37GYp9Wkmf6DPBe92SeqZy4Utmg+/zsw8n+o
-   9VjAyvzGH71m6AsCIXQr9BwnNnHd+EsACucDId+zQGkTANhSL8/98i8zD
-   snjf07CkO++LucP3/5P91HQAVN3wIExmgKOWto3xf7Qx7RutP9VdrQajj
-   qO2+FdNpaF8Y+Cicv79E1uKrGAlcKIAskpn7oDwahNQexQHg7BsT+3QLJ
-   bezeVxsTcmTbjy7MEXtoJu4Zp6wdaeJvTeRvz4YQORR6GC5dAV53WHSxI
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="353909983"
-X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
-   d="scan'208";a="353909983"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 00:25:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="860603090"
-X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
-   d="scan'208";a="860603090"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.251.212.187])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 00:25:46 -0700
-Message-ID: <c0bc5861-f78f-8d42-8ffe-7be7d827aad3@intel.com>
-Date:   Thu, 24 Aug 2023 10:25:42 +0300
+        Thu, 24 Aug 2023 03:28:21 -0400
+X-Greylist: delayed 61 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 24 Aug 2023 00:28:16 PDT
+Received: from outboundhk.mxmail.xiaomi.com (outboundhk.mxmail.xiaomi.com [118.143.206.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8626C10C8;
+        Thu, 24 Aug 2023 00:28:16 -0700 (PDT)
+X-IronPort-AV: E=Sophos;i="6.01,195,1684771200"; 
+   d="scan'208";a="63385427"
+From:   <huangshaobo3@xiaomi.com>
+To:     <tglx@linutronix.de>
+CC:     <bhelgaas@google.com>, <chenwei29@xiaomi.com>,
+        <darwi@linutronix.de>, <huangshaobo3@xiaomi.com>, <jgg@ziepe.ca>,
+        <kevin.tian@intel.com>, <linux-kernel@vger.kernel.org>,
+        <linux-pci@vger.kernel.org>, <weipengliang@xiaomi.com>,
+        <wengjinfei@xiaomi.com>
+Subject: Re: Subject: [PATCH] pci/msi: remove redundant calculation in msi_setup_msi_desc
+Date:   Thu, 24 Aug 2023 00:27:12 -0700
+Message-ID: <1692862032-37839-1-git-send-email-huangshaobo3@xiaomi.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <87bkexetfk.ffs@tglx>
+References: <87bkexetfk.ffs@tglx>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.14.0
-Subject: Re: [PATCH v10 1/2] mmc : sdhci-of-dwcmshc : add error handling in
- dwcmshc_resume
-Content-Language: en-US
-To:     Liming Sun <limings@nvidia.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        David Thompson <davthompson@nvidia.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <79137159a833c164ea8ea3f05d8d6d9537db2f42.1683747334.git.limings@nvidia.com>
- <20230822195929.168552-1-limings@nvidia.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <20230822195929.168552-1-limings@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [10.237.8.22]
+X-ClientProxiedBy: BJ-MBX16.mioffice.cn (10.237.8.136) To BJ-MBX01.mioffice.cn
+ (10.237.8.121)
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_SOFTFAIL,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/08/23 22:59, Liming Sun wrote:
-> This commit adds handling in dwcmshc_resume() for different error
-> cases.
-> 
-> Signed-off-by: Liming Sun <limings@nvidia.com>
+On Wed, 23 Aug 2023 16:15:27 +0200, Thomas Gleixner wrote:
+> On Fri, Aug 18 2023 at 07:26, 黄少波 wrote:
 
-We don't put a space before ":" in the subject line, and usually
-capitalize after that i.e.
+> Your patch is corrupt:
 
-mmc: sdhci-of-dwcmshc: Add error handling in dwcmshc_resume()
+>  Applying: Subject: [PATCH] pci/msi: remove redundant calculation in msi_setup_msi_desc
+>  error: corrupt patch at line 12
 
-Otherwise:
+> It's DOS mangled and whitespace damaged.
 
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Very sorry, may have accidentally broken the patch format,
+and will make sure to use plain text next time.
 
+> > Whether to support 64-bit address status has been calculated before,
+> > and the calculation result can be used directly afterwards, so use
+> > msi_attrib.is_64 to avoid double calculation.
 
-> ---
->  drivers/mmc/host/sdhci-of-dwcmshc.c | 21 ++++++++++++++++++---
->  1 file changed, 18 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/mmc/host/sdhci-of-dwcmshc.c b/drivers/mmc/host/sdhci-of-dwcmshc.c
-> index 31c1892f4ecd..bc332a035032 100644
-> --- a/drivers/mmc/host/sdhci-of-dwcmshc.c
-> +++ b/drivers/mmc/host/sdhci-of-dwcmshc.c
-> @@ -630,17 +630,32 @@ static int dwcmshc_resume(struct device *dev)
->  	if (!IS_ERR(priv->bus_clk)) {
->  		ret = clk_prepare_enable(priv->bus_clk);
->  		if (ret)
-> -			return ret;
-> +			goto disable_clk;
->  	}
->  
->  	if (rk_priv) {
->  		ret = clk_bulk_prepare_enable(RK35xx_MAX_CLKS,
->  					      rk_priv->rockchip_clks);
->  		if (ret)
-> -			return ret;
-> +			goto disable_bus_clk;
->  	}
->  
-> -	return sdhci_resume_host(host);
-> +	ret = sdhci_resume_host(host);
-> +	if (ret)
-> +		goto disable_rockchip_clks;
-> +
-> +	return 0;
-> +
-> +disable_rockchip_clks:
-> +	if (rk_priv)
-> +		clk_bulk_disable_unprepare(RK35xx_MAX_CLKS,
-> +					   rk_priv->rockchip_clks);
-> +disable_bus_clk:
-> +	if (!IS_ERR(priv->bus_clk))
-> +		clk_disable_unprepare(priv->bus_clk);
-> +disable_clk:
-> +	clk_disable_unprepare(pltfm_host->clk);
-> +	return ret;
->  }
->  #endif
->  
+> I'm not seeing what this solves:
 
+> > -       if (control & PCI_MSI_FLAGS_64BIT)
+> > +       if (desc.pci.msi_attrib.is_64)
+
+> Both variants resolve to a test of a bit and a conditional instruction
+> on the result. It's exactly zero difference in terms of "calculation".
+
+> So all this does is change the memory location to test. Not more not
+> less. It does not generate better code and does not save anything.
+
+It may not be appropriate to write to eliminate duplicate calculations,
+can it be proposed again with clean code?
+
+> Thanks,
+
+>         tglx
+
+thanks,
+sparkhuang
+#/******本邮件及其附件含有小米公司的保密信息，仅限于发送给上面地址中列出的个人或群组。禁止任何其他人以任何形式使用（包括但不限于全部或部分地泄露、复制、或散发）本邮件中的信息。如果您错收了本邮件，请您立即电话或邮件通知发件人并删除本邮件！ This e-mail and its attachments contain confidential information from XIAOMI, which is intended only for the person or entity whose address is listed above. Any use of the information contained herein in any way (including, but not limited to, total or partial disclosure, reproduction, or dissemination) by persons other than the intended recipient(s) is prohibited. If you receive this e-mail in error, please notify the sender by phone or email immediately and delete it!******/#
