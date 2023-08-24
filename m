@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B14078664A
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 05:51:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00BDC786653
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 05:53:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239912AbjHXDuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 23:50:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44996 "EHLO
+        id S239878AbjHXDwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 23:52:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240166AbjHXDuL (ORCPT
+        with ESMTP id S239762AbjHXDuQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 23:50:11 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6B34268F
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 20:48:31 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-569612f9d89so486294a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 20:48:31 -0700 (PDT)
+        Wed, 23 Aug 2023 23:50:16 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 105C22710
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 20:48:46 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-68a32506e90so1062800b3a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 20:48:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1692848903; x=1693453703;
+        d=bytedance.com; s=google; t=1692848913; x=1693453713;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=pYOB+hnIO83YvzUHSYTSuFO2utsF72W4sdU/yBHPL1U=;
-        b=YIHIoc1RJYxmkhYVOcGBRkBxvRhCV1vgbhLHLMHVKdroyXNJiDuJUutMmWOFcPBpBW
-         s/5YL1T7lyc2hav1PtBIIN2Dt6hyxpkwLoN2k+dutrk6yEzT3g/nPXTNMM1CpwIdn7cK
-         vKpo4xp6upXNV6Rk6KduOhBhcTSJ7rKvPI0CWETY6P1zhV3T+cGTYcHPpNts1uIFt7Xa
-         slnyTJaIC+EL0nEINpq6Gumx8Im0B6M3kdYzAJy8prFgOUb8N2+zr2h9bofMyVLTfYMe
-         wH5VoCpJVdhicwlvFPsZC33a5pDKbpFkIRl8d9BjaJjZ66w/ZuYhKjXRayn/0wC3WvtB
-         B4WQ==
+        bh=zC9WqkIww9J/yjcNVRfpW3XQ6AEKQ/LjI/iUfI4jlaA=;
+        b=glrCcAGlI9tORwLN4JeOX2Ojmpg3nd+ma/3S7SfNP2JPT41zIZ0IQM10eTVKPLkYqI
+         pg2c3cj/mxF72M7VVk2LY+U28qMFYAPfxu7KPD67Jpu5o7z+DfyV007ggfjzdgLysN82
+         cVDAiZHzpVRc6gETtIv1NBFK6Hvgz9JH2aOGng4fmagYixWYge8xFOfj1w99o4OKSpcR
+         lqLQMu8XVXXZKfG0W+wqfQnFIKtFhj4kiY4i3y6Fokx88A3jo9QjLRBpri3lqrfzuIJu
+         U/0aQHnJg90B6KEbY8BJ7rA54knmfENUkK0fN4nXKSLjT+G6swoIKswdwLSd7IVK09ma
+         wTRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692848903; x=1693453703;
+        d=1e100.net; s=20221208; t=1692848913; x=1693453713;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=pYOB+hnIO83YvzUHSYTSuFO2utsF72W4sdU/yBHPL1U=;
-        b=R0wlk09782zS60kK4t9CTseHyAFWmcvYkygyb8Dhu6yAMMch5eeqXuX0ocFdaDpxxk
-         PqV2m+GfCIs0eNyAeoqItdmk2tUYAO8ZPsiRPjymYWMoG0rN4fnPti7iKhczUIK9JBzM
-         duearCkk4jKdf6nBzO4GvrV3qU7zZ0ZeO1KjUIIuJS1K4oP/Rme/W6GnTeKHbbf+s+Sz
-         GSBOoyd5D50b2FRHcDHgew9z+eOhnC/hCMmA0PNubJCN1qV5FmRM4/8xj6EBWCJfCQ16
-         pNZJhv18v24gg+VmyzaN//vI3C/8D2zd+HR7jg0n6goa1s2msF2GdhyYJBkfK+wHSoBF
-         r0UA==
-X-Gm-Message-State: AOJu0YxP1b8ZPmzf9L1gNjF+DduwCUpygsTSEV7XPzJhs8zoRoQ2tpRz
-        tkYmghkvyxqM5jj8b7uwi+S+OQ==
-X-Google-Smtp-Source: AGHT+IG6N8tn7T7dg336qdyH1rso/0WPaO046+rzbqZhcbNGv58+8uAGt72gzl/ZUc8tgddqdUvO3Q==
-X-Received: by 2002:a05:6a21:7890:b0:112:cf5:d5cc with SMTP id bf16-20020a056a21789000b001120cf5d5ccmr18056004pzc.1.1692848903439;
-        Wed, 23 Aug 2023 20:48:23 -0700 (PDT)
+        bh=zC9WqkIww9J/yjcNVRfpW3XQ6AEKQ/LjI/iUfI4jlaA=;
+        b=TW7NqoW3oueEn7vRrLO1XeKnhzIxtEyLdC8zlkWiE2cpyry0A4yQ9sYnOX0rtdbfbI
+         584Kmkhw8tZ485yiAfs2FraVKl6niTxC5N2pCZZIrBF6yYZdw+1K3SJ4Ubxa727kkKEK
+         zbq2JFRDRc21qMgTod7w+Px7uBAMfv3jPKn/M+aYtrdvzuTb8VK9QNNEqpXPq705hZSO
+         WWYoKkEqdjTiGy8+tGL6tfpCjs6bF4Vw28zkTwGmeRxjt6LNfqu47/HimaaC2EiyWGLH
+         DGH/KeWGHpLUM6dACW5iu5MyYkVloetRtHA0MpFF+TT0c4G5oY7/jKjHr5Dr1aAWtT2J
+         llYg==
+X-Gm-Message-State: AOJu0Yw4AFycxnHlagGHgCOnH5Cd7O4DRmwNn2O3btUu/ktzamQljGaX
+        45EHzrf5+3OM5rGmWaSV6HKLDg==
+X-Google-Smtp-Source: AGHT+IEQ29rJQXeZVflVKNLar0GggbK4xIRfj9VbHOaq33vMQI6xRJWrdG4vksRQlcd6vKsocE2yjA==
+X-Received: by 2002:a05:6a21:78aa:b0:133:7a67:b477 with SMTP id bf42-20020a056a2178aa00b001337a67b477mr18675611pzc.1.1692848913047;
+        Wed, 23 Aug 2023 20:48:33 -0700 (PDT)
 Received: from C02DW0BEMD6R.bytedance.net ([203.208.167.146])
-        by smtp.gmail.com with ESMTPSA id t6-20020a63b246000000b005579f12a238sm10533157pgo.86.2023.08.23.20.48.15
+        by smtp.gmail.com with ESMTPSA id t6-20020a63b246000000b005579f12a238sm10533157pgo.86.2023.08.23.20.48.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Aug 2023 20:48:23 -0700 (PDT)
+        Wed, 23 Aug 2023 20:48:32 -0700 (PDT)
 From:   Qi Zheng <zhengqi.arch@bytedance.com>
 To:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
         vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
@@ -60,11 +60,14 @@ To:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
 Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
         linux-fsdevel@vger.kernel.org,
         Qi Zheng <zhengqi.arch@bytedance.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org
-Subject: [PATCH v5 31/45] jbd2,ext4: dynamically allocate the jbd2-journal shrinker
-Date:   Thu, 24 Aug 2023 11:42:50 +0800
-Message-Id: <20230824034304.37411-32-zhengqi.arch@bytedance.com>
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Olga Kornievskaia <kolga@netapp.com>,
+        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+        linux-nfs@vger.kernel.org
+Subject: [PATCH v5 32/45] nfsd: dynamically allocate the nfsd-client shrinker
+Date:   Thu, 24 Aug 2023 11:42:51 +0800
+Message-Id: <20230824034304.37411-33-zhengqi.arch@bytedance.com>
 X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 In-Reply-To: <20230824034304.37411-1-zhengqi.arch@bytedance.com>
 References: <20230824034304.37411-1-zhengqi.arch@bytedance.com>
@@ -72,7 +75,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -80,97 +84,82 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 In preparation for implementing lockless slab shrink, use new APIs to
-dynamically allocate the jbd2-journal shrinker, so that it can be freed
+dynamically allocate the nfsd-client shrinker, so that it can be freed
 asynchronously via RCU. Then it doesn't need to wait for RCU read-side
-critical section when releasing the struct journal_s.
+critical section when releasing the struct nfsd_net.
 
 Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-Reviewed-by: Muchun Song <songmuchun@bytedance.com>
-CC: "Theodore Ts'o" <tytso@mit.edu>
-CC: Jan Kara <jack@suse.com>
-CC: linux-ext4@vger.kernel.org
+Acked-by: Chuck Lever <chuck.lever@oracle.com>
+Acked-by: Jeff Layton <jlayton@kernel.org>
+CC: Jeff Layton <jlayton@kernel.org>
+CC: Olga Kornievskaia <kolga@netapp.com>
+CC: Dai Ngo <Dai.Ngo@oracle.com>
+CC: Tom Talpey <tom@talpey.com>
+CC: linux-nfs@vger.kernel.org
 ---
- fs/jbd2/journal.c    | 30 +++++++++++++++++++-----------
- include/linux/jbd2.h |  2 +-
- 2 files changed, 20 insertions(+), 12 deletions(-)
+ fs/nfsd/netns.h     |  2 +-
+ fs/nfsd/nfs4state.c | 20 ++++++++++++--------
+ 2 files changed, 13 insertions(+), 9 deletions(-)
 
-diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-index 768fa05bcbed..75692baa76e8 100644
---- a/fs/jbd2/journal.c
-+++ b/fs/jbd2/journal.c
-@@ -1290,7 +1290,7 @@ static int jbd2_min_tag_size(void)
- static unsigned long jbd2_journal_shrink_scan(struct shrinker *shrink,
- 					      struct shrink_control *sc)
+diff --git a/fs/nfsd/netns.h b/fs/nfsd/netns.h
+index ec49b200b797..f669444d5336 100644
+--- a/fs/nfsd/netns.h
++++ b/fs/nfsd/netns.h
+@@ -195,7 +195,7 @@ struct nfsd_net {
+ 	int			nfs4_max_clients;
+ 
+ 	atomic_t		nfsd_courtesy_clients;
+-	struct shrinker		nfsd_client_shrinker;
++	struct shrinker		*nfsd_client_shrinker;
+ 	struct work_struct	nfsd_shrinker_work;
+ };
+ 
+diff --git a/fs/nfsd/nfs4state.c b/fs/nfsd/nfs4state.c
+index 4c6a94a9699d..b2742065a813 100644
+--- a/fs/nfsd/nfs4state.c
++++ b/fs/nfsd/nfs4state.c
+@@ -4400,8 +4400,7 @@ static unsigned long
+ nfsd4_state_shrinker_count(struct shrinker *shrink, struct shrink_control *sc)
  {
--	journal_t *journal = container_of(shrink, journal_t, j_shrinker);
-+	journal_t *journal = shrink->private_data;
- 	unsigned long nr_to_scan = sc->nr_to_scan;
- 	unsigned long nr_shrunk;
- 	unsigned long count;
-@@ -1316,7 +1316,7 @@ static unsigned long jbd2_journal_shrink_scan(struct shrinker *shrink,
- static unsigned long jbd2_journal_shrink_count(struct shrinker *shrink,
- 					       struct shrink_control *sc)
- {
--	journal_t *journal = container_of(shrink, journal_t, j_shrinker);
-+	journal_t *journal = shrink->private_data;
- 	unsigned long count;
+ 	int count;
+-	struct nfsd_net *nn = container_of(shrink,
+-			struct nfsd_net, nfsd_client_shrinker);
++	struct nfsd_net *nn = shrink->private_data;
  
- 	count = percpu_counter_read_positive(&journal->j_checkpoint_jh_count);
-@@ -1588,14 +1588,22 @@ static journal_t *journal_init_common(struct block_device *bdev,
- 		goto err_cleanup;
+ 	count = atomic_read(&nn->nfsd_courtesy_clients);
+ 	if (!count)
+@@ -8149,12 +8148,17 @@ static int nfs4_state_create_net(struct net *net)
+ 	INIT_WORK(&nn->nfsd_shrinker_work, nfsd4_state_shrinker_worker);
+ 	get_net(net);
  
- 	journal->j_shrink_transaction = NULL;
--	journal->j_shrinker.scan_objects = jbd2_journal_shrink_scan;
--	journal->j_shrinker.count_objects = jbd2_journal_shrink_count;
--	journal->j_shrinker.seeks = DEFAULT_SEEKS;
--	journal->j_shrinker.batch = journal->j_max_transaction_buffers;
--	err = register_shrinker(&journal->j_shrinker, "jbd2-journal:(%u:%u)",
--				MAJOR(bdev->bd_dev), MINOR(bdev->bd_dev));
--	if (err)
+-	nn->nfsd_client_shrinker.scan_objects = nfsd4_state_shrinker_scan;
+-	nn->nfsd_client_shrinker.count_objects = nfsd4_state_shrinker_count;
+-	nn->nfsd_client_shrinker.seeks = DEFAULT_SEEKS;
+-
+-	if (register_shrinker(&nn->nfsd_client_shrinker, "nfsd-client"))
++	nn->nfsd_client_shrinker = shrinker_alloc(0, "nfsd-client");
++	if (!nn->nfsd_client_shrinker)
+ 		goto err_shrinker;
 +
-+	journal->j_shrinker = shrinker_alloc(0, "jbd2-journal:(%u:%u)",
-+					     MAJOR(bdev->bd_dev),
-+					     MINOR(bdev->bd_dev));
-+	if (!journal->j_shrinker) {
-+		err = -ENOMEM;
- 		goto err_cleanup;
-+	}
++	nn->nfsd_client_shrinker->scan_objects = nfsd4_state_shrinker_scan;
++	nn->nfsd_client_shrinker->count_objects = nfsd4_state_shrinker_count;
++	nn->nfsd_client_shrinker->seeks = DEFAULT_SEEKS;
++	nn->nfsd_client_shrinker->private_data = nn;
 +
-+	journal->j_shrinker->scan_objects = jbd2_journal_shrink_scan;
-+	journal->j_shrinker->count_objects = jbd2_journal_shrink_count;
-+	journal->j_shrinker->seeks = DEFAULT_SEEKS;
-+	journal->j_shrinker->batch = journal->j_max_transaction_buffers;
-+	journal->j_shrinker->private_data = journal;
++	shrinker_register(nn->nfsd_client_shrinker);
 +
-+	shrinker_register(journal->j_shrinker);
+ 	return 0;
  
- 	return journal;
+ err_shrinker:
+@@ -8252,7 +8256,7 @@ nfs4_state_shutdown_net(struct net *net)
+ 	struct list_head *pos, *next, reaplist;
+ 	struct nfsd_net *nn = net_generic(net, nfsd_net_id);
  
-@@ -2170,9 +2178,9 @@ int jbd2_journal_destroy(journal_t *journal)
- 		brelse(journal->j_sb_buffer);
- 	}
- 
--	if (journal->j_shrinker.flags & SHRINKER_REGISTERED) {
-+	if (journal->j_shrinker) {
- 		percpu_counter_destroy(&journal->j_checkpoint_jh_count);
--		unregister_shrinker(&journal->j_shrinker);
-+		shrinker_free(journal->j_shrinker);
- 	}
- 	if (journal->j_proc_entry)
- 		jbd2_stats_proc_exit(journal);
-diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-index 52772c826c86..6dcbb4eb80fb 100644
---- a/include/linux/jbd2.h
-+++ b/include/linux/jbd2.h
-@@ -886,7 +886,7 @@ struct journal_s
- 	 * Journal head shrinker, reclaim buffer's journal head which
- 	 * has been written back.
- 	 */
--	struct shrinker		j_shrinker;
-+	struct shrinker		*j_shrinker;
- 
- 	/**
- 	 * @j_checkpoint_jh_count:
+-	unregister_shrinker(&nn->nfsd_client_shrinker);
++	shrinker_free(nn->nfsd_client_shrinker);
+ 	cancel_work(&nn->nfsd_shrinker_work);
+ 	cancel_delayed_work_sync(&nn->laundromat_work);
+ 	locks_end_grace(&nn->nfsd4_manager);
 -- 
 2.30.2
 
