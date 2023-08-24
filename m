@@ -2,84 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D66F786B1B
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 11:06:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E718786B21
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 11:07:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240543AbjHXJFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 05:05:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59156 "EHLO
+        id S230447AbjHXJHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 05:07:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240643AbjHXJFe (ORCPT
+        with ESMTP id S240639AbjHXJHI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 05:05:34 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EDA21994
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 02:05:32 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-33-YnruvqDKO-W6zw-UTGc5mg-1; Thu, 24 Aug 2023 10:05:30 +0100
-X-MC-Unique: YnruvqDKO-W6zw-UTGc5mg-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 24 Aug
- 2023 10:05:28 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Thu, 24 Aug 2023 10:05:28 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Linus Torvalds' <torvalds@linux-foundation.org>
-CC:     Kees Cook <keescook@chromium.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: RE: [PATCH next v3 0/5] minmax: Relax type checks in min() and max().
-Thread-Topic: [PATCH next v3 0/5] minmax: Relax type checks in min() and
- max().
-Thread-Index: AdnGwQ6IGYkn0IjZSjuTaOSyeQI0UwIK8m4AABl1+KABQGc+AAAmLwYwADhjV4AAJn/WkA==
-Date:   Thu, 24 Aug 2023 09:05:28 +0000
-Message-ID: <bcf2fcad28c048058c808ec9e749da80@AcuMS.aculab.com>
-References: <01e3e09005e9434b8f558a893a47c053@AcuMS.aculab.com>
- <202308141416.89AC5C2@keescook>
- <2dd09c4033644239a314247e635fa735@AcuMS.aculab.com>
- <202308211113.4F49E73109@keescook>
- <acf8a7389d1f47a5ac55390b7ea76692@AcuMS.aculab.com>
- <CAHk-=wh1SFzTM1nWwC30t55jzZradQmJ4942CDD1pM_umhU_Vw@mail.gmail.com>
-In-Reply-To: <CAHk-=wh1SFzTM1nWwC30t55jzZradQmJ4942CDD1pM_umhU_Vw@mail.gmail.com>
-Accept-Language: en-GB, en-US
+        Thu, 24 Aug 2023 05:07:08 -0400
+Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03olkn2082.outbound.protection.outlook.com [40.92.58.82])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 404D51995
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 02:07:00 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AspGD3QaqKUagsXRekrrSlpZn07FCjJkhBrlLjC21/uDlWSzjE3UjUTRqnH1UWhWJWjsTa50oSm7q4TLEYtZWGsH4Nxx0qBYARAI0vXK/ku7tSvt/0suvxTzeW0iq23E62gWRZgSY98vDZDuxvVvGprXKMmW3+LIxU58NdGrkvytew/U5akx2IQ4LVY2X+AiRmFHoRsZyJoSbUTYK4geecUtvf03CH7pE9mIXPFN86TumfvhCKaDp21eL+qFVCb2sO8RxskQHRWo8ijI6l0heqvRqMWiOQuiWxzY1aTFrtZP7MlCgWiEf99vYLq1m4Bqmu9Ygbu1iecVjVQOBGG5PQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=aPNuaUBUdBLObYjva9aJgAROhzwVFdSxMbQKuDuSVok=;
+ b=m3n506tAeHuf+OjjbbdM604pQn0IqHwpw7XlN4wZSsG1v31h/fAWx94gHI+iMBtvw3Xgn40mXoHgS1FD27/a3VMGbCtiRAYTNVDICj/jNIMnfQfWR8tUXSH3+6h0RImlpxxCZdFMNMU75WjEf0nKsFla1La0944S3BD0sJXQp7tSYlw3Fk6XQN+maGV5A4o85nKoR/Tu295XdZKb/YQ6gD+jv4tDald64AyXtCw8Yvd+t0Q6F76+yQTzmeMWPcmh3uow6AGHpA86Zn2UEwHT9lbdBWIGayaZxForgXPCMo2vtlxi00pQTPyGlgEb+F5TdFdN29sbytS35CvvugmR+Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aPNuaUBUdBLObYjva9aJgAROhzwVFdSxMbQKuDuSVok=;
+ b=k85OeBhGXikwsldRWvXgr05pMvNCebTW5vvPhL97+D57tvyejB6lQiKRBmAN/gJ7NPU4avNxNNeHZkzXppKpqz2oVW4MmefVeplnBo9gQJuUDWl6m5pHMP6JqKIqN7pfB2exSH0+i2dX5/mwlOkrjaf/xayDVSJaxpFXtO4oXUIZRPp5hN7g2MfebEbT915KfbMhbdW+5Ns5dpm35s9hGoYhEgprCs6OyYatUJzW02yaXpNeO4TzsHuR+oMjKOKqCW+mDHFWYzgwGCGn+zhGWKXXsgLeLH0wCZWOhl9Q5mtDiTJpeeX6YyuN/HcP8FKRq/5GeowgPU5FLOYHfwdcxQ==
+Received: from PAVP192MB2135.EURP192.PROD.OUTLOOK.COM (2603:10a6:102:323::12)
+ by VE1P192MB0799.EURP192.PROD.OUTLOOK.COM (2603:10a6:800:16b::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.27; Thu, 24 Aug
+ 2023 09:06:58 +0000
+Received: from PAVP192MB2135.EURP192.PROD.OUTLOOK.COM
+ ([fe80::1293:a49d:9b32:afc4]) by PAVP192MB2135.EURP192.PROD.OUTLOOK.COM
+ ([fe80::1293:a49d:9b32:afc4%7]) with mapi id 15.20.6699.027; Thu, 24 Aug 2023
+ 09:06:58 +0000
+From:   =?iso-8859-1?Q?Ywe_C=E6rlyn?= <ywec4rlyn@outlook.com>
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Bit X low jitter kernel config/fair pay philosphy ideas, updates,
+ corrections
+Thread-Topic: Bit X low jitter kernel config/fair pay philosphy ideas,
+ updates, corrections
+Thread-Index: AQHZ1maKKufEruhIvk273lrveZR8Oq/5JnDi
+Date:   Thu, 24 Aug 2023 09:06:58 +0000
+Message-ID: <PAVP192MB2135E0C71E5896C3F042DE30E91DA@PAVP192MB2135.EURP192.PROD.OUTLOOK.COM>
+References: <DU0P192MB212276A380B4ED0F29C72229E91DA@DU0P192MB2122.EURP192.PROD.OUTLOOK.COM>
+In-Reply-To: <DU0P192MB212276A380B4ED0F29C72229E91DA@DU0P192MB2122.EURP192.PROD.OUTLOOK.COM>
+Accept-Language: nb-NO, en-US
+Content-Language: nb-NO
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+msip_labels: 
+x-tmn:  [1RxVJMN7f249DUFuRti7joXkjdzMPVFs]
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PAVP192MB2135:EE_|VE1P192MB0799:EE_
+x-ms-office365-filtering-correlation-id: 0a5ed964-6132-4328-a63d-08dba481787d
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: tnjIM6tH8ACgQPqIvtoRaO70eKYzPol7jQNwjGZ/XzVq0matuNjnniEj905dXre0KPkv4W7c7OqAaQSsJimQZHuxgD0NltoI9uyp9CZEb0CZS985H9BBPJyF4wlFTlFRMsedsCUH6TfxwCKZlhUEKJq8oTk5YrAyEuEHkdGQLiwMkzHGbcsnS+c+YInjygUh6nmf9Mz5ZavWgrsy+MdNRjCztBbs+84Sq/fCIKcJA3Nzvy30piQsIU+WTO5pGwEIIgqQdc4Z1VVsYtm+iffAz1vsfO6UxjmrCCfOMmUS2xXrqPoodyJLgS/MIKDuWqCapT6c8FyPZJqLPgp+Am9cYcivgVxDPm75fdo5jZpUX44K3JZ/KZBGj8wl5qyv7jYcvPkA0mjopxaQlbN3HyVCu8axa+WCU7QrJb2gFL3BLNsrlyRgG3AmrzeRHB7/8UbDCiYYHnfxXwowPPo59tW5WG3jSQPfx6aTRohE9iRhwFYyvP6y0Vrff4+CARtEc/4lYAFFEhNJjOO+O2+HFdmAULSCA3IIEjZLoA3ygYyC+ODFq92FcsR0iME/s1/GpBnn
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?hNhYvCcH/WWI/JNIHm7LqRBOAs6u4GN3xG1rC/h0mFxTY0lbhKY8MVgDal?=
+ =?iso-8859-1?Q?0sbDIpzMFRuHocw1q5xlJQTfRUWQ+CyxQxiFdOgv4ygiaXEtXpp6nsRFIJ?=
+ =?iso-8859-1?Q?DYBAm4rlEcLrHN4ARQq+18mNaYuD7SI+P/D3oE/0l/CWGqB6uJNOHIEGyV?=
+ =?iso-8859-1?Q?p9LJ/9swehD+mEJkXF7WxIUOeo4R0qc8ITTH9KXNJW8270VV8nLQhnEbZ8?=
+ =?iso-8859-1?Q?1wilGuELe+dLYO9tZvgqDhDTDOeqnLPzQLkK7RvIKpCl70PG0BJ3KM2ys1?=
+ =?iso-8859-1?Q?02iSwETexiOvxP74eaO7r0qL500BVe1tGn0S6tW19NnD/opjDb6+n3h13e?=
+ =?iso-8859-1?Q?HegOcrohactE8+WNeTiYumBfxSPlL2oZpKOvD6QZiVsljAgGt7bmKUwZS6?=
+ =?iso-8859-1?Q?u4nQS7jULCWwC4jHYQKrOMYbvAZdPaSYm7jHSk2OOa8ZttYOCkVGU19R5Y?=
+ =?iso-8859-1?Q?gCkdHvCGaAcX5V3d/u5B9hYPhui7EfkaaDxe3sSZ/qnH/zhl+JUsqV2Iiv?=
+ =?iso-8859-1?Q?JTu+qO/0OEGNzJ1KbU5QVERdnAznWGCH9wu8SdzDxbxgIyGD9UyAIpmJv8?=
+ =?iso-8859-1?Q?Pn+LsY1unqpZMa7sC4i1Jk+WV1K+othP5iSXx7ZeuTU05s/G+QqE1IuJFg?=
+ =?iso-8859-1?Q?QzhQtXvBs6y6I5nfnA1ZRt9nGU6q/93QXwiI0hX0Uczv20rrEwDSDOMLbs?=
+ =?iso-8859-1?Q?/jA17Ry5wuoE+nOveY/NB0CLkrMku3PLLWlIVq7ddX55R1xrXSLrIkTJdD?=
+ =?iso-8859-1?Q?KJ1J/rJozEgFw6TAk3jkA1cHz04ny9rOthcAP05ji6w/SRTWdoSiwuPK1T?=
+ =?iso-8859-1?Q?3qaRbXS/Os+Bbr9y4r1AYky5n9sY9BMJrv6sTWyJJJxN/MenjEHYVH9pc4?=
+ =?iso-8859-1?Q?Dy23hW8OaGoBbkuZ1Bv+Vu1GDIsSh9pgM9HfxhGQcFUgM7V2/HKop0QjV5?=
+ =?iso-8859-1?Q?Vor8sVSFsQuXHC3z1WsscbCg4B0F3N9YQPnIgZ6aUWIIXsWqawYgfqTqL5?=
+ =?iso-8859-1?Q?dk6J6gsSjU2tJ3uNqJn3W4WzAafY8ej90J3Wh/TBhkb8Th+speAOpHi4ri?=
+ =?iso-8859-1?Q?98jXocHA2VcPJZiRxjAIXzhhUDlM8BQYks8W48NXgSgZ67RMn+PIQIrPUG?=
+ =?iso-8859-1?Q?Esfy+gljDV3vRVQu3a3tXpJpEvZkmysnGMrs6swrzv3+F0La9dravCHP6a?=
+ =?iso-8859-1?Q?ZVoox6opapHA4zct4z4cOb5dDc+8gJj3KESi0VMbitPpezRLjEWtSDzr+7?=
+ =?iso-8859-1?Q?9W+e52OCv78GB05B1I6A=3D=3D?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PAVP192MB2135.EURP192.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0a5ed964-6132-4328-a63d-08dba481787d
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Aug 2023 09:06:58.2079
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1P192MB0799
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogTGludXMgVG9ydmFsZHMNCj4gU2VudDogV2VkbmVzZGF5LCBBdWd1c3QgMjMsIDIwMjMg
-NDozMiBQTQ0KLi4uDQo+IFRoYXQgbWlnaHQgZ2V0IHJpZCBvZiBhIG51bWJlciBvZiB0aGUgbW9y
-ZSBhbm5veWluZyBjYXNlcy4NCg0KVGhlIG9uZSBpdCBsZWF2ZXMgaXMgY29kZSBsaWtlOg0KDQoJ
-aW50IGxlbmd0aCA9IGdldF9sZW5ndGgoLi4uKTsNCglpZiAobGVuZ3RoIDw9IDApDQoJCXJldHVy
-biBlcnJvcjoNCglkbyB7DQoJCWZyYWdfbGVuID0gc29tZV9taW5fZnVuY3Rpb24obGVuZ3RoLCBQ
-QUdFX1NJWkUpOw0KCQkuLi4NCgl9IHdoaWxlICgobGVuZ3RoIC09IGZyYWdfbGVuKSAhPSAwKTsN
-Cg0KQXMgd3JpdHRlbiBpdCBpcyBvayBmb3IgYWxsIHJlYXNvbmFibGUgc29tZV9taW5fZnVuY3Rp
-b24oKS4NCg0KQnV0IGlmIHRoZSAobGVuZ3RoIDw9IDApIHRlc3QgaXMgbWlzc2luZyBpdCByZWFs
-bHkgZG9lc24ndA0KbWF0dGVyIHdoYXQgc29tZV9taW5fZnVuY3Rpb24oKSByZXR1cm5zIGJlY2F1
-c2UgdGhlIGNvZGUNCmlzbid0IGdvaW5nIHRvIGRvIGFueXRoaW5nIHNlbnNpYmxlIC0gYW5kIG1h
-eSBqdXN0IGxvb3AuDQoNCkFib3V0IHRoZSBvbmx5IHRoaW5nIHlvdSBjb3VsZCBkbyBpcyBhZGQg
-YSBydW4tdGltZSBjaGVjaw0KYW5kIHRoZW4gQlVHKCkgaWYgbmVnYXRpdmUuDQpCdXQgdGhhdCBp
-cyBob3JyaWQuLi4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwg
-QnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVn
-aXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
-
+=0A=
+Hello.=0A=
+=0A=
+I wrote the list about some of my ideas. Some of the stuff may be a bit ear=
+ly posted, so sorry about that. Its mature now.=0A=
+=0A=
+The low latency config I did worked very well. It gave excellent performanc=
+e on Doom 3, many years ago. Phoronix benchmarked it in 2012, and unfortuna=
+tely he did not have the tools to benchmark framesmoothness and actual fram=
+es drawn on screen, so it only showed good figures in=A0PostgreSQL tests. W=
+hat I saw myself though, was that all jitter was gone, from this demanding =
+3-passes pr. frame OpenGL game, and full 72.7 (low psychovisual noise refre=
+sh rate) hz updates. (This required renicing X aswell, and a kernel timer o=
+f 90hz at the time).=0A=
+=0A=
+I also tried 0.33ms latency audio streams. It was CPU demanding then, but t=
+hose codepaths could be optimized.=0A=
+=0A=
+And in these days, I guess things are perfected with the EEVDF scheduler.=
+=0A=
+I remember 200uS OS-Jitter being close to optimal for desktop use.=0A=
+=0A=
+I would call it the Bit X Low Jitter Kernel Config, and if an OS was based =
+on it, it would be Bit X. Everything is about streams now, and it would sui=
+t such a thing perfectly.=0A=
+=0A=
+Ofcourse as things like Bitcoin grows aswell, one would want a good fair pa=
+y background. And I have advocated non-sectarian Islam for this. As a regre=
+ssed Bible, and retrofitted regressed concepts of the Deity are unsuitable.=
+=0A=
+Now using Ra, as the translated concept of the arabic Deity, which works we=
+ll in latin alphabet, to my experience.=0A=
+=0A=
+The problem for Islam is that sects have taken an idol, a halfmoon symbol, =
+and this is a wellknown symbol. And sectarians emphasise books like Bukhari=
+, that are pseudoteachings only. This I want to state, that this is not wha=
+t I mean by "Islam". But rather something like the "Kuran Alone" directions=
+.=0A=
+=0A=
+A little update from me.=0A=
+Peace.=0A=
+Ywe.=0A=
