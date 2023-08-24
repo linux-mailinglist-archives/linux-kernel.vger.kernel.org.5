@@ -2,73 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFBE1787994
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 22:49:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C52CF787995
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 22:50:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243587AbjHXUs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 16:48:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38210 "EHLO
+        id S243592AbjHXUtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 16:49:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243600AbjHXUsu (ORCPT
+        with ESMTP id S243596AbjHXUtN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 16:48:50 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 353DC1993
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 13:48:47 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d4ddbcbbaacso288105276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 13:48:47 -0700 (PDT)
+        Thu, 24 Aug 2023 16:49:13 -0400
+Received: from mail-io1-xd4a.google.com (mail-io1-xd4a.google.com [IPv6:2607:f8b0:4864:20::d4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E126C1989
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 13:49:11 -0700 (PDT)
+Received: by mail-io1-xd4a.google.com with SMTP id ca18e2360f4ac-791c4ecd5d6so17228739f.3
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 13:49:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692910126; x=1693514926;
+        d=google.com; s=20221208; t=1692910151; x=1693514951;
         h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=M0yJZryWMYeO3ru4SL2etFZxtb/uTR0NYnDC6wqAIp0=;
-        b=O5lPfwxP2ZX5jRGZtkaXjoT01H5GZ0XSxuBn6tH/X6Eqc9pJ76hJE1kD86PTMk1ST6
-         8a5RMLvAcD0wH6ztd12HemFXEaxCCZxqESTRS+g0K8q+BDz9KUMW8vDVowHPv2C1gHpF
-         +cJ+sGBPRaB4phgQNWNLZjWGi5tuowVrTp/xey1jD/oLwUTKaBOs7WCiDQZwZPKDcsfm
-         PFebf5R2z/yVO03WpAePC/zYGH6tc4Y/uJxMbQNvGqlWuGWqCwpERL0EBDp/2EmK3cic
-         XtizBsVi1mzhQ7rpheyzqKRrH1TixpnXkyREJNr4cwfGmm0eLuqAyfA6Ze02loN9wpgQ
-         YdIA==
+        bh=BpHJy0xtUCv2a8+NkW5PB2F6J+9bq70l3+n1crasXPg=;
+        b=4LHD+g3Hs93NzyV+bQ21E+6npsJl1j6DyiILpZfa70xOL04NtrcgcxNja0HiixFg41
+         PrTf4UfUdQDU/V8mg2ZFUmRgb2Zuc2OlF7y62wISBC8uCLbBJ4zZqSGeFYa/2SXlIgki
+         ExYfzJAfwP3q2slB97qIUwuNJpv1nNtAZQMa0M+MmshbAJsQABzZGYIDI0y6usSMbPMY
+         i8rfAcFb3FpVcq9qLYzgBsC0A/7+J+Vrti+dWuRWP0moLpOHVrI/LnzkcV08mqagQXVq
+         YoEmujrR1+DBOcTFF+TKf4ZrbsOuHkTinvqyXSDIWx9ImqIm94NhIr5gIvIMDoK5edfs
+         BDBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692910126; x=1693514926;
+        d=1e100.net; s=20221208; t=1692910151; x=1693514951;
         h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=M0yJZryWMYeO3ru4SL2etFZxtb/uTR0NYnDC6wqAIp0=;
-        b=Y9hqXCqdbV00iRrcycV54K6greGV+Pgnk9GkUmuv8fMlUZK0KaGw7enur0as6zD0rO
-         UatRbX+p0BzzFfvvUyR3+lTiE+g8il0pNGR29VPVp4h4JKgiIj4MF8f2kce2dRpWYdfr
-         JjQc3uW2nJh5JWgpaxfo6vveTistfjb+B0x+OM59piblIshLpEmdOO65I9phVSlAdBc+
-         fefQtc+i3nHVdgPfbczxfQk6XEbEJ6a63ZaC4OnbLvPZiRvVvblLkRFpicwP89T4pQgQ
-         VBrvtKJmrTyJ5HqF9bexpAcmjRwA1rMp8tyZR6TjfmsCnle86JMEMeJpvMCc+Lkj0H0/
-         frug==
-X-Gm-Message-State: AOJu0YzjvxFWNS7sJBtxKBjtbCw3MgfN+XWsRpYS/2ArEZROVDQVQkBE
-        SmsUn+zhB4TAQxSPX/8XLnd8MHZeN8dyeulrIGg=
-X-Google-Smtp-Source: AGHT+IHSSvrHDyjia7HhrvF+NQ3tP9byLcqc5+0hCYuVncXYTIcVK7jaYqoyK5t55SBOOuPSFQPjEC5/8v9cDVOwv7Y=
-X-Received: from ndesaulniers-desktop.svl.corp.google.com ([2620:15c:2d1:203:63f7:38ec:c0bd:8830])
- (user=ndesaulniers job=sendgmr) by 2002:a05:6902:290:b0:d48:c04:f256 with
- SMTP id v16-20020a056902029000b00d480c04f256mr264462ybh.11.1692910126508;
- Thu, 24 Aug 2023 13:48:46 -0700 (PDT)
-Date:   Thu, 24 Aug 2023 13:48:43 -0700
+        bh=BpHJy0xtUCv2a8+NkW5PB2F6J+9bq70l3+n1crasXPg=;
+        b=RiBQoS7RUduf9ydA8gNWlrv6Gz5kWrGO3QAq+sdGs8pHx+emOd7dIw0m3cbFyJ7YMs
+         mkDy2WkJ5mg4+uuFf/UyrEawYG690wSbHTfK1947r9vsrMa0RNsp7o5cIoe8GMSoqnmM
+         pbQwM7SW1G5qoSdgKKoc8kIy5f7fSQjw15fREOIy1JSYdzr7YsTVu83og5cE/4aQv+nb
+         CwTrbDL3V59n+a2joWZ7inuX+9/HWrGfJBbgqLplSo47a37ZErfx5+2F0kg4azx8XBbA
+         Spgi3zSrFScH10mndN7oKhEH5D9aLIhGeXDUMk4r0mXw6JtC6mqNGi5Vnmq90WMf/QJZ
+         Gyww==
+X-Gm-Message-State: AOJu0YzmyVtDFE2bq0YglsdsNCSzoTFWicRSbC7en+hMWcokmdTg0d4Y
+        Qh9kMl03QRQtWEEbYrzSesNAbgDtzVkN7HTuYw==
+X-Google-Smtp-Source: AGHT+IGCzg9T12M4d/3pwncQLdGrc6I6tVfup/nIVd1cLf8n14WecMd5Gd812VnV/4jZSw+Sf0ueKAW2eYw3EjxUhw==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a02:a155:0:b0:42b:a220:a32d with SMTP
+ id m21-20020a02a155000000b0042ba220a32dmr202775jah.2.1692910151324; Thu, 24
+ Aug 2023 13:49:11 -0700 (PDT)
+Date:   Thu, 24 Aug 2023 20:49:11 +0000
 Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIACrC52QC/13MQQ7CIBCF4as0sxbDUC3ElfcwXVQYKIl2GjBE0
- 3B3sUuX/8vLt0GmFCnDpdsgUYk58tJCHTqw87QEEtG1BiVVL406Ccc2C4t6OjvSHmUP7bom8vG 9M7ex9Rzzi9NnVwv+1j+goEAxaJIDKm3uxl8Dc3jQ0fITxlrrF25UWUaZAAAA
-X-Developer-Key: i=ndesaulniers@google.com; a=ed25519; pk=eMOZeIQ4DYNKvsNmDNzVbQZqpdex34Aww3b8Ah957X4=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1692910124; l=8692;
- i=ndesaulniers@google.com; s=20230823; h=from:subject:message-id;
- bh=tF1NWDJnkZ9aR4MO1fxhjTI93RQpM0ZUl3wqcpY3mfQ=; b=RwPBFc3vurwU8C0ZNuw/kt5+Fi47JNw4+LMM4uD5X2F3Kqo9o3U1G3+rwNVyOeuAsmSnfsqtg
- w4kxoYGWLrFDA9cZ39ON8h8rVoSU6SFjdF2RPXbp4D0skkbHGU3lWeK
+X-B4-Tracking: v=1; b=H4sIAEbC52QC/yWNQQqDQAxFryJZNzBNLZVepXQRY6oBGSUpooh37
+ 2A3D97i/b9DqJsGPKsdXBcLm3KR66UCGTj3itYVB0p0Sw3VGF/PMm/YuS3qgSyiIw7ccuaR28B +2vgPQeJ0ZyqtPBook7Prx9bz7vU+jh82xQlvfgAAAA==
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1692910150; l=1804;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=q9RFqzuzSf+JWcxuWQQn2bXUpH2CiQm1RQ706+wRDyY=; b=JHfQP3Jmi2+KwCdCuR3S3FvUV4fZkP336jFiB4R4SLBE4/A58qQuTS/kDapIjztNdiYDiiYxh
+ 3SvAzyQcFyJBJyFXWRGaxHRr7ZkcwaenKRdNvQPuN/mBtNP3AXUA0E9
 X-Mailer: b4 0.12.3
-Message-ID: <20230824-docs-v2-1-848abf651184@google.com>
-Subject: [PATCH v2] Documentation/llvm: refresh docs
-From:   ndesaulniers@google.com
-To:     Nathan Chancellor <nathan@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Tom Rix <trix@redhat.com>, Nicolas Schier <nicolas@fjasle.eu>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, llvm@lists.linux.dev,
-        linux-kbuild@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        Nick Desaulniers <ndesaulniers@google.com>
+Message-ID: <20230824-strncpy-drivers-accel-habanalabs-goya-goya-c-v1-1-b81d5639e7a3@google.com>
+Subject: [PATCH] habanalabs/goya: refactor deprecated strncpy
+From:   Justin Stitt <justinstitt@google.com>
+To:     Oded Gabbay <ogabbay@kernel.org>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
 Content-Type: text/plain; charset="utf-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -80,232 +74,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Recent fixes for an embargoed hardware security vulnerability failed to
-link with ld.lld (LLVM's linker).  [0]  To be fair, our documentation
-mentions ``CC=clang`` foremost with ``LLVM=1`` being buried "below the
-fold."
+`strncpy` is deprecated for use on NUL-terminated destination strings [1].
 
-We want to encourage the use of ``LLVM=1`` rather than just
-``CC=clang``. Make that suggestion "above the fold" and "front and
-center" in our docs.
+A suitable replacement is `strscpy` [2] due to the fact that it
+guarantees NUL-termination on its destination buffer argument which is
+_not_ the case for `strncpy`!
 
-While here, the following additional changes were made:
-- remove the bit about CROSS_COMPILE setting --target=, that's no longer
-  true.
-- Add ARCH=loongarch to the list of maintained targets (though we're
-  still working on getting defconfig building cleanly at the moment;
-  we're pretty close).
-- Bump ARCH=powerpc from CC=clang to LLVM=1 status.
-- Promote ARCH=riscv from being Maintained to being Supported. Android
-  is working towards supporting RISC-V, and we have excellent support
-  from multiple companies in this regard.
-- Note that the toolchain distribution on kernel.org has been built with
-  profile data from kernel builds.
-
-Link: https://github.com/ClangBuiltLinux/linux/issues/1907 [0]
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+Link: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings[1]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
 ---
-Changes in v2:
-- Commit message changes:
-  - Put SOB tag above the fold.
-  - Mention PPC change in commit message.
-  - Fix typos in commit message.
-  - Add Nathan's RB tag to commit message.
-- Fix kernel doc warnings
-- Reword s390 example under `The LLVM= argument`.
-- Reword and add examples to `The LLVM_IAS= argument`.
-- Link to v1: https://lore.kernel.org/r/20230824-docs-v1-1-67e061278b8f@google.com
+Note: build-tested only.
 ---
- Documentation/kbuild/llvm.rst | 115 +++++++++++++++++++++++++-----------------
- 1 file changed, 68 insertions(+), 47 deletions(-)
+ drivers/accel/habanalabs/goya/goya.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/kbuild/llvm.rst b/Documentation/kbuild/llvm.rst
-index c3851fe1900d..1bfcadc41e7d 100644
---- a/Documentation/kbuild/llvm.rst
-+++ b/Documentation/kbuild/llvm.rst
-@@ -25,50 +25,38 @@ objects <https://www.aosabook.org/en/llvm.html>`_. Clang is a front-end to LLVM
- that supports C and the GNU C extensions required by the kernel, and is
- pronounced "klang," not "see-lang."
+diff --git a/drivers/accel/habanalabs/goya/goya.c b/drivers/accel/habanalabs/goya/goya.c
+index 7c685e6075f6..d0ac7065f3d7 100644
+--- a/drivers/accel/habanalabs/goya/goya.c
++++ b/drivers/accel/habanalabs/goya/goya.c
+@@ -466,7 +466,7 @@ int goya_set_fixed_properties(struct hl_device *hdev)
+ 	prop->pcie_dbi_base_address = mmPCIE_DBI_BASE;
+ 	prop->pcie_aux_dbi_reg_addr = CFG_BASE + mmPCIE_AUX_DBI;
  
--Clang
-------
--
--The compiler used can be swapped out via ``CC=`` command line argument to ``make``.
--``CC=`` should be set when selecting a config and during a build. ::
--
--	make CC=clang defconfig
--
--	make CC=clang
--
--Cross Compiling
-----------------
-+Building with LLVM
-+------------------
+-	strncpy(prop->cpucp_info.card_name, GOYA_DEFAULT_CARD_NAME,
++	strscpy(prop->cpucp_info.card_name, GOYA_DEFAULT_CARD_NAME,
+ 		CARD_NAME_MAX_LEN);
  
--A single Clang compiler binary will typically contain all supported backends,
--which can help simplify cross compiling. ::
-+Invoke ``make`` via::
+ 	prop->max_pending_cs = GOYA_MAX_PENDING_CS;
+@@ -5122,7 +5122,7 @@ int goya_cpucp_info_get(struct hl_device *hdev)
+ 	}
  
--	make ARCH=arm64 CC=clang CROSS_COMPILE=aarch64-linux-gnu-
-+	make LLVM=1
+ 	if (!strlen(prop->cpucp_info.card_name))
+-		strncpy(prop->cpucp_info.card_name, GOYA_DEFAULT_CARD_NAME,
++		strscpy(prop->cpucp_info.card_name, GOYA_DEFAULT_CARD_NAME,
+ 				CARD_NAME_MAX_LEN);
  
--``CROSS_COMPILE`` is not used to prefix the Clang compiler binary, instead
--``CROSS_COMPILE`` is used to set a command line flag: ``--target=<triple>``. For
--example: ::
-+to compile for the host target. For cross compiling::
- 
--	clang --target=aarch64-linux-gnu foo.c
-+	make LLVM=1 ARCH=arm64
- 
--LLVM Utilities
----------------
-+The LLVM= argument
-+------------------
- 
--LLVM has substitutes for GNU binutils utilities. They can be enabled individually.
--The full list of supported make variables::
-+LLVM has substitutes for GNU binutils utilities. They can be enabled
-+individually. The full list of supported make variables::
- 
- 	make CC=clang LD=ld.lld AR=llvm-ar NM=llvm-nm STRIP=llvm-strip \
- 	  OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump READELF=llvm-readelf \
- 	  HOSTCC=clang HOSTCXX=clang++ HOSTAR=llvm-ar HOSTLD=ld.lld
- 
--To simplify the above command, Kbuild supports the ``LLVM`` variable::
--
--	make LLVM=1
-+``LLVM=1`` expands to the above.
- 
- If your LLVM tools are not available in your PATH, you can supply their
- location using the LLVM variable with a trailing slash::
- 
- 	make LLVM=/path/to/llvm/
- 
--which will use ``/path/to/llvm/clang``, ``/path/to/llvm/ld.lld``, etc.
-+which will use ``/path/to/llvm/clang``, ``/path/to/llvm/ld.lld``, etc. The
-+following may also be used::
-+
-+	PATH=/path/to/llvm:$PATH make LLVM=1
- 
- If your LLVM tools have a version suffix and you want to test with that
- explicit version rather than the unsuffixed executables like ``LLVM=1``, you
-@@ -78,31 +66,59 @@ can pass the suffix using the ``LLVM`` variable::
- 
- which will use ``clang-14``, ``ld.lld-14``, etc.
- 
-+To support combinations of out of tree paths with version suffixes, we
-+recommend::
-+
-+	PATH=/path/to/llvm/:$PATH make LLVM=-14
-+
- ``LLVM=0`` is not the same as omitting ``LLVM`` altogether, it will behave like
--``LLVM=1``. If you only wish to use certain LLVM utilities, use their respective
--make variables.
-+``LLVM=1``. If you only wish to use certain LLVM utilities, use their
-+respective make variables.
- 
--The integrated assembler is enabled by default. You can pass ``LLVM_IAS=0`` to
--disable it.
-+The same value used for ``LLVM=`` should be set for each invocation of ``make``
-+if configuring and building via distinct commands. ``LLVM=`` should also be set
-+as an environment variable when running scripts that will eventually run
-+``make``.
- 
--Omitting CROSS_COMPILE
------------------------
-+Cross Compiling
-+---------------
-+
-+A single Clang compiler binary (and corresponding LLVM utilities) will
-+typically contain all supported back ends, which can help simplify cross
-+compiling especially when ``LLVM=1`` is used. If you use only LLVM tools,
-+``CROSS_COMPILE`` or target-triple-prefixes become unnecessary. Example::
-+
-+	make LLVM=1 ARCH=arm64
- 
--As explained above, ``CROSS_COMPILE`` is used to set ``--target=<triple>``.
-+As an example of mixing LLVM and GNU utilities, for a target like ``ARCH=s390``
-+which does not yet have ``ld.lld`` or ``llvm-objcopy`` support, you could
-+invoke ``make`` via::
- 
--If ``CROSS_COMPILE`` is not specified, the ``--target=<triple>`` is inferred
--from ``ARCH``.
-+	make LLVM=1 ARCH=s390 LD=s390x-linux-gnu-ld.bfd \
-+	  OBJCOPY=s390x-linux-gnu-objcopy
- 
--That means if you use only LLVM tools, ``CROSS_COMPILE`` becomes unnecessary.
-+This example will invoke ``s390x-linux-gnu-ld.bfd`` as the linker and
-+``s390x-linux-gnu-objcopy``, so ensure those are reachable in your ``$PATH``.
-+
-+``CROSS_COMPILE`` is not used to prefix the Clang compiler binary (or
-+corresponding LLVM utilities) as is the case for GNU utilities when ``LLVM=1``
-+is not set.
-+
-+The LLVM_IAS= argument
-+----------------------
- 
--For example, to cross-compile the arm64 kernel::
-+Clang can assemble assembler code. You can pass ``LLVM_IAS=0`` to disable this
-+behavior and have Clang invoke the corresponding non-integrated assembler
-+instead. Example::
- 
--	make ARCH=arm64 LLVM=1
-+	make LLVM=1 LLVM_IAS=0
- 
--If ``LLVM_IAS=0`` is specified, ``CROSS_COMPILE`` is also used to derive
--``--prefix=<path>`` to search for the GNU assembler and linker. ::
-+``CROSS_COMPILE`` is necessary when cross compiling and ``LLVM_IAS=0``
-+is used in order to set ``--prefix=`` for the compiler to find the
-+corresponding non-integrated assembler (typically, you don't want to use the
-+system assembler when targeting another architecture). Example::
- 
--	make ARCH=arm64 LLVM=1 LLVM_IAS=0 CROSS_COMPILE=aarch64-linux-gnu-
-+	make LLVM=1 ARCH=arm LLVM_IAS=0 CROSS_COMPILE=arm-linux-gnueabi-
- 
- Supported Architectures
- -----------------------
-@@ -135,14 +151,17 @@ yet. Bug reports are always welcome at the issue tracker below!
-    * - hexagon
-      - Maintained
-      - ``LLVM=1``
-+   * - loongarch
-+     - Maintained
-+     - ``LLVM=1``
-    * - mips
-      - Maintained
-      - ``LLVM=1``
-    * - powerpc
-      - Maintained
--     - ``CC=clang``
-+     - ``LLVM=1``
-    * - riscv
--     - Maintained
-+     - Supported
-      - ``LLVM=1``
-    * - s390
-      - Maintained
-@@ -171,9 +190,11 @@ Getting Help
- Getting LLVM
- -------------
- 
--We provide prebuilt stable versions of LLVM on `kernel.org <https://kernel.org/pub/tools/llvm/>`_.
--Below are links that may be useful for building LLVM from source or procuring
--it through a distribution's package manager.
-+We provide prebuilt stable versions of LLVM on `kernel.org
-+<https://kernel.org/pub/tools/llvm/>`_. These have been optimized with profile
-+data for building Linux kernels. Below are links that may be useful for
-+building LLVM from source or procuring it through a distribution's package
-+manager.
- 
- - https://releases.llvm.org/download.html
- - https://github.com/llvm/llvm-project
+ 	return 0;
 
 ---
-base-commit: 93f5de5f648d2b1ce3540a4ac71756d4a852dc23
-change-id: 20230824-docs-c17a5de7f103
+base-commit: f9604036a3fb6149badf346994b46b03f9292db7
+change-id: 20230824-strncpy-drivers-accel-habanalabs-goya-goya-c-2a05a2202c78
 
 Best regards,
--- 
-Nick Desaulniers <ndesaulniers@google.com>
+--
+Justin Stitt <justinstitt@google.com>
 
