@@ -2,133 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B41F786B63
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 11:18:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DC68786B76
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 11:21:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240684AbjHXJRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 05:17:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41778 "EHLO
+        id S237278AbjHXJUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 05:20:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236673AbjHXJRO (ORCPT
+        with ESMTP id S240716AbjHXJUa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 05:17:14 -0400
-Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBF2B198A;
-        Thu, 24 Aug 2023 02:17:11 -0700 (PDT)
-Received: from wsk (85-222-111-42.dynamic.chello.pl [85.222.111.42])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        Thu, 24 Aug 2023 05:20:30 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FDB219A0
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 02:19:59 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        (Authenticated sender: lukma@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id 6313186537;
-        Thu, 24 Aug 2023 11:17:09 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1692868629;
-        bh=MjCYFkH+kWFgdHXjUV3IPSIdSKo1123l7R50xgXphJk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=wH/SP0401DvS3UXyFIV0UCPuBuH5eED4hHKap1Qf2v0YH/Ry2kUwM0CxDw2iobSTM
-         ArkNkFrY4HQYakEDJLUqVk7nyWwE1NUz/Nk8b8S1+YFPUM7VjOXg7TYSRUrS4baj82
-         bV/3heEAwPuj27tcLmTbrLkKAWqbtzDS3Q3MN6a4MvCw7qHwD0Z6PvJ0np25pDRaCO
-         ycvYw4um1vD2NuHXOSQBrZjx/rUVL/fV3Wh8GQ3E6c712XlJTNjP+Yz7TJznMx0qVQ
-         tYP1TQUhiO9Ykgu6/gQ9+mesr2O4RCesf7jrofCO8UM/iLtCp6VwfE5QQYr3iAugtm
-         fZgTdMLVcUkFQ==
-Date:   Thu, 24 Aug 2023 11:17:02 +0200
-From:   Lukasz Majewski <lukma@denx.de>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>
-Cc:     Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARM: dts: at91: ksz9477_evb: Add tx-internal-delay-ps
- property for port5
-Message-ID: <20230824111702.1a034801@wsk>
-In-Reply-To: <20230727080656.3828397-1-lukma@denx.de>
-References: <20230727080656.3828397-1-lukma@denx.de>
-Organization: denx.de
-X-Mailer: Claws Mail 3.19.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 665C522D43;
+        Thu, 24 Aug 2023 09:19:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1692868797; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/RGP9xeav/e3xVesZmYKSwuX1TjnqIVlXGjw9+5yUF0=;
+        b=1JIHW9nydfiEN87mKuDeM/2onAxv3w6VzwVB4kz0YQtV9FLdnj+zEWgQ0TWOhpXuaxzgaw
+        dtDGQdcopESva3h/gaUGp1hYDD1o5uNxpR6/c9jHgIz/KO0rNzJ+28Ei4nSuaDQqujG6u1
+        81YFi0XVK6lPjGJ3enJ/7ldLr+XtXxg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1692868797;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/RGP9xeav/e3xVesZmYKSwuX1TjnqIVlXGjw9+5yUF0=;
+        b=2eEqiSkDdoa256MB0dclCNlzp37VVhXaRkQg8BqhmwDYcl3CxBgg4mY9r656Gy/I1sofCh
+        1j3srpdHXZzAG7CQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 52038132F2;
+        Thu, 24 Aug 2023 09:19:57 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 9kP5E70g52QLEgAAMHmgww
+        (envelope-from <jack@suse.cz>); Thu, 24 Aug 2023 09:19:57 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id CCF15A0774; Thu, 24 Aug 2023 11:19:56 +0200 (CEST)
+Date:   Thu, 24 Aug 2023 11:19:56 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Dennis Zhou <dennis@kernel.org>
+Cc:     Jan Kara <jack@suse.cz>, Mateusz Guzik <mjguzik@gmail.com>,
+        linux-kernel@vger.kernel.org, tj@kernel.org, cl@linux.com,
+        akpm@linux-foundation.org, shakeelb@google.com, linux-mm@kvack.org
+Subject: Re: [PATCH 0/2] execve scalability issues, part 1
+Message-ID: <20230824091956.drn6ucixj4qbxwa7@quack3>
+References: <20230821202829.2163744-1-mjguzik@gmail.com>
+ <ZOPSEJTzrow8YFix@snowbird>
+ <20230821213951.bx3yyqh7omdvpyae@f>
+ <CAGudoHHJECp2-DfSr5hudooAdV6mivvSO+4mC9kwUrWnSiob5g@mail.gmail.com>
+ <20230822095154.7cr5ofogw552z3jk@quack3>
+ <CAGudoHHe5nzRTuj4G1fphD+JJ02TE5BnHEDwFm=-W6DoEj2qVQ@mail.gmail.com>
+ <20230823094915.ggv3spzevgyoov6i@quack3>
+ <ZOZrzG/MgL8vw+lI@snowbird>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/vzI0HJKtdWEXGL/5zVg7OHh";
- protocol="application/pgp-signature"; micalg=pgp-sha512
-X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
-X-Virus-Status: Clean
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZOZrzG/MgL8vw+lI@snowbird>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/vzI0HJKtdWEXGL/5zVg7OHh
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed 23-08-23 13:27:56, Dennis Zhou wrote:
+> On Wed, Aug 23, 2023 at 11:49:15AM +0200, Jan Kara wrote:
+> > On Tue 22-08-23 16:24:56, Mateusz Guzik wrote:
+> > > On 8/22/23, Jan Kara <jack@suse.cz> wrote:
+> > > > On Tue 22-08-23 00:29:49, Mateusz Guzik wrote:
+> > > >> On 8/21/23, Mateusz Guzik <mjguzik@gmail.com> wrote:
+> > > >> > True Fix(tm) is a longer story.
+> > > >> >
+> > > >> > Maybe let's sort out this patchset first, whichever way. :)
+> > > >> >
+> > > >>
+> > > >> So I found the discussion around the original patch with a perf
+> > > >> regression report.
+> > > >>
+> > > >> https://lore.kernel.org/linux-mm/20230608111408.s2minsenlcjow7q3@quack3/
+> > > >>
+> > > >> The reporter suggests dodging the problem by only allocating per-cpu
+> > > >> counters when the process is going multithreaded. Given that there is
+> > > >> still plenty of forever single-threaded procs out there I think that's
+> > > >> does sound like a great plan regardless of what happens with this
+> > > >> patchset.
+> > > >>
+> > > >> Almost all access is already done using dedicated routines, so this
+> > > >> should be an afternoon churn to sort out, unless I missed a
+> > > >> showstopper. (maybe there is no good place to stuff a flag/whatever
+> > > >> other indicator about the state of counters?)
+> > > >>
+> > > >> That said I'll look into it some time this or next week.
+> > > >
+> > > > Good, just let me know how it went, I also wanted to start looking into
+> > > > this to come up with some concrete patches :). What I had in mind was that
+> > > > we could use 'counters == NULL' as an indication that the counter is still
+> > > > in 'single counter mode'.
+> > > >
+> > > 
+> > > In the current state there are only pointers to counters in mm_struct
+> > > and there is no storage for them in task_struct. So I don't think
+> > > merely null-checking the per-cpu stuff is going to cut it -- where
+> > > should the single-threaded counters land?
+> > 
+> > I think you misunderstood. What I wanted to do it to provide a new flavor
+> > of percpu_counter (sharing most of code and definitions) which would have
+> > an option to start as simple counter (indicated by pcc->counters == NULL
+> > and using pcc->count for counting) and then be upgraded by a call to real
+> > percpu thing. Because I think such counters would be useful also on other
+> > occasions than as rss counters.
+> > 
+> 
+> Kent wrote something similar and sent it out last year [1]. However, the
+> case slightly differs from what we'd want here, 1 -> 2 threads becomes
+> percpu vs update rate which a single thread might be able to trigger?
 
-Dear Community,
+Thanks for the pointer but that version of counters is not really suitable
+here as is (but we could factor out some common bits if that work is
+happening). 1 thread can easily do 10000 RSS updates per second.
 
-> Without this change the KSZ9477 Evaluation board's Linux (v6.5-rc1)
-> shows following device warning:
->=20
-> 'ksz-switch spi1.0: Port 5 interpreting RGMII delay settings based on
-> "phy-mode" property, please update device tree to specify
-> "rx-internal-delay-ps" and "tx-internal-delay-ps"'
->=20
-> This is not critical, as KSZ driver by itself assigns default value of
-> tx delay to 2000 ps (as 'rgmii-txid' is set as PHY mode).
->=20
-> However, to avoid extra warnings in logs - the missing
-> 'tx-internal-delay-ps' has been specified with the default value of
-> 2000 ps.
->=20
+> [1] https://lore.kernel.org/lkml/20230501165450.15352-8-surenb@google.com/
 
-Gentle ping on this patch.
+								Honza
 
-Claudiu, could you pick it as well?
-
-> Signed-off-by: Lukasz Majewski <lukma@denx.de>
-> ---
->  arch/arm/boot/dts/microchip/at91-sama5d3_ksz9477_evb.dts | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/arch/arm/boot/dts/microchip/at91-sama5d3_ksz9477_evb.dts
-> b/arch/arm/boot/dts/microchip/at91-sama5d3_ksz9477_evb.dts index
-> 99cd6d15998b..b66570080894 100644 ---
-> a/arch/arm/boot/dts/microchip/at91-sama5d3_ksz9477_evb.dts +++
-> b/arch/arm/boot/dts/microchip/at91-sama5d3_ksz9477_evb.dts @@ -152,6
-> +152,7 @@ label =3D "cpu";
->  				ethernet =3D <&macb0>;
->  				phy-mode =3D "rgmii-txid";
-> +				tx-internal-delay-ps =3D <2000>;
-> =20
->  				fixed-link {
->  					speed =3D <1000>;
-
-Best regards,
-
-Lukasz Majewski
-
---
-
-DENX Software Engineering GmbH,      Managing Director: Erika Unter
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
-
---Sig_/vzI0HJKtdWEXGL/5zVg7OHh
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAmTnIA4ACgkQAR8vZIA0
-zr2P5AgAoIPPnd/GsYkKjJRm0/8xk7A3nzmKSkn+olPPZMFBzLZP9EWnvI+3eYFw
-QzxvJPJyIt4bRcgtj5Ei/r4MrtiD/BU3g92sT4Q1uK4pIpAuLJvGI0b658k9zpA2
-FWK5KD035vX1QSn45CTq9/vlFGqBGSm9OKM30FtuayR/tZwxSdH58tqMwVCzc30c
-Jjy0DRS9s0YLTIGVyStrYkm5Tz0AMxhdO3tbm0nIi48/O8BQIQgxlRiNSbpbogvf
-lmvbO4sh+7ZjVvbjLoB73SRxAj4Fd4RXdqBMf+Z14O7kEknvCPDnEf8zQoyTpUsw
-ST7GuHD5WyPAuiQ55Ol4/VgCZMhSLA==
-=L7OX
------END PGP SIGNATURE-----
-
---Sig_/vzI0HJKtdWEXGL/5zVg7OHh--
+> > > Bonus problem, non-current can modify these counters and this needs to
+> > > be safe against current playing with them at the same time. (and it
+> > > would be a shame to require current to use atomic on them)
+> > 
+> > Hum, I didn't realize that. Indeed I can see that e.g. khugepaged can be
+> > modifying the counters for other processes. Thanks for pointing this out.
+> > 
+> > > That said, my initial proposal adds a union:
+> > > diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+> > > index 5e74ce4a28cd..ea70f0c08286 100644
+> > > --- a/include/linux/mm_types.h
+> > > +++ b/include/linux/mm_types.h
+> > > @@ -737,7 +737,11 @@ struct mm_struct {
+> > > 
+> > >                 unsigned long saved_auxv[AT_VECTOR_SIZE]; /* for
+> > > /proc/PID/auxv */
+> > > 
+> > > -               struct percpu_counter rss_stat[NR_MM_COUNTERS];
+> > > +               union {
+> > > +                       struct percpu_counter rss_stat[NR_MM_COUNTERS];
+> > > +                       u64 *rss_stat_single;
+> > > +               };
+> > > +               bool    magic_flag_stuffed_elsewhere;
+> > > 
+> > >                 struct linux_binfmt *binfmt;
+> > > 
+> > > 
+> > > Then for single-threaded case an area is allocated for NR_MM_COUNTERS
+> > > countes * 2 -- first set updated without any synchro by current
+> > > thread. Second set only to be modified by others and protected with
+> > > mm->arg_lock. The lock protects remote access to the union to begin
+> > > with.
+> > 
+> > arg_lock seems a bit like a hack. How is it related to rss_stat? The scheme
+> > with two counters is clever but I'm not 100% convinced the complexity is
+> > really worth it. I'm not sure the overhead of always using an atomic
+> > counter would really be measurable as atomic counter ops in local CPU cache
+> > tend to be cheap. Did you try to measure the difference?
+> > 
+> > If the second counter proves to be worth it, we could make just that one
+> > atomic to avoid the need for abusing some spinlock.
+> > 
+> > > Transition to per-CPU operation sets the magic flag (there is plenty
+> > > of spare space in mm_struct, I'll find a good home for it without
+> > > growing the struct). It would be a one-way street -- a process which
+> > > gets a bunch of threads and goes back to one stays with per-CPU.
+> > 
+> > Agreed with switching to be a one-way street.
+> > 
+> > > Then you get the true value of something by adding both counters.
+> > > 
+> > > arg_lock is sparingly used, so remote ops are not expected to contend
+> > > with anything. In fact their cost is going to go down since percpu
+> > > summation takes a spinlock which also disables interrupts.
+> > > 
+> > > Local ops should be about the same in cost as they are right now.
+> > > 
+> > > I might have missed some detail in the above description, but I think
+> > > the approach is decent.
+> > 
+> > 								Honza
+> > -- 
+> > Jan Kara <jack@suse.com>
+> > SUSE Labs, CR
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
