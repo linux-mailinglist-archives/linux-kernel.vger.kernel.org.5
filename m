@@ -2,50 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B20A7873BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 17:09:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D53B7873C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 17:13:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242129AbjHXPJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 11:09:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34256 "EHLO
+        id S242126AbjHXPMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 11:12:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242154AbjHXPJA (ORCPT
+        with ESMTP id S242104AbjHXPMN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 11:09:00 -0400
-Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 030941BC5
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 08:08:56 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:3c6b:f703:5ab5:f36d])
-        by laurent.telenet-ops.be with bizsmtp
-        id dT8t2A00G01sfPQ01T8th6; Thu, 24 Aug 2023 17:08:53 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtp (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qZBwx-001dhY-L3;
-        Thu, 24 Aug 2023 17:08:53 +0200
-Received: from geert by rox.of.borg with local (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qZBx7-000VzG-AC;
-        Thu, 24 Aug 2023 17:08:53 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Javier Martinez Canillas <javierm@redhat.com>,
+        Thu, 24 Aug 2023 11:12:13 -0400
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8A2EC7
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 08:12:11 -0700 (PDT)
+Received: by mail-qv1-xf34.google.com with SMTP id 6a1803df08f44-649a653479bso35792126d6.0
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 08:12:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fooishbar-org.20221208.gappssmtp.com; s=20221208; t=1692889931; x=1693494731;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=gKObriympOeNKMv/q1LmfMAqJXRFcpvTzk+LBnFI9Do=;
+        b=L6Rav7TEl/cmVgeGDFTk/95bD6/oGcwRBoB33dJQQM5ZdUY4TvFciWG32PBby6zop0
+         1TykTUgvvvT8gOENRI9wb3DHk+QJOLnqhNlk8VuFlpUdjjF5xmyl78c6tZ+69MRWmBs8
+         sNtUaHNvfmqb6CAx2HQcugLxDRLES063/AMyFIdiEFcSwIcF+Sxb7iZE1R8w40iWuDAk
+         UkoxFsCYGEzWbUd1wbH/Fi7D4jOLFyuvYSKvWaSTy91DzJxsNanUGcgMmO0QOhMz9UA2
+         ruAhVZdCvkLB4jpjzlRianrnPBGQKfVnYf0EZHmqi1f0TIcKxliMAoM9SnmjewS4OdIC
+         ITIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692889931; x=1693494731;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gKObriympOeNKMv/q1LmfMAqJXRFcpvTzk+LBnFI9Do=;
+        b=TsfQSaS7X0Ecx9UgB0/bK97a8kJSTIn7s71BOumPUjRWGGUQ/T+byXsLX6PejcUx/i
+         0wf9ZTOMWh/t3qG+5hLBG6CcwJt7y/qE5oAscBc9VoKOI6dj13NmtphBPCXLjiU0KPwG
+         U1zEPmuYhHJWl0ziIyUn35qfYr4tWVgtur90c31ApDtMJSDgSNasBSdt2J3mvadQbnAh
+         tFwETQJt02gMikZaBJfrj5fUYiqoO5YriszVY5YkOZ2sOqh9JFc6PPSy5Twe/KlKZ/7X
+         HLToRRtGzw0igqd3ewMM6DNwzaAbsIxn5qNiT3Wh2yyza1ATaUajQz9bL2rt2F6pbaMx
+         1wKQ==
+X-Gm-Message-State: AOJu0YyudDmqD+Csac38nNsSVA7lqS6TizNcpVqzb5JTHuxP3JKjZ7ye
+        a8IYxvhqTY1+zWAo/CMKcN5VCvX1bjhkheGmKUegYQ==
+X-Google-Smtp-Source: AGHT+IGzc1eptkc6jGGfl4yF9wMbyUJ8hqtRlaCPtnoUpteoJ6QvxFp8v8A85gxCC0FxqtNA7YTh3ZzUKQedrXTvQxU=
+X-Received: by 2002:a05:6214:5d0c:b0:642:d729:35ec with SMTP id
+ me12-20020a0562145d0c00b00642d72935ecmr15520155qvb.51.1692889930894; Thu, 24
+ Aug 2023 08:12:10 -0700 (PDT)
+MIME-Version: 1.0
+References: <cover.1692888745.git.geert@linux-m68k.org> <50762fd1694d3b5f6df1bdfa482564adb2ee7f36.1692888745.git.geert@linux-m68k.org>
+In-Reply-To: <50762fd1694d3b5f6df1bdfa482564adb2ee7f36.1692888745.git.geert@linux-m68k.org>
+From:   Daniel Stone <daniel@fooishbar.org>
+Date:   Thu, 24 Aug 2023 16:11:59 +0100
+Message-ID: <CAPj87rNr7PTcquaz+VzwmXh0mSWSSK25_Fa6uxC2VOfj=wMmcQ@mail.gmail.com>
+Subject: Re: [PATCH v2 5/8] drm/client: Convert drm_client_buffer_addfb() to drm_mode_addfb2()
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Javier Martinez Canillas <javierm@redhat.com>,
         Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         Maxime Ripard <mripard@kernel.org>,
         Thomas Zimmermann <tzimmermann@suse.de>,
         David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2 8/8] drm/ssd130x: Switch preferred_bpp/depth to 1
-Date:   Thu, 24 Aug 2023 17:08:46 +0200
-Message-Id: <9dbc3b5124c69514c123f9b880fdd372928e69df.1692888745.git.geert@linux-m68k.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1692888745.git.geert@linux-m68k.org>
-References: <cover.1692888745.git.geert@linux-m68k.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,42 +71,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The native display format is R1.  Hence change the preferred_depth and
-preferred_bpp to 1, to avoid the overhead of using XR24 and the
-associated conversions when using fbdev emulation and its text console.
+Hi Geert,
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
-Tested-by: Javier Martinez Canillas <javierm@redhat.com>
----
-v2:
-  - Add Reviewed-by, Tested-by.
----
- drivers/gpu/drm/solomon/ssd130x.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On Thu, 24 Aug 2023 at 16:09, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>         struct drm_client_dev *client = buffer->client;
+> -       struct drm_mode_fb_cmd fb_req = { };
+> -       const struct drm_format_info *info;
+> +       struct drm_mode_fb_cmd2 fb_req = { };
+>         int ret;
+>
+> -       info = drm_format_info(format);
+> -       fb_req.bpp = drm_format_info_bpp(info, 0);
+> -       fb_req.depth = info->depth;
+>         fb_req.width = width;
+>         fb_req.height = height;
+> -       fb_req.handle = handle;
+> -       fb_req.pitch = buffer->pitch;
+> +       fb_req.pixel_format = format;
+> +       fb_req.handles[0] = handle;
+> +       fb_req.pitches[0] = buffer->pitch;
+>
+> -       ret = drm_mode_addfb(client->dev, &fb_req, client->file);
+> +       ret = drm_mode_addfb2(client->dev, &fb_req, client->file);
+>         if (ret)
+>                 return ret;
 
-diff --git a/drivers/gpu/drm/solomon/ssd130x.c b/drivers/gpu/drm/solomon/ssd130x.c
-index 18007cb4f3de5aa1..0d2b36ba40113fa3 100644
---- a/drivers/gpu/drm/solomon/ssd130x.c
-+++ b/drivers/gpu/drm/solomon/ssd130x.c
-@@ -1049,7 +1049,7 @@ static int ssd130x_init_modeset(struct ssd130x_device *ssd130x)
- 	drm->mode_config.max_width = max_width;
- 	drm->mode_config.min_height = mode->vdisplay;
- 	drm->mode_config.max_height = max_height;
--	drm->mode_config.preferred_depth = 24;
-+	drm->mode_config.preferred_depth = 1;
- 	drm->mode_config.funcs = &ssd130x_mode_config_funcs;
- 
- 	/* Primary plane */
-@@ -1179,7 +1179,7 @@ struct ssd130x_device *ssd130x_probe(struct device *dev, struct regmap *regmap)
- 	if (ret)
- 		return ERR_PTR(dev_err_probe(dev, ret, "DRM device register failed\n"));
- 
--	drm_fbdev_generic_setup(drm, 32);
-+	drm_fbdev_generic_setup(drm, 1);
- 
- 	return ssd130x;
- }
--- 
-2.34.1
+This should explicitly set the LINEAR modifier (and the modifier flag)
+if the driver supports modifiers.
 
+Cheers,
+Daniel
