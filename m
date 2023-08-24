@@ -2,103 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EA9E787039
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 15:28:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA74F78703E
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 15:29:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241205AbjHXN2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 09:28:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59712 "EHLO
+        id S241219AbjHXN2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 09:28:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241355AbjHXN2P (ORCPT
+        with ESMTP id S241193AbjHXN2S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 09:28:15 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41649E5E;
+        Thu, 24 Aug 2023 09:28:18 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B3FD19A6
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 06:28:15 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-99c1c66876aso892371066b.2
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 06:28:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692883694; x=1693488494;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ImqDglmsX4gE1rDreji0Q3e+eQbu+XRHLE9I8QA79cw=;
+        b=mB3eAuFUc3gfns5iLxgrvJNpK8WpWiXOwHPNaWwHKWEAsP5CFakTp3MMt6SPSDiFKc
+         BWdQ9Sepw5gCpmNRbls3cS9er71eC3HRxv2JbohEWyGeaC35bTFkwHvUL7NbyvIOmPkJ
+         upOXUBN89LMA9XnQ1B8sD39Q0l9Gh+xscAoKTiOiqyzC296kH2ouSb73YOhFNCkhupI+
+         zG2EutZg1VQiZPEP39rsqLwbtbvwxJzU6xngERxhj+AR+DnqyHQ0h8veSaKoHLzIXpI9
+         hE62zOswe54QzhWkjWIgYtkVxkYvo+kHAzeizAXqojynkfEWLTn8VTtTRW0eQcxbFsWL
+         tPUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692883694; x=1693488494;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ImqDglmsX4gE1rDreji0Q3e+eQbu+XRHLE9I8QA79cw=;
+        b=PiIgvjg0FC1H+mrix4LBCRKYpPUyD2x+k5WIgc1ZajAcDM0XxtRA06//c7Mozks09J
+         G6j/IJCdtxOQJ9Sxpijc48mbsxBzRDkkRjjBXJIwA/5FWMrgfzEcgv55g6tXZV28YWlo
+         oVVZidXpPEMUCzZ8tdSzvBoy++xiQqZcipK7FfdNvW7bFMZbAssrt20Tma/bgMRn2E75
+         IbvvmpygTt7y4a3Pv9huCQ/pbZvuRHvhRvXl+kctd/b89riosipBWv4Qh2qix0DMOoik
+         lgaTz0SXgFEfVehnKxZUHsmFbaXICPXTuqnFMo2ewkkNXorTVhPnBdV12vwQWEt+pwlA
+         t0lw==
+X-Gm-Message-State: AOJu0YwrjwokPp+weKg0/Vy1Yo05dyty6u9C9PHRfFTpxzsSTWBScpzM
+        i0egVNzef2B2le53q5CQd4L5bQ==
+X-Google-Smtp-Source: AGHT+IF16QqOoKGpP5WTK94I2qdMdh3RlXH/q4UKovGuoNtRZiY8220OFQc1NuQ95U0YzsbN7URgQQ==
+X-Received: by 2002:a17:906:3113:b0:9a1:ea01:35b1 with SMTP id 19-20020a170906311300b009a1ea0135b1mr3252321ejx.62.1692883694028;
         Thu, 24 Aug 2023 06:28:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692883694; x=1724419694;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=psEOkkGtnM49+bw9Gf/k/pN/WxjaoGc+9hfLN7vrznE=;
-  b=eiIZwo0lPvdHuvMx5GOe+bnXBXtH5QQGt1NJ+nfEEp2vT1eWrj4AgKRL
-   svJLN9SkZBbh0IBmJ/P5rqzuljuNHFE84b6PyWaZh94U96JUzUuUN3P1X
-   bb9SYzqZg/jtN7e17YzlQN2tl264u0UVNmXPJmz5oXxsmnSBIZQkJ0k78
-   +Evun4wAd/seYa6BDJY7R0iAxKJc+vDtyP9HquP9BhgkZWfTfzlkHiCDD
-   iLUoQFMkeZT6SSB/C2vDRabZBJs3EVvDeQXE4I7pJg0KBpXy8YZDJiNlr
-   AP4foZTW5xLmOGh8ePwH7qFa12qzOL3sfsQCQeIBbEz/b7gHWtCl2nH5k
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="374402855"
-X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
-   d="scan'208";a="374402855"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 06:28:13 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="807127211"
-X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
-   d="scan'208";a="807127211"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga004.fm.intel.com with ESMTP; 24 Aug 2023 06:28:08 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@intel.com>)
-        id 1qZANZ-005Igm-0x;
-        Thu, 24 Aug 2023 16:28:05 +0300
-Date:   Thu, 24 Aug 2023 16:28:05 +0300
-From:   Andy Shevchenko <andriy.shevchenko@intel.com>
-To:     Martin =?utf-8?B?WmHFpW92acSN?= <m.zatovic1@gmail.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, linus.walleij@linaro.org,
-        quic_jhugo@quicinc.com, nipun.gupta@amd.com, tzimmermann@suse.de,
-        ogabbay@kernel.org, mathieu.poirier@linaro.org, axboe@kernel.dk,
-        damien.lemoal@opensource.wdc.com, linux@zary.sk, arnd@arndb.de,
-        yangyicong@hisilicon.com, benjamin.tissoires@redhat.com,
-        masahiroy@kernel.org, jacek.lawrynowicz@linux.intel.com,
-        geert+renesas@glider.be, devicetree@vger.kernel.org
-Subject: Re: [PATCHv5 2/4] wiegand: add Wiegand bus driver
-Message-ID: <ZOda5RY/2yW6Y63Q@smile.fi.intel.com>
-References: <20230824111015.57765-1-m.zatovic1@gmail.com>
- <20230824111015.57765-3-m.zatovic1@gmail.com>
- <2023082420-quaking-barley-47b4@gregkh>
- <ZOdSudrhg/9u3a9N@fedora>
+Received: from [192.168.0.22] ([77.252.47.198])
+        by smtp.gmail.com with ESMTPSA id t23-20020a170906269700b00992b50fbbe9sm11045915ejc.90.2023.08.24.06.28.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Aug 2023 06:28:13 -0700 (PDT)
+Message-ID: <6fea2e1d-426c-b3dd-389f-761312abfb2a@linaro.org>
+Date:   Thu, 24 Aug 2023 15:28:12 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 2/2] power: supply: bq24190_charger: Export current
+ regulator
+Content-Language: en-US
+To:     Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
+Cc:     Alexandre Courbot <acourbot@nvidia.com>,
+        azkali <a.ffcc7@gmail.com>, CTCaer <ctcaer@gmail.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230824112741.201353-1-linkmauve@linkmauve.fr>
+ <20230824112741.201353-3-linkmauve@linkmauve.fr>
+ <f2f033a6-f552-b86f-250b-08fb298c9bb1@linaro.org> <ZOdU1RO0AxKmz0PY@desktop>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <ZOdU1RO0AxKmz0PY@desktop>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZOdSudrhg/9u3a9N@fedora>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 02:53:13PM +0200, Martin Zaťovič wrote:
-> On Thu, Aug 24, 2023 at 01:40:35PM +0200, Greg KH wrote:
-> > On Thu, Aug 24, 2023 at 01:10:13PM +0200, Martin Zaťovič wrote:
-
-...
-
-> > > +static inline void wiegand_controller_put(void *ptr)
-> > 
-> > Why is this a void *?  It should be "struct wiegand_controller *"
+On 24/08/2023 15:02, Emmanuel Gil Peyrot wrote:
+> On Thu, Aug 24, 2023 at 02:41:41PM +0200, Krzysztof Kozlowski wrote:
+> […]
+>>>
+>>> Signed-off-by: Alexandre Courbot <acourbot@nvidia.com>
+>>
+>> Missing SoB.
 > 
-> It is a void* because it is being passed to devm_add_action_or_reset()
-> and this function only accepts a pointer to a function that accepts a void*
-> parameter. I am not sure if there is a way around it.
+> Do I need to add myself even if I didn’t change anything over what the
+> original author wrote?
 
-I just replied with a deeper review with the answer to this.
+Yes.
 
-> > Please never use void * if at all possible.
-
-Correct. We better to have a type checking when possible. Esp. for the exported
-functions.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+Best regards,
+Krzysztof
 
