@@ -2,175 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE9D4787400
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 17:23:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 870F2787404
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 17:24:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242105AbjHXPW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 11:22:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54088 "EHLO
+        id S241393AbjHXPX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 11:23:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241368AbjHXPWe (ORCPT
+        with ESMTP id S242175AbjHXPX0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 11:22:34 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 874E019B0;
-        Thu, 24 Aug 2023 08:22:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692890552; x=1724426552;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=bkFBZnep0UTd78d+sQjflVI480yvbLYhzysmWqjq0Ao=;
-  b=VzRk26Cb93Tqdmg4hHdCb6kzC+CZJLkVLGcEvr63a9+ycsrWuY92dWAG
-   UcVuqb4REj3Z/akNTB9p9bgQaiOkJ376BIQvcNdh+bdtsCoE0564vg1UX
-   Zuf9nNJ8k7N0LShdxmWsD8NQ7Bvg8X661TRzX8XEqHCUauYnyvztwYL3j
-   eV3jxrtZcmf7pigMDko7NujrjrXGkvndiBlhkpbUXY/N/3N6rlFBNdU9X
-   n4v+GAmvYucqKOwEm2Sul52m38eXKqAUfBKki3ywAdeb1EaYLbmOc3K5w
-   jNYKuxwP5Gthv50vqMYI64TUzxvPptqAMKyzKKCSMQTL0anVla8nD+ZNN
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="405470699"
-X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
-   d="scan'208";a="405470699"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 08:22:30 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="983751853"
-X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
-   d="scan'208";a="983751853"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmsmga006.fm.intel.com with ESMTP; 24 Aug 2023 08:22:29 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 24 Aug 2023 08:22:28 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Thu, 24 Aug 2023 08:22:28 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.175)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Thu, 24 Aug 2023 08:22:28 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=L5r58KiaKQBJCAlI7EB+2slzFAvDWkAAGAnrc1jHekc7gcHul1m/wM/qzpM8FRmrYBXE3AFwXdgaVALVtS9EcgUfH8TIGuOAS3LDverBaO1+pSPTkC97Vk7Hs54i8G7ZC+dz8x+1kYBa+14lmiG6iITWXyGMal19BypiI+JEfEveweTZaQRnELcaqjvumrNLenk8mUDWAzjdse1g7NgIkay796ImIJt79ycOm3MNBgdeJGYmPIMoDkc0eOjXz+T4i1+TCnamJxBIBeIbB+PnrqQfe7VmR3tyox6K6zLu8J0mbpzjAfUZeZ0pjmNDbSMmTqAoO1ukiec6YnUm0CQRmw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=bkFBZnep0UTd78d+sQjflVI480yvbLYhzysmWqjq0Ao=;
- b=c1LMd26WwRx9TTV+YgdqdcDZcSSYGtROoU94uzfKocRLYISbb+WJpbbErsbR3AAHBB0BMUBRcutGvTg9zJnqLqjPI9p3wETzOO/ULdMhRKYkeAj/HVcq10LZ+0PcJi47PU/5UKbX58migAXw0coEekOzqY58dLuqKAFiC5C5MP9HA5EyfGo5FckYLerr/Lx+lL+p+4ZxhrLYPG2QD+arQsMfaN2ZHLVfcaXkNFlJKqP5xtx+AqRiP22UNJRQm1pt7y5Vtz4gBcmCG9DZaIHw4uPrAeuAo1G7t7qLCRNmT3qEiz1VyAhM+3eAPPdegy67NCqUBKXHyGCXI9pq4oOLGg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from MN0PR11MB5963.namprd11.prod.outlook.com (2603:10b6:208:372::10)
- by DS0PR11MB7632.namprd11.prod.outlook.com (2603:10b6:8:14f::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.27; Thu, 24 Aug
- 2023 15:22:26 +0000
-Received: from MN0PR11MB5963.namprd11.prod.outlook.com
- ([fe80::abd2:f781:1433:259]) by MN0PR11MB5963.namprd11.prod.outlook.com
- ([fe80::abd2:f781:1433:259%3]) with mapi id 15.20.6699.027; Thu, 24 Aug 2023
- 15:22:26 +0000
-From:   "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-tip-commits@vger.kernel.org" 
-        <linux-tip-commits@vger.kernel.org>
-CC:     "tglx@linutronix.de" <tglx@linutronix.de>,
-        "Mehta, Sohil" <sohil.mehta@intel.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "Wang, Lei4" <lei4.wang@intel.com>,
-        "Pan, Lijun" <lijun.pan@intel.com>,
-        "x86@kernel.org" <x86@kernel.org>
-Subject: Re: [tip: x86/urgent] x86/fpu: Invalidate FPU state correctly on
- exec()
-Thread-Topic: [tip: x86/urgent] x86/fpu: Invalidate FPU state correctly on
- exec()
-Thread-Index: AQHZ1msY6s2b2oIqDkeG/rIOCMuRSq/5kLuA
-Date:   Thu, 24 Aug 2023 15:22:26 +0000
-Message-ID: <f2fdba6ecda7a6b1e2ea048a3863fb302cc0f8d1.camel@intel.com>
-References: <20230818170305.502891-1-rick.p.edgecombe@intel.com>
-         <169286827548.27769.3257744272966160176.tip-bot2@tip-bot2>
-In-Reply-To: <169286827548.27769.3257744272966160176.tip-bot2@tip-bot2>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.44.4-0ubuntu2 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MN0PR11MB5963:EE_|DS0PR11MB7632:EE_
-x-ms-office365-filtering-correlation-id: eed721b4-25bb-43d5-a612-08dba4b5ec8a
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: HZsF3dk26MsSJEdUcHdv4IxtttKvwoMiqmjT0JwCSatI1LBhQ+CeiwS1Tfs4SA8lhF4xvA2F3+4IgKWotmgmmhKZCBEDY8qS0fhIqtFiWkS+mKlJVdlsKzCopTUDudJK+vYkGSRvJsy4fxW/OJr0g+yBzG60oc0k9hPB625ow7PNyzPMqXFLHKMyVeKJWgEltyyY53vo1fzLl2znv1KwQNpscCr4ER1+7BSEFnyEamx9GTwk7Mc0z2nmThO336d0cHuS4kqMvls1/J0sWAZwQWkKSYYqPUndkK8wCnpVSuFjdL9CuOuhnYcYQYBHKj4VqUhbW+guFJdHDGjxyE/+Slz1cmdckal2V9ux7UiOO0sP+c8KHspHyhg9jsklVWsIESgeipz+mihCEwdYegNRF2e7H29AwxUU66qP+6fabeRe/iA1OVCLr2dp+U1i4OngWSObbRGrcJSbyxv3XZ3u0E4rgM55xsn9SvrDG2r4kI9dxa2Q5hYGszkdqcbqnxFA2oKzGipAgfemBW0nAoP9uZbZEekt/yjXmK0NjLfEUD+o1NTwwTuQkMmzgkm28ZYE+9rA7TDJs0WT0obrxU1GIw2MvM0BkfHWHS5d0pl/mX7FJsHBl6fguHJ85MsZDmRq
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB5963.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(376002)(346002)(366004)(136003)(186009)(1800799009)(451199024)(2616005)(558084003)(5660300002)(8936002)(4326008)(8676002)(36756003)(26005)(71200400001)(38100700002)(38070700005)(82960400001)(122000001)(66556008)(66946007)(66476007)(64756008)(54906003)(66446008)(76116006)(316002)(91956017)(110136005)(478600001)(41300700001)(2906002)(6506007)(6512007)(86362001)(6486002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?TzZHTzlQcU83RENoZXNGRzZDTlduRkhDdDVrdm1MSXJmWTBob3NTMC9LN3Vn?=
- =?utf-8?B?a0pFN0NFVnJRYXM5TldjVkFkcTBSeUxPTUo3aFdDZ3JabDdnZXpBejZMbGJu?=
- =?utf-8?B?ZUx6N2crSm5wZ1ZKazhYeUswTUN0TlE1RTJvNjNDZ0VldmpaUWU0N0k3Yi9O?=
- =?utf-8?B?WTdETUtWeVNKQVFXams3Y2pmUjcyMXp3eVcwMTlPSWtKc1YyaHlmaHpVaFJh?=
- =?utf-8?B?S0k3MEkzb2p2QWtmMlNtclRWcWI5bnlBSDFBeUF6TnBsbEFnT21ORk12Zmln?=
- =?utf-8?B?a053Qzg2b2dyQk1yekZwaThhQjhiSEZ6UWdzMTNIUkdkZktncU5IbHJIK1Aw?=
- =?utf-8?B?TDl5VDZ0YmRhU1BHeWFUYWkwNkducmQyNCswMXdHQm8zOEVuRmhzY1VXa1hU?=
- =?utf-8?B?S3o2UUJGZStFVFRGM2R4T1RRMFFDMEYzNFo3Z01rN0htVC9zWmUxa1FZajFM?=
- =?utf-8?B?L244anpTVStCS3plRWNIa2dHVjJ1cGJUc3hwSlRNcGVhTEFhZlZ1eGJRb05E?=
- =?utf-8?B?YkFXMXNrUWRrazJpUUVON1M5dmlSWjM3L2pQd1luUzFCT2kvalBGK29Hcm80?=
- =?utf-8?B?ZmdMQjVDbGdrUm04Y2tjQ0R3TUEyajhVZVQ2Q05YNmJTU2pibXJSNlNZWm5U?=
- =?utf-8?B?ek5QN0dJcDZzSDFadlMzRVJocW5VNjlvalk1ajdnUmhVbFF0a3lWdmVKcFdX?=
- =?utf-8?B?MUxBUmpqUFhmVG1seGJtOWIwNmJyaW0rM0VwN1NON29PbGowUjFVSXlTNEV4?=
- =?utf-8?B?VTJ0aDh5aHF1dEpzTjZRZXRrR3hFcUYwakdiWFZ5REhBRHRYK3N4OUU3VVRV?=
- =?utf-8?B?dFAwYitzSlMrZ2pISnE5VCtYV3hQUjdtUGkxTXQ3VkhIZVduQVk3WEE4VlpX?=
- =?utf-8?B?L2Y0RlZieWNIM2xnNFd4WVg4Q2Y5dlQyZ0lra1kzbUlhVTlKVGNBaHZuRTRo?=
- =?utf-8?B?YnlFVkZ4cVZOa3FOakd2dmZEVk9sV1JVelRWeDQydVlJMDVQNVd2cHhZZGQx?=
- =?utf-8?B?dnlLdnpvMEhKZkxESjIxY08xN1o2elkvekE0VzAzSVhKZThlVjRSc2FLelhY?=
- =?utf-8?B?RlppVHJOT2tiQTE5RnIreEsrY0s5ZHZyQngyZHVLT2hQVlBFVjdsYXBXbUxh?=
- =?utf-8?B?TEU3STFNMUxaQndHZ2lRdGZEQ24yRkdNTGxkV3VtazZmdzRaNGFZQkxMWTE0?=
- =?utf-8?B?aTkrdGRONGNnaDEvbmlsN2ZOeWtSYU1OaUl6Q0dTY2ZCZmlYREpiaFlhbXZO?=
- =?utf-8?B?Y0tBS2NJVWFEdkhBNC8vQ1U3QS9xeWpzak8wUlRkRzE3Zk1TSFFXcFNBTmVh?=
- =?utf-8?B?Q3J6UEN2L1ovMGVlUXJ2TlhEQnI1Z1pZOHFnUFhTdlR5MnhPYzBKZm5vRGVI?=
- =?utf-8?B?NkxsZ1NmclBCSWNqR0tObmQ5TFVmdzBUSVhjbUkyTGhmbmRHUXlORjdLUzRT?=
- =?utf-8?B?WU8xaGdwdmhnZnZ4dTUrZUlxVEdZU3FyODNRMEp2YmV6c0RKbXN0dVZCU29I?=
- =?utf-8?B?cXAwczExdHhrVjJTWDcyMVdiNVVXSDRBM1ErOVNYTTQwVlRSTDZueEN1LzIw?=
- =?utf-8?B?d2N1bHN1Rm9TYkNtTU9EVXdnbDRWOFBqOEtRR29sM1FoOHFWQmlhY2xDem10?=
- =?utf-8?B?Qk5hTzcyWUJsb05ydnRoMmFoYzlKVnlKQWRVOGhMM3NudUFHNTlVRHJaZVRy?=
- =?utf-8?B?amt4em9GazI0ZHRTZC9FYzNtT0J1QnJCbFdRdmFBNW5KbGU4TDhLVjdVT0NY?=
- =?utf-8?B?UDZJTmwwZ2xsaG5WOTFDL0Q1bTcvNHVwcEtBamdWN3lpTE16SUQwN0JMbWdk?=
- =?utf-8?B?bmZCRUdFaEM3MEVUbjVYdVp5VHZwUGIyZlhPMVJ5S3pKanAwMGhSRk90MUdY?=
- =?utf-8?B?cFg4cHlaVlB4V243WFZlWWJ1KzJtMGVzMEFBeklnS3JYWExCeDRpZVJwNXhy?=
- =?utf-8?B?Q09hNWVabGhDdENXVzVqVnRsNU91MGJ0aWdPN2dCQUU5RERzS3o0RFJUZUli?=
- =?utf-8?B?SU96R0kyRlJtSmgzRVBQaE5NdVdvZUlXbEwrR0k5cGlNQmd4cjJXaWJoeVFw?=
- =?utf-8?B?bElKTkFwVm0wV3lYRzBEOEdKdExGQ1F3Q0hkUmxCSDIxL3lKSVI1NnNIKzJS?=
- =?utf-8?B?eWpUanVMM2ppY0c0OGVjdm9maU9MTFFMd1c3SEhBWHdTNEYvVEpjalZuTFlm?=
- =?utf-8?B?S1E9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <B93CDA66FF945145A50E74C2A44713D0@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Thu, 24 Aug 2023 11:23:26 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0678B19B2;
+        Thu, 24 Aug 2023 08:23:23 -0700 (PDT)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37OEZQuY002270;
+        Thu, 24 Aug 2023 15:23:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=fRFa1Ju/IcoSsvJ9gYhluqBnlOmg8wcmIF9mWKN5gRM=;
+ b=UxGAW6abs2Pa2367ubXrknGHSXt7o5O7PKoupAVhpOVvVi/lDhoC8F0aB+ZuxPKFbb1D
+ VVL+vnfIlwpY7XcEFGuRa7kPA/QaoxrHMxBYLiAGvJ8om4iKYHVVQAJSLkKql4hLPCXo
+ QARnr+CK1h/orTM5Er+rwZK4+JXg28v82AuPBtIjx1lpvp6BMoOHtj7kRU+bEop12PLf
+ V8lzF7WT+6tccReqQuOK/IrXrAuRgn9H3ThzUqUkfUmd+G4ElUjYGNVnBIzYYo94GWbI
+ ulEF3ov6LGNyk33IsOZlgwa1ZytXQVdplKMVhMOhc/4RU0Zd57yrn89dc65i2YTfsAgt gg== 
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3snkumty3m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 24 Aug 2023 15:23:17 +0000
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37OFNFeL026321
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 24 Aug 2023 15:23:16 GMT
+Received: from [10.50.25.183] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Thu, 24 Aug
+ 2023 08:23:12 -0700
+Message-ID: <8c97d866-1cab-0106-4ab3-3ca070945ef7@quicinc.com>
+Date:   Thu, 24 Aug 2023 20:53:08 +0530
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB5963.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: eed721b4-25bb-43d5-a612-08dba4b5ec8a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Aug 2023 15:22:26.7178
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: +4GkOOC6qfO9zWY9jaWGDCLz03/E/K6JdX0T8aoPZ71onCXTjXU/RLVGQi1LxpYGVYgoofR4B/lbJrh6NfWlRhSSAR6Gdfs26S/ZI6hKflE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB7632
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 00/33] Qualcomm video decoder/encoder driver
+Content-Language: en-US
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Stanimir Varbanov <stanimir.k.varbanov@gmail.com>
+CC:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <mchehab@kernel.org>,
+        <hans.verkuil@cisco.com>, <linux-kernel@vger.kernel.org>,
+        <linux-media@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <quic_dikshita@quicinc.com>
+References: <1690550624-14642-1-git-send-email-quic_vgarodia@quicinc.com>
+ <e18b951e-7f15-2c67-9099-c45ea7f67daa@linaro.org>
+ <d80b5338-2eca-0223-d2a7-d6f7d39a28ba@gmail.com>
+ <CAA8EJpqArfMcxvJV2zxea8_C4VHY06MsU-Jw3pPXbu5Gxw-ccg@mail.gmail.com>
+From:   Vikash Garodia <quic_vgarodia@quicinc.com>
+In-Reply-To: <CAA8EJpqArfMcxvJV2zxea8_C4VHY06MsU-Jw3pPXbu5Gxw-ccg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: pyMctkSnSgK2tBnzLn-YWKR_YqIOCGbF
+X-Proofpoint-ORIG-GUID: pyMctkSnSgK2tBnzLn-YWKR_YqIOCGbF
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-24_12,2023-08-24_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxlogscore=758
+ spamscore=0 suspectscore=0 adultscore=0 clxscore=1011 priorityscore=1501
+ impostorscore=0 lowpriorityscore=0 phishscore=0 mlxscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2308240129
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIzLTA4LTI0IGF0IDA5OjExICswMDAwLCB0aXAtYm90MiBmb3IgUmljayBFZGdl
-Y29tYmUgd3JvdGU6DQo+IEZpeGVzOiAzMzM0NDM2OGNiMDggKCJ4ODYvZnB1OiBDbGVhbiB1cCB0
-aGUgZnB1X19jbGVhcigpIHZhcmlhbnRzIikNCg0KT29wcywgeWVzIHRoaXMgbG9va3MgY29ycmVj
-dC4gU29ycnkgZm9yIHRoZSB3cm9uZyBjaGFyYWN0ZXJpemF0aW9uIG9mDQppdCBiZWluZyBvbGRl
-ci4NCg==
+Hi Dmitry,
+
+On 8/14/2023 8:30 PM, Dmitry Baryshkov wrote:
+> Hi Stan,
+> 
+> On Mon, 14 Aug 2023 at 15:58, Stanimir Varbanov
+> <stanimir.k.varbanov@gmail.com> wrote:
+>>
+>> Hi Dmitry,
+>>
+>> On 28.07.23 г. 17:01 ч., Dmitry Baryshkov wrote:
+>>> On 28/07/2023 16:23, Vikash Garodia wrote:
+>>>> This patch series introduces support for Qualcomm new video acceleration
+>>>> hardware architecture, used for video stream decoding/encoding. This
+>>>> driver
+>>>> is based on new communication protocol between video hardware and
+>>>> application
+>>>> processor.
+>>>>
+>>>> This driver comes with below capabilities:
+>>>> - V4L2 complaint video driver with M2M and STREAMING capability.
+>>>> - Supports H264, H265, VP9 decoders.
+>>>> - Supports H264, H265 encoders.
+>>>
+>>> Please describe, why is it impossible to support this hardware in the
+>>> venus driver. We do not usually add new drivers for the new generations
+>>> of the hardware, unless it is fully incompatible with the previous
+>>> generations. Let me point you to camss or drm/msm drivers. They have
+>>> successfully solved the issue of supporting multiple generations of the
+>>> hardware in the same driver.
+>>>
+>>> Unless the "iris3" is completely different from all the previous
+>>> generations, I strongly suggest spending time on restructuring existing
+>>> venus driver and then adding support for the new hardware there instead
+>>> of dumping out something completely new.
+>>
+>> AFAIK the major differences are HW IP and firmware interface (by
+>> firmware interface I mean a protocol, API and API behavior). The
+>> firmware and its interface has been re-written to align closely with the
+>> current v4l2 specs for encoders/decoders state machines [1][2]. On the
+>> other side current mainline Venus driver firmware is following interface
+>> similar to OpenMAX.
+>>
+>> There are incompatibilities between both firmware interfaces which
+>> cannot easily combined in a common driver. Even if there is a
+>> possibility to do that it will lead us to a unreadable driver source
+>> code and maintenance burden.
+> 
+> Thank you for your explanation!
+> 
+> If the hardware is more or less the same, then the existing venus
+> driver should be refactored and split into hardware driver and the
+> firmware interface. Then iris3 can come up as a second driver
+> implementing support for new firmware interface but utilising common
+> hardware-related code.
+
+Its not just about supporting the new firmware interface because if that was the
+case, it would have been a simple change. Its also about how the new firmware
+interface affects the rest of the video sub-modules and state handling.
+We incrementally evaluated whether putting the pieces one by one would make
+sense but it doesn’t as every layer got affected and as a whole we decided to go
+with this approach.
+To elaborate more, let me try to put one of sequence which can provide info on
+firmware interface and its handling across different video layers.
+
+>> Vikash, could elaborate more on firmware interface differences.
+
+Many new interfaces are added. Explained below one such video usecase of
+handling dynamic resolution change (DRC) during drain. Illustrated a pseudo code
+on how this will look if we fit this in venus driver.
+
+- Client issues a STOP command. The command goes through state-wise command
+handling, which also checks for cases like back to back drain. Vidc layer, which
+handles common encoder and decoder functionality, routes it to decoder stop.
+Decoder and driver layer then submits the command "HFI_CMD_DRAIN" to hardware
+and moves the sub state to "MSM_VIDC_DRAIN".
+- Now before drain is completed, there is a resolution change in one of the
+frame queued before drain. Driver receives "HFI_CMD_SETTINGS_CHANGE" in hfi
+response layer. The response goes through state check if received in intended
+state and if good, changes the state to "MSM_VIDC_DRC | MSM_VIDC_INPUT_PAUSE".
+Any further input processing remain paused at this point. The decoder layer then
+parses all the bitstream parameters which were subscribed by the driver.
+V4L2_EVENT_SOURCE_CHANGE event is raised to client.
+- Hardware respond with HFI_INFO_HFI_FLAG_PSC_LAST to indicate LAST frame with
+old sequence. Driver substate is added with "MSM_VIDC_DRC_LAST_BUFFER |
+MSM_VIDC_OUTPUT_PAUSE". At this point, driver is in state, STREAMING and
+substate - MSM_VIDC_DRAIN | MSM_VIDC_DRC | MSM_VIDC_INPUT_PAUSE |
+MSM_VIDC_DRC_LAST_BUFFER | MSM_VIDC_OUTPUT_PAUSE. This is when both hardware as
+well as driver is paused while waiting for further instructions.
+- Client issues START cmd. Vidc layer routes it to decoder layer which checks
+for sub states and then allocates/queues internal buffers. At this point, DRC
+sequence is completed and substates "MSM_VIDC_DRC | MSM_VIDC_DRC_LAST_BUFFER"
+are cleared and both input and output planes are resumed with HFI
+"HFI_CMD_RESUME". substate "MSM_VIDC_INPUT_PAUSE" and "MSM_VIDC_OUTPUT_PAUSE" is
+cleared as well. So driver is in streaming state with sub state as "MSM_VIDC_DRAIN"
+- Hardware issues a response to "HFI_CMD_DRAIN". As part of handling of this,
+driver adds to sub state "MSM_VIDC_INPUT_PAUSE". This is done to avoid any
+further input processing. Once all the frames are processed, hardware raises HFI
+"HFI_INFO_HFI_FLAG_DRAIN_LAST". After doing state check, further sub states
+"MSM_VIDC_DRAIN_LAST_BUFFER | MSM_VIDC_OUTPUT_PAUSE" are added. So at this
+point, the sub states are MSM_VIDC_DRAIN, MSM_VIDC_DRAIN_LAST_BUFFER,
+MSM_VIDC_INPUT_PAUSE and MSM_VIDC_OUTPUT_PAUSE.
+- Any pair calls like VIDIOC_STREAMON()/VIDIOC_STREAMOFF() on output or capture
+queue, resets the substate to stream again.
+
+If the same needs to be added in venus driver
+
+- Client issues a STOP cmd to initiate drain. Decoder layer for stop handling
+needs to be updated something like below //pseudo code  if (old interface)
+   send dummy buffer
+   change state to VENUS_DEC_STATE_DRAIN
+   drain_active = true
+ else
+   statewise validation of STOP cmd
+   state check for back to back drain
+   issue HFI_CMD_DRAIN to hardware
+   change sub state = MSM_VIDC_DRAIN
+
+- DRC is issued by hardware
+  if (old interface) //vdec and hfi response layer
+   HFI_EVENT_SESSION_SEQUENCE_CHANGED with type
+HFI_EVENT_DATA_SEQUENCE_CHANGED_SUFFICIENT_BUF_RESOURCES
+   changes state to VENUS_DEC_STATE_DRC
+   next_buf_last = true
+   flush (output)
+   reconfig = true
+   raise V4L2_EVENT_SOURCE_CHANGE event to client
+  else
+   HFI_CMD_SETTINGS_CHANGE // in hfi response layer
+   state validation for intended state // in state handling layer
+   sub state |= MSM_VIDC_DRC | MSM_VIDC_INPUT_PAUSE
+   raise V4L2_EVENT_SOURCE_CHANGE event to client
+
+- LAST flag handling
+  if (old interface)
+    No LAST flag HFI from hardware
+    in qbuf_capture
+      if (next_buf_last) associated LAST flag
+  else
+    handle HFI_INFO_HFI_FLAG_PSC_LAST //in response layer
+    sub state |= MSM_VIDC_DRC_LAST_BUFFER | MSM_VIDC_OUTPUT_PAUSE
+
+- Client issues START cmd
+  if (old interface)
+    does not handle VENUS_DEC_STATE_DRC state
+  else
+    sub state &= ~(MSM_VIDC_DRC | MSM_VIDC_DRC_LAST_BUFFER)
+    allocates and queue internal buffer
+    call HFI_CMD_RESUME for input and output
+    sub state &= ~(MSM_VIDC_INPUT_PAUSE|MSM_VIDC_OUTPUT_PAUSE)
+
+- Hardware response for HFI_CMD_DRAIN
+  if (old interface)
+    Nothing to do.
+  else
+    sub state |= MSM_VIDC_INPUT_PAUSE
+
+- Handling for drain LAST flag
+  if (old interface)
+    receives dummy buffer with EOS
+    converts to LAST and send to client
+  else
+    process HFI_INFO_HFI_FLAG_DRAIN_LAST
+    sub state |= MSM_VIDC_DRAIN_LAST_BUFFER | MSM_VIDC_OUTPUT_PAUSE
+
+There are many such complex sequences which would add to complexity if we try to
+fit them into existing driver.
+
+> Do we have any details on firmware versions that implement older
+> (OpenMAX-like) interface vs versions implementing new (v4l2-like)
+> interface?
+> 
+>> [1]
+>> https://www.kernel.org/doc/html/latest/userspace-api/media/v4l/dev-decoder.html
+>>
+>> [2]
+>> https://www.kernel.org/doc/html/latest/userspace-api/media/v4l/dev-encoder.html
+
+Thanks,
+Vikash
