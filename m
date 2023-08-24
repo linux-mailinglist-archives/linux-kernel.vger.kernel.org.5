@@ -2,79 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86B7A78783C
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 20:50:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61208787842
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 20:52:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243125AbjHXStb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 14:49:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44170 "EHLO
+        id S243138AbjHXSvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 14:51:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243164AbjHXSt2 (ORCPT
+        with ESMTP id S243145AbjHXSvb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 14:49:28 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D36AA1BD1;
-        Thu, 24 Aug 2023 11:49:22 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-5007616b756so165060e87.3;
-        Thu, 24 Aug 2023 11:49:22 -0700 (PDT)
+        Thu, 24 Aug 2023 14:51:31 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E1231BCD
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 11:51:29 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-99cdb0fd093so10757166b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 11:51:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692902961; x=1693507761;
-        h=mime-version:user-agent:content-transfer-encoding:in-reply-to:date
-         :cc:to:from:subject:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LHRS4UEXxu8F0WleFwTDxLVpmIkpw8qRBxsTWoqyCew=;
-        b=EzE2YpmXh9abD9+0dqFc9MXO0MNUNQieniyt6V4qvN5TbOLydMBrfnhUzSEiMPK2TG
-         HnK8yubCC0Vy5L/1zZm4zNSx/jIloKmOIH9XDItHJ3c8NcFSE/UxNpOyVnG3zeTQO6+9
-         /3NzsVVWEcLTRaVv47zkjW25i2/ak6L/uDcjF2hi0o9dMXXuQtTd4Ak3sJuiB819cd9t
-         ln7p4IAUV4h4YyIBPdd4rPwNqeDo9XfRAa6klh4o+da6x+z4JKJ/RvkOOPHTMydY4+1Q
-         ULpNX1KoZiDUofBobwzMgOFoYucjZsyDzZslglJE98EW7rCRyGVCxN3/8YnEGNW/mjcT
-         PGiQ==
+        d=google.com; s=20221208; t=1692903088; x=1693507888;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FIntCscqhDfEHiFTt/nLdYcoh0FY54rWEh/TsH/OwaQ=;
+        b=YTj/bsBvUZUTjYN49dDIHhjUbcqUZnmwFrUEPy7wBE1yP8CClRJZcB2EqH8BTQ9L1p
+         9rfVxKZVqXDZQGgj5YVz4GBx700Sa82keEh+vFvHbV2cDP51G+M+h52AeHFmD3rhQT/S
+         KAjaYgd0InsPnpsp6p4u+LcvCftNLUwhzZ+GmDpg07XyqQf+hQVd/5t4uAHmpkqoqyIx
+         vmLOEMUE89WpXkh3oTDnsYgyIlxzeAz8grVxGy6Iux4RvAMQlX6In2y406zdh46ESotF
+         J2SvKFOD1STNKGBtkA7auuwY6QebYfK0veMj/+Eb8DraUFnVMB4WLcrBRvcODMDC0zcu
+         v8Pw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692902961; x=1693507761;
-        h=mime-version:user-agent:content-transfer-encoding:in-reply-to:date
-         :cc:to:from:subject:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=LHRS4UEXxu8F0WleFwTDxLVpmIkpw8qRBxsTWoqyCew=;
-        b=I72GuY87bQ67ZhoIZHHuz+aNhF8JbDJi86wvc8uZFeYD9XnvoVUADBcS5KAwnhr2mV
-         HmKGjjvDApdZlNJiP4JZpJGf3AoF4dRTwQ/RG069YjAVKVzZq8dArJjAxxfpUkh3zKCn
-         IU9EPsl0E+1I+94wsXGHdaGXwFCwc/q29OZ3AUMW4GaWDPxx8Hazro49vWbXE/uhorCO
-         2rlZpEn7I4zjlPcWWE05kY9dv+JaflVF2EWkcc9gvltVUVxHstVbFVwyeGVd4ypd4yDF
-         lM+ACwZ+mRHFhXkZRqvwAzM/Y6kK6by5ao5DA8ARVCI8a7/JL9eaOAjCGsEz/kL6zAz7
-         +zuQ==
-X-Gm-Message-State: AOJu0YzeEbNHuWY+s8IaAw/KSvj25A+VBIA9zdn+mGqSiZX0DHqX9yVP
-        CpmSxD7HnjNk6JEAi0oaZh8=
-X-Google-Smtp-Source: AGHT+IH4UH6SkmpNTWiDNASumNMT3avgYEaJSuF1a/GllfuoDAQfjLNGRgsgsTLHW4a+HgVEswOKCA==
-X-Received: by 2002:a05:6512:36c9:b0:4fe:17d6:af2b with SMTP id e9-20020a05651236c900b004fe17d6af2bmr10240267lfs.42.1692902960837;
-        Thu, 24 Aug 2023 11:49:20 -0700 (PDT)
-Received: from [192.168.100.57] ([77.105.14.121])
-        by smtp.gmail.com with ESMTPSA id i9-20020aa7c709000000b0052a198d8a4dsm59792edq.52.2023.08.24.11.49.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Aug 2023 11:49:20 -0700 (PDT)
-Message-ID: <add84df503df6b0bd3f572cd396dbde9da558eab.camel@gmail.com>
-Subject: Re: [PATCH net-next 1/2] dt-bindings: net: dsa: marvell: add
- MV88E6361 switch to compatibility list
-From:   airat.gl@gmail.com
-To:     alexis.lothore@bootlin.com
-Cc:     andrew@lunn.ch, davem@davemloft.net, devicetree@vger.kernel.org,
-        edumazet@google.com, f.fainelli@gmail.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        olteanv@gmail.com, pabeni@redhat.com, paul.arola@telus.com,
-        richardcochran@gmail.com, scott.roberts@telus.com,
-        thomas.petazzoni@bootlin.com
-Date:   Thu, 24 Aug 2023 20:49:17 +0200
-In-Reply-To: <20230517203430.448705-2-alexis.lothore@bootlin.com>
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-User-Agent: Evolution 3.48.4 (by Flathub.org) 
+        d=1e100.net; s=20221208; t=1692903088; x=1693507888;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FIntCscqhDfEHiFTt/nLdYcoh0FY54rWEh/TsH/OwaQ=;
+        b=U416mGJmcCD8Ke3C//8RAQz28dKXx993OCyBWwKg8u/tGsMcz5BEISCih+15+HlgNS
+         A/qiO28+H09KVboFF1lzo9s3fw8GTXx1g9pdEFNj4Z3KipXM5+31cBPMkcI5N/MITUeg
+         bM6FbSz/brzmvUUmMWbJg2ku67Afr7lC4NO2455G+sADCThx+vjD13P/cJ8NZ56rpU7V
+         pG9N4kPFaOC2aqCbyy1ElzyWGt38/qrmGgFI2QvrPsecHDMlt/tyvLCSCgrn4BBV5dRj
+         8EPK6U0eFuOYp6VIAB1ZURoTDi3GIeboRDjnWOJjK3sKKpYXoIoebeirulbdrcTKXGsb
+         HTWw==
+X-Gm-Message-State: AOJu0YwQZMcTEQVj3wq4ILfcR+4uNEryK/82XdaiZ8iy2lA8HMmb6wjU
+        s59G9w5nuPZ5vJ9fSk4ajsu6OY1pwswHPRoa0AkoEg==
+X-Google-Smtp-Source: AGHT+IF+IFNG4EAVUrKQsHTGpc++b97oZVHRYbXxJwtABfkADfSJsBlQZ57k7Xe37dAiSU1MfBG0ZsgWcdHrULKljiE=
+X-Received: by 2002:a17:906:24e:b0:99c:c8ec:bd4a with SMTP id
+ 14-20020a170906024e00b0099cc8ecbd4amr14264570ejl.60.1692903087746; Thu, 24
+ Aug 2023 11:51:27 -0700 (PDT)
 MIME-Version: 1.0
-X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+References: <20230821205458.1764662-1-yosryahmed@google.com>
+ <20230821205458.1764662-4-yosryahmed@google.com> <ZOR6eyYfJYlxdMet@dhcp22.suse.cz>
+ <CAJD7tka13M-zVZTyQJYL1iUAYvuQ1fcHbCjcOBZcz6POYTV-4g@mail.gmail.com>
+ <ZOW2PZN8Sgqq6uR2@dhcp22.suse.cz> <CAJD7tka34WjtwBWfkTu8ZCEUkLm7h-AyCXpw=h34n4RZ5qBVwA@mail.gmail.com>
+ <ZOcDLD/1WaOwWis9@dhcp22.suse.cz> <CAJD7tkZby2enWa8_Js8joHqFx_tHB=aRqHOizaSiXMUjvEei4g@mail.gmail.com>
+In-Reply-To: <CAJD7tkZby2enWa8_Js8joHqFx_tHB=aRqHOizaSiXMUjvEei4g@mail.gmail.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Thu, 24 Aug 2023 11:50:51 -0700
+Message-ID: <CAJD7tkadEtjK_NFwRe8yhUh_Mdx9LCLmCuj5Ty-pqp1rHTb-DA@mail.gmail.com>
+Subject: Re: [PATCH 3/3] mm: memcg: use non-unified stats flushing for
+ userspace reads
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Is there an error? The new string include 6163 instead of 6361
+On Thu, Aug 24, 2023 at 11:15=E2=80=AFAM Yosry Ahmed <yosryahmed@google.com=
+> wrote:
+>
+> On Thu, Aug 24, 2023 at 12:13=E2=80=AFAM Michal Hocko <mhocko@suse.com> w=
+rote:
+> >
+> > On Wed 23-08-23 07:55:40, Yosry Ahmed wrote:
+> > > On Wed, Aug 23, 2023 at 12:33=E2=80=AFAM Michal Hocko <mhocko@suse.co=
+m> wrote:
+> > > >
+> > > > On Tue 22-08-23 08:30:05, Yosry Ahmed wrote:
+> > > > > On Tue, Aug 22, 2023 at 2:06=E2=80=AFAM Michal Hocko <mhocko@suse=
+.com> wrote:
+> > > > > >
+> > > > > > On Mon 21-08-23 20:54:58, Yosry Ahmed wrote:
+> > > > [...]
+> > > > > So to answer your question, I don't think a random user can reall=
+y
+> > > > > affect the system in a significant way by constantly flushing. In
+> > > > > fact, in the test script (which I am now attaching, in case you'r=
+e
+> > > > > interested), there are hundreds of threads that are reading stats=
+ of
+> > > > > different cgroups every 1s, and I don't see any negative effects =
+on
+> > > > > in-kernel flushers in this case (reclaimers).
+> > > >
+> > > > I suspect you have missed my point.
+> > >
+> > > I suspect you are right :)
+> > >
+> > >
+> > > > Maybe I am just misunderstanding
+> > > > the code but it seems to me that the lock dropping inside
+> > > > cgroup_rstat_flush_locked effectivelly allows unbounded number of
+> > > > contenders which is really dangerous when it is triggerable from th=
+e
+> > > > userspace. The number of spinners at a moment is always bound by th=
+e
+> > > > number CPUs but depending on timing many potential spinners might b=
+e
+> > > > cond_rescheded and the worst time latency to complete can be really
+> > > > high. Makes more sense?
+> > >
+> > > I think I understand better now. So basically because we might drop
+> > > the lock and resched, there can be nr_cpus spinners + other spinners
+> > > that are currently scheduled away, so these will need to wait to be
+> > > scheduled and then start spinning on the lock. This may happen for on=
+e
+> > > reader multiple times during its read, which is what can cause a high
+> > > worst case latency.
+> > >
+> > > I hope I understood you correctly this time. Did I?
+> >
+> > Yes. I would just add that this could also influence the worst case
+> > latency for a different reader - so an adversary user can stall others.
+>
+> I can add that for v2 to the commit log, thanks.
+>
+> > Exposing a shared global lock in uncontrolable way over generally
+> > available user interface is not really a great idea IMHO.
+>
+> I think that's how it was always meant to be when it was designed. The
+> global rstat lock has always existed and was always available to
+> userspace readers. The memory controller took a different path at some
+> point with unified flushing, but that was mainly because of high
+> concurrency from in-kernel flushers, not because userspace readers
+> caused a problem. Outside of memcg, the core cgroup code has always
+> exercised this global lock when reading cpu.stat since rstat's
+> introduction. I assume there hasn't been any problems since it's still
+> there. I was hoping Tejun would confirm/deny this.
+
+One thing we can do to remedy this situation is to replace the global
+rstat lock with a mutex, and drop the resched/lock dropping condition.
+Tejun suggested this in the previous thread. This effectively reverts
+0fa294fb1985 ("cgroup: Replace cgroup_rstat_mutex with a spinlock")
+since now all the flushing contexts are sleepable.
+
+My synthetic stress test does not show any regressions with mutexes,
+and there is a small boost to reading latency (probably because we
+stop dropping the lock / rescheduling). Not sure if we may start
+seeing need_resched warnings on big flushes though.
+
+One other concern that Shakeel pointed out to me is preemption. If
+someone holding the mutex gets preempted this may starve other
+waiters. We can disable preemption while we hold the mutex, not sure
+if that's a common pattern though.
