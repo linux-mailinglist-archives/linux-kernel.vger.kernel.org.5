@@ -2,130 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C727D786872
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 09:37:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BF7778689A
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 09:38:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234610AbjHXHgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 03:36:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46432 "EHLO
+        id S240375AbjHXHhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 03:37:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230092AbjHXHg2 (ORCPT
+        with ESMTP id S240423AbjHXHhi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 03:36:28 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D379C7;
-        Thu, 24 Aug 2023 00:36:26 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1bda9207132so51449265ad.0;
-        Thu, 24 Aug 2023 00:36:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692862586; x=1693467386;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=eIb+HlByq9h5khMqS8bxE7oax55t0scbnyEW7Xgdu4k=;
-        b=AuyRMI51Da3PxZvX112N7jP4KDdJgHnZXK3nRLjGaCt/4VjnfLP5j+XCARtf5TFwiZ
-         OxD7YSH1PCgSFrYurB1jNBLbz37PJdiZ7agaZ6dcFU6nzCf76Rbrh/RKeUXratWL1TIv
-         sXCnHV3feW4WFssAlcTRf3qLQDk4Djc11fN/YxTyKOl4QRmJjDwZJSn6EG6E7kavXxsf
-         eZlVAQLpl9CZZD9J9i8q5hvJLUFgdVbvu6UG5Ya7d5f8N7tfZw4wYS29maYbmQ+wRvTK
-         48Yywt9zdBr61+iutQNBm+GTl0qpI+8GKTYM/z5JulEkO2qzNQfmJmnK+8Vxxve8Itkh
-         fC0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692862586; x=1693467386;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eIb+HlByq9h5khMqS8bxE7oax55t0scbnyEW7Xgdu4k=;
-        b=JLooCQz24M8sAHFYzJbUaZV52B57Jo6rHjCG1Ki6INCCq5N8IU/wOT/sGQE89VlSih
-         k5K2Akvw/xtp/NuZ5Jt4kDCY7AloZKQ9lrF631EN2mhJ0ELiBbQsBeCYZkDkI2GpJLmr
-         OjciBjVr6LGTqBg5T0eA2duyfIhCETsEMvuKQvz+NqN/TDO6UlQfK+hBbv0+FC1C7RxH
-         xjCoTk1hCKGys29wkdnWf2V+1OvtD/h//0b29rR2KaUdaglkYvr6LE+lHEOFW0tvqsru
-         D3CvUTbC79HiRUiuJf3WL9zvB+Ud3p8gJ2GFcrAknyK2Lsl7eBm1vaoZToZZOahgKxdR
-         evOA==
-X-Gm-Message-State: AOJu0YyESUtS3yS58aTNSRoCktuirlFGKMD9Kvjc48k3YckfZKI2ofiN
-        mrtI9tPy/g7MdMHBws5pnTmTCCqj6sg=
-X-Google-Smtp-Source: AGHT+IFcv7cjnpyEzkorL3pZ6uESi7+Ml1pJr9UyH23mfbcrmtPHEh9XXlZtR62k1uXQePsU50dlhQ==
-X-Received: by 2002:a17:902:c947:b0:1c0:7bac:13d4 with SMTP id i7-20020a170902c94700b001c07bac13d4mr10772102pla.65.1692862585673;
-        Thu, 24 Aug 2023 00:36:25 -0700 (PDT)
-Received: from sol (14-203-61-235.static.tpgi.com.au. [14.203.61.235])
-        by smtp.gmail.com with ESMTPSA id a16-20020a170902b59000b001bba3650448sm12132572pls.258.2023.08.24.00.36.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Aug 2023 00:36:25 -0700 (PDT)
-Date:   Thu, 24 Aug 2023 15:36:20 +0800
-From:   Kent Gibson <warthog618@gmail.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [libgpiod v1.6.x][PATCH] tests: mockup: unbind mockup devices
- before unloading the module
-Message-ID: <ZOcIdHVgK1ffzFMb@sol>
-References: <20230821153339.26305-1-brgl@bgdev.pl>
- <ZOP/n30hYR/8zN60@sol>
- <CAMRc=Mep_AZPht6cQFQ-Pz8UJC-q1r4F29SJ=+_WgJX1cz5wtw@mail.gmail.com>
- <CAMRc=MdoZJbiNUbdO6VOzS7NJTJtbmD1uoywa7+iWjeoy+RecQ@mail.gmail.com>
+        Thu, 24 Aug 2023 03:37:38 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4E331735;
+        Thu, 24 Aug 2023 00:37:26 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 457F66328D;
+        Thu, 24 Aug 2023 07:37:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E109C433C9;
+        Thu, 24 Aug 2023 07:37:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692862645;
+        bh=apVo29quPAJNJ5zBNsotHOwD/sJ5HhXMBXuZaLSVig8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=t6Uje6qsOtieNhKUK3PZ0NhYuVib0TYmuGgGXn/SM+BGz5yDI7Yv6Ic7/Q9SIMUoM
+         75jPH2B3yCqjB3etVZHJUsItPk+uS+QXbwFon6ZWnUHV0WvtOs0kOkmr/o9C48sf22
+         81r6ukOs+zNlnQuf4jGA8hYZhqmMf6Mc5DhcJNo4+uYaZOIMlCMSk8ezNAjSNX3y1r
+         L8ZsdtuEADnpUNzDfLQVv48w19gXSemSY9q/ESnKx2YKJwvrQoCFzyxlX1vA0+rsjp
+         EvLKEudsnhcXwz+dcCssbhSPSkdTNL+XLYFIzHsS7Jx93dkGS/l/b1fPNoO6EGgv3R
+         vFR2L2MSGRfYw==
+From:   Lee Jones <lee@kernel.org>
+To:     lee@kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        amd-gfx@lists.freedesktop.org, Ben Skeggs <bskeggs@redhat.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Danilo Krummrich <dakr@redhat.com>,
+        David Airlie <airlied@gmail.com>,
+        dri-devel@lists.freedesktop.org,
+        Fabio Estevam <festevam@gmail.com>,
+        Gourav Samaiya <gsamaiya@nvidia.com>,
+        Hawking Zhang <Hawking.Zhang@amd.com>,
+        Hyun Kwon <hyun.kwon@xilinx.com>,
+        Jerome Glisse <glisse@freedesktop.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Karol Herbst <kherbst@redhat.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        linaro-mm-sig@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
+        linux-tegra@vger.kernel.org, Luben Tuikov <luben.tuikov@amd.com>,
+        Lyude Paul <lyude@redhat.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        =?UTF-8?q?Ma=C3=ADra=20Canal?= <mairacanal@riseup.net>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        nouveau@lists.freedesktop.org, NXP Linux Team <linux-imx@nxp.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shashank Sharma <shashank.sharma@amd.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Stanley Yang <Stanley.Yang@amd.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Subject: [PATCH (set 1) 00/20] Rid W=1 warnings from GPU
+Date:   Thu, 24 Aug 2023 08:36:45 +0100
+Message-ID: <20230824073710.2677348-1-lee@kernel.org>
+X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMRc=MdoZJbiNUbdO6VOzS7NJTJtbmD1uoywa7+iWjeoy+RecQ@mail.gmail.com>
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 09:32:06AM +0200, Bartosz Golaszewski wrote:
-> On Tue, Aug 22, 2023 at 9:08 AM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
-> >
-> > On Tue, Aug 22, 2023 at 2:21 AM Kent Gibson <warthog618@gmail.com> wrote:
-> > >
-> > > On Mon, Aug 21, 2023 at 05:33:39PM +0200, Bartosz Golaszewski wrote:
-> > > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> > > >
-> > > > gpio-mockup relies on the GPIO devices being registered in module's __init
-> > > > function and them being unregistered in __exit. This works with the GPIO
-> > > > subsystem as it only takes a reference to the underlying owner module when
-> > > > a GPIO descriptor is requested and not when the GPIO device is
-> > > > instantiated.
-> > > >
-> > > > This behavior may change in the future in the kernel so make the behavior
-> > > > of libgpiomockup more correct and have it unbind all mockup devices over
-> > > > sysfs before unloading the module.
-> > > >
-> > >
-> > > Never knew that unbinding was even an option.
-> > > Maybe update gpio-mockup's documentation?
-> > >
-> >
-> > Yeah, I might once we agree on that reference counting patch.
-> >
-> > > Just clarifying what the potential impact of the existing libgpiomockup
-> > > behaviour and future kernel behaviour is - the kernel may log errors but
-> > > otherwise correctly handle userspace unloading behaving badly?
-> > > So this patch is pre-emptory noise reduction?
-> > >
-> >
-> > No, it's a bug-fix-in-advance. gpio-mockup will fail to unload (until
-> > we unbind all devices anyway) if we couple the module's reference with
-> > struct gpio_device. So will every driver that registers devices from
-> > its module_init() function and tears them down in module_exit(). But
-> > these drivers are wrong to do so in the first place and unloading them
-> > sound like a rare thing to do anyway, so I'm willing to give it a try.
-> >
-> > Bartosz
-> 
-> So what do you think Kent? Does it make sense to have it in v1.6? I
-> would need to make a new bugfix release but I have something else
-> queued anyway.
-> 
+This set is part of a larger effort attempting to clean-up W=1
+kernel builds, which are currently overwhelmingly riddled with
+niggly little warnings.
 
-If the plan is to change the kernel such that it will no longer unload
-modules with bound devices then the patch totally makes sense.
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: amd-gfx@lists.freedesktop.org
+Cc: Ben Skeggs <bskeggs@redhat.com>
+Cc: "Christian König" <christian.koenig@amd.com>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: Danilo Krummrich <dakr@redhat.com>
+Cc: David Airlie <airlied@gmail.com>
+Cc: dri-devel@lists.freedesktop.org
+Cc: Fabio Estevam <festevam@gmail.com>
+Cc: Gourav Samaiya <gsamaiya@nvidia.com>
+Cc: Hawking Zhang <Hawking.Zhang@amd.com>
+Cc: Hyun Kwon <hyun.kwon@xilinx.com>
+Cc: Jerome Glisse <glisse@freedesktop.org>
+Cc: Jonathan Hunter <jonathanh@nvidia.com>
+Cc: Karol Herbst <kherbst@redhat.com>
+Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: linaro-mm-sig@lists.linaro.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-media@vger.kernel.org
+Cc: linux-tegra@vger.kernel.org
+Cc: Luben Tuikov <luben.tuikov@amd.com>
+Cc: Lyude Paul <lyude@redhat.com>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc: "Maíra Canal" <mairacanal@riseup.net>
+Cc: Mario Limonciello <mario.limonciello@amd.com>
+Cc: Maxime Ripard <mripard@kernel.org>
+Cc: Michal Simek <michal.simek@xilinx.com>
+Cc: Mikko Perttunen <mperttunen@nvidia.com>
+Cc: nouveau@lists.freedesktop.org
+Cc: NXP Linux Team <linux-imx@nxp.com>
+Cc: "Pan, Xinhui" <Xinhui.Pan@amd.com>
+Cc: Pengutronix Kernel Team <kernel@pengutronix.de>
+Cc: Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: Shashank Sharma <shashank.sharma@amd.com>
+Cc: Shawn Guo <shawnguo@kernel.org>
+Cc: Stanley Yang <Stanley.Yang@amd.com>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
+Cc: Thierry Reding <thierry.reding@gmail.com>
+Cc: Thomas Zimmermann <tzimmermann@suse.de>
 
-Cheers,
-Kent.
+Lee Jones (20):
+  drm/xlnx/zynqmp_disp: Use correct kerneldoc formatting in zynqmp_disp
+  drm/nouveau/nvkm/subdev/acr/lsfw: Remove unused variable 'loc'
+  drm/nouveau/nvkm/subdev/bios/init: Demote a bunch of kernel-doc abuses
+  drm/nouveau/nvkm/subdev/volt/gk20a: Demote kerneldoc abuses
+  drm/nouveau/nvkm/engine/gr/gf100: Demote kerneldoc abuse
+  drm/nouveau/dispnv04/crtc: Demote kerneldoc abuses
+  drm/radeon/radeon_ttm: Remove unused variable 'rbo' from
+    radeon_bo_move()
+  drm/amd/amdgpu/sdma_v6_0: Demote a bunch of half-completed function
+    headers
+  drm/tests/drm_kunit_helpers: Place correct function name in the
+    comment header
+  drm/scheduler/sched_main: Provide short description of missing param
+    'result'
+  drm/amd/amdgpu/amdgpu_doorbell_mgr: Correct misdocumented param
+    'doorbell_index'
+  drm/amd/amdgpu/amdgpu_device: Provide suitable description for param
+    'xcc_id'
+  drm/tests/drm_kunit_helpers: Correct possible double-entry typo in
+    'ddrm_kunit_helper_acquire_ctx_alloc'
+  drm/imx/ipuv3/imx-ldb: Increase buffer size to ensure all possible
+    values can be stored
+  drm/tegra/hub: Increase buffer size to ensure all possible values can
+    be stored
+  drm/drm_connector: Provide short description of param
+    'supported_colorspaces'
+  drm/amd/amdgpu/amdgpu_ras: Increase buffer size to account for all
+    possible values
+  drm/drm_gpuva_mgr: Remove set but unused variable 'prev'
+  drm/amd/amdgpu/amdgpu_sdma: Increase buffer size to account for all
+    possible values
+  drm/amd/amdgpu/imu_v11_0: Increase buffer size to ensure all possible
+    values can be stored
+
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c    |   1 +
+ .../gpu/drm/amd/amdgpu/amdgpu_doorbell_mgr.c  |   2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ras.h       |   2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_sdma.c      |   2 +-
+ drivers/gpu/drm/amd/amdgpu/imu_v11_0.c        |   2 +-
+ drivers/gpu/drm/amd/amdgpu/sdma_v6_0.c        |   8 +-
+ drivers/gpu/drm/drm_connector.c               |   2 +
+ drivers/gpu/drm/drm_gpuva_mgr.c               |  10 +-
+ drivers/gpu/drm/imx/ipuv3/imx-ldb.c           |   2 +-
+ drivers/gpu/drm/nouveau/dispnv04/crtc.c       |   4 +-
+ .../gpu/drm/nouveau/nvkm/engine/gr/gf100.c    |   2 +-
+ .../gpu/drm/nouveau/nvkm/subdev/acr/lsfw.c    |   3 +-
+ .../gpu/drm/nouveau/nvkm/subdev/bios/init.c   | 136 +++++++++---------
+ .../gpu/drm/nouveau/nvkm/subdev/volt/gk20a.c  |   4 +-
+ drivers/gpu/drm/radeon/radeon_ttm.c           |   2 -
+ drivers/gpu/drm/scheduler/sched_main.c        |   1 +
+ drivers/gpu/drm/tegra/hub.c                   |   2 +-
+ drivers/gpu/drm/tests/drm_kunit_helpers.c     |   2 +-
+ drivers/gpu/drm/xlnx/zynqmp_disp.c            |   6 +-
+ 19 files changed, 96 insertions(+), 97 deletions(-)
+
+-- 
+2.42.0.rc1.204.g551eb34607-goog
+
