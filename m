@@ -2,131 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28BB4786B79
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 11:21:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8636786B82
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 11:22:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239241AbjHXJVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 05:21:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38194 "EHLO
+        id S240690AbjHXJVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 05:21:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240705AbjHXJUx (ORCPT
+        with ESMTP id S239423AbjHXJVq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 05:20:53 -0400
-Received: from jari.cn (unknown [218.92.28.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4C18FE67
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 02:20:46 -0700 (PDT)
-Received: from chenxuebing$jari.cn ( [125.70.163.142] ) by
- ajax-webmail-localhost.localdomain (Coremail) ; Thu, 24 Aug 2023 17:20:17
- +0800 (GMT+08:00)
-X-Originating-IP: [125.70.163.142]
-Date:   Thu, 24 Aug 2023 17:20:17 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   "XueBing Chen" <chenxuebing@jari.cn>
-To:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/amdgpu/sdma: Clean up errors in sdma_v3_0.c
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version 2023.1-cmXT6 build
- 20230419(ff23bf83) Copyright (c) 2002-2023 www.mailtech.cn
- mispb-4e503810-ca60-4ec8-a188-7102c18937cf-zhkzyfz.cn
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Thu, 24 Aug 2023 05:21:46 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64102198A;
+        Thu, 24 Aug 2023 02:21:44 -0700 (PDT)
+Received: from benjamin-XPS-13-9310.. (unknown [IPv6:2a01:e0a:120:3210:672:c310:4c8a:3a97])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: benjamin.gaignard)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 9541A6607258;
+        Thu, 24 Aug 2023 10:21:41 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1692868902;
+        bh=97a+g3efIidtGcTZHHeZ+X2jVG7x/bgfTKTTmbRUcvY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Orh/iAMx3/nUXWSytzs0WnKL/qlPvNmhlqtiScLvTQv/Ywb+RxROkkv5eebgqZ6mw
+         Jh7r3H2IAZRGwuSQl3DmqBr9jpjZNihpnYpLuE2+gmVwOIpkWLTZu1aFLoz71P5nKV
+         /im5/p1sMMnEiT3lwvyAC3Z8GGrXIkVJTTBsd+p5mw/5vEawfHenv66TvfBOoMjO7e
+         zZhkqxgMxUy6NspJwLu8nJpOfXB2ZHJHKTSDRjeHi/3GQ7ZKdU+RQv0HP8E/WMw4OI
+         whhReVWqe9ZOpf85AS9JBpM66odPQ699+EtZ6AgxGmDNF+JOE1/lUv9NX+zlQg+xHI
+         WLJt+PEBxR8dQ==
+From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
+To:     mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
+        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
+        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
+        hverkuil-cisco@xs4all.nl, nicolas.dufresne@collabora.com
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
+        kernel@collabora.com,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Subject: [PATCH v5 00/10] Add DELETE_BUF ioctl
+Date:   Thu, 24 Aug 2023 11:21:23 +0200
+Message-Id: <20230824092133.39510-1-benjamin.gaignard@collabora.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Message-ID: <662fba8d.647.18a26d833dc.Coremail.chenxuebing@jari.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: AQAAfwC3VUDRIOdkwFeSAA--.475W
-X-CM-SenderInfo: hfkh05pxhex0nj6mt2flof0/1tbiAQANCmTl1A4APAAIsp
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
-X-Spam-Status: No, score=2.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_PBL,RDNS_NONE,T_SPF_HELO_PERMERROR,T_SPF_PERMERROR,XPRIO
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: **
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rml4IHRoZSBmb2xsb3dpbmcgZXJyb3JzIHJlcG9ydGVkIGJ5IGNoZWNrcGF0Y2g6CgpFUlJPUjog
-dGhhdCBvcGVuIGJyYWNlIHsgc2hvdWxkIGJlIG9uIHRoZSBwcmV2aW91cyBsaW5lCkVSUk9SOiB0
-cmFpbGluZyBzdGF0ZW1lbnRzIHNob3VsZCBiZSBvbiBuZXh0IGxpbmUKClNpZ25lZC1vZmYtYnk6
-IFh1ZUJpbmcgQ2hlbiA8Y2hlbnh1ZWJpbmdAamFyaS5jbj4KLS0tCiBkcml2ZXJzL2dwdS9kcm0v
-YW1kL2FtZGdwdS9zZG1hX3YzXzAuYyB8IDQyICsrKysrKysrKy0tLS0tLS0tLS0tLS0tLS0tCiAx
-IGZpbGUgY2hhbmdlZCwgMTUgaW5zZXJ0aW9ucygrKSwgMjcgZGVsZXRpb25zKC0pCgpkaWZmIC0t
-Z2l0IGEvZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvc2RtYV92M18wLmMgYi9kcml2ZXJzL2dw
-dS9kcm0vYW1kL2FtZGdwdS9zZG1hX3YzXzAuYwppbmRleCAzNDQyMDI4NzBhZWIuLjJlNzBlMmNh
-YTM1MyAxMDA2NDQKLS0tIGEvZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvc2RtYV92M18wLmMK
-KysrIGIvZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvc2RtYV92M18wLmMKQEAgLTcxLDE0ICs3
-MSwxMiBAQCBNT0RVTEVfRklSTVdBUkUoImFtZGdwdS92ZWdhbV9zZG1hLmJpbiIpOwogTU9EVUxF
-X0ZJUk1XQVJFKCJhbWRncHUvdmVnYW1fc2RtYTEuYmluIik7CiAKIAotc3RhdGljIGNvbnN0IHUz
-MiBzZG1hX29mZnNldHNbU0RNQV9NQVhfSU5TVEFOQ0VdID0KLXsKK3N0YXRpYyBjb25zdCB1MzIg
-c2RtYV9vZmZzZXRzW1NETUFfTUFYX0lOU1RBTkNFXSA9IHsKIAlTRE1BMF9SRUdJU1RFUl9PRkZT
-RVQsCiAJU0RNQTFfUkVHSVNURVJfT0ZGU0VUCiB9OwogCi1zdGF0aWMgY29uc3QgdTMyIGdvbGRl
-bl9zZXR0aW5nc190b25nYV9hMTFbXSA9Ci17CitzdGF0aWMgY29uc3QgdTMyIGdvbGRlbl9zZXR0
-aW5nc190b25nYV9hMTFbXSA9IHsKIAltbVNETUEwX0NISUNLRU5fQklUUywgMHhmYzkxMDAwNywg
-MHgwMDgxMDAwNywKIAltbVNETUEwX0NMS19DVFJMLCAweGZmMDAwZmZmLCAweDAwMDAwMDAwLAog
-CW1tU0RNQTBfR0ZYX0lCX0NOVEwsIDB4ODAwZjAxMTEsIDB4MDAwMDAxMDAsCkBAIC05MSwxNCAr
-ODksMTIgQEAgc3RhdGljIGNvbnN0IHUzMiBnb2xkZW5fc2V0dGluZ3NfdG9uZ2FfYTExW10gPQog
-CW1tU0RNQTFfUkxDMV9JQl9DTlRMLCAweDgwMGYwMTExLCAweDAwMDAwMTAwLAogfTsKIAotc3Rh
-dGljIGNvbnN0IHUzMiB0b25nYV9tZ2NnX2NnY2dfaW5pdFtdID0KLXsKK3N0YXRpYyBjb25zdCB1
-MzIgdG9uZ2FfbWdjZ19jZ2NnX2luaXRbXSA9IHsKIAltbVNETUEwX0NMS19DVFJMLCAweGZmMDAw
-ZmYwLCAweDAwMDAwMTAwLAogCW1tU0RNQTFfQ0xLX0NUUkwsIDB4ZmYwMDBmZjAsIDB4MDAwMDAx
-MDAKIH07CiAKLXN0YXRpYyBjb25zdCB1MzIgZ29sZGVuX3NldHRpbmdzX2ZpamlfYTEwW10gPQot
-eworc3RhdGljIGNvbnN0IHUzMiBnb2xkZW5fc2V0dGluZ3NfZmlqaV9hMTBbXSA9IHsKIAltbVNE
-TUEwX0NISUNLRU5fQklUUywgMHhmYzkxMDAwNywgMHgwMDgxMDAwNywKIAltbVNETUEwX0dGWF9J
-Ql9DTlRMLCAweDgwMGYwMTExLCAweDAwMDAwMTAwLAogCW1tU0RNQTBfUkxDMF9JQl9DTlRMLCAw
-eDgwMGYwMTExLCAweDAwMDAwMTAwLApAQCAtMTA5LDE0ICsxMDUsMTIgQEAgc3RhdGljIGNvbnN0
-IHUzMiBnb2xkZW5fc2V0dGluZ3NfZmlqaV9hMTBbXSA9CiAJbW1TRE1BMV9STEMxX0lCX0NOVEws
-IDB4ODAwZjAxMTEsIDB4MDAwMDAxMDAsCiB9OwogCi1zdGF0aWMgY29uc3QgdTMyIGZpamlfbWdj
-Z19jZ2NnX2luaXRbXSA9Ci17CitzdGF0aWMgY29uc3QgdTMyIGZpamlfbWdjZ19jZ2NnX2luaXRb
-XSA9IHsKIAltbVNETUEwX0NMS19DVFJMLCAweGZmMDAwZmYwLCAweDAwMDAwMTAwLAogCW1tU0RN
-QTFfQ0xLX0NUUkwsIDB4ZmYwMDBmZjAsIDB4MDAwMDAxMDAKIH07CiAKLXN0YXRpYyBjb25zdCB1
-MzIgZ29sZGVuX3NldHRpbmdzX3BvbGFyaXMxMV9hMTFbXSA9Ci17CitzdGF0aWMgY29uc3QgdTMy
-IGdvbGRlbl9zZXR0aW5nc19wb2xhcmlzMTFfYTExW10gPSB7CiAJbW1TRE1BMF9DSElDS0VOX0JJ
-VFMsIDB4ZmM5MTAwMDcsIDB4MDA4MTAwMDcsCiAJbW1TRE1BMF9DTEtfQ1RSTCwgMHhmZjAwMGZm
-ZiwgMHgwMDAwMDAwMCwKIAltbVNETUEwX0dGWF9JQl9DTlRMLCAweDgwMGYwMTExLCAweDAwMDAw
-MTAwLApAQCAtMTI5LDggKzEyMyw3IEBAIHN0YXRpYyBjb25zdCB1MzIgZ29sZGVuX3NldHRpbmdz
-X3BvbGFyaXMxMV9hMTFbXSA9CiAJbW1TRE1BMV9STEMxX0lCX0NOVEwsIDB4ODAwZjAxMTEsIDB4
-MDAwMDAxMDAsCiB9OwogCi1zdGF0aWMgY29uc3QgdTMyIGdvbGRlbl9zZXR0aW5nc19wb2xhcmlz
-MTBfYTExW10gPQoteworc3RhdGljIGNvbnN0IHUzMiBnb2xkZW5fc2V0dGluZ3NfcG9sYXJpczEw
-X2ExMVtdID0gewogCW1tU0RNQTBfQ0hJQ0tFTl9CSVRTLCAweGZjOTEwMDA3LCAweDAwODEwMDA3
-LAogCW1tU0RNQTBfQ0xLX0NUUkwsIDB4ZmYwMDBmZmYsIDB4MDAwMDAwMDAsCiAJbW1TRE1BMF9H
-RlhfSUJfQ05UTCwgMHg4MDBmMDExMSwgMHgwMDAwMDEwMCwKQEAgLTE0Myw4ICsxMzYsNyBAQCBz
-dGF0aWMgY29uc3QgdTMyIGdvbGRlbl9zZXR0aW5nc19wb2xhcmlzMTBfYTExW10gPQogCW1tU0RN
-QTFfUkxDMV9JQl9DTlRMLCAweDgwMGYwMTExLCAweDAwMDAwMTAwLAogfTsKIAotc3RhdGljIGNv
-bnN0IHUzMiBjel9nb2xkZW5fc2V0dGluZ3NfYTExW10gPQoteworc3RhdGljIGNvbnN0IHUzMiBj
-el9nb2xkZW5fc2V0dGluZ3NfYTExW10gPSB7CiAJbW1TRE1BMF9DSElDS0VOX0JJVFMsIDB4ZmM5
-MTAwMDcsIDB4MDA4MTAwMDcsCiAJbW1TRE1BMF9DTEtfQ1RSTCwgMHhmZjAwMGZmZiwgMHgwMDAw
-MDAwMCwKIAltbVNETUEwX0dGWF9JQl9DTlRMLCAweDAwMDAwMTAwLCAweDAwMDAwMTAwLApAQCAt
-MTU5LDIyICsxNTEsMTkgQEAgc3RhdGljIGNvbnN0IHUzMiBjel9nb2xkZW5fc2V0dGluZ3NfYTEx
-W10gPQogCW1tU0RNQTFfUkxDMV9JQl9DTlRMLCAweDAwMDAwMTAwLCAweDAwMDAwMTAwLAogfTsK
-IAotc3RhdGljIGNvbnN0IHUzMiBjel9tZ2NnX2NnY2dfaW5pdFtdID0KLXsKK3N0YXRpYyBjb25z
-dCB1MzIgY3pfbWdjZ19jZ2NnX2luaXRbXSA9IHsKIAltbVNETUEwX0NMS19DVFJMLCAweGZmMDAw
-ZmYwLCAweDAwMDAwMTAwLAogCW1tU0RNQTFfQ0xLX0NUUkwsIDB4ZmYwMDBmZjAsIDB4MDAwMDAx
-MDAKIH07CiAKLXN0YXRpYyBjb25zdCB1MzIgc3RvbmV5X2dvbGRlbl9zZXR0aW5nc19hMTFbXSA9
-Ci17CitzdGF0aWMgY29uc3QgdTMyIHN0b25leV9nb2xkZW5fc2V0dGluZ3NfYTExW10gPSB7CiAJ
-bW1TRE1BMF9HRlhfSUJfQ05UTCwgMHgwMDAwMDEwMCwgMHgwMDAwMDEwMCwKIAltbVNETUEwX1BP
-V0VSX0NOVEwsIDB4MDAwMDA4MDAsIDB4MDAwM2M4MDAsCiAJbW1TRE1BMF9STEMwX0lCX0NOVEws
-IDB4MDAwMDAxMDAsIDB4MDAwMDAxMDAsCiAJbW1TRE1BMF9STEMxX0lCX0NOVEwsIDB4MDAwMDAx
-MDAsIDB4MDAwMDAxMDAsCiB9OwogCi1zdGF0aWMgY29uc3QgdTMyIHN0b25leV9tZ2NnX2NnY2df
-aW5pdFtdID0KLXsKK3N0YXRpYyBjb25zdCB1MzIgc3RvbmV5X21nY2dfY2djZ19pbml0W10gPSB7
-CiAJbW1TRE1BMF9DTEtfQ1RSTCwgMHhmZmZmZmZmZiwgMHgwMDAwMDEwMCwKIH07CiAKQEAgLTMw
-MCw3ICsyODksOCBAQCBzdGF0aWMgaW50IHNkbWFfdjNfMF9pbml0X21pY3JvY29kZShzdHJ1Y3Qg
-YW1kZ3B1X2RldmljZSAqYWRldikKIAljYXNlIENISVBfU1RPTkVZOgogCQljaGlwX25hbWUgPSAi
-c3RvbmV5IjsKIAkJYnJlYWs7Ci0JZGVmYXVsdDogQlVHKCk7CisJZGVmYXVsdDoKKwkJQlVHKCk7
-CiAJfQogCiAJZm9yIChpID0gMDsgaSA8IGFkZXYtPnNkbWEubnVtX2luc3RhbmNlczsgaSsrKSB7
-CkBAIC0xNzAyLDggKzE2OTIsNyBAQCBzdGF0aWMgdm9pZCBzZG1hX3YzXzBfc2V0X3ZtX3B0ZV9m
-dW5jcyhzdHJ1Y3QgYW1kZ3B1X2RldmljZSAqYWRldikKIAlhZGV2LT52bV9tYW5hZ2VyLnZtX3B0
-ZV9udW1fc2NoZWRzID0gYWRldi0+c2RtYS5udW1faW5zdGFuY2VzOwogfQogCi1jb25zdCBzdHJ1
-Y3QgYW1kZ3B1X2lwX2Jsb2NrX3ZlcnNpb24gc2RtYV92M18wX2lwX2Jsb2NrID0KLXsKK2NvbnN0
-IHN0cnVjdCBhbWRncHVfaXBfYmxvY2tfdmVyc2lvbiBzZG1hX3YzXzBfaXBfYmxvY2sgPSB7CiAJ
-LnR5cGUgPSBBTURfSVBfQkxPQ0tfVFlQRV9TRE1BLAogCS5tYWpvciA9IDMsCiAJLm1pbm9yID0g
-MCwKQEAgLTE3MTEsOCArMTcwMCw3IEBAIGNvbnN0IHN0cnVjdCBhbWRncHVfaXBfYmxvY2tfdmVy
-c2lvbiBzZG1hX3YzXzBfaXBfYmxvY2sgPQogCS5mdW5jcyA9ICZzZG1hX3YzXzBfaXBfZnVuY3Ms
-CiB9OwogCi1jb25zdCBzdHJ1Y3QgYW1kZ3B1X2lwX2Jsb2NrX3ZlcnNpb24gc2RtYV92M18xX2lw
-X2Jsb2NrID0KLXsKK2NvbnN0IHN0cnVjdCBhbWRncHVfaXBfYmxvY2tfdmVyc2lvbiBzZG1hX3Yz
-XzFfaXBfYmxvY2sgPSB7CiAJLnR5cGUgPSBBTURfSVBfQkxPQ0tfVFlQRV9TRE1BLAogCS5tYWpv
-ciA9IDMsCiAJLm1pbm9yID0gMSwKLS0gCjIuMTcuMQo=
+Unlike when resolution change on keyframes, dynamic resolution change
+on inter frames doesn't allow to do a stream off/on sequence because
+it is need to keep all previous references alive to decode inter frames.
+This constraint have two main problems:
+- more memory consumption.
+- more buffers in use.
+To solve these issue this series introduce DELETE_BUFS ioctl and remove
+the 32 buffers limit per queue.
+
+VP9 conformance tests using fluster give a score of 210/305.
+The 24 resize inter tests (vp90-2-21-resize_inter_* files) are ok
+but require to use postprocessor.
+
+Kernel branch is available here:
+https://gitlab.collabora.com/benjamin.gaignard/for-upstream/-/commits/remove_vb2_queue_limit_v5
+
+GStreamer branch to use DELETE_BUF ioctl and testing dynamic resolution
+change is here:
+https://gitlab.freedesktop.org/benjamin.gaignard1/gstreamer/-/commits/VP9_drc
+
+changes in version 5
+- Rework offset cookie encoding pattern is n ow the first patch of the
+  serie.
+- Use static array instead of allocated one for postprocessor buffers.
+
+changes in version 4:
+- Stop using Xarray, instead let queues decide about their own maximum
+  number of buffer and allocate bufs array given that value.
+- Rework offset cookie encoding pattern.
+- Change DELETE_BUF to DELETE_BUFS because it now usable for
+  range of buffer to be symetrical of CREATE_BUFS.
+- Add fixes tags on couple of Verisilicon related patches.
+- Be smarter in Verisilicon postprocessor buffers management.
+- Rebase on top of v6.4
+
+changes in version 3:
+- Use Xarray API to store allocated video buffers.
+- No module parameter to limit the number of buffer per queue.
+- Use Xarray inside Verisilicon driver to store postprocessor buffers
+  and remove VB2_MAX_FRAME limit.
+- Allow Versilicon driver to change of resolution while streaming
+- Various fixes the Verisilicon VP9 code to improve fluster score.
+ 
+changes in version 2:
+- Use a dynamic array and not a list to keep trace of allocated buffers.
+  Not use IDR interface because it is marked as deprecated in kernel
+  documentation.
+- Add a module parameter to limit the number of buffer per queue.
+- Add DELETE_BUF ioctl and m2m helpers.
+
+Regards,
+Benjamin
+ 
+Benjamin Gaignard (10):
+  media: videobuf2: Rework offset 'cookie' encoding pattern
+  media: videobuf2: Access vb2_queue bufs array through helper functions
+  media: videobuf2: Be more flexible on the number of queue stored
+    buffers
+  media: verisilicon: Refactor postprocessor to store more buffers
+  media: verisilicon: Store chroma and motion vectors offset
+  media: verisilicon: vp9: Use destination buffer height to compute
+    chroma offset
+  media: verisilicon: postproc: Fix down scale test
+  media: verisilicon: vp9: Allow to change resolution while streaming
+  media: v4l2: Add DELETE_BUFS ioctl
+  media: v4l2: Add mem2mem helpers for DELETE_BUFS ioctl
+
+ .../userspace-api/media/v4l/user-func.rst     |   1 +
+ .../media/v4l/vidioc-delete-bufs.rst          |  73 +++++
+ .../media/common/videobuf2/videobuf2-core.c   | 304 +++++++++++++-----
+ .../media/common/videobuf2/videobuf2-v4l2.c   |  44 ++-
+ drivers/media/platform/amphion/vpu_dbg.c      |  22 +-
+ .../platform/mediatek/jpeg/mtk_jpeg_core.c    |   6 +-
+ .../vcodec/decoder/vdec/vdec_vp9_req_lat_if.c |   2 +-
+ drivers/media/platform/st/sti/hva/hva-v4l2.c  |   4 +
+ drivers/media/platform/verisilicon/hantro.h   |   9 +-
+ .../media/platform/verisilicon/hantro_drv.c   |   4 +-
+ .../platform/verisilicon/hantro_g2_vp9_dec.c  |  10 +-
+ .../media/platform/verisilicon/hantro_hw.h    |   4 +-
+ .../platform/verisilicon/hantro_postproc.c    |  95 ++++--
+ .../media/platform/verisilicon/hantro_v4l2.c  |  27 +-
+ drivers/media/test-drivers/vim2m.c            |   1 +
+ drivers/media/test-drivers/visl/visl-dec.c    |  28 +-
+ drivers/media/v4l2-core/v4l2-dev.c            |   1 +
+ drivers/media/v4l2-core/v4l2-ioctl.c          |  17 +
+ drivers/media/v4l2-core/v4l2-mem2mem.c        |  20 ++
+ .../staging/media/atomisp/pci/atomisp_ioctl.c |   2 +-
+ include/media/v4l2-ioctl.h                    |   4 +
+ include/media/v4l2-mem2mem.h                  |  12 +
+ include/media/videobuf2-core.h                |  13 +-
+ include/media/videobuf2-v4l2.h                |  11 +
+ include/uapi/linux/videodev2.h                |  17 +
+ 25 files changed, 584 insertions(+), 147 deletions(-)
+ create mode 100644 Documentation/userspace-api/media/v4l/vidioc-delete-bufs.rst
+
+-- 
+2.39.2
+
