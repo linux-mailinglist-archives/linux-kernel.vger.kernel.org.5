@@ -2,144 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B18DB786472
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 03:05:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF2E5786477
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 03:08:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238958AbjHXBF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 21:05:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58628 "EHLO
+        id S238963AbjHXBIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 21:08:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238945AbjHXBFR (ORCPT
+        with ESMTP id S238976AbjHXBHu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 21:05:17 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F685101
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 18:05:15 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d7494be34f8so4814287276.2
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 18:05:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692839115; x=1693443915;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ciPsiCz8yRdds7TlQN57K1bIWKakCjV9gzutuPf6Vpo=;
-        b=SdedHeyF9zT2I6oXPzI3C3PP/mWA2v6GF689lF8eMP3dYY9zcq9TQv9ARwOxgX4hrk
-         Zc5rVcfASn1P8Ce9MK7mx6CzUikF7D+F7l2TsNdlaj3W8xMAz6sSb+fpJ5YhVPUOV8WT
-         3+vbvQJCr2xSG4Xp/m/XuwsFtx0wd6025Wnk/9AqbavbE7cNMyIPsRr+iwGfx2cGg+IB
-         xuGAH13yQvPFe78Kzsi4xwEf5ceBfXz0TVVkhtrrbmE5oEsohONv9ysIsLjRgGnY3dXB
-         Kfgj+OuUi2tKEbrtIT3d7lgfoCiM6UkB9cutLawQZYqyrIpM70ykbE2jqYBufK8V9w8/
-         IWRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692839115; x=1693443915;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ciPsiCz8yRdds7TlQN57K1bIWKakCjV9gzutuPf6Vpo=;
-        b=gP9IFCcjAMo/ajJzNG+XGpzW9OF6SRfh3ir62uwU4LHCgb9W7sQEB+WD6pAMkC0PMK
-         L0hl13dDNTnuF+9AAEGMZFclY/2kHz+zMAeTa9RSogD5lzShvkTQhYPLomves1pOKjIt
-         6pOI13dr11id/H203w9oSM9XgptV6NTtYjOFVutwN6P7fWZnkbj9+XH8eniZDBSEbN7Y
-         aKMSV9upvXk/oNN6I1gCTZZI5v/AFloJvQvCCm+2yrYybdIRYGdibzbFlcH3Xw4ms6g9
-         UcEfGgje1z2Cs506WA1RAoXOOH0pQy1vWM4A8MH1oRZKVFtofZlmuGadrsF+UvVSojmr
-         ECBA==
-X-Gm-Message-State: AOJu0YybKkvfPKCMHgh/s6QTN5wuHJJUzqFHvfXdq8jAULqdHk8kNPI8
-        fMJq+Q41Njd9GgvbtNg2UvYKOY5elss=
-X-Google-Smtp-Source: AGHT+IGvZeYDmJ5qRDwkuav3SWHa2ryrgfkFo061XRpAtQVhMvYGtZtAxM56ojlm5rlYbmzFAkShwllBI4Q=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:ce14:0:b0:c15:cbd1:60da with SMTP id
- x20-20020a25ce14000000b00c15cbd160damr178097ybe.6.1692839114887; Wed, 23 Aug
- 2023 18:05:14 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Wed, 23 Aug 2023 18:05:12 -0700
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.42.0.rc2.253.gd59a3bf2b4-goog
-Message-ID: <20230824010512.2714931-1-seanjc@google.com>
-Subject: [PATCH 5.15] Revert "KVM: x86: enable TDP MMU by default"
-From:   Sean Christopherson <seanjc@google.com>
-To:     stable@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 23 Aug 2023 21:07:50 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62B6B10DD;
+        Wed, 23 Aug 2023 18:07:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692839268; x=1724375268;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Lv3S5ouPY4y8kBlrKh8HvQ7grObroP43ydep697gLqI=;
+  b=a5I0tUszl+mpvTLZPg1OibIlsCUR/iZ3eRRtCUDARq9Y+YfgwG9dqqwq
+   GLkRm27YP5I2xDG32ixR997AACIFFe1k9yalLwmS3F3d/QDGGU3zlvxkN
+   LLazE4WRGXYbRnUmyorWzW+2A6QaD2BDHm2t+L82CczzTr/GLKbJIGq1I
+   EpM3l1AJZhxNnQpZWFEMRo5tjK7CBE9zar2vcKtXapf4UZZm55Q5ABQY2
+   IVhoQNKBC15cp/S1CQJfoiU1+OT3DVrL+awu8rMz1oHrszzaCzHb+kYDO
+   JBhUDVNOYf/cWCz2o/oirxqiDyfURcclWfta5EEInvK2ZTreQ+Xqv6UUe
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="438244454"
+X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
+   d="scan'208";a="438244454"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2023 18:07:47 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="826935169"
+X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
+   d="scan'208";a="826935169"
+Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 23 Aug 2023 18:07:44 -0700
+Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qYyp5-0001dw-2S;
+        Thu, 24 Aug 2023 01:07:43 +0000
+Date:   Thu, 24 Aug 2023 09:07:27 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Brian Norris <briannorris@chromium.org>,
+        Kalle Valo <kvalo@kernel.org>,
+        Amitkumar Karwar <akarwar@marvell.com>,
+        Xinming Hu <huxm@marvell.com>, Dan Williams <dcbw@redhat.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH 3/3] wifi: mwifiex: Sanity check tlv_len and
+ tlv_bitmap_len
+Message-ID: <202308240844.leyoOwdG-lkp@intel.com>
+References: <587423b0737108effe82aefed4407daca39e9a51.1692829410.git.gustavoars@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <587423b0737108effe82aefed4407daca39e9a51.1692829410.git.gustavoars@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Disable the TDP MMU by default in v5.15 kernels to "fix" several severe
-performance bugs that have since been found and fixed in the TDP MMU, but
-are unsuitable for backporting to v5.15.
+Hi Gustavo,
 
-The problematic bugs are fixed by upstream commit edbdb43fc96b ("KVM:
-x86: Preserve TDP MMU roots until they are explicitly invalidated") and
-commit 01b31714bd90 ("KVM: x86: Do not unload MMU roots when only toggling
-CR0.WP with TDP enabled").  Both commits fix scenarios where KVM will
-rebuild all TDP MMU page tables in paths that are frequently hit by
-certain guest workloads.  While not exactly common, the guest workloads
-are far from rare.  The fallout of rebuilding TDP MMU page tables can be
-so severe in some cases that it induces soft lockups in the guest.
+kernel test robot noticed the following build warnings:
 
-Commit edbdb43fc96b would require _significant_ effort and churn to
-backport due it depending on a major rework that was done in v5.18.
+[auto build test WARNING on linus/master]
+[also build test WARNING on v6.5-rc7 next-20230823]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Commit 01b31714bd90 has far fewer direct conflicts, but has several subtle
-_known_ dependencies, and it's unclear whether or not there are more
-unknown dependencies that have been missed.
+url:    https://github.com/intel-lab-lkp/linux/commits/Gustavo-A-R-Silva/wifi-mwifiex-Fix-tlv_buf_left-calculation/20230824-063517
+base:   linus/master
+patch link:    https://lore.kernel.org/r/587423b0737108effe82aefed4407daca39e9a51.1692829410.git.gustavoars%40kernel.org
+patch subject: [PATCH 3/3] wifi: mwifiex: Sanity check tlv_len and tlv_bitmap_len
+config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20230824/202308240844.leyoOwdG-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20230824/202308240844.leyoOwdG-lkp@intel.com/reproduce)
 
-Lastly, disabling the TDP MMU in v5.15 kernels also fixes a lurking train
-wreck started by upstream commit a955cad84cda ("KVM: x86/mmu: Retry page
-fault if root is invalidated by memslot update").  That commit was tagged
-for stable to fix a memory leak, but didn't cherry-pick cleanly and was
-never backported to v5.15.  Which is extremely fortunate, as it introduced
-not one but two bugs, one of which was fixed by upstream commit
-18c841e1f411 ("KVM: x86: Retry page fault if MMU reload is pending and
-root has no sp"), while the other was unknowingly fixed by upstream
-commit ba6e3fe25543 ("KVM: x86/mmu: Grab mmu_invalidate_seq in
-kvm_faultin_pfn()") in v6.3 (a one-off fix will be made for v6.1 kernels,
-which did receive a backport for a955cad84cda).  Disabling the TDP MMU
-by default reduces the probability of breaking v5.15 kernels by
-backporting only a subset of the fixes.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308240844.leyoOwdG-lkp@intel.com/
 
-As far as what is lost by disabling the TDP MMU, the main selling point of
-the TDP MMU is its ability to service page fault VM-Exits in parallel,
-i.e. the main benefactors of the TDP MMU are deployments of large VMs
-(hundreds of vCPUs), and in particular delployments that live-migrate such
-VMs and thus need to fault-in huge amounts of memory on many vCPUs after
-restarting the VM after migration.
+All warnings (new ones prefixed by >>):
 
-Smaller VMs can see performance improvements, but nowhere enough to make
-up for the TDP MMU (in v5.15) absolutely cratering performance for some
-workloads.  And practically speaking, anyone that is deploying and
-migrating VMs with hundreds of vCPUs is likely rolling their own kernel,
-not using a stock v5.15 series kernel.
+   In file included from drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c:12:
+   drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c: In function 'mwifiex_11n_rxba_sync_event':
+>> drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c:926:37: warning: format '%ld' expects argument of type 'long int', but argument 4 has type 'size_t' {aka 'unsigned int'} [-Wformat=]
+     926 |                                     "TLV size (%ld) overflows event_buf (%d)\n",
+         |                                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     927 |                                     size_add(sizeof(tlv_rxba->header), tlv_len),
+         |                                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         |                                     |
+         |                                     size_t {aka unsigned int}
+   drivers/net/wireless/marvell/mwifiex/main.h:199:51: note: in definition of macro 'mwifiex_dbg'
+     199 |         _mwifiex_dbg(adapter, MWIFIEX_DBG_##mask, fmt, ##__VA_ARGS__)
+         |                                                   ^~~
+   drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c:926:50: note: format string is defined here
+     926 |                                     "TLV size (%ld) overflows event_buf (%d)\n",
+         |                                                ~~^
+         |                                                  |
+         |                                                  long int
+         |                                                %d
+   drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c:942:37: warning: format '%ld' expects argument of type 'long int', but argument 4 has type 'size_t' {aka 'unsigned int'} [-Wformat=]
+     942 |                                     "TLV size (%ld) overflows event_buf (%d)\n",
+         |                                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     943 |                                     size_add(sizeof(*tlv_rxba), tlv_bitmap_len),
+         |                                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         |                                     |
+         |                                     size_t {aka unsigned int}
+   drivers/net/wireless/marvell/mwifiex/main.h:199:51: note: in definition of macro 'mwifiex_dbg'
+     199 |         _mwifiex_dbg(adapter, MWIFIEX_DBG_##mask, fmt, ##__VA_ARGS__)
+         |                                                   ^~~
+   drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c:942:50: note: format string is defined here
+     942 |                                     "TLV size (%ld) overflows event_buf (%d)\n",
+         |                                                ~~^
+         |                                                  |
+         |                                                  long int
+         |                                                %d
 
-This reverts commit 71ba3f3189c78f756a659568fb473600fd78f207.
 
-Link: https://lore.kernel.org/all/ZDmEGM+CgYpvDLh6@google.com
-Link: https://lore.kernel.org/all/f023d927-52aa-7e08-2ee5-59a2fbc65953@gameservers.com
-Cc: Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
-Cc: Mathias Krause <minipli@grsecurity.net>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/mmu/tdp_mmu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+vim +926 drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c
 
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index 6c2bb60ccd88..7a64fb238044 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.c
-+++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -10,7 +10,7 @@
- #include <asm/cmpxchg.h>
- #include <trace/events/kvm.h>
- 
--static bool __read_mostly tdp_mmu_enabled = true;
-+static bool __read_mostly tdp_mmu_enabled = false;
- module_param_named(tdp_mmu, tdp_mmu_enabled, bool, 0644);
- 
- /* Initializes the TDP MMU for the VM, if enabled. */
+   904	
+   905	/* This function handles rxba_sync event
+   906	 */
+   907	void mwifiex_11n_rxba_sync_event(struct mwifiex_private *priv,
+   908					 u8 *event_buf, u16 len)
+   909	{
+   910		struct mwifiex_ie_types_rxba_sync *tlv_rxba = (void *)event_buf;
+   911		u16 tlv_type, tlv_len;
+   912		struct mwifiex_rx_reorder_tbl *rx_reor_tbl_ptr;
+   913		u8 i, j;
+   914		u16 seq_num, tlv_seq_num, tlv_bitmap_len;
+   915		int tlv_buf_left = len;
+   916		int ret;
+   917		u8 *tmp;
+   918	
+   919		mwifiex_dbg_dump(priv->adapter, EVT_D, "RXBA_SYNC event:",
+   920				 event_buf, len);
+   921		while (tlv_buf_left > sizeof(*tlv_rxba)) {
+   922			tlv_type = le16_to_cpu(tlv_rxba->header.type);
+   923			tlv_len  = le16_to_cpu(tlv_rxba->header.len);
+   924			if (size_add(sizeof(tlv_rxba->header), tlv_len) > tlv_buf_left) {
+   925				mwifiex_dbg(priv->adapter, WARN,
+ > 926					    "TLV size (%ld) overflows event_buf (%d)\n",
 
-base-commit: f6f7927ac664ba23447f8dd3c3dfe2f4ee39272f
 -- 
-2.42.0.rc2.253.gd59a3bf2b4-goog
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
