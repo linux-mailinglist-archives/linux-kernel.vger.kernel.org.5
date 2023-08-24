@@ -2,97 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 313B3786C1D
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 11:37:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F2F2786C26
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 11:39:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240454AbjHXJg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 05:36:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52142 "EHLO
+        id S240692AbjHXJih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 05:38:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240610AbjHXJgn (ORCPT
+        with ESMTP id S240694AbjHXJiW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 05:36:43 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A82010DA;
-        Thu, 24 Aug 2023 02:36:41 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        Thu, 24 Aug 2023 05:38:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7264D198A
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 02:37:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692869852;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=uZHW7/YdobFQu4b8Ky8EljlQfqzf6RTBcoIhE6B2qYY=;
+        b=c6LBaqPbj069erkOOXna9rd9PaeUMmOreassVB65qd4n2lTvdPcMMPrYRkOfmnC12DPaT3
+        1MQk/OX7I6+VU51rYKpJHr1UicP/gdOuI6mt8H2Ec3Xe29TSPFSaHxgfguuzcHEN6OIJda
+        +EXMfwI61RMk0ZIR3Q40vkkoMALUus0=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-158-gOjt71FkNzGmanITnBlIvw-1; Thu, 24 Aug 2023 05:37:28 -0400
+X-MC-Unique: gOjt71FkNzGmanITnBlIvw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D3BD763879;
-        Thu, 24 Aug 2023 09:36:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B2A0C433C7;
-        Thu, 24 Aug 2023 09:36:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692869800;
-        bh=a4WM35KDIx9u2vIQWbx5TpnqxyINKnrnAWFNYPvujLs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=V70/DIn+dP/B+UgCZtuMEuNczXQxgInNYnXeyNbONvHj0vlkZ20eFadCW47nNo/IV
-         0d4APK6vgqBSS9bt4cU91r68XuvwUYHudHHa1PtDeQPGyrdocmbTv8bi4/MXbWvdPa
-         RgLlQYukncys6CZZoExSESqeUgBHSTB1PfJKATAViU+2F214yI7d1PgWrzsUzY+Bbr
-         CIElFeH+cEVJsG0Vh2+cdcF0RMtIpa1CyluWJI/vtGwuoCvPPgS1WcVh0PO6B3xLJ5
-         Hr7i19oWkk9/odoJj8TMqCS4S5cpPymhKD7MncnQojrYdByFHo/O4o9Zd2x7wlSX3F
-         EqSMADzLpdRwg==
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-4ff8f2630e3so10395890e87.1;
-        Thu, 24 Aug 2023 02:36:40 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yw4xtj3DAP6bk9TZIYLP5CMTZkgYoakXih8jtBfvL7pir1THyh2
-        eIl0Krgt8LUnCS0Ey7qMQ15//H9f+MyZxcvChfk=
-X-Google-Smtp-Source: AGHT+IEDjp4tvUZBDNVVjbgpu7zoJGI6qrScodL2WqnvOWVnQR8xPb2yhK9UzribHjY2bnTfEAZzejMN1oekQgB54Dc=
-X-Received: by 2002:a05:6512:2247:b0:500:83d0:a0ee with SMTP id
- i7-20020a056512224700b0050083d0a0eemr9871915lfu.69.1692869798252; Thu, 24 Aug
- 2023 02:36:38 -0700 (PDT)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 859D8101A528;
+        Thu, 24 Aug 2023 09:37:27 +0000 (UTC)
+Received: from laptop.redhat.com (unknown [10.39.193.143])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 60C4B6B2B2;
+        Thu, 24 Aug 2023 09:37:25 +0000 (UTC)
+From:   Eric Auger <eric.auger@redhat.com>
+To:     eric.auger.pro@gmail.com, eric.auger@redhat.com, elic@nvidia.com,
+        mail@anirudhrb.com, jasowang@redhat.com, mst@redhat.com,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        netdev@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        kvmarm@lists.linux.dev
+Cc:     stable@vger.kernel.org
+Subject: [PATCH v2] vhost: Allow null msg.size on VHOST_IOTLB_INVALIDATE
+Date:   Thu, 24 Aug 2023 11:37:22 +0200
+Message-ID: <20230824093722.249291-1-eric.auger@redhat.com>
 MIME-Version: 1.0
-References: <20230823215159.29082-1-mikel@mikelr.com>
-In-Reply-To: <20230823215159.29082-1-mikel@mikelr.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 24 Aug 2023 11:36:26 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXGVMcMqQwaFizX+T+YUKrFcVfPgWhU3GuPfdH=CbFV4sg@mail.gmail.com>
-Message-ID: <CAMj1kXGVMcMqQwaFizX+T+YUKrFcVfPgWhU3GuPfdH=CbFV4sg@mail.gmail.com>
-Subject: Re: [PATCH] x86/efistub: Fix PCI ROM preservation in mixed mode
-To:     Mikel Rychliski <mikel@mikelr.com>
-Cc:     Ingo Molnar <mingo@kernel.org>, linux-efi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 23 Aug 2023 at 23:53, Mikel Rychliski <mikel@mikelr.com> wrote:
->
-> preserve_pci_rom_image() was accessing the romsize field in
-> efi_pci_io_protocol_t directly instead of using the efi_table_attr()
-> helper. This prevents the ROM image from being saved correctly during a
-> mixed mode boot.
->
-> Fixes: 2c3625cb9fa2 ("efi/x86: Fold __setup_efi_pci32() and __setup_efi_pci64() into one function")
-> Signed-off-by: Mikel Rychliski <mikel@mikelr.com>
+Commit e2ae38cf3d91 ("vhost: fix hung thread due to erroneous iotlb
+entries") Forbade vhost iotlb msg with null size to prevent entries
+with size = start = 0 and last = ULONG_MAX to end up in the iotlb.
 
-Thanks, I've queued this up as a fix.
+Then commit 95932ab2ea07 ("vhost: allow batching hint without size")
+only applied the check for VHOST_IOTLB_UPDATE and VHOST_IOTLB_INVALIDATE
+message types to fix a regression observed with batching hit.
 
+Still, the introduction of that check introduced a regression for
+some users attempting to invalidate the whole ULONG_MAX range by
+setting the size to 0. This is the case with qemu/smmuv3/vhost
+integration which does not work anymore. It Looks safe to partially
+revert the original commit and allow VHOST_IOTLB_INVALIDATE messages
+with null size. vhost_iotlb_del_range() will compute a correct end
+iova. Same for vhost_vdpa_iotlb_unmap().
 
-> ---
->  drivers/firmware/efi/libstub/x86-stub.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/firmware/efi/libstub/x86-stub.c b/drivers/firmware/efi/libstub/x86-stub.c
-> index e976288728e9..2fee52ed335d 100644
-> --- a/drivers/firmware/efi/libstub/x86-stub.c
-> +++ b/drivers/firmware/efi/libstub/x86-stub.c
-> @@ -72,7 +72,7 @@ preserve_pci_rom_image(efi_pci_io_protocol_t *pci, struct pci_setup_rom **__rom)
->         rom->data.type  = SETUP_PCI;
->         rom->data.len   = size - sizeof(struct setup_data);
->         rom->data.next  = 0;
-> -       rom->pcilen     = pci->romsize;
-> +       rom->pcilen     = romsize;
->         *__rom = rom;
->
->         status = efi_call_proto(pci, pci.read, EfiPciIoWidthUint16,
-> --
-> 2.35.3
->
+Signed-off-by: Eric Auger <eric.auger@redhat.com>
+Fixes: e2ae38cf3d91 ("vhost: fix hung thread due to erroneous iotlb entries")
+Cc: stable@vger.kernel.org # v5.17+
+Acked-by: Jason Wang <jasowang@redhat.com>
+
+---
+v1 -> v2:
+- Added Cc stable and Jason's Acked-by
+---
+ drivers/vhost/vhost.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
+index c71d573f1c94..e0c181ad17e3 100644
+--- a/drivers/vhost/vhost.c
++++ b/drivers/vhost/vhost.c
+@@ -1458,9 +1458,7 @@ ssize_t vhost_chr_write_iter(struct vhost_dev *dev,
+ 		goto done;
+ 	}
+ 
+-	if ((msg.type == VHOST_IOTLB_UPDATE ||
+-	     msg.type == VHOST_IOTLB_INVALIDATE) &&
+-	     msg.size == 0) {
++	if (msg.type == VHOST_IOTLB_UPDATE && msg.size == 0) {
+ 		ret = -EINVAL;
+ 		goto done;
+ 	}
+-- 
+2.41.0
+
