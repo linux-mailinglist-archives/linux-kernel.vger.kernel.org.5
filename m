@@ -2,55 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25B65786808
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 09:02:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5BD578680C
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 09:04:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240266AbjHXHBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 03:01:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59058 "EHLO
+        id S240060AbjHXHEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 03:04:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235590AbjHXHBW (ORCPT
+        with ESMTP id S232346AbjHXHDa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 03:01:22 -0400
-Received: from mail-pf1-f206.google.com (mail-pf1-f206.google.com [209.85.210.206])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D48F9E7C
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 00:01:13 -0700 (PDT)
-Received: by mail-pf1-f206.google.com with SMTP id d2e1a72fcca58-68a56401b5bso5298790b3a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 00:01:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692860473; x=1693465273;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+        Thu, 24 Aug 2023 03:03:30 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 775071728
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 00:03:09 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-99bcc0adab4so831151366b.2
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 00:03:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692860588; x=1693465388;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=g8QLJ93H/zrO//rMAevhu8RWkecEt3CkKbeVnQwZKcc=;
-        b=UOnZMqtQimDcNdhPpyJ8xvTMW7c/qbenQD0CRZuSzYCFS0zSRVBmAVklpUMpUZTlIb
-         eQzv7dICECxwqpy51CQx3s6Bg54dfA1+C4pb/cml0r2Iai85GhsKyEmW+ZE+M8zTksv1
-         3Q19+TNdph6Ib4pmNS3iWfiBvqsg35L3b2dQhWjrxkbnDenyhy3TPMGDDohTJf/UNH+W
-         Lc7IHurgzbAPukAN9UtXbyX9bk7W8XxF6V2xHzkVuH53SOhDSdMQlkIPzCFfr7dPxyNy
-         s2hG/GDaUzwIfxPYnwPoGFuBuPEm9APk1GYaORUf4N1x2NgUP/ANvbF8JBxX1vB0rOtY
-         bARQ==
-X-Gm-Message-State: AOJu0YwnAoxtvMf32MzrHdq2ZMfEW25/GUxo8shAZMJvLKhWMRsliVv3
-        rddDpOrYIkoXWaV+uh/lRpPTuabOZl6uWWntm6yNW0Fpv3cl
-X-Google-Smtp-Source: AGHT+IF5s8TGinkAiQnXtWBdxCLtRr8vJbFKfzTX0KZYjlH1RVf3WytudqydgLn/voM2m7jKbRBavCab/QbB0lVdRkzNY8/HWR1+
+        bh=P45nAftBMkI9aO/uXRibti5ezjszBIQ2T+bQqiHAg7Y=;
+        b=J/3793hrGTYLIQrFLs/3h4rLwByn+HYPUKOvdOVBZlRd49ONEBMKcLI2nh5WpE7pOo
+         UsO/Bvg2lPXd1bP9iKhA5AWiUX6XfhUQ9I7QIgiG0uwfzuW8NctmXlwOh/F8qgAiJyKH
+         nQpgGOy6tYTYHe06Z8P5v1zwdNuegaggmRC4G0ZkHv8NM7TXLgDRQzWq1L81IEoj6HgL
+         p8VZmyGRCuFgu7t3pVqyL6T8NSQ95KBB+hbbbBjBHx2wMwnztJGjGSXdwmyfvG7r9p7E
+         d2nJS14n/zfM5s3aoHnG3GMK8MrT1Gfh+3NFsWKnF7uuIFix3AXhtQkqZPYGyZN571kZ
+         ZrFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692860588; x=1693465388;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=P45nAftBMkI9aO/uXRibti5ezjszBIQ2T+bQqiHAg7Y=;
+        b=ROIR77JdGlnBiDKQi9oe18ZRhdAqepkx3ZCzxSMBIt34vEYST8CFrntW1RKXU0wnu7
+         KxwSvTtsTjtzRYZE3a2xi0TQ8k21fkFRfIDGjfopZymqz71oLchSvptl9n9vS90nAGQr
+         LIEx3zR5+t5Lh1Fszq+4qXez/Jo7UuWLvlikw7XzK23KkpxtD3nTOvI86mzQSZVyL/lF
+         kZwyQ1UlHMnzaU9QwZugoOjqkGJIH9GleJzwvuejm+hYDGP90vk3vIbE/NKPQo5bE/it
+         rVJTC/CHlwNrlYiKN62zlXa7nciinl/AG13PoWTt04PXRJIXzv6h1zLCR4MnQ8wmndGo
+         icFw==
+X-Gm-Message-State: AOJu0Ywu7zsyNPLKQArc2Ykg5ImvvpblnFzlAMX9ndTwAfactNIXLHLR
+        0wwwhziuB/9DIoIAITelXem0Yg==
+X-Google-Smtp-Source: AGHT+IG9k8iOK1esFA6zAJ01EbUnrxPhvANPyRf1UsmBAx7WseNQfibQsTJkl94LBBFoLMX8n0VUjQ==
+X-Received: by 2002:a17:907:2c54:b0:9a2:1e03:1572 with SMTP id hf20-20020a1709072c5400b009a21e031572mr305572ejc.19.1692860587958;
+        Thu, 24 Aug 2023 00:03:07 -0700 (PDT)
+Received: from [192.168.0.22] ([77.252.47.198])
+        by smtp.gmail.com with ESMTPSA id c8-20020a170906528800b009887f4e0291sm10559750ejm.27.2023.08.24.00.03.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Aug 2023 00:03:07 -0700 (PDT)
+Message-ID: <413bb886-a734-e607-8dd3-79ee501416b2@linaro.org>
+Date:   Thu, 24 Aug 2023 09:03:05 +0200
 MIME-Version: 1.0
-X-Received: by 2002:a05:6a00:180c:b0:686:2ad5:d132 with SMTP id
- y12-20020a056a00180c00b006862ad5d132mr7930789pfa.5.1692860473296; Thu, 24 Aug
- 2023 00:01:13 -0700 (PDT)
-Date:   Thu, 24 Aug 2023 00:01:13 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002a4da90603a5cbbf@google.com>
-Subject: [syzbot] [dri?] kernel BUG in vmf_insert_pfn_prot (2)
-From:   syzbot <syzbot+398e17b61dab22cc56bc@syzkaller.appspotmail.com>
-To:     airlied@gmail.com, christian.koenig@amd.com, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        sumit.semwal@linaro.org, syzkaller-bugs@googlegroups.com,
-        tzimmermann@suse.de
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v1 2/5] ASoC: dt-bindings: Add schema for
+ "allwinner,sun20i-d1-codec-analog"
+Content-Language: en-US
+To:     Maxim Kiselev <bigunclemax@gmail.com>,
+        Rob Herring <robh@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-riscv@lists.infradead.org
+References: <20230805180506.718364-1-bigunclemax@gmail.com>
+ <20230805180506.718364-3-bigunclemax@gmail.com>
+ <20230821154739.GA1720453-robh@kernel.org>
+ <CALHCpMjoxV+sUh6KSVXfEcWgc_ETBHWo2a7xHMT-nKS2xBYOvQ@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <CALHCpMjoxV+sUh6KSVXfEcWgc_ETBHWo2a7xHMT-nKS2xBYOvQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,148 +94,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 23/08/2023 18:13, Maxim Kiselev wrote:
+> пн, 21 авг. 2023 г. в 19:47, Rob Herring <robh@kernel.org>:
+>>
+>> On Sat, Aug 05, 2023 at 09:05:02PM +0300, Maksim Kiselev wrote:
+>>> Add a DT schema to describe the analog part of the Allwinner D1/T113s
+>>> internal audio codec.
+>>>
+>>> Signed-off-by: Maksim Kiselev <bigunclemax@gmail.com>
+>>> ---
+>>>  .../allwinner,sun20i-d1-codec-analog.yaml     | 33 +++++++++++++++++++
+>>>  1 file changed, 33 insertions(+)
+>>>  create mode 100644 Documentation/devicetree/bindings/sound/allwinner,sun20i-d1-codec-analog.yaml
+>>
+>> Looks the same as allwinner,sun8i-a23-codec-analog.yaml. Why can't you
+>> use that?
+>>
+> Hmm. You're right. But let me explain my decision :)
+> When I added a new file, I assumed that since this is a separate driver,
+> then the binding should be in a separate file.
 
-syzbot found the following issue on:
+Driver architecture of one give OS does not matter for the bindings.
 
-HEAD commit:    9e6c269de404 Merge tag 'i2c-for-6.5-rc7' of git://git.kern..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=110b32d3a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=aa796b6080b04102
-dashboard link: https://syzkaller.appspot.com/bug?extid=398e17b61dab22cc56bc
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14284307a80000
+Best regards,
+Krzysztof
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/481d8421bfb2/disk-9e6c269d.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/5ec626f94634/vmlinux-9e6c269d.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/ab1e59619bd6/bzImage-9e6c269d.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+398e17b61dab22cc56bc@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-kernel BUG at mm/memory.c:2214!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 0 PID: 5157 Comm: syz-executor.3 Not tainted 6.5.0-rc6-syzkaller-00253-g9e6c269de404 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-RIP: 0010:vmf_insert_pfn_prot+0x247/0x430 mm/memory.c:2214
-Code: 0f 0b e8 0c 4f c0 ff 49 89 ef bf 20 00 00 00 41 83 e7 28 4c 89 fe e8 88 4a c0 ff 49 83 ff 20 0f 85 aa fe ff ff e8 e9 4e c0 ff <0f> 0b 48 bd ff ff ff ff ff ff 0f 00 e8 d8 4e c0 ff 4c 89 f6 48 89
-RSP: 0018:ffffc9000415f750 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff8880275a0d00 RCX: 0000000000000000
-RDX: ffff888018379dc0 RSI: ffffffff81c5b9b7 RDI: 0000000000000007
-RBP: 000000000c140477 R08: 0000000000000007 R09: 0000000000000020
-R10: 0000000000000020 R11: 000000000000001f R12: 0000000020ffc000
-R13: 1ffff9200082beeb R14: 000000000007e79e R15: 0000000000000020
-FS:  00007f235bd9a6c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020ffc000 CR3: 0000000022a32000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- drm_gem_shmem_fault+0x1ea/0x3a0 drivers/gpu/drm/drm_gem_shmem_helper.c:563
- __do_fault+0x107/0x5f0 mm/memory.c:4198
- do_read_fault mm/memory.c:4547 [inline]
- do_fault mm/memory.c:4670 [inline]
- do_pte_missing mm/memory.c:3664 [inline]
- handle_pte_fault mm/memory.c:4939 [inline]
- __handle_mm_fault+0x27e0/0x3b80 mm/memory.c:5079
- handle_mm_fault+0x2ab/0x9d0 mm/memory.c:5233
- do_user_addr_fault+0x446/0xfc0 arch/x86/mm/fault.c:1392
- handle_page_fault arch/x86/mm/fault.c:1486 [inline]
- exc_page_fault+0x5c/0xd0 arch/x86/mm/fault.c:1542
- asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:570
-RIP: 0010:rep_movs_alternative+0x4a/0xb0 arch/x86/lib/copy_user_64.S:71
-Code: 75 f1 c3 66 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 8b 06 48 89 07 48 83 c6 08 48 83 c7 08 83 e9 08 74 df 83 f9 08 73 e8 eb c9 <f3> a4 c3 0f 1f 00 4c 8b 06 4c 8b 4e 08 4c 8b 56 10 4c 8b 5e 18 4c
-RSP: 0018:ffffc9000415fb50 EFLAGS: 00050206
-RAX: 0000000000000001 RBX: 0000000020ffc000 RCX: 0000000000001000
-RDX: 0000000000000000 RSI: 0000000020ffc000 RDI: ffff88807b764000
-RBP: 0000000000001000 R08: 0000000000000001 R09: ffffed100f6ec9ff
-R10: ffff88807b764fff R11: 0000000000000000 R12: 0000000020ffd000
-R13: ffff88807b764000 R14: 0000000000000000 R15: 0000000020ffc000
- copy_user_generic arch/x86/include/asm/uaccess_64.h:112 [inline]
- raw_copy_from_user arch/x86/include/asm/uaccess_64.h:127 [inline]
- _copy_from_user+0xc2/0xf0 lib/usercopy.c:23
- copy_from_user include/linux/uaccess.h:183 [inline]
- snd_rawmidi_kernel_write1+0x360/0x860 sound/core/rawmidi.c:1618
- snd_rawmidi_write+0x278/0xc10 sound/core/rawmidi.c:1687
- vfs_write+0x2a4/0xe40 fs/read_write.c:582
- ksys_write+0x1f0/0x250 fs/read_write.c:637
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f235b07cae9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f235bd9a0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 00007f235b19bf80 RCX: 00007f235b07cae9
-RDX: 00000000fffffd2c RSI: 0000000020000000 RDI: 0000000000000005
-RBP: 00007f235b0c847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007f235b19bf80 R15: 00007ffd9cdf0fe8
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:vmf_insert_pfn_prot+0x247/0x430 mm/memory.c:2214
-Code: 0f 0b e8 0c 4f c0 ff 49 89 ef bf 20 00 00 00 41 83 e7 28 4c 89 fe e8 88 4a c0 ff 49 83 ff 20 0f 85 aa fe ff ff e8 e9 4e c0 ff <0f> 0b 48 bd ff ff ff ff ff ff 0f 00 e8 d8 4e c0 ff 4c 89 f6 48 89
-RSP: 0018:ffffc9000415f750 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff8880275a0d00 RCX: 0000000000000000
-RDX: ffff888018379dc0 RSI: ffffffff81c5b9b7 RDI: 0000000000000007
-RBP: 000000000c140477 R08: 0000000000000007 R09: 0000000000000020
-R10: 0000000000000020 R11: 000000000000001f R12: 0000000020ffc000
-R13: 1ffff9200082beeb R14: 000000000007e79e R15: 0000000000000020
-FS:  00007f235bd9a6c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f93c20ffac1 CR3: 0000000022a32000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	75 f1                	jne    0xfffffff3
-   2:	c3                   	ret
-   3:	66 66 2e 0f 1f 84 00 	data16 cs nopw 0x0(%rax,%rax,1)
-   a:	00 00 00 00
-   e:	66 90                	xchg   %ax,%ax
-  10:	48 8b 06             	mov    (%rsi),%rax
-  13:	48 89 07             	mov    %rax,(%rdi)
-  16:	48 83 c6 08          	add    $0x8,%rsi
-  1a:	48 83 c7 08          	add    $0x8,%rdi
-  1e:	83 e9 08             	sub    $0x8,%ecx
-  21:	74 df                	je     0x2
-  23:	83 f9 08             	cmp    $0x8,%ecx
-  26:	73 e8                	jae    0x10
-  28:	eb c9                	jmp    0xfffffff3
-* 2a:	f3 a4                	rep movsb %ds:(%rsi),%es:(%rdi) <-- trapping instruction
-  2c:	c3                   	ret
-  2d:	0f 1f 00             	nopl   (%rax)
-  30:	4c 8b 06             	mov    (%rsi),%r8
-  33:	4c 8b 4e 08          	mov    0x8(%rsi),%r9
-  37:	4c 8b 56 10          	mov    0x10(%rsi),%r10
-  3b:	4c 8b 5e 18          	mov    0x18(%rsi),%r11
-  3f:	4c                   	rex.WR
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
