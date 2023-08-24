@@ -2,49 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 642087868B2
+	by mail.lfdr.de (Postfix) with ESMTP id AD1957868B3
 	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 09:38:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240472AbjHXHig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 03:38:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54242 "EHLO
+        id S240479AbjHXHih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 03:38:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240403AbjHXHh4 (ORCPT
+        with ESMTP id S240408AbjHXHh7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 03:37:56 -0400
+        Thu, 24 Aug 2023 03:37:59 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBA4010FE;
-        Thu, 24 Aug 2023 00:37:54 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0C06C7
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 00:37:57 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6A44465A43;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 408D162349
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 07:37:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 551FFC433C9;
         Thu, 24 Aug 2023 07:37:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 450BDC433CB;
-        Thu, 24 Aug 2023 07:37:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692862673;
-        bh=U79uOFgK1bj6OBPdyCVW/Y7lNsxketkReBm6q4ZUwCk=;
+        s=k20201202; t=1692862676;
+        bh=HAx36VxD8SeJ19cuhWARnMLzp3fwBWyVuZuUJYdgr/w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JmDzg8On00UB4Q0g8nYLzgcTFG+0jmSIk+AItEutJcS9zfCGrEHl1Egwwtk45sm9M
-         08caRBSAaufQjsHXGJHS+LhNj+FeSpaLQgv9Ao7eXBheuBy+xTaj3y+06wYxXZReuZ
-         RECrvC6TsMRAAmVfagdJ6HwxZCVdar/o/7wIsnNthArxO2rtzuyqzid4ek8egFK37e
-         UQDPau2EcOY1cUPyLjDtYIldPt00bOhbTTOImRCXsS+6eIncUkQsZmE0/M3+/8WGF7
-         k0mTLR+G8d1WWAUOTuM25MeyjBo/tJPNqiYwa8T2gKV01GP9Ob1gKAW6rt66lLxnrH
-         4zs/NXCLrYa4Q==
+        b=jHuHQaGg4Vb86jowcTNgkWiVaVeYdqTolC0e84zCxI8iISBvWduO+la86lew1mX5S
+         yrHkH1eRcW1Ar0svfHOovGuWCJpKh+e7NsKP7UE9oez3OLiEy4caGPDBggU5pDFW61
+         8lXY1H+o3m5N8W19E4JZIAlwqZjssGSszLiJtwKHCQvxexYl+/3OE39X97kAKZXgO2
+         ZJkjcAwCA760dNQHuSnWRkdvk/yG6NyRqKKnuRkqrD8Vev8vrazo4AxJQZ95F2mKvw
+         og5sbSAmypyfGTlS+JTu6aH6bmSiw6NT70BHJAkLs9SnmNI5fXuRlmqHlu1Jb31KPG
+         Zyrb3ARi6Uh8Q==
 From:   Lee Jones <lee@kernel.org>
 To:     lee@kernel.org
-Cc:     linux-kernel@vger.kernel.org, Luben Tuikov <luben.tuikov@amd.com>,
+Cc:     linux-kernel@vger.kernel.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
         David Airlie <airlied@gmail.com>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org
-Subject: [PATCH 10/20] drm/scheduler/sched_main: Provide short description of missing param 'result'
-Date:   Thu, 24 Aug 2023 08:36:55 +0100
-Message-ID: <20230824073710.2677348-11-lee@kernel.org>
+        Shashank Sharma <shashank.sharma@amd.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
+Subject: [PATCH 11/20] drm/amd/amdgpu/amdgpu_doorbell_mgr: Correct misdocumented param 'doorbell_index'
+Date:   Thu, 24 Aug 2023 08:36:56 +0100
+Message-ID: <20230824073710.2677348-12-lee@kernel.org>
 X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
 In-Reply-To: <20230824073710.2677348-1-lee@kernel.org>
 References: <20230824073710.2677348-1-lee@kernel.org>
@@ -62,33 +63,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/scheduler/sched_main.c:266: warning: Function parameter or member 'result' not described in 'drm_sched_job_done'
+ drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell_mgr.c:123: warning: Function parameter or member 'doorbell_index' not described in 'amdgpu_doorbell_index_on_bar'
+ drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell_mgr.c:123: warning: Excess function parameter 'db_index' description in 'amdgpu_doorbell_index_on_bar'
 
 Signed-off-by: Lee Jones <lee@kernel.org>
 ---
-Cc: Luben Tuikov <luben.tuikov@amd.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: "Christian König" <christian.koenig@amd.com>
+Cc: "Pan, Xinhui" <Xinhui.Pan@amd.com>
 Cc: David Airlie <airlied@gmail.com>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: "Christian König" <christian.koenig@amd.com>
+Cc: Shashank Sharma <shashank.sharma@amd.com>
+Cc: amd-gfx@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
-Cc: linux-media@vger.kernel.org
-Cc: linaro-mm-sig@lists.linaro.org
 ---
- drivers/gpu/drm/scheduler/sched_main.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell_mgr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/scheduler/sched_main.c b/drivers/gpu/drm/scheduler/sched_main.c
-index 506371c427451..1ef558cda60ce 100644
---- a/drivers/gpu/drm/scheduler/sched_main.c
-+++ b/drivers/gpu/drm/scheduler/sched_main.c
-@@ -259,6 +259,7 @@ drm_sched_rq_select_entity_fifo(struct drm_sched_rq *rq)
- /**
-  * drm_sched_job_done - complete a job
-  * @s_job: pointer to the job which is done
-+ * @result: fence error to forward and set
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell_mgr.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell_mgr.c
+index da4be0bbb4466..d0249ada91d30 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell_mgr.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell_mgr.c
+@@ -113,7 +113,7 @@ void amdgpu_mm_wdoorbell64(struct amdgpu_device *adev, u32 index, u64 v)
   *
-  * Finish the job's fence and wake up the worker thread.
+  * @adev: amdgpu_device pointer
+  * @db_bo: doorbell object's bo
+- * @db_index: doorbell relative index in this doorbell object
++ * @doorbell_index: doorbell relative index in this doorbell object
+  *
+  * returns doorbell's absolute index in BAR
   */
 -- 
 2.42.0.rc1.204.g551eb34607-goog
