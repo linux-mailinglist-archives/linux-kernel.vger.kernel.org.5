@@ -2,156 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AAD1787626
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 18:56:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20D2578762B
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 18:56:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242760AbjHXQ4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 12:56:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54110 "EHLO
+        id S242769AbjHXQ4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 12:56:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242790AbjHXQ4I (ORCPT
+        with ESMTP id S242812AbjHXQ4T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 12:56:08 -0400
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5278A1989;
-        Thu, 24 Aug 2023 09:56:06 -0700 (PDT)
-Received: by mail-qv1-xf2c.google.com with SMTP id 6a1803df08f44-6490c2c4702so295436d6.2;
-        Thu, 24 Aug 2023 09:56:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692896165; x=1693500965;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=et8TOSEmIO3QzLFT4lx8CWQnB3/Guzy4Ha+7G/MeCFo=;
-        b=h2x+xj4RHYBRc7oohdX8bSH4BTS0wO5Rpejo8sneGdNcbouK4wmQAUei+ukrFMxn7u
-         pabYGn9N312ec4H2VYUGOYt5higLPDW4aDmMzkvrqJwcl4gCFwU0ldoOmSPCzS3CU281
-         wT/f61Fz8QX9KfFEWvJc77lWKrdTr0iGz46yubN6NkI1WFSFy3d7PqINw3Z79xPiC1Xj
-         bZ/I5bbly7bZoDqNhTVLWevR+gvC0Ufp03SIDF3cFaTreFktP74eS902hJFdt5knYXqH
-         kXlE2zr5g2lf82HKN7bqzy8sljNvvSMUHHLD7Aghs8i7cKKY17umDpHoHzrClhvUvzVJ
-         erlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692896165; x=1693500965;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=et8TOSEmIO3QzLFT4lx8CWQnB3/Guzy4Ha+7G/MeCFo=;
-        b=CkTbZtXMgQlcRvw39odGYIX5lXTEhjUp1Nb0sjCs4Mjc4KEFej1XZCxYe2ZLmE8ezC
-         u60cZiwJ+zieej/Zcbajz0HS4eOQnkx7meswhl3UQEOrXMyKATlXV5i0mAX3tTqjLncJ
-         o+WBudXJRXw9aoT9t6lHQwRPnVcIzAe0S9eZxA/Jop4fpnByGpyP2FQLn+EDAcrj3+Dc
-         zfTatIrth7q/fcWuRhD5FsW4yU7QVC/uww1PvoM4icdQDCgEDfQL1FlSTzEYTSB9Dr2O
-         Yu7UQ1FLlFivkwqU1MF7kRcWMA3JNZkSvV/N+fHCb27m2FTXjyVTJVxvENEG6FvI2zU8
-         J2JA==
-X-Gm-Message-State: AOJu0YzOYxkLk3iuy1KffrTXZPnlpHdN62pTW4KswD58QB4mNASOtDh3
-        o+DlG0rJUgAZm91gjMWFre0=
-X-Google-Smtp-Source: AGHT+IHbz94cY/C4D0UI2JcUm+0qULBNvaLm8nB1MOZSvOAgnPWGsxM0DFPvnj5lHx656EplcqSeNg==
-X-Received: by 2002:a0c:f8d1:0:b0:647:1993:92da with SMTP id h17-20020a0cf8d1000000b00647199392damr15247641qvo.48.1692896165369;
-        Thu, 24 Aug 2023 09:56:05 -0700 (PDT)
-Received: from [192.168.0.16] (modemcable063.135-226-192.mc.videotron.ca. [192.226.135.63])
-        by smtp.gmail.com with ESMTPSA id u18-20020a0cf1d2000000b0064f4f14aecesm2225654qvl.24.2023.08.24.09.56.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Aug 2023 09:56:05 -0700 (PDT)
-From:   Liam Beguin <liambeguin@gmail.com>
-Date:   Thu, 24 Aug 2023 12:55:32 -0400
-Subject: [PATCH 3/3] dt-bindings: iio: adc: add lltc,ltc2309 bindings
+        Thu, 24 Aug 2023 12:56:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A1DE1707
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 09:56:18 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DAA7D62F6E
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 16:56:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6BE0FC433C7;
+        Thu, 24 Aug 2023 16:56:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692896177;
+        bh=dP9g90j64qCMaovLVrE7U0qD7d+y+h/LejDD9mU3yPc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tEq06/3g8UQcYZditNWGtFR2BOKIRJA9n+l15LpuqibLWq9NO9+IRKGeDhgplAXpU
+         c3uOH5lDRiDpPeMvMpPgSErsX1dFRFjoAwjpixkQ0v8syBjKLW82fbD62Y0tE/stTQ
+         kr0TXU0RHJjq2h+RKKmg2f8Wqq/veBuTB3n0Mv/MIytNdM2INC8lxOsPMUD5Wlse3h
+         L0TYKDZB3Y92juwDP0qbh8i1zwC6ZLuBUlgVjTcdwC8qykK3IUg3QYdkvpBLTVWpUH
+         Pxt1XHYantu+xCJNfxuUM9EJFXhp6lQoJpxmw3b8KQCX/PLq85AYFI+0P84rwP6lE6
+         QkOoS3IIRC/dg==
+Date:   Thu, 24 Aug 2023 17:55:41 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Naresh Solanki <naresh.solanki@9elements.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>, zev@bewilderbeest.net,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] regulator: userspace-consumer: Use atomic operation
+Message-ID: <ZOeLjbN8i4i+/kd+@finisterre.sirena.org.uk>
+References: <20230823141558.957526-1-Naresh.Solanki@9elements.com>
+ <61279ff7-c1ad-446c-aa5e-4222a5cbd9fb@sirena.org.uk>
+ <CABqG17gQEa70kEDVVhNkOeM2SYdZ6-gkYfYJUNV+=NzyogK_PA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230824-ltc2309-v1-3-b87b4eb8030c@gmail.com>
-References: <20230824-ltc2309-v1-0-b87b4eb8030c@gmail.com>
-In-Reply-To: <20230824-ltc2309-v1-0-b87b4eb8030c@gmail.com>
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, Liam Beguin <liambeguin@gmail.com>
-X-Mailer: b4 0.13-dev-83828
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1692896161; l=1525;
- i=liambeguin@gmail.com; s=20230824; h=from:subject:message-id;
- bh=jOMSRnVhtOdMMA5BeZTnQMHkjBFOPEt0vDS9JW0uYNY=;
- b=OSWOmFl+2hTC9I9vmyLFmB/GFXXHjlxw5KavavRh1kY/wNY6e4W0P0liHSC9VDL32+PbWIAkB
- hqnqoBdv+zMAoNYCiPIO5qC+C8w4KtSekQZVcSf9uPB7hy13UmLK3uw
-X-Developer-Key: i=liambeguin@gmail.com; a=ed25519;
- pk=x+XyGOzOACLmUQ7jTEZhMy+lL3K5nhtUH6Oxt+tHkUQ=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="KrS/+9BqGAjkOSin"
+Content-Disposition: inline
+In-Reply-To: <CABqG17gQEa70kEDVVhNkOeM2SYdZ6-gkYfYJUNV+=NzyogK_PA@mail.gmail.com>
+X-Cookie: Give him an evasive answer.
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add devicetree bindings for the Linear Technology LTC2309 ADC driver.
 
-Signed-off-by: Liam Beguin <liambeguin@gmail.com>
----
- .../devicetree/bindings/iio/adc/lltc,ltc2309.yaml  | 52 ++++++++++++++++++++++
- 1 file changed, 52 insertions(+)
+--KrS/+9BqGAjkOSin
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/Documentation/devicetree/bindings/iio/adc/lltc,ltc2309.yaml b/Documentation/devicetree/bindings/iio/adc/lltc,ltc2309.yaml
-new file mode 100644
-index 000000000000..7874290dad75
---- /dev/null
-+++ b/Documentation/devicetree/bindings/iio/adc/lltc,ltc2309.yaml
-@@ -0,0 +1,52 @@
-+# SPDX-License-Identifier: GPL-2.0
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/iio/adc/lltc,ltc2309.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Linear Technology / Analog Devices LTC2309 ADC
-+
-+maintainers:
-+  - Liam Beguin <liambeguin@gmail.com>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - lltc,ltc2309
-+
-+  refcomp-supply:
-+    description: Power supply for the reference voltage
-+
-+  reg:
-+    enum:
-+      - 0x08
-+      - 0x09
-+      - 0x0a
-+      - 0x0b
-+      - 0x18
-+      - 0x19
-+      - 0x1a
-+      - 0x1b
-+      - 0x28
-+
-+  "#io-channel-cells":
-+    const: 1
-+
-+required:
-+  - compatible
-+  - reg
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        adc@28 {
-+            #io-channel-cells = <1>;
-+            compatible = "lltc,ltc2309";
-+            reg = <0x28>;
-+        };
-+    };
+On Thu, Aug 24, 2023 at 04:34:05PM +0530, Naresh Solanki wrote:
+> On Wed, 23 Aug 2023 at 20:41, Mark Brown <broonie@kernel.org> wrote:
+> > On Wed, Aug 23, 2023 at 04:15:57PM +0200, Naresh Solanki wrote:
 
--- 
-2.39.0
+> > > Replace mutexes with atomic operations.
 
+> > Why?  Generally atomics are more complicated and hard to understand and
+> > get right.
+
+> Since the operations involved here are simple & short & can be managed by
+> atomic operation.
+
+Unless there's a strong positive reason to specifically use atomics it
+seems better to avoid them, like I say they're full of landmines with
+unexpeted behaviours and therefore something that sets off alarm bells
+about needing careful study, the mutex is going to be less preformant
+but is also much more clearly correct.
+
+--KrS/+9BqGAjkOSin
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTni4wACgkQJNaLcl1U
+h9Bx+wf/aU1+udSDaC7KUPjl07nB/QaQKEc6w62DknVQxJWIw4OiZSOt1OZrsEpb
+7WaMQ2sJ9mjtLSYiRPZcIIAKNvBsoDBvOYc7mw+mi6quTXU5jBBY//YRiCSb7Ugc
+ZWEYkIBC+upqo3eZNPWaq2QKvM7XuMLg5AlFpyQcThxSW2HZp9XBHEpihfQAQG/c
+tujvViKKNl/b7OjnI0QQP0RRSg6z7HZV+mzbgnPqJLMcObdptuQzORpzhp4HJhCH
+iOwhnSzzymXDMgv4rBsBvK90ryuUJZb3OJQSweK7XtW4OAXcX5DbQ77yxaws++gg
+BfZV+/sjHSMW6ytBorxgwGD99td7+w==
+=f4my
+-----END PGP SIGNATURE-----
+
+--KrS/+9BqGAjkOSin--
