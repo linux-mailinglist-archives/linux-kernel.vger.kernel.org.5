@@ -2,75 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1537578656D
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 04:33:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0388786573
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 04:34:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239513AbjHXCc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 22:32:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48432 "EHLO
+        id S239509AbjHXCeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 22:34:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239618AbjHXCcy (ORCPT
+        with ESMTP id S239542AbjHXCdi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 22:32:54 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D16D7170D;
-        Wed, 23 Aug 2023 19:32:26 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8989D653E0;
-        Thu, 24 Aug 2023 02:32:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id E99A4C433C7;
-        Thu, 24 Aug 2023 02:32:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692844342;
-        bh=S2hy4pS5Z/UZBGkbRPkomY+VtflG1CjDdzyvk1uK9OQ=;
-        h=From:Date:Subject:To:Cc:Reply-To:From;
-        b=MxuXB9Xkrd7llmsNmc6JDHijITWpLThHWmqewtDZUx13WzXx0P96HGZhAEQ8iKKaL
-         33TKpHDEMxN+2aiU7G/JQ6TfKB8tY8OnwXKa57aPxaz90wXMyB0x/MsQ2uuCN64x4J
-         uyx93Qm8fWJwCeseBnz4LuP70PaJyKpHrpn3xEZmfL8Y7nmit40AIGOXiZ0PzKP0XG
-         Xk5VwbeCDsJAS5GQhu0bgZq7t+yn4Z4mI1HeswaE0AX+FJzzzudy47Zh2AYxaVbdym
-         /9T6Eq9xWqhmlee3BUaiT+HtHGZ64nipIZ8IEWYFEAWyV8Tg1Tr5D4uCwEtog1uSYb
-         wTtDIFONhm5ew==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by smtp.lore.kernel.org (Postfix) with ESMTP id C8E5BC3DA6F;
-        Thu, 24 Aug 2023 02:32:21 +0000 (UTC)
-From:   Hui Liu via B4 Relay <devnull+quic_huliu.quicinc.com@kernel.org>
-Date:   Thu, 24 Aug 2023 10:32:03 +0800
-Subject: [PATCH v2] usb: typec: qcom: check regulator enable status before
- disabling it
+        Wed, 23 Aug 2023 22:33:38 -0400
+Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3422F10DD;
+        Wed, 23 Aug 2023 19:33:33 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R751e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=renyu.zj@linux.alibaba.com;NM=1;PH=DS;RN=20;SR=0;TI=SMTPD_---0VqS2P5a_1692844408;
+Received: from 30.221.146.144(mailfrom:renyu.zj@linux.alibaba.com fp:SMTPD_---0VqS2P5a_1692844408)
+          by smtp.aliyun-inc.com;
+          Thu, 24 Aug 2023 10:33:29 +0800
+Message-ID: <a1e0be71-e613-7a62-6b4c-452515ea566f@linux.alibaba.com>
+Date:   Thu, 24 Aug 2023 10:33:27 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230824-qcom-tcpc-v2-1-3dd8c3424564@quicinc.com>
-X-B4-Tracking: v=1; b=H4sIACTB5mQC/03MQQ6CMBCF4auQWVvTFkrAlfcwLCZDK7OwQIuNh
- vTuVhITl//Ly7dDtIFthEu1Q7CJI8++hD5VQBP6uxU8lgYtdS07rcVK80NstJAYG9WbBqk1DqH
- 8l2Advw7rNpSeOG5zeB90Ut/1p9R/SlJCCYedQtkTStNe1ycTezqXCww55w+PsU6OpAAAAA==
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_fenglinw@quicinc.com,
-        subbaram@quicinc.com, Hui Liu <quic_huliu@quicinc.com>
-X-Mailer: b4 0.13-dev-83828
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1692844340; l=1421;
- i=quic_huliu@quicinc.com; s=20230823; h=from:subject:message-id;
- bh=RCxBxOmCdTDGIzvmHMT7qgcrSyfaH/WPRHb6SCAOpuk=;
- b=rPA/Tw4FDHy3n9OoyyeOWS1qi2tjEcPxU8Gs5vUKx3yx7nHtxv4tqcjwQXGAKuLMQRLlMnE/u
- CTNkGOEVUYfCHdNp8w0JTsFJaTgEWMyw1+qt8KD362Y+Ch+JvN8n4rR
-X-Developer-Key: i=quic_huliu@quicinc.com; a=ed25519;
- pk=1z+A50UnTuKe/FdQv2c0W3ajDsJOYddwIHo2iivhTTA=
-X-Endpoint-Received: by B4 Relay for quic_huliu@quicinc.com/20230823 with auth_id=80
-X-Original-From: Hui Liu <quic_huliu@quicinc.com>
-Reply-To: <quic_huliu@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [PATCH v7 0/8] perf vendor events: Add JSON metrics for Arm CMN
+To:     John Garry <john.g.garry@oracle.com>,
+        Ian Rogers <irogers@google.com>
+Cc:     Will Deacon <will@kernel.org>, James Clark <james.clark@arm.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-doc@vger.kernel.org,
+        Zhuo Song <zhuo.song@linux.alibaba.com>,
+        Shuai Xue <xueshuai@linux.alibaba.com>
+References: <1692606977-92009-1-git-send-email-renyu.zj@linux.alibaba.com>
+ <566ec1ff-fdea-336e-3cb8-503fc593f8ec@oracle.com>
+From:   Jing Zhang <renyu.zj@linux.alibaba.com>
+In-Reply-To: <566ec1ff-fdea-336e-3cb8-503fc593f8ec@oracle.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-12.6 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,43 +58,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hui Liu <quic_huliu@quicinc.com>
 
-Check regulator enable status before disabling it to avoid
-unbalanced regulator disable warnings.
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Fixes: a4422ff22142 ("usb: typec: qcom: Add Qualcomm PMIC Type-C driver")
-Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Signed-off-by: Hui Liu <quic_huliu@quicinc.com>
----
-Changes in v2:
-- Add Fixes tag
-- Link to v1: https://lore.kernel.org/r/20230823-qcom-tcpc-v1-1-fa81a09ca056@quicinc.com
----
- drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+在 2023/8/23 下午4:12, John Garry 写道:
+> On 21/08/2023 09:36, Jing Zhang wrote:
+> 
+> I'm hoping that Ian can check the outstanding patches here, but I'll also have a look.
+> 
 
-diff --git a/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c b/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c
-index bb0b8479d80f..ca616b17b5b6 100644
---- a/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c
-+++ b/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c
-@@ -422,7 +422,8 @@ static int qcom_pmic_typec_pdphy_disable(struct pmic_typec_pdphy *pmic_typec_pdp
- 	ret = regmap_write(pmic_typec_pdphy->regmap,
- 			   pmic_typec_pdphy->base + USB_PDPHY_EN_CONTROL_REG, 0);
- 
--	regulator_disable(pmic_typec_pdphy->vdd_pdphy);
-+	if (regulator_is_enabled(pmic_typec_pdphy->vdd_pdphy))
-+		regulator_disable(pmic_typec_pdphy->vdd_pdphy);
- 
- 	return ret;
- }
+Thanks! I haven't added your tag to patch 6 for now, because I made a modification and added
+the code in empty-pmu-events.c. Looking forward to your review.
 
----
-base-commit: bbb9e06d2c6435af9c62074ad7048910eeb2e7bc
-change-id: 20230822-qcom-tcpc-d41954ac65fa
+Thanks,
+Jing
 
-Best regards,
--- 
-Hui Liu <quic_huliu@quicinc.com>
-
+>> Changes since v6:
+>> - Supplement the omitted EventCode;
+>> - Keep the original way of ConfigCode;
+>> - Supplement the test in empty-pmu-events.c, so that the pmu event test
+>>    can succeed when build with NO_JEVENT=1.
+>> - Link: https://urldefense.com/v3/__https://lore.kernel.org/all/1691394685-61240-1-git-send-email-renyu.zj@linux.alibaba.com/__;!!ACWV5N9M2RV99hQ!Lakh7Lf-6l6Hovm4Tt5S5pqV1xHm-LAW2ICVl6gLONlN4CNk-BvyADBfjwQe5yQQj89yMK7s7rSjMNHCyFsIUxnHXg$
+>>
+>> Jing Zhang (8):
+>>    perf pmu: "Compat" supports matching multiple identifiers
+>>    perf metric: "Compat" supports matching multiple identifiers
+>>    perf vendor events: Supplement the omitted EventCode
+>>    perf jevents: Support more event fields
+>>    perf test: Make matching_pmu effective
+>>    perf test: Add pmu-event test for "Compat" and new event_field.
+>>    perf jevents: Add support for Arm CMN PMU aliasing
+>>    perf vendor events: Add JSON metrics for Arm CMN
+>>
+>>   .../pmu-events/arch/arm64/arm/cmn/sys/cmn.json     | 266 +++++++++++++++++++++
+>>   .../pmu-events/arch/arm64/arm/cmn/sys/metric.json  |  74 ++++++
+>>   .../pmu-events/arch/test/test_soc/sys/uncore.json  |   8 +
+>>   .../pmu-events/arch/x86/alderlake/pipeline.json    |   9 +
+>>   .../pmu-events/arch/x86/alderlaken/pipeline.json   |   3 +
+>>   .../pmu-events/arch/x86/broadwell/pipeline.json    |   4 +
+>>   .../pmu-events/arch/x86/broadwellde/pipeline.json  |   4 +
+>>   .../arch/x86/broadwellde/uncore-cache.json         |   2 +
+>>   .../arch/x86/broadwellde/uncore-interconnect.json  |   1 +
+>>   .../arch/x86/broadwellde/uncore-memory.json        |   1 +
+>>   .../arch/x86/broadwellde/uncore-power.json         |   1 +
+>>   .../pmu-events/arch/x86/broadwellx/pipeline.json   |   4 +
+>>   .../arch/x86/broadwellx/uncore-cache.json          |   2 +
+>>   .../arch/x86/broadwellx/uncore-interconnect.json   |  13 +
+>>   .../arch/x86/broadwellx/uncore-memory.json         |   2 +
+>>   .../arch/x86/broadwellx/uncore-power.json          |   1 +
+>>   .../pmu-events/arch/x86/cascadelakex/pipeline.json |   4 +
+>>   .../arch/x86/cascadelakex/uncore-cache.json        |   2 +
+>>   .../arch/x86/cascadelakex/uncore-interconnect.json |   1 +
+>>   .../arch/x86/cascadelakex/uncore-io.json           |   1 +
+>>   .../arch/x86/cascadelakex/uncore-memory.json       |   1 +
+>>   .../arch/x86/cascadelakex/uncore-power.json        |   1 +
+>>   .../pmu-events/arch/x86/elkhartlake/pipeline.json  |   2 +
+>>   .../pmu-events/arch/x86/goldmont/pipeline.json     |   3 +
+>>   .../pmu-events/arch/x86/goldmontplus/pipeline.json |   3 +
+>>   .../pmu-events/arch/x86/grandridge/pipeline.json   |   3 +
+>>   .../arch/x86/graniterapids/pipeline.json           |   4 +
+>>   .../perf/pmu-events/arch/x86/haswell/pipeline.json |   4 +
+>>   .../pmu-events/arch/x86/haswellx/pipeline.json     |   4 +
+>>   .../pmu-events/arch/x86/haswellx/uncore-cache.json |   2 +
+>>   .../arch/x86/haswellx/uncore-interconnect.json     |  14 ++
+>>   .../arch/x86/haswellx/uncore-memory.json           |   2 +
+>>   .../pmu-events/arch/x86/haswellx/uncore-power.json |   1 +
+>>   .../perf/pmu-events/arch/x86/icelake/pipeline.json |   4 +
+>>   .../pmu-events/arch/x86/icelakex/pipeline.json     |   4 +
+>>   .../pmu-events/arch/x86/icelakex/uncore-cache.json |   1 +
+>>   .../arch/x86/icelakex/uncore-interconnect.json     |   1 +
+>>   .../arch/x86/icelakex/uncore-memory.json           |   1 +
+>>   .../pmu-events/arch/x86/icelakex/uncore-power.json |   1 +
+>>   .../pmu-events/arch/x86/ivybridge/pipeline.json    |   3 +
+>>   .../perf/pmu-events/arch/x86/ivytown/pipeline.json |   4 +
+>>   .../pmu-events/arch/x86/ivytown/uncore-cache.json  |   2 +
+>>   .../arch/x86/ivytown/uncore-interconnect.json      |  11 +
+>>   .../pmu-events/arch/x86/ivytown/uncore-memory.json |   1 +
+>>   .../pmu-events/arch/x86/ivytown/uncore-power.json  |   1 +
+>>   .../pmu-events/arch/x86/jaketown/pipeline.json     |   4 +
+>>   .../pmu-events/arch/x86/jaketown/uncore-cache.json |   2 +
+>>   .../arch/x86/jaketown/uncore-interconnect.json     |  12 +
+>>   .../arch/x86/jaketown/uncore-memory.json           |   1 +
+>>   .../pmu-events/arch/x86/jaketown/uncore-power.json |   2 +
+>>   .../arch/x86/knightslanding/pipeline.json          |   3 +
+>>   .../arch/x86/knightslanding/uncore-cache.json      |   1 +
+>>   .../arch/x86/knightslanding/uncore-memory.json     |   4 +
+>>   .../pmu-events/arch/x86/meteorlake/pipeline.json   |   8 +
+>>   .../pmu-events/arch/x86/sandybridge/pipeline.json  |   4 +
+>>   .../arch/x86/sapphirerapids/pipeline.json          |   5 +
+>>   .../pmu-events/arch/x86/sierraforest/pipeline.json |   4 +
+>>   .../pmu-events/arch/x86/silvermont/pipeline.json   |   3 +
+>>   .../perf/pmu-events/arch/x86/skylake/pipeline.json |   4 +
+>>   .../pmu-events/arch/x86/skylakex/pipeline.json     |   4 +
+>>   .../pmu-events/arch/x86/skylakex/uncore-cache.json |   2 +
+>>   .../arch/x86/skylakex/uncore-interconnect.json     |   1 +
+>>   .../pmu-events/arch/x86/skylakex/uncore-io.json    |   1 +
+>>   .../arch/x86/skylakex/uncore-memory.json           |   1 +
+>>   .../pmu-events/arch/x86/skylakex/uncore-power.json |   1 +
+>>   .../pmu-events/arch/x86/snowridgex/pipeline.json   |   2 +
+>>   .../arch/x86/snowridgex/uncore-cache.json          |   1 +
+>>   .../arch/x86/snowridgex/uncore-interconnect.json   |   1 +
+>>   .../arch/x86/snowridgex/uncore-memory.json         |   1 +
+>>   .../arch/x86/snowridgex/uncore-power.json          |   1 +
+>>   .../pmu-events/arch/x86/tigerlake/pipeline.json    |   5 +
+>>   tools/perf/pmu-events/empty-pmu-events.c           |   8 +
+>>   tools/perf/pmu-events/jevents.py                   |  21 +-
+>>   tools/perf/tests/pmu-events.c                      |  64 ++++-
+>>   tools/perf/util/metricgroup.c                      |   2 +-
+>>   tools/perf/util/pmu.c                              |  33 ++-
+>>   tools/perf/util/pmu.h                              |   1 +
+>>   77 files changed, 679 insertions(+), 9 deletions(-)
+>>   create mode 100644 tools/perf/pmu-events/arch/arm64/arm/cmn/sys/cmn.json
+>>   create mode 100644 tools/perf/pmu-events/arch/arm64/arm/cmn/sys/metric.json
+>>
