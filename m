@@ -2,51 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78DF478792A
+	by mail.lfdr.de (Postfix) with ESMTP id 9E91078792B
 	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 22:13:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243469AbjHXUNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 16:13:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52528 "EHLO
+        id S243480AbjHXUNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 16:13:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243443AbjHXUMp (ORCPT
+        with ESMTP id S243472AbjHXUM4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 16:12:45 -0400
+        Thu, 24 Aug 2023 16:12:56 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CE681BF5
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 13:12:43 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A67B41BCD;
+        Thu, 24 Aug 2023 13:12:54 -0700 (PDT)
+Date:   Thu, 24 Aug 2023 20:12:52 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1692907962;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        s=2020; t=1692907973;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ZR1rQxXBixoxsSPe6VXswNM3XPHkojfsxvQaD4S7OyY=;
-        b=Y+zbm5i+W9wD1GIxwOTBDINKvd24QRfYh/JfBid/4BlAS5F3Hz5oZa516G8oy8zgz32Qr0
-        qTngbnf11w9qdW4DkiaOk7uGUPpYeFh7GyCgluooStBnL0FXQS/QOoF2JKtkoR5lp41PDQ
-        gXAedgdjRdngnfXNcoKVnRRQFE6nzKtg3Sg2kS6B8cq1icCzhEbJbN92RO0C8kAltpZrKU
-        wUZFd+vZX/YQmmgJmWjryHA12jdeuYPcLT+71zaZSljuEQTzEzbv3M7mPdwU88tP65Dhg5
-        oP1bzEds/J6jiG9ttKcZHV4tz46+a60jiJcvREkhcKhJHzhHpE5nUpdykH3v1A==
+        bh=oXTQ2wqGEq8Pz6yTwF/JEdPBqKNqe6nRDvBoVDyPzTQ=;
+        b=4Z7clyBSL7da6Yggng7uxjBXzvwVfRWuPzqQyd3TlC1rz4xD2pNMQ85vPKBspx9TdyKmK3
+        1/vF2Zgs0Sm2Q0FO8yGpJ8OGgMJ4miSiswBvYVqG3vRFIrMavhRdNggiEPXwdDLWkUuomO
+        +hlhAjpFkopRtK1Zs+RM9j0QtFhawsBfveqvLLTTNGEXs/yYT3dALSoMdSx2Zyu1zgYpAJ
+        DJXbw/q+Prj5PBTOG7RHZmvrjLByLAmvswEtt+qdY/go+w5xdwDv57Uvawds9Y3g4u617c
+        G4CrvqrKp5/B7E8hqTTrFZCae3QLtF2gS46+JrxVhY/iRqb/45bSaXvZst3j1A==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1692907962;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        s=2020e; t=1692907973;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ZR1rQxXBixoxsSPe6VXswNM3XPHkojfsxvQaD4S7OyY=;
-        b=/McinkJ51DZk1XSHyrCMjsvktwhI0VQ3J7+Kwh4nhhOkKW3sMwyjd9RPPXRS5cxEENIpWG
-        GPKoFffIju91WuCg==
-To:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Marc Zyngier <marc.zyngier@arm.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH 2/2] genirq: proc: fix a procfs entry leak
-In-Reply-To: <20230814093621.23209-3-brgl@bgdev.pl>
-References: <20230814093621.23209-1-brgl@bgdev.pl>
- <20230814093621.23209-3-brgl@bgdev.pl>
-Date:   Thu, 24 Aug 2023 22:12:41 +0200
-Message-ID: <875y54ci86.ffs@tglx>
+        bh=oXTQ2wqGEq8Pz6yTwF/JEdPBqKNqe6nRDvBoVDyPzTQ=;
+        b=kXd+GBrW+zDPcxYKvbwTBEl2R4cy5iP+IgLywRn3r9yS174VivPTicuDMjvLWNRuHiIFG3
+        jutIaJfXUdEySkAA==
+From:   "tip-bot2 for Justin Stitt" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cleanups] x86/platform/uv: Refactor code using deprecated
+ strncpy() interface to use strscpy()
+Cc:     Justin Stitt <justinstitt@google.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Dimitri Sivanich <sivanich@hpe.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: =?utf-8?q?=3C20230822-strncpy-arch-x86-kernel-apic-x2apic=5Fu?=
+ =?utf-8?q?v=5Fx-v1-1-91d681d0b3f3=40google=2Ecom=3E?=
+References: =?utf-8?q?=3C20230822-strncpy-arch-x86-kernel-apic-x2apic=5Fuv?=
+ =?utf-8?q?=5Fx-v1-1-91d681d0b3f3=40google=2Ecom=3E?=
 MIME-Version: 1.0
-Content-Type: text/plain
+Message-ID: <169290797270.27769.5277467952297102028.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -56,25 +70,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 14 2023 at 11:36, Bartosz Golaszewski wrote:
+The following commit has been merged into the x86/cleanups branch of tip:
 
-Please read and follow the guidelines of the tip tree:
+Commit-ID:     212f07a21622cbd4bb271b558b2d3ae0652e9875
+Gitweb:        https://git.kernel.org/tip/212f07a21622cbd4bb271b558b2d3ae0652e9875
+Author:        Justin Stitt <justinstitt@google.com>
+AuthorDate:    Tue, 22 Aug 2023 22:05:30 
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Thu, 24 Aug 2023 21:22:50 +02:00
 
-  https://www.kernel.org/doc/html/latest/process/maintainer-tip.html
+x86/platform/uv: Refactor code using deprecated strncpy() interface to use strscpy()
 
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->
-> When removing the proc entry for a desc that still has active users, we
-> will leak the irqaction entries. Let's remove them in
-> unregister_irq_proc().
+`strncpy` is deprecated for use on NUL-terminated destination strings [1].
 
-How exactly is an interrupt descriptor freed which has still active
-users?
+A suitable replacement is `strscpy` [2] due to the fact that it
+guarantees NUL-termination on its destination buffer argument which is
+_not_ the case for `strncpy`!
 
-If that happens then the procfs entry leak is the least of your worries.
+In this case, it means we can drop the `...-1` from:
+|       strncpy(to, from, len-1);
 
-Thanks,
+as well as remove the comment mentioning NUL-termination as `strscpy`
+implicitly grants us this behavior.
 
-        tglx
+There should be no functional change as I don't believe the padding from
+`strncpy` is needed here. If it turns out that the padding is necessary
+we should use `strscpy_pad` as a direct replacement.
 
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Dimitri Sivanich <sivanich@hpe.com>
+Link: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings[1]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+Link: https://github.com/KSPP/linux/issues/90
+Link: https://lore.kernel.org/r/20230822-strncpy-arch-x86-kernel-apic-x2apic_uv_x-v1-1-91d681d0b3f3@google.com
+---
+ arch/x86/kernel/apic/x2apic_uv_x.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
+diff --git a/arch/x86/kernel/apic/x2apic_uv_x.c b/arch/x86/kernel/apic/x2apic_uv_x.c
+index d9384d5..b524dee 100644
+--- a/arch/x86/kernel/apic/x2apic_uv_x.c
++++ b/arch/x86/kernel/apic/x2apic_uv_x.c
+@@ -294,8 +294,7 @@ static void __init early_get_apic_socketid_shift(void)
+ 
+ static void __init uv_stringify(int len, char *to, char *from)
+ {
+-	/* Relies on 'to' being NULL chars so result will be NULL terminated */
+-	strncpy(to, from, len-1);
++	strscpy(to, from, len);
+ 
+ 	/* Trim trailing spaces */
+ 	(void)strim(to);
+@@ -1013,7 +1012,7 @@ static void __init calc_mmioh_map(enum mmioh_arch index,
+ 
+ 	/* One (UV2) mapping */
+ 	if (index == UV2_MMIOH) {
+-		strncpy(id, "MMIOH", sizeof(id));
++		strscpy(id, "MMIOH", sizeof(id));
+ 		max_io = max_pnode;
+ 		mapped = 0;
+ 		goto map_exit;
