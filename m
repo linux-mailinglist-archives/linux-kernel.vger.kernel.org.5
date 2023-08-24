@@ -2,68 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22EB97877FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 20:34:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C7A8787802
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 20:34:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243086AbjHXSeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 14:34:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57966 "EHLO
+        id S243116AbjHXSeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 14:34:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243083AbjHXSdv (ORCPT
+        with ESMTP id S243101AbjHXSd5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 14:33:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 477CB19BE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 11:33:08 -0700 (PDT)
+        Thu, 24 Aug 2023 14:33:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B72931BF6
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 11:33:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692901987;
+        s=mimecast20190719; t=1692901988;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ZLXDxLfpL9zLoWLRxApVYve11hS/OEKZe5Jy4SYblss=;
-        b=D89olKtSfR2cYQvbsASFJfWvuU398byhR+5AemSdKcCMdSyJyEyPckXXqpGFsnLtdDXjIQ
-        of6Ih/NSxHJ157Km0p5n0McNZltGJ6Sj3PbMCqdxyIPlst7xrQitts+KGfglK8P6Equ/pJ
-        HzvVUbFCC9XUzhJFzMdqmY0vCo3l02I=
-Received: from mail-oa1-f72.google.com (mail-oa1-f72.google.com
- [209.85.160.72]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=qzwAY3qfQtSXBG/JoTJUgqmvExN/Fjeet/g8tdk5k1I=;
+        b=TL9fvLw+yqz3s/7odtWIpAK6orDDc5L4WsTsgNyPMRhkB8P+WF01UC5wKRMeyqXG55V0r8
+        p1y8Em/jvelAmvKMOMD1fxDswIj8jfFcqeRUbsOZeqsG/skBuaLFUZoEaqB8zFn+zurMVZ
+        vr0AsIYmcKuwi0lc58z4llPjbAB0YqM=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-611-_pkhuncZOEezRLgo4woftQ-1; Thu, 24 Aug 2023 14:33:06 -0400
-X-MC-Unique: _pkhuncZOEezRLgo4woftQ-1
-Received: by mail-oa1-f72.google.com with SMTP id 586e51a60fabf-1c0ed186cf5so110053fac.1
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 11:33:05 -0700 (PDT)
+ us-mta-464-x7ETsS2zMmiHg6alqRKLvg-1; Thu, 24 Aug 2023 14:33:07 -0400
+X-MC-Unique: x7ETsS2zMmiHg6alqRKLvg-1
+Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-64aaa3c2bc2so1487276d6.0
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 11:33:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692901985; x=1693506785;
+        d=1e100.net; s=20221208; t=1692901987; x=1693506787;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ZLXDxLfpL9zLoWLRxApVYve11hS/OEKZe5Jy4SYblss=;
-        b=GmHuy+3R/3/MOI3pXOq7HVyQ+pj3pBK8vxtI/1WzoFvhz+1+BRQWNUjML7yw/7GJck
-         h3QmXB2BwSbmaTY8z6GFTMKlwssKpPVy+awbTvhHvHa80mH1LlQovzSzD/YE9x9t5cir
-         T07YL92qVqTDK7xg1brzVOesQJzqeJE1uGjfqJg8P0JcPM29CeQ7ncjJf4gBTd8OlcFF
-         yjaFZv6pWU6kncUew7q2ngCvoC/Sa8Ek5HeqaLL2Ztz5vleWwQ7gconHEaXthXs1nalU
-         34AVPEWuzheZraPKlWuRhWb9hZBjpOuwcBNsW49XhvuoFbRoim8+nyxl8YUVDmkvYyYK
-         IAFg==
-X-Gm-Message-State: AOJu0YxIY23uFGJfCIHBaWaLceZY3jv+P5dmPyRkp3pmEK0qHO9SJ/Ls
-        Lo5AcGosZF5fKDv1s8o2MF6U5wGOQbGfwIP3Rg6UwDQgED89YmfD2Og2Cg9WCBe3qPfaX7I3aTy
-        CSeWwm4kY07+crIqHhD41Aklm
-X-Received: by 2002:a05:6871:299:b0:1b4:60b3:98bc with SMTP id i25-20020a056871029900b001b460b398bcmr646681oae.2.1692901985290;
-        Thu, 24 Aug 2023 11:33:05 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFbJca0VCeTskNWvGHD1H3TewlM9C3a0yafFFNkx3PrLHoWuGVt7iXKwhjuSJvnGG6tkI3pdg==
-X-Received: by 2002:a05:6871:299:b0:1b4:60b3:98bc with SMTP id i25-20020a056871029900b001b460b398bcmr646661oae.2.1692901985092;
-        Thu, 24 Aug 2023 11:33:05 -0700 (PDT)
+        bh=qzwAY3qfQtSXBG/JoTJUgqmvExN/Fjeet/g8tdk5k1I=;
+        b=RjbZrgetXaoXL2M/cZ6nqPUeTSAraVr5OTGzFgNPyTs++f4b/6jxT3sYWR2xQX2GS4
+         vAtnxV87oSaag50Xrk1KEpZXn3LttLhinxRObI5p9NoRQJ9Fw2/RbLhE6eLZJW2LVYMi
+         P7ttvodM3vkRQmyPsbejgpRp3vKmWmQDJPGf8sYEAUSNZVcUhFS1njaApIs58E2m32qy
+         AbEtFF1EsahTjOdpPZbR5Nlh8q8/sBWTnCPVIOQfrT4q0t4S0WAflLFeK/f05VDSdMi3
+         rCq/Hk+o5WuAPtmgB7TzwLg0OK8OONrxl6l8c0Zdwc1ftpyfrk0XnWFgIyGhpdDjAML2
+         SSLw==
+X-Gm-Message-State: AOJu0YxcIq4RIie6FqdgCq0zpKVIs2uxtS8pkrXuf5Bz27It0Z4PWBox
+        KnMdgk/HDaluAqIAFg9y9rx3GiA72ItOTQRoulnMsvAOpoC3epWPYPs0icmCpqU5ZIVmfzDQqSq
+        2aJbzc/9oi6xsFrGSLaU/cmAq
+X-Received: by 2002:a0c:cb8a:0:b0:64b:997f:5a73 with SMTP id p10-20020a0ccb8a000000b0064b997f5a73mr17312069qvk.0.1692901986875;
+        Thu, 24 Aug 2023 11:33:06 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH0V6Mej9o119R+pmyxj+YFe+lm4pgu3DlavB9TMY9jyVspWXod0xr56aTpa4++K5uMfm7xpg==
+X-Received: by 2002:a0c:cb8a:0:b0:64b:997f:5a73 with SMTP id p10-20020a0ccb8a000000b0064b997f5a73mr17312048qvk.0.1692901986627;
+        Thu, 24 Aug 2023 11:33:06 -0700 (PDT)
 Received: from [192.168.1.165] ([2600:1700:1ff0:d0e0::37])
-        by smtp.gmail.com with ESMTPSA id j17-20020a0ceb11000000b0064f77d37798sm4209qvp.5.2023.08.24.11.33.04
+        by smtp.gmail.com with ESMTPSA id j17-20020a0ceb11000000b0064f77d37798sm4209qvp.5.2023.08.24.11.33.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Aug 2023 11:33:04 -0700 (PDT)
+        Thu, 24 Aug 2023 11:33:06 -0700 (PDT)
 From:   Andrew Halaney <ahalaney@redhat.com>
-Date:   Thu, 24 Aug 2023 13:32:57 -0500
-Subject: [PATCH net-next 6/7] net: stmmac: Fix comment about default addend
- calculation
+Date:   Thu, 24 Aug 2023 13:32:58 -0500
+Subject: [PATCH net-next 7/7] net: stmmac: Make PTP reference clock
+ references more clear
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230824-stmmac-subsecond-inc-cleanup-v1-6-e0b9f7c18b37@redhat.com>
+Message-Id: <20230824-stmmac-subsecond-inc-cleanup-v1-7-e0b9f7c18b37@redhat.com>
 References: <20230824-stmmac-subsecond-inc-cleanup-v1-0-e0b9f7c18b37@redhat.com>
 In-Reply-To: <20230824-stmmac-subsecond-inc-cleanup-v1-0-e0b9f7c18b37@redhat.com>
 To:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
@@ -79,44 +79,74 @@ Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
         Andrew Halaney <ahalaney@redhat.com>
 X-Mailer: b4 0.12.3
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The comment neglects that freq_div_ratio is the ratio between
-the subsecond increment frequency and the clk_ptp_rate frequency.
+ptp_clock is an overloaded term, and in some instances it is used to
+represent the clk_ptp_rate variable. Just use that name as it is
+clear that it represents the rate of the PTP reference clock.
 
 Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
 ---
- drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/stmicro/stmmac/hwif.h            |  5 +++--
+ drivers/net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c | 10 +++++-----
+ 2 files changed, 8 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index dfead0df6163..64185753865f 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -853,10 +853,12 @@ int stmmac_init_tstamp_counter(struct stmmac_priv *priv, u32 systime_flags)
- 	/* Store sub second increment for later use */
- 	priv->sub_second_inc = sub_second_inc;
+diff --git a/drivers/net/ethernet/stmicro/stmmac/hwif.h b/drivers/net/ethernet/stmicro/stmmac/hwif.h
+index bd607da65037..ba92b10cff0e 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/hwif.h
++++ b/drivers/net/ethernet/stmicro/stmmac/hwif.h
+@@ -523,8 +523,9 @@ struct stmmac_ops {
+ /* PTP and HW Timer helpers */
+ struct stmmac_hwtimestamp {
+ 	void (*config_hw_tstamping) (void __iomem *ioaddr, u32 data);
+-	void (*config_sub_second_increment)(void __iomem *ioaddr, u32 ptp_clock,
+-					   int gmac4, u32 *sub_second_inc);
++	void (*config_sub_second_increment)(void __iomem *ioaddr,
++					    u32 clk_ptp_rate,
++					    int gmac4, u32 *sub_second_inc);
+ 	int (*init_systime) (void __iomem *ioaddr, u32 sec, u32 nsec);
+ 	int (*config_addend) (void __iomem *ioaddr, u32 addend);
+ 	int (*adjust_systime) (void __iomem *ioaddr, u32 sec, u32 nsec,
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c
+index 29fd51bb853d..cc0386ee6dee 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c
+@@ -24,7 +24,7 @@ static void config_hw_tstamping(void __iomem *ioaddr, u32 data)
+ }
  
--	/* calculate default addend value:
--	 * formula is :
--	 * addend = (2^32)/freq_div_ratio;
--	 * where, freq_div_ratio = 1e9ns/sub_second_inc
-+	/* Calculate default addend so the accumulator overflows (2^32) in
-+	 * sub_second_inc (ns). The addend is added to the accumulator
-+	 * every clk_ptp cycle.
-+	 *
-+	 * addend = (2^32) / freq_div_ratio
-+	 * where, freq_div_ratio = (1e9ns / sub_second_inc) / clk_ptp_rate
+ static void config_sub_second_increment(void __iomem *ioaddr,
+-		u32 ptp_clock, int gmac4, u32 *sub_second_inc)
++		u32 clk_ptp_rate, int gmac4, u32 *sub_second_inc)
+ {
+ 	u32 value = readl(ioaddr + PTP_TCR);
+ 	unsigned long data;
+@@ -34,14 +34,14 @@ static void config_sub_second_increment(void __iomem *ioaddr,
+ 	 * increment to twice the number of nanoseconds of a clock cycle.
+ 	 * The calculation of the default_addend value by the caller will set it
+ 	 * to mid-range = 2^31 when the remainder of this division is zero,
+-	 * which will make the accumulator overflow once every 2 ptp_clock
++	 * which will make the accumulator overflow once every 2 clk_ptp_rate
+ 	 * cycles, adding twice the number of nanoseconds of a clock cycle :
+-	 * 2 * NSEC_PER_SEC / ptp_clock.
++	 * 2 * NSEC_PER_SEC / clk_ptp_rate.
  	 */
- 	temp = div_u64(NSEC_PER_SEC, sub_second_inc);
- 	temp = temp << 32;
+ 	if (value & PTP_TCR_TSCFUPDT)
+-		data = (2 * NSEC_PER_SEC / ptp_clock);
++		data = (2 * NSEC_PER_SEC / clk_ptp_rate);
+ 	else
+-		data = (NSEC_PER_SEC / ptp_clock);
++		data = (NSEC_PER_SEC / clk_ptp_rate);
+ 
+ 	/* 0.465ns accuracy */
+ 	if (!(value & PTP_TCR_TSCTRLSSR))
 
 -- 
 2.41.0
