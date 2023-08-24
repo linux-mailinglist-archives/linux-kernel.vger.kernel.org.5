@@ -2,104 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07C40787914
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 22:07:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 259C878791D
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 22:10:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243411AbjHXUHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 16:07:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52210 "EHLO
+        id S243417AbjHXUJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 16:09:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243410AbjHXUGq (ORCPT
+        with ESMTP id S243415AbjHXUJU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 16:06:46 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 695FC170F
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 13:06:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692907604; x=1724443604;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=IQfaHD+DuyVsbsv8z1qkTOosiOK8pcjMsTTt+TvyONE=;
-  b=W6+buFcjIu5VeAo7PmV5kF3cxV6s5UW2bD02sQYH/CwNO8EIK7lEeOiM
-   hOgpcj750/eBheYI5PwrWOiXLf4YeB3FL+dTtu5CBZxIMtQ1QE+AgaX5N
-   HgkYMfGM51io7ZK1u7/ToHPXsIqNYfiVY0N43uzlQuhOJ+udvB6YuyXin
-   UlA64+rz9wP9v3tw6J4Ndt4ot6mD9vgKWR1A+UdrZYRyNQm2Ovk2X/fjV
-   PiNej8x1W2Qf44uDJcWwCNrgyvsnbCGuIiszjxGSpPO7nbgJyRmLEKGhR
-   lg3/hR+exCVivRTNt748VaXxaQ83itMXRNgFEPiFLGNP6WgyV7GISFxdt
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="373422294"
-X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
-   d="scan'208";a="373422294"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 13:06:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="1067965430"
-X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
-   d="scan'208";a="1067965430"
-Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
-  by fmsmga005.fm.intel.com with ESMTP; 24 Aug 2023 13:06:25 -0700
-Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qZGb2-0002wa-1G;
-        Thu, 24 Aug 2023 20:06:24 +0000
-Date:   Fri, 25 Aug 2023 04:05:44 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Uros Bizjak <ubizjak@gmail.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: test_set_error_stamp: rm
- /kbuild/obj/consumer/parisc-randconfig-r016-20230825/.reduce_errors/drivers-mtd-nand-raw-nand_base.c:internal-compiler-error:in-maybe_record_trace_start-at-dwarf2cfi.cc
-Message-ID: <202308250338.Upxr6yeb-lkp@intel.com>
+        Thu, 24 Aug 2023 16:09:20 -0400
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A71ACE
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 13:09:17 -0700 (PDT)
+Received: by mail-oi1-x233.google.com with SMTP id 5614622812f47-3a8506f5b73so179650b6e.0
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 13:09:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1692907757; x=1693512557;
+        h=to:from:cc:content-transfer-encoding:mime-version:date:message-id
+         :subject:references:in-reply-to:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eMOVw9zI4qUYS4/6mGHk8c1zHfKQdWpaVAIEoa2cllQ=;
+        b=1XdooHZArcSFuXTmOh9sPZwYlp4kCWdYOT7vO6LoqbY2xXDlTCUlu8qGoOksq147rC
+         OJboyJqgCpMCDVuq1YDhZMDdoIAZI4cXwm9JRcqLdNOjsn2WFfgtBBsqGlk1ahVdSoMZ
+         HNp7FaHppKxZU/4HTfXlRQgXtMTlHslUvujpvDY7qGyAhi/ZsW959L1eNGGijch8COA3
+         seuj98d4zcUhMc+Prz+bm0MvnYtf+Mzmmn9xYj6wMyIMzskM585qT9SAKoqkrpQGOn6Q
+         ztTATodcjPkppXE+CmcraIJFsuWXUq2klhRwnCbRBYecjnbwfqGW8FB+EWsOp7H+k7k1
+         Q5jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692907757; x=1693512557;
+        h=to:from:cc:content-transfer-encoding:mime-version:date:message-id
+         :subject:references:in-reply-to:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eMOVw9zI4qUYS4/6mGHk8c1zHfKQdWpaVAIEoa2cllQ=;
+        b=SC2GBlHW/X79Ks3DLoQsuATflGcCc0KvPipRZrXnZgTnpch1443xcYYWGCzgMHocmL
+         +HHmh0BERsRGS+n43Pf/BwCfN8cwaPbPnRyHsTn8ZyatL7GzyXhjraCbiqPVPzNNLqQB
+         gc7RxFqlsVsolbyCJWdo3GB/k8uo8ZTFiLeu9+cMbeMw7/l7C60ktXX1zyISM47LlOku
+         Jr8Iq6+vo98Ew5e+o0CyPzmFA980rI5V0ok+ETEDv2Ly8Zrm9jdmbeB/H4+NJU3oSzjO
+         tb0MWg/Xpk11WIwGKkuiShRR4aqS21OPsY0C+gm+m+bes9foCXdETRz9+yQzLr3wVQ1t
+         kbTA==
+X-Gm-Message-State: AOJu0Yx+oJ0+VXHmoBlaDdJHUmx5YTrPQkLzPL+cW+bIv0EcVZmR30c7
+        oyQUme10rKPcBQ/uqdh9DXahPw==
+X-Google-Smtp-Source: AGHT+IEXyd6Sd46IHd8WavbuIIHBZ5eX52cYSJmHLAQktkD6fWkrurbC+JmD+MlbPobmbuWKGaPQrg==
+X-Received: by 2002:a05:6808:1a92:b0:3a3:6cb2:d5bf with SMTP id bm18-20020a0568081a9200b003a36cb2d5bfmr746696oib.4.1692907756760;
+        Thu, 24 Aug 2023 13:09:16 -0700 (PDT)
+Received: from localhost ([50.221.140.188])
+        by smtp.gmail.com with ESMTPSA id s9-20020a639e09000000b005657495b03bsm11637pgd.38.2023.08.24.13.09.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Aug 2023 13:09:16 -0700 (PDT)
+In-Reply-To: <20230824190852.45470-1-xingmingzheng@iscas.ac.cn>
+References: <20230824190852.45470-1-xingmingzheng@iscas.ac.cn>
+Subject: Re: [PATCH] riscv: Fix build errors using binutils2.37 toolchains
+Message-Id: <169290773187.26503.887642526521895016.b4-ty@rivosinc.com>
+Date:   Thu, 24 Aug 2023 13:08:51 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,WEIRD_PORT autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-901c5
+Cc:     Bin Meng <bmeng@tinylab.org>, Guo Ren <guoren@kernel.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, stable@vger.kernel.org,
+        Conor Dooley <conor.dooley@microchip.com>
+From:   Palmer Dabbelt <palmer@rivosinc.com>
+To:     Conor Dooley <conor@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>,
+        Mingzheng Xing <xingmingzheng@iscas.ac.cn>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   b5cc3833f13ace75e26e3f7b51cd7b6da5e9cf17
-commit: 43c249ea0b1e10baac4a1264a25d69723ce5d2c2 compiler-gcc.h: remove ancient workaround for gcc PR 58670
-date:   1 year, 1 month ago
-config: parisc-randconfig-r016-20230825 (https://download.01.org/0day-ci/archive/20230825/202308250338.Upxr6yeb-lkp@intel.com/config)
-compiler: hppa-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20230825/202308250338.Upxr6yeb-lkp@intel.com/reproduce)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308250338.Upxr6yeb-lkp@intel.com/
+On Fri, 25 Aug 2023 03:08:52 +0800, Mingzheng Xing wrote:
+> When building the kernel with binutils 2.37 and GCC-11.1.0/GCC-11.2.0,
+> the following error occurs:
+> 
+>   Assembler messages:
+>   Error: cannot find default versions of the ISA extension `zicsr'
+>   Error: cannot find default versions of the ISA extension `zifencei'
+> 
+> [...]
 
-All errors (new ones prefixed by >>):
+Applied, thanks!
 
-   during RTL pass: dwarf2
-   drivers/mtd/nand/raw/nand_base.c: In function 'nand_do_write_ops':
->> drivers/mtd/nand/raw/nand_base.c:4370:1: internal compiler error: in maybe_record_trace_start, at dwarf2cfi.cc:2539
-    4370 | }
-         | ^
-   0x788517 maybe_record_trace_start
-   	/tmp/build-crosstools-gcc-13.2.0-binutils-2.41/gcc/gcc-13.2.0/gcc/dwarf2cfi.cc:2539
-   0x788a5a create_trace_edges
-   	/tmp/build-crosstools-gcc-13.2.0-binutils-2.41/gcc/gcc-13.2.0/gcc/dwarf2cfi.cc:2687
-   0x788d8e scan_trace
-   	/tmp/build-crosstools-gcc-13.2.0-binutils-2.41/gcc/gcc-13.2.0/gcc/dwarf2cfi.cc:2911
-   0x789127 create_cfi_notes
-   	/tmp/build-crosstools-gcc-13.2.0-binutils-2.41/gcc/gcc-13.2.0/gcc/dwarf2cfi.cc:2938
-   0x789127 execute_dwarf2_frame
-   	/tmp/build-crosstools-gcc-13.2.0-binutils-2.41/gcc/gcc-13.2.0/gcc/dwarf2cfi.cc:3309
-   0x789127 execute
-   	/tmp/build-crosstools-gcc-13.2.0-binutils-2.41/gcc/gcc-13.2.0/gcc/dwarf2cfi.cc:3799
-   Please submit a full bug report, with preprocessed source (by using -freport-bug).
-   Please include the complete backtrace with any bug report.
-   See <https://gcc.gnu.org/bugs/> for instructions.
+[1/1] riscv: Fix build errors using binutils2.37 toolchains
+      https://git.kernel.org/palmer/c/ef21fa7c198e
 
+Best regards,
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Palmer Dabbelt <palmer@rivosinc.com>
+
