@@ -2,160 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C677787566
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 18:31:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1336378756D
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 18:33:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242552AbjHXQab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 12:30:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55716 "EHLO
+        id S242556AbjHXQcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 12:32:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242648AbjHXQa0 (ORCPT
+        with ESMTP id S242554AbjHXQcW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 12:30:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDB2FE78
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 09:29:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692894551;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FId/o03kp5ceRUUcHeyqpoKLotNrGT+LgsYRCU6THrw=;
-        b=Z9P5BNYcekGcpqoyNvDD18oAy+rrVnWa8yuZvxHb8+d8D3SGjrSfh5TkTUg0cCbeyGQ5+p
-        Crv4irh9X7N6ix0RQBC5F/zaWLS0x7G3J9SOM/hmuVTj+llrQXeZg15zyil3/0BLmVC0zq
-        pebn4LQMOZyy66MjHwYRzS2iTN4QTPs=
-Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com
- [209.85.161.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-353-kkrzcCa-P6e61s7HTGVc7g-1; Thu, 24 Aug 2023 12:29:09 -0400
-X-MC-Unique: kkrzcCa-P6e61s7HTGVc7g-1
-Received: by mail-oo1-f70.google.com with SMTP id 006d021491bc7-571246bb0c9so73977eaf.3
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 09:29:09 -0700 (PDT)
+        Thu, 24 Aug 2023 12:32:22 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76FAF1BE;
+        Thu, 24 Aug 2023 09:32:20 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-31963263938so5923980f8f.2;
+        Thu, 24 Aug 2023 09:32:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692894739; x=1693499539;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2H1Mxjg5UfEr5egVnkOQOIzhgqJiFZzJQ5v7B4mwhI0=;
+        b=B80qaCHsmA0gk0/JE2VEJnZqSZI0FcvzTF0GMji/fUfw1/t0BwVb1V5uZY5Z5bm55w
+         wDsgEOlD/FJoV7EJ4Yn9e4CFdZGbA74kbk+0ls2vwpurLxYq8XW3YwX2baAdck9mA7kw
+         wHgqAZuLkduHeOXgiPv0H59Ztmg94miTjWDZaQBg2OokJErieCZOSKLVQdzcTShn4rZM
+         9S5ZeahrTcClEsZpy+ScuyBM/wG3P6nSVxSxIvC/ZJgIpFwr3c3cBo6CLxWA1HxbN8ak
+         hy9xg7KA7kqIF6PtbyYCTNwQPD/8J/B/qqVd20mWSwfhxFaD/hCqOkKdZGQvvHXfMGNc
+         VHoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692894549; x=1693499349;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FId/o03kp5ceRUUcHeyqpoKLotNrGT+LgsYRCU6THrw=;
-        b=baU2m0UWr5W2febj+cCn+S3FrQxvVNxAcGs/7iEn6LrVkVSBzJRyn1jn6fpxfCBdP9
-         ShEMXTmh0FGR6KwXdwDjaaPH7A06fxZHDYHCjuHDP0pkHxU5AdP9gXH5wxNftkhl0tRt
-         WAUB+Bp1OuPT1jLSSHdGU75javc4LAIAh9N5Q3bj0sidh0oFeIi2sZy8Rd5wkxG6Ibl4
-         6/bBGv8yr7Me2jr76N3yxvH8TGMaoC5V0pkG5Mkm3Q4YYUJiiGSx0O52wPXFDDc8ZFpB
-         DDnF134glW+oLgddu2kXf7n9hsWYxekvQagEvnLbh0FQXavTVAL6yOi7nD4mcPM4KNsD
-         Zw5w==
-X-Gm-Message-State: AOJu0YzkCrncBbyNoFn0CaEK5FKpUu4kcPuzNM0qKConVhD9r68Fy6Ok
-        XCd4jUr/PbguKg9Y7cqQYUfsj24rPALCO62zFB0MtOZ37ot6T2zQGs07Ba6KsPf73Dh+A8VEOao
-        4Wlf8xW/JE92JOlC9407v/KfZI5doMzmrAd8dXot6m4e0/F2curY=
-X-Received: by 2002:a4a:6c1d:0:b0:570:c8fa:4ad7 with SMTP id q29-20020a4a6c1d000000b00570c8fa4ad7mr2883827ooc.1.1692894548887;
-        Thu, 24 Aug 2023 09:29:08 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGWML3K7JRuTt+1isEsxFMtWBfyFz2RoBGN46xT5QwiFYMJm1CJNWGpIqgScuqVaJqC33t2mExZukC3kr7roOc=
-X-Received: by 2002:a4a:6c1d:0:b0:570:c8fa:4ad7 with SMTP id
- q29-20020a4a6c1d000000b00570c8fa4ad7mr2883810ooc.1.1692894548603; Thu, 24 Aug
- 2023 09:29:08 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692894739; x=1693499539;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2H1Mxjg5UfEr5egVnkOQOIzhgqJiFZzJQ5v7B4mwhI0=;
+        b=hyhq3xDHOgTVVY+OkVDoVJ6O+CdAumJuYNyP5tmBBT+ntW1iHhmkkyce8h/eMfbC69
+         FdC6utJsSSQVMc5McCaPZSnwHQJTYJRilOMZ83SIlbt/Tz/sv7VODMMyRztJFqBPbmz+
+         MXgdRiRjHvfVNmoZisGTy3FnINvTNN9rdXe92INMLY/NmrDZ50C+5YM1KSVx4WFM6Lih
+         QqypRwEfsj0gHa+7nGB79MvX+QmfWaGcom94zHZoggOK8WEntI1lPTHdG0ede/feD1Yf
+         lEmLtTJJfiyOve+7sKHlnUoPD701V7Eo/f0gIAqN9quQCTMWhYVH/7BOtnNKT4spFhdj
+         3gBA==
+X-Gm-Message-State: AOJu0YxvvAvW4keCNmfD8TaIyZ3ek+3BVa70HWWKAJfGZgYCzYHYp+if
+        PxQFfBnTH3xzcAD6sSUFnCrLL9UMPTM=
+X-Google-Smtp-Source: AGHT+IGua9aI6/tZ6+r2DiBVeH1YS7a0+u51HjDaHfj0eh3UsfSA+GHwvk+Wj2aF/cHGmA2dpAafXg==
+X-Received: by 2002:adf:f3cd:0:b0:317:3f64:4901 with SMTP id g13-20020adff3cd000000b003173f644901mr11006929wrp.41.1692894738629;
+        Thu, 24 Aug 2023 09:32:18 -0700 (PDT)
+Received: from [192.168.247.38] ([88.182.105.48])
+        by smtp.gmail.com with ESMTPSA id b8-20020a5d4d88000000b0031c6cc74882sm5428242wru.107.2023.08.24.09.32.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Aug 2023 09:32:17 -0700 (PDT)
+Message-ID: <530e8caf-a7ad-4c82-ab1b-58b728770703@gmail.com>
+Date:   Thu, 24 Aug 2023 18:32:13 +0200
 MIME-Version: 1.0
-References: <20230725135537.2534212-1-costa.shul@redhat.com>
- <CADDUTFx_o+kULEMbZWAECBKb4Fo85c303YiCUmgk50Z=7TSkkw@mail.gmail.com> <87il94tpxw.fsf@meer.lwn.net>
-In-Reply-To: <87il94tpxw.fsf@meer.lwn.net>
-From:   Costa Shulyupin <costa.shul@redhat.com>
-Date:   Thu, 24 Aug 2023 19:28:57 +0300
-Message-ID: <CADDUTFw1V3V8q7d_6m3H__Z40sJmnNkf_4niAd+dXtjttkZX6g@mail.gmail.com>
-Subject: Re: [PATCH] docs: consolidate embedded interfaces
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] dt-bindings: irqchip: convert st,stih407-irq-syscfg to
+ DT schema
+To:     Rob Herring <robh@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Conor Dooley <conor.dooley@microchip.com>
+References: <20230823224453.126963-1-rgallaispou@gmail.com>
+ <20230824134828.GA683810-robh@kernel.org>
+Content-Language: en-US, fr
+From:   =?UTF-8?Q?Rapha=C3=ABl_Gallais-Pou?= <rgallaispou@gmail.com>
+In-Reply-To: <20230824134828.GA683810-robh@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> I thought I was clear...I still don't see how this organization makes
-> sense.
-The last time you wrote was about the section "peripheral interfaces".
-This is the first time I've submitted "embedded interfaces". You
-haven't yet reviewed it.
+Hi Rob
 
->What is "embedded" about misc devices?
-I've reviewed https://docs.kernel.org/misc-devices/ and found
-that the most of described drivers are drivers for embedded devices:
-- Digital Potentiometers
-- combined ambient light and proximity sensor
-- I2C EEPROM
-- C2 Interface used for in-system programming of micro controllers
-- accelerometer
-- EEPROM-programmable power-supply
-- 950 serial port devices
-- Power Management IC
-- Xilinx Soft-Decision Forward Error Correction block
+Le 24/08/2023 à 15:48, Rob Herring a écrit :
+> On Thu, Aug 24, 2023 at 12:44:53AM +0200, Raphael Gallais-Pou wrote:
+>> Convert deprecated format to DT schema format.
+>>
+>> Signed-off-by: Raphael Gallais-Pou <rgallaispou@gmail.com>
+>> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+>> ---
+>> Changes in v2:
+>> 	- Added Conor's r-by
+>> 	- Removed quotes surrounding $refs
+>> 	- Hardcoded 'st,invert-ext' possible values
+>>
+>> Changes in v3:
+>> 	- Fixed enum syntax warnings
+>> 	- Removed reference to driver in favor of device
+>> ---
+>>   .../st,sti-irq-syscfg.txt                     | 30 ---------
+>>   .../st,stih407-irq-syscfg.yaml                | 64 +++++++++++++++++++
+>>   2 files changed, 64 insertions(+), 30 deletions(-)
+>>   delete mode 100644 Documentation/devicetree/bindings/interrupt-controller/st,sti-irq-syscfg.txt
+>>   create mode 100644 Documentation/devicetree/bindings/interrupt-controller/st,stih407-irq-syscfg.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/interrupt-controller/st,sti-irq-syscfg.txt b/Documentation/devicetree/bindings/interrupt-controller/st,sti-irq-syscfg.txt
+>> deleted file mode 100644
+>> index 977d7ed3670e..000000000000
+>> --- a/Documentation/devicetree/bindings/interrupt-controller/st,sti-irq-syscfg.txt
+>> +++ /dev/null
+>> @@ -1,30 +0,0 @@
+>> -STMicroelectronics STi System Configuration Controlled IRQs
+>> ------------------------------------------------------------
+>> -
+>> -On STi based systems; External, CTI (Core Sight), PMU (Performance Management),
+>> -and PL310 L2 Cache IRQs are controlled using System Configuration registers.
+>> -This driver is used to unmask them prior to use.
+>> -
+>> -Required properties:
+>> -- compatible	: Should be "st,stih407-irq-syscfg"
+>> -- st,syscfg	: Phandle to Cortex-A9 IRQ system config registers
+>> -- st,irq-device	: Array of IRQs to enable - should be 2 in length
+>> -- st,fiq-device	: Array of FIQs to enable - should be 2 in length
+>> -
+>> -Optional properties:
+>> -- st,invert-ext	: External IRQs can be inverted at will.  This property inverts
+>> -		  these IRQs using bitwise logic.  A number of defines have been
+>> -		  provided for convenience:
+>> -			ST_IRQ_SYSCFG_EXT_1_INV
+>> -			ST_IRQ_SYSCFG_EXT_2_INV
+>> -			ST_IRQ_SYSCFG_EXT_3_INV
+>> -Example:
+>> -
+>> -irq-syscfg {
+>> -	compatible    = "st,stih407-irq-syscfg";
+>> -	st,syscfg     = <&syscfg_cpu>;
+>> -	st,irq-device = <ST_IRQ_SYSCFG_PMU_0>,
+>> -			<ST_IRQ_SYSCFG_PMU_1>;
+>> -	st,fiq-device = <ST_IRQ_SYSCFG_DISABLED>,
+>> -			<ST_IRQ_SYSCFG_DISABLED>;
+>> -};
+>> diff --git a/Documentation/devicetree/bindings/interrupt-controller/st,stih407-irq-syscfg.yaml b/Documentation/devicetree/bindings/interrupt-controller/st,stih407-irq-syscfg.yaml
+>> new file mode 100644
+>> index 000000000000..985fa281f027
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/interrupt-controller/st,stih407-irq-syscfg.yaml
+>> @@ -0,0 +1,64 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/interrupt-controller/st,stih407-irq-syscfg.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: STMicroelectronics STi System Configuration Controlled IRQs
+>> +
+>> +maintainers:
+>> +  - Patrice Chotard <patrice.chotard@foss.st.com>
+>> +
+>> +description:
+>> +  On STi based systems; External, CTI (Core Sight), PMU (Performance
+>> +  Management), and PL310 L2 Cache IRQs are controlled using System
+>> +  Configuration registers.  This device is used to unmask them prior to use.
+>> +
+>> +properties:
+>> +  compatible:
+>> +    const: st,stih407-irq-syscfg
+>> +
+>> +  st,syscfg:
+>> +    description: Phandle to Cortex-A9 IRQ system config registers
+>> +    $ref: /schemas/types.yaml#/definitions/phandle
+>> +
+>> +  st,irq-device:
+>> +    description: Array of IRQs to enable.
+>> +    $ref: /schemas/types.yaml#/definitions/uint32-array
+>> +    items:
+>> +      - description: Enable the IRQ of the channel one.
+>> +      - description: Enable the IRQ of the channel two.
+>> +
+>> +  st,fiq-device:
+>> +    description: Array of FIQs to enable.
+>> +    $ref: /schemas/types.yaml#/definitions/uint32-array
+>> +    items:
+>> +      - description: Enable the IRQ of the channel one.
+>> +      - description: Enable the IRQ of the channel two.
+>> +
+>> +  st,invert-ext:
+>> +    description: External IRQs can be inverted at will. This property inverts
+>> +      these IRQs using bitwise logic.
+> 
+> So this is a mask?
 
-Thanks,
-Costa
+Of course, I did not had clarity given the hour I sent this, but it is 
+indeed a bitmask.
+> 
+>> +    $ref: /schemas/types.yaml#/definitions/uint32
+>> +    enum: [ 1, 2, 4]
+> 
+> If so, then this is wrong if you want to set more than 1 bit.
+So knowing this is a mask, it can take any integer between 1 and 4 in 
+our case.
 
->
-> Thanks,
->
-> jon
->
-> > On Tue, 25 Jul 2023 at 16:56, Costa Shulyupin <costa.shul@redhat.com> wrote:
-> >
-> >  to make page Subsystems APIs more organized as requested
-> >
-> >  Signed-off-by: Costa Shulyupin <costa.shul@redhat.com>
-> >  ---
-> >   Documentation/subsystem-apis.rst | 21 ++++++++++++++-------
-> >   1 file changed, 14 insertions(+), 7 deletions(-)
-> >
-> >  diff --git a/Documentation/subsystem-apis.rst b/Documentation/subsystem-apis.rst
-> >  index 90a0535a932a..7453586114d4 100644
-> >  --- a/Documentation/subsystem-apis.rst
-> >  +++ b/Documentation/subsystem-apis.rst
-> >  @@ -60,20 +60,28 @@ Storage interfaces
-> >      scsi/index
-> >      target/index
-> >
-> >  -**Fixme**: much more organizational work is needed here.
-> >  +Embedded interfaces
-> >  +-------------------
-> >  +
-> >  +.. toctree::
-> >  +   :maxdepth: 1
-> >  +
-> >  +   iio/index
-> >  +   spi/index
-> >  +   i2c/index
-> >  +   fpga/index
-> >  +   w1/index
-> >  +   misc-devices/index
-> >  +
-> >  +**Fixme**: some organizational work is still needed here.
-> >
-> >   .. toctree::
-> >      :maxdepth: 1
-> >
-> >      accounting/index
-> >      cpu-freq/index
-> >  -   fpga/index
-> >  -   i2c/index
-> >  -   iio/index
-> >      leds/index
-> >      pcmcia/index
-> >  -   spi/index
-> >  -   w1/index
-> >      watchdog/index
-> >      virt/index
-> >      hwmon/index
-> >  @@ -83,6 +91,5 @@ Storage interfaces
-> >      bpf/index
-> >      usb/index
-> >      PCI/index
-> >  -   misc-devices/index
-> >      peci/index
-> >      wmi/index
-> >  --
-> >  2.41.0
->
-
+> 
+>> +
+>> +required:
+>> +  - compatible
+>> +  - st,syscfg
+>> +  - st,irq-device
+>> +  - st,fiq-device
+>> +
+>> +additionalProperties: false
+>> +
+>> +examples:
+>> +  - |
+>> +    #include <dt-bindings/interrupt-controller/irq-st.h>
+>> +    irq-syscfg {
+>> +        compatible    = "st,stih407-irq-syscfg";
+>> +        st,syscfg     = <&syscfg_cpu>;
+>> +        st,irq-device = <ST_IRQ_SYSCFG_PMU_0>,
+>> +                        <ST_IRQ_SYSCFG_PMU_1>;
+>> +        st,fiq-device = <ST_IRQ_SYSCFG_DISABLED>,
+>> +                        <ST_IRQ_SYSCFG_DISABLED>;
+>> +    };
+>> +...
+>> -- 
+>> 2.41.0
+>>
