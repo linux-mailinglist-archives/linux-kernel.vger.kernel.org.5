@@ -2,141 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 831B778773F
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 19:46:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 363DF787736
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 19:38:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242883AbjHXRp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 13:45:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41966 "EHLO
+        id S242883AbjHXRiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 13:38:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242850AbjHXRpp (ORCPT
+        with ESMTP id S242852AbjHXRhy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 13:45:45 -0400
-X-Greylist: delayed 610 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 24 Aug 2023 10:45:40 PDT
-Received: from relay.yourmailgateway.de (relay.yourmailgateway.de [185.244.194.184])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85FF81BD8;
-        Thu, 24 Aug 2023 10:45:40 -0700 (PDT)
-Received: from relay01-mors.netcup.net (localhost [127.0.0.1])
-        by relay01-mors.netcup.net (Postfix) with ESMTPS id 4RWqwv29Mdz8xFh;
-        Thu, 24 Aug 2023 19:35:27 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=zint.sh; s=key2;
-        t=1692898527; bh=uDdCBJw05B5DvjBOJKfmweBC8bPeek5YyqTp773ZeBc=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=fBlbdGLUHouoJ0rPmcoiiKT5kiqFl27p/aSw5iUur1hopBm/A0AnW+YDAxtKsov5i
-         WcRQwJtdIW0m78hEJ8yb0pJtjv2iz/dT6QJtNPnhdQDi8b0sKw5XZ9q3ZSkq3nF+dT
-         4IOxQ26AZxYeurfq8Pe5JY37/hT0LV6k4bQBeGgyoXE/yVcX69E0ABervmirLdg/qD
-         N1kstyRNtRreGffHGN+5zxpeBA2WJHLXAmfoBwTE8tQ905Z2m5S/BMeXiZhjv3o8y7
-         eyQYRQuUg7hx3sfAOuTH4o/12XETX6joY5ewXVzmgMfAkP/A7b4RRSZWm4Uour4EjT
-         FVRqFC0C6+g2g==
-Received: from policy01-mors.netcup.net (unknown [46.38.225.35])
-        by relay01-mors.netcup.net (Postfix) with ESMTPS id 4RWqwv1VCnz7v9g;
-        Thu, 24 Aug 2023 19:35:27 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at policy01-mors.netcup.net
-X-Spam-Score: -2.9
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
-Received: from mxe217.netcup.net (unknown [10.243.12.53])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by policy01-mors.netcup.net (Postfix) with ESMTPS id 4RWqwl2Q7Mz8sYl;
-        Thu, 24 Aug 2023 19:35:19 +0200 (CEST)
-Received: from [192.168.33.30] (p5dcce04c.dip0.t-ipconnect.de [93.204.224.76])
-        by mxe217.netcup.net (Postfix) with ESMTPSA id D5F5C81990;
-        Thu, 24 Aug 2023 19:35:04 +0200 (CEST)
-Message-ID: <1813ff8c-e192-4873-a22b-5ee48a6f9185@zint.sh>
-Date:   Thu, 24 Aug 2023 19:35:04 +0200
+        Thu, 24 Aug 2023 13:37:54 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 604D819AC
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 10:37:53 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-68bec3a81c4so96928b3a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 10:37:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692898673; x=1693503473;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qZX9ZEXWSiOCvJp9CFzqaquNBXaibHiG0dOL3pBL8NU=;
+        b=JvA5CGXp+uTaxLRysTcu+2kc4PlKUbDvleVAikSv2cPKAulLMqwu676lH6n+oYrmpc
+         z90tCuKD0sQgAGr+U0/sEzDhQDe1ioKhBpxVfMYqeL+PTWw1dLn2VOMNCRAQcFRwq4wC
+         WVdK2566XCEI50XN+Yh/Q7IP5TN3IP2Mnhg6xGrwZP3PcCaDmF+liW+Kk/W/i47R1dZV
+         2+XfI2IYrY4qCFl8doeeC0j41WrGbG2PcjHrnR7TMBaERDa+QMd/IB4ibcI8H4V7R8rC
+         /EtXsuEllJJKZd3egu3r+2Kx0BdU4lyx9EWfeJ3dDMGZZYX8PJ/8XfzrQFC+KZMfPLby
+         C+jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692898673; x=1693503473;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qZX9ZEXWSiOCvJp9CFzqaquNBXaibHiG0dOL3pBL8NU=;
+        b=eiKuTkScJ60YUE1015+VhAdwl1lJvT4Q+pQ3RA9buiuEMEeb0sSFuak75Hv8FPBq5n
+         BWhAVJYX5vxZVO6tZebsRn8o7NUj9E8TcY/Wlfm0c+ZUSZWa2C4HziMXfDc4SyeNkEqx
+         oLjlUjNnQh1ZwpPgqOpmHQMFoFDEpYkDUFVTNN0GUSmLzSwLQUTNIt8utFZpl0/VQ4ZF
+         hgAQeucNPH9apmcWOT4ea4LXferJjV+KCL+2emNj7S5UzrBJ1iTI7F92EbRIKs8S2SjZ
+         pd/U7nhz3xL7M+H2MqGqcPSvXzExvy/0bBkyapDknXHnJMsz2I5kjIWGhXM3IL8Qk3QL
+         9KEg==
+X-Gm-Message-State: AOJu0YwGgNgTe8TU+qZUdb+rW3EIOfw/2/WqeBC4aSkvdo6PN85au3ct
+        S1dARMiUl3pZRq4K1ra6rGg=
+X-Google-Smtp-Source: AGHT+IE2S3owUZ8hfhM8ym+39zpLUlWI0vP9zliq1J0ii6d4atS7e7AgsxdU2xhH4u4B7jRnu4sBrQ==
+X-Received: by 2002:a05:6a00:2d83:b0:68b:e8b8:b9ee with SMTP id fb3-20020a056a002d8300b0068be8b8b9eemr5614968pfb.11.1692898672788;
+        Thu, 24 Aug 2023 10:37:52 -0700 (PDT)
+Received: from localhost.localdomain ([110.46.146.116])
+        by smtp.gmail.com with ESMTPSA id j12-20020aa7800c000000b00687dde8ae5dsm11774pfi.154.2023.08.24.10.37.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Aug 2023 10:37:52 -0700 (PDT)
+From:   SungHwan Jung <onenowy@gmail.com>
+To:     fabian@ritter-vogt.de
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        onenowy@gmail.com, perex@perex.cz, tiwai@suse.com
+Subject: Re: [PATCH] ALSA: hda/realtek: Add quirk for mute LEDs on HP ENVY x360 15-eu0xxx
+Date:   Fri, 25 Aug 2023 02:37:18 +0900
+Message-ID: <20230824173718.7992-1-onenowy@gmail.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <4504056.LvFx2qVVIh@fabians-envy>
+References: <4504056.LvFx2qVVIh@fabians-envy>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/1] backlight: hid_bl: Add VESA VCP HID backlight
- driver
-Content-Language: de-DE, en-US
-To:     Daniel Thompson <daniel.thompson@linaro.org>
-Cc:     Lee Jones <lee@kernel.org>, Jingoo Han <jingoohan1@gmail.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Helge Deller <deller@gmx.de>,
-        =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas@t-8ch.de>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-input@vger.kernel.org, linux-fbdev@vger.kernel.org
-References: <20230820094118.20521-1-julius@zint.sh>
- <20230820094118.20521-2-julius@zint.sh> <20230821163631.GA214013@aspen.lan>
-From:   Julius Zint <julius@zint.sh>
-In-Reply-To: <20230821163631.GA214013@aspen.lan>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: D5F5C81990
-X-Rspamd-Server: rspamd-worker-8404
-X-NC-CID: MAl9D4VvBFNVUZn19yuNCMkWaMu7XFKNF+zKd+WI
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21.08.23 18:36, Daniel Thompson wrote:
->> @@ -472,6 +472,14 @@ config BACKLIGHT_LED
->>   	  If you have a LCD backlight adjustable by LED class driver, say Y
->>   	  to enable this driver.
->>
->> +config BACKLIGHT_HID
->> +	tristate "VESA VCP HID Backlight Driver"
->> +	depends on HID
->> +	help
->> +	  If you have an external display with VESA compliant HID brightness
->> +	  controls then say Y to enable this backlight driver. Currently the
->> +	  only supported device is the Apple Studio Display.
-> This contradicts the description which says you write the driver to the
-> standard but only tested on Apple Studio Display. There is no need to
-> spell what has been tested in the Kconfig text. Remove the final
-> sentence!
-Will remove it in v4.
->> diff --git a/drivers/video/backlight/hid_bl.c b/drivers/video/backlight/hid_bl.c
->> new file mode 100644
->> index 000000000000..b40f8f412ee2
->> --- /dev/null
->> +++ b/drivers/video/backlight/hid_bl.c
->> <snip>
->> +static void hid_bl_remove(struct hid_device *hdev)
->> +{
->> +	struct backlight_device *bl;
->> +	struct hid_bl_data *data;
->> +
->> +	hid_dbg(hdev, "remove\n");
-> This message probably should be removed (if you want to know if a function was
-> executed use ftrace).
->
->
->> +	bl = hid_get_drvdata(hdev);
->> +	data = bl_get_data(bl);
->> +
->> +	devm_backlight_device_unregister(&hdev->dev, bl);
->> +	hid_hw_close(hdev);
->> +	hid_hw_stop(hdev);
->> +	hid_set_drvdata(hdev, NULL);
->> +	devm_kfree(&hdev->dev, data);
->> +}
->> +
->> +static int hid_bl_get_brightness_raw(struct hid_bl_data *data)
->> +{
->> +	struct hid_field *field;
->> +	int result;
->> +
->> +	field = data->input_field;
->> +	hid_hw_request(data->hdev, field->report, HID_REQ_GET_REPORT);
->> +	hid_hw_wait(data->hdev);
->> +	result = *field->new_value;
->> +	hid_dbg(data->hdev, "get brightness: %d\n", result);
-> To be honest I'm a little dubious about *all* the hid_dbg() calls. They
-> add very little value (e.g. they are useful to get the driver working
-> but not that important to keeping it working). As such I don't think
-> they are worth the clutter in a CONFIG_DYNAMIC_DEBUG kernel.
->
-> Note this is strictly for the hid_dbg() stuff... the hid_err() stuff in
-> the probe error paths are much more useful!
-You are right, I will remove all hid_dbg calls in v4.
+On Fri, Aug 25, 2023 at 12:57 AM Fabian Vogt <fabian@ritter-vogt.de> wrote:
+> I see that SungHwan Jung (CC'd) recently submitted the same fixup for
+> a rather similar but different model as
+> "ALSA: hda/realtek: Add quirk for HP Victus 16-d1xxx to enable mute LED"
+> Does your HP Victus also need the ALC245_FIXUP_HP_GPIO_LED? Then we could
+> combine the quirks.
 
-Thank you very much for the review.
-
-Julius
+These victus laptops don't need ALC245_FIXUP_HP_GPIO_LED, but we can make
+alc245_fixup_hp_x360_mute_led and alc245_fixup_hp_mute_led_coefbit into
+one function.
