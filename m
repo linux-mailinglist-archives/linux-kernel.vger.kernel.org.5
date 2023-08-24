@@ -2,87 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E21EC787BCF
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 01:08:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F898787BD0
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 01:09:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242000AbjHXXHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 19:07:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55510 "EHLO
+        id S241818AbjHXXJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 19:09:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244014AbjHXXHf (ORCPT
+        with ESMTP id S243989AbjHXXIs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 19:07:35 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2D381BE5
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 16:07:32 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2bb97f2c99cso4892481fa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 16:07:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1692918451; x=1693523251;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=i0gAwhqOWZT0diMDK7kLkhF5OyNhIxTRw4Qs38qP1Eo=;
-        b=U+zh9Sft3rt+a9QVtTqiWf4TgEepKuDsGDCloFQGlF263DJbDIr1mEFLChcTpH7o9c
-         u76JfrVBd75If2ETxFctQFZJytzFR07KoO7yJonBWHn7g4turExkilvs0bBkJHx9Oj3u
-         6HRJI47jEC2q6M2pLxwgAzzkLw5ve0onqRn0k=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692918451; x=1693523251;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=i0gAwhqOWZT0diMDK7kLkhF5OyNhIxTRw4Qs38qP1Eo=;
-        b=JNYNumcZ3kq5Tjo4o0Lc1fvp6zJZ1qccSsu46a9xhY2rFXCBPEYp+JsL20yTr84WXR
-         N0ss/oyhZz7F7X573jcbltUBJL8rS6TFPrSNS3URNGg7EN7b9OlsJmJLc9aohcc09QY+
-         kCxofE03naH+KB0W9EETnY7VF3U/RB/kLwJmBBxAlvgPwFgBUzLES3nDBWoNZpLcpm5i
-         xxDdssBu9RsH/lqrT3kmDD3xt+OUa0QcAaktOVOZ3I6D4RGlJDOnXEo9ePNhA3MoxhZ3
-         BhiYMy/i0vqoQO9CmoVZiIZW8+VrJQsjzGZt31USpSX9VGGkV6XboFSByqNJXHJXz4Ds
-         6+/Q==
-X-Gm-Message-State: AOJu0Yy+mwfSJQlBGtwLJkAxu+dswlPOh/51gfP3453GkbNt9IisOGQz
-        cBnb2k0o9Vp5C+3t7gb6j7d9YNYLQhOjMrShl03bMsPp
-X-Google-Smtp-Source: AGHT+IFUfK0uIHY9X2AqqOkBpGwKIAY3u6DKZm2bzQRa2RaWdTxr7/DzNcdsuR2tJ9fUy3d7uOeANw==
-X-Received: by 2002:a2e:9d54:0:b0:2bb:8d70:c9b with SMTP id y20-20020a2e9d54000000b002bb8d700c9bmr13059718ljj.30.1692918451120;
-        Thu, 24 Aug 2023 16:07:31 -0700 (PDT)
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com. [209.85.208.175])
-        by smtp.gmail.com with ESMTPSA id h17-20020a2e3a11000000b002b9b90474c7sm62490lja.129.2023.08.24.16.07.29
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Aug 2023 16:07:30 -0700 (PDT)
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2bbbda48904so4473181fa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 16:07:29 -0700 (PDT)
-X-Received: by 2002:a2e:9bcc:0:b0:2bc:bc70:263f with SMTP id
- w12-20020a2e9bcc000000b002bcbc70263fmr9572475ljj.0.1692918449041; Thu, 24 Aug
- 2023 16:07:29 -0700 (PDT)
+        Thu, 24 Aug 2023 19:08:48 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F8791BD8
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 16:08:46 -0700 (PDT)
+Received: from notapiano (unknown [IPv6:2600:4041:5b1a:cd00:524d:e95d:1a9c:492a])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: nfraprado)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id B09B166071DE;
+        Fri, 25 Aug 2023 00:08:43 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1692918524;
+        bh=nisYa2aI8MTBzLiQ2v+r2NJegk+yL4MVy1zlu23bxBw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ckU6NWS72BQZ0knVc2FAmK/mE4mFjYYd8hc0QsPRcm/dr1X8UJAfmawNPq66vmSG+
+         QjCvvhylE7w9cTRv6yeVINzb5B1SW84nPQAGkA4iHq5FawFbcW1hoGvQqDe9RfXf8m
+         L9AoTeDvDEjLtj2gDR/ZFZfUgYnwdv0Kc3hXHzxqBwmiVdVgJ74zu7dQcrH371yY8M
+         7HwZ6gO6PZrNHo19lHWzGXo/bh4bqr1CGbsnmFJ3LqcjzgdA55Wkvh+FsmYwiYqqqc
+         UFs55d81JvtcdtcQwNjYIsUFtW+jjFqTaW2zxPBhDYAjcdcflt9/nhuhhPQxndVfeq
+         orekVRNgo0+Lg==
+Date:   Thu, 24 Aug 2023 19:08:39 -0400
+From:   =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado 
+        <nfraprado@collabora.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org, kernel@collabora.com
+Subject: Stability guarantees on uevent variables?
+Message-ID: <c0d32695-9e3e-4173-8448-7d123f38824e@notapiano>
 MIME-Version: 1.0
-References: <79cb1ec7-08ec-40d2-bbb4-ce40b684f1a4@paulmck-laptop>
-In-Reply-To: <79cb1ec7-08ec-40d2-bbb4-ce40b684f1a4@paulmck-laptop>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 24 Aug 2023 16:07:12 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whn=hcK3E+je=QjJ-b0CYbp2aY6sQBJGjFsX34L7wO+xA@mail.gmail.com>
-Message-ID: <CAHk-=whn=hcK3E+je=QjJ-b0CYbp2aY6sQBJGjFsX34L7wO+xA@mail.gmail.com>
-Subject: Re: [GIT PULL] scftorture changes for v6.4
-To:     paulmck@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        rcu@vger.kernel.org, rostedt@goodmis.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Aug 2023 at 15:06, Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> Once the merge window opens, please pull these scftorture changes:
+Hi,
 
-Heh, hedging your bets a bit?
+my question boils down to the following:
 
-This email had "for v6.4" in the subject, the CSD-lock one had "for
-v6.5", and the RCU one had "for v6.6".
+Is there a stability guarantee on the format and content of the variables in
+uevents produced by the kernel?
 
-But I'll do them all in the next merge window, never fear.
+I would assume so, given that uevents are explicitly produced for userspace, and
+users will rely on them. However, looking through the ABI documentation I could
+only find two instances of uevents being defined (testing/usb-uevent and
+testing/usb-charger-uevent) and neither mention the variables added in the
+KOBJ_ADD action. The document for the uevent file in sysfs,
+testing/sysfs-uevent, only mentions writing synthetic uevents, rather than
+reading existing ones. Is the documentation simply lacking or is it intentional
+that uevent variables aren't covered?
 
-              Linus
+I'm particularly interested in the format for the MODALIAS uevent variable. My
+understanding is that its only use is to match against the modules' aliases in
+the modules.alias file. For that reason I'm wondering whether for this variable,
+the guarantee would only be that the format of the value will match the one in
+modules.alias, but the precise format is not guaranteed (for example, a new
+field could potentially be introduced in the future if added to both the device
+uevent and module's alias). However, I do see a few ABI documentation pages for
+the modalias file in sysfs (eg in testing/sysfs-bus-pci), which explicitly
+describe the format, and that's supposed to be the same as the MODALIAS uevent,
+so does that mean the format itself is stable?
+
+I'll be happy to improve the ABI documentation based on the reply to these
+questions.
+
+As for the full context for these questions, as part of an effort to improve the
+detection of regressions affecting device probe, I want to be able to check
+whether devices under a discoverable bus (USB, PCI) were populated and probed by
+a driver. We currently do this by checking against driver and device names [1],
+but as has been pointed out before, that's not stable ABI, and the test might
+break if things get renamed or moved around. So my intention is to change that
+check to use modaliases or other uevents to find the device in a stable way and
+check for the driver symlink to verify it's been probed.
+
+[1] https://github.com/kernelci/bootrr/blob/3ae9fd5dffc667fa96012892ea08532bc6877276/boards/google%2Cspherion#L279
+
+Thanks,
+Nícolas
