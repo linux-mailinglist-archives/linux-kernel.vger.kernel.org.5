@@ -2,67 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2FF47871CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 16:38:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 378827871CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 16:38:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241693AbjHXOhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 10:37:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41354 "EHLO
+        id S241702AbjHXOhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 10:37:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241701AbjHXOhC (ORCPT
+        with ESMTP id S241204AbjHXOh1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 10:37:02 -0400
-Received: from mail-oa1-x2b.google.com (mail-oa1-x2b.google.com [IPv6:2001:4860:4864:20::2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6088193;
-        Thu, 24 Aug 2023 07:37:00 -0700 (PDT)
-Received: by mail-oa1-x2b.google.com with SMTP id 586e51a60fabf-1a2dd615ddcso1216646fac.0;
-        Thu, 24 Aug 2023 07:37:00 -0700 (PDT)
+        Thu, 24 Aug 2023 10:37:27 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41D7D1BC6
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 07:37:25 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-3fee87dd251so47523365e9.2
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 07:37:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692887820; x=1693492620;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=5tE5urQmLOnciHXtitwRyqKhpUKhIg/sORznqPn+7MY=;
-        b=M6a9jQ0lrv/aU5IjWIMXwP7EB3uYJ3sTkTPEHC3zJVsB2grEEXRnkVUybpesULHcmU
-         v5NRfv7Oj6xqwyQBhUOa7WeUiTXhAWv/cwYjOt7PfkbSiyx86wFdwXQCt9oonq1ZWDFO
-         uaZDLxUKEuMKQMTktLQPjrmWwpIx18fF+WgGi4ki9CTeqeMAptZFGJ142vH3j2J2xr7O
-         DPG7hJwhgwejSko4wR5UmeMN9n8diJ97YisfeB8ojtou4Ifoeq+95QfPrr6V5vsil+19
-         4jQ6Ll0SMoK7+HEleFRawQXRUHJLn7LrO5ucGrDxc8XOfRMM82nkJCIkBGqeXMrgpVsh
-         hwTA==
+        d=linaro.org; s=google; t=1692887844; x=1693492644;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hQuKsdXLbaauilsfKUsMg7WsVO/VKSU1VxyRk46IkT0=;
+        b=bJDwysfdRjFTLaBLhfLk8D0yKyZ0D03dgCg7Acb5aFYBDIjREG7zibGUkgzgfhzABY
+         A5c8EcxkRkljyueKctr0NXYRnzrsXBuJ+MTjJzFYdduR4384YpvJ+QN+N0W5/yf1naRX
+         oy2o2CZv+qJVyX8OMdfNAsww11o4ZnsjPnWgOBDIUZCEVhCP8foiQCnck0O5qpc/D3dN
+         MHOlBo4X3hUy6O4i+BMwKciEM5sMFl3cznZqVdfng3+Gi1qRDWObOsoRuvaYeoIgjxlU
+         XAwWloEHv89so80l6UH2NS/ymsKh7R1JcLDYZuPo0nl/fjCVslo66kPw53giIkrc9Ke9
+         2L7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692887820; x=1693492620;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5tE5urQmLOnciHXtitwRyqKhpUKhIg/sORznqPn+7MY=;
-        b=gBmqFdha9FT+QXgGlZdtcQDqFQaasp7v4Ibj5hh8dmIUZ2SpTacVvfUAVLbD5ju7wG
-         nyhUpwxel8AmckjKdfEK/X2Y/ebXhttUk+vCZqiFUlUyA6ibWeA5aY96eBrhjvZ/+Fbq
-         9gybKeDGG4LBeRVcSo3YL0OIYg40H79F0yxvBzH/upIY0Z266H8ZDmJRY8XEWW/bl8AP
-         VEavRhBPUrnJXR3wcIJZGQ+zWEXIqYy87TEyorDiHE7PFmdbTwCxnqQEioJDPPM8pkgc
-         dv4yq4S3B4CpMUcB6IUz+sqBiGIs2b/9cxPG9Vrp7LloPBWWgu6AgIFs2COuwrOA97YX
-         lpiw==
-X-Gm-Message-State: AOJu0YzRP7PvbREkvRugBr3OAbf1HbC07mTSi1CYGRONphynVm1Jumpw
-        UVStjjmXAOt8EBQSsIN74Lk=
-X-Google-Smtp-Source: AGHT+IGScxhSj64wzOKTUF/kjCoE+4F464sfIi5/Ag7EgDaLadEW7LdfqO1H8GqCC1wrOYBTOZFxqA==
-X-Received: by 2002:a05:6870:56a8:b0:1bb:b9d1:37fe with SMTP id p40-20020a05687056a800b001bbb9d137femr17847622oao.2.1692887819863;
-        Thu, 24 Aug 2023 07:36:59 -0700 (PDT)
-Received: from fabio-Precision-3551.. ([2804:14c:485:4b61:8c51:3a01:4599:db3])
-        by smtp.gmail.com with ESMTPSA id n6-20020a05687104c600b001ccb5ea6ee5sm2916558oai.55.2023.08.24.07.36.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Aug 2023 07:36:59 -0700 (PDT)
-From:   Fabio Estevam <festevam@gmail.com>
-To:     daniel.lezcano@linaro.org
-Cc:     linux-pm@vger.kernel.org, rafael@kernel.org, amitk@kernel.org,
-        rui.zhang@intel.com, linux-kernel@vger.kernel.org,
-        Fabio Estevam <festevam@denx.de>
-Subject: [PATCH v4] thermal: imx8mm: Allow reboot after critical temperature
-Date:   Thu, 24 Aug 2023 11:36:52 -0300
-Message-Id: <20230824143652.529624-1-festevam@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20221208; t=1692887844; x=1693492644;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hQuKsdXLbaauilsfKUsMg7WsVO/VKSU1VxyRk46IkT0=;
+        b=IyMisrQgydqdamT1mljQe7DHWG1RNUzObR5UyI3GSNYHKQNmX5bVMZSnguiwVaajak
+         jct9bVCJXdWw5Q3RPgSx8Z55dBphNysCpCw28Iu9lY7Rl/7QQqowqf2CPiHPtw7WOZ91
+         9gE2H5fl47eGFBc56/94O9ZW/Ji4ha5KN5lGUiogcpVHb17mF6Pp0FCERvw9yy4oT40U
+         EFRYO2TOhicYKlkDxCRmnP75Fbbjtzf7DfmG+ME7GwgZxzjiXLKvSAd2+YNAv6iAOou5
+         dUSfcBAFAG0jceMkgU+BH4XM9bDsZwt6rYhzuY6Jt2o2zHyue66Heay7VeMRpUy8wE7c
+         Ugsg==
+X-Gm-Message-State: AOJu0YyvZqoINyzTzuYkjIg8HDR9qRtD3jadm8lHACEjKy97lA5TjEAR
+        aMvHkD0nkRwkvj/r8ZjDPg3Lyw==
+X-Google-Smtp-Source: AGHT+IG1Zmy9FiD6EGuNshteebwkJiVqUA4EOgVYV3DKG8lcdZvZlKIsdhMl2a27os9ORZTF6RnlGQ==
+X-Received: by 2002:a7b:c408:0:b0:401:aa8f:7565 with SMTP id k8-20020a7bc408000000b00401aa8f7565mr1238852wmi.34.1692887843655;
+        Thu, 24 Aug 2023 07:37:23 -0700 (PDT)
+Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
+        by smtp.gmail.com with ESMTPSA id t15-20020a7bc3cf000000b004013797efb6sm2449378wmj.9.2023.08.24.07.37.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Aug 2023 07:37:23 -0700 (PDT)
+Message-ID: <9574a219-3abf-b2c9-7d90-e79d364134bb@linaro.org>
+Date:   Thu, 24 Aug 2023 15:37:22 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH v2] usb: typec: qcom: check regulator enable status before
+ disabling it
+Content-Language: en-US
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        quic_huliu@quicinc.com
+Cc:     Guenter Roeck <linux@roeck-us.net>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, quic_fenglinw@quicinc.com,
+        subbaram@quicinc.com
+References: <20230824-qcom-tcpc-v2-1-3dd8c3424564@quicinc.com>
+ <ZOdlOQ+N2J7jyIEZ@kuha.fi.intel.com>
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <ZOdlOQ+N2J7jyIEZ@kuha.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,135 +83,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fabio Estevam <festevam@denx.de>
+On 24/08/2023 15:12, Heikki Krogerus wrote:
+> On Thu, Aug 24, 2023 at 10:32:03AM +0800, Hui Liu via B4 Relay wrote:
+>> From: Hui Liu <quic_huliu@quicinc.com>
+>>
+>> Check regulator enable status before disabling it to avoid
+>> unbalanced regulator disable warnings.
+>>
+>> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+>> Fixes: a4422ff22142 ("usb: typec: qcom: Add Qualcomm PMIC Type-C driver")
+>> Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+>> Signed-off-by: Hui Liu <quic_huliu@quicinc.com>
+>> ---
+>> Changes in v2:
+>> - Add Fixes tag
+>> - Link to v1: https://lore.kernel.org/r/20230823-qcom-tcpc-v1-1-fa81a09ca056@quicinc.com
+>> ---
+>>   drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c | 3 ++-
+>>   1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c b/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c
+>> index bb0b8479d80f..ca616b17b5b6 100644
+>> --- a/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c
+>> +++ b/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c
+>> @@ -422,7 +422,8 @@ static int qcom_pmic_typec_pdphy_disable(struct pmic_typec_pdphy *pmic_typec_pdp
+>>   	ret = regmap_write(pmic_typec_pdphy->regmap,
+>>   			   pmic_typec_pdphy->base + USB_PDPHY_EN_CONTROL_REG, 0);
+>>   
+>> -	regulator_disable(pmic_typec_pdphy->vdd_pdphy);
+>> +	if (regulator_is_enabled(pmic_typec_pdphy->vdd_pdphy))
+>> +		regulator_disable(pmic_typec_pdphy->vdd_pdphy);
+> 
+> Would it be an option to just enable the regulator in
+> qcom_pmic_typec_pdphy_start() and disable it in
+> qcom_pmic_typec_pdphy_stop()?
+> 
+> Now the whole thing looks weird. That regulator is in practice
+> only disabled and then enabled in one and the same place -
+> pmic_typec_pdphy_reset(). It's not touched anywhere else. That makes
+> the above condition confusing to me. I may be missing something.
+> 
+> At least more explanation is needed.
+> 
+> thanks,
+> 
 
-Currently, after the SoC reaches the critical temperature, the board
-goes through a poweroff mechanism.
+I don't see why not.
 
-In some cases, such behavior does not suit well, as the board may be
-unattended in the field and rebooting may be a better approach.
+The code would look neater that way too.
 
-The bootloader may also check the temperature and only allow the boot to
-proceed when the temperature is below a certain threshold.
+Can you give it a try Hui ?
 
-Introduce a 'reboot_on_crit' sysfs entry to indicate that the board
-will go through a reboot after the critical temperature is reached.
+diff --git a/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c 
+b/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c
+index 4e1b846627d20..d29f9506e5f12 100644
+--- a/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c
++++ b/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c
+@@ -383,10 +383,6 @@ static int qcom_pmic_typec_pdphy_enable(struct 
+pmic_typec_pdphy *pmic_typec_pdph
+         struct device *dev = pmic_typec_pdphy->dev;
+         int ret;
 
-By default, the original shutdown behavior is preserved.
+-       ret = regulator_enable(pmic_typec_pdphy->vdd_pdphy);
+-       if (ret)
+-               return ret;
+-
+         /* PD 2.0, DR=TYPEC_DEVICE, PR=TYPEC_SINK */
+         ret = regmap_update_bits(pmic_typec_pdphy->regmap,
+                                  pmic_typec_pdphy->base + 
+USB_PDPHY_MSG_CONFIG_REG,
+@@ -424,8 +420,6 @@ static int qcom_pmic_typec_pdphy_disable(struct 
+pmic_typec_pdphy *pmic_typec_pdp
+         ret = regmap_write(pmic_typec_pdphy->regmap,
+                            pmic_typec_pdphy->base + 
+USB_PDPHY_EN_CONTROL_REG, 0);
 
-Tested on a imx8mm-evk board by issuing the command below:
+-       regulator_disable(pmic_typec_pdphy->vdd_pdphy);
+-
+         return ret;
+  }
 
-echo 1 > /sys/devices/platform/soc@0/30000000.bus/30260000.tmu/reboot_on_crit
+@@ -449,6 +443,10 @@ int qcom_pmic_typec_pdphy_start(struct 
+pmic_typec_pdphy *pmic_typec_pdphy,
+         int i;
+         int ret;
 
-Confirmed that it goes through a reboot after the critical temperature
-is reached.
++       ret = regulator_enable(pmic_typec_pdphy->vdd_pdphy);
++       if (ret)
++               return ret;
++
+         pmic_typec_pdphy->tcpm_port = tcpm_port;
 
-Signed-off-by: Fabio Estevam <festevam@denx.de>
+         ret = pmic_typec_pdphy_reset(pmic_typec_pdphy);
+@@ -469,6 +467,8 @@ void qcom_pmic_typec_pdphy_stop(struct 
+pmic_typec_pdphy *pmic_typec_pdphy)
+                 disable_irq(pmic_typec_pdphy->irq_data[i].irq);
+
+         qcom_pmic_typec_pdphy_reset_on(pmic_typec_pdphy);
++
++       regulator_disable(pmic_typec_pdphy->vdd_pdphy);
+  }
+
 ---
-Changes since v3:
-- Add a sysfs entry.
-
- drivers/thermal/imx8mm_thermal.c | 57 ++++++++++++++++++++++++++++++++
- 1 file changed, 57 insertions(+)
-
-diff --git a/drivers/thermal/imx8mm_thermal.c b/drivers/thermal/imx8mm_thermal.c
-index e89b11b3f2b9..07c6d21147ba 100644
---- a/drivers/thermal/imx8mm_thermal.c
-+++ b/drivers/thermal/imx8mm_thermal.c
-@@ -15,6 +15,7 @@
- #include <linux/platform_device.h>
- #include <linux/slab.h>
- #include <linux/thermal.h>
-+#include <linux/reboot.h>
- 
- #include "thermal_hwmon.h"
- 
-@@ -91,6 +92,7 @@ struct imx8mm_tmu {
- 	void __iomem *base;
- 	struct clk *clk;
- 	const struct thermal_soc_data *socdata;
-+	bool reboot;
- 	struct tmu_sensor sensors[];
- };
- 
-@@ -146,8 +148,58 @@ static int tmu_get_temp(struct thermal_zone_device *tz, int *temp)
- 	return tmu->socdata->get_temp(sensor, temp);
- }
- 
-+static ssize_t reboot_on_crit_show(struct device *dev,
-+				   struct device_attribute *attr, char *buf)
-+{
-+	struct imx8mm_tmu *tmu = dev_get_drvdata(dev);
-+
-+	return sysfs_emit(buf, "%d\n", tmu->reboot);
-+}
-+
-+static ssize_t reboot_on_crit_store(struct device *dev,
-+				    struct device_attribute *attr,
-+				    const char *buf, size_t size)
-+{
-+	struct imx8mm_tmu *tmu = dev_get_drvdata(dev);
-+	int ret, reboot;
-+
-+	ret = kstrtoint(buf, 0, &reboot);
-+	if (ret < 0)
-+		return ret;
-+
-+	tmu->reboot = reboot;
-+
-+	return size;
-+}
-+
-+static DEVICE_ATTR_RW(reboot_on_crit);
-+
-+static struct attribute *reboot_on_crit_attrs[] = {
-+	&dev_attr_reboot_on_crit.attr,
-+	NULL
-+};
-+
-+static const struct attribute_group reboot_attribute_group = {
-+	.attrs = reboot_on_crit_attrs,
-+};
-+
-+static void tmu_critical(struct thermal_zone_device *tz)
-+{
-+	struct tmu_sensor *sensor = thermal_zone_device_priv(tz);
-+	struct imx8mm_tmu *tmu = sensor->priv;
-+
-+	if (tmu->reboot) {
-+		dev_emerg(thermal_zone_device(tz), "%s: critical temperature reached\n",
-+			  thermal_zone_device_type(tz));
-+		kernel_restart(NULL);
-+	} else {
-+		thermal_zone_device_critical(tz);
-+	}
-+}
-+
- static const struct thermal_zone_device_ops tmu_tz_ops = {
- 	.get_temp = tmu_get_temp,
-+	.critical = tmu_critical,
- };
- 
- static void imx8mm_tmu_enable(struct imx8mm_tmu *tmu, bool enable)
-@@ -355,6 +407,10 @@ static int imx8mm_tmu_probe(struct platform_device *pdev)
- 	if (tmu->socdata->version == TMU_VER2)
- 		imx8mm_tmu_probe_sel_all(tmu);
- 
-+	ret = sysfs_create_group(&pdev->dev.kobj, &reboot_attribute_group);
-+	if (ret)
-+		goto disable_clk;
-+
- 	/* enable the monitor */
- 	imx8mm_tmu_enable(tmu, true);
- 
-@@ -372,6 +428,7 @@ static int imx8mm_tmu_remove(struct platform_device *pdev)
- 	/* disable TMU */
- 	imx8mm_tmu_enable(tmu, false);
- 
-+	sysfs_remove_group(&pdev->dev.kobj, &reboot_attribute_group);
- 	clk_disable_unprepare(tmu->clk);
- 	platform_set_drvdata(pdev, NULL);
- 
--- 
-2.34.1
-
+bod
