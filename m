@@ -2,71 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 573407873D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 17:16:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C82C7873E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 17:18:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242167AbjHXPQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 11:16:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41928 "EHLO
+        id S242107AbjHXPRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 11:17:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242107AbjHXPP4 (ORCPT
+        with ESMTP id S242207AbjHXPRQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 11:15:56 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27FE6199D
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 08:15:55 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1c0d0bf18d6so214235ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 08:15:55 -0700 (PDT)
+        Thu, 24 Aug 2023 11:17:16 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FC5D1FD5
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 08:17:00 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-68a520dba33so3487002b3a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 08:17:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1692890154; x=1693494954;
-        h=in-reply-to:from:references:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=/bmH+07v1CDuCviVq8sxdPKos7m/yHgxjjdypmKOQE8=;
-        b=Oc8rRoX14VWqCNgAJtVNf/OmUNxdCnSYIKMjoEeQ6v6DzONjgTJgWmrb6HS8kmibpD
-         H5AUTZUUn9merIA6+GtFtp//8DzQJyayPJ5FazJYG9L5eYD/32VatgpzTAoBsEnFWkDc
-         VYp5FhXpegU2lu70VAH5/nSah0L0aTqYbH/nQ=
+        d=broadcom.com; s=google; t=1692890219; x=1693495019;
+        h=in-reply-to:from:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=kBjkSt9wF8RFqKt/MlozzqYPincl9IFxAz5kLSV+VnA=;
+        b=Ys93gj7yR+H90mx8Gqmo/h6+uWOm86OLpjqvtBFsuctQxKXMsg7Ik5PeFP3igkEef6
+         F+2UcfxgXeMpND343CpZ04X+CEnWLh3CKy1UuQzBAFfFtjxDxCQgzQWohn1+r40trDsQ
+         Ez1/0JzOzo+aWeTXgltAYJsyIQxy9ePnL6aTA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692890154; x=1693494954;
-        h=in-reply-to:from:references:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/bmH+07v1CDuCviVq8sxdPKos7m/yHgxjjdypmKOQE8=;
-        b=h9V4g7WaR4YbBv6c51U28pIenFfKRg0EA1zVSyM6NqM354ag9CFmSo6s35UGEXEaCy
-         owMbU/AbRFpPHOIzMrGqICV72P95PZ+E/7kDSD3m6A+aaIZep9nCWVQIYP3kFkX7hfOd
-         WXmM5FAJ1EcQicp4tCz9qe3uX6JiybBFUouvqszGMQHatILadrXSQsYjp95BtBGgiB43
-         kc9j5NptKdZDTcKXq3KPAyIb/Ufuhr+SMsMX+iIR3Fir/jnosJkX6h86Fyr28GKojjvi
-         wmK7q7wELwY2N8zlNQKgiL6HPvU/8+Zv8Kroj9KdAJdHxpw2IvljxaPG1YVPLYwl4PUY
-         E2QQ==
-X-Gm-Message-State: AOJu0Yz09FTejMHO9vvpvnF/5gjn2O0XwOVDNyd5iU/taKNnKnmmCscA
-        rwIw68jjluRX1IjLVkBe3jENaDd9Wqx/7ryL+Sk=
-X-Google-Smtp-Source: AGHT+IExZsGkiWISHBCO6buRE8fbSp7lv/NTIDf3MkctLoim8yxjye1Cny4IrtSKaE86j/5SkDKBbg==
-X-Received: by 2002:a17:903:22c1:b0:1bf:728:7459 with SMTP id y1-20020a17090322c100b001bf07287459mr19809450plg.63.1692890154572;
-        Thu, 24 Aug 2023 08:15:54 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692890219; x=1693495019;
+        h=in-reply-to:from:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kBjkSt9wF8RFqKt/MlozzqYPincl9IFxAz5kLSV+VnA=;
+        b=AQmZ5gx1V2bbfOqY362/p+gafv9BT+pPtwXLOwuXKkrmi/fv8yJWbtSGRdqdkiq1EF
+         xu1xzyETUkqsLyJoitT/k/FpCWL+6aWR7uYUD7myjKd/h798YEsDBkPHA0JKb4kiI5i5
+         X9MwmwYHuDk+nGK5oW4CaoNKEav+xNdckPMVftqeMyrrfaDumcqH+Je7UL5zy6Udg3zk
+         IadfjqM97HZc0dM+Q0MA0nUVaGxctqIiW+UW92l0vSwmn31DgKvH03n2Go04SPpbfyXd
+         NTd8WYzdA56BzSDnno3hpxCKuD/EEQvLyLJtW3mFWTWICWy491MOAKfoLvbyzqj8jDmB
+         Jp+Q==
+X-Gm-Message-State: AOJu0YyePjc29vcfR4XDUuU747pYXNYVfnr6NJASlxyRLf7uB4/QgCnv
+        WQhJYWjvGHTszPjE7LncA6K6OA==
+X-Google-Smtp-Source: AGHT+IHWD+IJ6SHtmSytHItm4n3pme/UFCVhe1Ydiq1H229vBi/c5qSM2mWdoh5w2nY5vU73BHdwVw==
+X-Received: by 2002:a05:6a20:8e01:b0:135:4527:efe4 with SMTP id y1-20020a056a208e0100b001354527efe4mr20898796pzj.10.1692890219164;
+        Thu, 24 Aug 2023 08:16:59 -0700 (PDT)
 Received: from [192.168.1.3] (ip72-194-116-95.oc.oc.cox.net. [72.194.116.95])
-        by smtp.gmail.com with ESMTPSA id jw15-20020a170903278f00b001b9d7c8f44dsm12895088plb.182.2023.08.24.08.15.53
+        by smtp.gmail.com with ESMTPSA id y4-20020aa78544000000b006862b2a6b0dsm11535368pfn.15.2023.08.24.08.16.54
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Aug 2023 08:15:54 -0700 (PDT)
-Message-ID: <123c494d-7f6d-06a5-c5ac-6d91261c8e35@broadcom.com>
-Date:   Thu, 24 Aug 2023 08:15:53 -0700
+        Thu, 24 Aug 2023 08:16:58 -0700 (PDT)
+Message-ID: <bd0a1e56-be02-6c3e-374b-0610116d94aa@broadcom.com>
+Date:   Thu, 24 Aug 2023 08:16:54 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH net-next] net: dsa: use capital "OR" for multiple licenses
- in SPDX
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Kurt Kanzenbach <kurt@linutronix.de>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230823085632.116725-1-krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH] thermal: Explicitly include correct DT includes
+To:     Rob Herring <robh@kernel.org>,
+        Guillaume La Roque <glaroque@baylibre.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Markus Mayer <mmayer@broadcom.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Thara Gopinath <thara.gopinath@gmail.com>,
+        =?UTF-8?Q?Niklas_S=c3=b6derlund?= <niklas.soderlund@ragnatech.se>,
+        Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Vasily Khoruzhick <anarsoul@gmail.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Cc:     devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+References: <20230714175008.4064592-1-robh@kernel.org>
 From:   Florian Fainelli <florian.fainelli@broadcom.com>
-In-Reply-To: <20230823085632.116725-1-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230714175008.4064592-1-robh@kernel.org>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="00000000000053f0380603acb45e"
+        boundary="0000000000002e30b80603acb862"
 X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
@@ -77,28 +115,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---00000000000053f0380603acb45e
+--0000000000002e30b80603acb862
 Content-Language: en-US
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 
 
-On 8/23/2023 1:56 AM, Krzysztof Kozlowski wrote:
-> Documentation/process/license-rules.rst and checkpatch expect the SPDX
-> identifier syntax for multiple licenses to use capital "OR".  Correct it
-> to keep consistent format and avoid copy-paste issues.
+On 7/14/2023 10:50 AM, Rob Herring wrote:
+> The DT of_device.h and of_platform.h date back to the separate
+> of_platform_bus_type before it as merged into the regular platform bus.
+> As part of that merge prepping Arm DT support 13 years ago, they
+> "temporarily" include each other. They also include platform_device.h
+> and of.h. As a result, there's a pretty much random mix of those include
+> files used throughout the tree. In order to detangle these headers and
+> replace the implicit includes with struct declarations, users need to
+> explicitly include the correct includes.
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Signed-off-by: Rob Herring <robh@kernel.org>
 > ---
->   drivers/net/dsa/b53/b53_serdes.c                   | 2 +-
->   drivers/net/dsa/b53/b53_serdes.h                   | 2 +-
+>   drivers/thermal/amlogic_thermal.c           | 2 --
+>   drivers/thermal/broadcom/bcm2711_thermal.c  | 2 +-
+>   drivers/thermal/broadcom/brcmstb_thermal.c  | 2 +-
 
-Reviewed-by: FLorian Fainelli <florian.fainelli@broadcom.com>
+Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com> # broadcom
 -- 
 Florian
 
---00000000000053f0380603acb45e
+--0000000000002e30b80603acb862
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -169,14 +213,14 @@ kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
 NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
 AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
 LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
-/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIKOXsE/Ob5Dbq3kF
-6Sq6v/SjqnivyjPRCICj8bokzOxHMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
-AQkFMQ8XDTIzMDgyNDE1MTU1NFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
+/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIDAkara8lJPPBhCq
+t6v04LaDsVizwC4qkLKimmoSP16fMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
+AQkFMQ8XDTIzMDgyNDE1MTY1OVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
 AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
-MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCBuEMTUFhe2gUP1HKPhH3VlH7VHhvwSVVL
-OQOMGRHUDsl+yVF/wfazBkUrCXF8Ywxvf8EG9NFhgv2nVlwQPC/GHA7PPlJw5LuS03CA80dVyc96
-FYdbTG7yEWpdl9FlPdO3BYk3+Mjd57mXpfVE4oOay/n0qpofGf6DxXlLqYxZAIBOpOp5b9nRrq9/
-q9irKFHwWYqo4aS3oXm+zo4j8ehZICbCG9AkrppM3jCVmGyYW5o4OFtMZ+wqvi2IAuwQ7XO27djo
-oa2zl1al6AwdGmtFkL33lLl7Av/TqBvy3kYkByXT5mPr1w3ZFk7WVlERdFcCRP2/iJOOGqkZQju9
-ciMq
---00000000000053f0380603acb45e--
+MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBN41iIKZurmzTDDnuys23uH2al+WNIaYYH
+ZPi9ocbUCT/ikybgUePbne7VGwBRw8uCkvT27C584EqExUHb48XnsF5YmUcxSiS6P8Jum7Bm0PIN
+TrATKzhawVgJnjasjC6N+jOSvShJHUUPXo1E9v9j13ZFK2d1lLMoQLxNyOBbNwdFdBIsIM4rHfdq
+C5taTXmiv/fUtCRJietWBtCdWcc3I/FCPJwVKuXqvm+LMIx1mKGcbaAuM/S8C5ZtiPbm9jkEXkm1
+o8yCJMYpcdf6aQLxtEbLJuj9iZYDPf5WSXuWFx959hlBTJIm1ddKskMXcmTO8qGoGrVM1VIUurvo
+GCsT
+--0000000000002e30b80603acb862--
