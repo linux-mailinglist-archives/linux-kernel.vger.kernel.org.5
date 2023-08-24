@@ -2,176 +2,384 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72215786FE0
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 15:04:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62B6C786FE3
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 15:05:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237813AbjHXNED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 09:04:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60492 "EHLO
+        id S238267AbjHXNEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 09:04:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240929AbjHXND4 (ORCPT
+        with ESMTP id S238203AbjHXNEI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 09:03:56 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFD4F1BD0;
-        Thu, 24 Aug 2023 06:03:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692882226; x=1724418226;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=jHMVu6k8S9w3sW744CRbIo5kUtynAHJhFX02muevFVU=;
-  b=fco9wB7K6KX7e5oMDUTOxgW7gnAF8AUAWtPUM4SE2YK7K5D6X5TxqfqB
-   d/n2js38ImjtOEeMrhtSAjCwBvm0Cn/yIS6DT79WQuHuPrNGFg1UxnYrK
-   UwjXYkr82oRvg/9XJeDP5kLg6pGLkHyG8No/m2DQEutG0akectYzqqDpf
-   oao0WKY4qhHJdaneclqTQLAF6r7RMDzFBHNeOSxqzJ6Pu+BlepYchFARN
-   Ub5tTRJXW7rfsLinOsKOTPX6E8z3eVI1jzkgX4usq4pnPeaKvt01v+r7f
-   QCem6UyDWPAGMXnw+N0nqYNxOKKD9mFy7ZMF6z3Zdo2diEGT8FJdtVyU7
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="359414863"
-X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
-   d="scan'208";a="359414863"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 06:03:45 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="807121086"
-X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
-   d="scan'208";a="807121086"
-Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 24 Aug 2023 06:03:41 -0700
-Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qZ9zt-0002gS-0G;
-        Thu, 24 Aug 2023 13:03:38 +0000
-Date:   Thu, 24 Aug 2023 21:03:34 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Khadija Kamran <kamrankhadijadj@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Serge Hallyn <serge@hallyn.com>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        linux-security-module@vger.kernel.org,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>, selinux@vger.kernel.org,
-        ztarkhani@microsoft.com, alison.schofield@intel.com
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: Re: [PATCH] lsm: constify the 'mm' parameter in
- security_vm_enough_memory_mm()
-Message-ID: <202308242024.q4KF0YIN-lkp@intel.com>
-References: <ZOWtBTKkfcc8sKkY@gmail.com>
+        Thu, 24 Aug 2023 09:04:08 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48569CEE
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 06:04:06 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id 41be03b00d2f7-569deb93999so3021662a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 06:04:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692882246; x=1693487046;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1o+2vd8c1a4db2KHxk6F8Sj0RF0g8Sua7zW/c976nvQ=;
+        b=MZDS1sEFd+HsZ+aTpjqthosRZvdHFRXYAoCWXfa/sP8D98tdd2rjvn47oBPxW+UHN6
+         /e5RzIY2nZEteSNkRCmTpF7YPZt50mtHhCZ2MOJoxhcRSPrfl5vTo1gHeP/iEQZ/sVwS
+         f2/bd0iTScYUW7/2EGbaAAjWukCWHkXSo2QK8HxUuh7PxbLPV24vAG+HW8EfcH0rjozP
+         OhKjqssLD3FEOLWcOTDNTAkmbGKRaVGsbm6OiAKxwvAisKD6yKDI2ATTpHZGnYY7dqyx
+         zTeIWWaZrM4DgtV1RkoPDYsiII32dGQTvLHoaIffauG3/8chPqTYVcGjDmgekerrBMDs
+         8n6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692882246; x=1693487046;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1o+2vd8c1a4db2KHxk6F8Sj0RF0g8Sua7zW/c976nvQ=;
+        b=FFa7eecQW/Ox+zzeQ9DhfeT30PREWAtJaBV9t6uBvDXcqjnLzHtHwSD68KocVuF2Wk
+         9fPQpdiaSL2T8QIM183HUlj9wfRyqOLpuPOPGwrUMyk2a6EbI+7exucVvLT1FjlYZOTX
+         957m0edMVhaIs8jHfCTkRMnl7ht/y6fY5K3cVrdd9v9FuSjw0NyBvfQBwyOx7h17n8oh
+         H4NdxKE93WnSRlBelxcvUrCxQqM8Woy1gvQsou50TDRSGDCmiQGnneroIcbDaKjQO9E5
+         cFqekn7/7pUS+uIMk+WjMQRkAaS0V+sH4MZeh/Z0tO8NVht0svoaAu3Eo0JNU03gSsNk
+         YoFg==
+X-Gm-Message-State: AOJu0Yym1ON+EM3zYcWZ+m9AADKjZlTxkFrdCRA1gFnMN4SD5tRvpyRg
+        cZYi1iTlGxJmoi8/4s/sOZgV/L68OKlfq/7ce3aQLg==
+X-Google-Smtp-Source: AGHT+IGrqMmOSeHA06K1Myxf5V23X1bVD9OLQANMJzne2qABEH0M+Hnk3Khp/XLXU6jjxhl+ebFwya5kKpDxIrBgwPY=
+X-Received: by 2002:a05:6a20:6d9d:b0:13d:ac08:6b79 with SMTP id
+ gl29-20020a056a206d9d00b0013dac086b79mr10488240pzb.60.1692882245454; Thu, 24
+ Aug 2023 06:04:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZOWtBTKkfcc8sKkY@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230823060832.454842-1-aaron.lu@intel.com> <20230823060832.454842-2-aaron.lu@intel.com>
+ <fd568884-9df4-2990-7b81-655fc7f63a4a@efficios.com> <20230824080142.GB459974@ziqianlu-dell>
+ <2192e838-48d1-9dec-5769-74a4a048f3c2@efficios.com>
+In-Reply-To: <2192e838-48d1-9dec-5769-74a4a048f3c2@efficios.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Thu, 24 Aug 2023 15:03:54 +0200
+Message-ID: <CAKfTPtDSjWCyrKpf6ftQtBi9zZC=zQn0tx7e1_eLRMi0M02FpA@mail.gmail.com>
+Subject: Re: [PATCH 1/1] sched/fair: ratelimit update to tg->load_avg
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Aaron Lu <aaron.lu@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Tim Chen <tim.c.chen@intel.com>,
+        Nitin Tekchandani <nitin.tekchandani@intel.com>,
+        Yu Chen <yu.c.chen@intel.com>,
+        Waiman Long <longman@redhat.com>,
+        Deng Pan <pan.deng@intel.com>,
+        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
+        David Vernet <void@manifault.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Khadija,
+On Thu, 24 Aug 2023 at 14:55, Mathieu Desnoyers
+<mathieu.desnoyers@efficios.com> wrote:
+>
+> On 8/24/23 04:01, Aaron Lu wrote:
+> > On Wed, Aug 23, 2023 at 10:05:31AM -0400, Mathieu Desnoyers wrote:
+> >> On 8/23/23 02:08, Aaron Lu wrote:
+> >>> When using sysbench to benchmark Postgres in a single docker instance
+> >>> with sysbench's nr_threads set to nr_cpu, it is observed there are ti=
+mes
+> >>> update_cfs_group() and update_load_avg() shows noticeable overhead on
+> >>> a 2sockets/112core/224cpu Intel Sapphire Rapids(SPR):
+> >>>
+> >>>       13.75%    13.74%  [kernel.vmlinux]           [k] update_cfs_gro=
+up
+> >>>       10.63%    10.04%  [kernel.vmlinux]           [k] update_load_av=
+g
+> >>>
+> >>> Annotate shows the cycles are mostly spent on accessing tg->load_avg
+> >>> with update_load_avg() being the write side and update_cfs_group() be=
+ing
+> >>> the read side. tg->load_avg is per task group and when different task=
+s
+> >>> of the same taskgroup running on different CPUs frequently access
+> >>> tg->load_avg, it can be heavily contended.
+> >>>
+> >>> E.g. when running postgres_sysbench on a 2sockets/112cores/224cpus In=
+tel
+> >>> Sappire Rapids, during a 5s window, the wakeup number is 14millions a=
+nd
+> >>> migration number is 11millions and with each migration, the task's lo=
+ad
+> >>> will transfer from src cfs_rq to target cfs_rq and each change involv=
+es
+> >>> an update to tg->load_avg. Since the workload can trigger as many wak=
+eups
+> >>> and migrations, the access(both read and write) to tg->load_avg can b=
+e
+> >>> unbound. As a result, the two mentioned functions showed noticeable
+> >>> overhead. With netperf/nr_client=3Dnr_cpu/UDP_RR, the problem is wors=
+e:
+> >>> during a 5s window, wakeup number is 21millions and migration number =
+is
+> >>> 14millions; update_cfs_group() costs ~25% and update_load_avg() costs=
+ ~16%.
+> >>>
+> >>> Reduce the overhead by limiting updates to tg->load_avg to at most on=
+ce
+> >>> per ms. After this change, the cost of accessing tg->load_avg is grea=
+tly
+> >>> reduced and performance improved. Detailed test results below.
+> >>
+> >> By applying your patch on top of my patchset at:
+> >>
+> >> https://lore.kernel.org/lkml/20230822113133.643238-1-mathieu.desnoyers=
+@efficios.com/
+> >>
+> >> The combined hackbench results look very promising:
+> >>
+> >> (hackbench -g 32 -f 20 --threads --pipe -l 480000 -s 100)
+> >> (192 cores AMD EPYC 9654 96-Core Processor (over 2 sockets), with hype=
+rthreading)
+> >>
+> >> Baseline:                                       49s
+> >> With L2-ttwu-queue-skip:                        34s (30% speedup)
+> >> With L2-ttwu-queue-skip + ratelimit-load-avg:   26s (46% speedup)
+> >>
+> >> Feel free to apply my:
+> >>
+> >> Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> >> Tested-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> >
+> > Thanks a lot for running this and reviewing the patch.
+> > I'll add your number and tag in the changelog when sending a new
+> > version.
+>
+> Now that I come to think of it, I have comment: why use
+> sched_clock_cpu() rather than just read the jiffies value ? AFAIR,
+> sched_clock can be slower than needed when read from a "remote" cpu on
+> architectures that have an unsynchronized tsc.
+>
+> Considering that you only need a time reference more or less accurate at
+> the millisecond level, I suspect that jiffies is what you are looking
+> for here. This is what the NUMA balance code and rseq mm_cid use to
+> execute work every N milliseconds.
 
-kernel test robot noticed the following build errors:
+tick can 4ms or even 10ms which means a rate limit up between 10ms to
+20ms in the latter case
 
-[auto build test ERROR on akpm-mm/mm-everything]
-[also build test ERROR on pcmoore-selinux/next pcmoore-audit/next linus/master v6.5-rc7 next-20230824]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Khadija-Kamran/lsm-constify-the-mm-parameter-in-security_vm_enough_memory_mm/20230823-145455
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/ZOWtBTKkfcc8sKkY%40gmail.com
-patch subject: [PATCH] lsm: constify the 'mm' parameter in security_vm_enough_memory_mm()
-config: arc-randconfig-001-20230824 (https://download.01.org/0day-ci/archive/20230824/202308242024.q4KF0YIN-lkp@intel.com/config)
-compiler: arc-elf-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20230824/202308242024.q4KF0YIN-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308242024.q4KF0YIN-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
->> mm/util.c:928:5: error: conflicting types for '__vm_enough_memory'; have 'int(struct mm_struct *, long int,  int)'
-     928 | int __vm_enough_memory(struct mm_struct *mm, long pages, int cap_sys_admin)
-         |     ^~~~~~~~~~~~~~~~~~
-   In file included from mm/util.c:2:
-   include/linux/mm.h:3199:12: note: previous declaration of '__vm_enough_memory' with type 'int(const struct mm_struct *, long int,  int)'
-    3199 | extern int __vm_enough_memory(const struct mm_struct *mm, long pages, int cap_sys_admin);
-         |            ^~~~~~~~~~~~~~~~~~
-
-
-vim +928 mm/util.c
-
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  911  
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  912  /*
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  913   * Check that a process has enough memory to allocate a new virtual
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  914   * mapping. 0 means there is enough memory for the allocation to
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  915   * succeed and -ENOMEM implies there is not.
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  916   *
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  917   * We currently support three overcommit policies, which are set via the
-ee65728e103bb7 Mike Rapoport   2022-06-27  918   * vm.overcommit_memory sysctl.  See Documentation/mm/overcommit-accounting.rst
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  919   *
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  920   * Strict overcommit modes added 2002 Feb 26 by Alan Cox.
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  921   * Additional code 2002 Jul 20 by Robert Love.
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  922   *
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  923   * cap_sys_admin is 1 if the process has admin privileges, 0 otherwise.
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  924   *
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  925   * Note this is a helper function intended to be used by LSMs which
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  926   * wish to use this logic.
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  927   */
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17 @928  int __vm_enough_memory(struct mm_struct *mm, long pages, int cap_sys_admin)
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  929  {
-8c7829b04c523c Johannes Weiner 2019-05-13  930  	long allowed;
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  931  
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  932  	vm_acct_memory(pages);
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  933  
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  934  	/*
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  935  	 * Sometimes we want to use more memory than we have
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  936  	 */
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  937  	if (sysctl_overcommit_memory == OVERCOMMIT_ALWAYS)
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  938  		return 0;
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  939  
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  940  	if (sysctl_overcommit_memory == OVERCOMMIT_GUESS) {
-8c7829b04c523c Johannes Weiner 2019-05-13  941  		if (pages > totalram_pages() + total_swap_pages)
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  942  			goto error;
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  943  		return 0;
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  944  	}
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  945  
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  946  	allowed = vm_commit_limit();
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  947  	/*
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  948  	 * Reserve some for root
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  949  	 */
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  950  	if (!cap_sys_admin)
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  951  		allowed -= sysctl_admin_reserve_kbytes >> (PAGE_SHIFT - 10);
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  952  
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  953  	/*
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  954  	 * Don't let a single process grow so big a user can't recover
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  955  	 */
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  956  	if (mm) {
-8c7829b04c523c Johannes Weiner 2019-05-13  957  		long reserve = sysctl_user_reserve_kbytes >> (PAGE_SHIFT - 10);
-8c7829b04c523c Johannes Weiner 2019-05-13  958  
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  959  		allowed -= min_t(long, mm->total_vm / 32, reserve);
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  960  	}
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  961  
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  962  	if (percpu_counter_read_positive(&vm_committed_as) < allowed)
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  963  		return 0;
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  964  error:
-6bdfc60cf0f977 Jakub Wilk      2023-02-10  965  	pr_warn_ratelimited("%s: pid: %d, comm: %s, not enough memory for the allocation\n",
-44b414c8715c5d Kefeng Wang     2022-07-26  966  			    __func__, current->pid, current->comm);
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  967  	vm_unacct_memory(pages);
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  968  
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  969  	return -ENOMEM;
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  970  }
-39a1aa8e194ab6 Andrey Ryabinin 2016-03-17  971  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>
+> Thanks,
+>
+> Mathieu
+>
+> >
+> > Regards,
+> > Aaron
+> >
+> >>>
+> >>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D
+> >>> postgres_sysbench on SPR:
+> >>> 25%
+> >>> base:   42382=C2=B119.8%
+> >>> patch:  50174=C2=B19.5%  (noise)
+> >>>
+> >>> 50%
+> >>> base:   67626=C2=B11.3%
+> >>> patch:  67365=C2=B13.1%  (noise)
+> >>>
+> >>> 75%
+> >>> base:   100216=C2=B11.2%
+> >>> patch:  112470=C2=B10.1% +12.2%
+> >>>
+> >>> 100%
+> >>> base:    93671=C2=B10.4%
+> >>> patch:  113563=C2=B10.2% +21.2%
+> >>>
+> >>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D
+> >>> hackbench on ICL:
+> >>> group=3D1
+> >>> base:    114912=C2=B15.2%
+> >>> patch:   117857=C2=B12.5%  (noise)
+> >>>
+> >>> group=3D4
+> >>> base:    359902=C2=B11.6%
+> >>> patch:   361685=C2=B12.7%  (noise)
+> >>>
+> >>> group=3D8
+> >>> base:    461070=C2=B10.8%
+> >>> patch:   491713=C2=B10.3% +6.6%
+> >>>
+> >>> group=3D16
+> >>> base:    309032=C2=B15.0%
+> >>> patch:   378337=C2=B11.3% +22.4%
+> >>>
+> >>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+> >>> hackbench on SPR:
+> >>> group=3D1
+> >>> base:    100768=C2=B12.9%
+> >>> patch:   103134=C2=B12.9%  (noise)
+> >>>
+> >>> group=3D4
+> >>> base:    413830=C2=B112.5%
+> >>> patch:   378660=C2=B116.6% (noise)
+> >>>
+> >>> group=3D8
+> >>> base:    436124=C2=B10.6%
+> >>> patch:   490787=C2=B13.2% +12.5%
+> >>>
+> >>> group=3D16
+> >>> base:    457730=C2=B13.2%
+> >>> patch:   680452=C2=B11.3% +48.8%
+> >>>
+> >>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+> >>> netperf/udp_rr on ICL
+> >>> 25%
+> >>> base:    114413=C2=B10.1%
+> >>> patch:   115111=C2=B10.0% +0.6%
+> >>>
+> >>> 50%
+> >>> base:    86803=C2=B10.5%
+> >>> patch:   86611=C2=B10.0%  (noise)
+> >>>
+> >>> 75%
+> >>> base:    35959=C2=B15.3%
+> >>> patch:   49801=C2=B10.6% +38.5%
+> >>>
+> >>> 100%
+> >>> base:    61951=C2=B16.4%
+> >>> patch:   70224=C2=B10.8% +13.4%
+> >>>
+> >>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+> >>> netperf/udp_rr on SPR
+> >>> 25%
+> >>> base:   104954=C2=B11.3%
+> >>> patch:  107312=C2=B12.8%  (noise)
+> >>>
+> >>> 50%
+> >>> base:    55394=C2=B14.6%
+> >>> patch:   54940=C2=B17.4%  (noise)
+> >>>
+> >>> 75%
+> >>> base:    13779=C2=B13.1%
+> >>> patch:   36105=C2=B11.1% +162%
+> >>>
+> >>> 100%
+> >>> base:     9703=C2=B13.7%
+> >>> patch:   28011=C2=B10.2% +189%
+> >>>
+> >>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >>> netperf/tcp_stream on ICL (all in noise range)
+> >>> 25%
+> >>> base:    43092=C2=B10.1%
+> >>> patch:   42891=C2=B10.5%
+> >>>
+> >>> 50%
+> >>> base:    19278=C2=B114.9%
+> >>> patch:   22369=C2=B17.2%
+> >>>
+> >>> 75%
+> >>> base:    16822=C2=B13.0%
+> >>> patch:   17086=C2=B12.3%
+> >>>
+> >>> 100%
+> >>> base:    18216=C2=B10.6%
+> >>> patch:   18078=C2=B12.9%
+> >>>
+> >>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >>> netperf/tcp_stream on SPR (all in noise range)
+> >>> 25%
+> >>> base:    34491=C2=B10.3%
+> >>> patch:   34886=C2=B10.5%
+> >>>
+> >>> 50%
+> >>> base:    19278=C2=B114.9%
+> >>> patch:   22369=C2=B17.2%
+> >>>
+> >>> 75%
+> >>> base:    16822=C2=B13.0%
+> >>> patch:   17086=C2=B12.3%
+> >>>
+> >>> 100%
+> >>> base:    18216=C2=B10.6%
+> >>> patch:   18078=C2=B12.9%
+> >>>
+> >>> Reported-by: Nitin Tekchandani <nitin.tekchandani@intel.com>
+> >>> Suggested-by: Vincent Guittot <vincent.guittot@linaro.org>
+> >>> Signed-off-by: Aaron Lu <aaron.lu@intel.com>
+> >>> Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+> >>> ---
+> >>>    kernel/sched/fair.c  | 13 ++++++++++++-
+> >>>    kernel/sched/sched.h |  1 +
+> >>>    2 files changed, 13 insertions(+), 1 deletion(-)
+> >>>
+> >>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> >>> index c28206499a3d..a5462d1fcc48 100644
+> >>> --- a/kernel/sched/fair.c
+> >>> +++ b/kernel/sched/fair.c
+> >>> @@ -3664,7 +3664,8 @@ static inline bool cfs_rq_is_decayed(struct cfs=
+_rq *cfs_rq)
+> >>>     */
+> >>>    static inline void update_tg_load_avg(struct cfs_rq *cfs_rq)
+> >>>    {
+> >>> -   long delta =3D cfs_rq->avg.load_avg - cfs_rq->tg_load_avg_contrib=
+;
+> >>> +   long delta;
+> >>> +   u64 now;
+> >>>     /*
+> >>>      * No need to update load_avg for root_task_group as it is not us=
+ed.
+> >>> @@ -3672,9 +3673,19 @@ static inline void update_tg_load_avg(struct c=
+fs_rq *cfs_rq)
+> >>>     if (cfs_rq->tg =3D=3D &root_task_group)
+> >>>             return;
+> >>> +   /*
+> >>> +    * For migration heavy workload, access to tg->load_avg can be
+> >>> +    * unbound. Limit the update rate to at most once per ms.
+> >>> +    */
+> >>> +   now =3D sched_clock_cpu(cpu_of(rq_of(cfs_rq)));
+> >>> +   if (now - cfs_rq->last_update_tg_load_avg < NSEC_PER_MSEC)
+> >>> +           return;
+> >>> +
+> >>> +   delta =3D cfs_rq->avg.load_avg - cfs_rq->tg_load_avg_contrib;
+> >>>     if (abs(delta) > cfs_rq->tg_load_avg_contrib / 64) {
+> >>>             atomic_long_add(delta, &cfs_rq->tg->load_avg);
+> >>>             cfs_rq->tg_load_avg_contrib =3D cfs_rq->avg.load_avg;
+> >>> +           cfs_rq->last_update_tg_load_avg =3D now;
+> >>>     }
+> >>>    }
+> >>> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+> >>> index 6a8b7b9ed089..52ee7027def9 100644
+> >>> --- a/kernel/sched/sched.h
+> >>> +++ b/kernel/sched/sched.h
+> >>> @@ -593,6 +593,7 @@ struct cfs_rq {
+> >>>     } removed;
+> >>>    #ifdef CONFIG_FAIR_GROUP_SCHED
+> >>> +   u64                     last_update_tg_load_avg;
+> >>>     unsigned long           tg_load_avg_contrib;
+> >>>     long                    propagate;
+> >>>     long                    prop_runnable_sum;
+> >>
+> >> --
+> >> Mathieu Desnoyers
+> >> EfficiOS Inc.
+> >> https://www.efficios.com
+> >>
+>
+> --
+> Mathieu Desnoyers
+> EfficiOS Inc.
+> https://www.efficios.com
+>
