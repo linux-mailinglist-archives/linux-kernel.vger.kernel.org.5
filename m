@@ -2,107 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F2F2786C26
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 11:39:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83825786C21
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 11:38:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240692AbjHXJih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 05:38:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59636 "EHLO
+        id S240660AbjHXJiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 05:38:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240694AbjHXJiW (ORCPT
+        with ESMTP id S240857AbjHXJhp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 05:38:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7264D198A
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 02:37:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692869852;
+        Thu, 24 Aug 2023 05:37:45 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C1F0CD5;
+        Thu, 24 Aug 2023 02:37:43 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1692869861;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=uZHW7/YdobFQu4b8Ky8EljlQfqzf6RTBcoIhE6B2qYY=;
-        b=c6LBaqPbj069erkOOXna9rd9PaeUMmOreassVB65qd4n2lTvdPcMMPrYRkOfmnC12DPaT3
-        1MQk/OX7I6+VU51rYKpJHr1UicP/gdOuI6mt8H2Ec3Xe29TSPFSaHxgfguuzcHEN6OIJda
-        +EXMfwI61RMk0ZIR3Q40vkkoMALUus0=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-158-gOjt71FkNzGmanITnBlIvw-1; Thu, 24 Aug 2023 05:37:28 -0400
-X-MC-Unique: gOjt71FkNzGmanITnBlIvw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 859D8101A528;
-        Thu, 24 Aug 2023 09:37:27 +0000 (UTC)
-Received: from laptop.redhat.com (unknown [10.39.193.143])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 60C4B6B2B2;
-        Thu, 24 Aug 2023 09:37:25 +0000 (UTC)
-From:   Eric Auger <eric.auger@redhat.com>
-To:     eric.auger.pro@gmail.com, eric.auger@redhat.com, elic@nvidia.com,
-        mail@anirudhrb.com, jasowang@redhat.com, mst@redhat.com,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        netdev@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        kvmarm@lists.linux.dev
-Cc:     stable@vger.kernel.org
-Subject: [PATCH v2] vhost: Allow null msg.size on VHOST_IOTLB_INVALIDATE
-Date:   Thu, 24 Aug 2023 11:37:22 +0200
-Message-ID: <20230824093722.249291-1-eric.auger@redhat.com>
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8FJ98OgH9T9QKg7dl2+I7VOlMigcXRv1vg0KHRHALbQ=;
+        b=bCQRYCPfCH8MlCBO0XiiD5I8dRp2w6etgD/Oz/u7xOyIgg7XR5Y/LKLD2UcRVIgaPH7xwF
+        Y+s3y+eRWteiovtDOKDockv8qNUM1hOd9SE5M+aFXLSVq5tQYt1zjtsQPSdd8piyzDNLly
+        zBHaHJLMz3Lojyh09q9G+fb3sxukjps/WdeNQFu3PpIU0tWv1d8zaz206pk6vCFtcEAVMm
+        C51vmC9XTkOYHvWJ5bSN7t/y6pgCtmotUoRDGbbzNQiHCGoD473gBeZqTIY08u2SM+xZUH
+        vnqHcpP19nX8UrN8NyBNShKPRVSc8Au8qmJxegJSFpZ6xqhGloBINCKhtdwlXw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1692869861;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8FJ98OgH9T9QKg7dl2+I7VOlMigcXRv1vg0KHRHALbQ=;
+        b=ILfLpyht+UselfK48GdAWhPKOq92wZvdwsjBBqohZZdDaI+WdNpRzMZ5JkzRBT8DqPmhY3
+        pyPtIhXzIUPrkIAw==
+To:     Huacai Chen <chenhuacai@loongson.cn>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        chenhuacai@kernel.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Huacai Chen <chenhuacai@loongson.cn>,
+        stable@vger.kernel.org, Binbin Zhou <zhoubinbin@loongson.cn>
+Subject: Re: [PATCH V3] rcu: Update jiffies locally in rcu_cpu_stall_reset()
+In-Reply-To: <20230822040248.329442-1-chenhuacai@loongson.cn>
+References: <20230822040248.329442-1-chenhuacai@loongson.cn>
+Date:   Thu, 24 Aug 2023 11:37:41 +0200
+Message-ID: <87lee0dbmi.ffs@tglx>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit e2ae38cf3d91 ("vhost: fix hung thread due to erroneous iotlb
-entries") Forbade vhost iotlb msg with null size to prevent entries
-with size = start = 0 and last = ULONG_MAX to end up in the iotlb.
+On Tue, Aug 22 2023 at 12:02, Huacai Chen wrote:
+> + * This function may be called in NMI context, so we cannot use ktime_get_ns()
+> + * and ktime_get_coarse_ns(). Instead, we use their inaccurate but safe friends
+> + * ktime_get_mono_fast_ns() and ktime_get_seconds() which will cause rcu_state.
+> + * jiffies_stall to be a little large than expected (harmless and safer).
 
-Then commit 95932ab2ea07 ("vhost: allow batching hint without size")
-only applied the check for VHOST_IOTLB_UPDATE and VHOST_IOTLB_INVALIDATE
-message types to fix a regression observed with batching hit.
+What's inaccurate about ktime_get_mono_fast_ns()? Bogus comments are
+even worse than no comments.
 
-Still, the introduction of that check introduced a regression for
-some users attempting to invalidate the whole ULONG_MAX range by
-setting the size to 0. This is the case with qemu/smmuv3/vhost
-integration which does not work anymore. It Looks safe to partially
-revert the original commit and allow VHOST_IOTLB_INVALIDATE messages
-with null size. vhost_iotlb_del_range() will compute a correct end
-iova. Same for vhost_vdpa_iotlb_unmap().
+>   */
+>  void rcu_cpu_stall_reset(void)
+>  {
+> +	u64 curr, last, delta;
+> +
+> +	curr = ktime_get_mono_fast_ns();
+> +	last = ktime_get_seconds() * NSEC_PER_SEC;
 
-Signed-off-by: Eric Auger <eric.auger@redhat.com>
-Fixes: e2ae38cf3d91 ("vhost: fix hung thread due to erroneous iotlb entries")
-Cc: stable@vger.kernel.org # v5.17+
-Acked-by: Jason Wang <jasowang@redhat.com>
+So this will trigger a warning when someone debugs suspend with KGDB.
 
----
-v1 -> v2:
-- Added Cc stable and Jason's Acked-by
----
- drivers/vhost/vhost.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+It seems the approach taken here seems to be to throw stuff at the wall
+and see what sticks.
 
-diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
-index c71d573f1c94..e0c181ad17e3 100644
---- a/drivers/vhost/vhost.c
-+++ b/drivers/vhost/vhost.c
-@@ -1458,9 +1458,7 @@ ssize_t vhost_chr_write_iter(struct vhost_dev *dev,
- 		goto done;
- 	}
- 
--	if ((msg.type == VHOST_IOTLB_UPDATE ||
--	     msg.type == VHOST_IOTLB_INVALIDATE) &&
--	     msg.size == 0) {
-+	if (msg.type == VHOST_IOTLB_UPDATE && msg.size == 0) {
- 		ret = -EINVAL;
- 		goto done;
- 	}
--- 
-2.41.0
+Thanks,
 
+        tglx
