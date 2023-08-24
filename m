@@ -2,66 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 374367865A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 04:58:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AD2A7865A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 05:00:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239546AbjHXC5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 22:57:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44404 "EHLO
+        id S239547AbjHXDAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 23:00:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239542AbjHXC5i (ORCPT
+        with ESMTP id S239552AbjHXC7r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 22:57:38 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B68CB124
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 19:57:31 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-99bcfe28909so789020766b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 19:57:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692845850; x=1693450650;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=glCjo1F94JBmzvms27OTmepsDv2N1ouu2CLlsTqKN9I=;
-        b=gLwkzFmrl8u8ZfHEDU8+AyiL0Fw6bZIaU3W/c0DWF1ETSG8JXJpKy3T46gfg+t5bSR
-         u0/y9oC0oXIjE2NFWprih7iP+l/GR5PMFHhaePj2TxYG+JMHIYwcke+HVgUO/MwQSLep
-         lsyP303pnccf0vngf9Nx56bClDyB0O9eCj82cq/0nBBJopEW5mFMaA48oasjwpcahvCv
-         SIkgImruCNKt9L7FiFkDdRQnmjFv0A3P3rI0l7mBy45WXAU0Cpt/Yil5ao5K77HfnQqE
-         AMA+/9BvdEChQvGkxSJBz/KfnVfjB1eU4pj7/OF84u1d9V1V+seZIfVHU5d6GAON/IVd
-         qRHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692845850; x=1693450650;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=glCjo1F94JBmzvms27OTmepsDv2N1ouu2CLlsTqKN9I=;
-        b=ZkzMR030ERXNLK/yBiwcsg5RrSNGh/4utuC0F9mq+PSalnZsmE4Qom7d0ghM2epys5
-         Ovw0UHErTT8rhTbR1XmpPiSHI1+BaEPse14kju/ChzMxYVsHTNpohtphXofUxsCW+U+n
-         DfheilfWJ8NMP6SbQdEDPPTrjELMKHCxuMvZIrIF2DJxNpjfSkEN3/Qvu3KsBQRz6Ic8
-         56ncdr52Kx6SVyvNwW3nZWDR90Nv+XPsHqoFWTcIs+3Z5KUdC41silqtfzk52gZ6RrVy
-         x3J4ujvpgkczg0Tre/Iefyw/ZCRKEBkiV9ud8W5MJmno8s03FrjUEqrySWuM0Pd1i4KE
-         W10Q==
-X-Gm-Message-State: AOJu0YzVGIHhHRXXMu7Yx+G9JYGo6mM9LM4VdSad9rp1X+uv6QqcUG5v
-        eYHb8qBBdm3aGAjFbKVAZDCH89EF2fIKcJCS8Yk=
-X-Google-Smtp-Source: AGHT+IGGs4hhDpkZJt5peSF19rdmbtl1bCN4ozS6KikecPNkQYyMYUkDlwhO9dKwKbz/kOan7UFvj/xcmq5erc+izak=
-X-Received: by 2002:a17:906:7391:b0:9a1:c659:7c62 with SMTP id
- f17-20020a170906739100b009a1c6597c62mr4052476ejl.66.1692845849977; Wed, 23
- Aug 2023 19:57:29 -0700 (PDT)
+        Wed, 23 Aug 2023 22:59:47 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B129C124
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 19:59:44 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RWSVM3GSrz4f3n5d
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 10:59:39 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+        by APP4 (Coremail) with SMTP id gCh0CgC3j6Kbx+ZkBYrGBQ--.40864S2;
+        Thu, 24 Aug 2023 10:59:40 +0800 (CST)
+Subject: Re: [PATCH 7/9] mm/compaction: factor out code to test if we should
+ run compaction for target order
+To:     Baolin Wang <baolin.wang@linux.alibaba.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        mgorman@techsingularity.net, david@redhat.com
+References: <20230805110711.2975149-1-shikemeng@huaweicloud.com>
+ <20230805110711.2975149-8-shikemeng@huaweicloud.com>
+ <7b337eca-1c45-c802-0aea-50d8d149efb4@linux.alibaba.com>
+ <631d62de-c9b5-3c5f-e0b3-df0109627a27@huaweicloud.com>
+ <3aefc27b-f7b8-6832-964d-77a55ea304fc@linux.alibaba.com>
+ <ba737e36-ef83-8254-aff1-1a46a9029fff@huaweicloud.com>
+ <7a309d46-4fbc-f86e-5f21-b77660e84ff5@linux.alibaba.com>
+From:   Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <0e907eb6-db69-503c-1d17-a26fc53c8384@huaweicloud.com>
+Date:   Thu, 24 Aug 2023 10:59:39 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 MIME-Version: 1.0
-References: <20230823233119.2891-1-dakr@redhat.com>
-In-Reply-To: <20230823233119.2891-1-dakr@redhat.com>
-From:   Dave Airlie <airlied@gmail.com>
-Date:   Thu, 24 Aug 2023 12:57:18 +1000
-Message-ID: <CAPM=9twmbMC8VSoShxZUDW2+7=Kp0kBXsV33v7+4crrDyzfMAg@mail.gmail.com>
-Subject: Re: [PATCH drm-misc-next] drm/gpuva_mgr: remove unused prev pointer
- in __drm_gpuva_sm_map()
-To:     Danilo Krummrich <dakr@redhat.com>
-Cc:     daniel@ffwll.ch, boris.brezillon@collabora.com,
-        matthew.brost@intel.com, thomas.hellstrom@linux.intel.com,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <7a309d46-4fbc-f86e-5f21-b77660e84ff5@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgC3j6Kbx+ZkBYrGBQ--.40864S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxuF1fAFWDKr4kXFy8Cry8Krg_yoW7Gr43pr
+        18JFyUJ3yrXr18Gr17tw1UJFy3tw48J3WDXrnFqF1UJrsIyr1qqr1qqryq9r1UXr48Jr1U
+        XF1UJFy7ZF15A37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
+        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+        c7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1CPfJUUUUU==
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,69 +69,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Aug 2023 at 09:31, Danilo Krummrich <dakr@redhat.com> wrote:
->
-> The prev pointer in __drm_gpuva_sm_map() was used to implement automatic
-> merging of mappings. Since automatic merging did not make its way
-> upstream, remove this leftover.
->
-> Fixes: e6303f323b1a ("drm: manager to keep track of GPUs VA mappings")
-> Signed-off-by: Danilo Krummrich <dakr@redhat.com>
 
-Reviewed-by: Dave Airlie <airlied@redhat.com>
-> ---
->  drivers/gpu/drm/drm_gpuva_mgr.c | 10 ++++------
->  1 file changed, 4 insertions(+), 6 deletions(-)
->
-> diff --git a/drivers/gpu/drm/drm_gpuva_mgr.c b/drivers/gpu/drm/drm_gpuva_mgr.c
-> index 1bc91fc60ef3..3e1ca878cb7e 100644
-> --- a/drivers/gpu/drm/drm_gpuva_mgr.c
-> +++ b/drivers/gpu/drm/drm_gpuva_mgr.c
-> @@ -1743,7 +1743,7 @@ __drm_gpuva_sm_map(struct drm_gpuva_manager *mgr,
->                    u64 req_addr, u64 req_range,
->                    struct drm_gem_object *req_obj, u64 req_offset)
->  {
-> -       struct drm_gpuva *va, *next, *prev = NULL;
-> +       struct drm_gpuva *va, *next;
->         u64 req_end = req_addr + req_range;
->         int ret;
->
-> @@ -1773,7 +1773,7 @@ __drm_gpuva_sm_map(struct drm_gpuva_manager *mgr,
->                                 ret = op_unmap_cb(ops, priv, va, merge);
->                                 if (ret)
->                                         return ret;
-> -                               goto next;
-> +                               continue;
->                         }
->
->                         if (end > req_end) {
-> @@ -1818,7 +1818,7 @@ __drm_gpuva_sm_map(struct drm_gpuva_manager *mgr,
->                                 ret = op_remap_cb(ops, priv, &p, NULL, &u);
->                                 if (ret)
->                                         return ret;
-> -                               goto next;
-> +                               continue;
->                         }
->
->                         if (end > req_end) {
-> @@ -1851,7 +1851,7 @@ __drm_gpuva_sm_map(struct drm_gpuva_manager *mgr,
->                                 ret = op_unmap_cb(ops, priv, va, merge);
->                                 if (ret)
->                                         return ret;
-> -                               goto next;
-> +                               continue;
->                         }
->
->                         if (end > req_end) {
-> @@ -1872,8 +1872,6 @@ __drm_gpuva_sm_map(struct drm_gpuva_manager *mgr,
->                                 break;
->                         }
->                 }
-> -next:
-> -               prev = va;
->         }
->
->         return op_map_cb(ops, priv,
-> --
-> 2.41.0
->
+
+on 8/24/2023 10:25 AM, Baolin Wang wrote:
+> 
+> 
+> On 8/22/2023 9:57 AM, Kemeng Shi wrote:
+>>
+>>
+>> on 8/19/2023 8:27 PM, Baolin Wang wrote:
+>>>
+>>>
+>>> On 8/15/2023 8:10 PM, Kemeng Shi wrote:
+>>>>
+>>>>
+>>>> on 8/15/2023 4:53 PM, Baolin Wang wrote:
+>>>>>
+>>>>>
+>>>>> On 8/5/2023 7:07 PM, Kemeng Shi wrote:
+>>>>>> We always do zone_watermark_ok check and compaction_suitable check
+>>>>>> together to test if compaction for target order should be runned.
+>>>>>> Factor these code out for preparation to remove repeat code.
+>>>>>>
+>>>>>> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+>>>>>> ---
+>>>>>>     mm/compaction.c | 42 +++++++++++++++++++++++++++++-------------
+>>>>>>     1 file changed, 29 insertions(+), 13 deletions(-)
+>>>>>>
+>>>>>> diff --git a/mm/compaction.c b/mm/compaction.c
+>>>>>> index b5a699ed526b..26787ebb0297 100644
+>>>>>> --- a/mm/compaction.c
+>>>>>> +++ b/mm/compaction.c
+>>>>>> @@ -2365,6 +2365,30 @@ bool compaction_zonelist_suitable(struct alloc_context *ac, int order,
+>>>>>>         return false;
+>>>>>>     }
+>>>>>>     +/*
+>>>>>> + * Should we do compaction for target allocation order.
+>>>>>> + * Return COMPACT_SUCCESS if allocation for target order can be already
+>>>>>> + * satisfied
+>>>>>> + * Return COMPACT_SKIPPED if compaction for target order is likely to fail
+>>>>>> + * Return COMPACT_CONTINUE if compaction for target order should be runned
+>>>>>> + */
+>>>>>> +static inline enum compact_result
+>>>>>> +compaction_suit_allocation_order(struct zone *zone, unsigned int order,
+>>>>>> +                 int highest_zoneidx, unsigned int alloc_flags)
+>>>>>> +{
+>>>>>> +    unsigned long watermark;
+>>>>>> +
+>>>>>> +    watermark = wmark_pages(zone, alloc_flags & ALLOC_WMARK_MASK);
+>>>>>
+>>>>> IIUC, the watermark used in patch 8 and patch 9 is different, right? Have you measured the impact of modifying this watermark?
+>>>>>
+>>>> Actually, there is no functional change intended. Consider wmark_pages with
+>>>> alloc_flags = 0 is equivalent to min_wmark_pages, patch 8 and patch 9 still
+>>>> use original watermark.
+>>>
+>>> Can you use ALLOC_WMARK_MIN macro to make it more clear?
+>> Sorry, I can't quite follow this. The watermark should differ with different
+>> alloc_flags instead of WMARK_MIN hard-coded.
+>> Patch 8 and patch 9 use watermark with WMARK_MIN as they get alloc_flags = 0.
+> 
+> I mean you can pass 'alloc_flags=ALLOC_WMARK_MIN' instead of a magic number 0 when calling compaction_suit_allocation_order() in patch 8 and patch 9.
+> 
+Thanks for explain and this do make it better. I will do this in next version.
+>>> And I think patch 8 and patch 9 should be squashed into patch 7 to convert all at once.
+>> Sure, i could do this in next version.
+>>>
+>>>>>> +    if (zone_watermark_ok(zone, order, watermark, highest_zoneidx,
+>>>>>> +                  alloc_flags))
+>>>>>> +        return COMPACT_SUCCESS;
+>>>>>> +
+>>>>>> +    if (!compaction_suitable(zone, order, highest_zoneidx))
+>>>>>> +        return COMPACT_SKIPPED;
+>>>>>> +
+>>>>>> +    return COMPACT_CONTINUE;
+>>>>>> +}
+>>>>>> +
+>>>>>>     static enum compact_result
+>>>>>>     compact_zone(struct compact_control *cc, struct capture_control *capc)
+>>>>>>     {
+>>>>>> @@ -2390,19 +2414,11 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
+>>>>>>         cc->migratetype = gfp_migratetype(cc->gfp_mask);
+>>>>>>           if (compaction_with_allocation_order(cc->order)) {
+>>>>>> -        unsigned long watermark;
+>>>>>> -
+>>>>>> -        /* Allocation can already succeed, nothing to do */
+>>>>>> -        watermark = wmark_pages(cc->zone,
+>>>>>> -                    cc->alloc_flags & ALLOC_WMARK_MASK);
+>>>>>> -        if (zone_watermark_ok(cc->zone, cc->order, watermark,
+>>>>>> -                      cc->highest_zoneidx, cc->alloc_flags))
+>>>>>> -            return COMPACT_SUCCESS;
+>>>>>> -
+>>>>>> -        /* Compaction is likely to fail */
+>>>>>> -        if (!compaction_suitable(cc->zone, cc->order,
+>>>>>> -                     cc->highest_zoneidx))
+>>>>>> -            return COMPACT_SKIPPED;
+>>>>>> +        ret = compaction_suit_allocation_order(cc->zone, cc->order,
+>>>>>> +                               cc->highest_zoneidx,
+>>>>>> +                               cc->alloc_flags);
+>>>>>> +        if (ret != COMPACT_CONTINUE)
+>>>>>> +            return ret;
+>>>>>>         }
+>>>>>>           /*
+>>>>>
+>>>>>
+>>>
+>>>
+> 
+
