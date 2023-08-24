@@ -2,169 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5B47787177
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 16:26:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18937787179
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 16:26:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241598AbjHXOZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 10:25:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46964 "EHLO
+        id S241608AbjHXO0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 10:26:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241653AbjHXOZQ (ORCPT
+        with ESMTP id S241639AbjHXOZr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 10:25:16 -0400
-Received: from mail-oa1-x33.google.com (mail-oa1-x33.google.com [IPv6:2001:4860:4864:20::33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 397D61FD9;
-        Thu, 24 Aug 2023 07:25:10 -0700 (PDT)
-Received: by mail-oa1-x33.google.com with SMTP id 586e51a60fabf-1c26bb27feeso4574158fac.0;
-        Thu, 24 Aug 2023 07:25:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692887109; x=1693491909;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0jj+VsxPNlYygxR0YWp1qEk+PHqvGIcv1NZFfF1gn04=;
-        b=LZA044mX8DLFktOaXrGFSp/RcXyh5URTciSLev7oFFAGezD2/hScyKGYxysgaXoXBH
-         XbBcKk1XjJVGFgsgg/kwM9OJLUmG+WvTKc/rqfJYOGfl4N46esY8ufvgOE60EbHsb0YH
-         hDpc7wMrAPE+iCIabCquj4gJa6v5k4FlcOV0fFkh3AR/U3dLoyLasp3hNqGerthBNI70
-         YN/fi9PT77+3FkTAGDthLSLMTCaD8kDdWkvoM0cYZt6NCYKBs7cb+3Y5vB5In2Y+/7KK
-         yjWBvpCYpLgBb8z4kRL7ujHG9ZAO3uT1ik6UQ4Kl68tg6iJ6eRCb15C/XXdHKJmt2BZi
-         sSrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692887109; x=1693491909;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0jj+VsxPNlYygxR0YWp1qEk+PHqvGIcv1NZFfF1gn04=;
-        b=iDN2JEOByfHKeWsfYpuZjfSpWsikPbkzk+Cu5dTMAkAOvo2nEYOuzxk33LWV4sZCLf
-         hTl2J/SZFWJ8LT1oJlzk8q0a8z+ZTt72KFEdeu6KhVo/Pbb8mn6vNt0pjQaL5OA0D1Xr
-         yD/H/LIvySiIy5h59xtXOJH8igauQJrP7geR6Qi8pI6aOI2jytJ5UVD/iRfDgW5dh0P8
-         voCHMV5Dnnk/AyZ+rlsIrf+Q+rHZkZFZsCAHX4rpaD5Pj2kil6F7wlw9Zx/c0WukF38f
-         R1EsDo8OodXuCeZ8KFitbCmFAT1gp66IufjCCjSuexVq+HhmfToLIKDdtojChKd1NPxP
-         +kWQ==
-X-Gm-Message-State: AOJu0YzXZpAsDcIcu6m8HZJbJO7yX08f3DPwVrZKMLnU/f8AVVam5pnF
-        RRnyBsaK5I+hM4ROlSrPJbBId8g4MXqlAKvrKlBLqIyE
-X-Google-Smtp-Source: AGHT+IFDDRQe/ZcAWLpqIFG8ZkwVnJ2S73S5T2E6cIqdd0/6XZWYewu0LM3ybZy276+QGrFZQcOUPJlQOWThlrvPXV8=
-X-Received: by 2002:a05:6870:41d2:b0:1c8:b82b:cbdb with SMTP id
- z18-20020a05687041d200b001c8b82bcbdbmr18609632oac.33.1692887108906; Thu, 24
- Aug 2023 07:25:08 -0700 (PDT)
+        Thu, 24 Aug 2023 10:25:47 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2F9C21FCE;
+        Thu, 24 Aug 2023 07:25:23 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 09C2DD75;
+        Thu, 24 Aug 2023 07:26:03 -0700 (PDT)
+Received: from pluto (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 07C9B3F762;
+        Thu, 24 Aug 2023 07:25:20 -0700 (PDT)
+Date:   Thu, 24 Aug 2023 15:25:21 +0100
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        sudeep.holla@arm.com, james.quinlan@broadcom.com,
+        f.fainelli@gmail.com, vincent.guittot@linaro.org,
+        etienne.carriere@linaro.org, peng.fan@oss.nxp.com,
+        chuck.cannon@nxp.com, souvik.chakravarty@arm.com,
+        nicola.mazzucato@arm.com,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-clk@vger.kernel.org
+Subject: Re: [PATCH 1/6] firmware: arm_scmi: Simplify enable/disable Clock
+ operations
+Message-ID: <ZOdoP00tlAIRr9fN@pluto>
+References: <20230811161446.636253-1-cristian.marussi@arm.com>
+ <20230811161446.636253-2-cristian.marussi@arm.com>
+ <17bd83d833b59fd4f64eec433589fa55.sboyd@kernel.org>
+ <ZOXLNliOogkNyJYQ@e120937-lin>
+ <a14cdd584283d32a3642658aaed6c98c.sboyd@kernel.org>
 MIME-Version: 1.0
-References: <20230822113553.3551206-1-sashal@kernel.org> <20230822113553.3551206-10-sashal@kernel.org>
-In-Reply-To: <20230822113553.3551206-10-sashal@kernel.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Thu, 24 Aug 2023 10:24:57 -0400
-Message-ID: <CADnq5_NGRLrgh=f1=4nyWAMv3_HhV5zCJxV9UYc1GLCygVjp1w@mail.gmail.com>
-Subject: Re: [PATCH AUTOSEL 6.4 10/11] drm/amdkfd: disable IOMMUv2 support for KV/CZ
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Mike Lothian <mike@fireburn.co.uk>,
-        Felix Kuehling <Felix.Kuehling@amd.com>, Xinhui.Pan@amd.com,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        daniel@ffwll.ch, Alex Deucher <alexander.deucher@amd.com>,
-        airlied@gmail.com,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a14cdd584283d32a3642658aaed6c98c.sboyd@kernel.org>
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 7:36=E2=80=AFAM Sasha Levin <sashal@kernel.org> wro=
-te:
->
-> From: Alex Deucher <alexander.deucher@amd.com>
->
-> [ Upstream commit 616f92d188ee7142a95a52068efdbea82645f859 ]
->
-> Use the dGPU path instead.  There were a lot of platform
-> issues with IOMMU in general on these chips due to windows
-> not enabling IOMMU at the time.  The dGPU path has been
-> used for a long time with newer APUs and works fine.  This
-> also paves the way to simplify the driver significantly.
->
-> v2: use the dGPU queue manager functions
->
-> Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
-> Acked-by: Christian K=C3=B6nig <christian.koenig@amd.com>
-> Tested-by: Mike Lothian <mike@fireburn.co.uk>
-> Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
+On Wed, Aug 23, 2023 at 11:01:17AM -0700, Stephen Boyd wrote:
+> Quoting Cristian Marussi (2023-08-23 02:02:46)
+> > On Tue, Aug 22, 2023 at 01:17:15PM -0700, Stephen Boyd wrote:
+> > > Quoting Cristian Marussi (2023-08-11 09:14:41)
+> > > > Add a param to Clock enable/disable operation to ask for atomic operation
+> > > > and remove _atomic version of such operations.
+> > > 
+> > 
+> > Hi,
+> 
+> Yo
+> 
+> > 
+> > > Why?
+> > > 
+> > 
+> > :D, given that the 2 flavours of SCMI enable/disable ops (and the upcoming
+> > state_get) just differ in their operating mode (atomic or not) and the
+> > Clock framework in turn wrap such calls into 4 related and explicitly
+> > named clk_ops (scmi_clock_enable/scmi_clock_atomic_enable etc) that hint
+> > at what is being done, seemed to me reasonable to reduce the churn and
+> > remove a bit of code wrappers in favour of a param.
+> 
+> Please add these extra details to the commit text about why we're making
+> the change.
+> 
+Sure I'll do.
 
-This is not necessary for stable.
+> > 
+> > > > 
+> > > > No functional change.
+> > > > 
+> > > > CC: Michael Turquette <mturquette@baylibre.com>
+> > > > CC: Stephen Boyd <sboyd@kernel.org>
+> > > > CC: linux-clk@vger.kernel.org
+> > > > Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+> > > > ---
+> > > >  drivers/clk/clk-scmi.c            |  8 ++++----
+> > > >  drivers/firmware/arm_scmi/clock.c | 24 ++++++------------------
+> > > >  include/linux/scmi_protocol.h     |  9 ++++-----
+> > > >  3 files changed, 14 insertions(+), 27 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/clk/clk-scmi.c b/drivers/clk/clk-scmi.c
+> > > > index 2c7a830ce308..ff003083e592 100644
+> > > > --- a/drivers/clk/clk-scmi.c
+> > > > +++ b/drivers/clk/clk-scmi.c
+> > > > @@ -78,28 +78,28 @@ static int scmi_clk_enable(struct clk_hw *hw)
+> > > >  {
+> > > >         struct scmi_clk *clk = to_scmi_clk(hw);
+> > > >  
+> > > > -       return scmi_proto_clk_ops->enable(clk->ph, clk->id);
+> > > > +       return scmi_proto_clk_ops->enable(clk->ph, clk->id, false);
+> > > >  }
+> > > >  
+> > > >  static void scmi_clk_disable(struct clk_hw *hw)
+> > > >  {
+> > > >         struct scmi_clk *clk = to_scmi_clk(hw);
+> > > >  
+> > > > -       scmi_proto_clk_ops->disable(clk->ph, clk->id);
+> > > > +       scmi_proto_clk_ops->disable(clk->ph, clk->id, false);
+> > > 
+> > > I enjoyed how it was before because I don't know what 'false' means
+> > > without looking at the ops now.
+> > > 
+> > 
+> > Yes indeed, I can drop this and rework if you prefer to maintain the old
+> > API calls, but this would mean that whenever we'll add new atomic
+> > flavour to some new SCMI clk operations we'll have to add 2 ops instead
+> > of a parametrized one...this is what would happen also in this series
+> > with state_get (and what really triggered this refactor)
+> > 
+> > (and please consider that on the SCMI side, for testing purposes, I would
+> > prefer to expose always both atomic and non-atomic flavours even if NOT
+> > both actively used by the Clock framework...like state_get() that can only
+> > be atomic for Clock frmwk...)
+> > 
+> 
+> Perhaps we need a local variable to make it more readable.
+> 
+> 	static int scmi_clk_enable(struct clk_hw *hw)
+> 	{
+> 	       bool can_sleep = false;
+> 	       struct scmi_clk *clk = to_scmi_clk(hw);
+> 
+> 	       return scmi_proto_clk_ops->enable(clk->ph, clk->id, can_sleep);
+> 	}
+> 
+> This let's the reader quickly understand what the parameter means. I'm
+> OK with adding the function parameter, but a plain 'true' or 'false'
+> doesn't help with clarity.
 
-Alex
+Thanks for the suggestion, it would help definitely making it more
+readable, maybe a local define or enum could make it without even
+putting anything on the stack.
 
-> ---
->  drivers/gpu/drm/amd/amdkfd/kfd_device.c               | 6 ------
->  drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c | 8 +-------
->  2 files changed, 1 insertion(+), 13 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_device.c b/drivers/gpu/drm/am=
-d/amdkfd/kfd_device.c
-> index 00f528eb98126..9c8197573dee7 100644
-> --- a/drivers/gpu/drm/amd/amdkfd/kfd_device.c
-> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_device.c
-> @@ -224,10 +224,6 @@ static void kfd_device_info_init(struct kfd_dev *kfd=
-,
->                     asic_type !=3D CHIP_TONGA)
->                         kfd->device_info.supports_cwsr =3D true;
->
-> -               if (asic_type =3D=3D CHIP_KAVERI ||
-> -                   asic_type =3D=3D CHIP_CARRIZO)
-> -                       kfd->device_info.needs_iommu_device =3D true;
-> -
->                 if (asic_type !=3D CHIP_HAWAII && !vf)
->                         kfd->device_info.needs_pci_atomics =3D true;
->         }
-> @@ -240,7 +236,6 @@ struct kfd_dev *kgd2kfd_probe(struct amdgpu_device *a=
-dev, bool vf)
->         uint32_t gfx_target_version =3D 0;
->
->         switch (adev->asic_type) {
-> -#ifdef KFD_SUPPORT_IOMMU_V2
->  #ifdef CONFIG_DRM_AMDGPU_CIK
->         case CHIP_KAVERI:
->                 gfx_target_version =3D 70000;
-> @@ -253,7 +248,6 @@ struct kfd_dev *kgd2kfd_probe(struct amdgpu_device *a=
-dev, bool vf)
->                 if (!vf)
->                         f2g =3D &gfx_v8_kfd2kgd;
->                 break;
-> -#endif
->  #ifdef CONFIG_DRM_AMDGPU_CIK
->         case CHIP_HAWAII:
->                 gfx_target_version =3D 70001;
-> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c b/driv=
-ers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
-> index 7a95698d83f73..c73417e79745e 100644
-> --- a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
-> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
-> @@ -2335,18 +2335,12 @@ struct device_queue_manager *device_queue_manager=
-_init(struct kfd_dev *dev)
->         }
->
->         switch (dev->adev->asic_type) {
-> -       case CHIP_CARRIZO:
-> -               device_queue_manager_init_vi(&dqm->asic_ops);
-> -               break;
-> -
->         case CHIP_KAVERI:
-> -               device_queue_manager_init_cik(&dqm->asic_ops);
-> -               break;
-> -
->         case CHIP_HAWAII:
->                 device_queue_manager_init_cik_hawaii(&dqm->asic_ops);
->                 break;
->
-> +       case CHIP_CARRIZO:
->         case CHIP_TONGA:
->         case CHIP_FIJI:
->         case CHIP_POLARIS10:
-> --
-> 2.40.1
->
+Thanks,
+Cristian
