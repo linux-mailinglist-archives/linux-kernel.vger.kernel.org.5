@@ -2,195 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 560217869D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 10:17:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 209927869DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 10:18:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235879AbjHXIQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 04:16:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52586 "EHLO
+        id S231435AbjHXIST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 04:18:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240512AbjHXIQW (ORCPT
+        with ESMTP id S231797AbjHXIR5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 04:16:22 -0400
-Received: from mx07-00376f01.pphosted.com (mx07-00376f01.pphosted.com [185.132.180.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C3901736
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 01:15:57 -0700 (PDT)
-Received: from pps.filterd (m0168889.ppops.net [127.0.0.1])
-        by mx07-00376f01.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 37O7Cjks007456;
-        Thu, 24 Aug 2023 09:15:03 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=imgtec.com; h=
-        from:to:cc:subject:date:message-id:references:in-reply-to
-        :content-type:content-id:content-transfer-encoding:mime-version;
-         s=dk201812; bh=IxyIQc4Fb6bG6qQNXM0rV+6B2zrlK1+qb3NNenSkUvU=; b=
-        x72Xc9JlBfM+iGAQzfqtakyWbXWrCoXDuq3GuTkG7dt1eMpjRAZdwPOHAVqMjH3h
-        BwtTXsH8AU6J3zoGAVHyT+jK6MoDgwxc9o8q6nKSwGIPgh1TM0ToTZrwP70aBL+h
-        tH83/SiI/cIT7TsK5TcKUW7thhfS7yv4z0AiKTPpvtapb5nFi2NgnAHwD8DZcLbC
-        RsDKn0dTUfSS0ca8gHZqYs/2iC3SqqnYY03a0m23/lg1JeLxjOUbwtzPPCgbvOBF
-        /Bt+XApis2gU32KtC4HN+9vuaJ0/s5V4NfcA9uCPwjy9OnX0K7VmA5sTCvGeXcd8
-        qKSRVftuEKhCI2rtoFcqPw==
-Received: from hhmail04.hh.imgtec.org ([217.156.249.195])
-        by mx07-00376f01.pphosted.com (PPS) with ESMTPS id 3snw8kr730-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 24 Aug 2023 09:15:02 +0100 (BST)
-Received: from HHMAIL04.hh.imgtec.org (10.100.10.119) by
- HHMAIL04.hh.imgtec.org (10.100.10.119) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Thu, 24 Aug 2023 09:15:01 +0100
-Received: from GBR01-LO4-obe.outbound.protection.outlook.com (104.47.85.108)
- by email.imgtec.com (10.100.10.121) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31 via Frontend Transport; Thu, 24 Aug 2023 09:15:01 +0100
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EPd149u5eo1muWRl3Q0rhY6kqXzmuL8zmenz1+oAZw/QE4BptNHLg803DHmiCvfF8+y9yYxTV5PMG9Ulxu/kVI0XXuIHn+jJbLkiHS/Nwudo6sp0aWR+vrlAS2RiPiAlhkzvcpNboWwEPm1pkYMK2yH5i6YXmgfTzYPtbQNq3H0JlaEw+sjgGzf+/4I2Bwpvn/aRTWon8Sgge5ybnhEVq939lZftp10sT2DxoYWJ446NhCA1JK6/1NvAYkfbNhaIXeZ/I1ENRVlSsEODyCxlmDL3BmA6i7tlBWYzZkJ5U4wfI60Q5e3YKuQuqbCUuVZji1jJBNspEs1pkn7gRmL63w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=IxyIQc4Fb6bG6qQNXM0rV+6B2zrlK1+qb3NNenSkUvU=;
- b=QR+RRSdUtCXtrGoCH2IwOmpdsXZqJeGmQh2WNwEh9VkB7fEvV4VYNJaoPzHGfT0czpivYm8OM35jd7uPew9fWND8jrtILPHSgvW/DbNoZazf7VgOkqDH4yKwaPHCeKs/k2omLA6wKGQWfyyykLuf4Z8YrfUu1Bfcz74btbHg0NBFuov/7V0dHhYpN1h+cD2d2f/s+Jvj9DLMn/0T/g14ENsO6dU2Ulr81oQXhf8+l5wxImcPah/moThgXEWux44bP9/TFxgI9qbVb0/yEuOvxrdZ7FxinYIr5Ybc7lcv/5cn+2h40WtjjrkNig7UJ0J3wP/y6QKlu30bEf3m/KmhUw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=imgtec.com; dmarc=pass action=none header.from=imgtec.com;
- dkim=pass header.d=imgtec.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=IMGTecCRM.onmicrosoft.com; s=selector2-IMGTecCRM-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IxyIQc4Fb6bG6qQNXM0rV+6B2zrlK1+qb3NNenSkUvU=;
- b=j3vlrC+5HfladTqmNSmYWqdqBiYTEqWeOhrEPRR4Y1DptL+jBZaKnwex/3uD8si2NgT6fQQ/vPJZ4b/vQroAKm4X7NAX/2JU2F1TGP/KDEzIy7RewV5p+CbVMoiO6Q0UJ0iXkoRP0LuOYoFSTscrJ5d4Pq2kcVVav+5KuQcTBf8=
-Received: from CWLP265MB4817.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:170::9)
- by CWLP265MB5691.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:1a3::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.27; Thu, 24 Aug
- 2023 08:15:00 +0000
-Received: from CWLP265MB4817.GBRP265.PROD.OUTLOOK.COM
- ([fe80::ee4f:2d71:fe8a:ffdf]) by CWLP265MB4817.GBRP265.PROD.OUTLOOK.COM
- ([fe80::ee4f:2d71:fe8a:ffdf%7]) with mapi id 15.20.6699.027; Thu, 24 Aug 2023
- 08:15:00 +0000
-From:   Sarah Walker <Sarah.Walker@imgtec.com>
-To:     "masahiroy@kernel.org" <masahiroy@kernel.org>
-CC:     "luben.tuikov@amd.com" <luben.tuikov@amd.com>,
-        "christian.koenig@amd.com" <christian.koenig@amd.com>,
-        "tzimmermann@suse.de" <tzimmermann@suse.de>,
-        "mripard@kernel.org" <mripard@kernel.org>,
-        "matthew.brost@intel.com" <matthew.brost@intel.com>,
-        "afd@ti.com" <afd@ti.com>, "daniel@ffwll.ch" <daniel@ffwll.ch>,
-        "maarten.lankhorst@linux.intel.com" 
-        <maarten.lankhorst@linux.intel.com>,
-        "boris.brezillon@collabora.com" <boris.brezillon@collabora.com>,
-        "hns@goldelico.com" <hns@goldelico.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "dakr@redhat.com" <dakr@redhat.com>,
-        Frank Binns <Frank.Binns@imgtec.com>,
-        "airlied@gmail.com" <airlied@gmail.com>,
-        Donald Robson <Donald.Robson@imgtec.com>,
-        "faith.ekstrand@collabora.com" <faith.ekstrand@collabora.com>
-Subject: Re: [PATCH v5 00/17] Imagination Technologies PowerVR DRM driver
-Thread-Topic: [PATCH v5 00/17] Imagination Technologies PowerVR DRM driver
-Thread-Index: AQHZ0BtDfpzVTCaduUicOr+1137Z36/4gt6AgAChY4CAAAGugA==
-Date:   Thu, 24 Aug 2023 08:14:59 +0000
-Message-ID: <48ed1bb6358671d8793fc505c6c9bfd23ce6d946.camel@imgtec.com>
-References: <20230816082531.164695-1-sarah.walker@imgtec.com>
-         <CAK7LNARQZjudwHe=u-Q1_y4HwpeamL-RiMnJ3fcPy93gaeQefA@mail.gmail.com>
-         <315242e09345d492724ab115e931c667504842ff.camel@imgtec.com>
-In-Reply-To: <315242e09345d492724ab115e931c667504842ff.camel@imgtec.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: CWLP265MB4817:EE_|CWLP265MB5691:EE_
-x-ms-office365-filtering-correlation-id: 46206595-d458-4e27-c29a-08dba47a35e1
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: J1OcXsz8dgbwFa1Z8xdYOPALjlkfKTuPdQi0hPJr9nAIrCwbTxChr0TpoIoQll1MgkKPkv0vFUmU47rOsk1teIvzQA6K49G3tBN2PJH99y0jrmI7/J/9IA2k4E+8WJ4L/o4Vp77y6UI1jQCGGnTL7F6zuqDnP7ZF8Zj2/waoMdgqxm166pau9/BNKP6zjAvQisNAmLbD68sdEMvYSSLCzlPRZVppqrHrcU7haf3ZACya42kfm736/eTSSzLDvyfbOM/J1sM3enWNF7r3qVZ+vTgoY5t23nCu0bqTvN7XeVs2pWCZSo612Wop66cDxnM7gg1/Ws3Y9Yl+nHjLsBuVPlziXNMJ6ypyIlLA3Nt1eWNrfdU3kRkdioM7kHdVppla1gUDAbWvkGUrcncJENtwVMEa9RdmEu458gHnzzhY9mm5gsdjPdcZAnQBR9W7p9Qk7oMTct336/I3oK16UP0hIgJgGMepSkZrZ0rFE3owJK0wrFzQ/dBc7tGiUz+2EMOjpOX6AaZV6MLpT9lVddr4RPzYn2/7Qbnv2ETk4O080G3mvURGdJY+yefi18BMx1yKO3ZoFUfMsxUH9H/pN9ZFNg/gKr3S7ne3H0jAVv3Fg8Y=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWLP265MB4817.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(346002)(376002)(366004)(39850400004)(451199024)(186009)(1800799009)(66446008)(64756008)(54906003)(66946007)(76116006)(66476007)(66556008)(316002)(6916009)(122000001)(478600001)(91956017)(26005)(38070700005)(38100700002)(71200400001)(41300700001)(53546011)(86362001)(6486002)(6506007)(2906002)(6512007)(966005)(4326008)(8676002)(8936002)(2616005)(5660300002)(7416002)(83380400001)(36756003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?S0NaSjFEVEh2Y1ZTaWU5cCtSZlY5UkI4bnhacjlNa0x5VTR3cjdGTWFmbkVP?=
- =?utf-8?B?M0hXcGpSTHo0clVNblh2S1hlb3hRTVRWYWtSL0tjSElvalhpRzB0ejR3Smph?=
- =?utf-8?B?S2dpK1RSQUlRekovSFk1Syt1ajBHaGVYTS9tVDlRdTc1ZGJYVVVNUlF2cEZP?=
- =?utf-8?B?OEFscDFkalhsK0hoT24vMmozWWxMQ1ZEMU9jRGRHZlc1Rkw1WUpXTG1JZTlz?=
- =?utf-8?B?U1Y5U3R2cHZ1TmpNMytwczBDSy93eDFkMlkzWTQrVEY2WGY4eCtPV2JLcDIr?=
- =?utf-8?B?ZUVValdMQU5XVVJUeDRvVmxmNE80SlZJVlpndit3S01RajVYc1JnQWdLQjU1?=
- =?utf-8?B?WnJ5VmllUVNKQyswdDRwbWMzdmFhaWRUTG5VaVZiZEJQcU5zMGpPRFduYVpH?=
- =?utf-8?B?YVN6N3VKa2NQQU1QbjdFQlY4R2RCUit4MkV3VVh5TjlqcmZIaHBXbXBhN2lG?=
- =?utf-8?B?SitlQ2xTSVpMMGtKSU5tMnZHSHVtYllEc0ZSZGdzQ1lpNHJCM0dEekRJVEZx?=
- =?utf-8?B?dDBxZE5ta3cwNzFta3pldzUrRjJ2Nm1Jb3pzTGVRaHp3N0lEMVBwRXNFN1h1?=
- =?utf-8?B?Y3BOQjhEcENWQXN5RnlKcEFKTHg3ajlPWWtqaWQxZy9JWFJNZW1QVGdpTDNn?=
- =?utf-8?B?RWV3Y2xmRWROK05XS1BadkxoOWJhem9xSkw2WWYvS1ozb3M0OFdVTU5qTnVO?=
- =?utf-8?B?cXJDeElIMGhrK3dnaDdGVC9iSUwycXQ2MzVkN2YxYmRJaVFMSEUrK1BUYnFv?=
- =?utf-8?B?WUpwN1BFOWkxTEd6ZG1CZHE2c1NNVFZGTlR6azNhcEk3RmZKT1dreTNEYXkr?=
- =?utf-8?B?N0FCR21HcHY3SFlIamZIb3J5TzF5M2VGYm4yaE9iQkROeS9ad2FBY3B0OVRU?=
- =?utf-8?B?eDBpb0dmSUl4UHc5NWN1WXo3ZmNzaUhhaG02TUVBRWppOW1FMitxOHZkUWQ4?=
- =?utf-8?B?a0tFT1ptbzRpSE93Q21OTTBHUFFhbFkrNmVoY1lsdC9HR1prSUphVmN5WHFH?=
- =?utf-8?B?V1hWM00xbVB6eUErd2RPRzRCcWYyUkZQSmw2T3NoVmh4ekYxZ0Q3aGk3RTR0?=
- =?utf-8?B?RCtXUnZiSFBtQUxtamhaTzFWKzdNZzRNTi8vNVpGb1dtUzFIVU9Hd2lNMFB0?=
- =?utf-8?B?Y3JhL3RiMnNuTzYrRGoxN0Yyc3A3dEY4MEVRU0F2QVlTUUJYOXkyWVladUVN?=
- =?utf-8?B?bFMyQTNRTEpnTTZNZmRteUdhQnFEeVliRVpEaittR3A0aldsWkpnWU5NbDZP?=
- =?utf-8?B?MlZ3cGNmUm4yUWJKQWJwSDYxOTVjZ01nZ0dvQjRlMjFEc1d2d2RKSk4vQ051?=
- =?utf-8?B?SnpEbTFINUY0blNBa1UzR3BVU3VQVWh6SlgwOXhRMkNHNEVTb1JiRDlLSnVy?=
- =?utf-8?B?cTk3Vmx5TnVtZHlDcHRlajExbDRqM0dxWkMzTkZlRnVkQUhWN3ZJNEkwL1VP?=
- =?utf-8?B?eHBrSC9sUGFPeWJ0MjF4dE9TVE5RV05aQ2Q0QVVoQ1dsMUsxN2ZQbTNPOE1a?=
- =?utf-8?B?RmsrWUxwNDRmSHlCaDlsKzhPdmpmWWQ3dXhWUXY5UE5XMXNZL2htVUZMVThV?=
- =?utf-8?B?dUpmb2pCUXI1eHlkMytFYWlUb3plakZwNnZDdFBTTllrWGlSWHhmdVZuTmxo?=
- =?utf-8?B?a3dnS0YrSndkY3B1aUFlT3RWbzBQR1pjRWk4YUc5Y1FUNXQ3a0tNSFliVXdy?=
- =?utf-8?B?aXFWeWtPRXVjQzBsR0x4QUg3ejhUZ2owRFFpUlpRTTBwTXRydGdEZU56V2wx?=
- =?utf-8?B?N0VzbEJoMXRrOU1GVVQ5c0JoSlBFNVUrUkt5VkwyajJ0SWR1aFlBb0pDd2NS?=
- =?utf-8?B?bUQ3WmFvdDAwMHh5bFYzSjlCaUZ6eE9XOFduclFkaGsyTllFYzlaZzYwbXB5?=
- =?utf-8?B?OUIyVWhTMWJCeFJneisyWVQvbFpxMzFBOWlUempGOFM1T2tObklQUVZ0OXdj?=
- =?utf-8?B?TC9RMnZKeWQrTzlnck8vaVpycjNPVFNER2JPTFdjRThmT0NqQ0FhTjIraHli?=
- =?utf-8?B?TzN0SGJGVUhHY2xUc0xJWlk0ZXA4WU45SUFpVWtaTEF3N1M5cmhRbXBsbDFC?=
- =?utf-8?B?NHViTDl4T28ycDRkYThUV3VueVE3YXhqSmNDSzNMckdWSm9vK1lRd2czbTll?=
- =?utf-8?B?bWZUN1VFRzI1bDNNdzlHZ1czWjFncURkTXdrL1o0d0d0a0VKVEF1eEJLUlNF?=
- =?utf-8?B?Q1E9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <E8276DEEA12F8047A4987D5B0480620A@GBRP265.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+        Thu, 24 Aug 2023 04:17:57 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CC3610EF;
+        Thu, 24 Aug 2023 01:17:55 -0700 (PDT)
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37O8CUu1006690;
+        Thu, 24 Aug 2023 08:16:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=KEWHsQIN0ibIJmqlOe+5geBhFJYS7lkWUXsTA+1dW1s=;
+ b=TN7oM66xZFKd9trAoNj/to+wrKk83acTpd3VRV5F9dH+fZ5Z8sBbl2AbNEsG9u4BT/rp
+ hNvSoyMhKrFT5qqUPfCRnAkhAJ301+5YIHUV0Rg6lQKi4uSkTLe0mgBTcgmRidluxFBW
+ O8kB7k0OE2SGBmAXrK2d8yL2biJwNwvIaOEBHrI2guhj4rH8g/rkXHq5HvHg1mT2IGy/
+ eRqnGhLXCq5hKQ4Av/Le3UlaaPX5igLCT04KlszV1NRB6L58s/vOfo9nzDNSbi9O+55t
+ ixanQzhrIZHC+lvbSJ4zTxl/+3WI32IQUVt8Ub1hE7MGlx5pkVibwEct+hn4ag0wCheH AA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sp3g705gu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 24 Aug 2023 08:16:44 +0000
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37O8CiYj008191;
+        Thu, 24 Aug 2023 08:16:43 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sp3g705ev-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 24 Aug 2023 08:16:43 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37O7E8Q7004093;
+        Thu, 24 Aug 2023 08:16:40 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3sn21rneej-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 24 Aug 2023 08:16:40 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37O8GalW33030748
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 24 Aug 2023 08:16:37 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CB4E320040;
+        Thu, 24 Aug 2023 08:16:36 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B6B5020043;
+        Thu, 24 Aug 2023 08:16:34 +0000 (GMT)
+Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.171.83.96])
+        by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Thu, 24 Aug 2023 08:16:34 +0000 (GMT)
+Date:   Thu, 24 Aug 2023 10:16:33 +0200
+From:   Alexander Gordeev <agordeev@linux.ibm.com>
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        surenb@google.com, willy@infradead.org,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        loongarch@lists.linux.dev, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org
+Subject: Re: [PATCH rfc v2 04/10] s390: mm: use try_vma_locked_page_fault()
+Message-ID: <ZOcR4Z1WnCy1vl9T@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+References: <20230821123056.2109942-1-wangkefeng.wang@huawei.com>
+ <20230821123056.2109942-5-wangkefeng.wang@huawei.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CWLP265MB4817.GBRP265.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 46206595-d458-4e27-c29a-08dba47a35e1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Aug 2023 08:14:59.9724
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 0d5fd8bb-e8c2-4e0a-8dd5-2c264f7140fe
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: +InzdxDBAyYTtga4NithrPv4yEVsIv6ESrKqSb5deRPkt0DdbsFVoKj8LVM1b+ovUHh6TBT217F7T/lrGEJR4w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWLP265MB5691
-X-OriginatorOrg: imgtec.com
-X-EXCLAIMER-MD-CONFIG: 15a78312-3e47-46eb-9010-2e54d84a9631
-X-Proofpoint-ORIG-GUID: wh9uFhFHPRZ5JkPqf0xsTc6KszS4Srrs
-X-Proofpoint-GUID: wh9uFhFHPRZ5JkPqf0xsTc6KszS4Srrs
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230821123056.2109942-5-wangkefeng.wang@huawei.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Xe2qvpopgdAywnsIWTGsa_U7sum5c185
+X-Proofpoint-ORIG-GUID: lweXzh7T5jsy5Cw_7-G4eq5m-9pnOzRv
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-24_05,2023-08-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 mlxlogscore=549
+ clxscore=1015 lowpriorityscore=0 phishscore=0 malwarescore=0 adultscore=0
+ priorityscore=1501 spamscore=0 suspectscore=0 impostorscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2308240065
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIzLTA4LTI0IGF0IDA5OjA4ICswMTAwLCBTYXJhaCBXYWxrZXIgd3JvdGU6DQo+
-IE9uIFRodSwgMjAyMy0wOC0yNCBhdCAwNzozMSArMDkwMCwgTWFzYWhpcm8gWWFtYWRhIHdyb3Rl
-Og0KPiA+IE9uIEZyaSwgQXVnIDE4LCAyMDIzIGF0IDQ6MzXigK9BTSBTYXJhaCBXYWxrZXIgPHNh
-cmFoLndhbGtlckBpbWd0ZWMuY29tPiB3cm90ZToNCj4gPiA+IFRoaXMgcGF0Y2ggc2VyaWVzIGFk
-ZHMgdGhlIGluaXRpYWwgRFJNIGRyaXZlciBmb3IgSW1hZ2luYXRpb24gVGVjaG5vbG9naWVzIFBv
-d2VyVlINCj4gPiA+IEdQVXMsIHN0YXJ0aW5nIHdpdGggdGhvc2UgYmFzZWQgb24gb3VyIFJvZ3Vl
-IGFyY2hpdGVjdHVyZS4gSXQncyB3b3J0aCBwb2ludGluZw0KPiA+ID4gb3V0IHRoYXQgdGhpcyBp
-cyBhIG5ldyBkcml2ZXIsIHdyaXR0ZW4gZnJvbSB0aGUgZ3JvdW5kIHVwLCByYXRoZXIgdGhhbiBh
-DQo+ID4gPiByZWZhY3RvcmVkIHZlcnNpb24gb2Ygb3VyIGV4aXN0aW5nIGRvd25zdHJlYW0gZHJp
-dmVyIChwdnJzcnZrbSkuDQo+ID4gPiANCj4gPiA+IA0KPiA+IA0KPiA+IA0KPiA+IA0KPiA+IEkg
-ZmFpbGVkIHRvIGNvbXBpbGUgdGhpcyBwYXRjaCBzZXQuDQo+ID4gDQo+ID4gSSBhcHBsaWVkIHRo
-aXMgc2VyaWVzIHRvIGxpbnV4IG5leHQtMjAyMzA4MjIgYW5kIHNldCBDT05GSUdfRFJNX1BPV0VS
-VlI9bS4NCj4gPiANCj4gPiANCj4gPiBJIGdvdCB0aGlzIGVycm9yLg0KPiA+IA0KPiA+ICAgQ0Mg
-W01dICBkcml2ZXJzL2dwdS9kcm0vaW1hZ2luYXRpb24vcHZyX2NjYi5vDQo+ID4gSW4gZmlsZSBp
-bmNsdWRlZCBmcm9tIGRyaXZlcnMvZ3B1L2RybS9pbWFnaW5hdGlvbi9wdnJfY2NiLmM6NDoNCj4g
-PiBkcml2ZXJzL2dwdS9kcm0vaW1hZ2luYXRpb24vcHZyX2NjYi5oOjc6MTA6IGZhdGFsIGVycm9y
-Og0KPiA+IHB2cl9yb2d1ZV9md2lmLmg6IE5vIHN1Y2ggZmlsZSBvciBkaXJlY3RvcnkNCj4gPiAg
-ICAgNyB8ICNpbmNsdWRlICJwdnJfcm9ndWVfZndpZi5oIg0KPiA+ICAgICAgIHwgICAgICAgICAg
-Xn5+fn5+fn5+fn5+fn5+fn5+DQo+ID4gY29tcGlsYXRpb24gdGVybWluYXRlZC4NCj4gDQo+IEFw
-b2xvZ2llcywgaXQgYXBwZWFycyBwYXRjaCA2ICh3aGljaCBpbmNsdWRlcyB0aGlzIGFuZCBvdGhl
-ciBoZWFkZXJzKSBnb3QNCj4gYmxvY2tlZCBieSBvdXIgSVQgZW1haWwgcG9saWN5LiBXaWxsIHJl
-c2VuZC4NCg0KSXQgYXBwZWFycyBpdCB3YXMgc2VudCwgYnV0IG1heSBoYXZlIGJlZW4gZHJvcHBl
-ZCBkdWUgdG8gc2l6ZT8gSXQncyBhdCANCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL2Fy
-Y2hpdmVzL2RyaS1kZXZlbC8yMDIzLUF1Z3VzdC80MTg4MDIuaHRtbC4NCkFwb2xvZ2llcyBmb3Ig
-dGhlIGNvbmZ1c2lvbi4NCg0KU2FyYWgNCg==
+On Mon, Aug 21, 2023 at 08:30:50PM +0800, Kefeng Wang wrote:
+> Use new try_vma_locked_page_fault() helper to simplify code.
+> No functional change intended.
+> 
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> ---
+>  arch/s390/mm/fault.c | 66 ++++++++++++++++++--------------------------
+>  1 file changed, 27 insertions(+), 39 deletions(-)
+> 
+> diff --git a/arch/s390/mm/fault.c b/arch/s390/mm/fault.c
+> index 099c4824dd8a..fbbdebde6ea7 100644
+> --- a/arch/s390/mm/fault.c
+> +++ b/arch/s390/mm/fault.c
+> @@ -357,16 +357,18 @@ static noinline void do_fault_error(struct pt_regs *regs, vm_fault_t fault)
+>  static inline vm_fault_t do_exception(struct pt_regs *regs, int access)
+>  {
+>  	struct gmap *gmap;
+> -	struct task_struct *tsk;
+> -	struct mm_struct *mm;
+>  	struct vm_area_struct *vma;
+>  	enum fault_type type;
+> -	unsigned long address;
+> -	unsigned int flags;
+> +	struct mm_struct *mm = current->mm;
+> +	unsigned long address = get_fault_address(regs);
+>  	vm_fault_t fault;
+>  	bool is_write;
+> +	struct vm_fault vmf = {
+> +		.real_address = address,
+> +		.flags = FAULT_FLAG_DEFAULT,
+> +		.vm_flags = access,
+> +	};
+>  
+> -	tsk = current;
+>  	/*
+>  	 * The instruction that caused the program check has
+>  	 * been nullified. Don't signal single step via SIGTRAP.
+> @@ -376,8 +378,6 @@ static inline vm_fault_t do_exception(struct pt_regs *regs, int access)
+>  	if (kprobe_page_fault(regs, 14))
+>  		return 0;
+>  
+> -	mm = tsk->mm;
+> -	address = get_fault_address(regs);
+>  	is_write = fault_is_write(regs);
+>  
+>  	/*
+> @@ -398,45 +398,33 @@ static inline vm_fault_t do_exception(struct pt_regs *regs, int access)
+>  	}
+>  
+>  	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, address);
+> -	flags = FAULT_FLAG_DEFAULT;
+>  	if (user_mode(regs))
+> -		flags |= FAULT_FLAG_USER;
+> +		vmf.flags |= FAULT_FLAG_USER;
+>  	if (is_write)
+> -		access = VM_WRITE;
+> -	if (access == VM_WRITE)
+> -		flags |= FAULT_FLAG_WRITE;
+> -	if (!(flags & FAULT_FLAG_USER))
+> -		goto lock_mmap;
+> -	vma = lock_vma_under_rcu(mm, address);
+> -	if (!vma)
+> -		goto lock_mmap;
+> -	if (!(vma->vm_flags & access)) {
+> -		vma_end_read(vma);
+> -		goto lock_mmap;
+> -	}
+> -	fault = handle_mm_fault(vma, address, flags | FAULT_FLAG_VMA_LOCK, regs);
+> -	if (!(fault & (VM_FAULT_RETRY | VM_FAULT_COMPLETED)))
+> -		vma_end_read(vma);
+> -	if (!(fault & VM_FAULT_RETRY)) {
+> -		count_vm_vma_lock_event(VMA_LOCK_SUCCESS);
+> -		if (likely(!(fault & VM_FAULT_ERROR)))
+> -			fault = 0;
+
+This fault fixup is removed in the new version.
+
+> +		vmf.vm_flags = VM_WRITE;
+> +	if (vmf.vm_flags == VM_WRITE)
+> +		vmf.flags |= FAULT_FLAG_WRITE;
+> +
+> +	fault = try_vma_locked_page_fault(&vmf);
+> +	if (fault == VM_FAULT_NONE)
+> +		goto lock_mm;
+
+Because VM_FAULT_NONE is set to 0 it gets confused with
+the success code of 0 returned by a fault handler. In the
+former case we want to continue, while in the latter -
+successfully return. I think it applies to all archs.
+
+> +	if (!(fault & VM_FAULT_RETRY))
+>  		goto out;
+> -	}
+> -	count_vm_vma_lock_event(VMA_LOCK_RETRY);
+> +
+>  	/* Quick path to respond to signals */
+>  	if (fault_signal_pending(fault, regs)) {
+>  		fault = VM_FAULT_SIGNAL;
+>  		goto out;
+>  	}
+> -lock_mmap:
+> +
+> +lock_mm:
+>  	mmap_read_lock(mm);
+>  
+>  	gmap = NULL;
+>  	if (IS_ENABLED(CONFIG_PGSTE) && type == GMAP_FAULT) {
+>  		gmap = (struct gmap *) S390_lowcore.gmap;
+>  		current->thread.gmap_addr = address;
+> -		current->thread.gmap_write_flag = !!(flags & FAULT_FLAG_WRITE);
+> +		current->thread.gmap_write_flag = !!(vmf.flags & FAULT_FLAG_WRITE);
+>  		current->thread.gmap_int_code = regs->int_code & 0xffff;
+>  		address = __gmap_translate(gmap, address);
+>  		if (address == -EFAULT) {
+> @@ -444,7 +432,7 @@ static inline vm_fault_t do_exception(struct pt_regs *regs, int access)
+>  			goto out_up;
+>  		}
+>  		if (gmap->pfault_enabled)
+> -			flags |= FAULT_FLAG_RETRY_NOWAIT;
+> +			vmf.flags |= FAULT_FLAG_RETRY_NOWAIT;
+>  	}
+>  
+>  retry:
+> @@ -466,7 +454,7 @@ static inline vm_fault_t do_exception(struct pt_regs *regs, int access)
+>  	 * we can handle it..
+>  	 */
+>  	fault = VM_FAULT_BADACCESS;
+> -	if (unlikely(!(vma->vm_flags & access)))
+> +	if (unlikely(!(vma->vm_flags & vmf.vm_flags)))
+>  		goto out_up;
+>  
+>  	/*
+> @@ -474,10 +462,10 @@ static inline vm_fault_t do_exception(struct pt_regs *regs, int access)
+>  	 * make sure we exit gracefully rather than endlessly redo
+>  	 * the fault.
+>  	 */
+> -	fault = handle_mm_fault(vma, address, flags, regs);
+> +	fault = handle_mm_fault(vma, address, vmf.flags, regs);
+>  	if (fault_signal_pending(fault, regs)) {
+>  		fault = VM_FAULT_SIGNAL;
+> -		if (flags & FAULT_FLAG_RETRY_NOWAIT)
+> +		if (vmf.flags & FAULT_FLAG_RETRY_NOWAIT)
+>  			goto out_up;
+>  		goto out;
+>  	}
+> @@ -497,7 +485,7 @@ static inline vm_fault_t do_exception(struct pt_regs *regs, int access)
+>  
+>  	if (fault & VM_FAULT_RETRY) {
+>  		if (IS_ENABLED(CONFIG_PGSTE) && gmap &&
+> -			(flags & FAULT_FLAG_RETRY_NOWAIT)) {
+> +			(vmf.flags & FAULT_FLAG_RETRY_NOWAIT)) {
+>  			/*
+>  			 * FAULT_FLAG_RETRY_NOWAIT has been set, mmap_lock has
+>  			 * not been released
+> @@ -506,8 +494,8 @@ static inline vm_fault_t do_exception(struct pt_regs *regs, int access)
+>  			fault = VM_FAULT_PFAULT;
+>  			goto out_up;
+>  		}
+> -		flags &= ~FAULT_FLAG_RETRY_NOWAIT;
+> -		flags |= FAULT_FLAG_TRIED;
+> +		vmf.flags &= ~FAULT_FLAG_RETRY_NOWAIT;
+> +		vmf.flags |= FAULT_FLAG_TRIED;
+>  		mmap_read_lock(mm);
+>  		goto retry;
+>  	}
+
+FWIW, this series ends up with kernel BUG at arch/s390/mm/fault.c:341!
+
+Thanks!
