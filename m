@@ -2,73 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 911FB78698A
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 10:07:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20B52786976
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 10:06:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240547AbjHXIGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 04:06:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44958 "EHLO
+        id S235718AbjHXIFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 04:05:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240492AbjHXIGW (ORCPT
+        with ESMTP id S240474AbjHXIFV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 04:06:22 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D9721994
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 01:05:43 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id 98e67ed59e1d1-26d60f27491so3037325a91.1
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 01:05:43 -0700 (PDT)
+        Thu, 24 Aug 2023 04:05:21 -0400
+Received: from mail-vk1-xa35.google.com (mail-vk1-xa35.google.com [IPv6:2607:f8b0:4864:20::a35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DC5D1725
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 01:04:48 -0700 (PDT)
+Received: by mail-vk1-xa35.google.com with SMTP id 71dfb90a1353d-48d0edd8a81so1621234e0c.0
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 01:04:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1692864329; x=1693469129;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1692864287; x=1693469087;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hI/ttp/wxMkRYZ+oyQ2NmS2HxwoQO77IewL5mtwNCh0=;
-        b=Vrd5G9upmFX23Dc2l1UOiVR7mwQuxLdJALTe566riReLawye0Iez9RByru+Lw1LGHs
-         +bLoUARoikkBnCqoL1flcVwqreaLS334iX1gCgyZpEjqUf218Tus3zznhtCtfSXcIQ+Z
-         YpZi1+Q5+CVa8tvqM3unr1KQ1huvUG9hP9dD4=
+        bh=LiEv4XqC+7KuHP099o9BoI+4py4527eV//6q5pjiRJE=;
+        b=E13rm5T5vcsam81LPUzwMKLwwRHQF+5UrjbeiVh6MlwbFu+j3LNZArr8E1Kn0Kv1Ko
+         1H4UnU8iFu/bBCF2AYWy6qZ6kIJNcv494b9Uzh88U47y1YIbDXAsTmjw+iIOlcgMI5x3
+         ebPDSrHspCjcOcyce10Sd3Tp/lBRaybhdpcGDZvJKm0WTNoDfjsTX9GGn1l4iIhzUcRI
+         0W/1q8GUdvkBpIkDnz1AncIb98z8gNYZ7GUcA9xDMcwzuw5x3k7K4jNK7Z8jQo1V0NZz
+         J1cpJwvMVPna8cQVsMOsp2PYj4YqP45UYLAMBSRuU678ERh7XU/5rg+kq1e7dzGrL2QQ
+         a3Cw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692864329; x=1693469129;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1692864287; x=1693469087;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hI/ttp/wxMkRYZ+oyQ2NmS2HxwoQO77IewL5mtwNCh0=;
-        b=fuoizUsAmbNwPoFdMeMHgTEL3ozgdgQ4qlIYhMiv9istmzqf2rnMek8h20CGfzqPGt
-         gWOta4qs4LN5oC8vOKkpxuyULUM/FzTRcFcUT0Vd6M1Eu+oFRs/R40JnqHwyV0djDKdH
-         +qCdtuB9guW/hWW0e3ZMkiVbjG0pzStYdH6EXQKOr9lMHSrIkRYjxM/cYCpobJV/zPut
-         mCvgCbWIojuvhkJCy7Vg6sN4HAWSW8xULjsWfr5oqSfWpoFobYgh6qHLXBSFLclQ2COx
-         BcYRU3vBlAErXhtg5rOeiKJmeQw4mFkavBpDBRnOXvNPsCVZGPqHZi/Lx4wvrSNMHGGK
-         vx+g==
-X-Gm-Message-State: AOJu0YwzvIn1GEzRBf9CIaBT1PRNH6jIyh4WsMIBrjDQi5jW8HGb4g15
-        5BEzYTEkAafueTUnWRnGV/vVlw==
-X-Google-Smtp-Source: AGHT+IGr4o4edi/X3Imw/dOG9514f6ovvLqJxfkblt2y6pWdfKpxCplBDdHZn5gaAedd/iurfPc6oA==
-X-Received: by 2002:a17:90b:3590:b0:267:f094:afcf with SMTP id mm16-20020a17090b359000b00267f094afcfmr11065174pjb.12.1692864328780;
-        Thu, 24 Aug 2023 01:05:28 -0700 (PDT)
-Received: from localhost ([2401:fa00:8f:203:515:8b2a:90c3:b79e])
-        by smtp.gmail.com with UTF8SMTPSA id g2-20020a17090adac200b0026d034f6badsm967988pjx.38.2023.08.24.01.05.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Aug 2023 01:05:28 -0700 (PDT)
-From:   David Stevens <stevensd@chromium.org>
-X-Google-Original-From: David Stevens <stevensd@google.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Peter Xu <peterx@redhat.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm@vger.kernel.org, David Stevens <stevensd@chromium.org>
-Subject: [PATCH v8 8/8] KVM: mmu: remove __gfn_to_pfn_memslot
-Date:   Thu, 24 Aug 2023 17:04:08 +0900
-Message-ID: <20230824080408.2933205-9-stevensd@google.com>
-X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
-In-Reply-To: <20230824080408.2933205-1-stevensd@google.com>
-References: <20230824080408.2933205-1-stevensd@google.com>
+        bh=LiEv4XqC+7KuHP099o9BoI+4py4527eV//6q5pjiRJE=;
+        b=cKHs2Lqr+deSn8x8hKsKM35ZfcIjMy7nxe5ude5lhecGRm06BKb8gShHkpXgFliWAD
+         xexbW32PoP8ejvNdvhEdNkAvJqPDR7rtX9ehcp/m4L0WBzj6bGLhuoqyLdV4lXUjjRTn
+         XY6Bp3QsJJ9r5lkbl7JkELSOZiMdirUnnNw9wyUh3Qk18uFt93G/lMG6m2Qwx3XX9ux9
+         YptxzKIKaGUfxuKOygLa3UZmNMLpxQ/GnzGHScQTp/mgHL1D7ZVF1ptkLMhrPLyVJFCw
+         vUdb6w/tC5YdfoChbqaVg2wpICoWF/Fx4lUyYdoo3I/fO7IyWBI5XpKthzzYTwZ6aElM
+         X1Jg==
+X-Gm-Message-State: AOJu0Ywcvu/Q3p+8yUFVMLXeRGgye9ZQP5CrA1OaGogfOplcvIzsvf/0
+        FybfxB56ICPrjI8HxrLj2YszZLr5UpOFszHnVYsbCQ==
+X-Google-Smtp-Source: AGHT+IFWFkHg7eaqOaB86gkOgbNQfghPr9mXzXtCYBVN+jkZIKo2EEPebwD0aYA651pru1Qz76lZD0swwYS5O/Diuhw=
+X-Received: by 2002:a1f:e783:0:b0:48f:9c75:411c with SMTP id
+ e125-20020a1fe783000000b0048f9c75411cmr6190288vkh.6.1692864287288; Thu, 24
+ Aug 2023 01:04:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20230823085258.113701-1-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230823085258.113701-1-krzysztof.kozlowski@linaro.org>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Thu, 24 Aug 2023 10:04:36 +0200
+Message-ID: <CAMRc=MfcRHhP5J2D9JCYfMkcRYBiTe-bfywEYVWtcv51HY=ERQ@mail.gmail.com>
+Subject: Re: [PATCH] gpio: mlxbf3: use capital "OR" for multiple licenses in SPDX
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy@kernel.org>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,59 +69,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Stevens <stevensd@chromium.org>
+On Wed, Aug 23, 2023 at 10:53=E2=80=AFAM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> Documentation/process/license-rules.rst and checkpatch expect the SPDX
+> identifier syntax for multiple licenses to use capital "OR".  Correct it
+> to keep consistent format and avoid copy-paste issues.
+>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>
+> ---
+>
+> Rebased on next-20230822, so might not apply cleanly.  What does not
+> apply, can be skipped and I will fix it after next RC.
+> ---
+>  drivers/gpio/gpio-mlxbf3.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpio/gpio-mlxbf3.c b/drivers/gpio/gpio-mlxbf3.c
+> index 0a5f241a8352..7a3e1760fc5b 100644
+> --- a/drivers/gpio/gpio-mlxbf3.c
+> +++ b/drivers/gpio/gpio-mlxbf3.c
+> @@ -1,4 +1,4 @@
+> -// SPDX-License-Identifier: GPL-2.0-only or BSD-3-Clause
+> +// SPDX-License-Identifier: GPL-2.0-only OR BSD-3-Clause
+>  /* Copyright (C) 2022 NVIDIA CORPORATION & AFFILIATES */
+>
+>  #include <linux/bitfield.h>
+> --
+> 2.34.1
+>
 
-All callers have been migrated to __kvm_follow_pfn.
+Applied, thanks!
 
-Signed-off-by: David Stevens <stevensd@chromium.org>
----
- virt/kvm/kvm_main.c | 33 ---------------------------------
- 1 file changed, 33 deletions(-)
-
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index fa1848c6c84f..aebaf4a7340e 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -2728,39 +2728,6 @@ kvm_pfn_t __kvm_follow_pfn(struct kvm_follow_pfn *foll)
- }
- EXPORT_SYMBOL_GPL(__kvm_follow_pfn);
- 
--kvm_pfn_t __gfn_to_pfn_memslot(const struct kvm_memory_slot *slot, gfn_t gfn,
--			       bool atomic, bool interruptible, bool *async,
--			       bool write_fault, bool *writable, hva_t *hva)
--{
--	kvm_pfn_t pfn;
--	struct kvm_follow_pfn foll = {
--		.slot = slot,
--		.gfn = gfn,
--		.flags = FOLL_GET,
--		.atomic = atomic,
--		.try_map_writable = !!writable,
--	};
--
--	if (write_fault)
--		foll.flags |= FOLL_WRITE;
--	if (async)
--		foll.flags |= FOLL_NOWAIT;
--	if (interruptible)
--		foll.flags |= FOLL_INTERRUPTIBLE;
--
--	pfn = __kvm_follow_pfn(&foll);
--	if (pfn == KVM_PFN_ERR_NEEDS_IO) {
--		*async = true;
--		pfn = KVM_PFN_ERR_FAULT;
--	}
--	if (hva)
--		*hva = foll.hva;
--	if (writable)
--		*writable = foll.writable;
--	return pfn;
--}
--EXPORT_SYMBOL_GPL(__gfn_to_pfn_memslot);
--
- kvm_pfn_t gfn_to_pfn_prot(struct kvm *kvm, gfn_t gfn, bool write_fault,
- 		      bool *writable)
- {
--- 
-2.42.0.rc1.204.g551eb34607-goog
-
+Bart
