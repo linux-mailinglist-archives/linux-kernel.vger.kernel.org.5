@@ -2,117 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA95878679B
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 08:41:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B04847867A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 08:42:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239933AbjHXGlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 02:41:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58366 "EHLO
+        id S240185AbjHXGmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 02:42:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240163AbjHXGkv (ORCPT
+        with ESMTP id S240155AbjHXGlY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 02:40:51 -0400
-Received: from jari.cn (unknown [218.92.28.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A9579170E
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 23:40:39 -0700 (PDT)
-Received: from chenxuebing$jari.cn ( [125.70.163.142] ) by
- ajax-webmail-localhost.localdomain (Coremail) ; Thu, 24 Aug 2023 14:40:11
- +0800 (GMT+08:00)
-X-Originating-IP: [125.70.163.142]
-Date:   Thu, 24 Aug 2023 14:40:11 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   "XueBing Chen" <chenxuebing@jari.cn>
-To:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/amdgpu/gfx11: Clean up errors in gfx_v11_0.c
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version 2023.1-cmXT6 build
- 20230419(ff23bf83) Copyright (c) 2002-2023 www.mailtech.cn
- mispb-4e503810-ca60-4ec8-a188-7102c18937cf-zhkzyfz.cn
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Thu, 24 Aug 2023 02:41:24 -0400
+Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A40F610FD;
+        Wed, 23 Aug 2023 23:41:21 -0700 (PDT)
+Received: (from willy@localhost)
+        by mail.home.local (8.17.1/8.17.1/Submit) id 37O6eYn8017295;
+        Thu, 24 Aug 2023 08:40:34 +0200
+Date:   Thu, 24 Aug 2023 08:40:34 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas@t-8ch.de>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Christian Brauner <brauner@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Zhangjin Wu <falcon@tinylab.org>
+Subject: Re: linux-next: manual merge of the nolibc tree with the vfs-brauner
+ tree
+Message-ID: <ZOb7Ynd8vjC/kygl@1wt.eu>
+References: <20230824141008.27f7270b@canb.auug.org.au>
+ <3028a552-bd75-4ded-9211-62d10768d9ea@t-8ch.de>
 MIME-Version: 1.0
-Message-ID: <3eb2c036.637.18a26459ea0.Coremail.chenxuebing@jari.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: AQAAfwDnhD9M++ZkwCuSAA--.456W
-X-CM-SenderInfo: hfkh05pxhex0nj6mt2flof0/1tbiAQAMCmTl1A4ABAADsb
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
-X-Spam-Status: No, score=2.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_PBL,RDNS_NONE,T_SPF_HELO_PERMERROR,T_SPF_PERMERROR,XPRIO
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: **
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3028a552-bd75-4ded-9211-62d10768d9ea@t-8ch.de>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rml4IHRoZSBmb2xsb3dpbmcgZXJyb3JzIHJlcG9ydGVkIGJ5IGNoZWNrcGF0Y2g6CgpFUlJPUjog
-dGhhdCBvcGVuIGJyYWNlIHsgc2hvdWxkIGJlIG9uIHRoZSBwcmV2aW91cyBsaW5lCkVSUk9SOiBz
-cGFjZXMgcmVxdWlyZWQgYXJvdW5kIHRoYXQgJz09JyAoY3R4OlZ4VikKRVJST1I6IHNwYWNlIHBy
-b2hpYml0ZWQgYmVmb3JlIHRoYXQgY2xvc2UgcGFyZW50aGVzaXMgJyknCkVSUk9SOiAiZm9vICog
-YmFyIiBzaG91bGQgYmUgImZvbyAqYmFyIgpFUlJPUjogc3BhY2UgcmVxdWlyZWQgYmVmb3JlIHRo
-ZSBvcGVuIHBhcmVudGhlc2lzICcoJwoKU2lnbmVkLW9mZi1ieTogWHVlQmluZyBDaGVuIDxjaGVu
-eHVlYmluZ0BqYXJpLmNuPgotLS0KIGRyaXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1L2dmeF92MTFf
-MC5jIHwgMTcgKysrKysrKystLS0tLS0tLS0KIDEgZmlsZSBjaGFuZ2VkLCA4IGluc2VydGlvbnMo
-KyksIDkgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRn
-cHUvZ2Z4X3YxMV8wLmMgYi9kcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS9nZnhfdjExXzAuYwpp
-bmRleCA1YzNkYjY5NGFmYTguLjY3MDhkMzg1MmZlNyAxMDA2NDQKLS0tIGEvZHJpdmVycy9ncHUv
-ZHJtL2FtZC9hbWRncHUvZ2Z4X3YxMV8wLmMKKysrIGIvZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRn
-cHUvZ2Z4X3YxMV8wLmMKQEAgLTgzLDggKzgzLDcgQEAgTU9EVUxFX0ZJUk1XQVJFKCJhbWRncHUv
-Z2NfMTFfMF80X21lLmJpbiIpOwogTU9EVUxFX0ZJUk1XQVJFKCJhbWRncHUvZ2NfMTFfMF80X21l
-Yy5iaW4iKTsKIE1PRFVMRV9GSVJNV0FSRSgiYW1kZ3B1L2djXzExXzBfNF9ybGMuYmluIik7CiAK
-LXN0YXRpYyBjb25zdCBzdHJ1Y3Qgc29jMTVfcmVnX2dvbGRlbiBnb2xkZW5fc2V0dGluZ3NfZ2Nf
-MTFfMF8xW10gPQoteworc3RhdGljIGNvbnN0IHN0cnVjdCBzb2MxNV9yZWdfZ29sZGVuIGdvbGRl
-bl9zZXR0aW5nc19nY18xMV8wXzFbXSA9IHsKIAlTT0MxNV9SRUdfR09MREVOX1ZBTFVFKEdDLCAw
-LCByZWdDR1RUX0dTX05HR19DTEtfQ1RSTCwgMHg5ZmZmOGZmZiwgMHgwMDAwMDAxMCksCiAJU09D
-MTVfUkVHX0dPTERFTl9WQUxVRShHQywgMCwgcmVnQ0dUVF9XRF9DTEtfQ1RSTCwgMHhmZmZmOGZm
-ZiwgMHgwMDAwMDAxMCksCiAJU09DMTVfUkVHX0dPTERFTl9WQUxVRShHQywgMCwgcmVnQ1BGX0dD
-Ul9DTlRMLCAweDAwMDdmZmZmLCAweDAwMDBjMjAwKSwKQEAgLTEyMzAsNyArMTIyOSw3IEBAIHN0
-YXRpYyB2b2lkIGdmeF92MTFfMF9ybGNfYmFja2Rvb3JfYXV0b2xvYWRfY29weV9tZXNfdWNvZGUo
-c3RydWN0IGFtZGdwdV9kZXZpY2UKIAlpbnQgcGlwZSwgdWNvZGVfaWQsIGRhdGFfaWQ7CiAKIAlm
-b3IgKHBpcGUgPSAwOyBwaXBlIDwgMjsgcGlwZSsrKSB7Ci0JCWlmIChwaXBlPT0wKSB7CisJCWlm
-IChwaXBlID09IDApIHsKIAkJCXVjb2RlX2lkID0gU09DMjFfRklSTVdBUkVfSURfUlM2NF9NRVNf
-UDA7CiAJCQlkYXRhX2lkICA9IFNPQzIxX0ZJUk1XQVJFX0lEX1JTNjRfTUVTX1AwX1NUQUNLOwog
-CQl9IGVsc2UgewpAQCAtMjMyNCw3ICsyMzIzLDcgQEAgc3RhdGljIGludCBnZnhfdjExXzBfY29u
-ZmlnX21lX2NhY2hlX3JzNjQoc3RydWN0IGFtZGdwdV9kZXZpY2UgKmFkZXYsIHVpbnQ2NF90IGEK
-IAkJc29jMjFfZ3JibV9zZWxlY3QoYWRldiwgMCwgcGlwZV9pZCwgMCwgMCk7CiAJCVdSRUczMl9T
-T0MxNShHQywgMCwgcmVnQ1BfTUVfUFJHUk1fQ05UUl9TVEFSVCwKIAkJCShtZV9oZHItPnVjb2Rl
-X3N0YXJ0X2FkZHJfaGkgPDwgMzApIHwKLQkJCShtZV9oZHItPnVjb2RlX3N0YXJ0X2FkZHJfbG8g
-Pj4gMikgKTsKKwkJCShtZV9oZHItPnVjb2RlX3N0YXJ0X2FkZHJfbG8gPj4gMikpOwogCQlXUkVH
-MzJfU09DMTUoR0MsIDAsIHJlZ0NQX01FX1BSR1JNX0NOVFJfU1RBUlRfSEksCiAJCQltZV9oZHIt
-PnVjb2RlX3N0YXJ0X2FkZHJfaGk+PjIpOwogCkBAIC0yNTA4LDcgKzI1MDcsNyBAQCBzdGF0aWMg
-dm9pZCBnZnhfdjExXzBfY29uZmlnX2dmeF9yczY0KHN0cnVjdCBhbWRncHVfZGV2aWNlICphZGV2
-KQogCQlzb2MyMV9ncmJtX3NlbGVjdChhZGV2LCAwLCBwaXBlX2lkLCAwLCAwKTsKIAkJV1JFRzMy
-X1NPQzE1KEdDLCAwLCByZWdDUF9NRV9QUkdSTV9DTlRSX1NUQVJULAogCQkJKG1lX2hkci0+dWNv
-ZGVfc3RhcnRfYWRkcl9oaSA8PCAzMCkgfAotCQkJKG1lX2hkci0+dWNvZGVfc3RhcnRfYWRkcl9s
-byA+PiAyKSApOworCQkJKG1lX2hkci0+dWNvZGVfc3RhcnRfYWRkcl9sbyA+PiAyKSk7CiAJCVdS
-RUczMl9TT0MxNShHQywgMCwgcmVnQ1BfTUVfUFJHUk1fQ05UUl9TVEFSVF9ISSwKIAkJCW1lX2hk
-ci0+dWNvZGVfc3RhcnRfYWRkcl9oaT4+Mik7CiAJfQpAQCAtMjgwNiw3ICsyODA1LDcgQEAgc3Rh
-dGljIGludCBnZnhfdjExXzBfY3BfZ2Z4X2xvYWRfcGZwX21pY3JvY29kZV9yczY0KHN0cnVjdCBh
-bWRncHVfZGV2aWNlICphZGV2KQogCQlzb2MyMV9ncmJtX3NlbGVjdChhZGV2LCAwLCBwaXBlX2lk
-LCAwLCAwKTsKIAkJV1JFRzMyX1NPQzE1KEdDLCAwLCByZWdDUF9QRlBfUFJHUk1fQ05UUl9TVEFS
-VCwKIAkJCShwZnBfaGRyLT51Y29kZV9zdGFydF9hZGRyX2hpIDw8IDMwKSB8Ci0JCQkocGZwX2hk
-ci0+dWNvZGVfc3RhcnRfYWRkcl9sbyA+PiAyKSApOworCQkJKHBmcF9oZHItPnVjb2RlX3N0YXJ0
-X2FkZHJfbG8gPj4gMikpOwogCQlXUkVHMzJfU09DMTUoR0MsIDAsIHJlZ0NQX1BGUF9QUkdSTV9D
-TlRSX1NUQVJUX0hJLAogCQkJcGZwX2hkci0+dWNvZGVfc3RhcnRfYWRkcl9oaT4+Mik7CiAKQEAg
-LTMwMjUsNyArMzAyNCw3IEBAIHN0YXRpYyBpbnQgZ2Z4X3YxMV8wX2NwX2dmeF9sb2FkX21lX21p
-Y3JvY29kZV9yczY0KHN0cnVjdCBhbWRncHVfZGV2aWNlICphZGV2KQogCQlzb2MyMV9ncmJtX3Nl
-bGVjdChhZGV2LCAwLCBwaXBlX2lkLCAwLCAwKTsKIAkJV1JFRzMyX1NPQzE1KEdDLCAwLCByZWdD
-UF9NRV9QUkdSTV9DTlRSX1NUQVJULAogCQkJKG1lX2hkci0+dWNvZGVfc3RhcnRfYWRkcl9oaSA8
-PCAzMCkgfAotCQkJKG1lX2hkci0+dWNvZGVfc3RhcnRfYWRkcl9sbyA+PiAyKSApOworCQkJKG1l
-X2hkci0+dWNvZGVfc3RhcnRfYWRkcl9sbyA+PiAyKSk7CiAJCVdSRUczMl9TT0MxNShHQywgMCwg
-cmVnQ1BfTUVfUFJHUk1fQ05UUl9TVEFSVF9ISSwKIAkJCW1lX2hkci0+dWNvZGVfc3RhcnRfYWRk
-cl9oaT4+Mik7CiAKQEAgLTQyMDIsNyArNDIwMSw3IEBAIHN0YXRpYyB2b2lkIGdmeF92MTFfMF9z
-ZWxlY3RfY3BfZndfYXJjaChzdHJ1Y3QgYW1kZ3B1X2RldmljZSAqYWRldikKIAkJbXNsZWVwKDEw
-MCk7CiB9CiAKLXN0YXRpYyBpbnQgZ2V0X2diX2FkZHJfY29uZmlnKHN0cnVjdCBhbWRncHVfZGV2
-aWNlICogYWRldikKK3N0YXRpYyBpbnQgZ2V0X2diX2FkZHJfY29uZmlnKHN0cnVjdCBhbWRncHVf
-ZGV2aWNlICphZGV2KQogewogCXUzMiBnYl9hZGRyX2NvbmZpZzsKIApAQCAtNDI5Myw3ICs0Mjky
-LDcgQEAgc3RhdGljIGludCBnZnhfdjExXzBfaHdfaW5pdCh2b2lkICpoYW5kbGUpCiAKIAlhZGV2
-LT5nZnguaXNfcG93ZXJvbiA9IHRydWU7CiAKLQlpZihnZXRfZ2JfYWRkcl9jb25maWcoYWRldikp
-CisJaWYgKGdldF9nYl9hZGRyX2NvbmZpZyhhZGV2KSkKIAkJRFJNX1dBUk4oIkludmFsaWQgZ2Jf
-YWRkcl9jb25maWcgIVxuIik7CiAKIAlpZiAoYWRldi0+ZmlybXdhcmUubG9hZF90eXBlID09IEFN
-REdQVV9GV19MT0FEX1BTUCAmJgotLSAKMi4xNy4xCg==
+On Thu, Aug 24, 2023 at 08:27:21AM +0200, Thomas Weißschuh wrote:
+> Hi everybody,
+> 
+> On 2023-08-24 14:10:08+1000, Stephen Rothwell wrote:
+> > Today's linux-next merge of the nolibc tree got a conflict in:
+> > 
+> >   tools/testing/selftests/nolibc/nolibc-test.c
+> > 
+> > between commit:
+> > 
+> >   49319832de90 ("selftests/nolibc: drop test chmod_net")
+> > 
+> > from the vfs-brauner tree and commit:
+> > 
+> >   148e9718e2a2 ("selftests/nolibc: add chmod_argv0 test")
+> > 
+> > from the nolibc tree.
+> > 
+> > I fixed it up (see below) and can carry the fix as necessary. This
+> > is now fixed as far as linux-next is concerned, but any non trivial
+> > conflicts should be mentioned to your upstream maintainer when your tree
+> > is submitted for merging.  You may also want to consider cooperating
+> > with the maintainer of the conflicting tree to minimise any particularly
+> > complex conflicts.
+> 
+> This is fallout from the recent removal of
+> "selftests/nolibc: drop test chmod_net" from the nolibc tree.
+> 
+> Christian:
+> 
+> You mentioned before that you plan to have this series in
+> -next for some time. If you only submit it to Linux for 6.7 or later
+> then you have to, if I understand the process correctly, rebase your
+> -next branch on Linus' master after 6.6-rc1.
+> 6.6-rc1 should contain the conflicting nolibc changes, so you would need
+> to resolve the conflict during rebasing.
+> The patch is intentionally made to be easy to resolve conflicts for,
+> just delete the line containing "CASE_TEST(chmod_net)".
+> 
+> Everyone:
+> 
+> What is your opinion on that?
+
+I think that if Stephen is okay with temporarily carrying the small fix
+he has (which is correct), it could be the simplest way to resolve it
+until the branches are merged. Otherwise we can try to adjust again.
+
+Cheers,
+Willy
