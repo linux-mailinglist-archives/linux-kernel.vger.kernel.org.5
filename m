@@ -2,131 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D2707877EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 20:33:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5D917877E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 20:32:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243064AbjHXSck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 14:32:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60190 "EHLO
+        id S243041AbjHXScF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 14:32:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243083AbjHXScT (ORCPT
+        with ESMTP id S243101AbjHXSb7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 14:32:19 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 889BF1BEF;
-        Thu, 24 Aug 2023 11:32:15 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-99bcf2de59cso10269766b.0;
-        Thu, 24 Aug 2023 11:32:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692901934; x=1693506734;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jPlwIuXS4UKNdwnv7dloCDkuc6cLmXeTG3uvRrx0mcc=;
-        b=AMrfHRJyOccu2U1+VViw/W5kSSakls1k6XEM2l+XA2ikpvbNc5CjPHOKd+S8cAgmxB
-         ifln8PRBXTTy667HLc2M0J9OBpMGT4SY7YR3yGWE4RPiVbS8xgwg+iyIw9DnjOY0Bu12
-         seKj6LhzYfkqiihsE+M9TuazFlSD8dWijS9Or1ipmamiKhW6c6v+1ExtJmeNqrxHAcri
-         +Xnt+j+8YxZLjpw4n1RONcQ4m0bs/79N7fv6iAjV8YS8moWOB0wQttJ0FcjvkQtf+KEN
-         IVtT0tGbaPM21Z8O7s7qYGj9kcaTar4Aja2e6R/11LDP0jpZr9mM04PIxpYCqod8ELkB
-         xXuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692901934; x=1693506734;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jPlwIuXS4UKNdwnv7dloCDkuc6cLmXeTG3uvRrx0mcc=;
-        b=iEiNXUvI9OsDGinn70/uCrMyRBGgeF28zx9rzPIaJo3E0w0FyVUg/lJpJR7tcaLO6m
-         OeXeUFkds50VSrznASV+yAcSGoxt4XwwXJHJYntdacf0CCVgfNsZIeyumzaAT8yUQop7
-         sQSCPYDJid3lKfZ9hleYIcp0ZSoJrEmEXXL9LgYx8QIPAuVn8dTeMHcGCjJKa51rcNml
-         ce8bhmpdeTOn7qGw/o0oBGTrAYqVlGA48LXiFILOM8xDr31rAPfEeNRninMkuhPLvB3C
-         21rr4Yj60bV9w9l0ttz7w023Wu4dUXGjj10rCSNYY+hRylPcv07uhVZSX9C1O0COR339
-         d5ig==
-X-Gm-Message-State: AOJu0YyIEtYNdC7oUtuUJ9ISIsMtfpAr/pl/KYoDkZgvJ/jxjQTSpOqw
-        SV9A302oVnOre9BCUOh2bmo=
-X-Google-Smtp-Source: AGHT+IHbCZyG5/7et0uig8UAuRPjyBzz20Gw3VrhhgrsbCSWXKLDR7YVo8khW5+Ne6maGO7ViU80UA==
-X-Received: by 2002:a17:906:5385:b0:99c:55c0:ad15 with SMTP id g5-20020a170906538500b0099c55c0ad15mr12900344ejo.38.1692901933771;
-        Thu, 24 Aug 2023 11:32:13 -0700 (PDT)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id fy3-20020a170906b7c300b009894b476310sm11087708ejb.163.2023.08.24.11.32.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Aug 2023 11:32:13 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 737EF27C0054;
-        Thu, 24 Aug 2023 14:32:01 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Thu, 24 Aug 2023 14:32:01 -0400
-X-ME-Sender: <xms:H6LnZE4l_cegzfNRp0EP6DxR7UzaH60yDcm9Pt-Dfj8GKn1ODIUhlQ>
-    <xme:H6LnZF4SK-YsUlMmogV1t3aAODNaiCZJfXsjftj4-kaZI_KQ2ZxBRIltAW7IhkAw0
-    B3r0J2Kg2Nds1C8Ew>
-X-ME-Received: <xmr:H6LnZDee3xyQL6gWQJSQ1KmTMHmrV7von6PKyEfVSOYtXpJxQi16PVMFwu1FvQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedruddviedguddvgecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhq
-    uhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrf
-    grthhtvghrnhephedugfduffffteeutddvheeuveelvdfhleelieevtdeguefhgeeuveei
-    udffiedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    epsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedt
-    ieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfh
-    higihmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:IKLnZJIz8wSlenA3l3Qv-0P0nBbFiMqJFQUHr7aIxk4wN1u8g5t4Nw>
-    <xmx:IKLnZILlvf4NrWmIsGxRmeg6Ng83iNEpHsG0WMrspAvKwVvlhnpQag>
-    <xmx:IKLnZKwgzOMhQDC1_-OuyZ4DpUGBSfg2L_B_RgNDJV9DcnnAIMbZeg>
-    <xmx:IaLnZIDqHZ_Iq7nXhNGsrr_JyIQXxcRxq99kQSgEl7DdxQVbCcST8g>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 24 Aug 2023 14:31:59 -0400 (EDT)
-Date:   Thu, 24 Aug 2023 11:31:23 -0700
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Nuno Das Neves <nunodasneves@linux.microsoft.com>
-Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-arch@vger.kernel.org, patches@lists.linux.dev,
-        mikelley@microsoft.com, kys@microsoft.com, wei.liu@kernel.org,
-        haiyangz@microsoft.com, decui@microsoft.com,
-        apais@linux.microsoft.com, Tianyu.Lan@microsoft.com,
-        ssengar@linux.microsoft.com, mukeshrathor@microsoft.com,
-        stanislav.kinsburskiy@gmail.com, jinankjain@linux.microsoft.com,
-        vkuznets@redhat.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
-        will@kernel.org, catalin.marinas@arm.com
-Subject: Re: [PATCH v2 15/15] Drivers: hv: Add modules to expose /dev/mshv to
- VMMs running on Hyper-V
-Message-ID: <ZOeh-4pFgil54iyx@boqun-archlinux>
-References: <1692309711-5573-1-git-send-email-nunodasneves@linux.microsoft.com>
- <1692309711-5573-16-git-send-email-nunodasneves@linux.microsoft.com>
+        Thu, 24 Aug 2023 14:31:59 -0400
+Received: from smtp.smtpout.orange.fr (smtp-23.smtpout.orange.fr [80.12.242.23])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F8371BE9
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 11:31:51 -0700 (PDT)
+Received: from [192.168.1.18] ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id ZF7QqAefwuWDMZF7Rqe7Po; Thu, 24 Aug 2023 20:31:48 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1692901908;
+        bh=nPsDNUjBoakY0a/VnBFZAypFsdRwpC9qQ/hznAqbH/g=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=VPg0zs3QpX8+1VbR+lNw3MYEEhAA7PHPxtG6IO0tPTiMoUC+tB5S+AbPMwkT4YPrW
+         gMT1XE1GyCj99tRP6zCmczJVRrwCrWXecpfMR2w63qVrU5jktnvAxwUO0kyHe41dE4
+         EkFPetm+uWmlgkV2+Emhfp3XJVG7zFQMZ9mAv52NYzetCRYWC2nGBKcK3vu75+o7CN
+         lZU4ZmqLdwU+L5eO1II6bO/8bF9ppd7zwHsV22JA61zlIPTfnB7pf7xZ2E9O8qk3mr
+         ITF/u93ACO/yi4tTqGx8VZv7KIsgmJbIaaH237zFUCo5jzcds+3ENhtNkWAZO0U+8Z
+         64EQnUi+QWYFQ==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Thu, 24 Aug 2023 20:31:48 +0200
+X-ME-IP: 86.243.2.178
+Message-ID: <74183f7b-6e53-ba3d-2160-1e526d61073b@wanadoo.fr>
+Date:   Thu, 24 Aug 2023 20:31:44 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1692309711-5573-16-git-send-email-nunodasneves@linux.microsoft.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v8 3/8] media: staging: media: starfive: camss: Add core
+ driver
+To:     Jack Zhu <jack.zhu@starfivetech.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Todor Tomov <todor.too@gmail.com>, bryan.odonoghue@linaro.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-staging@lists.linux.dev,
+        changhuang.liang@starfivetech.com
+References: <20230824080109.89613-1-jack.zhu@starfivetech.com>
+ <20230824080109.89613-4-jack.zhu@starfivetech.com>
+Content-Language: fr
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20230824080109.89613-4-jack.zhu@starfivetech.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 03:01:51PM -0700, Nuno Das Neves wrote:
-[...]
-> +static long
-> +mshv_dev_ioctl(struct file *filp, unsigned int ioctl, unsigned long arg)
+Le 24/08/2023 à 10:01, Jack Zhu a écrit :
+> Add core driver for StarFive Camera Subsystem. The code parses
+> the device platform resources and registers related devices.
+> 
+> Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+> Signed-off-by: Jack Zhu <jack.zhu@starfivetech.com>
+> ---
+
+...
+
+> diff --git a/drivers/staging/media/starfive/camss/Kconfig b/drivers/staging/media/starfive/camss/Kconfig
+> new file mode 100644
+> index 000000000000..8d20e2bd2559
+> --- /dev/null
+> +++ b/drivers/staging/media/starfive/camss/Kconfig
+> @@ -0,0 +1,17 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +config VIDEO_STARFIVE_CAMSS
+> +	tristate "Starfive Camera Subsystem driver"
+> +	depends on V4L_PLATFORM_DRIVERS
+> +	depends on VIDEO_DEV && OF
+> +	depends on HAS_DMA
+> +	depends on PM
+> +	select MEDIA_CONTROLLER
+> +	select VIDEO_V4L2_SUBDEV_API
+> +	select VIDEOBUF2_DMA_CONTIG
+> +	select V4L2_FWNODE
+> +	help
+> +	   Enable this to support for the Starfive Camera subsystem
+> +	   found on Starfive JH7110 SoC.
+> +
+> +	   To compile this driver as a module, choose M here: the
+> +	   module will be called stf-camss.
+
+stf_camss? (s/-/_)
+
+> diff --git a/drivers/staging/media/starfive/camss/Makefile b/drivers/staging/media/starfive/camss/Makefile
+> new file mode 100644
+> index 000000000000..f53c5cbe958f
+> --- /dev/null
+> +++ b/drivers/staging/media/starfive/camss/Makefile
+> @@ -0,0 +1,9 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +#
+> +# Makefile for StarFive Camera Subsystem driver
+> +#
+> +
+> +starfive-camss-objs += \
+> +		stf_camss.o
+> +
+> +obj-$(CONFIG_VIDEO_STARFIVE_CAMSS) += starfive-camss.o
+
+I'm not an expert in Makefile files, but this stf_camss.o and 
+starfive-camss.o look strange to me.
+
+> diff --git a/drivers/staging/media/starfive/camss/stf_camss.c b/drivers/staging/media/starfive/camss/stf_camss.c
+> new file mode 100644
+> index 000000000000..75ebc3a35218
+> --- /dev/null
+> +++ b/drivers/staging/media/starfive/camss/stf_camss.c
+
+...
+
+> +static int stfcamss_of_parse_ports(struct stfcamss *stfcamss)
 > +{
-> +	switch (ioctl) {
-> +	case MSHV_CHECK_EXTENSION:
-> +		return mshv_ioctl_check_extension((void __user *)arg);
-> +	case MSHV_CREATE_PARTITION:
-> +		return mshv.create_partition((void __user *)arg);
-> +	case MSHV_CREATE_VTL:
-> +		return mshv.create_vtl((void __user *)arg);
+> +	struct device_node *node = NULL;
+> +	int ret, num_subdevs = 0;
+> +
+> +	for_each_endpoint_of_node(stfcamss->dev->of_node, node) {
+> +		struct stfcamss_async_subdev *csd;
+> +
+> +		if (!of_device_is_available(node))
+> +			continue;
+> +
+> +		csd = v4l2_async_nf_add_fwnode_remote(&stfcamss->notifier,
+> +						      of_fwnode_handle(node),
+> +						      struct stfcamss_async_subdev);
+> +		if (IS_ERR(csd)) {
+> +			ret = PTR_ERR(csd);
+> +			dev_err(stfcamss->dev, "failed to add async notifier\n");
+> +			v4l2_async_nf_cleanup(&stfcamss->notifier);
+
+having it here, looks strange to me.
+It is already called in the error handling path of the probe.
+
+Should there be a "of_node_put(node);" if we return here?
+
+> +			return ret;
+> +		}
+> +
+> +		ret = stfcamss_of_parse_endpoint_node(stfcamss, node, csd);
+> +		if (ret)
+> +			return ret;
+> +
+> +		num_subdevs++;
 > +	}
 > +
+> +	return num_subdevs;
+> +}
 
-Shouldn't we also have a MSHV_GET_API_VERSION ioctl similar as KVM? So
-that in the future when we change these ioctl interfaces or semantics,
-we can bump up the API version to avoid breaking userspace?
+...
 
-Regards,
-Boqun
+> +static int stfcamss_remove(struct platform_device *pdev)
+> +{
+> +	struct stfcamss *stfcamss = platform_get_drvdata(pdev);
+> +
+> +	v4l2_device_unregister(&stfcamss->v4l2_dev);
+> +	media_device_cleanup(&stfcamss->media_dev);
+
+Is a "v4l2_async_nf_cleanup(&stfcamss->notifier);" missing to match the 
+error handling path of the probe?
+
+> +	pm_runtime_disable(&pdev->dev);
+> +
+> +	return 0;
+> +}
+> +
+
+...
