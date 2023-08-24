@@ -2,125 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A95B786F55
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 14:42:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C67E0786F82
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 14:47:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239430AbjHXMmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 08:42:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37978 "EHLO
+        id S235870AbjHXMra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 08:47:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239151AbjHXMlr (ORCPT
+        with ESMTP id S240795AbjHXMrI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 08:41:47 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D61E170C
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 05:41:45 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-4ff09632194so9767736e87.2
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 05:41:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692880903; x=1693485703;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=BAkSr3Gk0g2+5udpa+hB8OshiUKIlJ+N0mzFCMWze0o=;
-        b=IP+FLy7Q0SrCfI2pJZRd+41YwJooNenYVpinCZQmIDhcOVAYhurpTFudt/lCgl6V8c
-         AQZKWMQcke7ZFuakVie0TjNg/wBu/eoIM97Ilypdo0uwzNebev9nUJtyejs/du9F8XB4
-         HjyT5NRcMyxBK1kWFTkpzZyNd1x/NktQJ9MWcsSTXqh/b7nCx0um+w5xIcYXb266zwKx
-         56h4zdsXfv4fQlJxaAMYm32mf6eiVrIAgkghoZ/dZaSUmwlaRgARg7DGmHmV2wEwdvBD
-         QGHP90klsohOA3EEjoMGBgc717vV2dsmR0ssDRCdCKnvA4I+k/9+KnTiXa0nVw0yVY5e
-         OPqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692880903; x=1693485703;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BAkSr3Gk0g2+5udpa+hB8OshiUKIlJ+N0mzFCMWze0o=;
-        b=guYjlyfjo2X2NlrzB1hLs2OfdcqRfs4nnMMfReDvGo9xE4hhIfRRYK4My8NfeU3y8I
-         7GE3yhXpLrIWnDzgn0WaVfK8VHLoJ5rYsb9AAQ91NdXyemADedVOKVmibLxP2/CQyIdK
-         sixCE7SdLEqkA0LQfs2QWLDUDSJaV9X9YxwDkOP+OXF9WlEiz1H+R4jnG3lEYOMAPfwK
-         nXIVwUIF5YuXM0HSBEahhKjSvNizwUV0GjgdF0kNbOK7zWd+MEId6DrnOsCU+7175hM7
-         OS1m3RMby7ejSukDX7rvnJ6cs/dixaBQ/L0WWeJKdZzqmuoNuf26BstkXNJUsji5e6WZ
-         Wcsw==
-X-Gm-Message-State: AOJu0YyJ2RIBQNNtCbOLcAfgImUd1GjhkFGFJu0sSaGu6rqLCojlwKvS
-        FGUr31KWQDydG5l+IfV7ERd0ZA==
-X-Google-Smtp-Source: AGHT+IEOhpCT+JRJbh18sqyr+ORLms1Mm5XeQll9vnvq5Coz0JDnyJlnQU82T0VOl62OFRLGCkFBvA==
-X-Received: by 2002:ac2:4c82:0:b0:4fd:d92e:31ca with SMTP id d2-20020ac24c82000000b004fdd92e31camr10795414lfl.36.1692880903422;
-        Thu, 24 Aug 2023 05:41:43 -0700 (PDT)
-Received: from [192.168.0.22] ([77.252.47.198])
-        by smtp.gmail.com with ESMTPSA id b4-20020aa7d484000000b0052a1c0c859asm3771727edr.59.2023.08.24.05.41.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Aug 2023 05:41:42 -0700 (PDT)
-Message-ID: <f2f033a6-f552-b86f-250b-08fb298c9bb1@linaro.org>
-Date:   Thu, 24 Aug 2023 14:41:41 +0200
+        Thu, 24 Aug 2023 08:47:08 -0400
+Received: from mx.treblig.org (mx.treblig.org [IPv6:2a00:1098:5b::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABDCD10FC
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 05:47:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=treblig.org
+        ; s=bytemarkmx; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID
+        :Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID
+        :Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:
+        Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe
+        :List-Post:List-Owner:List-Archive;
+        bh=5ix2rprjqMmtg3QKk2R00SMw+sT74bDQ+N4/iHHMqXU=; b=dnmeukHg0IpApECk4SjENXZFVG
+        KUteOEBdFqKrRNxed5CoWPnxZY8giGvPrABTRaDOSuyny2+UfnA2pVIdCrl2/u/aRdAEsjkopG/mS
+        HboqVVQ6BnAPAKLVbftvP3Z+62G0idp7AXwiJXZgldf+0ZhbXdMkM0EXY7qV6GCVY8T/4Zom1MAkL
+        G4ndnvkvw1CTixHhv2kgrSpbetL+2io/qnDGyvGZgX3/WICiFSW334TITaq1m+geD8CUoJFoh2fxQ
+        T21v2pDAjWo3atPsU634ozBYUhM8IRBuiHblUpLpb1gJV84Ba/4cySexGGlIAXDVpyA1FGddZfUCs
+        5wouGs+g==;
+Received: from dg by mx.treblig.org with local (Exim 4.94.2)
+        (envelope-from <dg@treblig.org>)
+        id 1qZ9jk-008QkI-7r; Thu, 24 Aug 2023 12:46:56 +0000
+Date:   Thu, 24 Aug 2023 12:46:56 +0000
+From:   "Dr. David Alan Gilbert" <linux@treblig.org>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     npiggin@gmail.com, christophe.leroy@csgroup.eu, sam@ravnborg.org,
+        benh@kernel.crashing.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, rdunlap@infradead.org
+Subject: Re: [PATCH v3] powerpc: Use shared font data
+Message-ID: <ZOdRQFKaxnKQ+s/U@gallifrey>
+References: <20230812010241.529173-1-linux@treblig.org>
+ <ZOY0dANP4s3L3VyX@gallifrey>
+ <87msygvjvy.fsf@mail.lhotse>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 2/2] power: supply: bq24190_charger: Export current
- regulator
-Content-Language: en-US
-To:     Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
-Cc:     Alexandre Courbot <acourbot@nvidia.com>,
-        azkali <a.ffcc7@gmail.com>, CTCaer <ctcaer@gmail.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230824112741.201353-1-linkmauve@linkmauve.fr>
- <20230824112741.201353-3-linkmauve@linkmauve.fr>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230824112741.201353-3-linkmauve@linkmauve.fr>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <87msygvjvy.fsf@mail.lhotse>
+X-Chocolate: 70 percent or better cocoa solids preferably
+X-Operating-System: Linux/5.10.0-23-amd64 (x86_64)
+X-Uptime: 12:42:48 up 48 days, 22:14,  1 user,  load average: 0.01, 0.00, 0.00
+User-Agent: Mutt/2.0.5 (2021-01-21)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/08/2023 13:27, Emmanuel Gil Peyrot wrote:
-> From: Alexandre Courbot <acourbot@nvidia.com>
+* Michael Ellerman (mpe@ellerman.id.au) wrote:
+> "Dr. David Alan Gilbert" <linux@treblig.org> writes:
+> > * linux@treblig.org (linux@treblig.org) wrote:
+> >> From: "Dr. David Alan Gilbert" <linux@treblig.org>
+> >> 
+> >> PowerPC has a 'btext' font used for the console which is almost identical
+> >> to the shared font_sun8x16, so use it rather than duplicating the data.
+> >> 
+> >> They were actually identical until about a decade ago when
+> >>    commit bcfbeecea11c ("drivers: console: font_: Change a glyph from
+> >>                         "broken bar" to "vertical line"")
+> >> 
+> >> which changed the | in the shared font to be a solid
+> >> bar rather than a broken bar.  That's the only difference.
+> >> 
+> >> This was originally spotted by the PMF source code analyser, which
+> >> noticed that sparc does the same thing with the same data, and they
+> >> also share a bunch of functions to manipulate the data.  I've previously
+> >> posted a near identical patch for sparc.
+> >> 
+> >> Tested very lightly with a boot without FS in qemu.
+> >> 
+> >> Signed-off-by: Dr. David Alan Gilbert <linux@treblig.org>
+> >
+> > Hi Michael,
+> >   Just checking, is there anything else I need to do here?
+>    
+> I felt like the lib/fonts/Kconfig change could be cleaner, but the
+> existing Kconfig is not well structured for what we want to do.
 
-Empty commit msg. Sorry, we cannot take such commits.
+Yeh that line has caused quite a bit of pain in this otherwise simple
+set.
+
+> I think at least it could be simplified to:
+> 
+> config FONT_SUN8x16
+> 	bool "Sparc console 8x16 font"
+> 	depends on (FRAMEBUFFER_CONSOLE && (FONTS || SPARC)) || BOOTX_TEXT
+
+OK, I'll give it a go - but I wonder what else we need to test?
+My version was careful not to change other arch's behaviour
+on this config, I worry this might. (Although IMHO I actually think
+we could just remove this entire depends, and the only reason I haven't
+is because I worry what other knock on there might be).
+
+Dave
 
 > 
-> Signed-off-by: Alexandre Courbot <acourbot@nvidia.com>
-
-Missing SoB.
-
-
-> ---
->  drivers/power/supply/bq24190_charger.c | 84 ++++++++++++++++++++++++++
->  1 file changed, 84 insertions(+)
+> cheers
 > 
-> diff --git a/drivers/power/supply/bq24190_charger.c b/drivers/power/supply/bq24190_charger.c
-> index a56122b39687..8c026e86aeb3 100644
-> --- a/drivers/power/supply/bq24190_charger.c
-> +++ b/drivers/power/supply/bq24190_charger.c
-> @@ -530,6 +530,81 @@ static int bq24190_set_otg_vbus(struct bq24190_dev_info *bdi, bool enable)
->  }
->  
->  #ifdef CONFIG_REGULATOR
-> +static int bq24190_set_charging_current(struct regulator_dev *dev,
-> +			int min_uA, int max_uA)
-> +{
-> +	struct bq24190_dev_info *bdi = rdev_get_drvdata(dev);
-> +	u8 ss_reg;
-> +	int in_current_limit;
-> +	int ret = 0;
-> +
-> +	dev_info(bdi->dev, "Setting charging current %d mA\n", max_uA/1000);
-
-This is not info. It would pollute log and it is not really necessary,
-because regulator framework gives such information. You can make it
-debug if you need for debug purposes.
-
-
-
-Best regards,
-Krzysztof
-
+> 
+> >> diff --git a/lib/fonts/Kconfig b/lib/fonts/Kconfig
+> >> index c035fde66aebe..1804abe08ffe4 100644
+> >> --- a/lib/fonts/Kconfig
+> >> +++ b/lib/fonts/Kconfig
+> >> @@ -98,7 +98,8 @@ config FONT_10x18
+> >>  
+> >>  config FONT_SUN8x16
+> >>  	bool "Sparc console 8x16 font"
+> >> -	depends on FRAMEBUFFER_CONSOLE && (!SPARC && FONTS || SPARC)
+> >> +	depends on (FRAMEBUFFER_CONSOLE || BOOTX_TEXT) &&\
+> >> +	           (!SPARC && FONTS || SPARC || PPC)
+> >>  	help
+> >>  	  This is the high resolution console font for Sun machines. Say Y.
+> >>  
+-- 
+ -----Open up your eyes, open up your mind, open up your code -------   
+/ Dr. David Alan Gilbert    |       Running GNU/Linux       | Happy  \ 
+\        dave @ treblig.org |                               | In Hex /
+ \ _________________________|_____ http://www.treblig.org   |_______/
