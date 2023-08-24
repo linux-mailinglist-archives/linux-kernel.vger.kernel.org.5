@@ -2,53 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3581E7868BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 09:39:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE7BB7868B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 09:39:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240381AbjHXHiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 03:38:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51412 "EHLO
+        id S240388AbjHXHiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 03:38:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240389AbjHXHiZ (ORCPT
+        with ESMTP id S240419AbjHXHi0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 03:38:25 -0400
+        Thu, 24 Aug 2023 03:38:26 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 893DE1716;
-        Thu, 24 Aug 2023 00:38:19 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 176AC173F
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 00:38:22 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1E91462349;
-        Thu, 24 Aug 2023 07:38:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69CD6C433CA;
-        Thu, 24 Aug 2023 07:38:15 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A324465D8A
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 07:38:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06097C433CC;
+        Thu, 24 Aug 2023 07:38:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692862698;
-        bh=qTc11hboeB2aZlOqkN91NN/Dw5CZWbyrOr80wSzYNm4=;
+        s=k20201202; t=1692862701;
+        bh=XMLhGP3gS/GA5ugfwBvBA9rFCKno1toIUnNgJ1XxmRE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JvZadWCEBYotqkspkGwfoN/lfsikJ/T6fYB+lxsBQ4+b/7xuDAS+euYAqFWJjjorV
-         nJaf7bDOyNhZLRm3jEvgi+JdXdxxzS9roTINN1HfZo41vRV8EC4z/4GLmh1r3q/RAT
-         gwV4hMG5CwA6dEYGxHZe7CV7AYsnuIf7L1K2fVUfHwsFcPxScxjf8LE9ya9ZtVuewB
-         7I8t1tgs8gXolFV3dApvgXNSvl5c9lqSMMkqraj0/2d3Werd/kFOz6G6cKvASlNYXe
-         uJw42JOzUyihKE3BMX638v9Uw9GDCzksJVdFaGOIElhLbpHTxhaocarxF+4KPLuNti
-         pOPqUkbedTifg==
+        b=LfHCZhGIEbSono5ZPGTva+4svqck8IBZDnL/u9eLKYfW1VIZSZxjrA7vkzj4DvJ1m
+         qJYJ4KNKn1Doi63djOyJ3wu3g4PRXvFX2o8vOw/+qRmmbMgLGnUFwG1nvAcgtRvJ5b
+         e9oSsvjdTUwAQejOWe9yRaCNWjn3pAW2dNYz+5EIcEaJGO3g/07RkI0Q3VSFqaiRrZ
+         qRz/wS4Z65fKN5ogo6pg0Vc4zsRvDrX8pYHWOwL4YzPHaAKEdNUqJ+ZUr3y7FKYdrd
+         0+Vfq9nkp0ps8vzcVR3p2bbMJ/ituWnRr28BsSrxh7L0PtNt+2KxaxC1Jz7w3vihxa
+         raVHq0iG30JWQ==
 From:   Lee Jones <lee@kernel.org>
 To:     lee@kernel.org
 Cc:     linux-kernel@vger.kernel.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
         =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Danilo Krummrich <dakr@redhat.com>,
-        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org
-Subject: [PATCH 18/20] drm/drm_gpuva_mgr: Remove set but unused variable 'prev'
-Date:   Thu, 24 Aug 2023 08:37:03 +0100
-Message-ID: <20230824073710.2677348-19-lee@kernel.org>
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH 19/20] drm/amd/amdgpu/amdgpu_sdma: Increase buffer size to account for all possible values
+Date:   Thu, 24 Aug 2023 08:37:04 +0100
+Message-ID: <20230824073710.2677348-20-lee@kernel.org>
 X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
 In-Reply-To: <20230824073710.2677348-1-lee@kernel.org>
 References: <20230824073710.2677348-1-lee@kernel.org>
@@ -66,75 +62,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/drm_gpuva_mgr.c: In function ‘__drm_gpuva_sm_map’:
- drivers/gpu/drm/drm_gpuva_mgr.c:1079:39: warning: variable ‘prev’ set but not used [-Wunused-but-set-variable]
+ drivers/gpu/drm/amd/amdgpu/amdgpu_sdma.c: In function ‘amdgpu_sdma_init_microcode’:
+ drivers/gpu/drm/amd/amdgpu/amdgpu_sdma.c:217:64: warning: ‘.bin’ directive output may be truncated writing 4 bytes into a region of size between 0 and 32 [-Wformat-truncation=]
+ drivers/gpu/drm/amd/amdgpu/amdgpu_sdma.c:217:17: note: ‘snprintf’ output between 13 and 52 bytes into a destination of size 40
+ drivers/gpu/drm/amd/amdgpu/amdgpu_sdma.c:215:66: warning: ‘snprintf’ output may be truncated before the last format character [-Wformat-truncation=]
+ drivers/gpu/drm/amd/amdgpu/amdgpu_sdma.c:215:17: note: ‘snprintf’ output between 12 and 41 bytes into a destination of size 40
 
 Signed-off-by: Lee Jones <lee@kernel.org>
 ---
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Cc: Maxime Ripard <mripard@kernel.org>
-Cc: Thomas Zimmermann <tzimmermann@suse.de>
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: "Christian König" <christian.koenig@amd.com>
+Cc: "Pan, Xinhui" <Xinhui.Pan@amd.com>
 Cc: David Airlie <airlied@gmail.com>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: "Christian König" <christian.koenig@amd.com>
-Cc: Danilo Krummrich <dakr@redhat.com>
+Cc: amd-gfx@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
-Cc: linux-media@vger.kernel.org
-Cc: linaro-mm-sig@lists.linaro.org
 ---
- drivers/gpu/drm/drm_gpuva_mgr.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_sdma.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/drm_gpuva_mgr.c b/drivers/gpu/drm/drm_gpuva_mgr.c
-index f86bfad74ff8a..ad99c9cfedac7 100644
---- a/drivers/gpu/drm/drm_gpuva_mgr.c
-+++ b/drivers/gpu/drm/drm_gpuva_mgr.c
-@@ -1076,7 +1076,7 @@ __drm_gpuva_sm_map(struct drm_gpuva_manager *mgr,
- 		   u64 req_addr, u64 req_range,
- 		   struct drm_gem_object *req_obj, u64 req_offset)
- {
--	struct drm_gpuva *va, *next, *prev = NULL;
-+	struct drm_gpuva *va, *next;
- 	u64 req_end = req_addr + req_range;
- 	int ret;
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_sdma.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_sdma.c
+index e2b9392d7f0de..572f861e3f706 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_sdma.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_sdma.c
+@@ -208,7 +208,7 @@ int amdgpu_sdma_init_microcode(struct amdgpu_device *adev,
+ 	const struct sdma_firmware_header_v2_0 *sdma_hdr;
+ 	uint16_t version_major;
+ 	char ucode_prefix[30];
+-	char fw_name[40];
++	char fw_name[52];
  
-@@ -1106,7 +1106,7 @@ __drm_gpuva_sm_map(struct drm_gpuva_manager *mgr,
- 				ret = op_unmap_cb(ops, priv, va, merge);
- 				if (ret)
- 					return ret;
--				goto next;
-+				continue;
- 			}
- 
- 			if (end > req_end) {
-@@ -1151,7 +1151,7 @@ __drm_gpuva_sm_map(struct drm_gpuva_manager *mgr,
- 				ret = op_remap_cb(ops, priv, &p, NULL, &u);
- 				if (ret)
- 					return ret;
--				goto next;
-+				continue;
- 			}
- 
- 			if (end > req_end) {
-@@ -1184,7 +1184,7 @@ __drm_gpuva_sm_map(struct drm_gpuva_manager *mgr,
- 				ret = op_unmap_cb(ops, priv, va, merge);
- 				if (ret)
- 					return ret;
--				goto next;
-+				continue;
- 			}
- 
- 			if (end > req_end) {
-@@ -1205,8 +1205,6 @@ __drm_gpuva_sm_map(struct drm_gpuva_manager *mgr,
- 				break;
- 			}
- 		}
--next:
--		prev = va;
- 	}
- 
- 	return op_map_cb(ops, priv,
+ 	amdgpu_ucode_ip_version_decode(adev, SDMA0_HWIP, ucode_prefix, sizeof(ucode_prefix));
+ 	if (instance == 0)
 -- 
 2.42.0.rc1.204.g551eb34607-goog
 
