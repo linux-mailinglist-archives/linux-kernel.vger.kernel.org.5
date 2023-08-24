@@ -2,87 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 843177865C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 05:16:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AF3F7865D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 05:25:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239585AbjHXDQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 23:16:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45260 "EHLO
+        id S239592AbjHXDZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 23:25:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239584AbjHXDPt (ORCPT
+        with ESMTP id S239591AbjHXDYv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 23:15:49 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE3DC10E4
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 20:15:47 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id 5614622812f47-3a7d7e5fb03so4576998b6e.3
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 20:15:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1692846947; x=1693451747;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=fIvH/R6duOLq1ZSU+7s2c7YByvX3U6kHe3d3coChvNg=;
-        b=gdmMxC+KDAJXIiPhugCWLoAfzLN9lDq5H5VhE4XLeOQlETCB9Xz5Y5ZQuPic3ma2OD
-         GsRiWOOy5i9nE9NOFZzmDcpYBcBOZovhg3diIscsZkZCZuMwx6Kiz8Drg3Xa8+UT0pI5
-         zquQ3l89aUExYw6uMt4DkgKDIBf3J4HlLqxLw=
+        Wed, 23 Aug 2023 23:24:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48DF910EF
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 20:24:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692847447;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yPglN9jWCOWkDHiaVESzd3fbifjjVGG3Y2tLlmCAqyw=;
+        b=YUcZrJDx4MKgaE6mggOC/NfxnV8JswraF0my3vZzvliflbdcTLtVXsL1O7pH+lx2RavZJQ
+        y8KgM+xKXYtUNhRZetCOrs74BTxu+vI4H6qWiM636jhRaLhjB551bMKUKhq/HzVt5iFZRl
+        N1qxYh3k8P3QCegLtY4rY8Vs7WfT+MI=
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
+ [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-173-9PNl8kMyOK24lvCA0irGJw-1; Wed, 23 Aug 2023 23:24:04 -0400
+X-MC-Unique: 9PNl8kMyOK24lvCA0irGJw-1
+Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2bcdd6ba578so14805081fa.3
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 20:24:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692846947; x=1693451747;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fIvH/R6duOLq1ZSU+7s2c7YByvX3U6kHe3d3coChvNg=;
-        b=PG14tJHGvX0SQq8oGxFhUeI18rdp9ONPcFSh5CMCnIm5QmDm/kBSFY19e32n5A693t
-         cnsVfEwlqyse8AG85uKfJy72unovu7rlKKC1ZqfhJvCx2qhJJFjiawJDudl6HXdpcNDU
-         dIjhvKYCFYGb926zYdWTUO84xDNroyiZQxXRsa1VTXJ98Vlielx+fdBE63KKtQEvtY3m
-         9BHH7NBj9LPY4S0OWIlRkFi5X8sSa/y98qLmbUQZr+P3cFsMFgBgIqoFU5aBDIBLNc6o
-         /oA7SIT/voaFtBpl9iwrngmmMDhVou561whwZ2k8iOUb9wqhMtUiS1VLzS4iJ6+ByxVW
-         LEUQ==
-X-Gm-Message-State: AOJu0YzN66vtEs+kJcUXDgXUUdva3H4tXjbIMMlOJI3WFl3JX0vtB40F
-        tC4goSjbKRP2R7N2Kq5n20EEhz5Jcn8SckTWyD0=
-X-Google-Smtp-Source: AGHT+IGoT4EGATpr/JOD5rkhG52LxJgkZzKzwmjZ5ubTFa6vquSjDRAtG12nLn99Q07WR9DsIbO+WA==
-X-Received: by 2002:a05:6870:14cf:b0:1bb:b18e:b864 with SMTP id l15-20020a05687014cf00b001bbb18eb864mr18852517oab.48.1692846946934;
-        Wed, 23 Aug 2023 20:15:46 -0700 (PDT)
-Received: from google.com ([2401:fa00:8f:203:1ece:b679:4a91:d1e])
-        by smtp.gmail.com with ESMTPSA id j15-20020a17090a2a8f00b00262ca945cecsm504939pjd.54.2023.08.23.20.15.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Aug 2023 20:15:46 -0700 (PDT)
-Date:   Thu, 24 Aug 2023 12:15:42 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>
-Cc:     Rob Clark <robdclark@chromium.org>, Petr Mladek <pmladek@suse.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: Re: [PATCHv2] dma-debug: don't call __dma_entry_alloc_check_leak()
- under free_entries_lock
-Message-ID: <20230824031542.GB610023@google.com>
-References: <20230816023235.3798264-1-senozhatsky@chromium.org>
+        d=1e100.net; s=20221208; t=1692847443; x=1693452243;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yPglN9jWCOWkDHiaVESzd3fbifjjVGG3Y2tLlmCAqyw=;
+        b=kWDwQ3jt77Ip5wRuwmR42e8FBojsTAPy6LzUQEJ5mtnnEA0Ln3NXsmnWZZUzXPXPOr
+         s+/WzWo51z8PZoQ2/SVCbHqw73ohDb0Scs/4eZRTM2ktl9aSnh3H3NwDjrel0GKpMDjS
+         nxyX/lO0nM1vl3e0ZsX8dwT+CDSRSqVSIb3vDNAENkhxA64cOA4xGUTOqz8n2edHeuGn
+         Qd+y0K7aIwA4Vu74brmYNEaM2FR3ARdXOPzpUAusSJyUQUZ8RFKkB3twQkWO2IaWLcZ8
+         HXxeojO022IN0J2pSaiMJAu69kUqOsJaM8/kFtSjnmuOF20LJ62PBv5FvMkyuNwcdiz7
+         8dAg==
+X-Gm-Message-State: AOJu0YzUaZ3U0YiUtgBjEE1otEt331HhU1PdrVJBB083o0RD/aQ5+dG8
+        6BXBID5CWwreda6Uv5wG9+QjgCkoBfRLKrTgCf0v3CJewQAIlavHBYE/AoK4zbmXXfIi4oHqfSm
+        ymFnK05EcspQPudeiij9rIaGcqCVzu5rwJyv5sEik
+X-Received: by 2002:a2e:b710:0:b0:2b5:80e0:f18e with SMTP id j16-20020a2eb710000000b002b580e0f18emr11256982ljo.3.1692847443057;
+        Wed, 23 Aug 2023 20:24:03 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEjkeGqdviCPH5wTUExjQLr+CqEbEiWt/ba0nY6S4lLgHFwDlCy0ER84ojf2Z39Sci9dtg33fDr0zJFePv+spQ=
+X-Received: by 2002:a2e:b710:0:b0:2b5:80e0:f18e with SMTP id
+ j16-20020a2eb710000000b002b580e0f18emr11256978ljo.3.1692847442724; Wed, 23
+ Aug 2023 20:24:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230816023235.3798264-1-senozhatsky@chromium.org>
+References: <20230823153032.239304-1-eric.auger@redhat.com>
+In-Reply-To: <20230823153032.239304-1-eric.auger@redhat.com>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Thu, 24 Aug 2023 11:23:51 +0800
+Message-ID: <CACGkMEseBgbQx1ESA+QV_Y+BDdmwYPVg1UjUu2G0S2B6ksDeyQ@mail.gmail.com>
+Subject: Re: [PATCH] vhost: Allow null msg.size on VHOST_IOTLB_INVALIDATE
+To:     Eric Auger <eric.auger@redhat.com>
+Cc:     eric.auger.pro@gmail.com, elic@nvidia.com, mail@anirudhrb.com,
+        mst@redhat.com, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        kvmarm@lists.cs.columbia.edu, netdev@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (23/08/16 11:32), Sergey Senozhatsky wrote:
-> __dma_entry_alloc_check_leak() calls into printk -> serial console
-> output (qcom geni) and grabs port->lock under free_entries_lock
-> spin lock, which is a reverse locking dependency chain as qcom_geni
-> IRQ handler can call into dma-debug code and grab free_entries_lock
-> under port->lock.
-> 
-> Move __dma_entry_alloc_check_leak() call out of free_entries_lock
-> scope so that we don't acquire serial console's port->lock under it.
+On Wed, Aug 23, 2023 at 11:30=E2=80=AFPM Eric Auger <eric.auger@redhat.com>=
+ wrote:
+>
+> Commit e2ae38cf3d91 ("vhost: fix hung thread due to erroneous iotlb
+> entries") Forbade vhost iotlb msg with null size to prevent entries
+> with size =3D start =3D 0 and last =3D ULONG_MAX to end up in the iotlb.
+>
+> Then commit 95932ab2ea07 ("vhost: allow batching hint without size")
+> only applied the check for VHOST_IOTLB_UPDATE and VHOST_IOTLB_INVALIDATE
+> message types to fix a regression observed with batching hit.
+>
+> Still, the introduction of that check introduced a regression for
+> some users attempting to invalidate the whole ULONG_MAX range by
+> setting the size to 0. This is the case with qemu/smmuv3/vhost
+> integration which does not work anymore. It Looks safe to partially
+> revert the original commit and allow VHOST_IOTLB_INVALIDATE messages
+> with null size. vhost_iotlb_del_range() will compute a correct end
+> iova. Same for vhost_vdpa_iotlb_unmap().
+>
+> Signed-off-by: Eric Auger <eric.auger@redhat.com>
 
-Hello folks,
+Cc: stable@vger.kernel.org
 
-Have you got a chance to take a look at the patch?
+I think we need to document the usage of 0 as msg.size for
+IOTLB_INVALIDATE in uapi.
+
+Other than this:
+
+Acked-by: Jason Wang <jasowang@redhat.com>
+
+Thanks
+
+> Fixes: e2ae38cf3d91 ("vhost: fix hung thread due to erroneous iotlb entri=
+es")
+> ---
+>  drivers/vhost/vhost.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+>
+> diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
+> index c71d573f1c94..e0c181ad17e3 100644
+> --- a/drivers/vhost/vhost.c
+> +++ b/drivers/vhost/vhost.c
+> @@ -1458,9 +1458,7 @@ ssize_t vhost_chr_write_iter(struct vhost_dev *dev,
+>                 goto done;
+>         }
+>
+> -       if ((msg.type =3D=3D VHOST_IOTLB_UPDATE ||
+> -            msg.type =3D=3D VHOST_IOTLB_INVALIDATE) &&
+> -            msg.size =3D=3D 0) {
+> +       if (msg.type =3D=3D VHOST_IOTLB_UPDATE && msg.size =3D=3D 0) {
+>                 ret =3D -EINVAL;
+>                 goto done;
+>         }
+> --
+> 2.41.0
+>
+
