@@ -2,78 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36CB87877EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 20:33:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8319B7877FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 20:34:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243049AbjHXSci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 14:32:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45618 "EHLO
+        id S243056AbjHXSeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 14:34:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243106AbjHXSca (ORCPT
+        with ESMTP id S243065AbjHXSdp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 14:32:30 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE7E51BEF
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 11:32:21 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-583312344e7so2317597b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 11:32:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692901941; x=1693506741;
-        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=MNeeSRjShfUBxK20UmYelF8xLtXN72q85W2K9O6AewU=;
-        b=6eeGKylvsVaRxqcWbxgaNrUL6kMoeIfCaARcdvzuxV1Qk1Nn5wH02JO8+6/0T4pV1I
-         WZmUizQ6I7z2UHZ1tEsl8/bmQ/3t26lY0YiMcdEUVv/YeXJ3T5rnY+ZSLgx30PsG0/o/
-         7fH1Z85JmLBIX+EOYlLRcAzB2CkGJhzgMadtQVB/p5Mn2yZ3zVRST+Eq42Fbp8jRT2Zd
-         XCGR9jx6OKM0EAIC0lPTeCjqT/M1FsSHOZaz/JFRbqlS3OkgzH4vWqw+QL1XXHBmKSkV
-         uLv9sMAKA9GD09u63qp4hIjQOv4ZRu31x5nmzCaDkhRqYrJgE0USb0fFiXEWT0sj0nb6
-         0vEg==
+        Thu, 24 Aug 2023 14:33:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8574D1BE3
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 11:33:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692901979;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=MENyLQ2N3cu7YkwE8woYh2Uz3htsa5ND2UWg2HZ3684=;
+        b=QDXGl6VPv7eBYfdwpI0fabcutcVI1/68GGUxOfThn0l4pwe0YRXiiwOLqCsgpUW6Q3H1Jq
+        LospK8jSkiYOVo/Y4pNx/kXmbzsKGATFGWPU3QsGN2zmmOYYoqHyXn7pJn+di1NQJxCzpQ
+        c1vbZ8JiDDs+9pSbdUZ5usmVhhENILs=
+Received: from mail-ua1-f72.google.com (mail-ua1-f72.google.com
+ [209.85.222.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-581-kBRITvTbOFWYGPiRvbwFVA-1; Thu, 24 Aug 2023 14:32:58 -0400
+X-MC-Unique: kBRITvTbOFWYGPiRvbwFVA-1
+Received: by mail-ua1-f72.google.com with SMTP id a1e0cc1a2514c-79a1499c25aso50994241.0
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 11:32:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692901941; x=1693506741;
-        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MNeeSRjShfUBxK20UmYelF8xLtXN72q85W2K9O6AewU=;
-        b=gt3gb8VITDgQLdxekYTQkwDGt3fwAUIKZFOYiPECUmuCFHIcYLfKPbeikNDKL0mjkb
-         yw1qEd21izxp7xnN8NzMZJ4z+lOAtSM4CddyMoTAF8Jq1/lA/fDkgFDlXdaadYwEI7TR
-         1LUl9krti91tPJ1vOXIRsmT3DeYCXQq7IyoHVSnK+bACa+RfyHP+p5AO1AkJ54qcHLOf
-         srUE0cmOu9lfIQiOsEaI19eWLND5I3C40RrBE2J4rCMuV48/VSfH2EExXDO9lCRlBqNy
-         hpJnP1pC+A+k7jETcQS7uSDYtg6wWVuOchN2FXb2M6xpZ6puir6DcpnOt3M7wSrUUt1U
-         b94A==
-X-Gm-Message-State: AOJu0YySfNiSOg4NdvjYBNlngXCCE8n5gtr45aX6cbZPZyO0jiXiRQJG
-        TKUpq0HxS6bxtfVKQhU7weNnBju/i9qL
-X-Google-Smtp-Source: AGHT+IEHDSXwTvSkKB3beLc6wwOSaR1G9iaM3BAUwl25BtxYOXui5MNMrOMvZkCSI2+nprUfgTJaaCdXNoGt
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:fbb9:d9e7:7405:2651])
- (user=irogers job=sendgmr) by 2002:a25:bc8a:0:b0:d78:2f4c:7df with SMTP id
- e10-20020a25bc8a000000b00d782f4c07dfmr315ybk.12.1692901941141; Thu, 24 Aug
- 2023 11:32:21 -0700 (PDT)
-Date:   Thu, 24 Aug 2023 11:32:12 -0700
-Message-Id: <20230824183212.374787-1-irogers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.42.0.rc2.253.gd59a3bf2b4-goog
-Subject: [PATCH v3] perf jevents: Don't append Unit to desc
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        James Clark <james.clark@arm.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        John Garry <john.g.garry@oracle.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Jing Zhang <renyu.zj@linux.alibaba.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Rob Herring <robh@kernel.org>,
-        Gaosheng Cui <cuigaosheng1@huawei.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        d=1e100.net; s=20221208; t=1692901977; x=1693506777;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MENyLQ2N3cu7YkwE8woYh2Uz3htsa5ND2UWg2HZ3684=;
+        b=PuO8YBmke1Y5F+9S2w/Z1VLZMQl3AyL0xTts4iYToIGhOmCK1+lJWAeYLpegPdAgC4
+         7jJ+6ByMkz4hPgFuu8NEhMtXW7QjHB83YIa/RDBQl+23BGrmZ5I7Ffm15qjJuwjvz/J0
+         FL3kNQLoMbVKkmUzV/BuRkgcdyRZzxF3RiaWy6abIsy5oS3IE0XIPOccTxHn1iG6evwN
+         ipeKN3B6t403msbcvCbhbOYX+XGfVNYPkbych9MVhfwDcAKFtj4i+MTIV8m56TlRnspF
+         6eewFAm7RcP9sQejNGXBbxb9NleLe7Hv0SH+OqYuN7f4bIz8z6GKotweAZBUI0e9C/Km
+         rpgA==
+X-Gm-Message-State: AOJu0YyKKw8GF0ixu0yDYtsujN6ichgJQk+plYqRnPJcl6NICeXMjwNI
+        /zO582kNM7doxuGP+rDoL4IUNRzcb9wgmSi66hgxyu3sfKNtJnimbIocSfT4wo/nHCCyw+CyXU3
+        RcFgRq2w1b4jsjLxltGPiNqcm
+X-Received: by 2002:a67:e403:0:b0:44e:8874:585a with SMTP id d3-20020a67e403000000b0044e8874585amr4528615vsf.27.1692901977579;
+        Thu, 24 Aug 2023 11:32:57 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEgMO96NWiKDcYXf5IRr9AXBP8x7ijYPK4xRhHHkKJy0v9wR6V9lgxekYM8Ssryo0WjBBvQqQ==
+X-Received: by 2002:a67:e403:0:b0:44e:8874:585a with SMTP id d3-20020a67e403000000b0044e8874585amr4528610vsf.27.1692901977351;
+        Thu, 24 Aug 2023 11:32:57 -0700 (PDT)
+Received: from [192.168.1.165] ([2600:1700:1ff0:d0e0::37])
+        by smtp.gmail.com with ESMTPSA id j17-20020a0ceb11000000b0064f77d37798sm4209qvp.5.2023.08.24.11.32.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Aug 2023 11:32:56 -0700 (PDT)
+From:   Andrew Halaney <ahalaney@redhat.com>
+Subject: [PATCH net-next 0/7] net: stmmac: Improve default addend/subsecond
+ increment readability
+Date:   Thu, 24 Aug 2023 13:32:51 -0500
+Message-Id: <20230824-stmmac-subsecond-inc-cleanup-v1-0-e0b9f7c18b37@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAFOi52QC/x3MwQ6CMAwA0F8hPdtkbororxgPoyvaRApZByEh/
+ LuLx3d5OxhnYYNHs0PmVUwmrTifGqBP1DejpGrwzgfX+QtaGcdIaEtvTJMmFCWkL0ddZgzuGu4
+ 3ail2CWoxZx5k+/dPUC6ovBV4HccPlXRkO3gAAAA=
+To:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Richard Cochran <richardcochran@gmail.com>
+Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Andrew Halaney <ahalaney@redhat.com>
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,166 +88,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Unit with the PMU name is appended to desc in jevents.py, but on
-hybrid platforms it causes the desc to differ from the regular
-non-hybrid system with a PMU of 'cpu'. Having differing descs means
-the events don't deduplicate. To make the perf list output not differ,
-append the Unit on again in the perf list printing code.
+This series aims to improve the readability of the calculations
+for the default addend and subsecond increment values.
 
-On x86 reduces the binary size by 409,600 bytes or about 4%. Update
-pmu-events test expectations to match the differently generated
-pmu-events.c code.
+I recently had to understand what the hardware did by reading this code,
+and it took me longer than I care to admit. These patches aim to make it
+more self explanatory.
 
-Signed-off-by: Ian Rogers <irogers@google.com>
+Suggestions to further improve this are very welcomed.
+
+Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
 ---
- tools/perf/builtin-list.c        | 13 ++++++++++++-
- tools/perf/pmu-events/jevents.py |  7 -------
- tools/perf/tests/pmu-events.c    | 22 +++++++++++-----------
- 3 files changed, 23 insertions(+), 19 deletions(-)
+Andrew Halaney (7):
+      net: stmmac: Use consistent variable name for subsecond increment
+      net: stmmac: Use NSEC_PER_SEC for hwtstamp calculations
+      net: stmmac: Precede entire addend calculation with its comment
+      net: stmmac: Remove a pointless cast
+      net: stmmac: Correct addend typo
+      net: stmmac: Fix comment about default addend calculation
+      net: stmmac: Make PTP reference clock references more clear
 
-diff --git a/tools/perf/builtin-list.c b/tools/perf/builtin-list.c
-index 7fec2cca759f..d8b9f606e734 100644
---- a/tools/perf/builtin-list.c
-+++ b/tools/perf/builtin-list.c
-@@ -145,9 +145,20 @@ static void default_print_event(void *ps, const char *pmu_name, const char *topi
- 		putchar('\n');
- 
- 	if (desc && print_state->desc) {
-+		char *desc_with_unit = NULL;
-+		int desc_len = -1;
-+
-+		if (pmu_name && strcmp(pmu_name, "cpu")) {
-+			desc_len = strlen(desc);
-+			desc_len = asprintf(&desc_with_unit,
-+					    desc[desc_len - 1] != '.'
-+					      ? "%s. Unit: %s" : "%s Unit: %s",
-+					    desc, pmu_name);
-+		}
- 		printf("%*s", 8, "[");
--		wordwrap(desc, 8, pager_get_columns(), 0);
-+		wordwrap(desc_len > 0 ? desc_with_unit : desc, 8, pager_get_columns(), 0);
- 		printf("]\n");
-+		free(desc_with_unit);
- 	}
- 	long_desc = long_desc ?: desc;
- 	if (long_desc && print_state->long_desc) {
-diff --git a/tools/perf/pmu-events/jevents.py b/tools/perf/pmu-events/jevents.py
-index e5bce57f5688..712f80d7d071 100755
---- a/tools/perf/pmu-events/jevents.py
-+++ b/tools/perf/pmu-events/jevents.py
-@@ -357,13 +357,6 @@ class JsonEvent:
-       self.desc += extra_desc
-     if self.long_desc and extra_desc:
-       self.long_desc += extra_desc
--    if self.pmu and self.pmu != 'cpu':
--      if not self.desc:
--        self.desc = 'Unit: ' + self.pmu
--      else:
--        if not self.desc.endswith('. '):
--          self.desc += '. '
--      self.desc += 'Unit: ' + self.pmu
-     if arch_std:
-       if arch_std.lower() in _arch_std_events:
-         event = _arch_std_events[arch_std.lower()].event
-diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
-index 3dc1ebee4d9f..28c8789c4305 100644
---- a/tools/perf/tests/pmu-events.c
-+++ b/tools/perf/tests/pmu-events.c
-@@ -129,7 +129,7 @@ static const struct perf_pmu_test_event uncore_hisi_ddrc_flux_wcmd = {
- 	.event = {
- 		.name = "uncore_hisi_ddrc.flux_wcmd",
- 		.event = "event=0x2",
--		.desc = "DDRC write commands. Unit: hisi_sccl,ddrc",
-+		.desc = "DDRC write commands",
- 		.topic = "uncore",
- 		.long_desc = "DDRC write commands",
- 		.pmu = "hisi_sccl,ddrc",
-@@ -143,7 +143,7 @@ static const struct perf_pmu_test_event unc_cbo_xsnp_response_miss_eviction = {
- 	.event = {
- 		.name = "unc_cbo_xsnp_response.miss_eviction",
- 		.event = "event=0x22,umask=0x81",
--		.desc = "A cross-core snoop resulted from L3 Eviction which misses in some processor core. Unit: uncore_cbox",
-+		.desc = "A cross-core snoop resulted from L3 Eviction which misses in some processor core",
- 		.topic = "uncore",
- 		.long_desc = "A cross-core snoop resulted from L3 Eviction which misses in some processor core",
- 		.pmu = "uncore_cbox",
-@@ -157,7 +157,7 @@ static const struct perf_pmu_test_event uncore_hyphen = {
- 	.event = {
- 		.name = "event-hyphen",
- 		.event = "event=0xe0,umask=0x00",
--		.desc = "UNC_CBO_HYPHEN. Unit: uncore_cbox",
-+		.desc = "UNC_CBO_HYPHEN",
- 		.topic = "uncore",
- 		.long_desc = "UNC_CBO_HYPHEN",
- 		.pmu = "uncore_cbox",
-@@ -171,7 +171,7 @@ static const struct perf_pmu_test_event uncore_two_hyph = {
- 	.event = {
- 		.name = "event-two-hyph",
- 		.event = "event=0xc0,umask=0x00",
--		.desc = "UNC_CBO_TWO_HYPH. Unit: uncore_cbox",
-+		.desc = "UNC_CBO_TWO_HYPH",
- 		.topic = "uncore",
- 		.long_desc = "UNC_CBO_TWO_HYPH",
- 		.pmu = "uncore_cbox",
-@@ -185,7 +185,7 @@ static const struct perf_pmu_test_event uncore_hisi_l3c_rd_hit_cpipe = {
- 	.event = {
- 		.name = "uncore_hisi_l3c.rd_hit_cpipe",
- 		.event = "event=0x7",
--		.desc = "Total read hits. Unit: hisi_sccl,l3c",
-+		.desc = "Total read hits",
- 		.topic = "uncore",
- 		.long_desc = "Total read hits",
- 		.pmu = "hisi_sccl,l3c",
-@@ -199,7 +199,7 @@ static const struct perf_pmu_test_event uncore_imc_free_running_cache_miss = {
- 	.event = {
- 		.name = "uncore_imc_free_running.cache_miss",
- 		.event = "event=0x12",
--		.desc = "Total cache misses. Unit: uncore_imc_free_running",
-+		.desc = "Total cache misses",
- 		.topic = "uncore",
- 		.long_desc = "Total cache misses",
- 		.pmu = "uncore_imc_free_running",
-@@ -213,7 +213,7 @@ static const struct perf_pmu_test_event uncore_imc_cache_hits = {
- 	.event = {
- 		.name = "uncore_imc.cache_hits",
- 		.event = "event=0x34",
--		.desc = "Total cache hits. Unit: uncore_imc",
-+		.desc = "Total cache hits",
- 		.topic = "uncore",
- 		.long_desc = "Total cache hits",
- 		.pmu = "uncore_imc",
-@@ -238,13 +238,13 @@ static const struct perf_pmu_test_event sys_ddr_pmu_write_cycles = {
- 	.event = {
- 		.name = "sys_ddr_pmu.write_cycles",
- 		.event = "event=0x2b",
--		.desc = "ddr write-cycles event. Unit: uncore_sys_ddr_pmu",
-+		.desc = "ddr write-cycles event",
- 		.topic = "uncore",
- 		.pmu = "uncore_sys_ddr_pmu",
- 		.compat = "v8",
- 	},
- 	.alias_str = "event=0x2b",
--	.alias_long_desc = "ddr write-cycles event. Unit: uncore_sys_ddr_pmu",
-+	.alias_long_desc = "ddr write-cycles event",
- 	.matching_pmu = "uncore_sys_ddr_pmu",
- };
- 
-@@ -252,13 +252,13 @@ static const struct perf_pmu_test_event sys_ccn_pmu_read_cycles = {
- 	.event = {
- 		.name = "sys_ccn_pmu.read_cycles",
- 		.event = "config=0x2c",
--		.desc = "ccn read-cycles event. Unit: uncore_sys_ccn_pmu",
-+		.desc = "ccn read-cycles event",
- 		.topic = "uncore",
- 		.pmu = "uncore_sys_ccn_pmu",
- 		.compat = "0x01",
- 	},
- 	.alias_str = "config=0x2c",
--	.alias_long_desc = "ccn read-cycles event. Unit: uncore_sys_ccn_pmu",
-+	.alias_long_desc = "ccn read-cycles event",
- 	.matching_pmu = "uncore_sys_ccn_pmu",
- };
- 
+ drivers/net/ethernet/stmicro/stmmac/hwif.h         |  5 +++--
+ .../net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c  | 14 +++++++-------
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c  | 22 ++++++++++++----------
+ 3 files changed, 22 insertions(+), 19 deletions(-)
+---
+base-commit: 9f6708a668186dc5b38532fc1d1ff2f5311722d6
+change-id: 20230824-stmmac-subsecond-inc-cleanup-305397c6ca8d
+
+Best regards,
 -- 
-2.42.0.rc2.253.gd59a3bf2b4-goog
+Andrew Halaney <ahalaney@redhat.com>
 
