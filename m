@@ -2,204 +2,411 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50CE378702D
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 15:25:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CE62787030
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 15:25:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241116AbjHXNY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 09:24:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52366 "EHLO
+        id S241198AbjHXNZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 09:25:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241100AbjHXNYO (ORCPT
+        with ESMTP id S241194AbjHXNYx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 09:24:14 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE91519A5;
-        Thu, 24 Aug 2023 06:24:11 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5C2DD66BB3;
-        Thu, 24 Aug 2023 13:24:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B01DCC433C9;
-        Thu, 24 Aug 2023 13:24:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692883450;
-        bh=e1UdEt0G1ZuuvUbvI0q3HKGVn0n+qxCJo5AziWRbLV4=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=esyYirSv9Hon2TircB+ssyXu/QsUmQVaHA0s7BVggtQOgHvM4d2M4h5fX6Di6Ra3J
-         0kGuEsSjLLUFK7TqSz0VCgqYTgIlhugzVLM6QLO4DGpGjS+Cd0C8CQBhBl6if+qrXH
-         As4PXO6LwAxvSs+O00R4Yu+WaCHsBMkFtJDYT+VMJY5sBz791aFLReyz69dTGwvv+Z
-         XFIa5cQt34BvPAFBJZIBHTZsZXknyLq5/Tm1abT3b0uHmAZpHlBoxw18c5npSjd4I0
-         v5w4Jx2WEeLdMz1MdwYs7S4jJN0tPb3Nn5l23OPDq28n+eI/excFOIBqyGXCduSPxl
-         zjrLkL8zUGb1A==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 459BECE035E; Thu, 24 Aug 2023 06:24:10 -0700 (PDT)
-Date:   Thu, 24 Aug 2023 06:24:10 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Huacai Chen <chenhuacai@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Z qiang <qiang.zhang1211@gmail.com>,
-        Huacai Chen <chenhuacai@loongson.cn>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        John Stultz <jstultz@google.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Binbin Zhou <zhoubinbin@loongson.cn>
-Subject: Re: [PATCH V4 2/2] rcu: Update jiffies in rcu_cpu_stall_reset()
-Message-ID: <8792da20-a58e-4cc0-b3d2-231d5ade2242@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <CAAhV-H6ejw=8afS0jmmQvKUrCw=qZm_P6SA0A+tuvvb8bsq4-Q@mail.gmail.com>
- <5777BD82-2C8D-4BAB-BDD3-C2C003DC57FB@joelfernandes.org>
- <CAAhV-H58OpQJapV7LDNjZ-vM7nNJrwdkBiPjFcCutO1yRsUshQ@mail.gmail.com>
- <87ttspct76.ffs@tglx>
- <03fe7084-0509-45fa-87ee-8f8705a221a6@paulmck-laptop>
- <CAAhV-H5Z3s=2_OyA_AJ1-NqXBtNrcs-EmsqYcrjc+qXmJ=SitQ@mail.gmail.com>
- <16827b4e-9823-456d-a6be-157fbfae64c3@paulmck-laptop>
- <CAAhV-H7uXA=r-w1nN7sBpRTba3LjjZs+wasJfGo7VZ6D9eMBAw@mail.gmail.com>
+        Thu, 24 Aug 2023 09:24:53 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 291F219A1
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 06:24:51 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-565e395e7a6so3503380a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 06:24:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692883490; x=1693488290;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2lBR3tqzyooR1lTRR1wdDKJZ1fuOjHZtYVEtBHofxfU=;
+        b=m5rdJsOWl38RJ84g5uI2JgsGBf7dIwzJxJ/eAC4Ql613obK25J1m9bexWFCvi/VLh/
+         u4wmiD1zRrGeJlQGIlbfcfLBMOJ839rATtLRabsrmGh8LSjltwyL5unG7/TnfkJjMqeF
+         kmUbb2VyAV9sU0DLwr8/c/Ds2sqK2t3haXRjX8cnfY2HDa/p1t4WmCD0Kq0BzCHFAJFz
+         TammBc/GqfB+dfd+dNdRDDbICueK/D3XFKmOIXOHk6rXlLWAZoarLvL/O+igV86eJkE1
+         MWAySU4r6JAVLc67DJvhkeMN+iKgqr62QMuL3vVebb3zdsgHpdxZeetmRb7PP0XbgBno
+         Fnxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692883490; x=1693488290;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2lBR3tqzyooR1lTRR1wdDKJZ1fuOjHZtYVEtBHofxfU=;
+        b=gA0tUjPeQEAmUsv4IHEOvJLnKc7x6nvZe2/rwkcT6oxkfPyzG+bR4IvJMgqewBdrhm
+         am8niUqk8Bbs/ypzoXU8fmNbrB3alwQw5258VvD/INNlOLozO+DnCdYHpbMAoxZCv2it
+         Es0SRUVUMTGw20x8u047vVAQ8Xw2XfyiCHnevUxfi1TM4/6kr8Ts5+l7BNOwFjeegJF7
+         oE/2SHWUW6EIcDf/bfPT2An24kL+oIK8PUHi9xA836khJ/JXH9KapfqnIO2gVnn8LIB8
+         bHxnCK0bVreQ3N6x5+dFCIzfCWCazxaICE+R5fEGHLlVFF5hSgFxPVMd8mN5UDG/Vxgv
+         0FqA==
+X-Gm-Message-State: AOJu0Yw91QYoJAb73XPj1up7xOaFOSR+yUm2d6srTIJm4gbCpH4qmOCp
+        Hd0RvTaLdbLr2pdnyq/ciOqYTECSITdFsIQRqFqjEg==
+X-Google-Smtp-Source: AGHT+IGQoOhm/zyvk/7fhdBLdeza0nhaDwDTDXqCz3Fqb3OCmqPSeSX8RReexT5l/C6c2gy+USIoMJ8bsbFAN/x95NQ=
+X-Received: by 2002:a05:6a21:3b4a:b0:12f:1f1f:b506 with SMTP id
+ zy10-20020a056a213b4a00b0012f1f1fb506mr2993475pzb.21.1692883490445; Thu, 24
+ Aug 2023 06:24:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAAhV-H7uXA=r-w1nN7sBpRTba3LjjZs+wasJfGo7VZ6D9eMBAw@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230823060832.454842-1-aaron.lu@intel.com> <20230823060832.454842-2-aaron.lu@intel.com>
+ <fd568884-9df4-2990-7b81-655fc7f63a4a@efficios.com> <20230824080142.GB459974@ziqianlu-dell>
+ <2192e838-48d1-9dec-5769-74a4a048f3c2@efficios.com> <CAKfTPtDSjWCyrKpf6ftQtBi9zZC=zQn0tx7e1_eLRMi0M02FpA@mail.gmail.com>
+ <0b5ead16-d09b-2670-5692-092959c780dc@efficios.com>
+In-Reply-To: <0b5ead16-d09b-2670-5692-092959c780dc@efficios.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Thu, 24 Aug 2023 15:24:39 +0200
+Message-ID: <CAKfTPtBQWTMdX70Qu=dZZiLNLbP0Tj-pdstW_V2UHOE9snWNwQ@mail.gmail.com>
+Subject: Re: [PATCH 1/1] sched/fair: ratelimit update to tg->load_avg
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Aaron Lu <aaron.lu@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Tim Chen <tim.c.chen@intel.com>,
+        Nitin Tekchandani <nitin.tekchandani@intel.com>,
+        Yu Chen <yu.c.chen@intel.com>,
+        Waiman Long <longman@redhat.com>,
+        Deng Pan <pan.deng@intel.com>,
+        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
+        David Vernet <void@manifault.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 08:40:00PM +0800, Huacai Chen wrote:
-> Hi, Paul,
-> On Thu, Aug 24, 2023 at 7:40 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > On Thu, Aug 24, 2023 at 10:50:41AM +0800, Huacai Chen wrote:
-> > > Hi, Paul,
-> > > On Thu, Aug 24, 2023 at 6:41 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > > On Thu, Aug 24, 2023 at 12:03:25AM +0200, Thomas Gleixner wrote:
-> > > > > On Thu, Aug 17 2023 at 16:06, Huacai Chen wrote:
-> > > > > > On Thu, Aug 17, 2023 at 3:27 AM Joel Fernandes <joel@joelfernandes.org> wrote:
-> > > > > >> > If  do_update_jiffies_64() cannot be used in NMI context,
-> > > > > >>
-> > > > > >> Can you not make the jiffies update conditional on whether it is
-> > > > > >> called within NMI context?
-> > > > >
-> > > > > Which solves what? If KGDB has a breakpoint in the jiffies lock held
-> > > > > region then you still dead lock.
-> > > > >
-> > > > > >> I dislike that..
-> > > > > > Is this acceptable?
-> > > > > >
-> > > > > > void rcu_cpu_stall_reset(void)
-> > > > > > {
-> > > > > >         unsigned long delta;
-> > > > > >
-> > > > > >         delta = nsecs_to_jiffies(ktime_get_ns() - ktime_get_coarse_ns());
-> > > > > >
-> > > > > >         WRITE_ONCE(rcu_state.jiffies_stall,
-> > > > > >                    jiffies + delta + rcu_jiffies_till_stall_check());
-> > > > > > }
-> > > > > >
-> > > > > > This can update jiffies_stall without updating jiffies (but has the
-> > > > > > same effect).
-> > > > >
-> > > > > Now you traded the potential dead lock on jiffies lock for a potential
-> > > > > live lock vs. tk_core.seq. Not really an improvement, right?
-> > > > >
-> > > > > The only way you can do the above is something like the incomplete and
-> > > > > uncompiled below. NMI safe and therefore livelock proof time interfaces
-> > > > > exist for a reason.
-> > > >
-> > > > Just for completeness, another approach, with its own advantages
-> > > > and disadvantage, is to add something like ULONG_MAX/4 to
-> > > > rcu_state.jiffies_stall, but also set a counter indicating that this
-> > > > has been done.  Then RCU's force-quiescent processing could decrement
-> > > > that counter (if non-zero) and reset rcu_state.jiffies_stall when it
-> > > > does reach zero.
-> > > >
-> > > > Setting the counter to three should cover most cases, but "live by the
-> > > > heuristic, die by the heuristic".  ;-)
-> > > >
-> > > > It would be good to have some indication when gdb exited, but things
-> > > > like the gdb "next" command can make that "interesting" when applied to
-> > > > a long-running function.
-> > >
-> > > The original code is adding ULONG_MAX/2, so adding ULONG_MAX/4 may
-> > > make no much difference? The simplest way is adding 300*HZ, but Joel
-> > > dislikes that.
+On Thu, 24 Aug 2023 at 15:07, Mathieu Desnoyers
+<mathieu.desnoyers@efficios.com> wrote:
+>
+> On 8/24/23 09:03, Vincent Guittot wrote:
+> > On Thu, 24 Aug 2023 at 14:55, Mathieu Desnoyers
+> > <mathieu.desnoyers@efficios.com> wrote:
+> >>
+> >> On 8/24/23 04:01, Aaron Lu wrote:
+> >>> On Wed, Aug 23, 2023 at 10:05:31AM -0400, Mathieu Desnoyers wrote:
+> >>>> On 8/23/23 02:08, Aaron Lu wrote:
+> >>>>> When using sysbench to benchmark Postgres in a single docker instan=
+ce
+> >>>>> with sysbench's nr_threads set to nr_cpu, it is observed there are =
+times
+> >>>>> update_cfs_group() and update_load_avg() shows noticeable overhead =
+on
+> >>>>> a 2sockets/112core/224cpu Intel Sapphire Rapids(SPR):
+> >>>>>
+> >>>>>        13.75%    13.74%  [kernel.vmlinux]           [k] update_cfs_=
+group
+> >>>>>        10.63%    10.04%  [kernel.vmlinux]           [k] update_load=
+_avg
+> >>>>>
+> >>>>> Annotate shows the cycles are mostly spent on accessing tg->load_av=
+g
+> >>>>> with update_load_avg() being the write side and update_cfs_group() =
+being
+> >>>>> the read side. tg->load_avg is per task group and when different ta=
+sks
+> >>>>> of the same taskgroup running on different CPUs frequently access
+> >>>>> tg->load_avg, it can be heavily contended.
+> >>>>>
+> >>>>> E.g. when running postgres_sysbench on a 2sockets/112cores/224cpus =
+Intel
+> >>>>> Sappire Rapids, during a 5s window, the wakeup number is 14millions=
+ and
+> >>>>> migration number is 11millions and with each migration, the task's =
+load
+> >>>>> will transfer from src cfs_rq to target cfs_rq and each change invo=
+lves
+> >>>>> an update to tg->load_avg. Since the workload can trigger as many w=
+akeups
+> >>>>> and migrations, the access(both read and write) to tg->load_avg can=
+ be
+> >>>>> unbound. As a result, the two mentioned functions showed noticeable
+> >>>>> overhead. With netperf/nr_client=3Dnr_cpu/UDP_RR, the problem is wo=
+rse:
+> >>>>> during a 5s window, wakeup number is 21millions and migration numbe=
+r is
+> >>>>> 14millions; update_cfs_group() costs ~25% and update_load_avg() cos=
+ts ~16%.
+> >>>>>
+> >>>>> Reduce the overhead by limiting updates to tg->load_avg to at most =
+once
+> >>>>> per ms. After this change, the cost of accessing tg->load_avg is gr=
+eatly
+> >>>>> reduced and performance improved. Detailed test results below.
+> >>>>
+> >>>> By applying your patch on top of my patchset at:
+> >>>>
+> >>>> https://lore.kernel.org/lkml/20230822113133.643238-1-mathieu.desnoye=
+rs@efficios.com/
+> >>>>
+> >>>> The combined hackbench results look very promising:
+> >>>>
+> >>>> (hackbench -g 32 -f 20 --threads --pipe -l 480000 -s 100)
+> >>>> (192 cores AMD EPYC 9654 96-Core Processor (over 2 sockets), with hy=
+perthreading)
+> >>>>
+> >>>> Baseline:                                       49s
+> >>>> With L2-ttwu-queue-skip:                        34s (30% speedup)
+> >>>> With L2-ttwu-queue-skip + ratelimit-load-avg:   26s (46% speedup)
+> >>>>
+> >>>> Feel free to apply my:
+> >>>>
+> >>>> Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> >>>> Tested-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> >>>
+> >>> Thanks a lot for running this and reviewing the patch.
+> >>> I'll add your number and tag in the changelog when sending a new
+> >>> version.
+> >>
+> >> Now that I come to think of it, I have comment: why use
+> >> sched_clock_cpu() rather than just read the jiffies value ? AFAIR,
+> >> sched_clock can be slower than needed when read from a "remote" cpu on
+> >> architectures that have an unsynchronized tsc.
+> >>
+> >> Considering that you only need a time reference more or less accurate =
+at
+> >> the millisecond level, I suspect that jiffies is what you are looking
+> >> for here. This is what the NUMA balance code and rseq mm_cid use to
+> >> execute work every N milliseconds.
 > >
-> > I am not seeing the ULONG_MAX/2, so could you please point me to that
-> > original code?
-> 
-> Maybe I misunderstand something, I say the original code means code
-> before commit a80be428fbc1f1f3bc9ed924 ("rcu: Do not disable GP stall
-> detection in rcu_cpu_stall_reset()").
+> > tick can 4ms or even 10ms which means a rate limit up between 10ms to
+> > 20ms in the latter case
+>
+> Fair enough, so just to confirm: is the 1ms a target period which has
+> been empirically determined to be optimal (lower having too much
+> overhead, and higher not being precise enough) ?
 
-Yes, my suggestion would essentially revert that patch.  It would
-compensate by resetting rcu_state.jiffies_stall after a few calls
-to rcu_gp_fqs().
+yes it's a tradeoff. This impacts how much time a group can get on a rq
 
-Alternatively, we could simply provide a way for gdb users to manually
-disable RCU CPU stall warnings at the beginning of their debug sessions
-and to manually re-enable them when they are done.
-
-							Thanx, Paul
-
-> Huacai
+>
+> Thanks,
+>
+> Mathieu
+>
 > >
-> > The advantage of ULONG_MAX/4 over ULONG_MAX/2 is that the time_after()
-> > and time_before() macros have ULONG_MAX/4 slop in either direction
-> > before giving you the wrong answer.  You can get nearly the same result
-> > using ULONG_MAX/2, but it requires a bit more care.  And even on 32-bit
-> > HZ=1000 systems, ULONG_MAX/4 gets you more than 12 days of gdb session
-> > or jiffies-update delay before you start getting false positives.
-> >
-> > Then things can be reset after (say) 3 calls to rcu_gp_fqs() and
-> > also the current reset at the beginning of a grace period, which
-> > is in record_gp_stall_check_time().
-> >
-> > It would be better if RCU could get notified at both ends of the debug
-> > session, but given gdb commands such as "next", along with Thomas's
-> > point about gdb breakpoints being pretty much anywhere, this might or
-> > might not be so helpful in real life.  But worth looking into.
-> >
-> >                                                         Thanx, Paul
-> >
-> > > Huacai
-> > >
-> > > >
-> > > >                                                         Thanx, Paul
-> > > >
-> > > > > Thanks,
-> > > > >
-> > > > >         tglx
-> > > > > ---
-> > > > > --- a/kernel/time/tick-sched.c
-> > > > > +++ b/kernel/time/tick-sched.c
-> > > > > @@ -51,6 +51,13 @@ struct tick_sched *tick_get_tick_sched(i
-> > > > >   */
-> > > > >  static ktime_t last_jiffies_update;
-> > > > >
-> > > > > +unsigned long tick_estimate_stale_jiffies(void)
-> > > > > +{
-> > > > > +     ktime_t delta = ktime_get_mono_fast_ns() - READ_ONCE(last_jiffies_update);
-> > > > > +
-> > > > > +     return delta < 0 ? 0 : div_s64(delta, TICK_NSEC);
-> > > > > +}
-> > > > > +
-> > > > >  /*
-> > > > >   * Must be called with interrupts disabled !
-> > > > >   */
-> > > > >
-> > > > >
+> >>
+> >> Thanks,
+> >>
+> >> Mathieu
+> >>
+> >>>
+> >>> Regards,
+> >>> Aaron
+> >>>
+> >>>>>
+> >>>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D
+> >>>>> postgres_sysbench on SPR:
+> >>>>> 25%
+> >>>>> base:   42382=C2=B119.8%
+> >>>>> patch:  50174=C2=B19.5%  (noise)
+> >>>>>
+> >>>>> 50%
+> >>>>> base:   67626=C2=B11.3%
+> >>>>> patch:  67365=C2=B13.1%  (noise)
+> >>>>>
+> >>>>> 75%
+> >>>>> base:   100216=C2=B11.2%
+> >>>>> patch:  112470=C2=B10.1% +12.2%
+> >>>>>
+> >>>>> 100%
+> >>>>> base:    93671=C2=B10.4%
+> >>>>> patch:  113563=C2=B10.2% +21.2%
+> >>>>>
+> >>>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D
+> >>>>> hackbench on ICL:
+> >>>>> group=3D1
+> >>>>> base:    114912=C2=B15.2%
+> >>>>> patch:   117857=C2=B12.5%  (noise)
+> >>>>>
+> >>>>> group=3D4
+> >>>>> base:    359902=C2=B11.6%
+> >>>>> patch:   361685=C2=B12.7%  (noise)
+> >>>>>
+> >>>>> group=3D8
+> >>>>> base:    461070=C2=B10.8%
+> >>>>> patch:   491713=C2=B10.3% +6.6%
+> >>>>>
+> >>>>> group=3D16
+> >>>>> base:    309032=C2=B15.0%
+> >>>>> patch:   378337=C2=B11.3% +22.4%
+> >>>>>
+> >>>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D
+> >>>>> hackbench on SPR:
+> >>>>> group=3D1
+> >>>>> base:    100768=C2=B12.9%
+> >>>>> patch:   103134=C2=B12.9%  (noise)
+> >>>>>
+> >>>>> group=3D4
+> >>>>> base:    413830=C2=B112.5%
+> >>>>> patch:   378660=C2=B116.6% (noise)
+> >>>>>
+> >>>>> group=3D8
+> >>>>> base:    436124=C2=B10.6%
+> >>>>> patch:   490787=C2=B13.2% +12.5%
+> >>>>>
+> >>>>> group=3D16
+> >>>>> base:    457730=C2=B13.2%
+> >>>>> patch:   680452=C2=B11.3% +48.8%
+> >>>>>
+> >>>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+> >>>>> netperf/udp_rr on ICL
+> >>>>> 25%
+> >>>>> base:    114413=C2=B10.1%
+> >>>>> patch:   115111=C2=B10.0% +0.6%
+> >>>>>
+> >>>>> 50%
+> >>>>> base:    86803=C2=B10.5%
+> >>>>> patch:   86611=C2=B10.0%  (noise)
+> >>>>>
+> >>>>> 75%
+> >>>>> base:    35959=C2=B15.3%
+> >>>>> patch:   49801=C2=B10.6% +38.5%
+> >>>>>
+> >>>>> 100%
+> >>>>> base:    61951=C2=B16.4%
+> >>>>> patch:   70224=C2=B10.8% +13.4%
+> >>>>>
+> >>>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+> >>>>> netperf/udp_rr on SPR
+> >>>>> 25%
+> >>>>> base:   104954=C2=B11.3%
+> >>>>> patch:  107312=C2=B12.8%  (noise)
+> >>>>>
+> >>>>> 50%
+> >>>>> base:    55394=C2=B14.6%
+> >>>>> patch:   54940=C2=B17.4%  (noise)
+> >>>>>
+> >>>>> 75%
+> >>>>> base:    13779=C2=B13.1%
+> >>>>> patch:   36105=C2=B11.1% +162%
+> >>>>>
+> >>>>> 100%
+> >>>>> base:     9703=C2=B13.7%
+> >>>>> patch:   28011=C2=B10.2% +189%
+> >>>>>
+> >>>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >>>>> netperf/tcp_stream on ICL (all in noise range)
+> >>>>> 25%
+> >>>>> base:    43092=C2=B10.1%
+> >>>>> patch:   42891=C2=B10.5%
+> >>>>>
+> >>>>> 50%
+> >>>>> base:    19278=C2=B114.9%
+> >>>>> patch:   22369=C2=B17.2%
+> >>>>>
+> >>>>> 75%
+> >>>>> base:    16822=C2=B13.0%
+> >>>>> patch:   17086=C2=B12.3%
+> >>>>>
+> >>>>> 100%
+> >>>>> base:    18216=C2=B10.6%
+> >>>>> patch:   18078=C2=B12.9%
+> >>>>>
+> >>>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >>>>> netperf/tcp_stream on SPR (all in noise range)
+> >>>>> 25%
+> >>>>> base:    34491=C2=B10.3%
+> >>>>> patch:   34886=C2=B10.5%
+> >>>>>
+> >>>>> 50%
+> >>>>> base:    19278=C2=B114.9%
+> >>>>> patch:   22369=C2=B17.2%
+> >>>>>
+> >>>>> 75%
+> >>>>> base:    16822=C2=B13.0%
+> >>>>> patch:   17086=C2=B12.3%
+> >>>>>
+> >>>>> 100%
+> >>>>> base:    18216=C2=B10.6%
+> >>>>> patch:   18078=C2=B12.9%
+> >>>>>
+> >>>>> Reported-by: Nitin Tekchandani <nitin.tekchandani@intel.com>
+> >>>>> Suggested-by: Vincent Guittot <vincent.guittot@linaro.org>
+> >>>>> Signed-off-by: Aaron Lu <aaron.lu@intel.com>
+> >>>>> Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+> >>>>> ---
+> >>>>>     kernel/sched/fair.c  | 13 ++++++++++++-
+> >>>>>     kernel/sched/sched.h |  1 +
+> >>>>>     2 files changed, 13 insertions(+), 1 deletion(-)
+> >>>>>
+> >>>>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> >>>>> index c28206499a3d..a5462d1fcc48 100644
+> >>>>> --- a/kernel/sched/fair.c
+> >>>>> +++ b/kernel/sched/fair.c
+> >>>>> @@ -3664,7 +3664,8 @@ static inline bool cfs_rq_is_decayed(struct c=
+fs_rq *cfs_rq)
+> >>>>>      */
+> >>>>>     static inline void update_tg_load_avg(struct cfs_rq *cfs_rq)
+> >>>>>     {
+> >>>>> -   long delta =3D cfs_rq->avg.load_avg - cfs_rq->tg_load_avg_contr=
+ib;
+> >>>>> +   long delta;
+> >>>>> +   u64 now;
+> >>>>>      /*
+> >>>>>       * No need to update load_avg for root_task_group as it is not=
+ used.
+> >>>>> @@ -3672,9 +3673,19 @@ static inline void update_tg_load_avg(struct=
+ cfs_rq *cfs_rq)
+> >>>>>      if (cfs_rq->tg =3D=3D &root_task_group)
+> >>>>>              return;
+> >>>>> +   /*
+> >>>>> +    * For migration heavy workload, access to tg->load_avg can be
+> >>>>> +    * unbound. Limit the update rate to at most once per ms.
+> >>>>> +    */
+> >>>>> +   now =3D sched_clock_cpu(cpu_of(rq_of(cfs_rq)));
+> >>>>> +   if (now - cfs_rq->last_update_tg_load_avg < NSEC_PER_MSEC)
+> >>>>> +           return;
+> >>>>> +
+> >>>>> +   delta =3D cfs_rq->avg.load_avg - cfs_rq->tg_load_avg_contrib;
+> >>>>>      if (abs(delta) > cfs_rq->tg_load_avg_contrib / 64) {
+> >>>>>              atomic_long_add(delta, &cfs_rq->tg->load_avg);
+> >>>>>              cfs_rq->tg_load_avg_contrib =3D cfs_rq->avg.load_avg;
+> >>>>> +           cfs_rq->last_update_tg_load_avg =3D now;
+> >>>>>      }
+> >>>>>     }
+> >>>>> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+> >>>>> index 6a8b7b9ed089..52ee7027def9 100644
+> >>>>> --- a/kernel/sched/sched.h
+> >>>>> +++ b/kernel/sched/sched.h
+> >>>>> @@ -593,6 +593,7 @@ struct cfs_rq {
+> >>>>>      } removed;
+> >>>>>     #ifdef CONFIG_FAIR_GROUP_SCHED
+> >>>>> +   u64                     last_update_tg_load_avg;
+> >>>>>      unsigned long           tg_load_avg_contrib;
+> >>>>>      long                    propagate;
+> >>>>>      long                    prop_runnable_sum;
+> >>>>
+> >>>> --
+> >>>> Mathieu Desnoyers
+> >>>> EfficiOS Inc.
+> >>>> https://www.efficios.com
+> >>>>
+> >>
+> >> --
+> >> Mathieu Desnoyers
+> >> EfficiOS Inc.
+> >> https://www.efficios.com
+> >>
+>
+> --
+> Mathieu Desnoyers
+> EfficiOS Inc.
+> https://www.efficios.com
+>
