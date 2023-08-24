@@ -2,144 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC613787512
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 18:17:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA7E6787509
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 18:17:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242468AbjHXQRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 12:17:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57218 "EHLO
+        id S242434AbjHXQRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 12:17:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242485AbjHXQRA (ORCPT
+        with ESMTP id S242467AbjHXQQw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 12:17:00 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 189301BCE;
-        Thu, 24 Aug 2023 09:16:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692893819; x=1724429819;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=yvzC8rOAEf+j2WN5Y5D6UuaWb8/TjFD02ROTEAzmBo8=;
-  b=DTp5pCxGgZ9Blo4bguNZDXe3IPBDd3swZpSadbOC3xfF2W14vRSD3vCb
-   GonGKVEwgCWX0tTjXrRnStH0zAGrpFxTChut8Sl6oESLs1qecXqNjJaX+
-   zYWij+CWt7DijgrOkg+gdTzlKZhecZRdOBT1BULVQSyZY5LXmQ1fzDEmv
-   0G8tFjpavTEq17lsrX6HaDv9l58xxmctESK5RTU0L1QpETWsGegrinj18
-   mrgOdRt6h1Uy5lD0H1MHrnrRZvSLfDmvSebVZ4tnIVwGTPbmbPtMNqGUA
-   W0thjo1DVZ3PY0Dpn9MpCNsUVlDELw33CZ7KRIdhrnWxyBCvLkcU8psAL
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="364679268"
-X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
-   d="scan'208";a="364679268"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 09:15:38 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="686970911"
-X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
-   d="scan'208";a="686970911"
-Received: from rchatre-ws.ostc.intel.com ([10.54.69.144])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 09:15:38 -0700
-From:   Reinette Chatre <reinette.chatre@intel.com>
-To:     jgg@nvidia.com, yishaih@nvidia.com,
-        shameerali.kolothum.thodi@huawei.com, kevin.tian@intel.com,
-        alex.williamson@redhat.com
-Cc:     kvm@vger.kernel.org, dave.jiang@intel.com, jing2.liu@intel.com,
-        ashok.raj@intel.com, fenghua.yu@intel.com,
-        tom.zanussi@linux.intel.com, reinette.chatre@intel.com,
-        linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 3/3] vfio/ims: Add helper that returns IMS index
-Date:   Thu, 24 Aug 2023 09:15:22 -0700
-Message-Id: <2e293a866f071d6a116cad8c9b725298b8217f43.1692892275.git.reinette.chatre@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1692892275.git.reinette.chatre@intel.com>
-References: <cover.1692892275.git.reinette.chatre@intel.com>
+        Thu, 24 Aug 2023 12:16:52 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF8F81BDA
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 09:16:47 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-99c4923195dso905216466b.2
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 09:16:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692893806; x=1693498606;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/tLvnwDOum/C7NqjeZ7WvB8PzqL6V7KZu8ifXgc/R3I=;
+        b=ErLDMrwMWUHzXBYMNr1tKPcG61iJdSIls2jHvL6v7OKr5jzMmaGMzKc1IoibYwan3/
+         ZJDF6qW+n5ZspYUEQkuOgI/Ck15ix2TFQ+sD3McDGh9LHC1/zFADzjtnpObSSEsIwR/y
+         SzohkoScuyz/of9kNxRCq7LkHPLShiXgZMid4j/bCi4G8rBWQCSoldkwnZuYRAWocqp/
+         0Iv3kgm43R6gxPqScSmryV+EfOGCiSYD1LL3EaA9oY6spZyZ9X2amf0UHHviSdszVOzh
+         Nw0FUf6eFeQCKZTHzBU5K0QGEs++2Cj8KqivHg6B8TM5yARUUojQXAcYbY9MdrFFojSb
+         mg5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692893806; x=1693498606;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/tLvnwDOum/C7NqjeZ7WvB8PzqL6V7KZu8ifXgc/R3I=;
+        b=ASdOZyLbDzCrtvQd9Dghiw/W9PQM7gdNUpG+gUNRZ+cAoNjv5NgFVUBLxNFLf5Miis
+         MnTXUHgXpnYsy4N+UWm73uWY+3GSe4HG1YxSRXfGfSp6goJ2JYYqBfSeo0jmcBxhnQYb
+         sooDSIerXhBpIGuKsGO8HfMYh39tj3jhfYmt11rQ0P5L5/AoeiXUUflDWhTQb23coKqJ
+         LRLBPNWyFyQZQgfG6kBXcdmyyzNB7ZVYP6l9IQVStWmB584juOJVzrEWfH7yIuYUOkiy
+         gsigABUuVEgB+Du+Hx+8W1Uf7uZKHRp0lq3euFxFiR0i2m2aPO5oWFOgTOTE7czi2hTA
+         iXYg==
+X-Gm-Message-State: AOJu0YyxOSVopqA8LzCtLezYVRSfgdHP5yEwxObZhjPLTkJ3Jzlhxj6z
+        x3NfwN6dKT08DsY3vOPKf524Hw==
+X-Google-Smtp-Source: AGHT+IGVYiqG8sxongGWVoLO3regR9d0PIYEfKPXZhPItNU2GX0VUHfAsgopHgYB6TbQsAmafzv+1g==
+X-Received: by 2002:a17:907:a066:b0:9a2:200:b694 with SMTP id ia6-20020a170907a06600b009a20200b694mr2101470ejc.11.1692893806151;
+        Thu, 24 Aug 2023 09:16:46 -0700 (PDT)
+Received: from [192.168.0.22] ([77.252.47.198])
+        by smtp.gmail.com with ESMTPSA id k20-20020a1709063e1400b00992b71d8f19sm11170893eji.133.2023.08.24.09.16.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Aug 2023 09:16:45 -0700 (PDT)
+Message-ID: <8d4e2110-4e43-06c4-126d-22c29050f13e@linaro.org>
+Date:   Thu, 24 Aug 2023 18:16:44 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 1/2] dt-bindings: misc: rohm,bm92txx: Add BM92Txx support
+To:     Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
+Cc:     azkali <a.ffcc7@gmail.com>, Adam Jiang <chaoj@nvidia.com>,
+        CTCaer <ctcaer@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Derek Kiernan <derek.kiernan@amd.com>,
+        Dragan Cvetic <dragan.cvetic@amd.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230824153059.212244-1-linkmauve@linkmauve.fr>
+ <20230824153059.212244-2-linkmauve@linkmauve.fr>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230824153059.212244-2-linkmauve@linkmauve.fr>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A virtual device driver needs to facilitate translation between
-the guest's MSI-X interrupt and the backing IMS interrupt with
-which the physical device is programmed. For example, the
-guest may need to obtain the IMS index from the virtual device driver
-that it needs to program into descriptors submitted to the device
-to ensure that the completion interrupts are generated correctly.
+On 24/08/2023 17:30, Emmanuel Gil Peyrot wrote:
+> The BM92T36 is used in the Nintendo Switch as its USB-C Power Delivery
+> controller.
+> 
+> Signed-off-by: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
+> ---
+>  .../bindings/misc/rohm,bm92txx.yaml           | 67 +++++++++++++++++++
+>  MAINTAINERS                                   |  5 ++
+>  2 files changed, 72 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/misc/rohm,bm92txx.yaml
 
-Introduce vfio_pci_ims_hwirq() to VFIO PCI IMS as a helper that
-returns the IMS interrupt index backing a provided MSI-X
-interrupt index belonging to a guest.
+That's not misc device but usb, so please put it in usb.
 
-Originally-by: Dave Jiang <dave.jiang@intel.com>
-Signed-off-by: Reinette Chatre <reinette.chatre@intel.com>
----
- drivers/vfio/pci/vfio_pci_ims.c | 21 +++++++++++++++++++++
- include/linux/vfio.h            |  7 +++++++
- 2 files changed, 28 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/misc/rohm,bm92txx.yaml b/Documentation/devicetree/bindings/misc/rohm,bm92txx.yaml
+> new file mode 100644
+> index 000000000000..0322a7f096f0
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/misc/rohm,bm92txx.yaml
+> @@ -0,0 +1,67 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +# Copyright (C) 2023 Emmanuel Gil Peyrot
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/misc/rohm,bm92txx.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: BM92Txx USB-C Power Delivery Controller
+> +
+> +maintainers:
+> +  - Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - rohm,bm92t10
+> +      - rohm,bm92t20
+> +      - rohm,bm92t30
+> +      - rohm,bm92t36
+> +      - rohm,bm92t50
 
-diff --git a/drivers/vfio/pci/vfio_pci_ims.c b/drivers/vfio/pci/vfio_pci_ims.c
-index fe5b3484ad34..27711bc7a6c2 100644
---- a/drivers/vfio/pci/vfio_pci_ims.c
-+++ b/drivers/vfio/pci/vfio_pci_ims.c
-@@ -37,6 +37,27 @@ struct vfio_pci_ims_ctx {
- 	union msi_instance_cookie	icookie;
- };
- 
-+/*
-+ * Return IMS index of IMS interrupt backing MSI-X interrupt @vector
-+ */
-+int vfio_pci_ims_hwirq(struct vfio_device *vdev, unsigned int vector)
-+{
-+	struct vfio_pci_ims *ims = &vdev->ims;
-+	struct vfio_pci_ims_ctx *ctx;
-+	int id;
-+
-+	mutex_lock(&ims->ctx_mutex);
-+	ctx = xa_load(&ims->ctx, vector);
-+	if (!ctx || ctx->emulated)
-+		id = -EINVAL;
-+	else
-+		id = ctx->ims_id;
-+	mutex_unlock(&ims->ctx_mutex);
-+
-+	return id;
-+}
-+EXPORT_SYMBOL_GPL(vfio_pci_ims_hwirq);
-+
- /*
-  * Send signal to the eventfd.
-  * @vdev:	VFIO device
-diff --git a/include/linux/vfio.h b/include/linux/vfio.h
-index 906220002ff4..1c0e1bddd95b 100644
---- a/include/linux/vfio.h
-+++ b/include/linux/vfio.h
-@@ -339,6 +339,7 @@ int vfio_pci_ims_set_emulated(struct vfio_device *vdev, unsigned int start,
- void vfio_pci_ims_send_signal(struct vfio_device *vdev, unsigned int vector);
- int vfio_pci_ims_set_cookie(struct vfio_device *vdev, unsigned int vector,
- 			    union msi_instance_cookie *icookie);
-+int vfio_pci_ims_hwirq(struct vfio_device *vdev, unsigned int vector);
- #else
- static inline int vfio_pci_set_ims_trigger(struct vfio_device *vdev,
- 					   unsigned int index,
-@@ -374,6 +375,12 @@ static inline int vfio_pci_ims_set_cookie(struct vfio_device *vdev,
- 	return -EOPNOTSUPP;
- }
- 
-+static inline int vfio_pci_ims_hwirq(struct vfio_device *vdev,
-+				     unsigned int index)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
- #endif /* CONFIG_VFIO_PCI_IMS */
- 
- #endif /* VFIO_H */
--- 
-2.34.1
+Your driver suggests they are fully compatible.
+
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  rohm,dp-signal-toggle-on-resume:
+> +    type: boolean
+> +    description: |
+> +      Do a toggle on resume instead of disable in suspend and enable in resume,
+> +      because this also disables the LED effects.
+
+That's OS policy, not suitable for DT. Drop the property.
+
+> +
+> +  rohm,led-static-on-suspend:
+> +    type: boolean
+> +    description: Dim or breathing dock LED.
+
+Ditto
+
+> +
+> +  rohm,dock-power-limit-disable:
+> +    type: boolean
+> +    description: Disable the power limit in dock mode.
+
+Your description copies property name, so it is not much useful. Why
+this is board-configurable?
+
+> +
+> +  rohm,dp-alerts-enable:
+> +    type: boolean
+> +    description: Enable DisplayPort alerts.
+
+Same questions.
+
+> +
+> +  rohm,pd-5v-current-limit-ma:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+
+Use common property units.
+
+> +    default: 2000
+> +    description: Current limit in mA when voltage is 5V.
+> +
+
+You miss connector, so binding is incomplete. All these properties look
+duplicating connector properties.
+
+
+> +  rohm,pd-9v-current-limit-ma:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    default: 2000
+> +    description: Current limit in mA when voltage is 9V.
+> +
+> +  rohm,pd-12v-current-limit-ma:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    default: 1500
+> +    description: Current limit in mA when voltage is 12V.
+> +
+> +  rohm,pd-15v-current-limit-ma:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    default: 1200
+> +    description: Current limit in mA when voltage is 15V.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+
+Missing example. You must have and it must be complete.
+
+Best regards,
+Krzysztof
 
