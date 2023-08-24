@@ -2,61 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1A6178781A
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 20:37:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CF9D78781F
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 20:39:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243042AbjHXSh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 14:37:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39496 "EHLO
+        id S231299AbjHXSjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 14:39:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243205AbjHXShT (ORCPT
+        with ESMTP id S234578AbjHXSin (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 14:37:19 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFCA21FCA
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 11:37:04 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-5298e43bb67so427142a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 11:37:04 -0700 (PDT)
+        Thu, 24 Aug 2023 14:38:43 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26C3519B0
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 11:38:38 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2b974031aeaso1656991fa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 11:38:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692902223; x=1693507023;
+        d=linaro.org; s=google; t=1692902316; x=1693507116;
         h=content-transfer-encoding:in-reply-to:from:references:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=zvkwv2oqTP+pO4hYA4rG3ApU1P4yvVukZ5H0zf1EQAk=;
-        b=cA7+UHVVECJqrEE6p/VJbSOVeYpIYp/36VZMxoyg6KWGWNmGA+KGFC13OC5EvJU3ib
-         t04RKuHyl2uH08pv+mR1Jg3WejFg0hcPL3n+eix5+gWC6p6/fGBHT6bwUvy2Ill2lMWo
-         6X/gdaLNCDWxwjN7VzeHbffd6yQYd6D/sKs24xITfEpB0Mj47e+Orizs35wLrXeZ0vnQ
-         JO+2+ZfivJGKFlKkiWj1qdqWfRzonaDgPqoO45pg7/IKrYqQKVZfxW7Qb+nqxUFsQWpl
-         Unwfsz6SyxpjgCZRZjHmFC+y9pdxE/pF3iDJ3nxewpNsyz+TR+bd9hwwIvzA7wmQEz7h
-         HuTg==
+        bh=En2iu839EqQpNqcAkzG5XBjEYnMGVZow4zgnldYb4JA=;
+        b=sHx5bDpEepHLNUc0mEvKIgpaaI6oYKVExdB8uv5CQtZ+yi9KA/waolgk6D5ityUOdD
+         R6663YJYXBqdkE2Dhxeijkf0J1rnIeAYYncTLpCKjOt4c8xpNMYiTOk2eL0A9Gd76/Ml
+         b5foVrLUynpxJj0bdP6EX3yiou3gmhpThjk9OxOFQY56KzRS7awwquwUL1yysKg31o+2
+         ipjVNTLio6dR8rdrh30SKQ3HzTRrN3/fSV1Su7KOFfJXtJd9Gbt0qiqCYhzbd2CBMPTf
+         5MXsEKf78TQV+yMiLlJmXa4lccrygtKKDMn3gCqU5p/v3214Av5Mfo/DuwLcTyTH8OVa
+         l8kA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692902223; x=1693507023;
+        d=1e100.net; s=20221208; t=1692902316; x=1693507116;
         h=content-transfer-encoding:in-reply-to:from:references:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zvkwv2oqTP+pO4hYA4rG3ApU1P4yvVukZ5H0zf1EQAk=;
-        b=bYxMVIE9bl/DbrE4C7sXxp2L82IlytXArOPJzKxI3dkIa0sPtTFGNLHmSmPQRu3f1c
-         NaKA/23sfwb/JzSw6ga1f04yBwwgowRXSnCSj9AdEZazrPhAzYgAJPoaPvcH6Lq4hnC6
-         R/NlUYI9W3uMyY2R54zwzhSlfj8l7b3WYcqdTb4jlHMzoy4CGo9rooYdAtd0+CTbMmZu
-         w3qCa3Y5CLa3zQj41hCeoGkEF6lUZFljniylUYKeFfzT3XKiuaU6g2znhkgfkwWl3KCt
-         I+in0nkUECsmo7l9q7tsmRrM6xudRDprtbpcFnJjt7sIKveoanqPmhc5QynbdBfr8GWR
-         lQGA==
-X-Gm-Message-State: AOJu0YwUUw/OME0vVqXH7NFUYcNI1jlniCyVJkuUkZRkWPA2xXjcGWbE
-        w3DMpRmjRUcilq9fow8mTwZtYQ==
-X-Google-Smtp-Source: AGHT+IFH0SjCZSGrn7Os/RP0/GeyRTvMpzBP69ReY9cPwGMFt6KWOEV/ME/DCBYhsKqHrUz2iRxPKg==
-X-Received: by 2002:aa7:d502:0:b0:525:b29d:8dc8 with SMTP id y2-20020aa7d502000000b00525b29d8dc8mr20912857edq.5.1692902223431;
-        Thu, 24 Aug 2023 11:37:03 -0700 (PDT)
+        bh=En2iu839EqQpNqcAkzG5XBjEYnMGVZow4zgnldYb4JA=;
+        b=afqe3s3JPb612rMNOkDRq6QzLZ+/rKNaYbGBMFlN2Vh6wVEk4IOjtU3BlPJ45xsLX7
+         pFeQSRq/HOVbat1+KYBfjrZtBlwjavAe1t7ipLc/+IagEumYBJdndGvQdh8Bb/oOvQkQ
+         9GJ9Sb5GA40pENPIDYpngcx591/USzlT5Bs/2rFPeEFlJez0V7f2O0DDdgh0E0kIBCe7
+         IQWSQlubqL2tjK7AuEmzMh+DYSFhLaS7+7nbnQJQISUlG5ywzKl0/CMnw9OnY/cR7Z5l
+         3msVpM3MUa0NZyLjBRP/zAPEIXbda/3hj/DGnpV1vyXQloaUjisJMvLbiHenKKMkEy+R
+         eGwg==
+X-Gm-Message-State: AOJu0YweYiuolPw5dFDv++Zqun/H3QIyW4eJm3va1PrN8Q5PsI40xT5n
+        1523WodiVQV4e1hrilpDuPs2qQ==
+X-Google-Smtp-Source: AGHT+IEOWz8tiDwTWaanqHibok2oHyVgujQoY13FqBxm19IRl/RLbvgqU6TodBnf7BQzSGb8N7dELQ==
+X-Received: by 2002:a2e:9d96:0:b0:2bc:ce85:2de2 with SMTP id c22-20020a2e9d96000000b002bcce852de2mr7286418ljj.37.1692902316406;
+        Thu, 24 Aug 2023 11:38:36 -0700 (PDT)
 Received: from [192.168.0.22] ([77.252.47.198])
-        by smtp.gmail.com with ESMTPSA id f15-20020aa7d84f000000b0052228721f84sm44909eds.77.2023.08.24.11.37.02
+        by smtp.gmail.com with ESMTPSA id k6-20020a1709062a4600b0099bcbaa242asm11117747eje.9.2023.08.24.11.38.34
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Aug 2023 11:37:03 -0700 (PDT)
-Message-ID: <41581c90-3ee0-c969-2b54-ee512d637788@linaro.org>
-Date:   Thu, 24 Aug 2023 20:37:01 +0200
+        Thu, 24 Aug 2023 11:38:36 -0700 (PDT)
+Message-ID: <350def85-276e-0514-a5f4-24f95bedb375@linaro.org>
+Date:   Thu, 24 Aug 2023 20:38:34 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.14.0
-Subject: Re: [PATCH v5 09/11] firmware: imx: enclave-fw: add handling for
- save/restore IMEM region
+Subject: Re: [PATCH v5 10/11] firmware: imx: enclave api to read-common-fuses
 Content-Language: en-US
 To:     Pankaj Gupta <pankaj.gupta@nxp.com>, shawnguo@kernel.org,
         s.hauer@pengutronix.de, kernel@pengutronix.de, clin@suse.com,
@@ -70,9 +69,9 @@ To:     Pankaj Gupta <pankaj.gupta@nxp.com>, shawnguo@kernel.org,
         alexander.stein@ew.tq-group.com, sahil.malhotra@nxp.com,
         aisheng.dong@nxp.com, V.Sethi@nxp.com
 References: <20230823073330.1712721-1-pankaj.gupta@nxp.com>
- <20230823073330.1712721-10-pankaj.gupta@nxp.com>
+ <20230823073330.1712721-11-pankaj.gupta@nxp.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230823073330.1712721-10-pankaj.gupta@nxp.com>
+In-Reply-To: <20230823073330.1712721-11-pankaj.gupta@nxp.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -86,135 +85,47 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 23/08/2023 09:33, Pankaj Gupta wrote:
-> Some IMEM region is lost during kernel power down. Due to this,
-> firmware's functionaity cannot work correctly.
+> Added an API to read the common fuses only accessible to
+> enclave-firmware.
 > 
-> Saving encrypted IMEM region in kernel memory during power down,
-> and restore IMEM region on resume.
-> 
-> Signed-off-by: Gaurav Jain <gaurav.jain@nxp.com>
 > Signed-off-by: Pankaj Gupta <pankaj.gupta@nxp.com>
 
+...
 
-> @@ -959,6 +962,17 @@ static int se_probe_cleanup(struct platform_device *pdev)
->  		priv->flags &= (~RESERVED_DMA_POOL);
->  	}
->  
-> +	/* free the buffer in ele-mu remove, previously allocated
-> +	 * in ele-mu probe to store encrypted IMEM
-> +	 */
-
-Use Linux coding style comments.
-
-> +	if (priv->imem.buf) {
-> +		dmam_free_coherent(&pdev->dev,
-> +				   ELE_IMEM_SIZE,
-> +				   priv->imem.buf,
-> +				   priv->imem.phyaddr);
-> +		priv->imem.buf = NULL;
-> +	}
-> +
->  	if (priv->ctxs) {
->  		for (i = 0; i < priv->max_dev_ctx; i++) {
->  			if (priv->ctxs[i])
-> @@ -1160,6 +1174,19 @@ static int se_fw_probe(struct platform_device *pdev)
->  			dev_err(dev, "Failed to init ele-trng\n");
->  	}
->  
-> +	if (info->imem_mgmt) {
-> +		/* allocate buffer where ELE store encrypted IMEM */
-> +		priv->imem.buf = dmam_alloc_coherent(dev, ELE_IMEM_SIZE,
-> +						     &priv->imem.phyaddr,
-> +						     GFP_KERNEL);
-> +		if (!priv->imem.buf) {
-> +			dev_err(dev,
-> +				"dmam-alloc-failed: To store encr-IMEM.\n");
-> +			ret = -ENOMEM;
-> +			goto exit;
-> +		}
-> +	}
-> +
->  	pr_info("i.MX secure-enclave: %s's mu#%d interface to firmware, configured.\n",
->  		info->se_name,
->  		priv->ele_mu_id);
-> @@ -1196,17 +1223,31 @@ static int se_fw_remove(struct platform_device *pdev)
->  #ifdef CONFIG_PM_SLEEP
->  static int se_fw_suspend(struct device *dev)
->  {
+> +int read_common_fuse(struct device *dev,
+> +		     uint16_t fuse_id, u32 *value)
+> +{
 > +	struct ele_mu_priv *priv = dev_get_drvdata(dev);
-> +	const struct of_device_id *of_id = of_match_device(se_fw_match, dev);
-
-No.
-
-> +	struct imx_info *info = (of_id != NULL) ? (struct imx_info *)of_id->data
-> +						: NULL;
+> +	int err;
 > +
-> +	if (info && info->imem_mgmt)
-> +		priv->imem.size = save_imem(dev);
+> +	err = plat_fill_cmd_msg_hdr(priv,
+> +				    (struct mu_hdr *)&priv->tx_msg.header,
+> +				    ELE_READ_FUSE_REQ, 8);
+> +	if (err) {
+> +		pr_err("Error: plat_fill_cmd_msg_hdr failed.\n");
+> +		return err;
+> +	}
 > +
->  	return 0;
->  }
->  
->  static int se_fw_resume(struct device *dev)
->  {
->  	struct ele_mu_priv *priv = dev_get_drvdata(dev);
-> +	const struct of_device_id *of_id = of_match_device(se_fw_match, dev);
-
-Why do you keep matching device every time? Don't.
-
-> +	struct imx_info *info = (of_id != NULL) ? (struct imx_info *)of_id->data
-> +						: NULL;
->  	int i;
->  
->  	for (i = 0; i < priv->max_dev_ctx; i++)
->  		wake_up_interruptible(&priv->ctxs[i]->wq);
->  
-> +	if (info && info->imem_mgmt)
-> +		restore_imem(dev, info->pool_name);
+> +	priv->tx_msg.data[0] = fuse_id;
+> +	err = imx_ele_msg_send_rcv(priv);
+> +	if (err < 0)
+> +		return err;
 > +
->  	return 0;
->  }
->  #endif
-> diff --git a/drivers/firmware/imx/se_fw.h b/drivers/firmware/imx/se_fw.h
-> index b3502affbc85..acb967f2357c 100644
-> --- a/drivers/firmware/imx/se_fw.h
-> +++ b/drivers/firmware/imx/se_fw.h
-> @@ -165,4 +165,12 @@ struct ele_mu_priv {
->  	struct ele_imem_buf imem;
->  };
->  
-> +phys_addr_t get_phy_buf_mem_pool(struct device *dev,
-> +				 char *mem_pool_name,
-> +				 u32 **buf,
-> +				 uint32_t size);
-> +void free_phybuf_mem_pool(struct device *dev,
-> +			  char *mem_pool_name,
-> +			  u32 *buf,
-> +			  uint32_t size);
->  #endif
-> diff --git a/include/linux/firmware/imx/ele_base_msg.h b/include/linux/firmware/imx/ele_base_msg.h
-> index 8a5c385210fc..6fbea7a8d7c9 100644
-> --- a/include/linux/firmware/imx/ele_base_msg.h
-> +++ b/include/linux/firmware/imx/ele_base_msg.h
-> @@ -37,12 +37,23 @@
->  #define ELE_GET_TRNG_STATE_RETRY_COUNT	0x5
->  #define CSAL_TRNG_STATE_MASK		0x0000ffff
->  
-> +#define ELE_SERVICE_SWAP_REQ		0xDF
-> +#define ELE_SERVICE_SWAP_REQ_MSG_SZ	0x03
-> +#define ELE_IMEM_SIZE			0x10000
-> +#define ELE_IMEM_STATE_OK		0xCA
-> +#define ELE_IMEM_STATE_BAD		0xFE
-> +#define ELE_IMEM_STATE_WORD		0x27
-> +#define ELE_IMEM_STATE_MASK		0x00ff0000
-> +#define ELE_IMEM_EXPORT			0x1
-> +#define ELE_IMEM_IMPORT			0x2
+> +	switch (fuse_id) {
+> +	case OTP_UNIQ_ID:
+> +		err = read_otp_uniq_id(priv, value);
+> +		break;
+> +	default:
+> +		err = read_fuse_word(priv, value);
+> +		break;
+> +	}
 > +
->  #define ELE_BASE_API_VERSION		0x6
-> -#define ELE_SUCCESS_IND			0xD6
-> -#define ELE_FAILURE_IND			0x29
+> +	return err;
+> +}
+> +EXPORT_SYMBOL_GPL(read_common_fuse);
 
-No, you just added them. Don't add wrong code to remove it in next patch.
+Missing kerneldoc, missing user. Sorry, this cannot be accepted. Don't
+add such dead code.
 
 Best regards,
 Krzysztof
