@@ -2,76 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6891C7864F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 03:54:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B983786502
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 04:01:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239201AbjHXByF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 21:54:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53520 "EHLO
+        id S239213AbjHXCAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 22:00:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239215AbjHXByE (ORCPT
+        with ESMTP id S239219AbjHXCAL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 21:54:04 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21091E59
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 18:53:59 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B507B638A9
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 01:53:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 255F3C433C7;
-        Thu, 24 Aug 2023 01:53:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692842038;
-        bh=dUjRC96Y34euUDSaNA/h1pSNeZPTmkLzu7c2FEi2qA4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Pbk12ZrmqI8Ci5eZuW+fGynBf6JIzCY4Q3k6ZB/HU78f2Jdkaz9ZN5xraaI3HGsMP
-         pDJIYewooAbY+9jxcNTA5wpiyUPFF/es9Izng350BdxnNrYf2zxn3v3icKa38RRTsP
-         mSCLqHG/EfmUURRhWnoRta6McKOGaIsEOJsNmyj3cexzyIboKmoUvWkOziY5RK71OQ
-         o+OrQZ8qJ0qS55rkPQtoefygY5aMAy/qx60L99qjRrBo8USvU1VP8FmETEBrXUY1yu
-         DWMXlp9qcUZ7bnJ3unE+cN18tQsrJn2O56YMlyvIEHql0MYoWbDeqIjwtMGoRi+/cH
-         tfOw2YjmXN9WA==
-Date:   Wed, 23 Aug 2023 18:53:56 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Pu Lehui <pulehui@huaweicloud.com>
-Cc:     linux-riscv@lists.infradead.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?B?QmrDtnJu?= =?UTF-8?B?IFTDtnBlbA==?= <bjorn@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Xu Kuohai <xukuohai@huawei.com>,
-        Puranjay Mohan <puranjay12@gmail.com>,
-        Pu Lehui <pulehui@huawei.com>
-Subject: Re: [PATCH bpf-next v2 0/7] Add support cpu v4 insns for RV64
-Message-ID: <20230823185356.0db6cc1d@kernel.org>
-In-Reply-To: <20230824095001.3408573-1-pulehui@huaweicloud.com>
-References: <20230824095001.3408573-1-pulehui@huaweicloud.com>
+        Wed, 23 Aug 2023 22:00:11 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CEC5E6A
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 19:00:07 -0700 (PDT)
+Received: from kwepemm600007.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RWR5H1LkQztSKJ;
+        Thu, 24 Aug 2023 09:56:19 +0800 (CST)
+Received: from [10.69.136.139] (10.69.136.139) by
+ kwepemm600007.china.huawei.com (7.193.23.208) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Thu, 24 Aug 2023 10:00:03 +0800
+Message-ID: <daeec014-c642-c4c0-5b28-eac4eca3aa3d@huawei.com>
+Date:   Thu, 24 Aug 2023 10:00:02 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+CC:     <shaojijie@huawei.com>, <will@kernel.org>, <mark.rutland@arm.com>,
+        <yangyicong@huawei.com>, <chenhao418@huawei.com>,
+        <shenjian15@huawei.com>, <wangjie125@huawei.com>,
+        <liuyonglong@huawei.com>, <hejunhao3@huawei.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH drivers/perf: hisi:] drivers/perf: hisi: Update email
+ addresses of HISILICON_PMU driver maintainers.
+To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+References: <20230822122812.2384393-1-shaojijie@huawei.com>
+ <20230823090811.00001f7f@Huawei.com>
+From:   Jijie Shao <shaojijie@huawei.com>
+In-Reply-To: <20230823090811.00001f7f@Huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Originating-IP: [10.69.136.139]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600007.china.huawei.com (7.193.23.208)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Aug 2023 09:49:54 +0000 Pu Lehui wrote:
-> Add support cpu v4 instructions for RV64.
 
-Please make sure you fix the timezone on your system before sending 
-out the next version.
+on 2023/8/23 16:08, Jonathan Cameron wrote:
+> Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+>
+> Best wishes and thanks to them both and thanks to yangyicong and
+> shaojijie for stepping up.
+>
+>
+> Bit late now, but with hindsight it might have been better
+> to use the same wording for the HNS3 PMU as for HNS itself
+>
+> HISILICON NETWORK SUBSYSTEM 3 PMU Driver (HNS3 PMU)
+> so that it would appear in the obviously place in MAINTAINERS
+> rather than a few lines further up.  Probably not worth
+> the noise of changing it however.
+>
+> Jonathan
+>
+Hi,
+Yeah, I agree. and I think it's worth changing, and I'll change it in V2.
+
+Jijie Shao
+
+>> ---
+>>   MAINTAINERS | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/MAINTAINERS b/MAINTAINERS
+>> index 4171d3a102a9..a3109267a411 100644
+>> --- a/MAINTAINERS
+>> +++ b/MAINTAINERS
+>> @@ -9305,7 +9305,7 @@ F:	drivers/crypto/hisilicon/hpre/hpre_crypto.c
+>>   F:	drivers/crypto/hisilicon/hpre/hpre_main.c
+>>   
+>>   HISILICON HNS3 PMU DRIVER
+>> -M:	Guangbin Huang <huangguangbin2@huawei.com>
+>> +M:	Jijie Shao <shaojijie@huawei.com>
+>>   S:	Supported
+>>   F:	Documentation/admin-guide/perf/hns3-pmu.rst
+>>   F:	drivers/perf/hisilicon/hns3_pmu.c
+>> @@ -9343,7 +9343,7 @@ F:	Documentation/devicetree/bindings/net/hisilicon*.txt
+>>   F:	drivers/net/ethernet/hisilicon/
+>>   
+>>   HISILICON PMU DRIVER
+>> -M:	Shaokun Zhang <zhangshaokun@hisilicon.com>
+>> +M:	Yicong Yang <yangyicong@hisilicon.com>
+>>   M:	Jonathan Cameron <jonathan.cameron@huawei.com>
+>>   S:	Supported
+>>   W:	http://www.hisilicon.com
