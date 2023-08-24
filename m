@@ -2,194 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EEB778771A
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 19:31:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB94478771C
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 19:32:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242823AbjHXRbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 13:31:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36884 "EHLO
+        id S242852AbjHXRcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 13:32:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242863AbjHXRbO (ORCPT
+        with ESMTP id S235786AbjHXRbx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 13:31:14 -0400
-Received: from cstnet.cn (smtp84.cstnet.cn [159.226.251.84])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E046E19B5;
-        Thu, 24 Aug 2023 10:31:07 -0700 (PDT)
-Received: from [192.168.0.107] (unknown [111.197.209.91])
-        by APP-05 (Coremail) with SMTP id zQCowACXnGC8k+dkhsHRBA--.2541S2;
-        Fri, 25 Aug 2023 01:30:36 +0800 (CST)
-Message-ID: <4177c0c5-4d36-75e1-84e2-c6ac82b74e50@iscas.ac.cn>
-Date:   Fri, 25 Aug 2023 01:30:36 +0800
+        Thu, 24 Aug 2023 13:31:53 -0400
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39C5B19BA
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 10:31:50 -0700 (PDT)
+Received: by mail-qt1-x830.google.com with SMTP id d75a77b69052e-40c72caec5cso29551cf.0
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 10:31:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692898309; x=1693503109; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=C5NYspLPatoaGHxnDOw5o1c2qcpc2OSQyPvAfJjpWsY=;
+        b=q9R1lQKaeJYJSYiReqCHI0EjkndXWMEFuz2mre4y7dwU8sfWLYmKuyduwiPAn+1RYT
+         QJ5tAms0hyMdUc7IgtWmIYqT6umYuEEDMzvnZgKZOY9HKN0QP80aQB9YIWWbylms7YHY
+         rKXEJfUc+fvmhRLSyzXdyccYqEeYaGol5jpp94pKSvE8vvN1GtlRWokRzORMTqUqRNSk
+         VKkrj9NlwKsabktJpnutqI4SxiMhG7MLQ7cT+TXnx+gy1+4Se+OKkG4EV7I8f1+5KMkO
+         N9jB7NDq49OeuMAGAi3VR0XqgwlvEgBtxK+vYuKL/qGcgEqC0Nc92fftkqJgJlVew26H
+         0seQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692898309; x=1693503109;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=C5NYspLPatoaGHxnDOw5o1c2qcpc2OSQyPvAfJjpWsY=;
+        b=G6AzNY860qONXX2HzcbkypIf/1VIVyg/ck+idHdifnqiuE2Sudw5GTO1JfvMVjGwq8
+         6FmEuRDOtjuMyuSvs5XcgP1O7wZnJdbxH09tC68nVn6Uv7aOWad6ulsRcgT4RNLZH5ms
+         /QMKcxtG4LoEv7H4bgqYxKhTbFOPRGXFvsbbOaPDL7uNwBRcCy9MB0yEB1mm7UrVh7EE
+         OKl8zWEKfcZQm6hD9srct59fKs2I5sVuTvq49yBv44MtrYqZPgVMSVYR+kQYT1cm5n1i
+         4AHkZy8qq8oPKweMnrAHO42RCP8NJuL0DTEANVOsXkRDz00cQvSMXZQSM/oCTbudoFqX
+         v8Vw==
+X-Gm-Message-State: AOJu0YyqJZfU9RigDrlM62HkGjG39zNP7fFnlEoBY+oaqtKZMWvPhufv
+        vUxUkqmXyenzFMhHPqq3dxFqPS4HCZ4di1HglGIdcg==
+X-Google-Smtp-Source: AGHT+IEjg75CKZcLLJGcqGqw1dzVXkcrlwxKEuNCTdQ7rOkDY2ROvgciZoQYzsKm7PvlmUhjMLYr5BwGycobXZUMbnU=
+X-Received: by 2002:ac8:7fc4:0:b0:412:9cd:473b with SMTP id
+ b4-20020ac87fc4000000b0041209cd473bmr22689qtk.4.1692898309180; Thu, 24 Aug
+ 2023 10:31:49 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v5] riscv: Handle zicsr/zifencei issue between gcc and
- binutils
-Content-Language: en-US
-From:   Mingzheng Xing <xingmingzheng@iscas.ac.cn>
-To:     Conor Dooley <conor@kernel.org>,
-        Conor Dooley <conor.dooley@microchip.com>
-Cc:     patchwork-bot+linux-riscv@kernel.org,
-        linux-riscv@lists.infradead.org, paul.walmsley@sifive.com,
-        palmer@dabbelt.com, aou@eecs.berkeley.edu, nathan@kernel.org,
-        ndesaulniers@google.com, trix@redhat.com, bmeng@tinylab.org,
-        guoren@kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, stable@vger.kernel.org
-References: <20230809165648.21071-1-xingmingzheng@iscas.ac.cn>
- <169228562484.20811.14246462375671910714.git-patchwork-notify@kernel.org>
- <20230823-captive-abdomen-befd942a4a73@wendy>
- <20230823-facelift-ovary-41f2eb4d9eac@spud>
- <4677fc33-6e76-21e6-2a7f-f12670bc1ce2@iscas.ac.cn>
-Organization: ISCAS
-In-Reply-To: <4677fc33-6e76-21e6-2a7f-f12670bc1ce2@iscas.ac.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: zQCowACXnGC8k+dkhsHRBA--.2541S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxXFWrWF4xWryktFWxKFWxZwb_yoWrKF4kp3
-        4rGF17GrWUJr18Jwn7tr1jqryjyrWUJ34UXrn8JF1UJryDWr1jqF1xXryY9r1DtF4rGr18
-        Ar1UGF1xZr1DJrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvlb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4
-        A2jsIEc7CjxVAFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l
-        c7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJV
-        W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
-        1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
-        IIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvE
-        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
-        DU0xZFpf9x07beAp5UUUUU=
-X-Originating-IP: [111.197.209.91]
-X-CM-SenderInfo: 50lqwzhlqj6xxhqjqxpvfd2hldfou0/1tbiAxMNCmTnYidivAAAsP
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230824041330.266337-1-irogers@google.com> <20230824041330.266337-7-irogers@google.com>
+ <ZOdiX4eJHFfFbQhi@kernel.org>
+In-Reply-To: <ZOdiX4eJHFfFbQhi@kernel.org>
+From:   Ian Rogers <irogers@google.com>
+Date:   Thu, 24 Aug 2023 10:31:37 -0700
+Message-ID: <CAP-5=fU3PVCFjyy_R2w9xWbjBWktsuz9+crKhZNGqUR2jdKMrw@mail.gmail.com>
+Subject: Re: [PATCH v2 06/18] perf s390 s390_cpumcfdg_dump: Don't scan all PMUs
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Thomas Richter <tmricht@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Sumanth Korikkar <sumanthk@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        James Clark <james.clark@arm.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        John Garry <john.g.garry@oracle.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Jing Zhang <renyu.zj@linux.alibaba.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Rob Herring <robh@kernel.org>,
+        Gaosheng Cui <cuigaosheng1@huawei.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/24/23 19:32, Mingzheng Xing wrote:
-> On 8/23/23 21:31, Conor Dooley wrote:
->> On Wed, Aug 23, 2023 at 12:51:13PM +0100, Conor Dooley wrote:
->>> On Thu, Aug 17, 2023 at 03:20:24PM +0000, 
->>> patchwork-bot+linux-riscv@kernel.org wrote:
->>>> Hello:
->>>>
->>>> This patch was applied to riscv/linux.git (fixes)
->>>> by Palmer Dabbelt <palmer@rivosinc.com>:
->>>>
->>>> On Thu, 10 Aug 2023 00:56:48 +0800 you wrote:
->>>>> Binutils-2.38 and GCC-12.1.0 bumped[0][1] the default ISA spec to 
->>>>> the newer
->>>>> 20191213 version which moves some instructions from the I 
->>>>> extension to the
->>>>> Zicsr and Zifencei extensions. So if one of the binutils and GCC 
->>>>> exceeds
->>>>> that version, we should explicitly specifying Zicsr and Zifencei 
->>>>> via -march
->>>>> to cope with the new changes. but this only occurs when binutils 
->>>>> >= 2.36
->>>>> and GCC >= 11.1.0. It's a different story when binutils < 2.36.
->>>>>
->>>>> [...]
->>>> Here is the summary with links:
->>>>    - [v5] riscv: Handle zicsr/zifencei issue between gcc and binutils
->>>>      https://git.kernel.org/riscv/c/ca09f772ccca
->>> *sigh* so this breaks the build for gcc-11 & binutils 2.37 w/
->>>     Assembler messages:
->>>     Error: cannot find default versions of the ISA extension `zicsr'
->>>     Error: cannot find default versions of the ISA extension `zifencei'
->>>
->>> I'll have a poke later.
->> So uh, are we sure that this should not be:
->> -       depends on (CC_IS_CLANG && CLANG_VERSION < 170000) || 
->> (CC_IS_GCC && GCC_VERSION < 110100)
->> +       depends on (CC_IS_CLANG && CLANG_VERSION < 170000) || 
->> (CC_IS_GCC && GCC_VERSION <= 110100)
->>
->> My gcc-11.1 + binutils 2.37 toolchain built from riscv-gnu-toolchain
->> doesn't have the default versions & the above diff fixes the build.
+On Thu, Aug 24, 2023 at 7:00=E2=80=AFAM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
 >
-> I reproduced the error, the combination of gcc-11.1 and
-> binutils 2.37 does cause errors. What a surprise, since binutils
-> 2.36 and 2.38 are fine.
+> Em Wed, Aug 23, 2023 at 09:13:18PM -0700, Ian Rogers escreveu:
+> > Rather than scanning all PMUs for a counter name, scan the PMU
+> > associated with the evsel of the sample. This is done to remove a
+> > dependence on pmu-events.h.
 >
-> I used git bisect to locate this commit[1] for binutils.
-> I'll test this diff in more detail later. Thanks!
+> I'm applying this one, and CCing the S/390 developers so that they can
+> try this and maybe provide an Acked-by/Tested-by,
+
+Thanks Arnaldo! You're right that I wasn't able to test this s390
+change on an s390.
+
+Ian
+
+> - Arnaldo
 >
-> [1] 
-> https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=f0bae2552db1dd4f1995608fbf6648fcee4e9e0c
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> > ---
+> >  tools/perf/util/s390-sample-raw.c | 50 ++++++++++++++++---------------
+> >  1 file changed, 26 insertions(+), 24 deletions(-)
+> >
+> > diff --git a/tools/perf/util/s390-sample-raw.c b/tools/perf/util/s390-s=
+ample-raw.c
+> > index 91330c874170..dc1ed3e95d4d 100644
+> > --- a/tools/perf/util/s390-sample-raw.c
+> > +++ b/tools/perf/util/s390-sample-raw.c
+> > @@ -27,7 +27,7 @@
+> >  #include "color.h"
+> >  #include "sample-raw.h"
+> >  #include "s390-cpumcf-kernel.h"
+> > -#include "pmu-events/pmu-events.h"
+> > +#include "util/pmu.h"
+> >  #include "util/sample.h"
+> >
+> >  static size_t ctrset_size(struct cf_ctrset_entry *set)
+> > @@ -132,56 +132,57 @@ static int get_counterset_start(int setnr)
+> >
+> >  struct get_counter_name_data {
+> >       int wanted;
+> > -     const char *result;
+> > +     char *result;
+> >  };
+> >
+> > -static int get_counter_name_callback(const struct pmu_event *evp,
+> > -                                  const struct pmu_events_table *table=
+ __maybe_unused,
+> > -                                  void *vdata)
+> > +static int get_counter_name_callback(void *vdata, struct pmu_event_inf=
+o *info)
+> >  {
+> >       struct get_counter_name_data *data =3D vdata;
+> >       int rc, event_nr;
+> > +     const char *event_str;
+> >
+> > -     if (evp->name =3D=3D NULL || evp->event =3D=3D NULL)
+> > +     if (info->str =3D=3D NULL)
+> >               return 0;
+> > -     rc =3D sscanf(evp->event, "event=3D%x", &event_nr);
+> > +
+> > +     event_str =3D strstr(info->str, "event=3D");
+> > +     if (!event_str)
+> > +             return 0;
+> > +
+> > +     rc =3D sscanf(event_str, "event=3D%x", &event_nr);
+> >       if (rc =3D=3D 1 && event_nr =3D=3D data->wanted) {
+> > -             data->result =3D evp->name;
+> > +             data->result =3D strdup(info->name);
+> >               return 1; /* Terminate the search. */
+> >       }
+> >       return 0;
+> >  }
+> >
+> > -/* Scan the PMU table and extract the logical name of a counter from t=
+he
+> > - * PMU events table. Input is the counter set and counter number with =
+in the
+> > - * set. Construct the event number and use this as key. If they match =
+return
+> > - * the name of this counter.
+> > +/* Scan the PMU and extract the logical name of a counter from the eve=
+nt. Input
+> > + * is the counter set and counter number with in the set. Construct th=
+e event
+> > + * number and use this as key. If they match return the name of this c=
+ounter.
+> >   * If no match is found a NULL pointer is returned.
+> >   */
+> > -static const char *get_counter_name(int set, int nr, const struct pmu_=
+events_table *table)
+> > +static char *get_counter_name(int set, int nr, struct perf_pmu *pmu)
+> >  {
+> >       struct get_counter_name_data data =3D {
+> >               .wanted =3D get_counterset_start(set) + nr,
+> >               .result =3D NULL,
+> >       };
+> >
+> > -     if (!table)
+> > +     if (!pmu)
+> >               return NULL;
+> >
+> > -     pmu_events_table__for_each_event(table, get_counter_name_callback=
+, &data);
+> > +     perf_pmu__for_each_event(pmu, &data, get_counter_name_callback);
+> >       return data.result;
+> >  }
+> >
+> > -static void s390_cpumcfdg_dump(struct perf_sample *sample)
+> > +static void s390_cpumcfdg_dump(struct perf_pmu *pmu, struct perf_sampl=
+e *sample)
+> >  {
+> >       size_t i, len =3D sample->raw_size, offset =3D 0;
+> >       unsigned char *buf =3D sample->raw_data;
+> >       const char *color =3D PERF_COLOR_BLUE;
+> >       struct cf_ctrset_entry *cep, ce;
+> > -     const struct pmu_events_table *table;
+> >       u64 *p;
+> >
+> > -     table =3D pmu_events_table__find();
+> >       while (offset < len) {
+> >               cep =3D (struct cf_ctrset_entry *)(buf + offset);
+> >
+> > @@ -199,11 +200,12 @@ static void s390_cpumcfdg_dump(struct perf_sample=
+ *sample)
+> >               color_fprintf(stdout, color, "    [%#08zx] Counterset:%d"
+> >                             " Counters:%d\n", offset, ce.set, ce.ctr);
+> >               for (i =3D 0, p =3D (u64 *)(cep + 1); i < ce.ctr; ++i, ++=
+p) {
+> > -                     const char *ev_name =3D get_counter_name(ce.set, =
+i, table);
+> > +                     char *ev_name =3D get_counter_name(ce.set, i, pmu=
+);
+> >
+> >                       color_fprintf(stdout, color,
+> >                                     "\tCounter:%03d %s Value:%#018lx\n"=
+, i,
+> >                                     ev_name ?: "<unknown>", be64_to_cpu=
+(*p));
+> > +                     free(ev_name);
+> >               }
+> >               offset +=3D ctrset_size(&ce);
+> >       }
+> > @@ -216,14 +218,14 @@ static void s390_cpumcfdg_dump(struct perf_sample=
+ *sample)
+> >   */
+> >  void evlist__s390_sample_raw(struct evlist *evlist, union perf_event *=
+event, struct perf_sample *sample)
+> >  {
+> > -     struct evsel *ev_bc000;
+> > +     struct evsel *evsel;
+> >
+> >       if (event->header.type !=3D PERF_RECORD_SAMPLE)
+> >               return;
+> >
+> > -     ev_bc000 =3D evlist__event2evsel(evlist, event);
+> > -     if (ev_bc000 =3D=3D NULL ||
+> > -         ev_bc000->core.attr.config !=3D PERF_EVENT_CPUM_CF_DIAG)
+> > +     evsel =3D evlist__event2evsel(evlist, event);
+> > +     if (evsel =3D=3D NULL ||
+> > +         evsel->core.attr.config !=3D PERF_EVENT_CPUM_CF_DIAG)
+> >               return;
+> >
+> >       /* Display raw data on screen */
+> > @@ -231,5 +233,5 @@ void evlist__s390_sample_raw(struct evlist *evlist,=
+ union perf_event *event, str
+> >               pr_err("Invalid counter set data encountered\n");
+> >               return;
+> >       }
+> > -     s390_cpumcfdg_dump(sample);
+> > +     s390_cpumcfdg_dump(evsel->pmu, sample);
+> >  }
+> > --
+> > 2.42.0.rc1.204.g551eb34607-goog
+> >
 >
-
-Hi, Conor.
-The above error does originate from link[1] mentioned above, which was
-resolved in gcc-12.1.0[2], and gcc-11.3.0 made the backport[3].
-So gcc-11.2.0 combined with binutils 2.37 produces the same error.
-I think we should do the following diff to fix it:
--       depends on (CC_IS_CLANG && CLANG_VERSION < 170000) || (CC_IS_GCC 
-&& GCC_VERSION < 110100)
-+       depends on (CC_IS_CLANG && CLANG_VERSION < 170000) || (CC_IS_GCC 
-&& GCC_VERSION < 110300)
-
-Then below are my test results after the fix:
-
-gcc        binutils
-
-10.5.0     2.35            ok
-10.5.0     2.36            ok
-10.5.0     2.37            ok
-10.5.0     2.38            ok
-
-11.1.0     2.35            ok
-11.1.0     2.36            ok
-11.1.0     2.37            ok
-11.1.0     2.38            ok
-
-11.2.0     2.35            ok
-11.2.0     2.36            ok
-11.2.0     2.37            ok
-11.2.0     2.38            ok
-
-11.3.0     2.35            ok
-11.3.0     2.36            ok
-11.3.0     2.37            ok
-11.3.0     2.38            ok
-
-11.4.0     2.35            ok
-11.4.0     2.36            ok
-11.4.0     2.37            ok
-11.4.0     2.38            ok
-
-12.1.0     2.35            ok
-12.1.0     2.36            ok
-12.1.0     2.37            ok
-12.1.0     2.38            ok
-
-12.2.0     2.35            ok
-12.2.0     2.36            ok
-12.2.0     2.37            ok
-12.2.0     2.38            ok
-
-[1] 
-https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=f0bae2552db1dd4f1995608fbf6648fcee4e9e0c
-[2] 
-https://gcc.gnu.org/git/?p=gcc.git;a=commit;h=ca2bbb88f999f4d3cc40e89bc1aba712505dd598
-[3] 
-https://gcc.gnu.org/git/?p=gcc.git;a=commit;h=d29f5d6ab513c52fd872f532c492e35ae9fd6671
-
-Thanks,
-Mingzheng.
-
->>
->> Thanks,
->> Conor.
+> --
 >
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
-
+> - Arnaldo
