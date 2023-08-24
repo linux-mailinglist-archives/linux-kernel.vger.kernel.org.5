@@ -2,174 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13739787055
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 15:36:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41C69787057
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 15:36:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240088AbjHXNfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 09:35:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44772 "EHLO
+        id S241269AbjHXNgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 09:36:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241278AbjHXNfU (ORCPT
+        with ESMTP id S241234AbjHXNgB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 09:35:20 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AF3A19A8;
-        Thu, 24 Aug 2023 06:35:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692884118; x=1724420118;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=1jZ/aiaJGxJZwBAAGXAHF5rMlxlslZZhT8hph6XpXvs=;
-  b=oE3RIZ9t6WPPZmlcFLY0oXXbklbHFLubtSsc1S1tkBAbEMEj8xgOiT1U
-   uzYiECu1qZv3lZWnCkzaZOXQkCw87r02/BMa2Ghol8GxdGdm6FrKz7PYQ
-   kpwQJEUP3gqOJOO4Qq9E9B1108V6EyQt8KdY1q4LDzfZCwCGFSjSwGSR6
-   vVwrIKEix9nfyHA2kOp1KjDAPMjjG/vPKIh4Dab7ajjsp8Fk1beqJ2XOE
-   Qej+AobQnm8D6HJua9pnDhJR8JohqmctnZ6rkM5QgIebQGvVqnTR10E5L
-   pdU2km34ZO5X6xN7Zq6N682WW/wI/QxkZJz7xqwaWsf9MJPCjPDqwRk4k
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="373317461"
-X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
-   d="scan'208";a="373317461"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 06:35:17 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="860704164"
-X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
-   d="scan'208";a="860704164"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga004.jf.intel.com with ESMTP; 24 Aug 2023 06:35:11 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@intel.com>)
-        id 1qZAUO-005Xtp-0B;
-        Thu, 24 Aug 2023 16:35:08 +0300
-Date:   Thu, 24 Aug 2023 16:35:07 +0300
-From:   Andy Shevchenko <andriy.shevchenko@intel.com>
-To:     Martin =?utf-8?B?WmHFpW92acSN?= <m.zatovic1@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        gregkh@linuxfoundation.org, linus.walleij@linaro.org,
-        quic_jhugo@quicinc.com, nipun.gupta@amd.com, tzimmermann@suse.de,
-        ogabbay@kernel.org, mathieu.poirier@linaro.org, axboe@kernel.dk,
-        damien.lemoal@opensource.wdc.com, linux@zary.sk, arnd@arndb.de,
-        yangyicong@hisilicon.com, benjamin.tissoires@redhat.com,
-        masahiroy@kernel.org, jacek.lawrynowicz@linux.intel.com,
-        geert+renesas@glider.be, devicetree@vger.kernel.org
-Subject: Re: [PATCHv5 4/4] wiegand: add Wiegand GPIO bitbanged controller
- driver
-Message-ID: <ZOdciyyM4/BYxXL9@smile.fi.intel.com>
-References: <20230824111015.57765-1-m.zatovic1@gmail.com>
- <20230824111015.57765-5-m.zatovic1@gmail.com>
+        Thu, 24 Aug 2023 09:36:01 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD02A19A5;
+        Thu, 24 Aug 2023 06:35:59 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 62AC46313F;
+        Thu, 24 Aug 2023 13:35:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CFECC433C7;
+        Thu, 24 Aug 2023 13:35:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1692884158;
+        bh=FoeW5Vf0WqDwd9w8w9n1OLSBxvLkKSrUFjawAzxgK5Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wO6K+J4gYSmVIxvG6AJs8XWztSAYYUx6KQlp04BrJNZZr50PFkHGPYaiuKgByK+hr
+         ZnZFVK6yk+oQHLDfGQh+uUl3vm8vFVWVeVf5Hj0Astq+d2hzxFMjmSEy54+dBheQso
+         RdCozM1P21Cs3h2gvuYXQV0+cvVz271OM+5Zqu0g=
+Date:   Thu, 24 Aug 2023 15:35:55 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>, stable@vger.kernel.org,
+        patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+Subject: Re: [PATCH 6.1 000/194] 6.1.47-rc1 review
+Message-ID: <2023082401-arrange-bulk-d42a@gregkh>
+References: <20230821194122.695845670@linuxfoundation.org>
+ <991b93d2-9fde-4233-97d5-1133a9360d02@roeck-us.net>
+ <2023082309-veggie-unwoven-a7df@gregkh>
+ <CA+G9fYvwxuVpSn24YvtdNXaofg2JtZDREatOpDsKTVJX+nFN3Q@mail.gmail.com>
+ <2d8a5f48-6c50-4c12-8a3d-23e621c6b722@roeck-us.net>
+ <2023082325-expansion-revoke-1f3a@gregkh>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230824111015.57765-5-m.zatovic1@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <2023082325-expansion-revoke-1f3a@gregkh>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 01:10:15PM +0200, Martin Zaťovič wrote:
-> This controller formats the data to a Wiegand format and bit-bangs
-> the message on devicetree defined GPIO lines.
+On Wed, Aug 23, 2023 at 05:50:42PM +0200, Greg Kroah-Hartman wrote:
+> On Wed, Aug 23, 2023 at 06:30:13AM -0700, Guenter Roeck wrote:
+> > On Wed, Aug 23, 2023 at 01:47:39PM +0530, Naresh Kamboju wrote:
+> > > On Wed, 23 Aug 2023 at 12:33, Greg Kroah-Hartman
+> > > <gregkh@linuxfoundation.org> wrote:
+> > > >
+> > > > On Tue, Aug 22, 2023 at 05:49:54PM -0700, Guenter Roeck wrote:
+> > > > > On Mon, Aug 21, 2023 at 09:39:39PM +0200, Greg Kroah-Hartman wrote:
+> > > > > > This is the start of the stable review cycle for the 6.1.47 release.
+> > > > > > There are 194 patches in this series, all will be posted as a response
+> > > > > > to this one.  If anyone has any issues with these being applied, please
+> > > > > > let me know.
+> > > > > >
+> > > > > > Responses should be made by Wed, 23 Aug 2023 19:40:45 +0000.
+> > > > > > Anything received after that time might be too late.
+> > > > > >
+> > > > >
+> > > > > Build results:
+> > > > >       total: 157 pass: 156 fail: 1
+> > > > > Failed builds:
+> > > > >       m68k:sun3_defconfig
+> > > > > Qemu test results:
+> > > > >       total: 521 pass: 519 fail: 2
+> > > > > Failed tests:
+> > > > >       arm:fuji-bmc:aspeed_g5_defconfig:notests:mem1G:mtd128,0,8,1:net,nic:aspeed-bmc-facebook-fuji:f2fs
+> > > > >       arm:bletchley-bmc,fmc-model=mt25qu02g,spi-model=mt25qu02g:aspeed_g5_defconfig:notests:mem1G:mtd256:net,nic:aspeed-bmc-facebook-bletchley:f2fs
+> > > > >
+> > > > > The m68k build failure is
+> > > > >
+> > > > > Inconsistent kallsyms data
+> > > > > Try make KALLSYMS_EXTRA_PASS=1 as a workaround
+> > > > >
+> > > > > I already have KALLSYMS_EXTRA_PASS=1 enabled, so that doesn't help.
+> > > > > Nothing to worry about. The f2fs crashes are still seen. They
+> > > > > also happen for other architectures, so it is not just an arm problem.
+> > > > > I'll probably just disable all f2fs testing going forward. If so I'll
+> > > > > send a note clarifying that the lack of reported test failures doesn't
+> > > > > mean that it works.
+> > > >
+> > > > I'll look into this later this week, next week to resolve the f2fs
+> > > > stuff.  I wanted to get to the other known bug fixes first.
+> > > >
+> > > > > For x86 I get the same runtime warning as everyone else.
+> > > >
+> > > > Yeah, this is troubling...
+> > > >
+> > > > Is it clang only?  I'll dig into this today...
+> > > 
+> > > It is seen with gcc-13 and clang-17 with few extra configs.
+> > > We are not booting defconfig.
+> > > 
+> > > The Kconfigs are enabled with KFENCE.
+> > > 
+> > I have KFENCE enabled as well, so it may well be that this triggers
+> > the warning. I don't see it in 6.4.y or upstream, though.
 > 
-> The driver creates a dev file for writing messages on the bus.
-> It also creates a sysfs file to control the payload length of
-> messages(in bits). If a message is shorter than the set payload
-> length, it will be discarded. On the other hand, if a message is
-> longer, the additional bits will be stripped off.
+> Ok, let me rip out all the x86 and objtool patches from this release,
+> get it out the door with the good things in there that everyone else
+> needs, and then we can focus on this mess...
+> 
+> Maybe I'll just backport _all_ objtool changes to sync things up better,
+> last time I tried that it was a maze of twisty passages, all coated in
+> assembly...
 
-...
+I got lost in the maze again today, ick.
 
-> +Date:		August 2023
+Anyway, I give up.  I'm just going to push out a -rc1 with just these
+changes in it today, and if people are upset about the runtime warning,
+then they can provide a working backport of this objtool patch.
 
-Unrealistic. Use https://hansen.beer/~dave/phb/ to define Date and
-KernelVersion fields.
+Ideally, the CPU vendor who is causing this mess will do that, as it's
+their issue we are spending all of this time on, not Linux's issue.
 
-...
+Also, oddly, I can not reproduce this problem here on my hardware at
+all.  Maybe because it's an AMD processor?  If so, makes sense, as the
+SRSO issue is only for Intel chips.
 
-> +#define WIEGAND_DEFAULT_PAYLOAD_LEN 26
+thanks,
 
-_LEN --> _BITS
-
-...
-
-> +	return store_ulong(&(ctlr->payload_len), buf, count, WIEGAND_MAX_PAYLEN_BYTES * 8);
-
-Yeah, again use _BITS directly.
-
-...
-
-> +/**
-> + * wiegand_gpio_send_bit - Sends a single bit
-
-Do not forget to validate this with scripts/kernel-doc.
-
-> + * @wiegand_gpio: Instance of the Wiegand
-> + * @value: Bit value to send
-> + * @last: Indicates last bit of a message
-> + *
-> + * To send a bit of value 1 following the wiegand protocol, one must set
-> + * the wiegand_data_hi to low for the duration of pulse. Similarly to send
-> + * a bit of value 0, the wiegand_data_lo is set to low for pulse duration.
-> + * This way the two lines are never low at the same time.
-> + */
-
-...
-
-> +	struct gpio_desc *gpio = value ? wiegand_gpio->gpios->desc[1] :
-> +						wiegand_gpio->gpios->desc[0];
-
-Make it separate line.
-
-	gpio = value ? wiegand_gpio->gpios->desc[1] : wiegand_gpio->gpios->desc[0];
-
-...
-
-> +	wiegand_gpio->gpios = devm_gpiod_get_array(dev, "data", GPIOD_OUT_HIGH);
-
-> +
-
-Redundant blank line.
-
-> +	if (IS_ERR(wiegand_gpio->gpios))
-> +		dev_err(dev, "unable to get gpios\n");
-> +
-> +	return PTR_ERR_OR_ZERO(wiegand_gpio->gpios);
-
-Oh.
-
-	wiegand_gpio->gpios = devm_gpiod_get_array(dev, "data", GPIOD_OUT_HIGH);
-	ret = PTR_...();
-	if (ret)
-		dev_err();
-
-	return ret;
-
-...
-
-> +static int wiegand_gpio_probe(struct platform_device *device)
-
-	device --> pdev
-
-...
-
-> +static const struct of_device_id wiegand_gpio_dt_idtable[] = {
-> +	{ .compatible = "wiegand-gpio", },
-
-Inner comma is not needed.
-
-> +	{}
-> +};
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+greg k-h
