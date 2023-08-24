@@ -2,226 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54AFB787259
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 16:53:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F671787266
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 16:54:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241826AbjHXOxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 10:53:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54818 "EHLO
+        id S241833AbjHXOxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 10:53:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241810AbjHXOwc (ORCPT
+        with ESMTP id S241882AbjHXOxS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 10:52:32 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB67E19AD;
-        Thu, 24 Aug 2023 07:52:29 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 59A6866EAB;
-        Thu, 24 Aug 2023 14:52:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69657C433C8;
-        Thu, 24 Aug 2023 14:52:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692888748;
-        bh=be9S20F26UBLGXvg5MoMfSeQ2U5uvkDtL1GKsTTbqZw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iUwNCS80mj+iVZGFqG7u6DEYz0TZJjBNBHxJI0jkvvovZipVwp28rL+DXoPS21AyX
-         aqm82FCka3HEYSbm1fDyyEhmoN5/E1a/DrsfE3fJwC2SmMVwCjr66kGlMk2ZskF9zn
-         F4T1JJZgPTTc0QOQ3TnecmDBZHEQQS/zArCTyYBQCZ8+i70rDdHHrFbDxBYOl6n8GC
-         9JrxUzu3NYwVY8yVnvzFLEtEtaOSjCq8pCqNP/J/2w3vSFTB4exrB9/PImarMYL17c
-         P5NYL+ZfHfdk0Y/+5ADJ9RuN3xGWRysPz4jDs7i35p94y1RLOIN6WC1VJt2Ywd3385
-         hC2SMDcYJufNw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 32DB440722; Thu, 24 Aug 2023 11:52:26 -0300 (-03)
-Date:   Thu, 24 Aug 2023 11:52:26 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        James Clark <james.clark@arm.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        John Garry <john.g.garry@oracle.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Jing Zhang <renyu.zj@linux.alibaba.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Rob Herring <robh@kernel.org>,
-        Gaosheng Cui <cuigaosheng1@huawei.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 00/18] Lazily load PMU data
-Message-ID: <ZOduqlhnP6+HNSUl@kernel.org>
-References: <20230824041330.266337-1-irogers@google.com>
+        Thu, 24 Aug 2023 10:53:18 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A38419A9
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 07:53:12 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id 46e09a7af769-6bd0425ad4fso4818217a34.2
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 07:53:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692888791; x=1693493591;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KEgAJuBvB5RrueW913Bvc0IDd42WONx4EX0C4ngeyAc=;
+        b=cvzc/Ma42+/EH5GnV6gaAnBXY5rYSiYhq4y7y1CG0RIlz3m5ivrGOqHDG9qJYtccXi
+         CtNva/9uHFWsO5lCrNmZ+QsUe3y1P/ANtqnuJdTfI46L+8TecVzb9Sgj4KkjQDT4pmKp
+         TMtmCnIHMqlVovR/5d96sRjp2QDxVVxGOTXbs8RaciNESp00L0YrG0IlVztW+P1EL7sY
+         hN9k2rc34EvMEV1xZ8+wa+TAfvX05EEwHA22eg0XHr+n4KZcJaiQLru90PKsOqzwFXqu
+         qLl6cOCDlS5BfpT8K/ATHjsxe+xEvExHpSvTUv9lmd0hxNu7M5KMmldvJaiuL2LMFzgM
+         X2wA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692888791; x=1693493591;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KEgAJuBvB5RrueW913Bvc0IDd42WONx4EX0C4ngeyAc=;
+        b=A7li0FlpUgwlndHVablaPGhpNCcWarBTQ/YqMpmDnIFZgob7nvye+U+8AyQZLGD5xQ
+         MQSF48We5S0VQM9TJ2I38gtFl1U+sVItNHlm8LGnw1f1jLwTa3CdxsX4nqYhm/AOJwVl
+         //3Xont5CLc2Qg96CNy3HqPZY6trau2SZ+OPmdR1EZEvvJxUVbv8JbYZcNUIIvKhbXyq
+         xeJR798hwjuTcQ5EtM40TmIRjFv0dSseQPcFkqtcwaqNbfY9OFc1MuSSZIWQOBWhLSlf
+         h3yU+dwBXkXAWCq+wPr7I0vPVmZidkhNB10cYMFqxcQ1fwe+z+YiyPWNQFSLsk5XHulH
+         SmIg==
+X-Gm-Message-State: AOJu0YwEKIjXl+aw0JuDLwssAPgYtj1BgbgKP1W+YfGzpT9m7P1tZ2P4
+        DojzJssA/pBGIJlXMT/Zgrj4Kdw9eSBXH4lf6ak=
+X-Google-Smtp-Source: AGHT+IHkkjwf7Pf1Rx/dcEiwdD8uFdhQ76ZVl2mt75hB4yRbeXBGdMKP9T/bACPndUFjk98cNFZLiNjyEpjNR0fqUuY=
+X-Received: by 2002:a05:6870:9722:b0:1b7:4521:14b6 with SMTP id
+ n34-20020a056870972200b001b7452114b6mr19020700oaq.5.1692888791355; Thu, 24
+ Aug 2023 07:53:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230824041330.266337-1-irogers@google.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230824073710.2677348-1-lee@kernel.org> <20230824073710.2677348-8-lee@kernel.org>
+In-Reply-To: <20230824073710.2677348-8-lee@kernel.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Thu, 24 Aug 2023 10:53:00 -0400
+Message-ID: <CADnq5_O7m7QPEOi8Fgr5a4V6HcLNUyOuYO23Y=sGYtbnF6r_CQ@mail.gmail.com>
+Subject: Re: [PATCH 07/20] drm/radeon/radeon_ttm: Remove unused variable 'rbo'
+ from radeon_bo_move()
+To:     Lee Jones <lee@kernel.org>
+Cc:     "Pan, Xinhui" <Xinhui.Pan@amd.com>, linux-kernel@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org,
+        Jerome Glisse <glisse@freedesktop.org>,
+        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        David Airlie <airlied@gmail.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Aug 23, 2023 at 09:13:12PM -0700, Ian Rogers escreveu:
-> Lazily load PMU data both from sysfs and json files. Reorganize
-> json data to be more PMU oriented to facilitate this, for
-> example, json data is now sorted into arrays for their PMU.
-> 
-> In refactoring the code some changes were made to get rid of maximum
-> encoding sizes for events (256 bytes), with input files being directly
-> passed to the lex generated code. There is also a small event parse
-> error message improvement.
-> 
-> Some results from an Intel tigerlake laptop running Debian:
-> 
-> Binary size reduction of 5.3% or 552,864 bytes because the PMU
-> name no longer appears in the string or desc field.
-> 
-> stat -e cpu/cycles/ minor faults reduced from 1733 to 1667, open calls reduced
-> from 171 to 94.
-> 
-> stat default minor faults reduced from 1805 to 1717, open calls reduced
-> from 654 to 343.
-> 
-> Average PMU scanning reduced from 4720.641usec to 2927.293usec.
-> Average core PMU scanning reduced from 1004.658usec to 232.668usec
-> (4.3x faster).
-> 
-> v2: Add error path for failing strdup when allocating a format,
->     suggested by Arnaldo. Rebased on top of tmp.perf-tools-next
->     removing 8 patches. Added "perf jevents: Don't append Unit to
->     desc" to save yet more encoding json event space.
+Applied.  Thanks!
 
-So this is failing here:
-
-[acme@quaco ~]$ perf test 10
- 10: PMU events                                 :
- 10.1: PMU event table sanity                           : FAILED!
- 10.2: PMU event map aliases                            : FAILED!
- 10.3: Parsing of PMU event table metrics               : Ok
- 10.4: Parsing of PMU event table metrics with fake PMUs: Ok
- 10.5: Parsing of metric thresholds with fake PMUs      : Ok
-[acme@quaco ~]$
-
-[root@quaco ~]# grep -m1 "model name" /proc/cpuinfo
-model name	: Intel(R) Core(TM) i7-8650U CPU @ 1.90GHz
-[root@quaco ~]# 
-
-
-[root@quaco ~]# perf test -vv -F 10 |& head -40
- 10: PMU events                                                      :
- 10.1: PMU event table sanity                                        :
---- start ---
-testing event table bp_l1_btb_correct: pass
-testing event table bp_l2_btb_correct: pass
-testing event table dispatch_blocked.any: pass
-testing event table eist_trans: pass
-testing event table l3_cache_rd: pass
-testing event table segment_reg_loads.any: pass
-testing event e1 uncore_hisi_ddrc.flux_wcmd: mismatched desc, DDRC write commands vs DDRC write commands. Unit: hisi_sccl,ddrc
-
-
-Strange:
-
-        if (!is_same(e1->desc, e2->desc)) {
-                pr_debug2("testing event e1 %s: mismatched desc, %s vs %s\n",
-                          e1->name, e1->desc, e2->desc);
-                return -1;
-        }
-
-Adding "" around those descs:
-
-testing event e1 uncore_hisi_ddrc.flux_wcmd: mismatched desc, "DDRC write commands" vs "DDRC write commands. Unit: hisi_sccl,ddrc"
-
-I see, its the last patch, removing it the tests passes, please take a
-look at tmp.perf-tools-next
-
-- Arnaldo
-
-
-
----- end ----
-PMU events subtest 1: FAILED!
- 10.2: PMU event map aliases                                         :
---- start ---
-Using CPUID GenuineIntel-6-8E-A
-testing aliases core PMU cpu: matched event bp_l1_btb_correct
-testing aliases core PMU cpu: matched event bp_l2_btb_correct
-testing aliases core PMU cpu: matched event segment_reg_loads.any
-testing aliases core PMU cpu: matched event dispatch_blocked.any
-testing aliases core PMU cpu: matched event eist_trans
-testing aliases core PMU cpu: matched event l3_cache_rd
-testing core PMU cpu aliases: pass
-testing aliases PMU hisi_sccl1_ddrc2: mismatched desc, DDRC write commands vs DDRC write commands. Unit: hisi_sccl,ddrc
-testing aliases uncore PMU hisi_sccl1_ddrc2: could not match alias uncore_hisi_ddrc.flux_wcmd
----- end ----
-PMU events subtest 2: FAILED!
- 10.3: Parsing of PMU event table metrics                            :
---- start ---
-Found metric 'CPI'
-metric expr 1 / IPC for CPI
-parsing metric: 1 / IPC
-metric expr inst_retired.any / cpu_clk_unhalted.thread for IPC
-parsing metric: inst_retired.any / cpu_clk_unhalted.thread
-found event inst_retired.any
-found event cpu_clk_unhalted.thread
-Parsing metric events '{inst_retired.any/metric-id=inst_retired.any/,cpu_clk_unhalted.thread/metric-id=cpu_clk_unhalted.thread/}:W'
-Attempting to add event pmu 'inst_retired.any' with '(null),' that may result in non-fatal errors
-After aliases, add event pmu 'inst_retired.any' with '(null),' that may result in non-fatal errors
-Attempting to add event pmu 'cpu_clk_unhalted.thread' with '(null),' that may result in non-fatal errors
-After aliases, add event pmu 'cpu_clk_unhalted.thread' with '(null),' that may result in non-fatal errors
-[root@quaco ~]#
-
-Trying on a AMD 5950x:
-
-[root@five ~]# perf test -F -vv 10 |& head -40
- 10: PMU events                                                      :
- 10.1: PMU event table sanity                                        :
---- start ---
-testing event table bp_l1_btb_correct: pass
-testing event table bp_l2_btb_correct: pass
-testing event table dispatch_blocked.any: pass
-testing event table eist_trans: pass
-testing event table l3_cache_rd: pass
-testing event table segment_reg_loads.any: pass
-testing event e1 uncore_hisi_ddrc.flux_wcmd: mismatched desc, DDRC write commands vs DDRC write commands. Unit: hisi_sccl,ddrc
----- end ----
-PMU events subtest 1: FAILED!
- 10.2: PMU event map aliases                                         :
---- start ---
-Using CPUID AuthenticAMD-25-21-0
-testing aliases core PMU cpu: matched event bp_l1_btb_correct
-testing aliases core PMU cpu: matched event bp_l2_btb_correct
-testing aliases core PMU cpu: matched event segment_reg_loads.any
-testing aliases core PMU cpu: matched event dispatch_blocked.any
-testing aliases core PMU cpu: matched event eist_trans
-testing aliases core PMU cpu: matched event l3_cache_rd
-testing core PMU cpu aliases: pass
-testing aliases PMU hisi_sccl1_ddrc2: mismatched desc, DDRC write commands vs DDRC write commands. Unit: hisi_sccl,ddrc
-testing aliases uncore PMU hisi_sccl1_ddrc2: could not match alias uncore_hisi_ddrc.flux_wcmd
----- end ----
-PMU events subtest 2: FAILED!
- 10.3: Parsing of PMU event table metrics                            :
---- start ---
-Found metric 'CPI'
-metric expr 1 / IPC for CPI
-parsing metric: 1 / IPC
-metric expr inst_retired.any / cpu_clk_unhalted.thread for IPC
-parsing metric: inst_retired.any / cpu_clk_unhalted.thread
-found event inst_retired.any
-found event cpu_clk_unhalted.thread
-Parsing metric events '{inst_retired.any/metric-id=inst_retired.any/,cpu_clk_unhalted.thread/metric-id=cpu_clk_unhalted.thread/}:W'
-Attempting to add event pmu 'inst_retired.any' with '(null),' that may result in non-fatal errors
-After aliases, add event pmu 'inst_retired.any' with '(null),' that may result in non-fatal errors
-Attempting to add event pmu 'cpu_clk_unhalted.thread' with '(null),' that may result in non-fatal errors
-After aliases, add event pmu 'cpu_clk_unhalted.thread' with '(null),' that may result in non-fatal errors
-[root@five ~]#
+On Thu, Aug 24, 2023 at 3:37=E2=80=AFAM Lee Jones <lee@kernel.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/radeon/radeon_ttm.c: In function =E2=80=98radeon_bo_move=
+=E2=80=99:
+>  drivers/gpu/drm/radeon/radeon_ttm.c:201:27: warning: variable =E2=80=98r=
+bo=E2=80=99 set but not used [-Wunused-but-set-variable]
+>
+> Signed-off-by: Lee Jones <lee@kernel.org>
+> ---
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: "Pan, Xinhui" <Xinhui.Pan@amd.com>
+> Cc: David Airlie <airlied@gmail.com>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Jerome Glisse <glisse@freedesktop.org>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> ---
+>  drivers/gpu/drm/radeon/radeon_ttm.c | 2 --
+>  1 file changed, 2 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/radeon/radeon_ttm.c b/drivers/gpu/drm/radeon=
+/radeon_ttm.c
+> index 4eb83ccc4906a..de4e6d78f1e12 100644
+> --- a/drivers/gpu/drm/radeon/radeon_ttm.c
+> +++ b/drivers/gpu/drm/radeon/radeon_ttm.c
+> @@ -197,7 +197,6 @@ static int radeon_bo_move(struct ttm_buffer_object *b=
+o, bool evict,
+>  {
+>         struct ttm_resource *old_mem =3D bo->resource;
+>         struct radeon_device *rdev;
+> -       struct radeon_bo *rbo;
+>         int r;
+>
+>         if (new_mem->mem_type =3D=3D TTM_PL_TT) {
+> @@ -210,7 +209,6 @@ static int radeon_bo_move(struct ttm_buffer_object *b=
+o, bool evict,
+>         if (r)
+>                 return r;
+>
+> -       rbo =3D container_of(bo, struct radeon_bo, tbo);
+>         rdev =3D radeon_get_rdev(bo->bdev);
+>         if (!old_mem || (old_mem->mem_type =3D=3D TTM_PL_SYSTEM &&
+>                          bo->ttm =3D=3D NULL)) {
+> --
+> 2.42.0.rc1.204.g551eb34607-goog
+>
