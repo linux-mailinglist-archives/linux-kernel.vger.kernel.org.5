@@ -2,152 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ACAE786C00
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 11:33:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 482FC786C13
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 11:34:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240788AbjHXJco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 05:32:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36068 "EHLO
+        id S239985AbjHXJeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 05:34:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240743AbjHXJcW (ORCPT
+        with ESMTP id S240664AbjHXJdm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 05:32:22 -0400
-Received: from mail-vk1-xa2f.google.com (mail-vk1-xa2f.google.com [IPv6:2607:f8b0:4864:20::a2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEE1DE67
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 02:32:19 -0700 (PDT)
-Received: by mail-vk1-xa2f.google.com with SMTP id 71dfb90a1353d-48d165bd108so1417105e0c.0
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 02:32:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1692869539; x=1693474339;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=b1nJSzgjZ7Hvug6lAMKQXqVUZrQzEy/l96DGgOXlfO8=;
-        b=CKzVfACJQo1d9tqDKJByGBJEB5Mf/1wUPACkatvtu1RhnpcC3QmqJvYL3EKM3DgJ2f
-         WHpdyT8x4bP5n+0YlSUumFj7o7yObmw/vNceTfaLIBIQy6xHSuEEURqqP0GLWW5WK5sE
-         PnKcEHUClQCExCPxtUkQOxM9TqncHO15aL98ASTqSqZ01zr4dqAdZTiwQv4Q6HXpM+1n
-         l7GBdqoFtzunLgX663GXiqsudg3X7zQfxu8CD4GUTr85AaR8CRH5rA+qQ0nBDKxbIKzB
-         Dcozt6RVyn9P2Eh+74c3mCP7J4bUXxJ941oAO2Ft1J72sDu2n+68j4FyTCTBih64uj3s
-         NkbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692869539; x=1693474339;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=b1nJSzgjZ7Hvug6lAMKQXqVUZrQzEy/l96DGgOXlfO8=;
-        b=jiiVQVrsb24nuHneXqfuqUKWhEC5ibmJT9U3h7Ad4lEIRiGu5eVxXdxDBe5RdmyMgU
-         VOectKJyBZi4Sl+jQ+wu4BMFvB5poZexwKDwLwOaTmx9UrHrW6erOHT91HQEPCu2PUmA
-         RZxhFpQRbubhclypRPDGGlG+UwV/+e8jRCjSoYa8F94p/kgnlxCAdSt08IbOsXWmwPke
-         ep9MJxvR8KNQ9Gg9MSBv5c1OwGGcdh8CtpqMzSIRX2fmHCiGP6ZcrcuWNQd6huflO3aR
-         jxPOhsQi4J2XOmVPubMcg6jzGmWSmMJ+fb6ueM1vt9ogNA4dmGKVLWcbbDhkbzxWDtQK
-         ORoA==
-X-Gm-Message-State: AOJu0YxZ4o7yBfYWSE+/mjjqk1U+c8A9r86HVwMK6/YL12JDQ6U8q+PH
-        cqlZ8LureAedOONB5RUgxtInBm5mBJ/XmMD9KJ3lSQ==
-X-Google-Smtp-Source: AGHT+IEZR1afPLmLtnf4Wou3OYLMnOCWcvex44HH6uxOLkcP+wJPp5CSHamPGXsIsG5oVioubD6oCNLCkNOf27+fhYg=
-X-Received: by 2002:a67:ff91:0:b0:44d:4aa1:9d44 with SMTP id
- v17-20020a67ff91000000b0044d4aa19d44mr7806199vsq.8.1692869538789; Thu, 24 Aug
- 2023 02:32:18 -0700 (PDT)
+        Thu, 24 Aug 2023 05:33:42 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96BC310FA;
+        Thu, 24 Aug 2023 02:33:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692869618; x=1724405618;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version:content-transfer-encoding;
+  bh=2vFCU4cKjzROt9iNRAPD3gq42jmR3vOwCKOXq570yeM=;
+  b=JIBfTkpBHIsA37slPaUluFSeNaKkcXJNDzLpgOwCfo8vzzymvZyQPDyZ
+   iu//EPqpfGzPAXovKZcb4X2CCfWQaCTNGBpj2rejgUEVKVLCdj044WXkP
+   RVNzg8canes5Ri9OZnZp/IXD8/A+JMPRNI9bOvpbpu5iQqeRvMXPDeZNV
+   LnCuEaZ9m3Y4JWHDFtyS04MWWSLvnHVUkoguNOhaXFNlEqsF+hXnOkJry
+   Vr40I8apGoMn05d8Y2TwOpUy785XcT6zRleLGvxKS0hsKJTVPhxB45CFJ
+   tKz2cGRRZIaz1rHce7UciL/jdz8Iv2HE5qHIVMQOXVVPa2lIoG9vz3hPA
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="353934196"
+X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
+   d="scan'208";a="353934196"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 02:33:38 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="730548687"
+X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
+   d="scan'208";a="730548687"
+Received: from andrzejk-mobl.ger.corp.intel.com (HELO localhost) ([10.252.46.90])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 02:33:35 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-tegra@vger.kernel.org,
+        Mikko Perttunen <mperttunen@nvidia.com>
+Subject: Re: [PATCH 15/20] drm/tegra/hub: Increase buffer size to ensure all
+ possible values can be stored
+In-Reply-To: <ZOciEaJlHhp4xnFv@orome>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20230824073710.2677348-1-lee@kernel.org>
+ <20230824073710.2677348-16-lee@kernel.org> <ZOciEaJlHhp4xnFv@orome>
+Date:   Thu, 24 Aug 2023 12:33:33 +0300
+Message-ID: <87r0ns4weq.fsf@intel.com>
 MIME-Version: 1.0
-References: <20230824085544.110417-1-brgl@bgdev.pl> <ZOceEeBuX+Nh7DJo@sol>
- <CAMRc=MdEqm2U9AfPiw5kerJpB1hXyvEQ1_m7EhgoFZ+G3UyDAA@mail.gmail.com> <ZOcia3Nt+SzypTGm@sol>
-In-Reply-To: <ZOcia3Nt+SzypTGm@sol>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Thu, 24 Aug 2023 11:32:07 +0200
-Message-ID: <CAMRc=MfsWAe-bY62s8iBu+iAy76Wn7pxRnx-3iaOT7ym-FUstQ@mail.gmail.com>
-Subject: Re: [PATCH v2] gpiolib: notify user-space about line state changes
- triggered by kernel
-To:     Kent Gibson <warthog618@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 11:27=E2=80=AFAM Kent Gibson <warthog618@gmail.com>=
- wrote:
+On Thu, 24 Aug 2023, Thierry Reding <thierry.reding@gmail.com> wrote:
+> On Thu, Aug 24, 2023 at 08:37:00AM +0100, Lee Jones wrote:
+>> When converting from int to string, we must allow for up to 10-chars (21=
+47483647).
+>>=20
+>> Fixes the following W=3D1 kernel build warning(s):
+>>=20
+>>  drivers/gpu/drm/tegra/hub.c: In function =E2=80=98tegra_display_hub_pro=
+be=E2=80=99:
+>>  drivers/gpu/drm/tegra/hub.c:1106:47: warning: =E2=80=98%u=E2=80=99 dire=
+ctive output may be truncated writing between 1 and 10 bytes into a region =
+of size 4 [-Wformat-truncation=3D]
+>>  drivers/gpu/drm/tegra/hub.c:1106:42: note: directive argument in the ra=
+nge [0, 4294967294]
+>>  drivers/gpu/drm/tegra/hub.c:1106:17: note: =E2=80=98snprintf=E2=80=99 o=
+utput between 6 and 15 bytes into a destination of size 8
 >
-> On Thu, Aug 24, 2023 at 11:11:18AM +0200, Bartosz Golaszewski wrote:
-> > On Thu, Aug 24, 2023 at 11:08=E2=80=AFAM Kent Gibson <warthog618@gmail.=
-com> wrote:
-> > >
-> > > On Thu, Aug 24, 2023 at 10:55:44AM +0200, Bartosz Golaszewski wrote:
-> > > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> > > >
-> > > > We currently only emit CHANGED_CONFIG events when the user-space ch=
-anges
-> > > > GPIO config. We won't be notified if changes come from in-kernel. L=
-et's
-> > > > call the notifier chain whenever kernel users change direction or a=
-ny of
-> > > > the active-low, debounce or consumer name settings. We don't notify=
- the
-> > > > user-space about the persistence as the uAPI has no notion of it.
-> > > >
-> > > > Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> > > > ---
-> > > > v1 -> v2:
-> > > > - use the gpiod_line_state_notify() helper
-> > > > - reorder the code in gpiod_set_debounce() for better readability
-> > > >
-> > > >  drivers/gpio/gpiolib.c | 16 ++++++++++++++--
-> > > >  1 file changed, 14 insertions(+), 2 deletions(-)
-> > > >
-> > > > diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-> > > > index 40a0022ea719..1cb7731550ca 100644
-> > > > --- a/drivers/gpio/gpiolib.c
-> > > > +++ b/drivers/gpio/gpiolib.c
-> > > > @@ -2439,6 +2439,7 @@ int gpiod_direction_input(struct gpio_desc *d=
-esc)
-> > > >       }
-> > > >       if (ret =3D=3D 0) {
-> > > >               clear_bit(FLAG_IS_OUT, &desc->flags);
-> > > > +             gpiod_line_state_notify(desc, GPIO_V2_LINE_CHANGED_CO=
-NFIG);
-> > > >               ret =3D gpio_set_bias(desc);
-> > > >       }
-> > > >
-> > >
-> > > gpiod_direction_input() is called by cdev when a line is requested.
-> > > So requesting a line now creates two events - REQUESTED and
-> > > HANGED_CONFIG? Even worse - it calls gpiod_direction_input() first, s=
-o we
-> > > will get CHANGED_CONFIG then REQUESTED??
-> > >
-> > > And a config change from cdev can call this and then generate a
-> > > CHANGED_CONFIG event itself, so again double events.
-> > >
-> > > Same for output and probably debounce too (that one is a bit more
-> > > convoluted).
-> >
-> > Ah, should have tested it with user-space too...
-> >
-> > Back to the drawing board I guess. May be the reason why we're not
-> > doing it in the first place yet.
-> >
->
-> I think we were only looking at it from the userspace PoV, so what
-> constitutes a "change" is only well defined when driven from userspace.
-> This might be difficult to generalise without redefining what
-> "changed" means, or providing cdev with a separate gpiolib API so you
-> can tell whether the change is actually part of a cdev request, or ...
->
-> So, yeah - more thought required.
->
-> Got a use case that requires this, or just a nice to have?
->
+> I wish there was (perhaps there is?) a better way to annotate that i
+> will always be within a given range. In practice this is always going to
+> be smaller than 10 and even in future hardware I wouldn't expect this to
+> ever exceed anything like 32 or 64, so 8 characters is already generous.
 
-I'm extending the virtual consumer driver and wanted to test from
-user-spaces things like changing direction and other settings. I
-figured it would make more sense to notify about all changes no matter
-the source.
+I assume you could do
 
-Bart
+	snprintf(id, sizeof(id), "wgrp%u", (unsigned char)i);
+
+but it's perhaps less obvious than just increasing the size of the
+buffer.
+
+BR,
+Jani.
+
+>
+> Thierry
+>
+>>=20
+>> Signed-off-by: Lee Jones <lee@kernel.org>
+>> ---
+>> Cc: Thierry Reding <thierry.reding@gmail.com>
+>> Cc: Mikko Perttunen <mperttunen@nvidia.com>
+>> Cc: David Airlie <airlied@gmail.com>
+>> Cc: Daniel Vetter <daniel@ffwll.ch>
+>> Cc: Jonathan Hunter <jonathanh@nvidia.com>
+>> Cc: Philipp Zabel <p.zabel@pengutronix.de>
+>> Cc: dri-devel@lists.freedesktop.org
+>> Cc: linux-tegra@vger.kernel.org
+>> ---
+>>  drivers/gpu/drm/tegra/hub.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>=20
+>> diff --git a/drivers/gpu/drm/tegra/hub.c b/drivers/gpu/drm/tegra/hub.c
+>> index 1af5f8318d914..f21e57e8599ee 100644
+>> --- a/drivers/gpu/drm/tegra/hub.c
+>> +++ b/drivers/gpu/drm/tegra/hub.c
+>> @@ -1101,7 +1101,7 @@ static int tegra_display_hub_probe(struct platform=
+_device *pdev)
+>>=20=20
+>>  	for (i =3D 0; i < hub->soc->num_wgrps; i++) {
+>>  		struct tegra_windowgroup *wgrp =3D &hub->wgrps[i];
+>> -		char id[8];
+>> +		char id[16];
+>>=20=20
+>>  		snprintf(id, sizeof(id), "wgrp%u", i);
+>>  		mutex_init(&wgrp->lock);
+>> --=20
+>> 2.42.0.rc1.204.g551eb34607-goog
+>>=20
+
+--=20
+Jani Nikula, Intel Open Source Graphics Center
