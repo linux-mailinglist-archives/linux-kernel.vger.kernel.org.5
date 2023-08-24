@@ -2,150 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89883786482
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 03:15:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43AC6786487
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 03:17:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238990AbjHXBPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 21:15:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50142 "EHLO
+        id S238999AbjHXBQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 21:16:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238984AbjHXBPG (ORCPT
+        with ESMTP id S238994AbjHXBQ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 21:15:06 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BEE710E4
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 18:15:04 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-56f75ec7ca9so2364856a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 18:15:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692839704; x=1693444504;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=0glrRwVapDcacH4PQiSf+ntfCOeJDqIuukjE6gFNcUQ=;
-        b=K/jjgh1DJQWo65L+2XyhfVaFXSDkMWRpivKNi63UCsAdRdSULbDbqthdvWqqvSF4+N
-         H4wHqn8bHXwzrDwWd33t6DOzpSxsD6c9/J+AWTkOEL3o0ywJO29QSs1rZ//5kIRAXEqS
-         yz21oDlcTZ2Mf/30ILxVEM+kVHzyx5YCKCNtg0PN9C5IDk0iKCSrQSa7BuWRZ0pQDcq/
-         esAM0unLdAOAxZsTYkyMC693fLpXlHCAW9fuF5eNeYLkWfp5BHRuKkTKTQNkXj+G2hVj
-         UzS6rlSkmh7vQ8CTxwfU90cCfymtCrCCU9CJhW61KM1qrtYeICLps1mhI5On9ckC2YPN
-         YY+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692839704; x=1693444504;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0glrRwVapDcacH4PQiSf+ntfCOeJDqIuukjE6gFNcUQ=;
-        b=bM8ozDmtb438F9IhLiLWcf+7Z7VaXCHC7ujuRBcAhbLNg4if9CHxBVgj4/uJNj725b
-         zhIp3oULFfZjOzLUJ7srjZ1BwKP/WacoeeCUgZSU86TaPiwFONEG+X6GG6tVyXtFpzES
-         08aSnld25bOW183ZQhXoKJd0vbpYeeidGaoY1kBKvMf+sVSu1eDOQLHKdAaEu4CsVPMV
-         JqO8cox6wArZ1k7WL9lPtcaMk6h1PlCP9qJUmE/ILWG33/XgExKFaDIkMb4Iqyeay51p
-         htCzXVPAHuGgR9p6i0son5cqZ0aMLcORWxUJrQJ1Y0lqkLd9cWYRLbHm3Wn4xcGIzvKy
-         hkew==
-X-Gm-Message-State: AOJu0YwPDSfYFoNQKnfNV20vGkEJ51eQBEPT+Dqin5R/XnWGWsNBu7qJ
-        57T9URGvSNRaZnwQW+JRehg3kZjFRqU=
-X-Google-Smtp-Source: AGHT+IHM0rQn6h5dWztWg0HBYtMcaQvDtlWYw9NOlRJWGc4NPzNY+ODI1XPZ0XKr6LvSqCGLNC/C04RLZOA=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a63:3f8b:0:b0:564:cfab:5648 with SMTP id
- m133-20020a633f8b000000b00564cfab5648mr2693992pga.3.1692839703901; Wed, 23
- Aug 2023 18:15:03 -0700 (PDT)
-Date:   Wed, 23 Aug 2023 18:15:02 -0700
-In-Reply-To: <20230824010512.2714931-1-seanjc@google.com>
-Mime-Version: 1.0
-References: <20230824010512.2714931-1-seanjc@google.com>
-Message-ID: <ZOavFlKo2/sixUTk@google.com>
-Subject: Re: [PATCH 5.15] Revert "KVM: x86: enable TDP MMU by default"
-From:   Sean Christopherson <seanjc@google.com>
-To:     stable@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>,
-        Mathias Krause <minipli@grsecurity.net>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 23 Aug 2023 21:16:27 -0400
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3F7710E4;
+        Wed, 23 Aug 2023 18:16:24 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RWQC61gqjz4f3lJf;
+        Thu, 24 Aug 2023 09:16:18 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP4 (Coremail) with SMTP id gCh0CgBH1qhjr+ZkV8nABQ--.54463S3;
+        Thu, 24 Aug 2023 09:16:21 +0800 (CST)
+Subject: Re: [PATCH -next v3 6/7] md: factor out a helper rdev_addable() from
+ remove_and_add_spares()
+To:     Song Liu <song@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     xni@redhat.com, mariusz.tkaczyk@linux.intel.com,
+        linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com, yangerkun@huawei.com,
+        "yukuai (C)" <yukuai3@huawei.com>
+References: <20230820090949.2874537-1-yukuai1@huaweicloud.com>
+ <20230820090949.2874537-7-yukuai1@huaweicloud.com>
+ <CAPhsuW74MEFjNTNErYfOT1gX+BUdbDwaV1oTmmcz=_76Ym3ZuA@mail.gmail.com>
+ <c7a82fb2-cf4b-2095-e813-84aed2418ff0@huaweicloud.com>
+ <2766d001-f618-d224-f8a9-ec38ed1dc2a7@huaweicloud.com>
+ <CAPhsuW6JQX7ujeO77NVTme8t0DvzVBrsXRHmayVnp4fwWoYhZg@mail.gmail.com>
+ <a004ed5b-cf4a-2392-c7e5-fcd1161a29a4@huaweicloud.com>
+ <CAPhsuW5DytoZDTi1NEv_EDaKoaHNE9Vd3UU_O_-2XzVqq0YNwg@mail.gmail.com>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <c64c7b46-3447-79b5-a87f-7be835651269@huaweicloud.com>
+Date:   Thu, 24 Aug 2023 09:16:19 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
+MIME-Version: 1.0
+In-Reply-To: <CAPhsuW5DytoZDTi1NEv_EDaKoaHNE9Vd3UU_O_-2XzVqq0YNwg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgBH1qhjr+ZkV8nABQ--.54463S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxJF4DJw15Gr17Jw1ftrW3GFg_yoW5Xr1UpF
+        W8tFW3KF4UZryUWr10qr15A3WSvr18KF4xCa4Ska4xZas0vr13try8CFy5G3Z8AF45ur1Y
+        vF1UJa1fur1SgFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkC14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7I2V7IY0VAS07AlzVAY
+        IcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
+        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
+        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
+        0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_
+        Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjfUoOJ5UU
+        UUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Jeremi and Mathias, my scripts for sending patches to stable don't auto-cc :-/
+Hi,
 
-On Wed, Aug 23, 2023, Sean Christopherson wrote:
-> Disable the TDP MMU by default in v5.15 kernels to "fix" several severe
-> performance bugs that have since been found and fixed in the TDP MMU, but
-> are unsuitable for backporting to v5.15.
+在 2023/08/23 19:25, Song Liu 写道:
+> On Wed, Aug 23, 2023 at 1:37 AM Yu Kuai <yukuai1@huaweicloud.com> wrote:
+>>
+> [...]
+>>> diff --git i/drivers/md/md.c w/drivers/md/md.c
+>>> index 78be7811a89f..8cb855d03e0a 100644
+>>> --- i/drivers/md/md.c
+>>> +++ w/drivers/md/md.c
+>>> @@ -9117,6 +9117,20 @@ void md_do_sync(struct md_thread *thread)
+>>>    }
+>>>    EXPORT_SYMBOL_GPL(md_do_sync);
+>>>
+>>> +static bool rdev_addable(struct md_rdev *rdev)
+>>> +{
+>>> +       if (test_bit(Candidate, &rdev->flags) || rdev->raid_disk >= 0 ||
+>>> +           test_bit(Faulty, &rdev->flags))
+>>> +               return false;
+>>> +       return true;
+>>> +}
+>>> +
+>>> +static bool rdev_is_readd(struct md_rdev *rdev)
+>>> +{
+>>> +       return rdev->saved_raid_disk >= 0 ||
+>>> +               !test_bit(Bitmap_sync, &rdev->flags);
+>> This should use '&&' instead of '||' ?
+>>
+>>> +}
+>>> +
+>>>    static int remove_and_add_spares(struct mddev *mddev,
+>>>                                    struct md_rdev *this)
+>>>    {
+>>> @@ -9176,25 +9190,24 @@ static int remove_and_add_spares(struct mddev *mddev,
+>>>           rdev_for_each(rdev, mddev) {
+>>>                   if (this && this != rdev)
+>>>                           continue;
+>>> -               if (test_bit(Candidate, &rdev->flags))
+>>> -                       continue;
+>>>                   if (rdev->raid_disk >= 0 &&
+>>>                       !test_bit(In_sync, &rdev->flags) &&
+>>>                       !test_bit(Journal, &rdev->flags) &&
+>>>                       !test_bit(Faulty, &rdev->flags))
+>>>                           spares++;
+>>> -               if (rdev->raid_disk >= 0)
+>>> +
+>>> +               if (!rdev_addable(rdev))
+>>>                           continue;
+>>> -               if (test_bit(Faulty, &rdev->flags))
+>>> +
+>>> +               if (test_bit(Journal, &rdev->flags))
+>>> +                       goto hot_add_disk;
+>>> +
+>>
+>> I understand what you mean now, but I must use the exact same judgement
+>> in the new helper md_spares_need_change() in patch 7, there will be
+>> redundant code this way.
+>>
+>> How about this, rework rdev_addable():
 > 
-> The problematic bugs are fixed by upstream commit edbdb43fc96b ("KVM:
-> x86: Preserve TDP MMU roots until they are explicitly invalidated") and
-> commit 01b31714bd90 ("KVM: x86: Do not unload MMU roots when only toggling
-> CR0.WP with TDP enabled").  Both commits fix scenarios where KVM will
-> rebuild all TDP MMU page tables in paths that are frequently hit by
-> certain guest workloads.  While not exactly common, the guest workloads
-> are far from rare.  The fallout of rebuilding TDP MMU page tables can be
-> so severe in some cases that it induces soft lockups in the guest.
+> Yeah, this was another option that I was thinking about. Let's go with
+> this version.
 > 
-> Commit edbdb43fc96b would require _significant_ effort and churn to
-> backport due it depending on a major rework that was done in v5.18.
+Ok, and I'll do this for rdev_removeable() in patch 4 as well.
+
+Thanks,
+Kuai
+
+> Thanks,
+> Song
 > 
-> Commit 01b31714bd90 has far fewer direct conflicts, but has several subtle
-> _known_ dependencies, and it's unclear whether or not there are more
-> unknown dependencies that have been missed.
+>>
+>>     static bool rdev_addable(struct md_rdev *rdev)
+>>     {
+>> +         /* rdev is already used, don't add it again. */
+>>             if (test_bit(Candidate, &rdev->flags) || rdev->raid_disk >= 0 ||
+>>                 test_bit(Faulty, &rdev->flags))
+>>                     return false;
+>>
+>> ~         /* Allow to add journal disk. */
+>> ~         if (test_bit(Journal, &rdev->flags))
+>> ~_                return true;
+>>
+>> ~         /* Allow to add if array is read-write. */
+>> +         if (md_is_rdwr(rdev->mddev))
+>> +                 return true;
+>> +
+>> +         /*
+>> +          * For read-only array, only allow to readd a rdev. And if
+>> bitmap is
+>> +          * used, don't allow to readd a rdev that is too old.
+>> +          */
+>> +         if (rdev->saved_raid_disk >=0 && !test_bit(Bitmap_sync,
+>> &rdev->flags))
+>> +                 return true;
+>> +
+>> +         return false;
+>>     }
+> .
 > 
-> Lastly, disabling the TDP MMU in v5.15 kernels also fixes a lurking train
-> wreck started by upstream commit a955cad84cda ("KVM: x86/mmu: Retry page
-> fault if root is invalidated by memslot update").  That commit was tagged
-> for stable to fix a memory leak, but didn't cherry-pick cleanly and was
-> never backported to v5.15.  Which is extremely fortunate, as it introduced
-> not one but two bugs, one of which was fixed by upstream commit
-> 18c841e1f411 ("KVM: x86: Retry page fault if MMU reload is pending and
-> root has no sp"), while the other was unknowingly fixed by upstream
-> commit ba6e3fe25543 ("KVM: x86/mmu: Grab mmu_invalidate_seq in
-> kvm_faultin_pfn()") in v6.3 (a one-off fix will be made for v6.1 kernels,
-> which did receive a backport for a955cad84cda).  Disabling the TDP MMU
-> by default reduces the probability of breaking v5.15 kernels by
-> backporting only a subset of the fixes.
-> 
-> As far as what is lost by disabling the TDP MMU, the main selling point of
-> the TDP MMU is its ability to service page fault VM-Exits in parallel,
-> i.e. the main benefactors of the TDP MMU are deployments of large VMs
-> (hundreds of vCPUs), and in particular delployments that live-migrate such
-> VMs and thus need to fault-in huge amounts of memory on many vCPUs after
-> restarting the VM after migration.
-> 
-> Smaller VMs can see performance improvements, but nowhere enough to make
-> up for the TDP MMU (in v5.15) absolutely cratering performance for some
-> workloads.  And practically speaking, anyone that is deploying and
-> migrating VMs with hundreds of vCPUs is likely rolling their own kernel,
-> not using a stock v5.15 series kernel.
-> 
-> This reverts commit 71ba3f3189c78f756a659568fb473600fd78f207.
-> 
-> Link: https://lore.kernel.org/all/ZDmEGM+CgYpvDLh6@google.com
-> Link: https://lore.kernel.org/all/f023d927-52aa-7e08-2ee5-59a2fbc65953@gameservers.com
-> Cc: Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
-> Cc: Mathias Krause <minipli@grsecurity.net>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  arch/x86/kvm/mmu/tdp_mmu.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> index 6c2bb60ccd88..7a64fb238044 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.c
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-> @@ -10,7 +10,7 @@
->  #include <asm/cmpxchg.h>
->  #include <trace/events/kvm.h>
->  
-> -static bool __read_mostly tdp_mmu_enabled = true;
-> +static bool __read_mostly tdp_mmu_enabled = false;
->  module_param_named(tdp_mmu, tdp_mmu_enabled, bool, 0644);
->  
->  /* Initializes the TDP MMU for the VM, if enabled. */
-> 
-> base-commit: f6f7927ac664ba23447f8dd3c3dfe2f4ee39272f
-> -- 
-> 2.42.0.rc2.253.gd59a3bf2b4-goog
-> 
+
