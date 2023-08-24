@@ -2,181 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDA2F787AC3
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 23:59:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48AFA787ACC
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 23:59:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243677AbjHXV6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 17:58:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40854 "EHLO
+        id S243718AbjHXV6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 17:58:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238031AbjHXV5t (ORCPT
+        with ESMTP id S238031AbjHXV6S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 17:57:49 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BFC01B0
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 14:57:48 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Thu, 24 Aug 2023 17:58:18 -0400
+Received: from sonata.ens-lyon.org (sonata.ens-lyon.org [140.77.166.138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83C3E172D;
+        Thu, 24 Aug 2023 14:58:15 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by sonata.ens-lyon.org (Postfix) with ESMTP id F1193200F3;
+        Thu, 24 Aug 2023 23:58:07 +0200 (CEST)
+Received: from sonata.ens-lyon.org ([127.0.0.1])
+        by localhost (sonata.ens-lyon.org [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id tJdgRRiDj2Ea; Thu, 24 Aug 2023 23:58:07 +0200 (CEST)
+Received: from begin.home (lfbn-bor-1-1163-184.w92-158.abo.wanadoo.fr [92.158.138.184])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AE68762F1F
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 21:57:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B1A3C43395;
-        Thu, 24 Aug 2023 21:57:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692914267;
-        bh=e+pZg3YWlkmDjnHujmmDX7rt4Bs00zVl5lffsKGqixE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=RO6AyNNvqwZ+P080BIF/6nYsI41LvCuKLA1coiIsm51N5UDfZV7DEIiBaIAcvGN4w
-         7dJWZ/nrQ/9yEm/B+oT+S8dx4egAM6UaGo0NorCryjcPZDus8iGGa/ZlWnzIM+9ccV
-         8x+Vjc1gUKDfKwgd9clNZlHvwh2XE4v54nmgGnCSS//+kW18QiiK+87+Rfn55C5aD5
-         jFiHWTV8+s9YkNReWz1NIf627Z6vmYHczgmVVtA1gh3G6gGGKYMQLdAM6gif2+gN/o
-         epCl9hmIe/FQ+f5qnBv0/jR9HUf9Jjisc5hqlueo0uavb9q9Ud+38zvDDMdx0iN6fl
-         NixvlW0KOVYxg==
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-4ff88239785so425606e87.0;
-        Thu, 24 Aug 2023 14:57:47 -0700 (PDT)
-X-Gm-Message-State: AOJu0YyREw5dnpT0ChnBGBQ2n115tDGY2sSWztTWHty0TMamzC4Rvi0Y
-        34uH+KVxdV0u0yXsaOCvMQ+iDQxjcGSqzxMl0Xw=
-X-Google-Smtp-Source: AGHT+IHUeqKrf7kvSRY1DSALjp7e8C7fW1mUoYIBbnPTxuhFD3DIzgE8FiXJUxiEjA2LaHmF06aq7QlPyQZAVjmOQno=
-X-Received: by 2002:a05:6512:b03:b0:500:8fc1:8aba with SMTP id
- w3-20020a0565120b0300b005008fc18abamr7377893lfu.26.1692914265000; Thu, 24 Aug
- 2023 14:57:45 -0700 (PDT)
+        by sonata.ens-lyon.org (Postfix) with ESMTPSA id 50228200F0;
+        Thu, 24 Aug 2023 23:58:07 +0200 (CEST)
+Received: from samy by begin.home with local (Exim 4.96)
+        (envelope-from <samuel.thibault@ens-lyon.org>)
+        id 1qZIL8-001mhZ-2z;
+        Thu, 24 Aug 2023 23:58:06 +0200
+Date:   Thu, 24 Aug 2023 23:58:06 +0200
+From:   Samuel Thibault <samuel.thibault@ens-lyon.org>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     William Hubbs <w.d.hubbs@gmail.com>,
+        Chris Brannon <chris@the-brannons.com>,
+        Kirk Reiser <kirk@reisers.ca>, speakup@linux-speakup.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] accessibility: speakup: refactor deprecated strncpy
+Message-ID: <20230824215806.3ulejc2gsapcl2mw@begin>
+Mail-Followup-To: Samuel Thibault <samuel.thibault@ens-lyon.org>,
+        Justin Stitt <justinstitt@google.com>,
+        William Hubbs <w.d.hubbs@gmail.com>,
+        Chris Brannon <chris@the-brannons.com>,
+        Kirk Reiser <kirk@reisers.ca>, speakup@linux-speakup.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20230824-strncpy-drivers-accessibility-speakup-kobjects-c-v1-1-3a1ef1221e90@google.com>
 MIME-Version: 1.0
-References: <20230824133135.1176709-1-puranjay12@gmail.com> <20230824133135.1176709-2-puranjay12@gmail.com>
-In-Reply-To: <20230824133135.1176709-2-puranjay12@gmail.com>
-From:   Song Liu <song@kernel.org>
-Date:   Thu, 24 Aug 2023 14:57:32 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW5mMQbZ729W_5fhX0iYaNxG5JA1L7Sck-h0jQZQzEH8+Q@mail.gmail.com>
-Message-ID: <CAPhsuW5mMQbZ729W_5fhX0iYaNxG5JA1L7Sck-h0jQZQzEH8+Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/3] riscv: extend patch_text_nosync() for
- multiple pages
-To:     Puranjay Mohan <puranjay12@gmail.com>
-Cc:     paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, pulehui@huawei.com,
-        conor.dooley@microchip.com, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, yhs@fb.com,
-        kpsingh@kernel.org, bjorn@kernel.org, bpf@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230824-strncpy-drivers-accessibility-speakup-kobjects-c-v1-1-3a1ef1221e90@google.com>
+Organization: I am not organized
+User-Agent: NeoMutt/20170609 (1.8.3)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 6:31=E2=80=AFAM Puranjay Mohan <puranjay12@gmail.co=
-m> wrote:
->
-> The patch_insn_write() function currently doesn't work for multiple
-> pages of instructions, therefore patch_text_nosync() will fail with a
-> page fault if called with lengths spanning multiple pages.
->
-> This commit extends the patch_insn_write() function to support multiple
-> pages by copying at max 2 pages at a time in a loop. This implementation
-> is similar to text_poke_copy() function of x86.
->
-> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
-> Reviewed-by: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
+Justin Stitt, le jeu. 24 août 2023 21:44:29 +0000, a ecrit:
+> `strncpy` is deprecated for use on NUL-terminated destination strings [1].
+> 
+> Use `strscpy` as it guarantees NUL-termination of its destination buffer [2]
+> which allows for simpler and less ambiguous code.
+> 
+> Also, change `strlen(buf)` to `strlen(ptr)` to be consistent with
+> further usage within the scope of the function. Note that these are
+> equivalent:
+> |419 	const char *ptr = buf;
+> 
+> Link: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings[1]
+> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
+
+Reviewed-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
+
 > ---
->  arch/riscv/kernel/patch.c | 39 ++++++++++++++++++++++++++++++++++-----
->  1 file changed, 34 insertions(+), 5 deletions(-)
->
-> diff --git a/arch/riscv/kernel/patch.c b/arch/riscv/kernel/patch.c
-> index 575e71d6c8ae..465b2eebbc37 100644
-> --- a/arch/riscv/kernel/patch.c
-> +++ b/arch/riscv/kernel/patch.c
-> @@ -53,12 +53,18 @@ static void patch_unmap(int fixmap)
->  }
->  NOKPROBE_SYMBOL(patch_unmap);
->
-> -static int patch_insn_write(void *addr, const void *insn, size_t len)
-> +static int __patch_insn_write(void *addr, const void *insn, size_t len)
->  {
->         void *waddr =3D addr;
->         bool across_pages =3D (((uintptr_t) addr & ~PAGE_MASK) + len) > P=
-AGE_SIZE;
->         int ret;
->
-> +       /*
-> +        * Only two pages can be mapped at a time for writing.
-> +        */
-> +       if (len > 2 * PAGE_SIZE)
-> +               return -EINVAL;
-
-This check cannot guarantee __patch_insn_write touch at most two pages.
-Maybe use
-
-    if (len + offset_in_page(addr) > 2 * PAGE_SIZE)
-        return -EINVAL;
-?
-
-Thanks,
-Song
-
->         /*
->          * Before reaching here, it was expected to lock the text_mutex
->          * already, so we don't need to give another lock here and could
-> @@ -74,7 +80,7 @@ static int patch_insn_write(void *addr, const void *ins=
-n, size_t len)
->                 lockdep_assert_held(&text_mutex);
->
->         if (across_pages)
-> -               patch_map(addr + len, FIX_TEXT_POKE1);
-> +               patch_map(addr + PAGE_SIZE, FIX_TEXT_POKE1);
->
->         waddr =3D patch_map(addr, FIX_TEXT_POKE0);
->
-> @@ -87,15 +93,38 @@ static int patch_insn_write(void *addr, const void *i=
-nsn, size_t len)
->
->         return ret;
->  }
-> -NOKPROBE_SYMBOL(patch_insn_write);
-> +NOKPROBE_SYMBOL(__patch_insn_write);
->  #else
-> -static int patch_insn_write(void *addr, const void *insn, size_t len)
-> +static int __patch_insn_write(void *addr, const void *insn, size_t len)
->  {
->         return copy_to_kernel_nofault(addr, insn, len);
->  }
-> -NOKPROBE_SYMBOL(patch_insn_write);
-> +NOKPROBE_SYMBOL(__patch_insn_write);
->  #endif /* CONFIG_MMU */
->
-> +static int patch_insn_write(void *addr, const void *insn, size_t len)
-> +{
-> +       size_t patched =3D 0;
-> +       size_t size;
-> +       int ret =3D 0;
-> +
-> +       /*
-> +        * Copy the instructions to the destination address, two pages at=
- a time
-> +        * because __patch_insn_write() can only handle len <=3D 2 * PAGE=
-_SIZE.
-> +        */
-> +       while (patched < len && !ret) {
-> +               size =3D min_t(size_t,
-> +                            PAGE_SIZE * 2 - offset_in_page(addr + patche=
-d),
-> +                            len - patched);
-> +               ret =3D __patch_insn_write(addr + patched, insn + patched=
-, size);
-> +
-> +               patched +=3D size;
-> +       }
-> +
-> +       return ret;
-> +}
-> +NOKPROBE_SYMBOL(patch_insn_write);
-> +
->  int patch_text_nosync(void *addr, const void *insns, size_t len)
->  {
->         u32 *tp =3D addr;
+> Note: build-tested only.
+> ---
+>  drivers/accessibility/speakup/kobjects.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/accessibility/speakup/kobjects.c b/drivers/accessibility/speakup/kobjects.c
+> index a7522d409802..8aa416c5f3fc 100644
+> --- a/drivers/accessibility/speakup/kobjects.c
+> +++ b/drivers/accessibility/speakup/kobjects.c
+> @@ -422,12 +422,11 @@ static ssize_t synth_direct_store(struct kobject *kobj,
+>  	if (!synth)
+>  		return -EPERM;
+>  
+> -	len = strlen(buf);
+> +	len = strlen(ptr);
+>  	spin_lock_irqsave(&speakup_info.spinlock, flags);
+>  	while (len > 0) {
+>  		bytes = min_t(size_t, len, 250);
+> -		strncpy(tmp, ptr, bytes);
+> -		tmp[bytes] = '\0';
+> +		strscpy(tmp, ptr, bytes);
+>  		string_unescape_any_inplace(tmp);
+>  		synth_printf("%s", tmp);
+>  		ptr += bytes;
+> 
+> ---
+> base-commit: f9604036a3fb6149badf346994b46b03f9292db7
+> change-id: 20230824-strncpy-drivers-accessibility-speakup-kobjects-c-4009e7df0936
+> 
+> Best regards,
 > --
-> 2.39.2
->
+> Justin Stitt <justinstitt@google.com>
+> 
