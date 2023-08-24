@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6E9378663A
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 05:50:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1C6378663E
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 05:50:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239803AbjHXDty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 23:49:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58146 "EHLO
+        id S239965AbjHXDuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 23:50:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239865AbjHXDsB (ORCPT
+        with ESMTP id S233084AbjHXDsq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 23:48:01 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58885A1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 20:47:34 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-68a32506e90so1062656b3a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 20:47:34 -0700 (PDT)
+        Wed, 23 Aug 2023 23:48:46 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8F011981
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 20:47:43 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-565b053fe58so827916a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 20:47:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1692848850; x=1693453650;
+        d=bytedance.com; s=google; t=1692848859; x=1693453659;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=rDzcwqaIquIVzn8OsvZGliHXRbA8ENN1qRnYnmk/Xe8=;
-        b=DVQw6x+wRokChvzx3mB2d4JjmEZ8a52hJE0l07W8P8nNrlDhrotmyt3pUv3GQHPCXs
-         1BrfBypCNsEERgBF0IuI0x1Xr96Fhh2+gAJZZ0EK/1xIsaeYYxT6/EN1k9efrylQkcM1
-         zJ6XM0kKzaSamlFOt/zlkCHRnLHEfp7PkHOGXd5kLYVg7nejR+dkAMm4O/6awNT3a3Qc
-         xgwMhP+Jmrs8A3VyzQgEal/ZVI5LfCXDTSkiUmeyykfwpxK0jmaWMGlHcl5rKNUdpgen
-         WbYpfAOHKT2MQ9cGHKqu8Hq5a4pOBrfkWUy88QExaDxN1iywSQ8vpGlmHWNB0IOXICaV
-         VZBQ==
+        bh=Fa4A7mARo9UASqTNF5nYV+l5Qm4MYZjHRGtSJYP4Y4U=;
+        b=d1wXSjPKCFEr8z/p/byM5kRgXe8PbCA56N3zhbP1G8RyclSiP3MfoWO1VjUBFEfLu8
+         Jv8srfHUD4wK1EF90VWGYzVLQFM3cgUH6eOrKYXPD/cVeTsc5WoF/vQIJUe26UY/Ow3z
+         ENqa6anDehpg55dE40ykBpXSJ3cGdh/QxK3Pyn1kpms/fmsU04YXRAopjkNGU4+76Pq8
+         3Y9zyUnnRNr/yzJsGa3A3VHXMPXaHq1XkZzHyi87cd+Y6LY4TdHFbhSuzevUvRulOVyP
+         sd5aajfZ70TnWEP93V/mOvFrzj1icTTQnnd4xRKj7zmyKuiZMzeQiMH8vplG2YqtFRs+
+         1NdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692848850; x=1693453650;
+        d=1e100.net; s=20221208; t=1692848859; x=1693453659;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=rDzcwqaIquIVzn8OsvZGliHXRbA8ENN1qRnYnmk/Xe8=;
-        b=NUkNUH7sLT7DgLeVl7JfA+UQpVl1RFn4siro+04ffYD3HEWTqo4z87CTSfjDhGHI4H
-         XDrHrmetrWFaHaXfUY3g/tUFYcsfLyHsYXNSZUs2MFrmMDwMYbZt2e8gCq3+vQ9dPH6l
-         c88avLxNPX0UyXc7K3b0MqUKFv8zfDuwokrALxBo64zs98hqoo93AaMTW5JfkUHPBFch
-         aUcYjD/WESAXtIPgcDPBC14TxpYfSE/71Zhmg1LAMkEh/u3wvgVI16Yhhr/gR5e8P1ah
-         h5eJJz2h6P9mrnF9IRqybTHRUdZDAQbUbScS5cGqfY+zWCC/Bvf1ZfjZ1NxFqTyrG1fR
-         NEgw==
-X-Gm-Message-State: AOJu0YzmV0MQQrO7/vVmgbO3rYK/9tgAOe13AvSicnlSVIh/QZMqH6VD
-        wWYoYzAh+EWSGnu+bLv+O3MnhQ==
-X-Google-Smtp-Source: AGHT+IHnOiXJrClBMOyGTENJi9JIt4dG4SRfFKrPyHzsQUg0+5rqtXlfzEqyCDyUa5PDhlr05atJeA==
-X-Received: by 2002:a05:6a00:1791:b0:68a:42d0:6b9b with SMTP id s17-20020a056a00179100b0068a42d06b9bmr11893102pfg.3.1692848849886;
-        Wed, 23 Aug 2023 20:47:29 -0700 (PDT)
+        bh=Fa4A7mARo9UASqTNF5nYV+l5Qm4MYZjHRGtSJYP4Y4U=;
+        b=hmtrrEknIjhf/KTy6mptnSQfXs6l2eIvpMEYw2n4BwS8+dVnj5msRkXWur3WnAFltZ
+         b7mjXEx8ZgqueYffGk3feUTKZSCb9gePTdPrjgsOJlqgDM+eCmk1rRStviujYahOlFYl
+         U0cH0zYMaGWSQKjH1qz3rRe+XHw37cG/IMTIkvoEZoKUrFwKeLe514UrBly4WIIxjIIe
+         EZBHWy0QXVdPl/D+RoMoqikbgX8lN9h74pXLhUKskGuEKlMVAKFDPfkIpWDmh8wQbaEz
+         MLHw3SV/76aO11WIi9fRYoLsq7ljOtmLS8AUb3QjYErkk6F0c6pD0wUhw5TVTyXSwR4T
+         ATOA==
+X-Gm-Message-State: AOJu0YwHo9ZLx4qiGThkLa5O0CvnBaYi+nm5zXO4W9gbYwtuP+ubcb/J
+        Zw33BTuDCA5kohM6aAuhLoQ2Jg==
+X-Google-Smtp-Source: AGHT+IF3djZSCs4jg/UQUu42D+/WSQ6VNsO0pvWsZu5aji18gl8AMoEFfV4hmz2xAgIkNtsfI3eNSg==
+X-Received: by 2002:a05:6a20:3941:b0:111:a0e5:d2b7 with SMTP id r1-20020a056a20394100b00111a0e5d2b7mr16582686pzg.4.1692848858975;
+        Wed, 23 Aug 2023 20:47:38 -0700 (PDT)
 Received: from C02DW0BEMD6R.bytedance.net ([203.208.167.146])
-        by smtp.gmail.com with ESMTPSA id t6-20020a63b246000000b005579f12a238sm10533157pgo.86.2023.08.23.20.47.21
+        by smtp.gmail.com with ESMTPSA id t6-20020a63b246000000b005579f12a238sm10533157pgo.86.2023.08.23.20.47.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Aug 2023 20:47:29 -0700 (PDT)
+        Wed, 23 Aug 2023 20:47:38 -0700 (PDT)
 From:   Qi Zheng <zhengqi.arch@bytedance.com>
 To:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
         vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
@@ -60,11 +60,12 @@ To:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
 Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
         linux-fsdevel@vger.kernel.org,
         Qi Zheng <zhengqi.arch@bytedance.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Song Liu <song@kernel.org>, linux-raid@vger.kernel.org
-Subject: [PATCH v5 25/45] md/raid5: dynamically allocate the md-raid5 shrinker
-Date:   Thu, 24 Aug 2023 11:42:44 +0800
-Message-Id: <20230824034304.37411-26-zhengqi.arch@bytedance.com>
+        Coly Li <colyli@suse.de>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        linux-bcache@vger.kernel.org
+Subject: [PATCH v5 26/45] bcache: dynamically allocate the md-bcache shrinker
+Date:   Thu, 24 Aug 2023 11:42:45 +0800
+Message-Id: <20230824034304.37411-27-zhengqi.arch@bytedance.com>
 X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 In-Reply-To: <20230824034304.37411-1-zhengqi.arch@bytedance.com>
 References: <20230824034304.37411-1-zhengqi.arch@bytedance.com>
@@ -81,94 +82,107 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 In preparation for implementing lockless slab shrink, use new APIs to
-dynamically allocate the md-raid5 shrinker, so that it can be freed
+dynamically allocate the md-bcache shrinker, so that it can be freed
 asynchronously via RCU. Then it doesn't need to wait for RCU read-side
-critical section when releasing the struct r5conf.
+critical section when releasing the struct cache_set.
 
 Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-Reviewed-by: Muchun Song <songmuchun@bytedance.com>
-CC: Song Liu <song@kernel.org>
-CC: linux-raid@vger.kernel.org
+CC: Coly Li <colyli@suse.de>
+CC: Kent Overstreet <kent.overstreet@gmail.com>
+CC: linux-bcache@vger.kernel.org
 ---
- drivers/md/raid5.c | 26 +++++++++++++++-----------
- drivers/md/raid5.h |  2 +-
- 2 files changed, 16 insertions(+), 12 deletions(-)
+ drivers/md/bcache/bcache.h |  2 +-
+ drivers/md/bcache/btree.c  | 27 ++++++++++++++++-----------
+ drivers/md/bcache/sysfs.c  |  3 ++-
+ 3 files changed, 19 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
-index 4cb9c608ee19..c8d2c6e50aa1 100644
---- a/drivers/md/raid5.c
-+++ b/drivers/md/raid5.c
-@@ -7401,7 +7401,7 @@ static void free_conf(struct r5conf *conf)
+diff --git a/drivers/md/bcache/bcache.h b/drivers/md/bcache/bcache.h
+index 5a79bb3c272f..c622bc50f81b 100644
+--- a/drivers/md/bcache/bcache.h
++++ b/drivers/md/bcache/bcache.h
+@@ -541,7 +541,7 @@ struct cache_set {
+ 	struct bio_set		bio_split;
  
- 	log_exit(conf);
+ 	/* For the btree cache */
+-	struct shrinker		shrink;
++	struct shrinker		*shrink;
  
--	unregister_shrinker(&conf->shrinker);
-+	shrinker_free(conf->shrinker);
- 	free_thread_groups(conf);
- 	shrink_stripes(conf);
- 	raid5_free_percpu(conf);
-@@ -7449,7 +7449,7 @@ static int raid5_alloc_percpu(struct r5conf *conf)
- static unsigned long raid5_cache_scan(struct shrinker *shrink,
- 				      struct shrink_control *sc)
+ 	/* For the btree cache and anything allocation related */
+ 	struct mutex		bucket_lock;
+diff --git a/drivers/md/bcache/btree.c b/drivers/md/bcache/btree.c
+index fd121a61f17c..ae5cbb55861f 100644
+--- a/drivers/md/bcache/btree.c
++++ b/drivers/md/bcache/btree.c
+@@ -667,7 +667,7 @@ static int mca_reap(struct btree *b, unsigned int min_order, bool flush)
+ static unsigned long bch_mca_scan(struct shrinker *shrink,
+ 				  struct shrink_control *sc)
  {
--	struct r5conf *conf = container_of(shrink, struct r5conf, shrinker);
-+	struct r5conf *conf = shrink->private_data;
- 	unsigned long ret = SHRINK_STOP;
- 
- 	if (mutex_trylock(&conf->cache_size_mutex)) {
-@@ -7470,7 +7470,7 @@ static unsigned long raid5_cache_scan(struct shrinker *shrink,
- static unsigned long raid5_cache_count(struct shrinker *shrink,
- 				       struct shrink_control *sc)
+-	struct cache_set *c = container_of(shrink, struct cache_set, shrink);
++	struct cache_set *c = shrink->private_data;
+ 	struct btree *b, *t;
+ 	unsigned long i, nr = sc->nr_to_scan;
+ 	unsigned long freed = 0;
+@@ -734,7 +734,7 @@ static unsigned long bch_mca_scan(struct shrinker *shrink,
+ static unsigned long bch_mca_count(struct shrinker *shrink,
+ 				   struct shrink_control *sc)
  {
--	struct r5conf *conf = container_of(shrink, struct r5conf, shrinker);
-+	struct r5conf *conf = shrink->private_data;
+-	struct cache_set *c = container_of(shrink, struct cache_set, shrink);
++	struct cache_set *c = shrink->private_data;
  
- 	if (conf->max_nr_stripes < conf->min_nr_stripes)
- 		/* unlikely, but not impossible */
-@@ -7705,18 +7705,22 @@ static struct r5conf *setup_conf(struct mddev *mddev)
- 	 * it reduces the queue depth and so can hurt throughput.
- 	 * So set it rather large, scaled by number of devices.
- 	 */
--	conf->shrinker.seeks = DEFAULT_SEEKS * conf->raid_disks * 4;
--	conf->shrinker.scan_objects = raid5_cache_scan;
--	conf->shrinker.count_objects = raid5_cache_count;
--	conf->shrinker.batch = 128;
--	conf->shrinker.flags = 0;
--	ret = register_shrinker(&conf->shrinker, "md-raid5:%s", mdname(mddev));
--	if (ret) {
--		pr_warn("md/raid:%s: couldn't register shrinker.\n",
-+	conf->shrinker = shrinker_alloc(0, "md-raid5:%s", mdname(mddev));
-+	if (!conf->shrinker) {
-+		ret = -ENOMEM;
-+		pr_warn("md/raid:%s: couldn't allocate shrinker.\n",
- 			mdname(mddev));
- 		goto abort;
+ 	if (c->shrinker_disabled)
+ 		return 0;
+@@ -752,8 +752,8 @@ void bch_btree_cache_free(struct cache_set *c)
+ 
+ 	closure_init_stack(&cl);
+ 
+-	if (c->shrink.list.next)
+-		unregister_shrinker(&c->shrink);
++	if (c->shrink)
++		shrinker_free(c->shrink);
+ 
+ 	mutex_lock(&c->bucket_lock);
+ 
+@@ -828,14 +828,19 @@ int bch_btree_cache_alloc(struct cache_set *c)
+ 		c->verify_data = NULL;
+ #endif
+ 
+-	c->shrink.count_objects = bch_mca_count;
+-	c->shrink.scan_objects = bch_mca_scan;
+-	c->shrink.seeks = 4;
+-	c->shrink.batch = c->btree_pages * 2;
++	c->shrink = shrinker_alloc(0, "md-bcache:%pU", c->set_uuid);
++	if (!c->shrink) {
++		pr_warn("bcache: %s: could not allocate shrinker\n", __func__);
++		return 0;
++	}
++
++	c->shrink->count_objects = bch_mca_count;
++	c->shrink->scan_objects = bch_mca_scan;
++	c->shrink->seeks = 4;
++	c->shrink->batch = c->btree_pages * 2;
++	c->shrink->private_data = c;
+ 
+-	if (register_shrinker(&c->shrink, "md-bcache:%pU", c->set_uuid))
+-		pr_warn("bcache: %s: could not register shrinker\n",
+-				__func__);
++	shrinker_register(c->shrink);
+ 
+ 	return 0;
+ }
+diff --git a/drivers/md/bcache/sysfs.c b/drivers/md/bcache/sysfs.c
+index 0e2c1880f60b..45d8af755de6 100644
+--- a/drivers/md/bcache/sysfs.c
++++ b/drivers/md/bcache/sysfs.c
+@@ -866,7 +866,8 @@ STORE(__bch_cache_set)
+ 
+ 		sc.gfp_mask = GFP_KERNEL;
+ 		sc.nr_to_scan = strtoul_or_return(buf);
+-		c->shrink.scan_objects(&c->shrink, &sc);
++		if (c->shrink)
++			c->shrink->scan_objects(c->shrink, &sc);
  	}
  
-+	conf->shrinker->seeks = DEFAULT_SEEKS * conf->raid_disks * 4;
-+	conf->shrinker->scan_objects = raid5_cache_scan;
-+	conf->shrinker->count_objects = raid5_cache_count;
-+	conf->shrinker->batch = 128;
-+	conf->shrinker->private_data = conf;
-+
-+	shrinker_register(conf->shrinker);
-+
- 	sprintf(pers_name, "raid%d", mddev->new_level);
- 	rcu_assign_pointer(conf->thread,
- 			   md_register_thread(raid5d, mddev, pers_name));
-diff --git a/drivers/md/raid5.h b/drivers/md/raid5.h
-index 97a795979a35..22bea20eccbd 100644
---- a/drivers/md/raid5.h
-+++ b/drivers/md/raid5.h
-@@ -670,7 +670,7 @@ struct r5conf {
- 	wait_queue_head_t	wait_for_stripe;
- 	wait_queue_head_t	wait_for_overlap;
- 	unsigned long		cache_state;
--	struct shrinker		shrinker;
-+	struct shrinker		*shrinker;
- 	int			pool_size; /* number of disks in stripeheads in pool */
- 	spinlock_t		device_lock;
- 	struct disk_info	*disks;
+ 	sysfs_strtoul_clamp(congested_read_threshold_us,
 -- 
 2.30.2
 
