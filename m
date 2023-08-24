@@ -2,111 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92613786AC5
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 10:54:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11DC7786AC6
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 10:54:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235381AbjHXIxw convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 24 Aug 2023 04:53:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41656 "EHLO
+        id S235626AbjHXIy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 04:54:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240632AbjHXIxr (ORCPT
+        with ESMTP id S240569AbjHXIyM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 04:53:47 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3B431996
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 01:53:32 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-21-1nU0YSAiNYCfvxfcnnRqsg-1; Thu, 24 Aug 2023 09:53:29 +0100
-X-MC-Unique: 1nU0YSAiNYCfvxfcnnRqsg-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 24 Aug
- 2023 09:53:25 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Thu, 24 Aug 2023 09:53:25 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Mahmoud Matook' <mahmoudmatook.mm@gmail.com>
-CC:     'Willem de Bruijn' <willemdebruijn.kernel@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "linux-kernel-mentees@lists.linuxfoundation.org" 
-        <linux-kernel-mentees@lists.linuxfoundation.org>
-Subject: RE: [PATCH 1/2] selftests: Provide local define of min() and max()
-Thread-Topic: [PATCH 1/2] selftests: Provide local define of min() and max()
-Thread-Index: AQHZ03nFpJJs9cS/jEaiicM+CY14+6/0t4aQgAGcP4CAABL1kIAB05OAgADtwiA=
-Date:   Thu, 24 Aug 2023 08:53:25 +0000
-Message-ID: <956ab0e63b8340669c31d2452830b7f3@AcuMS.aculab.com>
-References: <20230819195005.99387-1-mahmoudmatook.mm@gmail.com>
- <20230819195005.99387-2-mahmoudmatook.mm@gmail.com>
- <64e22df53d1e6_3580162945b@willemb.c.googlers.com.notmuch>
- <7e8c2597c71647f38cd4672cbef53a66@AcuMS.aculab.com>
- <CAF=yD-+6cWTiDgpsu=hUV+OvzDFRaT2ZUmtQo9qTrCB9i-+7ng@mail.gmail.com>
- <d33fbb24119c4d09864e79ea9dfbb881@AcuMS.aculab.com>
- <20230823193545.nrzlbsa32hm4os4k@mmaatuq-HP-Laptop-15-dy2xxx>
-In-Reply-To: <20230823193545.nrzlbsa32hm4os4k@mmaatuq-HP-Laptop-15-dy2xxx>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Thu, 24 Aug 2023 04:54:12 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CD34171F
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 01:53:54 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E8B946489C
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 08:53:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12631C433C7;
+        Thu, 24 Aug 2023 08:53:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692867233;
+        bh=qWBfAY/syTaBh0XOs7U/kFl7+ZFgl//it3TsuYVk3Js=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=a3HtM/Myu/NikqDjIvsJhKNZhK8eMdJPnf3zEnGOVX8l44HmR0MT0K20ousjFOr/P
+         xAw/MQqXWBgZ2mJ1+51R8Yds05yXPGUDOJjnPEA34oSTBSPSB8RK9AR6hq741bEisf
+         PqRo/bVaOGLCJiE/FWvALh0m+iwGwC4w4Y/mEXE/dDaJNea61V/TD396RH3DYz+pqZ
+         u6Gb4Ym8ofa7voDr9Sfb8JjFnfg8EECLcP5n2hpBwD163HJUbXL4rQ8N6Pm0c1tHe8
+         036vsL6OvKv6UY7rMT4/tUrs9K2nEbKFDx6gNnJ7uQuqyvEv/FzUiYiUGS4S+TgUot
+         tagDftE9FADOA==
+Date:   Thu, 24 Aug 2023 10:53:50 +0200
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Lee Jones <lee@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        =?utf-8?B?TWHDrXJh?= Canal <mairacanal@riseup.net>,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 13/20] drm/tests/drm_kunit_helpers: Correct possible
+ double-entry typo in 'ddrm_kunit_helper_acquire_ctx_alloc'
+Message-ID: <b67sjdnlltxlg5qjeebbocgmpdsxv6qvyzpjwjqy5pkyeovaiv@76snvdcewxmo>
+References: <20230824073710.2677348-1-lee@kernel.org>
+ <20230824073710.2677348-14-lee@kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,PDS_BAD_THREAD_QP_64,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="vir4vd3mpfmkkxjr"
+Content-Disposition: inline
+In-Reply-To: <20230824073710.2677348-14-lee@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mahmoud Matook
-> Sent: Wednesday, August 23, 2023 8:36 PM
-...
-> I tried to use the relaxed version provided in the shared patchset link
-> besides not able to use is_constexpr(), I'm not able to use
-> __UNIQUE_ID() also. It's definded inside include/linux/compiler-gcc.h
-> and it uses another macro __PASTE() which is defined inside
-> include/linux/compiler_types.h.
-> not sure what to do next
->
-> - bring those macros definitions to able to use the relaxed version.
-> - if the most important point for min/max defines inside selftests is to
->   avoid multiple evaluation is the below version acceptable?
->
->   #define min(x, y) ({ \
->     typeof(x) _x = (x); \
->     typeof(y) _y = (y); \
->     _x < _y ? _x : _y; \
-> })
-> 
-> #define max(x, y) ({ \
->     typeof(x) _x = (x); \
->     typeof(y) _y = (y); \
->     _x > _y ? _x : _y; \
-> })
 
-Those are a reasonable pair.
+--vir4vd3mpfmkkxjr
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-If you want a signed-ness check the:
-	_Static_assert(is_signed_type(typeof(a)) == is_signed_type(typeof(b)), "min/max signednesss")
-check should just drop into the above.
+Hi,
 
-	David
+On Thu, Aug 24, 2023 at 08:36:58AM +0100, Lee Jones wrote:
+> Fixes the following W=3D1 kernel build warning(s):
+>=20
+>  drivers/gpu/drm/tests/drm_kunit_helpers.c:172: warning: expecting protot=
+ype for ddrm_kunit_helper_acquire_ctx_alloc(). Prototype was for drm_kunit_=
+helper_acquire_ctx_alloc() instead
+>=20
+> Signed-off-by: Lee Jones <lee@kernel.org>
+> ---
+> Cc: David Airlie <airlied@gmail.com>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Maxime Ripard <mripard@kernel.org>
+> Cc: "Ma=EDra Canal" <mairacanal@riseup.net>
+> Cc: dri-devel@lists.freedesktop.org
+> ---
+>  drivers/gpu/drm/tests/drm_kunit_helpers.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/gpu/drm/tests/drm_kunit_helpers.c b/drivers/gpu/drm/=
+tests/drm_kunit_helpers.c
+> index f102c23eee1dd..c1dfbfcaa0001 100644
+> --- a/drivers/gpu/drm/tests/drm_kunit_helpers.c
+> +++ b/drivers/gpu/drm/tests/drm_kunit_helpers.c
+> @@ -156,7 +156,7 @@ static void action_drm_release_context(void *ptr)
+>  }
+> =20
+>  /**
+> - * ddrm_kunit_helper_acquire_ctx_alloc - Allocates an acquire context
+> + * drm_kunit_helper_acquire_ctx_alloc - Allocates an acquire context
+>   * @test: The test context object
+>   *
+>   * Allocates and initializes a modeset acquire context.
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+The typo was added by your patch 9.
 
+I've applied and squashed them both
+
+Maxime
+
+--vir4vd3mpfmkkxjr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZOcangAKCRDj7w1vZxhR
+xapKAQDJgAtGJxi7Oa75js6tCobx04IEkX4GiDBAlghE/1LpTwD+N9eWXmGWC8Oq
+hncke8txx2Wdo0/ownwXK744E0ArxwM=
+=g15R
+-----END PGP SIGNATURE-----
+
+--vir4vd3mpfmkkxjr--
