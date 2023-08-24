@@ -2,51 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FD4378672C
+	by mail.lfdr.de (Postfix) with ESMTP id E926678672D
 	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 07:27:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239841AbjHXF1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 01:27:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42610 "EHLO
+        id S239860AbjHXF1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 01:27:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236085AbjHXF0d (ORCPT
+        with ESMTP id S239794AbjHXF0o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 01:26:33 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D584CD0;
-        Wed, 23 Aug 2023 22:26:31 -0700 (PDT)
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37O2dY7A027342;
-        Thu, 24 Aug 2023 05:26:08 GMT
+        Thu, 24 Aug 2023 01:26:44 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A25DA198;
+        Wed, 23 Aug 2023 22:26:42 -0700 (PDT)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37O5DI8N026426;
+        Thu, 24 Aug 2023 05:26:06 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
  mime-version : subject : to : cc : references : from : in-reply-to :
  content-type : content-transfer-encoding; s=qcppdkim1;
- bh=cR9r0HbqbixacVcNUJfujbEbOF2OUeDJHRF2a00IxU0=;
- b=I/292nJWrI7vtpLcA7HibzN5WXozIMOWCBhZzioZAXMHu7M4olI/DIi9XKtfsqlBZaf/
- IiobuYb85xVbYXc1wYxSag1uaurD0qCbNMN70zBVUHRo/1q1rIjmp5o3KVo+oxcwImfK
- b/uT/zxpPddUGF5HyRRGDrOmi+hyIpgtexd8ap3QNc+9QcziCdszGv2H7XU1Vuv4Rc/p
- SA7nYEDD80jK0A0rj8ZUy2t9l3cY7Hwpu98kSWb7JRTTz5/Cjn6csyDhRHkZF/fetcZ0
- 4ihxtkPfBD8TxtZyUqzpL3tqAz0Yh31JGjipdeBNiZIKD4QASan+J61J4f9Hy6erLTVj rQ== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sn2exukxw-1
+ bh=bOgs1mB1zlTdBpD4rupOhWFVyHKEo2JmyL+UiN2aZes=;
+ b=TQUoOIZ5MfHqPdB+DNAWASs+1cQmMhkpXO0mvZgV9cl67KnVxqz2mitCEt6IHQ05M5ID
+ yAOUVo/yMxtqEVC2EBUPN9oFoQohgWJK001tGSX6bewIsSPyikcSyLs4Q0UWziP8fdEb
+ fpzJCB94Lxfpz2YhRYQCjJBzoWxePqZzwEPOjCtB5NTj+tjVaSqGc9gO8CJodU/oGcSn
+ 3l2mmlEzuD7H+xpi49Fms70mxRL20+z/PmqgpNsO+IsSfN/kkJwxE4fDSgD4914PxVKy
+ Spgr1/6VPumBXpsgyICyIEJORcT5figo1LtnjFJmq6WCjgVyTchK80jqkPC87KyaDGqV jQ== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3snxtar7fk-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 24 Aug 2023 05:26:07 +0000
+        Thu, 24 Aug 2023 05:26:06 +0000
 Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37O5PWY4032278
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37O5Q5fw012926
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 24 Aug 2023 05:25:32 GMT
+        Thu, 24 Aug 2023 05:26:05 GMT
 Received: from [10.216.48.216] (10.80.80.8) by nalasex01a.na.qualcomm.com
  (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Wed, 23 Aug
- 2023 22:25:24 -0700
-Message-ID: <17a4b36b-4c46-86f6-5b93-b30171c324f2@quicinc.com>
-Date:   Thu, 24 Aug 2023 10:55:21 +0530
+ 2023 22:25:54 -0700
+Message-ID: <e07948d3-8766-b932-2eb4-7dc90b894f91@quicinc.com>
+Date:   Thu, 24 Aug 2023 10:55:51 +0530
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH 5/6] arm64: dts: qcom: ipq9574: Add support for nsscc node
+Subject: Re: [PATCH 6/6] arm64: defconfig: Build NSS Clock Controller driver
+ for IPQ9574
 Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
         <agross@kernel.org>, <andersson@kernel.org>,
         <konrad.dybcio@linaro.org>, <mturquette@baylibre.com>,
         <sboyd@kernel.org>, <robh+dt@kernel.org>,
@@ -61,26 +62,26 @@ To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
         <linux-arm-kernel@lists.infradead.org>, <netdev@vger.kernel.org>
 CC:     <quic_saahtoma@quicinc.com>
 References: <20230711093529.18355-1-quic_devipriy@quicinc.com>
- <20230711093529.18355-6-quic_devipriy@quicinc.com>
- <05554015-6b08-c194-9d27-af5539e3ce46@linaro.org>
+ <20230711093529.18355-7-quic_devipriy@quicinc.com>
+ <f234891f-c508-20de-6d6b-c7b37f6adb2b@linaro.org>
 From:   Devi Priya <quic_devipriy@quicinc.com>
-In-Reply-To: <05554015-6b08-c194-9d27-af5539e3ce46@linaro.org>
+In-Reply-To: <f234891f-c508-20de-6d6b-c7b37f6adb2b@linaro.org>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Originating-IP: [10.80.80.8]
 X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
  nalasex01a.na.qualcomm.com (10.47.209.196)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: k80k8rolSFTOWiLC5rDJLv-HBqSOxo8_
-X-Proofpoint-ORIG-GUID: k80k8rolSFTOWiLC5rDJLv-HBqSOxo8_
+X-Proofpoint-ORIG-GUID: z3CMQHD-4r6G21l9nMmw1F8IcRfDtqOs
+X-Proofpoint-GUID: z3CMQHD-4r6G21l9nMmw1F8IcRfDtqOs
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
  definitions=2023-08-24_02,2023-08-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxlogscore=999
- mlxscore=0 lowpriorityscore=0 priorityscore=1501 impostorscore=0
- malwarescore=0 suspectscore=0 adultscore=0 phishscore=0 bulkscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
+ priorityscore=1501 lowpriorityscore=0 suspectscore=0 bulkscore=0
+ impostorscore=0 clxscore=1015 malwarescore=0 mlxscore=0 spamscore=0
+ mlxlogscore=983 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2308100000 definitions=main-2308240043
 X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
@@ -94,78 +95,34 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 7/11/2023 3:27 PM, Krzysztof Kozlowski wrote:
-> On 11/07/2023 11:35, Devi Priya wrote:
->> Add a node for the nss clock controller found on ipq9574 based devices.
+On 7/11/2023 4:18 PM, Dmitry Baryshkov wrote:
+> On 11/07/2023 12:35, Devi Priya wrote:
+>> Build Qualcomm IPQ9574 NSSCC driver.
 >>
 >> Signed-off-by: Devi Priya <quic_devipriy@quicinc.com>
 >> ---
->>   arch/arm64/boot/dts/qcom/ipq9574.dtsi | 44 +++++++++++++++++++++++++++
->>   1 file changed, 44 insertions(+)
+>>   arch/arm64/configs/defconfig | 1 +
+>>   1 file changed, 1 insertion(+)
 >>
->> diff --git a/arch/arm64/boot/dts/qcom/ipq9574.dtsi b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
->> index f120c7c52351..257ce4a5bfd5 100644
->> --- a/arch/arm64/boot/dts/qcom/ipq9574.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
->> @@ -10,6 +10,8 @@
->>   #include <dt-bindings/clock/qcom,ipq9574-gcc.h>
->>   #include <dt-bindings/interrupt-controller/arm-gic.h>
->>   #include <dt-bindings/reset/qcom,ipq9574-gcc.h>
->> +#include <dt-bindings/clock/qcom,ipq9574-nsscc.h>
->> +#include <dt-bindings/reset/qcom,ipq9574-nsscc.h>
->>   
->>   / {
->>   	interrupt-parent = <&intc>;
->> @@ -17,6 +19,30 @@
->>   	#size-cells = <2>;
->>   
->>   	clocks {
->> +		bias_pll_cc_clk: bias-pll-cc-clk {
->> +			compatible = "fixed-clock";
->> +			clock-frequency = <1200000000>;
->> +			#clock-cells = <0>;
->> +		};
->> +
->> +		bias_pll_nss_noc_clk: bias-pll-nss-noc-clk {
->> +			compatible = "fixed-clock";
->> +			clock-frequency = <461500000>;
->> +			#clock-cells = <0>;
->> +		};
->> +
->> +		bias_pll_ubi_nc_clk: bias-pll-ubi-nc-clk {
->> +			compatible = "fixed-clock";
->> +			clock-frequency = <353000000>;
->> +			#clock-cells = <0>;
->> +		};
->> +
->> +		gcc_gpll0_out_aux: gcc-gpll0-out-aux {
->> +			compatible = "fixed-clock";
->> +			clock-frequency = <800000000>;
->> +			#clock-cells = <0>;
->> +		};
+>> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+>> index 9ce0f1554f4d..d10083da2401 100644
+>> --- a/arch/arm64/configs/defconfig
+>> +++ b/arch/arm64/configs/defconfig
+>> @@ -1180,6 +1180,7 @@ CONFIG_IPQ_GCC_5332=y
+>>   CONFIG_IPQ_GCC_6018=y
+>>   CONFIG_IPQ_GCC_8074=y
+>>   CONFIG_IPQ_GCC_9574=y
+>> +CONFIG_IPQ_NSSCC_9574=y
 > 
-> Isn't this GCC clock?
-Yes, will register this in the gcc driver.
+> Can it work if it is built as a module? This defconfig is used on all 
+> variety of platforms, including even non-Qualcomm ones. We are trying to 
+> limit the built-in drivers list to the crucial-only ones.
+> 
+Sure, got it
 
 Thanks,
-Devi Priya
-> 
->> +
->>   		sleep_clk: sleep-clk {
->>   			compatible = "fixed-clock";
->>   			#clock-cells = <0>;
->> @@ -620,6 +646,24 @@
->>   				status = "disabled";
->>   			};
->>   		};
->> +
->> +		nsscc: nsscc@39b00000 {
-> 
-> Node names should be generic. See also an explanation and list of
-> examples (not exhaustive) in DT specification:
-> https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
-> 
-> 
-> Best regards,
-> Krzysztof
+Devi priya
+>>   CONFIG_MSM_GCC_8916=y
+>>   CONFIG_MSM_GCC_8994=y
+>>   CONFIG_MSM_MMCC_8994=m
 > 
