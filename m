@@ -2,185 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 802D57868E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 09:45:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9123E7868DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 09:45:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237993AbjHXHpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 03:45:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52982 "EHLO
+        id S237393AbjHXHom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 03:44:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240123AbjHXHop (ORCPT
+        with ESMTP id S240394AbjHXHoV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 03:44:45 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36A7E1708
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 00:44:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692863082; x=1724399082;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=KjXKLMK+N4GSRL7HZ1n601Fx0NCTEWQ6GDChxqLcKWM=;
-  b=i/BaHIhbBp7aWFunCnQ1+e02tgp/lMvHSnBo+A6UWm9UA4lcWbFRNoVa
-   EVt32JhUk5CoCx5X0VIvZbRIT5BlSqAF+HJR8FTBJHq+CVhhkAuWW/xgH
-   hNHYUQbzVtDpP5SoPjfyFy81fTmJQLRXXccJ5m91C/hkHskbvK0nTrv7k
-   8bU+mjkCohzwnQW+3NIWXOVyuOdoBB3T9q48GPjtFyk4Yg0Wf1H5/35KR
-   GNfe288omnU8N12ORoMmwNExloTR9HHce5shgJG6gGwJxKUKBlZTWC8ga
-   mQxqw4sdY6Y2BDT9+m0LWkGHHia+sOG8PfIBpL6lT1o0PjzExFxFg3h8t
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="374341867"
-X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
-   d="scan'208";a="374341867"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 00:44:41 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
-   d="scan'208";a="880706428"
-Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
-  by fmsmga001.fm.intel.com with ESMTP; 24 Aug 2023 00:44:42 -0700
-Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qZ51B-0001qc-0z;
-        Thu, 24 Aug 2023 07:44:37 +0000
-Date:   Thu, 24 Aug 2023 15:43:53 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Hao Jia <jiahao.os@bytedance.com>, mingo@redhat.com,
-        peterz@infradead.org, mingo@kernel.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, pauld@redhat.com
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Hao Jia <jiahao.os@bytedance.com>
-Subject: Re: [PATCH 1/2] sched/core: Introduce sched_class::can_stop_tick()
-Message-ID: <202308241526.be4l9ROa-lkp@intel.com>
-References: <20230821094927.51079-2-jiahao.os@bytedance.com>
+        Thu, 24 Aug 2023 03:44:21 -0400
+Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D16D10F4
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 00:44:20 -0700 (PDT)
+Received: by mail-vs1-xe34.google.com with SMTP id ada2fe7eead31-44d3666c6cfso2204716137.3
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 00:44:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1692863059; x=1693467859;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Vbnvrj8jD+jFxmIgPUBsLHTIdjYzkW13qtC1PHUVzMg=;
+        b=2AtQmNlP4CjrQ7nLLUuHBL1+iBuxJeioF0wgb5a9oAa0e8E28lxZtsK8MjpJLeEr7v
+         VISToIgd/eBP1Uu1YCDkVLYew4KLJNY4bHK53IIOZRMFEUMLSiaJSUdABxiuPvQObGCy
+         cecF0IVVdyINhyKYis+bldc/fhIhcPIfSfpT8T0nWIOtVaw+yfqMucGm2zbrofhJBdu0
+         hLa/CVaeF0FgCEk1XICpyM3F9kMAVW0Q/cGkrdkcsXXuVd+bBSIHEj23Em5Zs6lrbV+c
+         gQ5eWCs2beCeA+IwHuArgBllx/nImQ2CwbyA44Bbe6r0Z6yy1+qHtM4W75HpRiQa85dP
+         s7fg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692863059; x=1693467859;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Vbnvrj8jD+jFxmIgPUBsLHTIdjYzkW13qtC1PHUVzMg=;
+        b=MHVTt2OWPMTHy10h4odtdB0p3ZgYhj815yJnRqiEPLsvHbNDMAeutPXAfUse52S6wL
+         E/WaMPNvRg4DEftIZVg9mAs5qCIp9onTnG73rCUKUOGdnsxlkpTkwVSkTlEN4yslZ06L
+         Mx5u1bm2HMmTpwPemi07UcHuI7NwDYVKq9Y8W/JpBjznTgSLQg0k2bKr1CZrBRzBafOx
+         jP+bbe97XZOXoqscwDYiIeRdZwOfEQbizDogsV0/NXULtrhOtgpKiG2sZy/J18tx/FDa
+         k7rm7gHjhVeytiiRR8P6rjb1AbRr69JzCrqLu4GwSSXnmrGsEcKrKjRaE1ik7PdZc42/
+         QULg==
+X-Gm-Message-State: AOJu0Yw9tzuuVtp4TbDDRAHJ++2GUqKUzV3knOW95yFWT/VLc3fryCrX
+        fBD/fswg+mrhOC2UKr2T98IkNiZXGgvuNztfQWDiEg==
+X-Google-Smtp-Source: AGHT+IGpAXZI8kTnpgAkhlHjfliupu+y8oncXlWQ/jH2NUqV8pLRu+hFNCwO3b6YH6Gl0Xbqg6CM///rSyrVY4WAP6U=
+X-Received: by 2002:a05:6102:1cf:b0:44d:50f0:f43e with SMTP id
+ s15-20020a05610201cf00b0044d50f0f43emr9500732vsq.30.1692863059115; Thu, 24
+ Aug 2023 00:44:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230821094927.51079-2-jiahao.os@bytedance.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230823165637.2466480-1-robh@kernel.org>
+In-Reply-To: <20230823165637.2466480-1-robh@kernel.org>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Thu, 24 Aug 2023 09:44:08 +0200
+Message-ID: <CAMRc=Mc5RaCWBs1DKPLbbgHdZ+xr+9WaCu50j4OavtVeaq5fXw@mail.gmail.com>
+Subject: Re: [PATCH v2] ARM: davinci: Drop unused includes
+To:     Rob Herring <robh@kernel.org>
+Cc:     soc@kernel.org, Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hao,
+On Wed, Aug 23, 2023 at 6:57=E2=80=AFPM Rob Herring <robh@kernel.org> wrote=
+:
+>
+> of_platform.h include is not needed, so drop it. It implicitly includes
+> of.h (for now) which is needed.
+>
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+> Arnd, Here's one more that slipped thru the cracks. Please take
+> directly.
+>
+> v2: Fix subject to be 'davinci' not 'keystone'
+> ---
+>  arch/arm/mach-davinci/pdata-quirks.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/arm/mach-davinci/pdata-quirks.c b/arch/arm/mach-davinci=
+/pdata-quirks.c
+> index b8b5f1a5e092..b5b5c7bda61e 100644
+> --- a/arch/arm/mach-davinci/pdata-quirks.c
+> +++ b/arch/arm/mach-davinci/pdata-quirks.c
+> @@ -5,7 +5,7 @@
+>   * Copyright (C) 2016 BayLibre, Inc
+>   */
+>  #include <linux/kernel.h>
+> -#include <linux/of_platform.h>
+> +#include <linux/of.h>
+>
+>  #include <media/i2c/tvp514x.h>
+>  #include <media/i2c/adv7343.h>
+> --
+> 2.40.1
+>
 
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on tip/sched/core]
-[also build test WARNING on next-20230824]
-[cannot apply to linus/master v6.5-rc7]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Hao-Jia/sched-core-Introduce-sched_class-can_stop_tick/20230821-175200
-base:   tip/sched/core
-patch link:    https://lore.kernel.org/r/20230821094927.51079-2-jiahao.os%40bytedance.com
-patch subject: [PATCH 1/2] sched/core: Introduce sched_class::can_stop_tick()
-config: arm64-randconfig-r122-20230824 (https://download.01.org/0day-ci/archive/20230824/202308241526.be4l9ROa-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230824/202308241526.be4l9ROa-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308241526.be4l9ROa-lkp@intel.com/
-
-sparse warnings: (new ones prefixed by >>)
-   kernel/sched/fair.c:702:6: sparse: sparse: symbol 'update_entity_lag' was not declared. Should it be static?
-   kernel/sched/fair.c:1140:34: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct sched_entity const *se @@     got struct sched_entity [noderef] __rcu * @@
-   kernel/sched/fair.c:1140:34: sparse:     expected struct sched_entity const *se
-   kernel/sched/fair.c:1140:34: sparse:     got struct sched_entity [noderef] __rcu *
-   kernel/sched/fair.c:12087:9: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct sched_domain *[assigned] sd @@     got struct sched_domain [noderef] __rcu *parent @@
-   kernel/sched/fair.c:12087:9: sparse:     expected struct sched_domain *[assigned] sd
-   kernel/sched/fair.c:12087:9: sparse:     got struct sched_domain [noderef] __rcu *parent
-   kernel/sched/fair.c:5674:22: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/fair.c:5674:22: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/fair.c:5674:22: sparse:    struct task_struct *
->> kernel/sched/fair.c:6336:56: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected struct task_struct *p @@     got struct task_struct [noderef] __rcu *curr @@
-   kernel/sched/fair.c:6336:56: sparse:     expected struct task_struct *p
-   kernel/sched/fair.c:6336:56: sparse:     got struct task_struct [noderef] __rcu *curr
-   kernel/sched/fair.c:6337:47: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct *p @@     got struct task_struct [noderef] __rcu *curr @@
-   kernel/sched/fair.c:6337:47: sparse:     expected struct task_struct *p
-   kernel/sched/fair.c:6337:47: sparse:     got struct task_struct [noderef] __rcu *curr
-   kernel/sched/fair.c:6438:38: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct task_struct *curr @@     got struct task_struct [noderef] __rcu *curr @@
-   kernel/sched/fair.c:6438:38: sparse:     expected struct task_struct *curr
-   kernel/sched/fair.c:6438:38: sparse:     got struct task_struct [noderef] __rcu *curr
-   kernel/sched/fair.c:7738:20: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct sched_domain *[assigned] sd @@     got struct sched_domain [noderef] __rcu *parent @@
-   kernel/sched/fair.c:7738:20: sparse:     expected struct sched_domain *[assigned] sd
-   kernel/sched/fair.c:7738:20: sparse:     got struct sched_domain [noderef] __rcu *parent
-   kernel/sched/fair.c:7940:9: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct sched_domain *[assigned] tmp @@     got struct sched_domain [noderef] __rcu *parent @@
-   kernel/sched/fair.c:7940:9: sparse:     expected struct sched_domain *[assigned] tmp
-   kernel/sched/fair.c:7940:9: sparse:     got struct sched_domain [noderef] __rcu *parent
-   kernel/sched/fair.c:8039:38: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct task_struct *curr @@     got struct task_struct [noderef] __rcu *curr @@
-   kernel/sched/fair.c:8039:38: sparse:     expected struct task_struct *curr
-   kernel/sched/fair.c:8039:38: sparse:     got struct task_struct [noderef] __rcu *curr
-   kernel/sched/fair.c:8319:38: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct task_struct *curr @@     got struct task_struct [noderef] __rcu *curr @@
-   kernel/sched/fair.c:8319:38: sparse:     expected struct task_struct *curr
-   kernel/sched/fair.c:8319:38: sparse:     got struct task_struct [noderef] __rcu *curr
-   kernel/sched/fair.c:9312:40: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct sched_domain *child @@     got struct sched_domain [noderef] __rcu *child @@
-   kernel/sched/fair.c:9312:40: sparse:     expected struct sched_domain *child
-   kernel/sched/fair.c:9312:40: sparse:     got struct sched_domain [noderef] __rcu *child
-   kernel/sched/fair.c:9939:22: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/fair.c:9939:22: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/fair.c:9939:22: sparse:    struct task_struct *
-   kernel/sched/fair.c:11359:9: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct sched_domain *[assigned] sd @@     got struct sched_domain [noderef] __rcu *parent @@
-   kernel/sched/fair.c:11359:9: sparse:     expected struct sched_domain *[assigned] sd
-   kernel/sched/fair.c:11359:9: sparse:     got struct sched_domain [noderef] __rcu *parent
-   kernel/sched/fair.c:11018:44: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct sched_domain *sd_parent @@     got struct sched_domain [noderef] __rcu *parent @@
-   kernel/sched/fair.c:11018:44: sparse:     expected struct sched_domain *sd_parent
-   kernel/sched/fair.c:11018:44: sparse:     got struct sched_domain [noderef] __rcu *parent
-   kernel/sched/fair.c:11455:9: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct sched_domain *[assigned] sd @@     got struct sched_domain [noderef] __rcu *parent @@
-   kernel/sched/fair.c:11455:9: sparse:     expected struct sched_domain *[assigned] sd
-   kernel/sched/fair.c:11455:9: sparse:     got struct sched_domain [noderef] __rcu *parent
-   kernel/sched/fair.c: note: in included file:
-   kernel/sched/sched.h:2130:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2130:25: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2130:25: sparse:    struct task_struct *
-   kernel/sched/sched.h:2296:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2296:9: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2296:9: sparse:    struct task_struct *
-   kernel/sched/sched.h:2130:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2130:25: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2130:25: sparse:    struct task_struct *
-   kernel/sched/sched.h:2130:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2130:25: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2130:25: sparse:    struct task_struct *
-
-vim +6336 kernel/sched/fair.c
-
-  6321	
-  6322	static bool can_stop_tick_fair(struct rq *rq, int *stop_next)
-  6323	{
-  6324		if (rq->nr_running > 1) {
-  6325			*stop_next = 1;
-  6326			return false;
-  6327		}
-  6328	
-  6329		/*
-  6330		 * If there is one task and it has CFS runtime bandwidth constraints
-  6331		 * and it's on the cpu now we don't want to stop the tick.
-  6332		 * This check prevents clearing the bit if a newly enqueued task here is
-  6333		 * dequeued by migrating while the constrained task continues to run.
-  6334		 * E.g. going from 2->1 without going through pick_next_task().
-  6335		 */
-> 6336		if (sched_feat(HZ_BW) && __need_bw_check(rq, rq->curr)) {
-  6337			if (cfs_task_bw_constrained(rq->curr)) {
-  6338				*stop_next = 1;
-  6339				return false;
-  6340			}
-  6341		}
-  6342	
-  6343		return true;
-  6344	}
-  6345	#endif
-  6346	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Acked-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
