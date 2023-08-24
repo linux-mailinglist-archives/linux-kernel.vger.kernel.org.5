@@ -2,87 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 938B07867C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 08:49:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E880D7867A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 08:43:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240220AbjHXGta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 02:49:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35074 "EHLO
+        id S240212AbjHXGm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 02:42:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240216AbjHXGtK (ORCPT
+        with ESMTP id S239992AbjHXGmX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 02:49:10 -0400
-Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 76ABC10FE;
-        Wed, 23 Aug 2023 23:48:51 -0700 (PDT)
-Received: (from willy@localhost)
-        by mail.home.local (8.17.1/8.17.1/Submit) id 37O6mQ1d017444;
-        Thu, 24 Aug 2023 08:48:26 +0200
-Date:   Thu, 24 Aug 2023 08:48:26 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas@t-8ch.de>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Ryan Roberts <ryan.roberts@arm.com>
-Subject: Re: linux-next: manual merge of the nolibc tree with the mm-stable
- tree
-Message-ID: <ZOb9OuFh/2pmkRv+@1wt.eu>
-References: <20230817133053.76d9f850@canb.auug.org.au>
- <28aeee7b-2de5-4f39-8eb5-3e3486eeed1b@t-8ch.de>
+        Thu, 24 Aug 2023 02:42:23 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E88510F7
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 23:42:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692859342; x=1724395342;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=L5+O8zxYvDFzyzEpO5do45/63yitfgQyrGVGG+U71C0=;
+  b=NWRNXpbTLInFuKREuwx2elTSpkS6Obbqzi9y/o0b+JD9EDfTSIIIkYjI
+   rI0nKkLEtwQJ+WeJzfMNv9sCZgpsFiL2I5xOm9XqfzEh43cEP1Q+mnXE8
+   NCpAMLTWgqB7CYkOR//pqvbk4E4tlljsGHw3UBZLbzOqvTSbmVPCFIjKJ
+   ly40dXrUSmgQ2UxNQk777wyh0sEoO4GIvBeliTnCex8rM0DHQVpXdCK3J
+   +4V89tTKVZURmjoDVe+A+5sOClziKf7tDFwwpGRiouWkeS8QLUp3H8/YM
+   fjw1UOtnRaynISvzWfufbkkvniX0NodNth4u9yB+q1dFfyd9WLd4CeTNv
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="359342340"
+X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
+   d="scan'208";a="359342340"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2023 23:42:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="806986843"
+X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
+   d="scan'208";a="806986843"
+Received: from shbuild999.sh.intel.com ([10.239.146.107])
+  by fmsmga004.fm.intel.com with ESMTP; 23 Aug 2023 23:42:13 -0700
+From:   Feng Tang <feng.tang@intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@intel.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>, x86@kernel.org,
+        kernel test robot <oliver.sang@intel.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Feng Tang <feng.tang@intel.com>
+Subject: [PATCH v2] x86/fpu: set X86_FEATURE_OSXSAVE feature after enabling OSXSAVE in CR4
+Date:   Thu, 24 Aug 2023 14:49:39 +0800
+Message-Id: <20230824064939.54207-1-feng.tang@intel.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <28aeee7b-2de5-4f39-8eb5-3e3486eeed1b@t-8ch.de>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
+0Day found a 34.6% regression in stress-ng's 'af-alg' test case [1], and
+bisected it to commit b81fac906a8f ("x86/fpu: Move FPU initialization
+into arch_cpu_finalize_init()"), which optimizes the FPU init order,
+and moves the CR4_OSXSAVE enabling into a later place:
 
-On Thu, Aug 24, 2023 at 08:41:18AM +0200, Thomas Weißschuh wrote:
-> Hi everybody,
-> 
-> On 2023-08-17 13:30:53+1000, Stephen Rothwell wrote:
-> > Today's linux-next merge of the nolibc tree got a conflict in:
-> > 
-> >   tools/include/nolibc/stdio.h
-> > 
-> > between commit:
-> > 
-> >   08d959738a95 ("selftests: line buffer test program's stdout")
-> > 
-> > from the mm-stable tree and commits:
-> > 
-> >   65ff4d19f792 ("tools/nolibc/stdio: add setvbuf() to set buffering mode")
-> >   2e00a8fc4f47 ("tools/nolibc: setvbuf: avoid unused parameter warnings")
-> > 
-> > from the nolibc tree.
-> >
-> > I fixed it up (I just used the latter version of this file) and can
-> > carry the fix as necessary. This is now fixed as far as linux-next is
-> > concerned, but any non trivial conflicts should be mentioned to your
-> > upstream maintainer when your tree is submitted for merging.  You may
-> > also want to consider cooperating with the maintainer of the conflicting
-> > tree to minimise any particularly complex conflicts.
-> 
-> how do we want to handle this one?
-> 
-> A small note to Linus in the PRs to him on how to resolve it seem
-> reasonable to me.
-> But I'm fairly new to the process.
+   arch_cpu_finalize_init
+       identify_boot_cpu
+	   identify_cpu
+	       generic_identify
+                   get_cpu_cap --> setup cpu capability
+       ...
+       fpu__init_cpu
+           fpu__init_cpu_xstate
+               cr4_set_bits(X86_CR4_OSXSAVE);
 
-My understanding is that Stephen's fix is still in his tree. We may indeed
-need to add a note to Linus in the PR about this one and the other one.
+'X86_FEATURE_OSXSAVE' feature bit maps to bit 27 of output in ECX from
+cpuid(0x00000001), which will be '1' once CR4.OSXSAVE is set. From the
+call sequence above, CR4.OSXSAVE is set after cpu capability setup,
+causing 'X86_FEATURE_OSXSAVE' feature bit not being set.
 
-Cheers,
-Willy
+Many security module like 'camellia_aesni_avx_x86_64' depends on
+this feature, and will fail to be loaded after the commit, causing the
+regression.
+
+So set X86_FEATURE_OSXSAVE feature right after OSXSAVE enabling to fix it.
+
+[1]. https://lore.kernel.org/lkml/202307192135.203ac24e-oliver.sang@intel.com/
+
+Fixes: b81fac906a8f ("x86/fpu: Move FPU initialization into arch_cpu_finalize_init()")
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Closes: https://lore.kernel.org/lkml/202307192135.203ac24e-oliver.sang@intel.com/
+Signed-off-by: Feng Tang <feng.tang@intel.com>
+---
+Changelog:
+
+  since v1:
+    * Add more background info to commit log and code comments (Rick Edgecombe)
+
+ arch/x86/kernel/fpu/xstate.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
+index 0bab497c9436..9de551662624 100644
+--- a/arch/x86/kernel/fpu/xstate.c
++++ b/arch/x86/kernel/fpu/xstate.c
+@@ -173,6 +173,13 @@ void fpu__init_cpu_xstate(void)
+ 
+ 	cr4_set_bits(X86_CR4_OSXSAVE);
+ 
++	/*
++	 * CPUID bit for X86_FEATURE_OSXSAVE value will change once
++	 * CR4.OSXSAVE is set, so update it manually.
++	 */
++	if (!boot_cpu_has(X86_FEATURE_OSXSAVE))
++		setup_force_cpu_cap(X86_FEATURE_OSXSAVE);
++
+ 	/*
+ 	 * Must happen after CR4 setup and before xsetbv() to allow KVM
+ 	 * lazy passthrough.  Write independent of the dynamic state static
+-- 
+2.27.0
+
