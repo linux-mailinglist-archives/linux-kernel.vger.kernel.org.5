@@ -2,55 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F16337868B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 09:38:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EAB87868BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 09:39:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240513AbjHXHio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 03:38:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37878 "EHLO
+        id S240519AbjHXHip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 03:38:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240417AbjHXHiL (ORCPT
+        with ESMTP id S240420AbjHXHiN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 03:38:11 -0400
+        Thu, 24 Aug 2023 03:38:13 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65DACC7;
-        Thu, 24 Aug 2023 00:38:09 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7E7810F7
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 00:38:11 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 04EEE65936;
-        Thu, 24 Aug 2023 07:38:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42B0BC433CA;
-        Thu, 24 Aug 2023 07:38:06 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 82A1465936
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 07:38:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBFE5C433C8;
+        Thu, 24 Aug 2023 07:38:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692862688;
-        bh=Ud+JmrQSf+WR8fLk9PtmUGKmnz/n+mzcTHuAf4DcxX4=;
+        s=k20201202; t=1692862691;
+        bh=yLSSSBHYD8WZeL0Wfaq/t90nMXiRlFnq7zlyLNlax8U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u5ji2+9DHanRfav04RicE1BpnqasiNzCcJCY2gklfVBpwKZTDHXBnfRI2zPvHMR6b
-         EDhSsPp9uIbNp0XLq4wmsg5rQl1GVmwm+KGFyMv7ED3vMGkja+GQKQmvoOWTmaLiTf
-         rkQwt73vqm4LSSOyqNdGHff79+P77BUQiGk54ItBMwFHwusnjsamjymWUp3I/tY8R8
-         pyqQhtTglLhNR1viLM6VVH7wuZSev3eBVvkF+7srRuni8wsseL4fMmlmlctOySpWdF
-         Rzd7UzjZBnBztEE+Lr0XPWru9W5onfLE0NSPSduzJHZKqV5keWJTCIk2d0BcJNKQe1
-         hhXLhGInGs3SA==
+        b=LMwWtL3rVjYSTgwJ1CI0v1o/Q48mMwbRMOlcDYwq+A+OS+R5v+eaFm+4HqPX1uOJC
+         gEas7dKEasmD1CfTvMY/YVSpCQK2Hq+jpszRL2zJ/84p8ikOahpk0/oRlilDY59sIt
+         TVBE1sKHZF+r5UGdG4k3EUgcqNYn2/K4DiXZfRWDNT0CkF/2wxgfvOlJvlbklxoC0G
+         as99N1n4vmCf5pPfskYATjzCpN1aHB30TkDase584bKcopT2ziVrT9AxueUBAhpUzi
+         0ERnmGyM2YL0mMown++64XtrIKXoW2Gv8o6Z0j+wifwPuX1yA7raQd8FFsaCU10uqy
+         8Y2pcg+zymOfg==
 From:   Lee Jones <lee@kernel.org>
 To:     lee@kernel.org
 Cc:     linux-kernel@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
         David Airlie <airlied@gmail.com>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org
-Subject: [PATCH 15/20] drm/tegra/hub: Increase buffer size to ensure all possible values can be stored
-Date:   Thu, 24 Aug 2023 08:37:00 +0100
-Message-ID: <20230824073710.2677348-16-lee@kernel.org>
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH 16/20] drm/drm_connector: Provide short description of param 'supported_colorspaces'
+Date:   Thu, 24 Aug 2023 08:37:01 +0100
+Message-ID: <20230824073710.2677348-17-lee@kernel.org>
 X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
 In-Reply-To: <20230824073710.2677348-1-lee@kernel.org>
 References: <20230824073710.2677348-1-lee@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
@@ -61,42 +59,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When converting from int to string, we must allow for up to 10-chars (2147483647).
-
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/tegra/hub.c: In function ‘tegra_display_hub_probe’:
- drivers/gpu/drm/tegra/hub.c:1106:47: warning: ‘%u’ directive output may be truncated writing between 1 and 10 bytes into a region of size 4 [-Wformat-truncation=]
- drivers/gpu/drm/tegra/hub.c:1106:42: note: directive argument in the range [0, 4294967294]
- drivers/gpu/drm/tegra/hub.c:1106:17: note: ‘snprintf’ output between 6 and 15 bytes into a destination of size 8
+ drivers/gpu/drm/drm_connector.c:2215: warning: Function parameter or member 'supported_colorspaces' not described in 'drm_mode_create_hdmi_colorspace_property'
+ drivers/gpu/drm/drm_connector.c:2239: warning: Function parameter or member 'supported_colorspaces' not described in 'drm_mode_create_dp_colorspace_property'
 
 Signed-off-by: Lee Jones <lee@kernel.org>
 ---
-Cc: Thierry Reding <thierry.reding@gmail.com>
-Cc: Mikko Perttunen <mperttunen@nvidia.com>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc: Maxime Ripard <mripard@kernel.org>
+Cc: Thomas Zimmermann <tzimmermann@suse.de>
 Cc: David Airlie <airlied@gmail.com>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Jonathan Hunter <jonathanh@nvidia.com>
-Cc: Philipp Zabel <p.zabel@pengutronix.de>
 Cc: dri-devel@lists.freedesktop.org
-Cc: linux-tegra@vger.kernel.org
 ---
- drivers/gpu/drm/tegra/hub.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/drm_connector.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/gpu/drm/tegra/hub.c b/drivers/gpu/drm/tegra/hub.c
-index 1af5f8318d914..f21e57e8599ee 100644
---- a/drivers/gpu/drm/tegra/hub.c
-+++ b/drivers/gpu/drm/tegra/hub.c
-@@ -1101,7 +1101,7 @@ static int tegra_display_hub_probe(struct platform_device *pdev)
- 
- 	for (i = 0; i < hub->soc->num_wgrps; i++) {
- 		struct tegra_windowgroup *wgrp = &hub->wgrps[i];
--		char id[8];
-+		char id[16];
- 
- 		snprintf(id, sizeof(id), "wgrp%u", i);
- 		mutex_init(&wgrp->lock);
+diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connector.c
+index bf8371dc2a612..c44d5bcf12847 100644
+--- a/drivers/gpu/drm/drm_connector.c
++++ b/drivers/gpu/drm/drm_connector.c
+@@ -2203,6 +2203,7 @@ static int drm_mode_create_colorspace_property(struct drm_connector *connector,
+ /**
+  * drm_mode_create_hdmi_colorspace_property - create hdmi colorspace property
+  * @connector: connector to create the Colorspace property on.
++ * @supported_colorspaces: bitmap of supported color spaces
+  *
+  * Called by a driver the first time it's needed, must be attached to desired
+  * HDMI connectors.
+@@ -2227,6 +2228,7 @@ EXPORT_SYMBOL(drm_mode_create_hdmi_colorspace_property);
+ /**
+  * drm_mode_create_dp_colorspace_property - create dp colorspace property
+  * @connector: connector to create the Colorspace property on.
++ * @supported_colorspaces: bitmap of supported color spaces
+  *
+  * Called by a driver the first time it's needed, must be attached to desired
+  * DP connectors.
 -- 
 2.42.0.rc1.204.g551eb34607-goog
 
