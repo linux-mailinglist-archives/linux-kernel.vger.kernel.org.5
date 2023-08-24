@@ -2,57 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3C3F7878D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 21:41:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98A2E7878E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 21:44:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243261AbjHXTlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 15:41:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60706 "EHLO
+        id S243186AbjHXTna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 15:43:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243196AbjHXTku (ORCPT
+        with ESMTP id S243346AbjHXTnW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 15:40:50 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAAFB2113;
-        Thu, 24 Aug 2023 12:40:16 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2FD59676AD;
-        Thu, 24 Aug 2023 19:39:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 623FBC433C9;
-        Thu, 24 Aug 2023 19:39:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692905956;
-        bh=IBIjENUwt+t9a5oKPAzomGd+RY2GI6cSJlWh+Ri7FgU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LxSvgNdYQ810IL4MMhCxucvsdrdd9lCe6q3FFZBVQvnEGMnR/Ec2FEJ1m522XBYg8
-         kQolHoOojKqP4xc6NKgVewX1O5QJUlSfyu094MHfnEU20JZIHuw9DiGDOaHKX7948W
-         7rc+lcst7v+FuLKYXWop+sruuf6V/ssKuRw2lDRRBSZaDRzfJU9e0x4lrVqb4Ygna6
-         olel0tpzPVvEejxyQiFEU31+kkx65iBeVuGuiyj+HeYGLE8o7PWL9ym3fMUB/j6RHA
-         YoiJafxjAhz0Fj3vOY81hkWBed9dvfaRXuV8S2SG4RTlCcqedZAQRQtCDJhMvXvU7Q
-         s9Z+jYEckmMZA==
-Received: by pali.im (Postfix)
-        id 866539D2; Thu, 24 Aug 2023 21:39:13 +0200 (CEST)
-Date:   Thu, 24 Aug 2023 21:39:13 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH 01/12] PCI: mvebu: Remove unused struct mvebu_pcie.busn
-Message-ID: <20230824193913.fp7njruq6zl3pg4d@pali>
-References: <20230824193712.542167-1-helgaas@kernel.org>
- <20230824193712.542167-2-helgaas@kernel.org>
+        Thu, 24 Aug 2023 15:43:22 -0400
+Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A46B1BE6;
+        Thu, 24 Aug 2023 12:43:21 -0700 (PDT)
+Received: from dslb-188-097-211-187.188.097.pools.vodafone-ip.de ([188.97.211.187] helo=martin-debian-2.paytec.ch)
+        by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <martin@kaiser.cx>)
+        id 1qZGEh-0003HB-Kw; Thu, 24 Aug 2023 21:43:19 +0200
+From:   Martin Kaiser <martin@kaiser.cx>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Martin Kaiser <martin@kaiser.cx>
+Subject: [PATCH 0/3]  hwrng: ks-sa - simple cleanups
+Date:   Thu, 24 Aug 2023 21:40:34 +0200
+Message-Id: <20230824194037.1575276-1-martin@kaiser.cx>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230824193712.542167-2-helgaas@kernel.org>
-User-Agent: NeoMutt/20180716
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -61,32 +39,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Duplicate of https://lore.kernel.org/linux-pci/20220905192310.22786-5-pali@kernel.org/ ?
+Some simple cleanups of the ks-sa-rng driver. Compile-tested only.
 
-On Thursday 24 August 2023 14:37:01 Bjorn Helgaas wrote:
-> From: Bjorn Helgaas <bhelgaas@google.com>
-> 
-> The busn member of struct mvebu_pcie is unused, so drop it.
-> 
-> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-> Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-> Cc: Pali Rohár <pali@kernel.org>
-> ---
->  drivers/pci/controller/pci-mvebu.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/pci/controller/pci-mvebu.c b/drivers/pci/controller/pci-mvebu.c
-> index c931b1b07b1d..60810a1fbfb7 100644
-> --- a/drivers/pci/controller/pci-mvebu.c
-> +++ b/drivers/pci/controller/pci-mvebu.c
-> @@ -87,7 +87,6 @@ struct mvebu_pcie {
->  	struct resource io;
->  	struct resource realio;
->  	struct resource mem;
-> -	struct resource busn;
->  	int nports;
->  };
->  
-> -- 
-> 2.34.1
-> 
+Martin Kaiser (3):
+  hwrng: ks-sa - access private data via struct hwrng
+  hwrng: ks-sa - remove dev from struct ks_sa_rng
+  hwrng: ks-sa - use dev_err_probe
+
+ drivers/char/hw_random/ks-sa-rng.c | 26 +++++++-------------------
+ 1 file changed, 7 insertions(+), 19 deletions(-)
+
+-- 
+2.39.2
+
