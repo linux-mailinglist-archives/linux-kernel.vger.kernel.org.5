@@ -2,173 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 291387869FC
+	by mail.lfdr.de (Postfix) with ESMTP id 7C5DF7869FD
 	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 10:26:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236808AbjHXIZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 04:25:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41156 "EHLO
+        id S237731AbjHXIZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 04:25:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231636AbjHXIZU (ORCPT
+        with ESMTP id S236591AbjHXIZq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 04:25:20 -0400
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2069.outbound.protection.outlook.com [40.107.102.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE9661711
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 01:25:16 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=P0fmhuKr6/OAyBfzCEz1bqhaWuTQxkPa/i/ur3X2s6JJKuygp2X5PZygkG+S+WT5wEDV9k6C+4JxtsxMn/IZ4bkqywP4rsRj/hqig1cemMRS8PVHRfU1VtXnlP8EHBiqb2Dwha/mRw1w+XuvPLhpondl7chQWccpQzbqy3P9HjFPraPxBN60MA7aZbJ6do9fOTp9LqDRoc1myq9/LYXkemV+oGfu/1LIwXq3NQMnkhHSx1chb6TfGqxjxcs1yuCEykd3H5BjiiWUPepQxvjWl2cziXXfSImZJHLZ4kxp54CnXo32Diu1JwLOYhUtvj6JyzfTKff99QTuGmx3EMaIPg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1fX8IH0G3Uzzs/ztwwaICrh4224UhnMBm17rYqlx3So=;
- b=lFvTyV0nU7R8gMxff/gaRxGAx80xUeNmjK+hLZmmuq80Fvqi322uvjDprCXN2CyZTgFwx5rYhvYKJ8UHzdCQsuOKidxzHJPyiYMAWeHg+qSLkiWvHRMCg1npqThc7x6YocaYkxPB5ywQuscD6MkzhIFLsjnv+4RbE++uSw/B4P7+LqiCfykn+LJm+Kab71ouhwAJN5aTy+kzr870PlVCX2o2gz//nVjHq+e2wpUiZQ8+F/byr2sN3J5XjH6UeYbVXvUpi0hVn900WhzcjKjRwuu9PM01grv8tjCeTMBEILpwhTwLdvqiLLIQIBVN+ftgC27C2CGrLShP74ZOTn08zg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1fX8IH0G3Uzzs/ztwwaICrh4224UhnMBm17rYqlx3So=;
- b=SmDuveNWNdAfIv/qjNU7F2/qgrsvjMEvkYHSGUnQvoC8TZD+7Z8prs/2YP592clGYGW0efPyLkRBBpVmt4FG6FtfkQ91yjSdoNHsDleLnZHJYf9UxlXhPf5QeTmqkopIzxR7D0Z1rjX2+uU+FS6MYY/JTWDOh1n4uWxiFq7HoVc=
-Received: from MW4PR12MB5667.namprd12.prod.outlook.com (2603:10b6:303:18a::10)
- by SJ2PR12MB8183.namprd12.prod.outlook.com (2603:10b6:a03:4f4::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.27; Thu, 24 Aug
- 2023 08:25:13 +0000
-Received: from MW4PR12MB5667.namprd12.prod.outlook.com
- ([fe80::dc06:ffb3:46ec:6b86]) by MW4PR12MB5667.namprd12.prod.outlook.com
- ([fe80::dc06:ffb3:46ec:6b86%3]) with mapi id 15.20.6699.027; Thu, 24 Aug 2023
- 08:25:12 +0000
-From:   "Sharma, Shashank" <Shashank.Sharma@amd.com>
-To:     Lee Jones <lee@kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "Koenig, Christian" <Christian.Koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
-Subject: RE: [PATCH 11/20] drm/amd/amdgpu/amdgpu_doorbell_mgr: Correct
- misdocumented param 'doorbell_index'
-Thread-Topic: [PATCH 11/20] drm/amd/amdgpu/amdgpu_doorbell_mgr: Correct
- misdocumented param 'doorbell_index'
-Thread-Index: AQHZ1l3o6TVy3C6poEeIVhDqGr29oK/5HA/Q
-Date:   Thu, 24 Aug 2023 08:25:12 +0000
-Message-ID: <MW4PR12MB56671A4E4281690A44C45C91F21DA@MW4PR12MB5667.namprd12.prod.outlook.com>
-References: <20230824073710.2677348-1-lee@kernel.org>
- <20230824073710.2677348-12-lee@kernel.org>
-In-Reply-To: <20230824073710.2677348-12-lee@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ActionId=49c14200-347e-4eac-9994-94c65f1544c4;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ContentBits=0;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Enabled=true;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Method=Standard;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Name=General;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SetDate=2023-08-24T08:24:27Z;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MW4PR12MB5667:EE_|SJ2PR12MB8183:EE_
-x-ms-office365-filtering-correlation-id: 281919c7-f6fe-4d21-bd4e-08dba47ba31d
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: +rlTYnb5OyMV9GWtaXdEMnuxXNnQDORrT32CSrKD201jMPKEjfzeOYH598TaMR3npduJUCWOsZLvJqWtS17MsfEtk/0rHV8pgIsR87CvHDlnIq6ysNJ1z8M6E/FpHUKLrsFTjKf8Hpm4jAa0nzekyH01wxp6jLajC0Sle/FUGvtjkGVbxV8+sseYhQ3Cg6h1Q7xICnK/Kf1SFnXM94G7weKCpK1qBR97eDpLooEuJK044dZSldetBQQoLf2ZM2/b78j7/s92t8m3rcXpZtXMZUE64t8OjLLsgtjsMyyT1mRCHYF14ON5vkU1JkQfSYXhqTU83aypeoea8YAHFIQRnAHFCNjIIGbvhOoRY6Ll5avFogCKspeJTRRh5oNHyXhQMWXKtJ8h2vKC86JtU79+/95iFztIUEPDcifAsYKvIK4jUbMEysRqw+yYsDJbsYNMLuBkF7/hy57RML9XuiVcTbwATAyxgHxAylYIbKwkpaamwL0/8jxAMqIdV+fSvwnm5xUv5097J+K8xGZiczIsrs9lr70t1J0haf6BkF6KxxhCuKLe+3pwdAbpq7RgLtLPaVHhlfTCwLTnrhBC+oe8FfvR3SYgRvJWakJ0rBilaKoXk+YPCLvybOJXG8cyFSzy
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR12MB5667.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(376002)(346002)(136003)(396003)(186009)(1800799009)(451199024)(52536014)(5660300002)(4326008)(8676002)(8936002)(66574015)(83380400001)(33656002)(55016003)(71200400001)(38070700005)(38100700002)(122000001)(66946007)(76116006)(66556008)(66476007)(66446008)(54906003)(64756008)(316002)(6916009)(478600001)(41300700001)(53546011)(6506007)(2906002)(86362001)(7696005)(9686003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?WTFaN2J3czlzTXlEY1hrNmczSTMvSzMvTDFjbXlyeFAvQ29zSVhMaGhJMmdy?=
- =?utf-8?B?UDZUSmR3YlZzeExPeDVGMEVwd2xyb0Q0bXZmazZ2NmtVbjRJN3duL01yOS93?=
- =?utf-8?B?QzhWLzlreDduZEwyV2lFVlQ2YVlRUFh1TlAvZDlONHhXTmw2V2xNV25obVRW?=
- =?utf-8?B?aWFtSHIwMTdxSnFOY1RDaHNNNWpuSTQ5cUh3YnV2WVZ6UFBodVRIZHhTVElp?=
- =?utf-8?B?UGxtZ0hlTzJLb09QZEJaeTY0VXYzQmwrZ2RWVXYwblgyMGZMM2FLVXVEeXFD?=
- =?utf-8?B?Q05qVWk2QThCWlhnQnBaZng1WTVPcFVMTzdpQzlaeXJIMStEbzlBcjl1Z012?=
- =?utf-8?B?Yyt4THBOQ0tZNnlnSytHU3kyV1ZDbnQ3aXFhMElsdVZDNUVhaTQwVlRFeFJY?=
- =?utf-8?B?d1NIcW8xaXY0WUMrL3JydGV6Yk9vM3c2S2RoeU5xTEZnWUNIcDFSUkpoWVdX?=
- =?utf-8?B?eVdiMzQwenlCSTNmWVFKN3doRjZPTi9MdnRqMitaS2lKdllmUHNYMm5FeWN5?=
- =?utf-8?B?UE9xUHJrMmdHS2grd3JKZUw1YVNER0d1N09uREdwSHNGVVJZVzVWcUJmd0gx?=
- =?utf-8?B?c0cyUHF5UGh5a1NHZUdHM3FoT1p5Y1FEOTg3QVZTbkZ0cWR5Z2t2bXdTSHlU?=
- =?utf-8?B?RUkrUVM2Y0JCWW1RSVlzZEdnWXZqNWJqcmtPV1FLVWQwR1I5RCtrRGcrMHpM?=
- =?utf-8?B?bXhDOVdKd3M4VzgrY2pnUEF5bDBKL3Z6N3VWcmNDTEx2TVh2RTBZallSdWdC?=
- =?utf-8?B?aXRKcXhIVlU3YllZemVtN3NXVWlDb1VZZ0NTbW1KZHZsZ1VrRGwxclpJUStF?=
- =?utf-8?B?TE1OdEdtMUhLZkVMVXVWSnRnNk5oa3RKU2E0NnljVU5CeE14VkdGRElYbmlG?=
- =?utf-8?B?QWJJZlhNZFhWOUxMOWFCaTlMYTlMODNJUmdld1Z6NStZbVJEd296RUwyUUpk?=
- =?utf-8?B?ZzNNZ3ZjMkpPQXJ0MlFWTmJGQ21QVWEzd2FnTXNJY0hRdnd1d0o0WW55MU9p?=
- =?utf-8?B?TkFCS20ya2FMRndvSEcyWDFvZ2N5YTAybG1xZE9Bd1lPNmR2aERiSXQvMlY0?=
- =?utf-8?B?MWlTQzJaSm1hbDE3SGZWekJyWTV6NGVDVkJvd3lXQnBhZWlkeUxGc0pBdjRh?=
- =?utf-8?B?NUtQRnBWVXM4MDB5ZnZDWXFaMFVnRTdWZHRmTzM2blltUStzNHNwU3I1QjFC?=
- =?utf-8?B?a3dGVFg1V0J4OUthRTVDSW5YdXNPUHhmczRyQXpvaS9iSkM2ZHpwQkVmaytq?=
- =?utf-8?B?am5hVnJaM3lURUdVSTlqT0tON0tpYUZmWjZCaW5iZVFIVjQrSFJ2T2thcXJw?=
- =?utf-8?B?dk1hb3ZQcHNJZ3htYkRUOExDeW96L0Z5Z003TGwyRVA4K2hDWDZSSnJlRGM1?=
- =?utf-8?B?bS9rUFhJU292ckFPNU1Ub1MyTW9DQnNTMjE5R2FrRzhCeVhXSGJBQm9NMnJm?=
- =?utf-8?B?b2Q1UUlDTWxBUFZzVDFmV1F0aCttMktUa1pBalhjQ3A4dmc1b0JDYlV3N3Bq?=
- =?utf-8?B?bkV1ZW5QKzdCVjNHcDhCS0RpWVBOUVp1S1pxcTU5YUtPb2V5U3pzN25uZjdF?=
- =?utf-8?B?bHpiTWg2eC9Zd00rMS8xV0Q2M3JJY1pIZm1GYUZyR3RjQmMvMUZYMEZoVnQ3?=
- =?utf-8?B?VjNzWDZUZklTdVhZQ1hLdXd4cS9pYTIyQW81Zi80dDFrYWdIelE3TDc5bXN5?=
- =?utf-8?B?cVNSdmJ3Wm1ZTk9zZ1NPTjdlamc4TW9KbHJ0RW05VnJ5aStEdnVNSExpeEJp?=
- =?utf-8?B?bi90OEVBN0JGTkNlOUF2N09YcWNBTVJoRGhGQmJPYWRYTjRGcmluSUR5akdR?=
- =?utf-8?B?Y3dLK3RoMm9QUm9JdjNiSGt1RnVOYTFIRHJOd0QrR0srM1Z5cXJ0R2prR0lY?=
- =?utf-8?B?WncvSVV1bStoQ0phWjVnOERYM0E3YkUzdWFWMFNxMFpnU01rY041dDZsVCtw?=
- =?utf-8?B?T2FYZmUrYU9qNTJjL0grUTk1MTRKcURXc0tBcHowWC9ScHBBQzFub1U4UkRn?=
- =?utf-8?B?ZVRGTkF6M0Z1N1d3SGtjdGRKQ2FWMTl4ejlxZGZUNUVjMm1ZYmhpWGk0K0lX?=
- =?utf-8?B?ZE1QY3dnZmg4aWk4UjkwL2NkWFZreXpFZk9iQT09?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Thu, 24 Aug 2023 04:25:46 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ADD51709
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 01:25:44 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-3fee769fcc3so44680175e9.2
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 01:25:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692865542; x=1693470342;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ufDuOrMZ6PX5JtRvNn4ZirU+4EA1nSr1OgPphDzyH8Q=;
+        b=veuxEedyZ+2JZm3y+1GOuqEXAWuiRN/ynvhk9QgzsFCQ1flNWPcgeZREQYx8gBBqMI
+         oPInzhVbfpFGrfM8Ae8nWMGWDUm8y2f/MIy7mCjN3DAZ8D6u6V3WO/F3iOdyCnJwQOvk
+         YpIsirR4URjHAEJgpQr+b7JZUCQUZNcLw5HKCJIc1Tr3MKJu2QmcyWDo0CtzGANenGA7
+         SPIwEvyx/KGLqj2ERLaRMl2d+gEBAk2ICSHHKNky/WArUdOnt39rtfZ4P33p8ptI3vF0
+         9JLyAo7Tg15wVvUIiyK2vG1qC3g/6oC5TLgWLu7u2PvTKN39rCXXAGdO865YtwJIFgRg
+         Z7YQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692865542; x=1693470342;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ufDuOrMZ6PX5JtRvNn4ZirU+4EA1nSr1OgPphDzyH8Q=;
+        b=OGxvxrT5Yllhykhjyb9fod3asMKso4n/FaIbu+xQiU44ROUBDaVYpqNPI3HOP612t+
+         Jo7huzyvVB61EJZ7oVVaBlGaEcGpxItcsgDKlXrC6Bj3zWIsr8vzfxZr2QTsIo+N9KVO
+         LFjkHtWnjI9Oa8+25P5cctbPPY7Uhgx3ZeW+TZdUoEtbTJdG2OPMyujHcZAFxtHkgDDy
+         P6k1sodV371ghu+DserD94ElN7wpCYGzjKaWaemLjIfpiMnX5MRpD1c9fZXDbxXz9Eyv
+         JatCLMNUZWxdJwNYOhyRp55dDdbFnsQcWfDhJfSzKSw2ZFa4HJDJGcqjdyZdqceyV01y
+         sTwA==
+X-Gm-Message-State: AOJu0Yy0G/WxZQzHxXMzNbPvYlLxppYupthCtn0HqT65QlaloUccB6ZP
+        /yu+o1Lt7DhFUuzq2tLEOuq8Tw==
+X-Google-Smtp-Source: AGHT+IHPKNu2kUb4ciPw/tpNDJNSqsuJa6veUIyEOWqVFnVhTYNl0ohIzznHmH/Hti0seds6z4MUXw==
+X-Received: by 2002:a7b:cd14:0:b0:3fc:1a6:7764 with SMTP id f20-20020a7bcd14000000b003fc01a67764mr11224846wmj.16.1692865542273;
+        Thu, 24 Aug 2023 01:25:42 -0700 (PDT)
+Received: from [192.168.2.107] ([79.115.63.239])
+        by smtp.gmail.com with ESMTPSA id 6-20020a05600c020600b003fc04d13242sm1954471wmi.0.2023.08.24.01.25.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Aug 2023 01:25:41 -0700 (PDT)
+Message-ID: <3df0728d-60d8-1cff-a0d9-f3de505dfa17@linaro.org>
+Date:   Thu, 24 Aug 2023 09:25:40 +0100
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR12MB5667.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 281919c7-f6fe-4d21-bd4e-08dba47ba31d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Aug 2023 08:25:12.7414
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Aff1fHa9g/g9ZdjbEL52AUWfSZprnD88Yl3b4SOYJdpUasraGOaTrKwLq3o2dTMIsH++Vql9OwIVsnlLFul0YQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB8183
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.1
+Subject: Re: [PATCH v2 05/41] mtd: spi-nor: convert .n_sectors to .size
+Content-Language: en-US
+To:     Michael Walle <mwalle@kernel.org>,
+        Pratyush Yadav <pratyush@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+References: <20230807-mtd-flash-info-db-rework-v2-0-291a0f39f8d8@kernel.org>
+ <20230807-mtd-flash-info-db-rework-v2-5-291a0f39f8d8@kernel.org>
+From:   Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <20230807-mtd-flash-info-db-rework-v2-5-291a0f39f8d8@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-W0FNRCBPZmZpY2lhbCBVc2UgT25seSAtIEdlbmVyYWxdDQoNClJldmlld2VkLWJ5OiA6IFNoYXNo
-YW5rIFNoYXJtYSA8c2hhc2hhbmsuc2hhcm1hQGFtZC5jb20+DQoNClJlZ2FyZHMNClNoYXNoYW5r
-DQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KRnJvbTogTGVlIEpvbmVzIDxsZWVAa2VybmVs
-Lm9yZz4NClNlbnQ6IFRodXJzZGF5LCBBdWd1c3QgMjQsIDIwMjMgOTozNyBBTQ0KVG86IGxlZUBr
-ZXJuZWwub3JnDQpDYzogbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsgRGV1Y2hlciwgQWxl
-eGFuZGVyIDxBbGV4YW5kZXIuRGV1Y2hlckBhbWQuY29tPjsgS29lbmlnLCBDaHJpc3RpYW4gPENo
-cmlzdGlhbi5Lb2VuaWdAYW1kLmNvbT47IFBhbiwgWGluaHVpIDxYaW5odWkuUGFuQGFtZC5jb20+
-OyBEYXZpZCBBaXJsaWUgPGFpcmxpZWRAZ21haWwuY29tPjsgRGFuaWVsIFZldHRlciA8ZGFuaWVs
-QGZmd2xsLmNoPjsgU2hhcm1hLCBTaGFzaGFuayA8U2hhc2hhbmsuU2hhcm1hQGFtZC5jb20+OyBh
-bWQtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZzsgZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9w
-Lm9yZw0KU3ViamVjdDogW1BBVENIIDExLzIwXSBkcm0vYW1kL2FtZGdwdS9hbWRncHVfZG9vcmJl
-bGxfbWdyOiBDb3JyZWN0IG1pc2RvY3VtZW50ZWQgcGFyYW0gJ2Rvb3JiZWxsX2luZGV4Jw0KDQpG
-aXhlcyB0aGUgZm9sbG93aW5nIFc9MSBrZXJuZWwgYnVpbGQgd2FybmluZyhzKToNCg0KIGRyaXZl
-cnMvZ3B1L2RybS9hbWQvYW1kZ3B1L2FtZGdwdV9kb29yYmVsbF9tZ3IuYzoxMjM6IHdhcm5pbmc6
-IEZ1bmN0aW9uIHBhcmFtZXRlciBvciBtZW1iZXIgJ2Rvb3JiZWxsX2luZGV4JyBub3QgZGVzY3Jp
-YmVkIGluICdhbWRncHVfZG9vcmJlbGxfaW5kZXhfb25fYmFyJw0KIGRyaXZlcnMvZ3B1L2RybS9h
-bWQvYW1kZ3B1L2FtZGdwdV9kb29yYmVsbF9tZ3IuYzoxMjM6IHdhcm5pbmc6IEV4Y2VzcyBmdW5j
-dGlvbiBwYXJhbWV0ZXIgJ2RiX2luZGV4JyBkZXNjcmlwdGlvbiBpbiAnYW1kZ3B1X2Rvb3JiZWxs
-X2luZGV4X29uX2JhcicNCg0KU2lnbmVkLW9mZi1ieTogTGVlIEpvbmVzIDxsZWVAa2VybmVsLm9y
-Zz4NCi0tLQ0KQ2M6IEFsZXggRGV1Y2hlciA8YWxleGFuZGVyLmRldWNoZXJAYW1kLmNvbT4NCkNj
-OiAiQ2hyaXN0aWFuIEvDtm5pZyIgPGNocmlzdGlhbi5rb2VuaWdAYW1kLmNvbT4NCkNjOiAiUGFu
-LCBYaW5odWkiIDxYaW5odWkuUGFuQGFtZC5jb20+DQpDYzogRGF2aWQgQWlybGllIDxhaXJsaWVk
-QGdtYWlsLmNvbT4NCkNjOiBEYW5pZWwgVmV0dGVyIDxkYW5pZWxAZmZ3bGwuY2g+DQpDYzogU2hh
-c2hhbmsgU2hhcm1hIDxzaGFzaGFuay5zaGFybWFAYW1kLmNvbT4NCkNjOiBhbWQtZ2Z4QGxpc3Rz
-LmZyZWVkZXNrdG9wLm9yZw0KQ2M6IGRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcNCi0t
-LQ0KIGRyaXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1L2FtZGdwdV9kb29yYmVsbF9tZ3IuYyB8IDIg
-Ky0NCiAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkNCg0KZGlm
-ZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1L2FtZGdwdV9kb29yYmVsbF9tZ3Iu
-YyBiL2RyaXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1L2FtZGdwdV9kb29yYmVsbF9tZ3IuYw0KaW5k
-ZXggZGE0YmUwYmJiNDQ2Ni4uZDAyNDlhZGE5MWQzMCAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvZ3B1
-L2RybS9hbWQvYW1kZ3B1L2FtZGdwdV9kb29yYmVsbF9tZ3IuYw0KKysrIGIvZHJpdmVycy9ncHUv
-ZHJtL2FtZC9hbWRncHUvYW1kZ3B1X2Rvb3JiZWxsX21nci5jDQpAQCAtMTEzLDcgKzExMyw3IEBA
-IHZvaWQgYW1kZ3B1X21tX3dkb29yYmVsbDY0KHN0cnVjdCBhbWRncHVfZGV2aWNlICphZGV2LCB1
-MzIgaW5kZXgsIHU2NCB2KQ0KICAqDQogICogQGFkZXY6IGFtZGdwdV9kZXZpY2UgcG9pbnRlcg0K
-ICAqIEBkYl9ibzogZG9vcmJlbGwgb2JqZWN0J3MgYm8NCi0gKiBAZGJfaW5kZXg6IGRvb3JiZWxs
-IHJlbGF0aXZlIGluZGV4IGluIHRoaXMgZG9vcmJlbGwgb2JqZWN0DQorICogQGRvb3JiZWxsX2lu
-ZGV4OiBkb29yYmVsbCByZWxhdGl2ZSBpbmRleCBpbiB0aGlzIGRvb3JiZWxsIG9iamVjdA0KICAq
-DQogICogcmV0dXJucyBkb29yYmVsbCdzIGFic29sdXRlIGluZGV4IGluIEJBUg0KICAqLw0KLS0N
-CjIuNDIuMC5yYzEuMjA0Lmc1NTFlYjM0NjA3LWdvb2cNCg0K
+
+
+On 8/22/23 08:09, Michael Walle wrote:
+> .n_sectors is rarely used. In fact it is only used in swp.c and to
+> calculate the flash size in the core. The use in swp.c might be
+> converted to use the (largest) flash erase size. For now, we just
+> locally calculate the sector size.
+> 
+> Simplify the flash_info database and set the size of the flash directly.
+> This also let us use the SZ_x macros.
+> 
+> Signed-off-by: Michael Walle <mwalle@kernel.org>
+> ---
+>  drivers/mtd/spi-nor/core.c   | 2 +-
+>  drivers/mtd/spi-nor/core.h   | 8 ++++----
+>  drivers/mtd/spi-nor/swp.c    | 9 +++++----
+>  drivers/mtd/spi-nor/xilinx.c | 4 ++--
+>  4 files changed, 12 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> index 286155002cdc..f4cc2eafcc5e 100644
+> --- a/drivers/mtd/spi-nor/core.c
+> +++ b/drivers/mtd/spi-nor/core.c
+> @@ -2999,7 +2999,7 @@ static void spi_nor_init_default_params(struct spi_nor *nor)
+>  
+>  	/* Set SPI NOR sizes. */
+>  	params->writesize = 1;
+> -	params->size = (u64)info->sector_size * info->n_sectors;
+> +	params->size = info->size;
+
+would be good to check the sanity of info->size to not be null and to be
+divisible by sector_size.
+
+>  	params->bank_size = params->size;
+>  	params->page_size = info->page_size;
+>  
+> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+> index dfc20a3296fb..12c35409493b 100644
+> --- a/drivers/mtd/spi-nor/core.h
+> +++ b/drivers/mtd/spi-nor/core.h
+> @@ -443,9 +443,9 @@ struct spi_nor_fixups {
+>   * @id:             the flash's ID bytes. The first three bytes are the
+>   *                  JEDIC ID. JEDEC ID zero means "no ID" (mostly older chips).
+>   * @id_len:         the number of bytes of ID.
+> + * @size:           the size of the flash in bytes.
+>   * @sector_size:    the size listed here is what works with SPINOR_OP_SE, which
+>   *                  isn't necessarily called a "sector" by the vendor.
+> - * @n_sectors:      the number of sectors.
+>   * @n_banks:        the number of banks.
+>   * @page_size:      the flash's page size.
+>   * @addr_nbytes:    number of address bytes to send.
+> @@ -505,8 +505,8 @@ struct flash_info {
+>  	char *name;
+>  	u8 id[SPI_NOR_MAX_ID_LEN];
+>  	u8 id_len;
+> +	size_t size;
+>  	unsigned sector_size;
+> -	u16 n_sectors;
+>  	u16 page_size;
+>  	u8 n_banks;
+>  	u8 addr_nbytes;
+> @@ -556,8 +556,8 @@ struct flash_info {
+>  	.id_len = 6
+>  
+>  #define SPI_NOR_GEOMETRY(_sector_size, _n_sectors, _n_banks)		\
+> +	.size = (_sector_size) * (_n_sectors),				\
+>  	.sector_size = (_sector_size),					\
+> -	.n_sectors = (_n_sectors),					\
+>  	.page_size = 256,						\
+>  	.n_banks = (_n_banks)
+>  
+> @@ -575,8 +575,8 @@ struct flash_info {
+>  	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors), 1),
+>  
+>  #define CAT25_INFO(_sector_size, _n_sectors, _page_size, _addr_nbytes)	\
+> +		.size = (_sector_size) * (_n_sectors),			\
+>  		.sector_size = (_sector_size),				\
+> -		.n_sectors = (_n_sectors),				\
+>  		.page_size = (_page_size),				\
+>  		.n_banks = 1,						\
+>  		.addr_nbytes = (_addr_nbytes),				\
+> diff --git a/drivers/mtd/spi-nor/swp.c b/drivers/mtd/spi-nor/swp.c
+> index 5ab9d5324860..40bf52867095 100644
+> --- a/drivers/mtd/spi-nor/swp.c
+> +++ b/drivers/mtd/spi-nor/swp.c
+> @@ -34,17 +34,18 @@ static u8 spi_nor_get_sr_tb_mask(struct spi_nor *nor)
+>  static u64 spi_nor_get_min_prot_length_sr(struct spi_nor *nor)
+>  {
+>  	unsigned int bp_slots, bp_slots_needed;
+> +	unsigned int sector_size = nor->info->sector_size;
+> +	u64 n_sectors = div_u64(nor->params->size, sector_size);
+
+if params(info)->size is zero here, we get into trouble.
+
+>  	u8 mask = spi_nor_get_sr_bp_mask(nor);
+>  
+>  	/* Reserved one for "protect none" and one for "protect all". */
+>  	bp_slots = (1 << hweight8(mask)) - 2;
+> -	bp_slots_needed = ilog2(nor->info->n_sectors);
+> +	bp_slots_needed = ilog2(n_sectors);
+>  
+>  	if (bp_slots_needed > bp_slots)
+> -		return nor->info->sector_size <<
+> -			(bp_slots_needed - bp_slots);
+> +		return sector_size << (bp_slots_needed - bp_slots);
+>  	else
+> -		return nor->info->sector_size;
+> +		return sector_size;
+>  }
+>  
+>  static void spi_nor_get_locked_range_sr(struct spi_nor *nor, u8 sr, loff_t *ofs,
+> diff --git a/drivers/mtd/spi-nor/xilinx.c b/drivers/mtd/spi-nor/xilinx.c
+> index 34267591282c..284e2e4970ab 100644
+> --- a/drivers/mtd/spi-nor/xilinx.c
+> +++ b/drivers/mtd/spi-nor/xilinx.c
+> @@ -23,8 +23,8 @@
+>  
+>  #define S3AN_INFO(_jedec_id, _n_sectors, _page_size)			\
+>  		SPI_NOR_ID(_jedec_id, 0),				\
+> +		.size = 8 * (_page_size) * (_n_sectors),		\
+
+here it's fine.
+
+>  		.sector_size = (8 * (_page_size)),			\
+> -		.n_sectors = (_n_sectors),				\
+>  		.page_size = (_page_size),				\
+>  		.n_banks = 1,						\
+>  		.flags = SPI_NOR_NO_FR
+> @@ -138,7 +138,7 @@ static int xilinx_nor_setup(struct spi_nor *nor,
+>  		page_size = (nor->params->page_size == 264) ? 256 : 512;
+>  		nor->params->page_size = page_size;
+>  		nor->mtd.writebufsize = page_size;
+> -		nor->params->size = 8 * page_size * nor->info->n_sectors;
+> +		nor->params->size = nor->info->size;
+>  		nor->mtd.erasesize = 8 * page_size;
+>  	} else {
+>  		/* Flash in Default addressing mode */
+> 
