@@ -2,53 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32C05787AB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 23:54:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDA2F787AC3
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 23:59:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243781AbjHXVxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 17:53:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38492 "EHLO
+        id S243677AbjHXV6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 17:58:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243779AbjHXVxl (ORCPT
+        with ESMTP id S238031AbjHXV5t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 17:53:41 -0400
+        Thu, 24 Aug 2023 17:57:49 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C871C1BD4
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 14:53:39 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BFC01B0
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 14:57:48 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 67C96638A7
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 21:53:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED6F7C433C7;
-        Thu, 24 Aug 2023 21:53:37 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id AE68762F1F
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 21:57:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B1A3C43395;
+        Thu, 24 Aug 2023 21:57:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692914018;
-        bh=tkWHeq6k5D3EQ6/qO1M1boc34SY9YrJif+Kaz8/2ZMs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VEHMY23WWmJEx7oOxgVJJjj+5yWFxJiK3V+1FXoWFDpVF+FuwzROgcqxJndJF8b98
-         w3fyYLMwzyxiCm12+DXiAnwSNusN+T5AFYM+Eoh13KpvQ424Cq6cYTYnTD5V+wXIFt
-         ztUmAmZdmMzTqjBijsBVLd7fyp922Eu2Z83DukO2cKOZjFXcvLaNtWQB5sWXkAQCU+
-         h+POOP/RSAkC+PA6fk6YTFuP8GuHPOjEl5BZPHtfjQHHtRKOwhdW6OkNZv+bj5Telz
-         YMJI5bUcyhvUUK9CTX17JDBRfS8ursoQxSVZeiicgL7mUIT4fDQB/5z7/coZwYlUub
-         fPBAK+eHpaARA==
-Date:   Thu, 24 Aug 2023 22:53:34 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Marian Postevca <posteuca@mutex.one>
-Cc:     Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/4] ASoC: es8316: Enable support for MCLK div by 2
-Message-ID: <ZOfRXjuSTxSV89SC@finisterre.sirena.org.uk>
-References: <20230824210135.19303-1-posteuca@mutex.one>
- <20230824210135.19303-3-posteuca@mutex.one>
+        s=k20201202; t=1692914267;
+        bh=e+pZg3YWlkmDjnHujmmDX7rt4Bs00zVl5lffsKGqixE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=RO6AyNNvqwZ+P080BIF/6nYsI41LvCuKLA1coiIsm51N5UDfZV7DEIiBaIAcvGN4w
+         7dJWZ/nrQ/9yEm/B+oT+S8dx4egAM6UaGo0NorCryjcPZDus8iGGa/ZlWnzIM+9ccV
+         8x+Vjc1gUKDfKwgd9clNZlHvwh2XE4v54nmgGnCSS//+kW18QiiK+87+Rfn55C5aD5
+         jFiHWTV8+s9YkNReWz1NIf627Z6vmYHczgmVVtA1gh3G6gGGKYMQLdAM6gif2+gN/o
+         epCl9hmIe/FQ+f5qnBv0/jR9HUf9Jjisc5hqlueo0uavb9q9Ud+38zvDDMdx0iN6fl
+         NixvlW0KOVYxg==
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-4ff88239785so425606e87.0;
+        Thu, 24 Aug 2023 14:57:47 -0700 (PDT)
+X-Gm-Message-State: AOJu0YyREw5dnpT0ChnBGBQ2n115tDGY2sSWztTWHty0TMamzC4Rvi0Y
+        34uH+KVxdV0u0yXsaOCvMQ+iDQxjcGSqzxMl0Xw=
+X-Google-Smtp-Source: AGHT+IHUeqKrf7kvSRY1DSALjp7e8C7fW1mUoYIBbnPTxuhFD3DIzgE8FiXJUxiEjA2LaHmF06aq7QlPyQZAVjmOQno=
+X-Received: by 2002:a05:6512:b03:b0:500:8fc1:8aba with SMTP id
+ w3-20020a0565120b0300b005008fc18abamr7377893lfu.26.1692914265000; Thu, 24 Aug
+ 2023 14:57:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="nohjNvg5OLaKpTCH"
-Content-Disposition: inline
-In-Reply-To: <20230824210135.19303-3-posteuca@mutex.one>
-X-Cookie: Give him an evasive answer.
+References: <20230824133135.1176709-1-puranjay12@gmail.com> <20230824133135.1176709-2-puranjay12@gmail.com>
+In-Reply-To: <20230824133135.1176709-2-puranjay12@gmail.com>
+From:   Song Liu <song@kernel.org>
+Date:   Thu, 24 Aug 2023 14:57:32 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW5mMQbZ729W_5fhX0iYaNxG5JA1L7Sck-h0jQZQzEH8+Q@mail.gmail.com>
+Message-ID: <CAPhsuW5mMQbZ729W_5fhX0iYaNxG5JA1L7Sck-h0jQZQzEH8+Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/3] riscv: extend patch_text_nosync() for
+ multiple pages
+To:     Puranjay Mohan <puranjay12@gmail.com>
+Cc:     paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, pulehui@huawei.com,
+        conor.dooley@microchip.com, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, yhs@fb.com,
+        kpsingh@kernel.org, bjorn@kernel.org, bpf@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -58,48 +68,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Aug 24, 2023 at 6:31=E2=80=AFAM Puranjay Mohan <puranjay12@gmail.co=
+m> wrote:
+>
+> The patch_insn_write() function currently doesn't work for multiple
+> pages of instructions, therefore patch_text_nosync() will fail with a
+> page fault if called with lengths spanning multiple pages.
+>
+> This commit extends the patch_insn_write() function to support multiple
+> pages by copying at max 2 pages at a time in a loop. This implementation
+> is similar to text_poke_copy() function of x86.
+>
+> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+> Reviewed-by: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
+> ---
+>  arch/riscv/kernel/patch.c | 39 ++++++++++++++++++++++++++++++++++-----
+>  1 file changed, 34 insertions(+), 5 deletions(-)
+>
+> diff --git a/arch/riscv/kernel/patch.c b/arch/riscv/kernel/patch.c
+> index 575e71d6c8ae..465b2eebbc37 100644
+> --- a/arch/riscv/kernel/patch.c
+> +++ b/arch/riscv/kernel/patch.c
+> @@ -53,12 +53,18 @@ static void patch_unmap(int fixmap)
+>  }
+>  NOKPROBE_SYMBOL(patch_unmap);
+>
+> -static int patch_insn_write(void *addr, const void *insn, size_t len)
+> +static int __patch_insn_write(void *addr, const void *insn, size_t len)
+>  {
+>         void *waddr =3D addr;
+>         bool across_pages =3D (((uintptr_t) addr & ~PAGE_MASK) + len) > P=
+AGE_SIZE;
+>         int ret;
+>
+> +       /*
+> +        * Only two pages can be mapped at a time for writing.
+> +        */
+> +       if (len > 2 * PAGE_SIZE)
+> +               return -EINVAL;
 
---nohjNvg5OLaKpTCH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This check cannot guarantee __patch_insn_write touch at most two pages.
+Maybe use
 
-On Fri, Aug 25, 2023 at 12:01:33AM +0300, Marian Postevca wrote:
+    if (len + offset_in_page(addr) > 2 * PAGE_SIZE)
+        return -EINVAL;
+?
 
-> +/* In at least one AMD laptop the internal timing of the codec goes off
-> + * if the MCLK (48Mhz) is not divided by 2. So we will divide all MCLK
-> + * frequencies above and equal to 48MHz by 2.
-> + */
-> +#define MAX_SUPPORTED_MCLK_FREQ 48000000
+Thanks,
+Song
 
-Given that the datasheet quotes a maximum MCLK of 51.2MHz I suspect that
-this is far too high and that performance is degrading well before this
-point, it sounds like it just so happens that you noticed issues on a
-machine with this MCLK rather than that's based on the spec.  I would
-instead suggest applying the MCLK divider in any case where we can do so
-and still generate suitable clocking for the rest of the system, or at
-least hit 256fs (the datasheet quotes 256/384fs on the front page which
-suggests it's targetting 256fs, that'd be a fairly normal number, and
-there's mention of 12/24MHz USB clocks being directly usable).  Doing
-this should either make no odds or result in better performance.
-
-It's probably also more power efficient to use a lower MCLK, though most
-likely the difference is marginal.  The earlier in the clock tree the
-divider is applied the lower more of the chip is clocked and all other
-things being equal a lower clock usually means lower power.
-
---nohjNvg5OLaKpTCH
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTn0V4ACgkQJNaLcl1U
-h9AwVAf+NNSivaoevGjiOze1TmfH7OzLeB1PW0sdIwpa7eQxGroC1UQleHHI5+QL
-wkFNWQ6to4WpwL+M2X/v7VIFN3rc5zHjF8fKJbP+22gEs8+FtReeE6dDogBFI/6u
-H4A8KYh0Qjwhnmlcz7GZaC1rmbpnbHY4T1no1RPlCQmR473yfWBpf7Eo3RapR/4a
-VmG+rkIrE17qAlcyj2o+eW89o9YqPR/FHhKauqbqzg7DMQusNk3VkhjhM6qmBbR6
-/mbFCk36d6Jt9VKC8mVdwbCPLJdj96EHpKPHzG5sWPbxRbfcHOGRQPt7n5YlxXmr
-uMu9+dBH/nte3EjXrpRi3OM9qUbVJw==
-=6SaS
------END PGP SIGNATURE-----
-
---nohjNvg5OLaKpTCH--
+>         /*
+>          * Before reaching here, it was expected to lock the text_mutex
+>          * already, so we don't need to give another lock here and could
+> @@ -74,7 +80,7 @@ static int patch_insn_write(void *addr, const void *ins=
+n, size_t len)
+>                 lockdep_assert_held(&text_mutex);
+>
+>         if (across_pages)
+> -               patch_map(addr + len, FIX_TEXT_POKE1);
+> +               patch_map(addr + PAGE_SIZE, FIX_TEXT_POKE1);
+>
+>         waddr =3D patch_map(addr, FIX_TEXT_POKE0);
+>
+> @@ -87,15 +93,38 @@ static int patch_insn_write(void *addr, const void *i=
+nsn, size_t len)
+>
+>         return ret;
+>  }
+> -NOKPROBE_SYMBOL(patch_insn_write);
+> +NOKPROBE_SYMBOL(__patch_insn_write);
+>  #else
+> -static int patch_insn_write(void *addr, const void *insn, size_t len)
+> +static int __patch_insn_write(void *addr, const void *insn, size_t len)
+>  {
+>         return copy_to_kernel_nofault(addr, insn, len);
+>  }
+> -NOKPROBE_SYMBOL(patch_insn_write);
+> +NOKPROBE_SYMBOL(__patch_insn_write);
+>  #endif /* CONFIG_MMU */
+>
+> +static int patch_insn_write(void *addr, const void *insn, size_t len)
+> +{
+> +       size_t patched =3D 0;
+> +       size_t size;
+> +       int ret =3D 0;
+> +
+> +       /*
+> +        * Copy the instructions to the destination address, two pages at=
+ a time
+> +        * because __patch_insn_write() can only handle len <=3D 2 * PAGE=
+_SIZE.
+> +        */
+> +       while (patched < len && !ret) {
+> +               size =3D min_t(size_t,
+> +                            PAGE_SIZE * 2 - offset_in_page(addr + patche=
+d),
+> +                            len - patched);
+> +               ret =3D __patch_insn_write(addr + patched, insn + patched=
+, size);
+> +
+> +               patched +=3D size;
+> +       }
+> +
+> +       return ret;
+> +}
+> +NOKPROBE_SYMBOL(patch_insn_write);
+> +
+>  int patch_text_nosync(void *addr, const void *insns, size_t len)
+>  {
+>         u32 *tp =3D addr;
+> --
+> 2.39.2
+>
