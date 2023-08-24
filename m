@@ -2,136 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 031217867CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 08:51:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ADA77867D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 08:52:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240211AbjHXGua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 02:50:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56280 "EHLO
+        id S240167AbjHXGwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 02:52:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240365AbjHXGu1 (ORCPT
+        with ESMTP id S240177AbjHXGvB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 02:50:27 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94C91101;
-        Wed, 23 Aug 2023 23:50:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692859825; x=1724395825;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=7c1u4LL4oLHnfK/HLKKjWnjJYUV11K5kwkL59BvWvZQ=;
-  b=lfRUAr/vpKBhF23uxrxiiKODvBBdwDLTybzk0XsyyZ9MBYV5FvTD2Muo
-   UeKjUjT/ZTYnePPcLE6wugw/KgWThuzVJapHukm2q30dnmX6ChBkEYLMz
-   CNMKU90xgvu1j5GEnDo19fdER6+7uMg1c0wS20WBEP9xYZeFMqCRtNTmH
-   RPYefKTB1m+O7DUAn3y94T6g84jNhP5YCrg1DcHsxCmG2BT5ZWl/L31OS
-   nwzA2iVcMgngnXsuTkQlEhHCTP65lre7GAWVk0Mkq/yJOgByDR4d8ivZA
-   gTYFduUaNAa1serZa2/0vqrUUaJA4gmtmb7BHyhCitCm7sgQ7YAosnWx1
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="378114827"
-X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
-   d="scan'208";a="378114827"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2023 23:50:24 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="910789373"
-X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
-   d="scan'208";a="910789373"
-Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 23 Aug 2023 23:50:19 -0700
-Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qZ4Ac-0001oG-27;
-        Thu, 24 Aug 2023 06:50:18 +0000
-Date:   Thu, 24 Aug 2023 14:49:52 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     =?iso-8859-1?Q?Adri=E1n?= Larumbe <adrian.larumbe@collabora.com>,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
-        robdclark@gmail.com, quic_abhinavk@quicinc.com,
-        dmitry.baryshkov@linaro.org, sean@poorly.run,
-        marijn.suijten@somainline.org, robh@kernel.org,
-        steven.price@arm.com
-Cc:     oe-kbuild-all@lists.linux.dev, linux-arm-msm@vger.kernel.org,
-        adrian.larumbe@collabora.com, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, healych@amazon.com,
-        kernel@collabora.com, freedreno@lists.freedesktop.org
-Subject: Re: [PATCH v2 6/6] drm/drm-file: Allow size unit selection in
- drm_show_memory_stats
-Message-ID: <202308241401.Hr6gvevs-lkp@intel.com>
-References: <20230824013604.466224-7-adrian.larumbe@collabora.com>
+        Thu, 24 Aug 2023 02:51:01 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C6C1E4B
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 23:50:59 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-523100882f2so7956616a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 23:50:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692859857; x=1693464657;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BhmEfKLm2auvLzU1H0Y+LxP11/52EFLaIX+4lk/LSDc=;
+        b=uTd/E1u5tM2WP4N5gUw0ZdqO06dkIsLwIzV3VW59B30K7dsNk4+Wgsv/G/VNTusLV3
+         WzL44SI+wBc12C3TsBFHCT9z13n+cIfKa925OMquWlob3sVmkvhOiAdIl2bg5En25yAy
+         eizvtKqx7N0PElDsXtV19Yo93PqK3v9KfZI8y9korGVDqE0eOnSvcge7cjMBUgIXh0Ib
+         XByk9LhlJ1h/ipGeexkoz4snAwTBmFT+kTO8yEb51QProGbuHwkn19ElV7kSJVkwN5VR
+         dJlxE6xZ6H+WFjuMFM4S0e4uURIGa1rO+fleNSuxKtTzgz6qvzh/9mvfBG86R00HVwyw
+         F8XA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692859857; x=1693464657;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BhmEfKLm2auvLzU1H0Y+LxP11/52EFLaIX+4lk/LSDc=;
+        b=P2xtXi/er/1WxD+hGmHnEHMY6JpDqhrupGyTAARAXbNUUt/w2zqt9WvCHCIkz1vsyn
+         hCFCokrFVN70V9z1PDhhZL8kwjVQclyBVnMMcZ+zqjvLI3jAwiMUeHCL9foMew+VkX1P
+         J+2VBg2JnJhZLTmBPkEqnnrrdwKpH8iDLbQ6Sb8c8HgLSnCKmcvH0pKIWPlNk/jLY+yx
+         df7qu7ZegU/T/Gnk4kyBUw2W204WH0UpbJLF7B0reaJ3Pw52jJ/R/YxFsXsB3YXzLiHz
+         nc6wLYPT/HxI7ni1g3r3rokMP2++WbEMDjVWTONll8QWFUQR2QJcqMknZnWaJLDMFctn
+         4ObA==
+X-Gm-Message-State: AOJu0Yz80XstCWNupeROBPdttqf50/8AnQWquHw7xnn21wF3mmePxOr7
+        +W1mXUUVP5Rw/x/W9fAXpMOH4Q==
+X-Google-Smtp-Source: AGHT+IFKOvRo7+2xMvm/brGQ+qgng4Ksbl2gcHnXtNfV23t2a5eGx8+E9rqMZ5Gn8A/xmHc8/noUWg==
+X-Received: by 2002:a05:6402:505:b0:523:4922:c9c4 with SMTP id m5-20020a056402050500b005234922c9c4mr11878649edv.11.1692859857524;
+        Wed, 23 Aug 2023 23:50:57 -0700 (PDT)
+Received: from [192.168.0.22] ([77.252.47.198])
+        by smtp.gmail.com with ESMTPSA id c22-20020aa7c756000000b00522572f323dsm10023230eds.16.2023.08.23.23.50.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Aug 2023 23:50:57 -0700 (PDT)
+Message-ID: <3362bfaf-225b-0eb7-5219-9c2b365cafe5@linaro.org>
+Date:   Thu, 24 Aug 2023 08:50:55 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230824013604.466224-7-adrian.larumbe@collabora.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [EXTERNAL] Re: [PATCH v6 1/5] dt-bindings: net: Add ICSS IEP
+Content-Language: en-US
+To:     Md Danish Anwar <a0501179@ti.com>,
+        MD Danish Anwar <danishanwar@ti.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Roger Quadros <rogerq@kernel.org>,
+        Simon Horman <simon.horman@corigine.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     nm@ti.com, srk@ti.com, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, netdev@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20230823113254.292603-1-danishanwar@ti.com>
+ <20230823113254.292603-2-danishanwar@ti.com>
+ <d5a343c8-c384-6eea-94bf-e0c4f96e5fb0@linaro.org>
+ <a91e7db9-e442-acff-befd-2fa63e209b0a@ti.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <a91e7db9-e442-acff-befd-2fa63e209b0a@ti.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Adrián,
+On 24/08/2023 08:47, Md Danish Anwar wrote:
+> Hi Krzysztof,
+> 
+> On 24/08/23 12:13 pm, Krzysztof Kozlowski wrote:
+>> On 23/08/2023 13:32, MD Danish Anwar wrote:
+>>> Add a DT binding document for the ICSS Industrial Ethernet Peripheral(IEP)
+>>> hardware. IEP supports packet timestamping, PTP and PPS.
+>>>
+>>> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+>>
+>> Really? Where?
+> 
+> Conor gave his RB tag for patch 1 and 2 in v4
+> https://lore.kernel.org/all/20230814-quarters-cahoots-1fbd583baad9@spud/
 
-kernel test robot noticed the following build warnings:
+OK, My mistake, cover letter was not the place where I was looking for
+Conor's reviews...
 
-[auto build test WARNING on drm-misc/drm-misc-next]
-[also build test WARNING on linus/master v6.5-rc7 next-20230823]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+>>
+>>> Reviewed-by: Roger Quadros <rogerq@kernel.org>
+>>
+>> Now you are making things up. Please stop faking tags.
+> 
+> Roger provided his RB tag in v5 for all the patches
+> https://lore.kernel.org/all/5d077342-435f-2829-ba2a-cdf763b6b8e1@kernel.org/
+>>
+>>> Reviewed-by: Simon Horman <horms@kernel.org>
+>>
+>> Where?
+>>
+> 
+> Simon gave his RB tag for all the patches of this series in v5
+> https://lore.kernel.org/all/ZN9aSTUOT+SKESQS@vergenet.net/
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Adri-n-Larumbe/drm-panfrost-Add-cycle-count-GPU-register-definitions/20230824-093848
-base:   git://anongit.freedesktop.org/drm/drm-misc drm-misc-next
-patch link:    https://lore.kernel.org/r/20230824013604.466224-7-adrian.larumbe%40collabora.com
-patch subject: [PATCH v2 6/6] drm/drm-file: Allow size unit selection in drm_show_memory_stats
-config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20230824/202308241401.Hr6gvevs-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20230824/202308241401.Hr6gvevs-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308241401.Hr6gvevs-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> drivers/gpu/drm/drm_file.c:905: warning: Function parameter or member 'unit' not described in 'drm_print_memory_stats'
+OK, I still question though reviewing own code.
 
 
-vim +905 drivers/gpu/drm/drm_file.c
 
-686b21b5f6ca2f Rob Clark      2023-05-24  891  
-686b21b5f6ca2f Rob Clark      2023-05-24  892  /**
-686b21b5f6ca2f Rob Clark      2023-05-24  893   * drm_print_memory_stats - A helper to print memory stats
-686b21b5f6ca2f Rob Clark      2023-05-24  894   * @p: The printer to print output to
-686b21b5f6ca2f Rob Clark      2023-05-24  895   * @stats: The collected memory stats
-686b21b5f6ca2f Rob Clark      2023-05-24  896   * @supported_status: Bitmask of optional stats which are available
-686b21b5f6ca2f Rob Clark      2023-05-24  897   * @region: The memory region
-686b21b5f6ca2f Rob Clark      2023-05-24  898   *
-686b21b5f6ca2f Rob Clark      2023-05-24  899   */
-686b21b5f6ca2f Rob Clark      2023-05-24  900  void drm_print_memory_stats(struct drm_printer *p,
-686b21b5f6ca2f Rob Clark      2023-05-24  901  			    const struct drm_memory_stats *stats,
-686b21b5f6ca2f Rob Clark      2023-05-24  902  			    enum drm_gem_object_status supported_status,
-cccad8cb432637 Adrián Larumbe 2023-08-24  903  			    const char *region,
-cccad8cb432637 Adrián Larumbe 2023-08-24  904  			    unsigned int unit)
-686b21b5f6ca2f Rob Clark      2023-05-24 @905  {
-cccad8cb432637 Adrián Larumbe 2023-08-24  906  	print_size(p, "total", region, stats->private + stats->shared, unit);
-cccad8cb432637 Adrián Larumbe 2023-08-24  907  	print_size(p, "shared", region, stats->shared, unit);
-cccad8cb432637 Adrián Larumbe 2023-08-24  908  	print_size(p, "active", region, stats->active, unit);
-686b21b5f6ca2f Rob Clark      2023-05-24  909  
-686b21b5f6ca2f Rob Clark      2023-05-24  910  	if (supported_status & DRM_GEM_OBJECT_RESIDENT)
-cccad8cb432637 Adrián Larumbe 2023-08-24  911  		print_size(p, "resident", region, stats->resident, unit);
-686b21b5f6ca2f Rob Clark      2023-05-24  912  
-686b21b5f6ca2f Rob Clark      2023-05-24  913  	if (supported_status & DRM_GEM_OBJECT_PURGEABLE)
-cccad8cb432637 Adrián Larumbe 2023-08-24  914  		print_size(p, "purgeable", region, stats->purgeable, unit);
-686b21b5f6ca2f Rob Clark      2023-05-24  915  }
-686b21b5f6ca2f Rob Clark      2023-05-24  916  EXPORT_SYMBOL(drm_print_memory_stats);
-686b21b5f6ca2f Rob Clark      2023-05-24  917  
+Best regards,
+Krzysztof
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
