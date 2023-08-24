@@ -2,63 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BED94787B32
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 00:06:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42878787B34
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 00:07:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243833AbjHXWGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 18:06:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33054 "EHLO
+        id S243754AbjHXWGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 18:06:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243886AbjHXWGK (ORCPT
+        with ESMTP id S243836AbjHXWGX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 18:06:10 -0400
+        Thu, 24 Aug 2023 18:06:23 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E0AC1BE9
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 15:06:08 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FE661BE2;
+        Thu, 24 Aug 2023 15:06:21 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id F14D565166
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 22:06:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64445C433CC;
-        Thu, 24 Aug 2023 22:06:07 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3971966C53;
+        Thu, 24 Aug 2023 22:06:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E7CBC433CB;
+        Thu, 24 Aug 2023 22:06:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692914767;
-        bh=wokMPVNGYw0bXxAHx+gbY2Rre1rA2yUIZNWpn8SDz0A=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=jyUXaUaxJtZV7CYOk2XL+Zyg2f4RZPI22r4LPPqKKdjy32b+hTft9aRxzS/4P+2da
-         PN1vk5nAcbHZwlOIfXEfFFkGSP0OmUVpQXTOOCk7GK9nwxknPK7fSrOfOAaezFDAJR
-         qCE8Njk77g7JsK1do2ZVbCU9ipTZ42pOpn0luBnxg5ayImyQUnUEyLagHycmdgNnys
-         /wA0eb+ayL6lpfMWgMkdRNHFHS/B4IUdwcNnU9tayDj5pEbFFbKlk1APFHAyxzrk9b
-         Sav4OVLLleGO4L879987zDovjmeQEtacJq7eLL2VsJpafwnrhW10nEvfUORf35rUk5
-         xwAqdf7Lqo9UQ==
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-5009d4a4897so428727e87.0;
-        Thu, 24 Aug 2023 15:06:07 -0700 (PDT)
-X-Gm-Message-State: AOJu0YynXFYU1dTMiuC5K3heu7rMRLX7h85TDZr0VLTE07prY04PkIWx
-        FSqvIu3flqU7MNJN+Bc61r7EliBM8Sic5DCBdis=
-X-Google-Smtp-Source: AGHT+IE7zxauTjqBL+3SpA3KVBh8UWS/WrLsqL0PTc+cCRH+7F9/m4FCw4SAU8RPuh5hsVsfOy/8ggpSJsWfddEbnQw=
-X-Received: by 2002:a05:6512:a8f:b0:4fe:8c01:32ac with SMTP id
- m15-20020a0565120a8f00b004fe8c0132acmr16342249lfu.41.1692914765396; Thu, 24
- Aug 2023 15:06:05 -0700 (PDT)
+        s=k20201202; t=1692914780;
+        bh=Hytxi3Cg98uzyBqRReiFnjcWLYhr5yk1C/6Y76auyFE=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=caF3wn5HbvvnM3Q8967B6lXbHI1nJ1JpYq4WSPGIBE5v3Qp4KJ0mPHm5YJ/ZVTwOk
+         YWlFa5Baj1g06+eh6VKduDWjBmZcF9apmqEn4ehy2dinmOLE+QzqQ1UmJnITVKdN/P
+         a5BotQEMST0nD2wB3A/Tvb5PTcnfawFZO9xBQX0Fybq/RDiSTF+WkJYiRNqS0a5qRY
+         9rwtyk2bJDCr/VEluBV4UwU5vpAUDs9saho9YUvjxVe74Mpzx5NywQV288GGFJCHI3
+         Iv3fO0jD7DWl2WrzvymQRBCd64tFdHXcNJXRbT/yvffgt+HmeeQyLQQKs8axTaC7sj
+         GG0LdjUZPYw0g==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 312D7CE134A; Thu, 24 Aug 2023 15:06:20 -0700 (PDT)
+Date:   Thu, 24 Aug 2023 15:06:20 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        rcu@vger.kernel.org, rostedt@goodmis.org
+Subject: [GIT PULL] scftorture changes for v6.4
+Message-ID: <79cb1ec7-08ec-40d2-bbb4-ce40b684f1a4@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-References: <20230824133135.1176709-1-puranjay12@gmail.com> <20230824133135.1176709-3-puranjay12@gmail.com>
-In-Reply-To: <20230824133135.1176709-3-puranjay12@gmail.com>
-From:   Song Liu <song@kernel.org>
-Date:   Thu, 24 Aug 2023 15:05:53 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW6jLLt7gu1RbZTAjLeFKzu=PoumaohRsN538BW2gH97sA@mail.gmail.com>
-Message-ID: <CAPhsuW6jLLt7gu1RbZTAjLeFKzu=PoumaohRsN538BW2gH97sA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/3] riscv: implement a memset like function
- for text
-To:     Puranjay Mohan <puranjay12@gmail.com>
-Cc:     paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, pulehui@huawei.com,
-        conor.dooley@microchip.com, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, yhs@fb.com,
-        kpsingh@kernel.org, bjorn@kernel.org, bpf@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -68,64 +55,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 6:31=E2=80=AFAM Puranjay Mohan <puranjay12@gmail.co=
-m> wrote:
->
-> The BPF JIT needs to write invalid instructions to RX regions of memory
-> to invalidate removed BPF programs. This needs a function like memset()
-> that can work with RX memory.
->
-> Implement patch_text_set_nosync() which is similar to text_poke_set() of
-> x86.
->
-> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
-> ---
->  arch/riscv/include/asm/patch.h |  1 +
->  arch/riscv/kernel/patch.c      | 74 ++++++++++++++++++++++++++++++++++
->  2 files changed, 75 insertions(+)
->
-> diff --git a/arch/riscv/include/asm/patch.h b/arch/riscv/include/asm/patc=
-h.h
-> index 63c98833d510..aa5c1830ea43 100644
-> --- a/arch/riscv/include/asm/patch.h
-> +++ b/arch/riscv/include/asm/patch.h
-> @@ -7,6 +7,7 @@
->  #define _ASM_RISCV_PATCH_H
->
->  int patch_text_nosync(void *addr, const void *insns, size_t len);
-> +int patch_text_set_nosync(void *addr, const int c, size_t len);
->  int patch_text(void *addr, u32 *insns, int ninsns);
->
->  extern int riscv_patch_in_stop_machine;
-> diff --git a/arch/riscv/kernel/patch.c b/arch/riscv/kernel/patch.c
-> index 465b2eebbc37..24d49999ac1a 100644
-> --- a/arch/riscv/kernel/patch.c
-> +++ b/arch/riscv/kernel/patch.c
-> @@ -13,6 +13,7 @@
->  #include <asm/fixmap.h>
->  #include <asm/ftrace.h>
->  #include <asm/patch.h>
-> +#include <asm/string.h>
->
->  struct patch_insn {
->         void *addr;
-> @@ -53,6 +54,34 @@ static void patch_unmap(int fixmap)
->  }
->  NOKPROBE_SYMBOL(patch_unmap);
->
-> +static int __patch_insn_set(void *addr, const int c, size_t len)
-> +{
-> +       void *waddr =3D addr;
-> +       bool across_pages =3D (((uintptr_t) addr & ~PAGE_MASK) + len) > P=
-AGE_SIZE;
-> +       int ret;
-> +
-> +       /*
-> +        * Only two pages can be mapped at a time for writing.
-> +        */
-> +       if (len > 2 * PAGE_SIZE)
-> +               return -EINVAL;
+Hello, Linus,
 
-Same for this one.
+Once the merge window opens, please pull these scftorture changes:
 
-[...]
+  git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git tags/scftorture.2023.08.15a
+  # HEAD: 3f68f9c822ebe208f961ab0402e49a10465278ca: scftorture: Add CONFIG_PREEMPT_DYNAMIC=n to NOPREEMPT scenario (2023-07-14 15:02:57 -0700)
+
+----------------------------------------------------------------
+smp_call_function torture-test updates for v6.6
+
+This pull request prevents some memory-exhaustion false-postitive failures
+in scftorture testing.
+
+----------------------------------------------------------------
+Paul E. McKenney (4):
+      torture: Scale scftorture memory based on number of CPUs
+      scftorture: Forgive memory-allocation failure if KASAN
+      scftorture: Pause testing after memory-allocation failure
+      scftorture: Add CONFIG_PREEMPT_DYNAMIC=n to NOPREEMPT scenario
+
+ kernel/scftorture.c                                      | 12 +++++++++---
+ tools/testing/selftests/rcutorture/bin/torture.sh        |  4 +++-
+ tools/testing/selftests/rcutorture/configs/scf/NOPREEMPT |  2 ++
+ 3 files changed, 14 insertions(+), 4 deletions(-)
