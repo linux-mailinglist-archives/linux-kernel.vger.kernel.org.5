@@ -2,86 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B6A1787954
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 22:27:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 526FF78793F
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 22:25:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243533AbjHXU0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 16:26:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56044 "EHLO
+        id S243492AbjHXUYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 16:24:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243521AbjHXU0O (ORCPT
+        with ESMTP id S243545AbjHXUYY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 16:26:14 -0400
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B28C1FC4;
-        Thu, 24 Aug 2023 13:25:39 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 12945240004;
-        Thu, 24 Aug 2023 20:24:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1692908737;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ujvMeJdRrlwdpn7qQgMLktbCGIyae1LBRG+zxTv3lqU=;
-        b=Ula8hEOcS+/eKkw3qByvNwkENDIVN4W8dILOW2xA3QeZByi1NFKT4qjpR20ylYIrPR/LPn
-        8ZC6T3xf65QonT74gL16iUsIdr1fuBn4EDOGgijSzoAPQ/Fb6/9wr81q4yL1eTihpwM+/d
-        fSRL6wO8TBroYggS+h1LB85zHjhOXdzIS2YlpkafjfL685M9ItlEfOxA61XsiZxswwH6HK
-        JA9dLTxrCBdPhkJrRkKdm2JLl6bAHCX8ASzdgEHn5qbguMdu7i7IG/LXWSCd6ZshcO7ZLA
-        yqmMZES++aBOm7AqwsgUyH2FPWNSXrx+/IFEY7P7uy1f38YVMbAG6o3ie5IJhQ==
-Date:   Thu, 24 Aug 2023 22:24:02 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        James Clark <james.clark@arm.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
+        Thu, 24 Aug 2023 16:24:24 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 064501BF5
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 13:24:15 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d780a0d3cefso288653276.0
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 13:24:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692908654; x=1693513454;
+        h=content-transfer-encoding:to:from:subject:references:mime-version
+         :message-id:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=M8lbYzuAjiIwvbINlV0oRf1zIRCEOQDh7Iqjg5SpPgY=;
+        b=M7+WolYp56Vg/KY9LX2z68OD9y5L/0RM9btrjfzFVo7XFpbruuYspec+KfFCdF2sSK
+         qY1dWUCT//Ug08HZmjucmj9zRWwpBOk6P7aYT/1CVPX0/VF/fK1gEJWeEiX+UlrAZh9v
+         pIZVTpFja6E0MjpGq09XEcUAqaOltObijBDoNsRWSSbA4SETc2ARV313uARkxzkFY68V
+         jggH+ZS6zE/Ak+ytVziR6lYLAfcP7wnFWVaSu/rOhDL5MTO+ck6LIca88DKyRIzOqbhS
+         mH5NErgFhqhlNbmcf9B/1ZLK+hkmGcgrrEs9QgsZ+HEWMKzz9jSVE4gxsHCyaD0webf9
+         L1TA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692908654; x=1693513454;
+        h=content-transfer-encoding:to:from:subject:references:mime-version
+         :message-id:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=M8lbYzuAjiIwvbINlV0oRf1zIRCEOQDh7Iqjg5SpPgY=;
+        b=cr2k6YpTU3D+e8VL1RCNSQRqXnnR8xAHgYMTKgABz3H+WW7Wmo5NBTa2GMdtGjk5ln
+         3D5SvjVme93kqusnQdvVzTUnnSxhqtEFiDtQB2l3kNChbMewHcuHXRzJsFB26PB2dy5X
+         9gEUayHJFJHCaWpmRH7xpcvbqHnMyRBz83aqqIp4edxTnwQiC9HPeQqynaCONBY4cDcK
+         IhjtaDO3zk7FyE5mUigmeAyPP7bvgJMPm9HVc1bhiHVNiJ9u2sByrbeV3sZboe0KJwgo
+         5cn7yAUFoox86nzR2kLRvTKT6Chd96c5pXUKccEfuMasbFO7RsN0MR+OaDuZZOuOqv1A
+         QJ1w==
+X-Gm-Message-State: AOJu0YxVlT+jFkPOIZS8Y/0Acqqb8VzdYPLTG8/NOwTeuECYu6gi6BDw
+        2xyMeb4jQbBvIWMhSgwVG+3GFwdY/7np
+X-Google-Smtp-Source: AGHT+IFnK7buND917Pw/3R/QOor+l+1P6/ypXwI5ckdnfa36rgJvDcvL1It4/5t4xCS/WADUBs+aHtAlnsSL
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:fbb9:d9e7:7405:2651])
+ (user=irogers job=sendgmr) by 2002:a05:6902:12c6:b0:d77:bcce:eb11 with SMTP
+ id j6-20020a05690212c600b00d77bcceeb11mr172282ybu.10.1692908654330; Thu, 24
+ Aug 2023 13:24:14 -0700 (PDT)
+Date:   Thu, 24 Aug 2023 13:24:02 -0700
+In-Reply-To: <20230824202402.436107-1-irogers@google.com>
+Message-Id: <20230824202402.436107-2-irogers@google.com>
+Mime-Version: 1.0
+References: <20230824202402.436107-1-irogers@google.com>
+X-Mailer: git-send-email 2.42.0.rc2.253.gd59a3bf2b4-goog
+Subject: [PATCH v1 2/2] perf vendor events intel: Fix spelling mistakes
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
         Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Shevchenko <andy@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>, Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Corey Minyard <minyard@acm.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        M ark Brown <broonie@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, linux-i3c@lists.infradead.org,
-        linux-iio@vger.kernel.org,
-        openipmi-developer@lists.sourceforge.net,
-        linux-media@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
-        alsa-devel@alsa-project.org, linux-scsi@vger.kernel.org,
-        linux-watchdog@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: Drop remaining unneeded quotes
-Message-ID: <20230824201756563976f6@mail.local>
-References: <20230823183749.2609013-1-robh@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230823183749.2609013-1-robh@kernel.org>
-X-GND-Sasl: alexandre.belloni@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        Kan Liang <kan.liang@linux.intel.com>,
+        Zhengjun Xing <zhengjun.xing@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Colin Ian King <colin.i.king@gmail.com>,
+        Edward Baker <edward.baker@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -89,727 +84,938 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/08/2023 13:28:47-0500, Rob Herring wrote:
-> Cleanup bindings dropping the last remaining unneeded quotes. With this,
-> the check for this can be enabled in yamllint.
-> 
-> Signed-off-by: Rob Herring <robh@kernel.org>
-Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Update perf json files with spelling fixes by Colin Ian King
+<colin.i.king@gmail.com> contributed in:
+https://github.com/intel/perfmon/pull/96
+Fix various spelling mistakes and typos as found using codespell #96
 
-> ---
->  .../bindings/arm/arm,embedded-trace-extension.yaml   |  4 ++--
->  .../bindings/arm/arm,trace-buffer-extension.yaml     |  7 ++++---
->  .../devicetree/bindings/arm/arm,vexpress-juno.yaml   |  2 +-
->  .../devicetree/bindings/arm/aspeed/aspeed,sbc.yaml   |  4 ++--
->  .../arm/firmware/tlm,trusted-foundations.yaml        |  4 ++--
->  .../bindings/arm/mstar/mstar,l3bridge.yaml           |  4 ++--
->  .../devicetree/bindings/arm/mstar/mstar,smpctrl.yaml |  4 ++--
->  .../devicetree/bindings/arm/stm32/st,mlahb.yaml      |  4 ++--
->  .../bindings/arm/stm32/st,stm32-syscon.yaml          |  4 ++--
->  .../devicetree/bindings/connector/usb-connector.yaml |  4 ++--
->  Documentation/devicetree/bindings/eeprom/at24.yaml   |  4 ++--
->  Documentation/devicetree/bindings/eeprom/at25.yaml   |  4 ++--
->  .../intel,ixp4xx-network-processing-engine.yaml      |  4 ++--
->  .../bindings/gpio/x-powers,axp209-gpio.yaml          |  4 ++--
->  .../bindings/gpio/xlnx,zynqmp-gpio-modepin.yaml      |  4 ++--
->  .../devicetree/bindings/gpio/xylon,logicvc-gpio.yaml |  4 ++--
->  .../devicetree/bindings/hwmon/iio-hwmon.yaml         |  4 ++--
->  .../bindings/hwmon/starfive,jh71x0-temp.yaml         |  8 ++++----
->  .../devicetree/bindings/i3c/mipi-i3c-hci.yaml        |  4 ++--
->  .../devicetree/bindings/iio/accel/fsl,mma7455.yaml   |  4 ++--
->  .../bindings/iio/adc/atmel,sama9260-adc.yaml         |  4 ++--
->  .../bindings/ipmi/aspeed,ast2400-kcs-bmc.yaml        |  8 ++++----
->  .../devicetree/bindings/ipmi/ipmi-ipmb.yaml          |  2 +-
->  .../devicetree/bindings/ipmi/ipmi-smic.yaml          |  2 +-
->  .../bindings/media/qcom,msm8916-venus.yaml           |  4 ++--
->  .../bindings/mips/loongson/ls2k-reset.yaml           |  4 ++--
->  .../bindings/mips/loongson/rs780e-acpi.yaml          |  4 ++--
->  .../misc/intel,ixp4xx-ahb-queue-manager.yaml         |  4 ++--
->  .../devicetree/bindings/mmc/marvell,xenon-sdhci.yaml |  4 ++--
->  .../bindings/mtd/microchip,mchp48l640.yaml           |  4 ++--
->  .../devicetree/bindings/soc/aspeed/uart-routing.yaml |  4 ++--
->  .../bindings/soc/intel/intel,hps-copy-engine.yaml    |  4 ++--
->  .../bindings/soc/litex/litex,soc-controller.yaml     |  4 ++--
->  .../bindings/soc/renesas/renesas,rzg2l-sysc.yaml     |  4 ++--
->  .../devicetree/bindings/soc/ti/k3-ringacc.yaml       |  4 ++--
->  .../devicetree/bindings/sound/dialog,da7219.yaml     |  4 ++--
->  .../bindings/sound/nvidia,tegra-audio-max9808x.yaml  | 12 ++++++------
->  .../bindings/sound/nvidia,tegra-audio-rt5631.yaml    |  8 ++++----
->  .../devicetree/bindings/ufs/ufs-common.yaml          |  2 +-
->  .../bindings/watchdog/toshiba,visconti-wdt.yaml      |  4 ++--
->  40 files changed, 88 insertions(+), 87 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/arm,embedded-trace-extension.yaml b/Documentation/devicetree/bindings/arm/arm,embedded-trace-extension.yaml
-> index 108460627d9a..a477a810f9e9 100644
-> --- a/Documentation/devicetree/bindings/arm/arm,embedded-trace-extension.yaml
-> +++ b/Documentation/devicetree/bindings/arm/arm,embedded-trace-extension.yaml
-> @@ -2,8 +2,8 @@
->  # Copyright 2021, Arm Ltd
->  %YAML 1.2
->  ---
-> -$id: "http://devicetree.org/schemas/arm/arm,embedded-trace-extension.yaml#"
-> -$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +$id: http://devicetree.org/schemas/arm/arm,embedded-trace-extension.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->  
->  title: ARM Embedded Trace Extensions
->  
-> diff --git a/Documentation/devicetree/bindings/arm/arm,trace-buffer-extension.yaml b/Documentation/devicetree/bindings/arm/arm,trace-buffer-extension.yaml
-> index b1322658063a..8c27e510cb71 100644
-> --- a/Documentation/devicetree/bindings/arm/arm,trace-buffer-extension.yaml
-> +++ b/Documentation/devicetree/bindings/arm/arm,trace-buffer-extension.yaml
-> @@ -2,8 +2,8 @@
->  # Copyright 2021, Arm Ltd
->  %YAML 1.2
->  ---
-> -$id: "http://devicetree.org/schemas/arm/arm,trace-buffer-extension.yaml#"
-> -$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +$id: http://devicetree.org/schemas/arm/arm,trace-buffer-extension.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->  
->  title: ARM Trace Buffer Extensions
->  
-> @@ -19,7 +19,8 @@ description: |
->  
->  properties:
->    $nodename:
-> -    const: "trbe"
-> +    const: trbe
-> +
->    compatible:
->      items:
->        - const: arm,trace-buffer-extension
-> diff --git a/Documentation/devicetree/bindings/arm/arm,vexpress-juno.yaml b/Documentation/devicetree/bindings/arm/arm,vexpress-juno.yaml
-> index cdd65881fcdd..8dd6b6446394 100644
-> --- a/Documentation/devicetree/bindings/arm/arm,vexpress-juno.yaml
-> +++ b/Documentation/devicetree/bindings/arm/arm,vexpress-juno.yaml
-> @@ -143,7 +143,7 @@ patternProperties:
->        "simple-bus". If the compatible is placed in the "motherboard-bus" node,
->        it is stricter and always has two compatibles.
->      type: object
-> -    $ref: '/schemas/simple-bus.yaml'
-> +    $ref: /schemas/simple-bus.yaml
->      unevaluatedProperties: false
->  
->      properties:
-> diff --git a/Documentation/devicetree/bindings/arm/aspeed/aspeed,sbc.yaml b/Documentation/devicetree/bindings/arm/aspeed/aspeed,sbc.yaml
-> index c72aab706484..b8c5cacb09bd 100644
-> --- a/Documentation/devicetree/bindings/arm/aspeed/aspeed,sbc.yaml
-> +++ b/Documentation/devicetree/bindings/arm/aspeed/aspeed,sbc.yaml
-> @@ -2,8 +2,8 @@
->  # Copyright 2021 Joel Stanley, IBM Corp.
->  %YAML 1.2
->  ---
-> -$id: "http://devicetree.org/schemas/arm/aspeed/aspeed,sbc.yaml#"
-> -$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +$id: http://devicetree.org/schemas/arm/aspeed/aspeed,sbc.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->  
->  title: ASPEED Secure Boot Controller
->  
-> diff --git a/Documentation/devicetree/bindings/arm/firmware/tlm,trusted-foundations.yaml b/Documentation/devicetree/bindings/arm/firmware/tlm,trusted-foundations.yaml
-> index 9d1857c0aa07..e3980b659f63 100644
-> --- a/Documentation/devicetree/bindings/arm/firmware/tlm,trusted-foundations.yaml
-> +++ b/Documentation/devicetree/bindings/arm/firmware/tlm,trusted-foundations.yaml
-> @@ -1,8 +1,8 @@
->  # SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
->  %YAML 1.2
->  ---
-> -$id: "http://devicetree.org/schemas/arm/firmware/tlm,trusted-foundations.yaml#"
-> -$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +$id: http://devicetree.org/schemas/arm/firmware/tlm,trusted-foundations.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->  
->  title: Trusted Foundations
->  
-> diff --git a/Documentation/devicetree/bindings/arm/mstar/mstar,l3bridge.yaml b/Documentation/devicetree/bindings/arm/mstar/mstar,l3bridge.yaml
-> index 6816bd68f9cf..a8ac4a2d672d 100644
-> --- a/Documentation/devicetree/bindings/arm/mstar/mstar,l3bridge.yaml
-> +++ b/Documentation/devicetree/bindings/arm/mstar/mstar,l3bridge.yaml
-> @@ -2,8 +2,8 @@
->  # Copyright 2020 thingy.jp.
->  %YAML 1.2
->  ---
-> -$id: "http://devicetree.org/schemas/arm/mstar/mstar,l3bridge.yaml#"
-> -$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +$id: http://devicetree.org/schemas/arm/mstar/mstar,l3bridge.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->  
->  title: MStar/SigmaStar Armv7 SoC l3bridge
->  
-> diff --git a/Documentation/devicetree/bindings/arm/mstar/mstar,smpctrl.yaml b/Documentation/devicetree/bindings/arm/mstar/mstar,smpctrl.yaml
-> index 599c65980f5d..5739848000b1 100644
-> --- a/Documentation/devicetree/bindings/arm/mstar/mstar,smpctrl.yaml
-> +++ b/Documentation/devicetree/bindings/arm/mstar/mstar,smpctrl.yaml
-> @@ -2,8 +2,8 @@
->  # Copyright 2020 thingy.jp.
->  %YAML 1.2
->  ---
-> -$id: "http://devicetree.org/schemas/arm/mstar/mstar,smpctrl.yaml#"
-> -$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +$id: http://devicetree.org/schemas/arm/mstar/mstar,smpctrl.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->  
->  title: MStar/SigmaStar Armv7 SoC SMP control registers
->  
-> diff --git a/Documentation/devicetree/bindings/arm/stm32/st,mlahb.yaml b/Documentation/devicetree/bindings/arm/stm32/st,mlahb.yaml
-> index 2297ad3f4774..d2dce238ff5d 100644
-> --- a/Documentation/devicetree/bindings/arm/stm32/st,mlahb.yaml
-> +++ b/Documentation/devicetree/bindings/arm/stm32/st,mlahb.yaml
-> @@ -1,8 +1,8 @@
->  # SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
->  %YAML 1.2
->  ---
-> -$id: "http://devicetree.org/schemas/arm/stm32/st,mlahb.yaml#"
-> -$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +$id: http://devicetree.org/schemas/arm/stm32/st,mlahb.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->  
->  title: STMicroelectronics STM32 ML-AHB interconnect
->  
-> diff --git a/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml b/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml
-> index b63ff591ef8f..d083d8ad48b7 100644
-> --- a/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml
-> +++ b/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml
-> @@ -1,8 +1,8 @@
->  # SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
->  %YAML 1.2
->  ---
-> -$id: "http://devicetree.org/schemas/arm/stm32/st,stm32-syscon.yaml#"
-> -$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +$id: http://devicetree.org/schemas/arm/stm32/st,stm32-syscon.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->  
->  title: STMicroelectronics STM32 Platforms System Controller
->  
-> diff --git a/Documentation/devicetree/bindings/connector/usb-connector.yaml b/Documentation/devicetree/bindings/connector/usb-connector.yaml
-> index 3ecb51f55a71..7c8a3e8430d3 100644
-> --- a/Documentation/devicetree/bindings/connector/usb-connector.yaml
-> +++ b/Documentation/devicetree/bindings/connector/usb-connector.yaml
-> @@ -232,8 +232,8 @@ properties:
->      type: boolean
->  
->  dependencies:
-> -  sink-vdos-v1: [ 'sink-vdos' ]
-> -  sink-vdos: [ 'sink-vdos-v1' ]
-> +  sink-vdos-v1: [ sink-vdos ]
-> +  sink-vdos: [ sink-vdos-v1 ]
->  
->  required:
->    - compatible
-> diff --git a/Documentation/devicetree/bindings/eeprom/at24.yaml b/Documentation/devicetree/bindings/eeprom/at24.yaml
-> index 84af0d5f52aa..b1e5dddf9bf4 100644
-> --- a/Documentation/devicetree/bindings/eeprom/at24.yaml
-> +++ b/Documentation/devicetree/bindings/eeprom/at24.yaml
-> @@ -2,8 +2,8 @@
->  # Copyright 2019 BayLibre SAS
->  %YAML 1.2
->  ---
-> -$id: "http://devicetree.org/schemas/eeprom/at24.yaml#"
-> -$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +$id: http://devicetree.org/schemas/eeprom/at24.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->  
->  title: I2C EEPROMs compatible with Atmel's AT24
->  
-> diff --git a/Documentation/devicetree/bindings/eeprom/at25.yaml b/Documentation/devicetree/bindings/eeprom/at25.yaml
-> index 0e31bb36ebb1..1715b0c9feea 100644
-> --- a/Documentation/devicetree/bindings/eeprom/at25.yaml
-> +++ b/Documentation/devicetree/bindings/eeprom/at25.yaml
-> @@ -1,8 +1,8 @@
->  # SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
->  %YAML 1.2
->  ---
-> -$id: "http://devicetree.org/schemas/eeprom/at25.yaml#"
-> -$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +$id: http://devicetree.org/schemas/eeprom/at25.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->  
->  title: SPI EEPROMs or FRAMs compatible with Atmel's AT25
->  
-> diff --git a/Documentation/devicetree/bindings/firmware/intel,ixp4xx-network-processing-engine.yaml b/Documentation/devicetree/bindings/firmware/intel,ixp4xx-network-processing-engine.yaml
-> index 9a785bbaafb7..e6bed7d93e2d 100644
-> --- a/Documentation/devicetree/bindings/firmware/intel,ixp4xx-network-processing-engine.yaml
-> +++ b/Documentation/devicetree/bindings/firmware/intel,ixp4xx-network-processing-engine.yaml
-> @@ -2,8 +2,8 @@
->  # Copyright 2019 Linaro Ltd.
->  %YAML 1.2
->  ---
-> -$id: "http://devicetree.org/schemas/firmware/intel,ixp4xx-network-processing-engine.yaml#"
-> -$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +$id: http://devicetree.org/schemas/firmware/intel,ixp4xx-network-processing-engine.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->  
->  title: Intel IXP4xx Network Processing Engine
->  
-> diff --git a/Documentation/devicetree/bindings/gpio/x-powers,axp209-gpio.yaml b/Documentation/devicetree/bindings/gpio/x-powers,axp209-gpio.yaml
-> index 1638cfe90f1c..5eeb29bcdd21 100644
-> --- a/Documentation/devicetree/bindings/gpio/x-powers,axp209-gpio.yaml
-> +++ b/Documentation/devicetree/bindings/gpio/x-powers,axp209-gpio.yaml
-> @@ -1,8 +1,8 @@
->  # SPDX-License-Identifier: GPL-2.0
->  %YAML 1.2
->  ---
-> -$id: "http://devicetree.org/schemas/gpio/x-powers,axp209-gpio.yaml#"
-> -$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +$id: http://devicetree.org/schemas/gpio/x-powers,axp209-gpio.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->  
->  title: X-Powers AXP209 GPIO
->  
-> diff --git a/Documentation/devicetree/bindings/gpio/xlnx,zynqmp-gpio-modepin.yaml b/Documentation/devicetree/bindings/gpio/xlnx,zynqmp-gpio-modepin.yaml
-> index 18e61aff2185..56143f1fe84a 100644
-> --- a/Documentation/devicetree/bindings/gpio/xlnx,zynqmp-gpio-modepin.yaml
-> +++ b/Documentation/devicetree/bindings/gpio/xlnx,zynqmp-gpio-modepin.yaml
-> @@ -1,8 +1,8 @@
->  # SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->  %YAML 1.2
->  ---
-> -$id: "http://devicetree.org/schemas/gpio/xlnx,zynqmp-gpio-modepin.yaml#"
-> -$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +$id: http://devicetree.org/schemas/gpio/xlnx,zynqmp-gpio-modepin.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->  
->  title: ZynqMP Mode Pin GPIO controller
->  
-> diff --git a/Documentation/devicetree/bindings/gpio/xylon,logicvc-gpio.yaml b/Documentation/devicetree/bindings/gpio/xylon,logicvc-gpio.yaml
-> index a36aec27069c..59c79a6943ec 100644
-> --- a/Documentation/devicetree/bindings/gpio/xylon,logicvc-gpio.yaml
-> +++ b/Documentation/devicetree/bindings/gpio/xylon,logicvc-gpio.yaml
-> @@ -2,8 +2,8 @@
->  # Copyright 2019 Bootlin
->  %YAML 1.2
->  ---
-> -$id: "http://devicetree.org/schemas/gpio/xylon,logicvc-gpio.yaml#"
-> -$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +$id: http://devicetree.org/schemas/gpio/xylon,logicvc-gpio.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->  
->  title: Xylon LogiCVC GPIO controller
->  
-> diff --git a/Documentation/devicetree/bindings/hwmon/iio-hwmon.yaml b/Documentation/devicetree/bindings/hwmon/iio-hwmon.yaml
-> index c54b5986b365..e5b24782f448 100644
-> --- a/Documentation/devicetree/bindings/hwmon/iio-hwmon.yaml
-> +++ b/Documentation/devicetree/bindings/hwmon/iio-hwmon.yaml
-> @@ -1,8 +1,8 @@
->  # SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
->  %YAML 1.2
->  ---
-> -$id: "http://devicetree.org/schemas/hwmon/iio-hwmon.yaml#"
-> -$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +$id: http://devicetree.org/schemas/hwmon/iio-hwmon.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->  
->  title: ADC-attached Hardware Sensor
->  
-> diff --git a/Documentation/devicetree/bindings/hwmon/starfive,jh71x0-temp.yaml b/Documentation/devicetree/bindings/hwmon/starfive,jh71x0-temp.yaml
-> index f5b34528928d..733cba780186 100644
-> --- a/Documentation/devicetree/bindings/hwmon/starfive,jh71x0-temp.yaml
-> +++ b/Documentation/devicetree/bindings/hwmon/starfive,jh71x0-temp.yaml
-> @@ -27,8 +27,8 @@ properties:
->  
->    clock-names:
->      items:
-> -      - const: "sense"
-> -      - const: "bus"
-> +      - const: sense
-> +      - const: bus
->  
->    '#thermal-sensor-cells':
->      const: 0
-> @@ -39,8 +39,8 @@ properties:
->  
->    reset-names:
->      items:
-> -      - const: "sense"
-> -      - const: "bus"
-> +      - const: sense
-> +      - const: bus
->  
->  required:
->    - compatible
-> diff --git a/Documentation/devicetree/bindings/i3c/mipi-i3c-hci.yaml b/Documentation/devicetree/bindings/i3c/mipi-i3c-hci.yaml
-> index c002afdbfc7c..5dda8cb44cdb 100644
-> --- a/Documentation/devicetree/bindings/i3c/mipi-i3c-hci.yaml
-> +++ b/Documentation/devicetree/bindings/i3c/mipi-i3c-hci.yaml
-> @@ -1,8 +1,8 @@
->  # SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
->  %YAML 1.2
->  ---
-> -$id: "http://devicetree.org/schemas/i3c/mipi-i3c-hci.yaml#"
-> -$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +$id: http://devicetree.org/schemas/i3c/mipi-i3c-hci.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->  
->  title: MIPI I3C HCI
->  
-> diff --git a/Documentation/devicetree/bindings/iio/accel/fsl,mma7455.yaml b/Documentation/devicetree/bindings/iio/accel/fsl,mma7455.yaml
-> index c8659c5eba2a..cb31e75ba680 100644
-> --- a/Documentation/devicetree/bindings/iio/accel/fsl,mma7455.yaml
-> +++ b/Documentation/devicetree/bindings/iio/accel/fsl,mma7455.yaml
-> @@ -36,8 +36,8 @@ properties:
->      maxItems: 2
->      items:
->        enum:
-> -        - "INT1"
-> -        - "INT2"
-> +        - INT1
-> +        - INT2
->  
->  required:
->    - compatible
-> diff --git a/Documentation/devicetree/bindings/iio/adc/atmel,sama9260-adc.yaml b/Documentation/devicetree/bindings/iio/adc/atmel,sama9260-adc.yaml
-> index e6a1f915b542..1f30a8569187 100644
-> --- a/Documentation/devicetree/bindings/iio/adc/atmel,sama9260-adc.yaml
-> +++ b/Documentation/devicetree/bindings/iio/adc/atmel,sama9260-adc.yaml
-> @@ -56,8 +56,8 @@ properties:
->        String corresponding to an identifier from atmel,adc-res-names property.
->        If not specified, the highest resolution will be used.
->      enum:
-> -      - "lowres"
-> -      - "highres"
-> +      - lowres
-> +      - highres
->  
->    atmel,adc-sleep-mode:
->      $ref: /schemas/types.yaml#/definitions/flag
-> diff --git a/Documentation/devicetree/bindings/ipmi/aspeed,ast2400-kcs-bmc.yaml b/Documentation/devicetree/bindings/ipmi/aspeed,ast2400-kcs-bmc.yaml
-> index 4ff6fabfcb30..129e32c4c774 100644
-> --- a/Documentation/devicetree/bindings/ipmi/aspeed,ast2400-kcs-bmc.yaml
-> +++ b/Documentation/devicetree/bindings/ipmi/aspeed,ast2400-kcs-bmc.yaml
-> @@ -41,7 +41,7 @@ properties:
->        - description: STR register
->  
->    aspeed,lpc-io-reg:
-> -    $ref: '/schemas/types.yaml#/definitions/uint32-array'
-> +    $ref: /schemas/types.yaml#/definitions/uint32-array
->      minItems: 1
->      maxItems: 2
->      description: |
-> @@ -50,7 +50,7 @@ properties:
->        status address may be optionally provided.
->  
->    aspeed,lpc-interrupts:
-> -    $ref: "/schemas/types.yaml#/definitions/uint32-array"
-> +    $ref: /schemas/types.yaml#/definitions/uint32-array
->      minItems: 2
->      maxItems: 2
->      description: |
-> @@ -63,12 +63,12 @@ properties:
->  
->    kcs_chan:
->      deprecated: true
-> -    $ref: '/schemas/types.yaml#/definitions/uint32'
-> +    $ref: /schemas/types.yaml#/definitions/uint32
->      description: The LPC channel number in the controller
->  
->    kcs_addr:
->      deprecated: true
-> -    $ref: '/schemas/types.yaml#/definitions/uint32'
-> +    $ref: /schemas/types.yaml#/definitions/uint32
->      description: The host CPU IO map address
->  
->  required:
-> diff --git a/Documentation/devicetree/bindings/ipmi/ipmi-ipmb.yaml b/Documentation/devicetree/bindings/ipmi/ipmi-ipmb.yaml
-> index 3f25cdb4e99b..52647bff31af 100644
-> --- a/Documentation/devicetree/bindings/ipmi/ipmi-ipmb.yaml
-> +++ b/Documentation/devicetree/bindings/ipmi/ipmi-ipmb.yaml
-> @@ -18,7 +18,7 @@ properties:
->  
->    device_type:
->      items:
-> -      - const: "ipmi"
-> +      - const: ipmi
->  
->    reg:
->      maxItems: 1
-> diff --git a/Documentation/devicetree/bindings/ipmi/ipmi-smic.yaml b/Documentation/devicetree/bindings/ipmi/ipmi-smic.yaml
-> index c1b4bf95ef99..4bffa3d86128 100644
-> --- a/Documentation/devicetree/bindings/ipmi/ipmi-smic.yaml
-> +++ b/Documentation/devicetree/bindings/ipmi/ipmi-smic.yaml
-> @@ -20,7 +20,7 @@ properties:
->  
->    device_type:
->      items:
-> -      - const: "ipmi"
-> +      - const: ipmi
->  
->    reg:
->      maxItems: 1
-> diff --git a/Documentation/devicetree/bindings/media/qcom,msm8916-venus.yaml b/Documentation/devicetree/bindings/media/qcom,msm8916-venus.yaml
-> index 2350bf4b370e..9410f13ca97c 100644
-> --- a/Documentation/devicetree/bindings/media/qcom,msm8916-venus.yaml
-> +++ b/Documentation/devicetree/bindings/media/qcom,msm8916-venus.yaml
-> @@ -40,7 +40,7 @@ properties:
->  
->      properties:
->        compatible:
-> -        const: "venus-decoder"
-> +        const: venus-decoder
->  
->      required:
->        - compatible
-> @@ -52,7 +52,7 @@ properties:
->  
->      properties:
->        compatible:
-> -        const: "venus-encoder"
-> +        const: venus-encoder
->  
->      required:
->        - compatible
-> diff --git a/Documentation/devicetree/bindings/mips/loongson/ls2k-reset.yaml b/Documentation/devicetree/bindings/mips/loongson/ls2k-reset.yaml
-> index 20b5836efd90..358ac8cd4d1d 100644
-> --- a/Documentation/devicetree/bindings/mips/loongson/ls2k-reset.yaml
-> +++ b/Documentation/devicetree/bindings/mips/loongson/ls2k-reset.yaml
-> @@ -1,8 +1,8 @@
->  # SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->  %YAML 1.2
->  ---
-> -$id: "http://devicetree.org/schemas/mips/loongson/ls2k-reset.yaml#"
-> -$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +$id: http://devicetree.org/schemas/mips/loongson/ls2k-reset.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->  
->  title: Loongson 2K1000 PM Controller
->  
-> diff --git a/Documentation/devicetree/bindings/mips/loongson/rs780e-acpi.yaml b/Documentation/devicetree/bindings/mips/loongson/rs780e-acpi.yaml
-> index 7c0f9022202c..3e3a3705e879 100644
-> --- a/Documentation/devicetree/bindings/mips/loongson/rs780e-acpi.yaml
-> +++ b/Documentation/devicetree/bindings/mips/loongson/rs780e-acpi.yaml
-> @@ -1,8 +1,8 @@
->  # SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->  %YAML 1.2
->  ---
-> -$id: "http://devicetree.org/schemas/mips/loongson/rs780e-acpi.yaml#"
-> -$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +$id: http://devicetree.org/schemas/mips/loongson/rs780e-acpi.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->  
->  title: Loongson RS780E PCH ACPI Controller
->  
-> diff --git a/Documentation/devicetree/bindings/misc/intel,ixp4xx-ahb-queue-manager.yaml b/Documentation/devicetree/bindings/misc/intel,ixp4xx-ahb-queue-manager.yaml
-> index 38ab0499102d..36a9dbdf3f03 100644
-> --- a/Documentation/devicetree/bindings/misc/intel,ixp4xx-ahb-queue-manager.yaml
-> +++ b/Documentation/devicetree/bindings/misc/intel,ixp4xx-ahb-queue-manager.yaml
-> @@ -2,8 +2,8 @@
->  # Copyright 2019 Linaro Ltd.
->  %YAML 1.2
->  ---
-> -$id: "http://devicetree.org/schemas/misc/intel,ixp4xx-ahb-queue-manager.yaml#"
-> -$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +$id: http://devicetree.org/schemas/misc/intel,ixp4xx-ahb-queue-manager.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->  
->  title: Intel IXP4xx AHB Queue Manager
->  
-> diff --git a/Documentation/devicetree/bindings/mmc/marvell,xenon-sdhci.yaml b/Documentation/devicetree/bindings/mmc/marvell,xenon-sdhci.yaml
-> index 3ee758886558..3a8e74894ae0 100644
-> --- a/Documentation/devicetree/bindings/mmc/marvell,xenon-sdhci.yaml
-> +++ b/Documentation/devicetree/bindings/mmc/marvell,xenon-sdhci.yaml
-> @@ -71,8 +71,8 @@ properties:
->    marvell,xenon-phy-type:
->      $ref: /schemas/types.yaml#/definitions/string
->      enum:
-> -      - "emmc 5.1 phy"
-> -      - "emmc 5.0 phy"
-> +      - emmc 5.1 phy
-> +      - emmc 5.0 phy
->      description: |
->        Xenon support multiple types of PHYs. To select eMMC 5.1 PHY, set:
->        marvell,xenon-phy-type = "emmc 5.1 phy" eMMC 5.1 PHY is the default
-> diff --git a/Documentation/devicetree/bindings/mtd/microchip,mchp48l640.yaml b/Documentation/devicetree/bindings/mtd/microchip,mchp48l640.yaml
-> index 00882892f47e..0ff32bd00bf6 100644
-> --- a/Documentation/devicetree/bindings/mtd/microchip,mchp48l640.yaml
-> +++ b/Documentation/devicetree/bindings/mtd/microchip,mchp48l640.yaml
-> @@ -1,8 +1,8 @@
->  # SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->  %YAML 1.2
->  ---
-> -$id: "http://devicetree.org/schemas/mtd/microchip,mchp48l640.yaml#"
-> -$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +$id: http://devicetree.org/schemas/mtd/microchip,mchp48l640.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->  
->  title: Microchip 48l640 (and similar) serial EERAM
->  
-> diff --git a/Documentation/devicetree/bindings/soc/aspeed/uart-routing.yaml b/Documentation/devicetree/bindings/soc/aspeed/uart-routing.yaml
-> index 6876407124dc..51aaf34acb32 100644
-> --- a/Documentation/devicetree/bindings/soc/aspeed/uart-routing.yaml
-> +++ b/Documentation/devicetree/bindings/soc/aspeed/uart-routing.yaml
-> @@ -3,8 +3,8 @@
->  # # Copyright (c) 2021 Aspeed Technology Inc.
->  %YAML 1.2
->  ---
-> -$id: "http://devicetree.org/schemas/soc/aspeed/uart-routing.yaml#"
-> -$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +$id: http://devicetree.org/schemas/soc/aspeed/uart-routing.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->  
->  title: Aspeed UART Routing Controller
->  
-> diff --git a/Documentation/devicetree/bindings/soc/intel/intel,hps-copy-engine.yaml b/Documentation/devicetree/bindings/soc/intel/intel,hps-copy-engine.yaml
-> index 8634865015cd..ceb81646fe75 100644
-> --- a/Documentation/devicetree/bindings/soc/intel/intel,hps-copy-engine.yaml
-> +++ b/Documentation/devicetree/bindings/soc/intel/intel,hps-copy-engine.yaml
-> @@ -2,8 +2,8 @@
->  # Copyright (C) 2022, Intel Corporation
->  %YAML 1.2
->  ---
-> -$id: "http://devicetree.org/schemas/soc/intel/intel,hps-copy-engine.yaml#"
-> -$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +$id: http://devicetree.org/schemas/soc/intel/intel,hps-copy-engine.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->  
->  title: Intel HPS Copy Engine
->  
-> diff --git a/Documentation/devicetree/bindings/soc/litex/litex,soc-controller.yaml b/Documentation/devicetree/bindings/soc/litex/litex,soc-controller.yaml
-> index ecae9fa8561b..a64406ca17b5 100644
-> --- a/Documentation/devicetree/bindings/soc/litex/litex,soc-controller.yaml
-> +++ b/Documentation/devicetree/bindings/soc/litex/litex,soc-controller.yaml
-> @@ -2,8 +2,8 @@
->  # Copyright 2020 Antmicro <www.antmicro.com>
->  %YAML 1.2
->  ---
-> -$id: "http://devicetree.org/schemas/soc/litex/litex,soc-controller.yaml#"
-> -$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +$id: http://devicetree.org/schemas/soc/litex/litex,soc-controller.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->  
->  title: LiteX SoC Controller driver
->  
-> diff --git a/Documentation/devicetree/bindings/soc/renesas/renesas,rzg2l-sysc.yaml b/Documentation/devicetree/bindings/soc/renesas/renesas,rzg2l-sysc.yaml
-> index 398663d21ab1..e52e176d8cb3 100644
-> --- a/Documentation/devicetree/bindings/soc/renesas/renesas,rzg2l-sysc.yaml
-> +++ b/Documentation/devicetree/bindings/soc/renesas/renesas,rzg2l-sysc.yaml
-> @@ -1,8 +1,8 @@
->  # SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->  %YAML 1.2
->  ---
-> -$id: "http://devicetree.org/schemas/soc/renesas/renesas,rzg2l-sysc.yaml#"
-> -$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +$id: http://devicetree.org/schemas/soc/renesas/renesas,rzg2l-sysc.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->  
->  title: Renesas RZ/{G2L,V2L} System Controller (SYSC)
->  
-> diff --git a/Documentation/devicetree/bindings/soc/ti/k3-ringacc.yaml b/Documentation/devicetree/bindings/soc/ti/k3-ringacc.yaml
-> index 22cf9002fee7..4ac00716885e 100644
-> --- a/Documentation/devicetree/bindings/soc/ti/k3-ringacc.yaml
-> +++ b/Documentation/devicetree/bindings/soc/ti/k3-ringacc.yaml
-> @@ -2,8 +2,8 @@
->  # Copyright (C) 2020 Texas Instruments Incorporated - http://www.ti.com/
->  %YAML 1.2
->  ---
-> -$id: "http://devicetree.org/schemas/soc/ti/k3-ringacc.yaml#"
-> -$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +$id: http://devicetree.org/schemas/soc/ti/k3-ringacc.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->  
->  title: Texas Instruments K3 NavigatorSS Ring Accelerator
->  
-> diff --git a/Documentation/devicetree/bindings/sound/dialog,da7219.yaml b/Documentation/devicetree/bindings/sound/dialog,da7219.yaml
-> index 2d01956cefbb..19137abdba3e 100644
-> --- a/Documentation/devicetree/bindings/sound/dialog,da7219.yaml
-> +++ b/Documentation/devicetree/bindings/sound/dialog,da7219.yaml
-> @@ -74,7 +74,7 @@ properties:
->      $ref: /schemas/types.yaml#/definitions/uint32
->  
->    dlg,mic-amp-in-sel:
-> -    enum: ["diff", "se_p", "se_n"]
-> +    enum: [diff, se_p, se_n]
->      description:
->        Mic input source type.
->  
-> @@ -124,7 +124,7 @@ properties:
->          $ref: /schemas/types.yaml#/definitions/uint32
->  
->        dlg,jack-ins-det-pty:
-> -        enum: ["low", "high"]
-> +        enum: [low, high]
->          description:
->            Polarity for jack insertion detection.
->          $ref: /schemas/types.yaml#/definitions/string
-> diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-max9808x.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-max9808x.yaml
-> index fc89dbd6bf24..c29d7942915c 100644
-> --- a/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-max9808x.yaml
-> +++ b/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-max9808x.yaml
-> @@ -35,12 +35,12 @@ properties:
->      items:
->        enum:
->          # Board Connectors
-> -        - "Int Spk"
-> -        - "Headphone Jack"
-> -        - "Earpiece"
-> -        - "Headset Mic"
-> -        - "Internal Mic 1"
-> -        - "Internal Mic 2"
-> +        - Int Spk
-> +        - Headphone Jack
-> +        - Earpiece
-> +        - Headset Mic
-> +        - Internal Mic 1
-> +        - Internal Mic 2
->  
->          # CODEC Pins
->          - HPL
-> diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-rt5631.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-rt5631.yaml
-> index a04487002e88..0c8067c3b056 100644
-> --- a/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-rt5631.yaml
-> +++ b/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-rt5631.yaml
-> @@ -31,10 +31,10 @@ properties:
->      items:
->        enum:
->          # Board Connectors
-> -        - "Int Spk"
-> -        - "Headphone Jack"
-> -        - "Mic Jack"
-> -        - "Int Mic"
-> +        - Int Spk
-> +        - Headphone Jack
-> +        - Mic Jack
-> +        - Int Mic
->  
->          # CODEC Pins
->          - MIC1
-> diff --git a/Documentation/devicetree/bindings/ufs/ufs-common.yaml b/Documentation/devicetree/bindings/ufs/ufs-common.yaml
-> index 47a4e9e1a775..bbaee4f5f7b2 100644
-> --- a/Documentation/devicetree/bindings/ufs/ufs-common.yaml
-> +++ b/Documentation/devicetree/bindings/ufs/ufs-common.yaml
-> @@ -74,7 +74,7 @@ properties:
->        Specifies max. load that can be drawn from VCCQ2 supply.
->  
->  dependencies:
-> -  freq-table-hz: [ 'clocks' ]
-> +  freq-table-hz: [ clocks ]
->  
->  required:
->    - interrupts
-> diff --git a/Documentation/devicetree/bindings/watchdog/toshiba,visconti-wdt.yaml b/Documentation/devicetree/bindings/watchdog/toshiba,visconti-wdt.yaml
-> index 51d03d5b08ad..3e9fd49d935e 100644
-> --- a/Documentation/devicetree/bindings/watchdog/toshiba,visconti-wdt.yaml
-> +++ b/Documentation/devicetree/bindings/watchdog/toshiba,visconti-wdt.yaml
-> @@ -2,8 +2,8 @@
->  # Copyright 2020 Toshiba Electronic Devices & Storage Corporation
->  %YAML 1.2
->  ---
-> -$id: "http://devicetree.org/schemas/watchdog/toshiba,visconti-wdt.yaml#"
-> -$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +$id: http://devicetree.org/schemas/watchdog/toshiba,visconti-wdt.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->  
->  title: Toshiba Visconti SoCs PIUWDT Watchdog timer
->  
-> -- 
-> 2.40.1
-> 
-> 
-> -- 
-> linux-i3c mailing list
-> linux-i3c@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-i3c
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ .../arch/x86/alderlake/adl-metrics.json        |  6 +++---
+ .../arch/x86/alderlake/pipeline.json           |  2 +-
+ .../arch/x86/alderlaken/adln-metrics.json      |  6 +++---
+ .../x86/broadwellde/uncore-interconnect.json   | 18 +++++++++---------
+ .../x86/broadwellx/uncore-interconnect.json    | 18 +++++++++---------
+ .../pmu-events/arch/x86/haswell/memory.json    |  2 +-
+ .../pmu-events/arch/x86/haswellx/memory.json   |  2 +-
+ .../arch/x86/haswellx/uncore-interconnect.json | 18 +++++++++---------
+ .../arch/x86/ivytown/uncore-interconnect.json  | 18 +++++++++---------
+ .../arch/x86/jaketown/uncore-interconnect.json | 18 +++++++++---------
+ .../arch/x86/nehalemep/floating-point.json     |  2 +-
+ .../arch/x86/nehalemex/floating-point.json     |  2 +-
+ .../arch/x86/westmereep-dp/floating-point.json |  2 +-
+ .../arch/x86/westmereep-sp/floating-point.json |  2 +-
+ .../arch/x86/westmereex/floating-point.json    |  2 +-
+ 15 files changed, 59 insertions(+), 59 deletions(-)
 
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+diff --git a/tools/perf/pmu-events/arch/x86/alderlake/adl-metrics.json b/to=
+ols/perf/pmu-events/arch/x86/alderlake/adl-metrics.json
+index c6780d5c456b..8b6bed3bc766 100644
+--- a/tools/perf/pmu-events/arch/x86/alderlake/adl-metrics.json
++++ b/tools/perf/pmu-events/arch/x86/alderlake/adl-metrics.json
+@@ -395,13 +395,13 @@
+         "Unit": "cpu_atom"
+     },
+     {
+-        "BriefDescription": "Instructions per Branch (lower number means h=
+igher occurance rate)",
++        "BriefDescription": "Instructions per Branch (lower number means h=
+igher occurrence rate)",
+         "MetricExpr": "INST_RETIRED.ANY / BR_INST_RETIRED.ALL_BRANCHES",
+         "MetricName": "tma_info_inst_mix_ipbranch",
+         "Unit": "cpu_atom"
+     },
+     {
+-        "BriefDescription": "Instruction per (near) call (lower number mea=
+ns higher occurance rate)",
++        "BriefDescription": "Instruction per (near) call (lower number mea=
+ns higher occurrence rate)",
+         "MetricExpr": "INST_RETIRED.ANY / BR_INST_RETIRED.CALL",
+         "MetricName": "tma_info_inst_mix_ipcall",
+         "Unit": "cpu_atom"
+@@ -726,7 +726,7 @@
+         "Unit": "cpu_atom"
+     },
+     {
+-        "BriefDescription": "Counts the numer of issue slots  that result =
+in retirement slots.",
++        "BriefDescription": "Counts the number of issue slots  that result=
+ in retirement slots.",
+         "DefaultMetricgroupName": "TopdownL1",
+         "MetricExpr": "TOPDOWN_RETIRING.ALL / tma_info_core_slots",
+         "MetricGroup": "Default;TopdownL1;tma_L1_group",
+diff --git a/tools/perf/pmu-events/arch/x86/alderlake/pipeline.json b/tools=
+/perf/pmu-events/arch/x86/alderlake/pipeline.json
+index cb5b8611064b..a92013cdf136 100644
+--- a/tools/perf/pmu-events/arch/x86/alderlake/pipeline.json
++++ b/tools/perf/pmu-events/arch/x86/alderlake/pipeline.json
+@@ -1145,7 +1145,7 @@
+         "BriefDescription": "TMA slots wasted due to incorrect speculation=
+ by branch mispredictions",
+         "EventCode": "0xa4",
+         "EventName": "TOPDOWN.BR_MISPREDICT_SLOTS",
+-        "PublicDescription": "Number of TMA slots that were wasted due to =
+incorrect speculation by (any type of) branch mispredictions. This event es=
+timates number of specualtive operations that were issued but not retired a=
+s well as the out-of-order engine recovery past a branch misprediction.",
++        "PublicDescription": "Number of TMA slots that were wasted due to =
+incorrect speculation by (any type of) branch mispredictions. This event es=
+timates number of speculative operations that were issued but not retired a=
+s well as the out-of-order engine recovery past a branch misprediction.",
+         "SampleAfterValue": "10000003",
+         "UMask": "0x8",
+         "Unit": "cpu_core"
+diff --git a/tools/perf/pmu-events/arch/x86/alderlaken/adln-metrics.json b/=
+tools/perf/pmu-events/arch/x86/alderlaken/adln-metrics.json
+index 06e67e34e1bf..c150c14ac6ed 100644
+--- a/tools/perf/pmu-events/arch/x86/alderlaken/adln-metrics.json
++++ b/tools/perf/pmu-events/arch/x86/alderlaken/adln-metrics.json
+@@ -328,12 +328,12 @@
+         "MetricName": "tma_info_inst_mix_idiv_uop_ratio"
+     },
+     {
+-        "BriefDescription": "Instructions per Branch (lower number means h=
+igher occurance rate)",
++        "BriefDescription": "Instructions per Branch (lower number means h=
+igher occurrence rate)",
+         "MetricExpr": "INST_RETIRED.ANY / BR_INST_RETIRED.ALL_BRANCHES",
+         "MetricName": "tma_info_inst_mix_ipbranch"
+     },
+     {
+-        "BriefDescription": "Instruction per (near) call (lower number mea=
+ns higher occurance rate)",
++        "BriefDescription": "Instruction per (near) call (lower number mea=
+ns higher occurrence rate)",
+         "MetricExpr": "INST_RETIRED.ANY / BR_INST_RETIRED.CALL",
+         "MetricName": "tma_info_inst_mix_ipcall"
+     },
+@@ -616,7 +616,7 @@
+         "ScaleUnit": "100%"
+     },
+     {
+-        "BriefDescription": "Counts the numer of issue slots  that result =
+in retirement slots.",
++        "BriefDescription": "Counts the number of issue slots  that result=
+ in retirement slots.",
+         "DefaultMetricgroupName": "TopdownL1",
+         "MetricExpr": "TOPDOWN_RETIRING.ALL / tma_info_core_slots",
+         "MetricGroup": "Default;TopdownL1;tma_L1_group",
+diff --git a/tools/perf/pmu-events/arch/x86/broadwellde/uncore-interconnect=
+.json b/tools/perf/pmu-events/arch/x86/broadwellde/uncore-interconnect.json
+index 8a327e0f1441..910395977a6e 100644
+--- a/tools/perf/pmu-events/arch/x86/broadwellde/uncore-interconnect.json
++++ b/tools/perf/pmu-events/arch/x86/broadwellde/uncore-interconnect.json
+@@ -253,7 +253,7 @@
+         "EventCode": "0x4",
+         "EventName": "UNC_I_RxR_BL_DRS_CYCLES_FULL",
+         "PerPkg": "1",
+-        "PublicDescription": "Counts the number of cycles when the BL Ingr=
+ess is full.  This queue is where the IRP receives data from R2PCIe (the ri=
+ng).  It is used for data returns from read requets as well as outbound MMI=
+O writes.",
++        "PublicDescription": "Counts the number of cycles when the BL Ingr=
+ess is full.  This queue is where the IRP receives data from R2PCIe (the ri=
+ng).  It is used for data returns from read requests as well as outbound MM=
+IO writes.",
+         "Unit": "IRP"
+     },
+     {
+@@ -261,7 +261,7 @@
+         "EventCode": "0x1",
+         "EventName": "UNC_I_RxR_BL_DRS_INSERTS",
+         "PerPkg": "1",
+-        "PublicDescription": "Counts the number of allocations into the BL=
+ Ingress.  This queue is where the IRP receives data from R2PCIe (the ring)=
+.  It is used for data returns from read requets as well as outbound MMIO w=
+rites.",
++        "PublicDescription": "Counts the number of allocations into the BL=
+ Ingress.  This queue is where the IRP receives data from R2PCIe (the ring)=
+.  It is used for data returns from read requests as well as outbound MMIO =
+writes.",
+         "Unit": "IRP"
+     },
+     {
+@@ -269,7 +269,7 @@
+         "EventCode": "0x7",
+         "EventName": "UNC_I_RxR_BL_DRS_OCCUPANCY",
+         "PerPkg": "1",
+-        "PublicDescription": "Accumulates the occupancy of the BL Ingress =
+in each cycles.  This queue is where the IRP receives data from R2PCIe (the=
+ ring).  It is used for data returns from read requets as well as outbound =
+MMIO writes.",
++        "PublicDescription": "Accumulates the occupancy of the BL Ingress =
+in each cycles.  This queue is where the IRP receives data from R2PCIe (the=
+ ring).  It is used for data returns from read requests as well as outbound=
+ MMIO writes.",
+         "Unit": "IRP"
+     },
+     {
+@@ -277,7 +277,7 @@
+         "EventCode": "0x5",
+         "EventName": "UNC_I_RxR_BL_NCB_CYCLES_FULL",
+         "PerPkg": "1",
+-        "PublicDescription": "Counts the number of cycles when the BL Ingr=
+ess is full.  This queue is where the IRP receives data from R2PCIe (the ri=
+ng).  It is used for data returns from read requets as well as outbound MMI=
+O writes.",
++        "PublicDescription": "Counts the number of cycles when the BL Ingr=
+ess is full.  This queue is where the IRP receives data from R2PCIe (the ri=
+ng).  It is used for data returns from read requests as well as outbound MM=
+IO writes.",
+         "Unit": "IRP"
+     },
+     {
+@@ -285,7 +285,7 @@
+         "EventCode": "0x2",
+         "EventName": "UNC_I_RxR_BL_NCB_INSERTS",
+         "PerPkg": "1",
+-        "PublicDescription": "Counts the number of allocations into the BL=
+ Ingress.  This queue is where the IRP receives data from R2PCIe (the ring)=
+.  It is used for data returns from read requets as well as outbound MMIO w=
+rites.",
++        "PublicDescription": "Counts the number of allocations into the BL=
+ Ingress.  This queue is where the IRP receives data from R2PCIe (the ring)=
+.  It is used for data returns from read requests as well as outbound MMIO =
+writes.",
+         "Unit": "IRP"
+     },
+     {
+@@ -293,7 +293,7 @@
+         "EventCode": "0x8",
+         "EventName": "UNC_I_RxR_BL_NCB_OCCUPANCY",
+         "PerPkg": "1",
+-        "PublicDescription": "Accumulates the occupancy of the BL Ingress =
+in each cycles.  This queue is where the IRP receives data from R2PCIe (the=
+ ring).  It is used for data returns from read requets as well as outbound =
+MMIO writes.",
++        "PublicDescription": "Accumulates the occupancy of the BL Ingress =
+in each cycles.  This queue is where the IRP receives data from R2PCIe (the=
+ ring).  It is used for data returns from read requests as well as outbound=
+ MMIO writes.",
+         "Unit": "IRP"
+     },
+     {
+@@ -301,7 +301,7 @@
+         "EventCode": "0x6",
+         "EventName": "UNC_I_RxR_BL_NCS_CYCLES_FULL",
+         "PerPkg": "1",
+-        "PublicDescription": "Counts the number of cycles when the BL Ingr=
+ess is full.  This queue is where the IRP receives data from R2PCIe (the ri=
+ng).  It is used for data returns from read requets as well as outbound MMI=
+O writes.",
++        "PublicDescription": "Counts the number of cycles when the BL Ingr=
+ess is full.  This queue is where the IRP receives data from R2PCIe (the ri=
+ng).  It is used for data returns from read requests as well as outbound MM=
+IO writes.",
+         "Unit": "IRP"
+     },
+     {
+@@ -309,7 +309,7 @@
+         "EventCode": "0x3",
+         "EventName": "UNC_I_RxR_BL_NCS_INSERTS",
+         "PerPkg": "1",
+-        "PublicDescription": "Counts the number of allocations into the BL=
+ Ingress.  This queue is where the IRP receives data from R2PCIe (the ring)=
+.  It is used for data returns from read requets as well as outbound MMIO w=
+rites.",
++        "PublicDescription": "Counts the number of allocations into the BL=
+ Ingress.  This queue is where the IRP receives data from R2PCIe (the ring)=
+.  It is used for data returns from read requests as well as outbound MMIO =
+writes.",
+         "Unit": "IRP"
+     },
+     {
+@@ -317,7 +317,7 @@
+         "EventCode": "0x9",
+         "EventName": "UNC_I_RxR_BL_NCS_OCCUPANCY",
+         "PerPkg": "1",
+-        "PublicDescription": "Accumulates the occupancy of the BL Ingress =
+in each cycles.  This queue is where the IRP receives data from R2PCIe (the=
+ ring).  It is used for data returns from read requets as well as outbound =
+MMIO writes.",
++        "PublicDescription": "Accumulates the occupancy of the BL Ingress =
+in each cycles.  This queue is where the IRP receives data from R2PCIe (the=
+ ring).  It is used for data returns from read requests as well as outbound=
+ MMIO writes.",
+         "Unit": "IRP"
+     },
+     {
+diff --git a/tools/perf/pmu-events/arch/x86/broadwellx/uncore-interconnect.=
+json b/tools/perf/pmu-events/arch/x86/broadwellx/uncore-interconnect.json
+index e61a23f68899..b9fb216bee16 100644
+--- a/tools/perf/pmu-events/arch/x86/broadwellx/uncore-interconnect.json
++++ b/tools/perf/pmu-events/arch/x86/broadwellx/uncore-interconnect.json
+@@ -271,7 +271,7 @@
+         "EventCode": "0x4",
+         "EventName": "UNC_I_RxR_BL_DRS_CYCLES_FULL",
+         "PerPkg": "1",
+-        "PublicDescription": "Counts the number of cycles when the BL Ingr=
+ess is full.  This queue is where the IRP receives data from R2PCIe (the ri=
+ng).  It is used for data returns from read requets as well as outbound MMI=
+O writes.",
++        "PublicDescription": "Counts the number of cycles when the BL Ingr=
+ess is full.  This queue is where the IRP receives data from R2PCIe (the ri=
+ng).  It is used for data returns from read requests as well as outbound MM=
+IO writes.",
+         "Unit": "IRP"
+     },
+     {
+@@ -279,7 +279,7 @@
+         "EventCode": "0x1",
+         "EventName": "UNC_I_RxR_BL_DRS_INSERTS",
+         "PerPkg": "1",
+-        "PublicDescription": "Counts the number of allocations into the BL=
+ Ingress.  This queue is where the IRP receives data from R2PCIe (the ring)=
+.  It is used for data returns from read requets as well as outbound MMIO w=
+rites.",
++        "PublicDescription": "Counts the number of allocations into the BL=
+ Ingress.  This queue is where the IRP receives data from R2PCIe (the ring)=
+.  It is used for data returns from read requests as well as outbound MMIO =
+writes.",
+         "Unit": "IRP"
+     },
+     {
+@@ -287,7 +287,7 @@
+         "EventCode": "0x7",
+         "EventName": "UNC_I_RxR_BL_DRS_OCCUPANCY",
+         "PerPkg": "1",
+-        "PublicDescription": "Accumulates the occupancy of the BL Ingress =
+in each cycles.  This queue is where the IRP receives data from R2PCIe (the=
+ ring).  It is used for data returns from read requets as well as outbound =
+MMIO writes.",
++        "PublicDescription": "Accumulates the occupancy of the BL Ingress =
+in each cycles.  This queue is where the IRP receives data from R2PCIe (the=
+ ring).  It is used for data returns from read requests as well as outbound=
+ MMIO writes.",
+         "Unit": "IRP"
+     },
+     {
+@@ -295,7 +295,7 @@
+         "EventCode": "0x5",
+         "EventName": "UNC_I_RxR_BL_NCB_CYCLES_FULL",
+         "PerPkg": "1",
+-        "PublicDescription": "Counts the number of cycles when the BL Ingr=
+ess is full.  This queue is where the IRP receives data from R2PCIe (the ri=
+ng).  It is used for data returns from read requets as well as outbound MMI=
+O writes.",
++        "PublicDescription": "Counts the number of cycles when the BL Ingr=
+ess is full.  This queue is where the IRP receives data from R2PCIe (the ri=
+ng).  It is used for data returns from read requests as well as outbound MM=
+IO writes.",
+         "Unit": "IRP"
+     },
+     {
+@@ -303,7 +303,7 @@
+         "EventCode": "0x2",
+         "EventName": "UNC_I_RxR_BL_NCB_INSERTS",
+         "PerPkg": "1",
+-        "PublicDescription": "Counts the number of allocations into the BL=
+ Ingress.  This queue is where the IRP receives data from R2PCIe (the ring)=
+.  It is used for data returns from read requets as well as outbound MMIO w=
+rites.",
++        "PublicDescription": "Counts the number of allocations into the BL=
+ Ingress.  This queue is where the IRP receives data from R2PCIe (the ring)=
+.  It is used for data returns from read requests as well as outbound MMIO =
+writes.",
+         "Unit": "IRP"
+     },
+     {
+@@ -311,7 +311,7 @@
+         "EventCode": "0x8",
+         "EventName": "UNC_I_RxR_BL_NCB_OCCUPANCY",
+         "PerPkg": "1",
+-        "PublicDescription": "Accumulates the occupancy of the BL Ingress =
+in each cycles.  This queue is where the IRP receives data from R2PCIe (the=
+ ring).  It is used for data returns from read requets as well as outbound =
+MMIO writes.",
++        "PublicDescription": "Accumulates the occupancy of the BL Ingress =
+in each cycles.  This queue is where the IRP receives data from R2PCIe (the=
+ ring).  It is used for data returns from read requests as well as outbound=
+ MMIO writes.",
+         "Unit": "IRP"
+     },
+     {
+@@ -319,7 +319,7 @@
+         "EventCode": "0x6",
+         "EventName": "UNC_I_RxR_BL_NCS_CYCLES_FULL",
+         "PerPkg": "1",
+-        "PublicDescription": "Counts the number of cycles when the BL Ingr=
+ess is full.  This queue is where the IRP receives data from R2PCIe (the ri=
+ng).  It is used for data returns from read requets as well as outbound MMI=
+O writes.",
++        "PublicDescription": "Counts the number of cycles when the BL Ingr=
+ess is full.  This queue is where the IRP receives data from R2PCIe (the ri=
+ng).  It is used for data returns from read requests as well as outbound MM=
+IO writes.",
+         "Unit": "IRP"
+     },
+     {
+@@ -327,7 +327,7 @@
+         "EventCode": "0x3",
+         "EventName": "UNC_I_RxR_BL_NCS_INSERTS",
+         "PerPkg": "1",
+-        "PublicDescription": "Counts the number of allocations into the BL=
+ Ingress.  This queue is where the IRP receives data from R2PCIe (the ring)=
+.  It is used for data returns from read requets as well as outbound MMIO w=
+rites.",
++        "PublicDescription": "Counts the number of allocations into the BL=
+ Ingress.  This queue is where the IRP receives data from R2PCIe (the ring)=
+.  It is used for data returns from read requests as well as outbound MMIO =
+writes.",
+         "Unit": "IRP"
+     },
+     {
+@@ -335,7 +335,7 @@
+         "EventCode": "0x9",
+         "EventName": "UNC_I_RxR_BL_NCS_OCCUPANCY",
+         "PerPkg": "1",
+-        "PublicDescription": "Accumulates the occupancy of the BL Ingress =
+in each cycles.  This queue is where the IRP receives data from R2PCIe (the=
+ ring).  It is used for data returns from read requets as well as outbound =
+MMIO writes.",
++        "PublicDescription": "Accumulates the occupancy of the BL Ingress =
+in each cycles.  This queue is where the IRP receives data from R2PCIe (the=
+ ring).  It is used for data returns from read requests as well as outbound=
+ MMIO writes.",
+         "Unit": "IRP"
+     },
+     {
+diff --git a/tools/perf/pmu-events/arch/x86/haswell/memory.json b/tools/per=
+f/pmu-events/arch/x86/haswell/memory.json
+index 2fc25e22a42a..df44c28efeeb 100644
+--- a/tools/perf/pmu-events/arch/x86/haswell/memory.json
++++ b/tools/perf/pmu-events/arch/x86/haswell/memory.json
+@@ -62,7 +62,7 @@
+         "BriefDescription": "Counts the number of machine clears due to me=
+mory order conflicts.",
+         "EventCode": "0xC3",
+         "EventName": "MACHINE_CLEARS.MEMORY_ORDERING",
+-        "PublicDescription": "This event counts the number of memory order=
+ing machine clears detected. Memory ordering machine clears can result from=
+ memory address aliasing or snoops from another hardware thread or core to =
+data inflight in the pipeline.  Machine clears can have a significant perfo=
+rmance impact if they are happening frequently.",
++        "PublicDescription": "This event counts the number of memory order=
+ing machine clears detected. Memory ordering machine clears can result from=
+ memory address aliasing or snoops from another hardware thread or core to =
+data in-flight in the pipeline.  Machine clears can have a significant perf=
+ormance impact if they are happening frequently.",
+         "SampleAfterValue": "100003",
+         "UMask": "0x2"
+     },
+diff --git a/tools/perf/pmu-events/arch/x86/haswellx/memory.json b/tools/pe=
+rf/pmu-events/arch/x86/haswellx/memory.json
+index 2d212cf59e92..d66e465ce41a 100644
+--- a/tools/perf/pmu-events/arch/x86/haswellx/memory.json
++++ b/tools/perf/pmu-events/arch/x86/haswellx/memory.json
+@@ -62,7 +62,7 @@
+         "BriefDescription": "Counts the number of machine clears due to me=
+mory order conflicts.",
+         "EventCode": "0xC3",
+         "EventName": "MACHINE_CLEARS.MEMORY_ORDERING",
+-        "PublicDescription": "This event counts the number of memory order=
+ing machine clears detected. Memory ordering machine clears can result from=
+ memory address aliasing or snoops from another hardware thread or core to =
+data inflight in the pipeline.  Machine clears can have a significant perfo=
+rmance impact if they are happening frequently.",
++        "PublicDescription": "This event counts the number of memory order=
+ing machine clears detected. Memory ordering machine clears can result from=
+ memory address aliasing or snoops from another hardware thread or core to =
+data in-flight in the pipeline.  Machine clears can have a significant perf=
+ormance impact if they are happening frequently.",
+         "SampleAfterValue": "100003",
+         "UMask": "0x2"
+     },
+diff --git a/tools/perf/pmu-events/arch/x86/haswellx/uncore-interconnect.js=
+on b/tools/perf/pmu-events/arch/x86/haswellx/uncore-interconnect.json
+index 954e8198c7a5..bef1f5ef6f31 100644
+--- a/tools/perf/pmu-events/arch/x86/haswellx/uncore-interconnect.json
++++ b/tools/perf/pmu-events/arch/x86/haswellx/uncore-interconnect.json
+@@ -271,7 +271,7 @@
+         "EventCode": "0x4",
+         "EventName": "UNC_I_RxR_BL_DRS_CYCLES_FULL",
+         "PerPkg": "1",
+-        "PublicDescription": "Counts the number of cycles when the BL Ingr=
+ess is full.  This queue is where the IRP receives data from R2PCIe (the ri=
+ng).  It is used for data returns from read requets as well as outbound MMI=
+O writes.",
++        "PublicDescription": "Counts the number of cycles when the BL Ingr=
+ess is full.  This queue is where the IRP receives data from R2PCIe (the ri=
+ng).  It is used for data returns from read requests as well as outbound MM=
+IO writes.",
+         "Unit": "IRP"
+     },
+     {
+@@ -279,7 +279,7 @@
+         "EventCode": "0x1",
+         "EventName": "UNC_I_RxR_BL_DRS_INSERTS",
+         "PerPkg": "1",
+-        "PublicDescription": "Counts the number of allocations into the BL=
+ Ingress.  This queue is where the IRP receives data from R2PCIe (the ring)=
+.  It is used for data returns from read requets as well as outbound MMIO w=
+rites.",
++        "PublicDescription": "Counts the number of allocations into the BL=
+ Ingress.  This queue is where the IRP receives data from R2PCIe (the ring)=
+.  It is used for data returns from read requests as well as outbound MMIO =
+writes.",
+         "Unit": "IRP"
+     },
+     {
+@@ -287,7 +287,7 @@
+         "EventCode": "0x7",
+         "EventName": "UNC_I_RxR_BL_DRS_OCCUPANCY",
+         "PerPkg": "1",
+-        "PublicDescription": "Accumulates the occupancy of the BL Ingress =
+in each cycles.  This queue is where the IRP receives data from R2PCIe (the=
+ ring).  It is used for data returns from read requets as well as outbound =
+MMIO writes.",
++        "PublicDescription": "Accumulates the occupancy of the BL Ingress =
+in each cycles.  This queue is where the IRP receives data from R2PCIe (the=
+ ring).  It is used for data returns from read requests as well as outbound=
+ MMIO writes.",
+         "Unit": "IRP"
+     },
+     {
+@@ -295,7 +295,7 @@
+         "EventCode": "0x5",
+         "EventName": "UNC_I_RxR_BL_NCB_CYCLES_FULL",
+         "PerPkg": "1",
+-        "PublicDescription": "Counts the number of cycles when the BL Ingr=
+ess is full.  This queue is where the IRP receives data from R2PCIe (the ri=
+ng).  It is used for data returns from read requets as well as outbound MMI=
+O writes.",
++        "PublicDescription": "Counts the number of cycles when the BL Ingr=
+ess is full.  This queue is where the IRP receives data from R2PCIe (the ri=
+ng).  It is used for data returns from read requests as well as outbound MM=
+IO writes.",
+         "Unit": "IRP"
+     },
+     {
+@@ -303,7 +303,7 @@
+         "EventCode": "0x2",
+         "EventName": "UNC_I_RxR_BL_NCB_INSERTS",
+         "PerPkg": "1",
+-        "PublicDescription": "Counts the number of allocations into the BL=
+ Ingress.  This queue is where the IRP receives data from R2PCIe (the ring)=
+.  It is used for data returns from read requets as well as outbound MMIO w=
+rites.",
++        "PublicDescription": "Counts the number of allocations into the BL=
+ Ingress.  This queue is where the IRP receives data from R2PCIe (the ring)=
+.  It is used for data returns from read requests as well as outbound MMIO =
+writes.",
+         "Unit": "IRP"
+     },
+     {
+@@ -311,7 +311,7 @@
+         "EventCode": "0x8",
+         "EventName": "UNC_I_RxR_BL_NCB_OCCUPANCY",
+         "PerPkg": "1",
+-        "PublicDescription": "Accumulates the occupancy of the BL Ingress =
+in each cycles.  This queue is where the IRP receives data from R2PCIe (the=
+ ring).  It is used for data returns from read requets as well as outbound =
+MMIO writes.",
++        "PublicDescription": "Accumulates the occupancy of the BL Ingress =
+in each cycles.  This queue is where the IRP receives data from R2PCIe (the=
+ ring).  It is used for data returns from read requests as well as outbound=
+ MMIO writes.",
+         "Unit": "IRP"
+     },
+     {
+@@ -319,7 +319,7 @@
+         "EventCode": "0x6",
+         "EventName": "UNC_I_RxR_BL_NCS_CYCLES_FULL",
+         "PerPkg": "1",
+-        "PublicDescription": "Counts the number of cycles when the BL Ingr=
+ess is full.  This queue is where the IRP receives data from R2PCIe (the ri=
+ng).  It is used for data returns from read requets as well as outbound MMI=
+O writes.",
++        "PublicDescription": "Counts the number of cycles when the BL Ingr=
+ess is full.  This queue is where the IRP receives data from R2PCIe (the ri=
+ng).  It is used for data returns from read requests as well as outbound MM=
+IO writes.",
+         "Unit": "IRP"
+     },
+     {
+@@ -327,7 +327,7 @@
+         "EventCode": "0x3",
+         "EventName": "UNC_I_RxR_BL_NCS_INSERTS",
+         "PerPkg": "1",
+-        "PublicDescription": "Counts the number of allocations into the BL=
+ Ingress.  This queue is where the IRP receives data from R2PCIe (the ring)=
+.  It is used for data returns from read requets as well as outbound MMIO w=
+rites.",
++        "PublicDescription": "Counts the number of allocations into the BL=
+ Ingress.  This queue is where the IRP receives data from R2PCIe (the ring)=
+.  It is used for data returns from read requests as well as outbound MMIO =
+writes.",
+         "Unit": "IRP"
+     },
+     {
+@@ -335,7 +335,7 @@
+         "EventCode": "0x9",
+         "EventName": "UNC_I_RxR_BL_NCS_OCCUPANCY",
+         "PerPkg": "1",
+-        "PublicDescription": "Accumulates the occupancy of the BL Ingress =
+in each cycles.  This queue is where the IRP receives data from R2PCIe (the=
+ ring).  It is used for data returns from read requets as well as outbound =
+MMIO writes.",
++        "PublicDescription": "Accumulates the occupancy of the BL Ingress =
+in each cycles.  This queue is where the IRP receives data from R2PCIe (the=
+ ring).  It is used for data returns from read requests as well as outbound=
+ MMIO writes.",
+         "Unit": "IRP"
+     },
+     {
+diff --git a/tools/perf/pmu-events/arch/x86/ivytown/uncore-interconnect.jso=
+n b/tools/perf/pmu-events/arch/x86/ivytown/uncore-interconnect.json
+index ccf451534d16..f4d11da01383 100644
+--- a/tools/perf/pmu-events/arch/x86/ivytown/uncore-interconnect.json
++++ b/tools/perf/pmu-events/arch/x86/ivytown/uncore-interconnect.json
+@@ -140,7 +140,7 @@
+         "EventCode": "0x4",
+         "EventName": "UNC_I_RxR_BL_DRS_CYCLES_FULL",
+         "PerPkg": "1",
+-        "PublicDescription": "Counts the number of cycles when the BL Ingr=
+ess is full.  This queue is where the IRP receives data from R2PCIe (the ri=
+ng).  It is used for data returns from read requets as well as outbound MMI=
+O writes.",
++        "PublicDescription": "Counts the number of cycles when the BL Ingr=
+ess is full.  This queue is where the IRP receives data from R2PCIe (the ri=
+ng).  It is used for data returns from read requests as well as outbound MM=
+IO writes.",
+         "Unit": "IRP"
+     },
+     {
+@@ -148,21 +148,21 @@
+         "EventCode": "0x1",
+         "EventName": "UNC_I_RxR_BL_DRS_INSERTS",
+         "PerPkg": "1",
+-        "PublicDescription": "Counts the number of allocations into the BL=
+ Ingress.  This queue is where the IRP receives data from R2PCIe (the ring)=
+.  It is used for data returns from read requets as well as outbound MMIO w=
+rites.",
++        "PublicDescription": "Counts the number of allocations into the BL=
+ Ingress.  This queue is where the IRP receives data from R2PCIe (the ring)=
+.  It is used for data returns from read requests as well as outbound MMIO =
+writes.",
+         "Unit": "IRP"
+     },
+     {
+         "EventCode": "0x7",
+         "EventName": "UNC_I_RxR_BL_DRS_OCCUPANCY",
+         "PerPkg": "1",
+-        "PublicDescription": "Accumulates the occupancy of the BL Ingress =
+in each cycles.  This queue is where the IRP receives data from R2PCIe (the=
+ ring).  It is used for data returns from read requets as well as outbound =
+MMIO writes.",
++        "PublicDescription": "Accumulates the occupancy of the BL Ingress =
+in each cycles.  This queue is where the IRP receives data from R2PCIe (the=
+ ring).  It is used for data returns from read requests as well as outbound=
+ MMIO writes.",
+         "Unit": "IRP"
+     },
+     {
+         "EventCode": "0x5",
+         "EventName": "UNC_I_RxR_BL_NCB_CYCLES_FULL",
+         "PerPkg": "1",
+-        "PublicDescription": "Counts the number of cycles when the BL Ingr=
+ess is full.  This queue is where the IRP receives data from R2PCIe (the ri=
+ng).  It is used for data returns from read requets as well as outbound MMI=
+O writes.",
++        "PublicDescription": "Counts the number of cycles when the BL Ingr=
+ess is full.  This queue is where the IRP receives data from R2PCIe (the ri=
+ng).  It is used for data returns from read requests as well as outbound MM=
+IO writes.",
+         "Unit": "IRP"
+     },
+     {
+@@ -170,21 +170,21 @@
+         "EventCode": "0x2",
+         "EventName": "UNC_I_RxR_BL_NCB_INSERTS",
+         "PerPkg": "1",
+-        "PublicDescription": "Counts the number of allocations into the BL=
+ Ingress.  This queue is where the IRP receives data from R2PCIe (the ring)=
+.  It is used for data returns from read requets as well as outbound MMIO w=
+rites.",
++        "PublicDescription": "Counts the number of allocations into the BL=
+ Ingress.  This queue is where the IRP receives data from R2PCIe (the ring)=
+.  It is used for data returns from read requests as well as outbound MMIO =
+writes.",
+         "Unit": "IRP"
+     },
+     {
+         "EventCode": "0x8",
+         "EventName": "UNC_I_RxR_BL_NCB_OCCUPANCY",
+         "PerPkg": "1",
+-        "PublicDescription": "Accumulates the occupancy of the BL Ingress =
+in each cycles.  This queue is where the IRP receives data from R2PCIe (the=
+ ring).  It is used for data returns from read requets as well as outbound =
+MMIO writes.",
++        "PublicDescription": "Accumulates the occupancy of the BL Ingress =
+in each cycles.  This queue is where the IRP receives data from R2PCIe (the=
+ ring).  It is used for data returns from read requests as well as outbound=
+ MMIO writes.",
+         "Unit": "IRP"
+     },
+     {
+         "EventCode": "0x6",
+         "EventName": "UNC_I_RxR_BL_NCS_CYCLES_FULL",
+         "PerPkg": "1",
+-        "PublicDescription": "Counts the number of cycles when the BL Ingr=
+ess is full.  This queue is where the IRP receives data from R2PCIe (the ri=
+ng).  It is used for data returns from read requets as well as outbound MMI=
+O writes.",
++        "PublicDescription": "Counts the number of cycles when the BL Ingr=
+ess is full.  This queue is where the IRP receives data from R2PCIe (the ri=
+ng).  It is used for data returns from read requests as well as outbound MM=
+IO writes.",
+         "Unit": "IRP"
+     },
+     {
+@@ -192,14 +192,14 @@
+         "EventCode": "0x3",
+         "EventName": "UNC_I_RxR_BL_NCS_INSERTS",
+         "PerPkg": "1",
+-        "PublicDescription": "Counts the number of allocations into the BL=
+ Ingress.  This queue is where the IRP receives data from R2PCIe (the ring)=
+.  It is used for data returns from read requets as well as outbound MMIO w=
+rites.",
++        "PublicDescription": "Counts the number of allocations into the BL=
+ Ingress.  This queue is where the IRP receives data from R2PCIe (the ring)=
+.  It is used for data returns from read requests as well as outbound MMIO =
+writes.",
+         "Unit": "IRP"
+     },
+     {
+         "EventCode": "0x9",
+         "EventName": "UNC_I_RxR_BL_NCS_OCCUPANCY",
+         "PerPkg": "1",
+-        "PublicDescription": "Accumulates the occupancy of the BL Ingress =
+in each cycles.  This queue is where the IRP receives data from R2PCIe (the=
+ ring).  It is used for data returns from read requets as well as outbound =
+MMIO writes.",
++        "PublicDescription": "Accumulates the occupancy of the BL Ingress =
+in each cycles.  This queue is where the IRP receives data from R2PCIe (the=
+ ring).  It is used for data returns from read requests as well as outbound=
+ MMIO writes.",
+         "Unit": "IRP"
+     },
+     {
+diff --git a/tools/perf/pmu-events/arch/x86/jaketown/uncore-interconnect.js=
+on b/tools/perf/pmu-events/arch/x86/jaketown/uncore-interconnect.json
+index 874f15ea8228..0fc907e5cf3c 100644
+--- a/tools/perf/pmu-events/arch/x86/jaketown/uncore-interconnect.json
++++ b/tools/perf/pmu-events/arch/x86/jaketown/uncore-interconnect.json
+@@ -140,7 +140,7 @@
+         "EventCode": "0x4",
+         "EventName": "UNC_I_RxR_BL_DRS_CYCLES_FULL",
+         "PerPkg": "1",
+-        "PublicDescription": "Counts the number of cycles when the BL Ingr=
+ess is full.  This queue is where the IRP receives data from R2PCIe (the ri=
+ng).  It is used for data returns from read requets as well as outbound MMI=
+O writes.",
++        "PublicDescription": "Counts the number of cycles when the BL Ingr=
+ess is full.  This queue is where the IRP receives data from R2PCIe (the ri=
+ng).  It is used for data returns from read requests as well as outbound MM=
+IO writes.",
+         "Unit": "IRP"
+     },
+     {
+@@ -148,21 +148,21 @@
+         "EventCode": "0x1",
+         "EventName": "UNC_I_RxR_BL_DRS_INSERTS",
+         "PerPkg": "1",
+-        "PublicDescription": "Counts the number of allocations into the BL=
+ Ingress.  This queue is where the IRP receives data from R2PCIe (the ring)=
+.  It is used for data returns from read requets as well as outbound MMIO w=
+rites.",
++        "PublicDescription": "Counts the number of allocations into the BL=
+ Ingress.  This queue is where the IRP receives data from R2PCIe (the ring)=
+.  It is used for data returns from read requests as well as outbound MMIO =
+writes.",
+         "Unit": "IRP"
+     },
+     {
+         "EventCode": "0x7",
+         "EventName": "UNC_I_RxR_BL_DRS_OCCUPANCY",
+         "PerPkg": "1",
+-        "PublicDescription": "Accumulates the occupancy of the BL Ingress =
+in each cycles.  This queue is where the IRP receives data from R2PCIe (the=
+ ring).  It is used for data returns from read requets as well as outbound =
+MMIO writes.",
++        "PublicDescription": "Accumulates the occupancy of the BL Ingress =
+in each cycles.  This queue is where the IRP receives data from R2PCIe (the=
+ ring).  It is used for data returns from read requests as well as outbound=
+ MMIO writes.",
+         "Unit": "IRP"
+     },
+     {
+         "EventCode": "0x5",
+         "EventName": "UNC_I_RxR_BL_NCB_CYCLES_FULL",
+         "PerPkg": "1",
+-        "PublicDescription": "Counts the number of cycles when the BL Ingr=
+ess is full.  This queue is where the IRP receives data from R2PCIe (the ri=
+ng).  It is used for data returns from read requets as well as outbound MMI=
+O writes.",
++        "PublicDescription": "Counts the number of cycles when the BL Ingr=
+ess is full.  This queue is where the IRP receives data from R2PCIe (the ri=
+ng).  It is used for data returns from read requests as well as outbound MM=
+IO writes.",
+         "Unit": "IRP"
+     },
+     {
+@@ -170,21 +170,21 @@
+         "EventCode": "0x2",
+         "EventName": "UNC_I_RxR_BL_NCB_INSERTS",
+         "PerPkg": "1",
+-        "PublicDescription": "Counts the number of allocations into the BL=
+ Ingress.  This queue is where the IRP receives data from R2PCIe (the ring)=
+.  It is used for data returns from read requets as well as outbound MMIO w=
+rites.",
++        "PublicDescription": "Counts the number of allocations into the BL=
+ Ingress.  This queue is where the IRP receives data from R2PCIe (the ring)=
+.  It is used for data returns from read requests as well as outbound MMIO =
+writes.",
+         "Unit": "IRP"
+     },
+     {
+         "EventCode": "0x8",
+         "EventName": "UNC_I_RxR_BL_NCB_OCCUPANCY",
+         "PerPkg": "1",
+-        "PublicDescription": "Accumulates the occupancy of the BL Ingress =
+in each cycles.  This queue is where the IRP receives data from R2PCIe (the=
+ ring).  It is used for data returns from read requets as well as outbound =
+MMIO writes.",
++        "PublicDescription": "Accumulates the occupancy of the BL Ingress =
+in each cycles.  This queue is where the IRP receives data from R2PCIe (the=
+ ring).  It is used for data returns from read requests as well as outbound=
+ MMIO writes.",
+         "Unit": "IRP"
+     },
+     {
+         "EventCode": "0x6",
+         "EventName": "UNC_I_RxR_BL_NCS_CYCLES_FULL",
+         "PerPkg": "1",
+-        "PublicDescription": "Counts the number of cycles when the BL Ingr=
+ess is full.  This queue is where the IRP receives data from R2PCIe (the ri=
+ng).  It is used for data returns from read requets as well as outbound MMI=
+O writes.",
++        "PublicDescription": "Counts the number of cycles when the BL Ingr=
+ess is full.  This queue is where the IRP receives data from R2PCIe (the ri=
+ng).  It is used for data returns from read requests as well as outbound MM=
+IO writes.",
+         "Unit": "IRP"
+     },
+     {
+@@ -192,14 +192,14 @@
+         "EventCode": "0x3",
+         "EventName": "UNC_I_RxR_BL_NCS_INSERTS",
+         "PerPkg": "1",
+-        "PublicDescription": "Counts the number of allocations into the BL=
+ Ingress.  This queue is where the IRP receives data from R2PCIe (the ring)=
+.  It is used for data returns from read requets as well as outbound MMIO w=
+rites.",
++        "PublicDescription": "Counts the number of allocations into the BL=
+ Ingress.  This queue is where the IRP receives data from R2PCIe (the ring)=
+.  It is used for data returns from read requests as well as outbound MMIO =
+writes.",
+         "Unit": "IRP"
+     },
+     {
+         "EventCode": "0x9",
+         "EventName": "UNC_I_RxR_BL_NCS_OCCUPANCY",
+         "PerPkg": "1",
+-        "PublicDescription": "Accumulates the occupancy of the BL Ingress =
+in each cycles.  This queue is where the IRP receives data from R2PCIe (the=
+ ring).  It is used for data returns from read requets as well as outbound =
+MMIO writes.",
++        "PublicDescription": "Accumulates the occupancy of the BL Ingress =
+in each cycles.  This queue is where the IRP receives data from R2PCIe (the=
+ ring).  It is used for data returns from read requests as well as outbound=
+ MMIO writes.",
+         "Unit": "IRP"
+     },
+     {
+diff --git a/tools/perf/pmu-events/arch/x86/nehalemep/floating-point.json b=
+/tools/perf/pmu-events/arch/x86/nehalemep/floating-point.json
+index c03f8990fa82..196ae1d9b157 100644
+--- a/tools/perf/pmu-events/arch/x86/nehalemep/floating-point.json
++++ b/tools/perf/pmu-events/arch/x86/nehalemep/floating-point.json
+@@ -8,7 +8,7 @@
+         "UMask": "0x1"
+     },
+     {
+-        "BriefDescription": "X87 Floating poiint assists for invalid input=
+ value (Precise Event)",
++        "BriefDescription": "X87 Floating point assists for invalid input =
+value (Precise Event)",
+         "EventCode": "0xF7",
+         "EventName": "FP_ASSIST.INPUT",
+         "PEBS": "1",
+diff --git a/tools/perf/pmu-events/arch/x86/nehalemex/floating-point.json b=
+/tools/perf/pmu-events/arch/x86/nehalemex/floating-point.json
+index c03f8990fa82..196ae1d9b157 100644
+--- a/tools/perf/pmu-events/arch/x86/nehalemex/floating-point.json
++++ b/tools/perf/pmu-events/arch/x86/nehalemex/floating-point.json
+@@ -8,7 +8,7 @@
+         "UMask": "0x1"
+     },
+     {
+-        "BriefDescription": "X87 Floating poiint assists for invalid input=
+ value (Precise Event)",
++        "BriefDescription": "X87 Floating point assists for invalid input =
+value (Precise Event)",
+         "EventCode": "0xF7",
+         "EventName": "FP_ASSIST.INPUT",
+         "PEBS": "1",
+diff --git a/tools/perf/pmu-events/arch/x86/westmereep-dp/floating-point.js=
+on b/tools/perf/pmu-events/arch/x86/westmereep-dp/floating-point.json
+index c03f8990fa82..196ae1d9b157 100644
+--- a/tools/perf/pmu-events/arch/x86/westmereep-dp/floating-point.json
++++ b/tools/perf/pmu-events/arch/x86/westmereep-dp/floating-point.json
+@@ -8,7 +8,7 @@
+         "UMask": "0x1"
+     },
+     {
+-        "BriefDescription": "X87 Floating poiint assists for invalid input=
+ value (Precise Event)",
++        "BriefDescription": "X87 Floating point assists for invalid input =
+value (Precise Event)",
+         "EventCode": "0xF7",
+         "EventName": "FP_ASSIST.INPUT",
+         "PEBS": "1",
+diff --git a/tools/perf/pmu-events/arch/x86/westmereep-sp/floating-point.js=
+on b/tools/perf/pmu-events/arch/x86/westmereep-sp/floating-point.json
+index c03f8990fa82..196ae1d9b157 100644
+--- a/tools/perf/pmu-events/arch/x86/westmereep-sp/floating-point.json
++++ b/tools/perf/pmu-events/arch/x86/westmereep-sp/floating-point.json
+@@ -8,7 +8,7 @@
+         "UMask": "0x1"
+     },
+     {
+-        "BriefDescription": "X87 Floating poiint assists for invalid input=
+ value (Precise Event)",
++        "BriefDescription": "X87 Floating point assists for invalid input =
+value (Precise Event)",
+         "EventCode": "0xF7",
+         "EventName": "FP_ASSIST.INPUT",
+         "PEBS": "1",
+diff --git a/tools/perf/pmu-events/arch/x86/westmereex/floating-point.json =
+b/tools/perf/pmu-events/arch/x86/westmereex/floating-point.json
+index c03f8990fa82..196ae1d9b157 100644
+--- a/tools/perf/pmu-events/arch/x86/westmereex/floating-point.json
++++ b/tools/perf/pmu-events/arch/x86/westmereex/floating-point.json
+@@ -8,7 +8,7 @@
+         "UMask": "0x1"
+     },
+     {
+-        "BriefDescription": "X87 Floating poiint assists for invalid input=
+ value (Precise Event)",
++        "BriefDescription": "X87 Floating point assists for invalid input =
+value (Precise Event)",
+         "EventCode": "0xF7",
+         "EventName": "FP_ASSIST.INPUT",
+         "PEBS": "1",
+--=20
+2.42.0.rc2.253.gd59a3bf2b4-goog
+
