@@ -2,251 +2,312 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BFD07868EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 09:52:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2226F7868F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 09:53:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232010AbjHXHvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 03:51:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49052 "EHLO
+        id S234551AbjHXHxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 03:53:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237437AbjHXHvc (ORCPT
+        with ESMTP id S232331AbjHXHwn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 03:51:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 750E710F7
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 00:50:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692863439;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9VEiwM/469XoxPkv00kiY2u9t4qVyJoCjGxKGq/80WA=;
-        b=g/MsZAgx31Lwy9vN5vwrriSIDcxkjIPS/nKgylY7QLX09VX+0XDN1fDWmKD22WqUOJMzpI
-        CIbcS3tx0qGi7qJJiC86f9vFNszy8nAzhfWzzrWZzVoqNaKq637J7tGcXngDzVZ1BKH08N
-        HQsLfTqkdppH+YNt/x3ng2W9bqi96k4=
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
- [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-73-y0Mnl1O0OJOZgrz_pEeNGw-1; Thu, 24 Aug 2023 03:50:37 -0400
-X-MC-Unique: y0Mnl1O0OJOZgrz_pEeNGw-1
-Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-4ff92d9f376so6858781e87.3
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 00:50:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692863436; x=1693468236;
-        h=content-transfer-encoding:in-reply-to:subject:organization:from
-         :references:cc:to:content-language:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9VEiwM/469XoxPkv00kiY2u9t4qVyJoCjGxKGq/80WA=;
-        b=Eotjau0SjO5hfT09H+mKud/wak5EV0iZ4f739tMOH0n29FDByZlM/46R7O8HBTrQ+s
-         qtw2mpGMpPZtEGFGPFb99zC5RDal7WVs2BWdP+uuXJ5+54Rq0o0C5YFM4idS4MqtEqrB
-         T9eOaXTyCiJTRag87hYLpJlVYImRZmT6HgRG9IqBhQdv6AjwsZm42ze9Rn78lk+wrC/q
-         pNPg5Z9XP5cMFa3eIhOVyyuDGJdiBKRC2Ly3nct9AIGH9NduTCWtYn8AZIb4XCltdCBO
-         tR9fX5/FN9Q/0dXZxUxYj8s3Jo7hUw9tlsOT332+KuAPnJAAu8cshGWjIDfe08L7/8Lv
-         1EZA==
-X-Gm-Message-State: AOJu0Yzsik524JW8JpRsEeBZQpIJYpHT1FiJ3LRMVMJ5Py1OaRchN6/x
-        o63bBkQj2rce3UJyvCFjdHiJRgyKlpdTnvaCfsjZQqQ6YawJ/BqJscl+N0Yp2HqmOfqCX7ZI5zU
-        4zQzme0U/KCoQNsGexK2ydo0V
-X-Received: by 2002:a05:6512:1296:b0:4fe:993:2218 with SMTP id u22-20020a056512129600b004fe09932218mr13520778lfs.31.1692863435822;
-        Thu, 24 Aug 2023 00:50:35 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFWxb3vEOPi9oDLO474PCk5smXiK4t0flJpP1QfkBeZvkQd0769Sd7lavC4bQKKWkbdbP5Q0A==
-X-Received: by 2002:a05:6512:1296:b0:4fe:993:2218 with SMTP id u22-20020a056512129600b004fe09932218mr13520754lfs.31.1692863435397;
-        Thu, 24 Aug 2023 00:50:35 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c709:6200:16ba:af70:999d:6a1a? (p200300cbc709620016baaf70999d6a1a.dip0.t-ipconnect.de. [2003:cb:c709:6200:16ba:af70:999d:6a1a])
-        by smtp.gmail.com with ESMTPSA id w7-20020adfcd07000000b00313de682eb3sm21614062wrm.65.2023.08.24.00.50.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Aug 2023 00:50:34 -0700 (PDT)
-Message-ID: <33def4fe-fdb8-6388-1151-fabd2adc8220@redhat.com>
-Date:   Thu, 24 Aug 2023 09:50:32 +0200
+        Thu, 24 Aug 2023 03:52:43 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A8FB1703
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 00:52:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692863561; x=1724399561;
+  h=date:from:to:cc:subject:message-id:references:
+   content-transfer-encoding:in-reply-to:mime-version;
+  bh=gvBCg+7RyrywKcbN8AHih/7zIRexIWxDjefGTL+MCgA=;
+  b=QbJiWxJikceXlehWDAUKrKIKId0dUooD9+MRZm/A96fkHW4+237fSJ4X
+   Bhwke5RSWzn7UCcf5ZU5pgcLIYQpR0G2/AjnhmBnpboC+n0L3aPxBeaH6
+   nju4XOrA8LbX/G6rb2pVxSq/YijuwV3VOvzF4pMbk/Y0INBg2agiVs1aO
+   MU2B9O9W1b6XoCLYhJqFRy/6QWtKzoi12hYGe55UF4cL1JUUP853kaU+q
+   EVFZNiaAwhFS6zNaA2RndTfuMVv8GJFxWitT0/yZDgZQXMzwYqzkm43CV
+   LpDic5+ygNZ+NaAUYPM57SwMoTdZg5yr9CgKv8/egzzIoxZwNzUPT4FqG
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="440721021"
+X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
+   d="scan'208";a="440721021"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 00:52:40 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="983604638"
+X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
+   d="scan'208";a="983604638"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmsmga006.fm.intel.com with ESMTP; 24 Aug 2023 00:52:39 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Thu, 24 Aug 2023 00:52:38 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Thu, 24 Aug 2023 00:52:38 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Thu, 24 Aug 2023 00:52:38 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.100)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Thu, 24 Aug 2023 00:52:32 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NIOuKg+xpWKlueSs45JkmJj5tUCkHprZNKgsSEfhqhsu/E69xjE9zUuvcqn2tnAdLPtfyay5b0x3asIU5r4mQi9cRM+F+l9zLLJK5veWaxfrzBikGme4QxCV/JQdCDdUlOpCNP4RBRzYJgqIZgzB8LxHNq1SZAKHT0b0BdKJwJK0wANgd/K1/F/IJStnLRCSd0fNFxM7cEQ96z1NFIzG7CYs0GRKEEwqnIxsVClaGqAtBdNXgBJJzz1ib17MQYr+E/a9A8pRHhgsnv57uX7cfRYNNIOlmiibHfamObznB7qPDBMT/7aZ++F2/73g1N9JAjISCDs+JKfDzTg5zshV2g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ftfnhyM8SHRUzSk+9P/Nwh9lOjeGR1Eq4QsFGoeXEIk=;
+ b=KGKij2XhD2u+xkCRundUkemqhPpzBgtgwKKc8H2/Q+AMi0GvaEr3aSLIAIEmmgVLM+OsTwJLmZlgQ/CAIWQcVB09BHoGh8nPcg/oYGDaTWlVN8zcg0t306i2S6VqkLNYoriFPuBI9AMipXFdrYwSyD6d0Q3TF9f6kC8mqRpaahYSs8crV8EcJCb0X+K8pDZKC8YvUjQNp9tQF1f6094OI8wEjeY6Od82k+dBVAo9cjx8RmriuQPvY1HK+lAngEB3IDTzy90qpw166W8Yke11QSo+fyWvxvCG5J0L9yeyLfW5r/0tma8h/b9W6pt8ja+XR3T6UFzP4fdBd2dqiY9e/g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from BL0PR11MB3060.namprd11.prod.outlook.com (2603:10b6:208:72::24)
+ by PH8PR11MB6949.namprd11.prod.outlook.com (2603:10b6:510:227::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.25; Thu, 24 Aug
+ 2023 07:52:24 +0000
+Received: from BL0PR11MB3060.namprd11.prod.outlook.com
+ ([fe80::b41e:473a:b81d:ce62]) by BL0PR11MB3060.namprd11.prod.outlook.com
+ ([fe80::b41e:473a:b81d:ce62%3]) with mapi id 15.20.6699.022; Thu, 24 Aug 2023
+ 07:52:23 +0000
+Date:   Thu, 24 Aug 2023 15:52:08 +0800
+From:   Aaron Lu <aaron.lu@intel.com>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+CC:     Peter Zijlstra <peterz@infradead.org>,
+        <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        "Mel Gorman" <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Swapnil Sapkal <Swapnil.Sapkal@amd.com>,
+        "Julien Desfossez" <jdesfossez@digitalocean.com>, <x86@kernel.org>
+Subject: Re: [RFC PATCH v3 2/3] sched: Introduce cpus_share_l2c
+Message-ID: <20230824075208.GA459974@ziqianlu-dell>
+References: <20230822113133.643238-1-mathieu.desnoyers@efficios.com>
+ <20230822113133.643238-3-mathieu.desnoyers@efficios.com>
+ <04be42cb-0e8b-25f7-a34b-41b2873f39d4@efficios.com>
+ <c7fe33f9-51bd-80e8-cb0e-1cefb20a61b9@efficios.com>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <c7fe33f9-51bd-80e8-cb0e-1cefb20a61b9@efficios.com>
+X-ClientProxiedBy: SI2PR02CA0042.apcprd02.prod.outlook.com
+ (2603:1096:4:196::19) To BL0PR11MB3060.namprd11.prod.outlook.com
+ (2603:10b6:208:72::24)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Content-Language: en-US
-To:     Alexandru Elisei <alexandru.elisei@arm.com>,
-        catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
-        maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
-        yuzenghui@huawei.com, arnd@arndb.de, akpm@linux-foundation.org,
-        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, mhiramat@kernel.org,
-        rppt@kernel.org, hughd@google.com
-Cc:     pcc@google.com, steven.price@arm.com, anshuman.khandual@arm.com,
-        vincenzo.frascino@arm.com, eugenis@google.com, kcc@google.com,
-        hyesoo.yu@samsung.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev,
-        linux-fsdevel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org
-References: <20230823131350.114942-1-alexandru.elisei@arm.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH RFC 00/37] Add support for arm64 MTE dynamic tag storage
- reuse
-In-Reply-To: <20230823131350.114942-1-alexandru.elisei@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL0PR11MB3060:EE_|PH8PR11MB6949:EE_
+X-MS-Office365-Filtering-Correlation-Id: 56236431-5777-4830-aeb1-08dba4770ce3
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: diJWOKz5qHnUKExbrM5nXXWSg7SV+8sqsUpFUpBAKOsU5REMzUTmpkgqkm+02KpiIL025L/lEEuhJVRqVlK4EMRA1Q8xB1M8Z06RUvlPpwDTOC+V8c0zYY6qJ6ubpCAAJ8DZqO9+d1QJaNM0vRbgd+RvPbttgyJjbmwRNNYGayeoFShDQas/ryXDhffrO3W21UvwcJDT/DzP9IDFSJEraX8Jn+qOzO7Wj4mCiF+lqsswtzi6acqN0swAd9ML8r/mra139wt2hOtbeuIEjL0rYj+VqJatZgTHrHg1fX1dh44UyvqEmVfYwYNI2zsBAWLa+pbQfukDzt42cRFzi6+V/85gjReQnyT4RZV8/jV5HQp5Qvk2SuzZa7uQ/lJVS46IONwdeRFSnH5lQX2Lqn58KNbut5rRfocN/ZX5ReCBnBG6tn2jnLxU4blkhRYLlG0nBtURuTkEbANzWRtw4YmAgVoBLaFva9OuVKLViirNTvlQwnBm0PgCXUtCLygdLkhqMsr2y39A8tCdoAa4r2c8k7xnUa4K5gLJTCiRVf22qAdtOkMFehGApeCjrYWFupTy
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR11MB3060.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(366004)(39860400002)(346002)(136003)(396003)(186009)(1800799009)(451199024)(6486002)(6666004)(478600001)(1076003)(6506007)(9686003)(6512007)(2906002)(8936002)(7416002)(53546011)(33716001)(316002)(8676002)(5660300002)(54906003)(66946007)(6916009)(4326008)(41300700001)(86362001)(66476007)(66556008)(44832011)(26005)(33656002)(82960400001)(38100700002)(83380400001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?q94TqMlE3vfhd4g+aLf+78woe8njccs+NAQxp882kt70gW0fgQSuLrO7FH?=
+ =?iso-8859-1?Q?qLHRpJMczpKjPJjpL+eq2H9fW7WOZtRg4wsXIIpg01He+ymPIgAOkrizA/?=
+ =?iso-8859-1?Q?9JfshbVmjFr7goHI9Nc9jIRR9BZHDXS3TQpFEaKLbvb+Ov/XXwGpQhfzUH?=
+ =?iso-8859-1?Q?BHNUm4W8t3mdZQinJ1YnDi0/q5M0zHdxZ3Qet1jafIq4MohVdKQidIrKU/?=
+ =?iso-8859-1?Q?e9Y7JMhU2IIgFOCg6uqu7D+6QCkSNnrOS6YRYxFhbc4tRhH05BRdtnxCiK?=
+ =?iso-8859-1?Q?Z/NWwb13H1pKNET6P6F+dqWRNjLOYLjsZMHtlf8bzXZBbbG8qlgsRMAG7s?=
+ =?iso-8859-1?Q?k1xq+sT6/Q5mKjLTb72VMVI8hGaAvkxppCKhpEPS82zLksjBue8xhmXqdJ?=
+ =?iso-8859-1?Q?ei8M7pj9zkdabvy5D7Xv+u/8DHKNOzPA6FJk/847CzNQ6gQ9lygEURoojN?=
+ =?iso-8859-1?Q?lGSPe5YDA97/s2uItB0Za4zaKbzyIyyI3HK+gNKJbdmSHgr9Ya0t1cf8Yp?=
+ =?iso-8859-1?Q?VRz7tsCuLvOd04puvsIs15sBmrTgsSid0Y4fLpb+HKiW97uk5Vo5Y1qxSB?=
+ =?iso-8859-1?Q?cdABzOyal9O/mubmOVcZSOIzYQlK2/fcjR5SQGF1tAJdSxYkdl8w/wYK6/?=
+ =?iso-8859-1?Q?FzGFFv0HI9yC27InWb7DnUL2J3IOiUY8goBm2WHztGl5IozOPsNAQb/pvl?=
+ =?iso-8859-1?Q?l6fJ65UIIJIUOmQJAPBqoID1YF87mrRiG7yJWCpetWGvH7LZbqkOdpP4RN?=
+ =?iso-8859-1?Q?ymwKY8OHwQ+a/Va6TS2LJlrVK62oSWFHUtkvwTo3WV8h/pjb6pW9gOKvL+?=
+ =?iso-8859-1?Q?N4P1/UV159D6ERL1ahu0JfRnONg3KO6fbVf7nvy8pVb2AGqFmF2351xQgF?=
+ =?iso-8859-1?Q?PDcV3K55TRBH4ljzVUfxtkXO5J+icuD+HiZENQdBrXqbK0iEsprYgmIV6A?=
+ =?iso-8859-1?Q?ecBvym0fP33tD6x1PyPR3YKR6D069Jw1qdhvbi1k+fS7sL/qG4UTVWVJjf?=
+ =?iso-8859-1?Q?JERwvIGzxQH3vs2y+FQPmtBLKib3rH3s05ZhEFjdMybR8Mi27i2sfSD3LA?=
+ =?iso-8859-1?Q?VKkfwtSnp5FwOnnKIVhtrmD7vpbidBiVPOVOMdhi9EMd30E/sjkzb0JMS5?=
+ =?iso-8859-1?Q?1XinhMmBT1oJntzuIClk5Da8NbHCF3jxvpnBx09/LKiY9cW7jf24UpSz8K?=
+ =?iso-8859-1?Q?o3qHKopasT2evT0hI0dNeCkuk8t3oKqtBz3dNNiTPEAZCda8L2rTYWeCrn?=
+ =?iso-8859-1?Q?C69oXsAY+iyW+kuOraU2xlCe2A13ql464uOc0TVu7Hw8Uaig+7C9K02s/S?=
+ =?iso-8859-1?Q?5zgumqlgxl3iwC3xzCpTXJwWT0n+Xc/IOn4NKkBIvNp0GI5tROtoMZujGl?=
+ =?iso-8859-1?Q?qsdAki8NpSxgSrOfYauI7aO+sAjEit+xQ1VZidJCWaVKGTj4hyJyKixmjd?=
+ =?iso-8859-1?Q?xsDbq2G0sG0CHu3FPXVPNxVO/cBXaEwvXy7Rd7fjeZWzbPxBkiXx9lgFrh?=
+ =?iso-8859-1?Q?v7gljFkCvsXFfgB4jkabfAI3kARazyVM+4/qINNR6J+E5UKW5Gc8Rkl05Z?=
+ =?iso-8859-1?Q?/8PES1fUmETmwpDMFmWGuFYC0Ed2tnpWBeM5HUJVfQC72EZLRCdZzQpB4t?=
+ =?iso-8859-1?Q?0yvLNNyoDivxyo7ykQOgmd0AMNizWnHzTH?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 56236431-5777-4830-aeb1-08dba4770ce3
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR11MB3060.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Aug 2023 07:52:23.7470
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ANGB89h9mu9Oy2QHfJP6A/ifg7QhK7lvMBFmaLZ5junZM3hWjFRWCrkWIM1fx78FtQBlpHnPCSgP12uX3T1fjw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB6949
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23.08.23 15:13, Alexandru Elisei wrote:
-> Introduction
-> ============
+On Wed, Aug 23, 2023 at 02:52:17PM -0400, Mathieu Desnoyers wrote:
+> On 8/23/23 11:26, Mathieu Desnoyers wrote:
+> > On 8/22/23 07:31, Mathieu Desnoyers wrote:
+> > > Introduce cpus_share_l2c to allow querying whether two logical CPUs
+> > > share a common L2 cache.
+> > > 
+> > > Considering a system like the AMD EPYC 9654 96-Core Processor, the L1
+> > > cache has a latency of 4-5 cycles, the L2 cache has a latency of at
+> > > least 14ns, whereas the L3 cache has a latency of 50ns [1]. Compared to
+> > > this, I measured the RAM accesses to a latency around 120ns on my
+> > > system [2]. So L3 really is only 2.4x faster than RAM accesses.
+> > > Therefore, with this relatively slow access speed compared to L2, the
+> > > scheduler will benefit from only considering CPUs sharing an L2 cache
+> > > for the purpose of using remote runqueue locking rather than queued
+> > > wakeups.
+> > 
+> > So I did some more benchmarking to figure out whether the reason for
+> > this speedup is the latency delta between L2 and L3, or is due to the
+> > number of hw threads contending on the rq locks.
+> > 
+> > I tried to force grouping of those "skip ttwu queue" groups by a subset
+> > of the LLC id, basically by taking the LLC id and adding the cpu number
+> > modulo N, where N is chosen based on my machine topology.
+> > 
+> > The end result is that I have similar numbers for groups of 1, 2, 4 HW
+> > threads (which use rq locks and skip queued ttwu within the group).
+> > Starting with group of size 8, the performance starts to degrade.
+> > 
+> > So I wonder: do machines with more than 4 HW threads per L2 cache exist?
+> > If it's the case, there we should think about grouping not only by L2
+> > cache, but also sub-divide this group so the number of hw threads per
+> > group is at most 4.
+> > 
+> > Here are my results with the hackbench test-case:
+> > 
+> > Group cpus by 16 hw threads:
+> > 
+> > Time: 49s
+> > 
+> > - group cpus by 8 hw threads: (llc_id + cpu modulo 2)
+> > 
+> > Time: 39s
+> > 
+> > - group cpus by 4 hw threads: (llc_id + cpu modulo 4)
+> > 
+> > Time: 34s
+> > 
+> > - group cpus by 2 hw threads: (llc_id + cpu modulo 8)
+> > (expect same as L2 grouping on this machine)
+> > 
+> > Time: 34s
+> > 
+> > - group cpus by 1 hw threads: (cpu)
+> > 
+> > Time: 33s
 > 
-> Arm has implemented memory coloring in hardware, and the feature is called
-> Memory Tagging Extensions (MTE). It works by embedding a 4 bit tag in bits
-> 59..56 of a pointer, and storing this tag to a reserved memory location.
-> When the pointer is dereferenced, the hardware compares the tag embedded in
-> the pointer (logical tag) with the tag stored in memory (allocation tag).
+> One more interesting data point: I tried modifying the grouping
+> so that I would explicitly group by hw threads which sit in different
+> L3, and even on different NUMA nodes for some
+> (group id = cpu_id % 192). This is expected to generate really _bad_
+> cache locality for the runqueue locks within a group.
 > 
-> The relation between memory and where the tag for that memory is stored is
-> static.
-> 
-> The memory where the tags are stored have been so far unaccessible to Linux.
-> This series aims to change that, by adding support for using the tag storage
-> memory only as data memory; tag storage memory cannot be itself tagged.
-> 
-> 
-> Implementation
-> ==============
-> 
-> The series is based on v6.5-rc3 with these two patches cherry picked:
-> 
-> - mm: Call arch_swap_restore() from unuse_pte():
-> 
->      https://lore.kernel.org/all/20230523004312.1807357-3-pcc@google.com/
-> 
-> - arm64: mte: Simplify swap tag restoration logic:
-> 
->      https://lore.kernel.org/all/20230523004312.1807357-4-pcc@google.com/
-> 
-> The above two patches are queued for the v6.6 merge window:
-> 
->      https://lore.kernel.org/all/20230702123821.04e64ea2c04dd0fdc947bda3@linux-foundation.org/
-> 
-> The entire series, including the above patches, can be cloned with:
-> 
-> $ git clone https://gitlab.arm.com/linux-arm/linux-ae.git \
-> 	-b arm-mte-dynamic-carveout-rfc-v1
-> 
-> On the arm64 architecture side, an extension is being worked on that will
-> clarify how MTE tag storage reuse should behave. The extension will be
-> made public soon.
-> 
-> On the Linux side, MTE tag storage reuse is accomplished with the
-> following changes:
-> 
-> 1. The tag storage memory is exposed to the memory allocator as a new
-> migratetype, MIGRATE_METADATA. It behaves similarly to MIGRATE_CMA, with
-> the restriction that it cannot be used to allocate tagged memory (tag
-> storage memory cannot be tagged). On tagged page allocation, the
-> corresponding tag storage is reserved via alloc_contig_range().
-> 
-> 2. mprotect(PROT_MTE) is implemented by changing the pte prot to
-> PAGE_METADATA_NONE. When the page is next accessed, a fault is taken and
-> the corresponding tag storage is reserved.
-> 
-> 3. When the code tries to copy tags to a page which doesn't have the tag
-> storage reserved, the tags are copied to an xarray and restored in
-> set_pte_at(), when the page is eventually mapped with the tag storage
-> reserved.
+> The result for these groups of 3 HW threads is about 33s with the
+> hackbench benchmark, which seems to confirm that the cause of the
+> speedup is reduction of the contention on the rq locks by making the
+> groups smaller, and therefore reducing the likelihood of contention for the
+> rq locks, rather than by improving cache locality from L3 to L2.
 
-Hi!
+In addition to reduced rq lock contention, I think another reason this
+improves performance is because it reduced task migration. Not sure if
+it is the case on your test system, but on my test machine(Intel SPR),
+task migration number dropped.
 
-after re-reading it 2 times, I still have no clue what your patch set is 
-actually trying to achieve. Probably there is a way to describe how user 
-space intents to interact with this feature, so to see which value this 
-actually has for user space -- and if we are using the right APIs and 
-allocators.
+Hackbench on Intel SPR(2sockets/112cores/224threads) test summary:
+- performance improved for all three cases; the more tasks(groups), the
+  more performance gain;
+- task migrations dropped with this series for nr_group=20 and 32
+  according to 'perf stat'. migration number didn't drop for nr_group=10
+  but the two update functions' cost dropped which means fewer access to
+  tg->load_avg and thus, fewer task migrations. This is contradictory
+  and I can not explain yet;
+- rq lock contention dropped for all three cases and it dropped the most
+  under more overloaded case: nr_group=32.
 
-So some dummy questions / statements
+It's not clear to me why this series can reduce task migrations. I doubt
+it has something to do with more wakelist style wakeup becasue for this
+test machine, only a single core with two SMT threads share L2 so more
+wakeups are through wakelist. In wakelist style wakeup, the target rq's
+ttwu_pending is set and that will make the target cpu as !idle_cpu();
+This is faster than grabbing the target rq's lock and then increase
+target rq's nr_running or set target rq's curr to something else than
+idle. So wakelist style wakeup can make target cpu appear as non idle
+faster, but I can't connect this with reduced migration yet, I just feel
+this might be the reason why task migration reduced.
 
-1) Is this about re-propusing the memory used to hold tags for different 
-purpose? Or what exactly is user space going to do with the PROT_MTE 
-memory? The whole mprotect(PROT_MTE) approach might not eb the right 
-thing to do.
+Below are detailed test data.
+Base: 6.5-rc1.
+rq_spin%: The percent of raw_spin_rq_lock_nested() as reported by
+          perf/events=cycles:pp
+migration: cpu-migrations reported by "perf stat -a -- sleep 5"
 
-2) Why do we even have to involve the page allocator if this is some 
-special-purpose memory? Re-porpusing the buddy when later using 
-alloc_contig_range() either way feels wrong.
+The cmdline used is:
+hackbench -g $nr_group -f 20 --pipe --threads -l 480000 -s 100
 
+nr_group=10:
+            time  rq_spin%  update_cfs_group%  update_load_avg% migration
+base         46s    1.32%        20.06%             10.78%      10.227 K/sec
+this_series  37s    0.57%        15.08%              7.05%      10.722 K/sec
 
-[...]
+nr_group=20:
+            time  rq_spin%  update_cfs_group%  update_load_avg% migration
+base         69s    2.57%        19.68%             10.74%      12.098 K/sec
+this_series  41s    0.62%        12.11%              5.78%       8.617 K/sec
 
->   arch/arm64/Kconfig                       |  13 +
->   arch/arm64/include/asm/assembler.h       |  10 +
->   arch/arm64/include/asm/memory_metadata.h |  49 ++
->   arch/arm64/include/asm/mte-def.h         |  16 +-
->   arch/arm64/include/asm/mte.h             |  40 +-
->   arch/arm64/include/asm/mte_tag_storage.h |  36 ++
->   arch/arm64/include/asm/page.h            |   5 +-
->   arch/arm64/include/asm/pgtable-prot.h    |   2 +
->   arch/arm64/include/asm/pgtable.h         |  33 +-
->   arch/arm64/kernel/Makefile               |   1 +
->   arch/arm64/kernel/elfcore.c              |  14 +-
->   arch/arm64/kernel/hibernate.c            |  46 +-
->   arch/arm64/kernel/mte.c                  |  31 +-
->   arch/arm64/kernel/mte_tag_storage.c      | 667 +++++++++++++++++++++++
->   arch/arm64/kernel/setup.c                |   7 +
->   arch/arm64/kvm/arm.c                     |   6 +-
->   arch/arm64/lib/mte.S                     |  30 +-
->   arch/arm64/mm/copypage.c                 |  26 +
->   arch/arm64/mm/fault.c                    |  35 +-
->   arch/arm64/mm/mteswap.c                  | 113 +++-
->   fs/proc/meminfo.c                        |   8 +
->   fs/proc/page.c                           |   1 +
->   include/asm-generic/Kbuild               |   1 +
->   include/asm-generic/memory_metadata.h    |  50 ++
->   include/linux/gfp.h                      |  10 +
->   include/linux/gfp_types.h                |  14 +-
->   include/linux/huge_mm.h                  |   6 +
->   include/linux/kernel-page-flags.h        |   1 +
->   include/linux/migrate_mode.h             |   1 +
->   include/linux/mm.h                       |  12 +-
->   include/linux/mmzone.h                   |  26 +-
->   include/linux/page-flags.h               |   1 +
->   include/linux/pgtable.h                  |  19 +
->   include/linux/sched.h                    |   2 +-
->   include/linux/sched/mm.h                 |  13 +
->   include/linux/vm_event_item.h            |   5 +
->   include/linux/vmstat.h                   |   2 +
->   include/trace/events/mmflags.h           |   5 +-
->   mm/Kconfig                               |   5 +
->   mm/compaction.c                          |  52 +-
->   mm/huge_memory.c                         | 109 ++++
->   mm/internal.h                            |   7 +
->   mm/khugepaged.c                          |   7 +
->   mm/memory.c                              | 180 +++++-
->   mm/mempolicy.c                           |   7 +
->   mm/migrate.c                             |   6 +
->   mm/mm_init.c                             |  23 +-
->   mm/mprotect.c                            |  46 ++
->   mm/page_alloc.c                          | 136 ++++-
->   mm/page_isolation.c                      |  19 +-
->   mm/page_owner.c                          |   3 +-
->   mm/shmem.c                               |  14 +-
->   mm/show_mem.c                            |   4 +
->   mm/swapfile.c                            |   4 +
->   mm/vmscan.c                              |   3 +
->   mm/vmstat.c                              |  13 +-
->   56 files changed, 1834 insertions(+), 161 deletions(-)
->   create mode 100644 arch/arm64/include/asm/memory_metadata.h
->   create mode 100644 arch/arm64/include/asm/mte_tag_storage.h
->   create mode 100644 arch/arm64/kernel/mte_tag_storage.c
->   create mode 100644 include/asm-generic/memory_metadata.h
+nr_group=32:
+            time  rq_spin%  update_cfs_group%  update_load_avg% migration
+base     192s±25%  15.12%        25.83%             9.33%       12.141 K/sec
+this_series  71s    0.47%        10.98%             4.58%        8.198 K/sec
 
-The core-mm changes don't look particularly appealing :)
+I also tested applying my "ratelimit update to tg->load_avg" patch and
+the test summary is:
+- performance improved noticeably for nr_group=20 and slightly for
+  nr_group=10 case; nr_group=32's performance is roughly the same.
+- task migrations dropped for all three cases; nr_group=20 saw the
+  biggest drop.
+- rq lock contention dropped for all three cases and again, nr_group=32
+  saw the biggest drop.
 
--- 
-Cheers,
+Below are detailed data.
+Base: peter's sched/core branch with my "ratelimit" patch.
+this_series: apply this patchset on top of base.
 
-David / dhildenb
+nr_group=10:
+            time  rq_spin%  update_cfs_group%  update_load_avg% migration
+base         36s    0.55%        0.46%              1.43%       15.034 K/sec
+this_series  35s    0.56%        0.52%              1.53%       13.751 K/sec
 
+nr_group=20:
+            time  rq_spin%  update_cfs_group%  update_load_avg% migration
+base         47s    1.28%        0.73%              2.33%       21.217 K/sec
+this_series  42s    0.60%        0.69%              1.69%       14.130 K/sec
+
+nr_group=32:
+            time  rq_spin%  update_cfs_group%  update_load_avg% migration
+base         70s    2.38%        0.60%              2.19%       17.855 K/sec
+this_series  70s    0.58%        0.63%              1.77%       12.331 K/sec
+
+Thanks,
+Aaron
