@@ -2,62 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7680A786565
+	by mail.lfdr.de (Postfix) with ESMTP id CFAE8786566
 	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 04:31:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239496AbjHXCaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 22:30:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39836 "EHLO
+        id S239511AbjHXCax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 22:30:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239511AbjHXCa2 (ORCPT
+        with ESMTP id S239512AbjHXCaa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 22:30:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3480B10FB
+        Wed, 23 Aug 2023 22:30:30 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 454FA10FE
         for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 19:30:25 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B597A65278
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C69DC652DB
         for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 02:30:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 163D0C433CA;
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 234E8C433C9;
         Thu, 24 Aug 2023 02:30:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1692844224;
-        bh=9Xb37OSDJN57bJvKF/3cFqqWU91ZHJ/cqmbZ1guvma4=;
+        bh=j9Kq4dl/5gc0BMf02DLNfYW3rJC8KZrnvYrZOv6vb8M=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=FC/V84pP4Kluj8GF5Bg5IHVBAJWd1OJdu1XutdSouErp7c4EsaiT5lBnMFBkivf5f
-         /ewPNVv9XoGBEzn4ZwrrXYesNAB9oY00GoKL2UohT+TDrY49CtDl/sK3TkNb15zibx
-         +qOxyyVE0kGU1MPXBZgWXX2B1cBNZXwh390fqAF1lmS6Pqc3iK+LoYCMp1xIuHeehI
-         ynCVw2Knv7xDCTxzma72q9ydJEsqRWGvtV+aYx7av2GuTr06HmaMbo867mgP7rj1tP
-         v1dsPn1JpgHJYEfbx5HIdgOBCDd47P9a977LLAN2ubgBygoONPWrsDQqHnohivzCJ1
-         PHuVEjRp3MxiQ==
+        b=NfbCXITbNg19Kl/LbJM+qPkLVoZHd6EC12JJWuh7UUBkWGJA1Jtt9ErjNLjb0KnaS
+         zd+IP2O6+tfpbfe1oAjZ8G81YC3crF+Qu1921jTb5W71xzlEgfB+YF5UkyGRrU/aP1
+         bdVNimPoOcs+m+RXe6osstFoR7v6RQ25k7dGkBwRDvNxGTxvzNpI7Uaml4aSFJl4aQ
+         LQOkFQWs8nNr/hynpK9pBQCg7RRTH4vy5d0zpgLilGV26jC5+0Tqx9hwHg3Gmuk2rb
+         fDxcOPdI0v9XI3h1gB9kP1d3idqytVnNi8p6VDVhc8Hs6/PYtwQNNf3FxLb42QPBRd
+         kUSRuK1oXlqdA==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id EB4A7E4EAF6;
-        Thu, 24 Aug 2023 02:30:23 +0000 (UTC)
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 05F92E330A0;
+        Thu, 24 Aug 2023 02:30:24 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v3 0/4] net: ethernet: mtk_eth_soc: improve support
- for MT7988
+Subject: Re: [PATCH net-next] net: fec: add exception tracing for XDP
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169284422395.2546.12287101492552231894.git-patchwork-notify@kernel.org>
-Date:   Thu, 24 Aug 2023 02:30:23 +0000
-References: <cover.1692721443.git.daniel@makrotopia.org>
-In-Reply-To: <cover.1692721443.git.daniel@makrotopia.org>
-To:     Daniel Golle <daniel@makrotopia.org>
-Cc:     nbd@nbd.name, john@phrozen.org, sean.wang@mediatek.com,
-        Mark-MC.Lee@mediatek.com, lorenzo@kernel.org, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Message-Id: <169284422401.2546.2123988345748875298.git-patchwork-notify@kernel.org>
+Date:   Thu, 24 Aug 2023 02:30:24 +0000
+References: <20230822065255.606739-1-wei.fang@nxp.com>
+In-Reply-To: <20230822065255.606739-1-wei.fang@nxp.com>
+To:     Wei Fang <wei.fang@nxp.com>
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
+        hawk@kernel.org, john.fastabend@gmail.com, shenwei.wang@nxp.com,
+        xiaoning.wang@nxp.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-imx@nxp.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -66,28 +63,22 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello:
 
-This series was applied to netdev/net-next.git (main)
+This patch was applied to netdev/net-next.git (main)
 by Jakub Kicinski <kuba@kernel.org>:
 
-On Tue, 22 Aug 2023 17:30:56 +0100 you wrote:
-> This series fixes and completes commit 445eb6448ed3b ("net: ethernet:
-> mtk_eth_soc: add basic support for MT7988 SoC") and also adds support
-> for using the in-SoC SRAM to previous MT7986 and MT7981 SoCs.
+On Tue, 22 Aug 2023 14:52:55 +0800 you wrote:
+> As we already added the exception tracing for XDP_TX, I think it is
+> necessary to add the exception tracing for other XDP actions, such
+> as XDP_REDIRECT, XDP_ABORTED and unknown error actions.
 > 
-> Changes since v2:
->  * fold changes to commit they were supposed to go into
+> Signed-off-by: Wei Fang <wei.fang@nxp.com>
+> Suggested-by: Jakub Kicinski <kuba@kernel.org>
 > 
 > [...]
 
 Here is the summary with links:
-  - [net-next,v3,1/4] net: ethernet: mtk_eth_soc: fix register definitions for MT7988
-    https://git.kernel.org/netdev/net-next/c/cfb5677de5ba
-  - [net-next,v3,2/4] net: ethernet: mtk_eth_soc: add reset bits for MT7988
-    https://git.kernel.org/netdev/net-next/c/88c1e6efb7a5
-  - [net-next,v3,3/4] net: ethernet: mtk_eth_soc: add support for in-SoC SRAM
-    https://git.kernel.org/netdev/net-next/c/ebb1e4f9cf38
-  - [net-next,v3,4/4] net: ethernet: mtk_eth_soc: support 36-bit DMA addressing on MT7988
-    https://git.kernel.org/netdev/net-next/c/2d75891ebc09
+  - [net-next] net: fec: add exception tracing for XDP
+    https://git.kernel.org/netdev/net-next/c/e83fabb797b9
 
 You are awesome, thank you!
 -- 
