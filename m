@@ -2,149 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D64C2786ACA
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 10:56:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ADC0786AD5
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 10:58:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232333AbjHXI4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 04:56:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50390 "EHLO
+        id S236247AbjHXI5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 04:57:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236723AbjHXIzw (ORCPT
+        with ESMTP id S236353AbjHXI5W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 04:55:52 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4460610FB
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 01:55:50 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-4ff9abf18f9so9996957e87.2
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 01:55:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1692867348; x=1693472148;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=+6GA2aSSzjMIpYzS9IyphBftmr15QYQINEEJHnRuPlg=;
-        b=HK5OHNsjOXmSg54H0vmXIKUU7xtCKB+PI5mVI5O/uyeRX63OQyA+8DPXQZ+FNNAwzA
-         gtWVJ7avEWjCii8rWu6w6setTlOCjfrSm/whPNgMQ4Ruo2tpODLw38yjDX5KICc2nclg
-         vlYreC/HHRndRHqcMimZ5VDXNhtvOaZ6sDfgkssWiVC41F8+inal5xt0ksEjWC7LcGlF
-         NJyrNo0hSat6YaS9FeoVMOUcaolrpZQNqLJaLSeXCxb4iPkcCWGtIgZXmKnkHtkproWY
-         bxDEyGRy6XJclv9PaSohpDMXu/+jONicNtjGSNyC9s+IlLTqL6II3UfnSom7vUTML6D4
-         t+1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692867348; x=1693472148;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+6GA2aSSzjMIpYzS9IyphBftmr15QYQINEEJHnRuPlg=;
-        b=deZwETNjhWrQK+mY81Wf5Hvy/2Ni97sbwDO3bHKVuFtZWAo4GzaeeUDNtKgDMnYCZ/
-         TdkQoAzRFIxyDvyB8/nx9A8t0sAfKn5Op0dj6MJmQ6fqK5O9juTKksQ7Rqf1VOW+7lLQ
-         JvD0Jn3LGKys9Y7XhrkhMZ1xRlyDOmkuplB8ReLTcNogs7yZVU6S2y6655fj8my2nEyC
-         8b9Ud2IWhBr8pc0MYjRh5PN+HtX+F9tHDQdxkS5nRiLP1PNX3HhDOLSVhD168WsJvy+F
-         wcn5pgTeoH6V2wTKgpF5MWAR7WHhN9sGXTg2m7uUEXmTs43smNLBvTdg5kdjnGmud0e5
-         O3ig==
-X-Gm-Message-State: AOJu0Yw1uIvGAENXG88jcuGUq0wwY5F2XSwYEwRwsyBysRGEVJOtcBWL
-        Mymo/o/r1cbkqYOT7t8GbHrLxQ==
-X-Google-Smtp-Source: AGHT+IFWXDT3TqF+psIqd+hSiyZ6asUmU93AmVQQUGQ0Oc5a8zhMSy2rP+ao4X3JpENaKqIPqsym/w==
-X-Received: by 2002:a05:6512:3e9:b0:4ff:95c:e158 with SMTP id n9-20020a05651203e900b004ff095ce158mr8804640lfq.64.1692867347584;
-        Thu, 24 Aug 2023 01:55:47 -0700 (PDT)
-Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:2a30:8709:b99d:e2bd])
-        by smtp.gmail.com with ESMTPSA id o10-20020a1c750a000000b003fe29dc0ff2sm2021347wmc.21.2023.08.24.01.55.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Aug 2023 01:55:47 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kent Gibson <warthog618@gmail.com>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH v2] gpiolib: notify user-space about line state changes triggered by kernel
-Date:   Thu, 24 Aug 2023 10:55:44 +0200
-Message-Id: <20230824085544.110417-1-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.39.2
+        Thu, 24 Aug 2023 04:57:22 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9F6C10D3;
+        Thu, 24 Aug 2023 01:57:20 -0700 (PDT)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37O6GnDb019400;
+        Thu, 24 Aug 2023 08:57:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=HXdRR3xVYZTemP/v5/O0iPiBXK3LfikLy6SU21yXpTA=;
+ b=YfeYjBjoJXNpSsrQQDedYANgFxzx8xiiExveoUWtJqEEYg0lQMeUrT+SDJjY/+wBLgeb
+ 4+Flp7lw4+x+rSQyX8k0XiXxly0Ioo5euvY23RFj/jK0QwQSfLzthWcDYq8pTfDsN5g8
+ qGVcYnTLch2CNRSX5lLIoxp5BrZ+jdgPSQACGkRXIdT4ARj2BbcE5ShYbgnQU+eCuSHR
+ +1VVCef4/bGtJP1phfKWaQb5Ee6KjUKj/Z1dkrDoTZVr7hfyUg2gTP1kQqwv7ce61pAU
+ 7DYOY8HGeRDigxrtyykx3CfOaVvryDXGcjLwWsFLP0ktiTlIFCJwSBlcuy1tkQ3CEJNU 2Q== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sp1k9garb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 24 Aug 2023 08:57:09 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37O8v8J5024410
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 24 Aug 2023 08:57:08 GMT
+Received: from [10.216.13.16] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Thu, 24 Aug
+ 2023 01:57:03 -0700
+Message-ID: <7abb9a41-a66f-a20a-1cd9-bfc18a2161da@quicinc.com>
+Date:   Thu, 24 Aug 2023 14:26:58 +0530
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.1
+Subject: Re: [PATCH 2/6] soc: qcom: llcc: Refactor llcc driver to support
+ multiple configuration
+Content-Language: en-US
+To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>, <agross@kernel.org>,
+        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <srinivas.kandagatla@linaro.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20230810061140.15608-1-quic_kbajaj@quicinc.com>
+ <20230810061140.15608-3-quic_kbajaj@quicinc.com>
+ <79ccb7c0-dc4b-87a7-3721-488f3ef3b192@linaro.org>
+From:   Komal Bajaj <quic_kbajaj@quicinc.com>
+In-Reply-To: <79ccb7c0-dc4b-87a7-3721-488f3ef3b192@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: sHegNJ9AJBLfsiuQDnCFkIOurQUTSzzK
+X-Proofpoint-ORIG-GUID: sHegNJ9AJBLfsiuQDnCFkIOurQUTSzzK
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-24_06,2023-08-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxscore=0
+ malwarescore=0 suspectscore=0 bulkscore=0 priorityscore=1501
+ lowpriorityscore=0 clxscore=1011 spamscore=0 mlxlogscore=750
+ impostorscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2308100000 definitions=main-2308240071
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-We currently only emit CHANGED_CONFIG events when the user-space changes
-GPIO config. We won't be notified if changes come from in-kernel. Let's
-call the notifier chain whenever kernel users change direction or any of
-the active-low, debounce or consumer name settings. We don't notify the
-user-space about the persistence as the uAPI has no notion of it.
 
-Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
----
-v1 -> v2:
-- use the gpiod_line_state_notify() helper
-- reorder the code in gpiod_set_debounce() for better readability
+On 8/10/2023 5:52 PM, Bryan O'Donoghue wrote:
+> On 10/08/2023 07:11, Komal Bajaj wrote:
+>> +    if (!cfgs || cfgs->num_config != DEF_NUM_CFG) {
+>> +        ret = -EINVAL;
+>> +        goto err;
+>> +    }
+>> +    cfg = &cfgs->llcc_config[DEF_NUM_CFG - 1];
+>
+> This is a bit of a redundant check.
+>
+> You add in the check for num_config != 1, then deref llc_config[0] but 
+> in patch #4 you get an index and check that index against num_config
 
- drivers/gpio/gpiolib.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+Hi Bryan, Thanks for reviewing the patch.
+Correct, in patch#4, index is checked against num_config, but the 
+condition also checks for equality case.
+For ex. in patch#6, num_config is 4, so index can vary from 0-3.
 
-diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-index 40a0022ea719..1cb7731550ca 100644
---- a/drivers/gpio/gpiolib.c
-+++ b/drivers/gpio/gpiolib.c
-@@ -2439,6 +2439,7 @@ int gpiod_direction_input(struct gpio_desc *desc)
- 	}
- 	if (ret == 0) {
- 		clear_bit(FLAG_IS_OUT, &desc->flags);
-+		gpiod_line_state_notify(desc, GPIO_V2_LINE_CHANGED_CONFIG);
- 		ret = gpio_set_bias(desc);
- 	}
- 
-@@ -2484,8 +2485,10 @@ static int gpiod_direction_output_raw_commit(struct gpio_desc *desc, int value)
- 		gc->set(gc, gpio_chip_hwgpio(desc), val);
- 	}
- 
--	if (!ret)
-+	if (!ret) {
- 		set_bit(FLAG_IS_OUT, &desc->flags);
-+		gpiod_line_state_notify(desc, GPIO_V2_LINE_CHANGED_CONFIG);
-+	}
- 	trace_gpio_value(desc_to_gpio(desc), 0, val);
- 	trace_gpio_direction(desc_to_gpio(desc), 0, ret);
- 	return ret;
-@@ -2672,9 +2675,16 @@ EXPORT_SYMBOL_GPL(gpiod_set_config);
- int gpiod_set_debounce(struct gpio_desc *desc, unsigned int debounce)
- {
- 	unsigned long config;
-+	int ret;
- 
- 	config = pinconf_to_config_packed(PIN_CONFIG_INPUT_DEBOUNCE, debounce);
--	return gpiod_set_config(desc, config);
-+	ret = gpiod_set_config(desc, config);
-+	if (ret)
-+		return ret;
-+
-+	gpiod_line_state_notify(desc, GPIO_V2_LINE_CHANGED_CONFIG);
-+
-+	return 0;
- }
- EXPORT_SYMBOL_GPL(gpiod_set_debounce);
- 
-@@ -2723,6 +2733,7 @@ void gpiod_toggle_active_low(struct gpio_desc *desc)
- {
- 	VALIDATE_DESC_VOID(desc);
- 	change_bit(FLAG_ACTIVE_LOW, &desc->flags);
-+	gpiod_line_state_notify(desc, GPIO_V2_LINE_CHANGED_CONFIG);
- }
- EXPORT_SYMBOL_GPL(gpiod_toggle_active_low);
- 
-@@ -3330,6 +3341,7 @@ int gpiod_set_consumer_name(struct gpio_desc *desc, const char *name)
- 
- 	kfree_const(desc->label);
- 	desc_set_label(desc, name);
-+	gpiod_line_state_notify(desc, GPIO_V2_LINE_CHANGED_CONFIG);
- 
- 	return 0;
- }
--- 
-2.39.2
+>
+> I'm not seeing how at this point in your series, how num_config could 
+> be anything other than 1.
+>
+> I'd do away with the DEF_NUM_CFG define in this code/series completely.
+>
+> num_config should encode all the necessary detail we need, DEF_NUM_CFG 
+> just adds noise.
+
+Got your point, will remove the macro DEF_NUM_CFG from the series.
+
+Thanks
+Komal
+
+>
+> ---
+> bod
 
