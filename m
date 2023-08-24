@@ -2,117 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2D26786FA1
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 14:51:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0F1E786FA4
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 14:51:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240883AbjHXMvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 08:51:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60784 "EHLO
+        id S241118AbjHXMvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 08:51:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241127AbjHXMvD (ORCPT
+        with ESMTP id S241123AbjHXMvB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 08:51:03 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 789B6CD0;
-        Thu, 24 Aug 2023 05:51:01 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1bc83a96067so42213835ad.0;
-        Thu, 24 Aug 2023 05:51:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692881460; x=1693486260;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kDfo1abF1Y082BBrZFHZQzYLHOisTvdpROer1sOJEwU=;
-        b=jd0VZmQajINAqsLXp9n23+2+1KPtGpIthpO0CZAlRVylZIpMh4ujG6YwTiR3tZBuwk
-         RLpZgr1je0bYfJGFMGeS3aUNK+A/+CjktG8ViaA/JEbd7xQDBlKJSbUbZ+ttsgBriprX
-         nrHRe4lZdRnyJubEaCzDLsjxoDVNA+/gQobHjRYXZtdH+1YxRJTEm9m/jlrHruz0czn3
-         RLF7YhqwVdTOoB9PnJdU8HA/YABsQgrxZH4z/wEil53cgrxD/DbNSRtQfgm0J0c3kLHf
-         Ox4RfN2SmJNKgLNatsA1wL79fyyHLgZaVepVaVkbELcYg4CPfzp4xNAGoZ2Dx9qEk0MM
-         GlWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692881460; x=1693486260;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kDfo1abF1Y082BBrZFHZQzYLHOisTvdpROer1sOJEwU=;
-        b=YoWHPFI6cvu9DXUr9SLhACJgxA7besC8W0KdGb7h4FgfR9xeDYighwzKsKfnR44jLE
-         RzkFbzSmUJl0CUg6euqy8nnmoSUSRlefZU72/21pC6Vv3enAOFLqEWyy/rXBt6ZGjRGj
-         IHslagduGF7MK1/c+o/T3KPOLq/QSRRM+7/2GHZWhK2uEPlAItheI7HRJT0om9W4T5ot
-         beFA8DJZ/G9+YcYP1HoUIzMuxZMHdXA+9vSIYaHsfoi+VwE45t8Qil3r9+xp49aMcZWK
-         JwjbvGUQ0zvYhYqC4u3VaV6yWN2oMKZQI/g7hQFYnEBC8eSm79SvOsqryNcyYuF8VMt2
-         5ZfA==
-X-Gm-Message-State: AOJu0YzgpfVcPXe28nanu7a0bbuJr4D/vZYHBwAupcB+shry9CyRyLkF
-        VZu6wqeDXi9PLYu3BArL4rqEVGEGgsS9jRDl
-X-Google-Smtp-Source: AGHT+IH1QQxInN2YyhJi1/gXe8Z0jHb1Wi+ficwRqovF5m3ZZocGRw+bUK+J91HtdzoFxOXNDj5+4g==
-X-Received: by 2002:a17:902:8c85:b0:1bf:13a7:d3ef with SMTP id t5-20020a1709028c8500b001bf13a7d3efmr11086285plo.66.1692881460511;
-        Thu, 24 Aug 2023 05:51:00 -0700 (PDT)
-Received: from kelvin-ThinkPad-L14-Gen-1.lan ([103.184.129.7])
-        by smtp.gmail.com with ESMTPSA id 19-20020a170902c11300b001afd821c057sm12837295pli.58.2023.08.24.05.50.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Aug 2023 05:51:00 -0700 (PDT)
-From:   Keguang Zhang <keguang.zhang@gmail.com>
-To:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Keguang Zhang <keguang.zhang@gmail.com>
-Subject: [PATCH v3 4/4] MAINTAINERS: Update MIPS/LOONGSON1 entry
-Date:   Thu, 24 Aug 2023 20:50:12 +0800
-Message-Id: <20230824125012.1040288-5-keguang.zhang@gmail.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230824125012.1040288-1-keguang.zhang@gmail.com>
-References: <20230824125012.1040288-1-keguang.zhang@gmail.com>
+        Thu, 24 Aug 2023 08:51:01 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6390ECD0;
+        Thu, 24 Aug 2023 05:50:59 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C623C65267;
+        Thu, 24 Aug 2023 12:50:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27832C433C8;
+        Thu, 24 Aug 2023 12:50:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692881458;
+        bh=lBZ5c/CUDVkywfcL++OEneM4SWhyv382iCUDsA/wTRI=;
+        h=In-Reply-To:References:From:Date:Subject:To:Cc:From;
+        b=eQ4x0KUNpLdBSAUkoOXOOiGyRazWlKYs1IKWqIPDvsUeF+eogO2elA6xPeeFwoQfx
+         CYIPfK7MmLjskY1gbZ+T6qYKnW2PNc72ML9NYg0qkyrGT8VWU9v3HyqcvwV00JMLjy
+         OE8Hky/uf0h6VE7nYqX/CFyr3gTVdE/9JwUatS03GdfATtzwPFBdmBJNBD3M0IS0Uz
+         DQzE4IaTEyHL0L07r4UaDiIOz2KRMJbJH8vUapl0VTIFxgS2xRhNuyHE+cCSy5ZraL
+         NjeUhtdoXTfTmXfb9S+VYWca3QFmHnoWje528Khl8fUP3J6FW1uJ2xBMovQCnyimn+
+         TU0DOs/4s3ZJg==
+Received: by mail-oo1-f43.google.com with SMTP id 006d021491bc7-56d8bc0d909so4134645eaf.3;
+        Thu, 24 Aug 2023 05:50:58 -0700 (PDT)
+X-Gm-Message-State: AOJu0YxcPk0HOiDBcMgN+wDO6Gm2LazGVq1AY8G61LBoyqT3Q6dnyEEB
+        rUuGX9eui4JimIE7WGsIx+06vwVHty2zkN4HjNE=
+X-Google-Smtp-Source: AGHT+IG3yEzQiDIJs4ioyXvdDknlK6YC1qUMG58DDDFHOUSHXKP4BX/kGvgMJu1eV6agiFbS5W2iw6kTsC1LVjV3XJU=
+X-Received: by 2002:a4a:6c1d:0:b0:56c:8d61:f66f with SMTP id
+ q29-20020a4a6c1d000000b0056c8d61f66fmr2277742ooc.2.1692881457272; Thu, 24 Aug
+ 2023 05:50:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Received: by 2002:a8a:1186:0:b0:4e8:f6ff:2aab with HTTP; Thu, 24 Aug 2023
+ 05:50:56 -0700 (PDT)
+In-Reply-To: <1a1af1dd-fb30-1af6-ab2a-d146ff230989@gmail.com>
+References: <1a1af1dd-fb30-1af6-ab2a-d146ff230989@gmail.com>
+From:   Namjae Jeon <linkinjeon@kernel.org>
+Date:   Thu, 24 Aug 2023 21:50:56 +0900
+X-Gmail-Original-Message-ID: <CAKYAXd8xsszN7NOe8bL-PCEsy3X2Y3FkOfSX1ETMKbH05xmUBg@mail.gmail.com>
+Message-ID: <CAKYAXd8xsszN7NOe8bL-PCEsy3X2Y3FkOfSX1ETMKbH05xmUBg@mail.gmail.com>
+Subject: Re: [PATCH] exfat: add ioctls for accessing attributes
+To:     Jan Cincera <hcincera@gmail.com>
+Cc:     Sungjong Seo <sj1557.seo@samsung.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add two new F: entries for Loongson1 Ethernet driver
-and dt-binding document.
-Add a new F: entry for the rest Loongson-1 dt-binding documents.
+2023-08-16 3:29 GMT+09:00, Jan Cincera <hcincera@gmail.com>:
+> Add GET and SET attributes ioctls to enable attribute modification.
+> We already do this in FAT and a few userspace utils made for it would
+> benefit from this also working on exFAT, namely fatattr.
+>
+> Signed-off-by: Jan Cincera <hcincera@gmail.com>
+> ---
+>  fs/exfat/exfat_fs.h |  6 +++
+>  fs/exfat/file.c     | 97 +++++++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 103 insertions(+)
+>
+> diff --git a/fs/exfat/exfat_fs.h b/fs/exfat/exfat_fs.h
+> index 729ada9e26e8..ebe8c4b928f4 100644
+> --- a/fs/exfat/exfat_fs.h
+> +++ b/fs/exfat/exfat_fs.h
+> @@ -149,6 +149,12 @@ enum {
+>  #define DIR_CACHE_SIZE		\
+>  	(DIV_ROUND_UP(EXFAT_DEN_TO_B(ES_MAX_ENTRY_NUM), SECTOR_SIZE) + 1)
+>
+> +/*
+> + * attribute ioctls, same as their FAT equivalents.
+> + */
+> +#define EXFAT_IOCTL_GET_ATTRIBUTES	_IOR('r', 0x10, __u32)
+> +#define EXFAT_IOCTL_SET_ATTRIBUTES	_IOW('r', 0x11, __u32)
+> +
+>  struct exfat_dentry_namebuf {
+>  	char *lfn;
+>  	int lfnbuf_len; /* usually MAX_UNINAME_BUF_SIZE */
+> diff --git a/fs/exfat/file.c b/fs/exfat/file.c
+> index 3cbd270e0cba..b358acbead27 100644
+> --- a/fs/exfat/file.c
+> +++ b/fs/exfat/file.c
+> @@ -8,6 +8,8 @@
+>  #include <linux/cred.h>
+>  #include <linux/buffer_head.h>
+>  #include <linux/blkdev.h>
+> +#include <linux/fsnotify.h>
+> +#include <linux/security.h>
+>
+>  #include "exfat_raw.h"
+>  #include "exfat_fs.h"
+> @@ -316,6 +318,96 @@ int exfat_setattr(struct mnt_idmap *idmap, struct
+> dentry *dentry,
+>  	return error;
+>  }
+>
+> +/*
+> + * modified ioctls from fat/file.c by Welmer Almesberger
+> + */
+> +static int exfat_ioctl_get_attributes(struct inode *inode, u32 __user
+> *user_attr)
+> +{
+> +	u32 attr;
+> +
+> +	inode_lock_shared(inode);
+> +	attr = exfat_make_attr(inode);
+> +	inode_unlock_shared(inode);
+> +
+> +	return put_user(attr, user_attr);
+> +}
+> +
+> +static int exfat_ioctl_set_attributes(struct file *file, u32 __user
+> *user_attr)
+> +{
+> +	struct inode *inode = file_inode(file);
+> +	struct exfat_sb_info *sbi = EXFAT_SB(inode->i_sb);
+> +	int is_dir = S_ISDIR(inode->i_mode);
+> +	u32 attr, oldattr;
+> +	struct iattr ia;
+> +	int err;
+> +
+> +	err = get_user(attr, user_attr);
+> +	if (err)
+> +		goto out;
+> +
+> +	err = mnt_want_write_file(file);
+> +	if (err)
+> +		goto out;
+> +	inode_lock(inode);
+> +
+> +	/*
+> +	 * ATTR_VOLUME and ATTR_SUBDIR cannot be changed; this also
+> +	 * prevents the user from turning us into a VFAT
+> +	 * longname entry.  Also, we obviously can't set
+> +	 * any of the NTFS attributes in the high 24 bits.
+> +	 */
+This comments seems to be wrong. In particular, The comment about
+longfilename and ATTR_VOLUME for vfat should be removed.
 
-Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
----
-V2 -> V3: Update the entries and the commit message
-V1 -> V2: Improve the commit message
+> +	attr &= 0xff & ~(ATTR_VOLUME | ATTR_SUBDIR);
+> +	/* Merge in ATTR_VOLUME and ATTR_DIR */
+> +	attr |= (EXFAT_I(inode)->attr & ATTR_VOLUME) |
+> +		(is_dir ? ATTR_SUBDIR : 0);
+We need to mask exfat file attribute bits like the following not to
+set reserved fields(+ ATTR_SUBDIR). And there is no ATTR_VOLUME field
+in exfat.
 
- MAINTAINERS | 3 +++
- 1 file changed, 3 insertions(+)
+Table 28 FileAttributes Field Structure
+ReadOnly        0	1	This field is mandatory and conforms to the MS-DOS
+definition.
+Hidden             1     	1	This field is mandatory and conforms to
+the MS-DOS definition.
+System            2	1	This field is mandatory and conforms to the
+MS-DOS definition.
+Reserved1       3	1	This field is mandatory and its contents are reserved.
+Directory          4	1	This field is mandatory and conforms to the
+MS-DOS definition.
+Archive            5	1	This field is mandatory and conforms to the
+MS-DOS definition.
+Reserved2	6	10	This field is mandatory and its contents are reserved.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 250c43c675cb..f462f3d19e4a 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -14341,9 +14341,12 @@ MIPS/LOONGSON1 ARCHITECTURE
- M:	Keguang Zhang <keguang.zhang@gmail.com>
- L:	linux-mips@vger.kernel.org
- S:	Maintained
-+F:	Documentation/devicetree/bindings/*/loongson,ls1x-*.yaml
-+F:	Documentation/devicetree/bindings/net/loongson,ls1[bc]-*.yaml
- F:	arch/mips/include/asm/mach-loongson32/
- F:	arch/mips/loongson32/
- F:	drivers/*/*loongson1*
-+F:	drivers/net/ethernet/stmicro/stmmac/dwmac-loongson1.c
- 
- MIPS/LOONGSON2EF ARCHITECTURE
- M:	Jiaxun Yang <jiaxun.yang@flygoat.com>
--- 
-2.39.2
-
+Thanks.
