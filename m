@@ -2,199 +2,432 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB75C787BAA
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 00:49:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD802787BAC
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 00:52:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243967AbjHXWtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 18:49:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55292 "EHLO
+        id S243030AbjHXWwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 18:52:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243970AbjHXWsi (ORCPT
+        with ESMTP id S239401AbjHXWv6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 18:48:38 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24CC71BFA
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 15:48:37 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B88EC64F57
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 22:48:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3991CC433C8;
-        Thu, 24 Aug 2023 22:48:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692917316;
-        bh=PNESehI9Q7IF3No/lyuoFeziIEUo7dChHkjhbNo3naM=;
-        h=From:Date:Subject:To:Cc:From;
-        b=h8nqcQOySBiDPsWftbV5hnApgG9UztWyablBExiaEKXHaZJn5VxVGfGfJXlqdxCT7
-         4YFSmjj85MQ9CVQAuzxqh9PujV4NPKStxw3qkQJvEgvIM3ewPg3udYrd2bQ8XViPXv
-         wcoCh69VtbtMTOvL3T17N4Jhmq76DwJHr45lYHh+qxQ0gJbfSgbvF0iFvjFeTSUEFp
-         8YX7SuNZo0cO83hCVMdPRMuD6mcQu+/nIOpIwymBEmvTk951kqC/drH+k0WUUjvGYg
-         YlsWog4NQUeUvFsY0VVWCAd/ccQ4NZw16F4hHMpiGkRN2LXeutoy3g0njANIIABlGC
-         wLOQf5D+E/z+A==
-From:   Mark Brown <broonie@kernel.org>
-Date:   Thu, 24 Aug 2023 23:48:22 +0100
-Subject: [PATCH] regulator: userspace-consumer: Drop event support for this
- cycle
+        Thu, 24 Aug 2023 18:51:58 -0400
+Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAC00CCB
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 15:51:54 -0700 (PDT)
+Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-76d93cf8e13so19982885a.2
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 15:51:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692917514; x=1693522314;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JCCTwcQZH0aBhFWBBOixRlh1ZzyV4dw2Rm8mUd3l1Tk=;
+        b=lpQ9/tnlRQncDxPXWDFEiGCJ64z7qCc59Z8rk553K/Ig8x1LMpKXyGjFlSGl1x7J+I
+         q2LkE6+FX9XlCes3G8Ysew1JdZY761J11QosUTF5DPn4KS3h6zMDnNw/doMkEfe/msT5
+         e2L/YUPszTs7lldFgYcPnlnrs+tM+UTOG4z0fWt1CW+hpXCh8ADT0dzcrE3/dC/hVijk
+         /K+bYq8ygCe/QHhUDAdIqMy4ENgWA1MDjnMHc8wmwwwnLi9XWSwyKRqa4TAQrrgoqNb8
+         AuhmCfJwuUgvlzTZ9stBBfxVyKGcfrhHQbke2+m8ocxi427v0k/q4DQfUpa1XW9IvwCM
+         CjUg==
+X-Gm-Message-State: AOJu0YxQY/0sM0u73WNQ9mrA9aNiOeABAsfPaqsNmqhkkoH6QnARrnGa
+        AMGVMsvyuUiqLATJOZ0fbiw=
+X-Google-Smtp-Source: AGHT+IGdXZGqgUGE/MslRa6yPTiKIj88tjXyFM6Bg06zdJSZaelUO2/7NTH2o1oE12oRIyf8q4khbg==
+X-Received: by 2002:a05:620a:22e1:b0:765:7652:a61d with SMTP id p1-20020a05620a22e100b007657652a61dmr17319891qki.30.1692917513615;
+        Thu, 24 Aug 2023 15:51:53 -0700 (PDT)
+Received: from maniforge ([2620:10d:c091:400::5:1df8])
+        by smtp.gmail.com with ESMTPSA id z15-20020ae9c10f000000b00767177a5bebsm134139qki.56.2023.08.24.15.51.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Aug 2023 15:51:53 -0700 (PDT)
+Date:   Thu, 24 Aug 2023 17:51:50 -0500
+From:   David Vernet <void@manifault.com>
+To:     "Gautham R. Shenoy" <gautham.shenoy@amd.com>
+Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
+        mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, tj@kernel.org,
+        roman.gushchin@linux.dev, kprateek.nayak@amd.com,
+        aaron.lu@intel.com, wuyun.abel@bytedance.com, kernel-team@meta.com
+Subject: Re: [PATCH v3 0/7] sched: Implement shared runqueue in CFS
+Message-ID: <20230824225150.GB6119@maniforge>
+References: <20230809221218.163894-1-void@manifault.com>
+ <ZN3dW5Gvcb0LFWjs@BLR-5CG11610CF.amd.com>
+ <20230818050355.GA5718@maniforge>
+ <ZN8wfiAVttkNnFDe@BLR-5CG11610CF.amd.com>
+ <ZOc7i7wM0x4hF4vL@BLR-5CG11610CF.amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230824-regulator-remove-status-sysfs-v1-1-554956e8c1ca@kernel.org>
-X-B4-Tracking: v=1; b=H4sIADXe52QC/x3MwQpAQBCA4VfRnE2xhLyKHDY7mMJqZonk3W1u/
- 3f5H1ASJoU2eUDoZGW/ReRpAsNst4mQXTSYzBRZY0oUmo7FBi+xVn8SarDhUNRbR0UytSurvBl
- cZSE+dqGRr//f9e/7Aewq7LRvAAAA
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Naresh Solanki <naresh.solanki@9elements.com>,
-        Zev Weiss <zev@bewilderbeest.net>
-Cc:     linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
-X-Mailer: b4 0.13-dev-099c9
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3935; i=broonie@kernel.org;
- h=from:subject:message-id; bh=PNESehI9Q7IF3No/lyuoFeziIEUo7dChHkjhbNo3naM=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBk595AWuXR3tpVDXzYLIy75MKjrrdMcxwQmvCc7
- fP8W4BUw7eJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZOfeQAAKCRAk1otyXVSH
- 0AlaB/44hzPIVgkcSH9nWnnAuBzcpAatVNGXeUDBKRPEtD6Ks2xinJlQRDps5LOcFPErj5hMMMu
- ymANeWC8C72U7luAuGROt/NJ4d+jN69LsK6L/VXS4PERsMenB8tPw5MQfvpRgsEhk2D1fyX/vMu
- CWKQPY/cJADgK+aBNNFrKrCYL/uGz7PQ3/3ka++s03zqjpZGPtmFAH22ZgyUkreyU3UtSVplt1k
- gtgFJyxJuAw1LVY3q4Mt9j/YiJL68cgKXllOIjHxOUjAV3gYHssoEPAv9G55R/tGjv4/3Nhq/GM
- t2XCfWiLzrUBhpJq3oplwJx/q66OrdaXcuUlyu3ybHEtKJgz
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZOc7i7wM0x4hF4vL@BLR-5CG11610CF.amd.com>
+User-Agent: Mutt/2.2.10 (2023-03-25)
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop commit 22475bcc2083 ("regulator: userspace-consumer: Add regulator
-event support") since Zev Weiss points out that it leaks the constants
-we use for notifications out as ABI which isn't ideal, we should have
-something more abstracted there.  There's a definite need for this
-feature but it needs some more work on the interface.
+On Thu, Aug 24, 2023 at 04:44:19PM +0530, Gautham R. Shenoy wrote:
+> Hello David,
+> 
+> On Fri, Aug 18, 2023 at 02:19:03PM +0530, Gautham R. Shenoy wrote:
+> > Hello David,
+> > 
+> > On Fri, Aug 18, 2023 at 12:03:55AM -0500, David Vernet wrote:
+> > > On Thu, Aug 17, 2023 at 02:12:03PM +0530, Gautham R. Shenoy wrote:
+> > > > Hello David,
+> > > 
+> > > Hello Gautham,
+> > > 
+> > > Thanks a lot as always for running some benchmarks and analyzing these
+> > > changes.
+> > > 
+> > > > On Wed, Aug 09, 2023 at 05:12:11PM -0500, David Vernet wrote:
+> > > > > Changes
+> > > > > -------
+> > > > > 
+> > > > > This is v3 of the shared runqueue patchset. This patch set is based off
+> > > > > of commit 88c56cfeaec4 ("sched/fair: Block nohz tick_stop when cfs
+> > > > > bandwidth in use") on the sched/core branch of tip.git.
+> > > > 
+> > > > 
+> > > > I tested the patches on Zen3 and Zen4 EPYC Servers like last time. I
+> > > > notice that apart from hackbench, every other bechmark is showing
+> > > > regressions with this patch series. Quick summary of my observations:
+> > > 
+> > > Just to verify per our prior conversation [0], was this latest set of
+> > > benchmarks run with boost disabled?
+> > 
+> > Boost is enabled by default. I will queue a run tonight with boost
+> > disabled.
+> 
+> Apologies for the delay. I didn't see any changes with boost-disabled
+> and with reverting the optimization to bail out of the
+> newidle_balance() for SMT and MC domains when there was no task to be
+> pulled from the shared-runq. I reran the whole thing once again, just
+> to rule out any possible variance. The results came out the same.
 
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- drivers/regulator/userspace-consumer.c | 52 +---------------------------------
- 1 file changed, 1 insertion(+), 51 deletions(-)
+Thanks a lot for taking the time to run more benchmarks.
 
-diff --git a/drivers/regulator/userspace-consumer.c b/drivers/regulator/userspace-consumer.c
-index a0b980022993..97f075ed68c9 100644
---- a/drivers/regulator/userspace-consumer.c
-+++ b/drivers/regulator/userspace-consumer.c
-@@ -29,10 +29,6 @@ struct userspace_consumer_data {
- 
- 	int num_supplies;
- 	struct regulator_bulk_data *supplies;
--
--	struct kobject *kobj;
--	struct notifier_block nb;
--	unsigned long events;
- };
- 
- static ssize_t name_show(struct device *dev,
-@@ -93,30 +89,12 @@ static ssize_t state_store(struct device *dev, struct device_attribute *attr,
- 	return count;
- }
- 
--static DEFINE_MUTEX(events_lock);
--
--static ssize_t events_show(struct device *dev,
--			   struct device_attribute *attr, char *buf)
--{
--	struct userspace_consumer_data *data = dev_get_drvdata(dev);
--	unsigned long e;
--
--	mutex_lock(&events_lock);
--	e = data->events;
--	data->events = 0;
--	mutex_unlock(&events_lock);
--
--	return sprintf(buf, "0x%lx\n", e);
--}
--
- static DEVICE_ATTR_RO(name);
- static DEVICE_ATTR_RW(state);
--static DEVICE_ATTR_RO(events);
- 
- static struct attribute *attributes[] = {
- 	&dev_attr_name.attr,
- 	&dev_attr_state.attr,
--	&dev_attr_events.attr,
- 	NULL,
- };
- 
-@@ -137,28 +115,12 @@ static const struct attribute_group attr_group = {
- 	.is_visible =  attr_visible,
- };
- 
--static int regulator_userspace_notify(struct notifier_block *nb,
--				      unsigned long event,
--				      void *ignored)
--{
--	struct userspace_consumer_data *data =
--		container_of(nb, struct userspace_consumer_data, nb);
--
--	mutex_lock(&events_lock);
--	data->events |= event;
--	mutex_unlock(&events_lock);
--
--	sysfs_notify(data->kobj, NULL, dev_attr_events.attr.name);
--
--	return NOTIFY_OK;
--}
--
- static int regulator_userspace_consumer_probe(struct platform_device *pdev)
- {
- 	struct regulator_userspace_consumer_data tmpdata;
- 	struct regulator_userspace_consumer_data *pdata;
- 	struct userspace_consumer_data *drvdata;
--	int i, ret;
-+	int ret;
- 
- 	pdata = dev_get_platdata(&pdev->dev);
- 	if (!pdata) {
-@@ -191,7 +153,6 @@ static int regulator_userspace_consumer_probe(struct platform_device *pdev)
- 	drvdata->num_supplies = pdata->num_supplies;
- 	drvdata->supplies = pdata->supplies;
- 	drvdata->no_autoswitch = pdata->no_autoswitch;
--	drvdata->kobj = &pdev->dev.kobj;
- 
- 	mutex_init(&drvdata->lock);
- 
-@@ -225,13 +186,6 @@ static int regulator_userspace_consumer_probe(struct platform_device *pdev)
- 	}
- 	drvdata->enabled = !!ret;
- 
--	drvdata->nb.notifier_call = regulator_userspace_notify;
--	for (i = 0; i < drvdata->num_supplies; i++) {
--		ret = devm_regulator_register_notifier(drvdata->supplies[i].consumer, &drvdata->nb);
--		if (ret)
--			goto err_enable;
--	}
--
- 	return 0;
- 
- err_enable:
-@@ -243,10 +197,6 @@ static int regulator_userspace_consumer_probe(struct platform_device *pdev)
- static int regulator_userspace_consumer_remove(struct platform_device *pdev)
- {
- 	struct userspace_consumer_data *data = platform_get_drvdata(pdev);
--	int i;
--
--	for (i = 0; i < data->num_supplies; i++)
--		devm_regulator_unregister_notifier(data->supplies[i].consumer, &data->nb);
- 
- 	sysfs_remove_group(&pdev->dev.kobj, &attr_group);
- 
+> With the boost disabled, and the optimization reverted, the results
+> don't change much.
 
----
-base-commit: 21cc7f816c670423a9dae06ad7de5fbc40da97c7
-change-id: 20230824-regulator-remove-status-sysfs-e27d4618cd6a
+Hmmm, I see. So, that was the only real substantive "change" between v2
+-> v3. The other changes were supporting hotplug / domain recreation,
+optimizing locking a bit, and fixing small bugs like the return value
+from shared_runq_pick_next_task(), draining the queue when the feature
+is disabled, and fixing the lkp errors.
 
-Best regards,
--- 
-Mark Brown <broonie@kernel.org>
+With all that said, it seems very possible that the regression is due to
+changes in sched/core between commit ebb83d84e49b ("sched/core: Avoid
+multiple calling update_rq_clock() in __cfsb_csd_unthrottle()") in v2,
+and commit 88c56cfeaec4 ("sched/fair: Block nohz tick_stop when cfs
+bandwidth in use") in v3. EEVDF was merged in that window, so that could
+be one explanation for the context switch rate being so much higher.
 
+> It doesn't appear that the optimization is the cause for increase in
+> the number of load-balancing attempts at the DIE and the NUMA
+> domains. I have shared the counts of the newidle_balance with and
+> without SHARED_RUNQ below for tbench and it can be noticed that the
+> counts are significantly higher for the 64 clients and 128 clients. I
+> also captured the counts/s of find_busiest_group() using funccount.py
+> which tells the same story. So the drop in the performance for tbench
+> with your patches strongly correlates with the increase in
+> load-balancing attempts.
+> 
+> newidle balance is undertaken only if the overload flag is set and the
+> expected idle duration is greater than the avg load balancing cost. It
+> is hard to imagine why should the shared runq cause the overload flag
+> to be set!
+
+Yeah, I'm not sure either about how or why shared_runq would cause this
+This is purely hypothetical, but is it possible that shared_runq causes
+idle cores to on average _stay_ idle longer due to other cores pulling
+tasks that would have otherwise been load balanced to those cores?
+
+Meaning -- say CPU0 is idle, and there are tasks on other rqs which
+could be load balanced. Without shared_runq, CPU0 might be woken up to
+run a task from a periodic load balance. With shared_runq, any active
+core that would otherwise have gone idle could pull the task, keeping
+CPU0 idle.
+
+What do you think? I could be totally off here.
+
+From my perspective, I'm not too worried about this given that we're
+seeing gains in other areas such as kernel compile as I showed in [0],
+though I definitely would like to better understand it.
+
+[0]: https://lore.kernel.org/all/20230809221218.163894-1-void@manifault.com/
+
+> Detailed Results are as follows:
+> =============================================================
+> Test Machine : 2 Socket Zen4 with 128 cores per socket, SMT enabled.
+> 
+> tip             : commit 88c56cfeaec4 ("sched/fair: Block nohz tick_stop when cfs
+> v3              : v3 of the shared_runq patch
+> v3-tgfix        : v3+ Aaron's RFC v1 patch to ratelimit the updates to tg->load_avg
+> v3-tgfix-no-opt : v3-tgfix + revered the optimization to bail out of
+>                   newidle-balance for SMT and MC domains when there
+>                   are no tasks in the shared-runq
+> 
+> In the results below, I have chosen the first row, first column in the
+> table as the baseline so that we get an idea of the scalability issues
+> as the number of groups/clients/workers increase.
+> 
+> ==================================================================
+> Test          : hackbench 
+> Units         : Normalized time in seconds 
+> Interpretation: Lower is better 
+> Statistic     : AMean 
+> ==================================================================
+> Case:         tip[pct imp](CV)            v3[pct imp](CV)      v3-tgfix[pct imp](CV)    v3-tgfix-no-opt[pct imp](CV)
+>  1-groups     1.00 [ -0.00]( 4.22)     0.92 [  7.75]( 9.09)     0.88 [ 11.53](10.61)     0.85 [ 15.31]( 8.20)
+>  2-groups     0.88 [ -0.00](11.65)     0.85 [  2.95](10.77)     0.88 [ -0.91]( 9.69)     0.88 [ -0.23]( 9.20)
+>  4-groups     1.08 [ -0.00]( 3.70)     0.93 [ 13.86](11.03)     0.90 [ 16.08]( 9.57)     0.83 [ 22.92]( 6.98)
+>  8-groups     1.32 [ -0.00]( 0.63)     1.16 [ 12.33]( 9.05)     1.21 [  8.72]( 5.54)     1.17 [ 11.13]( 5.29)
+> 16-groups     1.71 [ -0.00]( 0.63)     1.93 [-12.65]( 4.68)     1.27 [ 25.87]( 1.31)     1.25 [ 27.15]( 1.10)
+
+Great, looks like Aaron's patch really helps.
+
+> ==================================================================
+> Test          : tbench 
+> Units         : Normalized throughput 
+> Interpretation: Higher is better 
+> Statistic     : AMean 
+> ==================================================================
+> Clients:   tip[pct imp](CV)            v3[pct imp](CV)      v3-tgfix[pct imp](CV)    v3-tgfix-no-opt[pct imp](CV)
+>     1      1.00 [  0.00]( 0.18)      0.99 [ -0.99]( 0.18)      0.98 [ -2.08]( 0.10)      0.98 [ -2.19]( 0.24)
+>     2      1.95 [  0.00]( 0.65)      1.93 [ -1.04]( 0.72)      1.95 [ -0.37]( 0.31)      1.92 [ -1.73]( 0.39)
+>     4      3.80 [  0.00]( 0.59)      3.78 [ -0.53]( 0.37)      3.73 [ -1.66]( 0.58)      3.77 [ -0.79]( 0.97)
+>     8      7.49 [  0.00]( 0.37)      7.41 [ -1.12]( 0.39)      7.24 [ -3.42]( 1.99)      7.39 [ -1.39]( 1.53)
+>    16     14.78 [  0.00]( 0.84)     14.60 [ -1.24]( 1.51)     14.30 [ -3.28]( 1.28)     14.46 [ -2.18]( 0.78)
+>    32     28.18 [  0.00]( 1.26)     26.59 [ -5.65]( 0.46)     27.70 [ -1.71]( 0.92)     27.08 [ -3.90]( 0.83)
+>    64     55.05 [  0.00]( 1.56)     18.25 [-66.85]( 0.25)     48.07 [-12.68]( 1.51)     47.46 [-13.79]( 2.70)
+>   128    102.26 [  0.00]( 1.03)     21.74 [-78.74]( 0.65)     54.65 [-46.56]( 1.35)     54.69 [-46.52]( 1.16)
+>   256    156.69 [  0.00]( 0.27)     25.47 [-83.74]( 0.07)    130.85 [-16.49]( 0.57)    125.00 [-20.23]( 0.35)
+>   512    223.22 [  0.00]( 8.25)    236.98 [  6.17](17.10)    274.47 [ 22.96]( 0.44)    276.95 [ 24.07]( 3.37)
+>  1024    237.98 [  0.00]( 1.09)    299.72 [ 25.94]( 0.24)    304.89 [ 28.12]( 0.73)    300.37 [ 26.22]( 1.16)
+>  2048    242.13 [  0.00]( 0.37)    311.38 [ 28.60]( 0.24)    299.82 [ 23.82]( 1.35)    291.32 [ 20.31]( 0.66)
+> 
+> 
+> I reran tbench for v3-tgfix-no-opt, to collect the newidle balance
+> counts via schedstat as well as the find_busiest_group() counts via
+> funccount.py.
+> 
+> Comparison of the newidle balance counts across different
+> sched-domains for "v3-tgfix-no-opt" kernel with NO_SHARED_RUNQ vs
+> SHARED_RUNQ. We see a huge blowup for the DIE and the NUMA domains
+> when the number of clients are 64 and 128. The value within |xx.yy|
+> indicates the percentage increase when the difference is significant.
+> 
+> ============== SMT load_balance with CPU_NEWLY_IDLE ===============================
+>    1 clients: count : 1986, 1960 
+>    2 clients: count : 5777, 6543     |  13.26|
+>    4 clients: count : 16775, 15274   |  -8.95|
+>    8 clients: count : 37086, 32715   | -11.79|
+>   16 clients: count : 69627, 65652   |  -5.71|
+>   32 clients: count : 152288, 42723  | -71.95|
+>   64 clients: count : 216396, 169545 | -21.65|
+>  128 clients: count : 219570, 649880 | 195.98|
+>  256 clients: count : 443595, 951933 | 114.60|
+>  512 clients: count : 5498, 1949     | -64.55|
+> 1024 clients: count : 60, 3          | -95.00|
+> ================ MC load_balance with CPU_NEWLY_IDLE ===============================
+>    1 clients: count : 1954, 1943
+>    2 clients: count : 5775, 6541      |  13.26|
+>    4 clients: count : 15468, 15087 
+>    8 clients: count : 31941, 32140 
+>   16 clients: count : 57312, 62553    |   9.14|
+>   32 clients: count : 125791, 34386   | -72.66|
+>   64 clients: count : 181406, 133978  | -26.14|
+>  128 clients: count : 191143, 607594  | 217.87|
+>  256 clients: count : 388696, 584568  |  50.39| 
+>  512 clients: count : 2677, 218       | -91.86|
+> 1024 clients: count : 22, 3           | -86.36|
+> =============== DIE load_balance with CPU_NEWLY_IDLE ===============================
+>    1 clients: count : 10, 15          |   50.00|
+>    2 clients: count : 15, 56          |  273.33|
+>    4 clients: count : 65, 149         |  129.23|
+>    8 clients: count : 242, 412        |   70.25|
+>   16 clients: count : 509, 1235       |  142.63|
+>   32 clients: count : 909, 1371       |   50.83|
+>   64 clients: count : 1288, 59596     | 4527.02| <===
+>  128 clients: count : 666, 281426     |42156.16| <===
+>  256 clients: count : 213, 1463       |  586.85|
+>  512 clients: count : 28, 23          |  -17.86|
+> 1024 clients: count : 10, 3           |  -70.00|
+> ============== NUMA load_balance with CPU_NEWLY_IDLE ===============================
+>    1 clients: count : 9, 9 
+>    2 clients: count : 13, 14
+>    4 clients: count : 21, 21
+>    8 clients: count : 27, 29
+>   16 clients: count : 29, 50         |   72.41|
+>   32 clients: count : 29, 67         |  131.03|
+>   64 clients: count : 28, 9138       |32535.71|  <===
+>  128 clients: count : 25, 24234      |96836.00|  <===
+>  256 clients: count : 12, 11
+>  512 clients: count : 7, 3  
+> 1024 clients: count : 4, 3 
+> 
+> 
+> Further, collected the find_busiest_group() count/s using
+> funccount.py.
+> 
+> Notice that with 128 clients, most samples with SHARED_RUNQ fall into
+> the bucket which is > 2x of the buckets where we have most of the
+> samples of NO_SHARED_RUNQ runs.
+> 
+> 128 clients: find_busiest_group() count/s
+> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> fbg count bucket       NO_SHARED_RUNQ   SHARED_RUNQ
+> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> [2000000 - 2500000) :     23
+> [2500000 - 3000000) :     19               
+> [3000000 - 3500000) :     19               1
+> [3500000 - 4000000) :      3               3
+> [7500000 - 8000000) :                      5
+> [8000000 - 8500000) :                     54   <===
+> 
+> With 1024 clients, there is not a whole lot of difference in the
+> find_busiest_group() distribution with and without the SHARED_RUNQ.
+> 
+> 1024 clients: find_busiest_group() count/s
+> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> fbg count bucket       NO_SHARED_RUNQ   SHARED_RUNQ
+> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> [  4000 -   5000) :      1
+> [  7000 -   8000) :      2                  2
+> [  8000 -   9000) :      1                  2
+> [  9000 -  10000) :     57                 44  <===
+> [ 10000 -  11000) :      3                 13
+> [ 18000 -  19000) :      1                  1
+> 
+> 
+> 
+> ==================================================================
+> Test          : stream (10  Runs)
+> Units         : Normalized Bandwidth, MB/s 
+> Interpretation: Higher is better 
+> Statistic     : HMean 
+> ==================================================================
+> Test:     tip[pct imp](CV)            v3[pct imp](CV)      v3-tgfix[pct imp](CV)    v3-tgfix-no-opt[pct imp](CV)
+>  Copy     1.00 [  0.00]( 0.53)     1.00 [  0.01]( 0.77)     1.00 [ -0.22]( 0.55)     1.00 [  0.12]( 0.71)
+> Scale     0.95 [  0.00]( 0.23)     0.95 [  0.21]( 0.63)     0.95 [  0.13]( 0.22)     0.95 [  0.02]( 0.87)
+>   Add     0.97 [  0.00]( 0.27)     0.98 [  0.40]( 0.59)     0.98 [  0.52]( 0.31)     0.98 [  0.16]( 0.85)
+> Triad     0.98 [  0.00]( 0.28)     0.98 [  0.33]( 0.55)     0.98 [  0.34]( 0.29)     0.98 [  0.05]( 0.96)
+> 
+> 
+> ==================================================================
+> Test          : stream (100 Runs)
+> Units         : Normalized Bandwidth, MB/s 
+> Interpretation: Higher is better 
+> Statistic     : HMean 
+> ==================================================================
+> Test:     tip[pct imp](CV)            v3[pct imp](CV)      v3-tgfix[pct imp](CV)    v3-tgfix-no-opt[pct imp](CV)
+>  Copy     1.00 [  0.00]( 1.01)     1.00 [ -0.38]( 0.34)     1.00 [  0.08]( 1.19)     1.00 [ -0.18]( 0.38)
+> Scale     0.95 [  0.00]( 0.46)     0.95 [ -0.39]( 0.52)     0.94 [ -0.72]( 0.34)     0.94 [ -0.66]( 0.40)
+>   Add     0.98 [  0.00]( 0.16)     0.98 [ -0.40]( 0.53)     0.97 [ -0.80]( 0.26)     0.97 [ -0.79]( 0.34)
+> Triad     0.98 [  0.00]( 0.14)     0.98 [ -0.35]( 0.54)     0.97 [ -0.79]( 0.17)     0.97 [ -0.79]( 0.28)
+> 
+> 
+> ==================================================================
+> Test          : netperf 
+> Units         : Normalized Througput per client
+> Interpretation: Higher is better 
+> Statistic     : AMean 
+> ==================================================================
+> Clients:        tip[pct imp](CV)            v3[pct imp](CV)      v3-tgfix[pct imp](CV)    v3-tgfix-no-opt[pct imp](CV)
+>  1-clients      1.00 [  0.00]( 0.84)     0.99 [ -0.64]( 0.10)     0.97 [ -2.61]( 0.29)     0.98 [ -2.24]( 0.16)
+>  2-clients      1.00 [  0.00]( 0.47)     0.99 [ -1.07]( 0.42)     0.98 [ -2.27]( 0.33)     0.97 [ -2.75]( 0.24)
+>  4-clients      1.01 [  0.00]( 0.45)     0.99 [ -1.41]( 0.39)     0.98 [ -2.82]( 0.31)     0.97 [ -3.23]( 0.23)
+>  8-clients      1.00 [  0.00]( 0.39)     0.99 [ -1.95]( 0.29)     0.98 [ -2.78]( 0.25)     0.97 [ -3.62]( 0.39)
+> 16-clients      1.00 [  0.00]( 1.81)     0.97 [ -2.77]( 0.41)     0.97 [ -3.26]( 0.35)     0.96 [ -3.99]( 1.45)
+> 32-clients      1.00 [  0.00]( 1.87)     0.39 [-60.63]( 1.29)     0.95 [ -4.68]( 1.45)     0.95 [ -4.89]( 1.41)
+> 64-clients      0.98 [  0.00]( 2.70)     0.24 [-75.29]( 1.26)     0.66 [-33.23]( 0.99)     0.65 [-34.05]( 2.39)
+> 128-clients     0.90 [  0.00]( 2.48)     0.14 [-84.47]( 3.63)     0.36 [-60.00]( 1.37)     0.36 [-60.36]( 1.54)
+> 256-clients     0.67 [  0.00]( 2.91)     0.08 [-87.79]( 9.27)     0.54 [-20.38]( 3.69)     0.52 [-22.94]( 3.81)
+> 512-clients     0.36 [  0.00]( 8.11)     0.51 [ 39.96]( 4.92)     0.38 [  5.12]( 6.24)     0.39 [  5.88]( 6.13)
+> 
+> 
+> ==================================================================
+> Test          : schbench throughput
+> Units         : Normalized Requests per second 
+> Interpretation: Higher is better 
+> Statistic     : Median 
+> ==================================================================
+> #workers: tip[pct imp](CV)          v3[pct imp](CV)      v3-tgfix[pct imp](CV)    v3-tgfix-no-opt[pct imp](CV)
+>   1      1.00 [  0.00]( 0.24)      1.01 [  0.93]( 0.00)      1.01 [  0.93]( 0.24)      1.00 [  0.47]( 0.24)
+>   2      2.01 [  0.00]( 0.12)      2.03 [  0.93]( 0.00)      2.03 [  1.16]( 0.00)      2.01 [  0.00]( 0.12)
+>   4      4.03 [  0.00]( 0.12)      4.06 [  0.70]( 0.00)      4.07 [  0.93]( 0.00)      4.02 [ -0.23]( 0.24)
+>   8      8.05 [  0.00]( 0.00)      8.12 [  0.93]( 0.00)      8.14 [  1.16]( 0.00)      8.07 [  0.23]( 0.00)
+>  16     16.17 [  0.00]( 0.12)     16.24 [  0.46]( 0.12)     16.28 [  0.69]( 0.00)     16.17 [  0.00]( 0.12)
+>  32     32.34 [  0.00]( 0.12)     32.49 [  0.46]( 0.00)     32.56 [  0.69]( 0.00)     32.34 [  0.00]( 0.00)
+>  64     64.52 [  0.00]( 0.12)     64.82 [  0.46]( 0.00)     64.97 [  0.70]( 0.00)     64.52 [  0.00]( 0.00)
+> 128    127.25 [  0.00]( 1.48)    121.57 [ -4.47]( 0.38)    120.37 [ -5.41]( 0.13)    120.07 [ -5.64]( 0.34)
+> 256    135.33 [  0.00]( 0.11)    136.52 [  0.88]( 0.11)    136.22 [  0.66]( 0.11)    136.52 [  0.88]( 0.11)
+> 512    107.81 [  0.00]( 0.29)    109.91 [  1.94]( 0.92)    109.91 [  1.94]( 0.14)    109.91 [  1.94]( 0.14)
+> 
+> 
+> ==================================================================
+> Test          : schbench wakeup-latency 
+> Units         : Normalized 99th percentile latency in us 
+> Interpretation: Lower is better 
+> Statistic     : Median 
+> ==================================================================
+> 
+> #workers: tip[pct imp](CV)          v3[pct imp](CV)      v3-tgfix[pct imp](CV)    v3-tgfix-no-opt[pct imp](CV)
+>   1       1.00 [ -0.00](14.08)       0.80 [ 20.00](11.92)       1.00 [ -0.00]( 9.68)       1.40 [-40.00](18.75)
+>   2       1.20 [ -0.00]( 4.43)       1.10 [  8.33]( 4.84)       1.10 [  8.33]( 0.00)       1.10 [  8.33]( 4.56)
+>   4       1.10 [ -0.00]( 0.00)       1.10 [ -0.00]( 4.56)       1.10 [ -0.00]( 0.00)       1.10 [ -0.00]( 0.00)
+>   8       1.10 [ -0.00]( 0.00)       1.10 [ -0.00]( 4.56)       1.10 [ -0.00]( 0.00)       1.10 [ -0.00]( 0.00)
+>  16       1.10 [ -0.00]( 4.84)       1.20 [ -9.09]( 0.00)       1.10 [ -0.00]( 0.00)       1.10 [ -0.00]( 0.00)
+>  32       1.00 [ -0.00]( 0.00)       1.10 [-10.00]( 0.00)       1.10 [-10.00]( 0.00)       1.00 [ -0.00]( 0.00)
+>  64       1.00 [ -0.00]( 5.34)       1.10 [-10.00]( 0.00)       1.10 [-10.00]( 0.00)       1.10 [-10.00]( 0.00)
+> 128       1.20 [ -0.00]( 4.19)       2.10 [-75.00]( 2.50)       2.10 [-75.00]( 2.50)       2.10 [-75.00]( 0.00)
+> 256       5.90 [ -0.00]( 0.00)      12.10 [-105.08](14.03)     11.10 [-88.14]( 4.53)      12.70 [-115.25]( 5.17)
+> 512    2627.20 [ -0.00]( 1.21)    2288.00 [ 12.91]( 9.76)    2377.60 [  9.50]( 2.40)    2281.60 [ 13.15]( 0.77)
+> 
+> 
+> ==================================================================
+> Test          : schbench request-latency 
+> Units         : Normalized 99th percentile latency in us 
+> Interpretation: Lower is better 
+> Statistic     : Median 
+> ==================================================================
+> #workers: tip[pct imp](CV)          v3[pct imp](CV)      v3-tgfix[pct imp](CV)    v3-tgfix-no-opt[pct imp](CV)
+>   1     1.00 [ -0.00]( 0.35)     1.00 [  0.34]( 0.17)     0.99 [  0.67]( 0.30)     1.00 [ -0.34]( 0.00)
+>   2     1.00 [ -0.00]( 0.17)     1.00 [  0.34]( 0.00)     0.99 [  1.01]( 0.00)     1.00 [ -0.34]( 0.17)
+>   4     1.00 [ -0.00]( 0.00)     1.00 [  0.34]( 0.00)     0.99 [  1.01]( 0.00)     1.00 [ -0.00]( 0.17)
+>   8     1.00 [ -0.00]( 0.17)     1.00 [  0.34]( 0.17)     0.99 [  1.34]( 0.18)     1.00 [  0.34]( 0.17)
+>  16     1.00 [ -0.00]( 0.00)     1.00 [  0.67]( 0.17)     0.99 [  1.34]( 0.35)     1.00 [ -0.00]( 0.00)
+>  32     1.00 [ -0.00]( 0.00)     1.00 [  0.67]( 0.00)     0.99 [  1.34]( 0.00)     1.00 [ -0.00]( 0.00)
+>  64     1.00 [ -0.00]( 0.00)     1.00 [  0.34]( 0.17)     1.00 [  0.67]( 0.00)     1.00 [ -0.00]( 0.17)
+> 128     1.82 [ -0.00]( 0.83)     1.85 [ -1.48]( 0.00)     1.85 [ -1.85]( 0.37)     1.85 [ -1.85]( 0.19)
+> 256     1.94 [ -0.00]( 0.18)     1.96 [ -1.04]( 0.36)     1.95 [ -0.69]( 0.18)     1.95 [ -0.35]( 0.18)
+> 512    13.27 [ -0.00]( 5.00)    16.32 [-23.00]( 8.33)    16.16 [-21.78]( 1.05)    15.46 [-16.51]( 0.89)
+
+So as I said above, I definitely would like to better understand why
+we're hammering load_balance() so hard in a few different contexts. I'll
+try to repro the issue with tbench on a few different configurations. If
+I'm able to, the next step would be for me to investigate my theory,
+likely by doing something like measuring rq->avg_idle at wakeup time and
+in newidle_balance() using bpftrace. If avg_idle is a lot higher for
+waking cores, maybe my theory isn't too far fetched?
+
+With all that said, it's been pretty clear from early on in the patch
+set that there were going to be tradeoffs to enabling SHARED_RUNQ. It's
+not surprising to me that there are some configurations that really
+don't tolerate it well, and others that benefit from it a lot. Hackbench
+and kernel compile seem to be two such examples; hackbench especially.
+At Meta, we get really nice gains from it on a few of our biggest
+services. So my hope is that we don't have to tweak every possible use
+case in order for the patch set to be merged, as we've already done a
+lot of due diligence relative to other sched features.
+
+I would appreciate hearing what others think as well.
+
+Thanks,
+David
