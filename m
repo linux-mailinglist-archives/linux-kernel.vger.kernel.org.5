@@ -2,261 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2AA2786AB6
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 10:52:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 014B6786ABF
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 10:53:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232876AbjHXIvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 04:51:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51076 "EHLO
+        id S236594AbjHXIwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 04:52:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234672AbjHXIvL (ORCPT
+        with ESMTP id S240647AbjHXIwk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 04:51:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74916E5A
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 01:50:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692867023;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=O4t2CZ+6tbdAT1IpnUCc5NRn2/e0Kmg0+Pq6tGGnhxA=;
-        b=V20XsDcO/0ZDHRBOgmv9oes0+R09gVbWlDpya8jTdDzmTipnHAg+9Gqs4N4X+pFs+wM+g2
-        ZzeYKW0UrszLdz4JMOdXPd5Qd+i7rAL2tETCmKhBOQOvRSpTfI/Qik1vJ12k6I0f1vI3o8
-        WD/jAQ7ucXHWxxkqIZn/PDfLUVW09C8=
-Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
- [209.85.214.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-458-vDwWha5QNEuITaGxoRnDcg-1; Thu, 24 Aug 2023 04:50:20 -0400
-X-MC-Unique: vDwWha5QNEuITaGxoRnDcg-1
-Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-1bf43b0131cso12207585ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 01:50:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692867018; x=1693471818;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=O4t2CZ+6tbdAT1IpnUCc5NRn2/e0Kmg0+Pq6tGGnhxA=;
-        b=V26+SWGIXlucIG/MCKB6EslY1z6B1LuiTRVkjmjUrVwQHMglJ9sWUSQca680IWwyUb
-         2MkhyeO3V1Mf2Lk8lHX5MP2SwoUiWkT2aUIa9fNWPTfctTvYOrK862wnLTLMxn4J5WvU
-         D7C9chP+XP6QwkcmZSYf5eCdSLM9alfgOCIrRORyHbFVXjw2+XztwG7SdSjda4fnc668
-         gZTo6a7GxRhuxEI5MqkKL2YJEquu8THGP8n65um7qvW5RF56GcTd5R0iMGBDrIpWLPpa
-         XDzwjmmvPyJUXx7/0WLJTbqUe3GQPXvms0/8Ty42ULl35/vIqk+XAAj6tS+43ZScwMiq
-         7r+w==
-X-Gm-Message-State: AOJu0Yy0q+hPpDiWOlfJIaBT2U9wo2ktakhs49TDwe532pyNM8hFQhyx
-        iCYYxq+2kGY4b4CMt8sFNffM66igPJPvO6kWrmsD/xpd1ACh5ockJLGzmG3qIgxTBMqOedxVVH5
-        bE+T/2oEsrUMoCEB/+Got2+ao
-X-Received: by 2002:a17:902:f68f:b0:1b8:aded:524c with SMTP id l15-20020a170902f68f00b001b8aded524cmr16617195plg.1.1692867017756;
-        Thu, 24 Aug 2023 01:50:17 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEBWJObKjQLu7fh6BtSGhE/EC3pXQ307ZfD5VMY6ZyV4E+5CWM79low6Kc7uMjsCU19tiMc4w==
-X-Received: by 2002:a17:902:f68f:b0:1b8:aded:524c with SMTP id l15-20020a170902f68f00b001b8aded524cmr16617181plg.1.1692867017445;
-        Thu, 24 Aug 2023 01:50:17 -0700 (PDT)
-Received: from [10.72.112.250] ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id e12-20020a170902d38c00b001bdf046ed71sm12262137pld.120.2023.08.24.01.50.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Aug 2023 01:50:16 -0700 (PDT)
-Message-ID: <a0543866-1fac-6a3f-20cd-43b6d1263c0e@redhat.com>
-Date:   Thu, 24 Aug 2023 16:50:12 +0800
-MIME-Version: 1.0
+        Thu, 24 Aug 2023 04:52:40 -0400
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2130.outbound.protection.outlook.com [40.107.255.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DB47E68;
+        Thu, 24 Aug 2023 01:51:49 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RK3h+xXn5rXQRmqw3gOwq2RLp+dW4pfvwirIMf92MTiXtvQdHsYBKPULOo7KsNmlP3WjPWCzLo+K/frpuplV1X8oDFPkskxr4ocYLVxZRFX86eB5iN44j0XahgUxhx6nM6F5qft2yLY9PpZF5N+sivl6qKjHDHT2kSGkY/OsZeM+TXMFz3NkV2hE4ndKcz9cprZVnmCiMzPDe+AbukyUfB5S2XvMWwBkEJFuBOidIKjOpR553btdQGe+i+GSJjrOR0+/hSmrIMv8F21Ho/Qq/oMO9jQlGq2mky5dJUdbeJ+8TQtPcd5Q1YTpjq9rB20PiV6/QZVSRl7WxymiQXPaPw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Cn6/24uAgbXT4P8/ZpxJ9rKcyIVb1kS51oNGxHcZr0g=;
+ b=aAyjFizcCwgx9drHscBTICC5G5dllnzb6NbFmrqIbfUtII13SzYcKpl0NuFCjLE2rQBh+o+Nqj2GaQE4po+bhpt9X9UcNGGztol5jBwgjua+lT8d43fQO5Wkutzw5iknTjmvjTJZLqBAJsrRfHtDZ/X0KpGMFyj0npREgeS5vsduiAvr9DirotE3l7EZ1AeCRP8KFjsfzfO5ApnQtzDg0N0TwpKtf3RROZjnuOYfHbE1yduH1bUBwSBQ241OlnVWyJNweAzkwBxiyeMj5v4wgXSkKINKwEwJKlvtiMqbaDtKXtEHz0kWXBqlHOjIcK0PYDk1lgI3X+8h2oC0/Yno5w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amlogic.com; dmarc=pass action=none header.from=amlogic.com;
+ dkim=pass header.d=amlogic.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amlogic.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Cn6/24uAgbXT4P8/ZpxJ9rKcyIVb1kS51oNGxHcZr0g=;
+ b=hxvL6RDmGH3aDM0v257rJ210yzqMMysfSUuKBQdkzJtvg3HB/McNkFCJ3Kl+y/jzpwcD2frOoKXLgGc7DreeJMbTLWlMJHkX4qDfcbGSBfHVo6xqpuvbf2CoF4+8nTLqmSKGDOUiz/+NwQsRHQFOTQb+0rlZYz48CACNz6hVikedrH61lKsOPocgNzJTG61gbURVvLE7jWpqnHQcuwrG45zb1YNB3tStbPRv2P41HjPlsrv9RwjCDm8K5TVZ+8P9NPa5oKuMQZCT8bpfLkAZR5NfCj3b5THDj0jtXfzNMd4BBR23BpRPsc8m3yEyoFPi1uShrcIX9jRMfGAU+WZinA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amlogic.com;
+Received: from TYZPR03MB6896.apcprd03.prod.outlook.com (2603:1096:400:289::14)
+ by KL1PR03MB7527.apcprd03.prod.outlook.com (2603:1096:820:ea::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.26; Thu, 24 Aug
+ 2023 08:51:46 +0000
+Received: from TYZPR03MB6896.apcprd03.prod.outlook.com
+ ([fe80::f065:6e23:803b:2a75]) by TYZPR03MB6896.apcprd03.prod.outlook.com
+ ([fe80::f065:6e23:803b:2a75%7]) with mapi id 15.20.6699.025; Thu, 24 Aug 2023
+ 08:51:46 +0000
+Message-ID: <56c0b78a-b9dd-de6d-7d7e-654fc5dd8e1b@amlogic.com>
+Date:   Thu, 24 Aug 2023 16:51:41 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH v5 08/12] KVM: arm64: PMU: Allow userspace to limit
- PMCR_EL0.N for the guest
+ Thunderbird/102.13.0
+Subject: Re: [PATCH V2 6/6] arm64: dts: add support for T7 power domain
+ controller
 Content-Language: en-US
-To:     Raghavendra Rao Ananta <rananta@google.com>
-Cc:     Oliver Upton <oliver.upton@linux.dev>,
-        Marc Zyngier <maz@kernel.org>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-References: <20230817003029.3073210-1-rananta@google.com>
- <20230817003029.3073210-9-rananta@google.com>
- <1c6c07af-f6d0-89a6-1b7d-164ca100ac88@redhat.com>
- <CAJHc60x=rZTpeJ3PDUWmc08Aziow6S+2nndcL90vHfru5GhXtA@mail.gmail.com>
-From:   Shaoqin Huang <shahuang@redhat.com>
-In-Reply-To: <CAJHc60x=rZTpeJ3PDUWmc08Aziow6S+2nndcL90vHfru5GhXtA@mail.gmail.com>
+To:     neil.armstrong@linaro.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>
+References: <20230824055930.2576849-1-xianwei.zhao@amlogic.com>
+ <20230824055930.2576849-7-xianwei.zhao@amlogic.com>
+ <27e55b16-065b-4a16-ab05-dded04f2c705@linaro.org>
+From:   Xianwei Zhao <xianwei.zhao@amlogic.com>
+In-Reply-To: <27e55b16-065b-4a16-ab05-dded04f2c705@linaro.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-ClientProxiedBy: SG2PR06CA0195.apcprd06.prod.outlook.com (2603:1096:4:1::27)
+ To TYZPR03MB6896.apcprd03.prod.outlook.com (2603:1096:400:289::14)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: TYZPR03MB6896:EE_|KL1PR03MB7527:EE_
+X-MS-Office365-Filtering-Correlation-Id: e775d35f-8823-4677-30a1-08dba47f58b1
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: LVZ5aYneh8lGqJ2UbODrUCXX8ESr8Gp9PBCiawBWgtgrd6XhTFA70buO3BAdKjX/SKynlmO7AaoT7rvjJETvnNnGbmQeHU3rwm+jORGQFuLOULnefQqiCtZzGypCxaQu6S+CnoiwyvPyxv4we5FHWamAMNVTIvWvRto/6Ez449SNfaJ8SQhoUApKnhftMSiSpZtxsAY0VwEp5+RctVjiQ7Nk1VYvO7Vl0VW8R8SW8TpVdEOMlPgMpiRNxsRr7/Xt4XGTybHLDs/C0hlA8/8EiLB/qzAwEbv17jJDEt/wE6AGEJobWR9zDhA8RoYEaMgOfrpid6M5U+gzmtKREezgXOyfi/L54pG+XVCr2y3wqz29RFtaOLuimZTwhtAYf/KSnPnYBB152IU8oUEgBm7dnv5xksb8JFQEIAKVszu4WIJgW9g/CG/0qV96P8V3mpYFPd72h7PYb7uQQsJqlEsbpHTdXZBQsXE33tX3Q8yFL4u7/JloBsYkRn9En7uIV1x4fEU44pETTvm+gxKb8nSVBBD47gr0DXVEHyVCEuVxcXeyYQtCwry0tpcxJ2TMiIa4k+dY7tXbuU9GdE65KOgyvxDMyKWy+MQgS2iBq38Z93R/0v0CxGl2zZTQdIydkZF8T5wiV1gOFSjVHbvoxctT9408v0FVLiLRL+QiXndljhWr4eKPgtpuAUhmMF4yB8n9p0zetrx/ULnF0xvEBDebaMs/0H8skAIK8Iiha23jBq0=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR03MB6896.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39850400004)(376002)(366004)(346002)(396003)(136003)(451199024)(186009)(1800799009)(2616005)(6506007)(6486002)(53546011)(316002)(12101799020)(8936002)(8676002)(4326008)(54906003)(66946007)(66476007)(66556008)(41300700001)(6512007)(26005)(5660300002)(44832011)(6666004)(31686004)(478600001)(36756003)(86362001)(31696002)(2906002)(38100700002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WG1nSy9Cdi91VlBLMUlYTWM1eHhXMElCSFh4ZjNaZVpjYXFCdC9ZSlIzZExx?=
+ =?utf-8?B?Vm1SQnRyalJ3MEgrd2UzaWhmdFlaUUNxcTVnSEVyUWgra2ZOMzRJU1N2d09l?=
+ =?utf-8?B?RndTRnRralN6TmJEem11TCtxMWFoc2t6QmsyZHFEUzJoZVhsWG5RZ0RUOUlq?=
+ =?utf-8?B?amx3bG85QW1PaU1zRXY5c0xnb0d6dnkrQVVuK2lMVVRaSjV1UkF5RWFzOGJF?=
+ =?utf-8?B?OU5iZFkvUS80ejBJTUVNMlRTaUpGU2xLNDRudzVjSGJndjlaQ2RtYWZ5TGl1?=
+ =?utf-8?B?UW5UazFObThya0pTeC9Ya0FBMk9YTlRNWWVreVpMMEI1SGc5Yzd6RTlFelJF?=
+ =?utf-8?B?NVpSazU5YnR0VmV3V3dWd01pT0pibm0rV1ZQZzg5RmlzRVRyRG84QUFHUElR?=
+ =?utf-8?B?SGtYZUY0d0lKc1ZsNkt2UmluNmpFait4VVV0NGN4TmZCMG81STdzSXU2Q2Nr?=
+ =?utf-8?B?Yk1LaTd1Z25oeVJGVEQ3YnNwVVc5cjdINFpGSGc1SXgwRTM5cmRGZkhXU2JQ?=
+ =?utf-8?B?Z281M0Q5MXNZYVB4clQvSHdFY0RTbGdEek1hK1hDWmVyMlhRYnE0K0l1OFU0?=
+ =?utf-8?B?NDNzeFRjYXZJdGV0MlJkTGowdlY4cHNuSGxWek80M3pQQWd5dmNyc21wLytZ?=
+ =?utf-8?B?MkpxV2NibEJBWFZDZ0d4OUxzeS92ZG5RV3dGVXlnYTFjV05RM3BpYmtscVhL?=
+ =?utf-8?B?NjVseXM0QUtWSVZHMkY3ZVY3VW9XZlBjanVxajZ5SXFLdHQzcDVqSmYrR0Na?=
+ =?utf-8?B?MC82d29OWVNCbXBkK3A1OTk5cUJhYVQweFU2RXRTSVFLcjRFaHJLa3JDZThq?=
+ =?utf-8?B?cFBzU0ZIdkg0NlRPQkJFL0hqc1FjcW84YmRJVTBFZ21UTkZhbU9WaHRrQ01W?=
+ =?utf-8?B?eEVYL1VreVNlMUhkNW81cWJWdVZyQzErV21kOTJDREhiWk5WNWc5R3dQMWJx?=
+ =?utf-8?B?am94NERKUC9uQzFySWM0RCs0UkRyb24xbURxOVV5cEg5bnkzdFNFZWgzYlUr?=
+ =?utf-8?B?anB4eExMNnMxd0VPSXJ5SWV0bHhQc3pWamFqNXV3ZDA0cUVlNnZCMkJoVWQ5?=
+ =?utf-8?B?WWJQc2FzWEQxMVpnK25zdENYWUllS1FPbVpPMGk3Mi9OV0RjMEh1MEtGMjJY?=
+ =?utf-8?B?UDdOVDNIbHk5d1JZVHFTdzhDS1diZERsRGZ1YlRDZXFjTTIrTkttYU1YWmhZ?=
+ =?utf-8?B?d1dOVDgzOHNOR1FGTUozbW1JaWZFNUxmYThnNDkvek1yZ0lTR2V0NURtUVJU?=
+ =?utf-8?B?MGhIVXNaa1ZWRlpyN3kwa3Ura01SdGcvZ3o2ZXBTQ080Uk9XbG83UitFL0VN?=
+ =?utf-8?B?VndNaTlRTkhPRDdIMGVYZmpMb0twWkRkVHNKTjJEZ1YxdU1DNmlzNFJ1TzBn?=
+ =?utf-8?B?VW5leFFIelhhRHdCV0taOHF6RFMwbm83eWN6ZUV4b1J3QUZMWktuRWgyUnAr?=
+ =?utf-8?B?ZEFjUVdFUFhxaHRWQmlpSE1aSGFqS252RXRpQng0a05SbG1SSE95MmV2TlF2?=
+ =?utf-8?B?YUpSajYvWmFZQkhMK1dISmlXbEZvRlJQRi8zS2tsTDJSN285T1Q3dGZlQWN0?=
+ =?utf-8?B?ZGRwaFQvS0pHc0hBVHpwQWVPenpVRzhIQW84c3M4dXVUeGdnQlV1NmpNdm8x?=
+ =?utf-8?B?cUovemFneGx1dU9FelFOYllrd1JRSmlNWEZsVGVMWk1lcTVoOWtpa1orc09t?=
+ =?utf-8?B?eEg5SEN2eGR3UW1ybEtsa3hKdm5IL3pmMW5KV05jVGNTc1hMem1yeGtET00v?=
+ =?utf-8?B?dHBmNDQybGx2VE1RcDg4QUU1WVJmTzhJMXpDc3dFR1lFQStuTWlVVVpmNE9P?=
+ =?utf-8?B?NktFOVY4cFM3SU1rM1RtZHdhbVNqL2k2eXZFdTNaLzh3VXcwUGZpNEpjdkJH?=
+ =?utf-8?B?cHJXUkhPNUhBaXpzWWVUY21JdG5ydGhmRXduRkt1WktTMTFGU294eTNBdUdT?=
+ =?utf-8?B?eStWOGI2YWpublkzWFlkQnlxeXFNaklXNjkrY2pzU3pyWVp6K0wyOTQ3MExN?=
+ =?utf-8?B?d3ZJK0ZYdmhFQ0dsQVZOd09mdDlKaGFkSXVpVTNmTUFUSGZlSVM2ak0wcjFM?=
+ =?utf-8?B?b0MyZmh2VHBHQzMvamlCelU0bkdIaGlvdGdXTnZmcnNpMFBCZVoyd1V4L3VZ?=
+ =?utf-8?B?NUhFWTFqZ2w2UC9ISUlQNUNhZlEydzVVMjA2cnRaNlRNU01wK2RtT1hSaU9F?=
+ =?utf-8?B?Y3c9PQ==?=
+X-OriginatorOrg: amlogic.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e775d35f-8823-4677-30a1-08dba47f58b1
+X-MS-Exchange-CrossTenant-AuthSource: TYZPR03MB6896.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Aug 2023 08:51:46.0240
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 0df2add9-25ca-4b3a-acb4-c99ddf0b1114
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: OLD6gKImlkmtT3cFY92G4cWKrnwTsHowiK+0XrGHDh2U7Q2IplpSOMT7GllcqUE6smb1E+pmYoqX3Ncgdujem1Gn0XxzXvWKrikkqOaQF44=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR03MB7527
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Neil,
+     Thanks for your reply.
 
-
-On 8/24/23 00:06, Raghavendra Rao Ananta wrote:
-> On Tue, Aug 22, 2023 at 3:06 AM Shaoqin Huang <shahuang@redhat.com> wrote:
->>
->> Hi Raghavendra,
->>
->> On 8/17/23 08:30, Raghavendra Rao Ananta wrote:
->>> From: Reiji Watanabe <reijiw@google.com>
->>>
->>> KVM does not yet support userspace modifying PMCR_EL0.N (With
->>> the previous patch, KVM ignores what is written by upserspace).
->>> Add support userspace limiting PMCR_EL0.N.
->>>
->>> Disallow userspace to set PMCR_EL0.N to a value that is greater
->>> than the host value (KVM_SET_ONE_REG will fail), as KVM doesn't
->>> support more event counters than the host HW implements.
->>> Although this is an ABI change, this change only affects
->>> userspace setting PMCR_EL0.N to a larger value than the host.
->>> As accesses to unadvertised event counters indices is CONSTRAINED
->>> UNPREDICTABLE behavior, and PMCR_EL0.N was reset to the host value
->>> on every vCPU reset before this series, I can't think of any
->>> use case where a user space would do that.
->>>
->>> Also, ignore writes to read-only bits that are cleared on vCPU reset,
->>> and RES{0,1} bits (including writable bits that KVM doesn't support
->>> yet), as those bits shouldn't be modified (at least with
->>> the current KVM).
->>>
->>> Signed-off-by: Reiji Watanabe <reijiw@google.com>
->>> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
->>> ---
->>>    arch/arm64/include/asm/kvm_host.h |  3 ++
->>>    arch/arm64/kvm/pmu-emul.c         |  1 +
->>>    arch/arm64/kvm/sys_regs.c         | 49 +++++++++++++++++++++++++++++--
->>>    3 files changed, 51 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
->>> index 0f2dbbe8f6a7e..c15ec365283d1 100644
->>> --- a/arch/arm64/include/asm/kvm_host.h
->>> +++ b/arch/arm64/include/asm/kvm_host.h
->>> @@ -259,6 +259,9 @@ struct kvm_arch {
->>>        /* PMCR_EL0.N value for the guest */
->>>        u8 pmcr_n;
->>>
->>> +     /* Limit value of PMCR_EL0.N for the guest */
->>> +     u8 pmcr_n_limit;
->>> +
->>>        /* Hypercall features firmware registers' descriptor */
->>>        struct kvm_smccc_features smccc_feat;
->>>        struct maple_tree smccc_filter;
->>> diff --git a/arch/arm64/kvm/pmu-emul.c b/arch/arm64/kvm/pmu-emul.c
->>> index ce7de6bbdc967..39ad56a71ad20 100644
->>> --- a/arch/arm64/kvm/pmu-emul.c
->>> +++ b/arch/arm64/kvm/pmu-emul.c
->>> @@ -896,6 +896,7 @@ int kvm_arm_set_vm_pmu(struct kvm *kvm, struct arm_pmu *arm_pmu)
->>>         * while the latter does not.
->>>         */
->>>        kvm->arch.pmcr_n = arm_pmu->num_events - 1;
->>> +     kvm->arch.pmcr_n_limit = arm_pmu->num_events - 1;
->>>
->>>        return 0;
->>>    }
->>> diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
->>> index 2075901356c5b..c01d62afa7db4 100644
->>> --- a/arch/arm64/kvm/sys_regs.c
->>> +++ b/arch/arm64/kvm/sys_regs.c
->>> @@ -1086,6 +1086,51 @@ static int get_pmcr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *r,
->>>        return 0;
->>>    }
->>>
->>> +static int set_pmcr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *r,
->>> +                 u64 val)
->>> +{
->>> +     struct kvm *kvm = vcpu->kvm;
->>> +     u64 new_n, mutable_mask;
->>> +     int ret = 0;
->>> +
->>> +     new_n = FIELD_GET(ARMV8_PMU_PMCR_N, val);
->>> +
->>> +     mutex_lock(&kvm->arch.config_lock);
->>> +     if (unlikely(new_n != kvm->arch.pmcr_n)) {
->>> +             /*
->>> +              * The vCPU can't have more counters than the PMU
->>> +              * hardware implements.
->>> +              */
->>> +             if (new_n <= kvm->arch.pmcr_n_limit)
->>> +                     kvm->arch.pmcr_n = new_n;
->>> +             else
->>> +                     ret = -EINVAL;
->>> +     }
->>> +     mutex_unlock(&kvm->arch.config_lock);
->>
->> Another thing I am just wonder is that should we block any modification
->> to the pmcr_n after vm start to run? Like add one more checking
->> kvm_vm_has_ran_once() at the beginning of the set_pmcr() function.
->>
-> Thanks for bringing it up. Reiji and I discussed about this. Checking
-> for kvm_vm_has_ran_once() will be a good move, however, it will go
-> against the ABI expectations of setting the PMCR. I'd like others to
-> weigh in on this as well. What do you think?
+On 2023/8/24 16:32, Neil Armstrong wrote:
+> [ EXTERNAL EMAIL ]
 > 
-> Thank you.
-> Raghavendra
-
-Before this change, kvm not allowed userspace to change the pmcr_n, but 
-allowed to change the lower ARMV8_PMU_PMCR_MASK bits. With this change, 
-we now allow to change the pmcr_n, we should not block the change to 
-ARMV8_PMU_PMCR_MASK after vm start to run, but how about we just block 
-the change to ARMV8_PMU_PMCR_N after vm start to run?
-
-Thanks,
-Shaoqin
-
->> Thanks,
->> Shaoqin
+> On 24/08/2023 07:59, Xianwei Zhao wrote:
+>> From: "xianwei.zhao" <xianwei.zhao@amlogic.com>
 >>
->>> +     if (ret)
->>> +             return ret;
->>> +
->>> +     /*
->>> +      * Ignore writes to RES0 bits, read only bits that are cleared on
->>> +      * vCPU reset, and writable bits that KVM doesn't support yet.
->>> +      * (i.e. only PMCR.N and bits [7:0] are mutable from userspace)
->>> +      * The LP bit is RES0 when FEAT_PMUv3p5 is not supported on the vCPU.
->>> +      * But, we leave the bit as it is here, as the vCPU's PMUver might
->>> +      * be changed later (NOTE: the bit will be cleared on first vCPU run
->>> +      * if necessary).
->>> +      */
->>> +     mutable_mask = (ARMV8_PMU_PMCR_MASK | ARMV8_PMU_PMCR_N);
->>> +     val &= mutable_mask;
->>> +     val |= (__vcpu_sys_reg(vcpu, r->reg) & ~mutable_mask);
->>> +
->>> +     /* The LC bit is RES1 when AArch32 is not supported */
->>> +     if (!kvm_supports_32bit_el0())
->>> +             val |= ARMV8_PMU_PMCR_LC;
->>> +
->>> +     __vcpu_sys_reg(vcpu, r->reg) = val;
->>> +     return 0;
->>> +}
->>> +
->>>    /* Silly macro to expand the DBG{BCR,BVR,WVR,WCR}n_EL1 registers in one go */
->>>    #define DBG_BCR_BVR_WCR_WVR_EL1(n)                                  \
->>>        { SYS_DESC(SYS_DBGBVRn_EL1(n)),                                 \
->>> @@ -2147,8 +2192,8 @@ static const struct sys_reg_desc sys_reg_descs[] = {
->>>        { SYS_DESC(SYS_CTR_EL0), access_ctr },
->>>        { SYS_DESC(SYS_SVCR), undef_access },
->>>
->>> -     { PMU_SYS_REG(PMCR_EL0), .access = access_pmcr,
->>> -       .reset = reset_pmcr, .reg = PMCR_EL0, .get_user = get_pmcr },
->>> +     { PMU_SYS_REG(PMCR_EL0), .access = access_pmcr, .reset = reset_pmcr,
->>> +       .reg = PMCR_EL0, .get_user = get_pmcr, .set_user = set_pmcr },
->>>        { PMU_SYS_REG(PMCNTENSET_EL0),
->>>          .access = access_pmcnten, .reg = PMCNTENSET_EL0 },
->>>        { PMU_SYS_REG(PMCNTENCLR_EL0),
+>> Enable power domain controller for Amlogic T7 SoC
 >>
->> --
->> Shaoqin
+>> Signed-off-by: xianwei.zhao <xianwei.zhao@amlogic.com>
+>> ---
+>> V1 -> V2: None
+>> ---
+>>   arch/arm64/boot/dts/amlogic/amlogic-t7.dtsi | 6 ++++++
+>>   1 file changed, 6 insertions(+)
 >>
+>> diff --git a/arch/arm64/boot/dts/amlogic/amlogic-t7.dtsi 
+>> b/arch/arm64/boot/dts/amlogic/amlogic-t7.dtsi
+>> index 1423d4a79156..23cdad1b425b 100644
+>> --- a/arch/arm64/boot/dts/amlogic/amlogic-t7.dtsi
+>> +++ b/arch/arm64/boot/dts/amlogic/amlogic-t7.dtsi
+>> @@ -4,6 +4,7 @@
+>>    */
+>>
+>>   #include <dt-bindings/interrupt-controller/arm-gic.h>
+>> +#include <dt-bindings/power/amlogic,t7-pwrc.h>
+>>
+>>   / {
+>>       interrupt-parent = <&gic>;
+>> @@ -118,6 +119,11 @@ psci {
+>>
+>>       sm: secure-monitor {
+>>               compatible = "amlogic,meson-gxbb-sm";
+>> +
+>> +             pwrc: power-controller {
+>> +                     compatible = "amlogic,t7-pwrc";
+>> +                     #power-domain-cells = <1>;
+>> +             };
+>>       };
+>>
+>>       soc {
 > 
-
--- 
-Shaoqin
-
+> Please change the subject to:
+> arm64: dts: amlogic: t7: add power domain controller node
+> 
+Will do.
+> With that:
+> Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
