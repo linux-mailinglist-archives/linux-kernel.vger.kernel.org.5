@@ -2,90 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 550747866D0
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 06:39:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A60B67866D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 06:44:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238973AbjHXEiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 00:38:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47732 "EHLO
+        id S239079AbjHXEnw convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 24 Aug 2023 00:43:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238908AbjHXEil (ORCPT
+        with ESMTP id S239003AbjHXEn0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 00:38:41 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91CDE10F0
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 21:38:39 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1bbc87ded50so43319995ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 21:38:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1692851919; x=1693456719;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=DjmeAFSbeYSQx6eaOnaJcOZMrGEAlfmPS+XdM6xijgo=;
-        b=nF4G3zvj/oRdJns1E23Jmn7/GrxQ9Fafwn2zCgySY2cvwA/rLmLxsUV4Ec2pIQhrzD
-         WInH1gjFuY8wyYGMwl8wQfgZMnbuI7XGZNyVlH5h5qBvmYkCFS2T11wmvKG6t5uLIJa9
-         EfXJrMif/6WO6N5S+LI98aJro9TK68e8JG0Mw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692851919; x=1693456719;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DjmeAFSbeYSQx6eaOnaJcOZMrGEAlfmPS+XdM6xijgo=;
-        b=iuMc8Bd1hMX6Wg6dL7/NgbKlBzdWrfGHmmod9+sQYPD1nXiKZfGXKF2MfNZPrB7aX5
-         gdf3dg8ZYGlRix3PXhK+JDSe8oXc4XeiaLCx37y15Ub8YJ2ZR9xe4d5Wrhuj5/mcy7hq
-         06ixd0xHUEOrqGhypJtXd7L2T+vcEW3/f7e8eivsnRvxbEJ9DlYMSi0xZsLFkDDtfc+C
-         QKw8deChNpiWccpSel9NKKGuuSuSAbuds/nvrVYE1EZUr1Xe48t631wZjPxmcbSoYr8k
-         SBYtUEPi86kASot77i1XVAHCu+nFcFWn9lAJOn3K+KKE8lBmGFF/ZlpssLVZR3EQrbB+
-         M+dQ==
-X-Gm-Message-State: AOJu0YywrR1mWhHNOWPn6uApUhCxItcwiwb5LDbSBGF/k294tMop5xmq
-        cnP41QFF2CjgQw7TIDGU4bwbeYdb3lhNyeKuSwU=
-X-Google-Smtp-Source: AGHT+IFLfR5iGhFORMLjIVK/dQhQFkboVCHuAZnpxgVO0XlCNNG37enCJL3sXb4VGRzResYRe1oNvg==
-X-Received: by 2002:a17:903:41cc:b0:1af:aafb:64c8 with SMTP id u12-20020a17090341cc00b001afaafb64c8mr12782247ple.21.1692851919061;
-        Wed, 23 Aug 2023 21:38:39 -0700 (PDT)
-Received: from google.com ([2401:fa00:8f:203:1ece:b679:4a91:d1e])
-        by smtp.gmail.com with ESMTPSA id ij30-20020a170902ab5e00b001b881a8251bsm11919322plb.106.2023.08.23.21.38.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Aug 2023 21:38:38 -0700 (PDT)
-Date:   Thu, 24 Aug 2023 13:38:32 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Qi Zheng <zhengqi.arch@bytedance.com>
-Cc:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
-        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
-        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
-        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
-        yujie.liu@intel.com, gregkh@linuxfoundation.org,
-        muchun.song@linux.dev, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>,
-        Minchan Kim <minchan@kernel.org>
-Subject: Re: [PATCH v5 37/45] zsmalloc: dynamically allocate the mm-zspool
- shrinker
-Message-ID: <20230824043832.GC610023@google.com>
-References: <20230824034304.37411-1-zhengqi.arch@bytedance.com>
- <20230824034304.37411-38-zhengqi.arch@bytedance.com>
+        Thu, 24 Aug 2023 00:43:26 -0400
+Received: from relay.hostedemail.com (smtprelay0013.hostedemail.com [216.40.44.13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6788810E4;
+        Wed, 23 Aug 2023 21:43:24 -0700 (PDT)
+Received: from omf11.hostedemail.com (a10.router.float.18 [10.200.18.1])
+        by unirelay10.hostedemail.com (Postfix) with ESMTP id 4F25FC0199;
+        Thu, 24 Aug 2023 04:43:22 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf11.hostedemail.com (Postfix) with ESMTPA id BF3892002C;
+        Thu, 24 Aug 2023 04:43:18 +0000 (UTC)
+Message-ID: <0155a718388cf598d2171795c129a93f04a1ddfd.camel@perches.com>
+Subject: Re: checkpatch complains about Reported-by block (was: [PATCH v3]
+ tpm: Enable hwrng only for Pluton on AMD CPUs)
+From:   Joe Perches <joe@perches.com>
+To:     Paul Menzel <pmenzel@molgen.mpg.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Andy Whitcroft <apw@canonical.com>
+Cc:     linux-integrity@vger.kernel.org,
+        Jerry Snitselaar <jsnitsel@redhat.com>, stable@vger.kernel.org,
+        Todd Brandt <todd.e.brandt@intel.com>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        linux-kernel@vger.kernel.org, Patrick Steinhardt <ps@pks.im>,
+        Ronan Pigott <ronan@rjp.ie>,
+        Raymond Jay Golo <rjgolo@gmail.com>
+Date:   Wed, 23 Aug 2023 21:43:17 -0700
+In-Reply-To: <3a9bf7a1-1664-401d-8cff-3a5d553bdd77@molgen.mpg.de>
+References: <20230822231510.2263255-1-jarkko@kernel.org>
+         <705b9769-4132-450b-bd47-2423c419db2a@molgen.mpg.de>
+         <CV03X3OEI7RE.3NI1QJ6MBJSHA@suppilovahvero>
+         <3a9bf7a1-1664-401d-8cff-3a5d553bdd77@molgen.mpg.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230824034304.37411-38-zhengqi.arch@bytedance.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+X-Rspamd-Queue-Id: BF3892002C
+X-Stat-Signature: 1xjjsce6i7jma615t5qrayscjq57i77b
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,
+        SPF_NONE,UNPARSEABLE_RELAY autolearn=no autolearn_force=no
         version=3.4.6
+X-Rspamd-Server: rspamout01
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX19JYEiz5PLpsLuruTuFz2VoiXh0OmEylcQ=
+X-HE-Tag: 1692852198-257671
+X-HE-Meta: U2FsdGVkX18dUYFgPAQ9ALE34cDSU20UTVW4v+/WfftjxcVwLDAO/iYlu2p9HTFx2nbunLChkhEy99hDhbsGyAVSwMlubZAymz5tXIdTjWR1KOLAi+hcDAkoRxwl3Ui+y3rfUF3WhAQivGMqptjwN9+Q8HMfHLirF6cxXKFdz7pSJO1aqFRGXLRq8EbDxCDmDma3KYVzhscvWv3cHFdLVS5sOef75KM+fs0vu73ins+f0XmsSj8yp97NsS4VVU/dp2hIOLvsW8tiwj1N7j2hcoHlh9c7AzajKKzDTCoyWHTULdcJketAj9AdxAOVdsqw7QrSd8zg29bJDWxfXfKx3mPvDKp5fzp+EsDgmds6MsLhHPjHgP1mpOZdZWAGNJiV//p8dWLuQkNxyXKBNi+TxAbB/I6qrzc7+iXM+rEIi9o=
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (23/08/24 11:42), Qi Zheng wrote:
-> In preparation for implementing lockless slab shrink, use new APIs to
-> dynamically allocate the mm-zspool shrinker, so that it can be freed
-> asynchronously via RCU. Then it doesn't need to wait for RCU read-side
-> critical section when releasing the struct zs_pool.
+On Wed, 2023-08-23 at 21:24 +0200, Paul Menzel wrote:
+> [Cc: +Andy, +Joe]
 > 
-> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-> Reviewed-by: Muchun Song <songmuchun@bytedance.com>
-> CC: Minchan Kim <minchan@kernel.org>
-> CC: Sergey Senozhatsky <senozhatsky@chromium.org>
+> 
+> Dear Jarkko, dear Andy, dear Joe,
+> 
+> 
+> Am 23.08.23 um 19:40 schrieb Jarkko Sakkinen:
+> > On Wed Aug 23, 2023 at 11:23 AM EEST, Paul Menzel wrote:
+> 
+> > > Am 23.08.23 um 01:15 schrieb Jarkko Sakkinen:
+> > > > The vendor check introduced by commit 554b841d4703 ("tpm: Disable RNG for
+> > > > all AMD fTPMs") doesn't work properly on a number of Intel fTPMs.  On the
+> > > > reported systems the TPM doesn't reply at bootup and returns back the
+> > > > command code. This makes the TPM fail probe.
+> > > > 
+> > > > Since only Microsoft Pluton is the only known combination of AMD CPU and
+> > > > fTPM from other vendor, disable hwrng otherwise. In order to make sysadmin
+> > > > aware of this, print also info message to the klog.
+> > > > 
+> > > > Cc: stable@vger.kernel.org
+> > > > Fixes: 554b841d4703 ("tpm: Disable RNG for all AMD fTPMs")
+> > > > Reported-by: Todd Brandt <todd.e.brandt@intel.com>
+> > > > Closes: https://bugzilla.kernel.org/show_bug.cgi?id=217804
+> > > > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> > > 
+> > > Mario’s patch also had the three reporters below listed:
+> > > 
+> > > Reported-by: Patrick Steinhardt <ps@pks.im>
+> > > Reported-by: Ronan Pigott <ronan@rjp.ie>
+> > > Reported-by: Raymond Jay Golo <rjgolo@gmail.com>
+> > 
+> > The problem here is that checkpatch throws three warnings:
+> > 
+> > WARNING: Reported-by: should be immediately followed by Closes: with a URL to the report
+> > #19:
+> > Reported-by: Patrick Steinhardt <ps@pks.im>
+> > Reported-by: Ronan Pigott <ronan@rjp.ie>
+> > 
+> > WARNING: Reported-by: should be immediately followed by Closes: with a URL to the report
+> > #20:
+> > Reported-by: Ronan Pigott <ronan@rjp.ie>
+> > Reported-by: Raymond Jay Golo <rjgolo@gmail.com>
+> > 
+> > WARNING: Reported-by: should be immediately followed by Closes: with a URL to the report
+> > #21:
+> > Reported-by: Raymond Jay Golo <rjgolo@gmail.com>
+> > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> > 
+> > Since bugzilla is not part of the documented process afaik, I used this
+> > field as the guideline:
+> > 
+> > Reported:	2023-08-17 20:59 UTC by Todd Brandt
+> > 
+> > How otherwise I should interpret kernel bugzilla?
+> 
+> How is the proper process to add more than one reporter (so they are 
+> noted and also added to CC), so that checkpatch.pl does not complain?
+> 
+> 
+> Kind regards,
+> 
+> Paul
+> 
+> 
+> > In any case new version is still needed as the commit message must
+> > contain a mention of "Lenovo Legion Y540" as the stimulus for doing
+> > this code change in the first place.
+> > 
+> > BR, Jarkko
 
-Reviewed-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+Well, if it's really desired to allow multiple consecutive reported-by:
+lines, maybe:
+---
+ scripts/checkpatch.pl | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 528f619520eb9..5b5c11ad04087 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -3179,6 +3179,8 @@ sub process {
+ 				if (!defined $lines[$linenr]) {
+ 					WARN("BAD_REPORTED_BY_LINK",
+ 					     "Reported-by: should be immediately followed by Closes: with a URL to the report\n" . $herecurr . "\n");
++				} elsif ($rawlines[$linenr] =~ /^\s*reported(?:|-and-tested)-by:/i) {
++					;
+ 				} elsif ($rawlines[$linenr] !~ /^closes:\s*/i) {
+ 					WARN("BAD_REPORTED_BY_LINK",
+ 					     "Reported-by: should be immediately followed by Closes: with a URL to the report\n" . $herecurr . $rawlines[$linenr] . "\n");
+
