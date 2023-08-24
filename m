@@ -2,117 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 700E7786C8B
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 12:06:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EA23786C99
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 12:12:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237557AbjHXKFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 06:05:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43330 "EHLO
+        id S239313AbjHXKLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 06:11:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236823AbjHXKFk (ORCPT
+        with ESMTP id S238544AbjHXKLv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 06:05:40 -0400
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8DCAB198A;
-        Thu, 24 Aug 2023 03:05:34 -0700 (PDT)
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 37OA50PX0003424, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 37OA50PX0003424
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 24 Aug 2023 18:05:00 +0800
-Received: from RTEXMBS03.realtek.com.tw (172.21.6.96) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.32; Thu, 24 Aug 2023 18:05:22 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS03.realtek.com.tw (172.21.6.96) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Thu, 24 Aug 2023 18:05:21 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d]) by
- RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d%5]) with mapi id
- 15.01.2375.007; Thu, 24 Aug 2023 18:05:21 +0800
-From:   =?utf-8?B?U3RhbmxleSBDaGFuZ1vmmIzogrLlvrdd?= 
-        <stanley_chang@realtek.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>
-CC:     Chanwoo Choi <cw00.choi@samsung.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Subject: RE: [PATCH v1 2/2] dt-bindings: extcon: Add Realtek DHC RTD SoC Type-C
-Thread-Topic: [PATCH v1 2/2] dt-bindings: extcon: Add Realtek DHC RTD SoC
- Type-C
-Thread-Index: AQHZ1ONxPQNQ8ikjYkmsM4V64Zamr6/17aQAgAMBw+D//4itAIAAj2Mw//+WrQCAAIcBcP//jWIAABDd9xA=
-Date:   Thu, 24 Aug 2023 10:05:21 +0000
-Message-ID: <671154b1b4aa4e3eaa33c53e67d1c641@realtek.com>
-References: <20230822102846.4683-1-stanley_chang@realtek.com>
- <20230822102846.4683-2-stanley_chang@realtek.com>
- <1e0632d6-73e9-4633-a709-bf9140f2fd32@linaro.org>
- <ca406c19e59145fd9e7e035ea5ad3eeb@realtek.com>
- <50ce8e71-613e-1ef5-0c23-67a2f6f78949@linaro.org>
- <1390ad28e50f493fa72209fe29b7f3f4@realtek.com>
- <5894c8db-4b85-e7dd-e894-33aa8a448153@linaro.org>
- <7e34f4bfd15244ac95e68ee2372ac0de@realtek.com>
- <b06c6161-0143-f1fe-2ea8-4c54ed824595@linaro.org>
-In-Reply-To: <b06c6161-0143-f1fe-2ea8-4c54ed824595@linaro.org>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.21.190.159]
-x-kse-serverinfo: RTEXMBS03.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Thu, 24 Aug 2023 06:11:51 -0400
+Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 296C3198A
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 03:11:49 -0700 (PDT)
+Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-59231a1ca9eso37533187b3.1
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 03:11:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692871908; x=1693476708;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Bl1Q50iBdvCe5yXtMKZeggNf2z/kDCkF0CSNbFHkckI=;
+        b=MWPeZiaV94eD0r+5t0wdUz9wReNqAYmRAENUMMJEkml4RH2wlEoFqGlDit+EWODwQA
+         5ZG4ehZHT9fkISlrVp95oFTdEQwKHpkGxTsn/Oa+djoo1naBWG+DRNh9KZDx+x0uUyNL
+         lkgk5aqZ8GpuvHQlymX/f19ZkYdlftRtLDWyBc2HBVNRqCi+JMwmsMdBG92IUaMytyH2
+         3npp5YsqUIzJjVXp2INqN26cid6g95//+SeEsv8EuIN4g9PPEIXfjxEPPW9IYbA/V/GO
+         Z6vgS6WlFMnff9hs2GXybOmJyjrcaMeF6EA4eF7cRWk/oVE7DabMtnx6g14lhoCR6srH
+         zVQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692871908; x=1693476708;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Bl1Q50iBdvCe5yXtMKZeggNf2z/kDCkF0CSNbFHkckI=;
+        b=Fh07aY3Ju3I7g3KzmBsN+Ij5lWcga+xluLSw5dYDizvGbPlV0AmtMkPlf4u6xICa42
+         QTBV7Al2tkzz/1SqxAV05MD9YmkN8uKsNDa0+ozri5q4Xmk4Lk5VZjhfJgi/TgOK2siP
+         k9t7P0YKvlOHHx0Vk1sgnYVwpjVHqzJ1s+cfpeoQBUShUzFRQOTdJPmU6c2IqJPfyIdG
+         uwrsbGwIV/1Qf02n+vLnmMXR3Zh7/R86oBF65/NGPP12FWPfDXBq2xNRypUxkyhlwIa7
+         bLdP+VwnBulqKDUAThhh12dQAyi//UtBDPH9Sxvu5uzyA/STO1Q1ry1pREbLLDYdi8kE
+         mhKQ==
+X-Gm-Message-State: AOJu0YxOBtjt4x5T0soqnSPnSGdkS8ZIVrRvkRuUUWCsOt4CIRAJmPxP
+        KH/7wZ+7IUU9lWA72oicsb+iQIi7dyVFaaSpqRseIQ==
+X-Google-Smtp-Source: AGHT+IGvSXY7+rdDaIUHF9HjDvskEigToneQarxKPoW1CYKgFy0fTTrMflFl3uOlx1h55l1O4xnlqO1ip0o2IVD4ULk=
+X-Received: by 2002:a0d:e692:0:b0:565:c21d:8ec6 with SMTP id
+ p140-20020a0de692000000b00565c21d8ec6mr14885752ywe.6.1692871908391; Thu, 24
+ Aug 2023 03:11:48 -0700 (PDT)
 MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230815014057.13589-1-wenchao.chen@unisoc.com> <20230815014057.13589-2-wenchao.chen@unisoc.com>
+In-Reply-To: <20230815014057.13589-2-wenchao.chen@unisoc.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 24 Aug 2023 12:11:12 +0200
+Message-ID: <CAPDyKFphAPOSj5L6Q8tdmD0S3EkxTW8EfMyXKsoUU2jqLydx=g@mail.gmail.com>
+Subject: Re: [PATCH V2 1/2] mmc: core: Add host specific tuning support for SD
+ HS mode
+To:     Wenchao Chen <wenchao.chen@unisoc.com>
+Cc:     adrian.hunter@intel.com, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, wenchao.chen666@gmail.com,
+        zhenxiong.lai@unisoc.com, chunyan.zhang@unisoc.com,
+        yuelin.tang@unisoc.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgS3J6eXN6dG9mLA0KDQoNCj4gT24gMjQvMDgvMjAyMyAxMToyMywgU3RhbmxleSBDaGFuZ1vm
-mIzogrLlvrddIHdyb3RlOg0KPiA+Pj4NCj4gPj4+Pj4NCj4gPj4+Pj4gQW5kIEkgd2lsbCBhZGQg
-4oCcY29ubmVjdG9y4oCdIHRvIHRoZSB0aXRsZS4NCj4gPj4+Pj4gdGl0bGU6IFJlYWx0ZWsgREhD
-IFJURCBTb0NzIFVTQiBUeXBlLUMgQ29ubmVjdG9yIGRldGVjdGlvbg0KPiA+Pj4+DQo+ID4+Pj4g
-U28gdXNiLi4uDQo+ID4+Pg0KPiA+Pj4gSSByZWZlciB0byB0aGlzIGJpbmRpbmcsIGFuZCBpdCBp
-cyBpbiBmb2xkZXIgYmluZGluZ3MvZXh0Y29uLg0KPiA+Pj4gZG9jcy9kZXZpY2V0cmVlL2JpbmRp
-bmdzL2V4dGNvbi9leHRjb24tdXNiYy1jcm9zLWVjLnlhbWwNCj4gPj4+IFRpdGxlOiBDaHJvbWVP
-UyBFQyBVU0IgVHlwZS1DIENhYmxlIGFuZCBBY2Nlc3NvcnkgRGV0ZWN0aW9uDQo+ID4+DQo+ID4+
-IFNvIG1heWJlIGl0IHNob3VsZCBiZSBtb3ZlZCBhcyB3ZWxsPw0KPiA+Pg0KPiA+PiBleHRjb24g
-aXMgYSBMaW51eCBmcmFtZXdvcmsuIElmIHlvdSB0aGluayBleHRjb24gaXMgYSB0eXBlIG9mDQo+
-ID4+IGhhcmR3YXJlLCB0aGVuIHBsZWFzZSB0ZWxsIG1lIHdoYXQgaXQgaXMgZXhhY3RseS4gUGxl
-YXNlIGRlZmluZSBpdC4NCj4gPj4gQW5kIHRoZW4gSSB3b25kZXIgd2h5IHRoZSBuYW1lICJleHRj
-b24iIGlzIGFueWhvdyBjb25uZWN0ZWQgdG8gVHlwZS1DDQo+IFVTQi4NCj4gPj4NCj4gPg0KPiA+
-IFdlbGwsIGZyb20gbXkgcG9pbnQgb2Ygdmlldy4gZXh0Y29uIHN0YW5kcyBmb3IgRXh0ZXJuYWwg
-Q29ubmVjdG9yLg0KPiANCj4gRm9yIGNvbm5lY3RvcnMgd2UgaGF2ZSBzZXBhcmF0ZSBkaXJlY3Rv
-cnkgLSBjb25uZWN0b3IuIFNvIG5vLCBpdCBpcyBub3QgYW4NCj4gZXh0ZXJuYWwgY29ubmVjdG9y
-Lg0KPiANCj4gQW55d2F5IHR5cGUgImV4dGVybmFsIGNvbm5lY3RvciIgdG8gV2lraXBlZGlhIG9y
-IHNvbWUgaGFyZHdhcmUNCj4gbWFudWZhY3R1cmVyIHdlYnNpdGUgYW5kIGZpbmQgbWUgZXhhbXBs
-ZXMgb2Ygc3VjaCBoYXJkd2FyZS4gSXQgZG9lcyBub3QNCj4gZXhpc3QuDQo+IA0KPiA+IEhETUkg
-Y29ubmVjdG9yLCBtaWNybyBVU0IgY29ubmVjdG9yLCB0eXBlLWMgY29ubmVjdG9yIGFyZSBhbGwg
-YSBraW5kIG9mDQo+IGhhcmR3YXJlLCB0aGV5IGFyZSBleHRlcm5hbCBjb25uZWN0b3JzLg0KPiAN
-Cj4gWW91IGRpZCBub3Qgd3JpdGUgaGVyZSBiaW5kaW5ncyBmb3IgY29ubmVjdG9yLi4uDQo+IA0K
-PiA+IEkgdGhpbmsgdGhlIFR5cGUtQyBjb25uZWN0b3IgaXMgYSBraW5kIG9mIGV4dGNvbi4NCj4g
-DQo+IFRoZXJlIGlzIG5vIHN1Y2ggdGhpbmcgYXMgZXh0Y29uLiBPdGhlcndpc2UgcGxlYXNlIHNo
-b3cgbWUgZGF0YXNoZWV0cyB1c2luZw0KPiB0aGlzIG5hbWUuIFNob3cgbWUgV2lraXBlZGlhIGFy
-dGljbGUuDQo+IA0KPiA+IE9mIGNvdXJzZSwgSSBhZ3JlZSB0aGF0IFR5cGUtQyBpcyBwYXJ0IG9m
-IFVTQi4NCj4gPg0KPiA+IFNvIHRoaXMgYmluZGluZyBjYW4gYmUgdXNiIG9yIGV4dGNvbiwgSSBk
-b24ndCB0aGluayBpdCBpcyBzdHJpY3RseSByZXN0cmljdGVkLg0KPiANCg0KV2VsbH4NCkkgaGF2
-ZSBubyBwb3NpdGlvbiB0byBhcmd1ZSB0aGlzIGlzc3VlLg0KSSBhZ3JlZSB0byBtb3ZlIHRoaXMg
-YmluZGluZyB0byB1c2IgZGlyZWN0b3J5DQpCdXQgd2hhdCdzIHVwIHdpdGggdGhpcyBkaXJlY3Rv
-cnkgIkRvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9leHRjb24vIiA/DQpXaGF0IGJp
-bmRpbmcgY2FuIGJlIHBsYWNlZCBpbiB0aGlzIGRpcmVjdG9yeT8NCg0KVGhhbmtzLA0KU3Rhbmxl
-eQ0K
+On Tue, 15 Aug 2023 at 03:41, Wenchao Chen <wenchao.chen@unisoc.com> wrote:
+>
+> Added .prepare_hs_tuning and .execute_hs_tuning host callbacks to
+> support host-specific tuning for SD high speed mode.
+
+Please clarify this is entirely optional, host specific - and that
+there is nothing in the SD spec that mentions this.
+
+>
+> Signed-off-by: Wenchao Chen <wenchao.chen@unisoc.com>
+> ---
+>  drivers/mmc/core/sd.c    | 12 ++++++++++++
+>  include/linux/mmc/host.h |  6 ++++++
+>  2 files changed, 18 insertions(+)
+>
+> diff --git a/drivers/mmc/core/sd.c b/drivers/mmc/core/sd.c
+> index 246ce027ae0a..ac2da8f2fbce 100644
+> --- a/drivers/mmc/core/sd.c
+> +++ b/drivers/mmc/core/sd.c
+> @@ -1518,6 +1518,12 @@ static int mmc_sd_init_card(struct mmc_host *host, u32 ocr,
+>                  */
+>                 mmc_set_clock(host, mmc_sd_get_max_clock(card));
+>
+> +               if (host->ops->prepare_hs_tuning) {
+
+Shouldn't we check if we actually succeeded to enable MMC_TIMING_SD_HS
+before invoking this callback?
+
+> +                       err = host->ops->prepare_hs_tuning(host, card);
+> +                       if (err)
+> +                               goto free_card;
+> +               }
+> +
+>                 /*
+>                  * Switch to wider bus (if supported).
+>                  */
+> @@ -1529,6 +1535,12 @@ static int mmc_sd_init_card(struct mmc_host *host, u32 ocr,
+>
+>                         mmc_set_bus_width(host, MMC_BUS_WIDTH_4);
+>                 }
+> +
+> +               if (host->ops->execute_hs_tuning) {
+
+Ditto.
+
+> +                       err = host->ops->execute_hs_tuning(host, card);
+> +                       if (err)
+> +                               goto free_card;
+> +               }
+>         }
+>  cont:
+>         if (!oldcard) {
+> diff --git a/include/linux/mmc/host.h b/include/linux/mmc/host.h
+> index 461d1543893b..13cf894b9e3c 100644
+> --- a/include/linux/mmc/host.h
+> +++ b/include/linux/mmc/host.h
+> @@ -184,6 +184,12 @@ struct mmc_host_ops {
+>         /* Execute HS400 tuning depending host driver */
+>         int     (*execute_hs400_tuning)(struct mmc_host *host, struct mmc_card *card);
+>
+> +       /* Prepare HS tuning depending host driver */
+
+How about rephrasing this into something along the lines of "Optional
+callback to prepare for SD high-speed tuning"
+
+> +       int     (*prepare_hs_tuning)(struct mmc_host *host, struct mmc_card *card);
+
+To make it more clear this if for SD high-speed, maybe we should
+rename the callback into:
+
+"prepare_sd_hs_tuning"
+
+> +
+> +       /* Execute HS tuning depending host driver */
+
+How about rephrasing this to something along the lines of "Optional
+callback to execute SD high-speed tuning"
+
+> +       int     (*execute_hs_tuning)(struct mmc_host *host, struct mmc_card *card);
+
+Maybe execute_sd_hs_tuning instead?
+
+> +
+>         /* Prepare switch to DDR during the HS400 init sequence */
+>         int     (*hs400_prepare_ddr)(struct mmc_host *host);
+>
+
+Kind regards
+Uffe
