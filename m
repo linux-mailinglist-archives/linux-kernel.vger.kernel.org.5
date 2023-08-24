@@ -2,174 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A21A787AA9
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 23:47:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B577787B1B
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 00:01:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243773AbjHXVqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 17:46:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48612 "EHLO
+        id S243796AbjHXWA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 18:00:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243768AbjHXVqR (ORCPT
+        with ESMTP id S243846AbjHXWAY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 17:46:17 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D678E7C;
-        Thu, 24 Aug 2023 14:46:15 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-319559fd67dso210528f8f.3;
-        Thu, 24 Aug 2023 14:46:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692913573; x=1693518373;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Jv0lTM8uBfeXOWvVVDcJ9oeJdudwiBMRLvDZHlkmsvI=;
-        b=Xh2TifXLZP3ohpVEGhT70uCm9sh5Dp09MSPFBJHFCZBljrO//yagZ86xpY1R/VWylm
-         Q77iSRZCYMqB+15GXTI04v0fSC4cO5nmPnlm3IxCZBm3AUbq0UTbYwzBM7aD0jiuM2B7
-         Q5yq99hxksg3/sFBUScm1MqI+Fc6l7MQuBpYB7x0kG2f70UaHDR6etJbtJVjmgoFoRRg
-         7hGVzBmrgcgDjEOIjhBnuLhYEw8nAtXGTz0uyaS8l8voQxHtjYB3UzoGZPe39VRbzaqe
-         WKntVKF91+r/YeAQVdLtC+Zif7SQ56B7Nli4KGT8aIf6mpkknVt8RBiJUfFHvs8EGopP
-         xFIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692913573; x=1693518373;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Jv0lTM8uBfeXOWvVVDcJ9oeJdudwiBMRLvDZHlkmsvI=;
-        b=MTuP4bFxMuHNE3hg4sMBsqmif3WS16Z7vqR9UfpqVReyxpZX1FAAOccoz88vaKeNZo
-         vXkZ7OqAY7SBfKSiX+rtNlSfPgK1vJnqVkXm6MKJQGBk4TWWrBhb3pOJgEGN7WWWoxj0
-         llODK6Hhlq5Kfm8SdVT9D06vaBRH7IYraeTonZhFDnSgw4mTPCjxwXP6uGy4KzDQeYBB
-         fPwEC65rE9TqTpHb9TgieC8YbiMs6Rt/CARiZN3GUeMqleEs+J/VuliVb0uaSv3FENJ5
-         Qe8+hOJT/ar88bT5MVhswp4g0gr5kufk2iAVEKLZS00WMDsS6f7bGHgQWf9eMaHF/R8X
-         NUJQ==
-X-Gm-Message-State: AOJu0YzMAUHXHpUS9ThmUgZXAPIWJzb2wtGcxLXEla0GZUXYlTsOFzPZ
-        k8NUvpMezFGseMXaZRSBUys=
-X-Google-Smtp-Source: AGHT+IGOq7LhO2o9APNZsg1ZRPsWtMxB5dNzwCQLvXzw/uDaa++M4H/gTJgHhCYpUy1DwWOUWPLFCQ==
-X-Received: by 2002:a5d:494c:0:b0:317:5e5e:60e0 with SMTP id r12-20020a5d494c000000b003175e5e60e0mr11771129wrs.28.1692913573343;
-        Thu, 24 Aug 2023 14:46:13 -0700 (PDT)
-Received: from mmaatuq-HP-Laptop-15-dy2xxx.. ([2001:8f8:1163:806e:f960:7197:6afd:b6ed])
-        by smtp.gmail.com with ESMTPSA id l1-20020a5d4101000000b0031c6ae19e27sm278550wrp.99.2023.08.24.14.46.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Aug 2023 14:46:12 -0700 (PDT)
-From:   Mahmoud Maatuq <mahmoudmatook.mm@gmail.com>
-To:     davem@davemloft.net, keescook@chromium.org, luto@amacapital.net,
-        netdev@vger.kernel.org, pabeni@redhat.com,
-        willemdebruijn.kernel@gmail.com, linux-kselftest@vger.kernel.org,
-        shuah@kernel.org, wad@chromium.org, kuba@kernel.org,
-        edumazet@google.com, linux-kernel@vger.kernel.org
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        Mahmoud Maatuq <mahmoudmatook.mm@gmail.com>
-Subject: [PATCH v3 2/2] selftests/net: replace ternary operator with min()/max()
-Date:   Fri, 25 Aug 2023 01:45:06 +0400
-Message-Id: <20230824214506.137505-2-mahmoudmatook.mm@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Thu, 24 Aug 2023 18:00:24 -0400
+Received: from mx0a-002e3701.pphosted.com (mx0a-002e3701.pphosted.com [148.163.147.86])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F30E1BD4;
+        Thu, 24 Aug 2023 15:00:19 -0700 (PDT)
+Received: from pps.filterd (m0150241.ppops.net [127.0.0.1])
+        by mx0a-002e3701.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37OKRHsA020061;
+        Thu, 24 Aug 2023 21:59:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pps0720;
+ bh=CASWTq5OVcRru8tc6k2AOfuwFzR62vtIBb/D4ZT1Ld4=;
+ b=oeNIPxZyiEEwh49S0qMv2u7t1Gzhhe6YRS81IFhnrhVDabWZMmRnn74MXA29g904tA0M
+ x718oPTlwtvhIy9lD6hbHwOqZVRJINPpp71h9e1I9+fDnNuDBPvPZSmPxqYm+/rpcCiL
+ D85no9wIBGjYjdNphHmOMVaEGhmSqii0bbhYOXxFFkdEpNZ+3VNTj+tQ+ZwR1Akq8myL
+ DuAw6oQZc4+/2v/rs6ur5PidgryDjI5CmAIgYgu3m1V4eDBgnQjLTMnv/Sl63YN3+0yM
+ IYjm6I2ReQKzR9K+uBbeRSb0PDGk101KIVKJeAfOoFYrR9+uWwd4zU7OLEMo1D3nsQUf Ew== 
+Received: from p1lg14878.it.hpe.com ([16.230.97.204])
+        by mx0a-002e3701.pphosted.com (PPS) with ESMTPS id 3sp69adf7e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 24 Aug 2023 21:59:38 +0000
+Received: from p1lg14885.dc01.its.hpecorp.net (unknown [10.119.18.236])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by p1lg14878.it.hpe.com (Postfix) with ESMTPS id E7574D2EA;
+        Thu, 24 Aug 2023 21:59:37 +0000 (UTC)
+Received: from dog.eag.rdlabs.hpecorp.net (unknown [16.231.227.39])
+        by p1lg14885.dc01.its.hpecorp.net (Postfix) with ESMTP id F2285809623;
+        Thu, 24 Aug 2023 21:59:36 +0000 (UTC)
+Received: by dog.eag.rdlabs.hpecorp.net (Postfix, from userid 48777)
+        id 482A0302F47FB; Thu, 24 Aug 2023 16:59:36 -0500 (CDT)
+From:   Kyle Meyer <kyle.meyer@hpe.com>
+To:     seanjc@google.com, pbonzini@redhat.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@intel.com,
+        x86@kernel.org, hpa@zytor.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, vkuznets@redhat.com,
+        dmatlack@google.com
+Cc:     russ.anderson@hpe.com, dimitri.sivanich@hpe.com,
+        steve.wahl@hpe.com, Kyle Meyer <kyle.meyer@hpe.com>
+Subject: [PATCH v3] KVM: x86: Add CONFIG_KVM_MAX_NR_VCPUS
+Date:   Thu, 24 Aug 2023 16:52:46 -0500
+Message-Id: <20230824215244.3897419-1-kyle.meyer@hpe.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Proofpoint-GUID: CiGzJTnl_NVB2nZUSj8HY8a4321aT84J
+X-Proofpoint-ORIG-GUID: CiGzJTnl_NVB2nZUSj8HY8a4321aT84J
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-24_18,2023-08-24_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ malwarescore=0 adultscore=0 spamscore=0 impostorscore=0 suspectscore=0
+ priorityscore=1501 bulkscore=0 clxscore=1015 mlxlogscore=999 phishscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308240191
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warning:
-tools/testing/selftests/net/udpgso_bench_tx.c:297:18-19: WARNING opportunity for min()
-tools/testing/selftests/net/udpgso_bench_tx.c:354:27-28: WARNING opportunity for min()
-tools/testing/selftests/net/so_txtime.c:129:24-26: WARNING opportunity for max()
-tools/testing/selftests/net/so_txtime.c:96:30-31: WARNING opportunity for max()
+Add a Kconfig entry to set the maximum number of vCPUs per KVM guest and
+set the default value to 4096 when MAXSMP is enabled.
 
-Signed-off-by: Mahmoud Maatuq <mahmoudmatook.mm@gmail.com>
+Suggested-by: Sean Christopherson <seanjc@google.com>
+Signed-off-by: Kyle Meyer <kyle.meyer@hpe.com>
 ---
-changes in v3:
-remove Suggested-by tag
-fix wrong comment inside selftests/net/Makefile
+v2 -> v3: Default KVM_MAX_VCPUS to 1024 when CONFIG_KVM_MAX_NR_VCPUS is not
+defined. This prevents build failures in arch/x86/events/intel/core.c and
+drivers/vfio/vfio_main.c when KVM is disabled.
 
-changes in v2:
-cast var cfg_mss to int to avoid static assertion
-after providing a stricter version of min() that does signedness checking.
----
- tools/testing/selftests/net/Makefile          | 2 ++
- tools/testing/selftests/net/so_txtime.c       | 7 ++++---
- tools/testing/selftests/net/udpgso_bench_tx.c | 6 +++---
- 3 files changed, 9 insertions(+), 6 deletions(-)
+ arch/x86/include/asm/kvm_host.h |  4 ++++
+ arch/x86/kvm/Kconfig            | 11 +++++++++++
+ 2 files changed, 15 insertions(+)
 
-diff --git a/tools/testing/selftests/net/Makefile b/tools/testing/selftests/net/Makefile
-index 7f3ab2a93ed6..f50f04a513a7 100644
---- a/tools/testing/selftests/net/Makefile
-+++ b/tools/testing/selftests/net/Makefile
-@@ -3,6 +3,8 @@
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index 3bc146dfd38d..cd27e0a00765 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -39,7 +39,11 @@
  
- CFLAGS =  -Wall -Wl,--no-as-needed -O2 -g
- CFLAGS += -I../../../../usr/include/ $(KHDR_INCLUDES)
-+# Additional include path to include kselftest.h
-+CFLAGS += -I../
+ #define __KVM_HAVE_ARCH_VCPU_DEBUGFS
  
- TEST_PROGS := run_netsocktests run_afpackettests test_bpf.sh netdevice.sh \
- 	      rtnetlink.sh xfrm_policy.sh test_blackhole_dev.sh
-diff --git a/tools/testing/selftests/net/so_txtime.c b/tools/testing/selftests/net/so_txtime.c
-index 2672ac0b6d1f..2936174e7de4 100644
---- a/tools/testing/selftests/net/so_txtime.c
-+++ b/tools/testing/selftests/net/so_txtime.c
-@@ -33,6 +33,8 @@
- #include <unistd.h>
- #include <poll.h>
++#ifdef CONFIG_KVM_MAX_NR_VCPUS
++#define KVM_MAX_VCPUS CONFIG_KVM_MAX_NR_VCPUS
++#else
+ #define KVM_MAX_VCPUS 1024
++#endif
  
-+#include "kselftest.h"
+ /*
+  * In x86, the VCPU ID corresponds to the APIC ID, and APIC IDs
+diff --git a/arch/x86/kvm/Kconfig b/arch/x86/kvm/Kconfig
+index 89ca7f4c1464..e730e8255e22 100644
+--- a/arch/x86/kvm/Kconfig
++++ b/arch/x86/kvm/Kconfig
+@@ -141,4 +141,15 @@ config KVM_XEN
+ config KVM_EXTERNAL_WRITE_TRACKING
+ 	bool
+ 
++config KVM_MAX_NR_VCPUS
++	int "Maximum number of vCPUs per KVM guest"
++	depends on KVM
++	range 1024 4096
++	default 4096 if MAXSMP
++	default 1024
++	help
++	  Set the maximum number of vCPUs per KVM guest. Larger values will increase
++	  the memory footprint of each KVM guest, regardless of how many vCPUs are
++	  configured.
 +
- static int	cfg_clockid	= CLOCK_TAI;
- static uint16_t	cfg_port	= 8000;
- static int	cfg_variance_us	= 4000;
-@@ -93,8 +95,7 @@ static void do_send_one(int fdt, struct timed_send *ts)
- 		msg.msg_controllen = sizeof(control);
- 
- 		tdeliver = glob_tstart + ts->delay_us * 1000;
--		tdeliver_max = tdeliver_max > tdeliver ?
--			       tdeliver_max : tdeliver;
-+		tdeliver_max = max(tdeliver_max, tdeliver);
- 
- 		cm = CMSG_FIRSTHDR(&msg);
- 		cm->cmsg_level = SOL_SOCKET;
-@@ -126,7 +127,7 @@ static void do_recv_one(int fdr, struct timed_send *ts)
- 		error(1, 0, "read: %dB", ret);
- 
- 	tstop = (gettime_ns(cfg_clockid) - glob_tstart) / 1000;
--	texpect = ts->delay_us >= 0 ? ts->delay_us : 0;
-+	texpect = max(ts->delay_us, 0);
- 
- 	fprintf(stderr, "payload:%c delay:%lld expected:%lld (us)\n",
- 			rbuf[0], (long long)tstop, (long long)texpect);
-diff --git a/tools/testing/selftests/net/udpgso_bench_tx.c b/tools/testing/selftests/net/udpgso_bench_tx.c
-index 477392715a9a..6bd32a312901 100644
---- a/tools/testing/selftests/net/udpgso_bench_tx.c
-+++ b/tools/testing/selftests/net/udpgso_bench_tx.c
-@@ -25,7 +25,7 @@
- #include <sys/types.h>
- #include <unistd.h>
- 
--#include "../kselftest.h"
-+#include "kselftest.h"
- 
- #ifndef ETH_MAX_MTU
- #define ETH_MAX_MTU 0xFFFFU
-@@ -294,7 +294,7 @@ static int send_udp(int fd, char *data)
- 	total_len = cfg_payload_len;
- 
- 	while (total_len) {
--		len = total_len < cfg_mss ? total_len : cfg_mss;
-+		len = min(total_len, (int)cfg_mss);
- 
- 		ret = sendto(fd, data, len, cfg_zerocopy ? MSG_ZEROCOPY : 0,
- 			     cfg_connected ? NULL : (void *)&cfg_dst_addr,
-@@ -351,7 +351,7 @@ static int send_udp_sendmmsg(int fd, char *data)
- 			error(1, 0, "sendmmsg: exceeds max_nr_msg");
- 
- 		iov[i].iov_base = data + off;
--		iov[i].iov_len = cfg_mss < left ? cfg_mss : left;
-+		iov[i].iov_len = min(cfg_mss, left);
- 
- 		mmsgs[i].msg_hdr.msg_iov = iov + i;
- 		mmsgs[i].msg_hdr.msg_iovlen = 1;
+ endif # VIRTUALIZATION
 -- 
-2.34.1
+2.26.2
 
