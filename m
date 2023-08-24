@@ -2,48 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7A6A7875A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 18:41:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D9F87875AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 18:41:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242632AbjHXQkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 12:40:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60546 "EHLO
+        id S242687AbjHXQkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 12:40:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242673AbjHXQkM (ORCPT
+        with ESMTP id S236768AbjHXQkY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 12:40:12 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8C2D198;
-        Thu, 24 Aug 2023 09:40:06 -0700 (PDT)
-Received: from ginger.. (unknown [189.115.8.42])
+        Thu, 24 Aug 2023 12:40:24 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68B09E5E;
+        Thu, 24 Aug 2023 09:40:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        (Authenticated sender: koike)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 3F9916607276;
-        Thu, 24 Aug 2023 17:40:03 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1692895205;
-        bh=J8b2QT9rrJ018sKXflFL3FjdhNbqyS9w7fXnjXrLUcM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ROoNObRj3jfoWAYldXHpGfSLSdoQL0iecq4jjC3aAMkDzvlfJf2j0KKhKC8dTCUXx
-         JVmPBX4RUoJxu7m9UWOJwaMH6iyvO1lvxAEjYRyTpodLJovyHP7L8UjICJFSQzn5OL
-         ko1+HLg9AfvzY3TfqoSsPeu9Dsuezfo5I5J0VgIQMRqY7oLkslDARqwOft+KNdMwzI
-         WD+93mbT9JraJwmKrtxoROYdj3bb7jb6QPvcvqplnYg4TVozPi9nr8zYyfo0H/4YqG
-         VVWUqSkwCHJNJEXPjDaFCc2oIAaw9AmDFz4py4LTA8WJE9bs9zgBaxm0j0M3eTyRON
-         U8mgzqBI6QLww==
-From:   Helen Koike <helen.koike@collabora.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     daniel.vetter@ffwll.ch, linux-kernel@vger.kernel.org,
-        linux-next@vger.kernel.org, airlied@gmail.com
-Subject: [PATCH] drm: ci: docs: fix build warning - add missing scape
-Date:   Thu, 24 Aug 2023 13:39:54 -0300
-Message-Id: <20230824163954.47881-1-helen.koike@collabora.com>
-X-Mailer: git-send-email 2.34.1
+        by dfw.source.kernel.org (Postfix) with ESMTPS id ECF7D673DC;
+        Thu, 24 Aug 2023 16:40:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDB98C433CA;
+        Thu, 24 Aug 2023 16:40:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1692895221;
+        bh=4e06H7VcbeP0wJI+cNsJmxHmi54j3RoRZWY0z6/rWLM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IRFvXzN7U7fH2Vqh9ICN+vGBH+5S2BX4sKsuBMm7Tg4eknKTe0OZDCh/ufYNmzRTh
+         f040ZPz4veBtvTIrsd4eg/5Gd/FVhRn2GpVWC3PfVdhkgIitZ/7dTlsXbHR3T2LLW1
+         dnT63sWg7d0nqo8F9P34R4ExT9EXb7YOU6mw2OSQ=
+Date:   Thu, 24 Aug 2023 18:40:18 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>, stable@vger.kernel.org,
+        patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+Subject: Re: [PATCH 6.1 000/194] 6.1.47-rc1 review
+Message-ID: <2023082404-ion-jaunt-a14f@gregkh>
+References: <20230821194122.695845670@linuxfoundation.org>
+ <991b93d2-9fde-4233-97d5-1133a9360d02@roeck-us.net>
+ <2023082309-veggie-unwoven-a7df@gregkh>
+ <CA+G9fYvwxuVpSn24YvtdNXaofg2JtZDREatOpDsKTVJX+nFN3Q@mail.gmail.com>
+ <2d8a5f48-6c50-4c12-8a3d-23e621c6b722@roeck-us.net>
+ <2023082325-expansion-revoke-1f3a@gregkh>
+ <2023082401-arrange-bulk-d42a@gregkh>
+ <4b8fcb23-c5e3-4bf1-957f-f0cc717564be@roeck-us.net>
+ <2023082459-oxidize-script-77e4@gregkh>
+ <78a26d15-68eb-4a6f-a092-f7a554aa29e7@roeck-us.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <78a26d15-68eb-4a6f-a092-f7a554aa29e7@roeck-us.net>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,33 +65,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following warning:
+On Thu, Aug 24, 2023 at 08:58:46AM -0700, Guenter Roeck wrote:
+> On Thu, Aug 24, 2023 at 05:15:30PM +0200, Greg Kroah-Hartman wrote:
+> [ ... ]
+> > 
+> > This might be an issue on AMD chips, but for some reason, in running
+> > this kernel on my systems here, I have no boot warnings at all.  I
+> > blamed it on them being only AMD chips.  If that's not the issue then I
+> > really have no idea, sorry.
+> > 
+> 
+> AFAIK it depends on the compiler used and on the enabled debug options.
+> At some point I lost track about what exactly has to be enabled to see
+> the problem. We see it a lot with our (ChromeOS) debug kernel testing
+> which has various debug options enabled, to the point where we may
+> temporarily remove the warning from the kernel to stop the noise.
+> 
+> Alternatively, as I had suggested earlier, we could revert all srso patches
+> because they only seem to cause trouble. So far I have been resisting that
+> because I am concerned that it would make things even worse (like one can
+> not really revert a heart surgery without doing even more damage).
 
-Documentation/gpu/automated_testing.rst:55: WARNING: Inline emphasis start-string without end-string.
+If you don't want the feature, you can disable it at build time (I
+think), and I know you can disable it at runtime.  But there are groups
+out that that "need" this, to solve a known security hole in some cpus,
+so it is required for them.  To remove the code entirely would not be
+good for them, so I will say, if they are the ones that need this, they
+should help fix this warning, no one else should be seeing it :)
 
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Helen Koike <helen.koike@collabora.com>
+thanks,
 
----
-
-Patch for topic/drm-ci
----
- Documentation/gpu/automated_testing.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/Documentation/gpu/automated_testing.rst b/Documentation/gpu/automated_testing.rst
-index 1b87b802ac7f..469b6fb65c30 100644
---- a/Documentation/gpu/automated_testing.rst
-+++ b/Documentation/gpu/automated_testing.rst
-@@ -52,7 +52,7 @@ IGT_VERSION
- drivers/gpu/drm/ci/testlist.txt
- -------------------------------
- 
--IGT tests to be run on all drivers (unless mentioned in a driver's *-skips.txt
-+IGT tests to be run on all drivers (unless mentioned in a driver's \*-skips.txt
- file, see below).
- 
- drivers/gpu/drm/ci/${DRIVER_NAME}-${HW_REVISION}-fails.txt
--- 
-2.34.1
-
+greg k-h
