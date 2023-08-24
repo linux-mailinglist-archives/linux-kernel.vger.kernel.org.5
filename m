@@ -2,70 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D9F2787747
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 19:48:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BC0F787750
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 19:54:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242915AbjHXRrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 13:47:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37914 "EHLO
+        id S242764AbjHXRxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 13:53:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240215AbjHXRrY (ORCPT
+        with ESMTP id S242335AbjHXRxL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 13:47:24 -0400
-Received: from cstnet.cn (smtp84.cstnet.cn [159.226.251.84])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B7001BD8;
-        Thu, 24 Aug 2023 10:47:22 -0700 (PDT)
-Received: from [192.168.0.107] (unknown [111.197.209.91])
-        by APP-05 (Coremail) with SMTP id zQCowAAnQgmTl+dkmArTBA--.2605S2;
-        Fri, 25 Aug 2023 01:47:00 +0800 (CST)
-Message-ID: <3ba51c81-7eca-b1b5-c89d-47b292b65641@iscas.ac.cn>
-Date:   Fri, 25 Aug 2023 01:46:59 +0800
+        Thu, 24 Aug 2023 13:53:11 -0400
+Received: from relay.yourmailgateway.de (relay.yourmailgateway.de [188.68.63.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C9BD1BD9;
+        Thu, 24 Aug 2023 10:53:09 -0700 (PDT)
+Received: from mors-relay8203.netcup.net (localhost [127.0.0.1])
+        by mors-relay8203.netcup.net (Postfix) with ESMTPS id 4RWrKH6bckz8Ym7;
+        Thu, 24 Aug 2023 17:53:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=zint.sh; s=key2;
+        t=1692899587; bh=9z6Wo+e2ikvl+tHAYuVgs7vRHz/NQAhG7IflTB8QWso=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=D2cSF2pDKOhr4Zb6p/zlTICgNyBz5HqSsuO26oRN5Lws632eacB2WDdLZItHAEuJm
+         9VQU+evizqSO7/n8X2r/IQQOhK2MXw41chRxzOGBsDuPPLgul30gM2DPjcqe7J2zKA
+         Czdl3fzgzTq/8lw6wtHQQg/h3yipnW/OphomW/l6NfhtSxNoFj4NAYoKff371ICOEo
+         7vhsZWL4ncFt5F6MhF3YXNk/e1L91areUSQUb+1ssTl7UspQ94QRDoE80QWGNVD22K
+         5nISGrjY5KQLvhSLJUdFWKiY+C687PGsi8qnonygaSWOuirvyHNFkOb8WqL+ReJU2L
+         W0xtpoyrTU5vQ==
+Received: from policy02-mors.netcup.net (unknown [46.38.225.35])
+        by mors-relay8203.netcup.net (Postfix) with ESMTPS id 4RWrKH5t3Pz8Ym6;
+        Thu, 24 Aug 2023 17:53:07 +0000 (UTC)
+Received: from mxe217.netcup.net (unknown [10.243.12.53])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by policy02-mors.netcup.net (Postfix) with ESMTPS id 4RWrKG6kntz8sZN;
+        Thu, 24 Aug 2023 19:53:06 +0200 (CEST)
+Received: from [192.168.33.30] (p5dcce04c.dip0.t-ipconnect.de [93.204.224.76])
+        by mxe217.netcup.net (Postfix) with ESMTPSA id 70061819A2;
+        Thu, 24 Aug 2023 19:52:51 +0200 (CEST)
+Message-ID: <730f3107-f7b6-4260-837e-5ddad3a40e35@zint.sh>
+Date:   Thu, 24 Aug 2023 19:52:51 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v5] riscv: Handle zicsr/zifencei issue between gcc and
- binutils
-Content-Language: en-US
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Conor Dooley <conor.dooley@microchip.com>,
-        patchwork-bot+linux-riscv@kernel.org,
-        linux-riscv@lists.infradead.org, paul.walmsley@sifive.com,
-        palmer@dabbelt.com, aou@eecs.berkeley.edu, nathan@kernel.org,
-        ndesaulniers@google.com, trix@redhat.com, bmeng@tinylab.org,
-        guoren@kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, stable@vger.kernel.org
-References: <20230809165648.21071-1-xingmingzheng@iscas.ac.cn>
- <169228562484.20811.14246462375671910714.git-patchwork-notify@kernel.org>
- <20230823-captive-abdomen-befd942a4a73@wendy>
- <20230823-facelift-ovary-41f2eb4d9eac@spud>
- <4677fc33-6e76-21e6-2a7f-f12670bc1ce2@iscas.ac.cn>
- <4177c0c5-4d36-75e1-84e2-c6ac82b74e50@iscas.ac.cn>
- <20230824-stick-neutron-839dfdfa0538@spud>
-From:   Mingzheng Xing <xingmingzheng@iscas.ac.cn>
-Organization: ISCAS
-In-Reply-To: <20230824-stick-neutron-839dfdfa0538@spud>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/1] backlight: hid_bl: Add VESA VCP HID backlight
+ driver
+Content-Language: de-DE, en-US
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     Helge Deller <deller@gmx.de>,
+        =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas@t-8ch.de>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-input@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Lee Jones <lee@kernel.org>
+References: <20230820094118.20521-1-julius@zint.sh>
+ <20230820094118.20521-2-julius@zint.sh>
+ <2b7cf5af-1d96-8650-ac93-b1243bab5d7a@wanadoo.fr>
+From:   Julius Zint <julius@zint.sh>
+In-Reply-To: <2b7cf5af-1d96-8650-ac93-b1243bab5d7a@wanadoo.fr>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: zQCowAAnQgmTl+dkmArTBA--.2605S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxGw48Xw47WFy3ArW5WFWDtwb_yoW5ZFyxpa
-        yrKFyDKrWUXr48Jrn7tr1UX3Wjyr4ft34rXr1DJrW5Jr909F1FqFykZr1j9F9rZr4rCr40
-        yr45WasrZr1qyaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvlb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4
-        A2jsIEc7CjxVAFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l
-        c7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJV
-        W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
-        1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
-        IIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvE
-        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
-        DU0xZFpf9x07beAp5UUUUU=
-X-Originating-IP: [111.197.209.91]
-X-CM-SenderInfo: 50lqwzhlqj6xxhqjqxpvfd2hldfou0/1tbiCQYNCmTnYihoYAAAsJ
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+X-Rspamd-Queue-Id: 70061819A2
+X-Rspamd-Server: rspamd-worker-8404
+X-NC-CID: /spk1Hi8yFoovRaL0cEh4YroAazUgiTJ3J8Dapvo
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,78 +74,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/25/23 01:33, Conor Dooley wrote:
-> On Fri, Aug 25, 2023 at 01:30:36AM +0800, Mingzheng Xing wrote:
->> On 8/24/23 19:32, Mingzheng Xing wrote:
->>> On 8/23/23 21:31, Conor Dooley wrote:
->>>> On Wed, Aug 23, 2023 at 12:51:13PM +0100, Conor Dooley wrote:
->>>>> On Thu, Aug 17, 2023 at 03:20:24PM +0000,
->>>>> patchwork-bot+linux-riscv@kernel.org wrote:
->>>>>> Hello:
->>>>>>
->>>>>> This patch was applied to riscv/linux.git (fixes)
->>>>>> by Palmer Dabbelt <palmer@rivosinc.com>:
->>>>>>
->>>>>> On Thu, 10 Aug 2023 00:56:48 +0800 you wrote:
->>>>>>> Binutils-2.38 and GCC-12.1.0 bumped[0][1] the default
->>>>>>> ISA spec to the newer
->>>>>>> 20191213 version which moves some instructions from the
->>>>>>> I extension to the
->>>>>>> Zicsr and Zifencei extensions. So if one of the binutils
->>>>>>> and GCC exceeds
->>>>>>> that version, we should explicitly specifying Zicsr and
->>>>>>> Zifencei via -march
->>>>>>> to cope with the new changes. but this only occurs when
->>>>>>> binutils >= 2.36
->>>>>>> and GCC >= 11.1.0. It's a different story when binutils < 2.36.
->>>>>>>
->>>>>>> [...]
->>>>>> Here is the summary with links:
->>>>>>     - [v5] riscv: Handle zicsr/zifencei issue between gcc and binutils
->>>>>>       https://git.kernel.org/riscv/c/ca09f772ccca
->>>>> *sigh* so this breaks the build for gcc-11 & binutils 2.37 w/
->>>>>      Assembler messages:
->>>>>      Error: cannot find default versions of the ISA extension `zicsr'
->>>>>      Error: cannot find default versions of the ISA extension `zifencei'
->>>>>
->>>>> I'll have a poke later.
->>>> So uh, are we sure that this should not be:
->>>> -       depends on (CC_IS_CLANG && CLANG_VERSION < 170000) ||
->>>> (CC_IS_GCC && GCC_VERSION < 110100)
->>>> +       depends on (CC_IS_CLANG && CLANG_VERSION < 170000) ||
->>>> (CC_IS_GCC && GCC_VERSION <= 110100)
->>>>
->>>> My gcc-11.1 + binutils 2.37 toolchain built from riscv-gnu-toolchain
->>>> doesn't have the default versions & the above diff fixes the build.
->>> I reproduced the error, the combination of gcc-11.1 and
->>> binutils 2.37 does cause errors. What a surprise, since binutils
->>> 2.36 and 2.38 are fine.
->>>
->>> I used git bisect to locate this commit[1] for binutils.
->>> I'll test this diff in more detail later. Thanks!
->>>
->>> [1] https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=f0bae2552db1dd4f1995608fbf6648fcee4e9e0c
->>>
->> Hi, Conor.
->> The above error does originate from link[1] mentioned above, which was
->> resolved in gcc-12.1.0[2], and gcc-11.3.0 made the backport[3].
->> So gcc-11.2.0 combined with binutils 2.37 produces the same error.
->> I think we should do the following diff to fix it:
->> -       depends on (CC_IS_CLANG && CLANG_VERSION < 170000) || (CC_IS_GCC &&
->> GCC_VERSION < 110100)
->> +       depends on (CC_IS_CLANG && CLANG_VERSION < 170000) || (CC_IS_GCC &&
->> GCC_VERSION < 110300)
-> That sounds good to me. Can you make that a real patch please?
-
-Okey.
-Just a question, I see that the previous patch has been merged
-into 6.5-rc7, and now a new fix patch should be sent out based
-on that, right?
-
-
-Best Regards,
-Mingzheng.
-
+On 20.08.23 12:06, Christophe JAILLET wrote:
+> [...]
 >
-> Thanks for working on it :)
+>> +static void hid_bl_remove(struct hid_device *hdev)
+>> +{
+>> +    struct backlight_device *bl;
+>> +    struct hid_bl_data *data;
+>> +
+>> +    hid_dbg(hdev, "remove\n");
+>> +    bl = hid_get_drvdata(hdev);
+>> +    data = bl_get_data(bl);
+>> +
+>> +    devm_backlight_device_unregister(&hdev->dev, bl);
+>
+> Hi,
+>
+> If this need to be called here, before the hid_() calls below, there 
+> seems to be no real point in using devm_backlight_device_register() / 
+> devm_backlight_device_unregister().
+>
+> The non-devm_ version should be enough.
+The non-devm_ version is marked deprecated. As for the order, I am not 
+really sure. I am
+concerned about someone updating the brightness while its being removed. 
+So the HID device
+would already have been stopped and then I would issue a request and 
+wait for completion.
+
+If hid_hw_request and hid_hw_wait can handle this situation we are fine.
+>
+>> +    hid_hw_close(hdev);
+>> +    hid_hw_stop(hdev);
+>> +    hid_set_drvdata(hdev, NULL);
+>> +    devm_kfree(&hdev->dev, data);
+>
+> 'data' is devm_kzalloc()'ed.
+> It is likely that this explicit devm_kfree() could be saved. It will 
+> be freed by the framework.
+>
+>> +}
+>
+> [...]
+>
+>> +    if (input_field->logical_maximum != 
+>> feature_field->logical_maximum) {
+>> +        hid_warn(hdev, "maximums do not match: %d / %d\n",
+>> +             input_field->logical_maximum,
+>> +             feature_field->logical_maximum);
+>> +        ret = -ENODEV;
+>> +        goto exit_stop;
+>> +    }
+>> +
+>> +    hid_dbg(hdev, "Monitor VESA VCP with brightness control\n");
+>> +
+>> +    ret = hid_hw_open(hdev);
+>> +    if (ret) {
+>> +        hid_err(hdev, "hw open failed: %d\n", ret);
+>> +        goto exit_stop;
+>> +    }
+>> +
+>> +    data = devm_kzalloc(&hdev->dev, sizeof(*data), GFP_KERNEL);
+>> +    if (data == NULL) {
+>> +        ret = -ENOMEM;
+>> +        goto exit_stop;
+>
+> exit_free?
+> in order to undo the hid_hw_open() just above.
+Yes, my mistake. This does not call hid_hw_close(). I will fix it in v4.
+>
+>> +    }
+>> +    data->hdev = hdev;
+>> +    data->min_brightness = input_field->logical_minimum;
+>> +    data->max_brightness = input_field->logical_maximum;
+>> +    data->input_field = input_field;
+>> +    data->feature_field = feature_field;
+>> +
+>> +    memset(&props, 0, sizeof(props));
+>> +    props.type = BACKLIGHT_RAW;
+>> +    props.max_brightness = data->max_brightness - data->min_brightness;
+>> +
+>> +    bl = devm_backlight_device_register(&hdev->dev, "vesa_vcp",
+>> +                        &hdev->dev, data,
+>> +                        &hid_bl_ops,
+>> +                        &props);
+>> +    if (IS_ERR(bl)) {
+>> +        ret = PTR_ERR(bl);
+>> +        hid_err(hdev, "failed to register backlight: %d\n", ret);
+>> +        goto exit_free;
+>> +    }
+>> +
+>> +    hid_set_drvdata(hdev, bl);
+>> +
+>> +    return 0;
+>> +
+>> +exit_free:
+>> +    hid_hw_close(hdev);
+>> +    devm_kfree(&hdev->dev, data);
+>
+> 'data' is devm_kzalloc()'ed.
+> It is likely that this explicit devm_kfree() could be saved. It will 
+> be freed by the framework.
+>
+>> +
+>> +exit_stop:
+>> +    hid_hw_stop(hdev);
+>> +    return ret;
+>> +}
+>
+> [...]
+I will remove all of the explicit calls to devm_kfree (and others) in v4 
+(and test it thoroughly).
+
+Thank you for the helpful review.
+
+Julius
 
