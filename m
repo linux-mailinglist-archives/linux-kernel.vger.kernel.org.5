@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 253EA786539
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 04:23:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0700786545
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 04:23:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239351AbjHXCTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 22:19:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40706 "EHLO
+        id S239392AbjHXCTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 22:19:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239266AbjHXCSd (ORCPT
+        with ESMTP id S239301AbjHXCSd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 23 Aug 2023 22:18:33 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C2D310C4
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 576AA10C7
         for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 19:18:31 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9C15B633C6
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CE45B64A3B
         for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 02:18:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F34E6C433C9;
-        Thu, 24 Aug 2023 02:18:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D2B8C433CD;
+        Thu, 24 Aug 2023 02:18:30 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.96)
         (envelope-from <rostedt@goodmis.org>)
-        id 1qYzvu-001hQ7-2H;
+        id 1qYzvu-001hQg-2w;
         Wed, 23 Aug 2023 22:18:50 -0400
-Message-ID: <20230824021850.515849153@goodmis.org>
+Message-ID: <20230824021850.726268959@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Wed, 23 Aug 2023 22:18:13 -0400
+Date:   Wed, 23 Aug 2023 22:18:14 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
@@ -42,7 +42,7 @@ Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
         Leonardo Bras <leobras@redhat.com>,
         Frederic Weisbecker <frederic@kernel.org>,
         Valentin Schneider <vschneid@redhat.com>
-Subject: [for-next][PATCH 01/14] tracing/filters: Dynamically allocate filter_pred.regex
+Subject: [for-next][PATCH 02/14] tracing/filters: Enable filtering a cpumask field by another cpumask
 References: <20230824021812.938245293@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -57,27 +57,22 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Valentin Schneider <vschneid@redhat.com>
 
-Every predicate allocation includes a MAX_FILTER_STR_VAL (256) char array
-in the regex field, even if the predicate function does not use the field.
+The recently introduced ipi_send_cpumask trace event contains a cpumask
+field, but it currently cannot be used in filter expressions.
 
-A later commit will introduce a dynamically allocated cpumask to struct
-filter_pred, which will require a dedicated freeing function. Bite the
-bullet and make filter_pred.regex dynamically allocated.
+Make event filtering aware of cpumask fields, and allow these to be
+filtered by a user-provided cpumask.
 
-While at it, reorder the fields of filter_pred to fill in the byte
-holes. The struct now fits on a single cacheline.
+The user-provided cpumask is to be given in cpulist format and wrapped as:
+"CPUS{$cpulist}". The use of curly braces instead of parentheses is to
+prevent predicate_parse() from parsing the contents of CPUS{...} as a
+full-fledged predicate subexpression.
 
-No change in behaviour intended.
+This enables e.g.:
 
-The kfree()'s were patched via Coccinelle:
-  @@
-  struct filter_pred *pred;
-  @@
+$ trace-cmd record -e 'ipi_send_cpumask' -f 'cpumask & CPUS{2,4,6,8-32}'
 
-  -kfree(pred);
-  +free_predicate(pred);
-
-Link: https://lkml.kernel.org/r/20230707172155.70873-2-vschneid@redhat.com
+Link: https://lkml.kernel.org/r/20230707172155.70873-3-vschneid@redhat.com
 
 Cc: Masami Hiramatsu <mhiramat@kernel.org>
 Cc: Jonathan Corbet <corbet@lwn.net>
@@ -89,186 +84,185 @@ Cc: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Valentin Schneider <vschneid@redhat.com>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- kernel/trace/trace_events_filter.c | 64 ++++++++++++++++++------------
- 1 file changed, 39 insertions(+), 25 deletions(-)
+ include/linux/trace_events.h       |  1 +
+ kernel/trace/trace_events_filter.c | 97 +++++++++++++++++++++++++++++-
+ 2 files changed, 96 insertions(+), 2 deletions(-)
 
+diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
+index c17623c78029..1600aeb8e1a3 100644
+--- a/include/linux/trace_events.h
++++ b/include/linux/trace_events.h
+@@ -808,6 +808,7 @@ enum {
+ 	FILTER_RDYN_STRING,
+ 	FILTER_PTR_STRING,
+ 	FILTER_TRACE_FN,
++	FILTER_CPUMASK,
+ 	FILTER_COMM,
+ 	FILTER_CPU,
+ 	FILTER_STACKTRACE,
 diff --git a/kernel/trace/trace_events_filter.c b/kernel/trace/trace_events_filter.c
-index 1dad64267878..91fc9990107f 100644
+index 91fc9990107f..cb1863dfa280 100644
 --- a/kernel/trace/trace_events_filter.c
 +++ b/kernel/trace/trace_events_filter.c
-@@ -70,15 +70,15 @@ enum filter_pred_fn {
- };
+@@ -64,6 +64,7 @@ enum filter_pred_fn {
+ 	FILTER_PRED_FN_PCHAR_USER,
+ 	FILTER_PRED_FN_PCHAR,
+ 	FILTER_PRED_FN_CPU,
++	FILTER_PRED_FN_CPUMASK,
+ 	FILTER_PRED_FN_FUNCTION,
+ 	FILTER_PRED_FN_,
+ 	FILTER_PRED_TEST_VISITED,
+@@ -71,6 +72,7 @@ enum filter_pred_fn {
  
  struct filter_pred {
--	enum filter_pred_fn 	fn_num;
--	u64 			val;
--	u64 			val2;
--	struct regex		regex;
-+	struct regex		*regex;
+ 	struct regex		*regex;
++	struct cpumask          *mask;
  	unsigned short		*ops;
  	struct ftrace_event_field *field;
--	int 			offset;
-+	u64			val;
-+	u64			val2;
-+	enum filter_pred_fn	fn_num;
-+	int			offset;
- 	int			not;
--	int 			op;
-+	int			op;
- };
+ 	u64			val;
+@@ -94,6 +96,8 @@ struct filter_pred {
+ 	C(TOO_MANY_OPEN,	"Too many '('"),			\
+ 	C(TOO_MANY_CLOSE,	"Too few '('"),				\
+ 	C(MISSING_QUOTE,	"Missing matching quote"),		\
++	C(MISSING_BRACE_OPEN,   "Missing '{'"),				\
++	C(MISSING_BRACE_CLOSE,  "Missing '}'"),				\
+ 	C(OPERAND_TOO_LONG,	"Operand too long"),			\
+ 	C(EXPECT_STRING,	"Expecting string field"),		\
+ 	C(EXPECT_DIGIT,		"Expecting numeric field"),		\
+@@ -103,6 +107,7 @@ struct filter_pred {
+ 	C(BAD_SUBSYS_FILTER,	"Couldn't find or set field in one of a subsystem's events"), \
+ 	C(TOO_MANY_PREDS,	"Too many terms in predicate expression"), \
+ 	C(INVALID_FILTER,	"Meaningless filter expression"),	\
++	C(INVALID_CPULIST,	"Invalid cpulist"),	\
+ 	C(IP_FIELD_ONLY,	"Only 'ip' field is supported for function trace"), \
+ 	C(INVALID_VALUE,	"Invalid value (did you forget quotes)?"), \
+ 	C(NO_FUNCTION,		"Function not found"),			\
+@@ -190,6 +195,7 @@ static void free_predicate(struct filter_pred *pred)
+ {
+ 	if (pred) {
+ 		kfree(pred->regex);
++		kfree(pred->mask);
+ 		kfree(pred);
+ 	}
+ }
+@@ -877,6 +883,26 @@ static int filter_pred_cpu(struct filter_pred *pred, void *event)
+ 	}
+ }
  
- /*
-@@ -186,6 +186,14 @@ enum {
- 	PROCESS_OR	= 4,
- };
- 
-+static void free_predicate(struct filter_pred *pred)
++/* Filter predicate for cpumask field vs user-provided cpumask */
++static int filter_pred_cpumask(struct filter_pred *pred, void *event)
 +{
-+	if (pred) {
-+		kfree(pred->regex);
-+		kfree(pred);
++	u32 item = *(u32 *)(event + pred->offset);
++	int loc = item & 0xffff;
++	const struct cpumask *mask = (event + loc);
++	const struct cpumask *cmp = pred->mask;
++
++	switch (pred->op) {
++	case OP_EQ:
++		return cpumask_equal(mask, cmp);
++	case OP_NE:
++		return !cpumask_equal(mask, cmp);
++	case OP_BAND:
++		return cpumask_intersects(mask, cmp);
++	default:
++		return 0;
 +	}
 +}
 +
- /*
-  * Without going into a formal proof, this explains the method that is used in
-  * parsing the logical expressions.
-@@ -623,7 +631,7 @@ predicate_parse(const char *str, int nr_parens, int nr_preds,
- 	kfree(inverts);
- 	if (prog_stack) {
- 		for (i = 0; prog_stack[i].pred; i++)
--			kfree(prog_stack[i].pred);
-+			free_predicate(prog_stack[i].pred);
- 		kfree(prog_stack);
- 	}
- 	return ERR_PTR(ret);
-@@ -750,7 +758,7 @@ static int filter_pred_string(struct filter_pred *pred, void *event)
- 	char *addr = (char *)(event + pred->offset);
- 	int cmp, match;
- 
--	cmp = pred->regex.match(addr, &pred->regex, pred->regex.field_len);
-+	cmp = pred->regex->match(addr, pred->regex, pred->regex->field_len);
- 
- 	match = cmp ^ pred->not;
- 
-@@ -763,7 +771,7 @@ static __always_inline int filter_pchar(struct filter_pred *pred, char *str)
- 	int len;
- 
- 	len = strlen(str) + 1;	/* including tailing '\0' */
--	cmp = pred->regex.match(str, &pred->regex, len);
-+	cmp = pred->regex->match(str, pred->regex, len);
- 
- 	match = cmp ^ pred->not;
- 
-@@ -813,7 +821,7 @@ static int filter_pred_strloc(struct filter_pred *pred, void *event)
- 	char *addr = (char *)(event + str_loc);
- 	int cmp, match;
- 
--	cmp = pred->regex.match(addr, &pred->regex, str_len);
-+	cmp = pred->regex->match(addr, pred->regex, str_len);
- 
- 	match = cmp ^ pred->not;
- 
-@@ -836,7 +844,7 @@ static int filter_pred_strrelloc(struct filter_pred *pred, void *event)
- 	char *addr = (char *)(&item[1]) + str_loc;
- 	int cmp, match;
- 
--	cmp = pred->regex.match(addr, &pred->regex, str_len);
-+	cmp = pred->regex->match(addr, pred->regex, str_len);
- 
- 	match = cmp ^ pred->not;
- 
-@@ -874,7 +882,7 @@ static int filter_pred_comm(struct filter_pred *pred, void *event)
+ /* Filter predicate for COMM. */
+ static int filter_pred_comm(struct filter_pred *pred, void *event)
  {
- 	int cmp;
+@@ -1244,8 +1270,12 @@ static void filter_free_subsystem_filters(struct trace_subsystem_dir *dir,
  
--	cmp = pred->regex.match(current->comm, &pred->regex,
-+	cmp = pred->regex->match(current->comm, pred->regex,
- 				TASK_COMM_LEN);
- 	return cmp ^ pred->not;
- }
-@@ -1004,7 +1012,7 @@ enum regex_type filter_parse_regex(char *buff, int len, char **search, int *not)
- 
- static void filter_build_regex(struct filter_pred *pred)
+ int filter_assign_type(const char *type)
  {
--	struct regex *r = &pred->regex;
-+	struct regex *r = pred->regex;
- 	char *search;
- 	enum regex_type type = MATCH_FULL;
+-	if (strstr(type, "__data_loc") && strstr(type, "char"))
+-		return FILTER_DYN_STRING;
++	if (strstr(type, "__data_loc")) {
++		if (strstr(type, "char"))
++			return FILTER_DYN_STRING;
++		if (strstr(type, "cpumask_t"))
++			return FILTER_CPUMASK;
++		}
  
-@@ -1169,7 +1177,7 @@ static void free_prog(struct event_filter *filter)
- 		return;
+ 	if (strstr(type, "__rel_loc") && strstr(type, "char"))
+ 		return FILTER_RDYN_STRING;
+@@ -1357,6 +1387,8 @@ static int filter_pred_fn_call(struct filter_pred *pred, void *event)
+ 		return filter_pred_pchar(pred, event);
+ 	case FILTER_PRED_FN_CPU:
+ 		return filter_pred_cpu(pred, event);
++	case FILTER_PRED_FN_CPUMASK:
++		return filter_pred_cpumask(pred, event);
+ 	case FILTER_PRED_FN_FUNCTION:
+ 		return filter_pred_function(pred, event);
+ 	case FILTER_PRED_TEST_VISITED:
+@@ -1568,6 +1600,67 @@ static int parse_pred(const char *str, void *data,
+ 		strncpy(pred->regex->pattern, str + s, len);
+ 		pred->regex->pattern[len] = 0;
  
- 	for (i = 0; prog[i].pred; i++)
--		kfree(prog[i].pred);
-+		free_predicate(prog[i].pred);
- 	kfree(prog);
- }
- 
-@@ -1553,9 +1561,12 @@ static int parse_pred(const char *str, void *data,
- 			goto err_free;
- 		}
- 
--		pred->regex.len = len;
--		strncpy(pred->regex.pattern, str + s, len);
--		pred->regex.pattern[len] = 0;
-+		pred->regex = kzalloc(sizeof(*pred->regex), GFP_KERNEL);
-+		if (!pred->regex)
++	} else if (!strncmp(str + i, "CPUS", 4)) {
++		unsigned int maskstart;
++		char *tmp;
++
++		switch (field->filter_type) {
++		case FILTER_CPUMASK:
++			break;
++		default:
++			parse_error(pe, FILT_ERR_ILLEGAL_FIELD_OP, pos + i);
++			goto err_free;
++		}
++
++		switch (op) {
++		case OP_EQ:
++		case OP_NE:
++		case OP_BAND:
++			break;
++		default:
++			parse_error(pe, FILT_ERR_ILLEGAL_FIELD_OP, pos + i);
++			goto err_free;
++		}
++
++		/* Skip CPUS */
++		i += 4;
++		if (str[i++] != '{') {
++			parse_error(pe, FILT_ERR_MISSING_BRACE_OPEN, pos + i);
++			goto err_free;
++		}
++		maskstart = i;
++
++		/* Walk the cpulist until closing } */
++		for (; str[i] && str[i] != '}'; i++);
++		if (str[i] != '}') {
++			parse_error(pe, FILT_ERR_MISSING_BRACE_CLOSE, pos + i);
++			goto err_free;
++		}
++
++		if (maskstart == i) {
++			parse_error(pe, FILT_ERR_INVALID_CPULIST, pos + i);
++			goto err_free;
++		}
++
++		/* Copy the cpulist between { and } */
++		tmp = kmalloc((i - maskstart) + 1, GFP_KERNEL);
++		strscpy(tmp, str + maskstart, (i - maskstart) + 1);
++
++		pred->mask = kzalloc(cpumask_size(), GFP_KERNEL);
++		if (!pred->mask)
 +			goto err_mem;
-+		pred->regex->len = len;
-+		strncpy(pred->regex->pattern, str + s, len);
-+		pred->regex->pattern[len] = 0;
- 
++
++		/* Now parse it */
++		if (cpulist_parse(tmp, pred->mask)) {
++			parse_error(pe, FILT_ERR_INVALID_CPULIST, pos + i);
++			goto err_free;
++		}
++
++		/* Move along */
++		i++;
++		if (field->filter_type == FILTER_CPUMASK)
++			pred->fn_num = FILTER_PRED_FN_CPUMASK;
++
  	/* This is either a string, or an integer */
  	} else if (str[i] == '\'' || str[i] == '"') {
-@@ -1597,9 +1608,12 @@ static int parse_pred(const char *str, void *data,
- 			goto err_free;
- 		}
- 
--		pred->regex.len = len;
--		strncpy(pred->regex.pattern, str + s, len);
--		pred->regex.pattern[len] = 0;
-+		pred->regex = kzalloc(sizeof(*pred->regex), GFP_KERNEL);
-+		if (!pred->regex)
-+			goto err_mem;
-+		pred->regex->len = len;
-+		strncpy(pred->regex->pattern, str + s, len);
-+		pred->regex->pattern[len] = 0;
- 
- 		filter_build_regex(pred);
- 
-@@ -1608,7 +1622,7 @@ static int parse_pred(const char *str, void *data,
- 
- 		} else if (field->filter_type == FILTER_STATIC_STRING) {
- 			pred->fn_num = FILTER_PRED_FN_STRING;
--			pred->regex.field_len = field->size;
-+			pred->regex->field_len = field->size;
- 
- 		} else if (field->filter_type == FILTER_DYN_STRING) {
- 			pred->fn_num = FILTER_PRED_FN_STRLOC;
-@@ -1691,10 +1705,10 @@ static int parse_pred(const char *str, void *data,
- 	return i;
- 
- err_free:
--	kfree(pred);
-+	free_predicate(pred);
- 	return -EINVAL;
- err_mem:
--	kfree(pred);
-+	free_predicate(pred);
- 	return -ENOMEM;
- }
- 
-@@ -2287,8 +2301,8 @@ static int ftrace_function_set_filter_pred(struct filter_pred *pred,
- 		return ret;
- 
- 	return __ftrace_function_set_filter(pred->op == OP_EQ,
--					    pred->regex.pattern,
--					    pred->regex.len,
-+					    pred->regex->pattern,
-+					    pred->regex->len,
- 					    data);
- }
- 
+ 		char q = str[i];
 -- 
 2.40.1
