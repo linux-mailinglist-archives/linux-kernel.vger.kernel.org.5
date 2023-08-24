@@ -2,120 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5BD578680C
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 09:04:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE1B4786811
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 09:05:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240060AbjHXHEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 03:04:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47248 "EHLO
+        id S240257AbjHXHEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 03:04:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232346AbjHXHDa (ORCPT
+        with ESMTP id S240290AbjHXHEX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 03:03:30 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 775071728
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 00:03:09 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-99bcc0adab4so831151366b.2
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 00:03:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692860588; x=1693465388;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=P45nAftBMkI9aO/uXRibti5ezjszBIQ2T+bQqiHAg7Y=;
-        b=J/3793hrGTYLIQrFLs/3h4rLwByn+HYPUKOvdOVBZlRd49ONEBMKcLI2nh5WpE7pOo
-         UsO/Bvg2lPXd1bP9iKhA5AWiUX6XfhUQ9I7QIgiG0uwfzuW8NctmXlwOh/F8qgAiJyKH
-         nQpgGOy6tYTYHe06Z8P5v1zwdNuegaggmRC4G0ZkHv8NM7TXLgDRQzWq1L81IEoj6HgL
-         p8VZmyGRCuFgu7t3pVqyL6T8NSQ95KBB+hbbbBjBHx2wMwnztJGjGSXdwmyfvG7r9p7E
-         d2nJS14n/zfM5s3aoHnG3GMK8MrT1Gfh+3NFsWKnF7uuIFix3AXhtQkqZPYGyZN571kZ
-         ZrFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692860588; x=1693465388;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=P45nAftBMkI9aO/uXRibti5ezjszBIQ2T+bQqiHAg7Y=;
-        b=ROIR77JdGlnBiDKQi9oe18ZRhdAqepkx3ZCzxSMBIt34vEYST8CFrntW1RKXU0wnu7
-         KxwSvTtsTjtzRYZE3a2xi0TQ8k21fkFRfIDGjfopZymqz71oLchSvptl9n9vS90nAGQr
-         LIEx3zR5+t5Lh1Fszq+4qXez/Jo7UuWLvlikw7XzK23KkpxtD3nTOvI86mzQSZVyL/lF
-         kZwyQ1UlHMnzaU9QwZugoOjqkGJIH9GleJzwvuejm+hYDGP90vk3vIbE/NKPQo5bE/it
-         rVJTC/CHlwNrlYiKN62zlXa7nciinl/AG13PoWTt04PXRJIXzv6h1zLCR4MnQ8wmndGo
-         icFw==
-X-Gm-Message-State: AOJu0Ywu7zsyNPLKQArc2Ykg5ImvvpblnFzlAMX9ndTwAfactNIXLHLR
-        0wwwhziuB/9DIoIAITelXem0Yg==
-X-Google-Smtp-Source: AGHT+IG9k8iOK1esFA6zAJ01EbUnrxPhvANPyRf1UsmBAx7WseNQfibQsTJkl94LBBFoLMX8n0VUjQ==
-X-Received: by 2002:a17:907:2c54:b0:9a2:1e03:1572 with SMTP id hf20-20020a1709072c5400b009a21e031572mr305572ejc.19.1692860587958;
-        Thu, 24 Aug 2023 00:03:07 -0700 (PDT)
-Received: from [192.168.0.22] ([77.252.47.198])
-        by smtp.gmail.com with ESMTPSA id c8-20020a170906528800b009887f4e0291sm10559750ejm.27.2023.08.24.00.03.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Aug 2023 00:03:07 -0700 (PDT)
-Message-ID: <413bb886-a734-e607-8dd3-79ee501416b2@linaro.org>
-Date:   Thu, 24 Aug 2023 09:03:05 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v1 2/5] ASoC: dt-bindings: Add schema for
- "allwinner,sun20i-d1-codec-analog"
-Content-Language: en-US
-To:     Maxim Kiselev <bigunclemax@gmail.com>,
-        Rob Herring <robh@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-riscv@lists.infradead.org
-References: <20230805180506.718364-1-bigunclemax@gmail.com>
- <20230805180506.718364-3-bigunclemax@gmail.com>
- <20230821154739.GA1720453-robh@kernel.org>
- <CALHCpMjoxV+sUh6KSVXfEcWgc_ETBHWo2a7xHMT-nKS2xBYOvQ@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <CALHCpMjoxV+sUh6KSVXfEcWgc_ETBHWo2a7xHMT-nKS2xBYOvQ@mail.gmail.com>
+        Thu, 24 Aug 2023 03:04:23 -0400
+Received: from jari.cn (unknown [218.92.28.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A801810F
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 00:04:21 -0700 (PDT)
+Received: from chenxuebing$jari.cn ( [125.70.163.142] ) by
+ ajax-webmail-localhost.localdomain (Coremail) ; Thu, 24 Aug 2023 15:03:55
+ +0800 (GMT+08:00)
+X-Originating-IP: [125.70.163.142]
+Date:   Thu, 24 Aug 2023 15:03:55 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   "XueBing Chen" <chenxuebing@jari.cn>
+To:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/amdgpu: Clean up errors in cz_ih.c
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version 2023.1-cmXT6 build
+ 20230419(ff23bf83) Copyright (c) 2002-2023 www.mailtech.cn
+ mispb-4e503810-ca60-4ec8-a188-7102c18937cf-zhkzyfz.cn
+Content-Transfer-Encoding: base64
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+Message-ID: <45e66dd9.63c.18a265b582f.Coremail.chenxuebing@jari.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: AQAAfwC3VUDbAOdklS+SAA--.473W
+X-CM-SenderInfo: hfkh05pxhex0nj6mt2flof0/1tbiAQANCmTl1A4AOQAKsu
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
+X-Spam-Status: No, score=2.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_PBL,RDNS_NONE,T_SPF_HELO_PERMERROR,T_SPF_PERMERROR,XPRIO
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/08/2023 18:13, Maxim Kiselev wrote:
-> пн, 21 авг. 2023 г. в 19:47, Rob Herring <robh@kernel.org>:
->>
->> On Sat, Aug 05, 2023 at 09:05:02PM +0300, Maksim Kiselev wrote:
->>> Add a DT schema to describe the analog part of the Allwinner D1/T113s
->>> internal audio codec.
->>>
->>> Signed-off-by: Maksim Kiselev <bigunclemax@gmail.com>
->>> ---
->>>  .../allwinner,sun20i-d1-codec-analog.yaml     | 33 +++++++++++++++++++
->>>  1 file changed, 33 insertions(+)
->>>  create mode 100644 Documentation/devicetree/bindings/sound/allwinner,sun20i-d1-codec-analog.yaml
->>
->> Looks the same as allwinner,sun8i-a23-codec-analog.yaml. Why can't you
->> use that?
->>
-> Hmm. You're right. But let me explain my decision :)
-> When I added a new file, I assumed that since this is a separate driver,
-> then the binding should be in a separate file.
-
-Driver architecture of one give OS does not matter for the bindings.
-
-Best regards,
-Krzysztof
-
+Rml4IHRoZSBmb2xsb3dpbmcgZXJyb3JzIHJlcG9ydGVkIGJ5IGNoZWNrcGF0Y2g6CgpFUlJPUjog
+dGhhdCBvcGVuIGJyYWNlIHsgc2hvdWxkIGJlIG9uIHRoZSBwcmV2aW91cyBsaW5lCgpTaWduZWQt
+b2ZmLWJ5OiBYdWVCaW5nIENoZW4gPGNoZW54dWViaW5nQGphcmkuY24+Ci0tLQogZHJpdmVycy9n
+cHUvZHJtL2FtZC9hbWRncHUvY3pfaWguYyB8IDMgKy0tCiAxIGZpbGUgY2hhbmdlZCwgMSBpbnNl
+cnRpb24oKyksIDIgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL2Ft
+ZC9hbWRncHUvY3pfaWguYyBiL2RyaXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1L2N6X2loLmMKaW5k
+ZXggYjhjNDdlMGNmMzdhLi4zOGJjOWU4NmZkNDAgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvZ3B1L2Ry
+bS9hbWQvYW1kZ3B1L2N6X2loLmMKKysrIGIvZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvY3pf
+aWguYwpAQCAtNDQxLDggKzQ0MSw3IEBAIHN0YXRpYyB2b2lkIGN6X2loX3NldF9pbnRlcnJ1cHRf
+ZnVuY3Moc3RydWN0IGFtZGdwdV9kZXZpY2UgKmFkZXYpCiAJYWRldi0+aXJxLmloX2Z1bmNzID0g
+JmN6X2loX2Z1bmNzOwogfQogCi1jb25zdCBzdHJ1Y3QgYW1kZ3B1X2lwX2Jsb2NrX3ZlcnNpb24g
+Y3pfaWhfaXBfYmxvY2sgPQoteworY29uc3Qgc3RydWN0IGFtZGdwdV9pcF9ibG9ja192ZXJzaW9u
+IGN6X2loX2lwX2Jsb2NrID0gewogCS50eXBlID0gQU1EX0lQX0JMT0NLX1RZUEVfSUgsCiAJLm1h
+am9yID0gMywKIAkubWlub3IgPSAwLAotLSAKMi4xNy4xCg==
