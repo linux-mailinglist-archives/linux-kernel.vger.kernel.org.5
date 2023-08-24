@@ -2,173 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0F957874C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 17:59:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A9F47874BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 17:59:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242322AbjHXP7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 11:59:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55374 "EHLO
+        id S242320AbjHXP63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 11:58:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242334AbjHXP6w (ORCPT
+        with ESMTP id S242357AbjHXP6U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 11:58:52 -0400
-Received: from mx0a-002e3701.pphosted.com (mx0a-002e3701.pphosted.com [148.163.147.86])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44F3E198D;
-        Thu, 24 Aug 2023 08:58:50 -0700 (PDT)
-Received: from pps.filterd (m0134421.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37OCH0qA006574;
-        Thu, 24 Aug 2023 15:57:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- content-transfer-encoding : mime-version; s=pps0720;
- bh=YFDf13HppetYXuS5FUjjJ4wlqlcjj/cD+ZLcRWypgDY=;
- b=C6c7GiVtXYAhlLYQ2sDbNEVBrWONT7M28UiXdbQdzN55a2hvLtejTgnQqb6rJqkXVcC4
- jO4/JfYgXGEwnRC0hzRnbc2RGsCcnJjXRNZSGaSboxSJSEOAl1ppg5lZCJDBzK4n++Zi
- oHFdhe5mllqQZKGXfBy3XIns4WygxaukrOX5mwgD/DcVDlc0nmUEzzAZRTWhfxZ6oaMP
- Um/Mbs66paedB6JK7MyiOTGE4yk1fOSXCnVtGf9y68a9NTWJv0fS0GMe7XrdYwbCAYgp
- w0pzj1GKFsmQyfIgdbJdAvg+mTME2kA+kal4ynYKDRweRf/lIrV54sMz3dd6EhQ1lCgC Gw== 
-Received: from p1lg14880.it.hpe.com ([16.230.97.201])
-        by mx0b-002e3701.pphosted.com (PPS) with ESMTPS id 3snsr10x01-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 24 Aug 2023 15:57:48 +0000
-Received: from p1lg14886.dc01.its.hpecorp.net (unknown [10.119.18.237])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by p1lg14880.it.hpe.com (Postfix) with ESMTPS id 1EB93801AC3;
-        Thu, 24 Aug 2023 15:57:46 +0000 (UTC)
-Received: from hpe.com (unknown [16.231.227.39])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by p1lg14886.dc01.its.hpecorp.net (Postfix) with ESMTPS id 2D90C80E0EC;
-        Thu, 24 Aug 2023 15:57:42 +0000 (UTC)
-Date:   Thu, 24 Aug 2023 10:57:38 -0500
-From:   Dimitri Sivanich <sivanich@hpe.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Justin Stitt <justinstitt@google.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Steve Wahl <steve.wahl@hpe.com>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Russ Anderson <russ.anderson@hpe.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] x86/platform/uv: refactor deprecated strcpy and strncpy
-Message-ID: <20230824155234.GA102055@hpe.com>
-References: <20230822-strncpy-arch-x86-platform-uv-uv_nmi-v1-1-931f2943de0d@google.com>
- <CAHp75VeieNZ3+-2oq2yx36mJ0ERBkuF=f_uhAh8o0sFnHY6Wsg@mail.gmail.com>
- <CAFhGd8q1UeaUC-Wm9+Jr=7KZLk-VUn+EsOPP0uc1sFk+cv_yoQ@mail.gmail.com>
- <202308231554.4873EE731@keescook>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <202308231554.4873EE731@keescook>
-X-Proofpoint-GUID: Njnl-30G6qTEcEJdZA9SmViGE2c8L-Q5
-X-Proofpoint-ORIG-GUID: Njnl-30G6qTEcEJdZA9SmViGE2c8L-Q5
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Thu, 24 Aug 2023 11:58:20 -0400
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E580E50
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 08:58:16 -0700 (PDT)
+Received: from fabians-envy.localnet ([81.95.8.245]) by
+ mrelayeu.kundenserver.de (mreue107 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MzyAy-1plCp73rPC-00wzta; Thu, 24 Aug 2023 17:57:51 +0200
+From:   Fabian Vogt <fabian@ritter-vogt.de>
+To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        SungHwan Jung <onenowy@gmail.com>
+Subject: [PATCH] ALSA: hda/realtek: Add quirk for mute LEDs on HP ENVY x360 15-eu0xxx
+Date:   Thu, 24 Aug 2023 17:57:50 +0200
+Message-ID: <4504056.LvFx2qVVIh@fabians-envy>
 MIME-Version: 1.0
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-24_12,2023-08-24_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 phishscore=0
- malwarescore=0 suspectscore=0 adultscore=0 impostorscore=0 bulkscore=0
- spamscore=0 clxscore=1011 mlxscore=0 priorityscore=1501 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
- definitions=main-2308240134
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:F0a+FMLpOhqb6tBysEiC0NzEclV4tBUJelYJvukP8488vDO2TH5
+ kXQUGCzfSRVJ6HjIVnxodwL4dbJA1Ll1J0d0hpZf9RkT7hKa/gM6btNTOfLNoInja5tkhOn
+ ag8i/OxI9vE1f+10m8LEUBpqUBjxenTTmFA9kDg4nIAx5B1NRxTNFGlkXLBD+WqjX4qepNd
+ 6qQAmeluBcW2sH8D2GsDA==
+UI-OutboundReport: notjunk:1;M01:P0:9KX+/T3gwUQ=;QLU3XaUU4ZunHc20nIkCauAsB0d
+ QzsbwTNEGhZmqvqdvevZSkOlYrjR+hrN5/YgqsHxEaE8jsHgXGKo10unnqVjP8UgV0t5d1cxF
+ J507oJBs3VPrWvZXUdBJSSd6lDwFU1pNLUuQkAzzOG2CcWUhExt8jq2FTDBh/j4divoNn0i9/
+ ekbRjQ68ZeM1w5Ffob8W3TP5Vf22FgWxS+9tHndmfT1IIDZTaYCMYMwKhd5zvohrJ5VEZdM0c
+ in9dhKPccHq2vlBqMI5HOc8QqTW0pqmvMrJNQAgQMHCeu5nw7q0jsDmw5d2JRkxI2uuU3c+XV
+ c6p/81aSzxbzdo5RnzAhzH+zm91LXtWlFM6xZw7TJoBDt/Raz5ifVb+YTvonvpRyBvc5Qelx2
+ H38IT5Y8rrpNeW8/8PQ18BlH38GhUuW+YfmJH2MrYWnThUuIq/+ZA1KpsDyKKbK+yRLiuAQhk
+ 2QMVipusdWgMBShEs8kC9FXdzcC4MV7PVV4188NjoT8ehshkVzSvh+OMADSh++OOUMN1OdVM/
+ vkxhmZ+cSZrEbEs4v5GoYikRK2b8/ueIXBEwe/20E8CIHeuzU3yX5akO6O6Ea+Vnw8S3m2nUh
+ Q7L6JQ8aP681FYW9Qv5eUQcP5lYq3ukQApNeK/e8cTbm/fQLs01NB1jr2lMmx8uWed2OdXjx/
+ hWRG100cT2OQfi7NG3ne+tgMq+7iXp00rvNd/yT7jDbXXYgM6RNcEITkTicPTNXILUlkXQ1Ee
+ 71cgefVDu5+at8FaT9FJQlKJC6bh/fIpb8i73T2Z1VCIadjy7MB7ImpDsWpQgxYoNHLMNiiE1
+ v1+WIf0wO0nZrFAMqpCuIX92NFaSZE5jdgUSakddWmScKMEOSET8rjJHYM5MWoX9DMAYi5mcN
+ 4Oa/6b5S/1Rp24g==
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 23, 2023 at 04:00:13PM -0700, Kees Cook wrote:
-> On Wed, Aug 23, 2023 at 03:49:34PM -0700, Justin Stitt wrote:
-> > On Wed, Aug 23, 2023 at 4:07 AM Andy Shevchenko
-> > <andy.shevchenko@gmail.com> wrote:
-> > >
-> > > On Wed, Aug 23, 2023 at 1:32 AM Justin Stitt <justinstitt@google.com> wrote:
-> > > >
-> > > > Both `strncpy` and `strcpy` are deprecated for use on NUL-terminated
-> > > > destination strings [1].
-> > > >
-> > > > A suitable replacement is `strscpy` [2] due to the fact that it
-> > > > guarantees NUL-termination on its destination buffer argument which is
-> > > > _not_ the case for `strncpy` or `strcpy`!
-> > > >
-> > > > In this case, we can drop both the forced NUL-termination and the `... -1` from:
-> > > > |       strncpy(arg, val, ACTION_LEN - 1);
-> > > > as `strscpy` implicitly has this behavior.
-> > >
-> > > ...
-> > >
-> > > >         char arg[ACTION_LEN], *p;
-> > > >
-> > > >         /* (remove possible '\n') */
-> > > > -       strncpy(arg, val, ACTION_LEN - 1);
-> > > > -       arg[ACTION_LEN - 1] = '\0';
-> > > > +       strscpy(arg, val, ACTION_LEN);
-> > > >         p = strchr(arg, '\n');
-> > > >         if (p)
-> > > >                 *p = '\0';
-> > >
-> > > https://lore.kernel.org/all/202212091545310085328@zte.com.cn/
-> > >
-> > > ...
-> > >
-> > > > +               strscpy(uv_nmi_action, arg, strlen(uv_nmi_action));
-> > >
-> > > strlen() on the destination?!
+The LED for the mic mute button is controlled by GPIO2.
+The mute button LED is slightly more complex, it's controlled by two bits
+in coeff 0x0b. Add a fixup for the mute LED and chain to an existing fixup
+for the mic mute LED.
 
-The original code for the above (strcpy()), copies strlen(arg) assuming null
-termination, so strlen(uv_nmi_action) is not correct for this case.  You
-probably want to use sizeof of the destination.
+Signed-off-by: Fabian Vogt <fabian@ritter-vogt.de>
+---
+Applies on top of 89bf6209cad6.
 
-> > >
-> > > ...
-> > >
-> > > > -                       strncpy(uv_nmi_action, "dump", strlen(uv_nmi_action));
-> > > > +                       strscpy(uv_nmi_action, "dump", strlen(uv_nmi_action));
-> > >
-> > > Again, this is weird.
-> > 
-> > This is a common pattern with `strxcpy` and `sizeof` if you `$ rg
-> > "strncpy\(.*sizeof"`. Do you recommend I switch the strlen(dest) to
-> > strlen(src)? I only kept as-is because that's what was there
-> > originally and I assumed some greater purpose of it.
-> 
-> It's best to avoid any assumptions. If it can't be answered through code
-> inspection, the next best thing would be to ask for clarification. In
-> looking I see uv_nmi_action is a string:
-> 
-> arch/x86/platform/uv/uv_nmi.c:193:typedef char action_t[ACTION_LEN];
-> 
-> arch/x86/platform/uv/uv_nmi.c:          strcpy(uv_nmi_action, arg);
-> arch/x86/platform/uv/uv_nmi.c:module_param_named(action, uv_nmi_action, action, 0644);
-> arch/x86/platform/uv/uv_nmi.c:  return (strncmp(uv_nmi_action, action, strlen(action)) == 0);
-> arch/x86/platform/uv/uv_nmi.c:                  strncpy(uv_nmi_action, "dump", strlen(uv_nmi_action));
-> 
-> using strlen() here seems "accidentally safe", as it's overwriting
-> "kdump":
-> 
->         if (uv_nmi_action_is("kdump")) {
->                 uv_nmi_kdump(cpu, master, regs);
-> 
->                 /* Unexpected return, revert action to "dump" */
->                 if (master)
->                         strncpy(uv_nmi_action, "dump", strlen(uv_nmi_action));
-> 
-> anyway, a simple "sizeof" should be used AFAICT.
->
+I see that SungHwan Jung (CC'd) recently submitted the same fixup for
+a rather similar but different model as
+"ALSA: hda/realtek: Add quirk for HP Victus 16-d1xxx to enable mute LED"
+Does your HP Victus also need the ALC245_FIXUP_HP_GPIO_LED? Then we could
+combine the quirks.
 
-I agree.
+ sound/pci/hda/patch_realtek.c | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index dc7b7a407638..cac207d7c0b9 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -4639,6 +4639,24 @@ static void alc236_fixup_hp_mute_led_coefbit2(struct hda_codec *codec,
+ 	}
+ }
+ 
++/* The mute LED is controlled by two bits in coef 0x0b:
++ * To turn on, set bit 3 but clear bit 2.
++ */
++static void alc245_fixup_hp_x360_mute_led(struct hda_codec *codec,
++				      const struct hda_fixup *fix, int action)
++{
++	struct alc_spec *spec = codec->spec;
++
++	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
++		spec->mute_led_polarity = 0;
++		spec->mute_led_coef.idx = 0x0b;
++		spec->mute_led_coef.mask = 0xc;
++		spec->mute_led_coef.on = 0x8;
++		spec->mute_led_coef.off = 0x4;
++		snd_hda_gen_add_mute_led_cdev(codec, coef_mute_led_set);
++	}
++}
++
+ /* turn on/off mic-mute LED per capture hook by coef bit */
+ static int coef_micmute_led_set(struct led_classdev *led_cdev,
+ 				enum led_brightness brightness)
+@@ -7231,6 +7249,7 @@ enum {
+ 	ALC295_FIXUP_DELL_INSPIRON_TOP_SPEAKERS,
+ 	ALC236_FIXUP_DELL_DUAL_CODECS,
+ 	ALC287_FIXUP_CS35L41_I2C_2_THINKPAD_ACPI,
++	ALC245_FIXUP_HP_X360_MUTE_LED,
+ };
+ 
+ /* A special fixup for Lenovo C940 and Yoga Duet 7;
+@@ -9309,6 +9328,12 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = ALC269_FIXUP_THINKPAD_ACPI,
+ 	},
++	[ALC245_FIXUP_HP_X360_MUTE_LED] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc245_fixup_hp_x360_mute_led,
++		.chained = true,
++		.chain_id = ALC245_FIXUP_HP_GPIO_LED
++	},
+ };
+ 
+ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+@@ -9551,6 +9576,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x103c, 0x8870, "HP ZBook Fury 15.6 Inch G8 Mobile Workstation PC", ALC285_FIXUP_HP_GPIO_AMP_INIT),
+ 	SND_PCI_QUIRK(0x103c, 0x8873, "HP ZBook Studio 15.6 Inch G8 Mobile Workstation PC", ALC285_FIXUP_HP_GPIO_AMP_INIT),
+ 	SND_PCI_QUIRK(0x103c, 0x887a, "HP Laptop 15s-eq2xxx", ALC236_FIXUP_HP_MUTE_LED_COEFBIT2),
++	SND_PCI_QUIRK(0x103c, 0x888a, "HP ENVY x360 Convertible 15-eu0xxx", ALC245_FIXUP_HP_X360_MUTE_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x888d, "HP ZBook Power 15.6 inch G8 Mobile Workstation PC", ALC236_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8895, "HP EliteBook 855 G8 Notebook PC", ALC285_FIXUP_HP_SPEAKERS_MICMUTE_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8896, "HP EliteBook 855 G8 Notebook PC", ALC285_FIXUP_HP_MUTE_LED),
+-- 
+2.41.0
+
+
+
+
