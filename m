@@ -2,123 +2,308 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5116C78798C
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 22:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CCDE787993
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 22:49:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243576AbjHXUpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 16:45:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52478 "EHLO
+        id S243581AbjHXUs6 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 24 Aug 2023 16:48:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243567AbjHXUpL (ORCPT
+        with ESMTP id S243582AbjHXUsg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 16:45:11 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46B97172D
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 13:45:09 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d6ce0c4489bso285681276.2
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 13:45:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692909908; x=1693514708;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=ZUR68uKdghzn2Y8Ad4w0Ea6gF9hUY3E2tFS5OeMPoWo=;
-        b=WUm5i98pTP7NvgunuzXTkokjDZUgTIFrlN4kIp7ozqkz/QPleN+RIiBkhtGzOb9IBn
-         XsHVw91mX8ry/g42MRuowOm6eJ6GZrtoVv70me8cLRmwLL00hddEpgBlZPtSp70QPdq1
-         Uj0wcbPRCkyZdNX8YiHdkM56E+dPiWmmVuPolOJP+eCIAgwxNTlIF/czwiEGJDOiVEiW
-         2gDxnqLq1qLFVrAIseA5XK2HRXeSLhRTM0lE9rhHkiJ9unE4qco+6wHHZaHbF0S4ZYCt
-         aGhsVltsPfzxtYzhXr2vUEutUWE/Dq5OrX+qkTicJEbr0+UZE1mPDZn3xfRKpPRZhjN9
-         UETw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692909908; x=1693514708;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZUR68uKdghzn2Y8Ad4w0Ea6gF9hUY3E2tFS5OeMPoWo=;
-        b=bCl6RzN0M2J0l9yV0B0PkHSn4CCypuOZZ6Wf4urgo+iGcWsWhxBiGxa744RUO3cj6c
-         xNj6TkpHiWr8pwGairW03UQgqNDYX9H7Kxq5uYSwlfxZYERHDw4wpQcsr+q7+xgTL2fc
-         O1EaNBYb439sWQVs/Th+DMXmV7zZ1zSMeZQ9NIXsnow9LPrR3ocv6IAokB8DGmDwsZsW
-         do4IQ4SROUqlr/vFGOR9RrxTY3m/UZG11NRC0dpvgRz3oanDt7ZQE4LwZicv1ktll0lT
-         mzJJP4+bC8B95qu0KFqpBvXpmHk1nC/ZMA8eTSss9gJjxXB+i65AtnCic038XZ/UcHpN
-         0ttA==
-X-Gm-Message-State: AOJu0YxqlSYGdXC5IDyHdtCJKYG3XZG3DCRqJP69nffj01HUbeCujPts
-        1oOPzSa7+Vu4nAWi+92MD6L4hEAROaBSVJe9mQ==
-X-Google-Smtp-Source: AGHT+IGPDaZhtt7yTFPzL+iUB8gPlSwsG7LrnFHzE3lb+AAvs/HuF+e1Dp6UupEf3ne4ULA78L3JabmtBg+sOQn8+g==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a25:2442:0:b0:d11:6816:2d31 with SMTP
- id k63-20020a252442000000b00d1168162d31mr248160ybk.7.1692909908546; Thu, 24
- Aug 2023 13:45:08 -0700 (PDT)
-Date:   Thu, 24 Aug 2023 20:45:08 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAFPB52QC/zWNQQrCQAwAv1JyNrCbChW/Ih6yu2kbKGtJtCilf
- 3cRPA1zmdnBxVQcrt0OJpu6PmqTeOogz1wnQS3NgQL14UJn9KfVvH6wmG5ijpyzLDhz4soLJ8e JX0Xpj4wh9eMQhyQSCVp2NRn1/Vve7sfxBU6EPOOCAAAA
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1692909907; l=2009;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=6YGJBQmqB85nFtFD66zoKdZ4L+GgP4Vbcd+6oeKMetM=; b=+rLrfvbmfKhGQUmnwCP1/TSULbb1D6F2rtJ/GwVNHlqUPNPwNaUZuVzkoksRXIHvf+ECMV3Od
- iAsOhO9SWEsDzwggz1kemkbqpISqUBHTxxpuL/PkaFKeR7WZw8MhNQ5
-X-Mailer: b4 0.12.3
-Message-ID: <20230824-strncpy-drivers-accel-habanalabs-gaudi2-gaudi2-c-v1-1-1a37b65576b4@google.com>
-Subject: [PATCH] habanalabs/gaudi2: refactor deprecated strncpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     Oded Gabbay <ogabbay@kernel.org>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 24 Aug 2023 16:48:36 -0400
+Received: from relay05.th.seeweb.it (relay05.th.seeweb.it [5.144.164.166])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6355E1991
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 13:48:32 -0700 (PDT)
+Received: from [192.168.2.144] (bband-dyn198.178-41-58.t-com.sk [178.41.58.198])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id B66B73F291;
+        Thu, 24 Aug 2023 22:48:26 +0200 (CEST)
+Date:   Thu, 24 Aug 2023 22:48:20 +0200
+From:   Martin Botka <martin.botka@somainline.org>
+Subject: Re: [PATCH v4 4/4] arm64: dts: allwinner: h616: Add BigTreeTech Pi
+ support
+To:     Jernej =?iso-8859-2?q?=A9krabec?= <jernej.skrabec@gmail.com>
+Cc:     Martin Botka <martin.botka1@gmail.com>,
+        Martin Botka <martin@biqu3d.com>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Jami Kettunen <jamipkettunen@somainline.org>,
+        Paul Bouchara <paul.bouchara@somainline.org>,
+        Andre Przywara <andre.przywara@arm.com>,
+        Martin Botka <martin@biqu3d.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Samuel Holland <samuel@sholland.org>,
+        Ludwig Kormann <ludwig.kormann@ict42.de>,
+        Andrew Lunn <andrew@lunn.ch>, Icenowy Zheng <uwu@icenowy.me>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Chris Morgan <macromorgan@hotmail.com>,
+        Jagan Teki <jagan@edgeble.ai>,
+        Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Message-Id: <KSXWZR.LZT0IYKM7IPF@somainline.org>
+In-Reply-To: <ZBNDZR.IENEPBA0KL4D2@somainline.org>
+References: <20230807145349.2220490-1-martin@biqu3d.com>
+        <10318766.nUPlyArG6x@jernej-laptop> <168CZR.KVQVUV8KXJ5Y1@somainline.org>
+        <9148039.CDJkKcVGEf@jernej-laptop> <ZBNDZR.IENEPBA0KL4D2@somainline.org>
+X-Mailer: geary/43.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-2; format=flowed
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-`strncpy` is deprecated for use on NUL-terminated destination strings [1].
 
-A suitable replacement is `strscpy` [2] due to the fact that it
-guarantees NUL-termination on its destination buffer argument which is
-_not_ the case for `strncpy`!
 
-Link: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings[1]
-Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Note: build-tested only.
----
- drivers/accel/habanalabs/gaudi2/gaudi2.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On Mon, Aug 14 2023 at 12:47:59 PM +02:00:00, Martin Botka 
+<martin.botka@somainline.org> wrote:
+> 
+> 
+> On Mon, Aug 14 2023 at 12:26:07 PM +02:00:00, Jernej ©krabec 
+> <jernej.skrabec@gmail.com> wrote:
+>> Dne nedelja, 13. avgust 2023 ob 18:22:49 CEST je Martin Botka 
+>> napisal(a):
+>>>  On Sun, Aug 13 2023 at 05:55:35 PM +02:00:00, Jernej ©krabec
+>>> 
+>>>  <jernej.skrabec@gmail.com> wrote:
+>>>  > Dne ponedeljek, 07. avgust 2023 ob 16:53:24 CEST je Martin Botka
+>>>  >
+>>>  > napisal(a):
+>>>  >>  The BigTreeTech Pi is an H616 based board based on CB1.
+>>>  >>  Just in Rpi format board.
+>>>  >>
+>>>  >>  It features the same internals as BTT CB1 but adds:
+>>>  >>      - Fan port
+>>>  >>      - IR receiver
+>>>  >>      - ADXL345 Accelerometer connector via SPI
+>>>  >>      - 24V DC power supply via terminal plugs
+>>>  >>      - USB to CAN module connector (The actual USB to CAN 
+>>> happens on
+>>>  >>
+>>>  >> the
+>>>  >>
+>>>  >>  external module)
+>>>  >>
+>>>  >>  List of currently working things is same as BTT CB1 but also:
+>>>  >>      - IR receiver
+>>>  >>      - ADXL345 connector
+>>>  >>
+>>>  >>  Signed-off-by: Martin Botka <martin@biqu3d.com>
+>>>  >>  Reviewed-by: Andre Przywara <andre.przywara@arm.com>
+>>>  >>  ---
+>>>  >>
+>>>  >>  Changes in V2:
+>>>  >>      - Add UART alongside aliases and chosen for it
+>>>  >>      - Add model string
+>>>  >>      - Enable IR receiver
+>>>  >>      - Enable SPI0 for ADXL345 connector
+>>>  >>
+>>>  >>  Changes in V3:
+>>>  >>      - Add missing semicolons
+>>>  >>      - Add pinctrl for SPI0
+>>>  >>
+>>>  >>   arch/arm64/boot/dts/allwinner/Makefile        |  1 +
+>>>  >>   .../allwinner/sun50i-h616-bigtreetech-pi.dts  | 70
+>>>  >>
+>>>  >> +++++++++++++++++++
+>>>  >>
+>>>  >>   2 files changed, 71 insertions(+)
+>>>  >>   create mode 100644
+>>>  >>
+>>>  >>  arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts
+>>>  >>
+>>>  >>  diff --git a/arch/arm64/boot/dts/allwinner/Makefile
+>>>  >>  b/arch/arm64/boot/dts/allwinner/Makefile index
+>>>  >>
+>>>  >> 7b386428510b..0b6232a7f328
+>>>  >>
+>>>  >>  100644
+>>>  >>  --- a/arch/arm64/boot/dts/allwinner/Makefile
+>>>  >>  +++ b/arch/arm64/boot/dts/allwinner/Makefile
+>>>  >>  @@ -39,5 +39,6 @@ dtb-$(CONFIG_ARCH_SUNXI) +=
+>>>  >>
+>>>  >> sun50i-h6-pine-h64-model-b.dtb
+>>>  >>
+>>>  >>  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-tanix-tx6.dtb
+>>>  >>
+>>>  >>   dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-tanix-tx6-mini.dtb
+>>>  >>   dtb-$(CONFIG_ARCH_SUNXI) += 
+>>> sun50i-h616-bigtreetech-cb1-manta.dtb
+>>>  >>
+>>>  >>  +dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-bigtreetech-pi.dtb
+>>>  >>
+>>>  >>   dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-orangepi-zero2.dtb
+>>>  >>   dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-x96-mate.dtb
+>>>  >>
+>>>  >>  diff --git
+>>>  >>
+>>>  >> a/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts
+>>>  >>
+>>>  >>  b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts 
+>>> new
+>>>  >>
+>>>  >> file
+>>>  >>
+>>>  >>  mode 100644
+>>>  >>  index 000000000000..b0d0386e8f13
+>>>  >>  --- /dev/null
+>>>  >>  +++ 
+>>> b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts
+>>>  >>  @@ -0,0 +1,70 @@
+>>>  >>  +// SPDX-License-Identifier: (GPL-2.0+ or MIT)
+>>>  >>  +/*
+>>>  >>  + * Copyright (C) 2023 Martin Botka <martin@biqu3d.com>.
+>>>  >>  + */
+>>>  >>  +
+>>>  >>  +/dts-v1/;
+>>>  >>  +
+>>>  >>  +#include "sun50i-h616-bigtreetech-cb1.dtsi"
+>>>  >>  +
+>>>  >>  +/ {
+>>>  >>  +	model = "BigTreeTech Pi";
+>>>  >>  +	compatible = "bigtreetech,pi", "allwinner,sun50i-h616";
+>>>  >>  +
+>>>  >>  +	aliases {
+>>>  >>  +		serial0 = &uart0;
+>>>  >>  +	};
+>>>  >>  +
+>>>  >>  +	chosen {
+>>>  >>  +		stdout-path = "serial0:115200n8";
+>>>  >>  +	};
+>>>  >>  +};
+>>>  >>  +
+>>>  >>  +&ehci0 {
+>>>  >>  +	status = "okay";
+>>>  >>  +};
+>>>  >>  +
+>>>  >>  +&ehci1 {
+>>>  >>  +	status = "okay";
+>>>  >>  +};
+>>>  >>  +
+>>>  >>  +&ehci2 {
+>>>  >>  +	status = "okay";
+>>>  >>  +};
+>>>  >>  +
+>>>  >>  +&ehci3 {
+>>>  >>  +	status = "okay";
+>>>  >>  +};
+>>>  >>  +
+>>>  >>  +&ir {
+>>>  >>  +	status = "okay";
+>>>  >>  +};
+>>>  >>  +
+>>>  >>  +&ohci0 {
+>>>  >>  +	status = "okay";
+>>>  >>  +};
+>>>  >>  +
+>>>  >>  +&ohci1 {
+>>>  >>  +	status = "okay";
+>>>  >>  +};
+>>>  >>  +
+>>>  >>  +&ohci2 {
+>>>  >>  +	status = "okay";
+>>>  >>  +};
+>>>  >>  +
+>>>  >>  +&ohci3 {
+>>>  >>  +	status = "okay";
+>>>  >>  +};
+>>>  >>  +
+>>>  >>  +&spi0 {
+>>>  >>  +	/* SPI connection for onboard connector for ADXL345 
+>>> accelerometer
+>>>  >
+>>>  > */
+>>>  >
+>>>  >>  +	status = "okay";
+>>>  >>  +	pinctrl-names = "default";
+>>>  >>  +	pinctrl-0 = <&spi0_pins>, <&spi0_cs0_pin>;
+>>>  >
+>>>  > Driver and compatible for ADXL345 already exists, why don't you 
+>>> add
+>>>  > child node
+>>>  > for it?
+>>>  >
+>>>  > Best regards,
+>>>  > Jernej
+>>> 
+>>>  Ah. So the ADXL345 actually wont be driven by kernel.
+>> 
+>> DT is hardware description, it's not concerned what is done on 
+>> software side,
+>> either kernel or user space.
+> Im aware. But this is not a device that is on the board. Its simply a 
+> connector for the device.
+> Like Rpi has connectors for camera module :)
+>> 
+>>>  The SPI connection is enabled so that klipper (3d printer 
+>>> firmware) can
+>>>  be told to look for ADXL345 at this SPI and use it on its own.
+>>> 
+>>>  Klipper will initialize and communicate with the ADXL on its own.
+>> 
+>> What do you mean by firmware? User space app? In this case I suppose 
+>> you'll use
+>> direct SPI commands from user space? AFAIK that's less and less 
+>> supported by
+>> kernel (in contrast to I2C).
+> Firmware as in 3d printer firmware. Klipper runs on the board (CB1 or 
+> BTT Pi) and is indeed an userspace app.
+> And indeed uses direct SPI commands to the device.
+> 
+> The reason for this is the flexibility.
+> If Klipper read the values from kernel or well from the files the 
+> ADXL driver would create
+> then it would be unable to communicate with ADXL that is on toolhead 
+> board. Or would have to have
+> direct initialization either way for those. Thus it just controls the 
+> ADXL itself :)
+> 
+> I understand that this may be bit confusing. If there is still 
+> something not clear im more then happy to explain in
+> full detail how the userspace and 3D printer communicate :)
+> 
+> Cheers,
+> Martin.
+Hello,
+Jernej any comments on this ?
+I would like to resolve this conversation :)
+We do have a bunch of time before the new cycle but never hurts to get 
+it figured out ahead of time :)
 
-diff --git a/drivers/accel/habanalabs/gaudi2/gaudi2.c b/drivers/accel/habanalabs/gaudi2/gaudi2.c
-index 20c4583f12b0..755b2d92357d 100644
---- a/drivers/accel/habanalabs/gaudi2/gaudi2.c
-+++ b/drivers/accel/habanalabs/gaudi2/gaudi2.c
-@@ -2431,7 +2431,7 @@ static int gaudi2_set_fixed_properties(struct hl_device *hdev)
- 	prop->pcie_dbi_base_address = CFG_BASE + mmPCIE_DBI_BASE;
- 	prop->pcie_aux_dbi_reg_addr = CFG_BASE + mmPCIE_AUX_DBI;
- 
--	strncpy(prop->cpucp_info.card_name, GAUDI2_DEFAULT_CARD_NAME, CARD_NAME_MAX_LEN);
-+	strscpy(prop->cpucp_info.card_name, GAUDI2_DEFAULT_CARD_NAME, CARD_NAME_MAX_LEN);
- 
- 	prop->mme_master_slave_mode = 1;
- 
-@@ -2884,7 +2884,7 @@ static int gaudi2_cpucp_info_get(struct hl_device *hdev)
- 	}
- 
- 	if (!strlen(prop->cpucp_info.card_name))
--		strncpy(prop->cpucp_info.card_name, GAUDI2_DEFAULT_CARD_NAME, CARD_NAME_MAX_LEN);
-+		strscpy(prop->cpucp_info.card_name, GAUDI2_DEFAULT_CARD_NAME, CARD_NAME_MAX_LEN);
- 
- 	/* Overwrite binning masks with the actual binning values from F/W */
- 	hdev->dram_binning = prop->cpucp_info.dram_binning_mask;
+Cheers,
+Martin
+>> 
+>> Best regards,
+>> Jernej
+>> 
+>>> 
+>>>  >>  +};
+>>>  >>  +
+>>>  >>  +&uart0 {
+>>>  >>  +	pinctrl-names = "default";
+>>>  >>  +	pinctrl-0 = <&uart0_ph_pins>;
+>>>  >>  +	status = "okay";
+>>>  >>  +};
+>> 
+>> 
+>> 
+>> 
+> 
 
----
-base-commit: f9604036a3fb6149badf346994b46b03f9292db7
-change-id: 20230824-strncpy-drivers-accel-habanalabs-gaudi2-gaudi2-c-0b3f717bee12
-
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
 
