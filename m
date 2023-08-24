@@ -2,123 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ADC0786AD5
+	by mail.lfdr.de (Postfix) with ESMTP id 01428786AD4
 	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 10:58:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236247AbjHXI5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 04:57:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38146 "EHLO
+        id S235644AbjHXI5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 04:57:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236353AbjHXI5W (ORCPT
+        with ESMTP id S238774AbjHXI5k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 04:57:22 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9F6C10D3;
-        Thu, 24 Aug 2023 01:57:20 -0700 (PDT)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37O6GnDb019400;
-        Thu, 24 Aug 2023 08:57:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=HXdRR3xVYZTemP/v5/O0iPiBXK3LfikLy6SU21yXpTA=;
- b=YfeYjBjoJXNpSsrQQDedYANgFxzx8xiiExveoUWtJqEEYg0lQMeUrT+SDJjY/+wBLgeb
- 4+Flp7lw4+x+rSQyX8k0XiXxly0Ioo5euvY23RFj/jK0QwQSfLzthWcDYq8pTfDsN5g8
- qGVcYnTLch2CNRSX5lLIoxp5BrZ+jdgPSQACGkRXIdT4ARj2BbcE5ShYbgnQU+eCuSHR
- +1VVCef4/bGtJP1phfKWaQb5Ee6KjUKj/Z1dkrDoTZVr7hfyUg2gTP1kQqwv7ce61pAU
- 7DYOY8HGeRDigxrtyykx3CfOaVvryDXGcjLwWsFLP0ktiTlIFCJwSBlcuy1tkQ3CEJNU 2Q== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sp1k9garb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 24 Aug 2023 08:57:09 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37O8v8J5024410
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 24 Aug 2023 08:57:08 GMT
-Received: from [10.216.13.16] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Thu, 24 Aug
- 2023 01:57:03 -0700
-Message-ID: <7abb9a41-a66f-a20a-1cd9-bfc18a2161da@quicinc.com>
-Date:   Thu, 24 Aug 2023 14:26:58 +0530
+        Thu, 24 Aug 2023 04:57:40 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73AC110FC;
+        Thu, 24 Aug 2023 01:57:38 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1bc3d94d40fso50797505ad.3;
+        Thu, 24 Aug 2023 01:57:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692867458; x=1693472258;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=wONcFGWq+PGpZIkK9NYcTrSr8kaoXLZnug4VTSpfpPY=;
+        b=Tznc5ZWr+3NAD2cD/d5ogGrBOTq3TgjrZld+TW6mk6d+TZXYJDLL4Auc8V/6Il08eL
+         CFGn6otYSEkPncaBfF/lylKc4yQdlxsoLvhlLhj55ZwSwBoapNB6oAegGg3atmr/ZwYw
+         O4jgpo+1QrG+3X4XwixG0r5828IiHdmSTrb3B05pngmFwxlaxC0SK6MAnVgxWSh0SsJ6
+         slWAhrUde5orpCa1ycNpOJEHZqqKPj7f7cKV/NdWsBPjPYhwk+JeRr7Fo19Wc8/O4tKt
+         c8HZD2zgcCyIkRpv/3tGM7t4bgPV7gzozmyIXHsDS/kcyJNx1jMyMsA/JJn+Ezp7N4GJ
+         foPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692867458; x=1693472258;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wONcFGWq+PGpZIkK9NYcTrSr8kaoXLZnug4VTSpfpPY=;
+        b=drwXHqtDeO90PohyLU8gjLSf26X5mc1RioXuIdtAhoot1gssyVpM3stpvsg9GcB6jG
+         wm+oZqCVF1SJtlgkEKMnrN0Tk3IGihAKRG2WU3lighiYYjPU8bEZrdM9h7Z7OskYhH7r
+         csOP0W7cwFpGn6KUhuTnJQOqyZeQW7IxiJnqbq2CuMxVjSGLGqGrCxT11JdP0uIXueq1
+         DLwg+/Zh444fgQrHg+AMZlnoad959FlTKyaR12LSNuJk8F205OxO5tuQBvekBAdGmANj
+         XZ3SGQ3t+EokLwV+vj6Lqzuk358SzxZr8GKhchit59lmXma5TQqXA8loNMZD6s8wJqdX
+         3vtA==
+X-Gm-Message-State: AOJu0YzcW+M9gC3T5amZ5ZtibmNR6VlkBysTTB1nkz+TEROetSvhyeQF
+        X2Y/H/TzulxkyIWcRkx0R6k=
+X-Google-Smtp-Source: AGHT+IHsmAb2LrAKerZ9+R8nOBbMmaVsg9zBo6JFh36BUqIlI7RiLy51goYsL07hTZ4IdFaQPCDi+g==
+X-Received: by 2002:a17:903:234e:b0:1bd:aeb3:9504 with SMTP id c14-20020a170903234e00b001bdaeb39504mr17985769plh.15.1692867457815;
+        Thu, 24 Aug 2023 01:57:37 -0700 (PDT)
+Received: from localhost.localdomain ([2409:40c2:1047:2379:8974:f63f:c2f8:6a5b])
+        by smtp.gmail.com with ESMTPSA id l6-20020a170902d34600b001b8b26fa6c1sm12322673plk.115.2023.08.24.01.57.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Aug 2023 01:57:37 -0700 (PDT)
+From:   coolrrsh@gmail.com
+To:     hverkuil@xs4all.nl, mchehab@kernel.org, slark_xiao@163.com,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        Rajeshwar R Shinde <coolrrsh@gmail.com>,
+        syzbot+e27f3dbdab04e43b9f73@syzkaller.appspotmail.com
+Subject: [PATCH v3] media: gspca: UBSAN: shift-out-of-bounds in set_flicker
+Date:   Thu, 24 Aug 2023 14:27:31 +0530
+Message-Id: <20230824085731.9930-1-coolrrsh@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.1
-Subject: Re: [PATCH 2/6] soc: qcom: llcc: Refactor llcc driver to support
- multiple configuration
-Content-Language: en-US
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>, <agross@kernel.org>,
-        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <srinivas.kandagatla@linaro.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230810061140.15608-1-quic_kbajaj@quicinc.com>
- <20230810061140.15608-3-quic_kbajaj@quicinc.com>
- <79ccb7c0-dc4b-87a7-3721-488f3ef3b192@linaro.org>
-From:   Komal Bajaj <quic_kbajaj@quicinc.com>
-In-Reply-To: <79ccb7c0-dc4b-87a7-3721-488f3ef3b192@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: sHegNJ9AJBLfsiuQDnCFkIOurQUTSzzK
-X-Proofpoint-ORIG-GUID: sHegNJ9AJBLfsiuQDnCFkIOurQUTSzzK
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-24_06,2023-08-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxscore=0
- malwarescore=0 suspectscore=0 bulkscore=0 priorityscore=1501
- lowpriorityscore=0 clxscore=1011 spamscore=0 mlxlogscore=750
- impostorscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2308100000 definitions=main-2308240071
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Rajeshwar R Shinde <coolrrsh@gmail.com>
 
+Syzkaller reported the following issue:
+							
+UBSAN: shift-out-of-bounds in drivers/media/usb/gspca/cpia1.c:1031:27 
+shift exponent 245 is too large for 32-bit type 'int'
+						
+When the value of the variable "sd->params.exposure.gain" exceeds the 
+number of bits in an int, a shift-out-of-bounds error occurs. The error is 
+generated when the variable "currentexp" is left-shifted by more than 31 
+bits. In order to confirm the range is valid, the conditional expression 
+was added.
+				
+Reported-by: syzbot+e27f3dbdab04e43b9f73@syzkaller.appspotmail.com
+Closes: https://lore.kernel.org/all/20230818164522.12806-1-coolrrsh@gmail.com
+Link: https://syzkaller.appspot.com/bug?extid=e27f3dbdab04e43b9f73
+Signed-off-by: Rajeshwar R Shinde <coolrrsh@gmail.com>							
+---
+v1->v2			
+Changed the patch
+v2->v3				
+Changed the commit message	
+---
+ drivers/media/usb/gspca/cpia1.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-On 8/10/2023 5:52 PM, Bryan O'Donoghue wrote:
-> On 10/08/2023 07:11, Komal Bajaj wrote:
->> +    if (!cfgs || cfgs->num_config != DEF_NUM_CFG) {
->> +        ret = -EINVAL;
->> +        goto err;
->> +    }
->> +    cfg = &cfgs->llcc_config[DEF_NUM_CFG - 1];
->
-> This is a bit of a redundant check.
->
-> You add in the check for num_config != 1, then deref llc_config[0] but 
-> in patch #4 you get an index and check that index against num_config
-
-Hi Bryan, Thanks for reviewing the patch.
-Correct, in patch#4, index is checked against num_config, but the 
-condition also checks for equality case.
-For ex. in patch#6, num_config is 4, so index can vary from 0-3.
-
->
-> I'm not seeing how at this point in your series, how num_config could 
-> be anything other than 1.
->
-> I'd do away with the DEF_NUM_CFG define in this code/series completely.
->
-> num_config should encode all the necessary detail we need, DEF_NUM_CFG 
-> just adds noise.
-
-Got your point, will remove the macro DEF_NUM_CFG from the series.
-
-Thanks
-Komal
-
->
-> ---
-> bod
+diff --git a/drivers/media/usb/gspca/cpia1.c b/drivers/media/usb/gspca/cpia1.c
+index 46ed95483e22..dafc522d5e7b 100644
+--- a/drivers/media/usb/gspca/cpia1.c
++++ b/drivers/media/usb/gspca/cpia1.c
+@@ -1028,6 +1028,8 @@ static int set_flicker(struct gspca_dev *gspca_dev, int on, int apply)
+ 			sd->params.exposure.expMode = 2;
+ 			sd->exposure_status = EXPOSURE_NORMAL;
+ 		}
++		if (sd->params.exposure.gain > 31)
++			return -1;
+ 		currentexp = currentexp << sd->params.exposure.gain;
+ 		sd->params.exposure.gain = 0;
+ 		/* round down current exposure to nearest value */
+-- 
+2.25.1
 
