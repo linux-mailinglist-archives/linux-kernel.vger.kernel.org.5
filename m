@@ -2,360 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7195F786D78
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 13:11:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46FE5786D81
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 13:14:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240977AbjHXLKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 07:10:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49306 "EHLO
+        id S231809AbjHXLOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 07:14:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240959AbjHXLKf (ORCPT
+        with ESMTP id S239004AbjHXLNx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 07:10:35 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F51A10FA;
-        Thu, 24 Aug 2023 04:10:32 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-4fe2d152f62so10474887e87.0;
-        Thu, 24 Aug 2023 04:10:32 -0700 (PDT)
+        Thu, 24 Aug 2023 07:13:53 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 811D6172D
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 04:13:50 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-31c73c21113so621166f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 04:13:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692875431; x=1693480231;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fzTn37NhbD/APGPKPSueAFzFYve8TPijkZqKUT+Scqc=;
-        b=gf8WV3zaeFI5FGp20fEVwAKmNRV4ZIV3Vd5dQpRtrctM9MGVJJpbHJ1gGEoyqmyIhK
-         YPJ0r4eRQOxaTzR6vRkBebSaEQaC2EstipahIgYU5V1q78keL8mrRSo/ZVOYFh7LecwP
-         5hbTfvuHOkD3aYlj5ovBds99hgMcY9mMKWoZGmUnw1/AjyvbZT1TTRHrtODHwlaknqdB
-         JUvzXmr0SRzGDVNmDSgPdVkpOnNQa541bRQ8FDlEoppxa/jilJXtlCZdG8qIijG/+/rv
-         5KbDwR2ep9hSfuqmQH0Cn88pJr1mVDk0loc//vggSihdstBzqUrppETH8F6qkRs2VIZi
-         ClWw==
+        d=9elements.com; s=google; t=1692875629; x=1693480429;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=DkwdpEsnZjrBHPvFI7R2mEJyzdrosQr2sd/FTGz51gs=;
+        b=RCqQTVbnib3XzB0myr4N9s4B/TVmbRl8bAB5maubjYQUpcmstTpY0j+u0mGyvvlH9B
+         J6KbFYDRcpo9CMpjPVR2TLfztDk3Hengnw95zp4j7AbuGdtXo4xY7pUftdecwbC+IJvJ
+         /Gj3+1ILWdJqYboVY6ifF1hNvH0V99Jrfez2QGWLyus8DkFq7BXVFTDK/bV+JlEJh37d
+         q7O7a2nrLFxoxG9DKs6LeLFHg1OdvYQkppMRJd+Lebh3GdXrIJSA1jmZP1uX5JAtYa2p
+         xiqiaf/EZN5OiLkGOo+0/sFNTKpqYh5KgogoNUPMAFn2JVCQ1+ZBfxrQQbQx/FUkswMB
+         m09A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692875431; x=1693480231;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fzTn37NhbD/APGPKPSueAFzFYve8TPijkZqKUT+Scqc=;
-        b=eTxn3eMes9kOMfhWO4Fs16M24dXPWjc8QXrpBIvpSDApaWynBvISFFo9cjnAm4Zgf2
-         nsAz1PjA8qcPuHUQdRhWSAhF01+wlFGjeuEyVXBKHsiKuR59HgcYHuEc1aKc5booYv3t
-         2AUDLea8UHvQTP1W09mTJ9T1oyEvSts1l29YHYmJ9XjoXBG6Nr8oeueb5qdpAaDcPY5g
-         v2FlBkdBdhkI6CJKg297C4CiWNNiX0i2IDY9pS3VJvAvSGnYNYl3UuMAxLxiLmxQOfJy
-         BQrOis357woSxlVeppVEQCaJmEcPW1AcaouF1dY7WvNnGaNtXXumVs8wFUFQ2W7hTaEY
-         aW9g==
-X-Gm-Message-State: AOJu0Yxgh1u3RI2G2qczKUPFc4VdyI/K/CN3usgZqpbiUzVw3gN4Uk0d
-        ZqR4ALlouDCfzcsOrTibbESZ0STKPwCxjg==
-X-Google-Smtp-Source: AGHT+IErmwwg+0aSYpkqgZXk+jMOBmAeeR0WHAVP8ASzCMlqgS72erkEW2vhcLVs4nU4ZXV15JSrWA==
-X-Received: by 2002:a05:6512:ad3:b0:4f7:6966:36fb with SMTP id n19-20020a0565120ad300b004f7696636fbmr12263084lfu.12.1692875430726;
-        Thu, 24 Aug 2023 04:10:30 -0700 (PDT)
-Received: from fedora.dev.tbscz ([85.93.123.158])
-        by smtp.gmail.com with ESMTPSA id l8-20020a056402028800b005232e637c24sm972876edv.84.2023.08.24.04.10.29
+        d=1e100.net; s=20221208; t=1692875629; x=1693480429;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DkwdpEsnZjrBHPvFI7R2mEJyzdrosQr2sd/FTGz51gs=;
+        b=I/xq0b1OhWlP5grGiBqOs8/uPBv6s7n8/3P63CLRdoyxOgWcTGYUxHl/++4FZnugXy
+         OPAD57t0Iz6fS+LPyTXp9KXNiT23dMclyB+sNJqvqbYgxrd1KJElZ44Gu+3mqgh0HCjl
+         qxPOcsdJDqlTJVL8iEYb48dwh3W7g/SYQ28K9wZBayJuU3BxgfJqHhX/p/+/GKm8hJ0x
+         ZpKCVJpfYIkaHvsDBn6ceZEz/KA4mZF3x40mbq8NYrPf3DcKXqV2pP56dkHN3a+9o6uk
+         dMFnAIIaphWJqtdd0wLV6Ho+cf1XJPekJaw0DEKl0/0FC+mWt3JI2WNOuLqBO/aJgJfy
+         tCDA==
+X-Gm-Message-State: AOJu0Yy/t3SomRNSM74RitDY/amWtwyljBWJbBZXpSrkw3EsFDZlC1Dk
+        3sV3Wl83H8cLRRrVgjiqTdxmFsWutXm26PY1Zn+8JA==
+X-Google-Smtp-Source: AGHT+IHDvGqxKdCBn8C3V++imu78i7LpYDx7TqRwzi7mHrcuuPJF6pJtBG1YuCQlBTISfoEFIFwNKw==
+X-Received: by 2002:adf:f4c9:0:b0:317:5ddb:a8bf with SMTP id h9-20020adff4c9000000b003175ddba8bfmr11529921wrp.29.1692875628844;
+        Thu, 24 Aug 2023 04:13:48 -0700 (PDT)
+Received: from stroh80.sec.9e.network (ip-078-094-000-051.um19.pools.vodafone-ip.de. [78.94.0.51])
+        by smtp.gmail.com with ESMTPSA id j16-20020a056000125000b0031779a6b451sm21973021wrx.83.2023.08.24.04.13.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Aug 2023 04:10:30 -0700 (PDT)
-From:   =?UTF-8?q?Martin=20Za=C5=A5ovi=C4=8D?= <m.zatovic1@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, gregkh@linuxfoundation.org,
-        linus.walleij@linaro.org, quic_jhugo@quicinc.com,
-        nipun.gupta@amd.com, tzimmermann@suse.de, ogabbay@kernel.org,
-        mathieu.poirier@linaro.org, axboe@kernel.dk,
-        damien.lemoal@opensource.wdc.com, linux@zary.sk, arnd@arndb.de,
-        yangyicong@hisilicon.com, benjamin.tissoires@redhat.com,
-        masahiroy@kernel.org, jacek.lawrynowicz@linux.intel.com,
-        geert+renesas@glider.be, devicetree@vger.kernel.org,
-        andriy.shevchenko@intel.com,
-        =?UTF-8?q?Martin=20Za=C5=A5ovi=C4=8D?= <m.zatovic1@gmail.com>
-Subject: [PATCHv5 4/4] wiegand: add Wiegand GPIO bitbanged controller driver
-Date:   Thu, 24 Aug 2023 13:10:15 +0200
-Message-Id: <20230824111015.57765-5-m.zatovic1@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230824111015.57765-1-m.zatovic1@gmail.com>
-References: <20230824111015.57765-1-m.zatovic1@gmail.com>
+        Thu, 24 Aug 2023 04:13:48 -0700 (PDT)
+From:   Naresh Solanki <naresh.solanki@9elements.com>
+X-Google-Original-From: Naresh Solanki <Naresh.Solanki@9elements.com>
+To:     Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>
+Cc:     Patrick Rudolph <patrick.rudolph@9elements.com>,
+        Naresh Solanki <Naresh.Solanki@9elements.com>,
+        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org
+Subject: [PATCH v3] leds: max5970: Add support for max5970
+Date:   Thu, 24 Aug 2023 13:13:36 +0200
+Message-ID: <20230824111337.2589755-1-Naresh.Solanki@9elements.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This controller formats the data to a Wiegand format and bit-bangs
-the message on devicetree defined GPIO lines.
+From: Patrick Rudolph <patrick.rudolph@9elements.com>
 
-The driver creates a dev file for writing messages on the bus.
-It also creates a sysfs file to control the payload length of
-messages(in bits). If a message is shorter than the set payload
-length, it will be discarded. On the other hand, if a message is
-longer, the additional bits will be stripped off.
+The MAX5970 is hot swap controller and has 4 indication LED.
 
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Martin Zaťovič <m.zatovic1@gmail.com>
+Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
+Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
 ---
- .../ABI/testing/sysfs-driver-wiegand-gpio     |   9 +
- MAINTAINERS                                   |   2 +
- drivers/wiegand/Kconfig                       |  11 +
- drivers/wiegand/Makefile                      |   1 +
- drivers/wiegand/wiegand-gpio.c                | 192 ++++++++++++++++++
- 5 files changed, 215 insertions(+)
- create mode 100644 Documentation/ABI/testing/sysfs-driver-wiegand-gpio
- create mode 100644 drivers/wiegand/wiegand-gpio.c
+Changes in V3:
+- Drop array for ddata variable.
+Changes in V2:
+- Add of_node_put before return.
+- Code cleanup
+- Refactor code & remove max5970_setup_led function.
+---
+ drivers/leds/Kconfig        |  11 ++++
+ drivers/leds/Makefile       |   1 +
+ drivers/leds/leds-max5970.c | 110 ++++++++++++++++++++++++++++++++++++
+ 3 files changed, 122 insertions(+)
+ create mode 100644 drivers/leds/leds-max5970.c
 
-diff --git a/Documentation/ABI/testing/sysfs-driver-wiegand-gpio b/Documentation/ABI/testing/sysfs-driver-wiegand-gpio
-new file mode 100644
-index 000000000000..6bf6c2b93bf7
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-driver-wiegand-gpio
-@@ -0,0 +1,9 @@
-+What:		/sys/devices/platform/.../wiegand-gpio-attributes/payload_len
-+Date:		August 2023
-+Contact:	Martin Zaťovič <m.zatovic1@gmail.com>
-+Description:
-+		Read/set the payload length of messages sent by Wiegand GPIO
-+		bit-banging controller in bits. The default value is 26, as
-+		that is the most widely-used message length of Wiegand messages.
-+		Controller will only send messages of at least the set length
-+		and it will strip off bits of longer messages.
-diff --git a/MAINTAINERS b/MAINTAINERS
-index fb158e74ca4b..221ffa766ed0 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -22932,7 +22932,9 @@ F:	include/linux/wiegand.h
- WIEGAND GPIO BITBANG DRIVER
- M:	Martin Zaťovič <m.zatovic1@gmail.com>
- S:	Maintained
-+F:	Documentation/ABI/testing/sysfs-driver-wiegand-gpio
- F:	Documentation/devicetree/bindings/wiegand/wiegand-gpio.yaml
-+F:	drivers/wiegand/wiegand-gpio.c
+diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
+index b92208eccdea..03ef527cc545 100644
+--- a/drivers/leds/Kconfig
++++ b/drivers/leds/Kconfig
+@@ -637,6 +637,17 @@ config LEDS_ADP5520
+ 	  To compile this driver as a module, choose M here: the module will
+ 	  be called leds-adp5520.
  
- WILOCITY WIL6210 WIRELESS DRIVER
- L:	linux-wireless@vger.kernel.org
-diff --git a/drivers/wiegand/Kconfig b/drivers/wiegand/Kconfig
-index 09ac10217ede..17fd367a9004 100644
---- a/drivers/wiegand/Kconfig
-+++ b/drivers/wiegand/Kconfig
-@@ -23,3 +23,14 @@ config WIEGAND
- 
- 	  This Wiegand support can also be built as a module. If so, the module
- 	  will be called wiegand.
-+
-+config WIEGAND_GPIO
-+	tristate "GPIO-based wiegand master (write only)"
-+	depends on WIEGAND
++config LEDS_MAX5970
++	tristate "LED Support for Maxim 5970"
++	depends on LEDS_CLASS
++	depends on MFD_MAX5970
 +	help
-+	  This GPIO bitbanging Wiegand controller uses the libgpiod library to
-+	  utilize GPIO lines for sending Wiegand data. Userspace may access the
-+	  Wiegand GPIO interface via a dev file.
++	  This option enables support for the Maxim MAX5970 & MAX5978 smart
++	  switch indication LEDs via the I2C bus.
 +
-+	  This support is also available as a module. If so, the module will be
-+	  called wiegand-gpio.
-diff --git a/drivers/wiegand/Makefile b/drivers/wiegand/Makefile
-index d17ecb722c6e..ddf697e21088 100644
---- a/drivers/wiegand/Makefile
-+++ b/drivers/wiegand/Makefile
-@@ -1 +1,2 @@
- obj-$(CONFIG_WIEGAND)			+= wiegand.o
-+obj-$(CONFIG_WIEGAND_GPIO)		+= wiegand-gpio.o
-diff --git a/drivers/wiegand/wiegand-gpio.c b/drivers/wiegand/wiegand-gpio.c
++	  To compile this driver as a module, choose M here: the module will
++	  be called leds-max5970.
++
+ config LEDS_MC13783
+ 	tristate "LED Support for MC13XXX PMIC"
+ 	depends on LEDS_CLASS
+diff --git a/drivers/leds/Makefile b/drivers/leds/Makefile
+index d7348e8bc019..6eaee0a753c6 100644
+--- a/drivers/leds/Makefile
++++ b/drivers/leds/Makefile
+@@ -56,6 +56,7 @@ obj-$(CONFIG_LEDS_LP8501)		+= leds-lp8501.o
+ obj-$(CONFIG_LEDS_LP8788)		+= leds-lp8788.o
+ obj-$(CONFIG_LEDS_LP8860)		+= leds-lp8860.o
+ obj-$(CONFIG_LEDS_LT3593)		+= leds-lt3593.o
++obj-$(CONFIG_LEDS_MAX5970)		+= leds-max5970.o
+ obj-$(CONFIG_LEDS_MAX77650)		+= leds-max77650.o
+ obj-$(CONFIG_LEDS_MAX8997)		+= leds-max8997.o
+ obj-$(CONFIG_LEDS_MC13783)		+= leds-mc13783.o
+diff --git a/drivers/leds/leds-max5970.c b/drivers/leds/leds-max5970.c
 new file mode 100644
-index 000000000000..448bfefaa7d9
+index 000000000000..c9685990e26e
 --- /dev/null
-+++ b/drivers/wiegand/wiegand-gpio.c
-@@ -0,0 +1,192 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+#include <linux/delay.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/module.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/platform_device.h>
-+#include <linux/poll.h>
-+#include <linux/slab.h>
-+#include <linux/wiegand.h>
-+
-+#define WIEGAND_DEFAULT_PAYLOAD_LEN 26
-+
-+struct wiegand_gpio {
-+	struct device *dev;
-+	struct wiegand_controller *ctlr;
-+	struct gpio_descs *gpios;
-+};
-+
-+static ssize_t store_ulong(u32 *val, const char *buf, size_t size, unsigned long max)
-+{
-+	int rc;
-+	u32 new;
-+
-+	rc = kstrtou32(buf, 0, &new);
-+	if (rc)
-+		return rc;
-+
-+	if (new > max)
-+		return -ERANGE;
-+
-+	*val = new;
-+	return size;
-+}
-+
++++ b/drivers/leds/leds-max5970.c
+@@ -0,0 +1,110 @@
++// SPDX-License-Identifier: GPL-2.0
 +/*
-+ * Attribute file for setting payload length of Wiegand messages.
++ * Device driver for leds in MAX5970 and MAX5978 IC
++ *
++ * Copyright (c) 2022 9elements GmbH
++ *
++ * Author: Patrick Rudolph <patrick.rudolph@9elements.com>
 + */
-+static ssize_t payload_len_show(struct device *dev, struct device_attribute *attr, char *buf)
-+{
-+	struct wiegand_gpio *wiegand_gpio = dev_get_drvdata(dev);
-+	struct wiegand_controller *ctlr = wiegand_gpio->ctlr;
 +
-+	return sysfs_emit(buf, "%u\n", ctlr->payload_len);
-+}
++#include <linux/leds.h>
++#include <linux/mfd/max5970.h>
++#include <linux/of.h>
++#include <linux/platform_device.h>
++#include <linux/regmap.h>
 +
-+static ssize_t payload_len_store(struct device *dev, struct device_attribute *attr, const char *buf,
-+			size_t count)
-+{
-+	struct wiegand_gpio *wiegand_gpio = dev_get_drvdata(dev);
-+	struct wiegand_controller *ctlr = wiegand_gpio->ctlr;
++#define ldev_to_maxled(c)       container_of(c, struct max5970_led, cdev)
 +
-+	return store_ulong(&(ctlr->payload_len), buf, count, WIEGAND_MAX_PAYLEN_BYTES * 8);
-+}
-+static DEVICE_ATTR_RW(payload_len);
-+
-+static struct attribute *wiegand_gpio_attrs[] = {
-+	&dev_attr_payload_len.attr,
-+	NULL
++struct max5970_led {
++	struct device *dev;
++	struct regmap *regmap;
++	struct led_classdev cdev;
++	unsigned int index;
 +};
-+ATTRIBUTE_GROUPS(wiegand_gpio);
 +
-+/**
-+ * wiegand_gpio_send_bit - Sends a single bit
-+ *
-+ * @wiegand_gpio: Instance of the Wiegand
-+ * @value: Bit value to send
-+ * @last: Indicates last bit of a message
-+ *
-+ * To send a bit of value 1 following the wiegand protocol, one must set
-+ * the wiegand_data_hi to low for the duration of pulse. Similarly to send
-+ * a bit of value 0, the wiegand_data_lo is set to low for pulse duration.
-+ * This way the two lines are never low at the same time.
-+ */
-+void wiegand_gpio_send_bit(struct wiegand_gpio *wiegand_gpio, bool value, bool last)
++static int max5970_led_set_brightness(struct led_classdev *cdev,
++				      enum led_brightness brightness)
 +{
-+	u32 sleep_len;
-+	struct wiegand_timing *timing = &wiegand_gpio->ctlr->timing;
-+	u32 pulse_len = timing->pulse_len;
-+	u32 interval_len = timing->interval_len;
-+	u32 frame_gap = timing->frame_gap;
-+	struct gpio_desc *gpio = value ? wiegand_gpio->gpios->desc[1] :
-+						wiegand_gpio->gpios->desc[0];
++	struct max5970_led *ddata = ldev_to_maxled(cdev);
++	int ret, val;
 +
-+	gpiod_set_value_cansleep(gpio, 0);
-+	udelay(pulse_len);
-+	gpiod_set_value_cansleep(gpio, 1);
++	/* Set/clear corresponding bit for given led index */
++	val = !brightness ? BIT(ddata->index) : 0;
 +
-+	if (last)
-+		sleep_len = frame_gap - pulse_len;
-+	else
-+		sleep_len = interval_len - pulse_len;
++	ret = regmap_update_bits(ddata->regmap, MAX5970_REG_LED_FLASH, BIT(ddata->index), val);
++	if (ret < 0)
++		dev_err(cdev->dev, "failed to set brightness %d", ret);
 +
-+	fsleep(sleep_len);
++	return ret;
 +}
 +
-+static int wiegand_gpio_write_by_bits(struct wiegand_gpio *wiegand_gpio, u16 bitlen)
++static int max5970_led_probe(struct platform_device *pdev)
 +{
-+	unsigned int i;
-+	bool value;
++	struct device *dev = &pdev->dev;
++	struct device_node *np = dev_of_node(dev->parent);
++	struct regmap *regmap;
++	struct device_node *led_node;
++	struct device_node *child;
++	struct max5970_led *ddata;
++	int ret = -ENODEV, num_leds = 0;
 +
-+	for (i = 0; i < bitlen - 1; i++) {
-+		value = test_bit(i, wiegand_gpio->ctlr->data_bitmap);
-+		wiegand_gpio_send_bit(wiegand_gpio, value, false);
++	regmap = dev_get_regmap(pdev->dev.parent, NULL);
++	if (!regmap)
++		return -EPROBE_DEFER;
++
++	led_node = of_get_child_by_name(np, "leds");
++	if (!led_node)
++		return -ENODEV;
++
++	for_each_available_child_of_node(led_node, child) {
++		u32 reg;
++
++		if (of_property_read_u32(child, "reg", &reg))
++			continue;
++
++		if (reg >= MAX5970_NUM_LEDS) {
++			dev_err(dev, "invalid LED (%u >= %d)\n", reg, MAX5970_NUM_LEDS);
++			continue;
++		}
++
++		ddata = devm_kzalloc(dev, sizeof(struct max5970_led), GFP_KERNEL);
++		if (!ddata) {
++			of_node_put(child);
++			return -ENOMEM;
++		}
++
++		ddata->index = reg;
++		ddata->regmap = regmap;
++		ddata->dev = dev;
++
++		if (of_property_read_string(child, "label", &ddata->cdev.name))
++			ddata->cdev.name = child->name;
++
++		ddata->cdev.max_brightness = 1;
++		ddata->cdev.brightness_set_blocking = max5970_led_set_brightness;
++		ddata->cdev.default_trigger = "none";
++
++		ret = devm_led_classdev_register(ddata->dev, &ddata->cdev);
++		if (ret < 0) {
++			of_node_put(child);
++			dev_err(dev, "Failed to initialize LED %u\n", reg);
++			return ret;
++		}
++		num_leds++;
 +	}
 +
-+	value = test_bit(bitlen - 1, wiegand_gpio->ctlr->data_bitmap);
-+	wiegand_gpio_send_bit(wiegand_gpio, value, true);
-+
-+	return 0;
++	return ret;
 +}
 +
-+int wiegand_gpio_transfer_message(struct wiegand_controller *ctlr)
-+{
-+	struct wiegand_gpio *wiegand_gpio = wiegand_primary_get_devdata(ctlr);
-+	u8 msg_bitlen = ctlr->payload_len;
-+
-+	wiegand_gpio_write_by_bits(wiegand_gpio, msg_bitlen);
-+
-+	return 0;
-+}
-+
-+static int wiegand_gpio_request(struct device *dev, struct wiegand_gpio *wiegand_gpio)
-+{
-+	wiegand_gpio->gpios = devm_gpiod_get_array(dev, "data", GPIOD_OUT_HIGH);
-+
-+	if (IS_ERR(wiegand_gpio->gpios))
-+		dev_err(dev, "unable to get gpios\n");
-+
-+	return PTR_ERR_OR_ZERO(wiegand_gpio->gpios);
-+}
-+
-+static int wiegand_gpio_probe(struct platform_device *device)
-+{
-+	int status;
-+	struct wiegand_controller *primary;
-+	struct wiegand_gpio *wiegand_gpio;
-+	struct device *dev = &device->dev;
-+
-+	primary = devm_wiegand_alloc_controller(dev, sizeof(*wiegand_gpio), false);
-+	if (!primary)
-+		return -ENOMEM;
-+
-+	primary->transfer_message = &wiegand_gpio_transfer_message;
-+	primary->payload_len = WIEGAND_DEFAULT_PAYLOAD_LEN;
-+
-+	wiegand_gpio = wiegand_primary_get_devdata(primary);
-+	wiegand_gpio->ctlr = primary;
-+
-+	platform_set_drvdata(device, wiegand_gpio);
-+
-+	primary->bus_num = device->id;
-+	wiegand_gpio->dev = dev;
-+
-+	status = wiegand_gpio_request(dev, wiegand_gpio);
-+	if (status)
-+		return dev_err_probe(dev, status, "failed at requesting GPIOs\n");
-+
-+	status = gpiod_direction_output(wiegand_gpio->gpios->desc[0], 1);
-+	if (status)
-+		return dev_err_probe(dev, status, "failed to set GPIOs direction\n");
-+
-+	status = gpiod_direction_output(wiegand_gpio->gpios->desc[1], 1);
-+	if (status)
-+		return dev_err_probe(dev, status, "failed to set GPIOs direction\n");
-+
-+	status = devm_wiegand_register_controller(dev, primary);
-+	if (status)
-+		dev_err_probe(dev, status, "failed to register primary\n");
-+	return 0;
-+}
-+
-+static const struct of_device_id wiegand_gpio_dt_idtable[] = {
-+	{ .compatible = "wiegand-gpio", },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, wiegand_gpio_dt_idtable);
-+
-+static struct platform_driver wiegand_gpio_driver = {
++static struct platform_driver max5970_led_driver = {
 +	.driver = {
-+		.name	= "wiegand-gpio",
-+		.of_match_table = wiegand_gpio_dt_idtable,
-+		.dev_groups = wiegand_gpio_groups,
++		.name = "max5970-led",
 +	},
-+	.probe		= wiegand_gpio_probe,
++	.probe = max5970_led_probe,
 +};
-+module_platform_driver(wiegand_gpio_driver);
 +
-+MODULE_IMPORT_NS(WIEGAND);
++module_platform_driver(max5970_led_driver);
++MODULE_AUTHOR("Patrick Rudolph <patrick.rudolph@9elements.com>");
++MODULE_AUTHOR("Naresh Solanki <Naresh.Solanki@9elements.com>");
++MODULE_DESCRIPTION("MAX5970_hot-swap controller LED driver");
 +MODULE_LICENSE("GPL");
-+MODULE_DESCRIPTION("Wiegand write-only driver realized by GPIOs");
-+MODULE_AUTHOR("Martin Zaťovič <m.zatovic1@gmail.com>");
+
+base-commit: baca986e1f2c31f8e4b2a6d99d47c3bc844033e8
 -- 
-2.40.1
+2.41.0
 
