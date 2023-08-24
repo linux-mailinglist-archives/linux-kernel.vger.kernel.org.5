@@ -2,179 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2418D78706D
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 15:39:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0A2978707C
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 15:40:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240972AbjHXNi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 09:38:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50918 "EHLO
+        id S241353AbjHXNkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 09:40:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241384AbjHXNiS (ORCPT
+        with ESMTP id S241281AbjHXNjo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 09:38:18 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7836A8;
-        Thu, 24 Aug 2023 06:38:14 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 7161487F3;
-        Thu, 24 Aug 2023 15:36:54 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1692884214;
-        bh=oalxeZVFfKSUT8czfbUCm4o1WUQzUESRkV9W4kRfGiw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IUZ779YsdfuSph7BbBGVTfG0l6pO0U12VD4Jbl1cF/sQuqNXebpETUEM1MogEo+Pk
-         7vXYtXknTMJT6f2LSKl402jkvk9xB7TWOAa6NSyy9a4u+MYfCgiGXwrvYnoIJLJO3T
-         F99xH15/tBRNuqeb1eMYw2hTk3/IcZYVDDUow0QQ=
-Date:   Thu, 24 Aug 2023 16:38:19 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Jack Zhu <jack.zhu@starfivetech.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Todor Tomov <todor.too@gmail.com>, bryan.odonoghue@linaro.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Eugen Hristev <eugen.hristev@collabora.com>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, changhuang.liang@starfivetech.com
-Subject: Re: [PATCH v7 6/6] media: starfive: camss: Add VIN driver
-Message-ID: <20230824133819.GD27092@pendragon.ideasonboard.com>
-References: <20230619112838.19797-1-jack.zhu@starfivetech.com>
- <20230619112838.19797-7-jack.zhu@starfivetech.com>
- <20230727204911.GA7136@pendragon.ideasonboard.com>
- <696e3fd0-7c89-812b-5cda-c5c46b594bf7@starfivetech.com>
- <20230802103809.GB5269@pendragon.ideasonboard.com>
- <73222603-445e-fdb0-e831-219bac1d5865@starfivetech.com>
- <20230803221833.GF9722@pendragon.ideasonboard.com>
- <69c1800e-714e-372d-c894-fd060f26b306@starfivetech.com>
+        Thu, 24 Aug 2023 09:39:44 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5205EA8;
+        Thu, 24 Aug 2023 06:39:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692884382; x=1724420382;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ytyz4DisPxGG7v25rMAfmgsjmcCB7im5YSXKnOMR17g=;
+  b=TMHZgmz78XuO0qsbLfKMfSenvnVJd1JbwIMKOsT1Mame4bHAg5iaS1cy
+   GrMW5YtvYB+1Y8x1mhlJpJyjoAo5kyokj2AktoOdqjr+12tvrcZp4MmHv
+   4PvUr0I7fCcGFF/VmJV37tTw/cEagvq6kBVF0GGtadc4h7rmL7UoDw6X8
+   cufVabbSOIwnHGQEC7tLeiqz/n/lE2SCnULZ9Ma++EGSL6fq8ojrFdp7Y
+   VHtjRArHolK7gHtAiH+bIXbDDXTIyUgdfK2nIhfcuwwAmKT4MYIP+sqVD
+   9OIQ0YGzPR0dN1p7pyhWqc0wQky3SDU2J6HszKMMkHVUVRGzpvgqSOBGQ
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="354771248"
+X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
+   d="scan'208";a="354771248"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 06:39:06 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="983704613"
+X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
+   d="scan'208";a="983704613"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga006.fm.intel.com with ESMTP; 24 Aug 2023 06:39:03 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qZAY9-005fug-2X;
+        Thu, 24 Aug 2023 16:39:01 +0300
+Date:   Thu, 24 Aug 2023 16:39:01 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Matti Vaittinen <mazziesaccount@gmail.com>
+Cc:     Mehdi Djait <mehdi.djait.k@gmail.com>, jic23@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+        lars@metafoo.de, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v8 6/7] iio: accel: kionix-kx022a: Add a function to
+ retrieve number of bytes in buffer
+Message-ID: <ZOdddZ0Zpk5CknH8@smile.fi.intel.com>
+References: <cover.1692824815.git.mehdi.djait.k@gmail.com>
+ <923d01408680f5ac88ca8ee565a990645578ee83.1692824815.git.mehdi.djait.k@gmail.com>
+ <ZOdFyKHBc6BcOgZw@smile.fi.intel.com>
+ <eb47d0c9-9144-c947-f91e-d487c6ec9c45@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <69c1800e-714e-372d-c894-fd060f26b306@starfivetech.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <eb47d0c9-9144-c947-f91e-d487c6ec9c45@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jack,
+On Thu, Aug 24, 2023 at 03:52:56PM +0300, Matti Vaittinen wrote:
+> On 8/24/23 14:58, Andy Shevchenko wrote:
+> > On Wed, Aug 23, 2023 at 11:16:40PM +0200, Mehdi Djait wrote:
 
-On Fri, Aug 04, 2023 at 07:14:22PM +0800, Jack Zhu wrote:
-> On 2023/8/4 6:18, Laurent Pinchart wrote:
-> > On Thu, Aug 03, 2023 at 10:44:50AM +0800, Jack Zhu wrote:
-> >> On 2023/8/2 18:38, Laurent Pinchart wrote:
-> >> > On Wed, Aug 02, 2023 at 05:58:26PM +0800, Jack Zhu wrote:
-> >> >> On 2023/7/28 4:49, Laurent Pinchart wrote:
-> >> >> > On Mon, Jun 19, 2023 at 07:28:38PM +0800, Jack Zhu wrote:
-> >> >> >> Add Video In Controller driver for StarFive Camera Subsystem.
-> >> >> > 
-> >> >> > I haven't reviewed this patch in details, as I have a high-level
-> >> >> > question: why do you need VIN subdevs ? They don't seem to represent any
-> >> >> > particular piece of hardware, their input and output formats are always
-> >> >> > identical, and they're not used to configure registers. The contents of
-> >> >> > this patch seems to belong to the video device, I think you can drop the
-> >> >> > VIN subdevs.
-> >> >> 
-> >> >> The VIN module corresponds to a hardware module, which is mainly responsible
-> >> >> for data routing and partial interrupt management (when the image data does
-> >> >> not pass through the isp but directly goes to the ddr), the relevant registers
-> >> >> need to be configured.
-> >> > 
-> >> > That's fine, but I don't think you need a subdev for it. As far as I
-> >> > understand, the VIn modules are (more or less) DMA engines. You can just
-> >> > model them as video devices, connected directly to the CSI-2 RX and ISP
-> >> > source pads.
-> >> 
-> >> The VIN hardware can also route input data, it can decide whether DVP sensor
-> >> or MIPI sensor is used as input data.
-> >> 
-> >> > Does the "vin0_wr" have the ability to capture raw data from the DVP
-> >> > interface as well, or only from the CSI-2 RX ?
-> >> 
-> >> Yes, the "vin0_wr" has the ability to capture raw data from the DVP
-> >> interface.
+...
+
+> > > +	int ret, fifo_bytes;
+> > > +
+> > > +	ret = regmap_read(data->regmap, KX022A_REG_BUF_STATUS_1, &fifo_bytes);
+> > > +	if (ret) {
+> > > +		dev_err(data->dev, "Error reading buffer status\n");
+> > > +		return ret;
+> > > +	}
+> > > +
+> > > +	if (fifo_bytes == KX022A_FIFO_FULL_VALUE)
+> > > +		return KX022A_FIFO_MAX_BYTES;
+> > > +
+> > > +	return fifo_bytes;
 > > 
-> > Then I would recommend something similar to the following media graph:
-> > 
-> > digraph board {
-> >         rankdir=TB
-> >         imx219 [label="{{} | imx219 6-0010\n/dev/v4l-subdev0 | {<port0> 0}}", shape=Mrecord, style=filled, fillcolor=green]
-> >         imx219:port0 -> csi2rx:port0 [style=bold]
-> >         csi2rx [label="{{<port0> 0} | cdns_csi2rx.19800000.csi-bridge\n | {<port1> 1 | <port2> 2 | <port3> 3 | <port4> 4}}", shape=Mrecord, style=filled, fillcolor=green]
-> >         csi2rx:port1 -> vin:port0 [style=bold]
-> >         ov5640 [label="{{} | ov5640 6-0020\n/dev/v4l-subdev1 | {<port0> 0}}", shape=Mrecord, style=filled, fillcolor=green]
-> >         ov5640:port0 -> vin:port1 [style=bold]
-> >         vin [label="{{<port0> 0 | <port1> 1} | stf_vin0\n/dev/v4l-subdev2 | {<port2> 2}}", shape=Mrecord, style=filled, fillcolor=green]
-> >         vin:port2 -> raw_capture [style=dashed]
-> >         vin:port2 -> isp:port0 [style=dashed]
-> >         raw_capture [label="stf_vin0_wr_video0\n/dev/video0", shape=box, style=filled, fillcolor=yellow]
-> >         isp [label="{{<port0> 0} | stf_isp0\n/dev/v4l-subdev3 | {<port1> 1}}", shape=Mrecord, style=filled, fillcolor=green]
-> >         isp:port1 -> yuv_capture [style=bold]
-> >         yuv_capture [label="stf_vin0_isp0_video1\n/dev/video1", shape=box, style=filled, fillcolor=yellow]
-> > }
-> > 
-> > Here, the stf_vin0 subdev is used to route either the CSI-2 input or the
-> > DVP input to the raw capture video device and the ISP.
-> > 
-> > Does this match the hardware architecture ?
+> > This will be called each time ->get_fifo_bytes() called.
+> > Do you expect the fifo_bytes to be changed over times?
+> > Shouldn't we simply cache the value?
 > 
-> Yes, but I have a question to ask, is there any way for stf_vin0 subdev
-> to distinguish whether the current scene is 'raw_capture' or 'yuv_capture'?
+> I think this value tells how many samples there currently is in the FIFO.
+> Caching it does not sound meaningful unless I am missing something.
 
-Sorry about the late reply, I had missed your e-mail.
+I see. I think my confusion can be easily cured by renaming the callback to
 
-I'm not sure to follow you here. Do you mean differentiating between
-capturing raw frames from stf_vin0_wr_video0 and YUV frames from
-stf_vin0_isp0_video1 ? Are those mutually exclusive, or is it possible
-to capture both raw frames and YUV frames at the same time ?
+	get_amount_bytes_in_fifo()
 
-> > What are ports 2, 3 and 4 for in the CSI-2 RX ?
-> 
-> port2-4 are useless, they should be created by 'cdns-csi2rx.c' by default.
->  
-> >> >> >> Signed-off-by: Jack Zhu <jack.zhu@starfivetech.com>
-> >> >> >> ---
-> >> >> >>  .../media/platform/starfive/camss/Makefile    |    4 +-
-> >> >> >>  .../media/platform/starfive/camss/stf_camss.c |   42 +-
-> >> >> >>  .../media/platform/starfive/camss/stf_camss.h |    2 +
-> >> >> >>  .../media/platform/starfive/camss/stf_vin.c   | 1069 +++++++++++++++++
-> >> >> >>  .../media/platform/starfive/camss/stf_vin.h   |  173 +++
-> >> >> >>  .../platform/starfive/camss/stf_vin_hw_ops.c  |  192 +++
-> >> >> >>  6 files changed, 1478 insertions(+), 4 deletions(-)
-> >> >> >>  create mode 100644 drivers/media/platform/starfive/camss/stf_vin.c
-> >> >> >>  create mode 100644 drivers/media/platform/starfive/camss/stf_vin.h
-> >> >> >>  create mode 100644 drivers/media/platform/starfive/camss/stf_vin_hw_ops.c
-> >> >> >> 
-> >> >> >> diff --git a/drivers/media/platform/starfive/camss/Makefile b/drivers/media/platform/starfive/camss/Makefile
-> >> >> >> index cdf57e8c9546..ef574e01ca47 100644
-> >> >> >> --- a/drivers/media/platform/starfive/camss/Makefile
-> >> >> >> +++ b/drivers/media/platform/starfive/camss/Makefile
-> >> >> >> @@ -7,6 +7,8 @@ starfive-camss-objs += \
-> >> >> >>  		stf_camss.o \
-> >> >> >>  		stf_isp.o \
-> >> >> >>  		stf_isp_hw_ops.o \
-> >> >> >> -		stf_video.o
-> >> >> >> +		stf_video.o \
-> >> >> >> +		stf_vin.o \
-> >> >> >> +		stf_vin_hw_ops.o
-> >> >> >>  
-> >> >> >>  obj-$(CONFIG_VIDEO_STARFIVE_CAMSS) += starfive-camss.o
-> >> >> >> diff --git a/drivers/media/platform/starfive/camss/stf_camss.c b/drivers/media/platform/starfive/camss/stf_camss.c
-> >> >> >> index 6f56b45f57db..834ea63eb833 100644
-> >> >> >> --- a/drivers/media/platform/starfive/camss/stf_camss.c
-> >> >> >> +++ b/drivers/media/platform/starfive/camss/stf_camss.c
-> >> >> >> @@ -131,27 +131,61 @@ static int stfcamss_init_subdevices(struct stfcamss *stfcamss)
-> >> >> >>  		return ret;
-> >> >> >>  	}
-> >> >> >>  
+or
+
+	get_bytes_in_fifo()
+
+or alike.
 
 -- 
-Regards,
+With Best Regards,
+Andy Shevchenko
 
-Laurent Pinchart
+
