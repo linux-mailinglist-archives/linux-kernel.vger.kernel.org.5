@@ -2,104 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83043786A1E
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 10:33:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 744BF786A2C
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 10:34:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236705AbjHXIcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 04:32:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36548 "EHLO
+        id S239160AbjHXIeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 04:34:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240506AbjHXIcX (ORCPT
+        with ESMTP id S240547AbjHXIeI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 04:32:23 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F460173F
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 01:32:20 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3fee8af9cb9so42924565e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 01:32:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692865938; x=1693470738;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0r8DEwY1PL1OuTOZ7tvgpDOHdne9h/bxPfKsrxbUUJk=;
-        b=eAVRbdqdZrdGb6bDiWW4/F9weqyJ0Nz65cNPzoubXk4rdR0qVe1c42q4ZrTtf3OcjI
-         oMdKSJZrvyKvcFEZa/TXATUVjvErhuDR//+w6bteukoJgGRFP3zKPviDVaXO4rxcUlVV
-         QReqllyGSX2iXm2ZFWeWO1Ms6VOF1l5rrb6RQHoK/PJBfKg/C96sIo2kcTV9RCIwdZCq
-         J2LTeWh6dKONxrPdXuUbEgMCtGgEbpkalIbT8R1KrDefOikk4crQ3+fXn4la4mZoDIAJ
-         CbYJdJ4Xl9kE6iG8dz6/nr1seHKKuGrsjC5AvDohpRmOqpEev47uCuXHCbuZ710GOpPL
-         Z3WQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692865938; x=1693470738;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=0r8DEwY1PL1OuTOZ7tvgpDOHdne9h/bxPfKsrxbUUJk=;
-        b=F5NR1rtan4GsspjqAFJdSv+AciykqbKwIqCrlgCtzc9FJEAVUNbX6vZosDYYWO6STa
-         wv+G/AyuZ18t3Bjep8MUQDzegqiwqfziNJRXMfpxriHLSl9e7yTD//rfE0oZf2+z8Tg7
-         kULEJXJleeAsBc2x34bzX0AcCj6+7pL0H7WipOIanSBMi76dfuO1K88HY9yc/StmIJ6b
-         sF1zbmyO2r/wiaUwISTfHtZ8f0tj9Ylj1JXczM4Om8dYeFFJLOG/W0uNffH2fI+ewDAg
-         fDE/+r0f5wC2feWDd3v8oJAZ0/3A9Bf6f8ChJbtqroKwDVuj1jE9MWfo1x7FX355XTkX
-         CFgw==
-X-Gm-Message-State: AOJu0YxT+1yZ9Aps2lfiKHNm41h3ecQjhmTQ+yU/yutu1ZyqAREC9GGB
-        Fml/qaSpl8naU1uzANARBbGrzQ==
-X-Google-Smtp-Source: AGHT+IH1VcA2QnzPPWLkTP9JwJh+JjblnSC6qFKnGsaiLGfaw8iIz/QaQELIAMpS5KBRBEwImagIgg==
-X-Received: by 2002:a1c:770f:0:b0:3fa:96ad:5d2e with SMTP id t15-20020a1c770f000000b003fa96ad5d2emr11438461wmi.19.1692865938371;
-        Thu, 24 Aug 2023 01:32:18 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:982:cbb0:e6d5:d4d4:f3a1:e44b? ([2a01:e0a:982:cbb0:e6d5:d4d4:f3a1:e44b])
-        by smtp.gmail.com with ESMTPSA id 22-20020a05600c22d600b003fbd9e390e1sm1907393wmg.47.2023.08.24.01.32.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Aug 2023 01:32:17 -0700 (PDT)
-Message-ID: <27e55b16-065b-4a16-ab05-dded04f2c705@linaro.org>
-Date:   Thu, 24 Aug 2023 10:32:16 +0200
+        Thu, 24 Aug 2023 04:34:08 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B1151729;
+        Thu, 24 Aug 2023 01:34:06 -0700 (PDT)
+Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37O8VTbO001260;
+        Thu, 24 Aug 2023 08:33:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=KOHfq7yE34oHMF/DBtgsNugut3nvnkYP0hCTO74X1m8=;
+ b=FT/XVGxnbV1yJLUcavz1X/DkKtrpIYKPgr7jA1kh6yoIjCakGbzElNg/24Nfr13mm730
+ SrhuxUerPl7q/HjUfJZ0Ej4u4HAY/sWOC/NdESVVU9VmqzuIyh259ikz04aj2G65g47g
+ HHhGvubKmqQKVegkU2xZLlKLmFGNuSJyhlVtUWOJiR03Z6SpMyRRfFkNl+5G1mNyUqRJ
+ FEUGKLtnH7mhnpL7eYHKA7Kv7pp3XTlIppw48EJbMU7T5WHUp6uMTg6i04y0Oo9qEeAz
+ O8n6orMoY88sg/d0Q0WE2Xh61CpMTrcID83QRdE2XgtJDBWrp+IkOIYYmVju1tZNRHiE Sg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sp3rwr0yc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 24 Aug 2023 08:33:18 +0000
+Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37O8WAYI003577;
+        Thu, 24 Aug 2023 08:33:18 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sp3rwr0y3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 24 Aug 2023 08:33:18 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37O6ewPB026143;
+        Thu, 24 Aug 2023 08:33:17 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3snqgt4ycw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 24 Aug 2023 08:33:17 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37O8XEQm41288298
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 24 Aug 2023 08:33:14 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DC7A42005A;
+        Thu, 24 Aug 2023 08:33:13 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 70D4620075;
+        Thu, 24 Aug 2023 08:32:27 +0000 (GMT)
+Received: from osiris (unknown [9.171.81.161])
+        by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Thu, 24 Aug 2023 08:32:27 +0000 (GMT)
+Date:   Thu, 24 Aug 2023 10:32:25 +0200
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Alexander Gordeev <agordeev@linux.ibm.com>
+Cc:     Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        surenb@google.com, willy@infradead.org,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        loongarch@lists.linux.dev, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org
+Subject: Re: [PATCH rfc v2 04/10] s390: mm: use try_vma_locked_page_fault()
+Message-ID: <20230824083225.10112-A-hca@linux.ibm.com>
+References: <20230821123056.2109942-1-wangkefeng.wang@huawei.com>
+ <20230821123056.2109942-5-wangkefeng.wang@huawei.com>
+ <ZOcR4Z1WnCy1vl9T@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH V2 6/6] arm64: dts: add support for T7 power domain
- controller
-Content-Language: en-US, fr
-To:     Xianwei Zhao <xianwei.zhao@amlogic.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>
-References: <20230824055930.2576849-1-xianwei.zhao@amlogic.com>
- <20230824055930.2576849-7-xianwei.zhao@amlogic.com>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <20230824055930.2576849-7-xianwei.zhao@amlogic.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZOcR4Z1WnCy1vl9T@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: _ptMvc4VMCcBQrtNKVMyLJnbnArvRQhH
+X-Proofpoint-GUID: MMqKuJFCH130oxqzSHmDVw6sZHdPY5i-
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-24_05,2023-08-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ mlxlogscore=517 mlxscore=0 priorityscore=1501 lowpriorityscore=0
+ bulkscore=0 impostorscore=0 malwarescore=0 clxscore=1011 spamscore=0
+ adultscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308240065
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -107,45 +116,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/08/2023 07:59, Xianwei Zhao wrote:
-> From: "xianwei.zhao" <xianwei.zhao@amlogic.com>
+On Thu, Aug 24, 2023 at 10:16:33AM +0200, Alexander Gordeev wrote:
+> On Mon, Aug 21, 2023 at 08:30:50PM +0800, Kefeng Wang wrote:
+> > Use new try_vma_locked_page_fault() helper to simplify code.
+> > No functional change intended.
+> > 
+> > Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> > ---
+> >  arch/s390/mm/fault.c | 66 ++++++++++++++++++--------------------------
+> >  1 file changed, 27 insertions(+), 39 deletions(-)
+...
+> > -	fault = handle_mm_fault(vma, address, flags | FAULT_FLAG_VMA_LOCK, regs);
+> > -	if (!(fault & (VM_FAULT_RETRY | VM_FAULT_COMPLETED)))
+> > -		vma_end_read(vma);
+> > -	if (!(fault & VM_FAULT_RETRY)) {
+> > -		count_vm_vma_lock_event(VMA_LOCK_SUCCESS);
+> > -		if (likely(!(fault & VM_FAULT_ERROR)))
+> > -			fault = 0;
 > 
-> Enable power domain controller for Amlogic T7 SoC
-> 
-> Signed-off-by: xianwei.zhao <xianwei.zhao@amlogic.com>
-> ---
-> V1 -> V2: None
-> ---
->   arch/arm64/boot/dts/amlogic/amlogic-t7.dtsi | 6 ++++++
->   1 file changed, 6 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/amlogic/amlogic-t7.dtsi b/arch/arm64/boot/dts/amlogic/amlogic-t7.dtsi
-> index 1423d4a79156..23cdad1b425b 100644
-> --- a/arch/arm64/boot/dts/amlogic/amlogic-t7.dtsi
-> +++ b/arch/arm64/boot/dts/amlogic/amlogic-t7.dtsi
-> @@ -4,6 +4,7 @@
->    */
->   
->   #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +#include <dt-bindings/power/amlogic,t7-pwrc.h>
->   
->   / {
->   	interrupt-parent = <&gic>;
-> @@ -118,6 +119,11 @@ psci {
->   
->   	sm: secure-monitor {
->   		compatible = "amlogic,meson-gxbb-sm";
-> +
-> +		pwrc: power-controller {
-> +			compatible = "amlogic,t7-pwrc";
-> +			#power-domain-cells = <1>;
-> +		};
->   	};
->   
->   	soc {
+> This fault fixup is removed in the new version.
+...
 
-Please change the subject to:
-arm64: dts: amlogic: t7: add power domain controller node
+> > +		vmf.vm_flags = VM_WRITE;
+> > +	if (vmf.vm_flags == VM_WRITE)
+> > +		vmf.flags |= FAULT_FLAG_WRITE;
+> > +
+> > +	fault = try_vma_locked_page_fault(&vmf);
+> > +	if (fault == VM_FAULT_NONE)
+> > +		goto lock_mm;
+> 
+> Because VM_FAULT_NONE is set to 0 it gets confused with
+> the success code of 0 returned by a fault handler. In the
+> former case we want to continue, while in the latter -
+> successfully return. I think it applies to all archs.
+...
+> FWIW, this series ends up with kernel BUG at arch/s390/mm/fault.c:341!
 
-With that:
-Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
+Without having looked in detail into this patch: all of this is likely
+because s390's fault handling is quite odd. Not only because fault is set
+to 0, but also because of the private VM_FAULT values like
+VM_FAULT_BADCONTEXT. I'm just cleaning up all of this, but it won't make it
+for the next merge window.
+
+Therefore I'd like to ask to drop the s390 conversion of this series, and
+if this series is supposed to be merged the s390 conversion needs to be
+done later. Let's not waste more time on the current implementation,
+please.
