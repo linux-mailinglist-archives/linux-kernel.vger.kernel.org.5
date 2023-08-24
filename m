@@ -2,69 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 575E7786507
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 04:04:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F09678650B
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 04:06:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239221AbjHXCDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 22:03:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41986 "EHLO
+        id S239225AbjHXCGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 22:06:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239215AbjHXCDV (ORCPT
+        with ESMTP id S239232AbjHXCFk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 22:03:21 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66502E59;
-        Wed, 23 Aug 2023 19:03:17 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-52a069edca6so5419096a12.3;
-        Wed, 23 Aug 2023 19:03:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692842596; x=1693447396;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=OjL4sAUr98Mmw/HylBqttyHvxUAokrUFQ9c9iDys8rc=;
-        b=DDQQRb6i+/RmSqq8pC6lSxh1ppqw+AzLRtz8pPT4Kjueblo7Sj3TNfY8Peq5OE6kvB
-         aKxd59n5q6KAYj8VWwFBwTI1VvKpXYs3EIaFe8LT9n8YRLkaHRvNdAWBeyXtyIy4IC43
-         sXGFbLQYnmFfLxPQZZbUFTROz4Dir++W7hA0xxxVndNorPNf/TOrjq/CND6TpwVg4BA6
-         RtyNupidcLw2YvOIdJTIcB9VI6aLq51BB5u2wXLkgRASos2Y22QSWbKBOSD5cI9BuRpf
-         7dAKi//14Grrj/erqwB08uvMpP20XVl39NFy/lyRrBClE8qTrBQpmFNiVqOKY1/3PkAT
-         t4tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692842596; x=1693447396;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=OjL4sAUr98Mmw/HylBqttyHvxUAokrUFQ9c9iDys8rc=;
-        b=IUgwt/lN9kVExkvsxujx6npERtIExMJiCeiZAWzir2MPUWzCR52ynFxC/udy7bh8m+
-         Xv+X0hPBpO0GrCwTv8RO5ngnG8Ov7sk9VRFQLxoTUZvj9rLY+f8KHmo96eCRF46tanrH
-         gZiKvzIne5LGpiF/G2UV5vcnhw2d6UOhaLgrJ/0bWU/S4+Yfj+qkZZicdr4Q9oyPnmlY
-         zR9g0EVHz0rRGewzLEkUrRn2Rky8dAz7qO19uYMMzrq4MCn8lg7dchlyWO0ncGUPi3D6
-         HdWRC1ZDAZXsntD3OTibXPuvc0v+Vibg/hC4gtDJMxGz/1+2Kx1tkoVEQ4f0A8uGd+xP
-         njGg==
-X-Gm-Message-State: AOJu0YxKSqXrWACOL59wK2mxBxsMa88Yl4nIq+Y/hwQQtyMdWH7GLbSo
-        LE85YQraq+KMyYxeWCz0U1saEtT1n5qTWhQr8/s=
-X-Google-Smtp-Source: AGHT+IFMkPUHd4p3R7g3gP5YQveLKoBN3UibfETlMIC5FUxaH9SkdjYRlAYQV5QLrY155SkpaQqYgxExgzXbdvq70WM=
-X-Received: by 2002:a17:906:255a:b0:99c:47a:8bcd with SMTP id
- j26-20020a170906255a00b0099c047a8bcdmr9576794ejb.67.1692842595616; Wed, 23
- Aug 2023 19:03:15 -0700 (PDT)
+        Wed, 23 Aug 2023 22:05:40 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29B69E59;
+        Wed, 23 Aug 2023 19:05:39 -0700 (PDT)
+Received: from kwepemi500020.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RWRDR1nSgzLp7y;
+        Thu, 24 Aug 2023 10:02:31 +0800 (CST)
+Received: from [10.67.109.184] (10.67.109.184) by
+ kwepemi500020.china.huawei.com (7.221.188.8) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Thu, 24 Aug 2023 10:05:36 +0800
+Message-ID: <53b858fe-8f42-ffc2-fede-4d5918e1e9de@huawei.com>
+Date:   Thu, 24 Aug 2023 10:05:35 +0800
 MIME-Version: 1.0
-References: <20230805064820.30305-1-zhifeng.tang@unisoc.com>
-In-Reply-To: <20230805064820.30305-1-zhifeng.tang@unisoc.com>
-From:   Chunyan Zhang <zhang.lyra@gmail.com>
-Date:   Thu, 24 Aug 2023 10:02:38 +0800
-Message-ID: <CAAfSe-u2WiMUzyh71ZcMAS_Q+_Uo4skHahMbLNsU1xeUncnpSA@mail.gmail.com>
-Subject: Re: [PATCH] clk: sprd: Fix thm_parents incorrect configuration
-To:     Zhifeng Tang <zhifeng.tang@unisoc.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Cixi Geng <cixi.geng1@unisoc.com>, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Zhifeng Tang <zhifeng.tang23@gmail.com>,
-        Wenming Wu <wenming.wu@unisoc.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.0
+Subject: Re: [PATCH bpf-next v2 0/7] Add support cpu v4 insns for RV64
+Content-Language: en-US
+To:     Jakub Kicinski <kuba@kernel.org>,
+        Pu Lehui <pulehui@huaweicloud.com>
+CC:     <linux-riscv@lists.infradead.org>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Xu Kuohai <xukuohai@huawei.com>,
+        Puranjay Mohan <puranjay12@gmail.com>
+References: <20230824095001.3408573-1-pulehui@huaweicloud.com>
+ <20230823185356.0db6cc1d@kernel.org>
+From:   Pu Lehui <pulehui@huawei.com>
+In-Reply-To: <20230823185356.0db6cc1d@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.109.184]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemi500020.china.huawei.com (7.221.188.8)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -73,34 +66,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 5 Aug 2023 at 14:48, Zhifeng Tang <zhifeng.tang@unisoc.com> wrote:
->
-> The thm*_clk have two clock sources 32k and 250k,excluding 32m.
->
-> Signed-off-by: Zhifeng Tang <zhifeng.tang@unisoc.com>
 
-Acked-by: Chunyan Zhang <zhang.lyra@gmail.com>
 
-Thanks,
-Chunyan
+On 2023/8/24 9:53, Jakub Kicinski wrote:
+> On Thu, 24 Aug 2023 09:49:54 +0000 Pu Lehui wrote:
+>> Add support cpu v4 instructions for RV64.
+> 
+> Please make sure you fix the timezone on your system before sending
+> out the next version.
 
-> ---
->  drivers/clk/sprd/ums512-clk.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/clk/sprd/ums512-clk.c b/drivers/clk/sprd/ums512-clk.c
-> index fc25bdd85e4e..f43bb10bd5ae 100644
-> --- a/drivers/clk/sprd/ums512-clk.c
-> +++ b/drivers/clk/sprd/ums512-clk.c
-> @@ -800,7 +800,7 @@ static SPRD_MUX_CLK_DATA(uart1_clk, "uart1-clk", uart_parents,
->                          0x250, 0, 3, UMS512_MUX_FLAG);
->
->  static const struct clk_parent_data thm_parents[] = {
-> -       { .fw_name = "ext-32m" },
-> +       { .fw_name = "ext-32k" },
->         { .hw = &clk_250k.hw  },
->  };
->  static SPRD_MUX_CLK_DATA(thm0_clk, "thm0-clk", thm_parents,
-> --
-> 2.17.1
->
+It looks so odd, will dig it out. Thanks.
