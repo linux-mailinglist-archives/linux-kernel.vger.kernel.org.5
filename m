@@ -2,156 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CE89786446
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 02:38:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54CA7786453
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 02:51:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238912AbjHXAf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 20:35:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46644 "EHLO
+        id S238923AbjHXAsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 20:48:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238910AbjHXAfo (ORCPT
+        with ESMTP id S238921AbjHXArz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 20:35:44 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8994210D3
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 17:35:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692837342; x=1724373342;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=fLmhUzL/MeUrvdUoqFUQx93UlfX+PWDtxxYHmtQBJ/0=;
-  b=iFxTVQ0w8srU7Y1cdxNvxtz/H88dkOccDWpetiCD/llrSyZq8IP8NWIG
-   +Pdh8RLExm2zyj55S8HHxqofRtMzQgVyS/VuOMa0Rx49eX05HiqUo2/1M
-   OvuCFypxBpX88+7ykucCkfaTvlQPMPmmGEIAbr4Twv7k4Im1i5kZIID8w
-   wls2kFExLQ0UE7Eg1984xNGBCtm358TGjHdPE7dcW+f+Qt3lLd1qTeMJh
-   h5F4LJqTbYk6wf5rXeJsqi09KohK+8fqrUO3ny/+cZp/c+PvYnj60+MVK
-   YPgq62Y7177QMqFzCffVqY+ax5LmN3mhJd6t9P4J3CnDoIC+xd6gVMRgB
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="438237980"
-X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
-   d="scan'208";a="438237980"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2023 17:35:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="860520213"
-X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
-   d="scan'208";a="860520213"
-Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 23 Aug 2023 17:35:36 -0700
-Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qYyK0-0001cf-0d;
-        Thu, 24 Aug 2023 00:35:36 +0000
-Date:   Thu, 24 Aug 2023 08:34:57 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     John Stultz <jstultz@google.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, John Stultz <jstultz@google.com>,
-        Joel Fernandes <joelaf@google.com>,
-        Qais Yousef <qyousef@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Zimuzo Ezeozue <zezeozue@google.com>,
-        Youssef Esmat <youssefesmat@google.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, kernel-team@android.com
-Subject: Re: [PATCH v5 13/19] sched: Split out __sched() deactivate task
- logic into a helper
-Message-ID: <202308240824.ugWLq8LH-lkp@intel.com>
-References: <20230819060915.3001568-14-jstultz@google.com>
+        Wed, 23 Aug 2023 20:47:55 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C4C6CED
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 17:47:53 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-68a3cae6d94so3790807b3a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 17:47:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1692838072; x=1693442872;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=mqmqQz32jBcW9BevzM5t/zeWptvSYdEFNatyBEm47Vs=;
+        b=bCMBaZ+BXhH5KQKBdOAO9bRl6+m9EFy7XxlE2DpJUVSXCkrKK/lXy+QbD2jPLqp9vt
+         GuwSVAbqKsmEgFYo9Es5U3dSiRu7+tYw7JKGcpeDMT+hy/acPcL2KdcmiB+tsejsrFkN
+         QIUBWW2nFa2r8YqCXGC+e4ub2bYzbKKkI2Gmg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692838072; x=1693442872;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mqmqQz32jBcW9BevzM5t/zeWptvSYdEFNatyBEm47Vs=;
+        b=fM0xNNse1dxG1IPFtXklchcLX36lH/YJJLF+I3r+7BBWRBfbDwsb9Z35ZLxi11Z1Lj
+         PlwTOoy185z5Xte3GMd/zVlMsg6VtQem6dC2AL9wMB3EPgIk6jxXSomGitwFmg0KpmZW
+         fAIlbreZChZp1fQwgzkcNZvhoZXaw1uFnbjvYmegfdifV3Y7twJ2SgWJTjjF83CJmlBm
+         pWz/xPABX5p28TG2TPdtvNihoC/sTPzTU1mg/q6cl39vZihe/lpnjmnfox9k4noycH6x
+         6fnIHf//YWQ06kUhjtBSqspXbNs9uEjoJrrhBX0l+5spq+eQ2NOUikPI6yIR1HNckjfJ
+         W2bg==
+X-Gm-Message-State: AOJu0Yx0ssU2IW+EFykI2rXjBoN70v/Z+3G3MencCR9ttBZH7pnhRD/m
+        Lu0jdwn1ie0RBX5f6q1Ur4mGNA==
+X-Google-Smtp-Source: AGHT+IF2pUCFtH2+SpnHTH/g5ciVoWAYzING55WBLUuNjl1Hy4m9cFG8aGTmEZRpb71c17WJ0Me8WQ==
+X-Received: by 2002:a05:6a20:a11f:b0:140:3aa:e2ce with SMTP id q31-20020a056a20a11f00b0014003aae2cemr17743934pzk.42.1692838072501;
+        Wed, 23 Aug 2023 17:47:52 -0700 (PDT)
+Received: from google.com (KD124209188001.ppp-bb.dion.ne.jp. [124.209.188.1])
+        by smtp.gmail.com with ESMTPSA id jc19-20020a17090325d300b001b8b73da7b1sm11457406plb.227.2023.08.23.17.47.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Aug 2023 17:47:52 -0700 (PDT)
+Date:   Thu, 24 Aug 2023 09:47:47 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Ying Sun <sunying@nj.iscas.ac.cn>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Siyuan Guo <zy21df106@buaa.edu.cn>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Jesse T <mr.bossman075@gmail.com>
+Subject: Re: [PATCH] kconfig: add dependency warning print about invalid
+ values in verbose mode
+Message-ID: <20230824004747.GC3913@google.com>
+References: <20230809002436.18079-1-sunying@nj.iscas.ac.cn>
+ <CAK7LNARH-ziDD8=+90y5Zzo0cqqnc5qaiVWW0YQzdZ=nO9+e8w@mail.gmail.com>
+ <CAJFTR8SajdzT2kKscEpPon9faUa8tHrvYPC_+awG3VeHVS8sSg@mail.gmail.com>
+ <20230823015551.GB3913@google.com>
+ <CAK7LNAQNk2MU=M5Q6GXtm34VyFcNOhVgw3UQ7Mdn4hoqQ_636A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230819060915.3001568-14-jstultz@google.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAK7LNAQNk2MU=M5Q6GXtm34VyFcNOhVgw3UQ7Mdn4hoqQ_636A@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi John,
+On (23/08/24 06:52), Masahiro Yamada wrote:
+> On Wed, Aug 23, 2023 at 10:56 AM Sergey Senozhatsky
+> <senozhatsky@chromium.org> wrote:
+> >
+> > On (23/08/19 22:40), Jesse T wrote:
+> > > > > From: Ying Sun <sunying@nj.iscas.ac.cn>
+> > > > >
+> > > > > Add warning about the configuration option's invalid value in verbose mode,
+> > > > >  including error causes, mismatch dependency, old and new values,
+> > > > >  to help users correct them.
+> >
+> > Are those really errors?
+> >
+> > ERROR : CLANG_VERSION[140006 => 0] value is invalid  due to it has default value
+> > ERROR : CC_IS_GCC[n => y] value is invalid  due to it has default value
+> > ERROR : GCC_VERSION[0 => 120200] value is invalid  due to it has default value
+> >
+> > I'm using clang, so corresponding options are set accordingly in my .config
+> 
+> 
+> I think not errors, but warnings.
 
-kernel test robot noticed the following build warnings:
+I agree.
 
-[auto build test WARNING on tip/locking/core]
-[also build test WARNING on linus/master tip/auto-latest v6.5-rc7]
-[cannot apply to tip/sched/core tip/master next-20230823]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/John-Stultz/sched-Unify-runtime-accounting-across-classes/20230821-121604
-base:   tip/locking/core
-patch link:    https://lore.kernel.org/r/20230819060915.3001568-14-jstultz%40google.com
-patch subject: [PATCH v5 13/19] sched: Split out __sched() deactivate task logic into a helper
-config: um-i386_defconfig (https://download.01.org/0day-ci/archive/20230824/202308240824.ugWLq8LH-lkp@intel.com/config)
-compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
-reproduce: (https://download.01.org/0day-ci/archive/20230824/202308240824.ugWLq8LH-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308240824.ugWLq8LH-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> kernel/sched/core.c:6565:6: warning: no previous declaration for 'try_to_deactivate_task' [-Wmissing-declarations]
-    bool try_to_deactivate_task(struct rq *rq, struct task_struct *p, unsigned long state)
-         ^~~~~~~~~~~~~~~~~~~~~~
+Masahiro, do we really need "list missing" to be blocked on this?
+This patch has been posted on Aug 8 and there was not much progress
+since then. Can we, perhaps, move "list missing" forward?
 
 
-vim +/try_to_deactivate_task +6565 kernel/sched/core.c
+---
+ scripts/kconfig/confdata.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
-  6564	
-> 6565	bool try_to_deactivate_task(struct rq *rq, struct task_struct *p, unsigned long state)
-  6566	{
-  6567		if (signal_pending_state(state, p)) {
-  6568			WRITE_ONCE(p->__state, TASK_RUNNING);
-  6569		} else {
-  6570			p->sched_contributes_to_load =
-  6571				(state & TASK_UNINTERRUPTIBLE) &&
-  6572				!(state & TASK_NOLOAD) &&
-  6573				!(state & TASK_FROZEN);
-  6574	
-  6575			if (p->sched_contributes_to_load)
-  6576				rq->nr_uninterruptible++;
-  6577	
-  6578			/*
-  6579			 * __schedule()			ttwu()
-  6580			 *   prev_state = prev->state;    if (p->on_rq && ...)
-  6581			 *   if (prev_state)		    goto out;
-  6582			 *     p->on_rq = 0;		  smp_acquire__after_ctrl_dep();
-  6583			 *				  p->state = TASK_WAKING
-  6584			 *
-  6585			 * Where __schedule() and ttwu() have matching control dependencies.
-  6586			 *
-  6587			 * After this, schedule() must not care about p->state any more.
-  6588			 */
-  6589			deactivate_task(rq, p, DEQUEUE_SLEEP | DEQUEUE_NOCLOCK);
-  6590	
-  6591			if (p->in_iowait) {
-  6592				atomic_inc(&rq->nr_iowait);
-  6593				delayacct_blkio_start();
-  6594			}
-  6595			return true;
-  6596		}
-  6597		return false;
-  6598	}
-  6599	
-
+diff --git a/scripts/kconfig/confdata.c b/scripts/kconfig/confdata.c
+index fa2ae6f63352..bf6d473755aa 100644
+--- a/scripts/kconfig/confdata.c
++++ b/scripts/kconfig/confdata.c
+@@ -360,7 +360,10 @@ int conf_read_simple(const char *name, int def)
+        char *p, *p2;
+        struct symbol *sym;
+        int i, def_flags;
++       bool missing = false;
++       const char *sanity_checks;
+ 
++       sanity_checks = getenv("KCONFIG_SANITY_CHECKS");
+        if (name) {
+                in = zconf_fopen(name);
+        } else {
+@@ -448,6 +451,13 @@ int conf_read_simple(const char *name, int def)
+                        if (def == S_DEF_USER) {
+                                sym = sym_find(line + 2 + strlen(CONFIG_));
+                                if (!sym) {
++                                       if (sanity_checks) {
++                                               conf_warning("unknown symbol: %s",
++                                                            line + 2 + strlen(CONFIG_));
++                                               missing = true;
++                                               continue;
++                                       }
++
+                                        conf_set_changed(true);
+                                        continue;
+                                }
+@@ -482,6 +492,13 @@ int conf_read_simple(const char *name, int def)
+ 
+                        sym = sym_find(line + strlen(CONFIG_));
+                        if (!sym) {
++                               if (sanity_checks && def != S_DEF_AUTO) {
++                                       conf_warning("unknown symbol: %s",
++                                                    line + strlen(CONFIG_));
++                                       missing = true;
++                                       continue;
++                               }
++
+                                if (def == S_DEF_AUTO)
+                                        /*
+                                         * Reading from include/config/auto.conf
+@@ -530,6 +547,10 @@ int conf_read_simple(const char *name, int def)
+        }
+        free(line);
+        fclose(in);
++
++       if (missing)
++               exit(1);
++
+        return 0;
+ }
+ 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.42.0.rc1.204.g551eb34607-goog
