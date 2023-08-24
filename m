@@ -2,263 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C5CD786962
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 10:05:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 652DE78697A
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 10:06:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236809AbjHXIFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 04:05:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59492 "EHLO
+        id S240455AbjHXIFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 04:05:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240448AbjHXIEt (ORCPT
+        with ESMTP id S240512AbjHXIF2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 04:04:49 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFD141980
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 01:04:02 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2bcb89b4767so64992181fa.3
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 01:04:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1692864240; x=1693469040;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Td1ijM0dx2iNRqr2N3eBQRfbFRu8kCUmxHSvTRGEgsw=;
-        b=lhgftW+kUpJYgyukPTeMGEg46DSs1BtK5z/SjUu/e9VMVm5eN2eC2u/+blwQ54vuJI
-         QzMbNLtSEMMFERz0K+7AT6ffq4Qi3z/IjFDT6xFIyWWXpCQzGPh8rnE/SorU6ZtJitOd
-         jas03pjzHirqsUsRf4RDToow05j9J/8XlXbKo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692864240; x=1693469040;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Td1ijM0dx2iNRqr2N3eBQRfbFRu8kCUmxHSvTRGEgsw=;
-        b=SHSeT8BoEcF0rDGxGsJZd6UnU+53D1inzi4j0Vh/4bRgto18LsRGQJy38NdSUnwXmi
-         vRA/I+NEmFTUgOi4qQiZRIZvbW1xnAOe3IBn0FVwEH7JdScnIytLeTBwHiPegcmrWaEU
-         +MsKv9JlfHWaud/LaE/wS1+DJoxsIAa7I8CifPci4UGB928AzrPmyn3ILFZrPqAvTLI5
-         hItektCmubaBMPDMGB2VEOZrHfO5Bjfj55a/2/bX9n/nHbcOysQ1EAAmNQ2vOZTMOFTf
-         n4N6vhaBODae7xKESaZjwp4lh8zd06d455T1TnCAumCcSoFWNSM29A+OGsOH/Z1vCUNd
-         INBA==
-X-Gm-Message-State: AOJu0Yy9D9+NphCucvcB2yuClh6M8YD1C14sFUVxZU2U4dqttQTcL9Bw
-        T8f0xPxp3Z6clpbXQb13rBhZt1QlHoDwqg8/jBcUFg==
-X-Google-Smtp-Source: AGHT+IHrh+7nk/e5kV9L3xlBi65IU/eMAhbsiTEPcc+GmOb5gP2KdijZWmZMUBZJY5xZHioTccxZZzWEqXrR9lrjuwM=
-X-Received: by 2002:a2e:9ed1:0:b0:2b9:4b2e:5420 with SMTP id
- h17-20020a2e9ed1000000b002b94b2e5420mr10117680ljk.52.1692864239959; Thu, 24
- Aug 2023 01:03:59 -0700 (PDT)
+        Thu, 24 Aug 2023 04:05:28 -0400
+Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 692881729;
+        Thu, 24 Aug 2023 01:04:55 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VqT5ls6_1692864233;
+Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0VqT5ls6_1692864233)
+          by smtp.aliyun-inc.com;
+          Thu, 24 Aug 2023 16:04:02 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     kys@microsoft.com
+Cc:     haiyangz@microsoft.com, wei.liu@kernel.org, decui@microsoft.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Abaci Robot <abaci@linux.alibaba.com>
+Subject: [PATCH] x86/hyperv: Remove duplicate include
+Date:   Thu, 24 Aug 2023 16:03:52 +0800
+Message-Id: <20230824080352.98945-1-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1.7.g153144c
 MIME-Version: 1.0
-References: <20230704075054.3344915-1-stevensd@google.com> <20230704075054.3344915-6-stevensd@google.com>
- <20230705102547.hr2zxkdkecdxp5tf@linux.intel.com>
-In-Reply-To: <20230705102547.hr2zxkdkecdxp5tf@linux.intel.com>
-From:   David Stevens <stevensd@chromium.org>
-Date:   Thu, 24 Aug 2023 17:03:48 +0900
-Message-ID: <CAD=HUj7F6CUNt_9txEu0upB=PBwJzkL5dBhNs_BVHX1cicqBgw@mail.gmail.com>
-Subject: Re: [PATCH v7 5/8] KVM: x86/mmu: Don't pass FOLL_GET to __kvm_follow_pfn
-To:     Yu Zhang <yu.c.zhang@linux.intel.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Peter Xu <peterx@redhat.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 5, 2023 at 7:25=E2=80=AFPM Yu Zhang <yu.c.zhang@linux.intel.com=
-> wrote:
->
-> On Tue, Jul 04, 2023 at 04:50:50PM +0900, David Stevens wrote:
-> > From: David Stevens <stevensd@chromium.org>
-> >
-> > Stop passing FOLL_GET to __kvm_follow_pfn. This allows the host to map
-> > memory into the guest that is backed by un-refcounted struct pages - fo=
-r
-> > example, higher order non-compound pages allocated by the amdgpu driver
-> > via ttm_pool_alloc_page.
-> >
-> > The bulk of this change is tracking the is_refcounted_page flag so that
-> > non-refcounted pages don't trigger page_count() =3D=3D 0 warnings. This=
- is
-> > done by storing the flag in an unused bit in the sptes.
-> >
-> > Signed-off-by: David Stevens <stevensd@chromium.org>
-> > ---
-> >  arch/x86/kvm/mmu/mmu.c          | 44 +++++++++++++++++++++------------
-> >  arch/x86/kvm/mmu/mmu_internal.h |  1 +
-> >  arch/x86/kvm/mmu/paging_tmpl.h  |  9 ++++---
-> >  arch/x86/kvm/mmu/spte.c         |  4 ++-
-> >  arch/x86/kvm/mmu/spte.h         | 12 ++++++++-
-> >  arch/x86/kvm/mmu/tdp_mmu.c      | 22 ++++++++++-------
-> >  6 files changed, 62 insertions(+), 30 deletions(-)
-> >
-> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> > index e44ab512c3a1..b1607e314497 100644
-> > --- a/arch/x86/kvm/mmu/mmu.c
-> > +++ b/arch/x86/kvm/mmu/mmu.c
-> > @@ -553,12 +553,14 @@ static bool mmu_spte_update(u64 *sptep, u64 new_s=
-pte)
-> >
-> >       if (is_accessed_spte(old_spte) && !is_accessed_spte(new_spte)) {
-> >               flush =3D true;
-> > -             kvm_set_pfn_accessed(spte_to_pfn(old_spte));
-> > +             if (is_refcounted_page_pte(old_spte))
-> > +                     kvm_set_page_accessed(pfn_to_page(spte_to_pfn(old=
-_spte)));
-> >       }
-> >
-> >       if (is_dirty_spte(old_spte) && !is_dirty_spte(new_spte)) {
-> >               flush =3D true;
-> > -             kvm_set_pfn_dirty(spte_to_pfn(old_spte));
-> > +             if (is_refcounted_page_pte(old_spte))
-> > +                     kvm_set_page_dirty(pfn_to_page(spte_to_pfn(old_sp=
-te)));
-> >       }
-> >
-> >       return flush;
-> > @@ -596,14 +598,18 @@ static u64 mmu_spte_clear_track_bits(struct kvm *=
-kvm, u64 *sptep)
-> >        * before they are reclaimed.  Sanity check that, if the pfn is b=
-acked
-> >        * by a refcounted page, the refcount is elevated.
-> >        */
-> > -     page =3D kvm_pfn_to_refcounted_page(pfn);
-> > -     WARN_ON(page && !page_count(page));
-> > +     if (is_refcounted_page_pte(old_spte)) {
-> > +             page =3D kvm_pfn_to_refcounted_page(pfn);
-> > +             WARN_ON(!page || !page_count(page));
-> > +     }
-> >
-> > -     if (is_accessed_spte(old_spte))
-> > -             kvm_set_pfn_accessed(pfn);
-> > +     if (is_refcounted_page_pte(old_spte)) {
-> > +             if (is_accessed_spte(old_spte))
-> > +                     kvm_set_page_accessed(pfn_to_page(pfn));
-> >
-> > -     if (is_dirty_spte(old_spte))
-> > -             kvm_set_pfn_dirty(pfn);
-> > +             if (is_dirty_spte(old_spte))
-> > +                     kvm_set_page_dirty(pfn_to_page(pfn));
-> > +     }
-> >
-> >       return old_spte;
-> >  }
-> > @@ -639,8 +645,8 @@ static bool mmu_spte_age(u64 *sptep)
-> >                * Capture the dirty status of the page, so that it doesn=
-'t get
-> >                * lost when the SPTE is marked for access tracking.
-> >                */
-> > -             if (is_writable_pte(spte))
-> > -                     kvm_set_pfn_dirty(spte_to_pfn(spte));
-> > +             if (is_writable_pte(spte) && is_refcounted_page_pte(spte)=
-)
-> > +                     kvm_set_page_dirty(pfn_to_page(spte_to_pfn(spte))=
-);
-> >
-> >               spte =3D mark_spte_for_access_track(spte);
-> >               mmu_spte_update_no_track(sptep, spte);
-> > @@ -1278,8 +1284,8 @@ static bool spte_wrprot_for_clear_dirty(u64 *spte=
-p)
-> >  {
-> >       bool was_writable =3D test_and_clear_bit(PT_WRITABLE_SHIFT,
-> >                                              (unsigned long *)sptep);
-> > -     if (was_writable && !spte_ad_enabled(*sptep))
-> > -             kvm_set_pfn_dirty(spte_to_pfn(*sptep));
-> > +     if (was_writable && !spte_ad_enabled(*sptep) && is_refcounted_pag=
-e_pte(*sptep))
-> > +             kvm_set_page_dirty(pfn_to_page(spte_to_pfn(*sptep)));
-> >
-> >       return was_writable;
-> >  }
-> > @@ -2937,6 +2943,7 @@ static int mmu_set_spte(struct kvm_vcpu *vcpu, st=
-ruct kvm_memory_slot *slot,
-> >       bool host_writable =3D !fault || fault->map_writable;
-> >       bool prefetch =3D !fault || fault->prefetch;
-> >       bool write_fault =3D fault && fault->write;
-> > +     bool is_refcounted =3D !fault || fault->is_refcounted_page;
-> >
-> >       pgprintk("%s: spte %llx write_fault %d gfn %llx\n", __func__,
-> >                *sptep, write_fault, gfn);
-> > @@ -2969,7 +2976,7 @@ static int mmu_set_spte(struct kvm_vcpu *vcpu, st=
-ruct kvm_memory_slot *slot,
-> >       }
-> >
-> >       wrprot =3D make_spte(vcpu, sp, slot, pte_access, gfn, pfn, *sptep=
-, prefetch,
-> > -                        true, host_writable, &spte);
-> > +                        true, host_writable, is_refcounted, &spte);
-> >
-> >       if (*sptep =3D=3D spte) {
-> >               ret =3D RET_PF_SPURIOUS;
-> > @@ -4299,8 +4306,9 @@ static int __kvm_faultin_pfn(struct kvm_vcpu *vcp=
-u, struct kvm_page_fault *fault
-> >       struct kvm_follow_pfn foll =3D {
-> >               .slot =3D slot,
-> >               .gfn =3D fault->gfn,
-> > -             .flags =3D FOLL_GET | (fault->write ? FOLL_WRITE : 0),
-> > +             .flags =3D fault->write ? FOLL_WRITE : 0,
-> >               .allow_write_mapping =3D true,
-> > +             .guarded_by_mmu_notifier =3D true,
-> >       };
-> >
-> >       /*
-> > @@ -4317,6 +4325,7 @@ static int __kvm_faultin_pfn(struct kvm_vcpu *vcp=
-u, struct kvm_page_fault *fault
-> >                       fault->slot =3D NULL;
-> >                       fault->pfn =3D KVM_PFN_NOSLOT;
-> >                       fault->map_writable =3D false;
-> > +                     fault->is_refcounted_page =3D false;
-> >                       return RET_PF_CONTINUE;
-> >               }
-> >               /*
-> > @@ -4366,6 +4375,7 @@ static int __kvm_faultin_pfn(struct kvm_vcpu *vcp=
-u, struct kvm_page_fault *fault
-> >  success:
-> >       fault->hva =3D foll.hva;
-> >       fault->map_writable =3D foll.writable;
-> > +     fault->is_refcounted_page =3D foll.is_refcounted_page;
-> >       return RET_PF_CONTINUE;
-> >  }
-> >
-> > @@ -4451,7 +4461,8 @@ static int direct_page_fault(struct kvm_vcpu *vcp=
-u, struct kvm_page_fault *fault
-> >
-> >  out_unlock:
-> >       write_unlock(&vcpu->kvm->mmu_lock);
-> > -     kvm_release_pfn_clean(fault->pfn);
-> > +     if (fault->is_refcounted_page)
-> > +             kvm_set_page_accessed(pfn_to_page(fault->pfn));
-> >       return r;
-> >  }
-> >
-> > @@ -4529,7 +4540,8 @@ static int kvm_tdp_mmu_page_fault(struct kvm_vcpu=
- *vcpu,
-> >
-> >  out_unlock:
-> >       read_unlock(&vcpu->kvm->mmu_lock);
-> > -     kvm_release_pfn_clean(fault->pfn);
->
-> Yet kvm_release_pfn() can still be triggered for the kvm_vcpu_maped gfns.
-> What if guest uses a non-referenced page(e.g., as a vmcs12)? Although I
-> believe this is not gonna happen in real world...
+./arch/x86/hyperv/ivm.c: asm/sev.h is included more than once.
+./arch/x86/hyperv/ivm.c: asm/coco.h is included more than once.
 
-kvm_vcpu_map still uses gfn_to_pfn, which eventually passes FOLL_GET
-to __kvm_follow_pfn. So if a guest tries to use a non-refcounted page
-like that, then kvm_vcpu_map will fail and the guest will probably
-crash. It won't trigger any bugs in the host, though.
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=6212
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ arch/x86/hyperv/ivm.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-It is unfortunate that the guest will be able to use certain types of
-memory for some purposes but not for others. However, while it is
-theoretically fixable, it's an unreasonable amount of work for
-something that, as you say, nobody really cares about in practice [1].
+diff --git a/arch/x86/hyperv/ivm.c b/arch/x86/hyperv/ivm.c
+index 1448c6338971..55d43415a2fd 100644
+--- a/arch/x86/hyperv/ivm.c
++++ b/arch/x86/hyperv/ivm.c
+@@ -18,9 +18,7 @@
+ #include <asm/mshyperv.h>
+ #include <asm/hypervisor.h>
+ #include <asm/mtrr.h>
+-#include <asm/coco.h>
+ #include <asm/io_apic.h>
+-#include <asm/sev.h>
+ #include <asm/realmode.h>
+ #include <asm/e820/api.h>
+ #include <asm/desc.h>
+-- 
+2.20.1.7.g153144c
 
-[1] https://lore.kernel.org/all/ZBEEQtmtNPaEqU1i@google.com/
-
--David
