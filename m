@@ -2,206 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8A27787B27
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 00:05:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7163787B29
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 00:05:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243813AbjHXWEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 18:04:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51600 "EHLO
+        id S243819AbjHXWFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 18:05:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243866AbjHXWEe (ORCPT
+        with ESMTP id S243815AbjHXWEp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 18:04:34 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 228D71BF2;
-        Thu, 24 Aug 2023 15:04:29 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2bceca8a41aso4128171fa.0;
-        Thu, 24 Aug 2023 15:04:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692914667; x=1693519467;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kfWfQ+lRO+WKeDH70mlU0lgd8cz1Kx8i7ys96tkzebQ=;
-        b=S7NZJZ+VOsav0sm/ft26D6Am3LCuAyVsp1LgE/P0MvSw0PgpyVIrSlhTUdqCRQZx0Q
-         6jGbYAmoXjd+l1k2UEpRUtp3wf0dnehG+voSHBpQHZQUIcNy2bzD7Lx3SYdMYSwbTUt1
-         lDbxvrvN0Uvww5Dux82iOCG7s0ZDy419I/wItkmjUxslMl92oM0fiC3mqotaZJvpl9y0
-         a2toHbjNxPddjYofXoUcCuTEeFmaESPtLfhtk5JcrD2C2BJXNQC94JrIqkT9GJ8Ad350
-         Fvii1hj0VSe4wGhiLqCFpTX8MHow++qZu0S6zrPbeg5Y8oyN7YdI667ERQICARg6xgxP
-         aiWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692914667; x=1693519467;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kfWfQ+lRO+WKeDH70mlU0lgd8cz1Kx8i7ys96tkzebQ=;
-        b=aVdoLukj596anxSMHjH7BGUQ0/Fzj60wyznG/duZXzwqDfk7LeAevLDC5qd2y54scq
-         m/z/RbIh4ydThrOvH3ToPWiCdOGraCQs5eZ87vIAH+2FGRVLhF9ccxjqx9KPnuPiAsdm
-         HSAOORBSgo6I4G0it9ZFIxEqP5Lp+jOci4IZvcPsVkccO/sS66vzDAjY8rikgl41ttaB
-         el6gz0QoQMq1JFkm35m4LltRCS+UxbaxYUx2/7Ry7o/8TEm3dPq7+1H3KLOOjWXftDLq
-         6djZh76H9p8mR7jnsP0IN3Sq2jdF8SKASiRIX+QfxNnxXeXATfzGDqU2UcePz9ft5Imw
-         Nx5Q==
-X-Gm-Message-State: AOJu0YyGWYyTzFY3tOM6xK1+jGs5Sy1FpCqXYXFo0W4Pbu3Puku9JOdl
-        MPhkQFjsV8kKKEj5W1wOFeWA+ArfF+YqaO9BKfU=
-X-Google-Smtp-Source: AGHT+IELeWgckaV4V/XWmfU+4z0tlYBZeZ4Q0PJTA5DJsAayONqHOr3jMuSh5u/qLWsZhrs02IZo919xV5Fr25tn+Jg=
-X-Received: by 2002:a2e:9d10:0:b0:2bc:de8d:4ab1 with SMTP id
- t16-20020a2e9d10000000b002bcde8d4ab1mr4024122lji.6.1692914666983; Thu, 24 Aug
- 2023 15:04:26 -0700 (PDT)
+        Thu, 24 Aug 2023 18:04:45 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F1EC1991
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 15:04:44 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id AA4AF65737
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 22:04:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CB35C433C8;
+        Thu, 24 Aug 2023 22:04:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692914683;
+        bh=7Vbc8OMhC8QnpJJvlpLenZviLbygq6etasK3R0bAsbA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HoaMfuj3uEjgh+fLcsQaDYd9oDdKsNmLIJ/ALlS0PpJHUCsfedFVa5O7jnxJexvSS
+         6pMfZQZjAC5t8y7sgsuHYA6Qghb85cr+wWFtrhjzii84wXqoSiAI9Ul/HBAfqfELaW
+         b7HwbmkIYsV+moFsUdN3uDemJjgF6QPEuKzhPiTmXL10dF9tdxHRfRVPp2Fif7fapP
+         XD58jmaDjLBD68KQDenr9L6YJyZh+mjUWMqxCFQtHKUFYQNfXHCb9pbyjI2Pm1PthQ
+         1+rtU884pAPs3VBqVvevRt9hMhrLFdhmCYFDKoXr9hAzvFpAaxGx8loKy6BRgjXaAF
+         LhAI6eguEvXxw==
+Date:   Thu, 24 Aug 2023 15:04:40 -0700
+From:   Josh Poimboeuf <jpoimboe@kernel.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Andrew Cooper <andrew.cooper3@citrix.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Babu Moger <babu.moger@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>, David.Kaplan@amd.com,
+        Nikolay Borisov <nik.borisov@suse.com>,
+        gregkh@linuxfoundation.org, Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 02/22] x86/srso: Set CPUID feature bits independently of
+ bug or mitigation status
+Message-ID: <20230824220440.ltmozuypice2kmwg@treble>
+References: <cover.1692580085.git.jpoimboe@kernel.org>
+ <caf4d0a1233ccc1c33f4ff8d3fe302c9289f4bea.1692580085.git.jpoimboe@kernel.org>
+ <26a3421e-3a88-b326-4c4f-abdaa2262852@citrix.com>
+ <20230821140619.GBZONvWz+iwQZwx/sC@fat_crate.local>
+ <20230823052007.GBZOWXBymcCUOoMax3@fat_crate.local>
+ <22eb07b3-6de4-9fc2-fb05-2c7ebe6dc951@citrix.com>
+ <20230824042420.GAZObbdNb38eKaCPAm@fat_crate.local>
 MIME-Version: 1.0
-References: <20230824133135.1176709-1-puranjay12@gmail.com>
- <20230824133135.1176709-2-puranjay12@gmail.com> <CAPhsuW5mMQbZ729W_5fhX0iYaNxG5JA1L7Sck-h0jQZQzEH8+Q@mail.gmail.com>
-In-Reply-To: <CAPhsuW5mMQbZ729W_5fhX0iYaNxG5JA1L7Sck-h0jQZQzEH8+Q@mail.gmail.com>
-From:   Puranjay Mohan <puranjay12@gmail.com>
-Date:   Fri, 25 Aug 2023 00:04:15 +0200
-Message-ID: <CANk7y0i8YS70xbcXT7g0RmgR1Oi_Psk7gdNUdHzGCLvpddPd3g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/3] riscv: extend patch_text_nosync() for
- multiple pages
-To:     Song Liu <song@kernel.org>
-Cc:     paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, pulehui@huawei.com,
-        conor.dooley@microchip.com, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, yhs@fb.com,
-        kpsingh@kernel.org, bjorn@kernel.org, bpf@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230824042420.GAZObbdNb38eKaCPAm@fat_crate.local>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Song,
+On Thu, Aug 24, 2023 at 06:24:20AM +0200, Borislav Petkov wrote:
+> On Wed, Aug 23, 2023 at 01:22:34PM +0100, Andrew Cooper wrote:
+> > In my previous reply, I explained why this goes wrong when Linux ignores
+> > the CPUID bit provided by the hypervisor and decides to probe manually.
+> 
+> Send a patch and explain in its commit message *why* this is needed.
+> 
+> > No.
+> 
+> Hell yeah!
+> 
+> How do you expect us to support use cases we don't know about?!
+> 
+> > You don't get to take my code, break it when integrating it into Linux,
+> > then dismiss the bug as something hypothetical that you don't want to fix.
+> 
+> I have no clue what you're talking about but it sounds like
+> a misunderstanding. All I'm saying is, the live migration use cases the
+> kernel should support, should be documented first. If there's no
+> documentation for them, *then* you have hypothetical.
+> 
+> So patches explaining what we're supporting are welcome.
 
-On Thu, Aug 24, 2023 at 11:57=E2=80=AFPM Song Liu <song@kernel.org> wrote:
->
-> On Thu, Aug 24, 2023 at 6:31=E2=80=AFAM Puranjay Mohan <puranjay12@gmail.=
-com> wrote:
-> >
-> > The patch_insn_write() function currently doesn't work for multiple
-> > pages of instructions, therefore patch_text_nosync() will fail with a
-> > page fault if called with lengths spanning multiple pages.
-> >
-> > This commit extends the patch_insn_write() function to support multiple
-> > pages by copying at max 2 pages at a time in a loop. This implementatio=
-n
-> > is similar to text_poke_copy() function of x86.
-> >
-> > Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
-> > Reviewed-by: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
-> > ---
-> >  arch/riscv/kernel/patch.c | 39 ++++++++++++++++++++++++++++++++++-----
-> >  1 file changed, 34 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/arch/riscv/kernel/patch.c b/arch/riscv/kernel/patch.c
-> > index 575e71d6c8ae..465b2eebbc37 100644
-> > --- a/arch/riscv/kernel/patch.c
-> > +++ b/arch/riscv/kernel/patch.c
-> > @@ -53,12 +53,18 @@ static void patch_unmap(int fixmap)
-> >  }
-> >  NOKPROBE_SYMBOL(patch_unmap);
-> >
-> > -static int patch_insn_write(void *addr, const void *insn, size_t len)
-> > +static int __patch_insn_write(void *addr, const void *insn, size_t len=
-)
-> >  {
-> >         void *waddr =3D addr;
-> >         bool across_pages =3D (((uintptr_t) addr & ~PAGE_MASK) + len) >=
- PAGE_SIZE;
-> >         int ret;
-> >
-> > +       /*
-> > +        * Only two pages can be mapped at a time for writing.
-> > +        */
-> > +       if (len > 2 * PAGE_SIZE)
-> > +               return -EINVAL;
->
-> This check cannot guarantee __patch_insn_write touch at most two pages.
+Something like this?
 
-Yes, I just realised this can span 3 pages if len =3D 2 * PAGE_SIZE and
-offset_in_page(addr) > 0.
+From: Josh Poimboeuf <jpoimboe@kernel.org>
+Subject: [PATCH] x86/srso: Don't probe microcode in a guest
 
-> Maybe use
->
->     if (len + offset_in_page(addr) > 2 * PAGE_SIZE)
->         return -EINVAL;
-> ?
+To support live migration, the hypervisor sets the "lowest common
+denominator" of features.  Probing the microcode isn't allowed because
+any detected features might go away after a migration.
 
-Will fix it in the next version.
+As Andy Cooper states:
 
->
-> Thanks,
-> Song
->
-> >         /*
-> >          * Before reaching here, it was expected to lock the text_mutex
-> >          * already, so we don't need to give another lock here and coul=
-d
-> > @@ -74,7 +80,7 @@ static int patch_insn_write(void *addr, const void *i=
-nsn, size_t len)
-> >                 lockdep_assert_held(&text_mutex);
-> >
-> >         if (across_pages)
-> > -               patch_map(addr + len, FIX_TEXT_POKE1);
-> > +               patch_map(addr + PAGE_SIZE, FIX_TEXT_POKE1);
-> >
-> >         waddr =3D patch_map(addr, FIX_TEXT_POKE0);
-> >
-> > @@ -87,15 +93,38 @@ static int patch_insn_write(void *addr, const void =
-*insn, size_t len)
-> >
-> >         return ret;
-> >  }
-> > -NOKPROBE_SYMBOL(patch_insn_write);
-> > +NOKPROBE_SYMBOL(__patch_insn_write);
-> >  #else
-> > -static int patch_insn_write(void *addr, const void *insn, size_t len)
-> > +static int __patch_insn_write(void *addr, const void *insn, size_t len=
-)
-> >  {
-> >         return copy_to_kernel_nofault(addr, insn, len);
-> >  }
-> > -NOKPROBE_SYMBOL(patch_insn_write);
-> > +NOKPROBE_SYMBOL(__patch_insn_write);
-> >  #endif /* CONFIG_MMU */
-> >
-> > +static int patch_insn_write(void *addr, const void *insn, size_t len)
-> > +{
-> > +       size_t patched =3D 0;
-> > +       size_t size;
-> > +       int ret =3D 0;
-> > +
-> > +       /*
-> > +        * Copy the instructions to the destination address, two pages =
-at a time
-> > +        * because __patch_insn_write() can only handle len <=3D 2 * PA=
-GE_SIZE.
-> > +        */
-> > +       while (patched < len && !ret) {
-> > +               size =3D min_t(size_t,
-> > +                            PAGE_SIZE * 2 - offset_in_page(addr + patc=
-hed),
-> > +                            len - patched);
-> > +               ret =3D __patch_insn_write(addr + patched, insn + patch=
-ed, size);
-> > +
-> > +               patched +=3D size;
-> > +       }
-> > +
-> > +       return ret;
-> > +}
-> > +NOKPROBE_SYMBOL(patch_insn_write);
-> > +
-> >  int patch_text_nosync(void *addr, const void *insns, size_t len)
-> >  {
-> >         u32 *tp =3D addr;
-> > --
-> > 2.39.2
-> >
+  "Linux must not probe microcode when virtualised.  What it may see
+  instantaneously on boot (owing to MSR_PRED_CMD being fully passed
+  through) is not accurate for the lifetime of the VM."
 
-Thanks,
-Puranjay
+Rely on the hypervisor to set the needed IBPB_BRTYPE and SBPB bits.
+
+Fixes: 1b5277c0ea0b ("x86/srso: Add SRSO_NO support")
+Suggested-by: Andrew Cooper <andrew.cooper3@citrix.com>
+Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
+---
+ arch/x86/kernel/cpu/amd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
+index b08af929135d..28e77c5d6484 100644
+--- a/arch/x86/kernel/cpu/amd.c
++++ b/arch/x86/kernel/cpu/amd.c
+@@ -767,7 +767,7 @@ static void early_init_amd(struct cpuinfo_x86 *c)
+ 	if (cpu_has(c, X86_FEATURE_TOPOEXT))
+ 		smp_num_siblings = ((cpuid_ebx(0x8000001e) >> 8) & 0xff) + 1;
+ 
+-	if (!cpu_has(c, X86_FEATURE_IBPB_BRTYPE)) {
++	if (!cpu_has(c, X86_FEATURE_HYPERVISOR) && !cpu_has(c, X86_FEATURE_IBPB_BRTYPE)) {
+ 		if (c->x86 == 0x17 && boot_cpu_has(X86_FEATURE_AMD_IBPB))
+ 			setup_force_cpu_cap(X86_FEATURE_IBPB_BRTYPE);
+ 		else if (c->x86 >= 0x19 && !wrmsrl_safe(MSR_IA32_PRED_CMD, PRED_CMD_SBPB)) {
+-- 
+2.41.0
+
+
