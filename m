@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C967786AF4
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 11:00:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4274786AF9
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 11:01:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237518AbjHXJAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 05:00:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45104 "EHLO
+        id S239423AbjHXJA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 05:00:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238995AbjHXJAB (ORCPT
+        with ESMTP id S238017AbjHXJAu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 05:00:01 -0400
+        Thu, 24 Aug 2023 05:00:50 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 862AF1987;
-        Thu, 24 Aug 2023 01:59:58 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0B9B1739;
+        Thu, 24 Aug 2023 02:00:48 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2530C664C2;
-        Thu, 24 Aug 2023 08:59:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0ED30C433C7;
-        Thu, 24 Aug 2023 08:59:57 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7EE4461F83;
+        Thu, 24 Aug 2023 09:00:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6785BC433C8;
+        Thu, 24 Aug 2023 09:00:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692867597;
+        s=k20201202; t=1692867647;
         bh=pRjABeYbdZ7kYm0kauhfXEU9jP8GasEtUcwhn21dCxc=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=ectU467xo6X3YBcQDP+/ngOU7WPTPgRDxCHrpluWN392Mlc60axx3vIIX48VsgoDN
-         PpRyrP5/+WdC+2ykQLyOeTetMwu/huJ3eZd8i0LSxlom3CPb3lrf4rgBp8s0eX8avr
-         BGfWzbgxOTfIlW+pAY0WIEqoHeTxo/6sOY5QZAkYbyAkN19q9/PRObJOfOAPQjH1uq
-         yuz+qZ9oGjn0YECu1cNAX2T+ncu2eKxivxlqKZpSZVNj2O7+WanBFUfataSOnZA+79
-         SeT2jrZPjluftwVKxhf8sdBqKhIPd8Cn9wX8U0ZFVrF46L28H4hVpTzZP/2UJTdUE/
-         2QZdbUc7UizJQ==
+        b=FyA43QAVtvboJtLBnYjCn2l5B6rkqjm/L5UMpQBdz1EkwfzYAJF8ceZbbmfDWvnHP
+         c0NMsslfjy8YhmJnLIzirvCjxSqW/j46XG9U+pmj4Rdo4Jb1Ib0MPYmuWBfIdRgQcv
+         BQCIKj1tuabIgXNffOpoMoKWz6fFmUEc9y0mHFL+CvHTWIXiMDWg2qmK0a8Rrr6utX
+         4rQmBV9mdjclIv6Vlg0WeG5NxWT/TfYNNSEl1D7oeImRLkiMXntWYDhOsYxx5vULvK
+         4Ndwj/COJJ2khusQSyxLJCpSzB4hk7l3yB5hTbRpcCaHI+0YefYTK3XWKmNGhMw9SO
+         EvN/cUb31UV0w==
 From:   Maxime Ripard <mripard@kernel.org>
 To:     Lee Jones <lee@kernel.org>
 Cc:     linux-kernel@vger.kernel.org,
@@ -80,9 +80,10 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
