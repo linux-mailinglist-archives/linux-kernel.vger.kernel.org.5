@@ -2,67 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DB26786DD0
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 13:28:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C226786DD7
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 13:30:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237665AbjHXL1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 07:27:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44176 "EHLO
+        id S238672AbjHXL30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 07:29:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232506AbjHXL1S (ORCPT
+        with ESMTP id S240990AbjHXL3R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 07:27:18 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDE4710F3;
-        Thu, 24 Aug 2023 04:27:16 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id 46e09a7af769-6bca018afe8so1629696a34.0;
-        Thu, 24 Aug 2023 04:27:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692876435; x=1693481235;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=HoX/1SqxDvI7G80pdYJhH4J1CONUc0UeZCbshQ9Td9o=;
-        b=mLfi8Zk7uVlgAUg7qCr6D5cmpwiFbHNFqs0Ab58xc/IcDknZLrLQjRjarQjvbqyOXh
-         jMKy3tyitZ6E5MrbALXilBKs0tqhsSr+aSSTw8yrnTrovu9WCLOeR7HWch9M3RpMtGa7
-         TH8xzN9YShfEB1BO0Y/ijHPqqTeZeb7qCivj+gtIvB5kaxIzXo3PJgRS8MmMg+GIj8qz
-         BMTbK/h1quUxcJkYbLK5zG+PXM46bZ7Fpl5FjegYWzIeUny+dDAZnYGHRl8UNq0Bjlhc
-         stNPvHhNjAkFCp3dOGajJnUk0FYohMlaI+uDCliACr2tdVYzos2wOyxkSw3So1tLqr8J
-         s5/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692876435; x=1693481235;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HoX/1SqxDvI7G80pdYJhH4J1CONUc0UeZCbshQ9Td9o=;
-        b=Cb6RPtlFBS89DHsTugKJ43CPB+IH0dDoBy3VSKBXZPuYF9bfkkebP9O7AcJyIIe4R8
-         Z9IcwmZhApkhhmUAA+Jf/wVQu1Yz45AmK8L+nkb0aScIMdOhtm+xFvGtRyLX3gjbDSso
-         sYxZnGmB/SvjwbWjbKbwkzXBSua/ODRkTU3HDZEM5ziPTUoq3NixaWuR4cxviF0NZERJ
-         2QQIgcVAd2n9y7Mo9dfpXrE9Gw1/7dJ0mBRsN6UDaSv0XiEEun7NkvNiC9E8SIJO1O09
-         jRTUZSbl1iV+tafXGjTR8fDwUFHOmE5gip2WeL1doZxuz/EC2Ojg5KuGZ/V9CY2DXv6e
-         eqLg==
-X-Gm-Message-State: AOJu0YyOCzS4q2t9yVBFRLr21oCxVmu1k4aXmuuUllO4Kp3X3KLHtw37
-        9AJy2gQ0jslAy6MhlOj3GGodMtXi6jk=
-X-Google-Smtp-Source: AGHT+IHF0VFZPTm/p/IU3XRMQd1DYFEMeND9nfqMLQIC5tv06ttFVnzhZWeaHrzOVEeOd3x3Ovd/6g==
-X-Received: by 2002:a05:6871:5223:b0:1bf:fe4f:db58 with SMTP id ht35-20020a056871522300b001bffe4fdb58mr19335561oac.5.1692876435653;
-        Thu, 24 Aug 2023 04:27:15 -0700 (PDT)
-Received: from fabio-Precision-3551.. ([2804:14c:485:4b61:8c51:3a01:4599:db3])
-        by smtp.gmail.com with ESMTPSA id bp4-20020a056808238400b003a8715d7f9esm2160567oib.19.2023.08.24.04.27.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Aug 2023 04:27:15 -0700 (PDT)
-From:   Fabio Estevam <festevam@gmail.com>
-To:     daniel.lezcano@linaro.org
-Cc:     linux-pm@vger.kernel.org, rafael@kernel.org, amitk@kernel.org,
-        rui.zhang@intel.com, linux-kernel@vger.kernel.org,
-        Fabio Estevam <festevam@denx.de>
-Subject: [PATCH v2] thermal: imx8mm: Allow reboot after critical temperature
-Date:   Thu, 24 Aug 2023 08:27:05 -0300
-Message-Id: <20230824112705.451411-1-festevam@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Thu, 24 Aug 2023 07:29:17 -0400
+Received: from s1.sapience.com (s1.sapience.com [72.84.236.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DE7810FE
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 04:29:12 -0700 (PDT)
+Authentication-Results: dkim-srvy7; dkim=pass (Good ed25519-sha256 
+   signature) header.d=sapience.com header.i=@sapience.com 
+   header.a=ed25519-sha256; dkim=pass (Good 2048 bit rsa-sha256 signature) 
+   header.d=sapience.com header.i=@sapience.com header.a=rsa-sha256
+Received: from srv8.prv.sapience.com (srv8.prv.sapience.com [x.x.x.x])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+        (No client certificate requested)
+        by s1.sapience.com (Postfix) with ESMTPS id 93BDA480A94;
+        Thu, 24 Aug 2023 07:29:11 -0400 (EDT)
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=sapience.com;
+ i=@sapience.com; q=dns/txt; s=dk-ed25519-220413; t=1692876551;
+ h=message-id : date : mime-version : subject : to : cc : references :
+ from : in-reply-to : content-type : content-transfer-encoding : from;
+ bh=rZ2he4Mdtq8h71/ckeBbMY4eP2beNycVRu9+nDI/LtI=;
+ b=DrfrxhNWjnzMfrCoWg2Dk1FFavXmVuyhT2QiUVrVf1OK2SSTQO3gRKFoVsVNGEpWbdQfB
+ zB22vg5xXthZ2UTAA==
+ARC-Seal: i=1; a=rsa-sha256; d=sapience.com; s=arc6-rsa-220412; t=1692876551;
+        cv=none; b=gzNGUBgNNvaWOc+LXN3p/iXArc6vIGM4jW04i0+a+KjAE7mNEuYLxxMlbnSi1EPOhJe2hDUUFWI9bVMFSIAHFEBPPOBJn1+pPam7iTtvrn3sz9CgyTQuBd6iLJ0pTzYxc8H56YcsTIV+ys69tV1COeMFnFPdNQ+3JmPM0gYlMKx+toIpuDKybVF2k5EcS9GaP99yn0HiH9JYXYJNZYDlz3Uc7sBigA7/Xz3DOko0/e3EnM8CjwrvTCO4YLFs0UdPfhAP2/A1qzgIxcwqEC6ehZ5R1dqrM5LXR5XWW2qaiW0mAcEItw6kFToDHgY0SUKe0uXpvgxg2WGiRcELg4YUug==
+ARC-Message-Signature: i=1; a=rsa-sha256; d=sapience.com; s=arc6-rsa-220412;
+        t=1692876551; c=relaxed/simple;
+        bh=Nx1A+sRwHAGlgn7Xne833IH4vtwjiO7q6mIStrHv0c4=;
+        h=DKIM-Signature:DKIM-Signature:Message-ID:Date:MIME-Version:
+         User-Agent:Subject:Content-Language:To:Cc:References:From:
+         In-Reply-To:Content-Type:Content-Transfer-Encoding; b=unSXKCTynNKYf6G63Eo2da8ucVZlmCEsuSd5QzcD/L5YMOAw9JNxhxEkU26LCe1kpUPyxNvEq7AXOZDkH09wccjAJJ/uEgkkTWErem335CxZOMZZlDjGZR9DWZMNu6WpyjYUDjOJJfXGmLTiOzs1cR3+ZLpVILuRCVwj8Cejk0dU+mdVzL/SbkpIRLJ2gkwMf6Be8+NLo5Yt5NcWv0qvuTHJfTyrU/1eTQGUAkjJzC9KSkAW/aMZIa8JqGMo7YW6XGMl2r4mN9eFh3nXe0K0Da6/oYGiYuhU3oo2NrAo1ZXeB8IU9/isMkvea00mmHqI8PB1d933BntgXY+7Zp0NVw==
+ARC-Authentication-Results: i=1; arc-srv8.sapience.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sapience.com;
+ i=@sapience.com; q=dns/txt; s=dk-rsa-220413; t=1692876551;
+ h=message-id : date : mime-version : subject : to : cc : references :
+ from : in-reply-to : content-type : content-transfer-encoding : from;
+ bh=rZ2he4Mdtq8h71/ckeBbMY4eP2beNycVRu9+nDI/LtI=;
+ b=ni41ligdeHxPrnyUVg36yLtjJ9UWdETxXi4kyPfLEKTlear0+2dysffJKfdRZxAS7fgnv
+ 3zC6My6IJrA2QqCO6pY1QIj7qb7YLiAB2OKjfFWIV9ud0FQY9uOzGsfo+94g3lqw36oznwW
+ 9Pi832aRf6nj2BZTuA42qhFUdr8MMesJVL9fZeSrd08O2seF8pA1GmO/Hfh6ldxaO/Fnetl
+ qEUnAZP1x9+jFf19v5oJoQ/htlEOlrg/s8w6Lq+o0WbjROJLQSQSTkzSq7eM6zFZPn7+kVV
+ qsC6QYjzAAfTjWLAHyS/AbMj0TMcNllO2dDhKnPKRmiEf531LBtFnaBGMfFg==
+Message-ID: <b622dbe4-9b18-4406-b82d-942e3ec01ff2@sapience.com>
+Date:   Thu, 24 Aug 2023 07:29:10 -0400
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: Possible nvme regression in 6.4.11
+Content-Language: en-US
+To:     Keith Busch <kbusch@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, axboe@kernel.dk, sagi@grimberg.me,
+        linux-nvme@lists.infradead.org, hch@lst.de, arnd@arndb.de,
+        ricky_wu@realtek.com, gregkh@linuxfoundation.org
+References: <5f968b95-6b1c-4d6f-aac7-5d54f66834a8@sapience.com>
+ <ZN050TFnKZ54LJ5v@kbusch-mbp.dhcp.thefacebook.com>
+ <30b69186-5a6e-4f53-b24c-2221926fc3b4@sapience.com>
+ <570d465a-7500-4b58-98f0-fd781c8740cc@sapience.com>
+ <ZOZEwafA8+tknJNT@kbusch-mbp.dhcp.thefacebook.com>
+From:   Genes Lists <lists@sapience.com>
+In-Reply-To: <ZOZEwafA8+tknJNT@kbusch-mbp.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,83 +80,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fabio Estevam <festevam@denx.de>
+On 8/23/23 13:41, Keith Busch wrote:
+> On Thu, Aug 17, 2023 at 05:16:01AM -0400, Genes Lists wrote:
+>>> ----------------------------------------------------------------
+>>> 69304c8d285b77c9a56d68f5ddb2558f27abf406 is the first bad commit
+>>> commit 69304c8d285b77c9a56d68f5ddb2558f27abf406
+>>> Author: Ricky WU <ricky_wu@realtek.com>
+>>> Date:   Tue Jul 25 09:10:54 2023 +0000
+>>>
+>>>       misc: rtsx: judge ASPM Mode to set PETXCFG Reg
+>>>
+>>>       commit 101bd907b4244a726980ee67f95ed9cafab6ff7a upstream.
+>>>
+>>>       ASPM Mode is ASPM_MODE_CFG need to judge the value of clkreq_0
+>>>       to set HIGH or LOW, if the ASPM Mode is ASPM_MODE_REG
+>>>       always set to HIGH during the initialization.
+>>>
+>>>       Cc: stable@vger.kernel.org
+>>>       Signed-off-by: Ricky Wu <ricky_wu@realtek.com>
+>>>       Link:
+>>> https://lore.kernel.org/r/52906c6836374c8cb068225954c5543a@realtek.com
+>>>       Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>>>
+>>>    drivers/misc/cardreader/rts5227.c  |  2 +-
+>>>    drivers/misc/cardreader/rts5228.c  | 18 ------------------
+>>>    drivers/misc/cardreader/rts5249.c  |  3 +--
+>>>    drivers/misc/cardreader/rts5260.c  | 18 ------------------
+>>>    drivers/misc/cardreader/rts5261.c  | 18 ------------------
+>>>    drivers/misc/cardreader/rtsx_pcr.c |  5 ++++-
+>>>    6 files changed, 6 insertions(+), 58 deletions(-)
+>>>
+>>> ------------------------------------------------------
+>>>
+>>> And the machine does have this hardware:
+>>>
+>>> 03:00.0 Unassigned class [ff00]: Realtek Semiconductor Co., Ltd. RTS525A
+>>> PCI Express Card Reader (rev 01)
+>>>           Subsystem: Dell RTS525A PCI Express Card Reader
+>>>           Physical Slot: 1
+>>>           Flags: bus master, fast devsel, latency 0, IRQ 141
+>>>           Memory at ed100000 (32-bit, non-prefetchable) [size=4K]
+>>>           Capabilities: [80] Power Management version 3
+>>>           Capabilities: [90] MSI: Enable+ Count=1/1 Maskable- 64bit+
+>>>           Capabilities: [b0] Express Endpoint, MSI 00
+>>>           Kernel driver in use: rtsx_pci
+>>>           Kernel modules: rtsx_pci
+>>>
+>>>
+>>>
+>>
+>>
+>> Adding to CC list since bisect landed on
+>>
+>>     drivers/misc/cardreader/rtsx_pcr.c
+>>
+>> Thread starts here: https://lkml.org/lkml/2023/8/16/1154
+> 
+> I realize you can work around this by blacklisting the rtsx_pci, but
+> that's not a pleasant solution. With only a few days left in 6.5, should
+> the commit just be reverted?
 
-Currently, after the board reaches the critical temperature, the system
-goes through a poweroff mechanism.
 
-In some cases, such behavior does not suit well, as the board may be
-unattended in the field and rebooting may be a better approach.
+Looks like here are more people having same problem than I was aware of 
+earlier [1].
 
-The bootloader may also check the temperature and only allow the boot to
-proceed when the temperature is below a certain threshold.
+My recommendation now is to revert this.
 
-Introduce a reboot_on_critical parameter to indicate that the board
-will go through a reboot after the critical temperature is reached.
+thanks
 
-When this parameter is not selected, the default behavior of forcing a
-shutdown is preserved.
+gene
 
-Tested on a imx8mm-evk board by passing 'imx8mm_thermal.reboot_on_critical'
-via kernel command line.
+[1] https://bugs.archlinux.org/task/79439#comment221262
 
-Signed-off-by: Fabio Estevam <festevam@denx.de>
----
-Changes since v1:
-- Introduce a module_param() instead of a devicetree property.
-
- drivers/thermal/imx8mm_thermal.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
-
-diff --git a/drivers/thermal/imx8mm_thermal.c b/drivers/thermal/imx8mm_thermal.c
-index e89b11b3f2b9..2427bd46ac6c 100644
---- a/drivers/thermal/imx8mm_thermal.c
-+++ b/drivers/thermal/imx8mm_thermal.c
-@@ -10,9 +10,11 @@
- #include <linux/err.h>
- #include <linux/io.h>
- #include <linux/module.h>
-+#include <linux/moduleparam.h>
- #include <linux/nvmem-consumer.h>
- #include <linux/of.h>
- #include <linux/platform_device.h>
-+#include <linux/reboot.h>
- #include <linux/slab.h>
- #include <linux/thermal.h>
- 
-@@ -75,6 +77,11 @@
- #define TMU_VER1		0x1
- #define TMU_VER2		0x2
- 
-+static bool reboot_on_critical;
-+module_param(reboot_on_critical, bool, 0444);
-+MODULE_PARM_DESC(reboot_on_critical,
-+		 "Reboot the system after the critical temperature is reached.");
-+
- struct thermal_soc_data {
- 	u32 num_sensors;
- 	u32 version;
-@@ -146,8 +153,20 @@ static int tmu_get_temp(struct thermal_zone_device *tz, int *temp)
- 	return tmu->socdata->get_temp(sensor, temp);
- }
- 
-+static void tmu_critical(struct thermal_zone_device *tz)
-+{
-+	if (reboot_on_critical) {
-+		dev_emerg(thermal_zone_device(tz), "%s: critical temperature reached\n",
-+			  thermal_zone_device_type(tz));
-+		kernel_restart(NULL);
-+	} else {
-+		thermal_zone_device_critical(tz);
-+	}
-+}
-+
- static const struct thermal_zone_device_ops tmu_tz_ops = {
- 	.get_temp = tmu_get_temp,
-+	.critical = tmu_critical,
- };
- 
- static void imx8mm_tmu_enable(struct imx8mm_tmu *tmu, bool enable)
--- 
-2.34.1
 
