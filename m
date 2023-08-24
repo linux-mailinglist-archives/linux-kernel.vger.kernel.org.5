@@ -2,68 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BC48786AC0
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 10:53:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92613786AC5
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 10:54:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236975AbjHXIwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 04:52:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44830 "EHLO
+        id S235381AbjHXIxw convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 24 Aug 2023 04:53:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240557AbjHXIw2 (ORCPT
+        with ESMTP id S240632AbjHXIxr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 04:52:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA83010E4;
-        Thu, 24 Aug 2023 01:52:19 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3DF9664785;
-        Thu, 24 Aug 2023 08:52:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D583DC433C7;
-        Thu, 24 Aug 2023 08:52:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692867138;
-        bh=Cca/vEi7U8rHOsNTCfi3SJJmYuNAdDFTzCZqoo9E/Dk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=t8Q+RBPGOKoApRKuh/5WoEWeDdBfWeIlYbG4xhQvrymPBH300Wu/ojTx2cC62yQON
-         W3OlxCt6e5v1/9bEKUNGmFpp4avuquNjyCfghTXFQwMiAUhQoC16AVKlBp/0frZsUf
-         7Ov+c91FYTO1S08aIpYXRg7jwL8Fia+PPEX+NZU1RcjD566/jZQrNw7YcSxJwQ9u70
-         Lv/YtmvgsFh1hAbGTLofkY2yOKgS873Q/fAtdvJX57Ces6S2LM7vpSEevlNjeRrt1T
-         HNlCsPJiKf+xhYdbho5mSIbCHiCObpKxDYsYrai5cClmb7gieS8aYhZxgC1Nay2s81
-         QvILQaQmZkv2w==
-Date:   Thu, 24 Aug 2023 10:52:13 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas@t-8ch.de>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Willy Tarreau <w@1wt.eu>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Zhangjin Wu <falcon@tinylab.org>
-Subject: Re: linux-next: manual merge of the nolibc tree with the vfs-brauner
- tree
-Message-ID: <20230824-randfigur-emittenten-de303734445c@brauner>
-References: <20230824141008.27f7270b@canb.auug.org.au>
- <3028a552-bd75-4ded-9211-62d10768d9ea@t-8ch.de>
- <20230824-moment-wehten-5a47e319ae66@brauner>
- <26bc62c7-32c7-4ef1-b8d1-77738fa98598@t-8ch.de>
+        Thu, 24 Aug 2023 04:53:47 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3B431996
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 01:53:32 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-21-1nU0YSAiNYCfvxfcnnRqsg-1; Thu, 24 Aug 2023 09:53:29 +0100
+X-MC-Unique: 1nU0YSAiNYCfvxfcnnRqsg-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 24 Aug
+ 2023 09:53:25 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Thu, 24 Aug 2023 09:53:25 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Mahmoud Matook' <mahmoudmatook.mm@gmail.com>
+CC:     'Willem de Bruijn' <willemdebruijn.kernel@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        "linux-kernel-mentees@lists.linuxfoundation.org" 
+        <linux-kernel-mentees@lists.linuxfoundation.org>
+Subject: RE: [PATCH 1/2] selftests: Provide local define of min() and max()
+Thread-Topic: [PATCH 1/2] selftests: Provide local define of min() and max()
+Thread-Index: AQHZ03nFpJJs9cS/jEaiicM+CY14+6/0t4aQgAGcP4CAABL1kIAB05OAgADtwiA=
+Date:   Thu, 24 Aug 2023 08:53:25 +0000
+Message-ID: <956ab0e63b8340669c31d2452830b7f3@AcuMS.aculab.com>
+References: <20230819195005.99387-1-mahmoudmatook.mm@gmail.com>
+ <20230819195005.99387-2-mahmoudmatook.mm@gmail.com>
+ <64e22df53d1e6_3580162945b@willemb.c.googlers.com.notmuch>
+ <7e8c2597c71647f38cd4672cbef53a66@AcuMS.aculab.com>
+ <CAF=yD-+6cWTiDgpsu=hUV+OvzDFRaT2ZUmtQo9qTrCB9i-+7ng@mail.gmail.com>
+ <d33fbb24119c4d09864e79ea9dfbb881@AcuMS.aculab.com>
+ <20230823193545.nrzlbsa32hm4os4k@mmaatuq-HP-Laptop-15-dy2xxx>
+In-Reply-To: <20230823193545.nrzlbsa32hm4os4k@mmaatuq-HP-Laptop-15-dy2xxx>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <26bc62c7-32c7-4ef1-b8d1-77738fa98598@t-8ch.de>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,PDS_BAD_THREAD_QP_64,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Anyways Linus should also be able to resolve the conflict for v6.6 with
-> a small hint in the PR.
+From: Mahmoud Matook
+> Sent: Wednesday, August 23, 2023 8:36 PM
+...
+> I tried to use the relaxed version provided in the shared patchset link
+> besides not able to use is_constexpr(), I'm not able to use
+> __UNIQUE_ID() also. It's definded inside include/linux/compiler-gcc.h
+> and it uses another macro __PASTE() which is defined inside
+> include/linux/compiler_types.h.
+> not sure what to do next
+>
+> - bring those macros definitions to able to use the relaxed version.
+> - if the most important point for min/max defines inside selftests is to
+>   avoid multiple evaluation is the below version acceptable?
+>
+>   #define min(x, y) ({ \
+>     typeof(x) _x = (x); \
+>     typeof(y) _y = (y); \
+>     _x < _y ? _x : _y; \
+> })
+> 
+> #define max(x, y) ({ \
+>     typeof(x) _x = (x); \
+>     typeof(y) _y = (y); \
+>     _x > _y ? _x : _y; \
+> })
 
-Suprisingly, we've done this before. :)
+Those are a reasonable pair.
+
+If you want a signed-ness check the:
+	_Static_assert(is_signed_type(typeof(a)) == is_signed_type(typeof(b)), "min/max signednesss")
+check should just drop into the above.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
