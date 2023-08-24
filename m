@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD1957868B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 09:38:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BF327868B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 09:38:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240479AbjHXHih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 03:38:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54294 "EHLO
+        id S240489AbjHXHij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 03:38:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240408AbjHXHh7 (ORCPT
+        with ESMTP id S240412AbjHXHiC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 03:37:59 -0400
+        Thu, 24 Aug 2023 03:38:02 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0C06C7
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 00:37:57 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32AD210F7;
+        Thu, 24 Aug 2023 00:38:01 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 408D162349
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 07:37:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 551FFC433C9;
-        Thu, 24 Aug 2023 07:37:54 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BAF7162349;
+        Thu, 24 Aug 2023 07:38:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39DC7C433CA;
+        Thu, 24 Aug 2023 07:37:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692862676;
-        bh=HAx36VxD8SeJ19cuhWARnMLzp3fwBWyVuZuUJYdgr/w=;
+        s=k20201202; t=1692862680;
+        bh=wEDqvEDOA3vxGIk6EexeUNwMrFtaZlnfxVGm/bMEvr4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jHuHQaGg4Vb86jowcTNgkWiVaVeYdqTolC0e84zCxI8iISBvWduO+la86lew1mX5S
-         yrHkH1eRcW1Ar0svfHOovGuWCJpKh+e7NsKP7UE9oez3OLiEy4caGPDBggU5pDFW61
-         8lXY1H+o3m5N8W19E4JZIAlwqZjssGSszLiJtwKHCQvxexYl+/3OE39X97kAKZXgO2
-         ZJkjcAwCA760dNQHuSnWRkdvk/yG6NyRqKKnuRkqrD8Vev8vrazo4AxJQZ95F2mKvw
-         og5sbSAmypyfGTlS+JTu6aH6bmSiw6NT70BHJAkLs9SnmNI5fXuRlmqHlu1Jb31KPG
-         Zyrb3ARi6Uh8Q==
+        b=fIKJHkj2WVKxeDY/g/PYgsJrPDBu4r0Q2mLQv1WsRpbImdKaDv6Sfi5UmzJHGHlZP
+         /EzC9AQIvwtXl4YkhKBHfnpES4Kp8p0iTysNLX9AZzq9SmHEL4qzBlc/UUDiIZmAoO
+         WjYmTlFojar9djx8fDMorymgkC55/WK22bS4j4KI6Q+CO7XDQuWtDYlT9f/Nr2wf96
+         7Mr2FJAUzQfB3jXamFypkoSKtt0meqhPSRXnRXM4yp9OFzESP3XmU5gNnoJF3G3mt2
+         4UY0GjWBH/koZ4QBgtg/CXHBCwTnJV3cKnMFbNPFwSUldIyq21t5k6dMjg1ZJQZmkQ
+         XslXiYwP5lzgQ==
 From:   Lee Jones <lee@kernel.org>
 To:     lee@kernel.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -41,11 +41,12 @@ Cc:     linux-kernel@vger.kernel.org,
         "Pan, Xinhui" <Xinhui.Pan@amd.com>,
         David Airlie <airlied@gmail.com>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Shashank Sharma <shashank.sharma@amd.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH 11/20] drm/amd/amdgpu/amdgpu_doorbell_mgr: Correct misdocumented param 'doorbell_index'
-Date:   Thu, 24 Aug 2023 08:36:56 +0100
-Message-ID: <20230824073710.2677348-12-lee@kernel.org>
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
+Subject: [PATCH 12/20] drm/amd/amdgpu/amdgpu_device: Provide suitable description for param 'xcc_id'
+Date:   Thu, 24 Aug 2023 08:36:57 +0100
+Message-ID: <20230824073710.2677348-13-lee@kernel.org>
 X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
 In-Reply-To: <20230824073710.2677348-1-lee@kernel.org>
 References: <20230824073710.2677348-1-lee@kernel.org>
@@ -63,8 +64,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell_mgr.c:123: warning: Function parameter or member 'doorbell_index' not described in 'amdgpu_doorbell_index_on_bar'
- drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell_mgr.c:123: warning: Excess function parameter 'db_index' description in 'amdgpu_doorbell_index_on_bar'
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c:516: warning: Function parameter or member 'xcc_id' not described in 'amdgpu_mm_wreg_mmio_rlc'
 
 Signed-off-by: Lee Jones <lee@kernel.org>
 ---
@@ -73,25 +73,26 @@ Cc: "Christian König" <christian.koenig@amd.com>
 Cc: "Pan, Xinhui" <Xinhui.Pan@amd.com>
 Cc: David Airlie <airlied@gmail.com>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Shashank Sharma <shashank.sharma@amd.com>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
 Cc: amd-gfx@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
+Cc: linux-media@vger.kernel.org
+Cc: linaro-mm-sig@lists.linaro.org
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell_mgr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell_mgr.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell_mgr.c
-index da4be0bbb4466..d0249ada91d30 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell_mgr.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell_mgr.c
-@@ -113,7 +113,7 @@ void amdgpu_mm_wdoorbell64(struct amdgpu_device *adev, u32 index, u64 v)
-  *
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+index e77f048c99d85..d4f0e4327dd3f 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+@@ -507,6 +507,7 @@ void amdgpu_device_wreg(struct amdgpu_device *adev,
   * @adev: amdgpu_device pointer
-  * @db_bo: doorbell object's bo
-- * @db_index: doorbell relative index in this doorbell object
-+ * @doorbell_index: doorbell relative index in this doorbell object
+  * @reg: mmio/rlc register
+  * @v: value to write
++ * @xcc_id: xcc accelerated compute core id
   *
-  * returns doorbell's absolute index in BAR
+  * this function is invoked only for the debugfs register access
   */
 -- 
 2.42.0.rc1.204.g551eb34607-goog
