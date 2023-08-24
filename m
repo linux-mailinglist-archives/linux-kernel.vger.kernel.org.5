@@ -2,99 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4C0778782B
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 20:43:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E60E378782E
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 20:44:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243042AbjHXSnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 14:43:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37242 "EHLO
+        id S243061AbjHXSoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 14:44:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242916AbjHXSnM (ORCPT
+        with ESMTP id S243079AbjHXSnk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 14:43:12 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83FD4170F
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 11:43:09 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-50098cc8967so176975e87.1
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 11:43:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692902588; x=1693507388;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zhjKefBKCRC+/owmV/hiYBIN6wU3GhkPU+/uLiid8fA=;
-        b=t0hZepahLQFMnLH7qVeX+rfYGlgRPOOQADTSynJ8f/4Csf2w7ceb2m8YA1dNQ7T9SS
-         9IbBLEowTSPypoTXa5HNiFXvdNAfMiVZy3XgxURQRamecDzEWGL9nxch7ULMKfgJ8pFt
-         3+ii4udxYCMmY6yoxokW3rfOu4kUNzx1tzQdwi2AEUErvSwYxQJ3z61Zj5BqyrEo01px
-         ihvlG8R6qre8JllcNlSxH82F4PzmR36bPYR5X/0jXyLV0R7LFqEAwePGxzzuB7W4KgHD
-         6J0a/To4OIYi6fP5uMOD6I84AiBziPb3CqY2rjI1tnxVc6y5/UkqVv+zn3rOQERGuq4U
-         /PZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692902588; x=1693507388;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zhjKefBKCRC+/owmV/hiYBIN6wU3GhkPU+/uLiid8fA=;
-        b=TmPyh06uDSA5/WzPsgSDsZxp2uY0rlzVWErYtoJoMp/LnH0eSYnwOHSXCPmVOJePJa
-         BdMQYzP96RFFMkQDmx9MOD3/NmpUzLW6d/sQiWIy+mhTkvg84nnSVDCViqW4JxnFMY+v
-         jBNKN4llpA0fQBvvWGguc3Uk+HPzVFodEuGUUleATh2d84rY3iS4xlJypiUvZUZDHai3
-         5bCTd689cpuBn9vz4kHJ5at5w0Wa+Vqd8PJYdoKsb3kM10PWkcmpQYr06U33Lbqux2JA
-         zymcTiNhVg6WQDbM0g8Q+YoiQsovQfpLBHbpCqM/UUBF55C106Dp5CllKoFcagbEi5iF
-         zjAA==
-X-Gm-Message-State: AOJu0YxM8P55GYvpmX/tl6UMWQQTYACCdJNicypVvVcI+DEdfDQ82V9R
-        WnuWQrY03bigJ5y7dS/O1BRg6g==
-X-Google-Smtp-Source: AGHT+IEJmE2eCB7KS0sCNrctPm2u18Rv+ib/at04vzWZ+1rQlB90iVtX5m+f/8F8Lq4WvToGXoORDA==
-X-Received: by 2002:a19:5f43:0:b0:4ff:70d2:4512 with SMTP id a3-20020a195f43000000b004ff70d24512mr9219024lfj.23.1692902587561;
-        Thu, 24 Aug 2023 11:43:07 -0700 (PDT)
-Received: from [192.168.0.22] ([77.252.47.198])
-        by smtp.gmail.com with ESMTPSA id c15-20020aa7c74f000000b00522828d438csm54965eds.7.2023.08.24.11.43.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Aug 2023 11:43:07 -0700 (PDT)
-Message-ID: <949e6b65-653b-7b9d-00de-3541b7579bdc@linaro.org>
-Date:   Thu, 24 Aug 2023 20:43:05 +0200
+        Thu, 24 Aug 2023 14:43:40 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 145E5170F;
+        Thu, 24 Aug 2023 11:43:39 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A40A567041;
+        Thu, 24 Aug 2023 18:43:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 044DFC433C7;
+        Thu, 24 Aug 2023 18:43:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692902618;
+        bh=hyPhg2lvFHq0M/FUCI5u+mGZ2jcsghXBoKYtqtflqY8=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=XPE7QR2GgWieE3RFuMbgoUJ5Qd7rMSz4Hw+UwDJ2MlzgtLcCMiWOFN1wdeYCw1I3k
+         mz8ED62pC8TeVzCUngqa6HkAxLtoKdCYQs5MhVwKvG50T3ePIRm1AIsFYRaGMd4eCq
+         jdGEsBqCNdy7eDs6W+qczR37s02PyODrCPFrA89fJ1FOvFlFFLYGs3P8Ir3yGdC29r
+         lWiFQDQkbVodQUX/Oxww1RCpKdKc3LYkKs+DeKtbV0817vJiy1BiosU/L357c0nxh8
+         7lI218ctgcTeVIF6hgPCH3U6S8Nx5lrJ5e6VN5Y9WHlnoXngmSWbyg/n/pXUDpWmpY
+         IYjJHqitToD8w==
+Message-ID: <4870d94375cfdf6c0ba4d4b5cb3b6dc3.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [EXT] Re: [PATCH v4 6/7] firmware: imx: add driver for NXP
- EdgeLock Enclave
-Content-Language: en-US
-To:     Pankaj Gupta <pankaj.gupta@nxp.com>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "clin@suse.com" <clin@suse.com>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "pierre.gondois@arm.com" <pierre.gondois@arm.com>,
-        Jacky Bai <ping.bai@nxp.com>,
-        Clark Wang <xiaoning.wang@nxp.com>,
-        Wei Fang <wei.fang@nxp.com>, Peng Fan <peng.fan@nxp.com>,
-        Bough Chen <haibo.chen@nxp.com>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Gaurav Jain <gaurav.jain@nxp.com>,
-        "alexander.stein@ew.tq-group.com" <alexander.stein@ew.tq-group.com>,
-        Sahil Malhotra <sahil.malhotra@nxp.com>,
-        Aisheng Dong <aisheng.dong@nxp.com>,
-        Varun Sethi <V.Sethi@nxp.com>
-Cc:     kernel test robot <lkp@intel.com>
-References: <20230712121219.2654234-1-pankaj.gupta@nxp.com>
- <20230712121219.2654234-7-pankaj.gupta@nxp.com>
- <e143fd58-5c2b-fdb6-96bf-57bbf799d76c@linaro.org>
- <DU2PR04MB86306BC4EAB6F8EF2F252F8F950DA@DU2PR04MB8630.eurprd04.prod.outlook.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <DU2PR04MB86306BC4EAB6F8EF2F252F8F950DA@DU2PR04MB8630.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <ZOdoP00tlAIRr9fN@pluto>
+References: <20230811161446.636253-1-cristian.marussi@arm.com> <20230811161446.636253-2-cristian.marussi@arm.com> <17bd83d833b59fd4f64eec433589fa55.sboyd@kernel.org> <ZOXLNliOogkNyJYQ@e120937-lin> <a14cdd584283d32a3642658aaed6c98c.sboyd@kernel.org> <ZOdoP00tlAIRr9fN@pluto>
+Subject: Re: [PATCH 1/6] firmware: arm_scmi: Simplify enable/disable Clock operations
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        sudeep.holla@arm.com, james.quinlan@broadcom.com,
+        f.fainelli@gmail.com, vincent.guittot@linaro.org,
+        etienne.carriere@linaro.org, peng.fan@oss.nxp.com,
+        chuck.cannon@nxp.com, souvik.chakravarty@arm.com,
+        nicola.mazzucato@arm.com,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-clk@vger.kernel.org
+To:     Cristian Marussi <cristian.marussi@arm.com>
+Date:   Thu, 24 Aug 2023 11:43:35 -0700
+User-Agent: alot/0.10
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -103,80 +62,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/08/2023 14:36, Pankaj Gupta wrote:
-> 
-> 
->> -----Original Message-----
->> From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->> Sent: Thursday, July 13, 2023 12:27 AM
->> To: Pankaj Gupta <pankaj.gupta@nxp.com>; shawnguo@kernel.org;
->> s.hauer@pengutronix.de; kernel@pengutronix.de; clin@suse.com;
->> conor+dt@kernel.org; pierre.gondois@arm.com; Jacky Bai
->> <ping.bai@nxp.com>; Clark Wang <xiaoning.wang@nxp.com>; Wei Fang
->> <wei.fang@nxp.com>; Peng Fan <peng.fan@nxp.com>; Bough Chen
->> <haibo.chen@nxp.com>; festevam@gmail.com; dl-linux-imx <linux-
->> imx@nxp.com>; davem@davemloft.net; robh+dt@kernel.org;
->> krzysztof.kozlowski+dt@linaro.org; linux-arm-kernel@lists.infradead.org;
->> devicetree@vger.kernel.org; linux-kernel@vger.kernel.org; Gaurav Jain
->> <gaurav.jain@nxp.com>; alexander.stein@ew.tq-group.com; Sahil Malhotra
->> <sahil.malhotra@nxp.com>; Aisheng Dong <aisheng.dong@nxp.com>; Varun
->> Sethi <V.Sethi@nxp.com>
->> Cc: kernel test robot <lkp@intel.com>
->> Subject: [EXT] Re: [PATCH v4 6/7] firmware: imx: add driver for NXP EdgeLock
->> Enclave
->>
->> Caution: This is an external email. Please take care when clicking links or
->> opening attachments. When in doubt, report the message using the 'Report
->> this email' button
->>
->>
->> On 12/07/2023 14:12, Pankaj Gupta wrote:
->>> The Edgelock Enclave , is the secure enclave embedded in the SoC to
->>> support the features like HSM, SHE & V2X, using message based
->>> communication channel.
->>>
->>> ELE FW communicates on a dedicated MU with application core where
->>> kernel is running. It exists on specific i.MX processors. e.g.
->>> i.MX8ULP, i.MX93.
->>>
->>> Signed-off-by: Gaurav Jain <gaurav.jain@nxp.com>
->>> Signed-off-by: Pankaj Gupta <pankaj.gupta@nxp.com>
->>> Reported-by: kernel test robot <lkp@intel.com>
->>
->> What did the robot report? New driver?
-> [Pankaj] reported printf format-specifier for size_t. 
+Quoting Cristian Marussi (2023-08-24 07:25:21)
+> On Wed, Aug 23, 2023 at 11:01:17AM -0700, Stephen Boyd wrote:
+> >=20
+> > Perhaps we need a local variable to make it more readable.
+> >=20
+> >       static int scmi_clk_enable(struct clk_hw *hw)
+> >       {
+> >              bool can_sleep =3D false;
+> >              struct scmi_clk *clk =3D to_scmi_clk(hw);
+> >=20
+> >              return scmi_proto_clk_ops->enable(clk->ph, clk->id, can_sl=
+eep);
+> >       }
+> >=20
+> > This let's the reader quickly understand what the parameter means. I'm
+> > OK with adding the function parameter, but a plain 'true' or 'false'
+> > doesn't help with clarity.
+>=20
+> Thanks for the suggestion, it would help definitely making it more
+> readable, maybe a local define or enum could make it without even
+> putting anything on the stack.
+>=20
 
-That's not what you said here. You said robot reported the driver.
-
-...
-
->>> +
->>> +     pr_info("Misc-devices on i.MX enclave MU is configured.\n");
->>
->> No silly probe success messages.
-> [Accepted] Will removed in V5.
-
-I still found more.
-
->>
->>
->>> +     return devm_of_platform_populate(dev);
->>
->> No. You do not have children. Just open your own binding and look there.
->>
->> This driver is in terrible shape and I asked to do some internal review in NXP.
->> Internal review should point such trivial comments but your changelog from
->> v1 tp v4 says nothing about it.
->>
->> So internal review did not happen. Don't use upstream as cheap reviewers for
->> poor quality code. Please work internally till it starts looking correct and all
->> automated tools pass. NXP is not some small, amateour company which can be
->> excused of this. Or is it?
-
-I don't think much improved here... Still no coccinelle, probably no
-other tools. You Cc-ed like 10 NXP people, for what? Did they provide
-reviews?
-
-Best regards,
-Krzysztof
-
+Surely the compiler can optimize that so there isn't stack local
+storage for a local variable used as an argument to a function call?
