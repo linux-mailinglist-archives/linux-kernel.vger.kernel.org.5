@@ -2,120 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54361786826
+	by mail.lfdr.de (Postfix) with ESMTP id 9E04F786827
 	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 09:14:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240289AbjHXHOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 03:14:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33534 "EHLO
+        id S240298AbjHXHOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 03:14:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234019AbjHXHNw (ORCPT
+        with ESMTP id S240217AbjHXHOF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 03:13:52 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EFE7E4B;
-        Thu, 24 Aug 2023 00:13:50 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id D13A922C73;
-        Thu, 24 Aug 2023 07:13:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1692861228; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cL+xkHg3gVScj/qvNoq2aVyQCfwu6YNOsJXQogUGOQI=;
-        b=qb8NuamNvZBFYTTN0FOFT3Ibgam1CmlB83kK5rDCRNJ33KCnGr21xK0VtE/ya4rUb/TBQF
-        Octr+nFbz3nKd9GIf+gxbBOanAltvASnflTM5oIEWXbXNsTw55b1+9NG4YtLwiDoecBWWH
-        XRQcqtauBjN1w1a6QfonjTxSnwFUhTo=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B513F138FB;
-        Thu, 24 Aug 2023 07:13:48 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id kYj3KSwD52QZHQAAMHmgww
-        (envelope-from <mhocko@suse.com>); Thu, 24 Aug 2023 07:13:48 +0000
-Date:   Thu, 24 Aug 2023 09:13:48 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] mm: memcg: use non-unified stats flushing for
- userspace reads
-Message-ID: <ZOcDLD/1WaOwWis9@dhcp22.suse.cz>
-References: <20230821205458.1764662-1-yosryahmed@google.com>
- <20230821205458.1764662-4-yosryahmed@google.com>
- <ZOR6eyYfJYlxdMet@dhcp22.suse.cz>
- <CAJD7tka13M-zVZTyQJYL1iUAYvuQ1fcHbCjcOBZcz6POYTV-4g@mail.gmail.com>
- <ZOW2PZN8Sgqq6uR2@dhcp22.suse.cz>
- <CAJD7tka34WjtwBWfkTu8ZCEUkLm7h-AyCXpw=h34n4RZ5qBVwA@mail.gmail.com>
+        Thu, 24 Aug 2023 03:14:05 -0400
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F318E4B;
+        Thu, 24 Aug 2023 00:14:02 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.nyi.internal (Postfix) with ESMTP id A424F5C00DD;
+        Thu, 24 Aug 2023 03:13:59 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Thu, 24 Aug 2023 03:13:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm1; t=1692861239; x=1692947639; bh=0M
+        1ggo+Y5uf7UUVSVo0EZMwFgA9JMrcAzE/eU4EniSg=; b=mH1VKkNFAk/EotMeC/
+        eybnamqF4p4Jd5Glywnp+vEbXM2RtRuWwM6l8lhYD+jcmReG78yWAAuvgHzg7OXv
+        G0HMtJFKbCndygI2vqMP6ThULjxlDKnpGDE3LCTd9f96UW71NNPXaiWmsIugz8m4
+        NwJBCvnv/SnG3H5PkjOTD8xmruv7WPKQkY/+MvOGTqpY5uWE522TTHcBtpzB6gXn
+        P2BnmlZYj26cYb1hk7sPAfWMdBq8KAUy8e5Y8VgjGTOGB7y2mJUJLC4c3bYwz+Vn
+        rG7/x8Dp64akDA8AKm7Fu7v3bvg9ihipAFG/A+ICrW9Mg22yz+s+vI69JOP88Hej
+        dOoQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1692861239; x=1692947639; bh=0M1ggo+Y5uf7U
+        UVSVo0EZMwFgA9JMrcAzE/eU4EniSg=; b=f7Pgqc9dTkJixdZ88VhyBjFH/DdIv
+        q0FIdrBU/A6lMB3BDVzypp5O+cEjHfKnQwqQnlnqSduYE+0UyjxMXz/l2Xo7dQDC
+        vj9rXcm2g8U1NnQs5GuKaWZdNenWpuRomUFoTr6BcVOkLAndty9V8gwrF7PN+LK5
+        CWzW8ikcCryreQDkr1w6+Qmj23HtSOMdhytDT4GRyxSvKtBp+HIwW/pkJJW6ymtt
+        dyPt3dJFeVhH5ldUuGrZlgd9bDJBIgFpn8tMvO9PxZqKdQcB4doHbmUVN13R0m+I
+        rm1z74IztXJud9NUHy/6Vis9/xvAEdUZRRtJsX9t1wFHPVamNqfNCHZiQ==
+X-ME-Sender: <xms:NwPnZJ5OZn36HEz27Dz03ZSPDU26oHkTMywluqbvXUNgsgPdNEZ9Ug>
+    <xme:NwPnZG6JzxTB7l-blrTkCWRrtfMlK_pIvxNs1nGNhOBIiXYc8A0HGp40TrhQkne6w
+    oQt7WrQH5hN4w>
+X-ME-Received: <xmr:NwPnZAewnl6GqlqyyAdimjYxb0PSTNYf7B6ju7KBqp4y2hEdMfsOSFSDDy1VPl1PN_HTtpCEHMy0ABJx7nDQVEf6AJYDjOzdJMVh6A>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedruddvhedgudduiecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecunecujfgurhepfffhvfevuffkfhggtggujgesth
+    dtredttddtvdenucfhrhhomhepifhrvghgucfmjfcuoehgrhgvgheskhhrohgrhhdrtgho
+    mheqnecuggftrfgrthhtvghrnhephfeugfdthfeijeekveekuefgudfgffevhfehgeehvd
+    ehheetlefgkedtlefghefgnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghdpshihiihk
+    rghllhgvrhdrrghpphhsphhothdrtghomhenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
+X-ME-Proxy: <xmx:NwPnZCKpDnnNrxpQjgspKw5xYozl9nTfAhFSqSePwTUVhFOHdbYiKg>
+    <xmx:NwPnZNJTzlqxYZg_sxq3ctseECddogb1NhXBI0P4GCdLzEHN94BSng>
+    <xmx:NwPnZLz4pusTJ-edvs_P6FiymCqwDsaEwZJH8LK5jI0xFyc5muqdNg>
+    <xmx:NwPnZPhr4VOwAZrkt29wC6cfAmZoVFammo5ZDAXUvt3HAL6m-y030w>
+Feedback-ID: i787e41f1:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 24 Aug 2023 03:13:58 -0400 (EDT)
+Date:   Thu, 24 Aug 2023 09:13:54 +0200
+From:   Greg KH <greg@kroah.com>
+To:     coolrrsh@gmail.com
+Cc:     hverkuil@xs4all.nl, mchehab@kernel.org, slark_xiao@163.com,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+e27f3dbdab04e43b9f73@syzkaller.appspotmail.com
+Subject: Re: [PATCH v2] UBSAN: shift-out-of-bounds in set_flicker
+Message-ID: <2023082425-argue-tartar-4652@gregkh>
+References: <20230824070630.8209-1-coolrrsh@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJD7tka34WjtwBWfkTu8ZCEUkLm7h-AyCXpw=h34n4RZ5qBVwA@mail.gmail.com>
+In-Reply-To: <20230824070630.8209-1-coolrrsh@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 23-08-23 07:55:40, Yosry Ahmed wrote:
-> On Wed, Aug 23, 2023 at 12:33 AM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Tue 22-08-23 08:30:05, Yosry Ahmed wrote:
-> > > On Tue, Aug 22, 2023 at 2:06 AM Michal Hocko <mhocko@suse.com> wrote:
-> > > >
-> > > > On Mon 21-08-23 20:54:58, Yosry Ahmed wrote:
-> > [...]
-> > > So to answer your question, I don't think a random user can really
-> > > affect the system in a significant way by constantly flushing. In
-> > > fact, in the test script (which I am now attaching, in case you're
-> > > interested), there are hundreds of threads that are reading stats of
-> > > different cgroups every 1s, and I don't see any negative effects on
-> > > in-kernel flushers in this case (reclaimers).
-> >
-> > I suspect you have missed my point.
+On Thu, Aug 24, 2023 at 12:36:30PM +0530, coolrrsh@gmail.com wrote:
+> From: Rajeshwar R Shinde <coolrrsh@gmail.com>
 > 
-> I suspect you are right :)
+> Syzkaller reported the following issue:
 > 
+> UBSAN: shift-out-of-bounds in drivers/media/usb/gspca/cpia1.c:1031:27
+> shift exponent 245 is too large for 32-bit type 'int'
 > 
-> > Maybe I am just misunderstanding
-> > the code but it seems to me that the lock dropping inside
-> > cgroup_rstat_flush_locked effectivelly allows unbounded number of
-> > contenders which is really dangerous when it is triggerable from the
-> > userspace. The number of spinners at a moment is always bound by the
-> > number CPUs but depending on timing many potential spinners might be
-> > cond_rescheded and the worst time latency to complete can be really
-> > high. Makes more sense?
+> shift-out-of-bounds error was triggered when variable 
+> 'sd->params.exposure.gain' is greater than the number of bits of int.
+> When the variable 'currentexp' is left shifted beyond 31 bits then
+> the error is produced. Therefore added the conditional expression to 
+> verify valid range.
 > 
-> I think I understand better now. So basically because we might drop
-> the lock and resched, there can be nr_cpus spinners + other spinners
-> that are currently scheduled away, so these will need to wait to be
-> scheduled and then start spinning on the lock. This may happen for one
-> reader multiple times during its read, which is what can cause a high
-> worst case latency.
+> Tested via syzbot.
 > 
-> I hope I understood you correctly this time. Did I?
+> Reported-by: syzbot+e27f3dbdab04e43b9f73@syzkaller.appspotmail.com
+> Closes: https://lore.kernel.org/all/20230818164522.12806-1-coolrrsh@gmail.com
+> 
+> Link: https://syzkaller.appspot.com/bug?extid=e27f3dbdab04e43b9f73
+> 
+> Signed-off-by: Rajeshwar R Shinde <coolrrsh@gmail.com>
 
-Yes. I would just add that this could also influence the worst case
-latency for a different reader - so an adversary user can stall others.
-Exposing a shared global lock in uncontrolable way over generally
-available user interface is not really a great idea IMHO.
--- 
-Michal Hocko
-SUSE Labs
+Please do not have blank lines beween these tags.
+
+You also have trailing whitespace in your changelog text :(
+
+> ---
+> v1->v2
+> changed the patch
+> changed commit message and tested with checkpatch 
+> 
+> ---
+>  drivers/media/usb/gspca/cpia1.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/media/usb/gspca/cpia1.c b/drivers/media/usb/gspca/cpia1.c
+> index 46ed95483e22..dafc522d5e7b 100644
+> --- a/drivers/media/usb/gspca/cpia1.c
+> +++ b/drivers/media/usb/gspca/cpia1.c
+> @@ -1028,6 +1028,8 @@ static int set_flicker(struct gspca_dev *gspca_dev, int on, int apply)
+>  			sd->params.exposure.expMode = 2;
+>  			sd->exposure_status = EXPOSURE_NORMAL;
+>  		}
+> +		if (sd->params.exposure.gain > 31)
+> +			return -1;
+
+Do not make up error codes, please return a valid one and not a random
+negative number.  Unless -1 is a valid value for this function?
+
+thanks,
+
+greg k-h
