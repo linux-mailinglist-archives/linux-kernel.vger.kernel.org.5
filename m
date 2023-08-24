@@ -2,230 +2,356 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7D5F787A4E
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 23:23:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 728CE787A53
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 23:25:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243696AbjHXVXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 17:23:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60240 "EHLO
+        id S238875AbjHXVYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 17:24:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243691AbjHXVWl (ORCPT
+        with ESMTP id S243689AbjHXVYL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 17:22:41 -0400
-Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B07951BCC;
-        Thu, 24 Aug 2023 14:22:38 -0700 (PDT)
-Received: by mail-vs1-xe2e.google.com with SMTP id ada2fe7eead31-44e3a4d0a6fso135522137.0;
-        Thu, 24 Aug 2023 14:22:38 -0700 (PDT)
+        Thu, 24 Aug 2023 17:24:11 -0400
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E6281BC9
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 14:24:09 -0700 (PDT)
+Received: by mail-qv1-xf29.google.com with SMTP id 6a1803df08f44-64c2e2572f7so1638496d6.1
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 14:24:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692912158; x=1693516958;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AZvcG589l1AbddG8/t0ALjJZ+ZBC/3SPsKCiVH6+/H4=;
-        b=W3U/+wyH0NSyqy5A4DWxab172DSS0fWPGnd+061PkzfcfZiHqBRYmoptLeXllY660/
-         CLk65bWCPuHFt+V1VyjsxpnJ4+9KpWWYEt3Gh9gtFLL19ORxx4vYwxzlbsrmxrVwzo7n
-         bftKaNTh0uolpOiEf5LkhSK/skyQa3A2D57qJh2l7HxtEU48E0jeaCHde8FB+nS/za9Q
-         ZS8ZGt49RxHYy7Rf/xjsID0+vs6NIdg3YgRiEDvdL/wkHD8XULAfz6apzGXHX1rkCpGh
-         3+e+qcXpocKYuJ09DvRb/SxRyKwA9tuVFOvuBNc3wuRkrgHuxDcbcIGhf05IBPrkhAd3
-         n1yQ==
+        d=broadcom.com; s=google; t=1692912248; x=1693517048;
+        h=mime-version:message-id:date:subject:cc:to:from:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=tKFg3Mf7L0O9puBteBI6SR7YJvpN7KDNGtfNM+fOV8E=;
+        b=ThkJQ7412ENtHd+ie1nAfpD8qvNttwuH21PeNa26/15H75MMgQjbZ6ezepIt3rgcGC
+         U4fq81qepyEpAplwLXv8cTPDK351namjMzRxqL77MrWsMylxcqO+nrd41aywCxu1D654
+         LjYhtpTLHL1zud455kJXbVwYNbA9WwljLjq6k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692912158; x=1693516958;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AZvcG589l1AbddG8/t0ALjJZ+ZBC/3SPsKCiVH6+/H4=;
-        b=Z0X5wcOccZ4eSKMadRDmPJbXmBQr3vaopFoZzRHqAGjkXHX7N1n5rRrZmVd+JwQspW
-         Ol7qyC6AmI9IeN9RvSA1+NIgu1mceunClK0faf1eBwIfcc62ZLlL5gaLKVDWmX3IEANA
-         U+bzyIjaRZZX7qgu5W4pzjhwv7+DnIC6XapC6pMaM0J57+rZfG/ygY1uTB4cB3k7bqRY
-         UQhOf7y2WvchUdN5SQXPie3kwFXj1GcceFLiwxaxcfnVti6Ob1uNmnsDyb+4NeByq4jO
-         oR6Mqve5J4bW4PjPAGTcNbw2Ia9e59UjxzKEl/1raJHanlulXPd2ica74pOQwskcigCv
-         pMjQ==
-X-Gm-Message-State: AOJu0Yy6578dEQ9CFy/WLy3U2/AVlq3rZT/XrCqEb/MZyIkEnLTN/4/A
-        4SBjTNN77kNH7jSzDSpbh9bmgKcPFJnC8VmAGDwtBnx7
-X-Google-Smtp-Source: AGHT+IFndlTlMUYFyhuwlLiW1PSdaGai48rzrDmPVINH0uPZwsoPG2zpYKClvZxDe3ulnATQ5l1/8haEcW0cAfST37w=
-X-Received: by 2002:a05:6102:448:b0:44e:9168:918e with SMTP id
- e8-20020a056102044800b0044e9168918emr4822386vsq.29.1692912157771; Thu, 24 Aug
- 2023 14:22:37 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692912248; x=1693517048;
+        h=mime-version:message-id:date:subject:cc:to:from:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=tKFg3Mf7L0O9puBteBI6SR7YJvpN7KDNGtfNM+fOV8E=;
+        b=KRAjyvMuZktnhy/eWJ4xQpcankdn0DYJfAZXrdUcJRCpMGUhatwKdmlunmC7zf/U8A
+         paPg6Wc0/kSweFXvTIZYggKWJpql3qBNha1KctVhvez16k91dHpLugwWcl/j6mUL3V2m
+         8BqIKNGGx71tFw+IG9KfPiXWZqt3mXM7r2smKh1moUJIzq7g49Q5jKXHEwm4lpQMiyCD
+         0IdfpjbQWrds/GC77A66ZlLk8Bp+DN+hrVrkzTwN9q1cDcQXtwnktCRqWHK4mBdbiNFl
+         S3E4/vmX+ON9I0g7bG7YdjoHE8LMp1kzSvmf79IdCi+PWjnA0XDWR+PQlINQnKgodhl5
+         Mnfg==
+X-Gm-Message-State: AOJu0YwE5U970f156lv15d/9OcSuNE8VfGUMsLsKq2THjjo9oExSaXvM
+        lKU+VQN3DvgsjLpyp6q7OAFc3sxNv80E3NuAzQN9dyTSlWLnXzgBuBHzW0bTO+3isfwP35mKAJh
+        7CDwgOrzZzyFiAb0=
+X-Google-Smtp-Source: AGHT+IGWCYDrAVN1oLpPDbDF+nFArybQctWBj3Hy38VvwWk0SHX6eJ20UUVcTL/OVWcTHYiAvOgdlw==
+X-Received: by 2002:ad4:5149:0:b0:631:f426:a4ab with SMTP id g9-20020ad45149000000b00631f426a4abmr16429962qvq.49.1692912248472;
+        Thu, 24 Aug 2023 14:24:08 -0700 (PDT)
+Received: from HDYH7M3.Broadcom.net ([192.19.161.248])
+        by smtp.gmail.com with ESMTPSA id j15-20020a0ce00f000000b0064713c8fab7sm75769qvk.59.2023.08.24.14.24.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Aug 2023 14:24:07 -0700 (PDT)
+From:   roman.bacik@broadcom.com
+To:     andi.shyti@kernel.org, rjui@broadcom.com, sbranden@broadcom.com
+Cc:     bcm-kernel-feedback-list@broadcom.com, linux-i2c@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Roman Bacik <roman.bacik@broadcom.com>
+Subject: [PATCH] i2c: iproc: handle invalid slave state
+Date:   Thu, 24 Aug 2023 14:23:51 -0700
+Message-Id: <20230824212351.24346-1-roman.bacik@broadcom.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20230824202415.131824-1-mahmoudmatook.mm@gmail.com>
- <20230824202415.131824-2-mahmoudmatook.mm@gmail.com> <CAF=yD-+8GBB75ddvG1MECYrYpwbxH1RMcre6EYiqXo4pk_Nx5g@mail.gmail.com>
- <20230824211332.bnyvxda7a2ws75ep@mmaatuq-HP-Laptop-15-dy2xxx>
-In-Reply-To: <20230824211332.bnyvxda7a2ws75ep@mmaatuq-HP-Laptop-15-dy2xxx>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Thu, 24 Aug 2023 17:22:01 -0400
-Message-ID: <CAF=yD-JPL6M9_q_W2OZH=4wis3GSfpYAo5Y7Jp+SyhA+NLeE3g@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] selftests/net: replace ternary operator with min()/max()
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        keescook@chromium.org, edumazet@google.com, wad@chromium.org,
-        luto@amacapital.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kuba@kernel.org, shuah@kernel.org,
-        pabeni@redhat.com, linux-kselftest@vger.kernel.org,
-        davem@davemloft.net, linux-kernel-mentees@lists.linuxfoundation.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="0000000000003949760603b1d91c"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 5:13=E2=80=AFPM Mahmoud Matook
-<mahmoudmatook.mm@gmail.com> wrote:
->
-> On 08/24, Willem de Bruijn wrote:
->
-> > On Thu, Aug 24, 2023 at 4:25=E2=80=AFPM Mahmoud Maatuq
-> > <mahmoudmatook.mm@gmail.com> wrote:
-> > >
-> > > Fix the following coccicheck warning:
-> > > tools/testing/selftests/net/udpgso_bench_tx.c:297:18-19: WARNING oppo=
-rtunity for min()
-> > > tools/testing/selftests/net/udpgso_bench_tx.c:354:27-28: WARNING oppo=
-rtunity for min()
-> > > tools/testing/selftests/net/so_txtime.c:129:24-26: WARNING opportunit=
-y for max()
-> > > tools/testing/selftests/net/so_txtime.c:96:30-31: WARNING opportunity=
- for max()
-> > >
-> > > Signed-off-by: Mahmoud Maatuq <mahmoudmatook.mm@gmail.com>
-> > > Suggested-by: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-> >
-> > I did not suggest this change.
-> >
-> the suggestion i meant here is about the following part
-> "Note that a more strict version that includes __typecheck would
-> warn on the type difference between total_len and cfg_mss. Fine
-> with changing the type of cfg_mss in the follow-on patch to address
-> that."
-> as mentioned here https://lore.kernel.org/all/CAF=3DyD-+6cWTiDgpsu=3DhUV+=
-OvzDFRaT2ZUmtQo9qTrCB9i-+7ng@mail.gmail.com/
-> I tried to change the type of cfg_mss but it creates a different warn
-> at udpgso_bench_tx.c:354 between cfg_mss and left that's way i casted
-> instead.
-> apology if i misunderstood your point.
+--0000000000003949760603b1d91c
+Content-Type: text/plain; charset="US-ASCII"
 
-Thanks. It's fine to avoid changing the type or cast if it does not
-set of any alarms.
+From: Roman Bacik <roman.bacik@broadcom.com>
 
-I think Suggested-by is for when the main idea of the patch is
-someone's suggestion. Not a big deal, but please drop in v3. It's your
-hard work and yours only. I'll add my Reviewed-by.
+Add the code to handle an invalid state when both bits S_RX_EVENT
+(indicating a transaction) and S_START_BUSY (indicating the end
+of transaction - transition of START_BUSY from 1 to 0) are set in
+the interrupt status register during a slave read.
+
+Signed-off-by: Roman Bacik <roman.bacik@broadcom.com>
+Fixes: 1ca1b4516088 ("i2c: iproc: handle Master aborted error")
+---
+ drivers/i2c/busses/i2c-bcm-iproc.c | 133 ++++++++++++++++-------------
+ 1 file changed, 75 insertions(+), 58 deletions(-)
+
+diff --git a/drivers/i2c/busses/i2c-bcm-iproc.c b/drivers/i2c/busses/i2c-bcm-iproc.c
+index 05c80680dff4..68438d4e5d73 100644
+--- a/drivers/i2c/busses/i2c-bcm-iproc.c
++++ b/drivers/i2c/busses/i2c-bcm-iproc.c
+@@ -316,26 +316,44 @@ static void bcm_iproc_i2c_slave_init(
+ 	iproc_i2c_wr_reg(iproc_i2c, IE_OFFSET, val);
+ }
+ 
+-static void bcm_iproc_i2c_check_slave_status(
+-	struct bcm_iproc_i2c_dev *iproc_i2c)
++static bool bcm_iproc_i2c_check_slave_status
++	(struct bcm_iproc_i2c_dev *iproc_i2c, u32 status)
+ {
+ 	u32 val;
++	bool recover = false;
+ 
+-	val = iproc_i2c_rd_reg(iproc_i2c, S_CMD_OFFSET);
+-	/* status is valid only when START_BUSY is cleared after it was set */
+-	if (val & BIT(S_CMD_START_BUSY_SHIFT))
+-		return;
++	/* check slave transmit status only if slave is transmitting */
++	if (!iproc_i2c->slave_rx_only) {
++		val = iproc_i2c_rd_reg(iproc_i2c, S_CMD_OFFSET);
++		/* status is valid only when START_BUSY is cleared */
++		if (!(val & BIT(S_CMD_START_BUSY_SHIFT))) {
++			val = (val >> S_CMD_STATUS_SHIFT) & S_CMD_STATUS_MASK;
++			if (val == S_CMD_STATUS_TIMEOUT ||
++			    val == S_CMD_STATUS_MASTER_ABORT) {
++				dev_warn(iproc_i2c->device,
++					 (val == S_CMD_STATUS_TIMEOUT) ?
++					 "slave random stretch time timeout\n" :
++					 "Master aborted read transaction\n");
++				recover = true;
++			}
++		}
++	}
++
++	/* RX_EVENT is not valid when START_BUSY is set */
++	if ((status & BIT(IS_S_RX_EVENT_SHIFT)) &&
++	    (status & BIT(IS_S_START_BUSY_SHIFT))) {
++		dev_warn(iproc_i2c->device, "Slave aborted read transaction\n");
++		recover = true;
++	}
+ 
+-	val = (val >> S_CMD_STATUS_SHIFT) & S_CMD_STATUS_MASK;
+-	if (val == S_CMD_STATUS_TIMEOUT || val == S_CMD_STATUS_MASTER_ABORT) {
+-		dev_err(iproc_i2c->device, (val == S_CMD_STATUS_TIMEOUT) ?
+-			"slave random stretch time timeout\n" :
+-			"Master aborted read transaction\n");
++	if (recover) {
+ 		/* re-initialize i2c for recovery */
+ 		bcm_iproc_i2c_enable_disable(iproc_i2c, false);
+ 		bcm_iproc_i2c_slave_init(iproc_i2c, true);
+ 		bcm_iproc_i2c_enable_disable(iproc_i2c, true);
+ 	}
++
++	return recover;
+ }
+ 
+ static void bcm_iproc_i2c_slave_read(struct bcm_iproc_i2c_dev *iproc_i2c)
+@@ -420,48 +438,6 @@ static bool bcm_iproc_i2c_slave_isr(struct bcm_iproc_i2c_dev *iproc_i2c,
+ 	u32 val;
+ 	u8 value;
+ 
+-	/*
+-	 * Slave events in case of master-write, master-write-read and,
+-	 * master-read
+-	 *
+-	 * Master-write     : only IS_S_RX_EVENT_SHIFT event
+-	 * Master-write-read: both IS_S_RX_EVENT_SHIFT and IS_S_RD_EVENT_SHIFT
+-	 *                    events
+-	 * Master-read      : both IS_S_RX_EVENT_SHIFT and IS_S_RD_EVENT_SHIFT
+-	 *                    events or only IS_S_RD_EVENT_SHIFT
+-	 *
+-	 * iproc has a slave rx fifo size of 64 bytes. Rx fifo full interrupt
+-	 * (IS_S_RX_FIFO_FULL_SHIFT) will be generated when RX fifo becomes
+-	 * full. This can happen if Master issues write requests of more than
+-	 * 64 bytes.
+-	 */
+-	if (status & BIT(IS_S_RX_EVENT_SHIFT) ||
+-	    status & BIT(IS_S_RD_EVENT_SHIFT) ||
+-	    status & BIT(IS_S_RX_FIFO_FULL_SHIFT)) {
+-		/* disable slave interrupts */
+-		val = iproc_i2c_rd_reg(iproc_i2c, IE_OFFSET);
+-		val &= ~iproc_i2c->slave_int_mask;
+-		iproc_i2c_wr_reg(iproc_i2c, IE_OFFSET, val);
+-
+-		if (status & BIT(IS_S_RD_EVENT_SHIFT))
+-			/* Master-write-read request */
+-			iproc_i2c->slave_rx_only = false;
+-		else
+-			/* Master-write request only */
+-			iproc_i2c->slave_rx_only = true;
+-
+-		/* schedule tasklet to read data later */
+-		tasklet_schedule(&iproc_i2c->slave_rx_tasklet);
+-
+-		/*
+-		 * clear only IS_S_RX_EVENT_SHIFT and
+-		 * IS_S_RX_FIFO_FULL_SHIFT interrupt.
+-		 */
+-		val = BIT(IS_S_RX_EVENT_SHIFT);
+-		if (status & BIT(IS_S_RX_FIFO_FULL_SHIFT))
+-			val |= BIT(IS_S_RX_FIFO_FULL_SHIFT);
+-		iproc_i2c_wr_reg(iproc_i2c, IS_OFFSET, val);
+-	}
+ 
+ 	if (status & BIT(IS_S_TX_UNDERRUN_SHIFT)) {
+ 		iproc_i2c->tx_underrun++;
+@@ -493,8 +469,9 @@ static bool bcm_iproc_i2c_slave_isr(struct bcm_iproc_i2c_dev *iproc_i2c,
+ 		 * less than PKT_LENGTH bytes were output on the SMBUS
+ 		 */
+ 		iproc_i2c->slave_int_mask &= ~BIT(IE_S_TX_UNDERRUN_SHIFT);
+-		iproc_i2c_wr_reg(iproc_i2c, IE_OFFSET,
+-				 iproc_i2c->slave_int_mask);
++		val = iproc_i2c_rd_reg(iproc_i2c, IE_OFFSET);
++		val &= ~BIT(IE_S_TX_UNDERRUN_SHIFT);
++		iproc_i2c_wr_reg(iproc_i2c, IE_OFFSET, val);
+ 
+ 		/* End of SMBUS for Master Read */
+ 		val = BIT(S_TX_WR_STATUS_SHIFT);
+@@ -515,9 +492,49 @@ static bool bcm_iproc_i2c_slave_isr(struct bcm_iproc_i2c_dev *iproc_i2c,
+ 				 BIT(IS_S_START_BUSY_SHIFT));
+ 	}
+ 
+-	/* check slave transmit status only if slave is transmitting */
+-	if (!iproc_i2c->slave_rx_only)
+-		bcm_iproc_i2c_check_slave_status(iproc_i2c);
++	/* if the controller has been reset, immediately return from the ISR */
++	if (bcm_iproc_i2c_check_slave_status(iproc_i2c, status))
++		return true;
++
++	/*
++	 * Slave events in case of master-write, master-write-read and,
++	 * master-read
++	 *
++	 * Master-write     : only IS_S_RX_EVENT_SHIFT event
++	 * Master-write-read: both IS_S_RX_EVENT_SHIFT and IS_S_RD_EVENT_SHIFT
++	 *                    events
++	 * Master-read      : both IS_S_RX_EVENT_SHIFT and IS_S_RD_EVENT_SHIFT
++	 *                    events or only IS_S_RD_EVENT_SHIFT
++	 *
++	 * iproc has a slave rx fifo size of 64 bytes. Rx fifo full interrupt
++	 * (IS_S_RX_FIFO_FULL_SHIFT) will be generated when RX fifo becomes
++	 * full. This can happen if Master issues write requests of more than
++	 * 64 bytes.
++	 */
++	if (status & BIT(IS_S_RX_EVENT_SHIFT) ||
++	    status & BIT(IS_S_RD_EVENT_SHIFT) ||
++	    status & BIT(IS_S_RX_FIFO_FULL_SHIFT)) {
++		/* disable slave interrupts */
++		val = iproc_i2c_rd_reg(iproc_i2c, IE_OFFSET);
++		val &= ~iproc_i2c->slave_int_mask;
++		iproc_i2c_wr_reg(iproc_i2c, IE_OFFSET, val);
++
++		if (status & BIT(IS_S_RD_EVENT_SHIFT))
++			/* Master-write-read request */
++			iproc_i2c->slave_rx_only = false;
++		else
++			/* Master-write request only */
++			iproc_i2c->slave_rx_only = true;
++
++		/* schedule tasklet to read data later */
++		tasklet_schedule(&iproc_i2c->slave_rx_tasklet);
++
++		/* clear IS_S_RX_FIFO_FULL_SHIFT interrupt */
++		if (status & BIT(IS_S_RX_FIFO_FULL_SHIFT)) {
++			val = BIT(IS_S_RX_FIFO_FULL_SHIFT);
++			iproc_i2c_wr_reg(iproc_i2c, IS_OFFSET, val);
++		}
++	}
+ 
+ 	return true;
+ }
+-- 
+2.41.0
 
 
+-- 
+This electronic communication and the information and any files transmitted 
+with it, or attached to it, are confidential and are intended solely for 
+the use of the individual or entity to whom it is addressed and may contain 
+information that is confidential, legally privileged, protected by privacy 
+laws, or otherwise restricted from disclosure to anyone else. If you are 
+not the intended recipient or the person responsible for delivering the 
+e-mail to the intended recipient, you are hereby notified that any use, 
+copying, distributing, dissemination, forwarding, printing, or copying of 
+this e-mail is strictly prohibited. If you received this e-mail in error, 
+please return the e-mail to the sender, delete it from your computer, and 
+destroy any printed copy of it.
 
-> > > ---
-> > > changes in v2:
-> > > cast var cfg_mss to int to avoid static assertion
-> > > after providing a stricter version of min() that does signedness chec=
-king.
-> > > ---
-> > >  tools/testing/selftests/net/Makefile          | 2 ++
-> > >  tools/testing/selftests/net/so_txtime.c       | 7 ++++---
-> > >  tools/testing/selftests/net/udpgso_bench_tx.c | 6 +++---
-> > >  3 files changed, 9 insertions(+), 6 deletions(-)
-> > >
-> > > diff --git a/tools/testing/selftests/net/Makefile b/tools/testing/sel=
-ftests/net/Makefile
-> > > index 7f3ab2a93ed6..a06cc25489f9 100644
-> > > --- a/tools/testing/selftests/net/Makefile
-> > > +++ b/tools/testing/selftests/net/Makefile
-> > > @@ -3,6 +3,8 @@
-> > >
-> > >  CFLAGS =3D  -Wall -Wl,--no-as-needed -O2 -g
-> > >  CFLAGS +=3D -I../../../../usr/include/ $(KHDR_INCLUDES)
-> > > +# Additional include paths needed by kselftest.h
-> > > +CFLAGS +=3D -I../
-> >
-> > Why does kselftest.h need this? It does not include anything else?
-> >
-> > I'd just add #include "../kselftests.h" to so_txtime.c and remove the
-> > path change from udpgso_bench_tx.c
-> >
-> > Fine with this approach. Just don't understand the comment
-> >
->
-> the comment here is wrong and it should be changed to include path
-> needed to include kselftest.h or to be deleted
->
-> > >
-> > >  TEST_PROGS :=3D run_netsocktests run_afpackettests test_bpf.sh netde=
-vice.sh \
-> > >               rtnetlink.sh xfrm_policy.sh test_blackhole_dev.sh
-> > > diff --git a/tools/testing/selftests/net/so_txtime.c b/tools/testing/=
-selftests/net/so_txtime.c
-> > > index 2672ac0b6d1f..2936174e7de4 100644
-> > > --- a/tools/testing/selftests/net/so_txtime.c
-> > > +++ b/tools/testing/selftests/net/so_txtime.c
-> > > @@ -33,6 +33,8 @@
-> > >  #include <unistd.h>
-> > >  #include <poll.h>
-> > >
-> > > +#include "kselftest.h"
-> > > +
-> > >  static int     cfg_clockid     =3D CLOCK_TAI;
-> > >  static uint16_t        cfg_port        =3D 8000;
-> > >  static int     cfg_variance_us =3D 4000;
-> > > @@ -93,8 +95,7 @@ static void do_send_one(int fdt, struct timed_send =
-*ts)
-> > >                 msg.msg_controllen =3D sizeof(control);
-> > >
-> > >                 tdeliver =3D glob_tstart + ts->delay_us * 1000;
-> > > -               tdeliver_max =3D tdeliver_max > tdeliver ?
-> > > -                              tdeliver_max : tdeliver;
-> > > +               tdeliver_max =3D max(tdeliver_max, tdeliver);
-> > >
-> > >                 cm =3D CMSG_FIRSTHDR(&msg);
-> > >                 cm->cmsg_level =3D SOL_SOCKET;
-> > > @@ -126,7 +127,7 @@ static void do_recv_one(int fdr, struct timed_sen=
-d *ts)
-> > >                 error(1, 0, "read: %dB", ret);
-> > >
-> > >         tstop =3D (gettime_ns(cfg_clockid) - glob_tstart) / 1000;
-> > > -       texpect =3D ts->delay_us >=3D 0 ? ts->delay_us : 0;
-> > > +       texpect =3D max(ts->delay_us, 0);
-> > >
-> > >         fprintf(stderr, "payload:%c delay:%lld expected:%lld (us)\n",
-> > >                         rbuf[0], (long long)tstop, (long long)texpect=
-);
-> > > diff --git a/tools/testing/selftests/net/udpgso_bench_tx.c b/tools/te=
-sting/selftests/net/udpgso_bench_tx.c
-> > > index 477392715a9a..6bd32a312901 100644
-> > > --- a/tools/testing/selftests/net/udpgso_bench_tx.c
-> > > +++ b/tools/testing/selftests/net/udpgso_bench_tx.c
-> > > @@ -25,7 +25,7 @@
-> > >  #include <sys/types.h>
-> > >  #include <unistd.h>
-> > >
-> > > -#include "../kselftest.h"
-> > > +#include "kselftest.h"
-> > >
-> > >  #ifndef ETH_MAX_MTU
-> > >  #define ETH_MAX_MTU 0xFFFFU
-> > > @@ -294,7 +294,7 @@ static int send_udp(int fd, char *data)
-> > >         total_len =3D cfg_payload_len;
-> > >
-> > >         while (total_len) {
-> > > -               len =3D total_len < cfg_mss ? total_len : cfg_mss;
-> > > +               len =3D min(total_len, (int)cfg_mss);
-> > >
-> > >                 ret =3D sendto(fd, data, len, cfg_zerocopy ? MSG_ZERO=
-COPY : 0,
-> > >                              cfg_connected ? NULL : (void *)&cfg_dst_=
-addr,
-> > > @@ -351,7 +351,7 @@ static int send_udp_sendmmsg(int fd, char *data)
-> > >                         error(1, 0, "sendmmsg: exceeds max_nr_msg");
-> > >
-> > >                 iov[i].iov_base =3D data + off;
-> > > -               iov[i].iov_len =3D cfg_mss < left ? cfg_mss : left;
-> > > +               iov[i].iov_len =3D min(cfg_mss, left);
-> > >
-> > >                 mmsgs[i].msg_hdr.msg_iov =3D iov + i;
-> > >                 mmsgs[i].msg_hdr.msg_iovlen =3D 1;
-> > > --
-> > > 2.34.1
-> > >
+--0000000000003949760603b1d91c
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+kVemjZNSIF6M0772/HY5U+poXfKriD5OwRc4OQKNOj5JPlWbPqGsBLPV3V84TEHFB/HS8b9kLhFt
+/xJ8Oeq/cEcWTmUM3U7zxYP7gTg2ZyQhjuU7R8c3AgMBAAGjggHZMIIB1TAOBgNVHQ8BAf8EBAMC
+BaAwgaMGCCsGAQUFBwEBBIGWMIGTME4GCCsGAQUFBzAChkJodHRwOi8vc2VjdXJlLmdsb2JhbHNp
+Z24uY29tL2NhY2VydC9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcnQwQQYIKwYBBQUHMAGG
+NWh0dHA6Ly9vY3NwLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwME0G
+A1UdIARGMEQwQgYKKwYBBAGgMgEoCjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxz
+aWduLmNvbS9yZXBvc2l0b3J5LzAJBgNVHRMEAjAAMEkGA1UdHwRCMEAwPqA8oDqGOGh0dHA6Ly9j
+cmwuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3JsMCMGA1UdEQQc
+MBqBGHJvbWFuLmJhY2lrQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNVHSME
+GDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU6LrAS5I+9MU+uZwBN1CpwPA8t/cw
+DQYJKoZIhvcNAQELBQADggEBAFiR/8JScXcG5YSdUPk9otK4e6MFHqMm34r8qarOQZhvIHcQjzIc
+dSiFQXZ1rzMKLBkCEl5Rk72sXriIx3Wq0e20xrYGPgl2XG416Az6wrq9s8t0+BhtmMHy5+x3qORa
+yboad+vil8QhKeW3km9+fuK/s4hKXBn/S+0sxxgA8FcGod8oCC0kBeLLVL28uXkbSg6JFiIbEVvq
+8wipUVlpKabf+g30ppnXT/3yGzraM/w8j/b2YbX4ZXrLRAyn0Gp2V+dHicsFy5Yqtd1IgU/xOw97
+cBjJw8R9iSSnZYz3GrNX3DlIknplnG7jYK6OgWWuVdXi/TpH2muDOK2P8YF1+TsxggJtMIICaQIB
+ATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhH
+bG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgxQq66/g6f3ySKbXX0wDQYJ
+YIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIH+HHG3HLlKAeuMxRDnaj2VpvJ/ARR8fleXQ
+Xs05ek2eMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIzMDgyNDIx
+MjQwOFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFl
+AwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATAN
+BgkqhkiG9w0BAQEFAASCAQAe9vhrb935VRJEYUuHOFwbzn760UkI1ReWYsPL3f1OimU6b94Fb4rK
+TIEN1nAdtNLyXUUXYlEehkW94h5rYAwV/bt1+OLkp8AgDMr1aq8T7lav96vPdat1Hr2WiszpM/j8
+c+3hg/fetnAmFfnsI2E4gRE2ob0Fjtmz3/DVa4egd8N4It2DLDjueFqJV5/XHQ/is5VzSB14W4F7
+sbC2j9UmKXBFqkdQNz99rXJmxLRTVfU/ELgCbDpA+sViKGGJ6cPSPRoG/xPvW2BrX4XT8bdEjwyG
+KsfLcKBWmvlTNu3dUWFSK/vKy3oXuqa724aQPPkloizUCsZTVeHJrFb86DRA
+--0000000000003949760603b1d91c--
