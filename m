@@ -2,140 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E04F786827
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 09:14:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CE4478682F
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 09:16:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240298AbjHXHOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 03:14:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57904 "EHLO
+        id S240311AbjHXHP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 03:15:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240217AbjHXHOF (ORCPT
+        with ESMTP id S240379AbjHXHPk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 03:14:05 -0400
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F318E4B;
-        Thu, 24 Aug 2023 00:14:02 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.nyi.internal (Postfix) with ESMTP id A424F5C00DD;
-        Thu, 24 Aug 2023 03:13:59 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Thu, 24 Aug 2023 03:13:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm1; t=1692861239; x=1692947639; bh=0M
-        1ggo+Y5uf7UUVSVo0EZMwFgA9JMrcAzE/eU4EniSg=; b=mH1VKkNFAk/EotMeC/
-        eybnamqF4p4Jd5Glywnp+vEbXM2RtRuWwM6l8lhYD+jcmReG78yWAAuvgHzg7OXv
-        G0HMtJFKbCndygI2vqMP6ThULjxlDKnpGDE3LCTd9f96UW71NNPXaiWmsIugz8m4
-        NwJBCvnv/SnG3H5PkjOTD8xmruv7WPKQkY/+MvOGTqpY5uWE522TTHcBtpzB6gXn
-        P2BnmlZYj26cYb1hk7sPAfWMdBq8KAUy8e5Y8VgjGTOGB7y2mJUJLC4c3bYwz+Vn
-        rG7/x8Dp64akDA8AKm7Fu7v3bvg9ihipAFG/A+ICrW9Mg22yz+s+vI69JOP88Hej
-        dOoQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1692861239; x=1692947639; bh=0M1ggo+Y5uf7U
-        UVSVo0EZMwFgA9JMrcAzE/eU4EniSg=; b=f7Pgqc9dTkJixdZ88VhyBjFH/DdIv
-        q0FIdrBU/A6lMB3BDVzypp5O+cEjHfKnQwqQnlnqSduYE+0UyjxMXz/l2Xo7dQDC
-        vj9rXcm2g8U1NnQs5GuKaWZdNenWpuRomUFoTr6BcVOkLAndty9V8gwrF7PN+LK5
-        CWzW8ikcCryreQDkr1w6+Qmj23HtSOMdhytDT4GRyxSvKtBp+HIwW/pkJJW6ymtt
-        dyPt3dJFeVhH5ldUuGrZlgd9bDJBIgFpn8tMvO9PxZqKdQcB4doHbmUVN13R0m+I
-        rm1z74IztXJud9NUHy/6Vis9/xvAEdUZRRtJsX9t1wFHPVamNqfNCHZiQ==
-X-ME-Sender: <xms:NwPnZJ5OZn36HEz27Dz03ZSPDU26oHkTMywluqbvXUNgsgPdNEZ9Ug>
-    <xme:NwPnZG6JzxTB7l-blrTkCWRrtfMlK_pIvxNs1nGNhOBIiXYc8A0HGp40TrhQkne6w
-    oQt7WrQH5hN4w>
-X-ME-Received: <xmr:NwPnZAewnl6GqlqyyAdimjYxb0PSTNYf7B6ju7KBqp4y2hEdMfsOSFSDDy1VPl1PN_HTtpCEHMy0ABJx7nDQVEf6AJYDjOzdJMVh6A>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedruddvhedgudduiecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecunecujfgurhepfffhvfevuffkfhggtggujgesth
-    dtredttddtvdenucfhrhhomhepifhrvghgucfmjfcuoehgrhgvgheskhhrohgrhhdrtgho
-    mheqnecuggftrfgrthhtvghrnhephfeugfdthfeijeekveekuefgudfgffevhfehgeehvd
-    ehheetlefgkedtlefghefgnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghdpshihiihk
-    rghllhgvrhdrrghpphhsphhothdrtghomhenucevlhhushhtvghrufhiiigvpedtnecurf
-    grrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
-X-ME-Proxy: <xmx:NwPnZCKpDnnNrxpQjgspKw5xYozl9nTfAhFSqSePwTUVhFOHdbYiKg>
-    <xmx:NwPnZNJTzlqxYZg_sxq3ctseECddogb1NhXBI0P4GCdLzEHN94BSng>
-    <xmx:NwPnZLz4pusTJ-edvs_P6FiymCqwDsaEwZJH8LK5jI0xFyc5muqdNg>
-    <xmx:NwPnZPhr4VOwAZrkt29wC6cfAmZoVFammo5ZDAXUvt3HAL6m-y030w>
-Feedback-ID: i787e41f1:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 24 Aug 2023 03:13:58 -0400 (EDT)
-Date:   Thu, 24 Aug 2023 09:13:54 +0200
-From:   Greg KH <greg@kroah.com>
-To:     coolrrsh@gmail.com
-Cc:     hverkuil@xs4all.nl, mchehab@kernel.org, slark_xiao@163.com,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+e27f3dbdab04e43b9f73@syzkaller.appspotmail.com
-Subject: Re: [PATCH v2] UBSAN: shift-out-of-bounds in set_flicker
-Message-ID: <2023082425-argue-tartar-4652@gregkh>
-References: <20230824070630.8209-1-coolrrsh@gmail.com>
+        Thu, 24 Aug 2023 03:15:40 -0400
+Received: from jari.cn (unknown [218.92.28.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3F1461996
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 00:15:05 -0700 (PDT)
+Received: from chenxuebing$jari.cn ( [125.70.163.142] ) by
+ ajax-webmail-localhost.localdomain (Coremail) ; Thu, 24 Aug 2023 15:14:39
+ +0800 (GMT+08:00)
+X-Originating-IP: [125.70.163.142]
+Date:   Thu, 24 Aug 2023 15:14:39 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   "XueBing Chen" <chenxuebing@jari.cn>
+To:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/amdgpu: Clean up errors in dce_v11_0.c
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version 2023.1-cmXT6 build
+ 20230419(ff23bf83) Copyright (c) 2002-2023 www.mailtech.cn
+ mispb-4e503810-ca60-4ec8-a188-7102c18937cf-zhkzyfz.cn
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230824070630.8209-1-coolrrsh@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Message-ID: <4e7007e6.63e.18a26652d06.Coremail.chenxuebing@jari.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: AQAAfwD3lD9fA+dkYTSSAA--.484W
+X-CM-SenderInfo: hfkh05pxhex0nj6mt2flof0/1tbiAQANCmTl1A4AOgAKst
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
+X-Spam-Status: No, score=2.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_PBL,RDNS_NONE,T_SPF_HELO_PERMERROR,T_SPF_PERMERROR,XPRIO
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 12:36:30PM +0530, coolrrsh@gmail.com wrote:
-> From: Rajeshwar R Shinde <coolrrsh@gmail.com>
-> 
-> Syzkaller reported the following issue:
-> 
-> UBSAN: shift-out-of-bounds in drivers/media/usb/gspca/cpia1.c:1031:27
-> shift exponent 245 is too large for 32-bit type 'int'
-> 
-> shift-out-of-bounds error was triggered when variable 
-> 'sd->params.exposure.gain' is greater than the number of bits of int.
-> When the variable 'currentexp' is left shifted beyond 31 bits then
-> the error is produced. Therefore added the conditional expression to 
-> verify valid range.
-> 
-> Tested via syzbot.
-> 
-> Reported-by: syzbot+e27f3dbdab04e43b9f73@syzkaller.appspotmail.com
-> Closes: https://lore.kernel.org/all/20230818164522.12806-1-coolrrsh@gmail.com
-> 
-> Link: https://syzkaller.appspot.com/bug?extid=e27f3dbdab04e43b9f73
-> 
-> Signed-off-by: Rajeshwar R Shinde <coolrrsh@gmail.com>
-
-Please do not have blank lines beween these tags.
-
-You also have trailing whitespace in your changelog text :(
-
-> ---
-> v1->v2
-> changed the patch
-> changed commit message and tested with checkpatch 
-> 
-> ---
->  drivers/media/usb/gspca/cpia1.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/media/usb/gspca/cpia1.c b/drivers/media/usb/gspca/cpia1.c
-> index 46ed95483e22..dafc522d5e7b 100644
-> --- a/drivers/media/usb/gspca/cpia1.c
-> +++ b/drivers/media/usb/gspca/cpia1.c
-> @@ -1028,6 +1028,8 @@ static int set_flicker(struct gspca_dev *gspca_dev, int on, int apply)
->  			sd->params.exposure.expMode = 2;
->  			sd->exposure_status = EXPOSURE_NORMAL;
->  		}
-> +		if (sd->params.exposure.gain > 31)
-> +			return -1;
-
-Do not make up error codes, please return a valid one and not a random
-negative number.  Unless -1 is a valid value for this function?
-
-thanks,
-
-greg k-h
+Rml4IHRoZSBmb2xsb3dpbmcgZXJyb3JzIHJlcG9ydGVkIGJ5IGNoZWNrcGF0Y2g6CgpFUlJPUjog
+dGhhdCBvcGVuIGJyYWNlIHsgc2hvdWxkIGJlIG9uIHRoZSBwcmV2aW91cyBsaW5lCkVSUk9SOiBz
+d2l0Y2ggYW5kIGNhc2Ugc2hvdWxkIGJlIGF0IHRoZSBzYW1lIGluZGVudApFUlJPUjogc3BhY2Ug
+cmVxdWlyZWQgYmVmb3JlIHRoZSBvcGVuIHBhcmVudGhlc2lzICcoJwpFUlJPUjogc3BhY2UgcmVx
+dWlyZWQgYmVmb3JlIHRoZSBvcGVuIGJyYWNlICd7JwoKU2lnbmVkLW9mZi1ieTogWHVlQmluZyBD
+aGVuIDxjaGVueHVlYmluZ0BqYXJpLmNuPgotLS0KIGRyaXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1
+L2RjZV92MTFfMC5jIHwgMjAgKysrKysrKystLS0tLS0tLS0tLS0KIDEgZmlsZSBjaGFuZ2VkLCA4
+IGluc2VydGlvbnMoKyksIDEyIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1
+L2RybS9hbWQvYW1kZ3B1L2RjZV92MTFfMC5jIGIvZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUv
+ZGNlX3YxMV8wLmMKaW5kZXggYzE0YjcwMzUwYTUxLi5jYjYzMGRmZGNkNTAgMTAwNjQ0Ci0tLSBh
+L2RyaXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1L2RjZV92MTFfMC5jCisrKyBiL2RyaXZlcnMvZ3B1
+L2RybS9hbWQvYW1kZ3B1L2RjZV92MTFfMC5jCkBAIC0xNDUxLDggKzE0NTEsNyBAQCBzdGF0aWMg
+dm9pZCBkY2VfdjExXzBfYXVkaW9fZW5hYmxlKHN0cnVjdCBhbWRncHVfZGV2aWNlICphZGV2LAog
+CQkJICAgZW5hYmxlID8gQVpBTElBX0YwX0NPREVDX1BJTl9DT05UUk9MX0hPVF9QTFVHX0NPTlRS
+T0xfX0FVRElPX0VOQUJMRURfTUFTSyA6IDApOwogfQogCi1zdGF0aWMgY29uc3QgdTMyIHBpbl9v
+ZmZzZXRzW10gPQoteworc3RhdGljIGNvbnN0IHUzMiBwaW5fb2Zmc2V0c1tdID0gewogCUFVRDBf
+UkVHSVNURVJfT0ZGU0VULAogCUFVRDFfUkVHSVNURVJfT0ZGU0VULAogCUFVRDJfUkVHSVNURVJf
+T0ZGU0VULApAQCAtMTg1Myw4ICsxODUyLDcgQEAgc3RhdGljIHZvaWQgZGNlX3YxMV8wX2FmbXRf
+ZmluaShzdHJ1Y3QgYW1kZ3B1X2RldmljZSAqYWRldikKIAl9CiB9CiAKLXN0YXRpYyBjb25zdCB1
+MzIgdmdhX2NvbnRyb2xfcmVnc1s2XSA9Ci17CitzdGF0aWMgY29uc3QgdTMyIHZnYV9jb250cm9s
+X3JlZ3NbNl0gPSB7CiAJbW1EMVZHQV9DT05UUk9MLAogCW1tRDJWR0FfQ09OVFJPTCwKIAltbUQz
+VkdBX0NPTlRST0wsCkBAIC0zMjQwLDcgKzMyMzgsNyBAQCBzdGF0aWMgaW50IGRjZV92MTFfMF9z
+ZXRfY3J0Y19pcnFfc3RhdGUoc3RydWN0IGFtZGdwdV9kZXZpY2UgKmFkZXYsCiAJY2FzZSBBTURH
+UFVfQ1JUQ19JUlFfVkxJTkU1OgogCQlkY2VfdjExXzBfc2V0X2NydGNfdmxpbmVfaW50ZXJydXB0
+X3N0YXRlKGFkZXYsIDQsIHN0YXRlKTsKIAkJYnJlYWs7Ci0JIGNhc2UgQU1ER1BVX0NSVENfSVJR
+X1ZMSU5FNjoKKwljYXNlIEFNREdQVV9DUlRDX0lSUV9WTElORTY6CiAJCWRjZV92MTFfMF9zZXRf
+Y3J0Y192bGluZV9pbnRlcnJ1cHRfc3RhdGUoYWRldiwgNSwgc3RhdGUpOwogCQlicmVhazsKIAlk
+ZWZhdWx0OgpAQCAtMzI5NSwxMiArMzI5MywxMiBAQCBzdGF0aWMgaW50IGRjZV92MTFfMF9wYWdl
+ZmxpcF9pcnEoc3RydWN0IGFtZGdwdV9kZXZpY2UgKmFkZXYsCiAJCSAgICAgICBHUlBIX0lOVEVS
+UlVQVF9TVEFUVVNfX0dSUEhfUEZMSVBfSU5UX0NMRUFSX01BU0spOwogCiAJLyogSVJRIGNvdWxk
+IG9jY3VyIHdoZW4gaW4gaW5pdGlhbCBzdGFnZSAqLwotCWlmKGFtZGdwdV9jcnRjID09IE5VTEwp
+CisJaWYgKGFtZGdwdV9jcnRjID09IE5VTEwpCiAJCXJldHVybiAwOwogCiAJc3Bpbl9sb2NrX2ly
+cXNhdmUoJmFkZXZfdG9fZHJtKGFkZXYpLT5ldmVudF9sb2NrLCBmbGFncyk7CiAJd29ya3MgPSBh
+bWRncHVfY3J0Yy0+cGZsaXBfd29ya3M7Ci0JaWYgKGFtZGdwdV9jcnRjLT5wZmxpcF9zdGF0dXMg
+IT0gQU1ER1BVX0ZMSVBfU1VCTUlUVEVEKXsKKwlpZiAoYW1kZ3B1X2NydGMtPnBmbGlwX3N0YXR1
+cyAhPSBBTURHUFVfRkxJUF9TVUJNSVRURUQpIHsKIAkJRFJNX0RFQlVHX0RSSVZFUigiYW1kZ3B1
+X2NydGMtPnBmbGlwX3N0YXR1cyA9ICVkICE9ICIKIAkJCQkJCSAiQU1ER1BVX0ZMSVBfU1VCTUlU
+VEVEKCVkKVxuIiwKIAkJCQkJCSBhbWRncHVfY3J0Yy0+cGZsaXBfc3RhdHVzLApAQCAtMzMxNCw3
+ICszMzEyLDcgQEAgc3RhdGljIGludCBkY2VfdjExXzBfcGFnZWZsaXBfaXJxKHN0cnVjdCBhbWRn
+cHVfZGV2aWNlICphZGV2LAogCWFtZGdwdV9jcnRjLT5wZmxpcF93b3JrcyA9IE5VTEw7CiAKIAkv
+KiB3YWtldXAgdXNlcnNhcGNlICovCi0JaWYod29ya3MtPmV2ZW50KQorCWlmICh3b3Jrcy0+ZXZl
+bnQpCiAJCWRybV9jcnRjX3NlbmRfdmJsYW5rX2V2ZW50KCZhbWRncHVfY3J0Yy0+YmFzZSwgd29y
+a3MtPmV2ZW50KTsKIAogCXNwaW5fdW5sb2NrX2lycXJlc3RvcmUoJmFkZXZfdG9fZHJtKGFkZXYp
+LT5ldmVudF9sb2NrLCBmbGFncyk7CkBAIC0zNzgwLDggKzM3NzgsNyBAQCBzdGF0aWMgdm9pZCBk
+Y2VfdjExXzBfc2V0X2lycV9mdW5jcyhzdHJ1Y3QgYW1kZ3B1X2RldmljZSAqYWRldikKIAlhZGV2
+LT5ocGRfaXJxLmZ1bmNzID0gJmRjZV92MTFfMF9ocGRfaXJxX2Z1bmNzOwogfQogCi1jb25zdCBz
+dHJ1Y3QgYW1kZ3B1X2lwX2Jsb2NrX3ZlcnNpb24gZGNlX3YxMV8wX2lwX2Jsb2NrID0KLXsKK2Nv
+bnN0IHN0cnVjdCBhbWRncHVfaXBfYmxvY2tfdmVyc2lvbiBkY2VfdjExXzBfaXBfYmxvY2sgPSB7
+CiAJLnR5cGUgPSBBTURfSVBfQkxPQ0tfVFlQRV9EQ0UsCiAJLm1ham9yID0gMTEsCiAJLm1pbm9y
+ID0gMCwKQEAgLTM3ODksOCArMzc4Niw3IEBAIGNvbnN0IHN0cnVjdCBhbWRncHVfaXBfYmxvY2tf
+dmVyc2lvbiBkY2VfdjExXzBfaXBfYmxvY2sgPQogCS5mdW5jcyA9ICZkY2VfdjExXzBfaXBfZnVu
+Y3MsCiB9OwogCi1jb25zdCBzdHJ1Y3QgYW1kZ3B1X2lwX2Jsb2NrX3ZlcnNpb24gZGNlX3YxMV8y
+X2lwX2Jsb2NrID0KLXsKK2NvbnN0IHN0cnVjdCBhbWRncHVfaXBfYmxvY2tfdmVyc2lvbiBkY2Vf
+djExXzJfaXBfYmxvY2sgPSB7CiAJLnR5cGUgPSBBTURfSVBfQkxPQ0tfVFlQRV9EQ0UsCiAJLm1h
+am9yID0gMTEsCiAJLm1pbm9yID0gMiwKLS0gCjIuMTcuMQo=
