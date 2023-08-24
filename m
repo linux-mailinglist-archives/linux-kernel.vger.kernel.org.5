@@ -2,107 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CD307874DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 18:06:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4584B787507
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 18:16:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242368AbjHXQGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 12:06:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34864 "EHLO
+        id S242433AbjHXQQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 12:16:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242378AbjHXQFm (ORCPT
+        with ESMTP id S242418AbjHXQPe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 12:05:42 -0400
-Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A91F4E50;
-        Thu, 24 Aug 2023 09:05:40 -0700 (PDT)
-Received: from [10.10.2.52] (unknown [10.10.2.52])
-        by mail.ispras.ru (Postfix) with ESMTPSA id 1FF5840F1DE3;
-        Thu, 24 Aug 2023 16:05:36 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru 1FF5840F1DE3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
-        s=default; t=1692893136;
-        bh=caqsQ+c8XbhPmlQ5KZRGIo7T9OsOQPmeBRjdvjOtl3k=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=K7MyNx8Ik/O9d7LXuyLVLJL355ADYuFNMCAxtQtAi78K6IjMeaiGBxZX65EJltK/v
-         7kUsdZONsuAN5CDyCq2COSNroAjqql6u6//fZrXoH1NsPyZqGVcuU4g0CXLpFbwgc9
-         wa4cpjNavkPym3FL9Wt4WOueA0cX6Osu1Wnf0bRs=
-Subject: Re: [PATCH 5.10 000/135] 5.10.191-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-References: <20230824145027.008282920@linuxfoundation.org>
-From:   Alexey Khoroshilov <khoroshilov@ispras.ru>
-Autocrypt: addr=khoroshilov@ispras.ru; prefer-encrypt=mutual; keydata=
- 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
- kK2E04Fb+Zk1eJvHYRc=
-Message-ID: <e722f48c-2032-8898-84ed-994a4457c62b@ispras.ru>
-Date:   Thu, 24 Aug 2023 19:05:35 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 24 Aug 2023 12:15:34 -0400
+X-Greylist: delayed 425 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 24 Aug 2023 09:15:31 PDT
+Received: from out-31.mta1.migadu.com (out-31.mta1.migadu.com [95.215.58.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6B3D19A8
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 09:15:31 -0700 (PDT)
+Message-ID: <9009693a-0314-9526-e57f-1b2302abfd7e@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1692893302;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=g5E7qdRr6tib71iljQtViXUKA8jJHdS410Eq+tt1g2I=;
+        b=Etu8MOjjsSuYy+D+Sca7uQL7uibHzazb//dIfY11wSUjJP6lhA9yTPQS47Cn4tPlBpwoko
+        rbQPcfq3PHGdgi0+L6K0hlG4mkXx0DuUZ6FybsAhQvBUusF2aStcd4bgUgaB0gOKYhxdua
+        gLVqYX++NV2vypi5O50Y5m4C8lnK42g=
+Date:   Fri, 25 Aug 2023 00:07:32 +0800
 MIME-Version: 1.0
-In-Reply-To: <20230824145027.008282920@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: ru-RU
+Subject: Re: [PATCH V2 drivers/perf: hisi:] drivers/perf: hisi: Update
+ HiSilicon PMU maintainers
+Content-Language: en-US
+To:     Jijie Shao <shaojijie@huawei.com>, will@kernel.org,
+        jonathan.cameron@huawei.com, mark.rutland@arm.com,
+        yangyicong@hisilicon.com
+Cc:     chenhao418@huawei.com, shenjian15@huawei.com,
+        wangjie125@huawei.com, liuyonglong@huawei.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20230824024135.1291459-1-shaojijie@huawei.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Zenghui Yu <zenghui.yu@linux.dev>
+In-Reply-To: <20230824024135.1291459-1-shaojijie@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24.08.2023 17:49, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.191 release.
+On 2023/8/24 10:41, Jijie Shao wrote:
+> Since Guangbin and Shaokun have left HiSilicon and will no longer
+> maintain the drivers, update the maintainer information and
+> thanks for their work.
+> 
+> Signed-off-by: Jijie Shao <shaojijie@huawei.com>
+> Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Acked-by: Yicong Yang <yangyicong@hisilicon.com>
+> ---
+>  changeLog
+>  v2:
+>   1. update "HISILICON HNS3 PMU DRIVER" to "HISILICON NETWORK SUBSYSTEM 3 PMU DRIVER"
+>      suggested by Jonathan
+>   2. update pach subject suggested by Yicong
+>  v1: https://lore.kernel.org/all/20230822122812.2384393-1-shaojijie@huawei.com/
+> ---
+>  MAINTAINERS | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 4171d3a102a9..df3418780b0c 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -9304,8 +9304,8 @@ F:	drivers/crypto/hisilicon/hpre/hpre.h
+>  F:	drivers/crypto/hisilicon/hpre/hpre_crypto.c
+>  F:	drivers/crypto/hisilicon/hpre/hpre_main.c
+>  
+> -HISILICON HNS3 PMU DRIVER
+> -M:	Guangbin Huang <huangguangbin2@huawei.com>
+> +HISILICON NETWORK SUBSYSTEM 3 PMU DRIVER (HNS3 PMU)
+> +M:	Jijie Shao <shaojijie@huawei.com>
+>  S:	Supported
+>  F:	Documentation/admin-guide/perf/hns3-pmu.rst
+>  F:	drivers/perf/hisilicon/hns3_pmu.c
 
-Do you mean 5.10.192 release?
+You probably need to move the entry around to keep things ordered
+(see commit 80e62bc8487b).
 
---
-Alexey
+Zenghui
