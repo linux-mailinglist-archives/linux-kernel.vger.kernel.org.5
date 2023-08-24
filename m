@@ -2,144 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AC92786A6A
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 10:44:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFDF2786B1D
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 11:06:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235391AbjHXIoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 04:44:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58422 "EHLO
+        id S240592AbjHXJFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 05:05:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233618AbjHXInf (ORCPT
+        with ESMTP id S240598AbjHXJF0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 04:43:35 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C625C1FC6
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 01:43:15 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-51bece5d935so8242563a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 01:43:15 -0700 (PDT)
+        Thu, 24 Aug 2023 05:05:26 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44B03199D
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 02:05:22 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-ccc462deca6so6282372276.0
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 02:05:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692866594; x=1693471394;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=psTM6PkHgTPawHaVJ6bzDvzcYA39tQTvt5rxleFKO10=;
-        b=iEPC3IDzW6YHX96pOPzSzmpcFyWj2zBpgPpv4qRhnpeI55+VoEPcde53/SNq4SYI7r
-         OxR1k/QwJ+/WfycLMU7wlU6soKokoNFBmjiHgPhw+um218Kk9jOyImB9pH9qH5ALjioa
-         SxMWWatJ8v0LqLge0/abSFyFnk4ybq3dA3s5VBTBKHKQYM/E+qLHUQ0qZCfRfYazE6GR
-         o3X/l43LHTetY8xpgtFIPo6LY6yzmPsGIidJTfSZ03tCUP8psBofK+ZyTmdy6OfJBn6A
-         8AlpgQZrnjPBPnbjgE0RjR9y3yZwhVBv8T8SxM52Z1hYV6S0Mrr/HEgRC0708uBqQMnQ
-         blZA==
+        d=linaro.org; s=google; t=1692867921; x=1693472721;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fYgryWvnPj7R+xwNudgLtbOsnBLGlcOU0tzJHrsK2Lo=;
+        b=Hdfa7++EHZToHiaS9oXnu3yB/Y1FuEoR4bZ/LWSALP2mQHfQ2DNUL7DjuXGLCrTsYC
+         RPKjwPn8kelv/DTPqNP3BiqA1iNpwbV+s0jlDAJ6LbiWG6vMQeasuY9i5M2ZEzygOZ/N
+         zzk1MWcCUA2s0DEb8IoSHw6i04Wm6mRUrzN9sD9PJGvot7+dBPf50q2SfSQ619jDMIVW
+         fozYafszeFdHmWaiVmaOTsI7QOOjARDzg95WhmitiXVeg0L4tZKmVUHjqNOGrqrXxXjQ
+         ZC36JR7rleMJur738qBvBJOIC0rmduWmw1r52A6VygEAX7qKuh4OmsXhWnbD5DP8quXD
+         8cwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692866594; x=1693471394;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=psTM6PkHgTPawHaVJ6bzDvzcYA39tQTvt5rxleFKO10=;
-        b=jOqyfyN85uZYW0g1S8/Nbte1rwa68QHwqaA/VPTwTkR0P+TUOwuuJy7XwJtyS1lGXR
-         0wLwklJz5mWUiGJMLEK/I3PB+GsTjgso6qEfIomOqtgZ+tFztXFvl9Aa7+4u0Zf6+nAf
-         HhwBTy6lM/7boeHxsLGF5uR15m0v1GlH1tXqt4KQkCCQBb1BXPO9bkgexXlQpwzwhA7k
-         xg3aYEchCG4F28mZ8is28zRW5Nf6pvUL2ENz6kLq3TSvsQQS3OATrgCKTZiwKw1bIj1r
-         4q5x0fbRWMMdK6uYCc6yx7SaAhrylV37fH9UzE+w9QDUahcUsNOmwrGx/5ZCYynlzxf9
-         5srg==
-X-Gm-Message-State: AOJu0YxGMwhgSK/Q2oC4HP8JV2ceAdgpJu2fKnEqPJUXEWyQ1kLgpmTz
-        VYP6NCRJ6nSrsR1+f9UuqvHVSiHRO3WLDon7Q/c=
-X-Google-Smtp-Source: AGHT+IFwelOoWI5YGd5zWjT5DX3gKXVt9ooLDINX8jgzGT4asChH6rsKBW+mzfLxZ1BYuPmx980gvQ==
-X-Received: by 2002:a50:ec8c:0:b0:525:4471:6b59 with SMTP id e12-20020a50ec8c000000b0052544716b59mr12411056edr.7.1692866594088;
-        Thu, 24 Aug 2023 01:43:14 -0700 (PDT)
-Received: from [192.168.0.22] ([77.252.47.198])
-        by smtp.gmail.com with ESMTPSA id q1-20020aa7da81000000b0052237dfa82fsm10159282eds.64.2023.08.24.01.43.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Aug 2023 01:43:13 -0700 (PDT)
-Message-ID: <5894c8db-4b85-e7dd-e894-33aa8a448153@linaro.org>
-Date:   Thu, 24 Aug 2023 10:43:12 +0200
+        d=1e100.net; s=20221208; t=1692867921; x=1693472721;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fYgryWvnPj7R+xwNudgLtbOsnBLGlcOU0tzJHrsK2Lo=;
+        b=kbBvUlsAKmaDjmy4EqC8fXEMjev1dGQQB9DGINWYpo3r0teNOL6mb31VhH2pSMVfnK
+         6+GE+wiRR+txU4qKXVrK69DBoTB7nhAW3PxVLs6CRk43mVTYR8H++5b2rRnIfsN2Ly8c
+         guZyo7OGm0cb56ItgOAvDu1BRC0Mup4eikZrX9Bd2MNT9v1rAYPINgNRM7b2f6dc/UWR
+         RFwMx6lis3dZS0N4Zlt3Jl49tZ/dH5W7d5wQZQIkObhbcLYEIz2CvAQph+X96ryBKZPe
+         6b3Qdm9+jsWr8kXK5zKZZHW5iyCmyMVH51M4B+hzkTBbVdVFCQpWM/jmm4pReWZjeyCi
+         mRuw==
+X-Gm-Message-State: AOJu0YyEbSxfLDo9pMiLK24kzykxznGfLtWCjbaVQgVL86OZGgCXyaVU
+        Y1Z3fxIQ+n/jVrKzt8UuP7nQObdJzThj0mnRJ7+09Q==
+X-Google-Smtp-Source: AGHT+IH/X3LEeujnl74Jaat/Xaeae5WCCGO9DUWfsTTjnvKwhypih3sk2anUMCtADPvVHi1I04HgNKSi/+J5+auW6B0=
+X-Received: by 2002:a25:418a:0:b0:d49:5d3c:b04a with SMTP id
+ o132-20020a25418a000000b00d495d3cb04amr14826250yba.11.1692867921416; Thu, 24
+ Aug 2023 02:05:21 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v1 2/2] dt-bindings: extcon: Add Realtek DHC RTD SoC
- Type-C
-Content-Language: en-US
-To:     =?UTF-8?B?U3RhbmxleSBDaGFuZ1vmmIzogrLlvrdd?= 
-        <stanley_chang@realtek.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>
-Cc:     Chanwoo Choi <cw00.choi@samsung.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-References: <20230822102846.4683-1-stanley_chang@realtek.com>
- <20230822102846.4683-2-stanley_chang@realtek.com>
- <1e0632d6-73e9-4633-a709-bf9140f2fd32@linaro.org>
- <ca406c19e59145fd9e7e035ea5ad3eeb@realtek.com>
- <50ce8e71-613e-1ef5-0c23-67a2f6f78949@linaro.org>
- <1390ad28e50f493fa72209fe29b7f3f4@realtek.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <1390ad28e50f493fa72209fe29b7f3f4@realtek.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+References: <20230824070611.3335107-1-peng.fan@oss.nxp.com>
+In-Reply-To: <20230824070611.3335107-1-peng.fan@oss.nxp.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 24 Aug 2023 10:43:20 +0200
+Message-ID: <CACRpkdYU7MRXRV3Uw1w300sdxv=9XT=P1vFFarHfpSM6BT20Hg@mail.gmail.com>
+Subject: Re: [RFC] scmi: pinctrl: support i.MX9
+To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc:     oleksii_moisieiev@epam.com, sudeep.holla@arm.com,
+        aisheng.dong@nxp.com, festevam@gmail.com, ping.bai@nxp.com,
+        s.hauer@pengutronix.de, shawnguo@kernel.org, kernel@pengutronix.de,
+        linux-imx@nxp.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        Peng Fan <peng.fan@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/08/2023 09:23, Stanley Chang[昌育德] wrote:
-> Hi Krzysztof,
-> 
->>>>> +
->>>>> +title: Realtek DHC RTD SoCs USB Type-C detection
->>>>
->>>> Type-c usually go to usb directory.
->>>
->>> This binding is not for a type-c controller.
->>> It is an extcon device for type-c connector detection.
->>> So I put it at extcon directory.
->>
->> If this is not a type-c controller, then what is it? Explain me please what is an
->> "extcon device" without using any Linux subsystem naming.
-> 
-> Sorry. "extcon device" may be the wrong name I'm using.
-> 
-> As far as I know, type-c controller supports PD detection, role detection, role swap and cc configuration.
-> But in our SoC, type c module only supports role detection.
-> So I don't think it's a type-c controller.
+On Thu, Aug 24, 2023 at 9:01=E2=80=AFAM Peng Fan (OSS) <peng.fan@oss.nxp.co=
+m> wrote:
 
-So module handling some parts of "Type-C" is not a "Type-C controller"
-but if such module handles a bit more, it becomes Type-C?
+> This patch is just to introduce i.MX support to see whether people have
+> comments for the design.
 
-> 
-> I found a similar driver at
-> drivers/extcon/extcon-usbc-cros-ec.c
-> It belongs to External Connector, which can detect USB Type C cables.
+Very interesting!
 
-That's a driver, not a binding...
+> The binding format:
+> <mux_reg conf_reg input_reg mux_mode input_val>
+> dts:
+>         pinctrl_uart1: uart1grp {
+>                 fsl,pins =3D <
+>                         MX93_PAD_UART1_RXD__LPUART1_RX                  0=
+x31e
+>                         MX93_PAD_UART1_TXD__LPUART1_TX                  0=
+x31e
+>                 >;
+>         };
+>
+> i.MX pinctrl not use generic pinconf, this has been agreeed by
+> maintainers before.
 
-> 
-> So our driver is an external connector driver.
+Yes, it has historical reasons.
 
-Driver yes, not binding.
+> So after moving to SCMI, we will still
+> keep the same binding format, and i.MX SCMI firmware also use same
+> format when configure registers. So we need to use i.MX specific
+> dt_node_to_map function.
 
-> 
->>>
->>> And I will add “connector” to the title.
->>> title: Realtek DHC RTD SoCs USB Type-C Connector detection
->>
->> So usb...
-> 
-> I refer to this binding, and it is in folder bindings/extcon.
-> docs/devicetree/bindings/extcon/extcon-usbc-cros-ec.yaml
-> Title: ChromeOS EC USB Type-C Cable and Accessory Detection
+I thought the idea with SCMI was to abstract and hide the characteristics o=
+f
+the underlying hardware. I.e. the firmware is to present groups and
+functions and generic config options and then the driver will use these.
 
-So maybe it should be moved as well?
+This patch, it seems, creates a hybrid between the old freescale driver
+and the SCMI firmware communication link where the SCMI is just a
+transport mechanism to something inside SCMI that poke the same
+registers that userspace could poke, if it could only access these
+registers.
 
-extcon is a Linux framework. If you think extcon is a type of hardware,
-then please tell me what it is exactly. Please define it. And then I
-wonder why the name "extcon" is anyhow connected to Type-C USB.
+I.e using SCMI on this platform isn't creating any abstraction of the
+pin control hardware, it is merely making things more complex and
+also slower bymaking the registers only accessible from this SCMI link.
 
-Best regards,
-Krzysztof
+But I could have misunderstood it, so please correct me!
 
+Yours,
+Linus Walleij
