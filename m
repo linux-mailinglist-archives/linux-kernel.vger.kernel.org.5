@@ -2,55 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37AEE7868AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 09:38:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72C247868AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 09:38:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240365AbjHXHiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 03:38:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48396 "EHLO
+        id S240437AbjHXHi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 03:38:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240357AbjHXHhp (ORCPT
+        with ESMTP id S240373AbjHXHhr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 03:37:45 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EF89170D
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 00:37:43 -0700 (PDT)
+        Thu, 24 Aug 2023 03:37:47 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97FAD10D0
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 00:37:45 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 994A463563
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 07:37:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 317FFC433C9;
-        Thu, 24 Aug 2023 07:37:40 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 370E163563
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 07:37:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 866F2C433C8;
+        Thu, 24 Aug 2023 07:37:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692862662;
-        bh=bCtu9rh36yZVVyJcfPWI0y1vMiUsotu0ZqQMMBIYRRw=;
+        s=k20201202; t=1692862664;
+        bh=KGkXec50qVn+1NsITKmeoQrqKB+TztbCnmD5jRNHgpQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RLBw448BgDNLUBevsrEluKx5TMsHtCbaRFX/3iR1cj2c/ZtHKdQzYIcR+c44oP5nX
-         nORTmAuvq4lIjHAzLMISrq1vEBbK1cy6DJHqMUoeMzpkNhCi7K6urXHK0+/aJxxJDs
-         nNZeafEB/17lEFwNg7wPNyJyeaXfnUUtg8y0cpw+TWQhxUQaAfkZ07YrazxbIdKC+H
-         DOg1ESStGBF5tBcKr/hPQA8gI6u+kzvZChlfjdkvq4J2OfCjC2reQ7bGe2X7XqT3ts
-         dv2QEpq6LaJtQ5f7YBhbuGZrXqizuf2EDajyFOgRK3R+UcpflzCqhTvNpyzfdHj1Vi
-         agVZPaU18n+/A==
+        b=KttCJ0rm1DZdC3ckGCxTA4VK+U/KcZKxqkEpb//ZNS2bpeVJDb8nM4IijLvw8FnY3
+         MwJRdgDRysHojfTaGb9tEM45EewO59EIwwM6qihMcjZCP4jU6aCtx5jsnOUUr0ic04
+         xOR4pnmArY+PxZsNMwQqT2FVvTy5GybCaL8UvZkHrumtqsIxzJkIqU+FVmEinn0R1E
+         08U+pHUbz1MSbFfgM+spPwkBWkWvcwAyHYtiF9PrrfOx5bd9BAISpLbaSHaDZ/XCkn
+         jl/kiJ75be+1Q0awXKU18+dwSuoAfYda9UteXMpMJRwxQoo4aDPEqNNRfosCVWVxGG
+         /XYls+wznr6eA==
 From:   Lee Jones <lee@kernel.org>
 To:     lee@kernel.org
-Cc:     linux-kernel@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
-        Karol Herbst <kherbst@redhat.com>,
-        Lyude Paul <lyude@redhat.com>,
+Cc:     linux-kernel@vger.kernel.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
         David Airlie <airlied@gmail.com>,
         Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org
-Subject: [PATCH 06/20] drm/nouveau/dispnv04/crtc: Demote kerneldoc abuses
-Date:   Thu, 24 Aug 2023 08:36:51 +0100
-Message-ID: <20230824073710.2677348-7-lee@kernel.org>
+        Jerome Glisse <glisse@freedesktop.org>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
+Subject: [PATCH 07/20] drm/radeon/radeon_ttm: Remove unused variable 'rbo' from radeon_bo_move()
+Date:   Thu, 24 Aug 2023 08:36:52 +0100
+Message-ID: <20230824073710.2677348-8-lee@kernel.org>
 X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
 In-Reply-To: <20230824073710.2677348-1-lee@kernel.org>
 References: <20230824073710.2677348-1-lee@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,44 +63,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/nouveau/dispnv04/crtc.c:453: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
- drivers/gpu/drm/nouveau/dispnv04/crtc.c:629: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+ drivers/gpu/drm/radeon/radeon_ttm.c: In function ‘radeon_bo_move’:
+ drivers/gpu/drm/radeon/radeon_ttm.c:201:27: warning: variable ‘rbo’ set but not used [-Wunused-but-set-variable]
 
 Signed-off-by: Lee Jones <lee@kernel.org>
 ---
-Cc: Ben Skeggs <bskeggs@redhat.com>
-Cc: Karol Herbst <kherbst@redhat.com>
-Cc: Lyude Paul <lyude@redhat.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: "Christian König" <christian.koenig@amd.com>
+Cc: "Pan, Xinhui" <Xinhui.Pan@amd.com>
 Cc: David Airlie <airlied@gmail.com>
 Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: Jerome Glisse <glisse@freedesktop.org>
+Cc: amd-gfx@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
-Cc: nouveau@lists.freedesktop.org
 ---
- drivers/gpu/drm/nouveau/dispnv04/crtc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/radeon/radeon_ttm.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/nouveau/dispnv04/crtc.c b/drivers/gpu/drm/nouveau/dispnv04/crtc.c
-index a34924523133c..5454dbb669566 100644
---- a/drivers/gpu/drm/nouveau/dispnv04/crtc.c
-+++ b/drivers/gpu/drm/nouveau/dispnv04/crtc.c
-@@ -449,7 +449,7 @@ nv_crtc_mode_set_vga(struct drm_crtc *crtc, struct drm_display_mode *mode)
- 	regp->Attribute[NV_CIO_AR_CSEL_INDEX] = 0x00;
- }
+diff --git a/drivers/gpu/drm/radeon/radeon_ttm.c b/drivers/gpu/drm/radeon/radeon_ttm.c
+index 4eb83ccc4906a..de4e6d78f1e12 100644
+--- a/drivers/gpu/drm/radeon/radeon_ttm.c
++++ b/drivers/gpu/drm/radeon/radeon_ttm.c
+@@ -197,7 +197,6 @@ static int radeon_bo_move(struct ttm_buffer_object *bo, bool evict,
+ {
+ 	struct ttm_resource *old_mem = bo->resource;
+ 	struct radeon_device *rdev;
+-	struct radeon_bo *rbo;
+ 	int r;
  
--/**
-+/*
-  * Sets up registers for the given mode/adjusted_mode pair.
-  *
-  * The clocks, CRTCs and outputs attached to this CRTC must be off.
-@@ -625,7 +625,7 @@ nv_crtc_swap_fbs(struct drm_crtc *crtc, struct drm_framebuffer *old_fb)
- 	return ret;
- }
+ 	if (new_mem->mem_type == TTM_PL_TT) {
+@@ -210,7 +209,6 @@ static int radeon_bo_move(struct ttm_buffer_object *bo, bool evict,
+ 	if (r)
+ 		return r;
  
--/**
-+/*
-  * Sets up registers for the given mode/adjusted_mode pair.
-  *
-  * The clocks, CRTCs and outputs attached to this CRTC must be off.
+-	rbo = container_of(bo, struct radeon_bo, tbo);
+ 	rdev = radeon_get_rdev(bo->bdev);
+ 	if (!old_mem || (old_mem->mem_type == TTM_PL_SYSTEM &&
+ 			 bo->ttm == NULL)) {
 -- 
 2.42.0.rc1.204.g551eb34607-goog
 
