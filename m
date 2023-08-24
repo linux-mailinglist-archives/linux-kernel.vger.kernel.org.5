@@ -2,112 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F82F787929
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 22:13:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECED6787935
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 22:22:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243461AbjHXUNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 16:13:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44548 "EHLO
+        id S243425AbjHXUVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 16:21:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243473AbjHXUM5 (ORCPT
+        with ESMTP id S237013AbjHXUVU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 16:12:57 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BB5E1BD1;
-        Thu, 24 Aug 2023 13:12:55 -0700 (PDT)
-Date:   Thu, 24 Aug 2023 20:12:53 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1692907973;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2cA/0GyYWOjRYWT3uupYZWjwpxVQRTjUoPuZIbG25Ng=;
-        b=UrjmZhs7qfBcSxtAPrZbhZpZy5Te5CHQRR+s0LUrnk0gavs9o2j6T1C9Gl5BSwzzsZ7/cp
-        xSlKnH6xDKT9GT4sjqyjN8iAHjREM3vpUtYa9oHDlJnroxhJyNFwsd+ub1yFKx0EUjKtFX
-        4hfcZhDegefl4UKBzp/3+Lh2NXCp3HA7sS38MbtpdrKjaR72RdfskLPIHY8t0U2u+JoZXZ
-        /tGFoXysBQmSuFN+tBE2jlEft6rc4g7crCJ1boRPMT4q06+mXCBbB7zjTpkeaYtBHhXgq4
-        GTOgU+BgnrQXhVJmLzoxOAvqw/m9tx2hYZ+6x8+6juDGxfleeZ3gMK91RJR00g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1692907973;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2cA/0GyYWOjRYWT3uupYZWjwpxVQRTjUoPuZIbG25Ng=;
-        b=G87XPdEg8dbUS9LAZ/fj6Oi0rXrMrP+/J/uVvN09eDVFsBNM2GZQgMuy1NnWZVG9b28Vlo
-        0NQnTp0A0P4Q4GCQ==
-From:   "tip-bot2 for Justin Stitt" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cleanups] x86/hpet: Refactor code using deprecated
- strncpy() interface to use strscpy()
-Cc:     Justin Stitt <justinstitt@google.com>,
-        Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20230822-strncpy-arch-x86-kernel-hpet-v1-1-2c7d3be86f4a@google.com>
-References: <20230822-strncpy-arch-x86-kernel-hpet-v1-1-2c7d3be86f4a@google.com>
+        Thu, 24 Aug 2023 16:21:20 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C85CE4B;
+        Thu, 24 Aug 2023 13:21:18 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 10B9C633EC;
+        Thu, 24 Aug 2023 20:21:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 319D6C433C8;
+        Thu, 24 Aug 2023 20:21:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692908477;
+        bh=za/xL155tqWhW8dbTQ7zHNUpiREm/tC/+Iht7Gfd5YI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=AC3keX6QZ31lZVgtxJmOILROvNpEFoLxAgX1oDaeYbYPN5aNUnUNoAMVJm9se0Lnc
+         JMh3WE5fDgZPnQaAdf8bjsFAr3h4AXfdxWzlZn9LhJCe16TJlGY7EahnSKoZ8deDD4
+         J/7COWcEpegJrolQELqXrUwaaOJPOkGojSiHq8rA5F0mFwKAJ3m/AR0zM4SxCUXbCM
+         E9RsyYss0Ax8bDSfiNv48K8b4xQTH4amtydLWaCUwx3YGPfvEA1V9m3e66zD5hC/ka
+         YbX6cQR0KaBuBIbsacGjd2a3c8LUy2uzNQMQrEFkjgMzcjjhl1m1W1KImqPB4c3s3F
+         ljQCCCrgmx31Q==
+Date:   Thu, 24 Aug 2023 15:21:15 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH 01/12] PCI: mvebu: Remove unused struct mvebu_pcie.busn
+Message-ID: <20230824202115.GA543888@bhelgaas>
 MIME-Version: 1.0
-Message-ID: <169290797330.27769.8900864167037530170.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230824193913.fp7njruq6zl3pg4d@pali>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/cleanups branch of tip:
+On Thu, Aug 24, 2023 at 09:39:13PM +0200, Pali Rohár wrote:
+> Duplicate of https://lore.kernel.org/linux-pci/20220905192310.22786-5-pali@kernel.org/ ?
 
-Commit-ID:     4108d141bfd04cf7b2bbf96e899ee5392f62e8a2
-Gitweb:        https://git.kernel.org/tip/4108d141bfd04cf7b2bbf96e899ee5392f62e8a2
-Author:        Justin Stitt <justinstitt@google.com>
-AuthorDate:    Tue, 22 Aug 2023 22:13:36 
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Thu, 24 Aug 2023 21:22:40 +02:00
+Thank you!  Updated with you as author.
 
-x86/hpet: Refactor code using deprecated strncpy() interface to use strscpy()
-
-`strncpy` is deprecated for use on NUL-terminated destination strings [1].
-
-A suitable replacement is `strscpy` [2] due to the fact that it
-guarantees NUL-termination on its destination buffer argument which is
-_not_ the case for `strncpy`!
-
-In this case, it is a simple swap from `strncpy` to `strscpy`. There is
-one slight difference, though. If NUL-padding is a functional
-requirement here we should opt for `strscpy_pad`. It seems like this
-shouldn't be needed as I see no obvious signs of any padding being
-required.
-
-Signed-off-by: Justin Stitt <justinstitt@google.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings[1]
-Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-Link: https://github.com/KSPP/linux/issues/90
-Link: https://lore.kernel.org/r/20230822-strncpy-arch-x86-kernel-hpet-v1-1-2c7d3be86f4a@google.com
----
- arch/x86/kernel/hpet.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/x86/kernel/hpet.c b/arch/x86/kernel/hpet.c
-index c8eb1ac..1648aa0 100644
---- a/arch/x86/kernel/hpet.c
-+++ b/arch/x86/kernel/hpet.c
-@@ -421,7 +421,7 @@ static void __init hpet_legacy_clockevent_register(struct hpet_channel *hc)
- 	 * the IO_APIC has been initialized.
- 	 */
- 	hc->cpu = boot_cpu_data.cpu_index;
--	strncpy(hc->name, "hpet", sizeof(hc->name));
-+	strscpy(hc->name, "hpet", sizeof(hc->name));
- 	hpet_init_clockevent(hc, 50);
- 
- 	hc->evt.tick_resume	= hpet_clkevt_legacy_resume;
+> On Thursday 24 August 2023 14:37:01 Bjorn Helgaas wrote:
+> > From: Bjorn Helgaas <bhelgaas@google.com>
+> > 
+> > The busn member of struct mvebu_pcie is unused, so drop it.
+> > 
+> > Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+> > Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+> > Cc: Pali Rohár <pali@kernel.org>
+> > ---
+> >  drivers/pci/controller/pci-mvebu.c | 1 -
+> >  1 file changed, 1 deletion(-)
+> > 
+> > diff --git a/drivers/pci/controller/pci-mvebu.c b/drivers/pci/controller/pci-mvebu.c
+> > index c931b1b07b1d..60810a1fbfb7 100644
+> > --- a/drivers/pci/controller/pci-mvebu.c
+> > +++ b/drivers/pci/controller/pci-mvebu.c
+> > @@ -87,7 +87,6 @@ struct mvebu_pcie {
+> >  	struct resource io;
+> >  	struct resource realio;
+> >  	struct resource mem;
+> > -	struct resource busn;
+> >  	int nports;
+> >  };
+> >  
+> > -- 
+> > 2.34.1
+> > 
