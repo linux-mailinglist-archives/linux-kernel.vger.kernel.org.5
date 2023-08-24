@@ -2,177 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0F1E786FA4
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 14:51:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45B00786FA9
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 14:52:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241118AbjHXMvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 08:51:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60770 "EHLO
+        id S240811AbjHXMvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 08:51:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241123AbjHXMvB (ORCPT
+        with ESMTP id S241361AbjHXMv3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 08:51:01 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6390ECD0;
-        Thu, 24 Aug 2023 05:50:59 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C623C65267;
-        Thu, 24 Aug 2023 12:50:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27832C433C8;
-        Thu, 24 Aug 2023 12:50:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692881458;
-        bh=lBZ5c/CUDVkywfcL++OEneM4SWhyv382iCUDsA/wTRI=;
-        h=In-Reply-To:References:From:Date:Subject:To:Cc:From;
-        b=eQ4x0KUNpLdBSAUkoOXOOiGyRazWlKYs1IKWqIPDvsUeF+eogO2elA6xPeeFwoQfx
-         CYIPfK7MmLjskY1gbZ+T6qYKnW2PNc72ML9NYg0qkyrGT8VWU9v3HyqcvwV00JMLjy
-         OE8Hky/uf0h6VE7nYqX/CFyr3gTVdE/9JwUatS03GdfATtzwPFBdmBJNBD3M0IS0Uz
-         DQzE4IaTEyHL0L07r4UaDiIOz2KRMJbJH8vUapl0VTIFxgS2xRhNuyHE+cCSy5ZraL
-         NjeUhtdoXTfTmXfb9S+VYWca3QFmHnoWje528Khl8fUP3J6FW1uJ2xBMovQCnyimn+
-         TU0DOs/4s3ZJg==
-Received: by mail-oo1-f43.google.com with SMTP id 006d021491bc7-56d8bc0d909so4134645eaf.3;
-        Thu, 24 Aug 2023 05:50:58 -0700 (PDT)
-X-Gm-Message-State: AOJu0YxcPk0HOiDBcMgN+wDO6Gm2LazGVq1AY8G61LBoyqT3Q6dnyEEB
-        rUuGX9eui4JimIE7WGsIx+06vwVHty2zkN4HjNE=
-X-Google-Smtp-Source: AGHT+IG3yEzQiDIJs4ioyXvdDknlK6YC1qUMG58DDDFHOUSHXKP4BX/kGvgMJu1eV6agiFbS5W2iw6kTsC1LVjV3XJU=
-X-Received: by 2002:a4a:6c1d:0:b0:56c:8d61:f66f with SMTP id
- q29-20020a4a6c1d000000b0056c8d61f66fmr2277742ooc.2.1692881457272; Thu, 24 Aug
- 2023 05:50:57 -0700 (PDT)
+        Thu, 24 Aug 2023 08:51:29 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6742ECD0;
+        Thu, 24 Aug 2023 05:51:22 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-4ff9abf18f9so10344047e87.2;
+        Thu, 24 Aug 2023 05:51:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692881480; x=1693486280;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HxaN86uxdQ2hIjLtCcmkw3T1a4Gg2HerW4j/yXNxBOs=;
+        b=QPqpJCibFwuicCtOjT0g5X1VoXn30IZEZVZ/2B9hq6U9JYnNHPSkG7r+p/uCtvfEW9
+         iyrv6Z4cCb9pDoWZS/aA5S4wsfQTFcrdsJhjkp/5zM/vkTA05lVNvTLWvqj/auwEVXq+
+         WgBRP92gXoyTdZVw/4TXgEVcgzgmsxXkZsg0zDgJxm9Xo2fnnS7o/27ac6rMPhaZ/TV9
+         VHzIarpWwzrhwUZWrZlgjel4tT/tPj3I7oRNdQosRKatQe8+wkNPUUKVxxffuUP9NrNF
+         CF8i692LVuN9W/L9KtXsyA7r2/3rZ86E8Ckh/6LSgIWAcY01wqoh6C2cwT//qrQ4OZyU
+         fh2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692881480; x=1693486280;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=HxaN86uxdQ2hIjLtCcmkw3T1a4Gg2HerW4j/yXNxBOs=;
+        b=N7m+YwaIgesn3KGccMSaox53YMPsF7YFmEoscfXLhDqAdLuknzgFo97GgVS5EcTUEY
+         /bWZ360X9nqYeR+tEbdWGCz03tL1mV9FL4rYeGtnf769NKdGnn48zdIY9oW0jBbXZTMB
+         2XUx4MuAOUd4qrPy4CSrLjtxa1+2FlBQdw7XNe7n4KDnnmITSYV+aVAOxl3gBhFNaTwJ
+         Ls1rg8tXSs1GK3qQq+8amkgDtbw+/Ev35ZUnEKU60ESEI3MYkYKoUaFhlczfjoQYga13
+         6eQR623a1f35gS2nS7HgsxyS/Y9Ey5EQHYfjNg4AHj4MMjIObReXfY/rLzs7+BIIJWGX
+         9Hlg==
+X-Gm-Message-State: AOJu0YzA5L6/nSGG/d1CnA+28SFw4+6kg1kCleqX9gBfykxbosLUsEWF
+        f6kH3dHrrkO81vXc+IQkEfw=
+X-Google-Smtp-Source: AGHT+IGVo9is3ndYCWhXdlmusr+UH2e1O0U6g9Q19q1m8p5cozyfz2lOlrnGuqg/9TazaKOaBX4lEQ==
+X-Received: by 2002:a05:6512:12c4:b0:4fb:9712:a717 with SMTP id p4-20020a05651212c400b004fb9712a717mr12351733lfg.13.1692881479841;
+        Thu, 24 Aug 2023 05:51:19 -0700 (PDT)
+Received: from [172.16.196.206] ([213.255.186.46])
+        by smtp.gmail.com with ESMTPSA id m25-20020ac24259000000b004fe4811d382sm3130885lfl.85.2023.08.24.05.51.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Aug 2023 05:51:18 -0700 (PDT)
+Message-ID: <a3c2e506-3840-0136-a28f-a50eb0fdf72d@gmail.com>
+Date:   Thu, 24 Aug 2023 15:51:18 +0300
 MIME-Version: 1.0
-Received: by 2002:a8a:1186:0:b0:4e8:f6ff:2aab with HTTP; Thu, 24 Aug 2023
- 05:50:56 -0700 (PDT)
-In-Reply-To: <1a1af1dd-fb30-1af6-ab2a-d146ff230989@gmail.com>
-References: <1a1af1dd-fb30-1af6-ab2a-d146ff230989@gmail.com>
-From:   Namjae Jeon <linkinjeon@kernel.org>
-Date:   Thu, 24 Aug 2023 21:50:56 +0900
-X-Gmail-Original-Message-ID: <CAKYAXd8xsszN7NOe8bL-PCEsy3X2Y3FkOfSX1ETMKbH05xmUBg@mail.gmail.com>
-Message-ID: <CAKYAXd8xsszN7NOe8bL-PCEsy3X2Y3FkOfSX1ETMKbH05xmUBg@mail.gmail.com>
-Subject: Re: [PATCH] exfat: add ioctls for accessing attributes
-To:     Jan Cincera <hcincera@gmail.com>
-Cc:     Sungjong Seo <sj1557.seo@samsung.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Content-Language: en-US, en-GB
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mehdi Djait <mehdi.djait.k@gmail.com>
+Cc:     jic23@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        robh+dt@kernel.org, lars@metafoo.de, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+References: <cover.1692824815.git.mehdi.djait.k@gmail.com>
+ <c41ed69af6432298cbd82896328333f31d41dda0.1692824815.git.mehdi.djait.k@gmail.com>
+ <ZOdG1wFo892bJU53@smile.fi.intel.com>
+From:   Matti Vaittinen <mazziesaccount@gmail.com>
+Subject: Re: [PATCH v8 7/7] iio: accel: Add support for Kionix/ROHM KX132-1211
+ accelerometer
+In-Reply-To: <ZOdG1wFo892bJU53@smile.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2023-08-16 3:29 GMT+09:00, Jan Cincera <hcincera@gmail.com>:
-> Add GET and SET attributes ioctls to enable attribute modification.
-> We already do this in FAT and a few userspace utils made for it would
-> benefit from this also working on exFAT, namely fatattr.
->
-> Signed-off-by: Jan Cincera <hcincera@gmail.com>
-> ---
->  fs/exfat/exfat_fs.h |  6 +++
->  fs/exfat/file.c     | 97 +++++++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 103 insertions(+)
->
-> diff --git a/fs/exfat/exfat_fs.h b/fs/exfat/exfat_fs.h
-> index 729ada9e26e8..ebe8c4b928f4 100644
-> --- a/fs/exfat/exfat_fs.h
-> +++ b/fs/exfat/exfat_fs.h
-> @@ -149,6 +149,12 @@ enum {
->  #define DIR_CACHE_SIZE		\
->  	(DIV_ROUND_UP(EXFAT_DEN_TO_B(ES_MAX_ENTRY_NUM), SECTOR_SIZE) + 1)
->
-> +/*
-> + * attribute ioctls, same as their FAT equivalents.
-> + */
-> +#define EXFAT_IOCTL_GET_ATTRIBUTES	_IOR('r', 0x10, __u32)
-> +#define EXFAT_IOCTL_SET_ATTRIBUTES	_IOW('r', 0x11, __u32)
-> +
->  struct exfat_dentry_namebuf {
->  	char *lfn;
->  	int lfnbuf_len; /* usually MAX_UNINAME_BUF_SIZE */
-> diff --git a/fs/exfat/file.c b/fs/exfat/file.c
-> index 3cbd270e0cba..b358acbead27 100644
-> --- a/fs/exfat/file.c
-> +++ b/fs/exfat/file.c
-> @@ -8,6 +8,8 @@
->  #include <linux/cred.h>
->  #include <linux/buffer_head.h>
->  #include <linux/blkdev.h>
-> +#include <linux/fsnotify.h>
-> +#include <linux/security.h>
->
->  #include "exfat_raw.h"
->  #include "exfat_fs.h"
-> @@ -316,6 +318,96 @@ int exfat_setattr(struct mnt_idmap *idmap, struct
-> dentry *dentry,
->  	return error;
->  }
->
-> +/*
-> + * modified ioctls from fat/file.c by Welmer Almesberger
-> + */
-> +static int exfat_ioctl_get_attributes(struct inode *inode, u32 __user
-> *user_attr)
-> +{
-> +	u32 attr;
-> +
-> +	inode_lock_shared(inode);
-> +	attr = exfat_make_attr(inode);
-> +	inode_unlock_shared(inode);
-> +
-> +	return put_user(attr, user_attr);
-> +}
-> +
-> +static int exfat_ioctl_set_attributes(struct file *file, u32 __user
-> *user_attr)
-> +{
-> +	struct inode *inode = file_inode(file);
-> +	struct exfat_sb_info *sbi = EXFAT_SB(inode->i_sb);
-> +	int is_dir = S_ISDIR(inode->i_mode);
-> +	u32 attr, oldattr;
-> +	struct iattr ia;
-> +	int err;
-> +
-> +	err = get_user(attr, user_attr);
-> +	if (err)
-> +		goto out;
-> +
-> +	err = mnt_want_write_file(file);
-> +	if (err)
-> +		goto out;
-> +	inode_lock(inode);
-> +
-> +	/*
-> +	 * ATTR_VOLUME and ATTR_SUBDIR cannot be changed; this also
-> +	 * prevents the user from turning us into a VFAT
-> +	 * longname entry.  Also, we obviously can't set
-> +	 * any of the NTFS attributes in the high 24 bits.
-> +	 */
-This comments seems to be wrong. In particular, The comment about
-longfilename and ATTR_VOLUME for vfat should be removed.
+On 8/24/23 15:02, Andy Shevchenko wrote:
+> On Wed, Aug 23, 2023 at 11:16:41PM +0200, Mehdi Djait wrote:
+>> Kionix KX132-1211 is a tri-axis 16-bit accelerometer that can support
+>> ranges from ±2G to ±16G, digital output through I²C/SPI.
+>> Add support for basic accelerometer features such as reading acceleration
+>> via IIO using raw reads, triggered buffer (data-ready), or the WMI IRQ.
+> 
+> ...
+> 
+>>   	help
+>> -	  Enable support for the Kionix KX022A digital tri-axis
+>> -	  accelerometer connected to I2C interface.
+>> +	  Enable support for the Kionix KX022A, KX132-1211 digital tri-axis
+>> +	  accelerometers connected to SPI interface.
+> 
+> I know I have given a tag, but since it most likely require a new version,
+> this can be amended for the better maintenance as
+> 
+> 	  Enable support for the Kionix digital tri-axis accelerometers
+> 	  connected to SPI interface. Supported devices are:
+> 	    KX022A, KX132-1211
+> 
+> ...
+> 
+>>   	help
+>> -	  Enable support for the Kionix KX022A digital tri-axis
+>> -	  accelerometer connected to I2C interface.
+>> +	  Enable support for the Kionix KX022A, KX132-1211 digital tri-axis
+>> +	  accelerometers connected to I2C interface.
+> 
+> Ditto.
+> 
+> ...
+> 
+>> +static const struct regmap_access_table kx132_volatile_regs = {
+>> +	.yes_ranges = &kx132_volatile_ranges[0],
+> 
+> 
+> This should be the same as
+> 
+> 	.yes_ranges = kx132_volatile_ranges,
+> 
 
-> +	attr &= 0xff & ~(ATTR_VOLUME | ATTR_SUBDIR);
-> +	/* Merge in ATTR_VOLUME and ATTR_DIR */
-> +	attr |= (EXFAT_I(inode)->attr & ATTR_VOLUME) |
-> +		(is_dir ? ATTR_SUBDIR : 0);
-We need to mask exfat file attribute bits like the following not to
-set reserved fields(+ ATTR_SUBDIR). And there is no ATTR_VOLUME field
-in exfat.
+The driver uses &kx132_volatile_ranges[0] in a few places (for kx022a) 
+so I believe this is okay. Well, I know I am biased as I do personally 
+find &kx132_volatile_ranges[0] clearer. Here we point to the first 
+element in an array - and yes, it may be I am minority here - but at 
+least I wouldn't ask for changing this.
 
-Table 28 FileAttributes Field Structure
-ReadOnly        0	1	This field is mandatory and conforms to the MS-DOS
-definition.
-Hidden             1     	1	This field is mandatory and conforms to
-the MS-DOS definition.
-System            2	1	This field is mandatory and conforms to the
-MS-DOS definition.
-Reserved1       3	1	This field is mandatory and its contents are reserved.
-Directory          4	1	This field is mandatory and conforms to the
-MS-DOS definition.
-Archive            5	1	This field is mandatory and conforms to the
-MS-DOS definition.
-Reserved2	6	10	This field is mandatory and its contents are reserved.
+Yours,
+	-- Matti
 
-Thanks.
+-- 
+Matti Vaittinen
+Linux kernel developer at ROHM Semiconductors
+Oulu Finland
+
+~~ When things go utterly wrong vim users can always type :help! ~~
+
