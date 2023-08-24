@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CECCE786FFA
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 15:14:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D023787007
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 15:14:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238046AbjHXNNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 09:13:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53846 "EHLO
+        id S240870AbjHXNOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 09:14:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240397AbjHXNNl (ORCPT
+        with ESMTP id S240529AbjHXNNw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 09:13:41 -0400
+        Thu, 24 Aug 2023 09:13:52 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DE98198A;
-        Thu, 24 Aug 2023 06:13:39 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38C4719A1;
+        Thu, 24 Aug 2023 06:13:51 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BF6026269E;
-        Thu, 24 Aug 2023 13:13:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A422AC433C7;
-        Thu, 24 Aug 2023 13:13:37 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C687662997;
+        Thu, 24 Aug 2023 13:13:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4844C433C7;
+        Thu, 24 Aug 2023 13:13:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1692882818;
-        bh=SfeSvLlzV/QIsfQI6lGrqzROvKL38Kvs5ty/5yOH31A=;
+        s=korg; t=1692882830;
+        bh=KvEcWLiBBY8f1K358gTSNgZA4gcGcXcp2kJ+4ITugEM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZhJLIz8BGyAb2ivMZw6rmCdfIOYmFrT9z8ODxNAAJEQ85enR0GfFmnfIbFsFmArtl
-         FXYOynVSVtLEblhukepFVPKrJuXATUHOsl0w7G192F+Dh01gV5/rU18iIZ1iZF5rBy
-         bA5+n8aGEXbZtIfZb49YeDS5zo5cbYTnS7/mUOWs=
-Date:   Thu, 24 Aug 2023 15:13:35 +0200
+        b=CmGMcjNJfWSNDKvI2a0KTa/PxceHJqg2tDiD2vLcTKGqwPi/W9EcJojYMHvBBjInr
+         DwfYbO/vPp52rfqXKkU8yjYrWNccE+KRJWJj62Fi/66XGHbNDJsMdACNlpnFTFQYVo
+         k53U/tOUZpStkS7K60Jh5h182Fs5cx/HaCOEzZ7g=
+Date:   Thu, 24 Aug 2023 15:13:47 +0200
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     Alexandra Diupina <adiupina@astralinux.ru>
 Cc:     Joerg Roedel <joro@8bytes.org>, stable@vger.kernel.org,
@@ -40,7 +40,7 @@ Cc:     Joerg Roedel <joro@8bytes.org>, stable@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
 Subject: Re: [PATCH] [PATCH 5.10] iommu/mediatek: remove redundant comparison
-Message-ID: <2023082458-mongrel-catlike-b73d@gregkh>
+Message-ID: <2023082441-sulfide-abstain-fffa@gregkh>
 References: <20230824130954.29688-1-adiupina@astralinux.ru>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -58,20 +58,11 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Thu, Aug 24, 2023 at 04:09:54PM +0300, Alexandra Diupina wrote:
 > iommu_device_register always returns 0 in 4.11-5.12, so
-
-What do you mean by "4.11-5.12"?
-
 > we need to remove redundant comparison with 0
-
-Why?
-
 > 
 > Found by Linux Verification Center (linuxtesting.org) with SVACE.
 > 
 > Fixes: b16c0170b53c ("iommu/mediatek: Make use of iommu_device_register interface")
-
-How is this a fix if it isn't actually changing the code at all?
-
 > Signed-off-by: Alexandra Diupina <adiupina@astralinux.ru>
 > ---
 >  drivers/iommu/mtk_iommu.c | 4 +---
@@ -89,11 +80,18 @@ How is this a fix if it isn't actually changing the code at all?
 > -	if (ret)
 > -		return ret;
 > +	iommu_device_register(&data->iommu);
+>  
+>  	spin_lock_init(&data->tlb_lock);
+>  	list_add_tail(&data->list, &m4ulist);
+> -- 
+> 2.30.2
+> 
 
-This is obviously incorrect, please fix your "tool" that is telling you
-to make such a broken change.
+<formletter>
 
-Unless your tool wants to create buggy code?  If so, it's succeeding
-very well.
+This is not the correct way to submit patches for inclusion in the
+stable kernel tree.  Please read:
+    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+for how to do this properly.
 
-greg k-h
+</formletter>
