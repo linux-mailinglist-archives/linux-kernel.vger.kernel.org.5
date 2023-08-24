@@ -2,78 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B07E786DDE
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 13:31:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 102C1786DE4
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 13:33:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240990AbjHXLbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 07:31:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50068 "EHLO
+        id S240994AbjHXLdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 07:33:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240980AbjHXLar (ORCPT
+        with ESMTP id S240510AbjHXLcw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 07:30:47 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F95910FA
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 04:30:45 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id 2adb3069b0e04-50078eba7afso7523340e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 04:30:45 -0700 (PDT)
+        Thu, 24 Aug 2023 07:32:52 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8770B10FC;
+        Thu, 24 Aug 2023 04:32:49 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id 3f1490d57ef6-d650a22abd7so6478702276.3;
+        Thu, 24 Aug 2023 04:32:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692876643; x=1693481443;
-        h=mime-version:references:in-reply-to:message-id:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ASyf3JC5XyPQVGDixUt3RWgAOAA8jJHFRroqWQwv3RY=;
-        b=qpWZxM2Qjloj1a+cMHGM3pQr4DDwiArvbnTdwZyhVNpDspv2WeRdlce6m4AaLzGtvY
-         6CaLulniYcF0RtAdGImuUE7nj71aI1BQqSevZFdcR1X8sdoMwiLAoJF8JJJMjpCjPr/H
-         Q0g1F9+VJ9woK7K1P6luuzJmMO5e5CrMNkOgcf6mJdIDyi1VTVkzz72wP4e/3ezipNdR
-         qo2d1LWOEOB48ZKO8TIZ5xdNGuEKYqEIsCox+oyOh2YuI4J/4n3BIQUPpX7v30NV5kxJ
-         rmE97TYM7CNRd8bdwHdqgCk6pGpVsUw4XCM6jAQSH33vPy3kAUQMr/3dEkgoRRyPskFh
-         i0AA==
+        d=gmail.com; s=20221208; t=1692876768; x=1693481568;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sFzuk6LjNd6O3SJJcDHZwMhSOEnjaTo2LUY1fJylIvY=;
+        b=iQNdyhF+GnMTD3X9aPCAsEjySzRqLMQmpDyKFky61tmbtE8s29lGC+bqlrRnHvHzo2
+         L1bQj5qTAkug8xnWRnQoCzQNEMtHaCnt22LlnFe+FxCKe8d+lSlMUa2oHKvwUdJC1eVv
+         W2pYkt8q2W9BiKuZBzNcfPFI/eCoaAh0jZBzch3FWtuFV4cyKVeIB8Ss7jrg39rWU6o/
+         k+T1DjpG296DMhtF+hnbzWKbXb3bEqlpg2SWsZuNhnFO9aFkc9KEQztlRO8orkAS9uon
+         rdhHV9T2l5UoGayO9R+o4ZPmuxDPVWJs+wakBZ8b/BMMgy2XjeU2CdfaZ99t0qb7uwm8
+         iavQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692876643; x=1693481443;
-        h=mime-version:references:in-reply-to:message-id:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ASyf3JC5XyPQVGDixUt3RWgAOAA8jJHFRroqWQwv3RY=;
-        b=g0doQuUQ/WCs1JIIuqiX7o0bHGwzvdh3tK6sUgwMSkMywl+EDXwyD/MHbvjVeoXbxx
-         A89Oy2Ast/GqSQak5Nsddk5i4O0wqhtwdShMqzcRk/ZHODXhzddbX3JL0+m2tPfjPLwY
-         9Kg3+TM8V/Kn3gkvURdXhYMlOWH+5Zh8rRi2fznXyk7Pi+nM7PSIlFyV1WhCtAkAo1rn
-         aT8/jUzjsEYSjoe58uCyx853lMeliX7aqsU7yQmBPj+rl75CR9rqY5i3iGLbPD4TALKq
-         u+pmEBteoNpx0P7jYPW35za65SnljEVHhczxumfDbSiWyXHMTmTgRrxsspw5ZHYZbExo
-         bPhA==
-X-Gm-Message-State: AOJu0YxAH5zR18veKSXWWfqm//ouZGVT5Yv1kfW2x2kNQFptfzZ98UPc
-        RU06jthes8ryVrnUl+Nn/bA=
-X-Google-Smtp-Source: AGHT+IH4D6GfK5xg3N8hhq7h5mDdx+ATwxZUuYfEAtXL/l0B4+m8CCj/sEqnZt/7cbA9Fbt6O63yXw==
-X-Received: by 2002:a05:6512:b94:b0:4ff:8c0f:a745 with SMTP id b20-20020a0565120b9400b004ff8c0fa745mr12988582lfv.54.1692876642771;
-        Thu, 24 Aug 2023 04:30:42 -0700 (PDT)
-Received: from eldfell ([194.136.85.206])
-        by smtp.gmail.com with ESMTPSA id v17-20020ac25611000000b004fe4ab686b4sm3110828lfd.167.2023.08.24.04.30.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Aug 2023 04:30:42 -0700 (PDT)
-Date:   Thu, 24 Aug 2023 14:30:32 +0300
-From:   Pekka Paalanen <ppaalanen@gmail.com>
-To:     =?UTF-8?B?QW5kcsOp?= Almeida <andrealmeid@igalia.com>
-Cc:     dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, kernel-dev@igalia.com,
-        alexander.deucher@amd.com, christian.koenig@amd.com,
-        pierre-eric.pelloux-prayer@amd.com,
-        Simon Ser <contact@emersion.fr>,
-        Rob Clark <robdclark@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Daniel Stone <daniel@fooishbar.org>,
-        'Marek =?UTF-8?B?T2zFocOhayc=?= <maraeo@gmail.com>,
-        Dave Airlie <airlied@gmail.com>,
-        Michel =?UTF-8?B?RMOkbnplcg==?= <michel.daenzer@mailbox.org>,
-        Samuel Pitoiset <samuel.pitoiset@gmail.com>,
-        Timur =?UTF-8?B?S3Jpc3TDs2Y=?= <timur.kristof@gmail.com>,
-        Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH v7] drm/doc: Document DRM device reset expectations
-Message-ID: <20230824143032.65d7e74a@eldfell>
-In-Reply-To: <20230818200642.276735-1-andrealmeid@igalia.com>
-References: <20230818200642.276735-1-andrealmeid@igalia.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.37; x86_64-pc-linux-gnu)
+        d=1e100.net; s=20221208; t=1692876768; x=1693481568;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sFzuk6LjNd6O3SJJcDHZwMhSOEnjaTo2LUY1fJylIvY=;
+        b=EixIA9XfaaULLxcZUXFxJMjhH+n2A+ld4xuvDP0QMs3zEYUPG+525kayCJHWE5w/lQ
+         JjIwlsrGmuT5BMTEKWfnJzix85PpJyjxkXxMWtY8N6tGxBPhgaBHbQOE12tFD7Fia7d2
+         PyfnVqORHmktGtvAuQ53fykoOpy2FP4BXPbQPWOJtxoAomvzgxSo6qhTkKyoelmNR2XO
+         hdeqgzK1LOdqFgKtPHfsXhUyZxfkLdAbwFnvPALXysygQFhFrALPQ0tj3lAxTr4PGbZC
+         nOsZs/za1vVx+8p6owex+u9TNljl4G90JL88b8AnNRzWU7d95rkOW/Lpltmp6JvyO7SE
+         qeKA==
+X-Gm-Message-State: AOJu0YykSlHUD366WTxB/VkfMx+2ZsGe+oVf3sN2sak1ID8QbVsjRXHA
+        nEIcsg2bpx2jA4Jl64MFbqWqDS884N96dZ48zng=
+X-Google-Smtp-Source: AGHT+IEn8aX0Ghqxzi2g8EaeBYAiNIRZKT80Gmb0Nz9tRlI2YyrtbNPuIBXaV4jh4+DIBUvVEDYqBkMyUujAPQqm/Tg=
+X-Received: by 2002:a81:8882:0:b0:55a:3ce9:dc3d with SMTP id
+ y124-20020a818882000000b0055a3ce9dc3dmr15016049ywf.13.1692876768535; Thu, 24
+ Aug 2023 04:32:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/I4PIBoGe6NF2KXplXhCJGSP";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20230821061315.3416836-1-zhoubinbin@loongson.cn>
+ <e62185ca-cdf6-bde9-ad46-f4150db9ed6d@linaro.org> <CAMpQs4JhfuB4=s9VFc+xmw_+8h5u2EwPdM_0x2vO_=SYabAAxw@mail.gmail.com>
+ <6ba31912-6738-6156-d5f4-3c8d3a3ca7bc@linaro.org>
+In-Reply-To: <6ba31912-6738-6156-d5f4-3c8d3a3ca7bc@linaro.org>
+From:   Binbin Zhou <zhoubb.aaron@gmail.com>
+Date:   Thu, 24 Aug 2023 19:32:36 +0800
+Message-ID: <CAMpQs4+GiExt9uMmV1pf8gg8rFwWxbLkx9mdW7hY9xxXDOza3Q@mail.gmail.com>
+Subject: Re: [PATCH v2] dt-bindings: interrupt-controller: loongson,liointc:
+ Fix warnings about liointc-2.0
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Binbin Zhou <zhoubinbin@loongson.cn>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        loongson-kernel@lists.loongnix.cn, devicetree@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-mips@vger.kernel.org, diasyzhang@tencent.com,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -84,199 +83,370 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/I4PIBoGe6NF2KXplXhCJGSP
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hi Krzysztof:
 
-On Fri, 18 Aug 2023 17:06:42 -0300
-Andr=C3=A9 Almeida <andrealmeid@igalia.com> wrote:
+Thanks for your detailed reply.
 
-> Create a section that specifies how to deal with DRM device resets for
-> kernel and userspace drivers.
->=20
-> Signed-off-by: Andr=C3=A9 Almeida <andrealmeid@igalia.com>
->=20
-> ---
->=20
-> v7 changes:
->  - s/application/graphical API contex/ in the robustness part (Michel)
->  - Grammar fixes (Randy)
->=20
-> v6: https://lore.kernel.org/lkml/20230815185710.159779-1-andrealmeid@igal=
-ia.com/
->=20
-> v6 changes:
->  - Due to substantial changes in the content, dropped Pekka's Acked-by
->  - Grammar fixes (Randy)
->  - Add paragraph about disabling device resets
->  - Add note about integrating reset tracking in drm/sched
->  - Add note that KMD should return failure for contexts affected by
->    resets and UMD should check for this
->  - Add note about lack of consensus around what to do about non-robust
->    apps
->=20
-> v5: https://lore.kernel.org/dri-devel/20230627132323.115440-1-andrealmeid=
-@igalia.com/
-> ---
->  Documentation/gpu/drm-uapi.rst | 77 ++++++++++++++++++++++++++++++++++
->  1 file changed, 77 insertions(+)
+On Tue, Aug 22, 2023 at 4:30=E2=80=AFPM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> On 22/08/2023 10:13, Binbin Zhou wrote:
+> > Hi Krzysztof:
+> >
+> > Thanks for your detailed reply.
+> >
+> > On Tue, Aug 22, 2023 at 1:44=E2=80=AFPM Krzysztof Kozlowski
+> > <krzysztof.kozlowski@linaro.org> wrote:
+> >>
+> >> On 21/08/2023 08:13, Binbin Zhou wrote:
+> >>> Since commit f4dee5d8e1fa ("dt-bindings: interrupt-controller: Add
+> >>> Loongson-2K1000 LIOINTC"), the loongson liointc supports configuring
+> >>> routes for 64-bit interrupt sources.
+> >>>
+> >>> For liointc-2.0, we need to define two liointc nodes in dts, one for
+> >>> "0-31" interrupt sources and the other for "32-63" interrupt sources.
+> >>> This applies to mips Loongson-2K1000.
+> >>>
+> >>> Unfortunately, there are some warnings about "loongson,liointc-2.0":
+> >>> 1. "interrupt-names" should be "required", the driver gets the parent
+> >>> interrupts through it.
+> >>
+> >> No, why? Parent? This does not make sense.
+> >
+> > This was noted in the v1 patch discussion. The liointc driver now gets
+> > the parent interrupt via of_irq_get_byname(), so I think the
+> > "interrupt-names" should be "required".
+>
+> of_irq_get_byname() does not give you parent interrupt, but the
+> interrupt. Why do you need parent interrupt and what is it?
+>
+> >
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
+/drivers/irqchip/irq-loongson-liointc.c?h=3Dv6.5-rc6#n345
+> >
+> > static const char *const parent_names[] =3D {"int0", "int1", "int2", "i=
+nt3"};
+> >
+> >         for (i =3D 0; i < LIOINTC_NUM_PARENT; i++) {
+> >                 parent_irq[i] =3D of_irq_get_byname(node, parent_names[=
+i]);
+> >                 if (parent_irq[i] > 0)
+> >                         have_parent =3D TRUE;
+> >         }
+> >         if (!have_parent)
+> >                 return -ENODEV;
+>
+> How requiring parents interrupt is related to other changes in this
+> file? One logical change, one patch.
 
-Acked-by: Pekka Paalanen <pekka.paalanen@collabora.com>
+Yes, that was my mistake, whether or not the interrupt-names need to
+be "required" is another issue. It does not cause a check warning.
+I'll think about it some more.
+>
+> Anyway why did you do it and take it by names? Names here are basically
+> useless if they match indices, so just get interrupt by indices.
 
-It's a good introduction, even if answers to the most interesting
-questions were not found yet.
+There is a match between interrupts, interrupt names and interrupt maps:
 
-Does it still answer the questions you had originally that you set out
-to document?
+interrupt->interrupt name->interrupt map
+2->int0->int_map[0]
+3->int1->int_map[1]
+4->int2->int_map[2]
+5->int3->int_map[3]
+
+As part of the 2k1000 liointc1 node:
+
+                liointc1: interrupt-controller@1fe11440 {
+....
+                        interrupt-parent =3D <&cpuintc>;
+                        interrupts =3D <3>;
+                        interrupt-names =3D "int1";
+
+                        loongson,parent_int_map =3D <0x00000000>, /* int0 *=
+/
+                                                <0xffffffff>, /* int1 */
+                                                <0x00000000>, /* int2 */
+                                                <0x00000000>; /* int3 */
+                };
+
+To ensure this mapping relationship, the interrupt name becomes the
+intermediate bridge.
+
+>
+> >
+> >>
+> >>>
+> >>> 2. Since not all CPUs are multicore, e.g. Loongson-2K0500 is a
+> >>> single-core CPU, there is no core1-related registers. So "reg" and
+> >>> "reg-names" should be set to "minItems 2".
+> >>>
+> >>> 3. Routing interrupts from "int0" is a common solution in practice, b=
+ut
+> >>> theoretically there is no such requirement, as long as conflicts are
+> >>> avoided. So "interrupt-names" should be defined by "pattern".
+> >>
+> >> Why? What the pattern has to do with anything in routing or not routin=
+g
+> >> something?
+> >
+> > First of all, interrupt routing is configurable and each intx handles
+> > up to 32 interrupt sources. int0-int3 you can choose a single one or a
+> > combination of multiple ones, as long as the intx chosen matches the
+> > parent interrupt and is not duplicated:
+> > Parent interrupt --> intx
+> > 2-->int0
+> > 3-->int1
+> > 4-->int2
+> > 5-->int3
+> >
+> > As:
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
+/arch/mips/boot/dts/loongson/loongson64g-package.dtsi?h=3Dv6.5-rc6#n24
+> >
+> > In addition, if there are 64 interrupt sources, such as the mips
+> > Loongson-2K1000, and we need two dts nodes to describe the interrupt
+> > routing, then there is bound to be a node without "int0".
+> >
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
+/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi?h=3Dv6.5-rc6#n60
+>
+> All of them start from 0, so why do you want to allow here starting from =
+3?
+
+Actually now we are all starting at int0.
+Since the 2K1000 has 64 interrupt sources, we need two nodes to route
+the interrupts. Usually liointc0 (handle 0-31 interrupts sources )uses
+int0 and liointc1 (handle 32-63 interrupts sources ) uses int1.
+As follows:
+
+                liointc0: interrupt-controller@1fe11400 {
+.....
+                        interrupt-parent =3D <&cpuintc>;
+                        interrupts =3D <2>;
+                        interrupt-names =3D "int0";
+
+                        loongson,parent_int_map =3D <0xffffffff>, /* int0 *=
+/
+                                                <0x00000000>, /* int1 */
+                                                <0x00000000>, /* int2 */
+                                                <0x00000000>; /* int3 */
+                };
+
+                liointc1: interrupt-controller@1fe11440 {
+....
+                        interrupt-parent =3D <&cpuintc>;
+                        interrupts =3D <3>;
+                        interrupt-names =3D "int1";
+
+                        loongson,parent_int_map =3D <0x00000000>, /* int0 *=
+/
+                                                <0xffffffff>, /* int1 */
+                                                <0x00000000>, /* int2 */
+                                                <0x00000000>; /* int3 */
+                };
+
+At this point, liointc1 will be warned that it is not starting from
+int0, and that int0 is actually being used by liointc0.
+
+>
+> >
+> > According to the current dt-binding rule, if the node does not have
+> > "int0", there will be a dts_check warning, which is not in line with
+> > our original intention.
+>
+> Why DT node would not have int0? Provide proper upstreamed Linux kernel
+> source proving this, not some imaginary code.
+>
+> >
+> >>
+> >>>
+> >>> This fixes dtbs_check warning:
+> >>>
+> >>> DTC_CHK arch/mips/boot/dts/loongson/loongson64_2core_2k1000.dtb
+> >>> arch/mips/boot/dts/loongson/loongson64_2core_2k1000.dtb: interrupt-co=
+ntroller@1fe11440: interrupt-names:0: 'int0' was expected
+> >>>       From schema: Documentation/devicetree/bindings/interrupt-contro=
+ller/loongson,liointc.yaml
+> >>> arch/mips/boot/dts/loongson/loongson64_2core_2k1000.dtb: interrupt-co=
+ntroller@1fe11440: Unevaluated properties are not allowed ('interrupt-names=
+' was unexpected)
+> >>>       From schema: Documentation/devicetree/bindings/interrupt-contro=
+ller/loongson,liointc.yaml
+> >>>
+> >>> Fixes: f4dee5d8e1fa ("dt-bindings: interrupt-controller: Add Loongson=
+-2K1000 LIOINTC")
+> >>> Signed-off-by: Binbin Zhou <zhoubinbin@loongson.cn>
+> >>> ---
+> >>> V2:
+> >>> 1. Update commit message;
+> >>> 2. "interruprt-names" should be "required", the driver gets the paren=
+t
+> >>> interrupts through it;
+> >>> 3. Add more descriptions to explain the rationale for multiple nodes;
+> >>> 4. Rewrite if-else statements.
+> >>>
+> >>> Link to V1:
+> >>> https://lore.kernel.org/all/20230815084713.1627520-1-zhoubinbin@loong=
+son.cn/
+> >>>
+> >>>  .../loongson,liointc.yaml                     | 74 +++++++++--------=
+--
+> >>>  1 file changed, 37 insertions(+), 37 deletions(-)
+> >>>
+> >>> diff --git a/Documentation/devicetree/bindings/interrupt-controller/l=
+oongson,liointc.yaml b/Documentation/devicetree/bindings/interrupt-controll=
+er/loongson,liointc.yaml
+> >>> index 00b570c82903..f695d3a75ddf 100644
+> >>> --- a/Documentation/devicetree/bindings/interrupt-controller/loongson=
+,liointc.yaml
+> >>> +++ b/Documentation/devicetree/bindings/interrupt-controller/loongson=
+,liointc.yaml
+> >>> @@ -11,11 +11,11 @@ maintainers:
+> >>>
+> >>>  description: |
+> >>>    This interrupt controller is found in the Loongson-3 family of chi=
+ps and
+> >>> -  Loongson-2K1000 chip, as the primary package interrupt controller =
+which
+> >>> +  Loongson-2K series chips, as the primary package interrupt control=
+ler which
+> >>>    can route local I/O interrupt to interrupt lines of cores.
+> >>> -
+> >>> -allOf:
+> >>> -  - $ref: /schemas/interrupt-controller.yaml#
+> >>> +  In particular, the Loongson-2K1000/2K0500 has 64 interrupt sources=
+ that we
+> >>> +  need to describe with two dts nodes. One for interrupt sources "0-=
+31" and
+> >>> +  the other for interrupt sources "32-63".
+> >>>
+> >>>  properties:
+> >>>    compatible:
+> >>> @@ -24,15 +24,9 @@ properties:
+> >>>        - loongson,liointc-1.0a
+> >>>        - loongson,liointc-2.0
+> >>>
+> >>> -  reg:
+> >>> -    minItems: 1
+> >>> -    minItems: 3
+> >>> +  reg: true
+> >>
+> >> No. Constraints must be here.
+> >
+> > May I ask a question:
+> > Since different compatibles require different minItems/minItems for
+>
+> You don't have this case here. I don't see any device asking for 4 regs.
+>
+> > the attribute, this writeup of defining the attribute to be true first
+> > and then defining the specific value in an if-else statement is not
+> > recommended?
+>
+> The top-level defines widest constraints and if:else: narrows them per
+> each variant.
+>
+> ...
+>
+> >>> +        reg-names:
+> >>> +          minItems: 2
+> >>> +          items:
+> >>> +            - const: main
+> >>> +            - const: isr0
+> >>> +            - const: isr1
+> >>
+> >> Srsly, why this is moved here from the top? It does not make sense.
+> >
+> > In liointc-2.0, we need to deal with two dts nodes, and the setting
+> > and routing registers are not contiguous, so the driver needs
+> > "reg-names" to get the corresponding register mapping. So I put all
+> > this in the liointc-2.0 section.
+> >
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
+/drivers/irqchip/irq-loongson-liointc.c?h=3Dv6.5-rc6#n225
+>
+> This is driver. You need to show the DTS, not driver.
+>
+> >
+> >         if (revision > 1) {
+> >                 for (i =3D 0; i < LIOINTC_NUM_CORES; i++) {
+> >                         int index =3D of_property_match_string(node,
+> >                                         "reg-names", core_reg_names[i])=
+;
+> >
+> >                         if (index < 0)
+> >                                 continue;
+> >
+> >                         priv->core_isr[i] =3D of_iomap(node, index);
+> >                 }
+> >
+> >                 if (!priv->core_isr[0])
+> >                         goto out_iounmap;
+> >         }
+> >
+> >
+> > I referenced other dt-binding writeups and thought this would be cleare=
+r.
+> >
+> > Is this if-else style not recommended? Should I keep the v1 patch write=
+up?
+> > https://lore.kernel.org/all/20230815084713.1627520-1-zhoubinbin@loongso=
+n.cn/
+>
+> if:else: is recommended, we do not discuss it. Your v1 was making
+> everything totally loose, so incorrect. Explain - why the reg-names are
+> not correct for the other variant? We expect just to have maxItems for
+> the other variant... unless reg-names are not correct, then they can be
+> made false - which you didn't.
+>
+This is mainly due to discontinuities in register definitions.
+
+Interrupt routing configuration involves two aspects of registers (32 bits)=
+:
+1. interrupt configuration registers: including interrupt enable,
+interrupt status, etc;
+2. the CORE routing register: indicating which CORE to route to.
+
+First of all, for liointc-1.0, e.g. Loongson-3A, they are contiguous
+and we only need a set of register definitions, so reg-names are not
+needed.
+
+                liointc: interrupt-controller@3ff01400 {
+                        compatible =3D "loongson,liointc-1.0";
+                        reg =3D <0 0x3ff01400 0x64>;
+...........
+                };
+
+However, for liointc-2.0, e.g. Loongson-2K1000, they are not
+contiguous and we can only define them separately (main/isr0/isr1).
+
+                liointc0: interrupt-controller@1fe11400 {
+                        compatible =3D "loongson,liointc-2.0";
+                        reg =3D <0 0x1fe11400 0 0x40>,
+                                <0 0x1fe11040 0 0x8>,
+                                <0 0x1fe11140 0 0x8>;
+                        reg-names =3D "main", "isr0", "isr1";
+..........
+                };
 
 
-Thanks,
-pq
+Unfortunately, the Loongson-2K0500 is again special in that it is a
+single-core CPU. therefore the core1 routing register (isr1) does not
+exist.
 
-> diff --git a/Documentation/gpu/drm-uapi.rst b/Documentation/gpu/drm-uapi.=
-rst
-> index 65fb3036a580..3694bdb977f5 100644
-> --- a/Documentation/gpu/drm-uapi.rst
-> +++ b/Documentation/gpu/drm-uapi.rst
-> @@ -285,6 +285,83 @@ for GPU1 and GPU2 from different vendors, and a thir=
-d handler for
->  mmapped regular files. Threads cause additional pain with signal
->  handling as well.
-> =20
-> +Device reset
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> +
-> +The GPU stack is really complex and is prone to errors, from hardware bu=
-gs,
-> +faulty applications and everything in between the many layers. Some erro=
-rs
-> +require resetting the device in order to make the device usable again. T=
-his
-> +section describes the expectations for DRM and usermode drivers when a
-> +device resets and how to propagate the reset status.
-> +
-> +Device resets can not be disabled without tainting the kernel, which can=
- lead to
-> +hanging the entire kernel through shrinkers/mmu_notifiers. Userspace rol=
-e in
-> +device resets is to propagate the message to the application and apply a=
-ny
-> +special policy for blocking guilty applications, if any. Corollary is th=
-at
-> +debugging a hung GPU context require hardware support to be able to pree=
-mpt such
-> +a GPU context while it's stopped.
-> +
-> +Kernel Mode Driver
-> +------------------
-> +
-> +The KMD is responsible for checking if the device needs a reset, and to =
-perform
-> +it as needed. Usually a hang is detected when a job gets stuck executing=
-. KMD
-> +should keep track of resets, because userspace can query any time about =
-the
-> +reset status for a specific context. This is needed to propagate to the =
-rest of
-> +the stack that a reset has happened. Currently, this is implemented by e=
-ach
-> +driver separately, with no common DRM interface. Ideally this should be =
-properly
-> +integrated at DRM scheduler to provide a common ground for all drivers. =
-After a
-> +reset, KMD should reject new command submissions for affected contexts.
-> +
-> +User Mode Driver
-> +----------------
-> +
-> +After command submission, UMD should check if the submission was accepte=
-d or
-> +rejected. After a reset, KMD should reject submissions, and UMD can issu=
-e an
-> +ioctl to the KMD to check the reset status, and this can be checked more=
- often
-> +if the UMD requires it. After detecting a reset, UMD will then proceed t=
-o report
-> +it to the application using the appropriate API error code, as explained=
- in the
-> +section below about robustness.
-> +
-> +Robustness
-> +----------
-> +
-> +The only way to try to keep a graphical API context working after a rese=
-t is if
-> +it complies with the robustness aspects of the graphical API that it is =
-using.
-> +
-> +Graphical APIs provide ways to applications to deal with device resets. =
-However,
-> +there is no guarantee that the app will use such features correctly, and=
- a
-> +userspace that doesn't support robust interfaces (like a non-robust
-> +OpenGL context or API without any robustness support like libva) leave t=
-he
-> +robustness handling entirely to the userspace driver. There is no strong
-> +community consensus on what the userspace driver should do in that case,
-> +since all reasonable approaches have some clear downsides.
-> +
-> +OpenGL
-> +~~~~~~
-> +
-> +Apps using OpenGL should use the available robust interfaces, like the
-> +extension ``GL_ARB_robustness`` (or ``GL_EXT_robustness`` for OpenGL ES)=
-. This
-> +interface tells if a reset has happened, and if so, all the context stat=
-e is
-> +considered lost and the app proceeds by creating new ones. There's no co=
-nsensus
-> +on what to do to if robustness is not in use.
-> +
-> +Vulkan
-> +~~~~~~
-> +
-> +Apps using Vulkan should check for ``VK_ERROR_DEVICE_LOST`` for submissi=
-ons.
-> +This error code means, among other things, that a device reset has happe=
-ned and
-> +it needs to recreate the contexts to keep going.
-> +
-> +Reporting causes of resets
-> +--------------------------
-> +
-> +Apart from propagating the reset through the stack so apps can recover, =
-it's
-> +really useful for driver developers to learn more about what caused the =
-reset in
-> +the first place. DRM devices should make use of devcoredump to store rel=
-evant
-> +information about the reset, so this information can be added to user bug
-> +reports.
-> +
->  .. _drm_driver_ioctl:
-> =20
->  IOCTL Support on Device Nodes
+                liointc0: interrupt-controller@1fe11400 {
+                        compatible =3D "loongson,liointc-2.0";
+                        reg =3D <0x0 0x1fe11400 0x0 0x40>,
+                              <0x0 0x1fe11040 0x0 0x8>;
+                        reg-names =3D "main", "isr0";
+......
+                };
 
+So I would like to set the minItems of reg-names to 2 (main/isr0).
 
---Sig_/I4PIBoGe6NF2KXplXhCJGSP
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Thanks.
+Binbin
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmTnP1gACgkQI1/ltBGq
-qqd+qQ/9Ef0rbYI8EH7+wyhquOWEi9zaZmc/CzTCRL+XDkjUjSiw3mxvV3VIoyny
-Uv17w/6y0yX9+Yd0XwgYgeIYRtNTYVGJzPyFKBeOeGLutCj1w5OZcOMrui47O91z
-BEksXg2ihmB7LWIaX2nR8XLICKXOIn7rPgh4RuB8rltmX23grJm+tLVvd6VFVwNd
-VddO79s7k/ouwgK6gqMJG5ERPc5FTM8mFvwSXnc0UrivcuBNSUdOW2Jk2bRDc8hg
-n7WDQSK7jZHVf8swQoKj7YlDY4No7YqPORCNxgsUCWtmHFhINk/mvX5Ws0KSCDa4
-rGUqJQSfzYpy4H3QRtbwBiCTwD8NeVZmaj8JLgbEPMWzYUy9zmsPcHJogbt0V+dc
-UcWrlkqpbNUGVT3PSd2K9640GNu4noo3SlrIO34AYwN1byStUOTYQSiGI0LSYgBt
-aatt00CkGFR2AAp2+nH2Wk8JB1/BiNuPmO9KnyVhx3/6kv5ZqEYz+8Yzr+uo6M+H
-yF5FNEnuUh8RN2srWLfbBF4D7MrsRnbXD2BFkqLImTPrfbrMii5kjIulOnpfgMXP
-bpMO4hyl7jRoQoLC+Ef0To6Nf4V5SyNniczBuU2rfrN+VJroyXbPZFMWTR6zOnx7
-OOgkO3ggWbpbGiile5nb2fy5G1nRoXrG/0o29Vz/Lcnf4OUCh/o=
-=jaoU
------END PGP SIGNATURE-----
-
---Sig_/I4PIBoGe6NF2KXplXhCJGSP--
+>
+> Best regards,
+> Krzysztof
+>
