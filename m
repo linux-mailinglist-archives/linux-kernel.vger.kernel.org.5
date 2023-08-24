@@ -2,58 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6EF17879FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 23:12:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62DB4787A04
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 23:13:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243411AbjHXVLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 17:11:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51072 "EHLO
+        id S243469AbjHXVNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 17:13:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243448AbjHXVL1 (ORCPT
+        with ESMTP id S243480AbjHXVMs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 17:11:27 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF7CA1BCA;
-        Thu, 24 Aug 2023 14:11:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5D6276413D;
-        Thu, 24 Aug 2023 21:11:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A71CC433C8;
-        Thu, 24 Aug 2023 21:11:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692911483;
-        bh=XG9xLHZC9AhIzBvKGJ4Of38YYp/jhihhwc0lJqgRG3Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=X2fFplalH4gcAC/XBdhAZvLq8kJnZ0bUAstwzR/WDoE43vn82rk8Hwkw0lVu3ynHN
-         /nXkXdwND1vFcF39koEeCCQvDbmzhr1nFx/r+ONo8mDZBS79mYhRMm4cDbLt5XS/35
-         9bToe3RMwRgTZDnSZXt8Jml6NyvlDplle3QbvRu4XICD6acjgZh3wj2lwUAG0+PxMj
-         oJyvXv9OTpBpZDrv6j8RPt3L/oCS27/yZaNLQ9yGMUJlc9wbdPaitSooET4Uzj6HLA
-         6MUT/f2Y5Z7nrPDSitV6VVoe9flWt4/pzBteMUMao2W09C4DMH32GjZlhQcmGISpYP
-         nS1rbgL0q2kHQ==
-Received: (nullmailer pid 1436647 invoked by uid 1000);
-        Thu, 24 Aug 2023 21:11:22 -0000
-Date:   Thu, 24 Aug 2023 16:11:21 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Tzuyi Chang <tychang@realtek.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 5/7] dt-bindings: pinctrl: realtek: add RTD1315E
- pinctrl binding
-Message-ID: <20230824211121.GA1388146-robh@kernel.org>
-References: <20230824105703.19612-1-tychang@realtek.com>
- <20230824105703.19612-6-tychang@realtek.com>
+        Thu, 24 Aug 2023 17:12:48 -0400
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E8DF1FD8
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 14:12:35 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id d75a77b69052e-4106b6aa94bso1308251cf.3
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 14:12:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692911554; x=1693516354;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4U1ivCyumzozlOIlLtJN6Z5xOoT4k9wuOs/HLGPW8t0=;
+        b=VJTm8lTcxoztRvIBEKss1oLLWxWSKgQM+369NiNy8dvn6YCJDWVB+CfukSFIaxAJUD
+         KH1SYydQ4D1GB4zvI2rf433XTYXT8mIRtF+fh4asnISKH84UUcQcOGYjbhhyc6s+3VVy
+         l/jl/mku25gwK5PWyZxzTsGrcj5POmnlDzqJ0aK/7nblSFUoWz0Wp69s7yyrz30fM6Ju
+         42+RX2+D62Pw75tLd9JnBqgcnuM+Iqa3jNAiw6LBvWXKLuxIeWMXofxmelfE01nIyoGT
+         wJIwK/xjL1v0pE0G13JTFZQMB7DfQaKWxGkxX8+3OFgYOeOsarWYFtTlgBttr7mWS/CL
+         EajQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692911554; x=1693516354;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4U1ivCyumzozlOIlLtJN6Z5xOoT4k9wuOs/HLGPW8t0=;
+        b=KKjjKzGU0BLPmALZqYgcUQJt1owywshj+a/iTbFFjp7yoZf33YpO3YYMq1V1Uy69XC
+         etWDVbe87QOEconXP1bJ79AKF7371cClodSZ1fZNnDHhn+g5/BlD3PKLkaaxCYp4dVXB
+         SfYxE1CfmK4Oz7rWDpCxO996Fo2zLFYs6FsBDWKJLvIckMmRAFk+ovIysJxd260UMbAt
+         i5YVp8rEfbdgeke+TDz3R4ZJd25eG5hqnmpuZB196ihS/sIsgaZRqyQ8oXxpC0P/gm34
+         ks6NVCR+OLV3IPz3BwkrfRR01925rktGJGKlL7wzu5EgIPTPBdpB4EptnF0cou6M+k9d
+         EWaw==
+X-Gm-Message-State: AOJu0YwS4n18n35D8ryoUdcDvkJmDbsD/n3PYqsjVsRBFPv1QfD7Extm
+        Akx/aVirYMgsg0TiSTQ97N38F7mfZ0X0HTqRyGpKtg==
+X-Google-Smtp-Source: AGHT+IHJ5oM96Zm8ClYAtCrxKInIQduZvCd9928l9ysBLty471FXDG4CQkDMxa/8esRD1pekknsSAm8ScMk0Ote30z8=
+X-Received: by 2002:a0c:ac49:0:b0:647:2def:6a8 with SMTP id
+ m9-20020a0cac49000000b006472def06a8mr15925588qvb.45.1692911554574; Thu, 24
+ Aug 2023 14:12:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230824105703.19612-6-tychang@realtek.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20230824-docs-v1-1-67e061278b8f@google.com> <20230824184910.GA2015748@dev-arch.thelio-3990X>
+ <CAKwvOdkdb=dDggNNPHb08AiZNp5V-H9utgm0H+2hJmZJdO-biA@mail.gmail.com>
+In-Reply-To: <CAKwvOdkdb=dDggNNPHb08AiZNp5V-H9utgm0H+2hJmZJdO-biA@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 24 Aug 2023 14:12:23 -0700
+Message-ID: <CAKwvOdkuxO0TeERBCRFrjKvKUsg=nchOuPJc_gx_zGfOaWwhmA@mail.gmail.com>
+Subject: Re: [PATCH] Documentation/llvm: refresh docs
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>, Tom Rix <trix@redhat.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, llvm@lists.linux.dev,
+        linux-kbuild@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,222 +77,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 06:57:01PM +0800, Tzuyi Chang wrote:
-> Add device tree bindings for RTD1315E.
-> 
-> Signed-off-by: Tzuyi Chang <tychang@realtek.com>
-> ---
-> v1 to v2 change:
-> 1. Add a description for RTD1315E.
-> 2. Rename realtek,pdrive, realtekmndrive and realtek,dcycle.
-> 3. Add a description for PMOS and NMOS driving strength.
-> 4. Remove the wildcard in the compatible strings.
-> 5. Use '-pins$' to be node name pattern.
-> ---
->  .../pinctrl/realtek,rtd1315e-pinctrl.yaml     | 191 ++++++++++++++++++
->  1 file changed, 191 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pinctrl/realtek,rtd1315e-pinctrl.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/pinctrl/realtek,rtd1315e-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/realtek,rtd1315e-pinctrl.yaml
-> new file mode 100644
-> index 000000000000..babd87d05f32
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/pinctrl/realtek,rtd1315e-pinctrl.yaml
-> @@ -0,0 +1,191 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +# Copyright 2023 Realtek Semiconductor Corporation
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/pinctrl/realtek,rtd1315e-pinctrl.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Realtek DHC RTD1315E Pin Controller
-> +
-> +maintainers:
-> +  - TY Chang <tychang@realtek.com>
-> +
-> +description:
-> +  The Realtek DHC RTD1315E is a high-definition media processor SoC. The
-> +  RTD1315E pin controller is used to control pin function, pull up/down
-> +  resistor, drive strength, schmitt trigger and power source.
-> +
-> +properties:
-> +  compatible:
-> +    const: realtek,rtd1315e-pinctrl
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +patternProperties:
-> +  '-pins$':
-> +    if:
-> +      type: object
-> +    then:
+On Thu, Aug 24, 2023 at 1:32=E2=80=AFPM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> On Thu, Aug 24, 2023 at 11:49=E2=80=AFAM Nathan Chancellor <nathan@kernel=
+.org> wrote:
+> >
+>
+> > I see a few new kernel-doc warnings from not adjusting the underlines t=
+o
+> > match the new length of the title:
+> >
+> >   Documentation/kbuild/llvm.rst:40: WARNING: Title underline too short.
+> >
+> >   The LLVM=3D argument
+> >   --------------
+> >   Documentation/kbuild/llvm.rst:40: WARNING: Title underline too short.
+> >
+> >   The LLVM=3D argument
+> >   --------------
+> >   Documentation/kbuild/llvm.rst:102: WARNING: Title underline too short=
+.
+> >
+> >   The LLVM_IAS=3D argument
+> >   -----------------
+> >   Documentation/kbuild/llvm.rst:102: WARNING: Title underline too short=
+.
+> >
+> >   The LLVM_IAS=3D argument
+> >   -----------------
+>
+> oops! remind me of the make target to observe these?
 
-Drop the if/then. "-pins" should always be a node (object).
+Found it;
+make htmldocs
+https://www.kernel.org/doc/html/latest/doc-guide/sphinx.html
 
-> +      allOf:
-> +        - $ref: pincfg-node.yaml#
-> +        - $ref: pinmux-node.yaml#
-> +
-> +      properties:
-> +        pins:
-> +          items:
-> +            enum: [ gpio_0, gpio_1, emmc_rst_n, emmc_dd_sb, emmc_clk, emmc_cmd,
-> +                    gpio_6, gpio_7, gpio_8, gpio_9, gpio_10, gpio_11, gpio_12,
-> +                    gpio_13, gpio_14, gpio_15, gpio_16, gpio_17, gpio_18, gpio_19,
-> +                    gpio_20, emmc_data_0, emmc_data_1, emmc_data_2, usb_cc2, gpio_25,
-> +                    gpio_26, gpio_27, gpio_28, gpio_29, gpio_30, gpio_31, gpio_32,
-> +                    gpio_33, gpio_34, gpio_35, hif_data, hif_en, hif_rdy, hif_clk,
-> +                    gpio_dummy_40, gpio_dummy_41, gpio_dummy_42, gpio_dummy_43,
-> +                    gpio_dummy_44, gpio_dummy_45, gpio_46, gpio_47, gpio_48, gpio_49,
-> +                    gpio_50, usb_cc1, emmc_data_3, emmc_data_4, ir_rx, ur0_rx, ur0_tx,
-> +                    gpio_57, gpio_58, gpio_59, gpio_60, gpio_61, gpio_62, gpio_dummy_63,
-> +                    gpio_dummy_64, gpio_dummy_65, gpio_66, gpio_67, gpio_68, gpio_69,
-> +                    gpio_70, gpio_71, gpio_72, gpio_dummy_73, emmc_data_5, emmc_data_6,
-> +                    emmc_data_7, gpio_dummy_77, gpio_78, gpio_79, gpio_80, gpio_81,
-> +                    ur2_loc, gspi_loc, hi_width, sf_en, arm_trace_dbg_en,
-> +                    ejtag_aucpu_loc, ejtag_acpu_loc, ejtag_vcpu_loc, ejtag_scpu_loc,
-> +                    dmic_loc, vtc_dmic_loc, vtc_tdm_loc, vtc_i2si_loc, tdm_ai_loc,
-> +                    ai_loc, spdif_loc, hif_en_loc, scan_switch, wd_rset, boot_sel,
-> +                    reset_n, testmode ]
-> +
-> +        function:
-> +          enum: [ gpio, nf, emmc, ao, gspi_loc0, gspi_loc1, uart0, uart1,
-> +                  uart2_loc0, uart2_loc1, i2c0, i2c1, i2c4, i2c5, pcie1,
-> +                  etn_led, etn_phy, spi, pwm0_loc0, pwm0_loc1, pwm1_loc0,
-> +                  pwm1_loc1, pwm2_loc0, pwm2_loc1, pwm3_loc0, pwm3_loc1,
-> +                  spdif_optical_loc0, spdif_optical_loc1, usb_cc1, usb_cc2,
-> +                  sd, dmic_loc0, dmic_loc1, ai_loc0, ai_loc1, tdm_ai_loc0,
-> +                  tdm_ai_loc1, hi_loc0, hi_m, vtc_i2so, vtc_i2si_loc0,
-> +                  vtc_i2si_loc1, vtc_dmic_loc0, vtc_dmic_loc1, vtc_tdm_loc0,
-> +                  vtc_tdm_loc1, dc_fan, pll_test_loc0, pll_test_loc1,
-> +                  ir_rx, uart2_disable, gspi_disable, hi_width_disable,
-> +                  hi_width_1bit, sf_disable, sf_enable, scpu_ejtag_loc0,
-> +                  scpu_ejtag_loc1, scpu_ejtag_loc2, scpu_ejtag_loc3,
-> +                  acpu_ejtag_loc0, acpu_ejtag_loc1, acpu_ejtag_loc2,
-> +                  vcpu_ejtag_loc0, vcpu_ejtag_loc1, vcpu_ejtag_loc2,
-> +                  aucpu_ejtag_loc0, aucpu_ejtag_loc1, aucpu_ejtag_loc2,
-> +                  gpu_ejtag, iso_tristate, dbg_out0, dbg_out1, standby_dbg,
-> +                  spdif, arm_trace_debug_disable, arm_trace_debug_enable,
-> +                  aucpu_ejtag_disable, acpu_ejtag_disable, vcpu_ejtag_disable,
-> +                  scpu_ejtag_disable, vtc_dmic_loc_disable, vtc_tdm_disable,
-> +                  vtc_i2si_disable, tdm_ai_disable, ai_disable, spdif_disable,
-> +                  hif_disable, hif_enable, test_loop, pmic_pwrup ]
-> +
-> +
-> +        drive-strength:
-> +          enum: [4, 8]
-> +
-> +        bias-pull-down: true
-> +
-> +        bias-pull-up: true
-> +
-> +        bias-disable: true
-> +
-> +        input-schmitt-enable: true
-> +
-> +        input-schmitt-disable: true
-> +
-> +        drive-push-pull: true
-> +
-> +        power-source:
-> +          description: |
-> +            Valid arguments are described as below:
-> +            0: power supply of 1.8V
-> +            1: power supply of 3.3V
-> +          enum: [0, 1]
-> +
-> +        realtek,drive-strength-p:
-> +          description: |
-> +            Some of pins can be driven using the P-MOS and N-MOS transistor to
-> +            achieve finer adjustments. The block-diagram representation is as
-> +            follows:
-> +                           VDD
-> +                            |
-> +                        ||--+
-> +                 +-----o||     P-MOS-FET
-> +                 |      ||--+
-> +            IN --+          +----- out
-> +                 |      ||--+
-> +                 +------||     N-MOS-FET
-> +                        ||--+
-> +                            |
-> +                           GND
-> +            The driving strength of the P-MOS/N-MOS transistors impacts the
-> +            waveform's rise/fall times. Greater driving strength results in
-> +            shorter rise/fall times. Each P-MOS and N-MOS transistor offers
-> +            8 configurable levels (0 to 7), with higher values indicating
-> +            greater driving strength, contributing to achieving the desired
-> +            speed.
-> +
-> +            The realtek,drive-strength-p is used to control the driving strength
-> +            of the P-MOS output.
-> +          $ref: /schemas/types.yaml#/definitions/uint32
-> +          minimum: 0
-> +          maximum: 7
-> +
-> +        realtek,drive-strength-n:
-> +          description: |
-> +            Similar to the realtek,drive-strength-p, the realtek,drive-strength-n
-> +            is used to control the driving strength of the N-MOS output.
-> +          $ref: /schemas/types.yaml#/definitions/uint32
-> +          minimum: 0
-> +          maximum: 7
-> +
-> +        realtek,duty-cycle:
-> +          description: |
-> +            An integer describing the level to adjust output duty cycle, controlling
-> +            the proportion of positive and negative waveforms in nanoseconds.
-> +            Valid arguments are described as below:
-> +            0: 0ns
-> +            2: + 0.25ns
-> +            3: + 0.5ns
-> +            4: -0.25ns
-> +            5: -0.5ns
-> +          $ref: /schemas/types.yaml#/definitions/uint32
-> +          enum: [ 0, 2, 3, 4, 5 ]
-> +
-> +      required:
-> +        - pins
-> +
-> +      additionalProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +     pinctrl@4e000 {
-> +         compatible = "realtek,rtd1315e-pinctrl";
-> +         reg = <0x4e000 0x130>;
-> +
-> +         emmc-hs200-pins {
-> +             pins = "emmc_clk",
-> +                    "emmc_cmd",
-> +                    "emmc_data_0",
-> +                    "emmc_data_1",
-> +                    "emmc_data_2",
-> +                    "emmc_data_3",
-> +                    "emmc_data_4",
-> +                    "emmc_data_5",
-> +                    "emmc_data_6",
-> +                    "emmc_data_7";
-> +             function = "emmc";
-> +             realtek,drive-strength-p = <0x2>;
-> +             realtek,drive-strength-n = <0x2>;
-> +         };
-> +
-> +         i2c-0-pins {
-> +             pins = "gpio_12",
-> +                    "gpio_13";
-> +             function = "i2c0";
-> +             drive-strength = <4>;
-> +         };
-> +     };
-> -- 
-> 2.41.0
-> 
+
+--=20
+Thanks,
+~Nick Desaulniers
