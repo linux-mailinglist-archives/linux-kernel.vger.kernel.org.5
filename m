@@ -2,59 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E60E378782E
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 20:44:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7857787835
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 20:46:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243061AbjHXSoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 14:44:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52720 "EHLO
+        id S243074AbjHXSqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 14:46:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243079AbjHXSnk (ORCPT
+        with ESMTP id S243041AbjHXSpw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 14:43:40 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 145E5170F;
-        Thu, 24 Aug 2023 11:43:39 -0700 (PDT)
+        Thu, 24 Aug 2023 14:45:52 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5ADEE50;
+        Thu, 24 Aug 2023 11:45:50 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A40A567041;
-        Thu, 24 Aug 2023 18:43:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 044DFC433C7;
-        Thu, 24 Aug 2023 18:43:37 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 61FD963A36;
+        Thu, 24 Aug 2023 18:45:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 240E7C433C7;
+        Thu, 24 Aug 2023 18:45:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692902618;
-        bh=hyPhg2lvFHq0M/FUCI5u+mGZ2jcsghXBoKYtqtflqY8=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=XPE7QR2GgWieE3RFuMbgoUJ5Qd7rMSz4Hw+UwDJ2MlzgtLcCMiWOFN1wdeYCw1I3k
-         mz8ED62pC8TeVzCUngqa6HkAxLtoKdCYQs5MhVwKvG50T3ePIRm1AIsFYRaGMd4eCq
-         jdGEsBqCNdy7eDs6W+qczR37s02PyODrCPFrA89fJ1FOvFlFFLYGs3P8Ir3yGdC29r
-         lWiFQDQkbVodQUX/Oxww1RCpKdKc3LYkKs+DeKtbV0817vJiy1BiosU/L357c0nxh8
-         7lI218ctgcTeVIF6hgPCH3U6S8Nx5lrJ5e6VN5Y9WHlnoXngmSWbyg/n/pXUDpWmpY
-         IYjJHqitToD8w==
-Message-ID: <4870d94375cfdf6c0ba4d4b5cb3b6dc3.sboyd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1692902749;
+        bh=5Mb0MpT4Rr86M02kOZb7MIamOKaM0JtZAhyMccOWT7s=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=nI4Lgs8EfxsSd5q6uLEntRdh9HoZ9PQxpfpgVjEhcdxgcMyPdyCeoXzbSPgM0YUba
+         V93MQQK8jnVd2TUM86y7SiVCNab/5bLyXG1rlHB3h786/LQu33QaadrO1tOjHOk+Ju
+         mBs08j8J3U2Gk1Jdh1o+1nhT2w8sryXzcnJwOmVlVcH+cFJPM5pWr/D+uz8NteZA+t
+         lvTRgEOIM/nOXxcpyyWCJqKl0MUcJLRdfCfkg+gFiF/fLbHJioCvEolH0nPllmuZgx
+         BbtfXmj0qDFObi4IFjRLxgyUyAEM8qro1Q1n5gjdjpucvI3trHm+yj4ZIexq2fwuiD
+         vA2NItjLkKZvg==
+Message-ID: <574e93da-ec74-f1a2-7170-c16bb225a2bb@kernel.org>
+Date:   Thu, 24 Aug 2023 20:45:41 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <ZOdoP00tlAIRr9fN@pluto>
-References: <20230811161446.636253-1-cristian.marussi@arm.com> <20230811161446.636253-2-cristian.marussi@arm.com> <17bd83d833b59fd4f64eec433589fa55.sboyd@kernel.org> <ZOXLNliOogkNyJYQ@e120937-lin> <a14cdd584283d32a3642658aaed6c98c.sboyd@kernel.org> <ZOdoP00tlAIRr9fN@pluto>
-Subject: Re: [PATCH 1/6] firmware: arm_scmi: Simplify enable/disable Clock operations
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        sudeep.holla@arm.com, james.quinlan@broadcom.com,
-        f.fainelli@gmail.com, vincent.guittot@linaro.org,
-        etienne.carriere@linaro.org, peng.fan@oss.nxp.com,
-        chuck.cannon@nxp.com, souvik.chakravarty@arm.com,
-        nicola.mazzucato@arm.com,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-clk@vger.kernel.org
-To:     Cristian Marussi <cristian.marussi@arm.com>
-Date:   Thu, 24 Aug 2023 11:43:35 -0700
-User-Agent: alot/0.10
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v5 01/11] dt-bindings: arm: fsl: add imx-se-fw binding doc
+Content-Language: en-US
+To:     Rob Herring <robh@kernel.org>, Pankaj Gupta <pankaj.gupta@nxp.com>
+Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        clin@suse.com, conor+dt@kernel.org, pierre.gondois@arm.com,
+        ping.bai@nxp.com, xiaoning.wang@nxp.com, wei.fang@nxp.com,
+        peng.fan@nxp.com, haibo.chen@nxp.com, festevam@gmail.com,
+        linux-imx@nxp.com, davem@davemloft.net,
+        krzysztof.kozlowski+dt@linaro.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, gaurav.jain@nxp.com,
+        alexander.stein@ew.tq-group.com, sahil.malhotra@nxp.com,
+        aisheng.dong@nxp.com, V.Sethi@nxp.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20230823073330.1712721-1-pankaj.gupta@nxp.com>
+ <20230823073330.1712721-2-pankaj.gupta@nxp.com>
+ <20230823124340.GA2022486-robh@kernel.org>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+In-Reply-To: <20230823124340.GA2022486-robh@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,28 +69,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Cristian Marussi (2023-08-24 07:25:21)
-> On Wed, Aug 23, 2023 at 11:01:17AM -0700, Stephen Boyd wrote:
-> >=20
-> > Perhaps we need a local variable to make it more readable.
-> >=20
-> >       static int scmi_clk_enable(struct clk_hw *hw)
-> >       {
-> >              bool can_sleep =3D false;
-> >              struct scmi_clk *clk =3D to_scmi_clk(hw);
-> >=20
-> >              return scmi_proto_clk_ops->enable(clk->ph, clk->id, can_sl=
-eep);
-> >       }
-> >=20
-> > This let's the reader quickly understand what the parameter means. I'm
-> > OK with adding the function parameter, but a plain 'true' or 'false'
-> > doesn't help with clarity.
->=20
-> Thanks for the suggestion, it would help definitely making it more
-> readable, maybe a local define or enum could make it without even
-> putting anything on the stack.
->=20
+On 23/08/2023 14:43, Rob Herring wrote:
+>> +                                                          |
+>> +  +------------------------------------------------------ |
+>> +                     |             |           |          |
+>> +  userspace     /dev/ele_muXch0    |           |          |
+>> +                           /dev/ele_muXch1     |          |
+>> +                                         /dev/ele_muXchY  |
+>> +                                                          |
+>> +
+>> +  When a user sends a command to the firmware, it registers its device_ctx
+>> +  as waiter of a response from firmware.
+>> +
+>> +  A user can be registered as receiver of command from the ELE.
+>> +  Create char devices in /dev as channels of the form /dev/ele_muXchY with X
+>> +  the id of the driver and Y for each users. It allows to send and receive
+>> +  messages to the NXP EdgeLock Enclave IP firmware on NXP SoC, where current
+>> +  possible value, i.e., supported SoC(s) are imx8ulp, imx93.
+> 
+> Looks like a bunch of Linux details which don't belong in the binding.
+> 
+> Why do you need your own custom interface to userspace? No one else has 
+> a similar feature in their platforms? Something like virtio or rpmsg 
+> doesn't work?
 
-Surely the compiler can optimize that so there isn't stack local
-storage for a local variable used as an argument to a function call?
++Cc Greg,
+
+I doubt they care. This is some stub-driver to pass messages from
+user-space to the firmware. The interface is undocumented, without
+examples and no user-space user.
+
+Best regards,
+Krzysztof
+
