@@ -2,126 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F01B7875C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 18:44:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B81E97875DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 18:46:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236401AbjHXQn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 12:43:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58542 "EHLO
+        id S242720AbjHXQph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 12:45:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242750AbjHXQnj (ORCPT
+        with ESMTP id S242436AbjHXQpF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 12:43:39 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A4001BFA
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 09:43:22 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2bcb0b973a5so81012921fa.3
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 09:43:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692895400; x=1693500200;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MhNikzhh9eyMrDoIEuRkwpx1JH9DFmpQLb9Zaw13Qy0=;
-        b=PDjoFLERmxIiohisUaSL6+3gzt3DAVcvCSfU+4Kk+INBbN1VhCkpmAgGL3i4tr/sTe
-         0T9p+F3BFITd33UsV+z2Su7H0N4dpwumQXIiGRhl7BRgVbLiJpKv7roXVYzwuVxn8+AF
-         T1yP1U6JwXwk3tkvvQV/+1PRoQTk5eC4aNyg1oCM+v7xvICYl9uCD/pleJVojDKM2dUD
-         u46d0HSd78nc1KTR6AwfEuI83txDBhELpYo1Jv4wXdrlGyzDwBd06UHR7YITsw6HNTBQ
-         yqSOO2BNTuU9z6bYXzl/Tnsx5p/sUe+4SBaUtTUFPIp3mD3NWxKm2C7/Thy2vVEkhjK0
-         TRew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692895400; x=1693500200;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MhNikzhh9eyMrDoIEuRkwpx1JH9DFmpQLb9Zaw13Qy0=;
-        b=h/BYyjZUM47ADXALv5vOCWC8xcwjW2iHlrWrSOK4JLI+F6Jbx3B96bVMiHX2ABeMcZ
-         x4y0cGh9QQrL56Mq3s7y22ZsMRNxci0W3mutUQUeWCUwyOB+O+NpWJlkXh6//ekF7Y3p
-         bngqjHBdzeoEL/E6V3j2yx++8H0uYYQ30Awq0x2mbTBQMUS3gv0kEw5eV3QDg5eLDgYN
-         XPFInegNQpNnLAx105owDHZgXMTBFSvzwhBmfa6AbCtGYkj+CnNEuEPXH1qfs1v0sUul
-         jtXGeUT7zHD+uGE3dNsPXOcQIlXAdSjWSiPIhQRenRaYIaMcdinOCJaPYjliuA8hpXm7
-         5PvA==
-X-Gm-Message-State: AOJu0YzupDKCD4DVpTWKI40Jmih4Tl0xbAoKwJUNi3qw3FZ6zHDeDGyy
-        WlvSHgpC3W64zlDqTXnCv1f4BQ==
-X-Google-Smtp-Source: AGHT+IEUCWFeSlki8RwvSQkR7uTgoukotEH1DBXjt3MQ0tdHbYwZNDakkUYgqZ8EKbxOphgoG97j2Q==
-X-Received: by 2002:a05:6512:3e9:b0:4fb:8de9:ac0e with SMTP id n9-20020a05651203e900b004fb8de9ac0emr9588579lfq.1.1692895400332;
-        Thu, 24 Aug 2023 09:43:20 -0700 (PDT)
-Received: from [192.168.0.22] ([77.252.47.198])
-        by smtp.gmail.com with ESMTPSA id o15-20020aa7dd4f000000b0051dd19d6d6esm10781906edw.73.2023.08.24.09.43.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Aug 2023 09:43:19 -0700 (PDT)
-Message-ID: <c9ede9cd-282a-37b9-4fbb-5b27fb276247@linaro.org>
-Date:   Thu, 24 Aug 2023 18:43:18 +0200
+        Thu, 24 Aug 2023 12:45:05 -0400
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::224])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66374198;
+        Thu, 24 Aug 2023 09:45:01 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id C1707E0004;
+        Thu, 24 Aug 2023 16:44:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1692895499;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sgKRd8PXna9jddAQ7rYYlYUO4KIn7jskOvosbl+/UOs=;
+        b=KTVnzD5eVG2mw9j6CEqcZhnTJSoCHDBkb/MYYvlHhrk7z6MfEr8ZRX0TSl957if3mHmwzS
+        6frES6KAXz+WuMYXmtFLD13OjX3VJcXVNJNMy7D6DCPoRgPj1bT8AtppiE+olPLBuMGg//
+        JxxP0rArWBg88Nbj10QQwE39F6YhX3z3MDZGAnJf48nbqoGxGXN8Xia5wJbKAGfZBJ+N6Q
+        HZA6C5qZftnN7pcS/5UaU+tLfQg+VnUhV0Zik7VF4qhFoxdGtvxD+UIMBMYu3kVD898JBR
+        BQPsXzVrFkC3MWJPlEnpAEFtwQr2EIdoqd1el7kRXYhmwqMBOoOEs+RVJBd09g==
+Date:   Thu, 24 Aug 2023 18:44:54 +0200
+From:   Herve Codina <herve.codina@bootlin.com>
+To:     Simon Horman <horms@kernel.org>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v4 21/28] net: wan: Add framer framework support
+Message-ID: <20230824184454.2a96b6fc@bootlin.com>
+In-Reply-To: <ZOJKH0xHpQc4HdUP@vergenet.net>
+References: <cover.1692376360.git.christophe.leroy@csgroup.eu>
+        <5f671caf19be0a9bb7ea7b96a6c86381e243ca4c.1692376361.git.christophe.leroy@csgroup.eu>
+        <ZOJKH0xHpQc4HdUP@vergenet.net>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v2 1/3] arm64: dts: imx93: add edma1 and edma2
-Content-Language: en-US
-To:     Frank Li <Frank.Li@nxp.com>, festevam@gmail.com
-Cc:     clin@suse.com, conor+dt@kernel.org, devicetree@vger.kernel.org,
-        eagle.zhou@nxp.com, imx@lists.linux.dev, joy.zou@nxp.com,
-        kernel@pengutronix.de, krzysztof.kozlowski+dt@linaro.org,
-        leoyang.li@nxp.com, linux-arm-kernel@lists.infradead.org,
-        linux-imx@nxp.com, linux-kernel@vger.kernel.org,
-        pierre.gondois@arm.com, robh+dt@kernel.org, s.hauer@pengutronix.de,
-        shawnguo@kernel.org, shenwei.wang@nxp.com, sherry.sun@nxp.com
-References: <20230824163922.2952403-1-Frank.Li@nxp.com>
- <20230824163922.2952403-2-Frank.Li@nxp.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230824163922.2952403-2-Frank.Li@nxp.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: herve.codina@bootlin.com
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/08/2023 18:39, Frank Li wrote:
-> Add edma<n> nodes.
+Hi Simon,
+
+On Sun, 20 Aug 2023 19:15:11 +0200
+Simon Horman <horms@kernel.org> wrote:
+
+> On Fri, Aug 18, 2023 at 06:39:15PM +0200, Christophe Leroy wrote:
+> > From: Herve Codina <herve.codina@bootlin.com>
+> > 
+> > A framer is a component in charge of an E1/T1 line interface.
+> > Connected usually to a TDM bus, it converts TDM frames to/from E1/T1
+> > frames. It also provides information related to the E1/T1 line.
+> > 
+> > The framer framework provides a set of APIs for the framer drivers
+> > (framer provider) to create/destroy a framer and APIs for the framer
+> > users (framer consumer) to obtain a reference to the framer, and
+> > use the framer.
+> > 
+> > This basic implementation provides a framer abstraction for:
+> >  - power on/off the framer
+> >  - get the framer status (line state)
+> >  - be notified on framer status changes
+> >  - get/set the framer configuration
+> > 
+> > Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+> > Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> > Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>  
 > 
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> ---
->  arch/arm64/boot/dts/freescale/imx93.dtsi | 116 +++++++++++++++++++++++
->  1 file changed, 116 insertions(+)
+> Hi Christophe and Herve,
 > 
-> diff --git a/arch/arm64/boot/dts/freescale/imx93.dtsi b/arch/arm64/boot/dts/freescale/imx93.dtsi
-> index 6f85a05ee7e1..acdca18673b7 100644
-> --- a/arch/arm64/boot/dts/freescale/imx93.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx93.dtsi
-> @@ -185,6 +185,46 @@ aips1: bus@44000000 {
->  			#size-cells = <1>;
->  			ranges;
->  
-> +			edma1: dma-controller@44000000{
+> some minor feedback from my side.
+> 
+> ...
+> 
+> > diff --git a/drivers/net/wan/framer/framer-core.c b/drivers/net/wan/framer/framer-core.c  
+> 
+> ...
+> 
+> > +/**
+> > + * framer_create() - create a new framer
+> > + * @dev: device that is creating the new framer
+> > + * @node: device node of the framer. default to dev->of_node.
+> > + * @ops: function pointers for performing framer operations
+> > + *
+> > + * Called to create a framer using framer framework.
+> > + */
+> > +struct framer *framer_create(struct device *dev, struct device_node *node,
+> > +			     const struct framer_ops *ops)
+> > +{
+> > +	int ret;
+> > +	int id;
+> > +	struct framer *framer;  
+> 
+> Please arrange local variable declarations for Networking code
+> using reverse xmas tree order - longest line to shortest.
 
-Missing space. In other places as well.
+Yes, will be done in the next iteration.
 
-> +				compatible = "fsl,imx93-edma3";
-> +				reg = <0x44000000 0x200000>;
-> +				#dma-cells = <3>;
-> +				dma-channels = <31>;
+> 
+> https://github.com/ecree-solarflare/xmastree is helpful here.
+> 
+> ...
+> 
+> > diff --git a/include/linux/framer/framer-provider.h b/include/linux/framer/framer-provider.h  
+> 
+> ...
+> 
+> > +/**
+> > + * struct framer_ops - set of function pointers for performing framer operations
+> > + * @init: operation to be performed for initializing the framer
+> > + * @exit: operation to be performed while exiting
+> > + * @power_on: powering on the framer
+> > + * @power_off: powering off the framer
+> > + * @flags: OR-ed flags (FRAMER_FLAG_*) to ask for core functionality
+> > + *          - @FRAMER_FLAG_POLL_STATUS:
+> > + *            Ask the core to perfom a polling to get the framer status and  
+> 
+> nit: perfom -> perform
 
+Will be fixed in the next iteration.
 
-...
+> 
+>      checkpatch.pl --codespell is your friend here
+> 
+> > + *            notify consumers on change.
+> > + *            The framer should call @framer_notify_status_change() when it
+> > + *            detects a status change. This is usally done using interrutps.  
+> 
+> nit: usally -> usually
+>      interrutps -> interrupts
 
-> +				clocks = <&clk IMX93_CLK_EDMA2_GATE>;
-> +				clock-names = "dma";
-> +				fsl,edma-axi;
-> +				status = "okay";
+Will be fixed in the next iteration.
 
-Drop.
+> 
+> ...
+> 
+> > diff --git a/include/linux/framer/framer.h b/include/linux/framer/framer.h
+> > new file mode 100644
+> > index 000000000000..0bee7135142f
+> > --- /dev/null
+> > +++ b/include/linux/framer/framer.h
+> > @@ -0,0 +1,199 @@
+> > +/* SPDX-License-Identifier: GPL-2.0-or-later */
+> > +/*
+> > + * Generic framer header file
+> > + *
+> > + * Copyright 2023 CS GROUP France
+> > + *
+> > + * Author: Herve Codina <herve.codina@bootlin.com>
+> > + */
+> > +
+> > +#ifndef __DRIVERS_FRAMER_H
+> > +#define __DRIVERS_FRAMER_H
+> > +
+> > +#include <linux/err.h>
+> > +#include <linux/mutex.h>
+> > +#include <linux/notifier.h>
+> > +#include <linux/of.h>
+> > +#include <linux/device.h>
+> > +#include <linux/workqueue.h>
+> > +
+> > +/**
+> > + * enum framer_iface - Framer interface  
+> 
+> As this is a kernel-doc, please include documentation for
+> the defined constants: FRAMER_IFACE_E1 and FRAMER_IFACE_T1.
+> 
+> As flagged by: ./scripts/kernel-doc -none
 
-> +			};
-> +
->  			wakeupmix_gpr: syscon@42420000 {
->  				compatible = "fsl,imx93-wakeupmix-syscfg", "syscon";
->  				reg = <0x42420000 0x1000>;
+Will be done in the next iteration.
 
+> 
+> > + */
+> > +enum framer_iface {
+> > +	FRAMER_IFACE_E1,      /* E1 interface */
+> > +	FRAMER_IFACE_T1,      /* T1 interface */
+> > +};
+> > +
+> > +/**
+> > + * enum framer_clock_mode - Framer clock mode  
+> 
+> Likewise here too.
+> 
+> Also, nit: framer_clock_mode -> framer_clock_type
+> 
+
+Will be updated (doc and change to framer_clock_type) in the next iteration.
+
+> > + */
+> > +enum framer_clock_type {
+> > +	FRAMER_CLOCK_EXT, /* External clock */
+> > +	FRAMER_CLOCK_INT, /* Internal clock */
+> > +};
+> > +
+> > +/**
+> > + * struct framer_configuration - Framer configuration  
+> 
+> nit: framer_configuration -> framer_config
+
+Will be fixed in the next iteration.
+
+> 
+> > + * @line_iface: Framer line interface
+> > + * @clock_mode: Framer clock type
+> > + * @clock_rate: Framer clock rate
+> > + */
+> > +struct framer_config {
+> > +	enum framer_iface iface;
+> > +	enum framer_clock_type clock_type;
+> > +	unsigned long line_clock_rate;
+> > +};
+> > +
+> > +/**
+> > + * struct framer_status - Framer status
+> > + * @link_is_on: Framer link state. true, the link is on, false, the link is off.
+> > + */
+> > +struct framer_status {
+> > +	bool link_is_on;
+> > +};
+> > +
+> > +/**
+> > + * framer_event - event available for notification  
+> 
+> nit: framer_event -> enum framer_event
+
+Will be fixed in the next iteration.
+
+> 
+> A~d please document FRAMER_EVENT_STATUS in the kernel doc too.
+
+Will be documented in the next iteration.
+
+> 
+> > + */
+> > +enum framer_event {
+> > +	FRAMER_EVENT_STATUS,	/* Event notified on framer_status changes */
+> > +};  
+> 
+> ...
+
+Thanks for the review,
 Best regards,
-Krzysztof
-
+Hervé
