@@ -2,166 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D90617864FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 03:59:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27A757864DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 03:47:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239167AbjHXB7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 21:59:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39864 "EHLO
+        id S239192AbjHXBqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 21:46:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239172AbjHXB60 (ORCPT
+        with ESMTP id S239137AbjHXBp7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 21:58:26 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B11310D0;
-        Wed, 23 Aug 2023 18:58:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692842303; x=1724378303;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=zr7H0wGlnhCSbEDuWo9f0W/Bc09ig1Y26FxrMMZFams=;
-  b=f+g3AcOlvcJhHgUHHQ1LPSYGF5GZbu7Gl9Zd1vt3us1E4m7fhurjh7XI
-   dy8AZba1T5ZxrcQqEL3qT1ElMxPnccX6lqD1xtPLc8PjevFw21d2Z5YWz
-   2nK5u3IAbwPLhWrOqTczWs+/CXElU8l+tANndSJwL2e5Pxzosij7tcrF+
-   HhXmb6wieDJwGB/K8SGrQdKPFPox2bVnSDPCSqBu24OMofe2jGVgfm+Y9
-   +P9MUvh6Z97kxt7x2mVY7FBun2+msXZLi9HCtnwZMxJaXEMep2UhCCtKV
-   bGjFdKHBWQ6d4iaUz+vBDfXazroNzfsT42TwkyrXDP/uMioAwxEtAI//A
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="460682472"
-X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
-   d="scan'208";a="460682472"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2023 18:58:20 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="713794457"
-X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
-   d="scan'208";a="713794457"
-Received: from dmi-pnp-i7.sh.intel.com ([10.239.159.155])
-  by orsmga006.jf.intel.com with ESMTP; 23 Aug 2023 18:58:16 -0700
-From:   Dapeng Mi <dapeng1.mi@linux.intel.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Like Xu <likexu@tencent.com>
-Cc:     kvm@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhang Xiong <xiong.y.zhang@intel.com>,
-        Lv Zhiyuan <zhiyuan.lv@intel.com>,
-        Dapeng Mi <dapeng1.mi@intel.com>,
-        Dapeng Mi <dapeng1.mi@linux.intel.com>
-Subject: [Patch v3] KVM: x86/pmu: Manipulate FIXED_CTR_CTRL MSR with macros
-Date:   Thu, 24 Aug 2023 10:05:46 +0800
-Message-Id: <20230824020546.1108516-1-dapeng1.mi@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
+        Wed, 23 Aug 2023 21:45:59 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5536E67;
+        Wed, 23 Aug 2023 18:45:55 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RWQsD2Mznz4f3k6R;
+        Thu, 24 Aug 2023 09:45:52 +0800 (CST)
+Received: from ultra.huawei.com (unknown [10.90.53.71])
+        by APP4 (Coremail) with SMTP id gCh0CgB3TaBNtuZk2HbCBQ--.33536S2;
+        Thu, 24 Aug 2023 09:45:51 +0800 (CST)
+From:   Pu Lehui <pulehui@huaweicloud.com>
+To:     linux-riscv@lists.infradead.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Xu Kuohai <xukuohai@huawei.com>,
+        Puranjay Mohan <puranjay12@gmail.com>,
+        Pu Lehui <pulehui@huawei.com>,
+        Pu Lehui <pulehui@huaweicloud.com>
+Subject: [PATCH bpf-next v2 0/7] Add support cpu v4 insns for RV64
+Date:   Thu, 24 Aug 2023 09:49:54 +0000
+Message-Id: <20230824095001.3408573-1-pulehui@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-CM-TRANSID: gCh0CgB3TaBNtuZk2HbCBQ--.33536S2
+X-Coremail-Antispam: 1UD129KBjvAXoW3tryfJF1DZr48JrWxtFWxtFb_yoW8JrW3Ko
+        WYq39FkF9IyF47tanrZ3WSyF43tF98ur4kGry7GFyrAr48ZrnxKw1rur4xuF9rZwsIqr9r
+        Xay2yFyDJrykXayxn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
+        AaLaJ3UjIYCTnIWjp_UUUYB7AC8VAFwI0_Xr0_Wr1l1xkIjI8I6I8E6xAIw20EY4v20xva
+        j40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l87I20VAvwVAaII0Ic2I_JFv_Gryl8cAvFVAK0I
+        I2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0
+        Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84
+        ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8C
+        rVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxV
+        WUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS
+        5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28IcxkI7VAKI48JMxC20s026x
+        CaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_
+        JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r
+        1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_
+        WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r
+        4UJbIYCTnIWIevJa73UjIFyTuYvjTRKD73UUUUU
+X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Magic numbers are used to manipulate the bit fields of
-FIXED_CTR_CTRL MSR. This is not read-friendly and use macros to replace
-these magic numbers to increase the readability.
+Add support cpu v4 instructions for RV64. The relevant tests have passed as show bellow:
 
-Signed-off-by: Dapeng Mi <dapeng1.mi@linux.intel.com>
----
- arch/x86/kvm/pmu.c           | 10 +++++-----
- arch/x86/kvm/pmu.h           |  6 ++++--
- arch/x86/kvm/vmx/pmu_intel.c | 11 ++++++++---
- 3 files changed, 17 insertions(+), 10 deletions(-)
+# ./test_progs-cpuv4 -a ldsx_insn,verifier_sdiv,verifier_movsx,verifier_ldsx,verifier_gotol,verifier_bswap
+#116/1   ldsx_insn/map_val and probed_memory:OK
+#116/2   ldsx_insn/ctx_member_sign_ext:OK
+#116/3   ldsx_insn/ctx_member_narrow_sign_ext:OK
+#116     ldsx_insn:OK
+#309/1   verifier_bswap/BSWAP, 16:OK
+#309/2   verifier_bswap/BSWAP, 16 @unpriv:OK
+#309/3   verifier_bswap/BSWAP, 32:OK
+#309/4   verifier_bswap/BSWAP, 32 @unpriv:OK
+#309/5   verifier_bswap/BSWAP, 64:OK
+#309/6   verifier_bswap/BSWAP, 64 @unpriv:OK
+#309     verifier_bswap:OK
+#323/1   verifier_gotol/gotol, small_imm:OK
+#323/2   verifier_gotol/gotol, small_imm @unpriv:OK
+#323     verifier_gotol:OK
+#331/1   verifier_ldsx/LDSX, S8:OK
+#331/2   verifier_ldsx/LDSX, S8 @unpriv:OK
+#331/3   verifier_ldsx/LDSX, S16:OK
+#331/4   verifier_ldsx/LDSX, S16 @unpriv:OK
+#331/5   verifier_ldsx/LDSX, S32:OK
+#331/6   verifier_ldsx/LDSX, S32 @unpriv:OK
+#331/7   verifier_ldsx/LDSX, S8 range checking, privileged:OK
+#331/8   verifier_ldsx/LDSX, S16 range checking:OK
+#331/9   verifier_ldsx/LDSX, S16 range checking @unpriv:OK
+#331/10  verifier_ldsx/LDSX, S32 range checking:OK
+#331/11  verifier_ldsx/LDSX, S32 range checking @unpriv:OK
+#331     verifier_ldsx:OK
+#342/1   verifier_movsx/MOV32SX, S8:OK
+#342/2   verifier_movsx/MOV32SX, S8 @unpriv:OK
+#342/3   verifier_movsx/MOV32SX, S16:OK
+#342/4   verifier_movsx/MOV32SX, S16 @unpriv:OK
+#342/5   verifier_movsx/MOV64SX, S8:OK
+#342/6   verifier_movsx/MOV64SX, S8 @unpriv:OK
+#342/7   verifier_movsx/MOV64SX, S16:OK
+#342/8   verifier_movsx/MOV64SX, S16 @unpriv:OK
+#342/9   verifier_movsx/MOV64SX, S32:OK
+#342/10  verifier_movsx/MOV64SX, S32 @unpriv:OK
+#342/11  verifier_movsx/MOV32SX, S8, range_check:OK
+#342/12  verifier_movsx/MOV32SX, S8, range_check @unpriv:OK
+#342/13  verifier_movsx/MOV32SX, S16, range_check:OK
+#342/14  verifier_movsx/MOV32SX, S16, range_check @unpriv:OK
+#342/15  verifier_movsx/MOV32SX, S16, range_check 2:OK
+#342/16  verifier_movsx/MOV32SX, S16, range_check 2 @unpriv:OK
+#342/17  verifier_movsx/MOV64SX, S8, range_check:OK
+#342/18  verifier_movsx/MOV64SX, S8, range_check @unpriv:OK
+#342/19  verifier_movsx/MOV64SX, S16, range_check:OK
+#342/20  verifier_movsx/MOV64SX, S16, range_check @unpriv:OK
+#342/21  verifier_movsx/MOV64SX, S32, range_check:OK
+#342/22  verifier_movsx/MOV64SX, S32, range_check @unpriv:OK
+#342/23  verifier_movsx/MOV64SX, S16, R10 Sign Extension:OK
+#342/24  verifier_movsx/MOV64SX, S16, R10 Sign Extension @unpriv:OK
+#342     verifier_movsx:OK
+#354/1   verifier_sdiv/SDIV32, non-zero imm divisor, check 1:OK
+#354/2   verifier_sdiv/SDIV32, non-zero imm divisor, check 1 @unpriv:OK
+#354/3   verifier_sdiv/SDIV32, non-zero imm divisor, check 2:OK
+#354/4   verifier_sdiv/SDIV32, non-zero imm divisor, check 2 @unpriv:OK
+#354/5   verifier_sdiv/SDIV32, non-zero imm divisor, check 3:OK
+#354/6   verifier_sdiv/SDIV32, non-zero imm divisor, check 3 @unpriv:OK
+#354/7   verifier_sdiv/SDIV32, non-zero imm divisor, check 4:OK
+#354/8   verifier_sdiv/SDIV32, non-zero imm divisor, check 4 @unpriv:OK
+#354/9   verifier_sdiv/SDIV32, non-zero imm divisor, check 5:OK
+#354/10  verifier_sdiv/SDIV32, non-zero imm divisor, check 5 @unpriv:OK
+#354/11  verifier_sdiv/SDIV32, non-zero imm divisor, check 6:OK
+#354/12  verifier_sdiv/SDIV32, non-zero imm divisor, check 6 @unpriv:OK
+#354/13  verifier_sdiv/SDIV32, non-zero imm divisor, check 7:OK
+#354/14  verifier_sdiv/SDIV32, non-zero imm divisor, check 7 @unpriv:OK
+#354/15  verifier_sdiv/SDIV32, non-zero imm divisor, check 8:OK
+#354/16  verifier_sdiv/SDIV32, non-zero imm divisor, check 8 @unpriv:OK
+#354/17  verifier_sdiv/SDIV32, non-zero reg divisor, check 1:OK
+#354/18  verifier_sdiv/SDIV32, non-zero reg divisor, check 1 @unpriv:OK
+#354/19  verifier_sdiv/SDIV32, non-zero reg divisor, check 2:OK
+#354/20  verifier_sdiv/SDIV32, non-zero reg divisor, check 2 @unpriv:OK
+#354/21  verifier_sdiv/SDIV32, non-zero reg divisor, check 3:OK
+#354/22  verifier_sdiv/SDIV32, non-zero reg divisor, check 3 @unpriv:OK
+#354/23  verifier_sdiv/SDIV32, non-zero reg divisor, check 4:OK
+#354/24  verifier_sdiv/SDIV32, non-zero reg divisor, check 4 @unpriv:OK
+#354/25  verifier_sdiv/SDIV32, non-zero reg divisor, check 5:OK
+#354/26  verifier_sdiv/SDIV32, non-zero reg divisor, check 5 @unpriv:OK
+#354/27  verifier_sdiv/SDIV32, non-zero reg divisor, check 6:OK
+#354/28  verifier_sdiv/SDIV32, non-zero reg divisor, check 6 @unpriv:OK
+#354/29  verifier_sdiv/SDIV32, non-zero reg divisor, check 7:OK
+#354/30  verifier_sdiv/SDIV32, non-zero reg divisor, check 7 @unpriv:OK
+#354/31  verifier_sdiv/SDIV32, non-zero reg divisor, check 8:OK
+#354/32  verifier_sdiv/SDIV32, non-zero reg divisor, check 8 @unpriv:OK
+#354/33  verifier_sdiv/SDIV64, non-zero imm divisor, check 1:OK
+#354/34  verifier_sdiv/SDIV64, non-zero imm divisor, check 1 @unpriv:OK
+#354/35  verifier_sdiv/SDIV64, non-zero imm divisor, check 2:OK
+#354/36  verifier_sdiv/SDIV64, non-zero imm divisor, check 2 @unpriv:OK
+#354/37  verifier_sdiv/SDIV64, non-zero imm divisor, check 3:OK
+#354/38  verifier_sdiv/SDIV64, non-zero imm divisor, check 3 @unpriv:OK
+#354/39  verifier_sdiv/SDIV64, non-zero imm divisor, check 4:OK
+#354/40  verifier_sdiv/SDIV64, non-zero imm divisor, check 4 @unpriv:OK
+#354/41  verifier_sdiv/SDIV64, non-zero imm divisor, check 5:OK
+#354/42  verifier_sdiv/SDIV64, non-zero imm divisor, check 5 @unpriv:OK
+#354/43  verifier_sdiv/SDIV64, non-zero imm divisor, check 6:OK
+#354/44  verifier_sdiv/SDIV64, non-zero imm divisor, check 6 @unpriv:OK
+#354/45  verifier_sdiv/SDIV64, non-zero reg divisor, check 1:OK
+#354/46  verifier_sdiv/SDIV64, non-zero reg divisor, check 1 @unpriv:OK
+#354/47  verifier_sdiv/SDIV64, non-zero reg divisor, check 2:OK
+#354/48  verifier_sdiv/SDIV64, non-zero reg divisor, check 2 @unpriv:OK
+#354/49  verifier_sdiv/SDIV64, non-zero reg divisor, check 3:OK
+#354/50  verifier_sdiv/SDIV64, non-zero reg divisor, check 3 @unpriv:OK
+#354/51  verifier_sdiv/SDIV64, non-zero reg divisor, check 4:OK
+#354/52  verifier_sdiv/SDIV64, non-zero reg divisor, check 4 @unpriv:OK
+#354/53  verifier_sdiv/SDIV64, non-zero reg divisor, check 5:OK
+#354/54  verifier_sdiv/SDIV64, non-zero reg divisor, check 5 @unpriv:OK
+#354/55  verifier_sdiv/SDIV64, non-zero reg divisor, check 6:OK
+#354/56  verifier_sdiv/SDIV64, non-zero reg divisor, check 6 @unpriv:OK
+#354/57  verifier_sdiv/SMOD32, non-zero imm divisor, check 1:OK
+#354/58  verifier_sdiv/SMOD32, non-zero imm divisor, check 1 @unpriv:OK
+#354/59  verifier_sdiv/SMOD32, non-zero imm divisor, check 2:OK
+#354/60  verifier_sdiv/SMOD32, non-zero imm divisor, check 2 @unpriv:OK
+#354/61  verifier_sdiv/SMOD32, non-zero imm divisor, check 3:OK
+#354/62  verifier_sdiv/SMOD32, non-zero imm divisor, check 3 @unpriv:OK
+#354/63  verifier_sdiv/SMOD32, non-zero imm divisor, check 4:OK
+#354/64  verifier_sdiv/SMOD32, non-zero imm divisor, check 4 @unpriv:OK
+#354/65  verifier_sdiv/SMOD32, non-zero imm divisor, check 5:OK
+#354/66  verifier_sdiv/SMOD32, non-zero imm divisor, check 5 @unpriv:OK
+#354/67  verifier_sdiv/SMOD32, non-zero imm divisor, check 6:OK
+#354/68  verifier_sdiv/SMOD32, non-zero imm divisor, check 6 @unpriv:OK
+#354/69  verifier_sdiv/SMOD32, non-zero reg divisor, check 1:OK
+#354/70  verifier_sdiv/SMOD32, non-zero reg divisor, check 1 @unpriv:OK
+#354/71  verifier_sdiv/SMOD32, non-zero reg divisor, check 2:OK
+#354/72  verifier_sdiv/SMOD32, non-zero reg divisor, check 2 @unpriv:OK
+#354/73  verifier_sdiv/SMOD32, non-zero reg divisor, check 3:OK
+#354/74  verifier_sdiv/SMOD32, non-zero reg divisor, check 3 @unpriv:OK
+#354/75  verifier_sdiv/SMOD32, non-zero reg divisor, check 4:OK
+#354/76  verifier_sdiv/SMOD32, non-zero reg divisor, check 4 @unpriv:OK
+#354/77  verifier_sdiv/SMOD32, non-zero reg divisor, check 5:OK
+#354/78  verifier_sdiv/SMOD32, non-zero reg divisor, check 5 @unpriv:OK
+#354/79  verifier_sdiv/SMOD32, non-zero reg divisor, check 6:OK
+#354/80  verifier_sdiv/SMOD32, non-zero reg divisor, check 6 @unpriv:OK
+#354/81  verifier_sdiv/SMOD64, non-zero imm divisor, check 1:OK
+#354/82  verifier_sdiv/SMOD64, non-zero imm divisor, check 1 @unpriv:OK
+#354/83  verifier_sdiv/SMOD64, non-zero imm divisor, check 2:OK
+#354/84  verifier_sdiv/SMOD64, non-zero imm divisor, check 2 @unpriv:OK
+#354/85  verifier_sdiv/SMOD64, non-zero imm divisor, check 3:OK
+#354/86  verifier_sdiv/SMOD64, non-zero imm divisor, check 3 @unpriv:OK
+#354/87  verifier_sdiv/SMOD64, non-zero imm divisor, check 4:OK
+#354/88  verifier_sdiv/SMOD64, non-zero imm divisor, check 4 @unpriv:OK
+#354/89  verifier_sdiv/SMOD64, non-zero imm divisor, check 5:OK
+#354/90  verifier_sdiv/SMOD64, non-zero imm divisor, check 5 @unpriv:OK
+#354/91  verifier_sdiv/SMOD64, non-zero imm divisor, check 6:OK
+#354/92  verifier_sdiv/SMOD64, non-zero imm divisor, check 6 @unpriv:OK
+#354/93  verifier_sdiv/SMOD64, non-zero imm divisor, check 7:OK
+#354/94  verifier_sdiv/SMOD64, non-zero imm divisor, check 7 @unpriv:OK
+#354/95  verifier_sdiv/SMOD64, non-zero imm divisor, check 8:OK
+#354/96  verifier_sdiv/SMOD64, non-zero imm divisor, check 8 @unpriv:OK
+#354/97  verifier_sdiv/SMOD64, non-zero reg divisor, check 1:OK
+#354/98  verifier_sdiv/SMOD64, non-zero reg divisor, check 1 @unpriv:OK
+#354/99  verifier_sdiv/SMOD64, non-zero reg divisor, check 2:OK
+#354/100 verifier_sdiv/SMOD64, non-zero reg divisor, check 2 @unpriv:OK
+#354/101 verifier_sdiv/SMOD64, non-zero reg divisor, check 3:OK
+#354/102 verifier_sdiv/SMOD64, non-zero reg divisor, check 3 @unpriv:OK
+#354/103 verifier_sdiv/SMOD64, non-zero reg divisor, check 4:OK
+#354/104 verifier_sdiv/SMOD64, non-zero reg divisor, check 4 @unpriv:OK
+#354/105 verifier_sdiv/SMOD64, non-zero reg divisor, check 5:OK
+#354/106 verifier_sdiv/SMOD64, non-zero reg divisor, check 5 @unpriv:OK
+#354/107 verifier_sdiv/SMOD64, non-zero reg divisor, check 6:OK
+#354/108 verifier_sdiv/SMOD64, non-zero reg divisor, check 6 @unpriv:OK
+#354/109 verifier_sdiv/SMOD64, non-zero reg divisor, check 7:OK
+#354/110 verifier_sdiv/SMOD64, non-zero reg divisor, check 7 @unpriv:OK
+#354/111 verifier_sdiv/SMOD64, non-zero reg divisor, check 8:OK
+#354/112 verifier_sdiv/SMOD64, non-zero reg divisor, check 8 @unpriv:OK
+#354/113 verifier_sdiv/SDIV32, zero divisor:OK
+#354/114 verifier_sdiv/SDIV32, zero divisor @unpriv:OK
+#354/115 verifier_sdiv/SDIV64, zero divisor:OK
+#354/116 verifier_sdiv/SDIV64, zero divisor @unpriv:OK
+#354/117 verifier_sdiv/SMOD32, zero divisor:OK
+#354/118 verifier_sdiv/SMOD32, zero divisor @unpriv:OK
+#354/119 verifier_sdiv/SMOD64, zero divisor:OK
+#354/120 verifier_sdiv/SMOD64, zero divisor @unpriv:OK
+#354     verifier_sdiv:OK
+Summary: 6/166 PASSED, 0 SKIPPED, 0 FAILED
 
-diff --git a/arch/x86/kvm/pmu.c b/arch/x86/kvm/pmu.c
-index edb89b51b383..fb4ef2da3e32 100644
---- a/arch/x86/kvm/pmu.c
-+++ b/arch/x86/kvm/pmu.c
-@@ -420,11 +420,11 @@ static void reprogram_counter(struct kvm_pmc *pmc)
- 	if (pmc_is_fixed(pmc)) {
- 		fixed_ctr_ctrl = fixed_ctrl_field(pmu->fixed_ctr_ctrl,
- 						  pmc->idx - INTEL_PMC_IDX_FIXED);
--		if (fixed_ctr_ctrl & 0x1)
-+		if (fixed_ctr_ctrl & INTEL_FIXED_0_KERNEL)
- 			eventsel |= ARCH_PERFMON_EVENTSEL_OS;
--		if (fixed_ctr_ctrl & 0x2)
-+		if (fixed_ctr_ctrl & INTEL_FIXED_0_USER)
- 			eventsel |= ARCH_PERFMON_EVENTSEL_USR;
--		if (fixed_ctr_ctrl & 0x8)
-+		if (fixed_ctr_ctrl & INTEL_FIXED_0_ENABLE_PMI)
- 			eventsel |= ARCH_PERFMON_EVENTSEL_INT;
- 		new_config = (u64)fixed_ctr_ctrl;
- 	}
-@@ -749,8 +749,8 @@ static inline bool cpl_is_matched(struct kvm_pmc *pmc)
- 	} else {
- 		config = fixed_ctrl_field(pmc_to_pmu(pmc)->fixed_ctr_ctrl,
- 					  pmc->idx - INTEL_PMC_IDX_FIXED);
--		select_os = config & 0x1;
--		select_user = config & 0x2;
-+		select_os = config & INTEL_FIXED_0_KERNEL;
-+		select_user = config & INTEL_FIXED_0_USER;
- 	}
- 
- 	return (static_call(kvm_x86_get_cpl)(pmc->vcpu) == 0) ? select_os : select_user;
-diff --git a/arch/x86/kvm/pmu.h b/arch/x86/kvm/pmu.h
-index 7d9ba301c090..ffda2ecc3a22 100644
---- a/arch/x86/kvm/pmu.h
-+++ b/arch/x86/kvm/pmu.h
-@@ -12,7 +12,8 @@
- 					  MSR_IA32_MISC_ENABLE_BTS_UNAVAIL)
- 
- /* retrieve the 4 bits for EN and PMI out of IA32_FIXED_CTR_CTRL */
--#define fixed_ctrl_field(ctrl_reg, idx) (((ctrl_reg) >> ((idx)*4)) & 0xf)
-+#define fixed_ctrl_field(ctrl_reg, idx) \
-+	(((ctrl_reg) >> ((idx) * INTEL_FIXED_BITS_STRIDE)) & INTEL_FIXED_BITS_MASK)
- 
- #define VMWARE_BACKDOOR_PMC_HOST_TSC		0x10000
- #define VMWARE_BACKDOOR_PMC_REAL_TIME		0x10001
-@@ -165,7 +166,8 @@ static inline bool pmc_speculative_in_use(struct kvm_pmc *pmc)
- 
- 	if (pmc_is_fixed(pmc))
- 		return fixed_ctrl_field(pmu->fixed_ctr_ctrl,
--					pmc->idx - INTEL_PMC_IDX_FIXED) & 0x3;
-+					pmc->idx - INTEL_PMC_IDX_FIXED) &
-+					(INTEL_FIXED_0_KERNEL | INTEL_FIXED_0_USER);
- 
- 	return pmc->eventsel & ARCH_PERFMON_EVENTSEL_ENABLE;
- }
-diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
-index f2efa0bf7ae8..b0ac55891cb7 100644
---- a/arch/x86/kvm/vmx/pmu_intel.c
-+++ b/arch/x86/kvm/vmx/pmu_intel.c
-@@ -548,8 +548,13 @@ static void intel_pmu_refresh(struct kvm_vcpu *vcpu)
- 		setup_fixed_pmc_eventsel(pmu);
- 	}
- 
--	for (i = 0; i < pmu->nr_arch_fixed_counters; i++)
--		pmu->fixed_ctr_ctrl_mask &= ~(0xbull << (i * 4));
-+	for (i = 0; i < pmu->nr_arch_fixed_counters; i++) {
-+		pmu->fixed_ctr_ctrl_mask &=
-+			 ~intel_fixed_bits_by_idx(i,
-+						  INTEL_FIXED_0_KERNEL |
-+						  INTEL_FIXED_0_USER |
-+						  INTEL_FIXED_0_ENABLE_PMI);
-+	}
- 	counter_mask = ~(((1ull << pmu->nr_arch_gp_counters) - 1) |
- 		(((1ull << pmu->nr_arch_fixed_counters) - 1) << INTEL_PMC_IDX_FIXED));
- 	pmu->global_ctrl_mask = counter_mask;
-@@ -595,7 +600,7 @@ static void intel_pmu_refresh(struct kvm_vcpu *vcpu)
- 			pmu->reserved_bits &= ~ICL_EVENTSEL_ADAPTIVE;
- 			for (i = 0; i < pmu->nr_arch_fixed_counters; i++) {
- 				pmu->fixed_ctr_ctrl_mask &=
--					~(1ULL << (INTEL_PMC_IDX_FIXED + i * 4));
-+					~intel_fixed_bits_by_idx(i, ICL_FIXED_0_ADAPTIVE);
- 			}
- 			pmu->pebs_data_cfg_mask = ~0xff00000full;
- 		} else {
+NOTE: ldsx_insn testcase uses fentry and needs to rely on ftrace direct call [0].
+[0] https://lore.kernel.org/all/20230627111612.761164-1-suagrfillet@gmail.com/
 
-base-commit: fff2e47e6c3b8050ca26656693caa857e3a8b740
+v2:
+- Use temporary reg to avoid clobbering the source reg in movs_8/16 insns. (Björn)
+- Add Acked-by
+
+v1:
+https://lore.kernel.org/bpf/20230823231059.3363698-1-pulehui@huaweicloud.com
+
+Pu Lehui (7):
+  riscv, bpf: Fix missing exception handling and redundant zext for
+    LDX_B/H/W
+  riscv, bpf: Support sign-extension load insns
+  riscv, bpf: Support sign-extension mov insns
+  riscv, bpf: Support 32-bit offset jmp insn
+  riscv, bpf: Support signed div/mod insns
+  riscv, bpf: Support unconditional bswap insn
+  selftests/bpf: Enable cpu v4 tests for RV64
+
+ arch/riscv/net/bpf_jit.h                      |  30 ++++++
+ arch/riscv/net/bpf_jit_comp64.c               | 102 ++++++++++++++----
+ .../selftests/bpf/progs/test_ldsx_insn.c      |   3 +-
+ .../selftests/bpf/progs/verifier_bswap.c      |   3 +-
+ .../selftests/bpf/progs/verifier_gotol.c      |   3 +-
+ .../selftests/bpf/progs/verifier_ldsx.c       |   3 +-
+ .../selftests/bpf/progs/verifier_movsx.c      |   3 +-
+ .../selftests/bpf/progs/verifier_sdiv.c       |   3 +-
+ 8 files changed, 122 insertions(+), 28 deletions(-)
+
 -- 
-2.34.1
+2.39.2
 
