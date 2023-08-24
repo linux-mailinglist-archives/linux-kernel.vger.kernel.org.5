@@ -2,220 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D53DD7877EE
+	by mail.lfdr.de (Postfix) with ESMTP id 36CB87877EB
 	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 20:33:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243057AbjHXScj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 14:32:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47742 "EHLO
+        id S243049AbjHXSci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 14:32:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243113AbjHXScd (ORCPT
+        with ESMTP id S243106AbjHXSca (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 14:32:33 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BE2E1BFE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 11:32:25 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9936b3d0286so10507566b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 11:32:25 -0700 (PDT)
+        Thu, 24 Aug 2023 14:32:30 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE7E51BEF
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 11:32:21 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-583312344e7so2317597b3.1
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 11:32:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692901943; x=1693506743;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=b+3+dmlDnZFrI+rLYEmzONKPLNzgiZ+Y0780EKixBdg=;
-        b=VaTMowRbb97l4wYN4V2TLMO0Cysl0+5fgFw3XRKsQ8NPtmJDHYaNb/FZgIWGmAScXP
-         i0m3sP8CYsNfnkCAZqhTLk69U2t4Su8N7fzPHkjWzf6woVlnpYeTFJOdjbopcSU9YCiF
-         K5VOjyT+0YB8As89VDM4WJ2PBnhiuDLKYnwTdtz1IUhQtKgNCsdNHwF2TmL6CKAbhRVe
-         ELJuJ7gUgXTjR2og1xgmSII2lWgoERtPErGIHtCAqigeM9aQoBfeCqpKRZXLtV8M6NjX
-         a0hkF1seKyj1+2BALJuILa8X+9xvHZMEWnp1iBRL2vVChfej1BhDCaLnelJCStbdNT/J
-         saMA==
+        d=google.com; s=20221208; t=1692901941; x=1693506741;
+        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=MNeeSRjShfUBxK20UmYelF8xLtXN72q85W2K9O6AewU=;
+        b=6eeGKylvsVaRxqcWbxgaNrUL6kMoeIfCaARcdvzuxV1Qk1Nn5wH02JO8+6/0T4pV1I
+         WZmUizQ6I7z2UHZ1tEsl8/bmQ/3t26lY0YiMcdEUVv/YeXJ3T5rnY+ZSLgx30PsG0/o/
+         7fH1Z85JmLBIX+EOYlLRcAzB2CkGJhzgMadtQVB/p5Mn2yZ3zVRST+Eq42Fbp8jRT2Zd
+         XCGR9jx6OKM0EAIC0lPTeCjqT/M1FsSHOZaz/JFRbqlS3OkgzH4vWqw+QL1XXHBmKSkV
+         uLv9sMAKA9GD09u63qp4hIjQOv4ZRu31x5nmzCaDkhRqYrJgE0USb0fFiXEWT0sj0nb6
+         0vEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692901943; x=1693506743;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=b+3+dmlDnZFrI+rLYEmzONKPLNzgiZ+Y0780EKixBdg=;
-        b=jVitpTSyh6z973RCjtjBmPKskPys/KjSFe5hH4dnTLJYHbtVxMLTRIzL3J/5Rj4Ign
-         ydevABRZLDZpcN+q8VZUZsIvJs/QBzHqsg3PcEkeSaTScW0n1yLQub+wjn37jyElDSy3
-         5c7WJZJ7X4hd/X/Z6GG4aupiI1OyXVJq42LGokiPuNfb5vEIEgIpXt8Tegm/J/Kq0YRI
-         F9IXvLMiAPp5FrwQUDf31qcPKXMVwptF2Ykg2tHqMdymGBMHpNS6H4viBsUhHSKAziSm
-         w32KWHMdaP/rKgGadfpG2EN2zBVWaAEPdeo8ilsJWQxVwYpdzYTLNAavUH7G5yBvQRcB
-         L8yw==
-X-Gm-Message-State: AOJu0YwPCA7y8lm/I/HZ8q+VAiQJFActMfpLjvLrD1za80zcyAd2h+Az
-        2AX/vPs1FTqWjnD6K6hiWYdz6GUvhRZgSzwn1MHXNw==
-X-Google-Smtp-Source: AGHT+IHJSKeLVD6DR6KD6Xl66mDzcoycjKCoC9D3oU+ptw9RIDjabfvwWZJS27LYyh3lvexlD3+GdljBpK6hwuC4Fp4=
-X-Received: by 2002:a17:906:5307:b0:9a2:40e:2cad with SMTP id
- h7-20020a170906530700b009a2040e2cadmr2354481ejo.48.1692901943411; Thu, 24 Aug
- 2023 11:32:23 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230822024901.2412520-1-liushixin2@huawei.com>
- <CAJD7tkZkYsopuqGH_Lo=kE4=HO33wmvK6mXhuq4p_KZ6pYuXtw@mail.gmail.com> <87wmxk6d1m.fsf@yhuang6-desk2.ccr.corp.intel.com>
-In-Reply-To: <87wmxk6d1m.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Thu, 24 Aug 2023 11:31:47 -0700
-Message-ID: <CAJD7tkbRyDt6cCo6_UJgt_51BznbTVQx+qX9LmSM7ThLfU+hQg@mail.gmail.com>
-Subject: Re: [PATCH v2] mm: vmscan: reclaim anon pages if there are swapcache pages
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     Liu Shixin <liushixin2@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        wangkefeng.wang@huawei.com, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org
+        d=1e100.net; s=20221208; t=1692901941; x=1693506741;
+        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MNeeSRjShfUBxK20UmYelF8xLtXN72q85W2K9O6AewU=;
+        b=gt3gb8VITDgQLdxekYTQkwDGt3fwAUIKZFOYiPECUmuCFHIcYLfKPbeikNDKL0mjkb
+         yw1qEd21izxp7xnN8NzMZJ4z+lOAtSM4CddyMoTAF8Jq1/lA/fDkgFDlXdaadYwEI7TR
+         1LUl9krti91tPJ1vOXIRsmT3DeYCXQq7IyoHVSnK+bACa+RfyHP+p5AO1AkJ54qcHLOf
+         srUE0cmOu9lfIQiOsEaI19eWLND5I3C40RrBE2J4rCMuV48/VSfH2EExXDO9lCRlBqNy
+         hpJnP1pC+A+k7jETcQS7uSDYtg6wWVuOchN2FXb2M6xpZ6puir6DcpnOt3M7wSrUUt1U
+         b94A==
+X-Gm-Message-State: AOJu0YySfNiSOg4NdvjYBNlngXCCE8n5gtr45aX6cbZPZyO0jiXiRQJG
+        TKUpq0HxS6bxtfVKQhU7weNnBju/i9qL
+X-Google-Smtp-Source: AGHT+IEHDSXwTvSkKB3beLc6wwOSaR1G9iaM3BAUwl25BtxYOXui5MNMrOMvZkCSI2+nprUfgTJaaCdXNoGt
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:fbb9:d9e7:7405:2651])
+ (user=irogers job=sendgmr) by 2002:a25:bc8a:0:b0:d78:2f4c:7df with SMTP id
+ e10-20020a25bc8a000000b00d782f4c07dfmr315ybk.12.1692901941141; Thu, 24 Aug
+ 2023 11:32:21 -0700 (PDT)
+Date:   Thu, 24 Aug 2023 11:32:12 -0700
+Message-Id: <20230824183212.374787-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.rc2.253.gd59a3bf2b4-goog
+Subject: [PATCH v3] perf jevents: Don't append Unit to desc
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        James Clark <james.clark@arm.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        John Garry <john.g.garry@oracle.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Jing Zhang <renyu.zj@linux.alibaba.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Rob Herring <robh@kernel.org>,
+        Gaosheng Cui <cuigaosheng1@huawei.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 1:51=E2=80=AFAM Huang, Ying <ying.huang@intel.com> =
-wrote:
->
-> Yosry Ahmed <yosryahmed@google.com> writes:
->
-> > On Mon, Aug 21, 2023 at 6:54=E2=80=AFPM Liu Shixin <liushixin2@huawei.c=
-om> wrote:
-> >>
-> >> When spaces of swap devices are exhausted, only file pages can be recl=
-aimed.
-> >> But there are still some swapcache pages in anon lru list. This can le=
-ad
-> >> to a premature out-of-memory.
-> >>
-> >> This problem can be fixed by checking number of swapcache pages in
-> >> can_reclaim_anon_pages(). For memcg v2, there are swapcache stat that =
-can
-> >> be used directly. For memcg v1, use total_swapcache_pages() instead, w=
-hich
-> >> may not accurate but can solve the problem.
-> >
-> > Interesting find. I wonder if we really don't have any handling of
-> > this situation.
-> >
-> >>
-> >> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
-> >> ---
-> >>  include/linux/swap.h |  6 ++++++
-> >>  mm/memcontrol.c      |  8 ++++++++
-> >>  mm/vmscan.c          | 12 ++++++++----
-> >>  3 files changed, 22 insertions(+), 4 deletions(-)
-> >>
-> >> diff --git a/include/linux/swap.h b/include/linux/swap.h
-> >> index 456546443f1f..0318e918bfa4 100644
-> >> --- a/include/linux/swap.h
-> >> +++ b/include/linux/swap.h
-> >> @@ -669,6 +669,7 @@ static inline void mem_cgroup_uncharge_swap(swp_en=
-try_t entry, unsigned int nr_p
-> >>  }
-> >>
-> >>  extern long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg);
-> >> +extern long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memc=
-g);
-> >>  extern bool mem_cgroup_swap_full(struct folio *folio);
-> >>  #else
-> >>  static inline void mem_cgroup_swapout(struct folio *folio, swp_entry_=
-t entry)
-> >> @@ -691,6 +692,11 @@ static inline long mem_cgroup_get_nr_swap_pages(s=
-truct mem_cgroup *memcg)
-> >>         return get_nr_swap_pages();
-> >>  }
-> >>
-> >> +static inline long mem_cgroup_get_nr_swapcache_pages(struct mem_cgrou=
-p *memcg)
-> >> +{
-> >> +       return total_swapcache_pages();
-> >> +}
-> >> +
-> >>  static inline bool mem_cgroup_swap_full(struct folio *folio)
-> >>  {
-> >>         return vm_swap_full();
-> >> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> >> index e8ca4bdcb03c..3e578f41023e 100644
-> >> --- a/mm/memcontrol.c
-> >> +++ b/mm/memcontrol.c
-> >> @@ -7567,6 +7567,14 @@ long mem_cgroup_get_nr_swap_pages(struct mem_cg=
-roup *memcg)
-> >>         return nr_swap_pages;
-> >>  }
-> >>
-> >> +long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg)
-> >> +{
-> >> +       if (mem_cgroup_disabled() || do_memsw_account())
-> >> +               return total_swapcache_pages();
-> >> +
-> >> +       return memcg_page_state(memcg, NR_SWAPCACHE);
-> >> +}
-> >
-> > Is there a reason why we cannot use NR_SWAPCACHE for cgroup v1? Isn't
-> > that being maintained regardless of cgroup version? It is not exposed
-> > in cgroup v1's memory.stat, but I don't think there is a reason we
-> > can't do that -- if only to document that it is being used with cgroup
-> > v1.
-> >
-> >
-> >> +
-> >>  bool mem_cgroup_swap_full(struct folio *folio)
-> >>  {
-> >>         struct mem_cgroup *memcg;
-> >> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> >> index 7c33c5b653ef..bcb6279cbae7 100644
-> >> --- a/mm/vmscan.c
-> >> +++ b/mm/vmscan.c
-> >> @@ -609,13 +609,17 @@ static inline bool can_reclaim_anon_pages(struct=
- mem_cgroup *memcg,
-> >>         if (memcg =3D=3D NULL) {
-> >>                 /*
-> >>                  * For non-memcg reclaim, is there
-> >> -                * space in any swap device?
-> >> +                * space in any swap device or swapcache pages?
-> >>                  */
-> >> -               if (get_nr_swap_pages() > 0)
-> >> +               if (get_nr_swap_pages() + total_swapcache_pages() > 0)
-> >>                         return true;
-> >>         } else {
-> >> -               /* Is the memcg below its swap limit? */
-> >> -               if (mem_cgroup_get_nr_swap_pages(memcg) > 0)
-> >> +               /*
-> >> +                * Is the memcg below its swap limit or is there swapc=
-ache
-> >> +                * pages can be freed?
-> >> +                */
-> >> +               if (mem_cgroup_get_nr_swap_pages(memcg) +
-> >> +                   mem_cgroup_get_nr_swapcache_pages(memcg) > 0)
-> >>                         return true;
-> >>         }
-> >
-> > I wonder if it would be more efficient to set a bit in struct
-> > scan_control if we only are out of swap spaces but have swap cache
-> > pages, and only isolate anon pages that are in the swap cache, instead
-> > of isolating random anon pages. We may end up isolating pages that are
-> > not in the swap cache for a few iterations and wasting cycles.
->
-> Scanning swap cache directly will make the code more complex.  IIUC, the
-> possibility for the swap device to be used up isn't high.  If so, I
-> prefer the simpler implementation as that in this series.
+Unit with the PMU name is appended to desc in jevents.py, but on
+hybrid platforms it causes the desc to differ from the regular
+non-hybrid system with a PMU of 'cpu'. Having differing descs means
+the events don't deduplicate. To make the perf list output not differ,
+append the Unit on again in the perf list printing code.
 
-I did not mean that, sorry if I wasn't clear. I meant to set a bit in
-struct scan_control, and then in isolate_lru_folios() for anon lrus,
-we can skip isolating folios that are not in the swapcache if that bit
-is set.
+On x86 reduces the binary size by 409,600 bytes or about 4%. Update
+pmu-events test expectations to match the differently generated
+pmu-events.c code.
 
-My main concern was that if we have a few pages in the swapcache we
-may end up wasting cycles scanning through a lot of other anonymous
-pages until we reach them. If that's too much complexity that's
-understandable.
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/builtin-list.c        | 13 ++++++++++++-
+ tools/perf/pmu-events/jevents.py |  7 -------
+ tools/perf/tests/pmu-events.c    | 22 +++++++++++-----------
+ 3 files changed, 23 insertions(+), 19 deletions(-)
 
->
-> --
-> Best Regards,
-> Huang, Ying
+diff --git a/tools/perf/builtin-list.c b/tools/perf/builtin-list.c
+index 7fec2cca759f..d8b9f606e734 100644
+--- a/tools/perf/builtin-list.c
++++ b/tools/perf/builtin-list.c
+@@ -145,9 +145,20 @@ static void default_print_event(void *ps, const char *pmu_name, const char *topi
+ 		putchar('\n');
+ 
+ 	if (desc && print_state->desc) {
++		char *desc_with_unit = NULL;
++		int desc_len = -1;
++
++		if (pmu_name && strcmp(pmu_name, "cpu")) {
++			desc_len = strlen(desc);
++			desc_len = asprintf(&desc_with_unit,
++					    desc[desc_len - 1] != '.'
++					      ? "%s. Unit: %s" : "%s Unit: %s",
++					    desc, pmu_name);
++		}
+ 		printf("%*s", 8, "[");
+-		wordwrap(desc, 8, pager_get_columns(), 0);
++		wordwrap(desc_len > 0 ? desc_with_unit : desc, 8, pager_get_columns(), 0);
+ 		printf("]\n");
++		free(desc_with_unit);
+ 	}
+ 	long_desc = long_desc ?: desc;
+ 	if (long_desc && print_state->long_desc) {
+diff --git a/tools/perf/pmu-events/jevents.py b/tools/perf/pmu-events/jevents.py
+index e5bce57f5688..712f80d7d071 100755
+--- a/tools/perf/pmu-events/jevents.py
++++ b/tools/perf/pmu-events/jevents.py
+@@ -357,13 +357,6 @@ class JsonEvent:
+       self.desc += extra_desc
+     if self.long_desc and extra_desc:
+       self.long_desc += extra_desc
+-    if self.pmu and self.pmu != 'cpu':
+-      if not self.desc:
+-        self.desc = 'Unit: ' + self.pmu
+-      else:
+-        if not self.desc.endswith('. '):
+-          self.desc += '. '
+-      self.desc += 'Unit: ' + self.pmu
+     if arch_std:
+       if arch_std.lower() in _arch_std_events:
+         event = _arch_std_events[arch_std.lower()].event
+diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
+index 3dc1ebee4d9f..28c8789c4305 100644
+--- a/tools/perf/tests/pmu-events.c
++++ b/tools/perf/tests/pmu-events.c
+@@ -129,7 +129,7 @@ static const struct perf_pmu_test_event uncore_hisi_ddrc_flux_wcmd = {
+ 	.event = {
+ 		.name = "uncore_hisi_ddrc.flux_wcmd",
+ 		.event = "event=0x2",
+-		.desc = "DDRC write commands. Unit: hisi_sccl,ddrc",
++		.desc = "DDRC write commands",
+ 		.topic = "uncore",
+ 		.long_desc = "DDRC write commands",
+ 		.pmu = "hisi_sccl,ddrc",
+@@ -143,7 +143,7 @@ static const struct perf_pmu_test_event unc_cbo_xsnp_response_miss_eviction = {
+ 	.event = {
+ 		.name = "unc_cbo_xsnp_response.miss_eviction",
+ 		.event = "event=0x22,umask=0x81",
+-		.desc = "A cross-core snoop resulted from L3 Eviction which misses in some processor core. Unit: uncore_cbox",
++		.desc = "A cross-core snoop resulted from L3 Eviction which misses in some processor core",
+ 		.topic = "uncore",
+ 		.long_desc = "A cross-core snoop resulted from L3 Eviction which misses in some processor core",
+ 		.pmu = "uncore_cbox",
+@@ -157,7 +157,7 @@ static const struct perf_pmu_test_event uncore_hyphen = {
+ 	.event = {
+ 		.name = "event-hyphen",
+ 		.event = "event=0xe0,umask=0x00",
+-		.desc = "UNC_CBO_HYPHEN. Unit: uncore_cbox",
++		.desc = "UNC_CBO_HYPHEN",
+ 		.topic = "uncore",
+ 		.long_desc = "UNC_CBO_HYPHEN",
+ 		.pmu = "uncore_cbox",
+@@ -171,7 +171,7 @@ static const struct perf_pmu_test_event uncore_two_hyph = {
+ 	.event = {
+ 		.name = "event-two-hyph",
+ 		.event = "event=0xc0,umask=0x00",
+-		.desc = "UNC_CBO_TWO_HYPH. Unit: uncore_cbox",
++		.desc = "UNC_CBO_TWO_HYPH",
+ 		.topic = "uncore",
+ 		.long_desc = "UNC_CBO_TWO_HYPH",
+ 		.pmu = "uncore_cbox",
+@@ -185,7 +185,7 @@ static const struct perf_pmu_test_event uncore_hisi_l3c_rd_hit_cpipe = {
+ 	.event = {
+ 		.name = "uncore_hisi_l3c.rd_hit_cpipe",
+ 		.event = "event=0x7",
+-		.desc = "Total read hits. Unit: hisi_sccl,l3c",
++		.desc = "Total read hits",
+ 		.topic = "uncore",
+ 		.long_desc = "Total read hits",
+ 		.pmu = "hisi_sccl,l3c",
+@@ -199,7 +199,7 @@ static const struct perf_pmu_test_event uncore_imc_free_running_cache_miss = {
+ 	.event = {
+ 		.name = "uncore_imc_free_running.cache_miss",
+ 		.event = "event=0x12",
+-		.desc = "Total cache misses. Unit: uncore_imc_free_running",
++		.desc = "Total cache misses",
+ 		.topic = "uncore",
+ 		.long_desc = "Total cache misses",
+ 		.pmu = "uncore_imc_free_running",
+@@ -213,7 +213,7 @@ static const struct perf_pmu_test_event uncore_imc_cache_hits = {
+ 	.event = {
+ 		.name = "uncore_imc.cache_hits",
+ 		.event = "event=0x34",
+-		.desc = "Total cache hits. Unit: uncore_imc",
++		.desc = "Total cache hits",
+ 		.topic = "uncore",
+ 		.long_desc = "Total cache hits",
+ 		.pmu = "uncore_imc",
+@@ -238,13 +238,13 @@ static const struct perf_pmu_test_event sys_ddr_pmu_write_cycles = {
+ 	.event = {
+ 		.name = "sys_ddr_pmu.write_cycles",
+ 		.event = "event=0x2b",
+-		.desc = "ddr write-cycles event. Unit: uncore_sys_ddr_pmu",
++		.desc = "ddr write-cycles event",
+ 		.topic = "uncore",
+ 		.pmu = "uncore_sys_ddr_pmu",
+ 		.compat = "v8",
+ 	},
+ 	.alias_str = "event=0x2b",
+-	.alias_long_desc = "ddr write-cycles event. Unit: uncore_sys_ddr_pmu",
++	.alias_long_desc = "ddr write-cycles event",
+ 	.matching_pmu = "uncore_sys_ddr_pmu",
+ };
+ 
+@@ -252,13 +252,13 @@ static const struct perf_pmu_test_event sys_ccn_pmu_read_cycles = {
+ 	.event = {
+ 		.name = "sys_ccn_pmu.read_cycles",
+ 		.event = "config=0x2c",
+-		.desc = "ccn read-cycles event. Unit: uncore_sys_ccn_pmu",
++		.desc = "ccn read-cycles event",
+ 		.topic = "uncore",
+ 		.pmu = "uncore_sys_ccn_pmu",
+ 		.compat = "0x01",
+ 	},
+ 	.alias_str = "config=0x2c",
+-	.alias_long_desc = "ccn read-cycles event. Unit: uncore_sys_ccn_pmu",
++	.alias_long_desc = "ccn read-cycles event",
+ 	.matching_pmu = "uncore_sys_ccn_pmu",
+ };
+ 
+-- 
+2.42.0.rc2.253.gd59a3bf2b4-goog
+
