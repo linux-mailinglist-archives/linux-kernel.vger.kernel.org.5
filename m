@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC89E7864D6
+	by mail.lfdr.de (Postfix) with ESMTP id 598127864D5
 	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 03:47:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239172AbjHXBqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 21:46:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40962 "EHLO
+        id S239167AbjHXBqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 21:46:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235679AbjHXBp6 (ORCPT
+        with ESMTP id S239133AbjHXBp6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 23 Aug 2023 21:45:58 -0400
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5434E66;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B55FAE6A;
         Wed, 23 Aug 2023 18:45:55 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RWQsD3G9bz4f3l8W;
-        Thu, 24 Aug 2023 09:45:52 +0800 (CST)
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RWQsC5sfYz4f3pFh;
+        Thu, 24 Aug 2023 09:45:51 +0800 (CST)
 Received: from ultra.huawei.com (unknown [10.90.53.71])
-        by APP4 (Coremail) with SMTP id gCh0CgB3TaBNtuZk2HbCBQ--.33536S3;
+        by APP4 (Coremail) with SMTP id gCh0CgB3TaBNtuZk2HbCBQ--.33536S4;
         Thu, 24 Aug 2023 09:45:52 +0800 (CST)
 From:   Pu Lehui <pulehui@huaweicloud.com>
 To:     linux-riscv@lists.infradead.org, bpf@vger.kernel.org,
@@ -40,21 +40,22 @@ Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
         Puranjay Mohan <puranjay12@gmail.com>,
         Pu Lehui <pulehui@huawei.com>,
         Pu Lehui <pulehui@huaweicloud.com>
-Subject: [PATCH bpf-next v2 1/7] riscv, bpf: Fix missing exception handling and redundant zext for LDX_B/H/W
-Date:   Thu, 24 Aug 2023 09:49:55 +0000
-Message-Id: <20230824095001.3408573-2-pulehui@huaweicloud.com>
+Subject: [PATCH bpf-next v2 2/7] riscv, bpf: Support sign-extension load insns
+Date:   Thu, 24 Aug 2023 09:49:56 +0000
+Message-Id: <20230824095001.3408573-3-pulehui@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230824095001.3408573-1-pulehui@huaweicloud.com>
 References: <20230824095001.3408573-1-pulehui@huaweicloud.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgB3TaBNtuZk2HbCBQ--.33536S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7KFWrZr48AF1UXrW5GF1rWFg_yoW8Cw1Upr
-        45Gwnak34vqr4FqF1Dt3WUWw4ayFWUWanrWrZrKayrJa42vry3WrW3Kw1YvFy5Ary8Wr18
-        Ar4jvrnxu3Z8J37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUm214x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+X-CM-TRANSID: gCh0CgB3TaBNtuZk2HbCBQ--.33536S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxGr4fWrWkArW5Kr1UAw1xGrg_yoWrtr17pF
+        W3Gw1fC39YqrWSqF9rtF17Wr45Ar48WFnFgrW3K3yFqF4IqrZxWFyUtw4aya45GryrXa48
+        GFW2vryak3Z2grDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUmI14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
         rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2jI8I6cxK62vIxIIY0VWUZVW8XwA2048vs2IY02
-        0E87I2jVAFwI0_Jr4l82xGYIkIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2
+        0E87I2jVAFwI0_Jryl82xGYIkIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2
         F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjx
         v20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2
         z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0V
@@ -63,9 +64,9 @@ X-Coremail-Antispam: 1UD129KBjvJXoW7KFWrZr48AF1UXrW5GF1rWFg_yoW8Cw1Upr
         IFxwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkE
         bVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67
         AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI
-        42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMI
-        IF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVF
-        xhVjvjDU0xZFpf9x0pRPGYPUUUUU=
+        42IY6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCw
+        CI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnI
+        WIevJa73UjIFyTuYvjTRKLvtUUUUU
 X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
@@ -79,57 +80,145 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Pu Lehui <pulehui@huawei.com>
 
-For LDX_B/H/W, when zext has been inserted by verifier, it'll return 1,
-and no exception handling will continue. Also, when the offset is 12-bit
-value, the redundant zext inserted by the verifier is not removed. Fix
-both scenarios by moving down the removal of redundant zext.
+Add Support sign-extension load instructions for RV64.
 
 Signed-off-by: Pu Lehui <pulehui@huawei.com>
+Acked-by: Björn Töpel <bjorn@kernel.org>
 ---
- arch/riscv/net/bpf_jit_comp64.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ arch/riscv/net/bpf_jit.h        | 10 +++++++
+ arch/riscv/net/bpf_jit_comp64.c | 46 +++++++++++++++++++++++++++------
+ 2 files changed, 48 insertions(+), 8 deletions(-)
 
+diff --git a/arch/riscv/net/bpf_jit.h b/arch/riscv/net/bpf_jit.h
+index 2717f5490428..a52a3dda18c3 100644
+--- a/arch/riscv/net/bpf_jit.h
++++ b/arch/riscv/net/bpf_jit.h
+@@ -501,6 +501,16 @@ static inline u32 rv_ble(u8 rs1, u8 rs2, u16 imm12_1)
+ 	return rv_bge(rs2, rs1, imm12_1);
+ }
+ 
++static inline u32 rv_lb(u8 rd, u16 imm11_0, u8 rs1)
++{
++	return rv_i_insn(imm11_0, rs1, 0, rd, 0x03);
++}
++
++static inline u32 rv_lh(u8 rd, u16 imm11_0, u8 rs1)
++{
++	return rv_i_insn(imm11_0, rs1, 1, rd, 0x03);
++}
++
+ static inline u32 rv_lw(u8 rd, u16 imm11_0, u8 rs1)
+ {
+ 	return rv_i_insn(imm11_0, rs1, 2, rd, 0x03);
 diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
-index 0ca4f5c0097c..f2644e7ea6b5 100644
+index f2644e7ea6b5..fd36cb17101a 100644
 --- a/arch/riscv/net/bpf_jit_comp64.c
 +++ b/arch/riscv/net/bpf_jit_comp64.c
-@@ -1512,8 +1512,6 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+@@ -580,7 +580,8 @@ static int add_exception_handler(const struct bpf_insn *insn,
+ 	unsigned long pc;
+ 	off_t offset;
+ 
+-	if (!ctx->insns || !ctx->prog->aux->extable || BPF_MODE(insn->code) != BPF_PROBE_MEM)
++	if (!ctx->insns || !ctx->prog->aux->extable ||
++	    (BPF_MODE(insn->code) != BPF_PROBE_MEM && BPF_MODE(insn->code) != BPF_PROBE_MEMSX))
+ 		return 0;
+ 
+ 	if (WARN_ON_ONCE(ctx->nexentries >= ctx->prog->aux->num_exentries))
+@@ -1486,7 +1487,7 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+ 		return 1;
+ 	}
+ 
+-	/* LDX: dst = *(size *)(src + off) */
++	/* LDX: dst = *(unsigned size *)(src + off) */
+ 	case BPF_LDX | BPF_MEM | BPF_B:
+ 	case BPF_LDX | BPF_MEM | BPF_H:
+ 	case BPF_LDX | BPF_MEM | BPF_W:
+@@ -1495,14 +1496,28 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+ 	case BPF_LDX | BPF_PROBE_MEM | BPF_H:
+ 	case BPF_LDX | BPF_PROBE_MEM | BPF_W:
+ 	case BPF_LDX | BPF_PROBE_MEM | BPF_DW:
++	/* LDSX: dst = *(signed size *)(src + off) */
++	case BPF_LDX | BPF_MEMSX | BPF_B:
++	case BPF_LDX | BPF_MEMSX | BPF_H:
++	case BPF_LDX | BPF_MEMSX | BPF_W:
++	case BPF_LDX | BPF_PROBE_MEMSX | BPF_B:
++	case BPF_LDX | BPF_PROBE_MEMSX | BPF_H:
++	case BPF_LDX | BPF_PROBE_MEMSX | BPF_W:
+ 	{
+ 		int insn_len, insns_start;
++		bool sign_ext;
++
++		sign_ext = BPF_MODE(insn->code) == BPF_MEMSX ||
++			   BPF_MODE(insn->code) == BPF_PROBE_MEMSX;
+ 
+ 		switch (BPF_SIZE(code)) {
+ 		case BPF_B:
+ 			if (is_12b_int(off)) {
+ 				insns_start = ctx->ninsns;
+-				emit(rv_lbu(rd, off, rs), ctx);
++				if (sign_ext)
++					emit(rv_lb(rd, off, rs), ctx);
++				else
++					emit(rv_lbu(rd, off, rs), ctx);
+ 				insn_len = ctx->ninsns - insns_start;
+ 				break;
+ 			}
+@@ -1510,13 +1525,19 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+ 			emit_imm(RV_REG_T1, off, ctx);
+ 			emit_add(RV_REG_T1, RV_REG_T1, rs, ctx);
  			insns_start = ctx->ninsns;
- 			emit(rv_lbu(rd, 0, RV_REG_T1), ctx);
+-			emit(rv_lbu(rd, 0, RV_REG_T1), ctx);
++			if (sign_ext)
++				emit(rv_lb(rd, 0, RV_REG_T1), ctx);
++			else
++				emit(rv_lbu(rd, 0, RV_REG_T1), ctx);
  			insn_len = ctx->ninsns - insns_start;
--			if (insn_is_zext(&insn[1]))
--				return 1;
  			break;
  		case BPF_H:
  			if (is_12b_int(off)) {
-@@ -1528,8 +1526,6 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+ 				insns_start = ctx->ninsns;
+-				emit(rv_lhu(rd, off, rs), ctx);
++				if (sign_ext)
++					emit(rv_lh(rd, off, rs), ctx);
++				else
++					emit(rv_lhu(rd, off, rs), ctx);
+ 				insn_len = ctx->ninsns - insns_start;
+ 				break;
+ 			}
+@@ -1524,13 +1545,19 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+ 			emit_imm(RV_REG_T1, off, ctx);
+ 			emit_add(RV_REG_T1, RV_REG_T1, rs, ctx);
  			insns_start = ctx->ninsns;
- 			emit(rv_lhu(rd, 0, RV_REG_T1), ctx);
+-			emit(rv_lhu(rd, 0, RV_REG_T1), ctx);
++			if (sign_ext)
++				emit(rv_lh(rd, 0, RV_REG_T1), ctx);
++			else
++				emit(rv_lhu(rd, 0, RV_REG_T1), ctx);
  			insn_len = ctx->ninsns - insns_start;
--			if (insn_is_zext(&insn[1]))
--				return 1;
  			break;
  		case BPF_W:
  			if (is_12b_int(off)) {
-@@ -1544,8 +1540,6 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+ 				insns_start = ctx->ninsns;
+-				emit(rv_lwu(rd, off, rs), ctx);
++				if (sign_ext)
++					emit(rv_lw(rd, off, rs), ctx);
++				else
++					emit(rv_lwu(rd, off, rs), ctx);
+ 				insn_len = ctx->ninsns - insns_start;
+ 				break;
+ 			}
+@@ -1538,7 +1565,10 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+ 			emit_imm(RV_REG_T1, off, ctx);
+ 			emit_add(RV_REG_T1, RV_REG_T1, rs, ctx);
  			insns_start = ctx->ninsns;
- 			emit(rv_lwu(rd, 0, RV_REG_T1), ctx);
+-			emit(rv_lwu(rd, 0, RV_REG_T1), ctx);
++			if (sign_ext)
++				emit(rv_lw(rd, 0, RV_REG_T1), ctx);
++			else
++				emit(rv_lwu(rd, 0, RV_REG_T1), ctx);
  			insn_len = ctx->ninsns - insns_start;
--			if (insn_is_zext(&insn[1]))
--				return 1;
  			break;
  		case BPF_DW:
- 			if (is_12b_int(off)) {
-@@ -1566,6 +1560,9 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
- 		ret = add_exception_handler(insn, ctx, rd, insn_len);
- 		if (ret)
- 			return ret;
-+
-+		if (BPF_SIZE(code) != BPF_DW && insn_is_zext(&insn[1]))
-+			return 1;
- 		break;
- 	}
- 	/* speculation barrier */
 -- 
 2.39.2
 
