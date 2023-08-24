@@ -2,186 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B304E78677A
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 08:28:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07FFB78677B
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 08:28:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240092AbjHXG1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 02:27:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49214 "EHLO
+        id S240151AbjHXG1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 02:27:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240072AbjHXG1F (ORCPT
+        with ESMTP id S240051AbjHXG1F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 24 Aug 2023 02:27:05 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F90E137
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 23:27:01 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-5256d74dab9so7951450a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 23:27:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692858420; x=1693463220;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=PNCdYqQUps0lM4Vetry0zqGJRLv4Xo41z8z74LlzZb4=;
-        b=Xo5tYdr4AOaUWBl9YgA2xLc+5vPD866bVqitEfg1TfsSsnS56D0YlqbwLQ8cSBZA0f
-         LDLgSKlNH8dcTXg7IUj0IE9C2PUDygKYV+c37UHVkaTxJ2Tlja9VxXo/LEx6Q86eDht1
-         fDtYy6b1x4Dimjwd21qkx0UclkRmsvzcsQhQU6W/R2CRmDFixrI6JxhD7iJrA7gZIQv2
-         Rdcj7Cznd7ofiATaoPg4XQfw/jFOj+yw50ZmNEZS3MAAslBmMKJSPTchpxPQo4w2ewlQ
-         JfPH6fvGIWDVJIuVkl2Ibbtq8K0hpctiQQScEAklaft/snw+V9KkQ9zKQtWdMVU4wXfQ
-         mzGg==
+Received: from mail-io1-f48.google.com (mail-io1-f48.google.com [209.85.166.48])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C675710F5
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 23:27:02 -0700 (PDT)
+Received: by mail-io1-f48.google.com with SMTP id ca18e2360f4ac-77acb04309dso227555939f.2
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 23:27:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692858420; x=1693463220;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PNCdYqQUps0lM4Vetry0zqGJRLv4Xo41z8z74LlzZb4=;
-        b=RrAuYV+YUhFqNNWIUQz1YdJMBJivbW+2sqTzZwFRSZZynvFLYzY8SqpBkGY8pL9jNx
-         ullmSsI1d8OEfCer1eZ0n2RN6uA05g7MDf5jTB7wpcDqCyKLBCwzM1eKWvCpv9q8Z14X
-         aqLHx1oo5yA+belsUcNJVxio4Aj0N9nWSwuPYb63Hdf8oNrE8l1ISF1IMUvoVN8W4gnh
-         V2iPk8ce5utkIOCvlhbKdnOSY0l2WrIEZh1n1TGFpWcHF2WyT//vkPo89t4iBCK87q0w
-         u62U/hLpwc1QBN+Z/WxoC4kRj1wg/E4nFh5Un+vc8S5vdhHaL+cnugrYAtOiW0PevXzc
-         Ac3A==
-X-Gm-Message-State: AOJu0YzwPuLDMMu7LxP3FQpHwl8oO1ZEsZtzE/fe8tC2hVAuLYQI7pkV
-        zvgFacUJRKVxWn/zCQT1PuPJuQ==
-X-Google-Smtp-Source: AGHT+IFaKPL1GVeABrkF8YiNtStdFGw2o9uVH285QObhdfvwGKEaqB3vttmpLJpDTcJl19n6m4VyTw==
-X-Received: by 2002:aa7:d5c5:0:b0:523:1410:b611 with SMTP id d5-20020aa7d5c5000000b005231410b611mr11092414eds.25.1692858419763;
-        Wed, 23 Aug 2023 23:26:59 -0700 (PDT)
-Received: from [192.168.0.22] ([77.252.47.198])
-        by smtp.gmail.com with ESMTPSA id p6-20020aa7d306000000b0052574ef0da1sm9966034edq.28.2023.08.23.23.26.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Aug 2023 23:26:59 -0700 (PDT)
-Message-ID: <50ce8e71-613e-1ef5-0c23-67a2f6f78949@linaro.org>
-Date:   Thu, 24 Aug 2023 08:26:58 +0200
+        d=1e100.net; s=20221208; t=1692858422; x=1693463222;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zaYFol9VpMoa7wRnrH7aK64tMzJrKbUDz5W/yZnlsfE=;
+        b=QkNtc0Lf/vgxpImAhXXPXT1HSid+hEf74dT1c9/0BX6jblZmyymn6B+/vj1FUrGblT
+         /Z30omY0Y480irCdYdTqq3OjAcCzG6Znn1sFRfW446C66dozaZaVnfDGVabqPd02Khp7
+         VLo6I14L/FZTXZRiltHPF7De/F6YoaO3+ouJLUqbertIIhy3pq9ErsFb29XcrqQP/Ht7
+         cBAxi30WeSRS7uy/D1RJ8OQSz/co5ytrt4RlzPxF/Z+G2aXyAIvwBJoHz9F1CpDLSGzO
+         Z30mjYMjJ9/WFDIZhHxmj/EA8q9ZPBUtzQJhxnhsLPsAPqVwt3jdRh02zTcjdq5quBoo
+         q/UA==
+X-Gm-Message-State: AOJu0YxtHVpQktK1ZAGL1/WY/IRWMhe3lH8D4Jhe4YseLq4hZk0ri2uI
+        jBGXoXCx41uGkLFjMkmkzZA=
+X-Google-Smtp-Source: AGHT+IFh2m58yqt3RSg/o96un1ggqGI1jq8zQZvoCW3XNg5TdHmiYRDBByWAUNMdKvoLsoI8mKKFwA==
+X-Received: by 2002:a5d:930c:0:b0:786:f352:e3d4 with SMTP id l12-20020a5d930c000000b00786f352e3d4mr5539601ion.7.1692858421804;
+        Wed, 23 Aug 2023 23:27:01 -0700 (PDT)
+Received: from snowbird (c-73-228-235-230.hsd1.mn.comcast.net. [73.228.235.230])
+        by smtp.gmail.com with ESMTPSA id l17-20020a5e8811000000b007871aa2f144sm3559487ioj.16.2023.08.23.23.27.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Aug 2023 23:27:01 -0700 (PDT)
+Date:   Wed, 23 Aug 2023 23:26:59 -0700
+From:   Dennis Zhou <dennis@kernel.org>
+To:     Mateusz Guzik <mjguzik@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, tj@kernel.org, cl@linux.com,
+        akpm@linux-foundation.org, shakeelb@google.com,
+        vegard.nossum@oracle.com, linux-mm@kvack.org
+Subject: Re: [PATCH v3 1/2] pcpcntr: add group allocation/free
+Message-ID: <ZOb4Mwv5eFv2n7R8@snowbird>
+References: <20230823050609.2228718-1-mjguzik@gmail.com>
+ <20230823050609.2228718-2-mjguzik@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v1 2/2] dt-bindings: extcon: Add Realtek DHC RTD SoC
- Type-C
-To:     =?UTF-8?B?U3RhbmxleSBDaGFuZ1vmmIzogrLlvrdd?= 
-        <stanley_chang@realtek.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>
-Cc:     Chanwoo Choi <cw00.choi@samsung.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-References: <20230822102846.4683-1-stanley_chang@realtek.com>
- <20230822102846.4683-2-stanley_chang@realtek.com>
- <1e0632d6-73e9-4633-a709-bf9140f2fd32@linaro.org>
- <ca406c19e59145fd9e7e035ea5ad3eeb@realtek.com>
-Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <ca406c19e59145fd9e7e035ea5ad3eeb@realtek.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230823050609.2228718-2-mjguzik@gmail.com>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/08/2023 08:03, Stanley Chang[昌育德] wrote:
-> Hi Krzysztof,
+On Wed, Aug 23, 2023 at 07:06:08AM +0200, Mateusz Guzik wrote:
+> Allocations and frees are globally serialized on the pcpu lock (and the
+> CPU hotplug lock if enabled, which is the case on Debian).
 > 
->> On 22/08/2023 12:28, Stanley Chang wrote:
->>> Document the device-tree bindings for Realtek SoCs Type-C.
->>> Realtek DHC (digital home center) RTD SoCs support a Type-C module.
->>>
->>> Signed-off-by: Stanley Chang <stanley_chang@realtek.com>
->>> ---
->>>  .../bindings/extcon/extcon-rtk-type-c.yaml    | 77 +++++++++++++++++++
->>>  1 file changed, 77 insertions(+)
->>>  create mode 100644
->>> Documentation/devicetree/bindings/extcon/extcon-rtk-type-c.yaml
->>
->> Filename like compatible.
+> At least one frequent consumer allocates 4 back-to-back counters (and
+> frees them in the same manner), exacerbating the problem.
 > 
-> I will rename.
+> While this does not fully remedy scalability issues, it is a step
+> towards that goal and provides immediate relief.
 > 
->>>
->>> diff --git
->>> a/Documentation/devicetree/bindings/extcon/extcon-rtk-type-c.yaml
->>> b/Documentation/devicetree/bindings/extcon/extcon-rtk-type-c.yaml
->>> new file mode 100644
->>> index 000000000000..d14b9ee544b9
->>> --- /dev/null
->>> +++ b/Documentation/devicetree/bindings/extcon/extcon-rtk-type-c.yaml
->>> @@ -0,0 +1,77 @@
->>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) # Copyright
->>> +2023 Realtek Semiconductor Corporation %YAML 1.2
->>> +---
->>> +$id: http://devicetree.org/schemas/extcon/extcon-rtk-type-c.yaml#
->>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>> +
->>> +title: Realtek DHC RTD SoCs USB Type-C detection
->>
->> Type-c usually go to usb directory.
+> Signed-off-by: Mateusz Guzik <mjguzik@gmail.com>
+
+I'm happy with this. There are a few minor reflow of lines that I'd like
+to do but other than that nice.
+
+If there are no other comments and it's okay with Andrew I'll pick this
+up tomorrow for-6.6 and the corresponding changes to fork.c.
+
+Reviewed-by: Dennis Zhou <dennis@kernel.org>
+
+Thanks,
+Dennis
+
+> ---
+>  include/linux/percpu_counter.h | 39 ++++++++++++++++++----
+>  lib/percpu_counter.c           | 61 +++++++++++++++++++++++-----------
+>  2 files changed, 74 insertions(+), 26 deletions(-)
 > 
-> This binding is not for a type-c controller.
-> It is an extcon device for type-c connector detection.
-> So I put it at extcon directory.
-
-If this is not a type-c controller, then what is it? Explain me please
-what is an "extcon device" without using any Linux subsystem naming.
-
+> diff --git a/include/linux/percpu_counter.h b/include/linux/percpu_counter.h
+> index 75b73c83bc9d..f1e7c987e3d3 100644
+> --- a/include/linux/percpu_counter.h
+> +++ b/include/linux/percpu_counter.h
+> @@ -30,17 +30,27 @@ struct percpu_counter {
+>  
+>  extern int percpu_counter_batch;
+>  
+> -int __percpu_counter_init(struct percpu_counter *fbc, s64 amount, gfp_t gfp,
+> -			  struct lock_class_key *key);
+> +int __percpu_counter_init_many(struct percpu_counter *fbc, s64 amount, gfp_t gfp,
+> +			  u32 nr_counters, struct lock_class_key *key);
+>  
+> -#define percpu_counter_init(fbc, value, gfp)				\
+> +#define percpu_counter_init_many(fbc, value, gfp, nr_counters)		\
+>  	({								\
+>  		static struct lock_class_key __key;			\
+>  									\
+> -		__percpu_counter_init(fbc, value, gfp, &__key);		\
+> +		__percpu_counter_init_many(fbc, value, gfp, nr_counters,\
+> +					   &__key);			\
+>  	})
+>  
+> -void percpu_counter_destroy(struct percpu_counter *fbc);
+> +
+> +#define percpu_counter_init(fbc, value, gfp)				\
+> +	percpu_counter_init_many(fbc, value, gfp, 1)
+> +
+> +void percpu_counter_destroy_many(struct percpu_counter *fbc, u32 nr_counters);
+> +static inline void percpu_counter_destroy(struct percpu_counter *fbc)
+> +{
+> +	percpu_counter_destroy_many(fbc, 1);
+> +}
+> +
+>  void percpu_counter_set(struct percpu_counter *fbc, s64 amount);
+>  void percpu_counter_add_batch(struct percpu_counter *fbc, s64 amount,
+>  			      s32 batch);
+> @@ -116,11 +126,26 @@ struct percpu_counter {
+>  	s64 count;
+>  };
+>  
+> +static inline int percpu_counter_init_many(struct percpu_counter *fbc, s64 amount,
+> +				           gfp_t gfp, u32 nr_counters)
+> +{
+> +	u32 i;
+> +
+> +	for (i = 0; i < nr_counters; i++)
+> +		fbc[i].count = amount;
+> +
+> +	return 0;
+> +}
+> +
+>  static inline int percpu_counter_init(struct percpu_counter *fbc, s64 amount,
+>  				      gfp_t gfp)
+>  {
+> -	fbc->count = amount;
+> -	return 0;
+> +	return percpu_counter_init_many(fbc, amount, gfp, 1);
+> +}
+> +
+> +static inline void percpu_counter_destroy_many(struct percpu_counter *fbc,
+> +					       u32 nr_counters)
+> +{
+>  }
+>  
+>  static inline void percpu_counter_destroy(struct percpu_counter *fbc)
+> diff --git a/lib/percpu_counter.c b/lib/percpu_counter.c
+> index 5004463c4f9f..9338b27f1cdd 100644
+> --- a/lib/percpu_counter.c
+> +++ b/lib/percpu_counter.c
+> @@ -151,48 +151,71 @@ s64 __percpu_counter_sum(struct percpu_counter *fbc)
+>  }
+>  EXPORT_SYMBOL(__percpu_counter_sum);
+>  
+> -int __percpu_counter_init(struct percpu_counter *fbc, s64 amount, gfp_t gfp,
+> -			  struct lock_class_key *key)
+> +int __percpu_counter_init_many(struct percpu_counter *fbc, s64 amount, gfp_t gfp,
+> +			  u32 nr_counters, struct lock_class_key *key)
+>  {
+>  	unsigned long flags __maybe_unused;
+> -
+> -	raw_spin_lock_init(&fbc->lock);
+> -	lockdep_set_class(&fbc->lock, key);
+> -	fbc->count = amount;
+> -	fbc->counters = alloc_percpu_gfp(s32, gfp);
+> -	if (!fbc->counters)
+> +	size_t counter_size;
+> +	s32 __percpu *counters;
+> +	u32 i;
+> +
+> +	counter_size = ALIGN(sizeof(*counters), __alignof__(*counters));
+> +	counters = __alloc_percpu_gfp(nr_counters * counter_size,
+> +				      __alignof__(*counters), gfp);
+> +	if (!counters) {
+> +		fbc[0].counters = NULL;
+>  		return -ENOMEM;
+> +	}
+>  
+> -	debug_percpu_counter_activate(fbc);
+> +	for (i = 0; i < nr_counters; i++) {
+> +		raw_spin_lock_init(&fbc[i].lock);
+> +		lockdep_set_class(&fbc[i].lock, key);
+> +#ifdef CONFIG_HOTPLUG_CPU
+> +		INIT_LIST_HEAD(&fbc[i].list);
+> +#endif
+> +		fbc[i].count = amount;
+> +		fbc[i].counters = (void *)counters + (i * counter_size);
+> +
+> +		debug_percpu_counter_activate(&fbc[i]);
+> +	}
+>  
+>  #ifdef CONFIG_HOTPLUG_CPU
+> -	INIT_LIST_HEAD(&fbc->list);
+>  	spin_lock_irqsave(&percpu_counters_lock, flags);
+> -	list_add(&fbc->list, &percpu_counters);
+> +	for (i = 0; i < nr_counters; i++)
+> +		list_add(&fbc[i].list, &percpu_counters);
+>  	spin_unlock_irqrestore(&percpu_counters_lock, flags);
+>  #endif
+>  	return 0;
+>  }
+> -EXPORT_SYMBOL(__percpu_counter_init);
+> +EXPORT_SYMBOL(__percpu_counter_init_many);
+>  
+> -void percpu_counter_destroy(struct percpu_counter *fbc)
+> +void percpu_counter_destroy_many(struct percpu_counter *fbc, u32 nr_counters)
+>  {
+>  	unsigned long flags __maybe_unused;
+> +	u32 i;
+> +
+> +	if (WARN_ON_ONCE(!fbc))
+> +		return;
+>  
+> -	if (!fbc->counters)
+> +	if (!fbc[0].counters)
+>  		return;
+>  
+> -	debug_percpu_counter_deactivate(fbc);
+> +	for (i = 0; i < nr_counters; i++)
+> +		debug_percpu_counter_deactivate(&fbc[i]);
+>  
+>  #ifdef CONFIG_HOTPLUG_CPU
+>  	spin_lock_irqsave(&percpu_counters_lock, flags);
+> -	list_del(&fbc->list);
+> +	for (i = 0; i < nr_counters; i++)
+> +		list_del(&fbc[i].list);
+>  	spin_unlock_irqrestore(&percpu_counters_lock, flags);
+>  #endif
+> -	free_percpu(fbc->counters);
+> -	fbc->counters = NULL;
+> +
+> +	free_percpu(fbc[0].counters);
+> +
+> +	for (i = 0; i < nr_counters; i++)
+> +		fbc[i].counters = NULL;
+>  }
+> -EXPORT_SYMBOL(percpu_counter_destroy);
+> +EXPORT_SYMBOL(percpu_counter_destroy_many);
+>  
+>  int percpu_counter_batch __read_mostly = 32;
+>  EXPORT_SYMBOL(percpu_counter_batch);
+> -- 
+> 2.41.0
 > 
-> And I will add “connector” to the title.
-> title: Realtek DHC RTD SoCs USB Type-C Connector detection
-
-So usb...
-
-
->>
->>> +
->>> +  realtek,rd-ctrl-gpio:
->>> +    description: The gpio node to control external Rd on board.
->>
->> The names are always "gpios".
-> 
-> Do you mean "realtek,rd-ctrl-gpios" ?
-
-Yes, like all of such properties in DTS and bindings. Everywhere.
-
->>
->>> +    maxItems: 1
->>> +
->>
->> You miss here connector. Probably also VBUS supply and other supplies.
->>
-> Ok, I will add connector.
-> 
->>> +required:
->>> +  - compatible
->>> +  - reg
->>> +  - interrupts
->>> +
->>> +additionalProperties: false
->>> +
->>> +examples:
->>> +  - |
->>> +    type-c@7220 {
->>> +        compatible = "realtek,rtd1619b-type-c";
->>> +        reg = <0x7220 0x20>;
->>> +        interrupts = <0 60 4>;
->>
->> Use proper defines for common constants.
-> 
-> Ok, I will revise this.
-> 
->>> +
->>> +        pinctrl-names = "default";
->>> +        pinctrl-0 = <&usb_cc1_pins>, <&usb_cc2_pins>;
-> 
-> You mention that the property of pinctrl not need in doc.
-> Do I need to add the property of pintrl in example?
-
-Does not matter.
-
-Best regards,
-Krzysztof
-
