@@ -2,129 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1DDB78666F
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 05:56:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71220786672
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 05:58:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240011AbjHXDze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 23:55:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58918 "EHLO
+        id S240021AbjHXD6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 23:58:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240168AbjHXDzA (ORCPT
+        with ESMTP id S240221AbjHXD50 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 23:55:00 -0400
-Received: from smtp-fw-52005.amazon.com (smtp-fw-52005.amazon.com [52.119.213.156])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CBF21FD9;
-        Wed, 23 Aug 2023 20:53:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1692849226; x=1724385226;
-  h=from:to:cc:date:message-id:references:in-reply-to:
-   content-transfer-encoding:mime-version:subject;
-  bh=L6yr3F5rphRUMJexgvXXRSdT/PI8QQQWbd95l5gki+Q=;
-  b=L1W8/aEr2XKKJuOTUp1nbei8B0NFM73DiT9oy4bqMgPaI0Q+l1OuOvyz
-   AihpR1m6NO/iZ3MfzYes70GUYClCgZdYJTD6J3jccZBXO22h2aQMvUOfq
-   ZZdW4eTPqR3dKm3kbyw6I99YwgBQW4oaZ4+fXg1HgcTm/h4eJdjLqEDOX
-   o=;
-X-IronPort-AV: E=Sophos;i="6.01,195,1684800000"; 
-   d="scan'208";a="600451668"
-Subject: RE: Tasks stuck jbd2 for a long time
-Thread-Topic: Tasks stuck jbd2 for a long time
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1a-m6i4x-47cc8a4c.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-52005.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 03:52:08 +0000
-Received: from EX19MTAUWA002.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-iad-1a-m6i4x-47cc8a4c.us-east-1.amazon.com (Postfix) with ESMTPS id F1C4D169A84;
-        Thu, 24 Aug 2023 03:52:05 +0000 (UTC)
-Received: from EX19D002UWC002.ant.amazon.com (10.13.138.166) by
- EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Thu, 24 Aug 2023 03:52:04 +0000
-Received: from EX19D017UWC003.ant.amazon.com (10.13.139.227) by
- EX19D002UWC002.ant.amazon.com (10.13.138.166) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Thu, 24 Aug 2023 03:52:04 +0000
-Received: from EX19D017UWC003.ant.amazon.com ([fe80::f6d2:d06:a0ec:a97e]) by
- EX19D017UWC003.ant.amazon.com ([fe80::f6d2:d06:a0ec:a97e%6]) with mapi id
- 15.02.1118.037; Thu, 24 Aug 2023 03:52:04 +0000
-From:   "Lu, Davina" <davinalu@amazon.com>
-To:     Theodore Ts'o <tytso@mit.edu>
-CC:     "Bhatnagar, Rishabh" <risbhat@amazon.com>, Jan Kara <jack@suse.cz>,
-        "jack@suse.com" <jack@suse.com>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Park, SeongJae" <sjpark@amazon.com>
-Thread-Index: AQHZ0T0hyB578WffgkKt4A53/u6dQa/vMecAgAAmqwCABI99MIABMumAgAO8f9A=
-Date:   Thu, 24 Aug 2023 03:52:04 +0000
-Message-ID: <70943eab978e4482b9fa4f68119bc8ea@amazon.com>
-References: <17b6398c-859e-4ce7-b751-8688a7288b47@amazon.com>
- <20230816145310.giogco2nbzedgak2@quack3>
- <e716473e-7251-7a81-fa5e-6bf6ba34e49f@amazon.com>
- <20230816215227.jlvmqasfbc73asi4@quack3>
- <7f687907-8982-3be6-54ee-f55aae2f4692@amazon.com>
- <20230817104917.bs46doo6duo7utlm@quack3>
- <f8b8e655-7485-ef11-e151-7118b1531f16@amazon.com>
- <d82df68eb8514951a7f7acc923132796@amazon.com>
- <20230818024144.GD3464136@mit.edu>
- <099884899291490caf6c529929339e50@amazon.com> <ZOOvOT4dL1SCHQDz@mit.edu>
-In-Reply-To: <ZOOvOT4dL1SCHQDz@mit.edu>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.43.143.137]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Wed, 23 Aug 2023 23:57:26 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F6B91FEB;
+        Wed, 23 Aug 2023 20:56:56 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5A0326313A;
+        Thu, 24 Aug 2023 03:55:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0FB3C433CA;
+        Thu, 24 Aug 2023 03:55:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692849357;
+        bh=f2MaMPDKau4stYbi7cF7voUFa5rnept8FYUDhQEpDjk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=kCLPKRO3vG/kuskcO78aF4I2B+ZHsVDyhx4pglVcybTlSRpTye+rjGFamSLTzVRYO
+         EPncaOZmEd0Fwju5Ltvpf9oUa3MrVhaqAq03GY4G6tSyPn/0iomgWmU4zn8Bp6ronS
+         /EltsMz8pT0bvxVqHXHcZC2sawSeu7lDQoAn3puyt7NhGolHvAvrqvXmxtlJYeqQqG
+         Rsy+jwbp0W8VfEE3cp06B0X1Cwm5eb4WY8kq0RlCXi4EkUqVexiuRvM/VJWkDPxOlL
+         7RfD7OL6eB3hsl8vMlrrxDFDQh8+PXnfRrNOrIhEhHm6hMpk515ADUwbSfjI0vw0jw
+         M8ZoETD2Et57g==
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-4fe1b00fce2so9700074e87.3;
+        Wed, 23 Aug 2023 20:55:57 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yzvg7juYH+Q7Z8AaVB39djcYvoEQalyG8+AyZs/TzfJckApfWky
+        0pNUxI1Nzyvpo1ezBj9M5+ZtYMblEydb7k2QBmI=
+X-Google-Smtp-Source: AGHT+IHuPZ7LQJYjDMh9tonSINdmDBfMCDY6LWrqBjg7Q97XRVSQa1B8RpocHaT6h5lvN+tGGshVdDO1BJNhwZf8398=
+X-Received: by 2002:a05:6512:3241:b0:4fe:25bc:71f5 with SMTP id
+ c1-20020a056512324100b004fe25bc71f5mr8521870lfr.11.1692849355644; Wed, 23 Aug
+ 2023 20:55:55 -0700 (PDT)
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230824034304.37411-1-zhengqi.arch@bytedance.com> <20230824034304.37411-26-zhengqi.arch@bytedance.com>
+In-Reply-To: <20230824034304.37411-26-zhengqi.arch@bytedance.com>
+From:   Song Liu <song@kernel.org>
+Date:   Wed, 23 Aug 2023 20:55:42 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW4Tp3XPF349q8-BcEpaNSn23Rp10Wba=uoKy6Xtix29Gw@mail.gmail.com>
+Message-ID: <CAPhsuW4Tp3XPF349q8-BcEpaNSn23Rp10Wba=uoKy6Xtix29Gw@mail.gmail.com>
+Subject: Re: [PATCH v5 25/45] md/raid5: dynamically allocate the md-raid5 shrinker
+To:     Qi Zheng <zhengqi.arch@bytedance.com>
+Cc:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
+        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
+        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
+        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
+        yujie.liu@intel.com, gregkh@linuxfoundation.org,
+        muchun.song@linux.dev, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>,
+        linux-raid@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Aug 23, 2023 at 8:47=E2=80=AFPM Qi Zheng <zhengqi.arch@bytedance.co=
+m> wrote:
+>
+> In preparation for implementing lockless slab shrink, use new APIs to
+> dynamically allocate the md-raid5 shrinker, so that it can be freed
+> asynchronously via RCU. Then it doesn't need to wait for RCU read-side
+> critical section when releasing the struct r5conf.
+>
+> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+> Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+> CC: Song Liu <song@kernel.org>
+> CC: linux-raid@vger.kernel.org
 
-CAUTION: This email originated from outside of the organization. Do not cli=
-ck links or open attachments unless you can confirm the sender and know the=
- content is safe.
+LGTM!
 
-> Thanks for the details.  This is something that am interested in trying t=
-o potentially to merge, since for a sufficiently coversion-heavy workload (=
-assuming the conversion is happening=20
-> across multiple inodes, and not just a huge number of random writes into =
-a single fallocated file), limiting the number of kernel threads to one CPU=
- isn't always going to be the right thing. =20
->The reason why we had done this way was because at the time, the only choi=
-ces that we had was between a single kernel thread, or spawning a kernel th=
-read for every single CPU --=20
->which for a very high-core-count system, consumed a huge amount of system =
-resources.  This is no longer the case with the new Concurrency Managed Wor=
-kqueue (cmwq), but we never=20
->did the experiment to make sure cmwq didn't have surprising gotchas.
-
-Thank you for the detailed explanation.=20
-
-
-> I won't have time to look at this before the next merge window, but what =
-I'm hoping to look at is your patch at [2], with two changes:
-> a)  Drop the _WQ_ORDERED flag, since it is an internal flag.
-> b) Just pass in 0 for max_active instead of "num_active_cpus() > 1 ?
- > num_active_cpus() : 1", for two reasons.  Num_active_cpus() doesn't
- >  take into account CPU hotplugs (for example, if you have a
-  > dynmically adjustable VM shape where the number of active CPU's
-  > might change over time).  Is there a reason why we need to set that
-  > limit?
-
-> Do you see any potential problem with these changes?
-
-Sorry for the late response, after the internal discussion, I can continue =
-on this patch. These 2 points are easy to change, I will also do some xfste=
-st for EXT4 and run BMS on RDS environment to do a quick verify.  We can ch=
-ange num_active_cpus() to 0. Why adding that: just because during fio test,=
- the max active number goes to ~50 we won't see this issue. But this is not=
- necessary. I will see what's Oleg's opinion later offline.
-
-Thanks,
-Davina
-                                            =20
+Reviewed-by: Song Liu <song@kernel.org>
