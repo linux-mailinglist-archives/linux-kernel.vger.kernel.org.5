@@ -2,86 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2662B7875BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 18:43:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1936E7875C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 18:43:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240354AbjHXQnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 12:43:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47894 "EHLO
+        id S242680AbjHXQn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 12:43:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242743AbjHXQnN (ORCPT
+        with ESMTP id S242738AbjHXQnM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 12:43:13 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB4F11FDE;
-        Thu, 24 Aug 2023 09:42:47 -0700 (PDT)
-Received: from ginger.. (unknown [189.115.8.42])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: koike)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 18F956607273;
-        Thu, 24 Aug 2023 17:42:38 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1692895360;
-        bh=KEyNwtYYO4BSXGKpu8cyHNwnu4krA5gnS4naNjnuc2M=;
-        h=From:To:Cc:Subject:Date:From;
-        b=cR5YHUWiS5gT/bLp5SNr+AGlSISCof/y63WV89l2QZF0ajLiaHtxGbPWJgnv/xOQR
-         v/8HkWQRqNbXnznf2uIwb2hEKhOFrrahAXlywrcVepldXtC6Xw0GAiOgP1irS8dtTu
-         csO5B/Kx6wjFLtFeaJTs333QYI1TUjnEcJwP5BeDieddArrqsSdweSFxGVjDWe6ld1
-         QahCCJSRTUDdInOBjm3iHyG/bu46fOwXBQGdkH4UCsPx+m2WNV+3M9TIAilTDdZJFj
-         r8OfNFNYiPklZ+rQn6seWLA5TF0B5TCW5/K0naIlnG3vdP3ETT+PX3xBtnwq2qH/fK
-         9G+Cc8gIs4DzQ==
-From:   Helen Koike <helen.koike@collabora.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     daniel.vetter@ffwll.ch, linux-kernel@vger.kernel.org,
-        linux-next@vger.kernel.org, airlied@gmail.com
-Subject: [PATCH v2] drm: ci: docs: fix build warning - add missing escape
-Date:   Thu, 24 Aug 2023 13:42:30 -0300
-Message-Id: <20230824164230.48470-1-helen.koike@collabora.com>
-X-Mailer: git-send-email 2.34.1
+        Thu, 24 Aug 2023 12:43:12 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F2BE199E
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 09:42:46 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-99bcfe28909so881820066b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 09:42:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692895360; x=1693500160;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FRVTXGz++H59+3nilaNeFjWdjJ3kSI1rYdkOaYMbR6Q=;
+        b=OWz1mxqSKTG4Ws2n2ob+Ev6MkMfo5kvPd3Rs+GO1KhxPkDJOulx9VXNWBvJLPLkCsU
+         vf1r9HBJ5D759cqH5P8/XIaC5Zi3iLuWfNwj/3paWaicMP2kH6PMY7W67o6LOtJqnrq3
+         fjYrHJ1/LnQveippW69F7alZZqB/5sBGxBtgV8NPsMGumtmU1IDbT1TPwfeLmfYBAZdg
+         YVpbR9YS0hP4SwlX/ygDqBrEJCOEfBy3pqdNdEZXaTVVX/BH5ZLvxHqwSItHJF4Dy1KD
+         0xNjyXq7JDoPFVnY10J1oUSTaZlPfFTn399TpLVCBNwssIRB5a2zX78ZRbjmRPz/EEWD
+         qy9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692895360; x=1693500160;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FRVTXGz++H59+3nilaNeFjWdjJ3kSI1rYdkOaYMbR6Q=;
+        b=PQQaKx1RUpjealfzw3l1XeVdNK1jeFNiFYQbOtYgmhBu6xgEf0CDniIQG/+r/HVaNQ
+         akCk6clrsOSdvOF0Mno/t2Q2uzI7fGzYs68b0mFiu6/uiVnQEd19vsOh+ZDbIvafrxDF
+         fdBU0obhHdPlOD5j6f6ePDQwQ2khRMyRWJ2IE4aU8CEYg7uWZCRV8EkA9CFLGfCzbpBU
+         XOE9nz10CzcvO4QDeIyKhMcT5leKDRDj4f0VV+EppW0SzaMDO1p/A2do8KkZ7nRkURZu
+         2e0MuDkz3UQtxitjPwoFElvledExhMNJbsNGO0yQynJcAvkAvBbQwKp6CIGd7GJYJ9pF
+         R4VA==
+X-Gm-Message-State: AOJu0Yy4msYq2iD6IgRIGvU8rSbvF/kRGgHk2sjJj3IZd8FsjWLq1n9U
+        NYPmIAT+dyBLKnKijVi8Wpgsbw==
+X-Google-Smtp-Source: AGHT+IF6dqWQ4k0Xod7n5CRdbTReJzNMx54la11pA1FVG0NFk2R7/E+0l/ShfQPPpCjJ/TVSTT1tSw==
+X-Received: by 2002:a17:907:77c4:b0:993:d536:3cb7 with SMTP id kz4-20020a17090777c400b00993d5363cb7mr12802741ejc.11.1692895360669;
+        Thu, 24 Aug 2023 09:42:40 -0700 (PDT)
+Received: from [192.168.0.22] ([77.252.47.198])
+        by smtp.gmail.com with ESMTPSA id o15-20020a1709061b0f00b00985ed2f1584sm11172780ejg.187.2023.08.24.09.42.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Aug 2023 09:42:40 -0700 (PDT)
+Message-ID: <78007d9e-99ef-0922-2198-83e8c674b82c@linaro.org>
+Date:   Thu, 24 Aug 2023 18:42:38 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v2 2/3] arm64: dts: imx93: add dma support for
+ lpuart[1..9]
+Content-Language: en-US
+To:     Frank Li <Frank.Li@nxp.com>, festevam@gmail.com
+Cc:     clin@suse.com, conor+dt@kernel.org, devicetree@vger.kernel.org,
+        eagle.zhou@nxp.com, imx@lists.linux.dev, joy.zou@nxp.com,
+        kernel@pengutronix.de, krzysztof.kozlowski+dt@linaro.org,
+        leoyang.li@nxp.com, linux-arm-kernel@lists.infradead.org,
+        linux-imx@nxp.com, linux-kernel@vger.kernel.org,
+        pierre.gondois@arm.com, robh+dt@kernel.org, s.hauer@pengutronix.de,
+        shawnguo@kernel.org, shenwei.wang@nxp.com, sherry.sun@nxp.com
+References: <20230824163922.2952403-1-Frank.Li@nxp.com>
+ <20230824163922.2952403-5-Frank.Li@nxp.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230824163922.2952403-5-Frank.Li@nxp.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following warning:
+On 24/08/2023 18:39, Frank Li wrote:
+> Add dma support for lpuart[1..9].
+> 
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> ---
+>  arch/arm64/boot/dts/freescale/imx93.dtsi | 16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/freescale/imx93.dtsi b/arch/arm64/boot/dts/freescale/imx93.dtsi
+> index acdca18673b7..849543d35ed7 100644
+> --- a/arch/arm64/boot/dts/freescale/imx93.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/imx93.dtsi
+> @@ -336,6 +336,8 @@ lpuart1: serial@44380000 {
+>  				interrupts = <GIC_SPI 19 IRQ_TYPE_LEVEL_HIGH>;
+>  				clocks = <&clk IMX93_CLK_LPUART1_GATE>;
+>  				clock-names = "ipg";
+> +				dmas = <&edma1 16 0 0>, <&edma1 17 0 1>;
+> +				dma-names = "tx", "rx";
+>  				status = "disabled";
+>  			};
+>  
+> @@ -345,6 +347,8 @@ lpuart2: serial@44390000 {
+>  				interrupts = <GIC_SPI 20 IRQ_TYPE_LEVEL_HIGH>;
+>  				clocks = <&clk IMX93_CLK_LPUART2_GATE>;
+>  				clock-names = "ipg";
+> +				dmas = <&edma1 18 0 0>, <&edma1 19 0 1>;
+> +				dma-names = "tx", "rx";
+>  				status = "disabled";
+>  			};
+>  
+> @@ -666,6 +670,8 @@ lpuart3: serial@42570000 {
+>  				interrupts = <GIC_SPI 68 IRQ_TYPE_LEVEL_HIGH>;
+>  				clocks = <&clk IMX93_CLK_LPUART3_GATE>;
+>  				clock-names = "ipg";
+> +				dmas = <&edma2 17 0 0>, <&edma2 18 0 1>;
+> +				dma-names = "tx","rx";
 
-Documentation/gpu/automated_testing.rst:55: WARNING: Inline emphasis start-string without end-string.
+Missing space after ,
 
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Helen Koike <helen.koike@collabora.com>
-
----
-
-Patch for topic/drm-ci
-
-V2:
-- Fix typo s/scape/escape
-
----
- Documentation/gpu/automated_testing.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/Documentation/gpu/automated_testing.rst b/Documentation/gpu/automated_testing.rst
-index 1b87b802ac7f..469b6fb65c30 100644
---- a/Documentation/gpu/automated_testing.rst
-+++ b/Documentation/gpu/automated_testing.rst
-@@ -52,7 +52,7 @@ IGT_VERSION
- drivers/gpu/drm/ci/testlist.txt
- -------------------------------
- 
--IGT tests to be run on all drivers (unless mentioned in a driver's *-skips.txt
-+IGT tests to be run on all drivers (unless mentioned in a driver's \*-skips.txt
- file, see below).
- 
- drivers/gpu/drm/ci/${DRIVER_NAME}-${HW_REVISION}-fails.txt
--- 
-2.34.1
+Best regards,
+Krzysztof
 
