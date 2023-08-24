@@ -2,144 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DDF078705B
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 15:37:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2418D78706D
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 15:39:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239394AbjHXNhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 09:37:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45712 "EHLO
+        id S240972AbjHXNi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 09:38:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241370AbjHXNhH (ORCPT
+        with ESMTP id S241384AbjHXNiS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 09:37:07 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73412170F;
-        Thu, 24 Aug 2023 06:37:05 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 10E1C6501F;
-        Thu, 24 Aug 2023 13:37:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78AB5C433C7;
-        Thu, 24 Aug 2023 13:37:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692884224;
-        bh=3U3iza2rKnDGP9eBsmXIz+qXIBFFKyRg0jO73d+n7rY=;
+        Thu, 24 Aug 2023 09:38:18 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7836A8;
+        Thu, 24 Aug 2023 06:38:14 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 7161487F3;
+        Thu, 24 Aug 2023 15:36:54 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1692884214;
+        bh=oalxeZVFfKSUT8czfbUCm4o1WUQzUESRkV9W4kRfGiw=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Nw+6TPLwp6z3cmw3zNMGSL3HNi4K0Y/JuGnXUj+rMTVq2A8qMVRmuPyQ6jwH7YhCI
-         QYAjYIlVETOgHokB6uuRWNaITKKNamsvSphCIaMshd34ZvyQNJWQlb4RY88+9LaxUP
-         6cGrRHFvc1oat9vxnNXUFfX5DXWf2QxaOQnNfFyo1ovrcccIzRfH3vOaspppeSmyZD
-         aYrc+8kfwYsJGtqhz8nnY/g8DLlsKMPcPSo2/oB3Xxx78wJTchwf26AFWopP+PGvQO
-         sDeyfRem2HKTwRbS1OdU3FuDbUdK2zuKap9iaUYBnP1zciGJILD3IeWHx0D2VQW0SX
-         6KQgwFTJG1pQQ==
-Received: (nullmailer pid 671019 invoked by uid 1000);
-        Thu, 24 Aug 2023 13:37:01 -0000
-Date:   Thu, 24 Aug 2023 08:37:01 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Martin =?utf-8?B?WmHFpW92acSN?= <m.zatovic1@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, gregkh@linuxfoundation.org,
-        linus.walleij@linaro.org, quic_jhugo@quicinc.com,
-        nipun.gupta@amd.com, tzimmermann@suse.de, ogabbay@kernel.org,
-        mathieu.poirier@linaro.org, axboe@kernel.dk,
-        damien.lemoal@opensource.wdc.com, linux@zary.sk, arnd@arndb.de,
-        yangyicong@hisilicon.com, benjamin.tissoires@redhat.com,
-        masahiroy@kernel.org, jacek.lawrynowicz@linux.intel.com,
-        geert+renesas@glider.be, devicetree@vger.kernel.org,
-        andriy.shevchenko@intel.com
-Subject: Re: [PATCHv5 1/4] dt-bindings: wiegand: add Wiegand controller
- common properties
-Message-ID: <20230824133701.GA649032-robh@kernel.org>
-References: <20230824111015.57765-1-m.zatovic1@gmail.com>
- <20230824111015.57765-2-m.zatovic1@gmail.com>
+        b=IUZ779YsdfuSph7BbBGVTfG0l6pO0U12VD4Jbl1cF/sQuqNXebpETUEM1MogEo+Pk
+         7vXYtXknTMJT6f2LSKl402jkvk9xB7TWOAa6NSyy9a4u+MYfCgiGXwrvYnoIJLJO3T
+         F99xH15/tBRNuqeb1eMYw2hTk3/IcZYVDDUow0QQ=
+Date:   Thu, 24 Aug 2023 16:38:19 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Jack Zhu <jack.zhu@starfivetech.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Todor Tomov <todor.too@gmail.com>, bryan.odonoghue@linaro.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Eugen Hristev <eugen.hristev@collabora.com>,
+        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, changhuang.liang@starfivetech.com
+Subject: Re: [PATCH v7 6/6] media: starfive: camss: Add VIN driver
+Message-ID: <20230824133819.GD27092@pendragon.ideasonboard.com>
+References: <20230619112838.19797-1-jack.zhu@starfivetech.com>
+ <20230619112838.19797-7-jack.zhu@starfivetech.com>
+ <20230727204911.GA7136@pendragon.ideasonboard.com>
+ <696e3fd0-7c89-812b-5cda-c5c46b594bf7@starfivetech.com>
+ <20230802103809.GB5269@pendragon.ideasonboard.com>
+ <73222603-445e-fdb0-e831-219bac1d5865@starfivetech.com>
+ <20230803221833.GF9722@pendragon.ideasonboard.com>
+ <69c1800e-714e-372d-c894-fd060f26b306@starfivetech.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230824111015.57765-2-m.zatovic1@gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <69c1800e-714e-372d-c894-fd060f26b306@starfivetech.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 01:10:12PM +0200, Martin Zaťovič wrote:
-> Wiegand bus is defined by a Wiegand controller node. This node
-> can contain one or more device nodes for devices attached to
-> the controller(it is advised to only connect one device as Wiegand
-> is a point-to-point bus).
+Hi Jack,
 
-How would multiple devices work? Seems like you'd need some sort of mux 
-which would be another node. If there's not really any need, then I'd 
-just say it's only a single device. Either way the binding needs to 
-define this.
-
+On Fri, Aug 04, 2023 at 07:14:22PM +0800, Jack Zhu wrote:
+> On 2023/8/4 6:18, Laurent Pinchart wrote:
+> > On Thu, Aug 03, 2023 at 10:44:50AM +0800, Jack Zhu wrote:
+> >> On 2023/8/2 18:38, Laurent Pinchart wrote:
+> >> > On Wed, Aug 02, 2023 at 05:58:26PM +0800, Jack Zhu wrote:
+> >> >> On 2023/7/28 4:49, Laurent Pinchart wrote:
+> >> >> > On Mon, Jun 19, 2023 at 07:28:38PM +0800, Jack Zhu wrote:
+> >> >> >> Add Video In Controller driver for StarFive Camera Subsystem.
+> >> >> > 
+> >> >> > I haven't reviewed this patch in details, as I have a high-level
+> >> >> > question: why do you need VIN subdevs ? They don't seem to represent any
+> >> >> > particular piece of hardware, their input and output formats are always
+> >> >> > identical, and they're not used to configure registers. The contents of
+> >> >> > this patch seems to belong to the video device, I think you can drop the
+> >> >> > VIN subdevs.
+> >> >> 
+> >> >> The VIN module corresponds to a hardware module, which is mainly responsible
+> >> >> for data routing and partial interrupt management (when the image data does
+> >> >> not pass through the isp but directly goes to the ddr), the relevant registers
+> >> >> need to be configured.
+> >> > 
+> >> > That's fine, but I don't think you need a subdev for it. As far as I
+> >> > understand, the VIn modules are (more or less) DMA engines. You can just
+> >> > model them as video devices, connected directly to the CSI-2 RX and ISP
+> >> > source pads.
+> >> 
+> >> The VIN hardware can also route input data, it can decide whether DVP sensor
+> >> or MIPI sensor is used as input data.
+> >> 
+> >> > Does the "vin0_wr" have the ability to capture raw data from the DVP
+> >> > interface as well, or only from the CSI-2 RX ?
+> >> 
+> >> Yes, the "vin0_wr" has the ability to capture raw data from the DVP
+> >> interface.
+> > 
+> > Then I would recommend something similar to the following media graph:
+> > 
+> > digraph board {
+> >         rankdir=TB
+> >         imx219 [label="{{} | imx219 6-0010\n/dev/v4l-subdev0 | {<port0> 0}}", shape=Mrecord, style=filled, fillcolor=green]
+> >         imx219:port0 -> csi2rx:port0 [style=bold]
+> >         csi2rx [label="{{<port0> 0} | cdns_csi2rx.19800000.csi-bridge\n | {<port1> 1 | <port2> 2 | <port3> 3 | <port4> 4}}", shape=Mrecord, style=filled, fillcolor=green]
+> >         csi2rx:port1 -> vin:port0 [style=bold]
+> >         ov5640 [label="{{} | ov5640 6-0020\n/dev/v4l-subdev1 | {<port0> 0}}", shape=Mrecord, style=filled, fillcolor=green]
+> >         ov5640:port0 -> vin:port1 [style=bold]
+> >         vin [label="{{<port0> 0 | <port1> 1} | stf_vin0\n/dev/v4l-subdev2 | {<port2> 2}}", shape=Mrecord, style=filled, fillcolor=green]
+> >         vin:port2 -> raw_capture [style=dashed]
+> >         vin:port2 -> isp:port0 [style=dashed]
+> >         raw_capture [label="stf_vin0_wr_video0\n/dev/video0", shape=box, style=filled, fillcolor=yellow]
+> >         isp [label="{{<port0> 0} | stf_isp0\n/dev/v4l-subdev3 | {<port1> 1}}", shape=Mrecord, style=filled, fillcolor=green]
+> >         isp:port1 -> yuv_capture [style=bold]
+> >         yuv_capture [label="stf_vin0_isp0_video1\n/dev/video1", shape=box, style=filled, fillcolor=yellow]
+> > }
+> > 
+> > Here, the stf_vin0 subdev is used to route either the CSI-2 input or the
+> > DVP input to the raw capture video device and the ISP.
+> > 
+> > Does this match the hardware architecture ?
 > 
-> Wiegand controller needs to specify several attributes such as
-> the pulse length in order to function properly. These attributes
-> are documented here.
+> Yes, but I have a question to ask, is there any way for stf_vin0 subdev
+> to distinguish whether the current scene is 'raw_capture' or 'yuv_capture'?
+
+Sorry about the late reply, I had missed your e-mail.
+
+I'm not sure to follow you here. Do you mean differentiating between
+capturing raw frames from stf_vin0_wr_video0 and YUV frames from
+stf_vin0_isp0_video1 ? Are those mutually exclusive, or is it possible
+to capture both raw frames and YUV frames at the same time ?
+
+> > What are ports 2, 3 and 4 for in the CSI-2 RX ?
 > 
-> Acked-by: Linus Walleij <linus.walleij@linaro.org>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Martin Zaťovič <m.zatovic1@gmail.com>
-> ---
->  .../bindings/wiegand/wiegand-controller.yaml  | 39 +++++++++++++++++++
->  MAINTAINERS                                   |  5 +++
->  2 files changed, 44 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/wiegand/wiegand-controller.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/wiegand/wiegand-controller.yaml b/Documentation/devicetree/bindings/wiegand/wiegand-controller.yaml
-> new file mode 100644
-> index 000000000000..8f36287e4fed
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/wiegand/wiegand-controller.yaml
-> @@ -0,0 +1,39 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/wiegand/wiegand-controller.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Wiegand Generic Controller Common Properties
-> +
-> +maintainers:
-> +  - Martin Zaťovič <m.zatovic1@gmail.com>
-> +
-> +description:
-> +  Wiegand busses can be described with a node for the Wiegand controller device
-> +  and a set of child nodes for each SPI slave on the bus.
+> port2-4 are useless, they should be created by 'cdns-csi2rx.c' by default.
+>  
+> >> >> >> Signed-off-by: Jack Zhu <jack.zhu@starfivetech.com>
+> >> >> >> ---
+> >> >> >>  .../media/platform/starfive/camss/Makefile    |    4 +-
+> >> >> >>  .../media/platform/starfive/camss/stf_camss.c |   42 +-
+> >> >> >>  .../media/platform/starfive/camss/stf_camss.h |    2 +
+> >> >> >>  .../media/platform/starfive/camss/stf_vin.c   | 1069 +++++++++++++++++
+> >> >> >>  .../media/platform/starfive/camss/stf_vin.h   |  173 +++
+> >> >> >>  .../platform/starfive/camss/stf_vin_hw_ops.c  |  192 +++
+> >> >> >>  6 files changed, 1478 insertions(+), 4 deletions(-)
+> >> >> >>  create mode 100644 drivers/media/platform/starfive/camss/stf_vin.c
+> >> >> >>  create mode 100644 drivers/media/platform/starfive/camss/stf_vin.h
+> >> >> >>  create mode 100644 drivers/media/platform/starfive/camss/stf_vin_hw_ops.c
+> >> >> >> 
+> >> >> >> diff --git a/drivers/media/platform/starfive/camss/Makefile b/drivers/media/platform/starfive/camss/Makefile
+> >> >> >> index cdf57e8c9546..ef574e01ca47 100644
+> >> >> >> --- a/drivers/media/platform/starfive/camss/Makefile
+> >> >> >> +++ b/drivers/media/platform/starfive/camss/Makefile
+> >> >> >> @@ -7,6 +7,8 @@ starfive-camss-objs += \
+> >> >> >>  		stf_camss.o \
+> >> >> >>  		stf_isp.o \
+> >> >> >>  		stf_isp_hw_ops.o \
+> >> >> >> -		stf_video.o
+> >> >> >> +		stf_video.o \
+> >> >> >> +		stf_vin.o \
+> >> >> >> +		stf_vin_hw_ops.o
+> >> >> >>  
+> >> >> >>  obj-$(CONFIG_VIDEO_STARFIVE_CAMSS) += starfive-camss.o
+> >> >> >> diff --git a/drivers/media/platform/starfive/camss/stf_camss.c b/drivers/media/platform/starfive/camss/stf_camss.c
+> >> >> >> index 6f56b45f57db..834ea63eb833 100644
+> >> >> >> --- a/drivers/media/platform/starfive/camss/stf_camss.c
+> >> >> >> +++ b/drivers/media/platform/starfive/camss/stf_camss.c
+> >> >> >> @@ -131,27 +131,61 @@ static int stfcamss_init_subdevices(struct stfcamss *stfcamss)
+> >> >> >>  		return ret;
+> >> >> >>  	}
+> >> >> >>  
 
-Some more detail on what Wiegand is would be useful. Link to spec? What 
-it is used for?
+-- 
+Regards,
 
-> +
-> +properties:
-> +  $nodename:
-> +    pattern: "^wiegand(@.*|-[0-9a-f])?$"
-
-The '-[0-9a-f]' suffix should be decimal rather than hex.
-
-> +
-> +  pulse-len-us:
-> +    description:
-> +      Length of the low pulse in microseconds.
-> +
-> +  interval-len-us:
-> +    description:
-> +      Length of a whole bit (both the pulse and the high phase) in microseconds.
-> +
-> +  frame-gap-us:
-> +    description:
-> +      Length of the last bit of a frame (both the pulse and the high phase) in
-> +      microseconds.
-
-If you have multiple devices, you need to define the child node format. 
-Specifically, you need addresses for multiple devices. So you need to 
-define the unit-address format, #address-cells and #size-cells values, 
-and any constraints on 'reg' such as max address and/or number of entries.
-
-Rob
+Laurent Pinchart
