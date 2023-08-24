@@ -2,82 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 327EC786A1B
+	by mail.lfdr.de (Postfix) with ESMTP id 8655E786A1C
 	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 10:32:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235862AbjHXIbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 04:31:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47340 "EHLO
+        id S240455AbjHXIbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 04:31:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240541AbjHXIb2 (ORCPT
+        with ESMTP id S240543AbjHXIb2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 24 Aug 2023 04:31:28 -0400
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A88B9172D;
-        Thu, 24 Aug 2023 01:31:24 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37O8V4Jh075375;
-        Thu, 24 Aug 2023 03:31:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1692865864;
-        bh=vOkj4zAoo62uwYWmtr0A2SD6qiUs4QCmudTT6wYuduo=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=Ea/mkAOXqoJ25E1s+ejDOtb0Ot1GwNS1wqH4hslzh8ebJ1metrQr/KqV7N4gEnfN6
-         RSELm3jYE0L15pYTvQWzFWi7FBRN6YTsBvpDOzfa73No1gGhzijLG44KdKep4/tp7X
-         SkTmlq+PO2Op/p7XPUVVERm9SlI1JuPai1S4DlzE=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37O8V4ba037931
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 24 Aug 2023 03:31:04 -0500
-Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 24
- Aug 2023 03:31:04 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 24 Aug 2023 03:31:04 -0500
-Received: from [172.24.227.35] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37O8Uv93055459;
-        Thu, 24 Aug 2023 03:30:58 -0500
-Message-ID: <6d1b6571-20d4-a4a9-5c46-adb2c9938abb@ti.com>
-Date:   Thu, 24 Aug 2023 14:00:56 +0530
+Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 932361728
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 01:31:25 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:3c6b:f703:5ab5:f36d])
+        by andre.telenet-ops.be with bizsmtp
+        id dLXN2A00B01sfPQ01LXNtj; Thu, 24 Aug 2023 10:31:22 +0200
+Received: from geert (helo=localhost)
+        by ramsan.of.borg with local-esmtp (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qZ5kQ-001ccI-BO;
+        Thu, 24 Aug 2023 10:31:22 +0200
+Date:   Thu, 24 Aug 2023 10:31:22 +0200 (CEST)
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Lizhi Hou <lizhi.hou@amd.com>
+cc:     linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, robh@kernel.org, max.zhen@amd.com,
+        sonal.santan@amd.com, stefano.stabellini@xilinx.com
+Subject: Re: [PATCH V13 4/5] of: overlay: Extend of_overlay_fdt_apply() to
+ specify the target node
+In-Reply-To: <1692120000-46900-5-git-send-email-lizhi.hou@amd.com>
+Message-ID: <2aae84b8-41f9-3c24-bac9-8f882d2211b@linux-m68k.org>
+References: <1692120000-46900-1-git-send-email-lizhi.hou@amd.com> <1692120000-46900-5-git-send-email-lizhi.hou@amd.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [EXTERNAL] Re: [PATCH v6 1/5] dt-bindings: net: Add ICSS IEP
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        MD Danish Anwar <danishanwar@ti.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Roger Quadros <rogerq@kernel.org>,
-        Simon Horman <simon.horman@corigine.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>
-CC:     <nm@ti.com>, <srk@ti.com>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20230823113254.292603-1-danishanwar@ti.com>
- <20230823113254.292603-2-danishanwar@ti.com>
- <d5a343c8-c384-6eea-94bf-e0c4f96e5fb0@linaro.org>
-From:   Md Danish Anwar <a0501179@ti.com>
-Organization: Texas Instruments
-In-Reply-To: <d5a343c8-c384-6eea-94bf-e0c4f96e5fb0@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+Content-Type: multipart/mixed; boundary="8323329-249000650-1692865882=:386713"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,102 +45,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/08/23 12:13 pm, Krzysztof Kozlowski wrote:
-> On 23/08/2023 13:32, MD Danish Anwar wrote:
->> Add a DT binding document for the ICSS Industrial Ethernet Peripheral(IEP)
->> hardware. IEP supports packet timestamping, PTP and PPS.
->>
->> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-> 
-> Really? Where?
-> 
->> Reviewed-by: Roger Quadros <rogerq@kernel.org>
-> 
-> Now you are making things up. Please stop faking tags.
-> 
->> Reviewed-by: Simon Horman <horms@kernel.org>
-> 
-> Where?
-> 
->> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
->> ---
->>  .../devicetree/bindings/net/ti,icss-iep.yaml  | 61 +++++++++++++++++++
->>  1 file changed, 61 insertions(+)
->>  create mode 100644 Documentation/devicetree/bindings/net/ti,icss-iep.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/net/ti,icss-iep.yaml b/Documentation/devicetree/bindings/net/ti,icss-iep.yaml
->> new file mode 100644
->> index 000000000000..75668bea8614
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/net/ti,icss-iep.yaml
->> @@ -0,0 +1,61 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/net/ti,icss-iep.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Texas Instruments ICSS Industrial Ethernet Peripheral (IEP) module
->> +
->> +maintainers:
->> +  - Md Danish Anwar <danishanwar@ti.com>
->> +
->> +properties:
->> +  compatible:
->> +    oneOf:
->> +      - items:
->> +          - enum:
->> +              - ti,am642-icss-iep
->> +              - ti,j721e-icss-iep
->> +          - const: ti,am654-icss-iep
->> +
->> +      - const: ti,am654-icss-iep
->> +
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +  clocks:
->> +    maxItems: 1
->> +    description: phandle to the IEP source clock
->> +
->> +required:
->> +  - compatible
->> +  - reg
->> +  - clocks
->> +
->> +additionalProperties: false
->> +
->> +examples:
->> +  - |
->> +
-> 
-> Drop stray blank line
-> 
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-I will drop this blank line.
+--8323329-249000650-1692865882=:386713
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Transfer-Encoding: 8BIT
 
->> +    /* AM65x */
->> +    icssg0_iep0: iep@2e000 {
->> +        compatible = "ti,am654-icss-iep";
->> +        reg = <0x2e000 0x1000>;
->> +        clocks = <&icssg0_iepclk_mux>;
->> +    };
-> 
-> Choose one example.
-> 
+ 	Hi Lizhi,
 
-I will only keep one example (AM65x) and drop other examples.
+On Tue, 15 Aug 2023, Lizhi Hou wrote:
+> Currently, in an overlay fdt fragment, it needs to specify the exact
+> location in base DT. In another word, when the fdt fragment is generated,
+> the base DT location for the fragment is already known.
+>
+> There is new use case that the base DT location is unknown when fdt
+> fragment is generated. For example, the add-on device provide a fdt
+> overlay with its firmware to describe its downstream devices. Because it
+> is add-on device which can be plugged to different systems, its firmware
+> will not be able to know the overlay location in base DT. Instead, the
+> device driver will load the overlay fdt and apply it to base DT at runtime.
+> In this case, of_overlay_fdt_apply() needs to be extended to specify
+> the target node for device driver to apply overlay fdt.
+>    int overlay_fdt_apply(..., struct device_node *base);
+>
+> Signed-off-by: Lizhi Hou <lizhi.hou@amd.com>
 
-> 
-> Best regards,
-> Krzysztof
-> 
+Thanks for your patch, which is now commit 47284862bfc7fd56 ("of:
+overlay: Extend of_overlay_fdt_apply() in dt-rh/for-next.
 
-I will make above changes and remove Roger's RB from patch 3 and 4 as he is the
-author of those patches. With these changes I will send next revision today. If
-there is anything else, please let me know.
+> --- a/drivers/of/overlay.c
+> +++ b/drivers/of/overlay.c
+> @@ -715,6 +730,7 @@ static struct device_node *find_target(struct device_node *info_node)
+> /**
+>  * init_overlay_changeset() - initialize overlay changeset from overlay tree
+>  * @ovcs:		Overlay changeset to build
+> + * @target_base:	Point to the target node to apply overlay
+>  *
+>  * Initialize @ovcs.  Populate @ovcs->fragments with node information from
+>  * the top level of @overlay_root.  The relevant top level nodes are the
 
--- 
-Thanks and Regards,
-Danish.
+As an overlay can contain one or more fragments, this means the
+base (when specified) will be applied to all fragments, and will thus
+override the target-path properties in all fragments.
+
+However, for the use case of an overlay that you can plug into
+a random location (and of which there can be multiple instances),
+there can really be only a single fragment.  Even nodes that typically
+live at the root level (e.g. gpio-leds or gpio-keys) must be inserted
+below the specified location, to avoid conflicts.
+
+Hence:
+   1. Should init_overlay_changeset() return -EINVAL if target_base is
+      specified, and there is more than one fragment?
+
+   2. Should there be a convention about the target-path property's
+      contents in the original overlay?
+      drivers/of/unittest-data/overlay_pci_node.dtso in "[PATCH V13 5/5]
+      of: unittest: Add pci_dt_testdrv pci driver" uses
+
+          target-path="";
+
+      which cannot be represented when using sugar syntax.
+      "/" should work fine, though.
+
+Thanks!
+
+Gr{oetje,eeting}s,
+
+ 						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+ 							    -- Linus Torvalds
+--8323329-249000650-1692865882=:386713--
