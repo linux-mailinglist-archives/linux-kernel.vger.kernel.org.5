@@ -2,75 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C655E7877D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 20:30:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 217887877D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 20:31:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243033AbjHXS35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 14:29:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59588 "EHLO
+        id S238288AbjHXSbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 14:31:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230090AbjHXS3d (ORCPT
+        with ESMTP id S243096AbjHXSax (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 14:29:33 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2916F19BF
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 11:29:31 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id 98e67ed59e1d1-26d50a832a9so51453a91.3
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 11:29:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20221208.gappssmtp.com; s=20221208; t=1692901770; x=1693506570;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/1YcSecukI/DFCrztrORLNsZGL+keJIV6eV7Ksjr9Gk=;
-        b=BOqwKncfGAv7/sk10fo5h2uyW0w/tgq6WrtbnuolTn8KoRL9jeuPUXIby9JnccqFq3
-         CJHaRQTUzGjOy+/HSYJSbQnHhhApCmRk9X1EKYcx4HgrRH3HCGU/GL9P21pxsMRmJQ+e
-         TxS+zIrVgqZmXS/K7OWgaxaH4QqkwdK6noTPb+IYTTDrjjPT2rFT7IpfzZOsP2FJkWld
-         QmJ8/Yi7gahlB5c723fPBLLGaWi6WHhe+LvqlXg+XcXjTuoGQApRIyLCY/6hyoAi/iKg
-         hMw+8S8hD2PiK4OJg103GUAMSZ9Q7OK40HoX4dQ3i19KF0D7DDW6EwiwC4eG86/Kd/TU
-         AftQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692901770; x=1693506570;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/1YcSecukI/DFCrztrORLNsZGL+keJIV6eV7Ksjr9Gk=;
-        b=GlfCuADTfVBTp7jjsy7nzH/pwNdGKuJ95p2Tprlg2J6xHukAzfxJxojgYmK2nuzMOw
-         ZloZYnQep6w1PiqaGeqVp2DzcpIA/ptdGOxkatVWIR1Rpqw/oWRbAauwLRNwUGF7oTL7
-         iyJGAe8Pcv9rO06PUSox2tWXXU+sBvnsej/a8zLrxLWiVq9JaIHyxVn2cNpAYlODWYlt
-         zd3Mfk8Y2ewenum9zNYOLsfbmyUI7IqWK3+MULSxM1h9lSKdM7Grciy7uGKg1YEtOjg4
-         8MUko3mf21DYaXD5ABVOcC/i6nb99VHsRyTHy7BEBw/RXhV3TZQ4iqA7ls4b46hdskfg
-         8oFQ==
-X-Gm-Message-State: AOJu0YzRpS/3CEbojeyfz1sHgmqtSSjyKFEBL+GJ81JtPsL0i9hlGoba
-        7sfD0ihk+h1/d9QDLDPgyyY7uccNQL6lRREXBKc=
-X-Google-Smtp-Source: AGHT+IEj3DSxzNiMBroPsK0WsOrwhwhGUAIwXhWz1yAAmXCG0m396XZ+r/VKHLDvYZfeoEJd6N/nvg==
-X-Received: by 2002:a17:90a:dc05:b0:268:a691:412f with SMTP id i5-20020a17090adc0500b00268a691412fmr12818362pjv.39.1692901770550;
-        Thu, 24 Aug 2023 11:29:30 -0700 (PDT)
-Received: from localhost ([50.221.140.188])
-        by smtp.gmail.com with ESMTPSA id q9-20020a17090a68c900b0026b3773043dsm46714pjj.22.2023.08.24.11.29.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Aug 2023 11:29:29 -0700 (PDT)
-Date:   Thu, 24 Aug 2023 11:29:29 -0700 (PDT)
-X-Google-Original-Date: Thu, 24 Aug 2023 11:29:28 PDT (-0700)
-Subject:     Re: [PATCH v5] riscv: Handle zicsr/zifencei issue between gcc and binutils
-In-Reply-To: <20230824-cortex-mobilize-8b94e059e130@spud>
-CC:     xingmingzheng@iscas.ac.cn,
-        Conor Dooley <conor.dooley@microchip.com>,
-        patchwork-bot+linux-riscv@kernel.org,
-        linux-riscv@lists.infradead.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, nathan@kernel.org, ndesaulniers@google.com,
-        trix@redhat.com, bmeng@tinylab.org, guoren@kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        stable@vger.kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     Conor Dooley <conor@kernel.org>
-Message-ID: <mhng-a2e62840-6065-4435-a82d-b09054e8f254@palmer-ri-x1c9a>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
+        Thu, 24 Aug 2023 14:30:53 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9FC819A3
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 11:30:51 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8A39464452
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 18:30:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id E8608C433C7;
+        Thu, 24 Aug 2023 18:30:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692901851;
+        bh=DeKeaZL0R5C/9qoo3WdGT1JoCeASs543LFqTiYO4SKA=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=gXeWfMyB2VhAyi5FbRhfzVdWwr0KglhxFR1AwH11pWitYlB3vOwB4Vx08HKYAiWfq
+         zFR4opzgn4FP/UMRE7PkX6XvG/JMkGW+mWZNBuE54XFXDRWwswx7CdF9V34ehZatxj
+         mFFdCVsJehp3Wt5saC4Igkhq3GRP6tn94mwJaq8MBbIbMpCMxBvHQGU6n5BpT5bL8S
+         EzdJDTJ6k2bgecaBeiDESnRmSt0owFSDfy3fMGZ8lvRMMmR+10LadxIE3dfRsZ0YRS
+         OquaqWsCn+kZ1SVtvgGbv5Ic/fUmW4g/0HJsNrrTEjHdIl9wzu0yvYbs1ncKtq0gNV
+         MwdtnRf2UF+Kw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D220FE21EDF;
+        Thu, 24 Aug 2023 18:30:50 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Subject: Re: [PATCH net-next v2] net: generalize calculation of skb extensions
+ length
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169290185085.21414.5074142110949284955.git-patchwork-notify@kernel.org>
+Date:   Thu, 24 Aug 2023 18:30:50 +0000
+References: <20230823-skb_ext-simplify-v2-1-66e26cd66860@weissschuh.net>
+In-Reply-To: <20230823-skb_ext-simplify-v2-1-66e26cd66860@weissschuh.net>
+To:     =?utf-8?q?Thomas_Wei=C3=9Fschuh_=3Clinux=40weissschuh=2Enet=3E?=@ci.codeaurora.org
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, robimarko@gmail.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,14 +60,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Aug 2023 11:05:13 PDT (-0700), Conor Dooley wrote:
-> On Fri, Aug 25, 2023 at 01:46:59AM +0800, Mingzheng Xing wrote:
->
->> Just a question, I see that the previous patch has been merged
->> into 6.5-rc7, and now a new fix patch should be sent out based
->> on that, right?
->
-> yes
+Hello:
 
-Ideally ASAP, it's very late in the cycle.  I have something for 
-tomorrow morning, but this will need time to test...
+This patch was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Wed, 23 Aug 2023 11:28:38 +0200 you wrote:
+> Remove the necessity to modify skb_ext_total_length() when new extension
+> types are added.
+> Also reduces the line count a bit.
+> 
+> With optimizations enabled the function is folded down to the same
+> constant value as before during compilation.
+> This has been validated on x86 with GCC 6.5.0 and 13.2.1.
+> Also a similar construct has been validated on godbolt.org with GCC 5.1.
+> In any case the compiler has to be able to evaluate the construct at
+> compile-time for the BUILD_BUG_ON() in skb_extensions_init().
+> 
+> [...]
+
+Here is the summary with links:
+  - [net-next,v2] net: generalize calculation of skb extensions length
+    https://git.kernel.org/netdev/net-next/c/5d21d0a65b57
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
