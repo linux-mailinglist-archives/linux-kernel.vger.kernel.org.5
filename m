@@ -2,112 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 514D078878A
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 14:34:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D6DD788791
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 14:35:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244813AbjHYMeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 08:34:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33696 "EHLO
+        id S244858AbjHYMfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 08:35:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244880AbjHYMdu (ORCPT
+        with ESMTP id S244890AbjHYMet (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 08:33:50 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F88226B2
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 05:33:22 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-52a1ce529fdso1359030a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 05:33:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=futuring-girl-com.20221208.gappssmtp.com; s=20221208; t=1692966797; x=1693571597;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=32P+ZFI1tSBojfi+E4xOhhTXJzH5jER+YjKVHzgSHAY=;
-        b=3/pPdnklLTkdbJrgJjjALLC8S9ds83NXjsVorOj0iSf6+JOH8lir8uFRqKG6jmWPy1
-         SPr0o3gfGT5Yfn4LFHq8NhmF9KpZg9EefVxYUchbr1wIVAD2jLL+PhrhAHICCuCvBKm4
-         m8NhhP4ncZ34L9rcscQKJpyU4MiofBRki8f6WMlhJkpPvyLDKS7LLuF1EqJ4w1+pnE90
-         2dQxfBLlvVTHhMst30TsErK2v1ph3CGs6lAQ5AJsMTTDWg61TVnHRE/NdShkd40W3WFF
-         diaqMnMWOIzFox+XEC8ibWHvaos6f33EItwBcHkzIwQBQd0fKs4YOqEuxvyEgmvEA7yx
-         Cyhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692966797; x=1693571597;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=32P+ZFI1tSBojfi+E4xOhhTXJzH5jER+YjKVHzgSHAY=;
-        b=IkbSr/qVT9yY3LpSeQXAz6HMCpgPGLSPGEwk1y1dG2D5tOaU1CKt+N911Ww1H2MQBJ
-         QNsD7qQObqm7vXwnm7IO2M1tFq4Y8U53+sF3uP/h3l6XA10odfyo2xwipZuTt6OUo5aU
-         I+G57QqvLVtxbmj2nsL8IKFNhoYvzYWKe6zWZiotcrZeevITTUq78gSk/ADH+drsSQSe
-         SDab856A6AtpjSZuLNa/DrDVdsTou3gBxqwwphESBHsOX/7qWv8xo3khw3NTz2Y7S42v
-         i832ysSzzBb7DfMfm46kdEhb+5kNmD4XB6vviZ7Ep6LLmWgaYFM/b4huUk8YAX1ZMyZH
-         oP+w==
-X-Gm-Message-State: AOJu0YxEDD/3GM0HgwesJbnczf7n0EINDYIQXduXI+kcV2ZI5ngfLR16
-        v8eQDkD3/dVS6689p6QL70DSmGJl8m7rGrLS1KSuOg==
-X-Google-Smtp-Source: AGHT+IGaKjOzBddpOyoRZ6/22JOWZ17clvrTJvTI5coC7kWzoLT+Rqa0qdBOS3qSGTaXHQW2d05vTnDmbIn4hnC0mD4=
-X-Received: by 2002:a17:906:cc4e:b0:9a1:bccc:ef5f with SMTP id
- mm14-20020a170906cc4e00b009a1bcccef5fmr7737503ejb.53.1692966797212; Fri, 25
- Aug 2023 05:33:17 -0700 (PDT)
+        Fri, 25 Aug 2023 08:34:49 -0400
+Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35C75E7A
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 05:34:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+        s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=vOs5GKJ5B84q1sV3Ldza955jM6flGL+drWT4vJX7cM4=; b=I3izleluO5uz1HCwLP7T18tv8N
+        9n1toSviUoB2lbwKkTrfyM64u2xRfiOABqAPRuvvh6PA05L5U+JXXTy54RLVAeoxL8flRyYY2pocY
+        DMUXLpPl6tdlC/ApV2feBzvDnGPXpsbFrOG1JOZZ4UJyE/b3iODU9du4iskd+3+gkJDkfPJYP3W84
+        knfvKtPxh/eTZWN/l4qBetFmAociU955PeWIvPbG3KG7vG9rZeTHNDVW5YKPu3g6SOcmAeOEb/eDI
+        kzVPtcZORma6aA7npXi96+QJRhCWmn6Q5yJHnjoiKsf2vc8DQbtn1ezvq3oIlvC0QfzAUpbEPbAd0
+        +ajxqjqA==;
+Received: from [187.35.42.59] (helo=[192.168.1.111])
+        by fanzine2.igalia.com with esmtpsa 
+        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
+        id 1qZW15-00FHTT-TC; Fri, 25 Aug 2023 14:34:20 +0200
+Message-ID: <44ddad4c-6c69-48f4-bf9f-86b4c04dbfbe@igalia.com>
+Date:   Fri, 25 Aug 2023 09:34:15 -0300
 MIME-Version: 1.0
-References: <20230824141447.155846739@linuxfoundation.org>
-In-Reply-To: <20230824141447.155846739@linuxfoundation.org>
-From:   Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
-Date:   Fri, 25 Aug 2023 21:33:06 +0900
-Message-ID: <CAKL4bV7tpe696zsOWxF7uv5J-Rm0E=b5BVLw=+pbe7Wpmwv17w@mail.gmail.com>
-Subject: Re: [PATCH 6.1 00/15] 6.1.48-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] drm/amdgpu: Merge debug module parameters
+Content-Language: en-US
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     pierre-eric.pelloux-prayer@amd.com,
+        =?UTF-8?B?J01hcmVrIE9sxaHDoWsn?= <maraeo@gmail.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        amd-gfx@lists.freedesktop.org, kernel-dev@igalia.com,
+        alexander.deucher@amd.com
+References: <20230824162505.173399-1-andrealmeid@igalia.com>
+ <20230824162505.173399-2-andrealmeid@igalia.com>
+ <32549529-6cc8-e187-9436-8b9d28e88b1d@amd.com>
+ <5780676f-7f6b-4f82-a729-b011a493a861@igalia.com>
+ <3fed67c9-7a4a-a6ae-5d73-5d391da53a57@gmail.com>
+From:   =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>
+In-Reply-To: <3fed67c9-7a4a-a6ae-5d73-5d391da53a57@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg
+Em 25/08/2023 09:29, Christian König escreveu:
+> Am 25.08.23 um 14:24 schrieb André Almeida:
+>> Em 25/08/2023 03:56, Christian König escreveu:
+>> > Am 24.08.23 um 18:25 schrieb André Almeida:
+>> >> Merge all developer debug options available as separated module
+>> >> parameters in one, making it obvious that are for developers.
+>> >>
+>> >> Signed-off-by: André Almeida <andrealmeid@igalia.com>
+>> >> ---
+>> >>   drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c  | 24 
+>> ++++++++++++++++++++++++
+>> >>   drivers/gpu/drm/amd/include/amd_shared.h |  9 +++++++++
+>> >>   2 files changed, 33 insertions(+)
+>> >>
+>> >> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
+>> >> b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
+>> >> index f5856b82605e..d53e4097acc0 100644
+>> >> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
+>> >> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
+>> >> @@ -194,6 +194,7 @@ int amdgpu_use_xgmi_p2p = 1;
+>> >>   int amdgpu_vcnfw_log;
+>> >>   int amdgpu_sg_display = -1; /* auto */
+>> >>   int amdgpu_user_partt_mode = AMDGPU_AUTO_COMPUTE_PARTITION_MODE;
+>> >> +uint amdgpu_debug_mask;
+>> >>   static void amdgpu_drv_delayed_reset_work_handler(struct work_struct
+>> >> *work);
+>> >> @@ -938,6 +939,9 @@ module_param_named(user_partt_mode,
+>> >> amdgpu_user_partt_mode, uint, 0444);
+>> >>   module_param(enforce_isolation, bool, 0444);
+>> >>   MODULE_PARM_DESC(enforce_isolation, "enforce process isolation
+>> >> between graphics and compute . enforce_isolation = on");
+>> >> +MODULE_PARM_DESC(debug_mask, "debug options for amdgpu, disabled by
+>> >> default");
+>> >> +module_param_named(debug_mask, amdgpu_debug_mask, uint, 0444);
+>> >> +
+>> >>   /* These devices are not supported by amdgpu.
+>> >>    * They are supported by the mach64, r128, radeon drivers
+>> >>    */
+>> >> @@ -2871,6 +2875,24 @@ static struct pci_driver 
+>> amdgpu_kms_pci_driver = {
+>> >>       .dev_groups = amdgpu_sysfs_groups,
+>> >>   };
+>> >> +static void amdgpu_init_debug_options(void)
+>> >> +{
+>> >> +    if (amdgpu_debug_mask & DEBUG_VERBOSE_EVICTIONS) {
+>> >> +        pr_info("debug: eviction debug messages enabled\n");
+>> >> +        debug_evictions = true;
+>> >> +    }
+>> >> +
+>> >> +    if (amdgpu_debug_mask & DEBUG_VM) {
+>> >> +        pr_info("debug: VM handling debug enabled\n");
+>> >> +        amdgpu_vm_debug = true;
+>> >> +    }
+>> >> +
+>> >> +    if (amdgpu_debug_mask & DEBUG_LARGEBAR) {
+>> >> +        pr_info("debug: enabled simulating large-bar capability on
+>> >> non-large bar system\n");
+>> >> +        debug_largebar = true;
+>> >
+>> > How should that work???
+>>
+>> Ops, I thought it was a boolean. It should be
+>>
+>> +        debug_largebar = 1;
+> 
+> 
+> That's not the problem, the question is since when do we have a 
+> debug_largebar option and what should that one do?
+> 
 
-On Thu, Aug 24, 2023 at 11:16=E2=80=AFPM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 6.1.48 release.
-> There are 15 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sat, 26 Aug 2023 14:14:28 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
-6.1.48-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-6.1.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+It should work exactly like the other one, but instead of using 
+amdgpu.large_bar=1, one would use amdgpu.debug_mask=0x4 to activate it, 
+as the plan is to merge all current debug options in a single one right?
 
-6.1.48-rc1 tested.
+> Regards,
+> Christian.
 
-Build successfully completed.
-Boot successfully completed.
-No dmesg regressions.
-Video output normal.
-Sound output normal.
-
-Lenovo ThinkPad X1 Carbon Gen10(Intel i7-1260P(x86_64) arch linux)
-
-Thanks
-
-Tested-by: Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
