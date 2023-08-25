@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 027E6788077
+	by mail.lfdr.de (Postfix) with ESMTP id 4D420788078
 	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 09:02:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229793AbjHYHCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 03:02:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58670 "EHLO
+        id S242702AbjHYHCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 03:02:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241203AbjHYHCF (ORCPT
+        with ESMTP id S241222AbjHYHCF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 25 Aug 2023 03:02:05 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CC98E6B
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3A6A199E
         for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 00:02:03 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E684562C89
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 07:02:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCAD8C433C8;
-        Fri, 25 Aug 2023 07:02:01 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7CD5E63D4D
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 07:02:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78C18C433C9;
+        Fri, 25 Aug 2023 07:02:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1692946922;
-        bh=UBJmLcWAydNk4AsVk/2V5lnKNBOxuN5coNe2xiTdpmE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Yk3TlyDSqvvG0RtWoJYkLm56VSSKYsZM1o91S0t4//6I9SvsKa2Qn67myCwx/LtIY
-         u49BTdOoFedPgK2hB9tS4wGJSPGNSiGqslXBVRkLnpMRXyM65Qg6pRPdZ2Jal3dpyq
-         bQXmW/E7vC1/zbHCErg1To98Hez0Lga9+yu10MtMzRNHr7TuSFikVILkYWXN3Lgv4m
-         SVHX2KjVTIMXlnp0rwOIY9k0CnwMZHAnC6szQFu2ujow6mOcHhDtVtkAIBUE++eCEy
-         /NzHgl1hGWLwEJNzCTRZJNrnQKFupVg24+B7kYbBwY/fGl/XlSAiyy0BJrRMBZuXDU
-         F8dHEv+OrBLog==
+        bh=Rf7azYzBuF/8w9Rf8KpcVWynps2sflW/2Bm2YEq1sPU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=U/9kFJ+DR6ATAbQjeiuz+sfLe9LIhkf5E9HD9toKfDz1tD1l59MH1UqrqcCPqbrav
+         jQBIScMZD4ullWb5m9vRBD1lz9+BSI9750tQDXVvlg69Atb1+qVIS8FwI7MhwFcZ0i
+         O5JOREOGnpDlxQYAfkV6H8N2qtaErIy/9RWCXSI0cn/+gCkLSXlpdx3K6eDkNWJvkL
+         8RTDCPDa9e9wWktwAfxicKLFpiYXED7b+hYj7lebCD5h6VFawsJzVGAny6SdOc1VWt
+         cp8/nJJe9l5ta33spM/vTmkHwe5K5kvnBBIXx12tFPHsXERpdQ+lwW0k7soMZ1r/ck
+         NnqFNC/XlR2NA==
 From:   Josh Poimboeuf <jpoimboe@kernel.org>
 To:     x86@kernel.org
 Cc:     linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
@@ -43,12 +43,13 @@ Cc:     linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
         Andrew Cooper <andrew.cooper3@citrix.com>,
         Nikolay Borisov <nik.borisov@suse.com>,
         gregkh@linuxfoundation.org, Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH v2 00/23] SRSO fixes/cleanups
-Date:   Fri, 25 Aug 2023 00:01:31 -0700
-Message-ID: <cover.1692919072.git.jpoimboe@kernel.org>
+Subject: [PATCH 01/23] x86/srso: Fix srso_show_state() side effect
+Date:   Fri, 25 Aug 2023 00:01:32 -0700
+Message-ID: <40b2e6af3a94d2c6eb9a3afaa63f34ee910a17d0.1692919072.git.jpoimboe@kernel.org>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <cover.1692919072.git.jpoimboe@kernel.org>
+References: <cover.1692919072.git.jpoimboe@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -60,57 +61,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-v2:
-- reorder everything: fixes/functionality before cleanups
-- split up KVM patch, add Sean's changes
-- add patch to support live migration
-- remove "default:" case for enums throughout bugs.c
-- various minor tweaks based on v1 discussions with Boris
-- add Reviewed-by's
+Reading the 'spec_rstack_overflow' sysfs file can trigger an unnecessary
+MSR write, and possibly even a (handled) exception if the microcode
+hasn't been updated.
 
-Josh Poimboeuf (23):
-  x86/srso: Fix srso_show_state() side effect
-  x86/srso: Set CPUID feature bits independently of bug or mitigation
-    status
-  x86/srso: Don't probe microcode in a guest
-  KVM: x86: Add IBPB_BRTYPE support
-  KVM: x86: Add SBPB support
-  x86/srso: Fix SBPB enablement for spec_rstack_overflow=off
-  x86/srso: Fix SBPB enablement for (possible) future fixed HW
-  x86/srso: Print actual mitigation if requested mitigation isn't
-    possible
-  x86/srso: Print mitigation for retbleed IBPB case
-  x86/srso: Fix vulnerability reporting for missing microcode
-  x86/srso: Fix unret validation dependencies
-  x86/alternatives: Remove faulty optimization
-  x86/srso: Improve i-cache locality for alias mitigation
-  x86/srso: Unexport untraining functions
-  x86/srso: Remove 'pred_cmd' label
-  x86/bugs: Remove default case for fully switched enums
-  x86/srso: Move retbleed IBPB check into existing 'has_microcode' code
-    block
-  x86/srso: Remove redundant X86_FEATURE_ENTRY_IBPB check
-  x86/srso: Disentangle rethunk-dependent options
-  x86/rethunk: Use SYM_CODE_START[_LOCAL]_NOALIGN macros
-  x86/retpoline: Remove .text..__x86.return_thunk section
-  x86/nospec: Refactor UNTRAIN_RET[_*]
-  x86/calldepth: Rename __x86_return_skl() to call_depth_return_thunk()
+Avoid all that by just checking X86_FEATURE_IBPB_BRTYPE instead, which
+gets set by srso_select_mitigation() if the updated microcode exists.
 
- Documentation/admin-guide/hw-vuln/srso.rst |  22 ++-
- arch/x86/include/asm/nospec-branch.h       |  69 ++++-----
- arch/x86/include/asm/processor.h           |   2 -
- arch/x86/kernel/alternative.c              |   8 -
- arch/x86/kernel/cpu/amd.c                  |  28 ++--
- arch/x86/kernel/cpu/bugs.c                 | 104 ++++++-------
- arch/x86/kernel/vmlinux.lds.S              |  10 +-
- arch/x86/kvm/cpuid.c                       |   5 +-
- arch/x86/kvm/cpuid.h                       |   3 +-
- arch/x86/kvm/x86.c                         |  29 +++-
- arch/x86/lib/retpoline.S                   | 171 +++++++++++----------
- include/linux/objtool.h                    |   3 +-
- scripts/Makefile.vmlinux_o                 |   3 +-
- 13 files changed, 230 insertions(+), 227 deletions(-)
+Fixes: fb3bd914b3ec ("x86/srso: Add a Speculative RAS Overflow mitigation")
+Reviewed-by: Nikolay Borisov <nik.borisov@suse.com>
+Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
+---
+ arch/x86/kernel/cpu/bugs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
+index f081d26616ac..bdd3e296f72b 100644
+--- a/arch/x86/kernel/cpu/bugs.c
++++ b/arch/x86/kernel/cpu/bugs.c
+@@ -2717,7 +2717,7 @@ static ssize_t srso_show_state(char *buf)
+ 
+ 	return sysfs_emit(buf, "%s%s\n",
+ 			  srso_strings[srso_mitigation],
+-			  (cpu_has_ibpb_brtype_microcode() ? "" : ", no microcode"));
++			  boot_cpu_has(X86_FEATURE_IBPB_BRTYPE) ? "" : ", no microcode");
+ }
+ 
+ static ssize_t gds_show_state(char *buf)
 -- 
 2.41.0
 
