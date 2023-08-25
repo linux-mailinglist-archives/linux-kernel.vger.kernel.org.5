@@ -2,270 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C020788ED3
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 20:38:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2692F788ED7
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 20:39:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230229AbjHYSiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 14:38:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52382 "EHLO
+        id S230498AbjHYSi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 14:38:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231189AbjHYSiK (ORCPT
+        with ESMTP id S230499AbjHYSil (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 14:38:10 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9110CD2
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 11:38:07 -0700 (PDT)
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37PDqLbD012607;
-        Fri, 25 Aug 2023 18:37:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=0VReRN1N5x/WPlCXO6ei+ZSQ9KffN8nFcZopw4l1kuE=;
- b=LTXCdNvH/RspTTgTGXRk26qfmbC1ise7AiJF3mdqiomI+A+geh6ch5o6coQHtbjamHtX
- 6gq8K5e7gmlw+syQDZVbdeH8BhK/59yPTS8tQuA+Vi1MPD9nAeggPn5gV4gNagLQF/0Y
- 8I91YAGyQMCs8oM5+mbfy7NxKZ0VH3DMS8NkveHCewY4Jgovd88RVrh0B1z7j6J/dy+L
- lHv8Kkh9hLdBXDux3DfizlRUOtWZT4HMm5rbGZnKmci8NWmSbX7ry7QLbBUSL3FanQgn
- GfcFP24t/EBy4Zb45cmjHKQxudbzPrv3Y11Dwttuim7nyxOPGnrWUnzwuMDmzqg5b+2N 7A== 
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3spmrhhnf2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 25 Aug 2023 18:37:50 +0000
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37PIbnOw020519
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 25 Aug 2023 18:37:49 GMT
-Received: from [10.71.109.168] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Fri, 25 Aug
- 2023 11:37:48 -0700
-Message-ID: <54b37d60-61b1-e939-c71d-30aecad65598@quicinc.com>
-Date:   Fri, 25 Aug 2023 11:37:47 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/panel: Add prepare_prev_first flag to Visionox
- VTDR6130
+        Fri, 25 Aug 2023 14:38:41 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 054471997;
+        Fri, 25 Aug 2023 11:38:36 -0700 (PDT)
+Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37PIEMIo020630;
+        Fri, 25 Aug 2023 18:38:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-03-30;
+ bh=2sO74K8WAh3DUcBGditkI9d+zJMSb8B/4h9OQP6vhaA=;
+ b=KobK0jDrN7I32WJ4CLBRUe0VUdUMRqM2i4JMQdoRneJ9jbslu+rw4ilsbJMGsVAZTPcG
+ usioVxh1RqTIxaW+pPACWiqp0vZ3/uECS1AyRvGhFalUst2acESkLUbBiAaO6mFGz52e
+ Hc8Kc5PLN0RTJt2weNIffMlsBo72vwj6ggSJwf3+NN5hKo0SaKZXdxVmBHF4EpXUCwZV
+ ylna3Hg89WFTmoXThwVGBYMhMe7yyN0P8oqY9kXly9P9zkun0FPee/MPDM3dpDzHR2P9
+ BkKDZftQY1bUzv+RcY0+BOaJAjdgtGkQnQeGV943m6xSc3Q1t1tR/fT3RPRgoCRRPkFP yg== 
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3sn1yu75gt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 25 Aug 2023 18:38:05 +0000
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 37PHNYtd002121;
+        Fri, 25 Aug 2023 18:38:05 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2169.outbound.protection.outlook.com [104.47.55.169])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3sn1yyf9mn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 25 Aug 2023 18:38:05 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nIJ+XG7is383pOCvqGkL6Ocw7P/KjLVnfmt+xL/GBwikLtTppEkw2hndw8B2uJkO9C1FlD6w7hJv/udYLAVDHv7aLAMmrNq2lNyxFB+/OKmStAMqFRz2JlQU3+lwVyT/8ozIjWzVdmqKHE19nKyc7DSWI9HaqVkamBBsMH20vVkmuSeUZXXNFVMlGcjo8XnLiFq/QpKGfEo4t1v/BCSsssku5SgxCLgaxOgqOGYdiYAQH5GYLLeDIiIhzZaADLxUKsi60JcPUVWOfzjISuumSYgq/C+gw+y1QRE3OH55jaaujNLgcLYeSFv36v44qm51lmNGGT5SgKWqW4yb7dGo6Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=2sO74K8WAh3DUcBGditkI9d+zJMSb8B/4h9OQP6vhaA=;
+ b=AZ5VwQ6kA9pNbrLIeXIVQkZQNu4S01dotzpGhvT0RPNveds8nQ4CubM8glp72UaIrqCpqpCMhuwahrYKjLyr47Pg0As2Y5TCb9W4g/f/JFqBbKW8qJr4wD9SChMnchtFJ+y5LNYDv0Q5YC2y8l0rp8UB/gT9QXe8vy6IhPWuklkLWB/siXWb1nlceqqZIG+EUyulor0lqSCdii7x25vuSi/bCdBs0Kye55CO0W3K57sxwKllxBj+f+N23JVhdchpsZ5ooEUPYXm4AbY34g+CuRSpSQbl3hSmlpj0hDDK4qVZRUmHCmYXd5uPWPh7T/U8g28srV+Lf9etth1rABwwLQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2sO74K8WAh3DUcBGditkI9d+zJMSb8B/4h9OQP6vhaA=;
+ b=Zlg1gsQ63SlFi0SkOV1Uf8F4K6Qe2mvf2bBhg+etL0mbZ3iitSsY86OLZmwINkqCOw/M5/U0ETLqlIIUmYzqUq/n85xlFemREkRM7llat4cTVdL7KJxyEzvhDGVEusl/dNvybKjxGWKIWfDIqVF287YyKCGCatzdgPeWP8WvFwI=
+Received: from PH8PR10MB6290.namprd10.prod.outlook.com (2603:10b6:510:1c1::7)
+ by BN0PR10MB4888.namprd10.prod.outlook.com (2603:10b6:408:115::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.34; Fri, 25 Aug
+ 2023 18:38:03 +0000
+Received: from PH8PR10MB6290.namprd10.prod.outlook.com
+ ([fe80::3ec2:5bfc:fb8e:3ff4]) by PH8PR10MB6290.namprd10.prod.outlook.com
+ ([fe80::3ec2:5bfc:fb8e:3ff4%4]) with mapi id 15.20.6699.027; Fri, 25 Aug 2023
+ 18:38:03 +0000
+Message-ID: <94e08e69-377e-bda6-8a0a-8c83945fbc38@oracle.com>
+Date:   Sat, 26 Aug 2023 00:07:50 +0530
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.12.0
+Subject: Re: [PATCH 5.15 000/139] 5.15.128-rc1 review
 Content-Language: en-US
-To:     <neil.armstrong@linaro.org>, Maxime Ripard <mripard@kernel.org>
-CC:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Douglas Anderson <dianders@chromium.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        <quic_parellan@quicinc.com>, <dri-devel@lists.freedesktop.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230725-visionox-vtdr-prev-first-v1-1-3bc44cec7dc6@quicinc.com>
- <dde2774e-6f0b-21d0-e9c9-4a5bd1eac4e8@linaro.org>
- <2f9a9450-438b-257d-759c-22b273a7b35d@quicinc.com>
- <c183d823-81d4-6d7c-98d9-649fa4041262@quicinc.com>
- <6c0dd9fd-5d8e-537c-804f-7a03d5899a07@linaro.org>
- <548b0333-103b-ac66-0fc5-f29e7cc50596@quicinc.com>
- <6e1f6cb7-7f88-48dc-b494-1a5e990e1a33@linaro.org>
- <ff1b04c3-c852-4e28-9054-3cebb4ca5d6e@linaro.org>
- <c7c5c8f0-16e6-47bd-94e8-ce924163dfd3@linaro.org>
- <giimknikofbipipawfmrcjiar5qfyw3t7sqy3iewjahsm3ktkt@qcn4g23zfcnj>
- <76e76728-974e-46ff-8046-c61c54d07c76@linaro.org>
-From:   Jessica Zhang <quic_jesszhan@quicinc.com>
-In-Reply-To: <76e76728-974e-46ff-8046-c61c54d07c76@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        Vegard Nossum <vegard.nossum@oracle.com>,
+        Darren Kenny <darren.kenny@oracle.com>
+References: <20230824145023.559380953@linuxfoundation.org>
+From:   Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+In-Reply-To: <20230824145023.559380953@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 3VshZ4YUGIdsw7XqUte3vqcqO9rneSdW
-X-Proofpoint-ORIG-GUID: 3VshZ4YUGIdsw7XqUte3vqcqO9rneSdW
+X-ClientProxiedBy: DS7PR03CA0240.namprd03.prod.outlook.com
+ (2603:10b6:5:3ba::35) To PH8PR10MB6290.namprd10.prod.outlook.com
+ (2603:10b6:510:1c1::7)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR10MB6290:EE_|BN0PR10MB4888:EE_
+X-MS-Office365-Filtering-Correlation-Id: 105a7ac0-55c3-4b75-1b4a-08dba59a6a75
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: gjlbm4CgTUn2Wu1GXG3D4FvO3/o84/LMSbF76AMgiubJXbYrImL+vnr8eeM/d21eFqixqF/5iQIi9x9mMSMa0IRmh+YojYbd0oxaQ7fTgarr/RuxH1Ys+xB8CI4ufce8+ui4XJgdIMd38NbBcYIXUB/ca4D1xWeIV3LN0CgF/NXLJPyO8bTYbVXkUzT1eekON/FMTrqg5V635lIlN95Cs7saaHR/iSKydgvdXRVaODtz5BJwiD1Bw4ZHiko9Do7IwUmnZgO9VAAzKpSIZZ+n2LV+ZP4DAnOxAyOi6NxuwfJINw6Wvjmzl1hbpTYUZFMPA3kmAOL+gN1oAzgmrfvq67ufx4odJ+BbHLFN0ItB9ZPJiy9RLUVZP4ClA6jT6S1+CGARZuua1G5Dqpt4rd0f9lguMUOWA+Elqkw2FqSMnpDMZcJKSYnKWOQ7Df5HaJauOvvXvZn5NISCOVCKYNrO0GAG+TKEITAGGHAgP9nR6dW7O/3alRNgvxCnzIqaOe85eckpLYCOp8lMAGCRxwyp2RVi9G2NttEafPyje6fO93wrkB0798/vMlLs0Q1N7TJ+j4LXQePof6Ygdb5AzKApt0me3DSJ7aqKAr5ftkRzv6ahoMmT11Zb955GHxZtKz6dKGffjfg366oU0LUh+Q1kSA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR10MB6290.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(136003)(376002)(346002)(366004)(1800799009)(451199024)(186009)(31686004)(478600001)(6512007)(2616005)(6486002)(6666004)(6506007)(966005)(316002)(107886003)(26005)(41300700001)(54906003)(66556008)(66476007)(66946007)(53546011)(8936002)(8676002)(4326008)(38100700002)(7416002)(2906002)(4744005)(5660300002)(86362001)(31696002)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RHRySC9GZWRsMmpaQ2ExMlB5TDNtenFhcHVjNnFmNG9oYWxrMk12Yk1QR3Rm?=
+ =?utf-8?B?cHBaUkJDdS9ZTFB6N1ZsSDQ4dXFFbnN5S1Vqa3FsUk5BUUszQUVnb3E5NGtN?=
+ =?utf-8?B?OGdIRkVIZWpKMUVUKzBqVjA5Z21FNTdvREhOS1dWeEhUcWFNTWJLUGlTanRq?=
+ =?utf-8?B?QnhpbFgvVkZiWmV4WTRVWmliN2VuYW5VWnhQdnJZbjM0RFlzZmhKTVJEZ1RH?=
+ =?utf-8?B?cTllVU9hZ0pRZWVKWS8zL01qdDdrSzJxaXpNNnpQRWpuZm9VM0RjNzEvQXdQ?=
+ =?utf-8?B?T2hrZGYreDUvRm0xMkFSUkxKUHhDR0xvZ0l3SmlydHB1V0hLajN1VDZXK0Nh?=
+ =?utf-8?B?eVBETWlSb252TEE0K3VRZFcyN3Z3VVRPaFRpc29VTUZ2RmYwdEhZOVJ3Wjdz?=
+ =?utf-8?B?S1dwMm5BSGRjR3g5bVJISHBIaFoxZUFpdTUwb2gxU1RNWWQweVdnWFd2enhE?=
+ =?utf-8?B?bE14YkpsZmY2V2UvdGJXdGJGbmpLaUUxNGF4OW1TNlBpdG5NYk5WR0lud3BM?=
+ =?utf-8?B?SnM5UlFLcmc3bnE3cEEzY2JDTmp4YWh5VkloVjRMa2lyU2RiMHBNNmd1TFhJ?=
+ =?utf-8?B?Rk0zT0F1U2V1b1VWRUZCSEFwbUo3a05vd0FRclhKdEdmMWZGVi9zS3NZSUxS?=
+ =?utf-8?B?ZEJYNGF2STRON2xXa1ZxS0dvQzFoa0NwS0JPV1Zwb3lUbW43RC9LcVQ0SW1Q?=
+ =?utf-8?B?NjVzN2hydlFGNHloUCtCdjBtR3BMcG9MUHlYeU5SY3dQSDRtYm8zUVZyVENW?=
+ =?utf-8?B?cXZubVZWNmdrd2pNMlpOK213ZC9KUmdIMXFwbWNhWHRkRldINnh3QS81dHlF?=
+ =?utf-8?B?N1JRc3p4WmZjbHpPa01sUDVrcmcwTzJ2L3RYaFFOdUg1STc4Q3pyKy9sZnlU?=
+ =?utf-8?B?WC9BY211UDEwaTJTV1JOV3NLdTYzbThrYitpdy9jUjhtTTdsdVFjanZ1NFlm?=
+ =?utf-8?B?VmFDQmlyMWJkY1dUTWsxQ3Q2S1BET1FobGJ6Um56N3NDc2MxTHc5cFdtYXda?=
+ =?utf-8?B?M2pCeUdmZVAvMGhXbVl3NnRHTTBZT3BOQTZRR0ZsOWFYcWZ0SEpPVXA3UlJW?=
+ =?utf-8?B?S3puSkJjT3F2TXlKN0dxNzVUMnE0dHdUTlRXeWlNbXZwbExyMmdmNUVPM1hC?=
+ =?utf-8?B?R0Z2MlBaS3hETHZkdUNZMDN3Y0hRNGdNQ0hxS1ZzWUx5d2RRam1CY0svdXJR?=
+ =?utf-8?B?YllSQzcwK045b0hFRXpld2xhV0c3RUxPVUVrVGdqM3NxRWVsY3hlR3FzbGZs?=
+ =?utf-8?B?aFpLMHVNUzQySFVPNXBxdG5WZ2tiVkIxN1IvbEI3d1NjL20xNlpicU1ORytz?=
+ =?utf-8?B?OGI5Ym5NcWZJV1BkVU8vSW84M1J4Rlh5U3dKSXFkUHlSMm42K0hWUGRJa055?=
+ =?utf-8?B?ZDhjYzZkMFU5d0t6bDdGS2xCVzZpMUlFbnZNK01iMytXMVZadkxjR2NySkxH?=
+ =?utf-8?B?ajRGT20ydjBxOUp6VGpkMU9LeXd0ZVFTQnJFL0FiUW5aVWJ1ZUxwQ1VjV0Jv?=
+ =?utf-8?B?RU1nMms1OUNhVnBIWXduOGs0SjZQck5CUFZiSlpmZVJWVDhEOXZUd2haaG5T?=
+ =?utf-8?B?L29ST0NUSGZILzFMUVNoRFh0NnFxRTBoemNaZ1pFQUMyaUg2NGh6a2tQT0Ez?=
+ =?utf-8?B?aEQyODVNaEpDS3V5aDZWYVJ0MXF5THAyZzhvMjFSVHZEanA1SFYyR2NBbi9V?=
+ =?utf-8?B?KzNDOGxQcEZoZENSNVJnbHFEOVBiczBpUzdqT3B0T0VGeEZhL3M0RzAwaUJs?=
+ =?utf-8?B?UFBrZjJDczZkQ2tYTDBYenZoVDR1dmtTaHQ3ME11WEt3eitncTRBRDh3OWg4?=
+ =?utf-8?B?WVlhcm5LUlp0VjVrN1VLc09oV3Z2VVNONndlcDEzTXhsZWw3K1NsTzZhWVRt?=
+ =?utf-8?B?b095NmRoWmprcGp1Nzc1d25zbEE1VXlaT09Pb2Q0c3laSGZGNm9mcG1DOHpG?=
+ =?utf-8?B?TXNwb1hqanJpQWRFaUdneSs1ZEV3am8rZ0tncXpkT1hlTnhtSUppNlJQK1JB?=
+ =?utf-8?B?MG5uS0MxZlhrd1ZWUGg0QTdhaS9hRGtnbDBtZWVDMFVpREpTOUc3Ti9nOXZS?=
+ =?utf-8?B?MGtXUW5JVndtREZLUEhVeHZFbk10QzFnTEYrOXdMM1RXMlRlenlDRThjaWFi?=
+ =?utf-8?B?Z24vM0Z5RS9pYkZtZXY0ZEd0ekN2Z2k1OGxZcDV4OW9RM1JxcVlrbjVCT2g2?=
+ =?utf-8?Q?Aw7QYRtYUe8i3k/BOEAa8Pk=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?utf-8?B?RFBCTUhCQ1NLZTh6WEM5TnEwTmxqUzJvdlBERktEaDJaMzNMMWc1aTBTcnJw?=
+ =?utf-8?B?Uy9LeVlKU1lmaEJsS0NQUDlzSTd3RW5OS3NKUHR5SjZmVmtBWHVBT0V5YUVF?=
+ =?utf-8?B?N2dVZ2l5ZTNlSlFIem1jUXNVaUJjczdQVkVLdWhhcnYwRlZudEZlUzNzdnFi?=
+ =?utf-8?B?TG9KbTBDYWcvSm80SVlkejFoMDdaUlJXMTc2NGJiZnh1Z2Frc2MvY1pUS2w4?=
+ =?utf-8?B?V3R6eVFieUJWZFBycGNNM0NLRjdVRjc5cHluS3ZtL1JkaFYrU0ZrRHZYNDRy?=
+ =?utf-8?B?TjhNT1BzUGY2dmkzN1ZZd2M5ck92aGovVlQyaGRUTXF5R29KVzUwUCt5czRo?=
+ =?utf-8?B?QUx1YnZDWHlDeUdMVy9TRld5L2xEdGk3bERRa0s5ZVh0U2tZRmVpQlk4dTZm?=
+ =?utf-8?B?OWpJTmlkeFdPVnJxNU9QNXdQb09DWXhsb2UrYVlRa05QVmFEaG5CdXNiWXpx?=
+ =?utf-8?B?VUtkUXhMSnJPZzZTZWxrc3BaelZqN0JnN01IcFhBaGgydjRXQzF0aHhUY1Va?=
+ =?utf-8?B?SVpUYjQzRjU2bXVvSkVCeHYveUpQRE12RlU5eVExSTJOWnZSQ25RS0liQlh0?=
+ =?utf-8?B?R2dIRzdhNTRrdVp0MXl6VTM1ODV1WTJwWTZLNDFKc1dNQzEveFhPY2RpejRz?=
+ =?utf-8?B?UW8vRmhoMHNyclNXOG45WGRlalk4aWFPbVRYNldyeWpNcm80SE1HS3hHNHdo?=
+ =?utf-8?B?cGtZcXF6VjhwVFRpOVhscGM3anBpZ1AvZ2VBRjAzdy9yUWRJWTdKaUlEQkdG?=
+ =?utf-8?B?V2pac2kyNElmTGhrSHR5Ry90WEJzcDUxeUJGMVdJN2Q1eVFWaGJUYUdDOEE0?=
+ =?utf-8?B?MjNRUE9OTllXWVVaV1Z0ekc0UCtMNU8yOFZkRElVZXJVYUZNQVZEd21oMFJ3?=
+ =?utf-8?B?SnVKVWJaTnZzRGpoa25IWi9lazNSTTd6czBhaDNOUHNvN252SG9YalZsZzE0?=
+ =?utf-8?B?RUNmVWlSYnMreTZYaGJwenFoOVZOSE5XK3dWRDN6ZWxac1didGR4cjdSMmt4?=
+ =?utf-8?B?dnVtT0xwQ291RWJJbnFsY0pHbEU0ZU14aDd3cE5ad1g2YW5zNmZ6Ry9Hby83?=
+ =?utf-8?B?aEttcy9FN0ZUSjRNUUlhUldqQzM0S1Q2R3BsL0liNitnUzR4MzZsMm1VeTVM?=
+ =?utf-8?B?WC9wUkpmL2Yybmg3dlhMUDRDMVNSNE5RRTZ3UHhwNFkzc05NaXJjdW5obGRR?=
+ =?utf-8?B?ZlpmVUZZa0p3OHh6TXJ2bThUaFprSXVpM3c5ODhMV0NsVXVtWG9laGZxRFJa?=
+ =?utf-8?B?d2dVaWtiK1U3TVpJZlo0UEQwUHhWZmVHR1g0bmNRTlowblk1MlNsa2pQYUo4?=
+ =?utf-8?B?V2hFZlZYL3U3S2RWTUROb245bUxOUU1xOWZ1c09jcnRQbmVOR0hnUWlGd3Er?=
+ =?utf-8?B?bHU4YWJrWExLK2RqZkQxTTNJQXQvNGFzM214eEZrWnoraEFGRjZZb0lDRC9l?=
+ =?utf-8?B?VU5iRXhwSnAyditBNHpRdnpRNTFEUld5eVZ5QTNJWFFRa280cndYSlJuUy9j?=
+ =?utf-8?B?N0R2L3RZL1c4Yko0WVEwQ21XVUYzWVJhNnBTL05INnBNL0lNaDVoSmtUOWhW?=
+ =?utf-8?Q?BKB8OG9TRfhb39/HjBzbaJMLkteHlfKEUaNJAk1osYxmk+?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 105a7ac0-55c3-4b75-1b4a-08dba59a6a75
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR10MB6290.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Aug 2023 18:38:03.4680
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: DMMOr8NGB3wZPyETuTNPnqOgiSYKl3Phj65CnGG3yhKolGNChZL7aqWEj+h/I7YbtiWj4Bbsh7FBByzxyoFZzNMS/tVsEW4xAYEFR41f0Kr207ogbY1pJqHSNTMVGBIW
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN0PR10MB4888
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
  definitions=2023-08-25_16,2023-08-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- priorityscore=1501 phishscore=0 clxscore=1015 bulkscore=0 spamscore=0
- mlxscore=0 lowpriorityscore=0 adultscore=0 suspectscore=0 malwarescore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2308250167
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 mlxscore=0
+ bulkscore=0 malwarescore=0 phishscore=0 mlxlogscore=980 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2308250167
+X-Proofpoint-GUID: bhzJaySJzfZWwmDGvIRt1DLs7tT9qx9Z
+X-Proofpoint-ORIG-GUID: bhzJaySJzfZWwmDGvIRt1DLs7tT9qx9Z
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Greg,
 
-
-On 8/21/2023 3:01 AM, neil.armstrong@linaro.org wrote:
-> Hi Maxime,
+On 24/08/23 8:18 pm, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.15.128 release.
+> There are 139 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> On 21/08/2023 10:17, Maxime Ripard wrote:
->> Hi,
->>
->> On Fri, Aug 18, 2023 at 10:25:48AM +0200, neil.armstrong@linaro.org 
->> wrote:
->>> On 17/08/2023 20:35, Dmitry Baryshkov wrote:
->>>> On 16/08/2023 10:51, neil.armstrong@linaro.org wrote:
->>>>> Sending HS commands will always work on any controller, it's all
->>>>> about LP commands. The Samsung panels you listed only send HS
->>>>> commands so they can use prepare_prev_first and work on any
->>>>> controllers.
->>>>
->>>> I think there is some misunderstanding there, supported by the
->>>> description of the flag.
->>>>
->>>> If I remember correctly, some hosts (sunxi) can not send DCS
->>>> commands after enabling video stream and switching to HS mode, see
->>>> [1]. Thus, as you know, most of the drivers have all DSI panel setup
->>>> commands in drm_panel_funcs::prepare() /
->>>> drm_bridge_funcs::pre_enable() callbacks, not paying attention
->>>> whether these commands are to be sent in LP or in HS mode.
->>>>
->>>> Previously DSI source drivers could power on the DSI link either in
->>>> mode_set() or in pre_enable() callbacks, with mode_set() being the
->>>> hack to make panel/bridge drivers to be able to send commands from
->>>> their prepare() / pre_enable() callbacks.
->>>>
->>>> With the prev_first flags being introduced, we have established that
->>>> DSI link should be enabled in DSI host's pre_enable() callback and
->>>> switched to HS mode (be it command or video) in the enable()
->>>> callback.
->>>>
->>>> So far so good.
->>>
->>> It seems coherent, I would like first to have a state of all DSI host
->>> drivers and make this would actually work first before adding the
->>> prev_first flag to all the required panels.
->>
->> This is definitely what we should do in an ideal world, but at least for
->> sunxi there's no easy way for it at the moment. There's no documentation
->> for it and the driver provided doesn't allow this to happen.
->>
->> Note that I'm not trying to discourage you or something here, I'm simply
->> pointing out that this will be something that we will have to take into
->> account. And it's possible that other drivers are in a similar
->> situation.
->>
->>>> Unfortunately this change is not fully backwards-compatible. This
->>>> requires that all DSI panels sending commands from prepare() should
->>>> have the prepare_prev_first flag. In some sense, all such patches
->>>> might have Fixes: 5ea6b1702781 ("drm/panel: Add prepare_prev_first
->>>> flag to drm_panel").
->>>
->>> This kind of migration should be done *before* any possible
->>> regression, not the other way round.
->>>
->>> If all panels sending commands from prepare() should have the
->>> prepare_prev_first flag, then it should be first, check for
->>> regressions then continue.
->>>
->>> <snip>
->>>
->>>>>
->>>>> I understand, but this patch doesn't qualify as a fix for
->>>>> 9e15123eca79 and is too late to be merged in drm-misc-next for
->>>>> v6.6, and since 9e15123eca79 actually breaks some support it
->>>>> should be reverted (+ deps) since we are late in the rc cycles.
->>>>
->>>> If we go this way, we can never reapply these patches. There will be
->>>> no guarantee that all panel drivers are completely converted. We
->>>> already have a story without an observable end -
->>>> DRM_BRIDGE_ATTACH_NO_CONNECTOR.
->>>
->>> I don't understand this point, who would block re-applying the patches ?
->>>
->>> The migration to DRM_BRIDGE_ATTACH_NO_CONNECTOR was done over multiple
->>> Linux version and went smoothly because we reverted regressing patches
->>> and restarted when needed, I don't understand why we can't do this
->>> here aswell.
->>>
->>>> I'd consider that the DSI driver is correct here and it is about the
->>>> panel drivers that require fixes patches. If you care about the
->>>> particular Fixes tag, I have provided one several lines above.
->>>
->>> Unfortunately it should be done in the other way round, prepare for
->>> migration, then migrate,
->>>
->>> I mean if it's a required migration, then it should be done and I'll
->>> support it from both bridge and panel PoV.
->>>
->>> So, first this patch has the wrong Fixes tag, and I would like a
->>> better explanation on the commit message in any case. Then I would
->>> like to have an ack from some drm-misc maintainers before applying it
->>> because it fixes a patch that was sent via the msm tree thus per the
->>> drm-misc rules I cannot apply it via the drm-misc-next-fixes tree.
->>
->> Sorry, it's not clear to me what you'd like our feedback on exactly?
+> Responses should be made by Sat, 26 Aug 2023 14:49:55 +0000.
+> Anything received after that time might be too late.
 > 
-> So let me resume the situation:
-> 
-> - pre_enable_prev_first was introduced in [1]
-> - some panels made use of pre_enable_prev_first
-> - Visionox VTDR6130 was enabled on SM8550 systems and works on v6.5 
-> kernels and before
-> - patch [2] was introduced on MSM DRM tree, breaking VTDR6130 on SM8550 
-> systems (and probably other Video mode panels on Qcom platforms)
-> - this fix was sent late, and is now too late to be merged via 
-> drm-misc-next
 
-Hi Neil and Maxime,
+No new problems seen on x86_64 and aarch64.
 
-I agree with Neil that 9e15123eca79 was the commit that introduced the 
-issue (since it changed the MSM DSI host behavior).
-
-However, I'm not too keen on simply reverting that patch because
-
-1) it's not wrong to have the dsi_power_on in pre_enable. Arguably, it 
-actually makes more sense to power on DSI host in pre_enable than in 
-modeset (since modeset is meant for setting the bridge mode), and
-
-2) I think it would be good practice to keep specific bridge chip checks 
-out of the DSI host driver.
-
-
-That being said, what do you think about setting the default value of 
-prepare_prev_first to true (possibly in panel_bridge_attach)?
-
-It seems to me that most panel drivers send DCS commands during 
-pre_enable, so maybe it would make more sense to power on DSI host 
-before panel enable() by default. Any panel that needs DSI host to be 
-powered on later could then explicitly set the flag to false in their 
-respective drivers.
+Tested-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
 
 Thanks,
+Harshit
 
-Jessica Zhang
-
-
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.128-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> and the diffstat can be found below.
 > 
-> I do not consider it's the right way to fix regression caused by [2]
-> I consider [2] should be reverted, panels migrated to 
-> pre_enable_prev_first when needed, tested and the [2] applied again
+> thanks,
 > 
-> I have no objection about [2] and it should be done widely over the 
-> whole DSI controllers
-> and DSI Video panels.
-> 
-> I also object about the Fixes tag of this patch, which is wrong, and 
-> Dmitry considers [1]
-> should be used but it's even more wrong since [2] really caused the 
-> regression.
-> 
-> And if [2] was to correct one to use, it was pushed via the MSM tree so 
-> it couldn't be
-> applied via drm-misc-next-fixes, right ?
-> 
-> [1] 4fb912e5e190 ("drm/bridge: Introduce pre_enable_prev_first to alter 
-> bridge init order")
-> [2] 9e15123eca79 ("drm/msm/dsi: Stop unconditionally powering up DSI 
-> hosts at modeset")
-> 
-> Thanks,
-> Neil
-> 
->>
->> Maxime
+> greg k-h
 > 
