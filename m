@@ -2,182 +2,398 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C7927889F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 16:02:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EDB9788A27
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 16:04:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242612AbjHYOB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 10:01:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42332 "EHLO
+        id S245601AbjHYODc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 10:03:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245545AbjHYOBj (ORCPT
+        with ESMTP id S245611AbjHYODH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 10:01:39 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66A2E2704
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 07:01:07 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-31c83cd642cso168534f8f.2
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 07:01:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692972063; x=1693576863;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:reply-to:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Cz3wvihV4Khraq2quFRW1dbYxEl7BtIN5eOiHQDnTTs=;
-        b=xqn7boffTsoZ8n5yt2Eo1KHP14UWJYM9I/i9voNa5bLezX07HVpDau5+ZiB5aSmXYL
-         chspf245MiswOtYlVXA1o4e4OepqE/xiPUEU1H4wh9gzOYIycGbB5/CRz1UtZt177UnS
-         JSSObj+MANe14J/OT4eKGMavoBpcpxPPct93IW8kSnikV6JU9YCSRSF7No5e6WrZ51H4
-         Ur4ub9QrtS9Nt4YK61UN+o71lsoaDAqucKys1VFRDjsvsr8RViDYdwjlxWr8oSXhz3kT
-         Sr1X2gpYYhyp0JbdNdLhgJ0j/kYfEspMjM7ZNt5by36av1Uevdl3ZzhUcHPBL3OQIXQe
-         rwdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692972063; x=1693576863;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:reply-to:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Cz3wvihV4Khraq2quFRW1dbYxEl7BtIN5eOiHQDnTTs=;
-        b=hdQXhG36ipsih1fYo4YGfBksE4p47SQtxk1GmwnQeBrFBiJtKBLquWcmmcsOMbfOYo
-         KeovhAJXg25purTzQX9yJSg1bLQIClDfLVy+XsJdX/vanuB1V0P7hiozSXdQ4ZPidu5p
-         5jCZyMhHqMKXMu960rVDOdfGAqguasEwAcmOxmVKFn1A87z5ckXAn/r/j/NfPMeNg3Y5
-         GJoX5lm7CnFhq9p5XjvNFC9AA9xoKwIalkylcAhQbWsCsHH8nGXZoVGMKOE7cSxel9m5
-         VhMKwJ9lZByo+VHeAILlG4UKMcx+CeOsDIl57oXwl95UN6BJdhtwcT9JehnS88SrxaJD
-         4x5g==
-X-Gm-Message-State: AOJu0YzSiSnTwE84vLx10YrX8CMA7pTjCHx9EtvgsO82u1RODfhJosrT
-        pK/D5YwUUwrDdUDq2bkk76uPEQ==
-X-Google-Smtp-Source: AGHT+IHo2T3zBE151rMfkaJbiyRPBn5jZOjs9VP+lw99pnBUBa+mBAh2rrRjlocfb2/8uaB+zkWHjg==
-X-Received: by 2002:a5d:61d0:0:b0:317:f537:748d with SMTP id q16-20020a5d61d0000000b00317f537748dmr13225547wrv.64.1692972062756;
-        Fri, 25 Aug 2023 07:01:02 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:982:cbb0:4e1:71e1:b02b:811e? ([2a01:e0a:982:cbb0:4e1:71e1:b02b:811e])
-        by smtp.gmail.com with ESMTPSA id x16-20020a5d6510000000b003143c9beeaesm2322239wru.44.2023.08.25.07.01.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Aug 2023 07:01:02 -0700 (PDT)
-Message-ID: <71d1d748-133a-470b-986c-ece79f743aa4@linaro.org>
-Date:   Fri, 25 Aug 2023 16:01:00 +0200
+        Fri, 25 Aug 2023 10:03:07 -0400
+Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3304B270D
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 07:02:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+        s=smtpout1; t=1692972164;
+        bh=gW8LwajGqH3BcwBmfrTAhA53g76Xwm/ClyuazavKlW0=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=TqOycOranvWNGzZPR39c6aE/IpujYODKhFmOl8aLEfk6xaRc5WKq5Sn3XI+alaMCD
+         X6E1uKsPMHJ/OascsXIKJPVa1WVrXdnd/I0vM7wJK778t7bBWGg9VCaCJ5tSN7BClY
+         T4hCy/SryBQYUp0+AUgLpcXvW0/VqEb+8MRWvtli7DgQGWaB0TCbq4vWdW1fKB++e6
+         ZtqfUulHZI8695gOR1M1OwySmig2Qwuf1Vi6QN9GQiat6hRW7cjzxB5iFIDy+2QGUP
+         7dPXwYers3zbV5CcnR6oPA5daGqWAq5roPxPdkZUTDGmtIL0hnakiD1bPMiKPXktm+
+         MdM2NeAmP4KiQ==
+Received: from [172.24.0.4] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4RXM8z6LD8z1M6H;
+        Fri, 25 Aug 2023 10:02:43 -0400 (EDT)
+Message-ID: <5effb4de-b3d1-cffe-938e-4bdd1cc64b44@efficios.com>
+Date:   Fri, 25 Aug 2023 10:03:54 -0400
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH 2/4] clk: qcom: rpmh: Add RPMH clocks support for SM4450
-Content-Language: en-US, fr
-To:     Ajit Pandey <quic_ajipan@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Taniya Das <quic_tdas@quicinc.com>,
-        Imran Shaik <quic_imrashai@quicinc.com>,
-        Jagadeesh Kona <quic_jkona@quicinc.com>
-Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230824173410.550126-1-quic_ajipan@quicinc.com>
- <20230824173410.550126-3-quic_ajipan@quicinc.com>
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <20230824173410.550126-3-quic_ajipan@quicinc.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [RFC PATCH v3 0/3] sched: Skip queued wakeups only when L2 is
+ shared
+Content-Language: en-US
+To:     Swapnil Sapkal <Swapnil.Sapkal@amd.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Aaron Lu <aaron.lu@intel.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>, x86@kernel.org
+References: <20230822113133.643238-1-mathieu.desnoyers@efficios.com>
+ <f6dc1652-bc39-0b12-4b6b-29a2f9cd8484@amd.com>
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <f6dc1652-bc39-0b12-4b6b-29a2f9cd8484@amd.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 24/08/2023 19:34, Ajit Pandey wrote:
-> Add support for RPMH clocks for SM4450 platform.
+On 8/25/23 06:11, Swapnil Sapkal wrote:
+> Hello Mathieu,
 > 
-> Signed-off-by: Ajit Pandey <quic_ajipan@quicinc.com>
-> ---
->   drivers/clk/qcom/clk-rpmh.c | 21 +++++++++++++++++++++
->   1 file changed, 21 insertions(+)
+> On 8/22/2023 5:01 PM, Mathieu Desnoyers wrote:
+>> This series improves performance of scheduler wakeups on large systems
+>> by skipping queued wakeups only when CPUs share their L2 cache, rather
+>> than when they share their LLC.
+>>
+>> The speedup mainly reproduces on workloads which have at least *some*
+>> idle time (because it significantly increases the number of migrations,
+>> and thus remote wakeups), *and* it needs to have a sufficient load to
+>> cause contention on the runqueue locks.
+>>
+>> Feedback is welcome,
 > 
-> diff --git a/drivers/clk/qcom/clk-rpmh.c b/drivers/clk/qcom/clk-rpmh.c
-> index 4c5b552b47b6..5d853fd43294 100644
-> --- a/drivers/clk/qcom/clk-rpmh.c
-> +++ b/drivers/clk/qcom/clk-rpmh.c
-> @@ -350,6 +350,7 @@ DEFINE_CLK_RPMH_VRM(ln_bb_clk3, _a2, "lnbclka3", 2);
->   
->   DEFINE_CLK_RPMH_VRM(ln_bb_clk1, _a4, "lnbclka1", 4);
->   DEFINE_CLK_RPMH_VRM(ln_bb_clk2, _a4, "lnbclka2", 4);
-> +DEFINE_CLK_RPMH_VRM(ln_bb_clk3, _a4, "lnbclka3", 4);
->   
->   DEFINE_CLK_RPMH_VRM(ln_bb_clk2, _g4, "lnbclkg2", 4);
->   DEFINE_CLK_RPMH_VRM(ln_bb_clk3, _g4, "lnbclkg3", 4);
-> @@ -717,6 +718,25 @@ static const struct clk_rpmh_desc clk_rpmh_sdx75 = {
->   	.num_clks = ARRAY_SIZE(sdx75_rpmh_clocks),
->   };
->   
-> +static struct clk_hw *sm4450_rpmh_clocks[] = {
-> +	[RPMH_CXO_CLK]		= &clk_rpmh_bi_tcxo_div4.hw,
-> +	[RPMH_CXO_CLK_A]	= &clk_rpmh_bi_tcxo_div4_ao.hw,
+> I ran some micro-benchmarks as part of testing this series. Here are the
+> observations:
+> 
+> - Hackbench shows improvement with this patch and Aaron's patch with
+>    6.5-rc1 kernel as the baseline.
+> 
+> - tbench and netperf shows shows some dip in performance with highly
+>    overloaded case.
+> 
+> - Other micro-benchmarks shows more or less similar performance with
+>    these patches.
 
-Are you sure about div4 here ?
+Those results look promising! Thanks for testing!
 
-Kailua uses div2 because the CXO input gets used divided by 2
-by PHYs and divided by 4 for GCC/DISPCC/...
+Mathieu
 
-This is why we introduced a div2 clock in DT used to feed GCC/DISPCC/...
 
-Neil
+> 
+> o System Details
+> 
+> - 4th Generation EPYC System
+> - 2 x 128C/256T
+> - NPS1 mode
+> 
+> o Kernels
+> 
+> base:                                    6.5.0-rc1
+> base + mathieu-queued-wakeup:        6.5.0-rc1 + Mathieu's patches [1]
+> base + aaron-tg-load-avg:         6.5.0-rc1 + Aaron's patch [2]
+> base + queued-wakeup + tg-load-avg:     6.5.0-rc1 + Mathieu's patches 
+> [1] + Aaron's patch [2]
+> 
+> [References]
+> 
+> [1] "sched: Skip queued wakeups only when L2 is shared"
+>      
+> (https://lore.kernel.org/all/20230822113133.643238-1-mathieu.desnoyers@efficios.com/)
+> [2] "Reduce cost of accessing tg->load_avg"
+>      
+> (https://lore.kernel.org/lkml/20230823060832.454842-1-aaron.lu@intel.com/)
+> 
+> ==================================================================
+> Test          : hackbench
+> Units         : Time in seconds
+> Interpretation: Lower is better
+> Statistic     : AMean
+> ==================================================================
+> Test:        6.5.0-rc1 (base)    base + mathieu-queued-wakeup       base 
+> + aaron-tg-load-avg        base + queued-wakeup + tg-load-avg
+>   1-groups:   22.15 (0.00 pct)      22.46 (-1.39 pct)                    
+> 22.35 (-0.90 pct)                   21.20 (4.28 pct)
+>   2-groups:   22.76 (0.00 pct)      21.78 (4.30 pct)                     
+> 22.60 (0.70 pct)                    21.90 (3.77 pct)
+>   4-groups:   22.12 (0.00 pct)      22.02 (0.45 pct)                     
+> 22.22 (-0.45 pct)                   21.94 (0.81 pct)
+>   8-groups:   24.80 (0.00 pct)      22.36 (9.83 pct)                     
+> 22.99 (7.29 pct)                    22.00 (11.29 pct)
+> 16-groups:   31.09 (0.00 pct)      21.56 (30.65 pct)                    
+> 22.13 (28.81 pct)                   20.60 (33.74 pct)
+> 
+> ==================================================================
+> Test          : tbench
+> Units         : Throughput
+> Interpretation: Higher is better
+> Statistic     : AMean
+> ==================================================================
+> Clients: 6.5.0-rc1 (base)    base + mathieu-queued-wakeup           base 
+> + aaron-tg-load-avg       base + queued-wakeup + tg-load-avg
+>      1    261.49 (0.00 pct)       261.18 (-0.11 pct)                     
+> 262.29 (0.30 pct)                   257.80 (-1.41 pct)
+>      2    514.08 (0.00 pct)       521.30 (1.40 pct)                      
+> 517.66 (0.69 pct)                   510.96 (-0.60 pct)
+>      4    1002.51 (0.00 pct)      988.81 (-1.36 pct)                     
+> 995.04 (-0.74 pct)                  987.74 (-1.47 pct)
+>      8    1978.74 (0.00 pct)      1966.60 (-0.61 pct)                    
+> 1991.85 (0.66 pct)                  1941.39 (-1.88 pct)
+>     16    3864.14 (0.00 pct)      3952.03 (2.27 pct)                     
+> 3914.80 (1.31 pct)                  3873.88 (0.25 pct)
+>     32    7473.19 (0.00 pct)      7602.38 (1.72 pct)                     
+> 7585.94 (1.50 pct)                  7423.44 (-0.66 pct)
+>     64    14335.10 (0.00 pct)     14313.17 (-0.15 pct)                   
+> 14474.67 (0.97 pct)                 14030.63 (-2.12 pct)
+>    128    27275.73 (0.00 pct)     25176.80 (-7.69 pct)                   
+> 28066.53 (2.89 pct)                 25045.53 (-8.17 pct)
+>    256    41688.17 (0.00 pct)     44373.40 (6.44 pct)                    
+> 43779.37 (5.01 pct)                 41427.00 (-0.62 pct)
+>    512    137481.33 (0.00 pct)    136466.67 (-0.73 pct)                  
+> 134824.00 (-1.93 pct)               141280.00 (2.76 pct)
+>   1024    140534.00 (0.00 pct)    141916.33 (0.98 pct)                   
+> 137008.33 (-2.50 pct)               126319.33 (-10.11 pct)
+>   2048    145378.00 (0.00 pct)    145479.33 (0.06 pct)                   
+> 138763.67 (-4.54 pct)               124471.00 (-14.38 pct)
+> 
+>   ==================================================================
+>   Test          : netperf
+>   Units         : Througput
+>   Interpretation: Higher is better
+>   Statistic     : AMean
+>   ==================================================================
+>                   6.5.0-rc1 (base)    base + mathieu-queued-wakeup       
+> base + aaron-tg-load-avg        base + queued-wakeup + tg-load-avg
+>    1-clients:      59642.88 (0.00 pct)        61647.37 (3.36 
+> pct)         61186.24 (2.58 pct)                 59099.11 (-0.91 pct)
+>    2-clients:      59349.65 (0.00 pct)        60896.01 (2.60 
+> pct)         60582.49 (2.07 pct)                 62738.47 (5.70 pct)
+>    4-clients:      59197.37 (0.00 pct)        60457.29 (2.12 
+> pct)         63042.52 (6.49 pct)                 60879.58 (2.84 pct)
+>    8-clients:      61977.66 (0.00 pct)        60389.92 (-2.56 
+> pct)        62078.15 (0.16 pct)                 60314.65 (-2.68 pct)
+>   16-clients:      61518.83 (0.00 pct)        61143.51 (-0.61 
+> pct)        60946.08 (-0.93 pct)                59388.78 (-3.46 pct)
+>   32-clients:      58230.81 (0.00 pct)        58653.20 (0.72 
+> pct)         58594.14 (0.62 pct)                 58188.52 (-0.07 pct)
+>   64-clients:      58050.92 (0.00 pct)        57834.55 (-0.37 
+> pct)        58183.51 (0.22 pct)                 57565.75 (-0.83 pct)
+>   128-clients:     54324.55 (0.00 pct)        54385.60 (0.11 
+> pct)         54913.43 (1.08 pct)                 53917.11 (-0.75 pct)
+>   256-clients:     70155.29 (0.00 pct)        69390.68 (-1.08 
+> pct)        70097.50 (-0.08 pct)                64410.66 (-8.18 pct)
+>   512-clients:     61511.77 (0.00 pct)        61480.99 (-0.05 
+> pct)        54493.82 (-11.40 pct)               46227.05 (-24.84 pct)
+> 
+> ==================================================================
+> Test          : stream-10
+> Units         : Bandwidth, MB/s
+> Interpretation: Higher is better
+> Statistic     : HMean
+> ==================================================================
+> Test:      6.5.0-rc1 (base)      base + mathieu-queued-wakeup         
+> base + aaron-tg-load-avg       base + queued-wakeup + tg-load-avg
+>   Copy:   353336.76 (0.00 pct)       352956.36 (-0.10 pct)               
+> 349583.67 (-1.06 pct)               351152.80 (-0.61 pct)
+> Scale:   353474.88 (0.00 pct)       354582.35 (0.31 pct)                
+> 350543.75 (-0.82 pct)               353275.74 (-0.05 pct)
+>    Add:   371984.24 (0.00 pct)       372824.87 (0.22 pct)                
+> 369173.72 (-0.75 pct)               370483.63 (-0.40 pct)
+> Triad:   372625.41 (0.00 pct)       278389.62 (-25.28 pct)              
+> 369504.06 (-0.83 pct)               369070.11 (-0.95 pct)
+> 
+> ==================================================================
+> Test          : stream-100
+> Units         : Bandwidth, MB/s
+> Interpretation: Higher is better
+> Statistic     : HMean
+> ==================================================================
+> Test:     6.5.0-rc1 (base)        base + mathieu-queued-wakeup       
+> base + aaron-tg-load-avg       base + queued-wakeup + tg-load-avg
+>   Copy:   353476.35 (0.00 pct)       354954.50 (0.41 pct)                
+> 354614.56 (0.32 pct)                353512.71 (0.01 pct)
+> Scale:   353214.73 (0.00 pct)       354884.12 (0.47 pct)                
+> 355841.17 (0.74 pct)                353220.53 (0.00 pct)
+>    Add:   370755.48 (0.00 pct)       372292.72 (0.41 pct)                
+> 375307.35 (1.22 pct)                369917.77 (-0.22 pct)
+> Triad:   370652.02 (0.00 pct)       372732.11 (0.56 pct)                
+> 375718.85 (1.36 pct)                369926.26 (-0.19 pct)
+> 
+> ==================================================================
+> Test          : schbench (old)
+> Units         : 99th percentile latency in us
+> Interpretation: Lower is better
+> Statistic     : Median
+> ==================================================================
+> #workers: 6.5.0-rc1 (base)    base + mathieu-queued-wakeup          base 
+> + aaron-tg-load-avg        base + queued-wakeup + tg-load-avg
+>    1:      56.00 (0.00 pct)        58.00 (-3.57 
+> pct)                      60.00 (-7.14 pct)                   60.00 
+> (-7.14 pct)
+>    2:      61.00 (0.00 pct)        56.00 (8.19 
+> pct)                       59.00 (3.27 pct)                    60.00 
+> (1.63 pct)
+>    4:      64.00 (0.00 pct)        62.00 (3.12 
+> pct)                       66.00 (-3.12 pct)                   64.00 
+> (0.00 pct)
+>    8:      96.00 (0.00 pct)        78.00 (18.75 
+> pct)                      76.00 (20.83 pct)                   93.00 
+> (3.12 pct)
+>   16:      98.00 (0.00 pct)        95.00 (3.06 
+> pct)                       98.00 (0.00 pct)                    95.00 
+> (3.06 pct)
+>   32:     137.00 (0.00 pct)       144.00 (-5.10 pct)                     
+> 133.00 (2.91 pct)                   130.00 (5.10 pct)
+>   64:     206.00 (0.00 pct)       210.00 (-1.94 pct)                     
+> 200.00 (2.91 pct)                   217.00 (-5.33 pct)
+> 128:     348.00 (0.00 pct)       347.00 (0.28 pct)                      
+> 413.00 (-18.67 pct)                 366.00 (-5.17 pct)
+> 256:     679.00 (0.00 pct)       669.00 (1.47 pct)                      
+> 669.00 (1.47 pct)                   675.00 (0.58 pct)
+> 512:     1366.00 (0.00 pct)      1366.00 (0.00 pct)                     
+> 1442.00 (-5.56 pct)                 1430.00 (-4.68 pct)
+> 
+> 
+> ==================================================================
+> Test          : schbench (new)
+> Units         : 99th percentile latency in us
+> Interpretation: Lower is better
+> Statistic     : Median
+> ==================================================================
+> Metric: wakeup_lat_summary
+> #workers: 6.5.0-rc1 (base)    base + mathieu-queued-wakeup          base 
+> + aaron-tg-load-avg        base + queued-wakeup + tg-load-avg
+>    1:      15.00 (0.00 pct)        15.00 (0.00 
+> pct)                       16.00 (-6.66 pct)                   17.00 
+> (-13.33 pct)
+>    2:      16.00 (0.00 pct)        16.00 (0.00 
+> pct)                       17.00 (-6.25 pct)                   17.00 
+> (-6.25 pct)
+>    4:      17.00 (0.00 pct)        17.00 (0.00 
+> pct)                       15.00 (11.76 pct)                   17.00 
+> (0.00 pct)
+>    8:      11.00 (0.00 pct)        13.00 (-18.18 
+> pct)                     11.00 (0.00 pct)                    11.00 (0.00 
+> pct)
+>   16:      11.00 (0.00 pct)        11.00 (0.00 
+> pct)                       10.00 (9.09 pct)                     9.00 
+> (18.18 pct)
+>   32:      11.00 (0.00 pct)        11.00 (0.00 
+> pct)                       11.00 (0.00 pct)                    11.00 
+> (0.00 pct)
+>   64:      10.00 (0.00 pct)        11.00 (-10.00 
+> pct)                     10.00 (0.00 pct)                    10.00 (0.00 
+> pct)
+> 128:      11.00 (0.00 pct)        12.00 (-9.09 pct)                      
+> 12.00 (-9.09 pct)                   11.00 (0.00 pct)
+> 256:     117.00 (0.00 pct)       162.00 (-38.46 pct)                     
+> 90.00 (23.07 pct)                  103.00 (11.96 pct)
+> 512:     22496.00 (0.00 pct)     21664.00 (3.69 pct)                    
+> 22368.00 (0.56 pct)                 21408.00 (4.83 pct)
+> 
+> Metric: request_lat_summary
+> #workers: 6.5.0-rc1 (base)    base + mathieu-queued-wakeup          base 
+> + aaron-tg-load-avg        base + queued-wakeup + tg-load-avg
+>    1:     6872.00 (0.00 pct)      6872.00 (0.00 pct)                     
+> 6792.00 (1.16 pct)                  6856.00 (0.23 pct)
+>    2:     6824.00 (0.00 pct)      6824.00 (0.00 pct)                     
+> 6872.00 (-0.70 pct)                 6856.00 (-0.46 pct)
+>    4:     6824.00 (0.00 pct)      6808.00 (0.23 pct)                     
+> 6872.00 (-0.70 pct)                 6824.00 (0.00 pct)
+>    8:     6824.00 (0.00 pct)      6824.00 (0.00 pct)                     
+> 6872.00 (-0.70 pct)                 6824.00 (0.00 pct)
+>   16:     6824.00 (0.00 pct)      6840.00 (-0.23 pct)                    
+> 6872.00 (-0.70 pct)                 6840.00 (-0.23 pct)
+>   32:     6840.00 (0.00 pct)      6840.00 (0.00 pct)                     
+> 6888.00 (-0.70 pct)                 6856.00 (-0.23 pct)
+>   64:     6840.00 (0.00 pct)      6872.00 (-0.46 pct)                    
+> 6888.00 (-0.70 pct)                 6872.00 (-0.46 pct)
+> 128:     12272.00 (0.00 pct)     12784.00 (-4.17 pct)                   
+> 13200.00 (-7.56 pct)                12016.00 (2.08 pct)
+> 256:     13328.00 (0.00 pct)     13392.00 (-0.48 pct)                   
+> 13712.00 (-2.88 pct)                13552.00 (-1.68 pct)
+> 512:     88832.00 (0.00 pct)     86400.00 (2.73 pct)                    
+> 88192.00 (0.72 pct)                 85632.00 (3.60 pct)
+> 
+> Metric: rps_summary
+> #workers: 6.5.0-rc1 (base)    base + mathieu-queued-wakeup          base 
+> + aaron-tg-load-avg       base + queued-wakeup + tg-load-avg
+>    1:     297.00 (0.00 pct)       297.00 (0.00 pct)                      
+> 297.00 (0.00 pct)                   299.00 (-0.67 pct)
+>    2:     601.00 (0.00 pct)       603.00 (-0.33 pct)                     
+> 595.00 (0.99 pct)                   601.00 (0.00 pct)
+>    4:     1206.00 (0.00 pct)      1206.00 (0.00 pct)                     
+> 1190.00 (1.32 pct)                  1206.00 (0.00 pct)
+>    8:     2412.00 (0.00 pct)      2412.00 (0.00 pct)                     
+> 2396.00 (0.66 pct)                  2420.00 (-0.33 pct)
+>   16:     4840.00 (0.00 pct)      4824.00 (0.33 pct)                     
+> 4792.00 (0.99 pct)                  4840.00 (0.00 pct)
+>   32:     9648.00 (0.00 pct)      9648.00 (0.00 pct)                     
+> 9584.00 (0.66 pct)                  9680.00 (-0.33 pct)
+>   64:     19360.00 (0.00 pct)     19296.00 (0.33 pct)                    
+> 19168.00 (0.99 pct)                 19296.00 (0.33 pct)
+> 128:     37952.00 (0.00 pct)     35264.00 (7.08 pct)                    
+> 36672.00 (3.37 pct)                 38080.00 (-0.33 pct)
+> 256:     41408.00 (0.00 pct)     41536.00 (-0.30 pct)                   
+> 39744.00 (4.01 pct)                 40896.00 (1.23 pct)
+> 512:     36288.00 (0.00 pct)     36800.00 (-1.41 pct)                   
+> 35264.00 (2.82 pct)                 35776.00 (1.41 pct)
+> 
+> Tested-by: Swapnil Sapkal <Swapnil.Sapkal@amd.com>
+> 
+>>
+>> Thanks,
+>>
+>> Mathieu
+>>
+>> Mathieu Desnoyers (3):
+>>    sched: Rename cpus_share_cache to cpus_share_llc
+>>    sched: Introduce cpus_share_l2c (v3)
+>>    sched: ttwu_queue_cond: skip queued wakeups across different l2 caches
+>>
+>> Cc: Ingo Molnar <mingo@redhat.com>
+>> Cc: Peter Zijlstra <peterz@infradead.org>
+>> Cc: Valentin Schneider <vschneid@redhat.com>
+>> Cc: Steven Rostedt <rostedt@goodmis.org>
+>> Cc: Ben Segall <bsegall@google.com>
+>> Cc: Mel Gorman <mgorman@suse.de>
+>> Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
+>> Cc: Vincent Guittot <vincent.guittot@linaro.org>
+>> Cc: Juri Lelli <juri.lelli@redhat.com>
+>> Cc: Swapnil Sapkal <Swapnil.Sapkal@amd.com>
+>> Cc: Aaron Lu <aaron.lu@intel.com>
+>> Cc: Julien Desfossez <jdesfossez@digitalocean.com>
+>> Cc: x86@kernel.org
+>>
+>>   block/blk-mq.c                 |  2 +-
+>>   include/linux/sched/topology.h | 10 ++++++++--
+>>   kernel/sched/core.c            | 14 +++++++++++---
+>>   kernel/sched/fair.c            |  8 ++++----
+>>   kernel/sched/sched.h           |  2 ++
+>>   kernel/sched/topology.c        | 32 +++++++++++++++++++++++++++++---
+>>   6 files changed, 55 insertions(+), 13 deletions(-)
+>>
+> -- 
+> Thanks and Regards,
+> Swapnil
 
-> +	[RPMH_LN_BB_CLK2]	= &clk_rpmh_ln_bb_clk2_a4.hw,
-> +	[RPMH_LN_BB_CLK2_A]	= &clk_rpmh_ln_bb_clk2_a4_ao.hw,
-> +	[RPMH_LN_BB_CLK3]       = &clk_rpmh_ln_bb_clk3_a4.hw,
-> +	[RPMH_LN_BB_CLK3_A]     = &clk_rpmh_ln_bb_clk3_a4_ao.hw,
-> +	[RPMH_RF_CLK1]		= &clk_rpmh_rf_clk1_a.hw,
-> +	[RPMH_RF_CLK1_A]	= &clk_rpmh_rf_clk1_a_ao.hw,
-> +	[RPMH_RF_CLK5]		= &clk_rpmh_rf_clk5_a.hw,
-> +	[RPMH_RF_CLK5_A]	= &clk_rpmh_rf_clk5_a_ao.hw,
-> +	[RPMH_IPA_CLK]		= &clk_rpmh_ipa.hw,
-> +};
-> +
-> +static const struct clk_rpmh_desc clk_rpmh_sm4450 = {
-> +	.clks = sm4450_rpmh_clocks,
-> +	.num_clks = ARRAY_SIZE(sm4450_rpmh_clocks),
-> +};
-> +
->   static struct clk_hw *of_clk_rpmh_hw_get(struct of_phandle_args *clkspec,
->   					 void *data)
->   {
-> @@ -810,6 +830,7 @@ static const struct of_device_id clk_rpmh_match_table[] = {
->   	{ .compatible = "qcom,sdx55-rpmh-clk",  .data = &clk_rpmh_sdx55},
->   	{ .compatible = "qcom,sdx65-rpmh-clk",  .data = &clk_rpmh_sdx65},
->   	{ .compatible = "qcom,sdx75-rpmh-clk",  .data = &clk_rpmh_sdx75},
-> +	{ .compatible = "qcom,sm4450-rpmh-clk", .data = &clk_rpmh_sm4450},
->   	{ .compatible = "qcom,sm6350-rpmh-clk", .data = &clk_rpmh_sm6350},
->   	{ .compatible = "qcom,sm8150-rpmh-clk", .data = &clk_rpmh_sm8150},
->   	{ .compatible = "qcom,sm8250-rpmh-clk", .data = &clk_rpmh_sm8250},
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
 
