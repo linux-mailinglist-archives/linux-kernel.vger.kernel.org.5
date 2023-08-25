@@ -2,90 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B941788BA5
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 16:27:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DE1E788BA8
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 16:27:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245188AbjHYO0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 10:26:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37124 "EHLO
+        id S1343754AbjHYO0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 10:26:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343856AbjHYO0I (ORCPT
+        with ESMTP id S1343733AbjHYO0S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 10:26:08 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6D021995
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 07:26:04 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d78452de9cbso548843276.2
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 07:26:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692973564; x=1693578364;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xpKO/2A0f/no2QIyIWC8bhx4Rp180QUhRFsJmxIIf6k=;
-        b=cFkJgG2HgF7ql8/QY+ZSKA5R4EJ76QgRByuQImcO66jhdIVOsnThPj+OKN+Ka6GwJw
-         LDwJfXmt37njPox0SCKS6HtdoZWM6ZKAnPvo2IWC4fidM5IoeqCr98Znox9XCvkaOkg5
-         iR1mizqaTnQ20ylmolDwwgohXf1moQkKWuvlGg2fcH00GWrBQnzdlZKkNw3Jd9zs56Ed
-         gS+vllTY2iAPKvfWqIWBGqVi40qrXnxr1UFnnWPm2zibyB1cY+HQlv1SAkMJAajDCGOA
-         OtAqtn0S9nghmDwRoYT6UPKoghUIrjFerywtwSCDiMxj9N0IOlJb3F+6yZUT9TY27QWL
-         SdiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692973564; x=1693578364;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xpKO/2A0f/no2QIyIWC8bhx4Rp180QUhRFsJmxIIf6k=;
-        b=j3ZlUVRZxI9GbWsVeAKixMtbrFzENqw5ktFGkgdmZp9rM2kOwx19oa/lRwiE5Zz4a2
-         3TZBKlAhdtxTzwWMiVBEkV4jTdUZOGCQe5G/OinpxKcy7VMsqNIMozHfjk23PerapYnI
-         sY7P00qmy6oA1wLzcrRa/U7nlVfYFN6jpkOaRVxyTsBmYs7ICGi/BWHEqO6M2OePgqj1
-         7LOsOvSAfxdhlIeoESFN2cJgCdBTKmJiUhywwmBTTa7x57ZK1as9BAnMNTCWD4MNarSH
-         d0/bmkJpofu5WNtIemPnfbgBVBGm8jyofdFEIygqy4f5bmqlAC1IWZ+kfcSdyepn6NIi
-         eEYw==
-X-Gm-Message-State: AOJu0YxPvVAScGHHTg8Y6YnKKEPm6UR8MdfDz4n4vM86ziktD85MjJyA
-        r+8+wNLtlpt+iUHReh7A/qGzXuQ1wz8=
-X-Google-Smtp-Source: AGHT+IE64T9Kdj2ejG3B4Nr6Y45EuDCgAtQzT7hL9ZXXsmCS3yNmRUay9Xn0CHteK3xz97jhmqj3De9Ue1E=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:7450:0:b0:d7a:a879:614d with SMTP id
- p77-20020a257450000000b00d7aa879614dmr22384ybc.1.1692973564238; Fri, 25 Aug
- 2023 07:26:04 -0700 (PDT)
-Date:   Fri, 25 Aug 2023 07:26:02 -0700
-In-Reply-To: <cdad0a8b-0994-d2f3-7c68-e632ce4facf7@amd.com>
-Mime-Version: 1.0
-References: <67fba65c-ba2a-4681-a9bc-2a6e8f0bcb92.chenpeihong.cph@alibaba-inc.com>
- <ZOYfxgSy/SxCn0Wq@google.com> <174aa0da-0b05-a2dc-7884-4f7b57abcc37@amd.com>
- <ZOdnuDZUd4mevCqe@google.com> <cdad0a8b-0994-d2f3-7c68-e632ce4facf7@amd.com>
-Message-ID: <ZOi5+rMYTVpmdQ2+@google.com>
-Subject: Re: Question about AMD SVM's virtual NMI support in Linux kernel mainline
-From:   Sean Christopherson <seanjc@google.com>
-To:     Santosh Shukla <santosh.shukla@amd.com>
-Cc:     "=?utf-8?B?6ZmI5Z+56bi/KOS5mOm4vyk=?=" 
-        <chenpeihong.cph@alibaba-inc.com>, mlevitsk <mlevitsk@redhat.com>,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 25 Aug 2023 10:26:18 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79CA710FF;
+        Fri, 25 Aug 2023 07:26:16 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id ECD311F45E;
+        Fri, 25 Aug 2023 14:26:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1692973573; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=k3nAwwAKsWLIJVd2iWItRZG4ru0xIHX7/IuiHEF8IZI=;
+        b=HTeF6bZ0VA0DIQlN1T/x+27q58yPLJCNqFMa2xjRtd8bFTQ6dk9RVdiBHaYEGQQD3yhC9p
+        gEOECZeO+ZOfcaGAB/MJ+mWkj5Qr0d3klYpkmbT0F/pewNHc1CUjQ0aHfaHe2FhGbh6tNF
+        N1zGEue3U39PRNZ5CH+NJ8efsV5lceA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1692973573;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=k3nAwwAKsWLIJVd2iWItRZG4ru0xIHX7/IuiHEF8IZI=;
+        b=GoFNno7AIFl6spdBIffFERcOsaottt++Igia4izVWJonLfyGRogq00gB6bd5sO/NrKNxaJ
+        SHKapJhRtDUbT8CA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DC997138F9;
+        Fri, 25 Aug 2023 14:26:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 2H6jNQW66GRzFgAAMHmgww
+        (envelope-from <dwagner@suse.de>); Fri, 25 Aug 2023 14:26:13 +0000
+Date:   Fri, 25 Aug 2023 16:26:29 +0200
+From:   Daniel Wagner <dwagner@suse.de>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        Chaitanya Kulkarni <kch@nvidia.com>,
+        Hannes Reinecke <hare@suse.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Subject: Re: [PATCH blktests v3 3/3] nvme: introduce
+ nvmet_target_{setup/cleanup} common code
+Message-ID: <xz7rnke52xu3anmnjliybqv4yk3w367noo6ipguarkec6u4i5g@7bqtovmc3gjb>
+References: <20230822083812.24612-1-dwagner@suse.de>
+ <20230822083812.24612-4-dwagner@suse.de>
+ <fbyacmtpqfhfb763s7utwbt4kdbr3pli4rp7prj7jlklq2tit6@mkkjzy73r3a3>
+ <7b5fc500-afeb-7edf-383c-0cdda77b3cf6@acm.org>
+ <oss54jmgqzjcxecea4h7eeguh6lmhls4p74e7unbxmhz34asvk@a7n6vu6hauys>
+ <zvu2ihivd6f4fbs7hpgowstq3li4wrdycqzso3c32qcco7zes4@s2l2solzzo6u>
+ <saxcmve2nchhytphnknfqp2fxpwdk5v5xqfoq2g5gsdlecf3il@sypswqownxih>
+ <b79c0c9d-3930-4dbf-a1cf-8ca9e00af614@acm.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b79c0c9d-3930-4dbf-a1cf-8ca9e00af614@acm.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 25, 2023, Santosh Shukla wrote:
-> Hi Sean,
-> >> Yes, HW does set BLOCKING_MASK when HW takes the pending vNMI event.
+On Fri, Aug 25, 2023 at 06:45:25AM -0700, Bart Van Assche wrote:
+> On 8/25/23 00:34, Shinichiro Kawasaki wrote:
+> > Recently, you actively cleans up tests/nvme/* (which is great!), and introduced
+> > argument parsers in test/nvme/rc. The first one is _nvme_connect_subsys, and the
+> > second one is this _nvme_target_setup. It looks for me this is a bash coding
+> > style change in blktests, from "don't use optional arguments often" to "use
+> > optional arguments aggressively". If we apply this change, we should suppress
+> > SC2119. If we keep the old coding style, we should keep on enabling SC2119. What
+> > I see here is the style difference between you and Bart.
 > > 
-> > I'm not asking about the pending vNMI case, which is clearly spelled out in the
-> > APM.  I'm asking about directly injecting an NMI via:
+> > Now I'm tempted to disable SC2119, and to go with the new coding style...
 > > 
-> > 	svm->vmcb->control.event_inj = SVM_EVTINJ_VALID | SVM_EVTINJ_TYPE_NMI;
-> >
+> > If I have any misunderstanding, or if anyone has more comments on this, please
+> > let me know.
 > 
-> Yes. This is documented in APM as well.
-> https://www.amd.com/system/files/TechDocs/24593.pdf : "15.21.10 NMI Virtualization"
-> 
-> "
-> If Event Injection is used to inject an NMI when NMI Virtualization is enabled,
-> VMRUN sets V_NMI_MASK in the guest state.
-> "
+> I don't like the "new style". What is so hard about typing "$@" to pass all function
+> arguments to _nvmet_target_setup()? Leaving out "$@" makes it much harder than
+> necessary to figure out the intent of the code author - not passing any arguments
+> or passing all caller arguments implicitly.
 
-Awesome, thank you!
+Because "$@" is just not correct. Also by using defaults we really see
+where the test is special.
+
+Let's look at this here:
+
+ _create_nvmet_subsystem "${def_subsysnqn}" "${def_file_path}"
+
+Both arguments are default values and could just be left out. It makes
+reading the code way simpler,
+
+ _create_nvmet_subsystem
+
+Another example, if setup a default target
+
+ _nvmet_target_setup
+
+and if we want to enable the auth code:
+
+ _nvmet_target_setup --ctrlkey "${ctrlkey}" --hostkey "${hostkey}"
+
+and that's all. You can easily see what's is different from the default
+values.
+
+The "old" style is expecting that the caller gets the number of
+arguments and position correct:
+
+ _create_nvmet_host "${def_subsysnqn}" "${def_hostnqn}" "${hostkey}" "${ctrlkey}"
+
+And this isn't always the case. I already fixed a couple of bugs where
+the test got the order wrong.
