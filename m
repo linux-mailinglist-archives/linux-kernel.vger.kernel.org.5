@@ -2,299 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CA2F788157
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 09:57:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E53578815F
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 09:59:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243270AbjHYH45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 03:56:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33366 "EHLO
+        id S243293AbjHYH6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 03:58:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243272AbjHYH4d (ORCPT
+        with ESMTP id S243360AbjHYH6K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 03:56:33 -0400
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2080.outbound.protection.outlook.com [40.107.223.80])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA500CF1;
-        Fri, 25 Aug 2023 00:56:30 -0700 (PDT)
+        Fri, 25 Aug 2023 03:58:10 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47EED9E;
+        Fri, 25 Aug 2023 00:58:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692950289; x=1724486289;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=s8cAMTzktealvVfnTLRG0vnBHQLNzGmwn81ojO6lbSo=;
+  b=nCUqFvWOWs82hkhg8TmHtEOgUBq3Od4ORCtxG8XZsmpMGVFUi2sIPpMq
+   ASBp18Q/gCDC9YZbBmdm8iZAEgWWOvMgkLm+H/LxwZXWv6h9jOOPSrEEs
+   eQY3RkJ5evusUV4untxME49AfJ3M2AR/K1KMNZ+HTCkkoYFOJKXm34Ajn
+   oBgIxqyx1i3tdk8L9ZplfvTejvnkPLy7gVvMcaxTqZ/W8uvcDv2jsAg4P
+   Xk0O7khyDQ2SelTlQEpnxTcFNGuUndA4untSej8bHb8RN8eau9drgiEsk
+   fiUzDczsIgGb25aXtd3CIGuCK/zFFzZkcw1ps4YNqQgQjn8p+1qvv5kCq
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="354187080"
+X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
+   d="scan'208";a="354187080"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2023 00:58:08 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="984017576"
+X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
+   d="scan'208";a="984017576"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmsmga006.fm.intel.com with ESMTP; 25 Aug 2023 00:57:39 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Fri, 25 Aug 2023 00:57:39 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Fri, 25 Aug 2023 00:57:39 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Fri, 25 Aug 2023 00:57:39 -0700
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (104.47.73.48) by
+ edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Fri, 25 Aug 2023 00:57:27 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=doNmN+nIpw4Ya37o/23dWzLH7/2d/nDLXOreSzefyPHYkh7iRz3v1hO1hcubP8aV4lZYFUTyuziggX0Zxu0SB3snbtIxIfF+0eZrdElJO4IridYKxkeBCivBELU8/w76/zxi5btZDv/pvXz4ppQgZgMd/tG+XkiqqSfH2YnXH1Z6ODkCA3JpL7t0VpW/na5H+dg4br7iCCkjplJZAeFxY2an7vF+OqYuvxk5oemK3xyCNUMRiq5dFW45J7GObYCxYu+xWiyzGC9cJJ2UKbJUnw/4SlLlC03wokTe2wpOVdabVfNng49aYZbv4Bde4y15zsodsz9E+sfrcPPX07dNTA==
+ b=coPQ/5q40nkiK2+x3DkMZ7Lhe4wEZdPzvJk/OBIhotTIaosgbp7N1sdUqs75IoZrjf5wcxHvDfuARnAYzOpC/bX0UkKJeB5mMC6EEVSiTIGfYQHNIKs11vt7JL6zv43VpE8DU5EfXlni/VoR6cAlMSm7Xm8/ccu1n80q9LLA+A5H43eWSP2WRwRcQryVjgI8rLf/ywn8rYcEXETkU6YOuopXGg63eEZydT4YCvyfnT9h7Zr1VP8zlmFBk/SIxOo/qQbZ0ldC4ebzrNXbbLCVPybqTPs8sHHIxRdR2xnf7oqHkzs2rvhcJpQugKElbi6gOC4zDAtInjv+Tr1tNyvvqA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Ljr+/nIQcr41Gh9YfmXyXKB+kPQ7Q4Quv+nF5LnslEo=;
- b=O1IWzUVFmmEMkWQZjF0fqhOkcwcvnQ+bTihsVL1G+IXzW1RShcsoe8ivC0iLK4KA5vh15oLAvp2Ug6hpZTTaqlZgNo8C8Bg0XDsrGgl4jJXVlcG9vg8gug69rnsqTGTDVi38WbA0j4bf/tlNr4Q6iXPL034Op5+QtoDTfBvcujGb6yBctuAMBzfAAbGNNBRjt3V92CrQ/gH9nIb5hEXiDBv3PA8lMhJKMfTYLb6GF+D5xb9BWRE92ivvWiGedjtP7vs00oOALKZWInaYbnh9KYvR1gGkUjLJo771nVQm8P/svRx/1QALVPXNbW+gr2ncX6O/oA3fyOCGrFxHjm0rHg==
+ bh=s8cAMTzktealvVfnTLRG0vnBHQLNzGmwn81ojO6lbSo=;
+ b=nDaUTju8gn3xyM7AxhUPIpfHAZOmTwlflFRZw+YiMEgbbb9h5NEKBEQKXzuPMnWXf/xbLLvdeZNFYjSEvhY4iQs/VyMlJtu342ZEIx/IPoilPTf6PQmwRpBv5zGMxmdiuq+sPOdTbc7PfxZqPMebgkTwbEa+BPxJGKk4yfchdLHQ2Q/pYwG8lyQMpVhIQD4qUzZsP4vleo9hUucvaVjvvrVetARA502u7M3Bqva2lx1Ui+BFeQEI+HbbC8MrsaOCuxwojfHdKDA0GP/5E7kI3EILgDVyEklABQUTJB4pmOwlzyHNQY0lMMoPpiTCPuZ66mKCo4LXbV8A5N1VgwKJtA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synaptics.com; dmarc=pass action=none
- header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ljr+/nIQcr41Gh9YfmXyXKB+kPQ7Q4Quv+nF5LnslEo=;
- b=NjcyamhdgVtY3xfElOlqekuLcWZyIrrNGjnVqGqFhDD9eQ2xhS5f9f9qryG52DKUDXt1jKK9q/E0M3NVZPPzEknL69HJ6BPMKyjE9KHplyM2zrXNT4SOQ5YgSFFpO4+HqoMuM2DbdzMtLh1pQCvh4vJheUoBmNVFDa7tm2aLpsE=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=synaptics.com;
-Received: from DM6PR03MB5196.namprd03.prod.outlook.com (2603:10b6:5:24a::19)
- by PH0PR03MB6383.namprd03.prod.outlook.com (2603:10b6:510:a9::10) with
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
+ by SJ0PR11MB5088.namprd11.prod.outlook.com (2603:10b6:a03:2df::17) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.27; Fri, 25 Aug
- 2023 07:56:27 +0000
-Received: from DM6PR03MB5196.namprd03.prod.outlook.com
- ([fe80::411c:e486:3837:cc25]) by DM6PR03MB5196.namprd03.prod.outlook.com
- ([fe80::411c:e486:3837:cc25%3]) with mapi id 15.20.6699.027; Fri, 25 Aug 2023
- 07:56:27 +0000
-Message-ID: <65432c20-a6fd-141c-2ced-a7e6599a1e7c@synaptics.com>
-Date:   Fri, 25 Aug 2023 15:56:18 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [RFC]: shmem fd for non-DMA buffer sharing cross drivers
-Content-Language: en-GB
-To:     Pekka Paalanen <ppaalanen@gmail.com>
-Cc:     Tomasz Figa <tfiga@chromium.org>, linux-mm@kvack.org,
-        dri-devel@lists.freedesktop.org,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        hughd@google.com, akpm@linux-foundation.org,
-        Simon Ser <contact@emersion.fr>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>, daniels@collabora.com,
-        ayaka <ayaka@soulik.info>, linux-kernel@vger.kernel.org,
-        Nicolas Dufresne <nicolas@ndufresne.ca>
-References: <029b982f-da62-4fa8-66c4-ab11a515574a@synaptics.com>
- <CAAFQd5CqAvr7ZUdDSYPEOWSgvbttTBjHa0YWDomxJJSaiZxGog@mail.gmail.com>
- <f8a168e8-1a23-c6b3-0f68-baa73396d594@synaptics.com>
- <20230825104052.4573ab7b@eldfell>
-From:   Hsia-Jun Li <Randy.Li@synaptics.com>
-In-Reply-To: <20230825104052.4573ab7b@eldfell>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SJ0PR05CA0181.namprd05.prod.outlook.com
- (2603:10b6:a03:330::6) To DM6PR03MB5196.namprd03.prod.outlook.com
- (2603:10b6:5:24a::19)
+ 2023 07:57:25 +0000
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::dcf3:7bac:d274:7bed]) by BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::dcf3:7bac:d274:7bed%4]) with mapi id 15.20.6699.028; Fri, 25 Aug 2023
+ 07:57:25 +0000
+From:   "Tian, Kevin" <kevin.tian@intel.com>
+To:     Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "Will Deacon" <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "Jason Gunthorpe" <jgg@ziepe.ca>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Nicolin Chen <nicolinc@nvidia.com>
+CC:     "Liu, Yi L" <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Jason Gunthorpe" <jgg@nvidia.com>
+Subject: RE: [PATCH v4 04/10] iommu: Cleanup iopf data structure definitions
+Thread-Topic: [PATCH v4 04/10] iommu: Cleanup iopf data structure definitions
+Thread-Index: AQHZ1vyQX/knEfr01k+yN0AJLKXKtK/6pQ5Q
+Date:   Fri, 25 Aug 2023 07:57:25 +0000
+Message-ID: <BN9PR11MB5276E509F0B1CE9A8FC301868CE3A@BN9PR11MB5276.namprd11.prod.outlook.com>
+References: <20230825023026.132919-1-baolu.lu@linux.intel.com>
+ <20230825023026.132919-5-baolu.lu@linux.intel.com>
+In-Reply-To: <20230825023026.132919-5-baolu.lu@linux.intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|SJ0PR11MB5088:EE_
+x-ms-office365-filtering-correlation-id: 9c95ef0d-e855-468a-3507-08dba540eba9
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: aVKRQvUWJCYaInDyYeEtji4gInUCmGk31M26w6pPAurBkLV4B5hlSUEUxfqMN90NpeBSEmvHnJYvP1n3Hjlx/fRW9UbswqTclgvokmn7tiOCKMu8r821Z/sprFoU6uxowsywofRQTuvqd5bb5fs9CkJRJ2XsKZXgsmMks92Q6sex3Ll8UCPSbGRBPTG9XBSsS5XFgqPgGBDA+tsbrq8OQtuGUeEkk1LRFabpCbeK5dwdzM64PEx/ObWfsVD2rxYPmJbkd22los5ZEYwwwHomC9R9powznNfnA68lhH7AqSr4khwSja72saMWxLs6Hr9JVo2/MBp1rI+JpJ4hl6axavyoFnyBGBk/9AAwvfxT3j6/fXMq7AIUzr8oPUTAQQ1lC0V4c+CowaXK57/ZgCZjhiZYkeqzJfVJ6J8AVJ8rt8RMaL7dbLNk43XEn5AZgo2aj5P3j+sV5kTQ+ej0f19z3TqOxeBIabxpcsLCDsxo0M3qYVkL1p1tyZW2fLJsg3EfD0e9jH4HCaC5NAfihF+q2RtFGvdLrCU57a3tecTz2XgNHqQT8+ACOYCvqAS83wZ87Wb0vu2cwLczL/QYQKiKR1RmXU/ojvgpoBP+jrxPLDhJ0NLAMU/KhijZI/aTENGX
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(396003)(366004)(376002)(136003)(39860400002)(1800799009)(451199024)(186009)(7416002)(83380400001)(9686003)(26005)(478600001)(55016003)(5660300002)(52536014)(2906002)(8936002)(4326008)(8676002)(82960400001)(38070700005)(38100700002)(122000001)(66476007)(66556008)(110136005)(66946007)(76116006)(86362001)(71200400001)(41300700001)(64756008)(54906003)(6506007)(558084003)(66446008)(7696005)(33656002)(316002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?cPgb4diKDBUHhJRQEFk1xIIWPnYxXzAIkQbg9nXRcad5RJeep9xuGBhmiUvl?=
+ =?us-ascii?Q?cYdgifsaoHdi9kPmo47/twvkx42SiPFla8ZXlewJcZAPxrZv5+HxJ39Jytu3?=
+ =?us-ascii?Q?lVcztqnSv2XkgRZtL4MDfghczMupoQV6rhFrO6wRYQduFAGrzOjlH5ODMmEg?=
+ =?us-ascii?Q?usx5hSfNRu5gbx30CaTsg81mtAIZNo8e1tZ84kLkmbA8zt04ayjjHJvFFb5t?=
+ =?us-ascii?Q?4oHD+JSbwMTSytog0+tAulUob0Z598lwuil41adjNFa3FyVp9jLUWg4vJMvr?=
+ =?us-ascii?Q?sANqbrM90tXXnMHDbB/krdrNh8+TcOvpzjcWblB1B3QF7ZEdZvV6om6ny0Xh?=
+ =?us-ascii?Q?DVij6SggKUNYqaA/o4Tq8Ul5+1iZXO4vT3LobY7gvonU0yWVN9YnPo9vNo8O?=
+ =?us-ascii?Q?SldNX80L+yYzBBt5cRY0R7DyphyVyb6tCM4i1SI6hC3O1SrEv85PaMZeFSiQ?=
+ =?us-ascii?Q?amq5BqAki5sYMuQuF8m3QE9dyGtUFKLVXk/XO5pRp8gYBYyPt8MHBWxJ8bOZ?=
+ =?us-ascii?Q?dL1d1bcvoI+Jv8rbppdbf0ga6G/ghJmCEIdt5tb5MStnLLbP09Jhmn8m41Ab?=
+ =?us-ascii?Q?jsS7PfZr+YknCWbfEdUOsqNi2QYqteptBVLBKiEQ7zYIK8TkB9dkmPd8ol7M?=
+ =?us-ascii?Q?/gwYZvt1DOYCzDUxjIdV70z9yKypa4dv/0afO/Gfsd2K7FQaHdQYudE+HbCj?=
+ =?us-ascii?Q?B5XMAW1Z8heDnySGo3MUo35T3iJVyicWaYs1RCrpZsjLuBwL1yPxT3vRu6Wd?=
+ =?us-ascii?Q?1PLwxtROtDT50OSTbSlf8urkKFkLeVEYOd5zzs727PINhwfUK0jiFD4l/U8I?=
+ =?us-ascii?Q?MXzDsWM6mwYXWuc02YsKC7Y0k16xY5pqr/BRbuF5j+yCXdb/644R2FmpE0K9?=
+ =?us-ascii?Q?doRNAIno+gexcvjIVRznvpbGCBL76Mv0YwF6wjViMQ+UWqb2cRJGvj2FIzBL?=
+ =?us-ascii?Q?LqDkSJRPmrlQNGZ/7l/n+Wc2asGyX7cqiwAI3nv+ARcy5T6BguFeZMKYW36C?=
+ =?us-ascii?Q?lB9QvEYKTlyydhbFJEcvw3wFYaCudORF514biFrlrPparY8wan6dzBITH1aj?=
+ =?us-ascii?Q?Vxo8TGiX8D1iQMp0US7OPbW++93zyBjG1upwzjHzz5RVeyzatCuu+wM8LECM?=
+ =?us-ascii?Q?PeivSeiue2XilxbTis+l+mZcnbQ6B8nNC3xq8m86JD4jKxv+TaZjucpA7Un8?=
+ =?us-ascii?Q?+ztHoQYrx5pSOl/9MOSIurV9wmP3xdnGIFYzBri7/A0O+64//Q2+0XfqstkT?=
+ =?us-ascii?Q?c6iNiQkTcrNLtKjsb/gtr+wTeZ0vdUV59cR5pLy4Rw4a8qXdJ215tzPPOww1?=
+ =?us-ascii?Q?+UQe9SqzGpnq0mhzQj3f+DniVlwdZL8bwdT0fia+w3/nT+vwBZN1FuxpLBdo?=
+ =?us-ascii?Q?xu0oEr0p/lVXAYTNwEHDGn85lTRwpeH/cHXO3i3Y3/NNXdAUX6yXQsEQBOxR?=
+ =?us-ascii?Q?JVHloDDCCV6/gZju7QnExsxEEERbpXuSk3fj0IuPYGlPDb3o1UngFjsYFt+R?=
+ =?us-ascii?Q?prq8Fnvh7TYr7hH3eSxxnVlWqm1MRZCMIYvxaInEhgKpQUksCGxg9xBaR/P4?=
+ =?us-ascii?Q?N7V4pxJaZcumR/Xk3Yq/boAqiCn5XPBmcU+Kstiv?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR03MB5196:EE_|PH0PR03MB6383:EE_
-X-MS-Office365-Filtering-Correlation-Id: ad59d3db-75e4-442d-a828-08dba540c919
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: I8h95Rko70cOSXKKu7fLHvItiZPkQBF1PKcLYL0G51VmrHjKIYf1WJVy5hXr5TlbrPQgExt2E/U51SJkrtTb0ZPc4LRuLSIJl7fTuPQ7GGVRAcr5Sg9aRqTu64uBB7cAIrczMteTF2x9RiUSHcW/etJv56RWOPDV0EwL+lZK9o2IICxnTBE5aDEoHFABaRbqs6iIGzHrEVPpfdrUoY4BAAq8SH/BO0VS54cgvadOhHrpg32/tjLz9p6ICTLs4a18sFEHK2NXvx0iboeZQtvToNkI0xWTkHbEfUAio15MLMC06ZRGAoIl1Ic2TUjEbWEjdr5yCH2o1hxk2QaG3Ba4ayS3ocC4JjgXi6qhWNVRkPRuVPR8HfYJVC+SzHmgZgZPslKeBarb8MvJTD7QG55iti15BWWXWIHN90TJ9o48kQmXgQoHA+InSLh8upXnnZM1p2RyoS8Do9/5YZCub7UolivOpFiSf+3DVIVwUIFdNmUlWakIx+vXAxCTLbpoxR6deF4gDprnv6g2EKM8vQ6A5rXc97/wQRneU4dtDMALrIUEZoE03+fpuZUL14CSe2VtoUNoNZ0JBPZiF1iFZptFAkZrnP1JhWorvQk7/eYJ8mPpejcCSRQbpwJHuHZk+S5VFJ892wD7Ukm26Z874+fLL0cYq4ZvB25JvDlj5aY6NJ8=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR03MB5196.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(366004)(346002)(39850400004)(396003)(451199024)(1800799009)(186009)(38100700002)(38350700002)(66899024)(8676002)(4326008)(8936002)(54906003)(31696002)(41300700001)(52116002)(6486002)(53546011)(6506007)(6666004)(316002)(36756003)(66476007)(66556008)(66946007)(6916009)(86362001)(6512007)(26005)(478600001)(7416002)(83380400001)(31686004)(2906002)(2616005)(5660300002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?czQrZ1VmQUlNT0h0aHlHSElVLzIrbmNGRDNDcmI1ckxaVVZYUGM0S21nSVdP?=
- =?utf-8?B?RXhqODJKRENYajBxeHBKQVQzbmhLdm4rYk5PTHJnNUwwaFhkSDNxMXIxNldn?=
- =?utf-8?B?Ri9RUi9aVnl3bDhsVXV0VWRENjAxa0Znbi9oeEI5OTl4U3cyTG5VTThaY1hC?=
- =?utf-8?B?WmhvQzFLcDdqTEQrTkVEODZUT2tzTjcyeU82akI2K013UTBGd0ZTNlVjOTdX?=
- =?utf-8?B?RUdJQjRTYTNCSSszbytrTWNQOE1yUjczUm5Rdmdndm4zYzM3cjh4RHd0ZjhF?=
- =?utf-8?B?cXY0Y2pNbXZPZFN4OE9XMUpaZE9odzYvdnFKWDZEOGhlVlA4RTNEY2hSS3R0?=
- =?utf-8?B?cFJQMldJbUFFOVRxNWFrRVNqNWJTQ2w3OGJjQVBXeGhCeUh0enJVM2Z1S283?=
- =?utf-8?B?SXVYWmJTZVJ4OHYzZldzaTBUMXZVa05nRm84UHB5VDkxak81N01EWjFUWDdQ?=
- =?utf-8?B?OWFwbTNjb0JYODhHRTBMS3A1RUljS25yVjJyU0lBMkVUL2xNbnRuU0M0WkJi?=
- =?utf-8?B?d1pJMVY4WlBwcmtVc0lYRzhIdmUvMnZtTjlmbHhueXc4alpwQUlYazhkai9v?=
- =?utf-8?B?dHE0Qld2QkJWaHV5OFdUY0pYaU1GQnJGVEZteHpGdlQ5L3RqT1pXYXJ4VHpv?=
- =?utf-8?B?b3ljZ0JHNFppaDI5Z0xUYndVbk5uRklDT1ZTSUhwVmJkNWwyREJsS3FjUkJK?=
- =?utf-8?B?ZEtTQjFNOGtoQW5VbVkrUVpUYkxGdVJOZVhobGNyOTdPL2w5cDdXQXZvUDBI?=
- =?utf-8?B?SmhaZkd4dmhKcjQrZmtEUG9FV1hJSHlpeTlHS0Y4Q1NyQ3FsaXVzOXl0Wldu?=
- =?utf-8?B?cEtQYVlkY2pWbGlkTmwxSzV5WEhqYjhvblpna1BmakJDLy80U2N1M0ZLQlFK?=
- =?utf-8?B?M2x6OTVnejNmWlBKOG9qS2JkMnNVaURKU3VLOHhjYmNCZkM2bGRUcEJLY3R1?=
- =?utf-8?B?blJWZGl0UmQrRXJDV1lUeGFvMEtQOGdFZGE2N0o2UXg0RUo2YnF2TjBTb0Y3?=
- =?utf-8?B?NUV4UUYwSmtiaEw0UTBESG15MVlOc0dkVzlNNStDNmNWTmtWdnhiTForRENu?=
- =?utf-8?B?TnI3OVlBc2tPOVo2SzAxL2pITUw5MkRjR1FZRXVCS1BRU3lsRFVQUkd1Wis3?=
- =?utf-8?B?M1Q1Ty8wU3FaVnBRWnNHL0EyNVdkQ1BQKzlZa0tVWE5Xdm1XUUJMUWdweERa?=
- =?utf-8?B?NE5pVnl4N1ZwWUlFcFJITmcxamc3TDZHN2RHTytyYmlhTkl4aldhcXlSMHhv?=
- =?utf-8?B?WXZEdWZBYXRaSEVlKzBzcmJkd2FXY0NlUmFvT1ZTbVFTUnpneWYvbmo2Q1NM?=
- =?utf-8?B?aSt3M2Z6bTBCZ1ljTXgwYSsyekRMeTFOS3Robm9CdjBYNUZ5eE52MjFtK003?=
- =?utf-8?B?OUc3WXdnQlVIeWx4S0lIbkhRd0cxN2VneGhjNDJxMkRYZ21kM1Fld2Y5NmRk?=
- =?utf-8?B?cElOU3hwM2RpVVdtQ2hFa0gwaURwTjlBandxYm9vMUlsRVgzY1dKU2VFNWJB?=
- =?utf-8?B?Zk5TcDRiNXJlK3NtcnFkK04wcEdURld2RlM2TEx4ZGpxTlA4ZS9MWS9aRVMv?=
- =?utf-8?B?SlVRWUZnT2hxbXB5SmpQNXg4czIvVFJwK3hKWFMzWi9UQkZLZUZJSVVyZFdI?=
- =?utf-8?B?OWZZaXMzNlRVK1VkUExZbzlUU2M1c2tYOEV4QW5xYkVLNmNTdVNoNnM5bTMw?=
- =?utf-8?B?MmJwT0Jkb0l1YUR2aWVpeExmSUhTWndJQ0ZEVm9VZmVPbm55dCtjeHJ3WCtG?=
- =?utf-8?B?SEZWOFFkOG5xZWFkaCtwQ2RaZkd5L3JEODM5UzVnZXNiZlBYQXQvU2xEQjAy?=
- =?utf-8?B?cnBKK2htMnBLN1BRY3ZxOEdXTVN1Ky9UTUlobGFTUU5ZeWNuYmVTc3RTMzlE?=
- =?utf-8?B?L1RVUHdkOUQ1M3B4MUx6TTFNY1Q1L3pKbnpaTTR3Ukh5UHFKbnRkUGFsWDd1?=
- =?utf-8?B?cTc3YjRpM0pQRHlJeS9mM3cwRlg2a3YxRWhLUnBwWHNvdnV0SDdtN2EzRDM3?=
- =?utf-8?B?ekFnZTAxdS9yNU5Cdkhkdjcwd0dFWTV2azF6WlUvL0ljaytnekthd2U5eEp5?=
- =?utf-8?B?aENwR3lCTVliazd4L2lOZ3lwQksrZy9uVkMxSnhTejJtWHNncW0rTEdwMnpG?=
- =?utf-8?Q?WXnH4paLAMY2H/VhgpT3Ea4VC?=
-X-OriginatorOrg: synaptics.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ad59d3db-75e4-442d-a828-08dba540c919
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR03MB5196.namprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Aug 2023 07:56:27.4356
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9c95ef0d-e855-468a-3507-08dba540eba9
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Aug 2023 07:57:25.2683
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: e8ksU+GSSTOT1+qiL9cOWh/Q/A5zc4FTn7EVfsAkobM648jU1Ychnn5qZwNuBZQ/AUQMqiTmkvMs1dJvl1x7Og==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR03MB6383
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Xz+fY26Ws41dN9lXQVWEWHQjBxFwM67ZhnRNjXbO2BjsxXpP9dcleJb1dSLQaee97MRlJQRqc4Q9ui615N8lMw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5088
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> From: Lu Baolu <baolu.lu@linux.intel.com>
+> Sent: Friday, August 25, 2023 10:30 AM
+>=20
+> struct iommu_fault_page_request and struct iommu_page_response are not
+> part of uAPI anymore. Convert them to data structures for kAPI.
+>=20
+> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 
-
-On 8/25/23 15:40, Pekka Paalanen wrote:
-> Subject:
-> Re: [RFC]: shmem fd for non-DMA buffer sharing cross drivers
-> From:
-> Pekka Paalanen <ppaalanen@gmail.com>
-> Date:
-> 8/25/23, 15:40
-> 
-> To:
-> Hsia-Jun Li <Randy.Li@synaptics.com>
-> CC:
-> Tomasz Figa <tfiga@chromium.org>, linux-mm@kvack.org, 
-> dri-devel@lists.freedesktop.org, Linux Media Mailing List 
-> <linux-media@vger.kernel.org>, hughd@google.com, 
-> akpm@linux-foundation.org, Simon Ser <contact@emersion.fr>, Hans Verkuil 
-> <hverkuil-cisco@xs4all.nl>, daniels@collabora.com, ayaka 
-> <ayaka@soulik.info>, linux-kernel@vger.kernel.org, Nicolas Dufresne 
-> <nicolas@ndufresne.ca>
-> 
-> 
-> On Wed, 23 Aug 2023 15:11:23 +0800
-> Hsia-Jun Li<Randy.Li@synaptics.com>  wrote:
-> 
->> On 8/23/23 12:46, Tomasz Figa wrote:
->>> CAUTION: Email originated externally, do not click links or open attachments unless you recognize the sender and know the content is safe.
->>>
->>>
->>> Hi Hsia-Jun,
->>>
->>> On Tue, Aug 22, 2023 at 8:14 PM Hsia-Jun Li<Randy.Li@synaptics.com>  wrote:
->>>> Hello
->>>>
->>>> I would like to introduce a usage of SHMEM slimier to DMA-buf, the major
->>>> purpose of that is sharing metadata or just a pure container for cross
->>>> drivers.
->>>>
->>>> We need to exchange some sort of metadata between drivers, likes dynamic
->>>> HDR data between video4linux2 and DRM.
->>> If the metadata isn't too big, would it be enough to just have the
->>> kernel copy_from_user() to a kernel buffer in the ioctl code?
->>>    
->>>> Or the graphics frame buffer is
->>>> too complex to be described with plain plane's DMA-buf fd.
->>>> An issue between DRM and V4L2 is that DRM could only support 4 planes
->>>> while it is 8 for V4L2. It would be pretty hard for DRM to expend its
->>>> interface to support that 4 more planes which would lead to revision of
->>>> many standard likes Vulkan, EGL.
->>> Could you explain how a shmem buffer could be used to support frame
->>> buffers with more than 4 planes?
->>> If you are asking why we need this:
->> 1. metadata likes dynamic HDR tone data
->> 2. DRM also challenges with this problem, let me quote what sima said:
->> "another trick that we iirc used for afbc is that sometimes the planes
->> have a fixed layout
->> like nv12
->> and so logically it's multiple planes, but you only need one plane slot
->> to describe the buffer
->> since I think afbc had the "we need more than 4 planes" issue too"
->>
->> Unfortunately, there are vendor pixel formats are not fixed layout.
->>
->> 3. Secure(REE, trusted video piepline) info.
->>
->> For how to assign such metadata data.
->> In case with a drm fb_id, it is simple, we just add a drm plane property
->> for it. The V4L2 interface is not flexible, we could only leave into
->> CAPTURE request_fd as a control.
->>>> Also, there is no reason to consume a device's memory for the content
->>>> that device can't read it, or wasting an entry of IOMMU for such data.
->>> That's right, but DMA-buf doesn't really imply any of those. DMA-buf
->>> is just a kernel object with some backing memory. It's up to the
->>> allocator to decide how the backing memory is allocated and up to the
->>> importer on whether it would be mapped into an IOMMU.
->>>    
->> I just want to say it can't be allocated at the same place which was for
->> those DMA bufs(graphics or compressed bitstream).
->> This also could be answer for your first question, if we place this kind
->> of buffer in a plane for DMABUF(importing) in V4L2, V4L2 core would try
->> to prepare it, which could map it into IOMMU.
->>
->>>> Usually, such a metadata would be the value should be written to a
->>>> hardware's registers, a 4KiB page would be 1024 items of 32 bits registers.
->>>>
->>>> Still, I have some problems with SHMEM:
->>>> 1. I don't want the userspace modify the context of the SHMEM allocated
->>>> by the kernel, is there a way to do so?
->>> This is generally impossible without doing any of the two:
->>> 1) copying the contents to an internal buffer not accessible to the
->>> userspace, OR
->>> 2) modifying any of the buffer mappings to read-only
->>>
->>> 2) can actually be more costly than 1) (depending on the architecture,
->>> data size, etc.), so we shouldn't just discard the option of a simple
->>> copy_from_user() in the ioctl.
->>>    
->> I don't want the userspace access it at all. So that won't be a problem.
-> Hi,
-> 
-> if userspace cannot access things like an image's HDR metadata, then it
-> will be impossible for userspace to program KMS to have the correct
-> color pipeline, or to send intended HDR metadata to a video sink.
-> 
-> You cannot leave userspace out of HDR metadata handling, because quite
-> probably the V4L2 buffer is not the only thing on screen. That means
-> there must composition of multiple sources with different image
-> properties and metadata, which means it is no longer obvious what HDR
-> metadata should be sent to the video sink.
-> 
-> Even if it is a TV-like application rather than a windowed desktop, you
-> will still have other contents to composite: OSD (volume indicators,
-> channels indicators, program guide, ...), sub-titles, channel logos,
-> notifications... These components ideally should not change their
-> appearance arbitrarily with the main program content and metadata
-> changes. Either the metadata sent to the video sink is kept static and
-> the main program adapted on the fly, or main program metadata is sent
-> to the video sink and the additional content is adapted on the fly.
-> 
-> There is only one set of HDR metadata and one composited image that can
-> be sent to a video sink, so both must be chosen and produced correctly
-> at the source side. This cannot be done automatically inside KMS kernel
-> drivers.
-> 
-There may be some misunderstanding.
-Let suppose this HDR data is in a vendor specific format.
-Both upstream(decoder) and downstream(DRM) hardware devices are coming 
-from the same vendor.
-Then we just need to delivery the reference to this metadata buffer from 
-the upstream to downstream, both of drivers know how to handle it.
-
-Despite the userspace, we just need to extend a wayland protocol that 
-making wayland compositor know how to receive the reference to the 
-metadata and set it to the DRM plane.
-
-If you want a common HDR formats for all HDR variants(HDR10+, DV), I am 
-not against it. But it won't make the userspace be able to fill the HDR 
-metadata even the HDR data comes from the bitstream(likes SEI). We must 
-consider the case of Secure Video Path(Digital Right), the bitstream is 
-not accessible from (REE) userspace nor linux kernel, the downstream 
-must take what the upstream feed.
-> 
-> Thanks,
-> pq
-> 
->>>> 2. Should I create a helper function for installing the SHMEM file as a fd?
->>> We already have the udmabuf device [1] to turn a memfd into a DMA-buf,
->>> so maybe that would be enough?
->>>
->>> [1]https://elixir.bootlin.com/linux/v6.5-rc7/source/drivers/dma-buf/udmabuf.c
->>>    
->> It is the kernel driver that allocate this buffer. For example, v4l2
->> CAPTURE allocate a buffer for metadata when VIDIOC_REQBUFS.
->> Or GBM give you a fd which is assigned with a surface.
->>
->> So we need a kernel interface.
->>> Best,
->>> Tomasz
->>>    
->>>> --
->>>> Hsia-Jun(Randy) Li
-> 
-
--- 
-Hsia-Jun(Randy) Li
+Reviewed-by: Kevin Tian <kevin.tian@intel.com>
