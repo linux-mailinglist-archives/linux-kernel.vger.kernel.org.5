@@ -2,121 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69A8C78828E
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 10:45:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7842B788291
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 10:45:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243934AbjHYIow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 04:44:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48336 "EHLO
+        id S243952AbjHYIoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 04:44:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243900AbjHYIoW (ORCPT
+        with ESMTP id S243954AbjHYIo1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 04:44:22 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 613EA1BF2
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 01:43:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692953020; x=1724489020;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version:content-id;
-  bh=IkWOEkzFYba0CNLljiWZG0nZMMjbSEDGAWyUgSWb3SA=;
-  b=eLyTf0BJlEV0+poZLQTv0kJdmeVLNGc9qdV4dOgMyw6OAiK1kRrlLQx9
-   8XfJ/sYRTYVtqN2es+TIb4IWtnHWElOE8LmW2X6par81CijY6pXyBySWC
-   0sCp51CWq/K2cbIoQZhqO3iLWQ+LBrZ1EwBPYA0JTXwcoA1irIkhfyxk9
-   +PSrskGl7efXfdGgQn1GvUCWUl4nx0Vm/A/B1j4/FEjuTIFWsMEiz3va2
-   ogyBMlbWLjNcM4Zfuyg0gbDQVJwjI/TauLuXcFjH5S9I8yNplENQykvBz
-   3Dg+lIDbL4JofHVUYfkVlbk9DuOvYlIAS9JjAluefJXXgIhiHEQXo8gsk
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="441012167"
-X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
-   d="scan'208";a="441012167"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2023 01:43:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="1068165611"
-X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
-   d="scan'208";a="1068165611"
-Received: from enguerra-mobl.ger.corp.intel.com ([10.251.213.8])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2023 01:43:24 -0700
-Date:   Fri, 25 Aug 2023 11:43:22 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     =?ISO-8859-15?Q?Maciej_Wiecz=F3r-Retman?= 
-        <maciej.wieczor-retman@intel.com>
-cc:     LKML <linux-kernel@vger.kernel.org>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        fenghua.yu@intel.com
-Subject: Re: [PATCH 1/3] selftests/resctrl: Fix schemata write error check
-In-Reply-To: <c3yp5kkhrc75tvytkbmep7xknqgomyn52xpogqzsy3sp7kwefm@ikzmp6rgzisr>
-Message-ID: <32f9983a-42e-7cce-8192-bba8bbb93955@linux.intel.com>
-References: <cover.1692880423.git.maciej.wieczor-retman@intel.com> <e7ea177261ded70f0c781841b0fb67fb1eb8909d.1692880423.git.maciej.wieczor-retman@intel.com> <5c6a2065-6771-ed87-c5ed-843f4e184ff8@linux.intel.com>
- <c3yp5kkhrc75tvytkbmep7xknqgomyn52xpogqzsy3sp7kwefm@ikzmp6rgzisr>
+        Fri, 25 Aug 2023 04:44:27 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD5FF26A8;
+        Fri, 25 Aug 2023 01:43:47 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id AFA46674DD;
+        Fri, 25 Aug 2023 08:43:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 18C50C433C7;
+        Fri, 25 Aug 2023 08:43:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692953024;
+        bh=vnXQ9pNzSHGVvPmZJ7uQHNEZVNLQ05YRY8c7hb7Ravk=;
+        h=From:Subject:Date:To:Cc:Reply-To:From;
+        b=tOB+o2z3rw28M5KsCk0a9GGGpP9T911j7VmfFX67JuMW7wSlgZW/gTETOYVeGEw19
+         egVERGy8lWr9978ieHsSfyjkZtKCLQAwwdl66L8rDyFH5kmU94MUsez5FS/XcuKDtn
+         HeYVis91BDh17gJVBUFdZJpkgufZ0l8HcegXADT3iBmwK0l315NZQ8XkwVK+CzLYUe
+         3CGfb/amNeG+fDC3dXuy85jDNSq3Bc2aS9bsOvEFmD5ElKodg+LgtQ7MUl2HmeXFQq
+         MH1qywDTwFM0cR+JsubAjf/let6OVpj8C5y6TJym07HnlB8eMCegAURmTWZvOJLX2a
+         8sDZ6ZqSfX9xw==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by smtp.lore.kernel.org (Postfix) with ESMTP id E925BC71134;
+        Fri, 25 Aug 2023 08:43:43 +0000 (UTC)
+From:   Nikita Shubin via B4 Relay 
+        <devnull+nikita.shubin.maquefel.me@kernel.org>
+Subject: [PATCH v2 0/2] device tree support for ST M48T86
+Date:   Fri, 25 Aug 2023 11:43:24 +0300
+Message-Id: <20230823-m48t86_device_tree-v2-0-21ff275f949d@maquefel.me>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="8323329-236844462-1692952650=:3206"
-Content-ID: <fddc2bb8-e24-5049-297e-c5f7ff57b2a8@linux.intel.com>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAKxp6GQC/32NTQ6CMBBGr0JmbU0pVYor72EIGcogTSzotBIN4
+ e4WDuDyfT95CwRiRwEu2QJMswtuGhOoQwZ2wPFOwnWJQUlVSKMK4bWJ5tx0aWupiUwksFSEqCp
+ dVgbSscVAomUc7bBdPYZIvBVPpt59dtutTjy4ECf+7vI539K/njkXUigt06TVxQnt1ePrTT09j
+ p6gXtf1B2QIIJXPAAAA
+To:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Nikita Shubin <nikita.shubin@maquefel.me>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>
+X-Mailer: b4 0.12.1
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1692953023; l=1298;
+ i=nikita.shubin@maquefel.me; s=20230718; h=from:subject:message-id;
+ bh=vnXQ9pNzSHGVvPmZJ7uQHNEZVNLQ05YRY8c7hb7Ravk=; =?utf-8?q?b=3DUMK5u45Hw5yI?=
+ =?utf-8?q?/xg/NWbYvdUnHJhZO/nb7EBm0ZXilbIfLzsQ7FHSj56ClPW4RbRvESJW8o2cnqsk?=
+ mlIGoqixDBVTcjor5QBif9BAnfX6kjz8V70snTLiYMQgzk7njo3W
+X-Developer-Key: i=nikita.shubin@maquefel.me; a=ed25519;
+ pk=vqf5YIUJ7BJv3EJFaNNxWZgGuMgDH6rwufTLflwU9ac=
+X-Endpoint-Received: by B4 Relay for nikita.shubin@maquefel.me/20230718 with auth_id=65
+X-Original-From: Nikita Shubin <nikita.shubin@maquefel.me>
+Reply-To: <nikita.shubin@maquefel.me>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Add device tree support for ST M48T86.
 
---8323329-236844462-1692952650=:3206
-Content-Type: text/plain; CHARSET=ISO-8859-15
-Content-Transfer-Encoding: 8BIT
-Content-ID: <126be168-e37-7e92-b521-bd296fa97e6c@linux.intel.com>
+The reason it can't go to trivial-rtc.yaml, is that it has 2 registers
+instead of a single one. The registers are 1 byte wide.
 
-On Fri, 25 Aug 2023, Maciej Wieczór-Retman wrote:
-> On 2023-08-24 at 15:52:05 +0300, Ilpo Järvinen wrote:
-> >Ki,
-> >
-> >You're lacking a few people from the To/Cc list. Please see KERNEL 
-> >SELFTEST FRAMEWORK entry in MAINTAINERS.
-> 
-> Thank you, I thought I checked the MAINTAINERS file well enough. I'll
-> add them in the next version
-> 
-> >On Thu, 24 Aug 2023, Wieczor-Retman, Maciej wrote:
-> >
-> >> Writing bitmasks to the schemata can fail when the bitmask doesn't
-> >> adhere to some constraints defined by what a particular CPU supports.
-> >> Some example of constraints are max length or being having contiguous
-> >
-> >"being having" is not good English.
-> 
-> Thanks, I'll change it
-> 
-> >> bits. The driver should properly return errors when any rule concerning
-> >> bitmask format is broken.
-> >> 
-> >> Resctrl FS returns error codes from fprintf() only when fclose() is
-> >> called.
-> >
-> >I wonder if this is actually related to libc doing buffering between 
-> >fprintf() and the actual write() syscall.
-> 
-> I started looking and apparently in the manpages for fclose [1] it says
-> it uses fflush() to flush any buffered data in the stream. So that would
-> probably confirm that it does buffering there.
-> 
-> In this case is there a situation when the fprintf() before fclose()
-> would report an error? I'm thinking if there is a point to keep error
-> checking after both function calls or just fclose(). 
->
-> Or would putting additional fflush() after fprintf() make some sense?
-> To have separate error checks for both function calls.
+Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+---
+Changes in v2:
+- add links to mailthreads where the actual tags were recieved:
+  - dt-bindings: rtc: Add ST M48T86 was Reviewed-by Krzysztof in v3 "ep93xx device tree conversion"
+  - rtc: m48t86: add DT support for m48t86:
+     - Acked-by Arnd in very first "ep93xx device tree conversion"
+     - Reviewed-by Linus in v1 "ep93xx device tree conversion"
 
-Another approach would be to use syscalls directly (open, write, and 
-close to eliminate the buffering entirely. Given schema is already 
-written into local variable first, it would be quite straightforward to do 
-that conversion.
+Was asked by Krzysztof to send this part separately.
 
+Link: https://lore.kernel.org/lkml/61b9e036-7864-65c6-d43b-463fff896ddc@linaro.org/
+Link: https://lore.kernel.org/lkml/20230601054549.10843-12-nikita.shubin@maquefel.me/
 
+---
+Nikita Shubin (2):
+      dt-bindings: rtc: Add ST M48T86
+      rtc: m48t86: add DT support for m48t86
+
+ .../devicetree/bindings/rtc/st,m48t86.yaml         | 38 ++++++++++++++++++++++
+ drivers/rtc/rtc-m48t86.c                           |  8 +++++
+ 2 files changed, 46 insertions(+)
+---
+base-commit: 89bf6209cad66214d3774dac86b6bbf2aec6a30d
+change-id: 20230823-m48t86_device_tree-a72eaa294798
+
+Best regards,
 -- 
- i.
---8323329-236844462-1692952650=:3206--
+Nikita Shubin <nikita.shubin@maquefel.me>
+
