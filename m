@@ -2,238 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 11B417890A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 23:45:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C9387890AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 23:46:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231539AbjHYVow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 17:44:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53200 "EHLO
+        id S231531AbjHYVqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 17:46:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231520AbjHYVoY (ORCPT
+        with ESMTP id S231636AbjHYVqO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 17:44:24 -0400
-Received: from smtp.smtpout.orange.fr (smtp-24.smtpout.orange.fr [80.12.242.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45A2226AF
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 14:44:21 -0700 (PDT)
-Received: from [192.168.1.18] ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id ZebEqI11VuWDMZebFqgFz9; Fri, 25 Aug 2023 23:44:19 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1692999859;
-        bh=x+5ZPrYbhj5PKPVE2fTXOKBcqKXtsQpYPqOoSU95+TU=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=dmH2cbL7pPtsZ6zNKdCHqOfgcHMf6oSHtp/VBv6+ilraxBQHHCT8l9XGK0oTrtxOA
-         eSwSyE17nq/6JNxGAo4SKignN4lJq5vl9LEU39SiRK7NF+TQ46f0p50ZldBRd3WKr3
-         4dUj6R/WgH01yjP2wXovRu7+1hSl4KCyDU7ICRVC9ZIIyuNk9qR6M/ib1kaETWwPy4
-         Nqo9c70hKjyh4ShKmZG7qhxMEz+jpABoO29xfTmc+cTj0xxDC6lvi3J54hglCwz6ZU
-         +d7HQd7DniHnMb1OJL1S3kja6Ihd6GTiqobB3V/rNjAnQ7MTY1n98vKJEl9OJTJvkC
-         RCWp38HK3Tr+g==
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Fri, 25 Aug 2023 23:44:19 +0200
-X-ME-IP: 86.243.2.178
-Message-ID: <bff9e368-9c42-144c-bdbc-9b9fcd04ec6b@wanadoo.fr>
-Date:   Fri, 25 Aug 2023 23:44:12 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v8 3/8] media: staging: media: starfive: camss: Add core
- driver
-To:     Jack Zhu <jack.zhu@starfivetech.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Todor Tomov <todor.too@gmail.com>, bryan.odonoghue@linaro.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-staging@lists.linux.dev,
-        changhuang.liang@starfivetech.com
-References: <20230824080109.89613-1-jack.zhu@starfivetech.com>
- <20230824080109.89613-4-jack.zhu@starfivetech.com>
- <74183f7b-6e53-ba3d-2160-1e526d61073b@wanadoo.fr>
- <a0c023e0-e145-f6f7-3a84-ac6045a6c495@starfivetech.com>
-Content-Language: fr
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <a0c023e0-e145-f6f7-3a84-ac6045a6c495@starfivetech.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 25 Aug 2023 17:46:14 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1854C26BF
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 14:46:10 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d77fa2e7771so1685938276.1
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 14:46:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692999969; x=1693604769;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=odPHPe5zFeL7gaKGcaVYt3urnmLAQ3hctBtrMI+qFRc=;
+        b=x1X+gq2MNHdyg+JX1qqtqdxcUO2kaBiy8tBfkhCZ5MaylnPkC1GsPQ8OpPHi+1l820
+         bEwH8077zlnSdeqmpEIEREwJG2y+nCXOovwBkUnhk5QkIAh67hYH4nQxVK1otd2WsaNw
+         DYmZ6Mae7mBldaxAWYa04JztrC6TURexrrEupK6c5Ws+ARn6OTOLCk1l2IO8C4m8/w5c
+         AORM1FdX49kt2Ke0s8mhvpQTvuIFdVRj2oMg71710PuZBsple7IW3WOkQa5Ke2y84KsD
+         HTcJevzkKblSp+wkytY84gdV0jayyYyl+3HJnTs969ZCY89aeNoNmcrgOKPazKgL2Xhg
+         iecQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692999969; x=1693604769;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=odPHPe5zFeL7gaKGcaVYt3urnmLAQ3hctBtrMI+qFRc=;
+        b=aLP+6zkUe89/1S4dVvxLxVQIWzIuIL/tNIGn9s13T5bL3AE5PL1HdnJRnh6PXSbrlm
+         raL2poDDVwET1LFTdhlbk0XgmMp3sjut/ERVQ9yh30mc2JQNu+KYUadWXVhjGeNGylGn
+         PAs0itkdlBK5V0QYNJ6vsrRjLYh104fUmW73/amq8kN5V8y9pEPAHzbKDqKUVxABg1wr
+         K0Jtsrs3RVCzsCMKXcCXrEcive1uhH7rzOyJILIKwbYandwZfWXmD9HEBkcBc0Ge7KDE
+         hl06C5wVs9XVqPRszo5Bux1NUuKOHYP2zU6z9daAFE/Fgx+NM+iXllDqMf5zBMxqYH/A
+         NdNg==
+X-Gm-Message-State: AOJu0Ywu9QDgs36mjGPB2yaEhv9r2ljuZGZo7Juzi3arZ+rwouVEoVaX
+        5EtEoKGF6iGum36wv391pmzNLgzhYkI=
+X-Google-Smtp-Source: AGHT+IFQHGmjTYl5KU/LvfBJtGvqeIT1isPlUH0UyZjHzrJ0Bsc+pqJxN+QJLl9WGVAC9fNl/+TvuiUlzNY=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:41c1:0:b0:d45:daf4:1fc5 with SMTP id
+ o184-20020a2541c1000000b00d45daf41fc5mr482574yba.3.1692999969352; Fri, 25 Aug
+ 2023 14:46:09 -0700 (PDT)
+Date:   Fri, 25 Aug 2023 14:46:07 -0700
+In-Reply-To: <20230714065356.20620-1-yan.y.zhao@intel.com>
+Mime-Version: 1.0
+References: <20230714064656.20147-1-yan.y.zhao@intel.com> <20230714065356.20620-1-yan.y.zhao@intel.com>
+Message-ID: <ZOkhH9A2ghtUb96U@google.com>
+Subject: Re: [PATCH v4 08/12] KVM: x86: centralize code to get CD=1 memtype
+ when guest MTRRs are honored
+From:   Sean Christopherson <seanjc@google.com>
+To:     Yan Zhao <yan.y.zhao@intel.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, chao.gao@intel.com, kai.huang@intel.com,
+        robert.hoo.linux@gmail.com, yuan.yao@linux.intel.com
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 25/08/2023 à 12:44, Jack Zhu a écrit :
-> Hi Christophe,
+On Fri, Jul 14, 2023, Yan Zhao wrote:
+> Centralize the code to get cache disabled memtype when guest MTRRs are
+> honored. If a TDP honors guest MTRRs, it is required to call the provided
+> API to get the memtype for CR0.CD=1.
 > 
-> Thank you for your comment!
+> This is the preparation patch for later implementation of fine-grained gfn
+> zap for CR0.CD toggles when guest MTRRs are honored.
 > 
-> On 2023/8/25 2:31, Christophe JAILLET wrote:
->> Le 24/08/2023 à 10:01, Jack Zhu a écrit :
->>> Add core driver for StarFive Camera Subsystem. The code parses
->>> the device platform resources and registers related devices.
->>>
->>> Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
->>> Signed-off-by: Jack Zhu <jack.zhu@starfivetech.com>
->>> ---
->>
->> ...
->>
->>> diff --git a/drivers/staging/media/starfive/camss/Kconfig b/drivers/staging/media/starfive/camss/Kconfig
->>> new file mode 100644
->>> index 000000000000..8d20e2bd2559
->>> --- /dev/null
->>> +++ b/drivers/staging/media/starfive/camss/Kconfig
->>> @@ -0,0 +1,17 @@
->>> +# SPDX-License-Identifier: GPL-2.0-only
->>> +config VIDEO_STARFIVE_CAMSS
->>> +    tristate "Starfive Camera Subsystem driver"
->>> +    depends on V4L_PLATFORM_DRIVERS
->>> +    depends on VIDEO_DEV && OF
->>> +    depends on HAS_DMA
->>> +    depends on PM
->>> +    select MEDIA_CONTROLLER
->>> +    select VIDEO_V4L2_SUBDEV_API
->>> +    select VIDEOBUF2_DMA_CONTIG
->>> +    select V4L2_FWNODE
->>> +    help
->>> +       Enable this to support for the Starfive Camera subsystem
->>> +       found on Starfive JH7110 SoC.
->>> +
->>> +       To compile this driver as a module, choose M here: the
->>> +       module will be called msstf-cas.
->>
->> stf_camss? (s/-/_)
->>
+> No functional change intended.
 > 
-> Refer to the writing method of other media drivers, most of them use hyphen.
-
-Forget about my comment. I have been puzzled by "msstf-cas" here, vs 
-"stf_camss" below.
-
-> it may be better to use ‘starfive-camss'？
-
-Yes, I think so.
-
+> Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
+> ---
+>  arch/x86/kvm/mtrr.c    | 16 ++++++++++++++++
+>  arch/x86/kvm/vmx/vmx.c | 10 +++++-----
+>  arch/x86/kvm/x86.h     |  2 ++
+>  3 files changed, 23 insertions(+), 5 deletions(-)
 > 
->>> diff --git a/drivers/staging/media/starfive/camss/Makefile b/drivers/staging/media/starfive/camss/Makefile
->>> new file mode 100644
->>> index 000000000000..f53c5cbe958f
->>> --- /dev/null
->>> +++ b/drivers/staging/media/starfive/camss/Makefile
->>> @@ -0,0 +1,9 @@
->>> +# SPDX-License-Identifier: GPL-2.0
->>> +#
->>> +# Makefile for StarFive Camera Subsystem driver
->>> +#
->>> +
->>> +starfive-camss-objs += \
->>> +        stf_camss.o
->>> +
->>> +obj-$(CONFIG_VIDEO_STARFIVE_CAMSS) += starfive-camss.o
->>
->> I'm not an expert in Makefile files, but this stf_camss.o and starfive-camss.o look strange to me.
->>
+> diff --git a/arch/x86/kvm/mtrr.c b/arch/x86/kvm/mtrr.c
+> index 3ce58734ad22..64c6daa659c8 100644
+> --- a/arch/x86/kvm/mtrr.c
+> +++ b/arch/x86/kvm/mtrr.c
+> @@ -721,3 +721,19 @@ bool kvm_mtrr_check_gfn_range_consistency(struct kvm_vcpu *vcpu, gfn_t gfn,
+>  
+>  	return type == mtrr_default_type(mtrr_state);
+>  }
+> +
+> +/*
+> + * this routine is supposed to be called when guest mtrrs are honored
+> + */
+> +void kvm_honors_guest_mtrrs_get_cd_memtype(struct kvm_vcpu *vcpu,
+> +					   u8 *type, bool *ipat)
+
+I really don't like this helper.  IMO it's a big net negative for the readability
+of vmx_get_mt_mask().  As I said in the previous version, I agree that splitting
+logic is generally undesirable, but in this case I strongly believe it's the
+lesser evil.
+
+> +{
+> +	if (kvm_check_has_quirk(vcpu->kvm, KVM_X86_QUIRK_CD_NW_CLEARED)) {
+> +		*type = MTRR_TYPE_WRBACK;
+> +		*ipat = false;
+> +	} else {
+> +		*type = MTRR_TYPE_UNCACHABLE;
+> +		*ipat = true;
+> +	}
+> +}
+> +EXPORT_SYMBOL_GPL(kvm_honors_guest_mtrrs_get_cd_memtype);
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index c1e93678cea4..7fec1ee23b54 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -7573,11 +7573,11 @@ static u8 vmx_get_mt_mask(struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio)
+>  		return (MTRR_TYPE_WRBACK << VMX_EPT_MT_EPTE_SHIFT) | VMX_EPT_IPAT_BIT;
+>  
+>  	if (kvm_read_cr0_bits(vcpu, X86_CR0_CD)) {
+> -		if (kvm_check_has_quirk(vcpu->kvm, KVM_X86_QUIRK_CD_NW_CLEARED))
+> -			return MTRR_TYPE_WRBACK << VMX_EPT_MT_EPTE_SHIFT;
+> -		else
+> -			return (MTRR_TYPE_UNCACHABLE << VMX_EPT_MT_EPTE_SHIFT) |
+> -				VMX_EPT_IPAT_BIT;
+> +		bool ipat;
+> +		u8 cache;
+> +
+> +		kvm_honors_guest_mtrrs_get_cd_memtype(vcpu, &cache, &ipat);
+> +		return cache << VMX_EPT_MT_EPTE_SHIFT | (ipat ? VMX_EPT_IPAT_BIT : 0);
+>  	}
+>  
+>  	return kvm_mtrr_get_guest_memory_type(vcpu, gfn) << VMX_EPT_MT_EPTE_SHIFT;
+> diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
+> index 82e3dafc5453..e7733dc4dccc 100644
+> --- a/arch/x86/kvm/x86.h
+> +++ b/arch/x86/kvm/x86.h
+> @@ -313,6 +313,8 @@ int kvm_mtrr_set_msr(struct kvm_vcpu *vcpu, u32 msr, u64 data);
+>  int kvm_mtrr_get_msr(struct kvm_vcpu *vcpu, u32 msr, u64 *pdata);
+>  bool kvm_mtrr_check_gfn_range_consistency(struct kvm_vcpu *vcpu, gfn_t gfn,
+>  					  int page_num);
+> +void kvm_honors_guest_mtrrs_get_cd_memtype(struct kvm_vcpu *vcpu,
+> +					   u8 *type, bool *ipat);
+>  bool kvm_vector_hashing_enabled(void);
+>  void kvm_fixup_and_inject_pf_error(struct kvm_vcpu *vcpu, gva_t gva, u16 error_code);
+>  int x86_decode_emulated_instruction(struct kvm_vcpu *vcpu, int emulation_type,
+> -- 
+> 2.17.1
 > 
-> Is it better to replace 'stf_camss.o' with 'stf-camss.o', which is consistent
-> with the driving style of other media drivers?
-
-No strong opinion on it.
-Consistency is always good.
-
-> 
->>> diff --git a/drivers/staging/media/starfive/camss/stf_camss.c b/drivers/staging/media/starfive/camss/stf_camss.c
->>> new file mode 100644
->>> index 000000000000..75ebc3a35218
->>> --- /dev/null
->>> +++ b/drivers/staging/media/starfive/camss/stf_camss.c
->>
->> ...
->>
->>> +static int stfcamss_of_parse_ports(struct stfcamss *stfcamss)
->>> +{
->>> +    struct device_node *node = NULL;
->>> +    int ret, num_subdevs = 0;
->>> +
->>> +    for_each_endpoint_of_node(stfcamss->dev->of_node, node) {
->>> +        struct stfcamss_async_subdev *csd;
->>> +
->>> +        if (!of_device_is_available(node))
->>> +            continue;
->>> +
->>> +        csd = v4l2_async_nf_add_fwnode_remote(&stfcamss->notifier,
->>> +                              of_fwnode_handle(node),
->>> +                              struct stfcamss_async_subdev);
->>> +        if (IS_ERR(csd)) {
->>> +            ret = PTR_ERR(csd);
->>> +            dev_err(stfcamss->dev, "failed to add async notifier\n");
->>> +            v4l2_async_nf_cleanup(&stfcamss->notifier);
->>
->> having it here, looks strange to me.
->> It is already called in the error handling path of the probe.
->>
->> Should there be a "of_node_put(node);" if we return here?
->>
-> 
-> We do not call a 'get' interface, is it necessary to use the 'put' interface?
-
-for_each_endpoint_of_node() does.
-
-See [1] for doc, and [2] for an example.
-
-[1]: 
-https://elixir.bootlin.com/linux/v6.5-rc7/source/include/linux/of_graph.h#L30
-
-[2]: 
-https://elixir.bootlin.com/linux/v6.5-rc7/source/drivers/gpu/drm/bridge/tc358767.c#L2196
-
-
-
-Also, at least because of the recent b8ec754ae4c5 in -next, your patch 
-does not compile as-is on -next.
-
-CJ
-
-> 
->>> +            return ret;
->>> +        }
->>> +
->>> +        ret = stfcamss_of_parse_endpoint_node(stfcamss, node, csd);
->>> +        if (ret)
->>> +            return ret;
->>> +
->>> +        num_subdevs++;
->>> +    }
->>> +
->>> +    return num_subdevs;
->>> +}
->>
->> ...
->>
->>> +static int stfcamss_remove(struct platform_device *pdev)
->>> +{
->>> +    struct stfcamss *stfcamss = platform_get_drvdata(pdev);
->>> +
->>> +    v4l2_device_unregister(&stfcamss->v4l2_dev);
->>> +    media_device_cleanup(&stfcamss->media_dev);
->>
->> Is a "v4l2_async_nf_cleanup(&stfcamss->notifier);" missing to match the error handling path of the probe?
->>
->>> +    pm_runtime_disable(&pdev->dev);
->>> +
->>> +    return 0;
->>> +}
->>> +
->>
->> ...
-> 
-
