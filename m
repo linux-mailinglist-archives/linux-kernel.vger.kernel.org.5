@@ -2,94 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFEBC789244
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 01:16:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E2D8789236
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 01:08:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230253AbjHYXPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 19:15:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42356 "EHLO
+        id S230009AbjHYXIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 19:08:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229909AbjHYXPb (ORCPT
+        with ESMTP id S230290AbjHYXII (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 19:15:31 -0400
-X-Greylist: delayed 572 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 25 Aug 2023 16:15:29 PDT
-Received: from mx.antonionapolitano.net (host-97-108-136-83.retail.pianetafibra.it [83.136.108.97])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C5742109;
-        Fri, 25 Aug 2023 16:15:29 -0700 (PDT)
-Mime-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=polit.no; s=dkim;
-        t=1693004752;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=8hVBVaP53VtAK42XNl5f1DuEIUO3+COzZI4DkUPvW6c=;
-        b=fo+MX7iQl6PLGiS7Pd1ANp4AwP0xVOScgS3yGiu+z8dGezBhoiC7ew5thzkuO+XvhHLb14
-        dGUqaCivWkOau1Q+p/TB2GO5reniJq8lA9pwvOLt9j2/hPwdZ2afoy/HeD0Y34Wl/oyM8U
-        szhREela6pEWdjyY/4sYJAzc+I0kNHXhN1bMVoI6LR1TUewOfzXZSdUQt6QuvU8IquKtB0
-        jpX785x4Rwc6wkHMRP4fUZbwELZ4MkovXLG5B17Ag4wUWbZqHWV5AgDBRM3xjAiMA9PTmA
-        a+zRMq++OjtOKGLVgaMUda93Eo875IYUXylRxatwJDdhr2l0kKPRD18Ej34UTg==
-Authentication-Results: mx.antonionapolitano.net;
-        auth=pass smtp.mailfrom=anton@polit.no
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Sat, 26 Aug 2023 01:05:50 +0200
-Cc:     <linux-usb@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH net-next] r8152: add vendor/device ID pair for D-Link
- DUB-E250
-From:   "Antonio Napolitano" <anton@polit.no>
-To:     "David S. Miller" <davem@davemloft.net>,
-        "Eric Dumazet" <edumazet@google.com>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        "Paolo Abeni" <pabeni@redhat.com>
-Message-Id: <CV200KJEEUPC.WPKAHXCQJ05I@mercurius>
-X-Spamd-Bar: /
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PDS_RDNS_DYNAMIC_FP,
-        RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+        Fri, 25 Aug 2023 19:08:08 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62A252117
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 16:08:06 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-68c0d262933so762306b3a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 16:08:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1693004886; x=1693609686;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BGD8RLBqVNB4kmg9LQj/IaQhfmnGQcki3nbsh7hZk+8=;
+        b=YBDu8Aja6BKRjm5FFQRjlHeOK8tj/IlFyW39z6NGh6TnmxaKkflBY6o1warcrowa8W
+         ue9qNS6nE3FxEVPoZv1U3zrKf7ctMfV3M9xhjPZamFAFYwYxDNok3h/q7J4FmkU8ViNi
+         lwMjIA9kY9voVDj76fG9rs6kikyu1/dpBveGg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693004886; x=1693609686;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BGD8RLBqVNB4kmg9LQj/IaQhfmnGQcki3nbsh7hZk+8=;
+        b=TdqAB66I1lWAnNvzOPb+gOBeJtxGQxxYdEJLTzclBsxoE/5/hci1AwyKEQQb/Zrhv3
+         kUDZbXifNMQhnzcDLas5+xL7jwY7i+wM48RuAulExeRJa+jssZvUc56YyNf2lJMATM3u
+         XLSpNSeq3RUDYCxTWXEeD4tIbNKDIgch4VEAxGGwAu0o22vAVX8jm+UMJc9leU4qwTCJ
+         e2J4S+WA67ollq/MCiIX/lnzjCExI8DTDCMe26Vvy/MRQEEkyCtMFFudErO6tWJbRByD
+         Yjs9b9F37gEnJ+eHAWooRQNE9mwJtpY89AOjHhYuJ8f1JqBHEVd7JMLPzxxelhGJumzN
+         U6yA==
+X-Gm-Message-State: AOJu0YwwSh+3kW+XWTdiLoG5cnTjdU5UOzxRJ5s2l2PDPxkCC32hU2nA
+        LUc2XPBz1N3BJUdbTJyZZUCfRw==
+X-Google-Smtp-Source: AGHT+IFe1hAe7Lf6wq0l2606gcJN8yUb28I3sQVbEpzoh4vKFlqBPpa+9BRdxsU4JtNnzCmulUYBcg==
+X-Received: by 2002:a05:6a20:6a05:b0:130:7803:5843 with SMTP id p5-20020a056a206a0500b0013078035843mr21060026pzk.4.1693004885827;
+        Fri, 25 Aug 2023 16:08:05 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id ff5-20020a056a002f4500b006877b0b31c2sm2134013pfb.147.2023.08.25.16.08.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Aug 2023 16:08:05 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>
+Cc:     Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@kernel.org>, dm-devel@redhat.com,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-security-module@vger.kernel.org,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
+Subject: Re: [PATCH] LoadPin: Annotate struct dm_verity_loadpin_trusted_root_digest with __counted_by
+Date:   Fri, 25 Aug 2023 16:08:00 -0700
+Message-Id: <169300487782.1491255.12127882114694944126.b4-ty@chromium.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230817235955.never.762-kees@kernel.org>
+References: <20230817235955.never.762-kees@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The D-Link DUB-E250 is an RTL8156 based 2.5G Ethernet controller.
+On Thu, 17 Aug 2023 16:59:56 -0700, Kees Cook wrote:
+> Prepare for the coming implementation by GCC and Clang of the __counted_by
+> attribute. Flexible array members annotated with __counted_by can have
+> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
+> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> functions).
+> 
+> As found with Coccinelle[1], add __counted_by for struct dm_verity_loadpin_trusted_root_digest.
+> Additionally, since the element count member must be set before accessing
+> the annotated flexible array member, move its initialization earlier.
+> 
+> [...]
 
-Add the vendor and product ID values to the driver. This makes Ethernet
-work with the adapter.
+Applied to for-next/hardening, thanks!
 
-Signed-off-by: Antonio Napolitano <anton@polit.no>
----
- drivers/net/usb/r8152.c   | 1 +
- include/linux/usb/r8152.h | 1 +
- 2 files changed, 2 insertions(+)
+[1/1] LoadPin: Annotate struct dm_verity_loadpin_trusted_root_digest with __counted_by
+      https://git.kernel.org/kees/c/5f536ac6a5a7
 
-diff --git a/drivers/net/usb/r8152.c b/drivers/net/usb/r8152.c
-index bb234cf0cea0..332c853ca99b 100644
---- a/drivers/net/usb/r8152.c
-+++ b/drivers/net/usb/r8152.c
-@@ -9832,6 +9832,7 @@ static const struct usb_device_id rtl8152_table[] =3D=
- {
- 	{ USB_DEVICE(VENDOR_ID_LINKSYS, 0x0041) },
- 	{ USB_DEVICE(VENDOR_ID_NVIDIA,  0x09ff) },
- 	{ USB_DEVICE(VENDOR_ID_TPLINK,  0x0601) },
-+	{ USB_DEVICE(VENDOR_ID_DLINK,   0xb301) },
- 	{}
- };
-=20
-diff --git a/include/linux/usb/r8152.h b/include/linux/usb/r8152.h
-index 20d88b1defc3..287e9d83fb8b 100644
---- a/include/linux/usb/r8152.h
-+++ b/include/linux/usb/r8152.h
-@@ -29,6 +29,7 @@
- #define VENDOR_ID_LINKSYS		0x13b1
- #define VENDOR_ID_NVIDIA		0x0955
- #define VENDOR_ID_TPLINK		0x2357
-+#define VENDOR_ID_DLINK			0x2001
-=20
- #if IS_REACHABLE(CONFIG_USB_RTL8152)
- extern u8 rtl8152_get_version(struct usb_interface *intf);
---=20
-2.42.0
+Take care,
+
+-- 
+Kees Cook
 
