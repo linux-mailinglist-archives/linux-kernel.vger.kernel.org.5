@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 130EB78807A
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 09:02:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5083178807E
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 09:02:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242730AbjHYHCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 03:02:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58732 "EHLO
+        id S242831AbjHYHCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 03:02:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241784AbjHYHCI (ORCPT
+        with ESMTP id S242127AbjHYHCJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 03:02:08 -0400
+        Fri, 25 Aug 2023 03:02:09 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90A2819AC
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 00:02:06 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6884BD3
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 00:02:07 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7282064B51
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 07:02:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D6B2C433CA;
-        Fri, 25 Aug 2023 07:02:05 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 074C963D4D
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 07:02:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D265C433CB;
+        Fri, 25 Aug 2023 07:02:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692946925;
-        bh=wseebdWJGAG73aEf4oxCFFQ8XYhFMGqIJFkJEq0d3CE=;
+        s=k20201202; t=1692946926;
+        bh=uU+4b7Nqd1JBSc45+s2BfgDjWrwt8fgPRmfD9p0UXWA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z2LrM29aakLBo+Q0t4HA//gIgNz0uDTlsDHprcNdBIcZmE1TlwdX7b1c+fBuDrjPH
-         ExK+8I/Qt7Mlqlx/6uVxfQi4pPcllQP829Qmi1LFAf8f4vqai/djWmEu+aXa0gxe0R
-         vcmHeBFUnn+S2/E0std2EkgoTyfxi6EiozmU0IhkYOjPmBDshjF4QTbeFSZW8xda5j
-         6QkFC8CIg5kN3ioi+wnM4kJLpC582F4V6aq7Vl+WEdBbldQgYsXA3m6e0x3CCzsS9F
-         IBD2pvW3xEgP/lpnlzMBFRGwFU0wjjSBYpB3gTXIiJ/aZjB8yJ1KH6D7hYbf+0hCbO
-         NFgwowMSkLk+w==
+        b=j0taPDbXJy/3okWJZKyrzGQj3wFlK/9qMmcA/iCCYVFA04h3KLGvhdj7B+bwNENme
+         IuwKTn9PdAZqbMjK+i8qq0iTYer38mvCp4OmPWcvZvcmV++fQYNrG1h7kkX28L8Og5
+         yccmo+SBbz3IblZu8GIPvhNfofwFF2yDK9q8l3Laq/gTSQI6s6MM7Deou6fykK72Pf
+         ZA+VUGR8/6m5UjvHZVndHc+3456QlzsHbISHKdE0YLZtK4E9gj3w/1T7zWLqarbUs9
+         h6S6n69uziyhV+lGAFGXLJyPce91KYMWOLW7aI+n1NSkF30Ub16sQ2zonUUiQTkwvU
+         o+Zc2qZKeYJMA==
 From:   Josh Poimboeuf <jpoimboe@kernel.org>
 To:     x86@kernel.org
 Cc:     linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
@@ -43,9 +43,9 @@ Cc:     linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
         Andrew Cooper <andrew.cooper3@citrix.com>,
         Nikolay Borisov <nik.borisov@suse.com>,
         gregkh@linuxfoundation.org, Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH 06/23] x86/srso: Fix SBPB enablement for spec_rstack_overflow=off
-Date:   Fri, 25 Aug 2023 00:01:37 -0700
-Message-ID: <d025b558e451325db3a2c76f3daafe26a0928789.1692919072.git.jpoimboe@kernel.org>
+Subject: [PATCH 07/23] x86/srso: Fix SBPB enablement for (possible) future fixed HW
+Date:   Fri, 25 Aug 2023 00:01:38 -0700
+Message-ID: <d04e617b39eefdb0221857d53858579acdc3f580.1692919072.git.jpoimboe@kernel.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1692919072.git.jpoimboe@kernel.org>
 References: <cover.1692919072.git.jpoimboe@kernel.org>
@@ -61,28 +61,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the user has requested no SRSO mitigation, other mitigations can use
-the lighter-weight SBPB instead of IBPB.
+Make the SBPB check more robust against the (possible) case where future
+HW has SRSO fixed but doesn't have the SRSO_NO bit set.
 
-Fixes: fb3bd914b3ec ("x86/srso: Add a Speculative RAS Overflow mitigation")
+Fixes: 1b5277c0ea0b ("x86/srso: Add SRSO_NO support")
 Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
 ---
  arch/x86/kernel/cpu/bugs.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
-index b0ae985aa6a4..10499bcd4e39 100644
+index 10499bcd4e39..2859a54660a2 100644
 --- a/arch/x86/kernel/cpu/bugs.c
 +++ b/arch/x86/kernel/cpu/bugs.c
-@@ -2433,7 +2433,7 @@ static void __init srso_select_mitigation(void)
+@@ -2496,7 +2496,7 @@ static void __init srso_select_mitigation(void)
+ 	pr_info("%s%s\n", srso_strings[srso_mitigation], (has_microcode ? "" : ", no microcode"));
  
- 	switch (srso_cmd) {
- 	case SRSO_CMD_OFF:
--		return;
-+		goto pred_cmd;
- 
- 	case SRSO_CMD_MICROCODE:
- 		if (has_microcode) {
+ pred_cmd:
+-	if ((boot_cpu_has(X86_FEATURE_SRSO_NO) || srso_cmd == SRSO_CMD_OFF) &&
++	if ((!boot_cpu_has_bug(X86_BUG_SRSO) || srso_cmd == SRSO_CMD_OFF) &&
+ 	     boot_cpu_has(X86_FEATURE_SBPB))
+ 		x86_pred_cmd = PRED_CMD_SBPB;
+ }
 -- 
 2.41.0
 
