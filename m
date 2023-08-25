@@ -2,67 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA632789180
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 00:14:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFEFC789182
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 00:14:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230064AbjHYWNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 18:13:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52438 "EHLO
+        id S229758AbjHYWOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 18:14:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230043AbjHYWNO (ORCPT
+        with ESMTP id S230215AbjHYWNk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 18:13:14 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A1B026B9
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 15:13:11 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-51cff235226so3018189a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 15:13:11 -0700 (PDT)
+        Fri, 25 Aug 2023 18:13:40 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD15C26B0
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 15:13:36 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1bc0d39b52cso10489355ad.2
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 15:13:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693001590; x=1693606390;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bRGLhCJxk2YfYhkw71kLVJLLsM+bnOcMS87gS/EBB2k=;
-        b=B1jyrIcDb5DFQ48F/wCw3Jn5c7WHjXuwf5BP1lJtcMO+KVxCfURnBNUQcgZinLsSG4
-         MWWmbKrsLRZ7d2z2GYjUZrbwSkUZ+uiL4VORl65hWJcy05qfidHY5FhdbTu02H1duxsu
-         dBkaVaFu2jF2Z/V1zI5ILQ5REyW0NvlittLUsR8TOk4AttvI4Nw4dxClmD9XbFIH6wH3
-         0daKqwS9GEGTwFOZt+Cg4twvoIxR0oXUJoOq+WscXB2P0F+FfOuRfsNRuc05V2rI3jOJ
-         clxqpmVRw4KHhMKIL84kO8kfVOxYhyyImaKXawwnkgeYJPDnwmNFUvzBrj3g8XuumtTN
-         nHAw==
+        d=chromium.org; s=google; t=1693001616; x=1693606416;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=0BjJU4w8nwIph8eNiwGoKfedSYPjcFpwJfo8NljTIRk=;
+        b=UzpkgeTaNjwZqWYnvXJmrH8H4MUBGOgP+qcXrveK7VV6mTIdR8ZfSUrAHzEPSuyfuX
+         o9BsMJ3X0CdwVZ4rkN2AHMiMAaSi3CXp1kpBkuRzhJgyWiEhy4DWSzan1srRbI+Myo2u
+         uBa1JWaJlqpuwQtD6KqyrTfE00cTSwFSnQeOk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693001590; x=1693606390;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bRGLhCJxk2YfYhkw71kLVJLLsM+bnOcMS87gS/EBB2k=;
-        b=fq6gO4WZp890zobhK88d+S/JINOmV9DJb+BYR9PJbY1fDcaKS5/FRZ1VSCZTxQEJWZ
-         sSXyYyLFEOeelY8r504ZiupxzgKcd/TqMaIC7i8vNjNJic4k1AcNiqC/Vp/4gXkhh06G
-         ty77YzeT2myixfJOF0gh39ML47J3hDfHAxHX5BoMxyvRErc08Up82USd7v2eezpAmwNd
-         FL8BsKNS6BusT7L0uOQ+6dILa0+P8cbn0AlmvXPbe5SMAufog7awmUM6+mcQNlBa5dB9
-         C/2SkH//p4BCVGeocchlur5fgAfCs5x3rZQx4VHDRmZlUvnb7UWgdapK97uYW6Ozjylt
-         z9Zg==
-X-Gm-Message-State: AOJu0YxlKqYdHn8xx5CNqZEFYnUyOIQYefWmHneVDucjXCUN/ZicM4NH
-        ad/guJWH/iuafiErFqBAxhRWKHZ6nFqmxgb3kOKYEg==
-X-Google-Smtp-Source: AGHT+IGCmYRo7hllh+m7oORH9Z9Xh45QNBFb7h4WVFR4TG7CAw4ipcinmyISbGr6gmCiXUWeRCLxdyZgBaPZPc7K9kI=
-X-Received: by 2002:aa7:c384:0:b0:522:4764:8baa with SMTP id
- k4-20020aa7c384000000b0052247648baamr20833831edq.12.1693001589840; Fri, 25
- Aug 2023 15:13:09 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693001616; x=1693606416;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0BjJU4w8nwIph8eNiwGoKfedSYPjcFpwJfo8NljTIRk=;
+        b=cs4u5ZouTZkGfj5GGOBqoBFRs3v0KrDztxi2XURYoA2YLk+kJtKq07QjtHO+d2UV5C
+         dP82BUN8P6/w9+3FDILEzQXLyMsVOLKR+k19385LKBv5qQBQjqn0Q2bNBu3th8aCAj68
+         YCZh+xc2+DOmK2zZbZlw6G2DXa7l5DKLQ5O4t/JEHxc7BKa0q1D8nghJkOBJba/+kNkw
+         VT+6lyd+pYeP9eo/2h2oGUvftNruKQ2G8EPa4uSSqSM3qAYeHCd4+MUnaViVHQlndkAY
+         pcAHdoqFRyzcK0vixLx19RNOz1NSaR9qaT6YjPzhqLOP7iC6n8Lt7y18bD0iZ+8bZrtQ
+         6vfw==
+X-Gm-Message-State: AOJu0YwGwX/nvJUwhufUWB6DkHiXfrkgRh9bI6fm7vlbOuFO6j3I44MB
+        m4JFSuNCi5q1750FjF8+kEd5hQ==
+X-Google-Smtp-Source: AGHT+IHmApoYxQ/QPGNvuqZJJuCLA/kYG9vprDv9WbQh/uIwdR0ryLsfErzUUgIKN0tApgQ21jWq/Q==
+X-Received: by 2002:a17:903:1109:b0:1bb:3a7:6af7 with SMTP id n9-20020a170903110900b001bb03a76af7mr22568511plh.23.1693001616232;
+        Fri, 25 Aug 2023 15:13:36 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id o15-20020a170902d4cf00b001b9e86e05b7sm2261569plg.0.2023.08.25.15.13.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Aug 2023 15:13:35 -0700 (PDT)
+Date:   Fri, 25 Aug 2023 15:13:35 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     Oded Gabbay <ogabbay@kernel.org>, Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] accel/habanalabs: refactor deprecated strncpy to
+ strscpy_pad
+Message-ID: <202308251513.0F6BF9FEE6@keescook>
+References: <20230825-strncpy-habanalabs-combined-v1-1-daa05a89b7e3@google.com>
 MIME-Version: 1.0
-References: <20230824-strncpy-drivers-accel-habanalabs-gaudi-gaudi-c-v1-1-a7fb9054734c@google.com>
-In-Reply-To: <20230824-strncpy-drivers-accel-habanalabs-gaudi-gaudi-c-v1-1-a7fb9054734c@google.com>
-From:   Justin Stitt <justinstitt@google.com>
-Date:   Fri, 25 Aug 2023 15:12:58 -0700
-Message-ID: <CAFhGd8r1ADbYRg2dF5wwS4Tf1Worv-zR6CTrzBPHxQO2YAiWQA@mail.gmail.com>
-Subject: Re: [PATCH] habanalabs/gaudi: refactor deprecated strncpy
-To:     Oded Gabbay <ogabbay@kernel.org>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230825-strncpy-habanalabs-combined-v1-1-daa05a89b7e3@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,70 +71,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch as well as two other related patches were combined into a
-single patch [1]
-
-On Thu, Aug 24, 2023 at 1:41=E2=80=AFPM Justin Stitt <justinstitt@google.co=
-m> wrote:
->
-> `strncpy` is deprecated for use on NUL-terminated destination strings [1]=
-.
->
-> A suitable replacement is `strscpy` [2] due to the fact that it
-> guarantees NUL-termination on its destination buffer argument which is
-> _not_ the case for `strncpy`!
->
-> Link: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-n=
-ul-terminated-strings[1]
-> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.h=
-tml [2]
+On Fri, Aug 25, 2023 at 10:09:51PM +0000, Justin Stitt wrote:
+> `strncpy` is deprecated for use on NUL-terminated destination strings [1].
+> 
+> We see that `prop->cpucp_info.card_name` is supposed to be
+> NUL-terminated based on its usage within `__hwmon_device_register()`
+> (wherein it's called "name"):
+> |	if (name && (!strlen(name) || strpbrk(name, "-* \t\n")))
+> |		dev_warn(dev,
+> |			 "hwmon: '%s' is not a valid name attribute, please fix\n",
+> |			 name);
+> 
+> A suitable replacement is `strscpy_pad` [2] due to the fact that it
+> guarantees both NUL-termination and NUL-padding on its destination
+> buffer.
+> 
+> NUL-padding on `prop->cpucp_info.card_name` is not strictly necessary as
+> `hdev->prop` is explicitly zero-initialized but should be used
+> regardless as it gets copied out to userspace directly -- as per Kees' suggestion.
+> 
+> Link: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings[1]
+> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
 > Link: https://github.com/KSPP/linux/issues/90
 > Cc: linux-hardening@vger.kernel.org
 > Signed-off-by: Justin Stitt <justinstitt@google.com>
-> ---
-> Note: build-tested only
-> ---
->  drivers/accel/habanalabs/gaudi/gaudi.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/accel/habanalabs/gaudi/gaudi.c b/drivers/accel/haban=
-alabs/gaudi/gaudi.c
-> index 056e2ef44afb..f175456cdef0 100644
-> --- a/drivers/accel/habanalabs/gaudi/gaudi.c
-> +++ b/drivers/accel/habanalabs/gaudi/gaudi.c
-> @@ -660,7 +660,7 @@ static int gaudi_set_fixed_properties(struct hl_devic=
-e *hdev)
->         prop->pcie_dbi_base_address =3D mmPCIE_DBI_BASE;
->         prop->pcie_aux_dbi_reg_addr =3D CFG_BASE + mmPCIE_AUX_DBI;
->
-> -       strncpy(prop->cpucp_info.card_name, GAUDI_DEFAULT_CARD_NAME,
-> +       strscpy(prop->cpucp_info.card_name, GAUDI_DEFAULT_CARD_NAME,
->                                         CARD_NAME_MAX_LEN);
->
->         prop->max_pending_cs =3D GAUDI_MAX_PENDING_CS;
-> @@ -8000,7 +8000,7 @@ static int gaudi_cpucp_info_get(struct hl_device *h=
-dev)
->                 return rc;
->
->         if (!strlen(prop->cpucp_info.card_name))
-> -               strncpy(prop->cpucp_info.card_name, GAUDI_DEFAULT_CARD_NA=
-ME,
-> +               strscpy(prop->cpucp_info.card_name, GAUDI_DEFAULT_CARD_NA=
-ME,
->                                 CARD_NAME_MAX_LEN);
->
->         hdev->card_type =3D le32_to_cpu(hdev->asic_prop.cpucp_info.card_t=
-ype);
->
-> ---
-> base-commit: f9604036a3fb6149badf346994b46b03f9292db7
-> change-id: 20230824-strncpy-drivers-accel-habanalabs-gaudi-gaudi-c-f0b581=
-4ced38
->
-> Best regards,
-> --
-> Justin Stitt <justinstitt@google.com>
->
 
-[1]: https://lore.kernel.org/r/20230825-strncpy-habanalabs-combined-v1-1-da=
-a05a89b7e3@google.com
+Thanks for the consolidation and refresh. :)
+
+Reviewed-by: Kees Cook <keescook@chromium.org>
+
+-- 
+Kees Cook
