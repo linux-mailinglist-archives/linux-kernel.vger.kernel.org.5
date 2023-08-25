@@ -2,93 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0292F788287
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 10:43:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69A8C78828E
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 10:45:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243808AbjHYInQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 04:43:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41360 "EHLO
+        id S243934AbjHYIow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 04:44:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243944AbjHYInB (ORCPT
+        with ESMTP id S243900AbjHYIoW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 04:43:01 -0400
-Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FD18268A
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 01:42:27 -0700 (PDT)
-Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-58fae4a5285so8510947b3.0
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 01:42:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692952936; x=1693557736;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=paPaNBgdy8fC81NTESXp1GcybAQpiRbyhR1Y6LYNTlA=;
-        b=UEwtWD8cjlTAVSHsFw5Zp4/mr0/l3+aZwHQuhmEFr7b6685U7R7GnTDdnV21BNSKlT
-         EhkZn2ver6+pmnGz4oy7F9+4/nibRpgQZEx9oK3Vvczbf3oCDPx2mKTLDt22bak8ZIFj
-         4WYMa6BeMkgdZNWcONmE4Vdaz4Hhl60K0Z0J6wQul4rzgCR5LJ7mq/F2mXP9WHWWYmOl
-         2Wzd9iha3q/8dnndQN0TPTkscWnfPYCQiR2GM8f5TbfM6U9Q+wVE+rhwclLNVEn9gpmN
-         MXkRNgPlTm34skRZJ2YhfjIcBTgnhmKlvoaXS59Fb5v+6ua/FqwqqJcEdhVj9uCywD9n
-         ya7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692952936; x=1693557736;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=paPaNBgdy8fC81NTESXp1GcybAQpiRbyhR1Y6LYNTlA=;
-        b=Pf+a2xLg4YUctFjyHdgw4mxfgOHDTy+0u0i5MptgvW2NpofOA+DYkKky+yLlwTF6DN
-         WwkB5neDGr6pOya1nR9+2hW7+rAMKZ7DAFjMhY/OOPzaPWbG2hAUVWtbL1C5N3j2aIsa
-         NWT2WE4/Z8clck/xASHnYwYHxA5bR913/tOYhcVb5y6HO/jWjoDmwOybzM7I5BaN+n71
-         U0i3/JxbqHydmRJ1ZPxdY13CEw5zzfqrpffh/bGXvbE8XiSzzI9jDJMfwObOJEJl4Pub
-         7Vizp1TDCPqoauDvLcoWmoFb0fqvpviFD5NRH7p1W8DO3Ct+Xc+2bcfseI72vbyEIyfP
-         +vwg==
-X-Gm-Message-State: AOJu0YzRKZgED7s0Cnnl+MrJ+YjiQ/sruBa5mw9Dwvew4JJri8WTy3jE
-        2/0oEtkeWqgFq1Q3XLcxKKWNI/cd4CRRRK30JlpGdw==
-X-Google-Smtp-Source: AGHT+IFUJlU5/qBTUdIhAJDXncihHOCmd0RSL/+XkaajLB1RBuxUUa4sOsQ56q6Awg6wjBB56OfCUhU8LLtIvuaGiUE=
-X-Received: by 2002:a25:b309:0:b0:cc6:26f7:f0ea with SMTP id
- l9-20020a25b309000000b00cc626f7f0eamr16232194ybj.27.1692952936378; Fri, 25
- Aug 2023 01:42:16 -0700 (PDT)
+        Fri, 25 Aug 2023 04:44:22 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 613EA1BF2
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 01:43:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692953020; x=1724489020;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version:content-id;
+  bh=IkWOEkzFYba0CNLljiWZG0nZMMjbSEDGAWyUgSWb3SA=;
+  b=eLyTf0BJlEV0+poZLQTv0kJdmeVLNGc9qdV4dOgMyw6OAiK1kRrlLQx9
+   8XfJ/sYRTYVtqN2es+TIb4IWtnHWElOE8LmW2X6par81CijY6pXyBySWC
+   0sCp51CWq/K2cbIoQZhqO3iLWQ+LBrZ1EwBPYA0JTXwcoA1irIkhfyxk9
+   +PSrskGl7efXfdGgQn1GvUCWUl4nx0Vm/A/B1j4/FEjuTIFWsMEiz3va2
+   ogyBMlbWLjNcM4Zfuyg0gbDQVJwjI/TauLuXcFjH5S9I8yNplENQykvBz
+   3Dg+lIDbL4JofHVUYfkVlbk9DuOvYlIAS9JjAluefJXXgIhiHEQXo8gsk
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="441012167"
+X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
+   d="scan'208";a="441012167"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2023 01:43:26 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="1068165611"
+X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
+   d="scan'208";a="1068165611"
+Received: from enguerra-mobl.ger.corp.intel.com ([10.251.213.8])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2023 01:43:24 -0700
+Date:   Fri, 25 Aug 2023 11:43:22 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     =?ISO-8859-15?Q?Maciej_Wiecz=F3r-Retman?= 
+        <maciej.wieczor-retman@intel.com>
+cc:     LKML <linux-kernel@vger.kernel.org>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        fenghua.yu@intel.com
+Subject: Re: [PATCH 1/3] selftests/resctrl: Fix schemata write error check
+In-Reply-To: <c3yp5kkhrc75tvytkbmep7xknqgomyn52xpogqzsy3sp7kwefm@ikzmp6rgzisr>
+Message-ID: <32f9983a-42e-7cce-8192-bba8bbb93955@linux.intel.com>
+References: <cover.1692880423.git.maciej.wieczor-retman@intel.com> <e7ea177261ded70f0c781841b0fb67fb1eb8909d.1692880423.git.maciej.wieczor-retman@intel.com> <5c6a2065-6771-ed87-c5ed-843f4e184ff8@linux.intel.com>
+ <c3yp5kkhrc75tvytkbmep7xknqgomyn52xpogqzsy3sp7kwefm@ikzmp6rgzisr>
 MIME-Version: 1.0
-References: <20230825053910.17941-1-lukas.bulwahn@gmail.com>
-In-Reply-To: <20230825053910.17941-1-lukas.bulwahn@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 25 Aug 2023 10:42:05 +0200
-Message-ID: <CACRpkdaP1_57rYv0C4gf=1XQxtCC=BvxzeU15b0uY+uTFhMCQA@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: remove obsolete pattern in RTC SUBSYSTEM section
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-rtc@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/mixed; BOUNDARY="8323329-236844462-1692952650=:3206"
+Content-ID: <fddc2bb8-e24-5049-297e-c5f7ff57b2a8@linux.intel.com>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 25, 2023 at 7:39=E2=80=AFAM Lukas Bulwahn <lukas.bulwahn@gmail.=
-com> wrote:
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-> Commit d890cfc25fe9 ("rtc: ds2404: Convert to GPIO descriptors") removes
-> the rtc-ds2404.h platform data and with that, there is no file remaining
-> matching the pattern 'include/linux/platform_data/rtc-*'. Hence,
-> ./scripts/get_maintainer.pl --self-test=3Dpatterns complains about a brok=
-en
-> reference.
+--8323329-236844462-1692952650=:3206
+Content-Type: text/plain; CHARSET=ISO-8859-15
+Content-Transfer-Encoding: 8BIT
+Content-ID: <126be168-e37-7e92-b521-bd296fa97e6c@linux.intel.com>
+
+On Fri, 25 Aug 2023, Maciej Wieczór-Retman wrote:
+> On 2023-08-24 at 15:52:05 +0300, Ilpo Järvinen wrote:
+> >Ki,
+> >
+> >You're lacking a few people from the To/Cc list. Please see KERNEL 
+> >SELFTEST FRAMEWORK entry in MAINTAINERS.
+> 
+> Thank you, I thought I checked the MAINTAINERS file well enough. I'll
+> add them in the next version
+> 
+> >On Thu, 24 Aug 2023, Wieczor-Retman, Maciej wrote:
+> >
+> >> Writing bitmasks to the schemata can fail when the bitmask doesn't
+> >> adhere to some constraints defined by what a particular CPU supports.
+> >> Some example of constraints are max length or being having contiguous
+> >
+> >"being having" is not good English.
+> 
+> Thanks, I'll change it
+> 
+> >> bits. The driver should properly return errors when any rule concerning
+> >> bitmask format is broken.
+> >> 
+> >> Resctrl FS returns error codes from fprintf() only when fclose() is
+> >> called.
+> >
+> >I wonder if this is actually related to libc doing buffering between 
+> >fprintf() and the actual write() syscall.
+> 
+> I started looking and apparently in the manpages for fclose [1] it says
+> it uses fflush() to flush any buffered data in the stream. So that would
+> probably confirm that it does buffering there.
+> 
+> In this case is there a situation when the fprintf() before fclose()
+> would report an error? I'm thinking if there is a point to keep error
+> checking after both function calls or just fclose(). 
 >
-> Remove the obsolete file pattern in the REAL TIME CLOCK (RTC) SUBSYSTEM.
->
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> ---
-> Linus, please ack.
+> Or would putting additional fflush() after fprintf() make some sense?
+> To have separate error checks for both function calls.
 
-Excellent attention to detail here Lukas,
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
+Another approach would be to use syscalls directly (open, write, and 
+close to eliminate the buffering entirely. Given schema is already 
+written into local variable first, it would be quite straightforward to do 
+that conversion.
 
-Yours,
-Linus Walleij
+
+-- 
+ i.
+--8323329-236844462-1692952650=:3206--
