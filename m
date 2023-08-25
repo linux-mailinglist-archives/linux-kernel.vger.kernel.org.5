@@ -2,162 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 271BC788A36
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 16:04:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23E0D788ADC
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 16:08:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245394AbjHYOEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 10:04:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45264 "EHLO
+        id S1343505AbjHYOHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 10:07:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245511AbjHYOD2 (ORCPT
+        with ESMTP id S1343514AbjHYOG7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 10:03:28 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2304D270B
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 07:03:02 -0700 (PDT)
-Received: from notapiano (unknown [IPv6:2600:4041:5b1a:cd00:524d:e95d:1a9c:492a])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: nfraprado)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id D326966071BE;
-        Fri, 25 Aug 2023 15:02:59 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1692972181;
-        bh=Tf0lRvLk4egxaG6ZSwOtjS0aVzUEep0x+fFK3VC8laM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bpsA+ZN1hxW5O80D1U5sVzFN2ALmtNalrJ2+D2NfBXy/Yak3TYoY2Ye9xBdwBkg9l
-         nfK+B8Dvskeud9iRprmTOPiRaSrRvODue8tiAajdVq6VgY0bolTnHicKfaWjsrFTH4
-         OTZ03Q9O5YT7zwoBoviGtuadsZWlPsTr7qX1UeCUS3jUI4Cyhd6qBE7i8tSVC0LWoU
-         32QFdqMB9HneZuZgdqY6fEMHb2z5Mzf2rN+6MTzcXHlBnuNQSw33EOcUjJpeyFuzqH
-         62EhZgjDEiE4pMcfSxHFObTo3AdPEZqn87SvvIU9CZQFcYJ18YYJGTQmfhuucl6XA7
-         hlsqHbc2UrVbw==
-Date:   Fri, 25 Aug 2023 10:02:56 -0400
-From:   =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado 
-        <nfraprado@collabora.com>
-To:     Michael Walle <mwalle@kernel.org>
-Cc:     angelogioacchino.delregno@collabora.com, airlied@gmail.com,
-        amergnat@baylibre.com, chunkuang.hu@kernel.org, ck.hu@mediatek.com,
-        daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
-        ehristev@collabora.com, kernel@collabora.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com,
-        p.zabel@pengutronix.de, wenst@chromium.org
-Subject: Re: [PATCH v7 09/11] drm/mediatek: dp: Add support for embedded
- DisplayPort aux-bus
-Message-ID: <5b438dba-9b85-4448-bc89-08a11ddb822a@notapiano>
-References: <20230725073234.55892-10-angelogioacchino.delregno@collabora.com>
- <20230825120109.3132209-1-mwalle@kernel.org>
+        Fri, 25 Aug 2023 10:06:59 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id ED2572705;
+        Fri, 25 Aug 2023 07:06:31 -0700 (PDT)
+Received: from pwmachine.numericable.fr (85-170-34-233.rev.numericable.fr [85.170.34.233])
+        by linux.microsoft.com (Postfix) with ESMTPSA id E6B1A2127C93;
+        Fri, 25 Aug 2023 07:05:39 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E6B1A2127C93
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1692972340;
+        bh=A6Q32kWnUoP12B1U5iISjSX9nYGK/jEleiZ7bCJ98ag=;
+        h=From:To:Cc:Subject:Date:From;
+        b=XoddsejrRTgH6HXHE4cgrCL4VCIqhdE10QJrH91v+EYw49N8Gv14ulfYi+r4zl6OZ
+         g5yIV1mJnJuZvPMoISW+FhpdKeFDS2wLcS48qUQp2R1BF1svU3UOLgfcYLqXCvSz5h
+         zWzVUlSxqvSKpAeRxXtQtKT+RnM1Hpurqu6mjFmE=
+From:   Francis Laniel <flaniel@linux.microsoft.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-trace-kernel@vger.kernel.org,
+        Francis Laniel <flaniel@linux.microsoft.com>
+Subject: [PATCH v4 0/2] Return EADDRNOTAVAIL when func matches several symbols during kprobe creation
+Date:   Fri, 25 Aug 2023 16:05:17 +0200
+Message-Id: <20230825140519.34297-1-flaniel@linux.microsoft.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230825120109.3132209-1-mwalle@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-18.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi.
 
-On Fri, Aug 25, 2023 at 02:01:09PM +0200, Michael Walle wrote:
-> Hi AngeloGioacchino,
-> 
-> > For the eDP case we can support using aux-bus on MediaTek DP: this
-> > gives us the possibility to declare our panel as generic "panel-edp"
-> > which will automatically configure the timings and available modes
-> > via the EDID that we read from it.
-> > 
-> > To do this, move the panel parsing at the end of the probe function
-> > so that the hardware is initialized beforehand and also initialize
-> > the DPTX AUX block and power both on as, when we populate the
-> > aux-bus, the panel driver will trigger an EDID read to perform
-> > panel detection.
-> > 
-> > Last but not least, since now the AUX transfers can happen in the
-> > separated aux-bus, it was necessary to add an exclusion for the
-> > cable_plugged_in check in `mtk_dp_aux_transfer()` and the easiest
-> > way to do this is to simply ignore checking that when the bridge
-> > type is eDP.
-> 
-> This patch breaks my board based on the MT8195 which only has one
-> DisplayPort output port. I suspect it might also break the mt8195-cherry
-> board.
 
-Do you mean that your board does not have an internal display, only the one
-output port? If so, why are you enabling the nodes for the internal display path
-in your board specific DT?
+In the kernel source code, it exists different functions which share the same
+name but which have, of course, different addresses as they can be defined in
+different modules:
+# Kernel was compiled with CONFIG_NTFS_FS and CONFIG_NTFS3_FS as built-in.
+root@vm-amd64:~# grep ntfs_file_write_iter /proc/kallsyms
+ffffffff814ce3c0 t __pfx_ntfs_file_write_iter
+ffffffff814ce3d0 t ntfs_file_write_iter
+ffffffff814fc8a0 t __pfx_ntfs_file_write_iter
+ffffffff814fc8b0 t ntfs_file_write_iter
+This can be source of troubles when you create a PMU kprobe for such a function,
+as it will only install one for the first address (e.g. 0xffffffff814ce3d0 in
+the above).
+This could lead to some troubles were BPF based tools does not report any event
+because the second function is not called:
+root@vm-amd64:/mnt# mount | grep /mnt
+/foo.img on /mnt type ntfs3 (rw,relatime,uid=0,gid=0,iocharset=utf8)
+# ig is a tool which installs a PMU kprobe on ntfs_file_write_iter().
+root@vm-amd64:/mnt# ig trace fsslower -m 0 -f ntfs3 --host &> /tmp/foo &
+[1] 207
+root@vm-amd64:/mnt# dd if=./foo of=./bar count=3
+3+0 records in
+3+0 records out
+1536 bytes (1.5 kB, 1.5 KiB) copied, 0.00543323 s, 283 kB/s
+root@vm-amd64:/mnt# fg
+ig trace fsslower -m 0 -f ntfs3 --host &> /tmp/foo
+^Croot@vm-amd64:/mnt# more /tmp/foo
+RUNTIME.CONTAINERNAME          RUNTIME.CONTAIN… PID              COMM
+  T      BYTES     OFFSET        LAT FILE
+                                                214              dd
+  R        512          0        766 foo
+                                                214              dd
+  R        512        512          9 foo
+                                                214              dd
+As you can see in the above, only read events are reported and no write because
+the kprobe is installed for the old ntfs_file_write_iter() and not the ntfs3
+one.
+The same behavior occurs with sysfs kprobe:
+root@vm-amd64:/# echo 'p:probe/ntfs_file_write_iter ntfs_file_write_iter' > /sys/kernel/tracing/kprobe_events
+root@vm-amd64:/# cat /sys/kernel/tracing/kprobe_events
+p:probe/ntfs_file_write_iter ntfs_file_write_iter
+root@vm-amd64:/# mount | grep /mnt
+/foo.img on /mnt type ntfs3 (rw,relatime,uid=0,gid=0,iocharset=utf8)
+root@vm-amd64:/# perf record -e probe:ntfs_file_write_iter &
+[1] 210
+root@vm-amd64:/# cd /mnt/
+root@vm-amd64:/mnt# dd if=./foo of=./bar count=3
+3+0 records in
+3+0 records out
+1536 bytes (1.5 kB, 1.5 KiB) copied, 0.00234793 s, 654 kB/s
+root@vm-amd64:/mnt# cd -
+/
+root@vm-amd64:/# fg
+perf record -e probe:ntfs_file_write_iter
+^C[ perf record: Woken up 1 times to write data ]
+[ perf record: Captured and wrote 0.056 MB perf.data ]
 
-> 
-> While the mediatek-dpi driver finds the DP port:
-> [    3.131645] mediatek-dpi 1c113000.dp-intf: Found bridge node: /soc/dp-tx@1c600000
-> 
-> The probing of the eDP is deferred:
-> [   13.289009] platform 1c015000.dp-intf: deferred probe pending
-> 
-> So I don't know why, but to make dp_intf1 work, it seems that dp_intf0
-> must be probed successfully. After this patch, the edp (which is
-> connected to the dp_intf1) probe will return with an -ENODEV and
-> the previous call to devm_drm_bridge_add() will be rolled back.
+root@vm-amd64:/# perf report
+Error:
+The perf.data data has no samples!
+# To display the perf.data header info, please use --header/--header-only optio>
+#
 
-The MediaTek DRM driver uses the component framework, so it waits for all of its
-components to register until it binds them all (which includes both intf0 and
-intf1, unless they're disabled on the DT).
+In this contribution, I modified the functions creating sysfs and PMU kprobes to
+test if the function name given as argument matches several symbols.
+In this case, these functions return EADDRNOTAVAIL to indicate the user to use
+addr and offs to remove this ambiguity.
+So, when the above BPF tool is run, the following error message is printed:
+root@vm-amd64:~# ig trace fsslower -m 0 -f ntfs3 --host &> /tmp/foo &
+[1] 228
+root@vm-amd64:~# more /tmp/foo
+RUNTIME.CONTAINERNAME          RUNTIME.CONTAIN… PID              COMM
+  T      BYTES     OFFSET        LAT FILE
+Error: running gadget: running gadget: installing tracer: attaching kprobe: crea
+ting perf_kprobe PMU (arch-specific fallback for "ntfs_file_write_iter"): token
+ntfs_file_write_iter: opening perf event: cannot assign requested address
+And the same with sysfs kprobe:
+root@vm-amd64:/# echo 'p:probe/ntfs_file_write_iter ntfs_file_write_iter' > /sys/kernel/tracing/kprobe_events
+-bash: echo: write error: Cannot assign requested address
+Note that, this does not influence perf as it installs kprobes as offset on
+_text:
+root@vm-amd64:/# perf probe --add ntfs_file_write_iter
+Added new events:
+  probe:ntfs_file_write_iter (on ntfs_file_write_iter)
+  probe:ntfs_file_write_iter (on ntfs_file_write_iter)
+...
+root@vm-amd64:/# cat /sys/kernel/tracing/kprobe_events
+p:probe/ntfs_file_write_iter _text+5039088
+p:probe/ntfs_file_write_iter _text+5228752
 
-It's true that before this patch no panel being found for edp-tx wouldn't
-prevent it to probe, but it really should.
+Note that, this contribution is the conclusion of a previous RFC which intended
+to install a PMU kprobe for all matching symbols [1, 2].
 
-Thanks,
-N�colas
+If you see any way to improve this contribution, particularly if you have an
+idea to add tests or documentation for this behavior, please share your
+feedback.
 
-> 
-> Before this patch, bridge_add() was called in any case (in the
-> error case with next_bridge = NULL) and the mediatek-dpi probed
-> like that:
-> 
-> [    3.121011] mediatek-dpi 1c015000.dp-intf: Found bridge node: /soc/edp-tx@1c500000
-> [    3.122111] mediatek-dpi 1c113000.dp-intf: Found bridge node: /soc/dp-tx@1c600000
-> 
-> Eventually resulting in a framebuffer device:
-> [    4.451081] mediatek-drm mediatek-drm.8.auto: [drm] fb0: mediatekdrmfb frame buffer device
-> 
-> 
-> NB, somehow this series broke the initial display output. I always have
-> to replug the DisplayPort to get some output. I'll dig deeper into that
-> later.
-> 
-> ..
-> 
-> > @@ -2519,21 +2553,14 @@ static int mtk_dp_probe(struct platform_device *pdev)
-> >  		return dev_err_probe(dev, mtk_dp->irq,
-> >  				     "failed to request dp irq resource\n");
-> >  
-> > -	mtk_dp->next_bridge = devm_drm_of_get_bridge(dev, dev->of_node, 1, 0);
-> > -	if (IS_ERR(mtk_dp->next_bridge) &&
-> > -	    PTR_ERR(mtk_dp->next_bridge) == -ENODEV)
-> > -		mtk_dp->next_bridge = NULL;
-> 
-> In my case, this branch was taken.
-> 
-> -michael
-> 
-> > -	else if (IS_ERR(mtk_dp->next_bridge))
-> > -		return dev_err_probe(dev, PTR_ERR(mtk_dp->next_bridge),
-> > -				     "Failed to get bridge\n");
-> > -
-> >  	ret = mtk_dp_dt_parse(mtk_dp, pdev);
-> >  	if (ret)
-> >  		return dev_err_probe(dev, ret, "Failed to parse dt\n");
-> >  
-> > -	drm_dp_aux_init(&mtk_dp->aux);
-> >  	mtk_dp->aux.name = "aux_mtk_dp";
-> > +	mtk_dp->aux.dev = dev;
-> >  	mtk_dp->aux.transfer = mtk_dp_aux_transfer;
-> > +	drm_dp_aux_init(&mtk_dp->aux);
-> >  
-> >  	spin_lock_init(&mtk_dp->irq_thread_lock);
-> >  
+Changes since:
+ v1:
+  * Use EADDRNOTAVAIL instead of adding a new error code.
+  * Correct also this behavior for sysfs kprobe.
+ v2:
+  * Count the number of symbols corresponding to function name and return
+  EADDRNOTAVAIL if higher than 1.
+  * Return ENOENT if above count is 0, as it would be returned later by while
+  registering the kprobe.
+ v3:
+  * Check symbol does not contain ':' before testing its uniqueness.
+  * Add a selftest to check this is not possible to install a kprobe for a non
+  unique symbol.
+
+Francis Laniel (2):
+  tracing/kprobes: Return EADDRNOTAVAIL when func matches several
+    symbols
+  selftests/ftrace: Add new test case which checks non unique symbol
+
+ kernel/trace/trace_kprobe.c                   | 63 +++++++++++++++++++
+ kernel/trace/trace_probe.h                    |  1 +
+ .../test.d/kprobe/kprobe_non_uniq_symbol.tc   | 13 ++++
+ 3 files changed, 77 insertions(+)
+ create mode 100644 tools/testing/selftests/ftrace/test.d/kprobe/kprobe_non_uniq_symbol.tc
+
+
+Best regards and thank you in advance.
+---
+[1]: https://lore.kernel.org/lkml/20230816163517.112518-1-flaniel@linux.microsoft.com/
+[2]: https://lore.kernel.org/lkml/20230819101105.b0c104ae4494a7d1f2eea742@kernel.org/
+--
+2.34.1
+
