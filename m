@@ -2,50 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 546B1788C44
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 17:15:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5EC3788C48
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 17:16:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234543AbjHYPPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 11:15:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42236 "EHLO
+        id S235088AbjHYPQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 11:16:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234556AbjHYPPG (ORCPT
+        with ESMTP id S240185AbjHYPQM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 11:15:06 -0400
+        Fri, 25 Aug 2023 11:16:12 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73486212A;
-        Fri, 25 Aug 2023 08:15:03 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 974DF212A;
+        Fri, 25 Aug 2023 08:16:09 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 11B78655D3;
-        Fri, 25 Aug 2023 15:15:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6EC8EC433C8;
-        Fri, 25 Aug 2023 15:15:02 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3642564113;
+        Fri, 25 Aug 2023 15:16:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D27FC433C8;
+        Fri, 25 Aug 2023 15:16:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692976502;
-        bh=6DMQCZbZ+UizhzDWoKS3qOjSB+JIh/P9g7AHQPjx3zw=;
+        s=k20201202; t=1692976568;
+        bh=RlUOxxL7jJQGESweP3YbxAWqflgA6jjw+4tZbwdOzfU=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=H6ZooxvDWg9sQQq89Kv+P1kZPnVCYjeoLUDGi0I7c+4R/vEVKhGvwZPqKb+ie3GDW
-         gnQ/ugkoNkke68/VTkdtbIP23bLHxBvuUZoYtgGpm4GcGlKJbH242oyPQ+qFHSHeFy
-         Yc2xIhav0xIA97T4GJM/F5ooVx+H+bddxw7zSPqKPrBTjsKrQBRv1IJCzRAXnqrCRu
-         BXQDa7HtshBHNanVMTtzzycO1YNcucTcZeApaSfn2eDTRbnf73y5K0d/qvWlSteV19
-         vV5LjZmvi14B2P1fjGITNC9+POBcKqFa2eIEiNdO7fcv0GSg0ho8lSgKy4UCzFGx1D
-         vIFxzUaACY3lQ==
-Date:   Fri, 25 Aug 2023 08:15:01 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Chandan Babu R <chandan.babu@oracle.com>,
-        Dave Chinner <dchinner@redhat.com>, linux-xfs@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] xfs: fix select in config XFS_ONLINE_SCRUB_STATS
-Message-ID: <20230825151501.GJ17912@frogsfrogsfrogs>
-References: <20230825120513.29235-1-lukas.bulwahn@gmail.com>
+        b=r6naCyJ8sESpKYIhGWT5mIKOf2HZgc1sqxdWuL8wGrsALz6G7CFwHDKhMxL4Cwyuu
+         Bg/nHDjVJQl/B+RbkR6kKucFumf99QjQh/emosiJQ5vvFG/yF5YbpiZ7TcMbHJ5K9N
+         OGfeDV2ZO3AnZwlVquWtNzUPqDRhkb8XDEN0iud/v1ccM7cAmij6qWk2dSX7f5f3OH
+         EYhTnSv+NjHekDzoTuo1Kcsq5vQ2e6Wt68I1uss4ue/scbQlmlzGnVNY1ZOGJ42Qzk
+         EpqOMV5w+Q9fhFAfj2aU6kesS0KnM+1p4D2wzay6q2biUUjFdyBWM5wwJCeSPv0ND+
+         eas0jsxniYuhg==
+Date:   Fri, 25 Aug 2023 16:16:01 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Stefan Wahren <wahrenst@gmx.net>
+Cc:     Pankaj Gupta <pankaj.gupta@nxp.com>, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, clin@suse.com,
+        conor+dt@kernel.org, pierre.gondois@arm.com, ping.bai@nxp.com,
+        xiaoning.wang@nxp.com, wei.fang@nxp.com, peng.fan@nxp.com,
+        haibo.chen@nxp.com, festevam@gmail.com, linux-imx@nxp.com,
+        davem@davemloft.net, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, gaurav.jain@nxp.com,
+        alexander.stein@ew.tq-group.com, sahil.malhotra@nxp.com,
+        aisheng.dong@nxp.com, V.Sethi@nxp.com,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v5 06/11] firmware: imx: add driver for NXP EdgeLock
+ Enclave
+Message-ID: <20230825-escalate-mannish-523aa602ef36@spud>
+References: <20230823073330.1712721-1-pankaj.gupta@nxp.com>
+ <20230823073330.1712721-7-pankaj.gupta@nxp.com>
+ <f7a1252f-d043-b197-6d21-2a603d928da3@gmx.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="8GdQE578ZXm4nCfq"
 Content-Disposition: inline
-In-Reply-To: <20230825120513.29235-1-lukas.bulwahn@gmail.com>
+In-Reply-To: <f7a1252f-d043-b197-6d21-2a603d928da3@gmx.net>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -56,45 +69,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 25, 2023 at 02:05:13PM +0200, Lukas Bulwahn wrote:
-> Commit d7a74cad8f45 ("xfs: track usage statistics of online fsck")
-> introduces config XFS_ONLINE_SCRUB_STATS, which selects the non-existing
-> config FS_DEBUG. It is probably intended to select the existing config
-> XFS_DEBUG.
-> 
-> Fix the select in config XFS_ONLINE_SCRUB_STATS.
-> 
-> Fixes: d7a74cad8f45 ("xfs: track usage statistics of online fsck")
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
-Oops.
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+--8GdQE578ZXm4nCfq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> ---
-> Darrick, please pick this quick 'typo' fix.
+> Am 23.08.23 um 09:33 schrieb Pankaj Gupta:
+> > The Edgelock Enclave , is the secure enclave embedded in the SoC
+> > to support the features like HSM, SHE & V2X, using message based
+> > communication channel.
+> >=20
+> > ELE FW communicates on a dedicated MU with application core where
+> > kernel is running. It exists on specific i.MX processors. e.g.
+> > i.MX8ULP, i.MX93.
+> >=20
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Closes:https://lore.kernel.org/oe-kbuild-all/202304120902.bP52A56z-lkp@=
+intel.com
+> > Signed-off-by: Pankaj Gupta <pankaj.gupta@nxp.com>
 
-  ^^^^ isn't the maintainer anymore. ;)
+In passing, LKP did not report that support for your firmware was
+missing, please remove the Reported-by & Closes tags.
 
---D
+--8GdQE578ZXm4nCfq
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> v2: removed a stupid last-minute insert on my Signed-off-by line.
-> 
->  fs/xfs/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/xfs/Kconfig b/fs/xfs/Kconfig
-> index c9d653168ad0..ed0bc8cbc703 100644
-> --- a/fs/xfs/Kconfig
-> +++ b/fs/xfs/Kconfig
-> @@ -147,7 +147,7 @@ config XFS_ONLINE_SCRUB_STATS
->  	bool "XFS online metadata check usage data collection"
->  	default y
->  	depends on XFS_ONLINE_SCRUB
-> -	select FS_DEBUG
-> +	select XFS_DEBUG
->  	help
->  	  If you say Y here, the kernel will gather usage data about
->  	  the online metadata check subsystem.  This includes the number
-> -- 
-> 2.17.1
-> 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZOjFsQAKCRB4tDGHoIJi
+0jc2AP0foAd3nrsjN2d+JOE229wUlQRLIr5dLjt1Osd1MSXYQwD/Ve7A/HfqFFxE
+VuygqSi5LSd/ZfCtbwhAq4BGuJFSBww=
+=LLDe
+-----END PGP SIGNATURE-----
+
+--8GdQE578ZXm4nCfq--
