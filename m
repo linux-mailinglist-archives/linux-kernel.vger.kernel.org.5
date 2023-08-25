@@ -2,222 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8333878819E
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 10:09:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03A4878819A
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 10:09:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243387AbjHYIJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 04:09:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34114 "EHLO
+        id S237949AbjHYIIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 04:08:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241806AbjHYIIz (ORCPT
+        with ESMTP id S241806AbjHYIIo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 04:08:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92AC51FF7
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 01:08:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692950890;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=l9YDmP7EGByhxJ360XVPZoot7p/wWLTefjiD4Jsf+DI=;
-        b=GwaRkEGyx2uLhrr+xchNYu6dlAFFFVO9kJzpQlJB2xkcHAQUxXERky14aixh1bE9gdfdPG
-        c8DKM6NTDRdWnoq12KDaw2Ku34wPn/urn8DX2ZieYwwTzvX09hL0DY5k5zy1lgdsw8biU/
-        Ny3Iz7fWBtLuG0AwZMvgGB2UR2srsZc=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-650-Hc88rSiKM1ueFlgf5Zo96g-1; Fri, 25 Aug 2023 04:08:09 -0400
-X-MC-Unique: Hc88rSiKM1ueFlgf5Zo96g-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-3fe4f953070so5615975e9.2
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 01:08:08 -0700 (PDT)
+        Fri, 25 Aug 2023 04:08:44 -0400
+Received: from mail-vk1-xa33.google.com (mail-vk1-xa33.google.com [IPv6:2607:f8b0:4864:20::a33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2A161FFA
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 01:08:40 -0700 (PDT)
+Received: by mail-vk1-xa33.google.com with SMTP id 71dfb90a1353d-4871e5dbe0cso1048564e0c.1
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 01:08:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692950920; x=1693555720;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=6QcQszMmxdJXwrdj7qv0i9KCRG16x6Uvx3Pa+z1CyMw=;
+        b=kEtf7/dJtTkeGYA9DS3Z7w0+USux+OmEZxVGCz29NkVWX3Qsq3XmhIxosoEibdvlge
+         4kmMeo9X53/5rlLa4p2CGlpDlmsCvSeaH0IKkM3p0YX0ZSgdo6FhQrFm8DSA+/HsPwNs
+         Pdtqggstnu370CZL4cGFTUMqwRXpkVk1EAupqfBGoCFn2zu1qO8jNUtTTkty8KOa46Vp
+         oH3ebYMo8M04POs8Yf7S+PbOMfGyqDx//XmIlrvcgiZASOt56kIdPdDkK8Ck/45lXwhM
+         3mpNpnLHi9PZ31O6pv8fH/7rZ5A1uAk1u5sF4Q9Z/OniV6tKFgQPVwhjX9Pm5HttSW0G
+         /JoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692950887; x=1693555687;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=l9YDmP7EGByhxJ360XVPZoot7p/wWLTefjiD4Jsf+DI=;
-        b=Ybdz92fdMkOFHEhO5cYgXO9vYD0EYgCTkWEABPp9b2CH/6EJRhsObI+NKE0/hMxm7B
-         6r65lSOyddqAeNSZrYNCQeQaPZA8RQAXs5RzIBpd8QNVJnlGWNnii8uFsh2BlWQ4rTj4
-         eRBDmynXF9E5tVZLUlQym6cSuLtZt5Aru7YCRwyGRJJbRVUlTSmHKB0uZLCgMunFQXci
-         lJQBy2FnXrxlLXzfXglWwMmvHG73MXF1kx9whck4ZVSuafb+gxgRAzvLKukldlkYwX72
-         KTWu2OlM5ww5lgwxgOozcN0S3VXOwFRydPXkRZd5OzTvvke2ZbCYUX0p0NT46nTNs5Eg
-         qkcg==
-X-Gm-Message-State: AOJu0Yxgq1nbpfQm0Pe/YrUoKgzsvnc/3mZNxU2i7ztJmuzurZjPkCKs
-        O7YPEi09XhDk3gBAgoq7R9Zije3COHAYYEQ5EKLT2qqN7Ux1UPgmT42YayLEgcZNLBKH74VnJNg
-        YhPd6lLaJ5/Cd12HhjVL1gpme
-X-Received: by 2002:a7b:cc8e:0:b0:401:b3a5:ec03 with SMTP id p14-20020a7bcc8e000000b00401b3a5ec03mr1618534wma.1.1692950887384;
-        Fri, 25 Aug 2023 01:08:07 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHB2QDeCnpUSinediuR+3DhAUb/uZh+8tLlW2HtMVIOL3fzEOVQGLx576P+9vuPymPt0laUbA==
-X-Received: by 2002:a7b:cc8e:0:b0:401:b3a5:ec03 with SMTP id p14-20020a7bcc8e000000b00401b3a5ec03mr1618519wma.1.1692950887063;
-        Fri, 25 Aug 2023 01:08:07 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:2bc:381::432? ([2a01:e0a:2bc:381::432])
-        by smtp.gmail.com with ESMTPSA id k2-20020a7bc302000000b003fc06169ab3sm4672896wmj.20.2023.08.25.01.08.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Aug 2023 01:08:06 -0700 (PDT)
-Message-ID: <56ba8125-2c6f-a9c9-d498-0ca1c153dcb2@redhat.com>
-Date:   Fri, 25 Aug 2023 10:08:05 +0200
+        d=1e100.net; s=20221208; t=1692950920; x=1693555720;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6QcQszMmxdJXwrdj7qv0i9KCRG16x6Uvx3Pa+z1CyMw=;
+        b=U4SbTVI46CykuQ6mRlpo+4fG92nXy5HA8m+yBOMsuVTmL6DcTHK9RUMJFVbEIrIMaZ
+         D/zD7s2JWOfv8WxYVJXBknzjd5dXdCja0HaHy5B5wdjkFnPyuJZf6NCVoYEZ3WjXmX8u
+         p2atHkANOcYEgv8e+9uR4H4YaRHAs/Q27DAyH+rPgrbMTWET17qEqoiLFaGfxP8MM3oD
+         8KhpXLLh49kXaSynhSvZTxsKlTroi3wqQ8TvMKdHoUkVDnSxm5ePnFvLKmUszslhLIVa
+         z/bBqeFERNGGX+FV1WcF+kXxyaVEvDNKNtjBiHbSmCRGpOmG6cjI+FDohiAj9ACiXOsd
+         VqUg==
+X-Gm-Message-State: AOJu0Yy5cjAV3HFFaWyQKpCpxZ0/ssWHINvXpp5pMxyXUPYcArR3pQZ7
+        LTAdetEjB9sbCwAXU8RUMsm/8bADjjyzPnCN2qZlRg==
+X-Google-Smtp-Source: AGHT+IGKlUoZqLtAuC5n6U8/S/LEQzMs7GSNBs/X3ca/L9sMnytTCYWAR49NLSPWdqYY3WSdtWOyVrio55hiXGg7eeY=
+X-Received: by 2002:a05:6122:c56:b0:48d:392c:c7d9 with SMTP id
+ i22-20020a0561220c5600b0048d392cc7d9mr5516493vkr.6.1692950919958; Fri, 25 Aug
+ 2023 01:08:39 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Subject: Re: selftests: hid: trouble building with clang due to missing header
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
-        linux-input@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Kees Cook <keescook@google.com>
-References: <CAFhGd8ryUcu2yPC+dFyDKNuVFHxT-=iayG+n2iErotBxgd0FVw@mail.gmail.com>
- <CAKwvOd=p_7gWwBnR_RHUPukkG1A25GQy6iOnX_eih7u65u=oxw@mail.gmail.com>
- <CAO-hwJLio2dWs01VAhCgmub5GVxRU-3RFQifviOL0OTaqj9Ktg@mail.gmail.com>
- <CAFhGd8qmXD6VN+nuXKtV_Uz14gzY1Kqo7tmOAhgYpTBdCnoJRQ@mail.gmail.com>
- <CAO-hwJJ_ipXwLjyhGC6_4r-uZ-sDbrb_W7um6F2vgws0d-hvTQ@mail.gmail.com>
- <CAO-hwJ+DTPXWbpNaBDvCkyAsWZHbeLiBwYo4k93ZW79Jt-HAkg@mail.gmail.com>
- <CAFhGd8pVjUPpukHxxbQCEnmgDUqy-tgBa7POkmgrYyFXVRAMEw@mail.gmail.com>
- <CAO-hwJJntQTzcJH5nf9RM1bVWGVW1kb28rJ3tgew1AEH00PmJQ@mail.gmail.com>
- <CAFhGd8rgdszt5vgWuGKkcpTZbKvihGCJXRKKq7RP17+71dTYww@mail.gmail.com>
- <20230822214220.jjx3srik4mteeond@google.com>
-Content-Language: en-US
-In-Reply-To: <20230822214220.jjx3srik4mteeond@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230824145023.559380953@linuxfoundation.org>
+In-Reply-To: <20230824145023.559380953@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 25 Aug 2023 13:38:28 +0530
+Message-ID: <CA+G9fYvNipSR9HDcWT7F6j+yvy87jsbzLG-vUQSGH-o2JQv4nQ@mail.gmail.com>
+Subject: Re: [PATCH 5.15 000/139] 5.15.128-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Christian Brauner <brauner@kernel.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org, linux-nfs@vger.kernel.org,
+        LTP List <ltp@lists.linux.it>,
+        Sherry Yang <sherry.yang@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 24 Aug 2023 at 20:22, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.15.128 release.
+> There are 139 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sat, 26 Aug 2023 14:49:55 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.128-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
 
-On Tue, Aug 22, 2023 at 11:42 PM Justin Stitt <justinstitt@google.com> wrote:
-> > > > > Which kernel are you trying to test?
-> > > > > I tested your 2 commands on v6.5-rc7 and it just works.
-> > > >
-> > > > I'm also on v6.5-rc7 (706a741595047797872e669b3101429ab8d378ef)
-> > > >
-> > > > I ran these exact commands:
-> > > > |    $ make mrproper
-> > > > |    $ make LLVM=1 ARCH=x86_64 headers
-> > > > |    $ make LLVM=1 ARCH=x86_64 -j128 -C tools/testing/selftests
-> > > > TARGETS=hid &> out
-> > > >
-> > > > and here's the contents of `out` (still warnings/errors):
-> > > > https://gist.github.com/JustinStitt/d0c30180a2a2e046c32d5f0ce5f59c6d
-> > > >
-> > > > I have a feeling I'm doing something fundamentally incorrectly. Any ideas?
-> > >
-> > > Sigh... there is a high chance my Makefile is not correct and uses the
-> > > installed headers (I was running the exact same commands, but on a
-> > > v6.4-rc7+ kernel).
-> > >
-> > > But sorry, it will have to wait for tomorrow if you want me to have a
-> > > look at it. It's 11:35 PM here, and I need to go to bed
-> > Take it easy. Thanks for the prompt responses here! I'd like to get
-> > the entire kselftest make target building with Clang so that we can
-> > close [1].
+The same test regressions found on stable-rc linux.5.15.y as reported
+on stable-rc linux.6.1.y branch. LTP syscalls chown02 and fchown02 fails
+on arm64 Rpi4 device with the NFS rootfile system.
 
-Sorry I got urgent matters to tackle yesterday.
+Test log:
+--------
+chown02.c:46: TPASS: chown(testfile1, 0, 0) passed
+chown02.c:46: TPASS: chown(testfile2, 0, 0) passed
+chown02.c:58: TFAIL: testfile2: wrong mode permissions 0100700, expected 0102700
 
-It took me a while to understand what was going on, and I finally found
-it.
+fchown02.c:57: TPASS: fchown(3, 0, 0) passed
+fchown02.c:57: TPASS: fchown(4, 0, 0) passed
+fchown02.c:67: TFAIL: testfile2: wrong mode permissions 0100700,
+expected 0102700
 
-struct hid_bpf_ctx is internal to the kernel, and so is declared in
-vmlinux.h, that we generate through BTF. But to generate the vmlinux.h
-with the correct symbols, these need to be present in the running
-kernel.
-And that's where we had a fundamental difference: I was running my
-compilations on a kernel v6.3+ (6.4.11) with that symbol available, and
-you are probably not.
+  Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-The bpf folks are using a clever trick to force the compilation[2]. And
-I think the following patch would work for you:
+NOTE:
+Do we need a backport patch ?
 
----
- From bb9eccb7a896ba4b3a35ed12a248e6d6cfed2df6 Mon Sep 17 00:00:00 2001
-From: Benjamin Tissoires <bentiss@kernel.org>
-Date: Fri, 25 Aug 2023 10:02:32 +0200
-Subject: [PATCH] selftests/hid: ensure we can compile the tests on kernels
-  pre-6.3
+  nfsd: use vfs setgid helper
+    commit 2d8ae8c417db284f598dffb178cc01e7db0f1821 upstream.
 
-For the hid-bpf tests to compile, we need to have the definition of
-struct hid_bpf_ctx. This definition is an internal one from the kernel
-and it is supposed to be defined in the generated vmlinux.h.
 
-This vmlinux.h header is generated based on the currently running kernel
-or if the kernel was already compiled in the tree. If you just compile
-the selftests without compiling the kernel beforehand and you are running
-on a 6.2 kernel, you'll end up with a vmlinux.h without the hid_bpf_ctx
-definition.
+## Build
+* kernel: 5.15.128-rc1
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-5.15.y
+* git commit: 00e5f0b76767cab779762a1d27fc17c1cf2a3606
+* git describe: v5.15.127-140-g00e5f0b76767
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.15.y/build/v5.15.127-140-g00e5f0b76767
 
-Use the clever trick from tools/testing/selftests/bpf/progs/bpf_iter.h
-to force the definition of that symbol in case we don't find it in the
-BTF.
+## Test Regressions (compared to v5.15.127)
+* bcm2711-rpi-4-b, ltp-syscalls
+  - chown02
+  - fchown02
 
-Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
----
-  tools/testing/selftests/hid/progs/hid.c       |  3 ---
-  .../selftests/hid/progs/hid_bpf_helpers.h     | 20 +++++++++++++++++++
-  2 files changed, 20 insertions(+), 3 deletions(-)
+* bcm2711-rpi-4-b-clang, ltp-syscalls
+  - chown02
+  - fchown02
 
-diff --git a/tools/testing/selftests/hid/progs/hid.c b/tools/testing/selftests/hid/progs/hid.c
-index 88c593f753b5..1e558826b809 100644
---- a/tools/testing/selftests/hid/progs/hid.c
-+++ b/tools/testing/selftests/hid/progs/hid.c
-@@ -1,8 +1,5 @@
-  // SPDX-License-Identifier: GPL-2.0
-  /* Copyright (c) 2022 Red hat */
--#include "vmlinux.h"
--#include <bpf/bpf_helpers.h>
--#include <bpf/bpf_tracing.h>
-  #include "hid_bpf_helpers.h"
-  
-  char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/hid/progs/hid_bpf_helpers.h b/tools/testing/selftests/hid/progs/hid_bpf_helpers.h
-index 4fff31dbe0e7..749097f8f4d9 100644
---- a/tools/testing/selftests/hid/progs/hid_bpf_helpers.h
-+++ b/tools/testing/selftests/hid/progs/hid_bpf_helpers.h
-@@ -5,6 +5,26 @@
-  #ifndef __HID_BPF_HELPERS_H
-  #define __HID_BPF_HELPERS_H
-  
-+/* "undefine" structs in vmlinux.h, because we "override" them below */
-+#define hid_bpf_ctx hid_bpf_ctx___not_used
-+#include "vmlinux.h"
-+#undef hid_bpf_ctx
-+
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+
-+struct hid_bpf_ctx {
-+	__u32 index;
-+	const struct hid_device *hid;
-+	__u32 allocated_size;
-+	enum hid_report_type report_type;
-+	union {
-+		__s32 retval;
-+		__s32 size;
-+	};
-+};
-+
-  /* following are kfuncs exported by HID for HID-BPF */
-  extern __u8 *hid_bpf_get_data(struct hid_bpf_ctx *ctx,
-  			      unsigned int offset,
--- 
-2.41.0
----
-
-Would you mind testing it?
-
-Cheers,
-Benjamin
-
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/testing/selftests/bpf/progs/bpf_iter.h#n3
-
+--
+Linaro LKFT
+https://lkft.linaro.org
