@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BACA787D85
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 04:08:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46197787D8A
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 04:08:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239900AbjHYCIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 22:08:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40250 "EHLO
+        id S240691AbjHYCID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 22:08:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240779AbjHYCHj (ORCPT
+        with ESMTP id S240851AbjHYCHl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 22:07:39 -0400
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B855E66
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 19:07:37 -0700 (PDT)
-Received: by mail-pf1-x44a.google.com with SMTP id d2e1a72fcca58-68a400a6e38so606025b3a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 19:07:37 -0700 (PDT)
+        Thu, 24 Aug 2023 22:07:41 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4197619A
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 19:07:39 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1c09c1fd0abso5918485ad.2
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 19:07:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692929257; x=1693534057;
+        d=google.com; s=20221208; t=1692929258; x=1693534058;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=IGe/iF9SBZy5+j6HXUabX6OshBa9kEx+gGQsGFRDhhI=;
-        b=u3xIqi9osuTvUCTmUOsYQxgIxFLIf96g/NRPmenE/NCUekvOeA3QZmB+K52LPFPwNF
-         xEVmV1L/UKl0Xrfn/eWKc4r/IlOTYLpHE8VprA5emav26PB+zZLBQW7Dm58jOCtAmYuD
-         QBWCtjzSC1HkAKZynbCpalz5g7KSPmdGRrGawljdc3pv4JedzRwhHMlgjEniNstJoa/m
-         wSYsv96Av9ZAajSCFP8BGXixBnq+Ve4A3NdqqBf6V0x29ai/Z9BBDRJgDdruOj7OAJP6
-         fp9xQ8TBpf2+7OytS6xy8wLi2ejBOUpmWOtZzlFxdkVWxTjn7wLHY0EsvM/Uxayr7afa
-         Ufhg==
+        bh=ij7IJ9LeENVlJByi4z/6QrJLTj5aVJhs6LLV7CfHy1E=;
+        b=nZY/HsLnBnVzySI5bwR83jGtbGyAfr52IW7zOyBFfiKpVXDzCz66LOicUFzYv7+pjp
+         npFN6/fXfHEsdYPRvxhmAcBXuKa8iMXGOKHemw0KdIlsqkkXiLnSXXDcDnZYdVuZBLGS
+         VI9bK5XLqVYp/wn87KYxY8dZhSkVnavD8mDxyzgLdYXe9GpF4ZoD3Lzx/8GjB9V/sZ1W
+         6+l3YikZuyH3kyvhGw7m6g/eEjc/Lnb8+7T85xgUkVWlGeps+Q24Rl77dCIiUQkElMJF
+         RlxuicGUGppQCuBWcsHPVz/467/laIGeNy3RpNIa4jqIQ4JH5NK4hyDm31oi/CweNAvt
+         ZAJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692929257; x=1693534057;
+        d=1e100.net; s=20221208; t=1692929258; x=1693534058;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=IGe/iF9SBZy5+j6HXUabX6OshBa9kEx+gGQsGFRDhhI=;
-        b=LRCSPmNVfgaBhpUuzvkIOG0WlrJLLP6U9TYlIEYOLddp6zmc0vCANf47VeaulyGpSV
-         62r29Lm6tBQKpgU41C7RjunCaZfbfbVguAAfPXdzfuCSr3Tdrze+fxA7fiRODz5a7G3Y
-         29/PCEt6SQQ3iphGSfKM/EFy1eMhgQlRCXlZrBAqYmdcweu6C8/dmeehTalEEf2fnJp4
-         soc1I0c6Cw/5PClWKl6O/bub7c+fM+LPbfLvoGoxTDeoo8JnXYcLDWlKShyVwE6xzpvs
-         u38MLyQrsRIExmt/CWxHw7AbSnS91U9TvlcZ9CHFfQqLqt2pd5rtWjJDe+u9ZG443oHl
-         xozg==
-X-Gm-Message-State: AOJu0Yyf54TC/WVWp2HMMEpcpBU0vXQ81pSIWuAi3hY03vfRoFzH2pOc
-        51/pYZkV03ywihIMrXrr5BaExeetzmc=
-X-Google-Smtp-Source: AGHT+IH6trbdMiY01sxIrZj6hxaaLAYXKk3TyN33OwO8ttuBlmlUrTwS7e+FDOumukPVb66A8xaSRMzmG8U=
+        bh=ij7IJ9LeENVlJByi4z/6QrJLTj5aVJhs6LLV7CfHy1E=;
+        b=fteq6FayOf6Gr2sMw76lVrLTQcbbl2v0nC+ALFPNE3Fu0EOBpodV6Lm6UXuCj3Jp4v
+         Vdc6YXW4iGJSub/8PL9sIeqoEYmsRAxc7mreX9upXxI2GxdcUtKe7ylx0/ThBKle2kIV
+         ttpuaqEDI8U2SAeRZHhgg54da/+yJUOyTW5A/SjoLMsFVhdLOu+Xp7o3FiZ/gWgg8tGu
+         Nk58ITvIkaVp59zhSa25cqGtp5cJs6i3Vw9ksx/9R2E/TT2igJ4xm22D6cUef32C8VLn
+         gU7CSHhK9ommGyE2c1KhALcuI5+woAacZUDwUZz1hCpFyVDy2zikt2Ivruf1k81OWSTx
+         RTUQ==
+X-Gm-Message-State: AOJu0YzmgT69TExUbslmjTyA0dj5c05ovkrl/CzcOncsGiNlOFeLTdf1
+        A7lDv0nOYDqflU/ZdynSJOqYjm4MYt0=
+X-Google-Smtp-Source: AGHT+IF7loOUbycshuEEvy226/Q/37wCJDPtRBqLjjJlP1CdSVcxR8XOuDqm3RnPk2MjhQ3dFwEeCkRrGno=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a00:2389:b0:687:9855:ab23 with SMTP id
- f9-20020a056a00238900b006879855ab23mr9667830pfc.1.1692929256877; Thu, 24 Aug
- 2023 19:07:36 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a17:902:f203:b0:1bc:e6a:205e with SMTP id
+ m3-20020a170902f20300b001bc0e6a205emr6177096plc.5.1692929258615; Thu, 24 Aug
+ 2023 19:07:38 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu, 24 Aug 2023 19:07:32 -0700
+Date:   Thu, 24 Aug 2023 19:07:33 -0700
 In-Reply-To: <20230825020733.2849862-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20230825020733.2849862-1-seanjc@google.com>
 X-Mailer: git-send-email 2.42.0.rc2.253.gd59a3bf2b4-goog
-Message-ID: <20230825020733.2849862-2-seanjc@google.com>
-Subject: [PATCH 1/2] KVM: Allow calling mmu_invalidate_retry_hva() without
- holding mmu_lock
+Message-ID: <20230825020733.2849862-3-seanjc@google.com>
+Subject: [PATCH 2/2] KVM: x86/mmu: Retry fault before acquiring mmu_lock if
+ mapping is changing
 From:   Sean Christopherson <seanjc@google.com>
 To:     Sean Christopherson <seanjc@google.com>,
         Paolo Bonzini <pbonzini@redhat.com>
@@ -72,75 +72,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow checking mmu_invalidate_retry_hva() without holding mmu_lock, even
-though mmu_lock must be held to guarantee correctness, i.e. to avoid
-false negatives.  Dropping the requirement that mmu_lock be held will
-allow pre-checking for retry before acquiring mmu_lock, e.g. to avoid
-contending mmu_lock when the guest is accessing a range that is being
-invalidated by the host.
+Retry page faults without acquiring mmu_lock if the resolved hva is covered
+by an active invalidation.  Contending for mmu_lock is especially
+problematic on preemptible kernels as the mmu_notifier invalidation task
+will yield mmu_lock (see rwlock_needbreak()), delay the in-progress
+invalidation, and ultimately increase the latency of resolving the page
+fault.  And in the worst case scenario, yielding will be accompanied by a
+remote TLB flush, e.g. if the invalidation covers a large range of memory
+and vCPUs are accessing addresses that were already zapped.
 
-Contending mmu_lock can have severe negative side effects for x86's TDP
-MMU when running on preemptible kernels, as KVM will yield from the
-zapping task (holds mmu_lock for write) when there is lock contention,
-and yielding after any SPTEs have been zapped requires a VM-scoped TLB
-flush.
+Alternatively, the yielding issue could be mitigated by teaching KVM's MMU
+iterators to perform more work before yielding, but that wouldn't solve
+the lock contention and would negatively affect scenarios where a vCPU is
+trying to fault in an address that is NOT covered by the in-progress
+invalidation.
 
-Wrap mmu_invalidate_in_progress in READ_ONCE() to ensure that calling
-mmu_invalidate_retry_hva() in a loop won't put KVM into an infinite loop,
-e.g. due to caching the in-progress flag and never seeing it go to '0'.
-
-Force a load of mmu_invalidate_seq as well, even though it isn't strictly
-necessary to avoid an infinite loop, as doing so improves the probability
-that KVM will detect an invalidation that already completed before
-acquiring mmu_lock and bailing anyways.
-
-Note, adding READ_ONCE() isn't entirely free, e.g. on x86, the READ_ONCE()
-may generate a load into a register instead of doing a direct comparison
-(MOV+TEST+Jcc instead of CMP+Jcc), but practically speaking the added cost
-is a few bytes of code and maaaaybe a cycle or three.
-
+Reported-by: Yan Zhao <yan.y.zhao@intel.com>
+Closes: https://lore.kernel.org/all/ZNnPF4W26ZbAyGto@yzhao56-desk.sh.intel.com
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- include/linux/kvm_host.h | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+ arch/x86/kvm/mmu/mmu.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index 7418e881c21c..7314138ba5f4 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -1962,18 +1962,29 @@ static inline int mmu_invalidate_retry_hva(struct kvm *kvm,
- 					   unsigned long mmu_seq,
- 					   unsigned long hva)
- {
--	lockdep_assert_held(&kvm->mmu_lock);
- 	/*
- 	 * If mmu_invalidate_in_progress is non-zero, then the range maintained
- 	 * by kvm_mmu_notifier_invalidate_range_start contains all addresses
- 	 * that might be being invalidated. Note that it may include some false
- 	 * positives, due to shortcuts when handing concurrent invalidations.
-+	 *
-+	 * Note the lack of a memory barriers!  The caller *must* hold mmu_lock
-+	 * to avoid false negatives!  Holding mmu_lock is not mandatory though,
-+	 * e.g. to allow pre-checking for an in-progress invalidation to
-+	 * avoiding contending mmu_lock.  Ensure that the in-progress flag and
-+	 * sequence counter are always read from memory, so that checking for
-+	 * retry in a loop won't result in an infinite retry loop.  Don't force
-+	 * loads for start+end, as the key to avoiding an infinite retry loops
-+	 * is observing the 1=>0 transition of in-progress, i.e. getting false
-+	 * negatives (if mmu_lock isn't held) due to stale start+end values is
-+	 * acceptable.
- 	 */
--	if (unlikely(kvm->mmu_invalidate_in_progress) &&
-+	if (unlikely(READ_ONCE(kvm->mmu_invalidate_in_progress)) &&
- 	    hva >= kvm->mmu_invalidate_range_start &&
- 	    hva < kvm->mmu_invalidate_range_end)
- 		return 1;
--	if (kvm->mmu_invalidate_seq != mmu_seq)
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index 1a5a1e7d1eb7..8e2e07ed1a1b 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -4334,6 +4334,9 @@ static int kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault,
+ 	if (unlikely(!fault->slot))
+ 		return kvm_handle_noslot_fault(vcpu, fault, access);
+ 
++	if (mmu_invalidate_retry_hva(vcpu->kvm, fault->mmu_seq, fault->hva))
++		return RET_PF_RETRY;
 +
-+	if (READ_ONCE(kvm->mmu_invalidate_seq) != mmu_seq)
- 		return 1;
- 	return 0;
+ 	return RET_PF_CONTINUE;
  }
+ 
 -- 
 2.42.0.rc2.253.gd59a3bf2b4-goog
 
