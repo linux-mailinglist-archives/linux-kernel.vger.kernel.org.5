@@ -2,106 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0E3F787F76
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 08:01:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75724787F7A
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 08:01:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239438AbjHYF67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 01:58:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39976 "EHLO
+        id S239827AbjHYF7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 01:59:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239385AbjHYF63 (ORCPT
+        with ESMTP id S239639AbjHYF6g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 01:58:29 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 558B219B5;
-        Thu, 24 Aug 2023 22:58:26 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-99bcfe28909so59071466b.3;
-        Thu, 24 Aug 2023 22:58:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692943105; x=1693547905;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IJG8goSXk3zwWZ19FJPr0WxT/uyTahaaLMr2MHUcYLA=;
-        b=GNWYmUiuTytI+dVDFGnG7EG3wZqzZqbSLOqOqQ3+M7fas1jK/dQcmKOVwJVl+TA9vS
-         C0GpP5+io7Di8GvFK2C1VsQF8MYgkI6VxmRasZBP4RRXkvLHQ236CF1xusNX9owrOOsG
-         MoWMEHwrhlKotucXNIzltl3TJYvDwwG9vKshqMXCZ8FQI8x6koilEZqG6V4fcUgy8jWS
-         +jmBk9DgG1RO2YJ4ZGD/Xvmmg+8HWFwRc6Xiqu08POhJe9b//KXUwrsqfupx028mUgpd
-         2QbKNLI0FfpJRYD0bif239CmKXO4QlN1RSiQvojLc/H02cFMB9LWHnXv5h82tfp5Tb3T
-         YthA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692943105; x=1693547905;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IJG8goSXk3zwWZ19FJPr0WxT/uyTahaaLMr2MHUcYLA=;
-        b=GNHIhSIpvDxNLpbtn/s5tWHZVqGal7vfaSWom+VajUzkpX58jEoehJI21VGjbVFVUq
-         0ifInUDbcA0KpYE4xhIr/4KMkQ+CbpPDo/sFZ749hQ6ZJ1ei/jkHkROSQwSEaDrRj721
-         LWPxx1DRwn2Mr8D9wXNwL4Ia6JKpxQkRzKFCUJGGZPToHhenZ2wx5DJwHRtAcpOSm4tQ
-         64agdcmi89fDe5dvUhps2Y4FFMcYBWJrz+NYtM9JZL110dAXmyOUgn9Em6no8gVGpb86
-         Mx8/LMIUBxXw8tUoznk5rMWikPmKGS9yccraL6ylb+O6FniF+d1ZPxKG/f2g+Gn/b8SD
-         vfXw==
-X-Gm-Message-State: AOJu0YxkVTV2uGuXqoPwaUbErOsasH7Yo9yoZav635B9CDy0LBISSrML
-        2ful/mGCsAheSCurVkOMwew=
-X-Google-Smtp-Source: AGHT+IF9kWnJZdSru5yBZvRTrZ/LkXpY1drHf+dQXac0YH3cB4rwp3hFRPP5zVnGqhA1fMZuHoiU0Q==
-X-Received: by 2002:a17:906:1ba9:b0:9a1:680e:8c54 with SMTP id r9-20020a1709061ba900b009a1680e8c54mr13090737ejg.71.1692943104488;
-        Thu, 24 Aug 2023 22:58:24 -0700 (PDT)
-Received: from felia.fritz.box ([2a02:810d:7e40:14b0:98c5:e120:ff1e:7709])
-        by smtp.gmail.com with ESMTPSA id re4-20020a170906d8c400b009930042510csm546959ejb.222.2023.08.24.22.58.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Aug 2023 22:58:23 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        Markus Niebel <Markus.Niebel@ew.tq-group.com>,
-        Alexander Stein <alexander.stein@ew.tq-group.com>,
-        Lee Jones <lee@kernel.org>
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] MAINTAINERS: adjust file patterns in TQ SYSTEMS BOARD & DRIVER SUPPORT
-Date:   Fri, 25 Aug 2023 07:58:21 +0200
-Message-Id: <20230825055821.30508-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 25 Aug 2023 01:58:36 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E502419B5;
+        Thu, 24 Aug 2023 22:58:33 -0700 (PDT)
+Received: from kwepemm600003.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RX8NT64B8zrSVf;
+        Fri, 25 Aug 2023 13:56:57 +0800 (CST)
+Received: from [10.67.111.205] (10.67.111.205) by
+ kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Fri, 25 Aug 2023 13:58:29 +0800
+Subject: Re: [PATCH v6 2/7] perf evlist: Add evlist__findnew_tracking_event()
+ helper
+To:     Ian Rogers <irogers@google.com>
+CC:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <jolsa@kernel.org>, <namhyung@kernel.org>,
+        <adrian.hunter@intel.com>, <kan.liang@linux.intel.com>,
+        <james.clark@arm.com>, <tmricht@linux.ibm.com>,
+        <ak@linux.intel.com>, <anshuman.khandual@arm.com>,
+        <linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>
+References: <20230821012734.18241-1-yangjihong1@huawei.com>
+ <20230821012734.18241-3-yangjihong1@huawei.com>
+ <CAP-5=fVw9eO=rVLHL+XuaFxsfwD+ji2f9xWdOv3AkaYj9A+w0A@mail.gmail.com>
+From:   Yang Jihong <yangjihong1@huawei.com>
+Message-ID: <e9c7b1f0-a8d3-3d44-7901-398928ae5fef@huawei.com>
+Date:   Fri, 25 Aug 2023 13:58:29 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
+MIME-Version: 1.0
+In-Reply-To: <CAP-5=fVw9eO=rVLHL+XuaFxsfwD+ji2f9xWdOv3AkaYj9A+w0A@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.111.205]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemm600003.china.huawei.com (7.193.23.202)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 77da3f22b3d5 ("MAINTAINERS: Add entry for TQ-Systems device trees
-and drivers") adds some file patterns for files in arch/arm/boot/dts/, but
-those patterns do not match any files in the repository. Hence,
-./scripts/get_maintainer.pl --self-test=patterns complains about broken
-references. The files of interest are actually in the directory
-arch/arm/boot/dts/nxp/imx/.
+Hello,
 
-Adjust the file patterns to match the intended files.
+On 2023/8/25 12:55, Ian Rogers wrote:
+> On Sun, Aug 20, 2023 at 6:30 PM Yang Jihong <yangjihong1@huawei.com> wrote:
+>>
+>> Currently, intel-bts, intel-pt, and arm-spe may add a dummy event for
+>> tracking to the evlist. We may need to search for the dummy event for
+>> some settings. Therefore, add evlist__findnew_tracking_event() helper.
+> 
+> Given the first two sentences I don't understand why this is
+> evlist__findnew_tracking_event and not evlist__findnew_dummy_event?
+> Are you setting tracking on other events other than dummy? If so, then
+> the commit message isn't right. If not then I'd prefer not to use
+> tracking event in the function name.
+> 
+Yes, add this helper to find tracking event for some setting, will 
+modify commit message, like as follows:
 
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
-Lee, please pick this minor clean-up patch.
+Currently, intel-bts, intel-pt, and arm-spe may add tracking event to 
+the evlist. We may need to search for the tracking event for
+some settings. Therefore, add evlist__findnew_tracking_event() helper.
 
- MAINTAINERS | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+>>
+>> evlist__findnew_tracking_event() also deal with system_wide maps if
+>> system_wide is true.
+> 
+> Could you fix the explanation here, what does "deal with system_wide"
+> mean? A kerneldoc comment and explanation of the system_wide argument
+> would be useful.
+> 
+In the next version, details will be described as follows:
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 52277ee9c1b8..f5d4058b7ff4 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -21817,9 +21817,9 @@ TQ SYSTEMS BOARD & DRIVER SUPPORT
- L:	linux@ew.tq-group.com
- S:	Supported
- W:	https://www.tq-group.com/en/products/tq-embedded/
--F:	arch/arm/boot/dts/imx*mba*.dts*
--F:	arch/arm/boot/dts/imx*tqma*.dts*
--F:	arch/arm/boot/dts/mba*.dtsi
-+F:	arch/arm/boot/dts/nxp/imx/imx*mba*.dts*
-+F:	arch/arm/boot/dts/nxp/imx/imx*tqma*.dts*
-+F:	arch/arm/boot/dts/nxp/imx/mba*.dtsi
- F:	arch/arm64/boot/dts/freescale/imx*mba*.dts*
- F:	arch/arm64/boot/dts/freescale/imx*tqma*.dts*
- F:	arch/arm64/boot/dts/freescale/mba*.dtsi
--- 
-2.17.1
+If system_wide is true, evlist__findnew_tracking_event() set the cpu map 
+of the evsel to all online CPUs.
 
+Is such an explanation okay?
+
+Thanks,
+Yang
