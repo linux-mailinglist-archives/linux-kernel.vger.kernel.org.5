@@ -2,130 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD624787F88
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 08:06:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E44F787F8E
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 08:08:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240516AbjHYGGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 02:06:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53262 "EHLO
+        id S240705AbjHYGIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 02:08:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235624AbjHYGFm (ORCPT
+        with ESMTP id S235624AbjHYGHg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 02:05:42 -0400
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2083.outbound.protection.outlook.com [40.107.102.83])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 427E91BC7;
-        Thu, 24 Aug 2023 23:05:40 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SP04/inhNo7EPtBRe2cz62GN8jiQxcmowOl7NFdSYzFA37Gm/5CjwgcmnQknIE0qWaFRSTtSbhAP/p+IQgr1iZh7lGCUKBryEyTHFdngAvgBK4YuGufpE7uNDkZofXdjhcGFBLrCqFbi/D40Wg25+mOfJmcmADXAAg5F83TejwFrjiXEwOU8JZAYC2rptr1t9qJLWc7IteYBKo49607XgTaPd+NVck7aKtzBggY+mh4qHIE0FQaRvj7PBryxjKyIT59BILznMbRngP1L/Rm3VSgabpvAgmLhpHArKBMZOQpen7IeTApxwRUpZ61jBl5gZxh7ELwjzFSn7PZ6DO6M1g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=mvbV5hPrhiWL/ZCaymdF+2Ma7RnVsHLWvSAkvMJjB2M=;
- b=MTHSIil1p7U5aJPHV7vqxRmCrjSsQC4+oQlNxcJdFyeLU3PPWCcZlY3oXsvu7VNqJlphm6/50GsLEWD31Al7+zI0frllLdzbuOSEBkA79okPKjCwjPdeKIZk1J0xuXqxE1syYzgqk/iSSl+whV+q16WUohpZqsJHnuAvccp2j6TQ3Zu2uMKDY8cN0LNFj7RniO3RAbdZ6ze/6MTmAeNMK6SitdVq2n/QN8hdyZjpLy8jduGvL2GNbV0zmrzF3kd9MWiJyUilZR4m6+suCO0X4SkNq1AT1L1/7SVAhJnUKLpOuAfEhtttVMqur55vy0qoe0S/lwmAdkJ045LxovgK2A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mvbV5hPrhiWL/ZCaymdF+2Ma7RnVsHLWvSAkvMJjB2M=;
- b=cXuHFbcIzWG4D1B+ha0oQRoMlPeXtqCUuoLppGuRFhH7Vo0dW1gfrpKFgMvQFQ+BxSbB3YfxBCzCGq0fPI27LIXCLMtzJTGn+ef1Yq720wmWv5aIlwbjk4gyS1+G5LHMCrWb4RGmRXAFlFy11thElduxbGYBitWtP22MmUdjGPirHAxK9FGHJu6qYnLxbt+bAp2YlkcIMxhpPbbLZ0iLSJFA998jeexQIoHAJiSesnVxC8dMapObzdNBAVlmDVaO9FUwauhuwlb9ZMolMgnX3iHTS/g+07y5gj7fFwbDTMkDn7EPsJNJCqwVMuLrXRI8aIMTiRh8Yzidrde3N0e/kg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from BYAPR12MB3176.namprd12.prod.outlook.com (2603:10b6:a03:134::26)
- by CH2PR12MB4937.namprd12.prod.outlook.com (2603:10b6:610:64::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.27; Fri, 25 Aug
- 2023 06:05:38 +0000
-Received: from BYAPR12MB3176.namprd12.prod.outlook.com
- ([fe80::3bf6:11f3:64d7:2475]) by BYAPR12MB3176.namprd12.prod.outlook.com
- ([fe80::3bf6:11f3:64d7:2475%7]) with mapi id 15.20.6699.022; Fri, 25 Aug 2023
- 06:05:37 +0000
-References: <20230721012932.190742-1-ying.huang@intel.com>
- <20230721012932.190742-5-ying.huang@intel.com>
- <87edkwznsf.fsf@nvdebian.thelocal>
- <87cz0gxylp.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <871qfwwqi3.fsf@nvdebian.thelocal>
- <87a5ukc6nr.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <87sf8ble6g.fsf@nvdebian.thelocal>
- <87lee2bj5g.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-agent: mu4e 1.8.13; emacs 28.2
-From:   Alistair Popple <apopple@nvidia.com>
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org,
-        nvdimm@lists.linux.dev, linux-acpi@vger.kernel.org,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Wei Xu <weixugc@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Yang Shi <shy828301@gmail.com>,
-        Rafael J Wysocki <rafael.j.wysocki@intel.com>
-Subject: Re: [PATCH RESEND 4/4] dax, kmem: calculate abstract distance with
- general interface
-Date:   Fri, 25 Aug 2023 16:00:28 +1000
-In-reply-to: <87lee2bj5g.fsf@yhuang6-desk2.ccr.corp.intel.com>
-Message-ID: <87wmxj7j2v.fsf@nvdebian.thelocal>
-Content-Type: text/plain
-X-ClientProxiedBy: MEWPR01CA0018.ausprd01.prod.outlook.com
- (2603:10c6:220:1e4::17) To BYAPR12MB3176.namprd12.prod.outlook.com
- (2603:10b6:a03:134::26)
+        Fri, 25 Aug 2023 02:07:36 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C5DC1BCC
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 23:07:34 -0700 (PDT)
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37P66xYI003899;
+        Fri, 25 Aug 2023 06:07:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=6sJh0koK4zVQEuVvThXOR9jZ7+gsTEc/n56GLg6EF0c=;
+ b=kanRf1dqfIJrJZc4d6zOh7zoDRpbngB8VpDWBbHgANnXiNVnrkdj5f7C+Nv4u4nPlOSc
+ IgWNWm419zzbL1n56jjzih1uzHkRvBNfGkRBZ+DCUpWNKRvd5ekvPSL/xZa41oFszk6o
+ FyVOXGh3ZR2gJFHzQ1wieO8s4kgH9Afe4znHCauC+zUGSy3c16MDmqBqZ1dPEEnDEn8T
+ DP2fNDK5+Iwb/WFY2UgtSz2CuUwPjBpDNH9gwxw0uw5YkMREfWbw0mhZbOvDwSAMKZis
+ HB24l5slP71nFJML1jxabuwf8McuIys803/UCZ5U7h5izz77s8nmBlw0MD+0ZRF6JPf1 dw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3spp5v8nra-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 25 Aug 2023 06:07:20 +0000
+Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37P67J8Z006328;
+        Fri, 25 Aug 2023 06:07:19 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3spp5v8mjw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 25 Aug 2023 06:07:19 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37P5P25s004085;
+        Fri, 25 Aug 2023 06:02:08 GMT
+Received: from smtprelay04.dal12v.mail.ibm.com ([172.16.1.6])
+        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3sn21rw5xh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 25 Aug 2023 06:02:08 +0000
+Received: from smtpav04.dal12v.mail.ibm.com (smtpav04.dal12v.mail.ibm.com [10.241.53.103])
+        by smtprelay04.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37P628RQ12059180
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 25 Aug 2023 06:02:08 GMT
+Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0358B58056;
+        Fri, 25 Aug 2023 06:02:08 +0000 (GMT)
+Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3222558052;
+        Fri, 25 Aug 2023 06:02:03 +0000 (GMT)
+Received: from [9.171.40.203] (unknown [9.171.40.203])
+        by smtpav04.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Fri, 25 Aug 2023 06:02:02 +0000 (GMT)
+Message-ID: <932734b0-0a0c-c906-5e0a-a560a9d93ebc@linux.vnet.ibm.com>
+Date:   Fri, 25 Aug 2023 11:32:01 +0530
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR12MB3176:EE_|CH2PR12MB4937:EE_
-X-MS-Office365-Filtering-Correlation-Id: 66310b58-9b30-4442-d00b-08dba5314d6e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: JNxqpEi26bSwdRwHpk8ecm3ggIsshloqQFO3wKVdu0E2Q1lRi/5KcPUUFVeari1ISqHdyzy9dC7DWdlshNM4NLXphMlEw3P8duOD98Ia6CoqOWU/nNOyU4FD7vdbH8wFmKm+NykIJcQTA8hs5RHc3gVFtwsAkKsb77MiG7Skhn5NX2FPuYygAHR9Ie5Vz1+OxcPrn6swzexJym6OAYpNDUSarDMHDDYR4mNKV+IDJh6eqtEYHdJWzDDMTG2+k4Y8K91HVeN2KwxJMtzGQKoiJ4B0iuHGOlm8mdr8s9sz7txfd0YsUrs9+xIgelxKaxSkCsnfL2OntPm2mR6BJ18f1gcosoGdoBeD50HKOz/iGKRNYqdGpY/NVIL4A0ezBBWI5o/19kBxAhzZCm+vkX3hgcFWnpInyUDckm7Zd866pxgjQSEgH/xRhkwgNblzGiCLzri6DH+I9aHcPSL+mdsjU7yPiLQWxi95Z9xvMQf3HyQ2EcFBBmNk9T/i6BcgCXXprFCyVnxmWoCz9bdbTtAoeWMR98Lf/YvzyqfgagdOqWKzhadU9b50V00XsJIfNUBX
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB3176.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(346002)(366004)(376002)(39860400002)(1800799009)(186009)(451199024)(8936002)(4326008)(8676002)(83380400001)(5660300002)(7416002)(26005)(6666004)(38100700002)(66946007)(66556008)(66476007)(54906003)(2906002)(6916009)(316002)(478600001)(41300700001)(6512007)(9686003)(6506007)(6486002)(86362001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?mTREJ/PCJqx1wme6yS8Tp2RdSueUTuM6KstnlJb/6zq5jyYmED9IN/DzMMvY?=
- =?us-ascii?Q?TDK1ivr4AKB3tNjEYAuCV34C/I1dzr0HkOXN8/QbhZ1TweFAxfwx4owNM4xw?=
- =?us-ascii?Q?CpZhB+I4D6GTWChTkfvyKCCDPPaRVE8S4h7380Oi0mWzmL19V9qGjSUZbCIO?=
- =?us-ascii?Q?EXuklaWzChHGZreCfijLTlBXmhGd2ByVZPGIhOFeH0bjvQcgGlyFGjaNq4fo?=
- =?us-ascii?Q?HZWDNvxaavUsD7zKgh28Pc+O46V5MVs1Jis4tL35vVqPsHwAigPVk3nWMTkD?=
- =?us-ascii?Q?kIkBKzFmkSfazonF+ayC7EhMioBzIBhAdXOKgmALkUfAUsRCXrA5XtWDl5J8?=
- =?us-ascii?Q?SMBSpzqDQ0LviL2sKarctT3sAad8ifiUuTw8JarQmMCIxVpZsS6PyOmuExjb?=
- =?us-ascii?Q?bcZgqzrhGb63qBe2zUXdCIxwEFsMZL1kl9GHqqA0ZO4VE0hCSsbUcDhDFCcC?=
- =?us-ascii?Q?a4f/DSNkG4eLqhxJxOt5vwbV5Gs0WKI4ZGFrAKUWnq6Pw70Id56iRBJlgDzu?=
- =?us-ascii?Q?LrwQyBbdk6DU6opgqravn2EApFnfYGMtahuazjGypOXAlRYlXDFc2OQIR+KG?=
- =?us-ascii?Q?RP4gMDhaYlL8O1PFnP/pHaFaYIuBXsRTKA4qcCj8pmXdT/LJ/ZNUL0ou3R4J?=
- =?us-ascii?Q?rTNxcIE2xxIcngGABS5pstYfuSfyU9xlFHsxblLH6ZxqRe43bXiWHn8ALQrg?=
- =?us-ascii?Q?Zi/ohH00rPvCRbAbOTTm3RtxzhTQbWUcO0lfM9sp9TTIMdWGK+hXMdoVYewV?=
- =?us-ascii?Q?xBUZknCpYnxlQBaowbRZBAlc3MBAxJEKEhmj6nYpxVRR+KlL1iCp8jXyDpv4?=
- =?us-ascii?Q?bPxZw4L3FpdPipxONgVaDTWi8NbPJEkJfmDlTlWsHmgyh6XqKK1eyBso0iM2?=
- =?us-ascii?Q?RpGytEkAxCQtxhyYNiNZjVdEtGbd8G7cpPuywPCS2mn7Gh5km5pE5VaPX58i?=
- =?us-ascii?Q?77nxGXEDOeVM4ZsQCJtZjs/RWvoQIzLjxRla2DPDxgtqTTgecBK8OlBM3U6w?=
- =?us-ascii?Q?Pfy4DFctrqiV072j3zvqQ5w61FX47R/ODPA89w+7f7dxkcswfGVY7k1N6rdV?=
- =?us-ascii?Q?tow2EUt7hxmPwogZc54xPgahR06+pC1w/WTabUdXRHH7lGhj7KVBhIjTJfL/?=
- =?us-ascii?Q?ZqE0AqkzgR7aCWMjMft0NHqBmYyMAORmT6ccJ/JkvXxTOkI1TqzDAM7kk517?=
- =?us-ascii?Q?z7jR/8ybaCafJom6M2dfVZt7HCuveL2J/6InBgRWU6vR6i13/uB8lJmQgHHH?=
- =?us-ascii?Q?FCzG3tEhxBuKxCrWDdAmc+/OSGiIgbBqs8I7Avu7h+xpLgnih+bBrHR0RbxF?=
- =?us-ascii?Q?2ePdjEuKy0mf6cp/4AOoZ15DeYd4Vz11DGGB0c/eY27oZJtlvREuOkS7TPg8?=
- =?us-ascii?Q?IHVJuS4xnvCqSvXgM5eAp+1rJHamkR7gEaxpOYO8vGiqdbXFYIW35Q9OgRM4?=
- =?us-ascii?Q?0iLr77L0Ojs83BQ6Z1QR+xFH2MezJg7BQP/E71mE+fkcNzQCZWMdgEjt502r?=
- =?us-ascii?Q?xV/xytBG/KIJUdbCu8mtGeyzUv3WrgZm+OzccRI+b/UvzuEo0h9R7jmTWeb2?=
- =?us-ascii?Q?fJ6W6WC60gEEOaHWbnbI15kcTZ89NB4luUP68cx7?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 66310b58-9b30-4442-d00b-08dba5314d6e
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB3176.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Aug 2023 06:05:37.8978
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 07PWGzwalyDAHYcNc8pZlaeQO+tTbKDSFG4mEb6oPR7Etmc5Fr5UoNwscl4I+6kVIIQ7wwOdnTmCWYQ6bnCmyQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4937
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [RFC PATCH 4/7] sched/fair: Calculate the scan depth for idle
+ balance based on system utilization
+Content-Language: en-US
+To:     Chen Yu <yu.c.chen@intel.com>
+Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
+        Tim Chen <tim.c.chen@intel.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
+        Chen Yu <yu.chen.surf@gmail.com>,
+        Aaron Lu <aaron.lu@intel.com>, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+References: <cover.1690273854.git.yu.c.chen@intel.com>
+ <61e6fce60ca738215b6e5ad9033fb692c3a8fbb1.1690273854.git.yu.c.chen@intel.com>
+From:   Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
+In-Reply-To: <61e6fce60ca738215b6e5ad9033fb692c3a8fbb1.1690273854.git.yu.c.chen@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: ySHR_sSvVKgLtAWZpYMNxkhIM3mZx_dF
+X-Proofpoint-ORIG-GUID: niSlYZO-s8e2zRN-uc-4ajC6Qb0duZjj
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-25_04,2023-08-24_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 impostorscore=0
+ phishscore=0 bulkscore=0 priorityscore=1501 mlxscore=0 malwarescore=0
+ mlxlogscore=999 clxscore=1015 suspectscore=0 spamscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308250051
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -133,162 +105,118 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-"Huang, Ying" <ying.huang@intel.com> writes:
 
-> Alistair Popple <apopple@nvidia.com> writes:
->
->> "Huang, Ying" <ying.huang@intel.com> writes:
->>
->>> Alistair Popple <apopple@nvidia.com> writes:
->>>
->>>> "Huang, Ying" <ying.huang@intel.com> writes:
->>>>
->>>>> Alistair Popple <apopple@nvidia.com> writes:
->>>>>
->>>>>> Huang Ying <ying.huang@intel.com> writes:
->>>>>>
->>>>>>> Previously, a fixed abstract distance MEMTIER_DEFAULT_DAX_ADISTANCE is
->>>>>>> used for slow memory type in kmem driver.  This limits the usage of
->>>>>>> kmem driver, for example, it cannot be used for HBM (high bandwidth
->>>>>>> memory).
->>>>>>>
->>>>>>> So, we use the general abstract distance calculation mechanism in kmem
->>>>>>> drivers to get more accurate abstract distance on systems with proper
->>>>>>> support.  The original MEMTIER_DEFAULT_DAX_ADISTANCE is used as
->>>>>>> fallback only.
->>>>>>>
->>>>>>> Now, multiple memory types may be managed by kmem.  These memory types
->>>>>>> are put into the "kmem_memory_types" list and protected by
->>>>>>> kmem_memory_type_lock.
->>>>>>
->>>>>> See below but I wonder if kmem_memory_types could be a common helper
->>>>>> rather than kdax specific?
->>>>>>
->>>>>>> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
->>>>>>> Cc: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
->>>>>>> Cc: Wei Xu <weixugc@google.com>
->>>>>>> Cc: Alistair Popple <apopple@nvidia.com>
->>>>>>> Cc: Dan Williams <dan.j.williams@intel.com>
->>>>>>> Cc: Dave Hansen <dave.hansen@intel.com>
->>>>>>> Cc: Davidlohr Bueso <dave@stgolabs.net>
->>>>>>> Cc: Johannes Weiner <hannes@cmpxchg.org>
->>>>>>> Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
->>>>>>> Cc: Michal Hocko <mhocko@kernel.org>
->>>>>>> Cc: Yang Shi <shy828301@gmail.com>
->>>>>>> Cc: Rafael J Wysocki <rafael.j.wysocki@intel.com>
->>>>>>> ---
->>>>>>>  drivers/dax/kmem.c           | 54 +++++++++++++++++++++++++++---------
->>>>>>>  include/linux/memory-tiers.h |  2 ++
->>>>>>>  mm/memory-tiers.c            |  2 +-
->>>>>>>  3 files changed, 44 insertions(+), 14 deletions(-)
->>>>>>>
->>>>>>> diff --git a/drivers/dax/kmem.c b/drivers/dax/kmem.c
->>>>>>> index 898ca9505754..837165037231 100644
->>>>>>> --- a/drivers/dax/kmem.c
->>>>>>> +++ b/drivers/dax/kmem.c
->>>>>>> @@ -49,14 +49,40 @@ struct dax_kmem_data {
->>>>>>>  	struct resource *res[];
->>>>>>>  };
->>>>>>>  
->>>>>>> -static struct memory_dev_type *dax_slowmem_type;
->>>>>>> +static DEFINE_MUTEX(kmem_memory_type_lock);
->>>>>>> +static LIST_HEAD(kmem_memory_types);
->>>>>>> +
->>>>>>> +static struct memory_dev_type *kmem_find_alloc_memorty_type(int adist)
->>>>>>> +{
->>>>>>> +	bool found = false;
->>>>>>> +	struct memory_dev_type *mtype;
->>>>>>> +
->>>>>>> +	mutex_lock(&kmem_memory_type_lock);
->>>>>>> +	list_for_each_entry(mtype, &kmem_memory_types, list) {
->>>>>>> +		if (mtype->adistance == adist) {
->>>>>>> +			found = true;
->>>>>>> +			break;
->>>>>>> +		}
->>>>>>> +	}
->>>>>>> +	if (!found) {
->>>>>>> +		mtype = alloc_memory_type(adist);
->>>>>>> +		if (!IS_ERR(mtype))
->>>>>>> +			list_add(&mtype->list, &kmem_memory_types);
->>>>>>> +	}
->>>>>>> +	mutex_unlock(&kmem_memory_type_lock);
->>>>>>> +
->>>>>>> +	return mtype;
->>>>>>> +}
->>>>>>> +
->>>>>>>  static int dev_dax_kmem_probe(struct dev_dax *dev_dax)
->>>>>>>  {
->>>>>>>  	struct device *dev = &dev_dax->dev;
->>>>>>>  	unsigned long total_len = 0;
->>>>>>>  	struct dax_kmem_data *data;
->>>>>>> +	struct memory_dev_type *mtype;
->>>>>>>  	int i, rc, mapped = 0;
->>>>>>>  	int numa_node;
->>>>>>> +	int adist = MEMTIER_DEFAULT_DAX_ADISTANCE;
->>>>>>>  
->>>>>>>  	/*
->>>>>>>  	 * Ensure good NUMA information for the persistent memory.
->>>>>>> @@ -71,6 +97,11 @@ static int dev_dax_kmem_probe(struct dev_dax *dev_dax)
->>>>>>>  		return -EINVAL;
->>>>>>>  	}
->>>>>>>  
->>>>>>> +	mt_calc_adistance(numa_node, &adist);
->>>>>>> +	mtype = kmem_find_alloc_memorty_type(adist);
->>>>>>> +	if (IS_ERR(mtype))
->>>>>>> +		return PTR_ERR(mtype);
->>>>>>> +
->>>>>>
->>>>>> I wrote my own quick and dirty module to test this and wrote basically
->>>>>> the same code sequence.
->>>>>>
->>>>>> I notice your using a list of memory types here though. I think it would
->>>>>> be nice to have a common helper that other users could call to do the
->>>>>> mt_calc_adistance() / kmem_find_alloc_memory_type() /
->>>>>> init_node_memory_type() sequence and cleanup as my naive approach would
->>>>>> result in a new memory_dev_type per device even though adist might be
->>>>>> the same. A common helper would make it easy to de-dup those.
->>>>>
->>>>> If it's useful, we can move kmem_find_alloc_memory_type() to
->>>>> memory-tier.c after some revision.  But I tend to move it after we have
->>>>> the second user.  What do you think about that?
->>>>
->>>> Usually I would agree, but this series already introduces a general
->>>> interface for calculating adist even though there's only one user and
->>>> implementation. So if we're going to add a general interface I think it
->>>> would be better to make it more usable now rather than after variations
->>>> of it have been cut and pasted into other drivers.
->>>
->>> In general, I would like to introduce complexity when necessary.  So, we
->>> can discuss the necessity of the general interface firstly.  We can do
->>> that in [1/4] of the series.
->>
->> Do we need one memory_dev_type per adistance or per adistance+device?
->>
->> If IUC correctly I think it's the former. Logically that means
->> memory_dev_types should be managed by the memory-tiering subsystem
->> because they are system wide rather than driver specific resources. That
->> we need to add the list field to struct memory_dev_type specifically for
->> use by dax/kmem supports that idea.
->
-> In the original design (page 9/10/11 of [1]), memory_dev_type (Memory
-> Type) is driver specific.
+On 7/27/23 8:05 PM, Chen Yu wrote:
+> When the CPU is about to enter idle, it invokes newidle_balance()
+> to pull some tasks from other runqueues. Although there is per
+> domain max_newidle_lb_cost to throttle the newidle_balance(), it
+> would be good to further limit the scan based on overall system
+> utilization. The reason is that there is no limitation for
+> newidle_balance() to launch this balance simultaneously on
+> multiple CPUs. Since each newidle_balance() has to traverse all
+> the groups to calculate the statistics one by one, this total
+> time cost on newidle_balance() could be O(n^2). n is the number
+> of groups. This issue is more severe if there are many groups
+> within 1 domain, for example, a system with a large number of
+> Cores in a LLC domain. This is not good for performance or
+> power saving.
+> 
+> sqlite has spent quite some time on newidle balance() on Intel
+> Sapphire Rapids, which has 2 x 56C/112T = 224 CPUs:
+> 6.69%    0.09%  sqlite3     [kernel.kallsyms]   [k] newidle_balance
+> 5.39%    4.71%  sqlite3     [kernel.kallsyms]   [k] update_sd_lb_stats
+> 
+> Based on this observation, limit the scan depth of newidle_balance()
+> by considering the utilization of the sched domain. Let the number of
+> scanned groups be a linear function of the utilization ratio:
+> 
+> nr_groups_to_scan = nr_groups * (1 - util_ratio)
+> 
+> Suggested-by: Tim Chen <tim.c.chen@intel.com>
+> Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+> ---
+>  include/linux/sched/topology.h |  1 +
+>  kernel/sched/fair.c            | 30 ++++++++++++++++++++++++++++++
+>  kernel/sched/features.h        |  1 +
+>  3 files changed, 32 insertions(+)
+> 
+> diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
+> index d6a64a2c92aa..af2261308529 100644
+> --- a/include/linux/sched/topology.h
+> +++ b/include/linux/sched/topology.h
+> @@ -84,6 +84,7 @@ struct sched_domain_shared {
+>  	int		nr_idle_scan;
+>  	unsigned long	total_load;
+>  	unsigned long	total_capacity;
+> +	int		nr_sg_scan;
+>  };
+>  
+>  struct sched_domain {
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index edcfee9965cd..6925813db59b 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -10153,6 +10153,35 @@ static void ilb_save_stats(struct lb_env *env,
+>  		WRITE_ONCE(sd_share->total_capacity, sds->total_capacity);
+>  }
+>  
+> +static void update_ilb_group_scan(struct lb_env *env,
+> +				  unsigned long sum_util,
+> +				  struct sched_domain_shared *sd_share)
+> +{
+> +	u64 tmp, nr_scan;
+> +
+> +	if (!sched_feat(ILB_UTIL))
+> +		return;
+> +
+> +	if (!sd_share)
+> +		return;
+> +
+> +	if (env->idle == CPU_NEWLY_IDLE)
+> +		return;
 
-Oh fair enough. I was making these comments based on the incorrect
-understanding that these were a global rather than driver specific
-resource. Thanks for correcting that!
 
->> Also I'm not sure why you consider moving the
->> kmem_memory_types/kmem_find_alloc_memory_type()/etc. functions into
->> mm/memory-tiers.c to add complexity. Isn't it just moving code around or
->> am I missing some other subtlety that makes this hard? I really think
->> logically memory-tiering.c is where management of the various
->> memory_dev_types belongs.
->
-> IMHO, it depends on whether these functions are shared by at least 2
-> drivers.  If so, we can put them in mm/memory-tiers.c.  Otherwise, we
-> should keep them in the driver.
+Suggestion for small improvement:
 
-Ok. Not sure I entirely agree because I suspect it would still make the
-code clearer even for a single user. But generally you're correct and as
-these memory_dev_type's are *supposed* to be driver specific (rather
-than one per adistance) I don't think it's such a big issue.
+First if condition here could be check for newidle. As it often very often we could save a few cycles of checking
+sched feature.
+
+> +	if (env->idle == CPU_NEWLY_IDLE)
+> +		return;
+
+
+> +
+> +	/*
+> +	 * Limit the newidle balance scan depth based on overall system
+> +	 * utilization:
+> +	 * nr_groups_scan = nr_groups * (1 - util_ratio)
+> +	 * and util_ratio = sum_util / (sd_weight * SCHED_CAPACITY_SCALE)
+> +	 */
+> +	nr_scan = env->sd->nr_groups * sum_util;
+> +	tmp = env->sd->span_weight * SCHED_CAPACITY_SCALE;
+> +	do_div(nr_scan, tmp);
+> +	nr_scan = env->sd->nr_groups - nr_scan;
+> +	if ((int)nr_scan != sd_share->nr_sg_scan)
+> +		WRITE_ONCE(sd_share->nr_sg_scan, (int)nr_scan);
+> +}
+> +
+>  /**
+>   * update_sd_lb_stats - Update sched_domain's statistics for load balancing.
+>   * @env: The load balancing environment.
+> @@ -10231,6 +10260,7 @@ static inline void update_sd_lb_stats(struct lb_env *env, struct sd_lb_stats *sd
+>  	}
+>  
+>  	update_idle_cpu_scan(env, sum_util);
+> +	update_ilb_group_scan(env, sum_util, sd_share);
+>  
+>  	/* save a snapshot of stats during periodic load balance */
+>  	ilb_save_stats(env, sd_share, sds);
+> diff --git a/kernel/sched/features.h b/kernel/sched/features.h
+> index 3cb71c8cddc0..30f6d1a2f235 100644
+> --- a/kernel/sched/features.h
+> +++ b/kernel/sched/features.h
+> @@ -103,3 +103,4 @@ SCHED_FEAT(ALT_PERIOD, true)
+>  SCHED_FEAT(BASE_SLICE, true)
+>  
+>  SCHED_FEAT(ILB_SNAPSHOT, true)
+> +SCHED_FEAT(ILB_UTIL, true)
