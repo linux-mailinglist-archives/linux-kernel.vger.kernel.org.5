@@ -2,46 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B370788F48
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 21:40:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47A49788F4E
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 21:44:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229605AbjHYTjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 15:39:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50724 "EHLO
+        id S229639AbjHYTnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 15:43:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229559AbjHYTjR (ORCPT
+        with ESMTP id S229652AbjHYTml (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 15:39:17 -0400
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::223])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8F3B2686
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 12:39:14 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 51F5B60002;
-        Fri, 25 Aug 2023 19:39:07 +0000 (UTC)
-Message-ID: <6dcfcf22-08a4-ba1f-17c2-75f93efb6329@ghiti.fr>
-Date:   Fri, 25 Aug 2023 21:39:06 +0200
+        Fri, 25 Aug 2023 15:42:41 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B9961FC7
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 12:42:39 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-401314e7838so2121885e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 12:42:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692992557; x=1693597357;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ApTGyFrrfdw4KCGyPawOGnPGZS3+fq14dxevncgYpHY=;
+        b=QSxZ31vMqZPyeawNGOHHwLl4e88qNVwEZ3i9PPe4URN7RIx+B4NH7NHylClv1LoGZp
+         OSQBt1lgf+UAcMoteLaWiAGW6jDk4uBJ3B2kwFl/3fouGDvriSEXQYNJPmVkScMo6VCo
+         YE4ogUcWumTUg32GBFQecW1GuDso/AgEvzxwloA78qmDfU23NYAcvgGmq8hJVv2S29YG
+         19d2/u0v0C1taghQz4RqrjhVJbFCNiMVRsJ6iFJpMAXeMq//obrga2LLvfUgnrYYDdXV
+         9PFZ6xsIMMNTY215FSrdw71/iYZm6r+gatP2Sg/MiYKP2lpwA7NAEnDOOcNNt00BuSGU
+         nMMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692992557; x=1693597357;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ApTGyFrrfdw4KCGyPawOGnPGZS3+fq14dxevncgYpHY=;
+        b=NW8FhJMDoKoq3WopDnm6Dq2PG4WbgUrXtTs2WDwhgMhQA8yZQDljSFcTHzkwhn5GNt
+         89bW09cTM3/B8hQpOiz3ecRMSz+lfvw0jVIkPRLa8Rdxb9t8JDj15HnbHK1miFRIa+O/
+         3LTrrn1hAsjrSHjowf+eCjR7/xrzWwz6wdfwBXIKgFzwcZgJpjENfOihLAAoioa3q4bM
+         4z3b++ynl2vdqmS+dLB/DO64O8wdZZScz4ghceQhxcslRgV6+MLxcv08QIIIBZflaZch
+         kYUfDWBOLIv8yZ9jc0RRHXKG70Ibw8RVfRf0Txue54lIGBG+U25rvcjMT402zoM/fpnK
+         MHNw==
+X-Gm-Message-State: AOJu0YxwbLrpbQV0i/o69cj9kaOzEYx9SW8t8i3N3ra2cpdzo0hugKcZ
+        H0DGEL2cK5AC4VIIQDRnuBM=
+X-Google-Smtp-Source: AGHT+IG8X3HXPt4LbR41Ai+BpFfpAUFOECjvlZrKloM8fMcxozZ6I58ZfRSVrkyfXKQfFr1MUmy52A==
+X-Received: by 2002:a5d:60d2:0:b0:316:ef5f:7d8f with SMTP id x18-20020a5d60d2000000b00316ef5f7d8fmr13973286wrt.3.1692992557352;
+        Fri, 25 Aug 2023 12:42:37 -0700 (PDT)
+Received: from [192.168.0.101] (p579356c7.dip0.t-ipconnect.de. [87.147.86.199])
+        by smtp.gmail.com with ESMTPSA id e20-20020a05600c219400b003fe539b83f2sm6118788wme.42.2023.08.25.12.42.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Aug 2023 12:42:36 -0700 (PDT)
+Message-ID: <736c8159-90e9-4575-3c22-5a62515d5c03@gmail.com>
+Date:   Fri, 25 Aug 2023 21:42:35 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH v1] riscv: support arch_has_hw_pte_young()
-To:     Yong-Xuan Wang <yongxuan.wang@sifive.com>,
-        Jinyu Tang <tjytimi@163.com>
-Cc:     palmer@rivosinc.com, paul.walmsley@sifive.com, palmer@dabbelt.com,
-        yuzhao@google.com, conor.dooley@microchip.com,
-        ajones@ventanamicro.com, guoren@kernel.org, tongtiangen@huawei.com,
-        anup@brainfault.org, akpm@linux-foundation.org, falcon@tinylab.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Vincent Chen <vincent.chen@sifive.com>
-References: <20230129064956.143664-1-tjytimi@163.com>
- <CAMWQL2gBj84qhBopi=YKmHaUose2ggALKtOWqb6adDiuvS5xcg@mail.gmail.com>
+Subject: Re: [PATCH v4 00/16] Staging: rtl8192e: Rename struct rx_ts_record
+ references
+To:     Tree Davies <tdavies@darkphysics.net>, gregkh@linuxfoundation.org,
+        anjan@momi.ca
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20230825140847.501113-1-tdavies@darkphysics.net>
 Content-Language: en-US
-From:   Alexandre Ghiti <alex@ghiti.fr>
-In-Reply-To: <CAMWQL2gBj84qhBopi=YKmHaUose2ggALKtOWqb6adDiuvS5xcg@mail.gmail.com>
+From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
+In-Reply-To: <20230825140847.501113-1-tdavies@darkphysics.net>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: alex@ghiti.fr
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -49,105 +76,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yong-Xuan,
+On 8/25/23 16:08, Tree Davies wrote:
+> The goal of this series is to fix checkpatch warning Avoid CamelCase,
+> for all references of struct rx_ts_record. In most cases renames the
+> references to, ts, to make the naming consistent.
+> 
+> Thank you in advance to the reviewers,
+> ~ Tree
+> 
 
-
-On 25/08/2023 07:42, Yong-Xuan Wang wrote:
-> Hi Jinyu,
->
-> It seems like it has been a while since the last release of this patch. Do
-> you have any plans for the patch recently? Or, do you mind sharing any
-> internal progress on the patch?
->
-> We are starting to work on the Svadu extension of pte A/D bit feature on
-> Linux.
-
-
-This task was assigned to me on the RISE kernel spreadsheet, if you 
-indeed take over, I'll change it to your name: any objection?
-
-
-Thanks,
-
-
-Alex
-
-
-> Do you find any places where we may potentially work together to
-> get things moving? Also, I am willing to base on top of your work and
-> continue sending the series (by keeping all the credits from the original
-> work)
->
-> Please let me know if you have any thoughts, thanks :)
->
-> Regards,
-> Yong-Xuan
->
-> On Sun, Jan 29, 2023 at 2:53 PM Jinyu Tang <tjytimi@163.com> wrote:
->> The arch_has_hw_pte_young() is false for riscv by default. If it's
->> false, page table walk is almost skipped for MGLRU reclaim. And it
->> will also cause useless step in __wp_page_copy_user().
->>
->> RISC-V Privileged Book says that riscv have two schemes to manage A
->> and D bit.
->>
->> So add a config for selecting, the default is true. For simple
->> implementation riscv CPU which just generate page fault, unselect it.
->>
->> Signed-off-by: Jinyu Tang <tjytimi@163.com>
->> ---
->>   arch/riscv/Kconfig               | 10 ++++++++++
->>   arch/riscv/include/asm/pgtable.h |  7 +++++++
->>   2 files changed, 17 insertions(+)
->>
->> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
->> index e2b656043abf..17c82885549c 100644
->> --- a/arch/riscv/Kconfig
->> +++ b/arch/riscv/Kconfig
->> @@ -180,6 +180,16 @@ config PAGE_OFFSET
->>          default 0x80000000 if 64BIT && !MMU
->>          default 0xff60000000000000 if 64BIT
->>
->> +config ARCH_HAS_HARDWARE_PTE_YOUNG
->> +       bool "Hardware Set PTE Access Bit"
->> +       default y
->> +       help
->> +         Select if hardware set A bit when PTE is accessed. The default is
->> +         'Y', because most RISC-V CPU hardware can manage A and D bit.
->> +         But RISC-V may have simple implementation that do not support
->> +         hardware set A bit but only generate page fault, for that case just
->> +         unselect it.
->> +
->>   config KASAN_SHADOW_OFFSET
->>          hex
->>          depends on KASAN_GENERIC
->> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
->> index 4eba9a98d0e3..1db54ab4e1ba 100644
->> --- a/arch/riscv/include/asm/pgtable.h
->> +++ b/arch/riscv/include/asm/pgtable.h
->> @@ -532,6 +532,13 @@ static inline int ptep_clear_flush_young(struct vm_area_struct *vma,
->>           */
->>          return ptep_test_and_clear_young(vma, address, ptep);
->>   }
->> +#ifdef CONFIG_ARCH_HAS_HARDWARE_PTE_YOUNG
->> +#define arch_has_hw_pte_young arch_has_hw_pte_young
->> +static inline bool arch_has_hw_pte_young(void)
->> +{
->> +       return true;
->> +}
->> +#endif
->>
->>   #define pgprot_noncached pgprot_noncached
->>   static inline pgprot_t pgprot_noncached(pgprot_t _prot)
->> --
->> 2.30.2
->>
->>
->> _______________________________________________
->> linux-riscv mailing list
->> linux-riscv@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/linux-riscv
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+Tested-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
