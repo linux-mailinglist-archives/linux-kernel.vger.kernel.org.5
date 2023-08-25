@@ -2,69 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30097787D65
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 03:59:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 780C5787D7B
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 04:01:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240022AbjHYB64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 21:58:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35958 "EHLO
+        id S240350AbjHYCAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 22:00:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238649AbjHYB6k (ORCPT
+        with ESMTP id S240495AbjHYCAL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 21:58:40 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC78E1BD8;
-        Thu, 24 Aug 2023 18:58:38 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8B3606311D;
-        Fri, 25 Aug 2023 01:58:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9AE80C433C7;
-        Fri, 25 Aug 2023 01:58:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692928717;
-        bh=Ye93l/vYXIE6CzcjkMPU9NMl2srnKnjNzI3BvSNb86w=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Z95eYsZK8CqUJN7DWMuOQULLFKuBclOmhjzV5zDdgPYvC+YERs4ChG+PF2zdLGNXJ
-         E8Dx2zcr+RYjMMcR0u8AwSb4zXl1oAZgfk55bp9RBwxEUuYgg1Kh/aZaUvBR79DICh
-         TzOv0ElD4sSbbYwPP8gumcSdUs0Pde5wwK6vaiWdmJvP7ByilCeZr+rSdh6Ql6Tv+x
-         SLs40C6OMwzyRSPnoGLCHjOai9x1qyKV75Y3sJBSnZ38SyxhyAenEM9m5CMFhS7ToN
-         RkcCha58V406j8CVyvl0xIoHEA9Ew+ZV3Ozn70YcER1GZpIkKsmQZVicYu4v2JTeEt
-         j5KxlkiheOhtA==
-Date:   Thu, 24 Aug 2023 18:58:36 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Patrisious Haddad <phaddad@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Zhengchao Shao <shaozhengchao@huawei.com>
-Subject: Re: linux-next: manual merge of the mlx5-next tree with Linus' tree
-Message-ID: <20230824185836.5d40fafd@kernel.org>
-In-Reply-To: <20230825110536.41195860@canb.auug.org.au>
-References: <20230815123725.4ef5b7b9@canb.auug.org.au>
-        <20230825110536.41195860@canb.auug.org.au>
+        Thu, 24 Aug 2023 22:00:11 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F96B1BF2;
+        Thu, 24 Aug 2023 18:59:49 -0700 (PDT)
+X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="372006101"
+X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
+   d="scan'208";a="372006101"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 18:59:48 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="911123185"
+X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
+   d="scan'208";a="911123185"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga005.jf.intel.com with ESMTP; 24 Aug 2023 18:59:45 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andy@kernel.org>)
+        id 1qZM6x-00DDnp-0r;
+        Fri, 25 Aug 2023 04:59:43 +0300
+Date:   Fri, 25 Aug 2023 04:59:43 +0300
+From:   Andy Shevchenko <andy@kernel.org>
+To:     Liam Beguin <liambeguin@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH 1/2] gpio: pca953x: add support for TCA9538
+Message-ID: <ZOgLD2N9eoPQ7+yW@smile.fi.intel.com>
+References: <20230824-tca9538-v1-0-ee3bf2065065@gmail.com>
+ <20230824-tca9538-v1-1-ee3bf2065065@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230824-tca9538-v1-1-ee3bf2065065@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 25 Aug 2023 11:05:36 +1000 Stephen Rothwell wrote:
-> Was the second part of this resolution (i.e. the update to
-> drivers/net/ethernet/mellanox/mlx5/core/lib/macsec_fs.c) missed, or
-> deemed unnecessary after the mlx5-next tree was merged into the
-> net-next tree?
+On Thu, Aug 24, 2023 at 07:16:25PM -0400, Liam Beguin wrote:
+> The TCA9538 is an 8 bit version of the already supported TCA9539.
+> This chip also has interrupt support.
 
-Ugh, I should have caught it. Let me apply your fix from the list.
+Reviewed-by: Andy Shevchenko <andy@kernel.org>
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
