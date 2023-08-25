@@ -2,238 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCA487891A1
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 00:17:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 217257891A5
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 00:17:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230228AbjHYWQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 18:16:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47908 "EHLO
+        id S230078AbjHYWRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 18:17:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230343AbjHYWQY (ORCPT
+        with ESMTP id S230256AbjHYWRK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 18:16:24 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7730B2708
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 15:16:19 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1bf55a81eeaso10269815ad.0
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 15:16:19 -0700 (PDT)
+        Fri, 25 Aug 2023 18:17:10 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D58F2120
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 15:17:08 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-4ff8cf11b90so2165212e87.1
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 15:17:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1693001779; x=1693606579;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ppeQOWgbWz5gqWZs/rbytV4GhpZ82FSsmBh/giRYIfc=;
-        b=oGxnlMh0S/WiVEBqRgXg0XkOHzHqDpTBvnGnagMxXiK0WZOe1Z4r+2p1ptsCZGDnWB
-         pXEktmY/ad0PuwAxCgT0YcHOMRjDsuwyrAXCFtdwEmAj+muyxYQXIE+r39jHMvXhT5B0
-         o+SPYmvdCE0AaqEX44rBk89wjuy74zXAp3Vwzk0u1JPoPtSJh1DrCjw1RqWqiFdJpqby
-         tMNly65LV0QvaLstk47azhvzcHLQyEtc8q2u/G93EQr7wDi/F72WQh2TPKv7ILrD/tve
-         HoezaGEwtih61yu0zT7giO0Mqh1qaOyneAEL9vdEIb12mBB0wZbgWFOwNbvY6RzLwUwH
-         OW2Q==
+        d=chromium.org; s=google; t=1693001826; x=1693606626;
+        h=cc:to:subject:message-id:date:user-agent:from:references
+         :in-reply-to:mime-version:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RrlOotjavXB0JqE55pt9ehBxyPFQpiJrYDjXTIglhZ0=;
+        b=Ym/itz7Gtk0QnmD2HxbKyjjDXZ1SPqzcCAIeQ27erNIraYMX9ABmsl6JM6oJo+MJcQ
+         G5G4uXwpd5tjwcovfCHznTiZVpuXrSW/zUC3VNNxCI3+X0gfsoiilxOuuR7V/ggNsj5W
+         yQa84nEF7h2FarP7X0vagsDa39Fx68fLNueTU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693001779; x=1693606579;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20221208; t=1693001826; x=1693606626;
+        h=cc:to:subject:message-id:date:user-agent:from:references
+         :in-reply-to:mime-version:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ppeQOWgbWz5gqWZs/rbytV4GhpZ82FSsmBh/giRYIfc=;
-        b=c4OJzaSupS7WESo5Hf7gQLexK7/04nwjAyE5d8E4xFShthDAFdxs27/4MNHUl5usim
-         kkBon78eUOVedzZ4gw3T7HVzVm6u0SCy8th8voF7Ej//OgcjmHPQAX9ggv+a2IJssoRD
-         mOiVbHl7H44t4vLekoH/Fk006KuSNDldkclcl6CH3GdxbtE1xlm2nzYvRuiO9lxfh8bk
-         AGrQ96Q49dcEIF/Z6xDSye23cOCWO9itinJRmxS0Rn66nboDGiTeCZgaVKA5iyAvFa90
-         F6w3qL8pHHSeleTTViDxtgcyiG5qbBzgvYs8anrLaHhW0S8jbtD1cuM6GZ9QshxHUXsx
-         2hgQ==
-X-Gm-Message-State: AOJu0Yza8smLcS0dwaITnz2a4lSW9zLw+8k37BV/AN9kjqAJOwvUURjk
-        dyKF7hrkXciaRj6aJA67T/5rBw==
-X-Google-Smtp-Source: AGHT+IEjt82Q7/ukix1Bwi0HcqOCAUCGzooSpz1T14B8KRhD3u7v0lApveU1bnKvxuVgpN4iNhxk8w==
-X-Received: by 2002:a17:903:264e:b0:1bd:c338:ae14 with SMTP id je14-20020a170903264e00b001bdc338ae14mr16243879plb.12.1693001778913;
-        Fri, 25 Aug 2023 15:16:18 -0700 (PDT)
-Received: from dread.disaster.area (pa49-195-66-88.pa.nsw.optusnet.com.au. [49.195.66.88])
-        by smtp.gmail.com with ESMTPSA id f8-20020a170902684800b001c0bf60ba5csm2276046pln.272.2023.08.25.15.16.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Aug 2023 15:16:18 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-        (envelope-from <david@fromorbit.com>)
-        id 1qZf6F-006Va3-0j;
-        Sat, 26 Aug 2023 08:16:15 +1000
-Date:   Sat, 26 Aug 2023 08:16:15 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Hao Xu <hao.xu@linux.dev>
-Cc:     io-uring@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Stefan Roesch <shr@fb.com>, Clay Harris <bugs@claycon.org>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-cachefs@redhat.com,
-        ecryptfs@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-unionfs@vger.kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, codalist@coda.cs.cmu.edu,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
-        devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
-        samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
-        Wanpeng Li <wanpengli@tencent.com>
-Subject: Re: [PATCH 25/29] xfs: support nowait for xfs_buf_item_init()
-Message-ID: <ZOkoL8nuXJDVZM1H@dread.disaster.area>
-References: <20230825135431.1317785-1-hao.xu@linux.dev>
- <20230825135431.1317785-26-hao.xu@linux.dev>
+        bh=RrlOotjavXB0JqE55pt9ehBxyPFQpiJrYDjXTIglhZ0=;
+        b=SaKmR93Y7eFYsPiB7ADN2StEzS9PQLYcfnTmXlv3GLC4vuAEJhyx8KINq+v2Yzdm1c
+         gWN+tbcqemwQ+Cxbh7DqNxYxhEJLu4G5XzRNbj/AIj2otxhfl9oLBBc8XvEgidwXjBHA
+         sM2m57WD8d1ZRdeWvE461WmFjMMVXyyzN5TgKiXAhGwAL3KOvo09OIMcoMf+0U3aPrTW
+         faT5uguWiFLQVPa36e1OVD3WbvL7/fJbF+tdsjY5xT0BqXjiSjpjwoqMlrpIvfKRWVsI
+         9Bq/rRiQmNnecRAlog94Y+If4jB1JVQsAVZ6yVh9X5Uei6ux1I4HAiGlXtYeH/0amKpM
+         i5YA==
+X-Gm-Message-State: AOJu0YxjhY2kseR7wZbHYaNoi8Yd/uM1iW/P4y4atEP4ma2avu2RDHBI
+        ZCkbzKB0VcBRdqEuWFxoobPv2q3g994gS7Fp4NBdWg==
+X-Google-Smtp-Source: AGHT+IFKi/FjhPlAtZuPfnduFO2X83UaOHf4igEYpqi6QoVsmqz2ZB7PjG3rx+zsaSbxAb1kDqzEuOme7CDM83+kHIs=
+X-Received: by 2002:a05:6512:a86:b0:4f8:64f5:f591 with SMTP id
+ m6-20020a0565120a8600b004f864f5f591mr14490218lfu.12.1693001826529; Fri, 25
+ Aug 2023 15:17:06 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Fri, 25 Aug 2023 17:17:06 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230825135431.1317785-26-hao.xu@linux.dev>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <20230824083012.v11.3.I7209db47ef8ec151d3de61f59005bbc59fe8f113@changeid>
+References: <20230824153233.1006420-1-dianders@chromium.org> <20230824083012.v11.3.I7209db47ef8ec151d3de61f59005bbc59fe8f113@changeid>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.10
+Date:   Fri, 25 Aug 2023 17:17:06 -0500
+Message-ID: <CAE-0n51KWPN3bTSuVTTCxoULs_86A2WVm66FQ3jf+dztDU4G9g@mail.gmail.com>
+Subject: Re: [PATCH v11 3/6] arm64: smp: Remove dedicated wakeup IPI
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Will Deacon <will@kernel.org>
+Cc:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        kgdb-bugreport@lists.sourceforge.net,
+        Lecopzer Chen <lecopzer.chen@mediatek.com>,
+        linux-perf-users@vger.kernel.org,
+        Masayoshi Mizuma <msys.mizuma@gmail.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        linux-arm-kernel@lists.infradead.org, ito-yuichi@fujitsu.com,
+        Peter Zijlstra <peterz@infradead.org>,
+        D Scott Phillips <scott@os.amperecomputing.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        =?UTF-8?Q?Philippe_Mathieu=2DDaud=C3=A9?= <philmd@linaro.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 25, 2023 at 09:54:27PM +0800, Hao Xu wrote:
-> From: Hao Xu <howeyxu@tencent.com>
-> 
-> support nowait for xfs_buf_item_init() and error out -EAGAIN to
-> _xfs_trans_bjoin() when it would block.
-> 
-> Signed-off-by: Hao Xu <howeyxu@tencent.com>
+Quoting Douglas Anderson (2023-08-24 08:30:29)
+> From: Mark Rutland <mark.rutland@arm.com>
+>
+> To enable NMI backtrace and KGDB's NMI cpu roundup, we need to free up
+> at least one dedicated IPI.
+>
+> On arm64 the IPI_WAKEUP IPI is only used for the ACPI parking protocol,
+> which itself is only used on some very early ARMv8 systems which
+> couldn't implement PSCI.
+>
+> Remove the IPI_WAKEUP IPI, and rely on the IPI_RESCHEDULE IPI to wake
+> CPUs from the parked state. This will cause a tiny amonut of redundant
+> work to check the thread flags, but this is miniscule in relation to the
+> cost of taking and handling the IPI in the first place. We can safely
+> handle redundant IPI_RESCHEDULE IPIs, so there should be no functional
+> impact as a result of this change.
+>
+> Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: Sumit Garg <sumit.garg@linaro.org>
+> Cc: Will Deacon <will@kernel.org>
 > ---
->  fs/xfs/xfs_buf_item.c         |  9 +++++++--
->  fs/xfs/xfs_buf_item.h         |  2 +-
->  fs/xfs/xfs_buf_item_recover.c |  2 +-
->  fs/xfs/xfs_trans_buf.c        | 16 +++++++++++++---
->  4 files changed, 22 insertions(+), 7 deletions(-)
-> 
-> diff --git a/fs/xfs/xfs_buf_item.c b/fs/xfs/xfs_buf_item.c
-> index 023d4e0385dd..b1e63137d65b 100644
-> --- a/fs/xfs/xfs_buf_item.c
-> +++ b/fs/xfs/xfs_buf_item.c
-> @@ -827,7 +827,8 @@ xfs_buf_item_free_format(
->  int
->  xfs_buf_item_init(
->  	struct xfs_buf	*bp,
-> -	struct xfs_mount *mp)
-> +	struct xfs_mount *mp,
-> +	bool   nowait)
->  {
->  	struct xfs_buf_log_item	*bip = bp->b_log_item;
->  	int			chunks;
-> @@ -847,7 +848,11 @@ xfs_buf_item_init(
->  		return 0;
->  	}
->  
-> -	bip = kmem_cache_zalloc(xfs_buf_item_cache, GFP_KERNEL | __GFP_NOFAIL);
-> +	bip = kmem_cache_zalloc(xfs_buf_item_cache,
-> +				GFP_KERNEL | (nowait ? 0 : __GFP_NOFAIL));
-> +	if (!bip)
-> +		return -EAGAIN;
-> +
->  	xfs_log_item_init(mp, &bip->bli_item, XFS_LI_BUF, &xfs_buf_item_ops);
->  	bip->bli_buf = bp;
 
-I see filesystem shutdowns....
-
-> diff --git a/fs/xfs/xfs_trans_buf.c b/fs/xfs/xfs_trans_buf.c
-> index 016371f58f26..a1e4f2e8629a 100644
-> --- a/fs/xfs/xfs_trans_buf.c
-> +++ b/fs/xfs/xfs_trans_buf.c
-> @@ -57,13 +57,14 @@ xfs_trans_buf_item_match(
->   * If the buffer does not yet have a buf log item associated with it,
->   * then allocate one for it.  Then add the buf item to the transaction.
->   */
-> -STATIC void
-> +STATIC int
->  _xfs_trans_bjoin(
->  	struct xfs_trans	*tp,
->  	struct xfs_buf		*bp,
->  	int			reset_recur)
->  {
->  	struct xfs_buf_log_item	*bip;
-> +	int ret;
->  
->  	ASSERT(bp->b_transp == NULL);
->  
-> @@ -72,7 +73,11 @@ _xfs_trans_bjoin(
->  	 * it doesn't have one yet, then allocate one and initialize it.
->  	 * The checks to see if one is there are in xfs_buf_item_init().
->  	 */
-> -	xfs_buf_item_init(bp, tp->t_mountp);
-> +	ret = xfs_buf_item_init(bp, tp->t_mountp,
-> +				tp->t_flags & XFS_TRANS_NOWAIT);
-> +	if (ret < 0)
-> +		return ret;
-> +
->  	bip = bp->b_log_item;
->  	ASSERT(!(bip->bli_flags & XFS_BLI_STALE));
->  	ASSERT(!(bip->__bli_format.blf_flags & XFS_BLF_CANCEL));
-> @@ -92,6 +97,7 @@ _xfs_trans_bjoin(
->  	xfs_trans_add_item(tp, &bip->bli_item);
->  	bp->b_transp = tp;
->  
-> +	return 0;
->  }
->  
->  void
-> @@ -309,7 +315,11 @@ xfs_trans_read_buf_map(
->  	}
->  
->  	if (tp) {
-> -		_xfs_trans_bjoin(tp, bp, 1);
-> +		error = _xfs_trans_bjoin(tp, bp, 1);
-> +		if (error) {
-> +			xfs_buf_relse(bp);
-> +			return error;
-> +		}
->  		trace_xfs_trans_read_buf(bp->b_log_item);
-
-So what happens at the callers when we have a dirty transaction and
-joining a buffer fails with -EAGAIN?
-
-Apart from the fact this may well propagate -EAGAIN up to userspace,
-cancelling a dirty transaction at this point will result in a
-filesystem shutdown....
-
-Indeed, this can happen in the "simple" timestamp update case that
-this "nowait" semantic is being aimed at. We log the inode in the
-timestamp update, which dirties the log item and registers a
-precommit operation to be run. We commit the
-transaction, which then runs xfs_inode_item_precommit() and that
-may need to attach the inode to the inode cluster buffer. This
-results in:
-
-xfs_inode_item_precommit
-  xfs_imap_to_bp
-    xfs_trans_read_buf_map
-      _xfs_trans_bjoin
-        xfs_buf_item_init(XFS_TRANS_NOWAIT)
-	  kmem_cache_zalloc(GFP_NOFS)
-	  <memory allocation fails>
-      gets -EAGAIN error
-    propagates -EAGAIN
-  fails due to -EAGAIN
-
-And now xfs_trans_commit() fails with a dirty transaction and the
-filesystem shuts down.
-
-IOWs, XFS_TRANS_NOWAIT as it stands is fundamentally broken. Once we
-dirty an item in a transaction, we *cannot* back out of the
-transaction. We *must block* in every place that could fail -
-locking, memory allocation and/or IO - until the transaction
-completes because we cannot undo the changes we've already made to
-the dirty items in the transaction....
-
-It's even worse than that - once we have committed intents, the
-whole chain of intent processing must be run to completionr. Hence
-we can't tolerate backing out of that defered processing chain half
-way through because we might have to block.
-
-Until we can roll back partial dirty transactions and partially
-completed defered intent chains at any random point of completion,
-XFS_TRANS_NOWAIT will not work.
-
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
