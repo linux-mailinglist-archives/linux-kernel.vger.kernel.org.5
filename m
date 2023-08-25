@@ -2,314 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C4B978862C
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 13:42:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 409FE788630
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 13:44:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237906AbjHYLl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 07:41:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56008 "EHLO
+        id S240370AbjHYLna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 07:43:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237508AbjHYLl3 (ORCPT
+        with ESMTP id S230330AbjHYLm5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 07:41:29 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 438C41FD7;
-        Fri, 25 Aug 2023 04:41:26 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-5008faf4456so1235155e87.3;
-        Fri, 25 Aug 2023 04:41:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692963684; x=1693568484;
-        h=mime-version:references:in-reply-to:message-id:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=7XB8gnfeXwz3PBP03jcAxDaUlg2aSuMcd4cXYoa7Jfk=;
-        b=l3dZTosl7Hz9yo3uNyJ027jBuQwNpn0tO07C3kMRvb3/ali/t2h/STlmvOWPZo1AcK
-         Man4yRSr/uFPCpRgEeU0oiaZC3h07S6tgb0mWNSTwh64YH8vgpOT7r56TfrTxjDO8LTL
-         chQAjdC0bsG5BFxHD4lTiKupBryWo8HJd6ayTu7fHX4feT/qjQcPtxVKxnkTCUGPODe/
-         VQq/BVKZVSjHMHV7ePch7Je1mrieoy0jjWqQNz+F9t6aL7sbvhak4VP+D9IoMMOZoFvA
-         NeQP+QwUCImDD+Xl2iSaR97g8TdOS+UUE+2HITfg2lrBbScs4rYLaLNQTCewIHe7HVvl
-         F5Iw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692963684; x=1693568484;
-        h=mime-version:references:in-reply-to:message-id:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7XB8gnfeXwz3PBP03jcAxDaUlg2aSuMcd4cXYoa7Jfk=;
-        b=jZgtzJp2T6whqbZgjRFJw8U4/tliopIoEW9+PbX+nxR7kfWivdCqIBCKijFyZjiYy9
-         L4X0AN4M21bcP+cwAvNClOkQ8UErMfokNggzlmGEAnDGY/bmavnCPoopNflbkKttpL1C
-         czNQLyKkAqErKbfxsmotmRyRwJFQEDsbaxzJD3HPLH3rmUbvaMyLljXFoDnsp4OgVTOn
-         Vy2TZwu5yaumYxXtwgCUx+qGQnBC7tzHxLe33GJtQKo9j4OnDLCV2E0hkrmKGWXi1wn8
-         vMpOBNpogLyWmneLT2gYTNtMhtVNhsh88TluzKPdWW+jBgTp0A6u9sp95dvfx+bTtD5U
-         /G0g==
-X-Gm-Message-State: AOJu0Yz7yNxGXSoffwQQ5D8xCPIZjDJjmBPAqZpPydVT7FACnqwtuW/6
-        O+UL0gl/PdBqFmVaTbjATIQ=
-X-Google-Smtp-Source: AGHT+IHDgb5Yhbcq9kfuhmnzC36PS1dJtyuRMhZs4ZKUIbWW5GhJVTYMYUihVW8mlau0avuqzWNPNw==
-X-Received: by 2002:a05:6512:ba0:b0:500:882b:e55a with SMTP id b32-20020a0565120ba000b00500882be55amr11342373lfv.45.1692963683929;
-        Fri, 25 Aug 2023 04:41:23 -0700 (PDT)
-Received: from eldfell ([194.136.85.206])
-        by smtp.gmail.com with ESMTPSA id v9-20020a197409000000b004ff91dde4b4sm257584lfe.93.2023.08.25.04.41.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Aug 2023 04:41:23 -0700 (PDT)
-Date:   Fri, 25 Aug 2023 14:41:10 +0300
-From:   Pekka Paalanen <ppaalanen@gmail.com>
-To:     Hsia-Jun Li <Randy.Li@synaptics.com>
-Cc:     Tomasz Figa <tfiga@chromium.org>, linux-mm@kvack.org,
-        dri-devel@lists.freedesktop.org,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        hughd@google.com, akpm@linux-foundation.org,
-        Simon Ser <contact@emersion.fr>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>, daniels@collabora.com,
-        ayaka <ayaka@soulik.info>, linux-kernel@vger.kernel.org,
-        Nicolas Dufresne <nicolas@ndufresne.ca>
-Subject: Re: [RFC]: shmem fd for non-DMA buffer sharing cross drivers
-Message-ID: <20230825144110.1c58928f@eldfell>
-In-Reply-To: <65432c20-a6fd-141c-2ced-a7e6599a1e7c@synaptics.com>
-References: <029b982f-da62-4fa8-66c4-ab11a515574a@synaptics.com>
-        <CAAFQd5CqAvr7ZUdDSYPEOWSgvbttTBjHa0YWDomxJJSaiZxGog@mail.gmail.com>
-        <f8a168e8-1a23-c6b3-0f68-baa73396d594@synaptics.com>
-        <20230825104052.4573ab7b@eldfell>
-        <65432c20-a6fd-141c-2ced-a7e6599a1e7c@synaptics.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.37; x86_64-pc-linux-gnu)
+        Fri, 25 Aug 2023 07:42:57 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84DB91FD7;
+        Fri, 25 Aug 2023 04:42:55 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1A9CE64998;
+        Fri, 25 Aug 2023 11:42:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E165DC433C8;
+        Fri, 25 Aug 2023 11:42:51 +0000 (UTC)
+From:   Huacai Chen <chenhuacai@loongson.cn>
+To:     Arnd Bergmann <arnd@arndb.de>, Huacai Chen <chenhuacai@kernel.org>
+Cc:     loongarch@lists.linux.dev, linux-arch@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Guo Ren <guoren@kernel.org>, Xuerui Wang <kernel@xen0n.name>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-kernel@vger.kernel.org, loongson-kernel@lists.loongnix.cn,
+        Huacai Chen <chenhuacai@loongson.cn>
+Subject: [PATCH] LoongArch: Ensure FP/SIMD registers in the core dump file is up to date
+Date:   Fri, 25 Aug 2023 19:42:24 +0800
+Message-Id: <20230825114224.3886577-1-chenhuacai@loongson.cn>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/=7wEatCdcP1mozuK9z20Vy1";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/=7wEatCdcP1mozuK9z20Vy1
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+This is a port of commit 379eb01c21795edb4c ("riscv: Ensure the value
+of FP registers in the core dump file is up to date").
 
-On Fri, 25 Aug 2023 15:56:18 +0800
-Hsia-Jun Li <Randy.Li@synaptics.com> wrote:
+The values of FP/SIMD registers in the core dump file come from the
+thread.fpu. However, kernel saves the FP/SIMD registers only before
+scheduling out the process. If no process switch happens during the
+exception handling, kernel will not have a chance to save the latest
+values of FP/SIMD registers. So it may cause their values in the core
+dump file incorrect. To solve this problem, force fpr_get()/simd_get()
+to save the FP/SIMD registers into the thread.fpu if the target task
+equals the current task.
 
-> On 8/25/23 15:40, Pekka Paalanen wrote:
-> > Subject:
-> > Re: [RFC]: shmem fd for non-DMA buffer sharing cross drivers
-> > From:
-> > Pekka Paalanen <ppaalanen@gmail.com>
-> > Date:
-> > 8/25/23, 15:40
-> >=20
-> > To:
-> > Hsia-Jun Li <Randy.Li@synaptics.com>
-> > CC:
-> > Tomasz Figa <tfiga@chromium.org>, linux-mm@kvack.org,=20
-> > dri-devel@lists.freedesktop.org, Linux Media Mailing List=20
-> > <linux-media@vger.kernel.org>, hughd@google.com,=20
-> > akpm@linux-foundation.org, Simon Ser <contact@emersion.fr>, Hans Verkui=
-l=20
-> > <hverkuil-cisco@xs4all.nl>, daniels@collabora.com, ayaka=20
-> > <ayaka@soulik.info>, linux-kernel@vger.kernel.org, Nicolas Dufresne=20
-> > <nicolas@ndufresne.ca>
-> >=20
-> >=20
-> > On Wed, 23 Aug 2023 15:11:23 +0800
-> > Hsia-Jun Li<Randy.Li@synaptics.com>  wrote:
-> >  =20
-> >> On 8/23/23 12:46, Tomasz Figa wrote: =20
-> >>> CAUTION: Email originated externally, do not click links or open atta=
-chments unless you recognize the sender and know the content is safe.
-> >>>
-> >>>
-> >>> Hi Hsia-Jun,
-> >>>
-> >>> On Tue, Aug 22, 2023 at 8:14=E2=80=AFPM Hsia-Jun Li<Randy.Li@synaptic=
-s.com>  wrote: =20
-> >>>> Hello
-> >>>>
-> >>>> I would like to introduce a usage of SHMEM slimier to DMA-buf, the m=
-ajor
-> >>>> purpose of that is sharing metadata or just a pure container for cro=
-ss
-> >>>> drivers.
-> >>>>
-> >>>> We need to exchange some sort of metadata between drivers, likes dyn=
-amic
-> >>>> HDR data between video4linux2 and DRM. =20
-> >>> If the metadata isn't too big, would it be enough to just have the
-> >>> kernel copy_from_user() to a kernel buffer in the ioctl code?
-> >>>     =20
-> >>>> Or the graphics frame buffer is
-> >>>> too complex to be described with plain plane's DMA-buf fd.
-> >>>> An issue between DRM and V4L2 is that DRM could only support 4 planes
-> >>>> while it is 8 for V4L2. It would be pretty hard for DRM to expend its
-> >>>> interface to support that 4 more planes which would lead to revision=
- of
-> >>>> many standard likes Vulkan, EGL. =20
-> >>> Could you explain how a shmem buffer could be used to support frame
-> >>> buffers with more than 4 planes?
-> >>> If you are asking why we need this: =20
-> >> 1. metadata likes dynamic HDR tone data
-> >> 2. DRM also challenges with this problem, let me quote what sima said:
-> >> "another trick that we iirc used for afbc is that sometimes the planes
-> >> have a fixed layout
-> >> like nv12
-> >> and so logically it's multiple planes, but you only need one plane slot
-> >> to describe the buffer
-> >> since I think afbc had the "we need more than 4 planes" issue too"
-> >>
-> >> Unfortunately, there are vendor pixel formats are not fixed layout.
-> >>
-> >> 3. Secure(REE, trusted video piepline) info.
-> >>
-> >> For how to assign such metadata data.
-> >> In case with a drm fb_id, it is simple, we just add a drm plane proper=
-ty
-> >> for it. The V4L2 interface is not flexible, we could only leave into
-> >> CAPTURE request_fd as a control. =20
-> >>>> Also, there is no reason to consume a device's memory for the content
-> >>>> that device can't read it, or wasting an entry of IOMMU for such dat=
-a. =20
-> >>> That's right, but DMA-buf doesn't really imply any of those. DMA-buf
-> >>> is just a kernel object with some backing memory. It's up to the
-> >>> allocator to decide how the backing memory is allocated and up to the
-> >>> importer on whether it would be mapped into an IOMMU.
-> >>>     =20
-> >> I just want to say it can't be allocated at the same place which was f=
-or
-> >> those DMA bufs(graphics or compressed bitstream).
-> >> This also could be answer for your first question, if we place this ki=
-nd
-> >> of buffer in a plane for DMABUF(importing) in V4L2, V4L2 core would try
-> >> to prepare it, which could map it into IOMMU.
-> >> =20
-> >>>> Usually, such a metadata would be the value should be written to a
-> >>>> hardware's registers, a 4KiB page would be 1024 items of 32 bits reg=
-isters.
-> >>>>
-> >>>> Still, I have some problems with SHMEM:
-> >>>> 1. I don't want the userspace modify the context of the SHMEM alloca=
-ted
-> >>>> by the kernel, is there a way to do so? =20
-> >>> This is generally impossible without doing any of the two:
-> >>> 1) copying the contents to an internal buffer not accessible to the
-> >>> userspace, OR
-> >>> 2) modifying any of the buffer mappings to read-only
-> >>>
-> >>> 2) can actually be more costly than 1) (depending on the architecture,
-> >>> data size, etc.), so we shouldn't just discard the option of a simple
-> >>> copy_from_user() in the ioctl.
-> >>>     =20
-> >> I don't want the userspace access it at all. So that won't be a proble=
-m. =20
-> > Hi,
-> >=20
-> > if userspace cannot access things like an image's HDR metadata, then it
-> > will be impossible for userspace to program KMS to have the correct
-> > color pipeline, or to send intended HDR metadata to a video sink.
-> >=20
-> > You cannot leave userspace out of HDR metadata handling, because quite
-> > probably the V4L2 buffer is not the only thing on screen. That means
-> > there must composition of multiple sources with different image
-> > properties and metadata, which means it is no longer obvious what HDR
-> > metadata should be sent to the video sink.
-> >=20
-> > Even if it is a TV-like application rather than a windowed desktop, you
-> > will still have other contents to composite: OSD (volume indicators,
-> > channels indicators, program guide, ...), sub-titles, channel logos,
-> > notifications... These components ideally should not change their
-> > appearance arbitrarily with the main program content and metadata
-> > changes. Either the metadata sent to the video sink is kept static and
-> > the main program adapted on the fly, or main program metadata is sent
-> > to the video sink and the additional content is adapted on the fly.
-> >=20
-> > There is only one set of HDR metadata and one composited image that can
-> > be sent to a video sink, so both must be chosen and produced correctly
-> > at the source side. This cannot be done automatically inside KMS kernel
-> > drivers.
-> >  =20
-> There may be some misunderstanding.
-> Let suppose this HDR data is in a vendor specific format.
-> Both upstream(decoder) and downstream(DRM) hardware devices are coming=20
-> from the same vendor.
-> Then we just need to delivery the reference to this metadata buffer from=
-=20
-> the upstream to downstream, both of drivers know how to handle it.
->=20
-> Despite the userspace, we just need to extend a wayland protocol that=20
-> making wayland compositor know how to receive the reference to the=20
-> metadata and set it to the DRM plane.
+Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+---
+ arch/loongarch/include/asm/fpu.h | 22 ++++++++++++++++++----
+ arch/loongarch/kernel/ptrace.c   |  4 ++++
+ 2 files changed, 22 insertions(+), 4 deletions(-)
 
-Hi,
+diff --git a/arch/loongarch/include/asm/fpu.h b/arch/loongarch/include/asm/fpu.h
+index b541f6248837..08a45e9fd15c 100644
+--- a/arch/loongarch/include/asm/fpu.h
++++ b/arch/loongarch/include/asm/fpu.h
+@@ -173,16 +173,30 @@ static inline void restore_fp(struct task_struct *tsk)
+ 		_restore_fp(&tsk->thread.fpu);
+ }
+ 
+-static inline union fpureg *get_fpu_regs(struct task_struct *tsk)
++static inline void get_fpu_regs(struct task_struct *tsk)
+ {
++	unsigned int euen;
++
+ 	if (tsk == current) {
+ 		preempt_disable();
+-		if (is_fpu_owner())
++
++		euen = csr_read32(LOONGARCH_CSR_EUEN);
++
++#ifdef CONFIG_CPU_HAS_LASX
++		if (euen & CSR_EUEN_LASXEN)
++			_save_lasx(&current->thread.fpu);
++		else
++#endif
++#ifdef CONFIG_CPU_HAS_LSX
++		if (euen & CSR_EUEN_LSXEN)
++			_save_lsx(&current->thread.fpu);
++		else
++#endif
++		if (euen & CSR_EUEN_FPEN)
+ 			_save_fp(&current->thread.fpu);
++
+ 		preempt_enable();
+ 	}
+-
+-	return tsk->thread.fpu.fpr;
+ }
+ 
+ static inline int is_simd_owner(void)
+diff --git a/arch/loongarch/kernel/ptrace.c b/arch/loongarch/kernel/ptrace.c
+index 2bb5ec55ae1e..209e3d29e0b2 100644
+--- a/arch/loongarch/kernel/ptrace.c
++++ b/arch/loongarch/kernel/ptrace.c
+@@ -148,6 +148,8 @@ static int fpr_get(struct task_struct *target,
+ {
+ 	int r;
+ 
++	get_fpu_regs(target);
++
+ 	if (sizeof(target->thread.fpu.fpr[0]) == sizeof(elf_fpreg_t))
+ 		r = gfpr_get(target, &to);
+ 	else
+@@ -279,6 +281,8 @@ static int simd_get(struct task_struct *target,
+ {
+ 	const unsigned int wr_size = NUM_FPU_REGS * regset->size;
+ 
++	get_fpu_regs(target);
++
+ 	if (!tsk_used_math(target)) {
+ 		/* The task hasn't used FP or LSX, fill with 0xff */
+ 		copy_pad_fprs(target, regset, &to, 0);
+-- 
+2.39.3
 
-FWIW, I don't think Wayland upstream (wayland-protocols) would be any
-more welcoming to opaque vendor-specific proprietary data blobs than the
-upstream Linux.
-
-(To everyone not following #dri-devel: There was a fairly long IRC
-discussion about how HDR metadata is an exceptionally poor use case
-example for "hidden" ancillary data blobs, and then continuing to how a
-mechanism to pass proprietary data blobs around would not be accepted
-upstream:
-https://oftc.irclog.whitequark.org/dri-devel/2023-08-25#1692950883-16929604=
-35;
-)
-
-> If you want a common HDR formats for all HDR variants(HDR10+, DV), I am=20
-> not against it. But it won't make the userspace be able to fill the HDR=20
-> metadata even the HDR data comes from the bitstream(likes SEI). We must=20
-> consider the case of Secure Video Path(Digital Right), the bitstream is=20
-> not accessible from (REE) userspace nor linux kernel, the downstream=20
-> must take what the upstream feed.
-
-In that case, Secure Video Path is simply not possible to have (in
-upstream). Keeping actual pixels restricted is one thing, and
-understandable given they are the essence of the copyrighted material
-that the providers want to keep inaccessible. Not being able to deliver
-the metadata to userspace OTOH does not seem to have any justification
-in comparison.
-
-
-Thanks,
-pq
-
-> >>>> 2. Should I create a helper function for installing the SHMEM file a=
-s a fd? =20
-> >>> We already have the udmabuf device [1] to turn a memfd into a DMA-buf,
-> >>> so maybe that would be enough?
-> >>>
-> >>> [1]https://elixir.bootlin.com/linux/v6.5-rc7/source/drivers/dma-buf/u=
-dmabuf.c
-> >>>     =20
-> >> It is the kernel driver that allocate this buffer. For example, v4l2
-> >> CAPTURE allocate a buffer for metadata when VIDIOC_REQBUFS.
-> >> Or GBM give you a fd which is assigned with a surface.
-> >>
-> >> So we need a kernel interface. =20
-> >>> Best,
-> >>> Tomasz
-> >>>     =20
-> >>>> --
-> >>>> Hsia-Jun(Randy) Li =20
-> >  =20
->=20
-
-
---Sig_/=7wEatCdcP1mozuK9z20Vy1
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmTok1YACgkQI1/ltBGq
-qqeJTQ//YMiq0BxH7MunqPu+HKNs+EQYCnO4e82D4TNR96frJ7j9Nyd1ru8ZFSav
-vdgXX0LN/mt682PDcZHIPLle/83LjpNwfD33ed/P3czpu9NMjhQHQ5wLu1kvvSv2
-SINZnCmH8KitLvJsu51jWhI0mxEt74u/YjACIpgnxXLvsvZoyx+FOCF5XDm94qEi
-TAAbMdaFA5LBDFlHiarSbF17aM8aFm/XSJWPQZU9KHTv5ZCIiiU83CyDXIpV78OY
-FfxBhCCefD8NS11UUjqkEWb8VGQ97O5ZTtyl8Dio6A5lMcohWHnCFZr6bqGSG8kA
-OEPnm8WPEITW2nVUT3TMmJrPZFp3YPWZ3K/I0U7+KOzbI8FRl4nelg4jv5875eXi
-isQZ3iivpYLf2/0l7WKvu9ca50SFKxK6qsGy9qsi6jxph7PDQ0KaPz7E7iF15oQB
-z4rJY8cBfHSV0AVT7FQPiE0w8z7fWfvqzgtaVwk6fIkorxdHE32IdSsHOGjBnwWC
-EOmF96euDy/IG7eYatqN3Dld5sZyj4IZagRg2iQuMFnDpd++GdjZFUyvkkLjBVMP
-AdgaIM7sfLxPQNJDv5dqfhRGeFQrLWSGkXg7S40gY/9G1oqc3RtCu4XWbjR9ZrMm
-sGdU/4fFgELc4T+9oYTU5d7Cl6IwHKn1u2Kvdoa4hrFg8ynP5zI=
-=ltBp
------END PGP SIGNATURE-----
-
---Sig_/=7wEatCdcP1mozuK9z20Vy1--
