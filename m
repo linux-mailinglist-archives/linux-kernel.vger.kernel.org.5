@@ -2,341 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E49E7788679
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 13:58:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D745D78867C
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 13:58:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244530AbjHYL6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 07:58:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60892 "EHLO
+        id S244481AbjHYL6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 07:58:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244535AbjHYL5r (ORCPT
+        with ESMTP id S244541AbjHYL5x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 07:57:47 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FEB410F3;
-        Fri, 25 Aug 2023 04:57:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1692964665; x=1724500665;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=PyJ/YRwYJz7mq3U4+yTh/5HPypy5nwmdt+KOBtbkj+c=;
-  b=aBSUdX3R3ouyFobB8ivXPRLOljAU9SkRNTkuD6WEN1KuPbayM/CUYOQQ
-   /S5LEg+kobraJ+NxDTtzYOK+YxoujrJUiysFAo8VEkqE9plsMXZ4RMuet
-   CfonDIPWgWTylE02KdlClIhenmHjAk838CVUR1063TvNpZUKD+NA4jqBK
-   qZVCxAYWTxdXsmDKDO+q94pabEsxyiRoH7/xt4KA/r+ETDhx8TRXOpV8K
-   1WgJxOvOmBKjH4niHyDLnT6Nq7t4ZvvABIFQsSA9jfq1UkMJZNVsSjA4P
-   JSeOcG4j36GlwxAFVyBs0NIhbP69ERl8vaffz8pQ5HJ2kB3zP3qdJuNZz
-   Q==;
-X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
-   d="asc'?scan'208";a="168286757"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 25 Aug 2023 04:57:44 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Fri, 25 Aug 2023 04:56:47 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex01.mchp-main.com (10.10.85.143)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Fri, 25 Aug 2023 04:56:44 -0700
-Date:   Fri, 25 Aug 2023 12:56:03 +0100
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     Minda Chen <minda.chen@starfivetech.com>
-CC:     Daire McNamara <daire.mcnamara@microchip.com>,
-        Conor Dooley <conor@kernel.org>,
+        Fri, 25 Aug 2023 07:57:53 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3430F1736
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 04:57:51 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-5007abb15e9so1267526e87.0
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 04:57:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692964669; x=1693569469;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mI7LozyFnLw8X2nfK3M7EIsWWR+IuMlSQ82oLzCFyxQ=;
+        b=ANjRosRmqwfEkh2Bq99SkEV9Vgk1avFkNRtuIwM7yM/idaVfqIQqoa23ARNEbMWk4x
+         innLza2bIEkZwi+wjuYOix4GAlnribLsJiv05qD7RRv9qS2NLmtbiS84yD3ay9yjmVIX
+         8XiELTblkR04P5Z6Wv7dy9TfF9B0nPtLitQnmWFZfR/aXrwVcTY2EVA4sJcS8E+u5F75
+         A96Gj4CBIfHVTfjyj6TegWK3cmqHZl+t4qRxMuJhUGEgDhdDyDdXIzd03/Ngn0jQXm+w
+         hc7KX1nY3nnYCaMmnxa4Kqaa+pVgrDIqjgT9TR2ES1TFOURR5ooEi6qIluVG2CtD9+ei
+         tqaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692964669; x=1693569469;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mI7LozyFnLw8X2nfK3M7EIsWWR+IuMlSQ82oLzCFyxQ=;
+        b=FtmSpDGrRhnxd8UFQ0atq9YXoxG1PomZfV2SjHYxhpiPQBUmSAJvI+JxYQgOpA0EUf
+         6bgvvGXwq6jY5eQUAF6bDOwR2EaiopCIx96n93fcr8sU/CJGsDz/QZKXkqs24353MgUo
+         gsV+azxdRfdeaMUiOVxEr9Nh8TtQ5Fpcy+YDrtRNmCY3O6210QtjUb2Zrtl5Vi2d4CS0
+         SO6EQCIpjzIFW1SPspcqD4inCpGkO3mkb0LhV0MCHxGejIPW1ZHUa0nPpHU2kaRBtiFZ
+         dZUe8oRtb1rQCRWoI/yVoQelzNVsAIwdCsTvg0w0snQr3vljeTzOowKjzGWs0TtQWoZg
+         WsRQ==
+X-Gm-Message-State: AOJu0YyigLLOQUIFtUaJwCIzXzxnA0PtvejdnOJvlYpy+kJsYUl6CftT
+        XTgtJS3QAEFeExczQJIkDv7bjw==
+X-Google-Smtp-Source: AGHT+IFWg1yOq0L4H8y4xkE4vY/TfiOIhcqqBSADkWR9pfsWJHmvSXKgeslKs+QfJr7PY2t2Q6gJFQ==
+X-Received: by 2002:a05:6512:3150:b0:500:9d4a:8a02 with SMTP id s16-20020a056512315000b005009d4a8a02mr3450258lfi.62.1692964668752;
+        Fri, 25 Aug 2023 04:57:48 -0700 (PDT)
+Received: from [192.168.1.101] (abyk232.neoplus.adsl.tpnet.pl. [83.9.30.232])
+        by smtp.gmail.com with ESMTPSA id v12-20020ac2560c000000b004f86d3e52c0sm264602lfd.4.2023.08.25.04.57.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Aug 2023 04:57:48 -0700 (PDT)
+Message-ID: <bfacff27-e3b2-43e8-b50e-3da0f13feb5c@linaro.org>
+Date:   Fri, 25 Aug 2023 13:57:47 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ARM: dts: qcom: apq8960: reflect that memory node starts
+ at offset 0
+Content-Language: en-US
+To:     David Heidelberg <david@ixit.cz>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>, <linux-pci@vger.kernel.org>,
-        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mason Huo <mason.huo@starfivetech.com>,
-        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
-        Kevin Xie <kevin.xie@starfivetech.com>
-Subject: Re: [PATCH v4 07/11] PCI: microchip: Rename IRQ init function
-Message-ID: <20230825-undusted-detached-1d67370c0a18@wendy>
-References: <20230825090129.65721-1-minda.chen@starfivetech.com>
- <20230825090129.65721-8-minda.chen@starfivetech.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="XmI2SV5XQAzfiIRv"
-Content-Disposition: inline
-In-Reply-To: <20230825090129.65721-8-minda.chen@starfivetech.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230812183218.374157-1-david@ixit.cz>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20230812183218.374157-1-david@ixit.cz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_SORBS_HTTP,RCVD_IN_SORBS_SOCKS,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---XmI2SV5XQAzfiIRv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hey Minda,
-
-I would like Daire to take a look at this, but I have a few more
-smaller comments on this.
-
-On Fri, Aug 25, 2023 at 05:01:25PM +0800, Minda Chen wrote:
-> Rename IRQ init function and prepare for re-use
-> IRQ init function.
-> Add plda_pcie_ops function pointer data structure,
-> PolarFire PCIe uses function pointer to get
-> their events num.
->=20
-> rename list:
-> mc_init_interrupts()     -> plda_init_interrupts()
-> mc_pcie_init_irq_domain()-> plda_pcie_init_irq_domains()
->=20
-> Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
+On 12.08.2023 20:32, David Heidelberg wrote:
+> Fixes warning generated by `make qcom-msm8960-cdp.dtb`:
+> arch/arm/boot/dts/qcom-msm8960-cdp.dt.yaml: /: memory: False schema does not allow {'device_type': ['memory'], 'reg': [[0, 0]]}
+> 
+> Signed-off-by: David Heidelberg <david@ixit.cz>
 > ---
->  .../pci/controller/plda/pcie-microchip-host.c | 49 ++++++++++++++-----
->  drivers/pci/controller/plda/pcie-plda.h       | 14 ++++++
->  2 files changed, 51 insertions(+), 12 deletions(-)
->=20
-> diff --git a/drivers/pci/controller/plda/pcie-microchip-host.c b/drivers/=
-pci/controller/plda/pcie-microchip-host.c
-> index b1d5b5b3cee5..03e8e93ea7e4 100644
-> --- a/drivers/pci/controller/plda/pcie-microchip-host.c
-> +++ b/drivers/pci/controller/plda/pcie-microchip-host.c
-> @@ -416,7 +416,10 @@ static void mc_handle_event(struct irq_desc *desc)
-> =20
->  	chained_irq_enter(chip, desc);
-> =20
-> -	events =3D get_events(port);
-> +	if (port->ops && port->ops->get_events)
-> +		events =3D port->ops->get_events(port);
-> +	else
-> +		events =3D get_events(port);
+But does it really?
 
-I don't really understand why we are going to having two different sorts
-of event acquirers here. Is there a reason to not "just" register=20
-get_events() as the default callback & remove the special casing?
+i.e., if you boot it on a device and xxd /sys/firmware/devicetree/base/memory
+or decompile /sys/firmware/fdt, is it updated to <0x0 0xsomesize>?
 
-> =20
->  	for_each_set_bit(bit, &events, NUM_EVENTS)
->  		generic_handle_domain_irq(port->event_domain, bit);
-> @@ -562,11 +565,12 @@ static int mc_pcie_init_clks(struct device *dev)
->  	return 0;
->  }
-> =20
-> -static int mc_pcie_init_irq_domains(struct plda_pcie_rp *port)
-> +static int plda_pcie_init_irq_domains(struct plda_pcie_rp *port, struct =
-plda_evt *evt)
-
-Could you just spell out the word "event" in all of these data
-structures and variables? The existing code seems to always spell it
-out, so its a boon for consistency too.
-
->  {
->  	struct device *dev =3D port->dev;
->  	struct device_node *node =3D dev->of_node;
->  	struct device_node *pcie_intc_node;
-> +	const struct irq_domain_ops *ops;
-> =20
->  	/* Setup INTx */
->  	pcie_intc_node =3D of_get_next_child(node, NULL);
-> @@ -575,8 +579,9 @@ static int mc_pcie_init_irq_domains(struct plda_pcie_=
-rp *port)
->  		return -EINVAL;
->  	}
-> =20
-> -	port->event_domain =3D irq_domain_add_linear(pcie_intc_node, NUM_EVENTS,
-> -						   &event_domain_ops, port);
-> +	ops =3D evt->domain_ops ? evt->domain_ops : &event_domain_ops;
-> +	port->event_domain =3D irq_domain_add_linear(pcie_intc_node, port->num_=
-events,
-> +						   ops, port);
->  	if (!port->event_domain) {
->  		dev_err(dev, "failed to get event domain\n");
->  		of_node_put(pcie_intc_node);
-> @@ -661,14 +666,15 @@ static void mc_disable_interrupts(struct mc_pcie *p=
-ort)
->  	writel_relaxed(GENMASK(31, 0), bridge_base_addr + ISTATUS_HOST);
->  }
-> =20
-> -static int mc_init_interrupts(struct platform_device *pdev, struct plda_=
-pcie_rp *port)
-> +static int plda_init_interrupts(struct platform_device *pdev,
-> +				struct plda_pcie_rp *port, struct plda_evt *evt)
->  {
->  	struct device *dev =3D &pdev->dev;
->  	int irq;
->  	int i, intx_irq, msi_irq, event_irq;
->  	int ret;
-> =20
-> -	ret =3D mc_pcie_init_irq_domains(port);
-> +	ret =3D plda_pcie_init_irq_domains(port, evt);
->  	if (ret) {
->  		dev_err(dev, "failed creating IRQ domains\n");
->  		return ret;
-> @@ -678,15 +684,18 @@ static int mc_init_interrupts(struct platform_devic=
-e *pdev, struct plda_pcie_rp
->  	if (irq < 0)
->  		return -ENODEV;
-> =20
-> -	for (i =3D 0; i < NUM_EVENTS; i++) {
-> +	for (i =3D 0; i < port->num_events; i++) {
->  		event_irq =3D irq_create_mapping(port->event_domain, i);
->  		if (!event_irq) {
->  			dev_err(dev, "failed to map hwirq %d\n", i);
->  			return -ENXIO;
->  		}
-> =20
-> -		ret =3D devm_request_irq(dev, event_irq, mc_event_handler,
-> -				       0, event_cause[i].sym, port);
-> +		if (evt->request_evt_irq)
-> +			ret =3D evt->request_evt_irq(port, event_irq, i);
-> +		else
-> +			ret =3D devm_request_irq(dev, event_irq, plda_event_handler,
-> +					       0, NULL, port);
->  		if (ret) {
->  			dev_err(dev, "failed to request IRQ %d\n", event_irq);
->  			return ret;
-> @@ -694,7 +703,7 @@ static int mc_init_interrupts(struct platform_device =
-*pdev, struct plda_pcie_rp
->  	}
-> =20
->  	intx_irq =3D irq_create_mapping(port->event_domain,
-> -				      EVENT_LOCAL_PM_MSI_INT_INTX);
-> +				      evt->intx_evt);
->  	if (!intx_irq) {
->  		dev_err(dev, "failed to map INTx interrupt\n");
->  		return -ENXIO;
-> @@ -704,7 +713,7 @@ static int mc_init_interrupts(struct platform_device =
-*pdev, struct plda_pcie_rp
->  	irq_set_chained_handler_and_data(intx_irq, plda_handle_intx, port);
-> =20
->  	msi_irq =3D irq_create_mapping(port->event_domain,
-> -				     EVENT_LOCAL_PM_MSI_INT_MSI);
-> +				     evt->msi_evt);
->  	if (!msi_irq)
->  		return -ENXIO;
-> =20
-> @@ -717,6 +726,17 @@ static int mc_init_interrupts(struct platform_device=
- *pdev, struct plda_pcie_rp
->  	return 0;
->  }
-> =20
-> +static int mc_request_evt_irq(struct plda_pcie_rp *plda, int event_irq,
-> +			      int evt)
-> +{
-> +	return devm_request_irq(plda->dev, event_irq, mc_event_handler,
-> +				0, event_cause[evt].sym, plda);
-> +}
-> +
-> +static const struct plda_pcie_ops plda_ops =3D {
-> +	.get_events =3D get_events,
-> +};
-
-This struct gets left behind in the microchip driver file, but is named
-"plda_ops". That doesn't make sense to me, I think it should have an
-"mc" prefix like other stuff in the file (and the microchip version of
-get_events() should also grow a prefix IMO).
-
-Thanks,
-Conor.
-
-> +
->  static int mc_platform_init(struct pci_config_window *cfg)
->  {
->  	struct device *dev =3D cfg->parent;
-> @@ -724,6 +744,9 @@ static int mc_platform_init(struct pci_config_window =
-*cfg)
->  	void __iomem *bridge_base_addr =3D
->  		port->axi_base_addr + MC_PCIE_BRIDGE_ADDR;
->  	struct pci_host_bridge *bridge =3D platform_get_drvdata(pdev);
-> +	struct plda_evt evt =3D {&event_domain_ops, mc_request_evt_irq,
-> +			       EVENT_LOCAL_PM_MSI_INT_INTX,
-> +			       EVENT_LOCAL_PM_MSI_INT_MSI};
->  	int ret;
-> =20
->  	/* Configure address translation table 0 for PCIe config space */
-> @@ -740,7 +763,7 @@ static int mc_platform_init(struct pci_config_window =
-*cfg)
->  		return ret;
-> =20
->  	/* Address translation is up; safe to enable interrupts */
-> -	ret =3D mc_init_interrupts(pdev, &port->plda);
-> +	ret =3D plda_init_interrupts(pdev, &port->plda, &evt);
->  	if (ret)
->  		return ret;
-> =20
-> @@ -761,6 +784,8 @@ static int mc_host_probe(struct platform_device *pdev)
-> =20
->  	plda =3D &port->plda;
->  	plda->dev =3D dev;
-> +	plda->num_events =3D NUM_EVENTS;
-> +	plda->ops =3D &plda_ops;
-> =20
->  	port->axi_base_addr =3D devm_platform_ioremap_resource(pdev, 1);
->  	if (IS_ERR(port->axi_base_addr))
-> diff --git a/drivers/pci/controller/plda/pcie-plda.h b/drivers/pci/contro=
-ller/plda/pcie-plda.h
-> index 315d9874b899..ef33c1365b3e 100644
-> --- a/drivers/pci/controller/plda/pcie-plda.h
-> +++ b/drivers/pci/controller/plda/pcie-plda.h
-> @@ -104,6 +104,12 @@
-> =20
->  #define PM_MSI_TO_MASK_OFFSET			19
-> =20
-> +struct plda_pcie_rp;
-> +
-> +struct plda_pcie_ops {
-> +	u32 (*get_events)(struct plda_pcie_rp *pcie);
-> +};
-> +
->  struct plda_msi {
->  	struct mutex lock;		/* Protect used bitmap */
->  	struct irq_domain *msi_domain;
-> @@ -119,10 +125,18 @@ struct plda_pcie_rp {
->  	struct irq_domain *event_domain;
->  	raw_spinlock_t lock;
->  	struct plda_msi msi;
-> +	const struct plda_pcie_ops *ops;
->  	void __iomem *bridge_addr;
->  	int num_events;
->  };
-> =20
-> +struct plda_evt {
-> +	const struct irq_domain_ops *domain_ops;
-> +	int (*request_evt_irq)(struct plda_pcie_rp *pcie, int evt_irq, int even=
-t);
-> +	int intx_evt;
-> +	int msi_evt;
-> +};
-> +
->  void plda_handle_msi(struct irq_desc *desc);
->  int plda_allocate_msi_domains(struct plda_pcie_rp *port);
->  irqreturn_t plda_event_handler(int irq, void *dev_id);
-> --=20
-> 2.17.1
->=20
-
---XmI2SV5XQAzfiIRv
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZOiW0wAKCRB4tDGHoIJi
-0usKAQCoutHEHYtKJN5yeC2bNyPV59aXcleQ9m/tV7cP6smBKAEA3aA/0doWKu6f
-aT6FsgdV1w4pDO/39o2kuq9ou0X8AQE=
-=dHsN
------END PGP SIGNATURE-----
-
---XmI2SV5XQAzfiIRv--
+Konrad
+>  arch/arm/boot/dts/qcom/qcom-msm8960.dtsi | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm/boot/dts/qcom/qcom-msm8960.dtsi b/arch/arm/boot/dts/qcom/qcom-msm8960.dtsi
+> index c10797f3793c..c20f16845a97 100644
+> --- a/arch/arm/boot/dts/qcom/qcom-msm8960.dtsi
+> +++ b/arch/arm/boot/dts/qcom/qcom-msm8960.dtsi
+> @@ -47,7 +47,7 @@ L2: l2-cache {
+>  		};
+>  	};
+>  
+> -	memory {
+> +	memory@0 {
+>  		device_type = "memory";
+>  		reg = <0x0 0x0>;
+>  	};
