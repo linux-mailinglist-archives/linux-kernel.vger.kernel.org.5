@@ -2,183 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1910E7882BD
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 10:57:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E31687882C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 10:57:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243862AbjHYI4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 04:56:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44298 "EHLO
+        id S244032AbjHYI53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 04:57:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238636AbjHYI4e (ORCPT
+        with ESMTP id S244006AbjHYI5G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 04:56:34 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC6671BCD
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 01:56:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692953791; x=1724489791;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=JCH43ctKr+8nrbOK2BXGW5bYASdd1r/s0AzuHw4giac=;
-  b=H4RYQuX4kXwtvpE92FrlC/J+izi52FVOSIFV7V2w8j5cIRwXdhq5PLE7
-   viudZ4drO1kiI+SBqrJYH5wwIPg4UuttSdeddjPE+XxhWmecFnSxBtm43
-   NSd320tc3Di7QFLjEujusFbHeJA48Zdwr/gA3cuAVMgPQLtapqFymGRMi
-   SGIFTSFJU1+Mf8AXs7WDp0Bc2rbWTKy+wVzuRUzFGuG++xUKlKkHMAbqc
-   FHhnTRABvX1144WwrPpaqegw9pFeIslKXh5HDPBnR65vziM4ah0Hl3gnC
-   33IV+lurtNSOF23PYB93YgB37CkNn/VkqEsb2kQAA7VcBvP5jhfE4TT/5
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="405669222"
-X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
-   d="scan'208";a="405669222"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2023 01:56:31 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="737408490"
-X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
-   d="scan'208";a="737408490"
-Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 25 Aug 2023 01:56:29 -0700
-Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qZScG-0003Mu-24;
-        Fri, 25 Aug 2023 08:56:28 +0000
-Date:   Fri, 25 Aug 2023 16:55:39 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: [paulmck-rcu:dev.2023.08.22a 67/69]
- kernel/locking/qspinlock.c:691:29: error: redefinition of 'next_to_cpu_idx'
-Message-ID: <202308251616.7HOmYRfg-lkp@intel.com>
+        Fri, 25 Aug 2023 04:57:06 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F5D01BF6;
+        Fri, 25 Aug 2023 01:57:01 -0700 (PDT)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37P8L8rS016120;
+        Fri, 25 Aug 2023 08:56:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=onBKAcug19tEB8vhIRdPk/6OlxISuNmM42XPXEW9QAc=;
+ b=L6sGXD3j1xKckmgyy6crfOH22H3q1FH0wDeOdmZ5+LD/OPX9hntvHLuRnqwd9lg3+eic
+ 4ma3njb9LycwHx97qSRViKXddool054vv0l2MgQYkWsOEdITZeneKZr/hPpmEHMAmWlG
+ ofaSl++LPQb3DFrXFvERU1ySWLE3UMo6BJy/VUPca6VA2JR4Ei5XvYGhLM+6ov6++Cno
+ HG2bbj5H+VXTILcbNVMiliujhT/BXl+4gCjBoNC7Rw2F/KtEb5UI5+nakZIcAv6bHzmL
+ El2mbvR7g3Kz/Uv0FCmQEpYMwWdSaMecLAusAKWWW094+VzqyS8DgJBSIr4ihcUePs01 wQ== 
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3spmm68j1t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 25 Aug 2023 08:56:19 +0000
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37P8uIbh000424
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 25 Aug 2023 08:56:19 GMT
+Received: from [10.216.23.75] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Fri, 25 Aug
+ 2023 01:56:11 -0700
+Message-ID: <a3a5a5a6-fb09-4904-81a0-c1de4653e378@quicinc.com>
+Date:   Fri, 25 Aug 2023 14:26:04 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 3/6] dt-bindings: clock: Add ipq9574 NSSCC clock and reset
+ definitions
+Content-Language: en-US
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Kathiravan T <quic_kathirav@quicinc.com>, <agross@kernel.org>,
+        <andersson@kernel.org>, <mturquette@baylibre.com>,
+        <sboyd@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <catalin.marinas@arm.com>, <will@kernel.org>,
+        <p.zabel@pengutronix.de>, <richardcochran@gmail.com>,
+        <arnd@arndb.de>, <geert+renesas@glider.be>,
+        <neil.armstrong@linaro.org>, <nfraprado@collabora.com>,
+        <rafal@milecki.pl>, <linux-arm-msm@vger.kernel.org>,
+        <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <netdev@vger.kernel.org>
+CC:     <quic_saahtoma@quicinc.com>
+References: <20230711093529.18355-1-quic_devipriy@quicinc.com>
+ <20230711093529.18355-4-quic_devipriy@quicinc.com>
+ <ea229d40-0bce-87e8-edef-72a7f251c051@quicinc.com>
+ <868da572-cff1-42b6-9931-06b6a8c73809@linaro.org>
+From:   Devi Priya <quic_devipriy@quicinc.com>
+In-Reply-To: <868da572-cff1-42b6-9931-06b6a8c73809@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: Rp6KQ-52rhszQMjaKaWh-UHsgFMqZ8Fy
+X-Proofpoint-GUID: Rp6KQ-52rhszQMjaKaWh-UHsgFMqZ8Fy
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-25_07,2023-08-24_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
+ impostorscore=0 priorityscore=1501 malwarescore=0 phishscore=0
+ clxscore=1015 mlxscore=0 adultscore=0 bulkscore=0 lowpriorityscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308250077
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2023.08.22a
-head:   354957ec11dc80eac68c4b1e10c237d69adc1833
-commit: 62532cfc5f2be5376f0eac431783c226c35e104f [67/69] EXP qspinlock: Dump full qnode structure
-config: i386-buildonly-randconfig-001-20230825 (https://download.01.org/0day-ci/archive/20230825/202308251616.7HOmYRfg-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce: (https://download.01.org/0day-ci/archive/20230825/202308251616.7HOmYRfg-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308251616.7HOmYRfg-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   kernel/locking/qspinlock.c:730:102: warning: format specifies type 'unsigned long' but the argument has type 'unsigned int' [-Wformat]
-                   __func__, _Q_TAIL_CPU_OFFSET, _Q_TAIL_IDX_MASK, _Q_TAIL_IDX_OFFSET, _Q_LOCKED_VAL, _Q_TAIL_OFFSET, sizeof(qval.tail));
-                                                                                                                      ^~~~~~~~~~~~~~~~~
-   include/linux/printk.h:478:35: note: expanded from macro 'pr_alert'
-           printk(KERN_ALERT pr_fmt(fmt), ##__VA_ARGS__)
-                                    ~~~     ^~~~~~~~~~~
-   include/linux/printk.h:455:60: note: expanded from macro 'printk'
-   #define printk(fmt, ...) printk_index_wrap(_printk, fmt, ##__VA_ARGS__)
-                                                       ~~~    ^~~~~~~~~~~
-   include/linux/printk.h:427:19: note: expanded from macro 'printk_index_wrap'
-                   _p_func(_fmt, ##__VA_ARGS__);                           \
-                           ~~~~    ^~~~~~~~~~~
-   In file included from kernel/locking/qspinlock.c:779:
-   kernel/locking/qspinlock_paravirt.h:298:7: warning: variable 'wait_early' set but not used [-Wunused-but-set-variable]
-           bool wait_early;
-                ^
-   kernel/locking/qspinlock_paravirt.h:407:6: warning: variable 'waitcnt' set but not used [-Wunused-but-set-variable]
-           int waitcnt = 0;
-               ^
-   kernel/locking/qspinlock_paravirt.h:493:1: warning: no previous prototype for function '__pv_queued_spin_unlock_slowpath' [-Wmissing-prototypes]
-   __pv_queued_spin_unlock_slowpath(struct qspinlock *lock, u8 locked)
-   ^
-   kernel/locking/qspinlock_paravirt.h:492:22: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   __visible __lockfunc void
-                        ^
-                        static 
-   In file included from kernel/locking/qspinlock.c:780:
-   kernel/locking/qspinlock.c:660:19: error: redefinition of 'tail_to_cpu'
-   static __pure int tail_to_cpu(u32 tail)
-                     ^
-   kernel/locking/qspinlock.c:660:19: note: previous definition is here
-   static __pure int tail_to_cpu(u32 tail)
-                     ^
-   In file included from kernel/locking/qspinlock.c:780:
-   kernel/locking/qspinlock.c:665:19: error: redefinition of 'tail_to_idx'
-   static __pure int tail_to_idx(u32 tail)
-                     ^
-   kernel/locking/qspinlock.c:665:19: note: previous definition is here
-   static __pure int tail_to_idx(u32 tail)
-                     ^
-   In file included from kernel/locking/qspinlock.c:780:
-   kernel/locking/qspinlock.c:670:29: error: redefinition of 'next_to_prev'
-   static struct mcs_spinlock *next_to_prev(struct mcs_spinlock *msp, int *cpup, int *idxp)
-                               ^
-   kernel/locking/qspinlock.c:670:29: note: previous definition is here
-   static struct mcs_spinlock *next_to_prev(struct mcs_spinlock *msp, int *cpup, int *idxp)
-                               ^
-   In file included from kernel/locking/qspinlock.c:780:
->> kernel/locking/qspinlock.c:691:29: error: redefinition of 'next_to_cpu_idx'
-   static struct mcs_spinlock *next_to_cpu_idx(struct mcs_spinlock *msp, int *cpup, int *idxp)
-                               ^
-   kernel/locking/qspinlock.c:691:29: note: previous definition is here
-   static struct mcs_spinlock *next_to_cpu_idx(struct mcs_spinlock *msp, int *cpup, int *idxp)
-                               ^
-   In file included from kernel/locking/qspinlock.c:780:
-   kernel/locking/qspinlock.c:712:6: error: redefinition of 'spinlock_dump'
-   void spinlock_dump(spinlock_t *sp, bool full)
-        ^
-   kernel/locking/qspinlock.c:712:6: note: previous definition is here
-   void spinlock_dump(spinlock_t *sp, bool full)
-        ^
-   In file included from kernel/locking/qspinlock.c:780:
-   kernel/locking/qspinlock.c:730:102: warning: format specifies type 'unsigned long' but the argument has type 'unsigned int' [-Wformat]
-                   __func__, _Q_TAIL_CPU_OFFSET, _Q_TAIL_IDX_MASK, _Q_TAIL_IDX_OFFSET, _Q_LOCKED_VAL, _Q_TAIL_OFFSET, sizeof(qval.tail));
-                                                                                                                      ^~~~~~~~~~~~~~~~~
-   include/linux/printk.h:478:35: note: expanded from macro 'pr_alert'
-           printk(KERN_ALERT pr_fmt(fmt), ##__VA_ARGS__)
-                                    ~~~     ^~~~~~~~~~~
-   include/linux/printk.h:455:60: note: expanded from macro 'printk'
-   #define printk(fmt, ...) printk_index_wrap(_printk, fmt, ##__VA_ARGS__)
-                                                       ~~~    ^~~~~~~~~~~
-   include/linux/printk.h:427:19: note: expanded from macro 'printk_index_wrap'
-                   _p_func(_fmt, ##__VA_ARGS__);                           \
-                           ~~~~    ^~~~~~~~~~~
-   5 warnings and 5 errors generated.
 
 
-vim +/next_to_cpu_idx +691 kernel/locking/qspinlock.c
+On 8/24/2023 2:17 PM, Konrad Dybcio wrote:
+> On 24.08.2023 07:18, Kathiravan T wrote:
+>>
+>> On 7/11/2023 3:05 PM, Devi Priya wrote:
+>>> Add NSSCC clock and reset definitions for ipq9574.
+>>>
+>>> Signed-off-by: Devi Priya <quic_devipriy@quicinc.com>
+>>> ---
+>>>    .../bindings/clock/qcom,ipq9574-nsscc.yaml    |  76 +++++++++
+>>>    .../dt-bindings/clock/qcom,ipq9574-nsscc.h    | 152 ++++++++++++++++++
+>>>    .../dt-bindings/reset/qcom,ipq9574-nsscc.h    | 134 +++++++++++++++
+>>>    3 files changed, 362 insertions(+)
+>>>    create mode 100644 Documentation/devicetree/bindings/clock/qcom,ipq9574-nsscc.yaml
+>>>    create mode 100644 include/dt-bindings/clock/qcom,ipq9574-nsscc.h
+>>>    create mode 100644 include/dt-bindings/reset/qcom,ipq9574-nsscc.h
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/clock/qcom,ipq9574-nsscc.yaml b/Documentation/devicetree/bindings/clock/qcom,ipq9574-nsscc.yaml
+>>> new file mode 100644
+>>> index 000000000000..1e8754760785
+>>> --- /dev/null
+>>> +++ b/Documentation/devicetree/bindings/clock/qcom,ipq9574-nsscc.yaml
+>>> @@ -0,0 +1,76 @@
+>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>>> +%YAML 1.2
+>>> +---
+>>> +$id: http://devicetree.org/schemas/clock/qcom,ipq9574-nsscc.yaml#
+>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>>> +
+>>> +title: Qualcomm Networking Sub System Clock & Reset Controller on IPQ9574
+>>> +
+>>> +maintainers:
+>>> +  - Bjorn Andersson <andersson@kernel.org>
+>>> +  - Anusha Rao <quic_anusha@quicinc.com>
+>>> +
+>>> +description: |
+>>> +  Qualcomm networking sub system clock control module provides the clocks,
+>>> +  resets and power domains on IPQ9574
+>>> +
+>>> +  See also::
+>>> +    include/dt-bindings/clock/qcom,ipq9574-nsscc.h
+>>> +    include/dt-bindings/reset/qcom,ipq9574-nsscc.h
+>>> +
+>>> +properties:
+>>> +  compatible:
+>>> +    const: qcom,ipq9574-nsscc
+>>> +
+>>> +  clocks:
+>>> +    items:
+>>> +      - description: Bias PLL cc clock source
+>>> +      - description: Bias PLL nss noc clock source
+>>> +      - description: Bias PLL ubi nc clock source
+>>> +      - description: GCC GPLL0 out aux clock source
+>>> +      - description: Uniphy0 GCC Rx clock source
+>>> +      - description: Uniphy0 GCC Tx clock source
+>>> +      - description: Uniphy1 GCC Rx clock source
+>>> +      - description: Uniphy1 GCC Tx clock source
+>>> +      - description: Uniphy2 GCC Rx clock source
+>>> +      - description: Uniphy2 GCC Tx clock source
+>>
+>>
+>> These are UniphyX *NSS* TX/RX clock source?
+> Wouldn't that be "source from GCC"?
+These clocks are not sourced from GCC
 
-   690	
- > 691	static struct mcs_spinlock *next_to_cpu_idx(struct mcs_spinlock *msp, int *cpup, int *idxp)
-   692	{
-   693		int cpu;
-   694		int idx;
-   695	
-   696		for_each_possible_cpu(cpu) {
-   697			struct qnode *qnp = per_cpu_ptr(&qnodes[0], cpu);
-   698	
-   699			for (idx = 0; idx < MAX_NODES; idx++) {
-   700				if (&qnp[idx].mcs == msp) {
-   701					*cpup = cpu;
-   702					*idxp = idx;
-   703					return &qnp[idx].mcs;
-   704				}
-   705			}
-   706		}
-   707		*cpup = -1;
-   708		*idxp = -1;
-   709		return NULL;
-   710	}
-   711	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks,
+Devi Priya
+> 
+> Konrad
