@@ -2,179 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95140788E60
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 20:15:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43CB2788E6B
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 20:17:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231886AbjHYSPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 14:15:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49182 "EHLO
+        id S229703AbjHYSQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 14:16:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233500AbjHYSOv (ORCPT
+        with ESMTP id S231405AbjHYSQO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 14:14:51 -0400
-Received: from sonic311-30.consmr.mail.ne1.yahoo.com (sonic311-30.consmr.mail.ne1.yahoo.com [66.163.188.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 154842706
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 11:14:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1692987262; bh=zgxFzEwt+VhUWEvsZyRymTsuacibGHktWPWMIzPmD8Q=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=ct4Ms1G7NQpWzmktqt0vmDCcCTfQxbdQL23KzI869JXON+2EouOQA3UPa2WjBKuqFl+rxDAVQQeDpEnuI44X6EPqLHKN4J8bP0xDQC7wQxBE+GOASsBcxTORNyQv0nn2rLlWBFJhu7gD09JHB2MU6A1d8c4HEIwbOtB2MbA7zlNGPaBm8N2xWt3cls6Mm6DuP6x4FKraL+nlKxuAKWtgHbsa7zNHrwaX2okdzB9KLkw3NaJ5QFv5iqsfE3WCdivPy+V6TzfsqukB/6sy1o7iBMi4X4EHiX1itiEnUZxec6qgr6YiyCgkaFaDRUoJ/QDEAYE+N1QIsGgalkM8U16Dkg==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1692987262; bh=OyUoETvIwfPWH4eFUZLbxkw1RslQPD2X9ACvXGBKGmr=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=cCbr3UrBCFMDDmVKWlKQ5GLox0TKIwNv301hDqmUFyWJVtufndjYpNQZ+Nq9nZHRIcZ2pF4njYnT+P+Yhg6wH0llaAa9CCAbs9bT+HY+XfE11TnNk5k6fWjVe1Ci+Dz90QP2Fk3IzMt+ihzJZNYhPPJLZJkjPsdAttKsYbzO5k+7bTEXDuVVq4zUowdOyV2Jya41Rmk3phiVdKLPIdshWf35IYTn/VHvOMJDIpvr2cADpDXXUIxON0QNJ/F52QMMGeGRK8DO+6uCaL3I11KvqtGWtAwyzlQxtqssqYQlV6bYWwrYrCXdGZzQvq7Z14KgHAum1WTv8GROIgR8NXNp3g==
-X-YMail-OSG: 7SvZxUIVM1kPVaPNjSLTjPiA5bhFuIaJ7Pt8DRy5aC5PqZnGn7o6q74kawRDSxd
- YegdddUzaHCvy3._TMn.1yaOP0tiS7LrO8VATylBfuViXsuNLNHgc6fGWO.gEP_cFX2j8q3kR9Mg
- AoIOSsLbLlhKQ7VRW5KShiNO3Va0TAPn2Oa6MF.4FjGjcVWX3ovIlzGAZfptMlelhEaLT.6uMs70
- GKGoINiINa0TXRJq3ttKZGifwWg2Ux4eKoW5og9LeoMy3XuGR4FrqR5NRgPAxbK2LOuu_Q2uXeTA
- q_ri4JlCs17UQ8X62MABrKAZkQF6CMTYAeGMcDUnzb.4H6FG0vLXVBb8_15QBzefT0vVuE7STPTN
- NKaM2R8UNYKRE4m4GZSJKMzjfmzmO8AsTdjZrF4DtUjVN.O4QHNLjm0i0dqLnSBc3UmubaybaTcp
- 9oga3rS6PGh2fn0jifwY.shCPYv.tDnVYmZrwOgK1pDYOXYsZEFR6P8gkGHHl1EsvCGdzb2m4BWn
- YWleyj2Hvzz8BfOZPLr0SV4PaXRUvGRU2ujaVtiBGBGALvctH916jkJI0KjsfZUT5_JYnwqJpeVw
- W.YzvVsWGLdMDUpREDwao6e8VM4hkbTw2gRCXuCWw9dfBXE6sUPNenyhFBRR2EGobTJPPcRkBq9D
- Ejlxz2YiCn.JOpyyF2iUWzk9BY0wdIYmdy9SBwXeZUfCVPYc7AInhxgfcYKtjP54qWLKR8H0rf0T
- Ylr5jlHB9O.9MZLfx929h7RzXNh7EwqWaYqm_XnrfmNvwvwBGF9GhhNufBEJEQgf3AvhtnGoJhGY
- YZc_fDHqrpC4Jg0_KvMUH4hJPVCAMvQFPw5rVU723iXj6BGDwMPB94si1hnf9nqynoXNwD3WYRZl
- 2u9nxqNQJYmFIPM3owi2lYCAPzfyjGMR4rcJPtgGy36uLrNzHVVCbcVnFfFIVvgkCBSXLaXlRfJm
- 3CKnmcHtZrZlJzsvVBIAk3eAM91XuV3bOlUiss3yzqB5vqlHMpA5yHQt9N2wYPX6P0m2SvpyI3n9
- djxoLX5BlQBqnqE3IyeqKl8.uyglqdXKkjKrDRds19sMlVRsVNXjM5E0QaUK1PYsoQzgZ.jghpTg
- 9oX29yJQOy2DrvzSW4zut6k7mxyUgJ0UPhlxoAXRwKKJi3O04aOROX6IPnXDzWnAWXBAwIuyzaOJ
- eM20t40.gO_Kqe7sUITs0BXnEHQ7Bx2_C7j_D0suPe37o3pQl1UFXlBRCT5RIzIGO4cnKHFt2UO4
- LUGUD.iPfb8xNMmD_vlw.cA.ODqUO34kmo2GgVzd03D2WgttuauoosMHCW.uJCkRH25JgTvC4sKZ
- ycNUSxRFtmfR9XrANJ.Cos9pIPmfQOaXo8Cky7s8yfSl5NeeRHJo1yBc_DtWYHqlwanhsnDz5fZc
- OYAlq2BmtA1cmyhZJ.C8fp5gCj93sIk_UIjBMPFU3V.i5J7jHDa6JlpOTiZot4CvkJusk9aVjRdQ
- 4eIwaakJyvmfYhlDY7POJbdjCyedlnq3akNI78fhVZkKOegF6K5Qn8_wZopGLP0D4oO1nF8SIGYY
- R.TirwwylFRH.mJXsjCtnLFkdxtTiZBq5El0mVGrvCLk5hGI7RZU_Gqya635zC6EZfVCdnUgk9Wg
- RVeQa9Rxmji0PjpcsGCM8Oy9HHB_1MeVdiuOZxMddM_0T4nZesJoOJYtGH9NYDOXPWLPxxjaHssN
- C79A8lnqpAM5VezTofZKRX.NScLlXAtBrOvtzCFWLOXgUSYDvDtuD0l.Ywvunag8xqTdzyRH7KR7
- oZQWiadMfPis1tUhH5_hB70MmPIFCC7Qb4b.sxsA4V.xA1vjoMAsv_siWxFNGvvrhq0sIiknw2fR
- nj6zSCH4fJ9Q3Slrh9YjWCZWqqu4cMAPG1Szei5.jU3ppnfVeB6k2SQDOetYS_Cv0OZ_Ee1vo61f
- lD_mBIBrgPcohVpCs3ItxcCepDeUPBBrgAC1xLvCqWiOiU9WO_0XbQhqQgsZIGTTm2.4roHS6E1L
- ZhrvJ1YDtpXj8x7byei6RsHkFj84O8L0kuSmqBYofA7P5BY0ya3QZwpSZh8gAa4xrgncRixGyKMQ
- jIHGJU8VwLFLMcOlnGKDou8WBgM.G5JJiruF2.xkKXIfG16nJIPTWTmk3glzlbzM8jfLutVX6hFY
- p9bSPC4Ce89mTp5I_osbTpAqW3huwm6bwvBE8EAi3.raSFVws9eQkO_ZkR.yPORhbRFZaFukUVft
- mXFNlPJvPJHB4KDWRJ5hzsG3ymhaUpw8yUb4wTLIOjDma3hNlMKfYkvrxwpSqIfWjo8kz7g1irg-
- -
-X-Sonic-MF: <casey@schaufler-ca.com>
-X-Sonic-ID: f61f1efb-b783-42b2-82f1-ba85b049db2f
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic311.consmr.mail.ne1.yahoo.com with HTTP; Fri, 25 Aug 2023 18:14:22 +0000
-Received: by hermes--production-bf1-865889d799-r6v2w (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID d891f7071272a2e3a919fa0de812b59a;
-          Fri, 25 Aug 2023 18:14:19 +0000 (UTC)
-Message-ID: <9537cf00-575c-b57e-29ca-0b49be6617b9@schaufler-ca.com>
-Date:   Fri, 25 Aug 2023 11:14:15 -0700
+        Fri, 25 Aug 2023 14:16:14 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FD642D44;
+        Fri, 25 Aug 2023 11:15:41 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-4ff933f9ca8so1856895e87.1;
+        Fri, 25 Aug 2023 11:15:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692987339; x=1693592139;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Z/FGw8WTQcGNaVQqRBSGTtSHwW9E63Wb1NNcuS9eK8s=;
+        b=OxzC34VYQ/lOuAIJBv07wp6fPeLehLOAi1mU0uJLZSHMKrmj+EwYKRbIIaTKzGM0OD
+         FELyHBv8icVGpooaDMH3pX56dJa2Wwqw0V1UOotJHLaAiAGC1WhZgkjwzjb+PigyH2OO
+         qFu/a5ucbI3kLN3Rx4zRSLPky+hrc1dteGIHl/xz3OLfM3wEhzCkuhFy8oZFBdcQUsIl
+         CetyjZ4N7p2FqAbZhzJxrFNfPtCayDJZ+fEtxSGfa3e621rdXxWjQR+5/+GD5oFVXLKu
+         NBQYlM4Z037DJO07cmUfuVuyUIkjCbxMv2CfK1LjPyWxZWSdiHITq0jJPn22qbsZ/miw
+         X1YQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692987339; x=1693592139;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Z/FGw8WTQcGNaVQqRBSGTtSHwW9E63Wb1NNcuS9eK8s=;
+        b=Sgb+OFHl7TLWecoHO8HA4esRes9UZDQHcqthbz3nbyrU5a/lpw3n5ywNYqaziWH+d0
+         yw0U6BavCI0FiQGU/2KZGB9GFRGUVk+vwpK92rd+fvnrMtVtclo0cN8430+383hfMvai
+         PhLAcIVEuJZEBzKPizH1BWmaK49Stt4ejEiojCjBh9h4bdNzaSRvDqGsCZrI6S7LCEu1
+         NaCkvRKFCJ811B0A5BpUyKv3IxrOlLvJ/m6JhuOX3EHaHMztl97Ikea+JdzTicoiDvFD
+         tAMkoY9bxIJ4ZEaDAfz3mRMPA+JV/uJZ3RN2sFb2eMqx+CE68XnPonLJtsP7IKT1UTsc
+         smhw==
+X-Gm-Message-State: AOJu0YyNnZApcUbunY2yN7M/wVmUJPAOIRwoHxlRVnfa929k67Q2NTAI
+        VxhE4WaPS6vkvfZgsZggPSSwBXPG1F5KfQe4ieU=
+X-Google-Smtp-Source: AGHT+IHpRCVvS7diQdycBT5DGX0/HZUcX9oDLtQP3DT3UbV1oJ30vCnXpa+uG6GgEKk5nHZkYu+C35njfaJ8/ELaD5A=
+X-Received: by 2002:ac2:5f85:0:b0:500:9860:f8a with SMTP id
+ r5-20020ac25f85000000b0050098600f8amr5130105lfe.4.1692987338930; Fri, 25 Aug
+ 2023 11:15:38 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v13 11/11] LSM: selftests for Linux Security Module
- syscalls
-Content-Language: en-US
-To:     =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Cc:     paul@paul-moore.com, linux-security-module@vger.kernel.org,
-        jmorris@namei.org, serge@hallyn.com, keescook@chromium.org,
-        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
-        stephen.smalley.work@gmail.com, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, Casey Schaufler <casey@schaufler-ca.com>
-References: <20230802174435.11928-1-casey@schaufler-ca.com>
- <20230802174435.11928-12-casey@schaufler-ca.com>
- <20230825.OokahF6aezae@digikod.net>
-From:   Casey Schaufler <casey@schaufler-ca.com>
-In-Reply-To: <20230825.OokahF6aezae@digikod.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Mailer: WebService/1.1.21763 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <CAF6AEGsdR4XMQ73mwNEE-fntPFLbQrxmzdoWchjReoVXKexdVw@mail.gmail.com>
+ <3f08-64e8c380-3-f083520@11689262>
+In-Reply-To: <3f08-64e8c380-3-f083520@11689262>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Fri, 25 Aug 2023 11:15:26 -0700
+Message-ID: <CAF6AEGtzfEFpr610c8TdLAH_zEYEtXzt61ywQTcFbvCOj-G9-A@mail.gmail.com>
+Subject: Re: [PATCH 2/6] drm: ci: Force db410c to host mode
+To:     Helen Mae Koike Fornazier <helen.koike@collabora.com>
+Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Vignesh Raman <vignesh.raman@collabora.com>,
+        dri-devel@lists.freedesktop.org, emma@anholt.net,
+        linux-doc@vger.kernel.org, david.heidelberg@collabora.com,
+        linux-amlogic@lists.infradead.org, jbrunet@baylibre.com,
+        robdclark@google.com, corbet@lwn.net, khilman@baylibre.com,
+        sergi.blanch.torne@collabora.com, gustavo.padovan@collabora.com,
+        linux-rockchip@lists.infradead.org, daniels@collabora.com,
+        martin.blumenstingl@googlemail.com, robclark@freedesktop.org,
+        anholt@google.com, linux-mediatek@lists.infradead.org,
+        mripard@kernel.org, matthias.bgg@gmail.com,
+        linux-arm-kernel@lists.infradead.org,
+        angelogioacchino.delregno@collabora.com, neil.armstrong@linaro.org,
+        guilherme.gallo@collabora.com, linux-kernel@vger.kernel.org,
+        tzimmermann@suse.de
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/25/2023 8:01 AM, Mickaël Salaün wrote:
-> These tests look good!
+On Fri, Aug 25, 2023 at 8:06=E2=80=AFAM Helen Mae Koike Fornazier
+<helen.koike@collabora.com> wrote:
 >
-> I suggested other tests to add in my previous emails.
-
-Some of the tests you've suggested will be very difficult to implement
-in the face of varying LSM configurations. I need to defer them until a
-later date.
-
-> I'd suggest to re-run clang-format -i on them though.
-
-I assume you're recommending a set of options to clang-format
-beyond just "-i". The result of clang-format -i by itself is
-horrific. 
-
+> On Friday, August 25, 2023 11:41 -03, Rob Clark <robdclark@gmail.com> wro=
+te:
 >
-> On Wed, Aug 02, 2023 at 10:44:34AM -0700, Casey Schaufler wrote:
->> Add selftests for the three system calls supporting the LSM
->> infrastructure. This set of tests is limited by the differences
->> in access policy enforced by the existing security modules.
->>
->> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
->> ---
->>  MAINTAINERS                                   |   1 +
->>  tools/testing/selftests/Makefile              |   1 +
->>  tools/testing/selftests/lsm/Makefile          |  19 ++
->>  tools/testing/selftests/lsm/common.c          |  81 ++++++
->>  tools/testing/selftests/lsm/common.h          |  33 +++
->>  tools/testing/selftests/lsm/config            |   3 +
->>  .../selftests/lsm/lsm_get_self_attr_test.c    | 240 ++++++++++++++++++
->>  .../selftests/lsm/lsm_list_modules_test.c     | 140 ++++++++++
->>  .../selftests/lsm/lsm_set_self_attr_test.c    |  74 ++++++
->>  9 files changed, 592 insertions(+)
->>  create mode 100644 tools/testing/selftests/lsm/Makefile
->>  create mode 100644 tools/testing/selftests/lsm/common.c
->>  create mode 100644 tools/testing/selftests/lsm/common.h
->>  create mode 100644 tools/testing/selftests/lsm/config
->>  create mode 100644 tools/testing/selftests/lsm/lsm_get_self_attr_test.c
->>  create mode 100644 tools/testing/selftests/lsm/lsm_list_modules_test.c
->>  create mode 100644 tools/testing/selftests/lsm/lsm_set_self_attr_test.c
->>
->> diff --git a/MAINTAINERS b/MAINTAINERS
->> index aca4db11dd02..c96f1c388d22 100644
->> --- a/MAINTAINERS
->> +++ b/MAINTAINERS
->> @@ -19158,6 +19158,7 @@ W:	http://kernsec.org/
->>  T:	git git://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/lsm.git
->>  F:	include/uapi/linux/lsm.h
->>  F:	security/
->> +F:	tools/testing/selftests/lsm/
->>  X:	security/selinux/
->>  
->>  SELINUX SECURITY MODULE
->> diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
->> index 666b56f22a41..bde7c217b23f 100644
->> --- a/tools/testing/selftests/Makefile
->> +++ b/tools/testing/selftests/Makefile
->> @@ -39,6 +39,7 @@ TARGETS += landlock
->>  TARGETS += lib
->>  TARGETS += livepatch
->>  TARGETS += lkdtm
->> +TARGETS += lsm
->>  TARGETS += membarrier
->>  TARGETS += memfd
->>  TARGETS += memory-hotplug
->> diff --git a/tools/testing/selftests/lsm/Makefile b/tools/testing/selftests/lsm/Makefile
->> new file mode 100644
->> index 000000000000..bae6c1e3bba4
->> --- /dev/null
->> +++ b/tools/testing/selftests/lsm/Makefile
->> @@ -0,0 +1,19 @@
->> +# SPDX-License-Identifier: GPL-2.0
->> +#
->> +# First run: make -C ../../../.. headers_install
->> +
->> +CFLAGS += -Wall -O2 $(KHDR_INCLUDES)
->> +LOCAL_HDRS += common.h
->> +
->> +TEST_GEN_PROGS := lsm_get_self_attr_test lsm_list_modules_test \
->> +		  lsm_set_self_attr_test
->> +
->> +include ../lib.mk
->> +
->> +$(TEST_GEN_PROGS):
-> This target can be removed.
+> > On Fri, Aug 25, 2023 at 7:34=E2=80=AFAM Helen Mae Koike Fornazier
+> > <helen.koike@collabora.com> wrote:
+> > >
+> > > On Friday, August 25, 2023 11:30 -03, Rob Clark <robdclark@gmail.com>=
+ wrote:
+> > >
+> > > > On Fri, Aug 25, 2023 at 6:56=E2=80=AFAM Jani Nikula <jani.nikula@li=
+nux.intel.com> wrote:
+> > > > >
+> > > > > On Fri, 25 Aug 2023, Vignesh Raman <vignesh.raman@collabora.com> =
+wrote:
+> > > > > > Force db410c to host mode to fix network issue which results in=
+ failure
+> > > > > > to mount root fs via NFS.
+> > > > > > See https://gitlab.freedesktop.org/gfx-ci/linux/-/commit/cb72a6=
+29b8c15c80a54dda510743cefd1c4b65b8
+> > > > > >
+> > > > > > Since this fix is not sent upstream, add it to build.sh script
+> > > > > > before building the kernel and dts. Better approach would be
+> > > > > > to use devicetree overlays.
+> > > > > >
+> > > > > > Signed-off-by: Vignesh Raman <vignesh.raman@collabora.com>
+> > > > > > ---
+> > > > > >  drivers/gpu/drm/ci/build.sh | 4 ++++
+> > > > > >  1 file changed, 4 insertions(+)
+> > > > > >
+> > > > > > diff --git a/drivers/gpu/drm/ci/build.sh b/drivers/gpu/drm/ci/b=
+uild.sh
+> > > > > > index 7b014287a041..c39834bd6bd7 100644
+> > > > > > --- a/drivers/gpu/drm/ci/build.sh
+> > > > > > +++ b/drivers/gpu/drm/ci/build.sh
+> > > > > > @@ -70,6 +70,10 @@ if [ -z "$CI_MERGE_REQUEST_PROJECT_PATH" ]; =
+then
+> > > > > >      fi
+> > > > > >  fi
+> > > > > >
+> > > > > > +# Force db410c to host mode to fix network issue which results=
+ in failure to mount root fs via NFS.
+> > > > > > +# See https://gitlab.freedesktop.org/gfx-ci/linux/-/commit/cb7=
+2a629b8c15c80a54dda510743cefd1c4b65b8
+> > > > > > +sed -i '/&usb {/,/status =3D "okay";/s/status =3D "okay";/&\n\=
+tdr_mode =3D "host";/' arch/arm64/boot/dts/qcom/apq8016-sbc.dts
+> > > > > > +
+> > > > >
+> > > > > It seems like a really bad idea to me to have the CI build modify=
+ the
+> > > > > source tree before building.
+> > > > >
+> > > > > The kernel being built will have a dirty git repo, and the localv=
+ersion
+> > > > > will have -dirty in it.
+> > > > >
+> > > > > I think it would be better to do out-of-tree builds and assume th=
+e
+> > > > > source is read-only.
+> > > >
+> > > > We have the ${target_branch}-external-fixes mechanism to merge
+> > > > necessary changes before building the kernel for CI.  Which is
+> > > > necessary for a couple of reasons:
+> > >
+> > > Should we create an official topic/drm-ci-external-fixes branch ?
+> >
+> > Hmm, maybe.. I guess as we expand this to more driver trees, and want
+> > to be able to re-run CI in the drm tree after merges to
+> > drm-next/drm-fixes, we maybe want to have central
+> > drm-next-external-fixes and drm-fixes-external-fixes.  I guess we can
+> > keep those based on drm-next and drm-fixes?  And if there would be
+> > conflicts because, say, ${driver}-next is behind drm-next, then
+> > ${driver}-next could be rebased on drm-next?
+> >
 >
->> +
->> +$(OUTPUT)/lsm_get_self_attr_test: lsm_get_self_attr_test.c common.c
->> +$(OUTPUT)/lsm_set_self_attr_test: lsm_set_self_attr_test.c common.c
->> +$(OUTPUT)/lsm_list_modules_test: lsm_list_modules_test.c common.c
->> +
->> +EXTRA_CLEAN = $(OUTPUT)/common.o
+> tbh this is one of the reasons I would prefer in-code fixes instead of
+> commits on a -external-fixes branch, since it seems things start to becom=
+e
+> complex to manage all different trees for people executing ci tests
+> on different history points, but I don't oppose going for -external-fixes
+> either.
+
+If by in-code you mean in the same branch that we are running CI on, I
+think that will be difficult to do without having force-pushes later
+to remove the unrelated patch.
+
+It doesn't happen every release, but sometimes there is an issue
+requiring a fix outside of drm, which really shouldn't land via
+drm-next.  In some cases even, we might need a temporary hack fix when
+a proper solution is still being worked out.  Since the kernel
+development is unlike mesa, where we have a single main branch and CI
+runs on every change entering that main branch, we are going to have
+to deal occasionally with breakage that comes in via another tree that
+isn't running CI.  But IME so far with msm-next-external-fixes, it
+hasn't been so bad.. I haven't even had to rebase it every kernel
+cycle.  (If the fix cherry-picked into -external-fixes from a previous
+release cycle already exists in msm-next then the merge of that commit
+is a no-op.)
+
+BR,
+-R
+
+> Regards,
+> Helen
+>
+> > BR,
+> > -R
+> >
+> > > Regards,
+> > > Helen
+> > >
+> > > >
+> > > > 1) patches like this which aren't appropriate upstream but necessar=
+y
+> > > > due to the CI lab setup
+> > > > 2) target branch if often based on an early -rc, and it isn't unhea=
+rd
+> > > > of to need some fix for some board or another which isn't appropria=
+te
+> > > > to land via drm-next
+> > > >
+> > > > We should use the -external-fixes branch mechanism for patches like=
+ this one.
+> > > >
+> > > > BR,
+> > > > -R
+> > > >
+> > > > > >  for opt in $ENABLE_KCONFIGS; do
+> > > > > >    echo CONFIG_$opt=3Dy >> drivers/gpu/drm/ci/${KERNEL_ARCH}.co=
+nfig
+> > > > > >  done
+> > > > >
+> > > > > Ditto for the config changes in the context here. Those are files=
+ in
+> > > > > git, don't change them.
+> > > > >
+> > > > > Shouldn't this use something like 'scripts/config --enable' or
+> > > > > 'scripts/config --disable' on the .config file to be used for bui=
+lding
+> > > > > instead?
+> > > > >
+> > > > >
+> > > > > BR,
+> > > > > Jani.
+> > > > >
+> > > > >
+> > > > > --
+> > > > > Jani Nikula, Intel Open Source Graphics Center
+> > >
+>
