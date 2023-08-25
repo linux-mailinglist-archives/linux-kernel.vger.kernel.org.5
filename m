@@ -2,306 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26BA8787F30
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 07:24:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3CE5787F35
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 07:24:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237123AbjHYFGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 01:06:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41896 "EHLO
+        id S240720AbjHYFKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 01:10:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236250AbjHYFG3 (ORCPT
+        with ESMTP id S230093AbjHYFKZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 01:06:29 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D65B31FF0
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 22:06:25 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1bf0b24d925so4934295ad.3
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 22:06:25 -0700 (PDT)
+        Fri, 25 Aug 2023 01:10:25 -0400
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A94711BDB
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 22:10:23 -0700 (PDT)
+Received: by mail-qt1-x82a.google.com with SMTP id d75a77b69052e-40c72caec5cso183581cf.0
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 22:10:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1692939985; x=1693544785;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=I3zT7KyiHlbPGOkcR8/QPNmqoCabKbCC6GI5E//7oIA=;
-        b=VbMguP7wXH8hcUkMyI3z8jNJVqts4Ti6Fc3IrmUWPcfA3fBiMcwd7OhZpTAbWymnLR
-         I8wcXHai+2fBaNySku9/kD5jtqxS1bwmzCi01dA4hj5SrOhrWImSgZt/LeXOXCMeLekt
-         bN010oULR70MWAJzwrWUvLzbprayplUycmSns=
+        d=google.com; s=20221208; t=1692940223; x=1693545023; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GM5LCWOrYHm+b9e2C3LWn/6EqDtDallIRoPwjyWLLgw=;
+        b=cXZ+tmtzRjieSP5Xc82Ks7jFzMg8fiOaMkycJmhKKPkjljsOVkzyH/k4zp4wnJ78Mt
+         +mxKPeG0+QxqQ9lfwag5nk8suLxcVA50s9HnNbTLWSmXo5XTuOCwbJ2j/9YMtolAxmcp
+         MHE2wZbU6UIL1jrO8Id3wM0Nl5WQYFjnXPMa0hoLnJCf3ZgfIem/atsQUDOLOudLDVAp
+         Jgc/mdtMFFOhma/WCYu6FklwtpgRalo9+AGt5a6c+MmwBxhG7EbiByqG8+f1BPKYv/my
+         Rku4mW0E04xzUCHMVNOFO1BOcxpiwWyY+pywM8zzzil5k724DRdy/GGlN3oFnnpxe2gD
+         0kXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692939985; x=1693544785;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=I3zT7KyiHlbPGOkcR8/QPNmqoCabKbCC6GI5E//7oIA=;
-        b=cg1FAAsBbJcs2Byer/l6L1eQCOiWw3AvwnqTt3A51gfau+BoOIb4SiIayr2ZQLTK+x
-         Zdr+Hxw0tUfVvDNhHpDc8On72rfQTzUStsyOp4zRyjTSgyJaLKBqixdYZhAHu0DB2FQ1
-         f/3JmUScQx/u12nmIspPAYUkctcBQH+0Dqjc6B/a8ryAFsv8W7bwZXawkCjgZQXtNFPr
-         HLCmV/IX36+lYdwtTehNzR26MkQx84u+B1nkKJTqztFj6u8BtRW5gEC1jWSepqPFrAel
-         nMVfck3A5L1iSXg7EQLBUWDIrmZ9pmmvFYA0IXSsX/V4DI9nifXcDtj6w3su7VQsmVQ3
-         2aBQ==
-X-Gm-Message-State: AOJu0Yzg+/Rei908CL2MMVU2OT96EZsSRQTED6xl0eTEP1NYVrv3RSoN
-        M5YmVVltaSr2Q/rmBJ/YWM9SBA==
-X-Google-Smtp-Source: AGHT+IH6t3JzhPvDoxwMCbWGkRetaj8kRjjlY68CofkEKwVynUZOnb29p1p1g7bVUKgsqI05bIhSHA==
-X-Received: by 2002:a17:903:234e:b0:1b9:f7f4:5687 with SMTP id c14-20020a170903234e00b001b9f7f45687mr14274579plh.24.1692939985261;
-        Thu, 24 Aug 2023 22:06:25 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id bd10-20020a170902830a00b001bc56c1a384sm604488plb.277.2023.08.24.22.06.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Aug 2023 22:06:24 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Salvatore Mesoraca <s.mesoraca16@gmail.com>
-Cc:     Kees Cook <keescook@chromium.org>, x86@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH] hardening: Provide Kconfig fragments for basic options
-Date:   Thu, 24 Aug 2023 22:06:22 -0700
-Message-Id: <20230825050618.never.197-kees@kernel.org>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20221208; t=1692940223; x=1693545023;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GM5LCWOrYHm+b9e2C3LWn/6EqDtDallIRoPwjyWLLgw=;
+        b=XP1N9kB1AlVoSFhNJEMYldAh5fAskRuZ3/86Qyv6bn68s34mP/5pvAuhKNozKjFiIe
+         +1U19aBsLX91c14ESxhUH5+prLSBhyjr7jcWXtezYPv8g9LxYdOexPgwbFGfzaceObwd
+         gckLXekt5u0mVMgB9qe1me/If2Dc3h4gnuWoQ+gd1vj1IXHNIiFxEKExNhIbiUEpOdtY
+         pVxgqhVxppXYytpWCBD1v2awdtPdmuT1bTORY7ANMqrfJC9u3kt9fPtrMb9MuwsVF4Lx
+         E6o5YrtJwwlVOuZA6E83ZQxjNII/jCyeeOve8n/v2/UWJVei2fYY/8yXHDSOmKw+jFAY
+         3aiA==
+X-Gm-Message-State: AOJu0YyqSOvlL/24Ox/Nfms/zXgHzqyeozEBCzI57uBlFs9JAK6qcYR5
+        NjPQfYYNYB4ybL0Zq9ZNeO7rWWKw63PxAm3tO5sku8n0qHvGPOCnTc81Gd1c
+X-Google-Smtp-Source: AGHT+IG0tyEVEUGxl0lrYufkgEyIAvw8yi4OGUx4DBfPxEbTqKQdXPhMUYiE/cswuweuW6BM+MOqktyYifRs7XltpYw=
+X-Received: by 2002:a05:622a:1897:b0:403:affb:3c03 with SMTP id
+ v23-20020a05622a189700b00403affb3c03mr163509qtc.10.1692940222719; Thu, 24 Aug
+ 2023 22:10:22 -0700 (PDT)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=7615; i=keescook@chromium.org;
- h=from:subject:message-id; bh=2e7nTx+drvmh685ztXp5pQSAg2+x4Sh+eUEYxk3J+Uo=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBk6DbOKInN3FBBYpvVk+qT9ymT1xR4RqGelWIeH
- MPC+KDzmcGJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZOg2zgAKCRCJcvTf3G3A
- JiigEACvsvKy5NaiIL4d5QD+amZfb3dM3d8KuI4mohEpuMLt2izjJ6o/E3LiohpmR4epiubwr3V
- AfA7mZ9+sR99uZsdXTS9Go6rn+Xih2jAQh1XM3lcsJL3nes36WRpvmwJWG9fLND2iC1BL4FfgwR
- SI1FA3km3QIavkV/tI4p4EL++xG/mZnIAnAuLLlKQiZCLSUPAhSTG2YBIVzBRiZOYCJyCknUZgm
- sh0HrmnUK84Vv7JSUQxVVYcqXI9iUwQm01+YZoN03lIroCSFsTyBrKacsbktaHYmgSTW8VM/Dy8
- xSMKm8fDYTRLSttr430No8k/xRm7X6i7PVUOvTP5i6Bvxo6+1crHU1f6Z4HECM0ecxhShffsQT+
- nkwhNXLN1/rorItXt1kdDXAPe+TfXoz+h3O8sONcjtImF1UqBYqrCoZZd5feP0ghf/7PGK7L6QC
- JoPW4dEzoWvBJ659+2xPsmpU51m2Rk34Nxvolx7QfjXhY8KPCD0Kqkg0+d5msnVJhdTK3uRJqPy
- 9KzbQAYQLLpF3WeN4/AehfYRNkPEGOc6ykRiSaydewyzuFZt+5jkLe3GHhBGv38EJd3LtyOw0Gw
- 45Wxq5GgAxKdMdiPmLvpYIl+Y6AoUYxFe1QMVZ+AiII67Vc+jCLm8lMg7uWB/QZR2UIDS+nudB3
- 1O1uhF/ 30tXLVLQ==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <20230821012734.18241-1-yangjihong1@huawei.com> <20230821012734.18241-4-yangjihong1@huawei.com>
+In-Reply-To: <20230821012734.18241-4-yangjihong1@huawei.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Thu, 24 Aug 2023 22:10:11 -0700
+Message-ID: <CAP-5=fW1zRmx4xxHLUySJ6jJ7NO5BTCcufN_=27gMak8bu6LMg@mail.gmail.com>
+Subject: Re: [PATCH v6 3/7] perf record: Move setting dummy tracking before record__init_thread_masks()
+To:     Yang Jihong <yangjihong1@huawei.com>
+Cc:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@kernel.org, namhyung@kernel.org, adrian.hunter@intel.com,
+        kan.liang@linux.intel.com, james.clark@arm.com,
+        tmricht@linux.ibm.com, ak@linux.intel.com,
+        anshuman.khandual@arm.com, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Inspired by Salvatore Mesoraca's earlier[1] efforts to provide some
-in-tree guidance for kernel hardening Kconfig options, add a new fragment
-named "hardening-basic.config" (along with some arch-specific fragments)
-that enable a basic set of kernel hardening options that have the least
-(or no) performance impact and remove a reasonable set of legacy APIs.
+On Sun, Aug 20, 2023 at 6:30=E2=80=AFPM Yang Jihong <yangjihong1@huawei.com=
+> wrote:
+>
+> User space tasks can migrate between CPUs, so when tracing selected CPUs,
+> sideband for all CPUs is needed. In this case set the cpu map of the evse=
+l
+> to all online CPUs. This may modify the original cpu map of the evlist.
+> Therefore, need to check whether the preceding scenario exists before
+> record__init_thread_masks().
+> Dummy tracking has been set in record__open(), move it before
+> record__init_thread_masks() and add a helper for unified processing.
 
-Using this fragment is as simple as running "make hardening.config".
+I have a hard time understanding this commit message. Let me have a go:
 
-More extreme fragments can be added[2] in the future to cover all the
-recognized hardening options, and more per-architecture files can be
-added too.
+In order to set cpu maps correctly on dummy events they need to set up
+later. Factor out the dummy event initialization from record__open and
+move it to its own function record__setup_dummy_event. Move the call
+to the record__setup_dummy to before the call to
+record__init_thread_masks in cmd_record.
 
-For now, document the fragments directly via comments. Perhaps .rst
-documentation can be generated from them in the future (rather than the
-other way around).
+> The sys_perf_event_open invoked is as follows:
+>
+>   # perf --debug verbose=3D3 record -e cpu-clock -D 100 true
+>   <SNIP>
+>   Opening: cpu-clock
+>   ------------------------------------------------------------
+>   perf_event_attr:
+>     type                             1 (PERF_TYPE_SOFTWARE)
+>     size                             136
+>     config                           0 (PERF_COUNT_SW_CPU_CLOCK)
+>     { sample_period, sample_freq }   4000
+>     sample_type                      IP|TID|TIME|PERIOD|IDENTIFIER
+>     read_format                      ID|LOST
+>     disabled                         1
+>     inherit                          1
+>     freq                             1
+>     sample_id_all                    1
+>     exclude_guest                    1
+>   ------------------------------------------------------------
+>   sys_perf_event_open: pid 10318  cpu 0  group_fd -1  flags 0x8 =3D 5
+>   sys_perf_event_open: pid 10318  cpu 1  group_fd -1  flags 0x8 =3D 6
+>   sys_perf_event_open: pid 10318  cpu 2  group_fd -1  flags 0x8 =3D 7
+>   sys_perf_event_open: pid 10318  cpu 3  group_fd -1  flags 0x8 =3D 9
+>   sys_perf_event_open: pid 10318  cpu 4  group_fd -1  flags 0x8 =3D 10
+>   sys_perf_event_open: pid 10318  cpu 5  group_fd -1  flags 0x8 =3D 11
+>   sys_perf_event_open: pid 10318  cpu 6  group_fd -1  flags 0x8 =3D 12
+>   sys_perf_event_open: pid 10318  cpu 7  group_fd -1  flags 0x8 =3D 13
+>   Opening: dummy:u
+>   ------------------------------------------------------------
+>   perf_event_attr:
+>     type                             1 (PERF_TYPE_SOFTWARE)
+>     size                             136
+>     config                           0x9 (PERF_COUNT_SW_DUMMY)
+>     { sample_period, sample_freq }   1
+>     sample_type                      IP|TID|TIME|IDENTIFIER
+>     read_format                      ID|LOST
+>     disabled                         1
+>     inherit                          1
+>     exclude_kernel                   1
+>     exclude_hv                       1
+>     mmap                             1
+>     comm                             1
+>     enable_on_exec                   1
+>     task                             1
+>     sample_id_all                    1
+>     exclude_guest                    1
+>     mmap2                            1
+>     comm_exec                        1
+>     ksymbol                          1
+>     bpf_event                        1
+>   ------------------------------------------------------------
+>   sys_perf_event_open: pid 10318  cpu 0  group_fd -1  flags 0x8 =3D 14
+>   sys_perf_event_open: pid 10318  cpu 1  group_fd -1  flags 0x8 =3D 15
+>   sys_perf_event_open: pid 10318  cpu 2  group_fd -1  flags 0x8 =3D 16
+>   sys_perf_event_open: pid 10318  cpu 3  group_fd -1  flags 0x8 =3D 17
+>   sys_perf_event_open: pid 10318  cpu 4  group_fd -1  flags 0x8 =3D 18
+>   sys_perf_event_open: pid 10318  cpu 5  group_fd -1  flags 0x8 =3D 19
+>   sys_perf_event_open: pid 10318  cpu 6  group_fd -1  flags 0x8 =3D 20
+>   sys_perf_event_open: pid 10318  cpu 7  group_fd -1  flags 0x8 =3D 21
+>   <SNIP>
+>
+> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+> ---
+>  tools/perf/builtin-record.c | 59 +++++++++++++++++++++++--------------
+>  1 file changed, 37 insertions(+), 22 deletions(-)
+>
+> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+> index 12edad8392cc..4ee94058028f 100644
+> --- a/tools/perf/builtin-record.c
+> +++ b/tools/perf/builtin-record.c
+> @@ -906,6 +906,37 @@ static int record__config_off_cpu(struct record *rec=
+)
+>         return off_cpu_prepare(rec->evlist, &rec->opts.target, &rec->opts=
+);
+>  }
+>
+> +static int record__config_tracking_events(struct record *rec)
+> +{
+> +       struct record_opts *opts =3D &rec->opts;
+> +       struct evlist *evlist =3D rec->evlist;
+> +       struct evsel *evsel;
+> +
+> +       /*
+> +        * For initial_delay, system wide or a hybrid system, we need to =
+add a
+> +        * dummy event so that we can track PERF_RECORD_MMAP to cover the=
+ delay
 
-[1] https://lore.kernel.org/kernel-hardening/1536516257-30871-1-git-send-email-s.mesoraca16@gmail.com/
-[2] https://github.com/KSPP/linux/issues/14
+This code is explicitly talking about dummy events but the function is
+now renamed to call it a tracking event. I think the code should be
+consistent.
 
-Cc: Salvatore Mesoraca <s.mesoraca16@gmail.com>
-Cc: x86@kernel.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-doc@vger.kernel.org
-Cc: linux-kbuild@vger.kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- MAINTAINERS                         |  2 +
- arch/arm/configs/hardening.config   |  7 ++
- arch/arm64/configs/hardening.config | 22 +++++++
- arch/x86/configs/hardening.config   | 15 +++++
- kernel/configs/hardening.config     | 99 +++++++++++++++++++++++++++++
- 5 files changed, 145 insertions(+)
- create mode 100644 arch/arm/configs/hardening.config
- create mode 100644 arch/arm64/configs/hardening.config
- create mode 100644 arch/x86/configs/hardening.config
- create mode 100644 kernel/configs/hardening.config
+> +        * of waiting or event synthesis.
+> +        */
+> +       if (opts->target.initial_delay || target__has_cpu(&opts->target) =
+||
+> +           perf_pmus__num_core_pmus() > 1) {
+> +               evsel =3D evlist__findnew_tracking_event(evlist, false);
+> +               if (!evsel)
+> +                       return -ENOMEM;
+> +
+> +               /*
+> +                * Enable the dummy event when the process is forked for
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 48abe1a281f2..36a28c132133 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11304,8 +11304,10 @@ S:	Supported
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git for-next/hardening
- F:	Documentation/ABI/testing/sysfs-kernel-oops_count
- F:	Documentation/ABI/testing/sysfs-kernel-warn_count
-+F:	arch/*/configs/hardening.config
- F:	include/linux/overflow.h
- F:	include/linux/randomize_kstack.h
-+F:	kernel/configs/hardening.config
- F:	mm/usercopy.c
- K:	\b(add|choose)_random_kstack_offset\b
- K:	\b__check_(object_size|heap_object)\b
-diff --git a/arch/arm/configs/hardening.config b/arch/arm/configs/hardening.config
-new file mode 100644
-index 000000000000..327349ce6377
---- /dev/null
-+++ b/arch/arm/configs/hardening.config
-@@ -0,0 +1,7 @@
-+# Basic kernel hardening options (specific to arm)
-+
-+# Make sure PXN/PAN emulation is enabled.
-+CONFIG_CPU_SW_DOMAIN_PAN=y
-+
-+# Dangerous; old interfaces and needless additional attack surface.
-+# CONFIG_OABI_COMPAT is not set
-diff --git a/arch/arm64/configs/hardening.config b/arch/arm64/configs/hardening.config
-new file mode 100644
-index 000000000000..b0e795208998
---- /dev/null
-+++ b/arch/arm64/configs/hardening.config
-@@ -0,0 +1,22 @@
-+# Basic kernel hardening options (specific to arm64)
-+
-+# Make sure PAN emulation is enabled.
-+CONFIG_ARM64_SW_TTBR0_PAN=y
-+
-+# Software Shadow Stack or PAC
-+CONFIG_SHADOW_CALL_STACK=y
-+
-+# Pointer authentication (ARMv8.3 and later). If hardware actually supports
-+# it, one can turn off CONFIG_STACKPROTECTOR_STRONG with this enabled.
-+CONFIG_ARM64_PTR_AUTH=y
-+CONFIG_ARM64_PTR_AUTH_KERNEL=y
-+
-+# Available in ARMv8.5 and later.
-+CONFIG_ARM64_BTI=y
-+CONFIG_ARM64_BTI_KERNEL=y
-+CONFIG_ARM64_MTE=y
-+CONFIG_KASAN_HW_TAGS=y
-+CONFIG_ARM64_E0PD=y
-+
-+# Available in ARMv8.7 and later.
-+CONFIG_ARM64_EPAN=y
-diff --git a/arch/x86/configs/hardening.config b/arch/x86/configs/hardening.config
-new file mode 100644
-index 000000000000..19bb0c7a7669
---- /dev/null
-+++ b/arch/x86/configs/hardening.config
-@@ -0,0 +1,15 @@
-+# Basic kernel hardening options (specific to x86)
-+
-+# Modern libc no longer needs a fixed-position mapping in userspace, remove
-+# it as a possible target.
-+CONFIG_LEGACY_VSYSCALL_NONE=y
-+
-+# Enable chip-specific IOMMU support.
-+CONFIG_INTEL_IOMMU=y
-+CONFIG_INTEL_IOMMU_DEFAULT_ON=y
-+CONFIG_INTEL_IOMMU_SVM=y
-+CONFIG_AMD_IOMMU=y
-+CONFIG_AMD_IOMMU_V2=y
-+
-+# Enable CET Shadow Stack for userspace.
-+CONFIG_X86_USER_SHADOW_STACK=y
-diff --git a/kernel/configs/hardening.config b/kernel/configs/hardening.config
-new file mode 100644
-index 000000000000..dbeecdfca917
---- /dev/null
-+++ b/kernel/configs/hardening.config
-@@ -0,0 +1,99 @@
-+# Basic kernel hardening options
-+#
-+# These are considered the basic kernel hardening, self-protection, and
-+# attack surface reduction options. They are expected to have low (or
-+# no) performance impact on most workloads, and have a reasonable level
-+# of legacy API removals.
-+
-+# Make sure reporting of various hardening actions is possible.
-+CONFIG_BUG=y
-+
-+# Basic kernel memory permission enforcement.
-+CONFIG_STRICT_KERNEL_RWX=y
-+CONFIG_STRICT_MODULE_RWX=y
-+CONFIG_VMAP_STACK=y
-+
-+# Kernel image and memory ASLR.
-+CONFIG_RANDOMIZE_BASE=y
-+CONFIG_RANDOMIZE_MEMORY=y
-+
-+# Randomize allocator freelists, harden metadata.
-+CONFIG_SLAB_FREELIST_RANDOM=y
-+CONFIG_SLAB_FREELIST_HARDENED=y
-+CONFIG_SHUFFLE_PAGE_ALLOCATOR=y
-+CONFIG_RANDOM_KMALLOC_CACHES=y
-+
-+# Randomize kernel stack offset on syscall entry.
-+CONFIG_RANDOMIZE_KSTACK_OFFSET_DEFAULT=y
-+
-+# Basic stack frame overflow protection.
-+CONFIG_STACKPROTECTOR=y
-+CONFIG_STACKPROTECTOR_STRONG=y
-+
-+# Basic buffer length bounds checking.
-+CONFIG_HARDENED_USERCOPY=y
-+CONFIG_FORTIFY_SOURCE=y
-+
-+# Basic array index bounds checking.
-+CONFIG_UBSAN=y
-+CONFIG_UBSAN_TRAP=y
-+CONFIG_UBSAN_BOUNDS=y
-+# CONFIG_UBSAN_SHIFT is not set
-+# CONFIG_UBSAN_DIV_ZERO
-+# CONFIG_UBSAN_UNREACHABLE
-+# CONFIG_UBSAN_BOOL
-+# CONFIG_UBSAN_ENUM
-+# CONFIG_UBSAN_ALIGNMENT
-+CONFIG_UBSAN_SANITIZE_ALL=y
-+
-+# Linked list integrity checking.
-+CONFIG_LIST_HARDENED=y
-+
-+# Initialize all heap variables to zero on allocation.
-+CONFIG_INIT_ON_ALLOC_DEFAULT_ON=y
-+
-+# Initialize all stack variables to zero on function entry.
-+CONFIG_INIT_STACK_ALL_ZERO=y
-+
-+# Wipe all caller-used registers on exit from functions: reduces available
-+# ROP gadgets and minimizes stale data in registers usable in side channels.
-+CONFIG_ZERO_CALL_USED_REGS=y
-+
-+# Wipe RAM at reboot via EFI. For more details, see:
-+# https://trustedcomputinggroup.org/resource/pc-client-work-group-platform-reset-attack-mitigation-specification/
-+# https://bugzilla.redhat.com/show_bug.cgi?id=1532058
-+CONFIG_RESET_ATTACK_MITIGATION=y
-+
-+# Disable DMA between EFI hand-off and the kernel's IOMMU setup.
-+CONFIG_EFI_DISABLE_PCI_DMA=y
-+
-+# Force IOMMU TLB invalidation so devices will never be able to access stale
-+# data content.
-+CONFIG_IOMMU_SUPPORT=y
-+CONFIG_IOMMU_DEFAULT_DMA_STRICT=y
-+
-+# Do not allow direct physical memory access to non-device memory.
-+CONFIG_STRICT_DEVMEM=y
-+CONFIG_IO_STRICT_DEVMEM=y
-+
-+# Provide userspace with seccomp BPF API for syscall attack surface reduction.
-+CONFIG_SECCOMP=y
-+CONFIG_SECCOMP_FILTER=y
-+
-+# Provides some protections against SYN flooding.
-+CONFIG_SYN_COOKIES=y
-+
-+# Attack surface reduction: do not autoload TTY line disciplines.
-+# CONFIG_LDISC_AUTOLOAD is not set
-+
-+# Dangerous; enabling this disables userspace brk ASLR.
-+# CONFIG_COMPAT_BRK is not set
-+
-+# Dangerous; exposes kernel text image layout.
-+# CONFIG_PROC_KCORE is not set
-+
-+# Dangerous; enabling this disables userspace VDSO ASLR.
-+# CONFIG_COMPAT_VDSO is not set
-+
-+# Attack surface reduction: Use the modern PTY interface (devpts) only.
-+# CONFIG_LEGACY_PTYS is not set
--- 
-2.34.1
+Dummy again.
 
+Thanks,
+Ian
+
+> +                * initial_delay, immediately for system wide.
+> +                */
+> +               if (opts->target.initial_delay && !evsel->immediate &&
+> +                   !target__has_cpu(&opts->target))
+> +                       evsel->core.attr.enable_on_exec =3D 1;
+> +               else
+> +                       evsel->immediate =3D 1;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+>  static bool record__kcore_readable(struct machine *machine)
+>  {
+>         char kcore[PATH_MAX];
+> @@ -1286,28 +1317,6 @@ static int record__open(struct record *rec)
+>         struct record_opts *opts =3D &rec->opts;
+>         int rc =3D 0;
+>
+> -       /*
+> -        * For initial_delay, system wide or a hybrid system, we need to =
+add a
+> -        * dummy event so that we can track PERF_RECORD_MMAP to cover the=
+ delay
+> -        * of waiting or event synthesis.
+> -        */
+> -       if (opts->target.initial_delay || target__has_cpu(&opts->target) =
+||
+> -           perf_pmus__num_core_pmus() > 1) {
+> -               pos =3D evlist__findnew_tracking_event(evlist, false);
+> -               if (!pos)
+> -                       return -ENOMEM;
+> -
+> -               /*
+> -                * Enable the dummy event when the process is forked for
+> -                * initial_delay, immediately for system wide.
+> -                */
+> -               if (opts->target.initial_delay && !pos->immediate &&
+> -                   !target__has_cpu(&opts->target))
+> -                       pos->core.attr.enable_on_exec =3D 1;
+> -               else
+> -                       pos->immediate =3D 1;
+> -       }
+> -
+>         evlist__config(evlist, opts, &callchain_param);
+>
+>         evlist__for_each_entry(evlist, pos) {
+> @@ -4190,6 +4199,12 @@ int cmd_record(int argc, const char **argv)
+>                 goto out;
+>         }
+>
+> +       err =3D record__config_tracking_events(rec);
+> +       if (err) {
+> +               pr_err("record__config_tracking_events failed, error %d\n=
+", err);
+> +               goto out;
+> +       }
+> +
+>         err =3D record__init_thread_masks(rec);
+>         if (err) {
+>                 pr_err("Failed to initialize parallel data streaming mask=
+s\n");
+> --
+> 2.30.GIT
+>
