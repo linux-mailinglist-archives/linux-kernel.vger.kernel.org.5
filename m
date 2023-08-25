@@ -2,76 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 107C67887D1
+	by mail.lfdr.de (Postfix) with ESMTP id 80B987887D3
 	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 14:54:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244900AbjHYMx1 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 25 Aug 2023 08:53:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55230 "EHLO
+        id S244915AbjHYMxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 08:53:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244899AbjHYMxI (ORCPT
+        with ESMTP id S244904AbjHYMxX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 08:53:08 -0400
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9DB24D3
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 05:53:03 -0700 (PDT)
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 37PCofC63009238, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 37PCofC63009238
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 25 Aug 2023 20:50:41 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.32; Fri, 25 Aug 2023 20:51:05 +0800
-Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
- RTEXMBS04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Fri, 25 Aug 2023 20:51:04 +0800
-Received: from RTEXMBS01.realtek.com.tw ([fe80::9cb8:8d5:b6b3:213b]) by
- RTEXMBS01.realtek.com.tw ([fe80::9cb8:8d5:b6b3:213b%5]) with mapi id
- 15.01.2375.007; Fri, 25 Aug 2023 20:51:04 +0800
-From:   Ricky WU <ricky_wu@realtek.com>
-To:     Genes Lists <lists@sapience.com>, Keith Busch <kbusch@kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "sagi@grimberg.me" <sagi@grimberg.me>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "hch@lst.de" <hch@lst.de>, "arnd@arndb.de" <arnd@arndb.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-Subject: RE: Possible nvme regression in 6.4.11
-Thread-Topic: Possible nvme regression in 6.4.11
-Thread-Index: AQHZ0Otwxcnf+XYUokSPBeX1qZBAw6/3qhuAgAAtxICAAOyCoP//8+YAgAAJf4CAAj4x4w==
-Date:   Fri, 25 Aug 2023 12:51:04 +0000
-Message-ID: <fa82d9dcbe83403abc644c20922b47f9@realtek.com>
-References: <5f968b95-6b1c-4d6f-aac7-5d54f66834a8@sapience.com>
- <ZN050TFnKZ54LJ5v@kbusch-mbp.dhcp.thefacebook.com>
- <30b69186-5a6e-4f53-b24c-2221926fc3b4@sapience.com>
- <570d465a-7500-4b58-98f0-fd781c8740cc@sapience.com>
- <ZOZEwafA8+tknJNT@kbusch-mbp.dhcp.thefacebook.com>
- <7cf188d0-77b4-4e80-8da6-2045a7f29866@sapience.com>
- <180a2bbd2c314ede8f6c4c16cc4603bf@realtek.com>
- <903830f8-9f9a-4071-9ced-761a55018c5a@sapience.com>,<97cee217-e438-4fff-836a-186f59d6d256@sapience.com>
-In-Reply-To: <97cee217-e438-4fff-836a-186f59d6d256@sapience.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [180.177.3.181]
-x-kse-serverinfo: RTEXMBS04.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="Windows-1252"
-Content-Transfer-Encoding: 8BIT
+        Fri, 25 Aug 2023 08:53:23 -0400
+Received: from us-smtp-delivery-44.mimecast.com (unknown [207.211.30.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97E8FD3
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 05:53:20 -0700 (PDT)
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-133-Y7NVsyhmP-6lIszpvB8fGQ-1; Fri, 25 Aug 2023 08:53:01 -0400
+X-MC-Unique: Y7NVsyhmP-6lIszpvB8fGQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C0A971C0693A;
+        Fri, 25 Aug 2023 12:53:00 +0000 (UTC)
+Received: from hog (unknown [10.39.192.31])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0E46840C6F4C;
+        Fri, 25 Aug 2023 12:52:58 +0000 (UTC)
+Date:   Fri, 25 Aug 2023 14:52:57 +0200
+From:   Sabrina Dubroca <sd@queasysnail.net>
+To:     "Radu Pirea (NXP OSS)" <radu-nicolae.pirea@oss.nxp.com>
+Cc:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, richardcochran@gmail.com,
+        sebastian.tobuschat@nxp.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC net-next v2 3/5] net: phy: nxp-c45-tja11xx add MACsec
+ support
+Message-ID: <ZOikKUjRvces_vVj@hog>
+References: <20230824091615.191379-1-radu-nicolae.pirea@oss.nxp.com>
+ <20230824091615.191379-4-radu-nicolae.pirea@oss.nxp.com>
 MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230824091615.191379-4-radu-nicolae.pirea@oss.nxp.com>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_NONE,SPF_NONE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,48 +55,346 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+[Some of the questions I'm asking are probably dumb since I don't know
+anything about phy drivers. Sorry if that's the case.]
+
+General code organization nit: I think it would be easier to review
+the code if helpers functions were grouped by the type of object they
+work on. All the RXSA-related functions together, all the TXSA
+functions together, same for RXSC and then TXSC/SecY. Right now I see
+some RXSA functions in a group of TXSA functions, another in the
+middle of a group of RXSC functions. It makes navigating through the
+code a bit less convenient.
+
+Another nit: for consistency, it would be nice to stick to either
+"tx_sa" or "txsa" (same for rxsa and rxsc) in function names.
+
+2023-08-24, 12:16:13 +0300, Radu Pirea (NXP OSS) wrote:
+> +static int nxp_c45_macsec_write(struct phy_device *phydev, u16 reg, u32 val)
+> +{
+> +	WARN_ON_ONCE(reg % 4);
+> +
+> +	reg = reg / 2;
+> +	phy_write_mmd(phydev, MDIO_MMD_VEND2,
+> +		      VEND1_MACSEC_BASE + reg, val);
+> +	phy_write_mmd(phydev, MDIO_MMD_VEND2,
+> +		      VEND1_MACSEC_BASE + reg + 1, val >> 16);
+
+Can these calls fail? ie, do you need to handle errors like in
+nxp_c45_macsec_read (and then in callers of nxp_c45_macsec_write)?
+
+I see that no caller of nxp_c45_macsec_read actually checks the return
+value, so maybe those errors don't matter.
 
 
+[...]
+> +void nxp_c45_macsec_config_init(struct phy_device *phydev)
+> +{
+> +	if (!phydev->macsec_ops)
+> +		return;
+> +
+> +	phy_set_bits_mmd(phydev, MDIO_MMD_VEND1, VEND1_PORT_FUNC_ENABLES,
+> +			 MACSEC_EN | ADAPTER_EN);
+
+The calls to phy_set_bits_mmd() in nxp_c45_config_intr() have error
+handling. Does this need error handling as well?
+
+[...]
+> +static bool nxp_c45_port_valid(struct nxp_c45_secy *phy_secy, u16 port)
+> +{
+> +	if (phy_secy->secy->tx_sc.end_station &&
+> +	    __be16_to_cpu((__force __be16)port) != 1)
+> +		return false;
+> +
+> +	return true;
+> +}
+> +
+> +static bool nxp_c45_rx_sc_valid(struct nxp_c45_secy *phy_secy,
+> +				struct macsec_rx_sc *rx_sc)
+> +{
+> +	u16 port =  (__force u64)rx_sc->sci >> (ETH_ALEN * 8);
+
+u64 sci = be64_to_cpu((__force __be64)rx_sc->sci);
+u16 port = (u16)sci;
+
+And then drop the __be16_to_cpu conversion from nxp_c45_port_valid
+
+> +
+> +	if (phy_secy->point_to_point && phy_secy->secy_id != 0)
+> +		return false;
+> +
+> +	return nxp_c45_port_valid(phy_secy, port);
+> +}
+> +
+> +static bool nxp_c45_secy_cfg_valid(struct nxp_c45_secy *phy_secy, bool can_ptp)
+> +{
+> +	u16 port =  (__force u64)phy_secy->secy->sci >> (ETH_ALEN * 8);
+
+u64 sci = be64_to_cpu((__force __be64)rx_sc->sci);
+u16 port = (u16)sci;
+
+> +	if (phy_secy->secy->tx_sc.scb)
+> +		return false;
+
+[...]
+> +static int nxp_c45_update_tx_sc_secy_cfg(struct phy_device *phydev,
+> +					 struct nxp_c45_secy *phy_secy)
+> +{
+[...]
+> +	phydev_dbg(phydev, "scb %s\n",
+> +		   phy_secy->secy->tx_sc.scb ? "on" : "off");
+> +	if (phy_secy->secy->tx_sc.scb)
+> +		cfg |= MACSEC_TXSC_CFG_SCI;
+> +	else
+> +		cfg &= ~MACSEC_TXSC_CFG_SCI;
+
+Should that be called MACSEC_TXSC_CFG_SCB? I had to check that it
+wasn't using the wrong constant, using "SCI" for "SCB" (when SCI is
+already a well-defined thing in macsec) confused me.
+
+> +
+> +	nxp_c45_macsec_write(phydev, MACSEC_TXSC_CFG, cfg);
+> +
+> +	return 0;
+> +}
+> +
+[...]
+> +static int nxp_c45_set_rxsa_key(struct macsec_context *ctx, bool key_a)
+> +{
+> +	u32 *salt = (u32 *)ctx->sa.rx_sa->key.salt.bytes;
+> +	const struct nxp_c45_macsec_sa_regs *sa_regs;
+> +	u32 ssci = (__force u32)ctx->sa.rx_sa->ssci;
+> +	u32 key_size = ctx->secy->key_len / 4;
+> +	u32 salt_size = MACSEC_SALT_LEN / 4;
+> +	u32 *key = (u32 *)ctx->sa.key;
+> +	u32 reg;
+> +	int i;
+> +
+> +	sa_regs = nxp_c45_get_macsec_sa_regs(key_a);
+> +
+> +	for (i = 0; i < key_size; i++) {
+> +		reg = sa_regs->rxsa_ka + i * 4;
+> +		nxp_c45_macsec_write(ctx->phydev, reg,
+> +				     (__force u32)cpu_to_be32(key[i]));
+> +	}
+> +
+> +	if (ctx->secy->xpn) {
+> +		for (i = 0; i < salt_size; i++) {
+> +			reg = sa_regs->rxsa_salt + (2 - i) * 4;
+> +			nxp_c45_macsec_write(ctx->phydev, reg,
+> +					     (__force u32)cpu_to_be32(salt[i]));
+> +		}
+> +		nxp_c45_macsec_write(ctx->phydev, sa_regs->rxsa_ssci,
+> +				     (__force u32)cpu_to_be32(ssci));
+> +	}
+
+This looks basically identical to nxp_c45_txsa_set_key except for the
+registers it writes to. It could be turned into 2 or 3 small helpers
+(one for the key, then salt and ssci).
+
+> +
+> +	nxp_c45_set_rxsa_key_cfg(ctx, key_a, false);
+> +
+> +	return 0;
+> +}
+
+[...]
+> +static int nxp_c45_mdo_add_secy(struct macsec_context *ctx)
+> +{
+> +	struct phy_device *phydev = ctx->phydev;
+> +	struct nxp_c45_phy *priv = phydev->priv;
+> +	u64 sci = (__force u64)ctx->secy->sci;
+> +	struct nxp_c45_secy *phy_secy;
+> +	bool can_ptp;
+> +	int idx;
+> +	u32 reg;
+> +
+> +	phydev_dbg(ctx->phydev, "add secy SCI %llu\n", ctx->secy->sci);
+
+nit: %016llx feels more natural for SCIs since they can be broken down
+into address+port.
+
+And since it's stored in network byte order, you'll want to convert it
+via be64_to_cpu before you print it out.
+
+I'd suggest doing that directly into the sci variable:
+
+    u64 sci = be64_to_cpu((__force __be64)ctx->secy->sci);
+
+and then adapt the uses of sci further down.
+
+Feel free to move the sci_to_cpu function from
+drivers/net/netdevsim/macsec.c to include/net/macsec.h and reuse it.
 
 
->On 8/24/23 05:48, Genes Lists wrote:
->> On 8/23/23 22:44, Ricky WU wrote:
->>> Hi Gene,
->>>
->>> I can't reproduce this issue on my side...
->>>
->>> So if you only revert this patch
->>> (69304c8d285b77c9a56d68f5ddb2558f27abf406) can work fine?
->>> This patch only do is pull our clock request to HIGH if HOST need also
->>> can pull to LOW, and this only do on our device
->>> I don’t think this will affect other ports...
->>>
->>> BR,
->>> Ricky
->>
->> Thanks Ricky - I will test revering just that commit and report back.  I
->> wont be able to get to it till later today (sometime after 2pm EDT) but
->> I will do it today.
->>
->> FYI, i see one mpre report of someone experiencing same problem [1]
->>
->> gene
->>
->  > [1] https://bugs.archlinux.org/task/79439
->>
->>
->
->That commit was what was reverted in the last step of the git bisect -
->and indeed reverting that commit makes the problem go away and machine
->then boots fine.
->
->thanks
->
->gene
+[...]
+> +static int nxp_c45_mdo_upd_secy(struct macsec_context *ctx)
+> +{
+[...]
+> +	if (phy_secy->enabled_an != ctx->secy->tx_sc.encoding_sa) {
+> +		old_tx_sa = phy_secy->tx_sa[phy_secy->enabled_an];
+> +		phy_secy->enabled_an = ctx->secy->tx_sc.encoding_sa;
+> +		new_tx_sa = phy_secy->tx_sa[phy_secy->enabled_an];
+> +		if (!new_tx_sa) {
+> +			nxp_c45_tx_sa_disable(phydev, phy_secy);
+> +			goto disable_old_tx_sa;
+> +		}
+> +
+> +		if (!new_tx_sa->tx_sa->active) {
+> +			nxp_c45_tx_sa_disable(phydev, phy_secy);
+> +			goto disable_old_tx_sa;
+> +		}
 
-I think maybe it is a system power saving issue....
-In the past if the BIOS(config space) not set L1-substate, our driver will keep drive low CLKREQ# when HOST want to enter power saving state that make whole system not enter the power saving state.
-But this patch we release the CLKREQ# to HOST, make whole system can enter power saving state success when the HOST want to enter the power saving state, but I don't  know why your system can not wake out success from power saving stat on the platform
+You can combine those two conditions into
 
-Ricky
-    
+		if (!new_tx_sa || !new_tx_sa->tx_sa->active) {
+			nxp_c45_tx_sa_disable(phydev, phy_secy);
+			goto disable_old_tx_sa;
+		}
+
+> +
+> +		new_tx_sa->is_key_a = phy_secy->tx_sa_key_a;
+> +		phy_secy->tx_sa_key_a = phy_secy->tx_sa_key_a;
+
+Is this missing a ! on the right side?
+
+Maybe worth creating a "next_sa_key_id" helper (or something like
+that) that returns the current value and updates tx_sa_key_a, since
+you use this pattern a few times.
+
+
+[...]
+> +static int nxp_c45_mdo_add_rxsc(struct macsec_context *ctx)
+> +{
+> +	struct phy_device *phydev = ctx->phydev;
+> +	struct nxp_c45_phy *priv = phydev->priv;
+> +	struct nxp_c45_secy *phy_secy;
+> +	struct nxp_c45_rx_sc *rx_sc;
+> +
+> +	phydev_dbg(phydev, "add RX SC %s\n",
+> +		   ctx->rx_sc->active ? "enabled" : "disabled");
+
+If the HW/driver supports multiple TXSC/RXSC on the same device, it
+would probably be helpful to add their SCIs to this debug message (and
+the update/delete ones, also for the mdo_*_rxsa and mdo_*_txsa
+functions).
+
+[...]
+> +static int nxp_c45_mdo_add_rxsa(struct macsec_context *ctx)
+> +{
+[...]
+> +	if (!rx_sc->rx_sa_b) {
+> +		phydev_dbg(phydev, "add RX SA B %u %s\n",
+> +			   an, rx_sa->active ? "enabled" : "disabled");
+> +		nxp_c45_set_rxsa_key(ctx, false);
+> +		rx_sc->rx_sa_b = rx_sa;
+> +		return 0;
+> +	}
+> +
+> +	return -ENOMEM;
+
+maybe -ENOSPC would fit better?
+
+> +}
+> +
+
+[...]
+> +static int nxp_c45_mdo_add_txsa(struct macsec_context *ctx)
+> +{
+[...]
+> +	if (phy_secy->tx_sa[sa])
+> +		return -EBUSY;
+> +
+> +	tx_sa = kzalloc(sizeof(*tx_sa), GFP_KERNEL);
+
+missing NULL check
+
+[...]
+> +static int nxp_c45_mdo_del_txsa(struct macsec_context *ctx)
+> +{
+[...]
+> +
+> +	phy_secy->tx_sa[sa] = NULL;
+> +	kfree(tx_sa);
+
+tx_sa contains the key, so this needs to be kfree_sensitive, or add a
+memzero_explicit(tx_sa->key) before freeing. Or if possible, don't
+copy the key at all into tx_sa.
+
+similar changes in the mscc driver:
+1b16b3fdf675 ("net: phy: mscc: macsec: clear encryption keys when freeing a flow")
+0dc33c65835d ("net: phy: mscc: macsec: do not copy encryption keys")
+
+
+[...]
+> diff --git a/drivers/net/phy/nxp-c45-tja11xx.c b/drivers/net/phy/nxp-c45-tja11xx.c
+> index 7ab080ff02df..5bf7caa4e63d 100644
+> --- a/drivers/net/phy/nxp-c45-tja11xx.c
+> +++ b/drivers/net/phy/nxp-c45-tja11xx.c
+[...]
+> @@ -1218,12 +1201,25 @@ static int nxp_c45_start_op(struct phy_device *phydev)
+>  
+>  static int nxp_c45_config_intr(struct phy_device *phydev)
+>  {
+> -	if (phydev->interrupts == PHY_INTERRUPT_ENABLED)
+> +	int ret;
+> +
+> +	if (phydev->interrupts == PHY_INTERRUPT_ENABLED) {
+> +		ret = phy_set_bits_mmd(phydev, MDIO_MMD_VEND1,
+> +				       VEND1_PORT_FUNC_IRQ_EN, MACSEC_IRQS);
+> +		if (ret)
+> +			return ret;
+> +
+>  		return phy_set_bits_mmd(phydev, MDIO_MMD_VEND1,
+>  					VEND1_PHY_IRQ_EN, PHY_IRQ_LINK_EVENT);
+
+Maybe a dumb question: should we be clearing the MACSEC_IRQS bits when
+this 2nd call to phy_set_bits_mmd fails? (and same below, reset when
+the 2nd clear fails)
+
+
+> -	else
+> -		return phy_clear_bits_mmd(phydev, MDIO_MMD_VEND1,
+> -					  VEND1_PHY_IRQ_EN, PHY_IRQ_LINK_EVENT);
+> +	}
+> +
+> +	ret = phy_clear_bits_mmd(phydev, MDIO_MMD_VEND1,
+> +				 VEND1_PORT_FUNC_IRQ_EN, MACSEC_IRQS);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return phy_clear_bits_mmd(phydev, MDIO_MMD_VEND1,
+> +				  VEND1_PHY_IRQ_EN, PHY_IRQ_LINK_EVENT);
+>  }
+
+[...]
+> @@ -1666,6 +1666,20 @@ static int nxp_c45_probe(struct phy_device *phydev)
+>  	}
+>  
+>  no_ptp_support:
+> +	macsec_ability = !!(phy_abilities & MACSEC_ABILITY);
+> +	if (!macsec_ability) {
+> +		phydev_info(phydev, "the phy does not support MACsec\n");
+> +		goto no_macsec_support;
+> +	}
+> +
+> +	if (IS_ENABLED(CONFIG_MACSEC)) {
+> +		ret = nxp_c45_macsec_probe(phydev);
+
+I don't know how this probing is handled so maybe another dumb
+question: if that fails, are we going to leak resources allocated
+earlier?  (devm_kzalloc for example)
+
+> +		phydev_dbg(phydev, "MACsec support enabled.");
+> +	} else {
+> +		phydev_dbg(phydev, "MACsec support not enabled even if the phy supports it");
+> +	}
+> +
+> +no_macsec_support:
+>  
+>  	return ret;
+>  }
+
+-- 
+Sabrina
+
