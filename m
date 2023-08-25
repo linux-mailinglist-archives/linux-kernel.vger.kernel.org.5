@@ -2,88 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3640E7887F3
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 14:57:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E072B7887F2
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 14:57:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244978AbjHYM5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 08:57:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53588 "EHLO
+        id S244964AbjHYM5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 08:57:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245000AbjHYM4y (ORCPT
+        with ESMTP id S245006AbjHYM4y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 25 Aug 2023 08:56:54 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB097269E
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 05:56:36 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-525bd0b2b48so1297952a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 05:56:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692968195; x=1693572995;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MtEwEDc31XpRCbx957LHvDY3j7bJ3BCy8rsVcSY1Qg8=;
-        b=GFh2+yCXCJh68NAtuL+uu5tWmKdZw7rv7dK6cCbZOI6ARhUoZ6ygw+PqpSPTBjObeX
-         1mxosyQ701oM2XhS3eUerDU7SrLOkpfbtBbdaceaION1Ga5PPw5EpiY20WZWZ+9wE+ys
-         1f9po1qi85maLTDjHNCvru5HxFLgn3S9H1hyiQl3n0RDie0zeIMOcGuQwGJk7r5NNDPn
-         m2E/Aqnudgx+kI1fhgc/g7T6X0elbI0fabdn7zgLr5Fa875WgW2EldDyfXhUqEdm/IO3
-         7eYt7ZgI02w25jNeXkwfyv6xKT3vxzPP/q0wruTaO2VhARQ/RZlg33f36oQ8pz6IZPX/
-         jp+A==
+Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com [209.85.214.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C07861FF5
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 05:56:37 -0700 (PDT)
+Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-1bf703dd1c0so9846305ad.0
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 05:56:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692968195; x=1693572995;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20221208; t=1692968197; x=1693572997;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MtEwEDc31XpRCbx957LHvDY3j7bJ3BCy8rsVcSY1Qg8=;
-        b=D6r1xGzKFQz4Aning3Rcq2zkAVhE1Ezm7vDScfN6phQPxZimlnot2VXzScI3Bn5oZv
-         9fV11moPR5AhH2W+SZoMQfMdZjSoGtO4m71/PDnx+PLdyHvDkvNLxn9AH2watgP5/JA2
-         7jO/yOkhuhYBdOq7zDxjrNFJ9Wgfmp7lLMQ2mutI7jPZPe315LW9WDQvlCJnqxvkziGj
-         /RBVc3qsA2CgiONZWR97/yt7nK+TgqfQr/4/xA4FI7++q6LPtVb2QlviliHIiL4Gky8H
-         +XMAJDMUkA1h6B+8IrQDLgswsq2y2Mi1B/Pwx7w/o1V3xYypnNhk6m/4Gmh1npJ/Puij
-         5QQw==
-X-Gm-Message-State: AOJu0Yx8CmmSjM0BLO4KtbA20NmTm7rkDkllsJRFncg3WPh/W+8VAab6
-        zBPvUL7KedmxS/8X9jmVhqSYHQ==
-X-Google-Smtp-Source: AGHT+IHWEo2JrvOndiaBEw6DoshlyovZ2Hv+lEN7ah9G3oYuyveDThMSkPasCswGZt9qnVYhy7wNfg==
-X-Received: by 2002:a17:906:5dd9:b0:99d:ec81:df58 with SMTP id p25-20020a1709065dd900b0099dec81df58mr13705838ejv.19.1692968195305;
-        Fri, 25 Aug 2023 05:56:35 -0700 (PDT)
-Received: from [192.168.0.22] ([77.252.47.198])
-        by smtp.gmail.com with ESMTPSA id s11-20020a170906354b00b00999bb1e01dfsm923359eja.52.2023.08.25.05.56.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Aug 2023 05:56:34 -0700 (PDT)
-Message-ID: <d11873a1-b552-71f5-1100-7464687f8bb4@linaro.org>
-Date:   Fri, 25 Aug 2023 14:56:33 +0200
+        bh=FPbqsORJiEvVPy3vCE9/UaiCCFsYStAxDgahqrL3mB0=;
+        b=ZfP8lZpy+ZspFsDNM7DYNZyWsJ/I580YUtwd+YniQ8jf0fr7ZgZNnu9P/9lDT50Moz
+         /bojFdKL0kKWldNkq4U1G0N0FN+vyrSKQc0Lm32/5PrTVYIekVZjY0eA7vXWF3qxnwNS
+         WREKm6COXhwYfkR4UjzuXq+C3BKMZe0kUHqi3DjugvI45RKD4Mfd/LLMAFQcN5NNF87y
+         s/9DA59H1iHqL63A4NFSci1v4FZVCucoIJvCAhNVXEW4JOSRKln1gcc5j2bi6VhwZg8Q
+         IKXSxa5buLjS/zKBV01DzNNzirBp5AIGdyQ6ItFclkZHf0BabtnbNV0leWxQ68T+isgU
+         OhUA==
+X-Gm-Message-State: AOJu0Yy2ai29xt8HYT+i7ZFhIpFZnThDcPysvGwQHhKzkPpaWeAgo+KN
+        Ur+axH0Eng7zVtO5/RXXNh06GhnalHk7IebOrracyxn3mRZ4
+X-Google-Smtp-Source: AGHT+IFmJOIfqs+uEbcnGMciBUvAMXR4nQ3SdoDyXey8Ayp7lJl9AeFrJ3NxySMpwdEV27BmiddVISwOWe74MsYbHQ42SWwL/rL3
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v2] dt-bindings: interrupt-controller: loongson,liointc:
- Fix warnings about liointc-2.0
-Content-Language: en-US
-To:     Binbin Zhou <zhoubb.aaron@gmail.com>
-Cc:     Binbin Zhou <zhoubinbin@loongson.cn>,
-        Huacai Chen <chenhuacai@loongson.cn>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        loongson-kernel@lists.loongnix.cn, devicetree@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-mips@vger.kernel.org, diasyzhang@tencent.com,
-        linux-kernel@vger.kernel.org
-References: <20230821061315.3416836-1-zhoubinbin@loongson.cn>
- <e62185ca-cdf6-bde9-ad46-f4150db9ed6d@linaro.org>
- <CAMpQs4JhfuB4=s9VFc+xmw_+8h5u2EwPdM_0x2vO_=SYabAAxw@mail.gmail.com>
- <6ba31912-6738-6156-d5f4-3c8d3a3ca7bc@linaro.org>
- <CAMpQs4+GiExt9uMmV1pf8gg8rFwWxbLkx9mdW7hY9xxXDOza3Q@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <CAMpQs4+GiExt9uMmV1pf8gg8rFwWxbLkx9mdW7hY9xxXDOza3Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+X-Received: by 2002:a17:902:e548:b0:1bd:df9a:4fc6 with SMTP id
+ n8-20020a170902e54800b001bddf9a4fc6mr7489433plf.4.1692968197347; Fri, 25 Aug
+ 2023 05:56:37 -0700 (PDT)
+Date:   Fri, 25 Aug 2023 05:56:37 -0700
+In-Reply-To: <20230825111931.3182-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000004df5d0603bee097@google.com>
+Subject: Re: [syzbot] [bluetooth?] KASAN: slab-use-after-free Read in hci_send_acl
+From:   syzbot <syzbot+a0c80b06ae2cb8895bc4@syzkaller.appspotmail.com>
+To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -91,104 +55,261 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/08/2023 13:32, Binbin Zhou wrote:
-> Hi Krzysztof:
-> 
-> Thanks for your detailed reply.
-> 
-> On Tue, Aug 22, 2023 at 4:30 PM Krzysztof Kozlowski
-> <krzysztof.kozlowski@linaro.org> wrote:
->>
->> On 22/08/2023 10:13, Binbin Zhou wrote:
->>> Hi Krzysztof:
->>>
->>> Thanks for your detailed reply.
->>>
->>> On Tue, Aug 22, 2023 at 1:44 PM Krzysztof Kozlowski
->>> <krzysztof.kozlowski@linaro.org> wrote:
->>>>
->>>> On 21/08/2023 08:13, Binbin Zhou wrote:
->>>>> Since commit f4dee5d8e1fa ("dt-bindings: interrupt-controller: Add
->>>>> Loongson-2K1000 LIOINTC"), the loongson liointc supports configuring
->>>>> routes for 64-bit interrupt sources.
->>>>>
->>>>> For liointc-2.0, we need to define two liointc nodes in dts, one for
->>>>> "0-31" interrupt sources and the other for "32-63" interrupt sources.
->>>>> This applies to mips Loongson-2K1000.
->>>>>
->>>>> Unfortunately, there are some warnings about "loongson,liointc-2.0":
->>>>> 1. "interrupt-names" should be "required", the driver gets the parent
->>>>> interrupts through it.
->>>>
->>>> No, why? Parent? This does not make sense.
->>>
->>> This was noted in the v1 patch discussion. The liointc driver now gets
->>> the parent interrupt via of_irq_get_byname(), so I think the
->>> "interrupt-names" should be "required".
->>
->> of_irq_get_byname() does not give you parent interrupt, but the
->> interrupt. Why do you need parent interrupt and what is it?
->>
->>>
->>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/irqchip/irq-loongson-liointc.c?h=v6.5-rc6#n345
->>>
->>> static const char *const parent_names[] = {"int0", "int1", "int2", "int3"};
->>>
->>>         for (i = 0; i < LIOINTC_NUM_PARENT; i++) {
->>>                 parent_irq[i] = of_irq_get_byname(node, parent_names[i]);
->>>                 if (parent_irq[i] > 0)
->>>                         have_parent = TRUE;
->>>         }
->>>         if (!have_parent)
->>>                 return -ENODEV;
->>
->> How requiring parents interrupt is related to other changes in this
->> file? One logical change, one patch.
-> 
-> Yes, that was my mistake, whether or not the interrupt-names need to
-> be "required" is another issue. It does not cause a check warning.
-> I'll think about it some more.
->>
->> Anyway why did you do it and take it by names? Names here are basically
->> useless if they match indices, so just get interrupt by indices.
-> 
-> There is a match between interrupts, interrupt names and interrupt maps:
-> 
-> interrupt->interrupt name->interrupt map
-> 2->int0->int_map[0]
-> 3->int1->int_map[1]
-> 4->int2->int_map[2]
-> 5->int3->int_map[3]
-> 
-> As part of the 2k1000 liointc1 node:
-> 
->                 liointc1: interrupt-controller@1fe11440 {
-> ....
->                         interrupt-parent = <&cpuintc>;
->                         interrupts = <3>;
->                         interrupt-names = "int1";
-> 
->                         loongson,parent_int_map = <0x00000000>, /* int0 */
+Hello,
+
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+INFO: task hung in l2cap_chan_timeout
+
+INFO: task kworker/0:0:8 blocked for more than 143 seconds.
+      Not tainted 6.5.0-rc6-next-20230818-syzkaller-dirty #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:kworker/0:0     state:D stack:26488 pid:8     ppid:2      flags:0x00004000
+Workqueue: events l2cap_chan_timeout
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5382 [inline]
+ __schedule+0xee1/0x59f0 kernel/sched/core.c:6695
+ schedule+0xe7/0x1b0 kernel/sched/core.c:6771
+ schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6830
+ __mutex_lock_common kernel/locking/mutex.c:679 [inline]
+ __mutex_lock+0x967/0x1340 kernel/locking/mutex.c:747
+ l2cap_chan_timeout+0x68/0x2f0 net/bluetooth/l2cap_core.c:438
+ process_one_work+0x887/0x15d0 kernel/workqueue.c:2630
+ process_scheduled_works kernel/workqueue.c:2703 [inline]
+ worker_thread+0x8bb/0x1290 kernel/workqueue.c:2784
+ kthread+0x33a/0x430 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+ </TASK>
+INFO: task kworker/0:1:9 blocked for more than 143 seconds.
+      Not tainted 6.5.0-rc6-next-20230818-syzkaller-dirty #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:kworker/0:1     state:D stack:28784 pid:9     ppid:2      flags:0x00004000
+Workqueue: events l2cap_chan_timeout
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5382 [inline]
+ __schedule+0xee1/0x59f0 kernel/sched/core.c:6695
+ schedule+0xe7/0x1b0 kernel/sched/core.c:6771
+ schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6830
+ __mutex_lock_common kernel/locking/mutex.c:679 [inline]
+ __mutex_lock+0x967/0x1340 kernel/locking/mutex.c:747
+ l2cap_chan_timeout+0x68/0x2f0 net/bluetooth/l2cap_core.c:438
+ process_one_work+0x887/0x15d0 kernel/workqueue.c:2630
+ process_scheduled_works kernel/workqueue.c:2703 [inline]
+ worker_thread+0x8bb/0x1290 kernel/workqueue.c:2784
+ kthread+0x33a/0x430 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+ </TASK>
+INFO: task kworker/1:0:23 blocked for more than 143 seconds.
+      Not tainted 6.5.0-rc6-next-20230818-syzkaller-dirty #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:kworker/1:0     state:D stack:25448 pid:23    ppid:2      flags:0x00004000
+Workqueue: events l2cap_chan_timeout
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5382 [inline]
+ __schedule+0xee1/0x59f0 kernel/sched/core.c:6695
+ schedule+0xe7/0x1b0 kernel/sched/core.c:6771
+ schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6830
+ __mutex_lock_common kernel/locking/mutex.c:679 [inline]
+ __mutex_lock+0x967/0x1340 kernel/locking/mutex.c:747
+ l2cap_chan_timeout+0x68/0x2f0 net/bluetooth/l2cap_core.c:438
+ process_one_work+0x887/0x15d0 kernel/workqueue.c:2630
+ process_scheduled_works kernel/workqueue.c:2703 [inline]
+ worker_thread+0x8bb/0x1290 kernel/workqueue.c:2784
+ kthread+0x33a/0x430 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+ </TASK>
+INFO: task kworker/1:1:27 blocked for more than 143 seconds.
+      Not tainted 6.5.0-rc6-next-20230818-syzkaller-dirty #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:kworker/1:1     state:D stack:25880 pid:27    ppid:2      flags:0x00004000
+Workqueue: events l2cap_chan_timeout
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5382 [inline]
+ __schedule+0xee1/0x59f0 kernel/sched/core.c:6695
+ schedule+0xe7/0x1b0 kernel/sched/core.c:6771
+ schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6830
+ __mutex_lock_common kernel/locking/mutex.c:679 [inline]
+ __mutex_lock+0x967/0x1340 kernel/locking/mutex.c:747
+ l2cap_chan_timeout+0x68/0x2f0 net/bluetooth/l2cap_core.c:438
+ process_one_work+0x887/0x15d0 kernel/workqueue.c:2630
+ process_scheduled_works kernel/workqueue.c:2703 [inline]
+ worker_thread+0x8bb/0x1290 kernel/workqueue.c:2784
+ kthread+0x33a/0x430 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+ </TASK>
+INFO: task kworker/u5:0:50 blocked for more than 144 seconds.
+      Not tainted 6.5.0-rc6-next-20230818-syzkaller-dirty #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:kworker/u5:0    state:D stack:27704 pid:50    ppid:2      flags:0x00004000
+Workqueue: hci0 hci_cmd_sync_work
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5382 [inline]
+ __schedule+0xee1/0x59f0 kernel/sched/core.c:6695
+ schedule+0xe7/0x1b0 kernel/sched/core.c:6771
+ schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6830
+ __mutex_lock_common kernel/locking/mutex.c:679 [inline]
+ __mutex_lock+0x967/0x1340 kernel/locking/mutex.c:747
+ l2cap_chan_del+0x2b3/0xaa0 net/bluetooth/l2cap_core.c:659
+ l2cap_conn_del+0x3ce/0x870 net/bluetooth/l2cap_core.c:1918
+ l2cap_connect_cfm+0xa10/0xf90 net/bluetooth/l2cap_core.c:8232
+ hci_connect_cfm include/net/bluetooth/hci_core.h:1933 [inline]
+ hci_conn_failed+0x196/0x320 net/bluetooth/hci_conn.c:1235
+ hci_abort_conn_sync+0xacb/0xe20 net/bluetooth/hci_sync.c:5432
+ abort_conn_sync+0x18e/0x3a0 net/bluetooth/hci_conn.c:2878
+ hci_cmd_sync_work+0x1a4/0x3c0 net/bluetooth/hci_sync.c:306
+ process_one_work+0x887/0x15d0 kernel/workqueue.c:2630
+ process_scheduled_works kernel/workqueue.c:2703 [inline]
+ worker_thread+0x8bb/0x1290 kernel/workqueue.c:2784
+ kthread+0x33a/0x430 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+ </TASK>
+INFO: task kworker/0:2:54 blocked for more than 144 seconds.
+      Not tainted 6.5.0-rc6-next-20230818-syzkaller-dirty #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:kworker/0:2     state:D stack:25568 pid:54    ppid:2      flags:0x00004000
+Workqueue: events l2cap_chan_timeout
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5382 [inline]
+ __schedule+0xee1/0x59f0 kernel/sched/core.c:6695
+ schedule+0xe7/0x1b0 kernel/sched/core.c:6771
+ schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6830
+ __mutex_lock_common kernel/locking/mutex.c:679 [inline]
+ __mutex_lock+0x967/0x1340 kernel/locking/mutex.c:747
+ l2cap_chan_del+0x2b3/0xaa0 net/bluetooth/l2cap_core.c:659
+ l2cap_chan_close+0xff/0xa20 net/bluetooth/l2cap_core.c:844
+ l2cap_chan_timeout+0x17d/0x2f0 net/bluetooth/l2cap_core.c:452
+ process_one_work+0x887/0x15d0 kernel/workqueue.c:2630
+ process_scheduled_works kernel/workqueue.c:2703 [inline]
+ worker_thread+0x8bb/0x1290 kernel/workqueue.c:2784
+ kthread+0x33a/0x430 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+ </TASK>
+INFO: task kworker/1:2:780 blocked for more than 144 seconds.
+      Not tainted 6.5.0-rc6-next-20230818-syzkaller-dirty #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:kworker/1:2     state:D stack:26504 pid:780   ppid:2      flags:0x00004000
+Workqueue: events l2cap_chan_timeout
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5382 [inline]
+ __schedule+0xee1/0x59f0 kernel/sched/core.c:6695
+ schedule+0xe7/0x1b0 kernel/sched/core.c:6771
+ schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6830
+ __mutex_lock_common kernel/locking/mutex.c:679 [inline]
+ __mutex_lock+0x967/0x1340 kernel/locking/mutex.c:747
+ l2cap_chan_timeout+0x68/0x2f0 net/bluetooth/l2cap_core.c:438
+ process_one_work+0x887/0x15d0 kernel/workqueue.c:2630
+ process_scheduled_works kernel/workqueue.c:2703 [inline]
+ worker_thread+0x8bb/0x1290 kernel/workqueue.c:2784
+ kthread+0x33a/0x430 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+ </TASK>
+INFO: task kworker/1:3:4456 blocked for more than 144 seconds.
+      Not tainted 6.5.0-rc6-next-20230818-syzkaller-dirty #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:kworker/1:3     state:D stack:28128 pid:4456  ppid:2      flags:0x00004000
+Workqueue: events l2cap_chan_timeout
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5382 [inline]
+ __schedule+0xee1/0x59f0 kernel/sched/core.c:6695
+ schedule+0xe7/0x1b0 kernel/sched/core.c:6771
+ schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6830
+ __mutex_lock_common kernel/locking/mutex.c:679 [inline]
+ __mutex_lock+0x967/0x1340 kernel/locking/mutex.c:747
+ l2cap_chan_timeout+0x68/0x2f0 net/bluetooth/l2cap_core.c:438
+ process_one_work+0x887/0x15d0 kernel/workqueue.c:2630
+ process_scheduled_works kernel/workqueue.c:2703 [inline]
+ worker_thread+0x8bb/0x1290 kernel/workqueue.c:2784
+ kthread+0x33a/0x430 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+ </TASK>
+INFO: task kworker/1:4:5053 blocked for more than 145 seconds.
+      Not tainted 6.5.0-rc6-next-20230818-syzkaller-dirty #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:kworker/1:4     state:D stack:25112 pid:5053  ppid:2      flags:0x00004000
+Workqueue: events l2cap_chan_timeout
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5382 [inline]
+ __schedule+0xee1/0x59f0 kernel/sched/core.c:6695
+ schedule+0xe7/0x1b0 kernel/sched/core.c:6771
+ schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6830
+ __mutex_lock_common kernel/locking/mutex.c:679 [inline]
+ __mutex_lock+0x967/0x1340 kernel/locking/mutex.c:747
+ l2cap_chan_timeout+0x68/0x2f0 net/bluetooth/l2cap_core.c:438
+ process_one_work+0x887/0x15d0 kernel/workqueue.c:2630
+ process_scheduled_works kernel/workqueue.c:2703 [inline]
+ worker_thread+0x8bb/0x1290 kernel/workqueue.c:2784
+ kthread+0x33a/0x430 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+ </TASK>
+INFO: task kworker/0:4:5059 blocked for more than 145 seconds.
+      Not tainted 6.5.0-rc6-next-20230818-syzkaller-dirty #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:kworker/0:4     state:D stack:27920 pid:5059  ppid:2      flags:0x00004000
+Workqueue: events l2cap_chan_timeout
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5382 [inline]
+ __schedule+0xee1/0x59f0 kernel/sched/core.c:6695
+ schedule+0xe7/0x1b0 kernel/sched/core.c:6771
+ schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6830
+ __mutex_lock_common kernel/locking/mutex.c:679 [inline]
+ __mutex_lock+0x967/0x1340 kernel/locking/mutex.c:747
+ l2cap_chan_timeout+0x68/0x2f0 net/bluetooth/l2cap_core.c:438
+ process_one_work+0x887/0x15d0 kernel/workqueue.c:2630
+ process_scheduled_works kernel/workqueue.c:2703 [inline]
+ worker_thread+0x8bb/0x1290 kernel/workqueue.c:2784
+ kthread+0x33a/0x430 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+ </TASK>
+Future hung task reports are suppressed, see sysctl kernel.hung_task_warnings
+INFO: lockdep is turned off.
+NMI backtrace for cpu 0
+CPU: 0 PID: 29 Comm: khungtaskd Not tainted 6.5.0-rc6-next-20230818-syzkaller-dirty #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ nmi_cpu_backtrace+0x277/0x380 lib/nmi_backtrace.c:113
+ nmi_trigger_cpumask_backtrace+0x299/0x300 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:160 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:222 [inline]
+ watchdog+0xfac/0x1230 kernel/hung_task.c:379
+ kthread+0x33a/0x430 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+ </TASK>
+Sending NMI from CPU 0 to CPUs 1:
+NMI backtrace for cpu 1 skipped: idling at native_safe_halt arch/x86/include/asm/irqflags.h:48 [inline]
+NMI backtrace for cpu 1 skipped: idling at arch_safe_halt arch/x86/include/asm/irqflags.h:86 [inline]
+NMI backtrace for cpu 1 skipped: idling at acpi_safe_halt+0x1b/0x20 drivers/acpi/processor_idle.c:112
 
 
-How did you sneak this property? The version - v2 - which was reviewed
-by Rob:
-https://lore.kernel.org/all/20190905144316.12527-7-jiaxun.yang@flygoat.com/
-did not have it.
+Tested on:
 
-Now v3 suddenly appears with Rob's review and this property:
-https://lore.kernel.org/all/20200112081416.722218-4-jiaxun.yang@flygoat.com/
-
-Please help me understand this property appeared there and how did you
-get it reviewed?
-
->                                                 <0xffffffff>, /* int1 */
->                                                 <0x00000000>, /* int2 */
->                                                 <0x00000000>; /* int3 */
-
-So now you will keep bringing more hacks for a hacky property. No, this
-cannot go on.
-
-Best regards,
-Krzysztof
+commit:         7271b2a5 Add linux-next specific files for 20230818
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=109b2797a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1936af09cdef7dd6
+dashboard link: https://syzkaller.appspot.com/bug?extid=a0c80b06ae2cb8895bc4
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=146ec7cfa80000
 
