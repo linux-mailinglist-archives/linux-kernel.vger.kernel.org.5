@@ -2,239 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3744F78820C
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 10:27:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF47D788186
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 10:06:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242913AbjHYI1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 04:27:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35190 "EHLO
+        id S243375AbjHYIFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 04:05:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241127AbjHYI0p (ORCPT
+        with ESMTP id S243372AbjHYIFZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 04:26:45 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D927619A1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 01:26:43 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7863962450
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 08:26:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5CCADC433C7;
-        Fri, 25 Aug 2023 08:26:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1692952002;
-        bh=GX9kHRTvbYBel26XAIpavUFknh9Wifx+X21IDxKVqG0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=05vY0/e9/7jOLrHtca6isuOnGrrM9gWPMKMIruKNskcC4ufFkWRjSWvgnASqKhf29
-         wxPPol+Qfjql/tTVlWU8RbpjOWQIWbeB3duRihjXmJHsOT1z0BTCO7ZAlZvHfWG5aU
-         VhibwqqgB5GtiPyxGgwh3loFpEdm4pInfIpb747k=
-Date:   Fri, 25 Aug 2023 10:05:08 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Stanislav Kinsburskii <skinsburskii@linux.microsoft.com>
-Cc:     Stanislav Kinsburskii <stanislav.kinsburskii@gmail.com>,
-        Derek Kiernan <derek.kiernan@amd.com>,
-        Dragan Cvetic <dragan.cvetic@amd.com>,
-        Arnd Bergmann <arnd@arndb.de>, Wei Liu <wei.liu@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Madhavan Venkataraman <madvenka@linux.microsoft.com>,
-        Anthony Yznaga <anthony.yznaga@oracle.com>,
-        "Mike Rapoport (IBM)" <rppt@kernel.org>,
-        James Gowans <jgowans@amazon.com>,
-        Anirudh Rayabharam <anrayabh@linux.microsoft.com>,
-        Jinank Jain <jinankjain@linux.microsoft.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] Introduce persistent memory pool
-Message-ID: <2023082506-enchanted-tripping-d1d5@gregkh>
-References: <64e7cbf7.050a0220.114c7.b70dSMTPIN_ADDED_BROKEN@mx.google.com>
+        Fri, 25 Aug 2023 04:05:25 -0400
+Received: from forward500a.mail.yandex.net (forward500a.mail.yandex.net [IPv6:2a02:6b8:c0e:500:1:45:d181:d500])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A20381FF2
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 01:05:18 -0700 (PDT)
+Received: from mail-nwsmtp-smtp-production-main-51.vla.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-51.vla.yp-c.yandex.net [IPv6:2a02:6b8:c1f:5e51:0:640:23ee:0])
+        by forward500a.mail.yandex.net (Yandex) with ESMTP id 38B715E943;
+        Fri, 25 Aug 2023 11:05:16 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-51.vla.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id F5H80IKDaqM0-MiP4n5N0;
+        Fri, 25 Aug 2023 11:05:15 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail; t=1692950715;
+        bh=okl4esfBnnzgq8d0K6vscEpYCEHFmM+J8GQFV0E2GSE=;
+        h=References:Date:In-Reply-To:Cc:To:From:Subject:Message-ID;
+        b=coWb/+6y/oJR5yhd5JpL5YW/VDxAkAIVZMgkeFn0SUqx0ZHJ4O2jEAHfYwZRd27wC
+         eChBBQpO/erAqu7OCJ5qJnWTjM4Se+hjU45RB3shjOXS9717vAAa7xGb2rLaKdBpbn
+         7JMTi/q2HUSRM6aH4o4L9O7pCO5eNOXCm83VFiWc=
+Authentication-Results: mail-nwsmtp-smtp-production-main-51.vla.yp-c.yandex.net; dkim=pass header.i=@maquefel.me
+Message-ID: <913a0bc0dfcd3ecd28f65fb52db789033097d831.camel@maquefel.me>
+Subject: Re: [PATCH 1/2] ata: pata_ep93xx: fix error return code in probe
+From:   Nikita Shubin <nikita.shubin@maquefel.me>
+To:     Damien Le Moal <dlemoal@kernel.org>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>
+Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Fri, 25 Aug 2023 11:05:15 +0300
+In-Reply-To: <00462bc7-43ee-784a-3296-8051d69575df@kernel.org>
+References: <20230823-ep93xx_pata_fixes-v1-0-d7e7229be148@maquefel.me>
+         <20230823-ep93xx_pata_fixes-v1-1-d7e7229be148@maquefel.me>
+         <00462bc7-43ee-784a-3296-8051d69575df@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.3 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <64e7cbf7.050a0220.114c7.b70dSMTPIN_ADDED_BROKEN@mx.google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 11:34:34AM -0700, Stanislav Kinsburskii wrote:
-> This patch addresses the need for a memory allocator dedicated to
-> persistent memory within the kernel. This allocator will preserve
-> kernel-specific states like DMA passthrough device states, IOMMU state, and
-> more across kexec.
+Hi Damien!
 
-And CMA doesn't do this for you today?
+On Thu, 2023-08-24 at 08:07 +0900, Damien Le Moal wrote:
+> On 8/23/23 18:47, Nikita Shubin via B4 Relay wrote:
+> > From: Nikita Shubin <nikita.shubin@maquefel.me>
+> >=20
+> > Return -ENOMEM from ep93xx_pata_probe() if devm_kzalloc() or
+> > ata_host_alloc() fails.
+> >=20
+> > Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+>=20
+> Doesn't this need a Fixes tag and Cc: stable ?
+>=20
+> This is not really a bug fix, but might as well be complete with the
+> fix :)
 
-> The proposed solution offers a foundational implementation for potential
-> custom solutions that might follow. Though the implementation is
-> intentionally kept concise and straightforward to foster discussion and
-> feedback, it's fully functional in its current state.
-> 
-> The persistent memory pool consists of a simple page allocator that
-> operates on reserved physical memory regions. It employs bitmaps to
-> allocate and free pages, with the following characteristics:
-> 
->   1. Memory pool regions are specified using the command line option:
-> 
->        pmpool=<base>,<size>
-> 
->      Where <base> represents the physical memory base address and <size>
->      indicates the memory size.
-> 
->   2. While the pages allocation emulates the buddy allocator interface, it
->      isn't confined to the MAX_ORDER.
-> 
->   3. The memory pool initializes during a cold boot and is retained across
->      kexec.
-> 
-> Potential applications include:
-> 
->   1. Allowing various in-kernel entities to allocate persistent pages from
->      a singular memory pool, eliminating the need for multiple region
->      reservations.
-> 
->   2. For in-kernel components that require the allocation address to be
->      available on kernel kexec, this address can be exposed to user space and
->      then passed via the command line.
-> 
->   3. Separate subsystems or drivers can reserve their region, sharing a
->      portion of it for their persistent memory pool. This might be a file
->      system, a key-value store, or other applications.
-> 
-> Potential Enhancements for the Proposed Memory Pool:
-> 
->   1. Multiple Memory Regions Support: enhance the pool to accommodate and
->      manage multiple memory regions simultaneously.
-> 
->   2. In-Kernel Memory Allocations for Storage Memory Regions:
->    * Allow in-kernel memory allocations to serve as storage memory regions.
->    * Implement explicit reservation of these designated regions during kexec.
+Well... This would be fix for:
 
-As you have no in-kernel users of this, it's not something we can even
-consider at the moment for obvious reasons (neither would you want us
-to.)
+```
+commit 2fff27512600f9ad91335577e485a8552edb0abf
+Author: Rafal Prylowski <prylowski@metasoft.pl>
+Date:   Thu Apr 12 14:13:16 2012 +0200
+```
 
-Can you make this part of a patch series that actually adds a user,
-probably more than one, so that we can see if any of this even makes
-sense?
+v3.4-rc6-6-g2fff27512600
 
+Are you sure we wanna tag so solid and time proven commit as Fixes: :)
+?
 
->  drivers/misc/Kconfig   |    7 +
->  drivers/misc/Makefile  |    1 
->  drivers/misc/pmpool.c  |  270 ++++++++++++++++++++++++++++++++++++++++++++++++
->  include/linux/pmpool.h |   20 ++++
->  4 files changed, 298 insertions(+)
->  create mode 100644 drivers/misc/pmpool.c
->  create mode 100644 include/linux/pmpool.h
+>=20
+> > ---
+> > =C2=A0drivers/ata/pata_ep93xx.c | 4 ++--
+> > =C2=A01 file changed, 2 insertions(+), 2 deletions(-)
+> >=20
+> > diff --git a/drivers/ata/pata_ep93xx.c b/drivers/ata/pata_ep93xx.c
+> > index c6e043e05d43..4ce0f37c7a89 100644
+> > --- a/drivers/ata/pata_ep93xx.c
+> > +++ b/drivers/ata/pata_ep93xx.c
+> > @@ -939,7 +939,7 @@ static int ep93xx_pata_probe(struct
+> > platform_device *pdev)
+> > =C2=A0
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0drv_data =3D devm_kzall=
+oc(&pdev->dev, sizeof(*drv_data),
+> > GFP_KERNEL);
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (!drv_data) {
+> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0err =3D -ENXIO;
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0err =3D -ENOMEM;
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0goto err_rel_gpio;
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
+> > =C2=A0
+> > @@ -952,7 +952,7 @@ static int ep93xx_pata_probe(struct
+> > platform_device *pdev)
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/* allocate host */
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0host =3D ata_host_alloc=
+(&pdev->dev, 1);
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (!host) {
+> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0err =3D -ENXIO;
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0err =3D -ENOMEM;
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0goto err_rel_dma;
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
+> > =C2=A0
+> >=20
+>=20
 
-misc is not for memory pools, as this is not a driver.  please put this
-in the properly location instead of trying to hide it from the mm
-maintainers and subsystem :)
-
-> diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
-> index cadd4a820c03..c8ef5b37ee98 100644
-> --- a/drivers/misc/Kconfig
-> +++ b/drivers/misc/Kconfig
-> @@ -562,6 +562,13 @@ config TPS6594_PFSM
->  	  This driver can also be built as a module.  If so, the module
->  	  will be called tps6594-pfsm.
->  
-> +config PMPOOL
-> +	bool "Persistent memory pool support"
-> +	help
-> +	  This option adds support for a persistent memory pool feature, which
-> +	  provides pages allocation and freeing from a set of persistent memory ranges,
-> +	  deposited to the memory pool.
-
-Why would this even be a user selectable option?  Either the kernel
-needs this or it doesn't.
-
-
-> +
->  source "drivers/misc/c2port/Kconfig"
->  source "drivers/misc/eeprom/Kconfig"
->  source "drivers/misc/cb710/Kconfig"
-> diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
-> index f2a4d1ff65d4..31dd6553057d 100644
-> --- a/drivers/misc/Makefile
-> +++ b/drivers/misc/Makefile
-> @@ -67,3 +67,4 @@ obj-$(CONFIG_TMR_MANAGER)      += xilinx_tmr_manager.o
->  obj-$(CONFIG_TMR_INJECT)	+= xilinx_tmr_inject.o
->  obj-$(CONFIG_TPS6594_ESM)	+= tps6594-esm.o
->  obj-$(CONFIG_TPS6594_PFSM)	+= tps6594-pfsm.o
-> +obj-$(CONFIG_PMPOOL)		+= pmpool.o
-> diff --git a/drivers/misc/pmpool.c b/drivers/misc/pmpool.c
-> new file mode 100644
-> index 000000000000..e2c923b31b36
-> --- /dev/null
-> +++ b/drivers/misc/pmpool.c
-> @@ -0,0 +1,270 @@
-> +#include <linux/io.h>
-
-You forgot basic copyright/license stuff, did you use checkpatch.pl on
-your file?
-
-> +#include <linux/bitmap.h>
-> +#include <linux/memblock.h>
-> +#include <linux/spinlock.h>
-> +#include <linux/types.h>
-> +
-> +#include <linux/pmpool.h>
-> +
-> +#define VERSION			1
-
-In kernel code does not need versions.
-
-> +#define MAX_REGIONS		14
-
-Why 14?  Why not 24?  Or something else?
-
-> +
-> +#define for_each_region(pmpool, r)					\
-> +	for (r = pmpool->hdr->regions;					\
-> +	     r - pmpool->hdr->regions < pmpool->hdr->nr_regions;	\
-> +	     r++)
-> +
-> +#define for_each_used_region(pmpool, r)					\
-> +	for_each_region((pmpool), (r))					\
-> +		if (!(r)->size_in_pfns) { continue; } else
-> +
-> +struct pmpool_region {
-> +	uint32_t		base_pfn;		/* 32 bits * 4k = up it 15TB of physical address space */
-
-Please use proper kernel types when writing kernel code (i.e. u32, u8,
-and so on.)  uint*_t is for userspace code only.
-
-> --- /dev/null
-> +++ b/include/linux/pmpool.h
-> @@ -0,0 +1,20 @@
-> +#ifndef _PMPOOL_H
-> +#define _PMPOOL_H
-> +
-> +#include <linux/types.h>
-> +#include <linux/spinlock.h>
-> +
-> +void *alloc_pm_pages(unsigned int order);
-> +void free_pm_pages(void *addr, unsigned int order);
-> +
-> +struct pmpool {
-> +	spinlock_t		lock;
-> +	struct pmpool_header	*hdr;
-> +};
-> +
-> +int pmpool_init(struct pmpool *pmpool, phys_addr_t base, phys_addr_t size);
-> +
-> +void *alloc_pmpool_pages(struct pmpool *pmpool, unsigned int order);
-> +void free_pmpool_pages(struct pmpool *pmpool, void *addr, unsigned int order);
-
-Please use "noun_verb_*" for new apis so that we have a chance at
-understanding where the calls are living.
-
-good luck!
-
-greg k-h
