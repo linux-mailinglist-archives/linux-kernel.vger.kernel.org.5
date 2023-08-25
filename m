@@ -2,148 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D69AB7884F3
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 12:31:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2FC57884F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 12:32:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230361AbjHYKbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 06:31:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36038 "EHLO
+        id S241560AbjHYKcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 06:32:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240997AbjHYKbG (ORCPT
+        with ESMTP id S240870AbjHYKbx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 06:31:06 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2845A9E;
-        Fri, 25 Aug 2023 03:31:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692959464; x=1724495464;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=wVJ88ABD5p0H2+9hwW3zAACiH9v23ThhILL1RUf5G20=;
-  b=ON4UjiYvi6rEoGKjzkMsr/RF1ShOWhtCJnhFdtkdKCW6JsCgQzWbIURf
-   rv8zT6SgEDdMXWD8xZfYUp7h1uO6bkfIrNs3OKfHE3iCDifNFzZ60Femj
-   eVkSNe53eD802I/yyAeKEVGBgTKZjtCHHHiOLsIN5aJqZfsKeO/w9ziDd
-   lBjzUMMjw0EludFu9z4C5APoalQXWmVKtRQhz5eunWTa9kg4Y5CEdoOj4
-   f9RoJ7SSvraQJlxTOVBHpvGbLDF3y/VU5o4VG+Cfk55ySh7u2j1vMN1hX
-   gcIrGUCFtTc/KNK0Tu2ric2KJ1cMMmEtEC0RRuSxlchmIOdkZMXIy5Wg2
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="373554767"
-X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
-   d="scan'208";a="373554767"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2023 03:31:03 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="687259081"
-X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
-   d="scan'208";a="687259081"
-Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 25 Aug 2023 03:30:50 -0700
-Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qZU5Y-0003Rw-15;
-        Fri, 25 Aug 2023 10:30:48 +0000
-Date:   Fri, 25 Aug 2023 18:29:54 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
-        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
-        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
-        hverkuil-cisco@xs4all.nl, nicolas.dufresne@collabora.com
-Cc:     oe-kbuild-all@lists.linux.dev, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
-        kernel@collabora.com,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Subject: Re: [PATCH v5 10/10] media: v4l2: Add mem2mem helpers for
- DELETE_BUFS ioctl
-Message-ID: <202308251828.fSyIXACx-lkp@intel.com>
-References: <20230824092133.39510-11-benjamin.gaignard@collabora.com>
+        Fri, 25 Aug 2023 06:31:53 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2057.outbound.protection.outlook.com [40.107.237.57])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 285ED133
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 03:31:51 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gO394Nnrrp86iqZeqcxZEKZvgWBmeQbgMNLwZXuJDSq7DFwM8AQBRICBQu7j95yEUCuJJHT/xp9AM14/jefsFS9s6FzFOsdMCXm0+rheitqwr7sTrPrEOIisa9Z61FOyM9zhma/oqfx2UsQ0za+6zikObWrimmd+bDOua6UmUtVNLZjq6A1op4LiaDMHBUil/IW143436UWEZ1sYjAaM583B+ayC4UkjOZ8B6Xfi3ayzAIjjdJ/F4lIr1wrenMs7LMgoGCsPEo1Bq9rWdwwgzRz5+tQmgFUYemqu+zGxALqKv/71d0aMaPzTmjdCEbvFypGgKiEHq8o+X78GbIkuig==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=v6h2YbO73zwnGZSMmQeMlBUGA6mnH3aAdW7A8+1t4Iw=;
+ b=jO08zBInLcD79UPDutUGE0Ah6b2pN4N6BHzEfvHgOMKQ1i3XhpaviiZL0lTo5W4ji+y4xOE+ZHoFxLzHojndLiq9DP1j04cMNEzkk0LKvjknaXWAKFTJyMZVQ3gaoe16cNOJRU0yi6tgPEwPLRsHcKca74OJi7kx032Sf2C/p5LVYcxoBjgn6Z0IBrj0wEe9EAxdxFCUQOOA0yGCKHwj6olNRa0CQlTcvYJ4EqI2qyzZH0/PLEj5aBowu9SWFB87lSwOqri4h2HZq1IUwg1vciP9SO3u02qtn5d5orC+gawVlZ+JoMiWEgmS4DAppaHCZolFKgPY2tmVy4Iei9U5Kg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.232) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=v6h2YbO73zwnGZSMmQeMlBUGA6mnH3aAdW7A8+1t4Iw=;
+ b=dD1tCBKQPOoNrnzhy/vqWWFbNqqm+POxFMZCblRFqp7JqhIvN+pXzgRgmVIMW6Bfk++R9rj92VMDCDEgKxeeQi2WJtr6D/WsdHjtsxVQF0CXKRVRrwMS1lt5RQhL9MhcBS7xH9EW57NLTyxOCJVNb2FGr293PaTe6nWvDvPMIat6Y03mEjSdGpY8hqgyJR5XwrGOAqi3V/E/Hy96OyRmQqWJpgN86h8OJM6wEd5uCygiHNpDicJrnMUnlbw+PdPXoKxiaNUqWGfMT/Weo2A2xiLWJ9pAz/muEYkEWyi5j09lxGzNq9HStCg8zl6HfPHycAsrtdjXXLDN1qB517h50A==
+Received: from CY5PR16CA0007.namprd16.prod.outlook.com (2603:10b6:930:10::18)
+ by MN0PR12MB6223.namprd12.prod.outlook.com (2603:10b6:208:3c1::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.27; Fri, 25 Aug
+ 2023 10:31:48 +0000
+Received: from CY4PEPF0000E9DC.namprd05.prod.outlook.com
+ (2603:10b6:930:10:cafe::39) by CY5PR16CA0007.outlook.office365.com
+ (2603:10b6:930:10::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.27 via Frontend
+ Transport; Fri, 25 Aug 2023 10:31:48 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.232) by
+ CY4PEPF0000E9DC.mail.protection.outlook.com (10.167.241.82) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6699.14 via Frontend Transport; Fri, 25 Aug 2023 10:31:48 +0000
+Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
+ (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Fri, 25 Aug 2023
+ 03:31:40 -0700
+Received: from drhqmail203.nvidia.com (10.126.190.182) by
+ drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.37; Fri, 25 Aug 2023 03:31:40 -0700
+Received: from Asurada-Nvidia.nvidia.com (10.127.8.13) by mail.nvidia.com
+ (10.126.190.182) with Microsoft SMTP Server id 15.2.986.37 via Frontend
+ Transport; Fri, 25 Aug 2023 03:31:40 -0700
+From:   Nicolin Chen <nicolinc@nvidia.com>
+To:     <will@kernel.org>, <robin.murphy@arm.com>, <jgg@nvidia.com>
+CC:     <joro@8bytes.org>, <mshavit@google.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <iommu@lists.linux.dev>
+Subject: [PATCH v3 0/2] iommu/arm-smmu-v3: Allow default substream bypass with a pasid support
+Date:   Fri, 25 Aug 2023 03:31:22 -0700
+Message-ID: <cover.1692959239.git.nicolinc@nvidia.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230824092133.39510-11-benjamin.gaignard@collabora.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9DC:EE_|MN0PR12MB6223:EE_
+X-MS-Office365-Filtering-Correlation-Id: 86df20ba-0c4c-437e-5d17-08dba5567d04
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: c4aXnH3WkEilFJ1V2ILSV4eAjIxE0iPHNYqhEREkvEydpYF2bqxJaUpXwqkPv17sRY0xwneeYN3DtTr8THGU2bJKHeakjM/J27+Q/68G8rG7nWOEldaQnJokj+ytPCU5WjxJj1A1byPe20PbGbTaXkmQt+ObP+EdxWTvsx0QaFZcKDLlcaatkbfsUMHuXZBQar+15bhGTr2g+HNjBB2AaosuKQ5GRO66t8atUM7eFdhq/oE3jPd3yTGsqMA9EV/4DXFRqqq6gqza8aRmfbkVVcpn/RAo1ZkPa8x0J7k0WaqfpeXfx795odyNIhC9BYVMuc2zzFq+Ngec/p3n90nEyZPxdXCGF2WP1lR/cCcVOZMDjXhbTjE9TLI40jVkn7TgjeGBIATY0egbYiRclE622wYnXfm16q9CNv0IjW5rgDZz2C5gYBWNDS1eLtgOEWtWNcgXQ9/bRKd/0aTOGxjcNBohI8+jZTUcQKU4qLS/Vkx7bdNCqXOCI9IAGiilksxtd1vwJAWI/HVK6DIMeJOKjz+Bddzrl3Q971PJ+pvpe0ZRWJrrsF5eMwjV7xO7AMmk0iyg3Uk1MfkMp1+ePGxB4sJp7KDmEZTz2Vjccp3pLolaF05WorpliyyW2kRfCl/ak3yLswp0tEnSOIP5XItXCozUFHZ1Q/6xSxXUyiGOckz6pBImOHjOAsv6GViKY5ZzNKmAtjwmTRIX5xMnpm9YOJNlV2pHppc8jBCEh599yo8bun7QUJrxnPv9pkKhX3M5DbEjpARJtHk+t5cduCU31BcEo7CtisKjF7Lah1bPEoY=
+X-Forefront-Antispam-Report: CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(346002)(136003)(396003)(39860400002)(376002)(451199024)(1800799009)(82310400011)(186009)(40470700004)(46966006)(36840700001)(356005)(86362001)(82740400003)(7636003)(36756003)(40460700003)(7696005)(6666004)(478600001)(966005)(5660300002)(70586007)(54906003)(316002)(6636002)(70206006)(2906002)(4326008)(110136005)(8676002)(8936002)(40480700001)(426003)(336012)(83380400001)(26005)(36860700001)(47076005)(41300700001)(2616005);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Aug 2023 10:31:48.5328
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 86df20ba-0c4c-437e-5d17-08dba5567d04
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000E9DC.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB6223
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Benjamin,
+(This series is rebased on top of Michael's refactor series [1])
 
-kernel test robot noticed the following build errors:
+When an iommu_domain is set to IOMMU_DOMAIN_IDENTITY, the driver sets the
+arm_smmu_domain->stage to ARM_SMMU_DOMAIN_BYPASS and skips the allocation
+of a CD table, and then sets STRTAB_STE_0_CFG_BYPASS to the CONFIG field
+of the STE. This works well for devices that only have one substream, i.e.
+pasid disabled.
 
-[auto build test ERROR on next-20230824]
-[also build test ERROR on v6.5-rc7]
-[cannot apply to linus/master v6.5-rc7 v6.5-rc6 v6.5-rc5]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+With a pasid-capable device, however, there could be a use case where it
+allows an IDENTITY domain attachment without disabling its pasid feature.
+This requires the driver to allocate a multi-entry CD table to attach the
+IDENTITY domain to its default substream and to configure the S1DSS filed
+of the STE to STRTAB_STE_1_S1DSS_BYPASS. So, there is a missing link here
+between the STE setup and an IDENTITY domain attachment.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Benjamin-Gaignard/media-videobuf2-Rework-offset-cookie-encoding-pattern/20230824-172416
-base:   next-20230824
-patch link:    https://lore.kernel.org/r/20230824092133.39510-11-benjamin.gaignard%40collabora.com
-patch subject: [PATCH v5 10/10] media: v4l2: Add mem2mem helpers for DELETE_BUFS ioctl
-config: alpha-randconfig-r005-20230825 (https://download.01.org/0day-ci/archive/20230825/202308251828.fSyIXACx-lkp@intel.com/config)
-compiler: alpha-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20230825/202308251828.fSyIXACx-lkp@intel.com/reproduce)
+This series fills the gap for the use case above. The first patch corrects
+the conditions at ats_enabled capability and arm_smmu_alloc_cd_tables() so
+that the use case above could set the ats_enabled and allocate a CD table
+correctly. The second patch reworks the arm_smmu_write_strtab_ent() in a
+fashion of all possible configurations of STE.Config field.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308251828.fSyIXACx-lkp@intel.com/
+[1]
+https://lore.kernel.org/all/20230816131925.2521220-1-mshavit@google.com/
+---
 
-All errors (new ones prefixed by >>):
+Changelog
+v3:
+ * Replaced ARM_SMMU_DOMAIN_BYPASS_S1DSS with two boolean flags to correct
+   conditions of STE bypass and CD table allocation.
+ * Reworked arm_smmu_write_strtab_ent() with four helper functions
+v2: https://lore.kernel.org/all/20230817042135.32822-1-nicolinc@nvidia.com/
+ * Rebased on top of Michael's series reworking CD table ownership [1]
+ * Added a new ARM_SMMU_DOMAIN_BYPASS_S1DSS stage to tag the use case
+v1: https://lore.kernel.org/all/20230627033326.5236-1-nicolinc@nvidia.com/
 
->> drivers/media/test-drivers/vim2m.c:963:10: error: 'const struct v4l2_ioctl_ops' has no member named 'vidioc_delete_buf'; did you mean 'vidioc_delete_bufs'?
-     963 |         .vidioc_delete_buf      = v4l2_m2m_ioctl_delete_buf,
-         |          ^~~~~~~~~~~~~~~~~
-         |          vidioc_delete_bufs
->> drivers/media/test-drivers/vim2m.c:963:35: error: 'v4l2_m2m_ioctl_delete_buf' undeclared here (not in a function); did you mean 'v4l2_m2m_ioctl_delete_bufs'?
-     963 |         .vidioc_delete_buf      = v4l2_m2m_ioctl_delete_buf,
-         |                                   ^~~~~~~~~~~~~~~~~~~~~~~~~
-         |                                   v4l2_m2m_ioctl_delete_bufs
+Nicolin Chen (2):
+  iommu/arm-smmu-v3: Add boolean bypass_ste and skip_cdtab flags
+  iommu/arm-smmu-v3: Refactor arm_smmu_write_strtab_ent()
+
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 236 ++++++++++++--------
+ 1 file changed, 139 insertions(+), 97 deletions(-)
 
 
-vim +963 drivers/media/test-drivers/vim2m.c
-
-   942	
-   943	static const struct v4l2_ioctl_ops vim2m_ioctl_ops = {
-   944		.vidioc_querycap	= vidioc_querycap,
-   945	
-   946		.vidioc_enum_fmt_vid_cap = vidioc_enum_fmt_vid_cap,
-   947		.vidioc_enum_framesizes = vidioc_enum_framesizes,
-   948		.vidioc_g_fmt_vid_cap	= vidioc_g_fmt_vid_cap,
-   949		.vidioc_try_fmt_vid_cap	= vidioc_try_fmt_vid_cap,
-   950		.vidioc_s_fmt_vid_cap	= vidioc_s_fmt_vid_cap,
-   951	
-   952		.vidioc_enum_fmt_vid_out = vidioc_enum_fmt_vid_out,
-   953		.vidioc_g_fmt_vid_out	= vidioc_g_fmt_vid_out,
-   954		.vidioc_try_fmt_vid_out	= vidioc_try_fmt_vid_out,
-   955		.vidioc_s_fmt_vid_out	= vidioc_s_fmt_vid_out,
-   956	
-   957		.vidioc_reqbufs		= v4l2_m2m_ioctl_reqbufs,
-   958		.vidioc_querybuf	= v4l2_m2m_ioctl_querybuf,
-   959		.vidioc_qbuf		= v4l2_m2m_ioctl_qbuf,
-   960		.vidioc_dqbuf		= v4l2_m2m_ioctl_dqbuf,
-   961		.vidioc_prepare_buf	= v4l2_m2m_ioctl_prepare_buf,
-   962		.vidioc_create_bufs	= v4l2_m2m_ioctl_create_bufs,
- > 963		.vidioc_delete_buf	= v4l2_m2m_ioctl_delete_buf,
-   964		.vidioc_expbuf		= v4l2_m2m_ioctl_expbuf,
-   965	
-   966		.vidioc_streamon	= v4l2_m2m_ioctl_streamon,
-   967		.vidioc_streamoff	= v4l2_m2m_ioctl_streamoff,
-   968	
-   969		.vidioc_subscribe_event = v4l2_ctrl_subscribe_event,
-   970		.vidioc_unsubscribe_event = v4l2_event_unsubscribe,
-   971	};
-   972	
-
+base-commit: acd552d4b3b14d639784ea5ccfd61ba1fa85a16b
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.42.0
+
