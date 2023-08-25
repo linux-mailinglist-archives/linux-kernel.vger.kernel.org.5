@@ -2,493 +2,310 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65201788567
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 13:13:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 905CD78856E
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 13:16:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243022AbjHYLM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 07:12:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40434 "EHLO
+        id S236010AbjHYLQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 07:16:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244075AbjHYLMx (ORCPT
+        with ESMTP id S234647AbjHYLQD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 07:12:53 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 102031BE6;
-        Fri, 25 Aug 2023 04:12:50 -0700 (PDT)
-Received: from kwepemi500020.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RXHM5611qzfbdt;
-        Fri, 25 Aug 2023 19:11:13 +0800 (CST)
-Received: from [10.67.109.184] (10.67.109.184) by
- kwepemi500020.china.huawei.com (7.221.188.8) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Fri, 25 Aug 2023 19:12:45 +0800
-Message-ID: <a8bce2e9-80e1-246c-9b87-19e2fdef25a8@huawei.com>
-Date:   Fri, 25 Aug 2023 19:12:45 +0800
+        Fri, 25 Aug 2023 07:16:03 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9639F1BD4;
+        Fri, 25 Aug 2023 04:16:00 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1DD98621A0;
+        Fri, 25 Aug 2023 11:16:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F444C433C7;
+        Fri, 25 Aug 2023 11:15:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692962159;
+        bh=dFQYs74HXvTu7YBdYKQZ8MbmVQtVQchKfQEbhBBMerA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ZAUyKzrdW/oHkAXGlsMEHazLcTnscmRpWbCnsif9NCkrK/cArcUvBSjzm8IUGBH3D
+         Q2oMB0w0roWs2XQ1Gxl/Isb8hQvy7A679XQfX4zA29A9Axr6r3eBnOJ+V7K3uKz4Cm
+         4PEUBDLc/8MOcaaq3IZf6thuWnOLGeJIcQbYKh11DzvXTA1pfBcJDVxVNd1C9zyMTT
+         0pbjfClTFDe6roUzldqKtaSIfqAD95oqYisBZeUiSFuhr/kULOynCZcyB2twPqKAuN
+         8VpFDAZYKM5gxk8nlt1LPzzd6mX4fOfGnEzlEs5TQBQ17c1AI0fOZkpx6M1N7qAjlq
+         /N2lQkC45rdEQ==
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-50098cc8967so1244096e87.1;
+        Fri, 25 Aug 2023 04:15:59 -0700 (PDT)
+X-Gm-Message-State: AOJu0YyuEqgUz/uF67iFZvqYjw69awcQCwpVIMDvCrmelWVVJJMFJjLH
+        rv0XNOySxgMTVPyaTr3ZTNiz9oG8kNbdG1jSDs8=
+X-Google-Smtp-Source: AGHT+IGj0tXhxphH+FtycL0eYm7x0kAteFq2RBwyZRCaEhCWOi4QUiqfAMmEhbSIhFjknafwVOwZXPP8X19OujrsKy8=
+X-Received: by 2002:a05:6512:e99:b0:500:7de4:300e with SMTP id
+ bi25-20020a0565120e9900b005007de4300emr14004186lfb.58.1692962157472; Fri, 25
+ Aug 2023 04:15:57 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.0
-Subject: Re: [PATCH bpf-next v2 3/3] bpf, riscv: use prog pack allocator in
- the BPF JIT
-Content-Language: en-US
-To:     Puranjay Mohan <puranjay12@gmail.com>
-CC:     <bjorn@kernel.org>, <paul.walmsley@sifive.com>,
-        <palmer@dabbelt.com>, <aou@eecs.berkeley.edu>,
-        <conor.dooley@microchip.com>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <andrii@kernel.org>,
-        <martin.lau@linux.dev>, <song@kernel.org>, <yhs@fb.com>,
-        <linux-riscv@lists.infradead.org>, <bpf@vger.kernel.org>,
-        <kpsingh@kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20230824133135.1176709-1-puranjay12@gmail.com>
- <20230824133135.1176709-4-puranjay12@gmail.com>
- <3e21f79c-71a8-663e-1a62-0d2d787b9692@huawei.com>
- <b4d5aaaf-7fe6-29fd-645a-62a4032820ae@huawei.com>
- <CANk7y0hZBsrvMjOQihRLAZkX7OqNeuK+eHojc+X=-peUtn-k7g@mail.gmail.com>
-From:   Pu Lehui <pulehui@huawei.com>
-In-Reply-To: <CANk7y0hZBsrvMjOQihRLAZkX7OqNeuK+eHojc+X=-peUtn-k7g@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.109.184]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemi500020.china.huawei.com (7.221.188.8)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <CAAhV-H6ejw=8afS0jmmQvKUrCw=qZm_P6SA0A+tuvvb8bsq4-Q@mail.gmail.com>
+ <5777BD82-2C8D-4BAB-BDD3-C2C003DC57FB@joelfernandes.org> <CAAhV-H58OpQJapV7LDNjZ-vM7nNJrwdkBiPjFcCutO1yRsUshQ@mail.gmail.com>
+ <87ttspct76.ffs@tglx> <03fe7084-0509-45fa-87ee-8f8705a221a6@paulmck-laptop>
+ <CAAhV-H5Z3s=2_OyA_AJ1-NqXBtNrcs-EmsqYcrjc+qXmJ=SitQ@mail.gmail.com>
+ <16827b4e-9823-456d-a6be-157fbfae64c3@paulmck-laptop> <CAAhV-H7uXA=r-w1nN7sBpRTba3LjjZs+wasJfGo7VZ6D9eMBAw@mail.gmail.com>
+ <8792da20-a58e-4cc0-b3d2-231d5ade2242@paulmck-laptop> <CAAhV-H5BNPX8Eo3Xdy-jcYY97=xazGU+VVqoDy7qEH+VpVWFJA@mail.gmail.com>
+ <24e34f50-32d2-4b67-8ec0-1034c984d035@paulmck-laptop>
+In-Reply-To: <24e34f50-32d2-4b67-8ec0-1034c984d035@paulmck-laptop>
+From:   Huacai Chen <chenhuacai@kernel.org>
+Date:   Fri, 25 Aug 2023 19:15:44 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H5pfDG_tsRDL4dUYykaQ1ZwQYRDrQccpULBM5+kF4i2fA@mail.gmail.com>
+Message-ID: <CAAhV-H5pfDG_tsRDL4dUYykaQ1ZwQYRDrQccpULBM5+kF4i2fA@mail.gmail.com>
+Subject: Re: [PATCH V4 2/2] rcu: Update jiffies in rcu_cpu_stall_reset()
+To:     paulmck@kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Z qiang <qiang.zhang1211@gmail.com>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        John Stultz <jstultz@google.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Binbin Zhou <zhoubinbin@loongson.cn>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi, Paul,
 
+On Fri, Aug 25, 2023 at 2:28=E2=80=AFAM Paul E. McKenney <paulmck@kernel.or=
+g> wrote:
+>
+> On Thu, Aug 24, 2023 at 11:43:04PM +0800, Huacai Chen wrote:
+> > Hi, Paul,
+> >
+> > On Thu, Aug 24, 2023 at 9:24=E2=80=AFPM Paul E. McKenney <paulmck@kerne=
+l.org> wrote:
+> > >
+> > > On Thu, Aug 24, 2023 at 08:40:00PM +0800, Huacai Chen wrote:
+> > > > Hi, Paul,
+> > > > On Thu, Aug 24, 2023 at 7:40=E2=80=AFPM Paul E. McKenney <paulmck@k=
+ernel.org> wrote:
+> > > > > On Thu, Aug 24, 2023 at 10:50:41AM +0800, Huacai Chen wrote:
+> > > > > > Hi, Paul,
+> > > > > > On Thu, Aug 24, 2023 at 6:41=E2=80=AFAM Paul E. McKenney <paulm=
+ck@kernel.org> wrote:
+> > > > > > > On Thu, Aug 24, 2023 at 12:03:25AM +0200, Thomas Gleixner wro=
+te:
+> > > > > > > > On Thu, Aug 17 2023 at 16:06, Huacai Chen wrote:
+> > > > > > > > > On Thu, Aug 17, 2023 at 3:27=E2=80=AFAM Joel Fernandes <j=
+oel@joelfernandes.org> wrote:
+> > > > > > > > >> > If  do_update_jiffies_64() cannot be used in NMI conte=
+xt,
+> > > > > > > > >>
+> > > > > > > > >> Can you not make the jiffies update conditional on wheth=
+er it is
+> > > > > > > > >> called within NMI context?
+> > > > > > > >
+> > > > > > > > Which solves what? If KGDB has a breakpoint in the jiffies =
+lock held
+> > > > > > > > region then you still dead lock.
+> > > > > > > >
+> > > > > > > > >> I dislike that..
+> > > > > > > > > Is this acceptable?
+> > > > > > > > >
+> > > > > > > > > void rcu_cpu_stall_reset(void)
+> > > > > > > > > {
+> > > > > > > > >         unsigned long delta;
+> > > > > > > > >
+> > > > > > > > >         delta =3D nsecs_to_jiffies(ktime_get_ns() - ktime=
+_get_coarse_ns());
+> > > > > > > > >
+> > > > > > > > >         WRITE_ONCE(rcu_state.jiffies_stall,
+> > > > > > > > >                    jiffies + delta + rcu_jiffies_till_sta=
+ll_check());
+> > > > > > > > > }
+> > > > > > > > >
+> > > > > > > > > This can update jiffies_stall without updating jiffies (b=
+ut has the
+> > > > > > > > > same effect).
+> > > > > > > >
+> > > > > > > > Now you traded the potential dead lock on jiffies lock for =
+a potential
+> > > > > > > > live lock vs. tk_core.seq. Not really an improvement, right=
+?
+> > > > > > > >
+> > > > > > > > The only way you can do the above is something like the inc=
+omplete and
+> > > > > > > > uncompiled below. NMI safe and therefore livelock proof tim=
+e interfaces
+> > > > > > > > exist for a reason.
+> > > > > > >
+> > > > > > > Just for completeness, another approach, with its own advanta=
+ges
+> > > > > > > and disadvantage, is to add something like ULONG_MAX/4 to
+> > > > > > > rcu_state.jiffies_stall, but also set a counter indicating th=
+at this
+> > > > > > > has been done.  Then RCU's force-quiescent processing could d=
+ecrement
+> > > > > > > that counter (if non-zero) and reset rcu_state.jiffies_stall =
+when it
+> > > > > > > does reach zero.
+> > > > > > >
+> > > > > > > Setting the counter to three should cover most cases, but "li=
+ve by the
+> > > > > > > heuristic, die by the heuristic".  ;-)
+> > > > > > >
+> > > > > > > It would be good to have some indication when gdb exited, but=
+ things
+> > > > > > > like the gdb "next" command can make that "interesting" when =
+applied to
+> > > > > > > a long-running function.
+> > > > > >
+> > > > > > The original code is adding ULONG_MAX/2, so adding ULONG_MAX/4 =
+may
+> > > > > > make no much difference? The simplest way is adding 300*HZ, but=
+ Joel
+> > > > > > dislikes that.
+> > > > >
+> > > > > I am not seeing the ULONG_MAX/2, so could you please point me to =
+that
+> > > > > original code?
+> > > >
+> > > > Maybe I misunderstand something, I say the original code means code
+> > > > before commit a80be428fbc1f1f3bc9ed924 ("rcu: Do not disable GP sta=
+ll
+> > > > detection in rcu_cpu_stall_reset()").
+> > >
+> > > Yes, my suggestion would essentially revert that patch.  It would
+> > > compensate by resetting rcu_state.jiffies_stall after a few calls
+> > > to rcu_gp_fqs().
+> > >
+> > > Alternatively, we could simply provide a way for gdb users to manuall=
+y
+> > > disable RCU CPU stall warnings at the beginning of their debug sessio=
+ns
+> > > and to manually re-enable them when they are done.
+> >
+> > This problem is not KGDB-specific (though it is firstly found in the
+> > KGDB case), so I want to fix it in the rcu code rather than in the
+> > kgdb code.
+>
+> Sure, for example, there is also PowerPC XMON.
+>
+> But this problem also is not RCU-specific.  There are also hardlockups,
+> softlockups, workqueue lockups, networking timeouts, and who knows what
+> all else.
+>
+> Plus, and again to Thomas's point, gdb breakpoints can happen anywhere.
+> For example, immediately after RCU computes the RCU CPU stall time for
+> a new grace period, and right before it stores it.  The gdb callout
+> updates rcu_state.jiffies_stall, but that update is overwritten with a
+> stale value as soon as the system starts back up.
+>
+> Low probabillity, to be sure, but there are quite a few places in
+> the kernel right after a read from some timebase or another, and many
+> (perhaps all) of these can see similar stale-time-use problems.
+>
+> The only way I know of to avoid these sorts of false positives is for
+> the user to manually suppress all timeouts (perhaps using a kernel-boot
+> parameter for your early-boot case), do the gdb work, and then unsuppress
+> all stalls.  Even that won't work for networking, because the other
+> system's clock will be running throughout.
+>
+> In other words, from what I know now, there is no perfect solution.
+> Therefore, there are sharp limits to the complexity of any solution that
+> I will be willing to accept.
+I think the simplest solution is (I hope Joel will not angry):
 
-On 2023/8/25 16:42, Puranjay Mohan wrote:
-> Hi Pu,
-> 
-> On Fri, Aug 25, 2023 at 9:34 AM Pu Lehui <pulehui@huawei.com> wrote:
->>
->>
->>
->> On 2023/8/25 15:09, Pu Lehui wrote:
->>> Hi Puranjay,
->>>
->>> Happy to see the RV64 pack allocator implementation.
->>
->> RV32 also
->>
->>>
->>> On 2023/8/24 21:31, Puranjay Mohan wrote:
->>>> Use bpf_jit_binary_pack_alloc() for memory management of JIT binaries in
->>>> RISCV BPF JIT. The bpf_jit_binary_pack_alloc creates a pair of RW and RX
->>>> buffers. The JIT writes the program into the RW buffer. When the JIT is
->>>> done, the program is copied to the final RX buffer with
->>>> bpf_jit_binary_pack_finalize.
->>>>
->>>> Implement bpf_arch_text_copy() and bpf_arch_text_invalidate() for RISCV
->>>> JIT as these functions are required by bpf_jit_binary_pack allocator.
->>>>
->>>> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
->>>> ---
->>>>    arch/riscv/net/bpf_jit.h        |   3 +
->>>>    arch/riscv/net/bpf_jit_comp64.c |  56 +++++++++++++---
->>>>    arch/riscv/net/bpf_jit_core.c   | 113 +++++++++++++++++++++++++++-----
->>>>    3 files changed, 146 insertions(+), 26 deletions(-)
->>>>
->>>> diff --git a/arch/riscv/net/bpf_jit.h b/arch/riscv/net/bpf_jit.h
->>>> index 2717f5490428..ad69319c8ea7 100644
->>>> --- a/arch/riscv/net/bpf_jit.h
->>>> +++ b/arch/riscv/net/bpf_jit.h
->>>> @@ -68,6 +68,7 @@ static inline bool is_creg(u8 reg)
->>>>    struct rv_jit_context {
->>>>        struct bpf_prog *prog;
->>>>        u16 *insns;        /* RV insns */
->>>> +    u16 *ro_insns;
->>
->> In fact, the definition of w/ or w/o ro_ still looks a bit confusing.
->> Maybe it is better for us not to change the current framework, as the
->> current `image` is the final executed RX image, and the trampoline
->> treats `image` as the same. Maybe it would be better to add a new RW
->> image, such like `rw_iamge`, so that we do not break the existing
->> framework and do not have to add too many comments.
-> 
-> I had thought about this and decided to create a new _ro image/header
-> and not _rw image/header. Here is my reasoning:
-> If we let the existing insns, header be considered the read_only
-> version from where the
-> program will run, and create new rw_insn and rw_header for doing the jit process
-> it would require a lot more changes to the framework.
-> functions like build_body(), bpf_jit_build_prologue(), etc. work on
-> ctx->insns and
-
-Hmm, the other parts should be fine, but the emit instruction is a 
-problem. All right, let's go ahead.
-
-> now all these references would have to be changed to ctx->rw_insns.
-> 
-> Howsoever we implement this, there is no way to do it without changing
-> the current framework.
-> The crux of the problem is that we need to use the r/w area for
-> writing and the r/x area for calculating
-> offsets.
-> 
-> If you think this can be done in a more efficient way then I would
-> love to implement that, but all other
-> solutions that I tried made the code very difficult to follow.
-> 
->>
->> And any other parts, it looks great.😄
->>
->>>>        int ninsns;
->>>>        int prologue_len;
->>>>        int epilogue_offset;
->>>> @@ -85,7 +86,9 @@ static inline int ninsns_rvoff(int ninsns)
->>>>    struct rv_jit_data {
->>>>        struct bpf_binary_header *header;
->>>> +    struct bpf_binary_header *ro_header;
->>>>        u8 *image;
->>>> +    u8 *ro_image;
->>>>        struct rv_jit_context ctx;
->>>>    };
->>>> diff --git a/arch/riscv/net/bpf_jit_comp64.c
->>>> b/arch/riscv/net/bpf_jit_comp64.c
->>>> index 0ca4f5c0097c..d77b16338ba2 100644
->>>> --- a/arch/riscv/net/bpf_jit_comp64.c
->>>> +++ b/arch/riscv/net/bpf_jit_comp64.c
->>>> @@ -144,7 +144,11 @@ static bool in_auipc_jalr_range(s64 val)
->>>>    /* Emit fixed-length instructions for address */
->>>>    static int emit_addr(u8 rd, u64 addr, bool extra_pass, struct
->>>> rv_jit_context *ctx)
->>>>    {
->>>> -    u64 ip = (u64)(ctx->insns + ctx->ninsns);
->>>> +    /*
->>>> +     * Use the ro_insns(RX) to calculate the offset as the BPF
->>>> program will
->>>> +     * finally run from this memory region.
->>>> +     */
->>>> +    u64 ip = (u64)(ctx->ro_insns + ctx->ninsns);
->>>>        s64 off = addr - ip;
->>>>        s64 upper = (off + (1 << 11)) >> 12;
->>>>        s64 lower = off & 0xfff;
->>>> @@ -465,7 +469,11 @@ static int emit_call(u64 addr, bool fixed_addr,
->>>> struct rv_jit_context *ctx)
->>>>        u64 ip;
->>>>        if (addr && ctx->insns) {
->>>
->>> ctx->insns need to sync to ctx->ro_insns
-> 
-> Can you elaborate this more. I am missing something here.
-> The sync happens at the end by calling bpf_jit_binary_pack_finalize().
-
-if (addr && ctx->insns) {
-	ip = (u64)(long)(ctx->ro_insns + ctx->ninsns);
-	off = addr - ip;
+void rcu_cpu_stall_reset(void)
+{
+        WRITE_ONCE(rcu_state.jiffies_stall, jiffies + 300*HZ);
 }
-emit ctx->insns + off
 
-Here we are assuming ctx->insns == ctx->ro_insns, if they not, the 
-offset calculated by ctx->ro_insns will not meaningful for ctx->insns.
-I was curious why we need to use ro_insns to calculate offset? Is that 
-any problem if we do jit iteration with ctx->insns and the final copy 
-ctx->insns to ro_insns?
+300s is the upper limit of "stall timeout" we can configure
+(RCU_CPU_STALL_TIMEOUT in kernel/rcu/Kconfig.debug), so it isn't just
+a "magic number". In practice, 300s is also enough for any normal kgdb
+operation. And compared to "resetting after a few calls to
+rcu_gp_fqs()", this simple solution means "automatically resetting
+after 300s".
 
-> 
->>>
->>>> -        ip = (u64)(long)(ctx->insns + ctx->ninsns);
->>>> +        /*
->>>> +         * Use the ro_insns(RX) to calculate the offset as the BPF
->>>> +         * program will finally run from this memory region.
->>>> +         */
->>>> +        ip = (u64)(long)(ctx->ro_insns + ctx->ninsns);
->>>>            off = addr - ip;
->>>>        }
->>>> @@ -578,7 +586,8 @@ static int add_exception_handler(const struct
->>>> bpf_insn *insn,
->>>>    {
->>>>        struct exception_table_entry *ex;
->>>>        unsigned long pc;
->>>> -    off_t offset;
->>>> +    off_t ins_offset;
->>>> +    off_t fixup_offset;
->>>>        if (!ctx->insns || !ctx->prog->aux->extable ||
->>>> BPF_MODE(insn->code) != BPF_PROBE_MEM)
->>>
->>> ctx->ro_insns need to be checked also.
-> 
-> ctx->ro_insns is not initialised until we call bpf_jit_binary_pack_finalize()?
+If this is completely unacceptable, I prefer Thomas's
+tick_estimate_stale_jiffies() solution.
 
-if (!ctx->insns || !ctx->prog->aux->extable ||
-...
-pc = (unsigned long)&ctx->ro_insns[ctx->ninsns - insn_len];
+Huacai
 
-The uninitialized ctx->ro_insns may lead to illegal address access. 
-Although it will never happen, because we also assume that ctx->insns == 
-ctx->ro_insns.
-
-> 
->>>
->>>>            return 0;
->>>> @@ -593,12 +602,17 @@ static int add_exception_handler(const struct
->>>> bpf_insn *insn,
->>>>            return -EINVAL;
->>>>        ex = &ctx->prog->aux->extable[ctx->nexentries];
->>>> -    pc = (unsigned long)&ctx->insns[ctx->ninsns - insn_len];
->>>> +    pc = (unsigned long)&ctx->ro_insns[ctx->ninsns - insn_len];
->>>> -    offset = pc - (long)&ex->insn;
->>>> -    if (WARN_ON_ONCE(offset >= 0 || offset < INT_MIN))
->>>> +    /*
->>>> +     * This is the relative offset of the instruction that may fault
->>>> from
->>>> +     * the exception table itself. This will be written to the exception
->>>> +     * table and if this instruction faults, the destination register
->>>> will
->>>> +     * be set to '0' and the execution will jump to the next
->>>> instruction.
->>>> +     */
->>>> +    ins_offset = pc - (long)&ex->insn;
->>>> +    if (WARN_ON_ONCE(ins_offset >= 0 || ins_offset < INT_MIN))
->>>>            return -ERANGE;
->>>> -    ex->insn = offset;
->>>>        /*
->>>>         * Since the extable follows the program, the fixup offset is
->>>> always
->>>> @@ -607,12 +621,25 @@ static int add_exception_handler(const struct
->>>> bpf_insn *insn,
->>>>         * bits. We don't need to worry about buildtime or runtime sort
->>>>         * modifying the upper bits because the table is already sorted,
->>>> and
->>>>         * isn't part of the main exception table.
->>>> +     *
->>>> +     * The fixup_offset is set to the next instruction from the
->>>> instruction
->>>> +     * that may fault. The execution will jump to this after handling
->>>> the
->>>> +     * fault.
->>>>         */
->>>> -    offset = (long)&ex->fixup - (pc + insn_len * sizeof(u16));
->>>> -    if (!FIELD_FIT(BPF_FIXUP_OFFSET_MASK, offset))
->>>> +    fixup_offset = (long)&ex->fixup - (pc + insn_len * sizeof(u16));
->>>> +    if (!FIELD_FIT(BPF_FIXUP_OFFSET_MASK, fixup_offset))
->>>>            return -ERANGE;
->>>> -    ex->fixup = FIELD_PREP(BPF_FIXUP_OFFSET_MASK, offset) |
->>>> +    /*
->>>> +     * The offsets above have been calculated using the RO buffer but we
->>>> +     * need to use the R/W buffer for writes.
->>>> +     * switch ex to rw buffer for writing.
->>>> +     */
->>>> +    ex = (void *)ctx->insns + ((void *)ex - (void *)ctx->ro_insns);
->>>> +
->>>> +    ex->insn = ins_offset;
->>>> +
->>>> +    ex->fixup = FIELD_PREP(BPF_FIXUP_OFFSET_MASK, fixup_offset) |
->>>>            FIELD_PREP(BPF_FIXUP_REG_MASK, dst_reg);
->>>>        ex->type = EX_TYPE_BPF;
->>>> @@ -1006,6 +1033,7 @@ int arch_prepare_bpf_trampoline(struct
->>>> bpf_tramp_image *im, void *image,
->>>>        ctx.ninsns = 0;
->>>>        ctx.insns = NULL;
->>>> +    ctx.ro_insns = NULL;
->>>>        ret = __arch_prepare_bpf_trampoline(im, m, tlinks, func_addr,
->>>> flags, &ctx);
->>>>        if (ret < 0)
->>>>            return ret;
->>>> @@ -1014,7 +1042,15 @@ int arch_prepare_bpf_trampoline(struct
->>>> bpf_tramp_image *im, void *image,
->>>>            return -EFBIG;
->>>>        ctx.ninsns = 0;
->>>> +    /*
->>>> +     * The bpf_int_jit_compile() uses a RW buffer (ctx.insns) to
->>>> write the
->>>> +     * JITed instructions and later copies it to a RX region
->>>> (ctx.ro_insns).
->>>> +     * It also uses ctx.ro_insns to calculate offsets for jumps etc.
->>>> As the
->>>> +     * trampoline image uses the same memory area for writing and
->>>> execution,
->>>> +     * both ctx.insns and ctx.ro_insns can be set to image.
->>>> +     */
->>>>        ctx.insns = image;
->>>> +    ctx.ro_insns = image;
->>>>        ret = __arch_prepare_bpf_trampoline(im, m, tlinks, func_addr,
->>>> flags, &ctx);
->>>>        if (ret < 0)
->>>>            return ret;
->>>> diff --git a/arch/riscv/net/bpf_jit_core.c
->>>> b/arch/riscv/net/bpf_jit_core.c
->>>> index 7a26a3e1c73c..4c8dffc09368 100644
->>>> --- a/arch/riscv/net/bpf_jit_core.c
->>>> +++ b/arch/riscv/net/bpf_jit_core.c
->>>> @@ -8,6 +8,8 @@
->>>>    #include <linux/bpf.h>
->>>>    #include <linux/filter.h>
->>>> +#include <linux/memory.h>
->>>> +#include <asm/patch.h>
->>>>    #include "bpf_jit.h"
->>>>    /* Number of iterations to try until offsets converge. */
->>>> @@ -117,16 +119,27 @@ struct bpf_prog *bpf_int_jit_compile(struct
->>>> bpf_prog *prog)
->>>>                    sizeof(struct exception_table_entry);
->>>>                prog_size = sizeof(*ctx->insns) * ctx->ninsns;
->>>> -            jit_data->header =
->>>> -                bpf_jit_binary_alloc(prog_size + extable_size,
->>>> -                             &jit_data->image,
->>>> -                             sizeof(u32),
->>>> -                             bpf_fill_ill_insns);
->>>> -            if (!jit_data->header) {
->>>> +            jit_data->ro_header =
->>>> +                bpf_jit_binary_pack_alloc(prog_size +
->>>> +                              extable_size,
->>>> +                              &jit_data->ro_image,
->>>> +                              sizeof(u32),
->>>> +                              &jit_data->header,
->>>> +                              &jit_data->image,
->>>> +                              bpf_fill_ill_insns);
->>>> +            if (!jit_data->ro_header) {
->>>>                    prog = orig_prog;
->>>>                    goto out_offset;
->>>>                }
->>>> +            /*
->>>> +             * Use the image(RW) for writing the JITed instructions.
->>>> But also save
->>>> +             * the ro_image(RX) for calculating the offsets in the
->>>> image. The RW
->>>> +             * image will be later copied to the RX image from where
->>>> the program
->>>> +             * will run. The bpf_jit_binary_pack_finalize() will do
->>>> this copy in the
->>>> +             * final step.
->>>> +             */
->>>> +            ctx->ro_insns = (u16 *)jit_data->ro_image;
->>>>                ctx->insns = (u16 *)jit_data->image;
->>>>                /*
->>>>                 * Now, when the image is allocated, the image can
->>>> @@ -138,14 +151,12 @@ struct bpf_prog *bpf_int_jit_compile(struct
->>>> bpf_prog *prog)
->>>>        if (i == NR_JIT_ITERATIONS) {
->>>>            pr_err("bpf-jit: image did not converge in <%d passes!\n", i);
->>>> -        if (jit_data->header)
->>>> -            bpf_jit_binary_free(jit_data->header);
->>>>            prog = orig_prog;
->>>> -        goto out_offset;
->>>> +        goto out_free_hdr;
->>>>        }
->>>>        if (extable_size)
->>>> -        prog->aux->extable = (void *)ctx->insns + prog_size;
->>>> +        prog->aux->extable = (void *)ctx->ro_insns + prog_size;
->>>>    skip_init_ctx:
->>>>        pass++;
->>>> @@ -154,23 +165,35 @@ struct bpf_prog *bpf_int_jit_compile(struct
->>>> bpf_prog *prog)
->>>>        bpf_jit_build_prologue(ctx);
->>>>        if (build_body(ctx, extra_pass, NULL)) {
->>>> -        bpf_jit_binary_free(jit_data->header);
->>>>            prog = orig_prog;
->>>> -        goto out_offset;
->>>> +        goto out_free_hdr;
->>>>        }
->>>>        bpf_jit_build_epilogue(ctx);
->>>>        if (bpf_jit_enable > 1)
->>>>            bpf_jit_dump(prog->len, prog_size, pass, ctx->insns);
->>>> -    prog->bpf_func = (void *)ctx->insns;
->>>> +    prog->bpf_func = (void *)ctx->ro_insns;
->>>>        prog->jited = 1;
->>>>        prog->jited_len = prog_size;
->>>> -    bpf_flush_icache(jit_data->header, ctx->insns + ctx->ninsns);
->>>> -
->>>>        if (!prog->is_func || extra_pass) {
->>>> -        bpf_jit_binary_lock_ro(jit_data->header);
->>>> +        if (WARN_ON(bpf_jit_binary_pack_finalize(prog,
->>>> +                             jit_data->ro_header,
->>>> +                             jit_data->header))) {
->>>> +            /* ro_header has been freed */
->>>> +            jit_data->ro_header = NULL;
->>>> +            prog = orig_prog;
->>>> +            goto out_offset;
->>>> +        }
->>>> +        /*
->>>> +         * The instructions have now been copied to the ROX region from
->>>> +         * where they will execute.
->>>> +         * Write any modified data cache blocks out to memory and
->>>> +         * invalidate the corresponding blocks in the instruction cache.
->>>> +         */
->>>> +        bpf_flush_icache(jit_data->ro_header,
->>>> +                 ctx->ro_insns + ctx->ninsns);
->>>>            for (i = 0; i < prog->len; i++)
->>>>                ctx->offset[i] = ninsns_rvoff(ctx->offset[i]);
->>>>            bpf_prog_fill_jited_linfo(prog, ctx->offset);
->>>> @@ -185,6 +208,15 @@ struct bpf_prog *bpf_int_jit_compile(struct
->>>> bpf_prog *prog)
->>>>            bpf_jit_prog_release_other(prog, prog == orig_prog ?
->>>>                           tmp : orig_prog);
->>>>        return prog;
->>>> +
->>>> +out_free_hdr:
->>>> +    if (jit_data->header) {
->>>> +        bpf_arch_text_copy(&jit_data->ro_header->size,
->>>> +                   &jit_data->header->size,
->>>> +                   sizeof(jit_data->header->size));
->>>> +        bpf_jit_binary_pack_free(jit_data->ro_header, jit_data->header);
->>>> +    }
->>>> +    goto out_offset;
->>>>    }
->>>>    u64 bpf_jit_alloc_exec_limit(void)
->>>> @@ -204,3 +236,52 @@ void bpf_jit_free_exec(void *addr)
->>>>    {
->>>>        return vfree(addr);
->>>>    }
->>>> +
->>>> +void *bpf_arch_text_copy(void *dst, void *src, size_t len)
->>>> +{
->>>> +    int ret;
->>>> +
->>>> +    mutex_lock(&text_mutex);
->>>> +    ret = patch_text_nosync(dst, src, len);
->>>> +    mutex_unlock(&text_mutex);
->>>> +
->>>> +    if (ret)
->>>> +        return ERR_PTR(-EINVAL);
->>>> +
->>>> +    return dst;
->>>> +}
->>>> +
->>>> +int bpf_arch_text_invalidate(void *dst, size_t len)
->>>> +{
->>>> +    int ret = 0;
->>>
->>> no need to initialize it
->>>
->>>> +
->>>> +    mutex_lock(&text_mutex);
->>>> +    ret = patch_text_set_nosync(dst, 0, len);
->>>> +    mutex_unlock(&text_mutex);
->>>> +
->>>> +    return ret;
->>>> +}
->>>> +
->>>> +void bpf_jit_free(struct bpf_prog *prog)
->>>> +{
->>>> +    if (prog->jited) {
->>>> +        struct rv_jit_data *jit_data = prog->aux->jit_data;
->>>> +        struct bpf_binary_header *hdr;
->>>> +
->>>> +        /*
->>>> +         * If we fail the final pass of JIT (from jit_subprogs),
->>>> +         * the program may not be finalized yet. Call finalize here
->>>> +         * before freeing it.
->>>> +         */
->>>> +        if (jit_data) {
->>>> +            bpf_jit_binary_pack_finalize(prog, jit_data->ro_header,
->>>> +                             jit_data->header);
->>>> +            kfree(jit_data);
->>>> +        }
->>>> +        hdr = bpf_jit_binary_pack_hdr(prog);
->>>> +        bpf_jit_binary_pack_free(hdr, NULL);
->>>> +        WARN_ON_ONCE(!bpf_prog_kallsyms_verify_off(prog));
->>>> +    }
->>>> +
->>>> +    bpf_prog_unlock_free(prog);
->>>> +}
->>>
->>>
-> 
-> Thanks,
-> Puranjay
+>
+>                                                         Thanx, Paul
+>
+> > Huacai
+> > >
+> > >                                                         Thanx, Paul
+> > >
+> > > > Huacai
+> > > > >
+> > > > > The advantage of ULONG_MAX/4 over ULONG_MAX/2 is that the time_af=
+ter()
+> > > > > and time_before() macros have ULONG_MAX/4 slop in either directio=
+n
+> > > > > before giving you the wrong answer.  You can get nearly the same =
+result
+> > > > > using ULONG_MAX/2, but it requires a bit more care.  And even on =
+32-bit
+> > > > > HZ=3D1000 systems, ULONG_MAX/4 gets you more than 12 days of gdb =
+session
+> > > > > or jiffies-update delay before you start getting false positives.
+> > > > >
+> > > > > Then things can be reset after (say) 3 calls to rcu_gp_fqs() and
+> > > > > also the current reset at the beginning of a grace period, which
+> > > > > is in record_gp_stall_check_time().
+> > > > >
+> > > > > It would be better if RCU could get notified at both ends of the =
+debug
+> > > > > session, but given gdb commands such as "next", along with Thomas=
+'s
+> > > > > point about gdb breakpoints being pretty much anywhere, this migh=
+t or
+> > > > > might not be so helpful in real life.  But worth looking into.
+> > > > >
+> > > > >                                                         Thanx, Pa=
+ul
+> > > > >
+> > > > > > Huacai
+> > > > > >
+> > > > > > >
+> > > > > > >                                                         Thanx=
+, Paul
+> > > > > > >
+> > > > > > > > Thanks,
+> > > > > > > >
+> > > > > > > >         tglx
+> > > > > > > > ---
+> > > > > > > > --- a/kernel/time/tick-sched.c
+> > > > > > > > +++ b/kernel/time/tick-sched.c
+> > > > > > > > @@ -51,6 +51,13 @@ struct tick_sched *tick_get_tick_sched(i
+> > > > > > > >   */
+> > > > > > > >  static ktime_t last_jiffies_update;
+> > > > > > > >
+> > > > > > > > +unsigned long tick_estimate_stale_jiffies(void)
+> > > > > > > > +{
+> > > > > > > > +     ktime_t delta =3D ktime_get_mono_fast_ns() - READ_ONC=
+E(last_jiffies_update);
+> > > > > > > > +
+> > > > > > > > +     return delta < 0 ? 0 : div_s64(delta, TICK_NSEC);
+> > > > > > > > +}
+> > > > > > > > +
+> > > > > > > >  /*
+> > > > > > > >   * Must be called with interrupts disabled !
+> > > > > > > >   */
+> > > > > > > >
+> > > > > > > >
