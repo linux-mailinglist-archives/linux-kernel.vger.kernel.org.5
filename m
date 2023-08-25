@@ -2,137 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CF697881EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 10:17:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC31A7881EB
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 10:17:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240494AbjHYIQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 04:16:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41318 "EHLO
+        id S237828AbjHYIRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 04:17:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243879AbjHYIQq (ORCPT
+        with ESMTP id S237839AbjHYIQy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 04:16:46 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B85031FFF
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 01:16:39 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-401bbfc05fcso258135e9.3
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 01:16:39 -0700 (PDT)
+        Fri, 25 Aug 2023 04:16:54 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8E3F1FDB;
+        Fri, 25 Aug 2023 01:16:50 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2bcb54226e7so8430411fa.1;
+        Fri, 25 Aug 2023 01:16:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1692951398; x=1693556198;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=QarG4D38hejgpRnSoszhs3a63Lzs4eQsWlAcm288Byk=;
-        b=SsewulCt2Pc7EMM4EB+kWAAQsOzV4coQxJuejETJvl61nTNWAe9AIN8dsfWmodOhdp
-         mYRo5Q1rKMqayxVK+zsxdnCGRkVWeh/zUqra3G4s0o3p28IJLP6jxqzR4S79MJIgxH6U
-         4GF126GW7MZpz7K5JJ7CFyVNHF4Y+WTy1QlxB34+Ut/zC2JAZi2Nga1f1XXKBE5FLkBw
-         7FOxnNpIfOA95cLJ/x5PopEiCeHDlRqrFc1A2QEt20XTS4HVtRvNS1Ck+XlpIWbJjxTw
-         cew9m7iuAMCZd5A3BOczwItc/FWcua8jtpmA8FYJhr6zFWkMttX20vBUlml2l9ik0grv
-         5PxQ==
+        d=gmail.com; s=20221208; t=1692951409; x=1693556209;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=f8qLj5FUc1HhOX88AvZf8qe/nxQqPd0JSuX7WV1LK3U=;
+        b=QudLEjSJlDE45jVoEgorqd0O1/1o52LiTv+IUWE3+Q4kLt3FSYk4lFY1k/MmckslrS
+         Ny8HAH25hgJLJCseBArQHnzPegrUqhZvJ9U/rFTPy1Zixp7vgoiGsqmcXhzVVhp/ohfx
+         /cfIl58Kz5TRBMe4Rs3066BHLCnkeVH29hFB0GVtJgyVEIfvz8KChIaKghujCFesHEfP
+         /ABdIhXP6HXT/5W5QGJRYRngC8VItUNd2HOebK7ZddhM/Vqou5SsjvTfls+9IIHzutIn
+         fUMV+fvdncrSZZ6iCbFKzZoNkoQjdiNFWZkl2k3OBVoo8kaJBCnKKdmYxVCm2Uf+U4hi
+         lnSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692951398; x=1693556198;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QarG4D38hejgpRnSoszhs3a63Lzs4eQsWlAcm288Byk=;
-        b=N66C+BJ8OQWVPyrCb7DxiDuhr4zDE9aXV3/+lwG0R3rBIPzKrqVqD6ORUT2f1EycNx
-         HScInmK97sDdsE/NBsa4Prk82Qd94K1TQlHXN4D5ERxodFFYZfqXUoFkd55ta9dEDY+k
-         kCf5Hf+LfnrUXSxkBDRSnEo9HxLgVQIoClOaUJ0k/Xw/13M5RWuFtCzbbiQuxVFyLnYF
-         iGHKcwmX3H3s4wOKrtGtf85q3C+41ab7Xh84l68TGMfKvIXAIMgE+Jhgp3h19rvHxnS2
-         y8ovSgcMq49yNwDMLFPqZcSnwU4MykaOdOHHWpehGu0o9mnxTFKbejXY2cmqdZSB5JoB
-         xwWw==
-X-Gm-Message-State: AOJu0YziDfLuGyL3n3VcILvNTHFCjHKfXGpl6KVyFZXcZ1s+mWbrpeS8
-        iNzlep04zKzXcLFBxfXKZ7ptm1fXdfpM8PzDajXP9g==
-X-Google-Smtp-Source: AGHT+IHMBAQvzVNGufdhNhZVxd3pJA0HX/bQ3/nJpvxpmlK7f8hrq7Gl7fk4p8ovvvBQEZzI7M1xmg==
-X-Received: by 2002:a05:600c:204b:b0:3fe:d952:98fb with SMTP id p11-20020a05600c204b00b003fed95298fbmr13665161wmg.8.1692951398090;
-        Fri, 25 Aug 2023 01:16:38 -0700 (PDT)
-Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
-        by smtp.gmail.com with ESMTPSA id o18-20020a05600c511200b003fe24df4182sm2329978wms.1.2023.08.25.01.16.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Aug 2023 01:16:37 -0700 (PDT)
-Date:   Fri, 25 Aug 2023 10:16:36 +0200
-From:   Andrew Jones <ajones@ventanamicro.com>
-To:     Evan Green <evan@rivosinc.com>
-Cc:     Conor Dooley <conor@kernel.org>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Anup Patel <apatel@ventanamicro.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-riscv@lists.infradead.org,
-        Heiko Stuebner <heiko.stuebner@vrull.eu>
-Subject: Re: [PATCH v4] RISC-V: Show accurate per-hart isa in /proc/cpuinfo
-Message-ID: <20230825-374a82446ed3eea02fcb41e6@orel>
-References: <20230711201831.2695097-1-evan@rivosinc.com>
- <20230824-factual-jawed-2dddd2cf2bdd@wendy>
- <CALs-Hss51fQE1yxe1Y1T86X+OfjPaAd386vosQ8gzRm=Njm1gw@mail.gmail.com>
- <20230824-exploit-spectacle-ecedd91e9075@spud>
- <CALs-HssqaOjvUOdBVn=oN+uzkkmjguys2UttTYgdcqJwJB0HnQ@mail.gmail.com>
+        d=1e100.net; s=20221208; t=1692951409; x=1693556209;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=f8qLj5FUc1HhOX88AvZf8qe/nxQqPd0JSuX7WV1LK3U=;
+        b=QV4p1atzPBLOW/Vexs+0pGDpufrGIKOeBZquVlCn7+05beW9eGRQ1/qWtl9wjRarFD
+         75glVY33QYkFru3ddAbcydB5liKxWwAhx55MPi2fs2Yi3rRPtGTTJZGChWow3x9zttuq
+         cu/4lub9f451gElaMGErcnQOe9B6IuflQQwpamIWhOKWSOmLP7lbr4WxA+nYWZv2Oi9g
+         Rc50xEf8J2BPaJcajqfO9W1dtYAxA2+TaeOYZ+h9zTtVHtcOBASgMc5rWLryikP7L+AT
+         Uegrf2HxQx1TyNloBeEH3E3qpB+6jERzs/he2dy6M7u+PHBMAdk4OMaO0ktLDfJy69dJ
+         97Kg==
+X-Gm-Message-State: AOJu0Yy9u/G3IKVkIShqLReugIq8lsw9qdIvwmctQSzJ86nslD2uXhCf
+        uTRM/Z3C0bFrFShx1hrWg2NDKRXTwQOvqGfieFA=
+X-Google-Smtp-Source: AGHT+IEwWMFcF3PSUNciUBFIp0EsqEp8/V+IZeJyYDTcpXHSu308bUJ5h4tVSR5Y5sRVVgNI8erohhczVg+T5VTRM04=
+X-Received: by 2002:a05:651c:b94:b0:2b6:9f95:8118 with SMTP id
+ bg20-20020a05651c0b9400b002b69f958118mr7640239ljb.7.1692951408422; Fri, 25
+ Aug 2023 01:16:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CALs-HssqaOjvUOdBVn=oN+uzkkmjguys2UttTYgdcqJwJB0HnQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230824133135.1176709-1-puranjay12@gmail.com> <ad5ef9ee-7fa7-b945-a303-2bdcdeb0e740@huawei.com>
+In-Reply-To: <ad5ef9ee-7fa7-b945-a303-2bdcdeb0e740@huawei.com>
+From:   Puranjay Mohan <puranjay12@gmail.com>
+Date:   Fri, 25 Aug 2023 10:16:37 +0200
+Message-ID: <CANk7y0gxHpes-O4z6_+qW=b-ubkbc3Lf1=rxhkSjEU6=uR27sw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 0/3] bpf, riscv: use BPF prog pack allocator
+ in BPF JIT
+To:     Pu Lehui <pulehui@huawei.com>
+Cc:     bjorn@kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, conor.dooley@microchip.com, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, yhs@fb.com, kpsingh@kernel.org,
+        bpf@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 03:06:53PM -0700, Evan Green wrote:
-> On Thu, Aug 24, 2023 at 10:29 AM Conor Dooley <conor@kernel.org> wrote:
-...
-> > Do you want to have this new thing in cpuinfo tell the user "this hart
-> > has xyz extensions that are supported by a kernel, but maybe not this
-> > kernel" or to tell the user "this hart has xyz extensions that are
-> > supported by this kernel"? Your text above says "understood by the
-> > kernel", but I think that's a poor definition that needs to be improved
-> > to spell out exactly what you mean. IOW does "understood" mean the
-> > kernel will parse them into a structure, or does it mean "yes you can
-> > use this extension on this particular hart".
-> 
-> I'm imagining /proc/cpuinfo being closer to "the CPU has it and the
-> kernel at least vaguely understands it, but may not have full support
-> for it enabled". I'm assuming /proc/cpuinfo is mostly used by 1)
-> humans wanting to know if they have hardware support for a feature,
-> and 2) administrators collecting telemetry to manage fleets (ie do I
-> have any hardware deployed that supports X).
-
-Is (2) a special case of (1)? (I want to make sure I understand all the
-cases.)
-
-> Programmers looking to
-> see "is the kernel support for this feature ready right now" would
-> ideally not be parsing /proc/cpuinfo text, as more direct mechanisms
-> like specific hwprobe bits for "am I fully ready to go" would be
-> easier to work with. Feel free to yell at me if this overall vision
-> seems flawed.
-> 
-> I tried to look to see if there was consensus among the other
-> architectures. Aarch64 seems to go with "supported and fully enabled",
-> as their cpu_has_feature() directly tests elf_hwcap, and elements in
-> arm64_elf_hwcaps[] are Kconfig gated. X86 is complicated, but IIRC is
-> more along the lines of "hardware has it". They have two macros,
-> cpu_has() for "raw capability" and cpu_feature_enabled() for "kernel
-> can do it too", and they use cpu_has() for /proc/cpuinfo flags.
+On Fri, Aug 25, 2023 at 10:06=E2=80=AFAM Pu Lehui <pulehui@huawei.com> wrot=
+e:
 >
+>
+>
+> On 2023/8/24 21:31, Puranjay Mohan wrote:
+> > Changes in v1 -> v2:
+> > 1. Implement a new function patch_text_set_nosync() to be used in bpf_a=
+rch_text_invalidate().
+> >     The implementation in v1 called patch_text_nosync() in a loop and i=
+t was bad as it would
+> >     call flush_icache_range() for every word making it really slow. Thi=
+s was found by running
+> >     the test_tag selftest which would take forever to complete.
+> >
+> > Here is some data to prove the V2 fixes the problem:
+> >
+> > Without this series:
+> > root@rv-selftester:~/src/kselftest/bpf# time ./test_tag
+> > test_tag: OK (40945 tests)
+> >
+> > real    7m47.562s
+> > user    0m24.145s
+> > sys     6m37.064s
+> >
+> > With this series applied:
+> > root@rv-selftester:~/src/selftest/bpf# time ./test_tag
+> > test_tag: OK (40945 tests)
+> >
+> > real    7m29.472s
+> > user    0m25.865s
+> > sys     6m18.401s
+> >
+> > BPF programs currently consume a page each on RISCV. For systems with m=
+any BPF
+> > programs, this adds significant pressure to instruction TLB. High iTLB =
+pressure
+> > usually causes slow down for the whole system.
+> >
+> > Song Liu introduced the BPF prog pack allocator[1] to mitigate the abov=
+e issue.
+> > It packs multiple BPF programs into a single huge page. It is currently=
+ only
+> > enabled for the x86_64 BPF JIT.
+> >
+> > I enabled this allocator on the ARM64 BPF JIT[2]. It is being reviewed =
+now.
+> >
+> > This patch series enables the BPF prog pack allocator for the RISCV BPF=
+ JIT.
+> > This series needs a patch[3] from the ARM64 series to work.
+>
+> Is there a new version for arm64 currently? Maybe we could submit this
+> patch first as a separate patch to avoid dependencies.
 
-I'd lean more towards the way AArch64 goes, because, unless /proc/cpuinfo
-is just a blind regurgitation of an isa string from DT / ACPI, then the
-kernel must at least know something about it. Advertising a feature which
-is known, but also known not to work, seems odd to me. So my vote is that
-only features which are present and enabled in the kernel or present and
-not necessary to be enabled in the kernel in order for userspace or
-virtual machines to use be advertised in /proc/cpuinfo.
+Okay, I will send that patch as a separate patch because it is needed for a=
+ll
+architectures.
 
-We still have SMBIOS (dmidecode) to blindly dump what the hardware
-supports for cases (1) and (2) above.
+>
+> >
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+> > Performance Analysis of prog pack allocator on RISCV64
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+> >
+> > Test setup:
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >
+> > Host machine: Debian GNU/Linux 11 (bullseye)
+> > Qemu Version: QEMU emulator version 8.0.3 (Debian 1:8.0.3+dfsg-1)
+> > u-boot-qemu Version: 2023.07+dfsg-1
+> > opensbi Version: 1.3-1
+> >
+> > To test the performance of the BPF prog pack allocator on RV, a stresse=
+r
+> > tool[4] linked below was built. This tool loads 8 BPF programs on the s=
+ystem and
+> > triggers 5 of them in an infinite loop by doing system calls.
+> >
+> > The runner script starts 20 instances of the above which loads 8*20=3D1=
+60 BPF
+> > programs on the system, 5*20=3D100 of which are being constantly trigge=
+red.
+> > The script is passed a command which would be run in the above environm=
+ent.
+> >
+> > The script was run with following perf command:
+> > ./run.sh "perf stat -a \
+> >          -e iTLB-load-misses \
+> >          -e dTLB-load-misses  \
+> >          -e dTLB-store-misses \
+> >          -e instructions \
+> >          --timeout 60000"
+> >
+> > The output of the above command is discussed below before and after ena=
+bling the
+> > BPF prog pack allocator.
+> >
+> > The tests were run on qemu-system-riscv64 with 8 cpus, 16G memory. The =
+rootfs
+> > was created using Bjorn's riscv-cross-builder[5] docker container linke=
+d below.
+> >
+> > Results
+> > =3D=3D=3D=3D=3D=3D=3D
+> >
+> > Before enabling prog pack allocator:
+> > ------------------------------------
+> >
+> > Performance counter stats for 'system wide':
+> >
+> >             4939048      iTLB-load-misses
+> >             5468689      dTLB-load-misses
+> >              465234      dTLB-store-misses
+> >       1441082097998      instructions
+> >
+> >        60.045791200 seconds time elapsed
+> >
+> > After enabling prog pack allocator:
+> > -----------------------------------
+> >
+> > Performance counter stats for 'system wide':
+> >
+> >             3430035      iTLB-load-misses
+> >             5008745      dTLB-load-misses
+> >              409944      dTLB-store-misses
+> >       1441535637988      instructions
+> >
+> >        60.046296600 seconds time elapsed
+> >
+> > Improvements in metrics
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >
+> > It was expected that the iTLB-load-misses would decrease as now a singl=
+e huge
+> > page is used to keep all the BPF programs compared to a single page for=
+ each
+> > program earlier.
+> >
+> > --------------------------------------------
+> > The improvement in iTLB-load-misses: -30.5 %
+> > --------------------------------------------
+> >
+> > I repeated this expriment more than 100 times in different setups and t=
+he
+> > improvement was always greater than 30%.
+> >
+> > This patch series is boot tested on the Starfive VisionFive 2 board[6].
+> > The performance analysis was not done on the board because it doesn't
+> > expose iTLB-load-misses, etc. The stresser program was run on the board=
+ to test
+> > the loading and unloading of BPF programs
+> >
+> > [1] https://lore.kernel.org/bpf/20220204185742.271030-1-song@kernel.org=
+/
+> > [2] https://lore.kernel.org/all/20230626085811.3192402-1-puranjay12@gma=
+il.com/
+> > [3] https://lore.kernel.org/all/20230626085811.3192402-2-puranjay12@gma=
+il.com/
+> > [4] https://github.com/puranjaymohan/BPF-Allocator-Bench
+> > [5] https://github.com/bjoto/riscv-cross-builder
+> > [6] https://www.starfivetech.com/en/site/boards
+> >
+> > Puranjay Mohan (3):
+> >    riscv: extend patch_text_nosync() for multiple pages
+> >    riscv: implement a memset like function for text
+> >    bpf, riscv: use prog pack allocator in the BPF JIT
+> >
+> >   arch/riscv/include/asm/patch.h  |   1 +
+> >   arch/riscv/kernel/patch.c       | 113 ++++++++++++++++++++++++++++++-=
+-
+> >   arch/riscv/net/bpf_jit.h        |   3 +
+> >   arch/riscv/net/bpf_jit_comp64.c |  56 +++++++++++++---
+> >   arch/riscv/net/bpf_jit_core.c   | 113 +++++++++++++++++++++++++++----=
+-
+> >   5 files changed, 255 insertions(+), 31 deletions(-)
+> >
 
-Thanks,
-drew
+
+
+--=20
+Thanks and Regards
+
+Yours Truly,
+
+Puranjay Mohan
