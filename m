@@ -2,87 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F0FD787F4C
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 07:34:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71F00787F49
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 07:34:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236114AbjHYFeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 01:34:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53630 "EHLO
+        id S232159AbjHYFeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 01:34:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232272AbjHYFeH (ORCPT
+        with ESMTP id S232037AbjHYFds (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 01:34:07 -0400
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7046F1BC2
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 22:34:01 -0700 (PDT)
-X-UUID: c9b0efa59e364453838be3e90bce43c6-20230825
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.31,REQID:cbe6e406-667a-437c-b991-cddf18e07cd9,IP:-32
-        768,URL:-32768,TC:-32768,Content:-32768,EDM:-32768,RT:-32768,SF:-32768,FIL
-        E:-32768,BULK:-32768,RULE:Release_Ham,ACTION:release,TS:0
-X-CID-INFO: VERSION:1.1.31,REQID:cbe6e406-667a-437c-b991-cddf18e07cd9,IP:-3276
-        8,URL:-32768,TC:-32768,Content:-32768,EDM:-32768,RT:-32768,SF:-32768,FILE:
-        -32768,BULK:-32768,RULE:Release_Ham,ACTION:release,TS:0
-X-CID-META: VersionHash:0ad78a4,CLOUDID:nil,BulkID:nil,BulkQuantity:0,Recheck:
-        0,SF:nil,TC:nil,Content:nil,EDM:nil,IP:nil,URL:nil,File:nil,Bulk:nil,QS:ni
-        l,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: c9b0efa59e364453838be3e90bce43c6-20230825
-X-User: wangxuewen@kylinos.cn
-Received: from wxw-qitianm428-n000.. [(39.156.73.13)] by mailgw
-        (envelope-from <wangxuewen@kylinos.cn>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 160933064; Fri, 25 Aug 2023 13:33:26 +0800
-From:   wangxuewen@kylinos.cn
-To:     chenhuacai@kernel.org
-Cc:     kernel@xen0n.name, yangtiezhu@loongson.cn,
-        loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
-        wangxuewen <wangxuewen@kylinos.cn>
-Subject: [PATCH] loongarch/configs: Add support for gfs and jfs filesystem type
-Date:   Fri, 25 Aug 2023 13:33:22 +0800
-Message-Id: <20230825053322.60328-1-wangxuewen@kylinos.cn>
-X-Mailer: git-send-email 2.34.1
+        Fri, 25 Aug 2023 01:33:48 -0400
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE8C2198E;
+        Thu, 24 Aug 2023 22:33:45 -0700 (PDT)
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-5230a22cfd1so769289a12.1;
+        Thu, 24 Aug 2023 22:33:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692941624; x=1693546424;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=EinPb1gqc6wVAwHvf5ANWNWV9ybtUjcZw0hI0QOAiKI=;
+        b=EqgNHxZbBLpz86PdKGLgKyKeIxibUmKq5S+UTgmso4ueXbeOQjWcq+VSUbq/mo+qUa
+         HIj30C56/cOl9lWeZftsL0XK9hIxS79V7MF1sDkT92afIIG5Foirm6T0eelIrtZ92/DQ
+         5yzBaZjALUefA4vYUwsS3bEieQWSbwnoyVPcdUe2mifmHRIFjCUszIKxWbIjGskopd63
+         lBmlXjZc+KXSlaxSuIgsjpHC1HfRVg9e0EbKRjPQM2qCImSi/yLxAN/W/b4494M0gWsn
+         l67YdTfhO/GwmLK8jnT1vEiT6SSRHyFFYkMVvpVjHuSVctF7u/q0mfBS5ktqzX/1mT2j
+         R6Cw==
+X-Gm-Message-State: AOJu0YxD8nHFh07YejCXQ453kQTTpeAs9RCO6I+Ecs8OoyOKgU2tYkaP
+        dae3Hw0Fi90XzpwN1FTcQSc=
+X-Google-Smtp-Source: AGHT+IFfeSK/0G8/XxZakxZnT8wHMuaJDVecTFoSrtldfH7WJxUJmjt9Ja+/lOgYH/YTJVSDgF3p7w==
+X-Received: by 2002:a17:906:1444:b0:99b:c845:791d with SMTP id q4-20020a170906144400b0099bc845791dmr12494645ejc.76.1692941623971;
+        Thu, 24 Aug 2023 22:33:43 -0700 (PDT)
+Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
+        by smtp.gmail.com with ESMTPSA id rk17-20020a170907215100b00988c0c175c6sm526549ejb.189.2023.08.24.22.33.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Aug 2023 22:33:41 -0700 (PDT)
+Message-ID: <2a3647bf-91a8-7a5f-9edb-c792a6031f57@kernel.org>
+Date:   Fri, 25 Aug 2023 07:33:40 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH] docs: ABI: sysfs-tty: close times are in hundredths of a
+ second
+Content-Language: en-US
+To:     Simon Arlott <simon@octiron.net>, Oliver Neukum <oneukum@suse.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-serial@vger.kernel.org
+References: <ea1a13ad-a1e0-540a-e97a-4c44f6d2d33b@0882a8b5-c6c3-11e9-b005-00805fc181fe.uuid.home.arpa>
+ <40c5c70f-46ff-c5f3-212b-2badc47e49a3@0882a8b5-c6c3-11e9-b005-00805fc181fe.uuid.home.arpa>
+ <27304225-c8b0-9cac-94a3-e985e45aa41a@0882a8b5-c6c3-11e9-b005-00805fc181fe.uuid.home.arpa>
+From:   Jiri Slaby <jirislaby@kernel.org>
+In-Reply-To: <27304225-c8b0-9cac-94a3-e985e45aa41a@0882a8b5-c6c3-11e9-b005-00805fc181fe.uuid.home.arpa>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: wangxuewen <wangxuewen@kylinos.cn>
+On 24. 08. 23, 9:18, Simon Arlott wrote:
+> The times for close_delay and closing_wait are in hundredths of a
+> second, not milliseconds. Fix the documentation instead of trying
+> to use millisecond values (which would have to be rounded).
+> 
+> Signed-off-by: Simon Arlott <simon@octiron.net>
+> ---
+> If you'd prefer, I can fold the second part of this into my previous
+> patch which shouldn't have documented it as milliseconds in the first
+> place (but I copied it from the other entry).
+> 
+>   Documentation/ABI/testing/sysfs-tty | 12 ++++++++----
+>   1 file changed, 8 insertions(+), 4 deletions(-)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-tty b/Documentation/ABI/testing/sysfs-tty
+> index e04e322af568..6ee878771f51 100644
+> --- a/Documentation/ABI/testing/sysfs-tty
+> +++ b/Documentation/ABI/testing/sysfs-tty
+> @@ -87,7 +87,8 @@ What:		/sys/class/tty/ttyS<x>/close_delay
+>   Date:		October 2012
+>   Contact:	Alan Cox <alan@linux.intel.com>
+>   Description:
+> -		 Show the closing delay time for this port in ms.
+> +		 Show the closing delay time for this port in hundredths
+> +		 of a second.
+>   
+>   		 These sysfs values expose the TIOCGSERIAL interface via
+>   		 sysfs rather than via ioctls.
+> @@ -96,7 +97,8 @@ What:		/sys/class/tty/ttyS<x>/closing_wait
+>   Date:		October 2012
+>   Contact:	Alan Cox <alan@linux.intel.com>
+>   Description:
+> -		 Show the close wait time for this port in ms.
+> +		 Show the close wait time for this port in hundredths of
+> +		 a second.
+>   
+>   		 These sysfs values expose the TIOCGSERIAL interface via
+>   		 sysfs rather than via ioctls.
 
-When the device sdx is formatted as gfs or jfs, execute the command
-"mount /dev/sdx /mnt",we get:
-"mount: /mnt: unknoen filesystem type 'gfs'"
-"mount: /mnt: unknoen filesystem type 'jfs'"
+Could you send these two hunks as a separate patch? It's correct 
+regardless of your other patch.
 
-Signed-off-by: wangxuewen <wangxuewen@kylinos.cn>
----
- arch/loongarch/configs/loongson3_defconfig | 2 ++
- 1 file changed, 2 insertions(+)
+And I would use "centiseconds" instead, which is used (IMO) in these cases.
 
-diff --git a/arch/loongarch/configs/loongson3_defconfig b/arch/loongarch/configs/loongson3_defconfig
-index d64849b4cba1..d8db1f64f00b 100644
---- a/arch/loongarch/configs/loongson3_defconfig
-+++ b/arch/loongarch/configs/loongson3_defconfig
-@@ -759,9 +759,11 @@ CONFIG_EXT2_FS_SECURITY=y
- CONFIG_EXT3_FS=y
- CONFIG_EXT3_FS_POSIX_ACL=y
- CONFIG_EXT3_FS_SECURITY=y
-+CONFIG_JFS_FS=M
- CONFIG_XFS_FS=y
- CONFIG_XFS_QUOTA=y
- CONFIG_XFS_POSIX_ACL=y
-+CONFIG_GFS2_FS=M
- CONFIG_BTRFS_FS=y
- CONFIG_FANOTIFY=y
- CONFIG_FANOTIFY_ACCESS_PERMISSIONS=y
+thanks,
 -- 
-2.34.1
+js
+suse labs
 
