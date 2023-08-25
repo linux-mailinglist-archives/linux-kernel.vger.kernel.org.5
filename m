@@ -2,106 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A75C17891A7
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 00:18:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DA147891B1
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 00:26:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230139AbjHYWRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 18:17:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39014 "EHLO
+        id S229687AbjHYWXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 18:23:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231176AbjHYWRp (ORCPT
+        with ESMTP id S229553AbjHYWXc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 18:17:45 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D246C26B0;
-        Fri, 25 Aug 2023 15:17:39 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7105861C18;
-        Fri, 25 Aug 2023 22:17:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50065C433C7;
-        Fri, 25 Aug 2023 22:17:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693001858;
-        bh=5wEZ5+WfZTeITiieGOEm/Q/+VkMcT0g/7Bj4HC/ckYI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=o9pRJqadyLSa3vMvjnXrFX6Jh7JG3T4Mq+9L25/IpT3jNbAEXTsVF6QLNE3GkGlhM
-         O/JHv38ldszn6Psoyp1Xywm7FTDmEGnOUjiI6In2VBq+nVpHZKki4UIj8iLJ8iN/CZ
-         vdn397irGrUVBQsPet1DPHwGeztSQ44bkOQmOaqZa7SRST272atJcTeyE9tJF6MzdF
-         UT5mQ2wBhnEywyv7fVcM/oi9K1ToyXFG6A3Be4F+ly6IxQweI0qD7M1mKHS6YdimUm
-         m9mVuUcQGJlqxiQ9kwnGSoQOUHjS9uKm8CHKy7xJlVCt/4Bw3uz5AdhtO4j09ZFBjO
-         Uhpdyg8I001Aw==
-Date:   Sat, 26 Aug 2023 00:17:33 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Andi Shyti <andi.shyti@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH] i2c: pxa: fix clang -Wvoid-pointer-to-enum-cast warning
-Message-ID: <ZOkofUzv6t9lXyN+@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Justin Stitt <justinstitt@google.com>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-References: <20230816-void-drivers-i2c-busses-i2c-pxa-v1-1-931634b931ec@google.com>
+        Fri, 25 Aug 2023 18:23:32 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B2B62110
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 15:23:30 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-68a6f6a66e1so1154148b3a.2
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 15:23:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1693002210; x=1693607010;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=j72VvYLLcjO0q0TwaVgKma/+8ZFKhoi9lPXW4ZD9kEI=;
+        b=QgR7lk9EB9hOlN74mwjquJDA1za5oYjasjQNgU0G/GLDqfUn7VTJtcLC0c31qxM7q0
+         Utd1ldmmEgdFK86bLWiWObh7iHPj+Al4/NtzNE6guHdOoCen5WJhClt1HhI53vQMlczU
+         v9u9Q3PhCLz/oECKrfXnCby0JPUO/3RDF7zdQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693002210; x=1693607010;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=j72VvYLLcjO0q0TwaVgKma/+8ZFKhoi9lPXW4ZD9kEI=;
+        b=VpB3JNQ3a6RBuYpHYk/fd/xGlgNVloK1T0sKTkeItOYbF9okDAc+nFoCacAGtKhFd6
+         IcH4zDdQK7OO5OOJUUm1BwB8UtYg5uRreOzYLqdJ8GV7NYSEztR8SY7hCVGysgEb/KD0
+         Soi3vQkOTNJzA5S9xfuo9/ZUqfxGlYmMnOjNODEJas6ATbRX+LPNrJsmv0Vh2v1dvBYo
+         1vDDrBIZBc612KglRHhHDeY5M6MVrhFH68B5IzELaAWz0aJusTKcJuZSbfZXRp8xj++j
+         B5NZowtRYCs2xWX6RfTV3feq6+WKCbXdPoPCMghN+ZTgIhl4KLVkBp+ZW/LtEy1nwfv5
+         vK5A==
+X-Gm-Message-State: AOJu0Yx4vHJtdyg5TbV6teLEy1/3DVqeOIb5K2tXF9Z1J/6IV3FE1Ksm
+        0IPystkJNHrbOqnOS8Y2giaRWA==
+X-Google-Smtp-Source: AGHT+IHybvZuzO2a4OYgpsz8/eivtoS599NTcOKKsxc3NmvGpQxvRQOtarZrSQYWVfnKX0BGsTUFOQ==
+X-Received: by 2002:a05:6a00:1a88:b0:686:2b60:3348 with SMTP id e8-20020a056a001a8800b006862b603348mr18918994pfv.21.1693002210136;
+        Fri, 25 Aug 2023 15:23:30 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id a14-20020aa7864e000000b006888f6e8978sm2124792pfo.179.2023.08.25.15.23.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Aug 2023 15:23:29 -0700 (PDT)
+Date:   Fri, 25 Aug 2023 15:23:28 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Florent Revest <revest@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        akpm@linux-foundation.org, catalin.marinas@arm.com,
+        anshuman.khandual@arm.com, joey.gouly@arm.com, mhocko@suse.com,
+        david@redhat.com, peterx@redhat.com, izbyshev@ispras.ru,
+        broonie@kernel.org, szabolcs.nagy@arm.com, kpsingh@kernel.org,
+        gthelen@google.com, toiwoton@gmail.com
+Subject: Re: [PATCH v3 1/5] kselftest: vm: Fix tabs/spaces inconsistency in
+ the mdwe test
+Message-ID: <202308251523.E66A8D88E@keescook>
+References: <20230704153630.1591122-1-revest@chromium.org>
+ <20230704153630.1591122-2-revest@chromium.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ukkw/O5ByhuWtfMf"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230816-void-drivers-i2c-busses-i2c-pxa-v1-1-931634b931ec@google.com>
+In-Reply-To: <20230704153630.1591122-2-revest@chromium.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jul 04, 2023 at 05:36:25PM +0200, Florent Revest wrote:
+> Reviewed-by: David Hildenbrand <david@redhat.com>
+> Signed-off-by: Florent Revest <revest@chromium.org>
 
---ukkw/O5ByhuWtfMf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I love a good trivial patch review! :)
 
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-> Note: I think something like this may be more readable:
-> | 	*i2c_types =3D (enum pxa_i2c_types)(uintptr_t)of_id->data;
->=20
-> Thoughts on this approach against the one present in this patch?
-
-On the one hand, I think this is more explicit and, thus, more readable.
-On the other hand, we still have the loss of precision, between the
-first and the second cast. Which gives it a bit of a "let's hide it
-somewhat so the compiler will be happy" feeling?
-
-
---ukkw/O5ByhuWtfMf
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmTpKHkACgkQFA3kzBSg
-KbacVBAAg+N9jsa8f4e8wE1hq7+1tE7qvQY8yS3OV5Y7Dazv1ZMn15SI14rFd8MK
-OwHb/VHDzQVCb60doqviBDM6shh9DXenrzk+kN89WbJEWDcpq5Ne3NDwo2+i/D5Z
-GoK1znRWf9EUSxqr6Uf5ueoLy/IVBqNtF380UCMZiMYBO4hx0RvhwjoJ3vIl8Ucu
-lPaV28mmsNjDPYIclE9LHLt005Fo8yT6Yr15/YaspGG+bdoTBhH6+DkSpfLNdvM2
-YK5cGhVol8b2Tqs9IjiIGR/nNGi0eGaiSw135RkklsbmAJ491itmX2KU4afxNo8r
-be5fkSMIkHUDnfrkEv91hZ6pD9PqL3gkxrqsvHwJMrCWIUrxQnKp7dtY10CTozDr
-7cqrtrKt92cllY5R7TN/seBSzODjnvXU2yQR1NDRJIlyxIruhPmQe2XU7qm9QphV
-JKwUs5Y8tV2J3UPtwbuzBXn/Mdv4WkrKcl17ufyT5KXePlLnhoWWje2so3HfjD9b
-0J+26PZjpaWPif8jz9S7R+/aCbICJDGT8m855uLhu0E97y0RpGRF2jItk/WAW1/e
-8iJbz/m2+c/dHuCsCU2TQh3ibMz/7h3DijAs21tUnBhwbm8L8ySu9dp7nDpvCSBY
-bV5nJQURKg4ih0nFuCkaY720KaPEf958iIP+1+M3Uf1sZ0E1TDw=
-=pXsd
------END PGP SIGNATURE-----
-
---ukkw/O5ByhuWtfMf--
+-- 
+Kees Cook
