@@ -2,95 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66638788020
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 08:42:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2149788023
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 08:43:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242246AbjHYGmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 02:42:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59412 "EHLO
+        id S242296AbjHYGmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 02:42:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242623AbjHYGmS (ORCPT
+        with ESMTP id S242637AbjHYGmj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 02:42:18 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97F022129
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 23:41:58 -0700 (PDT)
-Received: from nazgul.tnic (unknown [78.130.214.203])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E52801EC0338;
-        Fri, 25 Aug 2023 08:41:56 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1692945717;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=n6ZUfPPmuShCDZMNulO4E5XiMbW+NH4bF6taV+K6lUM=;
-        b=q0MM2F+JHF3YNlG4TG88j7crhewEQXXUvVvb7oibXCW8qe3bzX5qa2FW9h5WKyoOGfjouq
-        iEAq6TsXjB4Y3iz2XtmUTGMT9f9KvIkYzpD2M9J9D4BbBdolj+LPQKybS+h1g93K4PEJGA
-        IqNmYYEhS596GBt3cn2Voql6vipPXaE=
-Date:   Fri, 25 Aug 2023 08:42:09 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Josh Poimboeuf <jpoimboe@kernel.org>
-Cc:     Andrew Cooper <andrew.cooper3@citrix.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Babu Moger <babu.moger@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>, David.Kaplan@amd.com,
-        Nikolay Borisov <nik.borisov@suse.com>,
-        gregkh@linuxfoundation.org, Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH 02/22] x86/srso: Set CPUID feature bits independently of
- bug or mitigation status
-Message-ID: <20230825064209.GCZOhNQf4wP1qWObOG@fat_crate.local>
-References: <cover.1692580085.git.jpoimboe@kernel.org>
- <caf4d0a1233ccc1c33f4ff8d3fe302c9289f4bea.1692580085.git.jpoimboe@kernel.org>
- <26a3421e-3a88-b326-4c4f-abdaa2262852@citrix.com>
- <20230821140619.GBZONvWz+iwQZwx/sC@fat_crate.local>
- <20230823052007.GBZOWXBymcCUOoMax3@fat_crate.local>
- <22eb07b3-6de4-9fc2-fb05-2c7ebe6dc951@citrix.com>
- <20230824042420.GAZObbdNb38eKaCPAm@fat_crate.local>
- <20230824220440.ltmozuypice2kmwg@treble>
+        Fri, 25 Aug 2023 02:42:39 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FD4ACD5
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 23:42:37 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2bcc14ea414so8557201fa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 23:42:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1692945755; x=1693550555;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Fw/TPy5PPNB4EMsxpIFEVOsKZ2VJzxUxBznQoDOdffI=;
+        b=UpxJmUF5ambajGRTOkN70yPHL9WD3P4M00wxtszch4r34Y3zKyy3MNF19DHwqfQgU9
+         TXYXZP3K7RtbK4KFKv8BQS0u6JO3qLOS216LBWWumkrYfk71SUfTKETOMXMj/zINbqWX
+         vEgDNbqMMHcdcTCYLgjAmu73yBeTjdlxK+kf4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692945755; x=1693550555;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Fw/TPy5PPNB4EMsxpIFEVOsKZ2VJzxUxBznQoDOdffI=;
+        b=MHv2GdG7Ak04okjnwKTOCpnU9jV516rF1DOnhaueOrWBc+pIHrH6V8ejRVoebj6mU5
+         BUHMgk87eiFWpqyoL1SqGQzESyz84oq+VJUA4bP6o1m5cTa6d5YiDFCTAWUv9xsMWY3X
+         C5XOFNB4x7HURItLINndh8x4ZCV+CbtBJXn886C1+B8huykDpI2f6m4o2V/x0B5311zt
+         XwqrCUEVBdqDXMRxrueZNOuAciYYLudFYwj5jXi0H38BYtOSqT9x+S9yyDkEmVB0bL7e
+         ikPPURj7zTzLVaE7b78Xdaowkfqm2MpHgGNw2QspVFNaCV2/fJ6w9XO7B4kHZ9eFuKf8
+         ggxQ==
+X-Gm-Message-State: AOJu0YxnXtPASj17eoHOnUxcqIYERIf0eqBExw1D/rz+/86VsaOF3n0M
+        xnISGoDmmEHsiEtiEHIrpXizmtN/Ygud6aPnLhxyGQ==
+X-Google-Smtp-Source: AGHT+IG6FUhjuS7jGvtYJp+Y5GnZ7JsUtK1au0ormYeBwz788UQ8ga8VspmYencK/Tf/1SwCV45MsdoGiS/GWSizaYU=
+X-Received: by 2002:ac2:4c52:0:b0:4fe:7e1f:766a with SMTP id
+ o18-20020ac24c52000000b004fe7e1f766amr17087918lfk.24.1692945755226; Thu, 24
+ Aug 2023 23:42:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230824220440.ltmozuypice2kmwg@treble>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230822065256.163660-1-denik@chromium.org> <20230822174835.253469-1-denik@chromium.org>
+ <CAFP8O3KunP9CzT_U2cj1_oysojTxCNJRWX_kvvu_wOx4tbYHug@mail.gmail.com>
+ <CAK7LNASstNj2HEfJHcRzqt7hay65T-yEgzaAuXbEQPuCS+yC6w@mail.gmail.com>
+ <CADDJ8CWdm+cWt4UBTae0sCQ8ZDWhbMuozqqq59R+EtvMHere0g@mail.gmail.com>
+ <CAFP8O3+3++awDi9uZueFC_xi+KAud0Ds3k3vdd_ruVngOEOKiw@mail.gmail.com> <CAK7LNAQcUkr8Phtj_cv6vD-QUvjO+7LEsQ5Tx+AuPAB1rbTU9w@mail.gmail.com>
+In-Reply-To: <CAK7LNAQcUkr8Phtj_cv6vD-QUvjO+7LEsQ5Tx+AuPAB1rbTU9w@mail.gmail.com>
+From:   Denis Nikitin <denik@chromium.org>
+Date:   Thu, 24 Aug 2023 23:42:23 -0700
+Message-ID: <CADDJ8CUfOqKJpoiDurdbm6suZmqmn5qL6EwE_6xXhxh5pdy3Uw@mail.gmail.com>
+Subject: Re: [PATCH v2] modpost: Skip .llvm.call-graph-profile section check
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Fangrui Song <maskray@google.com>, linux-kbuild@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nicolas Schier <nicolas@fjasle.eu>, Tom Rix <trix@redhat.com>,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        Douglas Anderson <dianders@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 03:04:40PM -0700, Josh Poimboeuf wrote:
-> Something like this?
+>
+> Thanks, Fangrui.
+>
+>
+> I'd like the commit log to record the use of REL for
+> .llvm.call-graph-profile is intentional.
+>
+>
+> Denis, could you add some more comments?
+>
 
-Yeah, that's solving the immediate issue but what I mean is, I'd prefer
-to have a statement saying:
+Sure, I will send a new version.
 
-"This is the use cases Foo and Bar related to live migration which we
-want to support because of reasons X and Y."
+Thanks,
+Denis
 
-So that we can know what we're actually supporting. I keep hearing of
-cloud vendors doing live migration but nothing about what the kernel
-running as a guest needs to support. And whether migration across
-generations should be supported. At all. And whether the kernel needs to
-even support anything.
-
-And if we don't know the use cases we can't even commit to supporting
-them. Or not break them in the future.
-
-And above you can replace "live migration" with any other feature that
-is requested. It helps immensely if we know how the kernel is used as
-most of us tip maintainers, IMNSVHO, are blissfully unaware of live
-migration.
-
-I hope that makes more sense.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+>
+>
+> --
+> Best Regards
+> Masahiro Yamada
