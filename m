@@ -2,125 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFDDA7883FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 11:41:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F5037883FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 11:41:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240297AbjHYJlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 05:41:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39944 "EHLO
+        id S242347AbjHYJlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 05:41:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237113AbjHYJkt (ORCPT
+        with ESMTP id S233491AbjHYJlK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 05:40:49 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A515F1FD5;
-        Fri, 25 Aug 2023 02:40:46 -0700 (PDT)
-Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RXFJ117srzVkb3;
-        Fri, 25 Aug 2023 17:38:25 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Fri, 25 Aug
- 2023 17:40:43 +0800
-Subject: Re: [PATCH net-next v7 1/6] page_pool: frag API support for 32-bit
- arch with 64-bit DMA
-To:     Alexander Duyck <alexander.duyck@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-CC:     Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Mina Almasry <almasrymina@google.com>, <davem@davemloft.net>,
-        <pabeni@redhat.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Liang Chen <liangchen.linux@gmail.com>,
-        Alexander Lobakin <aleksander.lobakin@intel.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>
-References: <20230816100113.41034-1-linyunsheng@huawei.com>
- <20230816100113.41034-2-linyunsheng@huawei.com>
- <CAC_iWjJd8Td_uAonvq_89WquX9wpAx0EYYxYMbm3TTxb2+trYg@mail.gmail.com>
- <20230817091554.31bb3600@kernel.org>
- <CAC_iWjJQepZWVrY8BHgGgRVS1V_fTtGe-i=r8X5z465td3TvbA@mail.gmail.com>
- <20230817165744.73d61fb6@kernel.org>
- <CAC_iWjL4YfCOffAZPUun5wggxrqAanjd+8SgmJQN0yyWsvb3sg@mail.gmail.com>
- <20230818145145.4b357c89@kernel.org>
- <1b8e2681-ccd6-81e0-b696-8b6c26e31f26@huawei.com>
- <20230821113543.536b7375@kernel.org>
- <5bd4ba5d-c364-f3f6-bbeb-903d71102ea2@huawei.com>
- <20230822083821.58d5d26c@kernel.org>
- <79a49ccd-b0c0-0b99-4b4d-c4a416d7e327@huawei.com>
- <20230823072552.044d13b3@kernel.org>
- <CAKgT0UeSOBbXohq1rZ3YsB4abB_-5ktkLtYbDKTah8dvaojruA@mail.gmail.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <5aae00a4-42c0-df8b-30cb-d47c91cf1095@huawei.com>
-Date:   Fri, 25 Aug 2023 17:40:43 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Fri, 25 Aug 2023 05:41:10 -0400
+Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com [IPv6:2607:f8b0:4864:20::931])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 928341FD5
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 02:41:07 -0700 (PDT)
+Received: by mail-ua1-x931.google.com with SMTP id a1e0cc1a2514c-79dc53034a8so289579241.3
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 02:41:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692956466; x=1693561266;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HuiW0cpLI38vpQljciiL9mKllo+hJgUjvnHQr0VpHR0=;
+        b=PmYiGn3ZIuVE2ywRDiqvXNkthjNWZAAn2Dmt15EhJRhDMjpYyNid6lVk2H6sT/4GZo
+         yXRC6Bq2ABbGdGbfuYj/qncaHAzTG/J8oNORc6FRVkZBBD42GmvYW9pEsWLp4SP4oXj6
+         3/DeRcQ4gXyA9hXAHcniQkcCO8JX/mEmrlYozwfmX1X5kc+6IooIuGNRJlELCBDlCTka
+         5JMdNrAnn21hbAhTCUBRCi6kuF85vZFl2Vjm7AsY9f0ASphMJuvNEO9zKNkK9Xyql1Sk
+         VzqfB+zHFDGkfXN2cQTMeqq9f3bE0/B6UAsZWzguxT71hwwWcVycUz9c+nTol31E0CER
+         Nj/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692956466; x=1693561266;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HuiW0cpLI38vpQljciiL9mKllo+hJgUjvnHQr0VpHR0=;
+        b=ciml6CUbUBFy/EEZUjPs8P+ngDbEgNos28edIBFjnJdBmyQLYpWLv2NbnCiePqYBiF
+         JxSO230XCwC+wS5Ylc2auVgBbmUlbj9c3Ga9u/A1Zy/Y244+B4R9PNVe5Cl1KLEzJV0g
+         qjTphGbGvnnH6vYWUikRc+xjAvgk/kA6fxQ7+GB0WnTkzWNXhaNa+H1otfauzY8gr68n
+         guXXA6ZHzeY/aZj+U6E8nD3xXRa9VjtaGbH0NyRkr1BkqiSeOR1unulxUmOvMWiHK0wc
+         TtTfK2ILVXNGukl3zxuCnhqnVqlEcdSqf1ZRDAacYATXy3vVBm3Nj6oHRRai3Ghdd2If
+         1v2A==
+X-Gm-Message-State: AOJu0Yxm6cMZ5YyNtPEGLGRdF4ByANW7o0DiDQsbSl0ZO8ugOleU7m+y
+        OX1Px8Z6B48hIhAI5e9sNsn7pt6matm66QRZFtVCHA==
+X-Google-Smtp-Source: AGHT+IHw6FNcU3nnH/c3qs5eR1Aswt5YmnANEpF/U2gzaABBppQuM/RmZNqEmbhsEHsLCrW4yfMlKH3k0/WSBvWBtpY=
+X-Received: by 2002:a67:ee59:0:b0:44e:8626:71f2 with SMTP id
+ g25-20020a67ee59000000b0044e862671f2mr6114824vsp.13.1692956466611; Fri, 25
+ Aug 2023 02:41:06 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAKgT0UeSOBbXohq1rZ3YsB4abB_-5ktkLtYbDKTah8dvaojruA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230824141447.155846739@linuxfoundation.org>
+In-Reply-To: <20230824141447.155846739@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 25 Aug 2023 15:10:55 +0530
+Message-ID: <CA+G9fYu9BK9Caqo6Mp0q-iGpKHDLQVPMYUhZFbvF_E-XDD6y8Q@mail.gmail.com>
+Subject: Re: [PATCH 6.1 00/15] 6.1.48-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/24 2:00, Alexander Duyck wrote:
-> On Wed, Aug 23, 2023 at 7:25 AM Jakub Kicinski <kuba@kernel.org> wrote:
->>
->> On Wed, 23 Aug 2023 11:03:31 +0800 Yunsheng Lin wrote:
->>> On 2023/8/22 23:38, Jakub Kicinski wrote:
->>>> On Tue, 22 Aug 2023 17:21:35 +0800 Yunsheng Lin wrote:
->>>>> As the CONFIG_PHYS_ADDR_T_64BIT seems to used widely in x86/arm/mips/powerpc,
->>>>> I am not sure if we can really make the above assumption.
->>>>>
->>>>> https://elixir.free-electrons.com/linux/v6.4-rc6/K/ident/CONFIG_PHYS_ADDR_T_64BIT
->>>>
->>>> Huh, it's actually used a lot less than I anticipated!
->>>>
->>>> None of the x86/arm/mips/powerpc systems matter IMHO - the only _real_
->>>
->>> Is there any particular reason that you think that the above systems does
->>> not really matter?
->>
->> Not the systems themselves but the combination of a 32b arch with
->> an address space >16TB. All those arches have 64b equivalent, seems
->> logical to use the 64b version for a system with a large address space.
->> If we're talking about a system which ends up running Linux.
->>
->>> As we have made a similar wrong assumption about those arches before, I am
->>> really trying to be more cautious about it.
->>>
->>> I searched through the web, some seems to be claiming that "32-bits is DEAD",
->>> I am not sure if there is some common agreement among the kernel community,
->>> is there any previous discussion about that?
->>
->> My suspicion/claim is that 32 + PAGE_SHIFT should be enough bits for
->> any 32b platform.
-> 
-> One additional thing we could consider would be to simply look at
-> having page_pool enforce a DMA mask for the device to address any
-> cases where we might not be able to fit the address. Then in the
-> unlikely event that somebody is running a 32b system with over 16
-> terabytes of RAM. With that the DMA subsystem would handle it for us
-> and we wouldn't have to worry so much about it.
+On Thu, 24 Aug 2023 at 19:45, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 6.1.48 release.
+> There are 15 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sat, 26 Aug 2023 14:14:28 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
+6.1.48-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-6.1.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-It seems there is a API to acquire the DMA mask used by the device:
-https://elixir.free-electrons.com/linux/v6.4-rc6/source/include/linux/dma-mapping.h#L434
 
-Is it possible to use that to check if DMA mask used by the device is
-within 32 + PAGE_SHIFT limit, if yes, we use jakub's proposal to reduce
-reduce the dma address bit, if no, we fail the page_pool creation?
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-> .
-> 
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+NOTE:
+1)
+LTP syscalls chown02 and fchown02 test failures on NFS mounted filesystem
+on arm64 Rpi4 will be investigated further.
+
+2)
+While booting x86_64 we have been noticing this kernel warning
+but the system is stable and running other test cases.
+
+kernel warning on x86_64,
+[    0.809960] missing return thunk:
+__alt_instructions_end+0x2743/0x2770-srso_untrain_ret+0x0/0x2: e9 7e
+fd 09 ff
+[    0.811301] WARNING: CPU: 0 PID: 0 at
+arch/x86/kernel/alternative.c:572 apply_returns+0x1d7/0x200
+[    0.812587] Modules linked in:
+[    0.813651] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 6.1.48-rc1 #1
+[    0.814120] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009),
+BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+[    0.814120] RIP: 0010:apply_returns+0x1d7/0x200
+
+
+## Build
+* kernel: 6.1.48-rc1
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-6.1.y
+* git commit: c079d0dd788ad4fe887ee6349fe89d23d72f7696
+* git describe: v6.1.47-16-gc079d0dd788a
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.1.y/build/v6.1.4=
+7-16-gc079d0dd788a
+
+## Test Regressions (compared to v6.1.46)
+
+## Metric Regressions (compared to v6.1.46)
+
+## Test Fixes (compared to v6.1.46)
+
+## Metric Fixes (compared to v6.1.46)
+
+## Test result summary
+total: 165563, pass: 138512, fail: 5138, skip: 21721, xfail: 192
+
+## Build Summary
+* arc: 5 total, 5 passed, 0 failed
+* arm: 151 total, 149 passed, 2 failed
+* arm64: 56 total, 53 passed, 3 failed
+* i386: 41 total, 39 passed, 2 failed
+* mips: 30 total, 28 passed, 2 failed
+* parisc: 4 total, 4 passed, 0 failed
+* powerpc: 38 total, 36 passed, 2 failed
+* riscv: 16 total, 13 passed, 3 failed
+* s390: 16 total, 14 passed, 2 failed
+* sh: 14 total, 12 passed, 2 failed
+* sparc: 8 total, 8 passed, 0 failed
+* x86_64: 46 total, 44 passed, 2 failed
+
+## Test suites summary
+* boot
+* kselftest-android
+* kselftest-arm64
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers-dma-buf
+* kselftest-efivarfs
+* kselftest-exec
+* kselftest-filesystems
+* kselftest-filesystems-binderfs
+* kselftest-filesystems-epoll
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-ftrace
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-net-forwarding
+* kselftest-net-mptcp
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-user_events
+* kselftest-vDSO
+* kselftest-vm
+* kselftest-watchdog
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libgpiod
+* log-parser-boot
+* log-parser-test
+* ltp-cap_bounds
+* ltp-commands
+* ltp-containers
+* ltp-controllers
+* ltp-cpuhotplug
+* ltp-crypto
+* ltp-cve
+* ltp-dio
+* ltp-fcntl-locktests
+* ltp-filecaps
+* ltp-fs
+* ltp-fs_bind
+* ltp-fs_perms_simple
+* ltp-fsx
+* ltp-hugetlb
+* ltp-io
+* ltp-ipc
+* ltp-math
+* ltp-mm
+* ltp-nptl
+* ltp-pty
+* ltp-sched
+* ltp-securebits
+* ltp-smoke
+* ltp-syscalls
+* ltp-tracing
+* network-basic-tests
+* perf
+* rcutorture
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
