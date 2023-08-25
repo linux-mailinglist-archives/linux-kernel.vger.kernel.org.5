@@ -2,145 +2,308 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BCD9788C40
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 17:15:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67037788C46
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 17:16:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233770AbjHYPOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 11:14:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50970 "EHLO
+        id S234724AbjHYPPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 11:15:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234079AbjHYPO0 (ORCPT
+        with ESMTP id S237139AbjHYPPg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 11:14:26 -0400
-Received: from mail-io1-f49.google.com (mail-io1-f49.google.com [209.85.166.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3002F212A
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 08:14:23 -0700 (PDT)
-Received: by mail-io1-f49.google.com with SMTP id ca18e2360f4ac-7926de0478eso45330439f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 08:14:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692976462; x=1693581262;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        Fri, 25 Aug 2023 11:15:36 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 311272134
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 08:15:33 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-99c3d3c3db9so131418166b.3
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 08:15:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692976531; x=1693581331;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4dWU0nxXevjdvt6ghvXCB5FvF1502/TurOTI/7ffia4=;
-        b=aBuf5RubsHh31z/H7yKG5gX/hueMb9Z2h1P1PsWJacivaBW+vz0FKtEtn2DmLMTYUn
-         biFEmqS3HB/ejWUEi/jmWISe7tN+/Phi8n4tpFkJ3jbPQt4+BdcUHWHYme9JVfMHKYK5
-         bkt7zTiELAQ2OyRtdgOcVmVlpj3UW0l6LSpSm0rjEKXwDtLtIt7ZKmmRRXwOqDrR0EtW
-         v78tPDYkLCsunj+aJYQ0kYCmjPZWetVXokf73BHg/OfwSlpy3x9GJUe7ohWlgz2gsPnU
-         7e8RamGFqLrsJtnjgCVx2sNABzAEZCQkKcbZ9HKAtMNy8CYt5IdEe9xlNvOTBGarOTnZ
-         ePYw==
-X-Gm-Message-State: AOJu0YyKvMJc4aDl9/oY/zNcJMOgCoYXaNiHkuUcs1T2svCT3jPAJ2cO
-        /zS9FzvKdgdZWumNiXDN0ZU=
-X-Google-Smtp-Source: AGHT+IF1KJ987vueX2tYfk71qttW5eCsvu1f86s9JhMG5zr1nirKlA2jkP4qzpJF24em7mkkxBGp7w==
-X-Received: by 2002:a05:6e02:1806:b0:348:d683:36bf with SMTP id a6-20020a056e02180600b00348d68336bfmr8732710ilv.12.1692976462178;
-        Fri, 25 Aug 2023 08:14:22 -0700 (PDT)
-Received: from snowbird (c-73-228-235-230.hsd1.mn.comcast.net. [73.228.235.230])
-        by smtp.gmail.com with ESMTPSA id gg13-20020a056638690d00b0042fec8620e4sm558615jab.57.2023.08.25.08.14.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Aug 2023 08:14:21 -0700 (PDT)
-Date:   Fri, 25 Aug 2023 08:14:19 -0700
-From:   Dennis Zhou <dennis@kernel.org>
-To:     Mateusz Guzik <mjguzik@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, tj@kernel.org, cl@linux.com,
-        akpm@linux-foundation.org, shakeelb@google.com,
-        vegard.nossum@oracle.com, linux-mm@kvack.org
-Subject: Re: [PATCH v3 0/2] execve scalability issues, part 1
-Message-ID: <ZOjFSwGNxMDT6bqm@snowbird>
-References: <20230823050609.2228718-1-mjguzik@gmail.com>
+        bh=1gxXEdOB/IMxquDgU+zJqv+Cmd6hlTz7uMEp9VHRpC8=;
+        b=v9rgKhW/wrrxHN6zPsoKuRmq5bzWNw9F9gEpCbdHdIuVFZlCB7ewA+sn+qO7hL3cTg
+         LNH7hYsZEKvUEpseVg039E388FbeED8aIIM+Au0eFzEYzP5XVlXrHFYCUCjfoz9oueI/
+         xgkOWV0p6orpu71DifrGZz99bkW97FVu7b3aBaihLniRMfjTiapQLVbATAAopJcxWP6f
+         d9mwChzXv+2ibGS7UcCyzLnXROdHM7suMdH1BNp6n6X+fEE1AwHI5xHBQd/h22o59WOH
+         M6kDtt+8Lf3Uet+U/+ZYEiE+ts45hUladY3/usx8lWQNakaZ8qw8quFyksADFgpX9/m6
+         9cxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692976531; x=1693581331;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1gxXEdOB/IMxquDgU+zJqv+Cmd6hlTz7uMEp9VHRpC8=;
+        b=INhJuxXTnnvSlvjVpYn1vBzdlUXk//tKuv09z9ZTaIYv9at9H4ZpciHxHoinh3NbKf
+         STjOWhDl6LnDOG6WQo4dC9lATHvyAJrxvFUoz1d4aSVsvY/PzPHR2PaiKEt+XCANhRkl
+         KjcFoLGFCL/ppA+02pVQQ93y8PrjHDuHhZLE3wtFh8pFV8ahWwQbHacDlt0bTHSSkYFu
+         7I3CLxl7xBCPVJMVmhWtkhiNvfp7urdYKv1wHwyY5Z/rM2wK0mWcUGe8rMuns+Gbc/yj
+         n9UXGOdTg+ORR5jdPj0SfuMLTOUf3Nkbk+izr4PsXR8u1LeP0Z8Ce6ghD7z+otFWCqnp
+         IZOA==
+X-Gm-Message-State: AOJu0Yz12IjcvKLxl2WEYxZ1ZMCOk6Uh7T2stG/fdkrPZHhm7JVhZ4s8
+        PcAkRj9W96Y/tyw+zLedylgoiArEICtpAKGjxLxg7x8Qi223nY+sJs3dT7HT
+X-Google-Smtp-Source: AGHT+IGJg7QkdQsClygNT9r5bEfow7rITYDHt5mrg27t0ux9YcRLbh1cZlAUmEqzdcKgGK7nq2+OP++BamPJYW0zqKQ=
+X-Received: by 2002:a17:907:75c5:b0:9a2:1e14:86bd with SMTP id
+ jl5-20020a17090775c500b009a21e1486bdmr3622301ejc.65.1692976531308; Fri, 25
+ Aug 2023 08:15:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230823050609.2228718-1-mjguzik@gmail.com>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+References: <20230821205458.1764662-1-yosryahmed@google.com>
+ <20230821205458.1764662-4-yosryahmed@google.com> <ZOR6eyYfJYlxdMet@dhcp22.suse.cz>
+ <CAJD7tka13M-zVZTyQJYL1iUAYvuQ1fcHbCjcOBZcz6POYTV-4g@mail.gmail.com>
+ <ZOW2PZN8Sgqq6uR2@dhcp22.suse.cz> <CAJD7tka34WjtwBWfkTu8ZCEUkLm7h-AyCXpw=h34n4RZ5qBVwA@mail.gmail.com>
+ <ZOcDLD/1WaOwWis9@dhcp22.suse.cz> <CAJD7tkZby2enWa8_Js8joHqFx_tHB=aRqHOizaSiXMUjvEei4g@mail.gmail.com>
+ <CAJD7tkadEtjK_NFwRe8yhUh_Mdx9LCLmCuj5Ty-pqp1rHTb-DA@mail.gmail.com> <ZOhSyvDxAyYUJ45i@dhcp22.suse.cz>
+In-Reply-To: <ZOhSyvDxAyYUJ45i@dhcp22.suse.cz>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Fri, 25 Aug 2023 08:14:54 -0700
+Message-ID: <CAJD7tkYPyb+2zOKqctQw-vhuwYRg85e6v2Y44xWJofHZ+F+YQw@mail.gmail.com>
+Subject: Re: [PATCH 3/3] mm: memcg: use non-unified stats flushing for
+ userspace reads
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, Aug 25, 2023 at 12:05=E2=80=AFAM Michal Hocko <mhocko@suse.com> wro=
+te:
+>
+> On Thu 24-08-23 11:50:51, Yosry Ahmed wrote:
+> > On Thu, Aug 24, 2023 at 11:15=E2=80=AFAM Yosry Ahmed <yosryahmed@google=
+.com> wrote:
+> > >
+> > > On Thu, Aug 24, 2023 at 12:13=E2=80=AFAM Michal Hocko <mhocko@suse.co=
+m> wrote:
+> > > >
+> > > > On Wed 23-08-23 07:55:40, Yosry Ahmed wrote:
+> > > > > On Wed, Aug 23, 2023 at 12:33=E2=80=AFAM Michal Hocko <mhocko@sus=
+e.com> wrote:
+> > > > > >
+> > > > > > On Tue 22-08-23 08:30:05, Yosry Ahmed wrote:
+> > > > > > > On Tue, Aug 22, 2023 at 2:06=E2=80=AFAM Michal Hocko <mhocko@=
+suse.com> wrote:
+> > > > > > > >
+> > > > > > > > On Mon 21-08-23 20:54:58, Yosry Ahmed wrote:
+> > > > > > [...]
+> > > > > > > So to answer your question, I don't think a random user can r=
+eally
+> > > > > > > affect the system in a significant way by constantly flushing=
+. In
+> > > > > > > fact, in the test script (which I am now attaching, in case y=
+ou're
+> > > > > > > interested), there are hundreds of threads that are reading s=
+tats of
+> > > > > > > different cgroups every 1s, and I don't see any negative effe=
+cts on
+> > > > > > > in-kernel flushers in this case (reclaimers).
+> > > > > >
+> > > > > > I suspect you have missed my point.
+> > > > >
+> > > > > I suspect you are right :)
+> > > > >
+> > > > >
+> > > > > > Maybe I am just misunderstanding
+> > > > > > the code but it seems to me that the lock dropping inside
+> > > > > > cgroup_rstat_flush_locked effectivelly allows unbounded number =
+of
+> > > > > > contenders which is really dangerous when it is triggerable fro=
+m the
+> > > > > > userspace. The number of spinners at a moment is always bound b=
+y the
+> > > > > > number CPUs but depending on timing many potential spinners mig=
+ht be
+> > > > > > cond_rescheded and the worst time latency to complete can be re=
+ally
+> > > > > > high. Makes more sense?
+> > > > >
+> > > > > I think I understand better now. So basically because we might dr=
+op
+> > > > > the lock and resched, there can be nr_cpus spinners + other spinn=
+ers
+> > > > > that are currently scheduled away, so these will need to wait to =
+be
+> > > > > scheduled and then start spinning on the lock. This may happen fo=
+r one
+> > > > > reader multiple times during its read, which is what can cause a =
+high
+> > > > > worst case latency.
+> > > > >
+> > > > > I hope I understood you correctly this time. Did I?
+> > > >
+> > > > Yes. I would just add that this could also influence the worst case
+> > > > latency for a different reader - so an adversary user can stall oth=
+ers.
+> > >
+> > > I can add that for v2 to the commit log, thanks.
+> > >
+> > > > Exposing a shared global lock in uncontrolable way over generally
+> > > > available user interface is not really a great idea IMHO.
+> > >
+> > > I think that's how it was always meant to be when it was designed. Th=
+e
+> > > global rstat lock has always existed and was always available to
+> > > userspace readers. The memory controller took a different path at som=
+e
+> > > point with unified flushing, but that was mainly because of high
+> > > concurrency from in-kernel flushers, not because userspace readers
+> > > caused a problem. Outside of memcg, the core cgroup code has always
+> > > exercised this global lock when reading cpu.stat since rstat's
+> > > introduction. I assume there hasn't been any problems since it's stil=
+l
+> > > there.
+>
+> I suspect nobody has just considered a malfunctioning or adversary
+> workloads so far.
 
-On Wed, Aug 23, 2023 at 07:06:07AM +0200, Mateusz Guzik wrote:
-> To start I figured I'm going to bench about as friendly case as it gets
-> -- statically linked *separate* binaries all doing execve in a loop.
-> 
-> I borrowed the bench from here:
-> http://apollo.backplane.com/DFlyMisc/doexec.c
-> 
-> $ cc -static -O2 -o static-doexec doexec.c
-> $ ./static-doexec $(nproc)
-> 
-> It prints a result every second.
-> 
-> My test box is temporarily only 26 cores and even at this scale I run
-> into massive lock contention stemming from back-to-back calls to
-> percpu_counter_init (and _destroy later).
-> 
-> While not a panacea, one simple thing to do here is to batch these ops.
-> Since the term "batching" is already used in the file, I decided to
-> refer to it as "grouping" instead.
-> 
-> Even if this code could be patched to dodge these counters,  I would
-> argue a high-traffic alloc/free consumer is only a matter of time so it
-> makes sense to facilitate it.
-> 
-> With the fix I get an ok win, to quote from the commit:
-> > Even at a very modest scale of 26 cores (ops/s):
-> > before: 133543.63
-> > after:  186061.81 (+39%)
-> 
-> While with the patch these allocations remain a significant problem,
-> the primary bottleneck shifts to:
-> 
->     __pv_queued_spin_lock_slowpath+1
->     _raw_spin_lock_irqsave+57
->     folio_lruvec_lock_irqsave+91
->     release_pages+590
->     tlb_batch_pages_flush+61
->     tlb_finish_mmu+101
->     exit_mmap+327
->     __mmput+61
->     begin_new_exec+1245
->     load_elf_binary+712
->     bprm_execve+644
->     do_execveat_common.isra.0+429
->     __x64_sys_execve+50
->     do_syscall_64+46
->     entry_SYSCALL_64_after_hwframe+110
-> 
-> I intend to do more work on the area to mostly sort it out, but I would
-> not mind if someone else took the hammer to folio. :)
-> 
-> With this out of the way I'll be looking at some form of caching to
-> eliminate these allocs as a problem.
-> 
-> v3:
-> - fix !CONFIG_SMP build
-> - drop the backtrace from fork commit message
-> 
-> v2:
-> - force bigger alignment on alloc
-> - rename "counters" to "nr_counters" and pass prior to lock key
-> - drop {}'s for single-statement loops
-> 
-> 
-> Mateusz Guzik (2):
->   pcpcntr: add group allocation/free
->   fork: group allocation of per-cpu counters for mm struct
-> 
->  include/linux/percpu_counter.h | 39 ++++++++++++++++++----
->  kernel/fork.c                  | 14 ++------
->  lib/percpu_counter.c           | 61 +++++++++++++++++++++++-----------
->  3 files changed, 77 insertions(+), 37 deletions(-)
-> 
-> -- 
-> 2.41.0
-> 
+Perhaps that also means it's not a problem in practice, or at least I hope =
+so :)
 
-I've applied both to percpu#for-6.6.
+>
+> > > I was hoping Tejun would confirm/deny this.
+>
+> Yes, that would be interesting to hear.
+>
+> > One thing we can do to remedy this situation is to replace the global
+> > rstat lock with a mutex, and drop the resched/lock dropping condition.
+> > Tejun suggested this in the previous thread. This effectively reverts
+> > 0fa294fb1985 ("cgroup: Replace cgroup_rstat_mutex with a spinlock")
+> > since now all the flushing contexts are sleepable.
+>
+> I would have a very daring question. Do we really need a global lock in
+> the first place? AFAIU this locks serializes (kinda as the lock can be
+> dropped midway) flushers and cgroup_rstat_flush_hold/release caller (a
+> single one ATM). I can see cgroup_base_stat_cputime_show would like to
+> have a consistent view on multiple stats but can we live without a
+> strong guarantee or to replace the lock with seqlock instead?
 
-Thanks,
-Dennis
+Unfortunately, it's more difficult than this. I thought about breaking
+down that lock and falled back to this solution. See below.
+
+>
+> > My synthetic stress test does not show any regressions with mutexes,
+> > and there is a small boost to reading latency (probably because we
+> > stop dropping the lock / rescheduling). Not sure if we may start
+> > seeing need_resched warnings on big flushes though.
+>
+> Reading 0fa294fb1985 ("cgroup: Replace cgroup_rstat_mutex with a spinlock=
+")
+> it seems the point of moving away from mutex was to have a more usable
+> API.
+
+Right, we needed an atomic interface for flushing, but that later
+turned out to cause some problems, so we reworked the code such that
+we never have to flush atomically. Now we can go back to the mutex if
+it makes things better, I am not really sure how much it helps though.
+
+>
+> > One other concern that Shakeel pointed out to me is preemption. If
+> > someone holding the mutex gets preempted this may starve other
+> > waiters. We can disable preemption while we hold the mutex, not sure
+> > if that's a common pattern though.
+>
+> No, not really. It is expected that holder of mutex can sleep and can be
+> preempted as well.
+
+Maybe not for this specific case because it's a global mutex and
+holding it for too long might cause problems? Is it bad to disable
+preemption while holding a mutex?
+
+>
+> I might be wrong but the whole discussion so far suggests that the
+> global rstat lock should be reconsidered. From my personal experience
+> global locks easily triggerable from the userspace are just a receip for
+> problems. Stats reading shouldn't be interfering with the system runtime
+> as much as possible and they should be deterministic wrt runtime as
+> well.
+
+The problem is that the global lock also serializes the global
+counters that we flush to. I will talk from the memcg flushing
+perspective as that's what I am familiar with. I am not sure how much
+this is transferable to other flushers.
+
+On the memcg side (see mem_cgroup_css_rstat_flush()), the global lock
+synchronizes access to multiple counters, for this discussion what's
+most important are:
+- The global stat counters of the memcg being flushed (e.g.
+memcg->vmstats->state).
+- The pending stat counters of the parent being flushed (e.g.
+parent->vmstats->state_pending).
+
+To get rid of this lock, we either need to use atomics for those
+counters, or have fine-grained locks. I experimented a while back with
+atomic and flushing was significantly more expensive. The number of
+atomic operations would scale with O(# cgroups * # cpus) and can grow
+unbounded.
+
+The other option is fine-grained locks. In this case we would need to
+lock both the memcg being flushed and its parent together. This can go
+wrong with ordering, and for top-level memcgs the root memcg lock will
+become the new global lock anyway. One way to overcome this is to
+change the parent's pending stat counters to also be percpu. This will
+increase the memory usage of the stat counters per-memcg, by hundreds
+of bytes per cpu.
+
+Let's assume that's okay, so we only need to lock one cgroup at a
+time. There are more problems.
+
+We also have a percpu lock (cgroup_rstat_cpu_lock), which we use to
+lock the percpu tree which has the cgroups that have updates on this
+cpu. It is held by both flushing contexts and updating contexts (hot
+paths). Ideally we don't want to spin on a per-cgroup (non percpu)
+lock while holding the percpu lock, as flushers of different cpus will
+start blocking one another, as well as blocking updaters. On the other
+hand, we need to hold percpu lock to pop a cgroup from that tree and
+lock it. It's a chicken and egg problem. Also, if we release the
+percpu lock while flushing, we open another can of worms:
+(a) Concurrent updates can keep updating the tree putting us in an
+endless flushing loop. We need some sort of generation tracking for
+this.
+(b) Concurrent flushing can flush a parent prematurely on the same cpu
+as we are flushing a child, and not get the updates from the child.
+
+One possible scheme to handle the above is as follows:
+1. Hold the percpu lock, find the cgroup that needs to be flushed next.
+2. Trylock that cgroup. If we succeed, we flush it with both the
+percpu and the per-cgroup locks held.
+3. If we fail, release the percpu lock and spin on the per-cgroup lock.
+4. When we get the per-cgroup lock, take the percpu lock again, and
+make sure that the locked cgroup is still the correct cgroup to flush.
+If not, repeat.
+5. Flush the cgroup, and go back to step 1 to get the next cgroup.
+
+Of course this is complex and error-prone, and might introduce
+significant overheads due to the number of locks we need to take
+compared with what we currently have.
+
+I guess what I am trying to say is, breaking down that lock is a major
+surgery that might require re-designing or re-implementing some parts
+of rstat. I would be extremely happy to be proven wrong. If we can
+break down that lock then there is no need for unified flushing even
+for in-kernel contexts, and we can all live happily ever after with
+cheap(ish) and accurate stats flushing.
+
+I really hope we can move forward with the problems at hand (sometimes
+reads are expensive, sometimes reads are stale), and not block fixing
+them until we can come up with an alternative to that global lock
+(unless, of course, there is a simpler way of doing that).
+
+Sorry for the very long reply :)
+
+Thanks!
