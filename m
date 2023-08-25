@@ -2,65 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BD90787D0F
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 03:19:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0A19787D16
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 03:25:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237279AbjHYBTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 21:19:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52106 "EHLO
+        id S235453AbjHYBYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 21:24:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243184AbjHYBSq (ORCPT
+        with ESMTP id S234966AbjHYBY1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 21:18:46 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2226619B4;
-        Thu, 24 Aug 2023 18:18:45 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AB1CB60916;
-        Fri, 25 Aug 2023 01:18:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9110FC433C8;
-        Fri, 25 Aug 2023 01:18:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692926324;
-        bh=DapHkQT8X84yWNvGu8oqRCoyMLM4nfpncPTa+wsDc9E=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=O8F3+JLyUJBelWixtfLPasTBEJs5UvdebGcBmQ58wEViQF0gncFfL3DBtYFsQVNxF
-         WR/z99kIEVDjOSN6c7XC5hfg/hE2tAr9Pudud0O5yPUZ6ZuKZoeDS14J1MEAkKVgdv
-         lgzAEuAcBkJGpmnluJaAtxY6A44LsH71MJVsl7ZUNzVtt5Ax9VwaUXQljF72oNeC34
-         GbBm7A4Sc70cxf0wPX62cLK9IiJPMhc5Acjj6jLTGTlCTkyQCCQbPYF1R/TQ8Cv6CH
-         xBlNEQwN9z421lKSDy+6LEEoAXMA37jjy1rNMOgXxTN3lNR1lmeNiG3StQN1YBOfbM
-         G207gAVdnZxOw==
-Message-ID: <96ffa54c-84e1-c953-23cd-ce68dd9350df@kernel.org>
-Date:   Fri, 25 Aug 2023 09:18:36 +0800
+        Thu, 24 Aug 2023 21:24:27 -0400
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com [209.85.214.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BE5DE7D
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 18:24:25 -0700 (PDT)
+Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1c0888c175fso5569185ad.3
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 18:24:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692926664; x=1693531464;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=b93WikqS+4vnaWooWK5ySt/jG9TwR95PJARN0StjRRQ=;
+        b=B0Q+SEHTL9vnTCehScwxiaAUPNHBUXtHbBRhAlWnsmcVbzLc8l4K3fRKCCZfiUI0v0
+         GkaeaRLGiDT1e6mmJQ7pynjmwqKRRfmYR5ugtUg11lvCLfMz/vSRGRvicEpFIqkvQzaD
+         gYr/BHHvlOxn53zG+bKou6UZBPVfIlAwYOLrLofpflWuTK46lgDJroZYxNqT0YZgDHyf
+         GLKHLn2UAslzkt72sqhDN6Wlh4Ixe8dNY7aCJ1x32hGGpgaIui0jqpuVWMCfCKBTw3Xn
+         mtY23X6EP97PGAtlie0IOaPx+dsivrQGDDOu85Jm3Xy4Q080uacQa5QyfYoKFZOBv4ff
+         blLA==
+X-Gm-Message-State: AOJu0YzxXVBAnPmlnGpzqR/ItMZpbfHLDGQX6lOe/KfUnUKTzIvDP/2H
+        dgQAJt4zEBhpl28f5uY/NGfwdtVAlk+wqTQjpZchGAo4pCi6
+X-Google-Smtp-Source: AGHT+IEq/WVy1JE2cKNmXFY5Gt1H059eLRy0i02jARwgMWQ5Zi4t28ZQ/f2if5Pi5iqHKoP9eFJmnhQGueycWk3asnJThNYiC88z
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v5 06/45] erofs: dynamically allocate the erofs-shrinker
-Content-Language: en-US
-To:     Qi Zheng <zhengqi.arch@bytedance.com>, akpm@linux-foundation.org,
-        david@fromorbit.com, tkhai@ya.ru, vbabka@suse.cz,
-        roman.gushchin@linux.dev, djwong@kernel.org, brauner@kernel.org,
-        paulmck@kernel.org, tytso@mit.edu, steven.price@arm.com,
-        cel@kernel.org, senozhatsky@chromium.org, yujie.liu@intel.com,
-        gregkh@linuxfoundation.org, muchun.song@linux.dev
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>,
-        Gao Xiang <xiang@kernel.org>, Yue Hu <huyue2@coolpad.com>,
-        Jeffle Xu <jefflexu@linux.alibaba.com>,
-        linux-erofs@lists.ozlabs.org
-References: <20230824034304.37411-1-zhengqi.arch@bytedance.com>
- <20230824034304.37411-7-zhengqi.arch@bytedance.com>
-From:   Chao Yu <chao@kernel.org>
-In-Reply-To: <20230824034304.37411-7-zhengqi.arch@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Received: by 2002:a17:903:1c7:b0:1bb:d27f:ac46 with SMTP id
+ e7-20020a17090301c700b001bbd27fac46mr6751001plh.2.1692926664665; Thu, 24 Aug
+ 2023 18:24:24 -0700 (PDT)
+Date:   Thu, 24 Aug 2023 18:24:24 -0700
+In-Reply-To: <20230824233602.3108-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007a71b10603b534ab@google.com>
+Subject: Re: [syzbot] [dri?] kernel BUG in vmf_insert_pfn_prot (2)
+From:   syzbot <syzbot+398e17b61dab22cc56bc@syzkaller.appspotmail.com>
+To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,17 +55,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/24 11:42, Qi Zheng wrote:
-> Use new APIs to dynamically allocate the erofs-shrinker.
-> 
-> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-> Reviewed-by: Muchun Song <songmuchun@bytedance.com>
-> CC: Gao Xiang <xiang@kernel.org>
-> CC: Chao Yu <chao@kernel.org>
-> CC: Yue Hu <huyue2@coolpad.com>
-> CC: Jeffle Xu <jefflexu@linux.alibaba.com>
-> CC: linux-erofs@lists.ozlabs.org
+Hello,
 
-Reviewed-by: Chao Yu <chao@kernel.org>
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-Thanks,
+Reported-and-tested-by: syzbot+398e17b61dab22cc56bc@syzkaller.appspotmail.com
+
+Tested on:
+
+commit:         f8d6ff44 Merge tag 'nfsd-6.5-5' of git://git.kernel.or..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=160a9a87a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1e4a882f77ed77bd
+dashboard link: https://syzkaller.appspot.com/bug?extid=398e17b61dab22cc56bc
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=17eefce0680000
+
+Note: testing is done by a robot and is best-effort only.
