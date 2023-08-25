@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5A0B7885B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 13:28:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B2E67885B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 13:28:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244087AbjHYL1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 07:27:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55854 "EHLO
+        id S244145AbjHYL1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 07:27:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243328AbjHYL1H (ORCPT
+        with ESMTP id S243387AbjHYL1K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 07:27:07 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4228210C
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 04:27:01 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-4ffae5bdc9aso1230084e87.1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 04:27:01 -0700 (PDT)
+        Fri, 25 Aug 2023 07:27:10 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5044C1FF7
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 04:27:03 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-5007f3d3235so1217961e87.2
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 04:27:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692962820; x=1693567620;
+        d=linaro.org; s=google; t=1692962821; x=1693567621;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=P6dRAO4EfoAn2re7zIc0y2rFhEJtu95IouhvL8pLKsw=;
-        b=PrZOmJtwD08yAaOBlxYOMRmce35UWUSuZX0cID7fIByJYAZOWPG8UCdKFup591sQdw
-         aKEI+RKumG0cR/ggCV3sMS5P1Ijo8gRorJS6WSFgojpYP9gzV7OGOQvvqPfujjkPGAfW
-         7JWaa6YenhNptu1oDfaA/xqYK5zss6bs0QLHr0fOH10oOr0FnoxfFnoMP0QuEarVB06N
-         ovxeRI2klfCdGI74WApPOYSAkcREByMy7Fc2n+DHtVHG4U65ECP/VCtbjsp4tSzbmIIO
-         ZAoIcXX814Vl0ats39/tvRJDVfJdYacYzyR6g5OPuLFa5EgBUukGwPw88mWcHMI8cNPO
-         7tnA==
+        bh=ZGDMaEKOG+5X48Gol+AxEGCcHKZ/Xp97A0Ym/9JW7WA=;
+        b=evHyviDBbKrlfh1CbONZfo3Hw+ynOWClrckD28Hb4PQcbXyoltKbeIH4CQbLmR4S6R
+         gfXyfPRSmirFAB54VWIlpJf7lMgQb9zUUyrjoPQOGM42LzYtaUEz8p70IB3y3cHdb35z
+         JtJzJnNoeyesZh6C1XKmiD8VyuRDY7uuAIz0leu5xTiSqhPT2K6Qy6H+tF5yoHzeqCVy
+         Avoxxpxu/R1LWsiFNPBzJGfEvp7kTXz6cUUd7rpoaTFDqMoqknyWMzaoTBrAmjvDgQ0Q
+         mE5IcQatFk8G70HHJisUwSFN+I6u8aAeVOmMIyaYvJNznAYDyvW2qkiFLKRnp0RoDB3x
+         PLVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692962820; x=1693567620;
+        d=1e100.net; s=20221208; t=1692962821; x=1693567621;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=P6dRAO4EfoAn2re7zIc0y2rFhEJtu95IouhvL8pLKsw=;
-        b=CizmY93FaI1FilwPZT4qvt84ce4TM/q8N8taPyT+aYKHna34Nreg4k/hNU50NYwmgw
-         bYnyFR2pM25/GfNbaQK1jZuMGQqRV/Ddfaj1fP42BgpiVB9HuSXPDElXQtHkUzgRa/zj
-         fT21h/lYc5wJc6+4COaj/GBZQ7H1AofMJyjKJOXGkq8lRFENuqEreDM2gvC/3dqjZc82
-         sNuQTX65zVFx4xPP5ZXoSSV0obbMH8NIkM2CQloucdNy+quPBosCL9xqV7AE4FlPod/G
-         ACygxGYUZQfxDbLB6yRY1Go0CsjF4N1ci/HCsUZDGzEtvR0CN7uwUrcJGJ8uOfjZ9ad8
-         PQHQ==
-X-Gm-Message-State: AOJu0YxRkHJp/Gn902iKrUgZj/l6OEIgtQkBYOyHbVQD5WU2TYh9xy6M
-        YpDxLaSB6mHpKqdmd/P6//VlpA==
-X-Google-Smtp-Source: AGHT+IHYk6QR/qJHStjgxhG5KWjzyp+nCjXgemUVAMEhLlaa2oudO6hS4L4C6mpOzsgc6fGW9YmYcA==
-X-Received: by 2002:a05:6512:3e9:b0:4ff:95c:e158 with SMTP id n9-20020a05651203e900b004ff095ce158mr10864148lfq.64.1692962820057;
-        Fri, 25 Aug 2023 04:27:00 -0700 (PDT)
+        bh=ZGDMaEKOG+5X48Gol+AxEGCcHKZ/Xp97A0Ym/9JW7WA=;
+        b=Vyhaahk2IPq95DZwc3NVXQp5B5SwNO3bSoSetDPyRYB1iAmC9Q6E9NclkYJrTVDruT
+         0tjZ0Txy6VWs9Y/k5fSQ5F+VS9X8YOUQunP+J1B0birXLEsAulfReUryqWRoszK0QqSw
+         iHRMD+OKpOXXUkhKP+TTguGGkQOAbMHjoQq+ImUloqkYTFv5GViYS7DFiepN5EMYPYWR
+         a5RW8QONExEx7h3OmjRft1BD4hDZEijh7pbzJnbXdjksUcs/XrMEFMD5FMDD/e3NoNNu
+         G2+4PA3cqjvZ8fRBojrSDdlI0MwiZzJSrfBzpEb/7SeMr6SKgIxdOJfZqVIjVlhsJ4ub
+         6qCw==
+X-Gm-Message-State: AOJu0YxXe16Giqg0e9YYFbx4x0KLwnDDAoUmZnwNRJ4DNnttZLmPFW7J
+        XVMJsh0elTr2v4NG2yYCzUUiOg==
+X-Google-Smtp-Source: AGHT+IH6lqqhRCYBDaNaKp91DKemKXN5IdXT7VJPtMsE6HuTPI+lcAdwJlp7Kc2m4jw4UZT1pd3Vkw==
+X-Received: by 2002:a05:6512:ba0:b0:500:882b:e55a with SMTP id b32-20020a0565120ba000b00500882be55amr11312115lfv.45.1692962821456;
+        Fri, 25 Aug 2023 04:27:01 -0700 (PDT)
 Received: from uffe-tuxpro14.. (h-94-254-63-18.NA.cust.bahnhof.se. [94.254.63.18])
-        by smtp.gmail.com with ESMTPSA id g7-20020ac25387000000b004fb7ac67bbdsm259164lfh.41.2023.08.25.04.26.59
+        by smtp.gmail.com with ESMTPSA id g7-20020ac25387000000b004fb7ac67bbdsm259164lfh.41.2023.08.25.04.27.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Aug 2023 04:26:59 -0700 (PDT)
+        Fri, 25 Aug 2023 04:27:01 -0700 (PDT)
 From:   Ulf Hansson <ulf.hansson@linaro.org>
 To:     Sudeep Holla <sudeep.holla@arm.com>,
         Cristian Marussi <cristian.marussi@arm.com>,
@@ -60,9 +60,9 @@ Cc:     Nikunj Kela <nkela@quicinc.com>,
         Alexandre Torgue <alexandre.torgue@foss.st.com>,
         Ulf Hansson <ulf.hansson@linaro.org>, linux-pm@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 06/13] cpufreq: scmi: Avoid one OF parsing in scmi_get_sharing_cpus()
-Date:   Fri, 25 Aug 2023 13:26:26 +0200
-Message-Id: <20230825112633.236607-7-ulf.hansson@linaro.org>
+Subject: [PATCH v3 07/13] cpufreq: scmi: Drop redundant ifdef in scmi_cpufreq_probe()
+Date:   Fri, 25 Aug 2023 13:26:27 +0200
+Message-Id: <20230825112633.236607-8-ulf.hansson@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230825112633.236607-1-ulf.hansson@linaro.org>
 References: <20230825112633.236607-1-ulf.hansson@linaro.org>
@@ -77,9 +77,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The domain-id for the cpu_dev has already been parsed at the point when
-scmi_get_sharing_cpus() is getting called. Let's pass it as an in-parameter
-to avoid the unnecessary OF parsing.
+We have stubs for devm_of_clk_add_hw_provider(), so there should be no need
+to protect this with the '#ifdef CONFIG_COMMON_CLK'. Let's drop it to clean
+up the code a bit.
 
 Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 ---
@@ -88,41 +88,25 @@ Changes in v3:
 	- None.
 
 ---
- drivers/cpufreq/scmi-cpufreq.c | 11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
+ drivers/cpufreq/scmi-cpufreq.c | 2 --
+ 1 file changed, 2 deletions(-)
 
 diff --git a/drivers/cpufreq/scmi-cpufreq.c b/drivers/cpufreq/scmi-cpufreq.c
-index 125e8a8421fb..78f53e388094 100644
+index 78f53e388094..48bd393a1506 100644
 --- a/drivers/cpufreq/scmi-cpufreq.c
 +++ b/drivers/cpufreq/scmi-cpufreq.c
-@@ -82,15 +82,12 @@ static int scmi_cpu_domain_id(struct device *cpu_dev)
- }
+@@ -320,11 +320,9 @@ static int scmi_cpufreq_probe(struct scmi_device *sdev)
+ 	if (IS_ERR(perf_ops))
+ 		return PTR_ERR(perf_ops);
  
- static int
--scmi_get_sharing_cpus(struct device *cpu_dev, struct cpumask *cpumask)
-+scmi_get_sharing_cpus(struct device *cpu_dev, int domain,
-+		      struct cpumask *cpumask)
- {
--	int cpu, domain, tdomain;
-+	int cpu, tdomain;
- 	struct device *tcpu_dev;
+-#ifdef CONFIG_COMMON_CLK
+ 	/* dummy clock provider as needed by OPP if clocks property is used */
+ 	if (of_property_present(dev->of_node, "#clock-cells"))
+ 		devm_of_clk_add_hw_provider(dev, of_clk_hw_simple_get, NULL);
+-#endif
  
--	domain = scmi_cpu_domain_id(cpu_dev);
--	if (domain < 0)
--		return domain;
--
- 	for_each_possible_cpu(cpu) {
- 		if (cpu == cpu_dev->id)
- 			continue;
-@@ -163,7 +160,7 @@ static int scmi_cpufreq_init(struct cpufreq_policy *policy)
- 	}
- 
- 	/* Obtain CPUs that share SCMI performance controls */
--	ret = scmi_get_sharing_cpus(cpu_dev, policy->cpus);
-+	ret = scmi_get_sharing_cpus(cpu_dev, domain, policy->cpus);
+ 	ret = cpufreq_register_driver(&scmi_cpufreq_driver);
  	if (ret) {
- 		dev_warn(cpu_dev, "failed to get sharing cpumask\n");
- 		goto out_free_cpumask;
 -- 
 2.34.1
 
