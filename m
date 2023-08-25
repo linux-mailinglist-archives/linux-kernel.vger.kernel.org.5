@@ -2,51 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D895788BCB
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 16:35:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98E1D788BD1
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 16:36:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343793AbjHYOep convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 25 Aug 2023 10:34:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57820 "EHLO
+        id S1343803AbjHYOfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 10:35:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343799AbjHYOeW (ORCPT
+        with ESMTP id S1343823AbjHYOfc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 10:34:22 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6F671FFE;
-        Fri, 25 Aug 2023 07:34:19 -0700 (PDT)
-Received: from hamburger.collabora.co.uk (hamburger.collabora.co.uk [IPv6:2a01:4f8:1c1c:f269::1])
-        by madras.collabora.co.uk (Postfix) with ESMTP id 12B3E66071BE;
-        Fri, 25 Aug 2023 15:34:15 +0100 (BST)
-From:   "Helen Mae Koike Fornazier" <helen.koike@collabora.com>
-In-Reply-To: <CAF6AEGs4p0xXJjsNug45CFiP0n-5h7wpdy22YBryjrnWFROESg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-X-Forward: 127.0.0.1
-Date:   Fri, 25 Aug 2023 15:34:15 +0100
-Cc:     "Jani Nikula" <jani.nikula@linux.intel.com>,
-        "Vignesh Raman" <vignesh.raman@collabora.com>,
-        dri-devel@lists.freedesktop.org, emma@anholt.net,
-        linux-doc@vger.kernel.org, david.heidelberg@collabora.com,
-        linux-amlogic@lists.infradead.org, jbrunet@baylibre.com,
-        robdclark@google.com, corbet@lwn.net, khilman@baylibre.com,
-        sergi.blanch.torne@collabora.com, gustavo.padovan@collabora.com,
-        linux-rockchip@lists.infradead.org, daniels@collabora.com,
-        martin.blumenstingl@googlemail.com, robclark@freedesktop.org,
-        anholt@google.com, linux-mediatek@lists.infradead.org,
-        mripard@kernel.org, matthias.bgg@gmail.com,
-        linux-arm-kernel@lists.infradead.org,
-        angelogioacchino.delregno@collabora.com, neil.armstrong@linaro.org,
-        guilherme.gallo@collabora.com, linux-kernel@vger.kernel.org,
-        tzimmermann@suse.de
-To:     "Rob Clark" <robdclark@gmail.com>
+        Fri, 25 Aug 2023 10:35:32 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03CAD1FFA;
+        Fri, 25 Aug 2023 07:35:30 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-4ff8f2630e3so1526371e87.1;
+        Fri, 25 Aug 2023 07:35:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692974128; x=1693578928;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=As3WpBwN84GV3HiC8Gn/35+z04ACfRVFYleEb0kw7gc=;
+        b=byn136xZe9WNh4itpN3fR7fIUK0DEPSnKhH9T060BVPFq74asHHjWfKwqwdQI1d1UT
+         XH6sIXQ72ZOa68ItbQflRgqb7Gv3kNnvWsMSvMSE4m4FFt2OShIm/3TyXmZdxCWczyk5
+         W0v8nFL788jvqFybOHR4XUtTicrimw+S5Sj3UqgordUgyXzhhnQwZ12bIsjaeq/do0NY
+         t5qesaHOUCH9NKtlHeqjWnTs5POIIjWsRJoJPl3kQZJDJXr4xzsB0Rq/nOd0k1PEpbf7
+         sA/eddEyozymSbEhGg/t1RkKtMSmSFivTNfPBCobRAzZyGBQP3kV+ZiFTvCuTIiznfh2
+         DkEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692974128; x=1693578928;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=As3WpBwN84GV3HiC8Gn/35+z04ACfRVFYleEb0kw7gc=;
+        b=TNNsxsfslIa5nWXK1WdMcvAz83MsYI17v05mOU7YOQ18WwW7v9PBQqINptq3uqtgJK
+         h6+kxnRb3RHUyhIRhatMKvCwojfnKYWM6rVe2vfieNyTjYjhifIbRoaFnKkVhXpNl5gv
+         4uKUnD/zZGa0Q7UADsMKY1iGTtn+4XJi4A9ji4K92J+x02E4kUC48zQN4RRZ3iWWEoaU
+         v3ObqZ9M1kcSlVmMcskvpizhHeV8nslhc0CdZbTgqXNziCMTB7FJZjcVCy4cpjwBA89u
+         QHLLM67OohSAsTbpiWaWlzNP/Uv/jCawo4y75HHap3hXqhSSrjoW4DpYRJRCww31K1Gw
+         fJpw==
+X-Gm-Message-State: AOJu0Yw+3Ishi7wxlabVPFx6ApS+6lBxKu31S2s2PHVM/5tFvuAgDUDB
+        DBCd5gnDa0F1EiD/LA5cWIlmef+h2Hrfija3vl4=
+X-Google-Smtp-Source: AGHT+IEPbbB/U7qcrlqk0xzPL8EzjIDrygU1VBarOCjB2I/2aouHlNgJ/88UBDf54Q/Ror43bkdbJw==
+X-Received: by 2002:a05:6512:2397:b0:4fb:8585:eefe with SMTP id c23-20020a056512239700b004fb8585eefemr19969494lfv.57.1692974127590;
+        Fri, 25 Aug 2023 07:35:27 -0700 (PDT)
+Received: from skhimich.dev.yadro.com ([185.15.172.210])
+        by smtp.gmail.com with ESMTPSA id z1-20020ac25de1000000b004fddbd29457sm310118lfq.7.2023.08.25.07.35.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Aug 2023 07:35:26 -0700 (PDT)
+From:   Sergey Khimich <serghox@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-mmc@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+Subject: [PATCH v1 0/1] mmc: sdhci-of-dwcmshc: Add CQE support
+Date:   Fri, 25 Aug 2023 17:35:24 +0300
+Message-Id: <20230825143525.869906-1-serghox@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Message-ID: <29c7-64e8bc00-3-6afffd8@162524261>
-Subject: =?utf-8?q?Re=3A?= [PATCH 2/6] =?utf-8?q?drm=3A?==?utf-8?q?_ci=3A?= Force 
- db410c to host mode
-User-Agent: SOGoMail 5.8.4
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,83 +70,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday, August 25, 2023 11:30 -03, Rob Clark <robdclark@gmail.com> wrote:
+Hello!
 
-> On Fri, Aug 25, 2023 at 6:56 AM Jani Nikula <jani.nikula@linux.intel.com> wrote:
-> >
-> > On Fri, 25 Aug 2023, Vignesh Raman <vignesh.raman@collabora.com> wrote:
-> > > Force db410c to host mode to fix network issue which results in failure
-> > > to mount root fs via NFS.
-> > > See https://gitlab.freedesktop.org/gfx-ci/linux/-/commit/cb72a629b8c15c80a54dda510743cefd1c4b65b8
-> > >
-> > > Since this fix is not sent upstream, add it to build.sh script
-> > > before building the kernel and dts. Better approach would be
-> > > to use devicetree overlays.
-> > >
-> > > Signed-off-by: Vignesh Raman <vignesh.raman@collabora.com>
-> > > ---
-> > >  drivers/gpu/drm/ci/build.sh | 4 ++++
-> > >  1 file changed, 4 insertions(+)
-> > >
-> > > diff --git a/drivers/gpu/drm/ci/build.sh b/drivers/gpu/drm/ci/build.sh
-> > > index 7b014287a041..c39834bd6bd7 100644
-> > > --- a/drivers/gpu/drm/ci/build.sh
-> > > +++ b/drivers/gpu/drm/ci/build.sh
-> > > @@ -70,6 +70,10 @@ if [ -z "$CI_MERGE_REQUEST_PROJECT_PATH" ]; then
-> > >      fi
-> > >  fi
-> > >
-> > > +# Force db410c to host mode to fix network issue which results in failure to mount root fs via NFS.
-> > > +# See https://gitlab.freedesktop.org/gfx-ci/linux/-/commit/cb72a629b8c15c80a54dda510743cefd1c4b65b8
-> > > +sed -i '/&usb {/,/status = "okay";/s/status = "okay";/&\n\tdr_mode = "host";/' arch/arm64/boot/dts/qcom/apq8016-sbc.dts
-> > > +
-> >
-> > It seems like a really bad idea to me to have the CI build modify the
-> > source tree before building.
-> >
-> > The kernel being built will have a dirty git repo, and the localversion
-> > will have -dirty in it.
-> >
-> > I think it would be better to do out-of-tree builds and assume the
-> > source is read-only.
-> 
-> We have the ${target_branch}-external-fixes mechanism to merge
-> necessary changes before building the kernel for CI.  Which is
-> necessary for a couple of reasons:
+This is implementation of SDHCI CQE support for sdhci-of-dwcmshc driver.
+For enabling CQE support just set 'supports-cqe' in your DevTree file
+for appropriate mmc node.
 
-Should we create an official topic/drm-ci-external-fixes branch ?
+Also, while implementing CQE support for the driver, I faced with a problem 
+which I will describe below.
+According to the IP block documentation CQE works only with "AMDA-2 only"
+mode which is activated only with v4 mode enabled. I see in dwcmshc_probe()
+function that v4 mode gets enabled only for 'sdhci_dwcmshc_bf3_pdata' platform data.
 
-Regards,
-Helen
+So my question is: is it correct to enable v4 mode for all platform data
+if 'SDHCI_CAN_64BIT_V4' bit is set in hw?
 
-> 
-> 1) patches like this which aren't appropriate upstream but necessary
-> due to the CI lab setup
-> 2) target branch if often based on an early -rc, and it isn't unheard
-> of to need some fix for some board or another which isn't appropriate
-> to land via drm-next
-> 
-> We should use the -external-fixes branch mechanism for patches like this one.
-> 
-> BR,
-> -R
-> 
-> > >  for opt in $ENABLE_KCONFIGS; do
-> > >    echo CONFIG_$opt=y >> drivers/gpu/drm/ci/${KERNEL_ARCH}.config
-> > >  done
-> >
-> > Ditto for the config changes in the context here. Those are files in
-> > git, don't change them.
-> >
-> > Shouldn't this use something like 'scripts/config --enable' or
-> > 'scripts/config --disable' on the .config file to be used for building
-> > instead?
-> >
-> >
-> > BR,
-> > Jani.
-> >
-> >
-> > --
-> > Jani Nikula, Intel Open Source Graphics Center
+Because I`m afraid that enabling v4 mode for some platforms could break
+them down. On the other hand, if host controller says that it can do v4
+(caps & SDHCI_CAN_64BIT_V4), lets do v4 or disable it manualy by some
+quirk. Anyway - RFC.
+
+Thanks in advance, Sergey.
+
+
+Sergey Khimich (1):
+  mmc: sdhci-of-dwcmshc: Add CQE support
+
+ drivers/mmc/host/Kconfig            |   1 +
+ drivers/mmc/host/sdhci-of-dwcmshc.c | 154 +++++++++++++++++++++++++++-
+ 2 files changed, 154 insertions(+), 1 deletion(-)
+
+-- 
+2.30.2
 
