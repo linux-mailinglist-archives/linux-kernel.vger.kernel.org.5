@@ -2,73 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A955C788839
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 15:17:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24A1B78883B
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 15:17:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244999AbjHYNQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 09:16:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51124 "EHLO
+        id S245008AbjHYNQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 09:16:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245041AbjHYNQg (ORCPT
+        with ESMTP id S245054AbjHYNQo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 09:16:36 -0400
-Received: from mail.8bytes.org (mail.8bytes.org [IPv6:2a01:238:42d9:3f00:e505:6202:4f0c:f051])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9DA7B198A;
-        Fri, 25 Aug 2023 06:16:33 -0700 (PDT)
-Received: from 8bytes.org (pd9fe95be.dip0.t-ipconnect.de [217.254.149.190])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.8bytes.org (Postfix) with ESMTPSA id 6AD2C2659D3;
-        Fri, 25 Aug 2023 15:16:32 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=8bytes.org;
-        s=default; t=1692969392;
-        bh=nIJIcDHCndV6RMR52sBlpXdKyenjgdoQvcGfHbdVufI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jcGWQkTdA+AdnfpIQpjrlpuJb28zPJrt4Avl8XWWYPUEmo5VFOYLYvEM7KkYhdSp5
-         VsErLvWdj+4wEeH1fcbJQS6VPwYscLzFjSotj9uEYoCBI6qbKkHwYpjZ5EO4q7nLHv
-         ldOJJoL/scasqRq5XfT2bAO46758V/GZi1dH0vdXZQIw4IV88v2bUT1DKeusWrWX8x
-         PbB2dZrWjtkn7p7gPJaOcL4nimTy4HVHqicnFbvEJhgfX3lrTJKVLI9u4Q9Nb93YN9
-         TJuyk1ouwIo3KDz+jbeUzXgIQWGK/AqX0YUASA0G8Uur2m8FDgvAQj06W1qTQzPASd
-         5FXCZZQQHzAcw==
-Date:   Fri, 25 Aug 2023 15:16:31 +0200
-From:   =?iso-8859-1?Q?J=F6rg_R=F6del?= <joro@8bytes.org>
-To:     linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        linux-sgx@vger.kernel.org
-Cc:     Dhaval Giani <dhaval.giani@gmail.com>
-Subject: Re: [CfP] Confidential Computing Microconference @ LPC 2023
-Message-ID: <ZOiprzq_cPmcnyX_@8bytes.org>
-References: <ZLAdPyqn8glGgYjT@8bytes.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZLAdPyqn8glGgYjT@8bytes.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 25 Aug 2023 09:16:44 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACF41E78
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 06:16:42 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1bf55a81eeaso6923585ad.0
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 06:16:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1692969402; x=1693574202;
+        h=message-id:to:from:cc:subject:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4rO/T+VQAJjKyFqYU/q8vdJEmTES2395aidBJOFqlkc=;
+        b=ugf4EtqYq2JVD/vAGeFD6EbdjYI93k0jVrPkERBv58xTOuFkDnt9ifB5NSChYQDi7j
+         1nu+WjzYtK6ir/P1OAY35X2HYj/LXQlTFazawP8dLBfAjemXkSd0YHgPIs2Tzf25XgAB
+         M9BeSQCkaBJnc7cs6GGm4J58Ouhr+PCow9dG7mSLHReSKTD/2ipaLDsY7cGIIwYIBQKR
+         szjf022J0YCd40+BetUEY7pIctRCrFuFG3cgGCxZk9ekJWxl/vboVfQ9mq4CA8mqONO2
+         80sp6lQRGRMYGJmKwvxhp6tMhUtbl+v/SpKIyXcyMiUj22gPdmBwddmb1nxt78Vtvpzn
+         6H/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692969402; x=1693574202;
+        h=message-id:to:from:cc:subject:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4rO/T+VQAJjKyFqYU/q8vdJEmTES2395aidBJOFqlkc=;
+        b=ihXyugCs22XgJrRk7x2CjdiivY88PR1t4bYTizzKx91S8goZODDpJfrRrFPt9wMyxI
+         KQPJXs29FKy41hu4Z38cdF0eyiAitoNAhJpp098o88eKXbvLfMXt0MZBiZZMmziKSJ23
+         AtB6mNDYO1VzvWTmojmyvDVARbX3+PLoGGyhdt1g8q3N+djbfEV2dNGrFNOC/ZjQMyfD
+         kgY2kp8XAS18M2SQQhWcOp1J4jsXcvI/TXzKAYLYr4GjMct3mDzP2PkHBykm3mHhmmgw
+         jYOdLKeOF0UFjeda6uXThyufegbKLpm/Kw3E644I/+lwoo0IYxGBsCmZ0RGeFdZRxIWc
+         JWpw==
+X-Gm-Message-State: AOJu0YzDGZxaQQuoKgglO21ku6b3j9qq5xaxdm5y4ZIka91EXH1CcUiU
+        osgUKt8SHeAOV50oA27Yfpdl1qJZqtx9+ovs7vE=
+X-Google-Smtp-Source: AGHT+IHBevM73Kvye69jaRbhoCXokaiiVy88IwWofacgNFMm10yHyulUw6HZsXBBoWq194yqe8RtUA==
+X-Received: by 2002:a17:903:4cd:b0:1bb:b855:db3c with SMTP id jm13-20020a17090304cd00b001bbb855db3cmr14119522plb.41.1692969401992;
+        Fri, 25 Aug 2023 06:16:41 -0700 (PDT)
+Received: from localhost ([135.180.227.0])
+        by smtp.gmail.com with ESMTPSA id b19-20020a170902ed1300b001bb99ea5d02sm1661383pld.4.2023.08.25.06.16.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Aug 2023 06:16:41 -0700 (PDT)
+Date:   Fri, 25 Aug 2023 06:16:41 -0700 (PDT)
+X-Google-Original-Date: Fri, 25 Aug 2023 06:15:01 PDT (-0700)
+Subject: [GIT PULL] RISC-V Fixes for 6.5-rc8
+CC:         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+From:   Palmer Dabbelt <palmer@rivosinc.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Message-ID: <mhng-f80b6a8e-79e3-486b-95e4-18c04a1be0dd@palmer-ri-x1c9>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 05:50:23PM +0200, Jörg Rödel wrote:
-> Make sure to select "Confidential Computing MC" as the track and submit
-> your session proposal by August 25th. Submissions made after that date
-> can not be included into the microconference.
+The following changes since commit ca09f772cccaeec4cd05a21528c37a260aa2dd2c:
 
-Given the relaxed timing requirements we are happy to extend the CfP
-period to September 25th. There are quite a few submissions already, but
-the schedule begins to fill up. So feel motivated to get your proposals
-in quickly :-)
+  riscv: Handle zicsr/zifencei issue between gcc and binutils (2023-08-16 07:39:38 -0700)
 
-In case you need to apply for a visa to enter the US and are not
-registered yet, please let us know by September 15th. We will try our
-best to get you registered so that there is enough time left for the
-visa process.
+are available in the Git repository at:
 
-Regards,
+  git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-6.5-rc8
 
-	Joerg
+for you to fetch changes up to ef21fa7c198e04f3d3053b1c5b5f2b4b225c3350:
+
+  riscv: Fix build errors using binutils2.37 toolchains (2023-08-24 12:35:20 -0700)
+
+----------------------------------------------------------------
+RISC-V Fixes for 6.5-rc8
+
+* The vector ucontext extension has been extended with vlenb.
+* The vector registers ELF core dump note type has been changed to avoid
+  aliasing with the CSR type used in embedded systems.
+* Support for accessing vector registers via ptrace() has been reverted.
+* Another build fix for the ISA spec changes around Zifencei/Zicsr that
+  manifests on some systems built with binutils-2.37 and gcc-11.2.
+
+----------------------------------------------------------------
+This is obviously not ideal, particularly for something this late in the cycle.
+Unfortunately we found some uABI issues in the vector support while reviewing
+the GDB port, which has triggered a revert -- probably a good sign we should
+have reviewed GDB before merging this, I guess I just dropped the ball because
+I was so worried about the context extension and libc suff I forgot.  Hence the
+late revert.
+
+There's some risk here as we're still exposing the vector context for signal
+handlers, but changing that would have meant reverting all of the vector
+support.  The issues we've found so far have been fixed already and they
+weren't absolute showstoppers, so we're essentially just playing it safe by
+holding ptrace support for another release (or until we get through a proper
+userspace code review).
+
+So sorry for the churn, I'll try to be more careful next time.
+
+----------------------------------------------------------------
+Andy Chiu (1):
+      RISC-V: vector: export VLENB csr in __sc_riscv_v_state
+
+Mingzheng Xing (1):
+      riscv: Fix build errors using binutils2.37 toolchains
+
+Palmer Dabbelt (2):
+      RISC-V: Remove ptrace support for vectors
+      Merge patch series "riscv: fix ptrace and export VLENB"
+
+ arch/riscv/Kconfig                   |  8 ++---
+ arch/riscv/include/asm/vector.h      |  3 +-
+ arch/riscv/include/uapi/asm/ptrace.h |  1 +
+ arch/riscv/kernel/ptrace.c           | 69 ------------------------------------
+ include/uapi/linux/elf.h             |  1 -
+ 5 files changed, 7 insertions(+), 75 deletions(-)
