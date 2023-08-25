@@ -2,79 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 212F7788836
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 15:16:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A955C788839
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 15:17:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245000AbjHYNPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 09:15:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36656 "EHLO
+        id S244999AbjHYNQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 09:16:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245082AbjHYNPl (ORCPT
+        with ESMTP id S245041AbjHYNQg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 09:15:41 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB8D310FE;
-        Fri, 25 Aug 2023 06:15:34 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Fri, 25 Aug 2023 09:16:36 -0400
+Received: from mail.8bytes.org (mail.8bytes.org [IPv6:2a01:238:42d9:3f00:e505:6202:4f0c:f051])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9DA7B198A;
+        Fri, 25 Aug 2023 06:16:33 -0700 (PDT)
+Received: from 8bytes.org (pd9fe95be.dip0.t-ipconnect.de [217.254.149.190])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5DE5460FF4;
-        Fri, 25 Aug 2023 13:15:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3660EC433C8;
-        Fri, 25 Aug 2023 13:15:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692969333;
-        bh=V3qws4P4qh5eqWpjG1yq8mlLBDX8jzSYct5bPfL2t6w=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=J0kSi1s6U1Uvu43lYR0H3G94LmAZa2PaNgx8bawtA0r7cfW9hFitbyfSLUF/SIv/q
-         5+N2yvvPiyBVUz1dWC9/Aks94HqVF1MrJDUJ3aYCV//24f4lB1xtZqikYDxOZ191RL
-         m84u/RV4tauHnTpWC0/WeLtvKIuRBtvGck2KRBiynWwFq5c2bzveNj1/NUMoJPtYvh
-         kGGLywvMPjQosG6UizQuX0al//JlJRg5r6USt3sNMDwgO0BFrsLTN8/xZuZLUS+ekp
-         R7/Q4t9rlRpmgLZxsnRi7tyU5hhSIOfgUqkb6Jk3BI757UFMzkrooUiZbKJMH+/B5F
-         0k5u61EXd+6Fw==
-Message-ID: <4c7ba4c4-713e-1cae-8aa5-fec46cb83679@kernel.org>
-Date:   Fri, 25 Aug 2023 22:15:31 +0900
+        by mail.8bytes.org (Postfix) with ESMTPSA id 6AD2C2659D3;
+        Fri, 25 Aug 2023 15:16:32 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=8bytes.org;
+        s=default; t=1692969392;
+        bh=nIJIcDHCndV6RMR52sBlpXdKyenjgdoQvcGfHbdVufI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jcGWQkTdA+AdnfpIQpjrlpuJb28zPJrt4Avl8XWWYPUEmo5VFOYLYvEM7KkYhdSp5
+         VsErLvWdj+4wEeH1fcbJQS6VPwYscLzFjSotj9uEYoCBI6qbKkHwYpjZ5EO4q7nLHv
+         ldOJJoL/scasqRq5XfT2bAO46758V/GZi1dH0vdXZQIw4IV88v2bUT1DKeusWrWX8x
+         PbB2dZrWjtkn7p7gPJaOcL4nimTy4HVHqicnFbvEJhgfX3lrTJKVLI9u4Q9Nb93YN9
+         TJuyk1ouwIo3KDz+jbeUzXgIQWGK/AqX0YUASA0G8Uur2m8FDgvAQj06W1qTQzPASd
+         5FXCZZQQHzAcw==
+Date:   Fri, 25 Aug 2023 15:16:31 +0200
+From:   =?iso-8859-1?Q?J=F6rg_R=F6del?= <joro@8bytes.org>
+To:     linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        linux-sgx@vger.kernel.org
+Cc:     Dhaval Giani <dhaval.giani@gmail.com>
+Subject: Re: [CfP] Confidential Computing Microconference @ LPC 2023
+Message-ID: <ZOiprzq_cPmcnyX_@8bytes.org>
+References: <ZLAdPyqn8glGgYjT@8bytes.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 0/2] ata: pata_ep93xx: dt convert preparation fixes
-To:     nikita.shubin@maquefel.me, Sergey Shtylyov <s.shtylyov@omp.ru>
-Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230823-ep93xx_pata_fixes-v1-0-d7e7229be148@maquefel.me>
-Content-Language: en-US
-From:   Damien Le Moal <dlemoal@kernel.org>
-Organization: Western Digital Research
-In-Reply-To: <20230823-ep93xx_pata_fixes-v1-0-d7e7229be148@maquefel.me>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZLAdPyqn8glGgYjT@8bytes.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/23/23 18:47, Nikita Shubin via B4 Relay wrote:
-> Sending some fixes in prior to "ep93xx device tree conversion" series,
-> as per Sergey request:
-> 
-> - simple replacement s/-ENXIO/-ENOMEM/ as it suits better.
-> - second is s/ep93xx_chip_revision()/soc_device_match(), so i can drop 
->   ep93xx_chip_revision() entirely in later series.
-> 
-> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
-> ---
-> Nikita Shubin (2):
->       ata: pata_ep93xx: fix error return code in probe
->       ata: pata_ep93xx: use soc_device_match for UDMA modes
+On Thu, Jul 13, 2023 at 05:50:23PM +0200, Jörg Rödel wrote:
+> Make sure to select "Confidential Computing MC" as the track and submit
+> your session proposal by August 25th. Submissions made after that date
+> can not be included into the microconference.
 
-Applied to for-6.6. Thanks !
+Given the relaxed timing requirements we are happy to extend the CfP
+period to September 25th. There are quite a few submissions already, but
+the schedule begins to fill up. So feel motivated to get your proposals
+in quickly :-)
 
--- 
-Damien Le Moal
-Western Digital Research
+In case you need to apply for a visa to enter the US and are not
+registered yet, please let us know by September 15th. We will try our
+best to get you registered so that there is enough time left for the
+visa process.
 
+Regards,
+
+	Joerg
