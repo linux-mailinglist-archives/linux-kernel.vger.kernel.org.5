@@ -2,56 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05B3F787D3D
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 03:37:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD6E0787D41
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 03:37:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238045AbjHYBg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 21:36:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42566 "EHLO
+        id S237383AbjHYBg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 21:36:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237250AbjHYBg0 (ORCPT
+        with ESMTP id S237330AbjHYBg1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 21:36:26 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AB0D10F4
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 18:36:24 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d746edab033so1240872276.0
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 18:36:24 -0700 (PDT)
+        Thu, 24 Aug 2023 21:36:27 -0400
+Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCA1B1707
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 18:36:25 -0700 (PDT)
+Received: by mail-pj1-x104a.google.com with SMTP id 98e67ed59e1d1-26f3fce5b0bso420265a91.2
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 18:36:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692927384; x=1693532184;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=d3zKt0MSpQclXBzb3GHTTMkVjfa1MlJje7RSqdsS9KA=;
-        b=sdZ0hDVV6OpJhXoT4TMLcD236897knP6OAt7jC5eFB/d2aQzF4z3DpU+hS9VIz2p03
-         lyPKTy+9M+sdnOOP4q190P8u+rHOHy4s1hzu7ixUFL16i+PRvhH3nyNEWxgvD4OZTN0o
-         oG9AZ/Di/j7HEnx6KWgHeOXkZvtHwdUacGpRj/d+rLMm8+EasCRVr8wApZdVoasfhJFK
-         x1811Rjdbd81K8IYIaTLwIhv1bwrCOnAxp370B6C1agQ+i5ymh4Yv2/Ih1/IXyPB9wjt
-         nQEYSGJwpGL8wNOChn33OWOX3A/KmwI3jZAlBVEREAEq4gs6zQU8idqY2tXMdxB0M9V/
-         81OQ==
+        d=google.com; s=20221208; t=1692927385; x=1693532185;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
+        bh=bJJ3epqDVWn/KgYpEj6yufH8AAy7yBUMi0zyuddHTI0=;
+        b=XqOqBAKajc/Uga/xASsgoKffklBZQ5azzky229tcolshI77rjyjQMLre9b7dPzSIgj
+         lVG4ew55uuC8R5nZ7nXg2b5A+L2qS52P9RfkYbnzcPJE/4NVnU4xH89WhtRpG4ofsstc
+         uy27UmXSND3YGSD+LBGo/LIhYYA7XV1THT9iHEfQSmAqHdt/Y54W+Vl1lD6cDXhnd43Z
+         UYCZeNDwkAIB7MM/GKjVgTCGdpX1j7846UcfyU2S6YP9AU+ERAsvIctRqa1lccR5EBbU
+         se9PTfEaPArj+ryD0h9Kun/f8ZvK/Xso/s+fZ/k/hC7e3Lna8ETybEyMa2okbU1dH+vj
+         qOAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692927384; x=1693532184;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=d3zKt0MSpQclXBzb3GHTTMkVjfa1MlJje7RSqdsS9KA=;
-        b=TyJ6/bxwwlu7GdwyUuNHbw0B1mZjNPcR4J/pTBcQd8+o0EIqJO2PZ/GWToh4kEGICg
-         j6t35VUojPvcYEqDNJ7FTTBcDLb243yeHj5hjhehWYhxspVLftv63LmzmqaO6MMzvCsL
-         3Ba9W7YAM3oBM2PUP4k1MMAT3z65YHBasF4RaXRLT1Vn1rfD6wz2k5/BoVrPuogO+LE4
-         44UsF3JL6MFQ3oXb8CC+kruQXxYAyom/Uc5MnZ+F2QuVAljYPBYm2BwLX8wf/Sweah9A
-         CLwNDOPl8xTjkuKPXzJ2x9eHkCohLLQmlDao55mSfIQKOuKNGJ60h4mNSEqNYaAFxIBs
-         x82Q==
-X-Gm-Message-State: AOJu0YyOUKhXWhC9oCDoSRpGJ3FK/SdxAdbtNL3UaEylV1uVnaDLElLU
-        ZFTBVdTPHoy3yOavvvrzp3SWuje1CFY=
-X-Google-Smtp-Source: AGHT+IEXejuR0vceKiPsiDxDwzOKvz+JnJ9kn9Jn5NJ04gxbtZY0NPLJjUHgZpzGgLAju1hMve4TXSMtFYM=
+        d=1e100.net; s=20221208; t=1692927385; x=1693532185;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bJJ3epqDVWn/KgYpEj6yufH8AAy7yBUMi0zyuddHTI0=;
+        b=EGGRWKB6gXANTwIc4dlCJfUM3A98Jt3iovNYHBJUhnwm2NIom4shbpOUH1lxwc4AgH
+         efeg9v2guf8eRKVGhdCyc2EsQa2UaoPsIHhac4HvrsqNYYj6tAOqo//fULuH/MLAfH3I
+         Jq0s4CO7/QV3WV5B7bsFOfCXdsx6c4bj7U4bKd7yn3EAWRQkWseHWTS8pND4SvhA9t+1
+         6pRHgLVmxMKhjWogAUQjFOqhyXPzrgJfXyZ0BD0w+n31Lth8gyK599pTUOSaNWggCv2v
+         gRXGvIyym2uXau0usoxbQo3hPG7rQlqEf1O8kxK0wefpswD22np+OB1yX3rr8SxlfS1H
+         B/cg==
+X-Gm-Message-State: AOJu0Yyz7VAXEH20c/Y9jEDF6JgTYDplWU0jwk3KOux1Lsb4E4lSnt9I
+        bba7fyH4zc1EPL0/uh1G0aMXM42UrNU=
+X-Google-Smtp-Source: AGHT+IH1W88yr05UABQ3pKkKEY6GI4o4pwaiVeo9ubY08TwPWlJzGKO/s9Bw0wnhW3tjJB3QbnPgiKkjsFg=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:e6cf:0:b0:d78:28d0:15bc with SMTP id
- d198-20020a25e6cf000000b00d7828d015bcmr94493ybh.4.1692927383859; Thu, 24 Aug
- 2023 18:36:23 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a17:90b:383:b0:268:1d63:b9ae with SMTP id
+ ga3-20020a17090b038300b002681d63b9aemr4281422pjb.3.1692927385357; Thu, 24 Aug
+ 2023 18:36:25 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu, 24 Aug 2023 18:36:17 -0700
+Date:   Thu, 24 Aug 2023 18:36:18 -0700
+In-Reply-To: <20230825013621.2845700-1-seanjc@google.com>
 Mime-Version: 1.0
+References: <20230825013621.2845700-1-seanjc@google.com>
 X-Mailer: git-send-email 2.42.0.rc2.253.gd59a3bf2b4-goog
-Message-ID: <20230825013621.2845700-1-seanjc@google.com>
-Subject: [PATCH v2 0/4] KVM: SVM: Fix unexpected #UD on INT3 in SEV guests
+Message-ID: <20230825013621.2845700-2-seanjc@google.com>
+Subject: [PATCH v2 1/4] KVM: SVM: Don't inject #UD if KVM attempts to skip SEV
+ guest insn
 From:   Sean Christopherson <seanjc@google.com>
 To:     Sean Christopherson <seanjc@google.com>,
         Paolo Bonzini <pbonzini@redhat.com>
@@ -69,47 +73,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix a bug where KVM injects a bogus #UD for SEV guests when trying to skip
-an INT3 as part of re-injecting the associated #BP that got kinda sorta
-intercepted due to a #NPF occuring while vectoring/delivering the #BP.
+Don't inject a #UD if KVM attempts to "emulate" to skip an instruction
+for an SEV guest, and instead resume the guest and hope that it can make
+forward progress.  When commit 04c40f344def ("KVM: SVM: Inject #UD on
+attempted emulation for SEV guest w/o insn buffer") added the completely
+arbitrary #UD behavior, there were no known scenarios where a well-behaved
+guest would induce a VM-Exit that triggered emulation, i.e. it was thought
+that injecting #UD would be helpful.
 
-Patch 1 is the main fix.  It's a little ugly, but suitable for backporting.
+However, now that KVM (correctly) attempts to re-inject INT3/INTO, e.g. if
+a #NPF is encountered when attempting to deliver the INT3/INTO, an SEV
+guest can trigger emulation without a buffer, through no fault of its own.
+Resuming the guest and retrying the INT3/INTO is architecturally wrong,
+e.g. the vCPU will incorrectly re-hit code #DBs, but for SEV guests there
+is literally no other option that has a chance of making forward progress.
 
-Patch 2 is a tangentially related cleanup to make NRIPS a requirement for
-enabling SEV, e.g. so that we don't ever get "bug" reports of SEV guests
-not working when NRIPS is disabled.
+Drop the #UD injection for all "skip" emulation, not just those related to
+INT3/INTO, even though that means that the guest will likely end up in an
+infinite loop instead of getting a #UD (the vCPU may also crash, e.g. if
+KVM emulated everything about an instruction except for advancing RIP).
+There's no evidence that suggests that an unexpected #UD is actually
+better than hanging the vCPU, e.g. a soft-hung vCPU can still respond to
+IRQs and NMIs to generate a backtrace.
 
-Patches 3 and 4 clean up the hack from patch 1, but are most definitely
-not stable material (hence the slightly ugly fix).
+Reported-by: Wu Zongyo <wuzongyo@mail.ustc.edu.cn>
+Closes: https://lore.kernel.org/all/8eb933fd-2cf3-d7a9-32fe-2a1d82eac42a@mail.ustc.edu.cn
+Fixes: 6ef88d6e36c2 ("KVM: SVM: Re-inject INT3/INTO instead of retrying the instruction")
+Cc: stable@vger.kernel.org
+Cc: Tom Lendacky <thomas.lendacky@amd.com>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
+ arch/x86/kvm/svm/svm.c | 35 +++++++++++++++++++++++++++--------
+ 1 file changed, 27 insertions(+), 8 deletions(-)
 
-Verified the original bug by toggling the NX hugepage mitigation to force
-a #NPF when devliering #BP in the guest.
-
-v2:
- - Actually fix the bug. [Tom]
- - Do the bigger cleanup I avoided in v1.
-
-v1: https://lore.kernel.org/all/20230810234919.145474-1-seanjc@google.com
-
-Sean Christopherson (4):
-  KVM: SVM: Don't inject #UD if KVM attempts to skip SEV guest insn
-  KVM: SVM: Require nrips support for SEV guests (and beyond)
-  KVM: x86: Refactor can_emulate_instruction() return to be more
-    expressive
-  KVM: SVM: Treat all "skip" emulation for SEV guests as outright
-    failures
-
- arch/x86/include/asm/kvm-x86-ops.h |  2 +-
- arch/x86/include/asm/kvm_host.h    |  4 +--
- arch/x86/kvm/svm/sev.c             |  2 +-
- arch/x86/kvm/svm/svm.c             | 55 +++++++++++++++++-------------
- arch/x86/kvm/svm/svm.h             |  1 +
- arch/x86/kvm/vmx/vmx.c             | 12 +++----
- arch/x86/kvm/x86.c                 | 22 ++++++++----
- 7 files changed, 58 insertions(+), 40 deletions(-)
-
-
-base-commit: fff2e47e6c3b8050ca26656693caa857e3a8b740
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index a139c626fa8b..bd53b2d497d0 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -364,6 +364,8 @@ static void svm_set_interrupt_shadow(struct kvm_vcpu *vcpu, int mask)
+ 		svm->vmcb->control.int_state |= SVM_INTERRUPT_SHADOW_MASK;
+ 
+ }
++static bool svm_can_emulate_instruction(struct kvm_vcpu *vcpu, int emul_type,
++					void *insn, int insn_len);
+ 
+ static int __svm_skip_emulated_instruction(struct kvm_vcpu *vcpu,
+ 					   bool commit_side_effects)
+@@ -384,6 +386,14 @@ static int __svm_skip_emulated_instruction(struct kvm_vcpu *vcpu,
+ 	}
+ 
+ 	if (!svm->next_rip) {
++		/*
++		 * FIXME: Drop this when kvm_emulate_instruction() does the
++		 * right thing and treats "can't emulate" as outright failure
++		 * for EMULTYPE_SKIP.
++		 */
++		if (!svm_can_emulate_instruction(vcpu, EMULTYPE_SKIP, NULL, 0))
++			return 0;
++
+ 		if (unlikely(!commit_side_effects))
+ 			old_rflags = svm->vmcb->save.rflags;
+ 
+@@ -4724,16 +4734,25 @@ static bool svm_can_emulate_instruction(struct kvm_vcpu *vcpu, int emul_type,
+ 	 * and cannot be decrypted by KVM, i.e. KVM would read cyphertext and
+ 	 * decode garbage.
+ 	 *
+-	 * Inject #UD if KVM reached this point without an instruction buffer.
+-	 * In practice, this path should never be hit by a well-behaved guest,
+-	 * e.g. KVM doesn't intercept #UD or #GP for SEV guests, but this path
+-	 * is still theoretically reachable, e.g. via unaccelerated fault-like
+-	 * AVIC access, and needs to be handled by KVM to avoid putting the
+-	 * guest into an infinite loop.   Injecting #UD is somewhat arbitrary,
+-	 * but its the least awful option given lack of insight into the guest.
++	 * If KVM is NOT trying to simply skip an instruction, inject #UD if
++	 * KVM reached this point without an instruction buffer.  In practice,
++	 * this path should never be hit by a well-behaved guest, e.g. KVM
++	 * doesn't intercept #UD or #GP for SEV guests, but this path is still
++	 * theoretically reachable, e.g. via unaccelerated fault-like AVIC
++	 * access, and needs to be handled by KVM to avoid putting the guest
++	 * into an infinite loop.   Injecting #UD is somewhat arbitrary, but
++	 * its the least awful option given lack of insight into the guest.
++	 *
++	 * If KVM is trying to skip an instruction, simply resume the guest.
++	 * If a #NPF occurs while the guest is vectoring an INT3/INTO, then KVM
++	 * will attempt to re-inject the INT3/INTO and skip the instruction.
++	 * In that scenario, retrying the INT3/INTO and hoping the guest will
++	 * make forward progress is the only option that has a chance of
++	 * success (and in practice it will work the vast majority of the time).
+ 	 */
+ 	if (unlikely(!insn)) {
+-		kvm_queue_exception(vcpu, UD_VECTOR);
++		if (!(emul_type & EMULTYPE_SKIP))
++			kvm_queue_exception(vcpu, UD_VECTOR);
+ 		return false;
+ 	}
+ 
 -- 
 2.42.0.rc2.253.gd59a3bf2b4-goog
 
