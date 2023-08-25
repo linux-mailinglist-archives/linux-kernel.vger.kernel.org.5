@@ -2,398 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EDB9788A27
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 16:04:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D973A788B97
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 16:21:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245601AbjHYODc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 10:03:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40840 "EHLO
+        id S1343748AbjHYOV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 10:21:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245611AbjHYODH (ORCPT
+        with ESMTP id S1343839AbjHYOVT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 10:03:07 -0400
-Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3304B270D
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 07:02:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-        s=smtpout1; t=1692972164;
-        bh=gW8LwajGqH3BcwBmfrTAhA53g76Xwm/ClyuazavKlW0=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=TqOycOranvWNGzZPR39c6aE/IpujYODKhFmOl8aLEfk6xaRc5WKq5Sn3XI+alaMCD
-         X6E1uKsPMHJ/OascsXIKJPVa1WVrXdnd/I0vM7wJK778t7bBWGg9VCaCJ5tSN7BClY
-         T4hCy/SryBQYUp0+AUgLpcXvW0/VqEb+8MRWvtli7DgQGWaB0TCbq4vWdW1fKB++e6
-         ZtqfUulHZI8695gOR1M1OwySmig2Qwuf1Vi6QN9GQiat6hRW7cjzxB5iFIDy+2QGUP
-         7dPXwYers3zbV5CcnR6oPA5daGqWAq5roPxPdkZUTDGmtIL0hnakiD1bPMiKPXktm+
-         MdM2NeAmP4KiQ==
-Received: from [172.24.0.4] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4RXM8z6LD8z1M6H;
-        Fri, 25 Aug 2023 10:02:43 -0400 (EDT)
-Message-ID: <5effb4de-b3d1-cffe-938e-4bdd1cc64b44@efficios.com>
-Date:   Fri, 25 Aug 2023 10:03:54 -0400
+        Fri, 25 Aug 2023 10:21:19 -0400
+X-Greylist: delayed 2650 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 25 Aug 2023 07:21:02 PDT
+Received: from out01.mta.xmission.com (out01.mta.xmission.com [166.70.13.231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9F122137;
+        Fri, 25 Aug 2023 07:21:02 -0700 (PDT)
+Received: from in02.mta.xmission.com ([166.70.13.52]:50416)
+        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1qZWz8-00GBtW-AP; Fri, 25 Aug 2023 07:36:22 -0600
+Received: from ip68-227-168-167.om.om.cox.net ([68.227.168.167]:38324 helo=email.froward.int.ebiederm.org.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1qZWz6-00E4Wv-P3; Fri, 25 Aug 2023 07:36:21 -0600
+From:   "Eric W. Biederman" <ebiederm@xmission.com>
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     Yonghong Song <yhs@fb.com>, Kui-Feng Lee <kuifeng@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230821150909.GA2431@redhat.com>
+        <20230825124115.GA13849@redhat.com>
+Date:   Fri, 25 Aug 2023 08:36:13 -0500
+In-Reply-To: <20230825124115.GA13849@redhat.com> (Oleg Nesterov's message of
+        "Fri, 25 Aug 2023 14:41:15 +0200")
+Message-ID: <87fs47qm5u.fsf@email.froward.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [RFC PATCH v3 0/3] sched: Skip queued wakeups only when L2 is
- shared
-Content-Language: en-US
-To:     Swapnil Sapkal <Swapnil.Sapkal@amd.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Aaron Lu <aaron.lu@intel.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>, x86@kernel.org
-References: <20230822113133.643238-1-mathieu.desnoyers@efficios.com>
- <f6dc1652-bc39-0b12-4b6b-29a2f9cd8484@amd.com>
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <f6dc1652-bc39-0b12-4b6b-29a2f9cd8484@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-XM-SPF: eid=1qZWz6-00E4Wv-P3;;;mid=<87fs47qm5u.fsf@email.froward.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.168.167;;;frm=ebiederm@xmission.com;;;spf=pass
+X-XM-AID: U2FsdGVkX1/v0CeTMpQDzRSGn8J9slRx4Jf3faq+kl8=
+X-SA-Exim-Connect-IP: 68.227.168.167
+X-SA-Exim-Mail-From: ebiederm@xmission.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Virus: No
+X-Spam-DCC: XMission; sa02 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;Oleg Nesterov <oleg@redhat.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 962 ms - load_scoreonly_sql: 0.04 (0.0%),
+        signal_user_changed: 4.3 (0.4%), b_tie_ro: 3.0 (0.3%), parse: 1.05
+        (0.1%), extract_message_metadata: 11 (1.2%), get_uri_detail_list: 1.75
+        (0.2%), tests_pri_-2000: 10 (1.0%), tests_pri_-1000: 1.88 (0.2%),
+        tests_pri_-950: 1.02 (0.1%), tests_pri_-900: 0.79 (0.1%),
+        tests_pri_-200: 0.66 (0.1%), tests_pri_-100: 3.4 (0.4%),
+        tests_pri_-90: 206 (21.4%), check_bayes: 201 (20.9%), b_tokenize: 4.3
+        (0.5%), b_tok_get_all: 147 (15.3%), b_comp_prob: 2.2 (0.2%),
+        b_tok_touch_all: 45 (4.7%), b_finish: 0.72 (0.1%), tests_pri_0: 182
+        (18.9%), check_dkim_signature: 0.37 (0.0%), check_dkim_adsp: 2.4
+        (0.2%), poll_dns_idle: 526 (54.7%), tests_pri_10: 2.6 (0.3%),
+        tests_pri_500: 534 (55.5%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH] bpf: task_group_seq_get_next: cleanup the usage of
+ next_thread()
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/25/23 06:11, Swapnil Sapkal wrote:
-> Hello Mathieu,
-> 
-> On 8/22/2023 5:01 PM, Mathieu Desnoyers wrote:
->> This series improves performance of scheduler wakeups on large systems
->> by skipping queued wakeups only when CPUs share their L2 cache, rather
->> than when they share their LLC.
->>
->> The speedup mainly reproduces on workloads which have at least *some*
->> idle time (because it significantly increases the number of migrations,
->> and thus remote wakeups), *and* it needs to have a sufficient load to
->> cause contention on the runqueue locks.
->>
->> Feedback is welcome,
-> 
-> I ran some micro-benchmarks as part of testing this series. Here are the
-> observations:
-> 
-> - Hackbench shows improvement with this patch and Aaron's patch with
->    6.5-rc1 kernel as the baseline.
-> 
-> - tbench and netperf shows shows some dip in performance with highly
->    overloaded case.
-> 
-> - Other micro-benchmarks shows more or less similar performance with
->    these patches.
+Oleg Nesterov <oleg@redhat.com> writes:
 
-Those results look promising! Thanks for testing!
+> OK, it seems that you are not going to take these preparatory
+> cleanups ;)
+>
+> I'll resend along with the s/next_thread/__next_thread/ change.
+> I was going to do the last change later, but this recent discussion
+> https://lore.kernel.org/all/20230824143112.GA31208@redhat.com/
+> makes me think we should do this right now.
 
-Mathieu
+For the record I find this code confusing, and wrong.
+
+It looks like it wants to keep the task_struct pointer or possibly the
+struct pid pointer like proc does, but then it winds up keeping a
+userspace pid value and regenerating both the struct pid pointer and
+the struct task_struct pointer.
+
+Which means that task_group_seq_get_next is unnecessarily slow and has
+a built in race condition which means it could wind up iterating through
+a different process.
+
+This whole thing looks to be a bad (aka racy) reimplementation of
+first_tid and next_tid from proc.  I thought the changes were to
+adapt to the needs of bpf, but on closer examination the code is
+just racy.
+
+For this code to be correct bpf_iter_seq_task_common needs to store
+at a minimum a struct pid pointer.
 
 
-> 
-> o System Details
-> 
-> - 4th Generation EPYC System
-> - 2 x 128C/256T
-> - NPS1 mode
-> 
-> o Kernels
-> 
-> base:                                    6.5.0-rc1
-> base + mathieu-queued-wakeup:        6.5.0-rc1 + Mathieu's patches [1]
-> base + aaron-tg-load-avg:         6.5.0-rc1 + Aaron's patch [2]
-> base + queued-wakeup + tg-load-avg:     6.5.0-rc1 + Mathieu's patches 
-> [1] + Aaron's patch [2]
-> 
-> [References]
-> 
-> [1] "sched: Skip queued wakeups only when L2 is shared"
->      
-> (https://lore.kernel.org/all/20230822113133.643238-1-mathieu.desnoyers@efficios.com/)
-> [2] "Reduce cost of accessing tg->load_avg"
->      
-> (https://lore.kernel.org/lkml/20230823060832.454842-1-aaron.lu@intel.com/)
-> 
-> ==================================================================
-> Test          : hackbench
-> Units         : Time in seconds
-> Interpretation: Lower is better
-> Statistic     : AMean
-> ==================================================================
-> Test:        6.5.0-rc1 (base)    base + mathieu-queued-wakeup       base 
-> + aaron-tg-load-avg        base + queued-wakeup + tg-load-avg
->   1-groups:   22.15 (0.00 pct)      22.46 (-1.39 pct)                    
-> 22.35 (-0.90 pct)                   21.20 (4.28 pct)
->   2-groups:   22.76 (0.00 pct)      21.78 (4.30 pct)                     
-> 22.60 (0.70 pct)                    21.90 (3.77 pct)
->   4-groups:   22.12 (0.00 pct)      22.02 (0.45 pct)                     
-> 22.22 (-0.45 pct)                   21.94 (0.81 pct)
->   8-groups:   24.80 (0.00 pct)      22.36 (9.83 pct)                     
-> 22.99 (7.29 pct)                    22.00 (11.29 pct)
-> 16-groups:   31.09 (0.00 pct)      21.56 (30.65 pct)                    
-> 22.13 (28.81 pct)                   20.60 (33.74 pct)
-> 
-> ==================================================================
-> Test          : tbench
-> Units         : Throughput
-> Interpretation: Higher is better
-> Statistic     : AMean
-> ==================================================================
-> Clients: 6.5.0-rc1 (base)    base + mathieu-queued-wakeup           base 
-> + aaron-tg-load-avg       base + queued-wakeup + tg-load-avg
->      1    261.49 (0.00 pct)       261.18 (-0.11 pct)                     
-> 262.29 (0.30 pct)                   257.80 (-1.41 pct)
->      2    514.08 (0.00 pct)       521.30 (1.40 pct)                      
-> 517.66 (0.69 pct)                   510.96 (-0.60 pct)
->      4    1002.51 (0.00 pct)      988.81 (-1.36 pct)                     
-> 995.04 (-0.74 pct)                  987.74 (-1.47 pct)
->      8    1978.74 (0.00 pct)      1966.60 (-0.61 pct)                    
-> 1991.85 (0.66 pct)                  1941.39 (-1.88 pct)
->     16    3864.14 (0.00 pct)      3952.03 (2.27 pct)                     
-> 3914.80 (1.31 pct)                  3873.88 (0.25 pct)
->     32    7473.19 (0.00 pct)      7602.38 (1.72 pct)                     
-> 7585.94 (1.50 pct)                  7423.44 (-0.66 pct)
->     64    14335.10 (0.00 pct)     14313.17 (-0.15 pct)                   
-> 14474.67 (0.97 pct)                 14030.63 (-2.12 pct)
->    128    27275.73 (0.00 pct)     25176.80 (-7.69 pct)                   
-> 28066.53 (2.89 pct)                 25045.53 (-8.17 pct)
->    256    41688.17 (0.00 pct)     44373.40 (6.44 pct)                    
-> 43779.37 (5.01 pct)                 41427.00 (-0.62 pct)
->    512    137481.33 (0.00 pct)    136466.67 (-0.73 pct)                  
-> 134824.00 (-1.93 pct)               141280.00 (2.76 pct)
->   1024    140534.00 (0.00 pct)    141916.33 (0.98 pct)                   
-> 137008.33 (-2.50 pct)               126319.33 (-10.11 pct)
->   2048    145378.00 (0.00 pct)    145479.33 (0.06 pct)                   
-> 138763.67 (-4.54 pct)               124471.00 (-14.38 pct)
-> 
->   ==================================================================
->   Test          : netperf
->   Units         : Througput
->   Interpretation: Higher is better
->   Statistic     : AMean
->   ==================================================================
->                   6.5.0-rc1 (base)    base + mathieu-queued-wakeup       
-> base + aaron-tg-load-avg        base + queued-wakeup + tg-load-avg
->    1-clients:      59642.88 (0.00 pct)        61647.37 (3.36 
-> pct)         61186.24 (2.58 pct)                 59099.11 (-0.91 pct)
->    2-clients:      59349.65 (0.00 pct)        60896.01 (2.60 
-> pct)         60582.49 (2.07 pct)                 62738.47 (5.70 pct)
->    4-clients:      59197.37 (0.00 pct)        60457.29 (2.12 
-> pct)         63042.52 (6.49 pct)                 60879.58 (2.84 pct)
->    8-clients:      61977.66 (0.00 pct)        60389.92 (-2.56 
-> pct)        62078.15 (0.16 pct)                 60314.65 (-2.68 pct)
->   16-clients:      61518.83 (0.00 pct)        61143.51 (-0.61 
-> pct)        60946.08 (-0.93 pct)                59388.78 (-3.46 pct)
->   32-clients:      58230.81 (0.00 pct)        58653.20 (0.72 
-> pct)         58594.14 (0.62 pct)                 58188.52 (-0.07 pct)
->   64-clients:      58050.92 (0.00 pct)        57834.55 (-0.37 
-> pct)        58183.51 (0.22 pct)                 57565.75 (-0.83 pct)
->   128-clients:     54324.55 (0.00 pct)        54385.60 (0.11 
-> pct)         54913.43 (1.08 pct)                 53917.11 (-0.75 pct)
->   256-clients:     70155.29 (0.00 pct)        69390.68 (-1.08 
-> pct)        70097.50 (-0.08 pct)                64410.66 (-8.18 pct)
->   512-clients:     61511.77 (0.00 pct)        61480.99 (-0.05 
-> pct)        54493.82 (-11.40 pct)               46227.05 (-24.84 pct)
-> 
-> ==================================================================
-> Test          : stream-10
-> Units         : Bandwidth, MB/s
-> Interpretation: Higher is better
-> Statistic     : HMean
-> ==================================================================
-> Test:      6.5.0-rc1 (base)      base + mathieu-queued-wakeup         
-> base + aaron-tg-load-avg       base + queued-wakeup + tg-load-avg
->   Copy:   353336.76 (0.00 pct)       352956.36 (-0.10 pct)               
-> 349583.67 (-1.06 pct)               351152.80 (-0.61 pct)
-> Scale:   353474.88 (0.00 pct)       354582.35 (0.31 pct)                
-> 350543.75 (-0.82 pct)               353275.74 (-0.05 pct)
->    Add:   371984.24 (0.00 pct)       372824.87 (0.22 pct)                
-> 369173.72 (-0.75 pct)               370483.63 (-0.40 pct)
-> Triad:   372625.41 (0.00 pct)       278389.62 (-25.28 pct)              
-> 369504.06 (-0.83 pct)               369070.11 (-0.95 pct)
-> 
-> ==================================================================
-> Test          : stream-100
-> Units         : Bandwidth, MB/s
-> Interpretation: Higher is better
-> Statistic     : HMean
-> ==================================================================
-> Test:     6.5.0-rc1 (base)        base + mathieu-queued-wakeup       
-> base + aaron-tg-load-avg       base + queued-wakeup + tg-load-avg
->   Copy:   353476.35 (0.00 pct)       354954.50 (0.41 pct)                
-> 354614.56 (0.32 pct)                353512.71 (0.01 pct)
-> Scale:   353214.73 (0.00 pct)       354884.12 (0.47 pct)                
-> 355841.17 (0.74 pct)                353220.53 (0.00 pct)
->    Add:   370755.48 (0.00 pct)       372292.72 (0.41 pct)                
-> 375307.35 (1.22 pct)                369917.77 (-0.22 pct)
-> Triad:   370652.02 (0.00 pct)       372732.11 (0.56 pct)                
-> 375718.85 (1.36 pct)                369926.26 (-0.19 pct)
-> 
-> ==================================================================
-> Test          : schbench (old)
-> Units         : 99th percentile latency in us
-> Interpretation: Lower is better
-> Statistic     : Median
-> ==================================================================
-> #workers: 6.5.0-rc1 (base)    base + mathieu-queued-wakeup          base 
-> + aaron-tg-load-avg        base + queued-wakeup + tg-load-avg
->    1:      56.00 (0.00 pct)        58.00 (-3.57 
-> pct)                      60.00 (-7.14 pct)                   60.00 
-> (-7.14 pct)
->    2:      61.00 (0.00 pct)        56.00 (8.19 
-> pct)                       59.00 (3.27 pct)                    60.00 
-> (1.63 pct)
->    4:      64.00 (0.00 pct)        62.00 (3.12 
-> pct)                       66.00 (-3.12 pct)                   64.00 
-> (0.00 pct)
->    8:      96.00 (0.00 pct)        78.00 (18.75 
-> pct)                      76.00 (20.83 pct)                   93.00 
-> (3.12 pct)
->   16:      98.00 (0.00 pct)        95.00 (3.06 
-> pct)                       98.00 (0.00 pct)                    95.00 
-> (3.06 pct)
->   32:     137.00 (0.00 pct)       144.00 (-5.10 pct)                     
-> 133.00 (2.91 pct)                   130.00 (5.10 pct)
->   64:     206.00 (0.00 pct)       210.00 (-1.94 pct)                     
-> 200.00 (2.91 pct)                   217.00 (-5.33 pct)
-> 128:     348.00 (0.00 pct)       347.00 (0.28 pct)                      
-> 413.00 (-18.67 pct)                 366.00 (-5.17 pct)
-> 256:     679.00 (0.00 pct)       669.00 (1.47 pct)                      
-> 669.00 (1.47 pct)                   675.00 (0.58 pct)
-> 512:     1366.00 (0.00 pct)      1366.00 (0.00 pct)                     
-> 1442.00 (-5.56 pct)                 1430.00 (-4.68 pct)
-> 
-> 
-> ==================================================================
-> Test          : schbench (new)
-> Units         : 99th percentile latency in us
-> Interpretation: Lower is better
-> Statistic     : Median
-> ==================================================================
-> Metric: wakeup_lat_summary
-> #workers: 6.5.0-rc1 (base)    base + mathieu-queued-wakeup          base 
-> + aaron-tg-load-avg        base + queued-wakeup + tg-load-avg
->    1:      15.00 (0.00 pct)        15.00 (0.00 
-> pct)                       16.00 (-6.66 pct)                   17.00 
-> (-13.33 pct)
->    2:      16.00 (0.00 pct)        16.00 (0.00 
-> pct)                       17.00 (-6.25 pct)                   17.00 
-> (-6.25 pct)
->    4:      17.00 (0.00 pct)        17.00 (0.00 
-> pct)                       15.00 (11.76 pct)                   17.00 
-> (0.00 pct)
->    8:      11.00 (0.00 pct)        13.00 (-18.18 
-> pct)                     11.00 (0.00 pct)                    11.00 (0.00 
-> pct)
->   16:      11.00 (0.00 pct)        11.00 (0.00 
-> pct)                       10.00 (9.09 pct)                     9.00 
-> (18.18 pct)
->   32:      11.00 (0.00 pct)        11.00 (0.00 
-> pct)                       11.00 (0.00 pct)                    11.00 
-> (0.00 pct)
->   64:      10.00 (0.00 pct)        11.00 (-10.00 
-> pct)                     10.00 (0.00 pct)                    10.00 (0.00 
-> pct)
-> 128:      11.00 (0.00 pct)        12.00 (-9.09 pct)                      
-> 12.00 (-9.09 pct)                   11.00 (0.00 pct)
-> 256:     117.00 (0.00 pct)       162.00 (-38.46 pct)                     
-> 90.00 (23.07 pct)                  103.00 (11.96 pct)
-> 512:     22496.00 (0.00 pct)     21664.00 (3.69 pct)                    
-> 22368.00 (0.56 pct)                 21408.00 (4.83 pct)
-> 
-> Metric: request_lat_summary
-> #workers: 6.5.0-rc1 (base)    base + mathieu-queued-wakeup          base 
-> + aaron-tg-load-avg        base + queued-wakeup + tg-load-avg
->    1:     6872.00 (0.00 pct)      6872.00 (0.00 pct)                     
-> 6792.00 (1.16 pct)                  6856.00 (0.23 pct)
->    2:     6824.00 (0.00 pct)      6824.00 (0.00 pct)                     
-> 6872.00 (-0.70 pct)                 6856.00 (-0.46 pct)
->    4:     6824.00 (0.00 pct)      6808.00 (0.23 pct)                     
-> 6872.00 (-0.70 pct)                 6824.00 (0.00 pct)
->    8:     6824.00 (0.00 pct)      6824.00 (0.00 pct)                     
-> 6872.00 (-0.70 pct)                 6824.00 (0.00 pct)
->   16:     6824.00 (0.00 pct)      6840.00 (-0.23 pct)                    
-> 6872.00 (-0.70 pct)                 6840.00 (-0.23 pct)
->   32:     6840.00 (0.00 pct)      6840.00 (0.00 pct)                     
-> 6888.00 (-0.70 pct)                 6856.00 (-0.23 pct)
->   64:     6840.00 (0.00 pct)      6872.00 (-0.46 pct)                    
-> 6888.00 (-0.70 pct)                 6872.00 (-0.46 pct)
-> 128:     12272.00 (0.00 pct)     12784.00 (-4.17 pct)                   
-> 13200.00 (-7.56 pct)                12016.00 (2.08 pct)
-> 256:     13328.00 (0.00 pct)     13392.00 (-0.48 pct)                   
-> 13712.00 (-2.88 pct)                13552.00 (-1.68 pct)
-> 512:     88832.00 (0.00 pct)     86400.00 (2.73 pct)                    
-> 88192.00 (0.72 pct)                 85632.00 (3.60 pct)
-> 
-> Metric: rps_summary
-> #workers: 6.5.0-rc1 (base)    base + mathieu-queued-wakeup          base 
-> + aaron-tg-load-avg       base + queued-wakeup + tg-load-avg
->    1:     297.00 (0.00 pct)       297.00 (0.00 pct)                      
-> 297.00 (0.00 pct)                   299.00 (-0.67 pct)
->    2:     601.00 (0.00 pct)       603.00 (-0.33 pct)                     
-> 595.00 (0.99 pct)                   601.00 (0.00 pct)
->    4:     1206.00 (0.00 pct)      1206.00 (0.00 pct)                     
-> 1190.00 (1.32 pct)                  1206.00 (0.00 pct)
->    8:     2412.00 (0.00 pct)      2412.00 (0.00 pct)                     
-> 2396.00 (0.66 pct)                  2420.00 (-0.33 pct)
->   16:     4840.00 (0.00 pct)      4824.00 (0.33 pct)                     
-> 4792.00 (0.99 pct)                  4840.00 (0.00 pct)
->   32:     9648.00 (0.00 pct)      9648.00 (0.00 pct)                     
-> 9584.00 (0.66 pct)                  9680.00 (-0.33 pct)
->   64:     19360.00 (0.00 pct)     19296.00 (0.33 pct)                    
-> 19168.00 (0.99 pct)                 19296.00 (0.33 pct)
-> 128:     37952.00 (0.00 pct)     35264.00 (7.08 pct)                    
-> 36672.00 (3.37 pct)                 38080.00 (-0.33 pct)
-> 256:     41408.00 (0.00 pct)     41536.00 (-0.30 pct)                   
-> 39744.00 (4.01 pct)                 40896.00 (1.23 pct)
-> 512:     36288.00 (0.00 pct)     36800.00 (-1.41 pct)                   
-> 35264.00 (2.82 pct)                 35776.00 (1.41 pct)
-> 
-> Tested-by: Swapnil Sapkal <Swapnil.Sapkal@amd.com>
-> 
->>
->> Thanks,
->>
->> Mathieu
->>
->> Mathieu Desnoyers (3):
->>    sched: Rename cpus_share_cache to cpus_share_llc
->>    sched: Introduce cpus_share_l2c (v3)
->>    sched: ttwu_queue_cond: skip queued wakeups across different l2 caches
->>
->> Cc: Ingo Molnar <mingo@redhat.com>
->> Cc: Peter Zijlstra <peterz@infradead.org>
->> Cc: Valentin Schneider <vschneid@redhat.com>
->> Cc: Steven Rostedt <rostedt@goodmis.org>
->> Cc: Ben Segall <bsegall@google.com>
->> Cc: Mel Gorman <mgorman@suse.de>
->> Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
->> Cc: Vincent Guittot <vincent.guittot@linaro.org>
->> Cc: Juri Lelli <juri.lelli@redhat.com>
->> Cc: Swapnil Sapkal <Swapnil.Sapkal@amd.com>
->> Cc: Aaron Lu <aaron.lu@intel.com>
->> Cc: Julien Desfossez <jdesfossez@digitalocean.com>
->> Cc: x86@kernel.org
->>
->>   block/blk-mq.c                 |  2 +-
->>   include/linux/sched/topology.h | 10 ++++++++--
->>   kernel/sched/core.c            | 14 +++++++++++---
->>   kernel/sched/fair.c            |  8 ++++----
->>   kernel/sched/sched.h           |  2 ++
->>   kernel/sched/topology.c        | 32 +++++++++++++++++++++++++++++---
->>   6 files changed, 55 insertions(+), 13 deletions(-)
->>
-> -- 
-> Thanks and Regards,
-> Swapnil
+Oleg your patch makes it easier to see what the how
+far this is from first_tid/next_tid in proc.
 
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
+Acked-by: "Eric W. Biederman" <ebiederm@xmission.com>
 
+Eric
