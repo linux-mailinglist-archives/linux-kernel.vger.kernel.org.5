@@ -2,150 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1743788E48
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 20:11:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9B28788E49
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 20:14:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232718AbjHYSL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 14:11:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46142 "EHLO
+        id S231612AbjHYSNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 14:13:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231984AbjHYSLL (ORCPT
+        with ESMTP id S233356AbjHYSNX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 14:11:11 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2365A1BF1;
-        Fri, 25 Aug 2023 11:11:10 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AE21661353;
-        Fri, 25 Aug 2023 18:11:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA76EC433C8;
-        Fri, 25 Aug 2023 18:11:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1692987069;
-        bh=CqRDmZ8FlXZOuBuhi4oqiIATxpNhdyBrCLj19NbET88=;
-        h=Date:From:To:Cc:Subject:From;
-        b=IkM01cKVxfP75Na8tXz1BAs/FMSDqyDWtXf2qrqa91rmvUuEevLumcPPL8ut0rOJ6
-         wjcfLgVDq1U0gOtlGxjFfZjv9/1SWCkt+/+eDqSCEr+LOvgKAswG/OXDAksc0nrSJ+
-         AA2puOQdZkxbsklCCRPQGyJIIByS77lTlAhUEoKE=
-Date:   Fri, 25 Aug 2023 11:11:08 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     mm-commits@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] hotfixes for 6.5
-Message-Id: <20230825111108.898f1600c365d22f74e52c70@linux-foundation.org>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        Fri, 25 Aug 2023 14:13:23 -0400
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 330A82717
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 11:12:44 -0700 (PDT)
+Received: by mail-il1-x132.google.com with SMTP id e9e14a558f8ab-34cad4e6a34so1477565ab.0
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 11:12:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1692987156; x=1693591956;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=C7fASciw8k4HY5gXvLmNNZpvPMF/wBHDgCKHYnbqgSM=;
+        b=dK7KblEm0EswR6B8cyEjjhuWM7XS5qtPbE8Bgf7VcqBX3yZ220qH2zXenViyhB/z2V
+         cDxsqXZbJuNty3TjV3VlHU1dPU2xshi6sXMQ3YdiLEUZDuuHLPI27Xt13w8tyEBcylm/
+         sCCiEk4ftwmOsGJVDSy2AxrS67UXgDB0TIzaU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692987156; x=1693591956;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=C7fASciw8k4HY5gXvLmNNZpvPMF/wBHDgCKHYnbqgSM=;
+        b=NQHq6nElMCNKT0jLORwB+tRv7Y/3j4af4ba527hn1zogRJbJFbZCEYaO+YYI83EgJB
+         ews+bmZyj/CYuoQFzZ2D2DeBuI1Ts/nqzbe0Lzi9ba917mAc1bkyvoKFUDcqepzSgpYj
+         6jFUTw4LkPpEyXEC7h6ZlRJ9aFZLsyQ33klPa7J4oAWsWUyvH4R77EYeAq80OMExNipU
+         LWl5waWl5tewEju/6YVJpBgGUg5fSWijDG8hwZ5v0hvBC+kkt7sgTEDZaaKmqQtunkVp
+         TdqR2rSW2C2493DS0OBGHYgIPF4A3hoQhrAOjJwk7jtbDLi6wdzlZKc31JbnsxjdWW3t
+         z5WA==
+X-Gm-Message-State: AOJu0Yxzm377AX0ghic+zl6IY89z7Iq22tqSzNT7BdLfPmIy7NwcH5DQ
+        LcWY3m6Le9eE9cadzc8Jn/FUiA==
+X-Google-Smtp-Source: AGHT+IGClfzFcJ7TBPEQJdIsOSwJoe5p987iA5e84iRE5OkoNUjcWnuB8Xp2vTjF0Tgmd9qMMc9Gng==
+X-Received: by 2002:a92:c00f:0:b0:349:67b0:6045 with SMTP id q15-20020a92c00f000000b0034967b06045mr19074524ild.3.1692987155806;
+        Fri, 25 Aug 2023 11:12:35 -0700 (PDT)
+Received: from [192.168.1.128] ([38.15.45.1])
+        by smtp.gmail.com with ESMTPSA id w9-20020a92d2c9000000b0034886587bdcsm683452ilg.18.2023.08.25.11.12.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Aug 2023 11:12:35 -0700 (PDT)
+Message-ID: <631bbec0-ce5e-9bff-d645-fa24b04e9ff3@linuxfoundation.org>
+Date:   Fri, 25 Aug 2023 12:12:34 -0600
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 6.1 00/15] 6.1.48-rc1 review
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20230824141447.155846739@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20230824141447.155846739@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 8/24/23 08:14, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.1.48 release.
+> There are 15 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sat, 26 Aug 2023 14:14:28 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.48-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Linus, please merge this batch of hotfixes, thanks.
+Compiled and booted on my test system. No dmesg regressions.
 
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-The following changes since commit 5f1fc67f2cb8d3035d3acd273b48b97835af8afd:
-
-  mm/damon/core: initialize damo_filter->list from damos_new_filter() (2023-08-04 13:03:43 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm tags/mm-hotfixes-stable-2023-08-25-11-07
-
-for you to fetch changes up to e5548f85b4527c4c803b7eae7887c10bf8f90c97:
-
-  shmem: fix smaps BUG sleeping while atomic (2023-08-24 14:59:47 -0700)
-
-----------------------------------------------------------------
-18 hotfixes.  13 are cc:stable and the remainder pertain to post-6.4 issues
-or aren't considered suitable for a -stable backport.
-
-----------------------------------------------------------------
-Alexandre Ghiti (1):
-      mm: add a call to flush_cache_vmap() in vmap_pfn()
-
-Andre Przywara (2):
-      selftests: cachestat: test for cachestat availability
-      selftests: cachestat: catch failing fsync test on tmpfs
-
-Arnd Bergmann (1):
-      radix tree: remove unused variable
-
-Ayush Jain (1):
-      selftests/mm: FOLL_LONGTERM need to be updated to 0x100
-
-David Hildenbrand (3):
-      mm/gup: reintroduce FOLL_NUMA as FOLL_HONOR_NUMA_FAULT
-      smaps: use vm_normal_page_pmd() instead of follow_trans_huge_pmd()
-      mm/gup: handle cont-PTE hugetlb pages correctly in gup_must_unshare() via GUP-fast
-
-Hugh Dickins (1):
-      shmem: fix smaps BUG sleeping while atomic
-
-Liam R. Howlett (1):
-      maple_tree: disable mas_wr_append() when other readers are possible
-
-Lucas Karpinski (1):
-      selftests: cgroup: fix test_kmem_basic less than error
-
-Miaohe Lin (1):
-      mm: memory-failure: fix unexpected return value in soft_offline_page()
-
-Ryusuke Konishi (1):
-      nilfs2: fix general protection fault in nilfs_lookup_dirty_data_buffers()
-
-Suren Baghdasaryan (1):
-      mm: enable page walking API to lock vmas during the walk
-
-T.J. Mercier (1):
-      mm: multi-gen LRU: don't spin during memcg release
-
-Yin Fengwei (3):
-      madvise:madvise_cold_or_pageout_pte_range(): don't use mapcount() against large folio for sharing check
-      madvise:madvise_free_huge_pmd(): don't use mapcount() against large folio for sharing check
-      madvise:madvise_free_pte_range(): don't use mapcount() against large folio for sharing check
-
- arch/powerpc/mm/book3s64/subpage_prot.c            |  1 +
- arch/riscv/mm/pageattr.c                           |  1 +
- arch/s390/mm/gmap.c                                |  5 ++
- fs/nilfs2/segment.c                                |  5 ++
- fs/proc/task_mmu.c                                 |  8 ++-
- include/linux/huge_mm.h                            |  3 -
- include/linux/mm.h                                 | 21 ++++--
- include/linux/mm_types.h                           |  9 +++
- include/linux/pagewalk.h                           | 11 +++
- lib/maple_tree.c                                   |  7 ++
- lib/radix-tree.c                                   |  1 -
- mm/damon/vaddr.c                                   |  2 +
- mm/gup.c                                           | 30 ++++++--
- mm/hmm.c                                           |  1 +
- mm/huge_memory.c                                   |  5 +-
- mm/internal.h                                      | 17 +++++
- mm/ksm.c                                           | 25 ++++---
- mm/madvise.c                                       |  9 ++-
- mm/memcontrol.c                                    |  2 +
- mm/memory-failure.c                                | 12 ++--
- mm/mempolicy.c                                     | 22 +++---
- mm/migrate_device.c                                |  1 +
- mm/mincore.c                                       |  1 +
- mm/mlock.c                                         |  1 +
- mm/mprotect.c                                      |  1 +
- mm/pagewalk.c                                      | 36 +++++++++-
- mm/shmem.c                                         |  6 +-
- mm/vmalloc.c                                       |  4 ++
- mm/vmscan.c                                        | 14 ++--
- tools/testing/selftests/cachestat/test_cachestat.c | 80 ++++++++++++++++++----
- tools/testing/selftests/cgroup/test_kmem.c         |  4 +-
- tools/testing/selftests/mm/hmm-tests.c             |  7 +-
- 32 files changed, 279 insertions(+), 73 deletions(-)
+thanks,
+-- Shuah
 
