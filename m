@@ -2,116 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04FD3788810
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 15:05:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0AF2788815
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 15:09:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244925AbjHYNFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 09:05:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35572 "EHLO
+        id S244922AbjHYNJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 09:09:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244993AbjHYNFD (ORCPT
+        with ESMTP id S242886AbjHYNJG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 09:05:03 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6CCE1BF0;
-        Fri, 25 Aug 2023 06:04:57 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1bf7a6509deso6658975ad.3;
-        Fri, 25 Aug 2023 06:04:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692968697; x=1693573497;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=CoViU47zP7yqEj1KNAwCFxEy/0OkP50WBChNobdQpEk=;
-        b=sQCeZG7uH3nYcY9GRHENnPT1vdy5VoPjMwd6NtQHIoP6NwKM//XPBwxEkhNWjdUpRD
-         amDY6MEIj/UtMrkdHxEVjOVVRHBbkwlHD7FbSRbkUnX8jZbtq95YQux5rn/h9vpmSqPf
-         eS0LWQ87xMkTd4xAhnS8oiYpsf3nVgmepuGx0Y2atVv1auCoVon0/sCk7+lVMzx3xUpJ
-         AdjPa03Kf6n5TNvGhrl71La0H+Ttew+jjdiyyn9ybKY28K5zf+neUxFrBlD+r3rP9Zei
-         nG1PQCLTBCwMd6C53KH/EeCaj73s+eqtZL0a9mSjvPrdXpWyNBqMkdTkmoKYxRpgEqvQ
-         zwIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692968697; x=1693573497;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CoViU47zP7yqEj1KNAwCFxEy/0OkP50WBChNobdQpEk=;
-        b=EN/o7IMYQVQYF+TY2phPikDsl1gnG5SVINXw5vCttNvUhU+c58FYN1ALEHHx3qXFuh
-         OnigaHEzYC8Ir0gaGhBB6MpQo+I3MZnFXcg3TPR3mioMRZb/GUCut64W/Kq/oNtjz543
-         q9YtRGu7K40ya1AJ4orwABMkgQeleBmz+5C/MBt2qpsho8Q2gCFabL63sV7vNz8KDq8p
-         DE3zNU1yX3JTKBC+td9B3TY2ldceUrcMfE5hksenOMps84aNMjypktRsnJdgvQxoeoYs
-         QEGN+nPlW9RU3mGbu2ylPAE87+oiJaPM4+QMnkO6XHS6S/rG5NMbepktdePWKWMynrmj
-         RCuw==
-X-Gm-Message-State: AOJu0YwuQuMSLdD520tGda8hm14CeLS5AxUmuu0mOf5Rp8KGsIdDLPbk
-        1TxH8NPJGtIqw8pjndX/1SQ=
-X-Google-Smtp-Source: AGHT+IEbTobU4DbNr3PSeZyqieW87FG8QQedMMZBFS8FhdmFZ42tpRGksnN8q1UwAmrTAvxAKmyBxA==
-X-Received: by 2002:a17:903:22d0:b0:1c0:9bef:4bbd with SMTP id y16-20020a17090322d000b001c09bef4bbdmr11219724plg.14.1692968697146;
-        Fri, 25 Aug 2023 06:04:57 -0700 (PDT)
-Received: from localhost.localdomain ([2409:40c2:100b:f444:c0d8:b853:252b:aa3])
-        by smtp.gmail.com with ESMTPSA id jj17-20020a170903049100b001b9d7c8f44dsm1638155plb.182.2023.08.25.06.04.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Aug 2023 06:04:56 -0700 (PDT)
-From:   coolrrsh@gmail.com
-To:     hverkuil@xs4all.nl, mchehab@kernel.org, slark_xiao@163.com,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        Rajeshwar R Shinde <coolrrsh@gmail.com>,
-        syzbot+e27f3dbdab04e43b9f73@syzkaller.appspotmail.com
-Subject: [PATCH v4] media: gspca: UBSAN: shift-out-of-bounds in set_flicker
-Date:   Fri, 25 Aug 2023 18:34:50 +0530
-Message-Id: <20230825130450.5287-1-coolrrsh@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 25 Aug 2023 09:09:06 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 922D4198A
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 06:09:04 -0700 (PDT)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37PCeNOp019270;
+        Fri, 25 Aug 2023 13:08:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=cwouXUzDVAXE+Y59+Ft45l5xh4x2UQkftIjvqRmh1+I=;
+ b=K3UoJeofuUcz39fRSiHM57vDMcqDHq8J8n2XdNE++bcQ+iO/7qAyzNpyN4XgxlRnn2qK
+ l+WSwzfIlEeU9chZcDpJJ03mcOAnHwiJBuw5W+FU9812k9TETTcJnGPad8O6j2MbDiBE
+ smtgFAPZd2E6LkeMbot3DD13FkQ1TJBS35IsE+k9Q+64Khkp0FKvNlVuSiXxVVoguIM6
+ xqEBz5GHqYryXul0rEenDnTVpi5Njj426ScEz/HaH0IEduxk9tJDkjzL4pN48aZYyni2
+ vcmIqNfoVdQGWAt/n3V8qpwbkxthpHmpwc3pzsRcfQVxjv7fimihk8EO7h2FaX+GqlLc kw== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3spmn38xds-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 25 Aug 2023 13:08:58 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37PD8MXO027216
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 25 Aug 2023 13:08:22 GMT
+Received: from [10.214.66.253] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Fri, 25 Aug
+ 2023 06:08:20 -0700
+Message-ID: <9ab7df09-e128-4940-ace5-0cc5ffa1ec4d@quicinc.com>
+Date:   Fri, 25 Aug 2023 18:38:13 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] cma: introduce CMA_ALLOC_DEBUG config
+Content-Language: en-US
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        Pavan Kondeti <quic_pkondeti@quicinc.com>,
+        <quic_charante@quicinc.com>
+References: <20230809131640.18791-1-quic_bibekkum@quicinc.com>
+ <20230810095451.cada824810441ecc955e2b2e@linux-foundation.org>
+ <c576a86e-7df0-410e-bcdd-b7831727475d@quicinc.com>
+From:   Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+In-Reply-To: <c576a86e-7df0-410e-bcdd-b7831727475d@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: FhtS749M2VOErv0kSOfkotJpLQuIrwiE
+X-Proofpoint-GUID: FhtS749M2VOErv0kSOfkotJpLQuIrwiE
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-25_10,2023-08-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
+ lowpriorityscore=0 clxscore=1015 phishscore=0 adultscore=0
+ priorityscore=1501 malwarescore=0 impostorscore=0 spamscore=0
+ mlxlogscore=999 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308250116
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rajeshwar R Shinde <coolrrsh@gmail.com>
+On 8/14/2023 8:30 AM, Pavan Kondeti wrote:
+> Bibek,
+> 
+> On Thu, Aug 10, 2023 at 09:54:51AM -0700, Andrew Morton wrote:
+>> On Wed, 9 Aug 2023 18:46:40 +0530 Bibek Kumar Patro <quic_bibekkum@quicinc.com> wrote:
+>>
+>>> Currently enabling CONFIG_CMA_DEBUG enables DEBUG preprocessor macro.
+>>> If DEBUG is defined, it's equivalent to a printk with KERN_DEBUG loglevel
+>>> flooding the dmesg buffer with pr_debug prints from mm/cma driver and from
+>>> included files as well. This results in excessive amount of CMA logging and
+>>> also might distract the debug teams with unrelated KERN_DEBUG prints.One of
+>>> the ways engineers currently tackle this problem is by passing loglevel=N
+>>> though commandline to suppress KERN_DEBUG messages. This approach can
+>>> sometimes become tiresome due to its repetitive nature.
+>>> This patch proposes an alternative approach by introducing a simple new
+>>> config CONFIG_CMA_ALLOC_DEBUG which only shows the cma bit allocation
+>>> status in case of cma failure and do not enable DEBUG preprocessor macro
+>>> from CONFIG_CMA_DEBUG avoiding excessive CMA logging from pr_debug.
+>>> Engineers and tech teams seeking only for bitmap status in case of cma
+>>> failure can use this simple config instead of worrying about changing
+>>> the loglevel or trying other similar workarounds.
+>>
+>> Would it be better to control this at runtime?  With a /proc or /sys tunable?
+> 
 
-Syzkaller reported the following issue:
+Thanks Andrew for suggestion and Pavan for the details, tunable approach
+looks viable too since we get to control this during runtime, but had
+one query in mind where your inputs would help. In case any engineer 
+wishes to check boot time CMA failures, would it be easier to use a
+CONFIG or /proc , /sys tunable?
+(Assuming for /proc or /sys tunable, one has to modify the
+init/post_boot scripts to mount the fs and set the tunable to true )
 
-UBSAN: shift-out-of-bounds in drivers/media/usb/gspca/cpia1.c:1031:27
-shift exponent 245 is too large for 32-bit type 'int'
-When the value of the variable "sd->params.exposure.gain" exceeds the
-number of bits in an int, a shift-out-of-bounds error occurs. The error is
-generated when the variable "currentexp" is left-shifted by more than 31
-bits. In order to confirm the range is valid, the conditional expression
-was added.
+> IIUC, Andrew is asking/suggesting that would a runtime knob be useful
+> here?
+> 
+> For ex:
+> 
+> /proc/sys/vm/cma_dump_on_failure : This needs to be registerd in the
+> cma.c . grep for "register_sysctl_init" in mm code. We can set this to
+> true by default in case CMA_DEBUG is enabled so that current users are
+> not affected.
+> 
+> /sys/kernel/mm/cma/bitmap_dump_on_failure : This needs to stay in
+> cma_sysfs.c code
+> 
+> Thanks,
+> Pavan
+> 
+> 
 
-Reported-by: syzbot+e27f3dbdab04e43b9f73@syzkaller.appspotmail.com
-Closes: https://lore.kernel.org/all/20230818164522.12806-1-coolrrsh@gmail.com
-Link: https://syzkaller.appspot.com/bug?extid=e27f3dbdab04e43b9f73
-Signed-off-by: Rajeshwar R Shinde <coolrrsh@gmail.com>
----
-v1->v2
-Changed the patch. Instead of avoiding shift operation for invalid
-input of 'exposure.gain', throw an error for invalid range.
-v2->v3
-Changed the commit message details
-v3->v4
-Removed the trailing spaces in commit message
----
- drivers/media/usb/gspca/cpia1.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/media/usb/gspca/cpia1.c b/drivers/media/usb/gspca/cpia1.c
-index 46ed95483e22..dafc522d5e7b 100644
---- a/drivers/media/usb/gspca/cpia1.c
-+++ b/drivers/media/usb/gspca/cpia1.c
-@@ -1028,6 +1028,8 @@ static int set_flicker(struct gspca_dev *gspca_dev, int on, int apply)
- 			sd->params.exposure.expMode = 2;
- 			sd->exposure_status = EXPOSURE_NORMAL;
- 		}
-+		if (sd->params.exposure.gain > 31)
-+			return -EINVAL;
- 		currentexp = currentexp << sd->params.exposure.gain;
- 		sd->params.exposure.gain = 0;
- 		/* round down current exposure to nearest value */
--- 
-2.25.1
-
+Thanks,
+Bibek
