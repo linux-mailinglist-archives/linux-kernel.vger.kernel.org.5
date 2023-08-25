@@ -2,75 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CC547891C0
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 00:35:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06D1B7891C1
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 00:35:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230234AbjHYWec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 18:34:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43196 "EHLO
+        id S230250AbjHYWed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 18:34:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230164AbjHYWeB (ORCPT
+        with ESMTP id S230221AbjHYWeU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 18:34:01 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D32E1269F
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 15:33:58 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-5232ce75e26so1835a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 15:33:58 -0700 (PDT)
+        Fri, 25 Aug 2023 18:34:20 -0400
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0C6B26AF
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 15:34:16 -0700 (PDT)
+Received: by mail-il1-x133.google.com with SMTP id e9e14a558f8ab-34cabf65ee8so40935ab.0
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 15:34:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693002837; x=1693607637; darn=vger.kernel.org;
+        d=google.com; s=20221208; t=1693002856; x=1693607656; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=EqXwtngxbhcerFqq2zzrMvbfgVxQJUNuombpjhiM9xQ=;
-        b=NLyB9aUncDEVcUMuN2DPiA/YxQpRVA1YzTqo4wVgy6rEIj9Xxu4oQ1amnG+RoIBxAE
-         aafI7MtWGaxK92/k+CIyvN6ds01pkj5P5dt3KmRD7k5d1azbsK9dSzKr/Y8pEj4Xu8iV
-         EQ4J/u8E3Tr14suESQ7hU1z5xJwKabJZocUpJbS5Vv1aIN1efSDX/RYMokfsDZFNGKEe
-         HLEshr9sADc+FOJ0C4hszMln8QF0A4YwEoU2aeLAkRnrZT3wPzaGoup2cO74qjaewLAy
-         BrNP2AlDhV6EJEfxiMcjxZih4bXES58CTd1uCq0epnIDA6BPZZtnDBzbTV1bkfVLMmxw
-         de4Q==
+        bh=VmGrXf9cYjykgOlg/u6doGW9vtPA8bMLiJ9T7b++na4=;
+        b=PAXh1adBUFauZawogz7q389GMBq1WlTduNIc5w2yFy7YwvjAX12asWO89+zph8dr3W
+         18RfY+Svstd8+bWMToVytpP3IiVsFkGapddtnpKG8BwIFkFRFeT/w5vzZbc9LZsUa/wl
+         8SD1ZwdYAwoS7/sEsIjY6sVgGDjgN21v2+j+IMJ46TJeZTJc40RsAGqeBp5kd1ZAAAxm
+         iBy6OXsKj66WVe7MwkHTq9MVQ3R8GoW2pbx/Fj0etosTOK8LkmlPwvTNcYI55eXbAZWJ
+         pY7SKwuhhmjsYGDNfKxn0/vyf1R6tYyBVyA0MNlFTZt3fKXqBuGMdu7qjER0RgSAuKXr
+         mNuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693002837; x=1693607637;
+        d=1e100.net; s=20221208; t=1693002856; x=1693607656;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=EqXwtngxbhcerFqq2zzrMvbfgVxQJUNuombpjhiM9xQ=;
-        b=VNPI8Mpb7EPwDzRXy0fkmWloaUz4SH+N5O6i1oNIqoU+Jg0ni756cqXih5B784TinE
-         dYUSFJ5yA9cl8HIrYPsZ91U2NrHq7ZN2PEOuPaPufFUsgZKGStFXiv/q0sWT0KI6RLCC
-         3aYIEZCoYFpeOaJxGU74SeqENBP434t/UMoE5gqNK5MW/Bkx1oGDqR8wLQVgj92MvZGt
-         P4MUIXB0Y0ev1vDup01Swf9jOY8HmX1eTunc1/1/O4zH5mnurXFooDCTk3hYq1sFa/Cc
-         TfiC91UQKZ95z5tTiW4Y5hZibXmSVbfehENm1SP/o2H6wNF7+0DFB44uhW/Cu8zvd9Le
-         Aevg==
-X-Gm-Message-State: AOJu0Yw1fbYcaEkct6EfipKWTm6OWMZGcbg18wKNNtxv8PfwPdNMGeOe
-        7qcq+vmVRu9p5px75WuBoruh1CJsR8FxffuGa07E
-X-Google-Smtp-Source: AGHT+IFl+RqipzjnPK+1V9vuXjOHGZb5UAP9IzU5oxxAZYiKr7WoTFmlztwgHegYdwhF5D9l61/KmtDABnovZFTgoF8=
-X-Received: by 2002:a50:d55c:0:b0:523:d5bc:8424 with SMTP id
- f28-20020a50d55c000000b00523d5bc8424mr44451edj.5.1693002837049; Fri, 25 Aug
- 2023 15:33:57 -0700 (PDT)
+        bh=VmGrXf9cYjykgOlg/u6doGW9vtPA8bMLiJ9T7b++na4=;
+        b=NpPNjWV4Mn5oKEBMOiXc7S2VU3X3xjvYtO6EjvskpruJMHeN8KHNYO/MM6Vfuqnu10
+         X4qYSdmrWwb6EBek4whcILenaRnLrfY03YDpoIoPDKeUgXHtumJ249DVxXgjqY0skh9j
+         trJU/hRdLfNO5g1lgnjaY/dmA69eRV9o9bpB/wAqBuYpiN6/cCC3Ei/19lADc+pRlFxK
+         fCynckfUvTIscwVkmAEVTmhPlBHWmqXcbP8CC+zNcNzcuB3Eg6csaz8hU0f99J2p8rrr
+         7rOuKBetJgslA5gm50IDlcisu8xH3uIdI3es77fty2AYlG5+G8dstIga30qC8kj/qpUs
+         b4WQ==
+X-Gm-Message-State: AOJu0YwlkF8u6Tu/f1iXgRXvvfYEiYZjrgQhweUro/ZQOLZ0MvWQxP+d
+        7IrlNtibnLPyNbMU+vjm3ABXdfm5tNcIScUpPEsXEA==
+X-Google-Smtp-Source: AGHT+IF3vhd8OdJzn3dbhBkM5wd1Hnk0dkeY4f07ZarV1sUQ5JqtJCGCgpfhgOuwf6tzaRd87yn7tlhJtjLYV3wJxgs=
+X-Received: by 2002:a92:cda1:0:b0:347:1b96:9d48 with SMTP id
+ g1-20020a92cda1000000b003471b969d48mr28190ild.15.1693002856153; Fri, 25 Aug
+ 2023 15:34:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <ZOkGCSNr0VN2VIJJ@p100> <CAHk-=wjZwSymfuGvf7TX3UQLU1OMN1FZMnEA-Hja0ruqyhMK4A@mail.gmail.com>
- <CAHk-=whVvD05T0yD5DQj803uETLD6qDq-Vx-SiLPcrL=eO77LQ@mail.gmail.com> <CAKwvOdnYauyrzz7-ceH-MP_KZ5ED8oYxjRx_Xei68=tUOSeKyA@mail.gmail.com>
-In-Reply-To: <CAKwvOdnYauyrzz7-ceH-MP_KZ5ED8oYxjRx_Xei68=tUOSeKyA@mail.gmail.com>
-From:   Bill Wendling <morbo@google.com>
-Date:   Fri, 25 Aug 2023 15:33:40 -0700
-Message-ID: <CAGG=3QWcZPYqHMcjwuYDz1+OQhzS40hmhdOvSBZBQOkhs8YAQQ@mail.gmail.com>
-Subject: Re: [PATCH] lib/clz_ctz.c: Fix __clzdi2() and __ctzdi2() for 32-bit kernels
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Helge Deller <deller@gmx.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Chanho Min <chanho.min@lge.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>
+References: <20230817003029.3073210-1-rananta@google.com> <20230817003029.3073210-9-rananta@google.com>
+ <1c6c07af-f6d0-89a6-1b7d-164ca100ac88@redhat.com> <CAJHc60x=rZTpeJ3PDUWmc08Aziow6S+2nndcL90vHfru5GhXtA@mail.gmail.com>
+ <a0543866-1fac-6a3f-20cd-43b6d1263c0e@redhat.com>
+In-Reply-To: <a0543866-1fac-6a3f-20cd-43b6d1263c0e@redhat.com>
+From:   Raghavendra Rao Ananta <rananta@google.com>
+Date:   Fri, 25 Aug 2023 15:34:04 -0700
+Message-ID: <CAJHc60z=+LG8kayRzYEZ6rCZuov7zC-nLMmzAabPiPKY5OhSEg@mail.gmail.com>
+Subject: Re: [PATCH v5 08/12] KVM: arm64: PMU: Allow userspace to limit
+ PMCR_EL0.N for the guest
+To:     Shaoqin Huang <shahuang@redhat.com>
+Cc:     Oliver Upton <oliver.upton@linux.dev>,
+        Marc Zyngier <maz@kernel.org>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,114 +83,196 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 25, 2023 at 2:01=E2=80=AFPM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
+On Thu, Aug 24, 2023 at 1:50=E2=80=AFAM Shaoqin Huang <shahuang@redhat.com>=
+ wrote:
 >
-> On Fri, Aug 25, 2023 at 1:43=E2=80=AFPM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> >
-> > [ Unrelated to this patch, except it made me look, adding clang build
-> > people to cc ]
-> >
-> > On Fri, 25 Aug 2023 at 13:25, Linus Torvalds
-> > <torvalds@linux-foundation.org> wrote:
-> > >
-> > > On Fri, 25 Aug 2023 at 12:50, Helge Deller <deller@gmx.de> wrote:
-> > > >
-> > > > This patch fixes the in-kernel functions __clzdi2() and __ctzdi2() =
-[..]
-> > >
-> > > Applied,
-> >
-> > Bah. Still applied,  but actually building this (on 64-bit, so kind of
-> > pointless) I note that clang completely messes up this function on
-> > x86.
-> >
-> > Clang turns this:
-> >
-> >         return __ffs64(val);
-> >
-> > into this horror:
-> >
-> >         pushq   %rax
-> >         movq    %rdi, (%rsp)
-> >         #APP
-> >         rep
-> >         bsfq    (%rsp), %rax
-> >         #NO_APP
-> >         popq    %rcx
-> >
-> > which is just incredibly broken on so many levels. It *should* be a
-> > single instruction, like gcc does:
-> >
-> >         rep; bsf %rdi,%rax      # tmp87, word
-> >
-> > but clang decides that it really wants to put the argument on the
-> > stack, and apparently also wants to do that nonsensical stack
-> > alignment thing to make things even worse.
-> >
-> > We use this:
-> >
-> >   static __always_inline unsigned long variable__ffs(unsigned long word=
-)
-> >   {
-> >         asm("rep; bsf %1,%0"
-> >                 : "=3Dr" (word)
-> >                 : "rm" (word));
-> >         return word;
-> >   }
-> >
-> > for the definition, and it looks like clang royally just screws up
-> > here. Yes, "m" is _allowed_ in that input set, but it damn well
-> > shouldn't be used for something that is already in a register, since
-> > "r" is also allowed, and is the first choice.
-> >
-> > I think it's this clang bug:
-> >
-> >     https://github.com/llvm/llvm-project/issues/20571
 >
-> ^ yep, my comments at the end of that thread are the last time we've
-> had a chance to look into this.  Boy, it's been 9 months since the
-> last discussion of it.  I'm sorry for that.
 >
-> The TL;DR of that thread is that when both "r" and "m" constraints are
-> present, LLVM is conservative and always chooses "m" because at that
-> point it's not able to express to later passes that "m" is still a
-> valid fallback if "r" was chosen.
+> On 8/24/23 00:06, Raghavendra Rao Ananta wrote:
+> > On Tue, Aug 22, 2023 at 3:06=E2=80=AFAM Shaoqin Huang <shahuang@redhat.=
+com> wrote:
+> >>
+> >> Hi Raghavendra,
+> >>
+> >> On 8/17/23 08:30, Raghavendra Rao Ananta wrote:
+> >>> From: Reiji Watanabe <reijiw@google.com>
+> >>>
+> >>> KVM does not yet support userspace modifying PMCR_EL0.N (With
+> >>> the previous patch, KVM ignores what is written by upserspace).
+> >>> Add support userspace limiting PMCR_EL0.N.
+> >>>
+> >>> Disallow userspace to set PMCR_EL0.N to a value that is greater
+> >>> than the host value (KVM_SET_ONE_REG will fail), as KVM doesn't
+> >>> support more event counters than the host HW implements.
+> >>> Although this is an ABI change, this change only affects
+> >>> userspace setting PMCR_EL0.N to a larger value than the host.
+> >>> As accesses to unadvertised event counters indices is CONSTRAINED
+> >>> UNPREDICTABLE behavior, and PMCR_EL0.N was reset to the host value
+> >>> on every vCPU reset before this series, I can't think of any
+> >>> use case where a user space would do that.
+> >>>
+> >>> Also, ignore writes to read-only bits that are cleared on vCPU reset,
+> >>> and RES{0,1} bits (including writable bits that KVM doesn't support
+> >>> yet), as those bits shouldn't be modified (at least with
+> >>> the current KVM).
+> >>>
+> >>> Signed-off-by: Reiji Watanabe <reijiw@google.com>
+> >>> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> >>> ---
+> >>>    arch/arm64/include/asm/kvm_host.h |  3 ++
+> >>>    arch/arm64/kvm/pmu-emul.c         |  1 +
+> >>>    arch/arm64/kvm/sys_regs.c         | 49 +++++++++++++++++++++++++++=
+++--
+> >>>    3 files changed, 51 insertions(+), 2 deletions(-)
+> >>>
+> >>> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/a=
+sm/kvm_host.h
+> >>> index 0f2dbbe8f6a7e..c15ec365283d1 100644
+> >>> --- a/arch/arm64/include/asm/kvm_host.h
+> >>> +++ b/arch/arm64/include/asm/kvm_host.h
+> >>> @@ -259,6 +259,9 @@ struct kvm_arch {
+> >>>        /* PMCR_EL0.N value for the guest */
+> >>>        u8 pmcr_n;
+> >>>
+> >>> +     /* Limit value of PMCR_EL0.N for the guest */
+> >>> +     u8 pmcr_n_limit;
+> >>> +
+> >>>        /* Hypercall features firmware registers' descriptor */
+> >>>        struct kvm_smccc_features smccc_feat;
+> >>>        struct maple_tree smccc_filter;
+> >>> diff --git a/arch/arm64/kvm/pmu-emul.c b/arch/arm64/kvm/pmu-emul.c
+> >>> index ce7de6bbdc967..39ad56a71ad20 100644
+> >>> --- a/arch/arm64/kvm/pmu-emul.c
+> >>> +++ b/arch/arm64/kvm/pmu-emul.c
+> >>> @@ -896,6 +896,7 @@ int kvm_arm_set_vm_pmu(struct kvm *kvm, struct ar=
+m_pmu *arm_pmu)
+> >>>         * while the latter does not.
+> >>>         */
+> >>>        kvm->arch.pmcr_n =3D arm_pmu->num_events - 1;
+> >>> +     kvm->arch.pmcr_n_limit =3D arm_pmu->num_events - 1;
+> >>>
+> >>>        return 0;
+> >>>    }
+> >>> diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
+> >>> index 2075901356c5b..c01d62afa7db4 100644
+> >>> --- a/arch/arm64/kvm/sys_regs.c
+> >>> +++ b/arch/arm64/kvm/sys_regs.c
+> >>> @@ -1086,6 +1086,51 @@ static int get_pmcr(struct kvm_vcpu *vcpu, con=
+st struct sys_reg_desc *r,
+> >>>        return 0;
+> >>>    }
+> >>>
+> >>> +static int set_pmcr(struct kvm_vcpu *vcpu, const struct sys_reg_desc=
+ *r,
+> >>> +                 u64 val)
+> >>> +{
+> >>> +     struct kvm *kvm =3D vcpu->kvm;
+> >>> +     u64 new_n, mutable_mask;
+> >>> +     int ret =3D 0;
+> >>> +
+> >>> +     new_n =3D FIELD_GET(ARMV8_PMU_PMCR_N, val);
+> >>> +
+> >>> +     mutex_lock(&kvm->arch.config_lock);
+> >>> +     if (unlikely(new_n !=3D kvm->arch.pmcr_n)) {
+> >>> +             /*
+> >>> +              * The vCPU can't have more counters than the PMU
+> >>> +              * hardware implements.
+> >>> +              */
+> >>> +             if (new_n <=3D kvm->arch.pmcr_n_limit)
+> >>> +                     kvm->arch.pmcr_n =3D new_n;
+> >>> +             else
+> >>> +                     ret =3D -EINVAL;
+> >>> +     }
+> >>> +     mutex_unlock(&kvm->arch.config_lock);
+> >>
+> >> Another thing I am just wonder is that should we block any modificatio=
+n
+> >> to the pmcr_n after vm start to run? Like add one more checking
+> >> kvm_vm_has_ran_once() at the beginning of the set_pmcr() function.
+> >>
+> > Thanks for bringing it up. Reiji and I discussed about this. Checking
+> > for kvm_vm_has_ran_once() will be a good move, however, it will go
+> > against the ABI expectations of setting the PMCR. I'd like others to
+> > weigh in on this as well. What do you think?
+> >
+> > Thank you.
+> > Raghavendra
 >
-> Obviously "r" is preferable to "m" and we should fix that.  Seeing who
-> wants to roll up their sleeves and volunteer to understand LLVM's
-> register allocation code is like asking who wants to be the first to
-> jump into a black hole and see what happens.
+> Before this change, kvm not allowed userspace to change the pmcr_n, but
+> allowed to change the lower ARMV8_PMU_PMCR_MASK bits. With this change,
+> we now allow to change the pmcr_n, we should not block the change to
+> ARMV8_PMU_PMCR_MASK after vm start to run, but how about we just block
+> the change to ARMV8_PMU_PMCR_N after vm start to run?
+>
+I believe you are referring to the guest trap access part of it
+(access_pmcr()). This patch focuses on the userspace access of PMCR
+via the KVM_SET_ONE_REG ioctl. Before this patch, KVM did not control
+the writes to the reg and userspace was free to write to any bits at
+any time.
 
-Yum! Human spaghetti! :-)
-
-I want to look into this myself. I'm a bit focussed on other things at
-the moment, but this is definitely on my list of "DO WANT"s.
-
--bw
-
->  I'm having a hard enough
-> time understanding the stack spilling code to better understand what
-> precisely exists in what stack slots in order to make progress on some
-> of our -Wframe-larger-than=3D warnings, but I need to suck it up and do
-> better.
+Thank you.
+Raghavendra
+> Thanks,
+> Shaoqin
 >
-> This came up previously in our discussion about __builtin_ia32_readeflags=
-_*.
-> https://lore.kernel.org/all/20211215211847.206208-1-morbo@google.com/
->
-> >     https://github.com/llvm/llvm-project/issues/30873
-> >     https://github.com/llvm/llvm-project/issues/34837
+> >> Thanks,
+> >> Shaoqin
+> >>
+> >>> +     if (ret)
+> >>> +             return ret;
+> >>> +
+> >>> +     /*
+> >>> +      * Ignore writes to RES0 bits, read only bits that are cleared =
+on
+> >>> +      * vCPU reset, and writable bits that KVM doesn't support yet.
+> >>> +      * (i.e. only PMCR.N and bits [7:0] are mutable from userspace)
+> >>> +      * The LP bit is RES0 when FEAT_PMUv3p5 is not supported on the=
+ vCPU.
+> >>> +      * But, we leave the bit as it is here, as the vCPU's PMUver mi=
+ght
+> >>> +      * be changed later (NOTE: the bit will be cleared on first vCP=
+U run
+> >>> +      * if necessary).
+> >>> +      */
+> >>> +     mutable_mask =3D (ARMV8_PMU_PMCR_MASK | ARMV8_PMU_PMCR_N);
+> >>> +     val &=3D mutable_mask;
+> >>> +     val |=3D (__vcpu_sys_reg(vcpu, r->reg) & ~mutable_mask);
+> >>> +
+> >>> +     /* The LC bit is RES1 when AArch32 is not supported */
+> >>> +     if (!kvm_supports_32bit_el0())
+> >>> +             val |=3D ARMV8_PMU_PMCR_LC;
+> >>> +
+> >>> +     __vcpu_sys_reg(vcpu, r->reg) =3D val;
+> >>> +     return 0;
+> >>> +}
+> >>> +
+> >>>    /* Silly macro to expand the DBG{BCR,BVR,WVR,WCR}n_EL1 registers i=
+n one go */
+> >>>    #define DBG_BCR_BVR_WCR_WVR_EL1(n)                                =
+  \
+> >>>        { SYS_DESC(SYS_DBGBVRn_EL1(n)),                               =
+  \
+> >>> @@ -2147,8 +2192,8 @@ static const struct sys_reg_desc sys_reg_descs[=
+] =3D {
+> >>>        { SYS_DESC(SYS_CTR_EL0), access_ctr },
+> >>>        { SYS_DESC(SYS_SVCR), undef_access },
+> >>>
+> >>> -     { PMU_SYS_REG(PMCR_EL0), .access =3D access_pmcr,
+> >>> -       .reset =3D reset_pmcr, .reg =3D PMCR_EL0, .get_user =3D get_p=
+mcr },
+> >>> +     { PMU_SYS_REG(PMCR_EL0), .access =3D access_pmcr, .reset =3D re=
+set_pmcr,
+> >>> +       .reg =3D PMCR_EL0, .get_user =3D get_pmcr, .set_user =3D set_=
+pmcr },
+> >>>        { PMU_SYS_REG(PMCNTENSET_EL0),
+> >>>          .access =3D access_pmcnten, .reg =3D PMCNTENSET_EL0 },
+> >>>        { PMU_SYS_REG(PMCNTENCLR_EL0),
+> >>
+> >> --
+> >> Shaoqin
+> >>
 > >
-> > and it doesn't matter for *this* case (since I don't think this
-> > library function is ever used on x86), but it looks like a generic
-> > clang issue.
-> >
-> >                  Linus
->
->
 >
 > --
-> Thanks,
-> ~Nick Desaulniers
+> Shaoqin
+>
