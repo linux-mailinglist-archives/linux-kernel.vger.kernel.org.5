@@ -2,265 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC31A7881EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 10:17:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 137117881ED
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 10:17:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237828AbjHYIRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 04:17:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33518 "EHLO
+        id S241458AbjHYIRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 04:17:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237839AbjHYIQy (ORCPT
+        with ESMTP id S239585AbjHYIRO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 04:16:54 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8E3F1FDB;
-        Fri, 25 Aug 2023 01:16:50 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2bcb54226e7so8430411fa.1;
-        Fri, 25 Aug 2023 01:16:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692951409; x=1693556209;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=f8qLj5FUc1HhOX88AvZf8qe/nxQqPd0JSuX7WV1LK3U=;
-        b=QudLEjSJlDE45jVoEgorqd0O1/1o52LiTv+IUWE3+Q4kLt3FSYk4lFY1k/MmckslrS
-         Ny8HAH25hgJLJCseBArQHnzPegrUqhZvJ9U/rFTPy1Zixp7vgoiGsqmcXhzVVhp/ohfx
-         /cfIl58Kz5TRBMe4Rs3066BHLCnkeVH29hFB0GVtJgyVEIfvz8KChIaKghujCFesHEfP
-         /ABdIhXP6HXT/5W5QGJRYRngC8VItUNd2HOebK7ZddhM/Vqou5SsjvTfls+9IIHzutIn
-         fUMV+fvdncrSZZ6iCbFKzZoNkoQjdiNFWZkl2k3OBVoo8kaJBCnKKdmYxVCm2Uf+U4hi
-         lnSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692951409; x=1693556209;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=f8qLj5FUc1HhOX88AvZf8qe/nxQqPd0JSuX7WV1LK3U=;
-        b=QV4p1atzPBLOW/Vexs+0pGDpufrGIKOeBZquVlCn7+05beW9eGRQ1/qWtl9wjRarFD
-         75glVY33QYkFru3ddAbcydB5liKxWwAhx55MPi2fs2Yi3rRPtGTTJZGChWow3x9zttuq
-         cu/4lub9f451gElaMGErcnQOe9B6IuflQQwpamIWhOKWSOmLP7lbr4WxA+nYWZv2Oi9g
-         Rc50xEf8J2BPaJcajqfO9W1dtYAxA2+TaeOYZ+h9zTtVHtcOBASgMc5rWLryikP7L+AT
-         Uegrf2HxQx1TyNloBeEH3E3qpB+6jERzs/he2dy6M7u+PHBMAdk4OMaO0ktLDfJy69dJ
-         97Kg==
-X-Gm-Message-State: AOJu0Yy9u/G3IKVkIShqLReugIq8lsw9qdIvwmctQSzJ86nslD2uXhCf
-        uTRM/Z3C0bFrFShx1hrWg2NDKRXTwQOvqGfieFA=
-X-Google-Smtp-Source: AGHT+IEwWMFcF3PSUNciUBFIp0EsqEp8/V+IZeJyYDTcpXHSu308bUJ5h4tVSR5Y5sRVVgNI8erohhczVg+T5VTRM04=
-X-Received: by 2002:a05:651c:b94:b0:2b6:9f95:8118 with SMTP id
- bg20-20020a05651c0b9400b002b69f958118mr7640239ljb.7.1692951408422; Fri, 25
- Aug 2023 01:16:48 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230824133135.1176709-1-puranjay12@gmail.com> <ad5ef9ee-7fa7-b945-a303-2bdcdeb0e740@huawei.com>
-In-Reply-To: <ad5ef9ee-7fa7-b945-a303-2bdcdeb0e740@huawei.com>
-From:   Puranjay Mohan <puranjay12@gmail.com>
-Date:   Fri, 25 Aug 2023 10:16:37 +0200
-Message-ID: <CANk7y0gxHpes-O4z6_+qW=b-ubkbc3Lf1=rxhkSjEU6=uR27sw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 0/3] bpf, riscv: use BPF prog pack allocator
- in BPF JIT
-To:     Pu Lehui <pulehui@huawei.com>
-Cc:     bjorn@kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, conor.dooley@microchip.com, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-        song@kernel.org, yhs@fb.com, kpsingh@kernel.org,
-        bpf@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 25 Aug 2023 04:17:14 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAD261FDB;
+        Fri, 25 Aug 2023 01:17:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692951432; x=1724487432;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=cCIFuJmVDMfjq1RSlUXfaOyXnYAe+ffROs7IeRwbFPc=;
+  b=hp5/aPgELRuG1HJSfJv5HqJMc/4J1AMe3ghR8LnK93aYUAK17x6QUiEg
+   YUm35oOmTX2VpovMLN++PqupHP0uPWWEyp/nQMVgbhxT1wrDthRq5Oz77
+   q9r/tp4RAtyN7cM4C/w1xmUVZhtJogF4DS6uDWkq+y5bg8z6FsIMgAQ1S
+   UsesqykSckSCOAjcG7OEyc3Zobx5aryb+GJM4x6AipRgw/3JLHHwq2ZnJ
+   p7ouJA3ZAYRuemr9Wf9PP6D9ijZST+wCxiMrNeSVTZPOkJ70raFxynNwt
+   6ocipluYAGw6Ta0wsNkSB5IzDRcvELnrSfWO9ySZszMWixYVo1RoKNLlb
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="441006967"
+X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
+   d="scan'208";a="441006967"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2023 01:17:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="984028611"
+X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
+   d="scan'208";a="984028611"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmsmga006.fm.intel.com with ESMTP; 25 Aug 2023 01:17:11 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Fri, 25 Aug 2023 01:17:10 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Fri, 25 Aug 2023 01:17:10 -0700
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.42) by
+ edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Fri, 25 Aug 2023 01:17:10 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=V2zINaiIAoqwJAhmaz9PHSCmXoAkFgFnun8JfE3MeyFHP1Wpf1UyrvAfgEYE9GIMaMvuwaY5kcsPpfBPttaOCEbzaIbtp9EhnOIyH3VdbcCi/Cr8R0BdJ5PGqxTVmz3jZsaJz30WOvWJHkHhEbUyYDvg6oJpKYZGy3NayzuZ7rfzL4uXMjkjsjthqevcWWNoWe7gx9aBUVEf/EkKkWxmGbgJ/cepaejSQ9mHW7GTy6JKO4SDSQoqZE9AaKx7aCVRlC7mIdLUPEZ3x8rjch4ESoq7EKjOR9o9Mca4dceu+lfd8tzMp6D/bfIQa9ihv/TLyvwBTS0g9wN6xSLxMguzXw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=MKCu7Nyanx3IdSmt8OLmDRMer9NYNvDSThlDFGp7aOo=;
+ b=dgrK09oKWcOqdJE8KTy0XyCc7l0a1afY83lAeCqWKKyNHts9ik6Vl+aPd+okNomEQw2SByS0TbNjp1ZKIOqPSsqiW+jrQ6v0qWWh12Va0M8e6gHq1H9SXwQVBQexjZIuvSRcqtLQgXfeqDfx0oYbuoTFynjc7hHizLpKUY13VvYylDHYTKl0+gYprw6zGNvhuaXD837rEUDftU6oT4MZY4wznYmw6rf0pir5tZFj3Dk4SySk9Z0g+7/iFNqG250cveIVeUPg3xgQ+5t0rIkMsNg1LIKCf7DRiM8Zl0oXbZXpERR35HzKcDs9vK0+xDpG/Hif8H7d9G6RbcUPv3mJqg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
+ by SA3PR11MB7528.namprd11.prod.outlook.com (2603:10b6:806:317::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.27; Fri, 25 Aug
+ 2023 08:17:08 +0000
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::dcf3:7bac:d274:7bed]) by BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::dcf3:7bac:d274:7bed%4]) with mapi id 15.20.6699.028; Fri, 25 Aug 2023
+ 08:17:08 +0000
+From:   "Tian, Kevin" <kevin.tian@intel.com>
+To:     Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "Will Deacon" <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "Jason Gunthorpe" <jgg@ziepe.ca>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Nicolin Chen <nicolinc@nvidia.com>
+CC:     "Liu, Yi L" <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v4 09/10] iommu: Make iommu_queue_iopf() more generic
+Thread-Topic: [PATCH v4 09/10] iommu: Make iommu_queue_iopf() more generic
+Thread-Index: AQHZ1vydYVSBpw8DUkS1M41ymLRuMK/6p/jw
+Date:   Fri, 25 Aug 2023 08:17:08 +0000
+Message-ID: <BN9PR11MB52762A33BC9F41AB424915688CE3A@BN9PR11MB5276.namprd11.prod.outlook.com>
+References: <20230825023026.132919-1-baolu.lu@linux.intel.com>
+ <20230825023026.132919-10-baolu.lu@linux.intel.com>
+In-Reply-To: <20230825023026.132919-10-baolu.lu@linux.intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|SA3PR11MB7528:EE_
+x-ms-office365-filtering-correlation-id: ee849a1f-3c67-4e62-e8a4-08dba543ac9c
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: vpUFblynU7931c8RLX06yczvho9V2HxRBrhE2HpF1criWWDYmRMOhJt8oykkY8vTLddiCp5Wg8+JdCcP4sATYALH5yLm9f/lx58ad7N6nfof4Xw+doHOXM4DAmvdoiZlq+PUyejka2wI//0AdoIdqX6CWxvsFTAbKb2Zs4W19fhbiinwuFPI+xVBCseQWSj8W+yPNDodtNCRZ2HoHrhGdw+aYaECf0SbLPam1l+yX0i55HYa5WvyKAU5eFwPV3OMpPI/GkZWzeJCuT/wdnMkXsic9tDWE6VMb9dQ2Tp1S0bJaI5yk9i3cR+34hdYc3i6AsCdIX8eO9lsPdslD2kxcShsJvNwzCv6PcteKuuL4IcA3oAmfQWgjCSpqLxgr25gdmjMLkciG+oSZyo0Ftw9+GpJI1odNKAPifZ1f6q/JIkt57nAl9y5vSADnkyoP24u3kURuqk3vBinqO1eUG5bLjjk6HgbajhG328S2H73pfvy35SSzDue63q7oGkLlKYWeppKXqpvvVLFn8VJQq5jn+1kotXTxHR3hJCsyQNj+AOnGc7+NbS7Vj7hUBIRu+D8lehJFo8vTS/RCDL6eHJv+AD1ba9Q2OwOMLzG75h9jKHgt7h1YysrReOzyrQvbc2BHugW173gbwMAdt/UqgpHcQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(39860400002)(396003)(136003)(366004)(1800799009)(186009)(451199024)(52536014)(5660300002)(8936002)(4326008)(8676002)(83380400001)(7416002)(33656002)(26005)(55016003)(71200400001)(38100700002)(38070700005)(82960400001)(122000001)(66556008)(66476007)(66946007)(64756008)(66446008)(6506007)(7696005)(54906003)(76116006)(316002)(110136005)(478600001)(41300700001)(2906002)(9686003)(86362001)(41533002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?J8aqXrpn08DZFgdm7RaSLWc9aiFFMlvCCwLJ9suxixr3r9J5je8fWvt5Jk+j?=
+ =?us-ascii?Q?DZa77v6/Pie5KoLQ719BC/gKk1aicfjrtqAPQho5zJQ5uVcyrzbWMyOoS9fh?=
+ =?us-ascii?Q?oFQJqvmRdDLXVq/GxS2Rf3E/sXAUhrjihzSyBeb8cGRfESMsxLt1svbfUh9O?=
+ =?us-ascii?Q?Y3euCY0l3lr6geHvPtjspwQGaidEqofC9gkf56sJv+ehGMW1PwwzOhK+C4MZ?=
+ =?us-ascii?Q?+n0ZWblg4qaG5i8kDtStrCjA3VeYE6QIya8JzbJdaomS2NIMhLdQxTMYYdUC?=
+ =?us-ascii?Q?YSWPWzyj3UsR6Vucq2lnCjGIjslen2dVhmQV6Hk9FTp4PTockXQqO2uqJ8NZ?=
+ =?us-ascii?Q?e0Vq1Sh0BC+Dc1xy4K/ezaAy2tf9y4K9AHYEll32Qtgw+mGbxnh/9IwxJK9R?=
+ =?us-ascii?Q?5cBTFtHooUmgAHJo4XULe84kdLaf+PsGsC73l/0h7UXrjiyEApP8W09Dx+dS?=
+ =?us-ascii?Q?MdH1S1Tp70TKI/QOw6ejOw7XOKSOiU9OdypRv/MKjsNIgBoStmbQ7S54xsjq?=
+ =?us-ascii?Q?UpZtXz8ZzF+ps2HjSBid6tHHAfvrC5ReFTGkFyJ8VQ5aevIKGqy64LhGkIo7?=
+ =?us-ascii?Q?8HyF2jWVtvLavne6uE7U1kTH6aPRZ/kh1RY70jPPJk2cx5A7t5Liq9HcWAwU?=
+ =?us-ascii?Q?hAENKFtMt16WOfYsGaJx8MRjo7WYbEfdaZVXMb4JrXIHgj94aqS280TJZaRa?=
+ =?us-ascii?Q?le/figclQzZBX/KZ2U7N8HqheTMsUjYGEljFpak+sJ2JqcTmtlN2wcow8rFP?=
+ =?us-ascii?Q?RUzN093Fv93FF2AmX4h0+JbCOP03gXNo2ExgSPcwEex9QfQcD06hfxYF7VYy?=
+ =?us-ascii?Q?Rp0fV9cpRrkXfCt2tb5ydDxMm5Zcx7meCl42njjB4VZ81EGC7HVrTTQd3n1c?=
+ =?us-ascii?Q?H4bd+pXzJuoMcp1owYRQACa6Hpw3rnFQ5Pw1WuScpSbjP9rwT2b0wqZ/x3eL?=
+ =?us-ascii?Q?e+9JgLkaFj2DlPTQ5nUPnk6OJH8f5al1ae+uNWrXkSROAA8GgEC9FWNOT6bj?=
+ =?us-ascii?Q?tDePU4AuOgoCxW30H/7unwL9WHWMYbi7izB1pC5FPBPG352W5Jqum5pmoTFw?=
+ =?us-ascii?Q?vJk1dEDHDQEaUCtLpQl6IgaIX4y7ZeAzm9ag+hyA52ZowDu/eCzNHkkjq+oz?=
+ =?us-ascii?Q?zRYpA3taCxzcPjLb84EPgQq3idzcuEJNMYNy6N4d/O4bLayGleFT5GDwfERx?=
+ =?us-ascii?Q?0cdwlrIQQbzJXAinZ8N6uvwdUAUFyc7SemaysM+yE/qtjTvcnC7MNGHuvui7?=
+ =?us-ascii?Q?houBAqCs4TSxVIOUYZWPeXQPGidS0tjtmNXP9xXkUxeLDF4bPeZ3xIZ2h0J/?=
+ =?us-ascii?Q?4ovjiC7H7a5+HneSVXbA0IAp7vTqFRiJfSrdBVv7VdF4FlTMJ/n7GzXcf3D/?=
+ =?us-ascii?Q?yaK5cm9hA0O+65XjWQmmvp7WRbXzjJ7TH5OctYFhl9i6DFqT2rNers8HheEr?=
+ =?us-ascii?Q?jKMVsjwHpzlHUMkG7kiyYMgGEpj+LeVQHZ+BQfc9M0ZBvj/Zcocj8A7zVpgT?=
+ =?us-ascii?Q?HIR2vlSGCA243/DJFWwNn1zsM9xbhb743NBU0eJoY33yFvQOMs7xeQmYiJRZ?=
+ =?us-ascii?Q?UJ8fKeZTcGbg/97pBHNzUo90QsorsNmVd6Ciktmn?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ee849a1f-3c67-4e62-e8a4-08dba543ac9c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Aug 2023 08:17:08.0287
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 03qqc9Z/k8UuiSMTEHi3dMirv9ZwCscqH8TPYyjTOHFPDNKYbKiXuKUEgbHLGCAz7/E61IPtN9GXL907JigH9g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR11MB7528
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 25, 2023 at 10:06=E2=80=AFAM Pu Lehui <pulehui@huawei.com> wrot=
-e:
->
->
->
-> On 2023/8/24 21:31, Puranjay Mohan wrote:
-> > Changes in v1 -> v2:
-> > 1. Implement a new function patch_text_set_nosync() to be used in bpf_a=
-rch_text_invalidate().
-> >     The implementation in v1 called patch_text_nosync() in a loop and i=
-t was bad as it would
-> >     call flush_icache_range() for every word making it really slow. Thi=
-s was found by running
-> >     the test_tag selftest which would take forever to complete.
-> >
-> > Here is some data to prove the V2 fixes the problem:
-> >
-> > Without this series:
-> > root@rv-selftester:~/src/kselftest/bpf# time ./test_tag
-> > test_tag: OK (40945 tests)
-> >
-> > real    7m47.562s
-> > user    0m24.145s
-> > sys     6m37.064s
-> >
-> > With this series applied:
-> > root@rv-selftester:~/src/selftest/bpf# time ./test_tag
-> > test_tag: OK (40945 tests)
-> >
-> > real    7m29.472s
-> > user    0m25.865s
-> > sys     6m18.401s
-> >
-> > BPF programs currently consume a page each on RISCV. For systems with m=
-any BPF
-> > programs, this adds significant pressure to instruction TLB. High iTLB =
-pressure
-> > usually causes slow down for the whole system.
-> >
-> > Song Liu introduced the BPF prog pack allocator[1] to mitigate the abov=
-e issue.
-> > It packs multiple BPF programs into a single huge page. It is currently=
- only
-> > enabled for the x86_64 BPF JIT.
-> >
-> > I enabled this allocator on the ARM64 BPF JIT[2]. It is being reviewed =
-now.
-> >
-> > This patch series enables the BPF prog pack allocator for the RISCV BPF=
- JIT.
-> > This series needs a patch[3] from the ARM64 series to work.
->
-> Is there a new version for arm64 currently? Maybe we could submit this
-> patch first as a separate patch to avoid dependencies.
+> From: Lu Baolu <baolu.lu@linux.intel.com>
+> Sent: Friday, August 25, 2023 10:30 AM
+>=20
+> +	if (fault->prm.flags & IOMMU_FAULT_PAGE_REQUEST_PASID_VALID)
+> +		domain =3D iommu_get_domain_for_dev_pasid(dev, fault-
+> >prm.pasid, 0);
+> +	else
+> +		domain =3D iommu_get_domain_for_dev(dev);
+> +
+> +	if (!domain || !domain->iopf_handler) {
+> +		dev_warn_ratelimited(dev,
+> +			"iopf from pasid %d received without handler
+> installed\n",
 
-Okay, I will send that patch as a separate patch because it is needed for a=
-ll
-architectures.
+"without domain attached or handler installed"
 
->
-> >
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D
-> > Performance Analysis of prog pack allocator on RISCV64
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D
-> >
-> > Test setup:
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> >
-> > Host machine: Debian GNU/Linux 11 (bullseye)
-> > Qemu Version: QEMU emulator version 8.0.3 (Debian 1:8.0.3+dfsg-1)
-> > u-boot-qemu Version: 2023.07+dfsg-1
-> > opensbi Version: 1.3-1
-> >
-> > To test the performance of the BPF prog pack allocator on RV, a stresse=
-r
-> > tool[4] linked below was built. This tool loads 8 BPF programs on the s=
-ystem and
-> > triggers 5 of them in an infinite loop by doing system calls.
-> >
-> > The runner script starts 20 instances of the above which loads 8*20=3D1=
-60 BPF
-> > programs on the system, 5*20=3D100 of which are being constantly trigge=
-red.
-> > The script is passed a command which would be run in the above environm=
-ent.
-> >
-> > The script was run with following perf command:
-> > ./run.sh "perf stat -a \
-> >          -e iTLB-load-misses \
-> >          -e dTLB-load-misses  \
-> >          -e dTLB-store-misses \
-> >          -e instructions \
-> >          --timeout 60000"
-> >
-> > The output of the above command is discussed below before and after ena=
-bling the
-> > BPF prog pack allocator.
-> >
-> > The tests were run on qemu-system-riscv64 with 8 cpus, 16G memory. The =
-rootfs
-> > was created using Bjorn's riscv-cross-builder[5] docker container linke=
-d below.
-> >
-> > Results
-> > =3D=3D=3D=3D=3D=3D=3D
-> >
-> > Before enabling prog pack allocator:
-> > ------------------------------------
-> >
-> > Performance counter stats for 'system wide':
-> >
-> >             4939048      iTLB-load-misses
-> >             5468689      dTLB-load-misses
-> >              465234      dTLB-store-misses
-> >       1441082097998      instructions
-> >
-> >        60.045791200 seconds time elapsed
-> >
-> > After enabling prog pack allocator:
-> > -----------------------------------
-> >
-> > Performance counter stats for 'system wide':
-> >
-> >             3430035      iTLB-load-misses
-> >             5008745      dTLB-load-misses
-> >              409944      dTLB-store-misses
-> >       1441535637988      instructions
-> >
-> >        60.046296600 seconds time elapsed
-> >
-> > Improvements in metrics
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> >
-> > It was expected that the iTLB-load-misses would decrease as now a singl=
-e huge
-> > page is used to keep all the BPF programs compared to a single page for=
- each
-> > program earlier.
-> >
-> > --------------------------------------------
-> > The improvement in iTLB-load-misses: -30.5 %
-> > --------------------------------------------
-> >
-> > I repeated this expriment more than 100 times in different setups and t=
-he
-> > improvement was always greater than 30%.
-> >
-> > This patch series is boot tested on the Starfive VisionFive 2 board[6].
-> > The performance analysis was not done on the board because it doesn't
-> > expose iTLB-load-misses, etc. The stresser program was run on the board=
- to test
-> > the loading and unloading of BPF programs
-> >
-> > [1] https://lore.kernel.org/bpf/20220204185742.271030-1-song@kernel.org=
-/
-> > [2] https://lore.kernel.org/all/20230626085811.3192402-1-puranjay12@gma=
-il.com/
-> > [3] https://lore.kernel.org/all/20230626085811.3192402-2-puranjay12@gma=
-il.com/
-> > [4] https://github.com/puranjaymohan/BPF-Allocator-Bench
-> > [5] https://github.com/bjoto/riscv-cross-builder
-> > [6] https://www.starfivetech.com/en/site/boards
-> >
-> > Puranjay Mohan (3):
-> >    riscv: extend patch_text_nosync() for multiple pages
-> >    riscv: implement a memset like function for text
-> >    bpf, riscv: use prog pack allocator in the BPF JIT
-> >
-> >   arch/riscv/include/asm/patch.h  |   1 +
-> >   arch/riscv/kernel/patch.c       | 113 ++++++++++++++++++++++++++++++-=
--
-> >   arch/riscv/net/bpf_jit.h        |   3 +
-> >   arch/riscv/net/bpf_jit_comp64.c |  56 +++++++++++++---
-> >   arch/riscv/net/bpf_jit_core.c   | 113 +++++++++++++++++++++++++++----=
--
-> >   5 files changed, 255 insertions(+), 31 deletions(-)
-> >
+>=20
+> +int iommu_sva_handle_iopf(struct iopf_group *group)
+> +{
+> +	struct iommu_fault_param *fault_param =3D group->dev->iommu-
+> >fault_param;
+> +
+> +	INIT_WORK(&group->work, iopf_handler);
+> +	if (!queue_work(fault_param->queue->wq, &group->work))
+> +		return -EBUSY;
+> +
+> +	return 0;
+> +}
 
+this function is generic so the name should not tie to 'sva'.
 
+> +
+>  /**
+>   * iopf_queue_flush_dev - Ensure that all queued faults have been
+> processed
+>   * @dev: the endpoint whose faults need to be flushed.
 
---=20
-Thanks and Regards
+Presumably we also need a flush callback per domain given now
+the use of workqueue is optional then flush_workqueue() might
+not be sufficient.
 
-Yours Truly,
+>=20
+> +static void assert_no_pending_iopf(struct device *dev, ioasid_t pasid)
+> +{
+> +	struct iommu_fault_param *iopf_param =3D dev->iommu-
+> >fault_param;
+> +	struct iopf_fault *iopf;
+> +
+> +	if (!iopf_param)
+> +		return;
+> +
+> +	mutex_lock(&iopf_param->lock);
+> +	list_for_each_entry(iopf, &iopf_param->partial, list) {
+> +		if (WARN_ON(iopf->fault.prm.pasid =3D=3D pasid))
+> +			break;
+> +	}
 
-Puranjay Mohan
+partial list is protected by dev_iommu lock.
+
+> +
+> +	list_for_each_entry(iopf, &iopf_param->faults, list) {
+> +		if (WARN_ON(iopf->fault.prm.pasid =3D=3D pasid))
+> +			break;
+> +	}
+> +	mutex_unlock(&iopf_param->lock);
+> +}
+> +
+>  void iommu_detach_device(struct iommu_domain *domain, struct device
+> *dev)
+>  {
+>  	struct iommu_group *group;
+> @@ -1959,6 +1980,7 @@ void iommu_detach_device(struct iommu_domain
+> *domain, struct device *dev)
+>  	if (!group)
+>  		return;
+>=20
+> +	assert_no_pending_iopf(dev, IOMMU_NO_PASID);
+>  	mutex_lock(&group->mutex);
+>  	if (WARN_ON(domain !=3D group->domain) ||
+>  	    WARN_ON(list_count_nodes(&group->devices) !=3D 1))
+> @@ -3269,6 +3291,7 @@ void iommu_detach_device_pasid(struct
+> iommu_domain *domain, struct device *dev,
+>  {
+>  	struct iommu_group *group =3D iommu_group_get(dev);
+>=20
+> +	assert_no_pending_iopf(dev, pasid);
+
+this doesn't look correct. A sane driver will stop triggering new
+page request before calling detach but there are still pending ones
+not drained until iopf_queue_flush_dev() called by
+ops->remove_dev_pasid().
+
+then this check will cause false warning.
+
+>  	mutex_lock(&group->mutex);
+>  	__iommu_remove_group_pasid(group, pasid);
+>  	WARN_ON(xa_erase(&group->pasid_array, pasid) !=3D domain);
+> --
+> 2.34.1
+
