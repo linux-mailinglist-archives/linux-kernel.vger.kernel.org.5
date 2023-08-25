@@ -2,112 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF273789254
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 01:29:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F50D78925A
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 01:32:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230253AbjHYX2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 19:28:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46580 "EHLO
+        id S230298AbjHYXb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 19:31:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230527AbjHYX2g (ORCPT
+        with ESMTP id S230047AbjHYXay (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 19:28:36 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 289C2210D
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 16:28:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693006113; x=1724542113;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=in1Btn1PedfK1mlpkECoYu0edNlcFiot2ISLi0R/Bik=;
-  b=Nfdg+buQeYelZ6MJklvjiFYHopzsM8UL71dhOUPCSGV7rZynj1REIboL
-   kY8Hu8yzeNGYGw77G6kXOCKDJVxyRQJHc1ws6qAGX3R1fV5aFfX+AQrcQ
-   CDkDvpx5g5pVzTPtVZHCADOU99FT0UDk1zNmu6AYmgahkSglSVM02IYtc
-   6OXdQEDXjtMSuDfjHQ0pL9fXO4YNDT6igqhRiKhlnvT6rAccY5Zf3vjS/
-   OXUsWriHQ14/9zMltcWMB8nk1LGcbeOAgNcrAnWy/PJg43ha7xLA4ej/u
-   Yi85wCQDjOh/So4WJyuyqVbz2kcMsnRLHHBeO6TP3FrWiPqr6hA/liIkX
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10813"; a="438767510"
-X-IronPort-AV: E=Sophos;i="6.02,202,1688454000"; 
-   d="scan'208";a="438767510"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2023 16:28:31 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10813"; a="807688839"
-X-IronPort-AV: E=Sophos;i="6.02,202,1688454000"; 
-   d="scan'208";a="807688839"
-Received: from naikshri-mobl7.ger.corp.intel.com (HELO box.shutemov.name) ([10.249.41.113])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2023 16:28:24 -0700
-Received: by box.shutemov.name (Postfix, from userid 1000)
-        id 0BFDE109FED; Sat, 26 Aug 2023 02:28:22 +0300 (+03)
-Date:   Sat, 26 Aug 2023 02:28:22 +0300
-From:   kirill.shutemov@linux.intel.com
-To:     Kai Huang <kai.huang@intel.com>
-Cc:     peterz@infradead.org, linux-kernel@vger.kernel.org,
-        dave.hansen@intel.com, tglx@linutronix.de, bp@alien8.de,
-        mingo@redhat.com, hpa@zytor.com, x86@kernel.org, seanjc@google.com,
-        pbonzini@redhat.com, isaku.yamahata@intel.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com,
-        n.borisov.lkml@gmail.com
-Subject: Re: [PATCH v4 05/12] x86/tdx: Pass TDCALL/SEAMCALL input/output
- registers via a structure
-Message-ID: <20230825232822.6vt6rexyts6ibfx3@box>
-References: <cover.1692096753.git.kai.huang@intel.com>
- <483616c1762d85eb3a3c3035a7de061cfacf2f14.1692096753.git.kai.huang@intel.com>
+        Fri, 25 Aug 2023 19:30:54 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C812F210D
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 16:30:52 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-d74a012e613so2047552276.1
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 16:30:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693006252; x=1693611052;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ey6d5gZX4O+5Ormvdw+/edKbvFqUfGvPPdAwBns5XZ0=;
+        b=YHweFZN6GWWe9k+V0XvG5rYvHDivYVgMTQvoLW7JqGs9V57KqEMh6nTzyqMyJL6+/c
+         s140AfjtRqHCG1/0hCF6C9gMhAY+tEA2aYYkowHtj1IKRtu5k7c40MK1YyUtqmVqZAYF
+         VDBXC2/ohxwnd83Z1nFnA2SIed4XNoM918BSHyBRJNkUQQXXB/AeV7anRnURqmWmj5oB
+         DkFvwRIu8uavah6wkkOOelblaW4sDJRrCAVmX+IApCje0g0Myy2CIMg4fMoaVli9w6eh
+         a4EZZyD/MlvDAiYn2i+hOeIIAgxn+ctWAVAlg9j4LiE7bmAxEmPctT1CsDKNdLFJKodV
+         bgeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693006252; x=1693611052;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ey6d5gZX4O+5Ormvdw+/edKbvFqUfGvPPdAwBns5XZ0=;
+        b=SsrepvYGy/WkSAVO5Be9NU9D1CxOokBUybm780/hkg+wxwUkp/hEuCk2Niv+fwd25D
+         4KCD8kOKHUtzdZ+PAAeu911D81XSHUB8Hz6MIAylTPqYXkb3ShnfsgC1tggKoA8Qm/Km
+         IOGnref1/3wojXpDV8k7iZI2YATT0UprvpwdFmKsY0CaDRakCrrcIpiSh7F8VEQT/yT3
+         /Rda5c25r2seBMSL4i7tRYqJhm8Xlteb4BtNQXxMXgijOmvClPJ827OUSdZBWqnozO5p
+         Bz8jyoiHSzIU59zU7FUINHkCS8pL9FbGz+Sovkm8AeVaZqNxYQzza1Hav36A7TCC7j+I
+         1BIw==
+X-Gm-Message-State: AOJu0YwwxkU98QtncA/l/m27kwmIKCoP0xu449vXH1vGK+1oS4pRMcMj
+        x4O4t8yyYiH6G8eLOVjGZhtRj+Em2XnymXjme6tGHQ==
+X-Google-Smtp-Source: AGHT+IH96iZdBFBpub3t9rZ+AHNDzp0KpWqQfScrAOFxIgwNDRNv8otji8p9J6NWQaVh/hdaQCLvseVk6BJ7yxkTnWk=
+X-Received: by 2002:a05:6902:185:b0:d4b:a962:76a3 with SMTP id
+ t5-20020a056902018500b00d4ba96276a3mr14239474ybh.29.1693006251979; Fri, 25
+ Aug 2023 16:30:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <483616c1762d85eb3a3c3035a7de061cfacf2f14.1692096753.git.kai.huang@intel.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230825230109.2264345-1-swboyd@chromium.org>
+In-Reply-To: <20230825230109.2264345-1-swboyd@chromium.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Sat, 26 Aug 2023 02:30:40 +0300
+Message-ID: <CAA8EJprmvczug0zxuhrHuK2kBYtnkLfkZmYwS78hdVRe8waDXA@mail.gmail.com>
+Subject: Re: [PATCH] drm/msm/dp: Add newlines to debug printks
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org,
+        Kuogee Hsieh <quic_khsieh@quicinc.com>,
+        Vinod Polimera <quic_vpolimer@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 15, 2023 at 11:01:59PM +1200, Kai Huang wrote:
-> Currently, the TDX_MODULE_CALL asm macro, which handles both TDCALL and
-> SEAMCALL, takes one parameter for each input register and an optional
-> 'struct tdx_module_output' (a collection of output registers) as output.
-> This is different from the TDX_HYPERCALL macro which uses a single
-> 'struct tdx_hypercall_args' to carry all input/output registers.
-> 
-> The newer TDX versions introduce more TDCALLs/SEAMCALLs which use more
-> input/output registers.  Also, the TDH.VP.ENTER (which isn't covered
-> by the current TDX_MODULE_CALL macro) basically can use all registers
-> that the TDX_HYPERCALL does.  The current TDX_MODULE_CALL macro isn't
-> extendible to cover those cases.
-> 
-> Similar to the TDX_HYPERCALL macro, simplify the TDX_MODULE_CALL macro
-> to use a single structure 'struct tdx_module_args' to carry all the
-> input/output registers.  Currently, R10/R11 are only used as output
-> register but not as input by any TDCALL/SEAMCALL.  Change to also use
-> R10/R11 as input register to make input/output registers symmetric.
-> 
-> Currently, the TDX_MODULE_CALL macro depends on the caller to pass a
-> non-NULL 'struct tdx_module_output' to get additional output registers.
-> Similar to the TDX_HYPERCALL macro, change the TDX_MODULE_CALL macro to
-> take a new 'ret' macro argument to indicate whether to save the output
-> registers to the 'struct tdx_module_args'.  Also introduce a new
-> __tdcall_ret() for that purpose, similar to the __tdx_hypercall_ret().
-> 
-> Note the tdcall(), which is a wrapper of __tdcall(), is called by three
-> callers: tdx_parse_tdinfo(), tdx_get_ve_info() and tdx_early_init().
-> The former two need the additional output but the last one doesn't.  For
-> simplicity, make tdcall() always call __tdcall_ret() to avoid another
-> "_ret()" wrapper.  The last caller tdx_early_init() isn't performance
-> critical anyway.
-> 
-> Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Suggested-by: Peter Zijlstra <peterz@infradead.org>
-> Signed-off-by: Kai Huang <kai.huang@intel.com>
+On Sat, 26 Aug 2023 at 02:01, Stephen Boyd <swboyd@chromium.org> wrote:
+>
+> These debug printks are missing newlines, causing drm debug logs to be
+> hard to read. Add newlines so that the messages are on their own line.
+>
+> Cc: Kuogee Hsieh <quic_khsieh@quicinc.com>
+> Cc: Vinod Polimera <quic_vpolimer@quicinc.com>
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> ---
+>  drivers/gpu/drm/msm/dp/dp_link.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
-Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+
+Fixes: 601f0479c583 ("drm/msm/dp: add logs across DP driver for ease
+of debugging")
+Fixes: cd779808cccd ("drm/msm/dp: Add basic PSR support for eDP")
+
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+
+>
+> diff --git a/drivers/gpu/drm/msm/dp/dp_link.c b/drivers/gpu/drm/msm/dp/dp_link.c
+> index 42427129acea..6375daaeb98e 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_link.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_link.c
+> @@ -1090,7 +1090,7 @@ int dp_link_process_request(struct dp_link *dp_link)
+>         } else if (dp_link_read_psr_error_status(link)) {
+>                 DRM_ERROR("PSR IRQ_HPD received\n");
+>         } else if (dp_link_psr_capability_changed(link)) {
+> -               drm_dbg_dp(link->drm_dev, "PSR Capability changed");
+> +               drm_dbg_dp(link->drm_dev, "PSR Capability changed\n");
+>         } else {
+>                 ret = dp_link_process_link_status_update(link);
+>                 if (!ret) {
+> @@ -1107,7 +1107,7 @@ int dp_link_process_request(struct dp_link *dp_link)
+>                 }
+>         }
+>
+> -       drm_dbg_dp(link->drm_dev, "sink request=%#x",
+> +       drm_dbg_dp(link->drm_dev, "sink request=%#x\n",
+>                                 dp_link->sink_request);
+>         return ret;
+>  }
+>
+> base-commit: 706a741595047797872e669b3101429ab8d378ef
+> --
+> https://chromeos.dev
+>
+
 
 -- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+With best wishes
+Dmitry
