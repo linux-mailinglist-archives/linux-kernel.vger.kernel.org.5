@@ -2,77 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D688788C71
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 17:28:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 158AA788C74
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 17:29:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240850AbjHYP1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 11:27:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37364 "EHLO
+        id S240866AbjHYP2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 11:28:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242251AbjHYP1W (ORCPT
+        with ESMTP id S242391AbjHYP2f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 11:27:22 -0400
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB32F2733;
-        Fri, 25 Aug 2023 08:26:58 -0700 (PDT)
-Received: by mail-il1-x136.google.com with SMTP id e9e14a558f8ab-34bb72ffb1fso3553215ab.3;
-        Fri, 25 Aug 2023 08:26:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692977218; x=1693582018;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=KcmM3G7mPvInDI7x9n1WVGdIT7j8cD6MA5FDEXRb+aE=;
-        b=s3hraC9tsUnIgyCPDaQtSu0TjbCWmspIIFEXz3RN21Lg6Q9MWewWMwhuxnx2iAu/1/
-         61FgF+8fiMvfNUrayZYSy4PwVasyF4e/HssLT3a+iuXFN/dboOREr0f48Yp8sO/MbGsa
-         Uf2leWp/jsVpAn7144DlcLNLPwcpiXlv0hHvv00INQOuCh0oxlTagWF4FzO6tymuS8or
-         KlhFZkkq7KDO3/tZEESIzW8+b46Zd96pySgqst2qcFXz8ZLCEQFTGbhnau0R8ou62wd3
-         2fLAdc1V/oACM9PTbEDG3C9683N2S+jeU2Ny3cnwn6HNj+KxEej7WPjjx5efkfURyN2U
-         BuHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692977218; x=1693582018;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KcmM3G7mPvInDI7x9n1WVGdIT7j8cD6MA5FDEXRb+aE=;
-        b=Z4oWKGJkz87JmX2lydYIgmFKEM6GXdicsDq/8BMXW1UGfFFzI43grPKQDX/OFnfo3e
-         vFv5+svn8fUf4kmfzwHoMVRMyO0COoHXh4Kcu9b9Tp38jtPxgSeFtMo29+wJZD9EluOy
-         1ymSA+n5GyPT417wElgiWhAw2U/LY+EJJasS/Mle4MOcjTo82JuGMLYCxitC/XtG9njK
-         goeOCwQWWbPtnmdfN/Q9egWQxkboz3mqKyGRLcvn6sr1vBRKFU2A4XVCkGmN8lW7LXwj
-         Vy9EUCC8V5iOoGmE+A9bl8EQSeYuH9elFjRQzjR0h8GKp68Yb1PNuL+o0LFgdfTRJ0I/
-         ganA==
-X-Gm-Message-State: AOJu0YzNtoywADeZjYgZa1XeDdKOVp5Y2XIARYj4btACcFXnOWRFXJmG
-        TDI/snNx8qEaYAiyaRUf2eg=
-X-Google-Smtp-Source: AGHT+IFz7+5LJ1/nuYFat8UgtlwpTAtGQnchg/NH5X+DRSteprVeX+TDhddZM1cNbBJOLsO+2f4zVA==
-X-Received: by 2002:a92:cd86:0:b0:349:777e:f514 with SMTP id r6-20020a92cd86000000b00349777ef514mr11240682ilb.10.1692977217952;
-        Fri, 25 Aug 2023 08:26:57 -0700 (PDT)
-Received: from ?IPV6:2600:8802:b00:4a48:944f:2db6:2b1a:8d59? ([2600:8802:b00:4a48:944f:2db6:2b1a:8d59])
-        by smtp.gmail.com with ESMTPSA id z11-20020a63b04b000000b00565ec002d14sm1694547pgo.33.2023.08.25.08.26.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Aug 2023 08:26:56 -0700 (PDT)
-Message-ID: <862e5225-2d8e-8b8f-fc6d-c9b48ac74bfc@gmail.com>
-Date:   Fri, 25 Aug 2023 08:26:55 -0700
+        Fri, 25 Aug 2023 11:28:35 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A2C6213C;
+        Fri, 25 Aug 2023 08:28:34 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9350265B67;
+        Fri, 25 Aug 2023 15:28:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76982C433C7;
+        Fri, 25 Aug 2023 15:28:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1692977313;
+        bh=Og+U/MtFwBTheabE1+SCfc/l83oqJcDNoCE6gOZICPE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=e2cEn7UJ1xskNn3qBwUMs8ngwdimS+Kf6ZZC2scYHOnVpoUmWJ5CicvsXDAOAsQwu
+         aAqSk4B0mrvr7SAo/wh3Ua5rUFhg5/FTTK+w2ByvVa/Hn7++1Vi+DyYnrEHtmZ3eYc
+         nWcE7QGV3UrjyBWM95/LIpOVYqjMnuzNHMzBNVic=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-serial@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+Subject: [PATCH] tty: shrink the size of struct tty_struct by 40 bytes
+Date:   Fri, 25 Aug 2023 17:28:20 +0200
+Message-ID: <2023082519-cobbler-unholy-8d1f@gregkh>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 2/2] net: dsa: microchip: Provide Module 4 KSZ9477 errata
- (DS80000754C)
-Content-Language: en-US
-To:     Lukasz Majewski <lukma@denx.de>, Tristram.Ha@microchip.com
-Cc:     andrew@lunn.ch, olteanv@gmail.com, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, Woojung.Huh@microchip.com,
-        pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, UNGLinuxDriver@microchip.com
-References: <20230824154827.166274-1-lukma@denx.de>
- <20230824154827.166274-2-lukma@denx.de>
- <BYAPR11MB35583A648E4E44944A0172A0ECE3A@BYAPR11MB3558.namprd11.prod.outlook.com>
- <20230825103911.682b3d70@wsk>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20230825103911.682b3d70@wsk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+Lines:  94
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2564; i=gregkh@linuxfoundation.org; h=from:subject:message-id; bh=Og+U/MtFwBTheabE1+SCfc/l83oqJcDNoCE6gOZICPE=; b=owGbwMvMwCRo6H6F97bub03G02pJDCkvTky+aL56DU+NcY3kWZ0k85UH85UX2x7k2hWgYCyvX FKQwvS+I5aFQZCJQVZMkeXLNp6j+ysOKXoZ2p6GmcPKBDKEgYtTACYyx4JhflKPZKNh2qO1mu8n dbru71NkbN5ryzC/5ofM9wsS9nv2uqb3aa6rXjol2CMJAA==
+X-Developer-Key: i=gregkh@linuxfoundation.org; a=openpgp; fpr=F4B60CC5BF78C2214A313DCB3147D40DDB2DFB29
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -81,101 +54,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+It's been a long time since anyone has looked at what struct tty_struct
+looks like in memory, turns out there was a ton of holes.
 
+So move things around a bit, change one variable (closing) from being an
+int to a bool (it is only being tested for 0/1), and we end up saving 40
+bytes per structure overall on x86-64 systems.
 
-On 8/25/2023 1:39 AM, Lukasz Majewski wrote:
-> Hi Tristram,
-> 
->>> +static int ksz9477_errata(struct dsa_switch *ds)
->>> +{
->>> +       struct ksz_device *dev = ds->priv;
->>> +       u16 val;
->>> +       int p;
->>> +
->>> +       /* KSZ9477 Errata DS80000754C
->>> +        *
->>> +        * Module 4: Energy Efficient Ethernet (EEE) feature select
->>> must be
->>> +        * manually disabled
->>> +        *   The EEE feature is enabled by default, but it is not
->>> fully
->>> +        *   operational. It must be manually disabled through
->>> register
->>> +        *   controls. If not disabled, the PHY ports can
->>> auto-negotiate
->>> +        *   to enable EEE, and this feature can cause link drops
->>> when linked
->>> +        *   to another device supporting EEE.
->>> +        *
->>> +        *   Only PHY ports (dsa user) [0-4] need to have the EEE
->>> advertisement
->>> +        *   bits cleared.
->>> +        */
->>> +
->>> +       for (p = 0; p < ds->num_ports; p++) {
->>> +               if (!dsa_is_user_port(ds, p))
->>> +                       continue;
->>> +
->>> +               ksz9477_port_mmd_read(dev, p, MMD_DEVICE_ID_EEE_ADV,
->>> +                                     MMD_EEE_ADV, &val, 1);
->>> +
->>> +               pr_err("%s: PORT: %d val: 0x%x pc: %d\n", __func__,
->>> p, val,
->>> +                      ds->num_ports);
->>> +
->>> +               val &= ~(EEE_ADV_100MBIT | EEE_ADV_1GBIT);
->>> +               ksz9477_port_mmd_write(dev, p,
->>> MMD_DEVICE_ID_EEE_ADV,
->>> +                                      MMD_EEE_ADV, &val, 1);
->>> +       }
->>> +
->>> +       return 0;
->>> +}
->>> +
->>>   int ksz9477_setup(struct dsa_switch *ds)
->>>   {
->>>          struct ksz_device *dev = ds->priv;
->>> @@ -1157,7 +1195,7 @@ int ksz9477_setup(struct dsa_switch *ds)
->>>          /* enable global MIB counter freeze function */
->>>          ksz_cfg(dev, REG_SW_MAC_CTRL_6, SW_MIB_COUNTER_FREEZE,
->>> true);
->>>
->>> -       return 0;
->>> +       return ksz9477_errata(ds);
->>>   }
->>
->> I would prefer to execute the code in ksz9477_config_cpu_port(), as at
->> the end there is already a loop to do something to each port.
-> 
-> Just some explanation of the taken approach:
-> 
-> 1. I've followed already in-mainline code for ksz8795.c
-> (ksz8_handle_global_errata(ds)) which is executed in ksz8_setup
-> function.
-> 
-> 2. I do believe, that separate "errata" function would be more
-> readable, as KSZ9477 has many more erratas to be added.
-> 
->> The
->> check to disable EEE or not should be dev->info->internal_phy[port],
->> as one of the user ports can be RGMII or SGMII, which does not have a
->> PHY that can be accessed inside the switch.
-> 
-> Yes, this would be better solution. Thanks for the suggestion.
-> 
->>
->> As the EEE register value is simply 6 it should be enough to just set
->> the register to zero.  If so we do not need to add back those
->> ksz9477_port_mmd_setup functions and just use ksz_pwrite16() to write
->> to the MMD register.
->>
-> 
-> IMHO adding functions to MMD modification would facilitate further
-> development (for example LED setup).
+Before this patch:
+	/* size: 696, cachelines: 11, members: 37 */
+	/* sum members: 665, holes: 8, sum holes: 31 */
+	/* forced alignments: 2, forced holes: 1, sum forced holes: 4 */
+	/* last cacheline: 56 bytes */
 
-We already have some KSZ9477 specific initialization done in the Micrel 
-PHY driver under drivers/net/phy/micrel.c, can we converge on the PHY 
-driver which has a reasonable amount of infrastructure for dealing with 
-workarounds, indirect or direct MMD accesses etc.?
+After this change:
+	/* size: 656, cachelines: 11, members: 37 */
+	/* sum members: 654, holes: 1, sum holes: 2 */
+	/* forced alignments: 2 */
+	/* last cacheline: 16 bytes */
+
+Cc: Jiri Slaby <jirislaby@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ include/linux/tty.h | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/include/linux/tty.h b/include/linux/tty.h
+index e8d5d9997aca..f002d0f25db7 100644
+--- a/include/linux/tty.h
++++ b/include/linux/tty.h
+@@ -192,13 +192,14 @@ struct tty_operations;
+  */
+ struct tty_struct {
+ 	struct kref kref;
++	int index;
+ 	struct device *dev;
+ 	struct tty_driver *driver;
++	struct tty_port *port;
+ 	const struct tty_operations *ops;
+-	int index;
+ 
+-	struct ld_semaphore ldisc_sem;
+ 	struct tty_ldisc *ldisc;
++	struct ld_semaphore ldisc_sem;
+ 
+ 	struct mutex atomic_write_lock;
+ 	struct mutex legacy_mutex;
+@@ -209,6 +210,7 @@ struct tty_struct {
+ 	char name[64];
+ 	unsigned long flags;
+ 	int count;
++	unsigned int receive_room;
+ 	struct winsize winsize;
+ 
+ 	struct {
+@@ -219,16 +221,16 @@ struct tty_struct {
+ 	} __aligned(sizeof(unsigned long)) flow;
+ 
+ 	struct {
+-		spinlock_t lock;
+ 		struct pid *pgrp;
+ 		struct pid *session;
++		spinlock_t lock;
+ 		unsigned char pktstatus;
+ 		bool packet;
+ 		unsigned long unused[0];
+ 	} __aligned(sizeof(unsigned long)) ctrl;
+ 
+ 	bool hw_stopped;
+-	unsigned int receive_room;
++	bool closing;
+ 	int flow_change;
+ 
+ 	struct tty_struct *link;
+@@ -239,15 +241,13 @@ struct tty_struct {
+ 	void *disc_data;
+ 	void *driver_data;
+ 	spinlock_t files_lock;
++	int write_cnt;
++	unsigned char *write_buf;
++
+ 	struct list_head tty_files;
+ 
+ #define N_TTY_BUF_SIZE 4096
+-
+-	int closing;
+-	unsigned char *write_buf;
+-	int write_cnt;
+ 	struct work_struct SAK_work;
+-	struct tty_port *port;
+ } __randomize_layout;
+ 
+ /* Each of a tty's open files has private_data pointing to tty_file_private */
 -- 
-Florian
+2.42.0
+
