@@ -2,51 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 648F0788F32
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 21:11:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCA72788F37
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 21:12:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229571AbjHYTKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 15:10:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38522 "EHLO
+        id S229526AbjHYTMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 15:12:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229878AbjHYTKT (ORCPT
+        with ESMTP id S231200AbjHYTLk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 15:10:19 -0400
-Received: from mail-pg1-f208.google.com (mail-pg1-f208.google.com [209.85.215.208])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A7B9273A
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 12:09:31 -0700 (PDT)
-Received: by mail-pg1-f208.google.com with SMTP id 41be03b00d2f7-5646e695ec1so1148385a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 12:09:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692990468; x=1693595268;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hmj/LY/FLKSl0a+ICdBO/BQJfheNoGL/ydDIAk9+GUo=;
-        b=d1MAeF3vbkr5c4sxXwE9WqSRVaLfX5zd3KK50zWW90TUQsBhM9VqhVX/7D4o65bxdG
-         0raj8A6U+DYAYQ5Jhy+PaxGGWL9IzTDKpgzI6g/zXwmyuo6QH0vXpoiwXx1CUju56Izp
-         3Dgkcad94voOMSim4qGZTL6/DBwmz2F4Imz7+y42Xi4a8HLZcPQ4khTaaOGiooSyY083
-         5fSJWAHtxRQO7DHSaAK1dtArem6zzU2GSBSroOI4BsjO9b121g8IQ1d8YEF+2o3jGoSi
-         PF8r0Rwqt+PvnENcC7pziA70LuxecafesS7+xbifNtAxY53g/f5vt28ymh2DAIT1PfjS
-         S7Mg==
-X-Gm-Message-State: AOJu0YwHOLJgY/lOgUijmhSUwwYseIUC6xNZ7fnDi4NNjsFfRUArE7rG
-        Q9Smew7IX9AQJWdpiZlceKeWxBW5pvQP49Sfh9o3jbJpKg9a/nWT8A==
-X-Google-Smtp-Source: AGHT+IHb6GLKyyeidfExT3uGtnSTbOV5xHC7+kv0KmQxlW+De5j1XLKYqNv0YT98tYsOd4+H2/oW18vRgJh58swOpxyN3fbaKh/Z
+        Fri, 25 Aug 2023 15:11:40 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4EB62133;
+        Fri, 25 Aug 2023 12:11:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=l+921+INTTmytbRdikj/w1XM0sYIGBKYxXwPysBHkj4=; b=cUl7Wlklv20N6NFHbMMQZ2qkxz
+        iOJS50gpsdgah/UsOFg0lq7wUfqKss37dUpIZ9rF7Ee193PFH1Sp37Edkg7Cp8Iml8lJyDcndu1am
+        cnn9VjGvF8i+7j/JBBOQaxwBLmAv5YUjaQRXh4mJhkO8WdJ/UmDUCVImvX5MoyZAsqXPWatMLseXu
+        QZIlEQi9GudaSu6wkELrAvBFjmWOBDG1x1einQ2rLgTqv4F6cqC82Ad0pTm3uMLheNRrfQzPk+YwH
+        2Nt3bG4V5pr+Iz861A6saVF7YHYI9ZKsvlrbNU0EKgwYT6NSJcs+mhkF4TcEK2AFKcsKcbVoP1do8
+        cWY77RWA==;
+Received: from [2601:1c2:980:9ec0::2764]
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qZcDR-005vPP-1T;
+        Fri, 25 Aug 2023 19:11:29 +0000
+Message-ID: <a5d07fee-b950-ea48-c480-dd5a8a575969@infradead.org>
+Date:   Fri, 25 Aug 2023 12:11:28 -0700
 MIME-Version: 1.0
-X-Received: by 2002:a63:3c0b:0:b0:56a:b197:12ca with SMTP id
- j11-20020a633c0b000000b0056ab19712camr3745613pga.2.1692990468727; Fri, 25 Aug
- 2023 12:07:48 -0700 (PDT)
-Date:   Fri, 25 Aug 2023 12:07:48 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007f2a810603c40f43@google.com>
-Subject: [syzbot] BUG: sleeping function called from invalid context
- aclient_loop: send disconnect: Broken pipe
-From:   syzbot <syzbot+b7ed0e35e48591d9ac0a@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH] kbuild: Show Kconfig fragments in "help"
+Content-Language: en-US
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>, x86@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20230824223606.never.762-kees@kernel.org>
+ <21193a52-0425-f5ae-90f0-10e4c578ae90@infradead.org>
+ <202308251119.B93C95A3A7@keescook>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <202308251119.B93C95A3A7@keescook>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,48 +59,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    35e2132122ba Merge branch 'for-next/core' into for-kernelci
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=104105efa80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4f6a8d3c0bd07f11
-dashboard link: https://syzkaller.appspot.com/bug?extid=b7ed0e35e48591d9ac0a
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/6808a9c4c8df/disk-35e21321.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/85a6cfc7b474/vmlinux-35e21321.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/a3958fe16b1c/Image-35e21321.gz.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b7ed0e35e48591d9ac0a@syzkaller.appspotmail.com
-
-BUG: sleeping function called from invalid context aclient_loop: send disconnect: Broken pipe
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+On 8/25/23 11:20, Kees Cook wrote:
+> On Thu, Aug 24, 2023 at 05:04:02PM -0700, Randy Dunlap wrote:
+>> Hi Kees,
+>>
+>> On 8/24/23 15:36, Kees Cook wrote:
+>>> Doing a "make help" would show only hard-coded Kconfig targets and
+>>> depended on the archhelp target to include ".config" targets. There was
+>>> nothing showing global kernel/configs/ targets. Solve this by walking
+>>> the wildcard list and include them in the output, using the first comment
+>>> line as the help text.
+>>>
+>>> Update all Kconfig fragments to include help text and adjust archhelp
+>>> targets to avoid redundancy.
+>>>
+>>> Adds the following section to "help" target output:
+>>>
+>>> Configuration fragment targets (for enabling various Kconfig items):
+>>>   debug.config         - Debugging for CI systems and finding regressions
+>>>   kvm_guest.config     - Bootable as a KVM guest
+>>>   nopm.config          - Disable Power Management
+>>>   rust.config          - Enable Rust
+>>>   tiny-base.config     - Minimal options for tiny systems
+>>>   tiny.config          - Smallest possible kernel image
+>>>   x86_debug.config     - Debugging options for tip tree testing
+>>>   xen.config           - Bootable as a Xen guest
+>>>   tiny.config          - x86-specific options for a small kernel image
+>>>   xen.config           - x86-specific options for a Xen virtualization guest
+>>
+>> ISTM that you are missing the "why" part of this change in the commit
+>> description.
+> 
+> I want to see what fragments are available without needing to know the
+> source tree layout for their locations. :)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Why?  :)
 
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+but you don't have to answer. I acquiesce (i.e., give up).
 
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+>> "make tinyconfig" is the real target here.  The other (tiny.) files are just
+>> implementation details.
+>> We can't put all implementation details into help messages and it's not
+>> difficult to find that the (tiny.) config files are merged to make the
+>> final .config file.
+> 
+> Yeah, this seems true for much of the ppc stuff to, as pointed out by
+> mpe. I'll go answer there...
+> 
 
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+-- 
+~Randy
