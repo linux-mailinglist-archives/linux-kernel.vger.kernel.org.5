@@ -2,133 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E89C7881A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 10:10:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0FC97881A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 10:11:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241163AbjHYIJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 04:09:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39526 "EHLO
+        id S240317AbjHYIK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 04:10:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243390AbjHYIJZ (ORCPT
+        with ESMTP id S241806AbjHYIK2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 04:09:25 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 869E71FF9;
-        Fri, 25 Aug 2023 01:09:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692950963; x=1724486963;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=DDYB9hgCGLLt7dGj4L2dfzxCUOAizYUlniAtMkNplVo=;
-  b=Kmuh6f5VF7GcD1ggRZEsQPgZZq7sab+TWO+eM6CMmNwG5s4r3Mf+4yP2
-   cJOpjXNO9f+OGZO7zX+Hdy94SXbotyONO0onk7D+mFN5CJRE0EYEI1EQ5
-   JTf4zTg1EMwHaM+UUSedbf8kQBnIlMeWZqK0+noDUm6W8IaNKMHzJqtWK
-   Vr99XOaHLuE8GrJezaZdxRsJ+u1UbjBgkl30INvt/tSEhRR7lCmv3JCWF
-   Qi54rieK03pooAyD0xWWRlOsi4UzY0j1l9s/r6oaXrVH41hzMfpaXiRQW
-   kGa9tVLcMORUaErwiDSaDmN7J4rQq5NiDBEW3p06ZYk/BlDf8o7WpCT5G
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="378446107"
-X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
-   d="scan'208";a="378446107"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2023 01:09:23 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="860998431"
-X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
-   d="scan'208";a="860998431"
-Received: from enguerra-mobl.ger.corp.intel.com ([10.251.213.8])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2023 01:09:21 -0700
-Date:   Fri, 25 Aug 2023 11:09:14 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-cc:     linux-pci@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH 12/12] PCI: Simplify pcie_capability_clear_and_set_word()
- control flow
-In-Reply-To: <20230824193712.542167-13-helgaas@kernel.org>
-Message-ID: <8f5f10be-333a-9d88-7acf-1cbb2b11680@linux.intel.com>
-References: <20230824193712.542167-1-helgaas@kernel.org> <20230824193712.542167-13-helgaas@kernel.org>
+        Fri, 25 Aug 2023 04:10:28 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91D741FF6;
+        Fri, 25 Aug 2023 01:10:26 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2690A66EEB;
+        Fri, 25 Aug 2023 08:10:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4322C433C8;
+        Fri, 25 Aug 2023 08:10:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692951025;
+        bh=MZiSPi7PsqNW/QQ5weCras7ssRcqxOoTx+NhIZgDiWE=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=e5AOOo7hoVXLo7H1x5MKH+DqM5YhKYzGx9SYVUivQ2jx1ZmkcTiH/0/yk5IODk4uX
+         UwBGX5K6sUD7af8uFQ6Fpnqi2Qnp3qPF0qmHPlSaMyQ01zo4gXZoPKVlhyHu5KeGOj
+         p9XN5srdk1BZ3EVh4Fgb+wqi9tewoZPd600oG1o+iRZnHCQZXllgwTKVOU7mC3B62a
+         8M1uUG/utLk/6SUH6XZ5tXeUyLKX9x0VPGYlFw7bnv3kAUFq3ecvYNleS+pAqjs/c2
+         0PmQo++aUxAEO4Ug631QmPY5KLhPY4nX2aWevyIrQGXV3UibfymHaPH0ZzcKiz4ioc
+         tBJtwgzjo57Kw==
+Message-ID: <689cfe0d-a323-b48c-8543-4ddd74258fc0@kernel.org>
+Date:   Fri, 25 Aug 2023 17:10:23 +0900
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-1153837569-1692950962=:3206"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 1/2] ata: pata_ep93xx: fix error return code in probe
+Content-Language: en-US
+To:     Nikita Shubin <nikita.shubin@maquefel.me>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>
+Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230823-ep93xx_pata_fixes-v1-0-d7e7229be148@maquefel.me>
+ <20230823-ep93xx_pata_fixes-v1-1-d7e7229be148@maquefel.me>
+ <00462bc7-43ee-784a-3296-8051d69575df@kernel.org>
+ <913a0bc0dfcd3ecd28f65fb52db789033097d831.camel@maquefel.me>
+From:   Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <913a0bc0dfcd3ecd28f65fb52db789033097d831.camel@maquefel.me>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---8323329-1153837569-1692950962=:3206
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-
-On Thu, 24 Aug 2023, Bjorn Helgaas wrote:
-
-> From: Bjorn Helgaas <bhelgaas@google.com>
+On 8/25/23 17:05, Nikita Shubin wrote:
+> Hi Damien!
 > 
-> Return early for errors in pcie_capability_clear_and_set_word_unlocked()
-> and pcie_capability_clear_and_set_dword() to simplify the control flow.
+> On Thu, 2023-08-24 at 08:07 +0900, Damien Le Moal wrote:
+>> On 8/23/23 18:47, Nikita Shubin via B4 Relay wrote:
+>>> From: Nikita Shubin <nikita.shubin@maquefel.me>
+>>>
+>>> Return -ENOMEM from ep93xx_pata_probe() if devm_kzalloc() or
+>>> ata_host_alloc() fails.
+>>>
+>>> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+>>
+>> Doesn't this need a Fixes tag and Cc: stable ?
+>>
+>> This is not really a bug fix, but might as well be complete with the
+>> fix :)
 > 
-> No functional change intended.
+> Well... This would be fix for:
 > 
-> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-> Cc: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> ```
+> commit 2fff27512600f9ad91335577e485a8552edb0abf
+> Author: Rafal Prylowski <prylowski@metasoft.pl>
+> Date:   Thu Apr 12 14:13:16 2012 +0200
+> ```
+> 
+> v3.4-rc6-6-g2fff27512600
+> 
+> Are you sure we wanna tag so solid and time proven commit as Fixes: :)
+> ?
 
-Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+Yeah, this is fine without the fixes tag. As I said, not exactly a bug fix but
+rather an improvement :)
 
 -- 
- i.
+Damien Le Moal
+Western Digital Research
 
-> ---
->  drivers/pci/access.c | 22 ++++++++++------------
->  1 file changed, 10 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/pci/access.c b/drivers/pci/access.c
-> index 0b2e90d2f04f..6554a2e89d36 100644
-> --- a/drivers/pci/access.c
-> +++ b/drivers/pci/access.c
-> @@ -504,13 +504,12 @@ int pcie_capability_clear_and_set_word_unlocked(struct pci_dev *dev, int pos,
->  	u16 val;
->  
->  	ret = pcie_capability_read_word(dev, pos, &val);
-> -	if (!ret) {
-> -		val &= ~clear;
-> -		val |= set;
-> -		ret = pcie_capability_write_word(dev, pos, val);
-> -	}
-> +	if (ret)
-> +		return ret;
->  
-> -	return ret;
-> +	val &= ~clear;
-> +	val |= set;
-> +	return pcie_capability_write_word(dev, pos, val);
->  }
->  EXPORT_SYMBOL(pcie_capability_clear_and_set_word_unlocked);
->  
-> @@ -535,13 +534,12 @@ int pcie_capability_clear_and_set_dword(struct pci_dev *dev, int pos,
->  	u32 val;
->  
->  	ret = pcie_capability_read_dword(dev, pos, &val);
-> -	if (!ret) {
-> -		val &= ~clear;
-> -		val |= set;
-> -		ret = pcie_capability_write_dword(dev, pos, val);
-> -	}
-> +	if (ret)
-> +		return ret;
->  
-> -	return ret;
-> +	val &= ~clear;
-> +	val |= set;
-> +	return pcie_capability_write_dword(dev, pos, val);
->  }
->  EXPORT_SYMBOL(pcie_capability_clear_and_set_dword);
->  
-> 
---8323329-1153837569-1692950962=:3206--
