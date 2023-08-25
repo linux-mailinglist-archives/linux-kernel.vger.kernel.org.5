@@ -2,72 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3CE5787F35
+	by mail.lfdr.de (Postfix) with ESMTP id 17B8C787F33
 	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 07:24:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240720AbjHYFKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 01:10:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34766 "EHLO
+        id S241127AbjHYFN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 01:13:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230093AbjHYFKZ (ORCPT
+        with ESMTP id S241117AbjHYFNr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 01:10:25 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A94711BDB
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 22:10:23 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id d75a77b69052e-40c72caec5cso183581cf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 22:10:23 -0700 (PDT)
+        Fri, 25 Aug 2023 01:13:47 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46F191BD9
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 22:13:45 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-99d937b83efso58660566b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 22:13:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692940223; x=1693545023; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GM5LCWOrYHm+b9e2C3LWn/6EqDtDallIRoPwjyWLLgw=;
-        b=cXZ+tmtzRjieSP5Xc82Ks7jFzMg8fiOaMkycJmhKKPkjljsOVkzyH/k4zp4wnJ78Mt
-         +mxKPeG0+QxqQ9lfwag5nk8suLxcVA50s9HnNbTLWSmXo5XTuOCwbJ2j/9YMtolAxmcp
-         MHE2wZbU6UIL1jrO8Id3wM0Nl5WQYFjnXPMa0hoLnJCf3ZgfIem/atsQUDOLOudLDVAp
-         Jgc/mdtMFFOhma/WCYu6FklwtpgRalo9+AGt5a6c+MmwBxhG7EbiByqG8+f1BPKYv/my
-         Rku4mW0E04xzUCHMVNOFO1BOcxpiwWyY+pywM8zzzil5k724DRdy/GGlN3oFnnpxe2gD
-         0kXA==
+        d=gmail.com; s=20221208; t=1692940424; x=1693545224;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Atdwlr4ZDNiktFeelgF93mSGgIj/iGi0rNQszZlVpA4=;
+        b=JRqmp0QSyt72qo5V3cY0Y5k8QRHmC1Ls5KH6YuJFu1V7KG3KZvjUZ2uvVFpanGmaaU
+         wlb3p5+BP9+JQ8HphFo4omJCJAdQyBJ/nm9rZ+QqDLK1LK9qz8C+eZ/QkJsp+FWhmvjx
+         iKbREA1UX34MRYfAcxZ9mZojJKrvJj6XzSrG9twaF5iDKmenYtdKh8qWlmrfH5cDJtyl
+         QLXjB01usvhO/upOTIRrUW5ktHTjqZHRlV3orlT9Jgg9KxchkFkADCm7lva/vevDro42
+         ZgX2dSu2aWqWUiV16z0g2lYoqXgAaPoXMgNe+Xrag0NqcFB6pOOI4Ye+jWPM57RqRBOx
+         xnvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692940223; x=1693545023;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GM5LCWOrYHm+b9e2C3LWn/6EqDtDallIRoPwjyWLLgw=;
-        b=XP1N9kB1AlVoSFhNJEMYldAh5fAskRuZ3/86Qyv6bn68s34mP/5pvAuhKNozKjFiIe
-         +1U19aBsLX91c14ESxhUH5+prLSBhyjr7jcWXtezYPv8g9LxYdOexPgwbFGfzaceObwd
-         gckLXekt5u0mVMgB9qe1me/If2Dc3h4gnuWoQ+gd1vj1IXHNIiFxEKExNhIbiUEpOdtY
-         pVxgqhVxppXYytpWCBD1v2awdtPdmuT1bTORY7ANMqrfJC9u3kt9fPtrMb9MuwsVF4Lx
-         E6o5YrtJwwlVOuZA6E83ZQxjNII/jCyeeOve8n/v2/UWJVei2fYY/8yXHDSOmKw+jFAY
-         3aiA==
-X-Gm-Message-State: AOJu0YyqSOvlL/24Ox/Nfms/zXgHzqyeozEBCzI57uBlFs9JAK6qcYR5
-        NjPQfYYNYB4ybL0Zq9ZNeO7rWWKw63PxAm3tO5sku8n0qHvGPOCnTc81Gd1c
-X-Google-Smtp-Source: AGHT+IG0tyEVEUGxl0lrYufkgEyIAvw8yi4OGUx4DBfPxEbTqKQdXPhMUYiE/cswuweuW6BM+MOqktyYifRs7XltpYw=
-X-Received: by 2002:a05:622a:1897:b0:403:affb:3c03 with SMTP id
- v23-20020a05622a189700b00403affb3c03mr163509qtc.10.1692940222719; Thu, 24 Aug
- 2023 22:10:22 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692940424; x=1693545224;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Atdwlr4ZDNiktFeelgF93mSGgIj/iGi0rNQszZlVpA4=;
+        b=L5ub5u30qpgYUyiKB73fjziFcc+TkaP52mEvJ/P0yFmEDxqmrqMqVrwWa/KZhnzO8r
+         CGGJReMeC6/l3WTHjw3xMMp9vaX25ZtCpGLyR4ZNc65ejp+IGJ7Ee2t66/aLhJKWov2I
+         kTlURX7K4fjuOZrCF7m08/tru7YO8N8Fc9nXfuSwpCFNQ8HFE9hV+Cz/6WiC5RaVmEB+
+         cZ74ToaHrbWZ2mKGr8ddjK27cqp5VdJAWcsn2hR6qbKbXWormVVj5cjnyckK25VBlR2d
+         JUxALaTZ+ybt/KUpM0dPRTTArlKCtKRCsER/jRR67KJjXd/q0sh6HxTRxjwfozKD+rK8
+         S7Mg==
+X-Gm-Message-State: AOJu0YyaibnLfpX3L25y5zEIBB1c4VQnnmPtqnSHy2kefVfxkM3Iwzvr
+        KMZmx/IFlQzCAsFC0Q1J10g=
+X-Google-Smtp-Source: AGHT+IEgarRabzEcG24RtoV2YIp8m8hWRSh94oPfHQvl0dgLnog3qHo8ZEbPuFDN1wXxUV+4gMXAbw==
+X-Received: by 2002:a17:907:1de6:b0:9a1:f21e:cdfd with SMTP id og38-20020a1709071de600b009a1f21ecdfdmr4319104ejc.34.1692940423527;
+        Thu, 24 Aug 2023 22:13:43 -0700 (PDT)
+Received: from [192.168.0.101] (ip5f5aba12.dynamic.kabel-deutschland.de. [95.90.186.18])
+        by smtp.gmail.com with ESMTPSA id u22-20020a17090626d600b00993159ce075sm505143ejc.210.2023.08.24.22.13.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Aug 2023 22:13:43 -0700 (PDT)
+Message-ID: <69226eca-d345-f6fa-59fe-3c55674cc534@gmail.com>
+Date:   Fri, 25 Aug 2023 07:13:42 +0200
 MIME-Version: 1.0
-References: <20230821012734.18241-1-yangjihong1@huawei.com> <20230821012734.18241-4-yangjihong1@huawei.com>
-In-Reply-To: <20230821012734.18241-4-yangjihong1@huawei.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Thu, 24 Aug 2023 22:10:11 -0700
-Message-ID: <CAP-5=fW1zRmx4xxHLUySJ6jJ7NO5BTCcufN_=27gMak8bu6LMg@mail.gmail.com>
-Subject: Re: [PATCH v6 3/7] perf record: Move setting dummy tracking before record__init_thread_masks()
-To:     Yang Jihong <yangjihong1@huawei.com>
-Cc:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@kernel.org, namhyung@kernel.org, adrian.hunter@intel.com,
-        kan.liang@linux.intel.com, james.clark@arm.com,
-        tmricht@linux.ibm.com, ak@linux.intel.com,
-        anshuman.khandual@arm.com, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH] staging: rtl8192e: prefer strscpy over strncpy
+To:     Dan Carpenter <dan.carpenter@linaro.org>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, philipp.g.hortmann@gmail.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20230805075114.15186-1-straube.linux@gmail.com>
+ <2023080952-maroon-waviness-9621@gregkh>
+ <b15bc777-b470-3c15-5ea7-8ef2f89622c3@gmail.com>
+ <cbca3311-2d5d-4b87-8966-e2b57d74d6e1@kadam.mountain>
+Content-Language: en-US
+From:   Michael Straube <straube.linux@gmail.com>
+In-Reply-To: <cbca3311-2d5d-4b87-8966-e2b57d74d6e1@kadam.mountain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,198 +78,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 20, 2023 at 6:30=E2=80=AFPM Yang Jihong <yangjihong1@huawei.com=
-> wrote:
->
-> User space tasks can migrate between CPUs, so when tracing selected CPUs,
-> sideband for all CPUs is needed. In this case set the cpu map of the evse=
-l
-> to all online CPUs. This may modify the original cpu map of the evlist.
-> Therefore, need to check whether the preceding scenario exists before
-> record__init_thread_masks().
-> Dummy tracking has been set in record__open(), move it before
-> record__init_thread_masks() and add a helper for unified processing.
+On 8/10/23 07:01, Dan Carpenter wrote:
+> On Wed, Aug 09, 2023 at 08:02:05PM +0200, Michael Straube wrote:
+>> On 8/9/23 14:21, Greg KH wrote:
+>>> On Sat, Aug 05, 2023 at 09:51:14AM +0200, Michael Straube wrote:
+>>>> Replace strncpy with strscpy in two places where the destination buffer
+>>>> should be NUL-terminated. Found by checkpatch.
+>>>>
+>>>> WARNING: Prefer strscpy, strscpy_pad, or __nonstring over strncpy - see: https://github.com/KSPP/linux/issues/90
+>>>
+>>> If a global search/replace could be done, it would have happend a long
+>>> time ago.
+>>>
+>>> How was this tested?  The functions work differently, are you sure there
+>>> is no change in functionality here?
+>>>
+>>
+>> It was only compile tested. To me it looked as it does not change
+>> functionality, but looking a bit deeper at it I'm not sure anymore.
+>> So, we should leave it as is.
+> 
+> So there are three main differences between strncpy() and strcpy().
+> 
+> 1) The return.
+> 2) strncpy() will always write net->hidden_ssid_len bytes.  If the
+>     string to copy is smaller than net->hidden_ssid_len bytes it will
+>     fill the rest with zeroes.  This can be important for preventing
+>     information leaks.
+> 3) strscpy() will always add a NUL terminator where strncpy() just
+>     truncates a too long string without adding a terminator.
+> 
+> We want #3.  We don't care about #1.  The only thing to check is #2.
+> 
+> regards,
+> dan carpenter
+> 
 
-I have a hard time understanding this commit message. Let me have a go:
+Thank you Dan,
 
-In order to set cpu maps correctly on dummy events they need to set up
-later. Factor out the dummy event initialization from record__open and
-move it to its own function record__setup_dummy_event. Move the call
-to the record__setup_dummy to before the call to
-record__init_thread_masks in cmd_record.
+so in this case we should/could replace strncpy with strscpy_pad,
+correct?
 
-> The sys_perf_event_open invoked is as follows:
->
->   # perf --debug verbose=3D3 record -e cpu-clock -D 100 true
->   <SNIP>
->   Opening: cpu-clock
->   ------------------------------------------------------------
->   perf_event_attr:
->     type                             1 (PERF_TYPE_SOFTWARE)
->     size                             136
->     config                           0 (PERF_COUNT_SW_CPU_CLOCK)
->     { sample_period, sample_freq }   4000
->     sample_type                      IP|TID|TIME|PERIOD|IDENTIFIER
->     read_format                      ID|LOST
->     disabled                         1
->     inherit                          1
->     freq                             1
->     sample_id_all                    1
->     exclude_guest                    1
->   ------------------------------------------------------------
->   sys_perf_event_open: pid 10318  cpu 0  group_fd -1  flags 0x8 =3D 5
->   sys_perf_event_open: pid 10318  cpu 1  group_fd -1  flags 0x8 =3D 6
->   sys_perf_event_open: pid 10318  cpu 2  group_fd -1  flags 0x8 =3D 7
->   sys_perf_event_open: pid 10318  cpu 3  group_fd -1  flags 0x8 =3D 9
->   sys_perf_event_open: pid 10318  cpu 4  group_fd -1  flags 0x8 =3D 10
->   sys_perf_event_open: pid 10318  cpu 5  group_fd -1  flags 0x8 =3D 11
->   sys_perf_event_open: pid 10318  cpu 6  group_fd -1  flags 0x8 =3D 12
->   sys_perf_event_open: pid 10318  cpu 7  group_fd -1  flags 0x8 =3D 13
->   Opening: dummy:u
->   ------------------------------------------------------------
->   perf_event_attr:
->     type                             1 (PERF_TYPE_SOFTWARE)
->     size                             136
->     config                           0x9 (PERF_COUNT_SW_DUMMY)
->     { sample_period, sample_freq }   1
->     sample_type                      IP|TID|TIME|IDENTIFIER
->     read_format                      ID|LOST
->     disabled                         1
->     inherit                          1
->     exclude_kernel                   1
->     exclude_hv                       1
->     mmap                             1
->     comm                             1
->     enable_on_exec                   1
->     task                             1
->     sample_id_all                    1
->     exclude_guest                    1
->     mmap2                            1
->     comm_exec                        1
->     ksymbol                          1
->     bpf_event                        1
->   ------------------------------------------------------------
->   sys_perf_event_open: pid 10318  cpu 0  group_fd -1  flags 0x8 =3D 14
->   sys_perf_event_open: pid 10318  cpu 1  group_fd -1  flags 0x8 =3D 15
->   sys_perf_event_open: pid 10318  cpu 2  group_fd -1  flags 0x8 =3D 16
->   sys_perf_event_open: pid 10318  cpu 3  group_fd -1  flags 0x8 =3D 17
->   sys_perf_event_open: pid 10318  cpu 4  group_fd -1  flags 0x8 =3D 18
->   sys_perf_event_open: pid 10318  cpu 5  group_fd -1  flags 0x8 =3D 19
->   sys_perf_event_open: pid 10318  cpu 6  group_fd -1  flags 0x8 =3D 20
->   sys_perf_event_open: pid 10318  cpu 7  group_fd -1  flags 0x8 =3D 21
->   <SNIP>
->
-> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
-> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-> ---
->  tools/perf/builtin-record.c | 59 +++++++++++++++++++++++--------------
->  1 file changed, 37 insertions(+), 22 deletions(-)
->
-> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-> index 12edad8392cc..4ee94058028f 100644
-> --- a/tools/perf/builtin-record.c
-> +++ b/tools/perf/builtin-record.c
-> @@ -906,6 +906,37 @@ static int record__config_off_cpu(struct record *rec=
-)
->         return off_cpu_prepare(rec->evlist, &rec->opts.target, &rec->opts=
-);
->  }
->
-> +static int record__config_tracking_events(struct record *rec)
-> +{
-> +       struct record_opts *opts =3D &rec->opts;
-> +       struct evlist *evlist =3D rec->evlist;
-> +       struct evsel *evsel;
-> +
-> +       /*
-> +        * For initial_delay, system wide or a hybrid system, we need to =
-add a
-> +        * dummy event so that we can track PERF_RECORD_MMAP to cover the=
- delay
-
-This code is explicitly talking about dummy events but the function is
-now renamed to call it a tracking event. I think the code should be
-consistent.
-
-> +        * of waiting or event synthesis.
-> +        */
-> +       if (opts->target.initial_delay || target__has_cpu(&opts->target) =
-||
-> +           perf_pmus__num_core_pmus() > 1) {
-> +               evsel =3D evlist__findnew_tracking_event(evlist, false);
-> +               if (!evsel)
-> +                       return -ENOMEM;
-> +
-> +               /*
-> +                * Enable the dummy event when the process is forked for
-
-Dummy again.
-
-Thanks,
-Ian
-
-> +                * initial_delay, immediately for system wide.
-> +                */
-> +               if (opts->target.initial_delay && !evsel->immediate &&
-> +                   !target__has_cpu(&opts->target))
-> +                       evsel->core.attr.enable_on_exec =3D 1;
-> +               else
-> +                       evsel->immediate =3D 1;
-> +       }
-> +
-> +       return 0;
-> +}
-> +
->  static bool record__kcore_readable(struct machine *machine)
->  {
->         char kcore[PATH_MAX];
-> @@ -1286,28 +1317,6 @@ static int record__open(struct record *rec)
->         struct record_opts *opts =3D &rec->opts;
->         int rc =3D 0;
->
-> -       /*
-> -        * For initial_delay, system wide or a hybrid system, we need to =
-add a
-> -        * dummy event so that we can track PERF_RECORD_MMAP to cover the=
- delay
-> -        * of waiting or event synthesis.
-> -        */
-> -       if (opts->target.initial_delay || target__has_cpu(&opts->target) =
-||
-> -           perf_pmus__num_core_pmus() > 1) {
-> -               pos =3D evlist__findnew_tracking_event(evlist, false);
-> -               if (!pos)
-> -                       return -ENOMEM;
-> -
-> -               /*
-> -                * Enable the dummy event when the process is forked for
-> -                * initial_delay, immediately for system wide.
-> -                */
-> -               if (opts->target.initial_delay && !pos->immediate &&
-> -                   !target__has_cpu(&opts->target))
-> -                       pos->core.attr.enable_on_exec =3D 1;
-> -               else
-> -                       pos->immediate =3D 1;
-> -       }
-> -
->         evlist__config(evlist, opts, &callchain_param);
->
->         evlist__for_each_entry(evlist, pos) {
-> @@ -4190,6 +4199,12 @@ int cmd_record(int argc, const char **argv)
->                 goto out;
->         }
->
-> +       err =3D record__config_tracking_events(rec);
-> +       if (err) {
-> +               pr_err("record__config_tracking_events failed, error %d\n=
-", err);
-> +               goto out;
-> +       }
-> +
->         err =3D record__init_thread_masks(rec);
->         if (err) {
->                 pr_err("Failed to initialize parallel data streaming mask=
-s\n");
-> --
-> 2.30.GIT
->
+regards,
+Michael
