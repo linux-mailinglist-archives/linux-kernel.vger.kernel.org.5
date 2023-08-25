@@ -2,126 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E829C788724
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 14:25:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DB4D788725
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 14:25:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244656AbjHYMZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 08:25:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34420 "EHLO
+        id S244720AbjHYMZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 08:25:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244879AbjHYMY4 (ORCPT
+        with ESMTP id S244844AbjHYMYu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 08:24:56 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A906D213F;
-        Fri, 25 Aug 2023 05:24:19 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-500a8b2b73eso836226e87.0;
-        Fri, 25 Aug 2023 05:24:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692966198; x=1693570998;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5WBrrXndAbZbJ6p/Nar438q9WSE55oh82llBeggBy/I=;
-        b=nQKj+pQZTHkdy7VgNuuNZ5VbLAFDgDEuEL3vnqILoN1t679DgqEme3Vjbkd3n4VMq5
-         lUQ1mXtgPXbQwWwAfHxIGLBbTN6rM0h93vmPfaiw1xq1IVAqLPirjHNld5FYOXvtD9ou
-         Q8Iuz1IQ27Uj07Apu2NkZd5L1xSKHRqToOADnED2h6AJZHkGTsMuMIvMu1Ip6GeRPayL
-         ok5Yb0XVnQTfHyC1Ukz9n4evX6asCr3ROV5IqKo9rj7z9BZpq7FB1Voq3Im8mUgHt47H
-         jCsD+10MXWzx5mSDLkvoXc/ZB+0M1Z3MV80CgIG0fNdwClxYWpHLjSXUUF5QyMrl955v
-         fw0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692966198; x=1693570998;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5WBrrXndAbZbJ6p/Nar438q9WSE55oh82llBeggBy/I=;
-        b=cMfJI5dIGeqDfysiPnlBKVK0DPqLyGrZbbRz9Z4K227PecEGRPSqsOawIWRFhu+O1X
-         m0xZjpxeaDYNCQouGVq68h13EXDUoE3nGVbnpe8G7IyEtww7f/i4B2EG/7DvFpaw6Jj6
-         p6XqrPeYG26OVB6iYKH2rYtl540BcSQJrvbw0UUMGD4zWQ9urMAHVDbt6osIBCg8LuKE
-         pP+rJUVQd4pll0HRjs8+8SfcbBwdA1/hTPsvypJTRbI7staYgNWZ0xInX2A3KNyVUNp0
-         GGuuBtPug1hhXYq/HqKhcnLZD12N7csEZ6+0JhL7JcYsImjEi4Awpq4ez6A52PWdhHBW
-         49pA==
-X-Gm-Message-State: AOJu0YxT+5Dlc3Xq3EOLLSaQKIcCf4b6s0ALJQnk0BvCGXPVVbi/n7tk
-        zkAMmpo7p5sLgNooXmg2CUBHDg2nyGC6iaHyGRQ=
-X-Google-Smtp-Source: AGHT+IGeYIhpQZQwYWBlFn9c0G+s1a43UuUYm0kyyGIY5iX6yP6g9N7SODjnUUyYfFNtPqSfJYqUJqDnDZHKZW5hPxc=
-X-Received: by 2002:a05:6512:689:b0:4fd:d64f:c0a6 with SMTP id
- t9-20020a056512068900b004fdd64fc0a6mr16089445lfe.48.1692966198141; Fri, 25
- Aug 2023 05:23:18 -0700 (PDT)
+        Fri, 25 Aug 2023 08:24:50 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5102126B2;
+        Fri, 25 Aug 2023 05:24:07 -0700 (PDT)
+Received: from canpemm500005.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RXJty6GNmzVkMk;
+        Fri, 25 Aug 2023 20:20:26 +0800 (CST)
+Received: from [10.174.176.34] (10.174.176.34) by
+ canpemm500005.china.huawei.com (7.192.104.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Fri, 25 Aug 2023 20:22:45 +0800
+Subject: Re: [syzbot] [ext4?] BUG: unable to handle kernel paging request in
+ ext4_calculate_overhead
+To:     syzbot <syzbot+b3123e6d9842e526de39@syzkaller.appspotmail.com>,
+        <adilger.kernel@dilger.ca>, <jack@suse.cz>,
+        <linux-ext4@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <llvm@lists.linux.dev>,
+        <nathan@kernel.org>, <ndesaulniers@google.com>,
+        <syzkaller-bugs@googlegroups.com>, <trix@redhat.com>,
+        <tytso@mit.edu>
+References: <000000000000b1426e0603bc40b6@google.com>
+From:   Zhang Yi <yi.zhang@huawei.com>
+Message-ID: <a220f4f7-e8b4-d8f8-0840-522ca123d21a@huawei.com>
+Date:   Fri, 25 Aug 2023 20:22:45 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20230824125012.1040288-1-keguang.zhang@gmail.com>
- <20230824125012.1040288-5-keguang.zhang@gmail.com> <b8b414cf-c425-f322-51e6-c825e58ae6ed@linaro.org>
-In-Reply-To: <b8b414cf-c425-f322-51e6-c825e58ae6ed@linaro.org>
-From:   Keguang Zhang <keguang.zhang@gmail.com>
-Date:   Fri, 25 Aug 2023 20:22:41 +0800
-Message-ID: <CAJhJPsV_OTY540D4_jryN57qEgK59fXJa03N5HZi=_qQWw78sQ@mail.gmail.com>
-Subject: Re: [PATCH v3 4/4] MAINTAINERS: Update MIPS/LOONGSON1 entry
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <000000000000b1426e0603bc40b6@google.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.34]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ canpemm500005.china.huawei.com (7.192.104.229)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 25, 2023 at 2:47=E2=80=AFPM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> On 24/08/2023 14:50, Keguang Zhang wrote:
-> > Add two new F: entries for Loongson1 Ethernet driver
-> > and dt-binding document.
-> > Add a new F: entry for the rest Loongson-1 dt-binding documents.
-> >
-> > Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
-> > ---
-> > V2 -> V3: Update the entries and the commit message
-> > V1 -> V2: Improve the commit message
-> >
-> >  MAINTAINERS | 3 +++
-> >  1 file changed, 3 insertions(+)
-> >
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index 250c43c675cb..f462f3d19e4a 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -14341,9 +14341,12 @@ MIPS/LOONGSON1 ARCHITECTURE
-> >  M:   Keguang Zhang <keguang.zhang@gmail.com>
-> >  L:   linux-mips@vger.kernel.org
-> >  S:   Maintained
-> > +F:   Documentation/devicetree/bindings/*/loongson,ls1x-*.yaml
-> > +F:   Documentation/devicetree/bindings/net/loongson,ls1[bc]-*.yaml
->
-> This should be just one pattern */loongson,* or even just N: loongson,
-> if you want to cover any future versions as well (not only ls1).
->
-Got it.
-Will change to "net/loongson,ls1*.yaml" in next version.
-Thanks!
+On 2023/8/25 17:48, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    47d9bb711707 Add linux-next specific files for 20230821
+> git tree:       linux-next
+> console+strace: https://syzkaller.appspot.com/x/log.txt?x=124d6a4ba80000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=20999f779fa96017
+> dashboard link: https://syzkaller.appspot.com/bug?extid=b3123e6d9842e526de39
+> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=110f9c0fa80000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10b8867fa80000
+> 
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/ffbe03c733b7/disk-47d9bb71.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/a61a31d6caf9/vmlinux-47d9bb71.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/37e6f882b2d9/bzImage-47d9bb71.xz
+> mounted in repro: https://storage.googleapis.com/syzbot-assets/bf27f1330349/mount_0.gz
+> 
+> The issue was bisected to:
+> 
+> commit 99d6c5d892bfff3be40f83ec34d91d562125afd4
+> Author: Zhang Yi <yi.zhang@huawei.com>
+> Date:   Fri Aug 11 06:36:10 2023 +0000
+> 
+>     ext4: ext4_get_{dev}_journal return proper error value
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13a381cfa80000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=106381cfa80000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=17a381cfa80000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+b3123e6d9842e526de39@syzkaller.appspotmail.com
+> Fixes: 99d6c5d892bf ("ext4: ext4_get_{dev}_journal return proper error value")
+> 
+> EXT4-fs (loop0): ext4_check_descriptors: Checksum for group 0 failed (394!=20869)
+> EXT4-fs error (device loop0): ext4_get_journal_inode:5719: comm syz-executor999: inode #33: comm syz-executor999: iget: illegal inode #
+> EXT4-fs (loop0): no journal found
+> BUG: unable to handle page fault for address: ffffffffffffffdb
 
-> Best regards,
-> Krzysztof
->
+Thanks for the report, It's a real issue and I'm sorry to introduce
+it due to my carelessness on commit '99d6c5d892bf ("ext4:
+ext4_get_{dev}_journal return proper error value")'. The problem is
+that I forgot to modify ext4_calculate_overhead() together to handle
+the error return value from ext4_get_journal_inode() properly. I will
+fix it soon.
 
+Thanks,
+Yi.
 
---=20
-Best regards,
-
-Keguang Zhang
+> #PF: supervisor read access in kernel mode
+> #PF: error_code(0x0000) - not-present page
+> PGD c979067 P4D c979067 PUD c97b067 PMD 0 
+> Oops: 0000 [#1] PREEMPT SMP KASAN
+> CPU: 1 PID: 5041 Comm: syz-executor999 Not tainted 6.5.0-rc7-next-20230821-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+> RIP: 0010:ext4_calculate_overhead+0xfd2/0x1380 fs/ext4/super.c:4182
+> Code: 7b 50 48 89 fa 48 c1 ea 03 44 0f b6 60 14 48 b8 00 00 00 00 00 fc ff df 80 3c 02 00 0f 85 72 03 00 00 44 89 e6 bf 3f 00 00 00 <48> 8b 6b 50 e8 95 20 43 ff 41 80 fc 3f 0f 87 cb 20 ef 07 e8 56 25
+> RSP: 0018:ffffc9000399fa00 EFLAGS: 00010246
+> RAX: dffffc0000000000 RBX: ffffffffffffff8b RCX: 0000000000000000
+> RDX: 1ffffffffffffffb RSI: 000000000000000a RDI: 000000000000003f
+> RBP: 0000000000000001 R08: 0000000000000005 R09: 0000000000000000
+> R10: 0000000080000000 R11: 0000000000000001 R12: 000000000000000a
+> R13: ffff888020936000 R14: dffffc0000000000 R15: ffff8880242a4000
+> FS:  0000555555f06380(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: ffffffffffffffdb CR3: 0000000074f9b000 CR4: 00000000003506e0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  <TASK>
+>  __ext4_fill_super fs/ext4/super.c:5391 [inline]
+>  ext4_fill_super+0x85e3/0xade0 fs/ext4/super.c:5643
+>  get_tree_bdev+0x390/0x630 fs/super.c:1351
+>  vfs_get_tree+0x88/0x350 fs/super.c:1524
+>  do_new_mount fs/namespace.c:3335 [inline]
+>  path_mount+0x1492/0x1ed0 fs/namespace.c:3662
+>  do_mount fs/namespace.c:3675 [inline]
+>  __do_sys_mount fs/namespace.c:3884 [inline]
+>  __se_sys_mount fs/namespace.c:3861 [inline]
+>  __x64_sys_mount+0x293/0x310 fs/namespace.c:3861
+>  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>  do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+>  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> RIP: 0033:0x7f73494babba
+> Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 5e 04 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007fffae0148e8 EFLAGS: 00000202 ORIG_RAX: 00000000000000a5
+> RAX: ffffffffffffffda RBX: 00007fffae0148f0 RCX: 00007f73494babba
+> RDX: 00000000200000c0 RSI: 0000000020000040 RDI: 00007fffae0148f0
+> RBP: 0000000000000004 R08: 00007fffae014930 R09: 00007fffae014930
+> R10: 0000000001000403 R11: 0000000000000202 R12: 00007fffae014930
+> R13: 0000000000000003 R14: 0000000000080000 R15: 0000000000000001
+>  </TASK>
+> Modules linked in:
+> CR2: ffffffffffffffdb
+> ---[ end trace 0000000000000000 ]---
+> RIP: 0010:ext4_calculate_overhead+0xfd2/0x1380 fs/ext4/super.c:4182
+> Code: 7b 50 48 89 fa 48 c1 ea 03 44 0f b6 60 14 48 b8 00 00 00 00 00 fc ff df 80 3c 02 00 0f 85 72 03 00 00 44 89 e6 bf 3f 00 00 00 <48> 8b 6b 50 e8 95 20 43 ff 41 80 fc 3f 0f 87 cb 20 ef 07 e8 56 25
+> RSP: 0018:ffffc9000399fa00 EFLAGS: 00010246
+> RAX: dffffc0000000000 RBX: ffffffffffffff8b RCX: 0000000000000000
+> RDX: 1ffffffffffffffb RSI: 000000000000000a RDI: 000000000000003f
+> RBP: 0000000000000001 R08: 0000000000000005 R09: 0000000000000000
+> R10: 0000000080000000 R11: 0000000000000001 R12: 000000000000000a
+> R13: ffff888020936000 R14: dffffc0000000000 R15: ffff8880242a4000
+> FS:  0000555555f06380(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: ffffffffffffffdb CR3: 0000000074f9b000 CR4: 00000000003506e0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> ----------------
+> Code disassembly (best guess):
+>    0:	7b 50                	jnp    0x52
+>    2:	48 89 fa             	mov    %rdi,%rdx
+>    5:	48 c1 ea 03          	shr    $0x3,%rdx
+>    9:	44 0f b6 60 14       	movzbl 0x14(%rax),%r12d
+>    e:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+>   15:	fc ff df
+>   18:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1)
+>   1c:	0f 85 72 03 00 00    	jne    0x394
+>   22:	44 89 e6             	mov    %r12d,%esi
+>   25:	bf 3f 00 00 00       	mov    $0x3f,%edi
+> * 2a:	48 8b 6b 50          	mov    0x50(%rbx),%rbp <-- trapping instruction
+>   2e:	e8 95 20 43 ff       	call   0xff4320c8
+>   33:	41 80 fc 3f          	cmp    $0x3f,%r12b
+>   37:	0f 87 cb 20 ef 07    	ja     0x7ef2108
+>   3d:	e8                   	.byte 0xe8
+>   3e:	56                   	push   %rsi
+>   3f:	25                   	.byte 0x25
+> 
+> 
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> 
+> If the bug is already fixed, let syzbot know by replying with:
+> #syz fix: exact-commit-title
+> 
+> If you want syzbot to run the reproducer, reply with:
+> #syz test: git://repo/address.git branch-or-commit-hash
+> If you attach or paste a git patch, syzbot will apply it before testing.
+> 
+> If you want to overwrite bug's subsystems, reply with:
+> #syz set subsystems: new-subsystem
+> (See the list of subsystem names on the web dashboard)
+> 
+> If the bug is a duplicate of another bug, reply with:
+> #syz dup: exact-subject-of-another-report
+> 
+> If you want to undo deduplication, reply with:
+> #syz undup
+> 
+> .
+> 
