@@ -2,65 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D598B787F43
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 07:30:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 580C1787F46
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 07:31:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235453AbjHYFaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 01:30:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47354 "EHLO
+        id S235788AbjHYFad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 01:30:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238395AbjHYF3x (ORCPT
+        with ESMTP id S235628AbjHYFaI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 01:29:53 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 195B31FEC;
-        Thu, 24 Aug 2023 22:29:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692941391; x=1724477391;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=7nAS5EPhqPsXIEPfnQNT4dt/gCwc/kV+DfYfbtVOcpQ=;
-  b=KSkzoGoc5XZA7h2+Nwo4eMYJLk3JiZonsrG+gi1wbn5V0SNzBQXxhLKS
-   Lw5JUk1dyBchxLiYSHU4nlbeHX4IvLfgTX9jAdchrF+kX8PF/XCnoswwP
-   eIvNuBzxA+V2vCDZ/LoOieVEPGjefVwyyDAQf5XfuEm1zQbGPK1T0J6aj
-   ETrMvgTSpTCQFToWULJI0JixR+LqaAtWa5bGkRHn1dn5vob1H479MpjYe
-   SxsekyJWpuhRQFJSR0fXydzt95x75l3yQmQOKer/r+PuGp0u6Bi8YIBFA
-   FE+mtl7DKUV5YXba06E3FEYn7Gja8PCuPEUahRXMlS5I8EWwUaI4w8SXY
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="405636265"
-X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
-   d="scan'208";a="405636265"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 22:29:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="730916357"
-X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
-   d="scan'208";a="730916357"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga007.jf.intel.com with ESMTP; 24 Aug 2023 22:29:48 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1001)
-        id 2F2351CA; Fri, 25 Aug 2023 08:29:46 +0300 (EEST)
-Date:   Fri, 25 Aug 2023 08:29:46 +0300
-From:   Mika Westerberg <mika.westerberg@linux.intel.com>
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     bhelgaas@google.com, koba.ko@canonical.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] PCI: Add helper to check if any of ancestor device
- support D3cold
-Message-ID: <20230825052946.GX3465@black.fi.intel.com>
-References: <20230824044645.423378-1-kai.heng.feng@canonical.com>
- <20230824115656.GW3465@black.fi.intel.com>
- <CAAd53p4Ey15SRkeW-5rDQfxrT8Cif+hYOk2BZ6iQpfd8s51wEw@mail.gmail.com>
+        Fri, 25 Aug 2023 01:30:08 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54C1B1BE2;
+        Thu, 24 Aug 2023 22:30:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1692941399;
+        bh=koD08kXsND19LIl+BR8O6YAgNUZiqvdi7U/T0JbZEQU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ItWR/uJmFezwbqNfjteGnHIeX8DtqOL1uEfdexRXmTqkS++J+IJ1MSIBe5FLJJany
+         PcbwIzTvo2c66ybFbYGRnyfr41nPNDDNL9Nhp0HQhHJfqikvYtF86tRdsNUejNuGFR
+         OP6tSk6w3Qwprszl8ujw8ZOLUYTNDjIQsUJ1pbso+2hY0b5XGLst1YNRf2rdOCl8DQ
+         WNSRrrRjiu0WMXuGgMmkzOWk2oeyLitCh/flw/TkaTOjk97tqhnNLkM8iNHv/0ZzV/
+         og1L39VePj+Mn5bHTy90h6qk3KkbDAeEWOXEho6ezXJ+DS4OhN/NixcrDm8fXhs7RM
+         zmJThmpnXMCvA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RX7nM1YzSz4wb0;
+        Fri, 25 Aug 2023 15:29:58 +1000 (AEST)
+Date:   Fri, 25 Aug 2023 15:29:57 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the sound tree
+Message-ID: <20230825152957.18c54ae2@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAAd53p4Ey15SRkeW-5rDQfxrT8Cif+hYOk2BZ6iQpfd8s51wEw@mail.gmail.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+Content-Type: multipart/signed; boundary="Sig_/aQ8gV_Y91n+Ky1_AMLPNlWQ";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,40 +50,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 09:46:00PM +0800, Kai-Heng Feng wrote:
-> Hi,
-> 
-> On Thu, Aug 24, 2023 at 7:57 PM Mika Westerberg
-> <mika.westerberg@linux.intel.com> wrote:
-> >
-> > Hi,
-> >
-> > On Thu, Aug 24, 2023 at 12:46:43PM +0800, Kai-Heng Feng wrote:
-> > > In addition to nearest upstream bridge, driver may want to know if the
-> > > entire hierarchy can be powered off to perform different action.
-> > >
-> > > So walk higher up the hierarchy to find out if any device has valid
-> > > _PR3.
-> >
-> > I'm not entirely sure this is good idea. The drivers should expect that
-> > the power will be turned off pretty soon after device enters D3hot. Also
-> > _PR3 is not PCI concept it's ACPI concept so API like this would only
-> > work on systems with ACPI.
-> 
-> IIUC, Bjorn wants to limit the AER/DPC disablement when device power
-> is really off.
-> Is "the power will be turned off pretty soon after device enters
-> D3hot" applicable to most devices? Since config space is still
-> accessible when device is in D3hot.
+--Sig_/aQ8gV_Y91n+Ky1_AMLPNlWQ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Well the device may be part of a topology, say Thunderbolt/USB4 (but can
-be NVMe or similar) where it initially goes into D3hot but in the end
-the whole topology is put into D3cold. The device driver really should
-expect that this happens always and not try to distinguish between the
-D3hot or D3cold.
+Hi all,
 
-> Unless there are cases when device firmware behave differently to
-> D3hot? Then maybe it's better to disable AER for both D3hot, D3cold
-> and system S3.
+After merging the sound tree, today's linux-next build (htmldocs)
+produced this warning:
 
-Yes, this makes sense.
+Documentation/sound/designs/midi-2.0.rst:517: WARNING: Inline interpreted t=
+ext or phrase reference start-string without end-string.
+
+Introduced by commit
+
+  e240cff9e6e9 ("ALSA: documentation: Add description for USB MIDI 2.0 gadg=
+et driver")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/aQ8gV_Y91n+Ky1_AMLPNlWQ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmToPFUACgkQAVBC80lX
+0Gz7qwgAmRttHSU6miA2HvL2RWdEAqeCMA72GYfBKdU11aKGrZUK6Y6Y1lViOKX5
+GQHMZoKxUnjxyZvOSoCd9uJqMowtJCcZK+tOScvjPRCmOMEQnrQVJcz0NEFmHtw4
+tqid9+uLxSgiaCPvtZnyccjpj6wwD3ctpRbdiHbvuml/UzOt64ozmfp9zzbpG+eb
+FWG7ijntGJGsosCwnm67Q0TRvL5HZt+99U7BGwSOsNRFqqdgvg3s185r8fJ5yNfz
+t032bujg4HabzOaOg9YQEjdmhSBJkdmgSDYbz1X4TfC1j2cOeoZFpLA05vexNYF1
+QiAjb/kVaS3vGt5Hyl423QTpaJ7fbw==
+=D70W
+-----END PGP SIGNATURE-----
+
+--Sig_/aQ8gV_Y91n+Ky1_AMLPNlWQ--
