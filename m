@@ -2,185 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C2D978809C
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 09:07:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B075788099
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 09:07:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242748AbjHYHHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 03:07:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42362 "EHLO
+        id S238114AbjHYHHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 03:07:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243203AbjHYHGs (ORCPT
+        with ESMTP id S240403AbjHYHGc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 03:06:48 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00BF82120;
-        Fri, 25 Aug 2023 00:06:29 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 92CF8206F1;
-        Fri, 25 Aug 2023 07:05:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1692947147; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DFvqr2Mve2mQrFrdi3E/iQQ9tHKEJ+bL4oJ5DR3ONuA=;
-        b=MRWBXewvJx4BQ8TNp/VntnCHY7bc0N+hCIA4Mr74fzytvbYazp8mM3CvngYeuTrbMnMDej
-        mv5H77Tl1V23moyDMh5iLSMEBZWwD1inNjZ/Gf9AqYSnCq2eQWBUmqtzJ4ZQNMIBZrdDl9
-        t6NQNNjgN4lPtm5PdLWfN6lgFOHOdqk=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6B17A138F9;
-        Fri, 25 Aug 2023 07:05:47 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id fiMdF8tS6GS2OwAAMHmgww
-        (envelope-from <mhocko@suse.com>); Fri, 25 Aug 2023 07:05:47 +0000
-Date:   Fri, 25 Aug 2023 09:05:46 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] mm: memcg: use non-unified stats flushing for
- userspace reads
-Message-ID: <ZOhSyvDxAyYUJ45i@dhcp22.suse.cz>
-References: <20230821205458.1764662-1-yosryahmed@google.com>
- <20230821205458.1764662-4-yosryahmed@google.com>
- <ZOR6eyYfJYlxdMet@dhcp22.suse.cz>
- <CAJD7tka13M-zVZTyQJYL1iUAYvuQ1fcHbCjcOBZcz6POYTV-4g@mail.gmail.com>
- <ZOW2PZN8Sgqq6uR2@dhcp22.suse.cz>
- <CAJD7tka34WjtwBWfkTu8ZCEUkLm7h-AyCXpw=h34n4RZ5qBVwA@mail.gmail.com>
- <ZOcDLD/1WaOwWis9@dhcp22.suse.cz>
- <CAJD7tkZby2enWa8_Js8joHqFx_tHB=aRqHOizaSiXMUjvEei4g@mail.gmail.com>
- <CAJD7tkadEtjK_NFwRe8yhUh_Mdx9LCLmCuj5Ty-pqp1rHTb-DA@mail.gmail.com>
+        Fri, 25 Aug 2023 03:06:32 -0400
+Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49E132125
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 00:06:11 -0700 (PDT)
+Received: by mail-vs1-xe2b.google.com with SMTP id ada2fe7eead31-44d426d0e05so305203137.0
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 00:06:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692947157; x=1693551957;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=zAyx91j0d1SiPs3sA0vgKNpQ3W+EG6C0ragX4AchNBE=;
+        b=uN2rEaDOxg/pvsgm9icIiIRITysW4eLMBpwqTl6ADtfVuemglwESF1ebt1WQUqa2eH
+         MaMHvubqXFo7kxYZkeKKL9BrOO4FMCgGlWmq1m7t9NpbLsiI6b0JuzPNyIJBCpca6cL5
+         4OLCC6NxZ42tEJYGwDn8Lwzb3xUJsi/IChumX8xNSHvgSPJ2rgYENoMTjDxoV5/KtTZV
+         s2lb9srRDXWRSs+2PE1gvDDqBj9liwPo4ZmjrZXnZxRomZg1R8yPiEQKRyJQbrN6I+MN
+         V0aQR68lzM4EAqwcIQnAyuNR1BIkbZKMKILMmoKgUZL8YXLydFBGa0Yv1jLbaBK5mBUa
+         iRiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692947157; x=1693551957;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zAyx91j0d1SiPs3sA0vgKNpQ3W+EG6C0ragX4AchNBE=;
+        b=dQN5WfcccZtIDtFPBk4B49st3r45sxc8PoaiwJfDCd+aT7QjMSjuV0vT2O7wKnX/IW
+         tkwDQQhayqasWuuIMcArgnHR0An56D+p7WIRbI0AbMWa9m90iTlfQviRr3lMj+QJGfS6
+         OJQ/RaGLDy44MBbCqlX5c4ZaAJCFqx25L80OJfgYlSTK45bFiGJ1npI9f6POGjzUIFs9
+         o6MlQlVhdacdUzbrSQrxS/ATgn7d7YxvjdAp7Cpk8LysLbEX3VlZZjPvjZbKaWWZwWU2
+         05ikjoP1mZ8hAEcWXdF5L5SF8r+YXw1luCPn4x3uegrvu43H1ry9L2qwII/+j3Tj+qwr
+         CKeg==
+X-Gm-Message-State: AOJu0YzqEvxohVdlR5VdKAg//2YCWxV30ri3Itzvo4kDTqmNo4tmRyYC
+        20EAevVHgD0mM/8/yZeitzhRbqDgxHsFylb0eA68zA==
+X-Google-Smtp-Source: AGHT+IF2hKbfhy15wte1809kF7Hyk6ONBucrn4iHiZSvthzk5hzVmg8s0lNZHK6urLSSNHhlSLdD3/SCAArIH6tequQ=
+X-Received: by 2002:a67:fe10:0:b0:449:6e24:be74 with SMTP id
+ l16-20020a67fe10000000b004496e24be74mr15745478vsr.0.1692947157287; Fri, 25
+ Aug 2023 00:05:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJD7tkadEtjK_NFwRe8yhUh_Mdx9LCLmCuj5Ty-pqp1rHTb-DA@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230824141447.155846739@linuxfoundation.org>
+In-Reply-To: <20230824141447.155846739@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 25 Aug 2023 12:35:46 +0530
+Message-ID: <CA+G9fYsPPpduLzJ4+GZe_18jgYw56=w5bQ2W1jnyWa-8krmOSw@mail.gmail.com>
+Subject: Re: [PATCH 6.1 00/15] 6.1.48-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>, linux-nfs@vger.kernel.org
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org, Sherry Yang <sherry.yang@oracle.com>,
+        LTP List <ltp@lists.linux.it>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 24-08-23 11:50:51, Yosry Ahmed wrote:
-> On Thu, Aug 24, 2023 at 11:15 AM Yosry Ahmed <yosryahmed@google.com> wrote:
-> >
-> > On Thu, Aug 24, 2023 at 12:13 AM Michal Hocko <mhocko@suse.com> wrote:
-> > >
-> > > On Wed 23-08-23 07:55:40, Yosry Ahmed wrote:
-> > > > On Wed, Aug 23, 2023 at 12:33 AM Michal Hocko <mhocko@suse.com> wrote:
-> > > > >
-> > > > > On Tue 22-08-23 08:30:05, Yosry Ahmed wrote:
-> > > > > > On Tue, Aug 22, 2023 at 2:06 AM Michal Hocko <mhocko@suse.com> wrote:
-> > > > > > >
-> > > > > > > On Mon 21-08-23 20:54:58, Yosry Ahmed wrote:
-> > > > > [...]
-> > > > > > So to answer your question, I don't think a random user can really
-> > > > > > affect the system in a significant way by constantly flushing. In
-> > > > > > fact, in the test script (which I am now attaching, in case you're
-> > > > > > interested), there are hundreds of threads that are reading stats of
-> > > > > > different cgroups every 1s, and I don't see any negative effects on
-> > > > > > in-kernel flushers in this case (reclaimers).
-> > > > >
-> > > > > I suspect you have missed my point.
-> > > >
-> > > > I suspect you are right :)
-> > > >
-> > > >
-> > > > > Maybe I am just misunderstanding
-> > > > > the code but it seems to me that the lock dropping inside
-> > > > > cgroup_rstat_flush_locked effectivelly allows unbounded number of
-> > > > > contenders which is really dangerous when it is triggerable from the
-> > > > > userspace. The number of spinners at a moment is always bound by the
-> > > > > number CPUs but depending on timing many potential spinners might be
-> > > > > cond_rescheded and the worst time latency to complete can be really
-> > > > > high. Makes more sense?
-> > > >
-> > > > I think I understand better now. So basically because we might drop
-> > > > the lock and resched, there can be nr_cpus spinners + other spinners
-> > > > that are currently scheduled away, so these will need to wait to be
-> > > > scheduled and then start spinning on the lock. This may happen for one
-> > > > reader multiple times during its read, which is what can cause a high
-> > > > worst case latency.
-> > > >
-> > > > I hope I understood you correctly this time. Did I?
-> > >
-> > > Yes. I would just add that this could also influence the worst case
-> > > latency for a different reader - so an adversary user can stall others.
-> >
-> > I can add that for v2 to the commit log, thanks.
-> >
-> > > Exposing a shared global lock in uncontrolable way over generally
-> > > available user interface is not really a great idea IMHO.
-> >
-> > I think that's how it was always meant to be when it was designed. The
-> > global rstat lock has always existed and was always available to
-> > userspace readers. The memory controller took a different path at some
-> > point with unified flushing, but that was mainly because of high
-> > concurrency from in-kernel flushers, not because userspace readers
-> > caused a problem. Outside of memcg, the core cgroup code has always
-> > exercised this global lock when reading cpu.stat since rstat's
-> > introduction. I assume there hasn't been any problems since it's still
-> > there.
++ linux-nfs and more
 
-I suspect nobody has just considered a malfunctioning or adversary
-workloads so far.
+On Thu, 24 Aug 2023 at 19:45, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 6.1.48 release.
+> There are 15 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sat, 26 Aug 2023 14:14:28 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.48-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-> > I was hoping Tejun would confirm/deny this.
 
-Yes, that would be interesting to hear.
+Following test regression found on stable-rc 6.1.
+Rpi4 is using NFS mount rootfs and running LTP syscalls testing.
+chown02 tests creating testfile2 on NFS mounted and validating
+the functionality and found that it was a failure.
 
-> One thing we can do to remedy this situation is to replace the global
-> rstat lock with a mutex, and drop the resched/lock dropping condition.
-> Tejun suggested this in the previous thread. This effectively reverts
-> 0fa294fb1985 ("cgroup: Replace cgroup_rstat_mutex with a spinlock")
-> since now all the flushing contexts are sleepable.
+This is already been reported by others on lore and fix patch merged
+into stable-rc linux-6.4.y [1] and [2].
 
-I would have a very daring question. Do we really need a global lock in
-the first place? AFAIU this locks serializes (kinda as the lock can be
-dropped midway) flushers and cgroup_rstat_flush_hold/release caller (a
-single one ATM). I can see cgroup_base_stat_cputime_show would like to
-have a consistent view on multiple stats but can we live without a
-strong guarantee or to replace the lock with seqlock instead?
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-> My synthetic stress test does not show any regressions with mutexes,
-> and there is a small boost to reading latency (probably because we
-> stop dropping the lock / rescheduling). Not sure if we may start
-> seeing need_resched warnings on big flushes though.
+Test log:
+--------
+chown02.c:46: TPASS: chown(testfile1, 0, 0) passed
+chown02.c:46: TPASS: chown(testfile2, 0, 0) passed
+chown02.c:58: TFAIL: testfile2: wrong mode permissions 0100700, expected 0102700
 
-Reading 0fa294fb1985 ("cgroup: Replace cgroup_rstat_mutex with a spinlock")
-it seems the point of moving away from mutex was to have a more usable
-API.
+fchown02.c:57: TPASS: fchown(3, 0, 0) passed
+fchown02.c:57: TPASS: fchown(4, 0, 0) passed
+fchown02.c:67: TFAIL: testfile2: wrong mode permissions 0100700,
+expected 0102700
 
-> One other concern that Shakeel pointed out to me is preemption. If
-> someone holding the mutex gets preempted this may starve other
-> waiters. We can disable preemption while we hold the mutex, not sure
-> if that's a common pattern though.
 
-No, not really. It is expected that holder of mutex can sleep and can be
-preempted as well.
+## Build
+* kernel: 6.1.48-rc1
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-6.1.y
+* git commit: c079d0dd788ad4fe887ee6349fe89d23d72f7696
+* git describe: v6.1.47-16-gc079d0dd788a
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.1.y/build/v6.1.47-16-gc079d0dd788a
 
-I might be wrong but the whole discussion so far suggests that the
-global rstat lock should be reconsidered. From my personal experience
-global locks easily triggerable from the userspace are just a receip for
-problems. Stats reading shouldn't be interfering with the system runtime
-as much as possible and they should be deterministic wrt runtime as
-well.
--- 
-Michal Hocko
-SUSE Labs
+## Test Regressions (compared to v6.1.46)
+* bcm2711-rpi-4-b, ltp-syscalls
+  - chown02
+  - fchown02
+
+* bcm2711-rpi-4-b-64k_page_size, ltp-syscalls
+  - chown02
+  - fchown02
+
+* bcm2711-rpi-4-b-clang, ltp-syscalls
+  - chown02
+  - fchown02
+
+
+
+
+Do we need the following patch into stable-rc linux-6.1.y ?
+
+I see from mailing thread discussion, says that
+
+the above commit is backported to LTS kernels -- 5.10.y,5.15.y and 6.1.y.
+
+
+----
+
+nfsd: use vfs setgid helper
+commit 2d8ae8c417db284f598dffb178cc01e7db0f1821 upstream.
+
+We've aligned setgid behavior over multiple kernel releases. The details
+can be found in commit cf619f891971 ("Merge tag 'fs.ovl.setgid.v6.2' of
+git://git.kernel.org/pub/scm/linux/kernel/git/vfs/idmapping") and
+commit 426b4ca2d6a5 ("Merge tag 'fs.setgid.v6.0' of
+git://git.kernel.org/pub/scm/linux/kernel/git/brauner/linux").
+Consistent setgid stripping behavior is now encapsulated in the
+setattr_should_drop_sgid() helper which is used by all filesystems that
+strip setgid bits outside of vfs proper. Usually ATTR_KILL_SGID is
+raised in e.g., chown_common() and is subject to the
+setattr_should_drop_sgid() check to determine whether the setgid bit can
+be retained. Since nfsd is raising ATTR_KILL_SGID unconditionally it
+will cause notify_change() to strip it even if the caller had the
+necessary privileges to retain it. Ensure that nfsd only raises
+ATR_KILL_SGID if the caller lacks the necessary privileges to retain the
+setgid bit.
+
+Without this patch the setgid stripping tests in LTP will fail:
+
+> As you can see, the problem is S_ISGID (0002000) was dropped on a
+> non-group-executable file while chown was invoked by super-user, while
+
+[...]
+
+> fchown02.c:66: TFAIL: testfile2: wrong mode permissions 0100700, expected 0102700
+
+[...]
+
+> chown02.c:57: TFAIL: testfile2: wrong mode permissions 0100700, expected 0102700
+
+With this patch all tests pass.
+
+Reported-by: Sherry Yang <sherry.yang@oracle.com>
+Signed-off-by: Christian Brauner <brauner@kernel.org>
+Reviewed-by: Jeff Layton <jlayton@kernel.org>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+
+[1] https://lore.kernel.org/linux-nfs/20230502-agenda-regeln-04d2573bd0fd@brauner/
+[2] https://lore.kernel.org/all/202210091600.dbe52cbf-yujie.liu@intel.com/
+--
+Linaro LKFT
+https://lkft.linaro.org
