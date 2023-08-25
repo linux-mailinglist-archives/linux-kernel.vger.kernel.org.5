@@ -2,69 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5A75788550
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 13:02:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE6D4788557
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 13:04:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241486AbjHYLBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 07:01:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38112 "EHLO
+        id S242574AbjHYLDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 07:03:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239618AbjHYLB3 (ORCPT
+        with ESMTP id S239618AbjHYLDc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 07:01:29 -0400
-Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9BF21BC9
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 04:01:24 -0700 (PDT)
-Received: by mail-ua1-x92a.google.com with SMTP id a1e0cc1a2514c-79df12ff0f0so303390241.3
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 04:01:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1692961284; x=1693566084;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sm1r4BFredFM9l2hXL1Ns0u9tVp5uce++0wcoYAEiXo=;
-        b=jtZKDhVVLjB4WZC5b4LOqXOyPAgBX4rBa8ifrQgowNoz+rVUHfP1HmdXZ8Oka9gcxt
-         KYkyUiTxGAK8Qooobp/dn28IluO4oR/Tr5A0zzOpu6UNdepiCNo5qJjitZPqKqrXcoX/
-         NaGSKqjs4JtBx8FknEqeth65BhieB7hYIMz93i2xo244KiL9h209Ig3PxzRnDOsMZFuh
-         gPpCTm7Ota1SSEgG6VSamCS33vxJ8bEOVj/9MWXbMubd0QO4goB4ee24Mfo703+xzm/7
-         g1B2HYBBlO6rU5AjHeo374Y96GHf1lDjqc+DSxIwnA6NRYJYurlJqdE9/rWbvkPgKwNL
-         r1tQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692961284; x=1693566084;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sm1r4BFredFM9l2hXL1Ns0u9tVp5uce++0wcoYAEiXo=;
-        b=JAB8ba6NcClmd329nwkQkNjbIJ09ValdmmY3r1Z4A5qmFkZnBALbWwsKsI3GciwPTg
-         5T2vqh2Fe+2MF5p+Q30mTJqlkDnbzYIfM5Y84TCfGYnU1K9GV6qLTGj8XCz68XjI2Yik
-         9+kleOdA/hf9NdbNiukyUT+T1rGcQMtWv1eHtafpeuYSiKDn1qYRRqkqkojSr+G//qOt
-         9d+P77gPqkzastIJwsPXCBBWP1en7vB7+aUfcXfvKl9IeAUiTSAE7mvYpOAnKS18bAqW
-         acQLddPBbD41LviV4wGuW9QEl8lcSvMvEqe1GHVGKM+QBkeC/98DRpQETepJtoDEeiAK
-         UjLA==
-X-Gm-Message-State: AOJu0YzYAUbxkCUcoFC3CCXAqNrTFkS2ktNUS0jGf/jxV82ekx8iKOZW
-        +VnE2pAYy7IDUSh9oLjO/ykl1MIBX7QtN5sJTFMG3w==
-X-Google-Smtp-Source: AGHT+IEF09Ea5vepo76zoBbWYctMnJ3nQqBTwvvVbowG9g3EYhkla+ZqowrdT5614wYHglHhKhAJw3Lf26l9/fFO59w=
-X-Received: by 2002:a05:6102:4b7:b0:44e:9313:b045 with SMTP id
- r23-20020a05610204b700b0044e9313b045mr5029333vsa.7.1692961283748; Fri, 25 Aug
- 2023 04:01:23 -0700 (PDT)
+        Fri, 25 Aug 2023 07:03:32 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 024751BC9
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 04:03:30 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37PB30el008638;
+        Fri, 25 Aug 2023 06:03:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1692961380;
+        bh=pFsncRId2Li4lFUoNT42s+0VDtLf48JGN1Hoc7R28Z4=;
+        h=From:Date:Subject:To:CC;
+        b=f4Wi1u470XsMHu2whcmfwwlT4btS3MhorHLLvGaJH7o8tpSAOlVftoFA1zuXTqF9f
+         ivkJBwGZ+zSerzCBhH2VHoW5KykEnbXWPyRQ/DmMxGlJbG919ICelrYL2wR+KgmTSw
+         hzblHRe7CiNnRyqefYWD1NTlApqsRp5QcMEdIhP4=
+Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37PB30hd031045
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 25 Aug 2023 06:03:00 -0500
+Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 25
+ Aug 2023 06:03:00 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 25 Aug 2023 06:03:00 -0500
+Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37PB2xpf129788;
+        Fri, 25 Aug 2023 06:02:59 -0500
+From:   Jai Luthra <j-luthra@ti.com>
+Date:   Fri, 25 Aug 2023 16:32:14 +0530
+Subject: [PATCH] drm: bridge: it66121: Fix invalid connector dereference
 MIME-Version: 1.0
-References: <20230814093621.23209-1-brgl@bgdev.pl> <20230814093621.23209-3-brgl@bgdev.pl>
- <875y54ci86.ffs@tglx> <CAMRc=Mfg52iqFKj0QMB55K5MCxhgPLbF-0WSRG0ktN3RbofMtQ@mail.gmail.com>
- <873507cziz.ffs@tglx>
-In-Reply-To: <873507cziz.ffs@tglx>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Fri, 25 Aug 2023 13:01:12 +0200
-Message-ID: <CAMRc=MdYteOxy87jdSEvBxnN7tx_J1X2aSsRzKZ6WKL31-ipmA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] genirq: proc: fix a procfs entry leak
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Marc Zyngier <marc.zyngier@arm.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <20230825-it66121_edid-v1-1-3ab54923e472@ti.com>
+X-B4-Tracking: v=1; b=H4sIADWK6GQC/x3MQQqAIBBA0avErBN0QrOuEhGVU83GQiMC8e5Jy
+ 7f4P0GkwBShrxIEejjy6QtUXcF6zH4nwa4YUGIjLWrBtzEK1USOnTBEndWqtdIuUJIr0Mbvvxv
+ GnD9fTW9WXgAAAA==
+To:     Phong LE <ple@baylibre.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Nicolas Belin <nbelin@baylibre.com>,
+        "Andy.Hsieh" <Andy.Hsieh@mediatek.com>
+CC:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Aradhya Bhatia <a-bhatia1@ti.com>, <devarsht@ti.com>,
+        <nm@ti.com>, Jai Luthra <j-luthra@ti.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1271; i=j-luthra@ti.com;
+ h=from:subject:message-id; bh=kY/mIB6mrYJ/fDB8nsf4jCfUQ4TGTeiTF0gmX+Q1uqs=;
+ b=owEBbQKS/ZANAwAIAUPekfkkmnFFAcsmYgBk6IpigIQx52k+CRuU8WRogDuAGfZVyc2Zzv7Ku
+ rt1Ysi8vHaJAjMEAAEIAB0WIQRN4NgY5dV16NRar8VD3pH5JJpxRQUCZOiKYgAKCRBD3pH5JJpx
+ RWmZEACd6dZsgfGKvaRljr69D0wWnNir9wuEqt1VHKsk3xC93MR+AqxNJh+xUftyibbG6PRqwkM
+ 0Mi9KeUvNURcDPV8qRKxa9Mg7mO81I55fIuG7dZx+t3WdvGQvzl6/40Z8Jyt9/4yA+fM1oCIWxQ
+ YzIY18S+HbrVmNlXI/X1zU1lkTKgIjAXlH+/wh+NtXXBMbyC6zlN5e5jl2TTUU2QYDP0aUW1tUS
+ rgC8yD2/xApHZsuRNEVKZuC05mFuXs5Pp4E1l24U67C+WKGPWExs5pMfURIc7juv+Sf+s84MfLR
+ 2L56efyro6hXSLRhTGHwkTTtm2q1HHvVoJgoBaIqw5IQcKwZYOJJxobpgJf6t9LWlf4NTMEO955
+ 5YSnqD4hYrwDYrj53sE49hXwnQOdQtjZiHvKMJ0L8VUW1hSIl5eACOEXdfQcf1FlH7ea3FXjKOv
+ uCBBNGLvvORqpWbL8/HATpBK0hSutDadI1lHlqEzN38WMPbLfJQ49IooNVEeAROdTiBrhwSHAVh
+ 9ngJ3xaofZDcT81GxFLxLwMWoUODMmbRH/qmhYNlRwAhABVJP/0CXbWsJbAOGU7C5RRnzyOD3rX
+ SRdhNLK6p/RdK4h2XxroGeIRjC6MPTTU/YU8F5NA6Rnt2oBnGkgnoYsdwfJ/xIpwrs7qltyVhsG
+ fyanZHL5pbY3cTg==
+X-Developer-Key: i=j-luthra@ti.com; a=openpgp;
+ fpr=4DE0D818E5D575E8D45AAFC543DE91F9249A7145
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,48 +93,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 25, 2023 at 10:11=E2=80=AFAM Thomas Gleixner <tglx@linutronix.d=
-e> wrote:
->
-> On Fri, Aug 25 2023 at 00:36, brgl@bgdev.pl wrote:
-> > On Thu, 24 Aug 2023 22:12:41 +0200, Thomas Gleixner <tglx@linutronix.de=
-> said:
-> > Here a GPIO device - that is also an irq chip - is unbound (this is a t=
-esting
-> > module unbound during a test-case but it can be anything else, like an =
-I2C
-> > expander for which the driver is unloaded) while some users called
-> > request_irq() on its interrupts (this is orthogonal to gpiod_get() and =
-doesn't
-> > take a reference to the module, so nothing is stopping us from
-> > unloading it)
->
-> You just described the real problem in this sentence. So why are you
-> trying to cure a symptom?
->
+Fix the NULL pointer dereference when no monitor is connected, and the
+sound card is opened from userspace.
 
-Cc: Linus Walleij
+Instead return an error as EDID information cannot be provided to
+the sound framework if there is no connector attached.
 
-Honestly I'm not following. Even if we did have a way of taking the
-reference to the underlying GPIO module (I'm 99% percent sure, it's
-not possible: we're not using any of the GPIO interfaces for that,
-just platform_get_irq() or similar and all the GPIO subsystem sees is
-the call to .irq_map() but that doesn't look like a reliable place to
-take that reference) - that wouldn't stop anyone from unbinding the
-device elsewhere: from user-space over sysfs or maybe it's a GPIO
-expander over USB that gets unplugged (I know that it would only be
-described in DT if it was hard-wired but it's still within the realm
-of possibility).
+Fixes: e0fd83dbe924 ("drm: bridge: it66121: Add audio support")
+Reported-by: Nishanth Menon <nm@ti.com>
+Closes: https://lore.kernel.org/all/20230825105849.crhon42qndxqif4i@gondola/
+Signed-off-by: Jai Luthra <j-luthra@ti.com>
+---
+ drivers/gpu/drm/bridge/ite-it66121.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-Because this situation (removing a device while it still has users) is
-possible, we have a way of handling that in the GPIO subsystem, where
-if a device you're using goes from under you, the GPIO descriptor (the
-only interface consumers have to that device) is "numbed down" and no
-longer functional but doesn't leak resources or crash.
+diff --git a/drivers/gpu/drm/bridge/ite-it66121.c b/drivers/gpu/drm/bridge/ite-it66121.c
+index 466641c77fe9..d6fa00dea464 100644
+--- a/drivers/gpu/drm/bridge/ite-it66121.c
++++ b/drivers/gpu/drm/bridge/ite-it66121.c
+@@ -1446,6 +1446,11 @@ static int it66121_audio_get_eld(struct device *dev, void *data,
+ {
+ 	struct it66121_ctx *ctx = dev_get_drvdata(dev);
+ 
++	if (!ctx->connector) {
++		dev_dbg(dev, "No connector present, cannot provide EDID data");
++		return -EINVAL;
++	}
++
+ 	mutex_lock(&ctx->lock);
+ 
+ 	memcpy(buf, ctx->connector->eld,
 
-I was under the impression that the whole irqnum-to-irq_desc mapping
-was designed to handle this situation on purpose, hence a check for
-!desc and a silent return in free_irq(). If a missing mapping was a
-bug, then it would warrant at least a warning, right?
+---
+base-commit: 6269320850097903b30be8f07a5c61d9f7592393
+change-id: 20230825-it66121_edid-6ee98517808b
 
-Bartosz
+Best regards,
+-- 
+Jai Luthra <j-luthra@ti.com>
+
