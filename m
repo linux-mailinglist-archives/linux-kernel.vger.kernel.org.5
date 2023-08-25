@@ -2,58 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0FC97881A9
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 10:11:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4FA878820E
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 10:27:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240317AbjHYIK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 04:10:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41896 "EHLO
+        id S243693AbjHYI1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 04:27:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241806AbjHYIK2 (ORCPT
+        with ESMTP id S241520AbjHYI1E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 04:10:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91D741FF6;
-        Fri, 25 Aug 2023 01:10:26 -0700 (PDT)
+        Fri, 25 Aug 2023 04:27:04 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5764419A1;
+        Fri, 25 Aug 2023 01:27:02 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2690A66EEB;
-        Fri, 25 Aug 2023 08:10:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4322C433C8;
-        Fri, 25 Aug 2023 08:10:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692951025;
-        bh=MZiSPi7PsqNW/QQ5weCras7ssRcqxOoTx+NhIZgDiWE=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=e5AOOo7hoVXLo7H1x5MKH+DqM5YhKYzGx9SYVUivQ2jx1ZmkcTiH/0/yk5IODk4uX
-         UwBGX5K6sUD7af8uFQ6Fpnqi2Qnp3qPF0qmHPlSaMyQ01zo4gXZoPKVlhyHu5KeGOj
-         p9XN5srdk1BZ3EVh4Fgb+wqi9tewoZPd600oG1o+iRZnHCQZXllgwTKVOU7mC3B62a
-         8M1uUG/utLk/6SUH6XZ5tXeUyLKX9x0VPGYlFw7bnv3kAUFq3ecvYNleS+pAqjs/c2
-         0PmQo++aUxAEO4Ug631QmPY5KLhPY4nX2aWevyIrQGXV3UibfymHaPH0ZzcKiz4ioc
-         tBJtwgzjo57Kw==
-Message-ID: <689cfe0d-a323-b48c-8543-4ddd74258fc0@kernel.org>
-Date:   Fri, 25 Aug 2023 17:10:23 +0900
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EB295619E4;
+        Fri, 25 Aug 2023 08:27:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D09DFC433C7;
+        Fri, 25 Aug 2023 08:27:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1692952021;
+        bh=/0P/Vuu4CvmfjvkFoCAuWPAgUuDaHWfDtDf85MPvZxw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=q05XK44U5RagfHRVH0HdFvF60AQUL8F1lSh4qbFMj/4u21g+5OxK2QEgCC63YSqG3
+         k7jQrPtv/h8eV9ROnJjknqx/dGefG+dblKD+BzZw3qBSYmJSnLtuMI0sko5lJqg3JL
+         nUN210NrpBA3Xw/htCH1snORJ+3XyBpex2vJ0ejU=
+Date:   Fri, 25 Aug 2023 10:10:46 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        linux-nfs@vger.kernel.org, stable@vger.kernel.org,
+        patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        Sherry Yang <sherry.yang@oracle.com>,
+        LTP List <ltp@lists.linux.it>
+Subject: Re: [PATCH 6.1 00/15] 6.1.48-rc1 review
+Message-ID: <2023082512-amusement-luncheon-8d8d@gregkh>
+References: <20230824141447.155846739@linuxfoundation.org>
+ <CA+G9fYsPPpduLzJ4+GZe_18jgYw56=w5bQ2W1jnyWa-8krmOSw@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 1/2] ata: pata_ep93xx: fix error return code in probe
-Content-Language: en-US
-To:     Nikita Shubin <nikita.shubin@maquefel.me>,
-        Sergey Shtylyov <s.shtylyov@omp.ru>
-Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230823-ep93xx_pata_fixes-v1-0-d7e7229be148@maquefel.me>
- <20230823-ep93xx_pata_fixes-v1-1-d7e7229be148@maquefel.me>
- <00462bc7-43ee-784a-3296-8051d69575df@kernel.org>
- <913a0bc0dfcd3ecd28f65fb52db789033097d831.camel@maquefel.me>
-From:   Damien Le Moal <dlemoal@kernel.org>
-Organization: Western Digital Research
-In-Reply-To: <913a0bc0dfcd3ecd28f65fb52db789033097d831.camel@maquefel.me>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYsPPpduLzJ4+GZe_18jgYw56=w5bQ2W1jnyWa-8krmOSw@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -62,40 +63,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/25/23 17:05, Nikita Shubin wrote:
-> Hi Damien!
+On Fri, Aug 25, 2023 at 12:35:46PM +0530, Naresh Kamboju wrote:
+> + linux-nfs and more
 > 
-> On Thu, 2023-08-24 at 08:07 +0900, Damien Le Moal wrote:
->> On 8/23/23 18:47, Nikita Shubin via B4 Relay wrote:
->>> From: Nikita Shubin <nikita.shubin@maquefel.me>
->>>
->>> Return -ENOMEM from ep93xx_pata_probe() if devm_kzalloc() or
->>> ata_host_alloc() fails.
->>>
->>> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
->>
->> Doesn't this need a Fixes tag and Cc: stable ?
->>
->> This is not really a bug fix, but might as well be complete with the
->> fix :)
+> On Thu, 24 Aug 2023 at 19:45, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > This is the start of the stable review cycle for the 6.1.48 release.
+> > There are 15 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> >
+> > Responses should be made by Sat, 26 Aug 2023 14:14:28 +0000.
+> > Anything received after that time might be too late.
+> >
+> > The whole patch series can be found in one patch at:
+> >         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.48-rc1.gz
+> > or in the git tree and branch at:
+> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> > and the diffstat can be found below.
+> >
+> > thanks,
+> >
+> > greg k-h
 > 
-> Well... This would be fix for:
 > 
-> ```
-> commit 2fff27512600f9ad91335577e485a8552edb0abf
-> Author: Rafal Prylowski <prylowski@metasoft.pl>
-> Date:   Thu Apr 12 14:13:16 2012 +0200
-> ```
+> Following test regression found on stable-rc 6.1.
+> Rpi4 is using NFS mount rootfs and running LTP syscalls testing.
+> chown02 tests creating testfile2 on NFS mounted and validating
+> the functionality and found that it was a failure.
 > 
-> v3.4-rc6-6-g2fff27512600
+> This is already been reported by others on lore and fix patch merged
+> into stable-rc linux-6.4.y [1] and [2].
 > 
-> Are you sure we wanna tag so solid and time proven commit as Fixes: :)
-> ?
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Yeah, this is fine without the fixes tag. As I said, not exactly a bug fix but
-rather an improvement :)
+Odd, it's not a regression in this -rc cycle, so it was missed in the
+previous ones somehow?
 
--- 
-Damien Le Moal
-Western Digital Research
+> Test log:
+> --------
+> chown02.c:46: TPASS: chown(testfile1, 0, 0) passed
+> chown02.c:46: TPASS: chown(testfile2, 0, 0) passed
+> chown02.c:58: TFAIL: testfile2: wrong mode permissions 0100700, expected 0102700
+> 
+> fchown02.c:57: TPASS: fchown(3, 0, 0) passed
+> fchown02.c:57: TPASS: fchown(4, 0, 0) passed
+> fchown02.c:67: TFAIL: testfile2: wrong mode permissions 0100700,
+> expected 0102700
+> 
+> 
+> ## Build
+> * kernel: 6.1.48-rc1
+> * git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+> * git branch: linux-6.1.y
+> * git commit: c079d0dd788ad4fe887ee6349fe89d23d72f7696
+> * git describe: v6.1.47-16-gc079d0dd788a
+> * test details:
+> https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.1.y/build/v6.1.47-16-gc079d0dd788a
+> 
+> ## Test Regressions (compared to v6.1.46)
+> * bcm2711-rpi-4-b, ltp-syscalls
+>   - chown02
+>   - fchown02
+> 
+> * bcm2711-rpi-4-b-64k_page_size, ltp-syscalls
+>   - chown02
+>   - fchown02
+> 
+> * bcm2711-rpi-4-b-clang, ltp-syscalls
+>   - chown02
+>   - fchown02
+> 
+> 
+> 
+> 
+> Do we need the following patch into stable-rc linux-6.1.y ?
+> 
+> I see from mailing thread discussion, says that
+> 
+> the above commit is backported to LTS kernels -- 5.10.y,5.15.y and 6.1.y.
 
+What "above commit"?
+
+And what commit should be backported?
+
+confused,
+
+greg k-h
