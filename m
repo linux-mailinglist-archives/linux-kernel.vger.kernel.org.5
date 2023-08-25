@@ -2,109 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB4F9788959
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 15:57:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDE6278896B
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 15:58:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245183AbjHYN5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 09:57:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56282 "EHLO
+        id S245387AbjHYN5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 09:57:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245413AbjHYN4p (ORCPT
+        with ESMTP id S245467AbjHYN5a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 09:56:45 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4EC22704
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 06:56:18 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-997c4107d62so120237866b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 06:56:18 -0700 (PDT)
+        Fri, 25 Aug 2023 09:57:30 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F70926B0
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 06:57:03 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-4f14865fcc0so3435e87.0
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 06:57:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692971777; x=1693576577;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=google.com; s=20221208; t=1692971820; x=1693576620; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hHx2EuAJD3oOyacRfgtS/t2Wtta1guele0wgkpACM9c=;
-        b=SZjqeWI+pAoJy4ty5S0NtVjewTId/aQ/O4WyEsWukGcJgclyIwscVFejTkhcr8LAjV
-         ZSqgFD0DrjCcypzg5k5Mdc3asdgDFgAFCfmLsiJBhwUV2e6jUfg5gwnf0I9U4SGbZqdX
-         OPtvR/01c1x9CzblstmhxwBwQVh2RmlW+27hbCgjxgV8oLlGczUdrYfI6jc/xYnyNmXt
-         a7gDzoors6egBL9HJ2by+3kb6Sk0zRSd7pvD/pvv7+bnX2M0KDdz+r9aBuhosfpabX8B
-         TUWK7IaAiWKXJ/vapo5QDZNUhAhfOH8Utjg4ypelditoLvajyHsq5YPgiV2ZkiRJiH1E
-         9m1w==
+        bh=jLAArgC/yF3W0SuXxiDWrJ5rFowVV703rxy6infsYco=;
+        b=Cc0u/u6YF8b3xyiO5XIf0cEkdejK9+V+aEVLGbdwp14Bua8ggH6umEzIVrGeUI8vzi
+         s3eKdAaVBOBWk/SPVtef++qSdz6Ij0eyIEdICoFr18lN0hlh1tqYeuU4aUHjwAoU+mP1
+         0x3Fans2Hth5nyJ4RgaXNN85ab9WyM69Wxzea7ANLJtIG0+Z/ZwQJHsD56XRrPnsRGAh
+         E2dfGdu1vbPNV55t2rVf23mDndZg2iL43Icq6dsH709F09/GinbgQDCYVlTEsPn9sbMC
+         gxR4iug77eyuVa9gIfV2etPm0ASW/tQu4dupj5fikPb/Xy48gjlZ/nhedQyBLgNBO+nz
+         xAcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692971777; x=1693576577;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1692971820; x=1693576620;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hHx2EuAJD3oOyacRfgtS/t2Wtta1guele0wgkpACM9c=;
-        b=Qi3JDF0hAiy9B1gjwVVFFIjTCytCJLplYUZzWC5qOnvt7znh1B8Jd5W6tiC1F/6Uo8
-         Q8IJ9ZU23Cx5JRxHqrqSh+YU1S0QlV5oRrGLSq+dZURFyCirm+3qSDxJ8VxIr+tQ4L3o
-         RJ6dpSwomiS8Gu+U7CxgF9/LpyWrWejUnnqkTWCByNJ6Sox8FRTvUaHt6OUyE/tFNJgf
-         MxJsPrVjvrURk09yB+xTxObiwaF8b2W5tRe5FRsC6vrR6nEvlzhb0DvVxp/m/yo1ToTP
-         xXLEAqPs1MLh6c94dtOm1aELYHzOIk8bMWi8oM2Rh9b3korZZNi5opxrGiTfX9ZQial1
-         RRoQ==
-X-Gm-Message-State: AOJu0YyZSqScowuuaLG0rtF70OYJTaA4fUHYSt/crU/ICpJ1CWoUPi2a
-        f+Qp6vXal29kHchhQPl9qF36Jw==
-X-Google-Smtp-Source: AGHT+IFE7cDuyIdDGc6j7eX19XjifX/KkDvRVTVpDR0onh51fNA9TA04g5R4C8by8Ey/SdUzp5D58A==
-X-Received: by 2002:a17:906:224c:b0:9a1:bd33:4389 with SMTP id 12-20020a170906224c00b009a1bd334389mr6915720ejr.74.1692971777091;
-        Fri, 25 Aug 2023 06:56:17 -0700 (PDT)
-Received: from krzk-bin.. ([77.252.47.198])
-        by smtp.gmail.com with ESMTPSA id mh2-20020a170906eb8200b0099b76c3041csm991608ejb.7.2023.08.25.06.56.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Aug 2023 06:56:16 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH 2/2] ARM: dts: qcom: sdx65: fix SDHCI clocks order
-Date:   Fri, 25 Aug 2023 15:56:13 +0200
-Message-Id: <20230825135613.282505-2-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230825135613.282505-1-krzysztof.kozlowski@linaro.org>
-References: <20230825135613.282505-1-krzysztof.kozlowski@linaro.org>
+        bh=jLAArgC/yF3W0SuXxiDWrJ5rFowVV703rxy6infsYco=;
+        b=NwPVlzNJ1rLA6tv7V0UXGRcUBR0Ww1kEffD5SPQgk3z8j8ifb4ZHjp7tpk18NhlJwA
+         xsjJ52Ne3sTbLRqygdH8fuNbEXQ0oS15XGoKGnUflodsZ4F0pqkhR2Gr1ROtxOkBBd93
+         gAq6WiPBiOwG6g0QV2zTgisDvMm5Rh0zmDMa0ayeesLvmbXxEQe4lT1Y2GrAB+J1f4uO
+         fb7roRplMLgPw1kEZTcX61HWzsp2MsYGWqQdP1Sb1JDJe1Xird4Cr4exwcZAZzpZlbXC
+         sbpAs7Bqj1kwZIEYoeoKoI3d7xFOdbJSiQbAnRmx0dGWfJMiB/6U2E4McU7MNxY3ecrF
+         uCSg==
+X-Gm-Message-State: AOJu0Yxv3qqmNZjmjzW2A80TWJnZHF14lj4GkSSwhM9nT734QsKaJKTY
+        4wBAucPAsolQM/3mnsmi/Q5UeCiXv3I1E6wDdWWFXA==
+X-Google-Smtp-Source: AGHT+IFn1+VuwezvxFgSzmSGg/JvxCqii0iVQ9ViNHc0q2OTp/uuY0OsuE3Aqyx0UbR1QHrGfpybQEwMEKG3wF3U4TA=
+X-Received: by 2002:ac2:558e:0:b0:500:8571:9d03 with SMTP id
+ v14-20020ac2558e000000b0050085719d03mr116185lfg.7.1692971820314; Fri, 25 Aug
+ 2023 06:57:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <20230825022357.2852133-1-seanjc@google.com> <20230825022357.2852133-3-seanjc@google.com>
+ <eb0eab09-3625-d3f2-d1bf-ef6595fb04e1@amd.com>
+In-Reply-To: <eb0eab09-3625-d3f2-d1bf-ef6595fb04e1@amd.com>
+From:   Peter Gonda <pgonda@google.com>
+Date:   Fri, 25 Aug 2023 07:56:48 -0600
+Message-ID: <CAMkAt6rB9a5+qu5ES4L1BnL35esSCY92+CB0fG7m6uq0Aj6z_A@mail.gmail.com>
+Subject: Re: [PATCH 2/2] KVM: SVM: Skip VMSA init in sev_es_init_vmcb() if
+ pointer is NULL
+To:     "Gupta, Pankaj" <pankaj.gupta@amd.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bindings expect clocks to be in different order:
+On Fri, Aug 25, 2023 at 4:26=E2=80=AFAM Gupta, Pankaj <pankaj.gupta@amd.com=
+> wrote:
+>
+> On 8/25/2023 4:23 AM, Sean Christopherson wrote:
+> > Skip initializing the VMSA physical address in the VMCB if the VMSA is
+> > NULL, which occurs during intrahost migration as KVM initializes the VM=
+CB
+> > before copying over state from the source to the destination (including
+> > the VMSA and its physical address).
+> >
+> > In normal builds, __pa() is just math, so the bug isn't fatal, but with
+> > CONFIG_DEBUG_VIRTUAL=3Dy, the validity of the virtual address is verifi=
+ed
+> > and passing in NULL will make the kernel unhappy.
+> >
+> > Fixes: 6defa24d3b12 ("KVM: SEV: Init target VMCBs in sev_migrate_from")
+> > Cc: stable@vger.kernel.org
+> > Cc: Peter Gonda <pgonda@google.com>
+> > Signed-off-by: Sean Christopherson <seanjc@google.com>
+> > ---
+> >   arch/x86/kvm/svm/sev.c | 7 +++++--
+> >   1 file changed, 5 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> > index acc700bcb299..5585a3556179 100644
+> > --- a/arch/x86/kvm/svm/sev.c
+> > +++ b/arch/x86/kvm/svm/sev.c
+> > @@ -2975,9 +2975,12 @@ static void sev_es_init_vmcb(struct vcpu_svm *sv=
+m)
+> >       /*
+> >        * An SEV-ES guest requires a VMSA area that is a separate from t=
+he
+> >        * VMCB page. Do not include the encryption mask on the VMSA phys=
+ical
+> > -      * address since hardware will access it using the guest key.
+> > +      * address since hardware will access it using the guest key.  No=
+te,
+> > +      * the VMSA will be NULL if this vCPU is the destination for intr=
+ahost
+> > +      * migration, and will be copied later.
+> >        */
+> > -     svm->vmcb->control.vmsa_pa =3D __pa(svm->sev_es.vmsa);
+> > +     if (svm->sev_es.vmsa)
+> > +             svm->vmcb->control.vmsa_pa =3D __pa(svm->sev_es.vmsa);
+> >
+> >       /* Can't intercept CR register access, HV can't modify CR registe=
+rs */
+> >       svm_clr_intercept(svm, INTERCEPT_CR0_READ);
+>
+> Reviewed-by: Pankaj Gupta <pankaj.gupta@amd.com>
 
-  qcom-sdx65-mtp.dtb: mmc@8804000: clock-names:0: 'iface' was expected
-  qcom-sdx65-mtp.dtb: mmc@8804000: clock-names:1: 'core' was expected
-
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- arch/arm/boot/dts/qcom/qcom-sdx65.dtsi | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/arch/arm/boot/dts/qcom/qcom-sdx65.dtsi b/arch/arm/boot/dts/qcom/qcom-sdx65.dtsi
-index a1679f9f8f1e..9d9ac4e23831 100644
---- a/arch/arm/boot/dts/qcom/qcom-sdx65.dtsi
-+++ b/arch/arm/boot/dts/qcom/qcom-sdx65.dtsi
-@@ -461,9 +461,9 @@ sdhc_1: mmc@8804000 {
- 			interrupts = <GIC_SPI 210 IRQ_TYPE_LEVEL_HIGH>,
- 				     <GIC_SPI 227 IRQ_TYPE_LEVEL_HIGH>;
- 			interrupt-names = "hc_irq", "pwr_irq";
--			clocks = <&gcc GCC_SDCC1_APPS_CLK>,
--				 <&gcc GCC_SDCC1_AHB_CLK>;
--			clock-names = "core", "iface";
-+			clocks = <&gcc GCC_SDCC1_AHB_CLK>,
-+				 <&gcc GCC_SDCC1_APPS_CLK>;
-+			clock-names = "iface", "core";
- 			status = "disabled";
- 		};
- 
--- 
-2.34.1
-
+Reviewed-by: Peter Gonda <pgonda@google.com>
