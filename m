@@ -2,134 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC731788529
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 12:42:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD49B78852A
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 12:45:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244524AbjHYKl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 06:41:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54920 "EHLO
+        id S234294AbjHYKpH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 25 Aug 2023 06:45:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244648AbjHYKlw (ORCPT
+        with ESMTP id S233105AbjHYKo7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 06:41:52 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2B37198A
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 03:41:42 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 50ACF6608D
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 10:41:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2B84C433C8;
-        Fri, 25 Aug 2023 10:41:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692960101;
-        bh=C+23fD72ZNSqdBsS5bGjW78zBwwoHToxHQsJuw/KJN0=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=WXuDL+Dm3ljWrCV0Zq03WyDGNcM27U7ChI6JYaZo16suJvxIOvNbKKBoVFLjIEiLC
-         qFDGkg4xU4Nk2ANiPt9Bq67OaS3mvZbXfw4LveHu8/h57bfzdknZSI61aK8LAlTDkp
-         6ZRlkckYEgpFQTpfCPj31ueJ4Pi3qAevi2dbLHWj6am/YHKicn5xH9NeomAqm4kYs6
-         tfHCyVQ9uBTWd723eCN/wc3afQJIa8K34VbQHMj/97brtnlZb3yElmw+fJoufyEKdI
-         4m49uq3n1RRyCBysKllqqSG+3IicUfyke4xqI2Q6qG8Bt5lNP6I1kBlE0KMri9HFum
-         X6Sg7fWhXRcNQ==
-Message-ID: <517380b7-77e6-3b79-5156-234b51dbb104@kernel.org>
-Date:   Fri, 25 Aug 2023 18:41:38 +0800
+        Fri, 25 Aug 2023 06:44:59 -0400
+Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1232E54;
+        Fri, 25 Aug 2023 03:44:55 -0700 (PDT)
+Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
+        by ex01.ufhost.com (Postfix) with ESMTP id 649C724E236;
+        Fri, 25 Aug 2023 18:44:54 +0800 (CST)
+Received: from EXMBX073.cuchost.com (172.16.6.83) by EXMBX165.cuchost.com
+ (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 25 Aug
+ 2023 18:44:54 +0800
+Received: from [192.168.1.218] (180.164.60.184) by EXMBX073.cuchost.com
+ (172.16.6.83) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 25 Aug
+ 2023 18:44:53 +0800
+Message-ID: <a0c023e0-e145-f6f7-3a84-ac6045a6c495@starfivetech.com>
+Date:   Fri, 25 Aug 2023 18:44:53 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] f2fs: fix deadlock in f2f2_add_dentry
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v8 3/8] media: staging: media: starfive: camss: Add core
+ driver
 Content-Language: en-US
-To:     Lizhi Xu <lizhi.xu@windriver.com>
-Cc:     jaegeuk@kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-References: <0000000000000f188605ffdd9cf8@google.com>
- <20230825053732.3098387-1-lizhi.xu@windriver.com>
-From:   Chao Yu <chao@kernel.org>
-In-Reply-To: <20230825053732.3098387-1-lizhi.xu@windriver.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Todor Tomov <todor.too@gmail.com>,
+        <bryan.odonoghue@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>
+CC:     <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-staging@lists.linux.dev>,
+        <changhuang.liang@starfivetech.com>
+References: <20230824080109.89613-1-jack.zhu@starfivetech.com>
+ <20230824080109.89613-4-jack.zhu@starfivetech.com>
+ <74183f7b-6e53-ba3d-2160-1e526d61073b@wanadoo.fr>
+From:   Jack Zhu <jack.zhu@starfivetech.com>
+In-Reply-To: <74183f7b-6e53-ba3d-2160-1e526d61073b@wanadoo.fr>
+Content-Type: text/plain; charset="UTF-8"
+X-Originating-IP: [180.164.60.184]
+X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX073.cuchost.com
+ (172.16.6.83)
+X-YovoleRuleAgent: yovoleflag
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/25 13:37, Lizhi Xu wrote:
-> There are two paths:
-> 1. f2fs_add_dentry->f2fs_down_read->f2fs_add_inline_entry->down_write->
->     up_write->f2fs_up_read
-> 2. f2fs_add_dentry->f2fs_add_regular_entry->down_write->
->     f2fs_init_inode_metadata->f2fs_down_read->f2fs_up_read->up_write
+Hi Christophe,
+
+Thank you for your comment!
+
+On 2023/8/25 2:31, Christophe JAILLET wrote:
+> Le 24/08/2023 à 10:01, Jack Zhu a écrit :
+>> Add core driver for StarFive Camera Subsystem. The code parses
+>> the device platform resources and registers related devices.
+>>
+>> Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+>> Signed-off-by: Jack Zhu <jack.zhu@starfivetech.com>
+>> ---
 > 
-> Force order lock to read->write.
-
-Hi Lizhi,
-
-Thanks for the fix.
-
-Can you please check below patch? it has fixed reported issue.
-
-https://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs.git/commit/?h=dev&id=5c13e2388bf3426fd69a89eb46e50469e9624e56
-
-Feedback from syzbot:
-
-https://lore.kernel.org/linux-f2fs-devel/0000000000001ba17a0603b5871e@google.com/
-
+> ...
 > 
-> Signed-off-by: Lizhi Xu <lizhi.xu@windriver.com>
-> Reported-and-tested-by: syzbot+a4976ce949df66b1ddf1@syzkaller.appspotmail.com
-> ---
->   fs/f2fs/dir.c    | 4 +---
->   fs/f2fs/inline.c | 2 ++
->   2 files changed, 3 insertions(+), 3 deletions(-)
+>> diff --git a/drivers/staging/media/starfive/camss/Kconfig b/drivers/staging/media/starfive/camss/Kconfig
+>> new file mode 100644
+>> index 000000000000..8d20e2bd2559
+>> --- /dev/null
+>> +++ b/drivers/staging/media/starfive/camss/Kconfig
+>> @@ -0,0 +1,17 @@
+>> +# SPDX-License-Identifier: GPL-2.0-only
+>> +config VIDEO_STARFIVE_CAMSS
+>> +    tristate "Starfive Camera Subsystem driver"
+>> +    depends on V4L_PLATFORM_DRIVERS
+>> +    depends on VIDEO_DEV && OF
+>> +    depends on HAS_DMA
+>> +    depends on PM
+>> +    select MEDIA_CONTROLLER
+>> +    select VIDEO_V4L2_SUBDEV_API
+>> +    select VIDEOBUF2_DMA_CONTIG
+>> +    select V4L2_FWNODE
+>> +    help
+>> +       Enable this to support for the Starfive Camera subsystem
+>> +       found on Starfive JH7110 SoC.
+>> +
+>> +       To compile this driver as a module, choose M here: the
+>> +       module will be called stf-camss.
 > 
-> diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
-> index d635c58cf5a3..022dc02c1390 100644
-> --- a/fs/f2fs/dir.c
-> +++ b/fs/f2fs/dir.c
-> @@ -736,12 +736,12 @@ int f2fs_add_regular_entry(struct inode *dir, const struct f2fs_filename *fname,
->   	f2fs_wait_on_page_writeback(dentry_page, DATA, true, true);
->   
->   	if (inode) {
-> -		f2fs_down_write(&F2FS_I(inode)->i_sem);
->   		page = f2fs_init_inode_metadata(inode, dir, fname, NULL);
->   		if (IS_ERR(page)) {
->   			err = PTR_ERR(page);
->   			goto fail;
->   		}
-> +		f2fs_down_write(&F2FS_I(inode)->i_sem);
->   	}
->   
->   	make_dentry_ptr_block(NULL, &d, dentry_blk);
-> @@ -780,9 +780,7 @@ int f2fs_add_dentry(struct inode *dir, const struct f2fs_filename *fname,
->   		 * Should get i_xattr_sem to keep the lock order:
->   		 * i_xattr_sem -> inode_page lock used by f2fs_setxattr.
->   		 */
-> -		f2fs_down_read(&F2FS_I(dir)->i_xattr_sem);
->   		err = f2fs_add_inline_entry(dir, fname, inode, ino, mode);
-> -		f2fs_up_read(&F2FS_I(dir)->i_xattr_sem);
->   	}
->   	if (err == -EAGAIN)
->   		err = f2fs_add_regular_entry(dir, fname, inode, ino, mode);
-> diff --git a/fs/f2fs/inline.c b/fs/f2fs/inline.c
-> index 4638fee16a91..7618b383c2b7 100644
-> --- a/fs/f2fs/inline.c
-> +++ b/fs/f2fs/inline.c
-> @@ -628,10 +628,12 @@ int f2fs_add_inline_entry(struct inode *dir, const struct f2fs_filename *fname,
->   	if (IS_ERR(ipage))
->   		return PTR_ERR(ipage);
->   
-> +	f2fs_down_read(&F2FS_I(dir)->i_xattr_sem);
->   	inline_dentry = inline_data_addr(dir, ipage);
->   	make_dentry_ptr_inline(dir, &d, inline_dentry);
->   
->   	bit_pos = f2fs_room_for_filename(d.bitmap, slots, d.max);
-> +	f2fs_up_read(&F2FS_I(dir)->i_xattr_sem);
->   	if (bit_pos >= d.max) {
->   		err = do_convert_inline_dir(dir, ipage, inline_dentry);
->   		if (err)
+> stf_camss? (s/-/_)
+> 
+
+Refer to the writing method of other media drivers, most of them use hyphen. It
+may be better to use ‘starfive-camss'？
+
+>> diff --git a/drivers/staging/media/starfive/camss/Makefile b/drivers/staging/media/starfive/camss/Makefile
+>> new file mode 100644
+>> index 000000000000..f53c5cbe958f
+>> --- /dev/null
+>> +++ b/drivers/staging/media/starfive/camss/Makefile
+>> @@ -0,0 +1,9 @@
+>> +# SPDX-License-Identifier: GPL-2.0
+>> +#
+>> +# Makefile for StarFive Camera Subsystem driver
+>> +#
+>> +
+>> +starfive-camss-objs += \
+>> +        stf_camss.o
+>> +
+>> +obj-$(CONFIG_VIDEO_STARFIVE_CAMSS) += starfive-camss.o
+> 
+> I'm not an expert in Makefile files, but this stf_camss.o and starfive-camss.o look strange to me.
+> 
+
+Is it better to replace 'stf_camss.o' with 'stf-camss.o', which is consistent
+with the driving style of other media drivers?
+
+>> diff --git a/drivers/staging/media/starfive/camss/stf_camss.c b/drivers/staging/media/starfive/camss/stf_camss.c
+>> new file mode 100644
+>> index 000000000000..75ebc3a35218
+>> --- /dev/null
+>> +++ b/drivers/staging/media/starfive/camss/stf_camss.c
+> 
+> ...
+> 
+>> +static int stfcamss_of_parse_ports(struct stfcamss *stfcamss)
+>> +{
+>> +    struct device_node *node = NULL;
+>> +    int ret, num_subdevs = 0;
+>> +
+>> +    for_each_endpoint_of_node(stfcamss->dev->of_node, node) {
+>> +        struct stfcamss_async_subdev *csd;
+>> +
+>> +        if (!of_device_is_available(node))
+>> +            continue;
+>> +
+>> +        csd = v4l2_async_nf_add_fwnode_remote(&stfcamss->notifier,
+>> +                              of_fwnode_handle(node),
+>> +                              struct stfcamss_async_subdev);
+>> +        if (IS_ERR(csd)) {
+>> +            ret = PTR_ERR(csd);
+>> +            dev_err(stfcamss->dev, "failed to add async notifier\n");
+>> +            v4l2_async_nf_cleanup(&stfcamss->notifier);
+> 
+> having it here, looks strange to me.
+> It is already called in the error handling path of the probe.
+> 
+> Should there be a "of_node_put(node);" if we return here?
+> 
+
+We do not call a 'get' interface, is it necessary to use the 'put' interface?
+
+>> +            return ret;
+>> +        }
+>> +
+>> +        ret = stfcamss_of_parse_endpoint_node(stfcamss, node, csd);
+>> +        if (ret)
+>> +            return ret;
+>> +
+>> +        num_subdevs++;
+>> +    }
+>> +
+>> +    return num_subdevs;
+>> +}
+> 
+> ...
+> 
+>> +static int stfcamss_remove(struct platform_device *pdev)
+>> +{
+>> +    struct stfcamss *stfcamss = platform_get_drvdata(pdev);
+>> +
+>> +    v4l2_device_unregister(&stfcamss->v4l2_dev);
+>> +    media_device_cleanup(&stfcamss->media_dev);
+> 
+> Is a "v4l2_async_nf_cleanup(&stfcamss->notifier);" missing to match the error handling path of the probe?
+> 
+>> +    pm_runtime_disable(&pdev->dev);
+>> +
+>> +    return 0;
+>> +}
+>> +
+> 
+> ...
