@@ -2,109 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D401F788C6B
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 17:26:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4526A788C6E
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 17:27:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240185AbjHYP0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 11:26:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47590 "EHLO
+        id S240597AbjHYP0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 11:26:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237464AbjHYP0C (ORCPT
+        with ESMTP id S240497AbjHYP00 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 11:26:02 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 473A72137;
-        Fri, 25 Aug 2023 08:26:00 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-68a3e271491so844135b3a.0;
-        Fri, 25 Aug 2023 08:26:00 -0700 (PDT)
+        Fri, 25 Aug 2023 11:26:26 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE29D212C
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 08:26:24 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1bb29dc715bso11266155ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 08:26:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692977160; x=1693581960;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2FJUnRDHEZaApoThKe1ItomuG6aOppIegF4bJQrMsxU=;
-        b=a+uJIwyuNnk3TVTQtZqW9uS+xJz2Gwe11uXTuYJQ3Skl544YB+I6cm+yPL8tms1KZm
-         Js8A08lH113Q4uSBGfsXo4vYVh5tg9DV8RgTqEgEVC1a1YfYoDuhQJj2BW99m6XlH6VM
-         NnfvgX3PfxRSbWunnGa/xh7tM2xd7Z4VE5qzdzN6FqmacCu7ZDF3SrgQwRpuRCizp6As
-         Sa2yvnKC9K9NowhzXxvsYZHymfhfxzJpByNxva0THoQ8WlMIBB2EaUi1a4Y+aGOEaK7u
-         ooxAZUhVDn6OZCtfAFnTPgjSWLGrap+yfutDs/iMdqhCcR8Xwd3wQcJd3XJHo09mrbNp
-         kMlw==
+        d=google.com; s=20221208; t=1692977184; x=1693581984;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=uT9B5IhwSieTS/lycgAO9B5cbkxabumJT7OeFCsXGMk=;
+        b=vvVTkRT+VuK5043ahLb/u/zj4f8sB0vqgAunodyYuRhNLeufoefzhoe4WNJFWBlqnT
+         fOjWSwwVNPHbk3edqUSOVA+XxAEjDCKjxs3HxwUIlookvW4KiCnYLFtt1qTalqSJOVGF
+         sScsGhUtVxEoQK15lzMQlLomYBvjcE2Sz4k/e1Oy+HS/9hhEtZcDcaVdaQEeyjXxZh3R
+         TzsVUTWd7XZcUj1STnMDvCZ5q8x5tT67ioP2DbuxoS8Xvt4bmsdKfkLeTHrNoo93HISk
+         V1NYfBP6/ZvZCCCq3TieE6qyCIY3XWbSHhfJP0iP2R+QQbrK8/8rYTZUS4Q+EnvzC4ai
+         inOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692977160; x=1693581960;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=2FJUnRDHEZaApoThKe1ItomuG6aOppIegF4bJQrMsxU=;
-        b=fCcYr99YLwmi1wN2+wPlLH2i+Qb2ufjG9Ym6Vv7+IAZhy+TvRQGnZyTjK+hxv8+T6X
-         DNwm4YoeRkyJ13IYcMHZp8Rt+OvlkST286K3C2EeDFXD2cOtJZ8X4OG3wyKX8QiIUDNe
-         PphJorOhmtuYYcr0K1BPzT8+Dl5bWirStO45RILLWLZWz6YO2JTIuV18sXD8EENW3GE4
-         73V4Yp7JuSFpJ4HEKVe/W5mFRToyV4hBkJqR0bsTYjf9mrfe+zjlCIGgD5saqhMPdCYm
-         YNPRkuKlbqyGR8oK1e5iEiFZrZQpee6NouYQpdM1Xw69tn5mqiU9KS3zYQpY2SnAOTpM
-         o6GQ==
-X-Gm-Message-State: AOJu0YzqCS8doNiap9Zk9QKuh/30Ej9ZWkOUU75yKoBMsDHnN1h6+CcH
-        Btfle8zzVOtGU3aaOKxvVJE=
-X-Google-Smtp-Source: AGHT+IHSQAyMHvANuR7fSUjRBKdsbfh5Ib/PbKyDzJqOdw7KsjZX6sLG+DRCxBJbw2nlkZyV0q1Ipg==
-X-Received: by 2002:a05:6a20:3d13:b0:14c:6a05:dfbf with SMTP id y19-20020a056a203d1300b0014c6a05dfbfmr2897922pzi.60.1692977159611;
-        Fri, 25 Aug 2023 08:25:59 -0700 (PDT)
-Received: from bangji.hsd1.ca.comcast.net ([2601:647:6780:42e0:a7ba:1788:3b00:4316])
-        by smtp.gmail.com with ESMTPSA id y1-20020aa78541000000b006879493aca0sm1701748pfn.26.2023.08.25.08.25.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Aug 2023 08:25:59 -0700 (PDT)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>
-Cc:     Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org
-Subject: [PATCH v2 4/4] tools/lib/perf: Get rid of attr.id field
-Date:   Fri, 25 Aug 2023 08:25:52 -0700
-Message-ID: <20230825152552.112913-4-namhyung@kernel.org>
-X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
-In-Reply-To: <20230825152552.112913-1-namhyung@kernel.org>
-References: <20230825152552.112913-1-namhyung@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1692977184; x=1693581984;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uT9B5IhwSieTS/lycgAO9B5cbkxabumJT7OeFCsXGMk=;
+        b=a2topNB9PTuynUQ8sTB7Xh4r86XGgFUDju+47UGflEV9j9hk59EKDiinG3uFcKp8jQ
+         atVLiHezOOSImZ/8hkbRjDFaZVd1x/oieu/3RUiY4ed3a/z1RfDIpdtRMMlpcGfme3M0
+         a3NPSR1NHLx3yvij25sxNFPEyIykMf87f3qbp2cNF9DzoSGbKMFXuKjIY05zWSdtrjbH
+         zHLLTV6/aqM41mw/HhtIL2h1MOt/gxVM6JPBHO+byHC/8k6xm5lpf084L5ZgIludd3fL
+         tSM+uVmH6gLZ8QhqCcQJYhxC72x/4FbvqBpIiF98+ybLPs7vmUdrXyhT+gL2bSZEndHw
+         Xi0g==
+X-Gm-Message-State: AOJu0YyDFz25dDxzXf6qFGWyeU7GPBDaEL7ZrSvsOfdYa9qXL/m5IrQc
+        QXnclTwTonU5wXp9as/H90noiq460ys=
+X-Google-Smtp-Source: AGHT+IHBe26z5RAiUFUIi9mr/ywY4xvfcSUx9IiaElkVhEpKpN2zZSyFkiUVw2XIEkVi8AWhgt40SvUlcq8=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:e801:b0:1bc:4452:59c4 with SMTP id
+ u1-20020a170902e80100b001bc445259c4mr7073353plg.4.1692977184048; Fri, 25 Aug
+ 2023 08:26:24 -0700 (PDT)
+Date:   Fri, 25 Aug 2023 08:26:22 -0700
+In-Reply-To: <20230824202415.131824-1-mahmoudmatook.mm@gmail.com>
+Mime-Version: 1.0
+References: <20230824202415.131824-1-mahmoudmatook.mm@gmail.com>
+Message-ID: <ZOjIHo2A6HZ8K4Qp@google.com>
+Subject: Re: [PATCH v2 1/2] selftests: Provide local define of min() and max()
+From:   Sean Christopherson <seanjc@google.com>
+To:     Mahmoud Maatuq <mahmoudmatook.mm@gmail.com>
+Cc:     keescook@chromium.org, edumazet@google.com,
+        willemdebruijn.kernel@gmail.com, wad@chromium.org,
+        luto@amacapital.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kuba@kernel.org, shuah@kernel.org,
+        pabeni@redhat.com, linux-kselftest@vger.kernel.org,
+        davem@davemloft.net,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        David Laight <David.Laight@aculab.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now there's no in-tree user of the field.  To remove the possible bug
-later, let's get rid of the 'id' field and add a comment for that.
+On Fri, Aug 25, 2023, Mahmoud Maatuq wrote:
+> to avoid manual calculation of min and max values
+> and fix coccinelle warnings such WARNING opportunity for min()/max()
+> adding one common definition that could be used in multiple files
+> under selftests.
+> there are also some defines for min/max scattered locally inside sources
+> under selftests.
+> this also prepares for cleaning up those redundant defines and include
+> kselftest.h instead.
+> 
+> Signed-off-by: Mahmoud Maatuq <mahmoudmatook.mm@gmail.com>
+> Suggested-by: David Laight <David.Laight@aculab.com>
+> ---
+> changes in v2:
+> redefine min/max in a more strict way to avoid 
+> signedness mismatch and multiple evaluation.
+> is_signed_type() moved from selftests/kselftest_harness.h 
+> to selftests/kselftest.h.
+> ---
+>  tools/testing/selftests/kselftest.h         | 24 +++++++++++++++++++++
 
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/lib/perf/include/perf/event.h | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+Heh, reminds me of https://xkcd.com/927.
 
-diff --git a/tools/lib/perf/include/perf/event.h b/tools/lib/perf/include/perf/event.h
-index e563dd8c3628..ae64090184d3 100644
---- a/tools/lib/perf/include/perf/event.h
-+++ b/tools/lib/perf/include/perf/event.h
-@@ -148,7 +148,13 @@ struct perf_record_switch {
- struct perf_record_header_attr {
- 	struct perf_event_header header;
- 	struct perf_event_attr	 attr;
--	__u64			 id[];
-+	/*
-+	 * Array of u64 id follows here but we cannot use a flexible array
-+	 * because size of attr in the data can be different then current
-+	 * version.  Please use perf_record_header_attr_id() below.
-+	 *
-+	 * __u64		 id[];  // do not use this
-+	 */
- };
- 
- /* Returns the pointer to id array based on the actual attr size. */
--- 
-2.42.0.rc1.204.g551eb34607-goog
-
+All of these #defines are available in tools/include/linux/kernel.h, and it's
+trivially easy for selftests to add all of tools/include to their include path.
+I don't see any reason for the selftests framework to define yet another version,
+just fix the individual tests.
