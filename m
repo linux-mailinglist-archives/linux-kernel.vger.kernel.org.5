@@ -2,59 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23099787D42
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 03:37:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73AC7787D44
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 03:37:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238956AbjHYBhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 21:37:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42594 "EHLO
+        id S239171AbjHYBhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 21:37:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237436AbjHYBga (ORCPT
+        with ESMTP id S237552AbjHYBgc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 21:36:30 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C90BB1707
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 18:36:27 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-56385c43eaeso490016a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 18:36:27 -0700 (PDT)
+        Thu, 24 Aug 2023 21:36:32 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C24291707
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 18:36:29 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1c09d82dfc7so5909935ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 18:36:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692927387; x=1693532187;
+        d=google.com; s=20221208; t=1692927389; x=1693532189;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=772R3fhvb1hJ+WgPywPWa6C7fO5Csuzrt1s6mb5DckI=;
-        b=X+2BvBC6u4TKcVZ++ZGwunu3SE65Gvh4sabEesPL6PDVApqC+rvcTGf9MqAe5Y0R8j
-         kCtoXMGfOylqtra+yu8AUH9NLn53MMLo7SVFskt93r+TipgOuHS2ThDMKGqNmZHYLDqG
-         WPpjG4amQ0WJAVueUBcuOtELYU/v0oZnVSOPO/LdOS8XYoWDYArMmi8I5xts5uYlYAxa
-         JgVf+ItKSjpH1zRuYLCNvIFM+S+hwf6Vi9VPah2pochSNfNKPwek57C/GaAlTPaEDuAR
-         0758uex/2pgTcV41xNUVwWTCBLV+BNlR1H80eELH7Dek4kH5MJTGi+YqQ0oZ8qeTtQZi
-         wwFA==
+        bh=qFwlnRwlA9Pcgw83ghVUTUpUbTL5c6TrSmvpVeQlOSI=;
+        b=rWMUp4+UZRDxcj/FmsFEl9Bny446asZs1yvFuXoyswCWJ9T/5fx5ZBm6RATp0dIw94
+         7vzK3yywp2QNRfP369DeuJKXr4U8PoQm+LM2wni4hix132hGgb4LRDsydTHr0P7nqhN8
+         MQoEsgyvE4gf3lYfqxwsSavu1HQzHoADCSBAJzxo1EjyLU4y8bLSHENPp9FfnduKmgXk
+         wPpceH6jOlj6T11Azu71IqDuLVlq/LS+0OTpQfOWOxRHTa2ql5HHLQlH0pFWREhnqKFf
+         UDTBHugVZjmByVpL3j/z1o28RbfipAuo4SgE4kBnalJWus3tLh8Rj9TBhS7QleDj66Va
+         mX+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692927387; x=1693532187;
+        d=1e100.net; s=20221208; t=1692927389; x=1693532189;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=772R3fhvb1hJ+WgPywPWa6C7fO5Csuzrt1s6mb5DckI=;
-        b=ZRRGW/N0Hy0M5LnIENoSQ/YIZ4gRzi4Ea1M2Qv+5Tt6Vdd0J790yuJqQZiSL/WZaLw
-         NWWBDvVdpNFCmptZEiPdKtGWExJhh87aBcKsoMx3WCqzx9e/Hlm3G7drhz00eOzRP2Yb
-         vLaNGKkQHbKZrcr+PJZxKZdQpQQv0zgvvGK/dn6RJUb58FVkGLwtDDWbKkR64m315Bhh
-         D2qgRwXTUcWk3I2PUQ8zp4xuEta4F6yqtImOtQTHoqbU4OxAh3uFWCAGJTNzjnL066rm
-         Ljt0aL7uTLAJQitEAo1PPOwkjU6jQyjzBqXuwu4xS80n9khsx/3CrTU+37cRI8dsMRFu
-         Q7CQ==
-X-Gm-Message-State: AOJu0YxCwxt7DPgptLKbKtUCgvev0KWM0msmEJbR4IPPh70Dn1lfXf9R
-        o5GbPPHQdcmtDtnkgxyrNt5a2lRNl4I=
-X-Google-Smtp-Source: AGHT+IFDstNWi9yd4ZsrD/aOyXNKkLudrxgwtqrCjoQNo0eWK/ax8ovhPQNmwtRTJTChjIOU1w100912sTI=
+        bh=qFwlnRwlA9Pcgw83ghVUTUpUbTL5c6TrSmvpVeQlOSI=;
+        b=Bi3WREKIm13tocF8baZDgGh1l+K1RN7PqDsw2nZlycpqYPmkbyKZbuaL20XJ6nhZhL
+         AjtnfIJwbiSmOltPE7iXk0rLsv0q899xAHXC+NdH/JYhuWusIAh4nONTPgeXnkzruS0b
+         xDCqZQpEGEJusChhQaLgmrtsQlHaEQ9Y1ixx+/76NE2R0PImYR91I6QRKVK29/4X1rZO
+         Dxzlfbm0Sr8OfPxL5S2R0ZdS25TDFcJOvp3NvKpgmh/Azt1P4YDs2sHiSzykb3lHlkyI
+         lRsuInuliqpWOowtC8HJ6dpuLDnToG8peQS2Mw3WQ1fCiJttNk6ps71+t0hPAkjHJouh
+         Bf1Q==
+X-Gm-Message-State: AOJu0Yym5o19JxxpA+R52hOEmSFrsu3MtthaNbqP/Hv/vQMgMuGiynw2
+        edUK5OAFUTA/2Nfo11unJrTBR+7NjHo=
+X-Google-Smtp-Source: AGHT+IH23uzGSC9Jib75RQ5v6ZuRbT3wj68jmFazJGmVBmw7Q73pT1lRHeuBZrNPglxYSWdNsE2nvNGUc8M=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a63:3383:0:b0:565:eb0b:626a with SMTP id
- z125-20020a633383000000b00565eb0b626amr2673084pgz.4.1692927387236; Thu, 24
- Aug 2023 18:36:27 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a17:902:f683:b0:1bb:e7ce:17d9 with SMTP id
+ l3-20020a170902f68300b001bbe7ce17d9mr7003860plg.6.1692927389308; Thu, 24 Aug
+ 2023 18:36:29 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu, 24 Aug 2023 18:36:19 -0700
+Date:   Thu, 24 Aug 2023 18:36:20 -0700
 In-Reply-To: <20230825013621.2845700-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20230825013621.2845700-1-seanjc@google.com>
 X-Mailer: git-send-email 2.42.0.rc2.253.gd59a3bf2b4-goog
-Message-ID: <20230825013621.2845700-3-seanjc@google.com>
-Subject: [PATCH v2 2/4] KVM: SVM: Require nrips support for SEV guests (and beyond)
+Message-ID: <20230825013621.2845700-4-seanjc@google.com>
+Subject: [PATCH v2 3/4] KVM: x86: Refactor can_emulate_instruction() return to
+ be more expressive
 From:   Sean Christopherson <seanjc@google.com>
 To:     Sean Christopherson <seanjc@google.com>,
         Paolo Bonzini <pbonzini@redhat.com>
@@ -72,82 +73,249 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Disallow SEV (and beyond) if nrips is disabled via module param, as KVM
-can't read guest memory to partially emulate and skip an instruction.  All
-CPUs that support SEV support NRIPS, i.e. this is purely stopping the user
-from shooting themselves in the foot.
+Refactor and rename can_emulate_instruction() to allow vendor code to
+return more than true/false, e.g. to explicitly differentiate between
+"retry", "fault", and "unhandleable".  For now, just do the plumbing, a
+future patch will expand SVM's implementation to signal outright failure
+if KVM attempts EMULTYPE_SKIP on an SEV guest.
 
-Cc: Tom Lendacky <thomas.lendacky@amd.com>
+No functional change intended (or rather, none that are visible to the
+guest or userspace).
+
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/svm/sev.c |  2 +-
- arch/x86/kvm/svm/svm.c | 11 ++++-------
- arch/x86/kvm/svm/svm.h |  1 +
- 3 files changed, 6 insertions(+), 8 deletions(-)
+ arch/x86/include/asm/kvm-x86-ops.h |  2 +-
+ arch/x86/include/asm/kvm_host.h    |  4 ++--
+ arch/x86/kvm/svm/svm.c             | 31 ++++++++++++++++--------------
+ arch/x86/kvm/vmx/vmx.c             | 12 ++++++------
+ arch/x86/kvm/x86.c                 | 15 +++++++++------
+ 5 files changed, 35 insertions(+), 29 deletions(-)
 
-diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index 2cd15783dfb9..8ce9ffc8709e 100644
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -2185,7 +2185,7 @@ void __init sev_hardware_setup(void)
- 	bool sev_es_supported = false;
- 	bool sev_supported = false;
+diff --git a/arch/x86/include/asm/kvm-x86-ops.h b/arch/x86/include/asm/kvm-x86-ops.h
+index 13bc212cd4bc..ac01552316e1 100644
+--- a/arch/x86/include/asm/kvm-x86-ops.h
++++ b/arch/x86/include/asm/kvm-x86-ops.h
+@@ -125,7 +125,7 @@ KVM_X86_OP_OPTIONAL(vm_copy_enc_context_from)
+ KVM_X86_OP_OPTIONAL(vm_move_enc_context_from)
+ KVM_X86_OP_OPTIONAL(guest_memory_reclaimed)
+ KVM_X86_OP(get_msr_feature)
+-KVM_X86_OP(can_emulate_instruction)
++KVM_X86_OP(check_emulate_instruction)
+ KVM_X86_OP(apic_init_signal_blocked)
+ KVM_X86_OP_OPTIONAL(enable_l2_tlb_flush)
+ KVM_X86_OP_OPTIONAL(migrate_timers)
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index 9f57aa33798b..4760e60fad44 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -1734,8 +1734,8 @@ struct kvm_x86_ops {
  
--	if (!sev_enabled || !npt_enabled)
-+	if (!sev_enabled || !npt_enabled || !nrips)
- 		goto out;
+ 	int (*get_msr_feature)(struct kvm_msr_entry *entry);
  
- 	/*
+-	bool (*can_emulate_instruction)(struct kvm_vcpu *vcpu, int emul_type,
+-					void *insn, int insn_len);
++	int (*check_emulate_instruction)(struct kvm_vcpu *vcpu, int emul_type,
++					 void *insn, int insn_len);
+ 
+ 	bool (*apic_init_signal_blocked)(struct kvm_vcpu *vcpu);
+ 	int (*enable_l2_tlb_flush)(struct kvm_vcpu *vcpu);
 diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index bd53b2d497d0..b21253c9ceb4 100644
+index b21253c9ceb4..39ce680013c4 100644
 --- a/arch/x86/kvm/svm/svm.c
 +++ b/arch/x86/kvm/svm/svm.c
-@@ -202,7 +202,7 @@ static int nested = true;
- module_param(nested, int, S_IRUGO);
+@@ -364,8 +364,8 @@ static void svm_set_interrupt_shadow(struct kvm_vcpu *vcpu, int mask)
+ 		svm->vmcb->control.int_state |= SVM_INTERRUPT_SHADOW_MASK;
  
- /* enable/disable Next RIP Save */
--static int nrips = true;
-+int nrips = true;
- module_param(nrips, int, 0444);
+ }
+-static bool svm_can_emulate_instruction(struct kvm_vcpu *vcpu, int emul_type,
+-					void *insn, int insn_len);
++static int svm_check_emulate_instruction(struct kvm_vcpu *vcpu, int emul_type,
++					 void *insn, int insn_len);
  
- /* enable/disable Virtual VMLOAD VMSAVE */
-@@ -5203,9 +5203,11 @@ static __init int svm_hardware_setup(void)
+ static int __svm_skip_emulated_instruction(struct kvm_vcpu *vcpu,
+ 					   bool commit_side_effects)
+@@ -391,7 +391,7 @@ static int __svm_skip_emulated_instruction(struct kvm_vcpu *vcpu,
+ 		 * right thing and treats "can't emulate" as outright failure
+ 		 * for EMULTYPE_SKIP.
+ 		 */
+-		if (!svm_can_emulate_instruction(vcpu, EMULTYPE_SKIP, NULL, 0))
++		if (svm_check_emulate_instruction(vcpu, EMULTYPE_SKIP, NULL, 0) != X86EMUL_CONTINUE)
+ 			return 0;
  
- 	svm_adjust_mmio_mask();
+ 		if (unlikely(!commit_side_effects))
+@@ -4698,15 +4698,15 @@ static void svm_enable_smi_window(struct kvm_vcpu *vcpu)
+ }
+ #endif
  
-+	nrips = nrips && boot_cpu_has(X86_FEATURE_NRIPS);
-+
- 	/*
- 	 * Note, SEV setup consumes npt_enabled and enable_mmio_caching (which
--	 * may be modified by svm_adjust_mmio_mask()).
-+	 * may be modified by svm_adjust_mmio_mask()), as well as nrips.
+-static bool svm_can_emulate_instruction(struct kvm_vcpu *vcpu, int emul_type,
+-					void *insn, int insn_len)
++static int svm_check_emulate_instruction(struct kvm_vcpu *vcpu, int emul_type,
++					 void *insn, int insn_len)
+ {
+ 	bool smep, smap, is_user;
+ 	u64 error_code;
+ 
+ 	/* Emulation is always possible when KVM has access to all guest state. */
+ 	if (!sev_guest(vcpu->kvm))
+-		return true;
++		return X86EMUL_CONTINUE;
+ 
+ 	/* #UD and #GP should never be intercepted for SEV guests. */
+ 	WARN_ON_ONCE(emul_type & (EMULTYPE_TRAP_UD |
+@@ -4718,14 +4718,14 @@ static bool svm_can_emulate_instruction(struct kvm_vcpu *vcpu, int emul_type,
+ 	 * to guest register state.
  	 */
- 	sev_hardware_setup();
+ 	if (sev_es_guest(vcpu->kvm))
+-		return false;
++		return X86EMUL_RETRY_INSTR;
  
-@@ -5217,11 +5219,6 @@ static __init int svm_hardware_setup(void)
- 			goto err;
+ 	/*
+ 	 * Emulation is possible if the instruction is already decoded, e.g.
+ 	 * when completing I/O after returning from userspace.
+ 	 */
+ 	if (emul_type & EMULTYPE_NO_DECODE)
+-		return true;
++		return X86EMUL_CONTINUE;
+ 
+ 	/*
+ 	 * Emulation is possible for SEV guests if and only if a prefilled
+@@ -4751,9 +4751,11 @@ static bool svm_can_emulate_instruction(struct kvm_vcpu *vcpu, int emul_type,
+ 	 * success (and in practice it will work the vast majority of the time).
+ 	 */
+ 	if (unlikely(!insn)) {
+-		if (!(emul_type & EMULTYPE_SKIP))
+-			kvm_queue_exception(vcpu, UD_VECTOR);
+-		return false;
++		if (emul_type & EMULTYPE_SKIP)
++			return X86EMUL_RETRY_INSTR;
++
++		kvm_queue_exception(vcpu, UD_VECTOR);
++		return X86EMUL_PROPAGATE_FAULT;
  	}
  
--	if (nrips) {
--		if (!boot_cpu_has(X86_FEATURE_NRIPS))
--			nrips = false;
--	}
--
- 	enable_apicv = avic = avic && avic_hardware_setup();
+ 	/*
+@@ -4764,7 +4766,7 @@ static bool svm_can_emulate_instruction(struct kvm_vcpu *vcpu, int emul_type,
+ 	 * table used to translate CS:RIP resides in emulated MMIO.
+ 	 */
+ 	if (likely(insn_len))
+-		return true;
++		return X86EMUL_CONTINUE;
  
- 	if (!enable_apicv) {
-diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-index 2237230aad98..860511276087 100644
---- a/arch/x86/kvm/svm/svm.h
-+++ b/arch/x86/kvm/svm/svm.h
-@@ -34,6 +34,7 @@
- #define MSRPM_OFFSETS	32
- extern u32 msrpm_offsets[MSRPM_OFFSETS] __read_mostly;
- extern bool npt_enabled;
-+extern int nrips;
- extern int vgif;
- extern bool intercept_smi;
- extern bool x2avic_enabled;
+ 	/*
+ 	 * Detect and workaround Errata 1096 Fam_17h_00_0Fh.
+@@ -4822,6 +4824,7 @@ static bool svm_can_emulate_instruction(struct kvm_vcpu *vcpu, int emul_type,
+ 			kvm_inject_gp(vcpu, 0);
+ 		else
+ 			kvm_make_request(KVM_REQ_TRIPLE_FAULT, vcpu);
++		return X86EMUL_PROPAGATE_FAULT;
+ 	}
+ 
+ resume_guest:
+@@ -4839,7 +4842,7 @@ static bool svm_can_emulate_instruction(struct kvm_vcpu *vcpu, int emul_type,
+ 	 * doesn't explicitly define "ignored", i.e. doing nothing and letting
+ 	 * the guest spin is technically "ignoring" the access.
+ 	 */
+-	return false;
++	return X86EMUL_RETRY_INSTR;
+ }
+ 
+ static bool svm_apic_init_signal_blocked(struct kvm_vcpu *vcpu)
+@@ -4998,7 +5001,7 @@ static struct kvm_x86_ops svm_x86_ops __initdata = {
+ 	.vm_copy_enc_context_from = sev_vm_copy_enc_context_from,
+ 	.vm_move_enc_context_from = sev_vm_move_enc_context_from,
+ 
+-	.can_emulate_instruction = svm_can_emulate_instruction,
++	.check_emulate_instruction = svm_check_emulate_instruction,
+ 
+ 	.apic_init_signal_blocked = svm_apic_init_signal_blocked,
+ 
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index e6849f780dba..2d4a80c406cb 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -1642,8 +1642,8 @@ static int vmx_rtit_ctl_check(struct kvm_vcpu *vcpu, u64 data)
+ 	return 0;
+ }
+ 
+-static bool vmx_can_emulate_instruction(struct kvm_vcpu *vcpu, int emul_type,
+-					void *insn, int insn_len)
++static int vmx_check_emulate_instruction(struct kvm_vcpu *vcpu, int emul_type,
++					 void *insn, int insn_len)
+ {
+ 	/*
+ 	 * Emulation of instructions in SGX enclaves is impossible as RIP does
+@@ -1654,9 +1654,9 @@ static bool vmx_can_emulate_instruction(struct kvm_vcpu *vcpu, int emul_type,
+ 	 */
+ 	if (to_vmx(vcpu)->exit_reason.enclave_mode) {
+ 		kvm_queue_exception(vcpu, UD_VECTOR);
+-		return false;
++		return X86EMUL_PROPAGATE_FAULT;
+ 	}
+-	return true;
++	return X86EMUL_CONTINUE;
+ }
+ 
+ static int skip_emulated_instruction(struct kvm_vcpu *vcpu)
+@@ -5770,7 +5770,7 @@ static int handle_ept_misconfig(struct kvm_vcpu *vcpu)
+ {
+ 	gpa_t gpa;
+ 
+-	if (!vmx_can_emulate_instruction(vcpu, EMULTYPE_PF, NULL, 0))
++	if (vmx_check_emulate_instruction(vcpu, EMULTYPE_PF, NULL, 0))
+ 		return 1;
+ 
+ 	/*
+@@ -8317,7 +8317,7 @@ static struct kvm_x86_ops vmx_x86_ops __initdata = {
+ 	.enable_smi_window = vmx_enable_smi_window,
+ #endif
+ 
+-	.can_emulate_instruction = vmx_can_emulate_instruction,
++	.check_emulate_instruction = vmx_check_emulate_instruction,
+ 	.apic_init_signal_blocked = vmx_apic_init_signal_blocked,
+ 	.migrate_timers = vmx_migrate_timers,
+ 
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index e4a939471df1..f897d582d560 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -7458,11 +7458,11 @@ int kvm_write_guest_virt_system(struct kvm_vcpu *vcpu, gva_t addr, void *val,
+ }
+ EXPORT_SYMBOL_GPL(kvm_write_guest_virt_system);
+ 
+-static int kvm_can_emulate_insn(struct kvm_vcpu *vcpu, int emul_type,
+-				void *insn, int insn_len)
++static int kvm_check_emulate_insn(struct kvm_vcpu *vcpu, int emul_type,
++				  void *insn, int insn_len)
+ {
+-	return static_call(kvm_x86_can_emulate_instruction)(vcpu, emul_type,
+-							    insn, insn_len);
++	return static_call(kvm_x86_check_emulate_instruction)(vcpu, emul_type,
++							      insn, insn_len);
+ }
+ 
+ int handle_ud(struct kvm_vcpu *vcpu)
+@@ -7472,8 +7472,10 @@ int handle_ud(struct kvm_vcpu *vcpu)
+ 	int emul_type = EMULTYPE_TRAP_UD;
+ 	char sig[5]; /* ud2; .ascii "kvm" */
+ 	struct x86_exception e;
++	int r;
+ 
+-	if (unlikely(!kvm_can_emulate_insn(vcpu, emul_type, NULL, 0)))
++	r = kvm_check_emulate_insn(vcpu, emul_type, NULL, 0);
++	if (r != X86EMUL_CONTINUE)
+ 		return 1;
+ 
+ 	if (fep_flags &&
+@@ -8855,7 +8857,8 @@ int x86_emulate_instruction(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
+ 	struct x86_emulate_ctxt *ctxt = vcpu->arch.emulate_ctxt;
+ 	bool writeback = true;
+ 
+-	if (unlikely(!kvm_can_emulate_insn(vcpu, emulation_type, insn, insn_len)))
++	r = kvm_check_emulate_insn(vcpu, emulation_type, insn, insn_len);
++	if (r != X86EMUL_CONTINUE)
+ 		return 1;
+ 
+ 	vcpu->arch.l1tf_flush_l1d = true;
 -- 
 2.42.0.rc2.253.gd59a3bf2b4-goog
 
