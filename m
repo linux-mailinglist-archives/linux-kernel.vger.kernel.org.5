@@ -2,321 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E0E478840A
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 11:47:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07FC6788412
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 11:49:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236768AbjHYJqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 05:46:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59234 "EHLO
+        id S235067AbjHYJtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 05:49:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238559AbjHYJqd (ORCPT
+        with ESMTP id S233476AbjHYJs5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 05:46:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91B9F19A1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 02:45:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692956746;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CrjGBjMuzKz4ebBtAvxlAUidoQDPdf4WSl157LQLo1U=;
-        b=IYXPDpm6SGzAqZtnelj/K62ex6jIz7bygYNXIvkZfeV01fIFp7bVIy1JJjirAdJwtczO+d
-        +i6CKhCnWF7erThWKHQUHcXaPoQbEGMfvzWXBHE6xWmzkUBgsqSjvjIdxj4hD9MAgsSr9J
-        Z8Zy8mqZnx7A0t85HHjexVIJvm1A0TY=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-611-8ecOoDNNMzatBNR3769slw-1; Fri, 25 Aug 2023 05:45:45 -0400
-X-MC-Unique: 8ecOoDNNMzatBNR3769slw-1
-Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-5231d9f9e53so733087a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 02:45:44 -0700 (PDT)
+        Fri, 25 Aug 2023 05:48:57 -0400
+Received: from mail-ot1-f80.google.com (mail-ot1-f80.google.com [209.85.210.80])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 067BC1FF0
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 02:48:55 -0700 (PDT)
+Received: by mail-ot1-f80.google.com with SMTP id 46e09a7af769-6bee6ec76f2so1047012a34.0
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 02:48:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692956744; x=1693561544;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CrjGBjMuzKz4ebBtAvxlAUidoQDPdf4WSl157LQLo1U=;
-        b=dv5jWWPLCqK4w45YgBgX+/JtMmYmXxzuAeGPaik51yHOgYHbHGbg1TkMj3fyrP+2xd
-         LIiO+orB736V1iz5K+jQeoClfIpqHEWkLLQd5LXIaXPKHXfcXmIkrq54W5DZ5PWYcBEQ
-         pkgdMsEswCLfuJ2tG0HcvTsN5+2c/2OBCqWgNHTVkxf1JSKMPKf+t/mz5LTZYPcKxjTj
-         yVe557PqAZZjXXUa8msetzJjPrc1UISX4bIFTYR3yaPQgi6n3Mum5QnwQTBstUgSAfZL
-         ElJAHOXmVfzkJlEkKRw3nJYCIsNswpoMBEY79fT2zI5QCBRE493IS7FQPNExIH00QQfp
-         4uHw==
-X-Gm-Message-State: AOJu0YyGTPf4B8LVqpLRba89EBrrRAfLdLMaTOIprlcPino7Hd3DwHGe
-        ib/r9OO6ADKkUYg2R2XgSQeGhvjdxuNndDjm51G2BhIV08J65uahoqyUQLI2jUHbnBa+pIGUUpk
-        iCDSu3fc/zqIU8yhDQJi2mMAKeGmQ0WwvNgTLg3s3
-X-Received: by 2002:aa7:d6d3:0:b0:526:9c4:bc06 with SMTP id x19-20020aa7d6d3000000b0052609c4bc06mr12003163edr.18.1692956744076;
-        Fri, 25 Aug 2023 02:45:44 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHgDt9FIdtsEpC4kqD3qNgfVsFAQCtSPJhDeSOFK7od6AJWv525UNBnReV1XMVXkZOH/9VDNNk8OLriDkJjk6M=
-X-Received: by 2002:aa7:d6d3:0:b0:526:9c4:bc06 with SMTP id
- x19-20020aa7d6d3000000b0052609c4bc06mr12003144edr.18.1692956743782; Fri, 25
- Aug 2023 02:45:43 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692956934; x=1693561734;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BFJif4QDdWSfgk5/2e0e9FOP2xlthhr5LjObem+qeTA=;
+        b=lQNItKTmwLCAwG9A775vF1wiM88LYB0uTUFj55Qm7Vl5wzweILDol8FnF8CkdevKUl
+         lAGklL18G98MH5Yw9a0OBzLDopZoYn3f1UQZT7LY3CITU/FRtwZMBWwGTM7v9/8IWJjg
+         1ORAjWd+2Ym9wcMeQsLn/X4ocYqizmzbf2ov4JV1Vuam5ZkCn/+K20WyPW72+XL4VkwU
+         tvV8Y6m2julfLqOBtYDAaLPEUSkUZFwF4fyZlTL06EL9spXfbM0TJK/BUvwoIHC4mr8Q
+         SoFJS8w3+2J6Q4E/PUSho25jsMApC7uet36OyBnIJ/6hLm87iJhtgZGc5GPQR0BywkzT
+         x5EQ==
+X-Gm-Message-State: AOJu0YyuMu70UaMlJs95hsH1bViEJC9JGS+bUm9oyaBgdHEvBaMHnmNt
+        csItwpQNNzx28C7lEnMG8Qan2XhsC7RAxfJaXiYT28t2vUU1
+X-Google-Smtp-Source: AGHT+IFffqOpQlow6RHRZJVP8RmFpLckBBaH8EwZWfUG5r88xpDg+lmaZp8PdpaoHGWBHpe9q8AsSDwWrStLeH6BNuvgAWGmisCR
 MIME-Version: 1.0
-References: <20230621-logitech-fixes-v2-1-3635f7f9c8af@kernel.org> <b68cf309-fca4-7ae0-b42f-90d5f338acdd@leemhuis.info>
-In-Reply-To: <b68cf309-fca4-7ae0-b42f-90d5f338acdd@leemhuis.info>
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date:   Fri, 25 Aug 2023 11:45:32 +0200
-Message-ID: <CAO-hwJLURSc03SdiHXst=kJnpZNjX0eeKPn14fYhtiSvWFzqKg@mail.gmail.com>
-Subject: Re: [PATCH v2] HID: logitech-hidpp: rework one more time the retries attempts
-To:     Linux regressions mailing list <regressions@lists.linux.dev>
-Cc:     bentiss@kernel.org,
-        =?UTF-8?Q?Filipe_La=C3=ADns?= <lains@riseup.net>,
-        Bastien Nocera <hadess@hadess.net>,
-        Jiri Kosina <jikos@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
+X-Received: by 2002:a9d:628a:0:b0:6bc:ac3d:2b77 with SMTP id
+ x10-20020a9d628a000000b006bcac3d2b77mr356281otk.2.1692956934355; Fri, 25 Aug
+ 2023 02:48:54 -0700 (PDT)
+Date:   Fri, 25 Aug 2023 02:48:54 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b1426e0603bc40b6@google.com>
+Subject: [syzbot] [ext4?] BUG: unable to handle kernel paging request in ext4_calculate_overhead
+From:   syzbot <syzbot+b3123e6d9842e526de39@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, jack@suse.cz, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, nathan@kernel.org, ndesaulniers@google.com,
+        syzkaller-bugs@googlegroups.com, trix@redhat.com, tytso@mit.edu,
+        yi.zhang@huawei.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thorsten,
+Hello,
 
-On Fri, Aug 4, 2023 at 11:14=E2=80=AFAM Linux regression tracking (Thorsten
-Leemhuis) <regressions@leemhuis.info> wrote:
->
-> Hi Benjamin, /me again! :-D
->
-> On 12.07.23 17:02, bentiss@kernel.org wrote:
-> > From: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-> >
-> > Extract the internal code inside a helper function, fix the
-> > initialization of the parameters used in the helper function
-> > (`hidpp->answer_available` was not reset and `*response` wasn't either)=
-,
-> > and use a `do {...} while();` loop.
-> >
-> > Fixes: 586e8fede795 ("HID: logitech-hidpp: Retry commands when device i=
-s busy")
-> > Cc: stable@vger.kernel.org
->
-> From what I understood there was hope that this would cure the last
-> remains (occasional init problems iirc) of the recent regressions with
-> this driver and their fixes. But things look stalled. Is there a reason?
-> Lack of reviews? Is there nevertheless hope that this will make it at
-> least into 6.6?
+syzbot found the following issue on:
 
-Well, mostly lack of testing. But given that nothing happened, I just
-sneaked it in the 6.6 work. I guess bots are happy enough by now.
+HEAD commit:    47d9bb711707 Add linux-next specific files for 20230821
+git tree:       linux-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=124d6a4ba80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=20999f779fa96017
+dashboard link: https://syzkaller.appspot.com/bug?extid=b3123e6d9842e526de39
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=110f9c0fa80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10b8867fa80000
 
-Cheers,
-Benjamin
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/ffbe03c733b7/disk-47d9bb71.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/a61a31d6caf9/vmlinux-47d9bb71.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/37e6f882b2d9/bzImage-47d9bb71.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/bf27f1330349/mount_0.gz
 
->
-> Ciao, Thorsten
->
-> > Reviewed-by: Bastien Nocera <hadess@hadess.net>
-> > Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-> > ---
-> > as requested by https://lore.kernel.org/all/CAHk-=3DwiMbF38KCNhPFiargen=
-pSBoecSXTLQACKS2UMyo_Vu2ww@mail.gmail.com/
-> > This is a rewrite of that particular piece of code.
-> > ---
-> > Changes in v2:
-> > - added __must_hold() for KASAN
-> > - Reworked the comment describing the functions and their return values
-> > - Link to v1: https://lore.kernel.org/r/20230621-logitech-fixes-v1-1-32=
-e70933c0b0@redhat.com
-> > ---
-> >  drivers/hid/hid-logitech-hidpp.c | 115 +++++++++++++++++++++++++------=
---------
-> >  1 file changed, 75 insertions(+), 40 deletions(-)
-> >
-> > diff --git a/drivers/hid/hid-logitech-hidpp.c b/drivers/hid/hid-logitec=
-h-hidpp.c
-> > index 129b01be488d..09ba2086c95c 100644
-> > --- a/drivers/hid/hid-logitech-hidpp.c
-> > +++ b/drivers/hid/hid-logitech-hidpp.c
-> > @@ -275,21 +275,22 @@ static int __hidpp_send_report(struct hid_device =
-*hdev,
-> >  }
-> >
-> >  /*
-> > - * hidpp_send_message_sync() returns 0 in case of success, and somethi=
-ng else
-> > - * in case of a failure.
-> > - * - If ' something else' is positive, that means that an error has be=
-en raised
-> > - *   by the protocol itself.
-> > - * - If ' something else' is negative, that means that we had a classi=
-c error
-> > - *   (-ENOMEM, -EPIPE, etc...)
-> > + * Effectively send the message to the device, waiting for its answer.
-> > + *
-> > + * Must be called with hidpp->send_mutex locked
-> > + *
-> > + * Same return protocol than hidpp_send_message_sync():
-> > + * - success on 0
-> > + * - negative error means transport error
-> > + * - positive value means protocol error
-> >   */
-> > -static int hidpp_send_message_sync(struct hidpp_device *hidpp,
-> > +static int __do_hidpp_send_message_sync(struct hidpp_device *hidpp,
-> >       struct hidpp_report *message,
-> >       struct hidpp_report *response)
-> >  {
-> > -     int ret =3D -1;
-> > -     int max_retries =3D 3;
-> > +     int ret;
-> >
-> > -     mutex_lock(&hidpp->send_mutex);
-> > +     __must_hold(&hidpp->send_mutex);
-> >
-> >       hidpp->send_receive_buf =3D response;
-> >       hidpp->answer_available =3D false;
-> > @@ -300,47 +301,74 @@ static int hidpp_send_message_sync(struct hidpp_d=
-evice *hidpp,
-> >        */
-> >       *response =3D *message;
-> >
-> > -     for (; max_retries !=3D 0 && ret; max_retries--) {
-> > -             ret =3D __hidpp_send_report(hidpp->hid_dev, message);
-> > +     ret =3D __hidpp_send_report(hidpp->hid_dev, message);
-> > +     if (ret) {
-> > +             dbg_hid("__hidpp_send_report returned err: %d\n", ret);
-> > +             memset(response, 0, sizeof(struct hidpp_report));
-> > +             return ret;
-> > +     }
-> >
-> > -             if (ret) {
-> > -                     dbg_hid("__hidpp_send_report returned err: %d\n",=
- ret);
-> > -                     memset(response, 0, sizeof(struct hidpp_report));
-> > -                     break;
-> > -             }
-> > +     if (!wait_event_timeout(hidpp->wait, hidpp->answer_available,
-> > +                             5*HZ)) {
-> > +             dbg_hid("%s:timeout waiting for response\n", __func__);
-> > +             memset(response, 0, sizeof(struct hidpp_report));
-> > +             return -ETIMEDOUT;
-> > +     }
-> >
-> > -             if (!wait_event_timeout(hidpp->wait, hidpp->answer_availa=
-ble,
-> > -                                     5*HZ)) {
-> > -                     dbg_hid("%s:timeout waiting for response\n", __fu=
-nc__);
-> > -                     memset(response, 0, sizeof(struct hidpp_report));
-> > -                     ret =3D -ETIMEDOUT;
-> > -                     break;
-> > -             }
-> > +     if (response->report_id =3D=3D REPORT_ID_HIDPP_SHORT &&
-> > +         response->rap.sub_id =3D=3D HIDPP_ERROR) {
-> > +             ret =3D response->rap.params[1];
-> > +             dbg_hid("%s:got hidpp error %02X\n", __func__, ret);
-> > +             return ret;
-> > +     }
-> >
-> > -             if (response->report_id =3D=3D REPORT_ID_HIDPP_SHORT &&
-> > -                 response->rap.sub_id =3D=3D HIDPP_ERROR) {
-> > -                     ret =3D response->rap.params[1];
-> > -                     dbg_hid("%s:got hidpp error %02X\n", __func__, re=
-t);
-> > +     if ((response->report_id =3D=3D REPORT_ID_HIDPP_LONG ||
-> > +          response->report_id =3D=3D REPORT_ID_HIDPP_VERY_LONG) &&
-> > +         response->fap.feature_index =3D=3D HIDPP20_ERROR) {
-> > +             ret =3D response->fap.params[1];
-> > +             dbg_hid("%s:got hidpp 2.0 error %02X\n", __func__, ret);
-> > +             return ret;
-> > +     }
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +/*
-> > + * hidpp_send_message_sync() returns 0 in case of success, and somethi=
-ng else
-> > + * in case of a failure.
-> > + *
-> > + * See __do_hidpp_send_message_sync() for a detailed explanation of th=
-e returned
-> > + * value.
-> > + */
-> > +static int hidpp_send_message_sync(struct hidpp_device *hidpp,
-> > +     struct hidpp_report *message,
-> > +     struct hidpp_report *response)
-> > +{
-> > +     int ret;
-> > +     int max_retries =3D 3;
-> > +
-> > +     mutex_lock(&hidpp->send_mutex);
-> > +
-> > +     do {
-> > +             ret =3D __do_hidpp_send_message_sync(hidpp, message, resp=
-onse);
-> > +             if (ret !=3D HIDPP20_ERROR_BUSY)
-> >                       break;
-> > -             }
-> >
-> > -             if ((response->report_id =3D=3D REPORT_ID_HIDPP_LONG ||
-> > -                  response->report_id =3D=3D REPORT_ID_HIDPP_VERY_LONG=
-) &&
-> > -                 response->fap.feature_index =3D=3D HIDPP20_ERROR) {
-> > -                     ret =3D response->fap.params[1];
-> > -                     if (ret !=3D HIDPP20_ERROR_BUSY) {
-> > -                             dbg_hid("%s:got hidpp 2.0 error %02X\n", =
-__func__, ret);
-> > -                             break;
-> > -                     }
-> > -                     dbg_hid("%s:got busy hidpp 2.0 error %02X, retryi=
-ng\n", __func__, ret);
-> > -             }
-> > -     }
-> > +             dbg_hid("%s:got busy hidpp 2.0 error %02X, retrying\n", _=
-_func__, ret);
-> > +     } while (--max_retries);
-> >
-> >       mutex_unlock(&hidpp->send_mutex);
-> >       return ret;
-> >
-> >  }
-> >
-> > +/*
-> > + * hidpp_send_fap_command_sync() returns 0 in case of success, and som=
-ething else
-> > + * in case of a failure.
-> > + *
-> > + * See __do_hidpp_send_message_sync() for a detailed explanation of th=
-e returned
-> > + * value.
-> > + */
-> >  static int hidpp_send_fap_command_sync(struct hidpp_device *hidpp,
-> >       u8 feat_index, u8 funcindex_clientid, u8 *params, int param_count=
-,
-> >       struct hidpp_report *response)
-> > @@ -373,6 +401,13 @@ static int hidpp_send_fap_command_sync(struct hidp=
-p_device *hidpp,
-> >       return ret;
-> >  }
-> >
-> > +/*
-> > + * hidpp_send_rap_command_sync() returns 0 in case of success, and som=
-ething else
-> > + * in case of a failure.
-> > + *
-> > + * See __do_hidpp_send_message_sync() for a detailed explanation of th=
-e returned
-> > + * value.
-> > + */
-> >  static int hidpp_send_rap_command_sync(struct hidpp_device *hidpp_dev,
-> >       u8 report_id, u8 sub_id, u8 reg_address, u8 *params, int param_co=
-unt,
-> >       struct hidpp_report *response)
-> >
-> > ---
-> > base-commit: 87854366176403438d01f368b09de3ec2234e0f5
-> > change-id: 20230621-logitech-fixes-a4c0e66ea2ad
-> >
-> > Best regards,
->
+The issue was bisected to:
 
+commit 99d6c5d892bfff3be40f83ec34d91d562125afd4
+Author: Zhang Yi <yi.zhang@huawei.com>
+Date:   Fri Aug 11 06:36:10 2023 +0000
+
+    ext4: ext4_get_{dev}_journal return proper error value
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13a381cfa80000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=106381cfa80000
+console output: https://syzkaller.appspot.com/x/log.txt?x=17a381cfa80000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b3123e6d9842e526de39@syzkaller.appspotmail.com
+Fixes: 99d6c5d892bf ("ext4: ext4_get_{dev}_journal return proper error value")
+
+EXT4-fs (loop0): ext4_check_descriptors: Checksum for group 0 failed (394!=20869)
+EXT4-fs error (device loop0): ext4_get_journal_inode:5719: comm syz-executor999: inode #33: comm syz-executor999: iget: illegal inode #
+EXT4-fs (loop0): no journal found
+BUG: unable to handle page fault for address: ffffffffffffffdb
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD c979067 P4D c979067 PUD c97b067 PMD 0 
+Oops: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 5041 Comm: syz-executor999 Not tainted 6.5.0-rc7-next-20230821-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+RIP: 0010:ext4_calculate_overhead+0xfd2/0x1380 fs/ext4/super.c:4182
+Code: 7b 50 48 89 fa 48 c1 ea 03 44 0f b6 60 14 48 b8 00 00 00 00 00 fc ff df 80 3c 02 00 0f 85 72 03 00 00 44 89 e6 bf 3f 00 00 00 <48> 8b 6b 50 e8 95 20 43 ff 41 80 fc 3f 0f 87 cb 20 ef 07 e8 56 25
+RSP: 0018:ffffc9000399fa00 EFLAGS: 00010246
+RAX: dffffc0000000000 RBX: ffffffffffffff8b RCX: 0000000000000000
+RDX: 1ffffffffffffffb RSI: 000000000000000a RDI: 000000000000003f
+RBP: 0000000000000001 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000080000000 R11: 0000000000000001 R12: 000000000000000a
+R13: ffff888020936000 R14: dffffc0000000000 R15: ffff8880242a4000
+FS:  0000555555f06380(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffffffffffffdb CR3: 0000000074f9b000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ __ext4_fill_super fs/ext4/super.c:5391 [inline]
+ ext4_fill_super+0x85e3/0xade0 fs/ext4/super.c:5643
+ get_tree_bdev+0x390/0x630 fs/super.c:1351
+ vfs_get_tree+0x88/0x350 fs/super.c:1524
+ do_new_mount fs/namespace.c:3335 [inline]
+ path_mount+0x1492/0x1ed0 fs/namespace.c:3662
+ do_mount fs/namespace.c:3675 [inline]
+ __do_sys_mount fs/namespace.c:3884 [inline]
+ __se_sys_mount fs/namespace.c:3861 [inline]
+ __x64_sys_mount+0x293/0x310 fs/namespace.c:3861
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f73494babba
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 5e 04 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fffae0148e8 EFLAGS: 00000202 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007fffae0148f0 RCX: 00007f73494babba
+RDX: 00000000200000c0 RSI: 0000000020000040 RDI: 00007fffae0148f0
+RBP: 0000000000000004 R08: 00007fffae014930 R09: 00007fffae014930
+R10: 0000000001000403 R11: 0000000000000202 R12: 00007fffae014930
+R13: 0000000000000003 R14: 0000000000080000 R15: 0000000000000001
+ </TASK>
+Modules linked in:
+CR2: ffffffffffffffdb
+---[ end trace 0000000000000000 ]---
+RIP: 0010:ext4_calculate_overhead+0xfd2/0x1380 fs/ext4/super.c:4182
+Code: 7b 50 48 89 fa 48 c1 ea 03 44 0f b6 60 14 48 b8 00 00 00 00 00 fc ff df 80 3c 02 00 0f 85 72 03 00 00 44 89 e6 bf 3f 00 00 00 <48> 8b 6b 50 e8 95 20 43 ff 41 80 fc 3f 0f 87 cb 20 ef 07 e8 56 25
+RSP: 0018:ffffc9000399fa00 EFLAGS: 00010246
+RAX: dffffc0000000000 RBX: ffffffffffffff8b RCX: 0000000000000000
+RDX: 1ffffffffffffffb RSI: 000000000000000a RDI: 000000000000003f
+RBP: 0000000000000001 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000080000000 R11: 0000000000000001 R12: 000000000000000a
+R13: ffff888020936000 R14: dffffc0000000000 R15: ffff8880242a4000
+FS:  0000555555f06380(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffffffffffffdb CR3: 0000000074f9b000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	7b 50                	jnp    0x52
+   2:	48 89 fa             	mov    %rdi,%rdx
+   5:	48 c1 ea 03          	shr    $0x3,%rdx
+   9:	44 0f b6 60 14       	movzbl 0x14(%rax),%r12d
+   e:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  15:	fc ff df
+  18:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1)
+  1c:	0f 85 72 03 00 00    	jne    0x394
+  22:	44 89 e6             	mov    %r12d,%esi
+  25:	bf 3f 00 00 00       	mov    $0x3f,%edi
+* 2a:	48 8b 6b 50          	mov    0x50(%rbx),%rbp <-- trapping instruction
+  2e:	e8 95 20 43 ff       	call   0xff4320c8
+  33:	41 80 fc 3f          	cmp    $0x3f,%r12b
+  37:	0f 87 cb 20 ef 07    	ja     0x7ef2108
+  3d:	e8                   	.byte 0xe8
+  3e:	56                   	push   %rsi
+  3f:	25                   	.byte 0x25
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
