@@ -2,80 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24954788BE4
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 16:42:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB1A3788BEA
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 16:47:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343841AbjHYOln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 10:41:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41116 "EHLO
+        id S1343844AbjHYOqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 10:46:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343804AbjHYOlh (ORCPT
+        with ESMTP id S240257AbjHYOq0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 10:41:37 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EC5AEC;
-        Fri, 25 Aug 2023 07:41:34 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-99bed101b70so122043066b.3;
-        Fri, 25 Aug 2023 07:41:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692974492; x=1693579292;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=t/Nyi2UtJHS2L8Ejnis0sIFHEs44gVXKzFV9je3/KrQ=;
-        b=m5YpFddniJdsweLpDiBMuTrwp/DFZA7ALBdWjy/ou8KTRnc7m1IFRI+d6jSHq0CEAM
-         QhFVj47cdxI+vCV4+9qbuh3aoDvvBm2JOgyx8jY9qcLLmmtrJkkqfq+aSlE7T8wv+4iP
-         uhe7HLkAu15rpIFabmISxrkvwM5L47q3+A/GaN/Zxe1GeBVJesIitTuCJOHfqnTe+pnm
-         nP2UxSHrwwfBZ0P6xfMo5V+2hntqsaNAGeYTsIgWO5h8S9W/2ESYbh+GDXW9yUOO5yFM
-         LLOejgrH7OPsyUOcMRfUViC3pludGiVGC9VygBQV532P5MSingkpNeSPgkrDQZ3GAMq9
-         vPvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692974492; x=1693579292;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=t/Nyi2UtJHS2L8Ejnis0sIFHEs44gVXKzFV9je3/KrQ=;
-        b=COae/jGL/3V+v1cpNpFmNDqji1wV32k75oMfzFufhXwhNFGpbstzaGxkMXHVZ7ynJE
-         2fs0IEMbsCCUdof1hMNtenpzgzj6nRZ8b5TGNaCvILeFQlAaeas8O5aNXpAUL0rD7T28
-         OaGsAYu1Sb1nj9z68GyKraMkeZ+hocEGswUpFYmQS2eHK6S5gLURZUc9KDUb6tHeU669
-         hRJx/1M8HtABj156JzwvvTUElCzzgklRsDQEnXMm4FnZfZuttM8HQFNg2veyklMB+wRQ
-         rpYrqlDUtNKDu66Sm1XiVziEsz2ZT4y0KGBrtfpDIL4pzllCPXvHMfO05nM14ysPHf0R
-         K6Tw==
-X-Gm-Message-State: AOJu0YyPmomdhxDpnPz4PaGUrP9VdsCW1C22yAILJ2BG2Q8OD0alw0DU
-        adbm0mkyhyT2dQCNYCVNeA8b5pXq0bC1A8oHnIPaWZ3O
-X-Google-Smtp-Source: AGHT+IFTa6AUo8YGThRRtKjSHjpALqvs56DSmtO34KA77It9bSY9eo+tp2QfZnFxYx9KevR2d+AoL9gNtc1jHFksSmA=
-X-Received: by 2002:a17:906:cc16:b0:9a1:870e:cc9d with SMTP id
- ml22-20020a170906cc1600b009a1870ecc9dmr14271003ejb.18.1692974492214; Fri, 25
- Aug 2023 07:41:32 -0700 (PDT)
+        Fri, 25 Aug 2023 10:46:26 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D4CA2109;
+        Fri, 25 Aug 2023 07:46:24 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2A5A0622A2;
+        Fri, 25 Aug 2023 14:46:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 533A5C433C8;
+        Fri, 25 Aug 2023 14:46:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692974783;
+        bh=RId/5/iXShBVctnrrr6Y2T9OzHSw2h2nMjzM8MonGHU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=htCCQYUD30K7SwzsDohB/EpP+awpuWjKtGzxStaBNcvt7J8XtL7wKMOOVOv9aufd5
+         GeA9ROiqIhgOE/izPFtjmKdO1eVsL0V4xzrnrVoqcdaMH3fw2eYJj5dXxBD+RqpfHY
+         4/cFON8CIvDNd18NAHZYMXtP66R1eyaJpLm2v4xZjFkojNbUtRnijtYZNOprkDaNBL
+         txEcPfupPcz3MEaNF0BiSAgbYM1aFMKMP73/RVjIt7HRa6F46cFuMN5ofQOfJwIlXX
+         +h2n4SYTRxEJK6+Zcg07VF7+Kf4rb1pDiPkrOrLvj1TqgN6g98mcFDCwVvgRg5zb8L
+         +XfOgMU+ZSufg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 516C140722; Fri, 25 Aug 2023 11:46:20 -0300 (-03)
+Date:   Fri, 25 Aug 2023 11:46:20 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     "Liang, Kan" <kan.liang@linux.intel.com>
+Cc:     Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        John Garry <john.g.garry@oracle.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 0/2] perf list: Remove duplicate PMUs
+Message-ID: <ZOi+vNhyUd5oduBQ@kernel.org>
+References: <20230825135237.921058-1-irogers@google.com>
+ <166e2aad-5e17-3ffa-b140-05f174583ab2@linux.intel.com>
 MIME-Version: 1.0
-References: <CAF6AEGs4p0xXJjsNug45CFiP0n-5h7wpdy22YBryjrnWFROESg@mail.gmail.com>
- <29c7-64e8bc00-3-6afffd8@162524261>
-In-Reply-To: <29c7-64e8bc00-3-6afffd8@162524261>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Fri, 25 Aug 2023 07:41:19 -0700
-Message-ID: <CAF6AEGsdR4XMQ73mwNEE-fntPFLbQrxmzdoWchjReoVXKexdVw@mail.gmail.com>
-Subject: Re: [PATCH 2/6] drm: ci: Force db410c to host mode
-To:     Helen Mae Koike Fornazier <helen.koike@collabora.com>
-Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Vignesh Raman <vignesh.raman@collabora.com>,
-        dri-devel@lists.freedesktop.org, emma@anholt.net,
-        linux-doc@vger.kernel.org, david.heidelberg@collabora.com,
-        linux-amlogic@lists.infradead.org, jbrunet@baylibre.com,
-        robdclark@google.com, corbet@lwn.net, khilman@baylibre.com,
-        sergi.blanch.torne@collabora.com, gustavo.padovan@collabora.com,
-        linux-rockchip@lists.infradead.org, daniels@collabora.com,
-        martin.blumenstingl@googlemail.com, robclark@freedesktop.org,
-        anholt@google.com, linux-mediatek@lists.infradead.org,
-        mripard@kernel.org, matthias.bgg@gmail.com,
-        linux-arm-kernel@lists.infradead.org,
-        angelogioacchino.delregno@collabora.com, neil.armstrong@linaro.org,
-        guilherme.gallo@collabora.com, linux-kernel@vger.kernel.org,
-        tzimmermann@suse.de
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <166e2aad-5e17-3ffa-b140-05f174583ab2@linux.intel.com>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,109 +69,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 25, 2023 at 7:34=E2=80=AFAM Helen Mae Koike Fornazier
-<helen.koike@collabora.com> wrote:
->
-> On Friday, August 25, 2023 11:30 -03, Rob Clark <robdclark@gmail.com> wro=
-te:
->
-> > On Fri, Aug 25, 2023 at 6:56=E2=80=AFAM Jani Nikula <jani.nikula@linux.=
-intel.com> wrote:
-> > >
-> > > On Fri, 25 Aug 2023, Vignesh Raman <vignesh.raman@collabora.com> wrot=
-e:
-> > > > Force db410c to host mode to fix network issue which results in fai=
-lure
-> > > > to mount root fs via NFS.
-> > > > See https://gitlab.freedesktop.org/gfx-ci/linux/-/commit/cb72a629b8=
-c15c80a54dda510743cefd1c4b65b8
-> > > >
-> > > > Since this fix is not sent upstream, add it to build.sh script
-> > > > before building the kernel and dts. Better approach would be
-> > > > to use devicetree overlays.
-> > > >
-> > > > Signed-off-by: Vignesh Raman <vignesh.raman@collabora.com>
-> > > > ---
-> > > >  drivers/gpu/drm/ci/build.sh | 4 ++++
-> > > >  1 file changed, 4 insertions(+)
-> > > >
-> > > > diff --git a/drivers/gpu/drm/ci/build.sh b/drivers/gpu/drm/ci/build=
-.sh
-> > > > index 7b014287a041..c39834bd6bd7 100644
-> > > > --- a/drivers/gpu/drm/ci/build.sh
-> > > > +++ b/drivers/gpu/drm/ci/build.sh
-> > > > @@ -70,6 +70,10 @@ if [ -z "$CI_MERGE_REQUEST_PROJECT_PATH" ]; then
-> > > >      fi
-> > > >  fi
-> > > >
-> > > > +# Force db410c to host mode to fix network issue which results in =
-failure to mount root fs via NFS.
-> > > > +# See https://gitlab.freedesktop.org/gfx-ci/linux/-/commit/cb72a62=
-9b8c15c80a54dda510743cefd1c4b65b8
-> > > > +sed -i '/&usb {/,/status =3D "okay";/s/status =3D "okay";/&\n\tdr_=
-mode =3D "host";/' arch/arm64/boot/dts/qcom/apq8016-sbc.dts
-> > > > +
-> > >
-> > > It seems like a really bad idea to me to have the CI build modify the
-> > > source tree before building.
-> > >
-> > > The kernel being built will have a dirty git repo, and the localversi=
-on
-> > > will have -dirty in it.
-> > >
-> > > I think it would be better to do out-of-tree builds and assume the
-> > > source is read-only.
-> >
-> > We have the ${target_branch}-external-fixes mechanism to merge
-> > necessary changes before building the kernel for CI.  Which is
-> > necessary for a couple of reasons:
->
-> Should we create an official topic/drm-ci-external-fixes branch ?
+Em Fri, Aug 25, 2023 at 10:05:46AM -0400, Liang, Kan escreveu:
+> On 2023-08-25 9:52 a.m., Ian Rogers wrote:
+> > When there are multiple PMUs, differing by ordered suffixes, by
+> > default only display one. This avoids repeated listing of events, in
+> > particular when there are 10s of uncore PMUs. If "-v" is passed to
+> > "perf list" then still list all PMUs.
+> > 
+> > Listing fewer PMU/event combinations helps speed the all PMU event
+> > tests.
+> > 
+> > Before:
+> > ```
+> > $ perf list
+> > ...
+> >   uncore_imc_free_running_0/data_read/               [Kernel PMU event]
+> >   uncore_imc_free_running_0/data_total/              [Kernel PMU event]
+> >   uncore_imc_free_running_0/data_write/              [Kernel PMU event]
+> >   uncore_imc_free_running_1/data_read/               [Kernel PMU event]
+> >   uncore_imc_free_running_1/data_total/              [Kernel PMU event]
+> >   uncore_imc_free_running_1/data_write/              [Kernel PMU event]
+> > ```
+> > 
+> > After:
+> > ```
+> > $ perf list
+> > ...
+> >   uncore_imc_free_running/data_read/                 [Kernel PMU event]
+> >   uncore_imc_free_running/data_total/                [Kernel PMU event]
+> >   uncore_imc_free_running/data_write/                [Kernel PMU event]
+> > ...
+> > $ perf list -v
+> > ...
+> >   uncore_imc_free_running_0/data_read/               [Kernel PMU event]
+> >   uncore_imc_free_running_0/data_total/              [Kernel PMU event]
+> >   uncore_imc_free_running_0/data_write/              [Kernel PMU event]
+> >   uncore_imc_free_running_1/data_read/               [Kernel PMU event]
+> >   uncore_imc_free_running_1/data_total/              [Kernel PMU event]
+> >   uncore_imc_free_running_1/data_write/              [Kernel PMU event]
+> > ...
+> > ```
+> > 
+> > The PMUs are sorted by name then suffix as a part of this change.
+> > 
+> > v5: Improved the 2nd patch's commit message and removed an unused
+> >     variable as suggested by Kan Liang <kan.liang@linux.intel.com>.
+> > v4: Rebase on top of lazy PMU changes. Ignore numeric ordering due to
+> >     gaps, suggested by Kan Liang <kan.liang@linux.intel.com>. Fold
+> >     patches 2 & 3 as suggested by John Garry <john.g.garry@oracle.com>
+> >     (done by accident as part of rebasing).
+> > v3: Add detail to patch 1 sorting commit message about the suffix and
+> >     why sorting is necessary.
+> > v2: List all PMUs when "-v" is passed as suggested by John Garry
+> >     <john.g.garry@oracle.com>.
+> > 
+> > Ian Rogers (2):
+> >   perf pmus: Sort pmus by name then suffix
+> >   perf pmus: Skip duplicate PMUs and don't print list suffix by default
+> 
+> 
+> Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
 
-Hmm, maybe.. I guess as we expand this to more driver trees, and want
-to be able to re-run CI in the drm tree after merges to
-drm-next/drm-fixes, we maybe want to have central
-drm-next-external-fixes and drm-fixes-external-fixes.  I guess we can
-keep those based on drm-next and drm-fixes?  And if there would be
-conflicts because, say, ${driver}-next is behind drm-next, then
-${driver}-next could be rebased on drm-next?
+Thanks, applied.
 
-BR,
--R
-
-> Regards,
-> Helen
->
-> >
-> > 1) patches like this which aren't appropriate upstream but necessary
-> > due to the CI lab setup
-> > 2) target branch if often based on an early -rc, and it isn't unheard
-> > of to need some fix for some board or another which isn't appropriate
-> > to land via drm-next
-> >
-> > We should use the -external-fixes branch mechanism for patches like thi=
-s one.
-> >
-> > BR,
-> > -R
-> >
-> > > >  for opt in $ENABLE_KCONFIGS; do
-> > > >    echo CONFIG_$opt=3Dy >> drivers/gpu/drm/ci/${KERNEL_ARCH}.config
-> > > >  done
-> > >
-> > > Ditto for the config changes in the context here. Those are files in
-> > > git, don't change them.
-> > >
-> > > Shouldn't this use something like 'scripts/config --enable' or
-> > > 'scripts/config --disable' on the .config file to be used for buildin=
-g
-> > > instead?
-> > >
-> > >
-> > > BR,
-> > > Jani.
-> > >
-> > >
-> > > --
-> > > Jani Nikula, Intel Open Source Graphics Center
->
+- Arnaldo
