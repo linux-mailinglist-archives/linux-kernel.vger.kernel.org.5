@@ -2,94 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43C04788501
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 12:37:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B2C6788506
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 12:37:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243193AbjHYKgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 06:36:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41978 "EHLO
+        id S244399AbjHYKhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 06:37:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244460AbjHYKgY (ORCPT
+        with ESMTP id S243927AbjHYKgh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 06:36:24 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3B61173F
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 03:36:21 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-529fb04a234so1177740a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 03:36:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692959780; x=1693564580;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=HnnnISbb0TpSgVVoJ28XkZwpDRboyHLlXiKPbTL7hTM=;
-        b=gQr0rDQubo0vt+T3kQEfvxXbYnO3u4tqp0eSB/24hKCYPMIhgi9Hj5Mc5o8DTuoKVf
-         Urn+u3CN7WT7D+x3JqxgcJxsq6VUhd8IZ6i/bbi1ORWxyfGqXDJP27OwvAnAkXKM6CLc
-         aobuvdLeKwHlI6wP1tagEijCFNxgEl4iNvzPhTb2V5dyCIBPMAZeeHW5Qxd2BXOEr1pL
-         NDZDobQQt5Bf6x+ZRZnagleF8aMj5TO3XUe/T5foDC6Vua0mNlX5BM4BNxDQlgHawnCR
-         EhmYsTRzCqAPo3JCtgoe6H1BV0W2o+kPDZZQkHZluFEvXNKuXgEDMOEo+7QZ7O4UWt5F
-         RXxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692959780; x=1693564580;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HnnnISbb0TpSgVVoJ28XkZwpDRboyHLlXiKPbTL7hTM=;
-        b=Y3qsTCsn+L36IjDLZ1/R4EEyYuJsBQly2zDLWntRo5+9wj68y/ZBwyt0BUQ45kBtx5
-         CEjsP1lAz1QnXywLKC6oEt9Tpo4QSNLiK913Kte5bNl1E9p8GRS9kiuPsZjxw5Cd1tjS
-         A2bjy4xcUqx6BLpLQphpn90J2fE+FDXWFnjLdGANJ/zWQ4Xc2QLJmVG3cBXwxEDDax9k
-         aJyePSJV+6YXp1l5wvpZ2YrhdKqe4SxwCkkoEWLl4xToZD/IzyGRiurHKGz2AzF46bhz
-         4qx2GXImS4Ywmckhx207PzRJyO2eyg2CvQW7kHYllsHu7hH3h6wct9pH8x84l8dFu/+i
-         Nyng==
-X-Gm-Message-State: AOJu0YyJiui49rqngMj+d0f0jHRE/kajVrz3zJfe2x/6n+Od4S5g5oRf
-        x6g8J3eJMr2Bo7anZ7b6I0ueIQ==
-X-Google-Smtp-Source: AGHT+IEBSo8fqbVupT4baEDRXyQBUSAT9CmB5VJ/QCzRSBh/BQZlcPS9Pv24c3T722NR4Kf3psq9dw==
-X-Received: by 2002:a05:6402:658:b0:52a:1d54:2530 with SMTP id u24-20020a056402065800b0052a1d542530mr7509242edx.27.1692959780184;
-        Fri, 25 Aug 2023 03:36:20 -0700 (PDT)
-Received: from [192.168.0.22] ([77.252.47.198])
-        by smtp.gmail.com with ESMTPSA id m15-20020a50ef0f000000b005254b41f507sm867671eds.32.2023.08.25.03.36.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Aug 2023 03:36:19 -0700 (PDT)
-Message-ID: <24113913-7756-6d9b-70a2-aeeed9ecf4e7@linaro.org>
-Date:   Fri, 25 Aug 2023 12:36:18 +0200
+        Fri, 25 Aug 2023 06:36:37 -0400
+Received: from out203-205-221-233.mail.qq.com (out203-205-221-233.mail.qq.com [203.205.221.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B221E67;
+        Fri, 25 Aug 2023 03:36:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+        s=s201512; t=1692959792;
+        bh=jJE5iplrxe3WtNxu9KkY2HFqumt/zV40jik2obAAn/E=;
+        h=From:To:Cc:Subject:Date;
+        b=sWb16gr4tjgfcRCQhn1mggQcvSk6JIGWNY2vPDIGR3jtbJxYIMiEGbvYFY2l+u6XD
+         GkVnk0kBvGx3ozIh+zQReRnHsOlxcT/y4jh5hgkZvJmPyDBZgH+2vXu87/9nvntn48
+         sAx62bg6LfH34PPR93VUWp8KB6w3f7xKWu7cfVTg=
+Received: from localhost.localdomain ([39.156.73.12])
+        by newxmesmtplogicsvrsza10-0.qq.com (NewEsmtp) with SMTP
+        id 91B3D264; Fri, 25 Aug 2023 18:36:27 +0800
+X-QQ-mid: xmsmtpt1692959787t4x138bb6
+Message-ID: <tencent_BD6E19C00BF565CD5C36A9A0BD828CFA210A@qq.com>
+X-QQ-XMAILINFO: N7h1OCCDntujNxOiev4OpcuHBreT3JFAVC51ReBNkmRJO/pMsUvD9e42ZK6duK
+         J5mWGrlDFmruuSx0dyetd5fZbBcTz2Wo3HE9jyg+U6w6QfiE+ULGTzAizqRUOB0nE8SeEREgkTaL
+         kMPJouYzIqRxzsjO/lz8MAZHo95heh8Kd0SZ/cVkl27pbztlxaIeNqH5ZI/15Xu1fcJSY4J5jFqY
+         QxCf9vBUGFgx+9vnoafhMaBBxMYrU23geM4jTo+P61DTQtO1wfoWmn+/+81UhLxvzSiFLXYzycb5
+         Odu4WkCw5DHboreAFErFrvXBsUQ8IIpAQy1nWpugABZCtETbr4iy8daGTAK+JUALigvl82M+eNKV
+         DctbHOO23b8zmEVpDZRtYPEvBxwZTg5TUW2iGpOF4BKIBRWTyTdz25optZBqJU/ijAMQKWudA3aB
+         lQzIy3isK6xtAKE/MSkipHQ2HovkArayI02icyVvFhJ9euffgfaNd0bBYQ6XCsXEmPO0N+Uwdzuo
+         bcDIaS5i06jfDQsafvubaesRiYfW++KdtWVXAR2C0pJIljjSpvvUYagyFTpkRkG221L7XnSovdvT
+         tI19Ki61H7oJRdJdBa0Z9UkRaTZjWNx5+obtrcMtP8B31WPDQ8UostZUzgpmgTwbepxXnymgOAhA
+         vEVFx2axtWP4wmASOEuExsCSxlIKsonU7KNGplqLszRDWbesaal0nA0NwHUqeRXw3LGC8PE33/ka
+         +GjG/CVQB1bg6Cb+1ILXHYY7FBcyyeVnyLkLRz5gVChju/cIbYpTPN5hmtPhsDfiXrdciR+DyhGq
+         zdJJndq8LXRbaUsXISW9zS4ayLzhLrYqq6MoWuiAz/q3idVTYqFS7D2t1DZgY9mV4bDinonugRvO
+         mUhzL8lNIs8jyozPOxNhV25C+vpSEnyg0Cqk+bDVP+DecQO25UUpuV8kCByZqAGPB72W/M+HY8iM
+         7a7o0xaz32hG4lv+FPuv4aUL3Zhn93ahPsEVyHsrFs/9WmyYjcSDIfeP/gwTJh
+X-QQ-XMRINFO: MPJ6Tf5t3I/ycC2BItcBVIA=
+From:   Rong Tao <rtoax@foxmail.com>
+To:     olsajiri@gmail.com, andrii@kernel.org, daniel@iogearbox.net,
+        sdf@google.com
+Cc:     Rong Tao <rongtao@cestc.cn>, Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+        Shuah Khan <shuah@kernel.org>,
+        bpf@vger.kernel.org (open list:BPF [GENERAL] (Safe Dynamic Programs and
+        Tools)), linux-kernel@vger.kernel.org (open list),
+        linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK)
+Subject: [PATCH bpf-next v7] selftests/bpf: trace_helpers.c: optimize kallsyms cache
+Date:   Fri, 25 Aug 2023 18:36:24 +0800
+X-OQ-MSGID: <20230825103624.31766-1-rtoax@foxmail.com>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 1/5] dt-bindings: phy: qcom,m31: Add IPQ5018 compatible
-Content-Language: en-US
-To:     Nitheesh Sekar <quic_nsekar@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org, vkoul@kernel.org,
-        kishon@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        gregkh@linuxfoundation.org, quic_srichara@quicinc.com,
-        quic_varada@quicinc.com, quic_wcheng@quicinc.com,
-        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org
-References: <20230825093531.7399-1-quic_nsekar@quicinc.com>
- <20230825093531.7399-2-quic_nsekar@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230825093531.7399-2-quic_nsekar@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/08/2023 11:35, Nitheesh Sekar wrote:
-> IPQ5332 qcom,m31 phy driver can support IPQ5018.
-> 
-> Signed-off-by: Nitheesh Sekar <quic_nsekar@quicinc.com>
-> ---
+From: Rong Tao <rongtao@cestc.cn>
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Static ksyms often have problems because the number of symbols exceeds the
+MAX_SYMS limit. Like changing the MAX_SYMS from 300000 to 400000 in
+commit e76a014334a6("selftests/bpf: Bump and validate MAX_SYMS") solves
+the problem somewhat, but it's not the perfect way.
 
-Best regards,
-Krzysztof
+This commit uses dynamic memory allocation, which completely solves the
+problem caused by the limitation of the number of kallsyms.
+
+Acked-by: Stanislav Fomichev <sdf@google.com>
+Signed-off-by: Rong Tao <rongtao@cestc.cn>
+---
+v7: Fix __must_check macro.
+v6: https://lore.kernel.org/lkml/tencent_4A09A36F883A06EA428A593497642AF8AF08@qq.com/
+    Apply libbpf_ensure_mem()
+v5: https://lore.kernel.org/lkml/tencent_0E9E1A1C0981678D5E7EA9E4BDBA8EE2200A@qq.com/
+    Release the allocated memory once the load_kallsyms_refresh() upon error
+    given it's dynamically allocated.
+v4: https://lore.kernel.org/lkml/tencent_59C74613113F0C728524B2A82FE5540A5E09@qq.com/
+    Make sure most cases we don't need the realloc() path to begin with,
+    and check strdup() return value.
+v3: https://lore.kernel.org/lkml/tencent_50B4B2622FE7546A5FF9464310650C008509@qq.com/
+    Do not use structs and judge ksyms__add_symbol function return value.
+v2: https://lore.kernel.org/lkml/tencent_B655EE5E5D463110D70CD2846AB3262EED09@qq.com/
+    Do the usual len/capacity scheme here to amortize the cost of realloc, and
+    don't free symbols.
+v1: https://lore.kernel.org/lkml/tencent_AB461510B10CD484E0B2F62E3754165F2909@qq.com/
+---
+ samples/bpf/Makefile                        |  2 +
+ tools/testing/selftests/bpf/trace_helpers.c | 58 ++++++++++++++++-----
+ 2 files changed, 48 insertions(+), 12 deletions(-)
+
+diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
+index 4ccf4236031c..0cd45c42af2f 100644
+--- a/samples/bpf/Makefile
++++ b/samples/bpf/Makefile
+@@ -175,6 +175,7 @@ TPROGS_CFLAGS += -I$(srctree)/tools/testing/selftests/bpf/
+ TPROGS_CFLAGS += -I$(LIBBPF_INCLUDE)
+ TPROGS_CFLAGS += -I$(srctree)/tools/include
+ TPROGS_CFLAGS += -I$(srctree)/tools/perf
++TPROGS_CFLAGS += -I$(srctree)/tools/lib
+ TPROGS_CFLAGS += -DHAVE_ATTR_TEST=0
+ 
+ ifdef SYSROOT
+@@ -314,6 +315,7 @@ XDP_SAMPLE_CFLAGS += -Wall -O2 \
+ 
+ $(obj)/$(XDP_SAMPLE): TPROGS_CFLAGS = $(XDP_SAMPLE_CFLAGS)
+ $(obj)/$(XDP_SAMPLE): $(src)/xdp_sample_user.h $(src)/xdp_sample_shared.h
++$(obj)/$(TRACE_HELPERS): TPROGS_CFLAGS := $(TPROGS_CFLAGS) -D__must_check=
+ 
+ -include $(BPF_SAMPLES_PATH)/Makefile.target
+ 
+diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/selftests/bpf/trace_helpers.c
+index f83d9f65c65b..d62ab3b77153 100644
+--- a/tools/testing/selftests/bpf/trace_helpers.c
++++ b/tools/testing/selftests/bpf/trace_helpers.c
+@@ -14,13 +14,44 @@
+ #include <linux/limits.h>
+ #include <libelf.h>
+ #include <gelf.h>
++#include "bpf/libbpf_internal.h"
+ 
+ #define TRACEFS_PIPE	"/sys/kernel/tracing/trace_pipe"
+ #define DEBUGFS_PIPE	"/sys/kernel/debug/tracing/trace_pipe"
+ 
+-#define MAX_SYMS 400000
+-static struct ksym syms[MAX_SYMS];
+-static int sym_cnt;
++static struct ksym *syms;
++static size_t sym_cap;
++static size_t sym_cnt;
++
++static int ksyms__add_symbol(const char *name, unsigned long addr)
++{
++	void *tmp;
++
++	tmp = strdup(name);
++	if (!tmp)
++		return -ENOMEM;
++	syms[sym_cnt].addr = addr;
++	syms[sym_cnt].name = tmp;
++
++	sym_cnt++;
++
++	return 0;
++}
++
++static void ksyms__free(void)
++{
++	unsigned int i;
++
++	if (!syms)
++		return;
++
++	for (i = 0; i < sym_cnt; i++)
++		free(syms[i].name);
++	free(syms);
++	syms = NULL;
++	sym_cnt = 0;
++	sym_cap = 0;
++}
+ 
+ static int ksym_cmp(const void *p1, const void *p2)
+ {
+@@ -33,9 +64,7 @@ int load_kallsyms_refresh(void)
+ 	char func[256], buf[256];
+ 	char symbol;
+ 	void *addr;
+-	int i = 0;
+-
+-	sym_cnt = 0;
++	int ret;
+ 
+ 	f = fopen("/proc/kallsyms", "r");
+ 	if (!f)
+@@ -46,17 +75,22 @@ int load_kallsyms_refresh(void)
+ 			break;
+ 		if (!addr)
+ 			continue;
+-		if (i >= MAX_SYMS)
+-			return -EFBIG;
+ 
+-		syms[i].addr = (long) addr;
+-		syms[i].name = strdup(func);
+-		i++;
++		ret = libbpf_ensure_mem((void **) &syms, &sym_cap,
++					sizeof(struct ksym), sym_cnt + 1);
++		if (ret)
++			goto error;
++		ret = ksyms__add_symbol(func, (unsigned long)addr);
++		if (ret)
++			goto error;
+ 	}
+ 	fclose(f);
+-	sym_cnt = i;
+ 	qsort(syms, sym_cnt, sizeof(struct ksym), ksym_cmp);
+ 	return 0;
++
++error:
++	ksyms__free();
++	return ret;
+ }
+ 
+ int load_kallsyms(void)
+-- 
+2.39.3
 
