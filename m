@@ -2,121 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EA607891FE
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 00:53:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4CCD789208
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 00:54:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230409AbjHYWxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 18:53:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55948 "EHLO
+        id S230456AbjHYWyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 18:54:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231214AbjHYWwx (ORCPT
+        with ESMTP id S231199AbjHYWxq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 18:52:53 -0400
-Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D4381BCC
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 15:52:52 -0700 (PDT)
-Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-58caaedb20bso16978397b3.1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 15:52:52 -0700 (PDT)
+        Fri, 25 Aug 2023 18:53:46 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A407268F
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 15:53:32 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-68a42d06d02so1178157b3a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 15:53:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693003971; x=1693608771;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8xMtqDbKxEwCzgnyNbVs2sMz5QqO99bNAeKAJBAO7ac=;
-        b=owun0nYHfvLTp02HwjgYJCJKKexvJCKZ8eEpK/3Pa51NHe3qKpAz3uJHyuIsFuWBSL
-         s8prQQagkZbq4lBh+Vb/qil5pGBOTceukyQpNn+SD480sQl3YIzE7pWG+7PyQFayvM+q
-         8WhSikpJegzXr+eu+3QY4wqY5bofpo+TgaSgHtXLMN9rXyi934cymNwNw9mcN4psAFWD
-         e6f6ePwPhTMBdPi1PLhDF1EKPIiLG7c4lp2fpy4/uNrHVrx6SEkFbm3ooIXfahBbkNiy
-         QMesI7AF4+yAjxNNYdcaaCLhrNDpo9mP6TPiCb9GW8Si7JtKP8EohgzrmuPP0u2RCpPh
-         cQww==
+        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1693004012; x=1693608812;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=pUz0mvDJOC9uQjgg5Uba361PK/6ticcfnjAOo3qTtYA=;
+        b=F6apRE+SrZTqCeuN1zLMRosK5ge3rhNKZnpOWKEqEdWDSsGDK7EQGyDQsb6/5NjMZA
+         3YMPbcTJ/D3BMiY5oD/xtnLm9pzhShZ6+Y7oDMWnO0DfFEZbieWLXokCpFNjeT5nfH1C
+         s22NB1Wf7ErFiXowqbOOitIpN8YQ6wn+7f9hHAh/AXrGUdDwlOs/O2qrqcuv4RSpXcnU
+         GbrxFepvZAk5VQgoyCmH+APqoM+wo3KvR0eb+zB1BsLvnPOQaJNrJEZsuvoY9FN/6wnP
+         PBrjyNBdKOdo0Hj7mZUOQ9904vJZldE2dQql827LKN+udL2AKxU33q1Q1ADVqqMaFs/v
+         qugw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693003971; x=1693608771;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8xMtqDbKxEwCzgnyNbVs2sMz5QqO99bNAeKAJBAO7ac=;
-        b=k7Stw7FK7gHN0WTJ7wl21SIja3SpesaVgJpgXJLEvCLNNV5TwW90K4i2LSkbif/UMh
-         HV0fznhbA4vT7kIJkDEDBSaxK5CoSKMGiY4lcQ7DC7KEPrcsXDw46+dkz4N49kOJD/fT
-         pI9reLUIvivx4sfVqtvULD3AARwu6wMxzVeqJygLACQW7YxYVJhNhClCdLxtJ1bRTGQV
-         4vLaon7vkRmKnjRwpSTNxxGMVlmUYYHjkoKJXRAC8NU6SPVQ2wvhRhlixlrDyuJ2F11p
-         wWdKPvaEVZrvZqr8EHx1rot2h6NsUBnUtqAtTq7nwa12mM1gUqK7JGuOhsY1UJpKqr2Z
-         kdRA==
-X-Gm-Message-State: AOJu0YwFPaVtasWgsSL2tggV0+wvNF27abntIawahF9GjTjq/MD9RoEL
-        FenBWTcCigyyc7b0m1hrFfgxhxxOioSnHeICaoaYnQ==
-X-Google-Smtp-Source: AGHT+IHXxCQJZoZx8m6MeDZFbASI/p7xgZwgm0CtAj9gMwK5eTjmcUc8UZWXJ+fjed0ebk0B7L3wKLDrCavAO/UrWKw=
-X-Received: by 2002:a0d:d4d5:0:b0:579:ec06:eb3d with SMTP id
- w204-20020a0dd4d5000000b00579ec06eb3dmr22215439ywd.21.1693003971054; Fri, 25
- Aug 2023 15:52:51 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693004012; x=1693608812;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pUz0mvDJOC9uQjgg5Uba361PK/6ticcfnjAOo3qTtYA=;
+        b=AezAS8DpQd4GZujBKFLYCR4F8NtR1PcLnoLf5C57LfEIbfIqU/CZLofH0ao9FJQVKJ
+         4WsF1FCn34mOsdxIEr+1ZTUGlQh83AAnW6zWeOQcueTM6UprlPRHNMj388yoFIysQJfU
+         sjwLKggpivh7L7HeQBRNJTruqBzICv7u8yxeqrE5xojMsRyqZXo0Ij2bCZ//1EyBf5J9
+         0c+AVfWD8s2eDQ/s+oI6Svq1G6jTtsGKpe6pYQ3B5cdPsGF/0I5dqFXxlKx893HcCuvW
+         OIECIS4QRLscokM6AM9YpUhdqXQXMAmoQcQ9mlvmgwPe2qOUILvnMBeN0O6iHT4sPVZ1
+         Hwxg==
+X-Gm-Message-State: AOJu0YxirDHkmuSeGSeKUA8oQ0vzf7qYVxEbzed7IkMfIP+M/vgLR+kJ
+        +tua8DPyWFxfMnesOMkI/gKHzg==
+X-Google-Smtp-Source: AGHT+IF7qLruqklxY40yAH4SKvsJCnFBTQ8pg1x9p8DXB9ryPTSvbA4aGhPPBTQdBXYgxxyeFGZdhA==
+X-Received: by 2002:a05:6a20:7354:b0:13d:5b8e:db83 with SMTP id v20-20020a056a20735400b0013d5b8edb83mr20399311pzc.9.1693004012072;
+        Fri, 25 Aug 2023 15:53:32 -0700 (PDT)
+Received: from dread.disaster.area (pa49-195-66-88.pa.nsw.optusnet.com.au. [49.195.66.88])
+        by smtp.gmail.com with ESMTPSA id u15-20020a62ed0f000000b006887be16675sm2060364pfh.205.2023.08.25.15.53.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Aug 2023 15:53:31 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qZfgG-006WDY-1c;
+        Sat, 26 Aug 2023 08:53:28 +1000
+Date:   Sat, 26 Aug 2023 08:53:28 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Hao Xu <hao.xu@linux.dev>
+Cc:     io-uring@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Stefan Roesch <shr@fb.com>, Clay Harris <bugs@claycon.org>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-cachefs@redhat.com,
+        ecryptfs@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-unionfs@vger.kernel.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, codalist@coda.cs.cmu.edu,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
+        devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
+        samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
+        Wanpeng Li <wanpengli@tencent.com>
+Subject: Re: [PATCH RFC v5 00/29] io_uring getdents
+Message-ID: <ZOkw6KkdP1UWPNBW@dread.disaster.area>
+References: <20230825135431.1317785-1-hao.xu@linux.dev>
 MIME-Version: 1.0
-References: <20230816-void-drivers-i2c-busses-i2c-pxa-v1-1-931634b931ec@google.com>
- <ZOkofUzv6t9lXyN+@shikoro> <CAFhGd8qg5aeo34irrOQR7td1rjBVF2q4mDFV=Kbt=EmMUiTB_A@mail.gmail.com>
-In-Reply-To: <CAFhGd8qg5aeo34irrOQR7td1rjBVF2q4mDFV=Kbt=EmMUiTB_A@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Fri, 25 Aug 2023 15:52:39 -0700
-Message-ID: <CAKwvOd=1otHgNkJf7wBajDrGmRNQduvR5ie_XgJMPPWT6+n_mQ@mail.gmail.com>
-Subject: Re: [PATCH] i2c: pxa: fix clang -Wvoid-pointer-to-enum-cast warning
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Wolfram Sang <wsa@kernel.org>, Andi Shyti <andi.shyti@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Tom Rix <trix@redhat.com>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230825135431.1317785-1-hao.xu@linux.dev>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 25, 2023 at 3:49=E2=80=AFPM Justin Stitt <justinstitt@google.co=
-m> wrote:
->
-> On Fri, Aug 25, 2023 at 3:17=E2=80=AFPM Wolfram Sang <wsa@kernel.org> wro=
-te:
-> >
-> >
-> > > Note: I think something like this may be more readable:
-> > > |     *i2c_types =3D (enum pxa_i2c_types)(uintptr_t)of_id->data;
-> > >
-> > > Thoughts on this approach against the one present in this patch?
-> >
-> > On the one hand, I think this is more explicit and, thus, more readable=
-.
-> > On the other hand, we still have the loss of precision, between the
-> > first and the second cast. Which gives it a bit of a "let's hide it
-> > somewhat so the compiler will be happy" feeling?
-> >
-> There was some discussion [1] wherein it was ultimately decided that
-> this warning should probably be turned off (contrary to what the title
-> of the GitHub issue says).
->
-> The state of these patches [2] is in some sort of limbo until I get a
-> patch in to disable the warning from W=3D1 (keep in mind GCC doesn't
-> even support this specific warning). I want to make the patch but am
-> seeking some guidance about what exactly is to be done -- I feel a
-> simply _demotion_ from W=3D1 to W=3D2 would suffice as CI robots aren't
-> testing w/ that AFAIK.
->
-> Nick, do you have anything to add here as we had previously discussed
-> this off-list/IRL.
+On Fri, Aug 25, 2023 at 09:54:02PM +0800, Hao Xu wrote:
+> From: Hao Xu <howeyxu@tencent.com>
+> 
+> This series introduce getdents64 to io_uring, the code logic is similar
+> with the snychronized version's. It first try nowait issue, and offload
+> it to io-wq threads if the first try fails.
+> 
+> Patch1 and Patch2 are some preparation
+> Patch3 supports nowait for xfs getdents code
+> Patch4-11 are vfs change, include adding helpers and trylock for locks
+> Patch12-29 supports nowait for involved xfs journal stuff
+> note, Patch24 and 27 are actually two questions, might be removed later.
+> an xfs test may come later.
 
-Mostly that we should make -fsanitize=3Denum not totally suck (i.e.
-actually do anything for C code, then check for bad conversions from
-values that aren't valid enumeration values including truncations),
-then disable this warning in favor of folks testing with that
-sanitizer enabled.
+You need to drop all the XFS journal stuff. It's fundamentally
+broken as it stands, and we cannot support non-blocking
+transactional changes without first putting a massive investment in
+transaction and intent chain rollback to allow correctly undoing
+partially complete modifications.
 
->
-> [1]: https://github.com/ClangBuiltLinux/linux/issues/1910
-> [2]: https://lore.kernel.org/all/?q=3Db%3Apointer-to-enum-cast
+Regardless, non-blocking transactions are completely unnecessary for
+a non-blocking readdir implementation. readdir should only be
+touching atime, and with relatime it should only occur once every 24
+hours per inode. If that's a problem, then we have noatime mount
+options. Hence I just don't see any point in worrying about having a
+timestamp update block occasionally...
 
+I also don't really don't see why you need to fiddle with xfs buffer
+cache semantics - it already has the functionality "nowait" buffer
+reads require (i.e.  XBF_INCORE|XBF_TRYLOCK).
 
+However, the readahead IO that the xfs readdir code issues cannot
+use your defined NOWAIT semantics - it must be able to allocate
+memory and issue IO. Readahead already avoids blocking on memory
+allocation and blocking on IO via the XBF_READ_AHEAD flag. This sets
+__GFP_NORETRY for buffer allocation and REQ_RAHEAD for IO. Hence
+readahead only needs the existing XBF_TRYLOCK flag to be set to be
+compatible with the required NOWAIT semantics....
 
---=20
-Thanks,
-~Nick Desaulniers
+As for the NOIO memory allocation restrictions io_uring requires,
+that should be enforced at the io_uring layer before calling into
+the VFS using memalloc_noio_save/restore.  At that point no memory
+allocation will trigger IO and none of the code running under NOWAIT
+conditions even needs to be aware that io_uring has a GFP_NOIO
+restriction on memory allocation....
+
+Please go back to the simple "do non-blocking buffer IO"
+implementation we started with and don't try to solve every little
+blocking problem that might exist in the VFS and filesystems...
+
+-Dave
+-- 
+Dave Chinner
+david@fromorbit.com
