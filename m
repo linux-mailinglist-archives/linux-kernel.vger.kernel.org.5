@@ -2,65 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63CD2787FA8
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 08:16:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDBDA787FAB
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 08:16:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241554AbjHYGPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 02:15:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43946 "EHLO
+        id S241668AbjHYGQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 02:16:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242000AbjHYGPS (ORCPT
+        with ESMTP id S234731AbjHYGQC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 02:15:18 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F59C2116;
-        Thu, 24 Aug 2023 23:15:12 -0700 (PDT)
-Received: from kwepemm600003.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RX8j70sshztSKw;
-        Fri, 25 Aug 2023 14:11:23 +0800 (CST)
-Received: from [10.67.111.205] (10.67.111.205) by
- kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Fri, 25 Aug 2023 14:15:08 +0800
-Subject: Re: [PATCH v6 1/7] perf evlist: Add perf_evlist__go_system_wide()
- helper
-To:     Ian Rogers <irogers@google.com>
-CC:     Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "Liang, Kan" <kan.liang@linux.intel.com>,
-        James Clark <james.clark@arm.com>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>
-References: <20230821012734.18241-1-yangjihong1@huawei.com>
- <20230821012734.18241-2-yangjihong1@huawei.com>
- <CAP-5=fXexLBnq1pkHPR5uXR-bL3CFTzEWkFnxHVs-71+S0yZSg@mail.gmail.com>
- <db2de7d0-d60d-33f8-3587-c776a3eb8fce@huawei.com>
- <CAP-5=fUtCHXDC5zOML4po8k1rQVPo9ybsTA8_AihepP6w8B5Kw@mail.gmail.com>
-From:   Yang Jihong <yangjihong1@huawei.com>
-Message-ID: <c447f442-2cc5-ab04-071e-1c26976dc828@huawei.com>
-Date:   Fri, 25 Aug 2023 14:15:07 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Fri, 25 Aug 2023 02:16:02 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE3A21BEC
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 23:16:00 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2bcbfb3705dso8089301fa.1
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 23:16:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692944159; x=1693548959;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=iM8El1KJDRMivN5v0+AcTBC/Luw+Aw9QD61213DG9Tw=;
+        b=HKIWiSgCf7clZB0dX0JAxEOoikVQyJ6WmsGXPGfiBYeMpdBxWTX+FwO3L3asRkWkrX
+         1qErpVNAHb+oAqYsWQ1zF1kiJ2dVfOraIpQqEkJVFJ3aHM8Qap37rLVfUf3Y/vOBKb6q
+         b00IT5dkHrmi1j5p+YS8BKcax4ZdYO9CEMrob3D3AaLHc0NomBef7FWZx9czrdt/ADyi
+         tHm8i2RvvQmLNpbRVENojA3/307Z5OqKBdmWovTfnzxjgiVhyo7KKKqcPglQbn9STgye
+         JiMfFRn0eGN4fmznF91bDApthclKVYJurfE5mA4ZR/qnp5ePDXVx132ZmqCPtYRrVAkx
+         v1mQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692944159; x=1693548959;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iM8El1KJDRMivN5v0+AcTBC/Luw+Aw9QD61213DG9Tw=;
+        b=HVrtOiSmFBPLDqHLVipjM2pDk21wzfvz1AL5gd1RcRMW5qAznA0yllr6lygLPnH4eY
+         WIvjtYHVvZnhg5WIhFJG2iIlRiHzni+UvG7I8Hgeo09R3AMMhApzdBUQVQCvHOrwwOpk
+         HxZEG3XVRBA8uoKWecaqmiVlXSTFF+CHGQQ5etVMwLp9aOdI1q+erU45chQGMes3OasA
+         fcCrWDiauRlbAtL8Jd9RPHCNwzzwrKnjpR4+0hzUSgKvKw8X+nuEYBpXDWaESBRPO+/D
+         D1n49wX0i2X4GWzChxy0yjBt/Gt7EwXD4XFWAZ9iapKh45CdVMo5bATKfZTUoVclfrO7
+         Z36A==
+X-Gm-Message-State: AOJu0YwRIiuY5MGJN5koPPfaUb/Soh9YEOocYVaFkoHdwS1zoag7CzKs
+        a74yg6oQN4VTaBpw6DOQJgr9Eg==
+X-Google-Smtp-Source: AGHT+IEG9YFvwBfJPh6Y4mk9Ujr63j9OKLTrCL6u4jSYhGphoBNbE1PIDQSsGBZ4FSaaNzcJUBKaJw==
+X-Received: by 2002:a05:6512:1590:b0:4ff:ae42:19e2 with SMTP id bp16-20020a056512159000b004ffae4219e2mr1092193lfb.58.1692944158849;
+        Thu, 24 Aug 2023 23:15:58 -0700 (PDT)
+Received: from [192.168.0.22] ([77.252.47.198])
+        by smtp.gmail.com with ESMTPSA id a20-20020a1709064a5400b00992b50fbbe9sm577072ejv.90.2023.08.24.23.15.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Aug 2023 23:15:58 -0700 (PDT)
+Message-ID: <fecb8658-ed3a-1c5c-70bb-5238b09d4e76@linaro.org>
+Date:   Fri, 25 Aug 2023 08:15:57 +0200
 MIME-Version: 1.0
-In-Reply-To: <CAP-5=fUtCHXDC5zOML4po8k1rQVPo9ybsTA8_AihepP6w8B5Kw@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 3/3] dt-bindings: iio: adc: add lltc,ltc2309 bindings
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.111.205]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600003.china.huawei.com (7.193.23.202)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+To:     Liam Beguin <liambeguin@gmail.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org
+References: <20230824-ltc2309-v1-0-b87b4eb8030c@gmail.com>
+ <20230824-ltc2309-v1-3-b87b4eb8030c@gmail.com>
+ <e54273c7-4728-7577-f053-b15307d3a083@linaro.org>
+ <20230824185054.GA3659959@shaak>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230824185054.GA3659959@shaak>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,82 +84,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 24/08/2023 20:50, Liam Beguin wrote:
+> On Thu, Aug 24, 2023 at 07:56:29PM +0200, Krzysztof Kozlowski wrote:
+>> On 24/08/2023 18:55, Liam Beguin wrote:
+>>> Add devicetree bindings for the Linear Technology LTC2309 ADC driver.
+>>>
+>>> Signed-off-by: Liam Beguin <liambeguin@gmail.com>
+>>
+>> Thank you for your patch. There is something to discuss/improve.
+>>
+>>> +++ b/Documentation/devicetree/bindings/iio/adc/lltc,ltc2309.yaml
+>>> @@ -0,0 +1,52 @@
+>>> +# SPDX-License-Identifier: GPL-2.0
+>>
+>> Wrong license. Run checkpatch before sending patches.
+>>
+> 
+> Sorry about that, I ran it through checkpatch but it didn't flag
+> anything.
 
-On 2023/8/25 13:45, Ian Rogers wrote:
-> 
-> 
-> On Thu, Aug 24, 2023, 10:41 PM Yang Jihong <yangjihong1@huawei.com 
-> <mailto:yangjihong1@huawei.com>> wrote:
-> 
->     Hello,
-> 
->     On 2023/8/25 12:51, Ian Rogers wrote:
->      > On Sun, Aug 20, 2023 at 6:30 PM Yang Jihong
->     <yangjihong1@huawei.com <mailto:yangjihong1@huawei.com>> wrote:
->      >>
->      >> For dummy events that keep tracking, we may need to modify its
->     cpu_maps.
->      >> For example, change the cpu_maps to record sideband events for
->     all CPUS.
->      >> Add perf_evlist__go_system_wide() helper to support this scenario.
->      >>
->      >> Signed-off-by: Yang Jihong <yangjihong1@huawei.com
->     <mailto:yangjihong1@huawei.com>>
->      >> Acked-by: Adrian Hunter <adrian.hunter@intel.com
->     <mailto:adrian.hunter@intel.com>>
->      >> ---
->      >>   tools/lib/perf/evlist.c                  | 9 +++++++++
->      >>   tools/lib/perf/include/internal/evlist.h | 2 ++
->      >>   2 files changed, 11 insertions(+)
->      >>
->      >> diff --git a/tools/lib/perf/evlist.c b/tools/lib/perf/evlist.c
->      >> index b8b066d0dc5e..3acbbccc1901 100644
->      >> --- a/tools/lib/perf/evlist.c
->      >> +++ b/tools/lib/perf/evlist.c
->      >> @@ -738,3 +738,12 @@ int perf_evlist__nr_groups(struct
->     perf_evlist *evlist)
->      >>          }
->      >>          return nr_groups;
->      >>   }
->      >> +
->      >> +void perf_evlist__go_system_wide(struct perf_evlist *evlist,
->     struct perf_evsel *evsel)
->      >> +{
->      >> +       if (!evsel->system_wide) {
->      >> +               evsel->system_wide = true;
->      >> +               if (evlist->needs_map_propagation)
->      >> +                       __perf_evlist__propagate_maps(evlist,
->     evsel);
->      >> +       }
->      >> +}
->      >
->      > I think this should be:
->      >
->      > void evsel__set_system_wide(struct evsel *evsel)
->      > {
->      >          if (evsel->system_wide)
->      >                 return;
->      >          evsel->system_wide = true;
->      >          if (evsel->evlist->core.needs_map_propagation)
->      > ...
->      >
->      > The API being on evlist makes it look like all evsels are affected.
->      >
->     This part of the code is implemented according to Adrian's suggestion.
->     Refer to:
-> 
->     https://lore.kernel.org/linux-perf-users/206972a3-d44d-1c75-3fbc-426427614543@intel.com/
->     <https://lore.kernel.org/linux-perf-users/206972a3-d44d-1c75-3fbc-426427614543@intel.com/>
-> 
->     The logic of both is the same, and either is OK for me.
->     If really want to change it, please let me know.
-> 
-> 
-> Yes, I think the naming isn't correct and the function being on evlist 
-> is misleading.
-> 
-Okay, I'll follow the above changes in the next version.
+No, you didn't, because checkpatch flags it easily:
 
-Thanks,
-Yang
+WARNING: DT binding documents should be licensed (GPL-2.0-only OR
+BSD-2-Clause)
+#21: FILE: Documentation/devicetree/bindings/iio/adc/lltc,ltc2309.yaml:1:
++# SPDX-License-Identifier: GPL-2.0
+
+total: 0 errors, 2 warnings, 52 lines checked
+
+
+Best regards,
+Krzysztof
+
