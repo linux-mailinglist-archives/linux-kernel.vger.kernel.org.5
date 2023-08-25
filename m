@@ -2,143 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B604D787F9E
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 08:12:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6FBD787FA1
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 08:13:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241484AbjHYGM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 02:12:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51628 "EHLO
+        id S241612AbjHYGM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 02:12:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241612AbjHYGMF (ORCPT
+        with ESMTP id S241996AbjHYGMq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 02:12:05 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA0291FFB;
-        Thu, 24 Aug 2023 23:12:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1692943919;
-        bh=Cc2wNrVySgQWB1oZUr5oEwkwqvGvweIc8X/OBtG4+Wg=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=iXSFfKONhaS61Wio3k/V1b70XjLLTQdt8vrEOUswdKDp7oPYD+2VsdrF14uK01p64
-         XXlT9K+fMxudJ8FOKNRLR6XGVcf35t4ZKkoKMI8rzvIHhKUlVXdEuAhvNneqf/3BKB
-         zxIP+l0zO05GipBAPeUhsSs3ZPmmChBaE4wXoIVUixOzyK7TIexFrSpeC7Sl9v0kGz
-         q8BWc/9IsPu+6fJocKU/6khYcBr1rEVzf06tM/e4KaUSImp+IRv5bY+pH9J7IsQG/j
-         dkA4oO/aRIG2l8rjLjajtdwh4qjdqeh8OAtvDnuqzZ5Yrqcq5mhGzx+uYqjvY3iwzJ
-         sDFScRxVAy46g==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RX8jp5yZWz4wxR;
-        Fri, 25 Aug 2023 16:11:58 +1000 (AEST)
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Kees Cook <keescook@chromium.org>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>, x86@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] kbuild: Show Kconfig fragments in "help"
-In-Reply-To: <20230824223606.never.762-kees@kernel.org>
-References: <20230824223606.never.762-kees@kernel.org>
-Date:   Fri, 25 Aug 2023 16:11:58 +1000
-Message-ID: <87a5ufvefl.fsf@mail.lhotse>
+        Fri, 25 Aug 2023 02:12:46 -0400
+Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CB0E2120;
+        Thu, 24 Aug 2023 23:12:32 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=renyu.zj@linux.alibaba.com;NM=1;PH=DS;RN=20;SR=0;TI=SMTPD_---0VqW2Dho_1692943945;
+Received: from 30.221.145.196(mailfrom:renyu.zj@linux.alibaba.com fp:SMTPD_---0VqW2Dho_1692943945)
+          by smtp.aliyun-inc.com;
+          Fri, 25 Aug 2023 14:12:27 +0800
+Message-ID: <8f319bc9-8740-627e-09c7-934c30a053bc@linux.alibaba.com>
+Date:   Fri, 25 Aug 2023 14:12:25 +0800
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [PATCH v7 1/8] perf pmu: "Compat" supports matching multiple
+ identifiers
+To:     Ian Rogers <irogers@google.com>
+Cc:     John Garry <john.g.garry@oracle.com>,
+        Will Deacon <will@kernel.org>,
+        James Clark <james.clark@arm.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-doc@vger.kernel.org,
+        Zhuo Song <zhuo.song@linux.alibaba.com>,
+        Shuai Xue <xueshuai@linux.alibaba.com>
+References: <1692606977-92009-1-git-send-email-renyu.zj@linux.alibaba.com>
+ <1692606977-92009-2-git-send-email-renyu.zj@linux.alibaba.com>
+ <CAP-5=fWK=wMuC1e9JE0MW8de4pNKH=48f8ydjCbMLjQ3S4zEjg@mail.gmail.com>
+From:   Jing Zhang <renyu.zj@linux.alibaba.com>
+In-Reply-To: <CAP-5=fWK=wMuC1e9JE0MW8de4pNKH=48f8ydjCbMLjQ3S4zEjg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-12.8 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kees Cook <keescook@chromium.org> writes:
-> Doing a "make help" would show only hard-coded Kconfig targets and
-> depended on the archhelp target to include ".config" targets. There was
-> nothing showing global kernel/configs/ targets. Solve this by walking
-> the wildcard list and include them in the output, using the first comment
-> line as the help text.
->
-> Update all Kconfig fragments to include help text and adjust archhelp
-> targets to avoid redundancy.
->
-> Adds the following section to "help" target output:
->
-> Configuration fragment targets (for enabling various Kconfig items):
->   debug.config         - Debugging for CI systems and finding regressions
->   kvm_guest.config     - Bootable as a KVM guest
->   nopm.config          - Disable Power Management
->   rust.config          - Enable Rust
->   tiny-base.config     - Minimal options for tiny systems
->   tiny.config          - Smallest possible kernel image
->   x86_debug.config     - Debugging options for tip tree testing
->   xen.config           - Bootable as a Xen guest
->   tiny.config          - x86-specific options for a small kernel image
->   xen.config           - x86-specific options for a Xen virtualization guest
 
-I think we need a way to opt some files out.
 
-It's a bit ugly on powerpc because there are so many fragments:
+在 2023/8/25 下午12:11, Ian Rogers 写道:
+> On Mon, Aug 21, 2023 at 1:36 AM Jing Zhang <renyu.zj@linux.alibaba.com> wrote:
+>>
+>> The jevent "Compat" is used for uncore PMU alias or metric definitions.
+>>
+>> The same PMU driver has different PMU identifiers due to different
+>> hardware versions and types, but they may have some common PMU event.
+>> Since a Compat value can only match one identifier, when adding the
+>> same event alias to PMUs with different identifiers, each identifier
+>> needs to be defined once, which is not streamlined enough.
+>>
+>> So let "Compat" supports matching multiple identifiers for uncore PMU
+>> alias. For example, the Compat value {43401;436*} can match the PMU
+>> identifier "43401", that is, CMN600_r0p0, and the PMU identifier with
+>> the prefix "436", that is, all CMN650, where "*" is a wildcard.
+>> Tokens in Unit field are delimited by ';' with no spaces.
+>>
+>> Signed-off-by: Jing Zhang <renyu.zj@linux.alibaba.com>
+>> Reviewed-by: John Garry <john.g.garry@oracle.com>
+>> ---
+>>  tools/perf/util/pmu.c | 33 +++++++++++++++++++++++++++++++--
+>>  tools/perf/util/pmu.h |  1 +
+>>  2 files changed, 32 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+>> index ad209c8..6402423 100644
+>> --- a/tools/perf/util/pmu.c
+>> +++ b/tools/perf/util/pmu.c
+>> @@ -776,6 +776,35 @@ static bool pmu_uncore_alias_match(const char *pmu_name, const char *name)
+>>         return res;
+>>  }
+>>
+>> +bool pmu_uncore_identifier_match(const char *id, const char *compat)
+> 
+> static?
+> 
 
-Configuration fragment targets (for enabling various Kconfig items):
-  debug.config         - Debugging for CI systems and finding regressions
-  kvm_guest.config     - Bootable as a KVM guest
-  nopm.config          - Disable Power Management
-  rust.config          - Enable Rust
-  tiny-base.config     - Minimal options for tiny systems
-  tiny.config          - Smallest possible kernel image
-  x86_debug.config     - Debugging options for tip tree testing
-  xen.config           - Bootable as a Xen guest
-  32-bit.config        - Build a 32-bit image
-  64-bit.config        - Build a 64-bit image
-  85xx-32bit.config    - Build a 32-bit 85xx image
-  85xx-64bit.config    - Build a 64-bit 85xx image
-  85xx-hw.config       - Base hardware support for 86xx
-  85xx-smp.config      - Enable SMP on 85xx
-  86xx-hw.config       - Base hardware support for 86xx
-  86xx-smp.config      - Enable SMP on 86xx
-  altivec.config       - Enable Altivec support
-  be.config            - Enable Big Endian mode
-  book3s_32.config     - Base support for Book3s
-  corenet_base.config  - Base support for corenet
-  debug.config         - Enable PowerPC specific debug options
-  disable-werror.config - Disable -Werror
-  dpaa.config          - Base suppot for DPPA
-  fsl-emb-nonhw.config - Non-hardware options common to 85xx and corenet
-  guest.config         - PowerPC specific virtualization guest options
-  kvm_guest.config     - Bootable as a KVM guest
-  le.config            - Enable Little Endian mode
-  mpc85xx_base.config  - Base mpc85xxx support
-  mpc86xx_base.config  - Base mpc85xxx support
-  ppc64le.config       - Enable ppc64le mode
-  security.config      - Common security options for PowerPC builds
+This function needs to be called in utils/metricgroup.c, so it cannot be static.
 
-And some of those are not intended for use with "make foo.config",
-they're used internally for generating our "normal" defconfigs and they
-don't necessarily work on their own.
+>> +{
+>> +       char *tmp = NULL, *tok, *str;
+>> +       bool res;
+> 
+> Initialize to false to avoid the goto.
+> 
 
-Also I'd like to add more fragments in future, to the point where nearly
-all our configs are generated by them.
+ok，no problem.
 
-Can we have some way to differentiate fragments that are intended to be
-used with "make foo.config" vs just being used internally to generate
-other configs.
+>> +       int n;
+> 
+> Move into the scope of the for loop, to reduce the scope.
+> 
 
-The obvious thing would be to use a different suffix, eg. "foo.fragment"
-for internal use fragments. That would require changing
-merge_into_defconfig and merge_into_defconfig_override to not assume the
-.config suffix, and update the users in arm, arm64 and powerpc.
+ok
 
-The other option would be to ignore .config files starting with eg. "_".
+>> +
+>> +       /*
+>> +        * The strdup() call is necessary here because "compat" is a const str*
+>> +        * type and cannot be used as an argument to strtok_r().
+>> +        */
+>> +       str = strdup(compat);
+>> +       if (!str)
+>> +               return false;
+>> +
+>> +       tok = strtok_r(str, ";", &tmp);
+>> +       for (; tok; tok = strtok_r(NULL, ";", &tmp)) {
+>> +               n = strlen(tok);
+>> +               if ((tok[n - 1] == '*' && !strncmp(id, tok, n - 1)) ||
+>> +                   !strcmp(id, tok)) {
+> 
+> We use fnmatch for a similar check:
+> https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tree/tools/perf/util/pmu.c?h=perf-tools-next#n1982
+> 
 
-+       @$(foreach c, $(filter-out $(call configfiles,_*.config),$(call configfiles,*.config)), \
-+               printf "  %-20s - %s\\n" \
-+                       $(shell basename $(c)) \
-+                       "$(subst # ,,$(shell grep -m1 '^# ' $(c)))";)
+ok
 
-Not sure which is preferable.
+>> +                       res = true;
+>> +                       goto out;
+> 
+> With "res=false;" above this can just be a regular break.
+> 
 
-cheers
+ok, thank you!
+
+> Thanks,
+> Ian
+> 
+>> +               }
+>> +       }
+>> +       res = false;
+>> +out:
+>> +       free(str);
+>> +       return res;
+>> +}
+>> +
+>>  struct pmu_add_cpu_aliases_map_data {
+>>         struct list_head *head;
+>>         const char *name;
+>> @@ -847,8 +876,8 @@ static int pmu_add_sys_aliases_iter_fn(const struct pmu_event *pe,
+>>         if (!pe->compat || !pe->pmu)
+>>                 return 0;
+>>
+>> -       if (!strcmp(pmu->id, pe->compat) &&
+>> -           pmu_uncore_alias_match(pe->pmu, pmu->name)) {
+>> +       if (pmu_uncore_alias_match(pe->pmu, pmu->name) &&
+>> +           pmu_uncore_identifier_match(pmu->id, pe->compat)) {
+>>                 __perf_pmu__new_alias(idata->head, -1,
+>>                                       (char *)pe->name,
+>>                                       (char *)pe->desc,
+>> diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
+>> index b9a02de..9d4385d 100644
+>> --- a/tools/perf/util/pmu.h
+>> +++ b/tools/perf/util/pmu.h
+>> @@ -241,6 +241,7 @@ void pmu_add_cpu_aliases_table(struct list_head *head, struct perf_pmu *pmu,
+>>  char *perf_pmu__getcpuid(struct perf_pmu *pmu);
+>>  const struct pmu_events_table *pmu_events_table__find(void);
+>>  const struct pmu_metrics_table *pmu_metrics_table__find(void);
+>> +bool pmu_uncore_identifier_match(const char *id, const char *compat);
+>>  void perf_pmu_free_alias(struct perf_pmu_alias *alias);
+>>
+>>  int perf_pmu__convert_scale(const char *scale, char **end, double *sval);
+>> --
+>> 1.8.3.1
+>>
