@@ -2,110 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3F8B788401
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 11:42:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F5D1788402
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 11:45:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242770AbjHYJmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 05:42:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59944 "EHLO
+        id S235001AbjHYJo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 05:44:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244405AbjHYJl5 (ORCPT
+        with ESMTP id S235628AbjHYJoX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 05:41:57 -0400
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D84592130;
-        Fri, 25 Aug 2023 02:41:53 -0700 (PDT)
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 37P7NEM2031680;
-        Fri, 25 Aug 2023 04:41:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-        message-id:date:mime-version:subject:to:cc:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        PODMain02222019; bh=hRUTXcpiXskPP197fpOdADi5JmQ/F7ahv8AvgqgLzYA=; b=
-        n2L/mW+QrbMojX2fMDehYpM4RZBeJT3jewpHt+Y/0m1U8DAvP17K+xHDbCQej9lb
-        JvuA0iTSlmoJmENsFVE0dRRIeKW/lLg1/7MHhcxON/XSvl+Xmb5lAGBKRa+iR2c8
-        iejeMAjclmw5fHkTs9yB71uCPYb/ZfMNN+c/8ftubOjwE5HUwBoValINWGWd+pgO
-        xGR65N/nKbQrNRhHzq+gMEpxKbpLY4giMRXrh0TxL8Tie1/U/BKiYctE9RGquux+
-        dahdt+hDzusjABYqsWN4j+zlHNY6+yIdGErU1w9mNhCcgyozqjmNFIyZFq/XHt9+
-        RIhV95oP5p6cLwJZUjGCnA==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3sp1rbhuvn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 25 Aug 2023 04:41:41 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Fri, 25 Aug
- 2023 10:41:39 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.30 via Frontend
- Transport; Fri, 25 Aug 2023 10:41:38 +0100
-Received: from [198.90.251.75] (edi-sw-dsktp-006.ad.cirrus.com [198.90.251.75])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id BCBC111CD;
-        Fri, 25 Aug 2023 09:41:38 +0000 (UTC)
-Message-ID: <3ce4262e-729c-932e-cee7-db07305550d1@opensource.cirrus.com>
-Date:   Fri, 25 Aug 2023 10:41:38 +0100
+        Fri, 25 Aug 2023 05:44:23 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D403F19A1;
+        Fri, 25 Aug 2023 02:44:20 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 68F3360D3D;
+        Fri, 25 Aug 2023 09:44:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 375CAC433C8;
+        Fri, 25 Aug 2023 09:44:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692956659;
+        bh=me1uoWKkEzgLUsTWeqOu/DWILOAbSgEJUKQu/4VvDZw=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=dH2yzUTTY2b7oQyz+3nAkP0NdHuO5NqCTKuIyrMg/wfm97eKhPl6/siE2zzCkOnOG
+         yDfHIqWBruqfsIhG2Wwy7FjalnyqTz0IdavmkM8I2dugiG+6B32m7IHzuZySerCt7d
+         yNUYQT0H8MPJb4rpEYS1u5dLVs9YPuUaXaAjS1UnG/7RuAMe+i+4KXN0aUeRy7lWbO
+         +SdRy1FfN+e5s8D3AuJRmQpFdEBc0YZzOif5QLCSARhZqaJpugoq3xd358ef3C8fS2
+         u87UmbBvQ6K3vTH+vE9Hw5gdn1sCsdrvF9V9ahZjoA9vtdBlCiA+RWaVNupUymfww7
+         FUwnH/OOTIqqw==
+From:   Benjamin Tissoires <bentiss@kernel.org>
+To:     =?utf-8?q?Filipe_La=C3=ADns?= <lains@riseup.net>,
+        Bastien Nocera <hadess@hadess.net>,
+        Jiri Kosina <jikos@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>, bentiss@kernel.org
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        stable@vger.kernel.org
+In-Reply-To: <20230621-logitech-fixes-v2-1-3635f7f9c8af@kernel.org>
+References: <20230621-logitech-fixes-v2-1-3635f7f9c8af@kernel.org>
+Subject: Re: [PATCH v2] HID: logitech-hidpp: rework one more time the
+ retries attempts
+Message-Id: <169295665797.600550.12347431863419633471.b4-ty@kernel.org>
+Date:   Fri, 25 Aug 2023 11:44:17 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v5 08/10] kunit: string-stream: Add tests for freeing
- resource-managed string_stream
-Content-Language: en-US
-To:     David Gow <davidgow@google.com>
-CC:     <brendan.higgins@linux.dev>, <rmoar@google.com>,
-        <linux-kselftest@vger.kernel.org>, <kunit-dev@googlegroups.com>,
-        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>
-References: <20230824143129.1957914-1-rf@opensource.cirrus.com>
- <20230824143129.1957914-9-rf@opensource.cirrus.com>
- <CABVgOSnG8epucY52ppNW7-vC_-QL3Lau9zsaw20dXgWTC0GV+Q@mail.gmail.com>
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-In-Reply-To: <CABVgOSnG8epucY52ppNW7-vC_-QL3Lau9zsaw20dXgWTC0GV+Q@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Proofpoint-ORIG-GUID: whNjsOMf7bL3tuLC9Ni1JJxBRlaUCwku
-X-Proofpoint-GUID: whNjsOMf7bL3tuLC9Ni1JJxBRlaUCwku
-X-Proofpoint-Spam-Reason: safe
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Mailer: b4 0.12.1
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/08/2023 07:49, David Gow wrote:
-> On Thu, 24 Aug 2023 at 22:32, 'Richard Fitzgerald' via KUnit
-> Development <kunit-dev@googlegroups.com> wrote:
->>
->> string_stream_managed_free_test() allocates a resource-managed
->> string_stream and tests that kunit_free_string_stream() calls
->> string_stream_destroy().
->>
->> string_stream_resource_free_test() allocates a resource-managed
->> string_stream and tests that string_stream_destroy() is called
->> when the test resources are cleaned up.
->>
->> The old string_stream_init_test() has been split into two tests,
->> one for kunit_alloc_string_stream() and the other for
->> alloc_string_stream().
->>
->> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
->> ---
->> Changes since V4:
->> - Added test case for kunit_free_string_stream().
->> - Split the initialization test into separate tests for managed and
->>    unmanaged allocations.
->> ---
+On Wed, 12 Jul 2023 17:02:34 +0200, bentiss@kernel.org wrote:
+> Extract the internal code inside a helper function, fix the
+> initialization of the parameters used in the helper function
+> (`hidpp->answer_available` was not reset and `*response` wasn't either),
+> and use a `do {...} while();` loop.
 > 
-> Looking over this again, I'm not convinced the streams are actually
-> getting freed. Once the stub has finished, the stream is removed from
-> the list of deferred actions / resources.
 > 
 
-Argh, I think you're right. My original version stashed the stream into
-the private data and freed it in a test exit() function so that it was
-guaranteed to be freed even if the resource cleanup wasn't called and
-the test function aborted before it could do a manual cleanup.
-I decided to simplify that but actually that original implementation was
-better.
+Applied to hid/hid.git (for-6.6/logitech), thanks!
+
+[1/1] HID: logitech-hidpp: rework one more time the retries attempts
+      https://git.kernel.org/hid/hid/c/60165ab774cb
+
+Cheers,
+-- 
+Benjamin Tissoires <bentiss@kernel.org>
 
