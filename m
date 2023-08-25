@@ -2,88 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEF30788EEA
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 20:47:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32156788EF0
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 20:50:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230259AbjHYSq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 14:46:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48786 "EHLO
+        id S229690AbjHYSti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 14:49:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229909AbjHYSqp (ORCPT
+        with ESMTP id S229478AbjHYStW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 14:46:45 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54A3DCD2;
-        Fri, 25 Aug 2023 11:46:42 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-99c353a395cso156639966b.2;
-        Fri, 25 Aug 2023 11:46:42 -0700 (PDT)
+        Fri, 25 Aug 2023 14:49:22 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCB781BD2;
+        Fri, 25 Aug 2023 11:49:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1692989360; x=1724525360;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=k2GUyE+Sq1heRCxaJ3psOuF9xtb1ZeYgzV8ugjK2eyk=;
+  b=gsli9vXPSHCSaUhumvTeuciddOc/UMA4tp4WV/niaYEtO57g0EjC4U5g
+   0l5b4Feq34Nuh9J4sWBRwYgs9ktfZedC8XGALQPMmEjmrJN9NhBgenjaI
+   Brv9a3afqL3e4uDPukt85gwfgkpddDqKiE8mXFx4cbqWgrPwHpc3vTU9T
+   pX4PqVjTShRp5zImcIcZ5vwaMdProFhWVOLpFysF4JelU9dEoEmHHLAD8
+   HMM8iyqFtOE8j4ZIGQ6pPT+pN4ryPiTkRJ08T594lafVNVqYLIKPnBJAT
+   XPZ6+cu1wgq2hOb9qv9V3yHVSe/WqhEIHG0fx+q2BoY4lwCNY/62vZY7b
+   w==;
+X-IronPort-AV: E=Sophos;i="6.02,201,1688454000"; 
+   d="scan'208";a="1325455"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 25 Aug 2023 11:49:20 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Fri, 25 Aug 2023 11:48:44 -0700
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21 via Frontend Transport; Fri, 25 Aug 2023 11:48:43 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jmkQQzPcI8wvpeqQnF0Z0LWLGB66W6cvW2doRa8DLnH6EHenOml3xxYomv+r0PsBK2WjJLHdWfs3jv2j39mDNUjoODEMbGY81WoMaaPQm2gEe9bsJJLAz4skaFHEeu0rH6owsCJhT4mnxH5zeumFFH4WHik0Ye1V9rYDNV8tFkgBjw2Ix6G/6i/TNeGiWEoveDoZ1gVrIn5JMnNjL8jah9Vj8j8WlGbJrJHKaDAMSlpuR7UBD/HPfxMRQs7B6V5o1SxBswET/Kzt0vFonkUXQC4KDvK1+pCTcEocKPOVUctFhh3uyJpMkJU165wbC/LJZxkDV4RK1wUFkjizmmKbTg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=k2GUyE+Sq1heRCxaJ3psOuF9xtb1ZeYgzV8ugjK2eyk=;
+ b=np8hw7El9ijrWemCje1n4VzBV29HQvY6U2ujS9OvXnYtB2rvWTZ5JoHeYGCUJpGZ02G+Rwe1I02pJmN9Uyp1UHBRIl4gAXE8UoUlreY0x1QrqaFQqXH7vwgPNk76y9sW6v0A4ChoUbQpEKDaPhTJDa3cOyGxno+jHfn4DX7se67oaebledNtHhuQTMqSgDrdY6Gz6Nw49LrdFu2lFoLEXcvFJjAI9iZlfu5M/PN57wV0B3wvi5+s978PB0YgyMMlRsKUzGJoODkwAQwiTXcFgrrtR9g0yBRph+TFFx4PTFdsXBDygQ5WxMAFF49v4rPwo/18XQ2mizwpiJjE8iKQMQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692989201; x=1693594001;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=L8kMb3SGZQ6eWcS2izBfAzJkuNyIE7vijCFiSkYhv/c=;
-        b=pchmme6U7B78a37PLmZ1LuNV3dmzi9pNYcmJichG/F8AvZxrDlxg8ZkoNRPIPl7isp
-         fmFbsl1GEpeN1S48Mt5AT9VYTPgtDCnhC4aP6s7mlHtn/CbZGObrCFwJRz9rOrOfGbJX
-         3ucJGDxeuEnLv7gIr6supoY2dyREq4h9hWETy9dDV7vjwH1X9SNb+cj2ohwZLDAwcbiD
-         VVkdlQk8uqovPFf39rpfeK5EVuIb8FblL0Ruv4gpNPDGcs+fDhQ0UXBy3p9PSJGDckkz
-         I/PETQadfJSMoARWLeyFeYR+JCTEG4S+m7vak7sTXnWqVzFUuVi7OLqgYiZABtnplWJQ
-         kzHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692989201; x=1693594001;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=L8kMb3SGZQ6eWcS2izBfAzJkuNyIE7vijCFiSkYhv/c=;
-        b=Q/gQD7xvvZeiBysxWCkQp0aZ2be0WZtqbLYVPTVLgL5JE29h0ccaJRuaLAE6R5zBQR
-         KHK+6vJKvsKXPOINYPPuwzjmSyGc9A1azt643fZbiuMi47sZb+Ni1IXS6/4bgUBY8t+b
-         M0UxoBnLEVx4KK3r21+ATRdd3goGKsgFMtHmilgchL2UYfuPLAgConMS6rBD2MnYxDFi
-         gjdqtD4uo2QDNtzNvxj5YkrjqaSbVin6WOsqyVYhhF2s6uCCpyCUFLRS0Wz+ambxMpSA
-         EjGCHybBgTnTw03auF4mG/iauLVrMIxHdnV6+F3U9yWtAx3r8m/anOTIMK3NE7XTtYwo
-         +PVA==
-X-Gm-Message-State: AOJu0YxXQcYMrpv6GV7lVU4qL0yCHh4gEd49Sm88MecvvntgSB9BxPEi
-        YbzCbaVDOd9QkKef3zlYxMCKjgBHLqTKXg==
-X-Google-Smtp-Source: AGHT+IFSVqIsCCp6o/KC9FED1oTxoVDQSY208QtrMRSuVRt7HfzLa54diuVazJw1+fwlshH/8kUqoA==
-X-Received: by 2002:a17:907:75f9:b0:994:577:f9dd with SMTP id jz25-20020a17090775f900b009940577f9ddmr15097321ejc.9.1692989200490;
-        Fri, 25 Aug 2023 11:46:40 -0700 (PDT)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id q5-20020a1709064c8500b00993928e4d1bsm1219668eju.24.2023.08.25.11.46.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Aug 2023 11:46:40 -0700 (PDT)
-Message-ID: <3226a69223806f403132a4003676b63f7bf6f7fb.camel@gmail.com>
-Subject: Re: selftests: hid: trouble building with clang due to missing
- header
-From:   Eduard Zingerman <eddyz87@gmail.com>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
-        linux-input@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Kees Cook <keescook@google.com>
-Date:   Fri, 25 Aug 2023 21:46:38 +0300
-In-Reply-To: <CAFhGd8ob_qet6ODduHz2=sjGXkHaFMzrtu1FFkN0eUWQvpyPrQ@mail.gmail.com>
-References: <CAFhGd8ryUcu2yPC+dFyDKNuVFHxT-=iayG+n2iErotBxgd0FVw@mail.gmail.com>
-         <CAKwvOd=p_7gWwBnR_RHUPukkG1A25GQy6iOnX_eih7u65u=oxw@mail.gmail.com>
-         <CAO-hwJLio2dWs01VAhCgmub5GVxRU-3RFQifviOL0OTaqj9Ktg@mail.gmail.com>
-         <CAFhGd8qmXD6VN+nuXKtV_Uz14gzY1Kqo7tmOAhgYpTBdCnoJRQ@mail.gmail.com>
-         <CAO-hwJJ_ipXwLjyhGC6_4r-uZ-sDbrb_W7um6F2vgws0d-hvTQ@mail.gmail.com>
-         <CAO-hwJ+DTPXWbpNaBDvCkyAsWZHbeLiBwYo4k93ZW79Jt-HAkg@mail.gmail.com>
-         <CAFhGd8pVjUPpukHxxbQCEnmgDUqy-tgBa7POkmgrYyFXVRAMEw@mail.gmail.com>
-         <CAO-hwJJntQTzcJH5nf9RM1bVWGVW1kb28rJ3tgew1AEH00PmJQ@mail.gmail.com>
-         <CAFhGd8rgdszt5vgWuGKkcpTZbKvihGCJXRKKq7RP17+71dTYww@mail.gmail.com>
-         <20230822214220.jjx3srik4mteeond@google.com>
-         <56ba8125-2c6f-a9c9-d498-0ca1c153dcb2@redhat.com>
-         <e99b4226bd450fedfebd4eb5c37054f032432b4f.camel@gmail.com>
-         <CAFhGd8ob_qet6ODduHz2=sjGXkHaFMzrtu1FFkN0eUWQvpyPrQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu1 
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=k2GUyE+Sq1heRCxaJ3psOuF9xtb1ZeYgzV8ugjK2eyk=;
+ b=eU2leESYA8wkgqMPQjsEWm3/sQvPrdFRo9+2ARH6JbJPHLunP2OjM+HQ5A2s3f9z3WxZTQaupppxgxCiyXw27F4AtMtRKPbQ7eoJeTqxR62rdH7gUO7WX6abAPXIfjEVZjS3nOaY5OigCrot/AkcMnVcmxF1nZ6dYJsD0okWi7Q=
+Received: from BYAPR11MB3558.namprd11.prod.outlook.com (2603:10b6:a03:b3::11)
+ by IA1PR11MB6099.namprd11.prod.outlook.com (2603:10b6:208:3d5::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.27; Fri, 25 Aug
+ 2023 18:48:41 +0000
+Received: from BYAPR11MB3558.namprd11.prod.outlook.com
+ ([fe80::ceda:7787:e08b:7a19]) by BYAPR11MB3558.namprd11.prod.outlook.com
+ ([fe80::ceda:7787:e08b:7a19%7]) with mapi id 15.20.6699.028; Fri, 25 Aug 2023
+ 18:48:41 +0000
+From:   <Tristram.Ha@microchip.com>
+To:     <f.fainelli@gmail.com>
+CC:     <andrew@lunn.ch>, <olteanv@gmail.com>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>,
+        <Woojung.Huh@microchip.com>, <pabeni@redhat.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <UNGLinuxDriver@microchip.com>, <lukma@denx.de>
+Subject: RE: [PATCH 2/2] net: dsa: microchip: Provide Module 4 KSZ9477 errata
+ (DS80000754C)
+Thread-Topic: [PATCH 2/2] net: dsa: microchip: Provide Module 4 KSZ9477 errata
+ (DS80000754C)
+Thread-Index: AQHZ1qKWLyunbFo9dUGlg3dtAL+k26/6NENwgAB9tYCAAHHrgIAANckA
+Date:   Fri, 25 Aug 2023 18:48:41 +0000
+Message-ID: <BYAPR11MB3558A24A05D30BA93408851EECE3A@BYAPR11MB3558.namprd11.prod.outlook.com>
+References: <20230824154827.166274-1-lukma@denx.de>
+ <20230824154827.166274-2-lukma@denx.de>
+ <BYAPR11MB35583A648E4E44944A0172A0ECE3A@BYAPR11MB3558.namprd11.prod.outlook.com>
+ <20230825103911.682b3d70@wsk>
+ <862e5225-2d8e-8b8f-fc6d-c9b48ac74bfc@gmail.com>
+In-Reply-To: <862e5225-2d8e-8b8f-fc6d-c9b48ac74bfc@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microchip.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BYAPR11MB3558:EE_|IA1PR11MB6099:EE_
+x-ms-office365-filtering-correlation-id: 814bd1fd-4a0c-42ce-69ae-08dba59be6c3
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: u0BbpOLzUebFRz9YYekWxWwSrysD9QmuFvTu8P0uvXWCTiQZyaG5KeTzhTpwQHyljX8y6BWhPHxqf8EWq1cMkn2E/DLRu5BOj/Ot5VAVC/ggtMwgZLwrrZNZ7CB8Dgee+/KP1DXeXjy9UMffD6HRMHvx/ID+ZngZ7nqC5gYKgbFUsthU0URXQpV5VEYjEsLt/MdaIkxDdhaaDIe9EmPKP+TbjQtc9WAGnIpaGJofsvXGc01eXaHGBMeE6zyYuQudgoTEtiJCKMRKEnA5rHPJVsUrU0m8N7UaXWryaM5ztszdohSiIGUjLyiPT3AnpyVcEJKo6+DKQIM7JbsWimgYDpPScCb+VDSXsFslHHsJO+xzL3hQ6PlUzlcMzhhRXvISQVS5dffUfKDtz5XeiYMyvFNRimv4d+KDfYdX69z/Om8p2dDaxwKOeC3Ze9WE8uEHaqATNtm4BCmr2FEY4gAEpIT87vxGcX5p68/Ot+2azY7xOyrpfB3u/jkfE90xYnMLsoXvh5hWkeG8VbjCCZhvsZwx/fvQjh9GQ5eOP/vfdsIOIr/A73zpDCwZiATbOHmnejVKPyNUHtF0IgLtOb4n9GpiotYcWPjHeM/A0JgAKPMyp7Uie9kZ5M+XWhlBFdW2
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3558.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(396003)(376002)(346002)(39860400002)(451199024)(186009)(1800799009)(54906003)(66446008)(6506007)(64756008)(76116006)(66946007)(66476007)(316002)(6916009)(66556008)(122000001)(478600001)(26005)(55016003)(71200400001)(38100700002)(38070700005)(41300700001)(86362001)(7696005)(9686003)(2906002)(8936002)(8676002)(4326008)(66899024)(52536014)(5660300002)(7416002)(83380400001)(33656002)(4744005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?QXdQU1FITmtNTWZYRElIRkRKVEJ4ZlJRWEZRejc1OFVIV2xWNzhtYkRaT0V0?=
+ =?utf-8?B?bkdZUXFNUGYrb2VhOTRxdVFGU3Jqb2R0UmR3bEovTGhCSHREY3JvS1oxeTlP?=
+ =?utf-8?B?R215RE9PeExLYmg1NURYNzZPTHBCREtlNjA2Ym01UXMzbm9USXQzQTZWdkRU?=
+ =?utf-8?B?VUlhVThNNUp0ZTIxNW5rcVN0SzBZRlBpNXc5T1R5cVNVU0hYVHhscngvbUZQ?=
+ =?utf-8?B?WlRPR2ZWSzBnNHVpMHNHRmFHbTNPVldFSENXRFhHU2JWZENhZUdTbXpCaUJ2?=
+ =?utf-8?B?bmVFZzRZYmE2bTJEQlE2QjZNdktXRDI0SGJjK1htRUczUTVJUEc4MXNVKy9D?=
+ =?utf-8?B?dVl5c0xxNVNaTEg1Nkg5bDhCV2NJQ2ZiKzVBSlBUYWFRSUZUOXErWHdEOHYx?=
+ =?utf-8?B?UXZBN1NkcG1kYjV1Z015Ly8raGRubnBhZUtKWkJnbVBDZUsrWTJEQjF6MWx1?=
+ =?utf-8?B?akRjTytnYXFVaHRDSzhsMDlDQTU3Rk1CVWdUWnlYNmVySnc4SEhucElJem9H?=
+ =?utf-8?B?T3hXNnNvKzY2WldOdGYzMlducjM1YVJ6QkVhLzkySkNkcTVFSUVuRDErMFZX?=
+ =?utf-8?B?bzhxR0VsQlR0cjVvV0cwVWtjK05UaE9oRW5Lb0xKNXErdEJ3N1NURWRGNmd0?=
+ =?utf-8?B?QUFXRGZFMG42dzlGNXRLNU1xTDZuQmppY0RqdExPdjI4U3BQcjBRYWgyMk1q?=
+ =?utf-8?B?alFvK01IdVI0QVVFUzZzV2ZQR3QyZGJkcDlVMHE5RkhBRHp1VHp6NUdNNlhK?=
+ =?utf-8?B?aTYxRlRuYmprZ2hzQ010QTh2MTJ2MlhxZXFjOXdPajgvZ3NSbTA5Wnhpb2VU?=
+ =?utf-8?B?bWUwMFZRZDRiaWM5ZmE1dkNCbC9KUFhaa21yRVlDZUNReVRqU3YzTTdzYnBN?=
+ =?utf-8?B?VFp5cG1mczlTZkY1d28rUmllQjlVSG5mVGh2a0JiUG1SN0JOcU5BUTdrUGc3?=
+ =?utf-8?B?OXNYa0szRUUyMzF2akh3d3N5S1RGNlRTRm10R1pWZ2RvRDZOcUI3cGtFUFAy?=
+ =?utf-8?B?TWh3MTJxZmxrVloySlcyZkZlRmQvTXhSM0FzYVprbkVZbEQzVFdpRUx0SmlK?=
+ =?utf-8?B?N1VVS21TQWpXVWJkNE0vYU1vU2RSdlNFQkx1cE9NNUJYWnlNTENEQlJSWXAz?=
+ =?utf-8?B?d2pzZUNBenR6dmVJdy95SFNKeTc3bnZNWkZGY1VoTzJTZC9ERmUwdTlJL3F2?=
+ =?utf-8?B?WlRDL0Z5VEs4VVAycG9sR1h4ck5RN0hjazNqWXRna3cxNlVyNXpVOHpVN2pN?=
+ =?utf-8?B?aFZpdzNWcFZHeU5Eb3J3TzVsN2RiZDVxTDFHejBYZWJITW9yUnNZQzJJck5X?=
+ =?utf-8?B?c1dmYTlDOEJ3NlZIT2NaanE0N3U2YUUzaGxBOC9pNlR3dWN2YzFOT0NacDAy?=
+ =?utf-8?B?UFZUTEVnZW0veXpPVWNTY2FGNnRkaFdJRjZwQ01vaktYTktyY09oM2pQWkhn?=
+ =?utf-8?B?QVRGL2N6WHhtNHkrcVlBZUNjeXBZRWRJWHhZUDFWRnBQRERTcTF1cVFUc2kz?=
+ =?utf-8?B?VGZOdVlod2gxTzdMdmFqeFJSOHhaVjlCSzV0VS9SZWxFY1c2eUtoZC9Zbnp3?=
+ =?utf-8?B?YVJvVWN3OFByZDJ3R0xvdWQ4Tk5ObHY0UFI0R3dqNFIycHc0Wk4wOXlvSkRZ?=
+ =?utf-8?B?Z2lPanNBUms2aTNaN3V0MCt4MXo2MUxqUUpWakdtdUpmRVZiVDhEMUxrRU9q?=
+ =?utf-8?B?YXhJanpUVkFDL0dPTmpkZXNnVWkzQVBiRkk4SmQ4Z1R2aU5CMzVxZWZnK253?=
+ =?utf-8?B?TjBuMUlSdUdRWWhqbW9CWnVIaUVuQWJYRVlXdC80ejFla0drNXBtSmMzL0Zh?=
+ =?utf-8?B?ZkV6TUh2N0tGK2RXaXJkelNXdGdFVUw3eUk2dDJ6OWVtbEFycXlQcm1VYUJv?=
+ =?utf-8?B?SitFR2pTcnp4TTJQM3ZPMVZWQVV4bGVUUHVhY09XQlVnUUp3bjFDOFRUaUVN?=
+ =?utf-8?B?MzVjekFOc2dxN3NsRnB2dXpqTGlldjF4b3NSM04yc3NvbUs4b3oyVEVQazM5?=
+ =?utf-8?B?K0R4OWlVMzFtcElNTnNTY1VOdFg4WWN6WlhtaEZXcGdML2ZCWmlNbjM5Qm9y?=
+ =?utf-8?B?a0hNM1R3Sm9vY2VLREozb3dKZWJ4bSsvWE1OR0tqd253THg4bEdRUTFMeEVW?=
+ =?utf-8?Q?z+qYWG35KNv0VQdy0fe120dL+?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3558.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 814bd1fd-4a0c-42ce-69ae-08dba59be6c3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Aug 2023 18:48:41.2717
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: W49DjupnhlELvaOpGwwxOUS7DTQFFGpN9qAcnHu7/7k6SWYOduWYMtA7++rs6A1Tvskd00PBLDmBauBZJ8UyuYveGKts18VRhJ31ghqR8MA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB6099
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -91,225 +160,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-08-25 at 11:36 -0700, Justin Stitt wrote:
-> On Fri, Aug 25, 2023 at 6:01=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.c=
-om> wrote:
-> >=20
-> > On Fri, 2023-08-25 at 10:08 +0200, Benjamin Tissoires wrote:
-> > >=20
-> > > On Tue, Aug 22, 2023 at 11:42=E2=80=AFPM Justin Stitt <justinstitt@go=
-ogle.com> wrote:
-> > > > > > > > Which kernel are you trying to test?
-> > > > > > > > I tested your 2 commands on v6.5-rc7 and it just works.
-> > > > > > >=20
-> > > > > > > I'm also on v6.5-rc7 (706a741595047797872e669b3101429ab8d378e=
-f)
-> > > > > > >=20
-> > > > > > > I ran these exact commands:
-> > > > > > > >    $ make mrproper
-> > > > > > > >    $ make LLVM=3D1 ARCH=3Dx86_64 headers
-> > > > > > > >    $ make LLVM=3D1 ARCH=3Dx86_64 -j128 -C tools/testing/sel=
-ftests
-> > > > > > > TARGETS=3Dhid &> out
-> > > > > > >=20
-> > > > > > > and here's the contents of `out` (still warnings/errors):
-> > > > > > > https://gist.github.com/JustinStitt/d0c30180a2a2e046c32d5f0ce=
-5f59c6d
-> > > > > > >=20
-> > > > > > > I have a feeling I'm doing something fundamentally incorrectl=
-y. Any ideas?
-> > > > > >=20
-> > > > > > Sigh... there is a high chance my Makefile is not correct and u=
-ses the
-> > > > > > installed headers (I was running the exact same commands, but o=
-n a
-> > > > > > v6.4-rc7+ kernel).
-> > > > > >=20
-> > > > > > But sorry, it will have to wait for tomorrow if you want me to =
-have a
-> > > > > > look at it. It's 11:35 PM here, and I need to go to bed
-> > > > > Take it easy. Thanks for the prompt responses here! I'd like to g=
-et
-> > > > > the entire kselftest make target building with Clang so that we c=
-an
-> > > > > close [1].
-> > >=20
-> > > Sorry I got urgent matters to tackle yesterday.
-> > >=20
-> > > It took me a while to understand what was going on, and I finally fou=
-nd
-> > > it.
-> > >=20
-> > > struct hid_bpf_ctx is internal to the kernel, and so is declared in
-> > > vmlinux.h, that we generate through BTF. But to generate the vmlinux.=
-h
-> > > with the correct symbols, these need to be present in the running
-> > > kernel.
-> > > And that's where we had a fundamental difference: I was running my
-> > > compilations on a kernel v6.3+ (6.4.11) with that symbol available, a=
-nd
-> > > you are probably not.
-> > >=20
-> > > The bpf folks are using a clever trick to force the compilation[2]. A=
-nd
-> > > I think the following patch would work for you:
-> >=20
-> > Hi Benjamin, Justin,
-> >=20
-> > You might want to take a look at these two links:
-> > [1] https://nakryiko.com/posts/bpf-core-reference-guide/#handling-incom=
-patible-field-and-type-changes
-> > [2] https://facebookmicrosites.github.io/bpf/blog/2020/02/19/bpf-portab=
-ility-and-co-re.html#dealing-with-kernel-version-and-configuration-differen=
-ces
-> >=20
-> > The short version is: CO-RE relocation handling logic in libbpf
-> > ignores suffixes of form '___something' for type and field names.
-> >=20
-> > So, the following should accomplish the same as the trick with
-> > #define/#undef:
-> >=20
-> >     #include "vmlinux.h"
-> >     ...
-> >     struct hid_bpf_ctx___local {
-> >         __u32 index;
-> >         const struct hid_device *hid;
-> >         __u32 allocated_size;
-> >         enum hid_report_type report_type;
-> >         union {
-> >             __s32 retval;
-> >             __s32 size;
-> >         };
-> >=20
-> >     };
-> >     ...
-> >     extern __u8 *hid_bpf_get_data(struct hid_bpf_ctx___local *ctx,
-> >                                   unsigned int offset, ...)
-> >=20
-> > However, if the kernel does not have `hid_bpf_ctx` definition would
-> > the test `progs/hid.c` still make sense?
-> >=20
-> > When I tried to build hid tests locally I run into similar errors:
-> >=20
-> >     ...
-> >       CLNG-BPF hid.bpf.o
-> >     In file included from progs/hid.c:6:
-> >     progs/hid_bpf_helpers.h:9:38: error: declaration of 'struct hid_bpf=
-_ctx' \
-> >            will not be visible outside of this function [-Werror,-Wvisi=
-bility]
-> >     extern __u8 *hid_bpf_get_data(struct hid_bpf_ctx *ctx,
-> >     ...
-> >=20
-> > And there is indeed no `hid_bpf_ctx` in my vmlinux.h.
-> > However, after enabling CONFIG_HID_BPF in kernel config the
-> > `hid_bpf_ctx` appears in vmlinux.h, and I can compile HID selftests
-> > w/o issues.
->=20
-> Even with enabling this configuration option I was unable to get clean
-> builds of the HID selftests. I proposed a 4th patch on top of
-> Benjamin's n=3D3 patch series here [1] using the #def/#undef pattern.
-
-What are the remaining errors?
-Could you please share your .config (e.g. as a gist).
-
-As I said, when your kernel does not have `struct hid_bpf_ctx`,
-sure you can define these data structures in the test itself,
-but the test would loose it's meaning. If kernel is built
-w/o HID BPF support there is no sense in compiling this test.
-
->=20
-> >=20
-> > >=20
-> > > ---
-> > >  From bb9eccb7a896ba4b3a35ed12a248e6d6cfed2df6 Mon Sep 17 00:00:00 20=
-01
-> > > From: Benjamin Tissoires <bentiss@kernel.org>
-> > > Date: Fri, 25 Aug 2023 10:02:32 +0200
-> > > Subject: [PATCH] selftests/hid: ensure we can compile the tests on ke=
-rnels
-> > >   pre-6.3
-> > >=20
-> > > For the hid-bpf tests to compile, we need to have the definition of
-> > > struct hid_bpf_ctx. This definition is an internal one from the kerne=
-l
-> > > and it is supposed to be defined in the generated vmlinux.h.
-> > >=20
-> > > This vmlinux.h header is generated based on the currently running ker=
-nel
-> > > or if the kernel was already compiled in the tree. If you just compil=
-e
-> > > the selftests without compiling the kernel beforehand and you are run=
-ning
-> > > on a 6.2 kernel, you'll end up with a vmlinux.h without the hid_bpf_c=
-tx
-> > > definition.
-> > >=20
-> > > Use the clever trick from tools/testing/selftests/bpf/progs/bpf_iter.=
-h
-> > > to force the definition of that symbol in case we don't find it in th=
-e
-> > > BTF.
-> > >=20
-> > > Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
-> > > ---
-> > >   tools/testing/selftests/hid/progs/hid.c       |  3 ---
-> > >   .../selftests/hid/progs/hid_bpf_helpers.h     | 20 ++++++++++++++++=
-+++
-> > >   2 files changed, 20 insertions(+), 3 deletions(-)
-> > >=20
-> > > diff --git a/tools/testing/selftests/hid/progs/hid.c b/tools/testing/=
-selftests/hid/progs/hid.c
-> > > index 88c593f753b5..1e558826b809 100644
-> > > --- a/tools/testing/selftests/hid/progs/hid.c
-> > > +++ b/tools/testing/selftests/hid/progs/hid.c
-> > > @@ -1,8 +1,5 @@
-> > >   // SPDX-License-Identifier: GPL-2.0
-> > >   /* Copyright (c) 2022 Red hat */
-> > > -#include "vmlinux.h"
-> > > -#include <bpf/bpf_helpers.h>
-> > > -#include <bpf/bpf_tracing.h>
-> > >   #include "hid_bpf_helpers.h"
-> > >=20
-> > >   char _license[] SEC("license") =3D "GPL";
-> > > diff --git a/tools/testing/selftests/hid/progs/hid_bpf_helpers.h b/to=
-ols/testing/selftests/hid/progs/hid_bpf_helpers.h
-> > > index 4fff31dbe0e7..749097f8f4d9 100644
-> > > --- a/tools/testing/selftests/hid/progs/hid_bpf_helpers.h
-> > > +++ b/tools/testing/selftests/hid/progs/hid_bpf_helpers.h
-> > > @@ -5,6 +5,26 @@
-> > >   #ifndef __HID_BPF_HELPERS_H
-> > >   #define __HID_BPF_HELPERS_H
-> > >=20
-> > > +/* "undefine" structs in vmlinux.h, because we "override" them below=
- */
-> > > +#define hid_bpf_ctx hid_bpf_ctx___not_used
-> > > +#include "vmlinux.h"
-> > > +#undef hid_bpf_ctx
-> > > +
-> > > +#include <bpf/bpf_helpers.h>
-> > > +#include <bpf/bpf_tracing.h>
-> > > +
-> > > +
-> > > +struct hid_bpf_ctx {
-> > > +     __u32 index;
-> > > +     const struct hid_device *hid;
-> > > +     __u32 allocated_size;
-> > > +     enum hid_report_type report_type;
-> > > +     union {
-> > > +             __s32 retval;
-> > > +             __s32 size;
-> > > +     };
-> > > +};
-> > > +
-> > >   /* following are kfuncs exported by HID for HID-BPF */
-> > >   extern __u8 *hid_bpf_get_data(struct hid_bpf_ctx *ctx,
-> > >                             unsigned int offset,
-> >=20
->=20
-> [1]: https://lore.kernel.org/all/20230825182316.m2ksjoxe4s7dsapn@google.c=
-om/
->=20
-> Thanks
-> Justin
-
+PiA+IElNSE8gYWRkaW5nIGZ1bmN0aW9ucyB0byBNTUQgbW9kaWZpY2F0aW9uIHdvdWxkIGZhY2ls
+aXRhdGUgZnVydGhlcg0KPiA+IGRldmVsb3BtZW50IChmb3IgZXhhbXBsZSBMRUQgc2V0dXApLg0K
+PiANCj4gV2UgYWxyZWFkeSBoYXZlIHNvbWUgS1NaOTQ3NyBzcGVjaWZpYyBpbml0aWFsaXphdGlv
+biBkb25lIGluIHRoZSBNaWNyZWwNCj4gUEhZIGRyaXZlciB1bmRlciBkcml2ZXJzL25ldC9waHkv
+bWljcmVsLmMsIGNhbiB3ZSBjb252ZXJnZSBvbiB0aGUgUEhZDQo+IGRyaXZlciB3aGljaCBoYXMg
+YSByZWFzb25hYmxlIGFtb3VudCBvZiBpbmZyYXN0cnVjdHVyZSBmb3IgZGVhbGluZyB3aXRoDQo+
+IHdvcmthcm91bmRzLCBpbmRpcmVjdCBvciBkaXJlY3QgTU1EIGFjY2Vzc2VzIGV0Yy4/DQoNCkFj
+dHVhbGx5IHRoZSBpbnRlcm5hbCBQSFkgdXNlZCBpbiB0aGUgS1NaOTg5Ny9LU1o5NDc3L0tTWjk4
+OTMgc3dpdGNoZXMNCmFyZSBzcGVjaWFsIGFuZCBvbmx5IHVzZWQgaW5zaWRlIHRob3NlIHN3aXRj
+aGVzLiAgUHV0dGluZyBhbGwgdGhlIHN3aXRjaA0KcmVsYXRlZCBjb2RlIGluIE1pY3JlbCBQSFkg
+ZHJpdmVyIGRvZXMgbm90IHJlYWxseSBoZWxwLiAgV2hlbiB0aGUgc3dpdGNoDQppcyByZXNldCBh
+bGwgdGhvc2UgUEhZIHJlZ2lzdGVycyBuZWVkIHRvIGJlIHNldCBhZ2FpbiwgYnV0IHRoZSBQSFkg
+ZHJpdmVyDQpvbmx5IGV4ZWN1dGVzIHRob3NlIGNvZGUgZHVyaW5nIFBIWSBpbml0aWFsaXphdGlv
+bi4gIEkgZG8gbm90IGtub3cgaWYNCnRoZXJlIGlzIGEgZ29vZCB3YXkgdG8gdGVsbCB0aGUgUEhZ
+IHRvIHJlLWluaXRpYWxpemUgYWdhaW4uDQpUaGVyZSBpcyBhbHNvIGEgdHlwbyBpbiBvbmUgb2Yg
+dGhvc2UgcmVnaXN0ZXJzIHdoZW4gdGhlIGNvZGUgd2FzIG1vdmVkDQp0byB0aGUgTWljcmVsIFBI
+WSBkcml2ZXIuICBBIGZpeCB3aWxsIGJlIG5lZWRlZC4NCg0K
