@@ -2,83 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9064F7888E5
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 15:46:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAFF47888FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 15:50:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245254AbjHYNqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 09:46:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47618 "EHLO
+        id S245264AbjHYNtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 09:49:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245320AbjHYNqQ (ORCPT
+        with ESMTP id S245257AbjHYNtA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 09:46:16 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30F09268A
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 06:46:11 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-d66f105634eso895299276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 06:46:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692971170; x=1693575970;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uoBf9yEiYNSj7LpWNz2WUTLupdyL6E9irB0nHYwcJ0Q=;
-        b=hj2qsrqISzlnPtcNvVuxksoGTMp3sBJyat9urrboVW2ESgFm3sB4EfTBbI8YzsQ52y
-         kHlGCdbsY/sfTt11BN/i0jLk7QaFnlx0NjWpxVvlG1y0luycwGyIVJceWrOC4Nk4m9lS
-         53n2FNS9oU5YcS19a9JjqXlyGFB3tCOkLxeqCJWKouTexAcsnjW8SUDL6u8WDwPZCHpO
-         l+c/RrU9x8k7fSFm5ME43x9KqIuSTdfLiN6fmlJdoot52532PDJZWQJ8bQ0cHH9G4ta+
-         zw8tfE6gpE4E79HaX4g/Rs2MH3slF5tPwiWbVFT1P3tNuZpL3+Ro62j/djTeAkEaGyi1
-         GevA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692971170; x=1693575970;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uoBf9yEiYNSj7LpWNz2WUTLupdyL6E9irB0nHYwcJ0Q=;
-        b=Sm2pGYkYPqp6nWfYJILWP08VWG0rgtgCa5j0TzQCgqwc+bULngzsnEmZrzh9jwUlL9
-         HeokHo7rLvVTXnT3SS7voC6JG0tUOy9coyifxjeY4nabQXCjqaj3e9iB3oMlRC7vHc+E
-         Kkex0GDUFROnnr6g8EEgulLXGfBcURs3ec3ardiRJ0UTT89k7VAH92wE73WF6CpQh/fs
-         OGQt3KLYOcDr4Vesj/+MurCv+0R8i3dlU7OtbnJPGE5CKS9r/EhNG9YTVB5q4w6phgp7
-         muHj66UjllLV8+mEycV6nQaQjA3zvtRpGLLMDpm37LCVliYDXe2urX38BI9/0oYhj4GR
-         a0uw==
-X-Gm-Message-State: AOJu0YwwRk9+c5nnvZnrKluhO8aOsmjX5EqQO6LKyJUx+IGlbUE4Zc1p
-        xriFYVwiHKmgeYg0TPb+bMeAMJ5wtEQcAT6BAzLAUA==
-X-Google-Smtp-Source: AGHT+IH/VwYzbXaobNFegA4uRBSoYdkmZzOyLTtqlc1smsTkPCb3hCVybf6SyGIk+P3Z7lKcYCGDhCZifehJAa7n4EI=
-X-Received: by 2002:a25:ce03:0:b0:d72:4395:38c1 with SMTP id
- x3-20020a25ce03000000b00d72439538c1mr20201071ybe.50.1692971170404; Fri, 25
- Aug 2023 06:46:10 -0700 (PDT)
+        Fri, 25 Aug 2023 09:49:00 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B72592134
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 06:48:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692971338; x=1724507338;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=1WrrVuaq3qOLP+4Fh4Oo1laXCwKcfJBSq+CqkNCWoQU=;
+  b=Sse6R4BIBzyomc7IZv3HIlUj4AaaWXppXOJUC7miHuK5WKA9C9ivnuy9
+   k6M93fx8Gk7xgUnEBz0bmJsMceCUKw1ehy6YjrUHV0Re/0zslbg7eXdL2
+   +6ds0kdMCS/rh7uKp0CdhskbsS8EeXgGGto0RUcFyUnau4oS4kBV4supt
+   XJvMEm0EalNFaAIz3UdWuALDe9xTzsvUcr91J5daEewcsXIwoBcXONmPw
+   18u/gxYCmkKmulqa+mZKYDZHNaimVXGnvI3t7yHBBsgy2SiE25B9iFCco
+   Dp7wJ9mmHTsfGvfBPDRqN9aJk7dp35Muzx7Erhl0ZKGduOxfjTM7xogjQ
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10813"; a="359715028"
+X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
+   d="scan'208";a="359715028"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2023 06:48:11 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10813"; a="766959646"
+X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
+   d="scan'208";a="766959646"
+Received: from naikshri-mobl7.ger.corp.intel.com (HELO box.shutemov.name) ([10.249.41.113])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2023 06:47:49 -0700
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id 62118109FED; Fri, 25 Aug 2023 16:47:46 +0300 (+03)
+Date:   Fri, 25 Aug 2023 16:47:46 +0300
+From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        Jun Nakajima <jun.nakajima@intel.com>, x86@kernel.org,
+        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>
+Subject: Re: [PATCH] x86/tdx: Mark TSC reliable
+Message-ID: <20230825134746.k7hkpa3e7wnsuq7m@box.shutemov.name>
+References: <20230808162320.27297-1-kirill.shutemov@linux.intel.com>
+ <ecc11d54-6aaa-f755-9436-ae15b94fb627@intel.com>
+ <20230808200111.nz74tmschph435ri@box>
+ <878ra0ck4k.ffs@tglx>
 MIME-Version: 1.0
-References: <20230824083550.49539f4b@canb.auug.org.au>
-In-Reply-To: <20230824083550.49539f4b@canb.auug.org.au>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 25 Aug 2023 15:45:59 +0200
-Message-ID: <CACRpkdYM8Rji5muAnik_hEeBvzdhL9zrfbi3zDCjSLw=F7u1Uw@mail.gmail.com>
-Subject: Re: linux-next: Fixes tag needs some work in the pinctrl tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Asmaa Mnebhi <asmaa@nvidia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <878ra0ck4k.ffs@tglx>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 12:35=E2=80=AFAM Stephen Rothwell <sfr@canb.auug.or=
-g.au> wrote:
+On Thu, Aug 24, 2023 at 09:31:39PM +0200, Thomas Gleixner wrote:
+> On Tue, Aug 08 2023 at 23:01, Kirill A. Shutemov wrote:
+> > On Tue, Aug 08, 2023 at 10:13:05AM -0700, Dave Hansen wrote:
+> >> On 8/8/23 09:23, Kirill A. Shutemov wrote:
+> >> ...
+> >> > On the other hand, other clock sources (such as HPET, ACPI timer,
+> >> > APIC, etc.) necessitate VM exits to implement, resulting in more 
+> >> > fluctuating measurements compared to TSC. Thus, those clock sources
+> >> > are not effective for calibrating TSC.
+> >> 
+> >> Do we need to do anything to _those_ to mark them as slightly stinky?
+> >
+> > I don't know what the rules here. As far as I can see, all other clock
+> > sources relevant for TDX guest have lower rating. I guess we are fine?
+> 
+> Ideally they are not enumerated in the first place, which prevents the
+> kernel from trying.
 
->   - SHA1 should be at least 12 digits long
->     This can be fixed for the future by setting core.abbrev to 12 (or
->     more) or (for git v2.11 or later) just making sure it is not set
->     (or set to "auto").
+We can ask QEMU/KVM not to advertise them to TDX guest, but guest has to
+protect itself as the VMM is not trusted. And we are back to device
+filtering...
 
-I fixed it. Thanks!
+> > There's notable exception to the rating order is kvmclock which is higher
+> > than tsc.
+> 
+> Which is silly aside of TDX.
+> 
+> > It has to be disabled, but it is not clear to me how. This topic
+> > is related to how we are going to filter allowed devices/drivers, so I
+> > would postpone the decision until we settle on wider filtering schema.
+> 
+> TDX aside it might be useful to have a mechanism to select TSC over KVM
+> clock in general.
 
-Yours,
-Linus Walleij
+Sean, Paolo, any comment on this?
+
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
