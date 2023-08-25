@@ -2,73 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0A19787D16
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 03:25:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBC97787D1B
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 03:27:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235453AbjHYBYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 21:24:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47734 "EHLO
+        id S235538AbjHYB1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 21:27:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234966AbjHYBY1 (ORCPT
+        with ESMTP id S236076AbjHYB1F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 21:24:27 -0400
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com [209.85.214.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BE5DE7D
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 18:24:25 -0700 (PDT)
-Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1c0888c175fso5569185ad.3
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 18:24:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692926664; x=1693531464;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=b93WikqS+4vnaWooWK5ySt/jG9TwR95PJARN0StjRRQ=;
-        b=B0Q+SEHTL9vnTCehScwxiaAUPNHBUXtHbBRhAlWnsmcVbzLc8l4K3fRKCCZfiUI0v0
-         GkaeaRLGiDT1e6mmJQ7pynjmwqKRRfmYR5ugtUg11lvCLfMz/vSRGRvicEpFIqkvQzaD
-         gYr/BHHvlOxn53zG+bKou6UZBPVfIlAwYOLrLofpflWuTK46lgDJroZYxNqT0YZgDHyf
-         GLKHLn2UAslzkt72sqhDN6Wlh4Ixe8dNY7aCJ1x32hGGpgaIui0jqpuVWMCfCKBTw3Xn
-         mtY23X6EP97PGAtlie0IOaPx+dsivrQGDDOu85Jm3Xy4Q080uacQa5QyfYoKFZOBv4ff
-         blLA==
-X-Gm-Message-State: AOJu0YzxXVBAnPmlnGpzqR/ItMZpbfHLDGQX6lOe/KfUnUKTzIvDP/2H
-        dgQAJt4zEBhpl28f5uY/NGfwdtVAlk+wqTQjpZchGAo4pCi6
-X-Google-Smtp-Source: AGHT+IEq/WVy1JE2cKNmXFY5Gt1H059eLRy0i02jARwgMWQ5Zi4t28ZQ/f2if5Pi5iqHKoP9eFJmnhQGueycWk3asnJThNYiC88z
+        Thu, 24 Aug 2023 21:27:05 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E88B1FC1;
+        Thu, 24 Aug 2023 18:27:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692926822; x=1724462822;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=v0UeNta87Sx8HA/Ip3QXS/fJh65LXYDTOgPDQc5jqwo=;
+  b=atmm1UJVyoffA/o6fx9VrlufZ9F+kgATswe3dTaqKQuANaZiGZDU6Ypj
+   QtgqkQg3WEN6gZQMHphtiAG8904MSSht2WbVZKMzmZr5hOAkpm5lyx94W
+   Zmuxs1CfNfz7bslt/8jghIgKwfCoCPKq3LgmDfPD7YY4cVm4K24ARyhd3
+   uYakFvFNXxMqUwc5oNnkIUkp9I8Hkea6vBZqZYmL0MmWvJU7vw2+XKmZJ
+   TM5Unyme06L72gXQ8eYxq74fcyT3rw0ANP1CIfHejJQhQDVLYddoDcb96
+   ME3O1w3TaRVVa3xfCRWeU3B3dKtL3o0ZzCEjgIV5DPs5xnpRJ2LupqnOD
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="354932353"
+X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
+   d="scan'208";a="354932353"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 18:27:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="730858553"
+X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
+   d="scan'208";a="730858553"
+Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
+  by orsmga007.jf.intel.com with ESMTP; 24 Aug 2023 18:26:57 -0700
+Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qZLbE-000368-0i;
+        Fri, 25 Aug 2023 01:26:56 +0000
+Date:   Fri, 25 Aug 2023 09:26:29 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Puranjay Mohan <puranjay12@gmail.com>, paul.walmsley@sifive.com,
+        palmer@dabbelt.com, aou@eecs.berkeley.edu, pulehui@huawei.com,
+        conor.dooley@microchip.com, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, kpsingh@kernel.org, bjorn@kernel.org,
+        bpf@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, puranjay12@gmail.com
+Subject: Re: [PATCH bpf-next v2 2/3] riscv: implement a memset like function
+ for text
+Message-ID: <202308250924.NlFcBoND-lkp@intel.com>
+References: <20230824133135.1176709-3-puranjay12@gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a17:903:1c7:b0:1bb:d27f:ac46 with SMTP id
- e7-20020a17090301c700b001bbd27fac46mr6751001plh.2.1692926664665; Thu, 24 Aug
- 2023 18:24:24 -0700 (PDT)
-Date:   Thu, 24 Aug 2023 18:24:24 -0700
-In-Reply-To: <20230824233602.3108-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007a71b10603b534ab@google.com>
-Subject: Re: [syzbot] [dri?] kernel BUG in vmf_insert_pfn_prot (2)
-From:   syzbot <syzbot+398e17b61dab22cc56bc@syzkaller.appspotmail.com>
-To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230824133135.1176709-3-puranjay12@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Puranjay,
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+kernel test robot noticed the following build warnings:
 
-Reported-and-tested-by: syzbot+398e17b61dab22cc56bc@syzkaller.appspotmail.com
+[auto build test WARNING on bpf-next/master]
 
-Tested on:
+url:    https://github.com/intel-lab-lkp/linux/commits/Puranjay-Mohan/riscv-extend-patch_text_nosync-for-multiple-pages/20230824-213410
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20230824133135.1176709-3-puranjay12%40gmail.com
+patch subject: [PATCH bpf-next v2 2/3] riscv: implement a memset like function for text
+config: riscv-allnoconfig (https://download.01.org/0day-ci/archive/20230825/202308250924.NlFcBoND-lkp@intel.com/config)
+compiler: riscv64-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20230825/202308250924.NlFcBoND-lkp@intel.com/reproduce)
 
-commit:         f8d6ff44 Merge tag 'nfsd-6.5-5' of git://git.kernel.or..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=160a9a87a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1e4a882f77ed77bd
-dashboard link: https://syzkaller.appspot.com/bug?extid=398e17b61dab22cc56bc
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=17eefce0680000
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308250924.NlFcBoND-lkp@intel.com/
 
-Note: testing is done by a robot and is best-effort only.
+All warnings (new ones prefixed by >>):
+
+   arch/riscv/kernel/patch.c: In function '__patch_insn_set':
+>> arch/riscv/kernel/patch.c:61:13: warning: unused variable 'ret' [-Wunused-variable]
+      61 |         int ret;
+         |             ^~~
+
+
+vim +/ret +61 arch/riscv/kernel/patch.c
+
+    56	
+    57	static int __patch_insn_set(void *addr, const int c, size_t len)
+    58	{
+    59		void *waddr = addr;
+    60		bool across_pages = (((uintptr_t) addr & ~PAGE_MASK) + len) > PAGE_SIZE;
+  > 61		int ret;
+    62	
+    63		/*
+    64		 * Only two pages can be mapped at a time for writing.
+    65		 */
+    66		if (len > 2 * PAGE_SIZE)
+    67			return -EINVAL;
+    68	
+    69		if (across_pages)
+    70			patch_map(addr + PAGE_SIZE, FIX_TEXT_POKE1);
+    71	
+    72		waddr = patch_map(addr, FIX_TEXT_POKE0);
+    73	
+    74		memset(waddr, c, len);
+    75	
+    76		patch_unmap(FIX_TEXT_POKE0);
+    77	
+    78		if (across_pages)
+    79			patch_unmap(FIX_TEXT_POKE1);
+    80	
+    81		return 0;
+    82	}
+    83	NOKPROBE_SYMBOL(__patch_insn_set);
+    84	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
