@@ -2,180 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D413789005
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 22:55:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B08C789006
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 22:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231269AbjHYUyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 16:54:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50730 "EHLO
+        id S231271AbjHYU4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 16:56:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231263AbjHYUyW (ORCPT
+        with ESMTP id S231287AbjHYU4J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 16:54:22 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E3901FF0
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 13:54:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692996860; x=1724532860;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=3C7JvGr4AJR6/16bCgkeVe12h0cpNID5Jz9uoMUPXLQ=;
-  b=a/vTzI1kiZzUqYSsj6e5h1LAz09SPf3l1AXRxIcQkwBYih7lHIIywZTJ
-   xvNlCxwxqlDbCagqlgVNcXPXg0COHe/94gPJC/g4+mYHqLv6yklSehVDd
-   8tcJRuyGrLu72PNy8jVN3Q72uFLHUySDrUhvoYBwWxR7aOCod16QWk2Lz
-   xL03iwu/WyhkMn1/DfksCLabdP1dhJtsl3inc9FoYV/MFpvd4s6PhulvP
-   gTlIK9r4pTMFe3VeMbAmTdI8OREYlN1lkPiL3o9sw3ZKORImz8tw+Jrup
-   OQe0qWZR0zyW5GAWFpD08dm4Z54zq0kUSjelxlaVekGVm8wUcm4Z0em9Z
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10813"; a="378582404"
-X-IronPort-AV: E=Sophos;i="6.02,201,1688454000"; 
-   d="scan'208";a="378582404"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2023 13:54:19 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10813"; a="911398812"
-X-IronPort-AV: E=Sophos;i="6.02,202,1688454000"; 
-   d="scan'208";a="911398812"
-Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.74])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2023 13:54:18 -0700
-Date:   Fri, 25 Aug 2023 13:54:17 -0700
-From:   Tony Luck <tony.luck@intel.com>
-To:     Reinette Chatre <reinette.chatre@intel.com>
-Cc:     Amit Singh Tomar <amitsinght@marvell.com>,
-        "Yu, Fenghua" <fenghua.yu@intel.com>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        George Cherian <gcherian@marvell.com>,
-        "robh@kernel.org" <robh@kernel.org>,
-        "peternewman@google.com" <peternewman@google.com>,
-        Drew Fustini <dfustini@baylibre.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: resctrl2 - status
-Message-ID: <ZOkU+d4AsLGSAG+y@agluck-desk3>
-References: <DS7PR11MB6077FE180B11A9138D8E7ED7FC1DA@DS7PR11MB6077.namprd11.prod.outlook.com>
- <35f05064-a412-ad29-5352-277fb147bbc4@intel.com>
- <SJ1PR11MB6083BC6B330FA7B7DFD3E76AFCE3A@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <dc4cd365-2a02-32a3-da78-7ba745877e97@intel.com>
- <SJ1PR11MB6083C0ED50E9B644F4AF8E4BFCE3A@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <fb9499b9-c445-01e8-8427-6b05256abdb5@intel.com>
+        Fri, 25 Aug 2023 16:56:09 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B58A71FF0;
+        Fri, 25 Aug 2023 13:56:06 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4582462557;
+        Fri, 25 Aug 2023 20:56:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46937C433C8;
+        Fri, 25 Aug 2023 20:56:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692996965;
+        bh=0yMxI1aqpUsVuQGJ9ksRgrZNIroKRdff7ovmW9cKQyc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ln9CyAHe75vjlgji4MmonWOQTFHHVkVWzeZpKIfE1fh8DdBDrD6ovBdrJPtCaoTYz
+         UVIRnYftqWE/BcEawOcor2S2nNDs4WGF/KuJUrBWuOrYOYJFflfYuIGCotnMMG3eXM
+         sYNbWJSKarO5EueVpoRSO2iNoqbevUPzWvTUvF8mvK+O6gsT1u23bdmjBmPTN4AT8Z
+         pMr1qqci1e9c1MaTtJdo52b1gA2tptXiGqLf0FSGYpkCWYw8cHFyE3H402Ph7SwnwV
+         MfICHm8Ig8N3hQxsn9pSmJ2so9MsZ6evOMLfwVb1FozpOnpNuMJcR1ruZRq9I6Fyb/
+         pxR+01Jq+3xKg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id BD5AC40722; Fri, 25 Aug 2023 17:56:02 -0300 (-03)
+Date:   Fri, 25 Aug 2023 17:56:02 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Thomas Richter <tmricht@linux.ibm.com>
+Cc:     Ian Rogers <irogers@google.com>,
+        Sumanth Korikkar <sumanthk@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        James Clark <james.clark@arm.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 06/18] perf s390 s390_cpumcfdg_dump: Don't scan all
+ PMUs
+Message-ID: <ZOkVYoN17A8wwP3k@kernel.org>
+References: <20230824041330.266337-1-irogers@google.com>
+ <20230824041330.266337-7-irogers@google.com>
+ <ZOdiX4eJHFfFbQhi@kernel.org>
+ <428afeb4-d5ca-8115-73fc-881119a1cd51@linux.ibm.com>
+ <CAP-5=fVt1vxK0CJ=aYjZzs4mushbxAx8056uxVQZUfsLAKpVoQ@mail.gmail.com>
+ <4f2438fc-2360-8833-3751-fe3bc8b11afb@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <fb9499b9-c445-01e8-8427-6b05256abdb5@intel.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4f2438fc-2360-8833-3751-fe3bc8b11afb@linux.ibm.com>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 25, 2023 at 01:20:22PM -0700, Reinette Chatre wrote:
-> Hi Tony,
+Em Fri, Aug 25, 2023 at 04:39:22PM +0200, Thomas Richter escreveu:
+> On 8/25/23 15:14, Ian Rogers wrote:
+> > On Fri, Aug 25, 2023 at 1:20 AM Thomas Richter <tmricht@linux.ibm.com> wrote:
+
+> >> On 8/24/23 15:59, Arnaldo Carvalho de Melo wrote:
+> >>> Em Wed, Aug 23, 2023 at 09:13:18PM -0700, Ian Rogers escreveu:
+> >>>> Rather than scanning all PMUs for a counter name, scan the PMU
+> >>>> associated with the evsel of the sample. This is done to remove a
+> >>>> dependence on pmu-events.h.
+
+> >>> I'm applying this one, and CCing the S/390 developers so that they can
+> >>> try this and maybe provide an Acked-by/Tested-by,
+
+> >> I have downloaded this patch set of 18 patches (using b4), but they do not
+> >> apply on my git tree.
+
+> >> Which git branch do I have to use to test this. Thanks a lot.
+
+> > the changes are in the perf-tools-next tree:
+> > https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/
+ 
+> Unfurtunately this patch set fails again on s390.
+> Here is the test output from the current 6.5.0rc7 kernel:
 > 
-> On 8/25/2023 12:44 PM, Luck, Tony wrote:
-> >>>> Alternatively, can user space just take a "load all resctrl modules
-> >>>> and see what sticks" (even modules of different architectures since
-> >>>> a user space may want to be generic) approach?
-> >>>
-> >>> This mostly works. Except for the cases where different modules access
-> >>> the same underlying hardware, so can't be loaded together.
-> >>>
-> >>> Examples:
-> >>>
-> >>> rdt_l3_cat vs. rdt_l3_cdp - user needs to decide whether they want CDP or not.
-> >>> But this is already true ... they have to decide whether to pass the "-o cdp" option
-> >>> to mount.
-> >>>
-> >>> rdt_l3_mba vs. rdt_l3_mba_MBps - does the user want to control memory bandwidth
-> >>> with percentages, or with MB/sec values. Again the user already has to make this
-> >>> decision when choosing mount options.
-> >>>
-> >>>
-> >>> Maybe the "What resctrl options does this machine support?" question would be
-> >>> best answered with a small utility?
-> >>
-> >> A user space utility or a kernel provided utility? If it is a user space utility
-> >> I think it would end up needing to duplicate what the kernel is required to do
-> >> to know if a particular feature is supported. It seems appropriate that this
-> >> could be a kernel utility that can share this existing information with user
-> >> space. resctrl already supports the interface for this via /sys/fs/resctrl/info.
-> > 
-> > I was imagining a user space utility. Even though /proc/cpuinfo doesn't show
-> > all features, a utility has access to all the CPUID leaves that contain the
-> > details of each feature enumeration.
+> # ./perf test 6 10 'perf all metricgroups test' 'perf all metrics test'
+>   6: Parse event definition strings                                  :
+>   6.1: Test event parsing                                            : Ok
+>   6.2: Parsing of all PMU events from sysfs                          : Ok
+>   6.3: Parsing of given PMU events from sysfs                        : Ok
+>   6.4: Parsing of aliased events from sysfs                          : Skip (no aliases in sysfs)
+>   6.5: Parsing of aliased events                                     : Ok
+>   6.6: Parsing of terms (event modifiers)                            : Ok
+>  10: PMU events                                                      :
+>  10.1: PMU event table sanity                                        : Ok
+>  10.2: PMU event map aliases                                         : Ok
+>  10.3: Parsing of PMU event table metrics                            : Ok
+>  10.4: Parsing of PMU event table metrics with fake PMUs             : Ok
+>  10.5: Parsing of metric thresholds with fake PMUs                   : Ok
+>  95: perf all metricgroups test                                      : Ok
+>  96: perf all metrics test                                           : Ok
+> # 
 > 
-> For x86 that may work (in some scenarios, see later) for now but as I understand
-> Arm would need a different solution where I believe the information is obtained
-> via ACPI. I think it is unnecessary to require user space to have parsers for
-> CPUID and ACPI if that same information needs to be parsed by the kernel and
-> there already exists an interface with which the information is communicated
-> from kernel to user space. Also, just because information CPUID shows a feature
-> is supported by the hardware does not mean that the kernel has support for that
-> feature. This could be because of a feature mismatch between user space and
-> kernel, or even some features disabled for use via the, for example "rdt=!l3cat",
-> kernel parameter.
+> This looks good.
 
-Agreed this is complex, and my initial resctrl2 proposal lacks
-functionality in this area.
+Reproduced:
 
-> >> fyi ... as with previous attempts to discuss this work I find it difficult
-> >> to discuss this work when you are selective about what you want to discuss/answer
-> >> and just wipe the rest. Through this I understand that I am not your target
-> >> audience.
-> > 
-> > Not my intent. I value your input highly. I'm maybe too avid a follower of the
-> > "trim your replies" school of e-mail etiquette. I thought I'd covered the gist
-> > of your message.
-> > 
-> > I'll try to be more thorough in responding in the future.
+# grep -E vendor_id\|^processor -m2 /proc/cpuinfo
+vendor_id       : IBM/S390
+processor 0: version = 00,  identification = 1A33E8,  machine = 2964
+#
+# perf test 6 10 'perf all metricgroups test' 'perf all metrics test'
+  6: Parse event definition strings                                  :
+  6.1: Test event parsing                                            : Ok
+  6.2: Parsing of all PMU events from sysfs                          : Ok
+  6.3: Parsing of given PMU events from sysfs                        : Ok
+  6.4: Parsing of aliased events from sysfs                          : Skip (no aliases in sysfs)
+  6.5: Parsing of aliased events                                     : Ok
+  6.6: Parsing of terms (event modifiers)                            : Ok
+ 10: PMU events                                                      :
+ 10.1: PMU event table sanity                                        : Ok
+ 10.2: PMU event map aliases                                         : Ok
+ 10.3: Parsing of PMU event table metrics                            : Ok
+ 10.4: Parsing of PMU event table metrics with fake PMUs             : Ok
+ 10.5: Parsing of metric thresholds with fake PMUs                   : Ok
+ 95: perf all metricgroups test                                      : Ok
+ 96: perf all metrics test                                           : Ok
+# perf -v
+perf version 6.5.rc7.g6f0edbb833ec
+#
+ 
+> However when I use the check-out from perf-tools-next, I get this output:
+> # ./perf test 6 10 'perf all metricgroups test' 'perf all metrics test'
+>   6: Parse event definition strings                                  :
+>   6.1: Test event parsing                                            : Ok
+>   6.2: Parsing of all PMU events from sysfs                          : FAILED!
+>   6.3: Parsing of given PMU events from sysfs                        : Ok
+>   6.4: Parsing of aliased events from sysfs                          : Skip (no aliases in sysfs)
+>   6.5: Parsing of aliased events                                     : FAILED!
+>   6.6: Parsing of terms (event modifiers)                            : Ok
+>  10: PMU events                                                      :
+>  10.1: PMU event table sanity                                        : Ok
+>  10.2: PMU event map aliases                                         : FAILED!
+>  10.3: Parsing of PMU event table metrics                            : Ok
+>  10.4: Parsing of PMU event table metrics with fake PMUs             : FAILED!
+>  10.5: Parsing of metric thresholds with fake PMUs                   : Ok
+>  93: perf all metricgroups test                                      : FAILED!
+>  94: perf all metrics test                                           : FAILED!
+> # 
 > 
-> Two items from my previous email remain open:
+> So some tests are failing again.
 > 
-> First, why does making the code modular require everything to be loadable
-> modules?
-> I think that it is great that the code is modular. Ideally it will help to
-> support the other architectures. As you explain this modular design also
-> has the benefit that "modules" can be loaded and unloaded after resctrl mount.
-> Considering your example of MBA and MBA_MBps support ... if I understand
-> correctly with code being modular it enables changes from one to the other
-> after resctrl mount. User can start with MBA and then switch to MBA_MBps
-> without needing to unmount resctrl. What I do not understand is why does
-> the code being modular require everything to be modules? Why, for example,
-> could a user not interact with a resctrl file that enables the user to make
-> this switch from, for example, MBA to MBA_MBps? With this the existing
-> interfaces can remain to be respected, the existing mount parameters need
-> to remain anyway, while enabling future "more modular" usages.
+> I am out for the next two weeks, Sumanth Korikkar (on to list) might be able to help.
+> Thanks a lot.
 
-Lots of advantages to modules:
-1) Only load what you need.
-	- saves memory
-	- reduces potential attack surface
-	- may avoid periodic timers (e.g. for MBM overflow and
-	  for LLC occupancy "limbo" mode).
-2) If there is a security fix, can be deployed without a reboot.
-3) Isolation between different features. 
-	- Makes development and testing simpler
+[root@kernelqe3 linux]# git checkout perf-tools-next
+git Switched to branch 'perf-tools-next'
+Your branch is up to date with 'perf-tools-next/perf-tools-next'.
+[root@kernelqe3 linux]# git log --oneline -5
+eeb6b12992c4 (HEAD -> perf-tools-next, perf-tools-next/perf-tools-next) perf jevents: Don't append Unit to desc
+f208b2c6f984 (perf-tools-next/tmp.perf-tools-next) perf scripts python gecko: Launch the profiler UI on the default browser with the appropriate URL
+43803cb16f99 perf scripts python: Add support for input args in gecko script
+f85d120c46e7 perf jevents: Sort strings in the big C string to reduce faults
+8d4b6d37ea78 perf pmu: Lazily load sysfs aliases
+[root@kernelqe3 linux]# make BUILD_BPF_SKEL=1 -C tools/perf O=/tmp/build/perf install-bin
 
-Sure some things like switching MBA to MBA_MBps mode by writing to
-a control file are theoretically possible. But they would be far more
-complex implementations with many possible oppurtunities for bugs.
-I think Vikas made a good choice to make this a mount option rather
-than selectable at run time.
+[root@kernelqe3 linux]# perf -v
+perf version 6.5.rc5.geeb6b12992c4
+[root@kernelqe3 linux]# git log --oneline -1
+eeb6b12992c4 (HEAD -> perf-tools-next, perf-tools-next/perf-tools-next) perf jevents: Don't append Unit to desc
+[root@kernelqe3 linux]# perf test 6 10 'perf all metricgroups test' 'perf all metrics test'
+  6: Parse event definition strings                                  :
+  6.1: Test event parsing                                            : Ok
+  6.2: Parsing of all PMU events from sysfs                          : FAILED!
+  6.3: Parsing of given PMU events from sysfs                        : Ok
+  6.4: Parsing of aliased events from sysfs                          : Skip (no aliases in sysfs)
+  6.5: Parsing of aliased events                                     : FAILED!
+  6.6: Parsing of terms (event modifiers)                            : Ok
+ 10: PMU events                                                      :
+ 10.1: PMU event table sanity                                        : Ok
+ 10.2: PMU event map aliases                                         : FAILED!
+ 10.3: Parsing of PMU event table metrics                            : Ok
+ 10.4: Parsing of PMU event table metrics with fake PMUs             : FAILED!
+ 10.5: Parsing of metric thresholds with fake PMUs                   : Ok
+ 93: perf all metricgroups test                                      : FAILED!
+ 94: perf all metrics test                                           : FAILED!
+[root@kernelqe3 linux]#
 
-> Second, copied from my previous email, what is the plan to deal with current
-> users that just mount resctrl and expect to learn from it what features are
-> supported?
+Bisecting the first problem:
 
-Do such users exist? Resctrl is a sophisticated system management tool.
-I'd expect system administrators deploying it are well aware of the
-capabilities of the different types of systems in their data center.
+ 10.2: PMU event map aliases                                         : FAILED!
 
-But if I'm wrong, then I have to go back to figure out a way to
-expose this information in a better way than randomly running "modprobe"
-to see what sticks.
+make: Leaving directory '/root/git/linux/tools/perf'
+  6: Parse event definition strings                                  :
+  6.1: Test event parsing                                            : Ok
+  6.2: Parsing of all PMU events from sysfs                          : Ok
+  6.3: Parsing of given PMU events from sysfs                        : Ok
+  6.4: Parsing of aliased events from sysfs                          : Skip (no aliases in sysfs)
+  6.5: Parsing of aliased events                                     : Ok
+  6.6: Parsing of terms (event modifiers)                            : Ok
+ 10: PMU events                                                      :
+ 10.1: PMU event table sanity                                        : Ok
+ 10.2: PMU event map aliases                                         : FAILED!
+ 10.3: Parsing of PMU event table metrics                            : Ok
+ 10.4: Parsing of PMU event table metrics with fake PMUs             : Ok
+ 10.5: Parsing of metric thresholds with fake PMUs                   : Ok
+ 93: perf all metricgroups test                                      : Ok
+ 94: perf all metrics test                                           : Ok
+[root@kernelqe3 linux]# git bisect bad
+2e255b4f9f41f137d9e3dc4fae3603a9c2c3dd28 is the first bad commit
+commit 2e255b4f9f41f137d9e3dc4fae3603a9c2c3dd28
+Author: Ian Rogers <irogers@google.com>
+Date:   Wed Aug 23 21:13:16 2023 -0700
 
--Tony
+    perf jevents: Group events by PMU
+
+    Prior to this change a cpuid would map to a list of events where the PMU
+    would be encoded alongside the event information. This change breaks
+    apart each group of events so that there is a group per PMU. A new table
+    is added with the PMU's name and the list of events, the original table
+    now holding an array of these per PMU tables.
+
+    These changes are to make it easier to get per PMU information about
+    events, rather than the current approach of scanning all events. The
+    perf binary size with BPF skeletons on x86 is reduced by about 1%. The
+    unidentified PMU is now always expanded to "cpu".
+
+    Signed-off-by: Ian Rogers <irogers@google.com>
+    Cc: Adrian Hunter <adrian.hunter@intel.com>
+    Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+    Cc: Gaosheng Cui <cuigaosheng1@huawei.com>
+    Cc: Ingo Molnar <mingo@redhat.com>
+    Cc: James Clark <james.clark@arm.com>
+    Cc: Jing Zhang <renyu.zj@linux.alibaba.com>
+    Cc: Jiri Olsa <jolsa@kernel.org>
+    Cc: John Garry <john.g.garry@oracle.com>
+    Cc: Kajol Jain <kjain@linux.ibm.com>
+    Cc: Kan Liang <kan.liang@linux.intel.com>
+    Cc: Mark Rutland <mark.rutland@arm.com>
+    Cc: Namhyung Kim <namhyung@kernel.org>
+    Cc: Peter Zijlstra <peterz@infradead.org>
+    Cc: Ravi Bangoria <ravi.bangoria@amd.com>
+    Cc: Rob Herring <robh@kernel.org>
+    Link: https://lore.kernel.org/r/20230824041330.266337-5-irogers@google.com
+    Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+
+ tools/perf/pmu-events/jevents.py | 181 +++++++++++++++++++++++++++++----------
+ tools/perf/tests/pmu-events.c    |  30 ++++---
+ 2 files changed, 154 insertions(+), 57 deletions(-)
+[root@kernelqe3 linux]#
+
+
