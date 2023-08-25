@@ -2,284 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5512D788ECF
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 20:37:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C020788ED3
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 20:38:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230457AbjHYSgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 14:36:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42948 "EHLO
+        id S230229AbjHYSiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 14:38:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231430AbjHYSgl (ORCPT
+        with ESMTP id S231189AbjHYSiK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 14:36:41 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8589A210D
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 11:36:38 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-5007abb15e9so1892065e87.0
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 11:36:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692988597; x=1693593397;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zfc+svOzCxvB7yRJtIEcq1qIHS1pzaD7yBQ0frUfrOs=;
-        b=Fbyo8i4DUT7CRSUZhuSpG1rSoSWlUGLlxwdscAVjilPHwlKCw/l+Y38zplZL94R3Go
-         SWLn7P5ndcDgZybrt/hyyURDN59dhFJNLEQ+m1Swn9vo9md5zfLurImt/ZDlhS287NuO
-         rmPMpf0Tflz8yPZvirTNpK7E6p1bq3czP9f2v+mm4Uyb87n0WjKjmxI3tyL//k2/WvPE
-         vZVzePxJ1DSWbDhbKNP/npcIeA/PJ4Ah60yE+aVHFZRHI55oPO7WX9vSv4KQLtXqjIRN
-         m8bfZYhzzmMLOAySl3kdo45qvtCS0uaa3I8q34j3KLzafSOwBkxm5qg/1cQgxKbDvhy4
-         EOsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692988597; x=1693593397;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zfc+svOzCxvB7yRJtIEcq1qIHS1pzaD7yBQ0frUfrOs=;
-        b=aohq/IYV61kOfJdxdr4WPKUbWDWU1aYnUW+JO+fba6w8MdSXuvS3KYyG1CKyC0UQbL
-         8GKJVAKQc1zitcfKpjlRRQhCKGGjR7fUzDeYShOc6gU7MLESrRb+2hQ9V/LJDVzFmYiw
-         q9PzBbklqPVNO0weeXOBkLjsm9sd43Ks8qR4kjk6yeZC86mQm0F7n2FqBnAMZdeXGqp/
-         bwxe7RM0J+CC7rshblajYXNsANXfNVLAMjvZPcpx1a9m1IKG3aTftF1l2uXyEhZqBXie
-         GBYIY2dAz5lCCPBDelmQdnkCjLZZSBHv9+PCOUiE9xEvaTE0SMQvu/frK8rStkBNFdqQ
-         pQpw==
-X-Gm-Message-State: AOJu0YywqUgMQ7k8unIrOa10XPshKyL/b4x3Vzz1ct+rZC94nW4p2bhH
-        U8u0MLmx64Iy1msjCZVfwzW8Y+i7rzAmF0yv9sOuxw==
-X-Google-Smtp-Source: AGHT+IGrldydCJQJSKs/g27Dr7xBAtnXV9y0Ay5Jeene2HWimKFVvOs3WUFSh0gFcSelV2Qw9y7BcbTiWTe9zY+5qlA=
-X-Received: by 2002:a05:6512:220f:b0:4fb:81f2:422b with SMTP id
- h15-20020a056512220f00b004fb81f2422bmr17047884lfu.54.1692988596632; Fri, 25
- Aug 2023 11:36:36 -0700 (PDT)
+        Fri, 25 Aug 2023 14:38:10 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9110CD2
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 11:38:07 -0700 (PDT)
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37PDqLbD012607;
+        Fri, 25 Aug 2023 18:37:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=0VReRN1N5x/WPlCXO6ei+ZSQ9KffN8nFcZopw4l1kuE=;
+ b=LTXCdNvH/RspTTgTGXRk26qfmbC1ise7AiJF3mdqiomI+A+geh6ch5o6coQHtbjamHtX
+ 6gq8K5e7gmlw+syQDZVbdeH8BhK/59yPTS8tQuA+Vi1MPD9nAeggPn5gV4gNagLQF/0Y
+ 8I91YAGyQMCs8oM5+mbfy7NxKZ0VH3DMS8NkveHCewY4Jgovd88RVrh0B1z7j6J/dy+L
+ lHv8Kkh9hLdBXDux3DfizlRUOtWZT4HMm5rbGZnKmci8NWmSbX7ry7QLbBUSL3FanQgn
+ GfcFP24t/EBy4Zb45cmjHKQxudbzPrv3Y11Dwttuim7nyxOPGnrWUnzwuMDmzqg5b+2N 7A== 
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3spmrhhnf2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 25 Aug 2023 18:37:50 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37PIbnOw020519
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 25 Aug 2023 18:37:49 GMT
+Received: from [10.71.109.168] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Fri, 25 Aug
+ 2023 11:37:48 -0700
+Message-ID: <54b37d60-61b1-e939-c71d-30aecad65598@quicinc.com>
+Date:   Fri, 25 Aug 2023 11:37:47 -0700
 MIME-Version: 1.0
-References: <CAFhGd8ryUcu2yPC+dFyDKNuVFHxT-=iayG+n2iErotBxgd0FVw@mail.gmail.com>
- <CAKwvOd=p_7gWwBnR_RHUPukkG1A25GQy6iOnX_eih7u65u=oxw@mail.gmail.com>
- <CAO-hwJLio2dWs01VAhCgmub5GVxRU-3RFQifviOL0OTaqj9Ktg@mail.gmail.com>
- <CAFhGd8qmXD6VN+nuXKtV_Uz14gzY1Kqo7tmOAhgYpTBdCnoJRQ@mail.gmail.com>
- <CAO-hwJJ_ipXwLjyhGC6_4r-uZ-sDbrb_W7um6F2vgws0d-hvTQ@mail.gmail.com>
- <CAO-hwJ+DTPXWbpNaBDvCkyAsWZHbeLiBwYo4k93ZW79Jt-HAkg@mail.gmail.com>
- <CAFhGd8pVjUPpukHxxbQCEnmgDUqy-tgBa7POkmgrYyFXVRAMEw@mail.gmail.com>
- <CAO-hwJJntQTzcJH5nf9RM1bVWGVW1kb28rJ3tgew1AEH00PmJQ@mail.gmail.com>
- <CAFhGd8rgdszt5vgWuGKkcpTZbKvihGCJXRKKq7RP17+71dTYww@mail.gmail.com>
- <20230822214220.jjx3srik4mteeond@google.com> <56ba8125-2c6f-a9c9-d498-0ca1c153dcb2@redhat.com>
- <e99b4226bd450fedfebd4eb5c37054f032432b4f.camel@gmail.com>
-In-Reply-To: <e99b4226bd450fedfebd4eb5c37054f032432b4f.camel@gmail.com>
-From:   Justin Stitt <justinstitt@google.com>
-Date:   Fri, 25 Aug 2023 11:36:25 -0700
-Message-ID: <CAFhGd8ob_qet6ODduHz2=sjGXkHaFMzrtu1FFkN0eUWQvpyPrQ@mail.gmail.com>
-Subject: Re: selftests: hid: trouble building with clang due to missing header
-To:     Eduard Zingerman <eddyz87@gmail.com>
-Cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
-        linux-input@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Kees Cook <keescook@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/panel: Add prepare_prev_first flag to Visionox
+ VTDR6130
+Content-Language: en-US
+To:     <neil.armstrong@linaro.org>, Maxime Ripard <mripard@kernel.org>
+CC:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Douglas Anderson <dianders@chromium.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        <quic_parellan@quicinc.com>, <dri-devel@lists.freedesktop.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20230725-visionox-vtdr-prev-first-v1-1-3bc44cec7dc6@quicinc.com>
+ <dde2774e-6f0b-21d0-e9c9-4a5bd1eac4e8@linaro.org>
+ <2f9a9450-438b-257d-759c-22b273a7b35d@quicinc.com>
+ <c183d823-81d4-6d7c-98d9-649fa4041262@quicinc.com>
+ <6c0dd9fd-5d8e-537c-804f-7a03d5899a07@linaro.org>
+ <548b0333-103b-ac66-0fc5-f29e7cc50596@quicinc.com>
+ <6e1f6cb7-7f88-48dc-b494-1a5e990e1a33@linaro.org>
+ <ff1b04c3-c852-4e28-9054-3cebb4ca5d6e@linaro.org>
+ <c7c5c8f0-16e6-47bd-94e8-ce924163dfd3@linaro.org>
+ <giimknikofbipipawfmrcjiar5qfyw3t7sqy3iewjahsm3ktkt@qcn4g23zfcnj>
+ <76e76728-974e-46ff-8046-c61c54d07c76@linaro.org>
+From:   Jessica Zhang <quic_jesszhan@quicinc.com>
+In-Reply-To: <76e76728-974e-46ff-8046-c61c54d07c76@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 3VshZ4YUGIdsw7XqUte3vqcqO9rneSdW
+X-Proofpoint-ORIG-GUID: 3VshZ4YUGIdsw7XqUte3vqcqO9rneSdW
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-25_16,2023-08-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ priorityscore=1501 phishscore=0 clxscore=1015 bulkscore=0 spamscore=0
+ mlxscore=0 lowpriorityscore=0 adultscore=0 suspectscore=0 malwarescore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308250167
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 25, 2023 at 6:01=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
->
-> On Fri, 2023-08-25 at 10:08 +0200, Benjamin Tissoires wrote:
-> >
-> > On Tue, Aug 22, 2023 at 11:42=E2=80=AFPM Justin Stitt <justinstitt@goog=
-le.com> wrote:
-> > > > > > > Which kernel are you trying to test?
-> > > > > > > I tested your 2 commands on v6.5-rc7 and it just works.
-> > > > > >
-> > > > > > I'm also on v6.5-rc7 (706a741595047797872e669b3101429ab8d378ef)
-> > > > > >
-> > > > > > I ran these exact commands:
-> > > > > > >    $ make mrproper
-> > > > > > >    $ make LLVM=3D1 ARCH=3Dx86_64 headers
-> > > > > > >    $ make LLVM=3D1 ARCH=3Dx86_64 -j128 -C tools/testing/selft=
-ests
-> > > > > > TARGETS=3Dhid &> out
-> > > > > >
-> > > > > > and here's the contents of `out` (still warnings/errors):
-> > > > > > https://gist.github.com/JustinStitt/d0c30180a2a2e046c32d5f0ce5f=
-59c6d
-> > > > > >
-> > > > > > I have a feeling I'm doing something fundamentally incorrectly.=
- Any ideas?
-> > > > >
-> > > > > Sigh... there is a high chance my Makefile is not correct and use=
-s the
-> > > > > installed headers (I was running the exact same commands, but on =
-a
-> > > > > v6.4-rc7+ kernel).
-> > > > >
-> > > > > But sorry, it will have to wait for tomorrow if you want me to ha=
-ve a
-> > > > > look at it. It's 11:35 PM here, and I need to go to bed
-> > > > Take it easy. Thanks for the prompt responses here! I'd like to get
-> > > > the entire kselftest make target building with Clang so that we can
-> > > > close [1].
-> >
-> > Sorry I got urgent matters to tackle yesterday.
-> >
-> > It took me a while to understand what was going on, and I finally found
-> > it.
-> >
-> > struct hid_bpf_ctx is internal to the kernel, and so is declared in
-> > vmlinux.h, that we generate through BTF. But to generate the vmlinux.h
-> > with the correct symbols, these need to be present in the running
-> > kernel.
-> > And that's where we had a fundamental difference: I was running my
-> > compilations on a kernel v6.3+ (6.4.11) with that symbol available, and
-> > you are probably not.
-> >
-> > The bpf folks are using a clever trick to force the compilation[2]. And
-> > I think the following patch would work for you:
->
-> Hi Benjamin, Justin,
->
-> You might want to take a look at these two links:
-> [1] https://nakryiko.com/posts/bpf-core-reference-guide/#handling-incompa=
-tible-field-and-type-changes
-> [2] https://facebookmicrosites.github.io/bpf/blog/2020/02/19/bpf-portabil=
-ity-and-co-re.html#dealing-with-kernel-version-and-configuration-difference=
-s
->
-> The short version is: CO-RE relocation handling logic in libbpf
-> ignores suffixes of form '___something' for type and field names.
->
-> So, the following should accomplish the same as the trick with
-> #define/#undef:
->
->     #include "vmlinux.h"
->     ...
->     struct hid_bpf_ctx___local {
->         __u32 index;
->         const struct hid_device *hid;
->         __u32 allocated_size;
->         enum hid_report_type report_type;
->         union {
->             __s32 retval;
->             __s32 size;
->         };
->
->     };
->     ...
->     extern __u8 *hid_bpf_get_data(struct hid_bpf_ctx___local *ctx,
->                                   unsigned int offset, ...)
->
-> However, if the kernel does not have `hid_bpf_ctx` definition would
-> the test `progs/hid.c` still make sense?
->
-> When I tried to build hid tests locally I run into similar errors:
->
->     ...
->       CLNG-BPF hid.bpf.o
->     In file included from progs/hid.c:6:
->     progs/hid_bpf_helpers.h:9:38: error: declaration of 'struct hid_bpf_c=
-tx' \
->            will not be visible outside of this function [-Werror,-Wvisibi=
-lity]
->     extern __u8 *hid_bpf_get_data(struct hid_bpf_ctx *ctx,
->     ...
->
-> And there is indeed no `hid_bpf_ctx` in my vmlinux.h.
-> However, after enabling CONFIG_HID_BPF in kernel config the
-> `hid_bpf_ctx` appears in vmlinux.h, and I can compile HID selftests
-> w/o issues.
 
-Even with enabling this configuration option I was unable to get clean
-builds of the HID selftests. I proposed a 4th patch on top of
-Benjamin's n=3D3 patch series here [1] using the #def/#undef pattern.
 
->
-> >
-> > ---
-> >  From bb9eccb7a896ba4b3a35ed12a248e6d6cfed2df6 Mon Sep 17 00:00:00 2001
-> > From: Benjamin Tissoires <bentiss@kernel.org>
-> > Date: Fri, 25 Aug 2023 10:02:32 +0200
-> > Subject: [PATCH] selftests/hid: ensure we can compile the tests on kern=
-els
-> >   pre-6.3
-> >
-> > For the hid-bpf tests to compile, we need to have the definition of
-> > struct hid_bpf_ctx. This definition is an internal one from the kernel
-> > and it is supposed to be defined in the generated vmlinux.h.
-> >
-> > This vmlinux.h header is generated based on the currently running kerne=
-l
-> > or if the kernel was already compiled in the tree. If you just compile
-> > the selftests without compiling the kernel beforehand and you are runni=
-ng
-> > on a 6.2 kernel, you'll end up with a vmlinux.h without the hid_bpf_ctx
-> > definition.
-> >
-> > Use the clever trick from tools/testing/selftests/bpf/progs/bpf_iter.h
-> > to force the definition of that symbol in case we don't find it in the
-> > BTF.
-> >
-> > Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
-> > ---
-> >   tools/testing/selftests/hid/progs/hid.c       |  3 ---
-> >   .../selftests/hid/progs/hid_bpf_helpers.h     | 20 ++++++++++++++++++=
-+
-> >   2 files changed, 20 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/tools/testing/selftests/hid/progs/hid.c b/tools/testing/se=
-lftests/hid/progs/hid.c
-> > index 88c593f753b5..1e558826b809 100644
-> > --- a/tools/testing/selftests/hid/progs/hid.c
-> > +++ b/tools/testing/selftests/hid/progs/hid.c
-> > @@ -1,8 +1,5 @@
-> >   // SPDX-License-Identifier: GPL-2.0
-> >   /* Copyright (c) 2022 Red hat */
-> > -#include "vmlinux.h"
-> > -#include <bpf/bpf_helpers.h>
-> > -#include <bpf/bpf_tracing.h>
-> >   #include "hid_bpf_helpers.h"
-> >
-> >   char _license[] SEC("license") =3D "GPL";
-> > diff --git a/tools/testing/selftests/hid/progs/hid_bpf_helpers.h b/tool=
-s/testing/selftests/hid/progs/hid_bpf_helpers.h
-> > index 4fff31dbe0e7..749097f8f4d9 100644
-> > --- a/tools/testing/selftests/hid/progs/hid_bpf_helpers.h
-> > +++ b/tools/testing/selftests/hid/progs/hid_bpf_helpers.h
-> > @@ -5,6 +5,26 @@
-> >   #ifndef __HID_BPF_HELPERS_H
-> >   #define __HID_BPF_HELPERS_H
-> >
-> > +/* "undefine" structs in vmlinux.h, because we "override" them below *=
-/
-> > +#define hid_bpf_ctx hid_bpf_ctx___not_used
-> > +#include "vmlinux.h"
-> > +#undef hid_bpf_ctx
-> > +
-> > +#include <bpf/bpf_helpers.h>
-> > +#include <bpf/bpf_tracing.h>
-> > +
-> > +
-> > +struct hid_bpf_ctx {
-> > +     __u32 index;
-> > +     const struct hid_device *hid;
-> > +     __u32 allocated_size;
-> > +     enum hid_report_type report_type;
-> > +     union {
-> > +             __s32 retval;
-> > +             __s32 size;
-> > +     };
-> > +};
-> > +
-> >   /* following are kfuncs exported by HID for HID-BPF */
-> >   extern __u8 *hid_bpf_get_data(struct hid_bpf_ctx *ctx,
-> >                             unsigned int offset,
->
+On 8/21/2023 3:01 AM, neil.armstrong@linaro.org wrote:
+> Hi Maxime,
+> 
+> On 21/08/2023 10:17, Maxime Ripard wrote:
+>> Hi,
+>>
+>> On Fri, Aug 18, 2023 at 10:25:48AM +0200, neil.armstrong@linaro.org 
+>> wrote:
+>>> On 17/08/2023 20:35, Dmitry Baryshkov wrote:
+>>>> On 16/08/2023 10:51, neil.armstrong@linaro.org wrote:
+>>>>> Sending HS commands will always work on any controller, it's all
+>>>>> about LP commands. The Samsung panels you listed only send HS
+>>>>> commands so they can use prepare_prev_first and work on any
+>>>>> controllers.
+>>>>
+>>>> I think there is some misunderstanding there, supported by the
+>>>> description of the flag.
+>>>>
+>>>> If I remember correctly, some hosts (sunxi) can not send DCS
+>>>> commands after enabling video stream and switching to HS mode, see
+>>>> [1]. Thus, as you know, most of the drivers have all DSI panel setup
+>>>> commands in drm_panel_funcs::prepare() /
+>>>> drm_bridge_funcs::pre_enable() callbacks, not paying attention
+>>>> whether these commands are to be sent in LP or in HS mode.
+>>>>
+>>>> Previously DSI source drivers could power on the DSI link either in
+>>>> mode_set() or in pre_enable() callbacks, with mode_set() being the
+>>>> hack to make panel/bridge drivers to be able to send commands from
+>>>> their prepare() / pre_enable() callbacks.
+>>>>
+>>>> With the prev_first flags being introduced, we have established that
+>>>> DSI link should be enabled in DSI host's pre_enable() callback and
+>>>> switched to HS mode (be it command or video) in the enable()
+>>>> callback.
+>>>>
+>>>> So far so good.
+>>>
+>>> It seems coherent, I would like first to have a state of all DSI host
+>>> drivers and make this would actually work first before adding the
+>>> prev_first flag to all the required panels.
+>>
+>> This is definitely what we should do in an ideal world, but at least for
+>> sunxi there's no easy way for it at the moment. There's no documentation
+>> for it and the driver provided doesn't allow this to happen.
+>>
+>> Note that I'm not trying to discourage you or something here, I'm simply
+>> pointing out that this will be something that we will have to take into
+>> account. And it's possible that other drivers are in a similar
+>> situation.
+>>
+>>>> Unfortunately this change is not fully backwards-compatible. This
+>>>> requires that all DSI panels sending commands from prepare() should
+>>>> have the prepare_prev_first flag. In some sense, all such patches
+>>>> might have Fixes: 5ea6b1702781 ("drm/panel: Add prepare_prev_first
+>>>> flag to drm_panel").
+>>>
+>>> This kind of migration should be done *before* any possible
+>>> regression, not the other way round.
+>>>
+>>> If all panels sending commands from prepare() should have the
+>>> prepare_prev_first flag, then it should be first, check for
+>>> regressions then continue.
+>>>
+>>> <snip>
+>>>
+>>>>>
+>>>>> I understand, but this patch doesn't qualify as a fix for
+>>>>> 9e15123eca79 and is too late to be merged in drm-misc-next for
+>>>>> v6.6, and since 9e15123eca79 actually breaks some support it
+>>>>> should be reverted (+ deps) since we are late in the rc cycles.
+>>>>
+>>>> If we go this way, we can never reapply these patches. There will be
+>>>> no guarantee that all panel drivers are completely converted. We
+>>>> already have a story without an observable end -
+>>>> DRM_BRIDGE_ATTACH_NO_CONNECTOR.
+>>>
+>>> I don't understand this point, who would block re-applying the patches ?
+>>>
+>>> The migration to DRM_BRIDGE_ATTACH_NO_CONNECTOR was done over multiple
+>>> Linux version and went smoothly because we reverted regressing patches
+>>> and restarted when needed, I don't understand why we can't do this
+>>> here aswell.
+>>>
+>>>> I'd consider that the DSI driver is correct here and it is about the
+>>>> panel drivers that require fixes patches. If you care about the
+>>>> particular Fixes tag, I have provided one several lines above.
+>>>
+>>> Unfortunately it should be done in the other way round, prepare for
+>>> migration, then migrate,
+>>>
+>>> I mean if it's a required migration, then it should be done and I'll
+>>> support it from both bridge and panel PoV.
+>>>
+>>> So, first this patch has the wrong Fixes tag, and I would like a
+>>> better explanation on the commit message in any case. Then I would
+>>> like to have an ack from some drm-misc maintainers before applying it
+>>> because it fixes a patch that was sent via the msm tree thus per the
+>>> drm-misc rules I cannot apply it via the drm-misc-next-fixes tree.
+>>
+>> Sorry, it's not clear to me what you'd like our feedback on exactly?
+> 
+> So let me resume the situation:
+> 
+> - pre_enable_prev_first was introduced in [1]
+> - some panels made use of pre_enable_prev_first
+> - Visionox VTDR6130 was enabled on SM8550 systems and works on v6.5 
+> kernels and before
+> - patch [2] was introduced on MSM DRM tree, breaking VTDR6130 on SM8550 
+> systems (and probably other Video mode panels on Qcom platforms)
+> - this fix was sent late, and is now too late to be merged via 
+> drm-misc-next
 
-[1]: https://lore.kernel.org/all/20230825182316.m2ksjoxe4s7dsapn@google.com=
-/
+Hi Neil and Maxime,
 
-Thanks
-Justin
+I agree with Neil that 9e15123eca79 was the commit that introduced the 
+issue (since it changed the MSM DSI host behavior).
+
+However, I'm not too keen on simply reverting that patch because
+
+1) it's not wrong to have the dsi_power_on in pre_enable. Arguably, it 
+actually makes more sense to power on DSI host in pre_enable than in 
+modeset (since modeset is meant for setting the bridge mode), and
+
+2) I think it would be good practice to keep specific bridge chip checks 
+out of the DSI host driver.
+
+
+That being said, what do you think about setting the default value of 
+prepare_prev_first to true (possibly in panel_bridge_attach)?
+
+It seems to me that most panel drivers send DCS commands during 
+pre_enable, so maybe it would make more sense to power on DSI host 
+before panel enable() by default. Any panel that needs DSI host to be 
+powered on later could then explicitly set the flag to false in their 
+respective drivers.
+
+Thanks,
+
+Jessica Zhang
+
+
+> 
+> I do not consider it's the right way to fix regression caused by [2]
+> I consider [2] should be reverted, panels migrated to 
+> pre_enable_prev_first when needed, tested and the [2] applied again
+> 
+> I have no objection about [2] and it should be done widely over the 
+> whole DSI controllers
+> and DSI Video panels.
+> 
+> I also object about the Fixes tag of this patch, which is wrong, and 
+> Dmitry considers [1]
+> should be used but it's even more wrong since [2] really caused the 
+> regression.
+> 
+> And if [2] was to correct one to use, it was pushed via the MSM tree so 
+> it couldn't be
+> applied via drm-misc-next-fixes, right ?
+> 
+> [1] 4fb912e5e190 ("drm/bridge: Introduce pre_enable_prev_first to alter 
+> bridge init order")
+> [2] 9e15123eca79 ("drm/msm/dsi: Stop unconditionally powering up DSI 
+> hosts at modeset")
+> 
+> Thanks,
+> Neil
+> 
+>>
+>> Maxime
+> 
