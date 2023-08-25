@@ -2,55 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AE97788E46
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 20:11:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1743788E48
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 20:11:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232583AbjHYSK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 14:10:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33774 "EHLO
+        id S232718AbjHYSL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 14:11:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231591AbjHYSKl (ORCPT
+        with ESMTP id S231984AbjHYSLL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 14:10:41 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B21EE1BF1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 11:10:39 -0700 (PDT)
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1692987038;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Qx5o5NWuongItLawGnYT3eYixJKHNqubNZ7Gbs6vpvI=;
-        b=r8sH32SWQe+RFNOfsM7sBQTrtyCKJSbyEmJihL7cyPasvs3mqvJJloypILxgiTF8a8K5yQ
-        b92E1Tw5pEw8vAQxwCvzTaXUkm7LQfokPXjzSK8gB6hdtQ8GBZZWSmbFNNsmD9r39i2yUa
-        g4gnLfL0b9YkcwDc0RB06AFI79gf6wAidcrD8Crswhxk+QnDGHYZx8L86szS4zz1O6tcFo
-        W3WGk45rLBu/c/MA5OJG6W+AZAIGbT+Ihdw6f6e0OkThvJnaLYa9kWTjffe8FT6mnQ+M9K
-        P3RfLsdQFj2G4pXaNyOhz72qB7gBk2s0BBN70dB6EEZw+9gkpSwoQjSiOEqRKQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1692987038;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Qx5o5NWuongItLawGnYT3eYixJKHNqubNZ7Gbs6vpvI=;
-        b=OiTe5S48gckWMNd+eXzMWGMgAI7oY+aP+qgi61j45/z7WgbsOQHKvYbNYrPBhwtcR5+6PE
-        h2FIxwpLeAoZN2Ag==
-To:     Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org
-Cc:     bigeasy@linutronix.de, tglx@linutronix.de, boqun.feng@gmail.com,
-        bristot@redhat.com, bsegall@google.com, dietmar.eggemann@arm.com,
-        jstultz@google.com, juri.lelli@redhat.com, longman@redhat.com,
-        mgorman@suse.de, mingo@redhat.com, rostedt@goodmis.org,
-        swood@redhat.com, vincent.guittot@linaro.org, vschneid@redhat.com,
-        will@kernel.org
-Subject: [PATCH v2 6/6] locking/rtmutex: Add a lockdep assert to catch potential nested blocking
-Date:   Fri, 25 Aug 2023 20:10:33 +0200
-Message-Id: <20230825181033.504534-7-bigeasy@linutronix.de>
-In-Reply-To: <20230825181033.504534-1-bigeasy@linutronix.de>
-References: <20230825181033.504534-1-bigeasy@linutronix.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+        Fri, 25 Aug 2023 14:11:11 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2365A1BF1;
+        Fri, 25 Aug 2023 11:11:10 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id AE21661353;
+        Fri, 25 Aug 2023 18:11:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA76EC433C8;
+        Fri, 25 Aug 2023 18:11:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1692987069;
+        bh=CqRDmZ8FlXZOuBuhi4oqiIATxpNhdyBrCLj19NbET88=;
+        h=Date:From:To:Cc:Subject:From;
+        b=IkM01cKVxfP75Na8tXz1BAs/FMSDqyDWtXf2qrqa91rmvUuEevLumcPPL8ut0rOJ6
+         wjcfLgVDq1U0gOtlGxjFfZjv9/1SWCkt+/+eDqSCEr+LOvgKAswG/OXDAksc0nrSJ+
+         AA2puOQdZkxbsklCCRPQGyJIIByS77lTlAhUEoKE=
+Date:   Fri, 25 Aug 2023 11:11:08 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     mm-commits@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] hotfixes for 6.5
+Message-Id: <20230825111108.898f1600c365d22f74e52c70@linux-foundation.org>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -60,68 +50,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
 
-There used to be a BUG_ON(current->pi_blocked_on) in the lock acquisition
-functions, but that vanished in one of the rtmutex overhauls.
+Linus, please merge this batch of hotfixes, thanks.
 
-Bring it back in form of a lockdep assert to catch code paths which take
-rtmutex based locks with current::pi_blocked_on !=3D NULL.
 
-Reported-by: Crystal Wood <swood@redhat.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20230427111937.2745231-5-bigeasy@linutronix=
-.de
-Link: https://lore.kernel.org/r/20230815111430.488430699@infradead.org
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- kernel/locking/rtmutex.c     | 2 ++
- kernel/locking/rwbase_rt.c   | 2 ++
- kernel/locking/spinlock_rt.c | 2 ++
- 3 files changed, 6 insertions(+)
+The following changes since commit 5f1fc67f2cb8d3035d3acd273b48b97835af8afd:
 
-diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
-index a3fe05dfd0d8f..4a10e8c16fd2b 100644
---- a/kernel/locking/rtmutex.c
-+++ b/kernel/locking/rtmutex.c
-@@ -1784,6 +1784,8 @@ static int __sched rt_mutex_slowlock(struct rt_mutex_=
-base *lock,
- static __always_inline int __rt_mutex_lock(struct rt_mutex_base *lock,
- 					   unsigned int state)
- {
-+	lockdep_assert(!current->pi_blocked_on);
-+
- 	if (likely(rt_mutex_try_acquire(lock)))
- 		return 0;
-=20
-diff --git a/kernel/locking/rwbase_rt.c b/kernel/locking/rwbase_rt.c
-index 7d57bfb909001..b5e881250fec5 100644
---- a/kernel/locking/rwbase_rt.c
-+++ b/kernel/locking/rwbase_rt.c
-@@ -133,6 +133,8 @@ static int __sched __rwbase_read_lock(struct rwbase_rt =
-*rwb,
- static __always_inline int rwbase_read_lock(struct rwbase_rt *rwb,
- 					    unsigned int state)
- {
-+	lockdep_assert(!current->pi_blocked_on);
-+
- 	if (rwbase_read_trylock(rwb))
- 		return 0;
-=20
-diff --git a/kernel/locking/spinlock_rt.c b/kernel/locking/spinlock_rt.c
-index 842037b2ba548..38e292454fccb 100644
---- a/kernel/locking/spinlock_rt.c
-+++ b/kernel/locking/spinlock_rt.c
-@@ -37,6 +37,8 @@
-=20
- static __always_inline void rtlock_lock(struct rt_mutex_base *rtm)
- {
-+	lockdep_assert(!current->pi_blocked_on);
-+
- 	if (unlikely(!rt_mutex_cmpxchg_acquire(rtm, NULL, current)))
- 		rtlock_slowlock(rtm);
- }
---=20
-2.40.1
+  mm/damon/core: initialize damo_filter->list from damos_new_filter() (2023-08-04 13:03:43 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm tags/mm-hotfixes-stable-2023-08-25-11-07
+
+for you to fetch changes up to e5548f85b4527c4c803b7eae7887c10bf8f90c97:
+
+  shmem: fix smaps BUG sleeping while atomic (2023-08-24 14:59:47 -0700)
+
+----------------------------------------------------------------
+18 hotfixes.  13 are cc:stable and the remainder pertain to post-6.4 issues
+or aren't considered suitable for a -stable backport.
+
+----------------------------------------------------------------
+Alexandre Ghiti (1):
+      mm: add a call to flush_cache_vmap() in vmap_pfn()
+
+Andre Przywara (2):
+      selftests: cachestat: test for cachestat availability
+      selftests: cachestat: catch failing fsync test on tmpfs
+
+Arnd Bergmann (1):
+      radix tree: remove unused variable
+
+Ayush Jain (1):
+      selftests/mm: FOLL_LONGTERM need to be updated to 0x100
+
+David Hildenbrand (3):
+      mm/gup: reintroduce FOLL_NUMA as FOLL_HONOR_NUMA_FAULT
+      smaps: use vm_normal_page_pmd() instead of follow_trans_huge_pmd()
+      mm/gup: handle cont-PTE hugetlb pages correctly in gup_must_unshare() via GUP-fast
+
+Hugh Dickins (1):
+      shmem: fix smaps BUG sleeping while atomic
+
+Liam R. Howlett (1):
+      maple_tree: disable mas_wr_append() when other readers are possible
+
+Lucas Karpinski (1):
+      selftests: cgroup: fix test_kmem_basic less than error
+
+Miaohe Lin (1):
+      mm: memory-failure: fix unexpected return value in soft_offline_page()
+
+Ryusuke Konishi (1):
+      nilfs2: fix general protection fault in nilfs_lookup_dirty_data_buffers()
+
+Suren Baghdasaryan (1):
+      mm: enable page walking API to lock vmas during the walk
+
+T.J. Mercier (1):
+      mm: multi-gen LRU: don't spin during memcg release
+
+Yin Fengwei (3):
+      madvise:madvise_cold_or_pageout_pte_range(): don't use mapcount() against large folio for sharing check
+      madvise:madvise_free_huge_pmd(): don't use mapcount() against large folio for sharing check
+      madvise:madvise_free_pte_range(): don't use mapcount() against large folio for sharing check
+
+ arch/powerpc/mm/book3s64/subpage_prot.c            |  1 +
+ arch/riscv/mm/pageattr.c                           |  1 +
+ arch/s390/mm/gmap.c                                |  5 ++
+ fs/nilfs2/segment.c                                |  5 ++
+ fs/proc/task_mmu.c                                 |  8 ++-
+ include/linux/huge_mm.h                            |  3 -
+ include/linux/mm.h                                 | 21 ++++--
+ include/linux/mm_types.h                           |  9 +++
+ include/linux/pagewalk.h                           | 11 +++
+ lib/maple_tree.c                                   |  7 ++
+ lib/radix-tree.c                                   |  1 -
+ mm/damon/vaddr.c                                   |  2 +
+ mm/gup.c                                           | 30 ++++++--
+ mm/hmm.c                                           |  1 +
+ mm/huge_memory.c                                   |  5 +-
+ mm/internal.h                                      | 17 +++++
+ mm/ksm.c                                           | 25 ++++---
+ mm/madvise.c                                       |  9 ++-
+ mm/memcontrol.c                                    |  2 +
+ mm/memory-failure.c                                | 12 ++--
+ mm/mempolicy.c                                     | 22 +++---
+ mm/migrate_device.c                                |  1 +
+ mm/mincore.c                                       |  1 +
+ mm/mlock.c                                         |  1 +
+ mm/mprotect.c                                      |  1 +
+ mm/pagewalk.c                                      | 36 +++++++++-
+ mm/shmem.c                                         |  6 +-
+ mm/vmalloc.c                                       |  4 ++
+ mm/vmscan.c                                        | 14 ++--
+ tools/testing/selftests/cachestat/test_cachestat.c | 80 ++++++++++++++++++----
+ tools/testing/selftests/cgroup/test_kmem.c         |  4 +-
+ tools/testing/selftests/mm/hmm-tests.c             |  7 +-
+ 32 files changed, 279 insertions(+), 73 deletions(-)
 
