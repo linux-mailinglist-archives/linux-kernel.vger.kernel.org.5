@@ -2,62 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7C16789229
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 01:00:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F51978922F
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 01:02:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229997AbjHYW7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 18:59:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35556 "EHLO
+        id S230137AbjHYXBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 19:01:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229815AbjHYW7Z (ORCPT
+        with ESMTP id S230020AbjHYXBP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 18:59:25 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76D4AE77;
-        Fri, 25 Aug 2023 15:59:23 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 12F9065415;
-        Fri, 25 Aug 2023 22:59:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA231C43395;
-        Fri, 25 Aug 2023 22:59:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693004362;
-        bh=7cns6S8+ADgngXm0a3i8nrTUZjXYM/26rR0aGDZTI4I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=F/BvoR86Sura+HK4lwwY7s2fyOAVDO/s8yExViZbsl9LXfvCVsc0KWXE40nUa+lDd
-         Xgmm/CEruefdvVT3wP/dikRMMohBp065gJIraKAduxaIto3kVP9hqBQCT2UI5EquqX
-         QBIILvID+FEFcSl/bmSHLWXNEc72qjo8R9TUOGfv3B43uPH9bB9Z/GJmfSSqFpKTCZ
-         08tbdCZ9TS8M4MtYJ0VO4KT0I8PA8m0lJv8Wp1VoxYZw3z0QK1Ss3KUKWSIJ2BCElm
-         U5xZvlqZlmsbLlGldCcfcj6uwa/JnCU3ffxhjV3YQWZmqMdYKdXIymF9qgxYPMuBRr
-         uyAu3pMttl0lQ==
-Date:   Sat, 26 Aug 2023 00:59:18 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Andi Shyti <andi.shyti@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH] i2c: pxa: fix clang -Wvoid-pointer-to-enum-cast warning
-Message-ID: <ZOkyRoKmRTMHLm7b@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Justin Stitt <justinstitt@google.com>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-References: <20230816-void-drivers-i2c-busses-i2c-pxa-v1-1-931634b931ec@google.com>
- <ZOkofUzv6t9lXyN+@shikoro>
- <CAFhGd8qg5aeo34irrOQR7td1rjBVF2q4mDFV=Kbt=EmMUiTB_A@mail.gmail.com>
+        Fri, 25 Aug 2023 19:01:15 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66A2FE77
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 16:01:13 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1bc8a2f71eeso11147935ad.0
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 16:01:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1693004473; x=1693609273;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=IRTyWDBK1um2dub2uCRhljhMZPNFPjV3AO6WOp/mvBA=;
+        b=jhsR+9LbG+Ou958P7E+9XQk3NWBxZyvL08H58dOJFMpUbywkYDZuTJiRYqvl6aRWuZ
+         ZWu9s/VR8KOtt4TmPta7k9Ii0sbMJEWVEX92p3BZ5Q3axWxD0EJaGZ+Q2g5QflyiOCdz
+         K6TFEGZnXS0pu/yaXvvYJN1OTOVbmRLoP1Lcc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693004473; x=1693609273;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IRTyWDBK1um2dub2uCRhljhMZPNFPjV3AO6WOp/mvBA=;
+        b=BryoFWiz0qIUvijQgC6zB0ClNs3K8Npqe4c4r/gh2zgYHRGv4EgPHEOtIYaH/4C733
+         KXYAP3O+K6VhQTPzG2X76kSG5ZqTrDHowzRcqzphRcAlKVa2Q0gSeN5+ppayA90w0qxv
+         mrKmW9P1pdpmDfYzVZa5O9j7+HuNhLE7nrm0RGS5b6szxmK19/CG32sbuBEWXrOgeV20
+         cYs7toVAjldQzzVByToTiqvr765KrkR3d3DM4y+Kl5sNOvMEbidaaW227ZaQYWrMVjzL
+         yRvouOCPT1RYva0NErZGZG9j8l3IQ0jzfKUGu6UUcZiXNYGdJZUuY3tylT4EsdzfwGAV
+         J9gw==
+X-Gm-Message-State: AOJu0YxsUQoYkt4gK63VxJMdXtfQyaz71Y8BecomqK3ecYdeXv4vGggP
+        QU0lp1j7q52j7sY90YVrvTpRng==
+X-Google-Smtp-Source: AGHT+IFzWclzxaj4YjkShuNK7rHT+Q1ZnPtkApoHCwgpQ4ybP7Ay3vwlvDyjy6qd5fa/B4Eoo/zG4Q==
+X-Received: by 2002:a17:903:32c6:b0:1c0:a8cb:b61d with SMTP id i6-20020a17090332c600b001c0a8cbb61dmr11484872plr.34.1693004472806;
+        Fri, 25 Aug 2023 16:01:12 -0700 (PDT)
+Received: from smtp.gmail.com ([2620:15c:11a:201:d711:d7a0:fa61:8f24])
+        by smtp.gmail.com with ESMTPSA id z12-20020a1709027e8c00b001bf044dc1a6sm2330059pla.39.2023.08.25.16.01.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Aug 2023 16:01:12 -0700 (PDT)
+From:   Stephen Boyd <swboyd@chromium.org>
+To:     Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org,
+        Kuogee Hsieh <quic_khsieh@quicinc.com>,
+        Vinod Polimera <quic_vpolimer@quicinc.com>
+Subject: [PATCH] drm/msm/dp: Add newlines to debug printks
+Date:   Fri, 25 Aug 2023 16:01:08 -0700
+Message-ID: <20230825230109.2264345-1-swboyd@chromium.org>
+X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Lct9vfZQb4MUpnCc"
-Content-Disposition: inline
-In-Reply-To: <CAFhGd8qg5aeo34irrOQR7td1rjBVF2q4mDFV=Kbt=EmMUiTB_A@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -68,40 +71,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+These debug printks are missing newlines, causing drm debug logs to be
+hard to read. Add newlines so that the messages are on their own line.
 
---Lct9vfZQb4MUpnCc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Cc: Kuogee Hsieh <quic_khsieh@quicinc.com>
+Cc: Vinod Polimera <quic_vpolimer@quicinc.com>
+Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+---
+ drivers/gpu/drm/msm/dp/dp_link.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/gpu/drm/msm/dp/dp_link.c b/drivers/gpu/drm/msm/dp/dp_link.c
+index 42427129acea..6375daaeb98e 100644
+--- a/drivers/gpu/drm/msm/dp/dp_link.c
++++ b/drivers/gpu/drm/msm/dp/dp_link.c
+@@ -1090,7 +1090,7 @@ int dp_link_process_request(struct dp_link *dp_link)
+ 	} else if (dp_link_read_psr_error_status(link)) {
+ 		DRM_ERROR("PSR IRQ_HPD received\n");
+ 	} else if (dp_link_psr_capability_changed(link)) {
+-		drm_dbg_dp(link->drm_dev, "PSR Capability changed");
++		drm_dbg_dp(link->drm_dev, "PSR Capability changed\n");
+ 	} else {
+ 		ret = dp_link_process_link_status_update(link);
+ 		if (!ret) {
+@@ -1107,7 +1107,7 @@ int dp_link_process_request(struct dp_link *dp_link)
+ 		}
+ 	}
+ 
+-	drm_dbg_dp(link->drm_dev, "sink request=%#x",
++	drm_dbg_dp(link->drm_dev, "sink request=%#x\n",
+ 				dp_link->sink_request);
+ 	return ret;
+ }
 
-> There was some discussion [1] wherein it was ultimately decided that
-> this warning should probably be turned off (contrary to what the title
-> of the GitHub issue says).
+base-commit: 706a741595047797872e669b3101429ab8d378ef
+-- 
+https://chromeos.dev
 
-I totally agree with your last comment in [1]. So, I also vote for
-disabling the warning. Thus, I will reject these patches, but still
-thank you for looking into such issues and trying to solve them!
-
-> [1]: https://github.com/ClangBuiltLinux/linux/issues/1910
-
---Lct9vfZQb4MUpnCc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmTpMkIACgkQFA3kzBSg
-Kba9gg/9GrJitxIM9E2rp5zbcPYpBOq2zX6PL5iO5PdIYoO3j9goeVD0n0hnWv9B
-CR/dDuAAkaBahCoewCuKdwbZQhoYS3WOZVrCCuXHT5CPmg23ujoOb3F2ANGHhsVd
-MvxaM6Eti6DOr1mRlqfaprpkNcPO0P0iDRSE2c0o0zi9L2VxrKamxTxRMyxMOF+H
-8KrHsetOQl4uwdCUGaQ07YKbxWp6qte2SH3/Y6FhwFpdTuSKhyco4ve/V2FdtUVL
-d3rPU/5V63xgILcniopUf9c4eFkGxptZ7jYhbqM/6QNXkf0fi3eh5Xd0kz3q2tv7
-7/YMRWvE7gIEwKO8UYzZtpsHcmLTDjHHcNpoqHVjYC7w/ZFkxkXANaleReeqkC15
-9Gsokez9QOWVwb1YjoeakNEDpvmiceYP1KM6yd+0mTyrGMDNBJLjxd2YD/PZtYgw
-k7ymNz2J0VXAXFTYA1PzQPG8RAjBeYC8HHiPtsTFX+7/DGviY1qPyRbLozYlilNE
-cyB98JpW0Sh82kBdbaK6yycWuU28xPHljRizFePv0tTtUKrK55Jeu0feIbwUVq1I
-ykcBs958tLnlX2vjqLGwLK35lUNJsbWTI6PgCrQ7bSo0KLm7N0q1JZTcsLbGc5Hx
-KDbAODfaypBHdyy/lS5TtsspmMVzqymlGuynUevwyZ1756S1ovI=
-=rq/A
------END PGP SIGNATURE-----
-
---Lct9vfZQb4MUpnCc--
