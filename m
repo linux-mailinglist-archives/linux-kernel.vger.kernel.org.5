@@ -2,210 +2,585 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D83F07885D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 13:34:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2D4278862A
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 13:41:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240089AbjHYLeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 07:34:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52998 "EHLO
+        id S235912AbjHYLlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 07:41:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240694AbjHYLdy (ORCPT
+        with ESMTP id S233470AbjHYLkw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 07:33:54 -0400
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2060.outbound.protection.outlook.com [40.107.92.60])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 288551FD7;
-        Fri, 25 Aug 2023 04:33:52 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=H+erQsb1nw5OK+nYcOaIItpqHoqfNesOIkhpgC5LFfxNMZUVPWVUwirx6ZC9/7OizJTsg2TEytxgqot4PkQzHI81AUvUkYNbK2WvuJe7i3Wg83FukacrwjqEbqXCPbnvmGLHVbxn5yJEWqFMovJ/bgPez01Nuc1MgSe5NLwpO5Q05w4eYs/b/qIqQpBXmvJJFEdFfVeiHfYlOCKg8jxHcvwQbYj0hzXsWlUlaK6dq6BduArMGkftjYu86/4SJTCChabgBfqk/9wcAR9/o35NJxaBEeItIYWu660Q/1eOiDVKnJ3eNJ6s/Qw+QrWycRb7zwS56WvzXBomgQpXzUMHLw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ymp+iHYDIG1jZB+PKaiOWJZWXFca8nrsnUbgxibJT/Q=;
- b=PPKJIro/hbDNP+BEkXuFgSCL8K8G4yZNk9uhst3BmFZ7uoDRHBGUW7pUwT1WaDghRfJKMd9zUTfbO0U/6uInv8uqUb25v5UE9PJ2hNB0i/nn51x4U6syzbZVfVtV4rtN4q42ipmplM78qCJelDKz1yv16xJZR4YmJ1JQG4sh2dInmnB2S3EeOmMrNKaoFbXHh63wmkGOwSsdSPq4pDnTgReMzp3WQ3buEXYQuExMVkUnUZOfrSIDuoGBorrE/pTuSu2TTT9khfFzaRgLP/oP85Nk4/x0FDrumWpivSmmfwPc1OPC1BeM06tmU0NT4kPgLNTGfBqzAUN/1ZRUL1rE5A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=linaro.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ymp+iHYDIG1jZB+PKaiOWJZWXFca8nrsnUbgxibJT/Q=;
- b=HAUi0dRkMnYyi+Xf/hRAchslRsu1yHv2ehQOmlWKqAl4VnvU5ARORnL4HYIm+aSFzsvKKW3Zjx2MTeNI0ZlNkY+mvBP21CAkEhYx5AdOMTeAfP4QeeAzOODi+ZkVYtEOlBkY58uPLyMjFVjddWjB59ou9W9hKGqA8ZDkEWn5lfU5TPr5P29X8lyabu4LGdsUVyZEZtdvvKSPOqWHIV/0DYDyzwEBDncR8gFqnmssi1yMkP0+Orjzpkacadly2gr3+VHDsDx04sb+H2+Huz+a2wPKjKxNcFuQFtJq7NE36mCjVPdMLmwEbiQAaQ18oeEfPxIwDz6Xl6k+GM5DUzUDVg==
-Received: from BY3PR05CA0050.namprd05.prod.outlook.com (2603:10b6:a03:39b::25)
- by CH0PR12MB5331.namprd12.prod.outlook.com (2603:10b6:610:d6::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.30; Fri, 25 Aug
- 2023 11:33:50 +0000
-Received: from CO1PEPF000042AE.namprd03.prod.outlook.com
- (2603:10b6:a03:39b:cafe::ef) by BY3PR05CA0050.outlook.office365.com
- (2603:10b6:a03:39b::25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.15 via Frontend
- Transport; Fri, 25 Aug 2023 11:33:49 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- CO1PEPF000042AE.mail.protection.outlook.com (10.167.243.43) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6699.15 via Frontend Transport; Fri, 25 Aug 2023 11:33:49 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Fri, 25 Aug 2023
- 04:33:34 -0700
-Received: from [10.41.21.79] (10.126.231.35) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Fri, 25 Aug
- 2023 04:33:30 -0700
-Message-ID: <e8114572-3e4b-1b1c-40fa-1dbc44d4f098@nvidia.com>
-Date:   Fri, 25 Aug 2023 17:03:27 +0530
+        Fri, 25 Aug 2023 07:40:52 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC2D51FD7;
+        Fri, 25 Aug 2023 04:40:48 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2b962c226ceso11775151fa.3;
+        Fri, 25 Aug 2023 04:40:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692963647; x=1693568447;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+7zXBNjC9cy/dhW6wJfTjLbYuXFRUmAsDxA3SYBGnp8=;
+        b=j7i1T3bTS7E2B+QsF8TfKzXpkoB6VZ4k/eSnDs5ZyoFhCyLIzzAbXEIKP/DIhmWpD8
+         rFeI0REni6B70aqsI7dwF/mf1DyMLec2azxzBHSF8alIF3YWxxwrJHykig0Ru+AXA2Mc
+         M/TvIGN9uHJCrOuuttLUpS9i2zI4+QhgDx2vrVNFN9Y7ufIZSDUkyj0iYzLc9z+B5/Na
+         r4WBEw4TnNQpghktP7/MmfwI62C+qJIuLDRqeI0loY7tEjfCZ/yuHT21/Ul2DCOnkJlQ
+         592uysUg/qlRGLAUd5q5LRhjy1yYV5dMugE6PWZtDJLWYpCz3p4KFRsk2kflt/GaM2Dg
+         zQkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692963647; x=1693568447;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+7zXBNjC9cy/dhW6wJfTjLbYuXFRUmAsDxA3SYBGnp8=;
+        b=kIHmFEn6DL5LD7XJMeDb1r31Eh6rUbLtnQ4tl/+wmxuK2Pc1WokXPuaDhfVoFCZ8T6
+         APUPKSPWTS6kF2PA/t5tM6s+T8xqDNvWVId0uMqWMKN8wvieS52OyWiQbThQkQyEl1bq
+         V12HKM8paMI2ihBMIubAsYwKrXdvItQCEJrx8TbqR3NSA7AHo9lZ1ARJlxoa83r2z9bK
+         vxRB4r1iUKH0jwRJmxWzgiYVGcolGoJcM838HqVxIrfQCNwkj/ckMWivWhwPN07LuvBh
+         UkmEk1t9HBB1KifQjCcfRcTePt1Y3rzPPbt6bVQ3+SyLaAda+BiYFTrgX8XauMbuzy3C
+         bvzg==
+X-Gm-Message-State: AOJu0YxVsc03+lWrNGLRgNjHZjmLMxmpxSI+/qkiF0dXEO8EzG22J3nS
+        Oic05xbSqnxOmxw61qQq6mKW74mxQSiIZGOhOlo=
+X-Google-Smtp-Source: AGHT+IH3Jm3oOGJDg8Kz1SjQ8dAVA7Ih2QkPW0ksIPDdnqu1A6ewp4UQUohHGzPCwPqgrTtoPtcYREYd/Eho4NPzzL0=
+X-Received: by 2002:a2e:9b4c:0:b0:2b9:e053:7a07 with SMTP id
+ o12-20020a2e9b4c000000b002b9e0537a07mr13295707ljj.45.1692963646535; Fri, 25
+ Aug 2023 04:40:46 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [Patch] cpufreq: tegra194: remove opp table in exit hook
-Content-Language: en-US
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-CC:     <rafael@kernel.org>, <treding@nvidia.com>, <jonathanh@nvidia.com>,
-        <linux-pm@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <bbasu@nvidia.com>,
-        Sumit Gupta <sumitg@nvidia.com>
-References: <20230809153455.29056-1-sumitg@nvidia.com>
- <20230810053127.y4wmumlggkro7r66@vireshk-i7>
- <17b11665-874a-5b06-bc97-70f5202f238b@nvidia.com>
- <20230816033402.3abmugb5goypvllm@vireshk-i7>
-From:   Sumit Gupta <sumitg@nvidia.com>
-In-Reply-To: <20230816033402.3abmugb5goypvllm@vireshk-i7>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.126.231.35]
-X-ClientProxiedBy: rnnvmail202.nvidia.com (10.129.68.7) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000042AE:EE_|CH0PR12MB5331:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3a61d9d7-d7b0-416d-712d-08dba55f270d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: +8ScwLKLp6eGH5rhemhsGG9q78QGGF2g5h90tiXK2jVsYD8MXobg/rgr0EAs/XVJZzsgzoeRDf3DdZtV0U7/+v1n4zXD+YmNTfbp0lMyo2rQPuIlIUJhVln5uko6qyOgk72T/8ZgPAac+TcvIXUtVVL/FbE7rrsK2nd3/V+v0ZWYhPWCJezga03fs3vIg6PvL9PXBNNp7aBcrmSAb/tQwZBdnALB0cGcEUIQNWoENnnEvVy6M707RvSXvazZ7SBtoqSpGwS8IDG6afaGwLQDQsvMRnpkKxl2fRzuY35wWwh7rrhzA5dVSCpdIrEE04gjjT2OKN2Bq2+p485iuLBifes9kQmC1z7t29ArwgCZsaF0Lvy6zm+aeqKrrodqT5xGCHjGNe1E5XTPhw3K4KSxjQwDXyNnAcQjrjBH2XJBv7oWmEUVnktRmg0Ec5MxyfVksic/F8DGAi8swYL+vf2+ZZV/9C0dgz6f7YtnghMQIuiYiUIIWPUC6KcrO2Es5h2KG05wSdI4KAuKAMZhNCjwM9iwNwGtHvSP5y1G7xcWCADUv37Iw1zuceQLZ8Ajl2CnUvWbUTnUIHo9ZT2PtWI7TyBnA/aHnJUUFvInh/eqGRIKzH8D3uFYt6pLF/gCnPn1sylu3MQ01CICUYoDkyCr2OWfKRyepBegCcI9CAbTPayEQ4eweIEL3MHli9PftdEKdVvfXoGB2u3+bKTAw4V0oOmHodfgGzow5pQBT75tGExagB8HFalwJqMna5JTxONJqfOCGQbbAI9CcL4rWOMAxSdu24Vy2jJ+XYPnvwOGkNYXGY0h/tHEX0w1BS6kq6Yh
-X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(376002)(346002)(396003)(136003)(186009)(82310400011)(1800799009)(451199024)(36840700001)(40470700004)(46966006)(40460700003)(6666004)(83380400001)(336012)(426003)(82740400003)(356005)(7636003)(86362001)(31696002)(36860700001)(36756003)(47076005)(16526019)(40480700001)(26005)(2616005)(107886003)(316002)(2906002)(6916009)(54906003)(70586007)(16576012)(70206006)(41300700001)(31686004)(4326008)(8676002)(8936002)(5660300002)(478600001)(966005)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Aug 2023 11:33:49.7788
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3a61d9d7-d7b0-416d-712d-08dba55f270d
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1PEPF000042AE.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR12MB5331
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230824133135.1176709-1-puranjay12@gmail.com>
+ <20230824133135.1176709-4-puranjay12@gmail.com> <3e21f79c-71a8-663e-1a62-0d2d787b9692@huawei.com>
+ <b4d5aaaf-7fe6-29fd-645a-62a4032820ae@huawei.com> <CANk7y0hZBsrvMjOQihRLAZkX7OqNeuK+eHojc+X=-peUtn-k7g@mail.gmail.com>
+ <a8bce2e9-80e1-246c-9b87-19e2fdef25a8@huawei.com>
+In-Reply-To: <a8bce2e9-80e1-246c-9b87-19e2fdef25a8@huawei.com>
+From:   Puranjay Mohan <puranjay12@gmail.com>
+Date:   Fri, 25 Aug 2023 13:40:35 +0200
+Message-ID: <CANk7y0h=0oTvDf7fZqZtFmkNUrvt4L+npAMypR+eyyjRKrUYeA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 3/3] bpf, riscv: use prog pack allocator in
+ the BPF JIT
+To:     Pu Lehui <pulehui@huawei.com>
+Cc:     bjorn@kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, conor.dooley@microchip.com, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, yhs@fb.com, linux-riscv@lists.infradead.org,
+        bpf@vger.kernel.org, kpsingh@kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Pu,
 
->>>> Add exit hook and remove OPP table when all the CPU's in a policy
->>>> are offlined. It will fix the below error messages when onlining
->>>> first CPU from a policy whose all CPU's were previously offlined.
->>>>
->>>>    debugfs: File 'cpu5' in directory 'opp' already present!
->>>>    debugfs: File 'cpu6' in directory 'opp' already present!
->>>>    debugfs: File 'cpu7' in directory 'opp' already present!
->>>>
->>>> Fixes: f41e1442ac5b ("cpufreq: tegra194: add OPP support and set bandwidth")
->>>> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
->>>> ---
->>>>    drivers/cpufreq/tegra194-cpufreq.c | 13 +++++++++++++
->>>>    1 file changed, 13 insertions(+)
->>>>
->>>> diff --git a/drivers/cpufreq/tegra194-cpufreq.c b/drivers/cpufreq/tegra194-cpufreq.c
->>>> index c90b30469165..66a9c23544db 100644
->>>> --- a/drivers/cpufreq/tegra194-cpufreq.c
->>>> +++ b/drivers/cpufreq/tegra194-cpufreq.c
->>>> @@ -454,6 +454,8 @@ static int tegra_cpufreq_init_cpufreq_table(struct cpufreq_policy *policy,
->>>>                 if (ret < 0)
->>>>                         return ret;
->>>>
->>>> +             dev_pm_opp_put(opp);
->>>> +
->>>>                 freq_table[j].driver_data = pos->driver_data;
->>>>                 freq_table[j].frequency = pos->frequency;
->>>>                 j++;
->>>> @@ -508,6 +510,16 @@ static int tegra194_cpufreq_init(struct cpufreq_policy *policy)
->>>>         return 0;
->>>>    }
->>>>
->>>> +static int tegra194_cpufreq_exit(struct cpufreq_policy *policy)
->>>> +{
->>>> +     struct device *cpu_dev = get_cpu_device(policy->cpu);
->>>> +
->>>> +     dev_pm_opp_remove_all_dynamic(cpu_dev);
->>>> +     dev_pm_opp_of_cpumask_remove_table(policy->related_cpus);
->>>> +
->>>> +     return 0;
->>>> +}
->>>> +
->>>>    static int tegra194_cpufreq_set_target(struct cpufreq_policy *policy,
->>>>                                        unsigned int index)
->>>>    {
->>>> @@ -535,6 +547,7 @@ static struct cpufreq_driver tegra194_cpufreq_driver = {
->>>>         .target_index = tegra194_cpufreq_set_target,
->>>>         .get = tegra194_get_speed,
->>>>         .init = tegra194_cpufreq_init,
->>>> +     .exit = tegra194_cpufreq_exit,
->>>>         .attr = cpufreq_generic_attr,
->>>>    };
->>>
->>> If it is only about hotplugging of the CPUs, then you can also do this I guess.
->>>
->>> commit 263abfe74b5f ("cpufreq: dt: Implement online/offline() callbacks")
-> 
-> You should do this as well, this makes hotplugging paths much faster. i.e. on
-> top of this patch.
-> 
+On Fri, Aug 25, 2023 at 1:12=E2=80=AFPM Pu Lehui <pulehui@huawei.com> wrote=
+:
+>
+>
+>
+> On 2023/8/25 16:42, Puranjay Mohan wrote:
+> > Hi Pu,
+> >
+> > On Fri, Aug 25, 2023 at 9:34=E2=80=AFAM Pu Lehui <pulehui@huawei.com> w=
+rote:
+> >>
+> >>
+> >>
+> >> On 2023/8/25 15:09, Pu Lehui wrote:
+> >>> Hi Puranjay,
+> >>>
+> >>> Happy to see the RV64 pack allocator implementation.
+> >>
+> >> RV32 also
+> >>
+> >>>
+> >>> On 2023/8/24 21:31, Puranjay Mohan wrote:
+> >>>> Use bpf_jit_binary_pack_alloc() for memory management of JIT binarie=
+s in
+> >>>> RISCV BPF JIT. The bpf_jit_binary_pack_alloc creates a pair of RW an=
+d RX
+> >>>> buffers. The JIT writes the program into the RW buffer. When the JIT=
+ is
+> >>>> done, the program is copied to the final RX buffer with
+> >>>> bpf_jit_binary_pack_finalize.
+> >>>>
+> >>>> Implement bpf_arch_text_copy() and bpf_arch_text_invalidate() for RI=
+SCV
+> >>>> JIT as these functions are required by bpf_jit_binary_pack allocator=
+.
+> >>>>
+> >>>> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+> >>>> ---
+> >>>>    arch/riscv/net/bpf_jit.h        |   3 +
+> >>>>    arch/riscv/net/bpf_jit_comp64.c |  56 +++++++++++++---
+> >>>>    arch/riscv/net/bpf_jit_core.c   | 113 +++++++++++++++++++++++++++=
+-----
+> >>>>    3 files changed, 146 insertions(+), 26 deletions(-)
+> >>>>
+> >>>> diff --git a/arch/riscv/net/bpf_jit.h b/arch/riscv/net/bpf_jit.h
+> >>>> index 2717f5490428..ad69319c8ea7 100644
+> >>>> --- a/arch/riscv/net/bpf_jit.h
+> >>>> +++ b/arch/riscv/net/bpf_jit.h
+> >>>> @@ -68,6 +68,7 @@ static inline bool is_creg(u8 reg)
+> >>>>    struct rv_jit_context {
+> >>>>        struct bpf_prog *prog;
+> >>>>        u16 *insns;        /* RV insns */
+> >>>> +    u16 *ro_insns;
+> >>
+> >> In fact, the definition of w/ or w/o ro_ still looks a bit confusing.
+> >> Maybe it is better for us not to change the current framework, as the
+> >> current `image` is the final executed RX image, and the trampoline
+> >> treats `image` as the same. Maybe it would be better to add a new RW
+> >> image, such like `rw_iamge`, so that we do not break the existing
+> >> framework and do not have to add too many comments.
+> >
+> > I had thought about this and decided to create a new _ro image/header
+> > and not _rw image/header. Here is my reasoning:
+> > If we let the existing insns, header be considered the read_only
+> > version from where the
+> > program will run, and create new rw_insn and rw_header for doing the ji=
+t process
+> > it would require a lot more changes to the framework.
+> > functions like build_body(), bpf_jit_build_prologue(), etc. work on
+> > ctx->insns and
+>
+> Hmm, the other parts should be fine, but the emit instruction is a
+> problem. All right, let's go ahead.
+>
+> > now all these references would have to be changed to ctx->rw_insns.
+> >
+> > Howsoever we implement this, there is no way to do it without changing
+> > the current framework.
+> > The crux of the problem is that we need to use the r/w area for
+> > writing and the r/x area for calculating
+> > offsets.
+> >
+> > If you think this can be done in a more efficient way then I would
+> > love to implement that, but all other
+> > solutions that I tried made the code very difficult to follow.
+> >
+> >>
+> >> And any other parts, it looks great.=F0=9F=98=84
+> >>
+> >>>>        int ninsns;
+> >>>>        int prologue_len;
+> >>>>        int epilogue_offset;
+> >>>> @@ -85,7 +86,9 @@ static inline int ninsns_rvoff(int ninsns)
+> >>>>    struct rv_jit_data {
+> >>>>        struct bpf_binary_header *header;
+> >>>> +    struct bpf_binary_header *ro_header;
+> >>>>        u8 *image;
+> >>>> +    u8 *ro_image;
+> >>>>        struct rv_jit_context ctx;
+> >>>>    };
+> >>>> diff --git a/arch/riscv/net/bpf_jit_comp64.c
+> >>>> b/arch/riscv/net/bpf_jit_comp64.c
+> >>>> index 0ca4f5c0097c..d77b16338ba2 100644
+> >>>> --- a/arch/riscv/net/bpf_jit_comp64.c
+> >>>> +++ b/arch/riscv/net/bpf_jit_comp64.c
+> >>>> @@ -144,7 +144,11 @@ static bool in_auipc_jalr_range(s64 val)
+> >>>>    /* Emit fixed-length instructions for address */
+> >>>>    static int emit_addr(u8 rd, u64 addr, bool extra_pass, struct
+> >>>> rv_jit_context *ctx)
+> >>>>    {
+> >>>> -    u64 ip =3D (u64)(ctx->insns + ctx->ninsns);
+> >>>> +    /*
+> >>>> +     * Use the ro_insns(RX) to calculate the offset as the BPF
+> >>>> program will
+> >>>> +     * finally run from this memory region.
+> >>>> +     */
+> >>>> +    u64 ip =3D (u64)(ctx->ro_insns + ctx->ninsns);
+> >>>>        s64 off =3D addr - ip;
+> >>>>        s64 upper =3D (off + (1 << 11)) >> 12;
+> >>>>        s64 lower =3D off & 0xfff;
+> >>>> @@ -465,7 +469,11 @@ static int emit_call(u64 addr, bool fixed_addr,
+> >>>> struct rv_jit_context *ctx)
+> >>>>        u64 ip;
+> >>>>        if (addr && ctx->insns) {
+> >>>
+> >>> ctx->insns need to sync to ctx->ro_insns
+> >
+> > Can you elaborate this more. I am missing something here.
+> > The sync happens at the end by calling bpf_jit_binary_pack_finalize().
+>
+> if (addr && ctx->insns) {
+>         ip =3D (u64)(long)(ctx->ro_insns + ctx->ninsns);
+>         off =3D addr - ip;
+> }
+> emit ctx->insns + off
+>
+> Here we are assuming ctx->insns =3D=3D ctx->ro_insns, if they not, the
+> offset calculated by ctx->ro_insns will not meaningful for ctx->insns.
 
-Sent a separate patch to add online/offline callbacks.
-   https://lore.kernel.org/lkml/20230825111920.8257-1-sumitg@nvidia.com/
+We are not assuming that ctx->insns =3D=3D ctx->ro_insns at this point.
+We are just finding the offset: off =3D addr(let's say in kernel) -
+ip(address of the instruction);
 
-Also, sent v2 of this patch with updated commit description.
-   https://lore.kernel.org/lkml/20230825111617.8069-1-sumitg@nvidia.com/
+> I was curious why we need to use ro_insns to calculate offset? Is that
+> any problem if we do jit iteration with ctx->insns and the final copy
+> ctx->insns to ro_insns?
 
-Thank you,
-Sumit Gupta
+All the offsets within the image can be calculated using ctx->insns and it =
+will
+work but if the emit_call() is for an address in the kernel code let's
+say, then the
+offset between this address(in kernel) and the R/W image would be different=
+ from
+the offset between the address(in kernel) and the R/O image.
+We need the offset between the R/X Image and the kernel address. Because th=
+e
+CPU will execute the instructions from there.
 
->>> But since your driver is capable of being built as a module, I suggest you try
->>> to build it as one and insert remove it multiple times. It must cause you some
->>> trouble as you don't implement an .exit() before this patch.
->>>
->>> Eventually, I think you need to do both, what this patch and 263abfe74b5f do.
->>> Just that the reasons need to be correct for both the changes.
->>>
->>> --
->>> viresh
->>
->> Hi Viresh,
->> I got the same message on inserting and removing the module multiple times
->> as you suggested. After applying this change, the message is not coming. So,
->> the current change is resolving both scenarios as __cpufreq_offline() calls
->> either exit() or offline().
->> I can update the commit message to mention both scenarios and keep change as
->> it is?
->>
->>    cpufreq_remove_dev
->>    |-__cpufreq_offline
->>    |--tegra194_cpufreq_exit
->>
->>    cpuhp_cpufreq_offline
->>    |-__cpufreq_offline
->>    |--tegra194_cpufreq_exit
-> 
-> --
-> viresh
+>
+> >
+> >>>
+> >>>> -        ip =3D (u64)(long)(ctx->insns + ctx->ninsns);
+> >>>> +        /*
+> >>>> +         * Use the ro_insns(RX) to calculate the offset as the BPF
+> >>>> +         * program will finally run from this memory region.
+> >>>> +         */
+> >>>> +        ip =3D (u64)(long)(ctx->ro_insns + ctx->ninsns);
+> >>>>            off =3D addr - ip;
+> >>>>        }
+> >>>> @@ -578,7 +586,8 @@ static int add_exception_handler(const struct
+> >>>> bpf_insn *insn,
+> >>>>    {
+> >>>>        struct exception_table_entry *ex;
+> >>>>        unsigned long pc;
+> >>>> -    off_t offset;
+> >>>> +    off_t ins_offset;
+> >>>> +    off_t fixup_offset;
+> >>>>        if (!ctx->insns || !ctx->prog->aux->extable ||
+> >>>> BPF_MODE(insn->code) !=3D BPF_PROBE_MEM)
+> >>>
+> >>> ctx->ro_insns need to be checked also.
+> >
+> > ctx->ro_insns is not initialised until we call bpf_jit_binary_pack_fina=
+lize()?
+
+ctx->ro_insns and ctx->insns are both allocated together by
+bpf_jit_binary_pack_alloc().
+ctx->ro_insns is marked R/X and ctx->insns is marked R/W. We dump all
+instructions in
+ctx->insns and then copy them to ctx->ro_insns with
+bpf_jit_binary_pack_finalize().
+
+The catch is that instructions that work with offsets like JAL need
+the offsets from ctx->ro_insns.
+as explained above.
+
+>
+> if (!ctx->insns || !ctx->prog->aux->extable ||
+> ...
+> pc =3D (unsigned long)&ctx->ro_insns[ctx->ninsns - insn_len];
+>
+> The uninitialized ctx->ro_insns may lead to illegal address access.
+> Although it will never happen, because we also assume that ctx->insns =3D=
+=3D
+> ctx->ro_insns.
+
+Here also we are not assuming ctx->insns =3D=3D ctx->ro_insns. The ctx->ro_=
+insns is
+allocated but not initialised yet. So all addresses in range
+ctx->ro_insns to ctx->ro_insns + size
+are valid addresses. Here we are using the addresses only to find the
+offset and not accessing those
+addresses.
+
+>
+> >
+> >>>
+> >>>>            return 0;
+> >>>> @@ -593,12 +602,17 @@ static int add_exception_handler(const struct
+> >>>> bpf_insn *insn,
+> >>>>            return -EINVAL;
+> >>>>        ex =3D &ctx->prog->aux->extable[ctx->nexentries];
+> >>>> -    pc =3D (unsigned long)&ctx->insns[ctx->ninsns - insn_len];
+> >>>> +    pc =3D (unsigned long)&ctx->ro_insns[ctx->ninsns - insn_len];
+> >>>> -    offset =3D pc - (long)&ex->insn;
+> >>>> -    if (WARN_ON_ONCE(offset >=3D 0 || offset < INT_MIN))
+> >>>> +    /*
+> >>>> +     * This is the relative offset of the instruction that may faul=
+t
+> >>>> from
+> >>>> +     * the exception table itself. This will be written to the exce=
+ption
+> >>>> +     * table and if this instruction faults, the destination regist=
+er
+> >>>> will
+> >>>> +     * be set to '0' and the execution will jump to the next
+> >>>> instruction.
+> >>>> +     */
+> >>>> +    ins_offset =3D pc - (long)&ex->insn;
+> >>>> +    if (WARN_ON_ONCE(ins_offset >=3D 0 || ins_offset < INT_MIN))
+> >>>>            return -ERANGE;
+> >>>> -    ex->insn =3D offset;
+> >>>>        /*
+> >>>>         * Since the extable follows the program, the fixup offset is
+> >>>> always
+> >>>> @@ -607,12 +621,25 @@ static int add_exception_handler(const struct
+> >>>> bpf_insn *insn,
+> >>>>         * bits. We don't need to worry about buildtime or runtime so=
+rt
+> >>>>         * modifying the upper bits because the table is already sort=
+ed,
+> >>>> and
+> >>>>         * isn't part of the main exception table.
+> >>>> +     *
+> >>>> +     * The fixup_offset is set to the next instruction from the
+> >>>> instruction
+> >>>> +     * that may fault. The execution will jump to this after handli=
+ng
+> >>>> the
+> >>>> +     * fault.
+> >>>>         */
+> >>>> -    offset =3D (long)&ex->fixup - (pc + insn_len * sizeof(u16));
+> >>>> -    if (!FIELD_FIT(BPF_FIXUP_OFFSET_MASK, offset))
+> >>>> +    fixup_offset =3D (long)&ex->fixup - (pc + insn_len * sizeof(u16=
+));
+> >>>> +    if (!FIELD_FIT(BPF_FIXUP_OFFSET_MASK, fixup_offset))
+> >>>>            return -ERANGE;
+> >>>> -    ex->fixup =3D FIELD_PREP(BPF_FIXUP_OFFSET_MASK, offset) |
+> >>>> +    /*
+> >>>> +     * The offsets above have been calculated using the RO buffer b=
+ut we
+> >>>> +     * need to use the R/W buffer for writes.
+> >>>> +     * switch ex to rw buffer for writing.
+> >>>> +     */
+> >>>> +    ex =3D (void *)ctx->insns + ((void *)ex - (void *)ctx->ro_insns=
+);
+> >>>> +
+> >>>> +    ex->insn =3D ins_offset;
+> >>>> +
+> >>>> +    ex->fixup =3D FIELD_PREP(BPF_FIXUP_OFFSET_MASK, fixup_offset) |
+> >>>>            FIELD_PREP(BPF_FIXUP_REG_MASK, dst_reg);
+> >>>>        ex->type =3D EX_TYPE_BPF;
+> >>>> @@ -1006,6 +1033,7 @@ int arch_prepare_bpf_trampoline(struct
+> >>>> bpf_tramp_image *im, void *image,
+> >>>>        ctx.ninsns =3D 0;
+> >>>>        ctx.insns =3D NULL;
+> >>>> +    ctx.ro_insns =3D NULL;
+> >>>>        ret =3D __arch_prepare_bpf_trampoline(im, m, tlinks, func_add=
+r,
+> >>>> flags, &ctx);
+> >>>>        if (ret < 0)
+> >>>>            return ret;
+> >>>> @@ -1014,7 +1042,15 @@ int arch_prepare_bpf_trampoline(struct
+> >>>> bpf_tramp_image *im, void *image,
+> >>>>            return -EFBIG;
+> >>>>        ctx.ninsns =3D 0;
+> >>>> +    /*
+> >>>> +     * The bpf_int_jit_compile() uses a RW buffer (ctx.insns) to
+> >>>> write the
+> >>>> +     * JITed instructions and later copies it to a RX region
+> >>>> (ctx.ro_insns).
+> >>>> +     * It also uses ctx.ro_insns to calculate offsets for jumps etc=
+.
+> >>>> As the
+> >>>> +     * trampoline image uses the same memory area for writing and
+> >>>> execution,
+> >>>> +     * both ctx.insns and ctx.ro_insns can be set to image.
+> >>>> +     */
+> >>>>        ctx.insns =3D image;
+> >>>> +    ctx.ro_insns =3D image;
+> >>>>        ret =3D __arch_prepare_bpf_trampoline(im, m, tlinks, func_add=
+r,
+> >>>> flags, &ctx);
+> >>>>        if (ret < 0)
+> >>>>            return ret;
+> >>>> diff --git a/arch/riscv/net/bpf_jit_core.c
+> >>>> b/arch/riscv/net/bpf_jit_core.c
+> >>>> index 7a26a3e1c73c..4c8dffc09368 100644
+> >>>> --- a/arch/riscv/net/bpf_jit_core.c
+> >>>> +++ b/arch/riscv/net/bpf_jit_core.c
+> >>>> @@ -8,6 +8,8 @@
+> >>>>    #include <linux/bpf.h>
+> >>>>    #include <linux/filter.h>
+> >>>> +#include <linux/memory.h>
+> >>>> +#include <asm/patch.h>
+> >>>>    #include "bpf_jit.h"
+> >>>>    /* Number of iterations to try until offsets converge. */
+> >>>> @@ -117,16 +119,27 @@ struct bpf_prog *bpf_int_jit_compile(struct
+> >>>> bpf_prog *prog)
+> >>>>                    sizeof(struct exception_table_entry);
+> >>>>                prog_size =3D sizeof(*ctx->insns) * ctx->ninsns;
+> >>>> -            jit_data->header =3D
+> >>>> -                bpf_jit_binary_alloc(prog_size + extable_size,
+> >>>> -                             &jit_data->image,
+> >>>> -                             sizeof(u32),
+> >>>> -                             bpf_fill_ill_insns);
+> >>>> -            if (!jit_data->header) {
+> >>>> +            jit_data->ro_header =3D
+> >>>> +                bpf_jit_binary_pack_alloc(prog_size +
+> >>>> +                              extable_size,
+> >>>> +                              &jit_data->ro_image,
+> >>>> +                              sizeof(u32),
+> >>>> +                              &jit_data->header,
+> >>>> +                              &jit_data->image,
+> >>>> +                              bpf_fill_ill_insns);
+> >>>> +            if (!jit_data->ro_header) {
+> >>>>                    prog =3D orig_prog;
+> >>>>                    goto out_offset;
+> >>>>                }
+> >>>> +            /*
+> >>>> +             * Use the image(RW) for writing the JITed instructions=
+.
+> >>>> But also save
+> >>>> +             * the ro_image(RX) for calculating the offsets in the
+> >>>> image. The RW
+> >>>> +             * image will be later copied to the RX image from wher=
+e
+> >>>> the program
+> >>>> +             * will run. The bpf_jit_binary_pack_finalize() will do
+> >>>> this copy in the
+> >>>> +             * final step.
+> >>>> +             */
+> >>>> +            ctx->ro_insns =3D (u16 *)jit_data->ro_image;
+> >>>>                ctx->insns =3D (u16 *)jit_data->image;
+> >>>>                /*
+> >>>>                 * Now, when the image is allocated, the image can
+> >>>> @@ -138,14 +151,12 @@ struct bpf_prog *bpf_int_jit_compile(struct
+> >>>> bpf_prog *prog)
+> >>>>        if (i =3D=3D NR_JIT_ITERATIONS) {
+> >>>>            pr_err("bpf-jit: image did not converge in <%d passes!\n"=
+, i);
+> >>>> -        if (jit_data->header)
+> >>>> -            bpf_jit_binary_free(jit_data->header);
+> >>>>            prog =3D orig_prog;
+> >>>> -        goto out_offset;
+> >>>> +        goto out_free_hdr;
+> >>>>        }
+> >>>>        if (extable_size)
+> >>>> -        prog->aux->extable =3D (void *)ctx->insns + prog_size;
+> >>>> +        prog->aux->extable =3D (void *)ctx->ro_insns + prog_size;
+> >>>>    skip_init_ctx:
+> >>>>        pass++;
+> >>>> @@ -154,23 +165,35 @@ struct bpf_prog *bpf_int_jit_compile(struct
+> >>>> bpf_prog *prog)
+> >>>>        bpf_jit_build_prologue(ctx);
+> >>>>        if (build_body(ctx, extra_pass, NULL)) {
+> >>>> -        bpf_jit_binary_free(jit_data->header);
+> >>>>            prog =3D orig_prog;
+> >>>> -        goto out_offset;
+> >>>> +        goto out_free_hdr;
+> >>>>        }
+> >>>>        bpf_jit_build_epilogue(ctx);
+> >>>>        if (bpf_jit_enable > 1)
+> >>>>            bpf_jit_dump(prog->len, prog_size, pass, ctx->insns);
+> >>>> -    prog->bpf_func =3D (void *)ctx->insns;
+> >>>> +    prog->bpf_func =3D (void *)ctx->ro_insns;
+> >>>>        prog->jited =3D 1;
+> >>>>        prog->jited_len =3D prog_size;
+> >>>> -    bpf_flush_icache(jit_data->header, ctx->insns + ctx->ninsns);
+> >>>> -
+> >>>>        if (!prog->is_func || extra_pass) {
+> >>>> -        bpf_jit_binary_lock_ro(jit_data->header);
+> >>>> +        if (WARN_ON(bpf_jit_binary_pack_finalize(prog,
+> >>>> +                             jit_data->ro_header,
+> >>>> +                             jit_data->header))) {
+> >>>> +            /* ro_header has been freed */
+> >>>> +            jit_data->ro_header =3D NULL;
+> >>>> +            prog =3D orig_prog;
+> >>>> +            goto out_offset;
+> >>>> +        }
+> >>>> +        /*
+> >>>> +         * The instructions have now been copied to the ROX region =
+from
+> >>>> +         * where they will execute.
+> >>>> +         * Write any modified data cache blocks out to memory and
+> >>>> +         * invalidate the corresponding blocks in the instruction c=
+ache.
+> >>>> +         */
+> >>>> +        bpf_flush_icache(jit_data->ro_header,
+> >>>> +                 ctx->ro_insns + ctx->ninsns);
+> >>>>            for (i =3D 0; i < prog->len; i++)
+> >>>>                ctx->offset[i] =3D ninsns_rvoff(ctx->offset[i]);
+> >>>>            bpf_prog_fill_jited_linfo(prog, ctx->offset);
+> >>>> @@ -185,6 +208,15 @@ struct bpf_prog *bpf_int_jit_compile(struct
+> >>>> bpf_prog *prog)
+> >>>>            bpf_jit_prog_release_other(prog, prog =3D=3D orig_prog ?
+> >>>>                           tmp : orig_prog);
+> >>>>        return prog;
+> >>>> +
+> >>>> +out_free_hdr:
+> >>>> +    if (jit_data->header) {
+> >>>> +        bpf_arch_text_copy(&jit_data->ro_header->size,
+> >>>> +                   &jit_data->header->size,
+> >>>> +                   sizeof(jit_data->header->size));
+> >>>> +        bpf_jit_binary_pack_free(jit_data->ro_header, jit_data->hea=
+der);
+> >>>> +    }
+> >>>> +    goto out_offset;
+> >>>>    }
+> >>>>    u64 bpf_jit_alloc_exec_limit(void)
+> >>>> @@ -204,3 +236,52 @@ void bpf_jit_free_exec(void *addr)
+> >>>>    {
+> >>>>        return vfree(addr);
+> >>>>    }
+> >>>> +
+> >>>> +void *bpf_arch_text_copy(void *dst, void *src, size_t len)
+> >>>> +{
+> >>>> +    int ret;
+> >>>> +
+> >>>> +    mutex_lock(&text_mutex);
+> >>>> +    ret =3D patch_text_nosync(dst, src, len);
+> >>>> +    mutex_unlock(&text_mutex);
+> >>>> +
+> >>>> +    if (ret)
+> >>>> +        return ERR_PTR(-EINVAL);
+> >>>> +
+> >>>> +    return dst;
+> >>>> +}
+> >>>> +
+> >>>> +int bpf_arch_text_invalidate(void *dst, size_t len)
+> >>>> +{
+> >>>> +    int ret =3D 0;
+> >>>
+> >>> no need to initialize it
+> >>>
+> >>>> +
+> >>>> +    mutex_lock(&text_mutex);
+> >>>> +    ret =3D patch_text_set_nosync(dst, 0, len);
+> >>>> +    mutex_unlock(&text_mutex);
+> >>>> +
+> >>>> +    return ret;
+> >>>> +}
+> >>>> +
+> >>>> +void bpf_jit_free(struct bpf_prog *prog)
+> >>>> +{
+> >>>> +    if (prog->jited) {
+> >>>> +        struct rv_jit_data *jit_data =3D prog->aux->jit_data;
+> >>>> +        struct bpf_binary_header *hdr;
+> >>>> +
+> >>>> +        /*
+> >>>> +         * If we fail the final pass of JIT (from jit_subprogs),
+> >>>> +         * the program may not be finalized yet. Call finalize here
+> >>>> +         * before freeing it.
+> >>>> +         */
+> >>>> +        if (jit_data) {
+> >>>> +            bpf_jit_binary_pack_finalize(prog, jit_data->ro_header,
+> >>>> +                             jit_data->header);
+> >>>> +            kfree(jit_data);
+> >>>> +        }
+> >>>> +        hdr =3D bpf_jit_binary_pack_hdr(prog);
+> >>>> +        bpf_jit_binary_pack_free(hdr, NULL);
+> >>>> +        WARN_ON_ONCE(!bpf_prog_kallsyms_verify_off(prog));
+> >>>> +    }
+> >>>> +
+> >>>> +    bpf_prog_unlock_free(prog);
+> >>>> +}
+> >>>
+> >>>
+> >
+> > Thanks,
+> > Puranjay
+
+
+Thanks,
+Puranjay
