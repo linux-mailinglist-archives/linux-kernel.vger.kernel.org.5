@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0B64787F17
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 06:52:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 653D1787F1E
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 06:55:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240755AbjHYEwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 00:52:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42468 "EHLO
+        id S240527AbjHYEzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 00:55:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235495AbjHYEvg (ORCPT
+        with ESMTP id S238532AbjHYEzQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 00:51:36 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30BAF1FD2
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 21:51:34 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id d75a77b69052e-40c72caec5cso180461cf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 21:51:34 -0700 (PDT)
+        Fri, 25 Aug 2023 00:55:16 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBB5B1FD2
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 21:55:13 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id d75a77b69052e-40a47e8e38dso103211cf.1
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 21:55:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692939093; x=1693543893; darn=vger.kernel.org;
+        d=google.com; s=20221208; t=1692939313; x=1693544113; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=OPFyyKMSssNX8avgS44LTxp2qnFm6/B0jvZ21cpGXLk=;
-        b=FBl1UivoDQtUIUksVjHTkoZ6n2tK7zRoU6FiOsFc0VFCTsH8gcBw00EL6qyN2a5+sb
-         iK+rQhhFr89SgCJVZ71zNQsQH4P9tCekaR7zI7xsLIGq3ouwhuyM3N21/HOvVjyrsWvD
-         JxfUaA82T9pbQ1uqSQS0d6PukVs+lR13M57PGDMt2OuUc4qeltboMRxkmi4mndYonQ1O
-         sLpNjTXL9uxW2BPBEy1NbbNoBhkGQJ1fG0e3KijOM4Qsye2/Hgw6aBgYysDzwkAf+RaN
-         TjIz5O4B0sWV155jmCJPrr661QMaIYymyL+89yvFfTXYHlNn9zPzUOMolurN4PWqZsL1
-         ovRg==
+        bh=UK9NVtWAgJG26oBVv+ugNcP8zu19Nzww0/cbuK0LKZU=;
+        b=MU6eA2NshUQx9YMB3iZZJtKoCm0v0il/KBTcCJK8yvtz1olQRcGk8RF05Sw1tWaaHH
+         x39al0Ob36T/KAkjLAwJ3VkChShoxX6035TVMxEZ9uE/HmteFSJurmKIKfLO6IXcU85/
+         NAmkac9Rz8MxV/sluc9ryyNnj6k8Xm3dRj0TKh2SMZ+Y7INnyCnJp7SeqU/ZrrhPOLEn
+         /8mvcc+wqr+2aq9kKnHhJk1G3tPZIo5qEYPZ035oN6BiGUirdCgOz8xeFjXtqKeB6u0W
+         DrUeqBHZQ9sctSnmGus72kA25KzSRyV3MWMtm1KMr8YkNIJCwZFijNiuhf7QLZfUSNkO
+         yfKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692939093; x=1693543893;
+        d=1e100.net; s=20221208; t=1692939313; x=1693544113;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=OPFyyKMSssNX8avgS44LTxp2qnFm6/B0jvZ21cpGXLk=;
-        b=I36gqSInRRnP6UmwS0w5NhYUUm24LLIPU3AdfRB/vU1+XrDvNSivoOW0pxZUSI23Fm
-         0GLFG59UTS2ZgtsWVTy5RzZ5FjjnP7CQRF/eJzOlJMV9+HsJ/XM88Q7h3uk5hJ2v2vYW
-         OJm2LY9mJon0knwh7oEJnR0ExjJ0U4KZ2BUwK6SRgpjZfwNfUfLduG+xdj4pYCQX/PEV
-         y3DmEfi12obOaqtr83sG9emFIh8/C9nok8l36/56Y6atlxLTaIAwag4JY+BZA6/5YiCV
-         4vwXPBHyTHzYS+3SUUCpjADMlEzfkN/ibBJDPv/rbOYy6QEz7uPTxnPUsHxtP3Finkhm
-         JW5g==
-X-Gm-Message-State: AOJu0YzVilmeMHaUuAouazRG1N4Fj5H1Zi3Thig3Hdtn9GPqmSVtxHW2
-        Yja9TnTcSQvHBEYbS1ztP64xS1cF1I4PygglerUlGCLSvLS0xtErt81w7Q==
-X-Google-Smtp-Source: AGHT+IEDndaQpZqCUxYnXWbxxdq4b7vxoWXcbvDIOtr2iuaNWb0yaxCQqreDRgTOsMCtCqcAiJKKakJxRPLmmS7OLhQ=
-X-Received: by 2002:a05:622a:1748:b0:404:8218:83da with SMTP id
- l8-20020a05622a174800b00404821883damr118639qtk.1.1692939093178; Thu, 24 Aug
- 2023 21:51:33 -0700 (PDT)
+        bh=UK9NVtWAgJG26oBVv+ugNcP8zu19Nzww0/cbuK0LKZU=;
+        b=Eauf9DS4lqvO7jgLDwfydtbRdvETkqpxXK9civGJuW96RZlXpxgIfmNInbDZMZnCr8
+         W//HWRFmRSNZnEDbozqiuOLmMiVsM2C8FEQLuxiiTBMLPE/acsiYNTXxDDnNTFsZUOsn
+         bUsxQfQwdtLK03MAfQy4iY2guHAuANbjwTsblHX2PXfj6bfa9S2LBz9cqleknZHRmVXL
+         zCXqH5d+rokULvRHL5KCpQ1u9E1MfGAkvZOYhZYCngy9+Ob1AJbGewU2rmVqZL2eexBB
+         jsfsuibZNZDHpxrWq2Xh7ORIxJW7mPAF9MdBM267KgKOuqMMOFljj2Hv9Gt8NuOT6GjA
+         b2Hg==
+X-Gm-Message-State: AOJu0YyLjtbt+sMrKupPcUTwq1YsuRcTx3nU/Ys0Zzj1IwSGZjKNaPFy
+        NuxRos2Uv/I0Enq5evyeX5B2RyU7TfDOlobw2WuHAg==
+X-Google-Smtp-Source: AGHT+IFE9mZvnAi5E7Oy2yBGlF7nZ1VVggJms2FC9NjJexufTqRq5Fiy/5Hx4gqtsfzMZSkM/j2JQ3NKRnRjjVR3T3g=
+X-Received: by 2002:ac8:5ad2:0:b0:410:9d71:ba5d with SMTP id
+ d18-20020ac85ad2000000b004109d71ba5dmr117201qtd.25.1692939312913; Thu, 24 Aug
+ 2023 21:55:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230821012734.18241-1-yangjihong1@huawei.com> <20230821012734.18241-2-yangjihong1@huawei.com>
-In-Reply-To: <20230821012734.18241-2-yangjihong1@huawei.com>
+References: <20230821012734.18241-1-yangjihong1@huawei.com> <20230821012734.18241-3-yangjihong1@huawei.com>
+In-Reply-To: <20230821012734.18241-3-yangjihong1@huawei.com>
 From:   Ian Rogers <irogers@google.com>
-Date:   Thu, 24 Aug 2023 21:51:22 -0700
-Message-ID: <CAP-5=fXexLBnq1pkHPR5uXR-bL3CFTzEWkFnxHVs-71+S0yZSg@mail.gmail.com>
-Subject: Re: [PATCH v6 1/7] perf evlist: Add perf_evlist__go_system_wide() helper
+Date:   Thu, 24 Aug 2023 21:55:01 -0700
+Message-ID: <CAP-5=fVw9eO=rVLHL+XuaFxsfwD+ji2f9xWdOv3AkaYj9A+w0A@mail.gmail.com>
+Subject: Re: [PATCH v6 2/7] perf evlist: Add evlist__findnew_tracking_event() helper
 To:     Yang Jihong <yangjihong1@huawei.com>
 Cc:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
         mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
@@ -78,67 +78,106 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On Sun, Aug 20, 2023 at 6:30=E2=80=AFPM Yang Jihong <yangjihong1@huawei.com=
 > wrote:
 >
-> For dummy events that keep tracking, we may need to modify its cpu_maps.
-> For example, change the cpu_maps to record sideband events for all CPUS.
-> Add perf_evlist__go_system_wide() helper to support this scenario.
+> Currently, intel-bts, intel-pt, and arm-spe may add a dummy event for
+> tracking to the evlist. We may need to search for the dummy event for
+> some settings. Therefore, add evlist__findnew_tracking_event() helper.
+
+Given the first two sentences I don't understand why this is
+evlist__findnew_tracking_event and not evlist__findnew_dummy_event?
+Are you setting tracking on other events other than dummy? If so, then
+the commit message isn't right. If not then I'd prefer not to use
+tracking event in the function name.
+
 >
-> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
-> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-> ---
->  tools/lib/perf/evlist.c                  | 9 +++++++++
->  tools/lib/perf/include/internal/evlist.h | 2 ++
->  2 files changed, 11 insertions(+)
->
-> diff --git a/tools/lib/perf/evlist.c b/tools/lib/perf/evlist.c
-> index b8b066d0dc5e..3acbbccc1901 100644
-> --- a/tools/lib/perf/evlist.c
-> +++ b/tools/lib/perf/evlist.c
-> @@ -738,3 +738,12 @@ int perf_evlist__nr_groups(struct perf_evlist *evlis=
-t)
->         }
->         return nr_groups;
->  }
-> +
-> +void perf_evlist__go_system_wide(struct perf_evlist *evlist, struct perf=
-_evsel *evsel)
-> +{
-> +       if (!evsel->system_wide) {
-> +               evsel->system_wide =3D true;
-> +               if (evlist->needs_map_propagation)
-> +                       __perf_evlist__propagate_maps(evlist, evsel);
-> +       }
-> +}
+> evlist__findnew_tracking_event() also deal with system_wide maps if
+> system_wide is true.
 
-I think this should be:
-
-void evsel__set_system_wide(struct evsel *evsel)
-{
-        if (evsel->system_wide)
-               return;
-        evsel->system_wide =3D true;
-        if (evsel->evlist->core.needs_map_propagation)
-...
-
-The API being on evlist makes it look like all evsels are affected.
+Could you fix the explanation here, what does "deal with system_wide"
+mean? A kerneldoc comment and explanation of the system_wide argument
+would be useful.
 
 Thanks,
 Ian
 
-> diff --git a/tools/lib/perf/include/internal/evlist.h b/tools/lib/perf/in=
-clude/internal/evlist.h
-> index 3339bc2f1765..d86ffe8ed483 100644
-> --- a/tools/lib/perf/include/internal/evlist.h
-> +++ b/tools/lib/perf/include/internal/evlist.h
-> @@ -135,4 +135,6 @@ int perf_evlist__id_add_fd(struct perf_evlist *evlist=
-,
->  void perf_evlist__reset_id_hash(struct perf_evlist *evlist);
+> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+> ---
+>  tools/perf/builtin-record.c | 11 +++--------
+>  tools/perf/util/evlist.c    | 18 ++++++++++++++++++
+>  tools/perf/util/evlist.h    |  1 +
+>  3 files changed, 22 insertions(+), 8 deletions(-)
 >
->  void __perf_evlist__set_leader(struct list_head *list, struct perf_evsel=
- *leader);
+> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+> index 34bb31f08bb5..12edad8392cc 100644
+> --- a/tools/perf/builtin-record.c
+> +++ b/tools/perf/builtin-record.c
+> @@ -1293,14 +1293,9 @@ static int record__open(struct record *rec)
+>          */
+>         if (opts->target.initial_delay || target__has_cpu(&opts->target) =
+||
+>             perf_pmus__num_core_pmus() > 1) {
+> -               pos =3D evlist__get_tracking_event(evlist);
+> -               if (!evsel__is_dummy_event(pos)) {
+> -                       /* Set up dummy event. */
+> -                       if (evlist__add_dummy(evlist))
+> -                               return -ENOMEM;
+> -                       pos =3D evlist__last(evlist);
+> -                       evlist__set_tracking_event(evlist, pos);
+> -               }
+> +               pos =3D evlist__findnew_tracking_event(evlist, false);
+> +               if (!pos)
+> +                       return -ENOMEM;
+>
+>                 /*
+>                  * Enable the dummy event when the process is forked for
+> diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+> index 7ef43f72098e..25c3ebe2c2f5 100644
+> --- a/tools/perf/util/evlist.c
+> +++ b/tools/perf/util/evlist.c
+> @@ -1694,6 +1694,24 @@ void evlist__set_tracking_event(struct evlist *evl=
+ist, struct evsel *tracking_ev
+>         tracking_evsel->tracking =3D true;
+>  }
+>
+> +struct evsel *evlist__findnew_tracking_event(struct evlist *evlist, bool=
+ system_wide)
+> +{
+> +       struct evsel *evsel;
 > +
-> +void perf_evlist__go_system_wide(struct perf_evlist *evlist, struct perf=
-_evsel *evsel);
->  #endif /* __LIBPERF_INTERNAL_EVLIST_H */
+> +       evsel =3D evlist__get_tracking_event(evlist);
+> +       if (!evsel__is_dummy_event(evsel)) {
+> +               evsel =3D evlist__add_aux_dummy(evlist, system_wide);
+> +               if (!evsel)
+> +                       return NULL;
+> +
+> +               evlist__set_tracking_event(evlist, evsel);
+> +       } else if (system_wide) {
+> +               perf_evlist__go_system_wide(&evlist->core, &evsel->core);
+> +       }
+> +
+> +       return evsel;
+> +}
+> +
+>  struct evsel *evlist__find_evsel_by_str(struct evlist *evlist, const cha=
+r *str)
+>  {
+>         struct evsel *evsel;
+> diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
+> index 664c6bf7b3e0..98e7ddb2bd30 100644
+> --- a/tools/perf/util/evlist.h
+> +++ b/tools/perf/util/evlist.h
+> @@ -387,6 +387,7 @@ bool evlist_cpu_iterator__end(const struct evlist_cpu=
+_iterator *evlist_cpu_itr);
+>
+>  struct evsel *evlist__get_tracking_event(struct evlist *evlist);
+>  void evlist__set_tracking_event(struct evlist *evlist, struct evsel *tra=
+cking_evsel);
+> +struct evsel *evlist__findnew_tracking_event(struct evlist *evlist, bool=
+ system_wide);
+>
+>  struct evsel *evlist__find_evsel_by_str(struct evlist *evlist, const cha=
+r *str);
+>
 > --
 > 2.30.GIT
 >
