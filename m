@@ -2,91 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 42A97788E22
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 19:58:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57C09788E27
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 19:59:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231907AbjHYR5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 13:57:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48974 "EHLO
+        id S230024AbjHYR7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 13:59:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235889AbjHYR5d (ORCPT
+        with ESMTP id S231938AbjHYR7Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 13:57:33 -0400
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A904128;
-        Fri, 25 Aug 2023 10:57:32 -0700 (PDT)
-Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-26f6b2c8e80so790260a91.1;
-        Fri, 25 Aug 2023 10:57:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692986251; x=1693591051;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Br6kJJfxbLrAeYAoyaF8n8ch2SmPfAfalV3GMRZvTyE=;
-        b=bXj4wH7leWNe9LicpoIIYkOBYbBvvtG8TMegYE7ildru+s3V+IZjGyFMxDmnz1MnXY
-         CKm+PlSloLhMVaVA3VEU7L4Hl4SwtJ3a6Q/AJqmlzzA5+Npz94gA+io85r6JubcMuGe2
-         WF8yyXKNYKme7AfAUW2MDkqOtamGRpr+EosPjogpl9SJQ0n1Pmik8IutfT6sKBp1MK77
-         fxVT2JxVlH6knnEpNdLyu1a5g6/6oF5GHbi0QaTmLw0oVotxQ3YaU9XTF4F4TvGiUn9m
-         GdSMC9s5yYOcqv0MWuHvvAUKU/7AHi/bwLFyuUmYIjio9FMNEjMfU0EItq0pBBjZdlMZ
-         UBwQ==
-X-Gm-Message-State: AOJu0YxH07guVOexn/DG4RjMMwLmgSzgiSDdfdqC+K28fl4SEMXiCLxJ
-        L7BfdLEXTOFzvVj+193tdY30iplYCXs=
-X-Google-Smtp-Source: AGHT+IGlvEx6Sbm28XFJGL/dVcxNkNLmDnxcOZS7bw2GFhwadT8yB9Sl8WuTzs59URW8TP9H70V15A==
-X-Received: by 2002:a17:90b:4381:b0:263:4815:cb9a with SMTP id in1-20020a17090b438100b002634815cb9amr18209467pjb.41.1692986251528;
-        Fri, 25 Aug 2023 10:57:31 -0700 (PDT)
-Received: from localhost (fpd11144dd.ap.nuro.jp. [209.17.68.221])
-        by smtp.gmail.com with ESMTPSA id f6-20020a17090ab94600b0025bdc3454c6sm3811608pjw.8.2023.08.25.10.57.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Aug 2023 10:57:30 -0700 (PDT)
-Date:   Sat, 26 Aug 2023 02:57:29 +0900
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH 0/7] Improvements to Qcom PCIe EP and EPF MHI drivers
-Message-ID: <20230825175729.GB131548@rocinante>
-References: <20230606115814.53319-1-manivannan.sadhasivam@linaro.org>
+        Fri, 25 Aug 2023 13:59:16 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE32DE54;
+        Fri, 25 Aug 2023 10:59:13 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 645C662257;
+        Fri, 25 Aug 2023 17:59:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 988DFC433C8;
+        Fri, 25 Aug 2023 17:59:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692986352;
+        bh=hpbJdR25m1QXnq31MNqMvBDRlA1RB0g3/1vKfKZm4Ag=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=NlPW+i6MO8wk5RnmJ6ewRqV3uF77qw4+tDysHCSgfE62FSGITEKoaTm7ITa5R/epp
+         ggJ0UpTAKVDwMmyddP9KV8r3XqasB3ZzHAMv+y1y/4MuvqRrvhol0QE+PDBe1ogd3g
+         ETvaMG5fRfhr7eAMtNez5c9YjO5O762P9xSpEnZAQprxvDXg5E61UZ70onxRpZ9QPM
+         8M2UbjQzXf/5DBWrAO5KJ7gOiQnxCp+T875FHXFKXmNIhPS3Rn4QB8QnBl01xsIWVQ
+         FG7Xv1y+56n1U18dz2xE9RW6p/9yeYD35BTdIAJOS0h0KOOHAUUP7jchbV7WcFMapr
+         qudeTGgg01zOg==
+Message-ID: <0ed7d3dc-90b5-52e0-747e-5d8712a71a05@kernel.org>
+Date:   Fri, 25 Aug 2023 11:58:53 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230606115814.53319-1-manivannan.sadhasivam@linaro.org>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [ANNOUNCE/CFP] Kernel Testing & Dependability Micro-conference at
+ LPC 2023
+Content-Language: en-US
+To:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Shuah Khan <skhan@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Guillaume Tucker <guillaume.tucker@collabora.com>,
+        shuah <shuah@kernel.org>
+References: <e04d1d5b-518b-bebd-aa7a-70b87bc4e867@kernel.org>
+From:   shuah <shuah@kernel.org>
+In-Reply-To: <e04d1d5b-518b-bebd-aa7a-70b87bc4e867@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hello all,
 
-> This series adds eDMA (embedded DMA) support to the Qcom PCIe EP and EPF 
-> MHI drivers for offloading the transfers between PCIe bus and the EP
-> memory. eDMA support makes use of the recently merged eDMA DMAEngine driver
-> and its integration with DWC PCIe EP core [1].
+On 7/19/23 15:34, shuah wrote:
+> Hello,
 > 
-> This series also adds Qcom SM8450 SoC support to EPF MHI driver that has
-> the eDMA support built-in.
+> I am reaching out to announce that we are once again planning to
+> gather to discuss testing and dependability related topics at the
+> Kernel Testing & Dependability Micro-conference at LPC 2023.
+> 
+> We invite you to submit proposals for discussion:
+> - https://lpc.events/event/17/abstracts/1430/
+> 
+> Proposals can be submitted here, by August 20th:
+> - https://lpc.events/event/17/abstracts/
+> 
 
-Applied to controller/qcom-edma, thank you!
+Reminding you to submit proposals for the upcoming Kernel Testing &
+Dependability Micro-conference.
 
-[1/7] PCI: qcom-ep: Pass alignment restriction to the EPF core
-      https://git.kernel.org/pci/pci/c/8cd2b8ce48e5
-[2/7] PCI: epf-mhi: Make use of the alignment restriction from EPF core
-      https://git.kernel.org/pci/pci/c/e0ea11b2b094
-[3/7] PCI: qcom-ep: Add eDMA support
-      https://git.kernel.org/pci/pci/c/2337fff7c400
-[4/7] PCI: epf-mhi: Add eDMA support
-      https://git.kernel.org/pci/pci/c/827d42dbbe3b
-[5/7] PCI: epf-mhi: Add support for SM8450
-      https://git.kernel.org/pci/pci/c/a35318fa2d73
-[6/7] PCI: epf-mhi: Use iATU for small transfers
-      https://git.kernel.org/pci/pci/c/b65bdcaa7ac4
-[7/7] PCI: endpoint: Add kernel-doc for pci_epc_mem_init() API
-      https://git.kernel.org/pci/pci/c/bcf054a26edc
+> Please reach out to MC leads:
+>       Shuah Khan (shuah@kernel.org)
+>       Sasha Levin <sashal@kernel.org>
+>       Guillaume Tucker <guillaume.tucker@collabora.com>
+> 
 
-        Krzysztof
+thanks,
+-- Shuah
+
