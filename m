@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E785788E45
+	by mail.lfdr.de (Postfix) with ESMTP id 8AE97788E46
 	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 20:11:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232464AbjHYSK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 14:10:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33772 "EHLO
+        id S232583AbjHYSK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 14:10:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231589AbjHYSKl (ORCPT
+        with ESMTP id S231591AbjHYSKl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 25 Aug 2023 14:10:41 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78AC62686
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B21EE1BF1
         for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 11:10:39 -0700 (PDT)
 From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
@@ -22,21 +22,21 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Iaghsr58+6ugluicDUPGF4WEEEZtHY5OFG7Ax1N0Kv0=;
-        b=VmUG3Jvy8eDY6U6AEGSYKBdKVev4hXPYbZZnLE0nGb0s2TFi18JfY8y3asJCr3hdUob9EW
-        P+mgg5qMsPrcwplGpenuXD5JpTTNL+S4DeFThynegOdzSCk1HL1kfo53K1CptmvRiLtAdb
-        rCWFKRKxsgAzJ4QO32r1ZONf3lBva9pd76LF0UGgeZSiPodcSJW6Vmk0VopAq3/tQIBuTA
-        tT830ggooTnnr3/Nt4RVE4ZwAOPVe2cjJUUXdntLrQ/jZKeByoKdG4FC0HupOgIN+hvc10
-        aB/q9fGLMEDJP0+17rRw4O7TbkLHcWYtuXvVoaZsiRHDbf7A0VeI54kzx66LKg==
+        bh=Qx5o5NWuongItLawGnYT3eYixJKHNqubNZ7Gbs6vpvI=;
+        b=r8sH32SWQe+RFNOfsM7sBQTrtyCKJSbyEmJihL7cyPasvs3mqvJJloypILxgiTF8a8K5yQ
+        b92E1Tw5pEw8vAQxwCvzTaXUkm7LQfokPXjzSK8gB6hdtQ8GBZZWSmbFNNsmD9r39i2yUa
+        g4gnLfL0b9YkcwDc0RB06AFI79gf6wAidcrD8Crswhxk+QnDGHYZx8L86szS4zz1O6tcFo
+        W3WGk45rLBu/c/MA5OJG6W+AZAIGbT+Ihdw6f6e0OkThvJnaLYa9kWTjffe8FT6mnQ+M9K
+        P3RfLsdQFj2G4pXaNyOhz72qB7gBk2s0BBN70dB6EEZw+9gkpSwoQjSiOEqRKQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1692987038;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Iaghsr58+6ugluicDUPGF4WEEEZtHY5OFG7Ax1N0Kv0=;
-        b=O9e4j5pPl4gXtJix6HHTEcBZhl/8SkolbNZ2Xhdc0VAHo26RB2MIdDi2//D27HqLBMKEtW
-        u4GbnTO9tVIYw0DQ==
+        bh=Qx5o5NWuongItLawGnYT3eYixJKHNqubNZ7Gbs6vpvI=;
+        b=OiTe5S48gckWMNd+eXzMWGMgAI7oY+aP+qgi61j45/z7WgbsOQHKvYbNYrPBhwtcR5+6PE
+        h2FIxwpLeAoZN2Ag==
 To:     Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org
 Cc:     bigeasy@linutronix.de, tglx@linutronix.de, boqun.feng@gmail.com,
         bristot@redhat.com, bsegall@google.com, dietmar.eggemann@arm.com,
@@ -44,9 +44,9 @@ Cc:     bigeasy@linutronix.de, tglx@linutronix.de, boqun.feng@gmail.com,
         mgorman@suse.de, mingo@redhat.com, rostedt@goodmis.org,
         swood@redhat.com, vincent.guittot@linaro.org, vschneid@redhat.com,
         will@kernel.org
-Subject: [PATCH v2 5/6] locking/rtmutex: Use rt_mutex specific scheduler helpers
-Date:   Fri, 25 Aug 2023 20:10:32 +0200
-Message-Id: <20230825181033.504534-6-bigeasy@linutronix.de>
+Subject: [PATCH v2 6/6] locking/rtmutex: Add a lockdep assert to catch potential nested blocking
+Date:   Fri, 25 Aug 2023 20:10:33 +0200
+Message-Id: <20230825181033.504534-7-bigeasy@linutronix.de>
 In-Reply-To: <20230825181033.504534-1-bigeasy@linutronix.de>
 References: <20230825181033.504534-1-bigeasy@linutronix.de>
 MIME-Version: 1.0
@@ -60,202 +60,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Have rt_mutex use the rt_mutex specific scheduler helpers to avoid
-recursion vs rtlock on the PI state.
+From: Thomas Gleixner <tglx@linutronix.de>
 
-[[ peterz: adapted to new names ]]
+There used to be a BUG_ON(current->pi_blocked_on) in the lock acquisition
+functions, but that vanished in one of the rtmutex overhauls.
+
+Bring it back in form of a lockdep assert to catch code paths which take
+rtmutex based locks with current::pi_blocked_on !=3D NULL.
 
 Reported-by: Crystal Wood <swood@redhat.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Link: https://lore.kernel.org/r/20230815111430.421408298@infradead.org
+Link: https://lkml.kernel.org/r/20230427111937.2745231-5-bigeasy@linutronix=
+.de
+Link: https://lore.kernel.org/r/20230815111430.488430699@infradead.org
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- kernel/futex/pi.c            | 11 +++++++++++
- kernel/locking/rtmutex.c     | 14 ++++++++++++--
- kernel/locking/rwbase_rt.c   |  6 ++++++
- kernel/locking/rwsem.c       |  8 +++++++-
- kernel/locking/spinlock_rt.c |  4 ++++
- 5 files changed, 40 insertions(+), 3 deletions(-)
+ kernel/locking/rtmutex.c     | 2 ++
+ kernel/locking/rwbase_rt.c   | 2 ++
+ kernel/locking/spinlock_rt.c | 2 ++
+ 3 files changed, 6 insertions(+)
 
-diff --git a/kernel/futex/pi.c b/kernel/futex/pi.c
-index ce2889f123755..f8e65b27d9d6b 100644
---- a/kernel/futex/pi.c
-+++ b/kernel/futex/pi.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
-=20
- #include <linux/slab.h>
-+#include <linux/sched/rt.h>
- #include <linux/sched/task.h>
-=20
- #include "futex.h"
-@@ -1002,6 +1003,12 @@ int futex_lock_pi(u32 __user *uaddr, unsigned int fl=
-ags, ktime_t *time, int tryl
- 		goto no_block;
- 	}
-=20
-+	/*
-+	 * Must be done before we enqueue the waiter, here is unfortunately
-+	 * under the hb lock, but that *should* work because it does nothing.
-+	 */
-+	rt_mutex_pre_schedule();
-+
- 	rt_mutex_init_waiter(&rt_waiter);
-=20
- 	/*
-@@ -1052,6 +1059,10 @@ int futex_lock_pi(u32 __user *uaddr, unsigned int fl=
-ags, ktime_t *time, int tryl
- 	if (ret && !rt_mutex_cleanup_proxy_lock(&q.pi_state->pi_mutex, &rt_waiter=
-))
- 		ret =3D 0;
-=20
-+	/*
-+	 * Waiter is unqueued.
-+	 */
-+	rt_mutex_post_schedule();
- no_block:
- 	/*
- 	 * Fixup the pi_state owner and possibly acquire the lock if we
 diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
-index bcec0533a0cc0..a3fe05dfd0d8f 100644
+index a3fe05dfd0d8f..4a10e8c16fd2b 100644
 --- a/kernel/locking/rtmutex.c
 +++ b/kernel/locking/rtmutex.c
-@@ -1632,7 +1632,7 @@ static int __sched rt_mutex_slowlock_block(struct rt_=
-mutex_base *lock,
- 		raw_spin_unlock_irq(&lock->wait_lock);
-=20
- 		if (!owner || !rtmutex_spin_on_owner(lock, waiter, owner))
--			schedule();
-+			rt_mutex_schedule();
-=20
- 		raw_spin_lock_irq(&lock->wait_lock);
- 		set_current_state(state);
-@@ -1661,7 +1661,7 @@ static void __sched rt_mutex_handle_deadlock(int res,=
- int detect_deadlock,
- 	WARN(1, "rtmutex deadlock detected\n");
- 	while (1) {
- 		set_current_state(TASK_INTERRUPTIBLE);
--		schedule();
-+		rt_mutex_schedule();
- 	}
- }
-=20
-@@ -1756,6 +1756,15 @@ static int __sched rt_mutex_slowlock(struct rt_mutex=
-_base *lock,
- 	unsigned long flags;
- 	int ret;
-=20
-+	/*
-+	 * Do all pre-schedule work here, before we queue a waiter and invoke
-+	 * PI -- any such work that trips on rtlock (PREEMPT_RT spinlock) would
-+	 * otherwise recurse back into task_blocks_on_rt_mutex() through
-+	 * rtlock_slowlock() and will then enqueue a second waiter for this
-+	 * same task and things get really confusing real fast.
-+	 */
-+	rt_mutex_pre_schedule();
-+
- 	/*
- 	 * Technically we could use raw_spin_[un]lock_irq() here, but this can
- 	 * be called in early boot if the cmpxchg() fast path is disabled
-@@ -1767,6 +1776,7 @@ static int __sched rt_mutex_slowlock(struct rt_mutex_=
+@@ -1784,6 +1784,8 @@ static int __sched rt_mutex_slowlock(struct rt_mutex_=
 base *lock,
- 	raw_spin_lock_irqsave(&lock->wait_lock, flags);
- 	ret =3D __rt_mutex_slowlock_locked(lock, ww_ctx, state);
- 	raw_spin_unlock_irqrestore(&lock->wait_lock, flags);
-+	rt_mutex_post_schedule();
+ static __always_inline int __rt_mutex_lock(struct rt_mutex_base *lock,
+ 					   unsigned int state)
+ {
++	lockdep_assert(!current->pi_blocked_on);
++
+ 	if (likely(rt_mutex_try_acquire(lock)))
+ 		return 0;
 =20
- 	return ret;
- }
 diff --git a/kernel/locking/rwbase_rt.c b/kernel/locking/rwbase_rt.c
-index 25ec0239477c2..7d57bfb909001 100644
+index 7d57bfb909001..b5e881250fec5 100644
 --- a/kernel/locking/rwbase_rt.c
 +++ b/kernel/locking/rwbase_rt.c
-@@ -71,6 +71,7 @@ static int __sched __rwbase_read_lock(struct rwbase_rt *r=
-wb,
- 	struct rt_mutex_base *rtm =3D &rwb->rtmutex;
- 	int ret;
-=20
-+	rwbase_pre_schedule();
- 	raw_spin_lock_irq(&rtm->wait_lock);
-=20
- 	/*
-@@ -125,6 +126,7 @@ static int __sched __rwbase_read_lock(struct rwbase_rt =
+@@ -133,6 +133,8 @@ static int __sched __rwbase_read_lock(struct rwbase_rt =
 *rwb,
- 		rwbase_rtmutex_unlock(rtm);
-=20
- 	trace_contention_end(rwb, ret);
-+	rwbase_post_schedule();
- 	return ret;
- }
-=20
-@@ -237,6 +239,8 @@ static int __sched rwbase_write_lock(struct rwbase_rt *=
-rwb,
- 	/* Force readers into slow path */
- 	atomic_sub(READER_BIAS, &rwb->readers);
-=20
-+	rt_mutex_pre_schedule();
+ static __always_inline int rwbase_read_lock(struct rwbase_rt *rwb,
+ 					    unsigned int state)
+ {
++	lockdep_assert(!current->pi_blocked_on);
 +
- 	raw_spin_lock_irqsave(&rtm->wait_lock, flags);
- 	if (__rwbase_write_trylock(rwb))
- 		goto out_unlock;
-@@ -248,6 +252,7 @@ static int __sched rwbase_write_lock(struct rwbase_rt *=
-rwb,
- 		if (rwbase_signal_pending_state(state, current)) {
- 			rwbase_restore_current_state();
- 			__rwbase_write_unlock(rwb, 0, flags);
-+			rt_mutex_post_schedule();
- 			trace_contention_end(rwb, -EINTR);
- 			return -EINTR;
- 		}
-@@ -266,6 +271,7 @@ static int __sched rwbase_write_lock(struct rwbase_rt *=
-rwb,
-=20
- out_unlock:
- 	raw_spin_unlock_irqrestore(&rtm->wait_lock, flags);
-+	rt_mutex_post_schedule();
- 	return 0;
- }
-=20
-diff --git a/kernel/locking/rwsem.c b/kernel/locking/rwsem.c
-index 9eabd585ce7af..2340b6d90ec6f 100644
---- a/kernel/locking/rwsem.c
-+++ b/kernel/locking/rwsem.c
-@@ -1427,8 +1427,14 @@ static inline void __downgrade_write(struct rw_semap=
-hore *sem)
- #define rwbase_signal_pending_state(state, current)	\
- 	signal_pending_state(state, current)
-=20
-+#define rwbase_pre_schedule()				\
-+	rt_mutex_pre_schedule()
-+
- #define rwbase_schedule()				\
--	schedule()
-+	rt_mutex_schedule()
-+
-+#define rwbase_post_schedule()				\
-+	rt_mutex_post_schedule()
-=20
- #include "rwbase_rt.c"
+ 	if (rwbase_read_trylock(rwb))
+ 		return 0;
 =20
 diff --git a/kernel/locking/spinlock_rt.c b/kernel/locking/spinlock_rt.c
-index 48a19ed8486d8..842037b2ba548 100644
+index 842037b2ba548..38e292454fccb 100644
 --- a/kernel/locking/spinlock_rt.c
 +++ b/kernel/locking/spinlock_rt.c
-@@ -184,9 +184,13 @@ static __always_inline int  rwbase_rtmutex_trylock(str=
-uct rt_mutex_base *rtm)
+@@ -37,6 +37,8 @@
 =20
- #define rwbase_signal_pending_state(state, current)	(0)
-=20
-+#define rwbase_pre_schedule()
+ static __always_inline void rtlock_lock(struct rt_mutex_base *rtm)
+ {
++	lockdep_assert(!current->pi_blocked_on);
 +
- #define rwbase_schedule()				\
- 	schedule_rtlock()
-=20
-+#define rwbase_post_schedule()
-+
- #include "rwbase_rt.c"
- /*
-  * The common functions which get wrapped into the rwlock API.
+ 	if (unlikely(!rt_mutex_cmpxchg_acquire(rtm, NULL, current)))
+ 		rtlock_slowlock(rtm);
+ }
 --=20
 2.40.1
 
