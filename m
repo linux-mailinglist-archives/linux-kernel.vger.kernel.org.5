@@ -2,118 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53DDB788011
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 08:40:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F5B5788019
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 08:41:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242111AbjHYGjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 02:39:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50584 "EHLO
+        id S242125AbjHYGkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 02:40:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242102AbjHYGjd (ORCPT
+        with ESMTP id S242192AbjHYGkN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 02:39:33 -0400
-Received: from mail-oa1-x2c.google.com (mail-oa1-x2c.google.com [IPv6:2001:4860:4864:20::2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B2211FD0
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 23:39:30 -0700 (PDT)
-Received: by mail-oa1-x2c.google.com with SMTP id 586e51a60fabf-1cc61f514baso371349fac.1
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 23:39:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692945569; x=1693550369;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=1WgDAlgwru6Ubk2nOTTHuUzG0ifZyKXeoH3bmFI55mQ=;
-        b=xWTap7b6KjGFd35uAPX1Yn9KWrq78hJY4xNw5NkbPEub9UgGozjUbF9N9i8OxKik+u
-         +USIVF4B7TJfRTVVrFPfKvf82W4sDKockuWbrQQ5OKZiJ4z2Yd5etj0veUynni9mqJPL
-         CoePRkRNs1PMTqL1uqHpq/s4nrUchUBlVeuYDcQu8nLDHLjt9CcmJAvnMnaTw76fzUts
-         ClK543zARJd/UhU34mp0+bTBW8Me8wHxUz5FtD5elnAodXrBB2Vi+dhRuDVvICYZdRLd
-         Efriu/xOPILeXGWM/ex8TkOMWSuQqpc+QhGibaPFlLZoG4MCAVhDcEIvEN2V/2EDF9BI
-         OpWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692945569; x=1693550369;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1WgDAlgwru6Ubk2nOTTHuUzG0ifZyKXeoH3bmFI55mQ=;
-        b=aAWZOx85znRXupI8GuMDejPBI4bYjEjwfOvDGujHpPpAOOETrHZmzRlbUj9flPdnKw
-         DdUWBaTxdM+clBrgYvkJbiOtP8B/SBNaY8O6fRVtxd/G1e6w1sFLEZSagso71D6BK7IP
-         Gl5Cnjbur5I11eKC9jH+/xivZpVBNXw7GTKdRFxzX0uxVkG0qvYMNhzYO9hUWt9Hd7NC
-         rqlujFzN6ijQMXr5vP2hK9q+dJWaiwVCAgn1AFyEo0aqZ9IXt6hcfbcbDaI8UATSHp1U
-         335xO2DQekfByRmEng5p2nLF9G4KNKuUIchl3nlUqgbIQYoE7PQRhQRLLlOzF7MMwa6Z
-         DQAg==
-X-Gm-Message-State: AOJu0Yw10wt+AWzgdI665f2cNbl6r5TtRmmgWctDHQp8nFwve5J7triX
-        cNnlPwF1jVN/uMCOnLC9xYiGYw==
-X-Google-Smtp-Source: AGHT+IFufVvytaEwsJpH+al9V2KuRovl3mSJRnUVk55X3PudBOMaIgZHkzIJOrbKnS2pOnV/EtFM7Q==
-X-Received: by 2002:a05:6871:5c6:b0:1c0:fe16:90f8 with SMTP id v6-20020a05687105c600b001c0fe1690f8mr2183814oan.57.1692945569460;
-        Thu, 24 Aug 2023 23:39:29 -0700 (PDT)
-Received: from localhost ([122.172.87.195])
-        by smtp.gmail.com with ESMTPSA id x53-20020a056a000bf500b0064fde7ae1ffsm784566pfu.38.2023.08.24.23.39.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Aug 2023 23:39:28 -0700 (PDT)
-Date:   Fri, 25 Aug 2023 12:09:26 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Jie Zhan <zhanjie9@hisilicon.com>
-Cc:     rafael@kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxarm@huawei.com,
-        xuwei5@huawei.com, wanghuiqiang@huawei.com,
-        jonathan.cameron@huawei.com, wangxiongfeng2@huawei.com
-Subject: Re: [PATCH v2] cpufreq: Support per-policy performance boost
-Message-ID: <20230825063926.n4o7cp6x56r5i2it@vireshk-i7>
-References: <20230822124837.3016641-1-zhanjie9@hisilicon.com>
+        Fri, 25 Aug 2023 02:40:13 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B41A92133;
+        Thu, 24 Aug 2023 23:39:58 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 270CF65D38;
+        Fri, 25 Aug 2023 06:39:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9087DC433C9;
+        Fri, 25 Aug 2023 06:39:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692945597;
+        bh=+s9Koxy+TTugL21cIgmab6DIs5KPUzfsaLnpEMPjvp0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=PftxFfPsqmjM96yXBpsER0XAs1j2lNUhEx2JdTIu55RGddcad4EGCynCy5aUnXuyx
+         eXs/xTgmkOZTt2MkQDDrkrBIvrZlQ37Qw5fU4dx+4EMZRbg/mba4DEBOTxfLz27+MB
+         NW88zbxmdUjdGWfNDZtTqVkWRtPFEY+Azne0i96/Se8HnpVaNxP8dVKqf1nYEeH9v1
+         i/CudMJ9rS2H+OmInNs6Ef5L6dIKjYD+i2UI6C1C2CXOAPj3kbUilLVHU9fORHioSi
+         1DmfCBeMhvADgk8l10TbVZKDwkgSYXl81RLMjhzCCiIsH906sObZvd8IvOqbgS/usT
+         2tt1nJ4ahnR8A==
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-5007abb15e9so860899e87.0;
+        Thu, 24 Aug 2023 23:39:57 -0700 (PDT)
+X-Gm-Message-State: AOJu0YyPvAgix6OSbp4jNpsUqUPmwzxQWNqJ0RjTzhVgHmPtkQ1Bs3nh
+        P45Jr1HosFxGGdXtYVs4Whgjj63Ea2+vgJJF5tc=
+X-Google-Smtp-Source: AGHT+IGObpDVPkI2f3gHr+eNk39SieeXXdBFR5o42FZlpllf6UoziXUH5g+xRTGeYzlJmnL15n5EctIxGgedfI8pCCE=
+X-Received: by 2002:ac2:4f15:0:b0:4fb:911b:4e19 with SMTP id
+ k21-20020ac24f15000000b004fb911b4e19mr14250662lfr.35.1692945595602; Thu, 24
+ Aug 2023 23:39:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230822124837.3016641-1-zhanjie9@hisilicon.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <20230825031622.1530464-1-yukuai1@huaweicloud.com>
+In-Reply-To: <20230825031622.1530464-1-yukuai1@huaweicloud.com>
+From:   Song Liu <song@kernel.org>
+Date:   Thu, 24 Aug 2023 23:39:43 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW4rQ1V7EHgfpfx9rL2=pUAcjr+Eint2iD0_EfVAbzcKOQ@mail.gmail.com>
+Message-ID: <CAPhsuW4rQ1V7EHgfpfx9rL2=pUAcjr+Eint2iD0_EfVAbzcKOQ@mail.gmail.com>
+Subject: Re: [PATCH -next v4 0/7] md: make rdev addition and removal
+ independent from daemon thread
+To:     Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     xni@redhat.com, linux-raid@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yukuai3@huawei.com,
+        yi.zhang@huawei.com, yangerkun@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22-08-23, 20:48, Jie Zhan wrote:
-> The boost control currently applies to the whole system.  However, users
-> may prefer to boost a subset of cores in order to provide prioritized
-> performance to workloads running on the boosted cores.
-> 
-> Enable per-policy boost by adding a 'boost' sysfs interface under each
-> policy path.  This can be found at:
-> 
-> 	/sys/devices/system/cpu/cpufreq/policy<*>/boost
-> 
-> Same to the global boost switch, writing 1/0 to the per-policy 'boost'
-> enables/disables boost on a cpufreq policy respectively.
-> 
-> The user view of global and per-policy boost controls should be:
-> 
-> 1. Enabling global boost initially enables boost on all policies, and
-> per-policy boost can then be enabled or disabled individually, given that
-> the platform does support so.
-> 
-> 2. Disabling global boost makes the per-policy boost interface illegal.
-> 
-> Signed-off-by: Jie Zhan <zhanjie9@hisilicon.com>
-> Reviewed-by: Wei Xu <xuwei5@hisilicon.com>
-> ---
-> A possible question could be: why not just limiting 'scaling_max_freq'?
-> Well, the fundamental difference is that per-policy boost could be more
-> user-friendly.  When global boost is enabled, it is not straightforward
-> to figure out the base frequency for setting 'scaling_max_freq' to a
-> non-boost value. Also, this is supposed to take effect on the physical
-> upper frequency limit, reflected through 'cpuinfo_max_freq'.
-> 
-> v1->v2:
-> - Rename the interface from 'local_boost' to 'boost'.
-> - Illegalize writing 0 to per-policy even if global boost is off.
-> - Show the per-policy 'boost' file only when ->set_boost() is available.
-> 
-> v1: https://lore.kernel.org/linux-pm/20230724075827.4160512-1-zhanjie9@hisilicon.com/
+On Thu, Aug 24, 2023 at 8:20=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.com> w=
+rote:
+>
+> From: Yu Kuai <yukuai3@huawei.com>
+>
+> Changes in v4:
+>  - add some review tag;
+>  - add comments to make code more readadble for patch 4,6;
+>  - rework patch 7 a litter;
 
-Looks good now, thanks.
+Applied v4 to md-next. But this set won't go into 6.6.
 
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+Thanks,
+Song
 
--- 
-viresh
+>
+> Changes in v3:
+>  - rename md_choose_sync_direction() to md_choose_sync_action() in patch =
+2;
+>  - fix an error in patch 3;
+>  - add flush_work(&mddev->sync_work) while change read-only array to
+>  read-write;
+>
+> Changes in v2:
+>  - remove patch 1 from v1 and some related patches, those patches will
+>  be sent later when rcu protection for rdev is removed.
+>  - add patch 2.
+>
+> This is the third patchset to do some preparatory work to synchronize
+> io with array reconfiguration.
+>
+> 1) The first patchset refactor 'active_io', make sure that mddev_suspend(=
+)
+> will wait for io to be done. [1]
+>
+> 2) The second patchset remove 'quiesce' callback from mddev_suspend(), so
+> that mddev_suspend() doesn't rely on 'quiesce' callback is registered,
+> and can be used for all personalites; [2]
+>
+> 3) This patchset make array reconfiguration independent from daemon threa=
+d,
+> and synchronize it with io will be much easier because io may rely on
+> daemon thread to be done.
+>
+> More patchset on the way!
+>
+> Yu Kuai (7):
+>   md: use separate work_struct for md_start_sync()
+>   md: factor out a helper to choose sync action from md_check_recovery()
+>   md: delay choosing sync action to md_start_sync()
+>   md: factor out a helper rdev_removeable() from remove_and_add_spares()
+>   md: factor out a helper rdev_is_spare() from remove_and_add_spares()
+>   md: factor out a helper rdev_addable() from remove_and_add_spares()
+>   md: delay remove_and_add_spares() for read only array to
+>     md_start_sync()
+>
+>  drivers/md/md.c | 308 +++++++++++++++++++++++++++++++++---------------
+>  drivers/md/md.h |   5 +-
+>  2 files changed, 218 insertions(+), 95 deletions(-)
+>
+> --
+> 2.39.2
+>
