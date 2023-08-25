@@ -2,119 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF857787DA5
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 04:29:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4272B787DAB
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 04:34:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240025AbjHYC3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 22:29:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47488 "EHLO
+        id S240631AbjHYCdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 22:33:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241053AbjHYC2w (ORCPT
+        with ESMTP id S236390AbjHYCdT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 22:28:52 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4DE01BFB;
-        Thu, 24 Aug 2023 19:28:49 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-26f3e26e55aso277471a91.3;
-        Thu, 24 Aug 2023 19:28:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692930529; x=1693535329;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=WsvObY4iMN9Z9CsQkQU8ffng3Vh8WH9nCAEFkBwr4JQ=;
-        b=Nd7ubQ3FdVgQGi399mXi5aT635L7Jk+fOOzeoM650+n0Ql6L0crbAQI0yhGfY7Ma4R
-         b2OS/Jg82swq3khYZDantj/XmCzJI7NZ710YG/b5DY7hgSVlRVdoo8V22cpJ8xl17vTY
-         2MySIpsrss/dr09dyIY7jgXR8rfIMCIOY6cUZb6ddyPl8viAJxhJOdvbG/Eo2aB/6Aru
-         LDRFaTQlpQLrCFrgznHFj/4sG7t7Jd5y66YuVw3XrsHke/ib1dHBJQ7Zwn3YT/7ddaWG
-         k1fKTaQcd2abHcs41B3cTzURty0uN61gDDKA+kAFzKUFfq0mELuo4J8N7Nbtr74HGEEQ
-         ufFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692930529; x=1693535329;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WsvObY4iMN9Z9CsQkQU8ffng3Vh8WH9nCAEFkBwr4JQ=;
-        b=SJk6bV0BonZ25SbtIOj5oaDzQNNiXJBEUobVAF0S7EkHnPPr1QQDccW70eJTEhccsV
-         t84DodWjVxxbNx9SDj6u5RBIe4Hf8P11RcfuCSWyKP4s4NbpCNQ+l7PYkRf0zB7J0ZSc
-         JWQeGZFemWyGTxIp7es6WDKumhd95fxFMq1y7sqNmtY9aVpsAnd2edvZHPyZCrv33DeM
-         vABGQJ0Msm7W8NYlFUgjueyJoWV5ZCR9jmN5fn7wMmoOCd2pMdLcU4iDtbIzISml2a5y
-         rDAMZnORS5o9Tsk1IcCIs9ptJYvykFY5gd63AUuCS6IREqWSfWrQmR/Qd5hI17Qe1G8F
-         UbtQ==
-X-Gm-Message-State: AOJu0YzOS+h/C4c5Sc2ca3+G4LZrorBF+UuluUxIwpm0z+TjiuvmPz/A
-        30iAJxnGgcCsm9RLwMveCvvz5ghZI6N5Vntzfguhie9TZhQ=
-X-Google-Smtp-Source: AGHT+IEPY8RDYBubCSP19QfmpP0539Pm+06ocq19gbo2bV1/lYdpFOTQ2hf+0P/TS5KOTWnx01wj2qrkdxwBjZaOSCI=
-X-Received: by 2002:a17:90b:1081:b0:267:717f:2f91 with SMTP id
- gj1-20020a17090b108100b00267717f2f91mr13521657pjb.40.1692930529127; Thu, 24
- Aug 2023 19:28:49 -0700 (PDT)
+        Thu, 24 Aug 2023 22:33:19 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85F6A1AD;
+        Thu, 24 Aug 2023 19:33:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692930797; x=1724466797;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=CuGojWCN1Q3oMFDKhD2YkAF8gHfytrzxJhYuhDOxwBI=;
+  b=Smpj+QBRfQLOeXHwGOCvuhKF/0FQxzKDwi6/7DW4JWmQmw948nUVgJPW
+   uoTnwnTZVMW7Q0VmtyEBQIcDE3bDjuU/vCNO4+icBGFHBXRCW1WWHler1
+   /zTA5NG98jUlSqbhg6E2xe2sWAMxBj6HkG3V6CTUZujs0Oni09hy5u9f6
+   +hxqwHmiXmQxIfU0LCnxfq7gfLFKbyWNGkGkkzwm/8cFCGz3G39buPZwU
+   HKtGH+xtsNvDPzXRzxElgie8SZpuM5of2kfMIxtwhoYmIhaTiwVKBgG67
+   xAFhu8+S+BbYJ9mKdmKAk7FjT8SFreZPU9Qqh5KbMbbDepJek3jSVIL+7
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="372009374"
+X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
+   d="scan'208";a="372009374"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 19:33:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="730874987"
+X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
+   d="scan'208";a="730874987"
+Received: from allen-box.sh.intel.com ([10.239.159.127])
+  by orsmga007.jf.intel.com with ESMTP; 24 Aug 2023 19:33:12 -0700
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Nicolin Chen <nicolinc@nvidia.com>
+Cc:     Yi Liu <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        iommu@lists.linux.dev, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Lu Baolu <baolu.lu@linux.intel.com>
+Subject: [PATCH v4 00/10] iommu: Prepare to deliver page faults to user space
+Date:   Fri, 25 Aug 2023 10:30:16 +0800
+Message-Id: <20230825023026.132919-1-baolu.lu@linux.intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20230824084206.22844-1-qiang.zhang1211@gmail.com> <162989fe-5ed8-4d1f-8c99-144e2de532f5@paulmck-laptop>
-In-Reply-To: <162989fe-5ed8-4d1f-8c99-144e2de532f5@paulmck-laptop>
-From:   Z qiang <qiang.zhang1211@gmail.com>
-Date:   Fri, 25 Aug 2023 10:28:37 +0800
-Message-ID: <CALm+0cVgg9u1-E+XrnbEyD75a_H3ifN9oB9j6xx0=cm8kuXE-Q@mail.gmail.com>
-Subject: Re: [PATCH] rcutorture: Traverse possible cpu to set maxcpu in rcu_nocb_toggle()
-To:     paulmck@kernel.org
-Cc:     joel@joelfernandes.org, linux-kernel@vger.kernel.org,
-        rcu@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->
-> On Thu, Aug 24, 2023 at 04:42:06PM +0800, Zqiang wrote:
-> > Currently, the maxcpu is set by traversing online CPUs, however, if
-> > the rcutorture.onoff_holdoff is set zero and onoff_interval is set
-> > non-zero, and the some CPUs with larger cpuid has been offline before
-> > setting maxcpu, for these CPUs, even if they are online again, also
-> > cannot be offload or deoffload.
-> >
-> > This commit therefore use for_each_possible_cpu() instead of
-> > for_each_online_cpu() in rcu_nocb_toggle().
-> >
-> > Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
-> > ---
-> >  kernel/rcu/rcutorture.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-> > index a58372bdf0c1..b75d0fe558ce 100644
-> > --- a/kernel/rcu/rcutorture.c
-> > +++ b/kernel/rcu/rcutorture.c
-> > @@ -2131,7 +2131,7 @@ static int rcu_nocb_toggle(void *arg)
-> >       VERBOSE_TOROUT_STRING("rcu_nocb_toggle task started");
-> >       while (!rcu_inkernel_boot_has_ended())
-> >               schedule_timeout_interruptible(HZ / 10);
-> > -     for_each_online_cpu(cpu)
-> > +     for_each_possible_cpu(cpu)
->
-> Last I checked, bad things could happen if the code attempted to
-> nocb_toggle a CPU that had not yet come online.  Has that changed?
+When a user-managed page table is attached to an IOMMU, it is necessary
+to deliver IO page faults to user space so that they can be handled
+appropriately. One use case for this is nested translation, which is
+currently being discussed in the mailing list.
 
-For example, there are 8 online CPUs in the system, before we traversing online
-CPUs and set maxcpu,  CPU7 has been offline, this causes us to miss nocb_toggle
-for CPU7(maxcpu=6)
+I have posted a RFC series [1] that describes the implementation of
+delivering page faults to user space through IOMMUFD. This series has
+received several comments on the IOMMU refactoring, which I am trying to
+address in this series.
 
-Even though we still use for_each_online_cpu(), the things described
-above also happen.  before we toggle the CPU, this CPU has been offline.
+The major refactoring includes:
 
+- [PATCH 01 ~ 04] Move include/uapi/linux/iommu.h to
+  include/linux/iommu.h. Remove the unrecoverable fault data definition.
+- [PATCH 05 ~ 06] Remove iommu_[un]register_device_fault_handler().
+- [PATCH 07 ~ 10] Separate SVA and IOPF. Make IOPF a generic page fault
+  handling framework. 
 
-Thanks
-Zqiang
+This is also available at github [2]. I would appreciate your feedback
+on this series.
 
+[1] https://lore.kernel.org/linux-iommu/20230530053724.232765-1-baolu.lu@linux.intel.com/
+[2] https://github.com/LuBaolu/intel-iommu/commits/preparatory-io-pgfault-delivery-v4
 
->
->                                                         Thanx, Paul
->
-> >               maxcpu = cpu;
-> >       WARN_ON(maxcpu < 0);
-> >       if (toggle_interval > ULONG_MAX)
-> > --
-> > 2.17.1
-> >
+Change log:
+v4:
+ - Merge iommu_fault_event and iopf_fault. They are duplicate.
+ - Move iommu_report_device_fault() and iommu_page_response() to
+   io-pgfault.c.
+ - Move iommu_sva_domain_alloc() to iommu-sva.c.
+ - Add group->domain and use it directly in sva fault handler.
+ - Misc code refactoring and refining.
+
+v3: https://lore.kernel.org/linux-iommu/20230817234047.195194-1-baolu.lu@linux.intel.com/
+ - Convert the fault data structures from uAPI to kAPI.
+ - Merge iopf_device_param into iommu_fault_param.
+ - Add debugging on domain lifetime for iopf.
+ - Remove patch "iommu: Change the return value of dev_iommu_get()".
+ - Remove patch "iommu: Add helper to set iopf handler for domain".
+ - Misc code refactoring and refining.
+
+v2: https://lore.kernel.org/linux-iommu/20230727054837.147050-1-baolu.lu@linux.intel.com/
+ - Remove unrecoverable fault data definition as suggested by Kevin.
+ - Drop the per-device fault cookie code considering that doesn't make
+   much sense for SVA.
+ - Make the IOMMU page fault handling framework generic. So that it can
+   avaible for use cases other than SVA.
+
+v1: https://lore.kernel.org/linux-iommu/20230711010642.19707-1-baolu.lu@linux.intel.com/
+
+Lu Baolu (10):
+  iommu: Move iommu fault data to linux/iommu.h
+  iommu/arm-smmu-v3: Remove unrecoverable faults reporting
+  iommu: Remove unrecoverable fault data
+  iommu: Cleanup iopf data structure definitions
+  iommu: Merge iopf_device_param into iommu_fault_param
+  iommu: Remove iommu_[un]register_device_fault_handler()
+  iommu: Merge iommu_fault_event and iopf_fault
+  iommu: Prepare for separating SVA and IOPF
+  iommu: Make iommu_queue_iopf() more generic
+  iommu: Separate SVA and IOPF
+
+ include/linux/iommu.h                         | 255 ++++++++++----
+ drivers/iommu/intel/iommu.h                   |   2 +-
+ drivers/iommu/iommu-sva.h                     |  71 ----
+ include/uapi/linux/iommu.h                    | 161 ---------
+ .../iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c   |  14 +-
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c   |  51 +--
+ drivers/iommu/intel/iommu.c                   |  25 +-
+ drivers/iommu/intel/svm.c                     |   6 +-
+ drivers/iommu/io-pgfault.c                    | 322 +++++++++++-------
+ drivers/iommu/iommu-sva.c                     |  82 ++++-
+ drivers/iommu/iommu.c                         | 255 ++------------
+ MAINTAINERS                                   |   1 -
+ drivers/iommu/Kconfig                         |   4 +
+ drivers/iommu/Makefile                        |   3 +-
+ drivers/iommu/intel/Kconfig                   |   1 +
+ 15 files changed, 504 insertions(+), 749 deletions(-)
+ delete mode 100644 drivers/iommu/iommu-sva.h
+ delete mode 100644 include/uapi/linux/iommu.h
+
+-- 
+2.34.1
+
