@@ -2,58 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57C09788E27
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 19:59:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEE50788E2C
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 20:00:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230024AbjHYR7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 13:59:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34314 "EHLO
+        id S231390AbjHYSAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 14:00:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231938AbjHYR7Q (ORCPT
+        with ESMTP id S234145AbjHYSAR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 13:59:16 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE32DE54;
-        Fri, 25 Aug 2023 10:59:13 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 645C662257;
-        Fri, 25 Aug 2023 17:59:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 988DFC433C8;
-        Fri, 25 Aug 2023 17:59:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692986352;
-        bh=hpbJdR25m1QXnq31MNqMvBDRlA1RB0g3/1vKfKZm4Ag=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=NlPW+i6MO8wk5RnmJ6ewRqV3uF77qw4+tDysHCSgfE62FSGITEKoaTm7ITa5R/epp
-         ggJ0UpTAKVDwMmyddP9KV8r3XqasB3ZzHAMv+y1y/4MuvqRrvhol0QE+PDBe1ogd3g
-         ETvaMG5fRfhr7eAMtNez5c9YjO5O762P9xSpEnZAQprxvDXg5E61UZ70onxRpZ9QPM
-         8M2UbjQzXf/5DBWrAO5KJ7gOiQnxCp+T875FHXFKXmNIhPS3Rn4QB8QnBl01xsIWVQ
-         FG7Xv1y+56n1U18dz2xE9RW6p/9yeYD35BTdIAJOS0h0KOOHAUUP7jchbV7WcFMapr
-         qudeTGgg01zOg==
-Message-ID: <0ed7d3dc-90b5-52e0-747e-5d8712a71a05@kernel.org>
-Date:   Fri, 25 Aug 2023 11:58:53 -0600
+        Fri, 25 Aug 2023 14:00:17 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00D26E59;
+        Fri, 25 Aug 2023 11:00:15 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-53fa455cd94so676632a12.2;
+        Fri, 25 Aug 2023 11:00:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692986415; x=1693591215;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=dTGOHpLCghqFrKN/eG+RlHSLAI5UV3j2Aq7spVq32nI=;
+        b=mDxH8FzC0k8We0/YQN5LGSp11gGbDLEx03QIYAIGfn3uIbh33ngtC+NrcJEnjWPqQt
+         gi8RkRoAEwusx+7SlYNoRhmg8OuX3EHwNmLNNdgmj0SVSL2K1jcfRt/iIszeANoqrk9I
+         oD/7wy2VZrUtEGq8A+w3pXCMKrUlBAQzx3ghair5yCDe6CmoXPb1kBAaZu/McmdAIsY9
+         5m7delawhdwTAid516waO+TmCtTUKmV5OUOCJQhDXufpDmLREJeIF48en8/FOUlWdVA7
+         MM0UqzOX9Idu//n1R+AMDrK+hr+XoPaPQL5TY+EA9CXwWmOGzxBo4Q9C4mcdA9G5jI2q
+         MWyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692986415; x=1693591215;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dTGOHpLCghqFrKN/eG+RlHSLAI5UV3j2Aq7spVq32nI=;
+        b=Fs1tBT+3turXHA9TCT2NSX9GGJqQXA3WCxu0Stc3R/tzhwYlCISPJ5mJ4dLaEmPRp4
+         EG9zR+BtxnDC5r38zwsLWlIi0Vyy6hyzKJ9vEIr052jd6HWLIZww42VyZkUqGSfwTbY7
+         iq+4FRr9P8gD4fzGTkPFZjEdXFkAacJd0AdFQ9kXxHozJ8OtR+9c5ztO0T0AKN7Gp1oL
+         bgJ8VuBBV9lxBTYcutt2qy87eSahavpUlUJfgOMAq7UbiL/hyfMIFq1R8f18WNTa227s
+         tENXaY1XT78bGWoyWn7d/Hpgk6gq8TO2YDw+OIW6v5UbqqqrmbwdCe+Txz0fEX2dq+yG
+         xKPA==
+X-Gm-Message-State: AOJu0Yz61r7UP9uCk5+RclNIMjZ9rKaDJZfkfXZEQCiJU3ucTcPnhlw3
+        t5c8OzVcz6UQxAGL3vnEWLXFU3aGTxDeHlfZtfw=
+X-Google-Smtp-Source: AGHT+IGbmnWJ3gBrg1stH0g/5v7ANGHxVRCdm4d42EaMLTJeTb+ZjbwwAZWv91ujsSbmUsfaAxUew0HqmFwF+iFCGpA=
+X-Received: by 2002:a17:90b:3b8f:b0:26d:28a8:5880 with SMTP id
+ pc15-20020a17090b3b8f00b0026d28a85880mr16340536pjb.32.1692986415286; Fri, 25
+ Aug 2023 11:00:15 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [ANNOUNCE/CFP] Kernel Testing & Dependability Micro-conference at
- LPC 2023
-Content-Language: en-US
-To:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Guillaume Tucker <guillaume.tucker@collabora.com>,
-        shuah <shuah@kernel.org>
-References: <e04d1d5b-518b-bebd-aa7a-70b87bc4e867@kernel.org>
-From:   shuah <shuah@kernel.org>
-In-Reply-To: <e04d1d5b-518b-bebd-aa7a-70b87bc4e867@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20230824145023.559380953@linuxfoundation.org> <61314350-629a-f870-e203-270d66b13a54@gmail.com>
+In-Reply-To: <61314350-629a-f870-e203-270d66b13a54@gmail.com>
+From:   Allen Pais <stable.kernel.dev@gmail.com>
+Date:   Fri, 25 Aug 2023 11:00:04 -0700
+Message-ID: <CAJq+SaD=0=MAti0fcif_cGjXi_BBEnswgurZ+ZcRFjPCdkM64Q@mail.gmail.com>
+Subject: Re: [PATCH 5.15 000/139] 5.15.128-rc1 review
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,31 +72,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello all,
+> > This is the start of the stable review cycle for the 5.15.128 release.
+> > There are 139 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> >
+> > Responses should be made by Sat, 26 Aug 2023 14:49:55 +0000.
+> > Anything received after that time might be too late.
+> >
+> > The whole patch series can be found in one patch at:
+> >       https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.128-rc1.gz
+> > or in the git tree and branch at:
+> >       git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> > and the diffstat can be found below.
+> >
+> > thanks,
+> >
+> > greg k-h
 
-On 7/19/23 15:34, shuah wrote:
-> Hello,
-> 
-> I am reaching out to announce that we are once again planning to
-> gather to discuss testing and dependability related topics at the
-> Kernel Testing & Dependability Micro-conference at LPC 2023.
-> 
-> We invite you to submit proposals for discussion:
-> - https://lpc.events/event/17/abstracts/1430/
-> 
-> Proposals can be submitted here, by August 20th:
-> - https://lpc.events/event/17/abstracts/
-> 
+Compiled and booted on my x86_64 and ARM64 test systems. No errors or
+regressions.
 
-Reminding you to submit proposals for the upcoming Kernel Testing &
-Dependability Micro-conference.
+Tested-by: Allen Pais <apais@linux.microsoft.com>
 
-> Please reach out to MC leads:
->       Shuah Khan (shuah@kernel.org)
->       Sasha Levin <sashal@kernel.org>
->       Guillaume Tucker <guillaume.tucker@collabora.com>
-> 
-
-thanks,
--- Shuah
-
+Thanks.
