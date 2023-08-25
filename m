@@ -2,149 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B7D278848D
+	by mail.lfdr.de (Postfix) with ESMTP id 322D578848C
 	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 12:16:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244058AbjHYKQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 06:16:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60814 "EHLO
+        id S240603AbjHYKQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 06:16:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244365AbjHYKQK (ORCPT
+        with ESMTP id S244402AbjHYKPm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 06:16:10 -0400
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2065.outbound.protection.outlook.com [40.107.237.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F152268C;
-        Fri, 25 Aug 2023 03:15:24 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=H1KIEm4qIfGA/yTeTc6dwy+qJ7I31hGOILeaL8CeTTom2sIoVLYcXXgEx6r+qLw9YxzSdm8QmnORhYKXwnpYS/3wUNL+7iE/kUFSjSsX14CZk5yItGm8gX78BKcv7D9Cl0RIZYvpPbArvoYb8T2QoTBelJKJ1i9yYf9+1HpFU8RLiyoRfCXLKma1icAQCMOGWbJg/UA+widmBxX4yuq2kmJ3p54W0uTnqGSsvGaurcKxF452sxRbNlxdEBH8IR4WX/+oT3r+2mR1II5Rmt8e+n6dybSVHlz1SeUdX/jAQXlVEruIbZkhrfV2OWaFLymKOaeVeG+Fc2410HXYcWYesQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xjVyQUTxHRU8sEHF5lrfyyyOgfhCeO29y8uxEdOyy/Q=;
- b=QFD4hwZPUBcFwO1vB2BgXly/5jimLM8lkTqD+mDVoIX6jS9/Sm4sNZ4C54CB88AMlkIg+KPd2RNpQ+uBrlG6CUMoMr5/eL0fQAVmpe1ruGyj7FS/2b/nKveonsD9Z3R8ZLWzxrTfwKAz46O7OwCMc5Ffk4djsN2xcckLU9b6HZ6EvIlbd6OFBv/uLU+h0pZ2pvVjJBLU6j9hVImhatrm6bXKk4Sfw9vAxUoutXv9MY07uvyyIQ4eb9R5NJEmdn5wk4DlW+ektc2x0m2xZXLTDfh5cUFoydWjw7PhkV3HA3pVjHkC2HaotD+ZfXjqXtv/U8E58H8WcNTYrGOzFErabw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.232) smtp.rcpttodomain=linuxfoundation.org
- smtp.mailfrom=nvidia.com; dmarc=pass (p=reject sp=reject pct=100) action=none
- header.from=nvidia.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xjVyQUTxHRU8sEHF5lrfyyyOgfhCeO29y8uxEdOyy/Q=;
- b=VTAHOsjqZ7KYg7MCuKA29OpN9SQfxDmFe9cAUoCP+a/2WcX6Er3xgSdZRbNYW+bJBKNHCyH9pkGURedFwy7+MVbJmTVNQemNh1oEtAdYLKKPJpHCQzRx25xh3NnYdAnLqCXJQkNbFaObhRdRVlwCIlrD1UkPfaMQEO+T8gCx6P24oKTMRzaK5CwE5cLKpYw3qZh8F/jfjwBsgb8g7tdUHCNNnRdxGNIxxr6ZzW1MyvWlLfGg6zoTwrfKGehYUjFr0oe8uPZpxcp5e/jX3y8bLbETa8EeOVgQPZYcZkhcMrom78t0pibDiqgTgnMs3KxiUu31whqPiM83USXVjFaPIg==
-Received: from DS7PR05CA0004.namprd05.prod.outlook.com (2603:10b6:5:3b9::9) by
- SJ0PR12MB5609.namprd12.prod.outlook.com (2603:10b6:a03:42c::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.19; Fri, 25 Aug
- 2023 10:14:46 +0000
-Received: from CO1PEPF000044F1.namprd05.prod.outlook.com
- (2603:10b6:5:3b9:cafe::9c) by DS7PR05CA0004.outlook.office365.com
- (2603:10b6:5:3b9::9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.15 via Frontend
- Transport; Fri, 25 Aug 2023 10:14:46 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.232) by
- CO1PEPF000044F1.mail.protection.outlook.com (10.167.241.71) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6699.14 via Frontend Transport; Fri, 25 Aug 2023 10:14:45 +0000
-Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
- (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Fri, 25 Aug 2023
- 03:14:34 -0700
-Received: from drhqmail201.nvidia.com (10.126.190.180) by
- drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.37; Fri, 25 Aug 2023 03:14:33 -0700
-Received: from jonathanh-vm-01.nvidia.com (10.127.8.9) by mail.nvidia.com
- (10.126.190.180) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37 via Frontend
- Transport; Fri, 25 Aug 2023 03:14:33 -0700
-From:   Jon Hunter <jonathanh@nvidia.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <patches@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
-        <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <sudipm.mukherjee@gmail.com>, <srw@sladewatkins.net>,
-        <rwarsow@gmx.de>, <conor@kernel.org>,
-        <linux-tegra@vger.kernel.org>, <stable@vger.kernel.org>
-Subject: Re: [PATCH 5.15 000/139] 5.15.128-rc1 review
-In-Reply-To: <20230824145023.559380953@linuxfoundation.org>
-References: <20230824145023.559380953@linuxfoundation.org>
-X-NVConfidentiality: public
-Content-Type: text/plain; charset="utf-8"
+        Fri, 25 Aug 2023 06:15:42 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80D0D26BB;
+        Fri, 25 Aug 2023 03:14:59 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B4B7661659;
+        Fri, 25 Aug 2023 10:14:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7E1CC433C8;
+        Fri, 25 Aug 2023 10:14:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692958490;
+        bh=F8oKNVTy6rC98/+pAVZNa2M+atmjLnnbW393Y6FNBxo=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=A8sw7xFVWcXBro5K9uPJOpgpgU7sA3zf9EWvvip2RG0ctsGSI70mxoQyHoBDNaVf/
+         NMTZlY8a3pXOfwJLZjwS6YO/Vhp9A1m5XG9tOSJnRpZbvovGknzdF8MvzalNXFKttE
+         G2TBUN7jNzf0UpoJxCWpTddFNy+ShUOkokH5Vv+cK/ad9fjrimWOtYzuH01UvqJTSM
+         9ZUqZG4fz+8luaaZ5tywnaNWMRdbXznrKlrSG4cpvysgMw4gaNDrsRftoN9iCLuQMi
+         qhkGjZc3UIf3oX8UkwuXG7tnB+/AYOOsW0j8kGmnic/eQKI2jwLvW84bWQYhpQ4Uxb
+         Lbn1BqYsXKFcg==
+Received: (nullmailer pid 2559857 invoked by uid 1000);
+        Fri, 25 Aug 2023 10:14:46 -0000
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
-Message-ID: <e0660126-7a7a-469f-a758-a66d4e72564e@drhqmail201.nvidia.com>
-Date:   Fri, 25 Aug 2023 03:14:33 -0700
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000044F1:EE_|SJ0PR12MB5609:EE_
-X-MS-Office365-Filtering-Correlation-Id: c3b3f8aa-6877-42c9-30af-08dba5541b86
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: gOVp9gHXCqEketgYUq8/zGmx6Km8fuW5tQw65epAg1LnE4gayCezfQlinc/r/UQ13TRKcB56GiabV16HsBQSdN6H/t6o8AtBf22jbaODyoC2hvzxACSCNVGNb8eY3mTi17MVLFRvMub8jOlFyBz9K2oj/RZZHjGY3RuFvExiaSh4iMyHgNQ6RgsgsHAYfM3gHR0OAXQ15LGj0JFhj13TyDTTW+00KFZgkr+6kt0u4gSeBNWW2TYGj9ASv0hE9zoAk77l1miZYVfrGxOy5sDtsi4M5Qz58pvMZpt4Li+I7k74xOwVSJcgCYQFvE7AqikaI6rApe7hzL3PJ7cAI0E8qEEq18+v5y8kEgssyKfArHWAR6d/r2d1mSDXDA9vtJ21F/dB1Qdcx1X463w3UdiSngs62up6d/W9+9Gk+CcKNqWlfZaZvMV0km+ZQKbkb484nMbXcvL5xh8bAdKiKb8E8CHbiHV59SBLnL2cCjmZqQq6Kr4Bv/M7bPZ00rporr/jTeisSPihtNgUqub+JjnbR7PACDknHq8BfqykfGtKBrY74Ps7SZGtrsbluF0bkQoDxSG9HtQ7NDtLrW0le2kQcCHNtwDDHBvSV90HRxRu5TxTDOsgJbI2qaiW/f04pDx3hzeYOf7DA/j0ZAX25T1nWg8KjCyYca/eq4Ww/ISRC+MrCrI2DRhAOCE3L6ueA7v+FHxUgjT5QjbB3IVbdjOVA1kywsX/7aIg9vYOQsNSUJjn8Hq8qEh5fF2Q/004O01/5RZ/mxjyTTsaoMEC+EsmwnLFXzHGp6naYXAAaqysZRM=
-X-Forefront-Antispam-Report: CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(376002)(39860400002)(396003)(136003)(346002)(451199024)(186009)(1800799009)(82310400011)(40470700004)(46966006)(36840700001)(47076005)(26005)(336012)(426003)(86362001)(31696002)(40480700001)(356005)(82740400003)(7636003)(36860700001)(40460700003)(8936002)(316002)(8676002)(41300700001)(54906003)(2906002)(70586007)(4326008)(5660300002)(6916009)(70206006)(31686004)(7416002)(966005)(478600001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Aug 2023 10:14:45.9734
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: c3b3f8aa-6877-42c9-30af-08dba5541b86
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1PEPF000044F1.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB5609
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+From:   Rob Herring <robh@kernel.org>
+To:     Devi Priya <quic_devipriy@quicinc.com>
+Cc:     rafal@milecki.pl, agross@kernel.org, linux-kernel@vger.kernel.org,
+        mturquette@baylibre.com, richardcochran@gmail.com,
+        p.zabel@pengutronix.de, catalin.marinas@arm.com, will@kernel.org,
+        conor+dt@kernel.org, nfraprado@collabora.com,
+        quic_saahtoma@quicinc.com, sboyd@kernel.org,
+        konrad.dybcio@linaro.org, linux-arm-msm@vger.kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, devicetree@vger.kernel.org,
+        robh+dt@kernel.org, linux-clk@vger.kernel.org, arnd@arndb.de,
+        andersson@kernel.org, linux-arm-kernel@lists.infradead.org,
+        peng.fan@nxp.com, netdev@vger.kernel.org, geert+renesas@glider.be
+In-Reply-To: <20230825091234.32713-5-quic_devipriy@quicinc.com>
+References: <20230825091234.32713-1-quic_devipriy@quicinc.com>
+ <20230825091234.32713-5-quic_devipriy@quicinc.com>
+Message-Id: <169295848663.2559800.3580053610150304724.robh@kernel.org>
+Subject: Re: [PATCH V2 4/7] dt-bindings: clock: Add ipq9574 NSSCC clock and
+ reset definitions
+Date:   Fri, 25 Aug 2023 05:14:46 -0500
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Aug 2023 16:48:43 +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.15.128 release.
-> There are 139 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+
+On Fri, 25 Aug 2023 14:42:31 +0530, Devi Priya wrote:
+> Add NSSCC clock and reset definitions for ipq9574.
 > 
-> Responses should be made by Sat, 26 Aug 2023 14:49:55 +0000.
-> Anything received after that time might be too late.
+> Signed-off-by: Devi Priya <quic_devipriy@quicinc.com>
+> ---
+>  Changes in V2:
+> 	- Referenced gcc.yaml and dropped the duplicate properties from
+> 	  the binding
+> 	- Updated Uniphy clock names
+> 	- Added nssnoc clocks and clock-names
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.128-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> and the diffstat can be found below.
+>  .../bindings/clock/qcom,ipq9574-nsscc.yaml    | 107 ++++++++++++
+>  .../dt-bindings/clock/qcom,ipq9574-nsscc.h    | 152 ++++++++++++++++++
+>  .../dt-bindings/reset/qcom,ipq9574-nsscc.h    | 134 +++++++++++++++
+>  3 files changed, 393 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/clock/qcom,ipq9574-nsscc.yaml
+>  create mode 100644 include/dt-bindings/clock/qcom,ipq9574-nsscc.h
+>  create mode 100644 include/dt-bindings/reset/qcom,ipq9574-nsscc.h
 > 
-> thanks,
-> 
-> greg k-h
 
-All tests passing for Tegra ...
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Test results for stable-v5.15:
-    11 builds:	11 pass, 0 fail
-    28 boots:	28 pass, 0 fail
-    114 tests:	114 pass, 0 fail
+yamllint warnings/errors:
 
-Linux version:	5.15.128-rc1-g00e5f0b76767
-Boards tested:	tegra124-jetson-tk1, tegra186-p2771-0000,
-                tegra194-p2972-0000, tegra194-p3509-0000+p3668-0000,
-                tegra20-ventana, tegra210-p2371-2180,
-                tegra210-p3450-0000, tegra30-cardhu-a04
+dtschema/dtc warnings/errors:
+Error: Documentation/devicetree/bindings/clock/qcom,ipq9574-nsscc.example.dts:28.26-27 syntax error
+FATAL ERROR: Unable to parse input tree
+make[2]: *** [scripts/Makefile.lib:419: Documentation/devicetree/bindings/clock/qcom,ipq9574-nsscc.example.dtb] Error 1
+make[2]: *** Waiting for unfinished jobs....
+make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1500: dt_binding_check] Error 2
+make: *** [Makefile:234: __sub-make] Error 2
 
-Tested-by: Jon Hunter <jonathanh@nvidia.com>
+doc reference errors (make refcheckdocs):
 
-Jon
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230825091234.32713-5-quic_devipriy@quicinc.com
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
+
