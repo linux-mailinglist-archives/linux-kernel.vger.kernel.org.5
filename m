@@ -2,220 +2,792 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB14E787C5D
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 02:03:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB4DD787C63
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 02:05:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237609AbjHYACf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 20:02:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53456 "EHLO
+        id S234583AbjHYAEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 20:04:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234441AbjHYACT (ORCPT
+        with ESMTP id S241308AbjHYAEK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 20:02:19 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBBA119B4;
-        Thu, 24 Aug 2023 17:02:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692921736; x=1724457736;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=V22gGqbR8kaiknRcOPOdSDDGoSYzwH3G9NrayUzZJEE=;
-  b=Dtf3DpYMkLVQQXZeeHNfwqal1t+Ve+jmQiN3FCACIh51KbLUkuXSe3QW
-   bGT7NUfsHoDRCJBLaupqD/Uh5h23hms/f9nTHh9Y8TJXBGt780FcEcFgE
-   FPdWDzxmFwYtBOSIgynAEcb2BPWsU/0zCspPlphSqit3diRPJDNb29g27
-   W34dOzvSem1/Y+plPxQz9m2AimvuPLFuDRxPJjwgmzaD3trgalne8qenI
-   HLXELZqw7HXvZUACx2gvQQXtNvpH0MxBTLNFL//rYhmiZg54CWwXI00LZ
-   +s30h52llkDXdh2ZfwU/fzow47JpfVOSGxDVFtrkdka7beb1sNnV2a4Lr
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="405591142"
-X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
-   d="scan'208";a="405591142"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 17:02:15 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="911096348"
-X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
-   d="scan'208";a="911096348"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orsmga005.jf.intel.com with ESMTP; 24 Aug 2023 17:02:13 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 24 Aug 2023 17:02:12 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Thu, 24 Aug 2023 17:02:12 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.105)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Thu, 24 Aug 2023 17:02:12 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=M6KlUy1Uw+vF/p0LheCqstZJ64sk4r8Jq6Mys0Z0TF/UPMxFWNTUBE3TVlkQPYKzuHg7FQklFzMDlUA+yWCpRLYxd8Fy0iK/+V/xHcJv4fRj/BBdaANlLoWulyhvp8bTUnaOnivJSVPPITxSOZR6EL1hfh4G2F85JgxifiaaA3YuVdS3vv2lETy7vQm3TaBowsuBrb1KT/yOTF5Jvf+BAw2/H4cFlWQXhLk1loMQ3rDrCGy/AUu/zggJTFH9WltxCNRkraZh6wyo6xi/j78dfq17JgiD713hhnk4Vk0Y3Lj9+/YPKZ+TqzzUWYjfxZu5gRF7kpLRt5fealTKzQNV5Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=V22gGqbR8kaiknRcOPOdSDDGoSYzwH3G9NrayUzZJEE=;
- b=elD6gn1LSEGwO5DsTz0kYBwMUlbUBZp5nsvD3kvVHKZvhxkEfriDI64cNEA3c/gIFHkQAWbilVw8Ak5OjTanJps3KjCwqWRXs1D2Lc94mBUiCxnMQ5+SNhBdPC4C0Nqhi0dxoWWpfQaLouklXBPxxySGcZ7Ki7X9rdMND8WC6LIpiK2/9bdhEo6IxfnvDDHKvQ2U7+6Z8PfENPe30WjS/MXsBpfE4rXJDXjKNmxHtrZtTu9aJXz7NVQDU7EwNKRX0ADysUGDlxeM93EP7ESQyhg0zgFanRrDYJxKUVYCPlnTaxxDiFBEhJVOA/5oTf1k7SgBRFn1JJwroH2okfmdCA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from MWHPR11MB0048.namprd11.prod.outlook.com (2603:10b6:301:6a::31)
- by CY8PR11MB6865.namprd11.prod.outlook.com (2603:10b6:930:5f::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.27; Fri, 25 Aug
- 2023 00:02:04 +0000
-Received: from MWHPR11MB0048.namprd11.prod.outlook.com
- ([fe80::da4:d67d:40ed:9786]) by MWHPR11MB0048.namprd11.prod.outlook.com
- ([fe80::da4:d67d:40ed:9786%4]) with mapi id 15.20.6699.027; Fri, 25 Aug 2023
- 00:02:04 +0000
-From:   "Patel, Utkarsh H" <utkarsh.h.patel@intel.com>
-To:     Prashant Malani <pmalani@chromium.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "heikki.krogerus@linux.intel.com" <heikki.krogerus@linux.intel.com>,
-        "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>,
-        "bleung@chromium.org" <bleung@chromium.org>
-Subject: RE: [PATCH 3/4] platform/chrome: cros_ec_typec: Add Displayport
- Alternatemode 2.1 Support
-Thread-Topic: [PATCH 3/4] platform/chrome: cros_ec_typec: Add Displayport
- Alternatemode 2.1 Support
-Thread-Index: AQHZzJW4ijJBPwTw+EyuNab2Xuk8e6/wVjQAgAS3/8CAAGp6gIAEvFUA
-Date:   Fri, 25 Aug 2023 00:02:04 +0000
-Message-ID: <MWHPR11MB0048EA29C4D2654BF176FAF3A9E3A@MWHPR11MB0048.namprd11.prod.outlook.com>
-References: <20230811210735.159529-1-utkarsh.h.patel@intel.com>
- <20230811210735.159529-4-utkarsh.h.patel@intel.com>
- <ZN+nXGr3S0OL3Edn@chromium.org>
- <MWHPR11MB0048AF9CAA00D2A57C8CC533A91EA@MWHPR11MB0048.namprd11.prod.outlook.com>
- <CACeCKaeEggChrqkN=izTySLRb75w0qkM1Xbnkyo3ZKVkGnZRTw@mail.gmail.com>
-In-Reply-To: <CACeCKaeEggChrqkN=izTySLRb75w0qkM1Xbnkyo3ZKVkGnZRTw@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MWHPR11MB0048:EE_|CY8PR11MB6865:EE_
-x-ms-office365-filtering-correlation-id: ae25bafb-4481-4d2b-3b55-08dba4fe840c
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 79/dRpU+KXB6efZoR+AnI7L/6hJ1bzGwdcG1gbSII5IJo04+xQbiT00dALHltjW6EfIsrDpUdK74Y0nZ7qYdVjhqdkHtxFYEQ3DluRCYP208fg8+uqY8tSx30EgGI9kxX8vnpv5ZTsYkYdDeS5vx0Wd5uFb5w7U0rsTEhN1Hqr4CTbeEAn7EAZNsDcqpyN/XRcCiZ2j9Gt1W5KvTB/f9gkf5n1Ib533CUxAHS3rj93clegTVNPtEWhbwtF68vruWGzMD5Y3WWeQhuAJ5iQKYyTSmVVxEHQPh1KnlEd5+loWJjti1eP2P+DDoeXENvoAf4eCSODMaQsgtYp91UXLVGi5jKJwgBX9D9R8ViGTQopQCUvNSVkGfCYnfeTUCE1lMEp80an8jLHrZ7ZMk+tPVKxrA+mM9RRQ+rbZsGpO40tD72zXynzRLjyqxCS/QCF5LQJaBHb0yWnOqS63IsNsR02f1ii6wMF2OhsiletCfmbTZemMwC/WyTGpEc4/XfK2hMltD6DQKYvQjO5++jo3qX1S9Yji2XZQnuV6+MSB6vBvyVnndVHFeizJE2K7uJqzBmMt4e9W19mSK9toP/qoepRJF4QIwYH7D3i+jYhCuO0lg8Bz+6PR6OyAIyyYRrp9ZwRSZwyDHFTSjFvd7EKMW9A==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB0048.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(396003)(136003)(39860400002)(366004)(186009)(451199024)(1800799009)(66899024)(64756008)(26005)(83380400001)(9686003)(41300700001)(66946007)(66446008)(66476007)(66556008)(54906003)(2906002)(6916009)(316002)(52536014)(5660300002)(4326008)(8936002)(8676002)(478600001)(71200400001)(6506007)(7696005)(55016003)(76116006)(82960400001)(86362001)(33656002)(122000001)(38100700002)(38070700005)(87944015);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?OXVOc2J0eDBURDNJdGJZbVRjWDJ6N1pnVFFCNkN4Y1ZLQU9oekw0S0JUUlZl?=
- =?utf-8?B?eEV1MVNkTUoyZVp3U2dJOEIxQjNZUXJNQW5Wd29lcnNkdXdsejRYd0h4OEVz?=
- =?utf-8?B?amdvRUp2K2tNdU9maWpmNk94MUFCVy9qV0V6VXA2OU50Y041akhQNzFtUTNq?=
- =?utf-8?B?ZXJKRDR5bWR5V0hSUVVLOWRaWWtXNkx0eWRESWI2L3BjSUtGekEvc25qMjBx?=
- =?utf-8?B?Mmx1TUhkdUZpNlZmV2Y1amNIOXI3VkZ5bUhsRXRuM2huU2N3bGd6YXZDM1g2?=
- =?utf-8?B?UEdIcldDc2c2UnBack5QV0VnK0tkNG9lR3RlSjRaK1prbDlqcWFFU2RSbDdI?=
- =?utf-8?B?a1plck9ES1ZJcGdVTDFoUzhuTlhsV0J0MVdPQjl6VmlxS0hyTEJYeUpsdlA1?=
- =?utf-8?B?RjlZQlBtZ1paZk9LcHd2NDBmZXFmdm5sVDhXVERqRllWT2hrWkQ2RTMvSzlP?=
- =?utf-8?B?T2RlOFNDSjN6V0I5OUhKa3M1bW9xTWRCVzhxMDZCZUdxMExnTkd1MUUvK0gx?=
- =?utf-8?B?T1RvM3dqZkZzZ3Y5ZGIvcUh1dmsrMlE3dDBBM28rczRMeWlkSWVIa3JhSW9I?=
- =?utf-8?B?NzJMaTlEMlVmMTZiVmNCalJiOGt2dzhKUTZFbkJURFZwSEZCZHlwaFBVdjhF?=
- =?utf-8?B?SDhjS0hhaWxLMzNIelNXUnkxbDNZa3paMmEwaXFHOFh5cC9mMUIrdEN3dzdH?=
- =?utf-8?B?WXJjaDVVRlYxRDM5Z1l5T1VGdG9FOVIvUDlWclVISW01Y3F6eUh0cGlSOXpr?=
- =?utf-8?B?aDFKa1o2WWRIdjd3cjcweDZBL0RhYTVXSnZqQzZORnJieVcrTVNxRHVRcEpQ?=
- =?utf-8?B?T2JhQldISUQrandwWTkvM1d0ektDdHVMcGNLSjl5Tjg4empvUlhiTmNiRHkr?=
- =?utf-8?B?RnJIY1FLSW1tR2l3RFY1QVE0OEJ5dmxRQUk2R09GNW4vZGE4MlB6LytadDJZ?=
- =?utf-8?B?bHZBRGpoZ0l0dWlwVVhzekUweWV2U0RkUjZMWlM0QzJRYVVmdHdSQ3REZXRn?=
- =?utf-8?B?QWVwTGdPUjFoMWJpMWl1dkI4K3c2VU9wbi84aFpJWFk4dy9taitmZ2RXTXUr?=
- =?utf-8?B?QktXQ01VR0wvQnpVSVc2SUx4dVZuWjFrc0JZVlVQZU05ZlBzVGIxQXhVMEhP?=
- =?utf-8?B?Z1BMNmlWMUYyWGtUMVlrdlZKM3BCM0ZYU0lHQ0dNdERjOU5lUEp5ZWk4cFJS?=
- =?utf-8?B?cEZpMUtLdWJGemNZa0F5ZmFKNHNFT0NkYnZRSjRnM0t0djhicUI2QWc0QS93?=
- =?utf-8?B?eEZFWWlicXYvYVBFNDAyaWliWEZHcG1jYVUwakxXWCtScXVlbkRXSTZaV2hK?=
- =?utf-8?B?a3ZpMkpJU1RRSnJrOGlEK3Q2QTRXNkNVdHJHVW5BOHlMZTM4ckdwc1d2eHFk?=
- =?utf-8?B?V0d3ZU84UTRxVCs4Sm9oZWRyYnQ4YisvVEROWUJQNENWOFcvN3lGYWVVY2lP?=
- =?utf-8?B?cGdPT243aGgwR20xUjdKbWpTU1I4RUN2YW5qazlNQ0E4L3lzV3hqaFBJZ1JR?=
- =?utf-8?B?R2hNUXNFK0hkamErNUQ5bEROMTcvZVRTRVdZZU1hQWFobnRlcWh2VFk3RURq?=
- =?utf-8?B?bG4xcWZxS2lQMjUrNGY5KzFQVXdJT3FZTm8xSHpodmZ2d1VvR0xyYUg4MU42?=
- =?utf-8?B?c0x5ZnY1LzIxR292SWI5RGZuUC9MWnJ2cEJLVjEyUTJUZHNjeVZndkc1WkhB?=
- =?utf-8?B?N0Jscm9kTlRadkcxZ3pkZHZBYW5XUWhWSWhyUCtrcUFZSkZId2psSm1CVXMy?=
- =?utf-8?B?YXdOa3Nva01pMW1qL1ViWk94a0dMaVFjNjN2RlZSU2hyTnhMMWFpVGVxb0V1?=
- =?utf-8?B?Vkp5U2pmdVdoNXQ4SkhwRWIrTG8waW1rV0dqa1dIRTF0K3lPN3FQNDBJRUxo?=
- =?utf-8?B?Z3d4MW5PY0FRMVBVbncvSGQzWGVqQ0plZ2ZBbk5qV2VJdFVGOVptdCtEbGkw?=
- =?utf-8?B?S094Sm5kY09wUmJiYlRtcGhZbExoaTh1dlVHNm9uOHp3UUVTZG9VTngxc0Nm?=
- =?utf-8?B?b0ZUejNxRU1uMjNGWkVZTzcyRHV2RUhlSmVpdjBGdGFEL3pwdHgzZ1ZMSkMy?=
- =?utf-8?B?RHpGVmthMEw2YTl5SEV5cGpsT0crR0lWdXF6TEJCNzB6cHNXVnpxcGZ5d0JO?=
- =?utf-8?B?dmdvOWk0Nno3OG9WV2I3T2VYd082a21SQS9FNVN5SUVSRG4wMkYvNU1hRVlL?=
- =?utf-8?B?Y0E9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Thu, 24 Aug 2023 20:04:10 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E8EB19B4
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 17:04:07 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8773C6414B
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 00:04:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15ED0C433C7;
+        Fri, 25 Aug 2023 00:04:03 +0000 (UTC)
+Date:   Thu, 24 Aug 2023 20:04:01 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>, GONG@vger.kernel.org,
+        Ruiqi <gongruiqi1@huawei.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Zheng Yejian <zhengyejian1@huawei.com>
+Subject: [GIT PULL] tracing; Fixes for 6.5
+Message-ID: <20230824200401.43521a7f@rorschach.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR11MB0048.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ae25bafb-4481-4d2b-3b55-08dba4fe840c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Aug 2023 00:02:04.6663
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: wIJrQOJEzknfn9T1utv7AZt26QMIrlxF+pQpsEYoOhm5FF33ktP0kF0/1om5qOo8O77VZXmZFrLA+cqXMUU8VBPK5JKLKKr1amwVnNxUhT8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB6865
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgUHJhc2hhbnQsDQoNCj4gPiA+IEkgZG9uJ3QgdW5kZXJzdGFuZCB3aHkgdGhlIGNvbmYgVkRP
-IGlzIGJlaW5nIHJlY3JlYXRlZCBoZXJlLg0KPiA+ID4gY2FibGVfdmRvIHNob3VsZCBhbHJlYWR5
-IGNvbnRhaW4gdGhlIG5lY2Vzc2FyeSBiaXRzLiBKdXN0IHVzZSB0aGUNCj4gPiA+IGNhYmxlX3Zk
-byB0aGF0IHlvdSBnZXQgZnJvbSBjcm9zX3R5cGVjX2dldF9jYWJsZV92ZG8oKTsgaXQgd2lsbCBo
-YXZlDQo+ID4gPiBhbGwgdGhlIGJpdHMgc2V0IGNvcnJlY3RseSBhbHJlYWR5ICh0aGUgRUMgc2hv
-dWxkIGJlIGRvaW5nIHRoYXQpLg0KPiA+ID4NCj4gPiA+IFRoZSAiaWYiIGNvbmRpdGlvbiBzaG91
-bGQgYWxzbyBiZSB1bm5lY2Vzc2FyeS4NCj4gPiA+DQo+ID4gPiBZb3UgYXJlIGFscmVhZHkgZG9p
-bmcgc29tZXRoaW5nIHNpbWlsYXIgaW4gdGhlIG90aGVyIHBhdGNoIGZvcg0KPiA+ID4gImFjdGl2
-ZSByZXRpbWVyIGNhYmxlIHN1cHBvcnQiIFsxXQ0KPiA+DQo+ID4gImlmIiBjb25kaXRpb24gaXMg
-bmVjZXNzYXJ5IGJlY2F1c2UgdGhlcmUgYXJlIGNhYmxlcyAoTFJEIEdlbjMpIHdpdGggRFBTSUQN
-Cj4gYnV0IGRvZXMgbm90IHN1cHBvcnQgRFBBTSAyLjEgYW5kIGluIHRoYXQgY2FzZSB3ZSBuZWVk
-IHRvIGNoZWNrIFRCVFNJRCBvZg0KPiB0aGUgY2FibGUgYW5kIHVzZSB0aGUgY2FibGUgcHJvcGVy
-dGllcyBlLmcuIFNQRUVEIGFuZCBUeXBlLg0KPiANCj4gT2ssIHRoZW4gZ3JhYiB0aGUgdHdvIFZE
-T3MgZGlzdGluY3RseSAoY2FibGVfZHBfdmRvIGFuZCBjYWJsZV90YnRfdmRvKS4NCj4gQWxzbywg
-dGhlIGV4cGxhbmF0aW9uIHlvdSBnYXZlIGFib3ZlIHNlZW1zIGxpa2UgYSBnb29kIGNhbmRpZGF0
-ZSBmb3IgYQ0KPiBjb21tZW50IGFib3ZlIHRoZSAiaWYiIGJsb2NrLg0KPiANCj4gPiBTaW5jZSB0
-aGF0IGluZm9ybWF0aW9uIGlzIGFscmVhZHkgYXZhaWxhYmxlIGluIHBkX2N0cmwsIHdlIGFyZSBs
-ZXZlcmFnaW5nIGl0LiAgSQ0KPiB3aWxsIHJlbW92ZSB0aGUgcGFydCB3aGVyZSBpdCdzIGNoZWNr
-aW5nIHJldGltZXIgY2FibGUgYXMgRFAyLjEgaXMgYW55d2F5IG5vdA0KPiBzdXBwb3J0ZWQuDQo+
-IA0KPiBBcyBtZW50aW9uZWQgaW4gZWFybGllciBwYXRjaGVzIHJlbGF0ZWQgdG8gdGhpcywgd2Ug
-d2FudCB0byBhdm9pZCB1c2luZyBFQy0NCj4gc3BlY2lmaWMgZGF0YSBzdHJ1Y3R1cmVzIGFzIG11
-Y2ggYXMgcG9zc2libGUgbW92aW5nIGZvcndhcmQsIGVzcGVjaWFsbHkgaWYgdGhlDQo+IGluZm9y
-bWF0aW9uIGNhbiBiZSBnbGVhbmVkIGZyb20gdGhlIGF2YWlsYWJsZSBEaXNjU1ZJRCBWRE9zLiBT
-bywgcGxlYXNlIHVzZQ0KPiB0aGUgcmVxdWlyZWQgY2FibGUgVkRPICh3aGV0aGVyIGl0IGlzIERQ
-IG9yIFRCVCBTSUQpLg0KDQpBY2suDQoNCj4gDQo+ID4NCj4gPiA+DQo+ID4gPiA+ICsNCj4gPiA+
-ID4gKyAgIHBvcnQtPnN0YXRlLmRhdGEgPSAmZHAyMV9kYXRhOw0KPiA+ID4gPiArDQo+ID4gPiA+
-ICsgICByZXR1cm4gdHlwZWNfbXV4X3NldChwb3J0LT5tdXgsICZwb3J0LT5zdGF0ZSk7DQo+ID4g
-Pg0KPiA+ID4gTm90ZSB0aGF0IG5vdyB5b3UgaGF2ZSByZXZlcnNlZCB0aGUgb3JkZXIgaW4gd2hp
-Y2ggdGhlIG11eGVzIGFyZSBzZXQNCj4gPiA+ICh3aGljaCBsZWFkcyB0byBzdWJ0bGUgdGltaW5n
-IGlzc3VlcyB3aXRoIEJ1cm5zaWRlIEJyaWRnZSBhbmQgb3RoZXIgc2ltaWxhcg0KPiByZXRpbWVy
-cykuDQo+ID4gPiBTbyBwbGVhc2UgZG9uJ3QgZG8gdGhpcy4NCj4gPg0KPiA+IEFyZSB5b3Ugc3Vn
-Z2VzdGluZyB0byBhZGQgc2FtZSBvcmRlciBoZXJlPw0KPiANCj4gU3BlY2lmaWNhbGx5LCBicmVh
-a2luZyBvdXQgYSBzZXBhcmF0ZSBmdW5jdGlvbiBmb3IgRFAgMi4xIGFuZCB0aGVuIGVtYmVkZGlu
-Zw0KPiB0aGF0IGluIHRoZSBvdmVyYWxsIGVuYWJsZV9kcCgpIGZ1bmN0aW9uIG1ha2VzIHRoaW5n
-cyB1bm5lY2Vzc2FyaWx5IGNvbXBsZXguDQo+IA0KPiBKdXN0IGNyYWZ0IHRoZSBWRE9zIG9uZXcg
-dGltZSwgd2l0aGluIGVuYWJsZV9kcCgpLCBhbmQgdGhlbiB1c2UgdGhlIGV4aXN0aW5nDQo+IGxv
-Y2F0aW9ucyB3aGVyZSBjcm9zX3JldGltZXJfc2V0IGFuZCB0eXBlY19tdXhfc2V0KCkgYXJlIGNh
-bGxlZC4NCj4gDQo+IFRoaXMgd2lsbCBiZWNvbWUgbW9yZSBjbGVhciBvbmNlIHlvdSByZWJhc2Ug
-dGhpcyBjb21taXQgb24gdG9wIG9mIHRoZQ0KPiBjaGFuZ2VzIGluIFsxXQ0KPiANCj4gRWZmZWN0
-aXZlbHkgY3Jvc190eXBlY19lbmFibGVfZHAoKSBzaG91bGQgaGFuZGxlIGFsbCBEUCBjYXNlcywg
-d2l0aG91dA0KPiBuZWVkaW5nIGEgc3BlY2lhbCBmdW5jdGlvbiBicm9rZW4gb3V0IGZvciBEUCAy
-LjENCg0KQWNrLg0KDQo+IA0KPiA+ID4gVGhpcyBlbnRpcmUgZmVhdHVyZSBpc24ndCBuZWNlc3Nh
-cnkuIFJlZ2FyZGxlc3Mgb2Ygd2hldGhlciBkcDIuMSBpcw0KPiA+ID4gc3VwcG9ydGVkIG9yIG5v
-dCwgdGhlIHBvcnQgZHJpdmVyIGp1c3QgbmVlZHMgdG8gZm9yd2FyZCB0aGUNCj4gPiA+IGNhYmxl
-X3ZkbyBpdCByZWNlaXZlcyBmYWl0aGZ1bGx5IHRvIHRoZSBtdXggZHJpdmVyLCB3aGljaCBjYW4g
-ZGVhbA0KPiA+ID4gd2l0aCBpbnRlcm5hbCBkZXRhaWxzIChiYXNlZCBvbiB3aGV0aGVyICppdCog
-c3VwcG9ydHMgRFAgMi4xIG9yIG5vdCkuDQo+ID4NCj4gPiBJIGFtIE9rYXkgd2l0aCB0aGF0Lg0K
-PiA+IFdlIHRob3VnaHQgd2UgY2FuIGF2b2lkIHVubmVjZXNzYXJ5IGNoZWNrIGZvciB0aGUgY2Fi
-bGVfdmRvIGZvciBEUA0KPiBhbHRlcm5hdGUgbW9kZSBvbiBwbGF0Zm9ybSB3aGVyZSBEUDIuMSBp
-cyBub3Qgc3VwcG9ydGVkLg0KPiBUaGUgb3B0aW1pemF0aW9uIGlzIG1pbmlzY3VsZSBlbm91Z2gg
-dG8gbm90IGJlIHdvcnRoIGl0IHRoZSBhZGRlZCBjb2RlDQo+IHZlcmJvc2l0eS4NCg0KQWNrLiBJ
-IHdpbGwgcmVtb3ZlIGl0Lg0KDQpTaW5jZXJlbHksDQpVdGthcnNoIFBhdGVsLg0K
+
+Linus,
+
+[ Note, I'm having issues with my nitro key, so I used my main PGP key
+  to sign the tag ]
+
+Tracing fixes for 6.5:
+
+- Fix ring buffer being permanently disabled due to missed record_disabled()
+  Changing the trace cpu mask will disable the ring buffers for the CPUs no
+  longer in the mask. But it fails to update the snapshot buffer. If a snapshot
+  takes place, the accounting for the ring buffer being disabled is corrupted
+  and this can lead to the ring buffer being permanently disabled.
+
+- Add test case for snapshot and cpu mask working together
+
+- Fix memleak by the function graph tracer not getting closed properly.
+  The iterator is used to read the ring buffer. When it opens, it calls
+  the open function of a tracer, and when it is closed, it calls the close
+  iteration. While a trace is being read, it is still possible to change
+  the tracer. If this happens between the function graph tracer and the
+  wakeup tracer (which uses function graph tracing), the tracers are not
+  closed properly during when the iterator sees the switch, and the wakeup
+  function did not initialize its private pointer to NULL, which is used
+  to know if the function graph tracer was the last tracer. It could be
+  fooled in thinking it is, but then on exit it does not call the close
+  function of the function graph tracer to clean up its data.
+
+- Fix synthetic events on big endian machines, by introducing a union
+  that does the conversions properly.
+
+- Fix synthetic events from printing out the number of elements in the
+  stacktrace when it shouldn't.
+
+- Fix synthetic events stacktrace to not print a bogus value at the end.
+
+- Introduce a pipe_cpumask that prevents the trace_pipe files from being
+  opened by more than one task (file descriptor). There was a race found
+  where if splice is called, the iter->ent could become stale and events
+  could be missed. There's no point reading a producer/consumer file by
+  more than one task as they will corrupt each other anyway. Add a cpumask
+  that keeps track of the per_cpu trace_pipe files as well as the global
+  trace_pipe file that prevents more than one open of a trace_pipe file
+  that represents the same ring buffer. This prevents the race from
+  happening.
+
+- Fix ftrace samples for arm64 to work with older compilers.
+
+
+Please pull the latest trace-v6.5-rc6 tree, which can be found at:
+
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git
+trace-v6.5-rc6
+
+Tag SHA1: d0cdb2b90c69a61f03822610d2925d31ad195dc8
+Head SHA1: e332938e6fc8117fb9bb1374339cea879b3972d9
+
+
+GONG, Ruiqi (1):
+      samples: ftrace: Replace bti assembly with hint for older compiler
+
+Sven Schnelle (3):
+      tracing/synthetic: Use union instead of casts
+      tracing/synthetic: Skip first entry for stack traces
+      tracing/synthetic: Allocate one additional element for size
+
+Zheng Yejian (4):
+      tracing: Fix cpu buffers unavailable due to 'record_disabled' missed
+      selftests/ftrace: Add a basic testcase for snapshot
+      tracing: Fix memleak due to race between current_tracer and trace
+      tracing: Introduce pipe_cpumask to avoid race on trace_pipes
+
+----
+ include/linux/trace_events.h                       |  11 +++
+ kernel/trace/trace.c                               |  70 ++++++++++++--
+ kernel/trace/trace.h                               |  10 ++
+ kernel/trace/trace_events_synth.c                  | 103 ++++++++-------------
+ kernel/trace/trace_irqsoff.c                       |   3 +-
+ kernel/trace/trace_sched_wakeup.c                  |   2 +
+ samples/ftrace/ftrace-direct-modify.c              |   4 +-
+ samples/ftrace/ftrace-direct-multi-modify.c        |   4 +-
+ samples/ftrace/ftrace-direct-multi.c               |   2 +-
+ samples/ftrace/ftrace-direct-too.c                 |   2 +-
+ samples/ftrace/ftrace-direct.c                     |   2 +-
+ .../selftests/ftrace/test.d/00basic/snapshot1.tc   |  31 +++++++
+ 12 files changed, 166 insertions(+), 78 deletions(-)
+ create mode 100644 tools/testing/selftests/ftrace/test.d/00basic/snapshot1.tc
+---------------------------
+diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
+index 3930e676436c..1e8bbdb8da90 100644
+--- a/include/linux/trace_events.h
++++ b/include/linux/trace_events.h
+@@ -59,6 +59,17 @@ int trace_raw_output_prep(struct trace_iterator *iter,
+ extern __printf(2, 3)
+ void trace_event_printf(struct trace_iterator *iter, const char *fmt, ...);
+ 
++/* Used to find the offset and length of dynamic fields in trace events */
++struct trace_dynamic_info {
++#ifdef CONFIG_CPU_BIG_ENDIAN
++	u16	offset;
++	u16	len;
++#else
++	u16	len;
++	u16	offset;
++#endif
++};
++
+ /*
+  * The trace entry - the most basic unit of tracing. This is what
+  * is printed in the end as a single line in the trace output, such as:
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index b8870078ef58..8e64aaad5361 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -4213,8 +4213,15 @@ static void *s_start(struct seq_file *m, loff_t *pos)
+ 	 * will point to the same string as current_trace->name.
+ 	 */
+ 	mutex_lock(&trace_types_lock);
+-	if (unlikely(tr->current_trace && iter->trace->name != tr->current_trace->name))
++	if (unlikely(tr->current_trace && iter->trace->name != tr->current_trace->name)) {
++		/* Close iter->trace before switching to the new current tracer */
++		if (iter->trace->close)
++			iter->trace->close(iter);
+ 		*iter->trace = *tr->current_trace;
++		/* Reopen the new current tracer */
++		if (iter->trace->open)
++			iter->trace->open(iter);
++	}
+ 	mutex_unlock(&trace_types_lock);
+ 
+ #ifdef CONFIG_TRACER_MAX_TRACE
+@@ -5277,11 +5284,17 @@ int tracing_set_cpumask(struct trace_array *tr,
+ 				!cpumask_test_cpu(cpu, tracing_cpumask_new)) {
+ 			atomic_inc(&per_cpu_ptr(tr->array_buffer.data, cpu)->disabled);
+ 			ring_buffer_record_disable_cpu(tr->array_buffer.buffer, cpu);
++#ifdef CONFIG_TRACER_MAX_TRACE
++			ring_buffer_record_disable_cpu(tr->max_buffer.buffer, cpu);
++#endif
+ 		}
+ 		if (!cpumask_test_cpu(cpu, tr->tracing_cpumask) &&
+ 				cpumask_test_cpu(cpu, tracing_cpumask_new)) {
+ 			atomic_dec(&per_cpu_ptr(tr->array_buffer.data, cpu)->disabled);
+ 			ring_buffer_record_enable_cpu(tr->array_buffer.buffer, cpu);
++#ifdef CONFIG_TRACER_MAX_TRACE
++			ring_buffer_record_enable_cpu(tr->max_buffer.buffer, cpu);
++#endif
+ 		}
+ 	}
+ 	arch_spin_unlock(&tr->max_lock);
+@@ -6705,10 +6718,36 @@ tracing_max_lat_write(struct file *filp, const char __user *ubuf,
+ 
+ #endif
+ 
++static int open_pipe_on_cpu(struct trace_array *tr, int cpu)
++{
++	if (cpu == RING_BUFFER_ALL_CPUS) {
++		if (cpumask_empty(tr->pipe_cpumask)) {
++			cpumask_setall(tr->pipe_cpumask);
++			return 0;
++		}
++	} else if (!cpumask_test_cpu(cpu, tr->pipe_cpumask)) {
++		cpumask_set_cpu(cpu, tr->pipe_cpumask);
++		return 0;
++	}
++	return -EBUSY;
++}
++
++static void close_pipe_on_cpu(struct trace_array *tr, int cpu)
++{
++	if (cpu == RING_BUFFER_ALL_CPUS) {
++		WARN_ON(!cpumask_full(tr->pipe_cpumask));
++		cpumask_clear(tr->pipe_cpumask);
++	} else {
++		WARN_ON(!cpumask_test_cpu(cpu, tr->pipe_cpumask));
++		cpumask_clear_cpu(cpu, tr->pipe_cpumask);
++	}
++}
++
+ static int tracing_open_pipe(struct inode *inode, struct file *filp)
+ {
+ 	struct trace_array *tr = inode->i_private;
+ 	struct trace_iterator *iter;
++	int cpu;
+ 	int ret;
+ 
+ 	ret = tracing_check_open_get_tr(tr);
+@@ -6716,13 +6755,16 @@ static int tracing_open_pipe(struct inode *inode, struct file *filp)
+ 		return ret;
+ 
+ 	mutex_lock(&trace_types_lock);
++	cpu = tracing_get_cpu(inode);
++	ret = open_pipe_on_cpu(tr, cpu);
++	if (ret)
++		goto fail_pipe_on_cpu;
+ 
+ 	/* create a buffer to store the information to pass to userspace */
+ 	iter = kzalloc(sizeof(*iter), GFP_KERNEL);
+ 	if (!iter) {
+ 		ret = -ENOMEM;
+-		__trace_array_put(tr);
+-		goto out;
++		goto fail_alloc_iter;
+ 	}
+ 
+ 	trace_seq_init(&iter->seq);
+@@ -6745,7 +6787,7 @@ static int tracing_open_pipe(struct inode *inode, struct file *filp)
+ 
+ 	iter->tr = tr;
+ 	iter->array_buffer = &tr->array_buffer;
+-	iter->cpu_file = tracing_get_cpu(inode);
++	iter->cpu_file = cpu;
+ 	mutex_init(&iter->mutex);
+ 	filp->private_data = iter;
+ 
+@@ -6755,12 +6797,15 @@ static int tracing_open_pipe(struct inode *inode, struct file *filp)
+ 	nonseekable_open(inode, filp);
+ 
+ 	tr->trace_ref++;
+-out:
++
+ 	mutex_unlock(&trace_types_lock);
+ 	return ret;
+ 
+ fail:
+ 	kfree(iter);
++fail_alloc_iter:
++	close_pipe_on_cpu(tr, cpu);
++fail_pipe_on_cpu:
+ 	__trace_array_put(tr);
+ 	mutex_unlock(&trace_types_lock);
+ 	return ret;
+@@ -6777,7 +6822,7 @@ static int tracing_release_pipe(struct inode *inode, struct file *file)
+ 
+ 	if (iter->trace->pipe_close)
+ 		iter->trace->pipe_close(iter);
+-
++	close_pipe_on_cpu(tr, iter->cpu_file);
+ 	mutex_unlock(&trace_types_lock);
+ 
+ 	free_cpumask_var(iter->started);
+@@ -9441,6 +9486,9 @@ static struct trace_array *trace_array_create(const char *name)
+ 	if (!alloc_cpumask_var(&tr->tracing_cpumask, GFP_KERNEL))
+ 		goto out_free_tr;
+ 
++	if (!alloc_cpumask_var(&tr->pipe_cpumask, GFP_KERNEL))
++		goto out_free_tr;
++
+ 	tr->trace_flags = global_trace.trace_flags & ~ZEROED_TRACE_FLAGS;
+ 
+ 	cpumask_copy(tr->tracing_cpumask, cpu_all_mask);
+@@ -9482,6 +9530,7 @@ static struct trace_array *trace_array_create(const char *name)
+  out_free_tr:
+ 	ftrace_free_ftrace_ops(tr);
+ 	free_trace_buffers(tr);
++	free_cpumask_var(tr->pipe_cpumask);
+ 	free_cpumask_var(tr->tracing_cpumask);
+ 	kfree(tr->name);
+ 	kfree(tr);
+@@ -9584,6 +9633,7 @@ static int __remove_instance(struct trace_array *tr)
+ 	}
+ 	kfree(tr->topts);
+ 
++	free_cpumask_var(tr->pipe_cpumask);
+ 	free_cpumask_var(tr->tracing_cpumask);
+ 	kfree(tr->name);
+ 	kfree(tr);
+@@ -10381,12 +10431,14 @@ __init static int tracer_alloc_buffers(void)
+ 	if (trace_create_savedcmd() < 0)
+ 		goto out_free_temp_buffer;
+ 
++	if (!alloc_cpumask_var(&global_trace.pipe_cpumask, GFP_KERNEL))
++		goto out_free_savedcmd;
++
+ 	/* TODO: make the number of buffers hot pluggable with CPUS */
+ 	if (allocate_trace_buffers(&global_trace, ring_buf_size) < 0) {
+ 		MEM_FAIL(1, "tracer: failed to allocate ring buffer!\n");
+-		goto out_free_savedcmd;
++		goto out_free_pipe_cpumask;
+ 	}
+-
+ 	if (global_trace.buffer_disabled)
+ 		tracing_off();
+ 
+@@ -10439,6 +10491,8 @@ __init static int tracer_alloc_buffers(void)
+ 
+ 	return 0;
+ 
++out_free_pipe_cpumask:
++	free_cpumask_var(global_trace.pipe_cpumask);
+ out_free_savedcmd:
+ 	free_saved_cmdlines_buffer(savedcmd);
+ out_free_temp_buffer:
+diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
+index e1edc2197fc8..73eaec158473 100644
+--- a/kernel/trace/trace.h
++++ b/kernel/trace/trace.h
+@@ -377,6 +377,8 @@ struct trace_array {
+ 	struct list_head	events;
+ 	struct trace_event_file *trace_marker_file;
+ 	cpumask_var_t		tracing_cpumask; /* only trace on set CPUs */
++	/* one per_cpu trace_pipe can be opened by only one user */
++	cpumask_var_t		pipe_cpumask;
+ 	int			ref;
+ 	int			trace_ref;
+ #ifdef CONFIG_FUNCTION_TRACER
+@@ -1295,6 +1297,14 @@ static inline void trace_branch_disable(void)
+ /* set ring buffers to default size if not already done so */
+ int tracing_update_buffers(void);
+ 
++union trace_synth_field {
++	u8				as_u8;
++	u16				as_u16;
++	u32				as_u32;
++	u64				as_u64;
++	struct trace_dynamic_info	as_dynamic;
++};
++
+ struct ftrace_event_field {
+ 	struct list_head	link;
+ 	const char		*name;
+diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
+index dd398afc8e25..9897d0bfcab7 100644
+--- a/kernel/trace/trace_events_synth.c
++++ b/kernel/trace/trace_events_synth.c
+@@ -127,7 +127,7 @@ static bool synth_event_match(const char *system, const char *event,
+ 
+ struct synth_trace_event {
+ 	struct trace_entry	ent;
+-	u64			fields[];
++	union trace_synth_field	fields[];
+ };
+ 
+ static int synth_event_define_fields(struct trace_event_call *call)
+@@ -321,19 +321,19 @@ static const char *synth_field_fmt(char *type)
+ 
+ static void print_synth_event_num_val(struct trace_seq *s,
+ 				      char *print_fmt, char *name,
+-				      int size, u64 val, char *space)
++				      int size, union trace_synth_field *val, char *space)
+ {
+ 	switch (size) {
+ 	case 1:
+-		trace_seq_printf(s, print_fmt, name, (u8)val, space);
++		trace_seq_printf(s, print_fmt, name, val->as_u8, space);
+ 		break;
+ 
+ 	case 2:
+-		trace_seq_printf(s, print_fmt, name, (u16)val, space);
++		trace_seq_printf(s, print_fmt, name, val->as_u16, space);
+ 		break;
+ 
+ 	case 4:
+-		trace_seq_printf(s, print_fmt, name, (u32)val, space);
++		trace_seq_printf(s, print_fmt, name, val->as_u32, space);
+ 		break;
+ 
+ 	default:
+@@ -350,7 +350,7 @@ static enum print_line_t print_synth_event(struct trace_iterator *iter,
+ 	struct trace_seq *s = &iter->seq;
+ 	struct synth_trace_event *entry;
+ 	struct synth_event *se;
+-	unsigned int i, n_u64;
++	unsigned int i, j, n_u64;
+ 	char print_fmt[32];
+ 	const char *fmt;
+ 
+@@ -374,43 +374,28 @@ static enum print_line_t print_synth_event(struct trace_iterator *iter,
+ 		/* parameter values */
+ 		if (se->fields[i]->is_string) {
+ 			if (se->fields[i]->is_dynamic) {
+-				u32 offset, data_offset;
+-				char *str_field;
+-
+-				offset = (u32)entry->fields[n_u64];
+-				data_offset = offset & 0xffff;
+-
+-				str_field = (char *)entry + data_offset;
++				union trace_synth_field *data = &entry->fields[n_u64];
+ 
+ 				trace_seq_printf(s, print_fmt, se->fields[i]->name,
+ 						 STR_VAR_LEN_MAX,
+-						 str_field,
++						 (char *)entry + data->as_dynamic.offset,
+ 						 i == se->n_fields - 1 ? "" : " ");
+ 				n_u64++;
+ 			} else {
+ 				trace_seq_printf(s, print_fmt, se->fields[i]->name,
+ 						 STR_VAR_LEN_MAX,
+-						 (char *)&entry->fields[n_u64],
++						 (char *)&entry->fields[n_u64].as_u64,
+ 						 i == se->n_fields - 1 ? "" : " ");
+ 				n_u64 += STR_VAR_LEN_MAX / sizeof(u64);
+ 			}
+ 		} else if (se->fields[i]->is_stack) {
+-			u32 offset, data_offset, len;
+-			unsigned long *p, *end;
+-
+-			offset = (u32)entry->fields[n_u64];
+-			data_offset = offset & 0xffff;
+-			len = offset >> 16;
+-
+-			p = (void *)entry + data_offset;
+-			end = (void *)p + len - (sizeof(long) - 1);
++			union trace_synth_field *data = &entry->fields[n_u64];
++			unsigned long *p = (void *)entry + data->as_dynamic.offset;
+ 
+ 			trace_seq_printf(s, "%s=STACK:\n", se->fields[i]->name);
+-
+-			for (; *p && p < end; p++)
+-				trace_seq_printf(s, "=> %pS\n", (void *)*p);
++			for (j = 1; j < data->as_dynamic.len / sizeof(long); j++)
++				trace_seq_printf(s, "=> %pS\n", (void *)p[j]);
+ 			n_u64++;
+-
+ 		} else {
+ 			struct trace_print_flags __flags[] = {
+ 			    __def_gfpflag_names, {-1, NULL} };
+@@ -419,13 +404,13 @@ static enum print_line_t print_synth_event(struct trace_iterator *iter,
+ 			print_synth_event_num_val(s, print_fmt,
+ 						  se->fields[i]->name,
+ 						  se->fields[i]->size,
+-						  entry->fields[n_u64],
++						  &entry->fields[n_u64],
+ 						  space);
+ 
+ 			if (strcmp(se->fields[i]->type, "gfp_t") == 0) {
+ 				trace_seq_puts(s, " (");
+ 				trace_print_flags_seq(s, "|",
+-						      entry->fields[n_u64],
++						      entry->fields[n_u64].as_u64,
+ 						      __flags);
+ 				trace_seq_putc(s, ')');
+ 			}
+@@ -454,21 +439,16 @@ static unsigned int trace_string(struct synth_trace_event *entry,
+ 	int ret;
+ 
+ 	if (is_dynamic) {
+-		u32 data_offset;
+-
+-		data_offset = struct_size(entry, fields, event->n_u64);
+-		data_offset += data_size;
+-
+-		len = fetch_store_strlen((unsigned long)str_val);
++		union trace_synth_field *data = &entry->fields[*n_u64];
+ 
+-		data_offset |= len << 16;
+-		*(u32 *)&entry->fields[*n_u64] = data_offset;
++		data->as_dynamic.offset = struct_size(entry, fields, event->n_u64) + data_size;
++		data->as_dynamic.len = fetch_store_strlen((unsigned long)str_val);
+ 
+ 		ret = fetch_store_string((unsigned long)str_val, &entry->fields[*n_u64], entry);
+ 
+ 		(*n_u64)++;
+ 	} else {
+-		str_field = (char *)&entry->fields[*n_u64];
++		str_field = (char *)&entry->fields[*n_u64].as_u64;
+ 
+ #ifdef CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
+ 		if ((unsigned long)str_val < TASK_SIZE)
+@@ -492,6 +472,7 @@ static unsigned int trace_stack(struct synth_trace_event *entry,
+ 				 unsigned int data_size,
+ 				 unsigned int *n_u64)
+ {
++	union trace_synth_field *data = &entry->fields[*n_u64];
+ 	unsigned int len;
+ 	u32 data_offset;
+ 	void *data_loc;
+@@ -504,10 +485,6 @@ static unsigned int trace_stack(struct synth_trace_event *entry,
+ 			break;
+ 	}
+ 
+-	/* Include the zero'd element if it fits */
+-	if (len < HIST_STACKTRACE_DEPTH)
+-		len++;
+-
+ 	len *= sizeof(long);
+ 
+ 	/* Find the dynamic section to copy the stack into. */
+@@ -515,8 +492,9 @@ static unsigned int trace_stack(struct synth_trace_event *entry,
+ 	memcpy(data_loc, stack, len);
+ 
+ 	/* Fill in the field that holds the offset/len combo */
+-	data_offset |= len << 16;
+-	*(u32 *)&entry->fields[*n_u64] = data_offset;
++
++	data->as_dynamic.offset = data_offset;
++	data->as_dynamic.len = len;
+ 
+ 	(*n_u64)++;
+ 
+@@ -550,7 +528,8 @@ static notrace void trace_event_raw_event_synth(void *__data,
+ 		str_val = (char *)(long)var_ref_vals[val_idx];
+ 
+ 		if (event->dynamic_fields[i]->is_stack) {
+-			len = *((unsigned long *)str_val);
++			/* reserve one extra element for size */
++			len = *((unsigned long *)str_val) + 1;
+ 			len *= sizeof(unsigned long);
+ 		} else {
+ 			len = fetch_store_strlen((unsigned long)str_val);
+@@ -592,19 +571,19 @@ static notrace void trace_event_raw_event_synth(void *__data,
+ 
+ 			switch (field->size) {
+ 			case 1:
+-				*(u8 *)&entry->fields[n_u64] = (u8)val;
++				entry->fields[n_u64].as_u8 = (u8)val;
+ 				break;
+ 
+ 			case 2:
+-				*(u16 *)&entry->fields[n_u64] = (u16)val;
++				entry->fields[n_u64].as_u16 = (u16)val;
+ 				break;
+ 
+ 			case 4:
+-				*(u32 *)&entry->fields[n_u64] = (u32)val;
++				entry->fields[n_u64].as_u32 = (u32)val;
+ 				break;
+ 
+ 			default:
+-				entry->fields[n_u64] = val;
++				entry->fields[n_u64].as_u64 = val;
+ 				break;
+ 			}
+ 			n_u64++;
+@@ -1791,19 +1770,19 @@ int synth_event_trace(struct trace_event_file *file, unsigned int n_vals, ...)
+ 
+ 			switch (field->size) {
+ 			case 1:
+-				*(u8 *)&state.entry->fields[n_u64] = (u8)val;
++				state.entry->fields[n_u64].as_u8 = (u8)val;
+ 				break;
+ 
+ 			case 2:
+-				*(u16 *)&state.entry->fields[n_u64] = (u16)val;
++				state.entry->fields[n_u64].as_u16 = (u16)val;
+ 				break;
+ 
+ 			case 4:
+-				*(u32 *)&state.entry->fields[n_u64] = (u32)val;
++				state.entry->fields[n_u64].as_u32 = (u32)val;
+ 				break;
+ 
+ 			default:
+-				state.entry->fields[n_u64] = val;
++				state.entry->fields[n_u64].as_u64 = val;
+ 				break;
+ 			}
+ 			n_u64++;
+@@ -1884,19 +1863,19 @@ int synth_event_trace_array(struct trace_event_file *file, u64 *vals,
+ 
+ 			switch (field->size) {
+ 			case 1:
+-				*(u8 *)&state.entry->fields[n_u64] = (u8)val;
++				state.entry->fields[n_u64].as_u8 = (u8)val;
+ 				break;
+ 
+ 			case 2:
+-				*(u16 *)&state.entry->fields[n_u64] = (u16)val;
++				state.entry->fields[n_u64].as_u16 = (u16)val;
+ 				break;
+ 
+ 			case 4:
+-				*(u32 *)&state.entry->fields[n_u64] = (u32)val;
++				state.entry->fields[n_u64].as_u32 = (u32)val;
+ 				break;
+ 
+ 			default:
+-				state.entry->fields[n_u64] = val;
++				state.entry->fields[n_u64].as_u64 = val;
+ 				break;
+ 			}
+ 			n_u64++;
+@@ -2031,19 +2010,19 @@ static int __synth_event_add_val(const char *field_name, u64 val,
+ 	} else {
+ 		switch (field->size) {
+ 		case 1:
+-			*(u8 *)&trace_state->entry->fields[field->offset] = (u8)val;
++			trace_state->entry->fields[field->offset].as_u8 = (u8)val;
+ 			break;
+ 
+ 		case 2:
+-			*(u16 *)&trace_state->entry->fields[field->offset] = (u16)val;
++			trace_state->entry->fields[field->offset].as_u16 = (u16)val;
+ 			break;
+ 
+ 		case 4:
+-			*(u32 *)&trace_state->entry->fields[field->offset] = (u32)val;
++			trace_state->entry->fields[field->offset].as_u32 = (u32)val;
+ 			break;
+ 
+ 		default:
+-			trace_state->entry->fields[field->offset] = val;
++			trace_state->entry->fields[field->offset].as_u64 = val;
+ 			break;
+ 		}
+ 	}
+diff --git a/kernel/trace/trace_irqsoff.c b/kernel/trace/trace_irqsoff.c
+index 590b3d51afae..ba37f768e2f2 100644
+--- a/kernel/trace/trace_irqsoff.c
++++ b/kernel/trace/trace_irqsoff.c
+@@ -231,7 +231,8 @@ static void irqsoff_trace_open(struct trace_iterator *iter)
+ {
+ 	if (is_graph(iter->tr))
+ 		graph_trace_open(iter);
+-
++	else
++		iter->private = NULL;
+ }
+ 
+ static void irqsoff_trace_close(struct trace_iterator *iter)
+diff --git a/kernel/trace/trace_sched_wakeup.c b/kernel/trace/trace_sched_wakeup.c
+index 330aee1c1a49..0469a04a355f 100644
+--- a/kernel/trace/trace_sched_wakeup.c
++++ b/kernel/trace/trace_sched_wakeup.c
+@@ -168,6 +168,8 @@ static void wakeup_trace_open(struct trace_iterator *iter)
+ {
+ 	if (is_graph(iter->tr))
+ 		graph_trace_open(iter);
++	else
++		iter->private = NULL;
+ }
+ 
+ static void wakeup_trace_close(struct trace_iterator *iter)
+diff --git a/samples/ftrace/ftrace-direct-modify.c b/samples/ftrace/ftrace-direct-modify.c
+index e5ed08098ff3..e2a6a69352df 100644
+--- a/samples/ftrace/ftrace-direct-modify.c
++++ b/samples/ftrace/ftrace-direct-modify.c
+@@ -105,7 +105,7 @@ asm (
+ "	.type		my_tramp1, @function\n"
+ "	.globl		my_tramp1\n"
+ "   my_tramp1:"
+-"	bti	c\n"
++"	hint	34\n" // bti	c
+ "	sub	sp, sp, #16\n"
+ "	stp	x9, x30, [sp]\n"
+ "	bl	my_direct_func1\n"
+@@ -117,7 +117,7 @@ asm (
+ "	.type		my_tramp2, @function\n"
+ "	.globl		my_tramp2\n"
+ "   my_tramp2:"
+-"	bti	c\n"
++"	hint	34\n" // bti	c
+ "	sub	sp, sp, #16\n"
+ "	stp	x9, x30, [sp]\n"
+ "	bl	my_direct_func2\n"
+diff --git a/samples/ftrace/ftrace-direct-multi-modify.c b/samples/ftrace/ftrace-direct-multi-modify.c
+index 292cff2b3f5d..2e349834d63c 100644
+--- a/samples/ftrace/ftrace-direct-multi-modify.c
++++ b/samples/ftrace/ftrace-direct-multi-modify.c
+@@ -112,7 +112,7 @@ asm (
+ "	.type		my_tramp1, @function\n"
+ "	.globl		my_tramp1\n"
+ "   my_tramp1:"
+-"	bti	c\n"
++"	hint	34\n" // bti	c
+ "	sub	sp, sp, #32\n"
+ "	stp	x9, x30, [sp]\n"
+ "	str	x0, [sp, #16]\n"
+@@ -127,7 +127,7 @@ asm (
+ "	.type		my_tramp2, @function\n"
+ "	.globl		my_tramp2\n"
+ "   my_tramp2:"
+-"	bti	c\n"
++"	hint	34\n" // bti	c
+ "	sub	sp, sp, #32\n"
+ "	stp	x9, x30, [sp]\n"
+ "	str	x0, [sp, #16]\n"
+diff --git a/samples/ftrace/ftrace-direct-multi.c b/samples/ftrace/ftrace-direct-multi.c
+index b4391e08c913..9243dbfe4d0c 100644
+--- a/samples/ftrace/ftrace-direct-multi.c
++++ b/samples/ftrace/ftrace-direct-multi.c
+@@ -75,7 +75,7 @@ asm (
+ "	.type		my_tramp, @function\n"
+ "	.globl		my_tramp\n"
+ "   my_tramp:"
+-"	bti	c\n"
++"	hint	34\n" // bti	c
+ "	sub	sp, sp, #32\n"
+ "	stp	x9, x30, [sp]\n"
+ "	str	x0, [sp, #16]\n"
+diff --git a/samples/ftrace/ftrace-direct-too.c b/samples/ftrace/ftrace-direct-too.c
+index e9804c5307c0..e39c3563ae4e 100644
+--- a/samples/ftrace/ftrace-direct-too.c
++++ b/samples/ftrace/ftrace-direct-too.c
+@@ -81,7 +81,7 @@ asm (
+ "	.type		my_tramp, @function\n"
+ "	.globl		my_tramp\n"
+ "   my_tramp:"
+-"	bti	c\n"
++"	hint	34\n" // bti	c
+ "	sub	sp, sp, #48\n"
+ "	stp	x9, x30, [sp]\n"
+ "	stp	x0, x1, [sp, #16]\n"
+diff --git a/samples/ftrace/ftrace-direct.c b/samples/ftrace/ftrace-direct.c
+index 20f4a7caa810..32c477da1e9a 100644
+--- a/samples/ftrace/ftrace-direct.c
++++ b/samples/ftrace/ftrace-direct.c
+@@ -72,7 +72,7 @@ asm (
+ "	.type		my_tramp, @function\n"
+ "	.globl		my_tramp\n"
+ "   my_tramp:"
+-"	bti	c\n"
++"	hint	34\n" // bti	c
+ "	sub	sp, sp, #32\n"
+ "	stp	x9, x30, [sp]\n"
+ "	str	x0, [sp, #16]\n"
+diff --git a/tools/testing/selftests/ftrace/test.d/00basic/snapshot1.tc b/tools/testing/selftests/ftrace/test.d/00basic/snapshot1.tc
+new file mode 100644
+index 000000000000..63b76cf2a360
+--- /dev/null
++++ b/tools/testing/selftests/ftrace/test.d/00basic/snapshot1.tc
+@@ -0,0 +1,31 @@
++#!/bin/sh
++# SPDX-License-Identifier: GPL-2.0
++# description: Snapshot and tracing_cpumask
++# requires: trace_marker tracing_cpumask snapshot
++# flags: instance
++
++# This testcase is constrived to reproduce a problem that the cpu buffers
++# become unavailable which is due to 'record_disabled' of array_buffer and
++# max_buffer being messed up.
++
++# Store origin cpumask
++ORIG_CPUMASK=`cat tracing_cpumask`
++
++# Stop tracing all cpu
++echo 0 > tracing_cpumask
++
++# Take a snapshot of the main buffer
++echo 1 > snapshot
++
++# Restore origin cpumask, note that there should be some cpus being traced
++echo ${ORIG_CPUMASK} > tracing_cpumask
++
++# Set tracing on
++echo 1 > tracing_on
++
++# Write a log into buffer
++echo "test input 1" > trace_marker
++
++# Ensure the log writed so that cpu buffers are still available
++grep -q "test input 1" trace
++exit 0
