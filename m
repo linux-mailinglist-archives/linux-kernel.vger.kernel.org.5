@@ -2,67 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E92E788126
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 09:44:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0EC47880DD
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 09:28:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237549AbjHYHoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 03:44:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34638 "EHLO
+        id S235769AbjHYH20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 03:28:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243374AbjHYHoC (ORCPT
+        with ESMTP id S231803AbjHYH16 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 03:44:02 -0400
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96D651FDA;
-        Fri, 25 Aug 2023 00:43:59 -0700 (PDT)
-X-UUID: 22987158431b11ee9cb5633481061a41-20230825
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=sU4/V6ndA5R7lvrGvDLIjLvlK6dyYIJGN/XjomZsBm8=;
-        b=We+D3KgVp1hooiQw9IIah1owpiZCfGeuFa2aVB3IUHZtUbZ+A0POr64tANBE7ySBR3Es+zPAlnXo7qTkNUgF8WNtVph5y9C1ucIRlfYQSdzZn5NGHAumgBoUxAv4OMmIlRFSbl5mJo0r9AmAPmulfE/SsMoo+IdJr9VdFTola3s=;
-X-CID-CACHE: Type:Local,Time:202308251510+08,HitQuantity:2
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.31,REQID:4157ade1-9c63-4697-b19f-3901d351eb84,IP:0,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-        release,TS:0
-X-CID-META: VersionHash:0ad78a4,CLOUDID:8c67bd1f-33fd-4aaa-bb43-d3fd68d9d5ae,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
-        DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: 22987158431b11ee9cb5633481061a41-20230825
-Received: from mtkmbs13n2.mediatek.inc [(172.21.101.108)] by mailgw01.mediatek.com
-        (envelope-from <sharp.xia@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1965188680; Fri, 25 Aug 2023 15:43:51 +0800
-Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Fri, 25 Aug 2023 15:43:50 +0800
-Received: from mbjsdccf07.mediatek.inc (10.15.20.246) by
- mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Fri, 25 Aug 2023 15:43:50 +0800
-From:   <Sharp.Xia@mediatek.com>
-To:     <ulf.hansson@linaro.org>
-CC:     <Sharp.Xia@mediatek.com>,
-        <angelogioacchino.delregno@collabora.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <linux-mmc@vger.kernel.org>,
-        <matthias.bgg@gmail.com>, <wsd_upstream@mediatek.com>
-Subject: Re: [PATCH 1/1] mmc: Set optimal I/O size when mmc_setip_queue
-Date:   Fri, 25 Aug 2023 15:26:56 +0800
-Message-ID: <20230825072656.23652-1-Sharp.Xia@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <CAPDyKFqN0K=2e4rijUBz=9LXVfhEVvDzNgqXTyTgvaPRK-PBNQ@mail.gmail.com>
-References: <CAPDyKFqN0K=2e4rijUBz=9LXVfhEVvDzNgqXTyTgvaPRK-PBNQ@mail.gmail.com>
+        Fri, 25 Aug 2023 03:27:58 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D80419B4
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 00:27:53 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1c0c6d4d650so5959145ad.0
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 00:27:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1692948473; x=1693553273;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MlXlLHBoW4dTZ8FthLBS8Kn5SzBMbKV4fH/qmyBs2dA=;
+        b=GuK8FTdQFStQBrc/+UrZlObuHDLb/Z8HolfK7+I4/Rz8Cj9OtCekENJ7pG3OpGAlIb
+         IRPgrHuLapXBWD0Rems1twDE6slppU1VDXMdMgWBeASnEeZXpzW1NrCUckmmp2WNmos9
+         JaJRtKhaR554bCf3Cpx+Jfml+7fx91n2y3TAo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692948473; x=1693553273;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MlXlLHBoW4dTZ8FthLBS8Kn5SzBMbKV4fH/qmyBs2dA=;
+        b=cKfI8uQoZPkAkAClCV2PKifCyDzai100rGG4+zwkp55peFZXVqacQlOYoCj382aMXz
+         TjHEO48qJhbWVhXRmXEaXuxk0wWGY4hk0xoFKOO1HQ+d1EvhAFWEsrWY2Mp2kGCfXKT/
+         PMAqtkvVnMe57o2Rc3lUefv/Jt/jezzYZw9rjg1Gi48XJRJrhnm6D/c8r2NFtYI50Fxq
+         fyHRE3aOINTUOIcmmqXMNP5i4ksgCCnj1J/FwvpYyEM/IGCbgGGHMxGC+TTvBrVW/y5Z
+         Ns65b/ISEQUBQf10lcP0IKz442XvTjAvtj9cezoBXPRFXJqCUxJomVMIEzEWHuMLf4hV
+         FssA==
+X-Gm-Message-State: AOJu0YzX7S74sn6yi7xPumL1/1MoIloApfMXEUuAqvW74j8eGuyfG2Pl
+        GnufXs5BmhLlMuuKCK8RByJPb+wZbvUV9E4mWwI=
+X-Google-Smtp-Source: AGHT+IHDwVITh4CP16FgpTedCa7AJLG3VbgEE5V/d8qOuRFFHo7iLtE66cCg3HNHXSdYwFnDkZi6VQ==
+X-Received: by 2002:a17:902:a587:b0:1c0:9abb:4873 with SMTP id az7-20020a170902a58700b001c09abb4873mr7736874plb.64.1692948472928;
+        Fri, 25 Aug 2023 00:27:52 -0700 (PDT)
+Received: from localhost ([2620:15c:2d3:205:b8fe:79ca:c6d4:645f])
+        by smtp.gmail.com with UTF8SMTPSA id t8-20020a1709027fc800b001bdcafcf8d3sm948242plb.69.2023.08.25.00.27.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Aug 2023 00:27:52 -0700 (PDT)
+From:   Denis Nikitin <denik@chromium.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     denik@chromium.org, Fangrui Song <maskray@google.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nicolas Schier <nicolas@fjasle.eu>, Tom Rix <trix@redhat.com>,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Subject: [PATCH v3] modpost: Skip .llvm.call-graph-profile section check
+Date:   Fri, 25 Aug 2023 00:27:43 -0700
+Message-ID: <20230825072744.1322656-1-denik@chromium.org>
+X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
+In-Reply-To: <20230822065256.163660-1-denik@chromium.org>
+References: <20230822065256.163660-1-denik@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,68 +74,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2023-08-24 at 12:55 +0200, Ulf Hansson wrote:
->        
-> External email : Please do not click links or open attachments until
-> you have verified the sender or the content.
->  On Fri, 18 Aug 2023 at 04:45, <Sharp.Xia@mediatek.com> wrote:
-> >
-> > From: Sharp Xia <Sharp.Xia@mediatek.com>
-> >
-> > MMC does not set readahead and uses the default VM_READAHEAD_PAGES
-> > resulting in slower reading speed.
-> > Use the max_req_size reported by host driver to set the optimal
-> > I/O size to improve performance.
-> 
-> This seems reasonable to me. However, it would be nice if you could
-> share some performance numbers too - comparing before and after
-> $subject patch.
-> 
-> Kind regards
-> Uffe
-> 
-> >
-> > Signed-off-by: Sharp Xia <Sharp.Xia@mediatek.com>
-> > ---
-> >  drivers/mmc/core/queue.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/drivers/mmc/core/queue.c b/drivers/mmc/core/queue.c
-> > index b396e3900717..fc83c4917360 100644
-> > --- a/drivers/mmc/core/queue.c
-> > +++ b/drivers/mmc/core/queue.c
-> > @@ -359,6 +359,7 @@ static void mmc_setup_queue(struct mmc_queue
-> *mq, struct mmc_card *card)
-> >                 blk_queue_bounce_limit(mq->queue, BLK_BOUNCE_HIGH);
-> >         blk_queue_max_hw_sectors(mq->queue,
-> >                 min(host->max_blk_count, host->max_req_size /
-> 512));
-> > +       blk_queue_io_opt(mq->queue, host->max_req_size);
-> >         if (host->can_dma_map_merge)
-> >                 WARN(!blk_queue_can_use_dma_map_merging(mq->queue,
-> >                                                         mmc_dev(hos
-> t)),
-> > --
-> > 2.18.0
-> >
+.llvm.call-graph-profile section is added by clang when the kernel is
+built with profiles (e.g. -fprofile-sample-use= or -fprofile-use=).
+Note that .llvm.call-graph-profile intentionally uses REL relocations
+to decrease the object size, for more details see
+https://reviews.llvm.org/D104080.
 
-I test this patch on internal platform(kernel-5.15).
+The section contains edge information derived from text sections,
+so .llvm.call-graph-profile itself doesn't need more analysis as
+the text sections have been analyzed.
 
-Before:
-console:/ # echo 3 > /proc/sys/vm/drop_caches
-console:/ # dd if=/mnt/media_rw/8031-130D/super.img of=/dev/null
-4485393+1 records in
-4485393+1 records out
-2296521564 bytes (2.1 G) copied, 37.124446 s, 59 M/s
-console:/ # cat /sys/block/mmcblk0/queue/read_ahead_kb
-128
+This change fixes the kernel build with clang and a sample profile
+which currently fails with:
 
-After:
-console:/ # echo 3 > /proc/sys/vm/drop_caches
-console:/ # dd if=/mnt/media_rw/8031-130D/super.img of=/dev/null
-4485393+1 records in
-4485393+1 records out
-2296521564 bytes (2.1 G) copied, 28.956049 s, 76 M/s
-console:/ # cat /sys/block/mmcblk0/queue/read_ahead_kb
-1024
+"FATAL: modpost: Please add code to calculate addend for this architecture"
+
+Signed-off-by: Denis Nikitin <denik@chromium.org>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Reviewed-by: Fangrui Song <maskray@google.com>
+---
+ scripts/mod/modpost.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
+index b29b29707f10..64bd13f7199c 100644
+--- a/scripts/mod/modpost.c
++++ b/scripts/mod/modpost.c
+@@ -761,6 +761,7 @@ static const char *const section_white_list[] =
+ 	".fmt_slot*",			/* EZchip */
+ 	".gnu.lto*",
+ 	".discard.*",
++	".llvm.call-graph-profile",	/* call graph */
+ 	NULL
+ };
+ 
+-- 
+2.42.0.rc1.204.g551eb34607-goog
 
