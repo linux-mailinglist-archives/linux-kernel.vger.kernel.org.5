@@ -2,154 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C9387890AF
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 23:46:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2E457890B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 23:50:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231531AbjHYVqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 17:46:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46142 "EHLO
+        id S230173AbjHYVuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 17:50:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231636AbjHYVqO (ORCPT
+        with ESMTP id S229729AbjHYVtn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 17:46:14 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1854C26BF
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 14:46:10 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d77fa2e7771so1685938276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 14:46:10 -0700 (PDT)
+        Fri, 25 Aug 2023 17:49:43 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9336A26AF
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 14:49:41 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-68bec3a9bdbso1063710b3a.3
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 14:49:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692999969; x=1693604769;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=odPHPe5zFeL7gaKGcaVYt3urnmLAQ3hctBtrMI+qFRc=;
-        b=x1X+gq2MNHdyg+JX1qqtqdxcUO2kaBiy8tBfkhCZ5MaylnPkC1GsPQ8OpPHi+1l820
-         bEwH8077zlnSdeqmpEIEREwJG2y+nCXOovwBkUnhk5QkIAh67hYH4nQxVK1otd2WsaNw
-         DYmZ6Mae7mBldaxAWYa04JztrC6TURexrrEupK6c5Ws+ARn6OTOLCk1l2IO8C4m8/w5c
-         AORM1FdX49kt2Ke0s8mhvpQTvuIFdVRj2oMg71710PuZBsple7IW3WOkQa5Ke2y84KsD
-         HTcJevzkKblSp+wkytY84gdV0jayyYyl+3HJnTs969ZCY89aeNoNmcrgOKPazKgL2Xhg
-         iecQ==
+        d=chromium.org; s=google; t=1693000181; x=1693604981;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=0uXX3yWMumHoz9Ne0brtDEr7hVyliwSsmYAIn+H5H/I=;
+        b=hvYCQ4ck9OTuXOrSASd6reczZDZbRFWik8y5PbNupSaE5FuhFpFik+7pBpNPwHvAXJ
+         J5e1fHtsPxC9WiZt9x4xoWNlEiuJp7QMKHgVO0z2VHaE8FYpq/a7/F6p0DkduKU9vwuE
+         2YSP02cD/U3CDGnoTjHNp7qsrx8qcemieW6hw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692999969; x=1693604769;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=odPHPe5zFeL7gaKGcaVYt3urnmLAQ3hctBtrMI+qFRc=;
-        b=aLP+6zkUe89/1S4dVvxLxVQIWzIuIL/tNIGn9s13T5bL3AE5PL1HdnJRnh6PXSbrlm
-         raL2poDDVwET1LFTdhlbk0XgmMp3sjut/ERVQ9yh30mc2JQNu+KYUadWXVhjGeNGylGn
-         PAs0itkdlBK5V0QYNJ6vsrRjLYh104fUmW73/amq8kN5V8y9pEPAHzbKDqKUVxABg1wr
-         K0Jtsrs3RVCzsCMKXcCXrEcive1uhH7rzOyJILIKwbYandwZfWXmD9HEBkcBc0Ge7KDE
-         hl06C5wVs9XVqPRszo5Bux1NUuKOHYP2zU6z9daAFE/Fgx+NM+iXllDqMf5zBMxqYH/A
-         NdNg==
-X-Gm-Message-State: AOJu0Ywu9QDgs36mjGPB2yaEhv9r2ljuZGZo7Juzi3arZ+rwouVEoVaX
-        5EtEoKGF6iGum36wv391pmzNLgzhYkI=
-X-Google-Smtp-Source: AGHT+IFQHGmjTYl5KU/LvfBJtGvqeIT1isPlUH0UyZjHzrJ0Bsc+pqJxN+QJLl9WGVAC9fNl/+TvuiUlzNY=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:41c1:0:b0:d45:daf4:1fc5 with SMTP id
- o184-20020a2541c1000000b00d45daf41fc5mr482574yba.3.1692999969352; Fri, 25 Aug
- 2023 14:46:09 -0700 (PDT)
-Date:   Fri, 25 Aug 2023 14:46:07 -0700
-In-Reply-To: <20230714065356.20620-1-yan.y.zhao@intel.com>
-Mime-Version: 1.0
-References: <20230714064656.20147-1-yan.y.zhao@intel.com> <20230714065356.20620-1-yan.y.zhao@intel.com>
-Message-ID: <ZOkhH9A2ghtUb96U@google.com>
-Subject: Re: [PATCH v4 08/12] KVM: x86: centralize code to get CD=1 memtype
- when guest MTRRs are honored
-From:   Sean Christopherson <seanjc@google.com>
-To:     Yan Zhao <yan.y.zhao@intel.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, chao.gao@intel.com, kai.huang@intel.com,
-        robert.hoo.linux@gmail.com, yuan.yao@linux.intel.com
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1693000181; x=1693604981;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0uXX3yWMumHoz9Ne0brtDEr7hVyliwSsmYAIn+H5H/I=;
+        b=le25nLdJH5pF0jCUhpIZ+gmPByqRqV+guUqd8todLb+ChQUwOdWWBeQ9xohsKLU1un
+         GEGOCGzssW8K/c2eu/PGc499vmL8UaCDKCkHJEJ6rKyCu38o+QS93R1/4YX7XQfh9Dd0
+         EEio4FMWWZ8x8AtfferNGBtHF6NR4sHtKDrIeAM8ft/mRRclbngQLGC4fDbvvtUTPMN0
+         eR/8QCvCmV0ekboYlLRpZApO/34vYJVOKwvx3bcnUjVUwYCkqUwbRRxl/r7d2FGcM8LS
+         7W+nNbe30jZXTV0XuaKiExq1bckacqGdG8b7UKzqk0C8PDHBq3IFuEXPvd3dpVwndxjh
+         +TUw==
+X-Gm-Message-State: AOJu0YzbfkTcWgkMq7g4s8DdMaKKcCNg1ApjB5TNelKKkeeLOft25o4B
+        enJGX5TCIt2KeM6522AMvL21zg==
+X-Google-Smtp-Source: AGHT+IFiDJhuRdMmJIDMmTKeu70VLVj2TRKI6mZc1WbmzXoLqFaEbFFsyDL3seS95GCNOAQgR/80iA==
+X-Received: by 2002:a05:6a00:b8e:b0:68a:45a1:c0f3 with SMTP id g14-20020a056a000b8e00b0068a45a1c0f3mr17743593pfj.18.1693000181021;
+        Fri, 25 Aug 2023 14:49:41 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id d21-20020aa78695000000b0068a6972ca0esm2030543pfo.106.2023.08.25.14.49.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Aug 2023 14:49:40 -0700 (PDT)
+Date:   Fri, 25 Aug 2023 14:49:39 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     William Hubbs <w.d.hubbs@gmail.com>,
+        Chris Brannon <chris@the-brannons.com>,
+        Kirk Reiser <kirk@reisers.ca>,
+        Samuel Thibault <samuel.thibault@ens-lyon.org>,
+        speakup@linux-speakup.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] accessibility: speakup: refactor deprecated strncpy
+Message-ID: <202308251439.36BC33ADB2@keescook>
+References: <20230824-strncpy-drivers-accessibility-speakup-kobjects-c-v1-1-3a1ef1221e90@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230824-strncpy-drivers-accessibility-speakup-kobjects-c-v1-1-3a1ef1221e90@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 14, 2023, Yan Zhao wrote:
-> Centralize the code to get cache disabled memtype when guest MTRRs are
-> honored. If a TDP honors guest MTRRs, it is required to call the provided
-> API to get the memtype for CR0.CD=1.
+On Thu, Aug 24, 2023 at 09:44:29PM +0000, Justin Stitt wrote:
+> `strncpy` is deprecated for use on NUL-terminated destination strings [1].
 > 
-> This is the preparation patch for later implementation of fine-grained gfn
-> zap for CR0.CD toggles when guest MTRRs are honored.
+> Use `strscpy` as it guarantees NUL-termination of its destination buffer [2]
+> which allows for simpler and less ambiguous code.
 > 
-> No functional change intended.
+> Also, change `strlen(buf)` to `strlen(ptr)` to be consistent with
+> further usage within the scope of the function. Note that these are
+> equivalent:
+> |419 	const char *ptr = buf;
 > 
-> Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
+> Link: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings[1]
+> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
 > ---
->  arch/x86/kvm/mtrr.c    | 16 ++++++++++++++++
->  arch/x86/kvm/vmx/vmx.c | 10 +++++-----
->  arch/x86/kvm/x86.h     |  2 ++
->  3 files changed, 23 insertions(+), 5 deletions(-)
+> Note: build-tested only.
+> ---
+>  drivers/accessibility/speakup/kobjects.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
 > 
-> diff --git a/arch/x86/kvm/mtrr.c b/arch/x86/kvm/mtrr.c
-> index 3ce58734ad22..64c6daa659c8 100644
-> --- a/arch/x86/kvm/mtrr.c
-> +++ b/arch/x86/kvm/mtrr.c
-> @@ -721,3 +721,19 @@ bool kvm_mtrr_check_gfn_range_consistency(struct kvm_vcpu *vcpu, gfn_t gfn,
+> diff --git a/drivers/accessibility/speakup/kobjects.c b/drivers/accessibility/speakup/kobjects.c
+> index a7522d409802..8aa416c5f3fc 100644
+> --- a/drivers/accessibility/speakup/kobjects.c
+> +++ b/drivers/accessibility/speakup/kobjects.c
+> @@ -422,12 +422,11 @@ static ssize_t synth_direct_store(struct kobject *kobj,
+>  	if (!synth)
+>  		return -EPERM;
 >  
->  	return type == mtrr_default_type(mtrr_state);
->  }
-> +
-> +/*
-> + * this routine is supposed to be called when guest mtrrs are honored
-> + */
-> +void kvm_honors_guest_mtrrs_get_cd_memtype(struct kvm_vcpu *vcpu,
-> +					   u8 *type, bool *ipat)
+> -	len = strlen(buf);
+> +	len = strlen(ptr);
+>  	spin_lock_irqsave(&speakup_info.spinlock, flags);
+>  	while (len > 0) {
+>  		bytes = min_t(size_t, len, 250);
+> -		strncpy(tmp, ptr, bytes);
+> -		tmp[bytes] = '\0';
+> +		strscpy(tmp, ptr, bytes);
+>  		string_unescape_any_inplace(tmp);
+>  		synth_printf("%s", tmp);
+>  		ptr += bytes;
 
-I really don't like this helper.  IMO it's a big net negative for the readability
-of vmx_get_mt_mask().  As I said in the previous version, I agree that splitting
-logic is generally undesirable, but in this case I strongly believe it's the
-lesser evil.
+Technically, yes, this is fine...
 
-> +{
-> +	if (kvm_check_has_quirk(vcpu->kvm, KVM_X86_QUIRK_CD_NW_CLEARED)) {
-> +		*type = MTRR_TYPE_WRBACK;
-> +		*ipat = false;
-> +	} else {
-> +		*type = MTRR_TYPE_UNCACHABLE;
-> +		*ipat = true;
-> +	}
-> +}
-> +EXPORT_SYMBOL_GPL(kvm_honors_guest_mtrrs_get_cd_memtype);
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index c1e93678cea4..7fec1ee23b54 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -7573,11 +7573,11 @@ static u8 vmx_get_mt_mask(struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio)
->  		return (MTRR_TYPE_WRBACK << VMX_EPT_MT_EPTE_SHIFT) | VMX_EPT_IPAT_BIT;
->  
->  	if (kvm_read_cr0_bits(vcpu, X86_CR0_CD)) {
-> -		if (kvm_check_has_quirk(vcpu->kvm, KVM_X86_QUIRK_CD_NW_CLEARED))
-> -			return MTRR_TYPE_WRBACK << VMX_EPT_MT_EPTE_SHIFT;
-> -		else
-> -			return (MTRR_TYPE_UNCACHABLE << VMX_EPT_MT_EPTE_SHIFT) |
-> -				VMX_EPT_IPAT_BIT;
-> +		bool ipat;
-> +		u8 cache;
-> +
-> +		kvm_honors_guest_mtrrs_get_cd_memtype(vcpu, &cache, &ipat);
-> +		return cache << VMX_EPT_MT_EPTE_SHIFT | (ipat ? VMX_EPT_IPAT_BIT : 0);
->  	}
->  
->  	return kvm_mtrr_get_guest_memory_type(vcpu, gfn) << VMX_EPT_MT_EPTE_SHIFT;
-> diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
-> index 82e3dafc5453..e7733dc4dccc 100644
-> --- a/arch/x86/kvm/x86.h
-> +++ b/arch/x86/kvm/x86.h
-> @@ -313,6 +313,8 @@ int kvm_mtrr_set_msr(struct kvm_vcpu *vcpu, u32 msr, u64 data);
->  int kvm_mtrr_get_msr(struct kvm_vcpu *vcpu, u32 msr, u64 *pdata);
->  bool kvm_mtrr_check_gfn_range_consistency(struct kvm_vcpu *vcpu, gfn_t gfn,
->  					  int page_num);
-> +void kvm_honors_guest_mtrrs_get_cd_memtype(struct kvm_vcpu *vcpu,
-> +					   u8 *type, bool *ipat);
->  bool kvm_vector_hashing_enabled(void);
->  void kvm_fixup_and_inject_pf_error(struct kvm_vcpu *vcpu, gva_t gva, u16 error_code);
->  int x86_decode_emulated_instruction(struct kvm_vcpu *vcpu, int emulation_type,
-> -- 
-> 2.17.1
-> 
+Reviewed-by: Kees Cook <keescook@chromium.org>
+
+But wow do you find the most amazing code. :)
+
+This thing is taking a buffer and chopping it up into at-most 250 byte
+chunks (smaller than buf, I might add), and then sending it to
+synth_printf() ... which uses a 160 byte buffer and silently
+truncates...  and uses "%s" which is just a string copy...
+why doesn't this just use synth_write() directly on an unescaped
+buf??
+
+I think this entire function should just be:
+
+static ssize_t synth_direct_store(struct kobject *kobj,
+                                  struct kobj_attribute *attr,
+                                  const char *buf, size_t count)
+{
+        char *unescaped;
+	char *p;
+
+        if (!synth)
+                return -EPERM;
+
+	unescaped = kstrdup(buf, GFP_KERNEL);
+	if (!unescaped)
+		return -ENOMEM;
+
+	string_unescape_any_inplace(unescaped);
+
+        spin_lock_irqsave(&speakup_info.spinlock, flags);
+	synth_write(unescaped, strlen(unescaped));
+        spin_unlock_irqrestore(&speakup_info.spinlock, flags);
+
+	kfree(unescaped);
+
+        return count;
+}
+
+(Though honestly, why does this need unescaping anyway?)
+
+-Kees
+
+-- 
+Kees Cook
