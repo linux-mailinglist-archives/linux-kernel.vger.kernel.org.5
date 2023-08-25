@@ -2,73 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AE0A787F36
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 07:24:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B358787F3D
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 07:26:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241276AbjHYFXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 01:23:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57914 "EHLO
+        id S234276AbjHYF0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 01:26:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232723AbjHYFXO (ORCPT
+        with ESMTP id S232440AbjHYF0C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 01:23:14 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 278591FE3
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 22:23:12 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id d75a77b69052e-40a47e8e38dso107291cf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 22:23:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692940991; x=1693545791; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oPtybhiqchWiyAtwBr9z+TbjcNikPgcMysmwOQUd7QY=;
-        b=W0+o1bAmDaX3vHWAB0XNKY+lJtyuWBNYdzroYXSOlSxfe5h/Cyf3qeVm/XDFW3WiXI
-         r+a0JliMVCFHUPRIDdSQIEMNUKtsfy6L1X/Q+++h9fY18cm1rScp3tQ9x2rW4q7FM6Tq
-         Mpt9TQNZkyABGHD3PISgfvzV9Yqj3SfnRfTU9HgVGlHiaBhGV1xGb53USPE41Y+EKhRV
-         h3LpIpG5+K1Tc8emGxFD0hXc5Rlyb9izKVelGz3zSWrMBSxek90yb5eTAIRQzFxJEOjw
-         DuhLQzKl4ECg5V+QMXvILoe9UFYVhNMOi8MOwvqOKkcwleH6YV5tJLbX54P9NeeJ+lIm
-         3Cqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692940991; x=1693545791;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oPtybhiqchWiyAtwBr9z+TbjcNikPgcMysmwOQUd7QY=;
-        b=QZGz45X3+075I/wpIxdogaX6BGT21tQjARObhaxWY1Y0mC4vbW5oCnNutqaO3JFm4v
-         mJi3C5TR0bM2D9u6R9v5JqZmMF6Li7Sa61eYApCtWVyFzCfpMBw/pezmK9I0ocRUe3TU
-         Ny5y+Srqkiit5ju8ENQvPap+tBhDv8UB5/QfZ0uanoDMP48CXcA/3iQey/kR0HeLjba4
-         GyiZY+4OPkC0AiH79ys4zvTpExRMMmVdZnFMNj/3CySbLq48LIE1Zbe3uSdWc4xFAwlq
-         3agy0M0luADoPWwP1JhYIoV4I9TdDGwLxf+r0xRKpf/CRQHFxQit5tVmUIAXBxMRP0QK
-         h3jQ==
-X-Gm-Message-State: AOJu0Yz1gk9eqwS0IwcmLhJFMXrSehXiDmbGg5lirMn6ZUGh4Hr5638W
-        lZlG2e5Yrl0xuU3lanvygnRz4oyW4uvI4FYbvRqr2Q==
-X-Google-Smtp-Source: AGHT+IFOdrfP2IEfWI1nC1Y7GnNhql7Ltd6coR06pzDDS33UxBR9XVaqu9tforQG+61tn9brCeGDydoBHZi1ZwGiiIU=
-X-Received: by 2002:a05:622a:1355:b0:3f0:af20:1a37 with SMTP id
- w21-20020a05622a135500b003f0af201a37mr117260qtk.15.1692940991147; Thu, 24 Aug
- 2023 22:23:11 -0700 (PDT)
+        Fri, 25 Aug 2023 01:26:02 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA9A61FE4;
+        Thu, 24 Aug 2023 22:26:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692941160; x=1724477160;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=aI6BWUAP+LSvDVU35aySOQGiA1HZ2NfjXkBNcqq4AeE=;
+  b=Z0G+n1Wi81D+63XUA3DPf2g1H0V3vZAXV9+3GJoDiirHwgSsKlq8CaSH
+   RIwohCUHn/qkTJNw10pCyiDb9Wh5/xLkUbARzQwX3wy8kuM1s8XaoOtFx
+   jklpe1Y0/Q2WimZaAm0S/Cuug9y53f5UxL/vw1TexRwX6COghZxMLK6OY
+   1HFmA8IgoUrE5qNZeOliDExxoFdtft3nDFWVZP1+m7b3UMxN59D5ZZOqT
+   G0gSWcEc1L+zQTuXE3ZXV9cGOSoXuF8pFQYube2LM06xTRwwFLMA0wg3j
+   9n63mpw8G4rEKRW6/mAW7mtnMBHkTOcDhaXkTG7kwv/dCBE5+fKonlkoM
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="440978245"
+X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
+   d="scan'208";a="440978245"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 22:26:00 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
+   d="scan'208";a="881045210"
+Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
+  by fmsmga001.fm.intel.com with ESMTP; 24 Aug 2023 22:26:01 -0700
+Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qZPKV-0003Ei-26;
+        Fri, 25 Aug 2023 05:25:55 +0000
+Date:   Fri, 25 Aug 2023 13:25:21 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Mario Limonciello <mario.limonciello@amd.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        Iain Lane <iain@orangesquash.org.uk>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Mario Limonciello <mario.limonciello@amd.com>
+Subject: Re: [PATCH v14.b 7/7] ACPI: x86: s2idle: Add a function to get
+ constraints for a device
+Message-ID: <202308251347.C2sdb28f-lkp@intel.com>
+References: <20230818194007.27410-8-mario.limonciello@amd.com>
 MIME-Version: 1.0
-References: <20230821012734.18241-1-yangjihong1@huawei.com> <20230821012734.18241-6-yangjihong1@huawei.com>
-In-Reply-To: <20230821012734.18241-6-yangjihong1@huawei.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Thu, 24 Aug 2023 22:22:59 -0700
-Message-ID: <CAP-5=fWK=vd4H6_SHpDw4rMN4eODSM5hmBY=rJ5F9fQMq-HcUg@mail.gmail.com>
-Subject: Re: [PATCH v6 5/7] perf test: Update base-record & system-wide-dummy
- attr expected values for test-record-C0
-To:     Yang Jihong <yangjihong1@huawei.com>
-Cc:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@kernel.org, namhyung@kernel.org, adrian.hunter@intel.com,
-        kan.liang@linux.intel.com, james.clark@arm.com,
-        tmricht@linux.ibm.com, ak@linux.intel.com,
-        anshuman.khandual@arm.com, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230818194007.27410-8-mario.limonciello@amd.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,104 +73,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 20, 2023 at 6:30=E2=80=AFPM Yang Jihong <yangjihong1@huawei.com=
-> wrote:
->
-> 1. Because a dummy sideband event is added to the sampling of specified
->    CPUs. When evlist contains evsel of different sample_type,
->    evlist__config() will change the default PERF_SAMPLE_ID bit to
->    PERF_SAMPLE_IDENTIFICATION bit.
->    The attr sample_type expected value of base-record and system-wide-dum=
-my
->    in test-record-C0 needs to be updated.
->
-> 2. The perf record uses evlist__add_aux_dummy() instead of
->    evlist__add_dummy() to add a dummy event.
->    The expected value of system-wide-dummy attr needs to be updated.
->
-> The perf test result is as follows:
->
->   # ./perf test list  2>&1 | grep 'Setup struct perf_event_attr'
->    17: Setup struct perf_event_attr
->   # ./perf test 17
->    17: Setup struct perf_event_attr                                    : =
-Ok
+Hi Mario,
 
-Will the kernel test robot complain about the previous patches
-breaking this test? It may be best to update the test while changing
-the behavior in those patches.
+kernel test robot noticed the following build warnings:
 
-Thanks,
-Ian
+[auto build test WARNING on linus/master]
+[also build test WARNING on v6.5-rc7]
+[cannot apply to next-20230824]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Mario-Limonciello/ACPI-Adjust-ifdef-for-_lps0_dev-use/20230821-113922
+base:   linus/master
+patch link:    https://lore.kernel.org/r/20230818194007.27410-8-mario.limonciello%40amd.com
+patch subject: [PATCH v14.b 7/7] ACPI: x86: s2idle: Add a function to get constraints for a device
+config: x86_64-defconfig (https://download.01.org/0day-ci/archive/20230825/202308251347.C2sdb28f-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230825/202308251347.C2sdb28f-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308251347.C2sdb28f-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/acpi/x86/s2idle.c:311: warning: Function parameter or member 'adev' not described in 'acpi_get_lps0_constraint'
+>> drivers/acpi/x86/s2idle.c:311: warning: Excess function parameter 'dev' description in 'acpi_get_lps0_constraint'
 
 
-> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
-> Tested-by: Adrian Hunter <adrian.hunter@intel.com>
-> ---
->  tools/perf/tests/attr/system-wide-dummy | 14 ++++++++------
->  tools/perf/tests/attr/test-record-C0    |  4 ++--
->  2 files changed, 10 insertions(+), 8 deletions(-)
->
-> diff --git a/tools/perf/tests/attr/system-wide-dummy b/tools/perf/tests/a=
-ttr/system-wide-dummy
-> index 2f3e3eb728eb..a1e1d6a263bf 100644
-> --- a/tools/perf/tests/attr/system-wide-dummy
-> +++ b/tools/perf/tests/attr/system-wide-dummy
-> @@ -9,8 +9,10 @@ flags=3D8
->  type=3D1
->  size=3D136
->  config=3D9
-> -sample_period=3D4000
-> -sample_type=3D455
-> +sample_period=3D1
-> +# PERF_SAMPLE_IP | PERF_SAMPLE_TID | PERF_SAMPLE_TIME |
-> +# PERF_SAMPLE_CPU | PERF_SAMPLE_IDENTIFIER
-> +sample_type=3D65671
->  read_format=3D4|20
->  # Event will be enabled right away.
->  disabled=3D0
-> @@ -18,12 +20,12 @@ inherit=3D1
->  pinned=3D0
->  exclusive=3D0
->  exclude_user=3D0
-> -exclude_kernel=3D0
-> -exclude_hv=3D0
-> +exclude_kernel=3D1
-> +exclude_hv=3D1
->  exclude_idle=3D0
->  mmap=3D1
->  comm=3D1
-> -freq=3D1
-> +freq=3D0
->  inherit_stat=3D0
->  enable_on_exec=3D0
->  task=3D1
-> @@ -32,7 +34,7 @@ precise_ip=3D0
->  mmap_data=3D0
->  sample_id_all=3D1
->  exclude_host=3D0
-> -exclude_guest=3D0
-> +exclude_guest=3D1
->  exclude_callchain_kernel=3D0
->  exclude_callchain_user=3D0
->  mmap2=3D1
-> diff --git a/tools/perf/tests/attr/test-record-C0 b/tools/perf/tests/attr=
-/test-record-C0
-> index 317730b906dd..198e8429a1bf 100644
-> --- a/tools/perf/tests/attr/test-record-C0
-> +++ b/tools/perf/tests/attr/test-record-C0
-> @@ -10,9 +10,9 @@ cpu=3D0
->  enable_on_exec=3D0
->
->  # PERF_SAMPLE_IP | PERF_SAMPLE_TID | PERF_SAMPLE_TIME |
-> -# PERF_SAMPLE_ID | PERF_SAMPLE_PERIOD
-> +# PERF_SAMPLE_PERIOD | PERF_SAMPLE_IDENTIFIER
->  # + PERF_SAMPLE_CPU added by -C 0
-> -sample_type=3D455
-> +sample_type=3D65927
->
->  # Dummy event handles mmaps, comm and task.
->  mmap=3D0
-> --
-> 2.30.GIT
->
+vim +311 drivers/acpi/x86/s2idle.c
+
+   301	
+   302	/**
+   303	 * acpi_get_lps0_constraint - get the LPS0 constraint for a device
+   304	 * @dev: device to get constraints for
+   305	 *
+   306	 * Returns:
+   307	 *  - ACPI state value for constraint.
+   308	 *  - Otherwise, ACPI_STATE_UNKNOWN.
+   309	 */
+   310	int acpi_get_lps0_constraint(struct acpi_device *adev)
+ > 311	{
+   312		struct lpi_constraints *entry;
+   313	
+   314		for_each_lpi_constraint(entry) {
+   315			if (adev->handle != entry->handle)
+   316				continue;
+   317			return entry->min_dstate;
+   318		}
+   319	
+   320		return ACPI_STATE_UNKNOWN;
+   321	}
+   322	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
