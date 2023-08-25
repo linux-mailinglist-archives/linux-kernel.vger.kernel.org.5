@@ -2,97 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 621F9787EE7
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 06:10:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEFC2787EE8
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 06:10:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240550AbjHYEJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 00:09:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34914 "EHLO
+        id S240875AbjHYEKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 00:10:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231676AbjHYEJL (ORCPT
+        with ESMTP id S240684AbjHYEJ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 00:09:11 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD7831FCE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 21:09:09 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-68a40d85593so445743b3a.2
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 21:09:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692936549; x=1693541349;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=L+y28ESYQkGLlaBqKy1Si+JoLS1Nz1yNzmMOUxp7mWQ=;
-        b=qnEGNFf1aF819DyDqN7jg0ypYvkRq9DPBcmJ6ZDIv4kJP/7ZiAN2jrtECT7qEYSjIZ
-         9ih5ujgSmNq2kv6SFfs8Yj/2i0I7C0FpqjaGPFDBieJWQMb5JQD8L+nU1+MT6aGIDdXo
-         Wz4+J20CRHcLaAR4jEdTkSyqCRKcl4DrGb/cRmZZrRjPiQoHR+V3pUV422fRHCvo2yFL
-         EjyxaVf1GtRunHUTF5CNdyy61M0p4PXphY4fM3N2MR2B00wdovxrS4SRVDd/UfB8ZkX3
-         cwBbijUtxDNOoNi9Dzfqkpgrn3fKjMcjLeDXxfw0u9gPp0I2ar0NmbKPhzVy6GT8HIeR
-         rZHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692936549; x=1693541349;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=L+y28ESYQkGLlaBqKy1Si+JoLS1Nz1yNzmMOUxp7mWQ=;
-        b=Uz+rEXJrcMx6rTLFU+8uJ+F9fCwXR7AZlauf5Lvlq9NiHSiS4/xnqiM5ZF3IiX0rQd
-         5HwAiJBwM1yV1uO3+mFC8wm9qNMGx+eQcapHIT+uw053SsilGMpYPWu9Ix4YxaIfBU8n
-         G9uyUXBzQANHyNwKNKRQ2UlHgytXsU5kDw0O/6Ue+hHzLbSCZvfG1Z8XBELw1GnD78zg
-         1MgHov/fwZyb43hh9KqPQ8w9OouhMMTIKsTpskVE0JpXD38+/HQJbL89shCixybkK19b
-         QDjWqjvoAh3nE76uVY2uNZduBYCCpFLX6N16lvj1GffRzGJpu+n+PWoMPtyhc4/3gHhG
-         4wug==
-X-Gm-Message-State: AOJu0Yz3y6k+5RK/Ed/hlypsrNbnIDhDGc+My/1SkR3VXulYuyoSszjR
-        qLmc9t6WPtvjuVYC+3837S8=
-X-Google-Smtp-Source: AGHT+IHBTjAHrN3pa2PmuUg5gwVX9bDtjdBxYyoodan97cmNqluNdJzO9Gr8nwqCFvhFSfo0qJitnA==
-X-Received: by 2002:a05:6a00:150a:b0:68a:6cf0:9400 with SMTP id q10-20020a056a00150a00b0068a6cf09400mr11167719pfu.21.1692936549105;
-        Thu, 24 Aug 2023 21:09:09 -0700 (PDT)
-Received: from VERNHAO-MC1.tencent.com ([103.7.29.31])
-        by smtp.gmail.com with ESMTPSA id x22-20020a62fb16000000b0064fd4a6b306sm524056pfm.76.2023.08.24.21.09.06
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Thu, 24 Aug 2023 21:09:08 -0700 (PDT)
-From:   Vern Hao <haoxing990@gmail.com>
-X-Google-Original-From: Vern Hao <haoxing990gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     zhaoyang.huang@unisoc.com, david@redhat.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, haoxing990@gmail.com,
-        Vern Hao <vernhao@tencent.com>
-Subject: [PATCH] mm/vmscan: Use folio_migratetype() instead of get_pageblock_migratetype()
-Date:   Fri, 25 Aug 2023 12:08:47 +0800
-Message-ID: <20230825040848.1542-1-user@VERNHAO-MC1>
-X-Mailer: git-send-email 2.41.0
+        Fri, 25 Aug 2023 00:09:59 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6F091FCE
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 21:09:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=9AcvZSxbpImY+QilwnlW7s4QTbMInM9uihUNGJjwdrU=; b=cAMCZehh5ClWBMQce2ZuCMk8fG
+        e71WxYyp3sgEjdkuiE0zMFtRxqyXix9iEicFES4G9a63BBP3426wWIiCd+Rfx8FpF95iYHdJscLpa
+        /xeqOsiCiMCsTO85X+5h6+0jm2d9FR0XvBnkklyy8V9ph6n9sJ7drtoZjjXvFa/SDmFYKQh1Cirf/
+        U/vmMElX6LfqEMhBcS/oLgXPBrNv0AOcEdTPq3cJNbiW6NTlhOHgxp6Uiv1becLHj2zdCTh+glVea
+        OkYtiZEyTi3oETlxN8UuyMilBaFrH9Yf9kma97XkhBRWXPIB16RLcAIa8VRBLwmwJuYp6Gkypg7bQ
+        lZFkKhMg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qZO8N-00Evmw-OC; Fri, 25 Aug 2023 04:09:19 +0000
+Date:   Fri, 25 Aug 2023 05:09:19 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Ryan Roberts <ryan.roberts@arm.com>
+Cc:     Will Deacon <will@kernel.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nick Piggin <npiggin@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        David Hildenbrand <david@redhat.com>,
+        Yu Zhao <yuzhao@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 4/4] mm/mmu_gather: Store and process pages in contig
+ ranges
+Message-ID: <ZOgpb1Qo5B0r+mhJ@casper.infradead.org>
+References: <20230810103332.3062143-1-ryan.roberts@arm.com>
+ <20230810103332.3062143-5-ryan.roberts@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230810103332.3062143-5-ryan.roberts@arm.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vern Hao <vernhao@tencent.com>
+On Thu, Aug 10, 2023 at 11:33:32AM +0100, Ryan Roberts wrote:
+> +void folios_put_refs(struct folio_range *folios, int nr)
+> +{
+> +	int i;
+> +	LIST_HEAD(pages_to_free);
+> +	struct lruvec *lruvec = NULL;
+> +	unsigned long flags = 0;
+> +	unsigned int lock_batch;
+> +
+> +	for (i = 0; i < nr; i++) {
+> +		struct folio *folio = page_folio(folios[i].start);
+> +		int refs = folios[i].end - folios[i].start;
+> +
+> +		/*
+> +		 * Make sure the IRQ-safe lock-holding time does not get
+> +		 * excessive with a continuous string of pages from the
+> +		 * same lruvec. The lock is held only if lruvec != NULL.
+> +		 */
+> +		if (lruvec && ++lock_batch == SWAP_CLUSTER_MAX) {
+> +			unlock_page_lruvec_irqrestore(lruvec, flags);
+> +			lruvec = NULL;
+> +		}
+> +
+> +		if (is_huge_zero_page(&folio->page))
+> +			continue;
+> +
+> +		if (folio_is_zone_device(folio)) {
+> +			if (lruvec) {
+> +				unlock_page_lruvec_irqrestore(lruvec, flags);
+> +				lruvec = NULL;
+> +			}
+> +			if (put_devmap_managed_page(&folio->page))
+> +				continue;
+> +			if (folio_put_testzero(folio))
 
-In skip_cma(), we can use folio_migratetype() to replace get_pageblock_migratetype().
+We're only putting one ref for the zone_device folios?  Surely
+this should be ref_sub_and_test like below?
 
-Fixes: 5da226dbfce3 ("mm: skip CMA pages when they are not available")
-Signed-off-by: Vern Hao <vernhao@tencent.com>
----
- mm/vmscan.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> +				free_zone_device_page(&folio->page);
+> +			continue;
+> +		}
+> +
+> +		if (!folio_ref_sub_and_test(folio, refs))
+> +			continue;
+> +
+> +		if (folio_test_large(folio)) {
+> +			if (lruvec) {
+> +				unlock_page_lruvec_irqrestore(lruvec, flags);
+> +				lruvec = NULL;
+> +			}
+> +			__folio_put_large(folio);
+> +			continue;
+> +		}
+> +
+> +		if (folio_test_lru(folio)) {
+> +			struct lruvec *prev_lruvec = lruvec;
+> +
+> +			lruvec = folio_lruvec_relock_irqsave(folio, lruvec,
+> +									&flags);
+> +			if (prev_lruvec != lruvec)
+> +				lock_batch = 0;
+> +
+> +			lruvec_del_folio(lruvec, folio);
+> +			__folio_clear_lru_flags(folio);
+> +		}
+> +
+> +		/*
+> +		 * In rare cases, when truncation or holepunching raced with
+> +		 * munlock after VM_LOCKED was cleared, Mlocked may still be
+> +		 * found set here.  This does not indicate a problem, unless
+> +		 * "unevictable_pgs_cleared" appears worryingly large.
+> +		 */
+> +		if (unlikely(folio_test_mlocked(folio))) {
+> +			__folio_clear_mlocked(folio);
+> +			zone_stat_sub_folio(folio, NR_MLOCK);
+> +			count_vm_event(UNEVICTABLE_PGCLEARED);
+> +		}
 
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 42e3893de2a7..d9e974b96144 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -2271,7 +2271,7 @@ static bool skip_cma(struct folio *folio, struct scan_control *sc)
- {
- 	return !current_is_kswapd() &&
- 			gfp_migratetype(sc->gfp_mask) != MIGRATE_MOVABLE &&
--			get_pageblock_migratetype(&folio->page) == MIGRATE_CMA;
-+			folio_migratetype(folio) == MIGRATE_CMA;
- }
- #else
- static bool skip_cma(struct folio *folio, struct scan_control *sc)
--- 
-2.31.1
+You'll be glad to know I've factored out a nice little helper for that.
 
