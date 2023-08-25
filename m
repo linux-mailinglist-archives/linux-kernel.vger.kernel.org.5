@@ -2,134 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC5117884DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 12:26:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31EEB7884DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 12:26:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239699AbjHYKZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 06:25:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35358 "EHLO
+        id S244441AbjHYKZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 06:25:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239475AbjHYKZ1 (ORCPT
+        with ESMTP id S244544AbjHYKZv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 06:25:27 -0400
-Received: from mail.avm.de (mail.avm.de [212.42.244.94])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 918992689
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 03:25:02 -0700 (PDT)
-Received: from mail-auth.avm.de (unknown [IPv6:2001:bf0:244:244::71])
-        by mail.avm.de (Postfix) with ESMTPS;
-        Fri, 25 Aug 2023 12:24:01 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=avm.de; s=mail;
-        t=1692959041; bh=2rnHvOPgsvKYbBiLLEwFMNGH7uF/YJHrz/RlvrfDtCI=;
+        Fri, 25 Aug 2023 06:25:51 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1896F2116
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 03:25:34 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 96E9E61CD3
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 10:25:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6AD85C433C7;
+        Fri, 25 Aug 2023 10:25:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692959133;
+        bh=vxCQvJwwZuY+Os//P83VMfDGNLl1duuxq7unTJHC1bs=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DC25E/+sCQH6l9klBzlq/VgUo9hVVMaX98Z6ihm3oZyAUnmr7ldN+5DseXKy2swIw
-         tBQS7xwZP6dyzMk/EsvOQvYL3Sovf6aGHfBQkQJoQR0Qp23FwjHbw12H+olrunEcqi
-         iT8uln7laOGYN4g+abq1GI9I3kNbWq1LOM+cggK8=
-Received: from buildd.core.avm.de (buildd-sv-01.avm.de [172.16.0.225])
-        by mail-auth.avm.de (Postfix) with ESMTPA id 71EA381C29;
-        Fri, 25 Aug 2023 12:24:01 +0200 (CEST)
-Received: by buildd.core.avm.de (Postfix, from userid 1000)
-        id 66E03180DA0; Fri, 25 Aug 2023 12:24:01 +0200 (CEST)
-Date:   Fri, 25 Aug 2023 12:24:01 +0200
-From:   Nicolas Schier <n.schier@avm.de>
-To:     Paulo Miguel Almeida <paulo.miguel.almeida.rodenas@gmail.com>
-Cc:     masahiroy@kernel.org, bgray@linux.ibm.com, ajd@linux.ibm.com,
-        linux-kernel@vger.kernel.org, keescook@chromium.org
-Subject: Re: [PATCH v2] [next] initramfs: Parse KBUILD_BUILD_TIMESTAMP as UTC
- date
-Message-ID: <ZOiBQaPiWj0FqCLM@buildd.core.avm.de>
-References: <ZOPTbkHvj8XQiott@mail.google.com>
+        b=t2onVQDkXoebNOsXBLTxey6UseN5/XAkEEqS2agypZkch2PisVrtj1j0GMV4cBMth
+         FF7BPS1TS59+3Qb03cP3/8gkvieYYlOurdegg3jBK+M5qUp8YMAn2sxMP6UN0kk3PZ
+         bLUkeGCWeyuG5AsQ/vAY5KElxyFXBx3/gOlYoFcloIMXnMzJkX6i7FaTF8r6I/LgDx
+         unSs/QCjBXId8o6eXdhLphvgIkNlPhzzggSkkrcfsV3Jb5PYx6ubWesoRO41UI+tyt
+         4T1vfL8/6vcciYr2nlT9VZNYQCRRdPUMPv4DTydsLYXJU7KruGcqJgoC/atvIyLFfJ
+         +jHhjHM1o2gfw==
+Date:   Fri, 25 Aug 2023 11:25:22 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Zenghui Yu <zenghui.yu@linux.dev>
+Cc:     Jijie Shao <shaojijie@huawei.com>, jonathan.cameron@huawei.com,
+        mark.rutland@arm.com, yangyicong@hisilicon.com,
+        chenhao418@huawei.com, shenjian15@huawei.com,
+        wangjie125@huawei.com, liuyonglong@huawei.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH V2 drivers/perf: hisi:] drivers/perf: hisi: Update
+ HiSilicon PMU maintainers
+Message-ID: <20230825102522.GA24076@willie-the-truck>
+References: <20230824024135.1291459-1-shaojijie@huawei.com>
+ <9009693a-0314-9526-e57f-1b2302abfd7e@linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZOPTbkHvj8XQiott@mail.google.com>
-X-purgate-ID: 149429::1692959041-3FB0A28E-915A8AB7/0/0
-X-purgate-type: clean
-X-purgate-size: 3145
-X-purgate-Ad: Categorized by eleven eXpurgate (R) http://www.eleven.de
-X-purgate: This mail is considered clean (visit http://www.eleven.de for further information)
-X-purgate: clean
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <9009693a-0314-9526-e57f-1b2302abfd7e@linux.dev>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 09:13:18AM +1200, Paulo Miguel Almeida wrote:
-> When KBUILD_BUILD_TIMESTAMP is specified, the date command will parse
-> it to Unix Epoch time in UTC. However, the date command is
-> timezone-aware so it will convert from the local timezone to UTC first
-> which hits some of the sanity checks added on commit 5efb685bb3af1
-> ("initramfs: Check negative timestamp to prevent broken cpio archive")
+On Fri, Aug 25, 2023 at 12:07:32AM +0800, Zenghui Yu wrote:
+> On 2023/8/24 10:41, Jijie Shao wrote:
+> > Since Guangbin and Shaokun have left HiSilicon and will no longer
+> > maintain the drivers, update the maintainer information and
+> > thanks for their work.
+> > 
+> > Signed-off-by: Jijie Shao <shaojijie@huawei.com>
+> > Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> > Acked-by: Yicong Yang <yangyicong@hisilicon.com>
+> > ---
+> >  changeLog
+> >  v2:
+> >   1. update "HISILICON HNS3 PMU DRIVER" to "HISILICON NETWORK SUBSYSTEM 3 PMU DRIVER"
+> >      suggested by Jonathan
+> >   2. update pach subject suggested by Yicong
+> >  v1: https://lore.kernel.org/all/20230822122812.2384393-1-shaojijie@huawei.com/
+> > ---
+> >  MAINTAINERS | 6 +++---
+> >  1 file changed, 3 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index 4171d3a102a9..df3418780b0c 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -9304,8 +9304,8 @@ F:	drivers/crypto/hisilicon/hpre/hpre.h
+> >  F:	drivers/crypto/hisilicon/hpre/hpre_crypto.c
+> >  F:	drivers/crypto/hisilicon/hpre/hpre_main.c
+> > -HISILICON HNS3 PMU DRIVER
+> > -M:	Guangbin Huang <huangguangbin2@huawei.com>
+> > +HISILICON NETWORK SUBSYSTEM 3 PMU DRIVER (HNS3 PMU)
+> > +M:	Jijie Shao <shaojijie@huawei.com>
+> >  S:	Supported
+> >  F:	Documentation/admin-guide/perf/hns3-pmu.rst
+> >  F:	drivers/perf/hisilicon/hns3_pmu.c
 > 
-> This creates an edge case for the UTC+<N> part of the world. For instance
-> 
->  - In New Zealand (UTC+12:00):
->      $ date -d"1970-01-01" +%s
->      -43200
-> 
->      $ make KBUILD_BUILD_TIMESTAMP=1970-01-01
->      make[1]: Entering directory '<snip>/linux/'
->        GEN     Makefile
->        DESCEND objtool
->        INSTALL libsubcmd_headers
->        CALL    ../scripts/checksyscalls.sh
->        GEN     usr/initramfs_data.cpio
->      ERROR: Timestamp out of range for cpio format
->      make[4]: *** [../usr/Makefile:76: usr/initramfs_data.cpio] Error 1
-> 
->  - In Seattle, WA (UTC-07:00):
->      $ date -d"1970-01-01" +%s
->      32400
-> 
->      $ make KBUILD_BUILD_TIMESTAMP=1970-01-01
->      <builds fine>
-> 
-> Parse KBUILD_BUILD_TIMESTAMP date string as UTC so no localtime
-> conversion is done, which fixes the edge case aforementioned
-> 
-> Signed-off-by: Paulo Miguel Almeida <paulo.miguel.almeida.rodenas@gmail.com>
-> ---
-> Changelog:
-> 
-> - v2: Document behaviour and way to override it on
->       Documentation/kbuild/kbuild.rst. (Req: Andrew Donnellan)
-> 
-> - v1: https://lore.kernel.org/lkml/ZMSdUS37BD5b%2Fdn7@mail.google.com/
-> ---
->  Documentation/kbuild/kbuild.rst | 9 ++++++++-
->  usr/gen_initramfs.sh            | 2 +-
->  2 files changed, 9 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/kbuild/kbuild.rst b/Documentation/kbuild/kbuild.rst
-> index bd906407e307..8c204186c762 100644
-> --- a/Documentation/kbuild/kbuild.rst
-> +++ b/Documentation/kbuild/kbuild.rst
-> @@ -296,7 +296,14 @@ KBUILD_BUILD_TIMESTAMP
->  Setting this to a date string overrides the timestamp used in the
->  UTS_VERSION definition (uname -v in the running kernel). The value has to
->  be a string that can be passed to date -d. The default value
-> -is the output of the date command at one point during build.
-> +is the output of the date command at one point during build. E.g.::
-> +
-> +    $ make KBUILD_BUILD_TIMESTAMP="1991-08-25"
-> +
-> +By default, the value is interpreted as UTC. To override this, append
-> +the desired timezone. E.g.::
+> You probably need to move the entry around to keep things ordered
+> (see commit 80e62bc8487b).
 
-This is still not true for IKHEADERS; there we still need to set TZ=UTC:
+I'll just leave the title of the entry as it is to avoid the churn.
 
-diff --git a/kernel/gen_kheaders.sh b/kernel/gen_kheaders.sh
---- a/kernel/gen_kheaders.sh
-+++ b/kernel/gen_kheaders.sh
-@@ -85,3 +85,3 @@ find $cpio_dir -type f -print0 |
- # Create archive and try to normalize metadata for reproducibility.
--tar "${KBUILD_BUILD_TIMESTAMP:+--mtime=$KBUILD_BUILD_TIMESTAMP}" \
-+TZ=UTC tar "${KBUILD_BUILD_TIMESTAMP:+--mtime=$KBUILD_BUILD_TIMESTAMP}" \
-     --owner=0 --group=0 --sort=name --numeric-owner \
-
-but I can send such a patch later.
-
-Reviewed-by: Nicolas Schier <n.schier@avm.de>
+Will
