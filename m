@@ -2,80 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E54AC78851C
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 12:40:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D531278852E
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 12:47:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244494AbjHYKkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 06:40:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53544 "EHLO
+        id S238743AbjHYKqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 06:46:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244496AbjHYKjx (ORCPT
+        with ESMTP id S236991AbjHYKqV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 06:39:53 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16013199E
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 03:39:50 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9a1de3417acso385510866b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 03:39:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692959989; x=1693564789;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=T4bCjQrZ7ywE3HWQV7oP/6H4w62lITlc52ygpwYMfFI=;
-        b=b/2B5kQNomuylgRRvXA3bIMXOMmpnHKBi9YGgMIqQniAJXNL347eXDGCMAp0rhbmRO
-         8tqMO/CKkHgbEE6h39avWZO8CDh04lC/FXnhEengWH9W8mp+MVwM/d4voiT5PmImrwR/
-         KJ4Z3izLAKR+bG5pvd2a/exarE0gImQCq1Atlaf67SB8Eji9IAERWhUX8JveT/gvLyE7
-         56giynFtUCXqGUIg30/TjLxfdYU1NwT5XDTaWYcjHJhcwa/HDxVTe0UoJ0uwuPJLPfk3
-         xcMeVChesfVvQBXtDrJ9U0P3o1+beJnptMamURKT8gHpWkeGeRFt/UCbxR9wk5J20BGs
-         1UjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692959989; x=1693564789;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=T4bCjQrZ7ywE3HWQV7oP/6H4w62lITlc52ygpwYMfFI=;
-        b=cuBpcHeiYccqLdfCfUYPBrzu6lzZALiXKnLtt4Ef+XG3e6tpCdgj8dGNGM967j8Wzd
-         Lpo8eOjLBK8jtdjOyd/o0fHWH3KtdCFtaSyztov1HMaGveyuX7nokVsXKAhpo9ZOjRx2
-         j8ipOn1bVKHH66hRX+BE0h9s1oHxNp4VLCuqqgUm9jMctyeg5xOCBrxlyxSvQmGR8uji
-         nRJKLfCYnwBZntnssdMB/j4WpAXN5nRDo8pcwjJWXfyTiHimbEkqIb5vwzypp6wxfZYC
-         F7QRUDDv+/upLxm9HvUwp6k++0HM2Gog+UoI2ou+jOc2h6uZTnDTGAKxtlJjnlhiRvBl
-         iEzQ==
-X-Gm-Message-State: AOJu0YzGl26Bc4pPV0oygvWgvFDfnoYVGEOR4VTrVVX65aNGLRqJwSNE
-        v58yrX9GlKvShvAc2N8UViFjgA==
-X-Google-Smtp-Source: AGHT+IEMrMlgr7JpaeTq/MvmU3/4a1WTA6huvdVoSFYPUJSKNZ2VXpw0Gy2tBVpvZnmyuzvs9XADfQ==
-X-Received: by 2002:a17:907:2711:b0:9a1:df30:e158 with SMTP id w17-20020a170907271100b009a1df30e158mr6781455ejk.36.1692959989433;
-        Fri, 25 Aug 2023 03:39:49 -0700 (PDT)
-Received: from [192.168.0.22] ([77.252.47.198])
-        by smtp.gmail.com with ESMTPSA id rs25-20020a170907037900b0099bd1a78ef5sm819588ejb.74.2023.08.25.03.39.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Aug 2023 03:39:48 -0700 (PDT)
-Message-ID: <df519068-c9f0-1051-afb3-75f71ad31791@linaro.org>
-Date:   Fri, 25 Aug 2023 12:39:47 +0200
+        Fri, 25 Aug 2023 06:46:21 -0400
+Received: from out203-205-221-173.mail.qq.com (out203-205-221-173.mail.qq.com [203.205.221.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4606BE54;
+        Fri, 25 Aug 2023 03:46:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+        s=s201512; t=1692960375;
+        bh=O9VbDsjRgMANqFTThKdY7QAEcZNVKzTA4JvoFBBWP1o=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=gHZaaYa5GLhnGYv9QzSeLBCqj94JsQrdoUW5G8diCo1+JnH5FSN4eJK+VtOh8Dje1
+         DSv2phOd87m4pC0cefJuNTgtzaZz+ByeXou7fw68gVzH1HNxL0Nk09i6PxQ8CD/I4k
+         ygPxq/281FVK6SN487J6m8+o8txXgCiDRevVywvI=
+Received: from localhost.localdomain ([39.156.73.12])
+        by newxmesmtplogicsvrszc2-1.qq.com (NewEsmtp) with SMTP
+        id A05B86B3; Fri, 25 Aug 2023 18:40:05 +0800
+X-QQ-mid: xmsmtpt1692960005tpqavecy8
+Message-ID: <tencent_FD258319A1DF2CCECB7095A3D7A65102C407@qq.com>
+X-QQ-XMAILINFO: OZZSS56D9fAjkQVDc0WwmzqTIzVTk/scWCjrbKeXJ1AV9BrNOG8a6qEUx5tUjx
+         FFbptZExJKxkgtxwDBKvW1frZb9+5kFZCttqSkhnJd7/HFbYcst5HPeKtnstNVhCgEo0uA9r7sUC
+         ygpepn9z5fUcDs3yJPp7tv3934JQRvU46c0Gaq09P1TR2w3X4/bOvajh5eqQD+ZdLfRA2+BId7FQ
+         Zm4roydqdSqgmLq6W76OQ6mNp/MABWCZn64vNGxpckRQwc66mOLSfOf2nz2oqc7E3BjzEfvEH1fJ
+         rqzKZKtK1R3KnGaDQSQnoGJGiT/q2vjjcNRlbq9xa+/iJex6ObUt9o4Z7L1X1wr5s+H71dWOGzwY
+         9+lttY7g6hVkMgf02OLeMhPbifZZCx75IxtxIwQ9e5nkKzZ3rpqwXgCIyK03fZxcmk42omzQo/zG
+         g6/CNGIO8cTytsG3Pk4nEUMq/DoHzs8Z+VXQXbQch4A5/VGoNcbwRW77vnbJyvF5XrVHQGbVk+fX
+         Gtm83XV7s3dzPhuUos/QbHqmDFEsojRprLVczuAM/hg68yV01qnUmigjHDgOkppAcPq6MjD5Q39b
+         81DASjz3Fr3IlbVna8RIKr2Wrldw7iW8ZHNlP7QwyqQ5yiHA9jU8ZpNOXR2Q4X6SrLn/nfpHuKiF
+         lcfUgq9eBx+8Y4rZ2jDk/seI1QzLKtpwi8uoA48V+mFHL+Vg15EWesDm6v+UBm6lJRLUXC2R7wCj
+         2Gn1+XUY2g5Rebt733F/A6Z4ltHxiQ4SkJjjeuICpMFfMIE4A7/seAeWPJE19uDunLI4yHqS9wXe
+         SD3QnqnHIf0yP8aSrPo4QJu3zSTlZ7MsZx24CTamQqNKjuW/3zV8KD3rAW6QbrXOu8iM+0SSZIA0
+         yREpg3pp2CivzvIsKqQxFjUHAkRnGXoBzYFpJtIMgLgYNv0J2TPpkuuO1Xqt/xp+P21zk+Iox9ni
+         6ChRcxp9VSba5FcQRHIe6MfPKvyQIXGljDGEurbiA26dY9yqBgs4gRzOHeZQu9Qh0nmo9q6wgpn0
+         vj0uRaxj4O+0+NcjiM
+X-QQ-XMRINFO: MSVp+SPm3vtS1Vd6Y4Mggwc=
+From:   Rong Tao <rtoax@foxmail.com>
+To:     olsajiri@gmail.com
+Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, martin.lau@linux.dev,
+        mykolal@fb.com, rongtao@cestc.cn, rtoax@foxmail.com,
+        sdf@google.com, shuah@kernel.org, song@kernel.org,
+        yonghong.song@linux.dev
+Subject: Re: [PATCH bpf-next v6] selftests/bpf: trace_helpers.c: optimize kallsyms cache
+Date:   Fri, 25 Aug 2023 18:40:04 +0800
+X-OQ-MSGID: <20230825104004.34674-1-rtoax@foxmail.com>
+X-Mailer: git-send-email 2.39.3
+In-Reply-To: <ZOhvhnUTxtD6YYzl@krava>
+References: <ZOhvhnUTxtD6YYzl@krava>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 4/5] arm64: dts: qcom: ipq5018: Add USB related nodes
-Content-Language: en-US
-To:     Nitheesh Sekar <quic_nsekar@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org, vkoul@kernel.org,
-        kishon@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        gregkh@linuxfoundation.org, quic_srichara@quicinc.com,
-        quic_varada@quicinc.com, quic_wcheng@quicinc.com,
-        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Cc:     Amandeep Singh <quic_amansing@quicinc.com>
-References: <20230825093531.7399-1-quic_nsekar@quicinc.com>
- <20230825093531.7399-5-quic_nsekar@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230825093531.7399-5-quic_nsekar@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,43 +71,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/08/2023 11:35, Nitheesh Sekar wrote:
-> Add USB phy and controller nodes.
-> 
-> Co-developed-by: Amandeep Singh <quic_amansing@quicinc.com>
-> Signed-off-by: Amandeep Singh <quic_amansing@quicinc.com>
-> Signed-off-by: Nitheesh Sekar <quic_nsekar@quicinc.com>
-> ---
->  arch/arm64/boot/dts/qcom/ipq5018.dtsi | 54 +++++++++++++++++++++++++++
->  1 file changed, 54 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/ipq5018.dtsi b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
-> index 9f13d2dcdfd5..ff477923a823 100644
-> --- a/arch/arm64/boot/dts/qcom/ipq5018.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
-> @@ -238,6 +238,60 @@
->  				status = "disabled";
->  			};
->  		};
-> +
-> +		usbphy0: phy@5b000 {
-> +			compatible = "qcom,ipq5018-usb-hsphy";
-> +			reg = <0x0005b000 0x120>;
-> +
-> +			clocks = <&gcc GCC_USB0_PHY_CFG_AHB_CLK>;
-> +
-> +			resets = <&gcc GCC_QUSB2_0_PHY_BCR>;
-> +
-> +			#phy-cells = <0>;
-> +
-> +			status = "disabled";
-> +		};
-> +
-> +		usb: usb2@8a00000 {
+Thanks a lot, jirka. I just submit v7 [0], please review.
 
-Eee, where did you put these? Don't stuff things to the end of any list.
-This applies to your entire code: Makefile, Kconfig, .c, .h, .dts, .dtsi
-and other languages and projects as well.
+Rong Tao.
 
-Krzysztof
+[0] https://lore.kernel.org/lkml/tencent_BD6E19C00BF565CD5C36A9A0BD828CFA210A@qq.com/
 
