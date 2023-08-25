@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD522788085
+	by mail.lfdr.de (Postfix) with ESMTP id 6AF65788084
 	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 09:03:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243107AbjHYHC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 03:02:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44574 "EHLO
+        id S243018AbjHYHCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 03:02:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242624AbjHYHCL (ORCPT
+        with ESMTP id S242559AbjHYHCL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 25 Aug 2023 03:02:11 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F271D3
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ADCFE6B
         for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 00:02:10 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E452366618
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 07:02:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5660C433C8;
-        Fri, 25 Aug 2023 07:02:08 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1D06B66658
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 07:02:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F1FEC433C7;
+        Fri, 25 Aug 2023 07:02:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1692946929;
-        bh=oDaAPQ4MM+hX/ir4eTMXwkf2sKUGdJD31TI52vLR7Iw=;
+        bh=roaZa6DJKVHyMmMO2D1vNZ9eeHp8DbQmu8mMGYbUivE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=stHo7l2GonNEWy4AsrdykJlkht0Lsq6esLszF0M5/WdYmi3uK27/uWuGFJlgLtduR
-         sVmDek5FodlX/ZnGt4G5oP2oX65woe76/agqYLW8JwjA8B8sj/bY7j+OnfEZCXiUjd
-         pO3jIfsGYCA1riZGpyoAWYYdPPjuoRlF/m1eOCLVopTBfq5BtCA2b/nTjCpjFaOleJ
-         o2Pm2lvbV3k3cHKkPQtLQGF0/pZfjtEheMrubOFBTwYlNfVFN14EKqQg9xfiF3UvZ2
-         fAYX5dO01DHRN5bDe1oxEEYI1YQkXX0+5kmGOpaTDBmJEIr6xlibkzHIL7cjz/D9Mv
-         VUHuNZggbbH9w==
+        b=fQSeisApm+/NTyGDFfw0K/xsyeWWEA1z/wN09Pm6UMQ8eZl0o25/nwqpRPXpgSnbl
+         zrPdrqyVPGxxYX72AvCVY1VQFHovnwDhHE7vU5reAqi8ZphVghCUQIdN5mn1IZY9Z4
+         IRVDW+WbunxZBBEOzVyzpwIldC0SDZ3Kv0h3jsUI6CIcuy92diG/KlsBzia/Bpw3/O
+         bmoHj9poMa8KtLNGH4vjDAcD8fNzzX27u/Ix6KlhadGyjMpJjVI5CY3S3I8nXjhC4h
+         glwoVCCAIalqq4lhoQApGbbjsFemfJ1FiA4GgMuS8mXdF/1Bhej0OcTHaJ2g2KiTzG
+         YtFmKgu/la65A==
 From:   Josh Poimboeuf <jpoimboe@kernel.org>
 To:     x86@kernel.org
 Cc:     linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
@@ -43,9 +43,9 @@ Cc:     linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
         Andrew Cooper <andrew.cooper3@citrix.com>,
         Nikolay Borisov <nik.borisov@suse.com>,
         gregkh@linuxfoundation.org, Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH 12/23] x86/alternatives: Remove faulty optimization
-Date:   Fri, 25 Aug 2023 00:01:43 -0700
-Message-ID: <ca76a2e94217d6fc8e007d2ca79fee219f3168f8.1692919072.git.jpoimboe@kernel.org>
+Subject: [PATCH 13/23] x86/srso: Improve i-cache locality for alias mitigation
+Date:   Fri, 25 Aug 2023 00:01:44 -0700
+Message-ID: <4f975cf178ab641d3720362f244694408d85ecca.1692919072.git.jpoimboe@kernel.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1692919072.git.jpoimboe@kernel.org>
 References: <cover.1692919072.git.jpoimboe@kernel.org>
@@ -61,43 +61,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit
+Move srso_alias_return_thunk() to the same section as
+srso_alias_safe_ret() so they can share a cache line.
 
-  095b8303f383 ("x86/alternative: Make custom return thunk
-
-made '__x86_return_thunk' a placeholder value.  All code setting
-X86_FEATURE_RETHUNK also changes the value of 'x86_return_thunk'.  So
-the optimization at the beginning of apply_returns() is dead code.
-
-Also, before the above-mentioned commit, the optimization actually had a
-bug It bypassed __static_call_fixup(), causing some raw returns to
-remain unpatched in static call trampolines.  Thus the 'Fixes' tag.
-
-Fixes: d2408e043e72 ("x86/alternative: Optimize returns patching")
 Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
 ---
- arch/x86/kernel/alternative.c | 8 --------
- 1 file changed, 8 deletions(-)
+ arch/x86/lib/retpoline.S | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
-index 099d58d02a26..34be5fbaf41e 100644
---- a/arch/x86/kernel/alternative.c
-+++ b/arch/x86/kernel/alternative.c
-@@ -720,14 +720,6 @@ void __init_or_module noinline apply_returns(s32 *start, s32 *end)
- {
- 	s32 *s;
+diff --git a/arch/x86/lib/retpoline.S b/arch/x86/lib/retpoline.S
+index cd86aeb5fdd3..9ab634f0b5d2 100644
+--- a/arch/x86/lib/retpoline.S
++++ b/arch/x86/lib/retpoline.S
+@@ -177,15 +177,14 @@ SYM_START(srso_alias_safe_ret, SYM_L_GLOBAL, SYM_A_NONE)
+ 	int3
+ SYM_FUNC_END(srso_alias_safe_ret)
  
--	/*
--	 * Do not patch out the default return thunks if those needed are the
--	 * ones generated by the compiler.
--	 */
--	if (cpu_feature_enabled(X86_FEATURE_RETHUNK) &&
--	    (x86_return_thunk == __x86_return_thunk))
--		return;
+-	.section .text..__x86.return_thunk
 -
- 	for (s = start; s < end; s++) {
- 		void *dest = NULL, *addr = (void *)s + *s;
- 		struct insn insn;
+-SYM_CODE_START(srso_alias_return_thunk)
++SYM_CODE_START_NOALIGN(srso_alias_return_thunk)
+ 	UNWIND_HINT_FUNC
+ 	ANNOTATE_NOENDBR
+ 	call srso_alias_safe_ret
+ 	ud2
+ SYM_CODE_END(srso_alias_return_thunk)
+ 
++	.section .text..__x86.return_thunk
+ /*
+  * Some generic notes on the untraining sequences:
+  *
 -- 
 2.41.0
 
