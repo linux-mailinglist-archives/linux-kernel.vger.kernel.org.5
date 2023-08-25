@@ -2,56 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BF4F787E3D
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 05:06:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A67AB787E47
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 05:08:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234642AbjHYDGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 23:06:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60160 "EHLO
+        id S235960AbjHYDII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 23:08:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234492AbjHYDFz (ORCPT
+        with ESMTP id S240604AbjHYDHl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 23:05:55 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 983D1198E;
-        Thu, 24 Aug 2023 20:05:53 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 372B56120E;
-        Fri, 25 Aug 2023 03:05:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2A8DC433C8;
-        Fri, 25 Aug 2023 03:05:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692932752;
-        bh=0myg6Da5IOq3dGebwmAyZr2L0BX2BU7FwaZAc1bAE7U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Hwvz3MaWUO9uJUyeLAckuLsQTxs7tfsIu253YDaPNSkAjWf/KXx0Ky0iRPAkSCPdD
-         Laccl6reWIGxBJFV6OupH/HShh9hChFDaW0zy7RWb8UDPb4xlSVl81f4kJJt+CUV7B
-         uUy1QGfBjvKv/Z/M7zJ8PgpNGYoJS+jpKCiU0s01XfE2sjGgXIjMJ61Zts6M1duxOw
-         DpoZjoVC+97Msuxi+F8VtmMf/vzdYije35GhJKB2JjK47/FiaUefFDOfe7oPJGHO3o
-         zsCZHrPhWPhHfJdko0AL+y2zu4eMjfNL66BYe6UKmqpwbWglx8Utm0gOMtSC8huJPd
-         hCRY9oxDqigZw==
-Date:   Thu, 24 Aug 2023 21:06:51 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Brian Norris <briannorris@chromium.org>,
-        Kalle Valo <kvalo@kernel.org>,
-        Amitkumar Karwar <akarwar@marvell.com>,
-        Xinming Hu <huxm@marvell.com>, Dan Williams <dcbw@redhat.com>
-Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH v2 1/3] wifi: mwifiex: Fix tlv_buf_left calculation
-Message-ID: <06668edd68e7a26bbfeebd1201ae077a2a7a8bce.1692931954.git.gustavoars@kernel.org>
-References: <cover.1692931954.git.gustavoars@kernel.org>
+        Thu, 24 Aug 2023 23:07:41 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A120199A
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 20:07:30 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2bb97f2c99cso6739441fa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 20:07:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692932849; x=1693537649;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=hxjULLs8tszYGy1gyvHkYEquD54rMJ6s2Os5kZTBKfE=;
+        b=MSSI/lfbS/f/wZLZrOeP8cJ1qievmIL7UK0Kj1b/1fRfyJGDd3WGG81Z924bMA7nyn
+         ngLhjfthzdZhoTDXDOn2fsyGFx2FrWXMPk4aodxJZW01MIhs3zTELIaQgsml1jWqQumf
+         R58fq9IVVhDm16GeluJ5mqTQ1ZJ0ENYxN41DrNtakG6LH4A2oebR+Dukz9DIIxFNypwF
+         ssHaTno1foMH4EvqvydB3b8/Jqfv6wuXd/64MXerBzsIAaVET5R/9jYjLE8+n0c1UmPG
+         Jv6Qx3ngvs+KeUqac+EHnMjSssQN/rcIQAg3mur+idl96z6JDMwY0ySfsuk0Xa64paZ/
+         AvlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692932849; x=1693537649;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hxjULLs8tszYGy1gyvHkYEquD54rMJ6s2Os5kZTBKfE=;
+        b=YR6gUhldlE1nkEg0DKV4pO+cIoTgv1q72Hv9HprABDMHqG8NVYfXSXxxy3mUVscvhI
+         nbB7HSx5yGbTCVF4616CBlMt/aL/z8KGCzUL2OYIw5jW1pWk7biyRaVLgf7GpldXThFm
+         /t/Hr4470xEpZ4WRjAPk6s16jAY4DAO0MVCrXQaZOgSO3e4zq903E5fTo8X5LFHEPwvv
+         Qcb+DuFmi0WTffviDKNV+bAGtJSDeK9KFzYMNlu3PSCcWyqWNZlnWAJwD1VHMSq7lM/6
+         6gYKnG29RbAyqq14/eySZpTV7K7qUKlT9NicFZBjvKSCxcTQQ5qBAV/Ep+juQa9di8a4
+         2iIw==
+X-Gm-Message-State: AOJu0Yw/fNovfsTf3SOIbIatnD1q++tnj+eCbnvT91PTVL4MadZu77BT
+        Xxy3Yxw+sWe87lHS7uzDSNoV02JPtQI0cX1VOsrVSrKnqLJ+LA==
+X-Google-Smtp-Source: AGHT+IEegpBDfaPBqqNmsZ9rrNZmdHsjADO/AD3Nqg0lhvvWgR//RsJD5iIbwuvUq1NB0QeIErmC86zdOQ/zDl4aOaI=
+X-Received: by 2002:a2e:7010:0:b0:2bb:bf30:16f1 with SMTP id
+ l16-20020a2e7010000000b002bbbf3016f1mr12416033ljc.18.1692932848419; Thu, 24
+ Aug 2023 20:07:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1692931954.git.gustavoars@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+From:   Dave Airlie <airlied@gmail.com>
+Date:   Fri, 25 Aug 2023 13:07:17 +1000
+Message-ID: <CAPM=9tyKm+X8XMk75_vWoFk90vjA33Jyo-ic==PQM84_WK2_Wg@mail.gmail.com>
+Subject: [git pull] drm fixes for 6.5 final
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,105 +65,122 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In a TLV encoding scheme, the Length part represents the length after
-the header containing the values for type and length. In this case,
-`tlv_len` should be:
+Hi Linus,
 
-tlv_len == (sizeof(*tlv_rxba) - 1) - sizeof(tlv_rxba->header) + tlv_bitmap_len
+A bit bigger than I'd care for, but it's mostly a single vmwgfx fix
+and a fix for an i915 hotplug probing. Otherwise misc i915, bridge,
+panfrost and dma-buf fixes.
 
-Notice that the `- 1` accounts for the one-element array `bitmap`, which
-1-byte size is already included in `sizeof(*tlv_rxba)`.
+Dave.
 
-So, if the above is correct, there is a double-counting of some members
-in `struct mwifiex_ie_types_rxba_sync`, when `tlv_buf_left` and `tmp`
-are calculated:
+drm-fixes-2023-08-25:
+drm fixes for 6.5-rc8
 
-968                 tlv_buf_left -= (sizeof(*tlv_rxba) + tlv_len);
-969                 tmp = (u8 *)tlv_rxba + tlv_len + sizeof(*tlv_rxba);
+core:
+- add a HPD poll helper
 
-in specific, members:
+i915:
+- fix regression in i915 polling
+- fix docs build warning
+- fix DG2 idle power consumption
 
-drivers/net/wireless/marvell/mwifiex/fw.h:777
- 777         u8 mac[ETH_ALEN];
- 778         u8 tid;
- 779         u8 reserved;
- 780         __le16 seq_num;
- 781         __le16 bitmap_len;
+bridge:
+- samsung-dsim: init fix
 
-This is clearly wrong, and affects the subsequent decoding of data in
-`event_buf` through `tlv_rxba`:
+panfrost:
+- fix speed binning issue
 
-970                 tlv_rxba = (struct mwifiex_ie_types_rxba_sync *)tmp;
+dma-buf:
+- fix recursive lock in fence signal
 
-Fix this by using `sizeof(tlv_rxba->header)` instead of `sizeof(*tlv_rxba)`
-in the calculation of `tlv_buf_left` and `tmp`.
+vmwgfx:
+- fix shader stage validation
+- fix NULL ptr derefs in gem put
+The following changes since commit 706a741595047797872e669b3101429ab8d378ef:
 
-This results in the following binary differences before/after changes:
+  Linux 6.5-rc7 (2023-08-20 15:02:52 +0200)
 
-| drivers/net/wireless/marvell/mwifiex/11n_rxreorder.o
-| @@ -4698,11 +4698,11 @@
-|  drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c:968
-|                 tlv_buf_left -= (sizeof(tlv_rxba->header) + tlv_len);
-| -    1da7:      lea    -0x11(%rbx),%edx
-| +    1da7:      lea    -0x4(%rbx),%edx
-|      1daa:      movzwl %bp,%eax
-|  drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c:969
-|                 tmp = (u8 *)tlv_rxba  + sizeof(tlv_rxba->header) + tlv_len;
-| -    1dad:      lea    0x11(%r15,%rbp,1),%r15
-| +    1dad:      lea    0x4(%r15,%rbp,1),%r15
+are available in the Git repository at:
 
-The above reflects the desired change: avoid counting 13 too many bytes;
-which is the total size of the double-counted members in
-`struct mwifiex_ie_types_rxba_sync`:
+  git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2023-08-25
 
-$ pahole -C mwifiex_ie_types_rxba_sync drivers/net/wireless/marvell/mwifiex/11n_rxreorder.o
-struct mwifiex_ie_types_rxba_sync {
-	struct mwifiex_ie_types_header header;           /*     0     4 */
+for you to fetch changes up to 59fe2029b9e05cd490eaf972053dd86f96f77869:
 
-     |-----------------------------------------------------------------------
-     |  u8                         mac[6];               /*     4     6 */  |
-     |	u8                         tid;                  /*    10     1 */  |
-     |  u8                         reserved;             /*    11     1 */  |
-     | 	__le16                     seq_num;              /*    12     2 */  |
-     | 	__le16                     bitmap_len;           /*    14     2 */  |
-     |  u8                         bitmap[1];            /*    16     1 */  |
-     |----------------------------------------------------------------------|
-								  | 13 bytes|
-								  -----------
+  Merge tag 'drm-intel-fixes-2023-08-24' of
+git://anongit.freedesktop.org/drm/drm-intel into drm-fixes (2023-08-25
+09:12:02 +1000)
 
-	/* size: 17, cachelines: 1, members: 7 */
-	/* last cacheline: 17 bytes */
-} __attribute__((__packed__));
+----------------------------------------------------------------
+drm fixes for 6.5-rc8
 
-Fixes: 99ffe72cdae4 ("mwifiex: process rxba_sync event")
-Cc: stable@vger.kernel.org
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
-Changes in v2:
- - Fix typo in changelog text: s/too bytes/too many bytes
- - Update binary diff snapshot in changelog text.
+core:
+- add a HPD poll helper
 
-v1:
- - Link: https://lore.kernel.org/linux-hardening/698dc480d939e3ae490140db5c2f36eb84093594.1692829410.git.gustavoars@kernel.org/
+i915:
+- fix regression in i915 polling
+- fix docs build warning
+- fix DG2 idle power consumption
 
- drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+bridge:
+- samsung-dsim: init fix
 
-diff --git a/drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c b/drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c
-index 391793a16adc..d1d3632a3ed7 100644
---- a/drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c
-+++ b/drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c
-@@ -965,8 +965,8 @@ void mwifiex_11n_rxba_sync_event(struct mwifiex_private *priv,
- 			}
- 		}
- 
--		tlv_buf_left -= (sizeof(*tlv_rxba) + tlv_len);
--		tmp = (u8 *)tlv_rxba + tlv_len + sizeof(*tlv_rxba);
-+		tlv_buf_left -= (sizeof(tlv_rxba->header) + tlv_len);
-+		tmp = (u8 *)tlv_rxba  + sizeof(tlv_rxba->header) + tlv_len;
- 		tlv_rxba = (struct mwifiex_ie_types_rxba_sync *)tmp;
- 	}
- }
--- 
-2.34.1
+panfrost:
+- fix speed binning issue
 
+dma-buf:
+- fix recursive lock in fence signal
+
+vmwgfx:
+- fix shader stage validation
+- fix NULL ptr derefs in gem put
+
+----------------------------------------------------------------
+Ankit Nautiyal (1):
+      drm/display/dp: Fix the DP DSC Receiver cap size
+
+Anshuman Gupta (1):
+      drm/i915/dgfx: Enable d3cold at s2idle
+
+Dave Airlie (2):
+      Merge tag 'drm-misc-fixes-2023-08-24' of
+git://anongit.freedesktop.org/drm/drm-misc into drm-fixes
+      Merge tag 'drm-intel-fixes-2023-08-24' of
+git://anongit.freedesktop.org/drm/drm-intel into drm-fixes
+
+David Michael (1):
+      drm/panfrost: Skip speed binning on EOPNOTSUPP
+
+Frieder Schrempf (1):
+      drm: bridge: samsung-dsim: Fix init during host transfer
+
+Imre Deak (2):
+      drm: Add an HPD poll helper to reschedule the poll work
+      drm/i915: Fix HPD polling, reenabling the output poll work as needed
+
+Jani Nikula (1):
+      drm/i915: fix Sphinx indentation warning
+
+Rob Clark (1):
+      dma-buf/sw_sync: Avoid recursive lock during fence signal
+
+Zack Rusin (2):
+      drm/vmwgfx: Fix shader stage validation
+      drm/vmwgfx: Fix possible invalid drm gem put calls
+
+ drivers/dma-buf/sw_sync.c                    | 18 ++++----
+ drivers/gpu/drm/bridge/samsung-dsim.c        | 27 +++++++----
+ drivers/gpu/drm/drm_probe_helper.c           | 68 +++++++++++++++++++---------
+ drivers/gpu/drm/i915/display/intel_hotplug.c |  4 +-
+ drivers/gpu/drm/i915/gt/uc/intel_huc.c       |  2 +
+ drivers/gpu/drm/i915/i915_driver.c           | 33 ++++++++------
+ drivers/gpu/drm/panfrost/panfrost_devfreq.c  |  2 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_bo.c           |  6 +--
+ drivers/gpu/drm/vmwgfx/vmwgfx_bo.h           |  8 ++++
+ drivers/gpu/drm/vmwgfx/vmwgfx_drv.h          | 12 +++++
+ drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c      | 35 ++++++--------
+ drivers/gpu/drm/vmwgfx/vmwgfx_kms.c          |  6 +--
+ drivers/gpu/drm/vmwgfx/vmwgfx_overlay.c      |  3 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_shader.c       |  3 +-
+ include/drm/display/drm_dp.h                 |  2 +-
+ include/drm/drm_probe_helper.h               |  1 +
+ 16 files changed, 136 insertions(+), 94 deletions(-)
