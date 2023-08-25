@@ -2,145 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03A4878819A
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 10:09:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E89C7881A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 10:10:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237949AbjHYIIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 04:08:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60740 "EHLO
+        id S241163AbjHYIJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 04:09:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241806AbjHYIIo (ORCPT
+        with ESMTP id S243390AbjHYIJZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 04:08:44 -0400
-Received: from mail-vk1-xa33.google.com (mail-vk1-xa33.google.com [IPv6:2607:f8b0:4864:20::a33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2A161FFA
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 01:08:40 -0700 (PDT)
-Received: by mail-vk1-xa33.google.com with SMTP id 71dfb90a1353d-4871e5dbe0cso1048564e0c.1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 01:08:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692950920; x=1693555720;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=6QcQszMmxdJXwrdj7qv0i9KCRG16x6Uvx3Pa+z1CyMw=;
-        b=kEtf7/dJtTkeGYA9DS3Z7w0+USux+OmEZxVGCz29NkVWX3Qsq3XmhIxosoEibdvlge
-         4kmMeo9X53/5rlLa4p2CGlpDlmsCvSeaH0IKkM3p0YX0ZSgdo6FhQrFm8DSA+/HsPwNs
-         Pdtqggstnu370CZL4cGFTUMqwRXpkVk1EAupqfBGoCFn2zu1qO8jNUtTTkty8KOa46Vp
-         oH3ebYMo8M04POs8Yf7S+PbOMfGyqDx//XmIlrvcgiZASOt56kIdPdDkK8Ck/45lXwhM
-         3mpNpnLHi9PZ31O6pv8fH/7rZ5A1uAk1u5sF4Q9Z/OniV6tKFgQPVwhjX9Pm5HttSW0G
-         /JoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692950920; x=1693555720;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6QcQszMmxdJXwrdj7qv0i9KCRG16x6Uvx3Pa+z1CyMw=;
-        b=U4SbTVI46CykuQ6mRlpo+4fG92nXy5HA8m+yBOMsuVTmL6DcTHK9RUMJFVbEIrIMaZ
-         D/zD7s2JWOfv8WxYVJXBknzjd5dXdCja0HaHy5B5wdjkFnPyuJZf6NCVoYEZ3WjXmX8u
-         p2atHkANOcYEgv8e+9uR4H4YaRHAs/Q27DAyH+rPgrbMTWET17qEqoiLFaGfxP8MM3oD
-         8KhpXLLh49kXaSynhSvZTxsKlTroi3wqQ8TvMKdHoUkVDnSxm5ePnFvLKmUszslhLIVa
-         z/bBqeFERNGGX+FV1WcF+kXxyaVEvDNKNtjBiHbSmCRGpOmG6cjI+FDohiAj9ACiXOsd
-         VqUg==
-X-Gm-Message-State: AOJu0Yy5cjAV3HFFaWyQKpCpxZ0/ssWHINvXpp5pMxyXUPYcArR3pQZ7
-        LTAdetEjB9sbCwAXU8RUMsm/8bADjjyzPnCN2qZlRg==
-X-Google-Smtp-Source: AGHT+IGKlUoZqLtAuC5n6U8/S/LEQzMs7GSNBs/X3ca/L9sMnytTCYWAR49NLSPWdqYY3WSdtWOyVrio55hiXGg7eeY=
-X-Received: by 2002:a05:6122:c56:b0:48d:392c:c7d9 with SMTP id
- i22-20020a0561220c5600b0048d392cc7d9mr5516493vkr.6.1692950919958; Fri, 25 Aug
- 2023 01:08:39 -0700 (PDT)
+        Fri, 25 Aug 2023 04:09:25 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 869E71FF9;
+        Fri, 25 Aug 2023 01:09:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692950963; x=1724486963;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=DDYB9hgCGLLt7dGj4L2dfzxCUOAizYUlniAtMkNplVo=;
+  b=Kmuh6f5VF7GcD1ggRZEsQPgZZq7sab+TWO+eM6CMmNwG5s4r3Mf+4yP2
+   cJOpjXNO9f+OGZO7zX+Hdy94SXbotyONO0onk7D+mFN5CJRE0EYEI1EQ5
+   JTf4zTg1EMwHaM+UUSedbf8kQBnIlMeWZqK0+noDUm6W8IaNKMHzJqtWK
+   Vr99XOaHLuE8GrJezaZdxRsJ+u1UbjBgkl30INvt/tSEhRR7lCmv3JCWF
+   Qi54rieK03pooAyD0xWWRlOsi4UzY0j1l9s/r6oaXrVH41hzMfpaXiRQW
+   kGa9tVLcMORUaErwiDSaDmN7J4rQq5NiDBEW3p06ZYk/BlDf8o7WpCT5G
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="378446107"
+X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
+   d="scan'208";a="378446107"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2023 01:09:23 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="860998431"
+X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
+   d="scan'208";a="860998431"
+Received: from enguerra-mobl.ger.corp.intel.com ([10.251.213.8])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2023 01:09:21 -0700
+Date:   Fri, 25 Aug 2023 11:09:14 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+cc:     linux-pci@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH 12/12] PCI: Simplify pcie_capability_clear_and_set_word()
+ control flow
+In-Reply-To: <20230824193712.542167-13-helgaas@kernel.org>
+Message-ID: <8f5f10be-333a-9d88-7acf-1cbb2b11680@linux.intel.com>
+References: <20230824193712.542167-1-helgaas@kernel.org> <20230824193712.542167-13-helgaas@kernel.org>
 MIME-Version: 1.0
-References: <20230824145023.559380953@linuxfoundation.org>
-In-Reply-To: <20230824145023.559380953@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 25 Aug 2023 13:38:28 +0530
-Message-ID: <CA+G9fYvNipSR9HDcWT7F6j+yvy87jsbzLG-vUQSGH-o2JQv4nQ@mail.gmail.com>
-Subject: Re: [PATCH 5.15 000/139] 5.15.128-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Christian Brauner <brauner@kernel.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, linux-nfs@vger.kernel.org,
-        LTP List <ltp@lists.linux.it>,
-        Sherry Yang <sherry.yang@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/mixed; boundary="8323329-1153837569-1692950962=:3206"
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Aug 2023 at 20:22, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.15.128 release.
-> There are 139 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sat, 26 Aug 2023 14:49:55 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.128-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
+--8323329-1153837569-1692950962=:3206
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 
-The same test regressions found on stable-rc linux.5.15.y as reported
-on stable-rc linux.6.1.y branch. LTP syscalls chown02 and fchown02 fails
-on arm64 Rpi4 device with the NFS rootfile system.
+On Thu, 24 Aug 2023, Bjorn Helgaas wrote:
 
-Test log:
---------
-chown02.c:46: TPASS: chown(testfile1, 0, 0) passed
-chown02.c:46: TPASS: chown(testfile2, 0, 0) passed
-chown02.c:58: TFAIL: testfile2: wrong mode permissions 0100700, expected 0102700
+> From: Bjorn Helgaas <bhelgaas@google.com>
+> 
+> Return early for errors in pcie_capability_clear_and_set_word_unlocked()
+> and pcie_capability_clear_and_set_dword() to simplify the control flow.
+> 
+> No functional change intended.
+> 
+> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+> Cc: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 
-fchown02.c:57: TPASS: fchown(3, 0, 0) passed
-fchown02.c:57: TPASS: fchown(4, 0, 0) passed
-fchown02.c:67: TFAIL: testfile2: wrong mode permissions 0100700,
-expected 0102700
+Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 
-  Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+-- 
+ i.
 
-NOTE:
-Do we need a backport patch ?
-
-  nfsd: use vfs setgid helper
-    commit 2d8ae8c417db284f598dffb178cc01e7db0f1821 upstream.
-
-
-## Build
-* kernel: 5.15.128-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-5.15.y
-* git commit: 00e5f0b76767cab779762a1d27fc17c1cf2a3606
-* git describe: v5.15.127-140-g00e5f0b76767
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.15.y/build/v5.15.127-140-g00e5f0b76767
-
-## Test Regressions (compared to v5.15.127)
-* bcm2711-rpi-4-b, ltp-syscalls
-  - chown02
-  - fchown02
-
-* bcm2711-rpi-4-b-clang, ltp-syscalls
-  - chown02
-  - fchown02
-
---
-Linaro LKFT
-https://lkft.linaro.org
+> ---
+>  drivers/pci/access.c | 22 ++++++++++------------
+>  1 file changed, 10 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/pci/access.c b/drivers/pci/access.c
+> index 0b2e90d2f04f..6554a2e89d36 100644
+> --- a/drivers/pci/access.c
+> +++ b/drivers/pci/access.c
+> @@ -504,13 +504,12 @@ int pcie_capability_clear_and_set_word_unlocked(struct pci_dev *dev, int pos,
+>  	u16 val;
+>  
+>  	ret = pcie_capability_read_word(dev, pos, &val);
+> -	if (!ret) {
+> -		val &= ~clear;
+> -		val |= set;
+> -		ret = pcie_capability_write_word(dev, pos, val);
+> -	}
+> +	if (ret)
+> +		return ret;
+>  
+> -	return ret;
+> +	val &= ~clear;
+> +	val |= set;
+> +	return pcie_capability_write_word(dev, pos, val);
+>  }
+>  EXPORT_SYMBOL(pcie_capability_clear_and_set_word_unlocked);
+>  
+> @@ -535,13 +534,12 @@ int pcie_capability_clear_and_set_dword(struct pci_dev *dev, int pos,
+>  	u32 val;
+>  
+>  	ret = pcie_capability_read_dword(dev, pos, &val);
+> -	if (!ret) {
+> -		val &= ~clear;
+> -		val |= set;
+> -		ret = pcie_capability_write_dword(dev, pos, val);
+> -	}
+> +	if (ret)
+> +		return ret;
+>  
+> -	return ret;
+> +	val &= ~clear;
+> +	val |= set;
+> +	return pcie_capability_write_dword(dev, pos, val);
+>  }
+>  EXPORT_SYMBOL(pcie_capability_clear_and_set_dword);
+>  
+> 
+--8323329-1153837569-1692950962=:3206--
