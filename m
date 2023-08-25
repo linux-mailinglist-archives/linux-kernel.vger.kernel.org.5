@@ -2,87 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0290C787CC6
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 03:09:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8E08787CC5
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 03:09:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237151AbjHYBIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 21:08:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39346 "EHLO
+        id S236891AbjHYBIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 21:08:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236173AbjHYBIf (ORCPT
+        with ESMTP id S236668AbjHYBIh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 21:08:35 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D0AE19BB;
-        Thu, 24 Aug 2023 18:08:33 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 299B262EC9;
-        Fri, 25 Aug 2023 01:08:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07376C433C7;
-        Fri, 25 Aug 2023 01:08:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692925712;
-        bh=cD8kNYTozm4FuGJASkCTOiGIy89mI5dFCwxsGj6eWRg=;
-        h=Date:Subject:To:References:From:In-Reply-To:From;
-        b=X/w2OvpRG0d2hEVa5GJsOYdO9HO0dZM+351CR1YQawNy+H1cVLe6qfmN4xe7bxD0r
-         iE+dMczgtnuj/gLd8ovO17reyq7Sxs8Ni+UrzOpLuWAzFYpOeOFp8C4Dzwxb+dFHv9
-         Ekxktp3qRZozdqEKajN57fkPifCV/rmhth4Q8J8YIOBUK7M+k08T2n2+MbHaaAjSws
-         hxV/V8czrwT3HURuKsp5rqUXufDOptm5ByF6PW2kn8SfxoTrqUkoZVl9AcxdlGwZ5g
-         UaL3TiWJPNLn03Nh/wAIQ7BxPzmhI62HvH8IbPL2B3uut/k4nk5qDI0/0SeC7vQCTW
-         /CcPCAWsAC4nA==
-Message-ID: <8680b259-528b-32a9-73ee-ce6a6406f13d@kernel.org>
-Date:   Fri, 25 Aug 2023 09:08:28 +0800
+        Thu, 24 Aug 2023 21:08:37 -0400
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com [209.85.216.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D3A519BB
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 18:08:35 -0700 (PDT)
+Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-26d3d868529so389561a91.2
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 18:08:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692925715; x=1693530515;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3dCcBtXWiWPSYXsQYLuq3iTu3I5/TeQSFgSM9sONk/k=;
+        b=h3bkohcXXImhdItW8CqypJaGfGxnc/l3PLjNf14LW4yWpcriGIPgSBN3X0ucUzL9/9
+         bHPHpsnMa4tkPISxp71/F1sUGReEJcglNTYQqUyU+sfeJtAsw/JavslG7ciW68MEMppJ
+         bSDz3x01Ds06xtu4uoqEf8PQRYOReHcEX3j8O+fu5uN6pn2KWX+O9PyQdMB15sffClww
+         7xNqlXu8sMz2xsEcq+FZow9RZeaiCiDTlB8A/XTm5yg8jOONAqvUzeJL3aQ4N9ORCO2U
+         bTT1Ao2HIer2wFgkxGuourJEm3yYPSZuMqGL7qVeZfkm3u2K522eAu5vVCNyPV2qnpGp
+         DqAg==
+X-Gm-Message-State: AOJu0YxyuIE+abtfw7wVW+9gjUAagVliFcFX3azx4bSInMAIu+sF+uE8
+        DtjH8SwpDCfw9hyNeQvL8xDJCAEx2smHSDhmmeRtHA8nNqzF
+X-Google-Smtp-Source: AGHT+IGsTCsdgvcfi7HoJRDvPTgY4swUryTP9RG3+0zAXEj1ww50udADvVEtezY+FIIXPCUItk6edHumXDBUapBXJk1Qc7PJk/v9
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [syzbot] [f2fs?] possible deadlock in f2fs_add_inline_entry
-To:     syzbot <syzbot+a4976ce949df66b1ddf1@syzkaller.appspotmail.com>,
-        hdanton@sina.com, jaegeuk@kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+X-Received: by 2002:a17:90a:f2c1:b0:26d:323c:a9b4 with SMTP id
+ gt1-20020a17090af2c100b0026d323ca9b4mr4320373pjb.3.1692925714997; Thu, 24 Aug
+ 2023 18:08:34 -0700 (PDT)
+Date:   Thu, 24 Aug 2023 18:08:34 -0700
+In-Reply-To: <20230824225837.3040-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000dfaa110603b4fbda@google.com>
+Subject: Re: [syzbot] [bluetooth?] KASAN: slab-use-after-free Read in hci_send_acl
+From:   syzbot <syzbot+a0c80b06ae2cb8895bc4@syzkaller.appspotmail.com>
+To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
         syzkaller-bugs@googlegroups.com
-References: <0000000000001b658e0603ad424d@google.com>
-Content-Language: en-US
-From:   Chao Yu <chao@kernel.org>
-In-Reply-To: <0000000000001b658e0603ad424d@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/24 23:55, syzbot wrote:
-> syzbot has bisected this issue to:
-> 
-> commit 5eda1ad1aaffdfebdecf7a164e586060a210f74f
-> Author: Jaegeuk Kim <jaegeuk@kernel.org>
-> Date:   Wed Jun 28 08:00:56 2023 +0000
-> 
->      f2fs: fix deadlock in i_xattr_sem and inode page lock
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=167691b7a80000
-> start commit:   cacc6e22932f tpm: Add a helper for checking hwrng enabled
-> git tree:       upstream
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=157691b7a80000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=117691b7a80000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=171b698bc2e613cf
-> dashboard link: https://syzkaller.appspot.com/bug?extid=a4976ce949df66b1ddf1
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=103c6bb3a80000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17bb51c7a80000
-> 
-> Reported-by: syzbot+a4976ce949df66b1ddf1@syzkaller.appspotmail.com
-> Fixes: 5eda1ad1aaff ("f2fs: fix deadlock in i_xattr_sem and inode page lock")
+Hello,
 
-#syz test: https://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs.git dev
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+WARNING in l2cap_chan_del
 
-> 
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 780 at kernel/workqueue.c:1725 __queue_work+0xb52/0x1060 kernel/workqueue.c:1724
+Modules linked in:
+CPU: 0 PID: 780 Comm: kworker/0:2 Not tainted 6.5.0-rc6-next-20230818-syzkaller-dirty #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+Workqueue: events l2cap_chan_timeout
+RIP: 0010:__queue_work+0xb52/0x1060 kernel/workqueue.c:1724
+Code: 03 38 d0 7c 09 84 d2 74 05 e8 ea 54 87 00 8b 5b 2c 31 ff 83 e3 20 89 de e8 5b cf 31 00 85 db 0f 85 7f 01 00 00 e8 de d3 31 00 <0f> 0b e9 ca fa ff ff e8 d2 d3 31 00 0f 0b e9 76 fa ff ff e8 c6 d3
+RSP: 0018:ffffc900046d7ac8 EFLAGS: 00010093
+RAX: 0000000000000000 RBX: ffff888013650000 RCX: 0000000000000000
+RDX: ffff88801d4d1dc0 RSI: ffffffff8155ff92 RDI: ffff888013650008
+RBP: 0000000000000000 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000000200000 R11: 0000000000000000 R12: ffff88806a634270
+R13: ffffffff81dd2d93 R14: ffff88806a6342b8 R15: ffffffff81dd2d93
+FS:  0000000000000000(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f98dec6b6c0 CR3: 000000000c976000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ __queue_delayed_work+0x1bf/0x260 kernel/workqueue.c:1950
+ queue_delayed_work_on+0x106/0x130 kernel/workqueue.c:1986
+ queue_delayed_work include/linux/workqueue.h:569 [inline]
+ hci_conn_drop include/net/bluetooth/hci_core.h:1549 [inline]
+ hci_conn_drop include/net/bluetooth/hci_core.h:1519 [inline]
+ l2cap_chan_del+0x389/0x9b0 net/bluetooth/l2cap_core.c:659
+ l2cap_chan_close+0xff/0xa20 net/bluetooth/l2cap_core.c:842
+ l2cap_chan_timeout+0x17d/0x2f0 net/bluetooth/l2cap_core.c:452
+ process_one_work+0x887/0x15d0 kernel/workqueue.c:2630
+ process_scheduled_works kernel/workqueue.c:2703 [inline]
+ worker_thread+0x8bb/0x1290 kernel/workqueue.c:2784
+ kthread+0x33a/0x430 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+ </TASK>
+
+
+Tested on:
+
+commit:         7271b2a5 Add linux-next specific files for 20230818
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=1333e4dfa80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1936af09cdef7dd6
+dashboard link: https://syzkaller.appspot.com/bug?extid=a0c80b06ae2cb8895bc4
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=1361735ba80000
+
