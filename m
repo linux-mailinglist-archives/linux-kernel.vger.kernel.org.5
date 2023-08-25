@@ -2,121 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB55D788928
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 15:56:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4B3878895B
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 15:57:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245338AbjHYNzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 09:55:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45744 "EHLO
+        id S245393AbjHYN5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 09:57:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245337AbjHYNzX (ORCPT
+        with ESMTP id S245447AbjHYN4y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 09:55:23 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CBDD213C
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 06:55:21 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-52683da3f5cso1402316a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 06:55:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692971720; x=1693576520;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WPFNeQZ6wVRfzI8X+CMFP24H+xIdOAmdyrQlfRbcMWo=;
-        b=ZN01E7vC5V4lr5DN8gK8WHHWia8UvZTCNZidis4wfPTVeTWXb7LIUjOy2lUstg2QFL
-         5GAg2aiShjUkSQK+8pamK94NEv+14WKP3TKGoCvA4s04POXDZOQ07bM8jTkNWPCLQGoY
-         SWsNKpUONLJeLM0Zel0KZHHSgd/OC2bb/eka/nIgZ4q0zDvllFitZi/8m8NOOyaZZQUd
-         kcmAthFH0TpQQWMESMcUQQ51C0EWAzsK7QnHzzLiak9o9vbiOTCXyuvBGia+Ze1Bd2Ze
-         DrKM71kEzpn1GWokkIAhYGn9ktuS1TNBEsEGm4iN5+SUe/of73o5DcFx57RZFOlcNzXU
-         qD/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692971720; x=1693576520;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WPFNeQZ6wVRfzI8X+CMFP24H+xIdOAmdyrQlfRbcMWo=;
-        b=RBt6E818hOcy4FSAKS9Mfy0wHV2vQc841b/7aayyqti0Xf+TYwyuSszurY7Z9bPTMX
-         EANEBgkIiXsRXSKpgdf8XEtsJMbsEay6EvwAKzgVUtoFIsFHpqRFAK4urCQGojojf16B
-         +vgLuKObXCMFnG0Ps4Ggfup7wvc4VejxJJm0FgX5Rpbx31U1pGMIAM+w/UaZ92taL0Mf
-         +yycKlMtAiDsW5yRgx+hqwqiyQWB+d/t0ZSgScKOoCfXVUY1a3ZWY1BtUd7JzoQJSAeY
-         +Jw9iTyFovWUm+rh5OIfaYheTjTWebTL37iYP0ENPat9z49oI6GWPsm9MtJooVZ+qy5h
-         gY0g==
-X-Gm-Message-State: AOJu0Yz0yfGQJ+acqgH0o3YdCzysVbyl4F87aEYcBR/xx8fbQrzmu89x
-        YDvH48cO5D17wVGqyUP9clTGmw==
-X-Google-Smtp-Source: AGHT+IFRV3jqjze/aOO11lTy2Fdk+HSPuP8nR7u8lakxQfGbHRcI9XDn413gGrhmM5E4cgTzI4fdqw==
-X-Received: by 2002:aa7:c698:0:b0:527:60c:53d9 with SMTP id n24-20020aa7c698000000b00527060c53d9mr12929555edq.15.1692971719371;
-        Fri, 25 Aug 2023 06:55:19 -0700 (PDT)
-Received: from krzk-bin.. ([77.252.47.198])
-        by smtp.gmail.com with ESMTPSA id c21-20020aa7d615000000b005256aaa6e7asm1019660edr.78.2023.08.25.06.55.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Aug 2023 06:55:18 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Bhupesh Sharma <bhupesh.sharma@linaro.org>,
-        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH 2/2] dt-bindings: mmc: sdhci-msm: allow flexible order of optional clocks
-Date:   Fri, 25 Aug 2023 15:55:03 +0200
-Message-Id: <20230825135503.282135-2-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230825135503.282135-1-krzysztof.kozlowski@linaro.org>
-References: <20230825135503.282135-1-krzysztof.kozlowski@linaro.org>
+        Fri, 25 Aug 2023 09:56:54 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC7122722;
+        Fri, 25 Aug 2023 06:56:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692971788; x=1724507788;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=rL8lwlEpWwyz5gytyannueKCuDWZ7o3Z7O2OXGq9D24=;
+  b=n2NsTeYC9dPgt8JUtmceRHEGDy+zmLfYRx22h38ZYAHBykBC9R0G3NMq
+   vGlmACzkVvY9UYi2pvyarR0ewng5inwB1nyg0tud/yKVtXd0XDwYX5cdI
+   t3t3nAdoLr3FII+4hhLBVxBWCUKGf/dzXWfQOtWymWRBKIIEJnnGgSjbp
+   POFT0yktsUUIvQI/1yMY2nutO8fbiaJQCPqm1zl5EaSKHS4EWhLJDraV4
+   CiG8UQN6JR9LogHZrNaeLLAo0VrnpXxuiK+fBlKNEYd7aI/RCZpYn9RZc
+   GblVxbkD8dutmuc2BLvDein1tbgtV75fIE3NkqgRGQG+atFDQeRDiTmlI
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10813"; a="373586065"
+X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
+   d="scan'208";a="373586065"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2023 06:56:24 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10813"; a="731073145"
+X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
+   d="scan'208";a="731073145"
+Received: from ogbrugge-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.56.56])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2023 06:56:16 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Vignesh Raman <vignesh.raman@collabora.com>,
+        dri-devel@lists.freedesktop.org
+Cc:     emma@anholt.net, linux-doc@vger.kernel.org,
+        david.heidelberg@collabora.com, linux-amlogic@lists.infradead.org,
+        jbrunet@baylibre.com, robdclark@google.com, corbet@lwn.net,
+        khilman@baylibre.com, sergi.blanch.torne@collabora.com,
+        gustavo.padovan@collabora.com, linux-rockchip@lists.infradead.org,
+        daniels@collabora.com, martin.blumenstingl@googlemail.com,
+        robclark@freedesktop.org, helen.koike@collabora.com,
+        anholt@google.com, linux-mediatek@lists.infradead.org,
+        mripard@kernel.org, matthias.bgg@gmail.com,
+        linux-arm-kernel@lists.infradead.org,
+        angelogioacchino.delregno@collabora.com, neil.armstrong@linaro.org,
+        guilherme.gallo@collabora.com, linux-kernel@vger.kernel.org,
+        tzimmermann@suse.de
+Subject: Re: [PATCH 2/6] drm: ci: Force db410c to host mode
+In-Reply-To: <20230825122435.316272-3-vignesh.raman@collabora.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20230825122435.316272-1-vignesh.raman@collabora.com>
+ <20230825122435.316272-3-vignesh.raman@collabora.com>
+Date:   Fri, 25 Aug 2023 16:56:12 +0300
+Message-ID: <87pm3b2pkz.fsf@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Qualcomm SDHCI controller lists optional clocks, but still expects
-fixed order of them and does not allow to skip such clocks if further
-one in the list is needed.  These optional clocks are truly optional,
-so we need to allow the list to have different orders.  The clocks are:
- - ice: used for Inline Crypto Engine, which is actually separate block
-   and merging it with SDHCI is not a requirement,
- - bus: clock for SDCC bus frequency voting,
- - cal and sleep: used for RCLK delay calibration and required for
-   certain platforms for such calibration (as expressed in original
-   commit 4946b3af5e8e ("mmc: sdhci-msm: Enable delay circuit
-   calibration clocks")).  Only MSM8974pro has these clocks.
+On Fri, 25 Aug 2023, Vignesh Raman <vignesh.raman@collabora.com> wrote:
+> Force db410c to host mode to fix network issue which results in failure
+> to mount root fs via NFS.
+> See https://gitlab.freedesktop.org/gfx-ci/linux/-/commit/cb72a629b8c15c80a54dda510743cefd1c4b65b8
+>
+> Since this fix is not sent upstream, add it to build.sh script
+> before building the kernel and dts. Better approach would be
+> to use devicetree overlays.
+>
+> Signed-off-by: Vignesh Raman <vignesh.raman@collabora.com>
+> ---
+>  drivers/gpu/drm/ci/build.sh | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/ci/build.sh b/drivers/gpu/drm/ci/build.sh
+> index 7b014287a041..c39834bd6bd7 100644
+> --- a/drivers/gpu/drm/ci/build.sh
+> +++ b/drivers/gpu/drm/ci/build.sh
+> @@ -70,6 +70,10 @@ if [ -z "$CI_MERGE_REQUEST_PROJECT_PATH" ]; then
+>      fi
+>  fi
+>  
+> +# Force db410c to host mode to fix network issue which results in failure to mount root fs via NFS.
+> +# See https://gitlab.freedesktop.org/gfx-ci/linux/-/commit/cb72a629b8c15c80a54dda510743cefd1c4b65b8
+> +sed -i '/&usb {/,/status = "okay";/s/status = "okay";/&\n\tdr_mode = "host";/' arch/arm64/boot/dts/qcom/apq8016-sbc.dts
+> +
 
-Relaxing the order fixes dtbs_check warnings:
+It seems like a really bad idea to me to have the CI build modify the
+source tree before building.
 
-  qcom-msm8974pro-fairphone-fp2.dtb: mmc@f9824900: clock-names:3: 'ice' was expected
-  qcom-msm8974pro-fairphone-fp2.dtb: mmc@f9824900: clock-names:4: 'bus' was expected
+The kernel being built will have a dirty git repo, and the localversion
+will have -dirty in it.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- Documentation/devicetree/bindings/mmc/sdhci-msm.yaml | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+I think it would be better to do out-of-tree builds and assume the
+source is read-only.
 
-diff --git a/Documentation/devicetree/bindings/mmc/sdhci-msm.yaml b/Documentation/devicetree/bindings/mmc/sdhci-msm.yaml
-index 10f34aa8ba8a..69a213965089 100644
---- a/Documentation/devicetree/bindings/mmc/sdhci-msm.yaml
-+++ b/Documentation/devicetree/bindings/mmc/sdhci-msm.yaml
-@@ -85,10 +85,10 @@ properties:
-       - const: iface
-       - const: core
-       - const: xo
--      - const: ice
--      - const: bus
--      - const: cal
--      - const: sleep
-+      - enum: [ice, bus, cal, sleep]
-+      - enum: [ice, bus, cal, sleep]
-+      - enum: [ice, bus, cal, sleep]
-+      - enum: [ice, bus, cal, sleep]
- 
-   dma-coherent: true
- 
+>  for opt in $ENABLE_KCONFIGS; do
+>    echo CONFIG_$opt=y >> drivers/gpu/drm/ci/${KERNEL_ARCH}.config
+>  done
+
+Ditto for the config changes in the context here. Those are files in
+git, don't change them.
+
+Shouldn't this use something like 'scripts/config --enable' or
+'scripts/config --disable' on the .config file to be used for building
+instead?
+
+
+BR,
+Jani.
+
+
 -- 
-2.34.1
-
+Jani Nikula, Intel Open Source Graphics Center
