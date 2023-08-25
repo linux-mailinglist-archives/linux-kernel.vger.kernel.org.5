@@ -2,118 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEA38787FB7
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 08:20:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1232787FC1
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 08:22:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241400AbjHYGT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 02:19:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60890 "EHLO
+        id S241144AbjHYGWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 02:22:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234731AbjHYGTh (ORCPT
+        with ESMTP id S231952AbjHYGV2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 02:19:37 -0400
-Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 941771BF1;
-        Thu, 24 Aug 2023 23:19:34 -0700 (PDT)
+        Fri, 25 Aug 2023 02:21:28 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28B691FF0
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 23:21:20 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-99c1f6f3884so65514866b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 23:21:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1692944374; x=1724480374;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=1+p0zY/IBQSsqQ7CeXy3RYnB3en+Ol+WgPS2hbi2Ohs=;
-  b=Qi2lAKgrUXxXl9jnAfoFVarbxhQ5eNq27r/CdDhRcwoUageuxD8fSAuS
-   LKm15eU2CMfO8mVuThQNmmU42POInGasOZepOI+cy25QZHGWwnOQK1Zu0
-   htGIpUSzBS5RhB5F3wmhHhT2PxddKJmZcn4ohBivlZfgu6sdXFiLFg0N4
-   1KdiCPL9sJJS2+0OP4WkSjI5QEAe2jYMHs2wy6ynNGaBCbH1V0wXko8h6
-   Btd/NhTA70CheL8Qljv9kszUT3qi+71I0aTuWU2UD6vxH0nNFkxafqmSU
-   BPAICg4dmLasMezrjngKXjWxyZG/AWMJc2u/Ey46JvHNJtTy8y6L2KN+P
-   w==;
-X-IronPort-AV: E=Sophos;i="6.02,195,1688421600"; 
-   d="scan'208";a="32620719"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 25 Aug 2023 08:19:32 +0200
-Received: from steina-w.localnet (steina-w.tq-net.de [10.123.53.21])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id B05C7280075;
-        Fri, 25 Aug 2023 08:19:32 +0200 (CEST)
-From:   Alexander Stein <alexander.stein@ew.tq-group.com>
-To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        Markus Niebel <Markus.Niebel@ew.tq-group.com>,
-        Lee Jones <lee@kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: adjust file patterns in TQ SYSTEMS BOARD & DRIVER SUPPORT
-Date:   Fri, 25 Aug 2023 08:19:32 +0200
-Message-ID: <11135245.nUPlyArG6x@steina-w>
-Organization: TQ-Systems GmbH
-In-Reply-To: <20230825055821.30508-1-lukas.bulwahn@gmail.com>
-References: <20230825055821.30508-1-lukas.bulwahn@gmail.com>
+        d=linaro.org; s=google; t=1692944478; x=1693549278;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CBxnZfv7/cH1hRB0BhsWxJRlKySChDxPip0EzQICdP8=;
+        b=v8kdgE5e4XH4nsipzfMsATjh5Oy01RtVCq5xvJd2GoQII71ClGbkLd02yu5J94HcPy
+         rnw71C8Itn6w/02FswZ2Ivsa0N3dQ9Ofwtx//vFtHG6ULEv2luOQvVwrGMcOBQdDsSzw
+         qvSoC1uwYBfgyLfdAWwhkqf3eMe6SR6jZp874Bq6AXit3XFsYpbmEBrfiZrR3yDKQ9Hp
+         vt91MnKjP/yw81XJq5rYLvySUtmQNeoTrltEr1zba0DpqGiC67BI7Ru5OmYh2NdRNPkX
+         ZLy/vybV98yylUYcKNJH97/3qKdICWKeqm5MWMvAd5fGIuwY2BrecWUErSUQF9TOUTim
+         47VQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692944478; x=1693549278;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CBxnZfv7/cH1hRB0BhsWxJRlKySChDxPip0EzQICdP8=;
+        b=joPiEScwl3kn46KGVvhn04eTqn3+UOCgvKwCvO6pzxDqcXys7vp5qcymnpSORJY26d
+         HCYK3ZuOVtEtcijcn8p/xfgbBJFDfpc79muS1mjbm2g96E+4VTTwcNhxlgI0epfAWuCD
+         3jnMLsUGjL0q78gp1y8gR6SzigZvbxgzsyVxHcYN8MgFawYHYcMdFuHAMUJ0NcGkafxe
+         zgfYU03NJoeMxnM8uG9ekpdOB6aZW9mG9eOc5l6sSWRp7akavUcsQi6GHVhNsJ0VO6Tx
+         gZG+woOyQJsv0ul6YmZn4DWocMge05fh8oc2jDRrxbiF7S3GuXiAMAd2Mqbvymhtkjn8
+         HtAA==
+X-Gm-Message-State: AOJu0Yxb+e7ECO9rJA2bdkHRTUIuSDlBG32ENGfTfawSn+NfXrLQg+VZ
+        imCUdYd3szkz9P6NMusd9D+vL+DLXgdSZeMkdOA=
+X-Google-Smtp-Source: AGHT+IFljUSTpwe44zryqFCU44Zs/vd81YaW0Y2DPrJTJb8DDeiQwlMm6Xs2N4hra1eh0QlpLazdiA==
+X-Received: by 2002:a17:906:3ca1:b0:9a1:891b:6eed with SMTP id b1-20020a1709063ca100b009a1891b6eedmr10694918ejh.76.1692944478566;
+        Thu, 24 Aug 2023 23:21:18 -0700 (PDT)
+Received: from [192.168.0.22] ([77.252.47.198])
+        by smtp.gmail.com with ESMTPSA id re4-20020a170906d8c400b009930042510csm570386ejb.222.2023.08.24.23.21.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Aug 2023 23:21:18 -0700 (PDT)
+Message-ID: <eb951323-d896-5ab9-e477-7dd412af58e5@linaro.org>
+Date:   Fri, 25 Aug 2023 08:21:17 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 2/2] dt-bindings: gpio: pca95xx: document new tca9538 chip
+Content-Language: en-US
+To:     Liam Beguin <liambeguin@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andy@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        devicetree@vger.kernel.org
+References: <20230824-tca9538-v1-0-ee3bf2065065@gmail.com>
+ <20230824-tca9538-v1-2-ee3bf2065065@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230824-tca9538-v1-2-ee3bf2065065@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lukas,
+On 25/08/2023 01:16, Liam Beguin wrote:
+> The previous patch added support for this chip. 
 
-Am Freitag, 25. August 2023, 07:58:21 CEST schrieb Lukas Bulwahn:
-> Commit 77da3f22b3d5 ("MAINTAINERS: Add entry for TQ-Systems device trees
-> and drivers") adds some file patterns for files in arch/arm/boot/dts/, but
-> those patterns do not match any files in the repository. Hence,
-> ./scripts/get_maintainer.pl --self-test=3Dpatterns complains about broken
-> references. The files of interest are actually in the directory
-> arch/arm/boot/dts/nxp/imx/.
+This is not needed. If by any chance this would go via different trees,
+it would stop to make any sense.
 
-Nice, I didn't know about --self-test=3Dpatterns. But you are right, the=20
-patterns do not match anymore since arch/arm dts restructuring.
-I also suggest to add the Fixes tag:
+Also, is wrong. Bindings come *always* before the users.
 
-=46ixes: 77da3f22b3d54 ("MAINTAINERS: Add entry for TQ-Systems device trees=
- and=20
-drivers")
-Reviewed-by: Alexander Stein <alexander.stein@ew.tq-group.com>
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-> Adjust the file patterns to match the intended files.
->=20
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> ---
-> Lee, please pick this minor clean-up patch.
->=20
->  MAINTAINERS | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->=20
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 52277ee9c1b8..f5d4058b7ff4 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -21817,9 +21817,9 @@ TQ SYSTEMS BOARD & DRIVER SUPPORT
->  L:	linux@ew.tq-group.com
->  S:	Supported
->  W:	https://www.tq-group.com/en/products/tq-embedded/
-> -F:	arch/arm/boot/dts/imx*mba*.dts*
-> -F:	arch/arm/boot/dts/imx*tqma*.dts*
-> -F:	arch/arm/boot/dts/mba*.dtsi
-> +F:	arch/arm/boot/dts/nxp/imx/imx*mba*.dts*
-> +F:	arch/arm/boot/dts/nxp/imx/imx*tqma*.dts*
-> +F:	arch/arm/boot/dts/nxp/imx/mba*.dtsi
->  F:	arch/arm64/boot/dts/freescale/imx*mba*.dts*
->  F:	arch/arm64/boot/dts/freescale/imx*tqma*.dts*
->  F:	arch/arm64/boot/dts/freescale/mba*.dtsi
-
-
-=2D-=20
-TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
-Amtsgericht M=FCnchen, HRB 105018
-Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
-http://www.tq-group.com/
-
+Best regards,
+Krzysztof
 
