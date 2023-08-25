@@ -2,118 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A9847881B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 10:12:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01C6A788210
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 10:28:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242054AbjHYIMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 04:12:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47054 "EHLO
+        id S240809AbjHYI2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 04:28:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243513AbjHYILu (ORCPT
+        with ESMTP id S243840AbjHYI1j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 04:11:50 -0400
-Received: from omta40.uswest2.a.cloudfilter.net (omta40.uswest2.a.cloudfilter.net [35.89.44.39])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9E7A1FF6
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 01:11:48 -0700 (PDT)
-Received: from eig-obgw-6006a.ext.cloudfilter.net ([10.0.30.182])
-        by cmsmtp with ESMTP
-        id ZKFAq8r2QbK1VZRv2qwxQQ; Fri, 25 Aug 2023 08:11:48 +0000
-Received: from box5620.bluehost.com ([162.241.219.59])
-        by cmsmtp with ESMTPS
-        id ZRv0qUSyEOWWRZRv0qyA2j; Fri, 25 Aug 2023 08:11:46 +0000
-X-Authority-Analysis: v=2.4 cv=KdTBDCUD c=1 sm=1 tr=0 ts=64e86243
- a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10 a=UttIx32zK-AA:10 a=-Ou01B_BuAIA:10 a=VwQbUJbxAAAA:8
- a=HaFmDPmJAAAA:8 a=-AzgORsN3iX8tt9mf90A:9 a=QEXdDO2ut3YA:10
- a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
-        s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
-        Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=SCiWYzsVolO7w3Wa+gemxZXSn/MaqliOj3WbUz/Gx98=; b=LPSeodhK9q21GrZsAs44/bozZv
-        EkesParxpwODw878cGIEu78ujaMZzrVaj7Bx3LREfelEI4/ja+LB9yXmEEoMttQHf/MMxnv0pss2G
-        lYeCCEvexpGg2sF03N6TvfOj3xrjIDvWEPqljaZWTnx/1t+ALXXeKh2C931XoROFLYYYq0676mHXf
-        fL2bcVYdmtYrqsJXZW4LRWz09kljcNFBgpivqUkMiB6bfxGY53pURkSGkglDk4TmD9xNcW7bX5UEK
-        hLZZCVF6jeFs6DR5JsHuJDfW/ecJK6dJ1OzaUkpmA9+uA19yjJTuhasQNSDza41T/f32cTqy/PH85
-        rhfnORmw==;
-Received: from c-73-162-232-9.hsd1.ca.comcast.net ([73.162.232.9]:53070 helo=[10.0.1.47])
-        by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.96)
-        (envelope-from <re@w6rz.net>)
-        id 1qZRuy-0014FF-0W;
-        Fri, 25 Aug 2023 02:11:44 -0600
-Subject: Re: [PATCH 5.15 000/139] 5.15.128-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-References: <20230824145023.559380953@linuxfoundation.org>
-In-Reply-To: <20230824145023.559380953@linuxfoundation.org>
-From:   Ron Economos <re@w6rz.net>
-Message-ID: <90797d76-4a3b-8e39-62f0-f7da1d61e47d@w6rz.net>
-Date:   Fri, 25 Aug 2023 01:11:42 -0700
-User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Fri, 25 Aug 2023 04:27:39 -0400
+X-Greylist: delayed 601 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 25 Aug 2023 01:27:28 PDT
+Received: from mail-m11880.qiye.163.com (mail-m11880.qiye.163.com [115.236.118.80])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C0B62108;
+        Fri, 25 Aug 2023 01:27:28 -0700 (PDT)
+Received: from [172.16.12.69] (unknown [58.22.7.114])
+        by mail-m11880.qiye.163.com (Hmail) with ESMTPA id E4E1620B33;
+        Fri, 25 Aug 2023 16:11:49 +0800 (CST)
+Message-ID: <c8c059ce-53a9-3627-8984-dff771dff1de@rock-chips.com>
+Date:   Fri, 25 Aug 2023 16:11:49 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - box5620.bluehost.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - w6rz.net
-X-BWhitelist: no
-X-Source-IP: 73.162.232.9
-X-Source-L: No
-X-Exim-ID: 1qZRuy-0014FF-0W
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: c-73-162-232-9.hsd1.ca.comcast.net ([10.0.1.47]) [73.162.232.9]:53070
-X-Source-Auth: re@w6rz.net
-X-Email-Count: 4
-X-Org:  HG=bhshared;ORG=bluehost;
-X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfFSotuDi7y/3zpLZMJjW0oFvmlH6jBpop6BcNd0Oqz4xBaVtI3GaRdneC0A2wo7gGngSdpt/x5J0t9/TL0pTFrEPKeCx8oxI/TIDznIFyaAuTpZoGgDk
- N1rKXPbeVcjWW3hcogu4pdFu3XGEXlGLOA7Rnbub/SCH+2c91Cd3HbQYRmPhRErRPVIJMYfOREaBix3eQAU8wHYqfpt8wZ2NWNU=
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Cc:     shawn.lin@rock-chips.com,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "angelogioacchino.delregno@collabora.com" 
+        <angelogioacchino.delregno@collabora.com>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
+Subject: Re: [PATCH 1/1] mmc: Set optimal I/O size when mmc_setip_queue
+To:     =?UTF-8?B?U2hhcnAgWGlhICjlpI/lroflvawp?= <Sharp.Xia@mediatek.com>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>
+References: <20230818022817.3341-1-Sharp.Xia@mediatek.com>
+ <CAPDyKFqN0K=2e4rijUBz=9LXVfhEVvDzNgqXTyTgvaPRK-PBNQ@mail.gmail.com>
+ <f71672cc699900b57d257c56b325e185f2b6fdd9.camel@mediatek.com>
+Content-Language: en-GB
+From:   Shawn Lin <shawn.lin@rock-chips.com>
+In-Reply-To: <f71672cc699900b57d257c56b325e185f2b6fdd9.camel@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+        tZV1koWUFDSUNOT01LS0k3V1ktWUFJV1kPCRoVCBIfWUFZGhkdS1ZJHUMdGh9MSR0eGR9VEwETFh
+        oSFyQUDg9ZV1kYEgtZQVlOQ1VJSVVMVUpKT1lXWRYaDxIVHRRZQVlPS0hVSk1PSU5IVUpLS1VKQk
+        tLWQY+
+X-HM-Tid: 0a8a2bbfe2152eb6kusne4e1620b33
+X-HM-MType: 1
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6M006Hhw5DD0BLz8BLUsSDgsM
+        AQswFDBVSlVKTUJJQk5KSkpLTENKVTMWGhIXVQgTGgwVVRcSFTsJFBgQVhgTEgsIVRgUFkVZV1kS
+        C1lBWU5DVUlJVUxVSkpPWVdZCAFZQU5ISEg3Bg++
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/24/23 7:48 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.15.128 release.
-> There are 139 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sat, 26 Aug 2023 14:49:55 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.128-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Hi Sharp,
 
-Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
+On 2023/8/25 15:10, Sharp Xia (夏宇彬) wrote:
+> On Thu, 2023-08-24 at 12:55 +0200, Ulf Hansson wrote:
+>>   	
+>> External email : Please do not click links or open attachments until
+>> you have verified the sender or the content.
+>>   On Fri, 18 Aug 2023 at 04:45, <Sharp.Xia@mediatek.com> wrote:
+>>>
+>>> From: Sharp Xia <Sharp.Xia@mediatek.com>
+>>>
+>>> MMC does not set readahead and uses the default VM_READAHEAD_PAGES
+>>> resulting in slower reading speed.
+>>> Use the max_req_size reported by host driver to set the optimal
+>>> I/O size to improve performance.
+>>
+>> This seems reasonable to me. However, it would be nice if you could
+>> share some performance numbers too - comparing before and after
+>> $subject patch.
+>>
+>> Kind regards
+>> Uffe
+>>
+>>>
+>>> Signed-off-by: Sharp Xia <Sharp.Xia@mediatek.com>
+>>> ---
+>>>   drivers/mmc/core/queue.c | 1 +
+>>>   1 file changed, 1 insertion(+)
+>>>
+>>> diff --git a/drivers/mmc/core/queue.c b/drivers/mmc/core/queue.c
+>>> index b396e3900717..fc83c4917360 100644
+>>> --- a/drivers/mmc/core/queue.c
+>>> +++ b/drivers/mmc/core/queue.c
+>>> @@ -359,6 +359,7 @@ static void mmc_setup_queue(struct mmc_queue
+>> *mq, struct mmc_card *card)
+>>>                  blk_queue_bounce_limit(mq->queue, BLK_BOUNCE_HIGH);
+>>>          blk_queue_max_hw_sectors(mq->queue,
+>>>                  min(host->max_blk_count, host->max_req_size /
+>> 512));
+>>> +       blk_queue_io_opt(mq->queue, host->max_req_size);
+>>>          if (host->can_dma_map_merge)
+>>>                  WARN(!blk_queue_can_use_dma_map_merging(mq->queue,
+>>>                                                          mmc_dev(hos
+>> t)),
+>>> --
+>>> 2.18.0
+>>>
+> 
+> I test this patch on internal platform(kernel-5.15).
 
-Tested-by: Ron Economos <re@w6rz.net>
+I patched this one and the test shows me a stable 11% performance drop.
 
+Before:
+echo 3 > proc/sys/vm/drop_caches && dd if=/data/1GB.img of=/dev/null 
+
+2048000+0 records in
+2048000+0 records out
+1048576000 bytes (0.9 G) copied, 3.912249 s, 256 M/s
+
+After:
+echo 3 > proc/sys/vm/drop_caches && dd if=/data/1GB.img of=/dev/null
+2048000+0 records in
+2048000+0 records out
+1048576000 bytes (0.9 G) copied, 4.436271 s, 225 M/s
+
+> 
+> Before:
+> console:/ # echo 3 > /proc/sys/vm/drop_caches
+> console:/ # dd if=/mnt/media_rw/8031-130D/super.img of=/dev/null
+> 4485393+1 records in
+> 4485393+1 records out
+> 2296521564 bytes (2.1 G) copied, 37.124446 s, 59 M/s
+> console:/ # cat /sys/block/mmcblk0/queue/read_ahead_kb
+> 128
+> 
+> After:
+> console:/ # echo 3 > /proc/sys/vm/drop_caches
+> console:/ # dd if=/mnt/media_rw/8031-130D/super.img of=/dev/null
+> 4485393+1 records in
+> 4485393+1 records out
+> 2296521564 bytes (2.1 G) copied, 28.956049 s, 76 M/s
+> console:/ # cat /sys/block/mmcblk0/queue/read_ahead_kb
+> 1024
+> 
