@@ -2,130 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F5B5788019
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 08:41:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9E84788018
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 08:41:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242125AbjHYGkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 02:40:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54408 "EHLO
+        id S242192AbjHYGkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 02:40:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242192AbjHYGkN (ORCPT
+        with ESMTP id S242453AbjHYGkT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 02:40:13 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B41A92133;
-        Thu, 24 Aug 2023 23:39:58 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 270CF65D38;
-        Fri, 25 Aug 2023 06:39:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9087DC433C9;
-        Fri, 25 Aug 2023 06:39:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692945597;
-        bh=+s9Koxy+TTugL21cIgmab6DIs5KPUzfsaLnpEMPjvp0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=PftxFfPsqmjM96yXBpsER0XAs1j2lNUhEx2JdTIu55RGddcad4EGCynCy5aUnXuyx
-         eXs/xTgmkOZTt2MkQDDrkrBIvrZlQ37Qw5fU4dx+4EMZRbg/mba4DEBOTxfLz27+MB
-         NW88zbxmdUjdGWfNDZtTqVkWRtPFEY+Azne0i96/Se8HnpVaNxP8dVKqf1nYEeH9v1
-         i/CudMJ9rS2H+OmInNs6Ef5L6dIKjYD+i2UI6C1C2CXOAPj3kbUilLVHU9fORHioSi
-         1DmfCBeMhvADgk8l10TbVZKDwkgSYXl81RLMjhzCCiIsH906sObZvd8IvOqbgS/usT
-         2tt1nJ4ahnR8A==
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-5007abb15e9so860899e87.0;
-        Thu, 24 Aug 2023 23:39:57 -0700 (PDT)
-X-Gm-Message-State: AOJu0YyPvAgix6OSbp4jNpsUqUPmwzxQWNqJ0RjTzhVgHmPtkQ1Bs3nh
-        P45Jr1HosFxGGdXtYVs4Whgjj63Ea2+vgJJF5tc=
-X-Google-Smtp-Source: AGHT+IGObpDVPkI2f3gHr+eNk39SieeXXdBFR5o42FZlpllf6UoziXUH5g+xRTGeYzlJmnL15n5EctIxGgedfI8pCCE=
-X-Received: by 2002:ac2:4f15:0:b0:4fb:911b:4e19 with SMTP id
- k21-20020ac24f15000000b004fb911b4e19mr14250662lfr.35.1692945595602; Thu, 24
- Aug 2023 23:39:55 -0700 (PDT)
+        Fri, 25 Aug 2023 02:40:19 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 013E91FF3;
+        Thu, 24 Aug 2023 23:40:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692945609; x=1724481609;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=etGYANIF6LqY7TvLbzOmTClwc0aVFSmG7bkx+aHoS2s=;
+  b=GXWBBhTCQO6k3dVt+PiOKnpB2Ra3PyZ85JTbAG7V3zGsRB0gSWVmOzJX
+   abJL5nFBr5iZ2/9nbNNzGgDTODxQm8sgfBBCJICyOLGeQKxojw9Oc3mGz
+   fS/QyhAUs/FXSbwZKb4WbXNDyJ3RFJYepB3UfKmfNJ4nT2T4H+zOM69Gp
+   exW6UqfYHjhYLWYfqGXwZCm2geUeh6YnlFxURRCUFb5DpDeMSbO1Q5LIM
+   Cv1r3Rt7b05D6RKexVlav+yS4hmzq4eJI00hZQYmpMdM+fRbqazOeQaJQ
+   sQMNcdnf+b6oN3lH53ZPhyYBh4xA6zBTSkGIeiGUZg1HVaSCvjIQXlUhE
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="440991156"
+X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
+   d="scan'208";a="440991156"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 23:39:51 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="1068133216"
+X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
+   d="scan'208";a="1068133216"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga005.fm.intel.com with ESMTP; 24 Aug 2023 23:39:49 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1001)
+        id 454961CA; Fri, 25 Aug 2023 09:39:48 +0300 (EEST)
+Date:   Fri, 25 Aug 2023 09:39:48 +0300
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     bhelgaas@google.com, koba.ko@canonical.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] PCI: Add helper to check if any of ancestor device
+ support D3cold
+Message-ID: <20230825063948.GY3465@black.fi.intel.com>
+References: <20230824044645.423378-1-kai.heng.feng@canonical.com>
+ <20230824115656.GW3465@black.fi.intel.com>
+ <CAAd53p4Ey15SRkeW-5rDQfxrT8Cif+hYOk2BZ6iQpfd8s51wEw@mail.gmail.com>
+ <20230825052946.GX3465@black.fi.intel.com>
+ <CAAd53p71gLHq71WtnWBXOaX6K6rXyZ=nrGND5x8ZKXvyNsWBtw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20230825031622.1530464-1-yukuai1@huaweicloud.com>
-In-Reply-To: <20230825031622.1530464-1-yukuai1@huaweicloud.com>
-From:   Song Liu <song@kernel.org>
-Date:   Thu, 24 Aug 2023 23:39:43 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW4rQ1V7EHgfpfx9rL2=pUAcjr+Eint2iD0_EfVAbzcKOQ@mail.gmail.com>
-Message-ID: <CAPhsuW4rQ1V7EHgfpfx9rL2=pUAcjr+Eint2iD0_EfVAbzcKOQ@mail.gmail.com>
-Subject: Re: [PATCH -next v4 0/7] md: make rdev addition and removal
- independent from daemon thread
-To:     Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     xni@redhat.com, linux-raid@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yukuai3@huawei.com,
-        yi.zhang@huawei.com, yangerkun@huawei.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAAd53p71gLHq71WtnWBXOaX6K6rXyZ=nrGND5x8ZKXvyNsWBtw@mail.gmail.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 8:20=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.com> w=
-rote:
->
-> From: Yu Kuai <yukuai3@huawei.com>
->
-> Changes in v4:
->  - add some review tag;
->  - add comments to make code more readadble for patch 4,6;
->  - rework patch 7 a litter;
+On Fri, Aug 25, 2023 at 01:43:08PM +0800, Kai-Heng Feng wrote:
+> On Fri, Aug 25, 2023 at 1:29 PM Mika Westerberg
+> <mika.westerberg@linux.intel.com> wrote:
+> >
+> > On Thu, Aug 24, 2023 at 09:46:00PM +0800, Kai-Heng Feng wrote:
+> > > Hi,
+> > >
+> > > On Thu, Aug 24, 2023 at 7:57 PM Mika Westerberg
+> > > <mika.westerberg@linux.intel.com> wrote:
+> > > >
+> > > > Hi,
+> > > >
+> > > > On Thu, Aug 24, 2023 at 12:46:43PM +0800, Kai-Heng Feng wrote:
+> > > > > In addition to nearest upstream bridge, driver may want to know if the
+> > > > > entire hierarchy can be powered off to perform different action.
+> > > > >
+> > > > > So walk higher up the hierarchy to find out if any device has valid
+> > > > > _PR3.
+> > > >
+> > > > I'm not entirely sure this is good idea. The drivers should expect that
+> > > > the power will be turned off pretty soon after device enters D3hot. Also
+> > > > _PR3 is not PCI concept it's ACPI concept so API like this would only
+> > > > work on systems with ACPI.
+> > >
+> > > IIUC, Bjorn wants to limit the AER/DPC disablement when device power
+> > > is really off.
+> > > Is "the power will be turned off pretty soon after device enters
+> > > D3hot" applicable to most devices? Since config space is still
+> > > accessible when device is in D3hot.
+> >
+> > Well the device may be part of a topology, say Thunderbolt/USB4 (but can
+> > be NVMe or similar) where it initially goes into D3hot but in the end
+> > the whole topology is put into D3cold. The device driver really should
+> > expect that this happens always and not try to distinguish between the
+> > D3hot or D3cold.
+> 
+> What if the device is not in such topology? There are cases that the
+> rootport doesn't have Power Resources associated so the rootport also
+> stays in D3hot.
 
-Applied v4 to md-next. But this set won't go into 6.6.
+Yes and this is why the driver should not care. Otherwise it just
+complicates things.
 
-Thanks,
-Song
+For instance, a root port may have _PR3 that allows the whole thing to
+enter L2/3 (D3cold) but some device has d3cold_allowed set to false or
+there may be a device that does not support PME on D3cold which prevents
+the power to be turned off.
 
->
-> Changes in v3:
->  - rename md_choose_sync_direction() to md_choose_sync_action() in patch =
-2;
->  - fix an error in patch 3;
->  - add flush_work(&mddev->sync_work) while change read-only array to
->  read-write;
->
-> Changes in v2:
->  - remove patch 1 from v1 and some related patches, those patches will
->  be sent later when rcu protection for rdev is removed.
->  - add patch 2.
->
-> This is the third patchset to do some preparatory work to synchronize
-> io with array reconfiguration.
->
-> 1) The first patchset refactor 'active_io', make sure that mddev_suspend(=
-)
-> will wait for io to be done. [1]
->
-> 2) The second patchset remove 'quiesce' callback from mddev_suspend(), so
-> that mddev_suspend() doesn't rely on 'quiesce' callback is registered,
-> and can be used for all personalites; [2]
->
-> 3) This patchset make array reconfiguration independent from daemon threa=
-d,
-> and synchronize it with io will be much easier because io may rely on
-> daemon thread to be done.
->
-> More patchset on the way!
->
-> Yu Kuai (7):
->   md: use separate work_struct for md_start_sync()
->   md: factor out a helper to choose sync action from md_check_recovery()
->   md: delay choosing sync action to md_start_sync()
->   md: factor out a helper rdev_removeable() from remove_and_add_spares()
->   md: factor out a helper rdev_is_spare() from remove_and_add_spares()
->   md: factor out a helper rdev_addable() from remove_and_add_spares()
->   md: delay remove_and_add_spares() for read only array to
->     md_start_sync()
->
->  drivers/md/md.c | 308 +++++++++++++++++++++++++++++++++---------------
->  drivers/md/md.h |   5 +-
->  2 files changed, 218 insertions(+), 95 deletions(-)
->
-> --
-> 2.39.2
->
+> I think what Bjorn suggested is to keep AER enabled for D3hot, and
+> only disable it for D3cold and S3.
+> 
+> >
+> > > Unless there are cases when device firmware behave differently to
+> > > D3hot? Then maybe it's better to disable AER for both D3hot, D3cold
+> > > and system S3.
+> >
+> > Yes, this makes sense.
+> 
+> I agree that differentiate between D3hot and D3cold unnecessarily make
+> things more complicated, but Bjorn suggested errors reported by AER
+> under D3hot should still be recorded.
+> Do you have more compelling data to persuade Bjorn that AER should be
+> disabled for both D3 states?
+
+Is there even an AER error that can happen when a device is in D3hot
+(link is in L1) or D3cold (link is in L2/3)? I'm not an expert in AER
+but AFAICT these errors are reported when the device is in active state
+not when it is in low power state.
+
+All that said, Bjorn is the maintainer so he gets to decide. If this is
+what he suggested then I'm fine with it. Just wanted to mention this. I
+too want to see this issue fixed, one way or another ;-) Thanks for
+working on this BTW!
