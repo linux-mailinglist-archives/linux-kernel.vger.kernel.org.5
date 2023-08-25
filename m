@@ -2,48 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 158AA788C74
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 17:29:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 579DC788C7A
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 17:30:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240866AbjHYP2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 11:28:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43178 "EHLO
+        id S241086AbjHYPaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 11:30:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242391AbjHYP2f (ORCPT
+        with ESMTP id S240731AbjHYPaA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 11:28:35 -0400
+        Fri, 25 Aug 2023 11:30:00 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A2C6213C;
-        Fri, 25 Aug 2023 08:28:34 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C31D12134;
+        Fri, 25 Aug 2023 08:29:58 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9350265B67;
-        Fri, 25 Aug 2023 15:28:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76982C433C7;
-        Fri, 25 Aug 2023 15:28:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1692977313;
-        bh=Og+U/MtFwBTheabE1+SCfc/l83oqJcDNoCE6gOZICPE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=e2cEn7UJ1xskNn3qBwUMs8ngwdimS+Kf6ZZC2scYHOnVpoUmWJ5CicvsXDAOAsQwu
-         aAqSk4B0mrvr7SAo/wh3Ua5rUFhg5/FTTK+w2ByvVa/Hn7++1Vi+DyYnrEHtmZ3eYc
-         nWcE7QGV3UrjyBWM95/LIpOVYqjMnuzNHMzBNVic=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-serial@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>
-Subject: [PATCH] tty: shrink the size of struct tty_struct by 40 bytes
-Date:   Fri, 25 Aug 2023 17:28:20 +0200
-Message-ID: <2023082519-cobbler-unholy-8d1f@gregkh>
-X-Mailer: git-send-email 2.42.0
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5875C66207;
+        Fri, 25 Aug 2023 15:29:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D577FC433C8;
+        Fri, 25 Aug 2023 15:29:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692977397;
+        bh=0ggVuMGhqYH1cp2j3btub6fTuSWhGgHPLeFVcSFRoDg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Y10PnyFmzviS9TyyOQj12lW79gVpBz6ARtYpp2h/FCMxmk+FNou0ZnU49QYbgICoM
+         gCMEGqHy+0vG8Il2wFg24rLOmGTo3LrmU52mhgLOgU3NJUErPLFnULIPtBKK7+BLEs
+         h46t94uTWt8Pr3YFjmxKNLOj0IfsETpbuuZ0LyehE2ev7Ut5BJoNh2/cwWv3PNPy6A
+         uP2OwfJhY7eP1co6zUnNO1IbxX6XPjHMP4soqwkKijcqp3zK0y/zxnwHKuYVBb0Q14
+         spMD/YUtdQfp/pSlY7+iq8mIJsPc3TZbhjwpspLi9gAHzhrZGauh6o4tSMa9Cydhcl
+         YKEL4kj/QVKZw==
+Date:   Fri, 25 Aug 2023 16:29:53 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] dt-bindings: mmc: sdhci-msm: allow flexible order of
+ optional clocks
+Message-ID: <20230825-oversight-dense-8dcf05e38f75@spud>
+References: <20230825135503.282135-1-krzysztof.kozlowski@linaro.org>
+ <20230825135503.282135-2-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-Lines:  94
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2564; i=gregkh@linuxfoundation.org; h=from:subject:message-id; bh=Og+U/MtFwBTheabE1+SCfc/l83oqJcDNoCE6gOZICPE=; b=owGbwMvMwCRo6H6F97bub03G02pJDCkvTky+aL56DU+NcY3kWZ0k85UH85UX2x7k2hWgYCyvX FKQwvS+I5aFQZCJQVZMkeXLNp6j+ysOKXoZ2p6GmcPKBDKEgYtTACYyx4JhflKPZKNh2qO1mu8n dbru71NkbN5ryzC/5ofM9wsS9nv2uqb3aa6rXjol2CMJAA==
-X-Developer-Key: i=gregkh@linuxfoundation.org; a=openpgp; fpr=F4B60CC5BF78C2214A313DCB3147D40DDB2DFB29
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="Wgni+GN1Xz9sorEc"
+Content-Disposition: inline
+In-Reply-To: <20230825135503.282135-2-krzysztof.kozlowski@linaro.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -54,98 +63,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's been a long time since anyone has looked at what struct tty_struct
-looks like in memory, turns out there was a ton of holes.
 
-So move things around a bit, change one variable (closing) from being an
-int to a bool (it is only being tested for 0/1), and we end up saving 40
-bytes per structure overall on x86-64 systems.
+--Wgni+GN1Xz9sorEc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Before this patch:
-	/* size: 696, cachelines: 11, members: 37 */
-	/* sum members: 665, holes: 8, sum holes: 31 */
-	/* forced alignments: 2, forced holes: 1, sum forced holes: 4 */
-	/* last cacheline: 56 bytes */
+On Fri, Aug 25, 2023 at 03:55:03PM +0200, Krzysztof Kozlowski wrote:
+> The Qualcomm SDHCI controller lists optional clocks, but still expects
+> fixed order of them and does not allow to skip such clocks if further
+> one in the list is needed.  These optional clocks are truly optional,
+> so we need to allow the list to have different orders.  The clocks are:
+>  - ice: used for Inline Crypto Engine, which is actually separate block
+>    and merging it with SDHCI is not a requirement,
+>  - bus: clock for SDCC bus frequency voting,
+>  - cal and sleep: used for RCLK delay calibration and required for
+>    certain platforms for such calibration (as expressed in original
+>    commit 4946b3af5e8e ("mmc: sdhci-msm: Enable delay circuit
+>    calibration clocks")).  Only MSM8974pro has these clocks.
+>=20
+> Relaxing the order fixes dtbs_check warnings:
+>=20
+>   qcom-msm8974pro-fairphone-fp2.dtb: mmc@f9824900: clock-names:3: 'ice' w=
+as expected
+>   qcom-msm8974pro-fairphone-fp2.dtb: mmc@f9824900: clock-names:4: 'bus' w=
+as expected
+>=20
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-After this change:
-	/* size: 656, cachelines: 11, members: 37 */
-	/* sum members: 654, holes: 1, sum holes: 2 */
-	/* forced alignments: 2 */
-	/* last cacheline: 16 bytes */
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
-Cc: Jiri Slaby <jirislaby@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- include/linux/tty.h | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+Thanks,
+Conor.
 
-diff --git a/include/linux/tty.h b/include/linux/tty.h
-index e8d5d9997aca..f002d0f25db7 100644
---- a/include/linux/tty.h
-+++ b/include/linux/tty.h
-@@ -192,13 +192,14 @@ struct tty_operations;
-  */
- struct tty_struct {
- 	struct kref kref;
-+	int index;
- 	struct device *dev;
- 	struct tty_driver *driver;
-+	struct tty_port *port;
- 	const struct tty_operations *ops;
--	int index;
- 
--	struct ld_semaphore ldisc_sem;
- 	struct tty_ldisc *ldisc;
-+	struct ld_semaphore ldisc_sem;
- 
- 	struct mutex atomic_write_lock;
- 	struct mutex legacy_mutex;
-@@ -209,6 +210,7 @@ struct tty_struct {
- 	char name[64];
- 	unsigned long flags;
- 	int count;
-+	unsigned int receive_room;
- 	struct winsize winsize;
- 
- 	struct {
-@@ -219,16 +221,16 @@ struct tty_struct {
- 	} __aligned(sizeof(unsigned long)) flow;
- 
- 	struct {
--		spinlock_t lock;
- 		struct pid *pgrp;
- 		struct pid *session;
-+		spinlock_t lock;
- 		unsigned char pktstatus;
- 		bool packet;
- 		unsigned long unused[0];
- 	} __aligned(sizeof(unsigned long)) ctrl;
- 
- 	bool hw_stopped;
--	unsigned int receive_room;
-+	bool closing;
- 	int flow_change;
- 
- 	struct tty_struct *link;
-@@ -239,15 +241,13 @@ struct tty_struct {
- 	void *disc_data;
- 	void *driver_data;
- 	spinlock_t files_lock;
-+	int write_cnt;
-+	unsigned char *write_buf;
-+
- 	struct list_head tty_files;
- 
- #define N_TTY_BUF_SIZE 4096
--
--	int closing;
--	unsigned char *write_buf;
--	int write_cnt;
- 	struct work_struct SAK_work;
--	struct tty_port *port;
- } __randomize_layout;
- 
- /* Each of a tty's open files has private_data pointing to tty_file_private */
--- 
-2.42.0
+> ---
+>  Documentation/devicetree/bindings/mmc/sdhci-msm.yaml | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/mmc/sdhci-msm.yaml b/Docum=
+entation/devicetree/bindings/mmc/sdhci-msm.yaml
+> index 10f34aa8ba8a..69a213965089 100644
+> --- a/Documentation/devicetree/bindings/mmc/sdhci-msm.yaml
+> +++ b/Documentation/devicetree/bindings/mmc/sdhci-msm.yaml
+> @@ -85,10 +85,10 @@ properties:
+>        - const: iface
+>        - const: core
+>        - const: xo
+> -      - const: ice
+> -      - const: bus
+> -      - const: cal
+> -      - const: sleep
+> +      - enum: [ice, bus, cal, sleep]
+> +      - enum: [ice, bus, cal, sleep]
+> +      - enum: [ice, bus, cal, sleep]
+> +      - enum: [ice, bus, cal, sleep]
+> =20
+>    dma-coherent: true
+> =20
+> --=20
+> 2.34.1
+>=20
 
+--Wgni+GN1Xz9sorEc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZOjI8QAKCRB4tDGHoIJi
+0hBoAPwNVRd3Iq0LZOhIfBYprVsRhjFwSd/8CLf0oEkOZxdgVAEAmG5bfnGOtU/X
+XH5fgMkAL4FTG3RdUc7O6yWW2/BvTgU=
+=nUSu
+-----END PGP SIGNATURE-----
+
+--Wgni+GN1Xz9sorEc--
