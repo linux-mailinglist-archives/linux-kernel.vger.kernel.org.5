@@ -2,89 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B2DF78843B
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 12:03:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2350D788441
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 12:04:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242360AbjHYKCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 06:02:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57134 "EHLO
+        id S242679AbjHYKDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 06:03:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243310AbjHYKCk (ORCPT
+        with ESMTP id S243345AbjHYKDm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 06:02:40 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 744FC1BCA;
-        Fri, 25 Aug 2023 03:02:38 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1267666595;
-        Fri, 25 Aug 2023 10:02:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28B15C433C7;
-        Fri, 25 Aug 2023 10:02:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692957757;
-        bh=JAU9g2CvtrHqFOZtrS2n1hIfXzY/RAqo3/y8vReZoNY=;
-        h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
-        b=FWTduIcRkDaqLOtBr+aE+ap9YbeO/k1exE5LCETd/1NPSbRX6BFc3W1YUytbPEeAe
-         LsihNROPxouiylEJysUmWDp0edsC6ftr78Ng/igL2/c5coV9Xw696uUJkbtJdgEGHx
-         JhxlYGrvQiYwRxltt0muHYpsEw8ZHFrga69M/KfQcVu4qv8yyBk+uqcuw0birhDKa6
-         z3RC5WRjo3UahwMvcIr+mCtliK4dgtj0GeWuAh+2eLDJM7FTWSVSvjn2emw9vN4FFw
-         X9An4U9qaQydu8JtKa+0EBbbk71e+or7V56CzeNWy7YcdZt72pI6XnuWzZ+Dd7F36i
-         5eYGPvME7rMbQ==
-Content-Type: text/plain; charset="utf-8"
+        Fri, 25 Aug 2023 06:03:42 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2E832106;
+        Fri, 25 Aug 2023 03:03:39 -0700 (PDT)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37P8SiPE006593;
+        Fri, 25 Aug 2023 10:03:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=U/ZcCXDFjz8CJhrGf3q8NmlPiawYAFQSce8Uk7s19m8=;
+ b=RJ9Z4uDlKp5ccDjrpHhgtKv6OF9U++EuF/TYBnIgbjMHk8hdxQcZ9zWwA1HQocK1xZYI
+ qoflPaltf3eiNGalaa15s9CF3wc7ZVeX4ePJY/mlVWRCa8IOWyFUgp62peePn/li5Gpn
+ 2VthJ+i8NoOxP3Gf+MbON6IJhXvkW6JqkVDynb2LyzP++AQTGedWDk6T6VztzTp4DdtM
+ GnPcBuMvj2CYimel5FDnZU0oIkp6SUvEqZpleT+qO1Vg30zCHuhy0jenz6YXNdlTRnB+
+ ZxGzBRZiIo9lrqatrn/trfsiC84DrStglQHC4wbNNcQILE8RhyO/mSNmnIZAM5quYqIX jQ== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3spmny0mx7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 25 Aug 2023 10:03:17 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37PA3GZL032514
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 25 Aug 2023 10:03:16 GMT
+Received: from [10.238.139.231] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Fri, 25 Aug
+ 2023 03:03:12 -0700
+Message-ID: <0b6b864c-3e41-4b41-ac35-9ab8edb156a0@quicinc.com>
+Date:   Fri, 25 Aug 2023 18:03:02 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: wifi: rtw88: usb: kill and free rx urbs on probe failure
-From:   Kalle Valo <kvalo@kernel.org>
-In-Reply-To: <20230823075021.588596-1-s.hauer@pengutronix.de>
-References: <20230823075021.588596-1-s.hauer@pengutronix.de>
-To:     Sascha Hauer <s.hauer@pengutronix.de>
-Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ping-Ke Shih <pkshih@realtek.com>,
-        =?utf-8?q?Ilgaz_=C3=96cal?= <ilgaz@ilgaz.gen.tr>,
-        kernel@pengutronix.de
-User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
-Message-ID: <169295775420.1850672.11682917620915060270.kvalo@kernel.org>
-Date:   Fri, 25 Aug 2023 10:02:35 +0000 (UTC)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] usb: typec: qcom: check regulator enable status before
+ disabling it
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+CC:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_fenglinw@quicinc.com>,
+        <subbaram@quicinc.com>
+References: <20230824-qcom-tcpc-v2-1-3dd8c3424564@quicinc.com>
+ <ZOdlOQ+N2J7jyIEZ@kuha.fi.intel.com> <ZOdt+dz7XXljFJcK@kuha.fi.intel.com>
+From:   hui liu <quic_huliu@quicinc.com>
+In-Reply-To: <ZOdt+dz7XXljFJcK@kuha.fi.intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: dRvMyf5UnPF_kG8qqmm5BsV-ZD3FUmoJ
+X-Proofpoint-GUID: dRvMyf5UnPF_kG8qqmm5BsV-ZD3FUmoJ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-25_07,2023-08-24_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ adultscore=0 lowpriorityscore=0 mlxlogscore=748 impostorscore=0
+ bulkscore=0 clxscore=1015 phishscore=0 suspectscore=0 malwarescore=0
+ mlxscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308250086
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sascha Hauer <s.hauer@pengutronix.de> wrote:
+Hi Heikki,
 
-> After rtw_usb_alloc_rx_bufs() has been called rx urbs have been
-> allocated and must be freed in the error path. After rtw_usb_init_rx()
-> has been called they are submitted, so they also must be killed.
+I will let Bryan to comment, I am using the driver to support the pdphy 
+in SMB2352 and there is no external regulator required, so I am just 
+using a dummy regulator device and I saw this unbalanced regulator 
+disabling warnings, so my intention for this change is just fixing the 
+warning message. However, I am fine with whatever suggestion you have, 
+since the logic is straightforward, and I can make the changes once you 
+have the agreement.
+
+Thanks,
+Hui
+
+On 8/24/2023 10:49 PM, Heikki Krogerus wrote:
+> On Thu, Aug 24, 2023 at 05:12:14PM +0300, Heikki Krogerus wrote:
+>> On Thu, Aug 24, 2023 at 10:32:03AM +0800, Hui Liu via B4 Relay wrote:
+>>> From: Hui Liu <quic_huliu@quicinc.com>
+>>>
+>>> Check regulator enable status before disabling it to avoid
+>>> unbalanced regulator disable warnings.
+>>>
+>>> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+>>> Fixes: a4422ff22142 ("usb: typec: qcom: Add Qualcomm PMIC Type-C driver")
+>>> Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+>>> Signed-off-by: Hui Liu <quic_huliu@quicinc.com>
+>>> ---
+>>> Changes in v2:
+>>> - Add Fixes tag
+>>> - Link to v1: https://lore.kernel.org/r/20230823-qcom-tcpc-v1-1-fa81a09ca056@quicinc.com
+>>> ---
+>>>   drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c | 3 ++-
+>>>   1 file changed, 2 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c b/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c
+>>> index bb0b8479d80f..ca616b17b5b6 100644
+>>> --- a/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c
+>>> +++ b/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c
+>>> @@ -422,7 +422,8 @@ static int qcom_pmic_typec_pdphy_disable(struct pmic_typec_pdphy *pmic_typec_pdp
+>>>   	ret = regmap_write(pmic_typec_pdphy->regmap,
+>>>   			   pmic_typec_pdphy->base + USB_PDPHY_EN_CONTROL_REG, 0);
+>>>   
+>>> -	regulator_disable(pmic_typec_pdphy->vdd_pdphy);
+>>> +	if (regulator_is_enabled(pmic_typec_pdphy->vdd_pdphy))
+>>> +		regulator_disable(pmic_typec_pdphy->vdd_pdphy);
+>>
+>> Would it be an option to just enable the regulator in
+>> qcom_pmic_typec_pdphy_start() and disable it in
+>> qcom_pmic_typec_pdphy_stop()?
+>>
+>> Now the whole thing looks weird. That regulator is in practice
+>> only disabled and then enabled in one and the same place -
+>> pmic_typec_pdphy_reset(). It's not touched anywhere else. That makes
+>> the above condition confusing to me. I may be missing something.
+>>
+>> At least more explanation is needed.
 > 
-> Add these forgotten steps to the probe error path.
+> I took a closer look at these drivers, and I think I understand the
+> code path now. This driver is made with an assumption that the
+> regulator is "on" when the driver is probed, but in your case it's
+> actually "off".
 > 
-> Besides the lost memory this also fixes a problem when the driver
-> fails to download the firmware in rtw_chip_info_setup(). In this
-> case it can happen that the completion of the rx urbs handler runs
-> at a time when we already freed our data structures resulting in
-> a kernel crash.
+> So there is something wrong here, but I don't know where the root
+> cause is. If the regulator is really "on" when this driver is probed,
+> then there should be another user for it somewhere (no?). In that case
+> the driver can't just switch off the regulator like it does now - this
+> part I think really has to be fixed (or explained).
 > 
-> Fixes: a82dfd33d123 ("wifi: rtw88: Add common USB chip support")
-> Cc: stable@vger.kernel.org
-> Reported-by: Ilgaz Öcal <ilgaz@ilgaz.gen.tr>
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> Acked-by: Larry Finger <Larry.Finger@lwfinger.net>
-> Acked-by: Ping-Ke Shih <pkshih@realtek.com>
-
-Patch applied to wireless-next.git, thanks.
-
-290564367ab7 wifi: rtw88: usb: kill and free rx urbs on probe failure
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20230823075021.588596-1-s.hauer@pengutronix.de/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+> The problem with your fix is that it will leave the regulator always
+> on when the driver is removed, which it really can't do, not at least
+> if the regulator was off by default.
+> 
+> I would propose this:
+> 
+> diff --git a/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c b/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c
+> index bb0b8479d80f..bbe40634e821 100644
+> --- a/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c
+> +++ b/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c
+> @@ -449,6 +449,10 @@ int qcom_pmic_typec_pdphy_start(struct pmic_typec_pdphy *pmic_typec_pdphy,
+>   
+>          pmic_typec_pdphy->tcpm_port = tcpm_port;
+>   
+> +       ret = regulator_enable(pmic_typec_pdphy->vdd_pdphy);
+> +       if (ret)
+> +               return ret;
+> +
+>          ret = pmic_typec_pdphy_reset(pmic_typec_pdphy);
+>          if (ret)
+>                  return ret;
+> @@ -467,6 +471,7 @@ void qcom_pmic_typec_pdphy_stop(struct pmic_typec_pdphy *pmic_typec_pdphy)
+>                  disable_irq(pmic_typec_pdphy->irq_data[i].irq);
+>   
+>          qcom_pmic_typec_pdphy_reset_on(pmic_typec_pdphy);
+> +       regulator_disable(pmic_typec_pdphy->vdd_pdphy);
+>   }
+>   
+>   struct pmic_typec_pdphy *qcom_pmic_typec_pdphy_alloc(struct device *dev)
+> 
+> 
+> The problem with it is that the regulator is not going to be disabled
+> if there really is another user for it when the component is expected
+> to be reset. But as said above, if there really is an other user, then
+> this driver simply can't just turn off the regulator.
+> 
+> thanks,
+> 
