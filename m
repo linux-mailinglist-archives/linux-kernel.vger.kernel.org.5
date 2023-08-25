@@ -2,56 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 784DF787D9B
+	by mail.lfdr.de (Postfix) with ESMTP id C226E787D9C
 	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 04:24:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232292AbjHYCYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 22:24:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58388 "EHLO
+        id S236114AbjHYCYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 22:24:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232248AbjHYCYD (ORCPT
+        with ESMTP id S232361AbjHYCYF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 22:24:03 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FA40CCB
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 19:24:01 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d77fa2e7771so548175276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 19:24:01 -0700 (PDT)
+        Thu, 24 Aug 2023 22:24:05 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C71081BE5
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 19:24:03 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-56f8c8fd8e7so320017a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 19:24:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692930241; x=1693535041;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=q394Ar5VGXqRlzD/NOIbDeE7m1nz83tkHb6zDhW+OcY=;
-        b=AREqEKG77fow5gLN288m8+5PgrXZDGnPkjkz/MhIL4sXOI5/b98+arPqseArPrdnuA
-         VYdil6Y4mRyydkQz6r4hxjE7DhwQ1BqxHSg1aam7d6iThWpe7LLwJ7w6mfLome0aZGqt
-         CiFrXkk1P33R/JZT6Hf5YZ8l5bIdqNGhZaFlRX3kKZuqAhEEqdCJmsLEhh+timjnJK+s
-         ANPv/T8KWgyPFHA39S60ov5IqwRy21ki7qiXq/dkE3szFqmZQQMgAPD0tv8UbtRvHQHy
-         ogvdGILJen5nMNuyly6aH7XNRAnrKf2j45Ukr5/bZWbu2i3S7vPK+F1Vm1C/jymcWYRQ
-         QH/g==
+        d=google.com; s=20221208; t=1692930243; x=1693535043;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
+        bh=oVtCByE4fDO3d4y8kIYOOEOORwXrAjMG9bL5RaKJEvo=;
+        b=ur6VpWRHVFba2UbZYv3uMwXPvqeBZqy5oCA5fJjgrGUUBOyYN2oleq4keewpDQ+mxs
+         P8kpbCDHKLDGTRsSFbyu4ZUDbKQTxpnzSRHTSdsuQa5eys8Gz8s4vCcnRi+5QORbXeNI
+         ziPChPP/73BRcKbpEZLOQhEjmPwdtLpXfrJBfsiTG3n5fNBFXQ1SGfoULSTV9igNAFw/
+         hic7Y1EbDaXCPCAQdrPpxCZuMImeMGhYoq0tsYCiBEuo5yzLeG/PUhTF0PrGOHOICFjz
+         gqxh/pN++mdXmJyyD06AZfRCsoFkxr1CD+/DfGXd47yt2yUwJOjrQzwTxXESyENUY5ig
+         rosw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692930241; x=1693535041;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=q394Ar5VGXqRlzD/NOIbDeE7m1nz83tkHb6zDhW+OcY=;
-        b=b+YDTItR93TnL+B++6sOamljkrc2yickRFrzZ9+JukdeWKuU5JKdzyiESk5F2YDk61
-         Irl8pOmip3yIPDvHUqmKOvRYDoUFUZRTJqRrkOn+f/MTIsoX43xdepYdKa7bNNDBLnGP
-         f/ZJXf5jjya8trpZU/+sgfk4J4UYVKeJTndM0IrYfy6QAjXkvlOVu/GQtkapSHAWRRJI
-         vokMvlg2hTNtvASrmWFHdQHRCXsIUQBdYnStQOHL3l6IUZ293RY9PZrkWXyoYdeAWsej
-         sP6cZhtWTs7z4BxONpCS5DHEbj4Zowk0N98dwFyigun728SKwhu7H5rV7hK8MlzMzQDB
-         yolw==
-X-Gm-Message-State: AOJu0Yy6eFYcEAFUwogr7v2nJtc6h5PWBQYrz+NkaWFEiqdmT5rxF0EE
-        WZIA94nt5w81KH0y/YsyB7WlLkYCamk=
-X-Google-Smtp-Source: AGHT+IH4Zo1Gu1BLnxnojSCV6KHCOezP9EJuBkVATQO+/bUOmJwM/V4Q7F91c9SlK+gQ/GYpdyMME4el8FA=
+        d=1e100.net; s=20221208; t=1692930243; x=1693535043;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oVtCByE4fDO3d4y8kIYOOEOORwXrAjMG9bL5RaKJEvo=;
+        b=grN9MipXDJURzqSa4jBjp7QBy+3wtRyQi433PpzJICCGmYBxNFDaxbxYKvLgPkkGeC
+         pSeAeIpJgE1tfWTraS3wCoPGA2c1mQEGQeNP14GZFG15II9Dh1Z2X5OwaQopuQT29Hsk
+         EDRX5PqR6+iRyH1E/UAMgd7NB7vupsMhfL4Hh1NUTpd3pSE+quLffjc9oLx+f7yFf6VU
+         nWe7p3Prg5wpsR4F4MyeHb32IaefYPHixnsPrOwUEkXhXLsxhbZfVmXy5Xupj4Y3Q35x
+         5EpybKph0sClYiOpLQHNip4xNFoi4maR8CRScGSEPmHUsoacHQPgavJ7vWv8KC9T+Ff1
+         hE0w==
+X-Gm-Message-State: AOJu0YwG+DzbMMU+cQNsoHgZkmAmpr4b6zsAjzKk06NfMN/72xL5KnTN
+        i8T94C0QIeBYJ4VdcRJm84GHpopj3wo=
+X-Google-Smtp-Source: AGHT+IF4TG4sBB/OOSznvFnGrC/wmig/Of5xf2wy3XzoLJK2Grrjw7w1nIisXmoqH4AKiH2Jo7cmip6vg1Y=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:8211:0:b0:d4f:d7a5:ba3b with SMTP id
- q17-20020a258211000000b00d4fd7a5ba3bmr346930ybk.8.1692930240827; Thu, 24 Aug
- 2023 19:24:00 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a63:be49:0:b0:569:3810:dda3 with SMTP id
+ g9-20020a63be49000000b005693810dda3mr3190445pgo.9.1692930243268; Thu, 24 Aug
+ 2023 19:24:03 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu, 24 Aug 2023 19:23:55 -0700
+Date:   Thu, 24 Aug 2023 19:23:56 -0700
+In-Reply-To: <20230825022357.2852133-1-seanjc@google.com>
 Mime-Version: 1.0
+References: <20230825022357.2852133-1-seanjc@google.com>
 X-Mailer: git-send-email 2.42.0.rc2.253.gd59a3bf2b4-goog
-Message-ID: <20230825022357.2852133-1-seanjc@google.com>
-Subject: [PATCH 0/2] KVM: SVM: Fix SEV-ES intrahost migration
+Message-ID: <20230825022357.2852133-2-seanjc@google.com>
+Subject: [PATCH 1/2] KVM: SVM: Get source vCPUs from source VM for SEV-ES
+ intrahost migration
 From:   Sean Christopherson <seanjc@google.com>
 To:     Sean Christopherson <seanjc@google.com>,
         Paolo Bonzini <pbonzini@redhat.com>
@@ -61,30 +65,77 @@ Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix two fatal bugs in SEV-ES intrahost migration, found by running
-sev_migrate_tests (:shocked-pikachu:).
+Fix a goof where KVM tries to grab source vCPUs from the destination VM
+when doing intrahost migration.  Grabbing the wrong vCPU not only hoses
+the guest, it also crashes the host due to the VMSA pointer being left
+NULL.
 
-IIRC, for some reason our platforms haven't played nice with SEV-ES on
-upstream kernels for a while, i.e. the test hasn't been run as part of my
-usual testing. 
+  BUG: unable to handle page fault for address: ffffe38687000000
+  #PF: supervisor read access in kernel mode
+  #PF: error_code(0x0000) - not-present page
+  PGD 0 P4D 0
+  Oops: 0000 [#1] SMP NOPTI
+  CPU: 39 PID: 17143 Comm: sev_migrate_tes Tainted: GO       6.5.0-smp--fff2e47e6c3b-next #151
+  Hardware name: Google, Inc. Arcadia_IT_80/Arcadia_IT_80, BIOS 34.28.0 07/10/2023
+  RIP: 0010:__free_pages+0x15/0xd0
+  RSP: 0018:ffff923fcf6e3c78 EFLAGS: 00010246
+  RAX: 0000000000000000 RBX: ffffe38687000000 RCX: 0000000000000100
+  RDX: 0000000000000100 RSI: 0000000000000000 RDI: ffffe38687000000
+  RBP: ffff923fcf6e3c88 R08: ffff923fcafb0000 R09: 0000000000000000
+  R10: 0000000000000000 R11: ffffffff83619b90 R12: ffff923fa9540000
+  R13: 0000000000080007 R14: ffff923f6d35d000 R15: 0000000000000000
+  FS:  0000000000000000(0000) GS:ffff929d0d7c0000(0000) knlGS:0000000000000000
+  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  CR2: ffffe38687000000 CR3: 0000005224c34005 CR4: 0000000000770ee0
+  PKRU: 55555554
+  Call Trace:
+   <TASK>
+   sev_free_vcpu+0xcb/0x110 [kvm_amd]
+   svm_vcpu_free+0x75/0xf0 [kvm_amd]
+   kvm_arch_vcpu_destroy+0x36/0x140 [kvm]
+   kvm_destroy_vcpus+0x67/0x100 [kvm]
+   kvm_arch_destroy_vm+0x161/0x1d0 [kvm]
+   kvm_put_kvm+0x276/0x560 [kvm]
+   kvm_vm_release+0x25/0x30 [kvm]
+   __fput+0x106/0x280
+   ____fput+0x12/0x20
+   task_work_run+0x86/0xb0
+   do_exit+0x2e3/0x9c0
+   do_group_exit+0xb1/0xc0
+   __x64_sys_exit_group+0x1b/0x20
+   do_syscall_64+0x41/0x90
+   entry_SYSCALL_64_after_hwframe+0x63/0xcd
+   </TASK>
+  CR2: ffffe38687000000
 
-Sean Christopherson (2):
-  KVM: SVM: Get source vCPUs from source VM for SEV-ES intrahost
-    migration
-  KVM: SVM: Skip VMSA init in sev_es_init_vmcb() if pointer is NULL
+Fixes: 6defa24d3b12 ("KVM: SEV: Init target VMCBs in sev_migrate_from")
+Cc: stable@vger.kernel.org
+Cc: Peter Gonda <pgonda@google.com>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
+ arch/x86/kvm/svm/sev.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- arch/x86/kvm/svm/sev.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
-
-
-base-commit: fff2e47e6c3b8050ca26656693caa857e3a8b740
+diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+index 2cd15783dfb9..acc700bcb299 100644
+--- a/arch/x86/kvm/svm/sev.c
++++ b/arch/x86/kvm/svm/sev.c
+@@ -1739,7 +1739,7 @@ static void sev_migrate_from(struct kvm *dst_kvm, struct kvm *src_kvm)
+ 		 * Note, the source is not required to have the same number of
+ 		 * vCPUs as the destination when migrating a vanilla SEV VM.
+ 		 */
+-		src_vcpu = kvm_get_vcpu(dst_kvm, i);
++		src_vcpu = kvm_get_vcpu(src_kvm, i);
+ 		src_svm = to_svm(src_vcpu);
+ 
+ 		/*
 -- 
 2.42.0.rc2.253.gd59a3bf2b4-goog
 
