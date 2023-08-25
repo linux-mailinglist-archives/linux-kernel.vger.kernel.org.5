@@ -2,149 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87AA2787F59
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 07:38:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 189F4787F5B
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 07:39:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237741AbjHYFhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 01:37:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49520 "EHLO
+        id S237994AbjHYFif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 01:38:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236267AbjHYFhX (ORCPT
+        with ESMTP id S236232AbjHYFiD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 01:37:23 -0400
-Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [80.241.56.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E717A198E;
-        Thu, 24 Aug 2023 22:37:21 -0700 (PDT)
-Received: from smtp202.mailbox.org (smtp202.mailbox.org [10.196.197.202])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4RX7xp0RX9z9sTD;
-        Fri, 25 Aug 2023 07:37:18 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oltmanns.dev;
-        s=MBO0001; t=1692941838;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Fhhg8LjnqWHw9jK4np+Et29xcmXmDbPkzHimy7iyMs8=;
-        b=ebGwYpuDh+GiyG7hTADoBJqYO+zffugm6GBX5ms5oDeRDFFhatpfK1WjHHI/O7DySOE/SV
-        OPc+jVtH83VHlVwdNOEktUwOc5oxIySE/PncphMlNuc7rYZ/kJvWxogAibz5kDlRiTpIxB
-        or4V6mGOqGispUJ+opF09xCB4wGmJvdcjXWCMSgwmCZV2F0l02hJwBMvYGqlbzELz1YD1j
-        WC+ipQq+Aa09SpSYYesN7Lbir0JlX9m6lGQ9LYf/3kX27bBe8d/6PasePjka/8q4YzNS1L
-        IAFxl9i2eszDItqIsPyEobdHOJbo51WiWPVG6rGSMzGYiLAWeWzu6rWOHV8UOQ==
-From:   Frank Oltmanns <frank@oltmanns.dev>
-Date:   Fri, 25 Aug 2023 07:36:39 +0200
-Subject: [PATCH 3/3] drm/sun4i: tcon: parent keeps TCON0 clock stable on
- A64
+        Fri, 25 Aug 2023 01:38:03 -0400
+Received: from mx0a-0064b401.pphosted.com (mx0a-0064b401.pphosted.com [205.220.166.238])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 210F71BC2;
+        Thu, 24 Aug 2023 22:38:00 -0700 (PDT)
+Received: from pps.filterd (m0250810.ppops.net [127.0.0.1])
+        by mx0a-0064b401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37P4ffNE008796;
+        Thu, 24 Aug 2023 22:37:36 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com;
+         h=from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding:content-type; s=
+        PPS06212021; bh=W0kBRV+hwLL8nmN1CEnpsNCRXsICS7stE9OWDLrPCRU=; b=
+        UMlCtlKzF/EgFobXYXcjexr4g3Kg9Qr/b7XC1UoNXzSJ2yEz8aVbazqEW1q9dNLr
+        FChA3jOSg45LcZqcsT2kC5zltsV9SzYhuIS7BM5QlbkkUvyFxQbaQilncMPpcgQ/
+        Qu7Zl1/yM+GpAuRlB4gm28FTl/9IH+RE1KsV+J4sb4jap0S7rNQk61iniy/KBPgC
+        CUXvp03lY7fYNlgofl0ivRT1JF/Ym36gUGJkuAVsbPVUIJnRKWomXz0tbEJlEsKL
+        dxVth7vSm4VQqlPcJyVvBf/kD4Z7IeTHx3GPnk/I0acNMKc2K00gqoaa2hFloLkf
+        yFsjQ1hZta/1CAF5oaok8A==
+Received: from ala-exchng01.corp.ad.wrs.com (ala-exchng01.wrs.com [147.11.82.252])
+        by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3sn20djumm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 24 Aug 2023 22:37:35 -0700 (PDT)
+Received: from ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) by
+ ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Thu, 24 Aug 2023 22:37:34 -0700
+Received: from pek-lpd-ccm6.wrs.com (147.11.136.210) by
+ ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server id
+ 15.1.2507.27 via Frontend Transport; Thu, 24 Aug 2023 22:37:32 -0700
+From:   Lizhi Xu <lizhi.xu@windriver.com>
+To:     <syzbot+a4976ce949df66b1ddf1@syzkaller.appspotmail.com>
+CC:     <chao@kernel.org>, <jaegeuk@kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <syzkaller-bugs@googlegroups.com>
+Subject: [PATCH] f2fs: fix deadlock in f2f2_add_dentry
+Date:   Fri, 25 Aug 2023 13:37:32 +0800
+Message-ID: <20230825053732.3098387-1-lizhi.xu@windriver.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <0000000000000f188605ffdd9cf8@google.com>
+References: <0000000000000f188605ffdd9cf8@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230825-pll-mipi_keep_rate-v1-3-35bc43570730@oltmanns.dev>
-References: <20230825-pll-mipi_keep_rate-v1-0-35bc43570730@oltmanns.dev>
-In-Reply-To: <20230825-pll-mipi_keep_rate-v1-0-35bc43570730@oltmanns.dev>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Ondrej Jirman <x@xnux.eu>,
-        Icenowy Zheng <uwu@icenowy.me>
-Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        dri-devel@lists.freedesktop.org,
-        Frank Oltmanns <frank@oltmanns.dev>,
-        Icenowy Zheng <icenowy@aosc.io>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2722; i=frank@oltmanns.dev;
- h=from:subject:message-id; bh=lixZnD4gOGvFFH/XF+fZYh5kfwu9gK3pt6KJB+wArKs=;
- b=owEB7QES/pANAwAIAZppogiUStPHAcsmYgBk6D3/wmL5lqS4EF2I27kUUUi4lKVb8k2n7bhOs
- wdLR8CjMcCJAbMEAAEIAB0WIQQC/SV7f5DmuaVET5aaaaIIlErTxwUCZOg9/wAKCRCaaaIIlErT
- x0SkC/0aYqpXgu3ZY91KIkiLXCz4UsarrkvPtOVd+1L6aFsZtAjj3keHKPSTlTp/AzMUebjwBKq
- mz5jj2e0H+Zimh0dIjIhDtXyvB2jK0e8Qt0nXvYGWWZVrIWRLddRhO0wSvTpmyNVNSI0CWkg9mm
- OYgOsktvuO7xHjbZ0IoAchGqTSYsassqtu9iH0ytXCy0U5W0iBPUgFlwWwnObB6DKlpgfxO6KE/
- +6HYOobUbyfhXMwoiLvwzxtIvPN950HDD6zGlxTv4oj1UIcHuzhDHboigzw5FVoO0fkxO1ozHGo
- 1k4eGBTpkjBZh3z3BlDP68XDAdre+ZqBO2th3oygehPbCqSjOh827NXeH24WtNYCm0r5WaIf5nL
- d0eFI75jEAFBukn+Uu0a/j40NAmL4up6Fj2iCC/ewsp5e/Xcox4M2neg35+P79AH+r6AWqzEdX/
- 6gfSv7KCF0vRwsl5UnDBG4fgHY2CfHZo46wmbMb3d5+CTarc3DQ/daL03nDN4x4lCwsvo=
-X-Developer-Key: i=frank@oltmanns.dev; a=openpgp;
- fpr=02FD257B7F90E6B9A5444F969A69A208944AD3C7
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: y5N4ZYVp_oaQ2GeQlb1tYlS30VuFONJi
+X-Proofpoint-GUID: y5N4ZYVp_oaQ2GeQlb1tYlS30VuFONJi
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-25_04,2023-08-24_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxscore=0
+ lowpriorityscore=0 malwarescore=0 bulkscore=0 clxscore=1011
+ mlxlogscore=411 priorityscore=1501 spamscore=0 impostorscore=0
+ adultscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2308100000 definitions=main-2308250047
+X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Icenowy Zheng <icenowy@aosc.io>
+There are two paths:
+1. f2fs_add_dentry->f2fs_down_read->f2fs_add_inline_entry->down_write->
+   up_write->f2fs_up_read
+2. f2fs_add_dentry->f2fs_add_regular_entry->down_write->
+   f2fs_init_inode_metadata->f2fs_down_read->f2fs_up_read->up_write
 
-As the clk framework keeps A64's TCON0 clock stable when HDMI changes
-its parent's clock, do not protect TCON0 clock on A64 in the TCON driver
-to allow PLL-Video0 to get changed by HDMI.
+Force order lock to read->write.
 
-Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
-Signed-off-by: Frank Oltmanns <frank@oltmanns.dev>
+Signed-off-by: Lizhi Xu <lizhi.xu@windriver.com>
+Reported-and-tested-by: syzbot+a4976ce949df66b1ddf1@syzkaller.appspotmail.com
 ---
- drivers/gpu/drm/sun4i/sun4i_tcon.c | 15 +++++++++++++--
- drivers/gpu/drm/sun4i/sun4i_tcon.h |  1 +
- 2 files changed, 14 insertions(+), 2 deletions(-)
+ fs/f2fs/dir.c    | 4 +---
+ fs/f2fs/inline.c | 2 ++
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/sun4i/sun4i_tcon.c b/drivers/gpu/drm/sun4i/sun4i_tcon.c
-index 6a52fb12cbfb..4439e62b7a34 100644
---- a/drivers/gpu/drm/sun4i/sun4i_tcon.c
-+++ b/drivers/gpu/drm/sun4i/sun4i_tcon.c
-@@ -108,9 +108,11 @@ static void sun4i_tcon_channel_set_status(struct sun4i_tcon *tcon, int channel,
+diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
+index d635c58cf5a3..022dc02c1390 100644
+--- a/fs/f2fs/dir.c
++++ b/fs/f2fs/dir.c
+@@ -736,12 +736,12 @@ int f2fs_add_regular_entry(struct inode *dir, const struct f2fs_filename *fname,
+ 	f2fs_wait_on_page_writeback(dentry_page, DATA, true, true);
  
- 	if (enabled) {
- 		clk_prepare_enable(clk);
--		clk_rate_exclusive_get(clk);
-+		if (!tcon->quirks->rate_kept_by_parent)
-+			clk_rate_exclusive_get(clk);
- 	} else {
--		clk_rate_exclusive_put(clk);
-+		if (!tcon->quirks->rate_kept_by_parent)
-+			clk_rate_exclusive_put(clk);
- 		clk_disable_unprepare(clk);
+ 	if (inode) {
+-		f2fs_down_write(&F2FS_I(inode)->i_sem);
+ 		page = f2fs_init_inode_metadata(inode, dir, fname, NULL);
+ 		if (IS_ERR(page)) {
+ 			err = PTR_ERR(page);
+ 			goto fail;
+ 		}
++		f2fs_down_write(&F2FS_I(inode)->i_sem);
  	}
- }
-@@ -1505,6 +1507,14 @@ static const struct sun4i_tcon_quirks sun8i_a33_quirks = {
- 	.supports_lvds		= true,
- };
  
-+static const struct sun4i_tcon_quirks sun50i_a64_lcd_quirks = {
-+	.supports_lvds		= true,
-+	.has_channel_0		= true,
-+	.rate_kept_by_parent	= true,
-+	.dclk_min_div		= 1,
-+	.setup_lvds_phy		= sun6i_tcon_setup_lvds_phy,
-+};
-+
- static const struct sun4i_tcon_quirks sun8i_a83t_lcd_quirks = {
- 	.supports_lvds		= true,
- 	.has_channel_0		= true,
-@@ -1563,6 +1573,7 @@ const struct of_device_id sun4i_tcon_of_table[] = {
- 	{ .compatible = "allwinner,sun9i-a80-tcon-tv", .data = &sun9i_a80_tcon_tv_quirks },
- 	{ .compatible = "allwinner,sun20i-d1-tcon-lcd", .data = &sun20i_d1_lcd_quirks },
- 	{ .compatible = "allwinner,sun20i-d1-tcon-tv", .data = &sun8i_r40_tv_quirks },
-+	{ .compatible = "allwinner,sun50i-a64-tcon-lcd", .data = &sun50i_a64_lcd_quirks },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, sun4i_tcon_of_table);
-diff --git a/drivers/gpu/drm/sun4i/sun4i_tcon.h b/drivers/gpu/drm/sun4i/sun4i_tcon.h
-index fa23aa23fe4a..c4ce7c29192e 100644
---- a/drivers/gpu/drm/sun4i/sun4i_tcon.h
-+++ b/drivers/gpu/drm/sun4i/sun4i_tcon.h
-@@ -243,6 +243,7 @@ struct sun4i_tcon_quirks {
- 	bool    needs_edp_reset; /* a80 edp reset needed for tcon0 access */
- 	bool	supports_lvds;   /* Does the TCON support an LVDS output? */
- 	bool	polarity_in_ch0; /* some tcon1 channels have polarity bits in tcon0 pol register */
-+	bool	rate_kept_by_parent; /* Does parent keep TCON0 clock stable? */
- 	u8	dclk_min_div;	/* minimum divider for TCON0 DCLK */
+ 	make_dentry_ptr_block(NULL, &d, dentry_blk);
+@@ -780,9 +780,7 @@ int f2fs_add_dentry(struct inode *dir, const struct f2fs_filename *fname,
+ 		 * Should get i_xattr_sem to keep the lock order:
+ 		 * i_xattr_sem -> inode_page lock used by f2fs_setxattr.
+ 		 */
+-		f2fs_down_read(&F2FS_I(dir)->i_xattr_sem);
+ 		err = f2fs_add_inline_entry(dir, fname, inode, ino, mode);
+-		f2fs_up_read(&F2FS_I(dir)->i_xattr_sem);
+ 	}
+ 	if (err == -EAGAIN)
+ 		err = f2fs_add_regular_entry(dir, fname, inode, ino, mode);
+diff --git a/fs/f2fs/inline.c b/fs/f2fs/inline.c
+index 4638fee16a91..7618b383c2b7 100644
+--- a/fs/f2fs/inline.c
++++ b/fs/f2fs/inline.c
+@@ -628,10 +628,12 @@ int f2fs_add_inline_entry(struct inode *dir, const struct f2fs_filename *fname,
+ 	if (IS_ERR(ipage))
+ 		return PTR_ERR(ipage);
  
- 	/* callback to handle tcon muxing options */
-
++	f2fs_down_read(&F2FS_I(dir)->i_xattr_sem);
+ 	inline_dentry = inline_data_addr(dir, ipage);
+ 	make_dentry_ptr_inline(dir, &d, inline_dentry);
+ 
+ 	bit_pos = f2fs_room_for_filename(d.bitmap, slots, d.max);
++	f2fs_up_read(&F2FS_I(dir)->i_xattr_sem);
+ 	if (bit_pos >= d.max) {
+ 		err = do_convert_inline_dir(dir, ipage, inline_dentry);
+ 		if (err)
 -- 
-2.41.0
+2.25.1
 
