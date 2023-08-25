@@ -2,319 +2,388 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F52A788048
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 08:50:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 369E4788053
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 08:50:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242599AbjHYGt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 02:49:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49210 "EHLO
+        id S242654AbjHYGuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 02:50:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242647AbjHYGto (ORCPT
+        with ESMTP id S242617AbjHYGuD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 02:49:44 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1F7D19A1
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 23:49:41 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-4009fdc224dso42295e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 23:49:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692946180; x=1693550980; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=XutmDjTJSbaholUEFFdKFWHx1lLHMKzhSEVbjKu52e8=;
-        b=cXZGVwWQdNKsQsztnpVz0Ms3nwtxVud1FDpW9/flN52UI0fPaN939MPaz/caTCJkZg
-         xWYBj0B/QAx9/ae9ua8nbGVgakXN0yrMonLR4j9Q8u+0mALjYAOoG6JqiAsF41taPbLM
-         GyO3IlTa3KFUMd+KuLuh5xZWMV7Zo5yCRoKZ9afkn7oo+PvSpkKxt/ItyfWC7LvaGllw
-         +h1izJTX4xIors7rqoBjPL2rM2MKc6L7yAf4w0hx2nJRGAnl3dbDEM7YINKQadrECyck
-         UZNCAP30MAaRCVDzJqHfhQoE/Dd3nRFYASd+7R6+zzz/y0x8YhKpkwrZz6At6GKNnvZS
-         fDUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692946180; x=1693550980;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=XutmDjTJSbaholUEFFdKFWHx1lLHMKzhSEVbjKu52e8=;
-        b=kn9Yr5I1u0SCF6tkkyVYjH+fXxZVH1+eHlgMrcL8gFy8ECjQ7b02QMZ12GPnnnZHFg
-         t347bBe/8I/XCHpCKhDcl/Oac5nyHX+8l+b2EfGuHlAxuVCqTqFiuxmu0twe6FS1lpGv
-         gV/TdfSoihl45jbBZac/SM2ozQMtkeyDkq9+Yorzr5jdDt9bjaaey/F1ilMXcAM9kA7s
-         G4afOVvqgcpnxsUbCkvDkTF9VVVIJx0tOBNcPZJQBvjJSb/3ukzjT/AMQ9xTRgedMDzU
-         eCzVClcNvO2nqSuNplQlLAkYogZPh4qvvOHZRRh9B03YcD1GkGBiXsEP0+XeHXzSL5l8
-         Tlgg==
-X-Gm-Message-State: AOJu0Yy0XBTspssuHrGLJjj3pj+c3kUyDiZBhS6ljYlQWbFIjm9ivqk/
-        eczViupSq6Xzvlk3hej+RhuDLHz0acKuzsgfjE4uuQ==
-X-Google-Smtp-Source: AGHT+IFkufJtS6lZhDP2VRCgLlGQeED7mercg+zbW6WucUF8ifEBjfv8JrUfXfkL8AKEeWvLTNDqiyPmqzT4krxyZ6o=
-X-Received: by 2002:a05:600c:5106:b0:3fe:eb42:7ec with SMTP id
- o6-20020a05600c510600b003feeb4207ecmr102437wms.1.1692946180073; Thu, 24 Aug
- 2023 23:49:40 -0700 (PDT)
+        Fri, 25 Aug 2023 02:50:03 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E924019A1
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 23:50:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692946202; x=1724482202;
+  h=date:from:to:cc:subject:message-id:references:
+   content-transfer-encoding:in-reply-to:mime-version;
+  bh=QIZC1erlvVG1rl3NdurDRb5Ed2QbdSbksPl3bdKSGhw=;
+  b=KQ3svJ0D9V/Wp5FiDbnSNoz4sKCEE/FH7ol2cEsuIWjo0G5+oxBahMMz
+   QduuV7elrG2mxl70UI3im2YrLkNT8bca8UkVt9OQFrS6aAInOXRCOg5yl
+   idfxLwflNcAtaXeLEm/DIn3AJthqMCzoKUoILZCN3hGDRAMJVHUdpJ4hl
+   ++8p3VD1AMxyeo5AviTshGGIytsYDLzzw6D+YJgvPIQuKa0JGjd5o/2Y8
+   ZK/jqywHNaGFk1pQ8N0xLkqrITKc1kDItPBDbBD3DamBVCLR/MG1jG2Sa
+   4kJLMxd65Niq+3lK891gtrHqh/xISJ0ghMKXODRVfITkZnferPxWAxSpX
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="377389399"
+X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
+   d="scan'208";a="377389399"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 23:50:01 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="802861495"
+X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
+   d="scan'208";a="802861495"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmsmga008.fm.intel.com with ESMTP; 24 Aug 2023 23:49:52 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Thu, 24 Aug 2023 23:49:46 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Thu, 24 Aug 2023 23:49:46 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.105)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Thu, 24 Aug 2023 23:49:45 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hL5HTER7LBbWWbcvrtzoP3oVSbhAXHSCa1gGxDN6rKnNWTsBunefGlZnVS7Dji+T9pZvg26iylBVVQWoKAOz+3xCrr5wUwHc2Ecn+Sg6jveBLdlYginJYRqJ6VBV+7PLAZI98MYLWpSySIJJlE94whnHcm/kMhR8gsJ4Rm+pacxhvR6go+28L+C+64zuIr8o4BryPpXx1xeMg3B2NEMqv8rh2FaXNhmzXbe5nmNJMakUDoM8frAbCSJ6FH0D7y5a5F+fP4ckwknmnZOKtXSghllB6VqzR5lzeMW8/kiZ4z8CmktrNJcn53D2Ib+IrsnY9zoObseTOwx9BWlH8cQNOw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=LBLwbQ8E/CuFxkwsNJw/NII1aZPoeWau3OMKAcpin/s=;
+ b=lBIE+mV+oBQURDxNBL4go43kt/4VMZPuNoA5sZmU0kKqp9zJr26aDFPZLIr1EP8QhHZqgroeiA6fzrc7B0rUVPiMSZseeMtsTpW3vMJJ5Qs9Be+FcTOI6h0mgDBffiHztYXoBSII0xclEiGznE34FP8Jw+OJx2FOeOHgS46zXgciUVuUDyL8gL4wVfFhIOkrPOojVoHPS0wGUO6lqmETMcj+9j53WfI98J9XEixTduQNYqmJn57wyFlEZ++ytPfvi0FjXQWF/tOQcdVI4Kd0UKH+63RoDCSFXnHiFu7492AoyJzcJgbmimrNq7q97qQW8mjkxKy38uDNhbXW4k+YiQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from BYAPR11MB3062.namprd11.prod.outlook.com (2603:10b6:a03:92::18)
+ by SA1PR11MB7063.namprd11.prod.outlook.com (2603:10b6:806:2b5::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.26; Fri, 25 Aug
+ 2023 06:49:43 +0000
+Received: from BYAPR11MB3062.namprd11.prod.outlook.com
+ ([fe80::9a8d:9d34:4af2:f2e5]) by BYAPR11MB3062.namprd11.prod.outlook.com
+ ([fe80::9a8d:9d34:4af2:f2e5%7]) with mapi id 15.20.6699.027; Fri, 25 Aug 2023
+ 06:49:43 +0000
+Date:   Fri, 25 Aug 2023 14:49:29 +0800
+From:   Aaron Lu <aaron.lu@intel.com>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+CC:     Peter Zijlstra <peterz@infradead.org>,
+        <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        "Mel Gorman" <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Swapnil Sapkal <Swapnil.Sapkal@amd.com>,
+        "Julien Desfossez" <jdesfossez@digitalocean.com>, <x86@kernel.org>
+Subject: Re: [RFC PATCH v3 2/3] sched: Introduce cpus_share_l2c
+Message-ID: <20230825064929.GC464990@ziqianlu-dell>
+References: <20230822113133.643238-1-mathieu.desnoyers@efficios.com>
+ <20230822113133.643238-3-mathieu.desnoyers@efficios.com>
+ <04be42cb-0e8b-25f7-a34b-41b2873f39d4@efficios.com>
+ <c7fe33f9-51bd-80e8-cb0e-1cefb20a61b9@efficios.com>
+ <20230824075208.GA459974@ziqianlu-dell>
+ <6e5ff343-0c4f-526c-eb53-890afb773563@efficios.com>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6e5ff343-0c4f-526c-eb53-890afb773563@efficios.com>
+X-ClientProxiedBy: KL1PR01CA0133.apcprd01.prod.exchangelabs.com
+ (2603:1096:820:4::25) To BYAPR11MB3062.namprd11.prod.outlook.com
+ (2603:10b6:a03:92::18)
 MIME-Version: 1.0
-References: <20230824143129.1957914-1-rf@opensource.cirrus.com> <20230824143129.1957914-5-rf@opensource.cirrus.com>
-In-Reply-To: <20230824143129.1957914-5-rf@opensource.cirrus.com>
-From:   David Gow <davidgow@google.com>
-Date:   Fri, 25 Aug 2023 14:49:28 +0800
-Message-ID: <CABVgOSms9GsXxCm1dUztJbcuX=QC7gNB3Kyc65=6UFExeyPxNQ@mail.gmail.com>
-Subject: Re: [PATCH v5 04/10] kunit: string-stream: Add cases for
- string_stream newline appending
-To:     Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc:     brendan.higgins@linux.dev, rmoar@google.com,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000b556580603b9bf69"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BYAPR11MB3062:EE_|SA1PR11MB7063:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4d4319f9-91cc-4dfc-39b0-08dba5377657
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: V0gOmyyKq/t5fKdigVshEXzyIqwbISgvWpsUGmC7IsGLpbOwkTe7zWZbLn4j2kcCUcN4fFgWNVWGtO4gUDVxJUBiUDGOUWupRdI9/kIkzDsAivx9QRbdNiYjQ2kL4VvF268BTQQP+fNBuFDZ/9M+xbGn+Xb1rN83lOM55IwXz8QHf9txBufyZc6vAWYhoGk9ZsN3MBPsrHvus2yKfQQlwyjwyOAZK5C4/sZ8h53vkh4VsUDpLFFey+hPiIR2S/8Ty6KY8LYeoEqpA7ClUFymYgNPynvyAs4wjlgtCpb6qUfiIp1wY/jpGiI18dIpHe9XonJYRuo4FaVb/ZMNEAZniCNtqZ5BYDI6YIg/gXSSOIkSuA09BVh6YTftch56AM3biBDtGbLLDiRVxQv0sAWQ/dpnM9YCb/our4IfZiAJ9tKLCeZhXtB/5k9aXyiAmx1U2bPp6FrDk5UlshlOKKtkmjTDJ/t2ocZ/6P6+fYy9V3loxsTp3iTWYfpGf9bXHui++Q9MLHdd41d2fv6MNAR/SoftAjflGP8aOz32X8vMQk/gMy1CBTrExLzkMOLdCPSL
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3062.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(346002)(136003)(366004)(396003)(39860400002)(1800799009)(451199024)(186009)(33656002)(83380400001)(2906002)(82960400001)(33716001)(38100700002)(86362001)(9686003)(6512007)(54906003)(66476007)(66556008)(66946007)(8676002)(316002)(6506007)(6486002)(6916009)(41300700001)(53546011)(5660300002)(8936002)(4326008)(478600001)(6666004)(1076003)(26005)(7416002)(44832011);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?7vWiy5ATGsq5+uYvrWAcjyE+RTsvZyyfkEQe9qpGjGa5vIgW1txb0hHwU3?=
+ =?iso-8859-1?Q?FaICC6Dt1wu0nnmZ6R6lMrgEDmCk/5aUIsz3ocS2Xqj2ziT/0LVf+1uhQ9?=
+ =?iso-8859-1?Q?wfFxaiAQpkm9BFiFlSZxsvrtabhUP1KwDcJvphX20DbfGI/3BuLtrY2Hki?=
+ =?iso-8859-1?Q?eYGIYXM5rmvtk/gXVd2giYjo47o6ykZiggZMR13DLJDH3gSEJ2WP9fLb4l?=
+ =?iso-8859-1?Q?QHmZJ7kodpt6SgXi24G2Tm8qjYnJJybaJoWS8q7W+E+v2aTHVoHSLNDd/+?=
+ =?iso-8859-1?Q?hKxCOSFEITMk85Q7wHI0t5LRnragxqQyicHjeC63B/MfIR06YYTLndo0V0?=
+ =?iso-8859-1?Q?5cLxHBiWbEQIRJPOfpwvcSCC9HvwnzRNvwPrP/qstmm8uMEQYzauEFHqRz?=
+ =?iso-8859-1?Q?rPQMaNOd7JcYgFhkIlvOvawiEzepdOUcK21n/wqAkUjklG61cXdC6aEGXt?=
+ =?iso-8859-1?Q?+GDyxOKhs0ehH9IQX9k+fGtr1IQ2DsFV9e/iJVUyQJsWytb4ymns5Z4QVj?=
+ =?iso-8859-1?Q?3l6dZmFW7kYc1b2sHScCiU7dhla2dO7vzk9ZNSy/FxmuAELP9Fr/b1/QFZ?=
+ =?iso-8859-1?Q?0lnPNcCfQPXHUgd4+U/+EXgH203HjCiQ5JJqzTdRLo70Cv9rYt53iRnl60?=
+ =?iso-8859-1?Q?yZeDm2OXu/l1UErCYEtf+67TjGYqFKo3GypZevrDdl/TdxWAgcdG1DaUyV?=
+ =?iso-8859-1?Q?H3JJx29E+ulaqNtMjFUQMEsNTza4XA4s3g60kyB7/81yz5wDAPHf6anR1R?=
+ =?iso-8859-1?Q?aAbQT/CaOAbmw69DfXuIiRF+nMY6vH4o53upVN+llsdmrpVPyjwMjIE0CR?=
+ =?iso-8859-1?Q?emPuYxcbR/Q3GmJw8/8XQ+tsrmB21rY+KYEO8ImJs3xMu6Qmk9EqINSDOh?=
+ =?iso-8859-1?Q?056l32lcknqaQLdH4oc+inhKDZywahhDZT2rrCAXYvwFfPpYukCsHeub3S?=
+ =?iso-8859-1?Q?KxVfQ4uDKBLtxbFjj368LYjyeVFocCfeOql8PhQl07od6KramSVv7JXNRS?=
+ =?iso-8859-1?Q?guEOwZUiKtGaptRHmYerpeZ4EuAVAWaWhdXn6npju7/lY+oHJVYYJR+nAg?=
+ =?iso-8859-1?Q?pK2p2PHFq87oSc1KfFNGiJpc1a6aoL7v08D2Rpap+HMj0yl2+9GUie8ZTI?=
+ =?iso-8859-1?Q?PeFqgk60MeEVWxzxcR0FenK/+K2Mh69C3oF8jOMHPfDLKzqrNgCbkZfRDd?=
+ =?iso-8859-1?Q?Y6M0r71FI8TSpkWAL6gFx/sTHmD6QLQQA3EZVjaRMxAymaCHY4LvoIYj6C?=
+ =?iso-8859-1?Q?nD/BxyKcUvoWTfmZw7F/WhHLNR7UUFPjSKIAaGlGD/Qg6YCMirq1H6PDWl?=
+ =?iso-8859-1?Q?mZOazsWrGL/0GEbVdNDeSaoyqL3mqu0QFysoV1X9ZTS4w83EHm8YGh8cEG?=
+ =?iso-8859-1?Q?C2q9YdWrQuPzdzSSIGRz1NF3r4GmDuy5g0vRli2o354N3rziTe6WUm8Whn?=
+ =?iso-8859-1?Q?xB7LSXyGEHbcMxk2nKUu0qzegHSpTrC/FkB5FqmfIZ1xmcAsR6y5cMyETg?=
+ =?iso-8859-1?Q?Yj11BPM4w4rWLJ32TQSFWBJ1X/wWTTYKtz6iXRG3Vqia32dLObANIUiE+W?=
+ =?iso-8859-1?Q?rAeXkYc1ZiZbBExlpy+zDQlWc7xShi0n9IJnoYsut03TsG1xSn1NXOSv0x?=
+ =?iso-8859-1?Q?LYKdsaTpfIq7JllbK0B48/LGVLTraoS1Ng?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4d4319f9-91cc-4dfc-39b0-08dba5377657
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3062.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Aug 2023 06:49:43.3335
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 41LbQ0Jm8dCfRkHB6SsaeCsDdA6h0jB7LeWqT4o+MeQlaItG5L/9c9O2RMzFgmZUXPwZVgPunfmjHmAA/4wKAQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB7063
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000b556580603b9bf69
-Content-Type: text/plain; charset="UTF-8"
+On Thu, Aug 24, 2023 at 10:40:45AM -0400, Mathieu Desnoyers wrote:
+> On 8/24/23 03:52, Aaron Lu wrote:
+> > On Wed, Aug 23, 2023 at 02:52:17PM -0400, Mathieu Desnoyers wrote:
+> > > On 8/23/23 11:26, Mathieu Desnoyers wrote:
+> > > > On 8/22/23 07:31, Mathieu Desnoyers wrote:
+> > > > > Introduce cpus_share_l2c to allow querying whether two logical CPUs
+> > > > > share a common L2 cache.
+> > > > > 
+> > > > > Considering a system like the AMD EPYC 9654 96-Core Processor, the L1
+> > > > > cache has a latency of 4-5 cycles, the L2 cache has a latency of at
+> > > > > least 14ns, whereas the L3 cache has a latency of 50ns [1]. Compared to
+> > > > > this, I measured the RAM accesses to a latency around 120ns on my
+> > > > > system [2]. So L3 really is only 2.4x faster than RAM accesses.
+> > > > > Therefore, with this relatively slow access speed compared to L2, the
+> > > > > scheduler will benefit from only considering CPUs sharing an L2 cache
+> > > > > for the purpose of using remote runqueue locking rather than queued
+> > > > > wakeups.
+> > > > 
+> > > > So I did some more benchmarking to figure out whether the reason for
+> > > > this speedup is the latency delta between L2 and L3, or is due to the
+> > > > number of hw threads contending on the rq locks.
+> > > > 
+> > > > I tried to force grouping of those "skip ttwu queue" groups by a subset
+> > > > of the LLC id, basically by taking the LLC id and adding the cpu number
+> > > > modulo N, where N is chosen based on my machine topology.
+> > > > 
+> > > > The end result is that I have similar numbers for groups of 1, 2, 4 HW
+> > > > threads (which use rq locks and skip queued ttwu within the group).
+> > > > Starting with group of size 8, the performance starts to degrade.
+> > > > 
+> > > > So I wonder: do machines with more than 4 HW threads per L2 cache exist?
+> > > > If it's the case, there we should think about grouping not only by L2
+> > > > cache, but also sub-divide this group so the number of hw threads per
+> > > > group is at most 4.
+> > > > 
+> > > > Here are my results with the hackbench test-case:
+> > > > 
+> > > > Group cpus by 16 hw threads:
+> > > > 
+> > > > Time: 49s
+> > > > 
+> > > > - group cpus by 8 hw threads: (llc_id + cpu modulo 2)
+> > > > 
+> > > > Time: 39s
+> > > > 
+> > > > - group cpus by 4 hw threads: (llc_id + cpu modulo 4)
+> > > > 
+> > > > Time: 34s
+> > > > 
+> > > > - group cpus by 2 hw threads: (llc_id + cpu modulo 8)
+> > > > (expect same as L2 grouping on this machine)
+> > > > 
+> > > > Time: 34s
+> > > > 
+> > > > - group cpus by 1 hw threads: (cpu)
+> > > > 
+> > > > Time: 33s
+> > > 
+> > > One more interesting data point: I tried modifying the grouping
+> > > so that I would explicitly group by hw threads which sit in different
+> > > L3, and even on different NUMA nodes for some
+> > > (group id = cpu_id % 192). This is expected to generate really _bad_
+> > > cache locality for the runqueue locks within a group.
+> > > 
+> > > The result for these groups of 3 HW threads is about 33s with the
+> > > hackbench benchmark, which seems to confirm that the cause of the
+> > > speedup is reduction of the contention on the rq locks by making the
+> > > groups smaller, and therefore reducing the likelihood of contention for the
+> > > rq locks, rather than by improving cache locality from L3 to L2.
+> > 
+> > In addition to reduced rq lock contention, I think another reason this
+> > improves performance is because it reduced task migration. Not sure if
+> > it is the case on your test system, but on my test machine(Intel SPR),
+> > task migration number dropped.
+> 
+> Yes, it's indeed the case on my system as well. It cuts migrations by half
+> (9.2K/sec down to 5.0K/sec).
+> 
+> > Hackbench on Intel SPR(2sockets/112cores/224threads) test summary:
+> > - performance improved for all three cases; the more tasks(groups), the
+> >    more performance gain;
+> 
+> Interesting!
+> 
+> > - task migrations dropped with this series for nr_group=20 and 32
+> >    according to 'perf stat'. migration number didn't drop for nr_group=10
+> >    but the two update functions' cost dropped which means fewer access to
+> >    tg->load_avg and thus, fewer task migrations. This is contradictory
+> >    and I can not explain yet;
+> 
+> Neither can I.
+> 
+> > - rq lock contention dropped for all three cases and it dropped the most
+> >    under more overloaded case: nr_group=32.
+> 
+> The fact that you observed rq lock contention dropping is a good sign
+> that doing more queued wakeups is a good thing compared to allowing
+> non-queued wakeups across cpus sharing a whole LLC.
+> 
+> At this point I'm not sure if the reduction on rq lock contention is mostly
+> due to using queued wakeups rather than grabbing remote rq locks, or by a
+> side-effet of doing a queued wakeup rather than immediately doing the
+> wakeup, which would open a window where the target rq is still considered
+> idle by the various code paths within select_task_rq_fair which don't care
+> about rq->ttwu_pending.
+> 
+> > It's not clear to me why this series can reduce task migrations. I doubt
+> > it has something to do with more wakelist style wakeup becasue for this
+> > test machine, only a single core with two SMT threads share L2 so more
+> > wakeups are through wakelist. In wakelist style wakeup, the target rq's
+> > ttwu_pending is set and that will make the target cpu as !idle_cpu();
+> > This is faster than grabbing the target rq's lock and then increase
+> > target rq's nr_running or set target rq's curr to something else than
+> > idle. So wakelist style wakeup can make target cpu appear as non idle
+> > faster, but I can't connect this with reduced migration yet, I just feel
+> > this might be the reason why task migration reduced.
+> 
+> Many code paths in select_task_rq_fair don't seem to care about
+> rq->ttwu_pending.
+> 
+> In wake_affine_idle, for sync wakeups, if nr_running is 1 on the waker, we
+> choose the waker cpu as target.
+> 
+> In wake_affine_idle, if none of waker or prev wakee cpus are idle, then it
+> uses wake_affine_weight to find out which of the waker/prev wakee cpus are
+> targets based on their respective load.
+> 
+> If wake_affine_idle cannot find an idle waker/prev wakee cpu, and if
+> wake_affine_weight finds that the prev wakee cpu had a lower load, then
+> wake_affine returns the prev wakee cpu as target. This happens even if the
+> prev wakee cpu is not idle.
+> 
+> This "target" cpu is then passed to select_idle_sibling. It expects the
+> available_idle_cpu(target) to check again to see whether the target cpu is
+> idle. However, it also uses "sched_idle_cpu(target)" which _only_ considers
+> nr_running (not ttwu_pending flag). Likewise for the other similar idleness
+> checks below in select_idle_sibling for prev and recent_used_cpu. The same
+> happens for the case where a per-cpu kthread
+> stacks with the wakee.
 
-On Thu, 24 Aug 2023 at 22:32, Richard Fitzgerald
-<rf@opensource.cirrus.com> wrote:
->
-> Add test cases for testing the string_stream feature that appends a
-> newline to strings that do not already end with a newline.
->
-> string_stream_no_auto_newline_test() tests with this feature disabled.
-> Newlines should not be added or dropped.
->
-> string_stream_auto_newline_test() tests with this feature enabled.
-> Newlines should be added to lines that do not end with a newline.
->
-> string_stream_append_auto_newline_test() tests appending the
-> content of one stream to another stream when the target stream
-> has newline appending enabled.
->
-> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-> ---
-> Changes since V4:
-> - string_stream_append_auto_newline_test() doesn't clear the destination
->   stream_1 between the newline and no-newline case. This is just a
->   simplification of the code.
->
-> - string_stream_no_auto_newline_test() uses the same set of test strings
->   as string_stream_auto_newline_test().
-> ---
+sched_idle_cpu() mainly concerns with idle policy tasks and if the rq
+does not have any idle policy tasks, it will not return true. Since our
+tests do not use idle policy tasks, it should never return true.
 
-Much better, thanks!
+> I've tried adding checks for rq->ttwu_pending in those code paths on top of
+> my patch and I'm still observing the reduction in number of migrations, so
+> it's unclear to me how doing more queued wakeups can reduce migrations the
+> way it does.
 
-Reviewed-by: David Gow <davidgow@google.com>
+An interesting puzzle.
 
-Cheers,
--- David
+> I'm starting to think may want to explore explicitly rate limiting task
+> migrations as well.
+> 
+> For instance, we could do something like this:
+> 
+> Within a 1ms window, if a task is migrated more than once, the following
+> wakeups would consider that the prev runqueue should be considered in
+> priority (as if it was completely idle) as long as its load is below a given
+> threshold.
+> 
+> So every 1ms tasks have a chance to be migrated to the idlest runqueues, but
+> we would then eliminate those frequent migration patterns which end up being
+> bad for cache locality.
+> 
+> Thoughts ?
 
+Not sure if this is a good idea. I had a feeling it could hurt latency..
 
->  lib/kunit/string-stream-test.c | 93 ++++++++++++++++++++++++++++++++++
->  1 file changed, 93 insertions(+)
->
-> diff --git a/lib/kunit/string-stream-test.c b/lib/kunit/string-stream-test.c
-> index 2b761ba01835..2a9936db1b9f 100644
-> --- a/lib/kunit/string-stream-test.c
-> +++ b/lib/kunit/string-stream-test.c
-> @@ -32,6 +32,7 @@ static void string_stream_init_test(struct kunit *test)
->         KUNIT_EXPECT_TRUE(test, list_empty(&stream->fragments));
->         KUNIT_EXPECT_PTR_EQ(test, stream->test, test);
->         KUNIT_EXPECT_EQ(test, stream->gfp, GFP_KERNEL);
-> +       KUNIT_EXPECT_FALSE(test, stream->append_newlines);
->
->         KUNIT_EXPECT_TRUE(test, string_stream_is_empty(stream));
->  }
-> @@ -214,6 +215,45 @@ static void string_stream_append_test(struct kunit *test)
->         KUNIT_EXPECT_STREQ(test, get_concatenated_string(test, stream_1), stream_2_content);
->  }
->
-> +/* Appending the content of one string stream to one with auto-newlining. */
-> +static void string_stream_append_auto_newline_test(struct kunit *test)
-> +{
-> +       struct string_stream *stream_1, *stream_2;
-> +
-> +       /* Stream 1 has newline appending enabled */
-> +       stream_1 = alloc_string_stream(test, GFP_KERNEL);
-> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, stream_1);
-> +       string_stream_set_append_newlines(stream_1, true);
-> +       KUNIT_EXPECT_TRUE(test, stream_1->append_newlines);
-> +
-> +       /* Stream 2 does not append newlines */
-> +       stream_2 = alloc_string_stream(test, GFP_KERNEL);
-> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, stream_2);
-> +
-> +       /* Appending a stream with a newline should not add another newline */
-> +       string_stream_add(stream_1, "Original string\n");
-> +       string_stream_add(stream_2, "Appended content\n");
-> +       string_stream_add(stream_2, "More stuff\n");
-> +       string_stream_append(stream_1, stream_2);
-> +       KUNIT_EXPECT_STREQ(test, get_concatenated_string(test, stream_1),
-> +                          "Original string\nAppended content\nMore stuff\n");
-> +
-> +       string_stream_destroy(stream_2);
-> +       stream_2 = alloc_string_stream(test, GFP_KERNEL);
-> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, stream_2);
-> +
-> +       /*
-> +        * Appending a stream without newline should add a final newline.
-> +        * The appended string_stream is treated as a single string so newlines
-> +        * should not be inserted between fragments.
-> +        */
-> +       string_stream_add(stream_2, "Another");
-> +       string_stream_add(stream_2, "And again");
-> +       string_stream_append(stream_1, stream_2);
-> +       KUNIT_EXPECT_STREQ(test, get_concatenated_string(test, stream_1),
-> +                          "Original string\nAppended content\nMore stuff\nAnotherAnd again\n");
-> +}
-> +
->  /* Adding an empty string should not create a fragment. */
->  static void string_stream_append_empty_string_test(struct kunit *test)
->  {
-> @@ -237,12 +277,65 @@ static void string_stream_append_empty_string_test(struct kunit *test)
->         KUNIT_EXPECT_STREQ(test, get_concatenated_string(test, stream), "Add this line");
->  }
->
-> +/* Adding strings without automatic newline appending */
-> +static void string_stream_no_auto_newline_test(struct kunit *test)
-> +{
-> +       struct string_stream *stream;
-> +
-> +       stream = alloc_string_stream(test, GFP_KERNEL);
-> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, stream);
-> +
-> +       /*
-> +        * Add some strings with and without newlines. All formatted newlines
-> +        * should be preserved. It should not add any extra newlines.
-> +        */
-> +       string_stream_add(stream, "One");
-> +       string_stream_add(stream, "Two\n");
-> +       string_stream_add(stream, "%s\n", "Three");
-> +       string_stream_add(stream, "%s", "Four\n");
-> +       string_stream_add(stream, "Five\n%s", "Six");
-> +       string_stream_add(stream, "Seven\n\n");
-> +       string_stream_add(stream, "Eight");
-> +       KUNIT_EXPECT_STREQ(test, get_concatenated_string(test, stream),
-> +                          "OneTwo\nThree\nFour\nFive\nSixSeven\n\nEight");
-> +}
-> +
-> +/* Adding strings with automatic newline appending */
-> +static void string_stream_auto_newline_test(struct kunit *test)
-> +{
-> +       struct string_stream *stream;
-> +
-> +       stream = alloc_string_stream(test, GFP_KERNEL);
-> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, stream);
-> +
-> +       string_stream_set_append_newlines(stream, true);
-> +       KUNIT_EXPECT_TRUE(test, stream->append_newlines);
-> +
-> +       /*
-> +        * Add some strings with and without newlines. Newlines should
-> +        * be appended to lines that do not end with \n, but newlines
-> +        * resulting from the formatting should not be changed.
-> +        */
-> +       string_stream_add(stream, "One");
-> +       string_stream_add(stream, "Two\n");
-> +       string_stream_add(stream, "%s\n", "Three");
-> +       string_stream_add(stream, "%s", "Four\n");
-> +       string_stream_add(stream, "Five\n%s", "Six");
-> +       string_stream_add(stream, "Seven\n\n");
-> +       string_stream_add(stream, "Eight");
-> +       KUNIT_EXPECT_STREQ(test, get_concatenated_string(test, stream),
-> +                          "One\nTwo\nThree\nFour\nFive\nSix\nSeven\n\nEight\n");
-> +}
-> +
->  static struct kunit_case string_stream_test_cases[] = {
->         KUNIT_CASE(string_stream_init_test),
->         KUNIT_CASE(string_stream_line_add_test),
->         KUNIT_CASE(string_stream_variable_length_line_test),
->         KUNIT_CASE(string_stream_append_test),
-> +       KUNIT_CASE(string_stream_append_auto_newline_test),
->         KUNIT_CASE(string_stream_append_empty_string_test),
-> +       KUNIT_CASE(string_stream_no_auto_newline_test),
-> +       KUNIT_CASE(string_stream_auto_newline_test),
->         {}
->  };
->
-> --
-> 2.30.2
->
+Thanks,
+Aaron
 
---000000000000b556580603b9bf69
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIIPnwYJKoZIhvcNAQcCoIIPkDCCD4wCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-ggz5MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
-VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
-AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
-AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
-IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
-dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
-6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
-c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
-I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
-AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
-BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
-CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
-AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
-MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
-My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
-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
-ddIn9n5Jt6Z1o79zxraLMEwGA1UdIARFMEMwQQYJKwYBBAGgMgEoMDQwMgYIKwYBBQUHAgEWJmh0
-dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAwGA1UdEwEB/wQCMAAwgZoGCCsG
-AQUFBwEBBIGNMIGKMD4GCCsGAQUFBzABhjJodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9jYS9n
-c2F0bGFzcjNzbWltZWNhMjAyMDBIBggrBgEFBQcwAoY8aHR0cDovL3NlY3VyZS5nbG9iYWxzaWdu
-LmNvbS9jYWNlcnQvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3J0MB8GA1UdIwQYMBaAFHzMCmjXouse
-LHIb0c1dlW+N+/JjMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20v
-Y2EvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQBtHFwIgQZjer5K
-H+4Q+wns10k7qN+4wN2Uf+JsyOYjukaMEgdLErfA1wwtQ9uHkoYQZcWBuVVkQFa5hI+sqI2m1Weq
-riMCFSiU38s1tADdMX12IMfJRN60Nznhrw+nPyDRZqRhUTW24TwnHorkDnFPW8PHo7fAw4FrpI0n
-impZAng7ccvvK09K3ZuhwTIxJMsPXCZYsrXWORTw5sczRAP6XvKbPBJnsJoSTe5dFBPBHOQJOGhU
-qWfEfWnWMJPF3LxSGLpLFQXO3RwQqmxv08avwXfVPouh1xuB3FX7rpDabT8YDhu9JgIZkLEKko7L
-yQt6zWwng7k8YF/jGbiAta6VMYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
-R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
-MDIwAhABzgV+4+mJnUzG7XDy6d2uMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCCu
-rveUM8FnqciEB27EIFr5/rkP43e4YY35xjU1iXB7xDAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
-MBwGCSqGSIb3DQEJBTEPFw0yMzA4MjUwNjQ5NDBaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
-BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
-CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAk2Shz6EWvMNYNA1T/Yo0
-nIcN4+W6wyvEZt72Y+d2lD9ynFMB+Eh/vU/20he1DoMyeD0z6pVqJ12BFOh33W6YiKHqBEQ6ZhWB
-+sfWt5gm2xP075nNSmJuC4zLYE8qWOsKmFAh3QdusP3FQf2yHhTIwrM6/IqQdVfwHkjCYNtloSDJ
-+Ml6OKMUfXxqTNypHL82cT/lmAqcxbeWCfU9Wdmr4YXyUSju17vXriQbXXUSFHDeXMvtZ4SvMiXK
-lzsvZWVxSRDLr8kc8bR6OQERLADNAXwcRxFSRzGcHSKwvWYy62bTtDZaxIaNFwH709qr6LHVW0VC
-1e0hj8le6+NAL2kpqw==
---000000000000b556580603b9bf69--
+> > 
+> > Below are detailed test data.
+> > Base: 6.5-rc1.
+> > rq_spin%: The percent of raw_spin_rq_lock_nested() as reported by
+> >            perf/events=cycles:pp
+> > migration: cpu-migrations reported by "perf stat -a -- sleep 5"
+> > 
+> > The cmdline used is:
+> > hackbench -g $nr_group -f 20 --pipe --threads -l 480000 -s 100
+> > 
+> > nr_group=10:
+> >              time  rq_spin%  update_cfs_group%  update_load_avg% migration
+> > base         46s    1.32%        20.06%             10.78%      10.227 K/sec
+> > this_series  37s    0.57%        15.08%              7.05%      10.722 K/sec
+> > 
+> > nr_group=20:
+> >              time  rq_spin%  update_cfs_group%  update_load_avg% migration
+> > base         69s    2.57%        19.68%             10.74%      12.098 K/sec
+> > this_series  41s    0.62%        12.11%              5.78%       8.617 K/sec
+> > 
+> > nr_group=32:
+> >              time  rq_spin%  update_cfs_group%  update_load_avg% migration
+> > base     192s±25%  15.12%        25.83%             9.33%       12.141 K/sec
+> > this_series  71s    0.47%        10.98%             4.58%        8.198 K/sec
+> > 
+> > I also tested applying my "ratelimit update to tg->load_avg" patch and
+> > the test summary is:
+> > - performance improved noticeably for nr_group=20 and slightly for
+> >    nr_group=10 case; nr_group=32's performance is roughly the same.
+> > - task migrations dropped for all three cases; nr_group=20 saw the
+> >    biggest drop.
+> > - rq lock contention dropped for all three cases and again, nr_group=32
+> >    saw the biggest drop.
+> > 
+> > Below are detailed data.
+> > Base: peter's sched/core branch with my "ratelimit" patch.
+> > this_series: apply this patchset on top of base.
+> > 
+> > nr_group=10:
+> >              time  rq_spin%  update_cfs_group%  update_load_avg% migration
+> > base         36s    0.55%        0.46%              1.43%       15.034 K/sec
+> > this_series  35s    0.56%        0.52%              1.53%       13.751 K/sec
+> > 
+> > nr_group=20:
+> >              time  rq_spin%  update_cfs_group%  update_load_avg% migration
+> > base         47s    1.28%        0.73%              2.33%       21.217 K/sec
+> > this_series  42s    0.60%        0.69%              1.69%       14.130 K/sec
+> > 
+> > nr_group=32:
+> >              time  rq_spin%  update_cfs_group%  update_load_avg% migration
+> > base         70s    2.38%        0.60%              2.19%       17.855 K/sec
+> > this_series  70s    0.58%        0.63%              1.77%       12.331 K/sec
+> > 
+> > Thanks,
+> > Aaron
