@@ -2,112 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46197787D8A
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 04:08:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3606C787D8C
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 04:10:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240691AbjHYCID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 22:08:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35318 "EHLO
+        id S240861AbjHYCJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 22:09:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240851AbjHYCHl (ORCPT
+        with ESMTP id S241200AbjHYCJQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 22:07:41 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4197619A
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 19:07:39 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1c09c1fd0abso5918485ad.2
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 19:07:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692929258; x=1693534058;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=ij7IJ9LeENVlJByi4z/6QrJLTj5aVJhs6LLV7CfHy1E=;
-        b=nZY/HsLnBnVzySI5bwR83jGtbGyAfr52IW7zOyBFfiKpVXDzCz66LOicUFzYv7+pjp
-         npFN6/fXfHEsdYPRvxhmAcBXuKa8iMXGOKHemw0KdIlsqkkXiLnSXXDcDnZYdVuZBLGS
-         VI9bK5XLqVYp/wn87KYxY8dZhSkVnavD8mDxyzgLdYXe9GpF4ZoD3Lzx/8GjB9V/sZ1W
-         6+l3YikZuyH3kyvhGw7m6g/eEjc/Lnb8+7T85xgUkVWlGeps+Q24Rl77dCIiUQkElMJF
-         RlxuicGUGppQCuBWcsHPVz/467/laIGeNy3RpNIa4jqIQ4JH5NK4hyDm31oi/CweNAvt
-         ZAJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692929258; x=1693534058;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ij7IJ9LeENVlJByi4z/6QrJLTj5aVJhs6LLV7CfHy1E=;
-        b=fteq6FayOf6Gr2sMw76lVrLTQcbbl2v0nC+ALFPNE3Fu0EOBpodV6Lm6UXuCj3Jp4v
-         Vdc6YXW4iGJSub/8PL9sIeqoEYmsRAxc7mreX9upXxI2GxdcUtKe7ylx0/ThBKle2kIV
-         ttpuaqEDI8U2SAeRZHhgg54da/+yJUOyTW5A/SjoLMsFVhdLOu+Xp7o3FiZ/gWgg8tGu
-         Nk58ITvIkaVp59zhSa25cqGtp5cJs6i3Vw9ksx/9R2E/TT2igJ4xm22D6cUef32C8VLn
-         gU7CSHhK9ommGyE2c1KhALcuI5+woAacZUDwUZz1hCpFyVDy2zikt2Ivruf1k81OWSTx
-         RTUQ==
-X-Gm-Message-State: AOJu0YzmgT69TExUbslmjTyA0dj5c05ovkrl/CzcOncsGiNlOFeLTdf1
-        A7lDv0nOYDqflU/ZdynSJOqYjm4MYt0=
-X-Google-Smtp-Source: AGHT+IF7loOUbycshuEEvy226/Q/37wCJDPtRBqLjjJlP1CdSVcxR8XOuDqm3RnPk2MjhQ3dFwEeCkRrGno=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:f203:b0:1bc:e6a:205e with SMTP id
- m3-20020a170902f20300b001bc0e6a205emr6177096plc.5.1692929258615; Thu, 24 Aug
- 2023 19:07:38 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu, 24 Aug 2023 19:07:33 -0700
-In-Reply-To: <20230825020733.2849862-1-seanjc@google.com>
-Mime-Version: 1.0
-References: <20230825020733.2849862-1-seanjc@google.com>
-X-Mailer: git-send-email 2.42.0.rc2.253.gd59a3bf2b4-goog
-Message-ID: <20230825020733.2849862-3-seanjc@google.com>
-Subject: [PATCH 2/2] KVM: x86/mmu: Retry fault before acquiring mmu_lock if
- mapping is changing
-From:   Sean Christopherson <seanjc@google.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yan Zhao <yan.y.zhao@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Thu, 24 Aug 2023 22:09:16 -0400
+Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id 68A492128
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 19:08:54 -0700 (PDT)
+Received: (qmail 244973 invoked by uid 1000); 24 Aug 2023 22:08:53 -0400
+Date:   Thu, 24 Aug 2023 22:08:53 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Andrey Konovalov <andreyknvl@gmail.com>
+Cc:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: dwc3: unusual handling of setup requests with wLength == 0
+Message-ID: <8209aefa-5ab3-43dd-94f5-350e6d38cec2@rowland.harvard.edu>
+References: <20230818194922.ys26zrqc4pocqq7q@synopsys.com>
+ <45d9ef53-e2be-4740-a93a-d36f18a49b39@rowland.harvard.edu>
+ <20230819000643.7mddkitzr4aqjsms@synopsys.com>
+ <e63ba783-f5a4-4442-8736-987a3b134e7f@rowland.harvard.edu>
+ <CA+fCnZcmb78DMaffb3cq2JeCNxcGBeyt8hxeJq3SaTTkbZ3ewA@mail.gmail.com>
+ <3f52eb94-1d8c-4233-86ac-bbc78d4efce7@rowland.harvard.edu>
+ <CA+fCnZcJ0JHHY04By+PjYvofpefKtp1br63gJNsEL=J7n1_vCA@mail.gmail.com>
+ <bdf69b9d-fe82-48e2-9638-d84d00d4ef1d@rowland.harvard.edu>
+ <20230823171757.vegbktpkk23eg34z@synopsys.com>
+ <CA+fCnZdewxqN6jaOmah4Ptz5CaJoc6iKisFBMLujBGOD_6HoiA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+fCnZdewxqN6jaOmah4Ptz5CaJoc6iKisFBMLujBGOD_6HoiA@mail.gmail.com>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Retry page faults without acquiring mmu_lock if the resolved hva is covered
-by an active invalidation.  Contending for mmu_lock is especially
-problematic on preemptible kernels as the mmu_notifier invalidation task
-will yield mmu_lock (see rwlock_needbreak()), delay the in-progress
-invalidation, and ultimately increase the latency of resolving the page
-fault.  And in the worst case scenario, yielding will be accompanied by a
-remote TLB flush, e.g. if the invalidation covers a large range of memory
-and vCPUs are accessing addresses that were already zapped.
+On Fri, Aug 25, 2023 at 03:36:36AM +0200, Andrey Konovalov wrote:
+> So to summarize the issue wrt the 0-length requests:
+> 
+> 1. UDC drivers must always delay the status stage for 0-length
+> requests until the gadget driver queues an empty request.
 
-Alternatively, the yielding issue could be mitigated by teaching KVM's MMU
-iterators to perform more work before yielding, but that wouldn't solve
-the lock contention and would negatively affect scenarios where a vCPU is
-trying to fault in an address that is NOT covered by the in-progress
-invalidation.
+Any request, not necessarily empty (although it should be).  The request 
+queued by the gadget driver _is_ the Status stage response; in this 
+situation the UDC driver doesn't create one automatically.
 
-Reported-by: Yan Zhao <yan.y.zhao@intel.com>
-Closes: https://lore.kernel.org/all/ZNnPF4W26ZbAyGto@yzhao56-desk.sh.intel.com
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/mmu/mmu.c | 3 +++
- 1 file changed, 3 insertions(+)
+> 2. Many UDC drivers do not do this, and only delay the status stage
+> when USB_GADGET_DELAYED_STATUS is returned from ->setup(). Some
+> drivers also assume that only a SET_CONFIGURATION request can be
+> delayed.
+> 
+> 3. All such UDC drivers should be fixed and USB_GADGET_DELAYED_STATUS
+> should be contained within the composite framework.
+> 
+> 4. Fixing all such UDC drivers is a non-trivial amount of work, but
+> this is the goal to strive towards.
+> 
+> Alan, would it be acceptable if I add custom handling of
+> USB_GADGET_DELAYED_STATUS to Raw Gadget in the meantime? It would be
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 1a5a1e7d1eb7..8e2e07ed1a1b 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -4334,6 +4334,9 @@ static int kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault,
- 	if (unlikely(!fault->slot))
- 		return kvm_handle_noslot_fault(vcpu, fault, access);
- 
-+	if (mmu_invalidate_retry_hva(vcpu->kvm, fault->mmu_seq, fault->hva))
-+		return RET_PF_RETRY;
-+
- 	return RET_PF_CONTINUE;
- }
- 
--- 
-2.42.0.rc2.253.gd59a3bf2b4-goog
+Sure.  It's your driver; do whatever you want with it.  :-)
 
+> great to keep it at least somewhat working with dwc3. I can also do it
+> for GadgetFS, if you think it's a good idea.
+
+I suspect gadgetfs doesn't need it.  But go ahead and look through the 
+code to check for yourself; I might be wrong.
+
+> I can also add some clarifying comments for USB_GADGET_DELAYED_STATUS
+> and ->setup() to hopefully avoid having new UDC drivers being added
+> with the same issue (e.g. cdns2 and renesas_usbf with the same issue
+> were added just recently).
+
+Good idea, although mistakes like this tend to propagate more through 
+copy-and-paste than by failures of documentation.
+
+> Maybe it's also a good idea to add a checkpatch.pl check for using
+> USB_GADGET_DELAYED_STATUS in UDC drivers. Or maybe ask Greg to keep an
+> eye out for this?
+
+I wouldn't try to modify checkpatch.pl.
+
+Alan Stern
