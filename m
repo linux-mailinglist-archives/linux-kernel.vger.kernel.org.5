@@ -2,479 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B695A788D91
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 19:06:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 463D1788D93
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 19:07:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344168AbjHYRF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 13:05:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33592 "EHLO
+        id S1344177AbjHYRGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 13:06:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344165AbjHYRFI (ORCPT
+        with ESMTP id S1344234AbjHYRGa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 13:05:08 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D0731FF7;
-        Fri, 25 Aug 2023 10:05:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692983106; x=1724519106;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=xjTr3RdquYQZshqoMMrT8zZd5hpw3eVfO5pTE854DFI=;
-  b=JUt2HuwwooZCP9V3lg8J7DVGttuVVHkDUj/chZBNuH/WCKYjJCIPBUHH
-   dz2ijMbKfjOB23af8LI0FWesKU1HTorDlW26gJK8yhKYXmAGPVf/Vtqoa
-   Y4VizRGiOXcO4PO18DmY9uKiJU510c5YhXqIvbLiUb+Uh1aHLjcETpHUt
-   SCieoqRUQTSXcLCMU2FPj6Pqhp/MvUSMVWaGfJBHHrBjB3n4mwzAOSkQX
-   2I/UCc2arcff/HcJWtz7beJqFVlKM5rHnQYkjk9b3kVO01VUolnMid6ED
-   mBGZchz6mIRv3XbZO0rFk32mZIVqcYKPKda/BqO7pFKCHnmQiBDd6WpCf
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10813"; a="359755330"
-X-IronPort-AV: E=Sophos;i="6.02,201,1688454000"; 
-   d="scan'208";a="359755330"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2023 10:05:05 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10813"; a="807600289"
-X-IronPort-AV: E=Sophos;i="6.02,201,1688454000"; 
-   d="scan'208";a="807600289"
-Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.74])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2023 10:05:04 -0700
-Date:   Fri, 25 Aug 2023 10:05:03 -0700
-From:   Tony Luck <tony.luck@intel.com>
-To:     Reinette Chatre <reinette.chatre@intel.com>
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        Peter Newman <peternewman@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org,
-        Shaopeng Tan <tan.shaopeng@fujitsu.com>,
-        James Morse <james.morse@arm.com>,
-        Jamie Iles <quic_jiles@quicinc.com>,
-        Babu Moger <babu.moger@amd.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        patches@lists.linux.dev
-Subject: Re: [PATCH v4 1/7] x86/resctrl: Create separate domains for control
- and monitoring
-Message-ID: <ZOjfPx8iwTULTqdg@agluck-desk3>
-References: <20230713163207.219710-1-tony.luck@intel.com>
- <20230722190740.326190-1-tony.luck@intel.com>
- <20230722190740.326190-2-tony.luck@intel.com>
- <cc1a144f-6667-18fb-7fe7-cd15ebfedd08@intel.com>
+        Fri, 25 Aug 2023 13:06:30 -0400
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2134.outbound.protection.outlook.com [40.107.94.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE81D212C
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 10:06:25 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OpiYxvfYvYheIQTey4+YriUIIZRgu2Fi5OwYqvCBwKvHviu2014NUwm+QRg71g8snpuC6OWRLwnlD7kuCp1B0uTOnftoW1aUAAHQEJb4VNmMR0FEPZe/vwtQXJb8mTiLsObyy7q1954NK3uG/nvwGgtCeS+yA/a8oIWtNJrw/jHlGgx2pDiV3U5zDYWMVZYrd2pfRrGtx000uQp2b1gdrKV27AISabBDcQmfahyFP/aW3sBYYqXg9wQ72+7xT8djBoXn9pdfq/v9jZHCuimn/K4EoOyTw3BGETB12/SHXY3859fN0md/gh4HpfqgNGRVEj8CPcwIz76MVMZQxGy9uA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=2MoEox2nhEFjZhCb7jF86o7rrsOJ1+wzA0GVyhoHjHU=;
+ b=H4eF9XFxzMH1bKbOj/FnkIPX0GsqNo6jkMBAcRLZ0oY9a9d34JXXkqnn5fKR1zWxb/mQWgS5QpwEZZpqIfd6BniwLXRIbNkc0dfLZ/jYyNrHhHmc0+TMeELwtnHEnW04BjAt7X0tMrlXuyN05rg3sWadu0ms2ar/fGPh8aQLNyIV6IsC8TJleXsH+1RU4oENZthh3vCEQPnR5IjRN9O7gcjTN6lL5etuQEMQmgIrxSePYpzKJxxZPT9OHxybqNAJZZHm6cyRzkaK7QwcM4UhwpX2Clj+B5Df9JtOtaaM9FvC/N2/H4KKDA1xaIx9bkqehM9DGtSveawOvw+QDBVLNw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=os.amperecomputing.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2MoEox2nhEFjZhCb7jF86o7rrsOJ1+wzA0GVyhoHjHU=;
+ b=Aakep+awg+XzepViw01w0CTf33QVpx7n0qKPLc0GdqA0Pm08DR8x4xOu7ghWKTWlzvxXjVmZTJ+GToXrzOM9x16T21UbusmXze7XyHW2fl8GyNqHJCPnP7PQ9+Fz7zFgAmK2w0zilqWtO8XLhB26GijBbuepmkxBL457uqhhNPQ=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
+Received: from DM6PR01MB5259.prod.exchangelabs.com (2603:10b6:5:68::27) by
+ LV8PR01MB8455.prod.exchangelabs.com (2603:10b6:408:18a::16) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6699.27; Fri, 25 Aug 2023 17:06:23 +0000
+Received: from DM6PR01MB5259.prod.exchangelabs.com
+ ([fe80::67e1:3510:9ea0:8661]) by DM6PR01MB5259.prod.exchangelabs.com
+ ([fe80::67e1:3510:9ea0:8661%7]) with mapi id 15.20.6699.028; Fri, 25 Aug 2023
+ 17:06:23 +0000
+Date:   Fri, 25 Aug 2023 10:06:19 -0700 (PDT)
+From:   "Lameter, Christopher" <cl@os.amperecomputing.com>
+To:     Michal Hocko <mhocko@suse.com>
+cc:     "Huang, Ying" <ying.huang@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH] mm: fix draining remote pageset
+In-Reply-To: <ZORtHmDeDCMcCb7Q@dhcp22.suse.cz>
+Message-ID: <94b0e0c6-a626-46a1-e746-a336d20cdc08@os.amperecomputing.com>
+References: <20230811090819.60845-1-ying.huang@intel.com> <ZNYA6YWLqtDOdQne@dhcp22.suse.cz> <87r0o6bcyw.fsf@yhuang6-desk2.ccr.corp.intel.com> <ZNxxaFnM9W8+imHD@dhcp22.suse.cz> <87jztv79co.fsf@yhuang6-desk2.ccr.corp.intel.com> <ZOMYb27IulTpDFpe@dhcp22.suse.cz>
+ <87v8d8dch1.fsf@yhuang6-desk2.ccr.corp.intel.com> <ZOMuCiZ07N+L/ljG@dhcp22.suse.cz> <87msykc9ip.fsf@yhuang6-desk2.ccr.corp.intel.com> <ZORtHmDeDCMcCb7Q@dhcp22.suse.cz>
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+X-ClientProxiedBy: CH2PR18CA0007.namprd18.prod.outlook.com
+ (2603:10b6:610:4f::17) To DM6PR01MB5259.prod.exchangelabs.com
+ (2603:10b6:5:68::27)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cc1a144f-6667-18fb-7fe7-cd15ebfedd08@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR01MB5259:EE_|LV8PR01MB8455:EE_
+X-MS-Office365-Filtering-Correlation-Id: c0a039e7-e175-495a-a455-08dba58d9bfb
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: apLGPJSQt0rkg9R/FQylhFNzjrvHooyzFUUhxpL5jLHWPXP79vzQ8zIV5mlK5kmirJ7vaQI9WA5KXYwyKpEXTDlYykds2CzfFhYGlWSKyBxpHjLqUrM68kgROxfoH86qOiZ9glvUsF5xw1fyMGMEGHXYbWjUoQbLnqUc3lAgf6j/gwZHKbnunpSDiOXjqmc48zC+jo8Xa96FUPA+nv43SA0kNPsi3Q3bSuPI3g9fc7UoHF85gZmxl3MpeNgh5IINCRsWZzhuXNg8Kv3pDTKolr1IwS1z8S1ipwWvz//USWQq0zCdj6IWb6j5NlM9+75ZlnaFrOxoFytkb73KFsDzEnOxRdtCuR2c64lw0xHoAFEUAWMM7dxQlJGNYPQTgL6f7lDnDYIOU34OQ7tat0r4vofwgCiJx4RoF/KcSkm9YIMrKQ48yR8YLcehGhsFSvhJf0WjYhXpfvGTJZPvQfX1gMatFJWCaHDKPUXGc0g49NrHBtxqY9Y+6c6M6M+ij/eFHluXo951e3sjXbjWrDmEoG7CaF3pwRifHtJxHS6kOoBtDWuI0tHRLRyBOgSGdp3m
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR01MB5259.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(39850400004)(136003)(346002)(396003)(186009)(1800799009)(451199024)(2616005)(5660300002)(4326008)(8676002)(8936002)(4744005)(83380400001)(26005)(38100700002)(6666004)(6916009)(66946007)(66476007)(6506007)(54906003)(66556008)(316002)(478600001)(31686004)(41300700001)(2906002)(6512007)(86362001)(6486002)(31696002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?IrwDjgQUZEoB04E7IN0LqUtiQKVRayqNyaJcPIqZlBxM2ed/BnPVnLh0Y/Y/?=
+ =?us-ascii?Q?qj6GH7+0bLA1oeZmPt9lCGSwlLMSqJwZ+CqrD9QfF1OGVjQ86GbgvCuZ8STY?=
+ =?us-ascii?Q?qBdwjjUVBRqt6ODx0gX/NxgXGLPQobEgLOOtwoIRspPgjO2NCgkZOpTOwgRt?=
+ =?us-ascii?Q?jgaHMImyi3qsPF+UCDJdp17l72MJTFKNFKh6G7GDjZiyBYYYBF3J1ZMoyQHE?=
+ =?us-ascii?Q?PzVi1oh1/yoOJ1q9fkjFncOX0xksPp4LohUAxHPJ4A22rbgat/LjlYix4Hgp?=
+ =?us-ascii?Q?Vo43vOwgRkkbaJAuCYccOvMeRvgsu7u6vSe1QUwtW1DlAMRSLhHbVoBSqsB1?=
+ =?us-ascii?Q?aAbMeyEAkgbNkXguTlb7ZLuVXPUQYX4O1wpf5pgI7rVXFPkG5eO5rqaz7WGp?=
+ =?us-ascii?Q?nk4yWhCN06be1jPi/GBOW2CpXy3l25BATmeQyoI4kp2qg4QnWzE3IE7G4ZdW?=
+ =?us-ascii?Q?xrFCLxpSL1OQsSK2zduppty9+8NNIM/vtTLwTUZ8pzhaH3xbQW0egosjrI8G?=
+ =?us-ascii?Q?Avrbvi3kH9JU1rTfLoQXNuaRNrUMFuhTqcjYUUR2gTxLEjEPRAxkiDW6hlPP?=
+ =?us-ascii?Q?2XsUsL1ElVF6tLmx4hdBdYjoXPduyPV95bgcXHfG/bEo9u18dULPb77YR/pO?=
+ =?us-ascii?Q?xwL1+iivmyKev/dN+lVLN8jqc7ApuBv8Gm5wpMFvbetdOgOkE/gvFJRXneHO?=
+ =?us-ascii?Q?HKzBQJUsRd/wWAFdJC3JYJr7z+LV88NdDmbeadcnhVTAjhR3UQ3N8mfMdqIs?=
+ =?us-ascii?Q?9ukskaI7BMGvcv9FIUe6F4U7It14aOvSH/U+5KH4pdt4Ds5TcpVGDinrX0Rn?=
+ =?us-ascii?Q?4ytQUwkoGP/hIgDwAOXF5p6T6MiBN+brzVmtVU2c11j2eDolZ/EyAcMwLZuZ?=
+ =?us-ascii?Q?IN/ZwVGQ/GmMk9e2OkFccXTQu7Ywo9w33GyjD7OaTSpnBpoyOoGHPCDgAoMS?=
+ =?us-ascii?Q?pC/QRmDPL0KDqAl3ew1ksmQoJ8CsD+7URCwwysmItqfULDrcpjjX6wYRAPo2?=
+ =?us-ascii?Q?L+Epmm0+uGyNP/rddCyxO75AtOQcqzcZMtkdtcEXdfbWp2ck2ShGRfr1qic1?=
+ =?us-ascii?Q?q15nJqgKebZeBd7BQw1yKbOv1bBfsrfgXiNjNH2UUp06Sn0OQmy5ov22YKzj?=
+ =?us-ascii?Q?h6R8nw668yCZB0NRX0udJT/wFlOwzwhG3U4jN71lmwQ6qXAJBrD345KKv6rb?=
+ =?us-ascii?Q?vwZd1sIfcHW1LHn/Mnq+IcMBAoSZaQAXdKizVLJDewQPnQ6BCC4z4tEYOyKD?=
+ =?us-ascii?Q?EYR9vYJcJgxa7SwX+sINyF8Fj3o2RZpuyfS15D7FJmifw6ugZnS7/wrUtMtf?=
+ =?us-ascii?Q?CzSOTsAJghrLCdw9xkw1Sl0N3z898HuBp3YjlG6Cxdn9ZHSVdkS8IVj3TPCV?=
+ =?us-ascii?Q?qeLygxRB7bbTwMfRZrBY9nmjuzxo7/vxCIDB2Mxymg/7zTT27PLGiPwkx/0a?=
+ =?us-ascii?Q?q/If+U4xEEeijtqG3Ak1C75jzO0HOsUEhQgxXbOO2vT8UhUqzo8GEFgLbeDQ?=
+ =?us-ascii?Q?Z1lsXRWTJCA8Ysg0E+feKTdhm7giEVAsVo6iBfZ7BzR+r2e9NCr1Oq7vk2Hw?=
+ =?us-ascii?Q?wJPPV7CZ6246OzGLwnYqpSW131AYBUK+VVO0QseYSsP5CBghBx/jqUkW52TG?=
+ =?us-ascii?Q?MQ=3D=3D?=
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c0a039e7-e175-495a-a455-08dba58d9bfb
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR01MB5259.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Aug 2023 17:06:23.2580
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 2kumqAeIlPSlXurxOPCB8C3Be9OKyjc6jJ1Ca75/OZxlgBAcHs0WIiasegp/mXUc1jNmu9PlTGbNTlIBtxiO/9qaE3g3cj8ygwERIHSu8Tk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR01MB8455
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 11, 2023 at 10:29:25AM -0700, Reinette Chatre wrote:
-> Hi Tony,
-> 
-> On 7/22/2023 12:07 PM, Tony Luck wrote:
-> > First step towards supporting resource control where the scope of
-> > control operations is not the same as monitor operations.
-> 
-> Each changelog should stand on its own merit. This changelog
-> appears to be written as a continuation of the cover letter.
-> 
-> Please do ensure that each patch first establishes the context
-> before it describes the problem and solution. For example,
-> as a context this changelog can start by describing what the
-> resctrl domains list represents.
-> 
-> > 
-> > Add an extra list in the rdt_resource structure. For this will
-> > just duplicate the existing list of domains based on the L3 cache
-> > scope.
-> 
-> The above paragraph does not make this change appealing at all.
-> 
-> > Refactor the domain_add_cpu() and domain_remove() functions to
-> 
-> domain_remove() -> domain_remove_cpu()
-> 
-> > build separate lists for r->alloc_capable and r->mon_capable
-> > resources. Note that only the "L3" domain currently supports
-> > both types.
-> 
-> "L3" domain -> "L3" resource?
-> 
-> > 
-> > Change all places where monitoring functions walk the list of
-> > domains to use the new "mondomains" list instead of the old
-> > "domains" list.
-> 
-> I would not refer to it as "the old domains list" as it creates
-> impression that this is being replaced. The changelog makes
-> no mention that domains list will remain and be dedicated to
-> control domains. I think this is important to include in description
-> of this change.
+On Tue, 22 Aug 2023, Michal Hocko wrote:
 
-I've rewritten the entire commit message incorporating your suggestions.
-V6 will be posted soon (after I get some time on an SNC SPR to check
-that it all works!)
+> Yes, this doesn't really show any actual correctness problem so I do not
+> think this is sufficient to change the code. You would need to show that
+> the existing behavior is actively harmful.
 
-> 
-> > 
-> > Signed-off-by: Tony Luck <tony.luck@intel.com>
-> > ---
-> >  include/linux/resctrl.h                   |  10 +-
-> >  arch/x86/kernel/cpu/resctrl/internal.h    |   2 +-
-> >  arch/x86/kernel/cpu/resctrl/core.c        | 195 +++++++++++++++-------
-> >  arch/x86/kernel/cpu/resctrl/ctrlmondata.c |   2 +-
-> >  arch/x86/kernel/cpu/resctrl/monitor.c     |   2 +-
-> >  arch/x86/kernel/cpu/resctrl/rdtgroup.c    |  30 ++--
-> >  6 files changed, 167 insertions(+), 74 deletions(-)
-> > 
-> > diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
-> > index 8334eeacfec5..1267d56f9e76 100644
-> > --- a/include/linux/resctrl.h
-> > +++ b/include/linux/resctrl.h
-> > @@ -151,9 +151,11 @@ struct resctrl_schema;
-> >   * @mon_capable:	Is monitor feature available on this machine
-> >   * @num_rmid:		Number of RMIDs available
-> >   * @cache_level:	Which cache level defines scope of this resource
-> > + * @mon_scope:		Scope of this resource if different from cache_level
-> 
-> I think this addition should be deferred. As it is here it the "if different
-> from cache_level" also creates many questions (when will it be different?
-> how will it be determined that the scope is different in order to know that
-> mon_scope should be used?)
+Having some pages from a remote NUMA node stuck in a pcp somewhere is 
+making that memory unusable. It is usually rate that these remote pages 
+are needed again and so they may remain there for a long time if the 
+situation is right.
 
-I've gone in a different direction. V6 renames "cache_level" to
-"ctrl_scope". I think this makes intent clear from step #1.
+And he is right that the intended behavior of freeing the remote pages 
+has been disabled by the patch.
 
-> 
-> Looking ahead on how mon_scope is used there does not seem to be an "if"
-> involved at all ... mon_scope is always the monitoring scope. 
+So I think there is sufficient rationale to apply these fixes.
 
-Dropped the "if different" comment. You are correct that this is
-unconditionally the monitor scope.
-
-> 
-> >   * @cache:		Cache allocation related data
-> >   * @membw:		If the component has bandwidth controls, their properties.
-> >   * @domains:		All domains for this resource
-> 
-> A change to the domains comment would also help - to highlight that it is
-> now dedicated to control domains.
-
-Done.
-
-> 
-> > + * @mondomains:		Monitor domains for this resource
-> >   * @name:		Name to use in "schemata" file.
-> >   * @data_width:		Character width of data when displaying
-> >   * @default_ctrl:	Specifies default cache cbm or memory B/W percent.
-> > @@ -169,9 +171,11 @@ struct rdt_resource {
-> >  	bool			mon_capable;
-> >  	int			num_rmid;
-> >  	int			cache_level;
-> > +	int			mon_scope;
-> >  	struct resctrl_cache	cache;
-> >  	struct resctrl_membw	membw;
-> >  	struct list_head	domains;
-> > +	struct list_head	mondomains;
-> >  	char			*name;
-> >  	int			data_width;
-> >  	u32			default_ctrl;
-> 
-> ...
-> 
-> > @@ -384,14 +386,15 @@ void rdt_ctrl_update(void *arg)
-> >  }
-> >  
-> >  /*
-> > - * rdt_find_domain - Find a domain in a resource that matches input resource id
-> > + * rdt_find_domain - Find a domain in one of the lists for a resource that
-> > + * matches input resource id
-> >   *
-> 
-> This change makes the function more vague. I think original summary is
-> still accurate, how the list is used can be describe in the details below.
-> I see more changes to this function is upcoming and I will comment more 
-> at those sites.
-
-Re-worked this based on your other suggestions to have separate find*
-functions for ctrl and mon cases calling to common __rdt_find_domain().
-
-> 
-> >   * Search resource r's domain list to find the resource id. If the resource
-> >   * id is found in a domain, return the domain. Otherwise, if requested by
-> >   * caller, return the first domain whose id is bigger than the input id.
-> >   * The domain list is sorted by id in ascending order.
-> >   */
-> > -struct rdt_domain *rdt_find_domain(struct rdt_resource *r, int id,
-> > +struct rdt_domain *rdt_find_domain(struct list_head *h, int id,
-> >  				   struct list_head **pos)
-> >  {
-> >  	struct rdt_domain *d;
-> > @@ -400,7 +403,7 @@ struct rdt_domain *rdt_find_domain(struct rdt_resource *r, int id,
-> >  	if (id < 0)
-> >  		return ERR_PTR(-ENODEV);
-> >  
-> > -	list_for_each(l, &r->domains) {
-> > +	list_for_each(l, h) {
-> >  		d = list_entry(l, struct rdt_domain, list);
-> >  		/* When id is found, return its domain. */
-> >  		if (id == d->id)
-> > @@ -487,6 +490,94 @@ static int arch_domain_mbm_alloc(u32 num_rmid, struct rdt_hw_domain *hw_dom)
-> >  	return 0;
-> >  }
-> >  
-> > +static void domain_add_cpu_ctrl(int cpu, struct rdt_resource *r)
-> > +{
-> > +	int id = get_cpu_cacheinfo_id(cpu, r->cache_level);
-> > +	struct list_head *add_pos = NULL;
-> > +	struct rdt_hw_domain *hw_dom;
-> > +	struct rdt_domain *d;
-> > +	int err;
-> > +
-> > +	d = rdt_find_domain(&r->domains, id, &add_pos);
-> > +	if (IS_ERR(d)) {
-> > +		pr_warn("Couldn't find cache id for CPU %d\n", cpu);
-> > +		return;
-> > +	}
-> > +
-> > +	if (d) {
-> > +		cpumask_set_cpu(cpu, &d->cpu_mask);
-> > +		if (r->cache.arch_has_per_cpu_cfg)
-> > +			rdt_domain_reconfigure_cdp(r);
-> > +		return;
-> > +	}
-> > +
-> > +	hw_dom = kzalloc_node(sizeof(*hw_dom), GFP_KERNEL, cpu_to_node(cpu));
-> > +	if (!hw_dom)
-> > +		return;
-> > +
-> > +	d = &hw_dom->d_resctrl;
-> > +	d->id = id;
-> > +	cpumask_set_cpu(cpu, &d->cpu_mask);
-> > +
-> > +	rdt_domain_reconfigure_cdp(r);
-> > +
-> > +	if (domain_setup_ctrlval(r, d)) {
-> > +		domain_free(hw_dom);
-> > +		return;
-> > +	}
-> > +
-> > +	list_add_tail(&d->list, add_pos);
-> > +
-> > +	err = resctrl_online_ctrl_domain(r, d);
-> > +	if (err) {
-> > +		list_del(&d->list);
-> > +		domain_free(hw_dom);
-> > +	}
-> > +}
-> > +
-> > +static void domain_add_cpu_mon(int cpu, struct rdt_resource *r)
-> > +{
-> > +	int id = get_cpu_cacheinfo_id(cpu, r->mon_scope);
-> 
-> Using a different scope variable but continuing to treat it
-> as a cache level creates unnecessary confusion at this point.
-> 
-> > +	struct list_head *add_pos = NULL;
-> > +	struct rdt_hw_domain *hw_dom;
-> > +	struct rdt_domain *d;
-> > +	int err;
-> > +
-> > +	d = rdt_find_domain(&r->mondomains, id, &add_pos);
-> > +	if (IS_ERR(d)) {
-> > +		pr_warn("Couldn't find cache id for CPU %d\n", cpu);
-> 
-> Note for future change ... this continues to refer to monitor scope as
-> a cache id. I did not see this changed in the later patch that actually
-> changes how scope is used.
-
-Changed all these messages to refer to scope instead of cache id.
-
-> 
-> > +		return;
-> > +	}
-> > +
-> > +	if (d) {
-> > +		cpumask_set_cpu(cpu, &d->cpu_mask);
-> > +		if (r->cache.arch_has_per_cpu_cfg)
-> > +			rdt_domain_reconfigure_cdp(r);
-> 
-> Copy & paste error?
-
-Indeed yes. This code isn't appropriate for the monitor case.
-Deleted.
-
-> 
-> > +		return;
-> > +	}
-> > +
-> > +	hw_dom = kzalloc_node(sizeof(*hw_dom), GFP_KERNEL, cpu_to_node(cpu));
-> > +	if (!hw_dom)
-> > +		return;
-> > +
-> > +	d = &hw_dom->d_resctrl;
-> > +	d->id = id;
-> > +	cpumask_set_cpu(cpu, &d->cpu_mask);
-> > +
-> > +	if (arch_domain_mbm_alloc(r->num_rmid, hw_dom)) {
-> > +		domain_free(hw_dom);
-> > +		return;
-> > +	}
-> > +
-> > +	list_add_tail(&d->list, add_pos);
-> > +
-> > +	err = resctrl_online_mon_domain(r, d);
-> > +	if (err) {
-> > +		list_del(&d->list);
-> > +		domain_free(hw_dom);
-> > +	}
-> > +}
-> > +
-> >  /*
-> >   * domain_add_cpu - Add a cpu to a resource's domain list.
-> >   *
-> > @@ -502,61 +593,19 @@ static int arch_domain_mbm_alloc(u32 num_rmid, struct rdt_hw_domain *hw_dom)
-> >   */
-> >  static void domain_add_cpu(int cpu, struct rdt_resource *r)
-> >  {
-> > -	int id = get_cpu_cacheinfo_id(cpu, r->cache_level);
-> > -	struct list_head *add_pos = NULL;
-> > -	struct rdt_hw_domain *hw_dom;
-> > -	struct rdt_domain *d;
-> > -	int err;
-> > -
-> > -	d = rdt_find_domain(r, id, &add_pos);
-> > -	if (IS_ERR(d)) {
-> > -		pr_warn("Couldn't find cache id for CPU %d\n", cpu);
-> > -		return;
-> > -	}
-> > -
-> > -	if (d) {
-> > -		cpumask_set_cpu(cpu, &d->cpu_mask);
-> > -		if (r->cache.arch_has_per_cpu_cfg)
-> > -			rdt_domain_reconfigure_cdp(r);
-> > -		return;
-> > -	}
-> > -
-> > -	hw_dom = kzalloc_node(sizeof(*hw_dom), GFP_KERNEL, cpu_to_node(cpu));
-> > -	if (!hw_dom)
-> > -		return;
-> > -
-> > -	d = &hw_dom->d_resctrl;
-> > -	d->id = id;
-> > -	cpumask_set_cpu(cpu, &d->cpu_mask);
-> > -
-> > -	rdt_domain_reconfigure_cdp(r);
-> > -
-> > -	if (r->alloc_capable && domain_setup_ctrlval(r, d)) {
-> > -		domain_free(hw_dom);
-> > -		return;
-> > -	}
-> > -
-> > -	if (r->mon_capable && arch_domain_mbm_alloc(r->num_rmid, hw_dom)) {
-> > -		domain_free(hw_dom);
-> > -		return;
-> > -	}
-> > -
-> > -	list_add_tail(&d->list, add_pos);
-> > -
-> > -	err = resctrl_online_domain(r, d);
-> > -	if (err) {
-> > -		list_del(&d->list);
-> > -		domain_free(hw_dom);
-> > -	}
-> > +	if (r->alloc_capable)
-> > +		domain_add_cpu_ctrl(cpu, r);
-> > +	if (r->mon_capable)
-> > +		domain_add_cpu_mon(cpu, r);
-> >  }
-> 
-> A resource could be both alloc and mon capable ... both
-> domain_add_cpu_ctrl() and domain_add_cpu_mon() can fail.
-> Should domain_add_cpu_mon() still be run for a CPU if
-> domain_add_cpu_ctrl() failed? 
-> 
-> Looking ahead the CPU should probably also not be added
-> to the default groups mask if a failure occurred.
-
-Existing code doesn't do anything for the case where a CPU
-can't be added to a domain (probably the only real error case
-is failure to allocate memory for the domain structure).
-
-May be something to tackle in a future series if anyone
-thinks this is a serious problem and has suggestions on
-what to do. It seems like a catastrophic problem to not
-have some CPUs in some/all domains of some resources.
-Maybe this should disable mounting resctrl filesystem
-completely?
-
-> 
-> > -static void domain_remove_cpu(int cpu, struct rdt_resource *r)
-> > +static void domain_remove_cpu_ctrl(int cpu, struct rdt_resource *r)
-> >  {
-> >  	int id = get_cpu_cacheinfo_id(cpu, r->cache_level);
-> >  	struct rdt_hw_domain *hw_dom;
-> >  	struct rdt_domain *d;
-> >  
-> > -	d = rdt_find_domain(r, id, NULL);
-> > +	d = rdt_find_domain(&r->domains, id, NULL);
-> >  	if (IS_ERR_OR_NULL(d)) {
-> >  		pr_warn("Couldn't find cache id for CPU %d\n", cpu);
-> >  		return;
-> > @@ -565,7 +614,7 @@ static void domain_remove_cpu(int cpu, struct rdt_resource *r)
-> >  
-> >  	cpumask_clear_cpu(cpu, &d->cpu_mask);
-> >  	if (cpumask_empty(&d->cpu_mask)) {
-> > -		resctrl_offline_domain(r, d);
-> > +		resctrl_offline_ctrl_domain(r, d);
-> >  		list_del(&d->list);
-> >  
-> >  		/*
-> > @@ -578,6 +627,30 @@ static void domain_remove_cpu(int cpu, struct rdt_resource *r)
-> >  
-> >  		return;
-> >  	}
-> > +}
-> > +
-> > +static void domain_remove_cpu_mon(int cpu, struct rdt_resource *r)
-> > +{
-> > +	int id = get_cpu_cacheinfo_id(cpu, r->cache_level);
-> 
-> Introducing mon_scope can really be deferred ... here the monitoring code
-> is not using mon_scope anyway.
-
-Not deferring. But I did fix this to use r->mon_scope. Good catch.
-
-> 
-> > +	struct rdt_hw_domain *hw_dom;
-> > +	struct rdt_domain *d;
-> > +
-> > +	d = rdt_find_domain(&r->mondomains, id, NULL);
-> > +	if (IS_ERR_OR_NULL(d)) {
-> > +		pr_warn("Couldn't find cache id for CPU %d\n", cpu);
-> > +		return;
-> > +	}
-> > +	hw_dom = resctrl_to_arch_dom(d);
-> > +
-> > +	cpumask_clear_cpu(cpu, &d->cpu_mask);
-> > +	if (cpumask_empty(&d->cpu_mask)) {
-> > +		resctrl_offline_mon_domain(r, d);
-> > +		list_del(&d->list);
-> > +
-> > +		domain_free(hw_dom);
-> > +
-> > +		return;
-> > +	}
-> >  
-> >  	if (r == &rdt_resources_all[RDT_RESOURCE_L3].r_resctrl) {
-> >  		if (is_mbm_enabled() && cpu == d->mbm_work_cpu) {
-> 
-> Reinette
-
--Tony
