@@ -2,65 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E387C788BB0
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 16:29:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E82AF788BB2
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 16:29:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343765AbjHYO2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 10:28:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33446 "EHLO
+        id S1343773AbjHYO3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 10:29:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343764AbjHYO2d (ORCPT
+        with ESMTP id S1343802AbjHYO3B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 10:28:33 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A9B31995;
-        Fri, 25 Aug 2023 07:28:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=icpdtukZEwDUOix5x9ObHjr4ZbjXlgBrYTfK907GSfI=; b=UKBytyyKZYw3JF/zHzs/PoNhCO
-        80cFvXNsTJf/2NtDDqK5PAFy5GloqDUeFgW2p7NtPWpSNXmK9XhyRivnOyssNuxee7kMaP4uwZbBn
-        Fgz5qQ3nET+tOYtOsWIsrZaBZOoFdGgbLGicYdV24N8t41A1wNeWBSk9IyvECtMLEahQM1vdLU9N4
-        ts/LS80zOa8EhbjSd5dTpxUA3V/G90X9edD9me7m98nZMZeEM3lbPu/zgnT7JYYXzrIy7e0kXBlgW
-        U43sDE6wBhlokfiwWWqTc9kBKqCdNwWZPLVYzz5H8CLMLc2fZPmPYNukb9YMD6gFKl45sKx7Q8rCw
-        TrMmAYeA==;
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1qZXnO-000Jop-Bs; Fri, 25 Aug 2023 16:28:18 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1qZXnO-000UPX-B3; Fri, 25 Aug 2023 16:28:18 +0200
-Subject: Re: [PATCH V2] bpf: task_group_seq_get_next: cleanup the usage of
- get/put_task_struct
-To:     Oleg Nesterov <oleg@redhat.com>, Yonghong Song <yhs@fb.com>,
-        Kui-Feng Lee <kuifeng@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230821150909.GA2431@redhat.com>
- <20230822120549.GA22091@redhat.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <05c66b19-d083-57df-b1ee-73035613df36@iogearbox.net>
-Date:   Fri, 25 Aug 2023 16:28:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Fri, 25 Aug 2023 10:29:01 -0400
+Received: from mx4.sionneau.net (mx4.sionneau.net [51.15.250.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 631C419A1;
+        Fri, 25 Aug 2023 07:28:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sionneau.net;
+        s=selectormx4; t=1692973735;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0X4+Ji+39ABCKYrzjK0NFl18pVh6VMzrmuwBt1D+Tao=;
+        b=bcQJeXYuPptdRZ3/8Ie7qGDMknotRQNn7qTY9in6TDJ/mA7xcdBkgvEr0FCshnVtEgVDLv
+        QZohGNYKfX7p4IPu2VnmBKcIp6f9re+HCHSmGLVfNSlhyoMG/r2pe339bxBMv7roxnK9kl
+        Rx5jkTpdFlAsi2TWb155K7Iy5Wxjeog=
+Received: from [192.168.1.18] (91-171-21-26.subs.proxad.net [91.171.21.26])
+        by mx4.sionneau.net (OpenSMTPD) with ESMTPSA id f6b5d399 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Fri, 25 Aug 2023 14:28:54 +0000 (UTC)
+Message-ID: <a52e0b9c-3742-bfe1-5e17-05905e52c819@sionneau.net>
+Date:   Fri, 25 Aug 2023 16:28:54 +0200
 MIME-Version: 1.0
-In-Reply-To: <20230822120549.GA22091@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] i2c: at91: Use dev_err_probe() instead of dev_err()
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/27011/Fri Aug 25 09:40:47 2023)
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+To:     Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Claudiu Beznea <claudiu.beznea@tuxon.dev>
+Cc:     linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20230825142415.37476-1-yann@sionneau.net>
+From:   Yann Sionneau <yann@sionneau.net>
+In-Reply-To: <20230825142415.37476-1-yann@sionneau.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLACK autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,25 +57,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Oleg,
+Commit msg is saying the opposite of what the change is doing, re-sending...
 
-On 8/22/23 2:05 PM, Oleg Nesterov wrote:
-> get_pid_task() makes no sense, the code does put_task_struct() soon after.
-> Use find_task_by_pid_ns() instead of find_pid_ns + get_pid_task and kill
-> put_task_struct(), this allows to do get_task_struct() only once before
-> return.
-> 
-> While at it, kill the unnecessary "if (!pid)" check in the "if (!*tid)"
-> block, this matches the next usage of find_pid_ns() + get_pid_task() in
-> this function.
-> 
-> Signed-off-by: Oleg Nesterov <oleg@redhat.com>
-> Acked-by: Yonghong Song <yonghong.song@linux.dev>
-
-Could you rebase this against bpf-next tree so this can run through our BPF
-CI? Right now the CI cannot pick the patch up due to merge conflict [0].
-
-Thanks,
-Daniel
-
-   [0] https://patchwork.kernel.org/project/netdevbpf/patch/20230822120549.GA22091@redhat.com/
+Le 25/08/2023 à 16:24, Yann Sionneau a écrit :
+> Change return dev_err_probe() into
+> if (IS_ERR(x)) { dev_err(...); return PTR_ERR(x); }
+>
+> Also, return the correct error instead of hardcoding -ENODEV
+> This change has also the advantage of handling the -EPROBE_DEFER situation.
+>
+> Signed-off-by: Yann Sionneau <yann@sionneau.net>
+> ---
+>   drivers/i2c/busses/i2c-at91-core.c | 7 +++----
+>   1 file changed, 3 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/i2c/busses/i2c-at91-core.c b/drivers/i2c/busses/i2c-at91-core.c
+> index 05ad3bc3578a..b7bc17b0e5f0 100644
+> --- a/drivers/i2c/busses/i2c-at91-core.c
+> +++ b/drivers/i2c/busses/i2c-at91-core.c
+> @@ -227,10 +227,9 @@ static int at91_twi_probe(struct platform_device *pdev)
+>   	platform_set_drvdata(pdev, dev);
+>   
+>   	dev->clk = devm_clk_get(dev->dev, NULL);
+> -	if (IS_ERR(dev->clk)) {
+> -		dev_err(dev->dev, "no clock defined\n");
+> -		return -ENODEV;
+> -	}
+> +	if (IS_ERR(dev->clk))
+> +		return dev_err_probe(dev->dev, PTR_ERR(dev->clk), "no clock defined\n");
+> +
+>   	clk_prepare_enable(dev->clk);
+>   
+>   	snprintf(dev->adapter.name, sizeof(dev->adapter.name), "AT91");
