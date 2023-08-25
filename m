@@ -2,221 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B2C6788506
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 12:37:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07247788507
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 12:37:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244399AbjHYKhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 06:37:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39940 "EHLO
+        id S244418AbjHYKhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 06:37:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243927AbjHYKgh (ORCPT
+        with ESMTP id S230441AbjHYKgv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 06:36:37 -0400
-Received: from out203-205-221-233.mail.qq.com (out203-205-221-233.mail.qq.com [203.205.221.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B221E67;
-        Fri, 25 Aug 2023 03:36:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1692959792;
-        bh=jJE5iplrxe3WtNxu9KkY2HFqumt/zV40jik2obAAn/E=;
-        h=From:To:Cc:Subject:Date;
-        b=sWb16gr4tjgfcRCQhn1mggQcvSk6JIGWNY2vPDIGR3jtbJxYIMiEGbvYFY2l+u6XD
-         GkVnk0kBvGx3ozIh+zQReRnHsOlxcT/y4jh5hgkZvJmPyDBZgH+2vXu87/9nvntn48
-         sAx62bg6LfH34PPR93VUWp8KB6w3f7xKWu7cfVTg=
-Received: from localhost.localdomain ([39.156.73.12])
-        by newxmesmtplogicsvrsza10-0.qq.com (NewEsmtp) with SMTP
-        id 91B3D264; Fri, 25 Aug 2023 18:36:27 +0800
-X-QQ-mid: xmsmtpt1692959787t4x138bb6
-Message-ID: <tencent_BD6E19C00BF565CD5C36A9A0BD828CFA210A@qq.com>
-X-QQ-XMAILINFO: N7h1OCCDntujNxOiev4OpcuHBreT3JFAVC51ReBNkmRJO/pMsUvD9e42ZK6duK
-         J5mWGrlDFmruuSx0dyetd5fZbBcTz2Wo3HE9jyg+U6w6QfiE+ULGTzAizqRUOB0nE8SeEREgkTaL
-         kMPJouYzIqRxzsjO/lz8MAZHo95heh8Kd0SZ/cVkl27pbztlxaIeNqH5ZI/15Xu1fcJSY4J5jFqY
-         QxCf9vBUGFgx+9vnoafhMaBBxMYrU23geM4jTo+P61DTQtO1wfoWmn+/+81UhLxvzSiFLXYzycb5
-         Odu4WkCw5DHboreAFErFrvXBsUQ8IIpAQy1nWpugABZCtETbr4iy8daGTAK+JUALigvl82M+eNKV
-         DctbHOO23b8zmEVpDZRtYPEvBxwZTg5TUW2iGpOF4BKIBRWTyTdz25optZBqJU/ijAMQKWudA3aB
-         lQzIy3isK6xtAKE/MSkipHQ2HovkArayI02icyVvFhJ9euffgfaNd0bBYQ6XCsXEmPO0N+Uwdzuo
-         bcDIaS5i06jfDQsafvubaesRiYfW++KdtWVXAR2C0pJIljjSpvvUYagyFTpkRkG221L7XnSovdvT
-         tI19Ki61H7oJRdJdBa0Z9UkRaTZjWNx5+obtrcMtP8B31WPDQ8UostZUzgpmgTwbepxXnymgOAhA
-         vEVFx2axtWP4wmASOEuExsCSxlIKsonU7KNGplqLszRDWbesaal0nA0NwHUqeRXw3LGC8PE33/ka
-         +GjG/CVQB1bg6Cb+1ILXHYY7FBcyyeVnyLkLRz5gVChju/cIbYpTPN5hmtPhsDfiXrdciR+DyhGq
-         zdJJndq8LXRbaUsXISW9zS4ayLzhLrYqq6MoWuiAz/q3idVTYqFS7D2t1DZgY9mV4bDinonugRvO
-         mUhzL8lNIs8jyozPOxNhV25C+vpSEnyg0Cqk+bDVP+DecQO25UUpuV8kCByZqAGPB72W/M+HY8iM
-         7a7o0xaz32hG4lv+FPuv4aUL3Zhn93ahPsEVyHsrFs/9WmyYjcSDIfeP/gwTJh
-X-QQ-XMRINFO: MPJ6Tf5t3I/ycC2BItcBVIA=
-From:   Rong Tao <rtoax@foxmail.com>
-To:     olsajiri@gmail.com, andrii@kernel.org, daniel@iogearbox.net,
-        sdf@google.com
-Cc:     Rong Tao <rongtao@cestc.cn>, Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
-        Shuah Khan <shuah@kernel.org>,
-        bpf@vger.kernel.org (open list:BPF [GENERAL] (Safe Dynamic Programs and
-        Tools)), linux-kernel@vger.kernel.org (open list),
-        linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK)
-Subject: [PATCH bpf-next v7] selftests/bpf: trace_helpers.c: optimize kallsyms cache
-Date:   Fri, 25 Aug 2023 18:36:24 +0800
-X-OQ-MSGID: <20230825103624.31766-1-rtoax@foxmail.com>
-X-Mailer: git-send-email 2.39.3
+        Fri, 25 Aug 2023 06:36:51 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7A149E;
+        Fri, 25 Aug 2023 03:36:48 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-4ffa6e25ebbso2187926e87.0;
+        Fri, 25 Aug 2023 03:36:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692959807; x=1693564607;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:mail-followup-to:message-id:subject:cc:to
+         :from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=DloYDrlAPjHBtQ5CqlfZMjNs6m1+SYJwj5cpl36zLwQ=;
+        b=ei79SIX8OFfQgxo70NKv/LkglmSZHnEB3gMhdUt8EpFFHExHms0MqZX1ac+SMwZD1U
+         jDHoU/7HNadcyAmE/xRRqT42o57CIB6P8qxbP/nHZ4Spxo9h9iuDpqWjsDcufi5POlDP
+         OhaqKO0HDbvpCTRvNOR8yp+aSNsKTIySgMwD7FIhwvTummnQ48tXlZu91ZewOX0groNY
+         f0M/q0bNwYwj/s8/GXKB6rXlCzu3MUfSer8fy7Syirov81P6OJOw1GFVwMhGkyiPr6jO
+         jqfXjlT32ZTTHfYmwrH2MJe6l+UGIpyCBv65TGOqZc0qv78SQSWKeh6mA+VyM5ZY7Iim
+         Vaag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692959807; x=1693564607;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:mail-followup-to:message-id:subject:cc:to
+         :from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DloYDrlAPjHBtQ5CqlfZMjNs6m1+SYJwj5cpl36zLwQ=;
+        b=U6TKP0pvrrMwr7IdsH5QApc3ciJakoVfvyumUhPEI9dKi7ZeW/gf8hT1ZOSmKSdJwd
+         luwaOXcIv08ytjL/+B0NAOcvsi8gqGt72D6ERs2xA1R5hEVbzA5f3rbqNNwIxtWP2mCC
+         yDBCgL2xWi7M+5FdvfIHpnmYg2MjgPpwR2tfwaEbwKMNy8w/t2ZOcDw+9p4nBVXcqqBi
+         CMHmnXooX45N7mdjoh+0C+LGaZ9KWtJQ51Xlhl9Vn436CEuZWZws9qG+JQiRpC8yOQok
+         3DsO49WDRl2CagUX054gOys3GT54MenEX/+6GCXqHyMVMAh/S6IuVq8EJMcSSppwqeXb
+         3scA==
+X-Gm-Message-State: AOJu0YxJd/JgMBSAAu20aU7aiE44fouIBkqtX8ekmmLFrBvxVR9CvPak
+        zq1BM9qYI4gvb2TRF4QNZ38=
+X-Google-Smtp-Source: AGHT+IF9n8Ya5LmNToJAo6Vx7+DpINb1nRudSdPR/4QZCaOJMJvdIRV+oUODuETbBxY4P4S0F4qR4w==
+X-Received: by 2002:a05:6512:4026:b0:4ff:839b:5355 with SMTP id br38-20020a056512402600b004ff839b5355mr6638684lfb.18.1692959806741;
+        Fri, 25 Aug 2023 03:36:46 -0700 (PDT)
+Received: from localhost ([2a05:3580:f312:6c00:826c:ae47:61a7:8af8])
+        by smtp.gmail.com with ESMTPSA id w14-20020ac2598e000000b004ff929df69asm236545lfn.271.2023.08.25.03.36.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Aug 2023 03:36:45 -0700 (PDT)
+Date:   Fri, 25 Aug 2023 13:36:44 +0300
+From:   Andrey Skvortsov <andrej.skvortzov@gmail.com>
+To:     Andre Przywara <andre.przywara@arm.com>
+Cc:     Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Samuel Holland <samuel@sholland.org>,
+        Kees Cook <keescook@chromium.org>,
+        Tony Luck <tony.luck@intel.com>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Jarrah Gosbell <kernel@undef.tools>,
+        Arnaud Ferraris <arnaud.ferraris@collabora.com>,
+        Pavel Machek <pavel@ucw.cz>
+Subject: Re: [PATCH v2] arm64: dts: pinephone: Add pstore support for
+ PinePhone A64
+Message-ID: <ZOiEPBtPpsygxRiM@skv.local>
+Mail-Followup-To: Andrey Skvortsov <andrej.skvortzov@gmail.com>,
+        Andre Przywara <andre.przywara@arm.com>,
+        Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Samuel Holland <samuel@sholland.org>,
+        Kees Cook <keescook@chromium.org>, Tony Luck <tony.luck@intel.com>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Jarrah Gosbell <kernel@undef.tools>,
+        Arnaud Ferraris <arnaud.ferraris@collabora.com>,
+        Pavel Machek <pavel@ucw.cz>
+References: <20230821160817.GA2227@bug>
+ <20230822092358.309835-1-andrej.skvortzov@gmail.com>
+ <2235209.iZASKD2KPV@jernej-laptop>
+ <20230824144952.5b908649@slackpad.lan>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+In-Reply-To: <20230824144952.5b908649@slackpad.lan>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rong Tao <rongtao@cestc.cn>
+Hi Andre,
 
-Static ksyms often have problems because the number of symbols exceeds the
-MAX_SYMS limit. Like changing the MAX_SYMS from 300000 to 400000 in
-commit e76a014334a6("selftests/bpf: Bump and validate MAX_SYMS") solves
-the problem somewhat, but it's not the perfect way.
+On 23-08-24 14:50, Andre Przywara wrote:
+> On Wed, 23 Aug 2023 21:36:51 +0200
+> Jernej Škrabec <jernej.skrabec@gmail.com> wrote:
+> 
+> 
+> Hi Andrey,
+> 
+> > send new revision as standalone e-mail, not as reply to old discussion.
+> > 
+> > Dne torek, 22. avgust 2023 ob 11:23:58 CEST je Andrey Skvortsov napisal(a):
+> > > This patch reserves some memory in the DTS and sets up a
+> > > pstore device tree node to enable pstore support.
+> > > 
+> > > In general any DRAM address, that isn't overwritten during a boot is
+> > > suitable for pstore.
+> > > 
+> > > Range from 0x40000000 - 0x50000000 is heavily used by u-boot for
+> > > internal use and to load kernel, fdt, fdto, scripts, pxefile and ramdisk
+> > > later in the boot process. Ramdisk start address is 0x4FF00000,
+> > > initramfs for kernel with some hacking features and debug info enabled
+> > > can take more than 100Mb and final address will be around 0x58000000.
+> > > Address 0x61000000 will most likely not overlap with that.  
+> > 
+> > There are other bootloaders as U-Boot, especially on PinePhone. Are you sure 
+> > it works there too? What about U-Boot configuration, will those addresses still 
+> > be used if configuration is changed?
+> 
+> Also going along with what Pavel said (that's it more a policy
+> decision, not a device property), I feel like this node should be added
+> by the bootloader then. And indeed U-Boot has support for that already.
+> From skimming over the code in cmd/pstore.c: if you enable
+> CONFIG_CMD_PSTORE and set CONFIG_CMD_PSTORE_MEM_ADDR to your chosen
+> address, then the U-Boot code will insert a reserved memory node on the
+> fly. Would that solve your problem?
+>
 
-This commit uses dynamic memory allocation, which completely solves the
-problem caused by the limitation of the number of kallsyms.
+I've tried pstore command in u-boot in the past to make sure it's
+working there as well. I didn't know, that it adds reserved-memory
+node as well. Thanks, Andre. That is very helpful.
 
-Acked-by: Stanislav Fomichev <sdf@google.com>
-Signed-off-by: Rong Tao <rongtao@cestc.cn>
----
-v7: Fix __must_check macro.
-v6: https://lore.kernel.org/lkml/tencent_4A09A36F883A06EA428A593497642AF8AF08@qq.com/
-    Apply libbpf_ensure_mem()
-v5: https://lore.kernel.org/lkml/tencent_0E9E1A1C0981678D5E7EA9E4BDBA8EE2200A@qq.com/
-    Release the allocated memory once the load_kallsyms_refresh() upon error
-    given it's dynamically allocated.
-v4: https://lore.kernel.org/lkml/tencent_59C74613113F0C728524B2A82FE5540A5E09@qq.com/
-    Make sure most cases we don't need the realloc() path to begin with,
-    and check strdup() return value.
-v3: https://lore.kernel.org/lkml/tencent_50B4B2622FE7546A5FF9464310650C008509@qq.com/
-    Do not use structs and judge ksyms__add_symbol function return value.
-v2: https://lore.kernel.org/lkml/tencent_B655EE5E5D463110D70CD2846AB3262EED09@qq.com/
-    Do the usual len/capacity scheme here to amortize the cost of realloc, and
-    don't free symbols.
-v1: https://lore.kernel.org/lkml/tencent_AB461510B10CD484E0B2F62E3754165F2909@qq.com/
----
- samples/bpf/Makefile                        |  2 +
- tools/testing/selftests/bpf/trace_helpers.c | 58 ++++++++++++++++-----
- 2 files changed, 48 insertions(+), 12 deletions(-)
+I've tried it again without patching a kernel as you
+suggested. Unfortunately it's not working on A64.
 
-diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-index 4ccf4236031c..0cd45c42af2f 100644
---- a/samples/bpf/Makefile
-+++ b/samples/bpf/Makefile
-@@ -175,6 +175,7 @@ TPROGS_CFLAGS += -I$(srctree)/tools/testing/selftests/bpf/
- TPROGS_CFLAGS += -I$(LIBBPF_INCLUDE)
- TPROGS_CFLAGS += -I$(srctree)/tools/include
- TPROGS_CFLAGS += -I$(srctree)/tools/perf
-+TPROGS_CFLAGS += -I$(srctree)/tools/lib
- TPROGS_CFLAGS += -DHAVE_ATTR_TEST=0
- 
- ifdef SYSROOT
-@@ -314,6 +315,7 @@ XDP_SAMPLE_CFLAGS += -Wall -O2 \
- 
- $(obj)/$(XDP_SAMPLE): TPROGS_CFLAGS = $(XDP_SAMPLE_CFLAGS)
- $(obj)/$(XDP_SAMPLE): $(src)/xdp_sample_user.h $(src)/xdp_sample_shared.h
-+$(obj)/$(TRACE_HELPERS): TPROGS_CFLAGS := $(TPROGS_CFLAGS) -D__must_check=
- 
- -include $(BPF_SAMPLES_PATH)/Makefile.target
- 
-diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/selftests/bpf/trace_helpers.c
-index f83d9f65c65b..d62ab3b77153 100644
---- a/tools/testing/selftests/bpf/trace_helpers.c
-+++ b/tools/testing/selftests/bpf/trace_helpers.c
-@@ -14,13 +14,44 @@
- #include <linux/limits.h>
- #include <libelf.h>
- #include <gelf.h>
-+#include "bpf/libbpf_internal.h"
- 
- #define TRACEFS_PIPE	"/sys/kernel/tracing/trace_pipe"
- #define DEBUGFS_PIPE	"/sys/kernel/debug/tracing/trace_pipe"
- 
--#define MAX_SYMS 400000
--static struct ksym syms[MAX_SYMS];
--static int sym_cnt;
-+static struct ksym *syms;
-+static size_t sym_cap;
-+static size_t sym_cnt;
-+
-+static int ksyms__add_symbol(const char *name, unsigned long addr)
-+{
-+	void *tmp;
-+
-+	tmp = strdup(name);
-+	if (!tmp)
-+		return -ENOMEM;
-+	syms[sym_cnt].addr = addr;
-+	syms[sym_cnt].name = tmp;
-+
-+	sym_cnt++;
-+
-+	return 0;
-+}
-+
-+static void ksyms__free(void)
-+{
-+	unsigned int i;
-+
-+	if (!syms)
-+		return;
-+
-+	for (i = 0; i < sym_cnt; i++)
-+		free(syms[i].name);
-+	free(syms);
-+	syms = NULL;
-+	sym_cnt = 0;
-+	sym_cap = 0;
-+}
- 
- static int ksym_cmp(const void *p1, const void *p2)
- {
-@@ -33,9 +64,7 @@ int load_kallsyms_refresh(void)
- 	char func[256], buf[256];
- 	char symbol;
- 	void *addr;
--	int i = 0;
--
--	sym_cnt = 0;
-+	int ret;
- 
- 	f = fopen("/proc/kallsyms", "r");
- 	if (!f)
-@@ -46,17 +75,22 @@ int load_kallsyms_refresh(void)
- 			break;
- 		if (!addr)
- 			continue;
--		if (i >= MAX_SYMS)
--			return -EFBIG;
- 
--		syms[i].addr = (long) addr;
--		syms[i].name = strdup(func);
--		i++;
-+		ret = libbpf_ensure_mem((void **) &syms, &sym_cap,
-+					sizeof(struct ksym), sym_cnt + 1);
-+		if (ret)
-+			goto error;
-+		ret = ksyms__add_symbol(func, (unsigned long)addr);
-+		if (ret)
-+			goto error;
- 	}
- 	fclose(f);
--	sym_cnt = i;
- 	qsort(syms, sym_cnt, sizeof(struct ksym), ksym_cmp);
- 	return 0;
-+
-+error:
-+	ksyms__free();
-+	return ret;
- }
- 
- int load_kallsyms(void)
+If there is no reserved-memory defined, u-boot adds a new one with
+following properties:
+    
+    reserved-memory {
+         #address-cells = <2>;
+         #size-cells = <2>;
+         ranges;
+    }
+    
+
+But with these default address-cells and size-cells values, pstore
+isn't working on A64. Root node for A64 defines 'address-cells' and 'size-cells' as 1.
+    
+dtc complains if reserved-memory has different address-cells and
+size-cells.
+
+```
+     Warning (ranges_format): /reserved-memory:ranges: empty "ranges" property but its #address-cells (2) differs from / (1)
+```
+
+If empty reserved-memory is added to
+arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi in the kernel, then
+u-boot adds working pstore subnode.
+
+```
+       reserved-memory {
+               #address-cells = <1>;
+               #size-cells = <1>;
+               ranges;
+
+               /* bootloader will add new entries here
+                * for example, for pstore.
+                */
+       };
+```
+
+It looks like a bug in u-boot for me. IMHO, it should look at
+#address-cells/#size-cells of the root-node for default values. I have
+tried that and this way pstore is working without any changes to the
+kernel dts. What do you think? Should I submit fix to u-boot instead?
+
 -- 
-2.39.3
-
+Best regards,
+Andrey Skvortsov
