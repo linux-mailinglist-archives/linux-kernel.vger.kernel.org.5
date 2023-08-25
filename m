@@ -2,82 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C815B788F0A
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 20:59:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09AE8788F0C
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 21:02:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230030AbjHYS7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 14:59:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34412 "EHLO
+        id S229889AbjHYTCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 15:02:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjHYS7A (ORCPT
+        with ESMTP id S229651AbjHYTBi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 14:59:00 -0400
-Received: from smtp-42a8.mail.infomaniak.ch (smtp-42a8.mail.infomaniak.ch [84.16.66.168])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 391212126
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 11:58:56 -0700 (PDT)
-Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
-        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4RXTkk46QwzMq2xq;
-        Fri, 25 Aug 2023 18:58:54 +0000 (UTC)
-Received: from unknown by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4RXTkh6ZYLzMppKV;
-        Fri, 25 Aug 2023 20:58:52 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
-        s=20191114; t=1692989934;
-        bh=9t9z0AWfKvu8cmYtluHWW8vh3FOqoGb0HQ1F5uA1RdU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kIsvixOWC6Vjz3deh4q1Kn0GMFc8uDMkLy6yZsDQGuW7OOgFvH3HwnlTwYkJVcgU2
-         /GnsSFIcAZeV8IJehrZEQusi3lM05J+kNEJVeNuA3Vby+RD2WOLdkcpkc54WZHuJgf
-         uj9xDxg2HNHq0eDiWSp+Vjjf+gSKR0b2jikhZjhc=
-Date:   Fri, 25 Aug 2023 20:58:49 +0200
-From:   =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     paul@paul-moore.com, linux-security-module@vger.kernel.org,
-        jmorris@namei.org, serge@hallyn.com, keescook@chromium.org,
-        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
-        stephen.smalley.work@gmail.com, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org
-Subject: Re: [PATCH v13 11/11] LSM: selftests for Linux Security Module
- syscalls
-Message-ID: <20230825.Oun6quaengoM@digikod.net>
-References: <20230802174435.11928-1-casey@schaufler-ca.com>
- <20230802174435.11928-12-casey@schaufler-ca.com>
- <20230825.OokahF6aezae@digikod.net>
- <9537cf00-575c-b57e-29ca-0b49be6617b9@schaufler-ca.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9537cf00-575c-b57e-29ca-0b49be6617b9@schaufler-ca.com>
-X-Infomaniak-Routing: alpha
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Fri, 25 Aug 2023 15:01:38 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F35C2127
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 12:01:37 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5840ea40c59so18998597b3.2
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 12:01:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692990096; x=1693594896;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wDjdWhERPFWhM20nCtIpVw+BZW9ucGGxqq2Ih3Ipg7c=;
+        b=ey7xFBVCRQ7PlvQlxi4eUdne1zA/2wDjFy4cqmx5T/ghhisPzygq5PpZBpcSHGjJAc
+         jjiJHNUHTEKn5No0dYcKYZ0M86AC6pzs95eLyrI3x8YR5t26aLchRDMr+Of7PyIPHrA2
+         X1eoDEObRqowjAWmRpBxrfHsjHDTQ9qdRDPNuNLzNHo9dwvpEvlayUAHKmzM2btKhqAP
+         gE9VY1S2D1l1C2j8SfwphyxKtEw5SQEfrNC8npqwg2JaOwqa16bRnfYWGzSAIv0ZZW7z
+         L7dcDwkRrZPIXNF6Uw7MbhJa9HOLP3vPh2eH4KYrfQh5ZG0XziCCQyibo9/urYUmsc3S
+         QfnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692990096; x=1693594896;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=wDjdWhERPFWhM20nCtIpVw+BZW9ucGGxqq2Ih3Ipg7c=;
+        b=JEZbK5WcFjhD6xjDangp0i+T7Iwt6WMWa2PIT/hdEBmjJckSrPJxvCsd08cBaZgWFS
+         YpJu0kVoPU0yl+OfOACCC7v6a5KBHpMl5eNMkWeh/CKy1Tr3RXvexbM2UCtpDlEvF1Am
+         Rjh12mxhLgvtAZG8bUoQxkabeSv3lYZ9b38Rx0QzzSM7LFD5MiWHEpapJOzr+++lIJUg
+         J/8+w4wjnUMsBXWeYLUddYIA0UDyuV9DT8iCVdNNwrG7g7K1/TV+e00zlxuDKgHmlac8
+         PrhbIPrKTfKFpO7/qMIY5W024HYNfbDeVX4spwoMgSIqdbxj6VYoYU8Cel24ybxpzhGS
+         Ssfg==
+X-Gm-Message-State: AOJu0YxeTwy5PTSzE95UiivrSpM2m3EABMHArqbNmBQUtyCKkBcKfmF0
+        7ABarOerARJSrm2NBRTHkXxLQlvQiNs=
+X-Google-Smtp-Source: AGHT+IETQGaWO4DLHWkOawS9jdRF0pC4CCo1ux4016usrq+ucz+kWD80oOGDsJSDr8OkXtfcRlm+4hDUgGw=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:12c6:b0:d77:bcce:eb11 with SMTP id
+ j6-20020a05690212c600b00d77bcceeb11mr463423ybu.10.1692990096293; Fri, 25 Aug
+ 2023 12:01:36 -0700 (PDT)
+Date:   Fri, 25 Aug 2023 12:01:26 -0700
+In-Reply-To: <20230808224059.2492476-1-seanjc@google.com>
+Mime-Version: 1.0
+References: <20230808224059.2492476-1-seanjc@google.com>
+X-Mailer: git-send-email 2.42.0.rc2.253.gd59a3bf2b4-goog
+Message-ID: <169297943227.2871340.9955188529798179185.b4-ty@google.com>
+Subject: Re: [PATCH] KVM: x86/mmu: Include mmu.h in spte.h
+From:   Sean Christopherson <seanjc@google.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 25, 2023 at 11:14:15AM -0700, Casey Schaufler wrote:
-> On 8/25/2023 8:01 AM, Mickaël Salaün wrote:
-> > These tests look good!
-> >
-> > I suggested other tests to add in my previous emails.
-> 
-> Some of the tests you've suggested will be very difficult to implement
-> in the face of varying LSM configurations. I need to defer them until a
-> later date.
+On Tue, 08 Aug 2023 15:40:59 -0700, Sean Christopherson wrote:
+> Explicitly include mmu.h in spte.h instead of relying on the "parent" to
+> include mmu.h.  spte.h references a variety of macros and variables that
+> are defined/declared in mmu.h, and so including spte.h before (or instead
+> of) mmu.h will result in build errors, e.g.
+>=20
+>   arch/x86/kvm/mmu/spte.h: In function =E2=80=98is_mmio_spte=E2=80=99:
+>   arch/x86/kvm/mmu/spte.h:242:23: error: =E2=80=98enable_mmio_caching=E2=
+=80=99 undeclared
+>     242 |                likely(enable_mmio_caching);
+>         |                       ^~~~~~~~~~~~~~~~~~~
+>=20
+> [...]
 
-Sure, some might be difficult, but some bound checks (e.g. extra flags)
-should be doable.
+Applied to kvm-x86 mmu, thanks!
 
-> 
-> > I'd suggest to re-run clang-format -i on them though.
-> 
-> I assume you're recommending a set of options to clang-format
-> beyond just "-i". The result of clang-format -i by itself is
-> horrific. 
+[1/1] KVM: x86/mmu: Include mmu.h in spte.h
+      https://github.com/kvm-x86/linux/commit/bfd926291c58
 
-I just ran clang -i (with the default kernel configuration, which is
-taken into account by default). This just add four changes: the PROCATTR
-define and three ASSERT*() calls, which are not too uggly IMO.
+--
+https://github.com/kvm-x86/linux/tree/next
+https://github.com/kvm-x86/linux/tree/fixes
