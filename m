@@ -2,94 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00A2678927B
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 01:41:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 764F678927C
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 01:42:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231348AbjHYXka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 19:40:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42412 "EHLO
+        id S229985AbjHYXmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 19:42:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231361AbjHYXkC (ORCPT
+        with ESMTP id S231345AbjHYXlg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 19:40:02 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEB082D72
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 16:39:36 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d780a0d3cefso1834368276.0
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 16:39:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693006774; x=1693611574;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=7aV7w0V21TeD8O9lx9J/kLPCQZ4fZ7EMNLpfS0Aue3E=;
-        b=GVYu7ijOZ7ZT+xY+UPkvyjNQcuDD1KSsf0Qu+Id3NgMOO8BFowHFeZq/mWl44Sa8wg
-         oRfsE086eMwryEq/fupeabtL3m8xfLrrB2oamvS/O5lvdr/ZEehM9K0SW+0iq6WgEjlM
-         38rtnLYRUSmhj4BKde8TvEHmbi3VnrhIc76AmWosAbFs12XsxLHmPIZbjAd3KOSEY942
-         U9ajPvEZ/SEJf0+59TMi4sfpQ9YP9vbWH8cEUIaiIR6EWRG3sIHD72TqhawvaGCvzEu8
-         NJmUhom8BLp6WoozJyr/s06CsxlsUlq9sxP4EhUe+IN5cpdOrVau/PD9RSAc3g55VfOw
-         mdPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693006774; x=1693611574;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7aV7w0V21TeD8O9lx9J/kLPCQZ4fZ7EMNLpfS0Aue3E=;
-        b=ZZAjHCjwIkVxNIHJIIoa3ASOKN2Rm6CX/AAVupJErrrfnqnKJJc3jnOJhJUKywB0JE
-         itLngcg2GcsEAZjyOUxYYIfFE+kLyNc9/HkSWex5t/Ta4b0Mk5HBfcvyTRXUuhhrmftb
-         Wn3sjDWyw8Ad2rPLts+kia82ahKzvx9513FJc98PMHy/5OXd0X/Gff8c89SWdE2EbfWS
-         LGjY8v1JyJQh4iL88yUEHq9y9vHhdgUCciKr/JyrHxcbrzuH1g79HteGtPR6q+FeYGAY
-         itqjzULNB+8ouDHQVAWM4Y+8YpKkCxv28YNYjndlSvJyJqz5SvkandTmYHbHgsF/26Om
-         rO8Q==
-X-Gm-Message-State: AOJu0Yzd3eoNnOo+Nj1D+3cyr5QzGFCWYL801rDiQGTp1rtMTi/zDiK+
-        hWCYADg0ve9rfVbzTkd5ewJqHDo7TA==
-X-Google-Smtp-Source: AGHT+IETlHmSjwJaM0AbmFP5PNi9j2E8KNwZHzi0fdSgcb/bfCO+qDMRXGD68g/LBc4tikN9NPbAK+0u8lE=
-X-Received: from yabinc-desktop.mtv.corp.google.com ([2620:15c:211:202:4739:860d:b144:6102])
- (user=yabinc job=sendgmr) by 2002:a25:e757:0:b0:d0b:c67:de3b with SMTP id
- e84-20020a25e757000000b00d0b0c67de3bmr508497ybh.13.1693006774139; Fri, 25 Aug
- 2023 16:39:34 -0700 (PDT)
-Date:   Fri, 25 Aug 2023 16:39:30 -0700
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
-Message-ID: <20230825233930.1875819-1-yabinc@google.com>
-Subject: [PATCH] coresight: tmc-etr: Don't fail probe when non-secure access
- is disabled
-From:   Yabin Cui <yabinc@google.com>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        James Clark <james.clark@arm.com>, Leo Yan <leo.yan@linaro.org>
-Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Yabin Cui <yabinc@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 25 Aug 2023 19:41:36 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A29872681
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 16:41:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693006883; x=1724542883;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=TP+As+nlB6Ht2oXJnL7zJjnZpxjV249m6p9AwdyS7o4=;
+  b=ZB7P21+Uz9qwiBK5vrRsDQXtIZkq0T6v3mD0TrPQV9GQbNid4TQp/sW4
+   xIOkq8t8bh0MYRRfNY8T0Ny51NX/2/oQ3u/4tbqiFLn7EC2sdlrjhkqrz
+   6UTKqLLzol2xclgdvmNyVY3VjUwiF+hAwyBTtgp7AdLx5KHkLkjKVBS2O
+   chmXELYPmL6ihg+xQHQAPIWSa6efLTlTcTTE69tN/hQA1sCjDE2d+t8g7
+   Eea7xJv4eOkMZFjbZUoRlJ5Wa4tfSmTsDnYYbAIEzKNuSupumcPZ8O88A
+   Fn5w5mhInfGOEi6qPRsgXNicfxq//C9sHfppam6eH8qrYWBTUugQQTLja
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10813"; a="405820881"
+X-IronPort-AV: E=Sophos;i="6.02,202,1688454000"; 
+   d="scan'208";a="405820881"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2023 16:41:23 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10813"; a="861225184"
+X-IronPort-AV: E=Sophos;i="6.02,202,1688454000"; 
+   d="scan'208";a="861225184"
+Received: from naikshri-mobl7.ger.corp.intel.com (HELO box.shutemov.name) ([10.249.41.113])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2023 16:41:18 -0700
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id A252E109FED; Sat, 26 Aug 2023 02:41:15 +0300 (+03)
+Date:   Sat, 26 Aug 2023 02:41:15 +0300
+From:   kirill.shutemov@linux.intel.com
+To:     Kai Huang <kai.huang@intel.com>
+Cc:     peterz@infradead.org, linux-kernel@vger.kernel.org,
+        dave.hansen@intel.com, tglx@linutronix.de, bp@alien8.de,
+        mingo@redhat.com, hpa@zytor.com, x86@kernel.org, seanjc@google.com,
+        pbonzini@redhat.com, isaku.yamahata@intel.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com,
+        n.borisov.lkml@gmail.com
+Subject: Re: [PATCH v4 11/12] x86/virt/tdx: Make TDX_MODULE_CALL handle
+ SEAMCALL #UD and #GP
+Message-ID: <20230825234115.wxuspnhiyuuf5bhu@box>
+References: <cover.1692096753.git.kai.huang@intel.com>
+ <de975832a367f476aab2d0eb0d9de66019a16b54.1692096753.git.kai.huang@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <de975832a367f476aab2d0eb0d9de66019a16b54.1692096753.git.kai.huang@intel.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Because the non-secure access can be enabled later on some devices.
+On Tue, Aug 15, 2023 at 11:02:05PM +1200, Kai Huang wrote:
+> SEAMCALL instruction causes #UD if the CPU isn't in VMX operation.
+> Currently the TDX_MODULE_CALL assembly doesn't handle #UD, thus making
+> SEAMCALL when VMX is disabled would cause Oops.
+> 
+> Unfortunately, there are legal cases that SEAMCALL can be made when VMX
+> is disabled.  For instance, VMX can be disabled due to emergency reboot
+> while there are still TDX guests running.
+> 
+> Extend the TDX_MODULE_CALL assembly to return an error code for #UD to
+> handle this case gracefully, e.g., KVM can then quietly eat all SEAMCALL
+> errors caused by emergency reboot.
+> 
+> SEAMCALL instruction also causes #GP when TDX isn't enabled by the BIOS.
+> Use _ASM_EXTABLE_FAULT() to catch both exceptions with the trap number
+> recorded, and define two new error codes by XORing the trap number to
+> the TDX_SW_ERROR.  This opportunistically handles #GP too while using
+> the same simple assembly code.
+> 
+> A bonus is when kernel mistakenly calls SEAMCALL when CPU isn't in VMX
+> operation, or when TDX isn't enabled by the BIOS, or when the BIOS is
+> buggy, the kernel can get a nicer error code rather than a less
+> understandable Oops.
+> 
+> This is basically based on Peter's code.
+> 
+> Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Suggested-by: Peter Zijlstra <peterz@infradead.org>
+> Signed-off-by: Kai Huang <kai.huang@intel.com>
 
-Signed-off-by: Yabin Cui <yabinc@google.com>
----
- drivers/hwtracing/coresight/coresight-tmc-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 
-diff --git a/drivers/hwtracing/coresight/coresight-tmc-core.c b/drivers/hwtracing/coresight/coresight-tmc-core.c
-index c106d142e632..5ebfd12b627b 100644
---- a/drivers/hwtracing/coresight/coresight-tmc-core.c
-+++ b/drivers/hwtracing/coresight/coresight-tmc-core.c
-@@ -370,7 +370,7 @@ static int tmc_etr_setup_caps(struct device *parent, u32 devid, void *dev_caps)
- 	struct tmc_drvdata *drvdata = dev_get_drvdata(parent);
- 
- 	if (!tmc_etr_has_non_secure_access(drvdata))
--		return -EACCES;
-+		dev_warn(parent, "TMC ETR doesn't have non-secure access\n");
- 
- 	/* Set the unadvertised capabilities */
- 	tmc_etr_init_caps(drvdata, (u32)(unsigned long)dev_caps);
 -- 
-2.42.0.rc1.204.g551eb34607-goog
-
+  Kiryl Shutsemau / Kirill A. Shutemov
