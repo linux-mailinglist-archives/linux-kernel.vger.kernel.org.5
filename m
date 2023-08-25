@@ -2,62 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2067787E07
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 04:52:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91E6A787E18
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 04:55:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240887AbjHYCwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 22:52:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46060 "EHLO
+        id S235537AbjHYCzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 22:55:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242577AbjHYCvw (ORCPT
+        with ESMTP id S242180AbjHYCzC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 22:51:52 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1AF5211D;
-        Thu, 24 Aug 2023 19:51:18 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 03F5064542;
-        Fri, 25 Aug 2023 02:51:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 6D1FEC433C8;
-        Fri, 25 Aug 2023 02:51:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692931872;
-        bh=4wthcCGK7UTEQggqK3+XS02OsVrGnYqqLtMdj3/SRxQ=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=Z6SBrzS6PFZy8neDiEhxfmJqZR5HDhHhkWxumjDXHD2HLLzommJz6j+XVLbFqOv60
-         UIx8jz3LeWLqFfwBYMhQwivxqKMK+LG5K0JupCpTrEJ7mxRoaokVcfW/Y86D5qDd58
-         PEA0XGbh2LI5+EocK/WkMJ5lazEPFKeoNYHIrrOMJQmSUuCMK+2XjsDSCTCUWgYsir
-         QZdKgr9F5XQDVt7SbeFYH0GAjKuIlSj/O+AW4aC9EEEd6oL7tm4ZJig5lt1fWjwAdR
-         CNONwM/SyWnFM2/BgP9lu5Sz4rI7BXnsjX826mQkVkT8qdWu7SqWoqQ/AwqJFvZaRF
-         7nqHDjmfXMXlw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 51680E21EDF;
-        Fri, 25 Aug 2023 02:51:12 +0000 (UTC)
-Subject: Re: [GIT PULL for v6.5] media fixes
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20230825015419.0848a4bc@coco.lan>
-References: <20230825015419.0848a4bc@coco.lan>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20230825015419.0848a4bc@coco.lan>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mchehab/linux-media tags/media/v6.5-4
-X-PR-Tracked-Commit-Id: e7f2e65699e2290fd547ec12a17008764e5d9620
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 14ddccc8a647f0e6b268858c4fe2804ae42aabb0
-Message-Id: <169293187232.29499.8466139975370857444.pr-tracker-bot@kernel.org>
-Date:   Fri, 25 Aug 2023 02:51:12 +0000
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Thu, 24 Aug 2023 22:55:02 -0400
+Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D10D1FFA;
+        Thu, 24 Aug 2023 19:54:28 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=25;SR=0;TI=SMTPD_---0VqVRP4b_1692932044;
+Received: from 30.97.48.238(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0VqVRP4b_1692932044)
+          by smtp.aliyun-inc.com;
+          Fri, 25 Aug 2023 10:54:07 +0800
+Message-ID: <d26b3da5-a3f6-f07b-e93f-d895eb230bf4@linux.alibaba.com>
+Date:   Fri, 25 Aug 2023 10:54:03 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH v5 06/45] erofs: dynamically allocate the erofs-shrinker
+To:     Qi Zheng <zhengqi.arch@bytedance.com>, akpm@linux-foundation.org,
+        david@fromorbit.com, tkhai@ya.ru, vbabka@suse.cz,
+        roman.gushchin@linux.dev, djwong@kernel.org, brauner@kernel.org,
+        paulmck@kernel.org, tytso@mit.edu, steven.price@arm.com,
+        cel@kernel.org, senozhatsky@chromium.org, yujie.liu@intel.com,
+        gregkh@linuxfoundation.org, muchun.song@linux.dev
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>,
+        Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>,
+        Yue Hu <huyue2@coolpad.com>,
+        Jeffle Xu <jefflexu@linux.alibaba.com>,
+        linux-erofs@lists.ozlabs.org
+References: <20230824034304.37411-1-zhengqi.arch@bytedance.com>
+ <20230824034304.37411-7-zhengqi.arch@bytedance.com>
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+In-Reply-To: <20230824034304.37411-7-zhengqi.arch@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-12.8 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,15 +54,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 25 Aug 2023 01:54:19 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/mchehab/linux-media tags/media/v6.5-4
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/14ddccc8a647f0e6b268858c4fe2804ae42aabb0
+On 2023/8/24 11:42, Qi Zheng wrote:
+> Use new APIs to dynamically allocate the erofs-shrinker.
+> 
+> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+> Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+> CC: Gao Xiang <xiang@kernel.org>
+> CC: Chao Yu <chao@kernel.org>
+> CC: Yue Hu <huyue2@coolpad.com>
+> CC: Jeffle Xu <jefflexu@linux.alibaba.com>
+> CC: linux-erofs@lists.ozlabs.org
 
-Thank you!
+Reviewed-by: Gao Xiang <hsiangkao@linux.alibaba.com>
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Thanks,
+Gao Xiang
