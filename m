@@ -2,72 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2D99788314
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 11:10:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3038B788319
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 11:10:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240550AbjHYJJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 05:09:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33842 "EHLO
+        id S240843AbjHYJKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 05:10:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236983AbjHYJJP (ORCPT
+        with ESMTP id S244218AbjHYJKK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 05:09:15 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 714881BCD;
-        Fri, 25 Aug 2023 02:09:13 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3fef56f7223so5994195e9.3;
-        Fri, 25 Aug 2023 02:09:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692954552; x=1693559352;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=BlCKPb+gS/u8b2HNdafG02mmprfB5qP1z6F3xKmLKkc=;
-        b=lyxwtosEE9udg9BUrGOeVC9n09rQIpZ8DTt9AoyUcY0b5Y92IIfHnNqAQWvxCwHxUk
-         yVrNgSxXiRXv8tV43Qc9zyreubVDqRmDxm3E8xJzP85ZcDsSEAV/X3qd87sp4IhUfb2X
-         JGlJ6IVHSnujSpAqjcacuvrwewTPdYrbjkl5vGLIjGKax3BZwfoNZXhHR5V1GK9PhT0c
-         UZ09uZS7xA465aBMkiTjuFLBXKjlqUrZq77MfVntfSZ1+YRT6sI3G+U4tDoHGP+T+bR+
-         5a2455/WmeoV9X6ZsZ9SRNgAMOeQB1ARBkld5qdl+2qbg066TzG7FLYOT7YoqYJC+O1Y
-         LePw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692954552; x=1693559352;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BlCKPb+gS/u8b2HNdafG02mmprfB5qP1z6F3xKmLKkc=;
-        b=At1RLplda5VBHKGp0cPlI2+zL5qXv73irqDoSPPUDHJOdFy3Rra66So41NXj1tgQPv
-         MPwrefe2bArq2UcjW1T2CIJR/kRBxulp/zUe0m++NFYeLYkG6XHleBhrv+mJVsQnEEmD
-         tjakT3yW726+e2A+jlHvNDKCRJWch+BwBjGGLAoUYecj7jhLho6c3JgFv+kZC0bJLnLf
-         Pj8NHZM6x6FfSQP6Tr9YT5mNv0KSNiUdYCtPg/2Dp1MZ9EdrW1tmLNnO1NjsJf4AYDYt
-         ocsLEKdI/f8ceqibwvSmViO9vjCgZzYJgdKCPAa1ErNpZAIQW62iGTjvh8OYx3Dm0EKz
-         8lHQ==
-X-Gm-Message-State: AOJu0YxyWhJxmyfsRK3C4resy/Akt2kXZ/pkpiAVHby3/pewD5AnSUGi
-        JYHU9hCEKK5r8cb0Yoh3uAg=
-X-Google-Smtp-Source: AGHT+IEEvUTNIeIpX92kaNzNg6zFx0Ysh39VmTXqvkAAIcYoZFcL0Lm/wke4qo/TJ3e3dEM4nes60A==
-X-Received: by 2002:a05:600c:2248:b0:3fe:2bb1:11ba with SMTP id a8-20020a05600c224800b003fe2bb111bamr14300392wmm.27.1692954551583;
-        Fri, 25 Aug 2023 02:09:11 -0700 (PDT)
-Received: from debian ([167.98.27.226])
-        by smtp.gmail.com with ESMTPSA id p18-20020a5d4e12000000b00317731a6e07sm1612026wrt.62.2023.08.25.02.09.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Aug 2023 02:09:11 -0700 (PDT)
-Date:   Fri, 25 Aug 2023 10:09:09 +0100
-From:   "Sudip Mukherjee (Codethink)" <sudipm.mukherjee@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, srw@sladewatkins.net,
-        rwarsow@gmx.de, conor@kernel.org
-Subject: Re: [PATCH 5.15 000/139] 5.15.128-rc1 review
-Message-ID: <ZOhvtS9fxHHLpZW3@debian>
-References: <20230824145023.559380953@linuxfoundation.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230824145023.559380953@linuxfoundation.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Fri, 25 Aug 2023 05:10:10 -0400
+X-Greylist: delayed 2259 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 25 Aug 2023 02:10:08 PDT
+Received: from mxhk.zte.com.cn (mxhk.zte.com.cn [63.216.63.35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 025D31BF2;
+        Fri, 25 Aug 2023 02:10:07 -0700 (PDT)
+Received: from mse-fl2.zte.com.cn (unknown [10.5.228.133])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mxhk.zte.com.cn (FangMail) with ESMTPS id 4RXDgG5J5jz4xPYg;
+        Fri, 25 Aug 2023 17:10:02 +0800 (CST)
+Received: from szxlzmapp03.zte.com.cn ([10.5.231.207])
+        by mse-fl2.zte.com.cn with SMTP id 37P99IOX020744;
+        Fri, 25 Aug 2023 17:09:18 +0800 (+08)
+        (envelope-from cheng.lin130@zte.com.cn)
+Received: from mapi (szxlzmapp03[null])
+        by mapi (Zmail) with MAPI id mid14;
+        Fri, 25 Aug 2023 17:09:20 +0800 (CST)
+Date:   Fri, 25 Aug 2023 17:09:20 +0800 (CST)
+X-Zmail-TransId: 2b0564e86fc074a-0da49
+X-Mailer: Zmail v1.0
+Message-ID: <202308251709208292077@zte.com.cn>
+In-Reply-To: <ZOfhoLql0TYiD5JW@dread.disaster.area>
+References: 202308241543526473806@zte.com.cn,ZOfhoLql0TYiD5JW@dread.disaster.area
+Mime-Version: 1.0
+From:   <cheng.lin130@zte.com.cn>
+To:     <david@fromorbit.com>
+Cc:     <djwong@kernel.org>, <linux-xfs@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <jiang.yong5@zte.com.cn>,
+        <wang.liang82@zte.com.cn>, <liu.dong3@zte.com.cn>
+Subject: =?UTF-8?B?UmU6IFtQQVRDSF0geGZzOiBpbnRyb2R1Y2UgcHJvdGVjdGlvbiBmb3IgZHJvcCBubGluaw==?=
+Content-Type: text/plain;
+        charset="UTF-8"
+X-MAIL: mse-fl2.zte.com.cn 37P99IOX020744
+X-Fangmail-Gw-Spam-Type: 0
+X-Fangmail-Anti-Spam-Filtered: true
+X-Fangmail-MID-QID: 64E86FEA.002/4RXDgG5J5jz4xPYg
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,41 +57,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+> On Thu, Aug 24, 2023 at 03:43:52PM +0800, cheng.lin130@zte.com.cn wrote:
+>> From: Cheng Lin <cheng.lin130@zte.com.cn>
+>> An dir nlinks overflow which down form 0 to 0xffffffff, cause the
+>> directory to become unusable until the next xfs_repair run.
+> Hmmm.  How does this ever happen?
+> IMO, if it does happen, we need to fix whatever bug that causes it
+> to happen, not issue a warning and do nothing about the fact we
+> just hit a corrupt inode state...
+Yes, I'm very agree with your opinion. But I don't know how it happened,
+and how to reproduce it.
+>> Introduce protection for drop nlink to reduce the impact of this.
+>> And produce a warning for directory nlink error during remove.
+>>
+>> Signed-off-by: Cheng Lin <cheng.lin130@zte.com.cn>
+>> ---
+>>  fs/xfs/xfs_inode.c | 16 +++++++++++++++-
+>>  1 file changed, 15 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/fs/xfs/xfs_inode.c b/fs/xfs/xfs_inode.c
+>> index 9e62cc5..536dbe4 100644
+>> --- a/fs/xfs/xfs_inode.c
+>> +++ b/fs/xfs/xfs_inode.c
+>> @@ -919,6 +919,15 @@ STATIC int xfs_iunlink_remove(struct xfs_trans *tp, struct xfs_perag *pag,
+>>      xfs_trans_t *tp,
+>>      xfs_inode_t *ip)
+>>  {
+>> +    xfs_mount_t     *mp;
+>> +
+>> +    if (VFS_I(ip)->i_nlink == 0) {
+>> +        mp = ip->i_mount;
+>> +        xfs_warn(mp, "%s: Deleting inode %llu with no links.",
+>> +             __func__, ip->i_ino);
+>> +        return 0;
+>> +    }
+> This is obviously incorrect - whiteout inodes (RENAME_WHITEOUT) have an
+> i_nlink of zero when they are removed from the unlinked list. As do
+> O_TMPFILE inodes - when they are linked into the filesystem, we
+> explicitly check for i_nlink being zero before calling
+> xfs_iunlink_remove().
+I am not familiar with the above process. You means there is such a
+scenario, even if it is (i_nlink==0), it still needs to run drop_nlink()
+in xfs_droplink()? But this will cause i_nlink to underflow to 0xffffffff.
+>> +
+>>      xfs_trans_ichgtime(tp, ip, XFS_ICHGTIME_CHG);
+>>
+>>      drop_nlink(VFS_I(ip));
+> Wait a second - this code doesn't match an upstream kernel. What
+> kernel did you make this patch against?
+It's kernel mainline linux-6.5-rc7
 
-On Thu, Aug 24, 2023 at 04:48:43PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.15.128 release.
-> There are 139 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sat, 26 Aug 2023 14:49:55 +0000.
-> Anything received after that time might be too late.
-
-Build test (gcc version 12.3.1 20230625):
-mips: 62 configs -> no failure
-arm: 99 configs -> no failure
-arm64: 3 configs -> no failure
-x86_64: 4 configs -> no failure
-alpha allmodconfig -> no failure
-csky allmodconfig -> no failure
-powerpc allmodconfig -> no failure
-riscv allmodconfig -> no failure
-s390 allmodconfig -> no failure
-xtensa allmodconfig -> no failure
-
-Boot test:
-x86_64: Booted on my test laptop. No regression.
-x86_64: Booted on qemu. No regression. [1]
-arm64: Booted on rpi4b (4GB model). No regression. [2]
-mips: Booted on ci20 board. No regression. [3]
-
-[1]. https://openqa.qa.codethink.co.uk/tests/4793
-[2]. https://openqa.qa.codethink.co.uk/tests/4794
-[3]. https://openqa.qa.codethink.co.uk/tests/4784
-
-Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
-
--- 
-Regards
-Sudip
+Thanks.
+> -Dave.
+> --
+> Dave Chinner
+> david@fromorbit.com
