@@ -2,90 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7585C78900D
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 22:59:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EE17789011
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 23:02:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231288AbjHYU64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 16:58:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49406 "EHLO
+        id S231297AbjHYVCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 17:02:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231287AbjHYU6x (ORCPT
+        with ESMTP id S229663AbjHYVBj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 16:58:53 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6A742136;
-        Fri, 25 Aug 2023 13:58:51 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6F584631B1;
-        Fri, 25 Aug 2023 20:58:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B458DC433C8;
-        Fri, 25 Aug 2023 20:58:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692997130;
-        bh=g08hzV5OBUeJ7RWaVONAbcH3zygdvgpJ5wKolWeZ0zI=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=RIUQ/Ih2Tcz3f07wyn6v2xDJy5LgoJmrbrBsmyqX5s+3LmNUYXDADnKuZoCsnb3RQ
-         PmkzpIa55YuL/n8anpNjfBkp1vDjLPotofNfZpnBlPo68AWos1lkv4Os6S+B94wb+D
-         naDyKbgXmayZrBvWRuUOf08fo7t2KEuWoaxygXw8DU4HB7jTjFG6j0OL9ddJlwRFMA
-         hVSJOxYILvEOq8eq/hiqJTnPnIH3EmQuu/BKNuZMVgnQiLCOsNeaVj7E37jbF9UOx9
-         NgCeCo8MuLUwcJQrx6T49tIK+IJsrN2u83McU1s9HOaOgvTSTLzNTv8li9bDdFOG5/
-         9Rt7kF8GxjYMw==
-Message-ID: <4a00db79414dbc47a2b7792d849f7056.sboyd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+        Fri, 25 Aug 2023 17:01:39 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 031C62137
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 14:01:37 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id d75a77b69052e-410ad0ae052so11064161cf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 14:01:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692997296; x=1693602096;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hkAYztjpuTDvmlvQDEMwE7LuIJIclxohHatS9qq8FpQ=;
+        b=nUnuz7qkRS2yR8NMNvP54YVzGxzU7dV6wG8mnObvjUHQ7epsoxiu8cC8QvHv7jq7nk
+         APLlH0rCGA2nrOYDR1CLG07ktNL2EOVhiFtcsEHe8yFCjomUkq06/y48G/iFT88DRde4
+         J4S5YMLtqXrpgdIGq6Lyq3ZaMVv3jzdDbOiFELsW96DBV+bUB9wmKuBL7ZmX1gFVN4QT
+         OwuUgkcBnHrkl8yZPoyVVceASWUV4ttIyBcQXn7a9uuWsUK8b7MzCn4tehpEll4vHRIF
+         luPQClNUXk7ENqcsto67P28AwnX9GE2+o1Gd6KhwVxb6xyVextbl58T+twQqoxKWLDX6
+         oYag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692997296; x=1693602096;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hkAYztjpuTDvmlvQDEMwE7LuIJIclxohHatS9qq8FpQ=;
+        b=UBgKpZaVba8tKCJD0FoZHnYaSHdjcbX+Eb7joMkahmv6cWKN2At68sX3AS4V4Q2RGs
+         4/5rPXeFdwUpCOBjjzz/o/aMJDH6fxju7mlmwckEcbmLh4IbeGNb6tBSKX0tz3mvXQRD
+         vtQL16GVRq7F1jceMsRTWPMRt2PE7BRpwy7/izXA9t+m9xkEXIJeOTh1+QaZ3m/Gei5S
+         oxW4IMxW3ddBCWNEA9byUARDEvb4/r9Atx7dZFaW76h5dhr8csHMTzLx/cYmeANxIgCO
+         OAe68wY9TDGRqJnA9NBXyhzDSRdVqn5KyUAHj55ZXa1ct94FOw8cT1baO+uoHZKrq/Dp
+         UUmw==
+X-Gm-Message-State: AOJu0Yzk6mqT0d8P8xQ/Dl5MHzWRttJlXU2wt1HF+W8Cr0MjREklpMrH
+        9eciS/QIxMt//8Fs33WNT+/OXNtBpOcMb2lDvfTsSA==
+X-Google-Smtp-Source: AGHT+IELJdZWKhTrYX/7XnhF2yKcffGozXMv8z8j94qe/b/Rq+vBWpCVIKR6RnIl18HDVQ4tCCN/zc7Ub2S7FDi1nA4=
+X-Received: by 2002:a05:6214:ac9:b0:64b:926a:e7fc with SMTP id
+ g9-20020a0562140ac900b0064b926ae7fcmr23517717qvi.21.1692997296030; Fri, 25
+ Aug 2023 14:01:36 -0700 (PDT)
 MIME-Version: 1.0
+References: <ZOkGCSNr0VN2VIJJ@p100> <CAHk-=wjZwSymfuGvf7TX3UQLU1OMN1FZMnEA-Hja0ruqyhMK4A@mail.gmail.com>
+ <CAHk-=whVvD05T0yD5DQj803uETLD6qDq-Vx-SiLPcrL=eO77LQ@mail.gmail.com>
+In-Reply-To: <CAHk-=whVvD05T0yD5DQj803uETLD6qDq-Vx-SiLPcrL=eO77LQ@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Fri, 25 Aug 2023 14:01:24 -0700
+Message-ID: <CAKwvOdnYauyrzz7-ceH-MP_KZ5ED8oYxjRx_Xei68=tUOSeKyA@mail.gmail.com>
+Subject: Re: [PATCH] lib/clz_ctz.c: Fix __clzdi2() and __ctzdi2() for 32-bit kernels
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Helge Deller <deller@gmx.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Chanho Min <chanho.min@lge.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bill Wendling <morbo@google.com>,
+        Kees Cook <keescook@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20230825091234.32713-2-quic_devipriy@quicinc.com>
-References: <20230825091234.32713-1-quic_devipriy@quicinc.com> <20230825091234.32713-2-quic_devipriy@quicinc.com>
-Subject: Re: [PATCH V2 1/7] clk: qcom: clk-alpha-pll: Add NSS HUAYRA ALPHA PLL support for ipq9574
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     quic_devipriy@quicinc.com, quic_saahtoma@quicinc.com
-To:     Devi Priya <quic_devipriy@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, arnd@arndb.de, catalin.marinas@arm.com,
-        conor+dt@kernel.org, devicetree@vger.kernel.org,
-        geert+renesas@glider.be, konrad.dybcio@linaro.org,
-        krzysztof.kozlowski+dt@linaro.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mturquette@baylibre.com,
-        netdev@vger.kernel.org, nfraprado@collabora.com,
-        p.zabel@pengutronix.de, peng.fan@nxp.com, rafal@milecki.pl,
-        richardcochran@gmail.com, robh+dt@kernel.org, will@kernel.org
-Date:   Fri, 25 Aug 2023 13:58:48 -0700
-User-Agent: alot/0.10
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Devi Priya (2023-08-25 02:12:28)
-> diff --git a/drivers/clk/qcom/clk-alpha-pll.c b/drivers/clk/qcom/clk-alph=
-a-pll.c
-> index e4ef645f65d1..1c2a72840cd2 100644
-> --- a/drivers/clk/qcom/clk-alpha-pll.c
-> +++ b/drivers/clk/qcom/clk-alpha-pll.c
-> @@ -228,6 +228,18 @@ const u8 clk_alpha_pll_regs[][PLL_OFF_MAX_REGS] =3D {
->                 [PLL_OFF_ALPHA_VAL] =3D 0x24,
->                 [PLL_OFF_ALPHA_VAL_U] =3D 0x28,
->         },
-> +
+On Fri, Aug 25, 2023 at 1:43=E2=80=AFPM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> [ Unrelated to this patch, except it made me look, adding clang build
+> people to cc ]
+>
+> On Fri, 25 Aug 2023 at 13:25, Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> > On Fri, 25 Aug 2023 at 12:50, Helge Deller <deller@gmx.de> wrote:
+> > >
+> > > This patch fixes the in-kernel functions __clzdi2() and __ctzdi2() [.=
+.]
+> >
+> > Applied,
+>
+> Bah. Still applied,  but actually building this (on 64-bit, so kind of
+> pointless) I note that clang completely messes up this function on
+> x86.
+>
+> Clang turns this:
+>
+>         return __ffs64(val);
+>
+> into this horror:
+>
+>         pushq   %rax
+>         movq    %rdi, (%rsp)
+>         #APP
+>         rep
+>         bsfq    (%rsp), %rax
+>         #NO_APP
+>         popq    %rcx
+>
+> which is just incredibly broken on so many levels. It *should* be a
+> single instruction, like gcc does:
+>
+>         rep; bsf %rdi,%rax      # tmp87, word
+>
+> but clang decides that it really wants to put the argument on the
+> stack, and apparently also wants to do that nonsensical stack
+> alignment thing to make things even worse.
+>
+> We use this:
+>
+>   static __always_inline unsigned long variable__ffs(unsigned long word)
+>   {
+>         asm("rep; bsf %1,%0"
+>                 : "=3Dr" (word)
+>                 : "rm" (word));
+>         return word;
+>   }
+>
+> for the definition, and it looks like clang royally just screws up
+> here. Yes, "m" is _allowed_ in that input set, but it damn well
+> shouldn't be used for something that is already in a register, since
+> "r" is also allowed, and is the first choice.
+>
+> I think it's this clang bug:
+>
+>     https://github.com/llvm/llvm-project/issues/20571
 
-Why the extra newline? All other types aren't this way.
+^ yep, my comments at the end of that thread are the last time we've
+had a chance to look into this.  Boy, it's been 9 months since the
+last discussion of it.  I'm sorry for that.
 
-> +       [CLK_ALPHA_PLL_TYPE_NSS_HUAYRA] =3D  {
-> +               [PLL_OFF_L_VAL] =3D 0x04,
-> +               [PLL_OFF_ALPHA_VAL] =3D 0x08,
-> +               [PLL_OFF_TEST_CTL] =3D 0x0c,
-> +               [PLL_OFF_TEST_CTL_U] =3D 0x10,
-> +               [PLL_OFF_USER_CTL] =3D 0x14,
-> +               [PLL_OFF_CONFIG_CTL] =3D 0x18,
-> +               [PLL_OFF_CONFIG_CTL_U] =3D 0x1c,
-> +               [PLL_OFF_STATUS] =3D 0x20,
-> +       },
-> +
+The TL;DR of that thread is that when both "r" and "m" constraints are
+present, LLVM is conservative and always chooses "m" because at that
+point it's not able to express to later passes that "m" is still a
+valid fallback if "r" was chosen.
+
+Obviously "r" is preferable to "m" and we should fix that.  Seeing who
+wants to roll up their sleeves and volunteer to understand LLVM's
+register allocation code is like asking who wants to be the first to
+jump into a black hole and see what happens.  I'm having a hard enough
+time understanding the stack spilling code to better understand what
+precisely exists in what stack slots in order to make progress on some
+of our -Wframe-larger-than=3D warnings, but I need to suck it up and do
+better.
+
+This came up previously in our discussion about __builtin_ia32_readeflags_*=
+.
+https://lore.kernel.org/all/20211215211847.206208-1-morbo@google.com/
+
+>     https://github.com/llvm/llvm-project/issues/30873
+>     https://github.com/llvm/llvm-project/issues/34837
+>
+> and it doesn't matter for *this* case (since I don't think this
+> library function is ever used on x86), but it looks like a generic
+> clang issue.
+>
+>                  Linus
+
+
+
+--=20
+Thanks,
+~Nick Desaulniers
