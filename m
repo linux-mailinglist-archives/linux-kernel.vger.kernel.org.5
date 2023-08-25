@@ -2,92 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B39F2787CF8
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 03:14:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A997787CFB
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 03:14:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240152AbjHYBOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 21:14:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50800 "EHLO
+        id S240400AbjHYBON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 21:14:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237818AbjHYBNv (ORCPT
+        with ESMTP id S238162AbjHYBNz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 21:13:51 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 205541BFB;
-        Thu, 24 Aug 2023 18:13:50 -0700 (PDT)
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37OJEofR022564;
-        Fri, 25 Aug 2023 01:13:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=corp-2023-03-30;
- bh=wjYnDCnJ/gIL/9h6HNzHJABHTPt5pAV93o57WL/6Eqc=;
- b=xY0G3vv2fTUpOq8qwsUCzoZb15Y86AY0VWn5HNpzbIbZFBO45lt4v3wKXPqpzLUBnjhk
- /oXh68o10s91z7gWeCrFTZJWMzUb1f1dUjzdIgLXHcWMSr4ULwc6CwkgTMDOfAc5WhR6
- 6vZspcvXmKzPYxEZTwqNrw3tWi1l/Vy277QhfADL3FZT4hzHggYl96XJAMF/zkhcVZMm
- 9M0x5aJjKdDjk9s1lLfpGjvHTMkv8+HnyB29biumLjFJlz8WC7BI1KmbIpmYcLMORURU
- aeSHATtLgFPucomjZgzuSxakr4uYTVezjG2hhi9g5YR6zgVft8bRGH15xRMoHMFg/lLj DA== 
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3sn1yu5hts-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 25 Aug 2023 01:13:42 +0000
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 37P0d735036245;
-        Fri, 25 Aug 2023 01:13:41 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3sn1ywqfn1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 25 Aug 2023 01:13:41 +0000
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37P1DVEM019787;
-        Fri, 25 Aug 2023 01:13:41 GMT
-Received: from ca-mkp2.ca.oracle.com.com (mpeterse-ol9.allregionaliads.osdevelopmeniad.oraclevcn.com [100.100.251.135])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3sn1ywqf8n-15;
-        Fri, 25 Aug 2023 01:13:41 +0000
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     jinpu.wang@cloud.ionos.com, jejb@linux.ibm.com,
-        john.garry@huawei.com, Yue Haibing <yuehaibing@huawei.com>
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] scsi: pm8001: Remove unused declarations
-Date:   Thu, 24 Aug 2023 21:13:01 -0400
-Message-Id: <169292577173.789945.10303176343285024737.b4-ty@oracle.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230818124700.49724-1-yuehaibing@huawei.com>
-References: <20230818124700.49724-1-yuehaibing@huawei.com>
-MIME-Version: 1.0
+        Thu, 24 Aug 2023 21:13:55 -0400
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 998B61BFB;
+        Thu, 24 Aug 2023 18:13:51 -0700 (PDT)
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 37P1CkisE019342, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 37P1CkisE019342
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 25 Aug 2023 09:12:46 +0800
+Received: from RTEXDAG01.realtek.com.tw (172.21.6.100) by
+ RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.32; Fri, 25 Aug 2023 09:13:09 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXDAG01.realtek.com.tw (172.21.6.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.7; Fri, 25 Aug 2023 09:13:09 +0800
+Received: from RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d]) by
+ RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d%5]) with mapi id
+ 15.01.2375.007; Fri, 25 Aug 2023 09:13:09 +0800
+From:   Ping-Ke Shih <pkshih@realtek.com>
+To:     Sascha Hauer <s.hauer@pengutronix.de>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Kalle Valo <kvalo@kernel.org>,
+        =?utf-8?B?SWxnYXogw5ZjYWw=?= <ilgaz@ilgaz.gen.tr>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>
+Subject: RE: [PATCH] wifi: rtw88: usb: kill and free rx urbs on probe failure
+Thread-Topic: [PATCH] wifi: rtw88: usb: kill and free rx urbs on probe failure
+Thread-Index: AQHZ1ZZ+7pKENBdpH0qwssJUFHQO4q/6N1RQ
+Date:   Fri, 25 Aug 2023 01:13:08 +0000
+Message-ID: <8b4b4228bfd140119665417137a087ea@realtek.com>
+References: <20230823075021.588596-1-s.hauer@pengutronix.de>
+In-Reply-To: <20230823075021.588596-1-s.hauer@pengutronix.de>
+Accept-Language: en-US, zh-TW
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.21.69.188]
+x-kse-serverinfo: RTEXDAG01.realtek.com.tw, 9
+x-kse-antispam-interceptor-info: fallback
+x-kse-antivirus-interceptor-info: fallback
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-25_01,2023-08-24_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0
- malwarescore=0 spamscore=0 phishscore=0 mlxlogscore=623 adultscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2308250009
-X-Proofpoint-GUID: YijWXBgkF5bYVGOQju-tAhHNBAVcxgsP
-X-Proofpoint-ORIG-GUID: YijWXBgkF5bYVGOQju-tAhHNBAVcxgsP
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Aug 2023 20:47:00 +0800, Yue Haibing wrote:
-
-> Commit 4fcf812ca392 ("[SCSI] libsas: export sas_alloc_task()")
-> removed these implementations but not the declarations.
-> 
-> 
-
-Applied to 6.6/scsi-queue, thanks!
-
-[1/1] scsi: pm8001: Remove unused declarations
-      https://git.kernel.org/mkp/scsi/c/04aff456af18
-
--- 
-Martin K. Petersen	Oracle Linux Engineering
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogU2FzY2hhIEhhdWVyIDxz
+LmhhdWVyQHBlbmd1dHJvbml4LmRlPg0KPiBTZW50OiBXZWRuZXNkYXksIEF1Z3VzdCAyMywgMjAy
+MyAzOjUwIFBNDQo+IFRvOiBsaW51eC13aXJlbGVzc0B2Z2VyLmtlcm5lbC5vcmcNCj4gQ2M6IGxp
+bnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IFBpbmctS2UgU2hpaCA8cGtzaGloQHJlYWx0ZWsu
+Y29tPjsgS2FsbGUgVmFsbyA8a3ZhbG9Aa2VybmVsLm9yZz47IElsZ2F6DQo+IMOWY2FsIDxpbGdh
+ekBpbGdhei5nZW4udHI+OyBrZXJuZWxAcGVuZ3V0cm9uaXguZGUNCj4gU3ViamVjdDogW1BBVENI
+XSB3aWZpOiBydHc4ODogdXNiOiBraWxsIGFuZCBmcmVlIHJ4IHVyYnMgb24gcHJvYmUgZmFpbHVy
+ZQ0KPiANCj4gQWZ0ZXIgcnR3X3VzYl9hbGxvY19yeF9idWZzKCkgaGFzIGJlZW4gY2FsbGVkIHJ4
+IHVyYnMgaGF2ZSBiZWVuDQo+IGFsbG9jYXRlZCBhbmQgbXVzdCBiZSBmcmVlZCBpbiB0aGUgZXJy
+b3IgcGF0aC4gQWZ0ZXIgcnR3X3VzYl9pbml0X3J4KCkNCj4gaGFzIGJlZW4gY2FsbGVkIHRoZXkg
+YXJlIHN1Ym1pdHRlZCwgc28gdGhleSBhbHNvIG11c3QgYmUga2lsbGVkLg0KPiANCj4gQWRkIHRo
+ZXNlIGZvcmdvdHRlbiBzdGVwcyB0byB0aGUgcHJvYmUgZXJyb3IgcGF0aC4NCj4gDQo+IEJlc2lk
+ZXMgdGhlIGxvc3QgbWVtb3J5IHRoaXMgYWxzbyBmaXhlcyBhIHByb2JsZW0gd2hlbiB0aGUgZHJp
+dmVyDQo+IGZhaWxzIHRvIGRvd25sb2FkIHRoZSBmaXJtd2FyZSBpbiBydHdfY2hpcF9pbmZvX3Nl
+dHVwKCkuIEluIHRoaXMNCj4gY2FzZSBpdCBjYW4gaGFwcGVuIHRoYXQgdGhlIGNvbXBsZXRpb24g
+b2YgdGhlIHJ4IHVyYnMgaGFuZGxlciBydW5zDQo+IGF0IGEgdGltZSB3aGVuIHdlIGFscmVhZHkg
+ZnJlZWQgb3VyIGRhdGEgc3RydWN0dXJlcyByZXN1bHRpbmcgaW4NCj4gYSBrZXJuZWwgY3Jhc2gu
+DQo+IA0KPiBmaXhlczogYTgyZGZkMzNkMTIzNyAoIndpZmk6IHJ0dzg4OiBBZGQgY29tbW9uIFVT
+QiBjaGlwIHN1cHBvcnQiKQ0KPiBDYzogc3RhYmxlQHZnZXIua2VybmVsLm9yZw0KPiBSZXBvcnRl
+ZC1ieTogSWxnYXogw5ZjYWwgPGlsZ2F6QGlsZ2F6Lmdlbi50cj4NCj4gU2lnbmVkLW9mZi1ieTog
+U2FzY2hhIEhhdWVyIDxzLmhhdWVyQHBlbmd1dHJvbml4LmRlPg0KDQpBY2tlZC1ieTogUGluZy1L
+ZSBTaGloIDxwa3NoaWhAcmVhbHRlay5jb20+DQoNCg==
