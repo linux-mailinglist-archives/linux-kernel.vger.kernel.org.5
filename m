@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62D487884C7
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 12:21:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85E847884D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 12:21:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244497AbjHYKUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 06:20:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37074 "EHLO
+        id S239415AbjHYKVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 06:21:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244436AbjHYKUO (ORCPT
+        with ESMTP id S244437AbjHYKUO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 25 Aug 2023 06:20:14 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E558B212A;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3AAB212B;
         Fri, 25 Aug 2023 03:20:08 -0700 (PDT)
 Date:   Fri, 25 Aug 2023 10:19:33 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
@@ -23,12 +23,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=OgR10qw7z1XA720J3L7ReJ2LmwtRWxdvjlZXoo55+pk=;
-        b=X2HvO3kjpG4xpyZVcORgOYMyZkB5HDgWITLRLM5CQ6AsfJAq0PlTxOSoG0n07sAydkx1T/
-        ZHLHNhUIXtQKUTBOITiJK6loOpHBNqjB/UWAJQaJoJiSYvZll0X1Q7y5TCq+Rfjj6rHcnw
-        5Y7ZMehWIvyUDNZVUaBeolCmbPYiKfdu4BJgzOak3pvB5r5Taon6zABujbJb87V7f/Lc7U
-        AO3aNK3XU8J1XKCoSWae9jMA/vBbSVGwMz6ZAULTAClwLv4aDx8MJoi5S65ZWWn8t/612C
-        l/sChNXZLukzJp4g+l0HsKT3Dzqt3yg1069Tt+4wZlTpdiTE02pMwjx9QJ5r5w==
+        bh=bT0k7KYVQRIuCbkueUNPUADuqr9cG91KK20SG3zGcC8=;
+        b=SKq0VpKkZ0SXOVcbNmoSw6JyqjYbg43aGjTB4T8HKl+XYTK+B8Xj72Dnxi0/LYZ5oP3GDD
+        xToZ6UroEIE3xbVfX0uMzWNZ0HWgQcN24X8C5DGyxNWWBY8k2Aga2kW4MYtl05wMtKNVIb
+        pn5fjXw3+a4brk0e9owfmU53MR3+R3pcseeb8rOoSkeYW79HzKc1wRKP3bSQ1CvIlFh+RU
+        JLtly9dO+vQHzH7do1YlDNOulH9ky2XLr1hBPOkzC0dIvdJNKR//SoUSIQijoJMYag79Dd
+        +N5qFHKUnoFCn402Snvs8Y/HCk1V/O4/9QUerhm7uHmfR7Yo2peMxLNI+x7VlQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1692958774;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -36,21 +36,23 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=OgR10qw7z1XA720J3L7ReJ2LmwtRWxdvjlZXoo55+pk=;
-        b=rWoqSTMrO6xldOBpjHewRX3/FCQlaMVCwpeuk6YERLni6XAh2g29uBfj4kJklnFnGnlhM7
-        pc2zVevBeKhnjfCQ==
+        bh=bT0k7KYVQRIuCbkueUNPUADuqr9cG91KK20SG3zGcC8=;
+        b=E8KSKyPU+kWjQOb6u+aK+qqWNmwQJTyufFZ4FXRptvCcSU+FomI2ALCsLEFU1Yxwf2ODkN
+        BZycuKaUTBQaesDA==
 From:   "tip-bot2 for Josh Poimboeuf" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/bugs] x86/srso: Fix SBPB enablement for (possible) future fixed HW
+Subject: [tip: x86/bugs] x86/srso: Print actual mitigation if requested
+ mitigation isn't possible
 Cc:     Josh Poimboeuf <jpoimboe@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
+        Ingo Molnar <mingo@kernel.org>,
+        "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <d04e617b39eefdb0221857d53858579acdc3f580.1692919072.git.jpoimboe@kernel.org>
-References: <d04e617b39eefdb0221857d53858579acdc3f580.1692919072.git.jpoimboe@kernel.org>
+In-Reply-To: <0f8b03be6b785efdc4a3d37feca0b25ef850e011.1692919072.git.jpoimboe@kernel.org>
+References: <0f8b03be6b785efdc4a3d37feca0b25ef850e011.1692919072.git.jpoimboe@kernel.org>
 MIME-Version: 1.0
-Message-ID: <169295877386.27769.6870799365649352535.tip-bot2@tip-bot2>
+Message-ID: <169295877343.27769.6620178797623760558.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -66,36 +68,51 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/bugs branch of tip:
 
-Commit-ID:     71278e8405530b12feb55dc3ef71ed045056950c
-Gitweb:        https://git.kernel.org/tip/71278e8405530b12feb55dc3ef71ed045056950c
+Commit-ID:     60b65d71d58153e1d3a2a87052c7b3e252008b91
+Gitweb:        https://git.kernel.org/tip/60b65d71d58153e1d3a2a87052c7b3e252008b91
 Author:        Josh Poimboeuf <jpoimboe@kernel.org>
-AuthorDate:    Fri, 25 Aug 2023 00:01:38 -07:00
+AuthorDate:    Fri, 25 Aug 2023 00:01:39 -07:00
 Committer:     Ingo Molnar <mingo@kernel.org>
 CommitterDate: Fri, 25 Aug 2023 11:21:59 +02:00
 
-x86/srso: Fix SBPB enablement for (possible) future fixed HW
+x86/srso: Print actual mitigation if requested mitigation isn't possible
 
-Make the SBPB check more robust against the (possible) case where future
-HW has SRSO fixed but doesn't have the SRSO_NO bit set.
+If the kernel wasn't compiled to support the requested option, print the
+actual option that ends up getting used.
 
-Fixes: 1b5277c0ea0b ("x86/srso: Add SRSO_NO support")
 Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/d04e617b39eefdb0221857d53858579acdc3f580.1692919072.git.jpoimboe@kernel.org
+Reviewed-by: Borislav Petkov (AMD) <bp@alien8.de>
+Link: https://lore.kernel.org/r/0f8b03be6b785efdc4a3d37feca0b25ef850e011.1692919072.git.jpoimboe@kernel.org
 ---
- arch/x86/kernel/cpu/bugs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kernel/cpu/bugs.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
 diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
-index 10499bc..2859a54 100644
+index 2859a54..235c0e0 100644
 --- a/arch/x86/kernel/cpu/bugs.c
 +++ b/arch/x86/kernel/cpu/bugs.c
-@@ -2496,7 +2496,7 @@ static void __init srso_select_mitigation(void)
- 	pr_info("%s%s\n", srso_strings[srso_mitigation], (has_microcode ? "" : ", no microcode"));
+@@ -2461,7 +2461,6 @@ static void __init srso_select_mitigation(void)
+ 			srso_mitigation = SRSO_MITIGATION_SAFE_RET;
+ 		} else {
+ 			pr_err("WARNING: kernel not compiled with CPU_SRSO.\n");
+-			goto pred_cmd;
+ 		}
+ 		break;
  
- pred_cmd:
--	if ((boot_cpu_has(X86_FEATURE_SRSO_NO) || srso_cmd == SRSO_CMD_OFF) &&
-+	if ((!boot_cpu_has_bug(X86_BUG_SRSO) || srso_cmd == SRSO_CMD_OFF) &&
- 	     boot_cpu_has(X86_FEATURE_SBPB))
- 		x86_pred_cmd = PRED_CMD_SBPB;
- }
+@@ -2473,7 +2472,6 @@ static void __init srso_select_mitigation(void)
+ 			}
+ 		} else {
+ 			pr_err("WARNING: kernel not compiled with CPU_IBPB_ENTRY.\n");
+-			goto pred_cmd;
+ 		}
+ 		break;
+ 
+@@ -2485,7 +2483,6 @@ static void __init srso_select_mitigation(void)
+ 			}
+ 		} else {
+ 			pr_err("WARNING: kernel not compiled with CPU_SRSO.\n");
+-			goto pred_cmd;
+                 }
+ 		break;
+ 
