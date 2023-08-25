@@ -2,128 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E74C788216
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 10:29:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3C5E788217
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 10:30:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241719AbjHYI3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 04:29:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36542 "EHLO
+        id S234426AbjHYIaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 04:30:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243796AbjHYI3M (ORCPT
+        with ESMTP id S230076AbjHYI3u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 04:29:12 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1255A1FFF
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 01:29:02 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id 3f1490d57ef6-d776e1f181bso690991276.3
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 01:29:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692952141; x=1693556941;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zShbebGR7PLkGJplbdrGe4oJjyEATchL4Kco8hr2mfw=;
-        b=lA42h9oMHbn8ANzZqZZYwhwSU3LzE6UI+MdUojllb8PZIK+J9fdXyIZidkkIY86J/P
-         Tmjqx1MH2Q2aR9tkgHJQtV/HBhVMDMC8KFgD19MQvNuYjHbJCm1hmGQ8WqqPPqjgiLG+
-         BwFx0pULpbC1nXpOUzyvtLnolCxsELioVunYnQHkXD0NIGvQJq8LuY9aM1NmZbkNFmxj
-         WPokG/TPg98o8G4zDqtIeZiMTxyShulYWvR/Kw40lCDixFdooNDnjo6+yjgrSuDsFrMP
-         scROwaX7vSTyMXHhqP9lwsL0CGObo3y13ryuAWDdiv7mnwFC9un+zXJTroQaLNop7SsU
-         jeFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692952141; x=1693556941;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zShbebGR7PLkGJplbdrGe4oJjyEATchL4Kco8hr2mfw=;
-        b=dBg/grAINg5yqMGBiVdSh6af+X2c6fuoN3EfWxjhUNZ8ABkjkkGGAg0p8MB8zgNOyZ
-         R9iOCyVEM42gECXx2FETmAnjSFBaxze+IgI3WQT8qMuR1+SF4U2q8f2ee4o2cSpjoYF5
-         nLlZwk+8hzlS/5j7FtbLpRoLFOuqKukvHwsSviJxQRPcdICuNFREw8N4Br3G6mlGRc91
-         Z/HYY1wQMwLPbYhxCQClK5pwjyD8Z4MikSxAlezvgN1gzhd/ZudtLEA1Z6IfyO04TPwf
-         TUFbzKeBnm6dfjzxyshAS9pYmXBDVuMPcsAiG7ui5LsFX3hjvPKZ95mlthTRYO6MAKaS
-         a0yQ==
-X-Gm-Message-State: AOJu0YwNza28gIusnGnO3oZPITzP/g/IZDkswXqywT+wOR245eZ+VrKU
-        2BXfFyfbsQ1xuhiCSCh6lkpEQXLQM9LxhbYZkqDbCg==
-X-Google-Smtp-Source: AGHT+IEGhPMThQPIReVUQ1KtfTOcgXLO6sOeeePCLDKT1Sqwr5Xc9ZLjLVoYzRMYYv8gLYIJo+zXxQHfAGBgeVWHyi0=
-X-Received: by 2002:a25:8707:0:b0:d3c:58ef:ef7b with SMTP id
- a7-20020a258707000000b00d3c58efef7bmr16436162ybl.6.1692952141144; Fri, 25 Aug
- 2023 01:29:01 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230824070611.3335107-1-peng.fan@oss.nxp.com>
- <CACRpkdYU7MRXRV3Uw1w300sdxv=9XT=P1vFFarHfpSM6BT20Hg@mail.gmail.com> <DU0PR04MB9417B3CB9638F936DF19C523881DA@DU0PR04MB9417.eurprd04.prod.outlook.com>
-In-Reply-To: <DU0PR04MB9417B3CB9638F936DF19C523881DA@DU0PR04MB9417.eurprd04.prod.outlook.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 25 Aug 2023 10:28:49 +0200
-Message-ID: <CACRpkdZKMsC1Wyi+nOf7idAWMTUe8w2XbtpWnbDKrCLD75ND1g@mail.gmail.com>
-Subject: Re: [RFC] scmi: pinctrl: support i.MX9
-To:     Peng Fan <peng.fan@nxp.com>
-Cc:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
-        "oleksii_moisieiev@epam.com" <oleksii_moisieiev@epam.com>,
-        "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
-        Aisheng Dong <aisheng.dong@nxp.com>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        Jacky Bai <ping.bai@nxp.com>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        Fri, 25 Aug 2023 04:29:50 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A16941FDB
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 01:29:46 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 5C71A2249B;
+        Fri, 25 Aug 2023 08:29:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1692952185; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=j538vrrxNUyT3Za9NprlQ1uFyWgr2e0zU4eCnTGaXyA=;
+        b=UphJpR6pIyEym8YiiNq8jba/rOj8wQVLkZEEQv3+WlxjGrWT7RvQeCbvqhQ3AmWSApTen6
+        a4Cy674H1Q6hBBg5HfgmQ+YLRaWvdsIqTBqkRqen1npOKTCKU3cw+ZNOgyae74t6EkdaVA
+        tK9AjPD+rY6KsRg/dNLu6d+SNzDu8PY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1692952185;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=j538vrrxNUyT3Za9NprlQ1uFyWgr2e0zU4eCnTGaXyA=;
+        b=30blT4QQWTzfBC1y4mj7jG4139U92y+kWF45KcWYIY9xAr93DZ0qU8Skt8AtrStE+fnp+l
+        f2Mw2LdDQomq02Dw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3C74A1340A;
+        Fri, 25 Aug 2023 08:29:45 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id awG/DXlm6GTlZQAAMHmgww
+        (envelope-from <tiwai@suse.de>); Fri, 25 Aug 2023 08:29:45 +0000
+Date:   Fri, 25 Aug 2023 10:29:44 +0200
+Message-ID: <875y538qyv.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] sound fixes for 6.5
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 2:47=E2=80=AFPM Peng Fan <peng.fan@nxp.com> wrote:
-> Me:
+Linus,
 
->> it is merely making things more complex and also slower
-> > bymaking the registers only accessible from this SCMI link.
->
-> This is for safety reason, the pinctrl hardware must be handled
-> by a system manager entity. So mmio direct access not allowed
-> from Cortex-A side.
+please pull sound fixes for v6.5 from:
 
-Yeah I understood as much. But I don't think that the firmware is
-really filtering any of the access, it will just poke into any pinctrl
-register as instructed anyway so what's the point. Just looks like
-a layer of indirection. But I'm not your system manager, so it's not
-my decision.
+  git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-6.5
 
-> The SCMI firmware is very straightforward, there is no group or
-> function.
->
-> It just accepts the format as this:
-> MUX_TYPE, MUX VALUE, CONF_TYPE, CONF_VAL, DAISY_TYPE,
-> DAISY ID, DAISY_CFG, DAISY_VALUE.
->
-> Similar as linux MMIO format.
->
-> Our i.MX95 platform will support two settings, one with SCMI
-> firmware, one without SCMI. These two settings will share
-> the same pinctrl header file.
->
-> And to simplify the scmi firmware design(anyway I am not owner
-> of the firmware), to make pinctrl header shared w/o scmi,
-> we take the current in-upstream freescale imx binding format.
+The topmost commit is 37e44d60cb875862930359e16a1f4764cedb342b
 
-The SCMI people will have to state their position on this.
-Like what they consider conformance and what extensions are
-allowed. This is more a standardization question than an
-implementation question so it's not really my turf.
+----------------------------------------------------------------
 
-I was under the impression that the ambition with SCMI firmware
-was to abstract away and hide aspects of the hardware behind
-a consistent API. This approach drives a truck through that
-idea.
+sound fixes for 6.5
 
-Yours,
-Linus Walleij
+Hopefully the last bits for 6.5.  It's slightly higher LOCs than
+wished, but it doesn't look scary.
+
+The biggest change is MAINTAINERS update for TI; it's good to have
+the update before the final release, so that people can contact to
+the right persons for bug reports (which shouldn't happen of course!)
+
+The rest are all device-specific fixes and quirks, most for various
+ASoC platforms.
+
+----------------------------------------------------------------
+
+BrenoRCBrito (1):
+      ASoC: amd: yc: Add VivoBook Pro 15 to quirks list for acp6x
+
+Chao Song (1):
+      ASoC: SOF: ipc4-pcm: fix possible null pointer deference
+
+Charles Keepax (1):
+      ASoC: cs35l41: Correct amp_gain_tlv values
+
+Kevin-Lu (1):
+      MAINTAINERS: Add entries for TEXAS INSTRUMENTS ASoC DRIVERS
+
+Maciej Strozek (1):
+      ASoC: cs35l56: Read firmware uuid from a device property instead of _SUB
+
+Mario Limonciello (1):
+      ASoC: amd: yc: Fix a non-functional mic on Lenovo 82SJ
+
+Shenghao Ding (1):
+      ASoC: tas2781: fixed register access error when switching to other chips
+
+Simon Trimmer (1):
+      ASoC: cs35l56: Add an ACPI match table
+
+Takashi Iwai (1):
+      ALSA: ymfpci: Fix the missing snd_card_free() call at probe error
+
+---
+ MAINTAINERS                       | 33 +++++++++++++++++++++++++++++++++
+ sound/pci/ymfpci/ymfpci.c         | 10 ++++++++--
+ sound/soc/amd/yc/acp6x-mach.c     |  9 ++++++++-
+ sound/soc/codecs/cs35l41.c        |  2 +-
+ sound/soc/codecs/cs35l56-i2c.c    |  9 +++++++++
+ sound/soc/codecs/cs35l56-spi.c    |  9 +++++++++
+ sound/soc/codecs/cs35l56.c        | 31 ++++++++++++-------------------
+ sound/soc/codecs/tas2781-comlib.c | 19 ++++++++++---------
+ sound/soc/sof/ipc4-pcm.c          |  3 +++
+ 9 files changed, 93 insertions(+), 32 deletions(-)
+
