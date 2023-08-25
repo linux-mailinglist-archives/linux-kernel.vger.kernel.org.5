@@ -2,182 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 653D1787F1E
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 06:55:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB392787F22
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 06:58:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240527AbjHYEzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 00:55:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33270 "EHLO
+        id S240889AbjHYE5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 00:57:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238532AbjHYEzQ (ORCPT
+        with ESMTP id S234469AbjHYE5B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 00:55:16 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBB5B1FD2
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 21:55:13 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id d75a77b69052e-40a47e8e38dso103211cf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 21:55:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692939313; x=1693544113; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UK9NVtWAgJG26oBVv+ugNcP8zu19Nzww0/cbuK0LKZU=;
-        b=MU6eA2NshUQx9YMB3iZZJtKoCm0v0il/KBTcCJK8yvtz1olQRcGk8RF05Sw1tWaaHH
-         x39al0Ob36T/KAkjLAwJ3VkChShoxX6035TVMxEZ9uE/HmteFSJurmKIKfLO6IXcU85/
-         NAmkac9Rz8MxV/sluc9ryyNnj6k8Xm3dRj0TKh2SMZ+Y7INnyCnJp7SeqU/ZrrhPOLEn
-         /8mvcc+wqr+2aq9kKnHhJk1G3tPZIo5qEYPZ035oN6BiGUirdCgOz8xeFjXtqKeB6u0W
-         DrUeqBHZQ9sctSnmGus72kA25KzSRyV3MWMtm1KMr8YkNIJCwZFijNiuhf7QLZfUSNkO
-         yfKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692939313; x=1693544113;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UK9NVtWAgJG26oBVv+ugNcP8zu19Nzww0/cbuK0LKZU=;
-        b=Eauf9DS4lqvO7jgLDwfydtbRdvETkqpxXK9civGJuW96RZlXpxgIfmNInbDZMZnCr8
-         W//HWRFmRSNZnEDbozqiuOLmMiVsM2C8FEQLuxiiTBMLPE/acsiYNTXxDDnNTFsZUOsn
-         bUsxQfQwdtLK03MAfQy4iY2guHAuANbjwTsblHX2PXfj6bfa9S2LBz9cqleknZHRmVXL
-         zCXqH5d+rokULvRHL5KCpQ1u9E1MfGAkvZOYhZYCngy9+Ob1AJbGewU2rmVqZL2eexBB
-         jsfsuibZNZDHpxrWq2Xh7ORIxJW7mPAF9MdBM267KgKOuqMMOFljj2Hv9Gt8NuOT6GjA
-         b2Hg==
-X-Gm-Message-State: AOJu0YyLjtbt+sMrKupPcUTwq1YsuRcTx3nU/Ys0Zzj1IwSGZjKNaPFy
-        NuxRos2Uv/I0Enq5evyeX5B2RyU7TfDOlobw2WuHAg==
-X-Google-Smtp-Source: AGHT+IFE9mZvnAi5E7Oy2yBGlF7nZ1VVggJms2FC9NjJexufTqRq5Fiy/5Hx4gqtsfzMZSkM/j2JQ3NKRnRjjVR3T3g=
-X-Received: by 2002:ac8:5ad2:0:b0:410:9d71:ba5d with SMTP id
- d18-20020ac85ad2000000b004109d71ba5dmr117201qtd.25.1692939312913; Thu, 24 Aug
- 2023 21:55:12 -0700 (PDT)
+        Fri, 25 Aug 2023 00:57:01 -0400
+Received: from FRA01-PR2-obe.outbound.protection.outlook.com (mail-pr2fra01on2045.outbound.protection.outlook.com [40.107.12.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45E821FD2;
+        Thu, 24 Aug 2023 21:56:57 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iXsHBDmfRhHDhMAOh0Jt8xZUOgQU5NREBYML3W0X1Lafyeo64qSqZSi8goiy2YMisPfnViGhbvcehIB/tGBypSeiS0yGREYm/GCM9iz0T8B9Ze/G+2CRmu2PTM8ziPfEatRK6JtC+hUHJIR3VSbrVxbNQha+bhJlvsHE9+2cSj+zq+NZN39FblLBhYjPVFRhoIP7RF6EM9skK96QI17xlbvMdWim1u28s3HO3v3UAczTTNK1agLT89nykdAyJ0WzYxUKM2Yk2eisyx92cElsFemVC8mBD9BtSFj4EO/0YCk2bQwsOxXGYVGfqXUm82bLRZcKr5axOVURM+wqF2WG6g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ozVq43cO/q3kxl0nTD/ZgysPujy2b0cMc6JOkoiyPUs=;
+ b=STohag4ZweqBlt9+3ptHuQ/jEb0Fv3h9PFzvzQXdCUXRF1KvTQ0mI1G/lSvXnrt75L5qo/vo4QC5IE6l2w8+ZcH2Xy5+P6wt0z1CSW1oUdu1FJkknEo6Nq5apvZR+Voj7H7CViI8Mf9YZgei/EXldon8M86jY9CxXHVDYtVU84FG1pPfL/F7d3ze+pO/3drFDh5pY72qV0o3propfH8dzdDkSF+wZVXkB0VedpQ9rAdzXsaRW3sI12BcYSTHYHH6SO1WMDIrOeEuz+nZ5P2frVf9MYYTQLP+PmvNUQHq+yW+d7tt2csFSNWSLq6VqEV/axWY0Z2HpmqZbvV3Ft/Pqw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
+ dkim=pass header.d=csgroup.eu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ozVq43cO/q3kxl0nTD/ZgysPujy2b0cMc6JOkoiyPUs=;
+ b=hwIuEG/VupoOqkFU+MpJVXlQFCZ8foZpGwly0vEZ5YvyF/QYSdERxGsC0Q0O9uSq+Nl4u3gXYibn6NRi47Lnqw/AbSUanl8U/9q7QxS06FNkXwAFfTAbLoG6wS9gZM8HAH3iGwq3Z69Gg7PO7zLdPZ/tsTWIm/ZbNIJVrUWXZxmgsaJOrW/rFBMb/v3XNczAXqN/6gF/Gmm26EO3f8u9S05AmKEZ+sdFv2YyVow5Fl+dA3uKzfiEU+SnCizQabAhrC7pFLFBR/FMjeHGRXwqJm+NJGa8qvn+0yoUOwLzLcORude6q+jyId2iVmOjMH1EMpw806fWzLs0mWHYCwspCA==
+Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
+ by MR1P264MB3012.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:3d::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.29; Fri, 25 Aug
+ 2023 04:56:54 +0000
+Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::2820:d3a6:1cdf:c60e]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::2820:d3a6:1cdf:c60e%7]) with mapi id 15.20.6699.028; Fri, 25 Aug 2023
+ 04:56:54 +0000
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Kees Cook <keescook@chromium.org>,
+        Masahiro Yamada <masahiroy@kernel.org>
+CC:     "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH] kbuild: Show Kconfig fragments in "help"
+Thread-Topic: [PATCH] kbuild: Show Kconfig fragments in "help"
+Thread-Index: AQHZ1tuDAhcovvkCmU+XTZ5bN1Nspa/6c2qA
+Date:   Fri, 25 Aug 2023 04:56:54 +0000
+Message-ID: <42174d5e-59f0-4612-d7a1-11e830d0a044@csgroup.eu>
+References: <20230824223606.never.762-kees@kernel.org>
+In-Reply-To: <20230824223606.never.762-kees@kernel.org>
+Accept-Language: fr-FR, en-US
+Content-Language: fr-FR
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=csgroup.eu;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MRZP264MB2988:EE_|MR1P264MB3012:EE_
+x-ms-office365-filtering-correlation-id: ab83a89c-f417-4024-23d8-08dba527b405
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: jP2uTRWfsf/Gal00biZ/28WN5qRj4XIquEeEcPjR96p2gHQE+ngLhE6ia7Him+QzFPHFZ1pifWDhP+RyzMve1AHGVKN6RyDq7nrb4pM7uZQXwnuawXZTIk9CLahVYvJCGyJPAZsgJyrQE2FPu8v/WiyUw36R7nfx5aanDI92cuwi95O2YYLezYLrErRwYI+6lRDeYaoyoZQYg4pgw1E+ybh+j1q6CC97cZNoCkOfCi0H2b7KRhc9Tx58YlVLA1H4l6VJ27WkzRl0CI0NZx6pUuTLYU0Sss4X6puJJY2pwwWV8Mqst5nQ5zmTvS8FJh4Y2yQmCfCiB0JaXi3OQIZt24OJ1l+4I7gJ+7PqWbNr+xjTq43IWdt/pVE/fvCGujSYXBb+UlmHFhTBsAKhEKpyEyyPcmvW4Ya3nxh04LGfX8Kx2zwlwUOrHnW0hYX7/d0rIXP/vV6rqB7oq5QZe3InCj+7327kpm8+T3WhkyWWDKwpsfjTQhukNhjw3XOzyVxmHOvz4JoaZbtBpQCViBFxVXS4zG4I8SQQURkdD1Tq48mWhBoSDMkLo4BfysRL2UVLkQWlgkwwvz7BJd8brnloyY6QweEbgBEsYJyLIp9VkTlDuMgRFjJ3qh29D7b7fKvWBrvaX6gZizvkxDQEy5ty+duso4PoOBs6qK0KkmaYYwBykV426NhLRXAlUW8ez3Dr
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(39850400004)(396003)(136003)(346002)(451199024)(1800799009)(186009)(122000001)(38100700002)(38070700005)(8676002)(4326008)(8936002)(54906003)(31696002)(41300700001)(6486002)(6506007)(316002)(36756003)(66446008)(64756008)(66476007)(66556008)(110136005)(91956017)(76116006)(66946007)(86362001)(71200400001)(6512007)(26005)(66574015)(478600001)(44832011)(83380400001)(7416002)(31686004)(2906002)(2616005)(5660300002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?QkNCZFNoeXBSSkxGMUZyWC9YNEwxMXdwTVJSOEpXVkJhbWZ4OWNqbWxpZFFs?=
+ =?utf-8?B?enBRZ0dvczNOb1UwRDJaYVE0ZUdBWTRKeXlLVDFLSFFxYUdPbkorZUx1bnJY?=
+ =?utf-8?B?NzhNdVhCRkw1Qkxrd3U3UWt4Z2QwYmJHeDIwVjZPUm04WTdEVVlucGd5dkhZ?=
+ =?utf-8?B?Mm5KbTRVbVFCazBWd0YwclQvNXJOWFBJQVA5U2hhYWwzYm5GRFRWRWtJUkZT?=
+ =?utf-8?B?dEorMVcrQlppUUFzMERYK250WHpMQnZsYkh2Vk5YMGVzT2RwdVlNeDJPQXYv?=
+ =?utf-8?B?Z0Y3aFhhL1paeUE1VGhHbVF1NFBqRGpBQWlQdlV1em5kM1QxQWUrMEo5bG5i?=
+ =?utf-8?B?V2g3Y0VEclcwNVZuRUFxU21vWWM4YWMwR1FvQ2pOSzk0cXRaMDg4NnN5dExv?=
+ =?utf-8?B?US94ZWZjMm9iL2tXaEJaTUljTGw4YjBiM3pleGpXSHoreUZSUEhJTEU5Ykdj?=
+ =?utf-8?B?c3o0c1FZNkphdDdDU2VJS1RyKzZPSzhCamxZVU03VjNIN1liVklSQ3B0Mk1J?=
+ =?utf-8?B?VHZET1ZIOHFPUTBUNnJQUXo1dkhkTkZiQlFzMkFpYlJ1Undsek5OVXl0Y1RT?=
+ =?utf-8?B?U1pZWmRHV1ZCL3UyZU1XQmxFZlV6WldhUnhJVEw4bVhFbE8wbkxNUklqSlpE?=
+ =?utf-8?B?OWFCeGZWYzJEWFJ3M1NUcFMycDR2dmdqd2U4ZlNGeVY4QzY1a3JTZkk0TTJM?=
+ =?utf-8?B?YVlFMWRzOGVaSjIwbXFwWk9aaU42T3lJZmU5WnFoa2RHaU1IbUZHV2Riajh2?=
+ =?utf-8?B?NC9jMlVzNG9KWUoxYmc2Tjc3Q1FQMS95SHBkeW4zSDBSdkc0WEs4YUIyYUk0?=
+ =?utf-8?B?dTZEZllITUt1dnpyd3gzV3FGTVh4U05RN2NRV2RpazY1c1hRYkN5L1VKYllw?=
+ =?utf-8?B?SitGa2tqRlBqTVgvbGlIQjM4Q2NITXZ4N0xVN2l5a0xMbkJsa0YrYkU3WWVv?=
+ =?utf-8?B?Mkh0QXgxQkYvS2lkM3NGV3l2bzhZRXZVVlJzaExSSWQyRStZQ05QT1h5TDls?=
+ =?utf-8?B?TG5WYk1wVktWSzE0Wm1LYVFORHlpRFh6VkZiY0dSNWpXK0RjTEU5Vk8xalhO?=
+ =?utf-8?B?dUgvTFlTbzlhb0ZYQWMyc2s0RERIWGRFVnZ2Zi9oc2ZMcjV2aDJpRGpaVjVX?=
+ =?utf-8?B?ajlRTm1rR1FFRGxJVnJaQ0RNTmhLdmxkOGdXM1NSUVNac29ZdExIbm14d21k?=
+ =?utf-8?B?VVhFMFBkc1podTRydGNYYmZHRXlRckNQMkpOMFE3N2IwdVdXRlA1VU80bFhZ?=
+ =?utf-8?B?VFI0WDNDbGJUSWpVTjFLUm0zVU12MW43NnZXd1M2aS9CQW9PUE0vakowR0N6?=
+ =?utf-8?B?RjkzWWVMOVN4ZWJoUGo2WUVPcjdoUmlMdS9qclQ4Nnc4bldnS2FyeS9OYncy?=
+ =?utf-8?B?UlhZNmM1UytkZ0VUdEhMamdGY0ZqOEpmY2hHYTh1K2FhM0pLTEZWVlJ0aW5E?=
+ =?utf-8?B?RWFLek40UTNEN1Z6dFRpOEozUDRwWmdKSHZ6c2x3c2VLRENPZElBcmZFRWw5?=
+ =?utf-8?B?YTNqbTUwaVR1UnZ5ajlnSUZwVHoyems3TzJZRXJXbUlJVFZyeEpkbk81dTZ5?=
+ =?utf-8?B?QTF1YThrNmR6cm9XSzdBNjRvL0NvUXQxOXpDZjZlRUpOc0lSN3pSZUJhWmFi?=
+ =?utf-8?B?dDZvem5RTXY1elBKTjdvR0lxUGtGNjUwb0pJSjIzK2wwNTBLTHdUNE15NURa?=
+ =?utf-8?B?NEJici81TTZOTTdBRDBSMmxncGQ2WnozSmlJcFMybEwrK2ZFWHN0NnN1bzVE?=
+ =?utf-8?B?RVcxWTluUzI2ZGlRSnhVU29tbWN3RVV2K1Zsc0lxZmZOK05DckNjQzcxeDI3?=
+ =?utf-8?B?NHcyRHVTaUk5ZWl4MUI1eGZZdncyVkVpc05pOTFpSnFlcWFyTGp2eG9EMVVV?=
+ =?utf-8?B?bW4wQkxuQjNSZmcyZEEvMXplb2g0Vzg4OXUrQ0I5cVd5SzhHYkd4YXZpRmtJ?=
+ =?utf-8?B?NXdzd3pOTWh4eEw0dnBKb1Eva3BRRndPUDZvUTRCWTdsaWpXYXNaOHNKNjA0?=
+ =?utf-8?B?eWNCVmJKTjZGVTlsd21wdVpjVzM3QkR5MXZ1Vy9scTdkcFJWdHZlc3hNVXRH?=
+ =?utf-8?B?YXVoU2NaTkZiaXVmWWhwaGdodk9tVkZxK0FoOEFtYXVDT2F5OFVUektxaTNQ?=
+ =?utf-8?Q?fOn9tJY3HLtwjTK/7FZtezp+Z?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <9B0681B0050E094BA0D2BCEEA39F876F@FRAP264.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20230821012734.18241-1-yangjihong1@huawei.com> <20230821012734.18241-3-yangjihong1@huawei.com>
-In-Reply-To: <20230821012734.18241-3-yangjihong1@huawei.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Thu, 24 Aug 2023 21:55:01 -0700
-Message-ID: <CAP-5=fVw9eO=rVLHL+XuaFxsfwD+ji2f9xWdOv3AkaYj9A+w0A@mail.gmail.com>
-Subject: Re: [PATCH v6 2/7] perf evlist: Add evlist__findnew_tracking_event() helper
-To:     Yang Jihong <yangjihong1@huawei.com>
-Cc:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@kernel.org, namhyung@kernel.org, adrian.hunter@intel.com,
-        kan.liang@linux.intel.com, james.clark@arm.com,
-        tmricht@linux.ibm.com, ak@linux.intel.com,
-        anshuman.khandual@arm.com, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-OriginatorOrg: csgroup.eu
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: ab83a89c-f417-4024-23d8-08dba527b405
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Aug 2023 04:56:54.5261
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: BtMJGE6htyVSGZn7j5/6W+O3w+zZmgsnP+TtKAP90njbKw0Wh5FlLt3NJ3mkqRIxEWTpbrMpxrx8UfP0GEruDD+xt+MDeXq4yS/xVu4AwiE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MR1P264MB3012
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 20, 2023 at 6:30=E2=80=AFPM Yang Jihong <yangjihong1@huawei.com=
-> wrote:
->
-> Currently, intel-bts, intel-pt, and arm-spe may add a dummy event for
-> tracking to the evlist. We may need to search for the dummy event for
-> some settings. Therefore, add evlist__findnew_tracking_event() helper.
-
-Given the first two sentences I don't understand why this is
-evlist__findnew_tracking_event and not evlist__findnew_dummy_event?
-Are you setting tracking on other events other than dummy? If so, then
-the commit message isn't right. If not then I'd prefer not to use
-tracking event in the function name.
-
->
-> evlist__findnew_tracking_event() also deal with system_wide maps if
-> system_wide is true.
-
-Could you fix the explanation here, what does "deal with system_wide"
-mean? A kerneldoc comment and explanation of the system_wide argument
-would be useful.
-
-Thanks,
-Ian
-
-> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
-> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-> ---
->  tools/perf/builtin-record.c | 11 +++--------
->  tools/perf/util/evlist.c    | 18 ++++++++++++++++++
->  tools/perf/util/evlist.h    |  1 +
->  3 files changed, 22 insertions(+), 8 deletions(-)
->
-> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-> index 34bb31f08bb5..12edad8392cc 100644
-> --- a/tools/perf/builtin-record.c
-> +++ b/tools/perf/builtin-record.c
-> @@ -1293,14 +1293,9 @@ static int record__open(struct record *rec)
->          */
->         if (opts->target.initial_delay || target__has_cpu(&opts->target) =
-||
->             perf_pmus__num_core_pmus() > 1) {
-> -               pos =3D evlist__get_tracking_event(evlist);
-> -               if (!evsel__is_dummy_event(pos)) {
-> -                       /* Set up dummy event. */
-> -                       if (evlist__add_dummy(evlist))
-> -                               return -ENOMEM;
-> -                       pos =3D evlist__last(evlist);
-> -                       evlist__set_tracking_event(evlist, pos);
-> -               }
-> +               pos =3D evlist__findnew_tracking_event(evlist, false);
-> +               if (!pos)
-> +                       return -ENOMEM;
->
->                 /*
->                  * Enable the dummy event when the process is forked for
-> diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
-> index 7ef43f72098e..25c3ebe2c2f5 100644
-> --- a/tools/perf/util/evlist.c
-> +++ b/tools/perf/util/evlist.c
-> @@ -1694,6 +1694,24 @@ void evlist__set_tracking_event(struct evlist *evl=
-ist, struct evsel *tracking_ev
->         tracking_evsel->tracking =3D true;
->  }
->
-> +struct evsel *evlist__findnew_tracking_event(struct evlist *evlist, bool=
- system_wide)
-> +{
-> +       struct evsel *evsel;
-> +
-> +       evsel =3D evlist__get_tracking_event(evlist);
-> +       if (!evsel__is_dummy_event(evsel)) {
-> +               evsel =3D evlist__add_aux_dummy(evlist, system_wide);
-> +               if (!evsel)
-> +                       return NULL;
-> +
-> +               evlist__set_tracking_event(evlist, evsel);
-> +       } else if (system_wide) {
-> +               perf_evlist__go_system_wide(&evlist->core, &evsel->core);
-> +       }
-> +
-> +       return evsel;
-> +}
-> +
->  struct evsel *evlist__find_evsel_by_str(struct evlist *evlist, const cha=
-r *str)
->  {
->         struct evsel *evsel;
-> diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
-> index 664c6bf7b3e0..98e7ddb2bd30 100644
-> --- a/tools/perf/util/evlist.h
-> +++ b/tools/perf/util/evlist.h
-> @@ -387,6 +387,7 @@ bool evlist_cpu_iterator__end(const struct evlist_cpu=
-_iterator *evlist_cpu_itr);
->
->  struct evsel *evlist__get_tracking_event(struct evlist *evlist);
->  void evlist__set_tracking_event(struct evlist *evlist, struct evsel *tra=
-cking_evsel);
-> +struct evsel *evlist__findnew_tracking_event(struct evlist *evlist, bool=
- system_wide);
->
->  struct evsel *evlist__find_evsel_by_str(struct evlist *evlist, const cha=
-r *str);
->
-> --
-> 2.30.GIT
->
+DQoNCkxlIDI1LzA4LzIwMjMgw6AgMDA6MzYsIEtlZXMgQ29vayBhIMOpY3JpdMKgOg0KPiBEb2lu
+ZyBhICJtYWtlIGhlbHAiIHdvdWxkIHNob3cgb25seSBoYXJkLWNvZGVkIEtjb25maWcgdGFyZ2V0
+cyBhbmQNCj4gZGVwZW5kZWQgb24gdGhlIGFyY2hoZWxwIHRhcmdldCB0byBpbmNsdWRlICIuY29u
+ZmlnIiB0YXJnZXRzLiBUaGVyZSB3YXMNCj4gbm90aGluZyBzaG93aW5nIGdsb2JhbCBrZXJuZWwv
+Y29uZmlncy8gdGFyZ2V0cy4gU29sdmUgdGhpcyBieSB3YWxraW5nDQo+IHRoZSB3aWxkY2FyZCBs
+aXN0IGFuZCBpbmNsdWRlIHRoZW0gaW4gdGhlIG91dHB1dCwgdXNpbmcgdGhlIGZpcnN0IGNvbW1l
+bnQNCj4gbGluZSBhcyB0aGUgaGVscCB0ZXh0Lg0KPiANCj4gVXBkYXRlIGFsbCBLY29uZmlnIGZy
+YWdtZW50cyB0byBpbmNsdWRlIGhlbHAgdGV4dCBhbmQgYWRqdXN0IGFyY2hoZWxwDQo+IHRhcmdl
+dHMgdG8gYXZvaWQgcmVkdW5kYW5jeS4NCj4gDQo+IEFkZHMgdGhlIGZvbGxvd2luZyBzZWN0aW9u
+IHRvICJoZWxwIiB0YXJnZXQgb3V0cHV0Og0KPiANCj4gQ29uZmlndXJhdGlvbiBmcmFnbWVudCB0
+YXJnZXRzIChmb3IgZW5hYmxpbmcgdmFyaW91cyBLY29uZmlnIGl0ZW1zKToNCj4gICAgZGVidWcu
+Y29uZmlnICAgICAgICAgLSBEZWJ1Z2dpbmcgZm9yIENJIHN5c3RlbXMgYW5kIGZpbmRpbmcgcmVn
+cmVzc2lvbnMNCj4gICAga3ZtX2d1ZXN0LmNvbmZpZyAgICAgLSBCb290YWJsZSBhcyBhIEtWTSBn
+dWVzdA0KPiAgICBub3BtLmNvbmZpZyAgICAgICAgICAtIERpc2FibGUgUG93ZXIgTWFuYWdlbWVu
+dA0KPiAgICBydXN0LmNvbmZpZyAgICAgICAgICAtIEVuYWJsZSBSdXN0DQo+ICAgIHRpbnktYmFz
+ZS5jb25maWcgICAgIC0gTWluaW1hbCBvcHRpb25zIGZvciB0aW55IHN5c3RlbXMNCj4gICAgdGlu
+eS5jb25maWcgICAgICAgICAgLSBTbWFsbGVzdCBwb3NzaWJsZSBrZXJuZWwgaW1hZ2UNCj4gICAg
+eDg2X2RlYnVnLmNvbmZpZyAgICAgLSBEZWJ1Z2dpbmcgb3B0aW9ucyBmb3IgdGlwIHRyZWUgdGVz
+dGluZw0KPiAgICB4ZW4uY29uZmlnICAgICAgICAgICAtIEJvb3RhYmxlIGFzIGEgWGVuIGd1ZXN0
+DQo+ICAgIHRpbnkuY29uZmlnICAgICAgICAgIC0geDg2LXNwZWNpZmljIG9wdGlvbnMgZm9yIGEg
+c21hbGwga2VybmVsIGltYWdlDQo+ICAgIHhlbi5jb25maWcgICAgICAgICAgIC0geDg2LXNwZWNp
+ZmljIG9wdGlvbnMgZm9yIGEgWGVuIHZpcnR1YWxpemF0aW9uIGd1ZXN0DQo+IA0KPiBDYzogTWFz
+YWhpcm8gWWFtYWRhIDxtYXNhaGlyb3lAa2VybmVsLm9yZz4NCj4gQ2M6IHg4NkBrZXJuZWwub3Jn
+DQo+IENjOiBsaW51eC1hcm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5vcmcNCj4gQ2M6IGxpbnV4
+cHBjLWRldkBsaXN0cy5vemxhYnMub3JnDQo+IENjOiBsaW51eC1yaXNjdkBsaXN0cy5pbmZyYWRl
+YWQub3JnDQo+IENjOiBsaW51eC1zMzkwQHZnZXIua2VybmVsLm9yZw0KPiBTaWduZWQtb2ZmLWJ5
+OiBLZWVzIENvb2sgPGtlZXNjb29rQGNocm9taXVtLm9yZz4NCj4gLS0tDQoNCj4gZGlmZiAtLWdp
+dCBhL2FyY2gvcG93ZXJwYy9jb25maWdzLzg1eHgtaHcuY29uZmlnIGIvYXJjaC9wb3dlcnBjL2Nv
+bmZpZ3MvODV4eC1ody5jb25maWcNCj4gaW5kZXggNTI0ZGI3NmY0N2I3Li43NmIyMmY4YTgxNzIg
+MTAwNjQ0DQo+IC0tLSBhL2FyY2gvcG93ZXJwYy9jb25maWdzLzg1eHgtaHcuY29uZmlnDQo+ICsr
+KyBiL2FyY2gvcG93ZXJwYy9jb25maWdzLzg1eHgtaHcuY29uZmlnDQo+IEBAIC0xLDMgKzEsNCBA
+QA0KPiArIyBCYXNlIGhhcmR3YXJlIHN1cHBvcnQgZm9yIDg2eHgNCg0Kcy84Nnh4Lzg1eHgNCg0K
+PiAgIENPTkZJR19BUVVBTlRJQV9QSFk9eQ0KPiAgIENPTkZJR19BVDgwM1hfUEhZPXkNCj4gICBD
+T05GSUdfQVRBPXkNCg0KPiBkaWZmIC0tZ2l0IGEvYXJjaC9wb3dlcnBjL2NvbmZpZ3MvYm9vazNz
+XzMyLmNvbmZpZyBiL2FyY2gvcG93ZXJwYy9jb25maWdzL2Jvb2szc18zMi5jb25maWcNCj4gaW5k
+ZXggODcyMWViN2IxMjk0Li5mMzM0ODNmMDc3ZGIgMTAwNjQ0DQo+IC0tLSBhL2FyY2gvcG93ZXJw
+Yy9jb25maWdzL2Jvb2szc18zMi5jb25maWcNCj4gKysrIGIvYXJjaC9wb3dlcnBjL2NvbmZpZ3Mv
+Ym9vazNzXzMyLmNvbmZpZw0KPiBAQCAtMSwyICsxLDMgQEANCj4gKyMgQmFzZSBzdXBwb3J0IGZv
+ciBCb29rM3MNCg0KMzIgYml0cyBCb29rM3MNCg0KPiAgIENPTkZJR19QUEM2ND1uDQo+ICAgQ09O
+RklHX1BQQ19CT09LM1NfMzI9eQ0KDQo+IGRpZmYgLS1naXQgYS9hcmNoL3Bvd2VycGMvY29uZmln
+cy9kcGFhLmNvbmZpZyBiL2FyY2gvcG93ZXJwYy9jb25maWdzL2RwYWEuY29uZmlnDQo+IGluZGV4
+IDRmZmFjYWZlNDAzNi4uNjVhMTNiYTMyODEzIDEwMDY0NA0KPiAtLS0gYS9hcmNoL3Bvd2VycGMv
+Y29uZmlncy9kcGFhLmNvbmZpZw0KPiArKysgYi9hcmNoL3Bvd2VycGMvY29uZmlncy9kcGFhLmNv
+bmZpZw0KPiBAQCAtMSwzICsxLDQgQEANCj4gKyMgQmFzZSBzdXBwb3QgZm9yIERQUEENCg0Kcy9z
+dXBwb3Qvc3VwcG9ydC8NCg0KPiAgIENPTkZJR19GU0xfRFBBQT15DQo+ICAgQ09ORklHX0ZTTF9Q
+QU1VPXkNCj4gICBDT05GSUdfRlNMX0ZNQU49eQ0KDQo+IGRpZmYgLS1naXQgYS9hcmNoL3Bvd2Vy
+cGMvY29uZmlncy9tcGM4NXh4X2Jhc2UuY29uZmlnIGIvYXJjaC9wb3dlcnBjL2NvbmZpZ3MvbXBj
+ODV4eF9iYXNlLmNvbmZpZw0KPiBpbmRleCBhMWU0ZDcyZWQzOWQuLjIwZWNmNjU3NWM1YyAxMDA2
+NDQNCj4gLS0tIGEvYXJjaC9wb3dlcnBjL2NvbmZpZ3MvbXBjODV4eF9iYXNlLmNvbmZpZw0KPiAr
+KysgYi9hcmNoL3Bvd2VycGMvY29uZmlncy9tcGM4NXh4X2Jhc2UuY29uZmlnDQo+IEBAIC0xLDMg
+KzEsNCBAQA0KPiArIyBCYXNlIG1wYzg1eHh4IHN1cHBvcnQNCg0Kcy9tcGM4NXh4eC9tcGM4NXh4
+Lw0KDQo+ICAgQ09ORklHX01BVEhfRU1VTEFUSU9OPXkNCj4gICBDT05GSUdfTVBDODUzNl9EUz15
+DQo+ICAgQ09ORklHX01QQzg1eHhfRFM9eQ0KPiBkaWZmIC0tZ2l0IGEvYXJjaC9wb3dlcnBjL2Nv
+bmZpZ3MvbXBjODZ4eF9iYXNlLmNvbmZpZyBiL2FyY2gvcG93ZXJwYy9jb25maWdzL21wYzg2eHhf
+YmFzZS5jb25maWcNCj4gaW5kZXggNjMyYzAxNGIxMjJkLi44MjM5ZDFlNzc4NWQgMTAwNjQ0DQo+
+IC0tLSBhL2FyY2gvcG93ZXJwYy9jb25maWdzL21wYzg2eHhfYmFzZS5jb25maWcNCj4gKysrIGIv
+YXJjaC9wb3dlcnBjL2NvbmZpZ3MvbXBjODZ4eF9iYXNlLmNvbmZpZw0KPiBAQCAtMSwzICsxLDQg
+QEANCj4gKyMgQmFzZSBtcGM4NXh4eCBzdXBwb3J0DQoNCnMvbXBjODV4eHgvbXBjODZ4eC8NCg0K
+PiAgIENPTkZJR19QUENfODZ4eD15DQo+ICAgQ09ORklHX0dFRl9QUEM5QT15DQo+ICAgQ09ORklH
+X0dFRl9TQkMzMTA9eQ0K
