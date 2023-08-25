@@ -2,174 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CB6D788B77
+	by mail.lfdr.de (Postfix) with ESMTP id 1E23C788B76
 	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 16:17:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343695AbjHYOQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 10:16:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60028 "EHLO
+        id S1343686AbjHYOQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 10:16:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343780AbjHYOQi (ORCPT
+        with ESMTP id S1343755AbjHYOQe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 10:16:38 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4768E26A6;
-        Fri, 25 Aug 2023 07:16:13 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-99bdeae1d0aso122297966b.1;
-        Fri, 25 Aug 2023 07:16:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692972910; x=1693577710;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BCh/SkT77T2Ffe7WtjbsHe67/BKAxXhiOOGhuLP94jw=;
-        b=i7ddXGPylDzR0I6AGUY+4BbMsDkjQcZzLGkQxRODWnXGWBeTmbglt/ZcTYDGuC2yTm
-         Jp2kxq75o2VzkJKXDzsHt4j0hYQWTTXIsarDASyqBW06BYXd5E3T5vN5AuKQwUrYkOJH
-         EhYkFirUcRvH+VRlKaEmUUKi+147VPCGeMlh0xtrI4iaRggxWmn41WROVWnuIbreRwSm
-         DlU9oqysXfrLbGY4Tl4QPK5aTVwmeQeMa4iMRxka3SH3ws5qgqNWnScRNUP1sgiMRfY7
-         FbwglmSSmpHK4b8OKulXecmG1zIQFR7FgzFF+c8FuMaymdDSswspEBmqsBZPw125yYgw
-         GxuA==
-X-Gm-Message-State: AOJu0YwJyiVHsqRN/UAxfw6Xm/tuopsfMs4LvESyIds3hlv1DD1xKmzT
-        eXHsfBwzDB/0hM03CrJMbYs=
-X-Google-Smtp-Source: AGHT+IGQ+BS7r6qMCNwz4eVEEF8AR1o7mkAPgh8C4EePozWNU8E/0B3fxHTTLeScNXWoiZOk6sOFPQ==
-X-Received: by 2002:a17:907:a06a:b0:9a1:f46c:ffc5 with SMTP id ia10-20020a170907a06a00b009a1f46cffc5mr4877449ejc.41.1692972910299;
-        Fri, 25 Aug 2023 07:15:10 -0700 (PDT)
-Received: from gmail.com (fwdproxy-cln-021.fbsv.net. [2a03:2880:31ff:15::face:b00c])
-        by smtp.gmail.com with ESMTPSA id fx13-20020a170906b74d00b00982be08a9besm1014734ejb.172.2023.08.25.07.15.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Aug 2023 07:15:09 -0700 (PDT)
-Date:   Fri, 25 Aug 2023 07:15:05 -0700
-From:   Breno Leitao <leitao@debian.org>
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        io-uring@vger.kernel.org, kuba@kernel.org, pabeni@redhat.com,
-        krisman@suse.de, Wang Yufen <wangyufen@huawei.com>,
-        Daniel =?iso-8859-1?Q?M=FCller?= <deso@posteo.net>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, sdf@google.com, axboe@kernel.dk,
-        asml.silence@gmail.com, willemdebruijn.kernel@gmail.com,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>, Song Liu <song@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>
-Subject: Re: [PATCH v3 9/9] selftests/bpf/sockopt: Add io_uring support
-Message-ID: <ZOi3aeq43hVb1Ner@gmail.com>
-References: <20230817145554.892543-1-leitao@debian.org>
- <20230817145554.892543-10-leitao@debian.org>
- <59278e71-3a88-5da9-b46e-9992987d258d@linux.dev>
+        Fri, 25 Aug 2023 10:16:34 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 973B51A5;
+        Fri, 25 Aug 2023 07:16:05 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B8AC56236B;
+        Fri, 25 Aug 2023 14:15:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7F3CC433C8;
+        Fri, 25 Aug 2023 14:15:54 +0000 (UTC)
+Message-ID: <bc12f76e-a2ac-2818-f136-b31f6fa49310@xs4all.nl>
+Date:   Fri, 25 Aug 2023 16:15:52 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <59278e71-3a88-5da9-b46e-9992987d258d@linux.dev>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [RFC PATCH v2 0/7] Add audio support in v4l2 framework
+Content-Language: en-US, nl
+To:     Takashi Iwai <tiwai@suse.de>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Shengjiu Wang <shengjiu.wang@nxp.com>, sakari.ailus@iki.fi,
+        tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xiubo.Lee@gmail.com, festevam@gmail.com, nicoleotsuka@gmail.com,
+        lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+        alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org
+References: <47d66c28-1eb2-07f5-d6f9-779d675aefe8@xs4all.nl>
+ <87il9xu1ro.wl-tiwai@suse.de>
+ <CAA+D8ANmBKMp_L2GS=Lp-saMQKja6L4E6No3yP-e=a5YQBD_jQ@mail.gmail.com>
+ <87il9xoddo.wl-tiwai@suse.de>
+ <CAA+D8AOVEpGxO0YNeS1p+Ym86k6VP-CNQB3JmbeT7mPKg0R99A@mail.gmail.com>
+ <844ef9b6-d5e2-46a9-b7a5-7ee86a2e449c@sirena.org.uk>
+ <CAA+D8AOnsx+7t3MrWm42waxtetL07nbKURLsh1hBx39LUDm+Zg@mail.gmail.com>
+ <CAA+D8AMriHO60SD2OqQSDMmi7wm=0MkoW6faR5nyve-j2Q5AEQ@mail.gmail.com>
+ <CAA+D8AN34-NVrgksRAG014PuHGUssTm0p-KR-HYGe+Pt8Yejxg@mail.gmail.com>
+ <87wmxk8jaq.wl-tiwai@suse.de> <ZOe74PO4S6bj/QlV@finisterre.sirena.org.uk>
+ <CAA+D8AM_pqbjQaE59n6Qm5gypLb8zPAwOpJR+_ZEG89-q3B8pg@mail.gmail.com>
+ <8735076xdn.wl-tiwai@suse.de>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+In-Reply-To: <8735076xdn.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 21, 2023 at 01:59:12PM -0700, Martin KaFai Lau wrote:
-> On 8/17/23 7:55 AM, Breno Leitao wrote:
-> > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> > index 538df8fb8c42..4da04242b848 100644
-> > --- a/tools/testing/selftests/bpf/Makefile
-> > +++ b/tools/testing/selftests/bpf/Makefile
-> > @@ -362,6 +362,7 @@ CLANG_CFLAGS = $(CLANG_SYS_INCLUDES) \
-> >   $(OUTPUT)/test_l4lb_noinline.o: BPF_CFLAGS += -fno-inline
-> >   $(OUTPUT)/test_xdp_noinline.o: BPF_CFLAGS += -fno-inline
-> > +$(OUTPUT)/test_progs.o: CFLAGS += -I../../../include/
+On 25/08/2023 15:54, Takashi Iwai wrote:
+> On Fri, 25 Aug 2023 05:46:43 +0200,
+> Shengjiu Wang wrote:
+>>
+>> On Fri, Aug 25, 2023 at 4:21 AM Mark Brown <broonie@kernel.org> wrote:
+>>>
+>>> On Thu, Aug 24, 2023 at 07:03:09PM +0200, Takashi Iwai wrote:
+>>>> Shengjiu Wang wrote:
+>>>
+>>>>> But there are several issues:
+>>>>> 1. Need to create sound cards.  ASRC module support multi instances, then
+>>>>> need to create multi sound cards for each instance.
+>>>
+>>>> Hm, why can't it be multiple PCM instances instead?
+>>>
+>>> I'm having a hard time following this one too.
+>>>
+>>>>> 2. The ASRC is an entirety but with DPCM we need to separate input port and
+>>>>> output port to playback substream and capture stream. Synchronous between
+>>>>> playback substream and capture substream is a problem.
+>>>>> How to start them and stop them at the same time.
+>>>
+>>>> This could be done by enforcing the full duplex and linking the both
+>>>> PCM streams, I suppose.
+>>>
+>>>>> So shall we make the decision that we can go to the V4L2 solution?
+>>>
+>>>> Honestly speaking, I don't mind much whether it's implemented in V2L4
+>>>> or not -- at least for the kernel part, we can reorganize / refactor
+>>>> things internally.  But, the biggest remaining question to me is
+>>>> whether this user-space interface is the most suitable one.  Is it
+>>>> well defined, usable and maintained for the audio applications?  Or
+>>>> is it meant to be a stop-gap for a specific use case?
+>>>
+>>> I'm having a really hard time summoning much enthusiasm for using v4l
+>>> here, it feels like this is heading down the same bodge route as DPCM
+>>> but directly as ABI so even harder to fix properly.  That said all the
+>>> ALSA APIs are really intended to be used in real time and this sounds
+>>> like a non real time application?  I don't fully understand what the
+>>> actual use case is here.
+>>
+>> Thanks for your reply.
+>>
+>> This asrc memory to memory (memory ->asrc->memory) case is a non
+>> real time use case.
+>>
+>> User fills the input buffer to the asrc module,  after conversion, then asrc
+>> sends back the output buffer to user. So it is not a traditional ALSA playback
+>> and capture case. I think it is not good to create sound card for it,  it is
+>> not a sound card actually.
+>>
+>> It is a specific use case,  there is no reference in current kernel.
+>> v4l2 memory to memory is the closed implementation,  v4l2 current
+>> support video, image, radio, tuner, touch devices, so it is not
+>> complicated to add support for this specific audio case.
+>>
+>> Maybe you can go through these patches first.  Because we
+>> had implemented the "memory -> asrc ->i2s device-> codec"
+>> use case in ALSA.  Now the "memory->asrc->memory" needs
+>> to reuse the code in asrc driver, so the first 3 patches is for refining
+>> the code to make it can be shared by the "memory->asrc->memory"
+>> driver.
+>>
+>> The main change is in the v4l2 side, A /dev/vl42-audio will be created,
+>> user applications only use the ioctl of v4l2 framework.
 > 
-> This is the tools/include? Is it really needed? iirc, some of the
-> prog_tests/*.c has already been using files from tools/include.
-
-You are right, we don't need it.
-
-> >   $(OUTPUT)/flow_dissector_load.o: flow_dissector_load.h
-> >   $(OUTPUT)/cgroup_getset_retval_hooks.o: cgroup_getset_retval_hooks.h
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/sockopt.c b/tools/testing/selftests/bpf/prog_tests/sockopt.c
-> > index 9e6a5e3ed4de..4693ad8bfe8f 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/sockopt.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/sockopt.c
-> > @@ -1,5 +1,6 @@
-> >   // SPDX-License-Identifier: GPL-2.0
-> >   #include <test_progs.h>
-> > +#include <io_uring/mini_liburing.h>
-> >   #include "cgroup_helpers.h"
-> >   static char bpf_log_buf[4096];
-> > @@ -38,6 +39,7 @@ static struct sockopt_test {
-> >   	socklen_t			get_optlen_ret;
-> >   	enum sockopt_test_error		error;
-> > +	bool				io_uring_support;
-> >   } tests[] = {
-> >   	/* ==================== getsockopt ====================  */
-> > @@ -53,6 +55,7 @@ static struct sockopt_test {
-> >   		.attach_type = BPF_CGROUP_GETSOCKOPT,
-> >   		.expected_attach_type = 0,
-> >   		.error = DENY_LOAD,
-> > +		.io_uring_support = true,
+> Ah, now I'm slowly understanding.  So, what you want is to have an
+> interface to perform the batch conversion of a data stream from an
+> input to an output?  And ALSA PCM interface doesn't fit fully for that
+> purpose because the data handling is batched and it's not like a
+> normal PCM streaming?
 > 
-> DENY_LOAD probably won't be an intersting test. The set/getsockopt won't be called.
-
-Yea, I will remove all the DENY_LOAD and DENY_ATTACH tests.
-
-> The existing test does not seem to have SOL_SOCKET for getsockopt also.
-
-I am planning to move two tests to use SOL_SOCKET so we can also
-exercise the io_uring tests. This is what I have in mind right now:
-
- * getsockopt: read ctx->optlen
- * getsockopt: support smaller ctx->optlen
-
-> > -static int run_test(int cgroup_fd, struct sockopt_test *test)
-> > +/* Core function that handles io_uring ring initialization,
-> > + * sending SQE with sockopt command and waiting for the CQE.
-> > + */
-> > +static int uring_sockopt(int op, int fd, int level, int optname,
-> > +			 const void *optval, socklen_t optlen)
-> > +{
-> > +	struct io_uring_cqe *cqe;
-> > +	struct io_uring_sqe *sqe;
-> > +	struct io_uring ring;
-> > +	int err;
-> > +
-> > +	err = io_uring_queue_init(1, &ring, 0);
-> > +	if (err) {
-> > +		log_err("Failed to initialize io_uring ring");
-> > +		return err;
-> > +	}
-> > +
-> > +	sqe = io_uring_get_sqe(&ring);
-> > +	if (!sqe) {
-> > +		log_err("Failed to get an SQE");
-> > +		return -1;
+> Basically the whole M2M arguments are rather subtle.  Those are
+> implementation details that can be resolved in several different ways
+> in the kernel side.  But the design of the operation is the crucial
+> point.
 > 
-> No need to io_uring_queue_exit() on the error path?
+> Maybe we can consider implementing a similar feature in ALSA API, too.
+> But it's too far-stretched for now.
+> 
+> So, if v4l2 interface provides the requested feature (the batched
+> audio stream conversion), it's OK to ride on it.
 
-Good idea. updating it.
+The V4L2 M2M interface is simple: you open a video device and then you can
+pass data to the hardware, it processes it and you get the processed data back.
 
-> > +	}
-> > +
-> > +	io_uring_prep_cmd(sqe, op, fd, level, optname, optval, optlen);
-> > +
-> > +	err = io_uring_submit(&ring);
-> > +	if (err != 1) {
-> > +		log_err("Failed to submit SQE");
-> 
-> Use ASSERT_* instead.
-> 
-> Regarding how to land this set,
-> it will be useful to have the selftest running in the bpf CI. While there is
-> iouring changes, some of the changes is in bpf and/or netdev also. eg. Patch
-> 3 already has a conflict with the net-next and bpf-next tree because of a
-> recent commit in socket.c on Aug 9.
-> 
-> May be Alexi and Daniel can advise how was similar patch managed before ?
-> 
-> 
+The hardware just processes the data as fast as it can. Each time you open
+the video device a new instance is created, and each instance can pass jobs
+to the hardware.
+
+Currently it is used for video scalers, deinterlacers, colorspace converters and
+codecs, but in the end it is just data in, data out with some job scheduling (fifo)
+towards the hardware. So supporting audio using the same core m2m framework wouldn't
+be a big deal. We'd probably make a /dev/v4l-audio device for that.
+
+It doesn't come for free: it is a new API, so besides adding support for it, it
+also needs to be documented, we would need compliance tests, and very likely I
+would want a new virtual driver for this (vim2m.c would be a good template).
+
+Regards,
+
+	Hans
