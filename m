@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA392788087
+	by mail.lfdr.de (Postfix) with ESMTP id 60D35788086
 	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 09:03:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243185AbjHYHDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 03:03:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44590 "EHLO
+        id S243118AbjHYHDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 03:03:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242699AbjHYHCO (ORCPT
+        with ESMTP id S242703AbjHYHCO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 25 Aug 2023 03:02:14 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14BFAE6B
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36CF6199E
         for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 00:02:12 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9F451636D4
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CAC2766658
         for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 07:02:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0C5BC433C7;
-        Fri, 25 Aug 2023 07:02:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3806CC433C8;
+        Fri, 25 Aug 2023 07:02:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1692946931;
-        bh=/LMUUmYy8woWUbMng0fqzBv0Si0zv45Y8zZTxKZ5pOo=;
+        bh=kJykmCoWXI54yCCaN5dwGUU6DK709wuUPkwcXktuY+A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iJvHJ2OTIi2oOt2WsSwrjJBoymwe29m8+f+hpBV4qlfSRMgUQYFFHDu8TvPb+RVp/
-         0+jD3kTlylP+nCYYsfG9vX70xttpFn0C/VnP4YEtpEXFI2T5WdZvJrhnu9zGbf0eiB
-         mltisxHOhasCKo0D1eyWlqIvpcGTu3pL9jqDW/o1JtcCo5pvR2g1T7l42Q2HXd1tnz
-         7jpviLAYhPJxWlE89/yKocoADsrxzMTfPI80RCfsUwdYlCbRdryPJVL49gmPERa8d8
-         Yd+OW6czl4BPJUBQX7Be1xJI962Js6WqQ53ogRA0MueB/qQwMxA2aevCYrOmdC3VYy
-         tFHHUJu/r7/1g==
+        b=SE/kOo6UrWZAZYPcclb5hqXnUB18+d8DeW5YfhArEp11HnibLUOHnrxuAvrmgXID9
+         vhz+hKfJ77/3Fx7JzCODvEQNE2nFBt/AQfh3qD5Nwrw7It4onwQDF075M4/WlRgiNf
+         4qgscFaIciIKCtA8qnfeIANLh9Hvv9UrpG9NyYYzesUvyN1PB320nAwX0rHDjjoUd1
+         FoavasVtbAz16indtXKViVONSSqgmElVxbBN1b707s17s0a+G+baedmVsHqXWJbAJA
+         vmqqlgOjA58hK+SR8f92gQdghSexeGoHMQaVuaKlLFItRiERY4SNV9eEKGuoDVJ+e3
+         1PqyOW56X/Bzg==
 From:   Josh Poimboeuf <jpoimboe@kernel.org>
 To:     x86@kernel.org
 Cc:     linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
@@ -43,9 +43,9 @@ Cc:     linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
         Andrew Cooper <andrew.cooper3@citrix.com>,
         Nikolay Borisov <nik.borisov@suse.com>,
         gregkh@linuxfoundation.org, Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH 15/23] x86/srso: Remove 'pred_cmd' label
-Date:   Fri, 25 Aug 2023 00:01:46 -0700
-Message-ID: <ec18b04787fc21874303f29746a49847751eddd6.1692919072.git.jpoimboe@kernel.org>
+Subject: [PATCH 16/23] x86/bugs: Remove default case for fully switched enums
+Date:   Fri, 25 Aug 2023 00:01:47 -0700
+Message-ID: <858e6f4ef71cd531e64db2903d8ac4763bec0af4.1692919072.git.jpoimboe@kernel.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1692919072.git.jpoimboe@kernel.org>
 References: <cover.1692919072.git.jpoimboe@kernel.org>
@@ -61,72 +61,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SBPB is only enabled in two distinct cases:
-
-1) when SRSO has been disabled with srso=off
-
-2) when SRSO has been fixed (in future HW)
-
-Simplify the control flow by getting rid of the 'pred_cmd' label and
-moving the SBPB enablement check to the two corresponding code sites.
-This makes it more clear when exactly SBPB gets enabled.
+For enum switch statements which handle all possible cases, remove the
+default case so a compiler warning gets printed if one of the enums gets
+accidentally omitted from the switch statement.
 
 Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
 ---
- arch/x86/kernel/cpu/bugs.c | 21 +++++++++++++--------
- 1 file changed, 13 insertions(+), 8 deletions(-)
+ arch/x86/kernel/cpu/bugs.c | 17 +++++++----------
+ 1 file changed, 7 insertions(+), 10 deletions(-)
 
 diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
-index d883d1c38f7f..3c7f634b6148 100644
+index 3c7f634b6148..06216159d7fc 100644
 --- a/arch/x86/kernel/cpu/bugs.c
 +++ b/arch/x86/kernel/cpu/bugs.c
-@@ -2410,13 +2410,21 @@ static void __init srso_select_mitigation(void)
+@@ -1019,7 +1019,6 @@ static void __init retbleed_select_mitigation(void)
+ 
+ do_cmd_auto:
+ 	case RETBLEED_CMD_AUTO:
+-	default:
+ 		if (boot_cpu_data.x86_vendor == X86_VENDOR_AMD ||
+ 		    boot_cpu_data.x86_vendor == X86_VENDOR_HYGON) {
+ 			if (IS_ENABLED(CONFIG_CPU_UNRET_ENTRY))
+@@ -1290,6 +1289,8 @@ spectre_v2_user_select_mitigation(void)
+ 
+ 		spectre_v2_user_ibpb = mode;
+ 		switch (cmd) {
++		case SPECTRE_V2_USER_CMD_NONE:
++			break;
+ 		case SPECTRE_V2_USER_CMD_FORCE:
+ 		case SPECTRE_V2_USER_CMD_PRCTL_IBPB:
+ 		case SPECTRE_V2_USER_CMD_SECCOMP_IBPB:
+@@ -1301,8 +1302,6 @@ spectre_v2_user_select_mitigation(void)
+ 		case SPECTRE_V2_USER_CMD_SECCOMP:
+ 			static_branch_enable(&switch_mm_cond_ibpb);
+ 			break;
+-		default:
+-			break;
+ 		}
+ 
+ 		pr_info("mitigation: Enabling %s Indirect Branch Prediction Barrier\n",
+@@ -2160,6 +2159,10 @@ static int l1d_flush_prctl_get(struct task_struct *task)
+ static int ssb_prctl_get(struct task_struct *task)
  {
- 	bool has_microcode = boot_cpu_has(X86_FEATURE_IBPB_BRTYPE);
- 
--	if (!boot_cpu_has_bug(X86_BUG_SRSO) || cpu_mitigations_off())
--		goto pred_cmd;
-+	if (cpu_mitigations_off())
-+		return;
-+
-+	if (!boot_cpu_has_bug(X86_BUG_SRSO)) {
-+		if (boot_cpu_has(X86_FEATURE_SBPB))
-+			x86_pred_cmd = PRED_CMD_SBPB;
-+		return;
-+	}
- 
- 	if (has_microcode) {
- 		/*
- 		 * Zen1/2 with SMT off aren't vulnerable after the right
- 		 * IBPB microcode has been applied.
-+		 *
-+		 * Zen1/2 don't have SBPB, no need to try to enable it here.
- 		 */
- 		if (boot_cpu_data.x86 < 0x19 && !cpu_smt_possible()) {
- 			setup_force_cpu_cap(X86_FEATURE_SRSO_NO);
-@@ -2439,7 +2447,9 @@ static void __init srso_select_mitigation(void)
- 
- 	switch (srso_cmd) {
- 	case SRSO_CMD_OFF:
--		goto pred_cmd;
-+		if (boot_cpu_has(X86_FEATURE_SBPB))
-+			x86_pred_cmd = PRED_CMD_SBPB;
-+		return;
- 
- 	case SRSO_CMD_MICROCODE:
- 		if (has_microcode) {
-@@ -2501,11 +2511,6 @@ static void __init srso_select_mitigation(void)
- 
- out:
- 	pr_info("%s%s\n", srso_strings[srso_mitigation], has_microcode ? "" : ", no microcode");
--
--pred_cmd:
--	if ((!boot_cpu_has_bug(X86_BUG_SRSO) || srso_cmd == SRSO_CMD_OFF) &&
--	     boot_cpu_has(X86_FEATURE_SBPB))
--		x86_pred_cmd = PRED_CMD_SBPB;
+ 	switch (ssb_mode) {
++	case SPEC_STORE_BYPASS_NONE:
++		if (boot_cpu_has_bug(X86_BUG_SPEC_STORE_BYPASS))
++			return PR_SPEC_ENABLE;
++		return PR_SPEC_NOT_AFFECTED;
+ 	case SPEC_STORE_BYPASS_DISABLE:
+ 		return PR_SPEC_DISABLE;
+ 	case SPEC_STORE_BYPASS_SECCOMP:
+@@ -2171,11 +2174,8 @@ static int ssb_prctl_get(struct task_struct *task)
+ 		if (task_spec_ssb_disable(task))
+ 			return PR_SPEC_PRCTL | PR_SPEC_DISABLE;
+ 		return PR_SPEC_PRCTL | PR_SPEC_ENABLE;
+-	default:
+-		if (boot_cpu_has_bug(X86_BUG_SPEC_STORE_BYPASS))
+-			return PR_SPEC_ENABLE;
+-		return PR_SPEC_NOT_AFFECTED;
+ 	}
++	BUG();
  }
  
- #undef pr_fmt
+ static int ib_prctl_get(struct task_struct *task)
+@@ -2504,9 +2504,6 @@ static void __init srso_select_mitigation(void)
+ 			pr_err("WARNING: kernel not compiled with CPU_SRSO.\n");
+                 }
+ 		break;
+-
+-	default:
+-		break;
+ 	}
+ 
+ out:
 -- 
 2.41.0
 
