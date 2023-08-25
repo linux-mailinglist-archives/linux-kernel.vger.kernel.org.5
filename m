@@ -2,145 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CD8F7880B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 09:15:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 535037880BA
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 09:16:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242712AbjHYHOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 03:14:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56234 "EHLO
+        id S242908AbjHYHPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 03:15:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232586AbjHYHO1 (ORCPT
+        with ESMTP id S243148AbjHYHPS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 03:14:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78712E6B
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 00:13:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692947622;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=89RAPJXu3l0nu+Qr7Ul5eYhcLbxfZVRVayP8mEU740g=;
-        b=TbOThrBO0xB2v3Z20L48x8NFudlHbkyme96jWNwtdDOj51nwBjp230JdUZ8Ed51NNJlaFw
-        1iuWb+EQuG3zs3vUtKaPOj6fiJ5GmPW45ioFw8/e42RCxXSKyHYjI/85W4TkYWykmowbeK
-        vX/5G54SDv2LmAU2NgksAI5cqPVU36M=
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
- [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-645-zoCsgvrqOou_LNRgffGueg-1; Fri, 25 Aug 2023 03:13:39 -0400
-X-MC-Unique: zoCsgvrqOou_LNRgffGueg-1
-Received: by mail-lf1-f72.google.com with SMTP id 2adb3069b0e04-5009796123dso677038e87.1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 00:13:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692947618; x=1693552418;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=89RAPJXu3l0nu+Qr7Ul5eYhcLbxfZVRVayP8mEU740g=;
-        b=iYfakb9UqFwDcJKY/T1aIBB2TOn6mAS7upc3f4DLMr5CJhNi452hgJazFzcZX1arp3
-         OdWrqpZXBHETMqYbcwFJLSuCrZrpYlvy3CNbIQVsGvwaFJrw3rOGrX3vZqmb7GTtQ3GL
-         n2rrh4i2avnZYFXAZ9xoHuAh65pwn9WxxQDaBdRPUtXjKVRDB0K4SMdGxfAsRcBV70dD
-         3h4YEjLtAL6at9CCQP/MmSmeT53+A8UPXRfxb5oveAxzZbRqQH0OIelmF8sBDpiKr03w
-         4Z+kgjnjKRJy91YRM5dt6D3Na/1cjn9O0oDxaXIz07A/R5Tq4uAoi+G4hyqjv67fqpul
-         tAHQ==
-X-Gm-Message-State: AOJu0YzE3gBqmGVaVyZlOrmEWomiVE8P8yNgQoKSwUi59sOfP4bjTPj2
-        oWZsVRAO5/BQP/WwT2kqJLp6t04ycQWPCR7h6srkxguHC0aYLsZg1vLoA9TVh8mJo8og2kU8biW
-        3C1S3Ed5ExMBl2/JBTvpyXYNB
-X-Received: by 2002:a05:6512:1584:b0:4fe:1c40:9266 with SMTP id bp4-20020a056512158400b004fe1c409266mr14578141lfb.17.1692947618087;
-        Fri, 25 Aug 2023 00:13:38 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE3Cv6J318zXRMFfrc43ddrKRkBL8efv+MD14IYUTrlxPGXzW9AmHYYZLa+xablU/kO5QDyPQ==
-X-Received: by 2002:a05:6512:1584:b0:4fe:1c40:9266 with SMTP id bp4-20020a056512158400b004fe1c409266mr14578112lfb.17.1692947617632;
-        Fri, 25 Aug 2023 00:13:37 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c70e:9200:ce93:b5e6:8aa9:65d4? (p200300cbc70e9200ce93b5e68aa965d4.dip0.t-ipconnect.de. [2003:cb:c70e:9200:ce93:b5e6:8aa9:65d4])
-        by smtp.gmail.com with ESMTPSA id y14-20020adfee0e000000b0031c56218984sm1317562wrn.104.2023.08.25.00.13.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Aug 2023 00:13:37 -0700 (PDT)
-Message-ID: <75337a54-da9e-c50a-395d-1c6c93b087f8@redhat.com>
-Date:   Fri, 25 Aug 2023 09:13:35 +0200
+        Fri, 25 Aug 2023 03:15:18 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DAD019B0;
+        Fri, 25 Aug 2023 00:15:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9686266798;
+        Fri, 25 Aug 2023 07:15:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9FA50C433C7;
+        Fri, 25 Aug 2023 07:15:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692947715;
+        bh=JLsSZDXLKc5glBFhzwQ6UlaoXdzLUq4UKNtCPROpmgM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Icujbchq2KE69jLiNDRzCfoaMuLd8AvDhe30LVIIXZ2QAUTA40rlmOUOfmAb0/ZQl
+         HSgUYDB7R8FhpgtogKB0yy7/iSvWbiqqRj4XkdzoBfvlwqrYAhepnAIWssa4BmUDEZ
+         mcrAiNd0ZIEAdpiztq1+zJH8+btq5IhKk1n5fd6OaD+0dyuk+nzgQkO5IVebtGAlLN
+         vpCUBGk8qAN/+fgCHS4azptOlfXU+5Yx7DQOhYeyEA8KOsf7vfZSpo3vawj2+pJ8fR
+         34NBMz/3Po2kN5sQdDLtbju88w5RJwzxQqoZ0K3z3oS+RlSzfHEsQHwl6lJ+jzg3bS
+         WYoWko9xcpF9w==
+Date:   Fri, 25 Aug 2023 00:15:12 -0700
+From:   Josh Poimboeuf <jpoimboe@kernel.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        x86@kernel.org, peterz@infradead.org, keescook@chromium.org,
+        elver@google.com, dvyukov@google.com, glider@google.com
+Subject: Re: [BUG] missing return thunk: __ret+0x5/0x7e-__ret+0x0/0x7e: e9 f6
+ ff ff ff
+Message-ID: <20230825071512.yqtpmrie2zma3qcp@treble>
+References: <4dc3d0ec-b827-4bce-8927-cfa5d837fd03@paulmck-laptop>
+ <20230816181720.GNZN0SsKi/B4eCsZHu@fat_crate.local>
+ <2023082458-vividness-habitable-cbc8@gregkh>
+ <20230825063302.GBZOhLHgdvhIw1d6f1@fat_crate.local>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v1 4/4] mm/mmu_gather: Store and process pages in contig
- ranges
-Content-Language: en-US
-To:     Matthew Wilcox <willy@infradead.org>,
-        Ryan Roberts <ryan.roberts@arm.com>
-Cc:     Will Deacon <will@kernel.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Yu Zhao <yuzhao@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20230810103332.3062143-1-ryan.roberts@arm.com>
- <20230810103332.3062143-5-ryan.roberts@arm.com>
- <ZOgpb1Qo5B0r+mhJ@casper.infradead.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <ZOgpb1Qo5B0r+mhJ@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230825063302.GBZOhLHgdvhIw1d6f1@fat_crate.local>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25.08.23 06:09, Matthew Wilcox wrote:
-> On Thu, Aug 10, 2023 at 11:33:32AM +0100, Ryan Roberts wrote:
->> +void folios_put_refs(struct folio_range *folios, int nr)
->> +{
->> +	int i;
->> +	LIST_HEAD(pages_to_free);
->> +	struct lruvec *lruvec = NULL;
->> +	unsigned long flags = 0;
->> +	unsigned int lock_batch;
->> +
->> +	for (i = 0; i < nr; i++) {
->> +		struct folio *folio = page_folio(folios[i].start);
->> +		int refs = folios[i].end - folios[i].start;
->> +
->> +		/*
->> +		 * Make sure the IRQ-safe lock-holding time does not get
->> +		 * excessive with a continuous string of pages from the
->> +		 * same lruvec. The lock is held only if lruvec != NULL.
->> +		 */
->> +		if (lruvec && ++lock_batch == SWAP_CLUSTER_MAX) {
->> +			unlock_page_lruvec_irqrestore(lruvec, flags);
->> +			lruvec = NULL;
->> +		}
->> +
->> +		if (is_huge_zero_page(&folio->page))
->> +			continue;
->> +
->> +		if (folio_is_zone_device(folio)) {
->> +			if (lruvec) {
->> +				unlock_page_lruvec_irqrestore(lruvec, flags);
->> +				lruvec = NULL;
->> +			}
->> +			if (put_devmap_managed_page(&folio->page))
->> +				continue;
->> +			if (folio_put_testzero(folio))
+On Fri, Aug 25, 2023 at 08:33:02AM +0200, Borislav Petkov wrote:
+> On Thu, Aug 24, 2023 at 03:52:56PM +0200, Greg KH wrote:
+> > On Wed, Aug 16, 2023 at 08:17:20PM +0200, Borislav Petkov wrote:
+> > > Hey Paul,
+> > > 
+> > > On Wed, Aug 16, 2023 at 10:54:09AM -0700, Paul E. McKenney wrote:
+> > > > I hit the splat at the end of this message in recent mainline, and has
+> > > > appeared some time since v6.5-rc1.  Should I be worried?
+> > > 
+> > > does it go away if you try the latest tip:x86/urgent branch?
+> > 
+> > Note, this problem is showing up in the 6.1.y branch right now, due to
+> > one objtool patch not being able to be backported there easily (i.e. I
+> > tried and gave up.)
+> > 
+> > 4ae68b26c3ab ("objtool/x86: Fix SRSO mess") being the commit that I
+> > can't seem to get to work properly, my attempt can be seen here:
+> > 	https://lore.kernel.org/r/2023082212-pregnant-lizard-80e0@gregkh
+> > 
+> > Just a heads up as this will start to affect users of the next 6.1.y
+> > release, and probably older releases, as they are taking portions of the
+> > "fixes for fixes" but not the above mentioned one.
 > 
-> We're only putting one ref for the zone_device folios?  Surely
-> this should be ref_sub_and_test like below?
+> Hmm, Peter and I are away, I guess maybe Josh might have an idea how and
+> what to backport to 6.1 to get this sorted out...
+> 
+> CCed.
 
-I suspect put_devmap_managed_page() then also needs care?
+Sure, will take a look tomorrow.
 
 -- 
-Cheers,
-
-David / dhildenb
-
+Josh
