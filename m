@@ -2,112 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7080E78863E
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 13:46:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 203E9788648
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 13:47:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243365AbjHYLqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 07:46:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35836 "EHLO
+        id S243881AbjHYLrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 07:47:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243759AbjHYLpg (ORCPT
+        with ESMTP id S243476AbjHYLqp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 07:45:36 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 837712105
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 04:45:32 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id 3f1490d57ef6-d7815003420so800998276.3
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 04:45:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692963932; x=1693568732;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fcf02hKF/0IdH3b1tfgEymyLjXbz5lFk9LkSgZ+/VMA=;
-        b=NXO+TOtkKX+bmKbXuTm0NUbkfxdku2aPo89ryMUq6iKKoSkZeNcvPAxF/bwzV7Eujg
-         u6WF2gihqJ9s2SCDG6vYWQ9kbfporJWKFWZ1QouFO3tOeQlAoSm9lJ82Iuc03a6V/q1F
-         NtK//fmUSm9gcKGUZxXwhxksr7YPzQbaBWBOQHfeFqodDOP7/Nr0IPLxY9Fe0oSNBmcr
-         HrabKwve6jfC5QWE5nYDd2fztV+PeSf4R2gcaO2E3u4kEyJ6v9lvTu41asp9/vy6oEcT
-         VLznEBoC+AGgyzjEhlUbFuyE9feuer683jMNKgerc2uCsoX+uimeVpNR/ymwy33l4mYH
-         I2hA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692963932; x=1693568732;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fcf02hKF/0IdH3b1tfgEymyLjXbz5lFk9LkSgZ+/VMA=;
-        b=DjNqQ2Nn8DckTaWCXc+XHks6dkvWM1/C4ghNnD2GTjAu/vgrRPWNwCJfFy5uYrDxuz
-         r6AOvFmTJHW0P0F4KGD7rLHGpIx4iIIV38rgOHVtpGK2BGKwF6N1XaUs4kuaPev0aC09
-         UT3o7zxYQQ0+ja14RXZ9BI0+W2gwhlY7NrThPn3Uen5VLBfpHSSJCs6hnyrkHMkbr74i
-         08vHrU8BBFtsJ1eVzgkiIA0fMU2tMa+bkU6Ri4pznP11LTP6b6Lef3nMyG8CWpbhvg1C
-         GMpkct70/NloCIL8C2e+5rQcVfkGOeZhpwUjb4+uHafzom6kihYsvm2ajrNLQi3v9qJh
-         KjZg==
-X-Gm-Message-State: AOJu0YxizxtWUYJj+LggLRITKxoY86vW8z4p4LW1NTa7whAGz+Pnf38i
-        lhADNzZ3PZL4pxJWT/ofmrDl+LK7zq6tk0AMfC8oyA==
-X-Google-Smtp-Source: AGHT+IGrtKMF8Yp+gEsaJ2A+cL1/buPgbXCYxwk792IJXE1syFo/+NkzfJGbMAyhGaVIo5+B9Tp9iUpkpzem/NxNnX0=
-X-Received: by 2002:a25:d0d5:0:b0:d77:ec2f:63b with SMTP id
- h204-20020a25d0d5000000b00d77ec2f063bmr5858906ybg.5.1692963931772; Fri, 25
- Aug 2023 04:45:31 -0700 (PDT)
+        Fri, 25 Aug 2023 07:46:45 -0400
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD9A9E7F;
+        Fri, 25 Aug 2023 04:46:37 -0700 (PDT)
+X-UUID: 091e16f2433d11ee9cb5633481061a41-20230825
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=csGBmjXikOyh3y8p13e2JwCsy1lcw0WkGW0pikGKqoI=;
+        b=iV4Sgo1PW15Bb2HP+gvNyKHijWOskBdl8FrEUmce5JCJIjPRXSFk1ED7EFS3YBu3XAfik+oYXtBcrDhfrZUYspdEEFzbB74IqjiFE3q0rSH7nnIIiq6o9DXv7BJhuih+PezPurtfoXlVdpyjT7H1AhznzjURoqMrfIHJxSazUVU=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.31,REQID:7ec91a70-76ab-43c6-ab4b-a024ee108136,IP:0,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:0
+X-CID-META: VersionHash:0ad78a4,CLOUDID:8b353013-4929-4845-9571-38c601e9c3c9,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+        DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: 091e16f2433d11ee9cb5633481061a41-20230825
+Received: from mtkmbs13n2.mediatek.inc [(172.21.101.108)] by mailgw01.mediatek.com
+        (envelope-from <macpaul.lin@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1291513685; Fri, 25 Aug 2023 19:46:32 +0800
+Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Fri, 25 Aug 2023 19:46:30 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Fri, 25 Aug 2023 19:46:30 +0800
+From:   Macpaul Lin <macpaul.lin@mediatek.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Fabien Parent <fparent@baylibre.com>,
+        Macpaul Lin <macpaul.lin@mediatek.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+CC:     Bear Wang <bear.wang@mediatek.com>,
+        Pablo Sun <pablo.sun@mediatek.com>,
+        Macpaul Lin <macpaul@gmail.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        <stable@vger.kernel.org>
+Subject: [PATCH 1/4] arm64: dts: mediatek: mt8195-demo: fix the memory size to 8GB
+Date:   Fri, 25 Aug 2023 19:46:20 +0800
+Message-ID: <20230825114623.16884-1-macpaul.lin@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-References: <20230825095157.76073-1-balamanikandan.gunasundar@microchip.com> <20230825095157.76073-4-balamanikandan.gunasundar@microchip.com>
-In-Reply-To: <20230825095157.76073-4-balamanikandan.gunasundar@microchip.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 25 Aug 2023 13:45:20 +0200
-Message-ID: <CACRpkdahEcKgR9gR7iU0cW_aDTReDYBKdP+5_F+hGcarCjG9gg@mail.gmail.com>
-Subject: Re: [PATCH v6 3/3] mmc: atmel-mci: Move card detect gpio polarity
- quirk to gpiolib
-To:     Balamanikandan Gunasundar 
-        <balamanikandan.gunasundar@microchip.com>
-Cc:     dmitry.torokhov@gmail.com, ulf.hansson@linaro.org,
-        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        ludovic.desroches@microchip.com, nicolas.ferre@microchip.com,
-        alexandre.belloni@bootlin.com, hari.prasathge@microchip.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK:  N
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_PASS,T_SPF_TEMPERROR,UNPARSEABLE_RELAY autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 25, 2023 at 11:53=E2=80=AFAM Balamanikandan Gunasundar
-<balamanikandan.gunasundar@microchip.com> wrote:
+The onboard dram of mt8195-demo board is 8GB.
 
-> The polarity of the card detection gpio is handled by the "cd-inverted"
-> property in the device tree. Move this inversion logic to gpiolib to avoi=
-d
-> reading the gpio raw value.
->
-> Signed-off-by: Balamanikandan Gunasundar <balamanikandan.gunasundar@micro=
-chip.com>
-> Suggested-by: Linus Walleij <linus.walleij@linaro.org>
+Cc: stable@vger.kernel.org      # 6.1, 6.4
+Fixes: 6147314aeedc ("arm64: dts: mediatek: Add device-tree for MT8195 Demo board")
+Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
+---
+ arch/arm64/boot/dts/mediatek/mt8195-demo.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+diff --git a/arch/arm64/boot/dts/mediatek/mt8195-demo.dts b/arch/arm64/boot/dts/mediatek/mt8195-demo.dts
+index b2485ddfd33b..ff363ab925e9 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8195-demo.dts
++++ b/arch/arm64/boot/dts/mediatek/mt8195-demo.dts
+@@ -48,7 +48,7 @@
+ 
+ 	memory@40000000 {
+ 		device_type = "memory";
+-		reg = <0 0x40000000 0 0x80000000>;
++		reg = <0 0x40000000 0x2 0x00000000>;
+ 	};
+ 
+ 	reserved-memory {
+-- 
+2.18.0
 
-> +#if IS_ENABLED(CONFIG_MMC_ATMELMCI)
-> +       /*
-> +        * The Atmel HSMCI has compatible property in the parent node and
-> +        * gpio property in a child node
-> +        */
-> +       if (of_device_is_compatible(np->parent, "atmel,hsmci")) {
-> +               np_compat =3D np->parent;
-> +               np_propname =3D np;
-> +       }
-> +#endif
-
-You don't need to use the preprocessor actually, what I did in my
-example works:
-
-if (IS_ENABLED()... && of_device_is_compatible()...) {
-...
-}
-
-If the first expression in the if() clause is constant false, the compiler
-will optimize out the entire if()-clause. At least the compilers we care
-about.
-
-Yours,
-Linus Walleij
