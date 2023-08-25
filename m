@@ -2,207 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C93D788B21
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 16:10:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 271BC788A36
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 16:04:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343532AbjHYOKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 10:10:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48230 "EHLO
+        id S245394AbjHYOEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 10:04:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343794AbjHYOJc (ORCPT
+        with ESMTP id S245511AbjHYOD2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 10:09:32 -0400
-Received: from out-251.mta1.migadu.com (out-251.mta1.migadu.com [95.215.58.251])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D757D213B
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 07:08:47 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1692972442;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NAMtHKwgj081g8lIPVs72MliioxtTYHj7D9CTN85ELE=;
-        b=sbYFUS6BU4QMfloFkojbf7LlIvBmbwqI6WjTGL8/Nwev4csxD24mU9E4d6JXOYCR7eZA1m
-        PqI1zbyFtIGUv/PonAelJnAkImEIFlhA1NIhorTVqtvxfqefn7QdiSQXQ23nqD5sCFBkVJ
-        VzfeXLG9iKOnGGbqPpV4YVYm/Xq84uM=
-From:   Hao Xu <hao.xu@linux.dev>
-To:     io-uring@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
-Cc:     Dominique Martinet <asmadeus@codewreck.org>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Stefan Roesch <shr@fb.com>, Clay Harris <bugs@claycon.org>,
-        Dave Chinner <david@fromorbit.com>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-cachefs@redhat.com,
-        ecryptfs@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-unionfs@vger.kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, codalist@coda.cs.cmu.edu,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
-        devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
-        samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
-        Wanpeng Li <wanpengli@tencent.com>
-Subject: [PATCH 29/29] io_uring: add support for getdents
-Date:   Fri, 25 Aug 2023 21:54:31 +0800
-Message-Id: <20230825135431.1317785-30-hao.xu@linux.dev>
-In-Reply-To: <20230825135431.1317785-1-hao.xu@linux.dev>
-References: <20230825135431.1317785-1-hao.xu@linux.dev>
+        Fri, 25 Aug 2023 10:03:28 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2304D270B
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 07:03:02 -0700 (PDT)
+Received: from notapiano (unknown [IPv6:2600:4041:5b1a:cd00:524d:e95d:1a9c:492a])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: nfraprado)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id D326966071BE;
+        Fri, 25 Aug 2023 15:02:59 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1692972181;
+        bh=Tf0lRvLk4egxaG6ZSwOtjS0aVzUEep0x+fFK3VC8laM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bpsA+ZN1hxW5O80D1U5sVzFN2ALmtNalrJ2+D2NfBXy/Yak3TYoY2Ye9xBdwBkg9l
+         nfK+B8Dvskeud9iRprmTOPiRaSrRvODue8tiAajdVq6VgY0bolTnHicKfaWjsrFTH4
+         OTZ03Q9O5YT7zwoBoviGtuadsZWlPsTr7qX1UeCUS3jUI4Cyhd6qBE7i8tSVC0LWoU
+         32QFdqMB9HneZuZgdqY6fEMHb2z5Mzf2rN+6MTzcXHlBnuNQSw33EOcUjJpeyFuzqH
+         62EhZgjDEiE4pMcfSxHFObTo3AdPEZqn87SvvIU9CZQFcYJ18YYJGTQmfhuucl6XA7
+         hlsqHbc2UrVbw==
+Date:   Fri, 25 Aug 2023 10:02:56 -0400
+From:   =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado 
+        <nfraprado@collabora.com>
+To:     Michael Walle <mwalle@kernel.org>
+Cc:     angelogioacchino.delregno@collabora.com, airlied@gmail.com,
+        amergnat@baylibre.com, chunkuang.hu@kernel.org, ck.hu@mediatek.com,
+        daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
+        ehristev@collabora.com, kernel@collabora.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com,
+        p.zabel@pengutronix.de, wenst@chromium.org
+Subject: Re: [PATCH v7 09/11] drm/mediatek: dp: Add support for embedded
+ DisplayPort aux-bus
+Message-ID: <5b438dba-9b85-4448-bc89-08a11ddb822a@notapiano>
+References: <20230725073234.55892-10-angelogioacchino.delregno@collabora.com>
+ <20230825120109.3132209-1-mwalle@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20230825120109.3132209-1-mwalle@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hao Xu <howeyxu@tencent.com>
+Hi,
 
-This add support for getdents64 to io_uring, acting exactly like the
-syscall: the directory is iterated from it's current's position as
-stored in the file struct, and the file's position is updated exactly as
-if getdents64 had been called.
+On Fri, Aug 25, 2023 at 02:01:09PM +0200, Michael Walle wrote:
+> Hi AngeloGioacchino,
+> 
+> > For the eDP case we can support using aux-bus on MediaTek DP: this
+> > gives us the possibility to declare our panel as generic "panel-edp"
+> > which will automatically configure the timings and available modes
+> > via the EDID that we read from it.
+> > 
+> > To do this, move the panel parsing at the end of the probe function
+> > so that the hardware is initialized beforehand and also initialize
+> > the DPTX AUX block and power both on as, when we populate the
+> > aux-bus, the panel driver will trigger an EDID read to perform
+> > panel detection.
+> > 
+> > Last but not least, since now the AUX transfers can happen in the
+> > separated aux-bus, it was necessary to add an exclusion for the
+> > cable_plugged_in check in `mtk_dp_aux_transfer()` and the easiest
+> > way to do this is to simply ignore checking that when the bridge
+> > type is eDP.
+> 
+> This patch breaks my board based on the MT8195 which only has one
+> DisplayPort output port. I suspect it might also break the mt8195-cherry
+> board.
 
-For filesystems that support NOWAIT in iterate_shared(), try to use it
-first; if a user already knows the filesystem they use do not support
-nowait they can force async through IOSQE_ASYNC in the sqe flags,
-avoiding the need to bounce back through a useless EAGAIN return.
+Do you mean that your board does not have an internal display, only the one
+output port? If so, why are you enabling the nodes for the internal display path
+in your board specific DT?
 
-Co-developed-by: Dominique Martinet <asmadeus@codewreck.org>
-Signed-off-by: Dominique Martinet <asmadeus@codewreck.org>
-Signed-off-by: Hao Xu <howeyxu@tencent.com>
----
- include/uapi/linux/io_uring.h |  1 +
- io_uring/fs.c                 | 53 +++++++++++++++++++++++++++++++++++
- io_uring/fs.h                 |  3 ++
- io_uring/opdef.c              |  8 ++++++
- 4 files changed, 65 insertions(+)
+> 
+> While the mediatek-dpi driver finds the DP port:
+> [    3.131645] mediatek-dpi 1c113000.dp-intf: Found bridge node: /soc/dp-tx@1c600000
+> 
+> The probing of the eDP is deferred:
+> [   13.289009] platform 1c015000.dp-intf: deferred probe pending
+> 
+> So I don't know why, but to make dp_intf1 work, it seems that dp_intf0
+> must be probed successfully. After this patch, the edp (which is
+> connected to the dp_intf1) probe will return with an -ENODEV and
+> the previous call to devm_drm_bridge_add() will be rolled back.
 
-diff --git a/include/uapi/linux/io_uring.h b/include/uapi/linux/io_uring.h
-index 8e61f8b7c2ce..3896397a1998 100644
---- a/include/uapi/linux/io_uring.h
-+++ b/include/uapi/linux/io_uring.h
-@@ -240,6 +240,7 @@ enum io_uring_op {
- 	IORING_OP_URING_CMD,
- 	IORING_OP_SEND_ZC,
- 	IORING_OP_SENDMSG_ZC,
-+	IORING_OP_GETDENTS,
- 
- 	/* this goes last, obviously */
- 	IORING_OP_LAST,
-diff --git a/io_uring/fs.c b/io_uring/fs.c
-index f6a69a549fd4..04711feac4e6 100644
---- a/io_uring/fs.c
-+++ b/io_uring/fs.c
-@@ -47,6 +47,12 @@ struct io_link {
- 	int				flags;
- };
- 
-+struct io_getdents {
-+	struct file			*file;
-+	struct linux_dirent64 __user	*dirent;
-+	unsigned int			count;
-+};
-+
- int io_renameat_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe)
- {
- 	struct io_rename *ren = io_kiocb_to_cmd(req, struct io_rename);
-@@ -291,3 +297,50 @@ void io_link_cleanup(struct io_kiocb *req)
- 	putname(sl->oldpath);
- 	putname(sl->newpath);
- }
-+
-+int io_getdents_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe)
-+{
-+	struct io_getdents *gd = io_kiocb_to_cmd(req, struct io_getdents);
-+
-+	if (READ_ONCE(sqe->off))
-+		return -EINVAL;
-+
-+	gd->dirent = u64_to_user_ptr(READ_ONCE(sqe->addr));
-+	gd->count = READ_ONCE(sqe->len);
-+
-+	return 0;
-+}
-+
-+int io_getdents(struct io_kiocb *req, unsigned int issue_flags)
-+{
-+	struct io_getdents *gd = io_kiocb_to_cmd(req, struct io_getdents);
-+	struct file *file = req->file;
-+	unsigned long getdents_flags = 0;
-+	bool force_nonblock = issue_flags & IO_URING_F_NONBLOCK;
-+	bool locked;
-+	int ret;
-+
-+	if (force_nonblock) {
-+		if (!(file->f_flags & O_NONBLOCK) &&
-+		    !(file->f_mode & FMODE_NOWAIT))
-+			return -EAGAIN;
-+
-+		getdents_flags = DIR_CONTEXT_F_NOWAIT;
-+	}
-+
-+	ret = file_pos_lock_nowait(file, force_nonblock);
-+	if (ret == -EAGAIN)
-+		return ret;
-+	locked = ret;
-+
-+	ret = vfs_getdents(file, gd->dirent, gd->count, getdents_flags);
-+	if (locked)
-+		file_pos_unlock(file);
-+
-+	if (ret == -EAGAIN && force_nonblock)
-+		return -EAGAIN;
-+
-+	io_req_set_res(req, ret, 0);
-+	return 0;
-+}
-+
-diff --git a/io_uring/fs.h b/io_uring/fs.h
-index 0bb5efe3d6bb..f83a6f3a678d 100644
---- a/io_uring/fs.h
-+++ b/io_uring/fs.h
-@@ -18,3 +18,6 @@ int io_symlinkat(struct io_kiocb *req, unsigned int issue_flags);
- int io_linkat_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe);
- int io_linkat(struct io_kiocb *req, unsigned int issue_flags);
- void io_link_cleanup(struct io_kiocb *req);
-+
-+int io_getdents_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe);
-+int io_getdents(struct io_kiocb *req, unsigned int issue_flags);
-diff --git a/io_uring/opdef.c b/io_uring/opdef.c
-index 3b9c6489b8b6..1bae6b2a8d0b 100644
---- a/io_uring/opdef.c
-+++ b/io_uring/opdef.c
-@@ -428,6 +428,11 @@ const struct io_issue_def io_issue_defs[] = {
- 		.prep			= io_eopnotsupp_prep,
- #endif
- 	},
-+	[IORING_OP_GETDENTS] = {
-+		.needs_file		= 1,
-+		.prep			= io_getdents_prep,
-+		.issue			= io_getdents,
-+	},
- };
- 
- 
-@@ -648,6 +653,9 @@ const struct io_cold_def io_cold_defs[] = {
- 		.fail			= io_sendrecv_fail,
- #endif
- 	},
-+	[IORING_OP_GETDENTS] = {
-+		.name			= "GETDENTS",
-+	},
- };
- 
- const char *io_uring_get_opcode(u8 opcode)
--- 
-2.25.1
+The MediaTek DRM driver uses the component framework, so it waits for all of its
+components to register until it binds them all (which includes both intf0 and
+intf1, unless they're disabled on the DT).
 
+It's true that before this patch no panel being found for edp-tx wouldn't
+prevent it to probe, but it really should.
+
+Thanks,
+Nícolas
+
+> 
+> Before this patch, bridge_add() was called in any case (in the
+> error case with next_bridge = NULL) and the mediatek-dpi probed
+> like that:
+> 
+> [    3.121011] mediatek-dpi 1c015000.dp-intf: Found bridge node: /soc/edp-tx@1c500000
+> [    3.122111] mediatek-dpi 1c113000.dp-intf: Found bridge node: /soc/dp-tx@1c600000
+> 
+> Eventually resulting in a framebuffer device:
+> [    4.451081] mediatek-drm mediatek-drm.8.auto: [drm] fb0: mediatekdrmfb frame buffer device
+> 
+> 
+> NB, somehow this series broke the initial display output. I always have
+> to replug the DisplayPort to get some output. I'll dig deeper into that
+> later.
+> 
+> ..
+> 
+> > @@ -2519,21 +2553,14 @@ static int mtk_dp_probe(struct platform_device *pdev)
+> >  		return dev_err_probe(dev, mtk_dp->irq,
+> >  				     "failed to request dp irq resource\n");
+> >  
+> > -	mtk_dp->next_bridge = devm_drm_of_get_bridge(dev, dev->of_node, 1, 0);
+> > -	if (IS_ERR(mtk_dp->next_bridge) &&
+> > -	    PTR_ERR(mtk_dp->next_bridge) == -ENODEV)
+> > -		mtk_dp->next_bridge = NULL;
+> 
+> In my case, this branch was taken.
+> 
+> -michael
+> 
+> > -	else if (IS_ERR(mtk_dp->next_bridge))
+> > -		return dev_err_probe(dev, PTR_ERR(mtk_dp->next_bridge),
+> > -				     "Failed to get bridge\n");
+> > -
+> >  	ret = mtk_dp_dt_parse(mtk_dp, pdev);
+> >  	if (ret)
+> >  		return dev_err_probe(dev, ret, "Failed to parse dt\n");
+> >  
+> > -	drm_dp_aux_init(&mtk_dp->aux);
+> >  	mtk_dp->aux.name = "aux_mtk_dp";
+> > +	mtk_dp->aux.dev = dev;
+> >  	mtk_dp->aux.transfer = mtk_dp_aux_transfer;
+> > +	drm_dp_aux_init(&mtk_dp->aux);
+> >  
+> >  	spin_lock_init(&mtk_dp->irq_thread_lock);
+> >  
