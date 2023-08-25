@@ -2,202 +2,533 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DF66788058
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 08:54:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFE3B78805D
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 08:54:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232179AbjHYGxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 02:53:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59308 "EHLO
+        id S235897AbjHYGyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 02:54:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242903AbjHYGxc (ORCPT
+        with ESMTP id S234027AbjHYGxk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 02:53:32 -0400
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B87FF212A
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 23:53:11 -0700 (PDT)
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 37P1cZSP029490
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 23:53:08 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : mime-version; s=s2048-2021-q4;
- bh=HLEZsevSbmbBXFGOLW1aALiUbsj5VS+xNjCVBN7G1fc=;
- b=AHNuQnxr7jOzXEYBptXPy3XuWmDFmUrTFt40THAwQaSYUr0A+pkXoafXlyI4ygMflokv
- f8o8mcpO0UduhYfQjI+W0lP9gbz5kEnbq85BH1oTTJvi6/4cRaBtrmQmbt5eEQrDp+W7
- IQ/ZcjMqMNVyMeMBALsjrage1VlpViqbP+G+A2wSrm1ko5bmsOG2psSkOiPB+YymJWtT
- N94R4GQVvpWsN+8yigdhdMuxoKRiXgR+YJ0sEEOuv7nEc7cavbuNCWBO/0WNQhjutdZW
- Dh5sUblK4ffEHq2rWZoXvwkjpyfYzsFYwdB5UvxTu6h+IU4JH5oWjElK+ZoLjgTtJiBj Hw== 
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2102.outbound.protection.outlook.com [104.47.58.102])
-        by m0089730.ppops.net (PPS) with ESMTPS id 3spb6jxx9p-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 23:53:08 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nV72htRWKtqYL2Kga3k9Peqadgdk7Z91h53vqi+9vaTS1kcbJkl7SlUOCZM6yaR4PiUSqpQAyIbgv99DQzNbbeLBgE6Ug1M+XjZRFhIeqOTiwNugYDtxMEH+2wUB1wSQDXCUk8wGRCDJTRfVVZVlxXxRb2B7o3Q9g6/bPOyi9DA9dE4xWg66uUJVgbM6jr+ASMtqIU791z2TjNM8PYll0IzpWFgNNQJyfEzcDhelObQKqYxO3pQsta24IfgO+HXBxvWzYq0y/FhhpDTvWkT0/6Z5Ygy3pRdOmD+E57usO/ZaTkP48wrECgWgAnAqmdk4GcP8JLmOnNpm7ES4bYTXug==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=HLEZsevSbmbBXFGOLW1aALiUbsj5VS+xNjCVBN7G1fc=;
- b=OGuiYTeQBVCkfw24E9yQp13NfjlI43s0xgdaNKPfTVbWg0TYygqlGMFizYROL/FH+G2Ie2Dzmb+AuHo/MnqJKADR8JSSht0cwO+qYCSAlWn8gl7JWrSpLoTYD9JPVlq0tn1Cn/UbQZT6JvZ4+qqqmRYiq/VYHoimFs7NdI8u8uMtGHdKEgNT6RQJTgM/8t1AN8KS4JSbgpjT1UtnvLaXyhKwMuA6WMVXNg/Ck++Hyh0LAAa87MddeC1cRhF+vqSgBQ9bubHawCXdPR9VZnNnDASWzKjqotWUbI0IhiGrj4EEjgc60HzAoz1lqlvNzbflMgqJ0S34+BBUXrlcpK5Q8Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
- dkim=pass header.d=meta.com; arc=none
-Received: from SA1PR15MB5109.namprd15.prod.outlook.com (2603:10b6:806:1dc::10)
- by PH0PR15MB4719.namprd15.prod.outlook.com (2603:10b6:510:8d::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.29; Fri, 25 Aug
- 2023 06:53:05 +0000
-Received: from SA1PR15MB5109.namprd15.prod.outlook.com
- ([fe80::57f2:86c6:1115:ad7d]) by SA1PR15MB5109.namprd15.prod.outlook.com
- ([fe80::57f2:86c6:1115:ad7d%6]) with mapi id 15.20.6699.027; Fri, 25 Aug 2023
- 06:53:05 +0000
-From:   Song Liu <songliubraving@meta.com>
-To:     Yonghong Song <yonghong.song@linux.dev>
-CC:     Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Petr Mladek <pmladek@suse.com>, Song Liu <song@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Fangrui Song <maskray@google.com>,
-        Kernel Team <kernel-team@meta.com>,
-        Leizhen <thunder.leizhen@huawei.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
-        kernel test robot <oliver.sang@intel.com>
-Subject: Re: [PATCH] kallsyms: Fix kallsyms_selftest failure
-Thread-Topic: [PATCH] kallsyms: Fix kallsyms_selftest failure
-Thread-Index: AQHZ1wcjHZ4VTqvh6kuU0K2TO5sxPq/6k30A
-Date:   Fri, 25 Aug 2023 06:53:04 +0000
-Message-ID: <C720F23D-167E-4BF0-A003-39F965448401@fb.com>
-References: <20230825034659.1037627-1-yonghong.song@linux.dev>
-In-Reply-To: <20230825034659.1037627-1-yonghong.song@linux.dev>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3731.700.6)
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SA1PR15MB5109:EE_|PH0PR15MB4719:EE_
-x-ms-office365-filtering-correlation-id: 87f69d5a-2ca1-413c-91b1-08dba537eebb
-x-fb-source: Internal
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: zyQY76MTK6CdJE1jj5inh/1qm52Y0d4I5AM3HvRDPHXlU/0zRPJ7drrY7dJmzVmN4I3FmS5m3IvRJX1Z+R88Z8GdDAlAsDuiuh9oI0TMy5ZImcdgkNcX/sExvlpZ0sF6xPZmliSSybH0397M1VpN8PybQbnzjoS6+0gylf1IiiugfKCumExUTaNmPxfQFLWDuuUXk8TZDAoE6vDrEdhuX/9Y3JHc/Wvq29HYXKrkx9YsBsyISy8ydJWA6WlCReG3umBdrDDR4+udJl/IQWQwcWdR5JH1hUjYg9BloGsGvoFqeOoX9MgvPqHeqM8+cS/lX/meJgQwkqAoQ/oRLpIj8A75BEr24IL6xkTvZnxabK2OpOVW9qSNqIzIj+RzCgiS5aalnXMpM9YPlFPx0CEfGO/y/RvAmATBKDE+E3+OBCrJ2WuzvgVjeKoLyJ71SBjAgjpV5CyusQ/rDV7ETfbHcdGbREIR53SpI2xIE94WupL10i8PUA5NirerMyhRCN62sX9TFCiIx5DQrjR10/7GQ//3hbYoHVhMYCCGEm+ERFug5DeywPbOkqyamqwsEeC23McAUJuAHbV0/+x/F3yFNb3FBm2CvAn7gV+YBtu/hpY=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5109.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(136003)(376002)(39860400002)(366004)(1800799009)(451199024)(186009)(7416002)(83380400001)(6512007)(9686003)(478600001)(5660300002)(966005)(2906002)(8936002)(4326008)(8676002)(38070700005)(38100700002)(122000001)(6916009)(66476007)(66556008)(66946007)(76116006)(91956017)(86362001)(71200400001)(41300700001)(64756008)(54906003)(6506007)(53546011)(6486002)(36756003)(66446008)(33656002)(316002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?oDo3GKZvWaLgFbECBrRP1KIWpvcGAPmUSIFk5jrXEs3Miaq5KURD1R0yvWAi?=
- =?us-ascii?Q?bSTi5E7BrSHD17qGEk2/RzcJ0/DnZ3w9tMINOe5kL3zSDXRUKagVheM7xyOl?=
- =?us-ascii?Q?5U3naALRCAk+KaDGd+YOGfLMUCi8wfAs8tLT/tQGksZpzTN57URCRzsGtdYq?=
- =?us-ascii?Q?fIisYk2Ad9VqBpSjqc6WMzNwK8KKcw8hwCVOqVBW1seHYU1UWRzoqkINu7h6?=
- =?us-ascii?Q?GI1Twk4lPAEqqwRBhl8mpI2v+71G6w3WlgQw3W6h51Ua+0ROydICnUO+S9IT?=
- =?us-ascii?Q?X3Gcaj42fTnxh4erszzj8wqC2ui7P7b7NaNU/ACaGCn46ZN9k+H3j691knN9?=
- =?us-ascii?Q?1Fdi26kv1bqXtYjNjiN1KG5A9eSZ6o5wnrRTtzE4bE+kGF2bIO29JyU5rF14?=
- =?us-ascii?Q?R1fN5efEkfoH46Fqi/2pYES3ui8brK/PpKY4L0fTeinP1PtQRKN0NaAATDd0?=
- =?us-ascii?Q?+H9bDbDS7/UyLE6pzqlkgguKYTMDu1D4/xByDhPfcB87gQHZGJ1oCSKWBovt?=
- =?us-ascii?Q?D/BV/XMK/rbb8TvlLO3ucEm5MAwYXHba3Ii2WbQPe17djxwXn/ykaQSoYJqf?=
- =?us-ascii?Q?3mjNQtKnI2vvx/AhQ6ERSZY8zRVtl0CQ15ROzCESagJVxwKgpAutBz/9YJVF?=
- =?us-ascii?Q?K/EnFTfdtUxALZ6I/v/0ISAaktlgaklnKP+vJ9/Cx8DcuVPdVGBvLJ3ODlMo?=
- =?us-ascii?Q?b2CfpeFPLRJqI4Nyd8Tjpdzu0s+EapLs8ELXg80muNF84OTr61HbBabEvf0d?=
- =?us-ascii?Q?Ed5g+Zq48brL3JdG15/j6uu1BD6s6t7VOo/EZ3hhZFWudxUCcDq7gAlMqGyY?=
- =?us-ascii?Q?w4rDiEdLbk7ehXK1cngjHqVp7gnxXVD+IpZZ91HUGxWD4M52F15R4f9X4+Ev?=
- =?us-ascii?Q?ENcXaN5p/NANAbb5Vq86Ft2mmdBsC3SjssJ3TfcXilAsyJc9IHzqAkWtMaU4?=
- =?us-ascii?Q?5rqfwfu4wu18oIPpPwm4FE04P/97F51gEiODrYWGTnMci1cJ4X3O3RI0pa8B?=
- =?us-ascii?Q?C6CEm1pqzFX8kNQKSe0XKFW8lMQMqtzWMRR4XIddbcYhDhrMPlBIkzPx1gpW?=
- =?us-ascii?Q?+D5HVCjse1x4UCp1gUHfjRPLxJ2NpEp5gAjY5z/5fgOf+T71cEHpA1/RD3pM?=
- =?us-ascii?Q?pEd3czPwySumj0CvCG27X0luEG7lzaiXSZ+Y1m935rB21udsortAdIeawAJm?=
- =?us-ascii?Q?RIzpsfAoUAfU3IAMNhqRt5lu02PUoGEUGihvHNbGr36kqfkXVJ2mlP4WxDvw?=
- =?us-ascii?Q?SsPq/Fu8abtimlqsbJIh34rnovGkduAQ4qkzCnL71Y34qCZuEbjSnBx4cORR?=
- =?us-ascii?Q?IPell88W3Ar37u1BGc9AS3XKeUYqV6Teiz4KihZouuX2Z7W2PNCsEM16FV/i?=
- =?us-ascii?Q?sIrIPyB7h5ISb8GKLMu+WX4wFaUyYXfYPdBD9rHniFJ9UknEb+8KejKsw33+?=
- =?us-ascii?Q?vXyBmE0OGULik27jUI8bGaj7DG60RgZ7uE7c68W3xbRT/LzLsPCB+vrET+E1?=
- =?us-ascii?Q?v9ZcnF4lNKBrciXgHGcAkcSaTWq3g3uPYQRrSJM89/wPu4lD6ID/SzZPXAR+?=
- =?us-ascii?Q?BfeIVyw5wC0CcaSnu1DRWXmxu2wbM07KQyiLJ8Wh8V/Av6k1in0ZeogW1ulQ?=
- =?us-ascii?Q?yjdWnqwGPvn9PchPaEt6DQc=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <5074AB52CA67FB41ACB7BC5452251C92@namprd15.prod.outlook.com>
-X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5109.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 87f69d5a-2ca1-413c-91b1-08dba537eebb
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Aug 2023 06:53:04.9694
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: +gnOiXOOcKr2tQOQnxhUrIt2wGhqaD7U3Yly8M3CjkDxenQiVwZBqohd0298GG1C4+coEfCRnUZDkac9zBZvxA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR15MB4719
-X-Proofpoint-ORIG-GUID: C9z8a3jkahlwEjHvqG_ptmaThEA4XiTr
-X-Proofpoint-GUID: C9z8a3jkahlwEjHvqG_ptmaThEA4XiTr
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Fri, 25 Aug 2023 02:53:40 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5425E6B
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 23:53:36 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-4009fdc224dso43105e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 23:53:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692946415; x=1693551215; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=U4RX9xaeDFbaWpqsN+NXcpN/mK3dv/EFiHSns+MmIWY=;
+        b=DEngoYI2Ni7I1WIecfWuo78iJeT8MudR4+KOoIQ7LdWnVIxM4FFzcU4xP85OXQDwta
+         BwKexZ1g39zTff5vZGZFE1rTvxYfRP+/d2Ee3NYTEexyxvlbbga+n4EzZz2tc9YEXYlk
+         E6U0Kbf/qB5SelLEm8IF61pYujLgrkfnd8amUc0Gw9zmvtbKGhHOcrFLAhbMR/ffXfd0
+         jw4Cgag51wi7iYM7AD+ofvq71EdkDsQPr5bJmJDa8ZqcsX8gUzndOIgGrGjrb9hyAZk/
+         KSyj8KEeZtGwG4Zyq9L7nUf2UFaz5u+2+oNO5lN4otviLFnB3gVizk/j7FMfDEWKIi0A
+         bNow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692946415; x=1693551215;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=U4RX9xaeDFbaWpqsN+NXcpN/mK3dv/EFiHSns+MmIWY=;
+        b=LoXohUdfJ2/qdRHyCXfzKSjdtNm5O29wgfl3Wa5d5629V7XFEyN4c7AR7YoQVVv/Id
+         Q20tIylrIsHKok6C4Y81/xYSzykm+QHRHOA5WAKB2+aVzV1D9FKVs2M9z0bXHQGjDD2s
+         EKJwS5VRWD51XhZPITH9i55OcX1AW/ZV85T/otmFpLjWLaFZ/IbnhWAzc1P3UUua2Bh+
+         eBRYNvFQbWVnLqjPTaGg+3AMIcxND1l2fkTnogMZec7Ygn7YdGw4UxwBzSzrwQIQ+CkN
+         QuPPZ/90ClwjM+5jXPyRSNugQ6ddFaqNYpRfg4aixs6OCzkqlOPWFTLcnlV/6Hus12aO
+         a1Sw==
+X-Gm-Message-State: AOJu0Yz7hdYfeOjwl6NO4vv8Gxs4EI1uo+7TgpPzdjlVsOAIyigLRchm
+        0W+5qyjdT3PudrDy7ppS23xHpMkAoXGkwC9/mFI64w==
+X-Google-Smtp-Source: AGHT+IH2Q8vE4sOBmx8yqN3POGQW3+K4N6RvfQHfN7ARZwgK3LDU01dvU2Hey3CdT0L4wy1vUAhzznTIbgPFysVInCs=
+X-Received: by 2002:a05:600c:3b02:b0:400:46db:1bf2 with SMTP id
+ m2-20020a05600c3b0200b0040046db1bf2mr135258wms.2.1692946415120; Thu, 24 Aug
+ 2023 23:53:35 -0700 (PDT)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-25_04,2023-08-24_01,2023-05-22_02
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230824143129.1957914-1-rf@opensource.cirrus.com> <20230824143129.1957914-10-rf@opensource.cirrus.com>
+In-Reply-To: <20230824143129.1957914-10-rf@opensource.cirrus.com>
+From:   David Gow <davidgow@google.com>
+Date:   Fri, 25 Aug 2023 14:53:23 +0800
+Message-ID: <CABVgOSmXuF=bJ4N7Oc8SdLv20ErhtN4A3BGrh8t-9QfFpz-S0w@mail.gmail.com>
+Subject: Re: [PATCH v5 09/10] kunit: Use string_stream for test log
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc:     brendan.higgins@linux.dev, rmoar@google.com,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000b9a1df0603b9cde0"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--000000000000b9a1df0603b9cde0
+Content-Type: text/plain; charset="UTF-8"
 
+On Thu, 24 Aug 2023 at 22:33, Richard Fitzgerald
+<rf@opensource.cirrus.com> wrote:
+>
+> Replace the fixed-size log buffer with a string_stream so that the
+> log can grow as lines are added.
+>
+> string_stream_clear() has been made public for the log truncation
+> done in kunit_init_test().
+>
+> The existing kunit log tests have been updated for using a
+> string_stream as the log. No new test have been added because there
+> are already tests for the underlying string_stream.
+>
+> As the log tests now depend on string_stream functions they cannot
+> build when kunit-test is a module. They have been surrounded by
+> a #if to replace them with skipping version when the test is
+> build as a module. Though this isn't pretty, it avoids moving
+> code to another file while that code is also being changed.
+>
+> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+> ---
+> Changes since V4:
+> - Don't move the log tests to another file. Deal with only including them
+>   when the test is built-in by wrapping them in a #if. This is to simplify
+>   code review, because it avoids having a block of code which moves from
+>   one file to another but at the same time the code has changed.
+> - Use kunit_add_action() to automatically free the string returned by
+>   string_stream_get_string().
+> ---
 
-> On Aug 24, 2023, at 8:46 PM, Yonghong Song <yonghong.song@linux.dev> wrote:
-> 
-> Kernel test robot reported a kallsyms_test failure when clang lto is
-> enabled (thin or full) and CONFIG_KALLSYMS_SELFTEST is also enabled.
-> I can reproduce in my local environment with the following error message
-> with thin lto:
->  [    1.877897] kallsyms_selftest: Test for 1750th symbol failed: (tsc_cs_mark_unstable) addr=ffffffff81038090
->  [    1.877901] kallsyms_selftest: abort
-> 
-> It appears that commit 8cc32a9bbf29 ("kallsyms: strip LTO-only suffixes
-> from promoted global functions") caused the failure. Commit 8cc32a9bbf29
-> changed cleanup_symbol_name() based on ".llvm." instead of '.' where
-> ".llvm." is appended to a before-lto-optimization local symbol name.
-> We need to propagate such knowledge in kallsyms_selftest.c as well.
-> 
-> Further more, compare_symbol_name() in kallsyms.c needs change as well.
-> In scripts/kallsyms.c, kallsyms_names and kallsyms_seqs_of_names are used
-> to record symbol names themselves and index to symbol names respectively.
-> For example:
->  kallsyms_names:
->    ...
->    __amd_smn_rw._entry       <== seq 1000
->    __amd_smn_rw._entry.5     <== seq 1001
->    __amd_smn_rw.llvm.<hash>  <== seq 1002
->    ...
-> 
-> kallsyms_seqs_of_names are sorted based on cleanup_symbol_name() through, so
-> the order in kallsyms_seqs_of_names actually has
-> 
->  index 1000:   seq 1002   <== __amd_smn_rw.llvm.<hash> (actual symbol comparison using '__amd_smn_rw')
->  index 1001:   seq 1000   <== __amd_smn_rw._entry
->  index 1002:   seq 1001   <== __amd_smn_rw._entry.5
-> 
-> Let us say at a particular point, at index 1000, symbol '__amd_smn_rw.llvm.<hash>'
-> is comparing to '__amd_smn_rw._entry' where '__amd_smn_rw._entry' is the one to
-> search e.g., with function kallsyms_on_each_match_symbol(). The current implementation
-> will find out '__amd_smn_rw._entry' is less than '__amd_smn_rw.llvm.<hash>' and
-> then continue to search e.g., index 999 and never found a match although the actual
-> index 1001 is a match.
-> 
-> To fix this issue, let us do cleanup_symbol_name() first and then do comparison.
-> In the above case, comparing '__amd_smn_rw' vs '__amd_smn_rw._entry' and
-> '__amd_smn_rw._entry' being greater than '__amd_smn_rw', the next comparison will
-> be > index 1000 and eventually index 1001 will be hit an a match is found.
-> 
-> For any symbols not having '.llvm.' substr, there is no functionality change
-> for compare_symbol_name().
-> 
-> Fixes: 8cc32a9bbf29 ("kallsyms: strip LTO-only suffixes from promoted global functions")
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> Closes: https://lore.kernel.org/oe-lkp/202308232200.1c932a90-oliver.sang@intel.com
-> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+Looks pretty good to me, and works fine here.
 
-Reviewed-by: Song Liu <song@kernel.org>
+The kunit_add_action() cast does trigger the clang warning (but again,
+it's not something which bothers me much personally). But since you've
+cleaned it up elsewhere, it may be worth adding a wrapper here, at
+least until we have a kunit_free_at_end() function or similar.
 
+Otherwise,
+Reviewed-by: David Gow <davidgow@google.com>
 
+Cheers,
+-- David
 
+>  include/kunit/test.h      | 14 +++++-------
+>  lib/kunit/debugfs.c       | 36 +++++++++++++++++++-----------
+>  lib/kunit/kunit-test.c    | 46 ++++++++++++++++++++++++++++++++-------
+>  lib/kunit/string-stream.c |  2 +-
+>  lib/kunit/string-stream.h |  2 ++
+>  lib/kunit/test.c          | 44 +++++--------------------------------
+>  6 files changed, 75 insertions(+), 69 deletions(-)
+>
+> diff --git a/include/kunit/test.h b/include/kunit/test.h
+> index d33114097d0d..b915a0fe93c0 100644
+> --- a/include/kunit/test.h
+> +++ b/include/kunit/test.h
+> @@ -32,9 +32,7 @@
+>  DECLARE_STATIC_KEY_FALSE(kunit_running);
+>
+>  struct kunit;
+> -
+> -/* Size of log associated with test. */
+> -#define KUNIT_LOG_SIZE 2048
+> +struct string_stream;
+>
+>  /* Maximum size of parameter description string. */
+>  #define KUNIT_PARAM_DESC_SIZE 128
+> @@ -132,7 +130,7 @@ struct kunit_case {
+>         /* private: internal use only. */
+>         enum kunit_status status;
+>         char *module_name;
+> -       char *log;
+> +       struct string_stream *log;
+>  };
+>
+>  static inline char *kunit_status_to_ok_not_ok(enum kunit_status status)
+> @@ -252,7 +250,7 @@ struct kunit_suite {
+>         /* private: internal use only */
+>         char status_comment[KUNIT_STATUS_COMMENT_SIZE];
+>         struct dentry *debugfs;
+> -       char *log;
+> +       struct string_stream *log;
+>         int suite_init_err;
+>  };
+>
+> @@ -278,7 +276,7 @@ struct kunit {
+>
+>         /* private: internal use only. */
+>         const char *name; /* Read only after initialization! */
+> -       char *log; /* Points at case log after initialization */
+> +       struct string_stream *log; /* Points at case log after initialization */
+>         struct kunit_try_catch try_catch;
+>         /* param_value is the current parameter value for a test case. */
+>         const void *param_value;
+> @@ -314,7 +312,7 @@ const char *kunit_filter_glob(void);
+>  char *kunit_filter(void);
+>  char *kunit_filter_action(void);
+>
+> -void kunit_init_test(struct kunit *test, const char *name, char *log);
+> +void kunit_init_test(struct kunit *test, const char *name, struct string_stream *log);
+>
+>  int kunit_run_tests(struct kunit_suite *suite);
+>
+> @@ -472,7 +470,7 @@ static inline void *kunit_kcalloc(struct kunit *test, size_t n, size_t size, gfp
+>
+>  void kunit_cleanup(struct kunit *test);
+>
+> -void __printf(2, 3) kunit_log_append(char *log, const char *fmt, ...);
+> +void __printf(2, 3) kunit_log_append(struct string_stream *log, const char *fmt, ...);
+>
+>  /**
+>   * kunit_mark_skipped() - Marks @test_or_suite as skipped
+> diff --git a/lib/kunit/debugfs.c b/lib/kunit/debugfs.c
+> index 22c5c496a68f..270d185737e6 100644
+> --- a/lib/kunit/debugfs.c
+> +++ b/lib/kunit/debugfs.c
+> @@ -37,14 +37,21 @@ void kunit_debugfs_init(void)
+>                 debugfs_rootdir = debugfs_create_dir(KUNIT_DEBUGFS_ROOT, NULL);
+>  }
+>
+> -static void debugfs_print_result(struct seq_file *seq,
+> -                                struct kunit_suite *suite,
+> -                                struct kunit_case *test_case)
+> +static void debugfs_print_result(struct seq_file *seq, struct string_stream *log)
+>  {
+> -       if (!test_case || !test_case->log)
+> +       struct string_stream_fragment *frag_container;
+> +
+> +       if (!log)
+>                 return;
+>
+> -       seq_printf(seq, "%s", test_case->log);
+> +       /*
+> +        * Walk the fragments so we don't need to allocate a temporary
+> +        * buffer to hold the entire string.
+> +        */
+> +       spin_lock(&log->lock);
+> +       list_for_each_entry(frag_container, &log->fragments, node)
+> +               seq_printf(seq, "%s", frag_container->fragment);
+> +       spin_unlock(&log->lock);
+>  }
+>
+>  /*
+> @@ -69,10 +76,9 @@ static int debugfs_print_results(struct seq_file *seq, void *v)
+>         seq_printf(seq, KUNIT_SUBTEST_INDENT "1..%zd\n", kunit_suite_num_test_cases(suite));
+>
+>         kunit_suite_for_each_test_case(suite, test_case)
+> -               debugfs_print_result(seq, suite, test_case);
+> +               debugfs_print_result(seq, test_case->log);
+>
+> -       if (suite->log)
+> -               seq_printf(seq, "%s", suite->log);
+> +       debugfs_print_result(seq, suite->log);
+>
+>         seq_printf(seq, "%s %d %s\n",
+>                    kunit_status_to_ok_not_ok(success), 1, suite->name);
+> @@ -105,9 +111,13 @@ void kunit_debugfs_create_suite(struct kunit_suite *suite)
+>         struct kunit_case *test_case;
+>
+>         /* Allocate logs before creating debugfs representation. */
+> -       suite->log = kzalloc(KUNIT_LOG_SIZE, GFP_KERNEL);
+> -       kunit_suite_for_each_test_case(suite, test_case)
+> -               test_case->log = kzalloc(KUNIT_LOG_SIZE, GFP_KERNEL);
+> +       suite->log = alloc_string_stream(GFP_KERNEL);
+> +       string_stream_set_append_newlines(suite->log, true);
+> +
+> +       kunit_suite_for_each_test_case(suite, test_case) {
+> +               test_case->log = alloc_string_stream(GFP_KERNEL);
+> +               string_stream_set_append_newlines(test_case->log, true);
+> +       }
+>
+>         suite->debugfs = debugfs_create_dir(suite->name, debugfs_rootdir);
+>
+> @@ -121,7 +131,7 @@ void kunit_debugfs_destroy_suite(struct kunit_suite *suite)
+>         struct kunit_case *test_case;
+>
+>         debugfs_remove_recursive(suite->debugfs);
+> -       kfree(suite->log);
+> +       string_stream_destroy(suite->log);
+>         kunit_suite_for_each_test_case(suite, test_case)
+> -               kfree(test_case->log);
+> +               string_stream_destroy(test_case->log);
+>  }
+> diff --git a/lib/kunit/kunit-test.c b/lib/kunit/kunit-test.c
+> index 83d8e90ca7a2..616e287aa4bf 100644
+> --- a/lib/kunit/kunit-test.c
+> +++ b/lib/kunit/kunit-test.c
+> @@ -8,6 +8,7 @@
+>  #include <kunit/test.h>
+>  #include <kunit/test-bug.h>
+>
+> +#include "string-stream.h"
+>  #include "try-catch-impl.h"
+>
+>  struct kunit_try_catch_test_context {
+> @@ -530,12 +531,19 @@ static struct kunit_suite kunit_resource_test_suite = {
+>         .test_cases = kunit_resource_test_cases,
+>  };
+>
+> +/*
+> + * Log tests call string_stream functions, which aren't exported. So only
+> + * build this code if this test is built-in.
+> + */
+> +#if IS_BUILTIN(CONFIG_KUNIT_TEST)
+>  static void kunit_log_test(struct kunit *test)
+>  {
+>         struct kunit_suite suite;
+> +       char *full_log;
+>
+> -       suite.log = kunit_kzalloc(test, KUNIT_LOG_SIZE, GFP_KERNEL);
+> +       suite.log = kunit_alloc_string_stream(test, GFP_KERNEL);
+>         KUNIT_ASSERT_NOT_ERR_OR_NULL(test, suite.log);
+> +       string_stream_set_append_newlines(suite.log, true);
+>
+>         kunit_log(KERN_INFO, test, "put this in log.");
+>         kunit_log(KERN_INFO, test, "this too.");
+> @@ -543,14 +551,21 @@ static void kunit_log_test(struct kunit *test)
+>         kunit_log(KERN_INFO, &suite, "along with this.");
+>
+>  #ifdef CONFIG_KUNIT_DEBUGFS
+> +       KUNIT_EXPECT_TRUE(test, test->log->append_newlines);
+> +
+> +       full_log = string_stream_get_string(test->log);
+> +       kunit_add_action(test, (kunit_action_t *)kfree, full_log);
+>         KUNIT_EXPECT_NOT_ERR_OR_NULL(test,
+> -                                    strstr(test->log, "put this in log."));
+> +                                    strstr(full_log, "put this in log."));
+>         KUNIT_EXPECT_NOT_ERR_OR_NULL(test,
+> -                                    strstr(test->log, "this too."));
+> +                                    strstr(full_log, "this too."));
+> +
+> +       full_log = string_stream_get_string(suite.log);
+> +       kunit_add_action(test, (kunit_action_t *)kfree, full_log);
+>         KUNIT_EXPECT_NOT_ERR_OR_NULL(test,
+> -                                    strstr(suite.log, "add to suite log."));
+> +                                    strstr(full_log, "add to suite log."));
+>         KUNIT_EXPECT_NOT_ERR_OR_NULL(test,
+> -                                    strstr(suite.log, "along with this."));
+> +                                    strstr(full_log, "along with this."));
+>  #else
+>         KUNIT_EXPECT_NULL(test, test->log);
+>  #endif
+> @@ -558,15 +573,30 @@ static void kunit_log_test(struct kunit *test)
+>
+>  static void kunit_log_newline_test(struct kunit *test)
+>  {
+> +       char *full_log;
+> +
+>         kunit_info(test, "Add newline\n");
+>         if (test->log) {
+> -               KUNIT_ASSERT_NOT_NULL_MSG(test, strstr(test->log, "Add newline\n"),
+> -                       "Missing log line, full log:\n%s", test->log);
+> -               KUNIT_EXPECT_NULL(test, strstr(test->log, "Add newline\n\n"));
+> +               full_log = string_stream_get_string(test->log);
+> +               kunit_add_action(test, (kunit_action_t *)kfree, full_log);
+> +               KUNIT_ASSERT_NOT_NULL_MSG(test, strstr(full_log, "Add newline\n"),
+> +                       "Missing log line, full log:\n%s", full_log);
+> +               KUNIT_EXPECT_NULL(test, strstr(full_log, "Add newline\n\n"));
+>         } else {
+>                 kunit_skip(test, "only useful when debugfs is enabled");
+>         }
+>  }
+> +#else
+> +static void kunit_log_test(struct kunit *test)
+> +{
+> +       kunit_skip(test, "Log tests only run when built-in");
+> +}
+> +
+> +static void kunit_log_newline_test(struct kunit *test)
+> +{
+> +       kunit_skip(test, "Log tests only run when built-in");
+> +}
+> +#endif /* IS_BUILTIN(CONFIG_KUNIT_TEST) */
+>
+>  static struct kunit_case kunit_log_test_cases[] = {
+>         KUNIT_CASE(kunit_log_test),
+> diff --git a/lib/kunit/string-stream.c b/lib/kunit/string-stream.c
+> index d2ded5207e9e..a6f3616c2048 100644
+> --- a/lib/kunit/string-stream.c
+> +++ b/lib/kunit/string-stream.c
+> @@ -99,7 +99,7 @@ int string_stream_add(struct string_stream *stream, const char *fmt, ...)
+>         return result;
+>  }
+>
+> -static void string_stream_clear(struct string_stream *stream)
+> +void string_stream_clear(struct string_stream *stream)
+>  {
+>         struct string_stream_fragment *frag_container, *frag_container_safe;
+>
+> diff --git a/lib/kunit/string-stream.h b/lib/kunit/string-stream.h
+> index c55925a9b67f..7be2450c7079 100644
+> --- a/lib/kunit/string-stream.h
+> +++ b/lib/kunit/string-stream.h
+> @@ -42,6 +42,8 @@ int __printf(2, 0) string_stream_vadd(struct string_stream *stream,
+>                                       const char *fmt,
+>                                       va_list args);
+>
+> +void string_stream_clear(struct string_stream *stream);
+> +
+>  char *string_stream_get_string(struct string_stream *stream);
+>
+>  int string_stream_append(struct string_stream *stream,
+> diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+> index 2ad45a4ac06a..b153808ff1ec 100644
+> --- a/lib/kunit/test.c
+> +++ b/lib/kunit/test.c
+> @@ -109,51 +109,17 @@ static void kunit_print_test_stats(struct kunit *test,
+>                   stats.total);
+>  }
+>
+> -/**
+> - * kunit_log_newline() - Add newline to the end of log if one is not
+> - * already present.
+> - * @log: The log to add the newline to.
+> - */
+> -static void kunit_log_newline(char *log)
+> -{
+> -       int log_len, len_left;
+> -
+> -       log_len = strlen(log);
+> -       len_left = KUNIT_LOG_SIZE - log_len - 1;
+> -
+> -       if (log_len > 0 && log[log_len - 1] != '\n')
+> -               strncat(log, "\n", len_left);
+> -}
+> -
+> -/*
+> - * Append formatted message to log, size of which is limited to
+> - * KUNIT_LOG_SIZE bytes (including null terminating byte).
+> - */
+> -void kunit_log_append(char *log, const char *fmt, ...)
+> +/* Append formatted message to log. */
+> +void kunit_log_append(struct string_stream *log, const char *fmt, ...)
+>  {
+>         va_list args;
+> -       int len, log_len, len_left;
+>
+>         if (!log)
+>                 return;
+>
+> -       log_len = strlen(log);
+> -       len_left = KUNIT_LOG_SIZE - log_len - 1;
+> -       if (len_left <= 0)
+> -               return;
+> -
+> -       /* Evaluate length of line to add to log */
+>         va_start(args, fmt);
+> -       len = vsnprintf(NULL, 0, fmt, args) + 1;
+> +       string_stream_vadd(log, fmt, args);
+>         va_end(args);
+> -
+> -       /* Print formatted line to the log */
+> -       va_start(args, fmt);
+> -       vsnprintf(log + log_len, min(len, len_left), fmt, args);
+> -       va_end(args);
+> -
+> -       /* Add newline to end of log if not already present. */
+> -       kunit_log_newline(log);
+>  }
+>  EXPORT_SYMBOL_GPL(kunit_log_append);
+>
+> @@ -359,14 +325,14 @@ void __kunit_do_failed_assertion(struct kunit *test,
+>  }
+>  EXPORT_SYMBOL_GPL(__kunit_do_failed_assertion);
+>
+> -void kunit_init_test(struct kunit *test, const char *name, char *log)
+> +void kunit_init_test(struct kunit *test, const char *name, struct string_stream *log)
+>  {
+>         spin_lock_init(&test->lock);
+>         INIT_LIST_HEAD(&test->resources);
+>         test->name = name;
+>         test->log = log;
+>         if (test->log)
+> -               test->log[0] = '\0';
+> +               string_stream_clear(log);
+>         test->status = KUNIT_SUCCESS;
+>         test->status_comment[0] = '\0';
+>  }
+> --
+> 2.30.2
+>
+
+--000000000000b9a1df0603b9cde0
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIIPnwYJKoZIhvcNAQcCoIIPkDCCD4wCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+ggz5MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
+VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
+AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
+AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
+IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
+dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
+6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
+c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
+I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
+AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
+BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
+CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
+AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
+MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
+My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
+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
+ddIn9n5Jt6Z1o79zxraLMEwGA1UdIARFMEMwQQYJKwYBBAGgMgEoMDQwMgYIKwYBBQUHAgEWJmh0
+dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAwGA1UdEwEB/wQCMAAwgZoGCCsG
+AQUFBwEBBIGNMIGKMD4GCCsGAQUFBzABhjJodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9jYS9n
+c2F0bGFzcjNzbWltZWNhMjAyMDBIBggrBgEFBQcwAoY8aHR0cDovL3NlY3VyZS5nbG9iYWxzaWdu
+LmNvbS9jYWNlcnQvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3J0MB8GA1UdIwQYMBaAFHzMCmjXouse
+LHIb0c1dlW+N+/JjMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20v
+Y2EvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQBtHFwIgQZjer5K
+H+4Q+wns10k7qN+4wN2Uf+JsyOYjukaMEgdLErfA1wwtQ9uHkoYQZcWBuVVkQFa5hI+sqI2m1Weq
+riMCFSiU38s1tADdMX12IMfJRN60Nznhrw+nPyDRZqRhUTW24TwnHorkDnFPW8PHo7fAw4FrpI0n
+impZAng7ccvvK09K3ZuhwTIxJMsPXCZYsrXWORTw5sczRAP6XvKbPBJnsJoSTe5dFBPBHOQJOGhU
+qWfEfWnWMJPF3LxSGLpLFQXO3RwQqmxv08avwXfVPouh1xuB3FX7rpDabT8YDhu9JgIZkLEKko7L
+yQt6zWwng7k8YF/jGbiAta6VMYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
+R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
+MDIwAhABzgV+4+mJnUzG7XDy6d2uMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCA6
+WW9W8EfWP6dlj5oo+nTWa0Q9MIeF1QfV15kUBgiX6jAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
+MBwGCSqGSIb3DQEJBTEPFw0yMzA4MjUwNjUzMzVaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
+BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
+CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAX5PEXOYH/EHwJGbXbrwM
+TUGif5EYCxX4a1KGaU6LoJtuGi0hOQyYA0xfSZKu0VB5oP6F5640gvEQ/AW0uknMBw9cwu7mG9BR
+eVXJp10ThHNHHHNU9bhJidyr3UxioyLMFBIPWK4XrJC0YHm6Y3h42UT9rku5rqVw7kB7qBOTndQR
+moNjzATdiBO1Uabzu+s81NaFr/kmROL2h/4R0hdBDlu2xVU714mlzlt1ulzQtAWKao7I5SqJ0AWA
+mkG9jQktVlEXBhVPwcSKHMrSRD2dV9dA6IidaQPSqSdXntrr85CpnssbEhasrBxDNVcvGeQhZIPZ
+NqfEmVGeT3oJfA8s5w==
+--000000000000b9a1df0603b9cde0--
