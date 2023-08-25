@@ -2,101 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4526A788C6E
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 17:27:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D688788C71
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 17:28:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240597AbjHYP0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 11:26:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51360 "EHLO
+        id S240850AbjHYP1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 11:27:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240497AbjHYP00 (ORCPT
+        with ESMTP id S242251AbjHYP1W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 11:26:26 -0400
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE29D212C
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 08:26:24 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1bb29dc715bso11266155ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 08:26:24 -0700 (PDT)
+        Fri, 25 Aug 2023 11:27:22 -0400
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB32F2733;
+        Fri, 25 Aug 2023 08:26:58 -0700 (PDT)
+Received: by mail-il1-x136.google.com with SMTP id e9e14a558f8ab-34bb72ffb1fso3553215ab.3;
+        Fri, 25 Aug 2023 08:26:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692977184; x=1693581984;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=uT9B5IhwSieTS/lycgAO9B5cbkxabumJT7OeFCsXGMk=;
-        b=vvVTkRT+VuK5043ahLb/u/zj4f8sB0vqgAunodyYuRhNLeufoefzhoe4WNJFWBlqnT
-         fOjWSwwVNPHbk3edqUSOVA+XxAEjDCKjxs3HxwUIlookvW4KiCnYLFtt1qTalqSJOVGF
-         sScsGhUtVxEoQK15lzMQlLomYBvjcE2Sz4k/e1Oy+HS/9hhEtZcDcaVdaQEeyjXxZh3R
-         TzsVUTWd7XZcUj1STnMDvCZ5q8x5tT67ioP2DbuxoS8Xvt4bmsdKfkLeTHrNoo93HISk
-         V1NYfBP6/ZvZCCCq3TieE6qyCIY3XWbSHhfJP0iP2R+QQbrK8/8rYTZUS4Q+EnvzC4ai
-         inOA==
+        d=gmail.com; s=20221208; t=1692977218; x=1693582018;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=KcmM3G7mPvInDI7x9n1WVGdIT7j8cD6MA5FDEXRb+aE=;
+        b=s3hraC9tsUnIgyCPDaQtSu0TjbCWmspIIFEXz3RN21Lg6Q9MWewWMwhuxnx2iAu/1/
+         61FgF+8fiMvfNUrayZYSy4PwVasyF4e/HssLT3a+iuXFN/dboOREr0f48Yp8sO/MbGsa
+         Uf2leWp/jsVpAn7144DlcLNLPwcpiXlv0hHvv00INQOuCh0oxlTagWF4FzO6tymuS8or
+         KlhFZkkq7KDO3/tZEESIzW8+b46Zd96pySgqst2qcFXz8ZLCEQFTGbhnau0R8ou62wd3
+         2fLAdc1V/oACM9PTbEDG3C9683N2S+jeU2Ny3cnwn6HNj+KxEej7WPjjx5efkfURyN2U
+         BuHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692977184; x=1693581984;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uT9B5IhwSieTS/lycgAO9B5cbkxabumJT7OeFCsXGMk=;
-        b=a2topNB9PTuynUQ8sTB7Xh4r86XGgFUDju+47UGflEV9j9hk59EKDiinG3uFcKp8jQ
-         atVLiHezOOSImZ/8hkbRjDFaZVd1x/oieu/3RUiY4ed3a/z1RfDIpdtRMMlpcGfme3M0
-         a3NPSR1NHLx3yvij25sxNFPEyIykMf87f3qbp2cNF9DzoSGbKMFXuKjIY05zWSdtrjbH
-         zHLLTV6/aqM41mw/HhtIL2h1MOt/gxVM6JPBHO+byHC/8k6xm5lpf084L5ZgIludd3fL
-         tSM+uVmH6gLZ8QhqCcQJYhxC72x/4FbvqBpIiF98+ybLPs7vmUdrXyhT+gL2bSZEndHw
-         Xi0g==
-X-Gm-Message-State: AOJu0YyDFz25dDxzXf6qFGWyeU7GPBDaEL7ZrSvsOfdYa9qXL/m5IrQc
-        QXnclTwTonU5wXp9as/H90noiq460ys=
-X-Google-Smtp-Source: AGHT+IHBe26z5RAiUFUIi9mr/ywY4xvfcSUx9IiaElkVhEpKpN2zZSyFkiUVw2XIEkVi8AWhgt40SvUlcq8=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:e801:b0:1bc:4452:59c4 with SMTP id
- u1-20020a170902e80100b001bc445259c4mr7073353plg.4.1692977184048; Fri, 25 Aug
- 2023 08:26:24 -0700 (PDT)
-Date:   Fri, 25 Aug 2023 08:26:22 -0700
-In-Reply-To: <20230824202415.131824-1-mahmoudmatook.mm@gmail.com>
-Mime-Version: 1.0
-References: <20230824202415.131824-1-mahmoudmatook.mm@gmail.com>
-Message-ID: <ZOjIHo2A6HZ8K4Qp@google.com>
-Subject: Re: [PATCH v2 1/2] selftests: Provide local define of min() and max()
-From:   Sean Christopherson <seanjc@google.com>
-To:     Mahmoud Maatuq <mahmoudmatook.mm@gmail.com>
-Cc:     keescook@chromium.org, edumazet@google.com,
-        willemdebruijn.kernel@gmail.com, wad@chromium.org,
-        luto@amacapital.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kuba@kernel.org, shuah@kernel.org,
-        pabeni@redhat.com, linux-kselftest@vger.kernel.org,
-        davem@davemloft.net,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        David Laight <David.Laight@aculab.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1692977218; x=1693582018;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KcmM3G7mPvInDI7x9n1WVGdIT7j8cD6MA5FDEXRb+aE=;
+        b=Z4oWKGJkz87JmX2lydYIgmFKEM6GXdicsDq/8BMXW1UGfFFzI43grPKQDX/OFnfo3e
+         vFv5+svn8fUf4kmfzwHoMVRMyO0COoHXh4Kcu9b9Tp38jtPxgSeFtMo29+wJZD9EluOy
+         1ymSA+n5GyPT417wElgiWhAw2U/LY+EJJasS/Mle4MOcjTo82JuGMLYCxitC/XtG9njK
+         goeOCwQWWbPtnmdfN/Q9egWQxkboz3mqKyGRLcvn6sr1vBRKFU2A4XVCkGmN8lW7LXwj
+         Vy9EUCC8V5iOoGmE+A9bl8EQSeYuH9elFjRQzjR0h8GKp68Yb1PNuL+o0LFgdfTRJ0I/
+         ganA==
+X-Gm-Message-State: AOJu0YzNtoywADeZjYgZa1XeDdKOVp5Y2XIARYj4btACcFXnOWRFXJmG
+        TDI/snNx8qEaYAiyaRUf2eg=
+X-Google-Smtp-Source: AGHT+IFz7+5LJ1/nuYFat8UgtlwpTAtGQnchg/NH5X+DRSteprVeX+TDhddZM1cNbBJOLsO+2f4zVA==
+X-Received: by 2002:a92:cd86:0:b0:349:777e:f514 with SMTP id r6-20020a92cd86000000b00349777ef514mr11240682ilb.10.1692977217952;
+        Fri, 25 Aug 2023 08:26:57 -0700 (PDT)
+Received: from ?IPV6:2600:8802:b00:4a48:944f:2db6:2b1a:8d59? ([2600:8802:b00:4a48:944f:2db6:2b1a:8d59])
+        by smtp.gmail.com with ESMTPSA id z11-20020a63b04b000000b00565ec002d14sm1694547pgo.33.2023.08.25.08.26.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Aug 2023 08:26:56 -0700 (PDT)
+Message-ID: <862e5225-2d8e-8b8f-fc6d-c9b48ac74bfc@gmail.com>
+Date:   Fri, 25 Aug 2023 08:26:55 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 2/2] net: dsa: microchip: Provide Module 4 KSZ9477 errata
+ (DS80000754C)
+Content-Language: en-US
+To:     Lukasz Majewski <lukma@denx.de>, Tristram.Ha@microchip.com
+Cc:     andrew@lunn.ch, olteanv@gmail.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, Woojung.Huh@microchip.com,
+        pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, UNGLinuxDriver@microchip.com
+References: <20230824154827.166274-1-lukma@denx.de>
+ <20230824154827.166274-2-lukma@denx.de>
+ <BYAPR11MB35583A648E4E44944A0172A0ECE3A@BYAPR11MB3558.namprd11.prod.outlook.com>
+ <20230825103911.682b3d70@wsk>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20230825103911.682b3d70@wsk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 25, 2023, Mahmoud Maatuq wrote:
-> to avoid manual calculation of min and max values
-> and fix coccinelle warnings such WARNING opportunity for min()/max()
-> adding one common definition that could be used in multiple files
-> under selftests.
-> there are also some defines for min/max scattered locally inside sources
-> under selftests.
-> this also prepares for cleaning up those redundant defines and include
-> kselftest.h instead.
+
+
+On 8/25/2023 1:39 AM, Lukasz Majewski wrote:
+> Hi Tristram,
 > 
-> Signed-off-by: Mahmoud Maatuq <mahmoudmatook.mm@gmail.com>
-> Suggested-by: David Laight <David.Laight@aculab.com>
-> ---
-> changes in v2:
-> redefine min/max in a more strict way to avoid 
-> signedness mismatch and multiple evaluation.
-> is_signed_type() moved from selftests/kselftest_harness.h 
-> to selftests/kselftest.h.
-> ---
->  tools/testing/selftests/kselftest.h         | 24 +++++++++++++++++++++
+>>> +static int ksz9477_errata(struct dsa_switch *ds)
+>>> +{
+>>> +       struct ksz_device *dev = ds->priv;
+>>> +       u16 val;
+>>> +       int p;
+>>> +
+>>> +       /* KSZ9477 Errata DS80000754C
+>>> +        *
+>>> +        * Module 4: Energy Efficient Ethernet (EEE) feature select
+>>> must be
+>>> +        * manually disabled
+>>> +        *   The EEE feature is enabled by default, but it is not
+>>> fully
+>>> +        *   operational. It must be manually disabled through
+>>> register
+>>> +        *   controls. If not disabled, the PHY ports can
+>>> auto-negotiate
+>>> +        *   to enable EEE, and this feature can cause link drops
+>>> when linked
+>>> +        *   to another device supporting EEE.
+>>> +        *
+>>> +        *   Only PHY ports (dsa user) [0-4] need to have the EEE
+>>> advertisement
+>>> +        *   bits cleared.
+>>> +        */
+>>> +
+>>> +       for (p = 0; p < ds->num_ports; p++) {
+>>> +               if (!dsa_is_user_port(ds, p))
+>>> +                       continue;
+>>> +
+>>> +               ksz9477_port_mmd_read(dev, p, MMD_DEVICE_ID_EEE_ADV,
+>>> +                                     MMD_EEE_ADV, &val, 1);
+>>> +
+>>> +               pr_err("%s: PORT: %d val: 0x%x pc: %d\n", __func__,
+>>> p, val,
+>>> +                      ds->num_ports);
+>>> +
+>>> +               val &= ~(EEE_ADV_100MBIT | EEE_ADV_1GBIT);
+>>> +               ksz9477_port_mmd_write(dev, p,
+>>> MMD_DEVICE_ID_EEE_ADV,
+>>> +                                      MMD_EEE_ADV, &val, 1);
+>>> +       }
+>>> +
+>>> +       return 0;
+>>> +}
+>>> +
+>>>   int ksz9477_setup(struct dsa_switch *ds)
+>>>   {
+>>>          struct ksz_device *dev = ds->priv;
+>>> @@ -1157,7 +1195,7 @@ int ksz9477_setup(struct dsa_switch *ds)
+>>>          /* enable global MIB counter freeze function */
+>>>          ksz_cfg(dev, REG_SW_MAC_CTRL_6, SW_MIB_COUNTER_FREEZE,
+>>> true);
+>>>
+>>> -       return 0;
+>>> +       return ksz9477_errata(ds);
+>>>   }
+>>
+>> I would prefer to execute the code in ksz9477_config_cpu_port(), as at
+>> the end there is already a loop to do something to each port.
+> 
+> Just some explanation of the taken approach:
+> 
+> 1. I've followed already in-mainline code for ksz8795.c
+> (ksz8_handle_global_errata(ds)) which is executed in ksz8_setup
+> function.
+> 
+> 2. I do believe, that separate "errata" function would be more
+> readable, as KSZ9477 has many more erratas to be added.
+> 
+>> The
+>> check to disable EEE or not should be dev->info->internal_phy[port],
+>> as one of the user ports can be RGMII or SGMII, which does not have a
+>> PHY that can be accessed inside the switch.
+> 
+> Yes, this would be better solution. Thanks for the suggestion.
+> 
+>>
+>> As the EEE register value is simply 6 it should be enough to just set
+>> the register to zero.  If so we do not need to add back those
+>> ksz9477_port_mmd_setup functions and just use ksz_pwrite16() to write
+>> to the MMD register.
+>>
+> 
+> IMHO adding functions to MMD modification would facilitate further
+> development (for example LED setup).
 
-Heh, reminds me of https://xkcd.com/927.
-
-All of these #defines are available in tools/include/linux/kernel.h, and it's
-trivially easy for selftests to add all of tools/include to their include path.
-I don't see any reason for the selftests framework to define yet another version,
-just fix the individual tests.
+We already have some KSZ9477 specific initialization done in the Micrel 
+PHY driver under drivers/net/phy/micrel.c, can we converge on the PHY 
+driver which has a reasonable amount of infrastructure for dealing with 
+workarounds, indirect or direct MMD accesses etc.?
+-- 
+Florian
