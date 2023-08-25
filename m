@@ -2,150 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01C6A788210
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 10:28:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 853707881B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 10:13:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240809AbjHYI2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 04:28:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58294 "EHLO
+        id S242906AbjHYIMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 04:12:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243840AbjHYI1j (ORCPT
+        with ESMTP id S237231AbjHYIMJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 04:27:39 -0400
-X-Greylist: delayed 601 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 25 Aug 2023 01:27:28 PDT
-Received: from mail-m11880.qiye.163.com (mail-m11880.qiye.163.com [115.236.118.80])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C0B62108;
-        Fri, 25 Aug 2023 01:27:28 -0700 (PDT)
-Received: from [172.16.12.69] (unknown [58.22.7.114])
-        by mail-m11880.qiye.163.com (Hmail) with ESMTPA id E4E1620B33;
-        Fri, 25 Aug 2023 16:11:49 +0800 (CST)
-Message-ID: <c8c059ce-53a9-3627-8984-dff771dff1de@rock-chips.com>
-Date:   Fri, 25 Aug 2023 16:11:49 +0800
+        Fri, 25 Aug 2023 04:12:09 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1233BCEE
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 01:12:03 -0700 (PDT)
+Received: from canpemm500006.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RXCJ93rTkzNn1t;
+        Fri, 25 Aug 2023 16:08:25 +0800 (CST)
+Received: from [10.67.145.224] (10.67.145.224) by
+ canpemm500006.china.huawei.com (7.192.105.130) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Fri, 25 Aug 2023 16:12:00 +0800
+Subject: Re: [PATCH v2 1/1] iommu/arm-smmu-v3: Fix error case of range command
+To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>
+CC:     Nicolin Chen <nicolinc@nvidia.com>,
+        <linux-arm-kernel@lists.infradead.org>, <iommu@lists.linux.dev>,
+        <linux-kernel@vger.kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Yicong Yang <yangyicong@hisilicon.com>,
+        Tomas Krcka <krckatom@amazon.de>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>
+References: <d5fc1f72-7428-4fef-d868-d06b85add635@huawei.com>
+ <20230804165225.GF30679@willie-the-truck> <ZM1DqxXcBT2SOs8/@Asurada-Nvidia>
+ <015b4573-9d74-451b-8028-a1050ade7019@huawei.com>
+ <661a7bb5-99e1-de16-d860-0cd17f7a0470@arm.com>
+ <20230808162409.GB2890@willie-the-truck>
+ <80ead8ee-4dbe-7b3c-44f5-944073a2a39d@arm.com>
+ <412886be-644a-5b46-9bfa-1c9a358f9a5d@huawei.com>
+ <280d0be7-7d41-ed78-bf4b-3db6c0076e22@arm.com>
+ <197e87cd-91a2-dce8-716c-488b379abbaf@arm.com>
+ <20230818162114.GB16216@willie-the-truck>
+From:   zhurui <zhurui3@huawei.com>
+Message-ID: <d05378c0-5b85-caaf-ae0d-49576adf7d86@huawei.com>
+Date:   Fri, 25 Aug 2023 16:12:00 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Cc:     shawn.lin@rock-chips.com,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        wsd_upstream <wsd_upstream@mediatek.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "angelogioacchino.delregno@collabora.com" 
-        <angelogioacchino.delregno@collabora.com>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
-Subject: Re: [PATCH 1/1] mmc: Set optimal I/O size when mmc_setip_queue
-To:     =?UTF-8?B?U2hhcnAgWGlhICjlpI/lroflvawp?= <Sharp.Xia@mediatek.com>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>
-References: <20230818022817.3341-1-Sharp.Xia@mediatek.com>
- <CAPDyKFqN0K=2e4rijUBz=9LXVfhEVvDzNgqXTyTgvaPRK-PBNQ@mail.gmail.com>
- <f71672cc699900b57d257c56b325e185f2b6fdd9.camel@mediatek.com>
-Content-Language: en-GB
-From:   Shawn Lin <shawn.lin@rock-chips.com>
-In-Reply-To: <f71672cc699900b57d257c56b325e185f2b6fdd9.camel@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <20230818162114.GB16216@willie-the-truck>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-        tZV1koWUFDSUNOT01LS0k3V1ktWUFJV1kPCRoVCBIfWUFZGhkdS1ZJHUMdGh9MSR0eGR9VEwETFh
-        oSFyQUDg9ZV1kYEgtZQVlOQ1VJSVVMVUpKT1lXWRYaDxIVHRRZQVlPS0hVSk1PSU5IVUpLS1VKQk
-        tLWQY+
-X-HM-Tid: 0a8a2bbfe2152eb6kusne4e1620b33
-X-HM-MType: 1
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6M006Hhw5DD0BLz8BLUsSDgsM
-        AQswFDBVSlVKTUJJQk5KSkpLTENKVTMWGhIXVQgTGgwVVRcSFTsJFBgQVhgTEgsIVRgUFkVZV1kS
-        C1lBWU5DVUlJVUxVSkpPWVdZCAFZQU5ISEg3Bg++
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Originating-IP: [10.67.145.224]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ canpemm500006.china.huawei.com (7.192.105.130)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sharp,
-
-On 2023/8/25 15:10, Sharp Xia (夏宇彬) wrote:
-> On Thu, 2023-08-24 at 12:55 +0200, Ulf Hansson wrote:
->>   	
->> External email : Please do not click links or open attachments until
->> you have verified the sender or the content.
->>   On Fri, 18 Aug 2023 at 04:45, <Sharp.Xia@mediatek.com> wrote:
->>>
->>> From: Sharp Xia <Sharp.Xia@mediatek.com>
->>>
->>> MMC does not set readahead and uses the default VM_READAHEAD_PAGES
->>> resulting in slower reading speed.
->>> Use the max_req_size reported by host driver to set the optimal
->>> I/O size to improve performance.
+On 2023/8/19 0:21, Will Deacon wrote:
+> On Fri, Aug 18, 2023 at 05:19:31PM +0100, Robin Murphy wrote:
+>> On 2023-08-09 14:48, Robin Murphy wrote:
+>> [...]
+>>> Does the patch below work for you?
 >>
->> This seems reasonable to me. However, it would be nice if you could
->> share some performance numbers too - comparing before and after
->> $subject patch.
->>
->> Kind regards
->> Uffe
->>
+>> Any comments on this? Just noticed this commit on a local dev branch and
+>> realised I'd totally forgotten about it already. I'm pretty confident it
+>> ought to be right, but then it *was* also me who missed the original bug to
+>> begin with... ;)
+> 
+> I'm happy to take it if zhurui can confirm that it fixes their issue...
+> 
+> Will (had also forgotten about this)
+> 
+>>> ----->8-----
+>>> Subject: [PATCH] iommu/arm-smmu-v3: Avoid constructing invalid range
+>>> commands
 >>>
->>> Signed-off-by: Sharp Xia <Sharp.Xia@mediatek.com>
+>>> Although io-pgtable's non-leaf invalidations are always for full tables,
+>>> I missed that SVA also uses non-leaf invalidations, while being at the
+>>> mercy of whatever range the MMU notifier throws at it. This means it
+>>> definitely wants the previous TTL fix as well, since it also doesn't
+>>> know exactly which leaf level(s) may need invalidating, but it can also
+>>> give us less-aligned ranges wherein certain corners may lead to building
+>>> an invalid command where TTL, Num and Scale are all 0. It should be fine
+>>> to handle this by over-invalidating an extra page, since falling back to
+>>> a non-range command opens up a whole can of errata-flavoured worms.
+>>>
+>>> Fixes: 6833b8f2e199 ("iommu/arm-smmu-v3: Set TTL invalidation hint better")
+>>> Reported-by: Rui Zhu <zhurui3@huawei.com>
+>>> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
 >>> ---
->>>   drivers/mmc/core/queue.c | 1 +
->>>   1 file changed, 1 insertion(+)
+>>>   drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 15 ++++++++++-----
+>>>   1 file changed, 10 insertions(+), 5 deletions(-)
 >>>
->>> diff --git a/drivers/mmc/core/queue.c b/drivers/mmc/core/queue.c
->>> index b396e3900717..fc83c4917360 100644
->>> --- a/drivers/mmc/core/queue.c
->>> +++ b/drivers/mmc/core/queue.c
->>> @@ -359,6 +359,7 @@ static void mmc_setup_queue(struct mmc_queue
->> *mq, struct mmc_card *card)
->>>                  blk_queue_bounce_limit(mq->queue, BLK_BOUNCE_HIGH);
->>>          blk_queue_max_hw_sectors(mq->queue,
->>>                  min(host->max_blk_count, host->max_req_size /
->> 512));
->>> +       blk_queue_io_opt(mq->queue, host->max_req_size);
->>>          if (host->can_dma_map_merge)
->>>                  WARN(!blk_queue_can_use_dma_map_merging(mq->queue,
->>>                                                          mmc_dev(hos
->> t)),
->>> --
->>> 2.18.0
+>>> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>>> b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>>> index 9b0dc3505601..6ccbae9b93a1 100644
+>>> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>>> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>>> @@ -1895,18 +1895,23 @@ static void __arm_smmu_tlb_inv_range(struct
+>>> arm_smmu_cmdq_ent *cmd,
+>>>           /* Get the leaf page size */
+>>>           tg = __ffs(smmu_domain->domain.pgsize_bitmap);
 >>>
-> 
-> I test this patch on internal platform(kernel-5.15).
+>>> +        num_pages = size >> tg;
+>>> +
+>>>           /* Convert page size of 12,14,16 (log2) to 1,2,3 */
+>>>           cmd->tlbi.tg = (tg - 10) / 2;
+>>>
+>>>           /*
+>>> -         * Determine what level the granule is at. For non-leaf,
+>>> io-pgtable
+>>> -         * assumes .tlb_flush_walk can invalidate multiple levels at once,
+>>> -         * so ignore the nominal last-level granule and leave TTL=0.
+>>> +         * Determine what level the granule is at. For non-leaf, both
+>>> +         * io-pgtable and SVA pass a nominal last-level granule because
+>>> +         * they don't know what level(s) actually apply, so ignore that
+>>> +         * and leave TTL=0. However for various errata reasons we still
+>>> +         * want to use a range command, so avoid the SVA corner case
+>>> +         * where both scale and num could be 0 as well.
+>>>            */
+>>>           if (cmd->tlbi.leaf)
+>>>               cmd->tlbi.ttl = 4 - ((ilog2(granule) - 3) / (tg - 3));
+>>> -
+>>> -        num_pages = size >> tg;
+>>> +        else if ((num_pages & CMDQ_TLBI_RANGE_NUM_MAX) == 1)
+>>> +            num_pages++;
+>>>       }
+>>>
+>>>       cmds.num = 0;
+>>>
 
-I patched this one and the test shows me a stable 11% performance drop.
+Hi, Will and Robin,
+Sorry for taking so long to reply you. We have some problems with our machine these days. It's
+solved just today. I give a test with Robin's patch for our testcase, everything is ok. I think
+the problem has been solved.
 
-Before:
-echo 3 > proc/sys/vm/drop_caches && dd if=/data/1GB.img of=/dev/null 
-
-2048000+0 records in
-2048000+0 records out
-1048576000 bytes (0.9 G) copied, 3.912249 s, 256 M/s
-
-After:
-echo 3 > proc/sys/vm/drop_caches && dd if=/data/1GB.img of=/dev/null
-2048000+0 records in
-2048000+0 records out
-1048576000 bytes (0.9 G) copied, 4.436271 s, 225 M/s
-
-> 
-> Before:
-> console:/ # echo 3 > /proc/sys/vm/drop_caches
-> console:/ # dd if=/mnt/media_rw/8031-130D/super.img of=/dev/null
-> 4485393+1 records in
-> 4485393+1 records out
-> 2296521564 bytes (2.1 G) copied, 37.124446 s, 59 M/s
-> console:/ # cat /sys/block/mmcblk0/queue/read_ahead_kb
-> 128
-> 
-> After:
-> console:/ # echo 3 > /proc/sys/vm/drop_caches
-> console:/ # dd if=/mnt/media_rw/8031-130D/super.img of=/dev/null
-> 4485393+1 records in
-> 4485393+1 records out
-> 2296521564 bytes (2.1 G) copied, 28.956049 s, 76 M/s
-> console:/ # cat /sys/block/mmcblk0/queue/read_ahead_kb
-> 1024
-> 
+Thanks,
+ZhuRui.
