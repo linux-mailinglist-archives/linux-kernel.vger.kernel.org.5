@@ -2,163 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90BBF788AFB
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 16:09:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAF5C788B0D
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 16:10:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242104AbjHYOIo convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 25 Aug 2023 10:08:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42062 "EHLO
+        id S245414AbjHYOJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 10:09:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242076AbjHYOIL (ORCPT
+        with ESMTP id S1343666AbjHYOJW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 10:08:11 -0400
-Received: from mail-vk1-f182.google.com (mail-vk1-f182.google.com [209.85.221.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF17E1BD9;
-        Fri, 25 Aug 2023 07:07:47 -0700 (PDT)
-Received: by mail-vk1-f182.google.com with SMTP id 71dfb90a1353d-48d0ceedda1so391122e0c.3;
-        Fri, 25 Aug 2023 07:07:47 -0700 (PDT)
+        Fri, 25 Aug 2023 10:09:22 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA4782D72
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 07:08:13 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4ffae5bdc9aso1502341e87.1
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 07:08:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692972478; x=1693577278;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=nfoa2eIyG6OCVkrOgXRD75RXSYr33Q8gn5+S+fM4lN0=;
+        b=YYsAYhCLt0J4HdmV3NGAzu0Suz9oRLymoikUzr6HRM9O/ou5pu6EqjAYOeXzb1y/Kk
+         d42e7YMljBzB3OJNH1vzcFwqKzksRLKus0Rtrllz+l15ZrEclMvdfLjf3sbDftGjhApM
+         aVlkblWmorBcpBp6YVXlgSIn1LpH4PGEC5HaP4C6TYUPxgGs3y/pM4M6hLD7sUaseR+L
+         c3LndkoUTQdbT/rheCxlI0DYMepb+3esZ6wdStiW8lhLaKMS//Y2bgRQqUfTZ/eis02H
+         s3cLNf7nfQNu+lvAzIcnch9u1m2sO4liOjAmt0q9e6f/rFPd3IFvIPsiQIqk4rECJflQ
+         FS+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692972405; x=1693577205;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8mQxmMAvnOZw0pwXo+btIZ2X2+HasX1mKXhjeR2nCxI=;
-        b=gNIH5jhizrlRTcw6YLt130Dc/YAWeHf6w8W8fdTO/TI6wfkX9Fa7cUuvrMotqQPD34
-         ebwnF2cYn8oTTY8JsN4s8RWOmChq8cDlCRoZ005If7LnqcnWwUar5mX3oelmOk3QjTbv
-         JNdVAsSN77h7hsyra1aXyla8ReY14fzolDpNGn/0uUnAK+rF/dj1FYzo9z0JQV8ZFKEc
-         EKCCW+YCTuogmzYNvQV0y3u8ndq6t7GvEuWXnP+ihDwXEx2+G8zsxPDw9zQfyScBJykv
-         t6tBvEHtTJeGPVEU75Tjgb/SW445lIBqzIVIgozcbnpN9y/vqs/gPK3r6DXrp38rw8zx
-         U0Aw==
-X-Gm-Message-State: AOJu0YxnVHhEzy+EvHS0n9D/4sNEVd9YrRSlbInWoakGQEtFSiNNxcJX
-        Q1WP1VUq6+bh0B0R4NONaFxnXkLGOGCh255EmkU=
-X-Google-Smtp-Source: AGHT+IE66ZqEeKIuG7KEqy3UzGM8u4dlPsgiisDqkM6WiMgDFej8tEo4JRRCrMyzpRh/d0ffD1s4Kk2U52oB4q81/Go=
-X-Received: by 2002:a1f:4a02:0:b0:48c:fc50:4292 with SMTP id
- x2-20020a1f4a02000000b0048cfc504292mr14506630vka.15.1692972405026; Fri, 25
- Aug 2023 07:06:45 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692972478; x=1693577278;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=nfoa2eIyG6OCVkrOgXRD75RXSYr33Q8gn5+S+fM4lN0=;
+        b=LTSb4Fu3vK++UsnQpLM4tbC0tJTktRhYSegRgTY7NSiYiKrcQ06csZfL0kUFV6X8Fr
+         TID+F+38wLgdpjFaQ+fLLxWUVk+C0bkMshNi8T0BT+3vgsLUg5D1+R7rEOxbrRsqrt/A
+         6fjWo04RNqF56zfP86G/WBLDh1hSkIPhXxn88mwRAVm8BC07/1doOa7H9nMalIeZxAdq
+         vTNYfpDgmzw7grY3cBW65KyCu8ofVEqGsJLDlnsEY3X6ixFmiBqUp5zXwpdln7zfU/u0
+         QTMowFrmriJac8MfmvZ/j8n+faU8xxY5MxTmIHbW35WSVBYvBZAqdDaayOb7r+GooayA
+         Tnhw==
+X-Gm-Message-State: AOJu0YztHlG3nJ3aJu1H9mx4blAQvXjJARzJ4zMFqp0obLZayk4aNJHG
+        /PLT7naGF4CtAcO5PRivFQ03xg==
+X-Google-Smtp-Source: AGHT+IHi8DfEL1iHFNmpgr0f7THIrkHI9QeDv6zPt2ocEHocdHs4PTrHnxA8aVrElaRCFq7YteTsBA==
+X-Received: by 2002:a05:6512:39d3:b0:4f9:56a9:b98e with SMTP id k19-20020a05651239d300b004f956a9b98emr15639293lfu.58.1692972478118;
+        Fri, 25 Aug 2023 07:07:58 -0700 (PDT)
+Received: from [192.168.1.101] (abxh59.neoplus.adsl.tpnet.pl. [83.9.1.59])
+        by smtp.gmail.com with ESMTPSA id m27-20020a056512015b00b005009dcb4503sm303800lfo.249.2023.08.25.07.07.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Aug 2023 07:07:57 -0700 (PDT)
+Message-ID: <b41e09f4-7bcb-48e9-b97e-bc8682562a41@linaro.org>
+Date:   Fri, 25 Aug 2023 16:07:56 +0200
 MIME-Version: 1.0
-References: <20230807061652.2492167-1-namhyung@kernel.org> <b2332dd5-e01e-dc61-e19c-55cf9a684ca2@intel.com>
-In-Reply-To: <b2332dd5-e01e-dc61-e19c-55cf9a684ca2@intel.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Fri, 25 Aug 2023 07:06:32 -0700
-Message-ID: <CAM9d7chY9415RDQ0CBFQgy3VYw+Ah8JSFL8A=o5_JB-HD6N2qw@mail.gmail.com>
-Subject: Re: [PATCH] perf tools: Handle old data in PERF_RECORD_ATTR
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] ARM: dts: qcom: apq8064: drop label property from DSI
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230825135613.282505-1-krzysztof.kozlowski@linaro.org>
+Content-Language: en-US
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20230825135613.282505-1-krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HI Adrian,
+On 25.08.2023 15:56, Krzysztof Kozlowski wrote:
+> DSI node does not accept nor use "label" property:
+> 
+>   qcom-apq8064-asus-nexus7-flo.dtb: dsi@4700000: Unevaluated properties are not allowed ('label' was unexpected)
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-Sorry for the late reply.
-
-On Mon, Aug 14, 2023 at 12:11 AM Adrian Hunter <adrian.hunter@intel.com> wrote:
->
-> On 7/08/23 09:16, Namhyung Kim wrote:
-> > The PERF_RECORD_ATTR is used for a pipe mode to describe an event with
-> > attribute and IDs.  The ID table comes after the attr and it calculate
-> > size of the table using the total record size and the attr size.
-> >
-> >   n_ids = (total_record_size - end_of_the_attr_field) / sizeof(u64)
-> >
-> > This is fine for most use cases, but sometimes it saves the pipe output
-> > in a file and then process it later.  And it becomes a problem if there
-> > is a change in attr size between the record and report.
-> >
-> >   $ perf record -o- > perf-pipe.data  # old version
-> >   $ perf report -i- < perf-pipe.data  # new version
-> >
-> > For example, if the attr size is 128 and it has 4 IDs, then it would
-> > save them in 168 byte like below:
-> >
-> >    8 byte: perf event header { .type = PERF_RECORD_ATTR, .size = 168 },
-> >  128 byte: perf event attr { .size = 128, ... },
-> >   32 byte: event IDs [] = { 1234, 1235, 1236, 1237 },
-> >
-> > But when report later, it thinks the attr size is 136 then it only read
-> > the last 3 entries as ID.
-> >
-> >    8 byte: perf event header { .type = PERF_RECORD_ATTR, .size = 168 },
-> >  136 byte: perf event attr { .size = 136, ... },
-> >   24 byte: event IDs [] = { 1235, 1236, 1237 },  // 1234 is missing
-> >
-> > So it should use the recorded version of the attr.  The attr has the
-> > size field already then it should honor the size when reading data.
-> >
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > ---
-> >  tools/perf/util/header.c | 11 ++++++-----
-> >  1 file changed, 6 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
-> > index 52fbf526fe74..f89321cbfdee 100644
-> > --- a/tools/perf/util/header.c
-> > +++ b/tools/perf/util/header.c
-> > @@ -4381,7 +4381,8 @@ int perf_event__process_attr(struct perf_tool *tool __maybe_unused,
-> >                            union perf_event *event,
-> >                            struct evlist **pevlist)
-> >  {
-> > -     u32 i, ids, n_ids;
-> > +     u32 i, n_ids;
-> > +     u64 *ids;
-> >       struct evsel *evsel;
-> >       struct evlist *evlist = *pevlist;
-> >
-> > @@ -4397,9 +4398,8 @@ int perf_event__process_attr(struct perf_tool *tool __maybe_unused,
-> >
-> >       evlist__add(evlist, evsel);
-> >
-> > -     ids = event->header.size;
-> > -     ids -= (void *)&event->attr.id - (void *)event;
-> > -     n_ids = ids / sizeof(u64);
-> > +     n_ids = event->header.size - sizeof(event->header) - event->attr.attr.size;
-> > +     n_ids = n_ids / sizeof(u64);
-> >       /*
-> >        * We don't have the cpu and thread maps on the header, so
-> >        * for allocating the perf_sample_id table we fake 1 cpu and
-> > @@ -4408,8 +4408,9 @@ int perf_event__process_attr(struct perf_tool *tool __maybe_unused,
-> >       if (perf_evsel__alloc_id(&evsel->core, 1, n_ids))
-> >               return -ENOMEM;
-> >
-> > +     ids = (void *)&event->attr.attr + event->attr.attr.size;
-> >       for (i = 0; i < n_ids; i++) {
-> > -             perf_evlist__id_add(&evlist->core, &evsel->core, 0, i, event->attr.id[i]);
-> > +             perf_evlist__id_add(&evlist->core, &evsel->core, 0, i, ids[i]);
-> >       }
-> >
-> >       return 0;
->
-> This is a good catch!
->
-> It looks like perf_event__hdr_swap() might also have this problem.
-
-You mean perf_event__hdr_attr_swap(), right?  Yeah, looks so.
-I'll change it too in v2.
-
->
-> I wonder if we should remove 'id' from struct perf_record_header_attr
-> since the position is not guaranteed?
->
-> Probably could use a comment there either way.
-
-Sounds good.  I'll remove the id field and add a comment.
-
->
-> Also perhaps a fixes tag and cc stable
-
-Sure, thanks for the review!
-
-Namhyung
+Konrad
