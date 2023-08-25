@@ -2,157 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0585788BF7
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 16:52:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74848788C88
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 17:36:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343874AbjHYOwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 10:52:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46052 "EHLO
+        id S241743AbjHYPgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 11:36:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343875AbjHYOvz (ORCPT
+        with ESMTP id S242706AbjHYPfy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 10:51:55 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0EB9211E;
-        Fri, 25 Aug 2023 07:51:53 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7FCBC63735;
-        Fri, 25 Aug 2023 14:51:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B30C3C433C8;
-        Fri, 25 Aug 2023 14:51:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692975112;
-        bh=oDUKt2y776qkY7mlL5afAMt5eHtx+3g2kNGFrLjZHX4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IH1R55785YKVlrPnoaLltrfwFj5/1XNZaTHxlW0Whd/p1vItVd0Azr/nc4PMPHYtl
-         YFW4hz6C12e/y7pHSEaj4/rfVSKjUSf8b3ZfilAgKl7EX/57a9j4sk50NZn2sZ+31u
-         aF1vH5xd7hEfykIeQPRdeCQ4j3rOQVQ7E62FA4m3uYsAIVsYSPCqxGKl1AQ5CLLXO5
-         LDULB44z6irTmwDQ14VAuONjWwzJOFIEmvmhtORqyKRV+MO21S9Lvu213nFkCRgbYs
-         GKerhKEbLWLVd3uNQ6ectj25YrTVB2gMUIdFfb9SQ3Fvkbfx2T+obvOka1dZ76Qg4f
-         0CKVDeimIXC+Q==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id C5AEC40722; Fri, 25 Aug 2023 11:51:49 -0300 (-03)
-Date:   Fri, 25 Aug 2023 11:51:49 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        John Garry <john.g.garry@oracle.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/2] perf pmus: Sort pmus by name then suffix
-Message-ID: <ZOjABa9ZfQgra/UX@kernel.org>
-References: <20230825135237.921058-1-irogers@google.com>
- <20230825135237.921058-2-irogers@google.com>
- <ZOi/KDRRrnkvJmkB@kernel.org>
+        Fri, 25 Aug 2023 11:35:54 -0400
+X-Greylist: delayed 2481 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 25 Aug 2023 08:35:48 PDT
+Received: from mx.dolansoft.org (s2.dolansoft.org [212.51.146.245])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E03E02137
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 08:35:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=brun.one;
+        s=s1; h=MIME-Version:Message-ID:Date:Subject:Cc:To:From:In-Reply-To:
+        References:From:To:Subject:Date:Message-ID:Reply-To;
+        bh=T3SoMggWQU9QDC3JzPWHOLjCpIniafz0l32O6ZjmZIo=; b=OyJKnRWFxE/QMt51QstCWNOyt1
+        2LRxEafsfxHOjnZQSVyDmhOrh3WQfkFQ4KCtrhMcQPHvzD1sLLnAPgW/7I6ngYxeSOi9WA40GG/0V
+        eEx0qkDUPjhaNO17TGE3KwqF92maMdGuDmYEezkL83X2004aj/27JrBXNfkFJZpoF2oKjqoNml7Oo
+        y63UCLYWU8mCou7HnowSpuw7VRzXfn2OpXezKrv93EUWRIpRv0e9O+e7L6D7oI/ojUClM2UsszhYS
+        VdjQWpKXYiOu1Z4bxX20M8BZtzK9xieAR0dLPtMroar43W96i4G5y33rlNEb+P9kCL+Vcy+uzWX1O
+        DU8qs6JA==;
+Received: from [212.51.153.89] (helo=blacklava.cluster.local)
+        by mx.dolansoft.org with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <lorenz@dolansoft.org>)
+        id 1qZYCR-006lKz-0Q;
+        Fri, 25 Aug 2023 14:54:11 +0000
+From:   Lorenz Brun <lorenz@brun.one>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: defconfig: add support for MediaTek MT7986
+Date:   Fri, 25 Aug 2023 16:54:05 +0200
+Message-ID: <20230825145406.1372848-1-lorenz@brun.one>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZOi/KDRRrnkvJmkB@kernel.org>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Sender: lorenz@dolansoft.org
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,UPPERCASE_50_75 autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, Aug 25, 2023 at 11:48:08AM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Fri, Aug 25, 2023 at 06:52:36AM -0700, Ian Rogers escreveu:
-> > Sort PMUs by name. If two PMUs have the same name but differ by
-> > suffix, sort the suffixes numerically. For example, "breakpoint" comes
-> > before "cpu", "uncore_imc_free_running_0" comes before
-> > "uncore_imc_free_running_1". Suffixes need to be treated specially as
-> > otherwise they will be ordered like 0, 1, 10, 11, .., 2, 20, 21, ..,
-> > etc. Only PMUs starting 'uncore_' are considered to have a potential
-> > suffix.
-> > 
-> > Sorting of PMUs is done so that later patches can skip duplicate
-> > uncore PMUs that differ only by there suffix.
-> > 
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> > ---
-> >  tools/perf/util/pmus.c | 48 ++++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 48 insertions(+)
-> > 
-> > diff --git a/tools/perf/util/pmus.c b/tools/perf/util/pmus.c
-> > index 4dd5912617ff..b1f6a64693fe 100644
-> > --- a/tools/perf/util/pmus.c
-> > +++ b/tools/perf/util/pmus.c
-> > @@ -1,8 +1,10 @@
-> >  // SPDX-License-Identifier: GPL-2.0
-> >  #include <linux/list.h>
-> > +#include <linux/list_sort.h>
-> >  #include <linux/zalloc.h>
-> >  #include <subcmd/pager.h>
-> >  #include <sys/types.h>
-> > +#include <ctype.h>
-> >  #include <dirent.h>
-> >  #include <pthread.h>
-> >  #include <string.h>
-> > @@ -33,6 +35,31 @@ static LIST_HEAD(other_pmus);
-> >  static bool read_sysfs_core_pmus;
-> >  static bool read_sysfs_all_pmus;
-> >  
-> > +static int pmu_name_len_no_suffix(const char *str, unsigned long *num)
-> > +{
-> > +	int orig_len, len;
-> > +
-> > +	orig_len = len = strlen(str);
-> > +
-> > +	/* Non-uncore PMUs have their full length, for example, i915. */
-> > +	if (strncmp(str, "uncore_", 7))
-> > +		return len;
-> 
-> I applied the patch, but we have strstarts() for this case, to avoid
-> having to count the size of the prefix in tools/include/linux/string.h,
-> that we copied from the kernel sources:
-> 
-> /**
->  * strstarts - does @str start with @prefix?
->  * @str: string to examine
->  * @prefix: prefix to look for.
->  */
-> static inline bool strstarts(const char *str, const char *prefix)
-> {
->         return strncmp(str, prefix, strlen(prefix)) == 0;
-> }
-> 
-> I'll change it, ok?
+Considering that there are boards based on this SoC with 2GiB+ RAM and
+PCIe out there (BPI-R3) I think it makes sense to have support for these
+in defconfig as people can conceivably use these with stock Linux
+distributions.
 
-This:
+AFAIK this only adds modules, it should not increase the size of the
+main vmlinux binary.
 
-diff --git a/tools/perf/util/pmus.c b/tools/perf/util/pmus.c
-index b1f6a64693fe0d49..bbf84ccc3aba7d5c 100644
---- a/tools/perf/util/pmus.c
-+++ b/tools/perf/util/pmus.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- #include <linux/list.h>
- #include <linux/list_sort.h>
-+#include <linux/string.h>
- #include <linux/zalloc.h>
- #include <subcmd/pager.h>
- #include <sys/types.h>
-@@ -42,7 +43,7 @@ static int pmu_name_len_no_suffix(const char *str, unsigned long *num)
- 	orig_len = len = strlen(str);
- 
- 	/* Non-uncore PMUs have their full length, for example, i915. */
--	if (strncmp(str, "uncore_", 7))
-+	if (!strstarts(str, "uncore_"))
- 		return len;
- 
- 	/*
+Signed-off-by: Lorenz Brun <lorenz@brun.one>
+---
+ arch/arm64/configs/defconfig | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+index a25d783dfb95..13a1e09524d4 100644
+--- a/arch/arm64/configs/defconfig
++++ b/arch/arm64/configs/defconfig
+@@ -162,6 +162,7 @@ CONFIG_IP6_NF_TARGET_MASQUERADE=m
+ CONFIG_BRIDGE=m
+ CONFIG_BRIDGE_VLAN_FILTERING=y
+ CONFIG_NET_DSA=m
++CONFIG_NET_DSA_MT7530=m
+ CONFIG_VLAN_8021Q=m
+ CONFIG_VLAN_8021Q_GVRP=y
+ CONFIG_VLAN_8021Q_MVRP=y
+@@ -177,6 +178,8 @@ CONFIG_NET_CLS_ACT=y
+ CONFIG_NET_ACT_GACT=m
+ CONFIG_NET_ACT_MIRRED=m
+ CONFIG_NET_ACT_GATE=m
++CONFIG_NET_VENDOR_MEDIATEK=y
++CONFIG_NET_MEDIATEK_SOC=m
+ CONFIG_QRTR_SMD=m
+ CONFIG_QRTR_TUN=m
+ CONFIG_CAN=m
+@@ -267,9 +270,11 @@ CONFIG_MTD_SST25L=y
+ CONFIG_MTD_RAW_NAND=y
+ CONFIG_MTD_NAND_DENALI_DT=y
+ CONFIG_MTD_NAND_MARVELL=y
++CONFIG_MTD_NAND_MTK=m
+ CONFIG_MTD_NAND_BRCMNAND=m
+ CONFIG_MTD_NAND_FSL_IFC=y
+ CONFIG_MTD_NAND_QCOM=y
++CONFIG_MTD_NAND_ECC_MEDIATEK=m
+ CONFIG_MTD_SPI_NOR=y
+ CONFIG_MTD_UBI=m
+ CONFIG_UBIFS_FS=m
+@@ -407,6 +412,8 @@ CONFIG_BRCMFMAC=m
+ CONFIG_MWIFIEX=m
+ CONFIG_MWIFIEX_SDIO=m
+ CONFIG_MWIFIEX_PCIE=m
++CONFIG_MT7915E=m
++CONFIG_MT7986_WMAC=y
+ CONFIG_MT7921E=m
+ CONFIG_WL18XX=m
+ CONFIG_WLCORE_SDIO=m
+@@ -529,6 +536,7 @@ CONFIG_SPI_MESON_SPICC=m
+ CONFIG_SPI_MESON_SPIFC=m
+ CONFIG_SPI_MT65XX=y
+ CONFIG_SPI_MTK_NOR=m
++CONFIG_SPI_MTK_SNFI=m
+ CONFIG_SPI_OMAP24XX=m
+ CONFIG_SPI_ORION=y
+ CONFIG_SPI_PL022=y
+@@ -645,6 +653,8 @@ CONFIG_THERMAL_GOV_POWER_ALLOCATOR=y
+ CONFIG_CPU_THERMAL=y
+ CONFIG_DEVFREQ_THERMAL=y
+ CONFIG_THERMAL_EMULATION=y
++CONFIG_MTK_THERMAL=y
++CONFIG_MTK_SOC_THERMAL=m
+ CONFIG_IMX_SC_THERMAL=m
+ CONFIG_IMX8MM_THERMAL=m
+ CONFIG_QORIQ_THERMAL=m
+-- 
+2.41.0
+
