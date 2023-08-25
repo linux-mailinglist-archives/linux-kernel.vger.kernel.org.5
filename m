@@ -2,58 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6FBD787FA1
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 08:13:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2D83787FA4
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 08:14:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241612AbjHYGM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 02:12:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40920 "EHLO
+        id S241587AbjHYGOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 02:14:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241996AbjHYGMq (ORCPT
+        with ESMTP id S241607AbjHYGNf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 02:12:46 -0400
-Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CB0E2120;
-        Thu, 24 Aug 2023 23:12:32 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=renyu.zj@linux.alibaba.com;NM=1;PH=DS;RN=20;SR=0;TI=SMTPD_---0VqW2Dho_1692943945;
-Received: from 30.221.145.196(mailfrom:renyu.zj@linux.alibaba.com fp:SMTPD_---0VqW2Dho_1692943945)
-          by smtp.aliyun-inc.com;
-          Fri, 25 Aug 2023 14:12:27 +0800
-Message-ID: <8f319bc9-8740-627e-09c7-934c30a053bc@linux.alibaba.com>
-Date:   Fri, 25 Aug 2023 14:12:25 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.14.0
-Subject: Re: [PATCH v7 1/8] perf pmu: "Compat" supports matching multiple
- identifiers
+        Fri, 25 Aug 2023 02:13:35 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 353BB1FEC;
+        Thu, 24 Aug 2023 23:12:58 -0700 (PDT)
+Received: from kwepemm600003.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RX8g86vp7zJrr7;
+        Fri, 25 Aug 2023 14:09:40 +0800 (CST)
+Received: from [10.67.111.205] (10.67.111.205) by
+ kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Fri, 25 Aug 2023 14:12:47 +0800
+Subject: Re: [PATCH v6 6/7] perf test: Add test case for record sideband
+ events
 To:     Ian Rogers <irogers@google.com>
-Cc:     John Garry <john.g.garry@oracle.com>,
-        Will Deacon <will@kernel.org>,
-        James Clark <james.clark@arm.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-doc@vger.kernel.org,
-        Zhuo Song <zhuo.song@linux.alibaba.com>,
-        Shuai Xue <xueshuai@linux.alibaba.com>
-References: <1692606977-92009-1-git-send-email-renyu.zj@linux.alibaba.com>
- <1692606977-92009-2-git-send-email-renyu.zj@linux.alibaba.com>
- <CAP-5=fWK=wMuC1e9JE0MW8de4pNKH=48f8ydjCbMLjQ3S4zEjg@mail.gmail.com>
-From:   Jing Zhang <renyu.zj@linux.alibaba.com>
-In-Reply-To: <CAP-5=fWK=wMuC1e9JE0MW8de4pNKH=48f8ydjCbMLjQ3S4zEjg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+CC:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <jolsa@kernel.org>, <namhyung@kernel.org>,
+        <adrian.hunter@intel.com>, <kan.liang@linux.intel.com>,
+        <james.clark@arm.com>, <tmricht@linux.ibm.com>,
+        <ak@linux.intel.com>, <anshuman.khandual@arm.com>,
+        <linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>
+References: <20230821012734.18241-1-yangjihong1@huawei.com>
+ <20230821012734.18241-7-yangjihong1@huawei.com>
+ <CAP-5=fW+ybe3GStU2ttUKH4BSwiyhS=zf6uHUORVEXhexFJxtQ@mail.gmail.com>
+From:   Yang Jihong <yangjihong1@huawei.com>
+Message-ID: <b2708b48-1922-73b5-ba9b-a4729105d3fa@huawei.com>
+Date:   Fri, 25 Aug 2023 14:12:46 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
+MIME-Version: 1.0
+In-Reply-To: <CAP-5=fW+ybe3GStU2ttUKH4BSwiyhS=zf6uHUORVEXhexFJxtQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-12.8 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
+X-Originating-IP: [10.67.111.205]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600003.china.huawei.com (7.193.23.202)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,129 +58,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
-
-在 2023/8/25 下午12:11, Ian Rogers 写道:
-> On Mon, Aug 21, 2023 at 1:36 AM Jing Zhang <renyu.zj@linux.alibaba.com> wrote:
+On 2023/8/25 13:28, Ian Rogers wrote:
+> On Sun, Aug 20, 2023 at 6:30 PM Yang Jihong <yangjihong1@huawei.com> wrote:
 >>
->> The jevent "Compat" is used for uncore PMU alias or metric definitions.
+>> Add a new test case to record sideband events for all CPUs when tracing
+>> selected CPUs
 >>
->> The same PMU driver has different PMU identifiers due to different
->> hardware versions and types, but they may have some common PMU event.
->> Since a Compat value can only match one identifier, when adding the
->> same event alias to PMUs with different identifiers, each identifier
->> needs to be defined once, which is not streamlined enough.
+>> Test result:
 >>
->> So let "Compat" supports matching multiple identifiers for uncore PMU
->> alias. For example, the Compat value {43401;436*} can match the PMU
->> identifier "43401", that is, CMN600_r0p0, and the PMU identifier with
->> the prefix "436", that is, all CMN650, where "*" is a wildcard.
->> Tokens in Unit field are delimited by ';' with no spaces.
+>>    # ./perf test list 2>&1 | grep 'perf record sideband tests'
+>>     95: perf record sideband tests
+>>    # ./perf test 95
+>>     95: perf record sideband tests                                      : Ok
 >>
->> Signed-off-by: Jing Zhang <renyu.zj@linux.alibaba.com>
->> Reviewed-by: John Garry <john.g.garry@oracle.com>
+>> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+>> Tested-by: Adrian Hunter <adrian.hunter@intel.com>
 >> ---
->>  tools/perf/util/pmu.c | 33 +++++++++++++++++++++++++++++++--
->>  tools/perf/util/pmu.h |  1 +
->>  2 files changed, 32 insertions(+), 2 deletions(-)
+>>   tools/perf/tests/shell/record_sideband.sh | 44 +++++++++++++++++++++++
+>>   1 file changed, 44 insertions(+)
+>>   create mode 100755 tools/perf/tests/shell/record_sideband.sh
 >>
->> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
->> index ad209c8..6402423 100644
->> --- a/tools/perf/util/pmu.c
->> +++ b/tools/perf/util/pmu.c
->> @@ -776,6 +776,35 @@ static bool pmu_uncore_alias_match(const char *pmu_name, const char *name)
->>         return res;
->>  }
->>
->> +bool pmu_uncore_identifier_match(const char *id, const char *compat)
-> 
-> static?
-> 
-
-This function needs to be called in utils/metricgroup.c, so it cannot be static.
-
->> +{
->> +       char *tmp = NULL, *tok, *str;
->> +       bool res;
-> 
-> Initialize to false to avoid the goto.
-> 
-
-ok，no problem.
-
->> +       int n;
-> 
-> Move into the scope of the for loop, to reduce the scope.
-> 
-
-ok
-
+>> diff --git a/tools/perf/tests/shell/record_sideband.sh b/tools/perf/tests/shell/record_sideband.sh
+>> new file mode 100755
+>> index 000000000000..2ecf00011cb1
+>> --- /dev/null
+>> +++ b/tools/perf/tests/shell/record_sideband.sh
+>> @@ -0,0 +1,44 @@
+>> +#!/bin/sh
+>> +# perf record sideband tests
+>> +# SPDX-License-Identifier: GPL-2.0
 >> +
->> +       /*
->> +        * The strdup() call is necessary here because "compat" is a const str*
->> +        * type and cannot be used as an argument to strtok_r().
->> +        */
->> +       str = strdup(compat);
->> +       if (!str)
->> +               return false;
+>> +set -e
 >> +
->> +       tok = strtok_r(str, ";", &tmp);
->> +       for (; tok; tok = strtok_r(NULL, ";", &tmp)) {
->> +               n = strlen(tok);
->> +               if ((tok[n - 1] == '*' && !strncmp(id, tok, n - 1)) ||
->> +                   !strcmp(id, tok)) {
+>> +err=0
+>> +perfdata=$(mktemp /tmp/__perf_test.perf.data.XXXXX)
 > 
-> We use fnmatch for a similar check:
-> https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tree/tools/perf/util/pmu.c?h=perf-tools-next#n1982
+> Could you add some kind of cleanup on trap function like:
+> https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tree/tools/perf/tests/shell/record.sh?h=perf-tools-next#n26
+> It'd be okay to do this as a follow up patch.
 > 
+Okay, it'll be modified in the next version.
 
-ok
-
->> +                       res = true;
->> +                       goto out;
-> 
-> With "res=false;" above this can just be a regular break.
-> 
-
-ok, thank you!
-
-> Thanks,
-> Ian
-> 
->> +               }
->> +       }
->> +       res = false;
->> +out:
->> +       free(str);
->> +       return res;
->> +}
->> +
->>  struct pmu_add_cpu_aliases_map_data {
->>         struct list_head *head;
->>         const char *name;
->> @@ -847,8 +876,8 @@ static int pmu_add_sys_aliases_iter_fn(const struct pmu_event *pe,
->>         if (!pe->compat || !pe->pmu)
->>                 return 0;
->>
->> -       if (!strcmp(pmu->id, pe->compat) &&
->> -           pmu_uncore_alias_match(pe->pmu, pmu->name)) {
->> +       if (pmu_uncore_alias_match(pe->pmu, pmu->name) &&
->> +           pmu_uncore_identifier_match(pmu->id, pe->compat)) {
->>                 __perf_pmu__new_alias(idata->head, -1,
->>                                       (char *)pe->name,
->>                                       (char *)pe->desc,
->> diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
->> index b9a02de..9d4385d 100644
->> --- a/tools/perf/util/pmu.h
->> +++ b/tools/perf/util/pmu.h
->> @@ -241,6 +241,7 @@ void pmu_add_cpu_aliases_table(struct list_head *head, struct perf_pmu *pmu,
->>  char *perf_pmu__getcpuid(struct perf_pmu *pmu);
->>  const struct pmu_events_table *pmu_events_table__find(void);
->>  const struct pmu_metrics_table *pmu_metrics_table__find(void);
->> +bool pmu_uncore_identifier_match(const char *id, const char *compat);
->>  void perf_pmu_free_alias(struct perf_pmu_alias *alias);
->>
->>  int perf_pmu__convert_scale(const char *scale, char **end, double *sval);
->> --
->> 1.8.3.1
->>
+Thanks,
+Yang
