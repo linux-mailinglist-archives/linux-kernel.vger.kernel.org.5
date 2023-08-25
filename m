@@ -2,246 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AFC6788BBD
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 16:31:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3937788BBF
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 16:31:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343656AbjHYOab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 10:30:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37748 "EHLO
+        id S1343744AbjHYObC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 10:31:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343801AbjHYOaR (ORCPT
+        with ESMTP id S1343694AbjHYOad (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 10:30:17 -0400
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 339B9199A
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 07:30:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-        s=20170329; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=TGt/GTv13MQd5EJYb83vy8cL8hzAXGUAw7TT+taelVc=; b=WDXQXr626TM8d9yeLpgm61Ci6b
-        Od5O/Vlnv7GaotaPMWOzAD84SLVv7QTfHzJdFCyAiwgLApcSZ44UWMlZ1hvMiK5j/vMt7IA2aOwNr
-        Dbfl3V4QH6lCv5QHKzVmRzgpqXNRevCzOeuLaSPv7IdsX/zv5dhSPfiEcnI06yEho8niRdd4SY4ZC
-        yJCLefuRoMqDZXwLyqT2dfMXx7yA8Jw8Zcx/0C+Qsj+5Zx8v8JVljvZW3iPeYuzDXVjnK2Yi4PiSM
-        Jr7g+9/tDTbnsVVH4I/ZbyXQMcUOiBqMFxLvBN41OdwIyhiR8vjFnC75qpELWlXzs7gX6bAtHlKyH
-        1WkXXbFA==;
-Received: from [38.44.68.151] (helo=mail.igalia.com)
-        by fanzine2.igalia.com with esmtpsa 
-        (Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
-        id 1qZXp0-00FJHc-Vi; Fri, 25 Aug 2023 16:29:59 +0200
-Date:   Fri, 25 Aug 2023 13:29:44 -0100
-From:   Melissa Wen <mwen@igalia.com>
-To:     Pekka Paalanen <pekka.paalanen@collabora.com>
-Cc:     amd-gfx@lists.freedesktop.org,
-        Harry Wentland <harry.wentland@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        sunpeng.li@amd.com, Alex Deucher <alexander.deucher@amd.com>,
-        dri-devel@lists.freedesktop.org, christian.koenig@amd.com,
-        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
-        Joshua Ashton <joshua@froggi.es>,
-        Sebastian Wick <sebastian.wick@redhat.com>,
-        Xaver Hugl <xaver.hugl@gmail.com>,
-        Shashank Sharma <Shashank.Sharma@amd.com>,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
-        sungjoon.kim@amd.com, Alex Hung <alex.hung@amd.com>,
-        Simon Ser <contact@emersion.fr>, kernel-dev@igalia.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 19/34] drm/amd/display: decouple steps for mapping
- CRTC degamma to DC plane
-Message-ID: <20230825142944.3jkibtz54f4utwuq@mail.igalia.com>
-References: <20230810160314.48225-1-mwen@igalia.com>
- <20230810160314.48225-20-mwen@igalia.com>
- <20230822151110.3107b745.pekka.paalanen@collabora.com>
+        Fri, 25 Aug 2023 10:30:33 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1024A1995;
+        Fri, 25 Aug 2023 07:30:31 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-99bcf2de59cso129101566b.0;
+        Fri, 25 Aug 2023 07:30:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692973829; x=1693578629;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+TKRKdJyVPQnXrud/UFhZyJn/bFLsStYMULRC9lmJOg=;
+        b=OQXrYSh/ZTaRcrWWA0vglXPp3TlsL1Ma7vpCxlFdwF1lEPdbMdGQ/tKMaMonLuwtO5
+         JABJFdxaAHTAHmpQ686SHGkxHl979MSfAFLV+3B5HIinjzcPUGnuPBGRlMn6pbEscsw4
+         b0PqksMuIqStaAEvnyVczSfPUB69oWqBDHLqH0RNamea7U8iC2tZ6nNFXK2HuYAt/32n
+         2kynjPi6lEJRwFgree9ATo/CaHaPlGM78Qu24dsK7wKNCKVFgt5H/HBeLRbk++6K2c1l
+         0MoGgedsO6+4cm5hC27BUve7gq5G1M1pu2ApSyFKqsJXzh2yWo+9u/FQYYSPKg4EXygz
+         Vhkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692973829; x=1693578629;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+TKRKdJyVPQnXrud/UFhZyJn/bFLsStYMULRC9lmJOg=;
+        b=jdgxEyOeYFc5O8iOobdWGKzhm0NIxVxjUgr6PoaFGAguNz/AF+zrsJWhnd1i/Waon/
+         /4NEVeZ6y4m7Z1IE/NyMMMpWKp+sGiV+3CZQAbbXgNIz/0DMuGVcb1Ia/GBwJiJ1vHvq
+         lCQ3bParVf1H21OqvLYoH36CebkaiuCHTH3rf4O+GJ8y6CgO+VXNHASX0f2dm7hrPuJC
+         O6nHHJJCdBiz+Yva23m2ntRKoqyMy53b6uhRMiHiFGa8IONDhtuZNsj2+tIQXQiMONAg
+         +Bguw48aHhYNYEBW4AVr7uWKx1hkrsl2d0Jo8MG4S99DUqQIzL6nlsNP2TmShELQ2f21
+         lr4A==
+X-Gm-Message-State: AOJu0Ywjb7oM5F/F38DZ4eetIjcyMhKSk4aZ3Y0G2Dsqff8AqJAtnYxU
+        GBqCrNQPuclxYaEUBi4FG5o22cOYi1SuayIDjIo=
+X-Google-Smtp-Source: AGHT+IEES/Rzsyvr1JvufABrAQWEAlPgt7MuBwIREScZLrLGFwNRoIXbaWrIdhd46oBepXht/zkQv0lQ0dAVqCGxlr0=
+X-Received: by 2002:a17:906:150:b0:9a1:d79a:418e with SMTP id
+ 16-20020a170906015000b009a1d79a418emr6028363ejh.40.1692973829204; Fri, 25 Aug
+ 2023 07:30:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="crdzpq3rjuvmqkwv"
-Content-Disposition: inline
-In-Reply-To: <20230822151110.3107b745.pekka.paalanen@collabora.com>
+References: <20230825122435.316272-1-vignesh.raman@collabora.com>
+ <20230825122435.316272-3-vignesh.raman@collabora.com> <87pm3b2pkz.fsf@intel.com>
+In-Reply-To: <87pm3b2pkz.fsf@intel.com>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Fri, 25 Aug 2023 07:30:17 -0700
+Message-ID: <CAF6AEGs4p0xXJjsNug45CFiP0n-5h7wpdy22YBryjrnWFROESg@mail.gmail.com>
+Subject: Re: [PATCH 2/6] drm: ci: Force db410c to host mode
+To:     Jani Nikula <jani.nikula@linux.intel.com>
+Cc:     Vignesh Raman <vignesh.raman@collabora.com>,
+        dri-devel@lists.freedesktop.org, emma@anholt.net,
+        linux-doc@vger.kernel.org, david.heidelberg@collabora.com,
+        linux-amlogic@lists.infradead.org, jbrunet@baylibre.com,
+        robdclark@google.com, corbet@lwn.net, khilman@baylibre.com,
+        sergi.blanch.torne@collabora.com, gustavo.padovan@collabora.com,
+        linux-rockchip@lists.infradead.org, daniels@collabora.com,
+        martin.blumenstingl@googlemail.com, robclark@freedesktop.org,
+        helen.koike@collabora.com, anholt@google.com,
+        linux-mediatek@lists.infradead.org, mripard@kernel.org,
+        matthias.bgg@gmail.com, linux-arm-kernel@lists.infradead.org,
+        angelogioacchino.delregno@collabora.com, neil.armstrong@linaro.org,
+        guilherme.gallo@collabora.com, linux-kernel@vger.kernel.org,
+        tzimmermann@suse.de
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---crdzpq3rjuvmqkwv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On 08/22, Pekka Paalanen wrote:
-> On Thu, 10 Aug 2023 15:02:59 -0100
-> Melissa Wen <mwen@igalia.com> wrote:
->=20
-> > The next patch adds pre-blending degamma to AMD color mgmt pipeline, but
-> > pre-blending degamma caps (DPP) is currently in use to provide DRM CRTC
-> > atomic degamma or implict degamma on legacy gamma. Detach degamma usage
-> > regarging CRTC color properties to manage plane and CRTC color
-> > correction combinations.
-> >=20
-> > Reviewed-by: Harry Wentland <harry.wentland@amd.com>
-> > Signed-off-by: Melissa Wen <mwen@igalia.com>
+On Fri, Aug 25, 2023 at 6:56=E2=80=AFAM Jani Nikula <jani.nikula@linux.inte=
+l.com> wrote:
+>
+> On Fri, 25 Aug 2023, Vignesh Raman <vignesh.raman@collabora.com> wrote:
+> > Force db410c to host mode to fix network issue which results in failure
+> > to mount root fs via NFS.
+> > See https://gitlab.freedesktop.org/gfx-ci/linux/-/commit/cb72a629b8c15c=
+80a54dda510743cefd1c4b65b8
+> >
+> > Since this fix is not sent upstream, add it to build.sh script
+> > before building the kernel and dts. Better approach would be
+> > to use devicetree overlays.
+> >
+> > Signed-off-by: Vignesh Raman <vignesh.raman@collabora.com>
 > > ---
-> >  .../amd/display/amdgpu_dm/amdgpu_dm_color.c   | 59 +++++++++++++------
-> >  1 file changed, 41 insertions(+), 18 deletions(-)
-> >=20
-> > diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c b/=
-drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
-> > index 68e9f2c62f2e..74eb02655d96 100644
-> > --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
-> > +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
-> > @@ -764,20 +764,9 @@ int amdgpu_dm_update_crtc_color_mgmt(struct dm_crt=
-c_state *crtc)
-> >  	return 0;
-> >  }
-> > =20
-> > -/**
-> > - * amdgpu_dm_update_plane_color_mgmt: Maps DRM color management to DC =
-plane.
-> > - * @crtc: amdgpu_dm crtc state
-> > - * @dc_plane_state: target DC surface
-> > - *
-> > - * Update the underlying dc_stream_state's input transfer function (IT=
-F) in
-> > - * preparation for hardware commit. The transfer function used depends=
- on
-> > - * the preparation done on the stream for color management.
-> > - *
-> > - * Returns:
-> > - * 0 on success. -ENOMEM if mem allocation fails.
-> > - */
-> > -int amdgpu_dm_update_plane_color_mgmt(struct dm_crtc_state *crtc,
-> > -				      struct dc_plane_state *dc_plane_state)
-> > +static int
-> > +map_crtc_degamma_to_dc_plane(struct dm_crtc_state *crtc,
-> > +			     struct dc_plane_state *dc_plane_state)
-> >  {
-> >  	const struct drm_color_lut *degamma_lut;
-> >  	enum dc_transfer_func_predefined tf =3D TRANSFER_FUNCTION_SRGB;
-> > @@ -800,8 +789,7 @@ int amdgpu_dm_update_plane_color_mgmt(struct dm_crt=
-c_state *crtc,
-> >  						 &degamma_size);
-> >  		ASSERT(degamma_size =3D=3D MAX_COLOR_LUT_ENTRIES);
-> > =20
-> > -		dc_plane_state->in_transfer_func->type =3D
-> > -			TF_TYPE_DISTRIBUTED_POINTS;
-> > +		dc_plane_state->in_transfer_func->type =3D TF_TYPE_DISTRIBUTED_POINT=
-S;
-> > =20
-> >  		/*
-> >  		 * This case isn't fully correct, but also fairly
-> > @@ -837,7 +825,7 @@ int amdgpu_dm_update_plane_color_mgmt(struct dm_crt=
-c_state *crtc,
-> >  				   degamma_lut, degamma_size);
-> >  		if (r)
-> >  			return r;
-> > -	} else if (crtc->cm_is_degamma_srgb) {
-> > +	} else {
-> >  		/*
-> >  		 * For legacy gamma support we need the regamma input
-> >  		 * in linear space. Assume that the input is sRGB.
-> > @@ -847,8 +835,43 @@ int amdgpu_dm_update_plane_color_mgmt(struct dm_cr=
-tc_state *crtc,
-> > =20
-> >  		if (tf !=3D TRANSFER_FUNCTION_SRGB &&
-> >  		    !mod_color_calculate_degamma_params(NULL,
-> > -			    dc_plane_state->in_transfer_func, NULL, false))
-> > +							dc_plane_state->in_transfer_func,
-> > +							NULL, false))
-> >  			return -ENOMEM;
-> > +	}
+> >  drivers/gpu/drm/ci/build.sh | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> >
+> > diff --git a/drivers/gpu/drm/ci/build.sh b/drivers/gpu/drm/ci/build.sh
+> > index 7b014287a041..c39834bd6bd7 100644
+> > --- a/drivers/gpu/drm/ci/build.sh
+> > +++ b/drivers/gpu/drm/ci/build.sh
+> > @@ -70,6 +70,10 @@ if [ -z "$CI_MERGE_REQUEST_PROJECT_PATH" ]; then
+> >      fi
+> >  fi
+> >
+> > +# Force db410c to host mode to fix network issue which results in fail=
+ure to mount root fs via NFS.
+> > +# See https://gitlab.freedesktop.org/gfx-ci/linux/-/commit/cb72a629b8c=
+15c80a54dda510743cefd1c4b65b8
+> > +sed -i '/&usb {/,/status =3D "okay";/s/status =3D "okay";/&\n\tdr_mode=
+ =3D "host";/' arch/arm64/boot/dts/qcom/apq8016-sbc.dts
 > > +
-> > +	return 0;
-> > +}
-> > +
-> > +/**
-> > + * amdgpu_dm_update_plane_color_mgmt: Maps DRM color management to DC =
-plane.
-> > + * @crtc: amdgpu_dm crtc state
-> > + * @dc_plane_state: target DC surface
-> > + *
-> > + * Update the underlying dc_stream_state's input transfer function (IT=
-F) in
-> > + * preparation for hardware commit. The transfer function used depends=
- on
-> > + * the preparation done on the stream for color management.
-> > + *
-> > + * Returns:
-> > + * 0 on success. -ENOMEM if mem allocation fails.
-> > + */
-> > +int amdgpu_dm_update_plane_color_mgmt(struct dm_crtc_state *crtc,
-> > +				      struct dc_plane_state *dc_plane_state)
-> > +{
-> > +	bool has_crtc_cm_degamma;
-> > +	int ret;
-> > +
-> > +	has_crtc_cm_degamma =3D (crtc->cm_has_degamma || crtc->cm_is_degamma_=
-srgb);
-> > +	if (has_crtc_cm_degamma){
-> > +		/* AMD HW doesn't have post-blending degamma caps. When DRM
-> > +		 * CRTC atomic degamma is set, we maps it to DPP degamma block
-> > +		 * (pre-blending) or, on legacy gamma, we use DPP degamma to
-> > +		 * linearize (implicit degamma) from sRGB/BT709 according to
-> > +		 * the input space.
->=20
-> Uhh, you can't just move degamma before blending if KMS userspace
-> wants it after blending. That would be incorrect behaviour. If you
-> can't implement it correctly, reject it.
->=20
-> I hope that magical unexpected linearization is not done with atomic,
-> either.
->=20
-> Or maybe this is all a lost cause, and only the new color-op pipeline
-> UAPI will actually work across drivers.
+>
+> It seems like a really bad idea to me to have the CI build modify the
+> source tree before building.
+>
+> The kernel being built will have a dirty git repo, and the localversion
+> will have -dirty in it.
+>
+> I think it would be better to do out-of-tree builds and assume the
+> source is read-only.
 
-I agree that crtc degamma is an optional property and should be not
-exposed if not available.  I did something in this line for DCE that has
-no degamma block[1].  Then, AMD DDX driver stopped to advertise atomic
-API for DCE, that was not correct too[2].
+We have the ${target_branch}-external-fixes mechanism to merge
+necessary changes before building the kernel for CI.  Which is
+necessary for a couple of reasons:
 
-But I see it as a lost cause that will only be fixed in a new generic
-color API. I don't think we should change it using the current DRM CRTC
-API with driver-specific props.
+1) patches like this which aren't appropriate upstream but necessary
+due to the CI lab setup
+2) target branch if often based on an early -rc, and it isn't unheard
+of to need some fix for some board or another which isn't appropriate
+to land via drm-next
 
-[1] https://lore.kernel.org/amd-gfx/20221103184500.14450-1-mwen@igalia.com/
-[2] https://gitlab.freedesktop.org/xorg/driver/xf86-video-amdgpu/-/issues/67
->=20
->=20
-> Thanks,
-> pq
->=20
-> > +		 */
-> > +		ret =3D map_crtc_degamma_to_dc_plane(crtc, dc_plane_state);
-> > +		if (ret)
-> > +			return ret;
-> >  	} else {
-> >  		/* ...Otherwise we can just bypass the DGM block. */
-> >  		dc_plane_state->in_transfer_func->type =3D TF_TYPE_BYPASS;
->=20
+We should use the -external-fixes branch mechanism for patches like this on=
+e.
 
---crdzpq3rjuvmqkwv
-Content-Type: application/pgp-signature; name="signature.asc"
+BR,
+-R
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEd8WOo/JViG+Tu+XIwqF3j0dLehwFAmToutIACgkQwqF3j0dL
-ehy5NA/9EdmnRFoWaC9teJxgxc6p+TJFocyVYDHQjj2O2+O0DYv9o58NWsjhqbzz
-ng67Zn4MWJqEYSe4iKXnoMknROT+FNV+hVjkTn8WJyjOsjP97aqKApouAHnIWQfZ
-n66xc6KCT4O/B3TjNRFfZltRdPikSM/ynpEbOGdAn0u/WqtZWcAmXeRwXIrdvO+N
-Z2SjIZL4ksowDrBHgYx63cxkknRkfhp00npkohPwqiPrb38hYSmj+SuP2nXo2gXS
-Xe23abhCD1L0xWB4WGlPZLE14VDU8M7Z4ILAF7J6SyA4syaPl9qtlM1USS7aq1TA
-eOkgGBxCOzvW0T0DfXseD+pg3b4l+Z5tWSC9aRXcW+GnJ/lbxmdTfyld4IW6FWND
-i+AcD2RNJZlI0Nc8JpmfijNvaq/wlRvFDBp9er7WUtKdjMA2yRLWHMgCjlsUXsgc
-TGfDM6KtTDMkh0ZQcAbU0a4VwDuGW4kiekrz5cHIR6yZsopvcyZUkY4pRPnzKJY2
-lv+uYALHOvr79n31ppW74xfMRVOU4GaNKnPCmW1aDcxJQzUqiv2KBZvVzJqfgKq9
-AYXGZELjnp5uG/jwh4vkeEXgpd7x1AyIMDdOtWrDSMu3m0pKfMB1Yo0ZcY5Zm3F9
-Ch/dQo33pIbRbcULhfeq7o1NSfhmvVyhlyQCa/clr0iVU3JgtAY=
-=lrJv
------END PGP SIGNATURE-----
-
---crdzpq3rjuvmqkwv--
+> >  for opt in $ENABLE_KCONFIGS; do
+> >    echo CONFIG_$opt=3Dy >> drivers/gpu/drm/ci/${KERNEL_ARCH}.config
+> >  done
+>
+> Ditto for the config changes in the context here. Those are files in
+> git, don't change them.
+>
+> Shouldn't this use something like 'scripts/config --enable' or
+> 'scripts/config --disable' on the .config file to be used for building
+> instead?
+>
+>
+> BR,
+> Jani.
+>
+>
+> --
+> Jani Nikula, Intel Open Source Graphics Center
