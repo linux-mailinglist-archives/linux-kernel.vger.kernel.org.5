@@ -2,215 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CEC778827D
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 10:42:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A23578824B
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 10:39:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243831AbjHYIlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 04:41:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53590 "EHLO
+        id S243469AbjHYIj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 04:39:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243964AbjHYIlU (ORCPT
+        with ESMTP id S243781AbjHYIjX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 04:41:20 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2074.outbound.protection.outlook.com [40.107.220.74])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 595471FFD;
-        Fri, 25 Aug 2023 01:41:18 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PCkq8FLNKafVM5CaULW7NJX071jjNhyxX56bOODIQwdh6+J5d1OpxcseEVQNjdj3kyqFXj4DJuh1j4Q1YMH35yh03WNaylNOWmu26sN08oYgF83RcxZuiSHd8mMlWAZ/JELUGFnLMg3/tuJeG0WQTbzK6q1GmyZ01YGBU5xxvCYxqiv+mEShyp/Jh9LcdZWcbLzw1BuEe545BTIYZImT0p1EWpytlKrl3F+iDAGpaRPoyFBko3VGxPK/L0Eipl0SvprX6DfTyUQi2qMZJ2YTIGSLz419m7Ku4tCEn1s2TiLIcCE0CPwBgCRlye+rWr/HLbtxc9dgEQsk6nMzW27xBQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=oBMyP5sjBldwqJ3K6uKO9aVAXKYlirNWck9M6BuMFVM=;
- b=QiNBwy/Wt8fxkE0Q2PtrozEDK3sU5LtxQE+VygRZkU2vlcCi2AtIf8AnJPrJcA4VJSKX4VJdm8bb/bYQEeAf9BPdg7ov1H0RGd0gLAl3Pza1b9dqoSIjGyc1+6bF1qVelU4g7hwnpmHQ0Yjxyzvttdl7ccyCocpqt6hrAhehmjV2/vPL8x6M4z/B3Thnde7vk7i66Mf+/9gPdxMmDcK3KKpPjXbnB2P5ALrit1T3vjKz/lHuL75P9VU06ravs2OrCgzHWFDpRjAxU/hrxQ0pF5Fdz25TXlDpo6sZTt79pQMvh64HuQ/lHgC3gNrGKu5GstgxCQi+H95Oo6F6H+hECQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oBMyP5sjBldwqJ3K6uKO9aVAXKYlirNWck9M6BuMFVM=;
- b=aGjrJdXPh49Ch/bpSaTCAtGXZZ8HNjt3iEhoW0GNTa04R6tlijVftvah9ER5ttyYYAy0fH4TQHdkwR8vkHTuV+QyXzBo0s/afK174ajlbK2yOoxiXNQXT4hkbNFCQ3TEv2WQSgIjXypF6xvnIQ8LgmuBsJtJWbtIRHwESWV9YM8=
-Received: from BYAPR07CA0047.namprd07.prod.outlook.com (2603:10b6:a03:60::24)
- by BY5PR12MB4163.namprd12.prod.outlook.com (2603:10b6:a03:202::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.27; Fri, 25 Aug
- 2023 08:41:15 +0000
-Received: from MWH0EPF000989E9.namprd02.prod.outlook.com
- (2603:10b6:a03:60:cafe::60) by BYAPR07CA0047.outlook.office365.com
- (2603:10b6:a03:60::24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.26 via Frontend
- Transport; Fri, 25 Aug 2023 08:41:15 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- MWH0EPF000989E9.mail.protection.outlook.com (10.167.241.136) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6699.15 via Frontend Transport; Fri, 25 Aug 2023 08:41:15 +0000
-Received: from equan-buildpc.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 25 Aug
- 2023 03:41:09 -0500
-From:   Evan Quan <evan.quan@amd.com>
-To:     <lenb@kernel.org>, <johannes@sipsolutions.net>,
+        Fri, 25 Aug 2023 04:39:23 -0400
+Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA86EE7D;
+        Fri, 25 Aug 2023 01:39:20 -0700 (PDT)
+Received: from wsk (85-222-111-42.dynamic.chello.pl [85.222.111.42])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: lukma@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id DB2FC8640E;
+        Fri, 25 Aug 2023 10:39:18 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1692952759;
+        bh=i17KcZi6sMv69Y8xEii5b5JThMFIT9ZeP6SHcy5yWtc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=gUOf3bp0rGBQBv862scEPntYJQ+mUe9HKHmPT2IRXiTrPsX8dsLMG1qu0sOrrRK1P
+         eSWknXSTwuCgvQJLne6DRO+UPr/zLF2oTFxOL1gVRQ/1F9NywPwlsl0rwcDTWAHg0N
+         Rv5Meiy28In+TOaNz0yFPlcIim251ZS/XU3Fh0PhB/kI4Y7Entyv2hBRRFlTR3GxQD
+         61DWraad3ZC7mD1OfGsQ01XvjAhFtbTdOp1g9lReQIyzv0lnoFYv/egBml4yiUpg2u
+         H71jKQR+QvJ6uDDBepo3yjyna3c6nvg+uEseQGys/7vKr1dx94SoYpZPpmTPcE9LvG
+         I02H97yfQH7Vg==
+Date:   Fri, 25 Aug 2023 10:39:11 +0200
+From:   Lukasz Majewski <lukma@denx.de>
+To:     <Tristram.Ha@microchip.com>
+Cc:     <andrew@lunn.ch>, <f.fainelli@gmail.com>, <olteanv@gmail.com>,
         <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <alexander.deucher@amd.com>,
-        <rafael@kernel.org>, <Lijo.Lazar@amd.com>,
-        <mario.limonciello@amd.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
-        <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
-        <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
-        Evan Quan <evan.quan@amd.com>
-Subject: [V10 8/8] drm/amd/pm: enable Wifi RFI mitigation feature support for SMU13.0.7
-Date:   Fri, 25 Aug 2023 16:38:46 +0800
-Message-ID: <20230825083846.4001973-9-evan.quan@amd.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230825083846.4001973-1-evan.quan@amd.com>
-References: <20230825083846.4001973-1-evan.quan@amd.com>
+        <Woojung.Huh@microchip.com>, <pabeni@redhat.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <UNGLinuxDriver@microchip.com>
+Subject: Re: [PATCH 2/2] net: dsa: microchip: Provide Module 4 KSZ9477
+ errata (DS80000754C)
+Message-ID: <20230825103911.682b3d70@wsk>
+In-Reply-To: <BYAPR11MB35583A648E4E44944A0172A0ECE3A@BYAPR11MB3558.namprd11.prod.outlook.com>
+References: <20230824154827.166274-1-lukma@denx.de>
+        <20230824154827.166274-2-lukma@denx.de>
+        <BYAPR11MB35583A648E4E44944A0172A0ECE3A@BYAPR11MB3558.namprd11.prod.outlook.com>
+Organization: denx.de
+X-Mailer: Claws Mail 3.19.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MWH0EPF000989E9:EE_|BY5PR12MB4163:EE_
-X-MS-Office365-Filtering-Correlation-Id: 12e6bf20-626f-4bd5-bca1-08dba5470b47
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: o2VU39ysDqURVFzQB2SOYgbw0/PNKOpBKJv7RPQJpGvBmdB7GyCBnqsxhByc9hYUc82uhcSef+k77J9WAiG/u+m84VGThkDlWNSvUhJb1Y9UhsFyOnTaPc7L0pvVXlwqM43itSxlxBD97pL/uvviCa1KEphJx74CzwhnUMfUNWnEql2AUE3PnytYyaLEIEFjjyPLjaPjLgPrCcs3iPJtwxAnSrx8NSB7iAKJAGzOhuGAsQvaZt2VVVq9D8nszettdyK22bxRcBd5KiLzYK/2M0eRALMGo9ZYw/06WxVwO2IQwQoeSDuXaW6H8SnDyRx9t5Jyn6VGbwc/BWXr/whK5aog0q5NdPZNKr+dnLffqj8psCMftnVfIsHOYZMt4GkIeOy7ItMtxytNYTEqiGFtBL+WCZNQrDjh/WIgUnPMWXeL7DVg6CDDG0XiYkT+Vw4nAzkXHLVqDMnqkOv8dCu5cOwm8Eoy4HVfQDqklBj3BwVdNj/SDnGquQdnw3dHoUp2nPLChJ5zJtIvuTwOvZTzvePyNzIIXXXBnKh2OzbA6krteVN3UJluMlCopRyTXRY1BjsToDj+AE1bFxffskmV2Q8m0rC8LZBjibjCIYcgwzZGtsu2UM3XyMfmmWwsQJgQ+Mm3tksfsSP0C9q4++WBrsDAsjHmdavG7WdBRX/Z0f6CucxnU7sahU+lpnjHRY2LUryMlGZA7JCLQECliz5T4VoX2ykRhmKoZWhf4is8iJgAu8qjTkE7+0eDScnFIxfIGO3Lglhv/19ZKJJHpTuaiIIRXiuB6PfdP+kX8vg+oBw=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(39860400002)(396003)(136003)(346002)(186009)(451199024)(1800799009)(82310400011)(46966006)(36840700001)(40470700004)(40460700003)(26005)(336012)(426003)(16526019)(83380400001)(1076003)(2616005)(47076005)(36860700001)(41300700001)(7416002)(70586007)(54906003)(316002)(6636002)(70206006)(2906002)(5660300002)(44832011)(8936002)(4326008)(110136005)(8676002)(478600001)(6666004)(7696005)(40480700001)(82740400003)(86362001)(356005)(81166007)(921005)(36756003)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Aug 2023 08:41:15.1850
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 12e6bf20-626f-4bd5-bca1-08dba5470b47
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: MWH0EPF000989E9.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4163
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/plYHyeasmSVUInH5yiK2.a2";
+ protocol="application/pgp-signature"; micalg=pgp-sha512
+X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
+X-Virus-Status: Clean
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fulfill the SMU13.0.7 support for Wifi RFI mitigation feature.
+--Sig_/plYHyeasmSVUInH5yiK2.a2
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Evan Quan <evan.quan@amd.com>
-Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
----
- .../drm/amd/pm/swsmu/smu13/smu_v13_0_7_ppt.c  | 59 +++++++++++++++++++
- 1 file changed, 59 insertions(+)
+Hi Tristram,
 
-diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_7_ppt.c b/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_7_ppt.c
-index b1f0937ccade..d02fe284b05d 100644
---- a/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_7_ppt.c
-+++ b/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_7_ppt.c
-@@ -126,6 +126,7 @@ static struct cmn2asic_msg_mapping smu_v13_0_7_message_map[SMU_MSG_MAX_COUNT] =
- 	MSG_MAP(AllowGpo,			PPSMC_MSG_SetGpoAllow,           0),
- 	MSG_MAP(GetPptLimit,			PPSMC_MSG_GetPptLimit,                 0),
- 	MSG_MAP(NotifyPowerSource,		PPSMC_MSG_NotifyPowerSource,           0),
-+	MSG_MAP(EnableUCLKShadow,		PPSMC_MSG_EnableUCLKShadow,            0),
- };
- 
- static struct cmn2asic_mapping smu_v13_0_7_clk_map[SMU_CLK_COUNT] = {
-@@ -207,6 +208,7 @@ static struct cmn2asic_mapping smu_v13_0_7_table_map[SMU_TABLE_COUNT] = {
- 	TAB_MAP(ACTIVITY_MONITOR_COEFF),
- 	[SMU_TABLE_COMBO_PPTABLE] = {1, TABLE_COMBO_PPTABLE},
- 	TAB_MAP(OVERDRIVE),
-+	TAB_MAP(WIFIBAND),
- };
- 
- static struct cmn2asic_mapping smu_v13_0_7_pwr_src_map[SMU_POWER_SOURCE_COUNT] = {
-@@ -497,6 +499,9 @@ static int smu_v13_0_7_tables_init(struct smu_context *smu)
- 	               AMDGPU_GEM_DOMAIN_VRAM);
- 	SMU_TABLE_INIT(tables, SMU_TABLE_COMBO_PPTABLE, MP0_MP1_DATA_REGION_SIZE_COMBOPPTABLE,
- 			PAGE_SIZE, AMDGPU_GEM_DOMAIN_VRAM);
-+	SMU_TABLE_INIT(tables, SMU_TABLE_WIFIBAND,
-+		       sizeof(WifiBandEntryTable_t), PAGE_SIZE,
-+		       AMDGPU_GEM_DOMAIN_VRAM);
- 
- 	smu_table->metrics_table = kzalloc(sizeof(SmuMetricsExternal_t), GFP_KERNEL);
- 	if (!smu_table->metrics_table)
-@@ -2173,6 +2178,57 @@ static int smu_v13_0_7_set_df_cstate(struct smu_context *smu,
- 					       NULL);
- }
- 
-+static bool smu_v13_0_7_wbrf_support_check(struct smu_context *smu)
-+{
-+	return smu->smc_fw_version > 0x00524600;
-+}
-+
-+static int smu_v13_0_7_set_wbrf_exclusion_ranges(struct smu_context *smu,
-+						 struct exclusion_range *exclusion_ranges)
-+{
-+	WifiBandEntryTable_t wifi_bands;
-+	int valid_entries = 0;
-+	int ret, i;
-+
-+	memset(&wifi_bands, 0, sizeof(wifi_bands));
-+	for (i = 0; i < ARRAY_SIZE(wifi_bands.WifiBandEntry); i++) {
-+		if (!exclusion_ranges[i].start &&
-+		    !exclusion_ranges[i].end)
-+			break;
-+
-+		/* PMFW expects the inputs to be in Mhz unit */
-+		wifi_bands.WifiBandEntry[valid_entries].LowFreq =
-+			DIV_ROUND_DOWN_ULL(exclusion_ranges[i].start, HZ_IN_MHZ);
-+		wifi_bands.WifiBandEntry[valid_entries++].HighFreq =
-+			DIV_ROUND_UP_ULL(exclusion_ranges[i].end, HZ_IN_MHZ);
-+	}
-+	wifi_bands.WifiBandEntryNum = valid_entries;
-+
-+	/*
-+	 * Per confirm with PMFW team, WifiBandEntryNum = 0 is a valid setting.
-+	 * Considering the scenarios below:
-+	 * - At first the wifi device adds an exclusion range e.g. (2400,2500) to
-+	 *   BIOS and our driver gets notified. We will set WifiBandEntryNum = 1
-+	 *   and pass the WifiBandEntry (2400, 2500) to PMFW.
-+	 *
-+	 * - Later the wifi device removes the wifiband list added above and
-+	 *   our driver gets notified again. At this time, driver will set
-+	 *   WifiBandEntryNum = 0 and pass an empty WifiBandEntry list to PMFW.
-+	 *   - PMFW may still need to do some uclk shadow update(e.g. switching
-+	 *     from shadow clock back to primary clock) on receiving this.
-+	 */
-+
-+	ret = smu_cmn_update_table(smu,
-+				   SMU_TABLE_WIFIBAND,
-+				   0,
-+				   (void *)(&wifi_bands),
-+				   true);
-+	if (ret)
-+		dev_err(smu->adev->dev, "Failed to set wifiband!");
-+
-+	return ret;
-+}
-+
- static const struct pptable_funcs smu_v13_0_7_ppt_funcs = {
- 	.get_allowed_feature_mask = smu_v13_0_7_get_allowed_feature_mask,
- 	.set_default_dpm_table = smu_v13_0_7_set_default_dpm_table,
-@@ -2241,6 +2297,9 @@ static const struct pptable_funcs smu_v13_0_7_ppt_funcs = {
- 	.set_mp1_state = smu_v13_0_7_set_mp1_state,
- 	.set_df_cstate = smu_v13_0_7_set_df_cstate,
- 	.gpo_control = smu_v13_0_gpo_control,
-+	.is_asic_wbrf_supported = smu_v13_0_7_wbrf_support_check,
-+	.enable_uclk_shadow = smu_v13_0_enable_uclk_shadow,
-+	.set_wbrf_exclusion_ranges = smu_v13_0_7_set_wbrf_exclusion_ranges,
- };
- 
- void smu_v13_0_7_set_ppt_funcs(struct smu_context *smu)
--- 
-2.34.1
+> > +static int ksz9477_errata(struct dsa_switch *ds)
+> > +{
+> > +       struct ksz_device *dev =3D ds->priv;
+> > +       u16 val;
+> > +       int p;
+> > +
+> > +       /* KSZ9477 Errata DS80000754C
+> > +        *
+> > +        * Module 4: Energy Efficient Ethernet (EEE) feature select
+> > must be
+> > +        * manually disabled
+> > +        *   The EEE feature is enabled by default, but it is not
+> > fully
+> > +        *   operational. It must be manually disabled through
+> > register
+> > +        *   controls. If not disabled, the PHY ports can
+> > auto-negotiate
+> > +        *   to enable EEE, and this feature can cause link drops
+> > when linked
+> > +        *   to another device supporting EEE.
+> > +        *
+> > +        *   Only PHY ports (dsa user) [0-4] need to have the EEE
+> > advertisement
+> > +        *   bits cleared.
+> > +        */
+> > +
+> > +       for (p =3D 0; p < ds->num_ports; p++) {
+> > +               if (!dsa_is_user_port(ds, p))
+> > +                       continue;
+> > +
+> > +               ksz9477_port_mmd_read(dev, p, MMD_DEVICE_ID_EEE_ADV,
+> > +                                     MMD_EEE_ADV, &val, 1);
+> > +
+> > +               pr_err("%s: PORT: %d val: 0x%x pc: %d\n", __func__,
+> > p, val,
+> > +                      ds->num_ports);
+> > +
+> > +               val &=3D ~(EEE_ADV_100MBIT | EEE_ADV_1GBIT);
+> > +               ksz9477_port_mmd_write(dev, p,
+> > MMD_DEVICE_ID_EEE_ADV,
+> > +                                      MMD_EEE_ADV, &val, 1);
+> > +       }
+> > +
+> > +       return 0;
+> > +}
+> > +
+> >  int ksz9477_setup(struct dsa_switch *ds)
+> >  {
+> >         struct ksz_device *dev =3D ds->priv;
+> > @@ -1157,7 +1195,7 @@ int ksz9477_setup(struct dsa_switch *ds)
+> >         /* enable global MIB counter freeze function */
+> >         ksz_cfg(dev, REG_SW_MAC_CTRL_6, SW_MIB_COUNTER_FREEZE,
+> > true);
+> >=20
+> > -       return 0;
+> > +       return ksz9477_errata(ds);
+> >  } =20
+>=20
+> I would prefer to execute the code in ksz9477_config_cpu_port(), as at
+> the end there is already a loop to do something to each port.=20
 
+Just some explanation of the taken approach:
+
+1. I've followed already in-mainline code for ksz8795.c
+(ksz8_handle_global_errata(ds)) which is executed in ksz8_setup
+function.=20
+
+2. I do believe, that separate "errata" function would be more
+readable, as KSZ9477 has many more erratas to be added.
+
+> The
+> check to disable EEE or not should be dev->info->internal_phy[port],
+> as one of the user ports can be RGMII or SGMII, which does not have a
+> PHY that can be accessed inside the switch.
+
+Yes, this would be better solution. Thanks for the suggestion.
+
+>=20
+> As the EEE register value is simply 6 it should be enough to just set
+> the register to zero.  If so we do not need to add back those
+> ksz9477_port_mmd_setup functions and just use ksz_pwrite16() to write
+> to the MMD register.
+>=20
+
+IMHO adding functions to MMD modification would facilitate further
+development (for example LED setup).
+
+However, if we only plan to fix this errata, then the MMD access
+functions are not required.
+
+
+Best regards,
+
+Lukasz Majewski
+
+--
+
+DENX Software Engineering GmbH,      Managing Director: Erika Unter
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
+
+--Sig_/plYHyeasmSVUInH5yiK2.a2
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAmToaK8ACgkQAR8vZIA0
+zr3ekwgAgFwxNjmx9Lc+4ZA3T6NhiEupyQSonzxehCc/tHBmKcZNllwhfxEqUZeE
+ok2RXVwTR+HNqVyMrge5K9TPbnCjlDLWGPyAMcaPcEtc9tsFeDyEbWRljhZYkjaQ
+nYmcc2S5LalhdCCRdJGhwEiwZl3bNrHoslLxj+lgRMsCoog1A3lM4NiMqFGpkgmI
+O0b6SlifRT+7ewXee8ps1nJDeI9SHKDDwH9iI1ievjavHx4p8JHQildSQZWiKkbm
+lUHahWDljtNSIukjDAwqQTG8pIaU4iCFVIsKU85LrVqBI9Fs+vWsqsgTeeQZ6XSJ
+eJtWa8Ol65WZ/Cf1R0v/IdkUb+SZiA==
+=o7y0
+-----END PGP SIGNATURE-----
+
+--Sig_/plYHyeasmSVUInH5yiK2.a2--
