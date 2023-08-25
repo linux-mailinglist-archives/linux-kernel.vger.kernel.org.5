@@ -2,120 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1F7D787E4B
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 05:10:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD00E787E73
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 05:21:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233277AbjHYDKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 23:10:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36488 "EHLO
+        id S236232AbjHYDU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 23:20:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230505AbjHYDJu (ORCPT
+        with ESMTP id S229449AbjHYDUi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 23:09:50 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CABECA1;
-        Thu, 24 Aug 2023 20:09:47 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 60BCA62DB2;
-        Fri, 25 Aug 2023 03:09:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C903AC433C8;
-        Fri, 25 Aug 2023 03:09:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692932986;
-        bh=3exBqVZ6PbhQCqcT4oQXsky3A0u1MhYBHNjPML/67Jk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JEGlUyCrxmSVl/GEfgrhYQq1eNKKg+SKugJJguIDTJLZZBdu6H9fuMTxz8k1CATX4
-         VEPIfGrqhXafzJc4zYPj1kcTa4HP/pWb6bEtnhuGKzx8hyTxSmY0jYm0Dq+Kezo1kX
-         azffLJwd8mQdVjtZEESDMRDDCqPMF1zMoQ64yNZtZy4rzwTMVE53UPj56fvmurVsJu
-         ++rUk1d1CGygU1Mkhs0O9WgHpf1bAOzN+oWndbWjpQXUyXlc9FPVeRol4Fo7DHdK7o
-         /lhHC1hZ0IL6pUviyxxVrfrAH1tXKw7V9bURD5FQO5X/hPIJE1/iLM9NZDkJ1QT4nU
-         UygEvdZUP4mlg==
-Date:   Thu, 24 Aug 2023 21:10:45 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Brian Norris <briannorris@chromium.org>,
-        Kalle Valo <kvalo@kernel.org>,
-        Amitkumar Karwar <akarwar@marvell.com>,
-        Xinming Hu <huxm@marvell.com>, Dan Williams <dcbw@redhat.com>
-Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH v2 3/3] wifi: mwifiex: Sanity check tlv_len and tlv_bitmap_len
-Message-ID: <d4f8780527d551552ee96f17a0229e02e1c200d1.1692931954.git.gustavoars@kernel.org>
-References: <cover.1692931954.git.gustavoars@kernel.org>
+        Thu, 24 Aug 2023 23:20:38 -0400
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DC35D3;
+        Thu, 24 Aug 2023 20:20:37 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RX4vz1QLnz4f3tDS;
+        Fri, 25 Aug 2023 11:20:31 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+        by APP4 (Coremail) with SMTP id gCh0CgDHoqUBHuhkPT4XBg--.14533S4;
+        Fri, 25 Aug 2023 11:20:34 +0800 (CST)
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+To:     song@kernel.org, xni@redhat.com
+Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yukuai3@huawei.com, yukuai1@huaweicloud.com, yi.zhang@huawei.com,
+        yangerkun@huawei.com
+Subject: [PATCH -next v4 0/7] md: make rdev addition and removal independent from daemon thread
+Date:   Fri, 25 Aug 2023 11:16:15 +0800
+Message-Id: <20230825031622.1530464-1-yukuai1@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1692931954.git.gustavoars@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgDHoqUBHuhkPT4XBg--.14533S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7Kr4kJrW8ZFykCry5Wr13CFg_yoW8AFy3pr
+        yaqF1agw4UZFZrGF9xJ3W7W34Fgw4fXrZrJFy3Ww18Cw15WrW0vryxJa1DZrWYy34akry7
+        uF4jqF95C3WkAFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkj14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1l42xK82IYc2Ij64vI
+        r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
+        xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0
+        cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY6xAIw2
+        0EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY
+        1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUZa9-UUUUU=
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add sanity checks for both `tlv_len` and `tlv_bitmap_len` before
-decoding data from `event_buf`.
+From: Yu Kuai <yukuai3@huawei.com>
 
-This prevents any malicious or buggy firmware from overflowing
-`event_buf` through large values for `tlv_len` and `tlv_bitmap_len`.
+Changes in v4:
+ - add some review tag;
+ - add comments to make code more readadble for patch 4,6;
+ - rework patch 7 a litter;
 
-Suggested-by: Dan Williams <dcbw@redhat.com>
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
+Changes in v3:
+ - rename md_choose_sync_direction() to md_choose_sync_action() in patch 2;
+ - fix an error in patch 3;
+ - add flush_work(&mddev->sync_work) while change read-only array to
+ read-write;
+
 Changes in v2:
- - Fix format specifier: %ld -> %zu
-   | Reported-by: kernel test robot <lkp@intel.com>
-   | Closes: https://lore.kernel.org/oe-kbuild-all/202308240844.leyoOwdG-lkp@intel.com/
+ - remove patch 1 from v1 and some related patches, those patches will
+ be sent later when rcu protection for rdev is removed.
+ - add patch 2.
 
- - Update warning messages to explicitly mention that TLV size is
-   greater than tlv_buf_len.
+This is the third patchset to do some preparatory work to synchronize
+io with array reconfiguration.
 
-v1:
- - Link: https://lore.kernel.org/linux-hardening/587423b0737108effe82aefed4407daca39e9a51.1692829410.git.gustavoars@kernel.org/
+1) The first patchset refactor 'active_io', make sure that mddev_suspend()
+will wait for io to be done. [1]
 
- .../net/wireless/marvell/mwifiex/11n_rxreorder.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+2) The second patchset remove 'quiesce' callback from mddev_suspend(), so
+that mddev_suspend() doesn't rely on 'quiesce' callback is registered,
+and can be used for all personalites; [2]
 
-diff --git a/drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c b/drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c
-index 735aac52bdc4..10690e82358b 100644
---- a/drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c
-+++ b/drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c
-@@ -921,6 +921,14 @@ void mwifiex_11n_rxba_sync_event(struct mwifiex_private *priv,
- 	while (tlv_buf_left > sizeof(*tlv_rxba)) {
- 		tlv_type = le16_to_cpu(tlv_rxba->header.type);
- 		tlv_len  = le16_to_cpu(tlv_rxba->header.len);
-+		if (size_add(sizeof(tlv_rxba->header), tlv_len) > tlv_buf_left) {
-+			mwifiex_dbg(priv->adapter, WARN,
-+				    "TLV size (%zu) overflows event_buf buf_left=%d\n",
-+				    size_add(sizeof(tlv_rxba->header), tlv_len),
-+				    tlv_buf_left);
-+			return;
-+		}
-+
- 		if (tlv_type != TLV_TYPE_RXBA_SYNC) {
- 			mwifiex_dbg(priv->adapter, ERROR,
- 				    "Wrong TLV id=0x%x\n", tlv_type);
-@@ -929,6 +937,14 @@ void mwifiex_11n_rxba_sync_event(struct mwifiex_private *priv,
- 
- 		tlv_seq_num = le16_to_cpu(tlv_rxba->seq_num);
- 		tlv_bitmap_len = le16_to_cpu(tlv_rxba->bitmap_len);
-+		if (size_add(sizeof(*tlv_rxba), tlv_bitmap_len) > tlv_buf_left) {
-+			mwifiex_dbg(priv->adapter, WARN,
-+				    "TLV size (%zu) overflows event_buf buf_left=%d\n",
-+				    size_add(sizeof(*tlv_rxba), tlv_bitmap_len),
-+				    tlv_buf_left);
-+			return;
-+		}
-+
- 		mwifiex_dbg(priv->adapter, INFO,
- 			    "%pM tid=%d seq_num=%d bitmap_len=%d\n",
- 			    tlv_rxba->mac, tlv_rxba->tid, tlv_seq_num,
+3) This patchset make array reconfiguration independent from daemon thread,
+and synchronize it with io will be much easier because io may rely on
+daemon thread to be done.
+
+More patchset on the way!
+
+Yu Kuai (7):
+  md: use separate work_struct for md_start_sync()
+  md: factor out a helper to choose sync action from md_check_recovery()
+  md: delay choosing sync action to md_start_sync()
+  md: factor out a helper rdev_removeable() from remove_and_add_spares()
+  md: factor out a helper rdev_is_spare() from remove_and_add_spares()
+  md: factor out a helper rdev_addable() from remove_and_add_spares()
+  md: delay remove_and_add_spares() for read only array to
+    md_start_sync()
+
+ drivers/md/md.c | 308 +++++++++++++++++++++++++++++++++---------------
+ drivers/md/md.h |   5 +-
+ 2 files changed, 218 insertions(+), 95 deletions(-)
+
 -- 
-2.34.1
+2.39.2
 
