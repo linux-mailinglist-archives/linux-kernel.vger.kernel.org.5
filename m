@@ -2,123 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0F4F788101
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 09:39:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E882F78811C
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 09:40:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237455AbjHYHip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 03:38:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49752 "EHLO
+        id S243206AbjHYHju convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 25 Aug 2023 03:39:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242918AbjHYHiZ (ORCPT
+        with ESMTP id S243279AbjHYHjo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 03:38:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAA141FDD
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 00:37:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692949048;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pnj66daazMp7cNcIjFO+EqMnKflgV7c8qtO7Inq7NlY=;
-        b=aWeMZqQtZCb2gVDxYcKRx35AtybMySniy9GbPo0rJxX9/INjkLNvFmb+fGb51aZlxaLO0Z
-        rMdTrrTfFU8QRIcNxGiKE5eyo2EQVxeglGmjKX4bGCape9GV57Fr0KuwpiVUsKtb0XLgQQ
-        s8gy2fPNgvRVgTB02s0YsSdD1AIX2xM=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-320-pLOBM8NOMmuq71nXuiEpaA-1; Fri, 25 Aug 2023 03:37:27 -0400
-X-MC-Unique: pLOBM8NOMmuq71nXuiEpaA-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-31c7b8d0f0aso454476f8f.3
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 00:37:26 -0700 (PDT)
+        Fri, 25 Aug 2023 03:39:44 -0400
+Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA19D1FCA;
+        Fri, 25 Aug 2023 00:39:42 -0700 (PDT)
+Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-5921a962adfso7750207b3.1;
+        Fri, 25 Aug 2023 00:39:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692949046; x=1693553846;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pnj66daazMp7cNcIjFO+EqMnKflgV7c8qtO7Inq7NlY=;
-        b=HcTiBSM72mVknGwQlvgZ5q36xSIgezZpeNQFqPX7grT86T7i0G9gAziaI6tv9j3h6S
-         kIY3roJjwbMgY5ReEVByS3riHeOEM/UX4DnmMcnR3fT6zHz009o1MbRko8iY9tLsv72M
-         MY7qENtV/d2IPzTJveLupIPTEACEgwQ6A18y7PMDA7wubOBnqApc9wMuclfphQ2PpNDm
-         3mcSP/vCzD7w1SJWwIXisRR4fubbrXSPWOtxFWTkkRD5Ei0OkuxiVNdspFEy17CQnfWc
-         kPRdfSLcC535J8X2UXWi257UlyX/i1q++SpJwrk7VEX9Ir4mZ/vGsL7AtBCG1yUCDpff
-         u5Eg==
-X-Gm-Message-State: AOJu0YzFo1PM0APn5fug92/irewd7vgnodRXd5OBQdtLaY+Zg02HrumD
-        GNAnEEXZSXI54mvnmxCd5ElDlZCjTtA+8qLUjvJ3BltE9pie+hug5dW1lMYNaCxzCBc+Hj7FtWs
-        46n9/LVVeqfQa7Fj7YJFdCg3P
-X-Received: by 2002:adf:ce02:0:b0:319:6b5e:85e3 with SMTP id p2-20020adfce02000000b003196b5e85e3mr12061985wrn.71.1692949045920;
-        Fri, 25 Aug 2023 00:37:25 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFKIgA2U9Vxpsz/IZArf9xGgiPdBdcR2RRWiffD6OYBacfD6fGlz67nU8gaKxQgqhi2iYmv+Q==
-X-Received: by 2002:adf:ce02:0:b0:319:6b5e:85e3 with SMTP id p2-20020adfce02000000b003196b5e85e3mr12061973wrn.71.1692949045578;
-        Fri, 25 Aug 2023 00:37:25 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c70e:9200:ce93:b5e6:8aa9:65d4? (p200300cbc70e9200ce93b5e68aa965d4.dip0.t-ipconnect.de. [2003:cb:c70e:9200:ce93:b5e6:8aa9:65d4])
-        by smtp.gmail.com with ESMTPSA id w12-20020a5d4b4c000000b0031416362e23sm1408837wrs.3.2023.08.25.00.37.24
+        d=1e100.net; s=20221208; t=1692949182; x=1693553982;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=E5r8bhhlGnXrx708tsGw6Ag8gm7AVkEO6BeDk4HD7tk=;
+        b=WLwKyxXquJm5Xn2E5suH9Ccdce9jLlK+GauaIf0md59SIWvBfCcZk4dC06SZ0nwQ5K
+         o8mlkO6FrAPPZ3xikK2nHElJNrNcLfVrv2YPtiaWl+//7MkAIb0Vy9SjeVnmpHyCYH4W
+         I5mObQzFhw+m1eUuyVIrzuU9uKe9VfJqoq2WCZPHWNbvYfU/7BBGvgSdw3Aj94FOHzun
+         daBwzKmfiYOEG8N743Xq7gSnARMMxTcLLRtVzpgdK587Rrb1jXfjpcGRqZ29++t0F+TH
+         kPYRW1w9pwZo8+0r6gIkcz/69x/2ENZa+/qIVHSblZZT+i08RU5Os3RvT9tGC4TBTm90
+         tNnA==
+X-Gm-Message-State: AOJu0YzJmfhWcq6vO1UlWpwHrSuIxQLbZeRqaa3IxlV4wtuvVLN03mWl
+        TT2srflCsiYRdKyAssRS2LZd8SWeNqosAGzC
+X-Google-Smtp-Source: AGHT+IG5X+1N+9gN7m2P63rFzRbifScZ6dVPHHJG1DUCTreGK5Pu6Rcf3MDfyMu9eFYv5GgCMrEEDw==
+X-Received: by 2002:a0d:cd45:0:b0:561:206a:ee52 with SMTP id p66-20020a0dcd45000000b00561206aee52mr20431530ywd.24.1692949181853;
+        Fri, 25 Aug 2023 00:39:41 -0700 (PDT)
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com. [209.85.128.172])
+        by smtp.gmail.com with ESMTPSA id l132-20020a0de28a000000b0058e430889d5sm379613ywe.10.2023.08.25.00.39.40
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Aug 2023 00:37:24 -0700 (PDT)
-Message-ID: <a6aaf2cf-1533-e55e-eaaf-75bc5d2056e1@redhat.com>
-Date:   Fri, 25 Aug 2023 09:37:24 +0200
+        Fri, 25 Aug 2023 00:39:40 -0700 (PDT)
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-5924093a9b2so7680237b3.2;
+        Fri, 25 Aug 2023 00:39:40 -0700 (PDT)
+X-Received: by 2002:a25:34cd:0:b0:d0b:5b6:4629 with SMTP id
+ b196-20020a2534cd000000b00d0b05b64629mr19382891yba.46.1692949180028; Fri, 25
+ Aug 2023 00:39:40 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] mm/vmscan: Use folio_migratetype() instead of
- get_pageblock_migratetype()
-Content-Language: en-US
-To:     Vern Hao <haoxing990@gmail.com>, akpm@linux-foundation.org
-Cc:     zhaoyang.huang@unisoc.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Vern Hao <vernhao@tencent.com>
-References: <20230825040848.1542-1-user@VERNHAO-MC1>
- <aa5d199b-ea12-90f3-91fb-468d74a6f934@redhat.com>
- <ca7199a4-5628-425f-8f0b-8e8123b431b8@gmail.com>
- <9d4d0643-6a7e-22bf-1f54-19646bb7231e@redhat.com>
- <90562ff0-9689-4d00-848e-87347cacdbae@gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <90562ff0-9689-4d00-848e-87347cacdbae@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230810141947.1236730-1-arnd@kernel.org> <169292577153.789945.11297239773543112051.b4-ty@oracle.com>
+ <3956e2a4-c545-1212-e95f-3cf61a60d6a4@gmail.com>
+In-Reply-To: <3956e2a4-c545-1212-e95f-3cf61a60d6a4@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 25 Aug 2023 09:39:28 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWC2S330_Vb_NTHTDC=BakBsw4ouP-eFJv0erV1-jmvTQ@mail.gmail.com>
+Message-ID: <CAMuHMdWC2S330_Vb_NTHTDC=BakBsw4ouP-eFJv0erV1-jmvTQ@mail.gmail.com>
+Subject: Re: (subset) [PATCH 00/17] -Wmissing-prototype warning fixes
+To:     Michael Schmitz <schmitzmic@gmail.com>
+Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Matt Turner <mattst88@gmail.com>,
+        Vineet Gupta <vgupta@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Brian Cain <bcain@quicinc.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>,
+        Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Stafford Horne <shorne@gmail.com>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        x86@kernel.org, Borislav Petkov <bp@alien8.de>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Richard Weinberger <richard@nod.at>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        linux-next@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-trace-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kbuild@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25.08.23 09:36, Vern Hao wrote:
-> 
-> 在 2023/8/25 15:34, David Hildenbrand 写道:
->> On 25.08.23 09:31, Vern Hao wrote:
->>>
->>> 在 2023/8/25 15:12, David Hildenbrand 写道:
->>>> On 25.08.23 06:08, Vern Hao wrote:
->>>>> From: Vern Hao <vernhao@tencent.com>
->>>>>
->>>>> In skip_cma(), we can use folio_migratetype() to replace
->>>>> get_pageblock_migratetype().
->>>>>
->>>>> Fixes: 5da226dbfce3 ("mm: skip CMA pages when they are not available")
->>>>
->>>> Why did you think "Fixes" was a good idea?
->>>>
->>> The skip_cma() contains the folio argument, and the folio_migratetype()
->>> is already implemented in the kernel, so I think it's fine to keep it
->>> consistent.
->>
->> If this doesn't actually *fix a bug*, then please don't add fixes and
->> confuse people looking for actual bugfixes.
->>
->> See Documentation/process/submitting-patches.rst
-> OK, my bad, i will remove it, thanks.
-> 
+Hi Michael,
 
-No need to resend. Andrew can drop that tag when applying.
+On Fri, Aug 25, 2023 at 3:31 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
+> On 25/08/23 13:12, Martin K. Petersen wrote:
+> > [11/17] scsi: gvp11: remove unused gvp11_setup() function
+> >          https://git.kernel.org/mkp/scsi/c/bfaa4a0ce1bb
+>
+> I somehow missed that one ...
+>
+> The gvp11_setup() function was probably a relic from the times before
+> module parameters.
+>
+> Since gvp11_xfer_mask appears to be required for some Amiga systems to
+> set the DMA mask, I'd best send a patch to add such a module parameter ...
+>
+> Do you know any details around the use of DMA masks for Amiga WD33C93
+> drivers, Geert?
+
+Doh, it's been a while, and I never had an affected system.
+Probably it's needed on A2000 with an accelerator card and GVP II SCSI,
+to prevent DMA to RAM banks that do not support fast DMA cycles.
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-Cheers,
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-David / dhildenb
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
