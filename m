@@ -2,180 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 110F67880D6
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 09:26:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A754788124
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 09:43:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237354AbjHYHZu convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 25 Aug 2023 03:25:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33532 "EHLO
+        id S236086AbjHYHnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 03:43:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229890AbjHYHZU (ORCPT
+        with ESMTP id S232793AbjHYHmp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 03:25:20 -0400
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E73C61FC7;
-        Fri, 25 Aug 2023 00:25:17 -0700 (PDT)
-Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-d7260fae148so626758276.1;
-        Fri, 25 Aug 2023 00:25:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692948317; x=1693553117;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Xhn4Ub6v7oYgtdvXuR5d+GmEHUbHP7Cgzd91J0zUNls=;
-        b=SPC28q4TGDMq7xSMPgQhA4YhT8acdVLTpzdfNMFKZxKy0yxcjfXa2pF5SnyrnkBxvE
-         cylDvEObwsiAVnd7bxGHNNX5B1J7q03DkqbiPDcQqhEcmj615UbYpoFfIOOK/69A2Vbq
-         4fggprtv3Ljpj4jayzInn8vgqnG2nFqLd6NaC+3NbzosuKUDU6tDgHg6npBkJJyPHNxN
-         w0mPC/NKnH2ql5sgbYKx2WVi6KZxbs6qgzStpNIZMUMhk2f5CxUyX7iFEZwfRYequkXD
-         tQHOCycGAE1CxzdoXtAERvfkT/EA8qIexNnTuRM/zq47EoGmAG8CsAbcVE6BL4trx9SH
-         H+hA==
-X-Gm-Message-State: AOJu0YxOVHhhNwWh117tnbHpVSr4VWHMcwSinVkINsWIsehTQ4TYAFNC
-        0rUnLRCtxPXVMgPHXlBsI8ms8Xt+DJCG3A==
-X-Google-Smtp-Source: AGHT+IGAL3dkY5fZGucbKaATtfnAR+TnhB64tJIuLm7h5tWYjnWhFfPidUJRTCFM8s6X0pIV0JfHuA==
-X-Received: by 2002:a25:a049:0:b0:c6f:b2de:21ba with SMTP id x67-20020a25a049000000b00c6fb2de21bamr16161880ybh.17.1692948316860;
-        Fri, 25 Aug 2023 00:25:16 -0700 (PDT)
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com. [209.85.219.174])
-        by smtp.gmail.com with ESMTPSA id 198-20020a250dcf000000b00d0d2c7dbfecsm280727ybn.7.2023.08.25.00.25.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Aug 2023 00:25:16 -0700 (PDT)
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-d7225259f52so633256276.0;
-        Fri, 25 Aug 2023 00:25:16 -0700 (PDT)
-X-Received: by 2002:a05:6902:100b:b0:d77:e43d:6e82 with SMTP id
- w11-20020a056902100b00b00d77e43d6e82mr7758325ybt.55.1692948316134; Fri, 25
- Aug 2023 00:25:16 -0700 (PDT)
+        Fri, 25 Aug 2023 03:42:45 -0400
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24BABE6A;
+        Fri, 25 Aug 2023 00:42:36 -0700 (PDT)
+X-UUID: f359327e431a11ee9cb5633481061a41-20230825
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=sU4/V6ndA5R7lvrGvDLIjLvlK6dyYIJGN/XjomZsBm8=;
+        b=iHuxotYZaEKndvPVIOALXBfrOPCiYKuNU6N57Arg9zeoYavBHe1jq8d8AGZAxw4/eAYmlYlxk/BbhMslgQawjTfJwQesBN8H3MWMne+hsvwn+5+IDv3HWltCSEXRiGXoGRt0Fum3HQ1tUKJO+6IO94tQbEYebgEijJfLsgMzIgg=;
+X-CID-CACHE: Type:Local,Time:202308251510+08,HitQuantity:1
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.31,REQID:910c819d-5461-4904-ac5e-b6d885aad33c,IP:0,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:0
+X-CID-META: VersionHash:0ad78a4,CLOUDID:8c67bd1f-33fd-4aaa-bb43-d3fd68d9d5ae,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+        DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: f359327e431a11ee9cb5633481061a41-20230825
+Received: from mtkmbs13n2.mediatek.inc [(172.21.101.108)] by mailgw01.mediatek.com
+        (envelope-from <sharp.xia@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1792325326; Fri, 25 Aug 2023 15:42:32 +0800
+Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
+ mtkmbs11n2.mediatek.inc (172.21.101.187) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Fri, 25 Aug 2023 15:42:31 +0800
+Received: from mbjsdccf07.mediatek.inc (10.15.20.246) by
+ mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Fri, 25 Aug 2023 15:42:30 +0800
+From:   <Sharp.Xia@mediatek.com>
+To:     <ulf.hansson@linaro.org>
+CC:     <Sharp.Xia@mediatek.com>,
+        <angelogioacchino.delregno@collabora.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <linux-mmc@vger.kernel.org>,
+        <matthias.bgg@gmail.com>, <wsd_upstream@medaitek.com>
+Subject: Re: [PATCH 1/1] mmc: Set optimal I/O size when mmc_setip_queue
+Date:   Fri, 25 Aug 2023 15:25:36 +0800
+Message-ID: <20230825072536.23602-1-Sharp.Xia@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <CAPDyKFqN0K=2e4rijUBz=9LXVfhEVvDzNgqXTyTgvaPRK-PBNQ@mail.gmail.com>
+References: <CAPDyKFqN0K=2e4rijUBz=9LXVfhEVvDzNgqXTyTgvaPRK-PBNQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <1692120000-46900-1-git-send-email-lizhi.hou@amd.com>
- <1692120000-46900-5-git-send-email-lizhi.hou@amd.com> <2aae84b8-41f9-3c24-bac9-8f882d2211b@linux-m68k.org>
- <2d2efa50-43b2-242c-028b-76554ed30962@amd.com>
-In-Reply-To: <2d2efa50-43b2-242c-028b-76554ed30962@amd.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 25 Aug 2023 09:25:04 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdW_riBrmEThdbaEMO468Hc0oBJKChW=jABUF3T9EhaRew@mail.gmail.com>
-Message-ID: <CAMuHMdW_riBrmEThdbaEMO468Hc0oBJKChW=jABUF3T9EhaRew@mail.gmail.com>
-Subject: Re: [PATCH V13 4/5] of: overlay: Extend of_overlay_fdt_apply() to
- specify the target node
-To:     Lizhi Hou <lizhi.hou@amd.com>
-Cc:     linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, robh@kernel.org, max.zhen@amd.com,
-        sonal.santan@amd.com, stefano.stabellini@xilinx.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-MTK:  N
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,T_SPF_TEMPERROR,UNPARSEABLE_RELAY autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lizhi,
-
-On Thu, Aug 24, 2023 at 8:40 PM Lizhi Hou <lizhi.hou@amd.com> wrote:
-> On 8/24/23 01:31, Geert Uytterhoeven wrote:
-> > On Tue, 15 Aug 2023, Lizhi Hou wrote:
-> >> Currently, in an overlay fdt fragment, it needs to specify the exact
-> >> location in base DT. In another word, when the fdt fragment is
-> >> generated,
-> >> the base DT location for the fragment is already known.
-> >>
-> >> There is new use case that the base DT location is unknown when fdt
-> >> fragment is generated. For example, the add-on device provide a fdt
-> >> overlay with its firmware to describe its downstream devices. Because it
-> >> is add-on device which can be plugged to different systems, its firmware
-> >> will not be able to know the overlay location in base DT. Instead, the
-> >> device driver will load the overlay fdt and apply it to base DT at
-> >> runtime.
-> >> In this case, of_overlay_fdt_apply() needs to be extended to specify
-> >> the target node for device driver to apply overlay fdt.
-> >>    int overlay_fdt_apply(..., struct device_node *base);
-> >>
-> >> Signed-off-by: Lizhi Hou <lizhi.hou@amd.com>
+On Thu, 2023-08-24 at 12:55 +0200, Ulf Hansson wrote:
+>        
+> External email : Please do not click links or open attachments until
+> you have verified the sender or the content.
+>  On Fri, 18 Aug 2023 at 04:45, <Sharp.Xia@mediatek.com> wrote:
 > >
-> > Thanks for your patch, which is now commit 47284862bfc7fd56 ("of:
-> > overlay: Extend of_overlay_fdt_apply() in dt-rh/for-next.
+> > From: Sharp Xia <Sharp.Xia@mediatek.com>
 > >
-> >> --- a/drivers/of/overlay.c
-> >> +++ b/drivers/of/overlay.c
-> >> @@ -715,6 +730,7 @@ static struct device_node *find_target(struct
-> >> device_node *info_node)
-> >> /**
-> >>  * init_overlay_changeset() - initialize overlay changeset from
-> >> overlay tree
-> >>  * @ovcs:        Overlay changeset to build
-> >> + * @target_base:    Point to the target node to apply overlay
-> >>  *
-> >>  * Initialize @ovcs.  Populate @ovcs->fragments with node information
-> >> from
-> >>  * the top level of @overlay_root.  The relevant top level nodes are the
+> > MMC does not set readahead and uses the default VM_READAHEAD_PAGES
+> > resulting in slower reading speed.
+> > Use the max_req_size reported by host driver to set the optimal
+> > I/O size to improve performance.
+> 
+> This seems reasonable to me. However, it would be nice if you could
+> share some performance numbers too - comparing before and after
+> $subject patch.
+> 
+> Kind regards
+> Uffe
+> 
 > >
-> > As an overlay can contain one or more fragments, this means the
-> > base (when specified) will be applied to all fragments, and will thus
-> > override the target-path properties in all fragments.
+> > Signed-off-by: Sharp Xia <Sharp.Xia@mediatek.com>
+> > ---
+> >  drivers/mmc/core/queue.c | 1 +
+> >  1 file changed, 1 insertion(+)
 > >
-> > However, for the use case of an overlay that you can plug into
-> > a random location (and of which there can be multiple instances),
-> > there can really be only a single fragment.  Even nodes that typically
-> > live at the root level (e.g. gpio-leds or gpio-keys) must be inserted
-> > below the specified location, to avoid conflicts.
+> > diff --git a/drivers/mmc/core/queue.c b/drivers/mmc/core/queue.c
+> > index b396e3900717..fc83c4917360 100644
+> > --- a/drivers/mmc/core/queue.c
+> > +++ b/drivers/mmc/core/queue.c
+> > @@ -359,6 +359,7 @@ static void mmc_setup_queue(struct mmc_queue
+> *mq, struct mmc_card *card)
+> >                 blk_queue_bounce_limit(mq->queue, BLK_BOUNCE_HIGH);
+> >         blk_queue_max_hw_sectors(mq->queue,
+> >                 min(host->max_blk_count, host->max_req_size /
+> 512));
+> > +       blk_queue_io_opt(mq->queue, host->max_req_size);
+> >         if (host->can_dma_map_merge)
+> >                 WARN(!blk_queue_can_use_dma_map_merging(mq->queue,
+> >                                                         mmc_dev(hos
+> t)),
+> > --
+> > 2.18.0
 > >
-> > Hence:
-> >   1. Should init_overlay_changeset() return -EINVAL if target_base is
-> >      specified, and there is more than one fragment?
->
-> Maybe allowing more than one fragment make the interface more generic?
-> For example, it could support the use case that multiple fragments share
-> the same base node.
->
-> Currently, the fragment overlay path is "base node path" + "fragment
-> target path". Thus, for the structure:
 
-Oh, I had missed that the "fragment target path" is appended,
-and thought it was just overridden.
+I test this patch on internal platform(kernel-5.15).
 
-> /a/b/c/fragment0
->
-> /a/b/d/fagment1
->
-> It can be two fragments in one fdt by using
->
->    base node path = /a/b
->
->    fragment0 target path = /c
->
->    fragment1 target path = /d
->
-> I am not sure if there will be this kind of use case or not. And I think
-> it would not be hurt to allow that.
+Before:
+console:/ # echo 3 > /proc/sys/vm/drop_caches
+console:/ # dd if=/mnt/media_rw/8031-130D/super.img of=/dev/null
+4485393+1 records in
+4485393+1 records out
+2296521564 bytes (2.1 G) copied, 37.124446 s, 59 M/s
+console:/ # cat /sys/block/mmcblk0/queue/read_ahead_kb
+128
 
-Is there a need for that? Both c and d can be handled as subnodes
-in a single fragment if the target path is empty (and see below).
+After:
+console:/ # echo 3 > /proc/sys/vm/drop_caches
+console:/ # dd if=/mnt/media_rw/8031-130D/super.img of=/dev/null
+4485393+1 records in
+4485393+1 records out
+2296521564 bytes (2.1 G) copied, 28.956049 s, 76 M/s
+console:/ # cat /sys/block/mmcblk0/queue/read_ahead_kb
+1024
 
-> >   2. Should there be a convention about the target-path property's
-> >      contents in the original overlay?
-> >      drivers/of/unittest-data/overlay_pci_node.dtso in "[PATCH V13 5/5]
-> >      of: unittest: Add pci_dt_testdrv pci driver" uses
-> >
-> >          target-path="";
-> >
-> >      which cannot be represented when using sugar syntax.
-> >      "/" should work fine, though.
->
-> Because the fragment overlay path is "base node path" + "fragment target
-> path", I may add code to check if "fragment target patch is '/' and
-> ignore it. I think that would support sugar syntax with only '/' specified.
-
-That makes sense.
-Thanks!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
