@@ -2,184 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0FC97890B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 23:50:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B8387890C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 23:52:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230502AbjHYVuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 17:50:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55372 "EHLO
+        id S231514AbjHYVvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 17:51:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230204AbjHYVuF (ORCPT
+        with ESMTP id S229778AbjHYVv3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 17:50:05 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BAED26B2;
-        Fri, 25 Aug 2023 14:50:02 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-31c5cac3ae2so1060630f8f.3;
-        Fri, 25 Aug 2023 14:50:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693000200; x=1693605000;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cINYXeZKT6Qzjs4rB6QKsa26hETCQhkT6ut7CBIDbos=;
-        b=KLS5gIxCGWPdL99OH1mH59psZ9Ey6yCTIcTR1iqbOxcqmLV3lR+gLrHumu6HCu6TF9
-         cVh6Evi81y931inKfhZX/SDVXSA5Zt6idn5Pii1YESrhnLoWm9GrfDzwtNdgfayu1o4o
-         KjiDC97LzPNrfEy5OaJBfZ+floD7mntSLLpRNBxG/qCQCPyPVfduaRMIirnllV8AeGQM
-         FNRF3x6OGhwaWNjMByUVNKfCM990pp7FyvWcrDUeJdNlO7pm6OsIj2yl3/pzQkj1ZIH3
-         GBnNLXD4C1eeWwFpAEyHBZCoONxBGWbCVbnYepQovon4p0mHWk/VoUyOPCDO7I8kXJyZ
-         0sGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693000200; x=1693605000;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cINYXeZKT6Qzjs4rB6QKsa26hETCQhkT6ut7CBIDbos=;
-        b=EtWkP5lBMJQoVix6sHgvsVGT7tK81GNoAD/C+2/qXjgFdNYjWQdsjR31tBFXFr+Udk
-         pXgfQYl/pUaQkGMXf9A8PUsVmbgmgMMQwp8uYt1ye3w+Xrwnc9OYgSfnfp1v0rWs6CVL
-         3b0qKyhvO1PBqkdNtmpMRER7mVbl16cnEZC0hli6yksXQJJeRB0iFLPLjqYUdJ3kGExc
-         bP7b3km2k4sDqzn6CMSk86mO83aw3gX7FT565Dp72XrKue8svQK1boMGP+1ERU7B7CoD
-         j97ooP3kWHp/1uk26nIYsuU3WwzL54xzgYKWK5RfmJCg9k9OIw7IHbjLM7xtbpknucpd
-         7vjQ==
-X-Gm-Message-State: AOJu0Yz4rAO/zu+P1NmsCV7pMPnPU4G09EIUnf9xY2gVjmQFe3HnQW0S
-        o+xMeOCaXF+5U27TONBd0/9DvTGSMTKOSXKwOyQ=
-X-Google-Smtp-Source: AGHT+IH1jGiQ0aUQ/YV08xIp3r2bAqvPlfqwWjtnuTQgbEmC5MMFOZZTN37c8SjldmRDu5uUY3vHgUfFBsFKp8b9awo=
-X-Received: by 2002:a5d:4a12:0:b0:317:49a2:1f89 with SMTP id
- m18-20020a5d4a12000000b0031749a21f89mr14661990wrq.1.1693000200321; Fri, 25
- Aug 2023 14:50:00 -0700 (PDT)
+        Fri, 25 Aug 2023 17:51:29 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 291BE26AD;
+        Fri, 25 Aug 2023 14:51:27 -0700 (PDT)
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37PIEI04025180;
+        Fri, 25 Aug 2023 21:51:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=corp-2023-03-30;
+ bh=D3Hs24eJaHAVwjPmIkUV9nktWGw2cWeejk3LHcVj4RY=;
+ b=WjeR0e039OCT2BFtFsobG9WyYaLlBWQGVs2vjkoNRACenoYqiMXb4dcCz5yn120zcCdG
+ R4li3/O63PztreZm2FYOt8CTQ++43VNboeabhzOEv9nDAMkIfJg2A3fLbwyd0GU28t2A
+ zrPH/j06Z3d6CbjoVUyfQKjGCyGEb6PuHTD0joGz2nu4thgVdunD6txnsB2MrPA1bIZM
+ PDZmsb9ImYYose2E0VL02gGgB+TX48vOr3fTIz0mC2WKYpEmNMt6a6jAyPTMqEgLPI5K
+ +CVQUyB+gHfNW9qGqKvUvDsh6rD5W1F+zvpJx24iDynv1VTsOsgfQWhYZmgLFsZsyDII +w== 
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3sn1yvyc9b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 25 Aug 2023 21:51:14 +0000
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 37PKXNFq005823;
+        Fri, 25 Aug 2023 21:51:14 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3sn1yv4emh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 25 Aug 2023 21:51:13 +0000
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37PLpDvV019636;
+        Fri, 25 Aug 2023 21:51:13 GMT
+Received: from ca-mkp2.ca.oracle.com.com (mpeterse-ol9.allregionaliads.osdevelopmeniad.oraclevcn.com [100.100.251.135])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3sn1yv4eg7-1;
+        Fri, 25 Aug 2023 21:51:13 +0000
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+To:     kartilak@cisco.com, sebaddel@cisco.com, jejb@linux.ibm.com,
+        nmusini@cisco.com, bvanassche@acm.org, dan.carpenter@linaro.org,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zhu Wang <wangzhu9@huawei.com>
+Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>
+Subject: Re: [PATCH -next] scsi: snic: fix double free in snic_tgt_create()
+Date:   Fri, 25 Aug 2023 17:50:59 -0400
+Message-Id: <169300023878.1212091.11390138946813564658.b4-ty@oracle.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230819083941.164365-1-wangzhu9@huawei.com>
+References: <20230819083941.164365-1-wangzhu9@huawei.com>
 MIME-Version: 1.0
-References: <169280372795.282662.9784422934484459769.stgit@devnote2> <169280378611.282662.4078983611827223131.stgit@devnote2>
-In-Reply-To: <169280378611.282662.4078983611827223131.stgit@devnote2>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 25 Aug 2023 14:49:48 -0700
-Message-ID: <CAEf4Bzb9CBnQp1_bEW-DOhw9rpDj6jt79DMmsKL2L4a_4ts9gQ@mail.gmail.com>
-Subject: Re: [PATCH v4 5/9] ftrace: Add ftrace_partial_regs() for converting
- ftrace_regs to pt_regs
-To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Florent Revest <revest@chromium.org>,
-        linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-25_19,2023-08-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 mlxscore=0
+ adultscore=0 phishscore=0 mlxlogscore=616 malwarescore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2308250195
+X-Proofpoint-GUID: meLRMKHYGsOT5CoetQQY-2WbvanquTy6
+X-Proofpoint-ORIG-GUID: meLRMKHYGsOT5CoetQQY-2WbvanquTy6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 23, 2023 at 8:16=E2=80=AFAM Masami Hiramatsu (Google)
-<mhiramat@kernel.org> wrote:
->
-> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
->
-> Add ftrace_partial_regs() which converts the ftrace_regs to pt_regs.
-> If the architecture defines its own ftrace_regs, this copies partial
-> registers to pt_regs and returns it. If not, ftrace_regs is the same as
-> pt_regs and ftrace_partial_regs() will return ftrace_regs::regs.
->
-> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> Acked-by: Florent Revest <revest@chromium.org>
-> ---
->  Changes in v3:
->   - Fix to use pt_regs::regs instead of x.
->   - Return ftrace_regs::regs forcibly if HAVE_PT_REGS_COMPAT_FTRACE_REGS=
-=3Dy.
->   - Fix typo.
->   - Fix to copy correct registers to the pt_regs on arm64.
->  Changes in v4:
->   - Change the patch order in the series so that fprobe event can use thi=
-s.
-> ---
->  arch/arm64/include/asm/ftrace.h |   11 +++++++++++
->  include/linux/ftrace.h          |   17 +++++++++++++++++
->  2 files changed, 28 insertions(+)
->
-> diff --git a/arch/arm64/include/asm/ftrace.h b/arch/arm64/include/asm/ftr=
-ace.h
-> index ab158196480c..5ad24f315d52 100644
-> --- a/arch/arm64/include/asm/ftrace.h
-> +++ b/arch/arm64/include/asm/ftrace.h
-> @@ -137,6 +137,17 @@ ftrace_override_function_with_return(struct ftrace_r=
-egs *fregs)
->         fregs->pc =3D fregs->lr;
->  }
->
-> +static __always_inline struct pt_regs *
-> +ftrace_partial_regs(const struct ftrace_regs *fregs, struct pt_regs *reg=
-s)
-> +{
-> +       memcpy(regs->regs, fregs->regs, sizeof(u64) * 9);
-> +       regs->sp =3D fregs->sp;
-> +       regs->pc =3D fregs->pc;
-> +       regs->regs[29] =3D fregs->fp;
-> +       regs->regs[30] =3D fregs->lr;
+On Sat, 19 Aug 2023 08:39:41 +0000, Zhu Wang wrote:
 
-I see that orig_x0 from pt_regs is used on arm64 to get syscall's
-first parameter. And it seems like this ftrace_regs to pt_regs
-conversion doesn't touch orig_x0 at all. Is it maintained/preserved
-somewhere else, or will we lose the ability to get the first syscall's
-argument?
+> The commit 41320b18a0e0 ("scsi: snic: Fix possible memory leak if
+> device_add() fails") fix the memory leak caused by dev_set_name() when
+> device_add() failed. While it did not consider that 'tgt' has already been
+> released when put_device(&tgt->dev) is called. We removed kfree(tgt) in
+> the error path to avoid double free 'tgt'. And we moved
+> put_device(&tgt->dev) after the removed kfree(tgt) to avoid UAF
+> (Use-After-Free).
+> 
+> [...]
 
-Looking at libbpf's bpf_tracing.h, other than orig_x0, I think all the
-other registers are still preserved, so this seems to be the only
-potential problem.
+Applied to 6.5/scsi-fixes, thanks!
 
+[1/1] scsi: snic: fix double free in snic_tgt_create()
+      https://git.kernel.org/mkp/scsi/c/1bd3a76880b2
 
-> +       return regs;
-> +}
-> +
->  int ftrace_regs_query_register_offset(const char *name);
->
->  int ftrace_init_nop(struct module *mod, struct dyn_ftrace *rec);
-> diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-> index c0a42d0860b8..a6ed2aa71efc 100644
-> --- a/include/linux/ftrace.h
-> +++ b/include/linux/ftrace.h
-> @@ -165,6 +165,23 @@ static __always_inline struct pt_regs *ftrace_get_re=
-gs(struct ftrace_regs *fregs
->         return arch_ftrace_get_regs(fregs);
->  }
->
-> +#if !defined(CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS) || \
-> +       defined(CONFIG_HAVE_PT_REGS_TO_FTRACE_REGS_CAST)
-> +
-> +static __always_inline struct pt_regs *
-> +ftrace_partial_regs(struct ftrace_regs *fregs, struct pt_regs *regs)
-> +{
-> +       /*
-> +        * If CONFIG_HAVE_PT_REGS_TO_FTRACE_REGS_CAST=3Dy, ftrace_regs me=
-mory
-> +        * layout is the same as pt_regs. So always returns that address.
-> +        * Since arch_ftrace_get_regs() will check some members and may r=
-eturn
-> +        * NULL, we can not use it.
-> +        */
-> +       return &fregs->regs;
-> +}
-> +
-> +#endif /* !CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS || CONFIG_HAVE_PT_REGS_T=
-O_FTRACE_REGS_CAST */
-> +
->  /*
->   * When true, the ftrace_regs_{get,set}_*() functions may be used on fre=
-gs.
->   * Note: this can be true even when ftrace_get_regs() cannot provide a p=
-t_regs.
->
->
+-- 
+Martin K. Petersen	Oracle Linux Engineering
