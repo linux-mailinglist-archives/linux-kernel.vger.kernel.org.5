@@ -2,70 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 910187891C7
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 00:39:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A238F7891CA
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 00:42:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230254AbjHYWi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 18:38:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47068 "EHLO
+        id S230221AbjHYWll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 18:41:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230221AbjHYWil (ORCPT
+        with ESMTP id S229987AbjHYWlS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 18:38:41 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C71D269F
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 15:38:38 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-68a3e943762so1260442b3a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 15:38:38 -0700 (PDT)
+        Fri, 25 Aug 2023 18:41:18 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F49F2126
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 15:41:16 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-52a0856b4fdso1959192a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 15:41:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1693003118; x=1693607918;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=pvT61EgqHV2sXzVGpzHb3/Do1J2IZRGpt5oeUSTXS1M=;
-        b=DOo8GPav/4/T0YBMMrO/cePh0ds1j+7XmPnsFiA81vr3N7hBMYIs6zg16ettL7gDXz
-         p9nCAjfggAkvTQaYkLHvydpFAuhhirXtq//ddTQNDrBzPaMlhwBaL0SlAH2fNVt/COZa
-         OKKoiWuxLo6XsHLH8vlgCysrsRSCMT9yGkNIc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693003118; x=1693607918;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20221208; t=1693003274; x=1693608074;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=pvT61EgqHV2sXzVGpzHb3/Do1J2IZRGpt5oeUSTXS1M=;
-        b=Lc+BvoLRt8m8IbtBAR5eJ1zyqTC+C7HqBXiRdMN7a7/i2v8biqUl92soNJrfBaFCxt
-         ozkfI/OPGzHtvn07q38JIDANxo9Tq6wtmGs/tL2zl37w5jyzjQyzK/aHjf86vtVdK4yO
-         QFp1wl8TxBerk8B3KF5myf3vH2L3/dZIW1ouGCKtoRtZTzZgMtsJFjEwcINyJ7bPujqD
-         kLqBFjXpdh49MQ700omsj9+zdA5liocpBYIPmXkVkFCleiVSoEJDDeOYefXy9S8dU34e
-         L2vaSJSas61vZistDXqMhrjco6PksX+S7Sx+WtNi1RU9dRor2Tz2b3ejeP5ZKnVsBOUu
-         ZHuQ==
-X-Gm-Message-State: AOJu0YyIqUE/g3Uc+tdL1JZD301pjCKUNLM2wOpU1+Xvtwmd6wh85oDj
-        yONrPuw7BzXMt8OHne0WuOo8oA==
-X-Google-Smtp-Source: AGHT+IHtcM7TBjRhEYZWBp/1bp8NSpQ8O6IsMGa1gTP1wB419PgWbxNHloZgf1ds3UA3SEXCGogzLg==
-X-Received: by 2002:a05:6a20:258b:b0:13e:1945:8873 with SMTP id k11-20020a056a20258b00b0013e19458873mr23803455pzd.37.1693003117713;
-        Fri, 25 Aug 2023 15:38:37 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id a3-20020aa78643000000b0068874e1faf2sm2069987pfo.56.2023.08.25.15.38.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Aug 2023 15:38:36 -0700 (PDT)
-Date:   Fri, 25 Aug 2023 15:38:36 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Florent Revest <revest@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org, catalin.marinas@arm.com,
-        anshuman.khandual@arm.com, joey.gouly@arm.com, mhocko@suse.com,
-        david@redhat.com, peterx@redhat.com, izbyshev@ispras.ru,
-        broonie@kernel.org, szabolcs.nagy@arm.com, kpsingh@kernel.org,
-        gthelen@google.com, toiwoton@gmail.com
-Subject: Re: [PATCH v3 4/5] mm: Add a NO_INHERIT flag to the PR_SET_MDWE prctl
-Message-ID: <202308251535.551E797B1@keescook>
-References: <20230704153630.1591122-1-revest@chromium.org>
- <20230704153630.1591122-5-revest@chromium.org>
+        bh=XNt4DyfeIzhhV0tgLa3rjei+leX4v+4lfQmFyrXCtB0=;
+        b=pMXG1akOTp23AsJ05SXCDpWQSJPJ8XiRbFCXmMmoHnZp10DAHWNiwxpZj7c0Yfl4xw
+         DBcqgNOUotfmmrMmcAYFzZlASziS1CQiFDIzLyWR1aqEfFf2/sErtJR5rUg2+4fP26hI
+         fPzxwv4DJkICTum0sUty6XChrIMdqow7XPn7ftH4VyHLtAa5uIH7+L0cANkLheBK0e13
+         loXU1wuUPEktYsmYR7ZH7keYW1B25BXNXVy4AVkPKWz3aI6f51ZSOgVZ8sY4+7+Tc/LT
+         SHk2pB2paLp0jllM2RZzc7g02Gk3zjeGEL+R25CjupDNQJTdN/yusjnrXoulwqkHg+gA
+         W5dQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693003274; x=1693608074;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XNt4DyfeIzhhV0tgLa3rjei+leX4v+4lfQmFyrXCtB0=;
+        b=l3sMqTkLpnv8jEIyTgrJzi3louNxD4EbEOZWpg2Ap8hWaJiCbYX3+QbkWZLaSkxu7L
+         t0dxEUlU2aIRZvjMq3W9cukphuo9VkSwjkgZKl1WQn9RhPnhxi0HGnxUhVXde8Ug1bNB
+         2R9+Ft3TWS+Tq9QsWNJ4MUkTz61fDDP9TFgcPML2nDtzyG2cgvyz3xPZDkejb+Vcbgjr
+         Q3f1BlFzRBJC5ZTzexPqe5I8VHiyeIcp8+De/6xknxjh3pqJ4VQHCWvZFpEDZrvBZ5W7
+         DKO45SY8zIBzyj6/hrF29sNeg2Opc7EeRhcrJgj+GEjwdol9s5i2AimGSwM619jsBwYj
+         +1ng==
+X-Gm-Message-State: AOJu0YyXBu7cevl4A/58KPV6nNvkalIMBaeY/s+Z0swMZYYvR8ig70xR
+        gGQnVUqZ2aDiBNwUMiSvoHZgDJKxkgi2ULM/DuFhvQ==
+X-Google-Smtp-Source: AGHT+IHdxpRbvdQqrV8IEsgFyYkkccQtI62ILyMER9GMSBV09OD46m5LnxIfpKO3HqZNIO6RnyDru8wHwhndx/EvMgg=
+X-Received: by 2002:aa7:cb07:0:b0:522:2dcc:afb6 with SMTP id
+ s7-20020aa7cb07000000b005222dccafb6mr16532241edt.7.1693003274449; Fri, 25 Aug
+ 2023 15:41:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230704153630.1591122-5-revest@chromium.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20230824-strncpy-drivers-accessibility-speakup-kobjects-c-v1-1-3a1ef1221e90@google.com>
+ <202308251439.36BC33ADB2@keescook>
+In-Reply-To: <202308251439.36BC33ADB2@keescook>
+From:   Justin Stitt <justinstitt@google.com>
+Date:   Fri, 25 Aug 2023 15:41:03 -0700
+Message-ID: <CAFhGd8r6A4VH5C=yF1WHKEPY86oh6PEzt6wuxPxsJAD0XKfrsQ@mail.gmail.com>
+Subject: Re: [PATCH] accessibility: speakup: refactor deprecated strncpy
+To:     Kees Cook <keescook@chromium.org>
+Cc:     William Hubbs <w.d.hubbs@gmail.com>,
+        Chris Brannon <chris@the-brannons.com>,
+        Kirk Reiser <kirk@reisers.ca>,
+        Samuel Thibault <samuel.thibault@ens-lyon.org>,
+        speakup@linux-speakup.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,151 +75,173 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 04, 2023 at 05:36:28PM +0200, Florent Revest wrote:
-> This extends the current PR_SET_MDWE prctl arg with a bit to indicate
-> that the process doesn't want MDWE protection to propagate to children.
-> 
-> To implement this no-inherit mode, the tag in current->mm->flags must be
-> absent from MMF_INIT_MASK. This means that the encoding for "MDWE but
-> without inherit" is different in the prctl than in the mm flags. This
-> leads to a bit of bit-mangling in the prctl implementation.
-> 
-> Signed-off-by: Florent Revest <revest@chromium.org>
-> ---
->  include/linux/sched/coredump.h   | 10 ++++++++++
->  include/uapi/linux/prctl.h       |  1 +
->  kernel/fork.c                    |  2 +-
->  kernel/sys.c                     | 32 ++++++++++++++++++++++++++------
->  tools/include/uapi/linux/prctl.h |  1 +
->  5 files changed, 39 insertions(+), 7 deletions(-)
-> 
-> diff --git a/include/linux/sched/coredump.h b/include/linux/sched/coredump.h
-> index 0ee96ea7a0e9..1b37fa8fc723 100644
-> --- a/include/linux/sched/coredump.h
-> +++ b/include/linux/sched/coredump.h
-> @@ -91,4 +91,14 @@ static inline int get_dumpable(struct mm_struct *mm)
->  				 MMF_DISABLE_THP_MASK | MMF_HAS_MDWE_MASK)
->  
->  #define MMF_VM_MERGE_ANY	29
-> +#define MMF_HAS_MDWE_NO_INHERIT	30
-> +
-> +static inline unsigned long mmf_init_flags(unsigned long flags)
-> +{
-> +	if (flags & (1UL << MMF_HAS_MDWE_NO_INHERIT))
-> +		flags &= ~((1UL << MMF_HAS_MDWE) |
-> +			   (1UL << MMF_HAS_MDWE_NO_INHERIT));
-> +	return flags & MMF_INIT_MASK;
-> +}
-> +
->  #endif /* _LINUX_SCHED_COREDUMP_H */
-> diff --git a/include/uapi/linux/prctl.h b/include/uapi/linux/prctl.h
-> index 6e9af6cbc950..dacbe824e7c3 100644
-> --- a/include/uapi/linux/prctl.h
-> +++ b/include/uapi/linux/prctl.h
-> @@ -284,6 +284,7 @@ struct prctl_mm_map {
->  /* Memory deny write / execute */
->  #define PR_SET_MDWE			65
->  # define PR_MDWE_REFUSE_EXEC_GAIN	(1UL << 0)
-> +# define PR_MDWE_NO_INHERIT		(1UL << 1)
->  
->  #define PR_GET_MDWE			66
->  
-> diff --git a/kernel/fork.c b/kernel/fork.c
-> index d17995934eb4..bc3c762d378f 100644
-> --- a/kernel/fork.c
-> +++ b/kernel/fork.c
-> @@ -1284,7 +1284,7 @@ static struct mm_struct *mm_init(struct mm_struct *mm, struct task_struct *p,
->  	hugetlb_count_init(mm);
->  
->  	if (current->mm) {
-> -		mm->flags = current->mm->flags & MMF_INIT_MASK;
-> +		mm->flags = mmf_init_flags(current->mm->flags);
->  		mm->def_flags = current->mm->def_flags & VM_INIT_DEF_MASK;
->  	} else {
->  		mm->flags = default_dump_filter;
-> diff --git a/kernel/sys.c b/kernel/sys.c
-> index 339fee3eff6a..1a2dc3da43ea 100644
-> --- a/kernel/sys.c
-> +++ b/kernel/sys.c
-> @@ -2362,19 +2362,41 @@ static int prctl_set_vma(unsigned long opt, unsigned long start,
->  }
->  #endif /* CONFIG_ANON_VMA_NAME */
->  
-> +static inline unsigned long get_current_mdwe(void)
-> +{
-> +	unsigned long ret = 0;
-> +
-> +	if (test_bit(MMF_HAS_MDWE, &current->mm->flags))
-> +		ret |= PR_MDWE_REFUSE_EXEC_GAIN;
-> +	if (test_bit(MMF_HAS_MDWE_NO_INHERIT, &current->mm->flags))
-> +		ret |= PR_MDWE_NO_INHERIT;
-> +
-> +	return ret;
-> +}
-> +
->  static inline int prctl_set_mdwe(unsigned long bits, unsigned long arg3,
->  				 unsigned long arg4, unsigned long arg5)
->  {
-> +	unsigned long current_bits;
-> +
->  	if (arg3 || arg4 || arg5)
->  		return -EINVAL;
->  
-> -	if (bits & ~(PR_MDWE_REFUSE_EXEC_GAIN))
-> +	if (bits & ~(PR_MDWE_REFUSE_EXEC_GAIN | PR_MDWE_NO_INHERIT))
-> +		return -EINVAL;
-> +
-> +	/* NO_INHERIT only makes sense with REFUSE_EXEC_GAIN */
-> +	if (bits & PR_MDWE_NO_INHERIT && !(bits & PR_MDWE_REFUSE_EXEC_GAIN))
->  		return -EINVAL;
->  
-> +	current_bits = get_current_mdwe();
-> +	if (current_bits && current_bits != bits)
-> +		return -EPERM; /* Cannot unset the flags */
+Thanks for the review Kees and Samuel. Hoping to get this picked-up soon :)
 
-I was pondering why PR_MDWE_NO_INHERIT can't be unset, but I guess it
-doesn't matter. Anything forked with have it off, and any process
-wanting to launch stuff before locking down can just skip running the
-prctl() until later.
+FWIW, I've quickly copy/pasted Kees' suggested refactor of
+synth_direct_store and rebased against v6.5-rc7 if anyone has the
+means by which to test it.
 
-> +
-> +	if (bits & PR_MDWE_NO_INHERIT)
-> +		set_bit(MMF_HAS_MDWE_NO_INHERIT, &current->mm->flags);
->  	if (bits & PR_MDWE_REFUSE_EXEC_GAIN)
->  		set_bit(MMF_HAS_MDWE, &current->mm->flags);
-> -	else if (test_bit(MMF_HAS_MDWE, &current->mm->flags))
-> -		return -EPERM; /* Cannot unset the flag */
->  
->  	return 0;
->  }
-> @@ -2384,9 +2406,7 @@ static inline int prctl_get_mdwe(unsigned long arg2, unsigned long arg3,
->  {
->  	if (arg2 || arg3 || arg4 || arg5)
->  		return -EINVAL;
-> -
-> -	return test_bit(MMF_HAS_MDWE, &current->mm->flags) ?
-> -		PR_MDWE_REFUSE_EXEC_GAIN : 0;
-> +	return (int)get_current_mdwe();
->  }
->  
->  static int prctl_get_auxv(void __user *addr, unsigned long len)
-> diff --git a/tools/include/uapi/linux/prctl.h b/tools/include/uapi/linux/prctl.h
-> index 6e9af6cbc950..dacbe824e7c3 100644
-> --- a/tools/include/uapi/linux/prctl.h
-> +++ b/tools/include/uapi/linux/prctl.h
-> @@ -284,6 +284,7 @@ struct prctl_mm_map {
->  /* Memory deny write / execute */
->  #define PR_SET_MDWE			65
->  # define PR_MDWE_REFUSE_EXEC_GAIN	(1UL << 0)
-> +# define PR_MDWE_NO_INHERIT		(1UL << 1)
->  
->  #define PR_GET_MDWE			66
->  
-> -- 
-> 2.41.0.255.g8b1d071c50-goog
-> 
+TEST PATCH BELOW
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+On Fri, Aug 25, 2023 at 2:49=E2=80=AFPM Kees Cook <keescook@chromium.org> w=
+rote:
+>
+> On Thu, Aug 24, 2023 at 09:44:29PM +0000, Justin Stitt wrote:
+> > `strncpy` is deprecated for use on NUL-terminated destination strings [=
+1].
+> >
+> > Use `strscpy` as it guarantees NUL-termination of its destination buffe=
+r [2]
+> > which allows for simpler and less ambiguous code.
+> >
+> > Also, change `strlen(buf)` to `strlen(ptr)` to be consistent with
+> > further usage within the scope of the function. Note that these are
+> > equivalent:
+> > |419  const char *ptr =3D buf;
+> >
+> > Link: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on=
+-nul-terminated-strings[1]
+> > Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en=
+.html [2]
+> > Link: https://github.com/KSPP/linux/issues/90
+> > Cc: linux-hardening@vger.kernel.org
+> > Signed-off-by: Justin Stitt <justinstitt@google.com>
+> > ---
+> > Note: build-tested only.
+> > ---
+> >  drivers/accessibility/speakup/kobjects.c | 5 ++---
+> >  1 file changed, 2 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/drivers/accessibility/speakup/kobjects.c b/drivers/accessi=
+bility/speakup/kobjects.c
+> > index a7522d409802..8aa416c5f3fc 100644
+> > --- a/drivers/accessibility/speakup/kobjects.c
+> > +++ b/drivers/accessibility/speakup/kobjects.c
+> > @@ -422,12 +422,11 @@ static ssize_t synth_direct_store(struct kobject =
+*kobj,
+> >       if (!synth)
+> >               return -EPERM;
+> >
+> > -     len =3D strlen(buf);
+> > +     len =3D strlen(ptr);
+> >       spin_lock_irqsave(&speakup_info.spinlock, flags);
+> >       while (len > 0) {
+> >               bytes =3D min_t(size_t, len, 250);
+> > -             strncpy(tmp, ptr, bytes);
+> > -             tmp[bytes] =3D '\0';
+> > +             strscpy(tmp, ptr, bytes);
+> >               string_unescape_any_inplace(tmp);
+> >               synth_printf("%s", tmp);
+> >               ptr +=3D bytes;
+>
+> Technically, yes, this is fine...
+>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+>
+> But wow do you find the most amazing code. :)
+>
+> This thing is taking a buffer and chopping it up into at-most 250 byte
+> chunks (smaller than buf, I might add), and then sending it to
+> synth_printf() ... which uses a 160 byte buffer and silently
+> truncates...  and uses "%s" which is just a string copy...
+> why doesn't this just use synth_write() directly on an unescaped
+> buf??
+>
+> I think this entire function should just be:
+>
+> static ssize_t synth_direct_store(struct kobject *kobj,
+>                                   struct kobj_attribute *attr,
+>                                   const char *buf, size_t count)
+> {
+>         char *unescaped;
+>         char *p;
+>
+>         if (!synth)
+>                 return -EPERM;
+>
+>         unescaped =3D kstrdup(buf, GFP_KERNEL);
+>         if (!unescaped)
+>                 return -ENOMEM;
+>
+>         string_unescape_any_inplace(unescaped);
+>
+>         spin_lock_irqsave(&speakup_info.spinlock, flags);
+>         synth_write(unescaped, strlen(unescaped));
+>         spin_unlock_irqrestore(&speakup_info.spinlock, flags);
+>
+>         kfree(unescaped);
+>
+>         return count;
+> }
+>
+> (Though honestly, why does this need unescaping anyway?)
+>
+> -Kees
+>
+> --
+> Kees Cook
+---
+From e7216bca30673a162660c51f8bad3b463d283041 Mon Sep 17 00:00:00 2001
+From: Justin Stitt <justinstitt@google.com>
+Date: Fri, 25 Aug 2023 22:32:03 +0000
+Subject: [PATCH NEEDS TEST] synth_direct_store refactor to use synth_write
 
--- 
-Kees Cook
+I've just copy/pasted Kees' suggestion here [1] and rebased it against
+6.5-rc7.
+
+This patch needs testing as it refactors behavior in synth_direct_store.
+
+[1]: https://lore.kernel.org/all/202308251439.36BC33ADB2@keescook/
+
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+ drivers/accessibility/speakup/kobjects.c | 25 +++++++++++-------------
+ 1 file changed, 11 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/accessibility/speakup/kobjects.c
+b/drivers/accessibility/speakup/kobjects.c
+index a7522d409802..0dfdb6608e02 100644
+--- a/drivers/accessibility/speakup/kobjects.c
++++ b/drivers/accessibility/speakup/kobjects.c
+@@ -413,27 +413,24 @@ static ssize_t synth_direct_store(struct kobject *kob=
+j,
+    struct kobj_attribute *attr,
+    const char *buf, size_t count)
+ {
+- u_char tmp[256];
+- int len;
+- int bytes;
+- const char *ptr =3D buf;
++ char *unescaped;
+  unsigned long flags;
+
+  if (!synth)
+  return -EPERM;
+
+- len =3D strlen(buf);
++ unescaped =3D kstrdup(buf, GFP_KERNEL);
++ if (!unescaped)
++ return -ENOMEM;
++
++ string_unescape_any_inplace(unescaped);
++
+  spin_lock_irqsave(&speakup_info.spinlock, flags);
+- while (len > 0) {
+- bytes =3D min_t(size_t, len, 250);
+- strncpy(tmp, ptr, bytes);
+- tmp[bytes] =3D '\0';
+- string_unescape_any_inplace(tmp);
+- synth_printf("%s", tmp);
+- ptr +=3D bytes;
+- len -=3D bytes;
+- }
++ synth_write(unescaped, strlen(unescaped));
+  spin_unlock_irqrestore(&speakup_info.spinlock, flags);
++
++ kfree(unescaped);
++
+  return count;
+ }
+
+--
+2.42.0.rc1.204.g551eb34607-goog
