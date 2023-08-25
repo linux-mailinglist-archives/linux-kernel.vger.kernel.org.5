@@ -2,232 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19BFA789091
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 23:40:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5667978909E
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 23:43:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231469AbjHYVj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 17:39:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43164 "EHLO
+        id S231466AbjHYVnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 17:43:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231488AbjHYVjW (ORCPT
+        with ESMTP id S231458AbjHYVnF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 17:39:22 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FD2026B8
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 14:39:17 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-68a3e271491so1082995b3a.0
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 14:39:17 -0700 (PDT)
+        Fri, 25 Aug 2023 17:43:05 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F375D1BF1;
+        Fri, 25 Aug 2023 14:43:01 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-d749f57cb22so1402977276.3;
+        Fri, 25 Aug 2023 14:43:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1692999556; x=1693604356;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=o7dRQ9By/T99QWDW5xev9b8rVkM9NZXXwZrmSduoTKY=;
-        b=SlHW1FHh55Miyt5dC5YbHFzbz8/Ww6dpIRyxo6vWvL1BUT9wpnYc90O8W3sh6jbVDI
-         8VSN/Xe7i/NpqgfmZUfGif/OWVY4CvO1XNCApsJ0gTKpBFDUVISAdbUZIXX0AL7Ymm4P
-         GTcb7wyrBEoupwm2T77MgFldNvL555iN8Gi3uYCzgcocNv0xnFj+WWlwbcbOTqmgKZI+
-         MLGEhJoBOR8ij98DujYJDG8/ErJs1WTRaajOZxKdaJWii5ir39jpSlGIz75MH3BFujgn
-         75aCRb2KJIpxhwlYFJHEvUeGNqpylJdIJf8XyyAJR0UoHIDg5wblyZNVqnwV4VZyvNd5
-         jfAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692999556; x=1693604356;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1692999781; x=1693604581;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=o7dRQ9By/T99QWDW5xev9b8rVkM9NZXXwZrmSduoTKY=;
-        b=jQ4yeIt1uMPfd9NwUwz/iAruWbGze3Hba/hX0PL5/ufyKSddth4ixcfHDRvpMYowbQ
-         XWRZLLgYsKcuXzKfy7dLvDI8vvzKqW6T5BQ9de5691ZHekBuGNbB3k2NYDxDu1tlEpnI
-         5dplWTChIGUH4wIp9YwtdMTuWcGIHH4okqXHHMhRpuHvz4rzj1MZoHhO7+i85iEyqv70
-         Aj2Q6uvznG27nI8CspBM7JtkrIZ5LxFAtTwWSZIpKVoTAhcqPaLCEzYzgAXzCndFS1/x
-         SVadLWk7r/+dutw3p52T6WcJ7nptmU27h2OsL8wkVbKrxtf6fPk+DWFfqBNOgQnMw3gY
-         fcUw==
-X-Gm-Message-State: AOJu0Yyon45IY83Lo4fOKIcE5FZVjYVoZjszCoJGnizMjYDHSw/FBlK+
-        rFtoVbAY7/O2RLmSMvxkJp737O6anu9abojjaCU=
-X-Google-Smtp-Source: AGHT+IFGwDu4J6IE5hfbjc7KSF4OfJEndquVBvBoV5vhWuIhyGy4zoBWcpcC8Lokr19GaOsT0RulfQ==
-X-Received: by 2002:a05:6a20:7fa0:b0:140:324c:124c with SMTP id d32-20020a056a207fa000b00140324c124cmr22387249pzj.62.1692999556447;
-        Fri, 25 Aug 2023 14:39:16 -0700 (PDT)
-Received: from dread.disaster.area (pa49-195-66-88.pa.nsw.optusnet.com.au. [49.195.66.88])
-        by smtp.gmail.com with ESMTPSA id a14-20020a62bd0e000000b006875df4773fsm1997221pff.163.2023.08.25.14.39.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Aug 2023 14:39:15 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-        (envelope-from <david@fromorbit.com>)
-        id 1qZeWO-006Uvd-0J;
-        Sat, 26 Aug 2023 07:39:12 +1000
-Date:   Sat, 26 Aug 2023 07:39:12 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Hao Xu <hao.xu@linux.dev>
-Cc:     io-uring@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Stefan Roesch <shr@fb.com>, Clay Harris <bugs@claycon.org>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-cachefs@redhat.com,
-        ecryptfs@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-unionfs@vger.kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, codalist@coda.cs.cmu.edu,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
-        devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
-        samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
-        Wanpeng Li <wanpengli@tencent.com>
-Subject: Re: [PATCH 02/29] xfs: rename XBF_TRYLOCK to XBF_NOWAIT
-Message-ID: <ZOkfgBlWKVmGN84i@dread.disaster.area>
-References: <20230825135431.1317785-1-hao.xu@linux.dev>
- <20230825135431.1317785-3-hao.xu@linux.dev>
+        bh=kOjiLmb+UW44aXh7b+IYQZhe4+kyawAGhkPK5fqLGxg=;
+        b=H11sQ00dlGNJFSl8ruX/T2dyoG451qCGPihbBVPIjhB9kRjrG6UvkG79PQL+C8ghRy
+         KgM8ByRo+oXbl0Kf/NPlzNJZV/04Auc4hc/ZWuYeALpaIup7XRmKj2AaKZMBVK+fRXjh
+         NCf3uJV4t7108inEwCn4w4KcKJYU6avlB468EBskN/Mkvs/1gtYdFjy5PYTgiur26K86
+         Q4ZhnneXWOB3+bZeEAtcJnQTtDQ6914lweJVQSpED24U3YcZlSG6IXHdXYIBTHVrzarB
+         R0jWXSunF2gjcyB9PcVeAF4k9sRyD59cv30HRw4wTZ5iA7xmhQmoZgJFm9bPZCWSP9oz
+         MLpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692999781; x=1693604581;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kOjiLmb+UW44aXh7b+IYQZhe4+kyawAGhkPK5fqLGxg=;
+        b=G2aEOyoN/mMDxDkd74T04qtOJhb1vWAqEllB2Q1PB0ffTxNvz/Uk2BbdiintXSSLJq
+         uMnfGsgxwzHnlxL61ZCuJk20/uw/eNDuAhA1QpFRDX3UBTsP08HbLw/3eSJ/6FrQPA37
+         tFLzv4Zas68/vGfZMqlCOrDijPxPvEosc2tFqMp9ssgxebUjLhPJIEDqiq81Pd++repS
+         ntxrDAItERez7m1miXWqixwq/se/HC5cRPZw0iT3RAEdaqVBKiLpoWdc/C51CGu85CEk
+         msWbSfK+cA0EDGXDqPL5N+HOGIMftZ6WvGE4wpBhfxQVyqQB677FtBHwddMbiiK4Gvj+
+         xFCw==
+X-Gm-Message-State: AOJu0Yzy9V+N6Uu4E4ArpOZlokikyFRhwTt2eN8t+ABg1oM/5EnJTYdX
+        d8Wc/T+UUqAcJA9VKe0nrIzELoNo+dxXwjFpX+s=
+X-Google-Smtp-Source: AGHT+IFYdKE+7m1VfV5IIDq2NFaDjbY6Ne7jqDO5pWrZgojiP0TNftc/e+0hEaEGndIzReC9AOY6vigqJDN5d81GFG4=
+X-Received: by 2002:a25:bb85:0:b0:d15:454e:8ecd with SMTP id
+ y5-20020a25bb85000000b00d15454e8ecdmr18647689ybg.13.1692999781101; Fri, 25
+ Aug 2023 14:43:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230825135431.1317785-3-hao.xu@linux.dev>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20230816164641.3371878-1-robimarko@gmail.com> <20230816164641.3371878-2-robimarko@gmail.com>
+ <ff9ec6f5-9c7c-546b-5814-159d7e2843a8@quicinc.com> <CAOX2RU7wbZopGErQ71frXFMz4+Y9QU6SjfrYbZPT_3yd0gU73A@mail.gmail.com>
+In-Reply-To: <CAOX2RU7wbZopGErQ71frXFMz4+Y9QU6SjfrYbZPT_3yd0gU73A@mail.gmail.com>
+From:   Brian Norris <computersforpeace@gmail.com>
+Date:   Fri, 25 Aug 2023 14:42:49 -0700
+Message-ID: <CAN8TOE8h9mAWTAx71NUEirSW4+5XTZgDiu5KjYmu6yecyowrUg@mail.gmail.com>
+Subject: Re: [PATCH v3 2/4] firmware: qcom_scm: disable SDI if required
+To:     Robert Marko <robimarko@gmail.com>
+Cc:     Mukesh Ojha <quic_mojha@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        quic_gurus@quicinc.com, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 25, 2023 at 09:54:04PM +0800, Hao Xu wrote:
-> From: Hao Xu <howeyxu@tencent.com>
-> 
-> XBF_TRYLOCK means we need lock but don't block on it,
+On Fri, Aug 25, 2023 at 2:41=E2=80=AFAM Robert Marko <robimarko@gmail.com> =
+wrote:
+> On Tue, 22 Aug 2023 at 17:38, Mukesh Ojha <quic_mojha@quicinc.com> wrote:
+> > On 8/16/2023 10:15 PM, Robert Marko wrote:
+> > > +     ret =3D qcom_scm_call(__scm->dev, &desc, &res);
+> >
+> > Would you not be wanting this call to be atomic ?
+>
+> This is implemented based off the downstream 5.4 kernel as I dont have
+> the SCM docs
+> so I dont know if its even supported in the atomic version.
 
-Yes.
+More than that, it's known *not* to be properly supported on one such
+applicable device:
 
+Subject: [RFC] qcom_scm: IPQ4019 firmware does not support atomic API?
+https://lore.kernel.org/linux-arm-kernel/20200913201608.GA3162100@bDebian/
 
-> we can use it to
-> stand for not waiting for memory allcation. Rename XBF_TRYLOCK to
-> XBF_NOWAIT, which is more generic.
+I still haven't gotten a solution to *that* problem upstream, but it'd
+be nice not to make it worse.
 
-No.
-
-Not only can XBF_TRYLOCK require memory allocation, it can require
-IO to be issued. We use TRYLOCK for -readahead- and so we *must* be
-able to allocate memory and issue IO under TRYLOCK caller
-conditions.
-
-[...]
-
-> diff --git a/fs/xfs/libxfs/xfs_attr_remote.c b/fs/xfs/libxfs/xfs_attr_remote.c
-> index d440393b40eb..2ccb0867824c 100644
-> --- a/fs/xfs/libxfs/xfs_attr_remote.c
-> +++ b/fs/xfs/libxfs/xfs_attr_remote.c
-> @@ -661,7 +661,7 @@ xfs_attr_rmtval_invalidate(
->  			return error;
->  		if (XFS_IS_CORRUPT(args->dp->i_mount, nmap != 1))
->  			return -EFSCORRUPTED;
-> -		error = xfs_attr_rmtval_stale(args->dp, &map, XBF_TRYLOCK);
-> +		error = xfs_attr_rmtval_stale(args->dp, &map, XBF_NOWAIT);
->  		if (error)
->  			return error;
-
-XBF_INCORE | XBF_NOWAIT makes no real sense. I mean, XBF_INCORE is
-exactly "find a cached buffer or fail" - it's not going to do any
-memory allocation or IO so NOWAIT smeantics don't make any sense
-here. It's the buffer lock that this lookup is explicitly
-avoiding, and so TRYLOCK describes exactly the semantics we want
-from this incore lookup.
-
-Indeed, this is a deadlock avoidance mechanism as the transaction
-may already have the buffer locked and so we don't want the
-xfs_buf_incore() lookup to try to lock the buffer again. TRYLOCK
-documents this pretty clearly - NOWAIT loses that context....
-
-> diff --git a/fs/xfs/libxfs/xfs_btree.c b/fs/xfs/libxfs/xfs_btree.c
-> index 6a6503ab0cd7..77c4f1d83475 100644
-> --- a/fs/xfs/libxfs/xfs_btree.c
-> +++ b/fs/xfs/libxfs/xfs_btree.c
-> @@ -1343,7 +1343,7 @@ xfs_btree_read_buf_block(
->  	int			error;
->  
->  	/* need to sort out how callers deal with failures first */
-> -	ASSERT(!(flags & XBF_TRYLOCK));
-> +	ASSERT(!(flags & XBF_NOWAIT));
->  
->  	error = xfs_btree_ptr_to_daddr(cur, ptr, &d);
->  	if (error)
-> diff --git a/fs/xfs/scrub/repair.c b/fs/xfs/scrub/repair.c
-> index ac6d8803e660..9312cf3b20e2 100644
-> --- a/fs/xfs/scrub/repair.c
-> +++ b/fs/xfs/scrub/repair.c
-> @@ -460,7 +460,7 @@ xrep_invalidate_block(
->  
->  	error = xfs_buf_incore(sc->mp->m_ddev_targp,
->  			XFS_FSB_TO_DADDR(sc->mp, fsbno),
-> -			XFS_FSB_TO_BB(sc->mp, 1), XBF_TRYLOCK, &bp);
-> +			XFS_FSB_TO_BB(sc->mp, 1), XBF_NOWAIT, &bp);
-
-My point exactly.
-
-xfs_buf_incore() is simply a lookup with XBF_INCORE set. (XBF_INCORE
-| XBF_TRYLOCK) has the exactly semantics of "return the buffer only
-if it is cached and we can lock it without blocking.
-
-It will not instantiate a new buffer (i.e. do memory allocation) or
-do IO because the if it is under IO the buffer lock will be held.
-
-So, essentially, this "NOWAIT" semantic you want is already supplied
-by (XBF_INCORE | XBF_TRYLOCK) buffer lookups.
-
->  	if (error)
->  		return 0;
->  
-> diff --git a/fs/xfs/xfs_buf.c b/fs/xfs/xfs_buf.c
-> index 15d1e5a7c2d3..9f84bc3b802c 100644
-> --- a/fs/xfs/xfs_buf.c
-> +++ b/fs/xfs/xfs_buf.c
-> @@ -228,7 +228,7 @@ _xfs_buf_alloc(
->  	 * We don't want certain flags to appear in b_flags unless they are
->  	 * specifically set by later operations on the buffer.
->  	 */
-> -	flags &= ~(XBF_UNMAPPED | XBF_TRYLOCK | XBF_ASYNC | XBF_READ_AHEAD);
-> +	flags &= ~(XBF_UNMAPPED | XBF_NOWAIT | XBF_ASYNC | XBF_READ_AHEAD);
->  
->  	atomic_set(&bp->b_hold, 1);
->  	atomic_set(&bp->b_lru_ref, 1);
-> @@ -543,7 +543,7 @@ xfs_buf_find_lock(
->  	struct xfs_buf          *bp,
->  	xfs_buf_flags_t		flags)
->  {
-> -	if (flags & XBF_TRYLOCK) {
-> +	if (flags & XBF_NOWAIT) {
->  		if (!xfs_buf_trylock(bp)) {
->  			XFS_STATS_INC(bp->b_mount, xb_busy_locked);
->  			return -EAGAIN;
-> @@ -886,7 +886,7 @@ xfs_buf_readahead_map(
->  	struct xfs_buf		*bp;
->  
->  	xfs_buf_read_map(target, map, nmaps,
-> -		     XBF_TRYLOCK | XBF_ASYNC | XBF_READ_AHEAD, &bp, ops,
-> +		     XBF_NOWAIT | XBF_ASYNC | XBF_READ_AHEAD, &bp, ops,
->  		     __this_address);
-
-That will break readahead (which we use extensively in getdents
-operations) if we can't allocate buffers and issue IO under NOWAIT
-conditions.
-
->  }
->  
-> diff --git a/fs/xfs/xfs_buf.h b/fs/xfs/xfs_buf.h
-> index 549c60942208..8cd307626939 100644
-> --- a/fs/xfs/xfs_buf.h
-> +++ b/fs/xfs/xfs_buf.h
-> @@ -45,7 +45,7 @@ struct xfs_buf;
->  
->  /* flags used only as arguments to access routines */
->  #define XBF_INCORE	 (1u << 29)/* lookup only, return if found in cache */
-> -#define XBF_TRYLOCK	 (1u << 30)/* lock requested, but do not wait */
-> +#define XBF_NOWAIT	 (1u << 30)/* mem/lock requested, but do not wait */
-
-That's now a really poor comment. It doesn't describe the semantics
-or constraints that NOWAIT might imply.
-
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Brian
