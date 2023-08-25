@@ -2,222 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6F3D788165
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 10:01:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9A8C788164
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 10:00:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243249AbjHYIAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 04:00:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35948 "EHLO
+        id S235054AbjHYIAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 04:00:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241338AbjHYIAW (ORCPT
+        with ESMTP id S243371AbjHYH77 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 04:00:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E3A61FF0
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 00:59:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692950368;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Jch5meqCve0IYszOaHOpzDCFTLibD/LfhsjzqZiTXSs=;
-        b=UikjQSqIpfkw/mnUxSBDYJGl6yC37vjeVC+ob3XOzvzf5kNHFlVkZ6stGrBumuVR9X4clE
-        /6+gaY4Uos4sAV9FXFGaasFQREb1/wbFAR4apafpLItJQGFQWG2EZBLowFxbo4U2IqupPs
-        pHmZNJ3WCMyMK1WCbRIdfNCNQrcwTms=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-473-NUtVMtuJPQmXWUtwMimqEA-1; Fri, 25 Aug 2023 03:59:26 -0400
-X-MC-Unique: NUtVMtuJPQmXWUtwMimqEA-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-3fee53cd697so5764855e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 00:59:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692950365; x=1693555165;
-        h=content-transfer-encoding:in-reply-to:subject:organization:from
-         :references:cc:to:content-language:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Jch5meqCve0IYszOaHOpzDCFTLibD/LfhsjzqZiTXSs=;
-        b=cmFz0tVkWh37PZLKUvJB9PrJ8YPAcHpjbhTvClTeM/zxJow1+nL1n27mHbGdnUB7mK
-         /rmB3dHNoRB/ogHGBViumNKR3Wnqy5usAZkt7Vr6mutaGUwon+uuI8QxgJc84qwxzITY
-         V1aaqrefZxWFy7Dr9VawhsbkLDf0JpxxxKL+3WhiEbW0J3+SNTY8sj4pgu/dBPM0gf8O
-         A4moCudtNn5zw4xFLC9yodmkK1It5yBy9UxeGfpWQC+bg+mn8tn9KKfiGarrg2zepYZP
-         uxIf5Fih1wxaLXXn4vq93nPAxPYzOmEN7KUheMx/Uk7PDdrMj2WpAHPbbhKQDixqONNB
-         438Q==
-X-Gm-Message-State: AOJu0YxbunqRxmXrr/lXUfs11cbMkP3eEvOlRqc3EmqidOU4jnSZwUdo
-        YSkJeDA8NRAgIPjtzeI+qYT5TwMfqsYUHyvmexi/Tx7wpATbtrXOPTb3U9jQ/ndzlQA8tbDEHEw
-        oKEK3LivC6FpMXNNQGeVaVHrH
-X-Received: by 2002:a05:600c:3b05:b0:3fd:2d35:b96a with SMTP id m5-20020a05600c3b0500b003fd2d35b96amr12623028wms.39.1692950365746;
-        Fri, 25 Aug 2023 00:59:25 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHdQwDqnosVW1DDak/N5nvionAIaQ4MZxk2UELAYY9GD/+opncTu71Ze9B8Wh064B3e3tF+WA==
-X-Received: by 2002:a05:600c:3b05:b0:3fd:2d35:b96a with SMTP id m5-20020a05600c3b0500b003fd2d35b96amr12623016wms.39.1692950365310;
-        Fri, 25 Aug 2023 00:59:25 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c70e:9200:ce93:b5e6:8aa9:65d4? (p200300cbc70e9200ce93b5e68aa965d4.dip0.t-ipconnect.de. [2003:cb:c70e:9200:ce93:b5e6:8aa9:65d4])
-        by smtp.gmail.com with ESMTPSA id y24-20020a1c4b18000000b003feae747ff2sm4647776wma.35.2023.08.25.00.59.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Aug 2023 00:59:24 -0700 (PDT)
-Message-ID: <3408ff54-f353-0334-0d66-c808389d2f01@redhat.com>
-Date:   Fri, 25 Aug 2023 09:59:23 +0200
+        Fri, 25 Aug 2023 03:59:59 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81B3ACF1;
+        Fri, 25 Aug 2023 00:59:56 -0700 (PDT)
+Received: from kwepemi500020.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RXC4Y4q45z1L9Xm;
+        Fri, 25 Aug 2023 15:58:21 +0800 (CST)
+Received: from [10.67.109.184] (10.67.109.184) by
+ kwepemi500020.china.huawei.com (7.221.188.8) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Fri, 25 Aug 2023 15:59:52 +0800
+Message-ID: <adb0634f-701a-76e9-35e6-3a8c2c2fb207@huawei.com>
+Date:   Fri, 25 Aug 2023 15:59:52 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.0
+Subject: Re: [PATCH bpf-next v2 2/3] riscv: implement a memset like function
+ for text
 Content-Language: en-US
-To:     Saurabh Singh Sengar <ssengar@microsoft.com>,
-        Zach O'Keefe <zokeefe@google.com>
-Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Yang Shi <shy828301@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Saurabh Sengar <ssengar@linux.microsoft.com>,
-        Matthew Wilcox <willy@infradead.org>
-References: <20230821234844.699818-1-zokeefe@google.com>
- <37c2b525-5c2c-d400-552c-9ccb91f4d7bf@redhat.com>
- <CAAa6QmSHF6-9aFa68WDcb+WATh2Yz=wXyp8VBLDNv6yPp2SS5Q@mail.gmail.com>
- <3e08d48b-7b70-cc7f-0ec1-12ad9b1a33db@redhat.com>
- <CAAa6QmSNvx7wbZzfhFOyhODTMoBbf6PimnOf2xeAw5NkD1eXVg@mail.gmail.com>
- <PUZP153MB06350A5DC9CCB8448C98E4EEBE1DA@PUZP153MB0635.APCP153.PROD.OUTLOOK.COM>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [EXTERNAL] Re: [PATCH v3] mm/thp: fix "mm: thp: kill
- __transhuge_page_enabled()"
-In-Reply-To: <PUZP153MB06350A5DC9CCB8448C98E4EEBE1DA@PUZP153MB0635.APCP153.PROD.OUTLOOK.COM>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+To:     Puranjay Mohan <puranjay12@gmail.com>
+References: <20230824133135.1176709-1-puranjay12@gmail.com>
+ <20230824133135.1176709-3-puranjay12@gmail.com>
+CC:     <bjorn@kernel.org>, <paul.walmsley@sifive.com>,
+        <palmer@dabbelt.com>, <aou@eecs.berkeley.edu>,
+        <conor.dooley@microchip.com>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <martin.lau@linux.dev>, <song@kernel.org>, <yhs@fb.com>,
+        <kpsingh@kernel.org>, <linux-riscv@lists.infradead.org>,
+        <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+From:   Pu Lehui <pulehui@huawei.com>
+In-Reply-To: <20230824133135.1176709-3-puranjay12@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.109.184]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemi500020.china.huawei.com (7.221.188.8)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24.08.23 17:39, Saurabh Singh Sengar wrote:
->> On Thu, Aug 24, 2023 at 7:05 AM David Hildenbrand <david@redhat.com>
->> wrote:
->>>
->>> On 24.08.23 15:59, Zach O'Keefe wrote:
->>>> On Thu, Aug 24, 2023 at 12:39 AM David Hildenbrand
->> <david@redhat.com> wrote:
->>>>>
->>>>> On 22.08.23 01:48, Zach O'Keefe wrote:
->>>>>> The 6.0 commits:
->>>>>>
->>>>>> commit 9fec51689ff6 ("mm: thp: kill
->>>>>> transparent_hugepage_active()") commit 7da4e2cb8b1f ("mm: thp:
->>>>>> kill __transhuge_page_enabled()")
->>>>>>
->>>>>> merged "can we have THPs in this VMA?" logic that was previously
->>>>>> done separately by fault-path, khugepaged, and smaps "THPeligible"
->> checks.
->>>>>>
->>>>>> During the process, the semantics of the fault path check changed
->>>>>> in two
->>>>>> ways:
->>>>>>
->>>>>> 1) A VM_NO_KHUGEPAGED check was introduced (also added to smaps
->> path).
->>>>>> 2) We no longer checked if non-anonymous memory had a vm_ops-
->>> huge_fault
->>>>>>       handler that could satisfy the fault.  Previously, this check had been
->>>>>>       done in create_huge_pud() and create_huge_pmd() routines, but
->> after
->>>>>>       the changes, we never reach those routines.
->>>>>>
->>>>>> During the review of the above commits, it was determined that
->>>>>> in-tree users weren't affected by the change; most notably, since
->>>>>> the only relevant user (in terms of THP) of VM_MIXEDMAP or
->>>>>> ->huge_fault is DAX, which is explicitly approved early in
->>>>>> approval logic.  However, there is at least one occurrence where
->>>>>> an out-of-tree driver that used VM_HUGEPAGE|VM_MIXEDMAP with a
->> vm_ops->huge_fault handler, was broken.
->>>>>
->>>>> ... so all we did is break an arbitrary out-of-tree driver? Sorry
->>>>> to say, but why should we care?
->>>>>
->>>>> Is there any in-tree code affected and needs a "Fixes:" ?
->>>>
->>>> The in-tree code was taken care of during the rework .. but I didn't
->>>> know about the possibility of a driver hooking in here.
->>>
->>> And that's the problem of the driver, no? It's not the job of the
->>> kernel developers to be aware of each out-of-tree driver to not
->>> accidentally break something in there.
->>>
->>>>
->>>> I don't know what the normal policy / stance here is, but I figured
->>>> the change was simple enough that it was worth helping out.
->>>
->>> If you decide to be out-of-tree, then you have be prepared to only
->>> support tested kernels and fix your driver when something changes
->>> upstream -- like upstream developers would do for you when it would be
->>> in-tree.
->>>
->>> So why can't the out-of-tree driver be fixed, similarly to how we
->>> would have fixed it if it would be in-tree?
->>
->> I don't know much about driver development, but perhaps they are / need to
->> use a pristine upstream kernel, with their driver as a loadable kernel module.
->> Saurabh can comment on this, I don't know.
+
+
+On 2023/8/24 21:31, Puranjay Mohan wrote:
+> The BPF JIT needs to write invalid instructions to RX regions of memory
+> to invalidate removed BPF programs. This needs a function like memset()
+> that can work with RX memory.
 > 
-
-Hi!
-
-> You are correct Zach. The "out-of-tree" driver had been seamlessly operational
-> on version 5.19, leveraging the kernel's capability to handle huge faults for
-> non-anonymous vma. However, the transition to kernel version 6.1 inadvertently
-> led to the removal of this feature. It's important to note that this removal wasn't
-> intentional, and I am optimistic about the potential restoration of this feature.
-
-We are currently creating 6.5, and are being told that a patch in 6.0 
-(released almost one year ago!) broke an out-of-tree driver.
-
-Being that back-level, you cannot possibly expect that the upstream 
-community can seriously care about not breaking your OOT driver in each 
-release.
-
-Especially, we do have bigger ->huge_fault changes coming up:
-
-https://lkml.kernel.org/r/20230818202335.2739663-1-willy@infradead.org
-
-If the driver is not in the tree, people don't care.
-
-You really should try upstreaming that driver.
-
-
-So this patch here adds complexity (which I don't like) in order to keep 
-an OOT driver working -- possibly for a short time. I'm tempted to say 
-"please fix your driver to not use huge faults in that scenario, it is 
-no longer supported".
-
-But I'm just about to vanish for 1.5 week into vacation :)
-
-@Willy, what are your thoughts?
-
-In any case, I think we should drop the "Fixes" tag. This does not fix 
-any kernel BUG -- it restores compatibility with an OOT driver -- and 
-already confused people building distributions and asking about this fix ;)
-
-
+> Implement patch_text_set_nosync() which is similar to text_poke_set() of
+> x86.
 > 
-> Hello David,
+> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+> ---
+>   arch/riscv/include/asm/patch.h |  1 +
+>   arch/riscv/kernel/patch.c      | 74 ++++++++++++++++++++++++++++++++++
+>   2 files changed, 75 insertions(+)
 > 
-> Given the context, I am currently exploring potential ways to address the issue
-> with the "out-of-tree" driver. I have recognized a challenge posed by the kernel's
-> memory management framework, which now imposes restrictions on huge faults
-> for non-anonymous vma.
+> diff --git a/arch/riscv/include/asm/patch.h b/arch/riscv/include/asm/patch.h
+> index 63c98833d510..aa5c1830ea43 100644
+> --- a/arch/riscv/include/asm/patch.h
+> +++ b/arch/riscv/include/asm/patch.h
+> @@ -7,6 +7,7 @@
+>   #define _ASM_RISCV_PATCH_H
+>   
+>   int patch_text_nosync(void *addr, const void *insns, size_t len);
+> +int patch_text_set_nosync(void *addr, const int c, size_t len);
+>   int patch_text(void *addr, u32 *insns, int ninsns);
+>   
+>   extern int riscv_patch_in_stop_machine;
+> diff --git a/arch/riscv/kernel/patch.c b/arch/riscv/kernel/patch.c
+> index 465b2eebbc37..24d49999ac1a 100644
+> --- a/arch/riscv/kernel/patch.c
+> +++ b/arch/riscv/kernel/patch.c
+> @@ -13,6 +13,7 @@
+>   #include <asm/fixmap.h>
+>   #include <asm/ftrace.h>
+>   #include <asm/patch.h>
+> +#include <asm/string.h>
+>   
+>   struct patch_insn {
+>   	void *addr;
+> @@ -53,6 +54,34 @@ static void patch_unmap(int fixmap)
+>   }
+>   NOKPROBE_SYMBOL(patch_unmap);
+>   
+> +static int __patch_insn_set(void *addr, const int c, size_t len)
+> +{
+> +	void *waddr = addr;
+> +	bool across_pages = (((uintptr_t) addr & ~PAGE_MASK) + len) > PAGE_SIZE;
+> +	int ret;
+> +
+> +	/*
+> +	 * Only two pages can be mapped at a time for writing.
+> +	 */
+> +	if (len > 2 * PAGE_SIZE)
+> +		return -EINVAL;
+> +
 
-You should try upstreaming your driver possibly without huge fault 
-support, and then separately try re-adding huge fault support and see if 
-kernel people want to support that or not.
+As a generic part, it better to add text_mutex lock assert.
 
-And if your driver *really* requires huge faults, then supporting that 
-would be part of your series when upstreaming that driver.
-
--- 
-Cheers,
-
-David / dhildenb
-
+> +	if (across_pages)
+> +		patch_map(addr + PAGE_SIZE, FIX_TEXT_POKE1);
+> +
+> +	waddr = patch_map(addr, FIX_TEXT_POKE0);
+> +
+> +	memset(waddr, c, len);
+> +
+> +	patch_unmap(FIX_TEXT_POKE0);
+> +
+> +	if (across_pages)
+> +		patch_unmap(FIX_TEXT_POKE1);
+> +
+> +	return 0;
+> +}
+> +NOKPROBE_SYMBOL(__patch_insn_set);
+> +
+>   static int __patch_insn_write(void *addr, const void *insn, size_t len)
+>   {
+>   	void *waddr = addr;
+> @@ -95,6 +124,14 @@ static int __patch_insn_write(void *addr, const void *insn, size_t len)
+>   }
+>   NOKPROBE_SYMBOL(__patch_insn_write);
+>   #else
+> +static int __patch_insn_set (void *addr, const int c, size_t len)
+> +{
+> +	memset(addr, c, len);
+> +
+> +	return 0;
+> +}
+> +NOKPROBE_SYMBOL(__patch_insn_set);
+> +
+>   static int __patch_insn_write(void *addr, const void *insn, size_t len)
+>   {
+>   	return copy_to_kernel_nofault(addr, insn, len);
+> @@ -102,6 +139,43 @@ static int __patch_insn_write(void *addr, const void *insn, size_t len)
+>   NOKPROBE_SYMBOL(__patch_insn_write);
+>   #endif /* CONFIG_MMU */
+>   
+> +static int patch_insn_set(void *addr, const int c, size_t len)
+> +{
+> +	size_t patched = 0;
+> +	size_t size;
+> +	int ret = 0;
+> +
+> +	/*
+> +	 * __patch_insn_set() can only work on 2 pages at a time so call it in a
+> +	 * loop with len <= 2 * PAGE_SIZE.
+> +	 */
+> +	while (patched < len && !ret) {
+> +		size = min_t(size_t,
+> +			     PAGE_SIZE * 2 - offset_in_page(addr + patched),
+> +			     len - patched);
+> +		ret = __patch_insn_set(addr + patched, c, size);
+> +
+> +		patched += size;
+> +	}
+> +
+> +	return ret;
+> +}
+> +NOKPROBE_SYMBOL(patch_insn_set);
+> +
+> +int patch_text_set_nosync(void *addr, const int c, size_t len)
+> +{
+> +	u32 *tp = addr;
+> +	int ret;
+> +
+> +	ret = patch_insn_set(tp, c, len);
+> +
+> +	if (!ret)
+> +		flush_icache_range((uintptr_t) tp, (uintptr_t) tp + len);
+> +
+> +	return ret;
+> +}
+> +NOKPROBE_SYMBOL(patch_text_set_nosync);
+> +
+>   static int patch_insn_write(void *addr, const void *insn, size_t len)
+>   {
+>   	size_t patched = 0;
