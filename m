@@ -2,73 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5674E788D8B
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 19:03:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 843A4788D92
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 19:06:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344161AbjHYRCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 13:02:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53924 "EHLO
+        id S1344172AbjHYRGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 13:06:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344195AbjHYRCe (ORCPT
+        with ESMTP id S1344175AbjHYRFt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 13:02:34 -0400
+        Fri, 25 Aug 2023 13:05:49 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 448082121
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 10:01:48 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45E791FF5
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 10:05:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692982908;
+        s=mimecast20190719; t=1692983100;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=aJ2tJi24zuLFj3A+pu+XP5QHGUTmirfNDkb8cZUXPw8=;
-        b=AYMKd+JY4MCbi35KIcC1gRfVfgTIenEDccJqyFf2UrxXJzfM+HG83ZoFlrRoSnmNLPnvCe
-        wsDd14XOZ46V12MTHqars0iEJShvTEYmqzuU5xZHRkAznsbvffOCbOXdVkD6SYDhcvcZ2y
-        ZR489CwCBzNoK7harSY8qyiDP9mnHbA=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-631-KXHGz1LvOQeN6eTj6W49lA-1; Fri, 25 Aug 2023 13:01:46 -0400
-X-MC-Unique: KXHGz1LvOQeN6eTj6W49lA-1
-Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-76d9b2b99fbso118934585a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 10:01:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692982906; x=1693587706;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aJ2tJi24zuLFj3A+pu+XP5QHGUTmirfNDkb8cZUXPw8=;
-        b=LjzTdwJUCGaC7rFyd+b6Zl/FheJdpJ4aG675EqLOSytVlcpWEcmPQIoOH/YllPMmM+
-         vrCLXWwORIihmCOB1vpYdHDjaAlhqYRpTThdXIBxFG2FxPPoxtKszkm0vdqzTcRhFQgg
-         tdK/T8vY+mkzEDdUNiibpA67YXbTQdx4eFqiYbZvgOg+NfiifkuFpHzGTDimfWqiLxVV
-         3A/4Zz0zU6XhKU3hGpyDQKG5U1H3ja4vxZgVrl6mXS+bGf2OfAGNoIS3ZkCj39wDLiY9
-         xD8e4U+i1VREDDDwlxzfudH2FS4DfDaYhfsm8g4sR5NIM6ifp3rjQ4qK+u+W+700DpFt
-         zEMQ==
-X-Gm-Message-State: AOJu0YzRN4jzHs9KBt/KpdwR6iuI2G5eG5zG3mQskh8hSw1teWJfDTef
-        mGh24zlyJIYtFZg1sq9hNvpZCYeMkByeeGawq9YFcDFRoRfF5jiG228DZ7oGz4jD9B48TZ9FoDx
-        OTx3mBgCFANtjL4CzKmfz+7nH
-X-Received: by 2002:a05:620a:4512:b0:767:3a10:d6de with SMTP id t18-20020a05620a451200b007673a10d6demr22732098qkp.58.1692982906146;
-        Fri, 25 Aug 2023 10:01:46 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF9r+hgC07ICJNI/lmyGO6j9NPtPE1qa1auLnJ7Ql2oN7fd3LKPda8+yzOutuYVdg7B7oo5aw==
-X-Received: by 2002:a05:620a:4512:b0:767:3a10:d6de with SMTP id t18-20020a05620a451200b007673a10d6demr22732079qkp.58.1692982905906;
-        Fri, 25 Aug 2023 10:01:45 -0700 (PDT)
-Received: from localhost (ip98-179-76-75.ph.ph.cox.net. [98.179.76.75])
-        by smtp.gmail.com with ESMTPSA id g24-20020ae9e118000000b00767e2668536sm644165qkm.17.2023.08.25.10.01.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Aug 2023 10:01:45 -0700 (PDT)
-Date:   Fri, 25 Aug 2023 10:01:43 -0700
-From:   Jerry Snitselaar <jsnitsel@redhat.com>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     joro@8bytes.org, will@kernel.org, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, zhangzekun11@huawei.com,
-        john.g.garry@oracle.com, dheerajkumar.srivastava@amd.com
-Subject: Re: [PATCH v2 2/2] iommu/iova: Manage the depot list size
-Message-ID: <tfub6qlwprlwhvbuyfzhiqbsdbnzlbnhmteb4xcqd7crrrmopd@2eotamfjn5t6>
-References: <cover.1692641204.git.robin.murphy@arm.com>
- <4eb00390132b93bbc113bef2205e9df54f888710.1692641204.git.robin.murphy@arm.com>
+        bh=5qKjBMHo1biiz/911STwdoJBuoMd8e2rBpwqZ/FJnf4=;
+        b=dQ83ny07etZ5yf3h0fIY7E5y/zPy0P0Y3844p/ZiaDUrW+uwMw7dnHecwIuu8XKMfaa0M9
+        n/TAWACumdCLXJJcg8yxsxN06oyVuXFRr3I2VE4RsXV0oEM3P5lJB7dI4ydd1w/VbdWPfc
+        kurtX96BbyMGOxZMxtxtIPTysfMS4gk=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-199-45FaRmCbMZGoY5f6GRu2PA-1; Fri, 25 Aug 2023 13:04:56 -0400
+X-MC-Unique: 45FaRmCbMZGoY5f6GRu2PA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E6FA928088AE;
+        Fri, 25 Aug 2023 17:04:55 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.136])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 752C56B2B2;
+        Fri, 25 Aug 2023 17:04:53 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Fri, 25 Aug 2023 19:04:09 +0200 (CEST)
+Date:   Fri, 25 Aug 2023 19:04:06 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Yonghong Song <yhs@fb.com>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kui-Feng Lee <kuifeng@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/6] bpf: task_group_seq_get_next: fix the
+ skip_if_dup_files check
+Message-ID: <20230825170406.GA16800@redhat.com>
+References: <20230825161842.GA16750@redhat.com>
+ <20230825161947.GA16871@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4eb00390132b93bbc113bef2205e9df54f888710.1692641204.git.robin.murphy@arm.com>
+In-Reply-To: <20230825161947.GA16871@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
@@ -79,14 +71,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 21, 2023 at 07:22:52PM +0100, Robin Murphy wrote:
-> Automatically scaling the depot up to suit the peak capacity of a
-> workload is all well and good, but it would be nice to have a way to
-> scale it back down again if the workload changes. To that end, add
-> backround reclaim that will gradually free surplus magazines if the
-> depot size remains above a reasonable threshold for long enough.
-> 
-> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+Forgot to mention in the changelog...
 
-Reviewed-by: Jerry Snitselaar <jsnitsel@redhat.com>
+In any case this doesn't look right. ->group_leader can exit before other
+threads, call exit_files(), and in this case task_group_seq_get_next() will
+check task->files == NULL.
+
+On 08/25, Oleg Nesterov wrote:
+>
+> Unless I am notally confused it is wrong. We are going to return or
+> skip next_task so we need to check next_task-files, not task->files.
+>
+> Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+> ---
+>  kernel/bpf/task_iter.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
+> index 1589ec3faded..2264870ae3fc 100644
+> --- a/kernel/bpf/task_iter.c
+> +++ b/kernel/bpf/task_iter.c
+> @@ -82,7 +82,7 @@ static struct task_struct *task_group_seq_get_next(struct bpf_iter_seq_task_comm
+>
+>  	common->pid_visiting = *tid;
+>
+> -	if (skip_if_dup_files && task->files == task->group_leader->files) {
+> +	if (skip_if_dup_files && next_task->files == next_task->group_leader->files) {
+>  		task = next_task;
+>  		goto retry;
+>  	}
+> --
+> 2.25.1.362.g51ebf55
 
