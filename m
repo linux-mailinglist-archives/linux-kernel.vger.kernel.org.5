@@ -2,20 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DBD17884A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 12:20:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AED087884AB
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 12:20:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244164AbjHYKUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 06:20:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43518 "EHLO
+        id S244372AbjHYKUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 06:20:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244413AbjHYKTu (ORCPT
+        with ESMTP id S244416AbjHYKTv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 06:19:50 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3A93211B;
-        Fri, 25 Aug 2023 03:19:29 -0700 (PDT)
-Date:   Fri, 25 Aug 2023 10:19:27 -0000
+        Fri, 25 Aug 2023 06:19:51 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 405C7213C;
+        Fri, 25 Aug 2023 03:19:30 -0700 (PDT)
+Date:   Fri, 25 Aug 2023 10:19:28 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1692958768;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -23,12 +23,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=yGnbo0UCy1jiV63yTKGTInHYBSyWoZfSHCRypChFJiA=;
-        b=VCWUWbFOCoVA8D6vURHzaMT5ibRrnE2RqtkTEYJo6gBdesmq7KuB4OYox4AX6xWy8jYmG3
-        seWrK9+EDdqsoTI5HCLfXiAc7DJpM7inLx9veCjsN0obK94FUJIVPq7w0Te/D0MINRajN2
-        3HLSUbzB2cotoukaRTmOvLXaQbs3dUfztphV7FPv4Z3roDSzhmsHi09ox+aWqszSnkb1wP
-        72yYRlSGbR4LI9FCa9RYDCQk5FsHXpoyQJjYlq2zB2CvvJizWKGuzJCA/fgv6kM7+WBcpg
-        1ke1ADexI0GduYamK5V2abU+udaAW2GHc76AfmSFiT9s4vJvMchVXEFiLukfLw==
+        bh=tJ3sLmm2V7cYTp24FPh8BMp7XmAh+QZzz0PIfsrQhig=;
+        b=iy70RIU+ty9o9N4Cq81GtBo+XbbRKirPrUAvuzTklZ/J+Cf9Vq0/Soiv9pB6eUtEIR1cKV
+        4gdkAT7ho4ZLLWTHk3G1nJU2hAbU0rCGwJwMFC0LEN6L4dPC06aMp6ybHFh3zA1o6WJtnq
+        W32xTkOooJwidJ3qh2M3hET73w+ZOmCpfpBZocQXxPtJhYG+7DrVQUKzXZOfrQVqaXvwxz
+        tg6O16a1PXdvxFjjGdzT0ZK3dcIyWOQPaRmt+H2isL8lAQF9DxQaLGzYQ31V0pqVMkkpO2
+        v12efopmLdHTdPQZ3TQ7iAcQeO/MUkEVNKQ9iHwaWF1m2PUlBq2Eq+zo/ONnVA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1692958768;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -36,21 +36,21 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=yGnbo0UCy1jiV63yTKGTInHYBSyWoZfSHCRypChFJiA=;
-        b=J+wE5Hl92Jlg3xXMYjKWtkGbCvY6hhzhVAlOZG/DT7NfZIZGBIFA4RB+aMy1Jz5lFnU9nT
-        2/uldypyXjx6CbAA==
+        bh=tJ3sLmm2V7cYTp24FPh8BMp7XmAh+QZzz0PIfsrQhig=;
+        b=IUjFe4Q0aFGTXFk4WFgr9c1MNzSRdSX5+c7ZHCk/wrU/gYfuM8/AvEQYLLtPw9sXbvFoeC
+        8JhqWwrGmuT9aECw==
 From:   "tip-bot2 for Josh Poimboeuf" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/bugs] x86/retpoline: Remove .text..__x86.return_thunk section
+Subject: [tip: x86/bugs] x86/rethunk: Use SYM_CODE_START[_LOCAL]_NOALIGN macros
 Cc:     Josh Poimboeuf <jpoimboe@kernel.org>,
         Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <34947acf1c8a1be2d3ba9a4d0dd8a3001ae3c0db.1692919072.git.jpoimboe@kernel.org>
-References: <34947acf1c8a1be2d3ba9a4d0dd8a3001ae3c0db.1692919072.git.jpoimboe@kernel.org>
+In-Reply-To: <1ae65b98ddc256ebc446768d9d0c461675dd0437.1692919072.git.jpoimboe@kernel.org>
+References: <1ae65b98ddc256ebc446768d9d0c461675dd0437.1692919072.git.jpoimboe@kernel.org>
 MIME-Version: 1.0
-Message-ID: <169295876766.27769.14642045062732796018.tip-bot2@tip-bot2>
+Message-ID: <169295876809.27769.9815339580520290470.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -66,51 +66,61 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/bugs branch of tip:
 
-Commit-ID:     dc184c7c1fe9670148fd74d9d5d7cf8894a65e64
-Gitweb:        https://git.kernel.org/tip/dc184c7c1fe9670148fd74d9d5d7cf8894a65e64
+Commit-ID:     03edd09ff88a4ecb6fd5b8c7999e62bf475b4e22
+Gitweb:        https://git.kernel.org/tip/03edd09ff88a4ecb6fd5b8c7999e62bf475b4e22
 Author:        Josh Poimboeuf <jpoimboe@kernel.org>
-AuthorDate:    Fri, 25 Aug 2023 00:01:52 -07:00
+AuthorDate:    Fri, 25 Aug 2023 00:01:51 -07:00
 Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Fri, 25 Aug 2023 11:22:02 +02:00
+CommitterDate: Fri, 25 Aug 2023 11:22:01 +02:00
 
-x86/retpoline: Remove .text..__x86.return_thunk section
+x86/rethunk: Use SYM_CODE_START[_LOCAL]_NOALIGN macros
 
-The '.text..__x86.return_thunk' section has no purpose.  Remove it and
-let the return thunk code live in '.text..__x86.indirect_thunk'.
+Macros already exist for unaligned code block symbols.  Use them.
 
 Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/34947acf1c8a1be2d3ba9a4d0dd8a3001ae3c0db.1692919072.git.jpoimboe@kernel.org
+Link: https://lore.kernel.org/r/1ae65b98ddc256ebc446768d9d0c461675dd0437.1692919072.git.jpoimboe@kernel.org
 ---
- arch/x86/kernel/vmlinux.lds.S | 3 ---
- arch/x86/lib/retpoline.S      | 2 --
- 2 files changed, 5 deletions(-)
+ arch/x86/lib/retpoline.S | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
-index 9188834..f1c3516 100644
---- a/arch/x86/kernel/vmlinux.lds.S
-+++ b/arch/x86/kernel/vmlinux.lds.S
-@@ -132,10 +132,7 @@ SECTIONS
- 		LOCK_TEXT
- 		KPROBES_TEXT
- 		SOFTIRQENTRY_TEXT
--#ifdef CONFIG_RETPOLINE
- 		*(.text..__x86.indirect_thunk)
--		*(.text..__x86.return_thunk)
--#endif
- 		STATIC_CALL_TEXT
- 
- 		ALIGN_ENTRY_TEXT_BEGIN
 diff --git a/arch/x86/lib/retpoline.S b/arch/x86/lib/retpoline.S
-index 415521d..49f2be7 100644
+index 8ba79d2..415521d 100644
 --- a/arch/x86/lib/retpoline.S
 +++ b/arch/x86/lib/retpoline.S
-@@ -129,8 +129,6 @@ SYM_CODE_END(__x86_indirect_jump_thunk_array)
+@@ -149,7 +149,7 @@ SYM_CODE_END(__x86_indirect_jump_thunk_array)
+  * As a result, srso_alias_safe_ret() becomes a safe return.
+  */
+ 	.pushsection .text..__x86.rethunk_untrain
+-SYM_START(srso_alias_untrain_ret, SYM_L_GLOBAL, SYM_A_NONE)
++SYM_CODE_START_NOALIGN(srso_alias_untrain_ret)
+ 	UNWIND_HINT_FUNC
+ 	ANNOTATE_NOENDBR
+ 	ASM_NOP2
+@@ -159,7 +159,7 @@ SYM_FUNC_END(srso_alias_untrain_ret)
+ 	.popsection
  
- #ifdef CONFIG_RETHUNK
+ 	.pushsection .text..__x86.rethunk_safe
+-SYM_START(srso_alias_safe_ret, SYM_L_GLOBAL, SYM_A_NONE)
++SYM_CODE_START_NOALIGN(srso_alias_safe_ret)
+ 	lea 8(%_ASM_SP), %_ASM_SP
+ 	UNWIND_HINT_FUNC
+ 	ANNOTATE_UNRET_SAFE
+@@ -187,7 +187,7 @@ SYM_CODE_END(srso_alias_return_thunk)
+  */
+ 	.align 64
+ 	.skip 64 - (srso_safe_ret - srso_untrain_ret), 0xcc
+-SYM_START(srso_untrain_ret, SYM_L_LOCAL, SYM_A_NONE)
++SYM_CODE_START_LOCAL_NOALIGN(srso_untrain_ret)
+ 	ANNOTATE_NOENDBR
+ 	.byte 0x48, 0xb8
  
--	.section .text..__x86.return_thunk
--
- #ifdef CONFIG_CPU_SRSO
- 
- /*
+@@ -255,7 +255,7 @@ SYM_CODE_END(srso_return_thunk)
+  */
+ 	.align 64
+ 	.skip 64 - (retbleed_return_thunk - retbleed_untrain_ret), 0xcc
+-SYM_START(retbleed_untrain_ret, SYM_L_LOCAL, SYM_A_NONE)
++SYM_CODE_START_LOCAL_NOALIGN(retbleed_untrain_ret)
+ 	ANNOTATE_NOENDBR
+ 	/*
+ 	 * As executed from retbleed_untrain_ret, this is:
