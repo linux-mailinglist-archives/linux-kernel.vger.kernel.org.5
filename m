@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70948788A37
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 16:04:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DB06788A77
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 16:05:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245588AbjHYOEF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 10:04:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45264 "EHLO
+        id S245750AbjHYOEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 10:04:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245479AbjHYODh (ORCPT
+        with ESMTP id S245654AbjHYOEL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 10:03:37 -0400
-Received: from out-242.mta1.migadu.com (out-242.mta1.migadu.com [IPv6:2001:41d0:203:375::f2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E4572717
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 07:03:10 -0700 (PDT)
+        Fri, 25 Aug 2023 10:04:11 -0400
+Received: from out-252.mta1.migadu.com (out-252.mta1.migadu.com [95.215.58.252])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D76F1A5;
+        Fri, 25 Aug 2023 07:03:42 -0700 (PDT)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1692972185;
+        t=1692972199;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=qTb/druvnHmAZS3W1u50TERu+WCPGmDec9gQaqemBTg=;
-        b=F3s/OJUcPEY5Zlidje3R3yeS51LSjhWu/qJIZQ5RlOJtYZFuPHsEDcjE4qLEmmAUjn6Noq
-        1FuuA0oBiaR8ILzLTnrrBydu7XR0r/KR3HJXB7nZmLWLG0jXn8HNnNNNLFYiSbQJ1kLBWH
-        sWlvtA/UHWBfhR+BdKG+F5ETxQfMgq0=
+        bh=oO47LbY0b5fVyG7D8YYQFkwRO57XM5uT3mfj/DxMSkA=;
+        b=j1kjownAAX9hJfB2BxApQkooYMrevfaPLxvPystRVIJaNfbMrYunmfkjCazr0ChWhlvVjY
+        lRX7+a9ciN0hwgjNK4X5Fb69aObVTB6DVFK6AZND7C0g5qPAW+vA7D+a0HhCiOEWDX9QRj
+        DdPtV8aYlp/xMHVmKP0gIoyMuJWp9/M=
 From:   Hao Xu <hao.xu@linux.dev>
 To:     io-uring@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
 Cc:     Dominique Martinet <asmadeus@codewreck.org>,
@@ -47,9 +47,9 @@ Cc:     Dominique Martinet <asmadeus@codewreck.org>,
         devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
         samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
         Wanpeng Li <wanpengli@tencent.com>
-Subject: [PATCH 18/29] xfs: set XBF_NOWAIT for xfs_buf_read_map if necessary
-Date:   Fri, 25 Aug 2023 21:54:20 +0800
-Message-Id: <20230825135431.1317785-19-hao.xu@linux.dev>
+Subject: [PATCH 19/29] xfs: support nowait memory allocation in _xfs_buf_alloc()
+Date:   Fri, 25 Aug 2023 21:54:21 +0800
+Message-Id: <20230825135431.1317785-20-hao.xu@linux.dev>
 In-Reply-To: <20230825135431.1317785-1-hao.xu@linux.dev>
 References: <20230825135431.1317785-1-hao.xu@linux.dev>
 MIME-Version: 1.0
@@ -66,26 +66,34 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Hao Xu <howeyxu@tencent.com>
 
-Set XBF_NOWAIT for xfs_buf_read_map() if necessary.
+Choose different gfp flags to support nowait memory allocation in
+_xfs_buf_alloc().
 
 Signed-off-by: Hao Xu <howeyxu@tencent.com>
 ---
- fs/xfs/xfs_trans_buf.c | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/xfs/xfs_buf.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/fs/xfs/xfs_trans_buf.c b/fs/xfs/xfs_trans_buf.c
-index 6549e50d852c..016371f58f26 100644
---- a/fs/xfs/xfs_trans_buf.c
-+++ b/fs/xfs/xfs_trans_buf.c
-@@ -286,6 +286,8 @@ xfs_trans_read_buf_map(
- 		return 0;
- 	}
+diff --git a/fs/xfs/xfs_buf.c b/fs/xfs/xfs_buf.c
+index 9f84bc3b802c..8b800ce28996 100644
+--- a/fs/xfs/xfs_buf.c
++++ b/fs/xfs/xfs_buf.c
+@@ -220,9 +220,14 @@ _xfs_buf_alloc(
+ 	struct xfs_buf		*bp;
+ 	int			error;
+ 	int			i;
++	bool			nowait = flags & XBF_NOWAIT;
++	gfp_t			gfp_flags = GFP_NOFS |
++					    (nowait ? 0 : __GFP_NOFAIL);
  
-+	if (tp && (tp->t_flags & XFS_TRANS_NOWAIT))
-+		flags |= XBF_NOWAIT;
- 	error = xfs_buf_read_map(target, map, nmaps, flags, &bp, ops,
- 			__return_address);
- 	switch (error) {
+ 	*bpp = NULL;
+-	bp = kmem_cache_zalloc(xfs_buf_cache, GFP_NOFS | __GFP_NOFAIL);
++	bp = kmem_cache_zalloc(xfs_buf_cache, gfp_flags);
++	if (!bp)
++		return -EAGAIN;
+ 
+ 	/*
+ 	 * We don't want certain flags to appear in b_flags unless they are
 -- 
 2.25.1
 
