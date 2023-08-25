@@ -2,228 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27E16788066
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 08:57:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1AE3788071
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 08:59:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231393AbjHYG5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 02:57:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39272 "EHLO
+        id S237191AbjHYG7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 02:59:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231397AbjHYG4x (ORCPT
+        with ESMTP id S231397AbjHYG62 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 02:56:53 -0400
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2048.outbound.protection.outlook.com [40.107.95.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 170E1E6B
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 23:56:51 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fhZgtutATY5BVR/PC8rgWNlU/fh3Z29OuuARmIS/10+F01tz+oujTxCu/D2YBujOELIeNPBIRLEhXyqCTLRiWwoTgqdShuV3L9TSvY/uhwJn5GZ3jfkE4p9wYnG5WTpv3TzfaaLITysPEclcDyoYDXp/AEZqM0lqD4s+Jn9QD8nbgVqiUbD8Z6mLq/Obf6ro5Bn28QhIkUOAnnx9XUsMYaWmTFNe2wiT8mpLh6vVck4V1A+/VR6l4265S86iOBUZrt8TmHFJKVM4bwiEp4RmjOjnAuPrktID2IpfM2RxN5k3ykGMKqxQAs8fEcVWPXnQf1P87ddnTKWrMmL4owQ1Jw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0Licu9mBz1FYOXkWINSNAva2/ULupc9YlbV4kgaag0I=;
- b=ctAxygoDr6TBCHv+FcGyd9RFuVAAAu3DKKAgIuxC0XkHeMhxH9bdlYPIbms6B03S2m5A5Pi8bsCNy//kiVRUdye/D7unup0Fv2SM927HXoAFrOdsdJL8mQIcYfoRhye92MUakwGhdUMZb5sF2otl3C7aywyNYOYn4ya6sDxFf2RyD4arP97KlW4TA2LqsUiMxocCp2pt3+KbX33q3w6Uadtbz5BHtTtOyUThs0WOTKRpu3TVwvItJ96ARFNP/LA9SfbU38cgEj6nT/2uqL1r6ZRlUuSBjbWNkUjV8VgGiP6w+nzP5V4KwhqDOm6bbQZia1qNeB+egEwhryWRce/6Sg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0Licu9mBz1FYOXkWINSNAva2/ULupc9YlbV4kgaag0I=;
- b=tMztLKFadPzWxSrsiE/ZyUzTq7/TIFjTaa8RMZi0bLrjak+PccdsfZqn1tmLO9KyoAcpqVSlHNzvGKC9ocpZPuvYcG0HZCw1GJVqwtjBqWDtbQKBqxfQkhSuvQv4HgqgPYa7xwPuEEu7E0MPuyPFrdjXY3j8hoz50cBSvGzcOEM=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BN8PR12MB3587.namprd12.prod.outlook.com (2603:10b6:408:43::13)
- by BL1PR12MB5380.namprd12.prod.outlook.com (2603:10b6:208:314::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.29; Fri, 25 Aug
- 2023 06:56:49 +0000
-Received: from BN8PR12MB3587.namprd12.prod.outlook.com
- ([fe80::3d:c14:667a:1c81]) by BN8PR12MB3587.namprd12.prod.outlook.com
- ([fe80::3d:c14:667a:1c81%4]) with mapi id 15.20.6699.028; Fri, 25 Aug 2023
- 06:56:49 +0000
-Message-ID: <32549529-6cc8-e187-9436-8b9d28e88b1d@amd.com>
-Date:   Fri, 25 Aug 2023 08:56:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 1/2] drm/amdgpu: Merge debug module parameters
-Content-Language: en-US
-To:     =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>,
-        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Cc:     kernel-dev@igalia.com, alexander.deucher@amd.com,
-        pierre-eric.pelloux-prayer@amd.com,
-        =?UTF-8?B?J01hcmVrIE9sxaHDoWsn?= <maraeo@gmail.com>
-References: <20230824162505.173399-1-andrealmeid@igalia.com>
- <20230824162505.173399-2-andrealmeid@igalia.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-In-Reply-To: <20230824162505.173399-2-andrealmeid@igalia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: FR0P281CA0103.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:a9::16) To BN8PR12MB3587.namprd12.prod.outlook.com
- (2603:10b6:408:43::13)
+        Fri, 25 Aug 2023 02:58:28 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81F0C199E
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 23:58:25 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-4005f0a6c2bso42255e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 23:58:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692946704; x=1693551504; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=D4jRn2k5P02iPL3WCWMvGO7bjgW/zDWoZvxcX1DGF/E=;
+        b=pT3cB9F5Zyrp2kEYrdGstyI7LvyaIsqfr0o0aYIIyI57nNrPnRn9nrpf5LdtDsKhP6
+         HdMxm5F0rzLJwSBZ9E1s8xx3ot0zvFyfYY+v/Y0Dt+EyXOiSizfs3xFXSZ/wJ/c/z/fX
+         +rN2nTY+Z9/0FP6MncCTmOqIRwVab4NNR6vj7JGKebwkvxvFs3RDBdxWJRJo0k+GWxaq
+         Kh8mennSfl72j0ljJ8IVUA/ro079kViRYlLu0ozqvBa30hAMenmZIaK0wjjpy4DVwRts
+         RM05FumKH4lEIjcVEfgKlKqVjjl8fvV681VLTT/80DWjX3ogltlkIav8TmUyrl5QsNaf
+         ZRaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692946704; x=1693551504;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=D4jRn2k5P02iPL3WCWMvGO7bjgW/zDWoZvxcX1DGF/E=;
+        b=g//BT+VCgb+8eebFYX2clV6T82QOp5grb+w4ZXD7DA8+LMydCjZX4XN+VLBnB72HY8
+         41Mm6ZnA8BRMR5RMsr/Ah03g19pJDImCJxixGX6xG3KOqCXFJx+2l6JG+qjLYIrK03iD
+         yRMb8WnePFWBf65HkL5A9afrBn+plqlpO/HlkE8Ban/pK/vaC2YDWE1GXZIrBvp8MixI
+         uIPZns6GenTqO68jxDX5fDGkFcCYY9b4rljA5CyzgEFZsXP7N7pcQIIHeYfN1GmD+W+k
+         poVqVQpIVIpL6/lu3BKdJ1v0XnuZ7bEyfW5mU/EOdQJ65gVGRqYqLDUqnqbe4rChn4QU
+         vjfg==
+X-Gm-Message-State: AOJu0YxrNVNNdHr+EXWyW8389k0WTHYcmq/tFdvKgb9S6a2kIwtjf14X
+        npJ9eYVpIgfMirwcnCKIHzut1BvFMoTn4IVnG80uag==
+X-Google-Smtp-Source: AGHT+IFT0DfTwzsxpQvtbJyEMIaqWKpiegNaNEaiwRKLAi4qJg8KyM53GkUGUdVEXaODVXA7y68bpU4hk9lB80TLESU=
+X-Received: by 2002:a05:600c:3b02:b0:401:7c14:948d with SMTP id
+ m2-20020a05600c3b0200b004017c14948dmr131939wms.2.1692946703922; Thu, 24 Aug
+ 2023 23:58:23 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN8PR12MB3587:EE_|BL1PR12MB5380:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4802ab4e-3207-491b-827d-08dba5387406
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: I75PrNqldH1f8F1vYSRI8LSf3Y1nLeO37nVY3A/Vb6/E4DcZZv8KGa3zplQaPFMpoQmDMNaEr+FSmyO9pcGXnr9L7lIIInfLwrkj8Oyb18i1hRtbOVoCzFJztFb63ObmsPO9sB2P8q1WX4VSh4afi37TX0lih+yL3ENQ+QBKn8rFeUK/HZncui0axldr6Hb1GwBaZ59tS8f+SkRaHYubsKbdLPRIwRBzCnFXQ/U6u/yi2VBQPK+L8fo00SqbeYDueB8AcsHhYdl5WOEBG46+KZE5aPCM/Mfgp34GxuPP17OcRCfmlEZrbewuf9NWMFjQYzfbaHVuBZ+cIyPHI7Tc4KP8XHAIOX+/Dex/qdN3zFpgRAwfbKModazcCJzr/veIO8FdMXdhoRxi8lbrbp+oRrIwqisI47I5tZUhLzz2Etc6qqQW5lMgvsYR7ysNrRBm1FfbCeOuhURJxaDI48d37fnEzk9Dvdtjc6OryAZW1NUUPreuAX6lJ8gbrt1++rmcOvbrxak0VrLidCuctrepRxeNBVnajCHnQ4rf71IpD9Nip15hUCztI2rX07fGTkiQcuX24OLGsBH3DNQrnUjda9BtJJHXz5pt3ww4a8q+/MgvsPUk3J4kD6P8LHnajwuedhfW4is2CNiwKLwne0pvBw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3587.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(136003)(376002)(39860400002)(366004)(1800799009)(451199024)(186009)(83380400001)(6512007)(26005)(478600001)(2616005)(5660300002)(31686004)(2906002)(8936002)(4326008)(8676002)(38100700002)(66476007)(66556008)(66946007)(86362001)(41300700001)(31696002)(6506007)(6486002)(36756003)(6666004)(316002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TTJicEhpZVo4WkNaNmIxMFUwRmJvN3dXUHFjWks4K0hZYnZPY1VENi94MUpN?=
- =?utf-8?B?RWNlcU5xeEdZTTZiUEF0NW0wWDl6Tmc2TTNwVS9PV2xGRjFRZXZPd25VTmdh?=
- =?utf-8?B?Y0E1WkM2ZW1SUWVJQ3pCaDRMY2o1bFl2dGJlWjhjYjdKZlZOcXVwQ1Qvaklv?=
- =?utf-8?B?RG05UEVJTEFLR2M4aUs3ZXpLRE5FbGZIQ3ozbDU2Y2txam0vcU1iWHN0UmNR?=
- =?utf-8?B?aWR6V3NqYStOSHZidzdURktEQkVIeDJEWTRWeUZmNW03Q1U3RjkvUkxCL3dS?=
- =?utf-8?B?T3ZEYytkMXpLZlJYdUNza0dDcHNER0h6RllQR2luaHc3MS9PR1czemMxWUh6?=
- =?utf-8?B?cnNoTXpNNzVOSjJwWXVVZ2pGZVd2RHAxT0ZxRzkzVXFWM1kxSlR5ckJQRzJ0?=
- =?utf-8?B?NGpBS0tpT0krM2QzVzVIbzhPQUlHTE5EMjJJa1RSYVlBWEtMZmJIY2RvQlI2?=
- =?utf-8?B?dC9CUUU3UzZjQXpNd3ZVWWpnd1FsNTZLSzN3T29EQmR4ZDdWWnNQck1RTW9u?=
- =?utf-8?B?Q294b3ZrN2VvN3lUVmE5bmMwYUVMc0FJTnVuZCs3d0lXK2pvMEUyeHB2MXZs?=
- =?utf-8?B?NVNUOXJaT0dqcnlneDM4UjZndU8zaVQwTlp4YjdNdUxUMjIzenRML1ZoVE1J?=
- =?utf-8?B?dHJyRlFpODRQS2NuY2pFbFhQMzVFTkVyRE5kSWp5QzY1elpVR09zVXJwbkY0?=
- =?utf-8?B?NGF3K3JaT0ZqUWpWU3JNM2tjcXI1Z3ROaWcyL3BZb3Z5enNEckh5aW1Pb0F2?=
- =?utf-8?B?MkNwN3ZOOGJ5YTdaR3lBa3krQ3AxNjRpQW9UVC9sdjAwcDc5dFB3V3M5RzM3?=
- =?utf-8?B?QjZnT3o0elh5N09aekwra3c3UEFBL3pjb29ZOTZRTWk5K2hKbm51R3BXa3lX?=
- =?utf-8?B?RXg2MUZrRnowVHJ3MUhCUVJTYjhDL2ZRVFRYdm9UaytoR2lubGJLMWlxQWhK?=
- =?utf-8?B?OUFCYjlzQ08xT3VQTEFINFVtZlNwaGdCRHBCbTlEQi9zRDlvOGVlc3JQdE55?=
- =?utf-8?B?Rk9wLzFlczdnUEpOL29XdDd3a0VhcHZNeW9mQTZlbThwcFFtbFdUL0tUV21X?=
- =?utf-8?B?cWhMVmpEa1JxU2NkU1VDR3B3Q2ZTQjlRZCtLaEFDa1NOUGlTNEtSQWU3NGdB?=
- =?utf-8?B?WnZ2bDFKOU9MUzJ1amtmYWhIY1htZzV3YVpSNk5Edk95QXlTWDdsMzd2RS80?=
- =?utf-8?B?L0IwOTg1VExFVHgvMCtGOUNlaFhyMHhHKzVOMEdMVmdxdnBCRDBUNFVTOGxz?=
- =?utf-8?B?Zkl5TXdPTEJmZEN4aExxR0x6WmFjeGxSazBwQ3pOQjlTSjJES2R3RWd3U05s?=
- =?utf-8?B?RTRLcUZRTVFYN3l6TVdQdFhVc3hsck01ZFZqOHJMaFR6VEdvL1BvcjJMMzVP?=
- =?utf-8?B?WERURjh2VWlpU3hrcUN2dkNWNkF4b3c2cTF6QWdYSnJEYWl6WndnNjN0bFc0?=
- =?utf-8?B?K2g0eERSRGZBVXh1Z2xBNkdTQmU0YkdyNjlSUTl5dWhnUFZTSW1wbThiVjZY?=
- =?utf-8?B?TUZadjE4SjNPczJWMVJEQVlRZXJsSkQ2ZlVqbTROQmQ3MGhuZE91cGt1dHU3?=
- =?utf-8?B?VEM2RWpsM2tya0NJdkI1UVVaRDJrRm9yeDVzd3JMN2ZVT0VLZVJ5bE93OVhu?=
- =?utf-8?B?NFlzUlBxSWMyNGhKQWVEdHJmMTV0VTl4dytaN0JOZHlWQVFvajBUd3g1RHBG?=
- =?utf-8?B?eFVmTThieGZtbGxEYmV6dnMyNkk1Qzc4Sm43VURvRGVuaHA3WE55TXNyY2Fv?=
- =?utf-8?B?ZWRScEl1dkY3VUxRSlg5T2Z4aTFCWUdzQlVqK0pwYU5zSHFPT25mZUF4bWZP?=
- =?utf-8?B?UnNoUnJYYkZaQ0pEcjdUbWFvQ0xROStvUXcxV1ErcHZqbkxDbU1JN0lDSTV2?=
- =?utf-8?B?UFdpRlhMaEtaMHI5ZWRIMFlTSGtGcm8vckF3Sk9RTjlXQlM3M2FZanZYZ1RI?=
- =?utf-8?B?cGszVTBKbTBnR3M0bkZuV3pOYkxHSndsa3hJamprUGwrVGFzMERtNjJLOGho?=
- =?utf-8?B?TkZzSzBNbTUwdW9lTFJLUFlrYWNWb205Njh5Qm1QNmRMUlpPUkgwd211VGhL?=
- =?utf-8?B?VEllWllaNjNuVkJ1M0NJbjh0MUd2ZEM2QkNvS0N4Y1MxeWxtbCtWL1NyK2Fk?=
- =?utf-8?Q?7Zi8=3D?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4802ab4e-3207-491b-827d-08dba5387406
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3587.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Aug 2023 06:56:48.8584
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ciPrLxqTvSCsB1I2Qt68LhggW+iabexN6JIiljiMOuxGsS0rV6Urfbf4hhb4XV5/
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5380
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230824143129.1957914-1-rf@opensource.cirrus.com>
+In-Reply-To: <20230824143129.1957914-1-rf@opensource.cirrus.com>
+From:   David Gow <davidgow@google.com>
+Date:   Fri, 25 Aug 2023 14:58:12 +0800
+Message-ID: <CABVgOSkpB3uJoLJppVZObXsm+BQEdA+b0+AfCmN54_1bpFeCzw@mail.gmail.com>
+Subject: Re: [PATCH v5 00/10] kunit: Add dynamically-extending log
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc:     brendan.higgins@linux.dev, rmoar@google.com,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000ef2b410603b9de02"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 24.08.23 um 18:25 schrieb André Almeida:
-> Merge all developer debug options available as separated module
-> parameters in one, making it obvious that are for developers.
+--000000000000ef2b410603b9de02
+Content-Type: text/plain; charset="UTF-8"
+
+On Thu, 24 Aug 2023 at 22:32, 'Richard Fitzgerald' via KUnit
+Development <kunit-dev@googlegroups.com> wrote:
 >
-> Signed-off-by: André Almeida <andrealmeid@igalia.com>
-> ---
->   drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c  | 24 ++++++++++++++++++++++++
->   drivers/gpu/drm/amd/include/amd_shared.h |  9 +++++++++
->   2 files changed, 33 insertions(+)
+> This patch chain changes the logging implementation to use string_stream
+> so that the log will grow dynamically.
 >
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-> index f5856b82605e..d53e4097acc0 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-> @@ -194,6 +194,7 @@ int amdgpu_use_xgmi_p2p = 1;
->   int amdgpu_vcnfw_log;
->   int amdgpu_sg_display = -1; /* auto */
->   int amdgpu_user_partt_mode = AMDGPU_AUTO_COMPUTE_PARTITION_MODE;
-> +uint amdgpu_debug_mask;
->   
->   static void amdgpu_drv_delayed_reset_work_handler(struct work_struct *work);
->   
-> @@ -938,6 +939,9 @@ module_param_named(user_partt_mode, amdgpu_user_partt_mode, uint, 0444);
->   module_param(enforce_isolation, bool, 0444);
->   MODULE_PARM_DESC(enforce_isolation, "enforce process isolation between graphics and compute . enforce_isolation = on");
->   
-> +MODULE_PARM_DESC(debug_mask, "debug options for amdgpu, disabled by default");
-> +module_param_named(debug_mask, amdgpu_debug_mask, uint, 0444);
-> +
->   /* These devices are not supported by amdgpu.
->    * They are supported by the mach64, r128, radeon drivers
->    */
-> @@ -2871,6 +2875,24 @@ static struct pci_driver amdgpu_kms_pci_driver = {
->   	.dev_groups = amdgpu_sysfs_groups,
->   };
->   
-> +static void amdgpu_init_debug_options(void)
-> +{
-> +	if (amdgpu_debug_mask & DEBUG_VERBOSE_EVICTIONS) {
-> +		pr_info("debug: eviction debug messages enabled\n");
-> +		debug_evictions = true;
-> +	}
-> +
-> +	if (amdgpu_debug_mask & DEBUG_VM) {
-> +		pr_info("debug: VM handling debug enabled\n");
-> +		amdgpu_vm_debug = true;
-> +	}
-> +
-> +	if (amdgpu_debug_mask & DEBUG_LARGEBAR) {
-> +		pr_info("debug: enabled simulating large-bar capability on non-large bar system\n");
-> +		debug_largebar = true;
+> The first 8 patches add test code for string_stream, and make some
+> changes to string_stream needed to be able to use it for the log.
+>
+> The final patch adds a performance report of string_stream.
+>
+> CHANGES SINCE V4:
+> - Re-ordered the first 3 patches from V4 to squash the first two sets
+>   of string_stream tests into a single patch.
+> - Changed is_literal() so it doesn't need a struct kunit.
+> - Split out the new resource-managed alloc and free functions into
+>   a pre-patch to reduce the amount of code churn when the string_stream
+>   is decoupled from kunit.
+> - Wrapped the call to string_stream_geT_string() in string-stream-test
+>   in a local function to reduce the amount of code churn when the
+>   string_stream is decoupled from kunit.
+> - Some minor changes to test implementations.
+> - string_stream is now completely separated from kunit and the 'test'
+>   member of struct string_stream has been eliminated.
+>
+> Richard Fitzgerald (10):
+>   kunit: string-stream: Don't create a fragment for empty strings
+>   kunit: string-stream: Improve testing of string_stream
+>   kunit: string-stream: Add option to make all lines end with newline
+>   kunit: string-stream: Add cases for string_stream newline appending
+>   kunit: Don't use a managed alloc in is_literal()
+>   kunit: string-stream: Add kunit_alloc_string_stream()
+>   kunit: string-stream: Decouple string_stream from kunit
+>   kunit: string-stream: Add tests for freeing resource-managed
+>     string_stream
+>   kunit: Use string_stream for test log
+>   kunit: string-stream: Test performance of string_stream
+>
 
-How should that work???
+Thanks a lot for sticking with this. I think we're in pretty good
+shape now. There are a few minor comments, only one of which really
+concerns me. That's the freeing of string streams in the
+resource-managed string stream tests. I can't quite see how the actual
+stream is freed after being "fake freed" by the stub. Is there
+something I'm missing?
 
-> +	}
-> +}
-> +
->   static int __init amdgpu_init(void)
->   {
->   	int r;
-> @@ -2893,6 +2915,8 @@ static int __init amdgpu_init(void)
->   	/* Ignore KFD init failures. Normal when CONFIG_HSA_AMD is not set. */
->   	amdgpu_amdkfd_init();
->   
-> +	amdgpu_init_debug_options();
-> +
->   	/* let modprobe override vga console setting */
->   	return pci_register_driver(&amdgpu_kms_pci_driver);
->   
-> diff --git a/drivers/gpu/drm/amd/include/amd_shared.h b/drivers/gpu/drm/amd/include/amd_shared.h
-> index 67d7b7ee8a2a..6fa644c249a5 100644
-> --- a/drivers/gpu/drm/amd/include/amd_shared.h
-> +++ b/drivers/gpu/drm/amd/include/amd_shared.h
-> @@ -257,6 +257,15 @@ enum DC_DEBUG_MASK {
->   
->   enum amd_dpm_forced_level;
->   
-> +/*
-> + * amdgpu.debug module options. Are all disabled by default
-> + */
-> +enum AMDGPU_DEBUG_MASK {
-> +	DEBUG_VERBOSE_EVICTIONS = (1 << 0),		// 0x1
-> +	DEBUG_VM = (1 << 1),				// 0x2
-> +	DEBUG_LARGEBAR = (1 << 2),			// 0x4
+Otherwise, this seems good enough to go. I fear we're probably past
+the point where it can make it into 6.6 (pull requests are already
+being sent out, and I'd really rather have the final version of this
+soak in linux-next for a while before sending it to Linus. But we'll
+make it the first thing to go into 6.7, I think.
 
-Good start, but please give the symbol names an AMDGPU_ prefix. Stuff 
-like DEBUG_VM is just way to general and could clash.
+Cheers,
+-- David
 
-Apart from that comments on the same line and using // style comments 
-are frowned upon. You should probably rather use the BIT() macro here.
 
-Regards,
-Christian.
+>  include/kunit/test.h           |  14 +-
+>  lib/kunit/assert.c             |  14 +-
+>  lib/kunit/debugfs.c            |  36 ++-
+>  lib/kunit/kunit-test.c         |  46 ++-
+>  lib/kunit/string-stream-test.c | 508 +++++++++++++++++++++++++++++++--
+>  lib/kunit/string-stream.c      | 100 +++++--
+>  lib/kunit/string-stream.h      |  16 +-
+>  lib/kunit/test.c               |  50 +---
+>  8 files changed, 662 insertions(+), 122 deletions(-)
+>
+> --
+> 2.30.2
+>
+> --
+> You received this message because you are subscribed to the Google Groups "KUnit Development" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to kunit-dev+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/kunit-dev/20230824143129.1957914-1-rf%40opensource.cirrus.com.
 
-> +
->   /**
->    * struct amd_ip_funcs - general hooks for managing amdgpu IP Blocks
->    * @name: Name of IP block
+--000000000000ef2b410603b9de02
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
+MIIPnwYJKoZIhvcNAQcCoIIPkDCCD4wCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+ggz5MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
+VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
+AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
+AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
+IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
+dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
+6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
+c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
+I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
+AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
+BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
+CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
+AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
+MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
+My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
+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
+ddIn9n5Jt6Z1o79zxraLMEwGA1UdIARFMEMwQQYJKwYBBAGgMgEoMDQwMgYIKwYBBQUHAgEWJmh0
+dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAwGA1UdEwEB/wQCMAAwgZoGCCsG
+AQUFBwEBBIGNMIGKMD4GCCsGAQUFBzABhjJodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9jYS9n
+c2F0bGFzcjNzbWltZWNhMjAyMDBIBggrBgEFBQcwAoY8aHR0cDovL3NlY3VyZS5nbG9iYWxzaWdu
+LmNvbS9jYWNlcnQvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3J0MB8GA1UdIwQYMBaAFHzMCmjXouse
+LHIb0c1dlW+N+/JjMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20v
+Y2EvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQBtHFwIgQZjer5K
+H+4Q+wns10k7qN+4wN2Uf+JsyOYjukaMEgdLErfA1wwtQ9uHkoYQZcWBuVVkQFa5hI+sqI2m1Weq
+riMCFSiU38s1tADdMX12IMfJRN60Nznhrw+nPyDRZqRhUTW24TwnHorkDnFPW8PHo7fAw4FrpI0n
+impZAng7ccvvK09K3ZuhwTIxJMsPXCZYsrXWORTw5sczRAP6XvKbPBJnsJoSTe5dFBPBHOQJOGhU
+qWfEfWnWMJPF3LxSGLpLFQXO3RwQqmxv08avwXfVPouh1xuB3FX7rpDabT8YDhu9JgIZkLEKko7L
+yQt6zWwng7k8YF/jGbiAta6VMYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
+R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
+MDIwAhABzgV+4+mJnUzG7XDy6d2uMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCA7
+UG2vVcC3D/vdBySQf05ufAAdiVgRHGbuToUf0FSPPDAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
+MBwGCSqGSIb3DQEJBTEPFw0yMzA4MjUwNjU4MjRaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
+BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
+CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAoQQFIOdFbgc9bE8M8JI1
+XYPVg7BAB8w8yMYfgsn5jiSv+tRbNbFScBsbpIBM/3gasBIeqFRib/FuSxcaV/nW1yefGOJYD1Js
+9vF6m7annd+d/7JonY2gFh10vr+lOHlFF4wcsAFRVCDfCqby/scKdT/X+vmuuAERMs+fY/RS0lZL
+DxARqYRirsoZMUde4Orp5y4CGYSLOWQEdDS+ktFrdI+nBksMpoEuHBNssUUqLw8M3gKWMYFm9CK4
+QLMU6bTvE2qCRh6DGYdrEtsrO+K5X9oLGE+5fyNn0JKPK7NwfhYBJjgJWj3zLW+o+QuqOFB0GfzA
+E9Utph/wt4ux9dgzsA==
+--000000000000ef2b410603b9de02--
