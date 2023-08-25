@@ -2,174 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2E9A788913
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 15:55:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA2F17889C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 16:01:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243352AbjHYNy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 09:54:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52148 "EHLO
+        id S245477AbjHYOAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 10:00:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245361AbjHYNyn (ORCPT
+        with ESMTP id S245504AbjHYOAd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 09:54:43 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45F822137;
-        Fri, 25 Aug 2023 06:54:15 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id B05A11F45E;
-        Fri, 25 Aug 2023 13:54:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1692971653; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Fri, 25 Aug 2023 10:00:33 -0400
+Received: from out-242.mta1.migadu.com (out-242.mta1.migadu.com [95.215.58.242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A70D272B;
+        Fri, 25 Aug 2023 07:00:11 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1692971991;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=XKT17FbYypZcEOfeXYaNtZ6Vwk1v8XxDX315rlANfbM=;
-        b=oaXz39cK3qcNjEBK5WwfqkPFOhZhOdCfDdzvyCvqfMG8kYdvk/WFEM8AQgd4KY9W+/Xo2/
-        E+14Ro0lcO4OSf9Zxf0w6da0XFtLFm0z2H4ik4XsNMVFtKFhMI6QmdOl5ydZYav7rGyV2j
-        qQEgupRXOTNkG1M7/ff3FJeiWUtYUfk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1692971653;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XKT17FbYypZcEOfeXYaNtZ6Vwk1v8XxDX315rlANfbM=;
-        b=49KR5S3p5IqEhp4UE32uf1qWdQM0x6sRKyRhKKMSfQBcjoZj/rr1e+PqWIINOHy9PPiXBz
-        Tf09mag9blyJ2gBA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 39122138F9;
-        Fri, 25 Aug 2023 13:54:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id tc/pDIWy6GTCBgAAMHmgww
-        (envelope-from <tiwai@suse.de>); Fri, 25 Aug 2023 13:54:13 +0000
-Date:   Fri, 25 Aug 2023 15:54:12 +0200
-Message-ID: <8735076xdn.wl-tiwai@suse.de>
-From:   Takashi Iwai <tiwai@suse.de>
-To:     Shengjiu Wang <shengjiu.wang@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>, Hans Verkuil <hverkuil@xs4all.nl>,
-        Shengjiu Wang <shengjiu.wang@nxp.com>, sakari.ailus@iki.fi,
-        tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xiubo.Lee@gmail.com, festevam@gmail.com, nicoleotsuka@gmail.com,
-        lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
-        alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [RFC PATCH v2 0/7] Add audio support in v4l2 framework
-In-Reply-To: <CAA+D8AM_pqbjQaE59n6Qm5gypLb8zPAwOpJR+_ZEG89-q3B8pg@mail.gmail.com>
-References: <47d66c28-1eb2-07f5-d6f9-779d675aefe8@xs4all.nl>
-        <87il9xu1ro.wl-tiwai@suse.de>
-        <CAA+D8ANmBKMp_L2GS=Lp-saMQKja6L4E6No3yP-e=a5YQBD_jQ@mail.gmail.com>
-        <87il9xoddo.wl-tiwai@suse.de>
-        <CAA+D8AOVEpGxO0YNeS1p+Ym86k6VP-CNQB3JmbeT7mPKg0R99A@mail.gmail.com>
-        <844ef9b6-d5e2-46a9-b7a5-7ee86a2e449c@sirena.org.uk>
-        <CAA+D8AOnsx+7t3MrWm42waxtetL07nbKURLsh1hBx39LUDm+Zg@mail.gmail.com>
-        <CAA+D8AMriHO60SD2OqQSDMmi7wm=0MkoW6faR5nyve-j2Q5AEQ@mail.gmail.com>
-        <CAA+D8AN34-NVrgksRAG014PuHGUssTm0p-KR-HYGe+Pt8Yejxg@mail.gmail.com>
-        <87wmxk8jaq.wl-tiwai@suse.de>
-        <ZOe74PO4S6bj/QlV@finisterre.sirena.org.uk>
-        <CAA+D8AM_pqbjQaE59n6Qm5gypLb8zPAwOpJR+_ZEG89-q3B8pg@mail.gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=UTF-8
+        bh=WRD02daxOp9FNChzaFYS1lXdVleuK5a0no8X9tPyoYM=;
+        b=KOUX30U5aMel7ZOrU6vyW+bfFawd12zc010HOkye0FIA5XwWQ8KuInrnnmEFvcM8/s51Q/
+        AaOybn5P1rP9UUeek73yc4I2uwInaXUHDAuF9iPRuAYZ+C8EXUIDSwZm4Bf0ZiLG750HKq
+        BEWS22oRahJI/f4a4TxHtu+cFMHMdVg=
+From:   Hao Xu <hao.xu@linux.dev>
+To:     io-uring@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
+Cc:     Dominique Martinet <asmadeus@codewreck.org>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Stefan Roesch <shr@fb.com>, Clay Harris <bugs@claycon.org>,
+        Dave Chinner <david@fromorbit.com>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-cachefs@redhat.com,
+        ecryptfs@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-unionfs@vger.kernel.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, codalist@coda.cs.cmu.edu,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
+        devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
+        samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
+        Wanpeng Li <wanpengli@tencent.com>
+Subject: [PATCH 10/29] vfs: add S_NOWAIT for nowait time update
+Date:   Fri, 25 Aug 2023 21:54:12 +0800
+Message-Id: <20230825135431.1317785-11-hao.xu@linux.dev>
+In-Reply-To: <20230825135431.1317785-1-hao.xu@linux.dev>
+References: <20230825135431.1317785-1-hao.xu@linux.dev>
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 25 Aug 2023 05:46:43 +0200,
-Shengjiu Wang wrote:
-> 
-> On Fri, Aug 25, 2023 at 4:21 AM Mark Brown <broonie@kernel.org> wrote:
-> >
-> > On Thu, Aug 24, 2023 at 07:03:09PM +0200, Takashi Iwai wrote:
-> > > Shengjiu Wang wrote:
-> >
-> > > > But there are several issues:
-> > > > 1. Need to create sound cards.  ASRC module support multi instances, then
-> > > > need to create multi sound cards for each instance.
-> >
-> > > Hm, why can't it be multiple PCM instances instead?
-> >
-> > I'm having a hard time following this one too.
-> >
-> > > > 2. The ASRC is an entirety but with DPCM we need to separate input port and
-> > > > output port to playback substream and capture stream. Synchronous between
-> > > > playback substream and capture substream is a problem.
-> > > > How to start them and stop them at the same time.
-> >
-> > > This could be done by enforcing the full duplex and linking the both
-> > > PCM streams, I suppose.
-> >
-> > > > So shall we make the decision that we can go to the V4L2 solution?
-> >
-> > > Honestly speaking, I don't mind much whether it's implemented in V2L4
-> > > or not -- at least for the kernel part, we can reorganize / refactor
-> > > things internally.  But, the biggest remaining question to me is
-> > > whether this user-space interface is the most suitable one.  Is it
-> > > well defined, usable and maintained for the audio applications?  Or
-> > > is it meant to be a stop-gap for a specific use case?
-> >
-> > I'm having a really hard time summoning much enthusiasm for using v4l
-> > here, it feels like this is heading down the same bodge route as DPCM
-> > but directly as ABI so even harder to fix properly.  That said all the
-> > ALSA APIs are really intended to be used in real time and this sounds
-> > like a non real time application?  I don't fully understand what the
-> > actual use case is here.
-> 
-> Thanks for your reply.
-> 
-> This asrc memory to memory (memory ->asrc->memory) case is a non
-> real time use case.
-> 
-> User fills the input buffer to the asrc module,  after conversion, then asrc
-> sends back the output buffer to user. So it is not a traditional ALSA playback
-> and capture case. I think it is not good to create sound card for it,  it is
-> not a sound card actually.
-> 
-> It is a specific use case,  there is no reference in current kernel.
-> v4l2 memory to memory is the closed implementation,  v4l2 current
-> support video, image, radio, tuner, touch devices, so it is not
-> complicated to add support for this specific audio case.
-> 
-> Maybe you can go through these patches first.  Because we
-> had implemented the "memory -> asrc ->i2s device-> codec"
-> use case in ALSA.  Now the "memory->asrc->memory" needs
-> to reuse the code in asrc driver, so the first 3 patches is for refining
-> the code to make it can be shared by the "memory->asrc->memory"
-> driver.
-> 
-> The main change is in the v4l2 side, A /dev/vl42-audio will be created,
-> user applications only use the ioctl of v4l2 framework.
+From: Hao Xu <howeyxu@tencent.com>
 
-Ah, now I'm slowly understanding.  So, what you want is to have an
-interface to perform the batch conversion of a data stream from an
-input to an output?  And ALSA PCM interface doesn't fit fully for that
-purpose because the data handling is batched and it's not like a
-normal PCM streaming?
+Add a new time flag S_NOWAIT to support nowait time update. Deliver it
+to specific filesystem and error out -EAGAIN when it would block.
 
-Basically the whole M2M arguments are rather subtle.  Those are
-implementation details that can be resolved in several different ways
-in the kernel side.  But the design of the operation is the crucial
-point.
+Signed-off-by: Hao Xu <howeyxu@tencent.com>
+---
+ fs/inode.c         | 9 +++++----
+ fs/xfs/xfs_iops.c  | 8 +++++++-
+ include/linux/fs.h | 1 +
+ 3 files changed, 13 insertions(+), 5 deletions(-)
 
-Maybe we can consider implementing a similar feature in ALSA API, too.
-But it's too far-stretched for now.
+diff --git a/fs/inode.c b/fs/inode.c
+index e83b836f2d09..eb3db34a3e6e 100644
+--- a/fs/inode.c
++++ b/fs/inode.c
+@@ -1966,12 +1966,13 @@ int touch_atime(const struct path *path, bool nowait)
+ 	struct vfsmount *mnt = path->mnt;
+ 	struct inode *inode = d_inode(path->dentry);
+ 	struct timespec64 now;
++	int ret = 0;
+ 
+ 	if (!atime_needs_update(path, inode))
+-		return 0;
++		return ret;
+ 
+ 	if (!sb_start_write_trylock(inode->i_sb))
+-		return 0;
++		return ret;
+ 
+ 	if (__mnt_want_write(mnt) != 0)
+ 		goto skip_update;
+@@ -1985,11 +1986,11 @@ int touch_atime(const struct path *path, bool nowait)
+ 	 * of the fs read only, e.g. subvolumes in Btrfs.
+ 	 */
+ 	now = current_time(inode);
+-	inode_update_time(inode, &now, S_ATIME);
++	ret = inode_update_time(inode, &now, S_ATIME | (nowait ? S_NOWAIT : 0));
+ 	__mnt_drop_write(mnt);
+ skip_update:
+ 	sb_end_write(inode->i_sb);
+-	return 0;
++	return ret;
+ }
+ EXPORT_SYMBOL(touch_atime);
+ 
+diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
+index 24718adb3c16..bf1d4c31f009 100644
+--- a/fs/xfs/xfs_iops.c
++++ b/fs/xfs/xfs_iops.c
+@@ -1053,7 +1053,13 @@ xfs_vn_update_time(
+ 	if (error)
+ 		return error;
+ 
+-	xfs_ilock(ip, XFS_ILOCK_EXCL);
++	if (flags & S_NOWAIT) {
++		if (!xfs_ilock_nowait(ip, XFS_ILOCK_EXCL))
++			return -EAGAIN;
++	} else {
++		xfs_ilock(ip, XFS_ILOCK_EXCL);
++	}
++
+ 	if (flags & S_CTIME)
+ 		inode->i_ctime = *now;
+ 	if (flags & S_MTIME)
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index ed60b3d70d1e..f8c267ee5cb7 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -2198,6 +2198,7 @@ enum file_time_flags {
+ 	S_MTIME = 2,
+ 	S_CTIME = 4,
+ 	S_VERSION = 8,
++	S_NOWAIT = 16,
+ };
+ 
+ extern bool atime_needs_update(const struct path *, struct inode *);
+-- 
+2.25.1
 
-So, if v4l2 interface provides the requested feature (the batched
-audio stream conversion), it's OK to ride on it.
-
-
-thanks,
-
-Takashi
