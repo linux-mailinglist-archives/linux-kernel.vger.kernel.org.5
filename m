@@ -2,138 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 189F4787F5B
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 07:39:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50330787F5E
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 07:40:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237994AbjHYFif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 01:38:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58102 "EHLO
+        id S238162AbjHYFjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 01:39:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236232AbjHYFiD (ORCPT
+        with ESMTP id S240893AbjHYFj1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 01:38:03 -0400
-Received: from mx0a-0064b401.pphosted.com (mx0a-0064b401.pphosted.com [205.220.166.238])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 210F71BC2;
-        Thu, 24 Aug 2023 22:38:00 -0700 (PDT)
-Received: from pps.filterd (m0250810.ppops.net [127.0.0.1])
-        by mx0a-0064b401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37P4ffNE008796;
-        Thu, 24 Aug 2023 22:37:36 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com;
-         h=from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding:content-type; s=
-        PPS06212021; bh=W0kBRV+hwLL8nmN1CEnpsNCRXsICS7stE9OWDLrPCRU=; b=
-        UMlCtlKzF/EgFobXYXcjexr4g3Kg9Qr/b7XC1UoNXzSJ2yEz8aVbazqEW1q9dNLr
-        FChA3jOSg45LcZqcsT2kC5zltsV9SzYhuIS7BM5QlbkkUvyFxQbaQilncMPpcgQ/
-        Qu7Zl1/yM+GpAuRlB4gm28FTl/9IH+RE1KsV+J4sb4jap0S7rNQk61iniy/KBPgC
-        CUXvp03lY7fYNlgofl0ivRT1JF/Ym36gUGJkuAVsbPVUIJnRKWomXz0tbEJlEsKL
-        dxVth7vSm4VQqlPcJyVvBf/kD4Z7IeTHx3GPnk/I0acNMKc2K00gqoaa2hFloLkf
-        yFsjQ1hZta/1CAF5oaok8A==
-Received: from ala-exchng01.corp.ad.wrs.com (ala-exchng01.wrs.com [147.11.82.252])
-        by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3sn20djumm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 24 Aug 2023 22:37:35 -0700 (PDT)
-Received: from ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) by
- ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 24 Aug 2023 22:37:34 -0700
-Received: from pek-lpd-ccm6.wrs.com (147.11.136.210) by
- ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server id
- 15.1.2507.27 via Frontend Transport; Thu, 24 Aug 2023 22:37:32 -0700
-From:   Lizhi Xu <lizhi.xu@windriver.com>
-To:     <syzbot+a4976ce949df66b1ddf1@syzkaller.appspotmail.com>
-CC:     <chao@kernel.org>, <jaegeuk@kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <syzkaller-bugs@googlegroups.com>
-Subject: [PATCH] f2fs: fix deadlock in f2f2_add_dentry
-Date:   Fri, 25 Aug 2023 13:37:32 +0800
-Message-ID: <20230825053732.3098387-1-lizhi.xu@windriver.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <0000000000000f188605ffdd9cf8@google.com>
-References: <0000000000000f188605ffdd9cf8@google.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: y5N4ZYVp_oaQ2GeQlb1tYlS30VuFONJi
-X-Proofpoint-GUID: y5N4ZYVp_oaQ2GeQlb1tYlS30VuFONJi
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-25_04,2023-08-24_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxscore=0
- lowpriorityscore=0 malwarescore=0 bulkscore=0 clxscore=1011
- mlxlogscore=411 priorityscore=1501 spamscore=0 impostorscore=0
- adultscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2308100000 definitions=main-2308250047
-X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+        Fri, 25 Aug 2023 01:39:27 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AD3B1FF3;
+        Thu, 24 Aug 2023 22:39:21 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4ff8a1746e0so797607e87.0;
+        Thu, 24 Aug 2023 22:39:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692941959; x=1693546759;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XxM4hun7J7j3+pA4h09bA4XVsK57JjdIEry9BgKjY3Q=;
+        b=czfc5ny0qfUkRN4qcHiJLAkogPE+hwYtJcgx7VIVnu9wpxNhcdBPdjqqnJuf0Q1UOM
+         oqEWLpPeHnJSdfy6dA4VBo1sHaRzu7ny3u1cyfyefRssEsB62r31K+PQ8qq1RzUUuIMj
+         iSmhx7DPK3pMH//YQKv6qBvA6Tftn+VHelEaIZ6yXXy4TWzO9C55zXVhehfxByDu3o+p
+         zesKgOyKD3FY06RAEXd0Dffpt8w9JhuDRyir0/Pxw7rpzTXQj9kOthzVprCGsitSgi41
+         YRbh4dw18+l/HKvkPFdcv5akBsXfLSGfEt2su4zrzDI2PHmJGjyDvI613NropKfuGC/V
+         6JlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692941959; x=1693546759;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XxM4hun7J7j3+pA4h09bA4XVsK57JjdIEry9BgKjY3Q=;
+        b=dw6P/YhKCBD9c3qCP9CSOVGYEEF/7xLPKaaIekBqDqg68HkiyarL5+8pnrPeW9J7DY
+         8qnNvRq1IkpN0GXyfIEiPqSbyS9iyuKJSF/rSMOqKORzJa889AAToK6tPGblMg+/X4ib
+         DCseWxkIofyVX/r17whY+HWV8kuxodhWWLMdnIx1InRw407lGlZ0cbxrkzTvS+WAumli
+         zaa4a23fxwzpVEmaWQsZYZd7tFfIqJetw1egalHKkJ0Zs0UaJhVuqTZKumAyZiVrB0W+
+         wHK9wjMY0HKdZXJdA3YFuqq+c+OLjuUCy6mGJ6oladNM9yhpxXPub7nuwFnFloR6QYjE
+         DySw==
+X-Gm-Message-State: AOJu0Yy0lprl/yZbrREWSVpjaSFFIK/anLqPqjALfj0PNXZBHITbtSlv
+        mz9M9ORY6Xahrc7NyslMag0=
+X-Google-Smtp-Source: AGHT+IGs7LI6eP5/RZSHTVEf9VXin5JHG9+q/5+tAOHoHiyBvuWVgn7WeG0XLuPmJgMT6OFGHiSdhA==
+X-Received: by 2002:a19:8c0f:0:b0:500:7685:839 with SMTP id o15-20020a198c0f000000b0050076850839mr10472065lfd.65.1692941958921;
+        Thu, 24 Aug 2023 22:39:18 -0700 (PDT)
+Received: from felia.fritz.box ([2a02:810d:7e40:14b0:98c5:e120:ff1e:7709])
+        by smtp.gmail.com with ESMTPSA id m22-20020aa7d356000000b0052338f5b2a4sm598540edr.86.2023.08.24.22.39.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Aug 2023 22:39:17 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-rtc@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] MAINTAINERS: remove obsolete pattern in RTC SUBSYSTEM section
+Date:   Fri, 25 Aug 2023 07:39:10 +0200
+Message-Id: <20230825053910.17941-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are two paths:
-1. f2fs_add_dentry->f2fs_down_read->f2fs_add_inline_entry->down_write->
-   up_write->f2fs_up_read
-2. f2fs_add_dentry->f2fs_add_regular_entry->down_write->
-   f2fs_init_inode_metadata->f2fs_down_read->f2fs_up_read->up_write
+Commit d890cfc25fe9 ("rtc: ds2404: Convert to GPIO descriptors") removes
+the rtc-ds2404.h platform data and with that, there is no file remaining
+matching the pattern 'include/linux/platform_data/rtc-*'. Hence,
+./scripts/get_maintainer.pl --self-test=patterns complains about a broken
+reference.
 
-Force order lock to read->write.
+Remove the obsolete file pattern in the REAL TIME CLOCK (RTC) SUBSYSTEM.
 
-Signed-off-by: Lizhi Xu <lizhi.xu@windriver.com>
-Reported-and-tested-by: syzbot+a4976ce949df66b1ddf1@syzkaller.appspotmail.com
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 ---
- fs/f2fs/dir.c    | 4 +---
- fs/f2fs/inline.c | 2 ++
- 2 files changed, 3 insertions(+), 3 deletions(-)
+Linus, please ack.
 
-diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
-index d635c58cf5a3..022dc02c1390 100644
---- a/fs/f2fs/dir.c
-+++ b/fs/f2fs/dir.c
-@@ -736,12 +736,12 @@ int f2fs_add_regular_entry(struct inode *dir, const struct f2fs_filename *fname,
- 	f2fs_wait_on_page_writeback(dentry_page, DATA, true, true);
- 
- 	if (inode) {
--		f2fs_down_write(&F2FS_I(inode)->i_sem);
- 		page = f2fs_init_inode_metadata(inode, dir, fname, NULL);
- 		if (IS_ERR(page)) {
- 			err = PTR_ERR(page);
- 			goto fail;
- 		}
-+		f2fs_down_write(&F2FS_I(inode)->i_sem);
- 	}
- 
- 	make_dentry_ptr_block(NULL, &d, dentry_blk);
-@@ -780,9 +780,7 @@ int f2fs_add_dentry(struct inode *dir, const struct f2fs_filename *fname,
- 		 * Should get i_xattr_sem to keep the lock order:
- 		 * i_xattr_sem -> inode_page lock used by f2fs_setxattr.
- 		 */
--		f2fs_down_read(&F2FS_I(dir)->i_xattr_sem);
- 		err = f2fs_add_inline_entry(dir, fname, inode, ino, mode);
--		f2fs_up_read(&F2FS_I(dir)->i_xattr_sem);
- 	}
- 	if (err == -EAGAIN)
- 		err = f2fs_add_regular_entry(dir, fname, inode, ino, mode);
-diff --git a/fs/f2fs/inline.c b/fs/f2fs/inline.c
-index 4638fee16a91..7618b383c2b7 100644
---- a/fs/f2fs/inline.c
-+++ b/fs/f2fs/inline.c
-@@ -628,10 +628,12 @@ int f2fs_add_inline_entry(struct inode *dir, const struct f2fs_filename *fname,
- 	if (IS_ERR(ipage))
- 		return PTR_ERR(ipage);
- 
-+	f2fs_down_read(&F2FS_I(dir)->i_xattr_sem);
- 	inline_dentry = inline_data_addr(dir, ipage);
- 	make_dentry_ptr_inline(dir, &d, inline_dentry);
- 
- 	bit_pos = f2fs_room_for_filename(d.bitmap, slots, d.max);
-+	f2fs_up_read(&F2FS_I(dir)->i_xattr_sem);
- 	if (bit_pos >= d.max) {
- 		err = do_convert_inline_dir(dir, ipage, inline_dentry);
- 		if (err)
+Alexandre, please pick this into your rtc tree.
+
+ MAINTAINERS | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 250c43c675cb..52277ee9c1b8 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -18089,7 +18089,6 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/abelloni/linux.git
+ F:	Documentation/admin-guide/rtc.rst
+ F:	Documentation/devicetree/bindings/rtc/
+ F:	drivers/rtc/
+-F:	include/linux/platform_data/rtc-*
+ F:	include/linux/rtc.h
+ F:	include/linux/rtc/
+ F:	include/uapi/linux/rtc.h
 -- 
-2.25.1
+2.17.1
 
