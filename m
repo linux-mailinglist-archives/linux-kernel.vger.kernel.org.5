@@ -2,219 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D377E788C25
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 17:09:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFB5B788C2A
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 17:10:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230004AbjHYPIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 11:08:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51812 "EHLO
+        id S231768AbjHYPKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 11:10:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbjHYPIQ (ORCPT
+        with ESMTP id S230297AbjHYPJt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 11:08:16 -0400
-Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [IPv6:2001:67c:2050:0:465::101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 441912127;
-        Fri, 25 Aug 2023 08:08:13 -0700 (PDT)
-Received: from smtp202.mailbox.org (smtp202.mailbox.org [IPv6:2001:67c:2050:b231:465::202])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4RXNcS5hXvz9sy4;
-        Fri, 25 Aug 2023 17:08:08 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oltmanns.dev;
-        s=MBO0001; t=1692976088;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=AAEOctatpX3/10zBsdBfZLy0AhwYTDuyHJC0ob0juM4=;
-        b=IjIDPIFmVJawwxPDgRAAlZPbcizlZu2X0oO98CrY7GZLx1XpLW7KW6fiyGbFlWKGn7z8px
-        LF8Yv+5laH7ak4UBi6248gTuwquMwszkDWa9XJG1NkJ/LtaAKl9Mef8iOsLi42PFCY54hP
-        faju8xYIEdwPmuMm1IFQfz1a3knx/QWXtOScS4DmfAUPRhyrypK/LXCflX+Ed/vnSuT0p5
-        X6XBeKAXaruVsPIMxm0XyjGUgjuAJF9j+0rwkBdTo48ZmcyH1FgFET4bkJ3LLQYP8K903P
-        V2fUr/uVExTnT01W5FiGDxwPHaR81Xyo5OyQSHKqolrMV8L6F355X+Isvsk0sA==
-References: <20230825-pll-mipi_keep_rate-v1-0-35bc43570730@oltmanns.dev>
- <zrjpbtf7qwaj2tjvfz2no534tmz5j4yudp45tung2w5x2zcl6y@bal3bclzze4e>
-From:   Frank Oltmanns <frank@oltmanns.dev>
-To:     Maxime Ripard <mripard@kernel.org>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Ondrej Jirman <x@xnux.eu>,
-        Icenowy Zheng <uwu@icenowy.me>, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, dri-devel@lists.freedesktop.org,
-        Icenowy Zheng <icenowy@aosc.io>
-Subject: Re: [PATCH 0/3] Make Allwinner A64's pll-mipi keep its rate when
- parent rate changes
-In-reply-to: <zrjpbtf7qwaj2tjvfz2no534tmz5j4yudp45tung2w5x2zcl6y@bal3bclzze4e>
-Date:   Fri, 25 Aug 2023 17:07:58 +0200
-Message-ID: <87ledzqhwx.fsf@oltmanns.dev>
+        Fri, 25 Aug 2023 11:09:49 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BA0B2127
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 08:09:46 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-529fa243739so16212a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 08:09:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692976184; x=1693580984; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+Gq9jP84cRzBl+sgoqLbq4czFux7bqHqPTg17tu5c2I=;
+        b=RyctydAu22cbp3h3vbRM953UBzLWrLOTdnyk9vhHxdiLZi9tU1GIy8j6dDoLZrUEvT
+         5lBY/92+L4PiJTQ5s8tkJqbB400jpopoDGPsbc3xoGk5nKBjfoN4WolBXCLd9kBsD6VO
+         PiWTGrliNKrT0wTTGVpt2ZkwEgBQ8kbW7O6imKrFM3nKIgex83iLXruvVCFhAhkk7dGt
+         TGbI+vrUqlpAlmw1t6La4Djd58YtohilqyAysq6OuG61WbTo986oqsleRRDuEY/DGcOj
+         aUG9+3P0voNqK94zB/RjWKu17235i6wxPPbMHVvU6BkuufKzjvFeiU7Wqj6wOtp5qEZc
+         Aemw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692976184; x=1693580984;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+Gq9jP84cRzBl+sgoqLbq4czFux7bqHqPTg17tu5c2I=;
+        b=elvoc/BMJoiAn6YkpY51eQy2tvNUeY72LvOxlIxyGqezauLmZfAcITOE4r/RtofQQm
+         KxZoL1K08TZcJ8ETCNA3sSPKq0eFj4y5H6hrqQKTPZ3jTC8lfQQUG3ahYDy1UUidhxqK
+         CbgXMcydGLLAqHL+TGGre+Q3tzZuei+jz0qjtiq/YX3uRteIgGw3/NJqPSMEzyAv/vjR
+         o+RscJdzP3zV8diR/NZH7MbN1Q2w6ox97Ku5K0G9COANXE3BCuGCPX96Vecq4EKllnfh
+         J8U+eek8r6rmCA/oye+lfuwG+8ygEK8425Ws+JkaIJZXJPTEhSZnOuxjfOj7Hch9q4WW
+         1TSQ==
+X-Gm-Message-State: AOJu0YzxMAL5H0HqFJ8NgsV+c6KC2wD556FPAzCC8XcUGCsps+y2zwNe
+        T8LDwkLmHtNliydpk13WCHtHMIf5BbAPoU+lIfLAMKOmuJeXNnjzIYqoOQ==
+X-Google-Smtp-Source: AGHT+IHUSbWA6D7Kr7ih9MQvH+AX9k2ln5in8pCdueT+yk36uQ89b3zjjhcJfDCPyElxPO1Arxlzr+hUBFrnlLobzrE=
+X-Received: by 2002:a50:9fa5:0:b0:523:d5bc:8424 with SMTP id
+ c34-20020a509fa5000000b00523d5bc8424mr172162edf.5.1692976184443; Fri, 25 Aug
+ 2023 08:09:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20230821234844.699818-1-zokeefe@google.com> <37c2b525-5c2c-d400-552c-9ccb91f4d7bf@redhat.com>
+ <CAAa6QmSHF6-9aFa68WDcb+WATh2Yz=wXyp8VBLDNv6yPp2SS5Q@mail.gmail.com>
+ <3e08d48b-7b70-cc7f-0ec1-12ad9b1a33db@redhat.com> <CAAa6QmSNvx7wbZzfhFOyhODTMoBbf6PimnOf2xeAw5NkD1eXVg@mail.gmail.com>
+ <PUZP153MB06350A5DC9CCB8448C98E4EEBE1DA@PUZP153MB0635.APCP153.PROD.OUTLOOK.COM>
+ <3408ff54-f353-0334-0d66-c808389d2f01@redhat.com> <ZOijSwCa9NFD6DZI@casper.infradead.org>
+ <9f967665-2cbd-f80b-404e-ac741eab1ced@redhat.com>
+In-Reply-To: <9f967665-2cbd-f80b-404e-ac741eab1ced@redhat.com>
+From:   "Zach O'Keefe" <zokeefe@google.com>
+Date:   Fri, 25 Aug 2023 08:09:07 -0700
+Message-ID: <CAAa6QmQRFwzXWHEL2d74sX6JuciJeBzprk1NxCWKB6i53gmt6Q@mail.gmail.com>
+Subject: Re: [EXTERNAL] Re: [PATCH v3] mm/thp: fix "mm: thp: kill __transhuge_page_enabled()"
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Saurabh Singh Sengar <ssengar@microsoft.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Yang Shi <shy828301@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Saurabh Sengar <ssengar@linux.microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Rspamd-Queue-Id: 4RXNcS5hXvz9sy4
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thank you for your feedback, Maxime!
-
-On 2023-08-25 at 10:13:53 +0200, Maxime Ripard <mripard@kernel.org> wrote:
-> [[PGP Signed Part:Undecided]]
-> Hi,
+On Fri, Aug 25, 2023 at 5:58=E2=80=AFAM David Hildenbrand <david@redhat.com=
+> wrote:
 >
-> On Fri, Aug 25, 2023 at 07:36:36AM +0200, Frank Oltmanns wrote:
->> I would like to make the Allwinner A64's pll-mipi to keep its rate when
->> its parent's (pll-video0) rate changes. Keeping pll-mipi's rate is
->> required, to let the A64 drive both an LCD and HDMI display at the same
->> time, because both have pll-video0 as an ancestor.
->>
->> PATCH 1 adds this functionality as a feature into the clk framework (new
->> flag: CLK_KEEP_RATE).
->>
->> Cores that use this flag, store a rate as req_rate when it or one of its
->> descendants requests a new rate.
->>
->> That rate is then restored in the clk_change_rate recursion, which walks
->> through the tree. It will reach the flagged core (e.g. pll-mipi) after
->> the parent's rate (e.g. pll-video0) has already been set to the new
->> rate. It will then call determine_rate (which requests the parent's
->> current, i.e. new, rate) to determine a rate that is close to the
->> flagged core's previous rate. Afterward it will re-calculate the rates
->> for the flagged core's subtree.
+> On 25.08.23 14:49, Matthew Wilcox wrote:
+> > On Fri, Aug 25, 2023 at 09:59:23AM +0200, David Hildenbrand wrote:
+> >> Especially, we do have bigger ->huge_fault changes coming up:
+> >>
+> >> https://lkml.kernel.org/r/20230818202335.2739663-1-willy@infradead.org
+
+FWIW, one of those patches updates the docs to read,
+
+"->huge_fault() is called when there is no PUD or PMD entry present.  This
+gives the filesystem the opportunity to install a PUD or PMD sized page.
+Filesystems can also use the ->fault method to return a PMD sized page,
+so implementing this function may not be necessary.  In particular,
+filesystems should not call filemap_fault() from ->huge_fault(). [..]"
+
+Which won't work (in the general case) without this patch (well, at
+least the ->huge_fault() check part).
+
+So, if we're advertising this is the way it works, maybe that gives a
+stronger argument for addressing it sooner vs when the first in-tree
+user depends on it?
+
+> >> If the driver is not in the tree, people don't care.
+> >>
+> >> You really should try upstreaming that driver.
+> >>
+> >>
+> >> So this patch here adds complexity (which I don't like) in order to ke=
+ep an
+> >> OOT driver working -- possibly for a short time. I'm tempted to say "p=
+lease
+> >> fix your driver to not use huge faults in that scenario, it is no long=
+er
+> >> supported".
+> >>
+> >> But I'm just about to vanish for 1.5 week into vacation :)
+> >>
+> >> @Willy, what are your thoughts?
+> >
+> > Fundamentally there was a bad assumption with the original patch --
+> > it assumed that the only reason to support ->huge_fault was for DAX,
+> > and that's not true.  It's just that the only drivers in-tree which
+> > support ->huge_fault do so in order to support DAX.
 >
-> I don't think it's the right way forward. It makes the core logic more
-> complicated, for something that is redundant with the notifiers
-> mechanism that has been the go-to for that kind of things so far.
-
-Yeah, that was my initial idea as well. But I couldn't get it to work.
-See details below.
-
-Do you have an example of a clock that restores its previous rate after
-the parent rate has changed? I've looked left and right, but to me it
-seems that notifiers are mainly used for setting clocks into some kind
-of "safe mode" prior to the rate change. Examples:
-
-sunxi-ng:
-https://elixir.bootlin.com/linux/v6.4.11/source/drivers/clk/sunxi-ng/ccu_mu=
-x.c#L273
-https://elixir.bootlin.com/linux/v6.4.11/source/drivers/clk/sunxi-ng/ccu_co=
-mmon.c#L60
-
-but also others:
-https://elixir.bootlin.com/linux/v6.4.11/source/drivers/clk/at91/clk-master=
-.c#L248
-https://elixir.bootlin.com/linux/v6.4.11/source/drivers/clk/meson/meson8b.c=
-#L3755
-https://elixir.bootlin.com/linux/v6.4.11/source/drivers/clk/qcom/clk-cpu-89=
-96.c#L546
-
-> It's not really obvious to me why the notifiers don't work there.
+> Okay, and we are willing to continue supporting that then and it's
+> nothing we want to stop OOT drivers from doing.
 >
->> This work is inspired by an out-of-tree patchset [1] [2] [3].
->> Unfortunately, the patchset uses clk_set_rate() in a notifier callback,
->> which the following comment on clk_notifier_register() forbids: "The
->> callbacks associated with the notifier must not re-enter into the clk
->> framework by calling any top-level clk APIs." [4] Furthermore, that
->> out-of-tree patchset no longer works with the current linux-next,
->> because setting pll-mipi is now also resetting pll-video0 [5].
+> Fine with me; we should probably reflect that in the patch description.
+
+I can change these paragraphs,
+
+"During the review of the above commits, it was determined that in-tree
+users weren't affected by the change; most notably, since the only relevant
+user (in terms of THP) of VM_MIXEDMAP or ->huge_fault is DAX, which is
+explicitly approved early in approval logic.  However, there is at least
+one occurrence where an out-of-tree driver that used
+VM_HUGEPAGE|VM_MIXEDMAP with a vm_ops->huge_fault handler, was broken.
+
+Remove the VM_NO_KHUGEPAGED check when not in collapse path and give
+any ->huge_fault handler a chance to handle the fault.  Note that we
+don't validate the file mode or mapping alignment, which is consistent
+with the behavior before the aforementioned commits."
+
+To read,
+
+"The above commits, however, overfit the existing in-tree use cases,
+and assume that
+the only reason to support ->huge_fault was for DAX (which is
+explicitly approved early in the approval logic).
+This is a bad assumption to make and unnecessarily prevents general
+support of ->huge_fault by filesystems. Allow returning "true" if such
+a handler exists, giving the fault path an opportunity to exercise it.
+
+Similarly, the rationale for including the VM_NO_KHUGEPAGED check
+along the fault path was that it didn't alter any in-tree users, but
+was likewise similarly unnecessarily restrictive (and reads odd).
+Remove the check from the fault path."
+
+> >
+> > Keeping a driver out of tree is always a risky and costly proposition.
+> > It will continue to be broken by core kernel changes, particularly
+> > if/when it does unusual things.
+> >
 >
-> Is it because of the "The callbacks associated with the notifier must
-> not re-enter into the clk framework by calling any top-level clk APIs."
-> comment?
-
-I don't think that's the reason. I'm fairly certain that the problem is,
-that pll-mipi tries to set the parent rate. Maybe it should check if the
-parent is locked, before determining a rate that requires the parent
-rate to change. =F0=9F=A4=94 Currently, it only calls clk_hw_can_set_rate_p=
-arent()
-which only checks the flag, but does not check if it is really possible
-to change the parent's rate.
-
-Regardless, please don't prematurely dismiss my proposal. It has the
-advantage that it is not specific for sunxi-ng, but could be used for
-other drivers as well. Maybe there other instances of exclusive locks
-today where the CLK_KEEP_RATE flag might work equally well. =F0=9F=A4=B7
-
-> If so, I think the thing we should emphasize is that it's about *any
-> top-level clk API*, as in clk_set_rate() or clk_set_parent().
+> Yes.
 >
-> The issue is that any consumer-facing API is taking the clk_prepare lock
-> and thus we would have reentrancy. But we're a provider there, and none
-> of the clk_hw_* functions are taking that lock. Neither do our own functi=
-on.
+> > I think the complexity is entirely on us.  I think there's a simpler wa=
+y
+> > to handle the problem, but I'd start by turning all of this "admin and
+> > app get to control when THP are used" nonsense into no-ops.
 >
-> So we could call in that notifier our set_rate callback directly, or we
-> could create a clk_hw_set_rate() function.
+> Well, simpler, yes, but also more controversial :)
 >
-> The first one will create cache issue between the actual rate that the
-> common clock framework is running and the one we actually enforced, but
-> we could create a function to flush the CCF cache.
+> --
+> Cheers,
 >
-> The second one is probably simpler.
-
-I'm probably missing something, because I don't think this would work.
-For reference, this is our tree:
-
-    pll-video0
-       hdmi-phy-clk
-       hdmi
-       tcon1
-       pll-mipi
-          tcon0
-             tcon-data-clock
-
-When pll-video0's rate is changed (e.g. because a HDMI monitor is
-plugged in), the rates of the complete subtree for pll-video0 are
-recalculated, including tcon0 and tcon-data-clock. The rate of tcon0 is
-based on the rate that was recalculated for pll-mipi, which - in turn -
-was of course recalculated based on the pll-video0's new rate. These
-values are stored by the clk framework in a private struct. They are
-calculated before actually performing any rate changes.
-
-So, if a notifier sets pll-mipi's rate to something else than was
-previously recalculated, the clk framework would still try to set tcon0
-to the value that it previously calculated.
-
-So, we would have to recalculate pll-mipi's subtree after changing its
-rate (that's what PATCH 1 is doing).
-
-> Another option could be that we turn clk_set_rate_exclusive into
-> something more subtle that allows to change a parent rate as long as the
-> clock rate doesn't.
-
-I don't think this would work either. Only in rare circumstances
-pll-mipi can be set to the exact previous rate, normally it will be set
-to a rate that is close to it's previous rate.
-
-Note there is another option, we could analyze: pll-video0's
-RRE_RATE_CHANGE notifier could be used to set pll-mipi into a mode that
-lets it recalculate a rate that is close to the previous rate. A
-POST_RATE_CHANGE notifier could be used to switch it back to "normal"
-recalc mode. I don't know if pll-video0's notifier works or if we also
-need to be notified after pll-mipi has finished setting it's rate.
-However, this seems a little hacky and I haven't tried if it works at
-all. I prefer the current proposal (i.e. the CLK_KEEP_RATE flag).
-
-Best regards,
-  Frank
-
-> It would ease the requirement that
-> clk_set_rate_exclusive() has on a clock subtree (which I think prevents
-> its usage to some extent), but I have no issue on how that would work in
-> practice.
+> David / dhildenb
 >
-> So yeah, I think adding a clk_hw_set_rate() that would be callable from
-> a notifier is the right way forward there.
->
-> Maxime
->
-> [[End of PGP Signed Part]]
