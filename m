@@ -2,77 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10320788040
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 08:50:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 552B4788047
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 08:50:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242463AbjHYGtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 02:49:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52222 "EHLO
+        id S242544AbjHYGt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 02:49:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242419AbjHYGt0 (ORCPT
+        with ESMTP id S242627AbjHYGtj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 02:49:26 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4653819AC
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 23:49:24 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-99cdb0fd093so65391166b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 23:49:24 -0700 (PDT)
+        Fri, 25 Aug 2023 02:49:39 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ACC41FD4
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 23:49:36 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fef2fafee2so66125e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 23:49:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692946163; x=1693550963;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=lajo7OqjOl8rNN2v6USsxhYYBHIrPlabiPvdvBF4vXE=;
-        b=dzoDs5/lDF0GjQ5kZXZxk2yOa49Piy22tw3skoTulieeCRGnP9Mv7HnYX3IjPFh6pd
-         HaMBy4bbjmA1xChFTcs48EyjUlsf/NSu9R7NZ35h62lrUIvy5+OF8AMYHvJiLekM29H2
-         2OlSutBxRTPj8yFiU13mUUVjYea3zoKx/QoEngtqssASp87p9OfWagBMgvGIlsnTBL7/
-         Z4nfbas0owDAM+427A5QSq5CL9gGS3cUkz8q52amlSw9lr+rFitpIZgeZ2+zSMLpeyI9
-         G0W598lKD1Rn2uPD+sB1l4NkpFzsaEfza0/hBHfTMhZ70GfizXngR8miIj/C7nsTSM54
-         pHjQ==
+        d=google.com; s=20221208; t=1692946174; x=1693550974; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=PojqxzM4SKlFxcxGZ5zVdtShUbGpoVAi1aKTMw1YdoY=;
+        b=5RVYy6Yoq39o4BdcDuj50wniVGBTtV5XvrpKDX4Fp5ByYyG4F5WfhMI25w3hkMtCD0
+         YkyKnrvG8r/lYejEWHtZl9UeWu8kVo+aOMEuVzlayCBKMz9LCXN+6cbHcZI1NJYPQFdW
+         ZOToHfaVN8HYXUlEnyVEfudrwpVWii+qumm+i1xGuN2itPoIdbBuqXj8aGhgxdiiBCP9
+         EPzErbCTkCaWdmPwMwaP2zOElHHknd2D9BXwFF2NKNl8n0uDGwZtuXUn6KiUYRtPCBNz
+         XAVh+1A3Di0wFsFd8ZTZHnWThnVz+bjqeeYp/a9gjzKUUh9SBvBLLORwQZzrE/JvgF6R
+         1VBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692946163; x=1693550963;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lajo7OqjOl8rNN2v6USsxhYYBHIrPlabiPvdvBF4vXE=;
-        b=gzxMQ5CrbvxKtv9Ka8g5UHcoeQ57zVv1eORy3QCb0c2dh7P8ZdfUxaAhiusmHRalwc
-         lt+5X1WAMHzZw2hZdw4PDk9cUvXnI+D+Udavte39zPcyZTvqKZBvtR5m+gaVvgwXkEyP
-         7RctTfSvGvbzac04qbcEdBnLjOegQ8ghbLAIyz5824OLQFjENviUUIx7TtnOeD2mGjSP
-         4kkjzBZdNPC7dN7HCJ/+8PkynpE5ynD63BXxUjlnrJRRK34+9HJo22wOwP+n5u6pgalZ
-         yAwmuwsSqA5DdfhlifNjc2EP8/kdDy1FiN6rB4lbzhau0ZESY5s8v/B0zTGspgfeDGgc
-         uf3w==
-X-Gm-Message-State: AOJu0Yz378w5exxNn0DaPNLT0+QUMSR0xMqYLHbQIJHbKfubOdK/ygx5
-        gwh5ovLyCtHsYoM3e2PRWet2Uw==
-X-Google-Smtp-Source: AGHT+IHM0u5TqZw/AW+78y+hWyLMRR4dUmiJS290WiUMgNgRrW7spqkKVWWxp/6asczYj3lW/GZuRw==
-X-Received: by 2002:a17:906:2d0:b0:9a1:d0bb:d215 with SMTP id 16-20020a17090602d000b009a1d0bbd215mr5444386ejk.5.1692946162757;
-        Thu, 24 Aug 2023 23:49:22 -0700 (PDT)
-Received: from [192.168.0.22] ([77.252.47.198])
-        by smtp.gmail.com with ESMTPSA id h1-20020a1709062dc100b00992b1c93279sm595709eji.110.2023.08.24.23.49.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Aug 2023 23:49:22 -0700 (PDT)
-Message-ID: <2eda319d-bdd9-bfeb-005a-5989cf674501@linaro.org>
-Date:   Fri, 25 Aug 2023 08:49:21 +0200
+        d=1e100.net; s=20221208; t=1692946174; x=1693550974;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PojqxzM4SKlFxcxGZ5zVdtShUbGpoVAi1aKTMw1YdoY=;
+        b=jUnX9WFRCi9Z2/bjePSzd6PDPpk1lpDHlBFzYUItd5pUwsTNbGEE20Cuuwj7xQ9vur
+         QPpgb6QptOW8k6K1j7ZAL4HSgRZXOYJ0pgp+dAxgdnvO8gmVS7RB6WCKmeu9ZILCOZjd
+         xx8VYmqmSLfN1FCiK11jfIaLUDl0gxvsxDp4br5NjWxaOZ8Ceo5PLNYO0e9Oy/eD/qZV
+         twGaabdPFqqzboJz4CjPfwmm3AU3TB5ipAi6/oqTEJ63UcwhN1mu6uiHiwbYZ1GU8CSg
+         x/buGHF36zHk+HTJNaz2q6ADp8QX98AIGr5ofjAq4oYzIYzgGshFmYDtxUurrcGtR6p4
+         d/Dg==
+X-Gm-Message-State: AOJu0YyMv5E02cCPFm3odlC5QhJ57a0iR0B6wQ8ngVIs7F7WF0OdP11c
+        ivXTVWgjD1+QUUSft/8QyxcPggUL/9WJSTvpWmEDkg==
+X-Google-Smtp-Source: AGHT+IGJraIU0fZ5/69pyZ8GbcuquzermKaYyruReb+AsR8I8LGh79gXTPGlLm2cC8YBaMekWlv5qT+lCaF4V3hIPVs=
+X-Received: by 2002:a05:600c:600b:b0:3f6:f4b:d4a6 with SMTP id
+ az11-20020a05600c600b00b003f60f4bd4a6mr99315wmb.7.1692946174748; Thu, 24 Aug
+ 2023 23:49:34 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 1/2] TSD: arm64: dts: rockchip: use codec as clock master
-Content-Language: en-US
-To:     Jakob Unterwurzacher <jakobunt@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Heiko Stuebner <heiko@sntech.de>
-Cc:     jakob.unterwurzacher@theobroma-systems.com,
-        Ermin Sunj <ermin.sunj@theobroma-systems.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20230823122000.585787-1-jakob.unterwurzacher@theobroma-systems.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230823122000.585787-1-jakob.unterwurzacher@theobroma-systems.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20230824143129.1957914-1-rf@opensource.cirrus.com> <20230824143129.1957914-4-rf@opensource.cirrus.com>
+In-Reply-To: <20230824143129.1957914-4-rf@opensource.cirrus.com>
+From:   David Gow <davidgow@google.com>
+Date:   Fri, 25 Aug 2023 14:49:22 +0800
+Message-ID: <CABVgOSkbB2TNTf_TqbpGnw4rOTHjksCYdU=Kh9s-HOpbUmxoeQ@mail.gmail.com>
+Subject: Re: [PATCH v5 03/10] kunit: string-stream: Add option to make all
+ lines end with newline
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc:     brendan.higgins@linux.dev, rmoar@google.com,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="0000000000006244370603b9bfb7"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,29 +71,196 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/08/2023 14:19, Jakob Unterwurzacher wrote:
-> From: Ermin Sunj <ermin.sunj@theobroma-systems.com>
-> 
-> If the codec is not the clock master, the MCLK needs to be
-> synchronous to both I2S_SCL ans I2S_LRCLK. We do not have that
-> on Haikou, causing distorted audio.
-> 
-> Before:
-> 
->  Running audioloopback.py script on Ringneck, 1kHz
->  output sine wave is not stable and shows distortion.
-> 
-> After:
-> 
->  10h stress tests audioloopback.py failed only one time.
->  That is 0.00014% failure rate.
+--0000000000006244370603b9bfb7
+Content-Type: text/plain; charset="UTF-8"
 
-What is TSD? Why it is in the subject prefix?
+On Thu, 24 Aug 2023 at 22:32, Richard Fitzgerald
+<rf@opensource.cirrus.com> wrote:
+>
+> Add an optional feature to string_stream that will append a newline to
+> any added string that does not already end with a newline. The purpose
+> of this is so that string_stream can be used to collect log lines.
+>
+> This is enabled/disabled by calling string_stream_set_append_newlines().
+>
+> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+> ---
 
-Please use subject prefixes matching the subsystem. You can get them for
-example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
-your patch is touching.
+This is the same as v4, patch 4, and still looks good.
 
-Best regards,
-Krzysztof
+(In the future, feel free to leave the Reviewed-by: tag from the
+previous version, so long as there are no significant changes.)
 
+Reviewed-by: David Gow <davidgow@google.com>
+
+Cheers,
+-- David
+
+
+>  lib/kunit/string-stream.c | 28 +++++++++++++++++++++-------
+>  lib/kunit/string-stream.h |  7 +++++++
+>  2 files changed, 28 insertions(+), 7 deletions(-)
+>
+> diff --git a/lib/kunit/string-stream.c b/lib/kunit/string-stream.c
+> index ed24d86af9f5..1dcf6513b692 100644
+> --- a/lib/kunit/string-stream.c
+> +++ b/lib/kunit/string-stream.c
+> @@ -44,32 +44,46 @@ int string_stream_vadd(struct string_stream *stream,
+>                        va_list args)
+>  {
+>         struct string_stream_fragment *frag_container;
+> -       int len;
+> +       int buf_len, result_len;
+>         va_list args_for_counting;
+>
+>         /* Make a copy because `vsnprintf` could change it */
+>         va_copy(args_for_counting, args);
+>
+>         /* Evaluate length of formatted string */
+> -       len = vsnprintf(NULL, 0, fmt, args_for_counting);
+> +       buf_len = vsnprintf(NULL, 0, fmt, args_for_counting);
+>
+>         va_end(args_for_counting);
+>
+> -       if (len == 0)
+> +       if (buf_len == 0)
+>                 return 0;
+>
+> +       /* Reserve one extra for possible appended newline. */
+> +       if (stream->append_newlines)
+> +               buf_len++;
+> +
+>         /* Need space for null byte. */
+> -       len++;
+> +       buf_len++;
+>
+>         frag_container = alloc_string_stream_fragment(stream->test,
+> -                                                     len,
+> +                                                     buf_len,
+>                                                       stream->gfp);
+>         if (IS_ERR(frag_container))
+>                 return PTR_ERR(frag_container);
+>
+> -       len = vsnprintf(frag_container->fragment, len, fmt, args);
+> +       if (stream->append_newlines) {
+> +               /* Don't include reserved newline byte in writeable length. */
+> +               result_len = vsnprintf(frag_container->fragment, buf_len - 1, fmt, args);
+> +
+> +               /* Append newline if necessary. */
+> +               if (frag_container->fragment[result_len - 1] != '\n')
+> +                       result_len = strlcat(frag_container->fragment, "\n", buf_len);
+> +       } else {
+> +               result_len = vsnprintf(frag_container->fragment, buf_len, fmt, args);
+> +       }
+> +
+>         spin_lock(&stream->lock);
+> -       stream->length += len;
+> +       stream->length += result_len;
+>         list_add_tail(&frag_container->node, &stream->fragments);
+>         spin_unlock(&stream->lock);
+>
+> diff --git a/lib/kunit/string-stream.h b/lib/kunit/string-stream.h
+> index b669f9a75a94..048930bf97f0 100644
+> --- a/lib/kunit/string-stream.h
+> +++ b/lib/kunit/string-stream.h
+> @@ -25,6 +25,7 @@ struct string_stream {
+>         spinlock_t lock;
+>         struct kunit *test;
+>         gfp_t gfp;
+> +       bool append_newlines;
+>  };
+>
+>  struct kunit;
+> @@ -47,4 +48,10 @@ bool string_stream_is_empty(struct string_stream *stream);
+>
+>  void string_stream_destroy(struct string_stream *stream);
+>
+> +static inline void string_stream_set_append_newlines(struct string_stream *stream,
+> +                                                    bool append_newlines)
+> +{
+> +       stream->append_newlines = append_newlines;
+> +}
+> +
+>  #endif /* _KUNIT_STRING_STREAM_H */
+> --
+> 2.30.2
+>
+
+--0000000000006244370603b9bfb7
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIIPnwYJKoZIhvcNAQcCoIIPkDCCD4wCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+ggz5MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
+VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
+AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
+AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
+IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
+dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
+6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
+c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
+I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
+AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
+BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
+CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
+AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
+MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
+My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
+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
+ddIn9n5Jt6Z1o79zxraLMEwGA1UdIARFMEMwQQYJKwYBBAGgMgEoMDQwMgYIKwYBBQUHAgEWJmh0
+dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAwGA1UdEwEB/wQCMAAwgZoGCCsG
+AQUFBwEBBIGNMIGKMD4GCCsGAQUFBzABhjJodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9jYS9n
+c2F0bGFzcjNzbWltZWNhMjAyMDBIBggrBgEFBQcwAoY8aHR0cDovL3NlY3VyZS5nbG9iYWxzaWdu
+LmNvbS9jYWNlcnQvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3J0MB8GA1UdIwQYMBaAFHzMCmjXouse
+LHIb0c1dlW+N+/JjMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20v
+Y2EvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQBtHFwIgQZjer5K
+H+4Q+wns10k7qN+4wN2Uf+JsyOYjukaMEgdLErfA1wwtQ9uHkoYQZcWBuVVkQFa5hI+sqI2m1Weq
+riMCFSiU38s1tADdMX12IMfJRN60Nznhrw+nPyDRZqRhUTW24TwnHorkDnFPW8PHo7fAw4FrpI0n
+impZAng7ccvvK09K3ZuhwTIxJMsPXCZYsrXWORTw5sczRAP6XvKbPBJnsJoSTe5dFBPBHOQJOGhU
+qWfEfWnWMJPF3LxSGLpLFQXO3RwQqmxv08avwXfVPouh1xuB3FX7rpDabT8YDhu9JgIZkLEKko7L
+yQt6zWwng7k8YF/jGbiAta6VMYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
+R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
+MDIwAhABzgV+4+mJnUzG7XDy6d2uMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCCV
+RRQyFtiSamRpVbg7OVzC8f420XR6ev9ZWgMrmJd+LzAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
+MBwGCSqGSIb3DQEJBTEPFw0yMzA4MjUwNjQ5MzRaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
+BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
+CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAd0QVybmyXwwidtRPps4H
+iipzSZJ2gRKa3Dkb7yXifQEuuum9gcigSA0yFWLGbPxCO+MfEqvh8v237eF4p71UT9B3qXXonpjr
+WrMmdnBk4sLA3140fIW+2tPwByYqVEWTAG+BG1aq8Sp51dkYwJ9TVuUB1q+mWitT5lg7nnR8nWAi
+QQTrgkcItS3BFSGKxE1+qBxuMioFfOkSlHo7uUnT/fKq02ea7cJ3EJlEttXWvgNvFnOz93eraWMW
+3AAzwDcGwKh50iILXSmPmqXtNiFs8mQlclJen2yLsGUnOyKXzK5Sw1otz1K9OdBWsZCFallnWThH
+5Opi4f13U00IPFwKRg==
+--0000000000006244370603b9bfb7--
