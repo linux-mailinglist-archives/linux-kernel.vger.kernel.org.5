@@ -2,225 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FBBB788EFC
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 20:55:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08B35788F02
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 20:55:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229932AbjHYSya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 14:54:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48166 "EHLO
+        id S230011AbjHYSzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 14:55:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbjHYSyE (ORCPT
+        with ESMTP id S229988AbjHYSyr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 14:54:04 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 495C11BD2;
-        Fri, 25 Aug 2023 11:54:01 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-9a2185bd83cso157107766b.0;
-        Fri, 25 Aug 2023 11:54:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692989640; x=1693594440;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=mxQMK9RP6ilUyhYYI+Su+gjUxqffi2sMga7zj0RkO+8=;
-        b=G0PN2o2H/4RkfQisDlOCOfjlg+Od9j1hPLw4L1DHMocm8PQsH3NskvWP5tAec/p2JK
-         VmQxoLccLp6GcypBkKPReC95jTmXFCP+RwQfPFuQW+Exw0skitjCLATUzzsuMlnhrqoS
-         WS/I+C03x4Bn06EJq52dn7rEYOHWl2GYOrbHs2nGhuuOw1IONhpVVUUNet1f64pFTMdv
-         Sc+ibh/XWdxCEXdXgnvu4XxYs9xmEQkdZAFUdQqNZ19U0hdQ7rrd0Sw0N9UFVwYXHNw/
-         IMQUn06hAPAX9YHvc9692N7fRVXz1GaAzpE+rOrdBYn2SFaQON4KeIE8gXNeSNZvducR
-         1ozw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692989640; x=1693594440;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mxQMK9RP6ilUyhYYI+Su+gjUxqffi2sMga7zj0RkO+8=;
-        b=XRe/rQAjlrYJAaIdtPI2odT2+BSOOMYmJGOVDn0fRTwqx/2vy+Cj8Yy65Y+D4uHVpd
-         hxj11LBokEU0jU6VGWTubhL5I6h+GYdzbLja4Z+pz1jg3BP6G9nZLHsqL6SUsnN8V+4D
-         lGtyo8pwanX6naGFLGxb2enwFvV2ZvsttjUozT/HgZh5JGWWNKXbIHphi503v8q7dH+H
-         lwry7ACnUN9CulEjWKklTJ29dCEES+KaTE6c3oFgNmSB1ptqK1ddCQmfEZLhjrQ+k3FL
-         yaLbtPf6lbTA1x9amm3kFWepAIrmfn10FdI6OnjwHTsmdf8hcMjM3fHL8pdkwM2Y2AAG
-         oyuw==
-X-Gm-Message-State: AOJu0YxVWmNQoyd5VBll6Ydpt1oDAtJtiu9ehPeqjQkdDIGBJYg/4Sa4
-        p1gybldbJmNUbLx+U+cT3RI=
-X-Google-Smtp-Source: AGHT+IGMYgJx3Qngg0jobBAnd3GFqEAJm2aB9ZBPeZNi4vv2ZU1Rkq0gIQ93J2FfL57nwSXCYhgWow==
-X-Received: by 2002:a17:906:5385:b0:994:4095:3abf with SMTP id g5-20020a170906538500b0099440953abfmr14748340ejo.14.1692989639406;
-        Fri, 25 Aug 2023 11:53:59 -0700 (PDT)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id jx13-20020a170906ca4d00b00992d122af63sm1239162ejb.89.2023.08.25.11.53.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Aug 2023 11:53:58 -0700 (PDT)
-Message-ID: <65800771171dcaff9901dae47de960ec66602f7e.camel@gmail.com>
-Subject: Re: [PATCH 4/3] selftests/hid: more fixes to build with older kernel
-From:   Eduard Zingerman <eddyz87@gmail.com>
-To:     Justin Stitt <justinstitt@google.com>,
-        Benjamin Tissoires <bentiss@kernel.org>
-Cc:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-input@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Date:   Fri, 25 Aug 2023 21:53:57 +0300
-In-Reply-To: <20230825182316.m2ksjoxe4s7dsapn@google.com>
-References: <20230825-wip-selftests-v1-0-c862769020a8@kernel.org>
-         <20230825182316.m2ksjoxe4s7dsapn@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 25 Aug 2023 14:54:47 -0400
+Received: from mx0a-002e3701.pphosted.com (mx0a-002e3701.pphosted.com [148.163.147.86])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EA862127;
+        Fri, 25 Aug 2023 11:54:43 -0700 (PDT)
+Received: from pps.filterd (m0150242.ppops.net [127.0.0.1])
+        by mx0a-002e3701.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37PDtqba031959;
+        Fri, 25 Aug 2023 18:54:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pps0720;
+ bh=pMkTiIDGulVPTZyLa/x01FawGNN81HNXf8mSU5lsGtk=;
+ b=amFtSQ4iM8CB0UMsSNf+9B2QxrntO7iz0cnQnXq5AJxOXt/5O/QKewuYJAwP70QLiIXw
+ 8OP3RbSCkW8arz+txOd10tGlVkUE1+1FluPhlAsKfAiGENwPEyRlLGCiQIWQucBVy59b
+ M2+0L1Ms5aT+fHFs4w3DJvILykR7O5pTYpwBLCJt4GOPK2o4hb8mgsq0lh6jz627ljiM
+ smU97bniSBtqCYRhrTR0pDa4mNSqNdBBS+6iwsmFSQFuQAbvOI/zCXEvCHrtzAPznmow
+ 3LkYwLndvBVq2udChylROdW1WW++MxumtZWwckQd7phpZe1mWoD3Ta4agolw+/v/B50B vg== 
+Received: from p1lg14879.it.hpe.com ([16.230.97.200])
+        by mx0a-002e3701.pphosted.com (PPS) with ESMTPS id 3spwm3jck3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 25 Aug 2023 18:54:22 +0000
+Received: from p1wg14924.americas.hpqcorp.net (unknown [10.119.18.113])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by p1lg14879.it.hpe.com (Postfix) with ESMTPS id 6A07CD2D2;
+        Fri, 25 Aug 2023 18:54:21 +0000 (UTC)
+Received: from p1wg14927.americas.hpqcorp.net (10.119.18.117) by
+ p1wg14924.americas.hpqcorp.net (10.119.18.113) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.42; Fri, 25 Aug 2023 06:54:21 -1200
+Received: from p1wg14923.americas.hpqcorp.net (10.119.18.111) by
+ p1wg14927.americas.hpqcorp.net (10.119.18.117) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.42; Fri, 25 Aug 2023 06:54:20 -1200
+Received: from p1wg14920.americas.hpqcorp.net (16.230.19.123) by
+ p1wg14923.americas.hpqcorp.net (10.119.18.111) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.42
+ via Frontend Transport; Fri, 25 Aug 2023 06:54:20 -1200
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (192.58.206.35)
+ by edge.it.hpe.com (16.230.19.123) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.42; Fri, 25 Aug 2023 06:54:20 -1200
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=X6j7mfpuzr6UwaVddSGJw6sPIh4KsHK1eBaBgm4PWYG2Qgp/7STVbdijBK4waVldNENGrEs/ubjsHv0RYF3s+wtUJhkNp0UFyZDHOK8kFYJX9wcm1tvtgWPioOrLhX6ZIZgMUhYRdRq5L94o40VL+pYNUG6BAx0C8A1r3NQG5Q0ix2Bg8QTAZ/sDsxRs8CLvGOykCf6kPgNzfF5Biiuo6/uCEyJ/+PSC1+VZdhiYteWiOjDek7g0Y5dOzq7uA5ZDUfoanNkiEg3O23/C+5KxSJ1l43ok7d8pXHXJekfBbUdvswTVp70N7LfpXs2hxYuDu5xFMa2lA3FaVlCc8dyxHw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=pMkTiIDGulVPTZyLa/x01FawGNN81HNXf8mSU5lsGtk=;
+ b=ofexgUm9atG78Huse2XhDmWkfSx7R8k3K1iXMaIV5BnR6cdMc4FNul+yXaFhBtAIrfLGT0TNDAlIG4sz3lTyhmaECcADu0iUliWfYru0j2zCrvwn2z6u6/tRWQvKiBg4GR1BsDN+jL2QRA2Co+hmcYR3qCyApStG+77MtDtNuwy215VB9yt/vhBRVZDiRI86esItFg+AyMuP6SdreMZvLCCGkvqn7rpLJMnhXtXso4CXWbd719UTLA8iBYmTl/K8Yvf/meadI9TXLqZYV8XBLmDHrdJBRI5i3O1yCMwc12Fr03UALlpfRGMWTfD35OO6lhu627aJfFiIC0FjCFHkpA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=hpe.com; dmarc=pass action=none header.from=hpe.com; dkim=pass
+ header.d=hpe.com; arc=none
+Received: from DM4PR84MB1927.NAMPRD84.PROD.OUTLOOK.COM (2603:10b6:8:4e::10) by
+ CH3PR84MB3522.NAMPRD84.PROD.OUTLOOK.COM (2603:10b6:610:1ca::5) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6699.29; Fri, 25 Aug 2023 18:54:18 +0000
+Received: from DM4PR84MB1927.NAMPRD84.PROD.OUTLOOK.COM
+ ([fe80::20b7:769e:3974:f17e]) by DM4PR84MB1927.NAMPRD84.PROD.OUTLOOK.COM
+ ([fe80::20b7:769e:3974:f17e%4]) with mapi id 15.20.6699.027; Fri, 25 Aug 2023
+ 18:54:18 +0000
+From:   "Hawkins, Nick" <nick.hawkins@hpe.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     "christophe.jaillet@wanadoo.fr" <christophe.jaillet@wanadoo.fr>,
+        "simon.horman@corigine.com" <simon.horman@corigine.com>,
+        "Verdun, Jean-Marie" <verdun@hpe.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v3 4/5] net: hpe: Add GXP UMAC Driver
+Thread-Topic: [PATCH v3 4/5] net: hpe: Add GXP UMAC Driver
+Thread-Index: AQHZ0Ixvto7vnAASrEiTAeghAafYu6/tuDUAgAJzHICAAGX0gIAFz7wAgABkmgCABKKvcA==
+Date:   Fri, 25 Aug 2023 18:54:18 +0000
+Message-ID: <DM4PR84MB1927E85827B5450F1952E58A88E3A@DM4PR84MB1927.NAMPRD84.PROD.OUTLOOK.COM>
+References: <20230816215220.114118-1-nick.hawkins@hpe.com>
+ <20230816215220.114118-5-nick.hawkins@hpe.com>
+ <01e96219-4f0c-4259-9398-bc2e6bc1794f@lunn.ch>
+ <88B3833C-19FB-4E4C-A398-E7EF3143ED02@hpe.com>
+ <1b8058e1-6e7f-4a4a-a191-09a9b8010e0a@lunn.ch>
+ <CF9BD927-B788-4554-B246-D5CC6D06258F@hpe.com>
+ <befbee5a-7b11-4948-a837-6311dd4d7276@lunn.ch>
+In-Reply-To: <befbee5a-7b11-4948-a837-6311dd4d7276@lunn.ch>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DM4PR84MB1927:EE_|CH3PR84MB3522:EE_
+x-ms-office365-filtering-correlation-id: b2208c1e-48d2-453e-e281-08dba59cafaf
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: tAlwHTWRZMzlsU0xjusLX/Cp/1lt2Mji3VqVISTjZP4slFzwPL4rf2V5umU3nB4ZzsCHqSKOMpIX0LOR3LQFz08mdnqxBNM7m2RGoX/fpzr1AYUj8isBcgDtrDYfOA69TOmq1mVGa65bdqTkvQlnRmaouoYhU6e8qv2DPZhuWNLDFZPl7pcs7LxHfC6QEsRquAbqH3zDvOdqyVDp+9FxjbU+RIFclo6ZMok1QEL1ycJkgmKkcFbMr6NeD9PxnaaNhwzmjSeXaS+tb8iIJYVItDgpeuEfOh5Ltppo8S3X/2M5DQ6EwekDRziZvd0PEgbMscqpq60cya1BCZvYkPRmSsZ8X4c9CNbES7Ew6l3c2jit4QM5mB366U9mpDV+jriqmaXfhZz910W3kUQskK5oK5Il8gUzI7vlrSbTMz15iuZnw59M3nozCW0/V/mrX3e8qLYt8fM+v/g8T36YZ0gQTY0GFM0rIc39fz409vI9dIfbtGy9dFZ+KkgSAqPVHmH7BcEIhAFnFnkBuu+DSIMWuUqDeSJiz6g3parYWINhjbRtI9wAKkzsnIusLnLjhKhq6xfNXIx3/iorZ0SoscYflJGXzrfgaiFmmhb78eWJbP98OT4fOBjxZihw5riAc/un
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR84MB1927.NAMPRD84.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(39860400002)(366004)(346002)(396003)(451199024)(1800799009)(186009)(82960400001)(38070700005)(38100700002)(122000001)(8676002)(4326008)(8936002)(64756008)(54906003)(41300700001)(6506007)(33656002)(66446008)(316002)(7696005)(76116006)(6916009)(66476007)(66556008)(86362001)(66946007)(71200400001)(9686003)(55016003)(26005)(478600001)(7416002)(4744005)(2906002)(52536014)(5660300002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?VnLnQJymqasS5g3n6XT2h+fDU8kBP+HRUEBzXquQswsURFP0Ov+WLmtQGd84?=
+ =?us-ascii?Q?+mueRGY9w1/xcj2oa1LjA1Ezg7pb4koPaNGyfHopnJNB/lULFa2w5g2ahWwZ?=
+ =?us-ascii?Q?kZPntFiI8mnsGBZ7eatk/FNk1zo6TEjDAsO5iIqH+DE0/mb65E+ln5F9rMRP?=
+ =?us-ascii?Q?NA6xoHo3THYRQPBO7JK9ETLl7up9Ub2ntPQ2Yp3uZc2yHpd1bPxb6Ik7FeaW?=
+ =?us-ascii?Q?II5uM8QNtOmJxmU5vnmeMXp21h0xUdHrQkHG4r9IsENnl2dQPiHbUIWhp/QP?=
+ =?us-ascii?Q?UBsx7rHdD+njNCU+BdaXFFbvShForrPIXhp3vmc+1FYEXLOmXVPNTBxLXUwb?=
+ =?us-ascii?Q?BIn6hrQEv1M0tZCZQNV7pWnFObBmNQVomQm+hR9Vs7ROkaps3wDVmaBlv/3S?=
+ =?us-ascii?Q?VinwFA0wVdkNiM8IyNIX3yNQ+f/Hfyde5xAOBsCfrZQwfu6yNyH45n4d2Uin?=
+ =?us-ascii?Q?DZjCVu9pKZHG0wDSEH+HpowMBDgJUwKXHGYWM6HSTTSlOMPpebTTDoY7KZvY?=
+ =?us-ascii?Q?3YGlAMtUKPmSiCWA+/ZgzmHLIgwPLKRX8QU0HgyP0VDuqGrdCRO+baQEA+Gd?=
+ =?us-ascii?Q?gcaEan27A4HR9SylqvuDtzJVa4vaB9zpD7Wm/17g2gQR9X5PwoT1vDX/u2ov?=
+ =?us-ascii?Q?8tSO4RC2hRXvVzezNWgXns7dUmja//bazHlp9gB/pDJ/vCQONzXTGJhUu8Xt?=
+ =?us-ascii?Q?y/NIW2Ca+0dmQbP1Vg3g4UNjgTYkZ8L25qEroXcUcUjjWbZkv+iyPI1sA+WD?=
+ =?us-ascii?Q?xFHSKdYliSiFARsReP4jyMzb7BOmQqPnQt23LrQKQfZmYl1HiiTNNTNl+w9d?=
+ =?us-ascii?Q?5Dhq5GDg1g/J4SGqstymbu95joqf0bpyiJ1apoapJly14E0rrT7MvrVfL31e?=
+ =?us-ascii?Q?ow4w7wpYYQjQ7OI3vc+9OHo6OrmfjA4nKgXsZEXe6b4c0c6UNlENe186pPNM?=
+ =?us-ascii?Q?endgIw4jm/i4yq6NYK005wl2FnmpXRsyBB0IJn55hWyfy8P6XAlSCTmEYxW3?=
+ =?us-ascii?Q?XQSLwzLzus79IwSlKHDlHof++xnMay770NkJWWnCmWiUTycxBkudmvB3072K?=
+ =?us-ascii?Q?VE6CnWaORxphDlCXO7Dz6eC+16oUOkM4qvtshDNl4whLk1ujPflYmJBbkY4w?=
+ =?us-ascii?Q?o1TwEfP7lmETgnJy4P1LFtbImWiynKYQQo+rvFdagJiBR7fqw8uW1LgDABhm?=
+ =?us-ascii?Q?iRWowGNrDAays1XRSQsHQaALawtEIlOi2o+VQUN6GN4KjCtP401t4XzQgBa3?=
+ =?us-ascii?Q?a3BiEczUrb9CMHVkX7MnFriFs0WmDEf8QynV+jBMWatmdQ1okyCxSRZhj7OH?=
+ =?us-ascii?Q?qIQX6ROduOBFygD0TZvWs/YYW3uwj92O8uQw8sU246D/fLRzeICdsi0Yn/CQ?=
+ =?us-ascii?Q?3I52LTLjoj7UKVKjPEVOajnYgPyYMNjO2EFrzY2kHKwQQYfbXJVU5v/QHRWb?=
+ =?us-ascii?Q?rb0zRedCBohVtMI7u6oTGHrh+xIJ5k0qHc95pUxcpL51fxCvDGNeU1Y94+c2?=
+ =?us-ascii?Q?eeWPOseOP/YqzvKMhgQOiXURtMR6RVG6WzyXzL9jHGzHfkuS9oOCGcAuESzK?=
+ =?us-ascii?Q?FO2kbngDbCxJhrSy8N292mAPUfiKbUnZdH+5U8Vy?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu1 
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR84MB1927.NAMPRD84.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: b2208c1e-48d2-453e-e281-08dba59cafaf
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Aug 2023 18:54:18.4018
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 105b2061-b669-4b31-92ac-24d304d195dc
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: NR4wfVUgX0YIZZvIDWkgp0oLN1gYIqMazJU1v8Mpt+bgQMh658teT4eGNzgR55KJTOX/Yksez5jAJQyjSP4npA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR84MB3522
+X-OriginatorOrg: hpe.com
+X-Proofpoint-GUID: aQTVhzlSJLLbi-uFii6rl6cESJBVK6Wt
+X-Proofpoint-ORIG-GUID: aQTVhzlSJLLbi-uFii6rl6cESJBVK6Wt
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-25_16,2023-08-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
+ phishscore=0 suspectscore=0 adultscore=0 priorityscore=1501 bulkscore=0
+ spamscore=0 mlxscore=0 mlxlogscore=938 malwarescore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2308250169
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-08-25 at 18:23 +0000, Justin Stitt wrote:
-> On Fri, Aug 25, 2023 at 10:36:30AM +0200, Benjamin Tissoires wrote:
-> > These fixes have been triggered by [0]:
-> > basically, if you do not recompile the kernel first, and are
-> > running on an old kernel, vmlinux.h doesn't have the required
-> > symbols and the compilation fails.
-> >=20
-> > The tests will fail if you run them on that very same machine,
-> > of course, but the binary should compile.
-> >=20
-> > And while I was sorting out why it was failing, I realized I
-> > could do a couple of improvements on the Makefile.
-> >=20
-> > [0] https://lore.kernel.org/linux-input/56ba8125-2c6f-a9c9-d498-0ca1c15=
-3dcb2@redhat.com/T/#t
-> >=20
-> > Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
-> > ---
-> > Benjamin Tissoires (3):
-> >       selftests/hid: ensure we can compile the tests on kernels pre-6.3
-> >       selftests/hid: do not manually call headers_install
-> >       selftests/hid: force using our compiled libbpf headers
-> >=20
-> >  tools/testing/selftests/hid/Makefile                | 10 ++++------
-> >  tools/testing/selftests/hid/progs/hid.c             |  3 ---
-> >  tools/testing/selftests/hid/progs/hid_bpf_helpers.h | 20 +++++++++++++=
-+++++++
-> >  3 files changed, 24 insertions(+), 9 deletions(-)
-> > ---
-> > base-commit: 1d7546042f8fdc4bc39ab91ec966203e2d64f8bd
-> > change-id: 20230825-wip-selftests-9a7502b56542
-> >=20
-> > Best regards,
-> > --
-> > Benjamin Tissoires <bentiss@kernel.org>
-> >=20
->=20
-> Benjamin, thanks for the work here. Your series fixed up _some_ of the
-> errors I had while building on my 6.3.11 kernel. I'm proposing a single
-> patch that should be applied on top of your series that fully fixes
-> _all_ of the build errors I'm experiencing.
->=20
-> Can you let me know if it works and potentially formulate a new series
-> so that `b4 shazam` applies it cleanly?
->=20
-> PATCH BELOW
-> ---
-> From 5378d70e1b3f7f75656332f9bff65a37122bb288 Mon Sep 17 00:00:00 2001
-> From: Justin Stitt <justinstitt@google.com>
-> Date: Fri, 25 Aug 2023 18:10:33 +0000
-> Subject: [PATCH 4/3] selftests/hid: more fixes to build with older kernel
->=20
-> I had to use the clever trick [1] on some other symbols to get my builds
-> working.
->=20
-> Apply this patch on top of Benjamin's series [2].
->=20
-> This is now a n=3D4 patch series which has fixed my builds when running:
-> > $ make LLVM=3D1 -j128 ARCH=3Dx86_64 mrproper headers
-> > $ make LLVM=3D1 -j128 ARCH=3Dx86_64 -C tools/testing/selftests TARGETS=
-=3Dhid
->=20
-> [1]: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/t=
-ree/tools/testing/selftests/bpf/progs/bpf_iter.h#n3
-> [2]: https://lore.kernel.org/all/20230825-wip-selftests-v1-0-c862769020a8=
-@kernel.org/
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
-> ---
->  .../selftests/hid/progs/hid_bpf_helpers.h     | 29 +++++++++++++++++++
->  1 file changed, 29 insertions(+)
->=20
-> diff --git a/tools/testing/selftests/hid/progs/hid_bpf_helpers.h b/tools/=
-testing/selftests/hid/progs/hid_bpf_helpers.h
-> index 749097f8f4d9..e2eace2c0029 100644
-> --- a/tools/testing/selftests/hid/progs/hid_bpf_helpers.h
-> +++ b/tools/testing/selftests/hid/progs/hid_bpf_helpers.h
-> @@ -7,12 +7,26 @@
->=20
->  /* "undefine" structs in vmlinux.h, because we "override" them below */
->  #define hid_bpf_ctx hid_bpf_ctx___not_used
-> +#define hid_report_type hid_report_type___not_used
-> +#define hid_class_request hid_class_request___not_used
-> +#define hid_bpf_attach_flags hid_bpf_attach_flags___not_used
->  #include "vmlinux.h"
->  #undef hid_bpf_ctx
-> +#undef hid_report_type
-> +#undef hid_class_request
-> +#undef hid_bpf_attach_flags
->=20
->  #include <bpf/bpf_helpers.h>
->  #include <bpf/bpf_tracing.h>
-> +#include <linux/const.h>
->=20
-> +enum hid_report_type {
-> +	HID_INPUT_REPORT		=3D 0,
-> +	HID_OUTPUT_REPORT		=3D 1,
-> +	HID_FEATURE_REPORT		=3D 2,
-> +
-> +	HID_REPORT_TYPES,
-> +};
->=20
->  struct hid_bpf_ctx {
->  	__u32 index;
-> @@ -25,6 +39,21 @@ struct hid_bpf_ctx {
->  	};
->  };
+Hi Andrew,
 
-Note, vmlinux.h has the following preamble/postamble:
+Thank you for pointing me at the correct repo to use. I was using the
+incorrect one.
 
-    #ifndef BPF_NO_PRESERVE_ACCESS_INDEX
-    #pragma clang attribute push (__attribute__((preserve_access_index)), a=
-pply_to =3D record)
-    #endif
-    ...
-    #ifndef BPF_NO_PRESERVE_ACCESS_INDEX
-    #pragma clang attribute pop
-    #endif
+> Nope, not required at all. The FEC driver was first converted to page
+> pool, and then XDP support added. The conversion to page pool made the
+> driver faster, it could handle more packets per second. That is why i
+> suggested using it, plus it means less driver code, which means less
+> bugs.
 
-You might want to use it or add __attribute__((preserve_access_index))
-to structure definitions, depending on whether or not you need CO-RE
-functionality for these tests.
+I have been trying to figure out how exactly I can translate the current co=
+de
+over to using the page pool api over the past week. It seems like it is qui=
+et
+a complex change. As the driver seems to be keeping up with our
+performance requirements would it be acceptable to mark this as a
+TODO: for a future enhancement?
 
->=20
-> +enum hid_class_request {
-> +	HID_REQ_GET_REPORT		=3D 0x01,
-> +	HID_REQ_GET_IDLE		=3D 0x02,
-> +	HID_REQ_GET_PROTOCOL		=3D 0x03,
-> +	HID_REQ_SET_REPORT		=3D 0x09,
-> +	HID_REQ_SET_IDLE		=3D 0x0A,
-> +	HID_REQ_SET_PROTOCOL		=3D 0x0B,
-> +};
-> +
-> +enum hid_bpf_attach_flags {
-> +	HID_BPF_FLAG_NONE =3D 0,
-> +	HID_BPF_FLAG_INSERT_HEAD =3D _BITUL(0),
-> +	HID_BPF_FLAG_MAX,
-> +};
-> +
->  /* following are kfuncs exported by HID for HID-BPF */
->  extern __u8 *hid_bpf_get_data(struct hid_bpf_ctx *ctx,
->  			      unsigned int offset,
-> --
-> 2.42.0.rc1.204.g551eb34607-goog
->=20
+Thank you for the assistance,
 
+-Nick Hawkins
