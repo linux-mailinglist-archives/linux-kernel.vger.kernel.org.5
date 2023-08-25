@@ -2,108 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCB96788FB0
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 22:16:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77F7D788FB4
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 22:18:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230405AbjHYUQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 16:16:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59144 "EHLO
+        id S230365AbjHYUSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 16:18:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231171AbjHYUQJ (ORCPT
+        with ESMTP id S231189AbjHYUR4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 16:16:09 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10D0010C7;
-        Fri, 25 Aug 2023 13:16:06 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-5230a22cfd1so1798037a12.1;
-        Fri, 25 Aug 2023 13:16:05 -0700 (PDT)
+        Fri, 25 Aug 2023 16:17:56 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A92AB171A
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 13:17:54 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-52a4737a08fso1802475a12.3
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 13:17:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692994564; x=1693599364;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+        d=chromium.org; s=google; t=1692994672; x=1693599472;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qjJCHGt0k1VwlPR6FmSHmbFrmal68KsL6y3OoKnV8Vg=;
-        b=UZ7+BszuI+HA4SWxjR91ezZtiTxHA+UElmuXBNh6shT/nuD663ATY9CDnFKGuqBSC5
-         kcOEH4L/nWnBy+j/YrgGzKycZdwYDU13qsgui6DLJnMsf4lY60iYcMmzoUOH9DPUhGPT
-         EopC7j2nw8blE5dCNn1utPlJppyp+P3Mu6zlxuFcip+qaeVr6ZpKXVMvZz5JUhag5iVc
-         zu13ZN1/0PG6Z4+sT7Le5Z9cdkPTSBpL41SXKouc/ac4/RAB/yU49s/XdZj+iaHR9KhA
-         hB6zVhmhhcSehxntStOySs/BhfMJ+PsJEgXG6FsqNQgRujz50k0wxrMkb8p4NgEsjHwW
-         kpjg==
+        bh=E4MG4Y7KTbIUQEo4oi1409RKv9+4SxTW98bg1s1cKPw=;
+        b=GrWpKq5qCWAOl/qCljbumGTWm18CTyDkFE4buGF28JEPf0EZ0jJYaMAXKEiLEAfBOC
+         RA/iWnBdbzq5isvY3WVl02D6l8eqg0C3mh3jA9PJju5HZIa0Hi/raZoviuzkE44aDI02
+         YLbwz1qATI+NWtedTySF44E9AijpItQHAMWy4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692994564; x=1693599364;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1692994672; x=1693599472;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=qjJCHGt0k1VwlPR6FmSHmbFrmal68KsL6y3OoKnV8Vg=;
-        b=T2xcH2T4daoFFW4Igu99NcnnvOR2oIhEuF05AId4ix3lG25NmEBLKM0XERNbNpIEoi
-         v1rKjaXafy2eOTw+/u42EnBR1VGdPnAlJHDLdgAjiz4UgtWh5Twa3MkolQAnn6UZd2Ve
-         D/dTr0rh3GFhPznh2XDZrEODaZiAagjZmwm0LLYz14tsNeCMpuvbt+3TyYAD9OGScLOo
-         GZNEJexsLVFNRRqMcI0ktA4bSBnZu0RPkzPFox5Il3xkvsC0lP4DyrWIm+0jSTeh1HRV
-         9n5EJer3SXdKbEZpmIGOx2XUFuwAV7tL/HJ5GZ7DmQykMWRm0WGzEvhofUR8O+u7S+o9
-         yXtA==
-X-Gm-Message-State: AOJu0YwEWvU1lyQwDYpAKsRRf3xx5jj0iVTZsXQpB2CVa1LTjfH41iBG
-        QqU2ghWpMDUbCzcyp66q0R0=
-X-Google-Smtp-Source: AGHT+IHfgnsvA/fcaQsFX768N5I5IbuzJzca9stNFdAHPqeaHuS0RfE3/Tb+CgNr6A4io8f1F4a7Tg==
-X-Received: by 2002:a17:906:cc0b:b0:9a3:7148:503c with SMTP id ml11-20020a170906cc0b00b009a37148503cmr2733908ejb.5.1692994564239;
-        Fri, 25 Aug 2023 13:16:04 -0700 (PDT)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id a5-20020a17090682c500b0098f33157e7dsm1277736ejy.82.2023.08.25.13.16.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Aug 2023 13:16:03 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 8716F27C005B;
-        Fri, 25 Aug 2023 16:16:00 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Fri, 25 Aug 2023 16:16:00 -0400
-X-ME-Sender: <xms:_wvpZIearZ1d82KHybSnHx5zol1Px_Shl4JNEIq9YKSReNvoc03TSw>
-    <xme:_wvpZKMxKuoYxmJA71dcESzXULjuCV7dlCSJ9iF_CAqGz48IjjunqJPO9ghVCKQpy
-    BZrf8dVHp2MpCO9Hw>
-X-ME-Received: <xmr:_wvpZJjsM7Do9yl-pHUUKeWS_V9kNfhAXHIPAwxT-OIDbNtnRJ-zuG-K-VM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedruddvkedgudegiecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhq
-    uhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrf
-    grthhtvghrnhephedugfduffffteeutddvheeuveelvdfhleelieevtdeguefhgeeuveei
-    udffiedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    epsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedt
-    ieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfh
-    higihmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:_wvpZN-4r917S81a3e2e1c7eemYg5ViSDPfVK-RHNnF_NJCICMnhbQ>
-    <xmx:_wvpZEvVwU-SShEVA8BHccOpv2HGzNmU7U4nNE9c0za_oHGvcbv4iA>
-    <xmx:_wvpZEHPM0f_w8c4lO_NqRJpQavSAClakN-e0tdhlPYMhVSquUJQPQ>
-    <xmx:AAzpZE0a0LrsZXGJrppD7TZGNgwtV7dSoB-cu2f1wHT7Z1dbkaprYw>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 25 Aug 2023 16:15:58 -0400 (EDT)
-Date:   Fri, 25 Aug 2023 13:15:19 -0700
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Nuno Das Neves <nunodasneves@linux.microsoft.com>
-Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-arch@vger.kernel.org, patches@lists.linux.dev,
-        mikelley@microsoft.com, kys@microsoft.com, wei.liu@kernel.org,
-        haiyangz@microsoft.com, decui@microsoft.com,
-        apais@linux.microsoft.com, Tianyu.Lan@microsoft.com,
-        ssengar@linux.microsoft.com, mukeshrathor@microsoft.com,
-        stanislav.kinsburskiy@gmail.com, jinankjain@linux.microsoft.com,
-        vkuznets@redhat.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
-        will@kernel.org, catalin.marinas@arm.com
-Subject: Re: [PATCH v2 15/15] Drivers: hv: Add modules to expose /dev/mshv to
- VMMs running on Hyper-V
-Message-ID: <ZOkL12qGLWe_ceCx@boqun-archlinux>
-References: <1692309711-5573-1-git-send-email-nunodasneves@linux.microsoft.com>
- <1692309711-5573-16-git-send-email-nunodasneves@linux.microsoft.com>
- <ZOeh-4pFgil54iyx@boqun-archlinux>
- <0909fb87-9370-4c59-b7ea-9ca673d456b3@linux.microsoft.com>
+        bh=E4MG4Y7KTbIUQEo4oi1409RKv9+4SxTW98bg1s1cKPw=;
+        b=lFT1nIfXa5LAv+FZ/rvKVzi5KEOdF2qVB9c2H8wekemL+NUnDg5MFMerssRqJ1W/Zb
+         ZVCG/r736uu8m/ncTDuy/g7CzMl+AjO0gJMUFJEtbXBFfAIxjoGhbA0b7b/iPRe0HPo5
+         1X7PWmIaQlODPoAKoctTA9GnAQ/dlRaHzf3osVf08olqml9F1KU8NAhGOc65jCu9xvKd
+         +5+7+o3qxxBT58t6zJowtCGGVqYHHzRotpr59gZ8UZfjxg4XJLXzbEdo8iMYYdF2kdno
+         CWZanWTBynAGNlcc0W+XbWS3tXoLQ53uZth2r9T/ITL32UI/fGUhU+/qx3bqIGBfHmVR
+         KYOQ==
+X-Gm-Message-State: AOJu0YxZAsJEzg5lFTpk0jK7P2S5T1BVqd62uVq2QmzvAExBS7FNC7ZB
+        it/+8NXeNo+KdbIrinOCECCa0CvRCH20cN2UyxPfx2DE
+X-Google-Smtp-Source: AGHT+IFf8wGCjjeiMxP2mgg8snBktWoKJZmLLCzRtU8yObtkMEG1jsXrL0iA8ocpMei5oyvd01dMLg==
+X-Received: by 2002:a05:6402:3447:b0:522:30cc:a1f4 with SMTP id l7-20020a056402344700b0052230cca1f4mr17573858edc.0.1692994672262;
+        Fri, 25 Aug 2023 13:17:52 -0700 (PDT)
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com. [209.85.128.54])
+        by smtp.gmail.com with ESMTPSA id l17-20020a056402029100b00523b1335618sm1323760edv.97.2023.08.25.13.17.51
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Aug 2023 13:17:51 -0700 (PDT)
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-3fef2fafee2so20085e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 13:17:51 -0700 (PDT)
+X-Received: by 2002:a05:600c:3b8f:b0:400:46db:1bf2 with SMTP id
+ n15-20020a05600c3b8f00b0040046db1bf2mr67016wms.2.1692994670872; Fri, 25 Aug
+ 2023 13:17:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0909fb87-9370-4c59-b7ea-9ca673d456b3@linux.microsoft.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20230811-topic-7280_lmhirq-v1-1-c262b6a25c8f@linaro.org>
+In-Reply-To: <20230811-topic-7280_lmhirq-v1-1-c262b6a25c8f@linaro.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Fri, 25 Aug 2023 13:17:38 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=XKeE7_ciuvfAic+24kyOF0yaFT7iCJWgN9NaW-zG+vKA@mail.gmail.com>
+Message-ID: <CAD=FV=XKeE7_ciuvfAic+24kyOF0yaFT7iCJWgN9NaW-zG+vKA@mail.gmail.com>
+Subject: Re: [PATCH RFT] arm64: dts: qcom: sc7280: Add missing LMH interrupts
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     cros-qcom-dts-watchers@chromium.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Taniya Das <quic_tdas@quicinc.com>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -111,51 +85,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 25, 2023 at 11:41:35AM -0700, Nuno Das Neves wrote:
-> On 8/24/2023 11:31 AM, Boqun Feng wrote:
-> > On Thu, Aug 17, 2023 at 03:01:51PM -0700, Nuno Das Neves wrote:
-> > [...]
-> >> +static long
-> >> +mshv_dev_ioctl(struct file *filp, unsigned int ioctl, unsigned long arg)
-> >> +{
-> >> +	switch (ioctl) {
-> >> +	case MSHV_CHECK_EXTENSION:
-> >> +		return mshv_ioctl_check_extension((void __user *)arg);
-> >> +	case MSHV_CREATE_PARTITION:
-> >> +		return mshv.create_partition((void __user *)arg);
-> >> +	case MSHV_CREATE_VTL:
-> >> +		return mshv.create_vtl((void __user *)arg);
-> >> +	}
-> >> +
-> > 
-> > Shouldn't we also have a MSHV_GET_API_VERSION ioctl similar as KVM? So
-> > that in the future when we change these ioctl interfaces or semantics,
-> > we can bump up the API version to avoid breaking userspace?
-> > 
-> 
-> Note that we contribute and maintain support for this driver in
-> Cloud Hypervisor, so we control both sides of this API - if we break
-> userspace we can fix it ourselves.
-> 
+Hi,
 
-This actually doesn't always work, e.g. old Clould Hypervisor + new
-kernel, but..
+On Fri, Aug 11, 2023 at 1:58=E2=80=AFPM Konrad Dybcio <konrad.dybcio@linaro=
+.org> wrote:
+>
+> Hook up the interrupts that signal the Limits Management Hardware has
+> started some sort of throttling action.
+>
+> Fixes: 7dbd121a2c58 ("arm64: dts: qcom: sc7280: Add cpufreq hw node")
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> ---
+> test case:
+>
+> - hammer the CPUs (like compile the Linux kernel)
+> - watch -n1 "cat /proc/interrupts | grep dcvsh"
+> - the numbers go up up up up -> good
 
-> For now the MSHV_CHECK_EXTENSION ioctl is sufficient - we can pass it
-> MSHV_CAP_CORE_API_STABLE, and it will return 0 to indicate that the API
-> is not yet stable.
-> 
+I'm not doing much on sc7280 these days, but I did try putting your
+patch on a sc7280-hoglin (AKA a CRD). I tried to stress the system out
+a bunch (ran 8 instances of "while true; do true; done" and opened
+something to activate the GPU). I didn't see any LMH interrupts fire.
+Of course, with ChromeOS firmware LMH is _supposed_ to be mostly
+disabled, so maybe that's right? Our policy was always to have Linux
+do as much of the throttling as possible and only use LMH as a last
+resort.
 
-.. I missed that we are using this to report API is not stable, so I
-agree, the API version is not needed for now.
+I assume I don't need any specific config option turned on?
 
-> A version check may be useful in the future, but is not needed right now.
-> 
+I know that on other Qualcomm boards I see LMH nodes in the device
+tree, which we don't have in sc7280. Like "qcom,sdm845-lmh". Is that
+important? I haven't been following what's been going on with LMH in
+Linux since we try not to use it.
 
-Thanks for the explanation.
+For giggles, I also tried putting the patch on a sc7280-villager
+device to see if it had different thermals. I even put my jacket over
+it to try to keep it warm. I saw the sensors go up to 109C on the
+medium cores and still no LMH interrupts. Oh, and then the device shut
+itself down. I guess something about thermal throttling in Linux must
+be disabled but then it still handles the critical state? :( That's
+concerning...
 
-Regards,
-Boqun
+I put the same kernel on a trogdor device and that did normal Linux
+throttling OK. So something is definitely wonky with sc7280... I dug
+enough to find that if I used "step_wise" instead of "power_allocator"
+that it works OK, so I guess something is wonky about the config of
+power_allocator on sc7280. In any case, it's not affected by your
+patch and I've already probably spent too much time on it. :-P
 
-> Thanks
-> Nuno Das Neves
+-Doug
