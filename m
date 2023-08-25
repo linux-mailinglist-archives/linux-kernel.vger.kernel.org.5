@@ -2,69 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFB9D788E9A
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 20:24:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9726788EA6
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 20:25:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229599AbjHYSXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 14:23:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39446 "EHLO
+        id S230380AbjHYSZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 14:25:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231784AbjHYSXg (ORCPT
+        with ESMTP id S231280AbjHYSY7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 14:23:36 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 523AB270B
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 11:23:19 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1bf092a16c9so10316175ad.0
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 11:23:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1692987798; x=1693592598;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KJ9zjJeALE62O4cw5IYTaJTtY+w53cmCJ0tqcg+cbfo=;
-        b=HnyXQbm8I0wncS7q6bqpL+84nVc+SRO3gOlr6HSanLhtlUGqe3qLtjl9NoeWnceonY
-         Wszkh9DExW9bToZKm+r3bfPJgD20l6FVa29cqrrXaEROEvs3vo6ecpcyMCQpnRom2zMm
-         0cq8MEdGxeVtq9mis1PNV+itkvcfNqdyC6/XE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692987798; x=1693592598;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KJ9zjJeALE62O4cw5IYTaJTtY+w53cmCJ0tqcg+cbfo=;
-        b=WAXVk+IMMZrV7znC5ZhenOKBdf3LlSqZPnKZLY9rajbusMxHKA0L1nkAFQMo6SkQWz
-         7XJWolpZu6U5+/cUZdrHE4Mpx5uTx57jeL7ynkruiyfZ/RtR4KLt/YIgmi4snzliCA4C
-         gkJaiau0pxO3zVrqsmc9WAd8FQiL6g34GfYWqubnPj6DkXiS2RaXHUEm7uMmPwsjpfc/
-         HQlOTGMt7kHVnjaaWCOIFFfGwkDrg+TQw/0M48GrKds0DQGFgkOVhDB3oqYo2T2lXXZ7
-         nVsXgjN/Oq/Jkc6e/7v4uUicMrnvoKZ6xSpokmnnv6+ahBKXs5vyQ9S1Jjr6HvZeH2sf
-         zEeQ==
-X-Gm-Message-State: AOJu0YwVHYc/5fHvpWHxQT+AbWG+GsJ3x7NzKNE59jGVznjPkv7L+z0I
-        yQrBSwIS3TyYs7jxretpkr9KVw==
-X-Google-Smtp-Source: AGHT+IF5mGfC+hpo4uDUVvE34Zd1neo+8AiXRx90NzQv5YAzJzW8HNQDHc63LgGceQ+tSuoW87RpyA==
-X-Received: by 2002:a17:903:24f:b0:1bf:4833:9c25 with SMTP id j15-20020a170903024f00b001bf48339c25mr22325045plh.36.1692987798689;
-        Fri, 25 Aug 2023 11:23:18 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id d10-20020a170902654a00b001bc930d4517sm2078150pln.42.2023.08.25.11.23.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Aug 2023 11:23:18 -0700 (PDT)
-Date:   Fri, 25 Aug 2023 11:23:17 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Nicolas Schier <n.schier@avm.de>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>, x86@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] kbuild: Show Kconfig fragments in "help"
-Message-ID: <202308251121.23BAF46E@keescook>
-References: <20230824223606.never.762-kees@kernel.org>
- <ZOg/pqoqhp/3rerZ@buildd.core.avm.de>
+        Fri, 25 Aug 2023 14:24:59 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 385DCE67;
+        Fri, 25 Aug 2023 11:24:57 -0700 (PDT)
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37PI8p3R030752;
+        Fri, 25 Aug 2023 18:24:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=OtWo1IYxQ+yQcq0/+c4rIFn6MsGnI6m13i+nhycPBX4=;
+ b=WD322mVrSBH+SbaXK8+7enbsVvbKw7dwRRohE0rtUoOkvoNAKbF0ntrKC0q873vERWx0
+ sz5ij/xNlHyf2mBGxvkpTuWjF7N3T4J+nCKXbbYwSYLssut+p9UtZ7wzdlXpnpzYOOt0
+ M6tA+/mvzuLdmi87p/GlODS5hwNKh5hi7uMGLFK+qDSAov+TmvmQtYv4/ejQcx4o9hCf
+ cSm6j6KztJLRpgTrLRNQpSHLe+P0v0FdpnxRyNOwVOrSI6JHm0ZHexv7/A9uXjWHg7Hg
+ N81EFs4rBxkPtXY8xqnhRecOwj3OXAwup7orw8tNSqv1OqN4yQIra490xwzrGr5ddACe cQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sq0qg93sf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 25 Aug 2023 18:24:07 +0000
+Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37PI9SN0032633;
+        Fri, 25 Aug 2023 18:24:06 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sq0qg93rx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 25 Aug 2023 18:24:06 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37PHhkO9010391;
+        Fri, 25 Aug 2023 18:24:05 GMT
+Received: from smtprelay06.dal12v.mail.ibm.com ([172.16.1.8])
+        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3sn21t9ndx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 25 Aug 2023 18:24:05 +0000
+Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
+        by smtprelay06.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37PIO48k65995188
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 25 Aug 2023 18:24:04 GMT
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 56ADD5804B;
+        Fri, 25 Aug 2023 18:24:04 +0000 (GMT)
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BAD0B5805B;
+        Fri, 25 Aug 2023 18:23:59 +0000 (GMT)
+Received: from [9.61.160.138] (unknown [9.61.160.138])
+        by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Fri, 25 Aug 2023 18:23:59 +0000 (GMT)
+Message-ID: <8872cb91-2a9d-c145-614b-bcd45895d769@linux.ibm.com>
+Date:   Fri, 25 Aug 2023 14:23:59 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZOg/pqoqhp/3rerZ@buildd.core.avm.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v12 4/6] iommu/s390: Disable deferred flush for ISM
+ devices
+Content-Language: en-US
+To:     Niklas Schnelle <schnelle@linux.ibm.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Wenjia Zhang <wenjia@linux.ibm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Gerd Bayer <gbayer@linux.ibm.com>,
+        Julian Ruess <julianr@linux.ibm.com>,
+        Pierre Morel <pmorel@linux.ibm.com>,
+        Alexandra Winter <wintera@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Hector Martin <marcan@marcan.st>,
+        Sven Peter <sven@svenpeter.dev>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Yong Wu <yong.wu@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Krishna Reddy <vdumpa@nvidia.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        iommu@lists.linux.dev, asahi@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
+        linux-doc@vger.kernel.org
+References: <20230825-dma_iommu-v12-0-4134455994a7@linux.ibm.com>
+ <20230825-dma_iommu-v12-4-4134455994a7@linux.ibm.com>
+From:   Matthew Rosato <mjrosato@linux.ibm.com>
+In-Reply-To: <20230825-dma_iommu-v12-4-4134455994a7@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: ferobBmEP6qSEiNVam69qatVrVPksXtv
+X-Proofpoint-GUID: p2X-CeuZ6DxfiqnLDGhiGEluJb7HjK0L
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-25_16,2023-08-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ impostorscore=0 adultscore=0 spamscore=0 clxscore=1011 mlxlogscore=999
+ bulkscore=0 phishscore=0 lowpriorityscore=0 malwarescore=0 suspectscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308250162
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,88 +137,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 25, 2023 at 07:44:06AM +0200, Nicolas Schier wrote:
-> On Thu, Aug 24, 2023 at 03:36:10PM -0700, Kees Cook wrote:
-> > Doing a "make help" would show only hard-coded Kconfig targets and
-> > depended on the archhelp target to include ".config" targets. There was
-> > nothing showing global kernel/configs/ targets. Solve this by walking
-> > the wildcard list and include them in the output, using the first comment
-> > line as the help text.
-> > [...]
+On 8/25/23 6:11 AM, Niklas Schnelle wrote:
+> ISM devices are virtual PCI devices used for cross-LPAR communication.
+> Unlike real PCI devices ISM devices do not use the hardware IOMMU but
+> inspects IOMMU translation tables directly on IOTLB flush (s390 RPCIT
+> instruction).
 > 
-> Thanks for that patch!  Several times I found myself searching the tree
-> to find a specific kconfig fragment; I think you found a nice solution.
-> Two minor things below.
+> ISM devices keep their DMA allocations static and only very rarely DMA
+> unmap at all. For each IOTLB flush that occurs after unmap the ISM
+> devices will however inspect the area of the IOVA space indicated by the
+> flush. This means that for the global IOTLB flushes used by the flush
+> queue mechanism the entire IOVA space would be inspected. In principle
+> this would be fine, albeit potentially unnecessarily slow, it turns out
+> however that ISM devices are sensitive to seeing IOVA addresses that are
+> currently in use in the IOVA range being flushed. Seeing such in-use
+> IOVA addresses will cause the ISM device to enter an error state and
+> become unusable.
 > 
-> [...]
-> > diff --git a/kernel/configs/tiny-base.config b/kernel/configs/tiny-base.config
-> > index 2f0e6bf6db2c..ac4d254abc3f 100644
-> > --- a/kernel/configs/tiny-base.config
-> > +++ b/kernel/configs/tiny-base.config
-> > @@ -1 +1,2 @@
-> > +# Minimal options for tiny systems
-> >  CONFIG_EMBEDDED=y
+> Fix this by claiming IOMMU_CAP_DEFERRED_FLUSH only for non-ISM devices.
+> This makes sure IOTLB flushes only cover IOVAs that have been unmapped
+> and also restricts the range of the IOTLB flush potentially reducing
+> latency spikes.
 > 
-> (just a note: Randy prepared a patch for removing CONFIG_EMBEDDED:
-> https://lore.kernel.org/linux-kbuild/20230816055010.31534-1-rdunlap@infradead.org/)
+> Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
 
-Ah yeah, I'll rebase this after the merge window, I guess...
+Reviewed-by: Matthew Rosato <mjrosato@linux.ibm.com>
 
-> > diff --git a/kernel/configs/tiny.config b/kernel/configs/tiny.config
-> > index 00009f7d0835..ea643e8f7f14 100644
-> > --- a/kernel/configs/tiny.config
-> > +++ b/kernel/configs/tiny.config
-> > @@ -1,3 +1,5 @@
-> > +# Smallest possible kernel image
+> ---
+>  drivers/iommu/s390-iommu.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
-> For this fragment alone (not within 'tinyconfig'), "Size-optimize kernel
-> image" possibly fits better?
-
-Sounds good to me!
-
-> > diff --git a/scripts/kconfig/Makefile b/scripts/kconfig/Makefile
-> > index af1c96198f49..c523f24b504a 100644
-> > --- a/scripts/kconfig/Makefile
-> > +++ b/scripts/kconfig/Makefile
-> > @@ -93,11 +93,11 @@ endif
-> >  %_defconfig: $(obj)/conf
-> >  	$(Q)$< $(silent) --defconfig=arch/$(SRCARCH)/configs/$@ $(Kconfig)
-> >  
-> > -configfiles=$(wildcard $(srctree)/kernel/configs/$@ $(srctree)/arch/$(SRCARCH)/configs/$@)
-> > +configfiles=$(wildcard $(srctree)/kernel/configs/$(1) $(srctree)/arch/$(SRCARCH)/configs/$(1))
-> >  
-> >  %.config: $(obj)/conf
-> > -	$(if $(call configfiles),, $(error No configuration exists for this target on this architecture))
-> > -	$(Q)$(CONFIG_SHELL) $(srctree)/scripts/kconfig/merge_config.sh -m .config $(configfiles)
-> > +	$(if $(call configfiles,$@),, $(error No configuration exists for this target on this architecture))
-> > +	$(Q)$(CONFIG_SHELL) $(srctree)/scripts/kconfig/merge_config.sh -m .config $(call configfiles,$@)
-> >  	$(Q)$(MAKE) -f $(srctree)/Makefile olddefconfig
-> >  
-> >  PHONY += tinyconfig
-> > @@ -115,6 +115,7 @@ clean-files += tests/.cache
-> >  
-> >  # Help text used by make help
-> >  help:
-> > +	@echo  'Configuration targets:'
-> >  	@echo  '  config	  - Update current config utilising a line-oriented program'
-> >  	@echo  '  nconfig         - Update current config utilising a ncurses menu based program'
-> >  	@echo  '  menuconfig	  - Update current config utilising a menu based program'
-> > @@ -141,6 +142,12 @@ help:
-> >  	@echo  '                    default value without prompting'
-> >  	@echo  '  tinyconfig	  - Configure the tiniest possible kernel'
-> >  	@echo  '  testconfig	  - Run Kconfig unit tests (requires python3 and pytest)'
-> > +	@echo  ''
-> > +	@echo  'Configuration fragment targets (for enabling various Kconfig items):'
-> > +	@$(foreach c, $(call configfiles,*.config), \
-> > +		printf "  %-20s - %s\\n" \
-> > +			$(shell basename $(c)) \
-> > +			"$(subst # ,,$(shell grep -m1 '^# ' $(c)))";)
+> diff --git a/drivers/iommu/s390-iommu.c b/drivers/iommu/s390-iommu.c
+> index f6d6c60e5634..8310180a102c 100644
+> --- a/drivers/iommu/s390-iommu.c
+> +++ b/drivers/iommu/s390-iommu.c
+> @@ -315,11 +315,13 @@ static struct s390_domain *to_s390_domain(struct iommu_domain *dom)
+>  
+>  static bool s390_iommu_capable(struct device *dev, enum iommu_cap cap)
+>  {
+> +	struct zpci_dev *zdev = to_zpci_dev(dev);
+> +
+>  	switch (cap) {
+>  	case IOMMU_CAP_CACHE_COHERENCY:
+>  		return true;
+>  	case IOMMU_CAP_DEFERRED_FLUSH:
+> -		return true;
+> +		return zdev->pft != PCI_FUNC_TYPE_ISM;
+>  	default:
+>  		return false;
+>  	}
 > 
-> Better use '$(notdir $(c))` instead of forking a shell with
-> '$(shell basename $(c))'.
 
-Ah! Thank you. I *knew* there was a function for this but couldn't find
-it for some reason. :)
-
--- 
-Kees Cook
