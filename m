@@ -2,140 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9129788D13
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 18:17:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F2C5788D26
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 18:21:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239576AbjHYQQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 12:16:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45848 "EHLO
+        id S1343941AbjHYQUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 12:20:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245225AbjHYQQ4 (ORCPT
+        with ESMTP id S1343952AbjHYQU2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 12:16:56 -0400
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44DDC1BD2;
-        Fri, 25 Aug 2023 09:16:54 -0700 (PDT)
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
- id 8ad44d5f7b6bf935; Fri, 25 Aug 2023 18:16:52 +0200
-Authentication-Results: v370.home.net.pl; spf=softfail (domain owner 
-   discourages use of this host) smtp.mailfrom=rjwysocki.net 
-   (client-ip=195.136.19.94; helo=[195.136.19.94]; 
-   envelope-from=rjw@rjwysocki.net; receiver=<UNKNOWN>)
-Received: from kreacher.localnet (unknown [195.136.19.94])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        Fri, 25 Aug 2023 12:20:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CD521991
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 09:19:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692980380;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=uiJ7/zCtGwucjs2wTp8G7jQHFGUDEyW7zcPa/oNYiWc=;
+        b=WBN0jTeKNfCxXSd9zU7ePEwTPoVSysWZNSNV2p385sjDJcf5t7hyZ5PyAgagoCVuUiDN04
+        A0nLbOwVS3CNGLOFRc/HVUy1kd+NheD08PUOlEWRsEkgf18LwUqQ9eKPIOMYItOcVgjjjH
+        6s0+Cg7WnCCmx1RiwIVbgk6+3xzrbmM=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-130-tqRQ3ruHMdKCN4LotaAvyQ-1; Fri, 25 Aug 2023 12:19:35 -0400
+X-MC-Unique: tqRQ3ruHMdKCN4LotaAvyQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id AED3D662F61;
-        Fri, 25 Aug 2023 18:16:51 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>
-Cc:     Linux ACPI <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Amit Kucheria <amitk@kernel.org>
-Subject: [PATCH v1] thermal: core: Drop unused .get_trip_*() callbacks
-Date:   Fri, 25 Aug 2023 18:16:51 +0200
-Message-ID: <12270283.O9o76ZdvQC@kreacher>
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 22929185A78F;
+        Fri, 25 Aug 2023 16:19:34 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.136])
+        by smtp.corp.redhat.com (Postfix) with SMTP id F24F62166B26;
+        Fri, 25 Aug 2023 16:19:30 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Fri, 25 Aug 2023 18:18:47 +0200 (CEST)
+Date:   Fri, 25 Aug 2023 18:18:42 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Yonghong Song <yhs@fb.com>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kui-Feng Lee <kuifeng@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/6] bpf: task_group_seq_get_next: use __next_thread()
+Message-ID: <20230825161842.GA16750@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedruddvkedgleejucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepffffffekgfehheffleetieevfeefvefhleetjedvvdeijeejledvieehueevueffnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepjedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhdrlhgviigtrghnoheslhhinhgrrhhordhorhhgpdhrtghpthht
- oheprhhuihdriihhrghnghesihhnthgvlhdrtghomhdprhgtphhtthhopehsrhhinhhivhgrshdrphgrnhgurhhuvhgruggrsehlihhnuhigrdhinhhtvghlrdgtohhm
-X-DCC--Metrics: v370.home.net.pl 1024; Body=7 Fuz1=7 Fuz2=7
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Compile tested, 1-5 need the review from bpf maintainers, quite possibly
+I did some silly mistakes. I tried to cleanup this code because I could
+not look at it, but it has other problems and imo should be rewritten.
 
-After recent changes in the ACPI thermal driver and in the Intel DTS
-IOSF thermal driver, all thermal zone drivers are expected to use trip
-tables for initialization and none of them should implement
-.get_trip_type(), .get_trip_temp() or .get_trip_hyst() callbacks, so
-drop these callbacks entirely from the core.
+6/6 obviously depends on
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/thermal/thermal_core.c |    2 +-
- drivers/thermal/thermal_trip.c |   22 +++-------------------
- include/linux/thermal.h        |    4 ----
- 3 files changed, 4 insertions(+), 24 deletions(-)
+	[PATCH 1/2] introduce __next_thread(), fix next_tid() vs exec() race
+	https://lore.kernel.org/all/20230824143142.GA31222@redhat.com/
 
-Index: linux-pm/include/linux/thermal.h
-===================================================================
---- linux-pm.orig/include/linux/thermal.h
-+++ linux-pm/include/linux/thermal.h
-@@ -76,11 +76,7 @@ struct thermal_zone_device_ops {
- 	int (*set_trips) (struct thermal_zone_device *, int, int);
- 	int (*change_mode) (struct thermal_zone_device *,
- 		enum thermal_device_mode);
--	int (*get_trip_type) (struct thermal_zone_device *, int,
--		enum thermal_trip_type *);
--	int (*get_trip_temp) (struct thermal_zone_device *, int, int *);
- 	int (*set_trip_temp) (struct thermal_zone_device *, int, int);
--	int (*get_trip_hyst) (struct thermal_zone_device *, int, int *);
- 	int (*set_trip_hyst) (struct thermal_zone_device *, int, int);
- 	int (*get_crit_temp) (struct thermal_zone_device *, int *);
- 	int (*set_emul_temp) (struct thermal_zone_device *, int);
-Index: linux-pm/drivers/thermal/thermal_trip.c
-===================================================================
---- linux-pm.orig/drivers/thermal/thermal_trip.c
-+++ linux-pm/drivers/thermal/thermal_trip.c
-@@ -118,27 +118,11 @@ int __thermal_zone_get_trip(struct therm
- {
- 	int ret;
- 
--	if (!tz || trip_id < 0 || trip_id >= tz->num_trips || !trip)
-+	if (!tz || !tz->trips || trip_id < 0 || trip_id >= tz->num_trips || !trip)
- 		return -EINVAL;
- 
--	if (tz->trips) {
--		*trip = tz->trips[trip_id];
--		return 0;
--	}
--
--	if (tz->ops->get_trip_hyst) {
--		ret = tz->ops->get_trip_hyst(tz, trip_id, &trip->hysteresis);
--		if (ret)
--			return ret;
--	} else {
--		trip->hysteresis = 0;
--	}
--
--	ret = tz->ops->get_trip_temp(tz, trip_id, &trip->temperature);
--	if (ret)
--		return ret;
--
--	return tz->ops->get_trip_type(tz, trip_id, &trip->type);
-+	*trip = tz->trips[trip_id];
-+	return 0;
- }
- EXPORT_SYMBOL_GPL(__thermal_zone_get_trip);
- 
-Index: linux-pm/drivers/thermal/thermal_core.c
-===================================================================
---- linux-pm.orig/drivers/thermal/thermal_core.c
-+++ linux-pm/drivers/thermal/thermal_core.c
-@@ -1266,7 +1266,7 @@ thermal_zone_device_register_with_trips(
- 		return ERR_PTR(-EINVAL);
- 	}
- 
--	if (num_trips > 0 && (!ops->get_trip_type || !ops->get_trip_temp) && !trips)
-+	if (num_trips > 0 && !trips)
- 		return ERR_PTR(-EINVAL);
- 
- 	if (!thermal_class)
+which was not merged yet.
 
+To simplify the review, this is the code after 6/6:
 
+	static struct task_struct *task_group_seq_get_next(struct bpf_iter_seq_task_common *common,
+							   u32 *tid,
+							   bool skip_if_dup_files)
+	{
+		struct task_struct *task;
+		struct pid *pid;
+		u32 next_tid;
+
+		if (!*tid) {
+			/* The first time, the iterator calls this function. */
+			pid = find_pid_ns(common->pid, common->ns);
+			task = get_pid_task(pid, PIDTYPE_TGID);
+			if (!task)
+				return NULL;
+
+			*tid = common->pid;
+			common->pid_visiting = common->pid;
+
+			return task;
+		}
+
+		/* If the control returns to user space and comes back to the
+		 * kernel again, *tid and common->pid_visiting should be the
+		 * same for task_seq_start() to pick up the correct task.
+		 */
+		if (*tid == common->pid_visiting) {
+			pid = find_pid_ns(common->pid_visiting, common->ns);
+			task = get_pid_task(pid, PIDTYPE_PID);
+
+			return task;
+		}
+
+		task = find_task_by_pid_ns(common->pid_visiting, common->ns);
+		if (!task)
+			return NULL;
+
+	retry:
+		task = __next_thread(task);
+		if (!task)
+			return NULL;
+
+		next_tid = __task_pid_nr_ns(task, PIDTYPE_PID, common->ns);
+		if (!next_tid)
+			goto retry;
+
+		if (skip_if_dup_files && task->files == task->group_leader->files)
+			goto retry;
+
+		*tid = common->pid_visiting = next_tid;
+		get_task_struct(task);
+		return task;
+	}
+
+Oleg.
 
