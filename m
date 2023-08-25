@@ -2,174 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6211E787DDF
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 04:41:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 195D5787DF3
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 04:50:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242395AbjHYClY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 22:41:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35048 "EHLO
+        id S236854AbjHYCtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 22:49:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242150AbjHYCkv (ORCPT
+        with ESMTP id S235631AbjHYCt1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 22:40:51 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 781821BF1
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 19:40:48 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id ca18e2360f4ac-7927f241772so11618939f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 19:40:48 -0700 (PDT)
+        Thu, 24 Aug 2023 22:49:27 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C58A61FCE
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 19:49:24 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1bdc19b782aso4569655ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 19:49:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1692931248; x=1693536048;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=mGesezR2GxD1T9cDe5R/6CNi6KNWzNxxi1cx+VsVIYY=;
-        b=ktkQrEF3v9HiEmQX5RQhZ63uq0LUhhUc3RxO5obGT/Waj8S9mJjT/dtmj9EIucQtFJ
-         Kk2aizxxeGduIezBAah0HRXpAMLmj/nyya6sQPvD/FO9dRVtiYX6kXoJK8r+ukpDT44r
-         NBmosFev5QXflPgO+bJfcDGx8qSVFzuZeemfw=
+        d=chromium.org; s=google; t=1692931764; x=1693536564;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=mXGXLKS3jNZtWjpP8MUeUNI8wguvALNNe8QcWuaTTAc=;
+        b=Mj1W1eqcThgQTlQYu1yvNbtvQH/G5alkFNQy+YuuNyLjj4Hnae2wGWDYKymil8WYMh
+         WCLCxv/Su3Tu4DbXSDGi+N1vhvTsiDpzz/SR9b5Zk4YRuBWqlU1H+0WmeJ3Pyn892zw8
+         WptBDyuOgu2IVHdBERb8/a8/xUD1iCOpwm6Gw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692931248; x=1693536048;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mGesezR2GxD1T9cDe5R/6CNi6KNWzNxxi1cx+VsVIYY=;
-        b=c2RvHcC+ckkxSoKqaBPR+Tg4cAdGJ8FGU6IRF5zriBRhRtuOh8bIE8wgts3OP/gtPi
-         n9r4HjHZUX+s38D/rpT1QVWpFKYn3UhT+Qumh9KBXgYxPwyeaZlqvT/N5DYLsAoDE+Le
-         IxYysEGNHhAC9WP072O5H774j/YACHOmDYn89i1JveBu2t4CEE5lT3X7YHol4T6xaZbX
-         O4XJ0XgIRG9TfQS2MFHafLl15F2SP3EQMDuyOtxw9rIrE4N1mfWXsuTWI1sGq/DAd8at
-         z3wqfrY9fvMoV1W8rDPi6jVFllfpGBnv1RIAL+q8q8XXbJJl4LVm7wll/uJUWdMaBx8b
-         ELug==
-X-Gm-Message-State: AOJu0YwVb6x6cyEcyXlVMRodQYsIMzZuUoapN168ySQzYT5WS3T5XSu3
-        Gise76FaypFG5dWwZ/ccYd1GmQ==
-X-Google-Smtp-Source: AGHT+IE/m57D/hIK3KnDvCR0H9xZWB45FyuDwifpXgAXpmWvgL3bF9YTNiZIm32H56PIcXGN03xAGQ==
-X-Received: by 2002:a6b:dd16:0:b0:790:fa58:69d2 with SMTP id f22-20020a6bdd16000000b00790fa5869d2mr7421626ioc.20.1692931247845;
-        Thu, 24 Aug 2023 19:40:47 -0700 (PDT)
-Received: from localhost (156.190.123.34.bc.googleusercontent.com. [34.123.190.156])
-        by smtp.gmail.com with ESMTPSA id n23-20020a056602221700b0078714764ca0sm192341ion.40.2023.08.24.19.40.47
+        d=1e100.net; s=20221208; t=1692931764; x=1693536564;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mXGXLKS3jNZtWjpP8MUeUNI8wguvALNNe8QcWuaTTAc=;
+        b=iC5iCLcoBXFg8kLM/w5Ko/1Ep8nCccRPcjpmt7kwpaHu4I55ycEJFsO+s598ufBl96
+         wIgmTvMRU1KIdTLBDSQkYEItloit4NCPRv99C/PZUqBfAznqX4S8QrEaxVWU+DONyssV
+         DxbuKQx5Ib3vPX8hhx3KjyZq74+WhpM7+Ha+liaODFYwV4qRzkDB0kTicqyAw0LG9Fhh
+         YJP1nKPpZRS1eBU0MhOMwtdgbxskKNdl/7+RIbxwxdT9wA0npXrFeS4hoa1GpNtnxtTU
+         zAkT9mR+DooHasLR3C+Nz2sBbUGvhtNth/GC3+uk8mArJOAl/SkH9AHyPQ9zJf7EPyTV
+         WpAg==
+X-Gm-Message-State: AOJu0YzCetQI5TJkzlRvuS4U4wAf6rnch+LTNPEXfEHfHYwlDphMvKvo
+        y628WASPELLyQbvouczXn9pEEg==
+X-Google-Smtp-Source: AGHT+IGNYtCTR8SWTybJF6A/n55k6TG7mlB9uXu6QZZkx9rf59w+jxMBHqodnR3YX5bLWYANu9sCzA==
+X-Received: by 2002:a17:902:d345:b0:1bb:1e69:28be with SMTP id l5-20020a170902d34500b001bb1e6928bemr13861764plk.42.1692931764287;
+        Thu, 24 Aug 2023 19:49:24 -0700 (PDT)
+Received: from rekanorman3.syd.corp.google.com ([2401:fa00:9:14:9fe1:d4b1:42cc:882f])
+        by smtp.gmail.com with ESMTPSA id q10-20020a170902a3ca00b001bb0eebd90asm420847plb.245.2023.08.24.19.49.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Aug 2023 19:40:47 -0700 (PDT)
-Date:   Fri, 25 Aug 2023 02:40:46 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-Subject: Re: [PATCH 6.1 00/15] 6.1.48-rc1 review
-Message-ID: <20230825024046.GD4008060@google.com>
-References: <20230824141447.155846739@linuxfoundation.org>
+        Thu, 24 Aug 2023 19:49:23 -0700 (PDT)
+From:   Reka Norman <rekanorman@chromium.org>
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     Daisuke Nojiri <dnojiri@chromium.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Stefan Adolfsson <sadolfsson@google.com>,
+        Reka Norman <rekanorman@chromium.org>,
+        Benson Leung <bleung@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        chrome-platform@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org
+Subject: [PATCH v2 0/9] media: cros-ec-cec: Add support for multiple ports
+Date:   Fri, 25 Aug 2023 12:43:53 +1000
+Message-ID: <20230825024735.1443836-1-rekanorman@chromium.org>
+X-Mailer: git-send-email 2.42.0.rc2.253.gd59a3bf2b4-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230824141447.155846739@linuxfoundation.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 04:14:56PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.1.48 release.
-> There are 15 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sat, 26 Aug 2023 14:14:28 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.48-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
 
-For RCU,
-Tested-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+The Google Dibbi chromebox will have two HDMI ports with CEC enabled via
+its EC. Currently, the cros-ec-cec driver and the host command interface
+to the EC assume there is only one port. E.g. the commands have no
+parameter to indicated which port to operate on.
 
-thanks,
+This series adds support for multiple ports. The driver is modified to
+manage an array of ports, each with their own CEC adapter and notifier.
+The host command interface is modified to support multiple ports. All
+changes to interface are backwards compatible.
 
- - Joel
+Changes in v2:
+- Make port_num unsigned in handle_cec_event
+- Use NULL-terminated arrays for the conns field of cec_dmi_match
+- Use a NULL-terminated conns array for the Dibbi match table entry
 
+Reka Norman (9):
+  media: cros-ec-cec: Use cros_ec_cmd to send host commands
+  media: cros-ec-cec: Manage an array of ports
+  media: cros-ec-cec: Support multiple ports in set/get host commands
+  media: cros-ec-cec: Support multiple ports in write command
+  media: cros-ec-cec: Support multiple ports in MKBP cec_events
+  media: cros-ec-cec: Support receiving messages from multiple ports
+  media: cros-ec-cec: Allow specifying multiple HDMI connectors
+  media: cros-ec-cec: Get number of CEC ports from EC
+  media: cros-ec-cec: Add Dibbi to the match table
 
-> 
-> -------------
-> Pseudo-Shortlog of commits:
-> 
-> Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->     Linux 6.1.48-rc1
-> 
-> Borislav Petkov (AMD) <bp@alien8.de>
->     x86/srso: Correct the mitigation status when SMT is disabled
-> 
-> Peter Zijlstra <peterz@infradead.org>
->     objtool/x86: Fixup frame-pointer vs rethunk
-> 
-> Petr Pavlu <petr.pavlu@suse.com>
->     x86/retpoline,kprobes: Fix position of thunk sections with CONFIG_LTO_CLANG
-> 
-> Borislav Petkov (AMD) <bp@alien8.de>
->     x86/srso: Disable the mitigation on unaffected configurations
-> 
-> Borislav Petkov (AMD) <bp@alien8.de>
->     x86/CPU/AMD: Fix the DIV(0) initial fix attempt
-> 
-> Sean Christopherson <seanjc@google.com>
->     x86/retpoline: Don't clobber RFLAGS during srso_safe_ret()
-> 
-> Peter Zijlstra <peterz@infradead.org>
->     x86/static_call: Fix __static_call_fixup()
-> 
-> Borislav Petkov (AMD) <bp@alien8.de>
->     x86/srso: Explain the untraining sequences a bit more
-> 
-> Peter Zijlstra <peterz@infradead.org>
->     x86/cpu: Cleanup the untrain mess
-> 
-> Peter Zijlstra <peterz@infradead.org>
->     x86/cpu: Rename srso_(.*)_alias to srso_alias_\1
-> 
-> Peter Zijlstra <peterz@infradead.org>
->     x86/cpu: Rename original retbleed methods
-> 
-> Peter Zijlstra <peterz@infradead.org>
->     x86/cpu: Clean up SRSO return thunk mess
-> 
-> Peter Zijlstra <peterz@infradead.org>
->     x86/alternative: Make custom return thunk unconditional
-> 
-> Peter Zijlstra <peterz@infradead.org>
->     x86/cpu: Fix up srso_safe_ret() and __x86_return_thunk()
-> 
-> Peter Zijlstra <peterz@infradead.org>
->     x86/cpu: Fix __x86_return_thunk symbol type
-> 
-> 
-> -------------
-> 
-> Diffstat:
-> 
->  Documentation/admin-guide/hw-vuln/srso.rst |   4 +-
->  Makefile                                   |   4 +-
->  arch/x86/include/asm/entry-common.h        |   1 +
->  arch/x86/include/asm/nospec-branch.h       |  28 +++---
->  arch/x86/kernel/cpu/amd.c                  |   1 +
->  arch/x86/kernel/cpu/bugs.c                 |  28 +++++-
->  arch/x86/kernel/static_call.c              |  13 +++
->  arch/x86/kernel/traps.c                    |   2 -
->  arch/x86/kernel/vmlinux.lds.S              |  20 ++--
->  arch/x86/kvm/svm/svm.c                     |   2 +
->  arch/x86/lib/retpoline.S                   | 141 ++++++++++++++++++++---------
->  tools/objtool/arch/x86/decode.c            |   2 +-
->  tools/objtool/check.c                      |  21 +++--
->  13 files changed, 182 insertions(+), 85 deletions(-)
-> 
-> 
+ .../media/cec/platform/cros-ec/cros-ec-cec.c  | 379 ++++++++++++++----
+ .../linux/platform_data/cros_ec_commands.h    |  66 ++-
+ 2 files changed, 357 insertions(+), 88 deletions(-)
+
+-- 
+2.42.0.rc2.253.gd59a3bf2b4-goog
+
