@@ -2,266 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F5037883FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 11:41:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDDE87883FE
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 11:42:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242347AbjHYJlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 05:41:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57886 "EHLO
+        id S241794AbjHYJlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 05:41:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233491AbjHYJlK (ORCPT
+        with ESMTP id S244398AbjHYJlm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 05:41:10 -0400
-Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com [IPv6:2607:f8b0:4864:20::931])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 928341FD5
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 02:41:07 -0700 (PDT)
-Received: by mail-ua1-x931.google.com with SMTP id a1e0cc1a2514c-79dc53034a8so289579241.3
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 02:41:07 -0700 (PDT)
+        Fri, 25 Aug 2023 05:41:42 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B925E1FD7;
+        Fri, 25 Aug 2023 02:41:40 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id 98e67ed59e1d1-26fb8225268so447339a91.1;
+        Fri, 25 Aug 2023 02:41:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692956466; x=1693561266;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HuiW0cpLI38vpQljciiL9mKllo+hJgUjvnHQr0VpHR0=;
-        b=PmYiGn3ZIuVE2ywRDiqvXNkthjNWZAAn2Dmt15EhJRhDMjpYyNid6lVk2H6sT/4GZo
-         yXRC6Bq2ABbGdGbfuYj/qncaHAzTG/J8oNORc6FRVkZBBD42GmvYW9pEsWLp4SP4oXj6
-         3/DeRcQ4gXyA9hXAHcniQkcCO8JX/mEmrlYozwfmX1X5kc+6IooIuGNRJlELCBDlCTka
-         5JMdNrAnn21hbAhTCUBRCi6kuF85vZFl2Vjm7AsY9f0ASphMJuvNEO9zKNkK9Xyql1Sk
-         VzqfB+zHFDGkfXN2cQTMeqq9f3bE0/B6UAsZWzguxT71hwwWcVycUz9c+nTol31E0CER
-         Nj/Q==
+        d=gmail.com; s=20221208; t=1692956500; x=1693561300;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=w3EFSJ+fFn4Kfma/veW4zBMk56UKoqqEoSOXHPI+3hg=;
+        b=X5Zd6yoHuc40HQJ7CKsdoC9SSOpRA3LR1+dMz1Yj290kyBG7Kk952YcXkc5hV+qN6q
+         vRxsxOnlplce/QmnyiH7Jd+0H4xnZslpbgtZK6dB0+4e6jvOdhEBPLKRP4Fjt2BYWlQg
+         gvwlGP7JhlPaosAyuy9lDCccJ5ZpeK7nJzPMjlCdisfD7SbLCTtUZDSGzyQ/bq3wDQPx
+         3+xUdNS0uxN40IHw1KlOk8cHCSBpiCvo6MnOPXtIzf22Z8xiZHrBxnHlnFFPOD0xAEkM
+         WZqNTYRglZuky8C6DvPrmwgMrAWwePKzujBuYytWq11ZQYpzxDDb7ZLuiAUU/bvP4PBO
+         0Amw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692956466; x=1693561266;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HuiW0cpLI38vpQljciiL9mKllo+hJgUjvnHQr0VpHR0=;
-        b=ciml6CUbUBFy/EEZUjPs8P+ngDbEgNos28edIBFjnJdBmyQLYpWLv2NbnCiePqYBiF
-         JxSO230XCwC+wS5Ylc2auVgBbmUlbj9c3Ga9u/A1Zy/Y244+B4R9PNVe5Cl1KLEzJV0g
-         qjTphGbGvnnH6vYWUikRc+xjAvgk/kA6fxQ7+GB0WnTkzWNXhaNa+H1otfauzY8gr68n
-         guXXA6ZHzeY/aZj+U6E8nD3xXRa9VjtaGbH0NyRkr1BkqiSeOR1unulxUmOvMWiHK0wc
-         TtTfK2ILVXNGukl3zxuCnhqnVqlEcdSqf1ZRDAacYATXy3vVBm3Nj6oHRRai3Ghdd2If
-         1v2A==
-X-Gm-Message-State: AOJu0Yxm6cMZ5YyNtPEGLGRdF4ByANW7o0DiDQsbSl0ZO8ugOleU7m+y
-        OX1Px8Z6B48hIhAI5e9sNsn7pt6matm66QRZFtVCHA==
-X-Google-Smtp-Source: AGHT+IHw6FNcU3nnH/c3qs5eR1Aswt5YmnANEpF/U2gzaABBppQuM/RmZNqEmbhsEHsLCrW4yfMlKH3k0/WSBvWBtpY=
-X-Received: by 2002:a67:ee59:0:b0:44e:8626:71f2 with SMTP id
- g25-20020a67ee59000000b0044e862671f2mr6114824vsp.13.1692956466611; Fri, 25
- Aug 2023 02:41:06 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692956500; x=1693561300;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=w3EFSJ+fFn4Kfma/veW4zBMk56UKoqqEoSOXHPI+3hg=;
+        b=P2Jd8XU0GBWfpaViaZrKkwaRrYz1uCqOOogSLAPZc0kgsooCm94MmP2+1McgdFj01m
+         OKX4wQ2adYsyfWHvNi+pe4vciN2ko4323rPtrEURNdbC72CmO3wIi5l2DVlou+WSko4/
+         5Cj7w5l33ckzrDSgZC45URCfCjOF8aybTyEVWZmSuxJ5oA0C4sCTn1V2nliSQdqw7UMz
+         LaWsy346fTLxQ5ylF88tagIp/mmgNwh4ALCu4J59Go80uW5Qar9KQzRrZBjJ1Hyv0zv6
+         IA6oRcvlAQ30c9Ay+yJHkqfbwMx4LFUH/EYUQmGkeVzc+hHNS9ZrcsT1sRsKlci+MDCI
+         0wgA==
+X-Gm-Message-State: AOJu0YzJhs2xLapTa/eoybDbKYSF4NbkB1k14dP+RHiYppSDCWDAbTnV
+        1icfeL9jAFQhR9DA9k48QbbbDlD/S+8d7fu9Zxigi1Cv
+X-Google-Smtp-Source: AGHT+IEjJ90TtlMF8Q8GbIACxekfZckGKmE7ETA7Fud31+HLSEbbinIFedzpt23nzSw6kE+IRkmpmpod3df546wCZLo=
+X-Received: by 2002:a17:90b:46d4:b0:26b:698f:dda7 with SMTP id
+ jx20-20020a17090b46d400b0026b698fdda7mr15020937pjb.32.1692956500056; Fri, 25
+ Aug 2023 02:41:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230824141447.155846739@linuxfoundation.org>
-In-Reply-To: <20230824141447.155846739@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 25 Aug 2023 15:10:55 +0530
-Message-ID: <CA+G9fYu9BK9Caqo6Mp0q-iGpKHDLQVPMYUhZFbvF_E-XDD6y8Q@mail.gmail.com>
-Subject: Re: [PATCH 6.1 00/15] 6.1.48-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
+References: <20230816164641.3371878-1-robimarko@gmail.com> <20230816164641.3371878-2-robimarko@gmail.com>
+ <ff9ec6f5-9c7c-546b-5814-159d7e2843a8@quicinc.com>
+In-Reply-To: <ff9ec6f5-9c7c-546b-5814-159d7e2843a8@quicinc.com>
+From:   Robert Marko <robimarko@gmail.com>
+Date:   Fri, 25 Aug 2023 11:41:29 +0200
+Message-ID: <CAOX2RU7wbZopGErQ71frXFMz4+Y9QU6SjfrYbZPT_3yd0gU73A@mail.gmail.com>
+Subject: Re: [PATCH v3 2/4] firmware: qcom_scm: disable SDI if required
+To:     Mukesh Ojha <quic_mojha@quicinc.com>
+Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, quic_gurus@quicinc.com,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, computersforpeace@gmail.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Aug 2023 at 19:45, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Tue, 22 Aug 2023 at 17:38, Mukesh Ojha <quic_mojha@quicinc.com> wrote:
 >
-> This is the start of the stable review cycle for the 6.1.48 release.
-> There are 15 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
 >
-> Responses should be made by Sat, 26 Aug 2023 14:14:28 +0000.
-> Anything received after that time might be too late.
 >
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
-6.1.48-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-6.1.y
-> and the diffstat can be found below.
+> On 8/16/2023 10:15 PM, Robert Marko wrote:
+> > IPQ5018 has SDI (Secure Debug Image) enabled by TZ by default, and that
+> > means that WDT being asserted or just trying to reboot will hang the board
+> > in the debug mode and only pulling the power and repowering will help.
+> > Some IPQ4019 boards like Google WiFI have it enabled as well.
+> >
+> > Luckily, SDI can be disabled via an SCM call.
+> >
+> > So, lets use the boolean DT property to identify boards that have SDI
+> > enabled by default and use the SCM call to disable SDI during SCM probe.
+> > It is important to disable it as soon as possible as we might have a WDT
+> > assertion at any time which would then leave the board in debug mode,
+> > thus disabling it during SCM removal is not enough.
+> >
+> > Signed-off-by: Robert Marko <robimarko@gmail.com>
+> > ---
+> > Changes in v3:
+> > * Squashed ("firmware: qcom: scm: Add SDI disable support") and
+> > ("firmware: qcom_scm: disable SDI if required")
+> > ---
+> >   drivers/firmware/qcom_scm.c | 29 +++++++++++++++++++++++++++++
+> >   drivers/firmware/qcom_scm.h |  1 +
+> >   2 files changed, 30 insertions(+)
+> >
+> > diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
+> > index 06fe8aca870d..de9d1a11d097 100644
+> > --- a/drivers/firmware/qcom_scm.c
+> > +++ b/drivers/firmware/qcom_scm.c
+> > @@ -403,6 +403,29 @@ int qcom_scm_set_remote_state(u32 state, u32 id)
+> >   }
+> >   EXPORT_SYMBOL_GPL(qcom_scm_set_remote_state);
+> >
+> > +static int qcom_scm_disable_sdi(void)
+> > +{
+> > +     int ret;
+> > +     struct qcom_scm_desc desc = {
+> > +             .svc = QCOM_SCM_SVC_BOOT,
+> > +             .cmd = QCOM_SCM_BOOT_SDI_CONFIG,
+> > +             .args[0] = 1, /* Disable watchdog debug */
+> > +             .args[1] = 0, /* Disable SDI */
+> > +             .arginfo = QCOM_SCM_ARGS(2),
+> > +             .owner = ARM_SMCCC_OWNER_SIP,
+> > +     };
+> > +     struct qcom_scm_res res;
+> > +
+> > +     ret = qcom_scm_clk_enable();
+> > +     if (ret)
+> > +             return ret;
+> > +     ret = qcom_scm_call(__scm->dev, &desc, &res);
 >
-> thanks,
+> Would you not be wanting this call to be atomic ?
+
+This is implemented based off the downstream 5.4 kernel as I dont have
+the SCM docs
+so I dont know if its even supported in the atomic version.
 >
-> greg k-h
+> > +
+> > +     qcom_scm_clk_disable();
+> > +
+> > +     return ret ? : res.result[0];
+> > +}
+> > +
+> >   static int __qcom_scm_set_dload_mode(struct device *dev, bool enable)
+> >   {
+> >       struct qcom_scm_desc desc = {
+> > @@ -1468,6 +1491,12 @@ static int qcom_scm_probe(struct platform_device *pdev)
+> >       if (download_mode)
+> >               qcom_scm_set_download_mode(true);
+> >
+> > +     /*
+> > +      * Disable SDI if indicated by DT that it is enabled by default.
+> > +      */
+> > +     if (of_property_read_bool(pdev->dev.of_node, "qcom,sdi-enabled"))
+> > +             qcom_scm_disable_sdi();
+>
+> Why don't we do this call in qcom_scm_shutdown()
+> also does it not conflict with above download_mode
+> we have enabled download mode but disabling SDI
+> means (hard reset) and will not be collecting
+> crash dump?
 
+Because doing it in SCM removal is too late, what if we have a WDT
+assertion and not a
+regular reboot?
+It would mean that the board will get stuck in the debug mode which is
+not useful for users and
+requires the power to be pulled in order to boot normally again.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+I am not sure about the download mode, this is where insight from QCA
+really help as I am
+doing this with very limited docs.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-NOTE:
-1)
-LTP syscalls chown02 and fchown02 test failures on NFS mounted filesystem
-on arm64 Rpi4 will be investigated further.
-
-2)
-While booting x86_64 we have been noticing this kernel warning
-but the system is stable and running other test cases.
-
-kernel warning on x86_64,
-[    0.809960] missing return thunk:
-__alt_instructions_end+0x2743/0x2770-srso_untrain_ret+0x0/0x2: e9 7e
-fd 09 ff
-[    0.811301] WARNING: CPU: 0 PID: 0 at
-arch/x86/kernel/alternative.c:572 apply_returns+0x1d7/0x200
-[    0.812587] Modules linked in:
-[    0.813651] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 6.1.48-rc1 #1
-[    0.814120] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009),
-BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-[    0.814120] RIP: 0010:apply_returns+0x1d7/0x200
-
-
-## Build
-* kernel: 6.1.48-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-6.1.y
-* git commit: c079d0dd788ad4fe887ee6349fe89d23d72f7696
-* git describe: v6.1.47-16-gc079d0dd788a
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.1.y/build/v6.1.4=
-7-16-gc079d0dd788a
-
-## Test Regressions (compared to v6.1.46)
-
-## Metric Regressions (compared to v6.1.46)
-
-## Test Fixes (compared to v6.1.46)
-
-## Metric Fixes (compared to v6.1.46)
-
-## Test result summary
-total: 165563, pass: 138512, fail: 5138, skip: 21721, xfail: 192
-
-## Build Summary
-* arc: 5 total, 5 passed, 0 failed
-* arm: 151 total, 149 passed, 2 failed
-* arm64: 56 total, 53 passed, 3 failed
-* i386: 41 total, 39 passed, 2 failed
-* mips: 30 total, 28 passed, 2 failed
-* parisc: 4 total, 4 passed, 0 failed
-* powerpc: 38 total, 36 passed, 2 failed
-* riscv: 16 total, 13 passed, 3 failed
-* s390: 16 total, 14 passed, 2 failed
-* sh: 14 total, 12 passed, 2 failed
-* sparc: 8 total, 8 passed, 0 failed
-* x86_64: 46 total, 44 passed, 2 failed
-
-## Test suites summary
-* boot
-* kselftest-android
-* kselftest-arm64
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers-dma-buf
-* kselftest-efivarfs
-* kselftest-exec
-* kselftest-filesystems
-* kselftest-filesystems-binderfs
-* kselftest-filesystems-epoll
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-ftrace
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-net-forwarding
-* kselftest-net-mptcp
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-user_events
-* kselftest-vDSO
-* kselftest-vm
-* kselftest-watchdog
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libgpiod
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds
-* ltp-commands
-* ltp-containers
-* ltp-controllers
-* ltp-cpuhotplug
-* ltp-crypto
-* ltp-cve
-* ltp-dio
-* ltp-fcntl-locktests
-* ltp-filecaps
-* ltp-fs
-* ltp-fs_bind
-* ltp-fs_perms_simple
-* ltp-fsx
-* ltp-hugetlb
-* ltp-io
-* ltp-ipc
-* ltp-math
-* ltp-mm
-* ltp-nptl
-* ltp-pty
-* ltp-sched
-* ltp-securebits
-* ltp-smoke
-* ltp-syscalls
-* ltp-tracing
-* network-basic-tests
-* perf
-* rcutorture
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+Regards,
+Robert
+>
+> -Mukesh
+>
+> > +
+> >       return 0;
+> >   }
+> >
+> > diff --git a/drivers/firmware/qcom_scm.h b/drivers/firmware/qcom_scm.h
+> > index e6e512bd57d1..7b68fa820495 100644
+> > --- a/drivers/firmware/qcom_scm.h
+> > +++ b/drivers/firmware/qcom_scm.h
+> > @@ -80,6 +80,7 @@ extern int scm_legacy_call(struct device *dev, const struct qcom_scm_desc *desc,
+> >   #define QCOM_SCM_SVC_BOOT           0x01
+> >   #define QCOM_SCM_BOOT_SET_ADDR              0x01
+> >   #define QCOM_SCM_BOOT_TERMINATE_PC  0x02
+> > +#define QCOM_SCM_BOOT_SDI_CONFIG     0x09
+> >   #define QCOM_SCM_BOOT_SET_DLOAD_MODE        0x10
+> >   #define QCOM_SCM_BOOT_SET_ADDR_MC   0x11
+> >   #define QCOM_SCM_BOOT_SET_REMOTE_STATE      0x0a
