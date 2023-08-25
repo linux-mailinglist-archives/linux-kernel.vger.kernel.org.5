@@ -2,63 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A3DE788CC8
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 17:44:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9ACC788CCB
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 17:45:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242746AbjHYPnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 11:43:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53246 "EHLO
+        id S243906AbjHYPpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 11:45:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242954AbjHYPnR (ORCPT
+        with ESMTP id S244073AbjHYPpD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 11:43:17 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC8CB1FC7
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 08:43:14 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7DC3861532
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 15:43:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7AEAAC433C7;
-        Fri, 25 Aug 2023 15:43:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692978193;
-        bh=G9n/YPFGOVSkbEMJy6OZc/r3PTQEJOCu7MoRuHGRBqQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Y7KI8dqWWKtEC8q2IiKsLvTqqQ7GnFkrnEH23Hw+QAQlKTvGA01ZNoDwsn98W4mgE
-         O2N+gXOxmgQ0WQVSkSYbszV9VMDWETufTkVAjQALTWyR2+EWmUEMT5rU1o5ycIodnW
-         AAsU3VNB5eQF1b4OoJ3Tc1e+I699bsezD/ANKhYLOXBJspIYC02bQUx7AyUqIDA7Ow
-         MY94ukBRbq9Ci1MQJS9GEza4eflcCyYrTp/g3/2nEXisyk8uv+qdAWJZO27u5fH13g
-         qhS/TKQLxOuoQ2o3LnaI+NXxoqklWDcKPZnRTyPTNgi8N//f/Gxa/CyWRAijik+tdL
-         Xsu9rmemZXONQ==
+        Fri, 25 Aug 2023 11:45:03 -0400
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2052.outbound.protection.outlook.com [40.107.7.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 509AA2135;
+        Fri, 25 Aug 2023 08:44:58 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HcYxdl9lA0cdyx18MFTyTUghc6qS3U3pfHf5wK747az0N5kfdbgAL2JQlpH3bWp/R9tMX0awrDrI4W1oaG5CvVsKv19rr5PCs8GFGtPapD/jS6dc8T/OeNnGtTHceIerp3sxzTeFIrDqbut15GWt33BtfsjX0C8j++tCDSR7ltTmxxOdP6AngaReGRgGr9+v3MBbxAwuizD3N+791aEj5yfcbHC6qQNa07GNrxzkvQJroyIwdDDGqa3HFZOD4j0rjSMlhlxdtoY0lXlfy7RcpH+0mW7wN5eyEUJuPf3HonrhypkBE+zxMsrHnfe4R3OfcmXj/DYNVNLNS6OpSTotTw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=27iK0MIVp/GcBlKwXY4BhVfDu6nDI9rl1Hi3Qg1amh0=;
+ b=UzpyYpXdLF9HbfY4zdBY+U1cHwDsKJsp4a5d0yKZWEZx4VJw4ejz03/xWrQsnlBRTd6CgWg5RcKLBY8emH51oZUdnQUjuVnmoym8sZe2XMQx84bQ7OAQZGmVT41X376t+amOpK4bjLhVSek55gPBcCAo8JjW29CR/vShI77wTP8+XC0RGvsLI3+XIGOl5SW6C/xlncd0u6yRBJZ9+jUQFvudqA+h8ANFirIgvhl1QPo8VSweiCToxLOyZXg/0QNd4NGYbz1bHRpC+n5JsF+n5iJDes1Gb4L9xAYHfW4YGdCaVw+K/sSw0NnX/KcwZbSv6Cl6HH43a38HjVqpbwTPGg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=27iK0MIVp/GcBlKwXY4BhVfDu6nDI9rl1Hi3Qg1amh0=;
+ b=XOnoMvUVMCtFSdg9iiIH4Srke7OEkWadN36n/6SfrsX2O8OkljO8e/o/6ursckL6O3t/lw19C/ilqx1lO4Z/K6V658c87jk1dHUpkqmo5elqa6s9HV/6SLejJhHCyxRe0KnPCi7f5Kq11L71izMqVePm4XCxCwN1IOuyYBf5jJI=
+Received: from PAXPR04MB9185.eurprd04.prod.outlook.com (2603:10a6:102:231::11)
+ by DB9PR04MB8090.eurprd04.prod.outlook.com (2603:10a6:10:240::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.20; Fri, 25 Aug
+ 2023 15:44:55 +0000
+Received: from PAXPR04MB9185.eurprd04.prod.outlook.com
+ ([fe80::d4ee:8daa:92f4:9671]) by PAXPR04MB9185.eurprd04.prod.outlook.com
+ ([fe80::d4ee:8daa:92f4:9671%3]) with mapi id 15.20.6699.027; Fri, 25 Aug 2023
+ 15:44:55 +0000
+From:   Shenwei Wang <shenwei.wang@nxp.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        "imx@lists.linux.dev" <imx@lists.linux.dev>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>
+Subject: Re: [PATCH 1/2] dt-bindings: power: Add regulator-pd yaml file
+Thread-Topic: [PATCH 1/2] dt-bindings: power: Add regulator-pd yaml file
+Thread-Index: AQHZ12sYQ9ArFLbHmUyJfmCCvgO8ew==
+Date:   Fri, 25 Aug 2023 15:44:55 +0000
+Message-ID: <PAXPR04MB9185F6AA20B0440B8FAB847789E3A@PAXPR04MB9185.eurprd04.prod.outlook.com>
+References: <20230818153446.1076027-1-shenwei.wang@nxp.com>
+ <CAPDyKFqsn6kVjPFUdVyRxNDiOaHO9hq=9c+6eAK4N-v-LVWUPw@mail.gmail.com>
+ <PAXPR04MB91858254554272C90822FED1891DA@PAXPR04MB9185.eurprd04.prod.outlook.com>
+ <CAPDyKFoV2Z=-WUiF3SgXqhF+K+r5QqsLgz8_hau0WKfZxTzYpg@mail.gmail.com>
+In-Reply-To: <CAPDyKFoV2Z=-WUiF3SgXqhF+K+r5QqsLgz8_hau0WKfZxTzYpg@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PAXPR04MB9185:EE_|DB9PR04MB8090:EE_
+x-ms-office365-filtering-correlation-id: dcf00290-51f9-4eee-cf52-08dba5823ac7
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: qSD5rMr+udDvNvPqhmIj+KS/Uv/ua36CdL2zNxTAhN+h9fOKI4CytwNNbNvPlbdBBZuCcw33UdGNKj2kfHfREVXemNZFoZqxffK/swKdzPkEM9npb1w+IvV8VDLzW13lfuYIWmSzusnc+4+Bh9ozAa4qz/J1bADfQpBpcjsTmqSVpk+Op0AzKA0q1UOQ+Y0B1PzQUqE3YGCCQEr6xhiISdVILq1etmXEGYRYUbdzm06cNMp/GTn9tODXkSg9esrQm/bYrAVdy8lUvxsft4jfYA6A//h8J5s2fqllsR5ksavmX0NiJ/x/EqqyIrAdoZZEwp4vLsQBW1abeGz7vnK7d+cIs2K4t00E9+VVzDS2InnM3mrdqaxPcaVFAhe3jCxwZE/vFk5AGWgDOhVQ+9fjb3qKbbmTIlfxtnqOEKPU5UuQgOUfvyrq1t9UcE0jYTxTCc3LMMxc2+P6Weeb3mnvomyhzIWfvXYkAlOmpHGhUiPqxydtsfIQtKy94rUWhGNJz8ZFS9ZvXPBBshXxWMMJFnsIg+zhLa5MfduATurJNJJw8ytZ1jnMumxTqGyHcXPOcglL+RNVkmv3YilIuM+bTBON/YbIuK62ue3wh7fCmf20rH6juWVchKsou+mO/xDK
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9185.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(376002)(366004)(136003)(396003)(451199024)(1800799009)(186009)(8936002)(71200400001)(6506007)(7696005)(55236004)(53546011)(478600001)(2906002)(26005)(83380400001)(66556008)(316002)(6916009)(41300700001)(54906003)(64756008)(66476007)(52536014)(66446008)(8676002)(76116006)(66946007)(44832011)(4326008)(9686003)(33656002)(55016003)(38100700002)(38070700005)(86362001)(122000001)(5660300002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?cTNOY1p6VE9MVXpmUEdMSkF2clNzd1kyM3pSbFI4cUhtMFE1c2NGZXlMZHFM?=
+ =?utf-8?B?ZXc2UExxN3l5aWJjMVJCdUZoVFhsZWFPb05DMGdWTGtpb0FHLy9BRWk2L2NF?=
+ =?utf-8?B?WVNqeDhtUkNLVFhxS1pJcWM4WVpld0FuOUY0ZXhPZC9remNSOVBNTktKL3hG?=
+ =?utf-8?B?ZHYzYUxnWUV3WEFWblJnTHVsKzE2K1hvdzVjMGlGemRPWURxbS9xeC9Ub09k?=
+ =?utf-8?B?TjRwNTNNWkFHOWZpTmlucmlIekxVYzhVSWQzaGhSc2d0K2kxc0RZQUVDRHpS?=
+ =?utf-8?B?Ulc2N3pDVEFIcFN1OGNZMjdqb1hJQURheE1JWTQzeDJ4QU1NeXNBeWhXMFZt?=
+ =?utf-8?B?UWpscTdhRDh3YlNyVExWcHdmM0h4b2lvWXZyUGxpemZLN1BaVktxUjBHU2Fi?=
+ =?utf-8?B?MWhSd3ArU2t5VFFzbStjYjErK3p0eGpRUUtyYXl6bUI1U0d1NWl6RGVNaVRm?=
+ =?utf-8?B?dmt5SWNsQTB6TjF3OVJMUEpheTJjRDNkSi96OGIrS2dWNDZRZEd3YVJ2OVRl?=
+ =?utf-8?B?WXNaRmRZYWZ6cDZYTzVRVGFUcEV0VmxhbExHZ1M1d01yZ0hPNUNIUGlWQUxB?=
+ =?utf-8?B?ZEF5YkJpMDA4aEE4SngxNG1WMk8xN1VyUWFQQTNVSWtTVERwa21udlJod1Rt?=
+ =?utf-8?B?M0hLR1ByelQxb1lZN3ZVVldBMkZvMERNeXlVT05UWVU0R3Q4WkRMNG40OVhQ?=
+ =?utf-8?B?eU9RL1ZxSU12RDhFcU5pR1plKy9oQ0RXNDNrR3FjYmV1d0F3OC8xUzlEcGF3?=
+ =?utf-8?B?dzcyUHNhTHUvMGVUVkkzTnROQlF4L1A4RDVNV2I5RVZTZ29ETWIxR1ZBcytx?=
+ =?utf-8?B?MVREbkFuRmZEaW5DakR6bWY3ajJHbUprSHUvb3I0b1ljS0JHVy9RTytlOENQ?=
+ =?utf-8?B?ckdnNEdxOUU2RUp2dGhYK1JDTlZKWnZuVncrNnFjRm5YdHhXdlNSTmJheHp4?=
+ =?utf-8?B?ejRBaWdlYnZNVXZveEd2N1kxZm9YM1V0SlF4V05QNXZvdDF4ZHpSdTJjUERN?=
+ =?utf-8?B?azZaTndSWlhwbWc5RktQUjg0cFJIMTFyZjQweGxrQ1RWd0xqY2MxTEpjRysv?=
+ =?utf-8?B?MnFIcXZjSTk3SndNNTh0WjA1eWJLUUI3QThWYzBaWE5oRFY4MVpnVERCMnd2?=
+ =?utf-8?B?Y25jdS9zRm4yZFhaTkVpTjFSckZkZ2dyVHJhY2NhbzNqRTB5Q09Fb0VlN3U2?=
+ =?utf-8?B?WnQ3YlJuRW9Pc3hUNGpFK3ZWTWlnZTU4a1NkTnJORUZQais1N2JEbktvWm0r?=
+ =?utf-8?B?aTVJcGFISHppaUZQY0VINGl5UU4rL1I0VktJOEgrWUYrbFF0UzZMNDFrTjQw?=
+ =?utf-8?B?aDhWMHZDbHdYdjdzcDJNTndUMUs4RlpUeVdlcEJHVDZuR3psSkF0ZlR3aThl?=
+ =?utf-8?B?MzIyOXhQaG92clZ0SWs3V0hxczRZNldGTHNqTkliSGpaaWcyekgvVTFJOTg2?=
+ =?utf-8?B?TkRxMnNlS08xcXdpK0QxdlM4aGE4aGtRVUx1eG1lZFF4bUk2N2xIVWlCTWVF?=
+ =?utf-8?B?MG4yVVNlMnh1M2JLb0VpVENBak1RVlo0cjA4dEN3UDFDeFpuUldJZDFPR01H?=
+ =?utf-8?B?aE8wVDZ5ZnZsVVIxYVljcUVML2Evd3F1WkNpZzRONk8zS2Y1djFHRUFVSXJt?=
+ =?utf-8?B?UkFiRWlHalp0eEF5WmFUMWowQmxjdHRINStJdC92TXI1MTYwL3ZTWjdGNk5s?=
+ =?utf-8?B?dEJsMVp3c0xxK0VJNEtQc0J4Mm9tTW1ITUhvK29NNFNZU1F4NHhCM2dGYmlv?=
+ =?utf-8?B?WC9BUm9WUExqbHdkcGpwWDR4eUJjREF1c3prUmxNaU9BM2txcitCRkFRZVk0?=
+ =?utf-8?B?WU1VSXRVQWkrRjhtamdmc3Nya1NnVFNjeC9Jd1diWUlCTXl1ZTRjODNMNmph?=
+ =?utf-8?B?T2JqSENJRlJaL3VRamNwdnlGdll6UE10S3kzV0pub3EzNnc4L25Zanh4Y2VM?=
+ =?utf-8?B?QVgrSjNEcnNWUG55S05sWFFlcncxZ2xCTlB0Rkl4WlVBZVZ5NVE1QWRUUWpC?=
+ =?utf-8?B?b1JxN1RoZ1FXSmdRSTBqa2p5TUhCNzduNHlPMXoxeEdnbzNyY3RLZE5zNkIw?=
+ =?utf-8?B?NlJZRnVwQzVYR1VZV0JKbzExSURWL3JKeTN4ZjRMWjZNY1JoTkRFSVI4MTNY?=
+ =?utf-8?Q?mFJYQEyhbga1j6xU2eAtEd6fK?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Date:   Fri, 25 Aug 2023 17:42:59 +0200
-From:   Michael Walle <mwalle@kernel.org>
-To:     =?UTF-8?Q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= 
-        <nfraprado@collabora.com>
-Cc:     angelogioacchino.delregno@collabora.com, airlied@gmail.com,
-        amergnat@baylibre.com, chunkuang.hu@kernel.org, ck.hu@mediatek.com,
-        daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
-        ehristev@collabora.com, kernel@collabora.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com,
-        p.zabel@pengutronix.de, wenst@chromium.org
-Subject: Re: [PATCH v7 09/11] drm/mediatek: dp: Add support for embedded
- DisplayPort aux-bus
-In-Reply-To: <5b438dba-9b85-4448-bc89-08a11ddb822a@notapiano>
-References: <20230725073234.55892-10-angelogioacchino.delregno@collabora.com>
- <20230825120109.3132209-1-mwalle@kernel.org>
- <5b438dba-9b85-4448-bc89-08a11ddb822a@notapiano>
-Message-ID: <fc6c054941420ac2d016496ccbeecad4@kernel.org>
-X-Sender: mwalle@kernel.org
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9185.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: dcf00290-51f9-4eee-cf52-08dba5823ac7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Aug 2023 15:44:55.3545
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: dvLnSh7E8KGBRRarT5CQvsma6bN/oA5SXAFWJrVGAFje+8JlE8bKUr14TxtZc5z5hFYYB6UoeGtrhROsbL/n2Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB8090
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,207 +134,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nicolas,
-
->> > For the eDP case we can support using aux-bus on MediaTek DP: this
->> > gives us the possibility to declare our panel as generic "panel-edp"
->> > which will automatically configure the timings and available modes
->> > via the EDID that we read from it.
->> >
->> > To do this, move the panel parsing at the end of the probe function
->> > so that the hardware is initialized beforehand and also initialize
->> > the DPTX AUX block and power both on as, when we populate the
->> > aux-bus, the panel driver will trigger an EDID read to perform
->> > panel detection.
->> >
->> > Last but not least, since now the AUX transfers can happen in the
->> > separated aux-bus, it was necessary to add an exclusion for the
->> > cable_plugged_in check in `mtk_dp_aux_transfer()` and the easiest
->> > way to do this is to simply ignore checking that when the bridge
->> > type is eDP.
->> 
->> This patch breaks my board based on the MT8195 which only has one
->> DisplayPort output port. I suspect it might also break the 
->> mt8195-cherry
->> board.
-> 
-> Do you mean that your board does not have an internal display, only the 
-> one
-> output port? If so, why are you enabling the nodes for the internal 
-> display path
-> in your board specific DT?
-
-Well, that depends. The board actually has an eDP socket, but because we
-are an OEM, there might be no display connected to it. (And I haven't
-tried it yet). It should probably go into an own device tree or overlay
-if it is used. I agree. But it looked like it was auto-detectable (it
-even has a HDP pin on the eDP socket, not sure about its use case..)
-
-But the real reason I've enabled it was because I'll get an kernel
-oops otherwise. I thought it might be some quirk that you'll need both,
-because eDP will register even if theres no display - as you've
-mentioned below.
-
-Here's the splat:
-[    3.237064] mediatek-drm mediatek-drm.10.auto: bound 
-1c110000.vpp-merge (ops mtk_disp_merge_component_ops)
-[    3.238274] mediatek-drm mediatek-drm.8.auto: Not creating crtc 0 
-because component 8 is disabled or missing
-[    3.239504] mediatek-drm mediatek-drm.8.auto: Not creating crtc 0 
-because component 9 is disabled or missing
-[    3.240741] Unable to handle kernel NULL pointer dereference at 
-virtual address 00000000000004a0
-[    3.241841] Mem abort info:
-[    3.242192]   ESR = 0x0000000096000004
-[    3.242662]   EC = 0x25: DABT (current EL), IL = 32 bits
-[    3.243328]   SET = 0, FnV = 0
-[    3.243710]   EA = 0, S1PTW = 0
-[    3.244104]   FSC = 0x04: level 0 translation fault
-[    3.244717] Data abort info:
-[    3.245078]   ISV = 0, ISS = 0x00000004, ISS2 = 0x00000000
-[    3.245765]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-[    3.246398]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-[    3.247063] [00000000000004a0] user address but active_mm is swapper
-[    3.247860] Internal error: Oops: 0000000096000004 [#1] SMP
-[    3.248559] Modules linked in:
-[    3.248945] CPU: 4 PID: 11 Comm: kworker/u16:0 Not tainted 
-6.5.0-rc7-next-20230821+ #2225
-[    3.249970] Hardware name: Kontron 3.5"-SBC-i1200 (DT)
-[    3.250614] Workqueue: events_unbound deferred_probe_work_func
-[    3.251347] pstate: 60400009 (nZCv daif +PAN -UAO -TCO -DIT -SSBS 
-BTYPE=--)
-[    3.252220] pc : mtk_drm_crtc_dma_dev_get+0x8/0x18
-[    3.252824] lr : mtk_drm_bind+0x458/0x558
-[    3.253326] sp : ffff800082b23a20
-[    3.253741] x29: ffff800082b23a20 x28: ffff000002c78880 x27: 
-ffff8000816466d0
-[    3.254635] x26: ffff000002c6f010 x25: 0000000000000003 x24: 
-0000000000000000
-[    3.255529] x23: ffff000002c78880 x22: 0000000000000002 x21: 
-0000000000000000
-[    3.256423] x20: ffff000006516800 x19: ffff000002c78880 x18: 
-ffffffffffffffff
-[    3.257317] x17: 6f63206573756163 x16: 6562203020637472 x15: 
-6320676e69746165
-[    3.258211] x14: 726320746f4e203a x13: 676e697373696d20 x12: 
-726f2064656c6261
-[    3.259106] x11: 7369642073692039 x10: ffff80008275c0c0 x9 : 
-ffff80008091ebf8
-[    3.260000] x8 : 00000000ffffefff x7 : ffff80008275c0c0 x6 : 
-80000000fffff000
-[    3.260895] x5 : 000000000000bff4 x4 : 0000000000000000 x3 : 
-ffff000006516ae0
-[    3.261789] x2 : ffff000006516ae0 x1 : 0000000000000000 x0 : 
-0000000000000000
-[    3.262684] Call trace:
-[    3.262991]  mtk_drm_crtc_dma_dev_get+0x8/0x18
-[    3.263549]  try_to_bring_up_aggregate_device+0x16c/0x1e0
-[    3.264227]  __component_add+0xac/0x180
-[    3.264708]  component_add+0x1c/0x30
-[    3.265158]  mtk_disp_rdma_probe+0x17c/0x270
-[    3.265695]  platform_probe+0x70/0xd0
-[    3.266155]  really_probe+0x150/0x2c0
-[    3.266615]  __driver_probe_device+0x80/0x140
-[    3.267162]  driver_probe_device+0x44/0x170
-[    3.267687]  __device_attach_driver+0xc0/0x148
-[    3.268245]  bus_for_each_drv+0x88/0xf0
-[    3.268727]  __device_attach+0xa4/0x198
-[    3.269208]  device_initial_probe+0x1c/0x30
-[    3.269732]  bus_probe_device+0xb4/0xc0
-[    3.270214]  deferred_probe_work_func+0x90/0xd0
-[    3.270783]  process_one_work+0x144/0x3a0
-[    3.271289]  worker_thread+0x2ac/0x4b8
-[    3.271761]  kthread+0xec/0xf8
-[    3.272145]  ret_from_fork+0x10/0x20
-[    3.272597] Code: 814f7858 ffff8000 aa1e03e9 d503201f (f9425000)
-[    3.273361] ---[ end trace 0000000000000000 ]---
-
-Here's the complete bootlog:
-https://pastebin.com/raw/SekMYBj4
-
-Any help is where to look is appreciated.
-
->> While the mediatek-dpi driver finds the DP port:
->> [    3.131645] mediatek-dpi 1c113000.dp-intf: Found bridge node: 
->> /soc/dp-tx@1c600000
->> 
->> The probing of the eDP is deferred:
->> [   13.289009] platform 1c015000.dp-intf: deferred probe pending
->> 
->> So I don't know why, but to make dp_intf1 work, it seems that dp_intf0
->> must be probed successfully. After this patch, the edp (which is
->> connected to the dp_intf1) probe will return with an -ENODEV and
->> the previous call to devm_drm_bridge_add() will be rolled back.
-> 
-> The MediaTek DRM driver uses the component framework, so it waits for 
-> all of its
-> components to register until it binds them all (which includes both 
-> intf0 and
-> intf1, unless they're disabled on the DT).
-
-Oh with "I don't know why, but to make dp_intf1 work.." I meant the 
-splat
-above. I figured that dpi won't probe if a dependency is still deferred 
-;)
-
--michael
-
-> It's true that before this patch no panel being found for edp-tx 
-> wouldn't
-> prevent it to probe, but it really should.
-> 
-> Thanks,
-> Nícolas
-> 
->> 
->> Before this patch, bridge_add() was called in any case (in the
->> error case with next_bridge = NULL) and the mediatek-dpi probed
->> like that:
->> 
->> [    3.121011] mediatek-dpi 1c015000.dp-intf: Found bridge node: 
->> /soc/edp-tx@1c500000
->> [    3.122111] mediatek-dpi 1c113000.dp-intf: Found bridge node: 
->> /soc/dp-tx@1c600000
->> 
->> Eventually resulting in a framebuffer device:
->> [    4.451081] mediatek-drm mediatek-drm.8.auto: [drm] fb0: 
->> mediatekdrmfb frame buffer device
->> 
->> 
->> NB, somehow this series broke the initial display output. I always 
->> have
->> to replug the DisplayPort to get some output. I'll dig deeper into 
->> that
->> later.
->> 
->> ..
->> 
->> > @@ -2519,21 +2553,14 @@ static int mtk_dp_probe(struct platform_device *pdev)
->> >  		return dev_err_probe(dev, mtk_dp->irq,
->> >  				     "failed to request dp irq resource\n");
->> >
->> > -	mtk_dp->next_bridge = devm_drm_of_get_bridge(dev, dev->of_node, 1, 0);
->> > -	if (IS_ERR(mtk_dp->next_bridge) &&
->> > -	    PTR_ERR(mtk_dp->next_bridge) == -ENODEV)
->> > -		mtk_dp->next_bridge = NULL;
->> 
->> In my case, this branch was taken.
->> 
->> -michael
->> 
->> > -	else if (IS_ERR(mtk_dp->next_bridge))
->> > -		return dev_err_probe(dev, PTR_ERR(mtk_dp->next_bridge),
->> > -				     "Failed to get bridge\n");
->> > -
->> >  	ret = mtk_dp_dt_parse(mtk_dp, pdev);
->> >  	if (ret)
->> >  		return dev_err_probe(dev, ret, "Failed to parse dt\n");
->> >
->> > -	drm_dp_aux_init(&mtk_dp->aux);
->> >  	mtk_dp->aux.name = "aux_mtk_dp";
->> > +	mtk_dp->aux.dev = dev;
->> >  	mtk_dp->aux.transfer = mtk_dp_aux_transfer;
->> > +	drm_dp_aux_init(&mtk_dp->aux);
->> >
->> >  	spin_lock_init(&mtk_dp->irq_thread_lock);
->> >
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogVWxmIEhhbnNzb24gPHVs
+Zi5oYW5zc29uQGxpbmFyby5vcmc+DQo+IFNlbnQ6IEZyaWRheSwgQXVndXN0IDI1LCAyMDIzIDc6
+MjUgQU0NCj4gVG86IFNoZW53ZWkgV2FuZyA8c2hlbndlaS53YW5nQG54cC5jb20+DQo+IENjOiBS
+b2IgSGVycmluZyA8cm9iaCtkdEBrZXJuZWwub3JnPjsgS3J6eXN6dG9mIEtvemxvd3NraQ0KPiA8
+a3J6eXN6dG9mLmtvemxvd3NraStkdEBsaW5hcm8ub3JnPjsgQ29ub3IgRG9vbGV5IDxjb25vcitk
+dEBrZXJuZWwub3JnPjsNCj4gTGlhbSBHaXJkd29vZCA8bGdpcmR3b29kQGdtYWlsLmNvbT47IE1h
+cmsgQnJvd24gPGJyb29uaWVAa2VybmVsLm9yZz47DQo+IGlteEBsaXN0cy5saW51eC5kZXY7IGRl
+dmljZXRyZWVAdmdlci5rZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOw0K
+PiBkbC1saW51eC1pbXggPGxpbnV4LWlteEBueHAuY29tPg0KPiBTdWJqZWN0OiBbRVhUXSBSZTog
+W1BBVENIIDEvMl0gZHQtYmluZGluZ3M6IHBvd2VyOiBBZGQgcmVndWxhdG9yLXBkIHlhbWwgZmls
+ZQ0KPiANCj4gQ2F1dGlvbjogVGhpcyBpcyBhbiBleHRlcm5hbCBlbWFpbC4gUGxlYXNlIHRha2Ug
+Y2FyZSB3aGVuIGNsaWNraW5nIGxpbmtzIG9yDQo+IG9wZW5pbmcgYXR0YWNobWVudHMuIFdoZW4g
+aW4gZG91YnQsIHJlcG9ydCB0aGUgbWVzc2FnZSB1c2luZyB0aGUgJ1JlcG9ydCB0aGlzDQo+IGVt
+YWlsJyBidXR0b24NCj4gDQo+IA0KPiBPbiBUaHUsIDI0IEF1ZyAyMDIzIGF0IDE4OjM1LCBTaGVu
+d2VpIFdhbmcgPHNoZW53ZWkud2FuZ0BueHAuY29tPiB3cm90ZToNCj4gPg0KPiA+DQo+ID4NCj4g
+PiA+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+ID4gPiBGcm9tOiBVbGYgSGFuc3NvbiA8
+dWxmLmhhbnNzb25AbGluYXJvLm9yZz4NCj4gPiA+IFNlbnQ6IFRodXJzZGF5LCBBdWd1c3QgMjQs
+IDIwMjMgNDoyNyBBTQ0KPiA+ID4gVG86IFNoZW53ZWkgV2FuZyA8c2hlbndlaS53YW5nQG54cC5j
+b20+DQo+ID4gPiBDYzogUm9iIEhlcnJpbmcgPHJvYmgrZHRAa2VybmVsLm9yZz47IEtyenlzenRv
+ZiBLb3psb3dza2kNCj4gPiA+IDxrcnp5c3p0b2Yua296bG93c2tpK2R0QGxpbmFyby5vcmc+OyBD
+b25vciBEb29sZXkNCj4gPiA+IDxjb25vcitkdEBrZXJuZWwub3JnPjsgTGlhbSBHaXJkd29vZCA8
+bGdpcmR3b29kQGdtYWlsLmNvbT47IE1hcmsNCj4gPiA+IEJyb3duIDxicm9vbmllQGtlcm5lbC5v
+cmc+OyBpbXhAbGlzdHMubGludXguZGV2Ow0KPiA+ID4gZGV2aWNldHJlZUB2Z2VyLmtlcm5lbC5v
+cmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7DQo+ID4gPiBkbC1saW51eC1pbXggPGxp
+bnV4LWlteEBueHAuY29tPg0KPiA+ID4gU3ViamVjdDogW0VYVF0gUmU6IFtQQVRDSCAxLzJdIGR0
+LWJpbmRpbmdzOiBwb3dlcjogQWRkIHJlZ3VsYXRvci1wZA0KPiA+ID4geWFtbCBmaWxlDQo+ID4g
+Pg0KPiA+ID4gQ2F1dGlvbjogVGhpcyBpcyBhbiBleHRlcm5hbCBlbWFpbC4gUGxlYXNlIHRha2Ug
+Y2FyZSB3aGVuIGNsaWNraW5nDQo+ID4gPiBsaW5rcyBvciBvcGVuaW5nIGF0dGFjaG1lbnRzLiBX
+aGVuIGluIGRvdWJ0LCByZXBvcnQgdGhlIG1lc3NhZ2UNCj4gPiA+IHVzaW5nIHRoZSAnUmVwb3J0
+IHRoaXMgZW1haWwnIGJ1dHRvbg0KPiA+ID4NCj4gPiA+DQo+ID4gPiBPbiBGcmksIDE4IEF1ZyAy
+MDIzIGF0IDE3OjM1LCBTaGVud2VpIFdhbmcgPHNoZW53ZWkud2FuZ0BueHAuY29tPg0KPiB3cm90
+ZToNCj4gPiA+ID4NCj4gPiA+ID4gRG9jdW1lbnRpbmcgdGhlIHJlZ3VsYXRvciBwb3dlciBkb21h
+aW4gcHJvcGVydGllcyBhbmQgdXNhZ2UgZXhhbXBsZXMuDQo+ID4gPg0KPiA+ID4gQXMgUm9iIGFu
+ZCBLcnp5c3p0b2YgYWxyZWFkeSBwb2ludGVkIG91dCwgSSBhZ3JlZSB0aGF0IHRoaXMgYmluZGlu
+Zw0KPiA+ID4gbG9va3MgYSBiaXQgcXVlc3Rpb25hYmxlLg0KPiA+ID4NCj4gPiA+IFJhdGhlciB0
+aGFuIGFkZGluZyBhIG5ldyBEVCBiaW5kaW5nLCB3aHkgY2FuJ3Qgd2UganVzdCB1c2UgdGhlDQo+
+ID4gPiBleGlzdGluZyB3YXkgb2YgZGVzY3JpYmluZyBhIHBsYXRmb3JtIHNwZWNpZmljIHBvd2Vy
+LWRvbWFpbiBwcm92aWRlcj8NCj4gPg0KPiA+IENhbiB5b3UgcGxlYXNlIHByb3ZpZGUgbW9yZSBk
+ZXRhaWxzIG9uIGhvdyB5b3UgdGhvdWdodCB3ZSBzaG91bGQNCj4gPiBpbXBsZW1lbnQgdGhpcyBm
+ZWF0dXJlIHVzaW5nIHRoZSBleGlzdGluZyB3YXk/IFZlcnkgYXBwcmVjaWF0ZSBpZiB5b3UgY291
+bGQNCj4gcHJvdmlkZSBhIHNpbXBsZSBleGFtcGxlLg0KPiA+DQo+ID4gPiBUaGlzIHN0aWxsIGxv
+b2tzIHBsYXRmb3JtIHNwZWNpZmljIHRvIG1lLg0KPiA+DQo+ID4gV2hhdCBkb2VzIHBsYXRmb3Jt
+IHNwZWNpZmljIGV4YWN0bHkgbWVhbiBoZXJlPyAgSSB3YW50IHRvIG1ha2Ugc3VyZSBJDQo+ID4g
+dW5kZXJzdGFuZCB3aGF0IHlvdSB3ZXJlIHJlZmVycmluZyB0by4NCj4gDQo+IFRoZXJlIGFyZSBw
+bGVudHkgb2YgZXhhbXBsZXMgb2YgaG93IGEgcGxhdGZvcm0gc3BlY2lmaWMgZ2VucGQgcHJvdmlk
+ZXIgbG9va3MgaW4NCj4gRFQuIFlvdSBtYXkgaGF2ZSBhIGxvb2sgYSBpbXggcGxhdGZvcm1zIGZv
+ciBleGFtcGxlLg0KPiANCj4gZ2l0IGdyZXAgIiNwb3dlci1kb21haW4tY2VsbHMiIGFyY2gvYXJt
+L2Jvb3QvZHRzL254cC9pbXgNCj4gDQo+IFRoZSBnZW5wZCBwcm92aWRlciB0aGVuIG5lZWRzIHRv
+IGJlIGEgY29uc3VtZXIgb2YgdGhlIHJlc291cmNlcyBpdCBuZWVkcy4gSW4NCj4gdGhpcyBjYXNl
+IGEgY291cGxlIG9mIHJlZ3VsYXRvcnMgaXQgc2VlbXMgbGlrZS4NCj4gDQoNCklmIEkgdW5kZXJz
+dG9vZCB5b3VyIHJlcGx5IGNvcnJlY3RseSwgIGl0IHNlZW1zIHRoYXQgdGhlIGN1cnJlbnQgaW1w
+bGVtZW50YXRpb24gb2YgDQpyZWd1bGF0b3ItcGQgaXMgd2hhdCB5b3UgaGF2ZSBkZXNjcmliZWQu
+IFBsZWFzZSBjb3JyZWN0IG1lIGlmIEknbSBtaXN0YWtlbi4NCg0KVGhlIGZvbGxvd2luZyBhcmUg
+dGhlIGRpZmYgb2Ygc2N1LXBkIGFuZCB0aGlzIHJlZ3VsYXRvci1wZC4NCg0KICAgIHBvd2VyLWNv
+bnRyb2xsZXIgewkJCQkJCSAgICBwb3dlci1jb250cm9sbGVyIHsNCiAgICAgICAgY29tcGF0aWJs
+ZSA9ICJmc2wsaW14OHF4cC1zY3UtcGQiLCAiZnNsLHNjdS1wZCI7ICAgICAgfAkgICAgICAgIGNv
+bXBhdGlibGUgPSAicmVndWxhdG9yLXBvd2VyLWRvbWFpbiI7DQogICAgICAgICNwb3dlci1kb21h
+aW4tY2VsbHMgPSA8MT47CQkJCSAgICAgICAgI3Bvd2VyLWRvbWFpbi1jZWxscyA9IDwxPjsNCgkJ
+CQkJCQkgICAgICA+DQoJCQkJCQkJICAgICAgPgkgICAgICAgIHJlZ3VsYXRvci1udW1iZXIgPSA8
+Mj47DQoJCQkJCQkJICAgICAgPgkgICAgICAgIHJlZ3VsYXRvci0wLXN1cHBseSA9IDwmcmVnMT47
+DQoJCQkJCQkJICAgICAgPgkgICAgICAgIHJlZ3VsYXRvci0xLXN1cHBseSA9IDwmcmVnMj47DQog
+ICAgfTsJCQkJCQkJCSAgICB9Ow0KDQpBcmUgeW91IHN1Z2dlc3RpbmcgdG8gbW92ZSB0aGUgcmVn
+dWxhdG9yLXBkIHRvIHRoZSBpbXggZGlyZWN0b3J5IGFuZCBhZGQgYSBjb21wYW55IHByZWZpeA0K
+dG8gdGhlIGNvbXBhdGlibGUgc3RyaW5nPw0KDQpUaGFua3MsDQpTaGVud2VpDQoNCj4gWy4uLl0N
+Cj4gDQo+IEtpbmQgcmVnYXJkcw0KPiBVZmZlDQo=
