@@ -2,88 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71220786672
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 05:58:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96B7B786524
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Aug 2023 04:16:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240021AbjHXD6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Aug 2023 23:58:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37260 "EHLO
+        id S239251AbjHXCNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Aug 2023 22:13:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240221AbjHXD50 (ORCPT
+        with ESMTP id S239238AbjHXCMj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Aug 2023 23:57:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F6B91FEB;
-        Wed, 23 Aug 2023 20:56:56 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5A0326313A;
-        Thu, 24 Aug 2023 03:55:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0FB3C433CA;
-        Thu, 24 Aug 2023 03:55:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692849357;
-        bh=f2MaMPDKau4stYbi7cF7voUFa5rnept8FYUDhQEpDjk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=kCLPKRO3vG/kuskcO78aF4I2B+ZHsVDyhx4pglVcybTlSRpTye+rjGFamSLTzVRYO
-         EPncaOZmEd0Fwju5Ltvpf9oUa3MrVhaqAq03GY4G6tSyPn/0iomgWmU4zn8Bp6ronS
-         /EltsMz8pT0bvxVqHXHcZC2sawSeu7lDQoAn3puyt7NhGolHvAvrqvXmxtlJYeqQqG
-         Rsy+jwbp0W8VfEE3cp06B0X1Cwm5eb4WY8kq0RlCXi4EkUqVexiuRvM/VJWkDPxOlL
-         7RfD7OL6eB3hsl8vMlrrxDFDQh8+PXnfRrNOrIhEhHm6hMpk515ADUwbSfjI0vw0jw
-         M8ZoETD2Et57g==
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-4fe1b00fce2so9700074e87.3;
-        Wed, 23 Aug 2023 20:55:57 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yzvg7juYH+Q7Z8AaVB39djcYvoEQalyG8+AyZs/TzfJckApfWky
-        0pNUxI1Nzyvpo1ezBj9M5+ZtYMblEydb7k2QBmI=
-X-Google-Smtp-Source: AGHT+IHuPZ7LQJYjDMh9tonSINdmDBfMCDY6LWrqBjg7Q97XRVSQa1B8RpocHaT6h5lvN+tGGshVdDO1BJNhwZf8398=
-X-Received: by 2002:a05:6512:3241:b0:4fe:25bc:71f5 with SMTP id
- c1-20020a056512324100b004fe25bc71f5mr8521870lfr.11.1692849355644; Wed, 23 Aug
- 2023 20:55:55 -0700 (PDT)
+        Wed, 23 Aug 2023 22:12:39 -0400
+Received: from mail.nfschina.com (unknown [42.101.60.195])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id D82F8E77
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Aug 2023 19:12:36 -0700 (PDT)
+Received: from localhost.localdomain (unknown [219.141.250.2])
+        by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPA id C132D60AA07D4;
+        Thu, 24 Aug 2023 10:12:33 +0800 (CST)
+X-MD-Sfrom: zeming@nfschina.com
+X-MD-SrcIP: 219.141.250.2
+From:   Li zeming <zeming@nfschina.com>
+To:     keescook@chromium.org, luto@amacapital.net, wad@chromium.org
+Cc:     linux-kernel@vger.kernel.org, Li zeming <zeming@nfschina.com>
+Subject: [PATCH] =?UTF-8?q?seccomp:=20Remove=20unnecessary=20=E2=80=98NULL?= =?UTF-8?q?=E2=80=99=20values=20from=20prepared?=
+Date:   Sat, 26 Aug 2023 02:43:48 +0800
+Message-Id: <20230825184348.6870-1-zeming@nfschina.com>
+X-Mailer: git-send-email 2.18.2
 MIME-Version: 1.0
-References: <20230824034304.37411-1-zhengqi.arch@bytedance.com> <20230824034304.37411-26-zhengqi.arch@bytedance.com>
-In-Reply-To: <20230824034304.37411-26-zhengqi.arch@bytedance.com>
-From:   Song Liu <song@kernel.org>
-Date:   Wed, 23 Aug 2023 20:55:42 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW4Tp3XPF349q8-BcEpaNSn23Rp10Wba=uoKy6Xtix29Gw@mail.gmail.com>
-Message-ID: <CAPhsuW4Tp3XPF349q8-BcEpaNSn23Rp10Wba=uoKy6Xtix29Gw@mail.gmail.com>
-Subject: Re: [PATCH v5 25/45] md/raid5: dynamically allocate the md-raid5 shrinker
-To:     Qi Zheng <zhengqi.arch@bytedance.com>
-Cc:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
-        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
-        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
-        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
-        yujie.liu@intel.com, gregkh@linuxfoundation.org,
-        muchun.song@linux.dev, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>,
-        linux-raid@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=4.3 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_24_48,
+        RCVD_IN_SBL_CSS,RDNS_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 23, 2023 at 8:47=E2=80=AFPM Qi Zheng <zhengqi.arch@bytedance.co=
-m> wrote:
->
-> In preparation for implementing lockless slab shrink, use new APIs to
-> dynamically allocate the md-raid5 shrinker, so that it can be freed
-> asynchronously via RCU. Then it doesn't need to wait for RCU read-side
-> critical section when releasing the struct r5conf.
->
-> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-> Reviewed-by: Muchun Song <songmuchun@bytedance.com>
-> CC: Song Liu <song@kernel.org>
-> CC: linux-raid@vger.kernel.org
+prepared is assigned first, so it does not need to initialize the 
+assignment.
 
-LGTM!
+Signed-off-by: Li zeming <zeming@nfschina.com>
+---
+ kernel/seccomp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Reviewed-by: Song Liu <song@kernel.org>
+diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+index d3e584065c7f..af672e03449a 100644
+--- a/kernel/seccomp.c
++++ b/kernel/seccomp.c
+@@ -1838,7 +1838,7 @@ static long seccomp_set_mode_filter(unsigned int flags,
+ 				    const char __user *filter)
+ {
+ 	const unsigned long seccomp_mode = SECCOMP_MODE_FILTER;
+-	struct seccomp_filter *prepared = NULL;
++	struct seccomp_filter *prepared;
+ 	long ret = -EINVAL;
+ 	int listener = -1;
+ 	struct file *listener_f = NULL;
+-- 
+2.18.2
+
