@@ -2,125 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C4807888B9
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 15:34:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE1D27888D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 15:44:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245192AbjHYNdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 09:33:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58054 "EHLO
+        id S245228AbjHYNnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 09:43:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245105AbjHYNdW (ORCPT
+        with ESMTP id S245167AbjHYNnR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 09:33:22 -0400
-Received: from icts-p-cavuit-1.kulnet.kuleuven.be (icts-p-cavuit-1.kulnet.kuleuven.be [IPv6:2a02:2c40:0:c0::25:132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8498E6F;
-        Fri, 25 Aug 2023 06:33:19 -0700 (PDT)
-X-KULeuven-Envelope-From: jo.vanbulck@cs.kuleuven.be
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
-X-KULeuven-Scanned: Found to be clean
-X-KULeuven-ID: 96CFC20174.A0277
-X-KULeuven-Information: Katholieke Universiteit Leuven
-Received: from icts-p-ceifnet-smtps-0.kuleuven.be (icts-p-ceifnet-smtps.service.icts.svcd [IPv6:2a02:2c40:0:51:144:242:ac11:2f])
-        by icts-p-cavuit-1.kulnet.kuleuven.be (Postfix) with ESMTP id 96CFC20174;
-        Fri, 25 Aug 2023 15:33:16 +0200 (CEST)
-BCmilterd-Mark-Subject: no
-BCmilterd-Errors: 
-BCmilterd-Report: SA-HVU#DKIM_VALID_AU#0.00,SA-HVU#DKIM_SIGNED#0.00,SA-HVU#DKIM_VALID#0.00
-X-CAV-Cluster: smtps
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cs.kuleuven.be;
-        s=cav; t=1692970396;
-        bh=iy/NPHygHvxAaFdyN1v8MXZULeJgux1Y5FZn5JfqR3c=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=R51GOWIzqqLbRCvSNmq4M+vruDcrrSKi0uUr9f/O56ZnVWjHQ5HO+zlRfEyFXxMk6
-         I7S8lyHGNU5AGesUieONeiW/zJwsySr23gwHetRZIyfeSWjTe4MUlqXiFRLoXgMycB
-         UKwh4UqKr6SYWJDPhtB36dCo77z9TC0sdM9NQ3Z8=
-Received: from localhost.localdomain (ptr-82s0fs8e775rpuqrs36.18120a2.ip6.access.telenet.be [IPv6:2a02:1811:d31:8b00:b56b:371:2317:a8f2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by icts-p-ceifnet-smtps-0.kuleuven.be (Postfix) with ESMTPSA id 58439D4EBEF26;
-        Fri, 25 Aug 2023 15:33:16 +0200 (CEST)
-X-Kuleuven: This mail passed the K.U.Leuven mailcluster
-From:   Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
-To:     jarkko@kernel.org, kai.huang@intel.com, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     dave.hansen@linux.intel.com,
-        Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
-Subject: [PATCH v4 07/13] selftests/sgx: Ensure expected location of test enclave buffer
-Date:   Fri, 25 Aug 2023 15:32:46 +0200
-Message-Id: <20230825133252.9056-8-jo.vanbulck@cs.kuleuven.be>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230825133252.9056-1-jo.vanbulck@cs.kuleuven.be>
-References: <20230825133252.9056-1-jo.vanbulck@cs.kuleuven.be>
+        Fri, 25 Aug 2023 09:43:17 -0400
+Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C658D1FDE;
+        Fri, 25 Aug 2023 06:43:14 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id B2A9032009B7;
+        Fri, 25 Aug 2023 09:43:10 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Fri, 25 Aug 2023 09:43:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjusaka.me; h=
+        cc:cc:content-transfer-encoding:content-type:date:date:from:from
+        :in-reply-to:message-id:mime-version:reply-to:sender:subject
+        :subject:to:to; s=fm1; t=1692970990; x=1693057390; bh=cWLyjRrcaS
+        NB2Tn0G3Iyc+2TU5mhy5OdRlgEedNUqgs=; b=Wlt0EPZhRt18+4hLp+cTyABmV/
+        rcA8OjZR2phU7nOpBGDFJ0xMqSsQY1B73abOqxNz5/lp9jwn2CTf36Pt+IOTgOmD
+        9QpEcAf/bxNqTMP3uziR4d4WrjjGV1GL4FjD/c3+m/PeXjhY2nOvyyGYNS6zqTke
+        eoBsY+PPQHL27lUvJdxv8cTtaOUOfzqVLlqxbx9pdIHPYjkGj7uvukBPaKkJ3mzn
+        ed6QLpwS+Nbo8Paj4BBF+Z8VzGkIl7SnO0rMTkZc7Of0IUDWDBJMMxD/1CGY/FhA
+        u2rJzkevGbTRDz+k/otnKQrdVj2yz7z9i3V6IMkT8mXF3iz69UFMiuuG7Q6A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:date:date:feedback-id:feedback-id:from:from
+        :in-reply-to:message-id:mime-version:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1692970990; x=1693057390; bh=cWLyjRrcaSNB2
+        Tn0G3Iyc+2TU5mhy5OdRlgEedNUqgs=; b=19faRVhuP58P5mFZUAw6KY9kqcKLH
+        86Ni0yIxChPTrD6BHjpINDq+UD8PK4TOyocGC8qzDqa5KhRB55H7b8lQY0Dpcac1
+        LvcftJLg34QeHtI8/5iG+EdmJq/xHkaFs0LeAgHDKTgUKuADg2ssCK5kL2KNbDkh
+        lyEq6/9lgUArHL0PfuPmRl/Gm9dglykWthRbjYKPdRRNImzW6+qUzJSxDE7GuO2J
+        U2fu38jaaWsd94L2agyFkIc9VkNJJwLvE2GNe59BjHvpIXSJRxxHQUVDa88ozGcU
+        ydg6hJ/9Akcl1NnzHIMD8jOHIvhyAgybyIENuSiQr/vwLtn6JhXW7MaCg==
+X-ME-Sender: <xms:7a_oZJ6VG1pjVuorpyoCUUjoGgIDzRcI0o7CxVDOLIHUa_HnhDaSBg>
+    <xme:7a_oZG7EyF_54juxEvm9RTjrd-qGX3wfk3GXqfcPmkMf3Zi_E890Zp5KTeeDR38Sl
+    f_pF5FfJXiwKc38nak>
+X-ME-Received: <xmr:7a_oZAfPvpmC4r9QdgqOUaNjtGDn-xkgs-Z-QM39pYvfM44ApgWktz-xAEBzgyVx52GHmxpkhg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedruddvkedgieejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffoggfgsedtkeertd
+    ertddtnecuhfhrohhmpegkhhgvrghoucfnihcuoehmvgesmhgrnhhjuhhsrghkrgdrmhgv
+    qeenucggtffrrghtthgvrhhnpeffgeeluddvveekueettdeiffefffdvhfevhffgkeelte
+    egieetfeffheffudekteenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhs
+    thgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmhgvsehmrghnjhhush
+    grkhgrrdhmvg
+X-ME-Proxy: <xmx:7a_oZCLclRUEbiVb1slwRlFGWocrjfx_NGm5r6F_oSFM84m_Ckx8lA>
+    <xmx:7a_oZNIKMXxwj_IH9fnvM6haE-fOvaMOyrlCtoBM2A6LrsHl5Vbl-g>
+    <xmx:7a_oZLzjGIclSULVr44ozt8oEcrBAeN9FIL6lqHeaX_63skPH22wIQ>
+    <xmx:7q_oZKD1FyLSLttSIGolxpoLubSTy_NMuRE8pGbnkjQMLwmm6xJgIw>
+Feedback-ID: i3ea9498d:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 25 Aug 2023 09:43:05 -0400 (EDT)
+From:   Zheao Li <me@manjusaka.me>
+To:     edumazet@google.com, mhiramat@kernel.org, rostedt@goodmis.org,
+        davem@davemloft.net, dsahern@kernel.org, kuba@kernel.org,
+        pabeni@redhat.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        Zheao Li <me@manjusaka.me>
+Subject: [PATCH v4] tracepoint: add new `tcp:tcp_ca_event` trace event
+Date:   Fri, 25 Aug 2023 13:32:47 +0000
+Message-Id: <20230825133246.344364-1-me@manjusaka.me>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The external tests manipulating page permissions expect encl_buffer to be
-placed at the start of the test enclave's .data section. As this is not
-guaranteed per the C standard, explicitly place encl_buffer in a separate
-section that is explicitly placed at the start of the .data segment in the
-linker script to avoid the compiler placing it somewhere else in .data.
+Hello 
 
-Signed-off-by: Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-Acked-by: Kai Huang <kai.huang@intel.com>
+This the 4th version of the patch, the previous discusstion is here
+
+https://lore.kernel.org/linux-trace-kernel/20230807183308.9015-1-me@manjusaka.me/
+
+In this version of the code, here's some different:
+
+1. The event name has been changed from `tcp_ca_event_set` to
+`tcp_ca_event`
+
+2. Output the current protocol family in TP_printk
+
+3. Show the ca_event symbol instead of the original number
+
+But the `./scripts/checkpatch.pl` has been failed to check this patch,
+because we sill have some code error in ./scripts/checkpatch.pl(in
+another world, the test would be failed when we use the 
+scripts/checkpatch.pl to check the events/tcp.h
+
+Feel free to ask me if you have have any issues and ideas.
+
+Thanks
+
 ---
- tools/testing/selftests/sgx/defines.h     | 1 +
- tools/testing/selftests/sgx/test_encl.c   | 8 ++++----
- tools/testing/selftests/sgx/test_encl.lds | 1 +
- 3 files changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/tools/testing/selftests/sgx/defines.h b/tools/testing/selftests/sgx/defines.h
-index b8f482667ce1..402f8787a71c 100644
---- a/tools/testing/selftests/sgx/defines.h
-+++ b/tools/testing/selftests/sgx/defines.h
-@@ -14,6 +14,7 @@
- #define __aligned(x) __attribute__((__aligned__(x)))
- #define __packed __attribute__((packed))
- #define __used __attribute__((used))
-+#define __section(x)__attribute__((__section__(x)))
+In normal use case, the tcp_ca_event would be changed in high frequency.
+
+The developer can monitor the network quality more easier by tracing
+TCP stack with this TP event.
+
+So I propose to add a `tcp:tcp_ca_event` trace event
+like `tcp:tcp_cong_state_set` to help the people to
+trace the TCP connection status
+
+Signed-off-by: Zheao Li <me@manjusaka.me>
+---
+ include/net/tcp.h          |  9 ++----
+ include/trace/events/tcp.h | 60 ++++++++++++++++++++++++++++++++++++++
+ net/ipv4/tcp_cong.c        | 10 +++++++
+ 3 files changed, 72 insertions(+), 7 deletions(-)
+
+diff --git a/include/net/tcp.h b/include/net/tcp.h
+index 0ca972ebd3dd..a68c5b61889c 100644
+--- a/include/net/tcp.h
++++ b/include/net/tcp.h
+@@ -1154,13 +1154,8 @@ static inline bool tcp_ca_needs_ecn(const struct sock *sk)
+ 	return icsk->icsk_ca_ops->flags & TCP_CONG_NEEDS_ECN;
+ }
  
- #include "../../../../arch/x86/include/asm/sgx.h"
- #include "../../../../arch/x86/include/asm/enclu.h"
-diff --git a/tools/testing/selftests/sgx/test_encl.c b/tools/testing/selftests/sgx/test_encl.c
-index 81070492230f..2ee597b9d14b 100644
---- a/tools/testing/selftests/sgx/test_encl.c
-+++ b/tools/testing/selftests/sgx/test_encl.c
-@@ -6,11 +6,11 @@
+-static inline void tcp_ca_event(struct sock *sk, const enum tcp_ca_event event)
+-{
+-	const struct inet_connection_sock *icsk = inet_csk(sk);
+-
+-	if (icsk->icsk_ca_ops->cwnd_event)
+-		icsk->icsk_ca_ops->cwnd_event(sk, event);
+-}
++/* from tcp_cong.c */
++void tcp_ca_event(struct sock *sk, const enum tcp_ca_event event);
  
+ /* From tcp_cong.c */
+ void tcp_set_ca_state(struct sock *sk, const u8 ca_state);
+diff --git a/include/trace/events/tcp.h b/include/trace/events/tcp.h
+index 7b1ddffa3dfc..993eb00403ea 100644
+--- a/include/trace/events/tcp.h
++++ b/include/trace/events/tcp.h
+@@ -41,6 +41,18 @@
+ 	TP_STORE_V4MAPPED(__entry, saddr, daddr)
+ #endif
+ 
++/* The TCP CA event traced by tcp_ca_event*/
++#define tcp_ca_event_names    \
++		EM(CA_EVENT_TX_START)     \
++		EM(CA_EVENT_CWND_RESTART) \
++		EM(CA_EVENT_COMPLETE_CWR) \
++		EM(CA_EVENT_LOSS)         \
++		EM(CA_EVENT_ECN_NO_CE)    \
++		EMe(CA_EVENT_ECN_IS_CE)
++
++#define show_tcp_ca_event_names(val) \
++	__print_symbolic(val, tcp_ca_event_names)
++
  /*
-  * Data buffer spanning two pages that will be placed first in the .data
-- * segment. Even if not used internally the second page is needed by external
-- * test manipulating page permissions, so mark encl_buffer as "used" to make
-- * sure it is entirely preserved by the compiler.
-+ * segment via the linker script. Even if not used internally the second page
-+ * is needed by external test manipulating page permissions, so mark
-+ * encl_buffer as "used" to make sure it is entirely preserved by the compiler.
-  */
--static uint8_t __used encl_buffer[8192] = { 1 };
-+static uint8_t __used __section(".data.encl_buffer") encl_buffer[8192] = { 1 };
+  * tcp event with arguments sk and skb
+  *
+@@ -419,6 +431,54 @@ TRACE_EVENT(tcp_cong_state_set,
+ 		  __entry->cong_state)
+ );
  
- enum sgx_enclu_function {
- 	EACCEPT = 0x5,
-diff --git a/tools/testing/selftests/sgx/test_encl.lds b/tools/testing/selftests/sgx/test_encl.lds
-index 6ffdfc9fb4cf..333a3e78fdc9 100644
---- a/tools/testing/selftests/sgx/test_encl.lds
-+++ b/tools/testing/selftests/sgx/test_encl.lds
-@@ -24,6 +24,7 @@ SECTIONS
- 	} : text
++TRACE_EVENT(tcp_ca_event,
++
++	TP_PROTO(struct sock *sk, const u8 ca_event),
++
++	TP_ARGS(sk, ca_event),
++
++	TP_STRUCT__entry(
++		__field(const void *, skaddr)
++		__field(__u16, sport)
++		__field(__u16, dport)
++		__field(__u16, family)
++		__array(__u8, saddr, 4)
++		__array(__u8, daddr, 4)
++		__array(__u8, saddr_v6, 16)
++		__array(__u8, daddr_v6, 16)
++		__field(__u8, ca_event)
++	),
++
++	TP_fast_assign(
++		struct inet_sock *inet = inet_sk(sk);
++		__be32 *p32;
++
++		__entry->skaddr = sk;
++
++		__entry->sport = ntohs(inet->inet_sport);
++		__entry->dport = ntohs(inet->inet_dport);
++		__entry->family = sk->sk_family;
++
++		p32 = (__be32 *) __entry->saddr;
++		*p32 = inet->inet_saddr;
++
++		p32 = (__be32 *) __entry->daddr;
++		*p32 =  inet->inet_daddr;
++
++		TP_STORE_ADDRS(__entry, inet->inet_saddr, inet->inet_daddr,
++			   sk->sk_v6_rcv_saddr, sk->sk_v6_daddr);
++
++		__entry->ca_event = ca_event;
++	),
++
++	TP_printk("family=%s sport=%hu dport=%hu saddr=%pI4 daddr=%pI4 saddrv6=%pI6c daddrv6=%pI6c ca_event=%s",
++		  show_family_name(__entry->family),
++		  __entry->sport, __entry->dport,
++		  __entry->saddr, __entry->daddr,
++		  __entry->saddr_v6, __entry->daddr_v6,
++		  show_tcp_ca_event_names(__entry->ca_event))
++);
++
+ #endif /* _TRACE_TCP_H */
  
- 	.data : {
-+		*(.data.encl_buffer)
- 		*(.data*)
- 	} : data
+ /* This part must be outside protection */
+diff --git a/net/ipv4/tcp_cong.c b/net/ipv4/tcp_cong.c
+index 1b34050a7538..fb7ec6ebbbd0 100644
+--- a/net/ipv4/tcp_cong.c
++++ b/net/ipv4/tcp_cong.c
+@@ -34,6 +34,16 @@ struct tcp_congestion_ops *tcp_ca_find(const char *name)
+ 	return NULL;
+ }
  
++void tcp_ca_event(struct sock *sk, const enum tcp_ca_event event)
++{
++	const struct inet_connection_sock *icsk = inet_csk(sk);
++
++	trace_tcp_ca_event(sk, (u8)event);
++
++	if (icsk->icsk_ca_ops->cwnd_event)
++		icsk->icsk_ca_ops->cwnd_event(sk, event);
++}
++
+ void tcp_set_ca_state(struct sock *sk, const u8 ca_state)
+ {
+ 	struct inet_connection_sock *icsk = inet_csk(sk);
 -- 
-2.25.1
+2.34.1
 
