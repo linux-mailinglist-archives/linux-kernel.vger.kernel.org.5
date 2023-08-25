@@ -2,146 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 853707881B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 10:13:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A9B57881BA
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 10:13:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242906AbjHYIMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 04:12:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50580 "EHLO
+        id S243435AbjHYIMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 04:12:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237231AbjHYIMJ (ORCPT
+        with ESMTP id S243456AbjHYIMS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 04:12:09 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1233BCEE
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 01:12:03 -0700 (PDT)
-Received: from canpemm500006.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RXCJ93rTkzNn1t;
-        Fri, 25 Aug 2023 16:08:25 +0800 (CST)
-Received: from [10.67.145.224] (10.67.145.224) by
- canpemm500006.china.huawei.com (7.192.105.130) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Fri, 25 Aug 2023 16:12:00 +0800
-Subject: Re: [PATCH v2 1/1] iommu/arm-smmu-v3: Fix error case of range command
-To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>
-CC:     Nicolin Chen <nicolinc@nvidia.com>,
-        <linux-arm-kernel@lists.infradead.org>, <iommu@lists.linux.dev>,
-        <linux-kernel@vger.kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Yicong Yang <yangyicong@hisilicon.com>,
-        Tomas Krcka <krckatom@amazon.de>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>
-References: <d5fc1f72-7428-4fef-d868-d06b85add635@huawei.com>
- <20230804165225.GF30679@willie-the-truck> <ZM1DqxXcBT2SOs8/@Asurada-Nvidia>
- <015b4573-9d74-451b-8028-a1050ade7019@huawei.com>
- <661a7bb5-99e1-de16-d860-0cd17f7a0470@arm.com>
- <20230808162409.GB2890@willie-the-truck>
- <80ead8ee-4dbe-7b3c-44f5-944073a2a39d@arm.com>
- <412886be-644a-5b46-9bfa-1c9a358f9a5d@huawei.com>
- <280d0be7-7d41-ed78-bf4b-3db6c0076e22@arm.com>
- <197e87cd-91a2-dce8-716c-488b379abbaf@arm.com>
- <20230818162114.GB16216@willie-the-truck>
-From:   zhurui <zhurui3@huawei.com>
-Message-ID: <d05378c0-5b85-caaf-ae0d-49576adf7d86@huawei.com>
-Date:   Fri, 25 Aug 2023 16:12:00 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Fri, 25 Aug 2023 04:12:18 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C52DC2109
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 01:12:14 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-4ff88239785so973905e87.0
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 01:12:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692951133; x=1693555933;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=3ZsvxtDw2cHrK/gH+F8nfBihvnVgUOAVKlUaPMeEkUI=;
+        b=LCbnJHQy1VMiQ4tifKEsp9uvCTkV/Ewo2KCxFPSMWF2TjNpFdyR5fghHe/vkK9AhdY
+         9qFQLtd07F9/BU3IgmFeBPtrGLmUqgx5mW+eNtIQyyTXUbxG/jv+OLSx3N/PWvQLIzpe
+         /HucRdle7oxDOeV8DOn2HgvUuPymfi+Y64FAMMUqVqF52ruIeDZtvH6zqCwx5zHpvmMH
+         mHIozSTtGU7qZLvQEiBCi7AbdNGtSFVmQbp19e/pMityydV8pmpM+4x1n7TQA2bxPkKG
+         9A26hOml8zRBQNNw53M0gg2usWBiHbnmBpGQYSiqJOkJQoRdoQfSyyd6DOnxUAp042xh
+         EnYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692951133; x=1693555933;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3ZsvxtDw2cHrK/gH+F8nfBihvnVgUOAVKlUaPMeEkUI=;
+        b=MD0VHcnPEELAeaIzcYQ8Ce5SB83YMlIQyvDpbeyV2xjdZhGSd/kSm6rwKF+sxQ1csl
+         ycj63OPiW3QzLTStH3n35kn8LTurZjJEVG9F5SHUb3lL2q0/kqlDJn3vDJQrWrkT3/BW
+         8eQYN3+OmOab62xE9kNhDZro0B2K1J+qlBhFNzQUcg7Mx6egQ5LePvv1Tv4Aq+0SN0+T
+         Ql1WcU7S07bED5OQ2A6lAuUjVRI2xqf/4ldLWMseS2bRjnkJ2kR7Vr1UlrUALcPiPhkB
+         Adn2r4HNjBFzBawHnI/mMBieC0YY8jW7zrGtaEp466MJERpeX6DLj5LKoQ5+2Oao+ewj
+         XHCQ==
+X-Gm-Message-State: AOJu0YxiVzNPTjcb4DV7+YhQnv/YRfcNcyEwN/m4nOygr0luhUAZfJo5
+        jXiIFCATTZvkWgGAuEIIh2/Xq2dhxc90+E2pHi8=
+X-Google-Smtp-Source: AGHT+IH2cYfOyAKDYkikVhhazevJIX4VasKy+kIf6y6CW4pTRpKnyies/vWRmWxt1pM2ZCb6NQEIfQ==
+X-Received: by 2002:a05:6512:128c:b0:4fa:f96c:745f with SMTP id u12-20020a056512128c00b004faf96c745fmr16758118lfs.38.1692951132892;
+        Fri, 25 Aug 2023 01:12:12 -0700 (PDT)
+Received: from [127.0.1.1] ([85.235.12.238])
+        by smtp.gmail.com with ESMTPSA id q28-20020ac2511c000000b004fe1a35fd15sm195559lfb.140.2023.08.25.01.12.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Aug 2023 01:12:12 -0700 (PDT)
+From:   Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH 0/7] ASoC: Convert some Maxim codecs to use GPIO
+ descriptors
+Date:   Fri, 25 Aug 2023 10:12:10 +0200
+Message-Id: <20230825-descriptors-asoc-max-v1-0-b212292b2f08@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20230818162114.GB16216@willie-the-truck>
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.145.224]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- canpemm500006.china.huawei.com (7.192.105.130)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAFpi6GQC/22Nyw6CMBBFf4XM2jFtjYCu/A/DovQBkyglM4ZgS
+ P/dSly6PDc5524ggSkIXKsNOCwklKYC+lCBG+00BCRfGIwyJ9XqBn0QxzS/EgtaSQ6fdsW+0dY
+ p00cdIxR15hBp3bP3rvBIUoT3/rLo7/oLmvP/4KJRobd10/a1ssZfbg+aLKdj4gG6nPMHtnz41
+ rkAAAA=
+To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/19 0:21, Will Deacon wrote:
-> On Fri, Aug 18, 2023 at 05:19:31PM +0100, Robin Murphy wrote:
->> On 2023-08-09 14:48, Robin Murphy wrote:
->> [...]
->>> Does the patch below work for you?
->>
->> Any comments on this? Just noticed this commit on a local dev branch and
->> realised I'd totally forgotten about it already. I'm pretty confident it
->> ought to be right, but then it *was* also me who missed the original bug to
->> begin with... ;)
-> 
-> I'm happy to take it if zhurui can confirm that it fixes their issue...
-> 
-> Will (had also forgotten about this)
-> 
->>> ----->8-----
->>> Subject: [PATCH] iommu/arm-smmu-v3: Avoid constructing invalid range
->>> commands
->>>
->>> Although io-pgtable's non-leaf invalidations are always for full tables,
->>> I missed that SVA also uses non-leaf invalidations, while being at the
->>> mercy of whatever range the MMU notifier throws at it. This means it
->>> definitely wants the previous TTL fix as well, since it also doesn't
->>> know exactly which leaf level(s) may need invalidating, but it can also
->>> give us less-aligned ranges wherein certain corners may lead to building
->>> an invalid command where TTL, Num and Scale are all 0. It should be fine
->>> to handle this by over-invalidating an extra page, since falling back to
->>> a non-range command opens up a whole can of errata-flavoured worms.
->>>
->>> Fixes: 6833b8f2e199 ("iommu/arm-smmu-v3: Set TTL invalidation hint better")
->>> Reported-by: Rui Zhu <zhurui3@huawei.com>
->>> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
->>> ---
->>>   drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 15 ++++++++++-----
->>>   1 file changed, 10 insertions(+), 5 deletions(-)
->>>
->>> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->>> b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->>> index 9b0dc3505601..6ccbae9b93a1 100644
->>> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->>> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->>> @@ -1895,18 +1895,23 @@ static void __arm_smmu_tlb_inv_range(struct
->>> arm_smmu_cmdq_ent *cmd,
->>>           /* Get the leaf page size */
->>>           tg = __ffs(smmu_domain->domain.pgsize_bitmap);
->>>
->>> +        num_pages = size >> tg;
->>> +
->>>           /* Convert page size of 12,14,16 (log2) to 1,2,3 */
->>>           cmd->tlbi.tg = (tg - 10) / 2;
->>>
->>>           /*
->>> -         * Determine what level the granule is at. For non-leaf,
->>> io-pgtable
->>> -         * assumes .tlb_flush_walk can invalidate multiple levels at once,
->>> -         * so ignore the nominal last-level granule and leave TTL=0.
->>> +         * Determine what level the granule is at. For non-leaf, both
->>> +         * io-pgtable and SVA pass a nominal last-level granule because
->>> +         * they don't know what level(s) actually apply, so ignore that
->>> +         * and leave TTL=0. However for various errata reasons we still
->>> +         * want to use a range command, so avoid the SVA corner case
->>> +         * where both scale and num could be 0 as well.
->>>            */
->>>           if (cmd->tlbi.leaf)
->>>               cmd->tlbi.ttl = 4 - ((ilog2(granule) - 3) / (tg - 3));
->>> -
->>> -        num_pages = size >> tg;
->>> +        else if ((num_pages & CMDQ_TLBI_RANGE_NUM_MAX) == 1)
->>> +            num_pages++;
->>>       }
->>>
->>>       cmds.num = 0;
->>>
+The Maxim devices are pretty straight-forward to convert
+over to use GPIO descriptors, so let's do it.
 
-Hi, Will and Robin,
-Sorry for taking so long to reply you. We have some problems with our machine these days. It's
-solved just today. I give a test with Robin's patch for our testcase, everything is ok. I think
-the problem has been solved.
+Tested with some x86_64 allmodconfig and aarch64 allmodconfig
+to smoke out the worst bugs this time.
 
-Thanks,
-ZhuRui.
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+Linus Walleij (7):
+      ASoC: max9768: Convert to use GPIO descriptors
+      ASoC: max98357a: Drop pointless include
+      ASoC: max98373: Convert to use GPIO descriptors
+      ASoC: max98388: Correct the includes
+      ASoC: max98396: Drop pointless include
+      ASoC: max98520: Drop pointless includes
+      ASoC: max98927: Drop pointless includes
+
+ include/sound/max9768.h         |  4 ----
+ sound/soc/codecs/max9768.c      | 45 +++++++++++++++++++++--------------------
+ sound/soc/codecs/max98357a.c    |  1 -
+ sound/soc/codecs/max98373-i2c.c | 17 ----------------
+ sound/soc/codecs/max98373.c     | 35 +++++++++++++++++---------------
+ sound/soc/codecs/max98373.h     |  2 +-
+ sound/soc/codecs/max98388.c     |  3 +--
+ sound/soc/codecs/max98396.c     |  1 -
+ sound/soc/codecs/max98520.c     |  2 --
+ sound/soc/codecs/max98927.c     |  2 --
+ 10 files changed, 44 insertions(+), 68 deletions(-)
+---
+base-commit: 17b9f4387ebabb19b871bbe2d06562e48e4e7130
+change-id: 20230817-descriptors-asoc-max-b71ac02bf1ff
+
+Best regards,
+-- 
+Linus Walleij <linus.walleij@linaro.org>
+
