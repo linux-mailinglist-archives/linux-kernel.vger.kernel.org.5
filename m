@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DFCA78808C
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 09:03:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69D94788090
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 09:03:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243289AbjHYHDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 03:03:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44640 "EHLO
+        id S243344AbjHYHDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 03:03:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242726AbjHYHCQ (ORCPT
+        with ESMTP id S242733AbjHYHCR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 03:02:16 -0400
+        Fri, 25 Aug 2023 03:02:17 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 016B219AC
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 00:02:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A621D3
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 00:02:15 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8B32A66652
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 07:02:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EA15C433CA;
-        Fri, 25 Aug 2023 07:02:13 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 20AEB66658
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 07:02:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24DA7C433CB;
+        Fri, 25 Aug 2023 07:02:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1692946934;
-        bh=up6EQCkk1anAO1jmS2olnlb+On0n5aX/Ud3MSqE+cZU=;
+        bh=vc/fpVk3bxy2ex4nbxSxEwbS+F8Y//JwnGv+3rBD+Rs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r28Uw/7AeJw1xr4ws4WPL+QRIDOYUqG0xMc8xtYlT703eGDpFnuoe7dJPAt1jSSal
-         c0aHXn00jr7v2yOkLxihYSR63uJ7wQ3/3ufAMIQF+foMzN/dY0qE5tEr+fWoDqpx0l
-         yHgWVYDHSFjZEHFIuUk6j3VquE7kGfKImeTPP17Ve73CU+4herEQFr/94bmfmerivE
-         W6jkTjqFX6sO8OaUqRx+LUowbQ6ZTC2aYyZkmazymk4A1kz03iJaBFTnssmZ/qnd58
-         BLtej3X7hqGqV8eORRIX1PJENjQtBgRBhy/5IH8QQwtEyaquMdaicADRaLWj5quZRu
-         PGpIQ76fRj40A==
+        b=mLHfznP8aizF6S7oxNi5andly3kHpxrG2MNiA7O5/5BmyJfQXd1HI0bp2RTsLSx1O
+         qey0EXBV+RiYQMwjVsLZf2J2H9KCW3U9pUDTx4eXZI/Dy2nGtYQsKDi1Pc1adJ/ZZl
+         Pk6uhMI/VfeS2cd4IdX4lQJEDP32Q6OCpGBI33mIcpSEf2KYVt2j0eFM5r0+rDKv9C
+         /I4BPaA4iDrQ3QZem10oo1LgWaB4hCUr3OLtXJ3m26GlmA0kaJsfo/WiSgXnRA6I3s
+         sML77KR4BFhXe5XYeev+14FmO1RMwTcD04zXzC/FN5GynAFg0Oi/VlIVOmKgh2+NCr
+         zGo80eQ8t135w==
 From:   Josh Poimboeuf <jpoimboe@kernel.org>
 To:     x86@kernel.org
 Cc:     linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
@@ -43,9 +43,9 @@ Cc:     linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
         Andrew Cooper <andrew.cooper3@citrix.com>,
         Nikolay Borisov <nik.borisov@suse.com>,
         gregkh@linuxfoundation.org, Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH 20/23] x86/rethunk: Use SYM_CODE_START[_LOCAL]_NOALIGN macros
-Date:   Fri, 25 Aug 2023 00:01:51 -0700
-Message-ID: <1ae65b98ddc256ebc446768d9d0c461675dd0437.1692919072.git.jpoimboe@kernel.org>
+Subject: [PATCH 21/23] x86/retpoline: Remove .text..__x86.return_thunk section
+Date:   Fri, 25 Aug 2023 00:01:52 -0700
+Message-ID: <34947acf1c8a1be2d3ba9a4d0dd8a3001ae3c0db.1692919072.git.jpoimboe@kernel.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1692919072.git.jpoimboe@kernel.org>
 References: <cover.1692919072.git.jpoimboe@kernel.org>
@@ -61,53 +61,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Macros already exist for unaligned code block symbols.  Use them.
+The '.text..__x86.return_thunk' section has no purpose.  Remove it and
+let the return thunk code live in '.text..__x86.indirect_thunk'.
 
 Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
 ---
- arch/x86/lib/retpoline.S | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/x86/kernel/vmlinux.lds.S | 3 ---
+ arch/x86/lib/retpoline.S      | 2 --
+ 2 files changed, 5 deletions(-)
 
+diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
+index 9188834e56c9..f1c3516d356d 100644
+--- a/arch/x86/kernel/vmlinux.lds.S
++++ b/arch/x86/kernel/vmlinux.lds.S
+@@ -132,10 +132,7 @@ SECTIONS
+ 		LOCK_TEXT
+ 		KPROBES_TEXT
+ 		SOFTIRQENTRY_TEXT
+-#ifdef CONFIG_RETPOLINE
+ 		*(.text..__x86.indirect_thunk)
+-		*(.text..__x86.return_thunk)
+-#endif
+ 		STATIC_CALL_TEXT
+ 
+ 		ALIGN_ENTRY_TEXT_BEGIN
 diff --git a/arch/x86/lib/retpoline.S b/arch/x86/lib/retpoline.S
-index 8ba79d2b8997..415521dbe15e 100644
+index 415521dbe15e..49f2be7c7b35 100644
 --- a/arch/x86/lib/retpoline.S
 +++ b/arch/x86/lib/retpoline.S
-@@ -149,7 +149,7 @@ SYM_CODE_END(__x86_indirect_jump_thunk_array)
-  * As a result, srso_alias_safe_ret() becomes a safe return.
-  */
- 	.pushsection .text..__x86.rethunk_untrain
--SYM_START(srso_alias_untrain_ret, SYM_L_GLOBAL, SYM_A_NONE)
-+SYM_CODE_START_NOALIGN(srso_alias_untrain_ret)
- 	UNWIND_HINT_FUNC
- 	ANNOTATE_NOENDBR
- 	ASM_NOP2
-@@ -159,7 +159,7 @@ SYM_FUNC_END(srso_alias_untrain_ret)
- 	.popsection
+@@ -129,8 +129,6 @@ SYM_CODE_END(__x86_indirect_jump_thunk_array)
  
- 	.pushsection .text..__x86.rethunk_safe
--SYM_START(srso_alias_safe_ret, SYM_L_GLOBAL, SYM_A_NONE)
-+SYM_CODE_START_NOALIGN(srso_alias_safe_ret)
- 	lea 8(%_ASM_SP), %_ASM_SP
- 	UNWIND_HINT_FUNC
- 	ANNOTATE_UNRET_SAFE
-@@ -187,7 +187,7 @@ SYM_CODE_END(srso_alias_return_thunk)
-  */
- 	.align 64
- 	.skip 64 - (srso_safe_ret - srso_untrain_ret), 0xcc
--SYM_START(srso_untrain_ret, SYM_L_LOCAL, SYM_A_NONE)
-+SYM_CODE_START_LOCAL_NOALIGN(srso_untrain_ret)
- 	ANNOTATE_NOENDBR
- 	.byte 0x48, 0xb8
+ #ifdef CONFIG_RETHUNK
  
-@@ -255,7 +255,7 @@ SYM_CODE_END(srso_return_thunk)
-  */
- 	.align 64
- 	.skip 64 - (retbleed_return_thunk - retbleed_untrain_ret), 0xcc
--SYM_START(retbleed_untrain_ret, SYM_L_LOCAL, SYM_A_NONE)
-+SYM_CODE_START_LOCAL_NOALIGN(retbleed_untrain_ret)
- 	ANNOTATE_NOENDBR
- 	/*
- 	 * As executed from retbleed_untrain_ret, this is:
+-	.section .text..__x86.return_thunk
+-
+ #ifdef CONFIG_CPU_SRSO
+ 
+ /*
 -- 
 2.41.0
 
