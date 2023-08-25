@@ -2,96 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5667978909E
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 23:43:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4789C7890A1
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 23:44:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231466AbjHYVnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 17:43:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39508 "EHLO
+        id S231499AbjHYVoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 17:44:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231458AbjHYVnF (ORCPT
+        with ESMTP id S231521AbjHYVnu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 17:43:05 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F375D1BF1;
-        Fri, 25 Aug 2023 14:43:01 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-d749f57cb22so1402977276.3;
-        Fri, 25 Aug 2023 14:43:01 -0700 (PDT)
+        Fri, 25 Aug 2023 17:43:50 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E63A26BB
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 14:43:47 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-55bf2bf1cdeso1152545a12.3
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 14:43:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692999781; x=1693604581;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kOjiLmb+UW44aXh7b+IYQZhe4+kyawAGhkPK5fqLGxg=;
-        b=H11sQ00dlGNJFSl8ruX/T2dyoG451qCGPihbBVPIjhB9kRjrG6UvkG79PQL+C8ghRy
-         KgM8ByRo+oXbl0Kf/NPlzNJZV/04Auc4hc/ZWuYeALpaIup7XRmKj2AaKZMBVK+fRXjh
-         NCf3uJV4t7108inEwCn4w4KcKJYU6avlB468EBskN/Mkvs/1gtYdFjy5PYTgiur26K86
-         Q4ZhnneXWOB3+bZeEAtcJnQTtDQ6914lweJVQSpED24U3YcZlSG6IXHdXYIBTHVrzarB
-         R0jWXSunF2gjcyB9PcVeAF4k9sRyD59cv30HRw4wTZ5iA7xmhQmoZgJFm9bPZCWSP9oz
-         MLpg==
+        d=google.com; s=20221208; t=1692999827; x=1693604627;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=gUkq9l1hQ47wY3yGj1dwdm5geOu41+610qOHq9w1Q7k=;
+        b=SZDELniJs7eK8tPGP42S7m/uzvzCpd4pjoWwK4PQouFi7h/e3ddOCG3yhkA8aBt70a
+         XUlypou7F3ktA9EjPDVpPbXSEoBJdP0Rki+6kXXak7wsx68WWRwq6j2gDSmgq5bBtRZG
+         0tXYXg5CLOxQ18BOt7mj8AzhTIGLrqQTkDiRvTYzM1lpLgxDCH0JjBo2O1I5J2PLf45i
+         iMhOtfuocS21DSHwbA7kmnF1PRY+p8TqbiRzRe1Kcla08n0bSeyQMts06Ve0BIw809GN
+         5bnPpe0P0R9ymEJbJxRv4YI8PLDTFHj870ntSR/rvLxhAnLLUGVJkDRM8AU3ResVPQmf
+         PwrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692999781; x=1693604581;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kOjiLmb+UW44aXh7b+IYQZhe4+kyawAGhkPK5fqLGxg=;
-        b=G2aEOyoN/mMDxDkd74T04qtOJhb1vWAqEllB2Q1PB0ffTxNvz/Uk2BbdiintXSSLJq
-         uMnfGsgxwzHnlxL61ZCuJk20/uw/eNDuAhA1QpFRDX3UBTsP08HbLw/3eSJ/6FrQPA37
-         tFLzv4Zas68/vGfZMqlCOrDijPxPvEosc2tFqMp9ssgxebUjLhPJIEDqiq81Pd++repS
-         ntxrDAItERez7m1miXWqixwq/se/HC5cRPZw0iT3RAEdaqVBKiLpoWdc/C51CGu85CEk
-         msWbSfK+cA0EDGXDqPL5N+HOGIMftZ6WvGE4wpBhfxQVyqQB677FtBHwddMbiiK4Gvj+
-         xFCw==
-X-Gm-Message-State: AOJu0Yzy9V+N6Uu4E4ArpOZlokikyFRhwTt2eN8t+ABg1oM/5EnJTYdX
-        d8Wc/T+UUqAcJA9VKe0nrIzELoNo+dxXwjFpX+s=
-X-Google-Smtp-Source: AGHT+IFYdKE+7m1VfV5IIDq2NFaDjbY6Ne7jqDO5pWrZgojiP0TNftc/e+0hEaEGndIzReC9AOY6vigqJDN5d81GFG4=
-X-Received: by 2002:a25:bb85:0:b0:d15:454e:8ecd with SMTP id
- y5-20020a25bb85000000b00d15454e8ecdmr18647689ybg.13.1692999781101; Fri, 25
- Aug 2023 14:43:01 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230816164641.3371878-1-robimarko@gmail.com> <20230816164641.3371878-2-robimarko@gmail.com>
- <ff9ec6f5-9c7c-546b-5814-159d7e2843a8@quicinc.com> <CAOX2RU7wbZopGErQ71frXFMz4+Y9QU6SjfrYbZPT_3yd0gU73A@mail.gmail.com>
-In-Reply-To: <CAOX2RU7wbZopGErQ71frXFMz4+Y9QU6SjfrYbZPT_3yd0gU73A@mail.gmail.com>
-From:   Brian Norris <computersforpeace@gmail.com>
-Date:   Fri, 25 Aug 2023 14:42:49 -0700
-Message-ID: <CAN8TOE8h9mAWTAx71NUEirSW4+5XTZgDiu5KjYmu6yecyowrUg@mail.gmail.com>
-Subject: Re: [PATCH v3 2/4] firmware: qcom_scm: disable SDI if required
-To:     Robert Marko <robimarko@gmail.com>
-Cc:     Mukesh Ojha <quic_mojha@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        quic_gurus@quicinc.com, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1692999827; x=1693604627;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gUkq9l1hQ47wY3yGj1dwdm5geOu41+610qOHq9w1Q7k=;
+        b=dACbK8s9j+VAYy7VI/2y7LOXBoxXqTWqwvR22+NGAIkRAALFoub3TGKZ0CZSbmyM0k
+         BfS6Ka7vizQKsEwB0ub5mYVRinar3RlG5D181bOG9HfPUmT/Jp3DLBq09TEP5ry+9Pfg
+         di1rK3JBnFfWlUqOjGutluMHpD7/OqFtBxo/DHbj6eu5c7wyhnoMQOuVpdRM6ubuOEmk
+         XQXvIrKBRNJppqV4hTH7ZJHcX9zLvSEFMCmHIPb1ZFX6Mk2MFYLa8aw6a9YaDrSkNjqS
+         p50fQkz3O3G8IsktG2AnWLFbHjg5wUtrluFdI3LUrS8nsk2CsYe4gqNy6sYQOY6uSlCj
+         c37w==
+X-Gm-Message-State: AOJu0YyMm6tvoenFqoGWwMx4lRiTIoxwQYUEDM2sl79wVt+EhjQA33mj
+        VdSr4a1sNUgj5xbib6RQLm3tU2FoYLI=
+X-Google-Smtp-Source: AGHT+IHbg1WAhJS8yHIPWqbqKYja5/h2pRycp2kzC53Q6kOly5HmQzy62FLBoM2UyqwHaTJimXoq6osJ5/Q=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a63:3ec6:0:b0:565:f8bd:cbc8 with SMTP id
+ l189-20020a633ec6000000b00565f8bdcbc8mr2052248pga.6.1692999826860; Fri, 25
+ Aug 2023 14:43:46 -0700 (PDT)
+Date:   Fri, 25 Aug 2023 14:43:45 -0700
+In-Reply-To: <20230714065326.20557-1-yan.y.zhao@intel.com>
+Mime-Version: 1.0
+References: <20230714064656.20147-1-yan.y.zhao@intel.com> <20230714065326.20557-1-yan.y.zhao@intel.com>
+Message-ID: <ZOkgka+DX4KNm5Mp@google.com>
+Subject: Re: [PATCH v4 07/12] KVM: VMX: drop IPAT in memtype when CD=1 for KVM_X86_QUIRK_CD_NW_CLEARED
+From:   Sean Christopherson <seanjc@google.com>
+To:     Yan Zhao <yan.y.zhao@intel.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, chao.gao@intel.com, kai.huang@intel.com,
+        robert.hoo.linux@gmail.com, yuan.yao@linux.intel.com
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 25, 2023 at 2:41=E2=80=AFAM Robert Marko <robimarko@gmail.com> =
-wrote:
-> On Tue, 22 Aug 2023 at 17:38, Mukesh Ojha <quic_mojha@quicinc.com> wrote:
-> > On 8/16/2023 10:15 PM, Robert Marko wrote:
-> > > +     ret =3D qcom_scm_call(__scm->dev, &desc, &res);
-> >
-> > Would you not be wanting this call to be atomic ?
->
-> This is implemented based off the downstream 5.4 kernel as I dont have
-> the SCM docs
-> so I dont know if its even supported in the atomic version.
+On Fri, Jul 14, 2023, Yan Zhao wrote:
+> For KVM_X86_QUIRK_CD_NW_CLEARED is on, remove the IPAT (ignore PAT) bit in
+> EPT memory types when cache is disabled and non-coherent DMA are present.
+> 
+> To correctly emulate CR0.CD=1, UC + IPAT are required as memtype in EPT.
+> However, as with commit
+> fb279950ba02 ("KVM: vmx: obey KVM_QUIRK_CD_NW_CLEARED"), WB + IPAT are
+> now returned to workaround a BIOS issue that guest MTRRs are enabled too
+> late. Without this workaround, a super slow guest boot-up is expected
+> during the pre-guest-MTRR-enabled period due to UC as the effective memory
+> type for all guest memory.
+> 
+> Absent emulating CR0.CD=1 with UC, it makes no sense to set IPAT when KVM
+> is honoring the guest memtype.
+> Removing the IPAT bit in this patch allows effective memory type to honor
+> PAT values as well, as WB is the weakest memtype. It means if a guest
+> explicitly claims UC as the memtype in PAT, the effective memory is UC
+> instead of previous WB. If, for some unknown reason, a guest meets a slow
+> boot-up issue with the removal of IPAT, it's desired to fix the blamed PAT
+> in the guest.
+> 
+> Besides, this patch is also a preparation patch for later fine-grained gfn
+> zap when guest MTRRs are honored, because it allows zapping only non-WB
+> ranges when CR0.CD toggles.
+> 
+> BTW, returning guest MTRR type as if CR0.CD=0 is also not preferred because
+> it still has to hardcode the MTRR type to WB during the
 
-More than that, it's known *not* to be properly supported on one such
-applicable device:
+Please use full names instead of prononous, I found the "it still has to hardcode"
+part really hard to grok.  I think this is what you're saying?
 
-Subject: [RFC] qcom_scm: IPQ4019 firmware does not support atomic API?
-https://lore.kernel.org/linux-arm-kernel/20200913201608.GA3162100@bDebian/
+  BTW, returning guest MTRR type as if CR0.CD=0 is also not preferred because
+  KVMs ABI for the quirk also requires KVM to force WB memtype regardless of
+  guest MTRRs to workaround the slow guest boot-up issue.
 
-I still haven't gotten a solution to *that* problem upstream, but it'd
-be nice not to make it worse.
-
-Brian
+> pre-guest-MTRR-enabled period to workaround the slow guest boot-up issue
+> (guest MTRR type when guest MTRRs are disabled is UC).
+> In addition, it will make the quirk unnecessarily complexer .
