@@ -2,76 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57036788E8B
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 20:22:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33D23788E91
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 20:22:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230388AbjHYSVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 14:21:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39014 "EHLO
+        id S230236AbjHYSWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 14:22:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231312AbjHYSVQ (ORCPT
+        with ESMTP id S231835AbjHYSWA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 14:21:16 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 630401FC7
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 11:21:12 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1bdbf10333bso10528535ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 11:21:12 -0700 (PDT)
+        Fri, 25 Aug 2023 14:22:00 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24D7DEC
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 11:21:55 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-99bfcf4c814so151058366b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 11:21:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1692987672; x=1693592472;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=cd1paIDws1ExLMgJh/WiTiPNEsGUGwcEQ17xiLulNdo=;
-        b=nhk5Ko+OG/2Q2+PvkEDtXdRrk3or+134Updyqdlu1P6XQCscy7egtl8AziCQjtc+Bn
-         zp65RvpL7MR7vfIQJtiyZ3WEwZ2/AOZJxGZQ4mDRGInpxpoBv+UhEk0r9hCNWL5bYNqC
-         5O0xNrQMLaQBipxQ7a78YEG4PHOgm1S3/j8H4=
+        d=google.com; s=20221208; t=1692987713; x=1693592513;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nfk4Ajg9vZhcSJWkO4D5es2l67WvnVitf3sD+Mxoc/o=;
+        b=eDIt+Z+t627KQ2EZuZm+87kajqqn1K0HU8KLFxdTLDCtD+wuMKjgaQ0qcwTIwSas49
+         WVDEYaMECWylUXWij+/jZvNoA9yx94nlAFZ8gWNnKx8KwewXBrVeKKK0QX4ejzgIPAQf
+         My1sCy+8zFZoDJZE7G08x+z+xA6WRPVttme9RirqimuSbFF6j9jfwyGfr54yrjgftsk4
+         xbmtMURmQ8TxfI7sySNl8Va+n7TPBzz4u5b6jN4EGP9duBqU2b2DEnuCcanhLGxOp3pW
+         77/h6WaPZTub5smuhLHICbRihdS/4AZopPwU7UN1pi4987SXBEhUn5Ng44/jEuYiINfx
+         ugIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692987672; x=1693592472;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cd1paIDws1ExLMgJh/WiTiPNEsGUGwcEQ17xiLulNdo=;
-        b=mBDgOVcplFDoLCTJmF9qRlxgt4iwtK022GjUA+RmTCfEb5kArQl1YsCPJ8npHljnD8
-         m4KZ4yKN7nBUysEKh7382iT4wcWIiXqYSVIUSuG2ZtgvSRah3nXPgJ8ogRt6FBBkEzEr
-         hBYoybWoch+PHixUbc0OfOC/JZ7TBoeBWfW0Yg0diOFY24kJfs/m3AB4brkso2Z2g5WE
-         JgCNqKlyNZydmGX6MRbPXiMZx5EHpUE9KhaK13LX8hfYjNHMTQjG8b5vrk9JQ3VN14CY
-         eUZFBfrnvJMczL9TrCtrJZfe1ESUMYUTnHhq062Jwxcw0HTAiYNe3spgy/Qf6V2v3ivn
-         MNDA==
-X-Gm-Message-State: AOJu0Yxps/UWT0d5cGmylSqjXOm7KmY8LWh+RIxRXqu6c2Xd6dJTVtcs
-        0u0WhnPI8WAgHdhgQEqcTA1MQQ==
-X-Google-Smtp-Source: AGHT+IHIDQ9FIJyjliN/xDw65w9ny7WQFMwwk363Mwv+Ejm+xJkfXuvIT+Ox7t86mTNHW1gFw7K36Q==
-X-Received: by 2002:a17:902:ec87:b0:1bb:9f07:5e0 with SMTP id x7-20020a170902ec8700b001bb9f0705e0mr21488860plg.60.1692987671857;
-        Fri, 25 Aug 2023 11:21:11 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id 6-20020a170902c10600b001bbb598b8bbsm2056354pli.41.2023.08.25.11.21.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Aug 2023 11:21:11 -0700 (PDT)
-Date:   Fri, 25 Aug 2023 11:21:10 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH] kbuild: Show Kconfig fragments in "help"
-Message-ID: <202308251120.159800A@keescook>
-References: <20230824223606.never.762-kees@kernel.org>
- <42174d5e-59f0-4612-d7a1-11e830d0a044@csgroup.eu>
+        d=1e100.net; s=20221208; t=1692987713; x=1693592513;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nfk4Ajg9vZhcSJWkO4D5es2l67WvnVitf3sD+Mxoc/o=;
+        b=PR3VCdHUN8PByraFlli1EXLlvaBxlhfe9FyJrIkArxWZyCFn/yj5LLH/7Fwu1+2Eje
+         00sq7xxfND28BPtlXaJ1X00ZumBYLmgwuOqV77h2YMkHu67CUwTHCUWKYPpPYixI6M5k
+         gylvxwcakAWFu+C5ZEOGSSQi+2IVvMVoLDGZcVHbaI1KvIwII+jhcET1DIf8Yr1/ddRy
+         exCGrnHPtI8XBlTm7up0FTi4avUdeB2e08QnCqm/DgWk4y+hcCNHXOQQHji4pBo3j+EH
+         IirSE9WVq9eBp7RhWfqwPIz4aq28rfivAF0R/q5fZFiup+Mhxi6tG8C5tUdFzj6uxYwy
+         /d9g==
+X-Gm-Message-State: AOJu0Yyeu01f3JOa74pmur/cH12WY5z2o9vSdd6o+JVwrCXr+dvT7YZx
+        PlbjMMABmeVAbX5Phr24Zxp8/0CIsrde6PiHcpWU0g==
+X-Google-Smtp-Source: AGHT+IGWYZ8FgYM5iKDfCxbBg5MabplOImSXSqKxXbXGZbeOf+zbrT7BGOZ8d5lxbtSGnauanQbjJjd+yGbCGWNlAMM=
+X-Received: by 2002:a17:906:8a41:b0:9a2:120a:577a with SMTP id
+ gx1-20020a1709068a4100b009a2120a577amr4276641ejc.48.1692987713446; Fri, 25
+ Aug 2023 11:21:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <42174d5e-59f0-4612-d7a1-11e830d0a044@csgroup.eu>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20230821205458.1764662-4-yosryahmed@google.com>
+ <ZOR6eyYfJYlxdMet@dhcp22.suse.cz> <CAJD7tka13M-zVZTyQJYL1iUAYvuQ1fcHbCjcOBZcz6POYTV-4g@mail.gmail.com>
+ <ZOW2PZN8Sgqq6uR2@dhcp22.suse.cz> <CAJD7tka34WjtwBWfkTu8ZCEUkLm7h-AyCXpw=h34n4RZ5qBVwA@mail.gmail.com>
+ <ZOcDLD/1WaOwWis9@dhcp22.suse.cz> <CAJD7tkZby2enWa8_Js8joHqFx_tHB=aRqHOizaSiXMUjvEei4g@mail.gmail.com>
+ <CAJD7tkadEtjK_NFwRe8yhUh_Mdx9LCLmCuj5Ty-pqp1rHTb-DA@mail.gmail.com>
+ <ZOhSyvDxAyYUJ45i@dhcp22.suse.cz> <CAJD7tkYPyb+2zOKqctQw-vhuwYRg85e6v2Y44xWJofHZ+F+YQw@mail.gmail.com>
+ <ZOjwNR2wv5mOdWv0@dhcp22.suse.cz>
+In-Reply-To: <ZOjwNR2wv5mOdWv0@dhcp22.suse.cz>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Fri, 25 Aug 2023 11:21:16 -0700
+Message-ID: <CAJD7tka=60_vPMY9Tg8tH+55g-feV1B24VNmDpp_3iMHqrUh7Q@mail.gmail.com>
+Subject: Re: [PATCH 3/3] mm: memcg: use non-unified stats flushing for
+ userspace reads
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,14 +83,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 25, 2023 at 04:56:54AM +0000, Christophe Leroy wrote:
-> Le 25/08/2023 à 00:36, Kees Cook a écrit :
-> > +# Base hardware support for 86xx
-> 
-> s/86xx/85xx
+On Fri, Aug 25, 2023 at 11:17=E2=80=AFAM Michal Hocko <mhocko@suse.com> wro=
+te:
+>
+> On Fri 25-08-23 08:14:54, Yosry Ahmed wrote:
+> > On Fri, Aug 25, 2023 at 12:05=E2=80=AFAM Michal Hocko <mhocko@suse.com>=
+ wrote:
 > [...]
+> > > I might be wrong but the whole discussion so far suggests that the
+> > > global rstat lock should be reconsidered. From my personal experience
+> > > global locks easily triggerable from the userspace are just a receip =
+for
+> > > problems. Stats reading shouldn't be interfering with the system runt=
+ime
+> > > as much as possible and they should be deterministic wrt runtime as
+> > > well.
+> >
+> > The problem is that the global lock also serializes the global
+> > counters that we flush to. I will talk from the memcg flushing
+> > perspective as that's what I am familiar with. I am not sure how much
+> > this is transferable to other flushers.
+> >
+> > On the memcg side (see mem_cgroup_css_rstat_flush()), the global lock
+> > synchronizes access to multiple counters, for this discussion what's
+> > most important are:
+> > - The global stat counters of the memcg being flushed (e.g.
+> > memcg->vmstats->state).
+> > - The pending stat counters of the parent being flushed (e.g.
+> > parent->vmstats->state_pending).
+>
+> I haven't digested the rest of the email yet (Friday brain, sorry) but I
+> do not think you are adressing this particular part so let me ask before
+> I dive more into the following. I really do not follow the serialization
+> requirement here because the lock doesn't really serialize the flushing,
+> does it? At least not in a sense of a single caller to do the flushing
+> atomicaly from other flushers. It is possible that the current flusher
+> simply drops the lock midway and another one retakes the lock and
+> performs the operation again. So what additional flushing
+> synchronization does it provide and why cannot parallel flushers simply
+> compete over pcp spinlocks?
+>
+> So what am I missing?
 
-Thanks for the typo fixes! I'll get these all fixed up. :)
+Those counters are non-atomic. The lock makes sure we don't have two
+concurrent flushers updating the same counter locklessly and
+non-atomically, which would be possible if we flush the same cgroup on
+two different cpus in parallel.
 
--- 
-Kees Cook
+> --
+> Michal Hocko
+> SUSE Labs
