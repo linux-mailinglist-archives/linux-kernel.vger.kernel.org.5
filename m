@@ -2,74 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C82C7883D2
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 11:35:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ADD67883D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 11:37:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244038AbjHYJfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 05:35:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46302 "EHLO
+        id S243916AbjHYJg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 05:36:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244328AbjHYJez (ORCPT
+        with ESMTP id S244405AbjHYJgQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 05:34:55 -0400
-Received: from mail-vk1-xa35.google.com (mail-vk1-xa35.google.com [IPv6:2607:f8b0:4864:20::a35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30C802133
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 02:34:26 -0700 (PDT)
-Received: by mail-vk1-xa35.google.com with SMTP id 71dfb90a1353d-48d2c072030so1094678e0c.0
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 02:34:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692956049; x=1693560849;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=NkOXDPx/S3uX0LGrWHhqDuzgnalOjRvvuzfXBDquIJE=;
-        b=ukX0Pnuivh/o6xISkXG2MwEK0o1GsQV27v/wL8PCYr3K8rw4rCQ89pL5zDucAFhMcb
-         YskOrO04SlvsfelPwM6wi6bo33kueI9hAzLSHaH+rO3C/KdletWIMPRTOYoAyAI3o5Bb
-         gwe8YbDTEL9VB12BM6LBCliW9FWhwvSr325DZcjSigPSeB9JpebjY5rhdU88q9fnhEcr
-         bO6YXtDqCkq7TIBUj7afnMs8Ik0gKHvbzTGASsEDdGmUvf5tgRjCJeHx7rzEZgS3e+cq
-         5wBCW0y7FKsG5YGqd1KFGnDwwJz8ywHAaQLG/7SL+2BGaFhCrt7m2jYp93piNMTJfTI7
-         5ZGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692956049; x=1693560849;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=NkOXDPx/S3uX0LGrWHhqDuzgnalOjRvvuzfXBDquIJE=;
-        b=QnG1WpT986LYISSDZsQyHmw8kICo/V3YmS9wVRUCVgE2J8tdLzOWpQ5wEKwk4PsacJ
-         d+LJKtW8UKEyubzM1vY3TzN5NcIh4Hwdl/U2J7CX3NoajqGGkGHq4bfdrqqqSkLdLOnX
-         stD096Nhu11lVBq6fEf9q0nkm9EcqKyUaScFejjZgFxz3AjZTN72CpSJNHzDo1ytuW93
-         EcUdkBWNBpVLOow49pIh3u/7FI4yY4DO4olf0j/qlp9aSCeCjZxJ4kHFMlDTCj+2ivL5
-         4LhDG0ik5d6eu8BVvG5dkk7ULHTtdNbz6OiPzofS7YrJV4hgib2BKhw6PODf3kS1kPtR
-         wLkQ==
-X-Gm-Message-State: AOJu0Yz4XPWe9vTn87EClD/OAQO0mUdbs2+37NBxYhPtDYHwRwY4zNHK
-        AnSKm76yJ3p2z1BNzXnY7IrtPdm6EYK7dR7jyq5Dy5fvylwR/U4A
-X-Google-Smtp-Source: AGHT+IHYxHlYu/b9jq1hZYwDJBTUYSSDdzBlVxG6txEHWSCkNIMRdBra+qgQir4lLTbNjKOfAbjN9wZa5rm8CXm04BI=
-X-Received: by 2002:a05:6122:2527:b0:48d:969:af8b with SMTP id
- cl39-20020a056122252700b0048d0969af8bmr10536527vkb.1.1692956049376; Fri, 25
- Aug 2023 02:34:09 -0700 (PDT)
+        Fri, 25 Aug 2023 05:36:16 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 327AE1FEC;
+        Fri, 25 Aug 2023 02:36:13 -0700 (PDT)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37P5nXB8007988;
+        Fri, 25 Aug 2023 09:35:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=nT86no/d9+8D4gWYVInaOyKap/Q6m4xCcwXiZPiBIm4=;
+ b=ny2rcvtY6lOzi0e4oglvT0R7dsS2AbYBS/Rvd34gwMH4NpmhWKIeZ0MIvEf1BFyLdjFC
+ K5UJZOlfm3RcIZTzf6ajwR/IEL2DKxGrmDbX0ayNNZB3JMsOZXE5s6AhWxlccHNGp8Q9
+ v9SKAmnoxjXs/EHhOryh18dek7MmXoZtMXj6KSpM7/dhlIUQY+L9KMudfVltdh5X+Wzx
+ Atot40gWeceMX+mnsUnrncNpJL4fL/IFbGZ4PifhJFNT9WmopMx81AVcj/4kDk87Ufd1
+ V/Am2wFoQjdZBZjKwcjUbaqqoW7OKGE+Ze1ohbAy16f6Bo8wrPjCM/K5YBcMv75SbTyj yg== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3spmpv0k3w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 25 Aug 2023 09:35:59 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37P9Zvlx019689
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 25 Aug 2023 09:35:57 GMT
+Received: from nsekar-linux.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Fri, 25 Aug 2023 02:35:52 -0700
+From:   Nitheesh Sekar <quic_nsekar@quicinc.com>
+To:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <vkoul@kernel.org>,
+        <kishon@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <gregkh@linuxfoundation.org>, <quic_srichara@quicinc.com>,
+        <quic_varada@quicinc.com>, <quic_wcheng@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-phy@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-usb@vger.kernel.org>
+CC:     Nitheesh Sekar <quic_nsekar@quicinc.com>
+Subject: [PATCH 0/5] Enable IPQ5018 USB2 support
+Date:   Fri, 25 Aug 2023 15:05:26 +0530
+Message-ID: <20230825093531.7399-1-quic_nsekar@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20230824141447.155846739@linuxfoundation.org> <CA+G9fYsPPpduLzJ4+GZe_18jgYw56=w5bQ2W1jnyWa-8krmOSw@mail.gmail.com>
- <2023082512-amusement-luncheon-8d8d@gregkh>
-In-Reply-To: <2023082512-amusement-luncheon-8d8d@gregkh>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 25 Aug 2023 15:03:58 +0530
-Message-ID: <CA+G9fYsxAgRcvc4G_mU2LW+bw3aUVgTNGd+zmkhkoaXUsWv67Q@mail.gmail.com>
-Subject: Re: [PATCH 6.1 00/15] 6.1.48-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        linux-nfs@vger.kernel.org, stable@vger.kernel.org,
-        patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        Sherry Yang <sherry.yang@oracle.com>,
-        LTP List <ltp@lists.linux.it>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: ZUS4u44MiVWJcJzA4qHwEcuZU33pZjvb
+X-Proofpoint-ORIG-GUID: ZUS4u44MiVWJcJzA4qHwEcuZU33pZjvb
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-25_07,2023-08-24_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 adultscore=0
+ priorityscore=1501 impostorscore=0 malwarescore=0 spamscore=0 bulkscore=0
+ phishscore=0 suspectscore=0 mlxscore=0 mlxlogscore=459 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2308250081
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,51 +79,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 25 Aug 2023 at 13:57, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Fri, Aug 25, 2023 at 12:35:46PM +0530, Naresh Kamboju wrote:
-> > + linux-nfs and more
-> >
-> > On Thu, 24 Aug 2023 at 19:45, Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > This is the start of the stable review cycle for the 6.1.48 release.
-> > > There are 15 patches in this series, all will be posted as a response
-> > > to this one.  If anyone has any issues with these being applied, please
-> > > let me know.
-> > >
-> > > Responses should be made by Sat, 26 Aug 2023 14:14:28 +0000.
-> > > Anything received after that time might be too late.
-> > >
-> > > The whole patch series can be found in one patch at:
-> > >         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.48-rc1.gz
-> > > or in the git tree and branch at:
-> > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> > > and the diffstat can be found below.
-> > >
-> > > thanks,
-> > >
-> > > greg k-h
-> >
-> >
-> > Following test regression found on stable-rc 6.1.
-> > Rpi4 is using NFS mount rootfs and running LTP syscalls testing.
-> > chown02 tests creating testfile2 on NFS mounted and validating
-> > the functionality and found that it was a failure.
-> >
-> > This is already been reported by others on lore and fix patch merged
-> > into stable-rc linux-6.4.y [1] and [2].
-> >
-> > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
->
-> Odd, it's not a regression in this -rc cycle, so it was missed in the
-> previous ones somehow?
+This patch series adds the relevant phy and controller
+DT configurations for enabling USB2 host mode support
+on IPQ5018.
 
-I have re-tested with newers and older versions of the kernel and here
-I confirm that this is not a regression from this round of stable rc review.
+Tested with a USB Mass storage device.
 
-We have made a couple of changes to our infrastructure and are investigating
-the root cause of these two test cases failures.
+Nitheesh Sekar (5):
+  dt-bindings: phy: qcom,m31: Add IPQ5018 compatible
+  dt-bindings: usb: dwc3: Add IPQ5018 compatible
+  phy: qcom-m31: Add compatible, phy init sequence for IPQ5018
+  arm64: dts: qcom: ipq5018: Add USB related nodes
+  arm64: dts: qcom: ipq5018: Enable USB
 
-- Naresh
+ .../bindings/phy/qcom,ipq5332-usb-hsphy.yaml  |  4 +-
+ .../devicetree/bindings/usb/qcom,dwc3.yaml    |  3 +
+ .../arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts | 12 ++++
+ arch/arm64/boot/dts/qcom/ipq5018.dtsi         | 54 +++++++++++++++++
+ drivers/phy/qualcomm/phy-qcom-m31.c           | 60 +++++++++++++++++++
+ 5 files changed, 132 insertions(+), 1 deletion(-)
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
