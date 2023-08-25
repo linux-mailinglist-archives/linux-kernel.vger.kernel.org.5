@@ -2,177 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C49C7788123
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 09:43:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C861878812E
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 09:46:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233969AbjHYHnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 03:43:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43864 "EHLO
+        id S238161AbjHYHqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 03:46:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241338AbjHYHm5 (ORCPT
+        with ESMTP id S232871AbjHYHp6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 03:42:57 -0400
-Received: from phobos.denx.de (phobos.denx.de [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D140E6A;
-        Fri, 25 Aug 2023 00:42:55 -0700 (PDT)
-Received: from wsk (85-222-111-42.dynamic.chello.pl [85.222.111.42])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        Fri, 25 Aug 2023 03:45:58 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0AE710F;
+        Fri, 25 Aug 2023 00:45:55 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        (Authenticated sender: lukma@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id A82D086824;
-        Fri, 25 Aug 2023 09:42:52 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1692949373;
-        bh=GIqC9Xv384AEKjzYxVeUMeLxfZbuNJ6onBjh++8s48U=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=k5dCYTGsrkBunazjaC+Ml4N/V7NfK1RQX2Egrqq0Kr8wMSFStnYN2+krulSLH/6p3
-         cfw0fyyifAIjjw0u9KeFw1cNHSA/QkGNu/qvBinMRKVEqkIpWX6cFrcB/E4IQNYtXk
-         1JUsOzw8ykjB9mLE36NC+9sor3uK+ut6GWtMx3taEscB/1MTm0ENB7Q8qUzIf8yvjs
-         UrzYABsfOD27gYwLKCWOkQfsF30XR3KfdZw0WiPE0F2uoTxQJZEdTj65T64xrNOJ7C
-         il3Nhj9KyRzBIsDWpoAgIBBkhr0pU6glI4dZLuJeeWMRtEnM0VIJOUeF/9c7LXsj/K
-         U7X5IRwa4jWBg==
-Date:   Fri, 25 Aug 2023 09:42:46 +0200
-From:   Lukasz Majewski <lukma@denx.de>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Woojung Huh <woojung.huh@microchip.com>,
-        UNGLinuxDriver@microchip.com, Andrew Lunn <andrew@lunn.ch>,
-        Vladimir Oltean <olteanv@gmail.com>, davem@davemloft.net,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] net: dsa: microchip: Provide Module 4 KSZ9477
- errata (DS80000754C)
-Message-ID: <20230825094246.211a4898@wsk>
-In-Reply-To: <9504d420-c137-2fde-312d-2c8e6f84ddd1@gmail.com>
-References: <20230824154827.166274-1-lukma@denx.de>
-        <20230824154827.166274-2-lukma@denx.de>
-        <9504d420-c137-2fde-312d-2c8e6f84ddd1@gmail.com>
-Organization: denx.de
-X-Mailer: Claws Mail 3.19.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 76B1960ECF;
+        Fri, 25 Aug 2023 07:45:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D8E7C433C7;
+        Fri, 25 Aug 2023 07:45:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692949554;
+        bh=SMtMTtCA1E7QOB4N4wAKyao6WAWTpmm/kuqvgdxPlCE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vPCMytq2Nukc6e+jtT8uC+526dkmUc52CFcTIYtE70na5tO/6Az3t8lxxCCC3eHmw
+         nAuehu1ER5g/MZFCCDJJSxik9DtKuNMngBPmAXvnXKyDfVmtRGIJkslKxqStdrHW2I
+         x3APl+rlC1jhiLTOe1k7oZCaU8lVHznbLpj7MSsq0YHJpqHFilRx369wD9qHIlbfRr
+         cNgap2kiIC/9PAxM4PY5iWH+3ATgR6I3nUPPHRu0Uw2vNy3/UKrJNQoXYRZzXntwij
+         lPCrqqfFZ+CAfPnwfRYt2s2uMMB2akqQWU3411hRxok6U63WT3bolanEVTxK8n7pot
+         UkIQbm0DPzblg==
+Date:   Fri, 25 Aug 2023 09:45:47 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        linux-nfs@vger.kernel.org, stable@vger.kernel.org,
+        patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        Sherry Yang <sherry.yang@oracle.com>,
+        LTP List <ltp@lists.linux.it>,
+        Amir Goldstein <amir73il@gmail.com>
+Subject: Re: [PATCH 6.1 00/15] 6.1.48-rc1 review
+Message-ID: <20230825-spalten-bekommen-080e680eb6db@brauner>
+References: <20230824141447.155846739@linuxfoundation.org>
+ <CA+G9fYsPPpduLzJ4+GZe_18jgYw56=w5bQ2W1jnyWa-8krmOSw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/X5uYKu_bpYe++gKJ4hIqhg7";
- protocol="application/pgp-signature"; micalg=pgp-sha512
-X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
-X-Virus-Status: Clean
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYsPPpduLzJ4+GZe_18jgYw56=w5bQ2W1jnyWa-8krmOSw@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/X5uYKu_bpYe++gKJ4hIqhg7
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Fri, Aug 25, 2023 at 12:35:46PM +0530, Naresh Kamboju wrote:
+> + linux-nfs and more
+> 
+> On Thu, 24 Aug 2023 at 19:45, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > This is the start of the stable review cycle for the 6.1.48 release.
+> > There are 15 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> >
+> > Responses should be made by Sat, 26 Aug 2023 14:14:28 +0000.
+> > Anything received after that time might be too late.
+> >
+> > The whole patch series can be found in one patch at:
+> >         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.48-rc1.gz
+> > or in the git tree and branch at:
+> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> > and the diffstat can be found below.
+> >
+> > thanks,
+> >
+> > greg k-h
+> 
+> 
+> Following test regression found on stable-rc 6.1.
+> Rpi4 is using NFS mount rootfs and running LTP syscalls testing.
+> chown02 tests creating testfile2 on NFS mounted and validating
+> the functionality and found that it was a failure.
+> 
+> This is already been reported by others on lore and fix patch merged
+> into stable-rc linux-6.4.y [1] and [2].
+> 
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> 
+> Test log:
+> --------
+> chown02.c:46: TPASS: chown(testfile1, 0, 0) passed
+> chown02.c:46: TPASS: chown(testfile2, 0, 0) passed
+> chown02.c:58: TFAIL: testfile2: wrong mode permissions 0100700, expected 0102700
+> 
+> fchown02.c:57: TPASS: fchown(3, 0, 0) passed
+> fchown02.c:57: TPASS: fchown(4, 0, 0) passed
+> fchown02.c:67: TFAIL: testfile2: wrong mode permissions 0100700,
+> expected 0102700
+> 
+> 
+> ## Build
+> * kernel: 6.1.48-rc1
+> * git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+> * git branch: linux-6.1.y
+> * git commit: c079d0dd788ad4fe887ee6349fe89d23d72f7696
+> * git describe: v6.1.47-16-gc079d0dd788a
+> * test details:
+> https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.1.y/build/v6.1.47-16-gc079d0dd788a
+> 
+> ## Test Regressions (compared to v6.1.46)
+> * bcm2711-rpi-4-b, ltp-syscalls
+>   - chown02
+>   - fchown02
+> 
+> * bcm2711-rpi-4-b-64k_page_size, ltp-syscalls
+>   - chown02
+>   - fchown02
+> 
+> * bcm2711-rpi-4-b-clang, ltp-syscalls
+>   - chown02
+>   - fchown02
+> 
+> 
+> 
+> 
+> Do we need the following patch into stable-rc linux-6.1.y ?
+> 
+> I see from mailing thread discussion, says that
+> 
+> the above commit is backported to LTS kernels -- 5.10.y,5.15.y and 6.1.y.
 
-On Thu, 24 Aug 2023 08:54:37 -0700
-Florian Fainelli <f.fainelli@gmail.com> wrote:
+s/above/below/?
 
-> On 8/24/2023 8:48 AM, Lukasz Majewski wrote:
-> > The KSZ9477 errata points out the link up/down problem when EEE is
-> > enabled in the device to which the KSZ9477 tries to auto negotiate.
-> >=20
-> > The suggested workaround is to clear advertisement EEE registers
-> > (accessed as per port MMD one).
-> >=20
-> > Signed-off-by: Lukasz Majewski <lukma@denx.de>
-> > ---
-> >   drivers/net/dsa/microchip/ksz9477.c | 40
-> > ++++++++++++++++++++++++++++- 1 file changed, 39 insertions(+), 1
-> > deletion(-)
-> >=20
-> > diff --git a/drivers/net/dsa/microchip/ksz9477.c
-> > b/drivers/net/dsa/microchip/ksz9477.c index
-> > cb6aa7c668a8..563f497ba656 100644 ---
-> > a/drivers/net/dsa/microchip/ksz9477.c +++
-> > b/drivers/net/dsa/microchip/ksz9477.c @@ -1128,6 +1128,44 @@ int
-> > ksz9477_enable_stp_addr(struct ksz_device *dev) return 0;
-> >   }
-> >  =20
-> > +static int ksz9477_errata(struct dsa_switch *ds)
-> > +{
-> > +	struct ksz_device *dev =3D ds->priv;
-> > +	u16 val;
-> > +	int p;
-> > +
-> > +	/* KSZ9477 Errata DS80000754C
-> > +	 *
-> > +	 * Module 4: Energy Efficient Ethernet (EEE) feature
-> > select must be
-> > +	 * manually disabled
-> > +	 *   The EEE feature is enabled by default, but it is not
-> > fully
-> > +	 *   operational. It must be manually disabled through
-> > register
-> > +	 *   controls. If not disabled, the PHY ports can
-> > auto-negotiate
-> > +	 *   to enable EEE, and this feature can cause link drops
-> > when linked
-> > +	 *   to another device supporting EEE.
-> > +	 *
-> > +	 *   Only PHY ports (dsa user) [0-4] need to have the EEE
-> > advertisement
-> > +	 *   bits cleared.
-> > +	 */
-> > +
-> > +	for (p =3D 0; p < ds->num_ports; p++) {
-> > +		if (!dsa_is_user_port(ds, p))
-> > +			continue;
-> > +
-> > +		ksz9477_port_mmd_read(dev, p,
-> > MMD_DEVICE_ID_EEE_ADV,
-> > +				      MMD_EEE_ADV, &val, 1);
-> > +
-> > +		pr_err("%s: PORT: %d val: 0x%x pc: %d\n",
-> > __func__, p, val,
-> > +		       ds->num_ports); =20
->=20
-> Left over debugging?
->=20
+All setgid related infrastructure and fixes have been backported to all
+LTSes. This one is needed for nfsd so yes, it should also be backported.
 
-Yes, correct - I will fix it.
-
-> > +
-> > +		val &=3D ~(EEE_ADV_100MBIT | EEE_ADV_1GBIT);
-> > +		ksz9477_port_mmd_write(dev, p,
-> > MMD_DEVICE_ID_EEE_ADV,
-> > +				       MMD_EEE_ADV, &val, 1);
-> > +	}
-> > +
-> > +	return 0; =20
->=20
-> You don't propagate any error, so make this return void?
-
-I will fix this too.
-
-
-Best regards,
-
-Lukasz Majewski
-
---
-
-DENX Software Engineering GmbH,      Managing Director: Erika Unter
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
-
---Sig_/X5uYKu_bpYe++gKJ4hIqhg7
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAmToW3YACgkQAR8vZIA0
-zr13rQgAodpJW/I8pztGdsV0lEkJ0kEYvyxD3TJoLaVUfK7kDwsenxyKcV6ggeCE
-katdjiNpQvjPMQR2MC1Dkz1wAGSVD+b6vqykHygF6IKPd5oS5lesVV+emAo0qbXV
-gXKEwMsLQ2nbjrp6z/ZikvSFvtZujny0ez4PLXnijf0tOfHEixiVGd23e15UvN8B
-i3fmq3zOXa5tq0i4J2/J94ll8h3iHsGreYIzWr9aXpdlxzQvgM629FPa3KmchXbk
-HVbV7SIeG8qbNwHdkft4FszAui/mLCqb6Aia4bO619+1N3yZhLzbpdTLPZIMZSi8
-B9mpiPFnLSu9YPIJMSwbPYnt4C+skQ==
-=RxGt
------END PGP SIGNATURE-----
-
---Sig_/X5uYKu_bpYe++gKJ4hIqhg7--
+> 
+> 
+> ----
+> 
+> nfsd: use vfs setgid helper
+> commit 2d8ae8c417db284f598dffb178cc01e7db0f1821 upstream.
+> 
+> We've aligned setgid behavior over multiple kernel releases. The details
+> can be found in commit cf619f891971 ("Merge tag 'fs.ovl.setgid.v6.2' of
+> git://git.kernel.org/pub/scm/linux/kernel/git/vfs/idmapping") and
+> commit 426b4ca2d6a5 ("Merge tag 'fs.setgid.v6.0' of
+> git://git.kernel.org/pub/scm/linux/kernel/git/brauner/linux").
+> Consistent setgid stripping behavior is now encapsulated in the
+> setattr_should_drop_sgid() helper which is used by all filesystems that
+> strip setgid bits outside of vfs proper. Usually ATTR_KILL_SGID is
+> raised in e.g., chown_common() and is subject to the
+> setattr_should_drop_sgid() check to determine whether the setgid bit can
+> be retained. Since nfsd is raising ATTR_KILL_SGID unconditionally it
+> will cause notify_change() to strip it even if the caller had the
+> necessary privileges to retain it. Ensure that nfsd only raises
+> ATR_KILL_SGID if the caller lacks the necessary privileges to retain the
+> setgid bit.
+> 
+> Without this patch the setgid stripping tests in LTP will fail:
+> 
+> > As you can see, the problem is S_ISGID (0002000) was dropped on a
+> > non-group-executable file while chown was invoked by super-user, while
+> 
+> [...]
+> 
+> > fchown02.c:66: TFAIL: testfile2: wrong mode permissions 0100700, expected 0102700
+> 
+> [...]
+> 
+> > chown02.c:57: TFAIL: testfile2: wrong mode permissions 0100700, expected 0102700
+> 
+> With this patch all tests pass.
+> 
+> Reported-by: Sherry Yang <sherry.yang@oracle.com>
+> Signed-off-by: Christian Brauner <brauner@kernel.org>
+> Reviewed-by: Jeff Layton <jlayton@kernel.org>
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> 
+> 
+> [1] https://lore.kernel.org/linux-nfs/20230502-agenda-regeln-04d2573bd0fd@brauner/
+> [2] https://lore.kernel.org/all/202210091600.dbe52cbf-yujie.liu@intel.com/
+> --
+> Linaro LKFT
+> https://lkft.linaro.org
