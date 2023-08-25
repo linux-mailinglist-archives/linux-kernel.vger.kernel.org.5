@@ -2,62 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A67AB787E47
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 05:08:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1349B787E45
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 05:07:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235960AbjHYDII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 23:08:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49274 "EHLO
+        id S236267AbjHYDHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 23:07:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240604AbjHYDHl (ORCPT
+        with ESMTP id S238583AbjHYDGz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 23:07:41 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A120199A
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 20:07:30 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2bb97f2c99cso6739441fa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Aug 2023 20:07:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692932849; x=1693537649;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=hxjULLs8tszYGy1gyvHkYEquD54rMJ6s2Os5kZTBKfE=;
-        b=MSSI/lfbS/f/wZLZrOeP8cJ1qievmIL7UK0Kj1b/1fRfyJGDd3WGG81Z924bMA7nyn
-         ngLhjfthzdZhoTDXDOn2fsyGFx2FrWXMPk4aodxJZW01MIhs3zTELIaQgsml1jWqQumf
-         R58fq9IVVhDm16GeluJ5mqTQ1ZJ0ENYxN41DrNtakG6LH4A2oebR+Dukz9DIIxFNypwF
-         ssHaTno1foMH4EvqvydB3b8/Jqfv6wuXd/64MXerBzsIAaVET5R/9jYjLE8+n0c1UmPG
-         Jv6Qx3ngvs+KeUqac+EHnMjSssQN/rcIQAg3mur+idl96z6JDMwY0ySfsuk0Xa64paZ/
-         AvlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692932849; x=1693537649;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hxjULLs8tszYGy1gyvHkYEquD54rMJ6s2Os5kZTBKfE=;
-        b=YR6gUhldlE1nkEg0DKV4pO+cIoTgv1q72Hv9HprABDMHqG8NVYfXSXxxy3mUVscvhI
-         nbB7HSx5yGbTCVF4616CBlMt/aL/z8KGCzUL2OYIw5jW1pWk7biyRaVLgf7GpldXThFm
-         /t/Hr4470xEpZ4WRjAPk6s16jAY4DAO0MVCrXQaZOgSO3e4zq903E5fTo8X5LFHEPwvv
-         Qcb+DuFmi0WTffviDKNV+bAGtJSDeK9KFzYMNlu3PSCcWyqWNZlnWAJwD1VHMSq7lM/6
-         6gYKnG29RbAyqq14/eySZpTV7K7qUKlT9NicFZBjvKSCxcTQQ5qBAV/Ep+juQa9di8a4
-         2iIw==
-X-Gm-Message-State: AOJu0Yw/fNovfsTf3SOIbIatnD1q++tnj+eCbnvT91PTVL4MadZu77BT
-        Xxy3Yxw+sWe87lHS7uzDSNoV02JPtQI0cX1VOsrVSrKnqLJ+LA==
-X-Google-Smtp-Source: AGHT+IEegpBDfaPBqqNmsZ9rrNZmdHsjADO/AD3Nqg0lhvvWgR//RsJD5iIbwuvUq1NB0QeIErmC86zdOQ/zDl4aOaI=
-X-Received: by 2002:a2e:7010:0:b0:2bb:bf30:16f1 with SMTP id
- l16-20020a2e7010000000b002bbbf3016f1mr12416033ljc.18.1692932848419; Thu, 24
- Aug 2023 20:07:28 -0700 (PDT)
+        Thu, 24 Aug 2023 23:06:55 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48B361FCE;
+        Thu, 24 Aug 2023 20:06:45 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D4BEE62C41;
+        Fri, 25 Aug 2023 03:06:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59655C433C7;
+        Fri, 25 Aug 2023 03:06:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692932804;
+        bh=/AAbfejQ3jy3wcWG4CNqXQRfKEgbclgptQ2iYKjbE5M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Fb62Zq2tu1kUNBSdWVRydgYGs4ornxiGwBtj5coxw6O2+BTFFI38ly3o/0Qhd+pL0
+         U6cTZRAQx4QxLWBSRrf03x9Mgq68mY8GXvUE9GHy0pKQZmE/lxnLCQUOg8vx5zsQwk
+         BL6QdyaTLwEkS4TPBu9/gPmDrjihxhr9X4QGHZDj6OpRto7FxH+VtCLbdi9p4GzEis
+         9VyjiNscrK2KM+ej+RKGLmO9KC7YRAhFwUFwWsyeAIuyyB+/EjXQ+eag7GD5iofyqg
+         rLd7gq0Lsd5fMeKbNe0FIEzWStZzoBrPOq3KBvno7AK79d/zoZrqjvCg3ozGPyjKbJ
+         b3bfjp9wBanBQ==
+Date:   Thu, 24 Aug 2023 21:07:43 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Brian Norris <briannorris@chromium.org>,
+        Kalle Valo <kvalo@kernel.org>,
+        Amitkumar Karwar <akarwar@marvell.com>,
+        Xinming Hu <huxm@marvell.com>, Dan Williams <dcbw@redhat.com>
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH v2 2/3] wifi: mwifiex: Replace one-element array with
+ flexible-array member in struct mwifiex_ie_types_rxba_sync
+Message-ID: <79c801c69c8beece2f80502c60166036d3c047cc.1692931954.git.gustavoars@kernel.org>
+References: <cover.1692931954.git.gustavoars@kernel.org>
 MIME-Version: 1.0
-From:   Dave Airlie <airlied@gmail.com>
-Date:   Fri, 25 Aug 2023 13:07:17 +1000
-Message-ID: <CAPM=9tyKm+X8XMk75_vWoFk90vjA33Jyo-ic==PQM84_WK2_Wg@mail.gmail.com>
-Subject: [git pull] drm fixes for 6.5 final
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1692931954.git.gustavoars@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,122 +60,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+One-element and zero-length arrays are deprecated. So, replace
+one-element array in struct mwifiex_ie_types_rxba_sync with
+flexible-array member, and refactor the rest of the code, accordingly.
 
-A bit bigger than I'd care for, but it's mostly a single vmwgfx fix
-and a fix for an i915 hotplug probing. Otherwise misc i915, bridge,
-panfrost and dma-buf fixes.
+This results in no differences in binary output.
 
-Dave.
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+Changes in v2:
+ - None.
 
-drm-fixes-2023-08-25:
-drm fixes for 6.5-rc8
+v1:
+ - Link: https://lore.kernel.org/linux-hardening/774ab3c21e1f2ee9c95909e5779216d83d05fd9f.1692829410.git.gustavoars@kernel.org/
 
-core:
-- add a HPD poll helper
+ drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c | 2 +-
+ drivers/net/wireless/marvell/mwifiex/fw.h            | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-i915:
-- fix regression in i915 polling
-- fix docs build warning
-- fix DG2 idle power consumption
+diff --git a/drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c b/drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c
+index d1d3632a3ed7..735aac52bdc4 100644
+--- a/drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c
++++ b/drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c
+@@ -918,7 +918,7 @@ void mwifiex_11n_rxba_sync_event(struct mwifiex_private *priv,
+ 
+ 	mwifiex_dbg_dump(priv->adapter, EVT_D, "RXBA_SYNC event:",
+ 			 event_buf, len);
+-	while (tlv_buf_left >= sizeof(*tlv_rxba)) {
++	while (tlv_buf_left > sizeof(*tlv_rxba)) {
+ 		tlv_type = le16_to_cpu(tlv_rxba->header.type);
+ 		tlv_len  = le16_to_cpu(tlv_rxba->header.len);
+ 		if (tlv_type != TLV_TYPE_RXBA_SYNC) {
+diff --git a/drivers/net/wireless/marvell/mwifiex/fw.h b/drivers/net/wireless/marvell/mwifiex/fw.h
+index f2168fac95ed..8e6db904e5b2 100644
+--- a/drivers/net/wireless/marvell/mwifiex/fw.h
++++ b/drivers/net/wireless/marvell/mwifiex/fw.h
+@@ -779,7 +779,7 @@ struct mwifiex_ie_types_rxba_sync {
+ 	u8 reserved;
+ 	__le16 seq_num;
+ 	__le16 bitmap_len;
+-	u8 bitmap[1];
++	u8 bitmap[];
+ } __packed;
+ 
+ struct chan_band_param_set {
+-- 
+2.34.1
 
-bridge:
-- samsung-dsim: init fix
-
-panfrost:
-- fix speed binning issue
-
-dma-buf:
-- fix recursive lock in fence signal
-
-vmwgfx:
-- fix shader stage validation
-- fix NULL ptr derefs in gem put
-The following changes since commit 706a741595047797872e669b3101429ab8d378ef:
-
-  Linux 6.5-rc7 (2023-08-20 15:02:52 +0200)
-
-are available in the Git repository at:
-
-  git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2023-08-25
-
-for you to fetch changes up to 59fe2029b9e05cd490eaf972053dd86f96f77869:
-
-  Merge tag 'drm-intel-fixes-2023-08-24' of
-git://anongit.freedesktop.org/drm/drm-intel into drm-fixes (2023-08-25
-09:12:02 +1000)
-
-----------------------------------------------------------------
-drm fixes for 6.5-rc8
-
-core:
-- add a HPD poll helper
-
-i915:
-- fix regression in i915 polling
-- fix docs build warning
-- fix DG2 idle power consumption
-
-bridge:
-- samsung-dsim: init fix
-
-panfrost:
-- fix speed binning issue
-
-dma-buf:
-- fix recursive lock in fence signal
-
-vmwgfx:
-- fix shader stage validation
-- fix NULL ptr derefs in gem put
-
-----------------------------------------------------------------
-Ankit Nautiyal (1):
-      drm/display/dp: Fix the DP DSC Receiver cap size
-
-Anshuman Gupta (1):
-      drm/i915/dgfx: Enable d3cold at s2idle
-
-Dave Airlie (2):
-      Merge tag 'drm-misc-fixes-2023-08-24' of
-git://anongit.freedesktop.org/drm/drm-misc into drm-fixes
-      Merge tag 'drm-intel-fixes-2023-08-24' of
-git://anongit.freedesktop.org/drm/drm-intel into drm-fixes
-
-David Michael (1):
-      drm/panfrost: Skip speed binning on EOPNOTSUPP
-
-Frieder Schrempf (1):
-      drm: bridge: samsung-dsim: Fix init during host transfer
-
-Imre Deak (2):
-      drm: Add an HPD poll helper to reschedule the poll work
-      drm/i915: Fix HPD polling, reenabling the output poll work as needed
-
-Jani Nikula (1):
-      drm/i915: fix Sphinx indentation warning
-
-Rob Clark (1):
-      dma-buf/sw_sync: Avoid recursive lock during fence signal
-
-Zack Rusin (2):
-      drm/vmwgfx: Fix shader stage validation
-      drm/vmwgfx: Fix possible invalid drm gem put calls
-
- drivers/dma-buf/sw_sync.c                    | 18 ++++----
- drivers/gpu/drm/bridge/samsung-dsim.c        | 27 +++++++----
- drivers/gpu/drm/drm_probe_helper.c           | 68 +++++++++++++++++++---------
- drivers/gpu/drm/i915/display/intel_hotplug.c |  4 +-
- drivers/gpu/drm/i915/gt/uc/intel_huc.c       |  2 +
- drivers/gpu/drm/i915/i915_driver.c           | 33 ++++++++------
- drivers/gpu/drm/panfrost/panfrost_devfreq.c  |  2 +-
- drivers/gpu/drm/vmwgfx/vmwgfx_bo.c           |  6 +--
- drivers/gpu/drm/vmwgfx/vmwgfx_bo.h           |  8 ++++
- drivers/gpu/drm/vmwgfx/vmwgfx_drv.h          | 12 +++++
- drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c      | 35 ++++++--------
- drivers/gpu/drm/vmwgfx/vmwgfx_kms.c          |  6 +--
- drivers/gpu/drm/vmwgfx/vmwgfx_overlay.c      |  3 +-
- drivers/gpu/drm/vmwgfx/vmwgfx_shader.c       |  3 +-
- include/drm/display/drm_dp.h                 |  2 +-
- include/drm/drm_probe_helper.h               |  1 +
- 16 files changed, 136 insertions(+), 94 deletions(-)
