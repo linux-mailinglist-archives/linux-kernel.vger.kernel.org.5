@@ -2,126 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDE6278896B
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 15:58:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C7927889F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 16:02:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245387AbjHYN5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 09:57:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43252 "EHLO
+        id S242612AbjHYOB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 10:01:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245467AbjHYN5a (ORCPT
+        with ESMTP id S245545AbjHYOBj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 09:57:30 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F70926B0
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 06:57:03 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-4f14865fcc0so3435e87.0
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 06:57:03 -0700 (PDT)
+        Fri, 25 Aug 2023 10:01:39 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66A2E2704
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 07:01:07 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-31c83cd642cso168534f8f.2
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 07:01:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692971820; x=1693576620; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jLAArgC/yF3W0SuXxiDWrJ5rFowVV703rxy6infsYco=;
-        b=Cc0u/u6YF8b3xyiO5XIf0cEkdejK9+V+aEVLGbdwp14Bua8ggH6umEzIVrGeUI8vzi
-         s3eKdAaVBOBWk/SPVtef++qSdz6Ij0eyIEdICoFr18lN0hlh1tqYeuU4aUHjwAoU+mP1
-         0x3Fans2Hth5nyJ4RgaXNN85ab9WyM69Wxzea7ANLJtIG0+Z/ZwQJHsD56XRrPnsRGAh
-         E2dfGdu1vbPNV55t2rVf23mDndZg2iL43Icq6dsH709F09/GinbgQDCYVlTEsPn9sbMC
-         gxR4iug77eyuVa9gIfV2etPm0ASW/tQu4dupj5fikPb/Xy48gjlZ/nhedQyBLgNBO+nz
-         xAcg==
+        d=linaro.org; s=google; t=1692972063; x=1693576863;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:reply-to:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Cz3wvihV4Khraq2quFRW1dbYxEl7BtIN5eOiHQDnTTs=;
+        b=xqn7boffTsoZ8n5yt2Eo1KHP14UWJYM9I/i9voNa5bLezX07HVpDau5+ZiB5aSmXYL
+         chspf245MiswOtYlVXA1o4e4OepqE/xiPUEU1H4wh9gzOYIycGbB5/CRz1UtZt177UnS
+         JSSObj+MANe14J/OT4eKGMavoBpcpxPPct93IW8kSnikV6JU9YCSRSF7No5e6WrZ51H4
+         Ur4ub9QrtS9Nt4YK61UN+o71lsoaDAqucKys1VFRDjsvsr8RViDYdwjlxWr8oSXhz3kT
+         Sr1X2gpYYhyp0JbdNdLhgJ0j/kYfEspMjM7ZNt5by36av1Uevdl3ZzhUcHPBL3OQIXQe
+         rwdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692971820; x=1693576620;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jLAArgC/yF3W0SuXxiDWrJ5rFowVV703rxy6infsYco=;
-        b=NwPVlzNJ1rLA6tv7V0UXGRcUBR0Ww1kEffD5SPQgk3z8j8ifb4ZHjp7tpk18NhlJwA
-         xsjJ52Ne3sTbLRqygdH8fuNbEXQ0oS15XGoKGnUflodsZ4F0pqkhR2Gr1ROtxOkBBd93
-         gAq6WiPBiOwG6g0QV2zTgisDvMm5Rh0zmDMa0ayeesLvmbXxEQe4lT1Y2GrAB+J1f4uO
-         fb7roRplMLgPw1kEZTcX61HWzsp2MsYGWqQdP1Sb1JDJe1Xird4Cr4exwcZAZzpZlbXC
-         sbpAs7Bqj1kwZIEYoeoKoI3d7xFOdbJSiQbAnRmx0dGWfJMiB/6U2E4McU7MNxY3ecrF
-         uCSg==
-X-Gm-Message-State: AOJu0Yxv3qqmNZjmjzW2A80TWJnZHF14lj4GkSSwhM9nT734QsKaJKTY
-        4wBAucPAsolQM/3mnsmi/Q5UeCiXv3I1E6wDdWWFXA==
-X-Google-Smtp-Source: AGHT+IFn1+VuwezvxFgSzmSGg/JvxCqii0iVQ9ViNHc0q2OTp/uuY0OsuE3Aqyx0UbR1QHrGfpybQEwMEKG3wF3U4TA=
-X-Received: by 2002:ac2:558e:0:b0:500:8571:9d03 with SMTP id
- v14-20020ac2558e000000b0050085719d03mr116185lfg.7.1692971820314; Fri, 25 Aug
- 2023 06:57:00 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692972063; x=1693576863;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:reply-to:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Cz3wvihV4Khraq2quFRW1dbYxEl7BtIN5eOiHQDnTTs=;
+        b=hdQXhG36ipsih1fYo4YGfBksE4p47SQtxk1GmwnQeBrFBiJtKBLquWcmmcsOMbfOYo
+         KeovhAJXg25purTzQX9yJSg1bLQIClDfLVy+XsJdX/vanuB1V0P7hiozSXdQ4ZPidu5p
+         5jCZyMhHqMKXMu960rVDOdfGAqguasEwAcmOxmVKFn1A87z5ckXAn/r/j/NfPMeNg3Y5
+         GJoX5lm7CnFhq9p5XjvNFC9AA9xoKwIalkylcAhQbWsCsHH8nGXZoVGMKOE7cSxel9m5
+         VhMKwJ9lZByo+VHeAILlG4UKMcx+CeOsDIl57oXwl95UN6BJdhtwcT9JehnS88SrxaJD
+         4x5g==
+X-Gm-Message-State: AOJu0YzSiSnTwE84vLx10YrX8CMA7pTjCHx9EtvgsO82u1RODfhJosrT
+        pK/D5YwUUwrDdUDq2bkk76uPEQ==
+X-Google-Smtp-Source: AGHT+IHo2T3zBE151rMfkaJbiyRPBn5jZOjs9VP+lw99pnBUBa+mBAh2rrRjlocfb2/8uaB+zkWHjg==
+X-Received: by 2002:a5d:61d0:0:b0:317:f537:748d with SMTP id q16-20020a5d61d0000000b00317f537748dmr13225547wrv.64.1692972062756;
+        Fri, 25 Aug 2023 07:01:02 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:982:cbb0:4e1:71e1:b02b:811e? ([2a01:e0a:982:cbb0:4e1:71e1:b02b:811e])
+        by smtp.gmail.com with ESMTPSA id x16-20020a5d6510000000b003143c9beeaesm2322239wru.44.2023.08.25.07.01.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Aug 2023 07:01:02 -0700 (PDT)
+Message-ID: <71d1d748-133a-470b-986c-ece79f743aa4@linaro.org>
+Date:   Fri, 25 Aug 2023 16:01:00 +0200
 MIME-Version: 1.0
-References: <20230825022357.2852133-1-seanjc@google.com> <20230825022357.2852133-3-seanjc@google.com>
- <eb0eab09-3625-d3f2-d1bf-ef6595fb04e1@amd.com>
-In-Reply-To: <eb0eab09-3625-d3f2-d1bf-ef6595fb04e1@amd.com>
-From:   Peter Gonda <pgonda@google.com>
-Date:   Fri, 25 Aug 2023 07:56:48 -0600
-Message-ID: <CAMkAt6rB9a5+qu5ES4L1BnL35esSCY92+CB0fG7m6uq0Aj6z_A@mail.gmail.com>
-Subject: Re: [PATCH 2/2] KVM: SVM: Skip VMSA init in sev_es_init_vmcb() if
- pointer is NULL
-To:     "Gupta, Pankaj" <pankaj.gupta@amd.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH 2/4] clk: qcom: rpmh: Add RPMH clocks support for SM4450
+Content-Language: en-US, fr
+To:     Ajit Pandey <quic_ajipan@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Taniya Das <quic_tdas@quicinc.com>,
+        Imran Shaik <quic_imrashai@quicinc.com>,
+        Jagadeesh Kona <quic_jkona@quicinc.com>
+Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230824173410.550126-1-quic_ajipan@quicinc.com>
+ <20230824173410.550126-3-quic_ajipan@quicinc.com>
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <20230824173410.550126-3-quic_ajipan@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 25, 2023 at 4:26=E2=80=AFAM Gupta, Pankaj <pankaj.gupta@amd.com=
-> wrote:
->
-> On 8/25/2023 4:23 AM, Sean Christopherson wrote:
-> > Skip initializing the VMSA physical address in the VMCB if the VMSA is
-> > NULL, which occurs during intrahost migration as KVM initializes the VM=
-CB
-> > before copying over state from the source to the destination (including
-> > the VMSA and its physical address).
-> >
-> > In normal builds, __pa() is just math, so the bug isn't fatal, but with
-> > CONFIG_DEBUG_VIRTUAL=3Dy, the validity of the virtual address is verifi=
-ed
-> > and passing in NULL will make the kernel unhappy.
-> >
-> > Fixes: 6defa24d3b12 ("KVM: SEV: Init target VMCBs in sev_migrate_from")
-> > Cc: stable@vger.kernel.org
-> > Cc: Peter Gonda <pgonda@google.com>
-> > Signed-off-by: Sean Christopherson <seanjc@google.com>
-> > ---
-> >   arch/x86/kvm/svm/sev.c | 7 +++++--
-> >   1 file changed, 5 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> > index acc700bcb299..5585a3556179 100644
-> > --- a/arch/x86/kvm/svm/sev.c
-> > +++ b/arch/x86/kvm/svm/sev.c
-> > @@ -2975,9 +2975,12 @@ static void sev_es_init_vmcb(struct vcpu_svm *sv=
-m)
-> >       /*
-> >        * An SEV-ES guest requires a VMSA area that is a separate from t=
-he
-> >        * VMCB page. Do not include the encryption mask on the VMSA phys=
-ical
-> > -      * address since hardware will access it using the guest key.
-> > +      * address since hardware will access it using the guest key.  No=
-te,
-> > +      * the VMSA will be NULL if this vCPU is the destination for intr=
-ahost
-> > +      * migration, and will be copied later.
-> >        */
-> > -     svm->vmcb->control.vmsa_pa =3D __pa(svm->sev_es.vmsa);
-> > +     if (svm->sev_es.vmsa)
-> > +             svm->vmcb->control.vmsa_pa =3D __pa(svm->sev_es.vmsa);
-> >
-> >       /* Can't intercept CR register access, HV can't modify CR registe=
-rs */
-> >       svm_clr_intercept(svm, INTERCEPT_CR0_READ);
->
-> Reviewed-by: Pankaj Gupta <pankaj.gupta@amd.com>
+Hi,
 
-Reviewed-by: Peter Gonda <pgonda@google.com>
+On 24/08/2023 19:34, Ajit Pandey wrote:
+> Add support for RPMH clocks for SM4450 platform.
+> 
+> Signed-off-by: Ajit Pandey <quic_ajipan@quicinc.com>
+> ---
+>   drivers/clk/qcom/clk-rpmh.c | 21 +++++++++++++++++++++
+>   1 file changed, 21 insertions(+)
+> 
+> diff --git a/drivers/clk/qcom/clk-rpmh.c b/drivers/clk/qcom/clk-rpmh.c
+> index 4c5b552b47b6..5d853fd43294 100644
+> --- a/drivers/clk/qcom/clk-rpmh.c
+> +++ b/drivers/clk/qcom/clk-rpmh.c
+> @@ -350,6 +350,7 @@ DEFINE_CLK_RPMH_VRM(ln_bb_clk3, _a2, "lnbclka3", 2);
+>   
+>   DEFINE_CLK_RPMH_VRM(ln_bb_clk1, _a4, "lnbclka1", 4);
+>   DEFINE_CLK_RPMH_VRM(ln_bb_clk2, _a4, "lnbclka2", 4);
+> +DEFINE_CLK_RPMH_VRM(ln_bb_clk3, _a4, "lnbclka3", 4);
+>   
+>   DEFINE_CLK_RPMH_VRM(ln_bb_clk2, _g4, "lnbclkg2", 4);
+>   DEFINE_CLK_RPMH_VRM(ln_bb_clk3, _g4, "lnbclkg3", 4);
+> @@ -717,6 +718,25 @@ static const struct clk_rpmh_desc clk_rpmh_sdx75 = {
+>   	.num_clks = ARRAY_SIZE(sdx75_rpmh_clocks),
+>   };
+>   
+> +static struct clk_hw *sm4450_rpmh_clocks[] = {
+> +	[RPMH_CXO_CLK]		= &clk_rpmh_bi_tcxo_div4.hw,
+> +	[RPMH_CXO_CLK_A]	= &clk_rpmh_bi_tcxo_div4_ao.hw,
+
+Are you sure about div4 here ?
+
+Kailua uses div2 because the CXO input gets used divided by 2
+by PHYs and divided by 4 for GCC/DISPCC/...
+
+This is why we introduced a div2 clock in DT used to feed GCC/DISPCC/...
+
+Neil
+
+> +	[RPMH_LN_BB_CLK2]	= &clk_rpmh_ln_bb_clk2_a4.hw,
+> +	[RPMH_LN_BB_CLK2_A]	= &clk_rpmh_ln_bb_clk2_a4_ao.hw,
+> +	[RPMH_LN_BB_CLK3]       = &clk_rpmh_ln_bb_clk3_a4.hw,
+> +	[RPMH_LN_BB_CLK3_A]     = &clk_rpmh_ln_bb_clk3_a4_ao.hw,
+> +	[RPMH_RF_CLK1]		= &clk_rpmh_rf_clk1_a.hw,
+> +	[RPMH_RF_CLK1_A]	= &clk_rpmh_rf_clk1_a_ao.hw,
+> +	[RPMH_RF_CLK5]		= &clk_rpmh_rf_clk5_a.hw,
+> +	[RPMH_RF_CLK5_A]	= &clk_rpmh_rf_clk5_a_ao.hw,
+> +	[RPMH_IPA_CLK]		= &clk_rpmh_ipa.hw,
+> +};
+> +
+> +static const struct clk_rpmh_desc clk_rpmh_sm4450 = {
+> +	.clks = sm4450_rpmh_clocks,
+> +	.num_clks = ARRAY_SIZE(sm4450_rpmh_clocks),
+> +};
+> +
+>   static struct clk_hw *of_clk_rpmh_hw_get(struct of_phandle_args *clkspec,
+>   					 void *data)
+>   {
+> @@ -810,6 +830,7 @@ static const struct of_device_id clk_rpmh_match_table[] = {
+>   	{ .compatible = "qcom,sdx55-rpmh-clk",  .data = &clk_rpmh_sdx55},
+>   	{ .compatible = "qcom,sdx65-rpmh-clk",  .data = &clk_rpmh_sdx65},
+>   	{ .compatible = "qcom,sdx75-rpmh-clk",  .data = &clk_rpmh_sdx75},
+> +	{ .compatible = "qcom,sm4450-rpmh-clk", .data = &clk_rpmh_sm4450},
+>   	{ .compatible = "qcom,sm6350-rpmh-clk", .data = &clk_rpmh_sm6350},
+>   	{ .compatible = "qcom,sm8150-rpmh-clk", .data = &clk_rpmh_sm8150},
+>   	{ .compatible = "qcom,sm8250-rpmh-clk", .data = &clk_rpmh_sm8250},
+
