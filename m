@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAF5C788B0D
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 16:10:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81AF3788B10
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 16:10:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245414AbjHYOJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 10:09:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48148 "EHLO
+        id S1343596AbjHYOJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 10:09:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343666AbjHYOJW (ORCPT
+        with ESMTP id S1343715AbjHYOJ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 10:09:22 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA4782D72
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 07:08:13 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4ffae5bdc9aso1502341e87.1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 07:08:13 -0700 (PDT)
+        Fri, 25 Aug 2023 10:09:26 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5889A30DA
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 07:08:23 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-50078e52537so1452551e87.1
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 07:08:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692972478; x=1693577278;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=nfoa2eIyG6OCVkrOgXRD75RXSYr33Q8gn5+S+fM4lN0=;
-        b=YYsAYhCLt0J4HdmV3NGAzu0Suz9oRLymoikUzr6HRM9O/ou5pu6EqjAYOeXzb1y/Kk
-         d42e7YMljBzB3OJNH1vzcFwqKzksRLKus0Rtrllz+l15ZrEclMvdfLjf3sbDftGjhApM
-         aVlkblWmorBcpBp6YVXlgSIn1LpH4PGEC5HaP4C6TYUPxgGs3y/pM4M6hLD7sUaseR+L
-         c3LndkoUTQdbT/rheCxlI0DYMepb+3esZ6wdStiW8lhLaKMS//Y2bgRQqUfTZ/eis02H
-         s3cLNf7nfQNu+lvAzIcnch9u1m2sO4liOjAmt0q9e6f/rFPd3IFvIPsiQIqk4rECJflQ
-         FS+g==
+        d=linaro.org; s=google; t=1692972498; x=1693577298;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=axteTkwlNxcxDBjG/ojqO7wTa/wt+0BzC+LNgL43cwU=;
+        b=p7ivgK7Ws/+u6OrGbT8SI+Aux6DTjmx2gGKTSy9++VZf/hzCDvFUOik2OexlhQ/HPy
+         7JWh5Bukhy3b4nlGjBJoz7M7TdGe+HlTtiM3smp768omOJuaER9DdOmAqhQTG9M/lYf9
+         ylZo65UKSLMU1yVEKK6DEjEilgAKYstewX+f0vo7zaZt2jP1xC6ZHFTvBUS1Ll4seCm3
+         GDL/9Zg0eiGVjXH0mnOYYQPvhMgjtpg8DDnMJhO2OB7nKYncwsblK/uOZDnxIpmbyQE2
+         vyopG/2gS1M4/+NrvpwougFnZhpcb5V9juI6uwX7MTlB8gFZbpQPxds6DFVbhEJfnrJW
+         CGmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692972478; x=1693577278;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nfoa2eIyG6OCVkrOgXRD75RXSYr33Q8gn5+S+fM4lN0=;
-        b=LTSb4Fu3vK++UsnQpLM4tbC0tJTktRhYSegRgTY7NSiYiKrcQ06csZfL0kUFV6X8Fr
-         TID+F+38wLgdpjFaQ+fLLxWUVk+C0bkMshNi8T0BT+3vgsLUg5D1+R7rEOxbrRsqrt/A
-         6fjWo04RNqF56zfP86G/WBLDh1hSkIPhXxn88mwRAVm8BC07/1doOa7H9nMalIeZxAdq
-         vTNYfpDgmzw7grY3cBW65KyCu8ofVEqGsJLDlnsEY3X6ixFmiBqUp5zXwpdln7zfU/u0
-         QTMowFrmriJac8MfmvZ/j8n+faU8xxY5MxTmIHbW35WSVBYvBZAqdDaayOb7r+GooayA
-         Tnhw==
-X-Gm-Message-State: AOJu0YztHlG3nJ3aJu1H9mx4blAQvXjJARzJ4zMFqp0obLZayk4aNJHG
-        /PLT7naGF4CtAcO5PRivFQ03xg==
-X-Google-Smtp-Source: AGHT+IHi8DfEL1iHFNmpgr0f7THIrkHI9QeDv6zPt2ocEHocdHs4PTrHnxA8aVrElaRCFq7YteTsBA==
-X-Received: by 2002:a05:6512:39d3:b0:4f9:56a9:b98e with SMTP id k19-20020a05651239d300b004f956a9b98emr15639293lfu.58.1692972478118;
-        Fri, 25 Aug 2023 07:07:58 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692972498; x=1693577298;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=axteTkwlNxcxDBjG/ojqO7wTa/wt+0BzC+LNgL43cwU=;
+        b=AhA4rmyzZyRNfR8Z+vhPEyJQWcIMfA/OW35Q8pOZ1Tus0O/62aoIw0NDnA2SPwzAXb
+         QleO5LIyd7P0MTlJTcASb/681aPOtmhIkWQYX5FFx06uPgaBICb0a6U2r6gnMHAdTCaI
+         QOcBGY6ftUzgTvPcIUJbXzkRX+Zf3MDNWd9fN8LogNI7KCPJFBcN6iu67JLUv0i1M1mG
+         xs1b334FH4ZNA10bSWuw0uWt/9gXOV+H+2b9uyCebEE7432N0DcGUzgBwKplfUkAfNxX
+         OyWIGGowReLbpLC/3uCIlSFYnm6rw1lEX2ogzlk39iRNLs90NhdyhOQaxHszmMdfYBrx
+         AFQQ==
+X-Gm-Message-State: AOJu0Yyzm2rr4YmdJsMwnPoaYbHLB5t68CU7xpJ/7he5QW7/Jmvx1DQC
+        nfjpluIWVizpPF4Zbhts54QNTA==
+X-Google-Smtp-Source: AGHT+IEQFT9RdIzhS6nwwoj2TAYYRrtqJ68gsxKCzzXmUloW2nCW3c4TfA3v9qGaFbX0xguDdJDCcg==
+X-Received: by 2002:a19:5f5e:0:b0:4fb:8bea:f5f6 with SMTP id a30-20020a195f5e000000b004fb8beaf5f6mr12363751lfj.34.1692972498470;
+        Fri, 25 Aug 2023 07:08:18 -0700 (PDT)
 Received: from [192.168.1.101] (abxh59.neoplus.adsl.tpnet.pl. [83.9.1.59])
-        by smtp.gmail.com with ESMTPSA id m27-20020a056512015b00b005009dcb4503sm303800lfo.249.2023.08.25.07.07.57
+        by smtp.gmail.com with ESMTPSA id m27-20020a056512015b00b005009dcb4503sm303800lfo.249.2023.08.25.07.08.17
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Aug 2023 07:07:57 -0700 (PDT)
-Message-ID: <b41e09f4-7bcb-48e9-b97e-bc8682562a41@linaro.org>
-Date:   Fri, 25 Aug 2023 16:07:56 +0200
+        Fri, 25 Aug 2023 07:08:17 -0700 (PDT)
+Message-ID: <2ecb64c5-c6bf-4dbb-a390-ef54bd649a9b@linaro.org>
+Date:   Fri, 25 Aug 2023 16:08:17 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] ARM: dts: qcom: apq8064: drop label property from DSI
+Subject: Re: [PATCH 2/2] ARM: dts: qcom: sdx65: fix SDHCI clocks order
+Content-Language: en-US
 To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
         Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
@@ -65,7 +65,7 @@ To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
         linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
 References: <20230825135613.282505-1-krzysztof.kozlowski@linaro.org>
-Content-Language: en-US
+ <20230825135613.282505-2-krzysztof.kozlowski@linaro.org>
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -102,13 +102,12 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <20230825135613.282505-1-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230825135613.282505-2-krzysztof.kozlowski@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -116,9 +115,10 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 25.08.2023 15:56, Krzysztof Kozlowski wrote:
-> DSI node does not accept nor use "label" property:
+> Bindings expect clocks to be in different order:
 > 
->   qcom-apq8064-asus-nexus7-flo.dtb: dsi@4700000: Unevaluated properties are not allowed ('label' was unexpected)
+>   qcom-sdx65-mtp.dtb: mmc@8804000: clock-names:0: 'iface' was expected
+>   qcom-sdx65-mtp.dtb: mmc@8804000: clock-names:1: 'core' was expected
 > 
 > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 > ---
