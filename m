@@ -2,153 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A810788C8E
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 17:37:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61BFB788C8F
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 17:37:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242416AbjHYPgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 11:36:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44292 "EHLO
+        id S242706AbjHYPhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 11:37:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242183AbjHYPgc (ORCPT
+        with ESMTP id S244073AbjHYPhN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 11:36:32 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DE5A2134;
-        Fri, 25 Aug 2023 08:36:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=public-files.de;
- s=s31663417; t=1692977768; x=1693582568; i=frank-w@public-files.de;
- bh=VdrUkzAPLFRLGC4qVYhEGfYBGe1g2ruEZDgeplhbi88=;
- h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
- b=nHkhHILK2J/MqzgRe84029JDk0X/iHDH1aU5wu5PbMc+PwfcTRh4U0S4P6xA0dSzIeWH9Vk
- SGtabHoZxe/AsDzptN9QWaodPbBZpMn/ZrCJ+wYq4BPpsN6NnJm88e5OognriPl1ZAJc8bLJb
- YAamrVR9oi2Yat0MwBnCuUmCEHCwhyYnNFks4wYighb4jd3F+3Sh26b3ERBfcbWW/ZUmN00dx
- 0c5czRaLidA/QYIIOdqRvaE5rJQE+NA9tQlQ/in+pl7ZI4UEOCoTOQecIjze2sbwsQHja7LwN
- acSq1RhLTddzbGdxh51uVVNKXEyjx2zDSaXdCOK/EmYbZO7gC9gg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [157.180.224.17] ([157.180.224.17]) by web-mail.gmx.net
- (3c-app-gmx-bs20.server.lan [172.19.170.72]) (via HTTP); Fri, 25 Aug 2023
- 17:36:08 +0200
-MIME-Version: 1.0
-Message-ID: <trinity-06c31f89-2833-402f-9451-2270a14a5d71-1692977768615@3c-app-gmx-bs20>
-From:   Frank Wunderlich <frank-w@public-files.de>
-To:     Frank Wunderlich <linux@fw-web.de>
-Cc:     linux-mediatek@lists.infradead.org,
-        Chaotian Jing <chaotian.jing@mediatek.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
+        Fri, 25 Aug 2023 11:37:13 -0400
+Received: from mail.astralinux.ru (mail.astralinux.ru [217.74.38.119])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10B90268E
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 08:37:11 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.astralinux.ru (Postfix) with ESMTP id 202671868942;
+        Fri, 25 Aug 2023 18:37:07 +0300 (MSK)
+Received: from mail.astralinux.ru ([127.0.0.1])
+        by localhost (rbta-msk-vsrv-mail01.astralinux.ru [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id v73nNLLpUn7Y; Fri, 25 Aug 2023 18:37:06 +0300 (MSK)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.astralinux.ru (Postfix) with ESMTP id 87BBD1867579;
+        Fri, 25 Aug 2023 18:37:06 +0300 (MSK)
+X-Virus-Scanned: amavisd-new at astralinux.ru
+Received: from mail.astralinux.ru ([127.0.0.1])
+        by localhost (rbta-msk-vsrv-mail01.astralinux.ru [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id I_6nBa4-AHub; Fri, 25 Aug 2023 18:37:06 +0300 (MSK)
+Received: from rbta-msk-lt-302690.astralinux.ru (unknown [10.177.233.189])
+        by mail.astralinux.ru (Postfix) with ESMTPSA id 72BA51868950;
+        Fri, 25 Aug 2023 18:37:04 +0300 (MSK)
+From:   Alexandra Diupina <adiupina@astralinux.ru>
+To:     Liam Girdwood <lgirdwood@gmail.com>
+Cc:     Alexandra Diupina <adiupina@astralinux.ru>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
         Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Wenbin Mei <wenbin.mei@mediatek.com>,
-        Sam Shih <sam.shih@mediatek.com>, linux-mmc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Eric Woudstra <ericwouds@gmail.com>, stable@vger.kernel.org
-Subject: Aw: [PATCH v2 2/2] arm64: dts: mt7986: fix emmc hs400 mode without
- uboot initialization
-Content-Type: text/plain; charset=UTF-8
-Date:   Fri, 25 Aug 2023 17:36:08 +0200
-Importance: normal
-Sensitivity: Normal
-In-Reply-To: <20230629184318.551317-3-linux@fw-web.de>
-References: <20230629184318.551317-1-linux@fw-web.de>
- <20230629184318.551317-3-linux@fw-web.de>
-X-UI-Message-Type: mail
-X-Priority: 3
-X-Provags-ID: V03:K1:jLmgX2xrUWmxLoyc5GosYJEGAAy+M/UfobOHavCkZCsfSMXYLEVuTuL7eyL7A/81kf9dO
- 3EVOYUOaCBIrmfLQNtf94f4TbqYZ6fC3P9MR6P+HFceuiP2uyOVIBMKxQoySqSOYCp2MYRkrktxN
- lcuClMK4/ayXmRMyc8yvJddgktK6jasBC0GDdnh4iQQFApClBwBeda9h9gtLeJsnPsB8hf4u7gAy
- 0wy7nzoyv1zef8p2KBYi/b9i1a1SfmBZCEEhQrcSdjZ35d1/7/0wBhGOfIknCE09Q0Qpanvl2N8v
- CQ=
-UI-OutboundReport: notjunk:1;M01:P0:YvFxJiBsRc0=;VYvrekVB2wysNxvT6zZABSQfKDJ
- Umw3aV1ismrOon8ZSBRcD1QrrqeU60hqGFXuZsQNKQTRj9Xj27DwnDZgDsy9w0QyEm3k/aO4T
- pjhNp4xP1tNSi6NtnY3+9S7SxykZEzn4jTxl3IsXta/xFoOcNQpOBIlwPsDh0g+g9Z+2Ak5nd
- bKbbxa+tf3p79ZZe0G8zkF755pyPkcc5X9Ipgyxv29qTI8dqW3Fj8atmwvfcvT0dIRBMwX59E
- 2L1MWf9gqJ583jl06irx8yl6jZvOFTIG3DHVhMSqdGiTDPM6nhfqK6M5RnoHhs44IKfQ138WB
- SEEHK3GI7SQ6g7Vdha20/+NY2ZCfRdTNspUBMFrIF04xbycuAgxlXYs/T3alP3rQSB1ksjheu
- Z4dksthaw0WWHEbCiAIfupDwkyAXPuYFnQweKhRqV97I0u0l7tW78gGfEi6PC0K1icSl3Udfg
- brQFjFQTfwrD1TOaRIFYA7FM47hjWKn6/KhV7F/ZBIhqBOwScz9i2/OrbQKgJKJ3xbZDbgs4B
- 5ghXdKD123a9SOr7vJU9ca80L/Dbw7Lt2ZxYQGVF0qUrNsXUikHhwGiG6+Vph0J3twbIqEQ+V
- aL7HMX7+XFY9z3afSe+N8D8D9Bc06XvK89bgTNErrJJjxln4QNWELS9Fkb8yv1PmYi+YSJDmb
- P6g3jaFJMdk8kX2IK3x/9JK+v/FHkGkyiG3KkFPy1Nx+iBCWC9nlrL0aKPwhGWPe1K88nk0F6
- wAGcs8z1GM8FVXgKn0zTkXs39PI56FBPvrULeOSRoe4EniUG9sy8BpaNhmUtnu7ZPZ98goJ4e
- JJW+CisC5H+chmurcIzaAwaw==
+        Eason Yen <eason.yen@mediatek.com>,
+        alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        lvc-project@linuxtesting.org
+Subject: [PATCH] asoc: mediatek: common: Remove check of return value of mtk_memif_set_addr() and mtk_memif_set_format()
+Date:   Fri, 25 Aug 2023 18:36:50 +0300
+Message-Id: <20230825153650.20923-1-adiupina@astralinux.ru>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The mtk_memif_set_addr() and mtk_memif_set_format() functions always retu=
+rns 0, so it is
+necessary to remove the check of its return value (which was
+probably specified by analogy with the check of return values
+for other functions) to make the code more readable
 
-just a friendly reminder, patch seems not applied to next.
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-dt-binding part is reported as applied
+Fixes: df799b9502ed ("ASoC: mediatek: common: refine hw_params and hw_pre=
+pare")
+Signed-off-by: Alexandra Diupina <adiupina@astralinux.ru>
+---
+ sound/soc/mediatek/common/mtk-afe-fe-dai.c | 14 ++------------
+ 1 file changed, 2 insertions(+), 12 deletions(-)
 
-regards Frank
+diff --git a/sound/soc/mediatek/common/mtk-afe-fe-dai.c b/sound/soc/media=
+tek/common/mtk-afe-fe-dai.c
+index 882cdf86c8bf..3c8a11c5958d 100644
+--- a/sound/soc/mediatek/common/mtk-afe-fe-dai.c
++++ b/sound/soc/mediatek/common/mtk-afe-fe-dai.c
+@@ -143,15 +143,10 @@ int mtk_afe_fe_hw_params(struct snd_pcm_substream *=
+substream,
+ 		  substream->runtime->dma_bytes);
+=20
+ 	/* set addr */
+-	ret =3D mtk_memif_set_addr(afe, id,
++	mtk_memif_set_addr(afe, id,
+ 				 substream->runtime->dma_area,
+ 				 substream->runtime->dma_addr,
+ 				 substream->runtime->dma_bytes);
+-	if (ret) {
+-		dev_err(afe->dev, "%s(), error, id %d, set addr, ret %d\n",
+-			__func__, id, ret);
+-		return ret;
+-	}
+=20
+ 	/* set channel */
+ 	ret =3D mtk_memif_set_channel(afe, id, channels);
+@@ -170,12 +165,7 @@ int mtk_afe_fe_hw_params(struct snd_pcm_substream *s=
+ubstream,
+ 	}
+=20
+ 	/* set format */
+-	ret =3D mtk_memif_set_format(afe, id, format);
+-	if (ret) {
+-		dev_err(afe->dev, "%s(), error, id %d, set format %d, ret %d\n",
+-			__func__, id, format, ret);
+-		return ret;
+-	}
++	mtk_memif_set_format(afe, id, format);
+=20
+ 	return 0;
+ }
+--=20
+2.30.2
 
-
-> Gesendet: Donnerstag, 29. Juni 2023 um 20:43 Uhr
-> Von: "Frank Wunderlich" <linux@fw-web.de>
-> An: linux-mediatek@lists.infradead.org
-> Cc: "Frank Wunderlich" <frank-w@public-files.de>, "Chaotian Jing" <chaot=
-ian.jing@mediatek.com>, "Ulf Hansson" <ulf.hansson@linaro.org>, "Rob Herri=
-ng" <robh+dt@kernel.org>, "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@li=
-naro.org>, "Conor Dooley" <conor+dt@kernel.org>, "Matthias Brugger" <matth=
-ias.bgg@gmail.com>, "AngeloGioacchino Del Regno" <angelogioacchino.delregn=
-o@collabora.com>, "Wenbin Mei" <wenbin.mei@mediatek.com>, "Sam Shih" <sam.=
-shih@mediatek.com>, linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,=
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, "Eric=
- Woudstra" <ericwouds@gmail.com>, stable@vger.kernel.org
-> Betreff: [PATCH v2 2/2] arm64: dts: mt7986: fix emmc hs400 mode without =
-uboot initialization
->
-> From: Eric Woudstra <ericwouds@gmail.com>
->
-> Eric reports errors on emmc with hs400 mode when booting linux on bpi-r3
-> without uboot [1]. Booting with uboot does not show this because clocks
-> seem to be initialized by uboot.
->
-> Fix this by adding assigned-clocks and assigned-clock-parents like it's
-> done in uboot [2].
->
-> [1] https://forum.banana-pi.org/t/bpi-r3-kernel-fails-setting-emmc-clock=
--to-416m-depends-on-u-boot/15170
-> [2] https://github.com/u-boot/u-boot/blob/master/arch/arm/dts/mt7986.dts=
-i#L287
->
-> Cc: stable@vger.kernel.org
-> Fixes: 513b49d19b34 ("arm64: dts: mt7986: add mmc related device nodes")
-> Signed-off-by: Eric Woudstra <ericwouds@gmail.com>
-> Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
-> ---
->  arch/arm64/boot/dts/mediatek/mt7986a.dtsi | 4 ++++
->  1 file changed, 4 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/mediatek/mt7986a.dtsi b/arch/arm64/boot=
-/dts/mediatek/mt7986a.dtsi
-> index 68539ea788df..207510abda89 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt7986a.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt7986a.dtsi
-> @@ -374,6 +374,10 @@ mmc0: mmc@11230000 {
->  			reg =3D <0 0x11230000 0 0x1000>,
->  			      <0 0x11c20000 0 0x1000>;
->  			interrupts =3D <GIC_SPI 143 IRQ_TYPE_LEVEL_HIGH>;
-> +			assigned-clocks =3D <&topckgen CLK_TOP_EMMC_416M_SEL>,
-> +					  <&topckgen CLK_TOP_EMMC_250M_SEL>;
-> +			assigned-clock-parents =3D <&apmixedsys CLK_APMIXED_MPLL>,
-> +						 <&topckgen CLK_TOP_NET1PLL_D5_D2>;
->  			clocks =3D <&topckgen CLK_TOP_EMMC_416M_SEL>,
->  				 <&infracfg CLK_INFRA_MSDC_HCK_CK>,
->  				 <&infracfg CLK_INFRA_MSDC_CK>,
-> --
-> 2.34.1
->
->
