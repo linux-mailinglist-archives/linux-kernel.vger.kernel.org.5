@@ -2,399 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C4627884F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 12:32:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F0EA7884FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 12:34:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242528AbjHYKcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 06:32:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50044 "EHLO
+        id S239119AbjHYKdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 06:33:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242559AbjHYKb4 (ORCPT
+        with ESMTP id S244467AbjHYKdw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 06:31:56 -0400
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2040.outbound.protection.outlook.com [40.107.94.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 685ECE7F
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 03:31:53 -0700 (PDT)
+        Fri, 25 Aug 2023 06:33:52 -0400
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2060.outbound.protection.outlook.com [40.107.243.60])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50EA12116
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 03:33:40 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aN7eN5eIaN+yQbdaOtfaT9CVaxYlCbKKMhMFRsNr0HEEBb+Jf7MIxVpezS/j0OU7JK81DPCDAQsNXMomGCNBN3FrrUgpUdkZsSxN+dJEoaltcKVErwICXglIyjCG6JoT2k3fqVHuD3sA4aGJGwFx+niO2kzO94nYIsOo2HFWdE51zhcsJbsqkZQlPxttmQcDifvKxpbddjzyDGS+c3banvD1I70Ty/8r4zEMSdKdeno5/BpsxacOWPXemcrx/4ZlBmof45bCJ7KTF5f9uEASkjN9OJ6InLgIiVTaGGnNJ0HKZFQeonSPy14spfxs/kcsa7Q6ENotiX9aEcjhicZxUw==
+ b=L/q5OYWhLNjF4IMf6T6a3vjxLVccDT2/TITsSzXgEjEbBphJWpHdH3LKnoacE3nr7akPsZSdQgBKn85jh8VZGgGqZ3NVCdIfJyWPgpYZCBKL1zV6c049WCRbTlVHSRc0NpuiXYCba42AK1tWqyAGkGW+VUoQD954Hfhlrghd+UYJFSNLulzva0zTxYVR1IxaaS8scvNvevQ43shOT3UILp9tcNsRcuzcPmzYn3AC2RifZk3cr0yUplEO8Sz0jSgNGseJP4khsxNg9LZyPAodR3r6JdboUNW9A7WfZ3yeA8D7hV8plrjAvw0wCcN2NvOf/BesWu/GTtpKEgFG6H/iwA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=wceeVQfcetdakbjQHEAWnZkEkV8Nu2st7X9BJ/4mAbo=;
- b=oB21ouyMtZzIPHjulNIjm+vXRVYd5/a397zwNLTcxY7THj1IIY/3sG8/QM22gxivUbzPpHfPazEGYbvw3FJA3/L1myaXAr/tSsaJ0Zy/FsewHs9sSFhUfelbmXz+978JL0gQRyrb2l6AFUJVE4iAdFsNRfVvpApzJpxqr6JS+inkt42MqHi9NSwUHP6YRvgkBA5x7kUFEyMPhK9nLoKJMDdGNLu6vovI3etKjLT27G/ljAD/k2sFOj8afvL3mtMgdR2DDaOjMCXWZLb2aVjRmWgrIN7aOcncCal+FMGgX2zipCHWR421nVmcOQw9aItsT4KZob8kGqxBB4ZwLqUSEA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.232) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
+ bh=LsjLCVXtqx4b5eMW5zAA0gQF1LedLnM+zGFK3JFfXQY=;
+ b=Vd/RpuFEsrlJl/JnQgE9HSIjnFLXApS5QgGf4nq+PiaYrmVwHTLTxv6ZwXLxMD+F9Q5qTvcLMAeAODiLc+fxrzauOJJt5Jvm+PKmIKX9hwu5VQRMHWQGcozAgcZko2zboWRE/KTfXbNt+bjK2e6sIONRAjUyEuwd8tEXu5KLrN4rnPV5H4dGVe6DDHex526SBLUMEwwf0xi4AJO+c3Y/+dQLMWRxKRzTqOpUl/qrBCPUkN2ZPUK1vwuDIOmEm+K/kfBJZN+oYPWLjQaTQ1ArLbonVJQqEcMMpsc2Rw05WSx5WPqiw8a4+Yv61AVcO+AqWcKLDTCqpnJAxvavVKSvsw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wceeVQfcetdakbjQHEAWnZkEkV8Nu2st7X9BJ/4mAbo=;
- b=RR3/CzcXKwAiOWbven+t/Ov8mPcT9yAGMK9Cyg4Ju/FUp2+mZSsYwhG1X5zcE5AVj8U//vI7weHxvVaMsQpRPB6qD02kQF7KbGR5xiHsV1pd2u5PJ++Gqzk/zmqKZ1jNCAbKipa8zpFZkaswEnjAS0Rq50IF7ea+nLIn8F40YdrzSFnIjy19KHKt8/plh3i1gWLnzByLRvZ6gsaR1Po8bx5ZmeL3GcnR9Hve898CoApAoifnGnMMi5xFGPYJxBV6S5i5l/VFDvaQGkFzQQAw5QimIXS+tqmEuy/tRVue7dS7cgcHUICOMkq2Bbtwx8V9wbeY1Ujc9WUOwrvRL0jUXA==
-Received: from CYZPR12CA0017.namprd12.prod.outlook.com (2603:10b6:930:8b::14)
- by CH3PR12MB8211.namprd12.prod.outlook.com (2603:10b6:610:125::11) with
+ bh=LsjLCVXtqx4b5eMW5zAA0gQF1LedLnM+zGFK3JFfXQY=;
+ b=y2YNwgJ6n6+eXl5Xo/hIUyKi1KRl07So1eR0mHIajey12/amm27Gdw2A767yxeQ6e7XP/mI21V9DWgzmK9pk901xBu/ud+pN9qEjNjG65PEWePDddLJpexcDvZMHSgaVxtNSXr7qvrDTt170suJCxSZswxWviuQ3GvF5oNVy6NM=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from SJ1PR12MB6172.namprd12.prod.outlook.com (2603:10b6:a03:459::22)
+ by DS0PR12MB7748.namprd12.prod.outlook.com (2603:10b6:8:130::22) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.29; Fri, 25 Aug
- 2023 10:31:51 +0000
-Received: from CY4PEPF0000E9DB.namprd05.prod.outlook.com
- (2603:10b6:930:8b:cafe::1f) by CYZPR12CA0017.outlook.office365.com
- (2603:10b6:930:8b::14) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.30 via Frontend
- Transport; Fri, 25 Aug 2023 10:31:51 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.232) by
- CY4PEPF0000E9DB.mail.protection.outlook.com (10.167.241.81) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6699.14 via Frontend Transport; Fri, 25 Aug 2023 10:31:51 +0000
-Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
- (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Fri, 25 Aug 2023
- 03:31:42 -0700
-Received: from drhqmail203.nvidia.com (10.126.190.182) by
- drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.37; Fri, 25 Aug 2023 03:31:41 -0700
-Received: from Asurada-Nvidia.nvidia.com (10.127.8.13) by mail.nvidia.com
- (10.126.190.182) with Microsoft SMTP Server id 15.2.986.37 via Frontend
- Transport; Fri, 25 Aug 2023 03:31:41 -0700
-From:   Nicolin Chen <nicolinc@nvidia.com>
-To:     <will@kernel.org>, <robin.murphy@arm.com>, <jgg@nvidia.com>
-CC:     <joro@8bytes.org>, <mshavit@google.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <iommu@lists.linux.dev>
-Subject: [PATCH v3 2/2] iommu/arm-smmu-v3: Refactor arm_smmu_write_strtab_ent()
-Date:   Fri, 25 Aug 2023 03:31:24 -0700
-Message-ID: <c1926ab1f06de64b4d30f1708b586a4ba95a4fdb.1692959239.git.nicolinc@nvidia.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <cover.1692959239.git.nicolinc@nvidia.com>
-References: <cover.1692959239.git.nicolinc@nvidia.com>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.27; Fri, 25 Aug
+ 2023 10:33:36 +0000
+Received: from SJ1PR12MB6172.namprd12.prod.outlook.com
+ ([fe80::8ff0:3f26:2697:d8d6]) by SJ1PR12MB6172.namprd12.prod.outlook.com
+ ([fe80::8ff0:3f26:2697:d8d6%4]) with mapi id 15.20.6699.027; Fri, 25 Aug 2023
+ 10:33:36 +0000
+Message-ID: <20e21145-4fef-33b5-f41c-5bfd66a0281e@amd.com>
+Date:   Fri, 25 Aug 2023 16:03:20 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [PATCH 0/1] Reduce cost of accessing tg->load_avg
+Content-Language: en-US
+To:     Aaron Lu <aaron.lu@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>
+Cc:     Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Tim Chen <tim.c.chen@intel.com>,
+        Nitin Tekchandani <nitin.tekchandani@intel.com>,
+        Yu Chen <yu.c.chen@intel.com>,
+        Waiman Long <longman@redhat.com>,
+        Deng Pan <pan.deng@intel.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
+        David Vernet <void@manifault.com>, linux-kernel@vger.kernel.org
+References: <20230823060832.454842-1-aaron.lu@intel.com>
+From:   Swapnil Sapkal <Swapnil.Sapkal@amd.com>
+In-Reply-To: <20230823060832.454842-1-aaron.lu@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PN2PR01CA0148.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:6::33) To SJ1PR12MB6172.namprd12.prod.outlook.com
+ (2603:10b6:a03:459::22)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9DB:EE_|CH3PR12MB8211:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1c503336-8e55-4c57-47ff-08dba5567e89
+X-MS-TrafficTypeDiagnostic: SJ1PR12MB6172:EE_|DS0PR12MB7748:EE_
+X-MS-Office365-Filtering-Correlation-Id: 51e6d6cb-e4c6-404a-b702-08dba556bcfa
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: OYQBZfTGe/ZTM35TZXQ1c0CK1NtVomaQeq2DWLtj/c7iAmRQuY2kwT+Fe0OlrIpaV+1PRsb6qC97ZIg1YCa93zDJiMHWEJ0exI7tZYvciDsfixPAEHZNtZYgbxVx51Uqt/qvjquKfP8ddQiqyYhmGA/id1pHFLpdmgZk5te3jmNvIZQv9MTvmjjQlMlYUim5u+grrhlDSuFlDRQLFClsDEXXMegJl80tAkzHWTyOfQBv6fpfNwhjYrBjasi2PeuDE7DdXSlSmELmXXcGeBUF83icCajX6ydLzoIuETdctLB78sA66l0MtRDY8r2Nc6HgQ2O2OpZnli3f8h/qcyHc0BY8OXHE9g4U+gN4uuHjp2Kz2pYqdC5/UDX5JQJ2wbO9ESLa4LGEIpIbBMcmBjLb7ODxqPYfSR5KmWtvtQhoFcunUNF4M+pBdAHEOYgL3zOEdPkzh4Vw89c11F3CvTWavtmK3yWW/zQJRzSFumvQlyoOnN4lSU4TlbtoP4lAevAEdpCwMZO/3CAWAHozDNnBBGd5Bh/xo8EdhsWt8+zXTzItG1mEMbKbWtVnK8bItqRmNQRZBhS6QRKBgCbmo3/rRr7cR98CZurs5GQblhgwbj6s8J14uVRcBRiaiGsoq9I1tIa/4QCaXMFsRb9U7ydMDO0oWfBaOKzcu0oui5vk98qkJfJL0lkza2SE6tuhlAfniHcNoTGHEQ65e9TWNx7HhAIzdBr70AEAo56LLt4ED0nDtn6TPZd2pPdTFhG65Zj2zv3AqmaQPCLxWWzjpJZ7Sg==
-X-Forefront-Antispam-Report: CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(376002)(39860400002)(396003)(136003)(346002)(1800799009)(82310400011)(186009)(451199024)(36840700001)(40470700004)(46966006)(86362001)(40460700003)(336012)(426003)(2906002)(47076005)(36756003)(36860700001)(83380400001)(6666004)(40480700001)(8676002)(4326008)(478600001)(26005)(41300700001)(8936002)(2616005)(82740400003)(7636003)(5660300002)(6636002)(356005)(316002)(110136005)(70206006)(70586007)(54906003)(7696005)(473944003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Aug 2023 10:31:51.0347
+X-Microsoft-Antispam-Message-Info: kX7RLdjVjRqxfaylUNvR2kMpXqZvlrPrtZ0au3F+OQ9DaCFRuQ++Ob3iVkU5vtvJGQDwk3QS+uS7EtsbbdEpL6O4daE1szS0rQf+6w2sthUQmtGmNNGU36S+YmAPx47KPHFzkskUFbs39R7pq3YdGbKI9d4jKKGd4Rek1EdYT9WT+6KwG5vy+0gY6fVbZ7jequoVWWSlcZlp0Tq2d71uVxJjJkgnykVxcyPsnLp8M8x8f6/wt9uAkM8Dz9k1/mYJbn6J/ysM+yDge3bGRBbtm/qmuT/NGBqSuVdTJUpY1qR8cwfuezTxfN+zWH3KMBk0jMJ6CHXkGuXlBj5IvCC9g/NZ4m6rEHcGITv2UAnDPMn7XWSYjKYeGjq5Vyi3cQ0nOXb+Jf6AcJMpgtQczqo9MP6IvvTUfLfbNIxu82L9OR2i1blj+565N76lPvUK7RyL0UDUC6/9PrjUlNWxYKqDm97f2Opv1EUSQUnh7k1p230uGysfW/q9Rc+lRaM92MIQSOdljH/Bo5kX7JZQVvq2xD/vM/IGjYvZ4JVs61+yk4b6810qhMAWjbnPPqe/qV5bLM2971/au7g0Qwq/BECYppzQ1SLYGiqgaN/LFS8F0LNozeVrYEw1MelOuivGP4pk
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ1PR12MB6172.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(39860400002)(396003)(136003)(366004)(1800799009)(186009)(451199024)(2616005)(5660300002)(4326008)(8676002)(8936002)(36756003)(83380400001)(7416002)(26005)(38100700002)(6666004)(66556008)(66946007)(66476007)(6506007)(54906003)(316002)(110136005)(478600001)(966005)(31686004)(6512007)(53546011)(41300700001)(2906002)(86362001)(6486002)(31696002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?K2xxRmRoWE15alo2ODR4MU1mZUFqaG5Bc290Qm5ZODNmcjY5b1Q2ZXZJdWVE?=
+ =?utf-8?B?S1Q0YjFMZDdJRWdIZHR3ZDlhRmU0dE1rbzg2ZkFhV2xyTCt2VDJYaDk0ZjZJ?=
+ =?utf-8?B?WmVacHdTd0ZxSDdYaE13Qk5DTUpFSWxRUmtRWFNrN0N2cUJ5MUEzcmVuUU9t?=
+ =?utf-8?B?bVFYRDNWSHdCU0tTZUdxczRtRXhDNkU3UVFjeThPa1V5OGI2Rmh6UXlzUjF1?=
+ =?utf-8?B?K3hodTlSaGMvdXl0cTQyYTJpd1JxWmZRSlhPYmF3T3JRTHZXOG54YnJjRnA2?=
+ =?utf-8?B?NHNLWkMzSGtVZHVUQ0RkTjU2RkR0aU5OZ3FqYXVlL3ZxdDRhU0FSL0c5ejc1?=
+ =?utf-8?B?cjBuMExTZXZST2tNWWNaU0E0NFVBY1AwU0kyck0yRzZMb1ZpOS95K1NmWFlT?=
+ =?utf-8?B?bG43NEJyQ2p3V0RJM0RXYUJWWHVYeW9YaGJYYVlUcWpBVG9BZkM5UGRqbUQ2?=
+ =?utf-8?B?VldCMHN6bmhvK1A4VTJWZmFjekZCaE1IakJNUG9jUG9pcDVqWHF0YVErdlAx?=
+ =?utf-8?B?ZkJta1NudzgzbjE5Z2RYZ0RhQTBZZnBYb1NzMktwUXhlbHZzVnlPUm9rUk84?=
+ =?utf-8?B?d3c4Y3dnR1lFMCswUEVhRERnMFZxV1RSVlpibEVsOW1jSGs1NENNc0tyb0x0?=
+ =?utf-8?B?RmZLUVlId2hkd2tYcW5pT0daREk1QUJraVpmTjZTdTljMHBnVmVNVHk0RHRh?=
+ =?utf-8?B?TkhSREtoYkxDdzBJOEFQcGpsdWVySUs5WStwb1pqWk5LUURuY1ZldmhVRkdP?=
+ =?utf-8?B?bEJLRllBNzRBTlEzRSthaWJZOUJGT2FUbFR0Z1ZKMEk0ZWpJRGRRejF6bDJT?=
+ =?utf-8?B?U1pIQlRrcVZ3OWx0MDdPbzhsbHJQZTBpY2ZicmNjWjlRRlZLQURjdy91bXdt?=
+ =?utf-8?B?MUQ2YzdTamh1WXZGenhUaHByS1NDejNISE9ETm0vSHpXQ2NRZ0toS2Yxb25E?=
+ =?utf-8?B?ZUxmOHBZdXk2TVJBSHgvaEtUV0xSQWd2clJObkowVG0zL0tKZCtaYjhtc1NP?=
+ =?utf-8?B?V0J2M0JzZ3VTY3ZwR1hGNVF5czhaa2s2Y29xaU8zTERJZ25nS2VUMXJYQ01t?=
+ =?utf-8?B?VzArajVFeFFrYVBHbVp6Sm1rU2tENWxhUkozU0ZMcWs4aFB4ZjF2ZXNVWWZE?=
+ =?utf-8?B?TGxxYWd1ZkEvckxDZG9kbzZFYlRldjRwTy91dnp2ZnI5RWp1YXRyWE9NbHpE?=
+ =?utf-8?B?emJZU21DSkpmSU5hbzJsc0FJcUNiTEY4ejNHQmlnODZJekdKMnJvSVFOQzNV?=
+ =?utf-8?B?ZUFEYW9ROXdoc1I2V2Y5V0NlRzhkNVRQTjl2ZFpUcUVxdGxyZlNoRTYyZ3gy?=
+ =?utf-8?B?WVhkalQ1cmYyeG01QWxpTWNqREI5VHB4dEpyTUVxaVR1TDZKVTVhQnEzTm1v?=
+ =?utf-8?B?WDRiUDFVbFRCSHJOR0pIZE11NllJemdPK2pmZXAwOHNtQ2lUV3ZadkI5SHlG?=
+ =?utf-8?B?eThrNVJOVVE3WmZlaWo3QlJPdU1jMnlWbGpwcHFCd0lGVGZwWElMdyt5eWJa?=
+ =?utf-8?B?RXpvMjA0dkZGMlp5dlgvY0lURE9BTE93MnBLbmV4dnVYVFpUcGhKWXozOUNK?=
+ =?utf-8?B?NDNLMnN3TUJGSXRsdFd2UURONmszZGEvMHpBbEk2NDk5ZkhCdDU1N2xLdzlH?=
+ =?utf-8?B?L2Yyb0hndTlKQjNCWG1MbndCVFA4TS9HckFrMk5OK0pGVDFBcXNaYkR2V1Ru?=
+ =?utf-8?B?cmgxakZKeDVoRTNPck9DQWp6TlNySWZNQU5VSDhXZWhqSUJTcjV0SmRXaHdk?=
+ =?utf-8?B?Y0hCdzRzNWYxbjlVSUs4YWkyS2ttby93VCtWTkxFWGluQ2dtbnEwSnBHTmpk?=
+ =?utf-8?B?d3ppc2ljUVRSRVZZUStlRVI0cUtNMjdVYjdlZFloVHI3MDlvcGZVb1VMNHo5?=
+ =?utf-8?B?MDdxckJhaEFQcTM4VC9pRWp2OWtPSWdQb0RZS0lBSUdkekdVeGgxNkxIT3Jk?=
+ =?utf-8?B?NWZxVloveUZaNTd5bFJpRGdKdWFRaHF4QUJocXZ1QUtWaUcxRVJzdnpWSXJ6?=
+ =?utf-8?B?VDZXNmJzaHM0T1FlTnZPUTkyTi9TUUVaZGN2eG4xZEZrc2VwNURTUXVOcGxq?=
+ =?utf-8?B?SjdhOEt2VTJRRkgxZ282UWdGTTBrbDJsV3JYSWowWkhwK0lEZUFUck5FZDU0?=
+ =?utf-8?Q?T3kwhjh3+thLqmHctSroOPgMR?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 51e6d6cb-e4c6-404a-b702-08dba556bcfa
+X-MS-Exchange-CrossTenant-AuthSource: SJ1PR12MB6172.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Aug 2023 10:33:36.4215
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1c503336-8e55-4c57-47ff-08dba5567e89
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000E9DB.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB8211
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ofhRv4XEJT/QC2Mx0bv1rR8ASF2UYyk5za2SSFOnWU5tTUnyKYBq31BfMcypehWdzAUcyGBZLpEYGdZeGnb67g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB7748
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A stream table entry generally can be configured for the following cases:
-Case #1: STE Stage-1 Translate Only
-  The master has a CD table and attached to an S1 or BYPASS domain.
-[Config #1] Set STE.Config to S1_TRANS. And set STE.SHCFG to INCOMING,
-	    required by a BYPASS domain and ignored by an S1 domain.
-	    Then follow the CD table to set the other fields.
+Hello Aaron,
 
-Case #2: STE Stage-2 Translate Only
-  The master doesn't have a CD table and attached to an S2 domain.
-[Config #2] Set STE.Config to S2_TRANS. Then follow the s2_cfg to set the
-            other fields.
+On 8/23/2023 11:38 AM, Aaron Lu wrote:
+> RFC v2 -> v1:
+> - drop RFC;
+> - move cfs_rq->last_update_tg_load_avg before cfs_rq->tg_load_avg_contrib;
+> - add Vincent's reviewed-by tag.
+> 
+> RFC v2:
+> Nitin Tekchandani noticed some scheduler functions have high cost
+> according to perf/cycles while running postgres_sysbench workload.
+> I perf/annotated the high cost functions: update_cfs_group() and
+> update_load_avg() and found the costs were ~90% due to accessing to
+> tg->load_avg. This series is an attempt to reduce the overhead of
+> the two functions.
+>                                                                                                                         
+> Thanks to Vincent's suggestion from v1, this revision used a simpler way
+> to solve the overhead problem by limiting updates to tg->load_avg to at
+> most once per ms. Benchmark shows that it has good results and with the
+> rate limit in place, other optimizations in v1 don't improve performance
+> further so they are dropped from this revision.
+> 
 
-Case #3: STE Stage-1 and Stage-2 Translate
-  The master allocated a CD table and attached to a NESTED domain that has
-  an s2_cfg somewhere for stage-2 fields.
-[Config #4] Set STE.Config to S1_TRANS | S2_TRANS. Then follow both the CD
-            table and the s2_cfg to set the other fields.
+I have tested this series alongside Mathieu's changes. You can find the
+report here: https://lore.kernel.org/all/f6dc1652-bc39-0b12-4b6b-29a2f9cd8484@amd.com/
 
-Case #4: STE Bypass
-  The master doesn't have a CD table and attached to an INDENTITY domain.
-[Config #3] Set STE.Config to BYPASS and set STE.SHCFG to INCOMING.
+Tested-by: Swapnil Sapkal <Swapnil.Sapkal@amd.com>
 
-Case #5: STE Abort
-  The master is not attached to any domain, and the "disable_bypass" param
-  is set to "true".
-[Config #4] Set STE.Config to ABORT
-
-After the recent refactor of moving cd/cd_table ownerships, things in the
-arm_smmu_write_strtab_ent() are a bit out of date, e.g. master pointer now
-is always available. And it doesn't support a special case of attaching a
-BYPASS domain to a multi-ssid master in the case #1.
-
-Add helpers by naming them clearly for the first four STE.Config settings.
-
-The case #5 can be covered by calling Config #2 at the end of Config #1,
-though the driver currently doesn't really use it and should be updated to
-the ongoing nesting design in the IOMMUFD. Yet, the helpers would be able
-to simply support that in the future by adding very limited changes in the
-switch-case in arm_smmu_ste_stage2_translate().
-
-Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
-Signed-off-by: Nicolin Chen <nicolinc@nvidia.com>
----
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 201 +++++++++++---------
- 1 file changed, 112 insertions(+), 89 deletions(-)
-
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-index de8bc4c3ad7a..c2ebbc916a2e 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-@@ -1251,6 +1251,91 @@ static void arm_smmu_sync_ste_for_sid(struct arm_smmu_device *smmu, u32 sid)
- 	arm_smmu_cmdq_issue_cmd_with_sync(smmu, &cmd);
- }
- 
-+static void arm_smmu_ste_stage2_translate(struct arm_smmu_master *master,
-+					  u64 *ste)
-+{
-+	struct arm_smmu_domain *smmu_domain = master->domain;
-+	struct arm_smmu_device *smmu = master->smmu;
-+	struct arm_smmu_s2_cfg *s2_cfg;
-+
-+	switch (smmu_domain->stage) {
-+	case ARM_SMMU_DOMAIN_NESTED:
-+	case ARM_SMMU_DOMAIN_S2:
-+		s2_cfg = &smmu_domain->s2_cfg;
-+		break;
-+	default:
-+		WARN_ON(1);
-+		return;
-+	}
-+
-+	ste[0] |= FIELD_PREP(STRTAB_STE_0_CFG, STRTAB_STE_0_CFG_S2_TRANS);
-+
-+	if (smmu->features & ARM_SMMU_FEAT_STALLS && !master->stall_enabled)
-+		ste[1] |= STRTAB_STE_1_S1STALLD;
-+
-+	if (master->ats_enabled)
-+		ste[1] |= FIELD_PREP(STRTAB_STE_1_EATS, STRTAB_STE_1_EATS_TRANS);
-+
-+	ste[2] |= FIELD_PREP(STRTAB_STE_2_S2VMID, s2_cfg->vmid) |
-+		  FIELD_PREP(STRTAB_STE_2_VTCR, s2_cfg->vtcr) |
-+#ifdef __BIG_ENDIAN
-+		  STRTAB_STE_2_S2ENDI |
-+#endif
-+		  STRTAB_STE_2_S2PTW | STRTAB_STE_2_S2AA64 | STRTAB_STE_2_S2R;
-+
-+	ste[3] |= s2_cfg->vttbr & STRTAB_STE_3_S2TTB_MASK;
-+}
-+
-+static void arm_smmu_ste_stage1_translate(struct arm_smmu_master *master,
-+					  u64 *ste)
-+{
-+	struct arm_smmu_ctx_desc_cfg *cd_table = &master->cd_table;
-+	struct arm_smmu_device *smmu = master->smmu;
-+	__le64 *cdptr = arm_smmu_get_cd_ptr(master, 0);
-+
-+	WARN_ON_ONCE(!cdptr);
-+
-+	ste[0] |= (cd_table->cdtab_dma & STRTAB_STE_0_S1CTXPTR_MASK) |
-+		  FIELD_PREP(STRTAB_STE_0_CFG, STRTAB_STE_0_CFG_S1_TRANS) |
-+		  FIELD_PREP(STRTAB_STE_0_S1CDMAX, cd_table->s1cdmax) |
-+		  FIELD_PREP(STRTAB_STE_0_S1FMT, cd_table->s1fmt);
-+
-+	if (FIELD_GET(CTXDESC_CD_0_ASID, le64_to_cpu(cdptr[0])))
-+		ste[1] |= FIELD_PREP(STRTAB_STE_1_S1DSS, STRTAB_STE_1_S1DSS_SSID0);
-+	else
-+		ste[1] |= FIELD_PREP(STRTAB_STE_1_S1DSS, STRTAB_STE_1_S1DSS_BYPASS);
-+
-+	ste[1] |= FIELD_PREP(STRTAB_STE_1_SHCFG, STRTAB_STE_1_SHCFG_INCOMING) |
-+		  FIELD_PREP(STRTAB_STE_1_S1CIR, STRTAB_STE_1_S1C_CACHE_WBRA) |
-+		  FIELD_PREP(STRTAB_STE_1_S1COR, STRTAB_STE_1_S1C_CACHE_WBRA) |
-+		  FIELD_PREP(STRTAB_STE_1_S1CSH, ARM_SMMU_SH_ISH);
-+
-+	if (smmu->features & ARM_SMMU_FEAT_E2H)
-+		ste[1] |= FIELD_PREP(STRTAB_STE_1_STRW, STRTAB_STE_1_STRW_EL2);
-+	else
-+		ste[1] |= FIELD_PREP(STRTAB_STE_1_STRW, STRTAB_STE_1_STRW_NSEL1);
-+
-+	if (smmu->features & ARM_SMMU_FEAT_STALLS && !master->stall_enabled)
-+		ste[1] |= STRTAB_STE_1_S1STALLD;
-+
-+	if (master->ats_enabled)
-+		ste[1] |= FIELD_PREP(STRTAB_STE_1_EATS, STRTAB_STE_1_EATS_TRANS);
-+
-+	if (master->domain->stage == ARM_SMMU_DOMAIN_NESTED)
-+		arm_smmu_ste_stage2_translate(master, ste);
-+}
-+
-+static void arm_smmu_ste_abort(u64 *ste)
-+{
-+	ste[0] |= FIELD_PREP(STRTAB_STE_0_CFG, STRTAB_STE_0_CFG_ABORT);
-+}
-+
-+static void arm_smmu_ste_bypass(u64 *ste)
-+{
-+	ste[0] |= FIELD_PREP(STRTAB_STE_0_CFG, STRTAB_STE_0_CFG_BYPASS);
-+	ste[1] |= FIELD_PREP(STRTAB_STE_1_SHCFG, STRTAB_STE_1_SHCFG_INCOMING);
-+}
-+
- static void arm_smmu_write_strtab_ent(struct arm_smmu_master *master, u32 sid,
- 				      __le64 *dst)
- {
-@@ -1270,12 +1355,11 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_master *master, u32 sid,
- 	 * 2. Write everything apart from dword 0, sync, write dword 0, sync
- 	 * 3. Update Config, sync
- 	 */
--	u64 val = le64_to_cpu(dst[0]);
-+	int i;
-+	u64 ste[4] = {0};
-+	bool ste_sync_all = false;
- 	bool ste_live = false;
--	struct arm_smmu_device *smmu = NULL;
--	struct arm_smmu_ctx_desc_cfg *cd_table = NULL;
--	struct arm_smmu_s2_cfg *s2_cfg = NULL;
--	struct arm_smmu_domain *smmu_domain = NULL;
-+	struct arm_smmu_device *smmu = master->smmu;
- 	struct arm_smmu_cmdq_ent prefetch_cmd = {
- 		.opcode		= CMDQ_OP_PREFETCH_CFG,
- 		.prefetch	= {
-@@ -1283,27 +1367,8 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_master *master, u32 sid,
- 		},
- 	};
- 
--	if (master) {
--		smmu_domain = master->domain;
--		smmu = master->smmu;
--	}
--
--	if (smmu_domain) {
--		switch (smmu_domain->stage) {
--		case ARM_SMMU_DOMAIN_S1:
--			cd_table = &master->cd_table;
--			break;
--		case ARM_SMMU_DOMAIN_S2:
--		case ARM_SMMU_DOMAIN_NESTED:
--			s2_cfg = &smmu_domain->s2_cfg;
--			break;
--		default:
--			break;
--		}
--	}
--
--	if (val & STRTAB_STE_0_V) {
--		switch (FIELD_GET(STRTAB_STE_0_CFG, val)) {
-+	if (le64_to_cpu(dst[0]) & STRTAB_STE_0_V) {
-+		switch (FIELD_GET(STRTAB_STE_0_CFG, le64_to_cpu(dst[0]))) {
- 		case STRTAB_STE_0_CFG_BYPASS:
- 			break;
- 		case STRTAB_STE_0_CFG_S1_TRANS:
-@@ -1318,78 +1383,36 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_master *master, u32 sid,
- 		}
- 	}
- 
--	/* Nuke the existing STE_0 value, as we're going to rewrite it */
--	val = STRTAB_STE_0_V;
--
--	/* Bypass/fault */
--	if (!smmu_domain || !(cd_table || s2_cfg)) {
--		if (!smmu_domain && disable_bypass)
--			val |= FIELD_PREP(STRTAB_STE_0_CFG, STRTAB_STE_0_CFG_ABORT);
--		else
--			val |= FIELD_PREP(STRTAB_STE_0_CFG, STRTAB_STE_0_CFG_BYPASS);
--
--		dst[0] = cpu_to_le64(val);
--		dst[1] = cpu_to_le64(FIELD_PREP(STRTAB_STE_1_SHCFG,
--						STRTAB_STE_1_SHCFG_INCOMING));
--		dst[2] = 0; /* Nuke the VMID */
--		/*
--		 * The SMMU can perform negative caching, so we must sync
--		 * the STE regardless of whether the old value was live.
--		 */
--		if (smmu)
--			arm_smmu_sync_ste_for_sid(smmu, sid);
--		master->cd_table.installed = false;
--		return;
--	}
--
--	if (cd_table) {
--		u64 strw = smmu->features & ARM_SMMU_FEAT_E2H ?
--			STRTAB_STE_1_STRW_EL2 : STRTAB_STE_1_STRW_NSEL1;
-+	ste[0] = STRTAB_STE_0_V;
- 
-+	if (master->cd_table.cdtab && master->domain) {
-+		BUG_ON(ste_live);
-+		arm_smmu_ste_stage1_translate(master, ste);
-+		master->cd_table.installed = true;
-+	} else if (master->domain &&
-+		   master->domain->stage == ARM_SMMU_DOMAIN_S2) {
- 		BUG_ON(ste_live);
--		dst[1] = cpu_to_le64(
--			 FIELD_PREP(STRTAB_STE_1_S1DSS, STRTAB_STE_1_S1DSS_SSID0) |
--			 FIELD_PREP(STRTAB_STE_1_S1CIR, STRTAB_STE_1_S1C_CACHE_WBRA) |
--			 FIELD_PREP(STRTAB_STE_1_S1COR, STRTAB_STE_1_S1C_CACHE_WBRA) |
--			 FIELD_PREP(STRTAB_STE_1_S1CSH, ARM_SMMU_SH_ISH) |
--			 FIELD_PREP(STRTAB_STE_1_STRW, strw));
--
--		if (smmu->features & ARM_SMMU_FEAT_STALLS &&
--		    !master->stall_enabled)
--			dst[1] |= cpu_to_le64(STRTAB_STE_1_S1STALLD);
--
--		val |= (cd_table->cdtab_dma & STRTAB_STE_0_S1CTXPTR_MASK) |
--			FIELD_PREP(STRTAB_STE_0_CFG, STRTAB_STE_0_CFG_S1_TRANS) |
--			FIELD_PREP(STRTAB_STE_0_S1CDMAX, cd_table->s1cdmax) |
--			FIELD_PREP(STRTAB_STE_0_S1FMT, cd_table->s1fmt);
--		cd_table->installed = true;
-+		arm_smmu_ste_stage2_translate(master, ste);
-+		master->cd_table.installed = false;
-+	} else if (!master->domain && disable_bypass) { /* Master is detached */
-+		arm_smmu_ste_abort(ste);
-+		master->cd_table.installed = false;
- 	} else {
-+		arm_smmu_ste_bypass(ste);
- 		master->cd_table.installed = false;
- 	}
- 
--	if (s2_cfg) {
--		BUG_ON(ste_live);
--		dst[2] = cpu_to_le64(
--			 FIELD_PREP(STRTAB_STE_2_S2VMID, s2_cfg->vmid) |
--			 FIELD_PREP(STRTAB_STE_2_VTCR, s2_cfg->vtcr) |
--#ifdef __BIG_ENDIAN
--			 STRTAB_STE_2_S2ENDI |
--#endif
--			 STRTAB_STE_2_S2PTW | STRTAB_STE_2_S2AA64 |
--			 STRTAB_STE_2_S2R);
--
--		dst[3] = cpu_to_le64(s2_cfg->vttbr & STRTAB_STE_3_S2TTB_MASK);
--
--		val |= FIELD_PREP(STRTAB_STE_0_CFG, STRTAB_STE_0_CFG_S2_TRANS);
-+	for (i = 1; i < 4; i++) {
-+		if (dst[i] == cpu_to_le64(ste[i]))
-+			continue;
-+		dst[i] = cpu_to_le64(ste[i]);
-+		ste_sync_all = true;
- 	}
- 
--	if (master->ats_enabled)
--		dst[1] |= cpu_to_le64(FIELD_PREP(STRTAB_STE_1_EATS,
--						 STRTAB_STE_1_EATS_TRANS));
--
--	arm_smmu_sync_ste_for_sid(smmu, sid);
-+	if (ste_sync_all)
-+		arm_smmu_sync_ste_for_sid(smmu, sid);
- 	/* See comment in arm_smmu_write_ctx_desc() */
--	WRITE_ONCE(dst[0], cpu_to_le64(val));
-+	WRITE_ONCE(dst[0], cpu_to_le64(ste[0]));
- 	arm_smmu_sync_ste_for_sid(smmu, sid);
- 
- 	/* It's likely that we'll want to use the new STE soon */
--- 
-2.42.0
-
+> Aaron Lu (1):
+>    sched/fair: ratelimit update to tg->load_avg
+> 
+>   kernel/sched/fair.c  | 13 ++++++++++++-
+>   kernel/sched/sched.h |  1 +
+>   2 files changed, 13 insertions(+), 1 deletion(-)
+> 
+--
+Thanks and Regards,
+Swapnil
