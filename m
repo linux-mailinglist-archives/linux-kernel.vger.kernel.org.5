@@ -2,102 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50330787F5E
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 07:40:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EC52787F5F
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 07:41:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238162AbjHYFjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 01:39:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54696 "EHLO
+        id S238636AbjHYFlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 01:41:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240893AbjHYFj1 (ORCPT
+        with ESMTP id S238506AbjHYFlN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 01:39:27 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AD3B1FF3;
-        Thu, 24 Aug 2023 22:39:21 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4ff8a1746e0so797607e87.0;
-        Thu, 24 Aug 2023 22:39:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692941959; x=1693546759;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XxM4hun7J7j3+pA4h09bA4XVsK57JjdIEry9BgKjY3Q=;
-        b=czfc5ny0qfUkRN4qcHiJLAkogPE+hwYtJcgx7VIVnu9wpxNhcdBPdjqqnJuf0Q1UOM
-         oqEWLpPeHnJSdfy6dA4VBo1sHaRzu7ny3u1cyfyefRssEsB62r31K+PQ8qq1RzUUuIMj
-         iSmhx7DPK3pMH//YQKv6qBvA6Tftn+VHelEaIZ6yXXy4TWzO9C55zXVhehfxByDu3o+p
-         zesKgOyKD3FY06RAEXd0Dffpt8w9JhuDRyir0/Pxw7rpzTXQj9kOthzVprCGsitSgi41
-         YRbh4dw18+l/HKvkPFdcv5akBsXfLSGfEt2su4zrzDI2PHmJGjyDvI613NropKfuGC/V
-         6JlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692941959; x=1693546759;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XxM4hun7J7j3+pA4h09bA4XVsK57JjdIEry9BgKjY3Q=;
-        b=dw6P/YhKCBD9c3qCP9CSOVGYEEF/7xLPKaaIekBqDqg68HkiyarL5+8pnrPeW9J7DY
-         8qnNvRq1IkpN0GXyfIEiPqSbyS9iyuKJSF/rSMOqKORzJa889AAToK6tPGblMg+/X4ib
-         DCseWxkIofyVX/r17whY+HWV8kuxodhWWLMdnIx1InRw407lGlZ0cbxrkzTvS+WAumli
-         zaa4a23fxwzpVEmaWQsZYZd7tFfIqJetw1egalHKkJ0Zs0UaJhVuqTZKumAyZiVrB0W+
-         wHK9wjMY0HKdZXJdA3YFuqq+c+OLjuUCy6mGJ6oladNM9yhpxXPub7nuwFnFloR6QYjE
-         DySw==
-X-Gm-Message-State: AOJu0Yy0lprl/yZbrREWSVpjaSFFIK/anLqPqjALfj0PNXZBHITbtSlv
-        mz9M9ORY6Xahrc7NyslMag0=
-X-Google-Smtp-Source: AGHT+IGs7LI6eP5/RZSHTVEf9VXin5JHG9+q/5+tAOHoHiyBvuWVgn7WeG0XLuPmJgMT6OFGHiSdhA==
-X-Received: by 2002:a19:8c0f:0:b0:500:7685:839 with SMTP id o15-20020a198c0f000000b0050076850839mr10472065lfd.65.1692941958921;
-        Thu, 24 Aug 2023 22:39:18 -0700 (PDT)
-Received: from felia.fritz.box ([2a02:810d:7e40:14b0:98c5:e120:ff1e:7709])
-        by smtp.gmail.com with ESMTPSA id m22-20020aa7d356000000b0052338f5b2a4sm598540edr.86.2023.08.24.22.39.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Aug 2023 22:39:17 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-rtc@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] MAINTAINERS: remove obsolete pattern in RTC SUBSYSTEM section
-Date:   Fri, 25 Aug 2023 07:39:10 +0200
-Message-Id: <20230825053910.17941-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 25 Aug 2023 01:41:13 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C8781BDA;
+        Thu, 24 Aug 2023 22:41:10 -0700 (PDT)
+Received: from kwepemm600003.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RX7xs1CdpztSMB;
+        Fri, 25 Aug 2023 13:37:21 +0800 (CST)
+Received: from [10.67.111.205] (10.67.111.205) by
+ kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Fri, 25 Aug 2023 13:41:06 +0800
+Subject: Re: [PATCH v6 1/7] perf evlist: Add perf_evlist__go_system_wide()
+ helper
+To:     Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+CC:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <jolsa@kernel.org>, <namhyung@kernel.org>,
+        <kan.liang@linux.intel.com>, <james.clark@arm.com>,
+        <tmricht@linux.ibm.com>, <ak@linux.intel.com>,
+        <anshuman.khandual@arm.com>, <linux-kernel@vger.kernel.org>,
+        <linux-perf-users@vger.kernel.org>
+References: <20230821012734.18241-1-yangjihong1@huawei.com>
+ <20230821012734.18241-2-yangjihong1@huawei.com>
+ <CAP-5=fXexLBnq1pkHPR5uXR-bL3CFTzEWkFnxHVs-71+S0yZSg@mail.gmail.com>
+From:   Yang Jihong <yangjihong1@huawei.com>
+Message-ID: <db2de7d0-d60d-33f8-3587-c776a3eb8fce@huawei.com>
+Date:   Fri, 25 Aug 2023 13:41:06 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
+MIME-Version: 1.0
+In-Reply-To: <CAP-5=fXexLBnq1pkHPR5uXR-bL3CFTzEWkFnxHVs-71+S0yZSg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.111.205]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemm600003.china.huawei.com (7.193.23.202)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit d890cfc25fe9 ("rtc: ds2404: Convert to GPIO descriptors") removes
-the rtc-ds2404.h platform data and with that, there is no file remaining
-matching the pattern 'include/linux/platform_data/rtc-*'. Hence,
-./scripts/get_maintainer.pl --self-test=patterns complains about a broken
-reference.
+Hello,
 
-Remove the obsolete file pattern in the REAL TIME CLOCK (RTC) SUBSYSTEM.
+On 2023/8/25 12:51, Ian Rogers wrote:
+> On Sun, Aug 20, 2023 at 6:30 PM Yang Jihong <yangjihong1@huawei.com> wrote:
+>>
+>> For dummy events that keep tracking, we may need to modify its cpu_maps.
+>> For example, change the cpu_maps to record sideband events for all CPUS.
+>> Add perf_evlist__go_system_wide() helper to support this scenario.
+>>
+>> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+>> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+>> ---
+>>   tools/lib/perf/evlist.c                  | 9 +++++++++
+>>   tools/lib/perf/include/internal/evlist.h | 2 ++
+>>   2 files changed, 11 insertions(+)
+>>
+>> diff --git a/tools/lib/perf/evlist.c b/tools/lib/perf/evlist.c
+>> index b8b066d0dc5e..3acbbccc1901 100644
+>> --- a/tools/lib/perf/evlist.c
+>> +++ b/tools/lib/perf/evlist.c
+>> @@ -738,3 +738,12 @@ int perf_evlist__nr_groups(struct perf_evlist *evlist)
+>>          }
+>>          return nr_groups;
+>>   }
+>> +
+>> +void perf_evlist__go_system_wide(struct perf_evlist *evlist, struct perf_evsel *evsel)
+>> +{
+>> +       if (!evsel->system_wide) {
+>> +               evsel->system_wide = true;
+>> +               if (evlist->needs_map_propagation)
+>> +                       __perf_evlist__propagate_maps(evlist, evsel);
+>> +       }
+>> +}
+> 
+> I think this should be:
+> 
+> void evsel__set_system_wide(struct evsel *evsel)
+> {
+>          if (evsel->system_wide)
+>                 return;
+>          evsel->system_wide = true;
+>          if (evsel->evlist->core.needs_map_propagation)
+> ...
+> 
+> The API being on evlist makes it look like all evsels are affected.
+> 
+This part of the code is implemented according to Adrian's suggestion.
+Refer to:
 
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
-Linus, please ack.
+https://lore.kernel.org/linux-perf-users/206972a3-d44d-1c75-3fbc-426427614543@intel.com/
 
-Alexandre, please pick this into your rtc tree.
+The logic of both is the same, and either is OK for me.
+If really want to change it, please let me know.
 
- MAINTAINERS | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 250c43c675cb..52277ee9c1b8 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -18089,7 +18089,6 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/abelloni/linux.git
- F:	Documentation/admin-guide/rtc.rst
- F:	Documentation/devicetree/bindings/rtc/
- F:	drivers/rtc/
--F:	include/linux/platform_data/rtc-*
- F:	include/linux/rtc.h
- F:	include/linux/rtc/
- F:	include/uapi/linux/rtc.h
--- 
-2.17.1
-
+Thanks,
+Yang
