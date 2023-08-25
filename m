@@ -2,110 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5581A788BA4
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 16:25:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B941788BA5
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 16:27:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343751AbjHYOZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 10:25:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49484 "EHLO
+        id S245188AbjHYO0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 10:26:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343677AbjHYOYe (ORCPT
+        with ESMTP id S1343856AbjHYO0I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 10:24:34 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96471D1;
-        Fri, 25 Aug 2023 07:24:31 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-68c3b9f83f4so43080b3a.2;
-        Fri, 25 Aug 2023 07:24:31 -0700 (PDT)
+        Fri, 25 Aug 2023 10:26:08 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6D021995
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 07:26:04 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d78452de9cbso548843276.2
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 07:26:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692973471; x=1693578271;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vHyka2U6Y9QLR3iBbxMxEWSzu/iMnQI0MUngbRlsFAY=;
-        b=BRzIOGxuRosXrZwg7/OsmumCL3DVKh3ipGfPDi7BQNgjqFv/K4e0DeFlCr6B9ScpJq
-         tqhWrH3jBZ3JCUmy2nO/aJ99fqoda8abgk505EcnjRILOKbEQoUDhIdrY4s1YtUlSQmy
-         TpRPjkHL6+i1lhltwha+HSuEM3tQ89i1GyhmGfaERgalGjlkhSm8rpPV0QOg3DyRnm5X
-         ioNUCdsgXRo/Is7OidNH7wvAL1UDGdrF8S5GNRutFqo8OXIZWGJRHcb0eRNUUvP26L3j
-         trdtwFz8rEt8HDzw18kjjJvsyjev6lD3yRtb55T+vQOsggThF56tEMhSwUhz2RCNODof
-         eraw==
+        d=google.com; s=20221208; t=1692973564; x=1693578364;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xpKO/2A0f/no2QIyIWC8bhx4Rp180QUhRFsJmxIIf6k=;
+        b=cFkJgG2HgF7ql8/QY+ZSKA5R4EJ76QgRByuQImcO66jhdIVOsnThPj+OKN+Ka6GwJw
+         LDwJfXmt37njPox0SCKS6HtdoZWM6ZKAnPvo2IWC4fidM5IoeqCr98Znox9XCvkaOkg5
+         iR1mizqaTnQ20ylmolDwwgohXf1moQkKWuvlGg2fcH00GWrBQnzdlZKkNw3Jd9zs56Ed
+         gS+vllTY2iAPKvfWqIWBGqVi40qrXnxr1UFnnWPm2zibyB1cY+HQlv1SAkMJAajDCGOA
+         OtAqtn0S9nghmDwRoYT6UPKoghUIrjFerywtwSCDiMxj9N0IOlJb3F+6yZUT9TY27QWL
+         SdiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692973471; x=1693578271;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vHyka2U6Y9QLR3iBbxMxEWSzu/iMnQI0MUngbRlsFAY=;
-        b=QgmkYw3sX4nsOdRYcAb+x+W0HRVNgb5KV7yCMcFDjyr7eg8tyFkxtugN1PhLDic0in
-         ufyZrcOUFnljT1MIRxWopbm3tfAji23AohRtYhbtKXhgYqdq7Lmvpdkc//1bAstEDmVp
-         RNf/i7wVYL8iQ7gLvreTaCmd4vkU/eTlgSF8NQmbXkjj6zGzT8IxOJw6IFAG4+GI8MNR
-         5R2+skxlVqRYrVzSt1hOF3igQn9rhvebZM0IbqMbuGuJaXWUTESXeBvQkH72umk2DPaW
-         yd37gaDOx77YzWzocuOCN6j2TI/6X84alouaxtLCn7tUe3VM2uwMt8fLefSYyZmDAgIo
-         670g==
-X-Gm-Message-State: AOJu0YxthTQDeLlflttI7Jxs0A9UEj2HDSPIiRNCtweDbWpSuhJsYfBm
-        b1efRyMnxNFI4l4ycSDnLUng6SHvtQ8=
-X-Google-Smtp-Source: AGHT+IFVem110PP4tmF7Ev+4kTdchTFejqRzAwBbt3fP8YY3TzU76qliEjKgB2szc8YRyFlqWUssoQ==
-X-Received: by 2002:a05:6a00:1581:b0:68b:4e07:133f with SMTP id u1-20020a056a00158100b0068b4e07133fmr11558479pfk.7.1692973470973;
-        Fri, 25 Aug 2023 07:24:30 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id y1-20020aa78541000000b006879493aca0sm1623555pfn.26.2023.08.25.07.24.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Aug 2023 07:24:30 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Fri, 25 Aug 2023 07:24:29 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-Subject: Re: [PATCH 5.10 000/135] 5.10.192-rc1 review
-Message-ID: <fb1c3952-1d72-4f9d-bc93-2988bcde462e@roeck-us.net>
-References: <20230824170617.074557800@linuxfoundation.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230824170617.074557800@linuxfoundation.org>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1692973564; x=1693578364;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xpKO/2A0f/no2QIyIWC8bhx4Rp180QUhRFsJmxIIf6k=;
+        b=j3ZlUVRZxI9GbWsVeAKixMtbrFzENqw5ktFGkgdmZp9rM2kOwx19oa/lRwiE5Zz4a2
+         3TZBKlAhdtxTzwWMiVBEkV4jTdUZOGCQe5G/OinpxKcy7VMsqNIMozHfjk23PerapYnI
+         sY7P00qmy6oA1wLzcrRa/U7nlVfYFN6jpkOaRVxyTsBmYs7ICGi/BWHEqO6M2OePgqj1
+         7LOsOvSAfxdhlIeoESFN2cJgCdBTKmJiUhywwmBTTa7x57ZK1as9BAnMNTCWD4MNarSH
+         d0/bmkJpofu5WNtIemPnfbgBVBGm8jyofdFEIygqy4f5bmqlAC1IWZ+kfcSdyepn6NIi
+         eEYw==
+X-Gm-Message-State: AOJu0YxPvVAScGHHTg8Y6YnKKEPm6UR8MdfDz4n4vM86ziktD85MjJyA
+        r+8+wNLtlpt+iUHReh7A/qGzXuQ1wz8=
+X-Google-Smtp-Source: AGHT+IE64T9Kdj2ejG3B4Nr6Y45EuDCgAtQzT7hL9ZXXsmCS3yNmRUay9Xn0CHteK3xz97jhmqj3De9Ue1E=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:7450:0:b0:d7a:a879:614d with SMTP id
+ p77-20020a257450000000b00d7aa879614dmr22384ybc.1.1692973564238; Fri, 25 Aug
+ 2023 07:26:04 -0700 (PDT)
+Date:   Fri, 25 Aug 2023 07:26:02 -0700
+In-Reply-To: <cdad0a8b-0994-d2f3-7c68-e632ce4facf7@amd.com>
+Mime-Version: 1.0
+References: <67fba65c-ba2a-4681-a9bc-2a6e8f0bcb92.chenpeihong.cph@alibaba-inc.com>
+ <ZOYfxgSy/SxCn0Wq@google.com> <174aa0da-0b05-a2dc-7884-4f7b57abcc37@amd.com>
+ <ZOdnuDZUd4mevCqe@google.com> <cdad0a8b-0994-d2f3-7c68-e632ce4facf7@amd.com>
+Message-ID: <ZOi5+rMYTVpmdQ2+@google.com>
+Subject: Re: Question about AMD SVM's virtual NMI support in Linux kernel mainline
+From:   Sean Christopherson <seanjc@google.com>
+To:     Santosh Shukla <santosh.shukla@amd.com>
+Cc:     "=?utf-8?B?6ZmI5Z+56bi/KOS5mOm4vyk=?=" 
+        <chenpeihong.cph@alibaba-inc.com>, mlevitsk <mlevitsk@redhat.com>,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 07:07:52PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.192 release.
-> There are 135 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Fri, Aug 25, 2023, Santosh Shukla wrote:
+> Hi Sean,
+> >> Yes, HW does set BLOCKING_MASK when HW takes the pending vNMI event.
+> > 
+> > I'm not asking about the pending vNMI case, which is clearly spelled out in the
+> > APM.  I'm asking about directly injecting an NMI via:
+> > 
+> > 	svm->vmcb->control.event_inj = SVM_EVTINJ_VALID | SVM_EVTINJ_TYPE_NMI;
+> >
 > 
-> Responses should be made by Sat, 26 Aug 2023 17:05:50 +0000.
-> Anything received after that time might be too late.
+> Yes. This is documented in APM as well.
+> https://www.amd.com/system/files/TechDocs/24593.pdf : "15.21.10 NMI Virtualization"
 > 
+> "
+> If Event Injection is used to inject an NMI when NMI Virtualization is enabled,
+> VMRUN sets V_NMI_MASK in the guest state.
+> "
 
-Testing is not complete, but early feedback: All riscv32 boot tests
-crash badly with errors such as
-
-Starting syslogd: OK
-Starting klogd: OK
-/etc/init.d/S02sysctl: line 68: syntax error: EOF in backquote substitution
-/etc/init.d/S20seedrng: line 33: syntax error: unexpected end of file (expecting ";;")
-Starting network: /bin/sh: syntax error: unterminated quoted string
-sed: unmatched '/'
-/bin/sh: syntax error: unterminated quoted string
-FAIL
-/etc/init.d/S55runtest: line 48: syntax error: EOF in backquote substitution
-
-This is no longer seen after reverting the following patches.
-
-92609bb3a1f8 riscv: uaccess: Return the number of bytes effectively not copied
-e06648704417 riscv: lib: uaccess: fix CSR_STATUS SR_SUM bit
-20704d763646 riscv: lib: uaccess: fold fixups into body
-4f503bad920e riscv: __asm_copy_to-from_user: Optimize unaligned memory access and pipeline stall
-
-Guenter
+Awesome, thank you!
