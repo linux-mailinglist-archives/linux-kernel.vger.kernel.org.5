@@ -2,172 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8259789237
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 01:09:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 524F078923C
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 01:12:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230209AbjHYXIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 19:08:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47810 "EHLO
+        id S230246AbjHYXL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 19:11:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230228AbjHYXIi (ORCPT
+        with ESMTP id S230240AbjHYXLz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 19:08:38 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83E462117
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 16:08:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693004915; x=1724540915;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=SD/+zXYeZhS1mXJgtDpvVyLszERaAjzV5TLOntL7gTQ=;
-  b=BArg5Yr2JT/47rwj3Pz/opXv1vO2oI9eYshlrhPcnm0UqiiRVHecGFNo
-   6oReDXOiQXtd2f6yz4yGHF+G+07X2SqphLAzPjV+YJ822BMbpH5bCNp61
-   HBW+yY9lQfmmnllPiJ3ZqxR86A/9FYEyTMmvlkh+Ssu6QfHwXqnPaRCtx
-   MIqLUi7nRyF4vK1tc8K5WrGG0sAZr6hvZ4Gipgx/Y0aW1/kQ0EJOv3gZS
-   QHKND2KiW6lKLTjmrxebcXsCM/WfJL7FYfh5BoPiDDJWcP4OV0kw6pAiS
-   rE6RdiVb5BU0buI/mvtqkqWqPkPPEYYBD4AGR0TE4xpG9O6DR/X9MvbrR
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10813"; a="359817254"
-X-IronPort-AV: E=Sophos;i="6.02,202,1688454000"; 
-   d="scan'208";a="359817254"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2023 16:08:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10813"; a="740770170"
-X-IronPort-AV: E=Sophos;i="6.02,202,1688454000"; 
-   d="scan'208";a="740770170"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by fmsmga007.fm.intel.com with ESMTP; 25 Aug 2023 16:08:34 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Fri, 25 Aug 2023 16:08:34 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Fri, 25 Aug 2023 16:08:32 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Fri, 25 Aug 2023 16:08:32 -0700
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (104.47.51.44) by
- edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Fri, 25 Aug 2023 16:08:32 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lE3+VvNbbJ8lhH1o6MJUEn72ICKufbL/BAe5cV7CySEQluZEAjx5Xp/7RRASNV6ZavlkAktCoVHDO2iWdMyjPu4oUEIceWtBj2EQJSIO2B4ma9gDJxLcqjiynlrLF/BOtzeJoS75W4F27asn4JAVWj/NDsahtKe+zUNOe7fT+V3F6oFwWO7dyBgZPOCuxfvl3Fmo2nj5XCnj/LZcamEwR/LEhl0tHdcQqA4PpXlcu0AGWWIV5ffegBnKlsxW6yHU9UfKWw/DuA2HKRANVaO6DZYvqOpLCxSOOC65InUWDuwt3tUZuVPD9WlgksrJfPL+HGWrPgD24N8S8VyZFDjlXg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=oK281+0gfGag8B/GU2w91MzpIK/FaU0ZxC2fldXWVvQ=;
- b=Kew5M+bqKp4mGtuuaGdCod5ikKNDtEFJCcGdTNbEJKj5dsUVZIT9W0IBnivsjKy1zmHHcNGUJm2cPF3OR3ZLjeLgguX5+0nCyMkYg2GyXXrn2OsIZkqSSV3y1bLIMKzaTpoAdZvVpZ7IsySlRdj3dUk2At+bbNlJyc2DIYEDPibqNjIK1nnPU2B3ldo/PKplHSeJoR/M7d5HSqOcXhiEE6cRwiMWrVEuZH4vkCyTrR2RgcYbRYcEZ+3xV+p9/jOSuZdfFjr9dyz8qcQ6gMztwIVkAHCuH6upRqT+or32T/FayKiadjgej6ZzQeNJHAa/IlIv294Gyv2YRpVRc9o2bQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
- by CH0PR11MB8144.namprd11.prod.outlook.com (2603:10b6:610:18d::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.29; Fri, 25 Aug
- 2023 23:08:25 +0000
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::47e:3e1f:bef4:20e0]) by SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::47e:3e1f:bef4:20e0%3]) with mapi id 15.20.6699.027; Fri, 25 Aug 2023
- 23:08:25 +0000
-Message-ID: <b48fe955-c1b4-4aeb-1ab0-bf26e56e1f0e@intel.com>
-Date:   Fri, 25 Aug 2023 16:08:21 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.14.0
-Subject: Re: resctrl2 - status
-Content-Language: en-US
-To:     Tony Luck <tony.luck@intel.com>
-CC:     Amit Singh Tomar <amitsinght@marvell.com>,
-        "Yu, Fenghua" <fenghua.yu@intel.com>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        "George Cherian" <gcherian@marvell.com>,
-        "robh@kernel.org" <robh@kernel.org>,
-        "peternewman@google.com" <peternewman@google.com>,
-        Drew Fustini <dfustini@baylibre.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-References: <DS7PR11MB6077FE180B11A9138D8E7ED7FC1DA@DS7PR11MB6077.namprd11.prod.outlook.com>
- <35f05064-a412-ad29-5352-277fb147bbc4@intel.com>
- <SJ1PR11MB6083BC6B330FA7B7DFD3E76AFCE3A@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <dc4cd365-2a02-32a3-da78-7ba745877e97@intel.com>
- <SJ1PR11MB6083C0ED50E9B644F4AF8E4BFCE3A@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <fb9499b9-c445-01e8-8427-6b05256abdb5@intel.com>
- <ZOkU+d4AsLGSAG+y@agluck-desk3>
-From:   Reinette Chatre <reinette.chatre@intel.com>
-In-Reply-To: <ZOkU+d4AsLGSAG+y@agluck-desk3>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4PR02CA0028.namprd02.prod.outlook.com
- (2603:10b6:303:16d::7) To SJ2PR11MB7573.namprd11.prod.outlook.com
- (2603:10b6:a03:4d2::10)
+        Fri, 25 Aug 2023 19:11:55 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B74C2117
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 16:11:52 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-68c0d4cc3a4so721182b3a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 16:11:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1693005111; x=1693609911;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=0ggPOOHH589hYjv6gdFVOq0aacdbX5IKUkHaLzkHlaY=;
+        b=QOZtL/y5zENYSSlmUxwLeSqpz5kI8kEAvVttdxBiqhATFMZi1X5kzSngCI+kn/X/6u
+         LfvF39rfgIQ5MLNHv9pYrUGDAHJxMTNSZTXagt8wRFV1egOngicf5Lhny0TrM40wL7Fh
+         sXK9aoyhMhrLHSeC5g2E7WB/mRBFuLoRLoq+fAsBDEpl1eWCbZ+ib9KHy+fbJqcbq3/X
+         5XMHGh/7KXdiSRnl+ZfldFts5QzYaW4ViMDGEKOhdAfiGB87m/VbtPcfMa7Z+q3L9YWN
+         ElzMdwiSX5ujwsnPG6OkrwZD2KDN2WqvoUZrnj7K7OxFJnlu6xWTwvzDl9QQf9BNz+JD
+         HZEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693005111; x=1693609911;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0ggPOOHH589hYjv6gdFVOq0aacdbX5IKUkHaLzkHlaY=;
+        b=KFUoRbfDM3d5hH9jgJZOAOs3mB97tNzjpWHNJRCQs1D2v6jdXGzQzP+lbKI8dLFSvU
+         9gk/RoAWO4lFzc0LNB/jNIv1Ts+3mh2nGs6OZUKYXCCp18FX78fE090ODTZaC3VDDTwt
+         R5Safb7T92mJ+gEzMYYmvG+2krYrXxFCGmzR98Xszf2t4Z7KZ/NPwzsySY2nxSmC631A
+         2jLuK+9j3d/FdmaTSKnBv5uGqNAbNdGGjja+xQYkoFxjYnWEh89/MNVPf5Yk/mi7AxG5
+         9wjt0hMGCuzVAyaubiC4g363C1SRvjWV8Ej9+N46CuQYqfXfdzEK5W0gGtUifqFXKx7H
+         a0EQ==
+X-Gm-Message-State: AOJu0YxdiJgEjjpcqA+5hwZeck8Jlqiia/EEPb942vEJxUrG+OBOy1g8
+        8lTu+Cq5RdUZm3podluLz0cqNA==
+X-Google-Smtp-Source: AGHT+IGaR7FGnDMNDLYgHhWG0XAuBfJDoKxj8hXBc/H8Me1KQj0GH7Oh42Tzr3U8HePmfacS6h2lYw==
+X-Received: by 2002:a05:6a21:3393:b0:140:fab7:4d14 with SMTP id yy19-20020a056a21339300b00140fab74d14mr21944630pzb.15.1693005111578;
+        Fri, 25 Aug 2023 16:11:51 -0700 (PDT)
+Received: from evan.ba.rivosinc.com ([66.220.2.162])
+        by smtp.gmail.com with ESMTPSA id e13-20020a17090301cd00b001a98f844e60sm456534plh.263.2023.08.25.16.11.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Aug 2023 16:11:51 -0700 (PDT)
+From:   Evan Green <evan@rivosinc.com>
+To:     Palmer Dabbelt <palmer@rivosinc.com>
+Cc:     Conor Dooley <conor.dooley@microchip.com>,
+        Evan Green <evan@rivosinc.com>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Anup Patel <apatel@ventanamicro.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Sunil V L <sunilvl@ventanamicro.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: [PATCH v5] RISC-V: Show accurate per-hart isa in /proc/cpuinfo
+Date:   Fri, 25 Aug 2023 16:11:38 -0700
+Message-Id: <20230825231139.1145522-1-evan@rivosinc.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|CH0PR11MB8144:EE_
-X-MS-Office365-Filtering-Correlation-Id: 703993b5-8ebf-4481-79c6-08dba5c02f42
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: qBYYrlTeB4/xJlQT7Pg/qqo2uMHuKpcbQD4Q+hwaAYf+a4XFDldChI0FiIA7GZoC5e2FH9wFf4ATBnDMZV7/kOjU/ET2Z438nRZiumWm61O0U4XjoxjBtKC+fUUsqKc2zpAXHPUVZFwrDdOVQdsOh+9BpCfr4QFbzB5TOfEcpMSzqcrUfChCrw/dwSnOz0f5b0r97G37ODWKCS0sLQI0FfzVfYTWQ7B2tulbsYlVNZX60TX9qRzJpfe6O3Zl2DqNFTLAQSQ5Xl2MHdp5kpAXNDS4FmNGvmQrBoqF3bjAc1llnFT8n/MUnfVM9HdoMYvNa/W4wDXcgTr019eopGFojAvflTCV/tGOtVDoyY0sbs5wTJkz77A3L/pQVPRmmxUEGalhPTZ5OFPHeZGJe6mdg8VD+LuXJ2fRkrwhIoxjz5KyCtM4RkyRtHn9HkAs0LEBOpQnJORlaN7vkZkzm1F1udq2IyMkwFziJ9FO4lJJTNI0tIPcVtfvgBtmspdu7lP7684lcNojUgw8dERKCWVxxON+pPN1IP7qLGOecEF2Lh4xb7Z5zrGt/O+vn4wTxiBoz+9z1EXbOoQ1aGKSdW+e184T9ZY2MCM8yZPyejvEmaC0k6GRfBUJoUru2x+20upSGyYhH0m899vOvjyUXPq7zg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(396003)(136003)(376002)(39860400002)(1800799009)(451199024)(186009)(44832011)(83380400001)(6512007)(478600001)(26005)(2616005)(5660300002)(31686004)(2906002)(8676002)(8936002)(6862004)(4326008)(66899024)(82960400001)(38100700002)(66946007)(6636002)(66556008)(37006003)(66476007)(86362001)(41300700001)(31696002)(54906003)(53546011)(6486002)(36756003)(6666004)(316002)(6506007)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aFJQdWY2Q3krN0NmNWdCVmVWcUcxdjBKdTY2d2FuUjM0ZzlzcGd2VTJWOXZa?=
- =?utf-8?B?aTVPdlpRSWYvUVNxT1ZiY1Yvd2RIT3FqUEtjWHNzQkI4cXNNaFB4ckZVclZ6?=
- =?utf-8?B?ZWpseWpDRUpKNlF2emxBTGpERnVSaVJadm1QTHBzcDY4b29GMjhEOXkxNkcx?=
- =?utf-8?B?cVIvK0xvN3VvTVVMZnlVWEgyblNHeExkaVdZVTA2d1haL2VqMEhheWdIVWFN?=
- =?utf-8?B?OEs2TWFGQzEybkw5UW5wRHM4aS9KODJ1VHJSVVM1WjVIMVdpeVhKSEtnL3cx?=
- =?utf-8?B?N1JrbytROTBGUEc5TlZuQ1ZvSUJXYmtvQlRCQUJPK2dGbkgyaTM5Q3h1a2Zs?=
- =?utf-8?B?cWovRXBtVVYvaUpuQm1WcGxqUmt6cXBKRk1tVjJVRHZ5b3pBVytwaUR6clMz?=
- =?utf-8?B?cnFtaTFFeEJUT3N3WWFKUENjY0l3S2g1RmZYTUpBQ0d0Y1lQbCttYk9Qd2Jz?=
- =?utf-8?B?eWRsbmZMYW90ZlA1eFBIY0trUlRSQUZhMmhCalBrQmMrMkg1ZnlYa3M2aUJU?=
- =?utf-8?B?bkRaMmlqMEt3UnVXUW80TUMybVh3Nm40MWoxOGNHbktWUkcvQ0RVUGM5a3o3?=
- =?utf-8?B?SUp6NDFab3hkYU1LV2g5TGpPN0djNSthWUYvR1IxYm1qZXhMRVNOVnlhOVF1?=
- =?utf-8?B?S3V2aCtQT2ZtKzFmYjMwSVh3NFVCczB0azgySXgvOGxPNVRVZHlTemxNKzQ5?=
- =?utf-8?B?VGk5Skp1U2IyaXMvRUhtU0tuZ1JvWUw3bFFiWUlxS200UDZXdThjQk5Db2gz?=
- =?utf-8?B?SGpiNTJteUp5SUFIMWo2VnZ2Yk1CRUtoa1FKaGtwa1Q4dEt0S0QxQVE5bEtE?=
- =?utf-8?B?eTdzbG5uVUNTNDNaeDlQcEp5MzlUcklITlh1RzVnTVBDcmF4ZmNxMXd6VTRh?=
- =?utf-8?B?bkt4b21oajRURTdKYmliRHB5TXdJcE5oSVJGcUljN1gxTDZ2MGRPR2tJNm10?=
- =?utf-8?B?Z0l6cnVzaUtPU3plUHVmY0NGWWR6dk92ckVpQTRqOURzeGwzMmJCRzJEanhJ?=
- =?utf-8?B?akgvOEhQaHVTZ0tPVDRMTVRtNU9VZ0xmSXpQellxbldrUVdCWlcxSENnbFA5?=
- =?utf-8?B?b3FNdlNnUm5haSthSGI4ZFlUVE1nZHNIckZwZ1VLQnB0M0xLdzV1ZVl0M2dY?=
- =?utf-8?B?YUxDWHdHZGtOTVc4L21HQ0V4dzFEVUIwbVNBSWhyMjVJclNDQnFwVllkRzBR?=
- =?utf-8?B?YWM4QzNPM3RGRGIvVjBjN0xNamVNSVRpRnp4eHpYb01MU1Z4RkNjMFc1cTZG?=
- =?utf-8?B?Y1lHRWdRVEJ5NVozSElQMnJCMWdySWVDSXUrY0VJWkxxUTErL0hzVUtwVEVX?=
- =?utf-8?B?alpkWkdYRnk5SlcrREs3amF0MFVxSUVQbXNGMWxDNStkdGdXeVlnTjFxQjFw?=
- =?utf-8?B?QVJTOHZDaXRRcGNQYnhSa3hIR1pRcE8zWElkWjFyVmJ2ZDNKMG5wdGgra2dx?=
- =?utf-8?B?R3krUFhYNGducGVMT01QcWhybE42eG9ydDh6S3VRSUw2aTVoQlNBaXBTZjN2?=
- =?utf-8?B?b1RXTFBvdWRkaXJWL2F6ZS92RVoyL0JlRURJZUp2eDMyK2dGRXlJWlBTakFC?=
- =?utf-8?B?OFlKVTNkai80MUtYNXJFQ3hDNW55aDNja29WWm1HbDY4M3FFWHpyVWppZ1A4?=
- =?utf-8?B?eGtkNi8rbTJNNmZJQnVjbHVxWUhNR2F5SWFYRDFCNWd4bTNUMExQb1VFYTdn?=
- =?utf-8?B?cVBIbDFFUUtnbFBhSlIwZmdCNWdPQWVmY3lCMldYaXVTSlNjdm1WbkgxQUJE?=
- =?utf-8?B?R3JQazVOL1BxclV5WmdvZFIzcGdDSUZFamd5MXpLVkdjR3V1RnRUeEdydmph?=
- =?utf-8?B?RG5oS3c5Q1Ixd1FMRE9VdC9KRHIvMUFqYzNMamdHQ3I0WEl3UkFRWXNGUTAz?=
- =?utf-8?B?NHBaZnAxZThVMjNvRWNFM3JhYVpMV256NDNGRjlUTG5pTXg3THdQUmNOTmNJ?=
- =?utf-8?B?dnJxb0MzT3lVL2ZLYmk5eXJNbEJBbnpoWVB2NDEvM1NIU3k0QzU3QWtUUjBR?=
- =?utf-8?B?UGtqMXdrWW85b2V3WmhlU0hvSEJvWTR3UnRnTnBOZWdvMTFPY0JMZE8wOWlG?=
- =?utf-8?B?NGVqdXA4Y3JHSHhSaG80bGxuOEJUVnNPRTh0NXRKNFJwM0xONWYyWXhlVVpP?=
- =?utf-8?B?V01qY0NqNmw2UGNvWldjbSs5VFZUbWdvRkNieldneHh6ZVViWmRjTDM3bllV?=
- =?utf-8?B?SFE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 703993b5-8ebf-4481-79c6-08dba5c02f42
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Aug 2023 23:08:25.0011
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hsvpA3SJrDZmSIvoZfC9Z4TThsAhDnDDAkNVY3ZEx6YuWk++ahdFDGsIhNS4zE2iz06MDLSA0V9rU4V9ONmBCb/DZei7mFNNgvdr31YWJcg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR11MB8144
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -175,133 +79,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tony,
+In /proc/cpuinfo, most of the information we show for each processor is
+specific to that hart: marchid, mvendorid, mimpid, processor, hart,
+compatible, and the mmu size. But the ISA string gets filtered through a
+lowest common denominator mask, so that if one CPU is missing an ISA
+extension, no CPUs will show it.
 
-On 8/25/2023 1:54 PM, Tony Luck wrote:
-> On Fri, Aug 25, 2023 at 01:20:22PM -0700, Reinette Chatre wrote:
->> On 8/25/2023 12:44 PM, Luck, Tony wrote:
->>>>>> Alternatively, can user space just take a "load all resctrl modules
->>>>>> and see what sticks" (even modules of different architectures since
->>>>>> a user space may want to be generic) approach?
->>>>>
->>>>> This mostly works. Except for the cases where different modules access
->>>>> the same underlying hardware, so can't be loaded together.
->>>>>
->>>>> Examples:
->>>>>
->>>>> rdt_l3_cat vs. rdt_l3_cdp - user needs to decide whether they want CDP or not.
->>>>> But this is already true ... they have to decide whether to pass the "-o cdp" option
->>>>> to mount.
->>>>>
->>>>> rdt_l3_mba vs. rdt_l3_mba_MBps - does the user want to control memory bandwidth
->>>>> with percentages, or with MB/sec values. Again the user already has to make this
->>>>> decision when choosing mount options.
->>>>>
->>>>>
->>>>> Maybe the "What resctrl options does this machine support?" question would be
->>>>> best answered with a small utility?
->>>>
->>>> A user space utility or a kernel provided utility? If it is a user space utility
->>>> I think it would end up needing to duplicate what the kernel is required to do
->>>> to know if a particular feature is supported. It seems appropriate that this
->>>> could be a kernel utility that can share this existing information with user
->>>> space. resctrl already supports the interface for this via /sys/fs/resctrl/info.
->>>
->>> I was imagining a user space utility. Even though /proc/cpuinfo doesn't show
->>> all features, a utility has access to all the CPUID leaves that contain the
->>> details of each feature enumeration.
->>
->> For x86 that may work (in some scenarios, see later) for now but as I understand
->> Arm would need a different solution where I believe the information is obtained
->> via ACPI. I think it is unnecessary to require user space to have parsers for
->> CPUID and ACPI if that same information needs to be parsed by the kernel and
->> there already exists an interface with which the information is communicated
->> from kernel to user space. Also, just because information CPUID shows a feature
->> is supported by the hardware does not mean that the kernel has support for that
->> feature. This could be because of a feature mismatch between user space and
->> kernel, or even some features disabled for use via the, for example "rdt=!l3cat",
->> kernel parameter.
-> 
-> Agreed this is complex, and my initial resctrl2 proposal lacks
-> functionality in this area.
+Now that we track the ISA extensions for each hart, let's report ISA
+extension info accurately per-hart in /proc/cpuinfo. We cannot change
+the "isa:" line, as usermode may be relying on that line to show only
+the common set of extensions supported across all harts. Add a new "hart
+isa" line instead, which reports the true set of extensions for that
+hart.
 
-Why is there a need to reinvent these parts?
+Signed-off-by: Evan Green <evan@rivosinc.com>
+Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 
->>>> fyi ... as with previous attempts to discuss this work I find it difficult
->>>> to discuss this work when you are selective about what you want to discuss/answer
->>>> and just wipe the rest. Through this I understand that I am not your target
->>>> audience.
->>>
->>> Not my intent. I value your input highly. I'm maybe too avid a follower of the
->>> "trim your replies" school of e-mail etiquette. I thought I'd covered the gist
->>> of your message.
->>>
->>> I'll try to be more thorough in responding in the future.
->>
->> Two items from my previous email remain open:
->>
->> First, why does making the code modular require everything to be loadable
->> modules?
->> I think that it is great that the code is modular. Ideally it will help to
->> support the other architectures. As you explain this modular design also
->> has the benefit that "modules" can be loaded and unloaded after resctrl mount.
->> Considering your example of MBA and MBA_MBps support ... if I understand
->> correctly with code being modular it enables changes from one to the other
->> after resctrl mount. User can start with MBA and then switch to MBA_MBps
->> without needing to unmount resctrl. What I do not understand is why does
->> the code being modular require everything to be modules? Why, for example,
->> could a user not interact with a resctrl file that enables the user to make
->> this switch from, for example, MBA to MBA_MBps? With this the existing
->> interfaces can remain to be respected, the existing mount parameters need
->> to remain anyway, while enabling future "more modular" usages.
-> 
-> Lots of advantages to modules:
-> 1) Only load what you need.
-> 	- saves memory
-> 	- reduces potential attack surface
-> 	- may avoid periodic timers (e.g. for MBM overflow and
-> 	  for LLC occupancy "limbo" mode).
-> 2) If there is a security fix, can be deployed without a reboot.
-> 3) Isolation between different features. 
-> 	- Makes development and testing simpler
->
+---
 
-From what I understand (1) and (3) are accomplished through things
-being modular. To transition smoothly it may be required for all
-currently supported features to be loaded by default, with the
-option to unload afterwards by user space that understands new
-modular interfaces.
+Changes in v5:
+ - Documentation changes (only) (Conor)
 
-(2) does not need a module for each resource and feature supported
-by resctrl. A single resctrl module would accomplish this and I
-would expect it to be something everybody would like. James also
-mentioned it being on his significant to-do list.
+Changes in v4:
+ - Documentation: Made the underline match the text line (Conor)
+ - Documentation: hanged "in question" to "being described" (Andrew)
+
+Changes in v3:
+ - Add some documentation (Conor)
+
+Changes in v2:
+ - Added new "hart isa" line rather than altering behavior of existing
+   "isa" line (Conor, Palmer)
+
+ Documentation/riscv/uabi.rst | 12 ++++++++++++
+ arch/riscv/kernel/cpu.c      | 22 ++++++++++++++++++----
+ 2 files changed, 30 insertions(+), 4 deletions(-)
+
+diff --git a/Documentation/riscv/uabi.rst b/Documentation/riscv/uabi.rst
+index 8960fac42c40..a46017f57db2 100644
+--- a/Documentation/riscv/uabi.rst
++++ b/Documentation/riscv/uabi.rst
+@@ -42,6 +42,18 @@ An example string following the order is::
  
-> Sure some things like switching MBA to MBA_MBps mode by writing to
-> a control file are theoretically possible. But they would be far more
-> complex implementations with many possible oppurtunities for bugs.
-> I think Vikas made a good choice to make this a mount option rather
-> than selectable at run time.
-> 
->> Second, copied from my previous email, what is the plan to deal with current
->> users that just mount resctrl and expect to learn from it what features are
->> supported?
-> 
-> Do such users exist? Resctrl is a sophisticated system management tool.
-> I'd expect system administrators deploying it are well aware of the
-> capabilities of the different types of systems in their data center.
-> 
-> But if I'm wrong, then I have to go back to figure out a way to
-> expose this information in a better way than randomly running "modprobe"
-> to see what sticks.
-
-I always start with intel-cmt-cat but I believe that the burden would be
-on you to convince all that existing user space would not be impacted
-by this change. If I understand correctly this implementation would
-result in mounting resctrl to have an empty schemata and no resources
-in the info directory. Without knowledge about how to enable resources
-the user space could be expected to interpret that as no resources enabled
-on the system.
-
-Reinette
+    rv64imadc_zifoo_zigoo_zafoo_sbar_scar_zxmbaz_xqux_xrux
+ 
++"isa" vs "hart isa" lines in /proc/cpuinfo
++------------------------------------------
++
++The "isa" line in /proc/cpuinfo describes the lowest common denominator of
++RISC-V ISA extensions recognized by the kernel and implemented on all harts. The
++"hart isa" line, in contrast, describes the set of extensions recognized by the
++kernel on the particular hart being described, even if those extensions may not
++be present on all harts in the system. In both cases, the presence of a feature
++in these lines guarantees only that the hardware has the described capability.
++Additional kernel support or policy control changes may be required before a
++feature is fully usable by userspace programs.
++
+ Misaligned accesses
+ -------------------
+ 
+diff --git a/arch/riscv/kernel/cpu.c b/arch/riscv/kernel/cpu.c
+index 7b793c4321bb..100fb382b450 100644
+--- a/arch/riscv/kernel/cpu.c
++++ b/arch/riscv/kernel/cpu.c
+@@ -197,9 +197,8 @@ arch_initcall(riscv_cpuinfo_init);
+ 
+ #ifdef CONFIG_PROC_FS
+ 
+-static void print_isa(struct seq_file *f)
++static void print_isa(struct seq_file *f, const unsigned long *isa_bitmap)
+ {
+-	seq_puts(f, "isa\t\t: ");
+ 
+ 	if (IS_ENABLED(CONFIG_32BIT))
+ 		seq_write(f, "rv32", 4);
+@@ -207,7 +206,7 @@ static void print_isa(struct seq_file *f)
+ 		seq_write(f, "rv64", 4);
+ 
+ 	for (int i = 0; i < riscv_isa_ext_count; i++) {
+-		if (!__riscv_isa_extension_available(NULL, riscv_isa_ext[i].id))
++		if (!__riscv_isa_extension_available(isa_bitmap, riscv_isa_ext[i].id))
+ 			continue;
+ 
+ 		/* Only multi-letter extensions are split by underscores */
+@@ -271,7 +270,15 @@ static int c_show(struct seq_file *m, void *v)
+ 
+ 	seq_printf(m, "processor\t: %lu\n", cpu_id);
+ 	seq_printf(m, "hart\t\t: %lu\n", cpuid_to_hartid_map(cpu_id));
+-	print_isa(m);
++
++	/*
++	 * For historical raisins, the isa: line is limited to the lowest common
++	 * denominator of extensions supported across all harts. A true list of
++	 * extensions supported on this hart is printed later in the hart_isa:
++	 * line.
++	 */
++	seq_puts(m, "isa\t\t: ");
++	print_isa(m, NULL);
+ 	print_mmu(m);
+ 
+ 	if (acpi_disabled) {
+@@ -287,6 +294,13 @@ static int c_show(struct seq_file *m, void *v)
+ 	seq_printf(m, "mvendorid\t: 0x%lx\n", ci->mvendorid);
+ 	seq_printf(m, "marchid\t\t: 0x%lx\n", ci->marchid);
+ 	seq_printf(m, "mimpid\t\t: 0x%lx\n", ci->mimpid);
++
++	/*
++	 * Print the ISA extensions specific to this hart, which may show
++	 * additional extensions not present across all harts.
++	 */
++	seq_puts(m, "hart isa\t: ");
++	print_isa(m, hart_isa[cpu_id].isa);
+ 	seq_puts(m, "\n");
+ 
+ 	return 0;
+-- 
+2.34.1
 
