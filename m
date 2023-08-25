@@ -2,72 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A238F7891CA
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 00:42:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77D597891DC
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 00:45:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230221AbjHYWll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 18:41:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33156 "EHLO
+        id S230296AbjHYWo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 18:44:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229987AbjHYWlS (ORCPT
+        with ESMTP id S230153AbjHYWok (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 18:41:18 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F49F2126
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 15:41:16 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-52a0856b4fdso1959192a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 15:41:15 -0700 (PDT)
+        Fri, 25 Aug 2023 18:44:40 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A203269F;
+        Fri, 25 Aug 2023 15:44:38 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1bdbbede5d4so11971175ad.2;
+        Fri, 25 Aug 2023 15:44:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693003274; x=1693608074;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1693003477; x=1693608277;
+        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
+         :message-id:subject:from:references:cc:to:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=XNt4DyfeIzhhV0tgLa3rjei+leX4v+4lfQmFyrXCtB0=;
-        b=pMXG1akOTp23AsJ05SXCDpWQSJPJ8XiRbFCXmMmoHnZp10DAHWNiwxpZj7c0Yfl4xw
-         DBcqgNOUotfmmrMmcAYFzZlASziS1CQiFDIzLyWR1aqEfFf2/sErtJR5rUg2+4fP26hI
-         fPzxwv4DJkICTum0sUty6XChrIMdqow7XPn7ftH4VyHLtAa5uIH7+L0cANkLheBK0e13
-         loXU1wuUPEktYsmYR7ZH7keYW1B25BXNXVy4AVkPKWz3aI6f51ZSOgVZ8sY4+7+Tc/LT
-         SHk2pB2paLp0jllM2RZzc7g02Gk3zjeGEL+R25CjupDNQJTdN/yusjnrXoulwqkHg+gA
-         W5dQ==
+        bh=+EfHZKV5Rs50FUqRYXClC9vzZD5WlxrYeYbs3IamXT4=;
+        b=YxGLOPcaOZR604IVjJRcGcoKnB33IZ0CTfYuHyWKXt+0pInUOQSMoNyJ0dS6B1KmgY
+         cxaBOMvor3UlQ6MZnz8hco99YltIQ+TVGTfUiOj3M6EtIom4aLy5Ogu10qSlU6URXk+W
+         RnRGmXEhLIg0POh+PDKptxk33OVTKsM2/52zz5494dr8R8CSNGpoqbrRI3gpmS9Q+cTN
+         hJYUsHOFyiz+AcMtmJLq8rt6PHOWgX+jhYTNJt4ghkMZ1YZYHd+UADqGIVtKxfSRzrdW
+         eHx1TWLsT9QLE3Re7SH9KzLMTXlxKvezJrH+R76CylIu77symnMHbROv+J2zJ4UP/BTK
+         7yuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693003274; x=1693608074;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XNt4DyfeIzhhV0tgLa3rjei+leX4v+4lfQmFyrXCtB0=;
-        b=l3sMqTkLpnv8jEIyTgrJzi3louNxD4EbEOZWpg2Ap8hWaJiCbYX3+QbkWZLaSkxu7L
-         t0dxEUlU2aIRZvjMq3W9cukphuo9VkSwjkgZKl1WQn9RhPnhxi0HGnxUhVXde8Ug1bNB
-         2R9+Ft3TWS+Tq9QsWNJ4MUkTz61fDDP9TFgcPML2nDtzyG2cgvyz3xPZDkejb+Vcbgjr
-         Q3f1BlFzRBJC5ZTzexPqe5I8VHiyeIcp8+De/6xknxjh3pqJ4VQHCWvZFpEDZrvBZ5W7
-         DKO45SY8zIBzyj6/hrF29sNeg2Opc7EeRhcrJgj+GEjwdol9s5i2AimGSwM619jsBwYj
-         +1ng==
-X-Gm-Message-State: AOJu0YyXBu7cevl4A/58KPV6nNvkalIMBaeY/s+Z0swMZYYvR8ig70xR
-        gGQnVUqZ2aDiBNwUMiSvoHZgDJKxkgi2ULM/DuFhvQ==
-X-Google-Smtp-Source: AGHT+IHdxpRbvdQqrV8IEsgFyYkkccQtI62ILyMER9GMSBV09OD46m5LnxIfpKO3HqZNIO6RnyDru8wHwhndx/EvMgg=
-X-Received: by 2002:aa7:cb07:0:b0:522:2dcc:afb6 with SMTP id
- s7-20020aa7cb07000000b005222dccafb6mr16532241edt.7.1693003274449; Fri, 25 Aug
- 2023 15:41:14 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693003477; x=1693608277;
+        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
+         :message-id:subject:from:references:cc:to:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=+EfHZKV5Rs50FUqRYXClC9vzZD5WlxrYeYbs3IamXT4=;
+        b=cp1KRCgcYkUTSF2D8a/65bm9gqUzQihVnP8c6wC6//KEb6d0JIiky/UAp7xRjHFcih
+         8s1FHO+UQbhcKHIGH6ZyjVwvqRLBbhsB1N1lNaZ9FL0owO1HKhy/Fwso4Cvtq+DxE50o
+         vA7XJSYq98tq7HF5W5D9gEn1VMwaEF0hgGVUNno9jMKLX7vah3BgtHwPV9vdnNbsncU0
+         TFZg16oEAiXNzdM5iLR35aiSR8KTJ8GuInan1PFH3GSggW5Y8J+wCiQEH3fo8NVkPoAi
+         od40573Ua718hlQrOtxancrF5a/ztQX6HBg4R5oi+P8L7kdh3pR2ZE6vtGyfLme3mm8e
+         BgfA==
+X-Gm-Message-State: AOJu0Yx8RZpbLX9s4Wh8CoyI+NHVzTMAIgKR8W9FocKvYDSC9GX2MXs6
+        LP3g7lpzxzcizs6KrVtcVCocaJKsEpB/tg==
+X-Google-Smtp-Source: AGHT+IHfISCtSa05UGz9PT6tDA2qtVyoG70cJPjb2fBEQ6/U+mzxDHROeZB/hJ4FR5D+DwWhbVxiGA==
+X-Received: by 2002:a17:903:25d4:b0:1bd:bbc3:c87b with SMTP id jc20-20020a17090325d400b001bdbbc3c87bmr18047490plb.41.1693003477133;
+        Fri, 25 Aug 2023 15:44:37 -0700 (PDT)
+Received: from Schmitz-MacBook-Pro.local (125-236-136-221-fibre.sparkbb.co.nz. [125.236.136.221])
+        by smtp.googlemail.com with ESMTPSA id b1-20020a170902d50100b001adf6b21c77sm2280761plg.107.2023.08.25.15.44.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Aug 2023 15:44:36 -0700 (PDT)
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Matt Turner <mattst88@gmail.com>,
+        Vineet Gupta <vgupta@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Brian Cain <bcain@quicinc.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>,
+        Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Stafford Horne <shorne@gmail.com>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        x86@kernel.org, Borislav Petkov <bp@alien8.de>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Richard Weinberger <richard@nod.at>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        linux-next@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-trace-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kbuild@vger.kernel.org
+References: <20230810141947.1236730-1-arnd@kernel.org>
+ <169292577153.789945.11297239773543112051.b4-ty@oracle.com>
+ <3956e2a4-c545-1212-e95f-3cf61a60d6a4@gmail.com>
+ <CAMuHMdWC2S330_Vb_NTHTDC=BakBsw4ouP-eFJv0erV1-jmvTQ@mail.gmail.com>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Subject: Re: (subset) [PATCH 00/17] -Wmissing-prototype warning fixes
+Message-ID: <130b3b57-edb0-184d-5b5f-69b013715773@gmail.com>
+Date:   Sat, 26 Aug 2023 10:44:13 +1200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20230824-strncpy-drivers-accessibility-speakup-kobjects-c-v1-1-3a1ef1221e90@google.com>
- <202308251439.36BC33ADB2@keescook>
-In-Reply-To: <202308251439.36BC33ADB2@keescook>
-From:   Justin Stitt <justinstitt@google.com>
-Date:   Fri, 25 Aug 2023 15:41:03 -0700
-Message-ID: <CAFhGd8r6A4VH5C=yF1WHKEPY86oh6PEzt6wuxPxsJAD0XKfrsQ@mail.gmail.com>
-Subject: Re: [PATCH] accessibility: speakup: refactor deprecated strncpy
-To:     Kees Cook <keescook@chromium.org>
-Cc:     William Hubbs <w.d.hubbs@gmail.com>,
-        Chris Brannon <chris@the-brannons.com>,
-        Kirk Reiser <kirk@reisers.ca>,
-        Samuel Thibault <samuel.thibault@ens-lyon.org>,
-        speakup@linux-speakup.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAMuHMdWC2S330_Vb_NTHTDC=BakBsw4ouP-eFJv0erV1-jmvTQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,173 +123,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the review Kees and Samuel. Hoping to get this picked-up soon :)
+Hi Geert,
 
-FWIW, I've quickly copy/pasted Kees' suggested refactor of
-synth_direct_store and rebased against v6.5-rc7 if anyone has the
-means by which to test it.
+Am 25.08.23 um 19:39 schrieb Geert Uytterhoeven:
+> Hi Michael,
+>
+> On Fri, Aug 25, 2023 at 3:31=E2=80=AFAM Michael Schmitz <schmitzmic@gma=
+il.com> wrote:
+>> On 25/08/23 13:12, Martin K. Petersen wrote:
+>>> [11/17] scsi: gvp11: remove unused gvp11_setup() function
+>>>          https://git.kernel.org/mkp/scsi/c/bfaa4a0ce1bb
+>> I somehow missed that one ...
+>>
+>> The gvp11_setup() function was probably a relic from the times before
+>> module parameters.
+>>
+>> Since gvp11_xfer_mask appears to be required for some Amiga systems to=
 
-TEST PATCH BELOW
+>> set the DMA mask, I'd best send a patch to add such a module parameter=
+ ...
+>>
+>> Do you know any details around the use of DMA masks for Amiga WD33C93
+>> drivers, Geert?
+> Doh, it's been a while, and I never had an affected system.
+> Probably it's needed on A2000 with an accelerator card and GVP II SCSI,=
 
-On Fri, Aug 25, 2023 at 2:49=E2=80=AFPM Kees Cook <keescook@chromium.org> w=
-rote:
->
-> On Thu, Aug 24, 2023 at 09:44:29PM +0000, Justin Stitt wrote:
-> > `strncpy` is deprecated for use on NUL-terminated destination strings [=
-1].
-> >
-> > Use `strscpy` as it guarantees NUL-termination of its destination buffe=
-r [2]
-> > which allows for simpler and less ambiguous code.
-> >
-> > Also, change `strlen(buf)` to `strlen(ptr)` to be consistent with
-> > further usage within the scope of the function. Note that these are
-> > equivalent:
-> > |419  const char *ptr =3D buf;
-> >
-> > Link: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on=
--nul-terminated-strings[1]
-> > Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en=
-.html [2]
-> > Link: https://github.com/KSPP/linux/issues/90
-> > Cc: linux-hardening@vger.kernel.org
-> > Signed-off-by: Justin Stitt <justinstitt@google.com>
-> > ---
-> > Note: build-tested only.
-> > ---
-> >  drivers/accessibility/speakup/kobjects.c | 5 ++---
-> >  1 file changed, 2 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/accessibility/speakup/kobjects.c b/drivers/accessi=
-bility/speakup/kobjects.c
-> > index a7522d409802..8aa416c5f3fc 100644
-> > --- a/drivers/accessibility/speakup/kobjects.c
-> > +++ b/drivers/accessibility/speakup/kobjects.c
-> > @@ -422,12 +422,11 @@ static ssize_t synth_direct_store(struct kobject =
-*kobj,
-> >       if (!synth)
-> >               return -EPERM;
-> >
-> > -     len =3D strlen(buf);
-> > +     len =3D strlen(ptr);
-> >       spin_lock_irqsave(&speakup_info.spinlock, flags);
-> >       while (len > 0) {
-> >               bytes =3D min_t(size_t, len, 250);
-> > -             strncpy(tmp, ptr, bytes);
-> > -             tmp[bytes] =3D '\0';
-> > +             strscpy(tmp, ptr, bytes);
-> >               string_unescape_any_inplace(tmp);
-> >               synth_printf("%s", tmp);
-> >               ptr +=3D bytes;
->
-> Technically, yes, this is fine...
->
-> Reviewed-by: Kees Cook <keescook@chromium.org>
->
-> But wow do you find the most amazing code. :)
->
-> This thing is taking a buffer and chopping it up into at-most 250 byte
-> chunks (smaller than buf, I might add), and then sending it to
-> synth_printf() ... which uses a 160 byte buffer and silently
-> truncates...  and uses "%s" which is just a string copy...
-> why doesn't this just use synth_write() directly on an unescaped
-> buf??
->
-> I think this entire function should just be:
->
-> static ssize_t synth_direct_store(struct kobject *kobj,
->                                   struct kobj_attribute *attr,
->                                   const char *buf, size_t count)
-> {
->         char *unescaped;
->         char *p;
->
->         if (!synth)
->                 return -EPERM;
->
->         unescaped =3D kstrdup(buf, GFP_KERNEL);
->         if (!unescaped)
->                 return -ENOMEM;
->
->         string_unescape_any_inplace(unescaped);
->
->         spin_lock_irqsave(&speakup_info.spinlock, flags);
->         synth_write(unescaped, strlen(unescaped));
->         spin_unlock_irqrestore(&speakup_info.spinlock, flags);
->
->         kfree(unescaped);
->
->         return count;
-> }
->
-> (Though honestly, why does this need unescaping anyway?)
->
-> -Kees
->
-> --
-> Kees Cook
----
-From e7216bca30673a162660c51f8bad3b463d283041 Mon Sep 17 00:00:00 2001
-From: Justin Stitt <justinstitt@google.com>
-Date: Fri, 25 Aug 2023 22:32:03 +0000
-Subject: [PATCH NEEDS TEST] synth_direct_store refactor to use synth_write
+> to prevent DMA to RAM banks that do not support fast DMA cycles.
 
-I've just copy/pasted Kees' suggestion here [1] and rebased it against
-6.5-rc7.
+Thanks, that's good enough for me.
 
-This patch needs testing as it refactors behavior in synth_direct_store.
+Linux 2.0 had this comment:
 
-[1]: https://lore.kernel.org/all/202308251439.36BC33ADB2@keescook/
+|/* * DMA transfer mask for GVP Series II SCSI controller. * Some
+versions can only DMA into the 24 bit address space * (0->16M). Others
+can DMA into the full 32 bit address * space. The default is to only
+allow DMA into the 24 bit * address space. The "gvp11=3D0xFFFFFFFE" setup=
 
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
- drivers/accessibility/speakup/kobjects.c | 25 +++++++++++-------------
- 1 file changed, 11 insertions(+), 14 deletions(-)
+parameter can * be supplied to force an alternate (32 bit) mask. */ |
 
-diff --git a/drivers/accessibility/speakup/kobjects.c
-b/drivers/accessibility/speakup/kobjects.c
-index a7522d409802..0dfdb6608e02 100644
---- a/drivers/accessibility/speakup/kobjects.c
-+++ b/drivers/accessibility/speakup/kobjects.c
-@@ -413,27 +413,24 @@ static ssize_t synth_direct_store(struct kobject *kob=
-j,
-    struct kobj_attribute *attr,
-    const char *buf, size_t count)
- {
-- u_char tmp[256];
-- int len;
-- int bytes;
-- const char *ptr =3D buf;
-+ char *unescaped;
-  unsigned long flags;
+|We now handle that (since 2.6.35) through masks defined in
+gvp11_zorro_tbl[] (though I note these don't account for unaligned
+addresses such as implied by the example in the comment. Are unaligned
+DMA buffers still possible today?). Would that cover the 'A2000 with
+accelerator' case?
+|
 
-  if (!synth)
-  return -EPERM;
+||
 
-- len =3D strlen(buf);
-+ unescaped =3D kstrdup(buf, GFP_KERNEL);
-+ if (!unescaped)
-+ return -ENOMEM;
-+
-+ string_unescape_any_inplace(unescaped);
-+
-  spin_lock_irqsave(&speakup_info.spinlock, flags);
-- while (len > 0) {
-- bytes =3D min_t(size_t, len, 250);
-- strncpy(tmp, ptr, bytes);
-- tmp[bytes] =3D '\0';
-- string_unescape_any_inplace(tmp);
-- synth_printf("%s", tmp);
-- ptr +=3D bytes;
-- len -=3D bytes;
-- }
-+ synth_write(unescaped, strlen(unescaped));
-  spin_unlock_irqrestore(&speakup_info.spinlock, flags);
-+
-+ kfree(unescaped);
-+
-  return count;
- }
+I'm happy to send a patch if an override to the device default DMA mask
+is still necessary.
 
---
-2.42.0.rc1.204.g551eb34607-goog
+(Incidentally - did you ever publish the m68k full history tree anywhere
+in git?)
+
+Cheers,
+
+=C2=A0=C2=A0=C2=A0 Michael
+
+
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+
