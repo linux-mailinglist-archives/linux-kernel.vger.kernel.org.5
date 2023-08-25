@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29932788293
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 10:45:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA5C0788292
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 10:45:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244008AbjHYIo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 04:44:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55348 "EHLO
+        id S243990AbjHYIoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 04:44:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244014AbjHYIof (ORCPT
+        with ESMTP id S243965AbjHYIo2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 04:44:35 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ECEF2118;
-        Fri, 25 Aug 2023 01:43:59 -0700 (PDT)
+        Fri, 25 Aug 2023 04:44:28 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3576426BC;
+        Fri, 25 Aug 2023 01:43:50 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C552467515;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D5AF267535;
         Fri, 25 Aug 2023 08:43:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 2E52EC433CA;
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 37FCCC433C9;
         Fri, 25 Aug 2023 08:43:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1692953024;
-        bh=oBoRKFjVyni9Ea4krJclsUMLSRnqH1PsiC8kmB3XndY=;
+        bh=X/MOk5kpPYjr9ggDQSqDheWAQJ8w+TztTS+czaBk9c4=;
         h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-        b=LR6gzN7bf3PXdS7QVJQBC/9sPWnRvb50mDo/dIi65SIpDVmG3K7sPt85RxJWQPMDT
-         OcJZ3X65L2FauWy6akFwidXB98y5WXj18dWIUD/hI6eLpmD2HSXDKNdJ913PKrAls7
-         ruz+/R1WHvbYIp22xQfrVis0XY5DDYhL23YAKINxD8yZumAS4Bf1ycNmfdZFsbHmp3
-         y3HYOL6U7voY2n9/SWXmRkUViAvWoCGQvFA4MKjbpMm8fqOHMesjz+SbGXtrprWPMw
-         kjqtiEk2xSuPA6Y+XYiCMuwaptY6/+3rNZUDoslXbsIfSTZ2VpU9eM9b9AkIeBmJHV
-         YnOG/Lk71b+Qw==
+        b=qvgMc/lD8it1d00ARwunt2wDI4+CWYYnBeQSmFUvcjctozV+uMo8yHYIdTW5yufVl
+         UD7R+5cD0tut8wpKnsoF7INe/rwY2PCpI139nwFRsmJx1AS2TiegbOhbdNmEORGEMM
+         LfGBQwONZ8130HVs2nI8ke35gi4UsYFLSZ+ObQDoxWdihK02c/IG3dI3/7HBEPQtNl
+         jKUppMiox/KXZXXzfS9vo8jeNslkIy3qYL2n58qEYHlCNrfF0hjtD40Tv3fOJwb+Pw
+         APHyszGzY9HfWd7wXqycTk05Gbxhan7q/tD7ejhvRFkQHPAJuMdYiajAkE+vqzmfwF
+         Hk137NyC7VARw==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by smtp.lore.kernel.org (Postfix) with ESMTP id 0C02EC3DA6F;
+        by smtp.lore.kernel.org (Postfix) with ESMTP id 1EFE4C71133;
         Fri, 25 Aug 2023 08:43:44 +0000 (UTC)
 From:   Nikita Shubin via B4 Relay 
         <devnull+nikita.shubin.maquefel.me@kernel.org>
-Date:   Fri, 25 Aug 2023 11:43:25 +0300
-Subject: [PATCH v2 1/2] dt-bindings: rtc: Add ST M48T86
+Date:   Fri, 25 Aug 2023 11:43:26 +0300
+Subject: [PATCH v2 2/2] rtc: m48t86: add DT support for m48t86
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230823-m48t86_device_tree-v2-1-21ff275f949d@maquefel.me>
+Message-Id: <20230823-m48t86_device_tree-v2-2-21ff275f949d@maquefel.me>
 References: <20230823-m48t86_device_tree-v2-0-21ff275f949d@maquefel.me>
 In-Reply-To: <20230823-m48t86_device_tree-v2-0-21ff275f949d@maquefel.me>
 To:     Alessandro Zummo <a.zummo@towertech.it>,
@@ -54,13 +54,14 @@ To:     Alessandro Zummo <a.zummo@towertech.it>,
 Cc:     linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         Nikita Shubin <nikita.shubin@maquefel.me>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>
 X-Mailer: b4 0.12.1
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1692953023; l=1415;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1692953023; l=1171;
  i=nikita.shubin@maquefel.me; s=20230718; h=from:subject:message-id;
- bh=MnFLUVNbKTyfZ50U0UaB3bgdv9grXe+OsjVQV5/9QnA=; =?utf-8?q?b=3DLVnK3jIdYHtY?=
- =?utf-8?q?hQ3q83ARey1BgIv2Hx+r3atUv8MPpTSm8UfB/QWN+DKaalJjZLk4kAUWxvNk6uJq?=
- sQOt5Nr3BYuZXkJKNVQQFlKwAaeGH12su8puRDMKqPxfQOvaJM2n
+ bh=nNUJapNSivCRonCxS+mxGAyZP1Hfr/cFgMFRykuTeBc=; =?utf-8?q?b=3Dt8EdvTM3pBf/?=
+ =?utf-8?q?eWnAA9hjBP05Hqrk+CPRL0vgdXsuo78XhZ19AlHRuzDRrVAvMRCr+GwDExzEXXr0?=
+ /IoFvxGMD9jklEZy3uITWLE1Z0wa5EaB7TJTXKj9M+NwrIZkhrQ3
 X-Developer-Key: i=nikita.shubin@maquefel.me; a=ed25519;
  pk=vqf5YIUJ7BJv3EJFaNNxWZgGuMgDH6rwufTLflwU9ac=
 X-Endpoint-Received: by B4 Relay for nikita.shubin@maquefel.me/20230718 with auth_id=65
@@ -78,59 +79,45 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Nikita Shubin <nikita.shubin@maquefel.me>
 
-Add YAML bindings for ST M48T86 / Dallas DS12887 RTC.
+Add OF ID match table.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Link: https://lore.kernel.org/lkml/61b9e036-7864-65c6-d43b-463fff896ddc@linaro.org/
+Acked-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Link: https://lore.kernel.org/lkml/20230601054549.10843-12-nikita.shubin@maquefel.me/
 Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
 ---
- .../devicetree/bindings/rtc/st,m48t86.yaml         | 38 ++++++++++++++++++++++
- 1 file changed, 38 insertions(+)
+ drivers/rtc/rtc-m48t86.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/rtc/st,m48t86.yaml b/Documentation/devicetree/bindings/rtc/st,m48t86.yaml
-new file mode 100644
-index 000000000000..e3e12fa23380
---- /dev/null
-+++ b/Documentation/devicetree/bindings/rtc/st,m48t86.yaml
-@@ -0,0 +1,38 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/rtc/st,m48t86.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/drivers/rtc/rtc-m48t86.c b/drivers/rtc/rtc-m48t86.c
+index 481c9525b1dd..dd4a62e2d39c 100644
+--- a/drivers/rtc/rtc-m48t86.c
++++ b/drivers/rtc/rtc-m48t86.c
+@@ -11,6 +11,7 @@
+  */
+ 
+ #include <linux/module.h>
++#include <linux/mod_devicetable.h>
+ #include <linux/rtc.h>
+ #include <linux/platform_device.h>
+ #include <linux/bcd.h>
+@@ -269,9 +270,16 @@ static int m48t86_rtc_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++static const struct of_device_id m48t86_rtc_of_ids[] = {
++	{ .compatible = "st,m48t86" },
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(of, m48t86_rtc_of_ids);
 +
-+title: ST M48T86 / Dallas DS12887 RTC with SRAM
-+
-+maintainers:
-+  - Alexandre Belloni <alexandre.belloni@bootlin.com>
-+
-+allOf:
-+  - $ref: rtc.yaml
-+
-+properties:
-+  compatible:
-+    enum:
-+      - st,m48t86
-+
-+  reg:
-+    items:
-+      - description: index register
-+      - description: data register
-+
-+required:
-+  - compatible
-+  - reg
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    rtc@10800000 {
-+      compatible = "st,m48t86";
-+      reg = <0x10800000 0x1>, <0x11700000 0x1>;
-+    };
-+
-+...
+ static struct platform_driver m48t86_rtc_platform_driver = {
+ 	.driver		= {
+ 		.name	= "rtc-m48t86",
++		.of_match_table = m48t86_rtc_of_ids,
+ 	},
+ 	.probe		= m48t86_rtc_probe,
+ };
 
 -- 
 2.39.2
