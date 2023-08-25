@@ -2,73 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2714D787C6A
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 02:07:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C108F787C77
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 02:16:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239524AbjHYAGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Aug 2023 20:06:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57320 "EHLO
+        id S234737AbjHYANV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Aug 2023 20:13:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239334AbjHYAG2 (ORCPT
+        with ESMTP id S231373AbjHYANE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Aug 2023 20:06:28 -0400
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE26B19B4;
-        Thu, 24 Aug 2023 17:06:26 -0700 (PDT)
-Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-26fc9e49859so247676a91.0;
-        Thu, 24 Aug 2023 17:06:26 -0700 (PDT)
+        Thu, 24 Aug 2023 20:13:04 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4323E1BC8;
+        Thu, 24 Aug 2023 17:13:02 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-99df431d4bfso39197166b.1;
+        Thu, 24 Aug 2023 17:13:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692922381; x=1693527181;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=+FrPKp5AaTmiKjjCxOEGvUxfqxf1WlvTqn4IiXnA5UA=;
+        b=gHlShRE+vf/JFJNmv/m3UW0JAsNq7WdSYYQn7gZ1R2pVRMgWRLlzJcWmHuNJ7XcI01
+         wSjuXVlKLaW1tWeQB9CSEvkEhE/xwhJg8MJ0F7mGbgCV0oZD1zFRQ8ei5KnyNit2HdY4
+         ck5JseeLky9WEPKhF5z1/t0O3FowCv3w2uOYci+p9o7j/Il4FoOdaeiW9jzaJq0gyiIB
+         8e94EMuPHIK+DQxDJBkURwp/0GVg5JGQM0CXtS0WPCg4Jn3LOFQs6DdByN4wT5INb1Wu
+         qFSw06wxlhgOdyd2A/dChZ5HIGzOdWgfiefmuO9L5RVGQeleZEFTtuEj5mKtOBJJueGX
+         cwdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692921986; x=1693526786;
+        d=1e100.net; s=20221208; t=1692922381; x=1693527181;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=aWdk9Nh27lTWI9Sy3qG2N2twh7bN52t5s/fVvyXjmsM=;
-        b=fRbuU66ME25jaQ4bEUhcYLG1rzlFQxrVEAJSMn4eaWJwIKJoC34NStiSazm81xPqww
-         a57eJ1YBlhWqezCfwD4+DofcC6K/i2IqVB+1Ud6FazvA10Q7RtHoPpBH5FTvW4qRbNw1
-         QF1QikZ47fz4PAs3RFvFxA9qlmeCXzZOBD2+swGCxKw6S5RtkGiXpOksQSY7Otg6naXU
-         RgrVMM1UIf9eOyxLFvODsKtHuIYIWv5SeN49vzPCr0Z9iJP4m0XjgApSkjEJ/UIOHDVK
-         26hBIBNW+Wm4futPKe4l2kQYhajo0EtSv7YdLiN5Lw+VCYjYrf79AFSjgCFFcJN6g3LR
-         NE0A==
-X-Gm-Message-State: AOJu0YxPbWKaM0vNhabAx+xvAwK0Gm7VwhGeYwacGEWNKSczuu8ta6rc
-        E15qgPM34kC+QOhWHa+sVm0=
-X-Google-Smtp-Source: AGHT+IEDTuEdW/fF2X8esUeNnTXm7RIMpfL/KicU8T2LpUpKyl82EpoWSQT1cG5TzHh4+GefRdQHUg==
-X-Received: by 2002:a17:90a:6806:b0:268:5e70:508a with SMTP id p6-20020a17090a680600b002685e70508amr13746847pjj.43.1692921986135;
-        Thu, 24 Aug 2023 17:06:26 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([20.69.120.36])
-        by smtp.gmail.com with ESMTPSA id d5-20020a17090a498500b00264040322desm285608pjh.40.2023.08.24.17.06.25
+        bh=+FrPKp5AaTmiKjjCxOEGvUxfqxf1WlvTqn4IiXnA5UA=;
+        b=BASw7FvezZIV3zLmtgH4bFBuR5GuaUqIglczaBCu/bG8nR+48+KyxARC8TldCL4PPq
+         NeXgo8riMc6r3Wvmta06+KIng7V2o6d/P2rJpgF6CY8139ArGxDHUd2sijJIGB2GDJLM
+         8EuAQ2s8zcBVGlrig/Ks1dM05RxId7PIJuhMk0n9wXMfTKf/pBqtjkfM8g1atqkhckgb
+         jLUnVnbJI1chSIEGxarTuFj5EFLG5lRSgQ0vbrVPHczvljppWeU7FCjeD16zI3IKWL13
+         Upnc6qxOX0nhqkyqOv5tW6iFkuMRxPXVPUNabrkihT/VcD12ExjoMxh0bomOLX+60df2
+         XjHQ==
+X-Gm-Message-State: AOJu0Yzu47Hv5jWERVR7noaIzR/ptlLfnyrQubocAyntDYFCnQA0qftO
+        jViWXKaBlc2z4QGBpMKvWxwoQFE5PmTv0Q==
+X-Google-Smtp-Source: AGHT+IE+S/WEthctejPnFDCeMkdjAA78DrPaZ+phtcITFg8m7IMG3ZOR/PjRGDFFIVSy27iYo1i81w==
+X-Received: by 2002:a17:906:150:b0:9a1:d79a:418e with SMTP id 16-20020a170906015000b009a1d79a418emr4746570ejh.40.1692922380506;
+        Thu, 24 Aug 2023 17:13:00 -0700 (PDT)
+Received: from f (cst-prg-6-172.cust.vodafone.cz. [46.135.6.172])
+        by smtp.gmail.com with ESMTPSA id le18-20020a170906ae1200b00991d54db2acsm245528ejb.44.2023.08.24.17.12.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Aug 2023 17:06:25 -0700 (PDT)
-Date:   Fri, 25 Aug 2023 00:06:03 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-        hpa@zytor.com, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>
-Subject: Re: [PATCH] x86/hyperv: Remove duplicate include
-Message-ID: <ZOfwa7ujBcs3AaFQ@liuwe-devbox-debian-v2>
-References: <20230824080352.98945-1-jiapeng.chong@linux.alibaba.com>
+        Thu, 24 Aug 2023 17:13:00 -0700 (PDT)
+Date:   Fri, 25 Aug 2023 02:12:57 +0200
+From:   Mateusz Guzik <mjguzik@gmail.com>
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     paul@paul-moore.com, linux-security-module@vger.kernel.org,
+        jmorris@namei.org, serge@hallyn.com, keescook@chromium.org,
+        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
+        stephen.smalley.work@gmail.com, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, mic@digikod.net
+Subject: Re: [PATCH v13 04/11] LSM: syscalls for current process attributes
+Message-ID: <20230825001257.qcckxswcrehs4uh2@f>
+References: <20230802174435.11928-1-casey@schaufler-ca.com>
+ <20230802174435.11928-5-casey@schaufler-ca.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230824080352.98945-1-jiapeng.chong@linux.alibaba.com>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20230802174435.11928-5-casey@schaufler-ca.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 04:03:52PM +0800, Jiapeng Chong wrote:
-> ./arch/x86/hyperv/ivm.c: asm/sev.h is included more than once.
-> ./arch/x86/hyperv/ivm.c: asm/coco.h is included more than once.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=6212
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+On Wed, Aug 02, 2023 at 10:44:27AM -0700, Casey Schaufler wrote:
+> +/**
+> + * security_setselfattr - Set an LSM attribute on the current process.
+> + * @attr: which attribute to set
+> + * @ctx: the user-space source for the information
 
-Applied to hyperv-next, thanks!
+Would be more idiomatic to name the user arg uctx.
+
+> + * @size: the size of the data
+> + * @flags: reserved for future use, must be 0
+> + *
+> + * Set an LSM attribute for the current process. The LSM, attribute
+> + * and new value are included in @ctx.
+> + *
+> + * Returns 0 on success, -EINVAL if the input is inconsistent, -EFAULT
+> + * if the user buffer is inaccessible or an LSM specific failure.
+> + */
+> +int security_setselfattr(unsigned int attr, struct lsm_ctx __user *ctx,
+> +			 size_t size, u32 flags)
+> +{
+> +	struct security_hook_list *hp;
+> +	struct lsm_ctx *lctx;
+> +	int rc = LSM_RET_DEFAULT(setselfattr);
+> +
+> +	if (flags)
+> +		return -EINVAL;
+> +	if (size < sizeof(*ctx))
+> +		return -EINVAL;
+> +
+
+I think it would be cleaner to check against lctx.
+
+But the actual point is that you want an upper bound here.
+
+> +	lctx = kmalloc(size, GFP_KERNEL);
+> +	if (lctx == NULL)
+> +		return -ENOMEM;
+> +
+> +	if (copy_from_user(&lctx, ctx, size))
+> +		return -EFAULT;
+> +
+
+One commenter over already mentioned this should be lctx, not &lctx.
+
+> +	if (size < lctx->len || size < lctx->ctx_len + sizeof(ctx) ||
+> +	    lctx->len < lctx->ctx_len + sizeof(ctx))
+> +		return -EINVAL;
+> +
+
+This leaks lctx.
+
+> +	hlist_for_each_entry(hp, &security_hook_heads.setselfattr, list)
+> +		if ((hp->lsmid->id) == lctx->id) {
+> +			rc = hp->hook.setselfattr(attr, lctx, size, flags);
+> +			break;
+> +		}
+> +
+> +	kfree(lctx);
+> +	return rc;
+> +}
+> +
