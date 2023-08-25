@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9616788088
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 09:03:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA392788087
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 09:03:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243228AbjHYHDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 03:03:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44588 "EHLO
+        id S243185AbjHYHDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 03:03:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242659AbjHYHCN (ORCPT
+        with ESMTP id S242699AbjHYHCO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 03:02:13 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AC4BD3
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 00:02:11 -0700 (PDT)
+        Fri, 25 Aug 2023 03:02:14 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14BFAE6B
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 00:02:12 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 178A266618
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9F451636D4
         for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 07:02:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15196C433C8;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0C5BC433C7;
         Fri, 25 Aug 2023 07:02:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692946930;
-        bh=kzD8Rkhdf6omv3NkeVtM4TRHGvAyOn4bC2fsiLph4tE=;
+        s=k20201202; t=1692946931;
+        bh=/LMUUmYy8woWUbMng0fqzBv0Si0zv45Y8zZTxKZ5pOo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j5z8PKCuUB594PcxlZNvWwaVh4G88UupO6bfbuuVyTKBvKmL2nrbEb5xZh/lq5LCS
-         q5RXSiQ0pMjSSymEp+kgU3K59nAsP0ayuqy/1yY2Fqinl+BRI9xylXB+FyGmKeKYrH
-         iuESWQK/lr93h0Kid2qpx8rAgW6OTSt2ZmmfpboGNQgx/PQ4/NzBs1q+MWx04OUyjF
-         MylUmKyWuwcQ0nAUeuJNlKfDwU5CNuch7+Ey1oP0UwcM6jtmOIDrzLV4G6gwjDETr5
-         mYUYrSw9gb8JZdJzuq9Jzx0csp0ch/k72JQe0FMxPdkUTy7AV2SiKJ3zCSzP+0DEEv
-         3qvG7AdBocaNg==
+        b=iJvHJ2OTIi2oOt2WsSwrjJBoymwe29m8+f+hpBV4qlfSRMgUQYFFHDu8TvPb+RVp/
+         0+jD3kTlylP+nCYYsfG9vX70xttpFn0C/VnP4YEtpEXFI2T5WdZvJrhnu9zGbf0eiB
+         mltisxHOhasCKo0D1eyWlqIvpcGTu3pL9jqDW/o1JtcCo5pvR2g1T7l42Q2HXd1tnz
+         7jpviLAYhPJxWlE89/yKocoADsrxzMTfPI80RCfsUwdYlCbRdryPJVL49gmPERa8d8
+         Yd+OW6czl4BPJUBQX7Be1xJI962Js6WqQ53ogRA0MueB/qQwMxA2aevCYrOmdC3VYy
+         tFHHUJu/r7/1g==
 From:   Josh Poimboeuf <jpoimboe@kernel.org>
 To:     x86@kernel.org
 Cc:     linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
@@ -43,9 +43,9 @@ Cc:     linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
         Andrew Cooper <andrew.cooper3@citrix.com>,
         Nikolay Borisov <nik.borisov@suse.com>,
         gregkh@linuxfoundation.org, Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH 14/23] x86/srso: Unexport untraining functions
-Date:   Fri, 25 Aug 2023 00:01:45 -0700
-Message-ID: <94caf421d80924666be921e387851665054ba9b7.1692919072.git.jpoimboe@kernel.org>
+Subject: [PATCH 15/23] x86/srso: Remove 'pred_cmd' label
+Date:   Fri, 25 Aug 2023 00:01:46 -0700
+Message-ID: <ec18b04787fc21874303f29746a49847751eddd6.1692919072.git.jpoimboe@kernel.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1692919072.git.jpoimboe@kernel.org>
 References: <cover.1692919072.git.jpoimboe@kernel.org>
@@ -61,75 +61,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These functions aren't called outside of retpoline.S.
+SBPB is only enabled in two distinct cases:
+
+1) when SRSO has been disabled with srso=off
+
+2) when SRSO has been fixed (in future HW)
+
+Simplify the control flow by getting rid of the 'pred_cmd' label and
+moving the SBPB enablement check to the two corresponding code sites.
+This makes it more clear when exactly SBPB gets enabled.
 
 Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
 ---
- arch/x86/include/asm/nospec-branch.h | 4 ----
- arch/x86/lib/retpoline.S             | 7 ++-----
- 2 files changed, 2 insertions(+), 9 deletions(-)
+ arch/x86/kernel/cpu/bugs.c | 21 +++++++++++++--------
+ 1 file changed, 13 insertions(+), 8 deletions(-)
 
-diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
-index 197ff4f4d1ce..6c14fd1f5912 100644
---- a/arch/x86/include/asm/nospec-branch.h
-+++ b/arch/x86/include/asm/nospec-branch.h
-@@ -352,10 +352,6 @@ extern void retbleed_return_thunk(void);
- extern void srso_return_thunk(void);
- extern void srso_alias_return_thunk(void);
+diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
+index d883d1c38f7f..3c7f634b6148 100644
+--- a/arch/x86/kernel/cpu/bugs.c
++++ b/arch/x86/kernel/cpu/bugs.c
+@@ -2410,13 +2410,21 @@ static void __init srso_select_mitigation(void)
+ {
+ 	bool has_microcode = boot_cpu_has(X86_FEATURE_IBPB_BRTYPE);
  
--extern void retbleed_untrain_ret(void);
--extern void srso_untrain_ret(void);
--extern void srso_alias_untrain_ret(void);
+-	if (!boot_cpu_has_bug(X86_BUG_SRSO) || cpu_mitigations_off())
+-		goto pred_cmd;
++	if (cpu_mitigations_off())
++		return;
++
++	if (!boot_cpu_has_bug(X86_BUG_SRSO)) {
++		if (boot_cpu_has(X86_FEATURE_SBPB))
++			x86_pred_cmd = PRED_CMD_SBPB;
++		return;
++	}
+ 
+ 	if (has_microcode) {
+ 		/*
+ 		 * Zen1/2 with SMT off aren't vulnerable after the right
+ 		 * IBPB microcode has been applied.
++		 *
++		 * Zen1/2 don't have SBPB, no need to try to enable it here.
+ 		 */
+ 		if (boot_cpu_data.x86 < 0x19 && !cpu_smt_possible()) {
+ 			setup_force_cpu_cap(X86_FEATURE_SRSO_NO);
+@@ -2439,7 +2447,9 @@ static void __init srso_select_mitigation(void)
+ 
+ 	switch (srso_cmd) {
+ 	case SRSO_CMD_OFF:
+-		goto pred_cmd;
++		if (boot_cpu_has(X86_FEATURE_SBPB))
++			x86_pred_cmd = PRED_CMD_SBPB;
++		return;
+ 
+ 	case SRSO_CMD_MICROCODE:
+ 		if (has_microcode) {
+@@ -2501,11 +2511,6 @@ static void __init srso_select_mitigation(void)
+ 
+ out:
+ 	pr_info("%s%s\n", srso_strings[srso_mitigation], has_microcode ? "" : ", no microcode");
 -
- extern void entry_untrain_ret(void);
- extern void entry_ibpb(void);
+-pred_cmd:
+-	if ((!boot_cpu_has_bug(X86_BUG_SRSO) || srso_cmd == SRSO_CMD_OFF) &&
+-	     boot_cpu_has(X86_FEATURE_SBPB))
+-		x86_pred_cmd = PRED_CMD_SBPB;
+ }
  
-diff --git a/arch/x86/lib/retpoline.S b/arch/x86/lib/retpoline.S
-index 9ab634f0b5d2..a40ba18610d8 100644
---- a/arch/x86/lib/retpoline.S
-+++ b/arch/x86/lib/retpoline.S
-@@ -157,7 +157,6 @@ SYM_START(srso_alias_untrain_ret, SYM_L_GLOBAL, SYM_A_NONE)
- 	lfence
- 	jmp srso_alias_return_thunk
- SYM_FUNC_END(srso_alias_untrain_ret)
--__EXPORT_THUNK(srso_alias_untrain_ret)
- 
- 	.section .text..__x86.rethunk_safe
- #else
-@@ -215,7 +214,7 @@ SYM_CODE_END(srso_alias_return_thunk)
-  */
- 	.align 64
- 	.skip 64 - (retbleed_return_thunk - retbleed_untrain_ret), 0xcc
--SYM_START(retbleed_untrain_ret, SYM_L_GLOBAL, SYM_A_NONE)
-+SYM_START(retbleed_untrain_ret, SYM_L_LOCAL, SYM_A_NONE)
- 	ANNOTATE_NOENDBR
- 	/*
- 	 * As executed from retbleed_untrain_ret, this is:
-@@ -263,7 +262,6 @@ SYM_CODE_END(retbleed_return_thunk)
- 	jmp retbleed_return_thunk
- 	int3
- SYM_FUNC_END(retbleed_untrain_ret)
--__EXPORT_THUNK(retbleed_untrain_ret)
- 
- /*
-  * SRSO untraining sequence for Zen1/2, similar to retbleed_untrain_ret()
-@@ -277,7 +275,7 @@ __EXPORT_THUNK(retbleed_untrain_ret)
-  */
- 	.align 64
- 	.skip 64 - (srso_safe_ret - srso_untrain_ret), 0xcc
--SYM_START(srso_untrain_ret, SYM_L_GLOBAL, SYM_A_NONE)
-+SYM_START(srso_untrain_ret, SYM_L_LOCAL, SYM_A_NONE)
- 	ANNOTATE_NOENDBR
- 	.byte 0x48, 0xb8
- 
-@@ -298,7 +296,6 @@ SYM_INNER_LABEL(srso_safe_ret, SYM_L_GLOBAL)
- 	ud2
- SYM_CODE_END(srso_safe_ret)
- SYM_FUNC_END(srso_untrain_ret)
--__EXPORT_THUNK(srso_untrain_ret)
- 
- SYM_CODE_START(srso_return_thunk)
- 	UNWIND_HINT_FUNC
+ #undef pr_fmt
 -- 
 2.41.0
 
