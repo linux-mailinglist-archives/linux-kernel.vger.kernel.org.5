@@ -2,171 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DDF47880C7
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 09:18:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EC3F7880CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 09:20:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242999AbjHYHSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 03:18:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50550 "EHLO
+        id S237601AbjHYHTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 03:19:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241794AbjHYHRt (ORCPT
+        with ESMTP id S243175AbjHYHTY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 03:17:49 -0400
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2057.outbound.protection.outlook.com [40.107.21.57])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D301E6B;
-        Fri, 25 Aug 2023 00:17:45 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VDD6Icnata43282knHJvv0D4IIvTnazxosoWdvzeUO6tquxWHkILtzl62KdLfGpGTOMDBq6AysYU7iiJgGjYP6mumSeYb27knLbnSOKa/qI23Ty0ZX2pIUmgkcGIywJWSY77z38pqjtkrscwTUev48Xmf9/E+x4ULLR1BI4vmeCNiu2k114ivEPJj6pRM9Kl8+A2pbc8uKEnVQWVJEWZVPt2kxOwoQAMDi6DxLMthHfDNczbdmCWERDj64IdSqcHOq7bixgwWLN874bXRJekG6ddhEiKb1KKs1ffH4XY+VYyxGrHf9XTNbuBFUf3kffCLfO+YknAlkCJKltON2Cc7A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5NCFSN6Cu+a7m/3UZM2J4wHjw1Al7hEH9wf+1C8zZMo=;
- b=aHqzF5jrZlKRxzBmVhajvZHFbzd1WfIfeKd2dlbIbmcQ2SQd49T9GQaZrrDyVdbMj4wgxQjNQn/T/BJJzd08lMgzOZZ+6I/UvLIQLa8NqyPUp1dtDXEojX4v2gQZrtFY6zuJxkeoIivpFRd6FGWqv/H7b6vaZ2K59T6ZOSF9qmKUscU6qaz06Nr+CZEKrfOM56HBOV6SPBgAV61KsYZ1QKrdK7QeBn9wx7DbchRyV/8coedumMU3Ih207orGTaDRSLUXMu8ODoFYTDmOtsB7P3Ujs6L7HsqHTFo6RsL2P7ElvxW71rVfJ5Id449T0vIpnnOeXYTSiYeYN3hG1N1Wjg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=siemens.com; dmarc=pass action=none header.from=siemens.com;
- dkim=pass header.d=siemens.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=siemens.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5NCFSN6Cu+a7m/3UZM2J4wHjw1Al7hEH9wf+1C8zZMo=;
- b=FpbeStm+NcuvfbibKJXjJdSS0XPbtLohUFOar88TJAt+WtfZYr46u2JmmLwN+rCLjwTfVkV0ObMtDVEiUkCxD4J/vrBv/zt/1TecUctxzSDiovRHrEnrWnV4NLgyYW1o9rC4uIaZNJedhollJNx00wGfPCEKX3J+FLPo0cF1HpKP8haMZiCWRF1+C3DIUiAoHl96vBp4oDz2qiAeFgLpPt/S8ZL3mBW45ooT8Nh3oF9VwWv+fv/Sc+xsHXC4QmWTJLczJaT1UvTT4cJ16QTbh9MEtMPYepAGoWA0N85UHXI+GXdZP2H8lBEWZF5ZfmcWGevQYYyCKlNsv667nDBiRg==
-Received: from AS8PR10MB6867.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:5b6::22)
- by PAVPR10MB7060.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:102:30f::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.29; Fri, 25 Aug
- 2023 07:17:42 +0000
-Received: from AS8PR10MB6867.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::1422:2669:47c5:d7bc]) by AS8PR10MB6867.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::1422:2669:47c5:d7bc%2]) with mapi id 15.20.6699.028; Fri, 25 Aug 2023
- 07:17:42 +0000
-From:   "Sverdlin, Alexander" <alexander.sverdlin@siemens.com>
-To:     "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-        "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "lukas@wunner.de" <lukas@wunner.de>
-Subject: Re: [PATCH v1 3/3] spidev: Simplify SPI_IOC_RD_MODE* cases in
- spidev_ioctl()
-Thread-Topic: [PATCH v1 3/3] spidev: Simplify SPI_IOC_RD_MODE* cases in
- spidev_ioctl()
-Thread-Index: AQHZ1qdJ6bgKs9m22EqxNH1Od3ICfq/6mymA
-Date:   Fri, 25 Aug 2023 07:17:42 +0000
-Message-ID: <fd0b4e1736a46a427d980a703fb99b9205bc4f84.camel@siemens.com>
-References: <20230824162209.2890440-1-andriy.shevchenko@linux.intel.com>
-         <20230824162209.2890440-4-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20230824162209.2890440-4-andriy.shevchenko@linux.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=siemens.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: AS8PR10MB6867:EE_|PAVPR10MB7060:EE_
-x-ms-office365-filtering-correlation-id: 71998894-b22b-44f9-a0ed-08dba53b5f88
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 2Nmmr7ATMcMy7XYBJj5fWNNAEZ6AlLQ7GM2SVZ1m0rwOlzP148myE/N+Uewc22y66F008SbVd2wihvXhxJzGIfWXNGokID8lQV7AaNF9I7bYbxB2WPH2nWM1B9f4hWWosYxAPUFWNzvkymkcZZxy7qxboIMRudL4Yq4XWxrELxb2Sg2knznN8ctcIVF4JhV10lrHulqBsuGisZDTe3opQgsqHxmK8Hr2Ofg21QnkiqUw4f1GiVHSRFiJCke/5iYywDg5ONuhvFKTUoYhNg65u725IU+ssbEuChClxwBQtdG8ZRkNnZtIPCxPBzTsieSh8AuTgUfLDBggP1JgcwnqjjYNr2QIJ9ivCggc37whw3pS0SlQqsi/vbYxCos7P6e9qqIyfPwTLnJDJ6XW2xWPGwSLbgIHpyT1wnwzpuRlut9yhJNtStDS44z3m2P/lrwm3sZ7C1Ru1GWNN5NE34qUkgHWLod4RnjIxj4lL0hSoB8QhWpQm6xfjsqSqQVYVMClrxnhYHoY348ZxFTgW+JnoGWhSeCENcvocaj/S2miNoatk0u0e/NKmC/GZjQVBGLGYV0HsUtjnmuZQ2rp+0gEd9q5Sc4d9vOeq/FcMti254kTkEbh7hXgFlxbB77zaLW3h9qY6RSXasJ4I5MwFxmGFQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR10MB6867.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(39860400002)(136003)(346002)(396003)(451199024)(1800799009)(186009)(82960400001)(122000001)(38100700002)(38070700005)(8676002)(4326008)(8936002)(91956017)(64756008)(41300700001)(6486002)(6506007)(316002)(15974865002)(36756003)(66446008)(66476007)(66556008)(110136005)(66946007)(76116006)(86362001)(71200400001)(6512007)(478600001)(83380400001)(2906002)(2616005)(5660300002)(18886075002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?OVZKUmJwSGNFZHFQYk16NjViQUhleWs3emRxV3lpYXp4ZmZ4RVdaM0hzZXFO?=
- =?utf-8?B?N2o1Si9PQW5wU0xYSHpyMlBZSW82NEpTZmFJZ2QxSTBaRHU2N1Raa2k1WWxN?=
- =?utf-8?B?eks0NjVqbDIrL2dEVFlyeDcvYlp2elZ0Ukw4dzRMdUR6Y1FnWEttdy9uYXl4?=
- =?utf-8?B?U0Q3QUxJcmNydVhjZmIwWDh6aXV1QmtpM1hOekdlVGx0bEFXdXd1VGtDb2Vl?=
- =?utf-8?B?MjVYOUJLRExqRHl1NUpRbm1hZDBwbjhiMmhBeFUvODg1eldFWllCTnZ3eVlK?=
- =?utf-8?B?K3RvUnJta0dCZjJhQ1l3QytrNEFtZ0l1TFF3MDlkSTZWaE9WblhKVGN1cGFS?=
- =?utf-8?B?YnhvZS9oY05sSWNxcWlWb0dKVGlkcGYxWTZJbnF2NjBmcDljcE1GWjIwaHhF?=
- =?utf-8?B?ZHlGcHliQk40d1FIOUVTcTlod2x5RE1BSWxBajVLWWg2VzFmR2hSNEdOWjhD?=
- =?utf-8?B?U1JwWW9iWnJZWWtrQ1c5T3dQQzFVZlVKYXZ3cUdGT05wM3hGY1Q0QnlCQ3or?=
- =?utf-8?B?MmRFSDlOVXh5U3dCalBaSHNDb1J1MG5pd1VOaWxMSzA5Q29OdjlTRFQvNDNs?=
- =?utf-8?B?bWpIb0FkMmkzd2xIWFhrWWFuSlp0cGZxMS93UDFQNjRaSEIzMXA2bDdqaFkw?=
- =?utf-8?B?bDd5bkZYVHZzMy9welgySW9xTmgxSWk3dWhTckN6eGxLMTJscnQyL1JJckVx?=
- =?utf-8?B?QmhWS1ArZ2U0MGZVUHpubGtlQjY3V01Bc2pmS3hJeHFERE5tR1M0Mlp3LzBY?=
- =?utf-8?B?dTl3RWZrUTA4NFJxeVRScjRhbVhQRHQ1YUU3WDkyaDhzb3V1Nmhaa2oyd2kz?=
- =?utf-8?B?dXcrVldWZW9jWi9ob1FsM01ONXNyWDBDV1BZSGZiczZnMng4OFVVTjJCVkla?=
- =?utf-8?B?UjlVa3dJSDNPYXdpTVBMOHYvcG5peHBEREZiRFN5ZDVlWnVSV3VPalFhazZT?=
- =?utf-8?B?UXhGZnIxWjFVdFZUYzdNRy80S2N3akNGLzFZZUl4S1VZY3htNjc4SnZXYXdD?=
- =?utf-8?B?RTRUWEhWZS94TUw1WWgxR2krT29iN1B0R0FBU2I3Y21WeFp1bDNoclNzOHl1?=
- =?utf-8?B?VlplbGxpUXQ2eGM0eHpZeXNRYlJvYmtOcktUdVdsUEZvT05EeEFDVE0xLzhh?=
- =?utf-8?B?VE8ydEZDM1g2RjVvb2ZmenJXb3VLc3pTWFdLTUhERUZMcnFFbXRBc1FESnNl?=
- =?utf-8?B?NjgwUDFqV2VOS29Bc3pTSldCTjA3MFl1Z2ZBUVZuaDV5M1hMTTVHd1ZLZFFx?=
- =?utf-8?B?Mytqc0xMQWRkWlE2cG5ZVUQwc05SOVBFb3dPY1pjMG5mWFpzdEFEMzA4S1Vz?=
- =?utf-8?B?UkVURjF5YkVYQ3psVVlUTEVINUdzUlVJR2Y5R3AxQy9jNjZ1NUpUclA2QXFv?=
- =?utf-8?B?K2RNRHVsd2FzZkxJdklqS1FCRUY2WUlBV1BOS0ZFUGo4UU1JMDFhYjhDY0ZF?=
- =?utf-8?B?UWgwaEZacTUxbno2VFVoRjdDZFpSWkFWWUllSkt3V1d0M0lET0VHQWJWYmls?=
- =?utf-8?B?Zkk3Vkt6LzhiQ2ZocmN6MEtaWXdaZUFEUnl4QjlPNncwMXp0S1VDaXNGY0hh?=
- =?utf-8?B?WmI2MjQ2eXM1UWp5N0ZNK0VFQXhKOEphOUI2SnA3bUNSdy84VXpmdmxSZ0tD?=
- =?utf-8?B?QVdDOHNLSjgySGVwdTNadzhuTjJEeUIyTzd6K2ZTZ09Qdy9LajYxeHlLUzB6?=
- =?utf-8?B?QjZPdHdQa0dlR2F5dmo0TUY0ejFsUHJxb2gvYi8yeVVUTmdwU2RibWlDK3JH?=
- =?utf-8?B?VWF6OWVjMUI4eTEyTDNURUxQRWovSXFVYnNldG9aOURwNC9IVE9remZ2Y0ZG?=
- =?utf-8?B?SzJnTWZPY1prbWpDa3ZxV1V4aTlaOHhnM2xJTlV2M2xkeXVHUXZBYkM2cmVZ?=
- =?utf-8?B?Nzlzekc5Tk1mTFBGclVhVFNPaUVRSmFIZ0ZxMkxkRERiT3RoQmpITUlTZlBF?=
- =?utf-8?B?eGNKZ3ZsWnRnajkzSEw1VEhhOGpqOGRubE4rVEVoTU16L1dRZ3ZDTGd2cEZ1?=
- =?utf-8?B?SzFxU3hrS3JTcFVJd1NjYzI0em1XOEY2dFo1WEhVNUExQk42OG5PcHJSR1Vm?=
- =?utf-8?B?bDd4SmdHdEpaWHdrMWZPMkR0RklCQm9uaWVMeEJnbmorSGZrbFNUQ1Jtc2V5?=
- =?utf-8?B?eUNxRWI4anczVTVhKzFWRTlqNzhGMlBZK2FlMmVuSk4wR2NhQllSc0dKQWRB?=
- =?utf-8?B?Mm50enlyelhna0luSUlnOTROK3hEK3d0ZVk2MkVOZzR5RzB4NGU1c2hLNXRo?=
- =?utf-8?Q?vLKbJYXX6mA2/UPWOanKESnOwnKqzuzG8vBVncMml0=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <12A23318050BC940A07B300528436390@EURPRD10.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+        Fri, 25 Aug 2023 03:19:24 -0400
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1479919B5
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 00:19:19 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RXBCP1xy8z4f3kjV
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 15:19:13 +0800 (CST)
+Received: from [10.174.178.55] (unknown [10.174.178.55])
+        by APP4 (Coremail) with SMTP id gCh0CgBH16nuVehkUYQkBg--.15410S3;
+        Fri, 25 Aug 2023 15:19:14 +0800 (CST)
+Subject: Re: [PATCH] kallsyms: Fix kallsyms_selftest failure
+To:     Yonghong Song <yonghong.song@linux.dev>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Petr Mladek <pmladek@suse.com>, Song Liu <song@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     Fangrui Song <maskray@google.com>, kernel-team@fb.com,
+        Leizhen <thunder.leizhen@huawei.com>,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        kernel test robot <oliver.sang@intel.com>
+References: <20230825034659.1037627-1-yonghong.song@linux.dev>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huaweicloud.com>
+Message-ID: <95a7d98c-b227-7929-b833-f6adc3b7e3ca@huaweicloud.com>
+Date:   Fri, 25 Aug 2023 15:19:10 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-X-OriginatorOrg: siemens.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR10MB6867.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 71998894-b22b-44f9-a0ed-08dba53b5f88
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Aug 2023 07:17:42.7314
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 38ae3bcd-9579-4fd4-adda-b42e1495d55a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: jxM6PHBkngsGcl/Mru64xJYFFLec9tjoVvrkEPm1GRs8Z2HVwphcwEw8ut6x5IBWbl0YcILB5Zg8EZw6xyzFcGth4HY2h/XFKJjXVAK9yss=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAVPR10MB7060
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20230825034659.1037627-1-yonghong.song@linux.dev>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: gCh0CgBH16nuVehkUYQkBg--.15410S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxuFyxCw1xAF1rZFyrtFW7CFg_yoW7Xw47pr
+        WSyFsrGF48Ar1Fka4UJay8WryxCws5Xw1UGayqkFykCFn5ury0qwn7Kw4fu3s8ZrZ8uFWr
+        XanYvFyxtF10yFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+        6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+        9x07UWE__UUUUU=
+X-CM-SenderInfo: hwkx0vthuozvpl2kv046kxt4xhlfz01xgou0bp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkhCgpPbiBUaHUsIDIwMjMtMDgtMjQgYXQgMTk6MjIgKzAzMDAsIEFuZHkgU2hldmNoZW5rbyB3
-cm90ZToKPiBUaGUgdGVtcG9yYXJ5IHZhcmlhYmxlIHRtcCBpcyBub3QgdXNlZCBvdXRzaWRlIG9m
-IHRoZQo+IFNQSV9JT0NfUkRfTU9ERSogY2FzZXMsIGhlbmNlIHdlIGNhbiBvcHRpbWl6ZSBpdHMg
-dXNlLgo+IAo+IFNpZ25lZC1vZmYtYnk6IEFuZHkgU2hldmNoZW5rbyA8YW5kcml5LnNoZXZjaGVu
-a29AbGludXguaW50ZWwuY29tPgo+IFJldmlld2VkLWJ5OiBMdWthcyBXdW5uZXIgPGx1a2FzQHd1
-bm5lci5kZT4KClJldmlld2VkLWJ5OiBBbGV4YW5kZXIgU3ZlcmRsaW4gPGFsZXhhbmRlci5zdmVy
-ZGxpbkBzaWVtZW5zLmNvbT4KCj4gLS0tCj4gwqBkcml2ZXJzL3NwaS9zcGlkZXYuYyB8IDggKysr
-LS0tLS0KPiDCoDEgZmlsZSBjaGFuZ2VkLCAzIGluc2VydGlvbnMoKyksIDUgZGVsZXRpb25zKC0p
-Cj4gCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvc3BpL3NwaWRldi5jIGIvZHJpdmVycy9zcGkvc3Bp
-ZGV2LmMKPiBpbmRleCBlMzI0YjQyYzY1OGMuLmM1NDUwMjE3NTI4YiAxMDA2NDQKPiAtLS0gYS9k
-cml2ZXJzL3NwaS9zcGlkZXYuYwo+ICsrKyBiL2RyaXZlcnMvc3BpL3NwaWRldi5jCj4gQEAgLTM5
-MSwxNyArMzkxLDE1IEBAIHNwaWRldl9pb2N0bChzdHJ1Y3QgZmlsZSAqZmlscCwgdW5zaWduZWQg
-aW50IGNtZCwgdW5zaWduZWQgbG9uZyBhcmcpCj4gwqDCoMKgwqDCoMKgwqDCoC8qIHJlYWQgcmVx
-dWVzdHMgKi8KPiDCoMKgwqDCoMKgwqDCoMKgY2FzZSBTUElfSU9DX1JEX01PREU6Cj4gwqDCoMKg
-wqDCoMKgwqDCoGNhc2UgU1BJX0lPQ19SRF9NT0RFMzI6Cj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoHRtcCA9IHNwaS0+bW9kZTsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgdG1wID0gc3BpLT5tb2RlICYgU1BJX01PREVfTUFTSzsKPiDCoAo+IMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgaWYgKGN0bHItPnVzZV9ncGlvX2Rlc2NyaXB0b3JzICYmIHNwaV9n
-ZXRfY3NncGlvZChzcGksIDApKQo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoHRtcCAmPSB+U1BJX0NTX0hJR0g7Cj4gwqAKPiDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoGlmIChjbWQgPT0gU1BJX0lPQ19SRF9NT0RFKQo+IC3CoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgcmV0dmFsID0gcHV0X3VzZXIodG1w
-ICYgU1BJX01PREVfTUFTSywKPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgKF9fdTggX191c2Vy
-ICopYXJnKTsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oHJldHZhbCA9IHB1dF91c2VyKHRtcCwgKF9fdTggX191c2VyICopYXJnKTsKPiDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoGVsc2UKPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoHJldHZhbCA9IHB1dF91c2VyKHRtcCAmIFNQSV9NT0RFX01BU0ss
-Cj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIChfX3UzMiBfX3VzZXIgKilhcmcpOwo+ICvCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgcmV0dmFsID0gcHV0X3Vz
-ZXIodG1wLCAoX191MzIgX191c2VyICopYXJnKTsKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoGJyZWFrOwo+IMKgwqDCoMKgwqDCoMKgwqBjYXNlIFNQSV9JT0NfUkRfTFNCX0ZJUlNU
-Ogo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgcmV0dmFsID0gcHV0X3VzZXIoKHNw
-aS0+bW9kZSAmIFNQSV9MU0JfRklSU1QpID/CoCAxIDogMCwKCi0tIApBbGV4YW5kZXIgU3ZlcmRs
-aW4KU2llbWVucyBBRwp3d3cuc2llbWVucy5jb20K
+
+
+On 2023/8/25 11:46, Yonghong Song wrote:
+> Kernel test robot reported a kallsyms_test failure when clang lto is
+> enabled (thin or full) and CONFIG_KALLSYMS_SELFTEST is also enabled.
+> I can reproduce in my local environment with the following error message
+> with thin lto:
+>   [    1.877897] kallsyms_selftest: Test for 1750th symbol failed: (tsc_cs_mark_unstable) addr=ffffffff81038090
+>   [    1.877901] kallsyms_selftest: abort
+> 
+> It appears that commit 8cc32a9bbf29 ("kallsyms: strip LTO-only suffixes
+> from promoted global functions") caused the failure. Commit 8cc32a9bbf29
+> changed cleanup_symbol_name() based on ".llvm." instead of '.' where
+> ".llvm." is appended to a before-lto-optimization local symbol name.
+> We need to propagate such knowledge in kallsyms_selftest.c as well.
+> 
+> Further more, compare_symbol_name() in kallsyms.c needs change as well.
+> In scripts/kallsyms.c, kallsyms_names and kallsyms_seqs_of_names are used
+> to record symbol names themselves and index to symbol names respectively.
+> For example:
+>   kallsyms_names:
+>     ...
+>     __amd_smn_rw._entry       <== seq 1000
+>     __amd_smn_rw._entry.5     <== seq 1001
+>     __amd_smn_rw.llvm.<hash>  <== seq 1002
+>     ...
+> 
+> kallsyms_seqs_of_names are sorted based on cleanup_symbol_name() through, so
+> the order in kallsyms_seqs_of_names actually has
+> 
+>   index 1000:   seq 1002   <== __amd_smn_rw.llvm.<hash> (actual symbol comparison using '__amd_smn_rw')
+>   index 1001:   seq 1000   <== __amd_smn_rw._entry
+>   index 1002:   seq 1001   <== __amd_smn_rw._entry.5
+> 
+> Let us say at a particular point, at index 1000, symbol '__amd_smn_rw.llvm.<hash>'
+> is comparing to '__amd_smn_rw._entry' where '__amd_smn_rw._entry' is the one to
+> search e.g., with function kallsyms_on_each_match_symbol(). The current implementation
+> will find out '__amd_smn_rw._entry' is less than '__amd_smn_rw.llvm.<hash>' and
+> then continue to search e.g., index 999 and never found a match although the actual
+> index 1001 is a match.
+> 
+> To fix this issue, let us do cleanup_symbol_name() first and then do comparison.
+> In the above case, comparing '__amd_smn_rw' vs '__amd_smn_rw._entry' and
+> '__amd_smn_rw._entry' being greater than '__amd_smn_rw', the next comparison will
+> be > index 1000 and eventually index 1001 will be hit an a match is found.
+> 
+> For any symbols not having '.llvm.' substr, there is no functionality change
+> for compare_symbol_name().
+
+Reviewed-by: Zhen Lei <thunder.leizhen@huawei.com>
+
+> 
+> Fixes: 8cc32a9bbf29 ("kallsyms: strip LTO-only suffixes from promoted global functions")
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Closes: https://lore.kernel.org/oe-lkp/202308232200.1c932a90-oliver.sang@intel.com
+> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+> ---
+>  kernel/kallsyms.c          | 17 +++++++----------
+>  kernel/kallsyms_selftest.c | 23 +----------------------
+>  2 files changed, 8 insertions(+), 32 deletions(-)
+> 
+> diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
+> index 016d997131d4..e12d26c10dba 100644
+> --- a/kernel/kallsyms.c
+> +++ b/kernel/kallsyms.c
+> @@ -188,16 +188,13 @@ static bool cleanup_symbol_name(char *s)
+>  
+>  static int compare_symbol_name(const char *name, char *namebuf)
+>  {
+> -	int ret;
+> -
+> -	ret = strcmp(name, namebuf);
+> -	if (!ret)
+> -		return ret;
+> -
+> -	if (cleanup_symbol_name(namebuf) && !strcmp(name, namebuf))
+> -		return 0;
+> -
+> -	return ret;
+> +	/* The kallsyms_seqs_of_names is sorted based on names after
+> +	 * cleanup_symbol_name() (see scripts/kallsyms.c) if clang lto is enabled.
+> +	 * To ensure correct bisection in kallsyms_lookup_names(), do
+> +	 * cleanup_symbol_name(namebuf) before comparing name and namebuf.
+> +	 */
+> +	cleanup_symbol_name(namebuf);
+> +	return strcmp(name, namebuf);
+>  }
+>  
+>  static unsigned int get_symbol_seq(int index)
+> diff --git a/kernel/kallsyms_selftest.c b/kernel/kallsyms_selftest.c
+> index a2e3745d15c4..e05ddc33a752 100644
+> --- a/kernel/kallsyms_selftest.c
+> +++ b/kernel/kallsyms_selftest.c
+> @@ -196,7 +196,7 @@ static bool match_cleanup_name(const char *s, const char *name)
+>  	if (!IS_ENABLED(CONFIG_LTO_CLANG))
+>  		return false;
+>  
+> -	p = strchr(s, '.');
+> +	p = strstr(s, ".llvm.");
+>  	if (!p)
+>  		return false;
+>  
+> @@ -344,27 +344,6 @@ static int test_kallsyms_basic_function(void)
+>  			goto failed;
+>  		}
+>  
+> -		/*
+> -		 * The first '.' may be the initial letter, in which case the
+> -		 * entire symbol name will be truncated to an empty string in
+> -		 * cleanup_symbol_name(). Do not test these symbols.
+> -		 *
+> -		 * For example:
+> -		 * cat /proc/kallsyms | awk '{print $3}' | grep -E "^\." | head
+> -		 * .E_read_words
+> -		 * .E_leading_bytes
+> -		 * .E_trailing_bytes
+> -		 * .E_write_words
+> -		 * .E_copy
+> -		 * .str.292.llvm.12122243386960820698
+> -		 * .str.24.llvm.12122243386960820698
+> -		 * .str.29.llvm.12122243386960820698
+> -		 * .str.75.llvm.12122243386960820698
+> -		 * .str.99.llvm.12122243386960820698
+> -		 */
+> -		if (IS_ENABLED(CONFIG_LTO_CLANG) && !namebuf[0])
+> -			continue;
+> -
+>  		lookup_addr = kallsyms_lookup_name(namebuf);
+>  
+>  		memset(stat, 0, sizeof(*stat));
+> 
+
+-- 
+Regards,
+  Zhen Lei
+
