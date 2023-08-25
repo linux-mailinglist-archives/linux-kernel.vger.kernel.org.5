@@ -2,224 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9FF8789162
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 00:06:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4286B789170
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 00:10:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229739AbjHYWFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 18:05:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52704 "EHLO
+        id S229938AbjHYWKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 18:10:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229593AbjHYWFU (ORCPT
+        with ESMTP id S230142AbjHYWJ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 18:05:20 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 12F8619B7
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 15:05:17 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1B7A9D75;
-        Fri, 25 Aug 2023 15:05:57 -0700 (PDT)
-Received: from slackpad.lan (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AF8393F762;
-        Fri, 25 Aug 2023 15:05:15 -0700 (PDT)
-Date:   Fri, 25 Aug 2023 23:04:18 +0100
-From:   Andre Przywara <andre.przywara@arm.com>
-To:     Lee Jones <lee@kernel.org>
-Cc:     Chen-Yu Tsai <wens@csie.org>, linux-kernel@vger.kernel.org,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Shengyu Qu <wiagn233@outlook.com>, martin.botka1@gmail.com,
-        Matthew Croughan <matthew.croughan@nix.how>
-Subject: Re: [PATCH] mfd: axp20x: Generalise handling without interrupts
-Message-ID: <20230825230418.47c93fa5@slackpad.lan>
-In-Reply-To: <20230817115529.GD986605@google.com>
-References: <20230807133930.94309-1-andre.przywara@arm.com>
-        <20230817115529.GD986605@google.com>
-Organization: Arm Ltd.
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.31; x86_64-slackware-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 25 Aug 2023 18:09:57 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94B9626B0
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 15:09:54 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-58f9db8bc1dso20780627b3.3
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 15:09:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1693001394; x=1693606194;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=IdHKEBf6LNa2SDLafbTePlchXJqRhBXEEMD76f6TFqQ=;
+        b=Q81oK/zkDH876XIfN0sPNVNN5z8b6L18X4x/1+1qY92QqqQw7RJRN82Vwabqzz8jrz
+         yHCgVzhl9GVIhGnnLQxocTR0yqRL9v3b5FA/IwncCsNRSrd/ESpv2nYwsG1l/hZ1Y2J4
+         uAyCLHE/pmVmYzGGkJ/Q7H8MW0nyoHLw8eYch6DINFcG0D/1UDyS0q72RiLzlfOFcJjN
+         OW6JujW6FHIXebrZScvsrviTCqEUJM/XiL0dfIQC2KEGrZgt8q6eM6oS8v0a0eSnq5vn
+         VPEFVNM9NG39LxSIl2Fk+Vlv+A7ZelyFFuFC1HzNShnlt7pZVtaN0Sm07XZ1Uiv1FDCA
+         YpjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693001394; x=1693606194;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=IdHKEBf6LNa2SDLafbTePlchXJqRhBXEEMD76f6TFqQ=;
+        b=BaSchNIxIsSxpVqQMXDRcGKC0qIgIvMZVibKLJOyCjrXYlIyS59cNAPT/M6geh/p5K
+         UqEK5OV1BR/7p/F8zhFkZpd3Vz0AJ37zSmSHULRWsSb/sZosR8JcBkjp2pmN0NmggnTT
+         O9pLVOkaWe9syvZMBXxlIfp6nlIQBnwtV2eefRobIvsrf+c+puyosUQ/3NufOsV/yAaj
+         KWsVnJbviqQk+VYxM9LZIPf0gxzyP7QnWx8kCI2rPiHi7KSABWK0Bdy/Flbyfer5R+FS
+         epjuVOsKlgj2XJlh3XkbOVIIRfJ/K0jYPQN0fD42IN4gcXEe3k56HZwwcCNh8o5EqG2i
+         6b7w==
+X-Gm-Message-State: AOJu0YywEkqNIIRScA5I6lC5l6yCZZxvz9SmlU65QUrHY2C6Cl3XTmec
+        bgkPUHdPPmucg+PdLVszf0mecxtFqwaR4491MA==
+X-Google-Smtp-Source: AGHT+IHtHRJ7fRcrma2Kt5JyL7K7aUmRWz+4dgMzIzO4z3FEZfOjTLnf+nN/dtoeAPuD6wy6OK9GjuCLAJHjuYGHxg==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a81:ae06:0:b0:569:e04a:238f with SMTP
+ id m6-20020a81ae06000000b00569e04a238fmr475035ywh.4.1693001393869; Fri, 25
+ Aug 2023 15:09:53 -0700 (PDT)
+Date:   Fri, 25 Aug 2023 22:09:51 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAK4m6WQC/x3MwQqDMAwA0F+RnBdoqxO3Xxk7pG3UwBalkbEh/
+ rtlx3d5OxgXYYN7s0Phj5gsWuEvDaSZdGKUXA3BhdYN4Yq2FU3rD2eKpPSiaJiWdxTljKlro8/ e33rHUIe18Cjf//54HscJfImEpm0AAAA=
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1693001392; l=5014;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=F1dg9ALegRSZFeyfAqDYuZEhvE32uhDXNyNHIraocuA=; b=3yMl0CQziwtRieL23Jknw+VaM6GOX8JUpBH9l1dlLv9vmV7gcjOFiB3EcfL6Q7IDaNoZziNU+
+ AYzlvo2lvZlCy8qmFlE1zcPe8wLsY2EG7W3nj6zGmEYx2OgYbFLym4q
+X-Mailer: b4 0.12.3
+Message-ID: <20230825-strncpy-habanalabs-combined-v1-1-daa05a89b7e3@google.com>
+Subject: [PATCH] accel/habanalabs: refactor deprecated strncpy to strscpy_pad
+From:   Justin Stitt <justinstitt@google.com>
+To:     Oded Gabbay <ogabbay@kernel.org>, Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Aug 2023 12:55:29 +0100
-Lee Jones <lee@kernel.org> wrote:
+`strncpy` is deprecated for use on NUL-terminated destination strings [1].
 
-Hi Lee,
+We see that `prop->cpucp_info.card_name` is supposed to be
+NUL-terminated based on its usage within `__hwmon_device_register()`
+(wherein it's called "name"):
+|	if (name && (!strlen(name) || strpbrk(name, "-* \t\n")))
+|		dev_warn(dev,
+|			 "hwmon: '%s' is not a valid name attribute, please fix\n",
+|			 name);
 
-> On Mon, 07 Aug 2023, Andre Przywara wrote:
-> 
-> > At the moment we allow the AXP15060 and the AXP806 PMICs to omit the
-> > interrupt line to the SoC, and we skip registering the PEK (power key)
-> > driver in this case, since that crashes when no IRQ is described in the
-> > DT node.
-> > The IRQ pin potentially not being connected to anything does affect more
-> > PMICs, though, and the PEK driver is not the only one requiring an
-> > interrupt: at least the AC power supply driver crashes in a similar
-> > fashion, for instance.
-> > 
-> > Generalise the handling of AXP MFD devices when the platform tables
-> > describe no interrupt, by putting devices requiring an IRQ *last* in
-> > the MFD cell array. We then can easily cut short the number of devices
-> > to be registered in this case.
-> > 
-> > This patch just enables that for three PMIC models for now: the two
-> > already handled, plus the AXP313a, for which we now have mulitple examples
-> > of boards without the IRQ pin connected.
-> > To stay consistent with the current behaviour, we still (try to) register
-> > all devices for the other PMICs, even though this will probably crash
-> > without an interrupt specified, if those problematic drivers are loaded.
-> > But this new approach can now easily be extended to other PMICs with more
-> > devices, should the need arise: currently all in-tree users are fine.
-> > 
-> > This fixes operation on the first boards using the AXP313a, which do not
-> > bother to connect the PMIC's IRQ pin.
-> > 
-> > Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-> > Reported-by: Shengyu Qu <wiagn233@outlook.com>
-> > ---
-> >  drivers/mfd/axp20x.c | 48 +++++++++++++++++---------------------------
-> >  1 file changed, 18 insertions(+), 30 deletions(-)  
-> 
-> Relying on the ordering of static struct elements is fragile.
-> 
-> Please separate into new structs.
+A suitable replacement is `strscpy_pad` [2] due to the fact that it
+guarantees both NUL-termination and NUL-padding on its destination
+buffer.
 
-Well, I was hoping to avoid this churn, since the IRQ-less lists are
-purely a subset of the original structs. At first I thought about some
-filtering (marking IRQ-required cells somehow), but looking at the
-current scope (just needed for three simple PMICs at the moment), I
-found an easier solution, which is both simple (avoids specifying both
-lists for *all* PMICs), but also flexible.
-Will tests this and post ASAP.
+NUL-padding on `prop->cpucp_info.card_name` is not strictly necessary as
+`hdev->prop` is explicitly zero-initialized but should be used
+regardless as it gets copied out to userspace directly -- as per Kees' suggestion.
 
-Cheers,
-Andre
+Link: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings[1]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+Suggested-by: Kees Cook <keescook@chromium.org>
+---
+Note: build-tested only
 
-> 
-> > diff --git a/drivers/mfd/axp20x.c b/drivers/mfd/axp20x.c
-> > index c03bc5cda080a..c9623604bf6c1 100644
-> > --- a/drivers/mfd/axp20x.c
-> > +++ b/drivers/mfd/axp20x.c
-> > @@ -1031,12 +1031,12 @@ static const struct mfd_cell axp803_cells[] = {
-> >  };
-> >  
-> >  static const struct mfd_cell axp806_self_working_cells[] = {
-> > +	{	.name		= "axp20x-regulator" },
-> >  	{
-> >  		.name		= "axp221-pek",
-> >  		.num_resources	= ARRAY_SIZE(axp806_pek_resources),
-> >  		.resources	= axp806_pek_resources,
-> >  	},
-> > -	{	.name		= "axp20x-regulator" },
-> >  };
-> >  
-> >  static const struct mfd_cell axp806_cells[] = {
-> > @@ -1090,19 +1090,11 @@ static const struct mfd_cell axp813_cells[] = {
-> >  };
-> >  
-> >  static const struct mfd_cell axp15060_cells[] = {
-> > +	{	.name		= "axp20x-regulator", },
-> >  	{
-> >  		.name		= "axp221-pek",
-> >  		.num_resources	= ARRAY_SIZE(axp15060_pek_resources),
-> >  		.resources	= axp15060_pek_resources,
-> > -	}, {
-> > -		.name		= "axp20x-regulator",
-> > -	},
-> > -};
-> > -
-> > -/* For boards that don't have IRQ line connected to SOC. */
-> > -static const struct mfd_cell axp_regulator_only_cells[] = {
-> > -	{
-> > -		.name		= "axp20x-regulator",
-> >  	},
-> >  };
-> >  
-> > @@ -1133,6 +1125,7 @@ int axp20x_match_device(struct axp20x_dev *axp20x)
-> >  	struct device *dev = axp20x->dev;
-> >  	const struct acpi_device_id *acpi_id;
-> >  	const struct of_device_id *of_id;
-> > +	int nr_cells_no_irq = 0;
-> >  
-> >  	if (dev->of_node) {
-> >  		of_id = of_match_device(dev->driver->of_match_table, dev);
-> > @@ -1191,6 +1184,7 @@ int axp20x_match_device(struct axp20x_dev *axp20x)
-> >  		break;
-> >  	case AXP313A_ID:
-> >  		axp20x->nr_cells = ARRAY_SIZE(axp313a_cells);
-> > +		nr_cells_no_irq = 1;
-> >  		axp20x->cells = axp313a_cells;
-> >  		axp20x->regmap_cfg = &axp313a_regmap_config;
-> >  		axp20x->regmap_irq_chip = &axp313a_regmap_irq_chip;
-> > @@ -1207,14 +1201,14 @@ int axp20x_match_device(struct axp20x_dev *axp20x)
-> >  		 * if there is no interrupt line.
-> >  		 */
-> >  		if (of_property_read_bool(axp20x->dev->of_node,
-> > -					  "x-powers,self-working-mode") &&
-> > -		    axp20x->irq > 0) {
-> > +					  "x-powers,self-working-mode")) {
-> >  			axp20x->nr_cells = ARRAY_SIZE(axp806_self_working_cells);
-> >  			axp20x->cells = axp806_self_working_cells;
-> >  		} else {
-> >  			axp20x->nr_cells = ARRAY_SIZE(axp806_cells);
-> >  			axp20x->cells = axp806_cells;
-> >  		}
-> > +		nr_cells_no_irq = 1;
-> >  		axp20x->regmap_cfg = &axp806_regmap_config;
-> >  		axp20x->regmap_irq_chip = &axp806_regmap_irq_chip;
-> >  		break;
-> > @@ -1238,24 +1232,9 @@ int axp20x_match_device(struct axp20x_dev *axp20x)
-> >  		axp20x->regmap_irq_chip = &axp803_regmap_irq_chip;
-> >  		break;
-> >  	case AXP15060_ID:
-> > -		/*
-> > -		 * Don't register the power key part if there is no interrupt
-> > -		 * line.
-> > -		 *
-> > -		 * Since most use cases of AXP PMICs are Allwinner SOCs, board
-> > -		 * designers follow Allwinner's reference design and connects
-> > -		 * IRQ line to SOC, there's no need for those variants to deal
-> > -		 * with cases that IRQ isn't connected. However, AXP15660 is
-> > -		 * used by some other vendors' SOCs that didn't connect IRQ
-> > -		 * line, we need to deal with this case.
-> > -		 */
-> > -		if (axp20x->irq > 0) {
-> > -			axp20x->nr_cells = ARRAY_SIZE(axp15060_cells);
-> > -			axp20x->cells = axp15060_cells;
-> > -		} else {
-> > -			axp20x->nr_cells = ARRAY_SIZE(axp_regulator_only_cells);
-> > -			axp20x->cells = axp_regulator_only_cells;
-> > -		}
-> > +		axp20x->nr_cells = ARRAY_SIZE(axp15060_cells);
-> > +		nr_cells_no_irq = 1;
-> > +		axp20x->cells = axp15060_cells;
-> >  		axp20x->regmap_cfg = &axp15060_regmap_config;
-> >  		axp20x->regmap_irq_chip = &axp15060_regmap_irq_chip;
-> >  		break;
-> > @@ -1263,6 +1242,15 @@ int axp20x_match_device(struct axp20x_dev *axp20x)
-> >  		dev_err(dev, "unsupported AXP20X ID %lu\n", axp20x->variant);
-> >  		return -EINVAL;
-> >  	}
-> > +
-> > +	/*
-> > +	 * Skip registering some MFD cells if there is no interrupt
-> > +	 * line, as IRQs might be required by some drivers.
-> > +	 * Those components must be the last in the cell array.
-> > +	 */
-> > +	if (axp20x->irq <= 0)
-> > +		axp20x->nr_cells -= nr_cells_no_irq;
-> > +
-> >  	dev_info(dev, "AXP20x variant %s found\n",
-> >  		 axp20x_model_names[axp20x->variant]);
-> >  
-> > -- 
-> > 2.25.1
-> >   
-> 
+This patch combines three previous strncpy refactor patches into one.
+1) https://lore.kernel.org/all/20230824-strncpy-drivers-accel-habanalabs-gaudi-gaudi-c-v1-1-a7fb9054734c@google.com/
+2) https://lore.kernel.org/all/20230824-strncpy-drivers-accel-habanalabs-gaudi2-gaudi2-c-v1-1-1a37b65576b4@google.com/
+3) https://lore.kernel.org/all/20230824-strncpy-drivers-accel-habanalabs-goya-goya-c-v1-1-b81d5639e7a3@google.com/
+---
+ drivers/accel/habanalabs/gaudi/gaudi.c   | 4 ++--
+ drivers/accel/habanalabs/gaudi2/gaudi2.c | 4 ++--
+ drivers/accel/habanalabs/goya/goya.c     | 4 ++--
+ 3 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/accel/habanalabs/gaudi/gaudi.c b/drivers/accel/habanalabs/gaudi/gaudi.c
+index 056e2ef44afb..1b5fe4d0cf5d 100644
+--- a/drivers/accel/habanalabs/gaudi/gaudi.c
++++ b/drivers/accel/habanalabs/gaudi/gaudi.c
+@@ -660,7 +660,7 @@ static int gaudi_set_fixed_properties(struct hl_device *hdev)
+ 	prop->pcie_dbi_base_address = mmPCIE_DBI_BASE;
+ 	prop->pcie_aux_dbi_reg_addr = CFG_BASE + mmPCIE_AUX_DBI;
+ 
+-	strncpy(prop->cpucp_info.card_name, GAUDI_DEFAULT_CARD_NAME,
++	strscpy_pad(prop->cpucp_info.card_name, GAUDI_DEFAULT_CARD_NAME,
+ 					CARD_NAME_MAX_LEN);
+ 
+ 	prop->max_pending_cs = GAUDI_MAX_PENDING_CS;
+@@ -8000,7 +8000,7 @@ static int gaudi_cpucp_info_get(struct hl_device *hdev)
+ 		return rc;
+ 
+ 	if (!strlen(prop->cpucp_info.card_name))
+-		strncpy(prop->cpucp_info.card_name, GAUDI_DEFAULT_CARD_NAME,
++		strscpy_pad(prop->cpucp_info.card_name, GAUDI_DEFAULT_CARD_NAME,
+ 				CARD_NAME_MAX_LEN);
+ 
+ 	hdev->card_type = le32_to_cpu(hdev->asic_prop.cpucp_info.card_type);
+diff --git a/drivers/accel/habanalabs/gaudi2/gaudi2.c b/drivers/accel/habanalabs/gaudi2/gaudi2.c
+index 20c4583f12b0..2ba7a50103bc 100644
+--- a/drivers/accel/habanalabs/gaudi2/gaudi2.c
++++ b/drivers/accel/habanalabs/gaudi2/gaudi2.c
+@@ -2431,7 +2431,7 @@ static int gaudi2_set_fixed_properties(struct hl_device *hdev)
+ 	prop->pcie_dbi_base_address = CFG_BASE + mmPCIE_DBI_BASE;
+ 	prop->pcie_aux_dbi_reg_addr = CFG_BASE + mmPCIE_AUX_DBI;
+ 
+-	strncpy(prop->cpucp_info.card_name, GAUDI2_DEFAULT_CARD_NAME, CARD_NAME_MAX_LEN);
++	strscpy_pad(prop->cpucp_info.card_name, GAUDI2_DEFAULT_CARD_NAME, CARD_NAME_MAX_LEN);
+ 
+ 	prop->mme_master_slave_mode = 1;
+ 
+@@ -2884,7 +2884,7 @@ static int gaudi2_cpucp_info_get(struct hl_device *hdev)
+ 	}
+ 
+ 	if (!strlen(prop->cpucp_info.card_name))
+-		strncpy(prop->cpucp_info.card_name, GAUDI2_DEFAULT_CARD_NAME, CARD_NAME_MAX_LEN);
++		strscpy_pad(prop->cpucp_info.card_name, GAUDI2_DEFAULT_CARD_NAME, CARD_NAME_MAX_LEN);
+ 
+ 	/* Overwrite binning masks with the actual binning values from F/W */
+ 	hdev->dram_binning = prop->cpucp_info.dram_binning_mask;
+diff --git a/drivers/accel/habanalabs/goya/goya.c b/drivers/accel/habanalabs/goya/goya.c
+index 7c685e6075f6..024ccf2e159b 100644
+--- a/drivers/accel/habanalabs/goya/goya.c
++++ b/drivers/accel/habanalabs/goya/goya.c
+@@ -466,7 +466,7 @@ int goya_set_fixed_properties(struct hl_device *hdev)
+ 	prop->pcie_dbi_base_address = mmPCIE_DBI_BASE;
+ 	prop->pcie_aux_dbi_reg_addr = CFG_BASE + mmPCIE_AUX_DBI;
+ 
+-	strncpy(prop->cpucp_info.card_name, GOYA_DEFAULT_CARD_NAME,
++	strscpy_pad(prop->cpucp_info.card_name, GOYA_DEFAULT_CARD_NAME,
+ 		CARD_NAME_MAX_LEN);
+ 
+ 	prop->max_pending_cs = GOYA_MAX_PENDING_CS;
+@@ -5122,7 +5122,7 @@ int goya_cpucp_info_get(struct hl_device *hdev)
+ 	}
+ 
+ 	if (!strlen(prop->cpucp_info.card_name))
+-		strncpy(prop->cpucp_info.card_name, GOYA_DEFAULT_CARD_NAME,
++		strscpy_pad(prop->cpucp_info.card_name, GOYA_DEFAULT_CARD_NAME,
+ 				CARD_NAME_MAX_LEN);
+ 
+ 	return 0;
+
+---
+base-commit: 706a741595047797872e669b3101429ab8d378ef
+change-id: 20230825-strncpy-habanalabs-combined-c43b1d11960e
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
 
