@@ -2,90 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE6D4788557
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 13:04:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9935E788556
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 13:04:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242574AbjHYLDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 07:03:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40616 "EHLO
+        id S242192AbjHYLDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 07:03:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239618AbjHYLDc (ORCPT
+        with ESMTP id S240406AbjHYLDd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 07:03:32 -0400
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 024751BC9
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 04:03:30 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37PB30el008638;
-        Fri, 25 Aug 2023 06:03:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1692961380;
-        bh=pFsncRId2Li4lFUoNT42s+0VDtLf48JGN1Hoc7R28Z4=;
-        h=From:Date:Subject:To:CC;
-        b=f4Wi1u470XsMHu2whcmfwwlT4btS3MhorHLLvGaJH7o8tpSAOlVftoFA1zuXTqF9f
-         ivkJBwGZ+zSerzCBhH2VHoW5KykEnbXWPyRQ/DmMxGlJbG919ICelrYL2wR+KgmTSw
-         hzblHRe7CiNnRyqefYWD1NTlApqsRp5QcMEdIhP4=
-Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37PB30hd031045
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 25 Aug 2023 06:03:00 -0500
-Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 25
- Aug 2023 06:03:00 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 25 Aug 2023 06:03:00 -0500
-Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37PB2xpf129788;
-        Fri, 25 Aug 2023 06:02:59 -0500
-From:   Jai Luthra <j-luthra@ti.com>
-Date:   Fri, 25 Aug 2023 16:32:14 +0530
-Subject: [PATCH] drm: bridge: it66121: Fix invalid connector dereference
+        Fri, 25 Aug 2023 07:03:33 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 218471BD2;
+        Fri, 25 Aug 2023 04:03:31 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B517A64998;
+        Fri, 25 Aug 2023 11:03:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5F1BC433C8;
+        Fri, 25 Aug 2023 11:03:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692961410;
+        bh=PlBzCJRe8m65lt6EVWU83U+40jTlJi63qn6ZecOweZ8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NSgBYasTx1ZoO2TlIe5UVLBtr21lPZSAhlDLEjbnRW2RyK5r8CtV+P5cMgCVg+69o
+         2q0VGFXaTbZGss0/1u4CHsj8Lqryy0W++3BGJU5V9aeFiXrkY7YQZJzJlx416MhKpw
+         ZZ1nBKIbfNuZ503/ic6w9IERhRIAio1nUVY/eV1l/n0r8tDpxA05K9wbuvr/EL2q2x
+         6FyAi1CYZ9vmCK8ViwNO82FKdeeqjgUNdg2sZ8Vd2Zri3X6GZCmp10RmKuI2m6wpQH
+         eTq7gBdn8KwxL66XGwOc5TaHXRteKYmbqzN/vqaymHDw8U2IG5yeJiKAakqHkuSYiV
+         ITJss2Xl21Vzw==
+Date:   Fri, 25 Aug 2023 13:03:27 +0200
+From:   Maxime Ripard <mripard@kernel.org>
+To:     e.orlova@ispras.ru
+Cc:     p.zabel@pengutronix.de, maarten.lankhorst@linux.intel.com,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        sumit.semwal@linaro.org, christian.koenig@amd.com,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+        lvc-project@linuxtesting.org
+Subject: Re: [QUESTION] drm/crtc: precondition for drm_crtc_init_with_planes()
+Message-ID: <u366i76e3qhh3ra5oxrtngjtm2u5lterkekcz6y2jkndhuxzli@diujon4h7qwb>
+References: <a830685d8b10a00cfe0a86db1ee9fb13@ispras.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20230825-it66121_edid-v1-1-3ab54923e472@ti.com>
-X-B4-Tracking: v=1; b=H4sIADWK6GQC/x3MQQqAIBBA0avErBN0QrOuEhGVU83GQiMC8e5Jy
- 7f4P0GkwBShrxIEejjy6QtUXcF6zH4nwa4YUGIjLWrBtzEK1USOnTBEndWqtdIuUJIr0Mbvvxv
- GnD9fTW9WXgAAAA==
-To:     Phong LE <ple@baylibre.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Nicolas Belin <nbelin@baylibre.com>,
-        "Andy.Hsieh" <Andy.Hsieh@mediatek.com>
-CC:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Aradhya Bhatia <a-bhatia1@ti.com>, <devarsht@ti.com>,
-        <nm@ti.com>, Jai Luthra <j-luthra@ti.com>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1271; i=j-luthra@ti.com;
- h=from:subject:message-id; bh=kY/mIB6mrYJ/fDB8nsf4jCfUQ4TGTeiTF0gmX+Q1uqs=;
- b=owEBbQKS/ZANAwAIAUPekfkkmnFFAcsmYgBk6IpigIQx52k+CRuU8WRogDuAGfZVyc2Zzv7Ku
- rt1Ysi8vHaJAjMEAAEIAB0WIQRN4NgY5dV16NRar8VD3pH5JJpxRQUCZOiKYgAKCRBD3pH5JJpx
- RWmZEACd6dZsgfGKvaRljr69D0wWnNir9wuEqt1VHKsk3xC93MR+AqxNJh+xUftyibbG6PRqwkM
- 0Mi9KeUvNURcDPV8qRKxa9Mg7mO81I55fIuG7dZx+t3WdvGQvzl6/40Z8Jyt9/4yA+fM1oCIWxQ
- YzIY18S+HbrVmNlXI/X1zU1lkTKgIjAXlH+/wh+NtXXBMbyC6zlN5e5jl2TTUU2QYDP0aUW1tUS
- rgC8yD2/xApHZsuRNEVKZuC05mFuXs5Pp4E1l24U67C+WKGPWExs5pMfURIc7juv+Sf+s84MfLR
- 2L56efyro6hXSLRhTGHwkTTtm2q1HHvVoJgoBaIqw5IQcKwZYOJJxobpgJf6t9LWlf4NTMEO955
- 5YSnqD4hYrwDYrj53sE49hXwnQOdQtjZiHvKMJ0L8VUW1hSIl5eACOEXdfQcf1FlH7ea3FXjKOv
- uCBBNGLvvORqpWbL8/HATpBK0hSutDadI1lHlqEzN38WMPbLfJQ49IooNVEeAROdTiBrhwSHAVh
- 9ngJ3xaofZDcT81GxFLxLwMWoUODMmbRH/qmhYNlRwAhABVJP/0CXbWsJbAOGU7C5RRnzyOD3rX
- SRdhNLK6p/RdK4h2XxroGeIRjC6MPTTU/YU8F5NA6Rnt2oBnGkgnoYsdwfJ/xIpwrs7qltyVhsG
- fyanZHL5pbY3cTg==
-X-Developer-Key: i=j-luthra@ti.com; a=openpgp;
- fpr=4DE0D818E5D575E8D45AAFC543DE91F9249A7145
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="dd5jtdgzjs64ofvs"
+Content-Disposition: inline
+In-Reply-To: <a830685d8b10a00cfe0a86db1ee9fb13@ispras.ru>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -93,42 +60,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the NULL pointer dereference when no monitor is connected, and the
-sound card is opened from userspace.
 
-Instead return an error as EDID information cannot be provided to
-the sound framework if there is no connector attached.
+--dd5jtdgzjs64ofvs
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Fixes: e0fd83dbe924 ("drm: bridge: it66121: Add audio support")
-Reported-by: Nishanth Menon <nm@ti.com>
-Closes: https://lore.kernel.org/all/20230825105849.crhon42qndxqif4i@gondola/
-Signed-off-by: Jai Luthra <j-luthra@ti.com>
----
- drivers/gpu/drm/bridge/ite-it66121.c | 5 +++++
- 1 file changed, 5 insertions(+)
+On Fri, Aug 25, 2023 at 01:18:46PM +0300, e.orlova@ispras.ru wrote:
+> Documentation for drm_crtc_init_with_planes() in
+> drivers/gpu/drm/drm_crtc.c states: =ABThe crtc structure should not be
+> allocated with devm_kzalloc()=BB.
+>=20
+> However, in drivers/gpu/drm/stm/ltdc.c
+> the 2nd argument of the function drm_crtc_init_with_planes()
+> is a structure allocated with devm_kzalloc()
+>=20
+> Also, in
+> drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+> drivers/gpu/drm/hisilicon/kirin/kirin_drm_drv.c
+> drivers/gpu/drm/logicvc/logicvc_crtc.c
+> drivers/gpu/drm/meson/meson_crtc.c
+> drivers/gpu/drm/mxsfb/lcdif_kms.c
+> drivers/gpu/drm/mxsfb/mxsfb_kms.c
+> drivers/gpu/drm/renesas/shmobile/shmob_drm_crtc.c
+> drivers/gpu/drm/rockchip/rockchip_drm_vop.c
+> drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
+> drivers/gpu/drm/sun4i/sun4i_crtc.c
+> drivers/gpu/drm/tegra/dc.c
+> drivers/gpu/drm/tilcdc/tilcdc_crtc.c
+> the 2nd argument of the function drm_crtc_init_with_planes()
+> is a field of the structure allocated with devm_kzalloc()
+>=20
+> Is it correct or can it lead to any problems?
 
-diff --git a/drivers/gpu/drm/bridge/ite-it66121.c b/drivers/gpu/drm/bridge/ite-it66121.c
-index 466641c77fe9..d6fa00dea464 100644
---- a/drivers/gpu/drm/bridge/ite-it66121.c
-+++ b/drivers/gpu/drm/bridge/ite-it66121.c
-@@ -1446,6 +1446,11 @@ static int it66121_audio_get_eld(struct device *dev, void *data,
- {
- 	struct it66121_ctx *ctx = dev_get_drvdata(dev);
- 
-+	if (!ctx->connector) {
-+		dev_dbg(dev, "No connector present, cannot provide EDID data");
-+		return -EINVAL;
-+	}
-+
- 	mutex_lock(&ctx->lock);
- 
- 	memcpy(buf, ctx->connector->eld,
+It can lead to use-after-free issues, that's why there's that comment :)
 
----
-base-commit: 6269320850097903b30be8f07a5c61d9f7592393
-change-id: 20230825-it66121_edid-6ee98517808b
+Maxime
 
-Best regards,
--- 
-Jai Luthra <j-luthra@ti.com>
+--dd5jtdgzjs64ofvs
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZOiKfwAKCRDj7w1vZxhR
+xVg5AP9VzNEiKZOgh4Ize9Wh5DKiSx1eSPouvE8JTEP/WJsy+QEA1C5l5XrIknkg
+Dp1X3M5uO0U25bmLkDl1x7lgHcKMBQE=
+=sPcz
+-----END PGP SIGNATURE-----
+
+--dd5jtdgzjs64ofvs--
