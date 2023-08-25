@@ -2,92 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 883557887C5
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 14:50:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A6D67887CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 14:51:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244729AbjHYMtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 08:49:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55518 "EHLO
+        id S244874AbjHYMvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 08:51:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244523AbjHYMt2 (ORCPT
+        with ESMTP id S244913AbjHYMvI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 08:49:28 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA51AD3
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 05:49:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=qrjV5LfbhE2I0hjArcTr3nf3ghXpZRO6ca+q7nCkmwE=; b=rGoKp+E+1vIvHTH06YcdIjXD7G
-        D9aHo/wY6h4lA6ZOiQvEVqOLXTNR0pKSBC92wS6dg9SXxq1csBZfQ9YXr9sgdwKSqWovZPp5j8+3v
-        XoPFWs/DofgF9c8I6se5aJ0IT8W88ttJjAFUik3k2WhF5K/P4uvczw3cfHL1JzGovpSdCa1hRowc5
-        hGkGzZVTttb9rJk78+KL7i+ptfcLNwGagxtX1YED6MiyvQVQDRWtevUkyOX3oiElJQuo3JuhETN2V
-        oTn9/HW30O3WS7OUCmLjfZEZAN/LDNBzSC39c81eNTWndVIjHr3mzN2JAqsH7sYr7ROoGyCkFv52u
-        Vq4e6MaQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qZWFX-00HAwg-S4; Fri, 25 Aug 2023 12:49:15 +0000
-Date:   Fri, 25 Aug 2023 13:49:15 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Saurabh Singh Sengar <ssengar@microsoft.com>,
-        Zach O'Keefe <zokeefe@google.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Yang Shi <shy828301@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Saurabh Sengar <ssengar@linux.microsoft.com>
-Subject: Re: [EXTERNAL] Re: [PATCH v3] mm/thp: fix "mm: thp: kill
- __transhuge_page_enabled()"
-Message-ID: <ZOijSwCa9NFD6DZI@casper.infradead.org>
-References: <20230821234844.699818-1-zokeefe@google.com>
- <37c2b525-5c2c-d400-552c-9ccb91f4d7bf@redhat.com>
- <CAAa6QmSHF6-9aFa68WDcb+WATh2Yz=wXyp8VBLDNv6yPp2SS5Q@mail.gmail.com>
- <3e08d48b-7b70-cc7f-0ec1-12ad9b1a33db@redhat.com>
- <CAAa6QmSNvx7wbZzfhFOyhODTMoBbf6PimnOf2xeAw5NkD1eXVg@mail.gmail.com>
- <PUZP153MB06350A5DC9CCB8448C98E4EEBE1DA@PUZP153MB0635.APCP153.PROD.OUTLOOK.COM>
- <3408ff54-f353-0334-0d66-c808389d2f01@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3408ff54-f353-0334-0d66-c808389d2f01@redhat.com>
+        Fri, 25 Aug 2023 08:51:08 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF6F91FD3;
+        Fri, 25 Aug 2023 05:51:05 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-52a3ec08d93so1315967a12.2;
+        Fri, 25 Aug 2023 05:51:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692967864; x=1693572664;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3veK2GLQgAEyb3AnmI5hfEQQ/nHn4wGQ/Gz5qedNjzc=;
+        b=KSo8N+C+lT7gjxgt0QTTjqKba1nHMTCn1/CGila3+nU74bsq8Mv6iojbozL1LzafRO
+         HbNxYDtICoE/zeuDbr3nMaxFW+kuVan4FsyeYpnq7csAxY+ehTqGlOT1r2S+RxnSJuvW
+         1h01y2SOlnmEIve/pzqc/ryEofvuHkItUkJtK2Nejr7X6tgg6V4U6tsgkUsNxh3Vi/+9
+         5KRsQEgtWX7ET07xI6y3yidv18lx4tSB+VXp6yBbjp/hL3U4Vk0TL4ag489Wv0ilPvcF
+         O4UpoOIaQzEF91IGN7YOUGH4lnvh6A+3OcN0KF57mGNTZJq4nOxfiy/Eh5FxaGo0YGQV
+         lv6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692967864; x=1693572664;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3veK2GLQgAEyb3AnmI5hfEQQ/nHn4wGQ/Gz5qedNjzc=;
+        b=H2muq5KYl5miHpIMoqf0tQY+12fHnNSj2IYQP+0GJkCpueL7T4L/4y2heNGuaVDl+w
+         iRR9SoeO41vPagVkcYi9n4+OeXnuNt8RXpELy7/QpdVt0724jkJV84ZGRV14IKUR1Xf+
+         U2gtp3cGhLUbk7S66h0fS+ycSctgAT3vwFi6/NH2plitQ1ovvltNN9v8M8YRU8nkdIer
+         msM9CSXjY5i6Rn4+uWuUV3TCaOWfE5rtcYhFdBirHiHBNpbKIJxyLKAH6r+e9AuNY9wu
+         WgBkOoowaxwjL+RHD6hsAAkyY7svJDHR3tuKDuc5tusG2wXOtOiEmDn/3s5fiS5jU9gM
+         i8iw==
+X-Gm-Message-State: AOJu0YyPl1LQIJOFhRnncsfLF2LhqVqOdw+HZmZloAJ+72R7v8dvf8cS
+        E1tYomqxWGv5/4E7IhI6P5v0Vto2nrU=
+X-Google-Smtp-Source: AGHT+IFI3Q0yMaKg4B5UwItri9FXog9d/RAogfgWy6j5YJ81cfmiJjeVJZgZiaF2B4L1kKoLDFNrjg==
+X-Received: by 2002:a17:906:7395:b0:9a1:b5fc:8c5f with SMTP id f21-20020a170906739500b009a1b5fc8c5fmr9538341ejl.49.1692967864276;
+        Fri, 25 Aug 2023 05:51:04 -0700 (PDT)
+Received: from felia.fritz.box ([2a02:810d:7e40:14b0:98c5:e120:ff1e:7709])
+        by smtp.gmail.com with ESMTPSA id ck16-20020a170906c45000b00992b8d56f3asm922571ejb.105.2023.08.25.05.51.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Aug 2023 05:51:03 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Gal Pressman <gal@nvidia.com>,
+        Rahul Rameshbabu <rrameshbabu@nvidia.com>,
+        Tariq Toukan <tariqt@nvidia.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] net/mlx5: fix config name in Kconfig parameter documentation
+Date:   Fri, 25 Aug 2023 14:51:00 +0200
+Message-Id: <20230825125100.26453-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 25, 2023 at 09:59:23AM +0200, David Hildenbrand wrote:
-> Especially, we do have bigger ->huge_fault changes coming up:
-> 
-> https://lkml.kernel.org/r/20230818202335.2739663-1-willy@infradead.org
-> 
-> If the driver is not in the tree, people don't care.
-> 
-> You really should try upstreaming that driver.
-> 
-> 
-> So this patch here adds complexity (which I don't like) in order to keep an
-> OOT driver working -- possibly for a short time. I'm tempted to say "please
-> fix your driver to not use huge faults in that scenario, it is no longer
-> supported".
-> 
-> But I'm just about to vanish for 1.5 week into vacation :)
-> 
-> @Willy, what are your thoughts?
+Commit a12ba19269d7 ("net/mlx5: Update Kconfig parameter documentation")
+adds documentation on Kconfig options for the mlx5 driver. It refers to the
+config MLX5_EN_MACSEC for MACSec offloading, but the config is actually
+called MLX5_MACSEC.
 
-Fundamentally there was a bad assumption with the original patch --
-it assumed that the only reason to support ->huge_fault was for DAX,
-and that's not true.  It's just that the only drivers in-tree which
-support ->huge_fault do so in order to support DAX.
+Fix the reference to the right config name in the documentation.
 
-Keeping a driver out of tree is always a risky and costly proposition.
-It will continue to be broken by core kernel changes, particularly
-if/when it does unusual things.
+Fixes: a12ba19269d7 ("net/mlx5: Update Kconfig parameter documentation")
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+Saeed, please pick this quick fix to the documentation.
 
-I think the complexity is entirely on us.  I think there's a simpler way
-to handle the problem, but I'd start by turning all of this "admin and
-app get to control when THP are used" nonsense into no-ops.
+ .../device_drivers/ethernet/mellanox/mlx5/kconfig.rst           | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Documentation/networking/device_drivers/ethernet/mellanox/mlx5/kconfig.rst b/Documentation/networking/device_drivers/ethernet/mellanox/mlx5/kconfig.rst
+index 0a42c3395ffa..20d3b7e87049 100644
+--- a/Documentation/networking/device_drivers/ethernet/mellanox/mlx5/kconfig.rst
++++ b/Documentation/networking/device_drivers/ethernet/mellanox/mlx5/kconfig.rst
+@@ -67,7 +67,7 @@ Enabling the driver and kconfig options
+ |    Enables :ref:`IPSec XFRM cryptography-offload acceleration <xfrm_device>`.
+ 
+ 
+-**CONFIG_MLX5_EN_MACSEC=(y/n)**
++**CONFIG_MLX5_MACSEC=(y/n)**
+ 
+ |    Build support for MACsec cryptography-offload acceleration in the NIC.
+ 
+-- 
+2.17.1
+
