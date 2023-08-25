@@ -2,116 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90B50788184
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 10:05:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3744F78820C
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 10:27:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243365AbjHYIFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 04:05:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50246 "EHLO
+        id S242913AbjHYI1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 04:27:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243363AbjHYIEg (ORCPT
+        with ESMTP id S241127AbjHYI0p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 04:04:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C3961FDA
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 01:03:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692950629;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2MxIZZ4mXfirEQxPRIwxDlbt+KbgvYe7pzgQ6nQuMXM=;
-        b=NWTMLXRWP+Y/5d4WCd5mvMFtdhTnyOY08LbeiVF956cAoL7iFq2Dp7pM9pdK0ZRPk2WkZH
-        J+0suFEBXh2QJ1XUXFZEbTzwRBLUgif9fqp366+W2C8c4jQx6k0c9OottRpGNKrNlEomZb
-        Tr87KgP4oGz9LGi/rA52wXXAoQpmL4A=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-66-146L-j9gNNm4IkQD858E-w-1; Fri, 25 Aug 2023 04:03:47 -0400
-X-MC-Unique: 146L-j9gNNm4IkQD858E-w-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-31aecb86dacso482733f8f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 01:03:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692950626; x=1693555426;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2MxIZZ4mXfirEQxPRIwxDlbt+KbgvYe7pzgQ6nQuMXM=;
-        b=iWGJ0/a7bUAfKllKAXN2GL7ZryZ5Xd/cV6Ori+2h/JGfuDQ3rD7T6b8mXCKDHeY3bw
-         8peeOyDzv2fJTFwQuwmG6qIBWm7C/0S6BL+zZMnKDFZSAK4Q0pR/0pFLJ0I8A7fPedgl
-         PrzKnC8IRsG3rrcXimpUCKxBkn90OF0s2g3GyQXCRjgTyoaABlDw3gLTQVHnsKdN6Y/z
-         JwuQzybofz3Kb1oaKGL8OAu2vKKXVJi3Fxe8TvvFXxIRwMItWqHB9++AVOyihZz5Jj1O
-         aF5FeC5/zhosRs3guQ0pbgZ0WH0WZdMAq87PRtXi8L0e4/vr5a83w05AcAH8XYVX8sos
-         3kMA==
-X-Gm-Message-State: AOJu0YxwccolmrOuOz6rq5Ev8a44gSZCCPBB2p7BJftbfwAedTvSalGX
-        dZxAIL8aFafB3YZAgEH8Nf6oSLC+mrGXjmjmcQxJWjTPasGh33H1x6zqWzXojRTEKG0MZLWicck
-        iGLwM8bMJiwqiZZctvIyFzXXU
-X-Received: by 2002:adf:f3cd:0:b0:313:e9f6:3378 with SMTP id g13-20020adff3cd000000b00313e9f63378mr12914612wrp.4.1692950626182;
-        Fri, 25 Aug 2023 01:03:46 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEp77WBmoQU7jbIBWKspqG9dAlzLpg5JTV9tJC+oX4MTnlZBIoLiOJSXLCsVRo5z+lM1xyTlQ==
-X-Received: by 2002:adf:f3cd:0:b0:313:e9f6:3378 with SMTP id g13-20020adff3cd000000b00313e9f63378mr12914599wrp.4.1692950625838;
-        Fri, 25 Aug 2023 01:03:45 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c70e:9200:ce93:b5e6:8aa9:65d4? (p200300cbc70e9200ce93b5e68aa965d4.dip0.t-ipconnect.de. [2003:cb:c70e:9200:ce93:b5e6:8aa9:65d4])
-        by smtp.gmail.com with ESMTPSA id o15-20020a5d684f000000b003180027d67asm1464874wrw.19.2023.08.25.01.03.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Aug 2023 01:03:45 -0700 (PDT)
-Message-ID: <56300927-4b81-8acc-58d3-4cbe0f1d60f1@redhat.com>
-Date:   Fri, 25 Aug 2023 10:03:44 +0200
+        Fri, 25 Aug 2023 04:26:45 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D927619A1
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 01:26:43 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7863962450
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 08:26:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5CCADC433C7;
+        Fri, 25 Aug 2023 08:26:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1692952002;
+        bh=GX9kHRTvbYBel26XAIpavUFknh9Wifx+X21IDxKVqG0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=05vY0/e9/7jOLrHtca6isuOnGrrM9gWPMKMIruKNskcC4ufFkWRjSWvgnASqKhf29
+         wxPPol+Qfjql/tTVlWU8RbpjOWQIWbeB3duRihjXmJHsOT1z0BTCO7ZAlZvHfWG5aU
+         VhibwqqgB5GtiPyxGgwh3loFpEdm4pInfIpb747k=
+Date:   Fri, 25 Aug 2023 10:05:08 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Stanislav Kinsburskii <skinsburskii@linux.microsoft.com>
+Cc:     Stanislav Kinsburskii <stanislav.kinsburskii@gmail.com>,
+        Derek Kiernan <derek.kiernan@amd.com>,
+        Dragan Cvetic <dragan.cvetic@amd.com>,
+        Arnd Bergmann <arnd@arndb.de>, Wei Liu <wei.liu@kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Madhavan Venkataraman <madvenka@linux.microsoft.com>,
+        Anthony Yznaga <anthony.yznaga@oracle.com>,
+        "Mike Rapoport (IBM)" <rppt@kernel.org>,
+        James Gowans <jgowans@amazon.com>,
+        Anirudh Rayabharam <anrayabh@linux.microsoft.com>,
+        Jinank Jain <jinankjain@linux.microsoft.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] Introduce persistent memory pool
+Message-ID: <2023082506-enchanted-tripping-d1d5@gregkh>
+References: <64e7cbf7.050a0220.114c7.b70dSMTPIN_ADDED_BROKEN@mx.google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2] mm/vmscan: Use folio_migratetype() instead of
- get_pageblock_migratetype()
-Content-Language: en-US
-To:     Vern Hao <haoxing990@gmail.com>, akpm@linux-foundation.org
-Cc:     zhaoyang.huang@unisoc.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Vern Hao <vernhao@tencent.com>
-References: <20230825075735.52436-1-user@VERNHAO-MC1>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20230825075735.52436-1-user@VERNHAO-MC1>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <64e7cbf7.050a0220.114c7.b70dSMTPIN_ADDED_BROKEN@mx.google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25.08.23 09:57, Vern Hao wrote:
-> From: Vern Hao <vernhao@tencent.com>
-> 
-> In skip_cma(), we can use folio_migratetype() to replace get_pageblock_migratetype().
-> 
-> Signed-off-by: Vern Hao <vernhao@tencent.com>
-> ---
-> v1 -> v2
-> 	- remove "Fixs:xxx" as David Hildenbrand suggestion.
-> 
->   mm/vmscan.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index 2b5d61eeb039..850811bb5699 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -2271,7 +2271,7 @@ static bool skip_cma(struct folio *folio, struct scan_control *sc)
->   {
->   	return !current_is_kswapd() &&
->   			gfp_migratetype(sc->gfp_mask) != MIGRATE_MOVABLE &&
-> -			get_pageblock_migratetype(&folio->page) == MIGRATE_CMA;
-> +			folio_migratetype(folio) == MIGRATE_CMA;
+On Tue, Aug 22, 2023 at 11:34:34AM -0700, Stanislav Kinsburskii wrote:
+> This patch addresses the need for a memory allocator dedicated to
+> persistent memory within the kernel. This allocator will preserve
+> kernel-specific states like DMA passthrough device states, IOMMU state, and
+> more across kexec.
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+And CMA doesn't do this for you today?
 
--- 
-Cheers,
+> The proposed solution offers a foundational implementation for potential
+> custom solutions that might follow. Though the implementation is
+> intentionally kept concise and straightforward to foster discussion and
+> feedback, it's fully functional in its current state.
+> 
+> The persistent memory pool consists of a simple page allocator that
+> operates on reserved physical memory regions. It employs bitmaps to
+> allocate and free pages, with the following characteristics:
+> 
+>   1. Memory pool regions are specified using the command line option:
+> 
+>        pmpool=<base>,<size>
+> 
+>      Where <base> represents the physical memory base address and <size>
+>      indicates the memory size.
+> 
+>   2. While the pages allocation emulates the buddy allocator interface, it
+>      isn't confined to the MAX_ORDER.
+> 
+>   3. The memory pool initializes during a cold boot and is retained across
+>      kexec.
+> 
+> Potential applications include:
+> 
+>   1. Allowing various in-kernel entities to allocate persistent pages from
+>      a singular memory pool, eliminating the need for multiple region
+>      reservations.
+> 
+>   2. For in-kernel components that require the allocation address to be
+>      available on kernel kexec, this address can be exposed to user space and
+>      then passed via the command line.
+> 
+>   3. Separate subsystems or drivers can reserve their region, sharing a
+>      portion of it for their persistent memory pool. This might be a file
+>      system, a key-value store, or other applications.
+> 
+> Potential Enhancements for the Proposed Memory Pool:
+> 
+>   1. Multiple Memory Regions Support: enhance the pool to accommodate and
+>      manage multiple memory regions simultaneously.
+> 
+>   2. In-Kernel Memory Allocations for Storage Memory Regions:
+>    * Allow in-kernel memory allocations to serve as storage memory regions.
+>    * Implement explicit reservation of these designated regions during kexec.
 
-David / dhildenb
+As you have no in-kernel users of this, it's not something we can even
+consider at the moment for obvious reasons (neither would you want us
+to.)
 
+Can you make this part of a patch series that actually adds a user,
+probably more than one, so that we can see if any of this even makes
+sense?
+
+
+>  drivers/misc/Kconfig   |    7 +
+>  drivers/misc/Makefile  |    1 
+>  drivers/misc/pmpool.c  |  270 ++++++++++++++++++++++++++++++++++++++++++++++++
+>  include/linux/pmpool.h |   20 ++++
+>  4 files changed, 298 insertions(+)
+>  create mode 100644 drivers/misc/pmpool.c
+>  create mode 100644 include/linux/pmpool.h
+
+misc is not for memory pools, as this is not a driver.  please put this
+in the properly location instead of trying to hide it from the mm
+maintainers and subsystem :)
+
+> diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
+> index cadd4a820c03..c8ef5b37ee98 100644
+> --- a/drivers/misc/Kconfig
+> +++ b/drivers/misc/Kconfig
+> @@ -562,6 +562,13 @@ config TPS6594_PFSM
+>  	  This driver can also be built as a module.  If so, the module
+>  	  will be called tps6594-pfsm.
+>  
+> +config PMPOOL
+> +	bool "Persistent memory pool support"
+> +	help
+> +	  This option adds support for a persistent memory pool feature, which
+> +	  provides pages allocation and freeing from a set of persistent memory ranges,
+> +	  deposited to the memory pool.
+
+Why would this even be a user selectable option?  Either the kernel
+needs this or it doesn't.
+
+
+> +
+>  source "drivers/misc/c2port/Kconfig"
+>  source "drivers/misc/eeprom/Kconfig"
+>  source "drivers/misc/cb710/Kconfig"
+> diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
+> index f2a4d1ff65d4..31dd6553057d 100644
+> --- a/drivers/misc/Makefile
+> +++ b/drivers/misc/Makefile
+> @@ -67,3 +67,4 @@ obj-$(CONFIG_TMR_MANAGER)      += xilinx_tmr_manager.o
+>  obj-$(CONFIG_TMR_INJECT)	+= xilinx_tmr_inject.o
+>  obj-$(CONFIG_TPS6594_ESM)	+= tps6594-esm.o
+>  obj-$(CONFIG_TPS6594_PFSM)	+= tps6594-pfsm.o
+> +obj-$(CONFIG_PMPOOL)		+= pmpool.o
+> diff --git a/drivers/misc/pmpool.c b/drivers/misc/pmpool.c
+> new file mode 100644
+> index 000000000000..e2c923b31b36
+> --- /dev/null
+> +++ b/drivers/misc/pmpool.c
+> @@ -0,0 +1,270 @@
+> +#include <linux/io.h>
+
+You forgot basic copyright/license stuff, did you use checkpatch.pl on
+your file?
+
+> +#include <linux/bitmap.h>
+> +#include <linux/memblock.h>
+> +#include <linux/spinlock.h>
+> +#include <linux/types.h>
+> +
+> +#include <linux/pmpool.h>
+> +
+> +#define VERSION			1
+
+In kernel code does not need versions.
+
+> +#define MAX_REGIONS		14
+
+Why 14?  Why not 24?  Or something else?
+
+> +
+> +#define for_each_region(pmpool, r)					\
+> +	for (r = pmpool->hdr->regions;					\
+> +	     r - pmpool->hdr->regions < pmpool->hdr->nr_regions;	\
+> +	     r++)
+> +
+> +#define for_each_used_region(pmpool, r)					\
+> +	for_each_region((pmpool), (r))					\
+> +		if (!(r)->size_in_pfns) { continue; } else
+> +
+> +struct pmpool_region {
+> +	uint32_t		base_pfn;		/* 32 bits * 4k = up it 15TB of physical address space */
+
+Please use proper kernel types when writing kernel code (i.e. u32, u8,
+and so on.)  uint*_t is for userspace code only.
+
+> --- /dev/null
+> +++ b/include/linux/pmpool.h
+> @@ -0,0 +1,20 @@
+> +#ifndef _PMPOOL_H
+> +#define _PMPOOL_H
+> +
+> +#include <linux/types.h>
+> +#include <linux/spinlock.h>
+> +
+> +void *alloc_pm_pages(unsigned int order);
+> +void free_pm_pages(void *addr, unsigned int order);
+> +
+> +struct pmpool {
+> +	spinlock_t		lock;
+> +	struct pmpool_header	*hdr;
+> +};
+> +
+> +int pmpool_init(struct pmpool *pmpool, phys_addr_t base, phys_addr_t size);
+> +
+> +void *alloc_pmpool_pages(struct pmpool *pmpool, unsigned int order);
+> +void free_pmpool_pages(struct pmpool *pmpool, void *addr, unsigned int order);
+
+Please use "noun_verb_*" for new apis so that we have a chance at
+understanding where the calls are living.
+
+good luck!
+
+greg k-h
