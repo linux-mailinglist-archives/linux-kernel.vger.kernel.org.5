@@ -2,72 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 635CB7882BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 10:57:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAE8878825C
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 10:41:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242395AbjHYI4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 04:56:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44296 "EHLO
+        id S243759AbjHYIkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 04:40:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238463AbjHYI4b (ORCPT
+        with ESMTP id S243824AbjHYIkN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 04:56:31 -0400
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C62241BCD;
-        Fri, 25 Aug 2023 01:56:23 -0700 (PDT)
-X-UUID: 40ca513c432511eeb20a276fd37b9834-20230825
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=MHN0S3NVXg6tu8IUhj0JOWDrZPMV2zreJoNkVEz3ogg=;
-        b=SZrw6RlHMOTZx8N1x/e51+/uQV0Pb3ZOpxc9JsldkO2MXT3evA3IMmK3JX99o4zwOTe9YhzMmLbl4P28mDBTDztyBldaJjfNkuPtm8u7nN3lFFSQgzxx4cWOdfpKYi0G7w4ah8PxE/eNlm+jnxMiNCjArFh6W7oZT1oE6ag8u/0=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.31,REQID:86890a58-b60b-4e05-b52b-b6f78873ae62,IP:0,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:45,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-        :release,TS:45
-X-CID-INFO: VERSION:1.1.31,REQID:86890a58-b60b-4e05-b52b-b6f78873ae62,IP:0,URL
-        :0,TC:0,Content:0,EDM:0,RT:0,SF:45,FILE:0,BULK:0,RULE:Release_Ham,ACTION:r
-        elease,TS:45
-X-CID-META: VersionHash:0ad78a4,CLOUDID:7db42e13-4929-4845-9571-38c601e9c3c9,B
-        ulkID:230824185604G6OMGZAT,BulkQuantity:27,Recheck:0,SF:28|17|19|48|64|29|
-        102,TC:nil,Content:0,EDM:-3,IP:nil,URL:0,File:nil,Bulk:40,QS:nil,BEC:nil,C
-        OL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_OBB,TF_CID_SPAM_SNR,
-        TF_CID_SPAM_SDM
-X-UUID: 40ca513c432511eeb20a276fd37b9834-20230825
-Received: from mtkmbs14n1.mediatek.inc [(172.21.101.75)] by mailgw02.mediatek.com
-        (envelope-from <sharp.xia@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 582389376; Fri, 25 Aug 2023 16:56:17 +0800
-Received: from mtkmbs11n1.mediatek.inc (172.21.101.185) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Fri, 25 Aug 2023 16:56:12 +0800
-Received: from mbjsdccf07.mediatek.inc (10.15.20.246) by
- mtkmbs11n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Fri, 25 Aug 2023 16:56:11 +0800
-From:   <Sharp.Xia@mediatek.com>
-To:     <shawn.lin@rock-chips.com>
-CC:     <Sharp.Xia@mediatek.com>,
-        <angelogioacchino.delregno@collabora.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <linux-mmc@vger.kernel.org>,
-        <matthias.bgg@gmail.com>, <ulf.hansson@linaro.org>,
-        <wsd_upstream@mediatek.com>
-Subject: Re: [PATCH 1/1] mmc: Set optimal I/O size when mmc_setip_queue
-Date:   Fri, 25 Aug 2023 16:39:18 +0800
-Message-ID: <20230825083918.24334-1-Sharp.Xia@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <c8c059ce-53a9-3627-8984-dff771dff1de@rock-chips.com>
-References: <c8c059ce-53a9-3627-8984-dff771dff1de@rock-chips.com>
+        Fri, 25 Aug 2023 04:40:13 -0400
+Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5FE61FD4;
+        Fri, 25 Aug 2023 01:40:09 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=renyu.zj@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0VqWZWZJ_1692952804;
+Received: from 30.221.145.196(mailfrom:renyu.zj@linux.alibaba.com fp:SMTPD_---0VqWZWZJ_1692952804)
+          by smtp.aliyun-inc.com;
+          Fri, 25 Aug 2023 16:40:06 +0800
+Message-ID: <27446554-54dd-51f9-c3e9-e3aa225d8380@linux.alibaba.com>
+Date:   Fri, 25 Aug 2023 16:40:03 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [PATCH v7 1/8] perf pmu: "Compat" supports matching multiple
+ identifiers
+To:     Robin Murphy <robin.murphy@arm.com>,
+        John Garry <john.g.garry@oracle.com>,
+        Ian Rogers <irogers@google.com>
+Cc:     Will Deacon <will@kernel.org>, James Clark <james.clark@arm.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-doc@vger.kernel.org,
+        Zhuo Song <zhuo.song@linux.alibaba.com>,
+        Shuai Xue <xueshuai@linux.alibaba.com>
+References: <1692606977-92009-1-git-send-email-renyu.zj@linux.alibaba.com>
+ <1692606977-92009-2-git-send-email-renyu.zj@linux.alibaba.com>
+ <cbd34ed6-3220-3c0c-74bc-46a2baa744e5@arm.com>
+From:   Jing Zhang <renyu.zj@linux.alibaba.com>
+In-Reply-To: <cbd34ed6-3220-3c0c-74bc-46a2baa744e5@arm.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-MTK:  N
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_PASS,T_SPF_TEMPERROR,UNPARSEABLE_RELAY autolearn=no
+X-Spam-Status: No, score=-11.5 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,100 +61,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-08-25 at 16:11 +0800, Shawn Lin wrote:
->  	 
->  Hi Sharp,
-> 
-> On 2023/8/25 15:10, Sharp Xia (夏宇彬) wrote:
-> > On Thu, 2023-08-24 at 12:55 +0200, Ulf Hansson wrote:
-> >>   
-> >> External email : Please do not click links or open attachments
-> until
-> >> you have verified the sender or the content.
-> >>   On Fri, 18 Aug 2023 at 04:45, <Sharp.Xia@mediatek.com> wrote:
-> >>>
-> >>> From: Sharp Xia <Sharp.Xia@mediatek.com>
-> >>>
-> >>> MMC does not set readahead and uses the default
-> VM_READAHEAD_PAGES
-> >>> resulting in slower reading speed.
-> >>> Use the max_req_size reported by host driver to set the optimal
-> >>> I/O size to improve performance.
-> >>
-> >> This seems reasonable to me. However, it would be nice if you
-> could
-> >> share some performance numbers too - comparing before and after
-> >> $subject patch.
-> >>
-> >> Kind regards
-> >> Uffe
-> >>
-> >>>
-> >>> Signed-off-by: Sharp Xia <Sharp.Xia@mediatek.com>
-> >>> ---
-> >>>   drivers/mmc/core/queue.c | 1 +
-> >>>   1 file changed, 1 insertion(+)
-> >>>
-> >>> diff --git a/drivers/mmc/core/queue.c b/drivers/mmc/core/queue.c
-> >>> index b396e3900717..fc83c4917360 100644
-> >>> --- a/drivers/mmc/core/queue.c
-> >>> +++ b/drivers/mmc/core/queue.c
-> >>> @@ -359,6 +359,7 @@ static void mmc_setup_queue(struct mmc_queue
-> >> *mq, struct mmc_card *card)
-> >>>                  blk_queue_bounce_limit(mq->queue,
-> BLK_BOUNCE_HIGH);
-> >>>          blk_queue_max_hw_sectors(mq->queue,
-> >>>                  min(host->max_blk_count, host->max_req_size /
-> >> 512));
-> >>> +       blk_queue_io_opt(mq->queue, host->max_req_size);
-> >>>          if (host->can_dma_map_merge)
-> >>>                  WARN(!blk_queue_can_use_dma_map_merging(mq-
-> >queue,
-> >>>                                                          mmc_dev(
-> hos
-> >> t)),
-> >>> --
-> >>> 2.18.0
-> >>>
-> > 
-> > I test this patch on internal platform(kernel-5.15).
-> 
-> I patched this one and the test shows me a stable 11% performance
-> drop.
-> 
-> Before:
-> echo 3 > proc/sys/vm/drop_caches && dd if=/data/1GB.img of=/dev/null 
-> 
-> 2048000+0 records in
-> 2048000+0 records out
-> 1048576000 bytes (0.9 G) copied, 3.912249 s, 256 M/s
-> 
-> After:
-> echo 3 > proc/sys/vm/drop_caches && dd if=/data/1GB.img of=/dev/null
-> 2048000+0 records in
-> 2048000+0 records out
-> 1048576000 bytes (0.9 G) copied, 4.436271 s, 225 M/s
-> 
-> > 
-> > Before:
-> > console:/ # echo 3 > /proc/sys/vm/drop_caches
-> > console:/ # dd if=/mnt/media_rw/8031-130D/super.img of=/dev/null
-> > 4485393+1 records in
-> > 4485393+1 records out
-> > 2296521564 bytes (2.1 G) copied, 37.124446 s, 59 M/s
-> > console:/ # cat /sys/block/mmcblk0/queue/read_ahead_kb
-> > 128
-> > 
-> > After:
-> > console:/ # echo 3 > /proc/sys/vm/drop_caches
-> > console:/ # dd if=/mnt/media_rw/8031-130D/super.img of=/dev/null
-> > 4485393+1 records in
-> > 4485393+1 records out
-> > 2296521564 bytes (2.1 G) copied, 28.956049 s, 76 M/s
-> > console:/ # cat /sys/block/mmcblk0/queue/read_ahead_kb
-> > 1024
-> > 
-Hi Shawn,
 
-What is your readahead value before and after applying this patch?
 
+在 2023/8/24 下午11:05, Robin Murphy 写道:
+> On 21/08/2023 9:36 am, Jing Zhang wrote:
+>> The jevent "Compat" is used for uncore PMU alias or metric definitions.
+>>
+>> The same PMU driver has different PMU identifiers due to different
+>> hardware versions and types, but they may have some common PMU event.
+>> Since a Compat value can only match one identifier, when adding the
+>> same event alias to PMUs with different identifiers, each identifier
+>> needs to be defined once, which is not streamlined enough.
+>>
+>> So let "Compat" supports matching multiple identifiers for uncore PMU
+>> alias. For example, the Compat value {43401;436*} can match the PMU
+>> identifier "43401", that is, CMN600_r0p0, and the PMU identifier with
+>> the prefix "436", that is, all CMN650, where "*" is a wildcard.
+>> Tokens in Unit field are delimited by ';' with no spaces.
+> 
+> I wonder is there any possibility of supporting multiple values as a JSON array, rather than a single delimited string? Otherwise, if we're putting restrictions on what characters a driver can expose as an identifier, then I think that really wants explicitly documenting. AFAICT there's currently not even any documentation of the de-facto ABI that it's expected to be a free-form string rather than completely arbitrary binary data.
+> 
+
+I'm sorry I almost missed this message, as it was in my spam folder.
+
+If we put multiple values as an array, its parsing in jevent.py will become complicated.
+I agree that we need to document the character restrictions for driver identifier composition.
+Both Unit and Compat have the same problem, so certain characters need to be restricted in
+the identifiers and names of drivers. However, it seems that there is no such document.
+
+Thanks,
+Jing
+
+> Thanks,
+> Robin.
+> 
+>> Signed-off-by: Jing Zhang <renyu.zj@linux.alibaba.com>
+>> Reviewed-by: John Garry <john.g.garry@oracle.com>
+>> ---
+>>   tools/perf/util/pmu.c | 33 +++++++++++++++++++++++++++++++--
+>>   tools/perf/util/pmu.h |  1 +
+>>   2 files changed, 32 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+>> index ad209c8..6402423 100644
+>> --- a/tools/perf/util/pmu.c
+>> +++ b/tools/perf/util/pmu.c
+>> @@ -776,6 +776,35 @@ static bool pmu_uncore_alias_match(const char *pmu_name, const char *name)
+>>       return res;
+>>   }
+>>   +bool pmu_uncore_identifier_match(const char *id, const char *compat)
+>> +{
+>> +    char *tmp = NULL, *tok, *str;
+>> +    bool res;
+>> +    int n;
+>> +
+>> +    /*
+>> +     * The strdup() call is necessary here because "compat" is a const str*
+>> +     * type and cannot be used as an argument to strtok_r().
+>> +     */
+>> +    str = strdup(compat);
+>> +    if (!str)
+>> +        return false;
+>> +
+>> +    tok = strtok_r(str, ";", &tmp);
+>> +    for (; tok; tok = strtok_r(NULL, ";", &tmp)) {
+>> +        n = strlen(tok);
+>> +        if ((tok[n - 1] == '*' && !strncmp(id, tok, n - 1)) ||
+>> +            !strcmp(id, tok)) {
+>> +            res = true;
+>> +            goto out;
+>> +        }
+>> +    }
+>> +    res = false;
+>> +out:
+>> +    free(str);
+>> +    return res;
+>> +}
+>> +
+>>   struct pmu_add_cpu_aliases_map_data {
+>>       struct list_head *head;
+>>       const char *name;
+>> @@ -847,8 +876,8 @@ static int pmu_add_sys_aliases_iter_fn(const struct pmu_event *pe,
+>>       if (!pe->compat || !pe->pmu)
+>>           return 0;
+>>   -    if (!strcmp(pmu->id, pe->compat) &&
+>> -        pmu_uncore_alias_match(pe->pmu, pmu->name)) {
+>> +    if (pmu_uncore_alias_match(pe->pmu, pmu->name) &&
+>> +        pmu_uncore_identifier_match(pmu->id, pe->compat)) {
+>>           __perf_pmu__new_alias(idata->head, -1,
+>>                         (char *)pe->name,
+>>                         (char *)pe->desc,
+>> diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
+>> index b9a02de..9d4385d 100644
+>> --- a/tools/perf/util/pmu.h
+>> +++ b/tools/perf/util/pmu.h
+>> @@ -241,6 +241,7 @@ void pmu_add_cpu_aliases_table(struct list_head *head, struct perf_pmu *pmu,
+>>   char *perf_pmu__getcpuid(struct perf_pmu *pmu);
+>>   const struct pmu_events_table *pmu_events_table__find(void);
+>>   const struct pmu_metrics_table *pmu_metrics_table__find(void);
+>> +bool pmu_uncore_identifier_match(const char *id, const char *compat);
+>>   void perf_pmu_free_alias(struct perf_pmu_alias *alias);
+>>     int perf_pmu__convert_scale(const char *scale, char **end, double *sval);
