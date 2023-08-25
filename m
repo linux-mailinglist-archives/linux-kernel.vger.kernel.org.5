@@ -2,78 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D531278852E
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 12:47:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B42378851E
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 12:41:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238743AbjHYKqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 06:46:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50544 "EHLO
+        id S236902AbjHYKkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 06:40:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236991AbjHYKqV (ORCPT
+        with ESMTP id S236919AbjHYKkt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 06:46:21 -0400
-Received: from out203-205-221-173.mail.qq.com (out203-205-221-173.mail.qq.com [203.205.221.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4606BE54;
-        Fri, 25 Aug 2023 03:46:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1692960375;
-        bh=O9VbDsjRgMANqFTThKdY7QAEcZNVKzTA4JvoFBBWP1o=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=gHZaaYa5GLhnGYv9QzSeLBCqj94JsQrdoUW5G8diCo1+JnH5FSN4eJK+VtOh8Dje1
-         DSv2phOd87m4pC0cefJuNTgtzaZz+ByeXou7fw68gVzH1HNxL0Nk09i6PxQ8CD/I4k
-         ygPxq/281FVK6SN487J6m8+o8txXgCiDRevVywvI=
-Received: from localhost.localdomain ([39.156.73.12])
-        by newxmesmtplogicsvrszc2-1.qq.com (NewEsmtp) with SMTP
-        id A05B86B3; Fri, 25 Aug 2023 18:40:05 +0800
-X-QQ-mid: xmsmtpt1692960005tpqavecy8
-Message-ID: <tencent_FD258319A1DF2CCECB7095A3D7A65102C407@qq.com>
-X-QQ-XMAILINFO: OZZSS56D9fAjkQVDc0WwmzqTIzVTk/scWCjrbKeXJ1AV9BrNOG8a6qEUx5tUjx
-         FFbptZExJKxkgtxwDBKvW1frZb9+5kFZCttqSkhnJd7/HFbYcst5HPeKtnstNVhCgEo0uA9r7sUC
-         ygpepn9z5fUcDs3yJPp7tv3934JQRvU46c0Gaq09P1TR2w3X4/bOvajh5eqQD+ZdLfRA2+BId7FQ
-         Zm4roydqdSqgmLq6W76OQ6mNp/MABWCZn64vNGxpckRQwc66mOLSfOf2nz2oqc7E3BjzEfvEH1fJ
-         rqzKZKtK1R3KnGaDQSQnoGJGiT/q2vjjcNRlbq9xa+/iJex6ObUt9o4Z7L1X1wr5s+H71dWOGzwY
-         9+lttY7g6hVkMgf02OLeMhPbifZZCx75IxtxIwQ9e5nkKzZ3rpqwXgCIyK03fZxcmk42omzQo/zG
-         g6/CNGIO8cTytsG3Pk4nEUMq/DoHzs8Z+VXQXbQch4A5/VGoNcbwRW77vnbJyvF5XrVHQGbVk+fX
-         Gtm83XV7s3dzPhuUos/QbHqmDFEsojRprLVczuAM/hg68yV01qnUmigjHDgOkppAcPq6MjD5Q39b
-         81DASjz3Fr3IlbVna8RIKr2Wrldw7iW8ZHNlP7QwyqQ5yiHA9jU8ZpNOXR2Q4X6SrLn/nfpHuKiF
-         lcfUgq9eBx+8Y4rZ2jDk/seI1QzLKtpwi8uoA48V+mFHL+Vg15EWesDm6v+UBm6lJRLUXC2R7wCj
-         2Gn1+XUY2g5Rebt733F/A6Z4ltHxiQ4SkJjjeuICpMFfMIE4A7/seAeWPJE19uDunLI4yHqS9wXe
-         SD3QnqnHIf0yP8aSrPo4QJu3zSTlZ7MsZx24CTamQqNKjuW/3zV8KD3rAW6QbrXOu8iM+0SSZIA0
-         yREpg3pp2CivzvIsKqQxFjUHAkRnGXoBzYFpJtIMgLgYNv0J2TPpkuuO1Xqt/xp+P21zk+Iox9ni
-         6ChRcxp9VSba5FcQRHIe6MfPKvyQIXGljDGEurbiA26dY9yqBgs4gRzOHeZQu9Qh0nmo9q6wgpn0
-         vj0uRaxj4O+0+NcjiM
-X-QQ-XMRINFO: MSVp+SPm3vtS1Vd6Y4Mggwc=
-From:   Rong Tao <rtoax@foxmail.com>
-To:     olsajiri@gmail.com
-Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, martin.lau@linux.dev,
-        mykolal@fb.com, rongtao@cestc.cn, rtoax@foxmail.com,
-        sdf@google.com, shuah@kernel.org, song@kernel.org,
-        yonghong.song@linux.dev
-Subject: Re: [PATCH bpf-next v6] selftests/bpf: trace_helpers.c: optimize kallsyms cache
-Date:   Fri, 25 Aug 2023 18:40:04 +0800
-X-OQ-MSGID: <20230825104004.34674-1-rtoax@foxmail.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <ZOhvhnUTxtD6YYzl@krava>
-References: <ZOhvhnUTxtD6YYzl@krava>
+        Fri, 25 Aug 2023 06:40:49 -0400
+Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CF78E67;
+        Fri, 25 Aug 2023 03:40:46 -0700 (PDT)
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37P3YDUR025426;
+        Fri, 25 Aug 2023 03:40:30 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0220;
+ bh=ULGo5y56IIkJmUKVD4/PVXleacDfOWY6lBq/dDiq/kM=;
+ b=X0OE+EeRVzHCYWlpWifR1etrebnj54mTyCQmZY0sz0m0tdrpRgXY5FdjnXZphCiKY0WW
+ TyJyg5JYcX/IBfNJW3KTbQpBJJiDAkKYIPXNnKovi8mli+FK3fDzGuAYxLfgF2+lYV+J
+ wfEGTq8W6TGyB+D+aQQkQyNm7mjNQj0pZHBl3AgF7A3u9Aix3H54HX7wc5lIU/mZMeFg
+ QtOSQkt9j2Ucef13bIKbes9Uhh2QSg9CRi3KnqfjgglyfVRnJ6NMiaBzhxdWhH1FldOy
+ tFhWkh6Sn0KCH6tI5r6T52K/1cG2z8AyYKFU+8pW2esJBGClim4vWrsQ+BnYZ7ynGBdU hQ== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3spmgvs3nq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Fri, 25 Aug 2023 03:40:29 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 25 Aug
+ 2023 03:40:27 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Fri, 25 Aug 2023 03:40:27 -0700
+Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
+        by maili.marvell.com (Postfix) with ESMTP id DFFEB3F70B7;
+        Fri, 25 Aug 2023 03:40:23 -0700 (PDT)
+From:   Hariprasad Kelam <hkelam@marvell.com>
+To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <kuba@kernel.org>, <davem@davemloft.net>, <sgoutham@marvell.com>,
+        <gakula@marvell.com>, <jerinj@marvell.com>, <lcherian@marvell.com>,
+        <sbhatta@marvell.com>, <hkelam@marvell.com>, <naveenm@marvell.com>,
+        <edumazet@google.com>, <pabeni@redhat.com>
+Subject: [net-next PatchV2 0/4] octeontx2-af: misc MAC block changes
+Date:   Fri, 25 Aug 2023 16:10:18 +0530
+Message-ID: <20230825104022.16288-1-hkelam@marvell.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Proofpoint-GUID: w82loodIsWPj5_R9WZree4Sm2v-68rBE
+X-Proofpoint-ORIG-GUID: w82loodIsWPj5_R9WZree4Sm2v-68rBE
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-25_08,2023-08-25_01,2023-05-22_02
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks a lot, jirka. I just submit v7 [0], please review.
+This series of patches adds recent changes added in MAC (CGX/RPM) block.
 
-Rong Tao.
+Patch1: Adds new LMAC mode supported by CN10KB silicon
 
-[0] https://lore.kernel.org/lkml/tencent_BD6E19C00BF565CD5C36A9A0BD828CFA210A@qq.com/
+Patch2: In a scenario where system boots with no cgx devices, currently
+        AF driver treats this as error as a result no interfaces will work.
+        This patch relaxes this check, such that non cgx mapped netdev
+        devices will work.
 
+Patch3: This patch adds required lmac validation in MAC block APIs.
+
+Patch4: Prints error message incase, no netdev is mapped with given
+        cgx,lmac pair.
+
+Hariprasad Kelam (3):
+  octeontx2-af: CN10KB: Add USGMII LMAC mode
+  octeontx2-af: Add validation of lmac
+  octeontx2-af: print error message incase of invalid pf mapping
+
+Sunil Goutham (1):
+  octeontx2-af: Don't treat lack of CGX interfaces as error
+---
+v2 * Removed patch #4 which is replacing generic error codes with driver
+     specific error codes.
+
+
+ drivers/net/ethernet/marvell/octeontx2/af/cgx.c     | 11 ++++++++---
+ drivers/net/ethernet/marvell/octeontx2/af/cgx.h     |  1 +
+ drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c |  7 ++++++-
+ 3 files changed, 15 insertions(+), 4 deletions(-)
+
+--
+2.17.1
