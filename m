@@ -2,204 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B075788099
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 09:07:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 379AB7880A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 09:10:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238114AbjHYHHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 03:07:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41268 "EHLO
+        id S239368AbjHYHKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 03:10:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240403AbjHYHGc (ORCPT
+        with ESMTP id S243014AbjHYHKB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 03:06:32 -0400
-Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49E132125
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 00:06:11 -0700 (PDT)
-Received: by mail-vs1-xe2b.google.com with SMTP id ada2fe7eead31-44d426d0e05so305203137.0
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 00:06:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692947157; x=1693551957;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=zAyx91j0d1SiPs3sA0vgKNpQ3W+EG6C0ragX4AchNBE=;
-        b=uN2rEaDOxg/pvsgm9icIiIRITysW4eLMBpwqTl6ADtfVuemglwESF1ebt1WQUqa2eH
-         MaMHvubqXFo7kxYZkeKKL9BrOO4FMCgGlWmq1m7t9NpbLsiI6b0JuzPNyIJBCpca6cL5
-         4OLCC6NxZ42tEJYGwDn8Lwzb3xUJsi/IChumX8xNSHvgSPJ2rgYENoMTjDxoV5/KtTZV
-         s2lb9srRDXWRSs+2PE1gvDDqBj9liwPo4ZmjrZXnZxRomZg1R8yPiEQKRyJQbrN6I+MN
-         V0aQR68lzM4EAqwcIQnAyuNR1BIkbZKMKILMmoKgUZL8YXLydFBGa0Yv1jLbaBK5mBUa
-         iRiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692947157; x=1693551957;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zAyx91j0d1SiPs3sA0vgKNpQ3W+EG6C0ragX4AchNBE=;
-        b=dQN5WfcccZtIDtFPBk4B49st3r45sxc8PoaiwJfDCd+aT7QjMSjuV0vT2O7wKnX/IW
-         tkwDQQhayqasWuuIMcArgnHR0An56D+p7WIRbI0AbMWa9m90iTlfQviRr3lMj+QJGfS6
-         OJQ/RaGLDy44MBbCqlX5c4ZaAJCFqx25L80OJfgYlSTK45bFiGJ1npI9f6POGjzUIFs9
-         o6MlQlVhdacdUzbrSQrxS/ATgn7d7YxvjdAp7Cpk8LysLbEX3VlZZjPvjZbKaWWZwWU2
-         05ikjoP1mZ8hAEcWXdF5L5SF8r+YXw1luCPn4x3uegrvu43H1ry9L2qwII/+j3Tj+qwr
-         CKeg==
-X-Gm-Message-State: AOJu0YzqEvxohVdlR5VdKAg//2YCWxV30ri3Itzvo4kDTqmNo4tmRyYC
-        20EAevVHgD0mM/8/yZeitzhRbqDgxHsFylb0eA68zA==
-X-Google-Smtp-Source: AGHT+IF2hKbfhy15wte1809kF7Hyk6ONBucrn4iHiZSvthzk5hzVmg8s0lNZHK6urLSSNHhlSLdD3/SCAArIH6tequQ=
-X-Received: by 2002:a67:fe10:0:b0:449:6e24:be74 with SMTP id
- l16-20020a67fe10000000b004496e24be74mr15745478vsr.0.1692947157287; Fri, 25
- Aug 2023 00:05:57 -0700 (PDT)
+        Fri, 25 Aug 2023 03:10:01 -0400
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB5D91B2;
+        Fri, 25 Aug 2023 00:09:58 -0700 (PDT)
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 37P3aE1u014750;
+        Fri, 25 Aug 2023 09:09:29 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        selector1; bh=MDkalMNBjUowOXiPQHgwxlnVRmYOYGag+qE9vvVRST0=; b=ky
+        3GDz677qACDSvjVCC4/BauiwA4RCBzaiIWIHCHP2dao5n4Zu9x6rrNLcFj2qUno7
+        o5YmvWPwhfx5hRWA6nwxkRm8jxHtTpPpRu2aA/DIqctdKAHhWkqvKwocpEd3xb9e
+        CFFJ0OqT25n0vbL7ZzduuWqKAfDlNav4QgmidALKD8CD4MNMJn1sN3E73DXly1Ph
+        jPZKtuLyrWIQ2ukSkPCDztGfxnrNYFel3WLPz/8pagSkRfyDur1Kbg8b+wFS0zNG
+        amCSzpkrnmkHm6ehkAnYoxauB0fd6LjsLgu+qGmSCan2FZnzg5qQI3DixVFGaZc+
+        8Z6XjQIuXwM0nx6f0r/Q==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3spmhs8m88-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 25 Aug 2023 09:09:29 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id E5D9B100059;
+        Fri, 25 Aug 2023 09:09:28 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id D1F88214D36;
+        Fri, 25 Aug 2023 09:09:28 +0200 (CEST)
+Received: from [10.201.21.122] (10.201.21.122) by SHFDAG1NODE1.st.com
+ (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Fri, 25 Aug
+ 2023 09:09:28 +0200
+Message-ID: <dbf33e7f-92e0-71ec-3bd4-ffa150c80e71@foss.st.com>
+Date:   Fri, 25 Aug 2023 09:09:27 +0200
 MIME-Version: 1.0
-References: <20230824141447.155846739@linuxfoundation.org>
-In-Reply-To: <20230824141447.155846739@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 25 Aug 2023 12:35:46 +0530
-Message-ID: <CA+G9fYsPPpduLzJ4+GZe_18jgYw56=w5bQ2W1jnyWa-8krmOSw@mail.gmail.com>
-Subject: Re: [PATCH 6.1 00/15] 6.1.48-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>, linux-nfs@vger.kernel.org
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, Sherry Yang <sherry.yang@oracle.com>,
-        LTP List <ltp@lists.linux.it>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v5 9/9] ARM: dts: stm32: Add Octavo OSD32MP1-RED board
+Content-Language: en-US
+To:     Sean Nyekjaer <sean@geanix.com>, <l.goehrs@pengutronix.de>,
+        <a.fatoum@pengutronix.de>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>
+CC:     <dantuguf14105@gmail.com>,
+        Olivier Moysan <olivier.moysan@foss.st.com>,
+        <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20230816122435.3153513-1-sean@geanix.com>
+ <20230816122435.3153513-9-sean@geanix.com>
+From:   Alexandre TORGUE <alexandre.torgue@foss.st.com>
+In-Reply-To: <20230816122435.3153513-9-sean@geanix.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.201.21.122]
+X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-25_04,2023-08-24_01,2023-05-22_02
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ linux-nfs and more
+Hi Sean
 
-On Thu, 24 Aug 2023 at 19:45, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 6.1.48 release.
-> There are 15 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sat, 26 Aug 2023 14:14:28 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.48-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On 8/16/23 14:24, Sean Nyekjaer wrote:
+> Add support for the Octavo OSD32MP1-RED development board.
+> 
+> General features:
+>   - STM32MP157C
+>   - 512MB DDR3
+>   - CAN-FD
+>   - HDMI
+>   - USB-C OTG
+>   - UART
+> 
+> Signed-off-by: Sean Nyekjaer <sean@geanix.com>
+> Reviewed-by: Olivier Moysan <olivier.moysan@foss.st.com>
+> ---
 
+Series applied on stm32-next (Queued for v6.7).
 
-Following test regression found on stable-rc 6.1.
-Rpi4 is using NFS mount rootfs and running LTP syscalls testing.
-chown02 tests creating testfile2 on NFS mounted and validating
-the functionality and found that it was a failure.
+Thanks
 
-This is already been reported by others on lore and fix patch merged
-into stable-rc linux-6.4.y [1] and [2].
-
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-Test log:
---------
-chown02.c:46: TPASS: chown(testfile1, 0, 0) passed
-chown02.c:46: TPASS: chown(testfile2, 0, 0) passed
-chown02.c:58: TFAIL: testfile2: wrong mode permissions 0100700, expected 0102700
-
-fchown02.c:57: TPASS: fchown(3, 0, 0) passed
-fchown02.c:57: TPASS: fchown(4, 0, 0) passed
-fchown02.c:67: TFAIL: testfile2: wrong mode permissions 0100700,
-expected 0102700
-
-
-## Build
-* kernel: 6.1.48-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-6.1.y
-* git commit: c079d0dd788ad4fe887ee6349fe89d23d72f7696
-* git describe: v6.1.47-16-gc079d0dd788a
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.1.y/build/v6.1.47-16-gc079d0dd788a
-
-## Test Regressions (compared to v6.1.46)
-* bcm2711-rpi-4-b, ltp-syscalls
-  - chown02
-  - fchown02
-
-* bcm2711-rpi-4-b-64k_page_size, ltp-syscalls
-  - chown02
-  - fchown02
-
-* bcm2711-rpi-4-b-clang, ltp-syscalls
-  - chown02
-  - fchown02
-
-
-
-
-Do we need the following patch into stable-rc linux-6.1.y ?
-
-I see from mailing thread discussion, says that
-
-the above commit is backported to LTS kernels -- 5.10.y,5.15.y and 6.1.y.
-
-
-----
-
-nfsd: use vfs setgid helper
-commit 2d8ae8c417db284f598dffb178cc01e7db0f1821 upstream.
-
-We've aligned setgid behavior over multiple kernel releases. The details
-can be found in commit cf619f891971 ("Merge tag 'fs.ovl.setgid.v6.2' of
-git://git.kernel.org/pub/scm/linux/kernel/git/vfs/idmapping") and
-commit 426b4ca2d6a5 ("Merge tag 'fs.setgid.v6.0' of
-git://git.kernel.org/pub/scm/linux/kernel/git/brauner/linux").
-Consistent setgid stripping behavior is now encapsulated in the
-setattr_should_drop_sgid() helper which is used by all filesystems that
-strip setgid bits outside of vfs proper. Usually ATTR_KILL_SGID is
-raised in e.g., chown_common() and is subject to the
-setattr_should_drop_sgid() check to determine whether the setgid bit can
-be retained. Since nfsd is raising ATTR_KILL_SGID unconditionally it
-will cause notify_change() to strip it even if the caller had the
-necessary privileges to retain it. Ensure that nfsd only raises
-ATR_KILL_SGID if the caller lacks the necessary privileges to retain the
-setgid bit.
-
-Without this patch the setgid stripping tests in LTP will fail:
-
-> As you can see, the problem is S_ISGID (0002000) was dropped on a
-> non-group-executable file while chown was invoked by super-user, while
-
-[...]
-
-> fchown02.c:66: TFAIL: testfile2: wrong mode permissions 0100700, expected 0102700
-
-[...]
-
-> chown02.c:57: TFAIL: testfile2: wrong mode permissions 0100700, expected 0102700
-
-With this patch all tests pass.
-
-Reported-by: Sherry Yang <sherry.yang@oracle.com>
-Signed-off-by: Christian Brauner <brauner@kernel.org>
-Reviewed-by: Jeff Layton <jlayton@kernel.org>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
-
-[1] https://lore.kernel.org/linux-nfs/20230502-agenda-regeln-04d2573bd0fd@brauner/
-[2] https://lore.kernel.org/all/202210091600.dbe52cbf-yujie.liu@intel.com/
---
-Linaro LKFT
-https://lkft.linaro.org
+Alex
