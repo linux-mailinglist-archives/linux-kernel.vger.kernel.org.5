@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30978788C69
+	by mail.lfdr.de (Postfix) with ESMTP id 87129788C6A
 	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 17:26:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239372AbjHYP0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 11:26:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47584 "EHLO
+        id S238758AbjHYP0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 11:26:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236050AbjHYP0B (ORCPT
+        with ESMTP id S236907AbjHYP0B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 25 Aug 2023 11:26:01 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1518D2134;
-        Fri, 25 Aug 2023 08:25:56 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-68a41031768so910476b3a.3;
-        Fri, 25 Aug 2023 08:25:56 -0700 (PDT)
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 973CA212C;
+        Fri, 25 Aug 2023 08:25:57 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-68c0d886ea0so432322b3a.2;
+        Fri, 25 Aug 2023 08:25:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692977155; x=1693581955;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=uVEm7+1ZpaZQWr2bgHUfzl7YJu5UdkQlkIaC2+5AOr8=;
-        b=V2DAPtAP2YiMNmhoRB+6Fgu1VyiBnOg4q6HEPh14rBH713VmOtwSXEyVizcBsF1rev
-         mQ+rcwCv1OWamUtlrGjejVcHcQSLfb5vOCCtnKN25yJO8Cafgl6rIrNOnrFLlVVTvyvn
-         vddOxwcGfC+wxN5m5sRnIB3YA0H7tIEamEx4OJNIi1pai7E+Immiwhmi2uEUNirnAqlc
-         7prBfuHnB/+QyFEZDEKskQtf7cdYY4AmqFazJS+Gd/fN+EmTThNuTpwn4QdJ8Z5VWApy
-         QxkGNt6pTxNU8D654krE+z9MnaWWHvWG9zjvj1S+ePxvhZtNGWmqe7QUnxZa+yKtrGnk
-         8zOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692977155; x=1693581955;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1692977157; x=1693581957;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=uVEm7+1ZpaZQWr2bgHUfzl7YJu5UdkQlkIaC2+5AOr8=;
-        b=kIUGsoZiZkjT2a/eQC+hh2RsbVg6EqAS2brNFft+6RivVeJTA7g0804WJ6h7nHDJR6
-         PKJHSecn2TEawgg6H8DD6bgeQV6+inAN48b6BCEIHTG2AhnTXaoxpW3EocJRgcWFAXB2
-         c6Ldj5zYbiVAG52wiP5TC9Lgl7j6dYUdUUIUgzNFkSqYr90BrDZRYOREu26AAhGtL1dg
-         WRoHuNpUNBp8vSeGfs2mOvnb5yD06JbomyivtM6Kd7WieY7D8ldIjSxdWgSE11UzBSJ0
-         YvkWNkI6WAfRYNc3ly+FOgovLvfydu+BCBAo8gzxz1LmNvb318yOW/j2IVzUDE8uQiBr
-         3aWw==
-X-Gm-Message-State: AOJu0Yz8go98u/fwJsKDFgeCmqqXhFw70LFxW/vKp23jQnBsCiky8qZK
-        TZpfwJ+pBv5fWj7RS3cpYIgQcHjpJjU=
-X-Google-Smtp-Source: AGHT+IFTwQdNWRKUjc71WQe+NJ9LOhjD2xkoouMwBYmnuTBgPYuTt0QiSCrXMTk5TqjbWufUpqfykA==
-X-Received: by 2002:a05:6a20:3d81:b0:148:658a:a73d with SMTP id s1-20020a056a203d8100b00148658aa73dmr20056039pzi.5.1692977155329;
-        Fri, 25 Aug 2023 08:25:55 -0700 (PDT)
+        bh=PVUAfjuhlGCsdGRU6NCyYn5JBe7LfSVAI851QTnMYfw=;
+        b=avaCuMI86t6FDHFMWtLPkJBIkA6Q61g1fG1I5qI3FhWb8/+MwyV6PA6KcdDcOA/Vf2
+         X8iHff1VjwvzyXNeNlnY0wGOA2NCWP3xOmBkGSmeZgz51AdqZ9/2ZA1Kw25Ro6qaQTtI
+         aV16ts4F583GdO82DciUz+pqeYGur/ghngIEXlqRPCSmkqaFGXpIzwwZMr+hEISYUUTi
+         7fIfnGzHB4CgkKdXS956oP9904iCXqPfFAUug83wVA4e7XTMRzMMgVwnbGrFBL0jbwxE
+         Xg/XmYRXfRdICejybXPrljxu0v+K5sSrO04R0mb6Kvo0azxMj4bGyKbUJPdPt2MagNX4
+         jVyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692977157; x=1693581957;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=PVUAfjuhlGCsdGRU6NCyYn5JBe7LfSVAI851QTnMYfw=;
+        b=cgdi2CfyNyANFXoJWxlvyn5RmsS+sjkwTaCqWcVteCtKasM01BlE7SiidrYS2kG1/M
+         qmI1VtpID+EVuuEQ5M5/uEcM3D5OduKxRVolrfSYv6pb8FFcG8tt0CACO5hm+X01e/4/
+         zOA/QqedtMhqNxcxxG9rIz142N0JJ/KoD5KnIcZPHxn6RRXUVsYJlM7AcPx0aMWlxa9A
+         vZ1Wwh07XlgDlk/oAt7PpqShnJCgpzyAweBX2pMaPySiS9WykYTy4u66Ve4wANqijcxU
+         4hTqWnm4oPNCY6L3FKnJwzxu0iWx08uWUqAFlhr6U5mCgZtYkP8pnNEPqZH6YKqo7PLS
+         Vslg==
+X-Gm-Message-State: AOJu0YzJx+5qWnexUeO6K1f0mVq6Mq8CIlP/tidavujVd+06PS7zIsrv
+        i8UpOpAtGZgfitb+2ALs3Nc=
+X-Google-Smtp-Source: AGHT+IGHDGppuZkAZwUYF/Oq5yH89HYDGye0Wf6tj/d8SxMoa3rAgzs85OId17NsbSbNXHP1qzxqiA==
+X-Received: by 2002:a05:6a20:7287:b0:149:2fd0:a4ac with SMTP id o7-20020a056a20728700b001492fd0a4acmr15696607pzk.42.1692977156937;
+        Fri, 25 Aug 2023 08:25:56 -0700 (PDT)
 Received: from bangji.hsd1.ca.comcast.net ([2601:647:6780:42e0:a7ba:1788:3b00:4316])
-        by smtp.gmail.com with ESMTPSA id y1-20020aa78541000000b006879493aca0sm1701748pfn.26.2023.08.25.08.25.53
+        by smtp.gmail.com with ESMTPSA id y1-20020aa78541000000b006879493aca0sm1701748pfn.26.2023.08.25.08.25.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Aug 2023 08:25:54 -0700 (PDT)
+        Fri, 25 Aug 2023 08:25:56 -0700 (PDT)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -58,12 +59,13 @@ Cc:     Ian Rogers <irogers@google.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org, stable@vger.kernel.org,
-        Tom Zanussi <zanussi@kernel.org>
-Subject: [PATCH v2 1/4] perf tools: Handle old data in PERF_RECORD_ATTR
-Date:   Fri, 25 Aug 2023 08:25:49 -0700
-Message-ID: <20230825152552.112913-1-namhyung@kernel.org>
+        linux-perf-users@vger.kernel.org
+Subject: [PATCH v2 2/4] tools/lib/perf: Add perf_record_header_attr_id()
+Date:   Fri, 25 Aug 2023 08:25:50 -0700
+Message-ID: <20230825152552.112913-2-namhyung@kernel.org>
 X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
+In-Reply-To: <20230825152552.112913-1-namhyung@kernel.org>
+References: <20230825152552.112913-1-namhyung@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -76,84 +78,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The PERF_RECORD_ATTR is used for a pipe mode to describe an event with
-attribute and IDs.  The ID table comes after the attr and it calculate
-size of the table using the total record size and the attr size.
+The HEADER_ATTR record has an event attr followed by the id array.  But
+perf data from a different version could have different size of attr.
 
-  n_ids = (total_record_size - end_of_the_attr_field) / sizeof(u64)
+So it cannot just use event->attr.id to access the array.  Let's add the
+perf_record_header_attr_id() macro to calculate the start of the array.
 
-This is fine for most use cases, but sometimes it saves the pipe output
-in a file and then process it later.  And it becomes a problem if there
-is a change in attr size between the record and report.
-
-  $ perf record -o- > perf-pipe.data  # old version
-  $ perf report -i- < perf-pipe.data  # new version
-
-For example, if the attr size is 128 and it has 4 IDs, then it would
-save them in 168 byte like below:
-
-   8 byte: perf event header { .type = PERF_RECORD_ATTR, .size = 168 },
- 128 byte: perf event attr { .size = 128, ... },
-  32 byte: event IDs [] = { 1234, 1235, 1236, 1237 },
-
-But when report later, it thinks the attr size is 136 then it only read
-the last 3 entries as ID.
-
-   8 byte: perf event header { .type = PERF_RECORD_ATTR, .size = 168 },
- 136 byte: perf event attr { .size = 136, ... },
-  24 byte: event IDs [] = { 1235, 1236, 1237 },  // 1234 is missing
-
-So it should use the recorded version of the attr.  The attr has the
-size field already then it should honor the size when reading data.
-
-Fixes: 2c46dbb517a10 ("perf: Convert perf header attrs into attr events")
-Cc: stable@vger.kernel.org
-Cc: Tom Zanussi <zanussi@kernel.org>
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
-Keep this version before the libperf change so that it can go through
-the stable versions.
+ tools/lib/perf/include/perf/event.h | 4 ++++
+ 1 file changed, 4 insertions(+)
 
- tools/perf/util/header.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
-
-diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
-index 52fbf526fe74..f89321cbfdee 100644
---- a/tools/perf/util/header.c
-+++ b/tools/perf/util/header.c
-@@ -4381,7 +4381,8 @@ int perf_event__process_attr(struct perf_tool *tool __maybe_unused,
- 			     union perf_event *event,
- 			     struct evlist **pevlist)
- {
--	u32 i, ids, n_ids;
-+	u32 i, n_ids;
-+	u64 *ids;
- 	struct evsel *evsel;
- 	struct evlist *evlist = *pevlist;
+diff --git a/tools/lib/perf/include/perf/event.h b/tools/lib/perf/include/perf/event.h
+index ba2dcf64f4e6..e563dd8c3628 100644
+--- a/tools/lib/perf/include/perf/event.h
++++ b/tools/lib/perf/include/perf/event.h
+@@ -151,6 +151,10 @@ struct perf_record_header_attr {
+ 	__u64			 id[];
+ };
  
-@@ -4397,9 +4398,8 @@ int perf_event__process_attr(struct perf_tool *tool __maybe_unused,
- 
- 	evlist__add(evlist, evsel);
- 
--	ids = event->header.size;
--	ids -= (void *)&event->attr.id - (void *)event;
--	n_ids = ids / sizeof(u64);
-+	n_ids = event->header.size - sizeof(event->header) - event->attr.attr.size;
-+	n_ids = n_ids / sizeof(u64);
- 	/*
- 	 * We don't have the cpu and thread maps on the header, so
- 	 * for allocating the perf_sample_id table we fake 1 cpu and
-@@ -4408,8 +4408,9 @@ int perf_event__process_attr(struct perf_tool *tool __maybe_unused,
- 	if (perf_evsel__alloc_id(&evsel->core, 1, n_ids))
- 		return -ENOMEM;
- 
-+	ids = (void *)&event->attr.attr + event->attr.attr.size;
- 	for (i = 0; i < n_ids; i++) {
--		perf_evlist__id_add(&evlist->core, &evsel->core, 0, i, event->attr.id[i]);
-+		perf_evlist__id_add(&evlist->core, &evsel->core, 0, i, ids[i]);
- 	}
- 
- 	return 0;
++/* Returns the pointer to id array based on the actual attr size. */
++#define perf_record_header_attr_id(evt)			\
++	((void *)&(evt)->attr.attr + (evt)->attr.attr.size)
++
+ enum {
+ 	PERF_CPU_MAP__CPUS = 0,
+ 	PERF_CPU_MAP__MASK = 1,
 -- 
 2.42.0.rc1.204.g551eb34607-goog
 
