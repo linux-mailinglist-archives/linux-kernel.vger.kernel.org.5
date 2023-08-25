@@ -2,81 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC481787F75
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 08:01:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0E3F787F76
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 08:01:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235653AbjHYF5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 01:57:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46216 "EHLO
+        id S239438AbjHYF67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 01:58:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234286AbjHYF5E (ORCPT
+        with ESMTP id S239385AbjHYF63 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 01:57:04 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F47C1BC7;
-        Thu, 24 Aug 2023 22:56:59 -0700 (PDT)
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37P5mhtc000886;
-        Fri, 25 Aug 2023 05:56:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=fBcNg7nrqFTeiSI9dFwDO6F4qFylvBduUrHomehxa0o=;
- b=hf/EWLnjd9mN+C4jg29Mi4WXxDRdHFT2IbqHepdo4CdjG7yP4+V5SyBA/j/DB9Fjk0BX
- EruROpZkQrac2V0U1Mn8drjQBXmMqa12JiI4Lask+aC6S8KsuR0NzBgOHBWrDmtgcvpK
- UW3ykaMycMhAJeNMRbrgiXW75aLElc/2PQ9VH3lrlvOWqPWUuZqfc4L8PQNNIuubKDfh
- tUm+kRr9/dlbY45uwPyqkHWNu3nWw9UufPcvBnWxtt7v6Er6RPluc9h5APaEhBonlPF4
- ftcwrRAVEiZgiE8pC+sgnW3vkillmSce+/eI7DqVhNfCO8fJge5IenAxMc1OqOY/MIlK TQ== 
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3spp7yrfes-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 25 Aug 2023 05:56:49 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37P5AiPH027388;
-        Fri, 25 Aug 2023 05:56:49 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3sn20sw8e4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 25 Aug 2023 05:56:48 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37P5ujaw40894724
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 25 Aug 2023 05:56:45 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B473C20040;
-        Fri, 25 Aug 2023 05:56:45 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 457192004D;
-        Fri, 25 Aug 2023 05:56:37 +0000 (GMT)
-Received: from li-e8dccbcc-2adc-11b2-a85c-bc1f33b9b810.ibm.com.com (unknown [9.43.34.48])
-        by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Fri, 25 Aug 2023 05:56:36 +0000 (GMT)
-From:   Kajol Jain <kjain@linux.ibm.com>
-To:     mpe@ellerman.id.au
-Cc:     atrajeev@linux.vnet.ibm.com, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, maddy@linux.ibm.com,
-        disgoel@linux.ibm.com, linuxppc-dev@lists.ozlabs.org,
-        kjain@linux.ibm.com,
-        Krishan Gopal Sarawast <krishang@linux.vnet.ibm.com>
-Subject: [PATCH] powerpc/perf/hv-24x7: Update domain value check
-Date:   Fri, 25 Aug 2023 11:26:01 +0530
-Message-Id: <20230825055601.360083-1-kjain@linux.ibm.com>
-X-Mailer: git-send-email 2.39.3
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: drY0TB5CReKrbIZpSzvvpa_clyRS0WtC
-X-Proofpoint-ORIG-GUID: drY0TB5CReKrbIZpSzvvpa_clyRS0WtC
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-25_04,2023-08-24_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- priorityscore=1501 lowpriorityscore=0 phishscore=0 adultscore=0
- clxscore=1011 mlxscore=0 suspectscore=0 bulkscore=0 impostorscore=0
- spamscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2308250046
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Fri, 25 Aug 2023 01:58:29 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 558B219B5;
+        Thu, 24 Aug 2023 22:58:26 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-99bcfe28909so59071466b.3;
+        Thu, 24 Aug 2023 22:58:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692943105; x=1693547905;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IJG8goSXk3zwWZ19FJPr0WxT/uyTahaaLMr2MHUcYLA=;
+        b=GNWYmUiuTytI+dVDFGnG7EG3wZqzZqbSLOqOqQ3+M7fas1jK/dQcmKOVwJVl+TA9vS
+         C0GpP5+io7Di8GvFK2C1VsQF8MYgkI6VxmRasZBP4RRXkvLHQ236CF1xusNX9owrOOsG
+         MoWMEHwrhlKotucXNIzltl3TJYvDwwG9vKshqMXCZ8FQI8x6koilEZqG6V4fcUgy8jWS
+         +jmBk9DgG1RO2YJ4ZGD/Xvmmg+8HWFwRc6Xiqu08POhJe9b//KXUwrsqfupx028mUgpd
+         2QbKNLI0FfpJRYD0bif239CmKXO4QlN1RSiQvojLc/H02cFMB9LWHnXv5h82tfp5Tb3T
+         YthA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692943105; x=1693547905;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IJG8goSXk3zwWZ19FJPr0WxT/uyTahaaLMr2MHUcYLA=;
+        b=GNHIhSIpvDxNLpbtn/s5tWHZVqGal7vfaSWom+VajUzkpX58jEoehJI21VGjbVFVUq
+         0ifInUDbcA0KpYE4xhIr/4KMkQ+CbpPDo/sFZ749hQ6ZJ1ei/jkHkROSQwSEaDrRj721
+         LWPxx1DRwn2Mr8D9wXNwL4Ia6JKpxQkRzKFCUJGGZPToHhenZ2wx5DJwHRtAcpOSm4tQ
+         64agdcmi89fDe5dvUhps2Y4FFMcYBWJrz+NYtM9JZL110dAXmyOUgn9Em6no8gVGpb86
+         Mx8/LMIUBxXw8tUoznk5rMWikPmKGS9yccraL6ylb+O6FniF+d1ZPxKG/f2g+Gn/b8SD
+         vfXw==
+X-Gm-Message-State: AOJu0YxkVTV2uGuXqoPwaUbErOsasH7Yo9yoZav635B9CDy0LBISSrML
+        2ful/mGCsAheSCurVkOMwew=
+X-Google-Smtp-Source: AGHT+IF9kWnJZdSru5yBZvRTrZ/LkXpY1drHf+dQXac0YH3cB4rwp3hFRPP5zVnGqhA1fMZuHoiU0Q==
+X-Received: by 2002:a17:906:1ba9:b0:9a1:680e:8c54 with SMTP id r9-20020a1709061ba900b009a1680e8c54mr13090737ejg.71.1692943104488;
+        Thu, 24 Aug 2023 22:58:24 -0700 (PDT)
+Received: from felia.fritz.box ([2a02:810d:7e40:14b0:98c5:e120:ff1e:7709])
+        by smtp.gmail.com with ESMTPSA id re4-20020a170906d8c400b009930042510csm546959ejb.222.2023.08.24.22.58.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Aug 2023 22:58:23 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        Markus Niebel <Markus.Niebel@ew.tq-group.com>,
+        Alexander Stein <alexander.stein@ew.tq-group.com>,
+        Lee Jones <lee@kernel.org>
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] MAINTAINERS: adjust file patterns in TQ SYSTEMS BOARD & DRIVER SUPPORT
+Date:   Fri, 25 Aug 2023 07:58:21 +0200
+Message-Id: <20230825055821.30508-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,32 +69,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Valid domain value is in range 1 to HV_PERF_DOMAIN_MAX.
-Current code has check for domain value greater than or
-equal to HV_PERF_DOMAIN_MAX. But the check for domain value 0
-is missing.
-Fix this issue by adding check for domain value 0.
+Commit 77da3f22b3d5 ("MAINTAINERS: Add entry for TQ-Systems device trees
+and drivers") adds some file patterns for files in arch/arm/boot/dts/, but
+those patterns do not match any files in the repository. Hence,
+./scripts/get_maintainer.pl --self-test=patterns complains about broken
+references. The files of interest are actually in the directory
+arch/arm/boot/dts/nxp/imx/.
 
-Fixes: ebd4a5a3ebd9 ("powerpc/perf/hv-24x7: Minor improvements")
-Reported-by: Krishan Gopal Sarawast <krishang@linux.vnet.ibm.com> 
-Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
+Adjust the file patterns to match the intended files.
+
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 ---
- arch/powerpc/perf/hv-24x7.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Lee, please pick this minor clean-up patch.
 
-diff --git a/arch/powerpc/perf/hv-24x7.c b/arch/powerpc/perf/hv-24x7.c
-index 317175791d23..644881cc1c00 100644
---- a/arch/powerpc/perf/hv-24x7.c
-+++ b/arch/powerpc/perf/hv-24x7.c
-@@ -1418,7 +1418,7 @@ static int h_24x7_event_init(struct perf_event *event)
- 	}
- 
- 	domain = event_get_domain(event);
--	if (domain >= HV_PERF_DOMAIN_MAX) {
-+	if (domain  == 0 || domain >= HV_PERF_DOMAIN_MAX) {
- 		pr_devel("invalid domain %d\n", domain);
- 		return -EINVAL;
- 	}
+ MAINTAINERS | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 52277ee9c1b8..f5d4058b7ff4 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -21817,9 +21817,9 @@ TQ SYSTEMS BOARD & DRIVER SUPPORT
+ L:	linux@ew.tq-group.com
+ S:	Supported
+ W:	https://www.tq-group.com/en/products/tq-embedded/
+-F:	arch/arm/boot/dts/imx*mba*.dts*
+-F:	arch/arm/boot/dts/imx*tqma*.dts*
+-F:	arch/arm/boot/dts/mba*.dtsi
++F:	arch/arm/boot/dts/nxp/imx/imx*mba*.dts*
++F:	arch/arm/boot/dts/nxp/imx/imx*tqma*.dts*
++F:	arch/arm/boot/dts/nxp/imx/mba*.dtsi
+ F:	arch/arm64/boot/dts/freescale/imx*mba*.dts*
+ F:	arch/arm64/boot/dts/freescale/imx*tqma*.dts*
+ F:	arch/arm64/boot/dts/freescale/mba*.dtsi
 -- 
-2.35.3
+2.17.1
 
