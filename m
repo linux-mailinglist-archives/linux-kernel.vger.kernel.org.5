@@ -2,133 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFDD67891F7
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 00:50:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F4347891FC
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 00:53:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230439AbjHYWuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 18:50:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37338 "EHLO
+        id S229727AbjHYWw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 18:52:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230359AbjHYWuM (ORCPT
+        with ESMTP id S229970AbjHYWwJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 18:50:12 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6A69E77;
-        Fri, 25 Aug 2023 15:50:09 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7845F60F87;
-        Fri, 25 Aug 2023 22:50:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C734C433C7;
-        Fri, 25 Aug 2023 22:50:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693003808;
-        bh=nMm5vYE7JaMjDPPEEJlEV36deplR3ba5q9rfZPaSY1k=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=AMtEe3DOiGC1QLWjcFukR0M7E2vIwgKNtgx5fHNyxgA1n7hamGnAADlmamBiCVXG2
-         Wcty+n3SunqeQFcfRgHo7PDo5jJywwHuB7BH/OnV25WhKjOCYQW451ZLamu65Rrxyc
-         M8Eys1xc6pioCdEjia+rq54QUWucD8VZfFENuGgK656UzCfRZTZgMYMjryg3QjeGNj
-         J8246kA3g2WB5c/+IIV/QNjMRPYAxPdD07TK1oWMOdM0fVHN+LzHyU2llpaRZBDyJj
-         hLuzT8C6qH+RWQw0ILn5ZRotXukNy9zOzLyumNpWgRsliHNAK2eyDtZuFYPt3n4z2M
-         4fyayf86TzJqg==
-Date:   Fri, 25 Aug 2023 17:50:06 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     lpieralisi@kernel.org, kw@linux.com, kishon@kernel.org,
-        bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v2 2/7] PCI: epf-mhi: Make use of the alignment
- restriction from EPF core
-Message-ID: <20230825225006.GA642059@bhelgaas>
+        Fri, 25 Aug 2023 18:52:09 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8C291BCC
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 15:52:06 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-5009d4a4897so2152170e87.0
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 15:52:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1693003925; x=1693608725;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+y9J0Vp2KEC0gOHwcifgBi34rB9oiYo6WicEeCrDYUk=;
+        b=BqHgwsSFGMBSzPfBjaL1mADgNZ/JMV/t3ctoiSTSqoIS5gT/l4uFn/xXCt6JLYHUy7
+         gPuSEJB2mTISHBWmZIMp31j/ybBK4kdYAyhdBlOs7wfaR8ddFAL65C0HQ5z5ntzz3uF2
+         vYBhDyW9oc46xobiDjao2H/AWMfF8ipOXkLGtC3ycfJ4b1+g9r+V0M1UbbRMqnP7UrZo
+         Og6lQd7ZrW6gCTz/6+vO73sKL64j4iTfOyFUwP12X0LaQZBEFoe8Yzt7H0KYrJH/kTkH
+         Ldj7CMmu49LAQ012XQkydspk8hWy7+53LwAoR6wNe3O6zq7t2zoG4e1xYxGAb2GJpwOA
+         bdYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693003925; x=1693608725;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+y9J0Vp2KEC0gOHwcifgBi34rB9oiYo6WicEeCrDYUk=;
+        b=IAnbxgWjA2Zld0G5KsceFV25x2ooezGVSqu+AgM/YJigUNbRZcxwtMllqocUYY8gl6
+         uZ6m+brtgvf0qr+yKOHBqOtafgK0rbD9xTz5DPA2/YyJo4oiC/7LP5AuANWPHmH9O7bG
+         domjLc5fTBgxEoRn9AtXHzk1rb1S5JKIwfPmUCb/QlDis4Lp4J9rIcq2hDwKLvesqemh
+         1UZIqX05ziPpwkMf6nKRYeX2hn6fUa1ty4xrIPeces/ctM90B8/aBru9eF6NOYagHhnO
+         v8s+4aGlVQxuE4U4hQzommL4mNvr9ISIx8k1iNTv1roFQUsefSOEhCBQt8EZ9/34zRTx
+         a8/A==
+X-Gm-Message-State: AOJu0Yyb2hX+kNnCY7iRz5nGvjIaMZVa5ywSyKqsfbzrdwp5vT25SFOz
+        wIOyp+JgnxMtrIcpm+N8wEK0H6X1fqEl6XcMJCflFg==
+X-Google-Smtp-Source: AGHT+IF+v+BY77506pMI43cchja2d3T+v50mea58RnGu7jsCphVTLnNPxrVLDaC4mo5oFMYvPobn4jQYIezwB6lXp8o=
+X-Received: by 2002:a05:6512:4026:b0:4f9:570c:7b28 with SMTP id
+ br38-20020a056512402600b004f9570c7b28mr17775050lfb.32.1693003924895; Fri, 25
+ Aug 2023 15:52:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230717065459.14138-3-manivannan.sadhasivam@linaro.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230711201831.2695097-1-evan@rivosinc.com> <20230824-factual-jawed-2dddd2cf2bdd@wendy>
+ <CALs-Hss51fQE1yxe1Y1T86X+OfjPaAd386vosQ8gzRm=Njm1gw@mail.gmail.com>
+ <20230824-exploit-spectacle-ecedd91e9075@spud> <CALs-HssqaOjvUOdBVn=oN+uzkkmjguys2UttTYgdcqJwJB0HnQ@mail.gmail.com>
+ <20230825-374a82446ed3eea02fcb41e6@orel>
+In-Reply-To: <20230825-374a82446ed3eea02fcb41e6@orel>
+From:   Evan Green <evan@rivosinc.com>
+Date:   Fri, 25 Aug 2023 15:51:28 -0700
+Message-ID: <CALs-HstfA29DDrmVemP6bZe+kON9JDKYR3p132gG_WefA6d7eQ@mail.gmail.com>
+Subject: Re: [PATCH v4] RISC-V: Show accurate per-hart isa in /proc/cpuinfo
+To:     Andrew Jones <ajones@ventanamicro.com>
+Cc:     Conor Dooley <conor@kernel.org>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Anup Patel <apatel@ventanamicro.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-riscv@lists.infradead.org,
+        Heiko Stuebner <heiko.stuebner@vrull.eu>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 12:24:54PM +0530, Manivannan Sadhasivam wrote:
-> Instead of hardcoding the alignment restriction in the EPF_MHI driver, make
-> use of the info available from the EPF core that reflects the alignment
-> restriction of the endpoint controller.
-> 
-> For this purpose, let's introduce the get_align_offset() static function.
+On Fri, Aug 25, 2023 at 1:16=E2=80=AFAM Andrew Jones <ajones@ventanamicro.c=
+om> wrote:
+>
+> On Thu, Aug 24, 2023 at 03:06:53PM -0700, Evan Green wrote:
+> > On Thu, Aug 24, 2023 at 10:29=E2=80=AFAM Conor Dooley <conor@kernel.org=
+> wrote:
+> ...
+> > > Do you want to have this new thing in cpuinfo tell the user "this har=
+t
+> > > has xyz extensions that are supported by a kernel, but maybe not this
+> > > kernel" or to tell the user "this hart has xyz extensions that are
+> > > supported by this kernel"? Your text above says "understood by the
+> > > kernel", but I think that's a poor definition that needs to be improv=
+ed
+> > > to spell out exactly what you mean. IOW does "understood" mean the
+> > > kernel will parse them into a structure, or does it mean "yes you can
+> > > use this extension on this particular hart".
+> >
+> > I'm imagining /proc/cpuinfo being closer to "the CPU has it and the
+> > kernel at least vaguely understands it, but may not have full support
+> > for it enabled". I'm assuming /proc/cpuinfo is mostly used by 1)
+> > humans wanting to know if they have hardware support for a feature,
+> > and 2) administrators collecting telemetry to manage fleets (ie do I
+> > have any hardware deployed that supports X).
+>
+> Is (2) a special case of (1)? (I want to make sure I understand all the
+> cases.)
 
-I thought this might be related to the [1/7] patch since they both
-mention an alignment restriction in the EPF core, but [1/7] sets
-pci_epc_features.align and this patch doesn't reference .align, so
-this must be a different alignment restriction?
+More or less, yes. In bucket two are also folks wondering things like
+"are all these crash reports I'm getting specific to machines with X".
 
-I'm sure there's nothing wrong here, and this is already applied, so
-no need to do anything unless .align *should* appear here.
+>
+> > Programmers looking to
+> > see "is the kernel support for this feature ready right now" would
+> > ideally not be parsing /proc/cpuinfo text, as more direct mechanisms
+> > like specific hwprobe bits for "am I fully ready to go" would be
+> > easier to work with. Feel free to yell at me if this overall vision
+> > seems flawed.
+> >
+> > I tried to look to see if there was consensus among the other
+> > architectures. Aarch64 seems to go with "supported and fully enabled",
+> > as their cpu_has_feature() directly tests elf_hwcap, and elements in
+> > arm64_elf_hwcaps[] are Kconfig gated. X86 is complicated, but IIRC is
+> > more along the lines of "hardware has it". They have two macros,
+> > cpu_has() for "raw capability" and cpu_feature_enabled() for "kernel
+> > can do it too", and they use cpu_has() for /proc/cpuinfo flags.
+> >
+>
+> I'd lean more towards the way AArch64 goes, because, unless /proc/cpuinfo
+> is just a blind regurgitation of an isa string from DT / ACPI, then the
+> kernel must at least know something about it. Advertising a feature which
+> is known, but also known not to work, seems odd to me. So my vote is that
+> only features which are present and enabled in the kernel or present and
+> not necessary to be enabled in the kernel in order for userspace or
+> virtual machines to use be advertised in /proc/cpuinfo.
+>
+> We still have SMBIOS (dmidecode) to blindly dump what the hardware
+> supports for cases (1) and (2) above.
 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
->  drivers/pci/endpoint/functions/pci-epf-mhi.c | 15 +++++++++++----
->  1 file changed, 11 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/pci/endpoint/functions/pci-epf-mhi.c b/drivers/pci/endpoint/functions/pci-epf-mhi.c
-> index 9c1f5a154fbd..bb7de6884824 100644
-> --- a/drivers/pci/endpoint/functions/pci-epf-mhi.c
-> +++ b/drivers/pci/endpoint/functions/pci-epf-mhi.c
-> @@ -102,6 +102,11 @@ struct pci_epf_mhi {
->  	int irq;
->  };
->  
-> +static size_t get_align_offset(struct pci_epc *epc, u64 addr)
-> +{
-> +	return addr % epc->mem->window.page_size;
-> +}
-> +
->  static int __pci_epf_mhi_alloc_map(struct mhi_ep_cntrl *mhi_cntrl, u64 pci_addr,
->  				 phys_addr_t *paddr, void __iomem **vaddr,
->  				 size_t offset, size_t size)
-> @@ -134,7 +139,7 @@ static int pci_epf_mhi_alloc_map(struct mhi_ep_cntrl *mhi_cntrl, u64 pci_addr,
->  {
->  	struct pci_epf_mhi *epf_mhi = to_epf_mhi(mhi_cntrl);
->  	struct pci_epc *epc = epf_mhi->epf->epc;
-> -	size_t offset = pci_addr & (epc->mem->window.page_size - 1);
-> +	size_t offset = get_align_offset(epc, pci_addr);
->  
->  	return __pci_epf_mhi_alloc_map(mhi_cntrl, pci_addr, paddr, vaddr,
->  				      offset, size);
-> @@ -161,7 +166,7 @@ static void pci_epf_mhi_unmap_free(struct mhi_ep_cntrl *mhi_cntrl, u64 pci_addr,
->  	struct pci_epf_mhi *epf_mhi = to_epf_mhi(mhi_cntrl);
->  	struct pci_epf *epf = epf_mhi->epf;
->  	struct pci_epc *epc = epf->epc;
-> -	size_t offset = pci_addr & (epc->mem->window.page_size - 1);
-> +	size_t offset = get_align_offset(epc, pci_addr);
->  
->  	__pci_epf_mhi_unmap_free(mhi_cntrl, pci_addr, paddr, vaddr, offset,
->  				 size);
-> @@ -185,7 +190,8 @@ static int pci_epf_mhi_read_from_host(struct mhi_ep_cntrl *mhi_cntrl, u64 from,
->  				      void *to, size_t size)
->  {
->  	struct pci_epf_mhi *epf_mhi = to_epf_mhi(mhi_cntrl);
-> -	size_t offset = from % SZ_4K;
-> +	struct pci_epc *epc = epf_mhi->epf->epc;
-> +	size_t offset = get_align_offset(epc, from);
->  	void __iomem *tre_buf;
->  	phys_addr_t tre_phys;
->  	int ret;
-> @@ -213,7 +219,8 @@ static int pci_epf_mhi_write_to_host(struct mhi_ep_cntrl *mhi_cntrl,
->  				     void *from, u64 to, size_t size)
->  {
->  	struct pci_epf_mhi *epf_mhi = to_epf_mhi(mhi_cntrl);
-> -	size_t offset = to % SZ_4K;
-> +	struct pci_epc *epc = epf_mhi->epf->epc;
-> +	size_t offset = get_align_offset(epc, to);
->  	void __iomem *tre_buf;
->  	phys_addr_t tre_phys;
->  	int ret;
-> -- 
-> 2.25.1
-> 
+Yeah, there's an argument to be made for that. My worry is it's a
+difficult line to hold. The bar you're really trying to describe (or
+at least what people might take away from it) is "if it's listed here
+then it's fully ready to be used in userspace". But then things get
+squishy when there are additional ways to control the use of the
+feature (prctls() in init to turn it on, usermode policy to turn it
+off, security doodads that disable it, etc). I'm assuming nobody wants
+a version of /proc/cpuinfo that changes depending on which process is
+asking. So then the line would have to be more carefully described as
+"well, the hardware can do it, and the kernel COULD do it under some
+circumstances, but YMMV", which ends up falling somewhat short of the
+original goal. In my mind keeping /proc/cpuinfo as close to "here's
+what the hardware can do" seems like a more defensible position.
+-Evan
