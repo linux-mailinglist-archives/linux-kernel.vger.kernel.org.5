@@ -2,62 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4B21788F13
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 21:03:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D891788F16
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Aug 2023 21:03:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230332AbjHYTCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 15:02:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44056 "EHLO
+        id S230365AbjHYTDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 15:03:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230178AbjHYTC1 (ORCPT
+        with ESMTP id S230377AbjHYTCi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 15:02:27 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 707EE2126
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 12:02:25 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d748b6f1077so1514190276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 12:02:25 -0700 (PDT)
+        Fri, 25 Aug 2023 15:02:38 -0400
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC6A5212A
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 12:02:36 -0700 (PDT)
+Received: by mail-pj1-x1049.google.com with SMTP id 98e67ed59e1d1-26d1f0d9b3fso1134656a91.1
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 12:02:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692990144; x=1693594944;
+        d=google.com; s=20221208; t=1692990156; x=1693594956;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2K0JSd6jxFl8ipBHN+l565B5wkNlVNWV8ekqr5bF1n4=;
-        b=qHVFfUV8BKk0oZU9PwHloLgH4qETAfSzOtrxF8+gycFEWyDAPyHO43wFaRRhNQJ2Vc
-         fGRYsMtykC4NKXEPkKvxahmesu2aqIhOfYn7+NQ+90GP86wailVQVfqqLVxZqSlm0lcu
-         rGCiLMYcNn/W7VuDir3peiUb/8BgOddcuXuUESAaU6G9cuNBgySd/Nglo22a/8foWfKO
-         c3mO5IrO14qIkg6wsBJgDCRsVyt5Usiqz2+HMcTV7TsTOeumX+aq/FaBnnKW0OQKCwIR
-         kFU+nee88jx/VTP3ViKRBYZc0/gajCVc4qw/xkKJ3upuheIVqOuh3twr+9eHZBmQFfbp
-         cE2w==
+        bh=1uQBcA29mNosCv8SGMH5eY1mYNGPfU9Gh/X2jA13FnI=;
+        b=D4CXpzzntvbuW2kul1V6/adtqvLb8fxpZJ5FhGOMP05Eocjn38ATqNfAfea9jr2qRl
+         d1CeyO8v+9Bqmh3kkem+Mo7NwppCd4My5LH5slBNbO5q5kPfl0Q2vhDJt6einSWoM6sV
+         vY2StzAJPJerS/hIhUJKogbIrVioWdLuDYOFKvPRw+GldJwgFxOm/nTTyKFxLE184qXT
+         nGNduKM/RW8Gpcjgn9x9Egr5xS03CgnjMkNyShHwxzND8JU75MiSGJMOCwIXoDL3rmd6
+         SdNRGBQxU1qaq796ddnYom0w+uiZ8JCjHcAU+qAnpn4OxSdGY4+CRW3VfLVruhifmmaB
+         o5Lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692990144; x=1693594944;
+        d=1e100.net; s=20221208; t=1692990156; x=1693594956;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2K0JSd6jxFl8ipBHN+l565B5wkNlVNWV8ekqr5bF1n4=;
-        b=IBEqdIi/78MfKSQBS4NXiogbIfP0vmf2zEwcLYlRWNFQFCPRgyldD/p2W0q/Ko6MWd
-         KEFPoSbgNjfqDS9HlyPx2FVpvdzlOJz6WZ5WoVjXAG0I6LoujYvweg0k45CR23dUfYos
-         xfg5U4dWw1wzkwzuMFqGWCzBWZpAu2nS7gCC+g+p3o8yi9e4F+cDl5XIgx31YaDkLXY3
-         OQRgdmxeRNg3FJS8SGWBtajfwaJZQvwdUae0TKCGWORl/TXrp86dq9gYrNrOdimfDamS
-         21o/zekbwzG0nDkStd0+njrMl8vtF/2CDve9JB6tIT2VncnCkOaON8/ObDHIKmMGRQqX
-         2kkQ==
-X-Gm-Message-State: AOJu0YyTzMP9GDW8jiTgTF1pB39RJJJEFke4nBASmmg6vqRAnh8YCCI9
-        D3VB1QMEYP6MQXTcjIaAd45GEIcn8J4=
-X-Google-Smtp-Source: AGHT+IG+IorwBNnRSS6CuqDsu7VIk2ZVe2xbdIGHpt3EhOGOj+ZNVqkAy2YgcGlFXz+l4zRLZeHGYnzSCCE=
+        bh=1uQBcA29mNosCv8SGMH5eY1mYNGPfU9Gh/X2jA13FnI=;
+        b=kb0P2X6zew+SVON3Y2K+4iraavg9POZjL+nAErW/w+flb2KJ88tPekppXLLRH0NxBP
+         8s/0Zf6ltD3C4WV+LBKhGDb+MW0kAWkuYBt9tkw1SGLnKOJvZNPqXEmlGGauaHcE2Ekn
+         XcEXcuZigVvdrnXmwalPJ/3CJqA9OkGX/qgsjRK3ppRISZjGWsl3B912RO0ui8gLP1Ez
+         nuc/i8iW+Nev3UCbfy2FnJEsDPSYgYCTzKiCa58T4Fcuk2AvhGr35K12IEBPVcU2pb8E
+         XvOl/hQ0125R4DQos2gC7/SpI9j6ynFA+vog1dW1QxuiK0tBfGJKqHHaxopii5G3evlW
+         aeIw==
+X-Gm-Message-State: AOJu0YwRq9dAwBeI3qcG09uiFwDy5/zUMQPhv86No5mlNpAb2ORO3UIH
+        XL1DjXSo2bSxNSGA/VkZo1g8grUG4WI=
+X-Google-Smtp-Source: AGHT+IFK8EE90d4Xw8A+M7LnbkAZk4ZTB9AadIN8Ve3ePLDd9mPPK5DF64J7kl1Ci/rIEWsZo4eq+mHZUVc=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:c5c8:0:b0:d78:2f82:b8de with SMTP id
- v191-20020a25c5c8000000b00d782f82b8demr241187ybe.6.1692990144788; Fri, 25 Aug
- 2023 12:02:24 -0700 (PDT)
-Date:   Fri, 25 Aug 2023 12:02:07 -0700
-In-Reply-To: <20230825022357.2852133-1-seanjc@google.com>
+ (user=seanjc job=sendgmr) by 2002:a17:90b:1011:b0:268:5ad0:cdcc with SMTP id
+ gm17-20020a17090b101100b002685ad0cdccmr4611067pjb.1.1692990156392; Fri, 25
+ Aug 2023 12:02:36 -0700 (PDT)
+Date:   Fri, 25 Aug 2023 12:02:09 -0700
+In-Reply-To: <20230825013621.2845700-1-seanjc@google.com>
 Mime-Version: 1.0
-References: <20230825022357.2852133-1-seanjc@google.com>
+References: <20230825013621.2845700-1-seanjc@google.com>
 X-Mailer: git-send-email 2.42.0.rc2.253.gd59a3bf2b4-goog
-Message-ID: <169297922637.2870680.4959975012627419790.b4-ty@google.com>
-Subject: Re: [PATCH 0/2] KVM: SVM: Fix SEV-ES intrahost migration
+Message-ID: <169297925407.2870848.7136723526525176171.b4-ty@google.com>
+Subject: Re: [PATCH v2 0/4] KVM: SVM: Fix unexpected #UD on INT3 in SEV guests
 From:   Sean Christopherson <seanjc@google.com>
 To:     Sean Christopherson <seanjc@google.com>,
         Paolo Bonzini <pbonzini@redhat.com>
 Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Gonda <pgonda@google.com>
+        Wu Zongyo <wuzongyo@mail.ustc.edu.cn>,
+        Tom Lendacky <thomas.lendacky@amd.com>
 Content-Type: text/plain; charset="utf-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -69,22 +70,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Aug 2023 19:23:55 -0700, Sean Christopherson wrote:
-> Fix two fatal bugs in SEV-ES intrahost migration, found by running
-> sev_migrate_tests (:shocked-pikachu:).
+On Thu, 24 Aug 2023 18:36:17 -0700, Sean Christopherson wrote:
+> Fix a bug where KVM injects a bogus #UD for SEV guests when trying to skip
+> an INT3 as part of re-injecting the associated #BP that got kinda sorta
+> intercepted due to a #NPF occuring while vectoring/delivering the #BP.
 > 
-> IIRC, for some reason our platforms haven't played nice with SEV-ES on
-> upstream kernels for a while, i.e. the test hasn't been run as part of my
-> usual testing.
+> Patch 1 is the main fix.  It's a little ugly, but suitable for backporting.
+> 
+> Patch 2 is a tangentially related cleanup to make NRIPS a requirement for
+> enabling SEV, e.g. so that we don't ever get "bug" reports of SEV guests
+> not working when NRIPS is disabled.
 > 
 > [...]
 
-Applied to kvm-x86 svm, thanks for the quick reviews!
+Applied 1 and 2 to kvm-x86 svm, the more aggressive cleanup can definitely wait
+until 6.7.
 
-[1/2] KVM: SVM: Get source vCPUs from source VM for SEV-ES intrahost migration
-      https://github.com/kvm-x86/linux/commit/f1187ef24eb8
-[2/2] KVM: SVM: Skip VMSA init in sev_es_init_vmcb() if pointer is NULL
-      https://github.com/kvm-x86/linux/commit/1952e74da96f
+[1/4] KVM: SVM: Don't inject #UD if KVM attempts to skip SEV guest insn
+      https://github.com/kvm-x86/linux/commit/cb49631ad111
+[2/4] KVM: SVM: Require nrips support for SEV guests (and beyond)
+      https://github.com/kvm-x86/linux/commit/80d0f521d59e
 
 --
 https://github.com/kvm-x86/linux/tree/next
