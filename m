@@ -2,138 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BEAA7898D9
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 21:56:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E55C07898E2
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 22:00:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229583AbjHZTzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 15:55:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54998 "EHLO
+        id S229768AbjHZUAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 16:00:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229605AbjHZTzg (ORCPT
+        with ESMTP id S229531AbjHZT7v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 15:55:36 -0400
-Received: from px.funlab.cc (px.funlab.cc [IPv6:2a01:4f8:c010:6bd5::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4039E1
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 12:55:33 -0700 (PDT)
-Received: from [192.168.1.40] (83.27.115.100.ipv4.supernova.orange.pl [83.27.115.100])
-        (Authenticated sender: doka@funlab.cc)
-        by px.funlab.cc (Postfix) with ESMTPSA id 0579960273;
-        Sat, 26 Aug 2023 22:55:31 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=funlab.cc; s=dkim;
-        t=1693079732; bh=Nq3E/C8MCYZ1MyUM+3Izi3Rw+2P9w68chIky07w10lg=;
-        h=Date:From:Subject:To:Cc:From;
-        b=IjSmHpWmwOWJ/CDnl4bLhyDZI+bDQOcWjQN1UEvEydXyvAuZdh48zIdK3xBv/sEd7
-         jCCbwOAW0TijS/dOBaqHpEN2yOZaKE3MIWHgsqofuPnCrp+V510OtAwwAp/d0LxNB1
-         FKkH5mxjOZP3d3tgf6dcxEkY84yYhY4TYOOu7l9cRNzO2dH9RXCHwzU4Cq/pFdshpw
-         /eAfUsjU3OefbgRv8NCxBSO1TVqsPNmt0ygjBid9gLRmr4t23gJeFpnRned426GQNY
-         BCr81B8qqeJb5ucgAJypcql8F6cDJAFZrDXe/+rzmRwbCVYjpq7Fp1iKhn0HKOY4l4
-         g+UIhhjLV0T3Q==
-Message-ID: <eaf3d0d8-fca2-029e-9c57-ddae31f17726@funlab.cc>
-Date:   Sat, 26 Aug 2023 21:55:30 +0200
+        Sat, 26 Aug 2023 15:59:51 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CB95D8;
+        Sat, 26 Aug 2023 12:59:49 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B7B7A61F2F;
+        Sat, 26 Aug 2023 19:59:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84168C433C8;
+        Sat, 26 Aug 2023 19:59:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1693079988;
+        bh=wk7TTw46I9VQ1vaqjL5oYSR1MWRvL3QqszPe1Ac3vEE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jUceMAv4p78ZNILkEQmopDvcIZ44XkSx8YyqCQzeVhrnFNDWN3wcMc8ZoERhQFETn
+         c8e7ID/zkoi0nwVWXynboBvJsIvtCSXs4S3OcfJ2lr5Ac4GDBo5U/Nx3T1SLQfKXvo
+         VPZa3kfJE565DVd7Jkrtr2glSNkantuwuRdZjw1A=
+Date:   Sat, 26 Aug 2023 21:59:45 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Lucas Tanure <tanure@linux.com>
+Cc:     Dmitry Rokosov <ddrokosov@sberdevices.ru>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Xianwei Zhao <xianwei.zhao@amlogic.com>,
+        Nick <nick@khadas.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-serial@vger.kernel.org
+Subject: Re: [PATCH v9 2/2] tty: serial: meson: Add a earlycon for the T7 SoC
+Message-ID: <2023082636-embolism-submitter-5e8c@gregkh>
+References: <20230814080128.143613-1-tanure@linux.com>
+ <20230814080128.143613-2-tanure@linux.com>
+ <20230823082940.t4xjgfzwpt2hsfst@CAB-WSD-L081021>
+ <29cfd5ef-16ae-4960-a95e-13b58c090604@linux.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-From:   Volodymyr Litovka <doka@funlab.cc>
-Subject: [Networking] ERSPAN decapsulation drops DHCP unicast packets
-To:     linux-kernel@vger.kernel.org
-Cc:     doka@funlab.cc
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <29cfd5ef-16ae-4960-a95e-13b58c090604@linux.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi colleagues,
+On Sat, Aug 26, 2023 at 07:07:18PM +0100, Lucas Tanure wrote:
+> On 23-08-2023 09:29, Dmitry Rokosov wrote:
+> > Hello Lucas,
+> > 
+> > Thank you for the patch! Please find my small comment below.
+> > 
+> > On Mon, Aug 14, 2023 at 09:01:28AM +0100, Lucas Tanure wrote:
+> > > The new Amlogic T7 SoC does not have a always-on uart,
+> > > so add OF_EARLYCON_DECLARE for it.
+> > > 
+> > > Signed-off-by: Lucas Tanure <tanure@linux.com>
+> > > Acked-by: Neil Armstrong <neil.armstrong@linaro.org>
+> > > ---
+> > > Since v8:
+> > >   - Fix issues with git send-mail command line
+> > > Since v7:
+> > >   - Send to the correct maintainers
+> > > 
+> > >   drivers/tty/serial/meson_uart.c | 2 ++
+> > >   1 file changed, 2 insertions(+)
+> > > 
+> > > diff --git a/drivers/tty/serial/meson_uart.c b/drivers/tty/serial/meson_uart.c
+> > > index 790d910dafa5..c4f61d82fb72 100644
+> > > --- a/drivers/tty/serial/meson_uart.c
+> > > +++ b/drivers/tty/serial/meson_uart.c
+> > > @@ -648,6 +648,8 @@ meson_serial_early_console_setup(struct earlycon_device *device, const char *opt
+> > >   OF_EARLYCON_DECLARE(meson, "amlogic,meson-ao-uart",
+> > >   		    meson_serial_early_console_setup);
+> > > +OF_EARLYCON_DECLARE(meson, "amlogic,t7-uart",
+> > > +		    meson_serial_early_console_setup);
+> > >   #define MESON_SERIAL_CONSOLE_PTR(_devname) (&meson_serial_console_##_devname)
+> > >   #else
+> > 
+> > I suppose you need to add a separate meson_t7_uart_data to switch the T7
+> > UART to a regular TTY devname 'ttyS'. For the new Amlogic SoCs, we have
+> > agreed to use 'ttyS' instead of 'ttyAML'. Please refer to the already
+> > applied patch series at [1] and the IRC discussion at [2].
+> > 
+> > Links:
+> >      [1] https://lore.kernel.org/all/20230705181833.16137-1-ddrokosov@sberdevices.ru/
+> >      [2] https://libera.irclog.whitequark.org/linux-amlogic/2023-07-03
+> > 
+> I asked Greg to drop this patch as is not need anymore.
+> T7 will use S4 TTY/UART code.
 
-I'm trying to catch and process (in 3rd party analytics app) DHCP 
-packets from ERSPAN session, but cannot do this due to absence of DHCP 
-unicast packets after decapsulation.
-
-The model is pretty simple: there is PHY interface (enp2s0) which 
-receive ERSPAN traffic and erspan-type interface to get decapsulated 
-packets (inspan, created using command "ip link add inspan type erspan 
-seq key 10 local 10.171.165.65 erspan_ver 1", where 10.171.165.65 is 
-ERSPAN target). Then I'm going to rewrite headers in the proper ways 
-(nftable's netdev family) and forward packets to the pool of workers.
-
-Having this, I'm expecting everything, which is encapsulated inside 
-ERSPAN, on 'inspan' interface. And there is _almost_ everything except 
-DHCP unicast packets - tcpdump shows about 1kps on this interface of 
-decapsulated packets, but no DHCP unicast (see below traces).
-
-To avoid any interactions, I removed and disabled everything that can 
-catch DHCP in userspace - systemd-networkd, netplan, dhcp-client. There 
-is no DHCP server and ifupdown - for test purposes, I'm bringing 
-networking manually. Apparmor disabled as well. Kernel (Linux 
-5.19.0-42-generic #43~22.04.1-Ubuntu SMP PREEMPT_DYNAMIC) compiled 
-without CONFIG_IP_PNP (according to /boot/config-5.19.0-42-generic). 
-Nothing in userspace listens on UDP/68 and UDP/67:
-
-# netstat -tunlpa
-Active Internet connections (servers and established)
-Proto Recv-Q Send-Q Local Address           Foreign Address         
-State       PID/Program name
-tcp        0      0 0.0.0.0:22 0.0.0.0:*               LISTEN      
-544/sshd: /usr/sbin
-tcp6       0      0 :::22 :::*                    LISTEN      544/sshd: 
-/usr/sbin
-
-I have no ideas, why this is happening. Decapsulation itself works, but 
-particular kind of packets get lost.
-
-I will appreciate if anyone can help me understand where is the bug - in 
-my configuration or somewhere inside the kernel?
-
-Evidence of traffic presence/absence is below.
-
-Thank you.
-
-Encapsulated ERSPAN session (udp and port 67/68) contains lot of 
-different kinds of DHCP packets:
-
-# tcpdump -s0 -w- -i enp2s0 'proto gre and ether[73:1]=17 and 
-(ether[84:2]=67 or ether[84:2]=68)' | tshark -r- -l
-  [ ... ]
-     7   0.001942  0.0.0.0 → 255.255.255.255 DHCP 392 DHCP Discover - 
-Transaction ID 0x25c096fc
-     8   0.003432  z.z.z.z → a.a.a.a         DHCP 418 DHCP ACK      - 
-Transaction ID 0x5515126a
-     9   0.005170  m.m.m.m → z.z.z.z         DHCP 435 DHCP Discover - 
-Transaction ID 0xa7b7
-    10   0.005171  m.m.m.m → z.z.z.z         DHCP 435 DHCP Discover - 
-Transaction ID 0xa7b7
-    11   0.015399  n.n.n.n → z.z.z.z         DHCP 690 DHCP Request  - 
-Transaction ID 0x54955233
-    12   0.025537  z.z.z.z → n.n.n.n         DHCP 420 DHCP ACK      - 
-Transaction ID 0x54955233
-    13   0.030313  z.z.z.z → m.m.m.m         DHCP 413 DHCP Offer    - 
-Transaction ID 0xa7b7
-
-but decapsulated traffic (which I'm seeing on inspan interface) contains 
-just the following:
-
-# tcpdump -i inspan 'port 67 or port 68'
-listening on inspan, link-type EN10MB (Ethernet), snapshot length 262144 
-bytes
-17:23:36.540721 IP 0.0.0.0.bootpc > 255.255.255.255.bootps: BOOTP/DHCP, 
-Request from 00:1a:64:33:8d:fa (oui Unknown), length 300
-17:23:39.760036 IP 0.0.0.0.bootpc > 255.255.255.255.bootps: BOOTP/DHCP, 
-Request from 00:1a:64:33:8d:fa (oui Unknown), length 300
-17:23:44.135711 IP 0.0.0.0.bootpc > 255.255.255.255.bootps: BOOTP/DHCP, 
-Request from 00:1a:64:33:8d:fa (oui Unknown), length 300
-17:23:52.008504 IP 0.0.0.0.bootpc > 255.255.255.255.bootps: BOOTP/DHCP, 
-Request from 00:1a:64:33:8d:fa (oui Unknown), length 300
-
-Thanks again for the help.
-
-
--- 
-Volodymyr Litovka
-   "Vision without Execution is Hallucination." -- Thomas Edison
-
+I can't drop it, I need a revert :(
