@@ -2,78 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7B57789730
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 16:07:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD944789731
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 16:09:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231660AbjHZOGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 10:06:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58948 "EHLO
+        id S229737AbjHZOIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 10:08:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231224AbjHZOGH (ORCPT
+        with ESMTP id S232374AbjHZOIY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 10:06:07 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C51519A0
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 07:06:05 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 21E4C608C0
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 14:06:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17630C433C7;
-        Sat, 26 Aug 2023 14:06:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693058764;
-        bh=ukZ6g9EgWPFpAkFvHGXVcuI1MM3Y+aVwL2MADMeVBTU=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=hEhdoseJzsPGizH7PA9sWAhJB8NV7oOIzb56+6bL7zKKO0dzFZQtjYW53M9Rdtrm1
-         PDll6zD9T3tkm1zl9r1jdEooRVqDYJEYqiBPe8i5umSYGTn8SSoExX7ih97FPcgUaX
-         xJUQsdOmuSD77v+2LbiRvJ8yv8ycUPjuEfgX5IZsC7xVUL5KQFE9UGSNONHVcUIjBK
-         KpDDt8BG7KLshSVKBFcqpDFH72eAt6ZlwcT4g7NHwF86Z+N4JnmPbCzpGW8F+tYP16
-         DtWyoGHvduD4mTpnEebDQkX8/Y/h/DN6ObHHNQFnzIUnqoJBDcEW/Lvc7aTk75p6HO
-         8o29gxRGxD3sw==
-From:   =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To:     Puranjay Mohan <puranjay12@gmail.com>, paul.walmsley@sifive.com,
-        palmer@dabbelt.com, aou@eecs.berkeley.edu, pulehui@huawei.com,
-        conor.dooley@microchip.com, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, kpsingh@kernel.org, bpf@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     puranjay12@gmail.com
-Subject: Re: [PATCH bpf-next v2 3/3] bpf, riscv: use prog pack allocator in
- the BPF JIT
-In-Reply-To: <20230824133135.1176709-4-puranjay12@gmail.com>
-References: <20230824133135.1176709-1-puranjay12@gmail.com>
- <20230824133135.1176709-4-puranjay12@gmail.com>
-Date:   Sat, 26 Aug 2023 16:06:00 +0200
-Message-ID: <87v8d1q4on.fsf@all.your.base.are.belong.to.us>
+        Sat, 26 Aug 2023 10:08:24 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBEBC2683
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 07:07:34 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id 2adb3069b0e04-4ff9abf18f9so2853441e87.2
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 07:07:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693058835; x=1693663635;
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=2RQNoxb2JU5kGe9U2HivLjm+aU1Pl42n1ug1iZISgwY=;
+        b=fwnPSnBhF2J7cJrPZv7ZLWJOCtD4VG/Hx99EGyKJB/lOHHlGPsxe+pES9FFPHk/TWF
+         CL2p7jDpiJ9v3Kr5m1oU7DImBjL6b9fjQD8PSwRzmpm4Ryn2r8/Hdheh1yidKT/AMUzn
+         WXVav7hZTdQB0SYWOTTtrOL6g9hINEc/yHtf6WDhlwuwQGVlKnTr1+TlyjCz84dwrG4J
+         xULQp98kaoTwk4pyP7/FKZgBFY1MWOwcghY5nKGT7Zr0laav25v0M+jfQaZq/mG0DD0a
+         oxFGojnXhMYtcEhBzu0nwB6ivJ0qnc5gofulFmqFN4kcLzLaX9eD6jes0jRk+DZ4K9or
+         Wmgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693058835; x=1693663635;
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2RQNoxb2JU5kGe9U2HivLjm+aU1Pl42n1ug1iZISgwY=;
+        b=cZMfzM9tehoXGgV31yESsxHDwxCThfBjkZ9DCMOHeOYam/M8+OpqBXliIXrhTx3alc
+         NRczm/LpRRLxpcTZ2QD5eI3h7yrOqZocKVe5N/bR9uuE0CRe+c3zi2AEEHUIyHkbtl2z
+         YfX3siMUs7LVYnSpZRNp2XALDig2iR0k/xMMPpO0g88ym1uLeog0Jls1RMalWokNjDr5
+         MORQ3D7McnM1jKlzuvPI1l4g45VisFdtYmNUIwnbZWsRlkSL44KvFMe5+IY8fT4lPjA9
+         8aH9BIceyHRsjH3x7tWQtC8J6/5YawcgXpjRjUwfJTa1B40+KIDyCG6So1fNRGaZz/HU
+         QC2g==
+X-Gm-Message-State: AOJu0YxfHEcHHiw9FedD5cDI9fm7fFPXhgcommriU6uuDdlx6+aG+VGP
+        0y5t8xfKvWqR7/9DMV2QYZO6R1RbMdGh80RaNIY=
+X-Google-Smtp-Source: AGHT+IEMkWvlO1BSqL2m5T6TsShy4LVe+p6dyDAfEndAnuTRfMxijuzm23UNZlAPdVTUjjkuQkQJ29BBmYgYezoTKz0=
+X-Received: by 2002:a05:6512:aca:b0:500:9f7b:e6a4 with SMTP id
+ n10-20020a0565120aca00b005009f7be6a4mr7051213lfu.32.1693058834359; Sat, 26
+ Aug 2023 07:07:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Received: by 2002:a05:6400:5710:b0:22f:7e4f:372f with HTTP; Sat, 26 Aug 2023
+ 07:07:13 -0700 (PDT)
+Reply-To: jennifermbaya01@gmail.com
+From:   "Mrs.Jennifer Mbaya" <fandjinoudonatien@gmail.com>
+Date:   Sat, 26 Aug 2023 15:07:13 +0100
+Message-ID: <CAApPn2p4izVyixVH=xkdCx2u+rLTmTdSrbQvF7ztN6uebZ9Urw@mail.gmail.com>
+Subject: Beneficiaria
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=4.5 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_HK_NAME_FM_MR_MRS,UNDISC_FREEM autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Puranjay Mohan <puranjay12@gmail.com> writes:
+Beneficiaria
+Usted surgi=C3=B3 con un premio de las Naciones Unidas afiliado a la
+fondo monetario internacional en el que se encontraban su direcci=C3=B3n de
+correo electr=C3=B3nico y su fondo
+liberado a nosotros para su transferencia, as=C3=AD que env=C3=ADe sus dato=
+s
+para su transferencia.
 
-> Use bpf_jit_binary_pack_alloc() for memory management of JIT binaries in
-> RISCV BPF JIT. The bpf_jit_binary_pack_alloc creates a pair of RW and RX
-> buffers. The JIT writes the program into the RW buffer. When the JIT is
-> done, the program is copied to the final RX buffer with
-> bpf_jit_binary_pack_finalize.
->
-> Implement bpf_arch_text_copy() and bpf_arch_text_invalidate() for RISCV
-> JIT as these functions are required by bpf_jit_binary_pack allocator.
-
-General style comment; Please try to use the full 100 characters width
-for the patches. You're having a lot of linebreaks, which IMO makes the
-patch harder to read.
-
-
-Bj=C3=B6rn
+Se nos indic=C3=B3 que transfiri=C3=A9ramos todas las transacciones pendien=
+tes
+dentro de los pr=C3=B3ximos
+48hr o ya recibiste tu fondo, si no cumples de inmediato. Nota:
+necesitamos su respuesta urgente, este no es uno de esos estafadores de int=
+ernet
+por ah=C3=AD, es alivio de COVID-19.
