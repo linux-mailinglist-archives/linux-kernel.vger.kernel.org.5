@@ -2,99 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DFE3789908
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 22:29:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A9C478990A
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 22:33:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229722AbjHZU24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 16:28:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46648 "EHLO
+        id S229745AbjHZUcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 16:32:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229735AbjHZU2x (ORCPT
+        with ESMTP id S229686AbjHZUcj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 16:28:53 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50EE7CF1
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 13:28:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=GQbLFOOBAbkQ+pMFo1tY5HOEbzfs6NK86EY1TrLGlT8=; b=LdYwvMXrpVavNV7//q6Vty51Hq
-        OCPautXtKdR3XtxES41NiGunhEyaALsAfzGwvQ2cv5td32/RwX4nSr1wX9xAS+yUTbgveMc6krFr5
-        KPZ+3+r+SKOa9ezWPDfjo7u/MmjI184tNuRRgwoBmS/UoVUQDha+tMVeWoBHUZ4KxSxknoZyus8rM
-        7yZ+jOGT/G/DD0emJyEe7Pj1UbyUJ0LYP59u2Ha3n4BZDHvX8uPkpCI/Q+O/cDoAj403dSc7m/WPs
-        1L2G1gQcIObJfkqyNUmf5GxGO7wUfAH43NnYGZy2mvjhy5dWY6q3Ms0YtBB0ykWH9agvBpIGXdQS7
-        5Pvz4hlw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qZztE-007aFb-MY; Sat, 26 Aug 2023 20:28:12 +0000
-Date:   Sat, 26 Aug 2023 21:28:12 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Tong Tiangen <tongtiangen@huawei.com>
-Cc:     Naoya Horiguchi <naoya.horiguchi@linux.dev>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Miaohe Lin <linmiaohe@huawei.com>, wangkefeng.wang@huawei.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mm: memory-failure: use rcu lock instead of
- tasklist_lock when collect_procs()
-Message-ID: <ZOpgXCAAz7PAxT7b@casper.infradead.org>
-References: <20230821091312.2034844-1-tongtiangen@huawei.com>
- <ZOOt6S+I9ywyNQjP@casper.infradead.org>
- <0bbbb7d8-699b-30ac-9657-840112c41a78@huawei.com>
- <ZOSlVGxcxT9JLoUv@casper.infradead.org>
- <20230825060221.GA3948311@ik1-406-35019.vs.sakura.ne.jp>
- <9e205429-1f27-4d18-faca-8a4fe9d429e3@huawei.com>
+        Sat, 26 Aug 2023 16:32:39 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F012812B
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 13:32:36 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-9a2a4a5472dso449125166b.1
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 13:32:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693081955; x=1693686755;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=PE9rZFLJE37KfD4a/UIuVo+Dsin6CGfHTs/lNm1wAFY=;
+        b=sNNHyRTnLjffOF9k4gRZR066bax1rmjkf/WD7nNhtm4nn0wDtMuMD8M4RC4POw/jzf
+         24ltZOIk9PRmwFFBRcUPySu9hAvuCGMkmHgjAT1/C4/iQXvwe0elrg7ZypdHKF2rPaoU
+         QS9kRIV3RDGtnCHVQfb5CECxTBFKo0casMTSRTUMkCmPSCLC/HGjH1LNFTBB20z2WIzE
+         NYEqiFrUIn2+sMk05/y2ZsfR65R/nav+f1BEjzi2ojdy8jNl77WAmewVZPHKvnVsFHMW
+         LjDllz4wqDPxrDdWGGpL+cF9Kj+jhqJcSicvgPoZUuZEniS6MvCiWbGwsnanLCgkhQt5
+         fXZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693081955; x=1693686755;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PE9rZFLJE37KfD4a/UIuVo+Dsin6CGfHTs/lNm1wAFY=;
+        b=hcj9kajVFom+XaIyiP6y1laiOdi7JDYRAKDoMCqsH2ISKOkBF8eYil1xvS329e1oIH
+         GlzB3TsWBDa2WGhFBXcpIzUn+c1AJAa1015Jmu0YUd/G53xACwKuqAX5Ayl/l2Kpxb+H
+         S/A+8sWavthssfNfuuwq2uF/zepPNaDyM2put1djcjXE7Hb6JJp+ffJR9guTfQRa2r9E
+         /wO1FphWsQ4+AIKZ2HQQPiTXjCprjBuT6gkzLj6w3CbiCGqZGRf25/lAR18syNp6Pfdi
+         hucKJPH5xjlW0eAvxUAJfahkXxBxBcwX2SYMQQekuVamlPZ6o/CXXAFfBW3fKOWIlJpA
+         775A==
+X-Gm-Message-State: AOJu0YxsrxKgYgfVXyaxPRlgkMIs0YnNJWGc0Y0D3auzwPcObMf3Cca9
+        2aaFE/TSibymP8LMXb+Ik5w=
+X-Google-Smtp-Source: AGHT+IHbqiHt+ugtV8o2hCN3fAJ5kGysqFKzACJkCK3IX47e27JTky7b/SKEEBVMvLpxNUYoL5lepA==
+X-Received: by 2002:a17:906:51db:b0:9a2:295a:9bbc with SMTP id v27-20020a17090651db00b009a2295a9bbcmr6730316ejk.37.1693081955216;
+        Sat, 26 Aug 2023 13:32:35 -0700 (PDT)
+Received: from nam-dell (ip-217-105-46-58.ip.prioritytelecom.net. [217.105.46.58])
+        by smtp.gmail.com with ESMTPSA id v17-20020a17090606d100b0098669cc16b2sm2565556ejb.83.2023.08.26.13.32.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 26 Aug 2023 13:32:34 -0700 (PDT)
+Date:   Sat, 26 Aug 2023 22:32:33 +0200
+From:   Nam Cao <namcaov@gmail.com>
+To:     Alexon Oliveira <alexondunkan@gmail.com>
+Cc:     gregkh@linuxfoundation.org, martyn@welchs.me.uk,
+        manohar.vanga@gmail.com, linux-kernel@vger.kernel.org,
+        linux-staging@lists.linux.dev
+Subject: Re: [PATCH v2 1/4] staging: vme_user: fix check alignment of open
+ parenthesis in vme_fake.c
+Message-ID: <ZOphYXeTMM+QhnTk@nam-dell>
+References: <ZOoWgZ7ZnGyWHUKe@alolivei-thinkpadt480s.gru.csb>
+ <ZOpWxBjONs0QpFlU@nam-dell>
+ <ZOpfUjRy3jDwZixX@alolivei-thinkpadt480s.gru.csb>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9e205429-1f27-4d18-faca-8a4fe9d429e3@huawei.com>
+In-Reply-To: <ZOpfUjRy3jDwZixX@alolivei-thinkpadt480s.gru.csb>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 26, 2023 at 09:46:53AM +0800, Tong Tiangen wrote:
-> " the ``task_struct`` object is freed only after one or more
-> grace periods elapse, with the help of call_rcu(), which is invoked via
-> put_task_struct_rcu_user(). "
+On Sat, Aug 26, 2023 at 05:23:46PM -0300, Alexon Oliveira wrote:
+> On Sat, Aug 26, 2023 at 09:47:16PM +0200, Nam Cao wrote:
+> > On Sat, Aug 26, 2023 at 12:13:05PM -0300, Alexon Oliveira wrote:
+> > > Fixed all CHECK: Alignment should match open parenthesis
+> > > as reported by checkpatch to adhere to the Linux kernel
+> > > coding-style guidelines.
+> > > 
+> > > Signed-off-by: Alexon Oliveira <alexondunkan@gmail.com>
+> > 
+> > Patch series should be in a single email thread. But your 4 patches are sent
+> > separately :(
+> >
 > 
-> Combined with the code,when the task exits：
+> Hmm, ACK, I didn't know that.
 > 
-> release_task()
-> 	__exit_signal()
-> 		__unhash_process()
-> 			list_del_rcu(&p->tasks)
-> 	
-> 	put_task_struct_rcu_user()
-> 		call_rcu(&task->rcu, delayed_put_task_struct);
-> 			
-> delayed_put_task_struct()
-> 	put_task_struct()
-> 		if (refcount_sub_and_test(nr, &t->usage))
-> 			__put_task_struct()
-> 				free_task()
-> 	
-> The code is consistent with the description in the document.
+> > Have a look at how your patches are sent on https://lore.kernel.org/linux-staging/
+> > and you will see what I am referring to.
+> > 
 > 
-> According to this understanding, i think for_each_process() under the
-> protection of rcu locl is safe, that is, task_struct in the list will not be
-> destroyed, and get_task_struct() is also safe.
+> Indeed they were sent as separate emails.
+> 
+> > Here's an example of how patch series should be:
+> > https://lore.kernel.org/linux-staging/736c8159-90e9-4575-3c22-5a62515d5c03@gmail.com/T/#t
+> >
+> 
+> Please, if you don't mind me to ask, how's the best way to do that?
+> I've already wrote the cover letter, generated the patches' files again,
+> but I don't know how is the best way to send them as you instructed me
+> using mutt.
 
-Aha!  This is different from the usual pattern.  What I'm used to seeing
-is:
+You must use the argument "--thread=shallow" while generating patch series
+with git format-patch. Then mutt should correctly send them in a single thread.
 
-if (refcount_sub_and_test()) {
-	list_del_rcu();
-	rcu_free();
-}
+The instructions can also be found here:
+https://kernelnewbies.org/FirstKernelPatch
 
-and then on the read side you need a refcount_inc_not_zero(), which we
-didn't have here.  Given this new information you've found, I withdraw
-my objection.  It'd be nice to include some of this analysis in an
-updated changelog (and maybe improved documentation for tasklist?).
+Best regards,
+Nam 
