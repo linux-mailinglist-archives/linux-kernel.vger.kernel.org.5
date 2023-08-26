@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A9157895D4
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 12:14:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 188617895D6
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 12:14:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231707AbjHZKNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 06:13:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45928 "EHLO
+        id S231888AbjHZKOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 06:14:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231530AbjHZKNE (ORCPT
+        with ESMTP id S231795AbjHZKNx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 06:13:04 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D7D5E5C
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 03:13:01 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-500aed06ffcso1028313e87.0
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 03:13:01 -0700 (PDT)
+        Sat, 26 Aug 2023 06:13:53 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 752EF1FCB
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 03:13:50 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-500913779f5so2640718e87.2
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 03:13:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693044779; x=1693649579;
+        d=linaro.org; s=google; t=1693044829; x=1693649629;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=TGdO71SK0ws8M3rPYY2CMJ6SkObtmRohY+viWQWMypg=;
-        b=S5ZwB0WIGK0pa7DF7oNXL6DdOBxCgyTTsZVhKHWQPSQ9JowqZOJktuvbVsSSyXU1kz
-         na1eBl2ICivx9HpUsYkE2NEzqF3lSjZuIrc1YSmQ1vd6IYZeiuNReJ3+JAAu9gbOpjyV
-         MVt9uGkCKeD06QphiNdDpLdphO4CtW5MO0dbG6VkH+MfkQc+Tk6Aflp3Nbuj+URYtxDk
-         SARs/oQ+8g6Ech7bKn+P/GYOiIUdlLsOkNRoYLEt4Efd9qtRh5Y9Fb6BP/yTHdlibWz9
-         mLwk57lM40m6wdMz35dp8OvJTBcDAcSVw9XapMiXxyYS5pK4o++Do19YBw/uAhpAIrTX
-         VIlw==
+        bh=y/q3VpPaIaGZ/5dVJno5sHgen3eMV3oIH2SkR9gJCQ4=;
+        b=PSJX5lSLwLq1Kfcfgh0eAhoXich0GScF7Hk+F921GO7FAN0B/05gbY5dRADD1uihRL
+         nj2iyRlDZ9KJ7wlcBC5zNokMHQy5d8tn05uNkW65oZfc9FNarKaT/Ndx1oEa8CqUYQjR
+         XmYqlPr+GG58oFU7CgkN6AmUzy6D+gUIXWj7TTcfKBDFPtmSdp70rpXbEi4snbhGl27C
+         HcB5TciMX8iBxsnG76V/s2bVkUcqH2YiB/mjjU79qOpq3ScABF/ZHcY4j7fuCmNHh4PO
+         cyywuzXBSZKuZ4PU9CSkzKnYV6rGpNIOZ5natqmOfFVsZqTaC6Rytg3B7Y6vpNzp44Jz
+         pX5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693044779; x=1693649579;
+        d=1e100.net; s=20221208; t=1693044829; x=1693649629;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TGdO71SK0ws8M3rPYY2CMJ6SkObtmRohY+viWQWMypg=;
-        b=lcYGtXIQfxeErUQ5mnV2My/zw2WphIgv+vVVEm40qgn8opCk+c+3znrNgaQ9p0zAnN
-         xGP5Ow886m1cYSnJkqs8Gr+SIYGPxXDKNJ+jSP48v/1JL3DwIWzjOAJfl7afyVrP/ASy
-         ff155nnb8Eod7ByQHZzmlyMeQFoNQuJfnxTnAfw6VfnuffTxJegWGe+krkVX75dYmxoj
-         Gur2LuC9+878iip/sDwdN5nBzSJYXanPglkNp/igeaKJ0L9rgFi1yX4bkaXGhLX4DTLM
-         IuppY/XjvjuIwbt//omAX9a22wssYubfcgcBDeTxZqHG36eySMQ0e9WNvx5wr8+Sgh1E
-         YqKw==
-X-Gm-Message-State: AOJu0Yxvn/cLGnapou+rhgTNxukGUYiyqEEP6/PQ9pt9kFykcfsS5LWF
-        LyZ/w/Ls1TMnTsFvdW3inbYGvA==
-X-Google-Smtp-Source: AGHT+IHostp7t2FrAV4lZdTN6oe8HAi4wIERNghQq8TZMSeiVdRSH78Y+/9PFwbWIouKcizTvDXjgw==
-X-Received: by 2002:a05:6512:1296:b0:4fe:993:2218 with SMTP id u22-20020a056512129600b004fe09932218mr18091367lfs.31.1693044779546;
-        Sat, 26 Aug 2023 03:12:59 -0700 (PDT)
+        bh=y/q3VpPaIaGZ/5dVJno5sHgen3eMV3oIH2SkR9gJCQ4=;
+        b=PjHXU2Jffu5kgZTcp6EDRd2/NuKWSLuAXumKaC7wFvnafMUNPH03qkiLwSCgAweoLS
+         wufPTRB2pzIcyoKzFp8CJMtaSt+T8a9eSh+iqMxyHTGlmz/oMILs/fAs8wGoMsuzZXqc
+         y0QsFH/bY+0vk1ySVAcj9RS9ey4sAKPS+7eMBOThtpd/K6T5VRIZ3l1/AVuzcztV0d2u
+         W4Nfroh9+9H1RjbYk++Gy+bp4y/CDOneGHBteZvlBJLWQz+DRWHnEy07zK5HvjCSt/aW
+         fwRBUvBbnix/oOAqJO8YrXmS1iMtRhnwPB0sSFNyTpxIvGqGJ/RJ/10T51+cJOV4TNiu
+         ujDg==
+X-Gm-Message-State: AOJu0YzMiJzq5TNG2FkQhCCutsYxdI+UZO47/ZetfRiMMvwf9Y0XHasz
+        hUJAzJw7pUE/PZwcxZ/9gy9GUw==
+X-Google-Smtp-Source: AGHT+IGq0h3yY+vcHzc2ndCT191RRQ+hhRMyzA37xr5h+i84hUPVVg+5a1/0Tk6MaLdZU52SXin3SQ==
+X-Received: by 2002:a05:6512:1186:b0:4f8:752f:3722 with SMTP id g6-20020a056512118600b004f8752f3722mr13770862lfr.5.1693044828699;
+        Sat, 26 Aug 2023 03:13:48 -0700 (PDT)
 Received: from [192.168.1.101] (abyl74.neoplus.adsl.tpnet.pl. [83.9.31.74])
-        by smtp.gmail.com with ESMTPSA id q26-20020ac24a7a000000b004fe1efe3e38sm647999lfp.225.2023.08.26.03.12.58
+        by smtp.gmail.com with ESMTPSA id q26-20020ac24a7a000000b004fe1efe3e38sm647999lfp.225.2023.08.26.03.13.46
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 26 Aug 2023 03:12:59 -0700 (PDT)
-Message-ID: <d8e54e0a-b176-49eb-9d8d-66324cdcd2e8@linaro.org>
-Date:   Sat, 26 Aug 2023 12:12:57 +0200
+        Sat, 26 Aug 2023 03:13:48 -0700 (PDT)
+Message-ID: <6f381a9e-9aac-4a3a-814e-26a230026d66@linaro.org>
+Date:   Sat, 26 Aug 2023 12:13:46 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 11/15] media: qcom: camss: Functionally decompose
- CSIPHY clock lookups
+Subject: Re: [PATCH v3 12/15] media: qcom: camss: Fix support for setting
+ CSIPHY clock name csiphyX
 Content-Language: en-US
 To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>, rfoss@kernel.org,
         todor.too@gmail.com, agross@kernel.org, andersson@kernel.org,
@@ -65,7 +65,7 @@ To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>, rfoss@kernel.org,
 Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         linux-kernel@vger.kernel.org
 References: <20230823104444.1954663-1-bryan.odonoghue@linaro.org>
- <20230823104444.1954663-12-bryan.odonoghue@linaro.org>
+ <20230823104444.1954663-13-bryan.odonoghue@linaro.org>
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -102,7 +102,7 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <20230823104444.1954663-12-bryan.odonoghue@linaro.org>
+In-Reply-To: <20230823104444.1954663-13-bryan.odonoghue@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -116,84 +116,43 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 23.08.2023 12:44, Bryan O'Donoghue wrote:
-> The csiphyX_timer and csiX_phy values need not be hard-coded. We can
-> functionally decompose the string matching inside of a loop.
+> Several of our upstream and soon-to-be upstream SoC CAMSS dtsi declare
+> csiphyX as opposed to the older clock name csiX_phy.
+This only reinforces my point about adding like csiphy_clks or so
+
+Konrad
 > 
-> Static string values are brittle, difficult to extend and not required
-> anyway since the camss->res->csiphy_num value informs us of the number
-> of CSIPHYs and hence the set of potential clocks for a given CSIPHY.
+> Right now the CAMSS code will fail to set the csiphyX clock even if we have
+> declared it in our list of clocks. For sdm845 and sm8250 we appear to "get
+> away" with this error, however on sc8280xp we don't.
 > 
-> In simple terms if we have five CSIPHYs we can have no more and no less
-> than five csiphy_timer clocks. Similarly csi_phy core clocks have a 1:1
-> relationship with the PHY they clock.
+> The right approach here is to set the clock when it is declared. If a SoC
+> doesn't require or a SoC driver implementer doesn't think we need, then the
+> clock ought to simply be omitted from the clock list.
+> 
+> Include csiphyX in the set of permissible strings which will subsequently
+> lead to the csiphyX clock being set during csiphy_set_clock_rates() phase.
+> 
+> sdm845 and sm8250 will work with the code as-is so I've omitted this from a
+> suggested Fixes list.
 > 
 > Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 > ---
->  .../media/platform/qcom/camss/camss-csiphy.c  | 37 ++++++++++++-------
->  1 file changed, 23 insertions(+), 14 deletions(-)
+>  drivers/media/platform/qcom/camss/camss-csiphy.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
 > diff --git a/drivers/media/platform/qcom/camss/camss-csiphy.c b/drivers/media/platform/qcom/camss/camss-csiphy.c
-> index 0e8c2a59ea241..baf78c525fbfc 100644
+> index baf78c525fbfc..d9c751f457703 100644
 > --- a/drivers/media/platform/qcom/camss/camss-csiphy.c
 > +++ b/drivers/media/platform/qcom/camss/camss-csiphy.c
-> @@ -536,6 +536,15 @@ static int csiphy_init_formats(struct v4l2_subdev *sd,
->  	return csiphy_set_format(sd, fh ? fh->state : NULL, &format);
->  }
->  
-> +static bool csiphy_match_clock_name(const char *clock_name, const char *format,
-> +				    int index)
-> +{
-> +	char name[CAMSS_RES_MAX];
-similar comment to the previous patch about the buf size
-
+> @@ -687,6 +687,10 @@ int msm_csiphy_subdev_init(struct camss *camss,
+>  				if (csiphy->rate_set[i])
+>  					break;
+>  			}
 > +
-> +	snprintf(name, sizeof(name), format, index);
-> +	return !strcmp(clock_name, name);
-> +}
-> +
->  /*
->   * msm_csiphy_subdev_init - Initialize CSIPHY device structure and resources
->   * @csiphy: CSIPHY device
-> @@ -550,7 +559,7 @@ int msm_csiphy_subdev_init(struct camss *camss,
->  {
->  	struct device *dev = camss->dev;
->  	struct platform_device *pdev = to_platform_device(dev);
-> -	int i, j;
-> +	int i, j, k;
->  	int ret;
->  
->  	csiphy->camss = camss;
-> @@ -666,19 +675,19 @@ int msm_csiphy_subdev_init(struct camss *camss,
->  		for (j = 0; j < clock->nfreqs; j++)
->  			clock->freq[j] = res->clock_rate[i][j];
->  
-> -		if (!strcmp(clock->name, "csiphy0_timer") ||
-> -		    !strcmp(clock->name, "csiphy1_timer") ||
-> -		    !strcmp(clock->name, "csiphy2_timer") ||
-> -		    !strcmp(clock->name, "csiphy3_timer") ||
-> -		    !strcmp(clock->name, "csiphy4_timer") ||
-> -		    !strcmp(clock->name, "csiphy5_timer"))
-> -			csiphy->rate_set[i] = true;
-> -
-> -		if (camss->res->version == CAMSS_660 &&
-> -		    (!strcmp(clock->name, "csi0_phy") ||
-> -		     !strcmp(clock->name, "csi1_phy") ||
-> -		     !strcmp(clock->name, "csi2_phy")))
-> -			csiphy->rate_set[i] = true;
-> +		for (k = 0; k < camss->res->csiphy_num; k++) {
-> +			csiphy->rate_set[i] = csiphy_match_clock_name(clock->name,
-> +								      "csiphy%d_timer", k);
-This entire functions is like.. soooo over-engineered
-
-adding something like csiphy_timer_clks and cisphy_clks and stuff
-would make this string comparison mess unnecessary
-
+> +			csiphy->rate_set[i] = csiphy_match_clock_name(clock->name, "csiphy%d", k);
 > +			if (csiphy->rate_set[i])
 > +				break;
-> +
-> +			if (camss->res->version == CAMSS_660) {
-> +				csiphy->rate_set[i] = csiphy_match_clock_name(clock->name,
-> +									      "csi%d_phy", k);
-hm, only ratesetting on 660 sounds very sus
-
-Konrad
+>  		}
+>  	}
+>  
