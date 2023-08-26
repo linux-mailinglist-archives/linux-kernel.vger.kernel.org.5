@@ -2,174 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3E837897AE
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 17:17:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E56F7897AF
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 17:17:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230345AbjHZPQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 11:16:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54750 "EHLO
+        id S230423AbjHZPQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 11:16:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230196AbjHZPQV (ORCPT
+        with ESMTP id S230255AbjHZPQW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 11:16:21 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59F0E171A;
-        Sat, 26 Aug 2023 08:16:18 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E459A61213;
-        Sat, 26 Aug 2023 15:16:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58519C433C7;
-        Sat, 26 Aug 2023 15:16:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693062977;
-        bh=lg99Ln+jiL+l84WPJ8FkQG+sfsE/5LrVsAW7P4iMBe8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=prtV+8v+7Zd3FkFrrlVOPYXKS5GDghMejcHIwvE3SF3+gfQ7mHpRXDtbxDYrhREVo
-         fJmjhjxTfU8nUTcTUH2RmuekJRRvUXzGU9FE0YSTo7N5TubM9qr7CcM5crKzhoHfXI
-         bDqqwksK5lbWbBCK6o3mNvyTzejpVHu9zLJ3EhL8PRiei42gVhiLr5ARn1Hjg8FYJ6
-         eKyVlTIJsbDH3H8KvvO89GcjNakMp3eDS8EhWbkR2Op8g/+exIjwZHQwrqvw16CDVV
-         IDi9OjL+U8ZarDKiSj9QTvvQJ6M2wcAPKsftGTMe7EXbGs819C7bCBefTgPEWVdxfs
-         RqP8wAUJsV7cw==
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2bbbda48904so27489241fa.2;
-        Sat, 26 Aug 2023 08:16:17 -0700 (PDT)
-X-Gm-Message-State: AOJu0YwQgGq36MjNZMLM3QafnsvTqDZBG/5wwdX3e5D+HUX1KIo2UZ50
-        27XxWtnWbsNY9jrhSsTTvrZFbIlb+5e1ButaWHg=
-X-Google-Smtp-Source: AGHT+IGPIKsysUpDMCEnjX/8/4Qbrqdo2/TpRFOIReMMxqMxVVBU9Sz5d0482DxrT8nOCs2FMb4flHIpcqvsziHFR6k=
-X-Received: by 2002:a2e:b80d:0:b0:2bc:fd7b:8ded with SMTP id
- u13-20020a2eb80d000000b002bcfd7b8dedmr1455984ljo.20.1693062975325; Sat, 26
- Aug 2023 08:16:15 -0700 (PDT)
+        Sat, 26 Aug 2023 11:16:22 -0400
+Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 884C9171A
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 08:16:20 -0700 (PDT)
+Received: by mail-oo1-xc2d.google.com with SMTP id 006d021491bc7-573675e6b43so289537eaf.0
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 08:16:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693062980; x=1693667780;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=SfmfX8y4suuxxYB42Bu/PClc6bkVL6Z00B4RiTnt8xI=;
+        b=L7LnsOgwWbNlgsGKgh1RQjFFH4TkfEIgREvE+uQ+9fpjbxljh2PaFgQYCbzTXFr7Fs
+         e8PFAuz+LpjHsQ0F+IfUyGCTtgO6pLKLmJmvopyBZe259yBxZOSFYTLpP6opR+xV1KTY
+         UIRu/nj0e+3rBuxPWk9vuvwQ+jeXANcdATyh6mCqoY0BX/ll+B1G6idTmxUSSYex3396
+         PeAAPyLz/KIWLZcfkTLjZO6/YxnXFDaDpcOYFgPA7hc90W25Z/2JVQaEX3Fg2VB2Hth3
+         ZDEGskg8GiruTcPm2uXSEnfqMiazVq9/ygZFK8q8NqNFkRxjFDkG/mw+ShghoVJFgmCy
+         AvAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693062980; x=1693667780;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SfmfX8y4suuxxYB42Bu/PClc6bkVL6Z00B4RiTnt8xI=;
+        b=BtrgW9vDqBp8eA3L1VTWKBU9k1rQOsDxuVIT5HjoRAZon+F90xSZw4FlwAaCvIl4W/
+         Op6dskrXVLyMCxHnGVlZqSdsEckTgvOq8RUzuhWDhYwPEu225uDVn678/9qhIKlDyhfs
+         MzSeja7ixfYbb0bolvCWbhRPHtN4LHMv5pU5VewAHPnuPHX4q1tww2KaenmSv1hF9tFM
+         5ogZSpKolY+2GX3eOIelg3AtD/nAJzSYRuBXYSIX4jsqkyywiv4HSTZXfVtFy+VEaOQf
+         CrLhOcWmfr2N96g9DRIZ1Q+49CheT0KDXlpox55wr00YgF9CfbAsTmRoIqW7qLfQPkBk
+         r1Wg==
+X-Gm-Message-State: AOJu0Yx+0Tu0zO4Gv6hiw5uSPLqpxwQg9El6AujazO341Tze8y38KeNO
+        Dv04mDWv+xAGxekwnWWR4jM=
+X-Google-Smtp-Source: AGHT+IHnoQkuq2Dxh/yd+t9QK4MX/uUIiw8dD8tvrP054uia23peRbBDWmfv9Wu08d298DuPJZQz2A==
+X-Received: by 2002:a05:6820:41:b0:56e:5a8e:654f with SMTP id v1-20020a056820004100b0056e5a8e654fmr7898675oob.8.1693062979763;
+        Sat, 26 Aug 2023 08:16:19 -0700 (PDT)
+Received: from alolivei-thinkpadt480s.gru.csb ([2804:14c:bf20:82ea:8c7c:b784:3f92:988a])
+        by smtp.gmail.com with ESMTPSA id c206-20020a4a4fd7000000b0056e9ffefee9sm2103688oob.3.2023.08.26.08.16.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 26 Aug 2023 08:16:19 -0700 (PDT)
+Date:   Sat, 26 Aug 2023 12:16:13 -0300
+From:   Alexon Oliveira <alexondunkan@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     martyn@welchs.me.uk, manohar.vanga@gmail.com,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: [PATCH v2 2/4] staging: vme_user: fix check lines not ending with
+ '(' in vme_fake.c
+Message-ID: <ZOoXPVHQInOz4gfh@alolivei-thinkpadt480s.gru.csb>
 MIME-Version: 1.0
-References: <20230825114224.3886577-1-chenhuacai@loongson.cn> <0b509186-bf01-2151-0954-d669075c1f71@xen0n.name>
-In-Reply-To: <0b509186-bf01-2151-0954-d669075c1f71@xen0n.name>
-From:   Huacai Chen <chenhuacai@kernel.org>
-Date:   Sat, 26 Aug 2023 23:16:05 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H6ugTh8XmgruyWYoL53hYGtj3035xM=Y_+AMrnK-caM5w@mail.gmail.com>
-Message-ID: <CAAhV-H6ugTh8XmgruyWYoL53hYGtj3035xM=Y_+AMrnK-caM5w@mail.gmail.com>
-Subject: Re: [PATCH] LoongArch: Ensure FP/SIMD registers in the core dump file
- is up to date
-To:     WANG Xuerui <kernel@xen0n.name>
-Cc:     Huacai Chen <chenhuacai@loongson.cn>,
-        Arnd Bergmann <arnd@arndb.de>, loongarch@lists.linux.dev,
-        linux-arch@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
-        Guo Ren <guoren@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-kernel@vger.kernel.org, loongson-kernel@lists.loongnix.cn
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 26, 2023 at 3:52=E2=80=AFPM WANG Xuerui <kernel@xen0n.name> wro=
-te:
->
-> On 8/25/23 19:42, Huacai Chen wrote:
-> > This is a port of commit 379eb01c21795edb4c ("riscv: Ensure the value
-> > of FP registers in the core dump file is up to date").
-> >
-> > The values of FP/SIMD registers in the core dump file come from the
-> > thread.fpu. However, kernel saves the FP/SIMD registers only before
-> > scheduling out the process. If no process switch happens during the
-> > exception handling, kernel will not have a chance to save the latest
-> > values of FP/SIMD registers. So it may cause their values in the core
-> > dump file incorrect. To solve this problem, force fpr_get()/simd_get()
-> > to save the FP/SIMD registers into the thread.fpu if the target task
-> > equals the current task.
-> >
-> > Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
-> > ---
-> >   arch/loongarch/include/asm/fpu.h | 22 ++++++++++++++++++----
-> >   arch/loongarch/kernel/ptrace.c   |  4 ++++
-> >   2 files changed, 22 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/arch/loongarch/include/asm/fpu.h b/arch/loongarch/include/=
-asm/fpu.h
-> > index b541f6248837..08a45e9fd15c 100644
-> > --- a/arch/loongarch/include/asm/fpu.h
-> > +++ b/arch/loongarch/include/asm/fpu.h
-> > @@ -173,16 +173,30 @@ static inline void restore_fp(struct task_struct =
-*tsk)
-> >               _restore_fp(&tsk->thread.fpu);
-> >   }
-> >
-> > -static inline union fpureg *get_fpu_regs(struct task_struct *tsk)
-> > +static inline void get_fpu_regs(struct task_struct *tsk)
-> Removing the return value from the signature means the function is no
-> longer a getter, so maybe the name should get changed as well? Like
-> "save_fpu_regs"?
-OK, that makes sense and has been done in V2.
+Fixed all CHECK: Lines should not end with a '('
+as reported by checkpatch to adhere to the Linux kernel
+coding-style guidelines.
 
-> >   {
-> > +     unsigned int euen;
-> > +
-> >       if (tsk =3D=3D current) {
-> >               preempt_disable();
-> > -             if (is_fpu_owner())
-> > +
-> > +             euen =3D csr_read32(LOONGARCH_CSR_EUEN);
-> > +
-> > +#ifdef CONFIG_CPU_HAS_LASX
-> > +             if (euen & CSR_EUEN_LASXEN)
-> > +                     _save_lasx(&current->thread.fpu);
-> > +             else
-> > +#endif
-> > +#ifdef CONFIG_CPU_HAS_LSX
-> > +             if (euen & CSR_EUEN_LSXEN)
-> > +                     _save_lsx(&current->thread.fpu);
-> > +             else
-> > +#endif
-> > +             if (euen & CSR_EUEN_FPEN)
-> >                       _save_fp(&current->thread.fpu);
-> > +
-> >               preempt_enable();
-> >       }
-> > -
-> > -     return tsk->thread.fpu.fpr;
-> >   }
-> >
-> >   static inline int is_simd_owner(void)
-> > diff --git a/arch/loongarch/kernel/ptrace.c b/arch/loongarch/kernel/ptr=
-ace.c
-> > index 2bb5ec55ae1e..209e3d29e0b2 100644
-> > --- a/arch/loongarch/kernel/ptrace.c
-> > +++ b/arch/loongarch/kernel/ptrace.c
-> > @@ -148,6 +148,8 @@ static int fpr_get(struct task_struct *target,
-> >   {
-> >       int r;
-> >
-> > +     get_fpu_regs(target);
-> > +
-> >       if (sizeof(target->thread.fpu.fpr[0]) =3D=3D sizeof(elf_fpreg_t))
-> >               r =3D gfpr_get(target, &to);
-> >       else
-> > @@ -279,6 +281,8 @@ static int simd_get(struct task_struct *target,
-> >   {
-> >       const unsigned int wr_size =3D NUM_FPU_REGS * regset->size;
-> >
-> > +     get_fpu_regs(target);
-> > +
-> >       if (!tsk_used_math(target)) {
-> >               /* The task hasn't used FP or LSX, fill with 0xff */
-> >               copy_pad_fprs(target, regset, &to, 0);
->
-> Otherwise this should be fine. (I don't know why that helper is
-> previously unused though...)
-This helper was derived from MIPS but the call sites are missing, so fix it=
- now.
+Signed-off-by: Alexon Oliveira <alexondunkan@gmail.com>
+---
 
-Huacai
->
-> --
-> WANG "xen0n" Xuerui
->
-> Linux/LoongArch mailing list: https://lore.kernel.org/loongarch/
->
->
+Changes in v2:
+- Fixed summary phrase with tags to indicate commit order
+in the patch series, noted by Greg KH
+
+ drivers/staging/vme_user/vme_fake.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/staging/vme_user/vme_fake.c b/drivers/staging/vme_user/vme_fake.c
+index a88d2c8a785b..dbaf050f88e5 100644
+--- a/drivers/staging/vme_user/vme_fake.c
++++ b/drivers/staging/vme_user/vme_fake.c
+@@ -403,8 +403,7 @@ static void fake_lm_check(struct fake_driver *bridge, unsigned long long addr,
+ 				if (((lm_base + (8 * i)) <= addr) &&
+ 				    ((lm_base + (8 * i) + 8) > addr)) {
+ 					if (bridge->lm_callback[i])
+-						bridge->lm_callback[i](
+-							bridge->lm_data[i]);
++						bridge->lm_callback[i](bridge->lm_data[i]);
+ 				}
+ 			}
+ 		}
+-- 
+2.41.0
+
