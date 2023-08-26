@@ -2,141 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8005E78977E
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 16:46:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12C80789783
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 16:47:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230236AbjHZOpp convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 26 Aug 2023 10:45:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45824 "EHLO
+        id S230374AbjHZOqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 10:46:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229638AbjHZOpc (ORCPT
+        with ESMTP id S230326AbjHZOq1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 10:45:32 -0400
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EA9FE4E;
-        Sat, 26 Aug 2023 07:45:29 -0700 (PDT)
-Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-d746d030a86so1856151276.1;
-        Sat, 26 Aug 2023 07:45:29 -0700 (PDT)
+        Sat, 26 Aug 2023 10:46:27 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76E86210C
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 07:46:23 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1bdc243d62bso12234345ad.3
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 07:46:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693061183; x=1693665983;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=cvjjfe1KUBN3ohw6yJuUww67ITTu8nVKPCe0bxCs6OE=;
+        b=Wtq31WVrNH5UsZYQaC0tTuFHA8JMb3nTGV4XvpJdirkyPpnNr2ozFq+/JjibIxB9uI
+         dJLQaDRF7kI6UBh3DZDt46LnVgQRrOzDFQ7W5sVpfAu+/+THbv3rAcKBkoqOVGP+yBAg
+         3Nysg/Ec6h9hBKCN6OQGIhdDLxh0TyHcJRBJdoz2x5z+o02AV6VNXii84n6l6tgCHkmc
+         g2iyBmRg+cK2U+EBuguXlypMzz1n2mYoyMke90yH+7o1HRFJcX7+AYK3DRmLuCF8unP4
+         k790/Nm1Znr0P9wlwq5H4qGOWHRsJzhZadgdmNdWBCZ4WVc8AdzZn7lMIuR9V6jCk82r
+         zbCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693061128; x=1693665928;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=s5KOUY+kV96llNzphnz+NXqnkWdYpQAMYzH4mHsanEw=;
-        b=NAbp/ZaXpMFsoB6V0cVyPBWndoNveRantcsbi6RUxFHBfbvRiHTM7MHfmjzjT19eNg
-         +rXP9hwOEd1AilZnXS3S0uHe0QbvzSOLkX0pBDRyWe3MUUAsbtHoWN561cvIi6cSW7LD
-         mmAaNnmA571bCyvv+ZuJK5P8ptiu074DFlZGQjF1qVs3pCylfg9gsTF01doTkABSTXoa
-         3bO+HsdP3XxvTFnDtM+pnw0jaqfdEqvODkO+leDyIYTxWJ0SbcCBbS+OBTqOJ7HSxzEv
-         ebrVOgNp3VzLU0ZSOcE1DMNy0OFNhypLvWH3DKqM7O+Q8FixAEOl1uSTGAOMrhsK4r5b
-         PH8A==
-X-Gm-Message-State: AOJu0YxHD0g3Js6vvb63Cy7XDnKmKzhJuzjd0CCorCQ+9UiDcAGl8skw
-        PZpG6mnC14AZHNHdGdKpVizDB0xMyntXDusy0lU=
-X-Google-Smtp-Source: AGHT+IFAYkptAcqGhimlYDrGfJ08wtS++iZW74Ht3FSwP4Y1Gj6ZCgux+GNkdtTdhHnd8+he3zj4z+q6L/jxHRBTueg=
-X-Received: by 2002:a25:c552:0:b0:d78:441d:4d62 with SMTP id
- v79-20020a25c552000000b00d78441d4d62mr3728385ybe.22.1693061128112; Sat, 26
- Aug 2023 07:45:28 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693061183; x=1693665983;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cvjjfe1KUBN3ohw6yJuUww67ITTu8nVKPCe0bxCs6OE=;
+        b=OUZRLxK0QUOQtKfhrGmXTo9NMoSdLd/MMKrhizwSt62/IX1aDHvTNmFjj/qS7nThHm
+         XbOSj1K6dhvilKpEwo11eTxbbIbhi2mnuPhUMDpeWJNumffFFMoOxcJTHlufzOJ1/ETN
+         LjqDlB2/WKwqVN+Ir4Mn8fy51Fq5CaHIOCjeKw17QWk6oG4FalQVsNyb3EDLfzXwjdBY
+         h7h7aQPdRKk0JOHyjB6D+hgQ9s4LHcLxvOHkAP+m1vmyR1CvMBefM+EJ/Sw+CnaSV0hd
+         p7wix/ZuzUBXPdwpziU7seSSVkiR76eQNjXn/As6Zq3GgzeO1Y2dgnDiDG0NRiE3QOaR
+         VLZA==
+X-Gm-Message-State: AOJu0YxHaBHZND2We6abVADlYn5kHW5dsEv5lnlFlUgIlwPsSfY57RBN
+        3Jg8qJhoT30F82W10O+2RGir
+X-Google-Smtp-Source: AGHT+IGGdf6SFxcjFol+302zSJxRzdTlKENX2fADfCRYYugfQ8pgY9tLxKTwVccX5HvNrpmRwa57uA==
+X-Received: by 2002:a17:902:a416:b0:1bf:46ee:9c6 with SMTP id p22-20020a170902a41600b001bf46ee09c6mr16552524plq.48.1693061182827;
+        Sat, 26 Aug 2023 07:46:22 -0700 (PDT)
+Received: from thinkpad ([117.206.116.138])
+        by smtp.gmail.com with ESMTPSA id k1-20020a170902694100b001b8b45b177esm3742889plt.274.2023.08.26.07.46.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 26 Aug 2023 07:46:22 -0700 (PDT)
+Date:   Sat, 26 Aug 2023 20:16:15 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     lpieralisi@kernel.org, kw@linux.com, kishon@kernel.org,
+        bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v2 2/7] PCI: epf-mhi: Make use of the alignment
+ restriction from EPF core
+Message-ID: <20230826144615.GA8858@thinkpad>
+References: <20230717065459.14138-3-manivannan.sadhasivam@linaro.org>
+ <20230825225006.GA642059@bhelgaas>
 MIME-Version: 1.0
-References: <20230819093340.265817-1-leo.yan@linaro.org> <CAM9d7cj=ichFk4bVQSbyptqy9wo8GFm1Z1Q7QzfhMFLjewNF-Q@mail.gmail.com>
- <20230823023838.GF57731@leoy-huanghe.lan> <CAM9d7cgaMyH=vSjVEOBjLzBWbZOricm6aHcP9hfLsTJ_gUEh3g@mail.gmail.com>
- <20230826072957.GA75980@leoy-huanghe.lan>
-In-Reply-To: <20230826072957.GA75980@leoy-huanghe.lan>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Sat, 26 Aug 2023 07:45:15 -0700
-Message-ID: <CAM9d7cjkQAhponi_mO9yBHaBP3wB4cBcWc5B7yb_4nE2dQWpLw@mail.gmail.com>
-Subject: Re: [PATCH v6] Documentation: userspace-api: Document perf ring
- buffer mechanism
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Jiri Olsa <jolsa@kernel.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230825225006.GA642059@bhelgaas>
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Leo,
+On Fri, Aug 25, 2023 at 05:50:06PM -0500, Bjorn Helgaas wrote:
+> On Mon, Jul 17, 2023 at 12:24:54PM +0530, Manivannan Sadhasivam wrote:
+> > Instead of hardcoding the alignment restriction in the EPF_MHI driver, make
+> > use of the info available from the EPF core that reflects the alignment
+> > restriction of the endpoint controller.
+> > 
+> > For this purpose, let's introduce the get_align_offset() static function.
+> 
+> I thought this might be related to the [1/7] patch since they both
+> mention an alignment restriction in the EPF core, but [1/7] sets
+> pci_epc_features.align and this patch doesn't reference .align, so
+> this must be a different alignment restriction?
+> 
+> I'm sure there's nothing wrong here, and this is already applied, so
+> no need to do anything unless .align *should* appear here.
+> 
 
-On Sat, Aug 26, 2023 at 12:30 AM Leo Yan <leo.yan@linaro.org> wrote:
->
-> Hi Namhyung,
->
-> On Tue, Aug 22, 2023 at 09:26:05PM -0700, Namhyung Kim wrote:
->
-> [...]
->
-> > > > > +Why ring buffers are mapped with above two different modes?  Here the
-> > > > > +write direction matters.  The forward writing starts to save data from
-> > > > > +the beginning of the ring buffer and wrap around when overflow, which is
-> > > > > +used with the read-write mode in the normal ring buffer.  When the
-> > > > > +consumer doesn't keep up with the producer, it would lose some data, the
-> > > > > +kernel keeps how many records it lost and generates the
-> > > > > +``PERF_RECORD_LOST`` records in the next time when it finds a space in the
-> > > > > +ring buffer.
-> > > >
-> > > > Thanks for the update.  It's unclear to me if all 4 combination of
-> > > > (rw, ro) x (fwd, bwd) are possible (yes!).  The rw mode and back-
-> > > > ward is also possible but just not used for perf tool.
-> > >
-> > > I can add a matrix for the combinations:
-> > >
-> > >   The combination is supported in perf tool:
-> > >
-> > >   ---+------------+-----------
-> > >      |  Forward   | Backward
-> > >   ---+------------+-----------
-> > >   rw |  Yes       |   No
-> > >   ---+------------+-----------
-> > >   ro |  X         |   Yes
-> > >   ---+------------+-----------
-> > >
-> > >   Yes: is supported
-> > >   No: is not supported
-> > >   X: is not feasible
-> >
-> > I think they are all supported.  You can use rw mode with backward
-> > direction but it's just not intuitive.  Also ro mode with forward direction
-> > is working but there's a chance to miss the start position of the
-> > previous event.
->
-> I am a bit confused for the all four modes are supported.
->
-> From the code [1], we can see there have only two combinations:
->
-> - overwrite + read-only mode (PROT_READ);
-> - no-overwrite + read-write mode (PROT_READ | PROT_WRITE);
->
-> And I think perf tool must use the backward writing for "overwrite",
-> and use the forward writing for "non-overwrite" mode.  I think the
-> code [2] can help us to conclude this.
+You are absolutely right! The patch was intented to make use of "align" but
+"page_size" was used as per old revision. Even though this patch works (because
+both "page_size" and "align" were 4K in my setup), it should be fixed.
 
-I mean the kernel supports all the combinations but perf tool uses
-the selected two.  IIUC you are describing the kernel behavior, right?
+I will send a fix up patch now. Thanks for spotting.
 
-Thanks,
-Namhyung
+- Mani
 
->
-> In the end, the perf tool doesn't support the combinations:
->
-> - overwrite + read-write mode
-> - no-overwrite + read-only mode
->
-> I have sent a v6 patch, please let me know if you have any concerns or
-> if I misunderstand anything.  Thanks!
->
-> Leo
->
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/lib/perf/evlist.c#n474
-> [2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/lib/perf/mmap.c#n141
+> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > ---
+> >  drivers/pci/endpoint/functions/pci-epf-mhi.c | 15 +++++++++++----
+> >  1 file changed, 11 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/drivers/pci/endpoint/functions/pci-epf-mhi.c b/drivers/pci/endpoint/functions/pci-epf-mhi.c
+> > index 9c1f5a154fbd..bb7de6884824 100644
+> > --- a/drivers/pci/endpoint/functions/pci-epf-mhi.c
+> > +++ b/drivers/pci/endpoint/functions/pci-epf-mhi.c
+> > @@ -102,6 +102,11 @@ struct pci_epf_mhi {
+> >  	int irq;
+> >  };
+> >  
+> > +static size_t get_align_offset(struct pci_epc *epc, u64 addr)
+> > +{
+> > +	return addr % epc->mem->window.page_size;
+> > +}
+> > +
+> >  static int __pci_epf_mhi_alloc_map(struct mhi_ep_cntrl *mhi_cntrl, u64 pci_addr,
+> >  				 phys_addr_t *paddr, void __iomem **vaddr,
+> >  				 size_t offset, size_t size)
+> > @@ -134,7 +139,7 @@ static int pci_epf_mhi_alloc_map(struct mhi_ep_cntrl *mhi_cntrl, u64 pci_addr,
+> >  {
+> >  	struct pci_epf_mhi *epf_mhi = to_epf_mhi(mhi_cntrl);
+> >  	struct pci_epc *epc = epf_mhi->epf->epc;
+> > -	size_t offset = pci_addr & (epc->mem->window.page_size - 1);
+> > +	size_t offset = get_align_offset(epc, pci_addr);
+> >  
+> >  	return __pci_epf_mhi_alloc_map(mhi_cntrl, pci_addr, paddr, vaddr,
+> >  				      offset, size);
+> > @@ -161,7 +166,7 @@ static void pci_epf_mhi_unmap_free(struct mhi_ep_cntrl *mhi_cntrl, u64 pci_addr,
+> >  	struct pci_epf_mhi *epf_mhi = to_epf_mhi(mhi_cntrl);
+> >  	struct pci_epf *epf = epf_mhi->epf;
+> >  	struct pci_epc *epc = epf->epc;
+> > -	size_t offset = pci_addr & (epc->mem->window.page_size - 1);
+> > +	size_t offset = get_align_offset(epc, pci_addr);
+> >  
+> >  	__pci_epf_mhi_unmap_free(mhi_cntrl, pci_addr, paddr, vaddr, offset,
+> >  				 size);
+> > @@ -185,7 +190,8 @@ static int pci_epf_mhi_read_from_host(struct mhi_ep_cntrl *mhi_cntrl, u64 from,
+> >  				      void *to, size_t size)
+> >  {
+> >  	struct pci_epf_mhi *epf_mhi = to_epf_mhi(mhi_cntrl);
+> > -	size_t offset = from % SZ_4K;
+> > +	struct pci_epc *epc = epf_mhi->epf->epc;
+> > +	size_t offset = get_align_offset(epc, from);
+> >  	void __iomem *tre_buf;
+> >  	phys_addr_t tre_phys;
+> >  	int ret;
+> > @@ -213,7 +219,8 @@ static int pci_epf_mhi_write_to_host(struct mhi_ep_cntrl *mhi_cntrl,
+> >  				     void *from, u64 to, size_t size)
+> >  {
+> >  	struct pci_epf_mhi *epf_mhi = to_epf_mhi(mhi_cntrl);
+> > -	size_t offset = to % SZ_4K;
+> > +	struct pci_epc *epc = epf_mhi->epf->epc;
+> > +	size_t offset = get_align_offset(epc, to);
+> >  	void __iomem *tre_buf;
+> >  	phys_addr_t tre_phys;
+> >  	int ret;
+> > -- 
+> > 2.25.1
+> > 
+
+-- 
+மணிவண்ணன் சதாசிவம்
