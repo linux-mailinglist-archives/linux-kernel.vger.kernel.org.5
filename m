@@ -2,156 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F85178930D
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 03:25:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0ADB789308
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 03:24:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231444AbjHZBYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 21:24:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44262 "EHLO
+        id S231633AbjHZBYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 21:24:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231645AbjHZBYQ (ORCPT
+        with ESMTP id S229601AbjHZBXq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 21:24:16 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C16C71FC3
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 18:24:13 -0700 (PDT)
-Received: from kwepemm600016.china.huawei.com (unknown [172.30.72.56])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RXfCh34hkzJrmt;
-        Sat, 26 Aug 2023 09:21:04 +0800 (CST)
-Received: from linux-hNCriV.Euler.HZ (10.175.124.27) by
- kwepemm600016.china.huawei.com (7.193.23.20) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Sat, 26 Aug 2023 09:24:11 +0800
-From:   Jiang Dongxu <jiangdongxu1@huawei.com>
-To:     <mst@redhat.com>, <jasowang@redhat.com>
-CC:     jiangdongxu <jiangdongxu1@huawei.com>,
-        <virtualization@lists.linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>, <longpeng2@huawei.com>,
-        <eric.fangyi@huawei.com>
-Subject: [PATCH 2/2] vhost-vdpa: add uAPI for logging
-Date:   Sat, 26 Aug 2023 09:23:32 +0800
-Message-ID: <0495a6ca0a025ff3b1e29d24d4a4b30a3e468bde.1693012755.git.jiangdongxu1@huawei.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <cover.1693012755.git.jiangdongxu1@huawei.com>
-References: <cover.1693012755.git.jiangdongxu1@huawei.com>
+        Fri, 25 Aug 2023 21:23:46 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18D59E77;
+        Fri, 25 Aug 2023 18:23:44 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1bc8a2f71eeso11561465ad.0;
+        Fri, 25 Aug 2023 18:23:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693013023; x=1693617823;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=acKCK1DDVsUgCwVPQW4+BV+8s2HfSsnrUrjpFkgd9wk=;
+        b=qZzFJ5Q5ESQ/8whIlhrjVp3nDjACHbnMZsluegvq6Ojinxc/067Osp2qbIlyw9OjoC
+         GrRln/+N7K+EJ6CyNvvc+wOUkgfi4l1q64Ul9uSGNiBBZAVF8RivtDyeN7Ha+sTyJOaS
+         LD/odcRNwB6O+gi1HjaHmDlF86++rjIJKEQ75ax2Mt4my1mA8ngmS7J7CH7ueAo62NGh
+         rmJDnzO84abFyXgzrzbSc0TZ8HkmvG7Bk4tGOnSBPpvE0bvVIuhs9dluaoWv8GjcnWtM
+         C3vb1aRCOnNEmeBc+8DIEHu3MJjtbU/oTaEjJwT/5Q+VpaLm82ujhnXu4CqBfchy1pUI
+         SPaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693013023; x=1693617823;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=acKCK1DDVsUgCwVPQW4+BV+8s2HfSsnrUrjpFkgd9wk=;
+        b=Zc7FbcRMymg97Mw7AUcocgeUX9q5QxLhKWO1uqATH5tknS12IhXPHt/30Wk4gLJ68D
+         ZHdpbUY5zsiiGwAGOeiAn0ZCGFFerLM4O4GHc8Znbat0atnUTnurgYy5HsG+RLq+uMX1
+         KJug7NU3VYmSUsvlHuaWvKISXQDRmoRFmYlE5vRX6dw8NPwbcmi9vbb+7DPSNRdO0P8o
+         59682bCTFlMNoOjHxgjs0CJ57pF4Khm+uxjIQFJ5KJissmZEYlmFPLwQmrOa9rGXAALJ
+         SWdMT3Hjoqe3wQAER/C1eIFbmRYha0GyipDdJ7qTCntL+b//UT7k23RfU0Tdw34n4qoq
+         uLEA==
+X-Gm-Message-State: AOJu0Yxk16v//0sokfcGqaYBH9cFa+DKrnU/fjVTAfjnQch8ubxYEd2O
+        iQ10E/lNdiMGeQQATML/y9M=
+X-Google-Smtp-Source: AGHT+IH4NYnJm+tQgvR+rYaA45h9XoYuEpTCK8oT0lwl1wjhA9qrHf69HItpzuopdJJAAu87CUg0YQ==
+X-Received: by 2002:a17:903:2642:b0:1ac:8be5:8787 with SMTP id je2-20020a170903264200b001ac8be58787mr14537859plb.21.1693013023425;
+        Fri, 25 Aug 2023 18:23:43 -0700 (PDT)
+Received: from debian.me ([103.124.138.83])
+        by smtp.gmail.com with ESMTPSA id z1-20020a170903018100b001bdb167f6ebsm2429875plg.94.2023.08.25.18.23.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Aug 2023 18:23:42 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id D2F5C82EFB85; Sat, 26 Aug 2023 08:23:38 +0700 (WIB)
+Date:   Sat, 26 Aug 2023 08:23:38 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+Subject: Re: [PATCH 6.1 00/15] 6.1.48-rc1 review
+Message-ID: <ZOlUGhlro_v6cvo4@debian.me>
+References: <20230824141447.155846739@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.27]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm600016.china.huawei.com (7.193.23.20)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Nr1MUEtNaDq7pJ3e"
+Content-Disposition: inline
+In-Reply-To: <20230824141447.155846739@linuxfoundation.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: jiangdongxu <jiangdongxu1@huawei.com>
 
-These new ioctl add support for setting bitmaps config,
-like base address and buffer size from userspace.
+--Nr1MUEtNaDq7pJ3e
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-When setup migration, VMM will call VHOST_SET_LOG_BASE and
-VHOST_SET_LOG_SIZE to set address and size of buffer used
-for storing bitmaps.
+On Thu, Aug 24, 2023 at 04:14:56PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.1.48 release.
+> There are 15 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>=20
 
-Then VMM start live migration, VMM will enable logging
-vhost device by set feature VHOST_F_LOG_ALL.
+Successfully compiled and installed bindeb-pkgs on my computer (Acer
+Aspire E15, Intel Core i3 Haswell). No noticeable regressions.
 
-And during live migration iterate, VMM get dirty page info
-from vhost device by calling VHOST_LOG_SYNC.
+Tested-by: Bagas Sanjaya <bagasdotme@gmail.com>
 
-Signed-off-by: jiangdongxu <jiangdongxu1@huawei.com>
----
- drivers/vhost/vdpa.c       | 49 ++++++++++++++++++++++++++++++++++++++
- include/uapi/linux/vhost.h |  4 ++++
- 2 files changed, 53 insertions(+)
+--=20
+An old man doll... just what I always wanted! - Clara
 
-diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-index b43e8680eee8..75e17d9b136b 100644
---- a/drivers/vhost/vdpa.c
-+++ b/drivers/vhost/vdpa.c
-@@ -556,6 +556,47 @@ static long vhost_vdpa_resume(struct vhost_vdpa *v)
- 	return ops->resume(vdpa);
- }
- 
-+static long vhost_vdpa_set_log_base(struct vhost_vdpa *v, u64 __user *argp)
-+{
-+	struct vdpa_device *vdpa = v->vdpa;
-+	const struct vdpa_config_ops *ops = vdpa->config;
-+	u64 log;
-+
-+	if (!ops->set_log_base)
-+		return -EOPNOTSUPP;
-+
-+	if (copy_from_user(&log, argp, sizeof(uint64_t)))
-+		return -EFAULT;
-+
-+	return ops->set_log_base(vdpa, log);
-+}
-+
-+static long vhost_vdpa_set_log_size(struct vhost_vdpa *v, u64 __user *sizep)
-+{
-+	struct vdpa_device *vdpa = v->vdpa;
-+	const struct vdpa_config_ops *ops = vdpa->config;
-+	u64 log_size;
-+
-+	if (!ops->set_log_size)
-+		return -EOPNOTSUPP;
-+
-+	if (copy_from_user(&log_size, sizep, sizeof(log_size)))
-+		return -EFAULT;
-+
-+	return ops->set_log_size(vdpa, log_size);
-+}
-+
-+static long vhost_vdpa_log_sync(struct vhost_vdpa *v)
-+{
-+	struct vdpa_device *vdpa = v->vdpa;
-+	const struct vdpa_config_ops *ops = vdpa->config;
-+
-+	if (!ops->log_sync)
-+		return -EOPNOTSUPP;
-+
-+	return ops->log_sync(vdpa);
-+}
-+
- static long vhost_vdpa_vring_ioctl(struct vhost_vdpa *v, unsigned int cmd,
- 				   void __user *argp)
- {
-@@ -729,6 +770,14 @@ static long vhost_vdpa_unlocked_ioctl(struct file *filep,
- 			r = -EFAULT;
- 		break;
- 	case VHOST_SET_LOG_BASE:
-+		r = vhost_vdpa_set_log_base(v, argp);
-+		break;
-+	case VHOST_SET_LOG_SIZE:
-+		r = vhost_vdpa_set_log_size(v, argp);
-+		break;
-+	case VHOST_LOG_SYNC:
-+		r = vhost_vdpa_log_sync(v);
-+		break;
- 	case VHOST_SET_LOG_FD:
- 		r = -ENOIOCTLCMD;
- 		break;
-diff --git a/include/uapi/linux/vhost.h b/include/uapi/linux/vhost.h
-index f5c48b61ab62..ce9d187432d1 100644
---- a/include/uapi/linux/vhost.h
-+++ b/include/uapi/linux/vhost.h
-@@ -43,6 +43,10 @@
-  * The bit is set using an atomic 32 bit operation. */
- /* Set base address for logging. */
- #define VHOST_SET_LOG_BASE _IOW(VHOST_VIRTIO, 0x04, __u64)
-+/* Set buffer size for logging */
-+#define VHOST_SET_LOG_SIZE _IOW(VHOST_VIRTIO, 0x05, __u64)
-+/* Synchronize logging buffer from kernel space to user space */
-+#define VHOST_LOG_SYNC _IO(VHOST_VIRTIO, 0x06)
- /* Specify an eventfd file descriptor to signal on log write. */
- #define VHOST_SET_LOG_FD _IOW(VHOST_VIRTIO, 0x07, int)
- /* By default, a device gets one vhost_worker that its virtqueues share. This
--- 
-2.27.0
+--Nr1MUEtNaDq7pJ3e
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZOlUFQAKCRD2uYlJVVFO
+o0YxAQCzDPWVI01UQ8OMk0c1w4/zdbNTbiH8jmHRdhQjtJBpzwEAj6mpdQtFZ0/5
+1WEuBsFeXqk/B+fVxLzQRakwl/wcWws=
+=AgPL
+-----END PGP SIGNATURE-----
+
+--Nr1MUEtNaDq7pJ3e--
