@@ -2,79 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D004778986C
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 19:34:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45674789876
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 19:43:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230219AbjHZRds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 13:33:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45972 "EHLO
+        id S229605AbjHZRmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 13:42:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229540AbjHZRdp (ORCPT
+        with ESMTP id S229717AbjHZRma (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 13:33:45 -0400
-Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com [209.85.210.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A872BCA
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 10:33:42 -0700 (PDT)
-Received: by mail-pf1-f200.google.com with SMTP id d2e1a72fcca58-68a628f923dso1859827b3a.2
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 10:33:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693071221; x=1693676021;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tjVLdoMeoNBHxjD3Hv96x2He0s6aP5eRpCyA9UAuyOA=;
-        b=HIkqhfxFhYrOAQ5LUjNQH1cqvJDk7Az9KjglRBZYD9z28HREDyO9TU0kItg0L/G5ZN
-         9oa4BN6tRvtSrJZQ4aP5EBzTROH8tgXDoeOvL9ltexnD82ctIQxjWeQ+JU94K/vP9Giu
-         WkcRS+fvSsH0gYXU7cFgaj7O6mBYPWgcP+UjjgSew9Ec+ObGm5lA13JywGUTck03hM3f
-         DOOb0KKeux1w2Y2Y0hJMM0Y0YeQAlAYFylGLqJAWDu7epVTc5xyucY7rSZYmZ9g8KZK2
-         9q2CMhp++ZUtYV8DX4u7OJUv2bpXLyC31S6r0fJvfYbnxifF9MRWw1OFTdNCkDTCwWNe
-         e5aQ==
-X-Gm-Message-State: AOJu0YwuhpH4wTiRGhRMTHqqirkAK4V6Jstxxezxa7dN5+MJxaOONUuR
-        JrNULfyoLpPSIyjfp3QDp3ZOuYV3rxZP4QA6BCJKbLsHd4wJ
-X-Google-Smtp-Source: AGHT+IFbNWDB+fYq/8p8IgoA/y3rlCahJG5okiucNxPC45l2dX3idUNq0eHY5+396R3r6YwmxazDDn3aFXq4W//XIGNxCTUnI1nt
+        Sat, 26 Aug 2023 13:42:30 -0400
+Received: from smtp.smtpout.orange.fr (smtp-21.smtpout.orange.fr [80.12.242.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED4BA10A
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 10:42:27 -0700 (PDT)
+Received: from pop-os.home ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id ZxInqYKe17qfuZxInqGrPq; Sat, 26 Aug 2023 19:42:26 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1693071746;
+        bh=orB9jPwaecPFP/gpzbrOrsYdsANF2oVXr2ZGkrw1kio=;
+        h=From:To:Cc:Subject:Date;
+        b=NJHc2LnPPCsJoZ1Ueo2HFkPUULSxF3IPHkgQ5KDAT1lAynfkoQtFBKjg/+3bE9/Ca
+         dWS4w5bcD09zfugdsG+HqBMefh6RCcoBDNPI+SBVZcV/jniTspdwtb/8lpxHOjaYig
+         VIDQbCYsLFkmjOFc2p04DIB8GB53BRUsoIAQL17N47Ot7kTagsICH0I0VbMRTZZ66y
+         8Xu+pxLOvrLCGULDZYu44PZStavJJ6ISh39DPqzCsVZOTyakYXKbvO2m64DtqC5YRq
+         lSQkn+pOTv3CgOyMS+oQn6ohPAIA2EQL0kW6z90zc1ZCgZiZQSQxszIdqzo86qyGDp
+         lK07r7YBaZ/UA==
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 26 Aug 2023 19:42:26 +0200
+X-ME-IP: 86.243.2.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     rrameshbabu@nvidia.com, jikos@kernel.org,
+        benjamin.tissoires@redhat.com
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH 0/3] HID: nvidia-shield: Fix the error handling path of shield_probe()
+Date:   Sat, 26 Aug 2023 19:42:16 +0200
+Message-Id: <cover.1693070958.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Received: by 2002:a05:6a00:178f:b0:68a:ce39:32b4 with SMTP id
- s15-20020a056a00178f00b0068ace3932b4mr4343740pfg.0.1693071221348; Sat, 26 Aug
- 2023 10:33:41 -0700 (PDT)
-Date:   Sat, 26 Aug 2023 10:33:41 -0700
-In-Reply-To: <000000000000de4c2c0600c02b28@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ba5da70603d6dc04@google.com>
-Subject: Re: [syzbot] [hfs?] kernel BUG in hfs_show_options
-From:   syzbot <syzbot+155274e882dcbf9885df@syzkaller.appspotmail.com>
-To:     andriy.shevchenko@linux.intel.com, keescook@chromium.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sel4@disroot.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
+This serie fixes some missing clean-up function calls in the error handling of
+the probe.
 
-commit c30417b20f4993e49406f3f6d986355c6e943aa2
-Author: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Date:   Mon Jul 17 09:33:32 2023 +0000
+Patch 1 and 2 fix some similar issues introduced in 2 different commits (hence 2
+patches)
 
-    seq_file: Replace strncpy()+nul by strscpy()
+Patch 3 is a proposal to be more future proof.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1009eda7a80000
-start commit:   aeba456828b4 Add linux-next specific files for 20230718
-git tree:       linux-next
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1209eda7a80000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1409eda7a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e7ec534f91cfce6c
-dashboard link: https://syzkaller.appspot.com/bug?extid=155274e882dcbf9885df
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=136fa2aaa80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16629fe4a80000
 
-Reported-by: syzbot+155274e882dcbf9885df@syzkaller.appspotmail.com
-Fixes: c30417b20f49 ("seq_file: Replace strncpy()+nul by strscpy()")
+*Note*: I'm not 100% sure that the order of the functions is the best one in
+thunderstrike_destroy(), but it is the way it was.
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+My personal preference would be to undo things in reverse order they are
+allocated, such as:
+	led_classdev_unregister(&ts->led_dev);
+	power_supply_unregister(ts->base.battery_dev.psy);
+	if (ts->haptics_dev)
+		input_unregister_device(ts->haptics_dev);
+	ida_free(&thunderstrike_ida, ts->id);
+This order was explicitly chnaged by 3ab196f88237, so, as I can't test the
+changes on a real harware, I've left it as-is.
+
+Christophe JAILLET (3):
+  HID: nvidia-shield: Fix a missing led_classdev_unregister() in the
+    probe error handling path
+  HID: nvidia-shield: Fix some missing function calls() in the probe
+    error handling path
+  HID: nvidia-shield: Introduce thunderstrike_destroy()
+
+ drivers/hid/hid-nvidia-shield.c | 23 ++++++++++++++++-------
+ 1 file changed, 16 insertions(+), 7 deletions(-)
+
+-- 
+2.34.1
+
