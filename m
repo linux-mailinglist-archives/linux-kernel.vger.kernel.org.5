@@ -2,181 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F276078939B
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 05:12:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A5B6789394
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 05:11:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231712AbjHZDMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 23:12:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36728 "EHLO
+        id S231641AbjHZDLG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 23:11:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231704AbjHZDLi (ORCPT
+        with ESMTP id S231638AbjHZDLE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 23:11:38 -0400
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 40FEC26BB;
-        Fri, 25 Aug 2023 20:11:36 -0700 (PDT)
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 37Q3AtzQ6031129, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
-        by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 37Q3AtzQ6031129
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sat, 26 Aug 2023 11:10:55 +0800
-Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
- RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Sat, 26 Aug 2023 11:10:17 +0800
-Received: from RTEXH36506.realtek.com.tw (172.21.6.27) by
- RTEXMBS01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Sat, 26 Aug 2023 11:10:17 +0800
-Received: from localhost.localdomain (172.21.252.101) by
- RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server id
- 15.1.2507.17 via Frontend Transport; Sat, 26 Aug 2023 11:10:17 +0800
-From:   Stanley Chang <stanley_chang@realtek.com>
+        Fri, 25 Aug 2023 23:11:04 -0400
+Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id 01D3226BF
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 20:10:59 -0700 (PDT)
+Received: (qmail 279161 invoked by uid 1000); 25 Aug 2023 23:10:58 -0400
+Date:   Fri, 25 Aug 2023 23:10:58 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
 To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-CC:     Stanley Chang <stanley_chang@realtek.com>,
-        Rob Herring <robh@kernel.org>,
+Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
+        Felipe Balbi <balbi@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        <linux-usb@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v6 2/2] dt-bindings: usb: dwc3: Add Realtek DHC RTD SoC DWC3 USB
-Date:   Sat, 26 Aug 2023 11:10:07 +0800
-Message-ID: <20230826031028.1892-2-stanley_chang@realtek.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230826031028.1892-1-stanley_chang@realtek.com>
-References: <20230826031028.1892-1-stanley_chang@realtek.com>
+        USB list <linux-usb@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: dwc3: unusual handling of setup requests with wLength == 0
+Message-ID: <ba06679f-93d2-4cb4-9218-9e288065bdfb@rowland.harvard.edu>
+References: <45d9ef53-e2be-4740-a93a-d36f18a49b39@rowland.harvard.edu>
+ <20230819000643.7mddkitzr4aqjsms@synopsys.com>
+ <e63ba783-f5a4-4442-8736-987a3b134e7f@rowland.harvard.edu>
+ <20230823021429.rlgixqehry4rsqmm@synopsys.com>
+ <5d5973b9-d590-4567-b1d6-4b5f8aeca68b@rowland.harvard.edu>
+ <20230823175903.bpumanwv5fkpwc44@synopsys.com>
+ <08a3759d-4c6b-4034-8516-685e4d96a41e@rowland.harvard.edu>
+ <20230823222202.k7y7hxndsbi7h4x7@synopsys.com>
+ <9b175f9e-ab70-47a3-a943-bfd05601aa23@rowland.harvard.edu>
+ <20230826012024.mboftu3wk7fsrslp@synopsys.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-KSE-ServerInfo: RTEXMBS01.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230826012024.mboftu3wk7fsrslp@synopsys.com>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the DWC3 USB bindings for Realtek SoCs.
+On Sat, Aug 26, 2023 at 01:20:34AM +0000, Thinh Nguyen wrote:
+> Sorry for the delay response.
+> 
+> On Wed, Aug 23, 2023, Alan Stern wrote:
+> > In uas, a -EPROTO error will cause an error status to be returned to the 
+> > SCSI layer, which will invoke the SCSI error handler.  After enough 
+> > failures it will call the uas device-reset handler, and 
+> > uas_eh_device_reset_handler() calls usb_reset_device().
+> 
+> From my testing with UASP, if I recall correctly, there's a 30 second
+> timeout before the reset handler kicks in.
 
-Signed-off-by: Stanley Chang <stanley_chang@realtek.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
----
-v5 to v6 change:
-    No change.
-v4 to v5 change:
-    No change.
-v3 to v4 change:
-    Add reg for register set for pm control.
-    Remove maximum-speed in example.
-v2 to v3 change:
-    Add description for reg
-    Remove property for realtek,unlink-usb3-port.
-    Remove property for realtek,disable-usb3-phy.
-    Use the maximum-speed instead of the above two properties.
-v1 to v2 change:
-    Revise the subject.
-    Rename the file.
-    Fix dtschema warnings.
-    Remove the property realtek,enable-l4icg.
-    Drop status.
----
- .../bindings/usb/realtek,rtd-dwc3.yaml        | 80 +++++++++++++++++++
- 1 file changed, 80 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/usb/realtek,rtd-dwc3.yaml
+That timeout length comes from the SCSI error handler.  I believe the
+user can control the length by setting a sysfs attribute.  Also, it
+should be possible to change the uas driver to make it perform a reset
+on its own right away, the way usb-storage does, without waiting for
+the SCSI error handler -- if this matters.
 
-diff --git a/Documentation/devicetree/bindings/usb/realtek,rtd-dwc3.yaml b/Documentation/devicetree/bindings/usb/realtek,rtd-dwc3.yaml
-new file mode 100644
-index 000000000000..345d0132d4a5
---- /dev/null
-+++ b/Documentation/devicetree/bindings/usb/realtek,rtd-dwc3.yaml
-@@ -0,0 +1,80 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+# Copyright 2023 Realtek Semiconductor Corporation
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/usb/realtek,rtd-dwc3.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Realtek DWC3 USB SoC Controller Glue
-+
-+maintainers:
-+  - Stanley Chang <stanley_chang@realtek.com>
-+
-+description:
-+  The Realtek DHC SoC embeds a DWC3 USB IP Core configured for USB 2.0
-+  and USB 3.0 in host or dual-role mode.
-+
-+properties:
-+  compatible:
-+    items:
-+      - enum:
-+          - realtek,rtd1295-dwc3
-+          - realtek,rtd1315e-dwc3
-+          - realtek,rtd1319-dwc3
-+          - realtek,rtd1319d-dwc3
-+          - realtek,rtd1395-dwc3
-+          - realtek,rtd1619-dwc3
-+          - realtek,rtd1619b-dwc3
-+      - const: realtek,rtd-dwc3
-+
-+  reg:
-+    items:
-+      - description: Address and length of register set for wrapper of dwc3 core.
-+      - description: Address and length of register set for pm control.
-+
-+  '#address-cells':
-+    const: 1
-+
-+  '#size-cells':
-+    const: 1
-+
-+  ranges: true
-+
-+patternProperties:
-+  "^usb@[0-9a-f]+$":
-+    $ref: snps,dwc3.yaml#
-+    description: Required child node
-+
-+required:
-+  - compatible
-+  - reg
-+  - "#address-cells"
-+  - "#size-cells"
-+  - ranges
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    usb@98013e00 {
-+        compatible = "realtek,rtd1319d-dwc3", "realtek,rtd-dwc3";
-+        reg = <0x98013e00 0x140>, <0x98013f60 0x4>;
-+        #address-cells = <1>;
-+        #size-cells = <1>;
-+        ranges;
-+
-+        usb@98050000 {
-+            compatible = "snps,dwc3";
-+            reg = <0x98050000 0x9000>;
-+            interrupts = <0 94 4>;
-+            phys = <&usb2phy &usb3phy>;
-+            phy-names = "usb2-phy", "usb3-phy";
-+            dr_mode = "otg";
-+            usb-role-switch;
-+            role-switch-default-mode = "host";
-+            snps,dis_u2_susphy_quirk;
-+            snps,parkmode-disable-ss-quirk;
-+            snps,parkmode-disable-hs-quirk;
-+            maximum-speed = "high-speed";
-+        };
-+    };
--- 
-2.34.1
 
+> From the xHCI spec, it suggests to issue a CLEAR_FEATURE(halt_ep) after
+> the endpoint reset (e.g. from transaction error). Whether this action
+> should be taken from the class driver or from the xHCI driver, it's not
+> clear. However, as you said, without Bulk-Only Mass Storage Reset
+> request, the host and device will be out of sync. The response action
+> taken from xHCI is independent from MSC protocol. So it would make sense
+> for the UDC driver to treat CLEAR_FEATURE(halt_ep) as such and not
+> expect a Bulk-Only Mass Storage Reset or the equivalent.
+
+In USB-2, performing an endpoint reset in the host controller together
+with sending a Clear-Halt is dangerous.  It can lead to data
+duplication.
+
+Here's how that can happen.  Suppose the data toggles on both the host
+and gadget side are initially equal to 0 when a bulk-OUT transaction
+occur.  The host sends a DATA0 packet which the gadget receives,
+causing the gadget's data toggle to change to 1.  But let's say the
+gadget's ACK handshake gets corrupted, causing a protocol error on the
+host.  So the host does an internal endpoint reset and sends a
+Clear-Halt to the gadget.  When the gadget processes this command, it
+resets its data toggle back to 0.  Now the host resends the same DATA0
+packet as before -- and the gadget accepts it the second time because
+its data toggle is set to 0!  The duplicated data leads to
+corruption.  If the gadget's data toggle had remained 1 then it would
+have acknowledged the duplicate DATA0 packet but otherwise ignored it,
+avoiding the corruption.
+
+I admit the probability of this happening is very low, but a more
+robust error recovery procedure at the class level would prevent this
+scenario.
+
+
+> > > The UDC driver needs to notify the gadget driver somehow, cancelling the
+> > > request and give it back is currently the way dwc3 handling it.
+> > 
+> > And I'm saying that the UDC driver does _not_ need to notify the gadget 
+> > driver.
+> > 
+> > The MSC gadget driver works just fine without any such notification.  
+> > Can you name any gadget driver that _does_ need a notification?
+> > 
+> 
+> We were testing against UASP. The reason I added this was to mimic the
+> behavior of common vendor UASP devices when it recovers from transaction
+> errors in Windows.
+> 
+> When the data sequence of a transfer is reset, the host needs to send
+> CLEAR_FEATURE(halt_ep). It should be a common behavior. Since it is
+> common and part of the xHCI spec, do we expect the xHCI to send this or
+> do we expect the class protocol to document and handle this? At the
+> moment, I expect it to be the former and expect the UDC driver to treat
+> it as a common synchronization that perhaps the only synchronization
+> mechanism the upper protocol depends on.
+
+I think it should be the opposite; the class protocol should specify
+how to recover from errors.  If for no other reason then to avoid the
+data duplication problem for USB-2.  However, if it doesn't specify a
+recovery procedure then there's not much else you can do.
+
+But regardless, how can the gadget driver make any use of the
+knowledge that the UDC received a Clear-Halt?  What would it do
+differently?  If the intent is simply to clear an error condition and
+continue with the existing transfer, the gadget driver doesn't need to
+do anything.
+
+Alternatively, if the procedure for clearing an error condition is
+given by the class protocol then the protocol should spell out a
+method for the host to inform the gadget about what it is doing --
+something more than just sending a Clear-Halt.
+
+Alan Stern
