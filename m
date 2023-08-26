@@ -2,177 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 333017894E0
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 10:39:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 490B37894E3
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 10:39:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231895AbjHZIiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 04:38:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36080 "EHLO
+        id S231997AbjHZIjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 04:39:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231790AbjHZIir (ORCPT
+        with ESMTP id S232156AbjHZIjN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 04:38:47 -0400
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10olkn2096.outbound.protection.outlook.com [40.92.41.96])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF1221BF2;
-        Sat, 26 Aug 2023 01:38:43 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GC2heLubiGjSifoV0Y/m59HKV1Lbg1yDvZrsiXw+wVTYoQilm3bix8USy5u8bZuMJP4Ncv5um3yz4hcwHe/yZQSG9LNcjzw7HtfkO67OcSHl31iVYA9NsCk87mwHYfqHZca+b8pPv46cJDpC8X/jfnwZtIceTBavOMjBtPWvPf7QXSIgtM8T65CFyJDbJchunL7CdCiGGlsuP3Kjz9kmrKm7bzbaDDQcs+Klxkf+wxnKGKiUJTKcc9Bz+XdXkdUunvHRKpcZQ6dy6hXKeSnBiu5039PTHWgarP4ALW9mNgUBVuvK6v9l3OCX9y4kF0KwqwQ5hTEEWAmsRARyVf858Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=oD7D4hOXe241VESq6IMYP/Kc3DL5yh0Yrek02YvU57I=;
- b=UfAE12YUDsb+87EweA9FZSEF+HhtYa8YBYsORqsfWcagmunBbKtHYxQWHFBMk3Bp42AT+B1xWdLg8w/4P2dugzmhwUvai/kdkyUEQgQp2eMnT1fM3lh0MSK3upMldNe0Fd3K+9dCYbqbSV0LU/euYTf1pPzbvxSLuWqKfvUnur/t0WgW0AeO9bNs7msiH2628T0TNGFgIJ1oA30TXwfBoIkCBvLYzNvzYQRGDR6KAnpKu7OtJ9vlHSYgBBCIMkY3R1EuR2a5yNnkx+dHIx6+99ejN88ys9mh0fo2H9PUgGFcY4bXAa0zlRn0kgR33L+37NRLpAwWkTyHoBKGj1YOyA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oD7D4hOXe241VESq6IMYP/Kc3DL5yh0Yrek02YvU57I=;
- b=CCvz1UPdBx3MmcxDeaTziYuq2cR1scPkfgNY13jEsga93+KbpLqrX7s0ab9zkoRDHpRUQs/63sp/UITlvdeVFSF3Ns51WElw/NphWgx+ubHTumx5+dfjNavfwmNxAnqz7wx8vVuUU6p1ZDlJeGIxfxde/H1F72qruufMhAZEauyRA7FblXOD+uKVMyqfbK6VHrEQcywpy9FEnMCASRqdU4kYbsgQK8RChFDG4fIwWsic7lwJ/xw85Q/2Vu87AjcHmnOsC6g+B14boQB5cWrQ7ySzNin2TWBvuiv8vgOTxyKJiwbfz3G4jDthIYkjzDcP7B/rQZSrFXnQe8PT/kBdLg==
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
- by CY5PR20MB4844.namprd20.prod.outlook.com (2603:10b6:930:23::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.29; Sat, 26 Aug
- 2023 08:38:41 +0000
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::cbad:4566:1f3e:4e1f]) by IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::cbad:4566:1f3e:4e1f%4]) with mapi id 15.20.6699.034; Sat, 26 Aug 2023
- 08:38:41 +0000
-From:   Inochi Amaoto <inochiama@outlook.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Inochi Amaoto <inochiama@outlook.com>,
-        Heiko Stuebner <heiko@sntech.de>, Wei Fu <wefu@redhat.com>,
-        Guo Ren <guoren@kernel.org>, devicetree@vger.kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] riscv: dts: allwinner: d1: Add PMU event node
-Date:   Sat, 26 Aug 2023 16:38:53 +0800
-Message-ID: <IA1PR20MB495310F06009AA884D0612A1BBE2A@IA1PR20MB4953.namprd20.prod.outlook.com>
-X-Mailer: git-send-email 2.41.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [MHffcNEFutK/NKvS6NUMhf2bYQ9cSLCmNEjCx7FQJQ0=]
-X-ClientProxiedBy: SI1PR02CA0047.apcprd02.prod.outlook.com
- (2603:1096:4:1f5::15) To IA1PR20MB4953.namprd20.prod.outlook.com
- (2603:10b6:208:3af::19)
-X-Microsoft-Original-Message-ID: <20230826083853.136087-1-inochiama@outlook.com>
+        Sat, 26 Aug 2023 04:39:13 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DABC1213A
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 01:39:10 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-52a1132b685so2448010a12.1
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 01:39:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693039149; x=1693643949;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=EYzLu3AMnSBzud06vqVq1DYv850gj02s8/sr8kWECTA=;
+        b=qlN9lkSoz+R+Wwuy0nxuQaqLw47sDENR1RxNYCmTu5wa7/xjxFLkqqKHaFNRAuvAmG
+         ku0VPwPrYf3tt4irem6XMKNlBx/nAX/uQ+KZP2Ri8rMUAb0iycjZoDyggPJB7sEVLG5A
+         aYzZjdqgVCpG6XCInzKTInplBzt8zuMzRZWOX5Zcl8rq4UHV+LWVPC8dSQ6pwdgiAGKY
+         B7ioVh0vb4PpAACHdRi8Ycg8RaWSFGRTL4V8phfaoUzfvBiXLfScbiXxzh2smeO96BS/
+         tsGs1Wv/+bLdEEiAgvfZo5rieE7HBdDQoVe6sknfCWhq2rokourV3e7S4Bm3b2e0zluJ
+         zQDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693039149; x=1693643949;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=EYzLu3AMnSBzud06vqVq1DYv850gj02s8/sr8kWECTA=;
+        b=OiUCk6nrglTmo3P08/ZhNCKIq7yGislGTFiyeq4mipabMJUUm7TFY92VGMRFpS2dQv
+         qpjU39jXsRp0j7FH94ghqSxb8NCFjv5RwOpF5DbBpu2L36EJH3BWmFAaBxJM/bvOaewT
+         h6jp2SNcyFQ+cE9inzNvSrneawnyuFWmvAX0lY/wu0iYDWQT06AxtoWGc8UVbqKwEqYr
+         DBsZaIva9t9HQzBdqY4+W2e8vsOkI5eNs8p813HYJGGeic49dEckLf/9BzJ8ZWftXtGQ
+         qu7m4H0mAw5nE/7ClB5822mRNDzXon2dmnAF9TjlM6WkgDWIV55aLbwzeNMJ9Ry84jKT
+         klyg==
+X-Gm-Message-State: AOJu0Yz4EK84aeeBKnibaKhkzkQLL8PwSz3I+w3UN8W/KyirgR+Et7Dq
+        YNGJzdHssndyKG/YvUWJBJJG1g==
+X-Google-Smtp-Source: AGHT+IH0NSUHl+zlxwX59+CEhOV2G5X+o9fhfo/09fJz4+7mLKi1QQsroRh2/Q+KC0BC7koudme1MQ==
+X-Received: by 2002:a17:906:58:b0:9a2:1b05:24c5 with SMTP id 24-20020a170906005800b009a21b0524c5mr4521790ejg.43.1693039149327;
+        Sat, 26 Aug 2023 01:39:09 -0700 (PDT)
+Received: from [192.168.0.22] ([77.252.47.198])
+        by smtp.gmail.com with ESMTPSA id m19-20020a170906849300b0099cf91fe297sm1915891ejx.13.2023.08.26.01.39.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 26 Aug 2023 01:39:08 -0700 (PDT)
+Message-ID: <afd4843b-427a-8535-78e2-f81879378371@linaro.org>
+Date:   Sat, 26 Aug 2023 10:39:07 +0200
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR20MB4953:EE_|CY5PR20MB4844:EE_
-X-MS-Office365-Filtering-Correlation-Id: ee2e1c8b-3c11-4967-3563-08dba60fd966
-X-MS-Exchange-SLBlob-MailProps: fNPDeqDZc0IqNcQZ0cWXe5cnwXgLTXMXawnC9DpyrkulOlbW3559MAetkeiX/vvx7VMtdZtUmk81ECGuSBmKlY8ahOtwfP8DAoMYBPQ1Mx0vXK5/7HgqPAUbe2PyppQNJRVXwWjuQ2jWJqZ6d3SjgAQRL5VYO7lsAKfGKAoIRoQD7topwgtbO+3OG2dyk6w4nbCw3cLLakhJWS3/Xkovj0FdwdOnR2iAiHKJYk8inM3JeYc1c2M5DsccQcFdiYvNWM8Q6ilLWLke2X3ZnYrWRxnq7qsE6j3iAN/dlPF1T9qQFfiiqhbMZ2f+/K/mquZfsjnnitZD07GzJlhv0BpeekGxRN4pdSSq2wJGs8vCtiVvAXJxtSFA34TTbO13nNjaaFS7tL5efMPcUcMR/l1FKbP/MVFTy+dunz7D6AHcnQbb8JMWIvmXPUymd2khKmVv+xKLljZ5HBKY5WXzLemixxq6A+E5/eoXo8cdjt8ECiIkCeUZtlQteKc6vU7+rbe3Nr9iZsNzPqp0vwvN0Jo0fromdK03JhPWvYx5cXHcIvqxxTSqyqn9AQcDDTVfUwup6Q7CiNUq78Rj4XY4l9CtEdYtwzrRf2iDXsk0BinOlzomtORpEkJGNotXxJBLcOlA+ndOmHpHS6ezDV3Y0IOVj5qUfoyHqsa05Wp4g39Q0xUxTbzeNnFesNTSoSNpKgQxFmZQNIjn8s8ldID0hZBe4Vc8pYZwdsCnI4qG1kElKi08gc0VN6I0BfG9b/elsCaT7yC7Z/2xpQdSRPo4Pq45sA==
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /xfzoutTd4KbPC8a5ig7BaZCmVs0y6+nriuiDMEPM60MF8DKz1oSm7RfLCo2oo5qJJ0T13u0uxJt5rqmbcH04nWtL4qweZHOTlTcgDWWykt88mYW0R9+ic7j79B0dBiPyOUYvHQbwFB5BhbXdtj+wwMmhhn2JmgbpgLbC93jv47aZ0D6ZcOZNPLNBIjRgydMVbugQUo24WYcxRcchJ+3mkUpcZtdJCrAS9QnWAryz/H9X3tZ5mFZogfuJ5foxKW2p2GCbPo26S3VFH9Fbt5jAQDeH2HSA4Ob5C+zqEFebg9tNwPR8NC2qNYEud6Io7gtctIW5L8+V/CEW+p8Qes5231HSK8/O8VbnFwdDjjdJ/5K0WG8u7tROxT+k9vVeLDk9XWgzrlEeFOmsG4c1UQetuXR7/+Tw8aKu/akW9UUgf8H5+Q5AxLNSWJZZHsaA0oPdU2A6iISqcYcsE2Ruy9ZIegnTosi2CVJDNDa8Bn1dEiEFelRIJq45fWWc9jm55t1nZUqZpdysgFtWFMtHw/ei1D8s41inKebAdYHAZHi7dbusHNf4yJSQiBJdNd9jsHoj9yJtyQJWUpLCq6JYxLM5npy3VrBucEbKF03owJlXBI=
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?RvkwzbWBCRZt3sM5Z39tEPeaVmeKNeDc6g/MKvqGjYyi2a8TWN5BN2lHWa1L?=
- =?us-ascii?Q?QbKZWjdo0XxRZVI4ISz1lqEW3JgzocPuq/iX66KJs5LH2vKVuHVDJ8/X/f9N?=
- =?us-ascii?Q?GwWJ0YYcmsqQFd++n/XYNtGVbNsGwlmTU1RCOIaf9yOkLSD3uu6ZdBGNyeCP?=
- =?us-ascii?Q?TAMd4VvRWx0wut3t4DWv99/Vus8Bk5tK3kHJBuHflT7ovNPaQN9mtmnpfBUj?=
- =?us-ascii?Q?VVoGqeqw47002Zsq3YULKvsCjy0fDYylo5/uwen8XBDt/o4qubuxuCSbF54b?=
- =?us-ascii?Q?dDmhfnXZnShXySHsJ8W5ttBDVJAtq3r4G+uADBDzSiVSPuya3Kz160htYIDU?=
- =?us-ascii?Q?x7QyofWGrDyPPMcaUUZy0XdiYoHmcfcB7KhT84EdicbuSDG1+9S2b1FD3AR2?=
- =?us-ascii?Q?hp4Qg7JPuRbK72O++74LnJ2jyLX3BnIRM6EhI0tvRmqX0e0SRzzjzNjelVmQ?=
- =?us-ascii?Q?qmyNsWZy95u98pOOJN21Lqmvr5bK1XnQMk/+1He6g4GRLK6+gwMicAZ+qOpE?=
- =?us-ascii?Q?suxGcq0nzALS/iBZSLguFUR/Wb39XCa9V9slx8oDkOTRF6ci3zD7ZfAxa+tJ?=
- =?us-ascii?Q?YFHJFVtncp99H58p1BXhLhKwb5/2t4ZIJwg8Ksux6UIXueNudFYiQxmtJfgZ?=
- =?us-ascii?Q?oWNe1aYwgaTvYP3dVmRMluozJsQC2/apGUAbRkeqTS2VodMK3UZlbmyV70TB?=
- =?us-ascii?Q?NpXcLlbqJJCP8wCTmS0CAYhIWbFESg+YpCCJ+Oz6QP/N8mbyPB1Um2XyaKgQ?=
- =?us-ascii?Q?qQnM5djyieWkzQO5dpkadROOleKxNRj3TByGq0PDsKDaAyV9DpVBVGRfzLxX?=
- =?us-ascii?Q?tzLWsoh2y9suQ0WwQqQapFsqvdJ5JGf3wXf7H7XSyrGWfB0fAyuZkcOXL9Iq?=
- =?us-ascii?Q?KjiJKz5Wcx67olGRXMpTY6oYGeTXUaeBkxHDRxhwxHii/vRKsx01N8sr4pY6?=
- =?us-ascii?Q?MhbossKdX5htrJ6s1ck6hmns8k3b7kW7AzA40vlpLSlsOeV1PurrJbfveXWB?=
- =?us-ascii?Q?NSH2A8kivhFao5u8eVWtOonj2Lys0JR6IYRx2cJ5PQv3rdXcG4TwrxN8qp0t?=
- =?us-ascii?Q?CR1dAjn2UBb2cSOELoskWIJaHV9UgN7e+jn2kE22gh06f41GbRgWLDxLE0wJ?=
- =?us-ascii?Q?l9CbAqPsjd7cGgqsdCjW/sKdW0Wt+pbAHAdRcLtEtD+wLOc3s+Bs6ONMjEsP?=
- =?us-ascii?Q?KG6pyoIIS9bQ4ijGXNTQmiUHYWXN/nGJ2WhqkUOkzqnRXGlQ1KjBfvoAyGY?=
- =?us-ascii?Q?=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ee2e1c8b-3c11-4967-3563-08dba60fd966
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR20MB4953.namprd20.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Aug 2023 08:38:41.6134
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR20MB4844
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v4 2/3] dt-bindings: usb: snps,dwc3: Add
+ runtime-suspend-on-usb-suspend property
+Content-Language: en-US
+To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Roger Quadros <rogerq@kernel.org>,
+        Elson Serrao <quic_eserrao@quicinc.com>
+Cc:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
+References: <20230814185043.9252-1-quic_eserrao@quicinc.com>
+ <20230814185043.9252-3-quic_eserrao@quicinc.com>
+ <a77403f5-8b99-3012-3843-1999ee8d12ce@linaro.org>
+ <6b27cd55-4e44-7a26-30ff-9692344cae4c@quicinc.com>
+ <31fa930a-51fb-6a7f-300d-e71f6b399eb1@linaro.org>
+ <a0a6c561-6319-00ba-c6db-f1dec9f0f0aa@quicinc.com>
+ <5dfae814-7233-eb1f-cae7-f335e54ce1b6@linaro.org>
+ <cf0227c8-cd02-81b6-9e13-2e7fe6f505f2@kernel.org>
+ <20230826015257.mbogiefsbz5474ft@synopsys.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230826015257.mbogiefsbz5474ft@synopsys.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-D1 has several pmu events supported by opensbi.
-These events can be used by perf for profiling.
+On 26/08/2023 03:53, Thinh Nguyen wrote:
+>>>> For example on Qualcomm platforms there is a phy sideband signalling 
+>>>> which detects the wakeup signal when resume is initiated by the host.
+>>>
+>>> So compatible-specific.
+>>>
+>>>> Thus qcom platforms can benefit from this feature by defining this dt 
+>>>> property. (in a parallel discussion with Thinh N to come up with a 
+>>>> better name for this dt entry).
+>>>
+>>> Thanks, with quite a long message you at the end admitted this is
+>>> compatible-specific. Exactly what I wrote it one sentence previously.
+>>>
+> 
+> Various dwc3 platforms often share a common capability that can be
+> shared with a common dt property. If we dedicate a property such as in
+> this case, it helps designers enable a certain feature without updating
+> the driver every time a new platform is introduced. It also helps keep
+> the driver a bit simpler on the compatible checks.
 
-Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
----
- arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi | 40 +++++++++++++++++++
- 1 file changed, 40 insertions(+)
+That's not the purpose of bindings. Sorry.
 
-diff --git a/arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi b/arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi
-index 8275630af977..d9031ccdec89 100644
---- a/arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi
-+++ b/arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi
-@@ -72,5 +72,45 @@ plic: interrupt-controller@10000000 {
- 			#address-cells = <0>;
- 			#interrupt-cells = <2>;
- 		};
-+
-+		pmu {
-+			compatible = "riscv,pmu";
-+			riscv,event-to-mhpmcounters =
-+				<0x00003 0x00003 0x00000008>,
-+				<0x00004 0x00004 0x00000010>,
-+				<0x00005 0x00005 0x00000200>,
-+				<0x00006 0x00006 0x00000100>,
-+				<0x10000 0x10000 0x00004000>,
-+				<0x10001 0x10001 0x00008000>,
-+				<0x10002 0x10002 0x00010000>,
-+				<0x10003 0x10003 0x00020000>,
-+				<0x10019 0x10019 0x00000040>,
-+				<0x10021 0x10021 0x00000020>;
-+			riscv,event-to-mhpmevent =
-+				<0x00003 0x00000000 0x00000001>,
-+				<0x00004 0x00000000 0x00000002>,
-+				<0x00005 0x00000000 0x00000007>,
-+				<0x00006 0x00000000 0x00000006>,
-+				<0x0000a 0x00000000 0x0000000b>,
-+				<0x10000 0x00000000 0x0000000c>,
-+				<0x10001 0x00000000 0x0000000d>,
-+				<0x10002 0x00000000 0x0000000e>,
-+				<0x10003 0x00000000 0x0000000f>,
-+				<0x10019 0x00000000 0x00000004>,
-+				<0x10021 0x00000000 0x00000003>;
-+			riscv,raw-event-to-mhpmcounters =
-+				<0x00000000 0x00000001 0xffffffff 0xffffffff 0x00000008>,
-+				<0x00000000 0x00000002 0xffffffff 0xffffffff 0x00000010>,
-+				<0x00000000 0x00000003 0xffffffff 0xffffffff 0x00000020>,
-+				<0x00000000 0x00000004 0xffffffff 0xffffffff 0x00000040>,
-+				<0x00000000 0x00000005 0xffffffff 0xffffffff 0x00000080>,
-+				<0x00000000 0x00000006 0xffffffff 0xffffffff 0x00000100>,
-+				<0x00000000 0x00000007 0xffffffff 0xffffffff 0x00000200>,
-+				<0x00000000 0x0000000b 0xffffffff 0xffffffff 0x00002000>,
-+				<0x00000000 0x0000000c 0xffffffff 0xffffffff 0x00004000>,
-+				<0x00000000 0x0000000d 0xffffffff 0xffffffff 0x00008000>,
-+				<0x00000000 0x0000000e 0xffffffff 0xffffffff 0x00010000>,
-+				<0x00000000 0x0000000f 0xffffffff 0xffffffff 0x00020000>;
-+		};
- 	};
- };
--- 
-2.41.0
+> 
+> Regardless, what Krzysztof said is valid. Perhaps we can look into
+> enhancing dwc3 to maintain shared behavior based on compatible instead?
+
+
+Best regards,
+Krzysztof
 
