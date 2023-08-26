@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C6A87896D0
+	by mail.lfdr.de (Postfix) with ESMTP id C340C7896D1
 	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 14:54:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232438AbjHZMyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 08:54:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45506 "EHLO
+        id S232467AbjHZMyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 08:54:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232243AbjHZMxx (ORCPT
+        with ESMTP id S232253AbjHZMxz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 08:53:53 -0400
+        Sat, 26 Aug 2023 08:53:55 -0400
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4756C1BC6
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 05:53:51 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 83C0919AE;
+        Sat, 26 Aug 2023 05:53:53 -0700 (PDT)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5113FD75;
-        Sat, 26 Aug 2023 05:54:31 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 99A5F1FB;
+        Sat, 26 Aug 2023 05:54:33 -0700 (PDT)
 Received: from pluto.fritz.box (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 53F3D3F64C;
-        Sat, 26 Aug 2023 05:53:49 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 431503F64C;
+        Sat, 26 Aug 2023 05:53:51 -0700 (PDT)
 From:   Cristian Marussi <cristian.marussi@arm.com>
 To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     sudeep.holla@arm.com, james.quinlan@broadcom.com,
@@ -28,10 +28,12 @@ Cc:     sudeep.holla@arm.com, james.quinlan@broadcom.com,
         etienne.carriere@foss.st.com, peng.fan@oss.nxp.com,
         chuck.cannon@nxp.com, souvik.chakravarty@arm.com,
         nicola.mazzucato@arm.com,
-        Cristian Marussi <cristian.marussi@arm.com>
-Subject: [PATCH v2 4/6] firmware: arm_scmi: Add Clock .state_get support to pre-v3.2
-Date:   Sat, 26 Aug 2023 13:53:06 +0100
-Message-ID: <20230826125308.462328-5-cristian.marussi@arm.com>
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org
+Subject: [PATCH v2 5/6] clk: scmi: Add support for .is_enabled clk_ops
+Date:   Sat, 26 Aug 2023 13:53:07 +0100
+Message-ID: <20230826125308.462328-6-cristian.marussi@arm.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20230826125308.462328-1-cristian.marussi@arm.com>
 References: <20230826125308.462328-1-cristian.marussi@arm.com>
@@ -46,109 +48,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support Clock .state_get operation against SCMI platform servers that do
-not support v3.2 CONFIG_GET dedicated command: while talking with these
-platforms the command CLOCK_ATTRIBUTES can be used to gather the current
-clock states.
+Add support for .is_enabled atomic clk_ops using the related SCMI Clock
+operation in atomic mode, if available.
 
-Note that, in case of shared resources, the retrieved clock state 'flavour'
-(virtual vs physical) depends on the backend SCMI platform server specific
-kind of implementation.
+Note that the .is_enabled callback will be supported by this SCMI Clock
+driver only if the configured underlying SCMI transport does support atomic
+operations.
 
+CC: Michael Turquette <mturquette@baylibre.com>
+CC: Stephen Boyd <sboyd@kernel.org>
+CC: linux-clk@vger.kernel.org
 Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
 ---
- drivers/firmware/arm_scmi/clock.c | 52 ++++++++++++++++++++++++++-----
- 1 file changed, 45 insertions(+), 7 deletions(-)
+v1 --> v2
+- use more descriptive defines
+---
+ drivers/clk/clk-scmi.c | 23 ++++++++++++++++++++---
+ 1 file changed, 20 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/firmware/arm_scmi/clock.c b/drivers/firmware/arm_scmi/clock.c
-index 1f3ba53877d4..519f4586c47b 100644
---- a/drivers/firmware/arm_scmi/clock.c
-+++ b/drivers/firmware/arm_scmi/clock.c
-@@ -132,6 +132,9 @@ struct clock_info {
- 	int (*clock_config_set)(const struct scmi_protocol_handle *ph,
- 				u32 clk_id, enum clk_state state,
- 				u8 oem_type, u32 oem_val, bool atomic);
-+	int (*clock_config_get)(const struct scmi_protocol_handle *ph,
-+				u32 clk_id, u8 oem_type, u32 *attributes,
-+				bool *enabled, u32 *oem_val, bool atomic);
- };
+diff --git a/drivers/clk/clk-scmi.c b/drivers/clk/clk-scmi.c
+index b7a180b3443e..2e1337b511eb 100644
+--- a/drivers/clk/clk-scmi.c
++++ b/drivers/clk/clk-scmi.c
+@@ -20,6 +20,7 @@ static const struct scmi_clk_proto_ops *scmi_proto_clk_ops;
  
- static enum scmi_clock_protocol_cmd evt_2_cmd[] = {
-@@ -511,9 +514,9 @@ static int scmi_clock_disable(const struct scmi_protocol_handle *ph, u32 clk_id,
+ struct scmi_clk {
+ 	u32 id;
++	struct device *dev;
+ 	struct clk_hw hw;
+ 	const struct scmi_clock_info *info;
+ 	const struct scmi_protocol_handle *ph;
+@@ -105,10 +106,24 @@ static void scmi_clk_atomic_disable(struct clk_hw *hw)
+ 	scmi_proto_clk_ops->disable(clk->ph, clk->id, ATOMIC);
  }
  
- static int
--scmi_clock_config_get(const struct scmi_protocol_handle *ph, u32 clk_id,
--		      u8 oem_type, u32 *attributes, bool *enabled,
--		      u32 *oem_val, bool atomic)
-+scmi_clock_config_get_v21(const struct scmi_protocol_handle *ph, u32 clk_id,
-+			  u8 oem_type, u32 *attributes, bool *enabled,
-+			  u32 *oem_val, bool atomic)
- {
- 	int ret;
- 	u32 flags;
-@@ -552,11 +555,43 @@ scmi_clock_config_get(const struct scmi_protocol_handle *ph, u32 clk_id,
- 	return ret;
- }
- 
-+static int
-+scmi_clock_config_get_v2(const struct scmi_protocol_handle *ph, u32 clk_id,
-+			 u8 oem_type, u32 *attributes, bool *enabled,
-+			 u32 *oem_val, bool atomic)
++static int scmi_clk_atomic_is_enabled(struct clk_hw *hw)
 +{
 +	int ret;
-+	struct scmi_xfer *t;
-+	struct scmi_msg_resp_clock_attributes *resp;
++	bool enabled = false;
++	struct scmi_clk *clk = to_scmi_clk(hw);
 +
-+	if (!enabled)
-+		return -EINVAL;
-+
-+	ret = ph->xops->xfer_get_init(ph, CLOCK_ATTRIBUTES,
-+				      sizeof(clk_id), sizeof(*resp), &t);
++	ret = scmi_proto_clk_ops->state_get(clk->ph, clk->id, &enabled, ATOMIC);
 +	if (ret)
-+		return ret;
++		dev_warn(clk->dev,
++			 "Failed to get state for clock ID %d\n", clk->id);
 +
-+	t->hdr.poll_completion = atomic;
-+	put_unaligned_le32(clk_id, t->tx.buf);
-+	resp = t->rx.buf;
-+
-+	ret = ph->xops->do_xfer(ph, t);
-+	if (!ret)
-+		*enabled = IS_CLK_ENABLED(resp->attributes);
-+
-+	ph->xops->xfer_put(ph, t);
-+
-+	return ret;
++	return !!enabled;
 +}
 +
- static int scmi_clock_state_get(const struct scmi_protocol_handle *ph,
- 				u32 clk_id, bool *enabled, bool atomic)
- {
--	return scmi_clock_config_get(ph, clk_id, NULL_OEM_TYPE, NULL,
--				     enabled, NULL, atomic);
-+	struct clock_info *ci = ph->get_priv(ph);
-+
-+	return ci->clock_config_get(ph, clk_id, NULL_OEM_TYPE, NULL,
-+				    enabled, NULL, atomic);
- }
+ /*
+- * We can provide enable/disable atomic callbacks only if the underlying SCMI
+- * transport for an SCMI instance is configured to handle SCMI commands in an
+- * atomic manner.
++ * We can provide enable/disable/is_enabled atomic callbacks only if the
++ * underlying SCMI transport for an SCMI instance is configured to handle
++ * SCMI commands in an atomic manner.
+  *
+  * When no SCMI atomic transport support is available we instead provide only
+  * the prepare/unprepare API, as allowed by the clock framework when atomic
+@@ -132,6 +147,7 @@ static const struct clk_ops scmi_atomic_clk_ops = {
+ 	.set_rate = scmi_clk_set_rate,
+ 	.enable = scmi_clk_atomic_enable,
+ 	.disable = scmi_clk_atomic_disable,
++	.is_enabled = scmi_clk_atomic_is_enabled,
+ };
  
- static int scmi_clock_count_get(const struct scmi_protocol_handle *ph)
-@@ -723,10 +758,13 @@ static int scmi_clock_protocol_init(const struct scmi_protocol_handle *ph)
- 	}
+ static int scmi_clk_ops_init(struct device *dev, struct scmi_clk *sclk,
+@@ -221,6 +237,7 @@ static int scmi_clocks_probe(struct scmi_device *sdev)
  
- 	if (PROTOCOL_REV_MAJOR(version) >= 0x2 &&
--	    PROTOCOL_REV_MINOR(version) >= 0x1)
-+	    PROTOCOL_REV_MINOR(version) >= 0x1) {
- 		cinfo->clock_config_set = scmi_clock_config_set_v21;
--	else
-+		cinfo->clock_config_get = scmi_clock_config_get_v21;
-+	} else {
- 		cinfo->clock_config_set = scmi_clock_config_set_v2;
-+		cinfo->clock_config_get = scmi_clock_config_get_v2;
-+	}
+ 		sclk->id = idx;
+ 		sclk->ph = ph;
++		sclk->dev = dev;
  
- 	cinfo->version = version;
- 	return ph->set_priv(ph, cinfo);
+ 		/*
+ 		 * Note that when transport is atomic but SCMI protocol did not
 -- 
 2.42.0
 
