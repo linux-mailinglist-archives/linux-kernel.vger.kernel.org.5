@@ -2,55 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45785789643
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 13:25:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57F96789648
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 13:26:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232599AbjHZLYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 07:24:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51206 "EHLO
+        id S232619AbjHZLZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 07:25:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232549AbjHZLYk (ORCPT
+        with ESMTP id S232674AbjHZLZi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 07:24:40 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DFFE19A0;
-        Sat, 26 Aug 2023 04:24:38 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DDDB861881;
-        Sat, 26 Aug 2023 11:24:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE4D2C433C8;
-        Sat, 26 Aug 2023 11:24:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1693049077;
-        bh=4xY2yHBfvVm2yFqr0cbJeko4G4N9NujIbsiZ5iVIA8A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FdnT6nQ5e9blAjttL1iEm2EJFXxQNLkgNeqmOdGQ81kXjnoTTuqODc38tkDI8GRL0
-         qn2FGzMRg7UCWnjAiQexrgKE2CoebJNZDB7USDd39s01vqLX/PSY4I65EBZvaOXfZV
-         WbLVDvSg8sY8Sv8fp9f8E1lRxNYEF1NLS/6gdLfo=
-Date:   Sat, 26 Aug 2023 13:24:33 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Josh Poimboeuf <jpoimboe@kernel.org>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        x86@kernel.org, peterz@infradead.org, keescook@chromium.org,
-        elver@google.com, dvyukov@google.com, glider@google.com
-Subject: Re: [BUG] missing return thunk: __ret+0x5/0x7e-__ret+0x0/0x7e: e9 f6
- ff ff ff
-Message-ID: <2023082618-pulse-wildcat-6746@gregkh>
-References: <4dc3d0ec-b827-4bce-8927-cfa5d837fd03@paulmck-laptop>
- <20230816181720.GNZN0SsKi/B4eCsZHu@fat_crate.local>
- <2023082458-vividness-habitable-cbc8@gregkh>
- <20230825232657.psb7c7x2tdgzciqw@treble>
+        Sat, 26 Aug 2023 07:25:38 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BC572123;
+        Sat, 26 Aug 2023 04:25:34 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2b9c907bc68so25487691fa.2;
+        Sat, 26 Aug 2023 04:25:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693049132; x=1693653932;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Z7q9dBWc81QA1pa/uzOif31Eyr0SsHNs9yCw/zf7Ygo=;
+        b=naL2RizsHkPl81Tn7M8FOmAl9U7H/P2uC5hoXX9gkpE1RzukK9ZQX7oW3Gca7QtL0r
+         bqDXOFgFHW6FKtGc+I7gOYLD6H1JxC+bV0Jl3pmn5JIxVc8v12qTKPTH791hgNJURaLW
+         Ri3/wI2XbvrJS2D8HaF50tofAySosTVqaPJmG4Fn6+yQkBGJO6JH34loz2xeK/IM1YbZ
+         lhdfDdr81cpMXwWgE+uZ+RpUZ8zx+Es/BGso2yqfiFPZDqxC/Ua8tcydMqVXpngYLzQg
+         KwknZlQTcfYjUZDRRR9bD7OQKk3ht+HHXOn1Ekg7gPPiN6FVEvhm0ptuVpzxZ9pn6qly
+         SEjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693049132; x=1693653932;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Z7q9dBWc81QA1pa/uzOif31Eyr0SsHNs9yCw/zf7Ygo=;
+        b=jSto9URzdBj2BztMc10buYCqATe1DOj7WJgxtTEItMM5KOh2scNirZmvO61EgLqQsL
+         MGQ8qJILaPmQC6rG0kGTCc4umCVvHVIgbF+iN8es+wCUt2ejR0CB7/6f9rPGdxw5dPfU
+         1EGPPX24DZv8DCeMRVPHgPXKLu5XebJMpr+fveMU+ykaQ/D1dXir0/YBzP3wOWntgkBm
+         9zGtkBLwCoOG+TmviYY9G5NW14s8tD4ZTXmKLJhPGN8gyO2fjCZWcsdYnC5rRoMEceNc
+         rvUGZQGra/eX0Wk3MtnLJkgHFZqu2nZB8HTi9n0ZmdG0Ggzvv3fiKOB9vSKS4wPqohOz
+         /vIA==
+X-Gm-Message-State: AOJu0Yx6txYvIu3Bw5eD/2mfSgSDKSdKDlj8Bh0PPEMjRuuCf+kiPDl2
+        2Euz/8YU/2YPiZ2YGd2oB2wVGKDebavymQ==
+X-Google-Smtp-Source: AGHT+IHa1RBHeNuoBKWE4UageeHtiPeJkDemALQvIrHv67GOVFom87yOULnI/u0HmGGkixDme02t+g==
+X-Received: by 2002:a2e:7810:0:b0:2bc:e46d:f4d0 with SMTP id t16-20020a2e7810000000b002bce46df4d0mr5668480ljc.2.1693049132260;
+        Sat, 26 Aug 2023 04:25:32 -0700 (PDT)
+Received: from user-PC.. ([178.134.198.138])
+        by smtp.gmail.com with ESMTPSA id u9-20020a2e9b09000000b002b9b27cf729sm758451lji.52.2023.08.26.04.25.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 26 Aug 2023 04:25:31 -0700 (PDT)
+From:   Maksim Kiselev <bigunclemax@gmail.com>
+To:     linux-clk@vger.kernel.org
+Cc:     badolevishal1116@gmail.com, chinmoyghosh2001@gmail.com,
+        linux-kernel@vger.kernel.org, mintupatel89@gmail.com,
+        mturquette@baylibre.com, sboyd@kernel.org, vimal.kumar32@gmail.com
+Subject: Re: [PATCH v5] Common clock: To list active consumers of clocks
+Date:   Sat, 26 Aug 2023 14:25:24 +0300
+Message-Id: <20230826112524.4134627-1-bigunclemax@gmail.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <1669569799-8526-1-git-send-email-badolevishal1116@gmail.com>
+References: <1669569799-8526-1-git-send-email-badolevishal1116@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230825232657.psb7c7x2tdgzciqw@treble>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -59,73 +73,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 25, 2023 at 04:26:57PM -0700, Josh Poimboeuf wrote:
-> On Thu, Aug 24, 2023 at 03:52:56PM +0200, Greg KH wrote:
-> > On Wed, Aug 16, 2023 at 08:17:20PM +0200, Borislav Petkov wrote:
-> > > Hey Paul,
-> > > 
-> > > On Wed, Aug 16, 2023 at 10:54:09AM -0700, Paul E. McKenney wrote:
-> > > > I hit the splat at the end of this message in recent mainline, and has
-> > > > appeared some time since v6.5-rc1.  Should I be worried?
-> > > 
-> > > does it go away if you try the latest tip:x86/urgent branch?
-> > 
-> > Note, this problem is showing up in the 6.1.y branch right now, due to
-> > one objtool patch not being able to be backported there easily (i.e. I
-> > tried and gave up.)
-> > 
-> > 4ae68b26c3ab ("objtool/x86: Fix SRSO mess") being the commit that I
-> > can't seem to get to work properly, my attempt can be seen here:
-> > 	https://lore.kernel.org/r/2023082212-pregnant-lizard-80e0@gregkh
-> 
-> > --- a/tools/objtool/arch/x86/decode.c
-> > +++ b/tools/objtool/arch/x86/decode.c
-> > @@ -796,8 +796,11 @@ bool arch_is_retpoline(struct symbol *sy
-> >  
-> >  bool arch_is_rethunk(struct symbol *sym)
-> >  {
-> > -	return !strcmp(sym->name, "__x86_return_thunk") ||
-> > -	       !strcmp(sym->name, "srso_untrain_ret") ||
-> > -	       !strcmp(sym->name, "srso_safe_ret") ||
-> > -	       !strcmp(sym->name, "retbleed_return_thunk");
-> > +	return !strcmp(sym->name, "__x86_return_thunk");
-> > +}
-> > +
-> > +bool arch_is_embedded_insn(struct symbol *sym)
-> > +{
-> > +	return !strcmp(sym->name, "retbleed_return_thunk") ||
-> > +	       !strcmp(sym->name, "srso_safe_ret");
-> 
-> This wouldn't work with the current 6.1.y branch, I assume you had some
-> other patches applied before this.  e.g., the patch renaming __ret to
-> retbleed_return_thunk.
+Sorry for disturbing. Just a gentle ping :) 
+This patch looks abandoned.
+Is there any chance that it will be reviewed?
 
-Yes, I did.
-
-> >  }
-> > --- a/tools/objtool/check.c
-> > +++ b/tools/objtool/check.c
-> > @@ -418,7 +418,7 @@ static int decode_instructions(struct ob
-> >  		}
-> >  
-> >  		list_for_each_entry(func, &sec->symbol_list, list) {
-> > -			if (func->type != STT_FUNC || func->alias != func)
-> > +			if (func->embedded_insn || func->alias != func)
-> >  				continue;
-> 
-> This hunk looks like a bug.  This might be the source of your problems.
-
-Ah, I guessed wrong on that change, my fault :(
-
-> The below patch seems to work on stock 6.1.47.  Or if you have other
-> SRSO patches pending, point me to them and I can look at porting this
-> one to fit.
-
-I got this to apply on top of the latest series (-rc) and it passes
-test-builds here.  I'll do a release now without it and then queue this
-up, along with some other fixes for reported problems in previous
-releases, and release it so that the CI systems can go at it.
-
-Many thanks for this!
-
-greg k-h
+Cheers,
+Maksim
