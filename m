@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5EDA789931
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 23:08:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84AF178992F
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 23:08:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229878AbjHZVIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 17:08:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37408 "EHLO
+        id S229888AbjHZVIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 17:08:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229776AbjHZVHm (ORCPT
+        with ESMTP id S229787AbjHZVHp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 17:07:42 -0400
-Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ACB2E50
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 14:07:40 -0700 (PDT)
-Received: by mail-oo1-xc2b.google.com with SMTP id 006d021491bc7-5633b7e5f90so1282991eaf.1
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 14:07:40 -0700 (PDT)
+        Sat, 26 Aug 2023 17:07:45 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67CE1E1
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 14:07:43 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id 46e09a7af769-6bcae8c4072so1396470a34.1
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 14:07:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693084060; x=1693688860;
+        d=gmail.com; s=20221208; t=1693084062; x=1693688862;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5OOg8+maoDUe9q7mOudOl/p44V4LSOgvZCREz8VZty8=;
-        b=IonTgb9QkQqRKfraItYCeB897JjYJHlJowFFlaXyLOHThcHeevaluGOSb24nj2j/aI
-         nllWloXEwhHSIKFXO1Kjam1TY4Kjh2xx/Om70Uw+cckcr1rYaZoU7AH+bzpE4YpsXPF0
-         1o7szmlYtgD4DlYrJaznxyxMmjOeHzEMIkXaGNM+5vy1+DYbe09s3puCiKiMZ2l2M2U0
-         dki6Z3FEB4zx8/P4n9yd4UAcafMkmytN+TXL2zon3P7I5xjHbJEXEOqIa4Z6ioDpQLDP
-         kMTJ1+muMnEvz95RtM7C9jPiglUOjdG4LLhRnqB+wv4wDIHXqKyqMOWsSMb2pXY3cV5N
-         UoMw==
+        bh=9ZyTeNGFnmQqE613GDKmKhvLAFe/AnQBwlsX/erp5GQ=;
+        b=F5JiEwbYoIU+ln+iqlWcPcVtM4ikg727AXK4/DMPwmas6P6QWtWxADpAy1ZPjfJI7Q
+         et2euTDprhrkB4XtgwjttJe74m7aHk92hkHaT4lEoPxNc/ei0ZUsmbbMAmKksVvVvT8p
+         bBfnYErPWjgnnN62KqESbzleqno7oRF3sz0g467YjnH1VQkHbv5bOeOV3PwKoP7fFTb9
+         /38CiYq0iPIJZxjOk/SUXOneVp5yekJacuHFL9Gi/9/pSXO2WtfnYQHNJme5//uzvQZJ
+         Lbzyos/qfQuE3Hctjac02Q40mXUaNi7G42oMPtHg5fefSAUKFcO+EcJIUgfjdqlQigj1
+         BPSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693084060; x=1693688860;
+        d=1e100.net; s=20221208; t=1693084062; x=1693688862;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5OOg8+maoDUe9q7mOudOl/p44V4LSOgvZCREz8VZty8=;
-        b=FGZHgjFohqHZztWn0WyC0Ecasv7cLWICzkgBM+7gYMsRC5Q7JcbbfjIqGPInqFKpiV
-         2Xj177T55RxpD063ogM2gnQJkt88fdHo++E2vJUevmSxZVadwI4WBZ9hpEYlMwQmTROM
-         tg/QC9hYjYBV5tiHfwM5Cwa/ljJfMRcUZlySmIe22GGVmwoW4RJpmBf/0YEsWfnIyemB
-         +a6Abcj5WwD7a4RATQPpSMOUKXc5YtWsYV8M+tE0PnsHVve5VCNB072VR0VEHauPIMMc
-         KcK8KUajZuOTU/TXB/OqtABvUC5GckW8dCiRJBWW08i3HT0glg6MKc8bsgFyRd6Ql++x
-         QlmQ==
-X-Gm-Message-State: AOJu0YxC4MuA3tYtR547IeglleIIKsPNA14ZaSozcDmlQqFv+B+/jAIF
-        FyNfQvEMazAI5rrAsQgGw0DjMsfnSG0=
-X-Google-Smtp-Source: AGHT+IHcNDE4V9Ev+F8vIZR6rYrKZg8hjUpAjYOuvW78cQxwnOngTIEOKA3T1SLgzzpYEwazHVUydQ==
-X-Received: by 2002:a05:6870:e0ca:b0:1b3:f010:87c2 with SMTP id a10-20020a056870e0ca00b001b3f01087c2mr7402646oab.30.1693084059835;
-        Sat, 26 Aug 2023 14:07:39 -0700 (PDT)
+        bh=9ZyTeNGFnmQqE613GDKmKhvLAFe/AnQBwlsX/erp5GQ=;
+        b=jr9OpDx/viFbEJVbyE6LwrAGE48xH9i/TXIFdAGuGDjkR7aX7RzhoRd3YXECOGkHJC
+         30YYB622elvX9I23TEXq6Pnxo2CXOTHvp8YH8QZ8tRvS4Cq+777BxcsPwKWFi7rTEZST
+         FwNQEZL5NuQABKJWg63um8MnO/jKcJUZB0v8Fvvbn5Gf5Prb6ElBeJrWdF5OTC7QtQIb
+         mPmd+7HQYnHj1LVFDxSyYdN0+XDgKhJ8sdEMBBaEs6KzI12Xm+uQJ/gNZiAdLcrOppm4
+         8XXLRFTkauKWaBSgukiTZQdaDhS+ZakB+B5LIH+oKCZt5ZOdmPV1XAFdVdzVJR7abvlu
+         SF9g==
+X-Gm-Message-State: AOJu0YzOMqBc/4dolTfHVRj2rtoK3KTKbizZumiIhk2qQmlH685BCVFk
+        MkdzORX+KzV2R7nWk6znf4sgMhVaNDU=
+X-Google-Smtp-Source: AGHT+IGr00EAhq6uWk1se+am4DAXkfUvAJpPrf0iDTs9CP82H184D9ynRddJTamvciCtHrFTWH8IHw==
+X-Received: by 2002:a05:6871:586:b0:1be:e925:3dce with SMTP id u6-20020a056871058600b001bee9253dcemr7357215oan.7.1693084062707;
+        Sat, 26 Aug 2023 14:07:42 -0700 (PDT)
 Received: from alolivei-thinkpadt480s.gru.csb ([2804:14c:bf20:82ea:8c7c:b784:3f92:988a])
-        by smtp.gmail.com with ESMTPSA id w3-20020a0c8e43000000b0064f50e2c551sm1488377qvb.1.2023.08.26.14.07.38
+        by smtp.gmail.com with ESMTPSA id w3-20020a0c8e43000000b0064f50e2c551sm1488377qvb.1.2023.08.26.14.07.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 26 Aug 2023 14:07:39 -0700 (PDT)
+        Sat, 26 Aug 2023 14:07:42 -0700 (PDT)
 From:   Alexon Oliveira <alexondunkan@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     martyn@welchs.me.uk, manohar.vanga@gmail.com,
         linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev,
         Alexon Oliveira <alexondunkan@gmail.com>
-Subject: [PATCH 3/4] staging: vme_user: fix check unnecessary blank lines in vme_fake.c
-Date:   Sat, 26 Aug 2023 18:05:17 -0300
-Message-ID: <dde6f13f92a7cb17e01aceaeabe790656078326e.1693082101.git.alexondunkan@gmail.com>
+Subject: [PATCH 4/4] staging: vme_user: fix check unnecessary space after a cast in vme_fake.c
+Date:   Sat, 26 Aug 2023 18:05:18 -0300
+Message-ID: <603976b29ad4d9a0e4cbd8452ff674ec70a227a8.1693082101.git.alexondunkan@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1693082101.git.alexondunkan@gmail.com>
 References: <cover.1693082101.git.alexondunkan@gmail.com>
@@ -73,35 +73,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed all CHECK: Blank lines aren't necessary before a close brace '}'
+Fixed all CHECK: No space is necessary after a cast
 as reported by checkpatch to adhere to the Linux kernel
 coding-style guidelines.
 
 Signed-off-by: Alexon Oliveira <alexondunkan@gmail.com>
 ---
- drivers/staging/vme_user/vme_fake.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/staging/vme_user/vme_fake.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/staging/vme_user/vme_fake.c b/drivers/staging/vme_user/vme_fake.c
-index dbaf050f88e5..4258ed6033e7 100644
+index 4258ed6033e7..4ccb16dd0d0b 100644
 --- a/drivers/staging/vme_user/vme_fake.c
 +++ b/drivers/staging/vme_user/vme_fake.c
-@@ -584,7 +584,6 @@ static ssize_t fake_master_read(struct vme_master_resource *image, void *buf,
- 					aspace, cycle);
- 			done += 1;
- 		}
--
- 	}
+@@ -95,7 +95,7 @@ static void fake_VIRQ_tasklet(unsigned long data)
+ 	struct vme_bridge *fake_bridge;
+ 	struct fake_driver *bridge;
  
- 	if ((dwidth == VME_D16) || (dwidth == VME_D32)) {
-@@ -770,7 +769,6 @@ static ssize_t fake_master_write(struct vme_master_resource *image, void *buf,
- 				       aspace, cycle);
- 			done += 1;
- 		}
--
- 	}
+-	fake_bridge = (struct vme_bridge *) data;
++	fake_bridge = (struct vme_bridge *)data;
+ 	bridge = fake_bridge->driver_priv;
  
- 	if ((dwidth == VME_D16) || (dwidth == VME_D32)) {
+ 	vme_irq_handler(fake_bridge, bridge->int_level, bridge->int_statid);
+@@ -1092,7 +1092,7 @@ static int __init fake_init(void)
+ 	mutex_init(&fake_device->vme_int);
+ 	mutex_init(&fake_bridge->irq_mtx);
+ 	tasklet_init(&fake_device->int_tasklet, fake_VIRQ_tasklet,
+-		     (unsigned long) fake_bridge);
++		     (unsigned long)fake_bridge);
+ 
+ 	strcpy(fake_bridge->name, driver_name);
+ 
 -- 
 2.41.0
 
