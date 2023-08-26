@@ -2,91 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DC9C7898AC
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 20:28:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D39007898AE
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 20:30:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229905AbjHZS1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 14:27:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54950 "EHLO
+        id S230226AbjHZSaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 14:30:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbjHZS1M (ORCPT
+        with ESMTP id S230207AbjHZS36 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 14:27:12 -0400
-Received: from hall.aurel32.net (hall.aurel32.net [IPv6:2001:bc8:30d7:100::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 055411711
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 11:27:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=aurel32.net
-        ; s=202004.hall; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:
-        Subject:Cc:To:From:Content-Type:From:Reply-To:Subject:Content-ID:
-        Content-Description:In-Reply-To:References:X-Debbugs-Cc;
-        bh=NSzUijcZ/MgUsFtsx1EEVy2F3mZEyyGzlmPtWD+DEE8=; b=Bs9E3dPWJM6urKAmwdT9uCRujQ
-        9/PKZTFXAeq9yfoPJdpp1q2c7lV4uvcyYMveTkQce6t0ZGn/2CMFy2ULKB/aTZhBRpVh17EkLJ1kR
-        ukcP7UbbnpPO6FOQZI3JKgnviEBaynhenqfg4+kDfAaPIXC7Bh5BworGgrZ/EaKwYsNGbsoT06/23
-        LlqyNEV4Sz68ypi1qaPVa7GXYZc6K8Im8NNRsJdwV5mA05ae/izD5Gf9Fc4VdSNrJX13D7U4x/tYp
-        ZCqIYO7b7P+eL5oCEuHPhv6l3mIIALee9/OLMFAe9oi1XYJ1Gs8JdhyH3dqiZebMCpVwTXelTYWJ3
-        MBWesq0w==;
-Received: from [2a01:e34:ec5d:a741:9a7b:5831:531:65c9] (helo=ohm.rr44.fr)
-        by hall.aurel32.net with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <aurelien@aurel32.net>)
-        id 1qZy01-00AqTj-1Y; Sat, 26 Aug 2023 20:27:05 +0200
-Received: from aurel32 by ohm.rr44.fr with local (Exim 4.96)
-        (envelope-from <aurelien@aurel32.net>)
-        id 1qZy00-00B5Ey-0m;
-        Sat, 26 Aug 2023 20:27:04 +0200
-From:   Aurelien Jarno <aurelien@aurel32.net>
-To:     devicetree@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-Cc:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Ziv Xu <ziv.xu@starfivetech.com>,
-        William Qiu <william.qiu@starfivetech.com>,
-        Aurelien Jarno <aurelien@aurel32.net>
-Subject: [PATCH] riscv: dts: starfive: fix NOR flash reserved-data partition size
-Date:   Sat, 26 Aug 2023 20:27:02 +0200
-Message-Id: <20230826182702.2641743-1-aurelien@aurel32.net>
-X-Mailer: git-send-email 2.39.2
+        Sat, 26 Aug 2023 14:29:58 -0400
+Received: from smtp.smtpout.orange.fr (smtp-25.smtpout.orange.fr [80.12.242.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44E63DE
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 11:29:56 -0700 (PDT)
+Received: from [192.168.1.18] ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id Zy2iqZD4SDlJeZy2iq4uVv; Sat, 26 Aug 2023 20:29:54 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1693074594;
+        bh=RjPClBuIQRKMUfUSALQ4hUOgO+gv3HMIBglb3IFBbrg=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=mIeukVNvFU9WVtm+E106zutSEC0fVbdI/i0uDfT2/deLfV6d8HIb+Yd1cyT9d4e0O
+         d6YDqZc+tQFMDWv8c+TDpT7j+D+EBd9h0AQI528gXfCpiOtDUTA7kGl9U2IZo0OiF4
+         xPOp1D4mMSTnNMRHJyAn3ID3p5rG2NMSoVhSDNesDL9RAZwrT3xF4K0fj1C56ZZPHF
+         5ZCpwKU/ujdEZkGeh15XhlEIN/r9VIugpPM3RyuqW8XPiqQOBveENDnEtO1TKGfceH
+         F0oDl+ai//OjAHSDq0TkkAf2pAtMun6HjkV0MWPgDOVTo7lBliM8AuHK4/1wtu2pQm
+         97HPP+nHL3GyA==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 26 Aug 2023 20:29:54 +0200
+X-ME-IP: 86.243.2.178
+Message-ID: <50683aac-b186-c6ae-de1f-5b8e4806913c@wanadoo.fr>
+Date:   Sat, 26 Aug 2023 20:29:52 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v1 06/12] HID: cp2112: Remove dead code
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Andy Shevchenko <andy@kernel.org>
+References: <20230703185222.50554-1-andriy.shevchenko@linux.intel.com>
+ <20230703185222.50554-7-andriy.shevchenko@linux.intel.com>
+Content-Language: fr
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20230703185222.50554-7-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Starfive VisionFive 2 has a 16MiB NOR flash, while the reserved-data
-partition is declared starting at address 0x600000 with a size of
-0x1000000. This causes the kernel to output the following warning:
+Le 03/07/2023 à 20:52, Andy Shevchenko a écrit :
+> Remove cp2112_allocate_irq() and counterparts that seems to be
+> a dead code from day 1. In case somebody needs it, it can be
+> retrieved from Git index.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[   22.156589] mtd: partition "reserved-data" extends beyond the end of device "13010000.spi.0" -- size truncated to 0xa00000
+Hi,
 
-It seems to be a confusion between the size of the partition and the end
-address. Fix that by specifying the right size.
+for the records, just in case it still makesense to keep this code:
 
-Fixes: 8384087a4223 ("riscv: dts: starfive: Add QSPI controller node for StarFive JH7110 SoC")
-Signed-off-by: Aurelien Jarno <aurelien@aurel32.net>
----
- arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+	https://lore.kernel.org/all/CAO-hwJJfncQ3jgtS=HO0atbzrTNOT_rzU66oG2yRTWTSY-L8KA@mail.gmail.com/
 
-diff --git a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-index 498eb179d90f..30c85ba6da02 100644
---- a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-+++ b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-@@ -262,7 +262,7 @@ uboot@100000 {
- 				reg = <0x100000 0x400000>;
- 			};
- 			reserved-data@600000 {
--				reg = <0x600000 0x1000000>;
-+				reg = <0x600000 0xa00000>;
- 			};
- 		};
- 	};
--- 
-2.39.2
+CJ
+
+> ---
+>   drivers/hid/hid-cp2112.c | 54 ----------------------------------------
+>   1 file changed, 54 deletions(-)
+> 
+> diff --git a/drivers/hid/hid-cp2112.c b/drivers/hid/hid-cp2112.c
+> index 15b626359281..45cd0d2fd3fd 100644
+> --- a/drivers/hid/hid-cp2112.c
+> +++ b/drivers/hid/hid-cp2112.c
+> @@ -17,8 +17,6 @@
+>    */
+>   
+>   #include <linux/bitops.h>
+> -#include <linux/gpio/consumer.h>
+> -#include <linux/gpio/machine.h>
+>   #include <linux/gpio/driver.h>
+>   #include <linux/hid.h>
+>   #include <linux/hidraw.h>
+> @@ -168,7 +166,6 @@ struct cp2112_device {
+>   	u8 *in_out_buffer;
+>   	struct mutex lock;
+>   
+> -	struct gpio_desc *desc[8];
+>   	bool gpio_poll;
+>   	struct delayed_work gpio_poll_worker;
+>   	unsigned long irq_mask;
+> @@ -1181,51 +1178,6 @@ static int cp2112_gpio_irq_type(struct irq_data *d, unsigned int type)
+>   	return 0;
+>   }
+>   
+> -static int __maybe_unused cp2112_allocate_irq(struct cp2112_device *dev,
+> -					      int pin)
+> -{
+> -	int ret;
+> -
+> -	if (dev->desc[pin])
+> -		return -EINVAL;
+> -
+> -	dev->desc[pin] = gpiochip_request_own_desc(&dev->gc, pin,
+> -						   "HID/I2C:Event",
+> -						   GPIO_ACTIVE_HIGH,
+> -						   GPIOD_IN);
+> -	if (IS_ERR(dev->desc[pin])) {
+> -		dev_err(dev->gc.parent, "Failed to request GPIO\n");
+> -		return PTR_ERR(dev->desc[pin]);
+> -	}
+> -
+> -	ret = cp2112_gpio_direction_input(&dev->gc, pin);
+> -	if (ret < 0) {
+> -		dev_err(dev->gc.parent, "Failed to set GPIO to input dir\n");
+> -		goto err_desc;
+> -	}
+> -
+> -	ret = gpiochip_lock_as_irq(&dev->gc, pin);
+> -	if (ret) {
+> -		dev_err(dev->gc.parent, "Failed to lock GPIO as interrupt\n");
+> -		goto err_desc;
+> -	}
+> -
+> -	ret = gpiod_to_irq(dev->desc[pin]);
+> -	if (ret < 0) {
+> -		dev_err(dev->gc.parent, "Failed to translate GPIO to IRQ\n");
+> -		goto err_lock;
+> -	}
+> -
+> -	return ret;
+> -
+> -err_lock:
+> -	gpiochip_unlock_as_irq(&dev->gc, pin);
+> -err_desc:
+> -	gpiochip_free_own_desc(dev->desc[pin]);
+> -	dev->desc[pin] = NULL;
+> -	return ret;
+> -}
+> -
+>   static const struct irq_chip cp2112_gpio_irqchip = {
+>   	.name = "cp2112-gpio",
+>   	.irq_startup = cp2112_gpio_irq_startup,
+> @@ -1390,7 +1342,6 @@ static int cp2112_probe(struct hid_device *hdev, const struct hid_device_id *id)
+>   static void cp2112_remove(struct hid_device *hdev)
+>   {
+>   	struct cp2112_device *dev = hid_get_drvdata(hdev);
+> -	int i;
+>   
+>   	sysfs_remove_group(&hdev->dev.kobj, &cp2112_attr_group);
+>   	i2c_del_adapter(&dev->adap);
+> @@ -1400,11 +1351,6 @@ static void cp2112_remove(struct hid_device *hdev)
+>   		cancel_delayed_work_sync(&dev->gpio_poll_worker);
+>   	}
+>   
+> -	for (i = 0; i < ARRAY_SIZE(dev->desc); i++) {
+> -		gpiochip_unlock_as_irq(&dev->gc, i);
+> -		gpiochip_free_own_desc(dev->desc[i]);
+> -	}
+> -
+>   	gpiochip_remove(&dev->gc);
+>   	/* i2c_del_adapter has finished removing all i2c devices from our
+>   	 * adapter. Well behaved devices should no longer call our cp2112_xfer
 
