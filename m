@@ -2,61 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 283987896F0
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 15:38:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F5F37896FC
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 15:48:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232663AbjHZNiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 09:38:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40540 "EHLO
+        id S232706AbjHZNrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 09:47:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231960AbjHZNiR (ORCPT
+        with ESMTP id S232698AbjHZNrN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 09:38:17 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FF702115
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 06:38:15 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-500aed06ffcso1201667e87.0
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 06:38:15 -0700 (PDT)
+        Sat, 26 Aug 2023 09:47:13 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 480092117
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 06:47:10 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-5007c8308c3so2807926e87.0
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 06:47:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693057093; x=1693661893;
+        d=linaro.org; s=google; t=1693057628; x=1693662428;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=G9SgFDv7E50+Hpq3nmjKvqF8IQ9dgI58NUkPjP5JpyY=;
-        b=Bv6/6wDWhD8YabIZkVDDIT4xOSLkR+SqRA/51bt56W+8k0L6XZjKivwQfd+cmhSchQ
-         YfQlwmE89P5JBitroJRAPyV5g0sIpaKYf9rmKxTvdV4vK4JmVcYNF5llsmhiOLs0sOzt
-         6oEQVOIeiueSmldFz4fXOMlu03J5+Tf10XDvUkhLIwjlFzWALqlC28rYYuYU2Veb4W4q
-         X7d52oWkKXQnAJFMFULMOOjp4LZAV/FO26zwhLrJJlxPa1tfsGmtoHpDUuMr85hqLCyc
-         jpGWQ2DX09YT0hw1FlvqNXhLohp5V8YiTyc1eeu7e/2OaHPFM21Dnikxfv3DU6yRirF8
-         4faw==
+        bh=pzTy/z60gMYj6TKaLYHrM1JAenmr+JgEEKxhwTVubRs=;
+        b=hDSfszhKlhiIdz445i4IMjQ2mB3vVZGzp67zCXoXH5Ww6YsShxnew0AZd0lKtM0yUh
+         SNIxxU/NPrUSSfoXmST0iX8jgD5SPW6LP/jfCUh0B+j/ZOt47YRc9hYn5wL8qefVit7h
+         GH6tiTK/6uAEdzg9g7kU1DKPz2GeFs/Kn2ttNMiQkMvqEVTSjpT8rk4AEtM4q9HlYH7H
+         E0KLEI6H9OOMAPDGeOtjoJZXAcE3KMsWR/xEouNtOF4MmlpZo5vCzZ2kC+d2TVoJvAl8
+         g4LrlXNE9Vf16imSF5afkrcZ8BKnBG8HrspWQyZTJakMi2p/QaXx2cam1i+6tQxogc5a
+         r91Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693057093; x=1693661893;
+        d=1e100.net; s=20221208; t=1693057628; x=1693662428;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=G9SgFDv7E50+Hpq3nmjKvqF8IQ9dgI58NUkPjP5JpyY=;
-        b=iCYkirMTDT0YZWmswDLJpp7AI2H6343hzDmZIyy8opRM1LbQPP4kR4Xm4pk9I3KhKx
-         zxGV/pF6XMmXFn+0CbZ0wSnVQOlBkk7QXYELKWRmxrH5I3W4o7N930RProdMQnQwGQJZ
-         1b0g5u6OlVzYbfgunY9vJiWLApA9+E2icofC0OrAj4j9updm/l8j0CoKcnjoeIVoSezG
-         rvCsBQBwbq2rs0pvZ+UhYFNc4Xo60TQaOl+LKWF+nJA4CPTJzTQ9GkqmtTxkNtLI4oWY
-         HgcOAmONRKdEirAuV8lPJWgzUjIoDhUkQhyKnv/xG7BZdW/wuKd/vqQC6LgdEe3+9h9k
-         tdIA==
-X-Gm-Message-State: AOJu0Ywb+1/ysT/I8+SXB7TDoHu6m/WoOU7XO3CqQnOABX1IgV1Y8ojV
-        T3xlhn+7y1rLjZ4/WQFE698Qwg==
-X-Google-Smtp-Source: AGHT+IGOOe4NRVVciDOLuPW6zZbQIteqXBz8Yh+SmQkl8iB5eV4JI2+u5ly9aQKtcUeyZkQTpITxEQ==
-X-Received: by 2002:a05:6512:11e3:b0:4fb:ca59:42d7 with SMTP id p3-20020a05651211e300b004fbca5942d7mr14104758lfs.33.1693057093505;
-        Sat, 26 Aug 2023 06:38:13 -0700 (PDT)
+        bh=pzTy/z60gMYj6TKaLYHrM1JAenmr+JgEEKxhwTVubRs=;
+        b=GuR1+1tBuGiow3kjPrr3Y19Nz/OiWUvlsTOe/ucZ63hpJ4Avn9ll2Qx360qa9ZRWka
+         cqEQUaGazcaFsFr3rRRV2HTVCssV8mhnqeoAfr76cScEeJW8mB9affq84PGYPe3asTxt
+         FLa0TJbNfFbM84m0XtIBXW8VlwZPeUxHTm42SBlmXcJLYnIN8dwLfCAZ0A3sRByIZ258
+         H/DEJK3GQF9X4LNSWwbHpkmIY1jQyy0Ma59aFAv2avRZG1ZtjUygrPoJVe8yNHwD9nHU
+         ZYYjB/OuCJda0JuHuhXQlm81Qjkpnvv18rClSp3IdubXUFu3QlrmSEKIvaxRHv43a5Cj
+         b6fA==
+X-Gm-Message-State: AOJu0YwPxTYB724EDmkjlX7G41eJx4YuBGR/vR9+JmDEpglwr1/AIoNY
+        C/a+zgQqrkbLgukyQC+s8+Wr+w==
+X-Google-Smtp-Source: AGHT+IGnDQgLCQnDFV6npf4cv1sAPmPerwW0ZNOydxKBZ11TH7hu3kUdrl+jNa66Upu30H6U1jplmA==
+X-Received: by 2002:a05:6512:2313:b0:4f8:6d99:f4f3 with SMTP id o19-20020a056512231300b004f86d99f4f3mr17457695lfu.52.1693057628477;
+        Sat, 26 Aug 2023 06:47:08 -0700 (PDT)
 Received: from [192.168.1.101] (abyl74.neoplus.adsl.tpnet.pl. [83.9.31.74])
-        by smtp.gmail.com with ESMTPSA id e5-20020ac25465000000b005008cd93961sm714187lfn.192.2023.08.26.06.38.11
+        by smtp.gmail.com with ESMTPSA id q10-20020ac246ea000000b005009b2678eesm718547lfo.0.2023.08.26.06.47.06
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 26 Aug 2023 06:38:13 -0700 (PDT)
-Message-ID: <fd016130-12c2-4aa3-a19a-24153754b338@linaro.org>
-Date:   Sat, 26 Aug 2023 15:38:11 +0200
+        Sat, 26 Aug 2023 06:47:08 -0700 (PDT)
+Message-ID: <b0732580-4449-4350-8415-bfbdb79b6bdb@linaro.org>
+Date:   Sat, 26 Aug 2023 15:47:05 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH 4/6] media: platform: venus: Add optional LLCC path
 Content-Language: en-US
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+To:     Bryan O'Donoghue <pure.logic@nexus-software.ie>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
         Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
         Vikash Garodia <quic_vgarodia@quicinc.com>,
         Andy Gross <agross@kernel.org>,
@@ -72,6 +73,7 @@ Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
 References: <20230731-topic-8280_venus-v1-0-8c8bbe1983a5@linaro.org>
  <20230731-topic-8280_venus-v1-4-8c8bbe1983a5@linaro.org>
  <78d2fd56-804d-827b-d074-b139cf62a498@linaro.org>
+ <9abd328b-e702-b6f7-7740-8cbaf3a0b866@nexus-software.ie>
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -108,47 +110,25 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <78d2fd56-804d-827b-d074-b139cf62a498@linaro.org>
+In-Reply-To: <9abd328b-e702-b6f7-7740-8cbaf3a0b866@nexus-software.ie>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4.08.2023 23:04, Bryan O'Donoghue wrote:
-> On 04/08/2023 21:09, Konrad Dybcio wrote:
->> Some newer SoCs (such as SM8350) have a third interconnect path. Add
->> it and make it optional.
->>
->> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
->> ---
-[...]
-
-> I would scream if someone left me this comment but...
+On 4.08.2023 23:06, Bryan O'Donoghue wrote:
+> On 04/08/2023 22:04, Bryan O'Donoghue wrote:
+>> you can get for llc_path == NULL
 > 
-> In probe we have
-> 
-> video_path =
-> cpu_cfgpath =
-> 
-> llc_path =
-> 
-> suspend
-> 
-> icc_set_bw(cpu_cfgpath,);
-> icc_set_bw(llc_path,);
-> icc_set_bw(video_path,);
-> 
-> resume
-> icc_set_bw(video_path,);
-> icc_set_bw(llc_path,);
-> icc_set_bw(cpu_cfgpath,);
-suspend == resume[::-1] is totally the right thing, but I'll
-reorder things in probe for your viewing pleasure
+> [sic] You can test.
+Even better, I can just throw it into icc APIs as-is, as they
+nullcheck internally
 
 Konrad
