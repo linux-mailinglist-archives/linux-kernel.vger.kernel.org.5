@@ -2,154 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FF6F7896DD
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 15:09:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 183817896E1
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 15:11:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232589AbjHZNI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 09:08:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38298 "EHLO
+        id S232643AbjHZNLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 09:11:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232606AbjHZNIE (ORCPT
+        with ESMTP id S232655AbjHZNLK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 09:08:04 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10DE31BF2;
-        Sat, 26 Aug 2023 06:08:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693055282; x=1724591282;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=h5qAIYNCKZ5pVgkeXhd5+JVPUHjrWuo3wDX5RG0ObUo=;
-  b=kY4aETQ4GKPj0/AGrYxTTvbGK+WxxCMxXIPQaI6Rnb+sDT+sPE2T7Cxm
-   pmBVYEaxP+5x1l0e+LKXmzhwPqydIVWKPNbbSf6XAq/tE9Whs4zud+MNr
-   M/LoVQ7zbF9QcUzFCjzDjtUj4hn/AueNXl3q4hpk3ETkGwbajmx0aCai4
-   SAwzgp3cFhFYiQoPm/O9yV+bIM25XyLoAu5HY9WzbfuHUDzdr6ZL7U5km
-   AfPHKhb9WheN6jC9mdE1TdbFfvUjl+NEM6NYWHODqNWZt4NAZOiIcyjEd
-   kjQ2aQKgoqw1SVjbyH4kGGOEqUdwIaZTSbjsYOVmbBCWxwCZd831QHuU/
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10814"; a="374844340"
-X-IronPort-AV: E=Sophos;i="6.02,203,1688454000"; 
-   d="scan'208";a="374844340"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2023 06:08:01 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10814"; a="852281523"
-X-IronPort-AV: E=Sophos;i="6.02,203,1688454000"; 
-   d="scan'208";a="852281523"
-Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 26 Aug 2023 06:07:54 -0700
-Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qZt17-0004jJ-2M;
-        Sat, 26 Aug 2023 13:07:53 +0000
-Date:   Sat, 26 Aug 2023 21:07:14 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc:     oe-kbuild-all@lists.linux.dev, Alex Sierra <alex.sierra@amd.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrei Vagin <avagin@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Danylo Mocherniuk <mdanylo@google.com>,
-        David Hildenbrand <david@redhat.com>, Greg KH <greg@kroah.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <emmir@google.com>,
-        Mike Rapoport <rppt@kernel.org>, Nadav Amit <namit@vmware.com>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>,
-        Paul Gofman <pgofman@codeweavers.com>,
-        Peter Xu <peterx@redhat.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Yang Shi <shy828301@gmail.com>,
-        Yun Zhou <yun.zhou@windriver.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: Re: fs/proc/task_mmu: Implement IOCTL for efficient page table
- scanning
-Message-ID: <202308262125.VHTuZ7uV-lkp@intel.com>
-References: <a0b5c6776b2ed91f78a7575649f8b100e58bd3a9.1689881078.git.mirq-linux@rere.qmqm.pl>
+        Sat, 26 Aug 2023 09:11:10 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8E581BCD;
+        Sat, 26 Aug 2023 06:11:08 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 77A6661520;
+        Sat, 26 Aug 2023 13:11:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A73A6C433C8;
+        Sat, 26 Aug 2023 13:11:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693055467;
+        bh=k1KBNma+mj9R6FSjzC6LtY+2F3uIa1IqFiWhk15mOYs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=Vuu19/SERi1EBgk27a3l85/2K+GMkEwHBqiiCXXqg7sU/pZ246pcBNXqH8DjCKgse
+         qFNjioHYAAQq7i2QNUY6PZKniqvR0sjakPuifbKDY6ar3B2Vtl/mkW04Sumj8xY4Kj
+         OM3ciKR7d9S4xjbkiBZwjqx5rVPLABNPTWdzSUiZ50OPuHGa3bfr0PURx957FlSoq/
+         pTOM6yrWvuOf1j+qodQjKqZTh9oBPp7ntXn40NALfmFFfuY2nFC9/CfMFghH+pqL9c
+         GYtyp5CNNX2KFFGv9Xr4dukWnMJxCuFl5fFv4Bx/nETtaoJRIYbGwytde4Y4hWeE/8
+         vgo/wU7r9PmTw==
+Date:   Sat, 26 Aug 2023 08:11:05 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>, bhelgaas@google.com,
+        koba.ko@canonical.com, sathyanarayanan.kuppuswamy@linux.intel.com,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] PCI: Add helper to check if any of ancestor device
+ support D3cold
+Message-ID: <20230826131105.GA691555@bhelgaas>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <a0b5c6776b2ed91f78a7575649f8b100e58bd3a9.1689881078.git.mirq-linux@rere.qmqm.pl>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230825063948.GY3465@black.fi.intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michał,
+On Fri, Aug 25, 2023 at 09:39:48AM +0300, Mika Westerberg wrote:
+> On Fri, Aug 25, 2023 at 01:43:08PM +0800, Kai-Heng Feng wrote:
+> > On Fri, Aug 25, 2023 at 1:29 PM Mika Westerberg
+> > <mika.westerberg@linux.intel.com> wrote:
+> > > On Thu, Aug 24, 2023 at 09:46:00PM +0800, Kai-Heng Feng wrote:
+> > > > On Thu, Aug 24, 2023 at 7:57 PM Mika Westerberg
+> > > > <mika.westerberg@linux.intel.com> wrote:
 
-kernel test robot noticed the following build warnings:
+> > I think what Bjorn suggested is to keep AER enabled for D3hot, and
+> > only disable it for D3cold and S3.
+> > 
+> > > > Unless there are cases when device firmware behave differently to
+> > > > D3hot? Then maybe it's better to disable AER for both D3hot, D3cold
+> > > > and system S3.
+> > >
+> > > Yes, this makes sense.
+> > 
+> > I agree that differentiate between D3hot and D3cold unnecessarily make
+> > things more complicated, but Bjorn suggested errors reported by AER
+> > under D3hot should still be recorded.
+> > Do you have more compelling data to persuade Bjorn that AER should be
+> > disabled for both D3 states?
+> 
+> Is there even an AER error that can happen when a device is in D3hot
+> (link is in L1) or D3cold (link is in L2/3)? I'm not an expert in AER
+> but AFAICT these errors are reported when the device is in active state
+> not when it is in low power state.
 
-[auto build test WARNING on akpm-mm/mm-everything]
-[also build test WARNING on linus/master v6.5-rc7 next-20230825]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+I don't think a device in D3cold can signal its own errors.  But the
+link transition to L2/L3 as a device goes to D3cold may cause the
+bridge above to log an error.  And of course a config access to a
+device in D3cold will probably result in an Unsupported Request being
+logged by the bridge above it.  I think these are the sorts of errors
+we do need to avoid or ignore somehow.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Micha-Miros-aw/Re-fs-proc-task_mmu-Implement-IOCTL-for-efficient-page-table-scanning/20230721-033050
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/a0b5c6776b2ed91f78a7575649f8b100e58bd3a9.1689881078.git.mirq-linux%40rere.qmqm.pl
-patch subject: Re: fs/proc/task_mmu: Implement IOCTL for efficient page table scanning
-config: i386-randconfig-i004-20230720 (https://download.01.org/0day-ci/archive/20230826/202308262125.VHTuZ7uV-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20230826/202308262125.VHTuZ7uV-lkp@intel.com/reproduce)
+But Configuration and Message requests definitely happen in D3hot, and
+they can cause errors reported via AER.  The spec (r6.0, sec 2.2.8)
+recommends that Messages be handled the same in D0-D3hot.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308262125.VHTuZ7uV-lkp@intel.com/
+PTM is an example of where we had errors being reported at suspend/
+resume because we had it configured incorrectly.  If we disabled AER
+in D3hot we might not learn about that kind of configuration problem.
+That's what makes me think there's some value in keeping AER enabled
+in D3hot.
 
-All warnings (new ones prefixed by >>):
-
-   fs/proc/task_mmu.c: In function 'pagemap_scan_test_walk':
-   fs/proc/task_mmu.c:1921:13: error: implicit declaration of function 'userfaultfd_wp_async'; did you mean 'userfaultfd_wp'? [-Werror=implicit-function-declaration]
-    1921 |         if (userfaultfd_wp_async(vma) && userfaultfd_wp_use_markers(vma))
-         |             ^~~~~~~~~~~~~~~~~~~~
-         |             userfaultfd_wp
-   fs/proc/task_mmu.c: In function 'pagemap_scan_init_bounce_buffer':
-   fs/proc/task_mmu.c:2290:22: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
-    2290 |         p->vec_out = (void __user *)p->arg.vec;
-         |                      ^
-   fs/proc/task_mmu.c: At top level:
->> fs/proc/task_mmu.c:1967:13: warning: 'pagemap_scan_backout_range' defined but not used [-Wunused-function]
-    1967 | static void pagemap_scan_backout_range(struct pagemap_scan_private *p,
-         |             ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   cc1: some warnings being treated as errors
-
-
-vim +/pagemap_scan_backout_range +1967 fs/proc/task_mmu.c
-
-  1966	
-> 1967	static void pagemap_scan_backout_range(struct pagemap_scan_private *p,
-  1968					       unsigned long addr, unsigned long end)
-  1969	{
-  1970		struct page_region *cur_buf = &p->cur_buf;
-  1971	
-  1972		if (cur_buf->start != addr) {
-  1973			cur_buf->end = addr;
-  1974		} else {
-  1975			cur_buf->start = cur_buf->end = 0;
-  1976		}
-  1977	
-  1978		p->end_addr = 0;
-  1979	}
-  1980	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Bjorn
