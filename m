@@ -2,166 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 495AC7893A0
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 05:18:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B30667893AB
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 05:32:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231686AbjHZDSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 23:18:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59930 "EHLO
+        id S231792AbjHZD3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 23:29:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231765AbjHZDSB (ORCPT
+        with ESMTP id S231638AbjHZD3N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 23:18:01 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59DE3210C
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 20:17:58 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1c0e7e3d170so55735ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 20:17:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693019878; x=1693624678; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=NTpWWoAzCcGiRnwVxW+wyPGfNXm/UmsRStzWL2401ms=;
-        b=teQLc7wAUgGrER8vTD1pcB6PLRVdVTwkVG9WKMNyN6+TCd5oCGlJESlTncu6f8VdQP
-         qUYGszWCYKw4qYMn5yc0yrthvYgBgSEjpKMKYnCGVHpK2dSNWIYAOBz09QLbTDTK/1Q1
-         e+bYeitkmm9iaYQYhYBPqMj2y0l7jOevVP32SGNN4ABk2Tj4mQsEobj1s5kMItYq8nJe
-         4PoByq3CP7G/b9yV8es943koSrvFzG260D6zZwop7NaSILAS5xQVzp/8V2AjKtGPDYsg
-         7Bbp6tmLgIdhfeHhg3uup4RLFA6hYT+jQ9mmApTUGNAFlg1hGDuhfthJ45DULTmXbV4G
-         iMHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693019878; x=1693624678;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NTpWWoAzCcGiRnwVxW+wyPGfNXm/UmsRStzWL2401ms=;
-        b=KNY2+A2AuPmYNSDfsyFIdvQM5ECj5H9bP1islKV87hy66kq06jdUy7A2SZi2yaPi4K
-         0s6Pm7wM35jWggpPcWMDOwWz0PdpMTEu8BxW2zsK1AyguMNxA1yXKoMhdGZfwO+dHgpw
-         N++/PckeOVoESDawrY0m+k7KoILmBFv4cScy8L+VN6av8x55mXmYfBMFfoQVUBoZ9fKl
-         ZW+/5n1LnKHxfgygtCIkqQCDKvgDY4JQs1CQLz7rVrpl0jgAka9ep47/o7KkDNAl2PYW
-         TvYA0CjVc6inFnF96M+MeLM9ixDu9YhCt/UP7Kg9RIP/y0uv3GJd5CTX5N/kXPK0szgz
-         lxAg==
-X-Gm-Message-State: AOJu0YwffUHMGtCgL1QticnGHi8oAyCl0M8jJaGNOBR8MVeRGNTnC5NY
-        lxN5UDJ8q6TBiVkG67ZzW01ekw==
-X-Google-Smtp-Source: AGHT+IFgTjL85NMW7QVTfT1LIEunufc8m3DLUqvJfm8kEADFDEa+5LGQPIut13OdOpGUuedULTjPsw==
-X-Received: by 2002:a17:902:c703:b0:1bd:b75a:e95f with SMTP id p3-20020a170902c70300b001bdb75ae95fmr128179plp.0.1693019877605;
-        Fri, 25 Aug 2023 20:17:57 -0700 (PDT)
-Received: from google.com ([2620:15c:2d3:205:6671:452e:1913:d899])
-        by smtp.gmail.com with ESMTPSA id a14-20020a62bd0e000000b006870ff20254sm2251739pff.125.2023.08.25.20.17.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Aug 2023 20:17:57 -0700 (PDT)
-Date:   Fri, 25 Aug 2023 20:17:52 -0700
-From:   Fangrui Song <maskray@google.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Bill Wendling <morbo@google.com>, Helge Deller <deller@gmx.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Chanho Min <chanho.min@lge.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        clang-built-linux <llvm@lists.linux.dev>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>
-Subject: Re: [PATCH] lib/clz_ctz.c: Fix __clzdi2() and __ctzdi2() for 32-bit
- kernels
-Message-ID: <20230826031752.gongmxkr56zyycol@google.com>
-References: <ZOkGCSNr0VN2VIJJ@p100>
- <CAHk-=wjZwSymfuGvf7TX3UQLU1OMN1FZMnEA-Hja0ruqyhMK4A@mail.gmail.com>
- <CAHk-=whVvD05T0yD5DQj803uETLD6qDq-Vx-SiLPcrL=eO77LQ@mail.gmail.com>
- <CAKwvOdnYauyrzz7-ceH-MP_KZ5ED8oYxjRx_Xei68=tUOSeKyA@mail.gmail.com>
- <CAGG=3QWcZPYqHMcjwuYDz1+OQhzS40hmhdOvSBZBQOkhs8YAQQ@mail.gmail.com>
- <CAGG=3QX8AaTedPy-joWm6yp+TFHBVXm59OcvxkdLGsSuDjem5g@mail.gmail.com>
- <CAHk-=wjQpXpnGAwvv-oBi+cQ0g+D9rTK5STkXSSV4a90FPR+EQ@mail.gmail.com>
- <CAKwvOdm_y6UOnxFrAiDxou2jc8CRUvyhfH9kAdc3PG0=bEvduw@mail.gmail.com>
- <CAHk-=wgJzMzPFTCzejWs1WM4=74z2VENyOzySnucrXG3i=ajrw@mail.gmail.com>
+        Fri, 25 Aug 2023 23:29:13 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C63E12132;
+        Fri, 25 Aug 2023 20:29:08 -0700 (PDT)
+Received: from kwepemm600003.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RXj1c3jwjzfbw5;
+        Sat, 26 Aug 2023 11:27:32 +0800 (CST)
+Received: from localhost.localdomain (10.67.174.95) by
+ kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Sat, 26 Aug 2023 11:29:05 +0800
+From:   Yang Jihong <yangjihong1@huawei.com>
+To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <jolsa@kernel.org>, <namhyung@kernel.org>, <irogers@google.com>,
+        <adrian.hunter@intel.com>, <kan.liang@linux.intel.com>,
+        <james.clark@arm.com>, <tmricht@linux.ibm.com>,
+        <ak@linux.intel.com>, <anshuman.khandual@arm.com>,
+        <linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>
+CC:     <yangjihong1@huawei.com>
+Subject: [PATCH v7 0/6] perf record: Track sideband events for all CPUs when tracing selected CPUs
+Date:   Sat, 26 Aug 2023 03:26:02 +0000
+Message-ID: <20230826032608.107261-1-yangjihong1@huawei.com>
+X-Mailer: git-send-email 2.30.GIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wgJzMzPFTCzejWs1WM4=74z2VENyOzySnucrXG3i=ajrw@mail.gmail.com>
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.174.95]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemm600003.china.huawei.com (7.193.23.202)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-08-25, Linus Torvalds wrote:
->On Fri, 25 Aug 2023 at 17:52, Nick Desaulniers <ndesaulniers@google.com> wrote:
->>
->> So 2 concerns where "I'll do it in inline asm" can pessimize codegen:
->> 1. You alluded to this, but what happens when one of these functions
->> is called with a constant?
->
->This is why our headers have a lot of __builtin_constant_p()'s in them..
->
->In this particular case, see the x86 asm/bitops.h code:
->
->    #define ffs(x) (__builtin_constant_p(x) ? __builtin_ffs(x) :
->variable_ffs(x))
+User space tasks can migrate between CPUs, track sideband events for all
+CPUs.
 
-For the curious (like me),
+The specific scenarios are as follows:
 
-__builtin_ffs
-https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html#index-_005f_005fbuiltin_005fffs says
+         CPU0                                 CPU1
+  perf record -C 0 start
+                              taskA starts to be created and executed
+                                -> PERF_RECORD_COMM and PERF_RECORD_MMAP
+                                   events only deliver to CPU1
+                              ......
+                                |
+                          migrate to CPU0
+                                |
+  Running on CPU0    <----------/
+  ...
 
-     Returns the number of leading 0-bits in x, starting at the most significant bit position. If x is 0, the result is undefined.
+  perf record -C 0 stop
 
-The hangling of 0 seems the cause that __builtin_ffs codegen is not as
-well as inline asm.  Clang implemented the builtin in 2008 and took the
-same constraint (penalty).
+Now perf samples the PC of taskA. However, perf does not record the
+PERF_RECORD_COMM and PERF_RECORD_COMM events of taskA.
+Therefore, the comm and symbols of taskA cannot be parsed.
 
+The sys_perf_event_open invoked is as follows:
 
+  # perf --debug verbose=3 record -e cpu-clock -C 1 true
+  <SNIP>
+  Opening: cpu-clock
+  ------------------------------------------------------------
+  perf_event_attr:
+    type                             1 (PERF_TYPE_SOFTWARE)
+    size                             136
+    config                           0 (PERF_COUNT_SW_CPU_CLOCK)
+    { sample_period, sample_freq }   4000
+    sample_type                      IP|TID|TIME|CPU|PERIOD|IDENTIFIER
+    read_format                      ID|LOST
+    disabled                         1
+    inherit                          1
+    freq                             1
+    sample_id_all                    1
+    exclude_guest                    1
+  ------------------------------------------------------------
+  sys_perf_event_open: pid -1  cpu 1  group_fd -1  flags 0x8 = 5
+  Opening: dummy:u
+  ------------------------------------------------------------
+  perf_event_attr:
+    type                             1 (PERF_TYPE_SOFTWARE)
+    size                             136
+    config                           0x9 (PERF_COUNT_SW_DUMMY)
+    { sample_period, sample_freq }   1
+    sample_type                      IP|TID|TIME|CPU|IDENTIFIER
+    read_format                      ID|LOST
+    inherit                          1
+    exclude_kernel                   1
+    exclude_hv                       1
+    mmap                             1
+    comm                             1
+    task                             1
+    sample_id_all                    1
+    exclude_guest                    1
+    mmap2                            1
+    comm_exec                        1
+    ksymbol                          1
+    bpf_event                        1
+  ------------------------------------------------------------
+  sys_perf_event_open: pid -1  cpu 0  group_fd -1  flags 0x8 = 6
+  sys_perf_event_open: pid -1  cpu 1  group_fd -1  flags 0x8 = 7
+  sys_perf_event_open: pid -1  cpu 2  group_fd -1  flags 0x8 = 9
+  sys_perf_event_open: pid -1  cpu 3  group_fd -1  flags 0x8 = 10
+  sys_perf_event_open: pid -1  cpu 4  group_fd -1  flags 0x8 = 11
+  sys_perf_event_open: pid -1  cpu 5  group_fd -1  flags 0x8 = 12
+  sys_perf_event_open: pid -1  cpu 6  group_fd -1  flags 0x8 = 13
+  sys_perf_event_open: pid -1  cpu 7  group_fd -1  flags 0x8 = 14
+  <SNIP>
 
-GCC compiles __builtin_ctzl(x) to xorl    %eax, %eax; tzcntq  %rdi, %rax
-on most Intel processors (AMD -march= values are unaffected). The extra
-xor is due to a false dependency issue
-https://gcc.gnu.org/git/?p=gcc.git&a=commit;h=73543b2286027da1de561902440b53f775a03a86
+Changes since_v6:
+ - Patch1:
+    1. No change.
+    2. Keep Acked-by tag from Adrian.
+ - Patch2:
+    1. Update commit message as suggested by Ian.
+    2. Keep Acked-by tag from Adrian because code is not modified.
+ - Patch3:
+    1. Update comment as suggested by Ian.
+    2. Merge original patch5 ("perf test: Update base-record & system-wide-dummy attr") as suggested by Ian.
+    3. Only merge commit, keep Acked-by tag from Adrian.
+ - Patch4:
+    1. No change. Because Adrian recommends not changing the function name.
+    2. Keep Acked-by tag from Adrian.
+ - Patch5:
+    1. Add cleanup on trap function as suggested by Ian.
+    2. Remove Tested-by tag from Adrian because the script is modified.
+ - Patch6:
+    1. Add Reviewed-by tag from Ian.
 
-Inline asm wins here as well since we know the argument 0 is undefined.
+Changes since_v5:
+ - No code changes.
+ - Detailed commit message of patch3.
+ - Add Acked-by and Tested-by tags from Adrian Hunter.
 
-In May 2023, https://gcc.gnu.org/git/?p=gcc.git;a=commit;h=cc6eb8b51f9568ae0caf46b80e2a0aff050030ce
-"Disable avoid_false_dep_for_bmi for atom and icelake(and later) core processors."
-removed the extra xor for icelake (and later) core processors.
+Changes since_v4:
+ - Simplify check code for record__tracking_system_wide().
+ - Add perf attr test result to commit message for patch 7.
 
->but this is actually quite a common pattern, and it's often not about
->something like __builtin_ffs() at all.
->
->See all the other __builtin_constant_p()'s that we have in that same
->file because we basically just use different code sequences for
->constants.
->
->And that file isn't even unusual. We use it quite a lot when we care
->about code generation for some particular case.
->
->> 2. by providing the definition of a symbol typically provided by libc
->> (and then not building with -ffreestanding) pessimizes libcall
->> optimization.
->
->.. and this is partly why we often avoid libgcc things, and do certain
->things by hand.
->
->The classic rule is "Don't do 64-bit divisions using the C '/' operator".
->
->So in the kernel you have to use do_div() and friends, because the
->library versions are often disgusting and might not know that 64/32 is
->much much cheaper and is what you want.
->
->And quite often we simply use other names - but then we also do *not*
->build with -freestanding, because -freestanding has at least
->traditionally meant that the compiler won't optimize the simple and
->obvious cases (typically things like "memcpy with a constant size").
->
->So we mix and match and pick the best option.
->
->The kernel really doesn't care about architecture portability, because
->honestly, something like "ffs()" is entirely *trivial* to get right,
->compared to the real differences between architectures (eg VM and IO
->differences etc).
->
->             Linus
->
+Changes since_v3:
+ - Check fall_kernel, all_user, and dummy or exclude_user when determining
+   whether system wide is required.
+
+Changes since_v2:
+ - Rename record_tracking.sh to record_sideband.sh in tools/perf/tests/shell.
+ - Remove "perf evlist: Skip dummy event sample_type check for evlist_config" patch.
+ - Add opts->all_kernel check in record__config_tracking_events().
+ - Add perf_event_attr test for record selected CPUs exclude_user.
+ - Update base-record & system-wide-dummy sample_type attr expected values for test-record-C0.
+
+Changes since v1:
+ - Add perf_evlist__go_system_wide() via internal/evlist.h instead of
+   exporting perf_evlist__propagate_maps().
+ - Use evlist__add_aux_dummy() instead of evlist__add_dummy() in
+   evlist__findnew_tracking_event().
+ - Add a parameter in evlist__findnew_tracking_event() to deal with
+   system_wide inside.
+ - Add sideband for all CPUs when tracing selected CPUs comments on
+   the perf record man page.
+ - Use "sideband events" instead of "tracking events".
+ - Adjust the patches Sequence.
+ - Add patch5 to skip dummy event sample_type check for evlist_config.
+ - Add patch6 to update system-wide-dummy attr values for perf test.
+
+Yang Jihong (6):
+  perf evlist: Add perf_evlist__go_system_wide() helper
+  perf evlist: Add evlist__findnew_tracking_event() helper
+  perf record: Move setting tracking events before
+    record__init_thread_masks()
+  perf record: Track sideband events for all CPUs when tracing selected
+    CPUs
+  perf test: Add test case for record sideband events
+  perf test: Add perf_event_attr test for record selected CPUs
+    exclude_user
+
+ tools/lib/perf/evlist.c                       |   9 ++
+ tools/lib/perf/include/internal/evlist.h      |   2 +
+ tools/perf/Documentation/perf-record.txt      |   3 +
+ tools/perf/builtin-record.c                   | 106 +++++++++++++-----
+ tools/perf/tests/attr/system-wide-dummy       |  14 ++-
+ tools/perf/tests/attr/test-record-C0          |   4 +-
+ .../perf/tests/attr/test-record-C0-all-kernel |  32 ++++++
+ tools/perf/tests/shell/record_sideband.sh     |  58 ++++++++++
+ tools/perf/util/evlist.c                      |  18 +++
+ tools/perf/util/evlist.h                      |   1 +
+ 10 files changed, 212 insertions(+), 35 deletions(-)
+ create mode 100644 tools/perf/tests/attr/test-record-C0-all-kernel
+ create mode 100755 tools/perf/tests/shell/record_sideband.sh
+
+-- 
+2.30.GIT
+
