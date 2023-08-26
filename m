@@ -2,98 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F3C37894A6
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 10:07:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 171C67894A4
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 10:06:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231905AbjHZIHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 04:07:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54788 "EHLO
+        id S232027AbjHZIFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 04:05:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232114AbjHZIGy (ORCPT
+        with ESMTP id S232157AbjHZIFV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 04:06:54 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 383321FD7;
-        Sat, 26 Aug 2023 01:06:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693037212; x=1724573212;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=UhARcOy9YMTwuaxIShQFvNQvOf5srjiw1fqZq+/wgA0=;
-  b=Ecb7Aj1j7+9BEclYK7Dmd4wjS9RlKYUJSgoaTt+DltBXH1ELsUglVO1F
-   MZWqd8iorgvfsRtIqKTYxybtLvT+b8sytV56721Ed3SuFqYGLWLBDX5w7
-   rl0AMJdiJeFwBEpds5NgIoIEFmFmC9yq11T2d2cDg7SNHl3t3BvegCDnd
-   WV26MjF+l6PDFVTezsRyx1q0SoRfoQ4IkSnOGJLPt2OZufot17jtXVbcx
-   xwySl2Z+UbdTaIWg9x3x+Nns/qSelbm22HxCGN1oW+CAjASRXHylhhh2h
-   MXi+6VlRaght80QIB0Go/fMzS9wbPMGH0SLBH/e1VS81DuQwRzvBVsN1R
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10813"; a="441205045"
-X-IronPort-AV: E=Sophos;i="6.02,203,1688454000"; 
-   d="scan'208";a="441205045"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2023 01:06:51 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10813"; a="731286368"
-X-IronPort-AV: E=Sophos;i="6.02,203,1688454000"; 
-   d="scan'208";a="731286368"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
-  by orsmga007.jf.intel.com with ESMTP; 26 Aug 2023 01:06:48 -0700
-Message-ID: <cfd9e0b8-167e-a79b-9ef1-b3bfa38c9199@linux.intel.com>
-Date:   Sat, 26 Aug 2023 16:04:12 +0800
+        Sat, 26 Aug 2023 04:05:21 -0400
+Received: from smtp.smtpout.orange.fr (smtp-20.smtpout.orange.fr [80.12.242.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D42D5213D
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 01:05:14 -0700 (PDT)
+Received: from pop-os.home ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id ZoIAqIrNMOQiUZoIAqOb6j; Sat, 26 Aug 2023 10:05:13 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1693037113;
+        bh=1Gj5BE4925dZFZIgp6qeJNN2Uh0t4RwmAE2vfWPWlHg=;
+        h=From:To:Cc:Subject:Date;
+        b=Mtc9wkbD2Qb8iaLZJqRusvwUfBsgZTlNj8sxJfPvYTXbiaFLTh6bJj15oKxTBvlgL
+         TFu0tT6abzOIl5F3NdyJlvMd0NJ7GnAA6WcKavJec/bMe/i0+kXhxOxnmv5Zm8xQ0s
+         R1wb24yQFsg8tEw2VpWL3dZAyFmsOA5SxDzfrbbuzc3V3dF7eP59f33eq6wm1KgMqA
+         kGtTriSrJfCA8EGGGFjePAYk6JaCCh/tfyrXrzFD1iJx/13e3hZosTewFqufuriEzs
+         2ljWaf6jsM8O0GGLZ2UDTPJYXM12jfEiQaF0qoYz4Oeo7HXKPJF7eEIKNkrVoTrQYh
+         GGl8ek4DCIstA==
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 26 Aug 2023 10:05:13 +0200
+X-ME-IP: 86.243.2.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        linux-media@vger.kernel.org
+Subject: [PATCH] media: i2c: rdacm2: Remove an incorrect fwnode_handle_put() call
+Date:   Sat, 26 Aug 2023 10:05:06 +0200
+Message-Id: <d9230082aefcb7bab6363c51c08598eb5ab62cfc.1693037086.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Cc:     baolu.lu@linux.intel.com, "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 09/10] iommu: Make iommu_queue_iopf() more generic
-Content-Language: en-US
-To:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Nicolin Chen <nicolinc@nvidia.com>
-References: <20230825023026.132919-1-baolu.lu@linux.intel.com>
- <20230825023026.132919-10-baolu.lu@linux.intel.com>
- <BN9PR11MB52762A33BC9F41AB424915688CE3A@BN9PR11MB5276.namprd11.prod.outlook.com>
-From:   Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <BN9PR11MB52762A33BC9F41AB424915688CE3A@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/25/23 4:17 PM, Tian, Kevin wrote:
->> +static void assert_no_pending_iopf(struct device *dev, ioasid_t pasid)
->> +{
->> +	struct iommu_fault_param *iopf_param = dev->iommu-
->>> fault_param;
->> +	struct iopf_fault *iopf;
->> +
->> +	if (!iopf_param)
->> +		return;
->> +
->> +	mutex_lock(&iopf_param->lock);
->> +	list_for_each_entry(iopf, &iopf_param->partial, list) {
->> +		if (WARN_ON(iopf->fault.prm.pasid == pasid))
->> +			break;
->> +	}
-> partial list is protected by dev_iommu lock.
-> 
+The commit in Fixes has removed an fwnode_handle_put() call in the error
+handling path of the probe.
 
-Ah, do you mind elaborating a bit more? In my mind, partial list is
-protected by dev_iommu->fault_param->lock.
+Remove the same call from the remove function.
 
-Best regards,
-baolu
+Fixes: 1029939b3782 ("media: v4l: async: Simplify async sub-device fwnode matching")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+/!\   This patch is highly speculative. Review with care.   /!\
+
+If it is correct, it is likely that other similar issue lurk in commit
+1029939b3782. I've not looked in detail and my cocci script did not
+trigger on them but drivers/media/i2c/max9286.c also looks like a
+similar candidate.
+---
+ drivers/media/i2c/rdacm21.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/media/i2c/rdacm21.c b/drivers/media/i2c/rdacm21.c
+index a36a709243fd..3e22df36354f 100644
+--- a/drivers/media/i2c/rdacm21.c
++++ b/drivers/media/i2c/rdacm21.c
+@@ -608,7 +608,6 @@ static void rdacm21_remove(struct i2c_client *client)
+ 	v4l2_async_unregister_subdev(&dev->sd);
+ 	v4l2_ctrl_handler_free(&dev->ctrls);
+ 	i2c_unregister_device(dev->isp);
+-	fwnode_handle_put(dev->sd.fwnode);
+ }
+ 
+ static const struct of_device_id rdacm21_of_ids[] = {
+-- 
+2.34.1
+
