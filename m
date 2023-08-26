@@ -2,172 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A615B7893FE
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 08:02:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A227789400
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 08:15:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231686AbjHZF7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 01:59:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51850 "EHLO
+        id S231841AbjHZGOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 02:14:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231546AbjHZF7K (ORCPT
+        with ESMTP id S231799AbjHZGNx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 01:59:10 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FD6926A5
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 22:59:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693029548; x=1724565548;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=JAf9bJ52chH87/HILStlWSZpikaAPYbuILpRJipkCrA=;
-  b=eM34MtLO/wVh3P+0ut/osr6y0JqojfqFbSET+dfCEXQ8Bbwr5+4qS/rt
-   FOEdp6dsZeRSy0sTiVFp8m+GYRNY9McvXDkpEPsuBcfyb0oYHWeT4uYID
-   DgCNjEglrMhr+5gLeW9Of0K8ka/dD1jjulgSrw4X25fvqUgNMR6JfwUES
-   8PpexgIuxlfw1JrsUjMJpN+9OertbneqtIDCGU2ThosTbWdrPr3CmrMGF
-   OB+Cg+/gsgm18ALPUz42K/IBXDKIb/8SsOMA6y9bjN/3VLnfJ53SEnHwg
-   i3SNFOxwcIhRTIiQm8Cu3A9sG1s71lkKXFEBAv/J6OUiH70x+Y7efly2U
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10813"; a="374824720"
-X-IronPort-AV: E=Sophos;i="6.02,203,1688454000"; 
-   d="scan'208";a="374824720"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2023 22:59:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10813"; a="731267495"
-X-IronPort-AV: E=Sophos;i="6.02,203,1688454000"; 
-   d="scan'208";a="731267495"
-Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 25 Aug 2023 22:59:01 -0700
-Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qZmIR-0004Ot-09;
-        Sat, 26 Aug 2023 05:58:03 +0000
-Date:   Sat, 26 Aug 2023 13:56:22 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        Muchun Song <songmuchun@bytedance.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        David Rientjes <rientjes@google.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Xiongchun Duan <duanxiongchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>
-Subject: Re: [PATCH 10/12] hugetlb: batch PMD split for bulk vmemmap dedup
-Message-ID: <202308261325.ipTttZHZ-lkp@intel.com>
-References: <20230825190436.55045-11-mike.kravetz@oracle.com>
+        Sat, 26 Aug 2023 02:13:53 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B4C42682;
+        Fri, 25 Aug 2023 23:13:51 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id 5614622812f47-3a7d4030621so1013592b6e.3;
+        Fri, 25 Aug 2023 23:13:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693030430; x=1693635230;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=sgU8Ln5Lgx/RyqorzJt1zp0SL+mSfYjwzgmS5gdi1bI=;
+        b=VJ/IhqnxcNSiLJr3e+7lBNC9NPpr8c0TSDH3lo/IBe9gFpwnzNXUnHZi1pbgLlK3vx
+         M9x6L7YjK0D1rfF+DHhl8YNETJ4p9WLByCR0amXTAX2ONhPPDpJc+t6Axw1wcvS+2Ea1
+         0bVKtjwmL5E4WRZIJxu8vBlJu5TB2Xz+KZGOtf/JuL8gAERxdj8/x2vZUu+0UuZPy3O8
+         r7x6PzR9etlZyEl2l5xZGxT/x6EI6LKQPfTsLIyZWxAuXVpxTs+rDYSoVpNF6WjSrNJa
+         tvKLhLeY3cJHic86KYz6xX3GEg+715nBQluBP6kYZb9u8bpm9k8xHwcZlt6Hlnvz9ugv
+         UpOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693030430; x=1693635230;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sgU8Ln5Lgx/RyqorzJt1zp0SL+mSfYjwzgmS5gdi1bI=;
+        b=iOu02tom1Zv5WppsBrRIKzteYPgSrIddoZF8oP1t8D/L6CappacMcsBDT4exiICU/d
+         5un1xNuf5mfqvsT0GtimKG8TVHGa7veQE0eLRbwPhHK3Ym2+vsN5SQIhfFWpYH2p2Fe8
+         3myhetLnghTKPVDL4hmY9/1DFM4GFLXYPmgwIi+N5KXjLBcNSYs+wInvUxQD5ymleSb4
+         s2AHfEnEgobWJLAgiPj9ElVU43v383hXSNBWtsPomzvXkdTLy53KWyN965l1RCrjJo+T
+         okFhgOdniTUDG5g3B5a+2bA45fkDbZ3JE1g/6L/IL37mnlhXeOIVJwbZSqWfmXDTI93I
+         3nvQ==
+X-Gm-Message-State: AOJu0Yzev71EgCh1xPyPnTo+DOQtqm+o7XIJYN1D1cB6JGieA+MvoW/q
+        vgjG0K+uw6dvcQu1p7heKcPaUN4hO/IOxipdndk=
+X-Google-Smtp-Source: AGHT+IGnBRlCy/GHk0hYXyJ3W+bjgnmngqX6N4H7rzMmNwfLoYz7Zw5qoS9HgRRNXRSSlRw+/0U4uy2u46DpP9m1DaE=
+X-Received: by 2002:a05:6808:2d7:b0:3a8:6c27:c1f6 with SMTP id
+ a23-20020a05680802d700b003a86c27c1f6mr4884677oid.19.1693030430437; Fri, 25
+ Aug 2023 23:13:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230825190436.55045-11-mike.kravetz@oracle.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230824084206.22844-1-qiang.zhang1211@gmail.com>
+ <162989fe-5ed8-4d1f-8c99-144e2de532f5@paulmck-laptop> <CALm+0cVgg9u1-E+XrnbEyD75a_H3ifN9oB9j6xx0=cm8kuXE-Q@mail.gmail.com>
+ <20e7f112-ff70-4ba7-b39f-a0fea499d8d7@paulmck-laptop>
+In-Reply-To: <20e7f112-ff70-4ba7-b39f-a0fea499d8d7@paulmck-laptop>
+From:   Z qiang <qiang.zhang1211@gmail.com>
+Date:   Sat, 26 Aug 2023 14:13:39 +0800
+Message-ID: <CALm+0cV8GP_gbbiCwmKyMxE=Qm1pLVWXWkmHUjdaDS8L0hZgFw@mail.gmail.com>
+Subject: Re: [PATCH] rcutorture: Traverse possible cpu to set maxcpu in rcu_nocb_toggle()
+To:     paulmck@kernel.org
+Cc:     joel@joelfernandes.org, linux-kernel@vger.kernel.org,
+        rcu@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mike,
+>
+> On Fri, Aug 25, 2023 at 10:28:37AM +0800, Z qiang wrote:
+> > >
+> > > On Thu, Aug 24, 2023 at 04:42:06PM +0800, Zqiang wrote:
+> > > > Currently, the maxcpu is set by traversing online CPUs, however, if
+> > > > the rcutorture.onoff_holdoff is set zero and onoff_interval is set
+> > > > non-zero, and the some CPUs with larger cpuid has been offline before
+> > > > setting maxcpu, for these CPUs, even if they are online again, also
+> > > > cannot be offload or deoffload.
+> > > >
+> > > > This commit therefore use for_each_possible_cpu() instead of
+> > > > for_each_online_cpu() in rcu_nocb_toggle().
+> > > >
+> > > > Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+> > > > ---
+> > > >  kernel/rcu/rcutorture.c | 2 +-
+> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+> > > > index a58372bdf0c1..b75d0fe558ce 100644
+> > > > --- a/kernel/rcu/rcutorture.c
+> > > > +++ b/kernel/rcu/rcutorture.c
+> > > > @@ -2131,7 +2131,7 @@ static int rcu_nocb_toggle(void *arg)
+> > > >       VERBOSE_TOROUT_STRING("rcu_nocb_toggle task started");
+> > > >       while (!rcu_inkernel_boot_has_ended())
+> > > >               schedule_timeout_interruptible(HZ / 10);
+> > > > -     for_each_online_cpu(cpu)
+> > > > +     for_each_possible_cpu(cpu)
+> > >
+> > > Last I checked, bad things could happen if the code attempted to
+> > > nocb_toggle a CPU that had not yet come online.  Has that changed?
+> >
+> > For example, there are 8 online CPUs in the system, before we traversing online
+> > CPUs and set maxcpu,  CPU7 has been offline, this causes us to miss nocb_toggle
+> > for CPU7(maxcpu=6)
+> >
+> > Even though we still use for_each_online_cpu(), the things described
+> > above also happen.  before we toggle the CPU, this CPU has been offline.
+>
+> Suppose we have a system whose possible CPUs are 0, 1, 2, and 3.  However,
+> only 0 and 1 are present in this system, and until some manual action is
+> taken, only 0 and 1 will ever be online.  (Yes, this really can happen!)
+> In that state, won't toggling CPU 2 and 3 result in failures?
+>
 
-kernel test robot noticed the following build errors:
+Agree.
+As long as we enabled rcutorture.onoff_interval,  regardless of whether we use
+online CPUs or possible CPUs to set maxcpu,  It is all possible to
+toggling the CPUs failure
+and print "NOCB: Cannot CB-offload offline CPU" log. but the failures
+due to CPU offline are acceptable.
 
-[auto build test ERROR on next-20230825]
-[cannot apply to akpm-mm/mm-everything v6.5-rc7 v6.5-rc6 v6.5-rc5 linus/master v6.5-rc7]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+but at least the toggling operation on CPU7 will not be missed. when
+CPU7 comes online again.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Mike-Kravetz/hugetlb-clear-flags-in-tail-pages-that-will-be-freed-individually/20230826-030805
-base:   next-20230825
-patch link:    https://lore.kernel.org/r/20230825190436.55045-11-mike.kravetz%40oracle.com
-patch subject: [PATCH 10/12] hugetlb: batch PMD split for bulk vmemmap dedup
-config: s390-randconfig-001-20230826 (https://download.01.org/0day-ci/archive/20230826/202308261325.ipTttZHZ-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce: (https://download.01.org/0day-ci/archive/20230826/202308261325.ipTttZHZ-lkp@intel.com/reproduce)
+Would it be better to use for_each_present_cpu() ?
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308261325.ipTttZHZ-lkp@intel.com/
+Thanks
+Zqiang
 
-All error/warnings (new ones prefixed by >>):
-
-   mm/hugetlb_vmemmap.c:661:6: warning: no previous prototype for function 'hugetlb_vmemmap_optimize_bulk' [-Wmissing-prototypes]
-     661 | void hugetlb_vmemmap_optimize_bulk(const struct hstate *h, struct page *head,
-         |      ^
-   mm/hugetlb_vmemmap.c:661:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-     661 | void hugetlb_vmemmap_optimize_bulk(const struct hstate *h, struct page *head,
-         | ^
-         | static 
->> mm/hugetlb_vmemmap.c:667:6: warning: no previous prototype for function 'hugetlb_vmemmap_split' [-Wmissing-prototypes]
-     667 | void hugetlb_vmemmap_split(const struct hstate *h, struct page *head)
-         |      ^
-   mm/hugetlb_vmemmap.c:667:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-     667 | void hugetlb_vmemmap_split(const struct hstate *h, struct page *head)
-         | ^
-         | static 
->> mm/hugetlb_vmemmap.c:698:28: error: use of undeclared identifier 'TLB_FLUSH_ALL'
-     698 |         flush_tlb_kernel_range(0, TLB_FLUSH_ALL);
-         |                                   ^
-   2 warnings and 1 error generated.
-
-
-vim +/TLB_FLUSH_ALL +698 mm/hugetlb_vmemmap.c
-
-   666	
- > 667	void hugetlb_vmemmap_split(const struct hstate *h, struct page *head)
-   668	{
-   669		unsigned long vmemmap_start = (unsigned long)head, vmemmap_end;
-   670		unsigned long vmemmap_reuse;
-   671	
-   672		if (!vmemmap_should_optimize(h, head))
-   673			return;
-   674	
-   675		static_branch_inc(&hugetlb_optimize_vmemmap_key);
-   676	
-   677		vmemmap_end     = vmemmap_start + hugetlb_vmemmap_size(h);
-   678		vmemmap_reuse   = vmemmap_start;
-   679		vmemmap_start   += HUGETLB_VMEMMAP_RESERVE_SIZE;
-   680	
-   681		/*
-   682		 * Remap the vmemmap virtual address range [@vmemmap_start, @vmemmap_end)
-   683		 * to the page which @vmemmap_reuse is mapped to, then free the pages
-   684		 * which the range [@vmemmap_start, @vmemmap_end] is mapped to.
-   685		 */
-   686		if (vmemmap_remap_split(vmemmap_start, vmemmap_end, vmemmap_reuse))
-   687			static_branch_dec(&hugetlb_optimize_vmemmap_key);
-   688	}
-   689	
-   690	void hugetlb_vmemmap_optimize_folios(struct hstate *h, struct list_head *folio_list)
-   691	{
-   692		struct folio *folio;
-   693		LIST_HEAD(vmemmap_pages);
-   694	
-   695		list_for_each_entry(folio, folio_list, lru)
-   696			hugetlb_vmemmap_split(h, &folio->page);
-   697	
- > 698		flush_tlb_kernel_range(0, TLB_FLUSH_ALL);
-   699	
-   700		list_for_each_entry(folio, folio_list, lru)
-   701			hugetlb_vmemmap_optimize_bulk(h, &folio->page, &vmemmap_pages);
-   702	
-   703		free_vmemmap_page_list(&vmemmap_pages);
-   704	}
-   705	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>
+>                                                         Thanx, Paul
+>
+> > Thanks
+> > Zqiang
+> >
+> >
+> > >
+> > >                                                         Thanx, Paul
+> > >
+> > > >               maxcpu = cpu;
+> > > >       WARN_ON(maxcpu < 0);
+> > > >       if (toggle_interval > ULONG_MAX)
+> > > > --
+> > > > 2.17.1
+> > > >
