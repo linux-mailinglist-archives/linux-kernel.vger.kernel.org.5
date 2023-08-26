@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70287789879
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 19:43:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4796C789880
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 19:43:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230493AbjHZRnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 13:43:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43834 "EHLO
+        id S230513AbjHZRnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 13:43:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230441AbjHZRmk (ORCPT
+        with ESMTP id S230456AbjHZRmk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 26 Aug 2023 13:42:40 -0400
 Received: from smtp.smtpout.orange.fr (smtp-21.smtpout.orange.fr [80.12.242.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D284CEE
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8757E7A
         for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 10:42:38 -0700 (PDT)
 Received: from pop-os.home ([86.243.2.178])
         by smtp.orange.fr with ESMTPA
-        id ZxInqYKe17qfuZxIyqGrQw; Sat, 26 Aug 2023 19:42:37 +0200
+        id ZxInqYKe17qfuZxIzqGrR5; Sat, 26 Aug 2023 19:42:37 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
         s=t20230301; t=1693071757;
-        bh=J2IAazKwns7ngGWe0+roM1E+yKslkp7WaduYjND4iwo=;
+        bh=QTIm/KtA3vhwN8cxnOOJvoO7+sH2uOIZpMI8GWwMiqw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=Da+Zq5dulkq/6u8ueEkQC7tVbRjzFcU14vepedq7lCPcgoiWXmpY7NWgggLDzBNwm
-         fQcep7UXqbOXM7Ea8SYawTl9ubr+NnE5l0b6gjCi273ywxzL9ezxnPy/O6sdtkqGb5
-         oXF+68yFPVAyfgoce4hIXb4Z2Wrseo5CiS0NS7cNPoCvRDVgRHrgwCtvWiwsloznZN
-         IzCKKtxEW1LzjANK0t0lBOGyTmk+lLHkT5zLHPnH1ujmYHP6MV4Hb/nBDfQLij+4ZE
-         6PfkLbsmk+3JkE/2LNtxL1FCi1dp5oy4ZcHRt0IYEzmstnPaD2W7+QXwRqeRO3RvWy
-         TPRC0BO9aD2HA==
+        b=ZKLAgxe0jXbDOKq1GyiKn7ylNbFayEaNogLejRQcu90GaIae+cmlBqpnhTxhxDH7I
+         Hx7irQUuQraeQcWUbRMUpuF6O8ds/gkCUS9kg6R2thfL+OugE57Yu1mrK9Ojn8PuFq
+         OF35YKkp8QS8iTxNSC7B7MBQKA9fOQxXBuyfRnjnzMTIXRYObF+pZhOq5ePTYnEIw3
+         KseeEd1dFmF8z2hC69YMFDooDN7Sm+WpHG5i4SsmOa6jOWdX2GULeGJPF4g/UTDoFk
+         xNffvtVM8OqL9n9drabhnuBXyZhM2kRk7vLX43swB8Pnq/CEpGnf9Ry/a0SdRacB8j
+         JzBaiqAd6A2tQ==
 X-ME-Helo: pop-os.home
 X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
 X-ME-Date: Sat, 26 Aug 2023 19:42:37 +0200
@@ -38,9 +38,9 @@ To:     rrameshbabu@nvidia.com, jikos@kernel.org,
 Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
         kernel-janitors@vger.kernel.org,
         Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH 2/3] HID: nvidia-shield: Fix some missing function calls() in the probe error handling path
-Date:   Sat, 26 Aug 2023 19:42:18 +0200
-Message-Id: <443aef6a6d90011e8fffcd43e1a88cd9e98594ca.1693070958.git.christophe.jaillet@wanadoo.fr>
+Subject: [PATCH 3/3] HID: nvidia-shield: Introduce thunderstrike_destroy()
+Date:   Sat, 26 Aug 2023 19:42:19 +0200
+Message-Id: <4c9a8c7f6b4eb879dd7ef4d44bb6a80b3f126d25.1693070958.git.christophe.jaillet@wanadoo.fr>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1693070958.git.christophe.jaillet@wanadoo.fr>
 References: <cover.1693070958.git.christophe.jaillet@wanadoo.fr>
@@ -56,35 +56,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit in Fixes updated the error handling path of
-thunderstrike_create() and the remove function but not the error handling
-path of shield_probe(), should an error occur after a successful
-thunderstrike_create() call.
+In order to simplify some error handling paths, and avoid code duplication
+introduce thunderstrike_destroy() which undoes thunderstrike_create().
 
-Add the missing calls.
-
-Fixes: 3ab196f88237 ("HID: nvidia-shield: Add battery support for Thunderstrike")
 Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
- drivers/hid/hid-nvidia-shield.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/hid/hid-nvidia-shield.c | 26 ++++++++++++++++----------
+ 1 file changed, 16 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/hid/hid-nvidia-shield.c b/drivers/hid/hid-nvidia-shield.c
-index 66a7478e2c9d..849b3f8409a0 100644
+index 849b3f8409a0..4e39e7c1a2c3 100644
 --- a/drivers/hid/hid-nvidia-shield.c
 +++ b/drivers/hid/hid-nvidia-shield.c
-@@ -1074,9 +1074,11 @@ static int shield_probe(struct hid_device *hdev, const struct hid_device_id *id)
+@@ -915,6 +915,20 @@ static struct shield_device *thunderstrike_create(struct hid_device *hdev)
+ 	return ERR_PTR(ret);
+ }
+ 
++static void thunderstrike_destroy(struct hid_device *hdev)
++{
++	struct shield_device *dev = hid_get_drvdata(hdev);
++	struct thunderstrike *ts;
++
++	ts = container_of(dev, struct thunderstrike, base);
++
++	power_supply_unregister(ts->base.battery_dev.psy);
++	if (ts->haptics_dev)
++		input_unregister_device(ts->haptics_dev);
++	led_classdev_unregister(&ts->led_dev);
++	ida_free(&thunderstrike_ida, ts->id);
++}
++
+ static int android_input_mapping(struct hid_device *hdev, struct hid_input *hi,
+ 				 struct hid_field *field,
+ 				 struct hid_usage *usage, unsigned long **bit,
+@@ -1074,11 +1088,7 @@ static int shield_probe(struct hid_device *hdev, const struct hid_device_id *id)
  err_stop:
  	hid_hw_stop(hdev);
  err_haptics:
-+	power_supply_unregister(ts->base.battery_dev.psy);
- 	if (ts->haptics_dev)
- 		input_unregister_device(ts->haptics_dev);
- 	led_classdev_unregister(&ts->led_dev);
-+	ida_free(&thunderstrike_ida, ts->id);
+-	power_supply_unregister(ts->base.battery_dev.psy);
+-	if (ts->haptics_dev)
+-		input_unregister_device(ts->haptics_dev);
+-	led_classdev_unregister(&ts->led_dev);
+-	ida_free(&thunderstrike_ida, ts->id);
++	thunderstrike_destroy(hdev);
  	return ret;
  }
  
+@@ -1090,11 +1100,7 @@ static void shield_remove(struct hid_device *hdev)
+ 	ts = container_of(dev, struct thunderstrike, base);
+ 
+ 	hid_hw_close(hdev);
+-	power_supply_unregister(dev->battery_dev.psy);
+-	if (ts->haptics_dev)
+-		input_unregister_device(ts->haptics_dev);
+-	led_classdev_unregister(&ts->led_dev);
+-	ida_free(&thunderstrike_ida, ts->id);
++	thunderstrike_destroy(hdev);
+ 	del_timer_sync(&ts->psy_stats_timer);
+ 	cancel_work_sync(&ts->hostcmd_req_work);
+ 	hid_hw_stop(hdev);
 -- 
 2.34.1
 
