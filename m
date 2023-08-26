@@ -2,135 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFB657897F6
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 18:11:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B3E17897FA
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 18:17:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229734AbjHZQFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 12:05:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57402 "EHLO
+        id S229757AbjHZQQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 12:16:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbjHZQEz (ORCPT
+        with ESMTP id S229652AbjHZQQ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 12:04:55 -0400
-Received: from gnuweeb.org (gnuweeb.org [51.81.211.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A25A1BE6
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 09:04:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gnuweeb.org;
-        s=default; t=1693065892;
-        bh=+SGIC5dxof8GjOe3TXq/u5jq4AcqCToAtMLWOcxfXuU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=NMc6oDfrFJVVpZ1Fs+xnzNsqDfIUGlVyTHSuzeXw25zDnP2xtcBbtE7PkGTDmtKgf
-         v8R1nLBoNLgXBYEQ7y7rCoBvviHgG1jD/iVlwspXNTlR4awOLkbAAnxXCdFWuDhQcB
-         NltGo158Wqh4+OchlBrJYWDgMkAZfPuTGmr9gKDfEUuNsANGh00e14P80RlLQ0xThx
-         Eky5S+D+hN7lWyLw7L29/FsYy0JCboKq2aIVFPTcvu9l4jLpUF4pKoIZtOHG4mXUps
-         E7edd52VKn66DihASghC8rH+yqLUscn3iy4XueGoCacSkmgp4Zgsdzg69iI6lijfKa
-         fjy9lqI2oovLw==
-Received: from biznet-home.integral.gnuweeb.org (unknown [182.253.126.208])
-        by gnuweeb.org (Postfix) with ESMTPSA id F355724B175;
-        Sat, 26 Aug 2023 23:04:49 +0700 (WIB)
-Date:   Sat, 26 Aug 2023 23:04:45 +0700
-From:   Ammar Faizi <ammarfaizi2@gnuweeb.org>
-To:     Zhangjin Wu <falcon@tinylab.org>
-Cc:     Willy Tarreau <w@1wt.eu>,
-        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
-        Nicholas Rosenberg <inori@vnlx.org>,
-        GNU/Weeb Mailing List <gwml@vger.gnuweeb.org>,
-        Michael William Jonathan <moe@gnuweeb.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 0/1] Fix a stack misalign bug on _start
-Message-ID: <ZOoindMFj1UKqo+s@biznet-home.integral.gnuweeb.org>
-References: <20230826141632.1488740-1-ammarfaizi2@gnuweeb.org>
- <20230826152024.7773-1-falcon@tinylab.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230826152024.7773-1-falcon@tinylab.org>
-X-Bpl:  hUx9VaHkTWcLO7S8CQCslj6OzqBx2hfLChRz45nPESx5VSB/xuJQVOKOB1zSXE3yc9ntP27bV1M1
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Sat, 26 Aug 2023 12:16:26 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9917EE79
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 09:16:23 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 287D360B8B
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 16:16:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71DE7C433C7;
+        Sat, 26 Aug 2023 16:16:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693066582;
+        bh=aDafZhJdBZ54bMBH0U8rbFAbXjiaRfjXVMc/PxusHh4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=LjFt1NlW0FYDk4RMQrP4RMgE6stQgS2eTIz3lF7hgyAbBATfhHuS0CaXprPiNP9Vq
+         NrMsNY+j2WkOt9GM6N7cpYBvspW3E/TudzFDjAI41MyiMrD1MCbzp4sp8CQRpyo9an
+         /BJnuYV2REUk2M2V1Px8OWWMBxLZ39JO9g7Rqk2SAkXeh/aScY6J6t1D+Xls1DWS82
+         reELGlQfwrM2MHT/cGjlGAXAlVMGSksmR6+JI0LPGB3EPE6I4bJk1awIUKRwMwI2xz
+         qVPH7Bm8TpvCZvMqCM8BEvFDKxx9Mgmg4mKcifonG3MrIOOHBHNjM8/8WYA8R7vM47
+         cfzYPOFmaETLw==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qZvxT-008Jns-Ho;
+        Sat, 26 Aug 2023 17:16:19 +0100
+Date:   Sat, 26 Aug 2023 17:16:19 +0100
+Message-ID: <867cphg4oc.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Johan Hovold <johan+linaro@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+        Shanker Donthineni <sdonthineni@nvidia.com>
+Subject: Re: [PATCH] genirq: Fix software resend lockup and nested resend
+In-Reply-To: <20230826154004.1417-1-johan+linaro@kernel.org>
+References: <20230826154004.1417-1-johan+linaro@kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: johan+linaro@kernel.org, tglx@linutronix.de, linux-kernel@vger.kernel.org, sdonthineni@nvidia.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 26, 2023 at 11:20:24PM +0800, Zhangjin Wu wrote:
-> >   $eax   : 0x56559000  →  0x00003f90
-> >   $ebx   : 0x56559000  →  0x00003f90
-> >   $ecx   : 0x1
-> >   $edx   : 0xf7fcaaa0  →   endbr32 
-> >   $esp   : 0xffffcdbc  →  0x00000001
-> >   $ebp   : 0x0
-> >   $esi   : 0xffffce7c  →  0xffffd096
-> >   $edi   : 0x56556060  →  <_start+0> xor %ebp, %ebp
-> >   $eip   : 0x56556489  →  <sse_pq_add+25> movaps %xmm0, 0x30(%esp)
-> > 
-> >     <sse_pq_add+11>  pop    %eax
-> >     <sse_pq_add+12>  add    $0x2b85, %eax
-> >     <sse_pq_add+18>  movups -0x1fd0(%eax), %xmm0
-> >   → <sse_pq_add+25>  movaps %xmm0, 0x30(%esp)     <== trapping instruction
-> >     <sse_pq_add+30>  movups -0x1fe0(%eax), %xmm1
-> >     <sse_pq_add+37>  movaps %xmm1, 0x20(%esp)
-> >     <sse_pq_add+42>  movups -0x1ff0(%eax), %xmm2
-> >     <sse_pq_add+49>  movaps %xmm2, 0x10(%esp)
-> >     <sse_pq_add+54>  movups -0x2000(%eax), %xmm3
-> > 
-> >   [#0] Id 1, Name: "test", stopped 0x56556489 in sse_pq_add (), reason: SIGSEGV
-> > 
-> >   (gdb)  bt
-> >   #0  0x56556489 in sse_pq_add ()
-> >   #1  0x5655608e in main ()
-> >
+Hi Johan,
+
+On Sat, 26 Aug 2023 16:40:04 +0100,
+Johan Hovold <johan+linaro@kernel.org> wrote:
 > 
-> Since we have a new 'startup' test group, do you have a short function
-> to trigger this error?
+> The switch to using hlist for managing software resend of interrupts
+> broke resend in at least two ways:
+> 
+> First, unconditionally adding interrupt descriptors to the resend list
+> can corrupt the list when the descriptor in question has already been
+> added. This causes the resend tasklet to loop indefinitely with
+> interrupts disabled as was recently reported with the Lenovo ThinkPad
+> X13s after threaded NAPI was disabled in the ath11k WiFi driver. [1]
 
-Here is a simple program to test the stack alignment.
+Gah, of course. Making the descriptor pending again isn't an
+idempotent operation anymore (while setting an already set bit in the
+bitmap was). You'll need the right timing, but it looks like you've
+managed to achieve that reliably.
 
-#include "tools/include/nolibc/nolibc.h"
+>
+> This bug is easily fixed by restoring the old semantics of
+> irq_sw_resend() so that it can be called also for descriptors that have
+> already been marked for resend.
+> 
+> Second, the offending commit also broke software resend of nested
+> interrupts by simply discarding the code that made sure that such
+> interrupts are retriggered using the parent interrupt.
+> 
+> Add back the corresponding code that adds the parent descriptor to the
+> resend list. Note that this bit is untested, but I decided to include it
+> to avoid having to revert the offending commit and the maple tree
+> conversion that depends on it.
 
-__asm__ (
-"main:\n"
-    /*
-     * When the call main is executed, the
-     * %esp is 16 bytes aligned.
-     *
-     * Then, on function entry (%esp mod 16) == 12
-     * because the call instruction pushes 4 bytes
-     * onto the stack.
-     *
-     * subl $12, %esp will make (%esp mod 16) == 0
-     * again.
-     */
-    "subl  $12, %esp\n"
+Indeed, and that one is not timing related, but 100% broken.
 
-    /*
-     * These move instructions will crash if %esp is
-     * not a multiple of 16.
-     */
-    "movdqa (%esp), %xmm0\n"
-    "movdqa %xmm0, (%esp)\n"
-    "movaps (%esp), %xmm0\n"
-    "movaps %xmm0, (%esp)\n"
+> 
+> [1] https://lore.kernel.org/lkml/20230809073432.4193-1-johan+linaro@kernel.org/
+> 
+> Fixes: bc06a9e08742 ("genirq: Use hlist for managing resend handlers")
+> Cc: Shanker Donthineni <sdonthineni@nvidia.com>
+> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+> ---
+> 
+> Hi Thomas and Marc,
+> 
+> This patch fixes a severe regression in the resend code in 6.5-rc1 that
+> breaks machines like the Lenovo X13s and which ideally should be
+> addressed before 6.5 is released tomorrow.
 
-    "addl   $12, %esp\n"
-    "xorl   %eax, %eax\n"
-    "ret\n"
-);
+This relies on Thomas seeing this email before tomorrow. Unless you
+directly reach out to Linus to try and intercept the release.
 
-> Perhaps it is time for us to add a new 'stack alignment' test case for
-> all of the architectures.
+>
+> I hesitated about including the fix for nested interrupts as I've not
+> had time to test this bit, but I ultimately decided to include it to
+> avoid having to suggest a revert of the maple tree conversion. Let me
+> know if you prefer to go this route and I'll post a (prepared) revert
+> series instead.
 
-I don't know the alignment rules for other architectures (I only work on
-x86 and x86-64). While waiting for the maintainers' comment, I'll leave
-the test case decision to you. Feel free to take the above code.
+I think it is too late for that revert to happen, and we might as well
+plough along and take the fix.
 
-Extra:
-It's also fine if you take my patch with the 'sub $(16 - 4), %esp'
-change and batch it together in your next series.
+> 
+> Johan
+> 
+> 
+>  kernel/irq/resend.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/irq/resend.c b/kernel/irq/resend.c
+> index edec335c0a7a..5f2c66860ac6 100644
+> --- a/kernel/irq/resend.c
+> +++ b/kernel/irq/resend.c
+> @@ -68,11 +68,16 @@ static int irq_sw_resend(struct irq_desc *desc)
+>  		 */
+>  		if (!desc->parent_irq)
+>  			return -EINVAL;
+> +
+> +		desc = irq_to_desc(desc->parent_irq);
+> +		if (!desc)
+> +			return -EINVAL;
+>  	}
+>  
+>  	/* Add to resend_list and activate the softirq: */
+>  	raw_spin_lock(&irq_resend_lock);
+> -	hlist_add_head(&desc->resend_node, &irq_resend_list);
+> +	if (hlist_unhashed(&desc->resend_node))
+> +		hlist_add_head(&desc->resend_node, &irq_resend_list);
+>  	raw_spin_unlock(&irq_resend_lock);
+>  	tasklet_schedule(&resend_tasklet);
+>  	return 0;
+
+FWIW:
+
+Reviewed-by: Marc Zyngier <maz@kernel.org>
+
+	M.
 
 -- 
-Ammar Faizi
-
+Without deviation from the norm, progress is not possible.
