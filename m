@@ -2,66 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31D997892BA
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 02:37:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E05C57892C1
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 02:46:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231169AbjHZAbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 20:31:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43474 "EHLO
+        id S231158AbjHZAj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 20:39:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230050AbjHZAae (ORCPT
+        with ESMTP id S231282AbjHZAjr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 20:30:34 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB4452118
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 17:30:32 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id af79cd13be357-76d7224c5bcso86568685a.2
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 17:30:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693009832; x=1693614632;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=9ZyTeNGFnmQqE613GDKmKhvLAFe/AnQBwlsX/erp5GQ=;
-        b=lBAbfPJmyYr7D+xhXIJ4YlXKgiw1v/rQRbN7gs6i9aXXb+yHcLxmQO6diIOdHwDr8H
-         3JEvbxn/uYkWU88LxZDBF0jDV6Ry3jfFkUSV1i9Z38wNXI0Sr5+bzF0aq2CM0d7qOUy0
-         Na/Pcc51GOHtZNfYuhxMdkUR2iI1GHSJPRnhAwcBLzDkuSv5w8yWCiGPhza5v3RRxCei
-         xw+sqsZmRAeLqfWQ5jPEyDKTuQRzhmWfzTstc6f70MP/0JCfHfNEr+yvIx2i6y7/InLQ
-         TsNObOQVDPmY7eeKrRd4Lk+/zyrwm9ZduKtsBC0tD9SiouW5gdv9niBdgZUEATAaY6tM
-         fLmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693009832; x=1693614632;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9ZyTeNGFnmQqE613GDKmKhvLAFe/AnQBwlsX/erp5GQ=;
-        b=IXuATpyhecLD0Zas3ihc83CXrbxQK/kZOezanAuQS/nE46pNWgXNbVevWRFQYd59Fy
-         zUYt4we9EoQCJOGg2sEDuI7y9hR5XKuy2IxpUv2zPZV6V3Fqf+JYwEk1RY7h9ADmScYB
-         o+04pNYnn+NQQ+KKnDLrImh6a8/onvjEs/SGp1654DRFMLslTPIvOSx5/G8X4U7kOwv5
-         fXU4PpI3oOshIAI/JENQr7d4N4yT1UYS5DGDmmpy0QB8qRNvzKwqO1igFKgvQyA/dDdD
-         s8IkEG7s6KWoWc57cpUkxTiuqrY01q9TIByKd/Nyz57BCkmwNkCxtLxlnGjcKjPhZYRz
-         BkkA==
-X-Gm-Message-State: AOJu0YwY4IJ2nwsP+F9s4FEwMn7X9OqwGXnWHariA5W3QkXY4rvV1Xmd
-        UGpYhqpAiT8zQvNf1UVwd9MQieBmzto=
-X-Google-Smtp-Source: AGHT+IHdQMAbKiU8+7Ds3mrCtSx4VtAtS4KB91c27s3l8W/W893AhW7DAtd/kGWb6/gzHLi2XTIGRA==
-X-Received: by 2002:a0c:c502:0:b0:64f:69a3:af37 with SMTP id x2-20020a0cc502000000b0064f69a3af37mr7616094qvi.13.1693009831703;
-        Fri, 25 Aug 2023 17:30:31 -0700 (PDT)
-Received: from alolivei-thinkpadt480s.gru.csb ([2804:14c:bf20:82ea:8c7c:b784:3f92:988a])
-        by smtp.gmail.com with ESMTPSA id x4-20020a0cda04000000b0063d162a8b8bsm903510qvj.19.2023.08.25.17.30.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Aug 2023 17:30:31 -0700 (PDT)
-Date:   Fri, 25 Aug 2023 21:30:26 -0300
-From:   Alexon Oliveira <alexondunkan@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     martyn@welchs.me.uk, manohar.vanga@gmail.com,
-        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
-Subject: [PATCH] staging: vme_user: fix check unnecessary space after a cast
- in vme_fake.c
-Message-ID: <ZOlHos18LFnsKg0i@alolivei-thinkpadt480s.gru.csb>
+        Fri, 25 Aug 2023 20:39:47 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6221F26B2;
+        Fri, 25 Aug 2023 17:39:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693010385; x=1724546385;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=zBEsPpbqpz0jgz/L1/kzw9Bxwx0vlfNsgqHrm4AXy+Y=;
+  b=ahloIwhntAo04CGxyx3jF94Joy5KKMcQo8eMkMHhrY/sTsDB4l68YG6Z
+   eGBM7o09GUmZDXmRN6vqMB2IbfJ9fxLtiPLSPhDPZilkp037qHDDLohtx
+   l2sJUtpiLe+Ia5b7HVtV0znv542r5TpW+iKclk4PEDmdke4DbFBzP7izX
+   7t7hC3lnaAdxIieVJOIg9HM8FAz1tT9HvY1uqWMjscDefiuBtDf0AkNZE
+   M7FFPGwJ4a5lQO3AXaTx1RhbDAQOBT71+n2+VzHaAJLKx1cgDtwKZi6Sr
+   2BHzxLmNRT+uYDaB+FKcBTFwcTPIvTIMWly6UmlVukPtoFXK44vt3R+Iu
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10813"; a="373704369"
+X-IronPort-AV: E=Sophos;i="6.02,202,1688454000"; 
+   d="scan'208";a="373704369"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2023 17:39:44 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10813"; a="772670959"
+X-IronPort-AV: E=Sophos;i="6.02,202,1688454000"; 
+   d="scan'208";a="772670959"
+Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 25 Aug 2023 17:39:40 -0700
+Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qZhL1-0004At-1O;
+        Sat, 26 Aug 2023 00:39:39 +0000
+Date:   Sat, 26 Aug 2023 08:38:52 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Lukasz Majewski <lukma@denx.de>, Tristram.Ha@microchip.com,
+        Eric Dumazet <edumazet@google.com>, davem@davemloft.net
+Cc:     oe-kbuild-all@lists.linux.dev, Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Kristian Overskeid <koverskeid@gmail.com>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukasz Majewski <lukma@denx.de>
+Subject: Re: [PATCH] net: hsr : Provide fix for HSRv1 supervisor frames
+ decoding
+Message-ID: <202308260833.erhVKBnc-lkp@intel.com>
+References: <20230825153111.228768-1-lukma@denx.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <20230825153111.228768-1-lukma@denx.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,37 +74,201 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed all CHECK: No space is necessary after a cast
-as reported by checkpatch to adhere to the Linux kernel
-coding-style guidelines.
+Hi Lukasz,
 
-Signed-off-by: Alexon Oliveira <alexondunkan@gmail.com>
----
- drivers/staging/vme_user/vme_fake.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+kernel test robot noticed the following build errors:
 
-diff --git a/drivers/staging/vme_user/vme_fake.c b/drivers/staging/vme_user/vme_fake.c
-index 4258ed6033e7..4ccb16dd0d0b 100644
---- a/drivers/staging/vme_user/vme_fake.c
-+++ b/drivers/staging/vme_user/vme_fake.c
-@@ -95,7 +95,7 @@ static void fake_VIRQ_tasklet(unsigned long data)
- 	struct vme_bridge *fake_bridge;
- 	struct fake_driver *bridge;
- 
--	fake_bridge = (struct vme_bridge *) data;
-+	fake_bridge = (struct vme_bridge *)data;
- 	bridge = fake_bridge->driver_priv;
- 
- 	vme_irq_handler(fake_bridge, bridge->int_level, bridge->int_statid);
-@@ -1092,7 +1092,7 @@ static int __init fake_init(void)
- 	mutex_init(&fake_device->vme_int);
- 	mutex_init(&fake_bridge->irq_mtx);
- 	tasklet_init(&fake_device->int_tasklet, fake_VIRQ_tasklet,
--		     (unsigned long) fake_bridge);
-+		     (unsigned long)fake_bridge);
- 
- 	strcpy(fake_bridge->name, driver_name);
- 
+[auto build test ERROR on net-next/main]
+[also build test ERROR on net/main linus/master v6.5-rc7 next-20230825]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Lukasz-Majewski/net-hsr-Provide-fix-for-HSRv1-supervisor-frames-decoding/20230825-233423
+base:   net-next/main
+patch link:    https://lore.kernel.org/r/20230825153111.228768-1-lukma%40denx.de
+patch subject: [PATCH] net: hsr : Provide fix for HSRv1 supervisor frames decoding
+config: riscv-randconfig-001-20230826 (https://download.01.org/0day-ci/archive/20230826/202308260833.erhVKBnc-lkp@intel.com/config)
+compiler: riscv64-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20230826/202308260833.erhVKBnc-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308260833.erhVKBnc-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   net/hsr/hsr_framereg.c: In function 'hsr_handle_sup_frame':
+>> net/hsr/hsr_framereg.c:289:12: error: 'And' undeclared (first use in this function)
+     289 |          * And leave the HSR tag.
+         |            ^~~
+   net/hsr/hsr_framereg.c:289:12: note: each undeclared identifier is reported only once for each function it appears in
+>> net/hsr/hsr_framereg.c:289:15: error: expected ';' before 'leave'
+     289 |          * And leave the HSR tag.
+         |               ^~~~~~
+         |               ;
+
+
+vim +/And +289 net/hsr/hsr_framereg.c
+
+   249	
+   250	/* Use the Supervision frame's info about an eventual macaddress_B for merging
+   251	 * nodes that has previously had their macaddress_B registered as a separate
+   252	 * node.
+   253	 */
+   254	void hsr_handle_sup_frame(struct hsr_frame_info *frame)
+   255	{
+   256		struct hsr_node *node_curr = frame->node_src;
+   257		struct hsr_port *port_rcv = frame->port_rcv;
+   258		struct hsr_priv *hsr = port_rcv->hsr;
+   259		struct hsr_sup_payload *hsr_sp;
+   260		struct hsr_sup_tlv *hsr_sup_tlv;
+   261		struct hsr_node *node_real;
+   262		struct sk_buff *skb = NULL;
+   263		struct list_head *node_db;
+   264		struct ethhdr *ethhdr;
+   265		int i;
+   266		unsigned int pull_size = 0;
+   267		unsigned int total_pull_size = 0;
+   268	
+   269		/* Here either frame->skb_hsr or frame->skb_prp should be
+   270		 * valid as supervision frame always will have protocol
+   271		 * header info.
+   272		 */
+   273		if (frame->skb_hsr)
+   274			skb = frame->skb_hsr;
+   275		else if (frame->skb_prp)
+   276			skb = frame->skb_prp;
+   277		else if (frame->skb_std)
+   278			skb = frame->skb_std;
+   279		if (!skb)
+   280			return;
+   281	
+   282		/* Leave the ethernet header. */
+   283		pull_size = sizeof(struct ethhdr);
+   284		skb_pull(skb, pull_size);
+   285		total_pull_size += pull_size;
+   286	
+   287		ethhdr = (struct ethhdr *)skb_mac_header(skb);
+   288	
+ > 289		 * And leave the HSR tag.
+   290		 *
+   291		 * The HSRv1 supervisory frame encapsulates the v0 frame
+   292		 * with EtherType of 0x88FB
+   293		 */
+   294		if (ethhdr->h_proto == htons(ETH_P_HSR)) {
+   295			if (hsr->prot_version == HSR_V1)
+   296				/* In the above step the DA, SA and EtherType
+   297				 * (0x892F - HSRv1) bytes has been removed.
+   298				 *
+   299				 * As the HSRv1 has the HSR header added, one need
+   300				 * to remove path_and_LSDU_size and sequence_nr fields.
+   301				 *
+   302				 */
+   303				pull_size = 4;
+   304			else
+   305				pull_size = sizeof(struct hsr_tag);
+   306	
+   307			skb_pull(skb, pull_size);
+   308			total_pull_size += pull_size;
+   309		}
+   310	
+   311		/* And leave the HSR sup tag. */
+   312		pull_size = sizeof(struct hsr_tag);
+   313		skb_pull(skb, pull_size);
+   314		total_pull_size += pull_size;
+   315	
+   316		/* get HSR sup payload */
+   317		if (hsr->prot_version == HSR_V1) {
+   318			/* In the HSRv1 supervisor frame, when
+   319			 * one with EtherType = 0x88FB is extracted, the Node A
+   320			 * MAC address is preceded with type and length elements of TLV
+   321			 * data field.
+   322			 *
+   323			 * It needs to be removed to get the remote peer MAC address.
+   324			 */
+   325			pull_size = sizeof(struct hsr_sup_tlv);
+   326			skb_pull(skb, pull_size);
+   327			total_pull_size += pull_size;
+   328		}
+   329	
+   330		hsr_sp = (struct hsr_sup_payload *)skb->data;
+   331	
+   332		/* Merge node_curr (registered on macaddress_B) into node_real */
+   333		node_db = &port_rcv->hsr->node_db;
+   334		node_real = find_node_by_addr_A(node_db, hsr_sp->macaddress_A);
+   335		if (!node_real)
+   336			/* No frame received from AddrA of this node yet */
+   337			node_real = hsr_add_node(hsr, node_db, hsr_sp->macaddress_A,
+   338						 HSR_SEQNR_START - 1, true,
+   339						 port_rcv->type);
+   340		if (!node_real)
+   341			goto done; /* No mem */
+   342		if (node_real == node_curr)
+   343			/* Node has already been merged */
+   344			goto done;
+   345	
+   346		/* Leave the first HSR sup payload. */
+   347		pull_size = sizeof(struct hsr_sup_payload);
+   348		skb_pull(skb, pull_size);
+   349		total_pull_size += pull_size;
+   350	
+   351		/* Get second supervision tlv */
+   352		hsr_sup_tlv = (struct hsr_sup_tlv *)skb->data;
+   353		/* And check if it is a redbox mac TLV */
+   354		if (hsr_sup_tlv->HSR_TLV_type == PRP_TLV_REDBOX_MAC) {
+   355			/* We could stop here after pushing hsr_sup_payload,
+   356			 * or proceed and allow macaddress_B and for redboxes.
+   357			 */
+   358			/* Sanity check length */
+   359			if (hsr_sup_tlv->HSR_TLV_length != 6)
+   360				goto done;
+   361	
+   362			/* Leave the second HSR sup tlv. */
+   363			pull_size = sizeof(struct hsr_sup_tlv);
+   364			skb_pull(skb, pull_size);
+   365			total_pull_size += pull_size;
+   366	
+   367			/* Get redbox mac address. */
+   368			hsr_sp = (struct hsr_sup_payload *)skb->data;
+   369	
+   370			/* Check if redbox mac and node mac are equal. */
+   371			if (!ether_addr_equal(node_real->macaddress_A, hsr_sp->macaddress_A)) {
+   372				/* This is a redbox supervision frame for a VDAN! */
+   373				goto done;
+   374			}
+   375		}
+   376	
+   377		ether_addr_copy(node_real->macaddress_B, ethhdr->h_source);
+   378		spin_lock_bh(&node_real->seq_out_lock);
+   379		for (i = 0; i < HSR_PT_PORTS; i++) {
+   380			if (!node_curr->time_in_stale[i] &&
+   381			    time_after(node_curr->time_in[i], node_real->time_in[i])) {
+   382				node_real->time_in[i] = node_curr->time_in[i];
+   383				node_real->time_in_stale[i] =
+   384							node_curr->time_in_stale[i];
+   385			}
+   386			if (seq_nr_after(node_curr->seq_out[i], node_real->seq_out[i]))
+   387				node_real->seq_out[i] = node_curr->seq_out[i];
+   388		}
+   389		spin_unlock_bh(&node_real->seq_out_lock);
+   390		node_real->addr_B_port = port_rcv->type;
+   391	
+   392		spin_lock_bh(&hsr->list_lock);
+   393		if (!node_curr->removed) {
+   394			list_del_rcu(&node_curr->mac_list);
+   395			node_curr->removed = true;
+   396			kfree_rcu(node_curr, rcu_head);
+   397		}
+   398		spin_unlock_bh(&hsr->list_lock);
+   399	
+   400	done:
+   401		/* Push back here */
+   402		skb_push(skb, total_pull_size);
+   403	}
+   404	
+
 -- 
-2.41.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
