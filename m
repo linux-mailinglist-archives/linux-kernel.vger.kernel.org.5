@@ -2,176 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0DE478967D
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 14:08:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A301789680
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 14:08:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232752AbjHZMHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 08:07:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60916 "EHLO
+        id S232756AbjHZMIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 08:08:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232748AbjHZMHE (ORCPT
+        with ESMTP id S232754AbjHZMHl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 08:07:04 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC064C3
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 05:07:01 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2bcc331f942so21316201fa.0
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 05:07:01 -0700 (PDT)
+        Sat, 26 Aug 2023 08:07:41 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92908E58
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 05:07:39 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-3ff5ddb4329so17205205e9.0
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 05:07:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693051620; x=1693656420;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
+        d=linaro.org; s=google; t=1693051658; x=1693656458;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=fxY8GzOUSjJpbnpDLCF9tnnYblSq+xTqK+i5DsaGhz0=;
-        b=xPuwmgJqltwIl5qjdyaSFaAR3hozi7pzkl283hOFK2jHekRzRsO8UHXQKXUT3J0+1Y
-         ZnK6qysEPNN4NykZwfy62Uh8JVXrzq9ggqjA1hnHMcMnxQSy6mgi2ELATbtP5Qha3msE
-         mLdGWbliwXX9E7N9R6L3LplGJcvOupwA1BQ5P801jz7bPEForgun34tFdCjt9eiU1MdV
-         Y7KDgjfmuWwO6nEdZyJb3gbMFLwg4fh7PsaqgKeLJYFRvM0196Lb/gBglNhelyJFw0LL
-         Ed8A64GJYi1w8qD1g41u5UyAw+tdlRvhehKumf7PFonAdcfMtwCDZv9bs0Ac/r23YXsU
-         tXPg==
+        bh=SgjOnn8759o52/0xR2SZGeU49du3p6c+06WsheGV4j4=;
+        b=cz3G1Tf2I0daNU/qdQZgGdJqb9+dvz2XPOebn9ezsblUs6GOyTLhX9VXpiWMqD3K9l
+         ifnVGcIOonu9oa8yDL1MEN8826vPI92uPLQvOd6myLac4XFyKKPpczuh1Y1RLmR/+EBE
+         tsbeifr5TDXiCns0I0b15gZJkwwr3gtN6Cbs1IkHSct8heuEWLsDBq20dcHftyXyqUVQ
+         RWgBdgIeOnwSKIkHYD4DkoHc1an6rjGC6+ZwXfevOSN1hbaRCqT6CCt3TvvnWp4vXGPA
+         xF4U/vW8uVT5oVfdatiG0qDzBj22g7PhBRaBdIWnLJ99bq9DA+MXfoG/Xtz2CJkmnXEQ
+         u6SQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693051620; x=1693656420;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20221208; t=1693051658; x=1693656458;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fxY8GzOUSjJpbnpDLCF9tnnYblSq+xTqK+i5DsaGhz0=;
-        b=EeBxuAhYb7N4AiF7rGrQP7zjJEDQYozKAT0XaFQDJoHxpRuITaw4+wIxgfDlbkHiCx
-         98qcYKO1nAxEiza/AD623PKEgnMqhdoggt7n69yob85giSSFRFQurMpYHMpISB2qG2jf
-         ItS89zu1OTgQ5FuiFjPKCeDYzbXM6ea3aCxQuVfTiPGxA3FSk9DN3GU3yF6XhbNZ4Dd+
-         /1T2oAqZiRCTMSUwFj0g0GE11tR6LG5EJ0CqMDfqRPayNeNJ0CUnCO6Ss4YIju48DzPs
-         tCkmJw/vVV5tBe9qa7rl08oqp9Gs5ugDAZyerHBq4oUdw1LZyxE7yrZK0jMXHdTeZi7e
-         j4/g==
-X-Gm-Message-State: AOJu0YwK/OHOcSk04uk4k4zef/cl6wFxeUQVvQ1bzCs5cNwGkVep84HS
-        +9F9Fj58j4wYQkphYzTFJVQYWA==
-X-Google-Smtp-Source: AGHT+IH8TVip4xI95ezyyOf6FmQm74KohrLqFBiRaCOmUZfCvyGjphngtDD9yytWeUO2Vl23ErGyrg==
-X-Received: by 2002:a2e:b0c3:0:b0:2bc:c4fa:489c with SMTP id g3-20020a2eb0c3000000b002bcc4fa489cmr6166606ljl.8.1693051620086;
-        Sat, 26 Aug 2023 05:07:00 -0700 (PDT)
-Received: from [192.168.1.101] (abyl74.neoplus.adsl.tpnet.pl. [83.9.31.74])
-        by smtp.gmail.com with ESMTPSA id a8-20020a2e88c8000000b002b9f0b25ff6sm776135ljk.4.2023.08.26.05.06.59
+        bh=SgjOnn8759o52/0xR2SZGeU49du3p6c+06WsheGV4j4=;
+        b=aJa3JBWhDGweRm6mczlkfDUeWETtgfcsr5czbViA09LboSP7fxH+3CiY6bNI+JkoRK
+         eXj4WuMKjh75bamUGPW6api8CUn0priSQaMq7RIPqBsaYJYJNOARGagVqOLeEmxKONQ/
+         leo/BQtUn9KhkcI/GGQ4iwl1AHISWToMWcSo9AbbwVfYkb3nYCOL2tMeHKhu3zu9bdCg
+         URL7sNZmipopDmZTZlD+biov9JLY4Ga6rg4ColiBrIaEh5jAxUT50URx99nK4FL1kVNN
+         UlOXN9FOTfEd2uZwh+O7zr+Cgfb9PJX9fW6sypqwOF1kpkagD9VI6hRVTbFpwRnS74oF
+         R3pg==
+X-Gm-Message-State: AOJu0YzyAWBvFZ37VwflSFJGKixIk1I44l9fQIwf96Ts0es9sK32z9YB
+        LqhZayWsYzSxn2k9fkgOQSW6+Q==
+X-Google-Smtp-Source: AGHT+IHd4Exu5h9J0XmDWeeqi750ETU8bhPtCzxFplnhIiVlkhJpQeEw9xxbIIb6CYoihBXGSX+5ig==
+X-Received: by 2002:adf:ed51:0:b0:319:55d8:5d51 with SMTP id u17-20020adfed51000000b0031955d85d51mr17212507wro.30.1693051658113;
+        Sat, 26 Aug 2023 05:07:38 -0700 (PDT)
+Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
+        by smtp.gmail.com with ESMTPSA id c12-20020a05600c0acc00b003fee6f027c7sm7972018wmr.19.2023.08.26.05.07.36
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 26 Aug 2023 05:06:59 -0700 (PDT)
-Message-ID: <cca2a215-e71d-4e8c-a5d9-93aa870b7995@linaro.org>
-Date:   Sat, 26 Aug 2023 14:06:58 +0200
+        Sat, 26 Aug 2023 05:07:37 -0700 (PDT)
+Message-ID: <1b15ca0d-0781-c3f8-4822-fce3a7fbb7e7@linaro.org>
+Date:   Sat, 26 Aug 2023 13:07:36 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RESEND v3 2/2] arm64: dts: qcom: msm8939-longcheer-l9100:
- Add initial device tree
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH v3 11/15] media: qcom: camss: Functionally decompose
+ CSIPHY clock lookups
 Content-Language: en-US
-To:     =?UTF-8?Q?Andr=C3=A9_Apitzsch?= <git@apitzsch.eu>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Stephan Gerhold <stephan@gerhold.net>,
-        phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
-References: <20230815-bq_m5-v3-0-fd26d7c76a1f@apitzsch.eu>
- <20230815-bq_m5-v3-2-fd26d7c76a1f@apitzsch.eu>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20230815-bq_m5-v3-2-fd26d7c76a1f@apitzsch.eu>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>, rfoss@kernel.org,
+        todor.too@gmail.com, agross@kernel.org, andersson@kernel.org,
+        mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
+        laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com,
+        andrey.konovalov@linaro.org
+Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230823104444.1954663-1-bryan.odonoghue@linaro.org>
+ <20230823104444.1954663-12-bryan.odonoghue@linaro.org>
+ <d8e54e0a-b176-49eb-9d8d-66324cdcd2e8@linaro.org>
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <d8e54e0a-b176-49eb-9d8d-66324cdcd2e8@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15.08.2023 21:49, André Apitzsch wrote:
-> This dts adds support for BQ Aquaris M5 (Longcheer L9100) released in
-> 2015.
-> 
-> Add a device tree with initial support for:
-> 
-> - GPIO keys
-> - Hall sensor
-> - SDHCI
-> - WCNSS (BT/WIFI)
-> - Accelerometer/Magnetometer
-> - Vibrator
-> - Touchscreen
-> - Front flash
-> 
-> Signed-off-by: André Apitzsch <git@apitzsch.eu>
-> ---> +	light-sensor@23 {
-> +		compatible = "liteon,ltr559";
-> +		reg = <0x23>;
-> +
-> +		vdd-supply = <&pm8916_l17>;
-> +		vddio-supply = <&pm8916_l5>;
-> +
-> +		interrupt-parent = <&tlmm>;
-> +		interrupts = <113 IRQ_TYPE_EDGE_FALLING>;
-interrupts-extended = <&tlmm 113 IRQ_TYPE_EDGE_FALLING>;
+On 26/08/2023 11:12, Konrad Dybcio wrote:
+>> -			csiphy->rate_set[i] = true;
+>> +		for (k = 0; k < camss->res->csiphy_num; k++) {
+>> +			csiphy->rate_set[i] = csiphy_match_clock_name(clock->name,
+>> +								      "csiphy%d_timer", k);
+> This entire functions is like.. soooo over-engineered
 
-> +
-> +		pinctrl-0 = <&light_int_default>;
-> +		pinctrl-names = "default";
-> +	};
-> +
-> +	imu@68 {
-> +		compatible = "bosch,bmi160";
-> +		reg = <0x68>;
-> +
-> +		vdd-supply = <&pm8916_l17>;
-> +		vddio-supply = <&pm8916_l6>;
-> +	};
-> +};
-> +
-> +&blsp_i2c5 {
-> +	status = "okay";
-> +
-> +	touchscreen@4a {
-> +		compatible = "atmel,maxtouch";
-> +		reg = <0x4a>;
-> +
-> +		interrupt-parent = <&tlmm>;
-> +		interrupts = <13 IRQ_TYPE_LEVEL_LOW>;
-similarly here
+I'm going to accept your compliment there.
 
-otherwise:
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> adding something like csiphy_timer_clks and cisphy_clks and stuff
+> would make this string comparison mess unnecessary
 
-Konrad
+I don't understand your comment.
+
+Having a litany of static comparisons is definitely inferior to a 
+generic helper function.
+
+I'm not sure what you are asking/arguing for here.
+
+---
+bod
+
+
+
