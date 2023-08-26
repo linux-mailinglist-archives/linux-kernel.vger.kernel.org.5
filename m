@@ -2,265 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A370678964B
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 13:30:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BD6178965D
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 13:54:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231741AbjHZL3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 07:29:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44054 "EHLO
+        id S231576AbjHZLx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 07:53:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbjHZL3b (ORCPT
+        with ESMTP id S232496AbjHZLxW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 07:29:31 -0400
-Received: from mailbox.box.xen0n.name (mail.xen0n.name [115.28.160.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CE561BF1;
-        Sat, 26 Aug 2023 04:29:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xen0n.name; s=mail;
-        t=1693049360; bh=jVCVG1/221W+GBfmKbFkmaTpzK/cZFxAofMIlAvip0g=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=dpQoBgXXGbviD+RTGcpdLy7Eef4gvaNogljYVawGYQnm1S1abeeb/lJd6+BqSSkmK
-         PTwVP8nAYFGSh2qmpL6j+Nf6aJA7JtX7rZyDCFyNOmEa9UAoJ/dKkS0hslm+Cp2KNo
-         DJlsRP+sgcoT8XcA/mp7Ayn3V052c7OqTY8+od/0=
-Received: from [192.168.9.172] (unknown [101.88.24.218])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id 5D50C6011B;
-        Sat, 26 Aug 2023 19:29:20 +0800 (CST)
-Message-ID: <1b0ca747-e6cb-e53f-f5cf-b1bbfc1ed839@xen0n.name>
-Date:   Sat, 26 Aug 2023 19:29:19 +0800
+        Sat, 26 Aug 2023 07:53:22 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19DC11FD7
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 04:53:17 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-5009969be25so2786215e87.3
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 04:53:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693050795; x=1693655595;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zlqYvrNT9PUAv5XmqZBjGuR+UnDR90WcQscjzLGLmHg=;
+        b=r3TzFirXmwBRpTs9p45zCc6tHqJwP4g0Q8TV95pqYUEKpjpqZ2IHoZ0Twyb7YOpAnu
+         aUCE5Zpp2AasnCrB2usKLPt3a27cGyEfaq7OOXAMHwu5aTh2ANv1q2Gyoq3vkMERs1Fg
+         pAYCyXeCZCiOxGcBUTicS+XHNlOjRnPc76oCY3p+WWxmUVIABsJgFQOOpjX0Hem8B0zz
+         MvAvJIxZ1M9nEuwxhAIHlH2Quum1PA8h+0z4dH3Zhm6MCv/pWMBC9Jr/Zlux/8dr8fh8
+         GVVX0Uv3tEeURODb+fpI9zAO92iaZqLTN9cIAzKdYDW/1ynM5ZHrIs478ZocwDvQFDoT
+         vufw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693050795; x=1693655595;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zlqYvrNT9PUAv5XmqZBjGuR+UnDR90WcQscjzLGLmHg=;
+        b=AzahvicmdQJZ5hAeWVXPhEjyll+i8esz5inXr4p7ILGp14lcPV5VhlVRQSpnUN4SXx
+         v5h+cEJk8qYvTDkxCFkRsgLcxPngF8SpwhRt3D37OWYP1BCE5RxtGBrEhb6TqZpjAvpz
+         Mq2PBQQBFvE6QLoTk9EMJ8MCsQCjeB2ijIVK2EnjHa1EyPvOeaTpdvnUob7yTP2xWwYm
+         g8F+7JZqjf05T05VuJwOvKvwpkGRDP5Zh0QLYbAh7bHGl86szvv8OAohCtX3eAPEpV6A
+         RcN7J4XKrmc6fom4o6W0qxeGXDENv8LpTP/nRBi2jiVKP6s+3+empbMsB6UvluG4AmzL
+         oohA==
+X-Gm-Message-State: AOJu0YxYlsr89wSNVpenFw5llFtiYlOG0V9tMuJAIzsDVgZ2yWvrPX9r
+        ZPIMkdvLZEZrMhp8X4K6qbZYmw==
+X-Google-Smtp-Source: AGHT+IG+vab1Uyjae0tlLVaHthI4AF1AhvMp2RwXpOyJsWiIapsGe3TO2kZyCvks4SPsrrOUWzqaSA==
+X-Received: by 2002:a05:6512:2524:b0:4fe:676:8c0b with SMTP id be36-20020a056512252400b004fe06768c0bmr16056397lfb.11.1693050794997;
+        Sat, 26 Aug 2023 04:53:14 -0700 (PDT)
+Received: from [192.168.1.101] (abyl74.neoplus.adsl.tpnet.pl. [83.9.31.74])
+        by smtp.gmail.com with ESMTPSA id q27-20020ac2515b000000b005008c11ca6dsm678165lfd.184.2023.08.26.04.53.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 26 Aug 2023 04:53:14 -0700 (PDT)
+Message-ID: <154203eb-dcdb-4152-aec0-cfcc1bf80c13@linaro.org>
+Date:   Sat, 26 Aug 2023 13:53:13 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v19 05/30] LoongArch: KVM: Add vcpu related header files
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm64: dts: qcom: sdm630: remove refs to nonexistent
+ clocks
 Content-Language: en-US
-To:     Tianrui Zhao <zhaotianrui@loongson.cn>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        loongarch@lists.linux.dev, Jens Axboe <axboe@kernel.dk>,
-        Mark Brown <broonie@kernel.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Oliver Upton <oliver.upton@linux.dev>, maobibo@loongson.cn,
-        Xi Ruoyao <xry111@xry111.site>
-References: <20230817125951.1126909-1-zhaotianrui@loongson.cn>
- <20230817125951.1126909-6-zhaotianrui@loongson.cn>
-From:   WANG Xuerui <kernel@xen0n.name>
-In-Reply-To: <20230817125951.1126909-6-zhaotianrui@loongson.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Stephan Gerhold <stephan@gerhold.net>,
+        Alexey Minnekhanov <alexeymin@postmarketos.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org
+References: <20230719073520.2644966-1-alexeymin@postmarketos.org>
+ <9e38d2f5-6da4-089e-1c70-a89069708909@linaro.org>
+ <b8cc0229-d663-3527-b320-51a48b4af5b5@postmarketos.org>
+ <ZLexD5tdjYGhTCR9@gerhold.net>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <ZLexD5tdjYGhTCR9@gerhold.net>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 19.07.2023 11:46, Stephan Gerhold wrote:
+> On Wed, Jul 19, 2023 at 11:36:46AM +0300, Alexey Minnekhanov wrote:
+>> On 19.07.2023 10:39, Krzysztof Kozlowski wrote:
+>>> It does not look like you tested the DTS against bindings. Please run
+>>> `make dtbs_check`
+>>>
+>>
+>> If DT schema for interconnect requires bus clocks to be specified, I don't
+>> even know what to put there now. Can we change schema?
+>>
+> 
+> I think I mentioned the DT schema updates during the review of Konrad's
+> interconnect changes and he mentioned he would like to clean those up
+> after getting the series in. (Which would be sometime soon now I guess)
+> 
+> For now, having the &rpmcc "bus"/"bus_a"/"ipa" clocks specified on the
+> interconnect@... nodes is still valid. At runtime they will just be
+> ignored. Feel free to just keep them there for this initial fix.
+> 
+> For the other two usages (iommu@, usb@) these votes with minimal
+> frequency look a bit related to the "keep_alive" stuff Konrad added. [1]
+> Maybe that could be used here instead of bypassing interconnect with the
+> clock votes?
+or just pass interconnects=
 
-On 8/17/23 20:59, Tianrui Zhao wrote:
-> Add LoongArch vcpu related header files, including vcpu csr
-> information, irq number defines, and some vcpu interfaces.
->
-> Reviewed-by: Bibo Mao <maobibo@loongson.cn>
-> Signed-off-by: Tianrui Zhao <zhaotianrui@loongson.cn>
-> ---
->   arch/loongarch/include/asm/insn-def.h  |  55 ++++++
->   arch/loongarch/include/asm/kvm_csr.h   | 252 +++++++++++++++++++++++++
->   arch/loongarch/include/asm/kvm_vcpu.h  |  95 ++++++++++
->   arch/loongarch/include/asm/loongarch.h |  20 +-
->   arch/loongarch/kvm/trace.h             | 168 +++++++++++++++++
->   5 files changed, 585 insertions(+), 5 deletions(-)
->   create mode 100644 arch/loongarch/include/asm/insn-def.h
->   create mode 100644 arch/loongarch/include/asm/kvm_csr.h
->   create mode 100644 arch/loongarch/include/asm/kvm_vcpu.h
->   create mode 100644 arch/loongarch/kvm/trace.h
->
-> diff --git a/arch/loongarch/include/asm/insn-def.h b/arch/loongarch/include/asm/insn-def.h
-> new file mode 100644
-> index 000000000000..e285ee108fb0
-> --- /dev/null
-> +++ b/arch/loongarch/include/asm/insn-def.h
-> @@ -0,0 +1,55 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +
-> +#ifndef __ASM_INSN_DEF_H
-> +#define __ASM_INSN_DEF_H
-> +
-> +#include <linux/stringify.h>
-> +#include <asm/gpr-num.h>
-> +#include <asm/asm.h>
-> +
-> +#define INSN_STR(x)		__stringify(x)
-> +#define CSR_RD_SHIFT		0
-> +#define CSR_RJ_SHIFT		5
-> +#define CSR_SIMM14_SHIFT	10
-> +#define CSR_OPCODE_SHIFT	24
-> +
-> +#define DEFINE_INSN_CSR							\
-> +	__DEFINE_ASM_GPR_NUMS						\
-> +"	.macro insn_csr, opcode, rj, rd, simm14\n"			\
-> +"	.4byte	((\\opcode << " INSN_STR(CSR_OPCODE_SHIFT) ") |"	\
-> +"		 (.L__gpr_num_\\rj << " INSN_STR(CSR_RJ_SHIFT) ") |"	\
-> +"		 (.L__gpr_num_\\rd << " INSN_STR(CSR_RD_SHIFT) ") |"	\
-> +"		 (\\simm14 << " INSN_STR(CSR_SIMM14_SHIFT) "))\n"	\
-> +"	.endm\n"
-
-Okay so the previous request (just removing this file and related 
-machinery, with detailed analysis [1] as to why this is doable across 
-the whole LoongArch ecosystem, and agreed by at least one downstream 
-commercial distro [2]) still isn't being honored...
-
-Maybe give your arguments as to what edge case the previous analysis 
-wasn't covering, or *at the very least* re-use the existing "parse_r" 
-helper and don't re-invent it, should it happen that such usage is 
-actually deemed acceptable in the kvm subsystem as previously pointed 
-out by Ruoyao [3].
-
-[1]: 
-https://lore.kernel.org/loongarch/81270b55-37c4-d566-8cd7-acc90b490c10@xen0n.name/
-[2]: 
-https://lore.kernel.org/loongarch/367239C38ED9D19C+9ef16061-9057-482c-bd8c-0b9ede71cfa7@uniontech.com/
-[3]: 
-https://lore.kernel.org/loongarch/6a5ed2266138cc61cbe27577424bb53cda72378d.camel@xry111.site/
-
-> +
-> +#define UNDEFINE_INSN_CSR						\
-> +"	.purgem insn_csr\n"
-> +
-> +#define __INSN_CSR(opcode, rj, rd, simm14)				\
-> +	DEFINE_INSN_CSR							\
-> +	"insn_csr " opcode ", " rj ", " rd ", " simm14 "\n"		\
-> +	UNDEFINE_INSN_CSR
-> +
-> +
-> +#define INSN_CSR(opcode, rj, rd, simm14)				\
-> +	__INSN_CSR(LARCH_##opcode, LARCH_##rj, LARCH_##rd,		\
-> +		   LARCH_##simm14)
-> +
-> +#define __ASM_STR(x)		#x
-> +#define LARCH_OPCODE(v)		__ASM_STR(v)
-> +#define LARCH_SIMM14(v)		__ASM_STR(v)
-> +#define __LARCH_REG(v)		__ASM_STR(v)
-> +#define LARCH___RD(v)		__LARCH_REG(v)
-> +#define LARCH___RJ(v)		__LARCH_REG(v)
-> +#define LARCH_OPCODE_GCSR	LARCH_OPCODE(5)
-> +
-> +#define GCSR_read(csr, rd)						\
-> +	INSN_CSR(OPCODE_GCSR, __RJ(zero), __RD(rd), SIMM14(csr))
-> +
-> +#define GCSR_write(csr, rd)						\
-> +	INSN_CSR(OPCODE_GCSR, __RJ($r1), __RD(rd), SIMM14(csr))
-> +
-> +#define GCSR_xchg(csr, rj, rd)						\
-> +	INSN_CSR(OPCODE_GCSR, __RJ(rj), __RD(rd), SIMM14(csr))
-> +
-> +#endif /* __ASM_INSN_DEF_H */
-> diff --git a/arch/loongarch/include/asm/kvm_csr.h b/arch/loongarch/include/asm/kvm_csr.h
-> new file mode 100644
-> index 000000000000..34483bbaec15
-> --- /dev/null
-> +++ b/arch/loongarch/include/asm/kvm_csr.h
-> @@ -0,0 +1,252 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright (C) 2020-2023 Loongson Technology Corporation Limited
-> + */
-> +
-> +#ifndef __ASM_LOONGARCH_KVM_CSR_H__
-> +#define __ASM_LOONGARCH_KVM_CSR_H__
-> +#include <asm/loongarch.h>
-> +#include <asm/kvm_vcpu.h>
-> +#include <linux/uaccess.h>
-> +#include <linux/kvm_host.h>
-> +
-> +#ifdef CONFIG_AS_HAS_LVZ_EXTENSION
-> +/* binutils support virtualization instructions */
-
-It may also be LLVM IAS, so I'd suggest removing this comment as the 
-config symbol name is pretty self-documenting.
-
-But this Kconfig flag isn't being defined until Patch 28, which feels a 
-bit reversed. I'd suggest splitting the definition for this symbol out 
-for a small patch before this one, or merging that definition into this 
-patch.
-
-> +#define gcsr_read(csr)						\
-> +({								\
-> +	register unsigned long __v;				\
-> +	__asm__ __volatile__(					\
-> +		" gcsrrd %[val], %[reg]\n\t"			\
-> +		: [val] "=r" (__v)				\
-> +		: [reg] "i" (csr)				\
-> +		: "memory");					\
-> +	__v;							\
-> +})
-> +
-> +#define gcsr_write(v, csr)					\
-> +({								\
-> +	register unsigned long __v = v;				\
-> +	__asm__ __volatile__ (					\
-> +		" gcsrwr %[val], %[reg]\n\t"			\
-> +		: [val] "+r" (__v)				\
-> +		: [reg] "i" (csr)				\
-> +		: "memory");					\
-> +})
-> +
-> +#define gcsr_xchg(v, m, csr)					\
-> +({								\
-> +	register unsigned long __v = v;				\
-> +	__asm__ __volatile__(					\
-> +		" gcsrxchg %[val], %[mask], %[reg]\n\t"		\
-> +		: [val] "+r" (__v)				\
-> +		: [mask] "r" (m), [reg] "i" (csr)		\
-> +		: "memory");					\
-> +	__v;							\
-> +})
-> +#else
-> +/* binutils do not support virtualization instructions */
-
-Similarly this comment could be removed. Or better, instead hint at the 
-symbol being checked so readers don't lose context:
-
-#else /* CONFIG_AS_HAS_LVZ_EXTENSION */
-
-> +#define gcsr_read(csr)						\
-> +({								\
-> +	register unsigned long __v;				\
-> +	__asm__ __volatile__ (GCSR_read(csr, %0)		\
-> +				: "=r" (__v) :			\
-> +				: "memory");			\
-> +	__v;							\
-> +})
-> +
-> +#define gcsr_write(val, csr)					\
-> +({								\
-> +	register unsigned long __v = val;			\
-> +	__asm__ __volatile__ (GCSR_write(csr, %0)		\
-> +				: "+r" (__v) :			\
-> +				: "memory");			\
-> +})
-> +
-> +#define gcsr_xchg(val, mask, csr)				\
-> +({								\
-> +	register unsigned long __v = val;			\
-> +	__asm__ __volatile__ (GCSR_xchg(csr, %1, %0)		\
-> +				: "+r" (__v)			\
-> +				: "r"  (mask)			\
-> +				: "memory");			\
-> +	__v;							\
-> +})
-> +#endif
-> +
->
-> [snip]
-
--- 
-WANG "xen0n" Xuerui
-
-Linux/LoongArch mailing list: https://lore.kernel.org/loongarch/
-
+Konrad
