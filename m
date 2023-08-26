@@ -2,259 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D61A7892E5
+	by mail.lfdr.de (Postfix) with ESMTP id 60A757892E6
 	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 03:12:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231583AbjHZBLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 21:11:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38260 "EHLO
+        id S231591AbjHZBLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 21:11:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230094AbjHZBLN (ORCPT
+        with ESMTP id S231580AbjHZBLV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 21:11:13 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7868198D;
-        Fri, 25 Aug 2023 18:11:10 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 42A1060C2B;
-        Sat, 26 Aug 2023 01:11:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FD5AC433CA;
-        Sat, 26 Aug 2023 01:11:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693012269;
-        bh=sr6TWPi1+0ni0dfdaA8biToHHsWF8rj3UNXFTjdgQqg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=LFDuGJjdIJ05NeHkxqUWFOBvXW5vfKHFG3nCWEGaDSJKuNuDHiTZVHyI3nJOs3kZi
-         MBymhL0e76l5oxResaBN688i87N2sZR31vFKUiLPZENBBR4NnooticvOZMsphn+seX
-         pFU6DW4EMgp8HS4zjgw09QlVs7KfHNC0ypdrLr4OOGudbtXCrPXXE4oxnm8KkTfHGE
-         HLNYOCROsOxfZuWsn7XC4FiNAGpVXqYecoooCCvT0OMj4DQMyBm5h3dbA2WEP+BhFN
-         PLLg7dr20qMnDxW7+qSpyuU2a0IUxfMEakXCIwrNvBh08w/uDgAj19/AV2ULmHct4/
-         2LbqOWIcTQbjw==
-Received: by mail-ot1-f52.google.com with SMTP id 46e09a7af769-6bcac140aaaso1060480a34.2;
-        Fri, 25 Aug 2023 18:11:09 -0700 (PDT)
-X-Gm-Message-State: AOJu0YwOVepTJOqqhv/fIrOB8VsY6YcbMGVdj8JuC59waUMR73vzJNfl
-        YALTvLOxmovIjpSnIkXpLHSokSZ0JU82XJs6qhQ=
-X-Google-Smtp-Source: AGHT+IEoIxtEB6Zq+I8FOWyQEt255F1KHwGBLkNXDHI/c2eNT3AbfB0sYCmMMnw6x7WPre66TNyCp7vg0c/Op/toQGk=
-X-Received: by 2002:a05:6870:d60c:b0:1ba:caf2:acc3 with SMTP id
- a12-20020a056870d60c00b001bacaf2acc3mr4384026oaq.5.1693012268806; Fri, 25 Aug
- 2023 18:11:08 -0700 (PDT)
+        Fri, 25 Aug 2023 21:11:21 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F3AF198D
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 18:11:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693012278; x=1724548278;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=hCgjM/3Cb7Q3vaGTOHAqkmDXPwHjYpY1lM7SHgHpiyA=;
+  b=ILCVnRy5E2D5+aE29qbuLXwoyykPFekb+4434+JKpb/rxtTT772uMqJ9
+   sJitwZNV4lTUBzU61lTTDiLt/cHYraHhbe6O0pf2Qxs4CG1CZ/fWqYbG0
+   1zb8xGDojC7sp3qdsZmijMrG8anjp5ZWQh1Hxco2ytcu95ERVUOI02+RC
+   48pGd1w0Dk+RK9ueU+oZ+kdiOY/lQTxXLwvliDBsluAigGDraSIsFx7DZ
+   h0uCIOUx19HKO3Lo8oO1wo21Ki5ibuhen/LHL26eSewUw/jLLPEskqjTF
+   xp9oAifbMR9bWZNBJy8T6ewBlymGvhyz2Cu8yF+jkpPHVrFUtKC2ncwMt
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10813"; a="378616691"
+X-IronPort-AV: E=Sophos;i="6.02,202,1688454000"; 
+   d="scan'208";a="378616691"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2023 18:11:18 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10813"; a="1068411827"
+X-IronPort-AV: E=Sophos;i="6.02,202,1688454000"; 
+   d="scan'208";a="1068411827"
+Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.74])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2023 18:11:18 -0700
+Date:   Fri, 25 Aug 2023 18:11:17 -0700
+From:   Tony Luck <tony.luck@intel.com>
+To:     Reinette Chatre <reinette.chatre@intel.com>
+Cc:     Amit Singh Tomar <amitsinght@marvell.com>,
+        "Yu, Fenghua" <fenghua.yu@intel.com>,
+        "james.morse@arm.com" <james.morse@arm.com>,
+        George Cherian <gcherian@marvell.com>,
+        "robh@kernel.org" <robh@kernel.org>,
+        "peternewman@google.com" <peternewman@google.com>,
+        Drew Fustini <dfustini@baylibre.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: resctrl2 - status
+Message-ID: <ZOlRNTq3lE7VNHjU@agluck-desk3>
+References: <DS7PR11MB6077FE180B11A9138D8E7ED7FC1DA@DS7PR11MB6077.namprd11.prod.outlook.com>
+ <35f05064-a412-ad29-5352-277fb147bbc4@intel.com>
+ <SJ1PR11MB6083BC6B330FA7B7DFD3E76AFCE3A@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <dc4cd365-2a02-32a3-da78-7ba745877e97@intel.com>
+ <SJ1PR11MB6083C0ED50E9B644F4AF8E4BFCE3A@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <fb9499b9-c445-01e8-8427-6b05256abdb5@intel.com>
+ <ZOkU+d4AsLGSAG+y@agluck-desk3>
+ <b48fe955-c1b4-4aeb-1ab0-bf26e56e1f0e@intel.com>
 MIME-Version: 1.0
-References: <20230817012007.131868-1-senozhatsky@chromium.org>
- <CAK7LNASJWKSsdzn5ccgWaC35-XvHGU7pnE6C=eZFDbqrrghtdQ@mail.gmail.com>
- <20230820024519.GK907732@google.com> <CAK7LNAS9KC1GjPgadMEivSpy4TMYU8mQ+BrtfJpNs2kvhK18yA@mail.gmail.com>
- <20230820072119.GM907732@google.com> <20230820073332.GN907732@google.com>
- <CAK7LNARTZXvWD8PrA3bC+Ok7LK85qO=pkMs4kOPGn90OBooL6w@mail.gmail.com>
- <20230822061203.GA610023@google.com> <CAK7LNAS0qEZk+xAq84=7SuJSQz5F3dNBjYKPoeKTd_caq-QMKg@mail.gmail.com>
- <CAAFQd5DeDEhPUQScXB67v9giiV=G33L-YDdtF4e-+UcmBXG6jA@mail.gmail.com>
-In-Reply-To: <CAAFQd5DeDEhPUQScXB67v9giiV=G33L-YDdtF4e-+UcmBXG6jA@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sat, 26 Aug 2023 10:10:32 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATj-jnOLMkgzz=3MfqWgUjKF-MwSKQkr4hW0g7+tEsXUw@mail.gmail.com>
-Message-ID: <CAK7LNATj-jnOLMkgzz=3MfqWgUjKF-MwSKQkr4hW0g7+tEsXUw@mail.gmail.com>
-Subject: Re: [RFC][PATCH] kconfig: introduce listunknownconfig
-To:     Tomasz Figa <tfiga@chromium.org>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Ying Sun <sunying@nj.iscas.ac.cn>,
-        Jesse T <mr.bossman075@gmail.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Jonathan Corbet <corbet@lwn.net>, linux-kbuild@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b48fe955-c1b4-4aeb-1ab0-bf26e56e1f0e@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 2:30=E2=80=AFPM Tomasz Figa <tfiga@chromium.org> wr=
-ote:
->
-> Hi Masahiro,
->
-> On Thu, Aug 24, 2023 at 10:00=E2=80=AFAM Masahiro Yamada <masahiroy@kerne=
-l.org> wrote:
+On Fri, Aug 25, 2023 at 04:08:21PM -0700, Reinette Chatre wrote:
+> Hi Tony,
+> 
+> On 8/25/2023 1:54 PM, Tony Luck wrote:
+> > On Fri, Aug 25, 2023 at 01:20:22PM -0700, Reinette Chatre wrote:
+> >> On 8/25/2023 12:44 PM, Luck, Tony wrote:
+> >>>>>> Alternatively, can user space just take a "load all resctrl modules
+> >>>>>> and see what sticks" (even modules of different architectures since
+> >>>>>> a user space may want to be generic) approach?
+> >>>>>
+> >>>>> This mostly works. Except for the cases where different modules access
+> >>>>> the same underlying hardware, so can't be loaded together.
+> >>>>>
+> >>>>> Examples:
+> >>>>>
+> >>>>> rdt_l3_cat vs. rdt_l3_cdp - user needs to decide whether they want CDP or not.
+> >>>>> But this is already true ... they have to decide whether to pass the "-o cdp" option
+> >>>>> to mount.
+> >>>>>
+> >>>>> rdt_l3_mba vs. rdt_l3_mba_MBps - does the user want to control memory bandwidth
+> >>>>> with percentages, or with MB/sec values. Again the user already has to make this
+> >>>>> decision when choosing mount options.
+> >>>>>
+> >>>>>
+> >>>>> Maybe the "What resctrl options does this machine support?" question would be
+> >>>>> best answered with a small utility?
+> >>>>
+> >>>> A user space utility or a kernel provided utility? If it is a user space utility
+> >>>> I think it would end up needing to duplicate what the kernel is required to do
+> >>>> to know if a particular feature is supported. It seems appropriate that this
+> >>>> could be a kernel utility that can share this existing information with user
+> >>>> space. resctrl already supports the interface for this via /sys/fs/resctrl/info.
+> >>>
+> >>> I was imagining a user space utility. Even though /proc/cpuinfo doesn't show
+> >>> all features, a utility has access to all the CPUID leaves that contain the
+> >>> details of each feature enumeration.
+> >>
+> >> For x86 that may work (in some scenarios, see later) for now but as I understand
+> >> Arm would need a different solution where I believe the information is obtained
+> >> via ACPI. I think it is unnecessary to require user space to have parsers for
+> >> CPUID and ACPI if that same information needs to be parsed by the kernel and
+> >> there already exists an interface with which the information is communicated
+> >> from kernel to user space. Also, just because information CPUID shows a feature
+> >> is supported by the hardware does not mean that the kernel has support for that
+> >> feature. This could be because of a feature mismatch between user space and
+> >> kernel, or even some features disabled for use via the, for example "rdt=!l3cat",
+> >> kernel parameter.
+> > 
+> > Agreed this is complex, and my initial resctrl2 proposal lacks
+> > functionality in this area.
+> 
+> Why is there a need to reinvent these parts?
+
+Perhaps there isn't ... see below.
+
+> 
+> >>>> fyi ... as with previous attempts to discuss this work I find it difficult
+> >>>> to discuss this work when you are selective about what you want to discuss/answer
+> >>>> and just wipe the rest. Through this I understand that I am not your target
+> >>>> audience.
+> >>>
+> >>> Not my intent. I value your input highly. I'm maybe too avid a follower of the
+> >>> "trim your replies" school of e-mail etiquette. I thought I'd covered the gist
+> >>> of your message.
+> >>>
+> >>> I'll try to be more thorough in responding in the future.
+> >>
+> >> Two items from my previous email remain open:
+> >>
+> >> First, why does making the code modular require everything to be loadable
+> >> modules?
+> >> I think that it is great that the code is modular. Ideally it will help to
+> >> support the other architectures. As you explain this modular design also
+> >> has the benefit that "modules" can be loaded and unloaded after resctrl mount.
+> >> Considering your example of MBA and MBA_MBps support ... if I understand
+> >> correctly with code being modular it enables changes from one to the other
+> >> after resctrl mount. User can start with MBA and then switch to MBA_MBps
+> >> without needing to unmount resctrl. What I do not understand is why does
+> >> the code being modular require everything to be modules? Why, for example,
+> >> could a user not interact with a resctrl file that enables the user to make
+> >> this switch from, for example, MBA to MBA_MBps? With this the existing
+> >> interfaces can remain to be respected, the existing mount parameters need
+> >> to remain anyway, while enabling future "more modular" usages.
+> > 
+> > Lots of advantages to modules:
+> > 1) Only load what you need.
+> > 	- saves memory
+> > 	- reduces potential attack surface
+> > 	- may avoid periodic timers (e.g. for MBM overflow and
+> > 	  for LLC occupancy "limbo" mode).
+> > 2) If there is a security fix, can be deployed without a reboot.
+> > 3) Isolation between different features. 
+> > 	- Makes development and testing simpler
 > >
-> > On Tue, Aug 22, 2023 at 4:30=E2=80=AFPM Sergey Senozhatsky
-> > <senozhatsky@chromium.org> wrote:
-> > >
-> > > On (23/08/21 21:27), Masahiro Yamada wrote:
-> > > >
-> > > > My (original) hope was to add a single switch, KCONFIG_VERBOSE, to =
-address both:
-> > > >
-> > > >   - A CONFIG option is hidden by unmet dependency (Ying Sun's case)
-> > > >   - A CONFIG option no longer exists  (your case)
-> > > >   - Anything else we need to be careful
-> > >
-> > > A quick question: is it too late to suggest an alternative name?
-> > > Could KCONFIG_SANITY_CHECKS be a little cleaner? Because we basically
-> > > run sanity checks on the config.
-> >
-> >
-> > Ying's is not applied yet. So, it is not too late.
-> >
-> > But, I started to be a little worried
-> > because it is unpredictable how many KCONFIG_* env
-> > variables will increase until people are satisfied.
-> >
->
-> Is there really a problem with having those? There are a lot of
-> different env variables affecting different parts of the kernel build.
-> If they are useful, and even better, allow catching issues quickly,
-> should we favor less options or usefulness for users?
+> 
+> From what I understand (1) and (3) are accomplished through things
+> being modular. To transition smoothly it may be required for all
+> currently supported features to be loaded by default, with the
+> option to unload afterwards by user space that understands new
+> modular interfaces.
+> 
+> (2) does not need a module for each resource and feature supported
+> by resctrl. A single resctrl module would accomplish this and I
+> would expect it to be something everybody would like. James also
+> mentioned it being on his significant to-do list.
+>  
+> > Sure some things like switching MBA to MBA_MBps mode by writing to
+> > a control file are theoretically possible. But they would be far more
+> > complex implementations with many possible oppurtunities for bugs.
+> > I think Vikas made a good choice to make this a mount option rather
+> > than selectable at run time.
+> > 
+> >> Second, copied from my previous email, what is the plan to deal with current
+> >> users that just mount resctrl and expect to learn from it what features are
+> >> supported?
+> > 
+> > Do such users exist? Resctrl is a sophisticated system management tool.
+> > I'd expect system administrators deploying it are well aware of the
+> > capabilities of the different types of systems in their data center.
+> > 
+> > But if I'm wrong, then I have to go back to figure out a way to
+> > expose this information in a better way than randomly running "modprobe"
+> > to see what sticks.
+> 
+> I always start with intel-cmt-cat but I believe that the burden would be
+> on you to convince all that existing user space would not be impacted
+> by this change. If I understand correctly this implementation would
+> result in mounting resctrl to have an empty schemata and no resources
+> in the info directory. Without knowledge about how to enable resources
+> the user space could be expected to interpret that as no resources enabled
+> on the system.
 
+Reinette,
 
+The basic issue is that my module based system has become less user
+friendly. Requiring extra steps to get basic things works.
 
-I am considering how to implement it.
+Luckily there is a simple solution. Make the modules for the basic
+functions autoload.  E.g. for MBA:
 
++static const struct x86_cpu_id mba_feature[] = {
++       X86_MATCH_FEATURE(X86_FEATURE_MBA, 0),
++       { }
++};
++MODULE_DEVICE_TABLE(x86cpu, mba_feature);
 
+Then immediately after booting the system looks like this:
 
-One way is to add env variables as a new request arises.
+$ lsmod | grep rdt
+rdt_l3_mba             16384  0
+rdt_mbm_local_bytes    12288  0
+rdt_mbm_total_bytes    12288  0
+rdt_llc_occupancy      12288  0
+rdt_l3_cat             16384  0
 
-Sergey is doing two things by one option.
+And mounting resctrl:
 
+$ sudo mount -t resctrl resctrl /sys/fs/resctrl
+$ tree /sys/fs/resctrl/info
+/sys/fs/resctrl/info
+├── L3
+│   ├── bit_usage
+│   ├── cbm_mask
+│   ├── min_cbm_bits
+│   ├── num_closids
+│   └── shareable_bits
+├── L3_MON
+│   ├── max_threshold_occupancy
+│   ├── mbm_poll_threshold
+│   ├── mon_features
+│   └── num_rmids
+├── last_cmd_status
+└── MB
+    ├── bandwidth_gran
+    ├── delay_linear
+    ├── min_bandwidth
+    └── num_closids
 
-   KCONFIG_WARN_UNKNWON_SYMBOL : warn unknown symbol in input .config
-or defconfig
-   KCONFIG_WARN_TO_ERROR       : turn warnings into errors
+3 directories, 14 files
+$ cat /sys/fs/resctrl/schemata
+MB: 0=0;1=0
+L3: 0=fff;1=fff
 
+Thanks for pushing me to search for this solution to make things
+more compatible.
 
-
-Another way is to handle those as command line options.
-
-  -Wunknown-symbol
-  -Werror             (associated with W=3De)
-  -Wall               (associated with W=3D1)
-
-
-
-  $ make W=3D1e olddefconfig
-
-
-will work to sanity check.
-
-
-
-
-
-> > >
-> > > And one more question: those sanity checks seem very reasonable.
-> > > Is there any reason we would not want to keep them ON by default?
-> > > And those brave souls, that do not wish for the tool to very that
-> > > the .config is sane and nothing will get downgraded/disabled, can
-> > > always set KCONFIG_SANITY_CHECKS to 0.
-> >
-> >
-> > Kconfig is meant to resolve the dependency without causing an error.
-> > If a feature is not available, it is automatically, silently hidden,
-> > and that works well.
->
-> How do you come to the conclusion that it works well? I've heard many
-> people unhappy about the way Kconfig works. How does one know that
-> something is missing (and should maybe be fixed?) if Kconfig silently
-> hides it?
-
-
-Kconfig has worked like that for a long time, but I do not know
-how to detect non-existing symbols.
-
-
-
-
->
-> >
-> > When a compiler does not support a particular feature,
-> > 'depends on $(cc-option )' hides that CONFIG option.
-> > Kconfig is meant to work like that.
-> >
-> >
-> >
-> > For your case, it is case-by-case.
-> >
-> > Let's say a stale code is removed from upstream.
-> >
-> > After "obj-$(CONFIG_FOO) +=3D foo.o" is removed
-> > from upstream, CONFIG_FOO in the .config is a "don't care".
-> >
-> > If it were an error, all arch/*/configs/*_defconfig
-> > must be cleaned up at the same time.
-> >
->
-> I'd argue that clean up should actually happen. An identically named
-> option could be added in the future again and mean something different
-> and would end up accidentally selected by those old defconfigs.
-
-
-For renaming, I agree with you.
-All defconfig files should be updated to keep the equivalent behavior.
-
-For code removal, defconfig cleaning can be deferred because
-that would possibly cause conflicts across subsystems.
-
-Reusing the same CONFIG name for different meaning must be
-sorted out properly but that rarely happens, I guess.
-
-
-
-> >
-> > So, sometimes it is helpful, but sometimes noisy.
-> >
-> >
-> >
-> >
-> > For the MFD_RK808 case particularly,
-> > I believe Kconfig showed MFD_RK8XX_I2C
-> > as a new option.
->
-> Among tens or hundreds of other new options. Good luck making sure
-> that you didn't miss it.
->
-> >
-> > Or, when you bumped to a new kernel version,
-> > you could run 'make listnewconfig'.
-> > (See 17baab68d337a0bf4654091e2b4cd67c3fdb44d8.
-> > Redhat says they review every new config option.)
-> >
->
-> What is the listnewconfig supposed to show?
-
-
-Documented in Documentation/kbuild/kconfig.rst
-line 16 - 34.
-
-
->
-> Regardless of that, shouldn't we strive to automate things rather than
-> just put people at those and wasting the time they could spend on
-> something more productive?
->
-> >
-> > If you had done a per-config review
-> > you would have noticed
-> > c20e8c5b1203af3726561ee5649b147194e0618e
-> > before spending time on run-time debugging.
-> >
->
-> Instead, I'd have spent time on researching every single new Kconfig
-> option just to realize that I don't care about it, except the single
-> one that I needed. In fact, it wouldn't have even guaranteed tracking
-> down the problem, because I don't necessarily have to know all the
-> config options that are necessary for my board - how do you associate
-> some MFD driver Kconfig option with an SD/MMC controller not working?
-
-
-
-
-
---
-Best Regards
-Masahiro Yamada
+-Tony
