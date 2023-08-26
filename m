@@ -2,155 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EBDE7896DC
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 15:07:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FF6F7896DD
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 15:09:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232530AbjHZNGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 09:06:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34176 "EHLO
+        id S232589AbjHZNI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 09:08:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232099AbjHZNGZ (ORCPT
+        with ESMTP id S232606AbjHZNIE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 09:06:25 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 115971BCC;
-        Sat, 26 Aug 2023 06:06:22 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 91CE260C19;
-        Sat, 26 Aug 2023 13:06:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7284C433C8;
-        Sat, 26 Aug 2023 13:06:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693055181;
-        bh=BaWopcSK9rULsmtqhJkB5V82MS76XOq5bi827IJgjNM=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=ZXB0gQhDhPEjWcYXWGEEaMMVwuXhV/h5wXPzAGkoDtZkiKP8IyD2voImyyCIPku1/
-         qRIPuFP3h0YmE/bdLDYDm7558pkXIf6KKPl9WDF9GTLg8ImI0THl3VCx1O7wqaa371
-         iTj6F94oBijgJXM/tJ6zDnneeWH8hAfEsW3NdruItdz9o18Mu+hH+V3+/1oQsziVc2
-         mGIN1Cinn22IUBzhgVKXtKCSXfdMY+Wbl7CiO60sbaAItfZQtGyR10AloCJUJyyhmo
-         VxyaV2Ensr20vDzfwnniZK3gaYYuJ4Vf1tOxMA24CTC1j4v25SdgdbXSbB3nWnhfQZ
-         mDwrPXc2GFbgA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 3F215CE1349; Sat, 26 Aug 2023 06:06:20 -0700 (PDT)
-Date:   Sat, 26 Aug 2023 06:06:20 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Z qiang <qiang.zhang1211@gmail.com>
-Cc:     joel@joelfernandes.org, linux-kernel@vger.kernel.org,
-        rcu@vger.kernel.org
-Subject: Re: [PATCH] rcutorture: Traverse possible cpu to set maxcpu in
- rcu_nocb_toggle()
-Message-ID: <7650aae0-36d2-467d-a2be-a96dabfcccae@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230824084206.22844-1-qiang.zhang1211@gmail.com>
- <162989fe-5ed8-4d1f-8c99-144e2de532f5@paulmck-laptop>
- <CALm+0cVgg9u1-E+XrnbEyD75a_H3ifN9oB9j6xx0=cm8kuXE-Q@mail.gmail.com>
- <20e7f112-ff70-4ba7-b39f-a0fea499d8d7@paulmck-laptop>
- <CALm+0cV8GP_gbbiCwmKyMxE=Qm1pLVWXWkmHUjdaDS8L0hZgFw@mail.gmail.com>
+        Sat, 26 Aug 2023 09:08:04 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10DE31BF2;
+        Sat, 26 Aug 2023 06:08:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693055282; x=1724591282;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=h5qAIYNCKZ5pVgkeXhd5+JVPUHjrWuo3wDX5RG0ObUo=;
+  b=kY4aETQ4GKPj0/AGrYxTTvbGK+WxxCMxXIPQaI6Rnb+sDT+sPE2T7Cxm
+   pmBVYEaxP+5x1l0e+LKXmzhwPqydIVWKPNbbSf6XAq/tE9Whs4zud+MNr
+   M/LoVQ7zbF9QcUzFCjzDjtUj4hn/AueNXl3q4hpk3ETkGwbajmx0aCai4
+   SAwzgp3cFhFYiQoPm/O9yV+bIM25XyLoAu5HY9WzbfuHUDzdr6ZL7U5km
+   AfPHKhb9WheN6jC9mdE1TdbFfvUjl+NEM6NYWHODqNWZt4NAZOiIcyjEd
+   kjQ2aQKgoqw1SVjbyH4kGGOEqUdwIaZTSbjsYOVmbBCWxwCZd831QHuU/
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10814"; a="374844340"
+X-IronPort-AV: E=Sophos;i="6.02,203,1688454000"; 
+   d="scan'208";a="374844340"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2023 06:08:01 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10814"; a="852281523"
+X-IronPort-AV: E=Sophos;i="6.02,203,1688454000"; 
+   d="scan'208";a="852281523"
+Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 26 Aug 2023 06:07:54 -0700
+Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qZt17-0004jJ-2M;
+        Sat, 26 Aug 2023 13:07:53 +0000
+Date:   Sat, 26 Aug 2023 21:07:14 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc:     oe-kbuild-all@lists.linux.dev, Alex Sierra <alex.sierra@amd.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrei Vagin <avagin@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Danylo Mocherniuk <mdanylo@google.com>,
+        David Hildenbrand <david@redhat.com>, Greg KH <greg@kroah.com>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <emmir@google.com>,
+        Mike Rapoport <rppt@kernel.org>, Nadav Amit <namit@vmware.com>,
+        Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Paul Gofman <pgofman@codeweavers.com>,
+        Peter Xu <peterx@redhat.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Yang Shi <shy828301@gmail.com>,
+        Yun Zhou <yun.zhou@windriver.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: Re: fs/proc/task_mmu: Implement IOCTL for efficient page table
+ scanning
+Message-ID: <202308262125.VHTuZ7uV-lkp@intel.com>
+References: <a0b5c6776b2ed91f78a7575649f8b100e58bd3a9.1689881078.git.mirq-linux@rere.qmqm.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CALm+0cV8GP_gbbiCwmKyMxE=Qm1pLVWXWkmHUjdaDS8L0hZgFw@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a0b5c6776b2ed91f78a7575649f8b100e58bd3a9.1689881078.git.mirq-linux@rere.qmqm.pl>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 26, 2023 at 02:13:39PM +0800, Z qiang wrote:
-> >
-> > On Fri, Aug 25, 2023 at 10:28:37AM +0800, Z qiang wrote:
-> > > >
-> > > > On Thu, Aug 24, 2023 at 04:42:06PM +0800, Zqiang wrote:
-> > > > > Currently, the maxcpu is set by traversing online CPUs, however, if
-> > > > > the rcutorture.onoff_holdoff is set zero and onoff_interval is set
-> > > > > non-zero, and the some CPUs with larger cpuid has been offline before
-> > > > > setting maxcpu, for these CPUs, even if they are online again, also
-> > > > > cannot be offload or deoffload.
-> > > > >
-> > > > > This commit therefore use for_each_possible_cpu() instead of
-> > > > > for_each_online_cpu() in rcu_nocb_toggle().
-> > > > >
-> > > > > Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
-> > > > > ---
-> > > > >  kernel/rcu/rcutorture.c | 2 +-
-> > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > >
-> > > > > diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-> > > > > index a58372bdf0c1..b75d0fe558ce 100644
-> > > > > --- a/kernel/rcu/rcutorture.c
-> > > > > +++ b/kernel/rcu/rcutorture.c
-> > > > > @@ -2131,7 +2131,7 @@ static int rcu_nocb_toggle(void *arg)
-> > > > >       VERBOSE_TOROUT_STRING("rcu_nocb_toggle task started");
-> > > > >       while (!rcu_inkernel_boot_has_ended())
-> > > > >               schedule_timeout_interruptible(HZ / 10);
-> > > > > -     for_each_online_cpu(cpu)
-> > > > > +     for_each_possible_cpu(cpu)
-> > > >
-> > > > Last I checked, bad things could happen if the code attempted to
-> > > > nocb_toggle a CPU that had not yet come online.  Has that changed?
-> > >
-> > > For example, there are 8 online CPUs in the system, before we traversing online
-> > > CPUs and set maxcpu,  CPU7 has been offline, this causes us to miss nocb_toggle
-> > > for CPU7(maxcpu=6)
-> > >
-> > > Even though we still use for_each_online_cpu(), the things described
-> > > above also happen.  before we toggle the CPU, this CPU has been offline.
-> >
-> > Suppose we have a system whose possible CPUs are 0, 1, 2, and 3.  However,
-> > only 0 and 1 are present in this system, and until some manual action is
-> > taken, only 0 and 1 will ever be online.  (Yes, this really can happen!)
-> > In that state, won't toggling CPU 2 and 3 result in failures?
-> >
-> 
-> Agree.
-> As long as we enabled rcutorture.onoff_interval,  regardless of whether we use
-> online CPUs or possible CPUs to set maxcpu,  It is all possible to
-> toggling the CPUs failure
-> and print "NOCB: Cannot CB-offload offline CPU" log. but the failures
-> due to CPU offline are acceptable.
-> 
-> but at least the toggling operation on CPU7 will not be missed. when
-> CPU7 comes online again.
-> 
-> Would it be better to use for_each_present_cpu() ?
+Hi Michał,
 
-The problem we face is that RCU and rcutorture have no reasonable way
-of knowing when the boot-time CPU bringup has completed.  If there was a
-way of knowing that, then my approach would be to make rcutorture react
-to a holdoff of zero by waiting for all the CPUs to come online.
+kernel test robot noticed the following build warnings:
 
-Failing that, for_each_present_cpu() with a holdoff of zero will likely
-get us transient failures between the time rcutorture starts and the
-last CPU has come online.
+[auto build test WARNING on akpm-mm/mm-everything]
+[also build test WARNING on linus/master v6.5-rc7 next-20230825]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Or is there now a way for in-kernel code know when boot-time CPU onlining
-has completed?
+url:    https://github.com/intel-lab-lkp/linux/commits/Micha-Miros-aw/Re-fs-proc-task_mmu-Implement-IOCTL-for-efficient-page-table-scanning/20230721-033050
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/a0b5c6776b2ed91f78a7575649f8b100e58bd3a9.1689881078.git.mirq-linux%40rere.qmqm.pl
+patch subject: Re: fs/proc/task_mmu: Implement IOCTL for efficient page table scanning
+config: i386-randconfig-i004-20230720 (https://download.01.org/0day-ci/archive/20230826/202308262125.VHTuZ7uV-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20230826/202308262125.VHTuZ7uV-lkp@intel.com/reproduce)
 
-							Thanx, Paul
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308262125.VHTuZ7uV-lkp@intel.com/
 
-> Thanks
-> Zqiang
-> 
-> >
-> >                                                         Thanx, Paul
-> >
-> > > Thanks
-> > > Zqiang
-> > >
-> > >
-> > > >
-> > > >                                                         Thanx, Paul
-> > > >
-> > > > >               maxcpu = cpu;
-> > > > >       WARN_ON(maxcpu < 0);
-> > > > >       if (toggle_interval > ULONG_MAX)
-> > > > > --
-> > > > > 2.17.1
-> > > > >
+All warnings (new ones prefixed by >>):
+
+   fs/proc/task_mmu.c: In function 'pagemap_scan_test_walk':
+   fs/proc/task_mmu.c:1921:13: error: implicit declaration of function 'userfaultfd_wp_async'; did you mean 'userfaultfd_wp'? [-Werror=implicit-function-declaration]
+    1921 |         if (userfaultfd_wp_async(vma) && userfaultfd_wp_use_markers(vma))
+         |             ^~~~~~~~~~~~~~~~~~~~
+         |             userfaultfd_wp
+   fs/proc/task_mmu.c: In function 'pagemap_scan_init_bounce_buffer':
+   fs/proc/task_mmu.c:2290:22: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+    2290 |         p->vec_out = (void __user *)p->arg.vec;
+         |                      ^
+   fs/proc/task_mmu.c: At top level:
+>> fs/proc/task_mmu.c:1967:13: warning: 'pagemap_scan_backout_range' defined but not used [-Wunused-function]
+    1967 | static void pagemap_scan_backout_range(struct pagemap_scan_private *p,
+         |             ^~~~~~~~~~~~~~~~~~~~~~~~~~
+   cc1: some warnings being treated as errors
+
+
+vim +/pagemap_scan_backout_range +1967 fs/proc/task_mmu.c
+
+  1966	
+> 1967	static void pagemap_scan_backout_range(struct pagemap_scan_private *p,
+  1968					       unsigned long addr, unsigned long end)
+  1969	{
+  1970		struct page_region *cur_buf = &p->cur_buf;
+  1971	
+  1972		if (cur_buf->start != addr) {
+  1973			cur_buf->end = addr;
+  1974		} else {
+  1975			cur_buf->start = cur_buf->end = 0;
+  1976		}
+  1977	
+  1978		p->end_addr = 0;
+  1979	}
+  1980	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
