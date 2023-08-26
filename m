@@ -2,101 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAC0E7897C7
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 17:42:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9D677897C9
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 17:44:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230241AbjHZPmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 11:42:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47262 "EHLO
+        id S230371AbjHZPnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 11:43:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229922AbjHZPmK (ORCPT
+        with ESMTP id S230317AbjHZPnl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 11:42:10 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 160AD199F
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 08:42:08 -0700 (PDT)
+        Sat, 26 Aug 2023 11:43:41 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AA3319AE;
+        Sat, 26 Aug 2023 08:43:39 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9F4ED6112E
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 15:42:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94860C433C8;
-        Sat, 26 Aug 2023 15:42:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693064527;
-        bh=hOaNCqqt27RWOnKw81xQYpQ0mlMIgLKh1VaZrPKzs4c=;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EA3F4621EF;
+        Sat, 26 Aug 2023 15:43:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9E1BC433C8;
+        Sat, 26 Aug 2023 15:43:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1693064618;
+        bh=weZ7hM26hSmhQknF+fslvxqkPMpUEXb3Hf1xgLFvSeY=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MBLSqgPaK8znE1cGYxx00KU1Ur1R1EOPeQ+HgKag7E6IpocWl4u8O/3CvMXwftiSH
-         AkoTtSAm6Ip4mPwZv3dXTWkpx1WRz+lhGLYQYEqcHNKsrfRtWyukTlcdgCFM1rhsTU
-         /cN9X8JQX3i68PM3GJXinYVPs2VDrZJ6d/7WXd0IjCs0knVIjy3eeXW9KRZRgh3zLS
-         lYu4pq9s0Ri9oWcMMAVXDzlWyMAT7KVAZDFK0OsWeGJdZ6sMaRXSGPyGVhiqIxhb0v
-         Z1jIK7xamY3LMPU6IDdFt9JQiVEMjySzykL/psu4THQHhuf9SYNJ4TIpCQBx1Dqurf
-         elMoXNLjCVHMw==
-Date:   Sat, 26 Aug 2023 08:42:05 -0700
-From:   Josh Poimboeuf <jpoimboe@kernel.org>
-To:     Nikolay Borisov <nik.borisov@suse.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Babu Moger <babu.moger@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>, David.Kaplan@amd.com,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        gregkh@linuxfoundation.org, Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH 22/23] x86/nospec: Refactor UNTRAIN_RET[_*]
-Message-ID: <20230826154205.6ejzfk6mmrrtvsm5@treble>
-References: <cover.1692919072.git.jpoimboe@kernel.org>
- <d9ad341e6ce84ccdbd3924615f4a47b3d7b19942.1692919072.git.jpoimboe@kernel.org>
- <4f9ea97a-7023-f2b5-8dc8-3ce208197b28@suse.com>
+        b=EcGlyV9hyIKwMfU/My+NiiuEK9Vxphlgd3+GDTIaPAypfszMEMjPjfQ8CeBs+AYov
+         AXyp0wJdWhGcbQaektl381Vb1grjWncmcc2rB7g1BYdZGtkHNPRoLwZku+4UWQBQT2
+         RNQm3GsaW4duQfNrXna7j7Hxy1n+Qij+Sda0Kcsk=
+Date:   Sat, 26 Aug 2023 17:43:35 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Huacai Chen <chenhuacai@kernel.org>
+Cc:     Huacai Chen <chenhuacai@loongson.cn>, loongarch@lists.linux.dev,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Guo Ren <guoren@kernel.org>, Xuerui Wang <kernel@xen0n.name>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-kernel@vger.kernel.org, loongson-kernel@lists.loongnix.cn,
+        stable@vger.kernel.org
+Subject: Re: [PATCH V2] LoongArch: Ensure FP/SIMD registers in the core dump
+ file is up to date
+Message-ID: <2023082609-coerce-capricorn-a69f@gregkh>
+References: <20230826142341.4107728-1-chenhuacai@loongson.cn>
+ <2023082618-mocha-reactor-1dbe@gregkh>
+ <CAAhV-H4aKT=O1Ly7Zw+oSuVDP73kcXf+boAJK5W=6n76Ftz=WA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <4f9ea97a-7023-f2b5-8dc8-3ce208197b28@suse.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAAhV-H4aKT=O1Ly7Zw+oSuVDP73kcXf+boAJK5W=6n76Ftz=WA@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 25, 2023 at 09:22:10PM +0300, Nikolay Borisov wrote:
-> 
-> 
-> On 25.08.23 г. 10:01 ч., Josh Poimboeuf wrote:
-> > Factor out the UNTRAIN_RET[_*] common bits into a helper macro.
-> > 
-> > Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
-> > ---
-> >   arch/x86/include/asm/nospec-branch.h | 31 +++++++++-------------------
-> >   1 file changed, 10 insertions(+), 21 deletions(-)
-> > 
-> > diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
-> > index 51e3f1a287d2..dcc78477a38d 100644
-> > --- a/arch/x86/include/asm/nospec-branch.h
-> > +++ b/arch/x86/include/asm/nospec-branch.h
-> > @@ -288,35 +288,24 @@
-> >    * As such, this must be placed after every *SWITCH_TO_KERNEL_CR3 at a point
-> >    * where we have a stack but before any RET instruction.
-> >    */
-> > -.macro UNTRAIN_RET
-> > +.macro __UNTRAIN_RET ibpb_feature, call_depth_insns
-> >   #if defined(CONFIG_RETHUNK) || defined(CONFIG_CPU_IBPB_ENTRY)
-> >   	VALIDATE_UNRET_END
-> >   	ALTERNATIVE_3 "",						\
-> >   		      CALL_UNTRAIN_RET, X86_FEATURE_UNRET,		\
-> > -		      "call entry_ibpb", X86_FEATURE_ENTRY_IBPB,	\
-> > -		     __stringify(RESET_CALL_DEPTH), X86_FEATURE_CALL_DEPTH
-> > +		      "call entry_ibpb", \ibpb_feature,			\
-> > +		     __stringify(\call_depth_insns), X86_FEATURE_CALL_DEPTH
-> 
-> so this becomes __stringify(__stringify(RESET_CALL_DEPTH)) etc.
+On Sat, Aug 26, 2023 at 11:35:31PM +0800, Huacai Chen wrote:
+> On Sat, Aug 26, 2023 at 11:22 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Sat, Aug 26, 2023 at 10:23:41PM +0800, Huacai Chen wrote:
+> > > This is a port of commit 379eb01c21795edb4c ("riscv: Ensure the value
+> > > of FP registers in the core dump file is up to date").
+> > >
+> > > The values of FP/SIMD registers in the core dump file come from the
+> > > thread.fpu. However, kernel saves the FP/SIMD registers only before
+> > > scheduling out the process. If no process switch happens during the
+> > > exception handling, kernel will not have a chance to save the latest
+> > > values of FP/SIMD registers. So it may cause their values in the core
+> > > dump file incorrect. To solve this problem, force fpr_get()/simd_get()
+> > > to save the FP/SIMD registers into the thread.fpu if the target task
+> > > equals the current task.
+> > >
+> > > Cc: stable@vger.kernel.org
+> > > Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+> > > ---
+> > > V2: Rename get_fpu_regs() to save_fpu_regs().
+> >
+> > What stable tree(s) is this for?
+> For 5.19+, but before 6.4 we should remove the call site in simd_get()
+> because that function doesn't exist.
 
-Apparently the gas macro un-stringifies the argument when using it, so
-it needs to be re-stringified again.  ¯\_(ツ)_/¯
+But this commit is already in the following released kernels:
+	5.10.62 5.13.14 5.14
+so how can it be backported?
 
--- 
-Josh
+totally confused,
+
+greg k-h
