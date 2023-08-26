@@ -2,82 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 089D678979C
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 17:03:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B98D97897A1
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 17:07:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230497AbjHZPDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 11:03:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33730 "EHLO
+        id S230270AbjHZPHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 11:07:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230454AbjHZPDP (ORCPT
+        with ESMTP id S229761AbjHZPGh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 11:03:15 -0400
-Received: from mail.nearlyone.de (mail.nearlyone.de [IPv6:2a01:4f8:1c1e:abde::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA080E5;
-        Sat, 26 Aug 2023 08:03:12 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id B843DE1A7D;
-        Sat, 26 Aug 2023 17:03:07 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=monom.org; s=dkim;
-        t=1693062190; h=from:subject:date:message-id:to:mime-version:content-type;
-        bh=PQY8pRZTlh1hNxRAMGxNP3xcvWUOFTxpD/BFKidKmgo=;
-        b=EggrK5hzzfMDebPHdBDiOftGPcoxMw363oWH3GIm77ypEWxd/hoS+ON1nboeofwotHLj+e
-        gIGOjXGkusnyrFr2tJjefP3ynV4aT+SZFCJKzxSvCBp3i/fTSFR0FQVV/NhUADSl5e9LJL
-        XDAD2TZjqKOfNE7IewHRRNTBxT28KXw6YOiIuEhFjxwAAW6nXdp/wwpRd+uVNYmg04uRTg
-        aeyPK+4kMNfcwh9WKdcSpZoi8uP7zWSSBdweaKjA/hPFiTk8TXNrVLkGT0rAyF0ps3qUme
-        Jmtgj040xN3oR1u5sg2PRHuvGR3z1mFJOwLs2FHFI0+Aksyok/G3PCGC/rEhBQ==
-Date:   Sat, 26 Aug 2023 17:03:04 +0200
-From:   Daniel Wagner <wagi@monom.org>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users@vger.kernel.org, stable-rt@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Tom Zanussi <tom.zanussi@linux.intel.com>,
-        Clark Williams <williams@redhat.com>
-Subject: [ANNOUNCE] 4.19.292-rt128
-Message-ID: <169306206792.7820.15513710483397536765@beryllium.lan>
+        Sat, 26 Aug 2023 11:06:37 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3961AE7A
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 08:06:35 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1bf078d5f33so15263755ad.3
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 08:06:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693062394; x=1693667194;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=sZDr/QoX1SGI6WCegd87zMXpRP3udrKlKAnd69niEvM=;
+        b=ZWCwvK9RPU4SWKMiLQR1mm6HX/q+eWJmewxcNZuVA9OSS1DRFoZVX+EUBCAZfAm1Hw
+         aJDYuRHlMCxU9kbTlcOiO7srSkYpbR1K67u7vMlqL/W3pLHfuAcVcAsLsu4x3y2Q7MIS
+         +4KTqRHB9Gc4U1sb4kw5RpQgiERp/TQhBJjN6iPlb0hu519rAATR8/cy3r7mxZCDWcGX
+         YkCZ6SaaJItlk8Krh86UdwM+Bc8pnEpe9dYVvpz8P/9LaXVGQciMXD8eIpy18jS5w0Nf
+         aib4uqJFTzACj+NXUsV4PIEJ1NcuVGSLlOOO8XjsVVpMO2NvOEYojemvAx4NNLRzlDzh
+         4jdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693062394; x=1693667194;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sZDr/QoX1SGI6WCegd87zMXpRP3udrKlKAnd69niEvM=;
+        b=PTsUv2DJoGrc2/RyIJ2R3jnpStZL8XaC+TjwNAVHpRjpJ6NowdOmXrKjyCN39rgLIT
+         WzSUE/3B/I0xEuTRyVP+UfeHuQNuzMwav14owiEj/1Hnhgg3srzfFrhxbo2AJtZcFNHD
+         iuv0wfYK47r/FzP3zJXz62vD+scKv8TlPlQzWqv3PjsWigz/QUNwjZmRtE7iICdNVa9u
+         tZJEIOnwaZG8MlQ7Ytf2MyGC2GoJZMQXC9miZAABx880dygQQsSQ1+/Si7l6QI6PqzBj
+         n0HDVNiKAzWWzX6DBPZntyt+v1nZAVh2hQ/xVk/YwLbVNeWt04CIhW9SdVwApPfc2sw2
+         HS2Q==
+X-Gm-Message-State: AOJu0Yx/0Z7QdprAdSOq+CQSRADDVSm4BOAGZ8JcDkVFrphPBPS9m2YF
+        UU3Bk/lHkSh4p5tH0FUGwjBeI1gyDbS/cSzPwg==
+X-Google-Smtp-Source: AGHT+IE4u92j97rFy4KPYSk0a6QYrzQJQye05JIdyOapYHU5tlwJrXqptPMTXQ5r3XHF+Mg6wMH/Dg==
+X-Received: by 2002:a17:902:e54f:b0:1bc:61d6:5fcc with SMTP id n15-20020a170902e54f00b001bc61d65fccmr27215634plf.51.1693062394654;
+        Sat, 26 Aug 2023 08:06:34 -0700 (PDT)
+Received: from localhost.localdomain ([117.206.116.138])
+        by smtp.gmail.com with ESMTPSA id k5-20020a170902e90500b001b8052d58a0sm3801231pld.305.2023.08.26.08.06.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 26 Aug 2023 08:06:34 -0700 (PDT)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     lpieralisi@kernel.org, kw@linux.com
+Cc:     kishon@kernel.org, bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH] PCI: epf-mhi: Really use "align" from EPF core
+Date:   Sat, 26 Aug 2023 20:36:26 +0530
+Message-Id: <20230826150626.23309-1-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Last-TLS-Session-Version: TLSv1.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello RT-list!
+Commit <15fe2e279c19> was supposed to make use of "align" parameter from
+the EPF core, but it incorrectly used the outbound window "page_size".
+Fix it!
 
-I'm pleased to announce the 4.19.292-rt128 stable release.
+Fixes: 15fe2e279c19 ("PCI: epf-mhi: Make use of the alignment restriction from EPF core")
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+---
+ drivers/pci/endpoint/functions/pci-epf-mhi.c | 22 ++++++++++----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
-This is just an update to stable release 4.19.292. No RT specific changes.
+diff --git a/drivers/pci/endpoint/functions/pci-epf-mhi.c b/drivers/pci/endpoint/functions/pci-epf-mhi.c
+index bb7de6884824..bb4669eafcca 100644
+--- a/drivers/pci/endpoint/functions/pci-epf-mhi.c
++++ b/drivers/pci/endpoint/functions/pci-epf-mhi.c
+@@ -92,6 +92,7 @@ static const struct pci_epf_mhi_ep_info sdx55_info = {
+ };
+ 
+ struct pci_epf_mhi {
++	const struct pci_epc_features *epc_features;
+ 	const struct pci_epf_mhi_ep_info *info;
+ 	struct mhi_ep_cntrl mhi_cntrl;
+ 	struct pci_epf *epf;
+@@ -102,9 +103,9 @@ struct pci_epf_mhi {
+ 	int irq;
+ };
+ 
+-static size_t get_align_offset(struct pci_epc *epc, u64 addr)
++static size_t get_align_offset(struct pci_epf_mhi *epf_mhi, u64 addr)
+ {
+-	return addr % epc->mem->window.page_size;
++	return addr % epf_mhi->epc_features->align;
+ }
+ 
+ static int __pci_epf_mhi_alloc_map(struct mhi_ep_cntrl *mhi_cntrl, u64 pci_addr,
+@@ -138,8 +139,7 @@ static int pci_epf_mhi_alloc_map(struct mhi_ep_cntrl *mhi_cntrl, u64 pci_addr,
+ 				 size_t size)
+ {
+ 	struct pci_epf_mhi *epf_mhi = to_epf_mhi(mhi_cntrl);
+-	struct pci_epc *epc = epf_mhi->epf->epc;
+-	size_t offset = get_align_offset(epc, pci_addr);
++	size_t offset = get_align_offset(epf_mhi, pci_addr);
+ 
+ 	return __pci_epf_mhi_alloc_map(mhi_cntrl, pci_addr, paddr, vaddr,
+ 				      offset, size);
+@@ -164,9 +164,7 @@ static void pci_epf_mhi_unmap_free(struct mhi_ep_cntrl *mhi_cntrl, u64 pci_addr,
+ 				   size_t size)
+ {
+ 	struct pci_epf_mhi *epf_mhi = to_epf_mhi(mhi_cntrl);
+-	struct pci_epf *epf = epf_mhi->epf;
+-	struct pci_epc *epc = epf->epc;
+-	size_t offset = get_align_offset(epc, pci_addr);
++	size_t offset = get_align_offset(epf_mhi, pci_addr);
+ 
+ 	__pci_epf_mhi_unmap_free(mhi_cntrl, pci_addr, paddr, vaddr, offset,
+ 				 size);
+@@ -190,8 +188,7 @@ static int pci_epf_mhi_read_from_host(struct mhi_ep_cntrl *mhi_cntrl, u64 from,
+ 				      void *to, size_t size)
+ {
+ 	struct pci_epf_mhi *epf_mhi = to_epf_mhi(mhi_cntrl);
+-	struct pci_epc *epc = epf_mhi->epf->epc;
+-	size_t offset = get_align_offset(epc, from);
++	size_t offset = get_align_offset(epf_mhi, from);
+ 	void __iomem *tre_buf;
+ 	phys_addr_t tre_phys;
+ 	int ret;
+@@ -219,8 +216,7 @@ static int pci_epf_mhi_write_to_host(struct mhi_ep_cntrl *mhi_cntrl,
+ 				     void *from, u64 to, size_t size)
+ {
+ 	struct pci_epf_mhi *epf_mhi = to_epf_mhi(mhi_cntrl);
+-	struct pci_epc *epc = epf_mhi->epf->epc;
+-	size_t offset = get_align_offset(epc, to);
++	size_t offset = get_align_offset(epf_mhi, to);
+ 	void __iomem *tre_buf;
+ 	phys_addr_t tre_phys;
+ 	int ret;
+@@ -277,6 +273,10 @@ static int pci_epf_mhi_core_init(struct pci_epf *epf)
+ 		return ret;
+ 	}
+ 
++	epf_mhi->epc_features = pci_epc_get_features(epc, epf->func_no, epf->vfunc_no);
++	if (!epf_mhi->epc_features)
++		return -ENODATA;
++
+ 	return 0;
+ }
+ 
+-- 
+2.25.1
 
-You can get this release via the git tree at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
-
-  branch: v4.19-rt
-  Head SHA1: 6b3de4d487c20b013ab91bf85259c2b9a17b139b
-
-Or to build 4.19.292-rt128 directly, the following patches should be applied:
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.19.tar.xz
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.19.292.xz
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/4.19/older/patch-4.19.292-rt128.patch.xz
-
-Signing key fingerprint:
-
-  5BF6 7BC5 0826 72CA BB45  ACAE 587C 5ECA 5D0A 306C
-
-All keys used for the above files and repositories can be found on the
-following git repository:
-
-   git://git.kernel.org/pub/scm/docs/kernel/pgpkeys.git
-
-Enjoy!
-Daniel
