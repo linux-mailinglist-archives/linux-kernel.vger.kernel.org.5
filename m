@@ -2,66 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7CC47895F1
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 12:27:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC6C07895FE
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 12:30:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232016AbjHZK1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 06:27:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33912 "EHLO
+        id S232119AbjHZKaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 06:30:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231993AbjHZK05 (ORCPT
+        with ESMTP id S232133AbjHZK3k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 06:26:57 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87E932105
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 03:26:54 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-5007abb15e9so2603629e87.0
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 03:26:54 -0700 (PDT)
+        Sat, 26 Aug 2023 06:29:40 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B9EC2105
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 03:29:37 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-5009969be25so2714873e87.3
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 03:29:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693045613; x=1693650413;
+        d=linaro.org; s=google; t=1693045776; x=1693650576;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=gZX38VcqAVATv8KNVmv5eg9FNWeBbTAhgamd8wWoGQA=;
-        b=BhMuCSjmLWfcHf1Y/EsQT3pDrj32KHcNjkjhIgWgzsVWz22TWhXaltNFTO/MiDrE7N
-         A5oT9H3B7BYG6J+ydZadYiu3whWF2BKERTaoUt328wsl7jAIGZb0aXtOmAymJk07atQi
-         J19GCi78Sqk1HqcBzuwDCk0ZRVVHitD7lAdVMCBju62Ipobobo6J1ZZHDpRBLzGB5ODj
-         o8IDFoDVesdgERPCOtJlEin9GUyDF5i9uKnf0KzvTmKgUorUc+piw+KjdhKIM5DTy42i
-         rfq3dhg1tUd6talKdagfPYJGyoew+UVBLmXq5r6Ov4eNNuMxK+n1ubRKEKNVhdfc6G8G
-         63PQ==
+        bh=GsNUN6pqnz0TuH+F4mwwIbD9xuCZQL0gzpUGeQXtpFk=;
+        b=zH/Q/+pqS2Wa0vxdtDigAdNP/6bkDMG3RFWXZpRmekjXovIYMERoHRRNgAAM6iLlPU
+         ClAIeXYP6NUWLSYmTGnAT5540Pi1/fGVysbqW07j8N0MmxM3Iv2yrYf3g5Q7Oofu5NZr
+         cob+Uyegkg7xjfquST6JirXlWA9RLaMIHYpwQfamH71Zk8JKqMIyUM3vi6dGTUN/sAcn
+         HV8ekoWqwQBni/ngVeHNuOCna9yY8XcknUNOq2XLf99oOZcQRbBixD+kYsfbzh+89AdL
+         imUgjYgcYzkaEpzymMv4F3KjtiSuAHBBQYDRbp9cayO5GiEze8tF0M28El4E0nbJXbAE
+         j4ng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693045613; x=1693650413;
+        d=1e100.net; s=20221208; t=1693045776; x=1693650576;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gZX38VcqAVATv8KNVmv5eg9FNWeBbTAhgamd8wWoGQA=;
-        b=RGcYjp2le8zl41Z+m0qBnxO3YgmZsa44jqb6jRYdcLtNWJb/q64WsJ+mCHPR1a2RAQ
-         O7dYpvCGspv0NMHCDRrM4dMT7RoNOPzteuORew7ceOaCo9339FToZS56uHOaeR56C1xB
-         QHDL2AcN0c2Pu1H3CTPcRpPRibmfFF5Emo2jGuyAeL4ogczd2AOKxSof+m13LSueyIWz
-         N3tgmmeRk6QaSsTMAVKEgZXWUu0JSGelDF3OgdjVJcHYI3TxJ2HR6DM1EyEG7PM7ORtR
-         S5kpN1BlXRbdW7opTv+F+DBaI15DMsp5V30rljT6fv0cC0wvZM/2PUQzKeePCa1xKz8F
-         vTlQ==
-X-Gm-Message-State: AOJu0YxZ1cj5hnGhhs5yaiJ2TN2ZcdygEDJvhznAUPvRMMSudyw06RZL
-        0f8hQnFSrt8oB8MU4tfU0WCAXg==
-X-Google-Smtp-Source: AGHT+IGzBiB+woor3H5kbOZ8vsCWkPDbgQ5KLOHKLSVPrD0qRG01iVlR9M3wZ+DeuOX4IJWDZbR+5Q==
-X-Received: by 2002:a05:6512:2087:b0:500:94aa:739c with SMTP id t7-20020a056512208700b0050094aa739cmr7243881lfr.61.1693045612770;
-        Sat, 26 Aug 2023 03:26:52 -0700 (PDT)
+        bh=GsNUN6pqnz0TuH+F4mwwIbD9xuCZQL0gzpUGeQXtpFk=;
+        b=TNTRSK68hRnSxzvskyptJb3rgCl8eEooaHmNIktZGCblOhkx5uxynwmKYtB+3oJj5b
+         2HUfOZ+fC68UPUSIf/7wQr847AYlpjxt+SZDcNUFSe9Pp84+/+0R6jQ3IBuC7qzQnkYe
+         k4oR79Qt4Hat9hnXyVKp4RfnhpaQo8wZ67Qbx0NXsPkkA2cFkz3h/YYFIFZ2AQWrTCds
+         pQNSy8K6f5LDR4B/SZzXgtawWBiGQokz+p3UeulYUL+2lMfAAJDT/urLUI8fxcl4U9k1
+         TYD/nL69QJJxBk6mdgMilylUVT4YuaRF4CkjcOMH+9Nm0zBsYtM9M/1jdt5KaVBgXaqV
+         nVHg==
+X-Gm-Message-State: AOJu0YzegYipP928res2w1naZipozX0xNZKiHPqb25t/Ir6DNH6xy8vM
+        GPM0vyQz1gxBZsNSGpwR1nMKdg==
+X-Google-Smtp-Source: AGHT+IFRhChplWciczblVbM/j/a6uTbdRJi9ezDFTRStIJxdY0CuJl0LLWZ0Gy1mgmRsbdt8h/9GwA==
+X-Received: by 2002:a05:6512:33c5:b0:4f9:cd02:4af1 with SMTP id d5-20020a05651233c500b004f9cd024af1mr16860889lfg.34.1693045775850;
+        Sat, 26 Aug 2023 03:29:35 -0700 (PDT)
 Received: from [192.168.1.101] (abyl74.neoplus.adsl.tpnet.pl. [83.9.31.74])
-        by smtp.gmail.com with ESMTPSA id o13-20020ac2434d000000b004fe4d45f56bsm658996lfl.68.2023.08.26.03.26.51
+        by smtp.gmail.com with ESMTPSA id o13-20020ac2434d000000b004fe4d45f56bsm658996lfl.68.2023.08.26.03.29.34
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 26 Aug 2023 03:26:52 -0700 (PDT)
-Message-ID: <c2bac3ce-f190-4917-95de-fd67a00728ff@linaro.org>
-Date:   Sat, 26 Aug 2023 12:26:51 +0200
+        Sat, 26 Aug 2023 03:29:35 -0700 (PDT)
+Message-ID: <790bfcec-48dc-4a6a-8ca5-fd6d11f93d50@linaro.org>
+Date:   Sat, 26 Aug 2023 12:29:34 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: qcom: qru1000-idp: add SDHCI for emmc
+Subject: Re: [PATCH 1/3] arm64: dts: qcom: msm8916-samsung-gt510: Add display
+ panel
 Content-Language: en-US
-To:     Komal Bajaj <quic_kbajaj@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+To:     Nikita Travkin <nikita@trvn.ru>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
 Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230822114850.3335-1-quic_kbajaj@quicinc.com>
+        linux-kernel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Jasper Korten <jja2000@gmail.com>
+References: <20230725-gt5-panel-v1-0-7c787e33a614@trvn.ru>
+ <20230725-gt5-panel-v1-1-7c787e33a614@trvn.ru>
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -98,7 +104,7 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <20230822114850.3335-1-quic_kbajaj@quicinc.com>
+In-Reply-To: <20230725-gt5-panel-v1-1-7c787e33a614@trvn.ru>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -111,30 +117,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.08.2023 13:48, Komal Bajaj wrote:
-> Add sdhci node for emmc in qru1000-idp.
+On 25.07.2023 13:52, Nikita Travkin wrote:
+> From: Jasper Korten <jja2000@gmail.com>
 > 
-> Signed-off-by: Komal Bajaj <quic_kbajaj@quicinc.com>
+> The device has a 9.7 inch ltl101at01 display. Add it to the device tree.
+> 
+> Signed-off-by: Jasper Korten <jja2000@gmail.com>
+> Co-developed-by: Nikita Travkin <nikita@trvn.ru>
+> Signed-off-by: Nikita Travkin <nikita@trvn.ru>
 > ---
->  arch/arm64/boot/dts/qcom/qru1000-idp.dts | 23 +++++++++++++++++++++++
->  1 file changed, 23 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/qru1000-idp.dts b/arch/arm64/boot/dts/qcom/qru1000-idp.dts
-> index 2a862c83309e..672e1946eba2 100644
-> --- a/arch/arm64/boot/dts/qcom/qru1000-idp.dts
-> +++ b/arch/arm64/boot/dts/qcom/qru1000-idp.dts
-> @@ -460,6 +460,29 @@ tenx_sp_mem: tenx-sp-buffer@800000000 {
->  	};
->  };
-> 
-> +&sdhc {
-> +	pinctrl-0 = <&sdc_on_state>;
-> +	pinctrl-1 = <&sdc_off_state>;
-> +	pinctrl-names = "default", "sleep";
-> +
-> +	cap-mmc-hw-reset;
-Looks like the qcom mmc driver doesn't have any card_hw_reset ops.
-Would that be something necessary or valueable for this platform/
-device?
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
 Konrad
