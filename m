@@ -2,60 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5546778963D
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 13:17:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACBAE78963F
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 13:23:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232571AbjHZLQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 07:16:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52580 "EHLO
+        id S232585AbjHZLWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 07:22:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232561AbjHZLQP (ORCPT
+        with ESMTP id S230503AbjHZLWO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 07:16:15 -0400
-Received: from mx.skole.hr (mx2.hosting.skole.hr [161.53.165.186])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1172AA6;
-        Sat, 26 Aug 2023 04:16:11 -0700 (PDT)
-Received: from mx2.hosting.skole.hr (localhost.localdomain [127.0.0.1])
-        by mx.skole.hr (mx.skole.hr) with ESMTP id 7AB1C833B0;
-        Sat, 26 Aug 2023 13:16:08 +0200 (CEST)
-From:   =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-Date:   Sat, 26 Aug 2023 13:15:52 +0200
-Subject: [PATCH v2] arm: marvell: Fix maxium->maxim typo in brownstone dts
+        Sat, 26 Aug 2023 07:22:14 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81FC4C9;
+        Sat, 26 Aug 2023 04:22:09 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1C90561369;
+        Sat, 26 Aug 2023 11:22:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 035FEC433C7;
+        Sat, 26 Aug 2023 11:22:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1693048928;
+        bh=fyswWCvolm2y6M4a91+O6ddbkgFK7oDmD1bgTfuHkRI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QiZw78cJZrox80FpImQplJf7bRThtISkxjvnU+T4bGie45ydhn7zeHyAc8cjxcCmw
+         xH2ClnZJXNkDv9fRtLCPWeyQHkKbcZI7OvshFRB170uoZXGkyUo9BmJvh2HY/9ntHk
+         HZNcmO/QdCFyLk8cdUeZ1eM2cTtbLVt3I3YueX44=
+Date:   Sat, 26 Aug 2023 13:22:05 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>, stable@vger.kernel.org,
+        patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de
+Subject: Re: [PATCH 5.10 000/135] 5.10.192-rc1 review
+Message-ID: <2023082633-shininess-sponsor-f747@gregkh>
+References: <20230824170617.074557800@linuxfoundation.org>
+ <fb1c3952-1d72-4f9d-bc93-2988bcde462e@roeck-us.net>
+ <2023082636-postnasal-cobalt-5ab5@gregkh>
+ <20230826-huddle-designed-952a01db6e88@spud>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20230826-brownstone-typo-fix-v2-1-1f8196e9a2e3@skole.hr>
-X-B4-Tracking: v=1; b=H4sIAOje6WQC/32NQQ7CIBBFr9LM2jFAoaIr72G6sHQqRAMNNGjTc
- HexB3D5XvLf3yBRdJTg0mwQKbvkgq8gDg0Ye/cPQjdWBsFEyzSTOMTw9mkJnnBZ54CT++CkBt4
- ZeRp1p6Au50hV79VbX9m6OojrfpL5z/7vZY4cpW7FqKVhip2v6RledLQR+lLKF9NWNnW1AAAA
-To:     Lubomir Rintel <lkundrak@v3.sk>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Samuel Ortiz <sameo@linux.intel.com>,
-        Qing Xu <qingx@marvell.com>
-Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1307;
- i=duje.mihanovic@skole.hr; h=from:subject:message-id;
- bh=49t1UVPg2Rf9WsD0FkWFL7j0VQBEwi2PNjeKLJosF0c=;
- b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBk6d718/XU0lY5w8yTymz1LpaNf7EY1BGPrCNP9
- OdVd262jeiJAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZOne9QAKCRCaEZ6wQi2W
- 4RW1D/9i7CptAgOahcAu7WLrn2unQzhi89dBqSJRUPebZowFzlxRAaayCBQ0COHm7QDnt7whXOw
- le5d2rb9dyPX3+v3qk0QdufuvNP3902GY0Yco2yQrt45vT4SLiBC8ZBK6ZJaVYeMVROypEfZwkU
- mWHT4/V40Lj6B1Y26la6duahJZON+0A6d+pI6jSPp1gGtYM061Bs2zhnYO6rYk8fICNKuLFkNnC
- EkneOmnW2OvcxL8TK4U+MatXnW0QFHyD+wJ4ClLd0QSnN1+F3nZhSh2qlvFmcRcwF9PQwajYneW
- fwO8BWWIbevROQTrDtNz2JkXJJ6J5E83S5gv4h/z8Gzul7muE/3z+I2QzY993ezicb80lPBkpfV
- 9U5ZUjcawtrWp4g4mskTe8wGDj+OwAjhkI1QQPOvMPjNfUjcCTdVjQs10yNVeGzw2+OnnonO4MH
- Su7ZxQVxAc6WkvRjnpn+QOHLQvlodFzBAZLQL3kbRDabC2fJDJ6xQ6KfKjB0wcVONwtxnjLx1zy
- n5QqGgqHiuUkVmUyTpP+qjs6tH9qpzobDyen7pgTy6oXlek3fava7u4BEaCAzf/THg2byEaL82Z
- YSN7Pr85C1fD4SHsPuEaviJxm391DHuuzVyDtnHMeQCm28/d2grLik3jwpqbFowrqTmRoMLF9S8
- J3CUZbPK3kfwQ8g==
-X-Developer-Key: i=duje.mihanovic@skole.hr; a=openpgp;
- fpr=53DF9D4D9C3FE110FB362D789A119EB0422D96E1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230826-huddle-designed-952a01db6e88@spud>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -64,45 +60,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix an obvious spelling error in the PMIC compatible in the MMP2
-Brownstone DTS file.
+On Sat, Aug 26, 2023 at 11:38:56AM +0100, Conor Dooley wrote:
+> On Sat, Aug 26, 2023 at 12:08:20PM +0200, Greg Kroah-Hartman wrote:
+> > On Fri, Aug 25, 2023 at 07:24:29AM -0700, Guenter Roeck wrote:
+> > > On Thu, Aug 24, 2023 at 07:07:52PM +0200, Greg Kroah-Hartman wrote:
+> > > > This is the start of the stable review cycle for the 5.10.192 release.
+> > > > There are 135 patches in this series, all will be posted as a response
+> > > > to this one.  If anyone has any issues with these being applied, please
+> > > > let me know.
+> > > > 
+> > > > Responses should be made by Sat, 26 Aug 2023 17:05:50 +0000.
+> > > > Anything received after that time might be too late.
+> > > > 
+> > > 
+> > > Testing is not complete, but early feedback: All riscv32 boot tests
+> > > crash badly with errors such as
+> > > 
+> > > Starting syslogd: OK
+> > > Starting klogd: OK
+> > > /etc/init.d/S02sysctl: line 68: syntax error: EOF in backquote substitution
+> > > /etc/init.d/S20seedrng: line 33: syntax error: unexpected end of file (expecting ";;")
+> > > Starting network: /bin/sh: syntax error: unterminated quoted string
+> > > sed: unmatched '/'
+> > > /bin/sh: syntax error: unterminated quoted string
+> > > FAIL
+> > > /etc/init.d/S55runtest: line 48: syntax error: EOF in backquote substitution
+> > > 
+> > > This is no longer seen after reverting the following patches.
+> > > 
+> > > 92609bb3a1f8 riscv: uaccess: Return the number of bytes effectively not copied
+> > > e06648704417 riscv: lib: uaccess: fix CSR_STATUS SR_SUM bit
+> > > 20704d763646 riscv: lib: uaccess: fold fixups into body
+> > > 4f503bad920e riscv: __asm_copy_to-from_user: Optimize unaligned memory access and pipeline stall
+> > 
+> > Thanks for the review, I'll go drop all of the riscv patches here.
+> > Really, we shouldn't be adding any of them to any kernels older than
+> > 5.15 these days as I do not think anyone using that cpu is using those
+> > older kernels (or at least I sure hope not...)
+> 
+> I know one of the main cpu IP vendors does run a 5.10 based tree, but
+> that thing is both an abomination of out-of-tree patches to core arch
+> code & about 100 releases out of date, therefore not really worth
+> factoring. Anyone in their right mind should be running something
+> significantly more recent than 5.10 for riscv.
 
-Without this, the PMIC would never probe.
+Thanks for the verification.  Anyone using such an abomination of a
+tree, gets their support from the creator of such an abomination :)
 
-Fixes: 58f1193e6210 ("mfd: max8925: Add dts")
-Cc: stable@vger.kernel.org
-Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
----
-Changes in v2:
-- Address maintainer comments:
-  - Add Fixes: and Cc: tags
-- Change "for" to "in" in subject
-- Emphasize PMIC's inability to probe without patch
-- Link to v1: https://lore.kernel.org/r/20230804-brownstone-typo-fix-v1-1-4832d84c0509@skole.hr
----
- arch/arm/boot/dts/marvell/mmp2-brownstone.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/arm/boot/dts/marvell/mmp2-brownstone.dts b/arch/arm/boot/dts/marvell/mmp2-brownstone.dts
-index 04f1ae1382e7..bc64348b8218 100644
---- a/arch/arm/boot/dts/marvell/mmp2-brownstone.dts
-+++ b/arch/arm/boot/dts/marvell/mmp2-brownstone.dts
-@@ -28,7 +28,7 @@ &uart3 {
- &twsi1 {
- 	status = "okay";
- 	pmic: max8925@3c {
--		compatible = "maxium,max8925";
-+		compatible = "maxim,max8925";
- 		reg = <0x3c>;
- 		interrupts = <1>;
- 		interrupt-parent = <&intcmux4>;
-
----
-base-commit: 2ccdd1b13c591d306f0401d98dedc4bdcd02b421
-change-id: 20230804-brownstone-typo-fix-f5b16c47d865
-
-Best regards,
--- 
-Duje Mihanović <duje.mihanovic@skole.hr>
-
-
+greg k-h
