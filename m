@@ -2,52 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A8797893D0
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 06:30:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A2E57893D2
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 06:32:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231831AbjHZE3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 00:29:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56716 "EHLO
+        id S231840AbjHZEbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 00:31:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231422AbjHZE3a (ORCPT
+        with ESMTP id S231835AbjHZEbK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 00:29:30 -0400
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com [209.85.215.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 564FD2125
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 21:29:27 -0700 (PDT)
-Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-564fa3b49e1so1480116a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 21:29:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693024167; x=1693628967;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VzLKIj7738CHBK5hqDFLq6dRuWSOn+KOL0WTI7lNSpA=;
-        b=XZ7gbgK5meU+xQgVaFRzsM8S+2KU6OMtgJwgtvyxmDygBkl0vCj3oCoLdQRgcELB+g
-         SUDCELcznTAUGAvHY2Ah5hF36fS3qZuloTFw5/mmTMhbwJZ3F/AmNgC2SPpdaxgOqGl+
-         xWCiZ1+mwHXX3kaNficuMJEHXVmF7z8xDRU0anKqT7JJwLnF4jU9PeS2Z4IpVTStNDm7
-         DL6S3AcaewR4LhSnE+lMiZefeRRIsMDDztGUV0PBbfR+R9DdJisDKnTDk1WnFECu/Lgs
-         Kyllg32AittWJgvHz9Y9CtTGcZQStPjzRs7ngHMhMn6+Z5jbLBeXQgd5G7K0paaZhUBx
-         Szgw==
-X-Gm-Message-State: AOJu0Yz/yJFNzo5QvsyrTKX7/Cup5s8row1CEttPeChS0+mD0Uj/BkWY
-        Cw/YTYpZ20Kiz6Lr82yKzXvpY99dbLlE3l/O3691XzI2y3Eg
-X-Google-Smtp-Source: AGHT+IGyc1C2i00cXzEc4J+s9hP8upxYmjilm3rP5HDC9USp91NQ4PtUYkQFqCLJTZ7KYi8f8IqqSiwzgBGqVeuzNmGEejBSLBBQ
+        Sat, 26 Aug 2023 00:31:10 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C55326B8;
+        Fri, 25 Aug 2023 21:31:02 -0700 (PDT)
+X-QQ-mid: bizesmtp69t1693024250t8x1szhz
+Received: from linux-lab-host.localdomain ( [116.30.128.222])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Sat, 26 Aug 2023 12:30:48 +0800 (CST)
+X-QQ-SSF: 01200000000000E0Y000000A0000000
+X-QQ-FEAT: CR3LFp2JE4lYYSpivJlI2SuOuzPRWJJc0IWzbiEGnrcKe7FBJFh6wZ6s+PQ2F
+        37o20e7zvbK+67J0O+P7OT4mCfHmX3LySQKEgqzwX26Gr8zpzUHM3ZMUDgjRjHiDKGWpD3P
+        RakL14KHqxla/2WvULqNpYU7G+If8ywK4/UZofvWrn9k1XNJmh4gwyt+Dsnjl8w1dCwHmRg
+        tRRAgHzmHB24F0GBYVTHa6c/87WASvShOI+Yu+6CTgAFAsgwUb6TOlgfKwugUNFelUI4qmh
+        xGo8vC+ioADDnRaCE8B8AndYhPD6Gs0ukpg6f3VSjUqV/5fdQzfLuTfTtBZPC+0/fH4pE4I
+        5dZGfDHZorEkgf/I41Y/HvOk68z58F8EfJZq5j7
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 558064754395152056
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     w@1wt.eu
+Cc:     falcon@tinylab.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux@weissschuh.net,
+        thomas@t-8ch.de, Yuan Tan <tanyuan@tinylab.org>
+Subject: Re: [PATCH v2 3/3] selftests/nolibc: fix up O= option support
+Date:   Sat, 26 Aug 2023 12:30:46 +0800
+Message-Id: <20230826043046.53692-1-falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230806121721.30774-1-falcon@tinylab.org>
+References: <20230806121721.30774-1-falcon@tinylab.org>
 MIME-Version: 1.0
-X-Received: by 2002:a63:935b:0:b0:569:425b:7ec7 with SMTP id
- w27-20020a63935b000000b00569425b7ec7mr3336969pgm.2.1693024166925; Fri, 25 Aug
- 2023 21:29:26 -0700 (PDT)
-Date:   Fri, 25 Aug 2023 21:29:26 -0700
-In-Reply-To: <20230826035531.3320-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000010dead0603cbe8f4@google.com>
-Subject: Re: [syzbot] [bluetooth?] KASAN: slab-use-after-free Read in hci_send_acl
-From:   syzbot <syzbot+a0c80b06ae2cb8895bc4@syzkaller.appspotmail.com>
-To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,121 +52,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi, Willy
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-KASAN: use-after-free Read in hci_get_route
+> > On Sat, Aug 05, 2023 at 02:13:11PM +0800, Zhangjin Wu wrote:
+> > > To avoid pollute the source code tree and avoid mrproper for every
+> > > architecture switch, the O= argument must be supported.
+> > > 
+> > > Both IMAGE and .config are from the building directory, let's use
+> > > objtree instead of srctree for them.
+> > > 
+> > > If no O= option specified, means building kernel in source code tree,
+> > > objtree should be srctree in such case.
+> > > 
+> > > To support relative path, as suggested by Thomas, $(COMMAND_O) is used
+> > > to pass the O=$(ABSOLUTE_O) to the $(MAKE) commands.
+> > 
+> > Zhangjin, I cannot get this one to work, regardless of what I try:
+> > 
+> >    $ make -j8 O=$PWD/output-i386 nolibc-test XARCH=i386 CROSS_COMPILE=/f/tc/nolibc/gcc-12.3.0-nolibc/i386-linux/bin/i386-linux- CC=/f/tc/nolibc/gcc-12.3.0-nolibc/i386-linux/bin/i386-linux-gcc
+> >    (...)
+> >    CC      nolibc-test
+> >    In file included from sysroot/i386/include/stdio.h:14,
+> >                     from nolibc-test.c:13:
+> >    sysroot/i386/include/errno.h:10:10: fatal error: asm/errno.h: No such file or directory
+> >       10 | #include <asm/errno.h>
+> >          |          ^~~~~~~~~~~~~
+> >    compilation terminated.
+> >
+> 
+> Willy, I also just reproduced the issue, seems only i386 sysroot has no
+> asm/errno.h, will check why it is no rightly installed later.
+> 
+>     $ find sysroot/ -name "errno.h"
+>     sysroot/arm/include/errno.h
+>     sysroot/arm/include/asm-generic/errno.h
+>     sysroot/arm/include/asm/errno.h
+>     sysroot/arm/include/linux/errno.h
+>     sysroot/riscv/include/errno.h
+>     sysroot/riscv/include/asm-generic/errno.h
+>     sysroot/riscv/include/asm/errno.h
+>     sysroot/riscv/include/linux/errno.h
+>     sysroot/s390/include/errno.h
+>     sysroot/s390/include/asm-generic/errno.h
+>     sysroot/s390/include/asm/errno.h
+>     sysroot/s390/include/linux/errno.h
+>     sysroot/arm64/include/errno.h
+>     sysroot/arm64/include/asm-generic/errno.h
+>     sysroot/arm64/include/asm/errno.h
+>     sysroot/arm64/include/linux/errno.h
+>     sysroot/mips/include/errno.h
+>     sysroot/mips/include/asm-generic/errno.h
+>     sysroot/mips/include/asm/errno.h
+>     sysroot/mips/include/linux/errno.h
+>     sysroot/x86_64/include/errno.h
+>     sysroot/x86_64/include/asm-generic/errno.h
+>     sysroot/x86_64/include/asm/errno.h
+>     sysroot/x86_64/include/linux/errno.h
+>     sysroot/i386/include/errno.h
+>     sysroot/i386/include/asm-generic/errno.h
+>     sysroot/i386/include/linux/errno.h
+>     sysroot/powerpc/include/errno.h
+>     sysroot/powerpc/include/asm-generic/errno.h
+>     sysroot/powerpc/include/asm/errno.h
+>     sysroot/powerpc/include/linux/errno.h
+> 
+> > I'll leave it aside for now as I've spent way longer than I hoped on
+> > these series. I could take the previous two patches however.
+> >
+> 
+> Ok, let's ignore this one, I will find why sysroot not install well for i386.
+>
 
-==================================================================
-BUG: KASAN: use-after-free in instrument_atomic_read include/linux/instrumented.h:68 [inline]
-BUG: KASAN: use-after-free in _test_bit include/asm-generic/bitops/instrumented-non-atomic.h:141 [inline]
-BUG: KASAN: use-after-free in hci_get_route+0x1cc/0x510 net/bluetooth/hci_conn.c:1156
-Read of size 8 at addr ffff888068d1c0a8 by task syz-executor.0/5857
+Thanks to Yuan, he have done some testing and have found the root cause, that
+is mrproper on top-level source code tree is required before installing
+sysroot, otherwise, the 'generated' headers will not be installed (removed by
+scripts/Makefile.asm-generic).
 
-CPU: 0 PID: 5857 Comm: syz-executor.0 Not tainted 6.5.0-rc6-next-20230818-syzkaller-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:364 [inline]
- print_report+0xc4/0x620 mm/kasan/report.c:475
- kasan_report+0xda/0x110 mm/kasan/report.c:588
- check_region_inline mm/kasan/generic.c:181 [inline]
- kasan_check_range+0xef/0x190 mm/kasan/generic.c:187
- instrument_atomic_read include/linux/instrumented.h:68 [inline]
- _test_bit include/asm-generic/bitops/instrumented-non-atomic.h:141 [inline]
- hci_get_route+0x1cc/0x510 net/bluetooth/hci_conn.c:1156
- get_l2cap_conn.constprop.0+0xe9/0x6b0 net/bluetooth/6lowpan.c:968
- lowpan_control_write+0x1ba/0x730 net/bluetooth/6lowpan.c:1100
- full_proxy_write+0x124/0x190 fs/debugfs/file.c:236
- vfs_write+0x2a4/0xe40 fs/read_write.c:582
- ksys_write+0x12f/0x250 fs/read_write.c:637
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f728f47cae9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f72900ee0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 00007f728f59bf80 RCX: 00007f728f47cae9
-RDX: 000000000000001b RSI: 0000000020000280 RDI: 0000000000000003
-RBP: 00007f728f4c847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007f728f59bf80 R15: 00007ffd19482978
- </TASK>
+After mrproper (not with O=out, must on top-level source code tree), the
+asm/errno.h will be there:
 
-The buggy address belongs to the physical page:
-page:ffffea0001a34700 refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x68d1c
-flags: 0xfff00000000000(node=0|zone=1|lastcpupid=0x7ff)
-page_type: 0xffffffff()
-raw: 00fff00000000000 ffffea00008a6e08 ffff8880b9842670 0000000000000000
-raw: 0000000000000000 0000000000000000 00000000ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as freed
-page last allocated via order 2, migratetype Unmovable, gfp_mask 0x140dc0(GFP_USER|__GFP_COMP|__GFP_ZERO), pid 5393, tgid 5393 (syz-executor.0), ts 86181654329, free_ts 106465252737
- set_page_owner include/linux/page_owner.h:31 [inline]
- post_alloc_hook+0x2cf/0x340 mm/page_alloc.c:1536
- prep_new_page mm/page_alloc.c:1543 [inline]
- get_page_from_freelist+0x10d7/0x31b0 mm/page_alloc.c:3219
- __alloc_pages+0x1d0/0x4a0 mm/page_alloc.c:4475
- __alloc_pages_node include/linux/gfp.h:237 [inline]
- alloc_pages_node include/linux/gfp.h:260 [inline]
- __kmalloc_large_node+0x87/0x1c0 mm/slab_common.c:1145
- __do_kmalloc_node mm/slab_common.c:992 [inline]
- __kmalloc.cold+0xb/0xe0 mm/slab_common.c:1017
- kmalloc include/linux/slab.h:604 [inline]
- kzalloc include/linux/slab.h:721 [inline]
- hci_alloc_dev_priv+0x1d/0x2770 net/bluetooth/hci_core.c:2467
- hci_alloc_dev include/net/bluetooth/hci_core.h:1598 [inline]
- __vhci_create_device+0xf7/0x800 drivers/bluetooth/hci_vhci.c:402
- vhci_create_device drivers/bluetooth/hci_vhci.c:475 [inline]
- vhci_get_user drivers/bluetooth/hci_vhci.c:532 [inline]
- vhci_write+0x2c7/0x470 drivers/bluetooth/hci_vhci.c:612
- call_write_iter include/linux/fs.h:1983 [inline]
- new_sync_write fs/read_write.c:491 [inline]
- vfs_write+0x650/0xe40 fs/read_write.c:584
- ksys_write+0x12f/0x250 fs/read_write.c:637
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-page last free stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1136 [inline]
- free_unref_page_prepare+0x476/0xa40 mm/page_alloc.c:2348
- free_unref_page+0x33/0x3b0 mm/page_alloc.c:2441
- bt_host_release+0x87/0xb0 net/bluetooth/hci_sysfs.c:95
- device_release+0xa1/0x240 drivers/base/core.c:2484
- kobject_cleanup lib/kobject.c:689 [inline]
- kobject_release lib/kobject.c:720 [inline]
- kref_put include/linux/kref.h:65 [inline]
- kobject_put+0x1f7/0x5b0 lib/kobject.c:737
- put_device+0x1f/0x30 drivers/base/core.c:3731
- hci_dev_put include/net/bluetooth/hci_core.h:1558 [inline]
- hci_conn_timeout+0x215/0x2d0 net/bluetooth/hci_conn.c:633
- process_one_work+0x887/0x15d0 kernel/workqueue.c:2630
- process_scheduled_works kernel/workqueue.c:2703 [inline]
- worker_thread+0x8bb/0x1290 kernel/workqueue.c:2784
- kthread+0x33a/0x430 kernel/kthread.c:388
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+    ubuntu@linux-lab:/labs/linux-lab/src/linux-stable/tools/testing/selftests/nolibc$ find sysroot/ -name "errno.h"
+    sysroot/i386/include/errno.h
+    sysroot/i386/include/asm-generic/errno.h
+    sysroot/i386/include/asm/errno.h             --> here it is
+    sysroot/i386/include/linux/errno.h
+    sysroot/x86/include/errno.h
+    sysroot/x86/include/asm-generic/errno.h
+    sysroot/x86/include/asm/errno.h              --> here it is
+    sysroot/x86/include/linux/errno.h
 
-Memory state around the buggy address:
- ffff888068d1bf80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffff888068d1c000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->ffff888068d1c080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-                                  ^
- ffff888068d1c100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff888068d1c180: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-==================================================================
+That also means, to use O=out for run-user, we also need to use O=out for
+defconfig (and kernel ...) too, otherwise, the top-level source code tree will
+be polluated.
 
+Seems a manual mrproper on top-level source code tree is always required for a
+new iteration, so, it may be ok to pick this patch with a note on the potential
+error.
 
-Tested on:
+Best Regards,
+Zhangjin
 
-commit:         7271b2a5 Add linux-next specific files for 20230818
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=11425db7a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1936af09cdef7dd6
-dashboard link: https://syzkaller.appspot.com/bug?extid=a0c80b06ae2cb8895bc4
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=170c63a7a80000
-
+> Thanks,
+> Zhangjin
+> 
+> > Thanks,
+> > Willy
