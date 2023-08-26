@@ -2,124 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70580789589
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 11:48:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B3A578958B
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 11:50:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232719AbjHZJsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 05:48:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40848 "EHLO
+        id S229840AbjHZJtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 05:49:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232493AbjHZJrk (ORCPT
+        with ESMTP id S231377AbjHZJtO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 05:47:40 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B7EDE7A
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 02:47:37 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-5007f3d3235so2570235e87.2
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 02:47:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693043256; x=1693648056;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mCjyvkNiRyZpzjsm80k366sW/ayXlbttNl0SthehxqI=;
-        b=evKldsDiET1PPux63QY/TgbJADKpJA3bC0TxVwrGHtemQKT7qdGhdCcylE6jTSFfyk
-         jvg/G3dcYpRWoN6yoWjUuEiAsj0wOPI2ZF6z1Y9j/ZGIsZeOCB8kUDa5Gda8J0ChGgFU
-         oHFFgdiD/LBBIiwNEAR62CRxQjUYAg3BlLezKXS4ecr7pNpEL0OXxstIgN+VVBMvEO/D
-         o0w/qEC9vU7PuHDXXUOqBygHmh/YiJqjyU8WPlCRkh+UAMrikQa245Sz2mdEbONr74W8
-         MTi8IZaXQ8INyx8NxawzMKE5w0AR9Eg7CB6rjidJ2aaWMQEBCwYtV6FDrb4oMchwIgg6
-         pW/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693043256; x=1693648056;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mCjyvkNiRyZpzjsm80k366sW/ayXlbttNl0SthehxqI=;
-        b=Zk5v+Umf+A+vIIDD2dAXwSzif4PEbx/87PWk/XSIcgnT1hU4/dr7A3Tv2uGr06v0Nb
-         Utx6EnIPhbG6wbLuHpqRGO7Bk+yBTvA5pJ+AG3O/ohYfywzcMHoMgbRDLLzA/bKiL8/L
-         tRQJzMeLreRZ70LBAFZUvnze5yqmUcF+mrUPja6Fu6061SI5WjC5dc+jnm7WUyFXqcMJ
-         mmt2B9w9x/njmKWfZkwAhriKnKzbKf/6TxuxJSLl/7XqDN9w7LuxoGxdUZM4HXDMEjcc
-         KUBJTb2yVePrViJyE6QRg+QfiWw0krfJd0mElqG0unJPEVVC2NlOQ8YzypR4UGUP/6rv
-         ag0w==
-X-Gm-Message-State: AOJu0YymjRyaUXNSMe79reTyy54LsnH0PqJYW4dtomRIbNeT46Qlk8XE
-        SphDDxdWL5/o1RAtLFiAK5JNsg==
-X-Google-Smtp-Source: AGHT+IHtviGxcbH/f17sR99Ur6AJOQhlXnlV0cwTxqQQMUymHOSIo3mCIqwUS7kBB8xo//gcyjqI3g==
-X-Received: by 2002:a05:6512:2256:b0:500:808c:9ee6 with SMTP id i22-20020a056512225600b00500808c9ee6mr14004831lfu.6.1693043255928;
-        Sat, 26 Aug 2023 02:47:35 -0700 (PDT)
-Received: from [192.168.1.101] (abyl74.neoplus.adsl.tpnet.pl. [83.9.31.74])
-        by smtp.gmail.com with ESMTPSA id l17-20020ac25551000000b004fdfd79e732sm645732lfk.289.2023.08.26.02.47.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 26 Aug 2023 02:47:35 -0700 (PDT)
-Message-ID: <0a65427e-0f2a-469c-8565-d0b3b0831e89@linaro.org>
-Date:   Sat, 26 Aug 2023 11:47:34 +0200
+        Sat, 26 Aug 2023 05:49:14 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91C2230F4;
+        Sat, 26 Aug 2023 02:48:45 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RXsTH0Fjvz4f3k6j;
+        Sat, 26 Aug 2023 17:48:35 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+        by APP4 (Coremail) with SMTP id gCh0CgDnvaBwyulkCLt7Bg--.33483S2;
+        Sat, 26 Aug 2023 17:48:33 +0800 (CST)
+Subject: Re: [PATCH v2 00/13] fixes and cleanups to ext4 resize
+From:   Kemeng Shi <shikemeng@huaweicloud.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230826173735.4023594-1-shikemeng@huaweicloud.com>
+Message-ID: <ba9f7a44-f389-885a-5de1-079a58424939@huaweicloud.com>
+Date:   Sat, 26 Aug 2023 17:48:32 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ARM: dts: apq8064: add support to gsbi4 uart
-Content-Language: en-US
-To:     David Heidelberg <david@ixit.cz>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230812155234.338016-1-david@ixit.cz>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20230812155234.338016-1-david@ixit.cz>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20230826173735.4023594-1-shikemeng@huaweicloud.com>
+Content-Type: text/plain; charset=gbk
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-CM-TRANSID: gCh0CgDnvaBwyulkCLt7Bg--.33483S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxGr15XF4rGF4kKw15CF43GFg_yoWrAw1Up3
+        WS9rnrKrZ5Xw13Cwsrt343uF98Z397Jr45XF15G3Z2qF1UZr1rWF9agan3AFZIkFWfZw18
+        Xa97Xr15GF1UZaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
+        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Xr0_Ar1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1lIxAIcV
+        CF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWxJVW8Jr1lIxAIcVC2z280
+        aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07UE-erUUUUU=
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12.08.2023 17:52, David Heidelberg wrote:
-> This patch adds support to gsbi4 uart which is used in LG Mako.
+Please ignore this version and sorry for the noise...
+
+on 8/27/2023 1:37 AM, Kemeng Shi wrote:
+> This series contains some random cleanups and a few fixes to correct gdb
+> backup copy, fix buffer_head leak and so on. More details can be found
+> in respective log messages.
+> I run kvm-xfstest with config "ext4/all" and "-g auto" together with
+> mballoc patchset I sent before.
 > 
-> Signed-off-by: David Heidelberg <david@ixit.cz>
-> ---
-Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> v1->v2:
+> -Prioritize returning error in "err" in patch 3
+> -Rewrite patch 11
+> -Improve description and add comment to sbi->s_group_desc in patch 12
+> -Collect RVB from Ted for rest patches
+> 
+> -------------------- Summary report
+> KERNEL:    kernel 6.4.0-rc5-xfstests-g90158dd3c06b #23 SMP PREEMPT_DYNAMIC
+> Wed Jun 28 17:19:32 CST 2023 x86_64
+> CPUS:      2
+> MEM:       1975.36
+> 
+> ext4/4k: 531 tests, 31 skipped, 3421 seconds
+> ext4/1k: 527 tests, 33 skipped, 4638 seconds
+> ext4/ext3: 523 tests, 119 skipped, 3289 seconds
+> ext4/encrypt: 509 tests, 3 failures, 138 skipped, 2163 seconds
+>   Failures: generic/681 generic/682 generic/691
+> ext4/nojournal: 526 tests, 5 failures, 98 skipped, 3469 seconds
+>   Failures: ext4/301 ext4/304 generic/455 generic/459 generic/581
+> ext4/ext3conv: 528 tests, 31 skipped, 3877 seconds
+> ext4/adv: 528 tests, 4 failures, 38 skipped, 4170 seconds
+>   Failures: generic/475 generic/477
+>   Flaky: generic/455: 80% (4/5)   generic/482: 80% (4/5)
+> ext4/dioread_nolock: 529 tests, 31 skipped, 3825 seconds
+> ext4/data_journal: 527 tests, 3 failures, 99 skipped, 3307 seconds
+>   Failures: generic/455 generic/484
+>   Flaky: generic/068: 40% (2/5)
+> ext4/bigalloc_4k: 503 tests, 35 skipped, 3286 seconds
+> ext4/bigalloc_1k: 503 tests, 1 failures, 43 skipped, 4421 seconds
+>   Failures: shared/298
+> Totals: 5798 tests, 696 skipped, 75 failures, 0 errors, 39645s
+> 
+> FSTESTVER: blktests 676d42c (Thu, 2 Mar 2023 15:25:44 +0900)
+> FSTESTVER: e2fsprogs archive/debian/1.47.0-1 (Mon, 6 Feb 2023 22:36:16 -0500)
+> FSTESTVER: fio  fio-3.31 (Tue, 9 Aug 2022 14:41:25 -0600)
+> FSTESTVER: fsverity v1.5-6-g5d6f7c4 (Mon, 30 Jan 2023 23:22:45 -0800)
+> FSTESTVER: ima-evm-utils v1.3.2 (Wed, 28 Oct 2020 13:18:08 -0400)
+> FSTESTVER: nvme-cli v1.16 (Thu, 11 Nov 2021 13:09:06 -0800)
+> FSTESTVER: quota  v4.05-53-gd90b7d5 (Tue, 6 Dec 2022 12:59:03 +0100)
+> FSTESTVER: util-linux v2.38.1 (Thu, 4 Aug 2022 11:06:21 +0200)
+> FSTESTVER: xfsprogs v6.1.1 (Fri, 13 Jan 2023 19:06:37 +0100)
+> FSTESTVER: xfstests v2023.02.26-8-g821ef488 (Thu, 2 Mar 2023 10:23:51 -0500)
+> FSTESTVER: xfstests-bld 35650073 (Mon, 6 Mar 2023 20:48:08 -0500)
+> FSTESTVER: zz_build-distro bullseye
+> FSTESTCFG: ext4/all
+> FSTESTSET: -g auto
+> FSTESTOPT: aex
+> 
+> There more failures compared with "good" report in reply from Ted [1] as
+> following:
+> ext4/nojournal: generic/459 generic/581
+> ext4/adv: Flaky: generic/455: 80% (4/5)   generic/482: 80% (4/5)
+> ext4/data_journal: Flaky: generic/068: 40% (2/5)
+> It seems still a "good" test run according to rules listed in [1].
+> Please let me know if more tests to run. Thanks!
+> 
+> [1] https://lore.kernel.org/linux-ext4/db478a24-39f5-3cef-8814-89406ce4d2ca@huawei.com/T/#ma9de3f355f0300291d32fe1f0b32c5660c9bd191
+> 
+> Kemeng Shi (13):
+>   ext4: correct offset of gdb backup in non meta_bg group to
+>     update_backups
+>   ext4: add missed brelse in update_backups
+>   ext4: correct return value of ext4_convert_meta_bg
+>   ext4: remove gdb backup copy for meta bg in
+>     setup_new_flex_group_blocks
+>   ext4: fix typo in setup_new_flex_group_blocks
+>   ext4: remove redundant check of count
+>   ext4: remove commented code in reserve_backup_gdb
+>   ext4: calculate free_clusters_count in cluster unit in
+>     verify_group_input
+>   ext4: remove EXT4FS_DEBUG defination in resize.c
+>   ext4: use saved local variable sbi instead of EXT4_SB(sb)
+>   ext4: simplify the gdbblock calculation in add_new_gdb_meta_bg
+>   ext4: remove unnecessary check to avoid repeat update_backups for the
+>     same gdb
+>   ext4: remove unnecessary initialization of count2 in
+>     set_flexbg_block_bitmap
+> 
+>  fs/ext4/ext4.h   |  1 +
+>  fs/ext4/resize.c | 88 ++++++++++++++++++++----------------------------
+>  2 files changed, 38 insertions(+), 51 deletions(-)
+> 
 
-Bindings suggest qcom,[rt]x-crci may be useful for DMA transfers
-through this hw
-
-Konrad
