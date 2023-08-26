@@ -2,142 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD57B78967A
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 14:06:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0DE478967D
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 14:08:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232745AbjHZMGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 08:06:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33632 "EHLO
+        id S232752AbjHZMHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 08:07:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232731AbjHZMFb (ORCPT
+        with ESMTP id S232748AbjHZMHE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 08:05:31 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E45E9F
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 05:05:29 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-3fe24dd8898so15193425e9.2
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 05:05:28 -0700 (PDT)
+        Sat, 26 Aug 2023 08:07:04 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC064C3
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 05:07:01 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2bcc331f942so21316201fa.0
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 05:07:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693051527; x=1693656327;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=linaro.org; s=google; t=1693051620; x=1693656420;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=pxZ6783DRoORgpEw4bmAN1NBzsg/pJKjg2XMcvaxxgY=;
-        b=rlar3IyM1EE9xaOIjXG+VMGMEGxel8ZTCZ+xn1/qIG7u6U8TQy27yryC/4WtDuCoxH
-         BzU5nKGMDuBUWnDrdc8Y9mks8XRSrZQSobk64EvBRAmhhrAcwXzXYie+FaZuEfKLsQFN
-         Y5kZiDYzCr8dixTJZp/LMzo7LQI6sN1q0vYKt1g9jJ1VK2/qy4m9hbSVSvelCWnT2mIJ
-         B+y90D3YRDmdXFaYKqtM0MDb3JilJrvc/BhfWzFN9KSrtKISLSsHR1UrQ96shxq24C6h
-         8N5V8wOMwZCu4z72yTF6RYPeRGj3/w5H1juGhChn6TtiDDZtUYvQvY5fyA8zw/FyQrU7
-         HS0g==
+        bh=fxY8GzOUSjJpbnpDLCF9tnnYblSq+xTqK+i5DsaGhz0=;
+        b=xPuwmgJqltwIl5qjdyaSFaAR3hozi7pzkl283hOFK2jHekRzRsO8UHXQKXUT3J0+1Y
+         ZnK6qysEPNN4NykZwfy62Uh8JVXrzq9ggqjA1hnHMcMnxQSy6mgi2ELATbtP5Qha3msE
+         mLdGWbliwXX9E7N9R6L3LplGJcvOupwA1BQ5P801jz7bPEForgun34tFdCjt9eiU1MdV
+         Y7KDgjfmuWwO6nEdZyJb3gbMFLwg4fh7PsaqgKeLJYFRvM0196Lb/gBglNhelyJFw0LL
+         Ed8A64GJYi1w8qD1g41u5UyAw+tdlRvhehKumf7PFonAdcfMtwCDZv9bs0Ac/r23YXsU
+         tXPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693051527; x=1693656327;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20221208; t=1693051620; x=1693656420;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pxZ6783DRoORgpEw4bmAN1NBzsg/pJKjg2XMcvaxxgY=;
-        b=gq2RUpzzpJ97RaS9XlFWZaaUtDC1qDvKvZ+HI352o9pJ0GecMTip0sDy6M1MLI44/8
-         BRoF7W8bAKAaMWcQ/JJo/oaJUHxlSVgDnkQ3cM95el7XF+cXwvVGLOtw1/wKPB18ztqz
-         m9r0atBiUhd+JoN2NXL/p1dIMUXExcfEJ1cIge+7ACj3wt6DLBcszYSMFXfP4GE0VdU5
-         h9sjMRQ+bwKfV93QRPOBkwPFdohzIKfUkLfayZNL/OVdL18FhryVuuR2yh5A7mGr/eLi
-         514JRUWbWyaFdV3bkTwyyR4Bd7xs3tZisQoBNSJZVeyt0fSrP7xodN9X90k2On6iLhaY
-         TT+w==
-X-Gm-Message-State: AOJu0YytGgOg7Zxl9U9FxYJH4ahxb/gZYPOslLQDPOSEWd7cBdKuaoIA
-        58f8yDkdHSci5OnCtcD+IsC9EPC/C1dJMM8yync=
-X-Google-Smtp-Source: AGHT+IGZ4o3nzmZZPaMyc1s50h4lEwvlLi/vXTJfE65dIaQLs18ImNEoE6a7c5pwRQNT5F16vOq7Tg==
-X-Received: by 2002:a1c:7303:0:b0:3fa:8db4:91ec with SMTP id d3-20020a1c7303000000b003fa8db491ecmr15561718wmb.10.1693051527274;
-        Sat, 26 Aug 2023 05:05:27 -0700 (PDT)
-Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
-        by smtp.gmail.com with ESMTPSA id 7-20020a05600c248700b003fbc30825fbsm4802926wms.39.2023.08.26.05.05.26
+        bh=fxY8GzOUSjJpbnpDLCF9tnnYblSq+xTqK+i5DsaGhz0=;
+        b=EeBxuAhYb7N4AiF7rGrQP7zjJEDQYozKAT0XaFQDJoHxpRuITaw4+wIxgfDlbkHiCx
+         98qcYKO1nAxEiza/AD623PKEgnMqhdoggt7n69yob85giSSFRFQurMpYHMpISB2qG2jf
+         ItS89zu1OTgQ5FuiFjPKCeDYzbXM6ea3aCxQuVfTiPGxA3FSk9DN3GU3yF6XhbNZ4Dd+
+         /1T2oAqZiRCTMSUwFj0g0GE11tR6LG5EJ0CqMDfqRPayNeNJ0CUnCO6Ss4YIju48DzPs
+         tCkmJw/vVV5tBe9qa7rl08oqp9Gs5ugDAZyerHBq4oUdw1LZyxE7yrZK0jMXHdTeZi7e
+         j4/g==
+X-Gm-Message-State: AOJu0YwK/OHOcSk04uk4k4zef/cl6wFxeUQVvQ1bzCs5cNwGkVep84HS
+        +9F9Fj58j4wYQkphYzTFJVQYWA==
+X-Google-Smtp-Source: AGHT+IH8TVip4xI95ezyyOf6FmQm74KohrLqFBiRaCOmUZfCvyGjphngtDD9yytWeUO2Vl23ErGyrg==
+X-Received: by 2002:a2e:b0c3:0:b0:2bc:c4fa:489c with SMTP id g3-20020a2eb0c3000000b002bcc4fa489cmr6166606ljl.8.1693051620086;
+        Sat, 26 Aug 2023 05:07:00 -0700 (PDT)
+Received: from [192.168.1.101] (abyl74.neoplus.adsl.tpnet.pl. [83.9.31.74])
+        by smtp.gmail.com with ESMTPSA id a8-20020a2e88c8000000b002b9f0b25ff6sm776135ljk.4.2023.08.26.05.06.59
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 26 Aug 2023 05:05:26 -0700 (PDT)
-Message-ID: <1b5b5bf0-43a5-2ec4-5570-891a710b85dd@linaro.org>
-Date:   Sat, 26 Aug 2023 13:05:25 +0100
+        Sat, 26 Aug 2023 05:06:59 -0700 (PDT)
+Message-ID: <cca2a215-e71d-4e8c-a5d9-93aa870b7995@linaro.org>
+Date:   Sat, 26 Aug 2023 14:06:58 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH v3 10/15] media: qcom: camss: Allow clocks vfeN vfe_liteN
- or vfe_lite
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RESEND v3 2/2] arm64: dts: qcom: msm8939-longcheer-l9100:
+ Add initial device tree
 Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>, rfoss@kernel.org,
-        todor.too@gmail.com, agross@kernel.org, andersson@kernel.org,
-        mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
-        laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com,
-        andrey.konovalov@linaro.org
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230823104444.1954663-1-bryan.odonoghue@linaro.org>
- <20230823104444.1954663-11-bryan.odonoghue@linaro.org>
- <076d958f-2cf3-4a52-99a2-52a6cdd5443c@linaro.org>
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <076d958f-2cf3-4a52-99a2-52a6cdd5443c@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+To:     =?UTF-8?Q?Andr=C3=A9_Apitzsch?= <git@apitzsch.eu>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Stephan Gerhold <stephan@gerhold.net>,
+        phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
+References: <20230815-bq_m5-v3-0-fd26d7c76a1f@apitzsch.eu>
+ <20230815-bq_m5-v3-2-fd26d7c76a1f@apitzsch.eu>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20230815-bq_m5-v3-2-fd26d7c76a1f@apitzsch.eu>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/08/2023 11:08, Konrad Dybcio wrote:
-> On 23.08.2023 12:44, Bryan O'Donoghue wrote:
->> The number of Video Front End - VFE or Image Front End - IFE supported
->> with new SoCs can vary both for the full and lite cases.
->>
->> For example sdm845 has one vfe_lite and two vfe interfaces with the vfe
->> clock called simply "vfe_lite" with no integer postfix. sc8280xp has four
->> vfe and four vfe lite blocks.
->>
->> We need to support the following clock name formats
->>
->> - vfeN
->> - vfe_liteN
->> - vfe_lite
->>
->> with N being any reasonably sized integer.
->>
->> There are two sites in this code which need to do the same thing,
->> constructing and matching strings with the pattern above, so encapsulate
->> the logic in one function.
->>
->> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
->> ---
->>   drivers/media/platform/qcom/camss/camss-vfe.c | 22 ++++++++++++++-----
->>   1 file changed, 16 insertions(+), 6 deletions(-)
->>
->> diff --git a/drivers/media/platform/qcom/camss/camss-vfe.c b/drivers/media/platform/qcom/camss/camss-vfe.c
->> index 8f48401e31cd3..73380e75dbb22 100644
->> --- a/drivers/media/platform/qcom/camss/camss-vfe.c
->> +++ b/drivers/media/platform/qcom/camss/camss-vfe.c
->> @@ -437,6 +437,20 @@ void vfe_isr_reset_ack(struct vfe_device *vfe)
->>   	complete(&vfe->reset_complete);
->>   }
->>   
->> +static int vfe_match_clock_names(struct vfe_device *vfe,
->> +				 struct camss_clock *clock)
->> +{
->> +	char vfe_name[CAMSS_RES_MAX];
->> +	char vfe_lite_name[CAMSS_RES_MAX];
-> I don't think using the "number of resources" define to define
-> the maximum length of a resource name is a good idea.
+On 15.08.2023 21:49, André Apitzsch wrote:
+> This dts adds support for BQ Aquaris M5 (Longcheer L9100) released in
+> 2015.
 > 
-> Perhaps we can do:
+> Add a device tree with initial support for:
 > 
-> char vfe_name[5]; /* "vfeX\0" */
-> char vfe_lite_name[10]; /* "vfe_liteX\0" */
+> - GPIO keys
+> - Hall sensor
+> - SDHCI
+> - WCNSS (BT/WIFI)
+> - Accelerometer/Magnetometer
+> - Vibrator
+> - Touchscreen
+> - Front flash
 > 
-> if index > 9
->     return INCREASE_THE_BUFFER
-> 
-> Konrad
+> Signed-off-by: André Apitzsch <git@apitzsch.eu>
+> ---> +	light-sensor@23 {
+> +		compatible = "liteon,ltr559";
+> +		reg = <0x23>;
+> +
+> +		vdd-supply = <&pm8916_l17>;
+> +		vddio-supply = <&pm8916_l5>;
+> +
+> +		interrupt-parent = <&tlmm>;
+> +		interrupts = <113 IRQ_TYPE_EDGE_FALLING>;
+interrupts-extended = <&tlmm 113 IRQ_TYPE_EDGE_FALLING>;
 
-I'm reluctant to fix only the VFE clock name string length in isolation, 
-plus I'm aware of another patchset coming down the line from other 
-people which will likely address the string length stuff.
+> +
+> +		pinctrl-0 = <&light_int_default>;
+> +		pinctrl-names = "default";
+> +	};
+> +
+> +	imu@68 {
+> +		compatible = "bosch,bmi160";
+> +		reg = <0x68>;
+> +
+> +		vdd-supply = <&pm8916_l17>;
+> +		vddio-supply = <&pm8916_l6>;
+> +	};
+> +};
+> +
+> +&blsp_i2c5 {
+> +	status = "okay";
+> +
+> +	touchscreen@4a {
+> +		compatible = "atmel,maxtouch";
+> +		reg = <0x4a>;
+> +
+> +		interrupt-parent = <&tlmm>;
+> +		interrupts = <13 IRQ_TYPE_LEVEL_LOW>;
+similarly here
 
-But in the interests of consensus I will restrict the length in the helper.
+otherwise:
 
----
-bod
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+
+Konrad
