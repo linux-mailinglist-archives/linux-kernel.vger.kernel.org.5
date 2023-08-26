@@ -2,170 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD9417895B5
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 12:02:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A3B5789553
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 11:39:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231530AbjHZKCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 06:02:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37928 "EHLO
+        id S232417AbjHZJin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 05:38:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232192AbjHZKCJ (ORCPT
+        with ESMTP id S232318AbjHZJiF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 06:02:09 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDD2BC9
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 03:02:06 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-500aed06ffcso1019487e87.0
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 03:02:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693044125; x=1693648925;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4wihlPAHCQyE2MHUMACtA8INTrlsBlg1yrsBWc8GDmM=;
-        b=v5uxljoKHKrDn4CzKwlI3h94rPTGkRdRWTFCRVw7KRzVH7fWTMHsS9kF+QKXO5OG5K
-         /yO0+NvRmVpLjUy+8Aqk7WMyC1VWqOXoWIf/EV2g+qrnWTNisSlZt6mc/3oNu48i2jh6
-         aV172HhPxCXdYuHOcsv65opv1KgfA7FWSWLm++xdmrf+FbXkQ47iUbp3mAQf4nKnC2TJ
-         UdtSwSeWz6ylHDhgUjS9i/H2b0/Y6kfYQTnGOiIFD0jiY/cctnRVS5EefGx+WkCB0e/y
-         eoCRP88RLicCZsLv67thyFCpeZa87RJkxuI+a8YQ4ar5OVfKZr/YEGD4EB7TuuGceAjb
-         H/Rg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693044125; x=1693648925;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4wihlPAHCQyE2MHUMACtA8INTrlsBlg1yrsBWc8GDmM=;
-        b=e8k06/vfcfbhvp8y4t145kFgKHYwR0M0Y/LeJunh4i8k+rXtnTA81k91oxHNKj2+aL
-         soEPlrunpFoehJmBLVVU4OHS8zAypcR1NbmwES3QYLR++zL35MP+NJxHJMyDrhN+M8LA
-         DQ7rxNmWdTvBOaZevpLmJD35JNeBhsZWp6prXMZyrnt89C2X7Y6IJJ17INzG3GGh3WNT
-         IeY+yESaQwBWj2KFF5JqgBFNo3XYVp2I4nQzKb+B64KDryXaMgjaPZnf4QWg+UFNkYpX
-         ajzppsznbUOoDyaaO3I0tvWqzh8qlvSqcp4ACuo2xzpyfXCfdmDxKh1SVaqiaMlAS5Ts
-         EBFQ==
-X-Gm-Message-State: AOJu0YzZhoZOIS9ePz5SM0Vw7Odj1Xnz9IyatQZkj616JGrdWU3HenwK
-        n+aKK/YsvkZ2IkQE03i5eY68JA==
-X-Google-Smtp-Source: AGHT+IEULLHv09I6IWB4Li7pyLGhZ2NULf87wgF1YJX64yem/iG/D1aDHr6u3vD0A5VE6sBwyJ+gEA==
-X-Received: by 2002:a05:6512:3d1f:b0:500:7dc0:b0b2 with SMTP id d31-20020a0565123d1f00b005007dc0b0b2mr17000844lfv.28.1693044125066;
-        Sat, 26 Aug 2023 03:02:05 -0700 (PDT)
-Received: from [192.168.1.101] (abyl74.neoplus.adsl.tpnet.pl. [83.9.31.74])
-        by smtp.gmail.com with ESMTPSA id y1-20020a197501000000b004fdbb36a677sm654770lfe.288.2023.08.26.03.02.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 26 Aug 2023 03:02:04 -0700 (PDT)
-Message-ID: <a84f33f5-cf46-48ef-a9a9-01acb926c145@linaro.org>
-Date:   Sat, 26 Aug 2023 12:02:02 +0200
+        Sat, 26 Aug 2023 05:38:05 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 066A72715;
+        Sat, 26 Aug 2023 02:37:52 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RXsDq54MSz4f3lfw;
+        Sat, 26 Aug 2023 17:37:47 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.124.27])
+        by APP4 (Coremail) with SMTP id gCh0CgA3E6bqx+lkNx57Bg--.59420S2;
+        Sat, 26 Aug 2023 17:37:47 +0800 (CST)
+From:   Kemeng Shi <shikemeng@huaweicloud.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 00/13] fixes and cleanups to ext4 resize
+Date:   Sun, 27 Aug 2023 01:37:22 +0800
+Message-Id: <20230826173735.4023594-1-shikemeng@huaweicloud.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 07/15] media: qcom: camss: Capture VFE CSID dependency
- in a helper function
-Content-Language: en-US
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>, rfoss@kernel.org,
-        todor.too@gmail.com, agross@kernel.org, andersson@kernel.org,
-        mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
-        laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com,
-        andrey.konovalov@linaro.org
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230823104444.1954663-1-bryan.odonoghue@linaro.org>
- <20230823104444.1954663-8-bryan.odonoghue@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
- BB/OmIWU6X+LZW6P88ZmHe+KeyABLMP5s1tJNK1j4ntT7mECcWZDzafPWF4F6m4WJOG27kTJ
- HGWdmtO+RvadOVi6CoUDqALsmfS3MUG5Pj2Ne9+0jRg4hEnB92AyF9rW2G3qisFcwPgvatt7
- TXD5E38mLyOPOUyXNj9XpDbt1hNwKQfiidmPh5e7VNAWRnW1iCMMoKqzM1Anzq7e5Afyeifz
- zRcQPLaqrPjnKqZGL2BKQSZDh6NkI5ZLRhhHQf61fkWcUpTp1oDC6jWVfT7hwRVIQLrrNj9G
- MpPzrlN4YuAqKeIer1FMt8cq64ifgTzxHzXsMcUdclzq2LTk2RXaPl6Jg/IXWqUClJHbamSk
- t1bfif3SnmhA6TiNvEpDKPiT3IDs42THU6ygslrBxyROQPWLI9IL1y8S6RtEh8H+NZQWZNzm
- UQ3imZirlPjxZtvz1BtnnBWS06e7x/UEAguj7VHCuymVgpl2Za17d1jj81YN5Rp5L9GXxkV1
- aUEwONM3eCI3qcYm5JNc5X+JthZOWsbIPSC1Rhxz3JmWIwP1udr5E3oNRe9u2LIEq+wH/toH
- kpPDhTeMkvt4KfE5m5ercid9+ZXAqoaYLUL4HCEw+HW0DXcKDwARAQABzShLb25yYWQgRHli
- Y2lvIDxrb25yYWQuZHliY2lvQGxpbmFyby5vcmc+wsGOBBMBCAA4FiEEU24if9oCL2zdAAQV
- R4cBcg5dfFgFAmQ5bqwCGwMFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQR4cBcg5dfFjO
- BQ//YQV6fkbqQCceYebGg6TiisWCy8LG77zV7DB0VMIWJv7Km7Sz0QQrHQVzhEr3trNenZrf
- yy+o2tQOF2biICzbLM8oyQPY8B///KJTWI2khoB8IJSJq3kNG68NjPg2vkP6CMltC/X3ohAo
- xL2UgwN5vj74QnlNneOjc0vGbtA7zURNhTz5P/YuTudCqcAbxJkbqZM4WymjQhe0XgwHLkiH
- 5LHSZ31MRKp/+4Kqs4DTXMctc7vFhtUdmatAExDKw8oEz5NbskKbW+qHjW1XUcUIrxRr667V
- GWH6MkVceT9ZBrtLoSzMLYaQXvi3sSAup0qiJiBYszc/VOu3RbIpNLRcXN3KYuxdQAptacTE
- mA+5+4Y4DfC3rUSun+hWLDeac9z9jjHm5rE998OqZnOU9aztbd6zQG5VL6EKgsVXAZD4D3RP
- x1NaAjdA3MD06eyvbOWiA5NSzIcC8UIQvgx09xm7dThCuQYJR4Yxjd+9JPJHI6apzNZpDGvQ
- BBZzvwxV6L1CojUEpnilmMG1ZOTstktWpNzw3G2Gis0XihDUef0MWVsQYJAl0wfiv/0By+XK
- mm2zRR+l/dnzxnlbgJ5pO0imC2w0TVxLkAp0eo0LHw619finad2u6UPQAkZ4oj++iIGrJkt5
- Lkn2XgB+IW8ESflz6nDY3b5KQRF8Z6XLP0+IEdLOOARkOW7yEgorBgEEAZdVAQUBAQdAwmUx
- xrbSCx2ksDxz7rFFGX1KmTkdRtcgC6F3NfuNYkYDAQgHwsF2BBgBCAAgFiEEU24if9oCL2zd
- AAQVR4cBcg5dfFgFAmQ5bvICGwwACgkQR4cBcg5dfFju1Q//Xta1ShwL0MLSC1KL1lXGXeRM
- 8arzfyiB5wJ9tb9U/nZvhhdfilEDLe0jKJY0RJErbdRHsalwQCrtq/1ewQpMpsRxXzAjgfRN
- jc4tgxRWmI+aVTzSRpywNahzZBT695hMz81cVZJoZzaV0KaMTlSnBkrviPz1nIGHYCHJxF9r
- cIu0GSIyUjZ/7xslxdvjpLth16H27JCWDzDqIQMtg61063gNyEyWgt1qRSaK14JIH/DoYRfn
- jfFQSC8bffFjat7BQGFz4ZpRavkMUFuDirn5Tf28oc5ebe2cIHp4/kajTx/7JOxWZ80U70mA
- cBgEeYSrYYnX+UJsSxpzLc/0sT1eRJDEhI4XIQM4ClIzpsCIN5HnVF76UQXh3a9zpwh3dk8i
- bhN/URmCOTH+LHNJYN/MxY8wuukq877DWB7k86pBs5IDLAXmW8v3gIDWyIcgYqb2v8QO2Mqx
- YMqL7UZxVLul4/JbllsQB8F/fNI8AfttmAQL9cwo6C8yDTXKdho920W4WUR9k8NT/OBqWSyk
- bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
- nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
- izWDgYvmBE8=
-In-Reply-To: <20230823104444.1954663-8-bryan.odonoghue@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgA3E6bqx+lkNx57Bg--.59420S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxGr18Zw1fXF17AF43tr4kXrb_yoWrWry5pa
+        1Sgw13Kr95Xw13Cw47t3sxuF95Xws7GF4UWr13Gan7KF1UZr1kWF9xWan5Aay5KFWkZw10
+        q397Xrs8WF18ZaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M2
+        8lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_
+        Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oV
+        Cq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG
+        8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2js
+        IE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY
+        0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I
+        0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAI
+        cVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcV
+        CF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280
+        aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07j-6pPUUUUU=
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
+        MAY_BE_FORGED,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23.08.2023 12:44, Bryan O'Donoghue wrote:
-> From sdm845 onwards we need to ensure the VFE is powered on prior to
-> switching on the CSID.
-And what's the symptom if we fail to ensure this? How can someone
-adding support for another platform tell whether the match-list
-should be expanded?
+This series contains some random cleanups and a few fixes to correct gdb
+backup copy, fix buffer_head leak and so on. More details can be found
+in respective log messages.
+I run kvm-xfstest with config "ext4/all" and "-g auto" together with
+mballoc patchset I sent before.
 
-> 
-> Alternatively we could model up the GDSCs and clocks the CSID needs
-> without the VFE but, there's a real question of the legitimacy of such a
-> use-case.
-> 
-> For now drawing a line at sdm845 and switching on the associated VFEs is
-> a perfectly valid thing to do.
-> 
-> Rather than continually extend out this clause for at least two new SoCs
-> with this same model - making the vfe_get/vfe_put path start to look
-> like spaghetti we can encoded the dependency in a helper function.
-> 
-> Use csid_depends_vfe() for this purpose.
-> 
-> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-> ---
->  .../media/platform/qcom/camss/camss-csid.c    | 20 +++++++++++++++++--
->  1 file changed, 18 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/media/platform/qcom/camss/camss-csid.c b/drivers/media/platform/qcom/camss/camss-csid.c
-> index 08991b070bd61..fd04ed112b564 100644
-> --- a/drivers/media/platform/qcom/camss/camss-csid.c
-> +++ b/drivers/media/platform/qcom/camss/camss-csid.c
-> @@ -146,6 +146,22 @@ static int csid_set_clock_rates(struct csid_device *csid)
->  	return 0;
->  }
->  
-> +static bool csid_depends_vfe(u32 version)
-toggle_vfe_before_csid?
+v1->v2:
+-Prioritize returning error in "err" in patch 3
+-Rewrite patch 11
+-Improve description and add comment to sbi->s_group_desc in patch 12
+-Collect RVB from Ted for rest patches
 
-> +{
-> +	bool ret = false;
-> +
-> +	switch (version) {
-> +	case CAMSS_845:
-> +	case CAMSS_8250:
-> +		ret = true;
-> +		break;
-> +	default:
-> +		break;
-> +	}
-> +
-> +	return ret;
-I'm not sure if it would be okay with like C conventions and
-stuff, but this can be made shorter by returning from within
-the switch statement
+-------------------- Summary report
+KERNEL:    kernel 6.4.0-rc5-xfstests-g90158dd3c06b #23 SMP PREEMPT_DYNAMIC
+Wed Jun 28 17:19:32 CST 2023 x86_64
+CPUS:      2
+MEM:       1975.36
 
-Konrad
+ext4/4k: 531 tests, 31 skipped, 3421 seconds
+ext4/1k: 527 tests, 33 skipped, 4638 seconds
+ext4/ext3: 523 tests, 119 skipped, 3289 seconds
+ext4/encrypt: 509 tests, 3 failures, 138 skipped, 2163 seconds
+  Failures: generic/681 generic/682 generic/691
+ext4/nojournal: 526 tests, 5 failures, 98 skipped, 3469 seconds
+  Failures: ext4/301 ext4/304 generic/455 generic/459 generic/581
+ext4/ext3conv: 528 tests, 31 skipped, 3877 seconds
+ext4/adv: 528 tests, 4 failures, 38 skipped, 4170 seconds
+  Failures: generic/475 generic/477
+  Flaky: generic/455: 80% (4/5)   generic/482: 80% (4/5)
+ext4/dioread_nolock: 529 tests, 31 skipped, 3825 seconds
+ext4/data_journal: 527 tests, 3 failures, 99 skipped, 3307 seconds
+  Failures: generic/455 generic/484
+  Flaky: generic/068: 40% (2/5)
+ext4/bigalloc_4k: 503 tests, 35 skipped, 3286 seconds
+ext4/bigalloc_1k: 503 tests, 1 failures, 43 skipped, 4421 seconds
+  Failures: shared/298
+Totals: 5798 tests, 696 skipped, 75 failures, 0 errors, 39645s
+
+FSTESTVER: blktests 676d42c (Thu, 2 Mar 2023 15:25:44 +0900)
+FSTESTVER: e2fsprogs archive/debian/1.47.0-1 (Mon, 6 Feb 2023 22:36:16 -0500)
+FSTESTVER: fio  fio-3.31 (Tue, 9 Aug 2022 14:41:25 -0600)
+FSTESTVER: fsverity v1.5-6-g5d6f7c4 (Mon, 30 Jan 2023 23:22:45 -0800)
+FSTESTVER: ima-evm-utils v1.3.2 (Wed, 28 Oct 2020 13:18:08 -0400)
+FSTESTVER: nvme-cli v1.16 (Thu, 11 Nov 2021 13:09:06 -0800)
+FSTESTVER: quota  v4.05-53-gd90b7d5 (Tue, 6 Dec 2022 12:59:03 +0100)
+FSTESTVER: util-linux v2.38.1 (Thu, 4 Aug 2022 11:06:21 +0200)
+FSTESTVER: xfsprogs v6.1.1 (Fri, 13 Jan 2023 19:06:37 +0100)
+FSTESTVER: xfstests v2023.02.26-8-g821ef488 (Thu, 2 Mar 2023 10:23:51 -0500)
+FSTESTVER: xfstests-bld 35650073 (Mon, 6 Mar 2023 20:48:08 -0500)
+FSTESTVER: zz_build-distro bullseye
+FSTESTCFG: ext4/all
+FSTESTSET: -g auto
+FSTESTOPT: aex
+
+There more failures compared with "good" report in reply from Ted [1] as
+following:
+ext4/nojournal: generic/459 generic/581
+ext4/adv: Flaky: generic/455: 80% (4/5)   generic/482: 80% (4/5)
+ext4/data_journal: Flaky: generic/068: 40% (2/5)
+It seems still a "good" test run according to rules listed in [1].
+Please let me know if more tests to run. Thanks!
+
+[1] https://lore.kernel.org/linux-ext4/db478a24-39f5-3cef-8814-89406ce4d2ca@huawei.com/T/#ma9de3f355f0300291d32fe1f0b32c5660c9bd191
+
+Kemeng Shi (13):
+  ext4: correct offset of gdb backup in non meta_bg group to
+    update_backups
+  ext4: add missed brelse in update_backups
+  ext4: correct return value of ext4_convert_meta_bg
+  ext4: remove gdb backup copy for meta bg in
+    setup_new_flex_group_blocks
+  ext4: fix typo in setup_new_flex_group_blocks
+  ext4: remove redundant check of count
+  ext4: remove commented code in reserve_backup_gdb
+  ext4: calculate free_clusters_count in cluster unit in
+    verify_group_input
+  ext4: remove EXT4FS_DEBUG defination in resize.c
+  ext4: use saved local variable sbi instead of EXT4_SB(sb)
+  ext4: simplify the gdbblock calculation in add_new_gdb_meta_bg
+  ext4: remove unnecessary check to avoid repeat update_backups for the
+    same gdb
+  ext4: remove unnecessary initialization of count2 in
+    set_flexbg_block_bitmap
+
+ fs/ext4/ext4.h   |  1 +
+ fs/ext4/resize.c | 88 ++++++++++++++++++++----------------------------
+ 2 files changed, 38 insertions(+), 51 deletions(-)
+
+-- 
+2.30.0
+
