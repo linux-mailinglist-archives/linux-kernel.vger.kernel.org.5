@@ -2,169 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6DC07898B3
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 20:34:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F41F7898C3
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 21:11:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230079AbjHZSdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 14:33:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33434 "EHLO
+        id S229786AbjHZTK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 15:10:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229761AbjHZSdZ (ORCPT
+        with ESMTP id S229689AbjHZTKa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 14:33:25 -0400
-Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95F86109
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 11:33:22 -0700 (PDT)
-Received: by mail-oo1-xc2d.google.com with SMTP id 006d021491bc7-57354433a7dso648719eaf.1
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 11:33:22 -0700 (PDT)
+        Sat, 26 Aug 2023 15:10:30 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8E74E79
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 12:10:26 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id 38308e7fff4ca-2bbbda48904so29415691fa.2
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 12:10:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693074802; x=1693679602;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
+        d=gmail.com; s=20221208; t=1693077025; x=1693681825;
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=n+z/gBamPq/Xr3Inj2gAsNhcxuw0UOxejNz9OQS7tcU=;
-        b=hsYzgD0fMZYMgny5rOU+xzD6RP5D1s2F38QXvrhnvzRommZB7UmjeuTZIbZc2aSfBz
-         Aensp5yuJEBH3NpZpRq+oVRHNvjMsi6e6cnr88VYHGMhKKwBC9ihO4KWCWECAC0eGqvC
-         pUl+mQWkKFxB4f/9jiVAV2CYinGzLGXtwsUhOm3L77X2JNGt36/fI3mSE0Rua+7XSC6n
-         jCqcD/bDSmjK7m1oqwWEJEAOKzbGLVGMW2cNsZ7yWSETZtuO1i8jv9mCXvqIVWWiqTgf
-         MEVff+GyxVnlCLnXAdhSKpM+n6tFUIQ6Y98ruizZ5ZSHUCnmVUMlkfpm7DBq+1n0gGBn
-         8HYg==
+        bh=20PRx02HJnVAIbBegfbEzAt6FGsymy7uvpJpjNQVnno=;
+        b=Bg4LrLAVF8TzvlvvTjeQ88MQEd7LYuRnD3MPBbiVUFVKJRDpg0KAoe6+5tyrBZe/6u
+         6YJ2WLACNPi35gLTN86CXim0tVGZyluePdNVuBhVDVzA7Ma9ocduuISn6pQNFRN9S+Yg
+         ySSWLdakZqUmJN6lGoZQJ86/AwD661fhWoirK+0NhOrt9607tbTgg14k/ph9aegD7RH/
+         wsx0ZKm4ITGGylwvjN+3ivJ26EoaBZgIJLEGyHh6jzT7GaKVmRW/zkZKxsC1fQWyMg5u
+         WignbvwFNTZuKkV1KDLp69Yd7PZzrxtTW2WgVkpUF4NTybtzuo9ZWn7b3hkZ+Yz8aL+I
+         7pJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693074802; x=1693679602;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
+        d=1e100.net; s=20221208; t=1693077025; x=1693681825;
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=n+z/gBamPq/Xr3Inj2gAsNhcxuw0UOxejNz9OQS7tcU=;
-        b=jlM/8ucZZ0j49t+H+PjI40twks5fv8gEb8SiJivnwbjMJ0cbjxQ/1zIvdpyBhs9c3y
-         r/uLoCJiXUdDWPdL0Axwir16xQSj6v4CUXuJ/hC/RVEuaIAtsO0BVd1n3w+NbP3y81I4
-         JdFCJ5XiCfsk7yTsyW4ODjCwvXpOljI4ZZjImZjcaINv4mFeELZ6A6udWqqACUu3W7Ti
-         QDrK4IW6NTkILpbj8nEA+lKrPhoybmn/uMy0yuSajCMDFd9By2giEgDwatIx06eYNU5Z
-         tUHqbN8hRzflJNokT2Og8IjVgY1d6RheOzu0lOLGv5eK7eqqAIA0YdzQqCADlF50FaBq
-         7kcg==
-X-Gm-Message-State: AOJu0YwdUqpcyj6ZO9Si57zvL4c+U5g0Zt8ezaY/lS2fQ06D+WGXqktz
-        76NKl4Vt5SVU6n5J8nJ2CLSq31saaWCcaZSwAmR35/My
-X-Google-Smtp-Source: AGHT+IFOFXxE3hhZsvvuJJHkNUN5OCtKBU8Ou+XCUZnlS5M9mCThljAPJikRLCLTLXbgwiPMKWbmq28zOcFhFqXqecQ=
-X-Received: by 2002:a05:6870:46a9:b0:1b3:ef56:270a with SMTP id
- a41-20020a05687046a900b001b3ef56270amr6121334oap.29.1693074801769; Sat, 26
- Aug 2023 11:33:21 -0700 (PDT)
+        bh=20PRx02HJnVAIbBegfbEzAt6FGsymy7uvpJpjNQVnno=;
+        b=ema4PcMhb02DcXP7TO0GJ1ukaCB7bUzt9wEa4D7ooKyy78LMqdThpZKYpk3gcfOrgX
+         V902VJ++Mb2sCXZOhaGPXOabU00mOQqUsjjFbCnMzyVuT2S3uwwNbakBU6Q+BFdhPUVB
+         zePId81cMxpXrS0E1XaGWbA+9hY/Ia7ho/2MKHbFcs8WlnIilfvFTkQxuvYjpEGob6Pr
+         cLXp8p7oa27ggi/2Rfvkg4rMGhRtOEXyx4fxZFXZ5X2bM2ttil+7lLTWeRJZa1HWkK5l
+         T10Jo7+REdmEXYsfhztrEVcbR0RgchBLSXwKqkS3s1cXH6NHVaYuCAhuv4QBMvdDZdDM
+         /PtQ==
+X-Gm-Message-State: AOJu0YxZrX26ciW2h6kEYnJvLVxrrTES2OlQPfPrrdH8nvWStbOnIZ5W
+        Bl/wriXFhH7dP58B4qvUe5q6IW+W+Kd+En/ao28=
+X-Google-Smtp-Source: AGHT+IGdDP/lUbxvg/9wWU99Pdot7X3MI2aCmviK1hpfATeOg28wucX8WEkxp2Kdbw/2bzKPptdnVsbUVWNgx5IJa7A=
+X-Received: by 2002:a2e:8342:0:b0:2b9:4841:9652 with SMTP id
+ l2-20020a2e8342000000b002b948419652mr15640940ljh.25.1693077024598; Sat, 26
+ Aug 2023 12:10:24 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a8a:1141:0:b0:4f0:1250:dd51 with HTTP; Sat, 26 Aug 2023
- 11:33:21 -0700 (PDT)
-In-Reply-To: <20230821202829.2163744-1-mjguzik@gmail.com>
-References: <20230821202829.2163744-1-mjguzik@gmail.com>
-From:   Mateusz Guzik <mjguzik@gmail.com>
-Date:   Sat, 26 Aug 2023 20:33:21 +0200
-Message-ID: <CAGudoHEKYYmbJ+3SEHDeqi9TLoLjpFNf9HdAQXkuWSd2TKhJQw@mail.gmail.com>
-Subject: Re: [PATCH 0/2] execve scalability issues, part 1
-To:     linux-kernel@vger.kernel.org
-Cc:     dennis@kernel.org, tj@kernel.org, cl@linux.com,
-        akpm@linux-foundation.org, shakeelb@google.com, linux-mm@kvack.org,
-        jack@suse.cz
+Received: by 2002:a05:6022:607:b0:43:16ec:74c1 with HTTP; Sat, 26 Aug 2023
+ 12:10:23 -0700 (PDT)
+Reply-To: hegborkodjov@gmail.com
+From:   hegborkodjov <moritaanderson3@gmail.com>
+Date:   Sat, 26 Aug 2023 19:10:23 +0000
+Message-ID: <CACTmLXMH9aapw-LEmVw_WXmGUzj+Sp-EsdQo7BbVTANgOAZUWw@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=4.6 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FUZZY_XPILL,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,UNDISC_FREEM autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/21/23, Mateusz Guzik <mjguzik@gmail.com> wrote:
-> To start I figured I'm going to bench about as friendly case as it gets
-> -- statically linked *separate* binaries all doing execve in a loop.
->
-> I borrowed the bench from found here:
-> http://apollo.backplane.com/DFlyMisc/doexec.c
->
-> $ cc -static -O2 -o static-doexec doexec.c
-> $ ./static-doexec $(nproc)
->
-> It prints a result every second (warning: first line is garbage).
->
-> My test box is temporarily only 26 cores and even at this scale I run
-> into massive lock contention stemming from back-to-back calls to
-> percpu_counter_init (and _destroy later).
->
-> While not a panacea, one simple thing to do here is to batch these ops.
-> Since the term "batching" is already used in the file, I decided to
-> refer to it as "grouping" instead.
->
-> Even if this code could be patched to dodge these counters,  I would
-> argue a high-traffic alloc/free consumer is only a matter of time so it
-> makes sense to facilitate it.
->
-> With the fix I get an ok win, to quote from the commit:
->> Even at a very modest scale of 26 cores (ops/s):
->> before: 133543.63
->> after:  186061.81 (+39%)
->
-
-So to sum up, a v3 of the patchset is queued up here:
-https://git.kernel.org/pub/scm/linux/kernel/git/dennis/percpu.git/log/?h=for-next
-
-For interested I temporarily got my hands on something exceeding the
-hand watch scale benched above -- a 192-way AMD EPYC 7R13 box (2
-sockets x 48 cores x 2 threads).
-
-A 6.5 kernel + the patchset only gets south of 140k execs/s when
-running ./static-doexec 192
-
-According to perf top:
-  51.04%  [kernel]           [k] osq_lock
-   6.82%  [kernel]           [k] __raw_callee_save___kvm_vcpu_is_preempted
-   2.98%  [kernel]           [k] _atomic_dec_and_lock_irqsave
-   1.62%  [kernel]           [k] rcu_cblist_dequeue
-   1.54%  [kernel]           [k] refcount_dec_not_one
-   1.51%  [kernel]           [k] __mod_lruvec_page_state
-   1.46%  [kernel]           [k] put_cred_rcu
-   1.34%  [kernel]           [k] native_queued_spin_lock_slowpath
-   0.94%  [kernel]           [k] srso_alias_safe_ret
-   0.81%  [kernel]           [k] memset_orig
-   0.77%  [kernel]           [k] unmap_page_range
-   0.73%  [kernel]           [k] _compound_head
-   0.72%  [kernel]           [k] kmem_cache_free
-
-Then bpftrace -e 'kprobe:osq_lock { @[kstack()] = count(); }' shows:
-
-@[
-    osq_lock+1
-    __mutex_lock_killable_slowpath+19
-    mutex_lock_killable+62
-    pcpu_alloc+1219
-    __alloc_percpu_gfp+18
-    __percpu_counter_init_many+43
-    mm_init+727
-    mm_alloc+78
-    alloc_bprm+138
-    do_execveat_common.isra.0+103
-    __x64_sys_execve+55
-    do_syscall_64+54
-    entry_SYSCALL_64_after_hwframe+110
-]: 637370
-
-@[
-    osq_lock+1
-    __mutex_lock_killable_slowpath+19
-    mutex_lock_killable+62
-    pcpu_alloc+1219
-    __alloc_percpu+21
-    mm_init+577
-    mm_alloc+78
-    alloc_bprm+138
-    do_execveat_common.isra.0+103
-    __x64_sys_execve+55
-    do_syscall_64+54
-    entry_SYSCALL_64_after_hwframe+110
-]: 638036
-
-That is per-cpu allocation is still on top at this scale.
-
-But more importantly there are *TWO* unrelated back-to-back per-cpu
-allocs -- one by rss counters and one by mm_alloc_cid.
-
-That is to say per-cpu alloc scalability definitely needs to get
-fixed, I'll ponder about it.
-
--- 
-Mateusz Guzik <mjguzik gmail.com>
+0JHQuCDQvdOp0YXTqdGA0LvTqdC706nTqSDRgdCw0L3QsNC7INCx0L7Qu9Cz0L7QtiDQsdCw0LnQ
+vdCwLCDRgtCwINC90LDQvNCw0LnQsyDRgdCw0LnRhdCw0L0g0YHRjdGC0LPRjdC70Y3RjdGAINGF
+0q/Qu9GN0Y3Qtg0K0LDQstC90LAg0LPRjdC00Y3Qs9GCINC40YLQs9GN0LYg0LHQsNC50L3QsCwg
+0LHQuCDRgtCw0L3RgtCw0Lkg0YXQvtC70LHQvtC+INCx0LDRgNGM0LYsINCx0LjQtCDQsdC40LUg
+0LHQuNC10LTRjdGNINGF0Y3RgNGF0Y3QvQ0K0YLRg9GB0LDQu9C2INGH0LDQtNCw0YXRi9CzINGF
+0LDRgNCw0YXRi9CzINGI0LDQsNGA0LTRgdCw0L0uINCR0Lgg0LHQvtC7DQrQotGD0YDQutC40LnQ
+vSDRhdCw0YLQsNCz0YLQsNC5INCa0L7QtNC20L7QstC4INCl0LXQs9Cx0L7RgCDQsdC40LQg0YXQ
+vtGR0YAgU3RhbmRhcmRCTlAgQmFuayBMaW1pdGVkDQpUdXJrZXkt0LQg0q7QudC7INCw0LbQuNC7
+0LvQsNCz0LDQsNC90Ysg0YXRjdC70YLRgdC40LnQvSDQtNCw0YDQs9Cw0LDRgCDQsNC20LjQu9C7
+0LDQtNCw0LMuINCt0L3RjSDQsdC+0Lsg0LzQuNC90LjQuQ0K0YLTqdC706nTqdGFINCR0YPRgNGF
+0LDQvdGLINGF0q/RgdGN0Lsg0LPRjdC00Y3Qs9GCINCx0Lgg0LjRgtCz0Y3QtNGN0LMNCtC+0LTQ
+vtC+INGH0LDQvNGC0LDQuSDRgtCw0LDRgNCw0YUg0LPRjdC2INCx0LDQudC90LAuINCR0Lgg0YfR
+g9GF0LDQuyDQsNC20LjQuyDRhdGN0YDQs9C40LnQvSDRj9GA0LjQu9GG0LvQsNCz0LAg0YXQuNC5
+0LYNCtCx0LDQudC90LAsINGN0L3RjSDQvdGMINGC0LDQvdCw0Lkg0YPQu9GB0YvQvSDQvdGN0YDR
+gtGN0Lkg0YXQvtC70LHQvtC+0YLQvtC5INGC0YPQuyDRgtCwINKv0q/QvdGN0Y3RgSDQsNGI0LjQ
+syDRhdKv0YDRgtGN0YUNCtCx0L7Qu9C90L4g0LPRjdC2INCx0L7QtNC+0LYg0LHQsNC50L3QsC4N
+Cg0KMjAxOCDQvtC90LQg0JjQstCw0L0g0LPRjdGFINGC0LDQvdCw0Lkg0YPQu9GB0YvQvSDQuNGA
+0LPRjdC9INGF0YPQsNC90LvQuNC50L0gMzYg0YHQsNGA0YvQvSDRhdGD0LPQsNGG0LDQsNC90LQg
+0LzQsNC90LDQuQ0K0LHQsNC90LrQuNC90LQgOCw0MDAsMDAwLjAwINGE0YPQvdGCINGB0YLQtdGA
+0LvQuNC90LPQuNC50L0g0q/QvdGNINCx0q/RhdC40Lkg0J7RgNGI0LjQvSDRgdGD0YPQs9GHINCx
+0YPRgSDQtNCw0L3RgQ0K0YXQuNC50YHRjdC9LiBUaGUNCtCt0L3RjdGF0q/SryDRhdCw0LTQs9Cw
+0LvQsNC80LbQuNC50L0g0LPRjdGA0Y3RjdC90LjQuSDRhdGD0LPQsNGG0LDQsCAyMDIxINC+0L3R
+iyAxLdGAINGB0LDRgNGL0L0gMTYt0L3RiyDTqdC006nRgA0K0LHQsNC50YHQsNC9LiDQpdCw0YDQ
+sNC80YHQsNC70YLQsNC5INC90Ywg0YLRjdGA0Y3RjdGAINCl0Y/RgtCw0LTQsNC0INGB0LDRj9GF
+0LDQvSDRgtC+0YXQuNC+0LvQtNGB0L7QvSAyMDE5LTIwMjAg0L7QvdGLDQrQmtC+0YDQvtC90LDQ
+ktC40YDRg9GBICjQmtC+0LLQuNC0MTkpINGC0LDRhdC70YvQvSDQtNGN0LPQtNGN0LvRgtC40LnQ
+vSDSr9C10Y3RgCDQvdCw0YEg0LHQsNGA0YHQsNC9INGF0q/QvNKv0q/RgdC40LnQvQ0K0YLQvtC+
+0L3QtCDQsdCw0LPRgtCw0LYsINCx0LjQt9C90LXRgSDQsNGP0LvQsNC70LDQsNGAINGP0LLQtiDQ
+sdCw0LnRhdC00LDQsCDQtNC+0YAg0YXQsNGP0LYgNjgsMDAwINGF0q/QvdC40Lkg0LDQvNC40LnQ
+sw0K0LDQstGHINC+0LTRgdC+0L0uIC4NCg0K0JzQsNC90LDQuSDQsdCw0L3QutC90Ysg0YPQtNC4
+0YDQtNC70LDQs9GD0YPQtCDRgtKv0q/QvdC40Lkg0q/RhdC70LjQudC9INGC0LDQu9Cw0LDRgCDR
+hdCw0YDQsNCw0YXQsNC9INC80Y3QtNGN0Y3Qs9Kv0Lkg0LHQsNC50L3QsCwNCtGC0Y3RgCDQvNC4
+0L3QuNC5INC90LDQudC3INCx0LDQudGB0LDQvSwg0LTQsNC90YEg0L3RjCDQvdGN0Y3Qs9C00Y3R
+hdGN0LQg0LHQuCDRgtKv0q/QvdC40Lkg0LTQsNC90YHQvdGLINCw0LbQuNC70YLQsNC9DQrQsdCw
+0LnRgdCw0L0g0YPRh9GA0LDQsNGBINCx0Lgg0LzRjdC00YHRjdC9Lg0K0L3QsNC80LDQudCzINC0
+0Y3QstGI0LjRhdGN0Y3RgSDTqdC80L3TqSDQvdGN0Y3RhS4g0JPRjdGB0Y3QvSDRhdGN0LTQuNC5
+INGHLCDQvdC+0ZHQvSDQmNCy0LDQvSDQtNCw0L3RgSDQvdGN0Y3Qu9Cz0Y3RhSDSr9C10LQNCtGP
+0LzQsNGAINGHINC00LDRgNCw0LDQs9C40LnQvSDRhdCw0LzQsNCw0YLQsNC9INGB0LDQtNCw0L0v
+INOp0LIg0LfQsNC70LPQsNC80LbQu9Cw0LPRh9C40LnQvSDRgtCw0LvQsNCw0YAg0LTRg9GA0LTQ
+sNCw0LPSr9C5DQrQsdOp0LPTqdOp0LQg0YLRjdGA0Y3RjdGAINCz0Y3RgNC70Y3RjdCz0q/QuSwg
+0LPRjdGA0LvRjdGN0LPSr9C5INCx0LDQudGB0LDQvS4NCtGF0q/Sr9GF0LTSr9Kv0LQuINOo0L3Q
+s9Op0YDRgdOp0L0g0LTQvtC70L7QviDRhdC+0L3QvtCz0YIg0LzQsNC90LDQuSDQsdCw0L3QutC9
+0Ysg0YPQtNC40YDQtNC70LDQs9CwINCz0Y3RgNGN0Y3Qs9GN0Y0NCtGB0YPQvdCz0LDRhdCw0LDR
+gCDQsdC+0LvRgdC+0L0g0YLQvtGF0LjQvtC70LTQvtC70LQg0YLSr9Kv0L3QuNC5INC806nQvdCz
+0LjQudCzINGO0YMg0YXQuNC50YUg0YLQsNC70LDQsNGAINC30LDQsNCy0LDRgNGH0LjQu9Cz0LDQ
+sA0K06nQs9Op0YXQuNC50LMg0YXSr9GB0YHRjdC9Lg0KDQrQmNC50Lwg0LfSr9C50Lsg0LHQvtC7
+0L3QviDQs9GN0LTQs9C40LnQsyDQsdC4INC80Y3QtNGN0LYg0LHQsNC50LPQsNCwINGC0YPQuyDQ
+vdOp0YXRhtOp0Lsg0LHQsNC50LTQu9GL0LMg0LfQvtGF0LjRhtGD0YPQu9Cw0YUNCtCw0YDQs9Cw
+INC30LDQvNGL0LMg0YXQsNC50LYg0LHQsNC50YHQsNC9LCDRg9GH0LjRgCDQvdGMINGF0Y3RgNGN
+0LIg0LzQuNC90LjQuSDQsdCw0L3QutC90Ysg0LfQsNGF0LjRgNC70YPRg9C0INCY0LLQsNC90YvQ
+sw0K0LzRjdC00LLRjdC7DQrQvdCw0YEg0LHQsNGA0YHQsNC9LCDTqdCyINC30LDQu9Cz0LDQvNC2
+0LvQsNCz0YfQs9Kv0LksINGC0Y3QtCDRhdGD0LLQuNC50L0g0YXRjdGA0Y3Qs9GG0Y3RjdC90LQg
+0LfQvtGA0LjRg9C70LYg0YXTqdGA06nQvdCz06nTqQ0K0LDQstCw0YUg0LHQvtC70L3Qviwg0YLQ
+uNC50LzRjdGN0YEg0LHQuCDQuNC50Lwg0LfSr9C50Lsg0LHQvtC70L7QvtGB0L7QuSDQs9GN0LYg
+0YXSr9GB0Y3RhdCz0q/QuSDQsdCw0LnQvdCwLiDQotGN0YAg0q/QtdC0DQrQsdC4INGH0LDQvNCw
+0LnQsyDRhdCw0YDQsNCw0LQg0LHQsNGP0YDRgtCw0Lkg0LHQsNC50YHQsNC9INCx06nQs9Op06nQ
+tCDQvtC00L7QviDRgtCwINGC0q/Sr9C90YLRjdC5INC40LbQuNC7INGD0LvRgdGC0LDQuSwNCtC8
+0LjQvdC40Lkg0LHQsNC90LrQvdGLINGC06nQsiDQvtGE0YTQuNGBINGC0LDQvdC0INC00LDQvdGB
+0YvQsyDTqdCz06nRhSDQsdC+0LvQvdC+LiDQr9C80LDRgCDRhyDRjdGA0YHQtNGN0Lsg0LHQsNC5
+0YXQs9Kv0LkNCtC+0YDQvtC70YbQvtGFOyDQs9Kv0LnQu9Cz0Y3RjSDQvdGMINGC0LDQvdGL0LMg
+0LDQu9C40LLQsNCwINGF0YPRg9C70Ywg0LfTqdGA0YfQu9Op06nRgSDRhdCw0LzQs9Cw0LDQu9Cw
+0YUg0YXRg9GD0LvRjCDRkdGB0L3Riw0K0LfQvtGF0LjRhtGD0YPQu9Cw0LvRgtGL0L0g0LTQsNCz
+0YPRgyDRhdC40LnQs9C00Y3RhSDQsdC+0LvQvdC+Lg0KDQrQkdCw0L3QutC90Ysg0LfQsNGF0LjR
+gNC70YPRg9C00YvQsyDQsNCy0LDRhdGL0LMg0LfTqdCy0YjTqdOp0YDRgdC906nTqdGBINCx0LjQ
+tCDQvNOp0L3Qs9Op06kg0L3RjdGF0Y3QvNC20LjQu9GB0Y3QvSDQvdGMINC00Y3RjdGALA0K0YLR
+jdC0INGF0Y3QtNC40LnQvdGNINCx0LDRj9C9LiDQkdC4INGI0YPQvdCw0LvRgtCw0Lkg0YXSr9C9
+INCx0LjRiCDQsdC+0LvQvtGF0L7QvtGAINCx0LjQtNGN0L3QtCDRgdCw0L3QsNC7INCx0L7Qu9Cz
+0L7Qtg0K0LHQsNC50L3QsA0K0KHQsNC90YXSr9Kv0LPQuNC50L0gNTAvNTAg0YXRg9Cy0LjQudCz
+INGF0L7RkdGAINGC0LDQu9C00LDQsCDRgtGN0L3RhtKv0q8g0YXRg9Cy0LDQsNGFLCDQvNC40L3Q
+uNC5INGF0YPQstGMINC90LDQtNCw0LQNCtOp06nRgNC40LnQvSDQutC+0LzQv9Cw0L3QuNC50LMg
+0LHQsNC50LPRg9GD0LvQtiwg0L7Qu9GB0L7QvSDQvtGA0LvQvtCz0YvQsyDQsdGD0Y/QvdGLINCw
+0LbQuNC70LQg0LfQsNGA0YbRg9GD0LvQsNGF0LDQtA0K0YLRg9GB0LDQu9C90LAuDQrQvNOp0YDT
+qdOp0LTTqdC7Lg0KDQrQnNC40L3QuNC5INGB0LDQvdCw0LvRi9C9INGC0LDQu9Cw0LDRgCDRgdCw
+0L3QsNC7INCx0L7QtNC70L7QviDRhdGN0LvRjdGN0YDRjdC5LCDQvdCw0LTQsNC0INGN0L3RjSDQ
+s9Kv0LnQu9Cz0Y3RjdC90LQg0YLQsNC90YsNCtGC0YPRgdC70LDQvNC2INKv0L3RjdGF0Y3RjdGA
+INGF0Y3RgNGN0LPRgtGN0Lkg0LHQsNC50L3QsCwg0LHQuCDRh9Cw0LzQsNC50LMg06nTqdGA0LjQ
+udC90YXTqdOp0YDTqdOpINCx0LjRiCDQvdCw0LTQsNC0DQrRgtGD0YHQu9Cw0YXQsNCw0YAg0YHQ
+vtC90LPQvtGB0L7QvS4NCtCl0L7QvdCz0L7RgCDQvNC40L3RjCwg0LPRjdGF0LTRjdGNINCx0Lgg
+0YLQsNC90YLQsNC5INGF0L7Qu9Cx0L7QviDQsdCw0YDQuNGF0LDQsNGB0LDQsCDTqdC80L3TqSDR
+jdC90Y0g0YXQsNGA0LjQu9GG0LDQsNC90YsNCtGC0LDQu9Cw0LDRgCDQt9Cw0LvQsdC40YDQsNGF
+INCz0Y3QtiDRhtCw0LMg0LfQsNCy0LDQsCDQs9Cw0YDQs9Cw0YHQvdCw0LAg0LHRg9GA0YXQsNC9
+0LDQsNGBINGC0LAg0LHSr9GF0Y3QvdC0INC80Y3QtNGN0Y3RgdGN0LkNCtCz0Y3QtiDRhdKv0YHR
+hyDQsdCw0LnQvdCwLg0K0K3QvdGNINGC0LDQu9Cw0LDRgCDQsNC90YXQsNCw0YDRhywg0Y3QvdGN
+INC80Y3QtNGN0Y3Qu9C70LjQudCzINCc0JDQqCDQndCj0KPQpiDQs9GN0LYg0q/Qt9C90Y0g0q/S
+ry4g0KLQsNC90Ysg0YXQsNGA0LjRg9CzDQrRhdKv0LvRjdGN0L0g0LDQstGB0L3RiyDQtNCw0YDQ
+sNCwINC80LjQvdC40Lkg0YXRg9Cy0LjQudC9INC40LzRjdC50Lsg0YXQsNGP0LPQsNCw0YAgaGVn
+Ym9ya29kam92QGdtYWlsLmNvbQ0K0LPSr9C50LvQs9GN0Y3QvdC40Lkg0YLQsNC70LDQsNGAINC0
+0Y3Qu9Cz0Y3RgNGN0L3Qs9Kv0Lkg0LzRjdC00Y3RjdC70Y3QuyDTqdCz06nRhSDQsdC+0LvQvdC+
+LiDQnNOp0L0g0YHQsNC90LPQuNC50L0NCtGF0LDQtNCz0LDQu9Cw0LzQttC40LnQvSDQs9GN0YDR
+h9C40LvQs9GN0Y3QvdC40Lkg0YXRg9GD0LvQsdCw0YAsINC806nQvSDQutC+0LzQv9Cw0L3QuNC5
+0LMg0q/Sr9GB0LPRjdC9INCx0LDQudCz0YPRg9C70YHQsNC9DQrQs9GN0YDRh9C40LvQs9GN0Y0N
+CtGB0LDQvdCzINCx0LjQuSDQsdC+0LvQs9C+0YHQvtC9LiDQotCw0L3RiyDRj9Cw0YDQsNC70YLQ
+sNC5INGF0LDRgNC40YMg0LDRgNCz0LAg0YXRjdC80LbRjdGNINCw0LLQsNGF0YvQsyDRhdKv0LvR
+jdGN0LYNCtCx0LDQudCz0LDQsCDRgtGD0Lsg0JHRg9GA0YXQsNC9INC40LLRjdGN0LMNCtCl0q/Q
+vdC00Y3RgtCz0Y3RgdGN0L0NCtCl0LDRgtCw0LPRgtCw0Lkg0JrQvtC00LbQvtCy0Lgg0KXQtdCz
+0LHQvtGADQpoZWdib3Jrb2Rqb3ZAZ21haWwuY29tDQo=
