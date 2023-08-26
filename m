@@ -2,174 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D39007898AE
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 20:30:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 870987898B1
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 20:31:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230226AbjHZSaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 14:30:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36946 "EHLO
+        id S230438AbjHZSad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 14:30:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230207AbjHZS36 (ORCPT
+        with ESMTP id S230207AbjHZSaN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 14:29:58 -0400
-Received: from smtp.smtpout.orange.fr (smtp-25.smtpout.orange.fr [80.12.242.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44E63DE
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 11:29:56 -0700 (PDT)
-Received: from [192.168.1.18] ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id Zy2iqZD4SDlJeZy2iq4uVv; Sat, 26 Aug 2023 20:29:54 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1693074594;
-        bh=RjPClBuIQRKMUfUSALQ4hUOgO+gv3HMIBglb3IFBbrg=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=mIeukVNvFU9WVtm+E106zutSEC0fVbdI/i0uDfT2/deLfV6d8HIb+Yd1cyT9d4e0O
-         d6YDqZc+tQFMDWv8c+TDpT7j+D+EBd9h0AQI528gXfCpiOtDUTA7kGl9U2IZo0OiF4
-         xPOp1D4mMSTnNMRHJyAn3ID3p5rG2NMSoVhSDNesDL9RAZwrT3xF4K0fj1C56ZZPHF
-         5ZCpwKU/ujdEZkGeh15XhlEIN/r9VIugpPM3RyuqW8XPiqQOBveENDnEtO1TKGfceH
-         F0oDl+ai//OjAHSDq0TkkAf2pAtMun6HjkV0MWPgDOVTo7lBliM8AuHK4/1wtu2pQm
-         97HPP+nHL3GyA==
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 26 Aug 2023 20:29:54 +0200
-X-ME-IP: 86.243.2.178
-Message-ID: <50683aac-b186-c6ae-de1f-5b8e4806913c@wanadoo.fr>
-Date:   Sat, 26 Aug 2023 20:29:52 +0200
+        Sat, 26 Aug 2023 14:30:13 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CB1BBD;
+        Sat, 26 Aug 2023 11:30:07 -0700 (PDT)
+X-QQ-mid: bizesmtpipv602t1693074596txh9
+Received: from [IPV6:2001:da8:c000:3005:c026:8 ( [255.193.153.7])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Sun, 27 Aug 2023 02:29:54 +0800 (CST)
+X-QQ-SSF: 01200000000000907000000A0000000
+X-QQ-FEAT: fj/jKqveG5F37E2q+TLQp06oyzV8uk1tUboC9VYcnxaGoe+e4Hz5P2zI6fdDN
+        mhg/fyeruMJUt0N9AnR8rTJ2x70msQAaNrgiac2VQ7/6mTtSAQ1dlFpdR6TVkFMZNF/BmzI
+        RCtrNcZ1y6e89VgtLt1kvvLslWFVDtRewVIoHORpoXFJwk6bI0TmXFtpG+POPmE6SZ6u+vG
+        YnBTIr3Uv/OX6dM1sYlbvHeRttVvZsECzV4kHNBjkzAwYLxATHSrcvc8EE97ErHfcxzh0jy
+        VnXdMYyfKYp0Z+qTgXrff53HZbnoikT7UDy3cIKv6nqWaq3Zaaroj2LaKB9wmVFEPKeL8at
+        grnJuDetShCApaM8HmbQR/f8spR6myIEf43ayW8
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 9143129729124953103
+Message-ID: <B0DD4BA059591F13+4c61dc98-4d70-4ab2-b4ca-81c0e6596482@tinylab.org>
+Date:   Sun, 27 Aug 2023 02:29:53 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v1 06/12] HID: cp2112: Remove dead code
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Andy Shevchenko <andy@kernel.org>
-References: <20230703185222.50554-1-andriy.shevchenko@linux.intel.com>
- <20230703185222.50554-7-andriy.shevchenko@linux.intel.com>
-Content-Language: fr
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <20230703185222.50554-7-andriy.shevchenko@linux.intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/3] selftests/nolibc: fix up O= option support
+Content-Language: en-GB
+To:     Zhangjin Wu <falcon@tinylab.org>, w@1wt.eu
+Cc:     arnd@arndb.de, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux@weissschuh.net,
+        thomas@t-8ch.de, Yuan Tan <tanyuan@tinylab.org>
+References: <20230806121721.30774-1-falcon@tinylab.org>
+ <20230826043046.53692-1-falcon@tinylab.org>
+From:   Yuan Tan <tanyuan@tinylab.org>
+In-Reply-To: <20230826043046.53692-1-falcon@tinylab.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtpipv:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=1.7 required=5.0 tests=BAYES_00,FORGED_MUA_MOZILLA,
+        RCVD_ILLEGAL_IP,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 03/07/2023 à 20:52, Andy Shevchenko a écrit :
-> Remove cp2112_allocate_irq() and counterparts that seems to be
-> a dead code from day 1. In case somebody needs it, it can be
-> retrieved from Git index.
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Hi Zhangjin and Willy,
 
-Hi,
+On 8/26/2023 12:30 PM, Zhangjin Wu wrote:
+> Hi, Willy
+>
+>>> On Sat, Aug 05, 2023 at 02:13:11PM +0800, Zhangjin Wu wrote:
+>>>> To avoid pollute the source code tree and avoid mrproper for every
+>>>> architecture switch, the O= argument must be supported.
+>>>>
+>>>> Both IMAGE and .config are from the building directory, let's use
+>>>> objtree instead of srctree for them.
+>>>>
+>>>> If no O= option specified, means building kernel in source code tree,
+>>>> objtree should be srctree in such case.
+>>>>
+>>>> To support relative path, as suggested by Thomas, $(COMMAND_O) is used
+>>>> to pass the O=$(ABSOLUTE_O) to the $(MAKE) commands.
+>>> Zhangjin, I cannot get this one to work, regardless of what I try:
+>>>
+>>>     $ make -j8 O=$PWD/output-i386 nolibc-test XARCH=i386 CROSS_COMPILE=/f/tc/nolibc/gcc-12.3.0-nolibc/i386-linux/bin/i386-linux- CC=/f/tc/nolibc/gcc-12.3.0-nolibc/i386-linux/bin/i386-linux-gcc
+>>>     (...)
+>>>     CC      nolibc-test
+>>>     In file included from sysroot/i386/include/stdio.h:14,
+>>>                      from nolibc-test.c:13:
+>>>     sysroot/i386/include/errno.h:10:10: fatal error: asm/errno.h: No such file or directory
+>>>        10 | #include <asm/errno.h>
+>>>           |          ^~~~~~~~~~~~~
+>>>     compilation terminated.
+>>>
+>> Willy, I also just reproduced the issue, seems only i386 sysroot has no
+>> asm/errno.h, will check why it is no rightly installed later.
+>>
+>>      $ find sysroot/ -name "errno.h"
+>>      sysroot/arm/include/errno.h
+>>      sysroot/arm/include/asm-generic/errno.h
+>>      sysroot/arm/include/asm/errno.h
+>>      sysroot/arm/include/linux/errno.h
+>>      sysroot/riscv/include/errno.h
+>>      sysroot/riscv/include/asm-generic/errno.h
+>>      sysroot/riscv/include/asm/errno.h
+>>      sysroot/riscv/include/linux/errno.h
+>>      sysroot/s390/include/errno.h
+>>      sysroot/s390/include/asm-generic/errno.h
+>>      sysroot/s390/include/asm/errno.h
+>>      sysroot/s390/include/linux/errno.h
+>>      sysroot/arm64/include/errno.h
+>>      sysroot/arm64/include/asm-generic/errno.h
+>>      sysroot/arm64/include/asm/errno.h
+>>      sysroot/arm64/include/linux/errno.h
+>>      sysroot/mips/include/errno.h
+>>      sysroot/mips/include/asm-generic/errno.h
+>>      sysroot/mips/include/asm/errno.h
+>>      sysroot/mips/include/linux/errno.h
+>>      sysroot/x86_64/include/errno.h
+>>      sysroot/x86_64/include/asm-generic/errno.h
+>>      sysroot/x86_64/include/asm/errno.h
+>>      sysroot/x86_64/include/linux/errno.h
+>>      sysroot/i386/include/errno.h
+>>      sysroot/i386/include/asm-generic/errno.h
+>>      sysroot/i386/include/linux/errno.h
+>>      sysroot/powerpc/include/errno.h
+>>      sysroot/powerpc/include/asm-generic/errno.h
+>>      sysroot/powerpc/include/asm/errno.h
+>>      sysroot/powerpc/include/linux/errno.h
+>>
+>>> I'll leave it aside for now as I've spent way longer than I hoped on
+>>> these series. I could take the previous two patches however.
+>>>
+>> Ok, let's ignore this one, I will find why sysroot not install well for i386.
+>>
+> Thanks to Yuan, he have done some testing and have found the root cause, that
+> is mrproper on top-level source code tree is required before installing
+> sysroot, otherwise, the 'generated' headers will not be installed (removed by
+> scripts/Makefile.asm-generic).
 
-for the records, just in case it still makesense to keep this code:
+More specifically, building kernel will generate 
+'linux/arch/x86/include/generated/uapi/asm/errno.h', which prevents 
+nolibc-test with O= generate 
+'output-x86/arch/x86/include/generated/asm/errno.h'.
 
-	https://lore.kernel.org/all/CAO-hwJJfncQ3jgtS=HO0atbzrTNOT_rzU66oG2yRTWTSY-L8KA@mail.gmail.com/
+>
+> After mrproper (not with O=out, must on top-level source code tree), the
+> asm/errno.h will be there:
+>
+>      ubuntu@linux-lab:/labs/linux-lab/src/linux-stable/tools/testing/selftests/nolibc$ find sysroot/ -name "errno.h"
+>      sysroot/i386/include/errno.h
+>      sysroot/i386/include/asm-generic/errno.h
+>      sysroot/i386/include/asm/errno.h             --> here it is
+>      sysroot/i386/include/linux/errno.h
+>      sysroot/x86/include/errno.h
+>      sysroot/x86/include/asm-generic/errno.h
+>      sysroot/x86/include/asm/errno.h              --> here it is
+>      sysroot/x86/include/linux/errno.h
+>
+> That also means, to use O=out for run-user, we also need to use O=out for
+> defconfig (and kernel ...) too, otherwise, the top-level source code tree will
+> be polluated.
+>
+> Seems a manual mrproper on top-level source code tree is always required for a
+> new iteration, so, it may be ok to pick this patch with a note on the potential
+> error.
 
-CJ
+There are two potential solutions for addressing this issue.
 
-> ---
->   drivers/hid/hid-cp2112.c | 54 ----------------------------------------
->   1 file changed, 54 deletions(-)
-> 
-> diff --git a/drivers/hid/hid-cp2112.c b/drivers/hid/hid-cp2112.c
-> index 15b626359281..45cd0d2fd3fd 100644
-> --- a/drivers/hid/hid-cp2112.c
-> +++ b/drivers/hid/hid-cp2112.c
-> @@ -17,8 +17,6 @@
->    */
->   
->   #include <linux/bitops.h>
-> -#include <linux/gpio/consumer.h>
-> -#include <linux/gpio/machine.h>
->   #include <linux/gpio/driver.h>
->   #include <linux/hid.h>
->   #include <linux/hidraw.h>
-> @@ -168,7 +166,6 @@ struct cp2112_device {
->   	u8 *in_out_buffer;
->   	struct mutex lock;
->   
-> -	struct gpio_desc *desc[8];
->   	bool gpio_poll;
->   	struct delayed_work gpio_poll_worker;
->   	unsigned long irq_mask;
-> @@ -1181,51 +1178,6 @@ static int cp2112_gpio_irq_type(struct irq_data *d, unsigned int type)
->   	return 0;
->   }
->   
-> -static int __maybe_unused cp2112_allocate_irq(struct cp2112_device *dev,
-> -					      int pin)
-> -{
-> -	int ret;
-> -
-> -	if (dev->desc[pin])
-> -		return -EINVAL;
-> -
-> -	dev->desc[pin] = gpiochip_request_own_desc(&dev->gc, pin,
-> -						   "HID/I2C:Event",
-> -						   GPIO_ACTIVE_HIGH,
-> -						   GPIOD_IN);
-> -	if (IS_ERR(dev->desc[pin])) {
-> -		dev_err(dev->gc.parent, "Failed to request GPIO\n");
-> -		return PTR_ERR(dev->desc[pin]);
-> -	}
-> -
-> -	ret = cp2112_gpio_direction_input(&dev->gc, pin);
-> -	if (ret < 0) {
-> -		dev_err(dev->gc.parent, "Failed to set GPIO to input dir\n");
-> -		goto err_desc;
-> -	}
-> -
-> -	ret = gpiochip_lock_as_irq(&dev->gc, pin);
-> -	if (ret) {
-> -		dev_err(dev->gc.parent, "Failed to lock GPIO as interrupt\n");
-> -		goto err_desc;
-> -	}
-> -
-> -	ret = gpiod_to_irq(dev->desc[pin]);
-> -	if (ret < 0) {
-> -		dev_err(dev->gc.parent, "Failed to translate GPIO to IRQ\n");
-> -		goto err_lock;
-> -	}
-> -
-> -	return ret;
-> -
-> -err_lock:
-> -	gpiochip_unlock_as_irq(&dev->gc, pin);
-> -err_desc:
-> -	gpiochip_free_own_desc(dev->desc[pin]);
-> -	dev->desc[pin] = NULL;
-> -	return ret;
-> -}
-> -
->   static const struct irq_chip cp2112_gpio_irqchip = {
->   	.name = "cp2112-gpio",
->   	.irq_startup = cp2112_gpio_irq_startup,
-> @@ -1390,7 +1342,6 @@ static int cp2112_probe(struct hid_device *hdev, const struct hid_device_id *id)
->   static void cp2112_remove(struct hid_device *hdev)
->   {
->   	struct cp2112_device *dev = hid_get_drvdata(hdev);
-> -	int i;
->   
->   	sysfs_remove_group(&hdev->dev.kobj, &cp2112_attr_group);
->   	i2c_del_adapter(&dev->adap);
-> @@ -1400,11 +1351,6 @@ static void cp2112_remove(struct hid_device *hdev)
->   		cancel_delayed_work_sync(&dev->gpio_poll_worker);
->   	}
->   
-> -	for (i = 0; i < ARRAY_SIZE(dev->desc); i++) {
-> -		gpiochip_unlock_as_irq(&dev->gc, i);
-> -		gpiochip_free_own_desc(dev->desc[i]);
-> -	}
-> -
->   	gpiochip_remove(&dev->gc);
->   	/* i2c_del_adapter has finished removing all i2c devices from our
->   	 * adapter. Well behaved devices should no longer call our cp2112_xfer
+The first option involves copying 
+'linux/arch/x86/include/generated/uapi/asm/' to 'sysroot/x86/include/' 
+during the make of target headers_standalone.
+
+The second approach entails displaying an error message when the code 
+tree is not clean and prompting users to manually execute 'make 
+mrproper'. In this case, we can utilize the target 'outputmakefile' from 
+the root makefile directly.
+
+Willy, which method do you prefer? Do you have any alternative 
+suggestions? :)
+
+
+Besides. using x86_64-linux-gnu- won't reproduce this issue. It searched 
+and found 'asm/errno.h' in '/usr/include/x86_64-linux-gnu', whereas 
+'x86_64-linux' lacks these libraries.
+
+>
+> Best Regards,
+> Zhangjin
+>
+>> Thanks,
+>> Zhangjin
+>>
+>>> Thanks,
+>>> Willy
 
