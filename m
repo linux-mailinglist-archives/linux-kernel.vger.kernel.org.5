@@ -2,78 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E66A78989D
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 20:11:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E54437898A5
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 20:16:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231235AbjHZSKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 14:10:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46030 "EHLO
+        id S229832AbjHZSPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 14:15:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230465AbjHZSKZ (ORCPT
+        with ESMTP id S229522AbjHZSP0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 14:10:25 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4D0810FF
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 11:10:21 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-523b066d7ceso2696342a12.2
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 11:10:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693073420; x=1693678220;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4QiagJfRx5PmjGMtP0dUi7DvNIVha/t7dHrhZvI83zo=;
-        b=WsSgNBrqrlOgtnKRSmIfPV2pbGKqfKX1GCK0whPtAztjTVsT9PPs8OSoQxSvtsQJdF
-         D5Ndk9sTCcE4q9tyc77eUdIr2fBshZGlNcx2yrwpIRoSa5lIcr5zPKfu4Y1JzN+ViqUZ
-         1u359VPuql8fwxk3ebKBBU0lbyZ9VGWRruygvtu68RJjPWwa1MsUGw8XAGe5Ldpqdnss
-         9Ji0wJJhYWa+b91DpYAPLpnJO4GvlfTzPA7vBd3t9DJBizJqxuqR6WweN51WddUOEmGC
-         4Dm69tTgQpazyJ4CZNrryqIoUL0JIA0f8z+Acnw5snEqsp2PD/+IascZAwPD50xwewTz
-         pndA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693073420; x=1693678220;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4QiagJfRx5PmjGMtP0dUi7DvNIVha/t7dHrhZvI83zo=;
-        b=GhFrr8EcDlzTOJNKveqTWi8c37PqV3zhkP7vWJb6rpOf+eEKJSZYWO5lHVRaWLgyDS
-         UYGa0Of1Kb0itzh9M3dZ6W9EJLGdSvN/gJObZRWOc3+c03iANxBYFj5IcH7qEp+1JK5v
-         eNSgHBjF3ZNRdk0sdBZjYJ7fNr/ry5IkBTc4qpyaILWTe/aNL+cetiwLeOefNhf7qy5w
-         gPwFzs58XZzjFRMeU6wRnFD8lupKb8OTxejuwgtbc+ixiEKlWhx0+24SJ/Hz8EA1DHcb
-         L2OkS3EnnLyZ2x8vZjf5ka2V1+mpIGl/0glVUw4+FXU7R/cW904aU5uGh6Bi4MJAAZhn
-         Yq8A==
-X-Gm-Message-State: AOJu0Yyrd4oG4T4DrgZAGxGYoKHT2W4+lPSL+HHhEny7jX9A5Iu9bYfW
-        k6uOcJVV7FjP9UesRLVTzO4ZBw==
-X-Google-Smtp-Source: AGHT+IEFWoVX8d9z28lL17g6Z+qe5o8zR28N7GoXPVvbRQc4gaGzV9XT5uFIFnm8ML7Ge9ve5Sb9tQ==
-X-Received: by 2002:a17:906:1090:b0:99b:c8db:d92f with SMTP id u16-20020a170906109000b0099bc8dbd92fmr17059997eju.69.1693073420226;
-        Sat, 26 Aug 2023 11:10:20 -0700 (PDT)
-Received: from [192.168.0.22] ([77.252.47.198])
-        by smtp.gmail.com with ESMTPSA id q22-20020a170906361600b00982cfe1fe5dsm2452697ejb.65.2023.08.26.11.10.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 26 Aug 2023 11:10:19 -0700 (PDT)
-Message-ID: <6fd3a9ab-667d-934b-f1c2-03776be93d4d@linaro.org>
-Date:   Sat, 26 Aug 2023 20:10:18 +0200
+        Sat, 26 Aug 2023 14:15:26 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29155E0
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 11:15:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693073724; x=1724609724;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=sow/NUD0MSkiIp8x5GRqQtIOQTiTt/joLibtDQWus5o=;
+  b=H+VBWrnfRBXOS53nT4pGsY141OfFk6DVW0M4OFl/CGY3X31LsNNJE57+
+   LSDk7nsA+pyNTKzI4XCIsfsZYzI1B5A8oPi7S1It29MsxWWjOKtni2PuN
+   PJ3ySLolbp3WtjIwLHrOFAGpBCIes2kOh6uL+PafxHE5ixMhCW3QMQD/m
+   1/+gqXwqKUDG/0ABcEIIX1t5U4/DzAKe3Nlizt65kFn+dVMMfx8O1xd8T
+   +oIe8HIuOrQkPZKOnc49SMsL95l2u8LmmaPVPOa+X48N0wkvJhPEUaEQz
+   1M0S6/S6yo8yVrY3E29UAHOyE4Eh5b5gtM7MEACmpCq8vH2PcypXcuyBh
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10814"; a="378673437"
+X-IronPort-AV: E=Sophos;i="6.02,203,1688454000"; 
+   d="scan'208";a="378673437"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2023 11:15:23 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
+   d="scan'208";a="881491461"
+Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
+  by fmsmga001.fm.intel.com with ESMTP; 26 Aug 2023 11:15:24 -0700
+Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qZxoc-0004yF-2W;
+        Sat, 26 Aug 2023 18:15:18 +0000
+Date:   Sun, 27 Aug 2023 02:14:42 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Muchun Song <songmuchun@bytedance.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        David Hildenbrand <david@redhat.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        David Rientjes <rientjes@google.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Xiongchun Duan <duanxiongchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>
+Subject: Re: [PATCH 10/12] hugetlb: batch PMD split for bulk vmemmap dedup
+Message-ID: <202308270248.eJT8UDG3-lkp@intel.com>
+References: <20230825190436.55045-11-mike.kravetz@oracle.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v2 0/2] arm64: dts: exynos: Enable USB for E850-96 board
-Content-Language: en-US
-To:     Sam Protsenko <semen.protsenko@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Conor Dooley <conor+dt@kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        JaeHun Jung <jh0801.jung@samsung.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230825215445.28309-1-semen.protsenko@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230825215445.28309-1-semen.protsenko@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230825190436.55045-11-mike.kravetz@oracle.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,18 +79,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/08/2023 23:54, Sam Protsenko wrote:
-> This patch series enables USB gadget, USB host and Ethernet support for
-> E850-96 board. The most major change was done in USB PHY driver, as the
-> register layout of PHY block in Exynos850 is very different from
-> Exynos5 one.
-> 
-> Changes in v2:
+Hi Mike,
 
-Thank you for the patch. Looks good.
-It is too late in the cycle for me to pick it up. I will take it after
-the merge window.
+kernel test robot noticed the following build warnings:
 
-Best regards,
-Krzysztof
+[auto build test WARNING on next-20230825]
+[cannot apply to akpm-mm/mm-everything v6.5-rc7 v6.5-rc6 v6.5-rc5 linus/master v6.5-rc7]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
+url:    https://github.com/intel-lab-lkp/linux/commits/Mike-Kravetz/hugetlb-clear-flags-in-tail-pages-that-will-be-freed-individually/20230826-030805
+base:   next-20230825
+patch link:    https://lore.kernel.org/r/20230825190436.55045-11-mike.kravetz%40oracle.com
+patch subject: [PATCH 10/12] hugetlb: batch PMD split for bulk vmemmap dedup
+config: x86_64-randconfig-r031-20230826 (https://download.01.org/0day-ci/archive/20230827/202308270248.eJT8UDG3-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230827/202308270248.eJT8UDG3-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308270248.eJT8UDG3-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> mm/hugetlb_vmemmap.c:40: warning: Function parameter or member 'flags' not described in 'vmemmap_remap_walk'
+
+
+vim +40 mm/hugetlb_vmemmap.c
+
+f41f2ed43ca525 Muchun Song  2021-06-30  19  
+998a2997885f73 Muchun Song  2022-06-28  20  /**
+998a2997885f73 Muchun Song  2022-06-28  21   * struct vmemmap_remap_walk - walk vmemmap page table
+998a2997885f73 Muchun Song  2022-06-28  22   *
+998a2997885f73 Muchun Song  2022-06-28  23   * @remap_pte:		called for each lowest-level entry (PTE).
+998a2997885f73 Muchun Song  2022-06-28  24   * @nr_walked:		the number of walked pte.
+998a2997885f73 Muchun Song  2022-06-28  25   * @reuse_page:		the page which is reused for the tail vmemmap pages.
+998a2997885f73 Muchun Song  2022-06-28  26   * @reuse_addr:		the virtual address of the @reuse_page page.
+998a2997885f73 Muchun Song  2022-06-28  27   * @vmemmap_pages:	the list head of the vmemmap pages that can be freed
+998a2997885f73 Muchun Song  2022-06-28  28   *			or is mapped from.
+506a27a4627ab7 Joao Martins 2023-08-25  29   * @flags		used to modify behavior in bulk operations
+998a2997885f73 Muchun Song  2022-06-28  30   */
+998a2997885f73 Muchun Song  2022-06-28  31  struct vmemmap_remap_walk {
+998a2997885f73 Muchun Song  2022-06-28  32  	void			(*remap_pte)(pte_t *pte, unsigned long addr,
+998a2997885f73 Muchun Song  2022-06-28  33  					     struct vmemmap_remap_walk *walk);
+998a2997885f73 Muchun Song  2022-06-28  34  	unsigned long		nr_walked;
+998a2997885f73 Muchun Song  2022-06-28  35  	struct page		*reuse_page;
+998a2997885f73 Muchun Song  2022-06-28  36  	unsigned long		reuse_addr;
+998a2997885f73 Muchun Song  2022-06-28  37  	struct list_head	*vmemmap_pages;
+506a27a4627ab7 Joao Martins 2023-08-25  38  #define VMEMMAP_REMAP_ONLY_SPLIT	BIT(0)
+506a27a4627ab7 Joao Martins 2023-08-25  39  	unsigned long		flags;
+998a2997885f73 Muchun Song  2022-06-28 @40  };
+998a2997885f73 Muchun Song  2022-06-28  41  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
