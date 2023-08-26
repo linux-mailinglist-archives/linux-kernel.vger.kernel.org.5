@@ -2,81 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D032D789919
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 22:41:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36ECF78991A
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 22:43:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229650AbjHZUlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 16:41:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46720 "EHLO
+        id S229635AbjHZUm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 16:42:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbjHZUk7 (ORCPT
+        with ESMTP id S229613AbjHZUmD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 16:40:59 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67E04E50;
-        Sat, 26 Aug 2023 13:40:56 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-4ffa94a7a47so3075766e87.1;
-        Sat, 26 Aug 2023 13:40:56 -0700 (PDT)
+        Sat, 26 Aug 2023 16:42:03 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C17EE6A
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 13:41:59 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-4013454fa93so17554125e9.0
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 13:41:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693082455; x=1693687255;
+        d=layalina-io.20221208.gappssmtp.com; s=20221208; t=1693082518; x=1693687318;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=EvG4wr4iVEOqhfUZzSb/rbAgbd3Kb/9kFhAnVt5rwHk=;
-        b=dzcLr8lM4n5dq3VrJTw/OlM2ANfWWa/Tqs9YtwEqBY0yAtQ2dX8mSaTTiPo3v/oipD
-         v3n8A6S9Zbld3Kj3dkKNheL+xFZY3/x6d7q66ZeCGvv0W+ukIIxHl0zY5hdAleYJOVTW
-         k3xF7EULH1d8pFaUKZRnnGSlF7YRiBcrg+gflMz5o3axgEFDWk+ZnZzYuceE3OIfCD3w
-         kZx/Hav14vM/NPWsPna5GOuI/ZWfrIiLVOeDNYiXe7BaoApKQUOTchplTCPuS2enJcix
-         UoiqxxOm6fjE8pq3U2JKqlai5vVRbIxH7Mv7npFpeHa9616zgLJcmVOLjpXpvSVTQMbc
-         q4tA==
+        bh=E7YN0wCnIq+t8XafVYpgVaLqsH4A98UuAWrQzG8X/LI=;
+        b=StCsZmo1lPqed69uGsGJWmupb8iSz/a6VVg2PD/Nv/ReJW2pZekZcq5JFq+OTiS6pA
+         xCkiOcLRjDwVCihnDmdbHE0Vb0BVYqE+JwTB5NvZWfqyqDcO0U/1YbNrviNaWnuFg+R6
+         KJz5ZlYY7EN3YKUEnKRRgqt9ulaupDqTk0+DTz6HTr+S6boK3s1Yt4bRhZxe79ZcLoRC
+         8hLHG39Uc+7JChFRvfko1cAs+eWOZgBErF0V3nZyn6pfc8nz8a6fHadtLcRlj+qS6eYL
+         RMQ4q2Ge0I2f8+0SESEapP7IFGKRo3XC6tc+5gBYcqa+IhWOb9UM5pj9AzOBQhX2E2XJ
+         SqpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693082455; x=1693687255;
+        d=1e100.net; s=20221208; t=1693082518; x=1693687318;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=EvG4wr4iVEOqhfUZzSb/rbAgbd3Kb/9kFhAnVt5rwHk=;
-        b=Pb2m1yWX29PizNA2V2oDF+fZXt68o8Z83HWDbaLH58sdVpKjKvO3cxDEVCZ5pae3uM
-         Apir/rJLZgt2HRVZR/9jICuyC+rbDuoMfTPn/D2F2aJyklgojBiSGSmwhH9WOxazcCJV
-         SM+UDuiAQM6uzUQuVyDQn+d3SS+lPQpvCm/C3czFyVT4PXSt18Zomk4mJLay7llST1w7
-         tMuQO5EVNEwGWaLmQ05R2Waba2m5rbugJCZgiKNu3kAoJAQK2lO/ATxbtv1GUWEjWlq8
-         lbQ1VEbi8c3TTj/EsYL2QQO2xrIfKFo3AogFDxUdwbPzSvLEg5qXYnwHMSeyAMLSyk9i
-         5Eow==
-X-Gm-Message-State: AOJu0Yx/3+zob1KU3tTx/X+5lAo5BxntrIOaHXDWWVDjGpAHkzkzsgef
-        wnyxmcfknn7k+uldhbecVX8=
-X-Google-Smtp-Source: AGHT+IHKnx/jrbpmi6HUdQjO6eVO23NAjYtT85NNpJDXainqmB71ji74epTI3vz2D8Quskw9Wca82g==
-X-Received: by 2002:a05:6512:34c6:b0:4fe:1dc8:7ec with SMTP id w6-20020a05651234c600b004fe1dc807ecmr12777646lfr.37.1693082454161;
-        Sat, 26 Aug 2023 13:40:54 -0700 (PDT)
-Received: from mobilestation ([95.79.200.178])
-        by smtp.gmail.com with ESMTPSA id i1-20020a056512006100b004ff9ee35739sm837500lfo.283.2023.08.26.13.40.52
+        bh=E7YN0wCnIq+t8XafVYpgVaLqsH4A98UuAWrQzG8X/LI=;
+        b=EeRoBNpleNwICMGYuDKsn1gKo1DYa2rUxcEbjTl6v2CZTEwtVRXhrtKUuxRGzD3hGb
+         PNWNuNhN7qIEKxyEcSX1Ls9jsUKoAjCtxTC21XLGGU5p26M7anNXbCwri9R3l6pAUVJp
+         vGLJFWcbiMEnet9Dh9/1UL4i4mCcXkQ/XH5wnpACzTdlFO1hvO10zq7cBjaTHqsAQwf/
+         EOZjFcphQ6WQHl/ml8L184Um/48/McjCUiOOaN5HZjajQbosGsxEfRcI5UpCypMX+9AF
+         zqbNBS23Rt7nE3M0Zez5mFUXSmuBQGbXArgGtDZhVtZQCp/Ce1El2wLUBDdAzEJ7X/3m
+         ee/A==
+X-Gm-Message-State: AOJu0YyXDJLQXagZiz3NZCU3OQS95C3ZFYDVl5cc/0xwhu6mAli4ekU4
+        HunN87jylGImch4ttVNoJiE8PA==
+X-Google-Smtp-Source: AGHT+IGkpLKXHWWbAJl9BDM6aWVZGrb69jLmc5BIgx+3cnaEzs0eZFHYSRP3GNwtTxzSUcdGEF6iig==
+X-Received: by 2002:a7b:cb96:0:b0:401:b53e:6c54 with SMTP id m22-20020a7bcb96000000b00401b53e6c54mr4034046wmi.7.1693082518031;
+        Sat, 26 Aug 2023 13:41:58 -0700 (PDT)
+Received: from airbuntu (host109-151-228-137.range109-151.btcentralplus.com. [109.151.228.137])
+        by smtp.gmail.com with ESMTPSA id f2-20020a7bcd02000000b003fba6a0c881sm9153780wmj.43.2023.08.26.13.41.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 26 Aug 2023 13:40:53 -0700 (PDT)
-Date:   Sat, 26 Aug 2023 23:40:51 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Keguang Zhang <keguang.zhang@gmail.com>
-Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Subject: Re: [PATCH v3 3/4] net: stmmac: Add glue layer for Loongson-1 SoC
-Message-ID: <c3k77fijjiq6osz53jbryulm77f2hmmk6jpiptzthokuzg4tpt@d7h6x7a3dbdg>
-References: <20230824125012.1040288-1-keguang.zhang@gmail.com>
- <20230824125012.1040288-4-keguang.zhang@gmail.com>
+        Sat, 26 Aug 2023 13:41:57 -0700 (PDT)
+Date:   Sat, 26 Aug 2023 21:41:56 +0100
+From:   Qais Yousef <qyousef@layalina.io>
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel@vger.kernel.org, Lukasz Luba <lukasz.luba@arm.com>,
+        Wei Wang <wvw@google.com>, Xuewen Yan <xuewen.yan94@gmail.com>,
+        Hank <han.lin@mediatek.com>,
+        Jonathan JMChen <Jonathan.JMChen@mediatek.com>,
+        Hongyan Xia <hongyan.xia2@arm.com>
+Subject: Re: [PATCH v4 1/3] sched/uclamp: Set max_spare_cap_cpu even if
+ max_spare_cap is 0
+Message-ID: <20230826204156.5gznalle6qzwl7y3@airbuntu>
+References: <20230821224504.710576-1-qyousef@layalina.io>
+ <20230821224504.710576-2-qyousef@layalina.io>
+ <d5407fdf-8e49-1035-3188-f96248c96c44@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230824125012.1040288-4-keguang.zhang@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <d5407fdf-8e49-1035-3188-f96248c96c44@arm.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,419 +79,139 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 08:50:11PM +0800, Keguang Zhang wrote:
-> This glue driver is created based on the arch-code
-> implemented earlier with the platform-specific settings.
+On 08/23/23 12:30, Dietmar Eggemann wrote:
+> On 22/08/2023 00:45, Qais Yousef wrote:
+> > When uclamp_max is being used, the util of the task could be higher than
+> > the spare capacity of the CPU, but due to uclamp_max value we force fit
+> > it there.
+> > 
+> > The way the condition for checking for max_spare_cap in
+> > find_energy_efficient_cpu() was constructed; it ignored any CPU that has
+> > its spare_cap less than or _equal_ to max_spare_cap. Since we initialize
+> > max_spare_cap to 0; this lead to never setting max_spare_cap_cpu and
+> > hence ending up never performing compute_energy() for this cluster and
+> > missing an opportunity for a better energy efficient placement to honour
+> > uclamp_max setting.
+> > 
+> > 	max_spare_cap = 0;
+> > 	cpu_cap = capacity_of(cpu) - task_util(p);  // 0 if task_util(p) is high
 > 
-> Use syscon for SYSCON register access.
+> Nitpick:
 > 
-> Partially based on the previous work by Serge Semin.
+> s/task_util(p)/cpu_util(cpu, p, cpu, ...) which is
 > 
-> Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
-> ---
-> V2 -> V3: Determine the device ID by physical
->           base address(suggested by Serge Semin)
->           Use regmap instead of regmap fields
->           Use syscon_regmap_lookup_by_phandle()
->           Some minor fixes
-> V1 -> V2: Fix the build errors due to CONFIG_OF being unset
->           Change struct reg_field definitions to const
->           Rename the syscon property to "loongson,dwmac-syscon"
->           Add MII PHY mode for LS1C
+> max(cpu_util + task_util, cpu_util_est + task_util_est)
 > 
->  drivers/net/ethernet/stmicro/stmmac/Kconfig   |  11 +
->  drivers/net/ethernet/stmicro/stmmac/Makefile  |   1 +
->  .../ethernet/stmicro/stmmac/dwmac-loongson1.c | 240 ++++++++++++++++++
->  3 files changed, 252 insertions(+)
->  create mode 100644 drivers/net/ethernet/stmicro/stmmac/dwmac-loongson1.c
+> > 
+> > 	...
+> > 
+> > 	util_fits_cpu(...);		// will return true if uclamp_max forces it to fit
+> > 
+> > 	...
+> > 
+> > 	// this logic will fail to update max_spare_cap_cpu if cpu_cap is 0
+> > 	if (cpu_cap > max_spare_cap) {
+> > 		max_spare_cap = cpu_cap;
+> > 		max_spare_cap_cpu = cpu;
+> > 	}
+> > 
+> > prev_spare_cap suffers from a similar problem.
+> > 
+> > Fix the logic by converting the variables into long and treating -1
+> > value as 'not populated' instead of 0 which is a viable and correct
+> > spare capacity value. We need to be careful signed comparison is used
+> > when comparing with cpu_cap in one of the conditions.
+> > 
+> > Fixes: 1d42509e475c ("sched/fair: Make EAS wakeup placement consider uclamp restrictions")
+> > Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+> > Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
+> > ---
+> >  kernel/sched/fair.c | 11 +++++------
+> >  1 file changed, 5 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index 0b7445cd5af9..5da6538ed220 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -7707,11 +7707,10 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
+> >  	for (; pd; pd = pd->next) {
+> >  		unsigned long util_min = p_util_min, util_max = p_util_max;
+> >  		unsigned long cpu_cap, cpu_thermal_cap, util;
+> > -		unsigned long cur_delta, max_spare_cap = 0;
+> > +		long prev_spare_cap = -1, max_spare_cap = -1;
+> >  		unsigned long rq_util_min, rq_util_max;
+> > -		unsigned long prev_spare_cap = 0;
+> > +		unsigned long cur_delta, base_energy;
+> >  		int max_spare_cap_cpu = -1;
+> > -		unsigned long base_energy;
+> >  		int fits, max_fits = -1;
+> >  
+> >  		cpumask_and(cpus, perf_domain_span(pd), cpu_online_mask);
+> > @@ -7774,7 +7773,7 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
+> >  				prev_spare_cap = cpu_cap;
+> >  				prev_fits = fits;
+> >  			} else if ((fits > max_fits) ||
+> > -				   ((fits == max_fits) && (cpu_cap > max_spare_cap))) {
+> > +				   ((fits == max_fits) && ((long)cpu_cap > max_spare_cap))) {
+> >  				/*
+> >  				 * Find the CPU with the maximum spare capacity
+> >  				 * among the remaining CPUs in the performance
+> > @@ -7786,7 +7785,7 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
+> >  			}
+> >  		}
+> >  
+> > -		if (max_spare_cap_cpu < 0 && prev_spare_cap == 0)
+> > +		if (max_spare_cap_cpu < 0 && prev_spare_cap < 0)
+> >  			continue;
+> >  
+> >  		eenv_pd_busy_time(&eenv, cpus, p);
+> > @@ -7794,7 +7793,7 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
+> >  		base_energy = compute_energy(&eenv, pd, cpus, p, -1);
+> >  
+> >  		/* Evaluate the energy impact of using prev_cpu. */
+> > -		if (prev_spare_cap > 0) {
+> > +		if (prev_spare_cap > -1) {
+> >  			prev_delta = compute_energy(&eenv, pd, cpus, p,
+> >  						    prev_cpu);
+> >  			/* CPU utilization has changed */
 > 
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/Kconfig b/drivers/net/ethernet/stmicro/stmmac/Kconfig
-> index 06c6871f8788..a2b9e289aa36 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/Kconfig
-> +++ b/drivers/net/ethernet/stmicro/stmmac/Kconfig
-> @@ -239,6 +239,17 @@ config DWMAC_INTEL_PLAT
->  	  the stmmac device driver. This driver is used for the Intel Keem Bay
->  	  SoC.
->  
-> +config DWMAC_LOONGSON1
-> +	tristate "Loongson1 GMAC support"
-> +	default MACH_LOONGSON32
-> +	depends on OF && (MACH_LOONGSON32 || COMPILE_TEST)
-> +	help
-> +	  Support for ethernet controller on Loongson1 SoC.
-> +
-> +	  This selects Loongson1 SoC glue layer support for the stmmac
-> +	  device driver. This driver is used for Loongson1-based boards
-> +	  like Loongson LS1B/LS1C.
-> +
->  config DWMAC_TEGRA
->  	tristate "NVIDIA Tegra MGBE support"
->  	depends on ARCH_TEGRA || COMPILE_TEST
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/Makefile b/drivers/net/ethernet/stmicro/stmmac/Makefile
-> index 5b57aee19267..80e598bd4255 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/Makefile
-> +++ b/drivers/net/ethernet/stmicro/stmmac/Makefile
-> @@ -29,6 +29,7 @@ obj-$(CONFIG_DWMAC_SUNXI)	+= dwmac-sunxi.o
->  obj-$(CONFIG_DWMAC_SUN8I)	+= dwmac-sun8i.o
->  obj-$(CONFIG_DWMAC_DWC_QOS_ETH)	+= dwmac-dwc-qos-eth.o
->  obj-$(CONFIG_DWMAC_INTEL_PLAT)	+= dwmac-intel-plat.o
-> +obj-$(CONFIG_DWMAC_LOONGSON1)	+= dwmac-loongson1.o
->  obj-$(CONFIG_DWMAC_GENERIC)	+= dwmac-generic.o
->  obj-$(CONFIG_DWMAC_IMX8)	+= dwmac-imx.o
->  obj-$(CONFIG_DWMAC_TEGRA)	+= dwmac-tegra.o
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-loongson1.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-loongson1.c
-> new file mode 100644
-> index 000000000000..347d842141e4
-> --- /dev/null
-> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-loongson1.c
-> @@ -0,0 +1,240 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Loongson-1 DWMAC glue layer
-> + *
-> + * Copyright (C) 2011-2023 Keguang Zhang <keguang.zhang@gmail.com>
-> + */
-> +
-> +#include <linux/mfd/syscon.h>
-> +#include <linux/module.h>
-> +#include <linux/of.h>
-> +#include <linux/phy.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/regmap.h>
-> +
-> +#include "stmmac.h"
-> +#include "stmmac_platform.h"
-> +
-> +#define LS1X_GMAC0_BASE		(0xe10000)
-
-> +#define LS1X_GMAC1_BASE		(0xe20000)
-
-If LS1C doesn't have the second GMAC then what about changing the
-macros name to LS1B_GMAC1_BASE?
-
-> +
-> +/* Loongson-1 SYSCON Registers */
-> +#define LS1X_SYSCON0		(0x0)
-> +#define LS1X_SYSCON1		(0x4)
-> +
-> +/* Loongson-1B SYSCON Register Bits */
-
-> +#define GMAC1_USE_UART1		BIT(4)
-> +#define GMAC1_USE_UART0		BIT(3)
-> +
-> +#define GMAC1_SHUT		BIT(13)
-> +#define GMAC0_SHUT		BIT(12)
-> +
-> +#define GMAC1_USE_TXCLK		BIT(3)
-> +#define GMAC0_USE_TXCLK		BIT(2)
-> +#define GMAC1_USE_PWM23		BIT(1)
-> +#define GMAC0_USE_PWM01		BIT(0)
-> +
-> +/* Loongson-1C SYSCON Register Bits */
-> +#define GMAC_SHUT		BIT(6)
-> +
-> +#define PHY_INTF_SELI		GENMASK(30, 28)
-
-IMO having the SoC-specific prefixes (LS1B_ and LS1C_) in these names
-would make the driver a bit more readable. But it's up to you to
-decide.
-
-> +#define PHY_INTF_SELI_SHIFT	28
-
-Use FIELD_PREP():
-#define PHY_INTF_MII			FIELD_PREP(PHY_INTF_SELI, 0)
-#define PHY_INTF_RMII			FIELD_PREP(PHY_INTF_SELI, 4)
-
-> +
-> +struct ls1x_dwmac_syscon {
-> +	int (*syscon_init)(struct plat_stmmacenet_data *plat);
-> +};
-
-This struct is redundant. See further for details.
-
-> +
-> +struct ls1x_dwmac {
-
-> +	unsigned long reg_base;
-
-this field
-
-> +	struct device *dev;
-
-> +	struct plat_stmmacenet_data *plat_dat;
-> +	const struct ls1x_dwmac_syscon *syscon;
-
-and these fields are also redundant. See further for details.
-
-> +	struct regmap *regmap;
-> +};
-> +
-> +static int ls1b_dwmac_syscon_init(struct plat_stmmacenet_data *plat)
-> +{
-> +	struct ls1x_dwmac *dwmac = plat->bsp_priv;
-> +	struct regmap *regmap = dwmac->regmap;
-> +
-
-> +	if ((dwmac->reg_base & LS1X_GMAC0_BASE) == LS1X_GMAC0_BASE) {
-
-Is it necessary to bitwise-and-ing? What if LS1X_GMAC0_BASE would be
-just a full physical base address? Then you'll be able to just compare
-the base addresses.
-
-> +		switch (plat->phy_interface) {
-> +		case PHY_INTERFACE_MODE_RGMII_ID:
-> +			regmap_update_bits(regmap, LS1X_SYSCON0,
-> +					   GMAC0_USE_TXCLK | GMAC0_USE_PWM01,
-> +					   0);
-> +			break;
-> +		case PHY_INTERFACE_MODE_MII:
-> +			regmap_update_bits(regmap, LS1X_SYSCON0,
-> +					   GMAC0_USE_TXCLK | GMAC0_USE_PWM01,
-> +					   GMAC0_USE_TXCLK | GMAC0_USE_PWM01);
-> +			break;
-> +		default:
-> +			dev_err(dwmac->dev, "Unsupported PHY mode %u\n",
-> +				plat->phy_interface);
-> +			return -EOPNOTSUPP;
-> +		}
-> +
-> +		regmap_update_bits(regmap, LS1X_SYSCON0, GMAC0_SHUT, 0);
-
-> +	}
-> +
-> +	if ((dwmac->reg_base & LS1X_GMAC1_BASE) == LS1X_GMAC1_BASE) {
-
-else if?
-
-> +		regmap_update_bits(regmap, LS1X_SYSCON0,
-> +				   GMAC1_USE_UART1 | GMAC1_USE_UART0,
-> +				   GMAC1_USE_UART1 | GMAC1_USE_UART0);
-> +
-> +		switch (plat->phy_interface) {
-> +		case PHY_INTERFACE_MODE_RGMII_ID:
-> +			regmap_update_bits(regmap, LS1X_SYSCON1,
-> +					   GMAC1_USE_TXCLK | GMAC1_USE_PWM23,
-> +					   0);
-> +
-> +			break;
-> +		case PHY_INTERFACE_MODE_MII:
-> +			regmap_update_bits(regmap, LS1X_SYSCON1,
-> +					   GMAC1_USE_TXCLK | GMAC1_USE_PWM23,
-> +					   GMAC1_USE_TXCLK | GMAC1_USE_PWM23);
-> +			break;
-> +		default:
-> +			dev_err(dwmac->dev, "Unsupported PHY mode %u\n",
-> +				plat->phy_interface);
-> +			return -EOPNOTSUPP;
-> +		}
-> +
-> +		regmap_update_bits(regmap, LS1X_SYSCON1, GMAC1_SHUT, 0);
-
-> +	}
-
-else {
-	dev_err(...)
-	return -EINVAL;
-}
-?
-
-* unless you have some more DW GMACs on the SoC which don't require the
-syscon setups.
-
-> +
-> +	return 0;
-> +}
-> +
-> +static int ls1c_dwmac_syscon_init(struct plat_stmmacenet_data *plat)
-> +{
-> +	struct ls1x_dwmac *dwmac = plat->bsp_priv;
-> +	struct regmap *regmap = dwmac->regmap;
-> +
-> +	switch (plat->phy_interface) {
-> +	case PHY_INTERFACE_MODE_MII:
-
-> +		regmap_update_bits(regmap, LS1X_SYSCON1, PHY_INTF_SELI, 0);
-
-
-		regmap_update_bits(regmap, LS1X_SYSCON1, PHY_INTF_SELI,
-				   PHY_INTF_MII);
-
-> +		break;
-> +	case PHY_INTERFACE_MODE_RMII:
-
-> +		regmap_update_bits(regmap, LS1X_SYSCON1, PHY_INTF_SELI,
-> +				   4 << PHY_INTF_SELI_SHIFT);
-
-		regmap_update_bits(regmap, LS1X_SYSCON1, PHY_INTF_SELI,
-				   PHY_INTF_RMII);
-
-> +		break;
-> +	default:
-> +		dev_err(dwmac->dev, "Unsupported PHY-mode %u\n",
-> +			plat->phy_interface);
-> +		return -EOPNOTSUPP;
-> +	}
-> +
-> +	regmap_update_bits(regmap, LS1X_SYSCON0, GMAC0_SHUT, 0);
-> +
-> +	return 0;
-> +}
-> +
-
-> +static const struct ls1x_dwmac_syscon ls1b_dwmac_syscon = {
-> +	.syscon_init = ls1b_dwmac_syscon_init,
-> +};
-> +
-> +static const struct ls1x_dwmac_syscon ls1c_dwmac_syscon = {
-> +	.syscon_init = ls1c_dwmac_syscon_init,
-> +};
-
-This can be dropped. See the next comment for details.
-
-> +
-> +static int ls1x_dwmac_init(struct platform_device *pdev, void *priv)
-> +{
-> +	struct ls1x_dwmac *dwmac = priv;
-> +	struct resource *res;
-> +	int ret;
-> +
-
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	if (!res) {
-> +		dev_err(&pdev->dev, "Could not get IO_MEM resources\n");
-> +		return -EINVAL;
-> +	}
-> +	dwmac->reg_base = (unsigned long)res->start;
-
-What about moving this to ls1b_dwmac_syscon_init() seeing it's used
-for LS1B only? Thus you won't need to have the reg_base defined in the
-private data and can get rid from the ls1x_dwmac_init() method setting
-the ls1b_dwmac_syscon_init() and ls1c_dwmac_syscon_init() pointers
-directly to the device match data.
-
-> +
-> +	if (dwmac->syscon->syscon_init) {
-> +		ret = dwmac->syscon->syscon_init(dwmac->plat_dat);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int ls1x_dwmac_probe(struct platform_device *pdev)
-> +{
-> +	struct plat_stmmacenet_data *plat_dat;
-> +	struct stmmac_resources stmmac_res;
-> +	struct regmap *regmap;
-> +	struct ls1x_dwmac *dwmac;
-
-> +	const struct ls1x_dwmac_syscon *syscon;
-
-This can be replaced with just
-int (*init)(struct platform_device *pdev, void *priv);
-
-> +	int ret;
-> +
-> +	ret = stmmac_get_platform_resources(pdev, &stmmac_res);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* Probe syscon */
-> +	regmap = syscon_regmap_lookup_by_phandle(pdev->dev.of_node,
-> +						 "loongson,ls1-syscon");
-> +	if (IS_ERR(regmap)) {
-
-> +		ret = PTR_ERR(regmap);
-> +		dev_err(&pdev->dev, "Unable to map syscon: %d\n", ret);
-> +		return ret;
-
-return dev_err_probe(&pdev->dev, PTR_ERR(regmap), "Unable to find syscon\n");
-
-> +	}
-> +
-
-> +	syscon = of_device_get_match_data(&pdev->dev);
-
-init = of_device_get_match_data(&pdev->dev);
-
-> +	if (!syscon) {
-> +		dev_err(&pdev->dev, "No of match data provided\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	dwmac = devm_kzalloc(&pdev->dev, sizeof(*dwmac), GFP_KERNEL);
-> +	if (!dwmac)
-> +		return -ENOMEM;
-> +
-> +	plat_dat = stmmac_probe_config_dt(pdev, stmmac_res.mac);
-> +	if (IS_ERR(plat_dat)) {
-> +		dev_err(&pdev->dev, "dt configuration failed\n");
-> +		return PTR_ERR(plat_dat);
-> +	}
-> +
-> +	plat_dat->bsp_priv = dwmac;
-
-> +	plat_dat->init = ls1x_dwmac_init;
-
-plat_dat->init = init;
-
-> +	dwmac->dev = &pdev->dev;
-> +	dwmac->plat_dat = plat_dat;
-> +	dwmac->syscon = syscon;
-> +	dwmac->regmap = regmap;
-> +
-> +	ret = stmmac_pltfr_probe(pdev, plat_dat, &stmmac_res);
-> +	if (ret)
-> +		goto err_remove_config_dt;
-> +
-> +	return 0;
-> +
-> +err_remove_config_dt:
-> +	stmmac_remove_config_dt(pdev, plat_dat);
-> +
-> +	return ret;
-> +}
-> +
-> +static const struct of_device_id ls1x_dwmac_match[] = {
-
-> +	{ .compatible = "loongson,ls1b-gmac", .data = &ls1b_dwmac_syscon, },
-> +	{ .compatible = "loongson,ls1c-emac", .data = &ls1c_dwmac_syscon, },
-
-{ .compatible = "loongson,ls1b-gmac", .data = &ls1b_dwmac_syscon_init, },
-{ .compatible = "loongson,ls1c-emac", .data = &ls1c_dwmac_syscon_init, },
-
-Thus you can simplify the driver by:
-1. dropping ls1x_dwmac_syscon definition and its instances.
-2. dropping three redundant fields from the ls1x_dwmac structure.
-3. dropping the ls1x_dwmac_init() method.
-Sounds like worth it.)
-
-Note if no further driver update is planned then you can drop the
-ls1x_dwmac->dev field too. Otherwise you can keep it seeing some of
-the plat_stmmacenet_data data callbacks do have any device instance
-passed.
-
--Serge(y)
-
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(of, ls1x_dwmac_match);
-> +
-> +static struct platform_driver ls1x_dwmac_driver = {
-> +	.probe = ls1x_dwmac_probe,
-> +	.remove_new = stmmac_pltfr_remove,
-> +	.driver = {
-> +		.name = "loongson1-dwmac",
-> +		.of_match_table = ls1x_dwmac_match,
-> +	},
-> +};
-> +module_platform_driver(ls1x_dwmac_driver);
-> +
-> +MODULE_AUTHOR("Keguang Zhang <keguang.zhang@gmail.com>");
-> +MODULE_DESCRIPTION("Loongson1 DWMAC glue layer");
-> +MODULE_LICENSE("GPL");
-> -- 
-> 2.39.2
+> We still need a solution to deal with situations in which `pd + task
+> contribution` > `pd_capacity`:
 > 
+>   compute_energy()
 > 
+>     if (dst_cpu >= 0)
+>      busy_time = min(pd_capacity, pd_busy_time + task_busy_time);
+>                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>                                   pd + task contribution
+> 
+> busy_time is based on util (ENERGY_UTIL), not on the uclamp values
+> (FREQUENCY_UTIL) we try to fit into a PD (and finally onto a CPU).
+> 
+> With that as a reminder for us and the change in the cover letter:
+
+This is not being ignored, but I don't see this as an urgent problem too. There
+are more pressing issues that make uclamp_max not effective in practice, and
+this ain't a bottleneck yet. Actually it might be doing a good thing as there's
+a desire to keep those tasks away on smallest CPU. But we shall visit this
+later for sure, don't worry :-) Ultimately we want EAS algorithm to be the
+judge of best placement for sure.
+
+I hope to send patches to address load balancer and max aggregation issues in
+the coming weeks.
+
+> 
+> Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+
+Thanks for the review!
+
+I will wait for the maintainers to see if they would like a v5 to address the
+nitpicks or it's actually good enough and happy to pick this up. I think the
+commit messages explain the problem clear enough and doesn't warrant sending
+a new version. But happy to do so if there's insistence :-)
+
+
+Thanks!
+
+--
+Qais Yousef
