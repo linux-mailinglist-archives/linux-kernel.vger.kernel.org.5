@@ -2,131 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0415F7897CB
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 17:44:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAC0E7897C7
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 17:42:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229922AbjHZPo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 11:44:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47330 "EHLO
+        id S230241AbjHZPmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 11:42:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229816AbjHZPoK (ORCPT
+        with ESMTP id S229922AbjHZPmK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 11:44:10 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F3EE19AE
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 08:44:08 -0700 (PDT)
+        Sat, 26 Aug 2023 11:42:10 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 160AD199F
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 08:42:08 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1EB80621EF
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 15:44:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C752C433C7;
-        Sat, 26 Aug 2023 15:44:07 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9F4ED6112E
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 15:42:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94860C433C8;
+        Sat, 26 Aug 2023 15:42:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693064647;
-        bh=6yWhPECgcUGQ5JtYMmktOSLpS0LUf06+NSiTp8Vohoo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=DcEiS45l04OgUcdiZTtE4q2/1NA695sO9rOuZ7VvMeA5pbpxtvK2e/k6x/neKTj3E
-         jP6TX0IntedLpZJuBUBj0uL8U4/y1HX/RuCdwHUXgWgqVgsoUfuaBf1dO/BZLy63IZ
-         7RC5pvKLigxraIpEOcmjwPLrHMreCG8JvllMioUdDIWrsVIxQRtC0MFX5hWwBlhvon
-         B/EEZ1sRx1IERWcnLQrQ1SdL8V9p2lGQTDKshDLdw+quvib885BwVe8Zbd1PhnDhpq
-         geRNNOSQ1SN/BHk36tO3gnebDqUcEYqf0xOI091YIpAC/Qdvuw43T2Zonm+5lx+EAn
-         JDqEHvEocPeQA==
-Received: from johan by xi.lan with local (Exim 4.96)
-        (envelope-from <johan+linaro@kernel.org>)
-        id 1qZvSJ-0000O6-2G;
-        Sat, 26 Aug 2023 17:44:08 +0200
-From:   Johan Hovold <johan+linaro@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>, Marc Zyngier <maz@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Johan Hovold <johan+linaro@kernel.org>,
-        Shanker Donthineni <sdonthineni@nvidia.com>
-Subject: [PATCH] genirq: Fix software resend lockup and nested resend
-Date:   Sat, 26 Aug 2023 17:40:04 +0200
-Message-ID: <20230826154004.1417-1-johan+linaro@kernel.org>
-X-Mailer: git-send-email 2.41.0
+        s=k20201202; t=1693064527;
+        bh=hOaNCqqt27RWOnKw81xQYpQ0mlMIgLKh1VaZrPKzs4c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MBLSqgPaK8znE1cGYxx00KU1Ur1R1EOPeQ+HgKag7E6IpocWl4u8O/3CvMXwftiSH
+         AkoTtSAm6Ip4mPwZv3dXTWkpx1WRz+lhGLYQYEqcHNKsrfRtWyukTlcdgCFM1rhsTU
+         /cN9X8JQX3i68PM3GJXinYVPs2VDrZJ6d/7WXd0IjCs0knVIjy3eeXW9KRZRgh3zLS
+         lYu4pq9s0Ri9oWcMMAVXDzlWyMAT7KVAZDFK0OsWeGJdZ6sMaRXSGPyGVhiqIxhb0v
+         Z1jIK7xamY3LMPU6IDdFt9JQiVEMjySzykL/psu4THQHhuf9SYNJ4TIpCQBx1Dqurf
+         elMoXNLjCVHMw==
+Date:   Sat, 26 Aug 2023 08:42:05 -0700
+From:   Josh Poimboeuf <jpoimboe@kernel.org>
+To:     Nikolay Borisov <nik.borisov@suse.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Babu Moger <babu.moger@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>, David.Kaplan@amd.com,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        gregkh@linuxfoundation.org, Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 22/23] x86/nospec: Refactor UNTRAIN_RET[_*]
+Message-ID: <20230826154205.6ejzfk6mmrrtvsm5@treble>
+References: <cover.1692919072.git.jpoimboe@kernel.org>
+ <d9ad341e6ce84ccdbd3924615f4a47b3d7b19942.1692919072.git.jpoimboe@kernel.org>
+ <4f9ea97a-7023-f2b5-8dc8-3ce208197b28@suse.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <4f9ea97a-7023-f2b5-8dc8-3ce208197b28@suse.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The switch to using hlist for managing software resend of interrupts
-broke resend in at least two ways:
+On Fri, Aug 25, 2023 at 09:22:10PM +0300, Nikolay Borisov wrote:
+> 
+> 
+> On 25.08.23 г. 10:01 ч., Josh Poimboeuf wrote:
+> > Factor out the UNTRAIN_RET[_*] common bits into a helper macro.
+> > 
+> > Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
+> > ---
+> >   arch/x86/include/asm/nospec-branch.h | 31 +++++++++-------------------
+> >   1 file changed, 10 insertions(+), 21 deletions(-)
+> > 
+> > diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
+> > index 51e3f1a287d2..dcc78477a38d 100644
+> > --- a/arch/x86/include/asm/nospec-branch.h
+> > +++ b/arch/x86/include/asm/nospec-branch.h
+> > @@ -288,35 +288,24 @@
+> >    * As such, this must be placed after every *SWITCH_TO_KERNEL_CR3 at a point
+> >    * where we have a stack but before any RET instruction.
+> >    */
+> > -.macro UNTRAIN_RET
+> > +.macro __UNTRAIN_RET ibpb_feature, call_depth_insns
+> >   #if defined(CONFIG_RETHUNK) || defined(CONFIG_CPU_IBPB_ENTRY)
+> >   	VALIDATE_UNRET_END
+> >   	ALTERNATIVE_3 "",						\
+> >   		      CALL_UNTRAIN_RET, X86_FEATURE_UNRET,		\
+> > -		      "call entry_ibpb", X86_FEATURE_ENTRY_IBPB,	\
+> > -		     __stringify(RESET_CALL_DEPTH), X86_FEATURE_CALL_DEPTH
+> > +		      "call entry_ibpb", \ibpb_feature,			\
+> > +		     __stringify(\call_depth_insns), X86_FEATURE_CALL_DEPTH
+> 
+> so this becomes __stringify(__stringify(RESET_CALL_DEPTH)) etc.
 
-First, unconditionally adding interrupt descriptors to the resend list
-can corrupt the list when the descriptor in question has already been
-added. This causes the resend tasklet to loop indefinitely with
-interrupts disabled as was recently reported with the Lenovo ThinkPad
-X13s after threaded NAPI was disabled in the ath11k WiFi driver. [1]
+Apparently the gas macro un-stringifies the argument when using it, so
+it needs to be re-stringified again.  ¯\_(ツ)_/¯
 
-This bug is easily fixed by restoring the old semantics of
-irq_sw_resend() so that it can be called also for descriptors that have
-already been marked for resend.
-
-Second, the offending commit also broke software resend of nested
-interrupts by simply discarding the code that made sure that such
-interrupts are retriggered using the parent interrupt.
-
-Add back the corresponding code that adds the parent descriptor to the
-resend list. Note that this bit is untested, but I decided to include it
-to avoid having to revert the offending commit and the maple tree
-conversion that depends on it.
-
-[1] https://lore.kernel.org/lkml/20230809073432.4193-1-johan+linaro@kernel.org/
-
-Fixes: bc06a9e08742 ("genirq: Use hlist for managing resend handlers")
-Cc: Shanker Donthineni <sdonthineni@nvidia.com>
-Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
----
-
-Hi Thomas and Marc,
-
-This patch fixes a severe regression in the resend code in 6.5-rc1 that
-breaks machines like the Lenovo X13s and which ideally should be
-addressed before 6.5 is released tomorrow.
-
-I hesitated about including the fix for nested interrupts as I've not
-had time to test this bit, but I ultimately decided to include it to
-avoid having to suggest a revert of the maple tree conversion. Let me
-know if you prefer to go this route and I'll post a (prepared) revert
-series instead.
-
-Johan
-
-
- kernel/irq/resend.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/irq/resend.c b/kernel/irq/resend.c
-index edec335c0a7a..5f2c66860ac6 100644
---- a/kernel/irq/resend.c
-+++ b/kernel/irq/resend.c
-@@ -68,11 +68,16 @@ static int irq_sw_resend(struct irq_desc *desc)
- 		 */
- 		if (!desc->parent_irq)
- 			return -EINVAL;
-+
-+		desc = irq_to_desc(desc->parent_irq);
-+		if (!desc)
-+			return -EINVAL;
- 	}
- 
- 	/* Add to resend_list and activate the softirq: */
- 	raw_spin_lock(&irq_resend_lock);
--	hlist_add_head(&desc->resend_node, &irq_resend_list);
-+	if (hlist_unhashed(&desc->resend_node))
-+		hlist_add_head(&desc->resend_node, &irq_resend_list);
- 	raw_spin_unlock(&irq_resend_lock);
- 	tasklet_schedule(&resend_tasklet);
- 	return 0;
 -- 
-2.41.0
-
+Josh
