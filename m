@@ -2,204 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFED87896A7
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 14:22:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE83D789674
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 14:04:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231876AbjHZMVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 08:21:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49504 "EHLO
+        id S232726AbjHZMDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 08:03:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjHZMVF (ORCPT
+        with ESMTP id S232729AbjHZMDs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 08:21:05 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B72BDE;
-        Sat, 26 Aug 2023 05:21:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9F084615C1;
-        Sat, 26 Aug 2023 12:21:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A89D2C433C8;
-        Sat, 26 Aug 2023 12:20:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693052461;
-        bh=7EXJ1LENbcLPurI5Z9dQe+9Ef/4yp4DqUevs1jxxCUM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=QXrZon6mgILY3byNR5FdVO14AfRXgGliokWBj7UEH8qMyJK/L4H/fLd/0PGSstUtk
-         8AzAaWTrePhSf5jH8OmNMttFBD2vmnuAvdmelceQiZAlcrA6MORPqeCiEkB4aDK9jM
-         iSbZj8kB3KW23QR5XfS2zkchwmSvq60aY0LHMDqO6Gr931s/+D07jbYobJfPiLEXuM
-         oawV7+GlZWxvnoR6pNFUzLleWtQ/EngVNDVbY+FinkTuR120DUMCpIp3J0FUFlwXOt
-         l0/DRPNc2Nxmgg2ItwrXI1m6FR1TdOhWUaPmY3tTicHR9x6hKvylQeAyJjCPIUqlyr
-         Cx9r6xEKuuNPQ==
-Date:   Sat, 26 Aug 2023 12:38:38 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Florent Revest <revest@chromium.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH v4 6/9] tracing/fprobe: Enable fprobe events with
- CONFIG_DYNAMIC_FTRACE_WITH_ARGS
-Message-Id: <20230826123838.610b3fe09b9fa1aab75f158d@kernel.org>
-In-Reply-To: <CABRcYmLcTBey7QY9Ln3aVvJPV7weeTR0FA6DOU3_QObuAM8_Zg@mail.gmail.com>
-References: <169280372795.282662.9784422934484459769.stgit@devnote2>
-        <169280379741.282662.12221517584561036597.stgit@devnote2>
-        <CABRcYmLcTBey7QY9Ln3aVvJPV7weeTR0FA6DOU3_QObuAM8_Zg@mail.gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
+        Sat, 26 Aug 2023 08:03:48 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B532C3
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 05:03:45 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-4ff93a7f230so2097276e87.1
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 05:03:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693051423; x=1693656223;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=SG+FRA6Jdj7lloQ4CW4VDp8In+rYXljtoh+/xtNc81Q=;
+        b=AQjawv90XA6JscmYjGQ/4tY5fCDVRZdeTNh/TCIRnz/SMgswAbboswgnPhjXOvG1Au
+         mZUUf19xCG/1sL76eWHX7H4MUsI3KGYz7IwEIQNN7eP2vb3KHivEQh9JVU4hNpnvwDMV
+         Pft/TwotggUNwbMpPPkB8EDPwmuBc6Y/sXtLX6DOxuJPyxP0Y6e2TJpdw53GxFWy+y45
+         Egxa8Phc32xAJM5m8zSTqzHlAYw4vseLbMlTG60U8Yt+VqegzyEEyqYj1OA00Hnjnmy+
+         9xwOnb21zBfGemIbtRw/HZgBjweZq61JjNicpGQlgrwSxpG9km2a/dyVa2aUTlCgmmpY
+         /0qw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693051423; x=1693656223;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SG+FRA6Jdj7lloQ4CW4VDp8In+rYXljtoh+/xtNc81Q=;
+        b=Xoa1NaK4vBvvh7VFC4BhIO/iLh791YSC6lXXJIkULcJeC97JJREzb/pAR2vdGga5Cz
+         hMmZeCMIDKdYm4K+gPQuwilOUXoMzx1vMT0ZhoeZQkkqJcif0hdNDG0MyJAi0oiagxq/
+         EoKo2+n4Ft8K4ZhtrZ5yAvWmu83peMCShbWmIYy2ZGIBZ2jSOZerpvigCFOLHt5McxiH
+         PdISXGAyEOOgcUkUEsl+Fv1TE6c8RtOuintP+VErn03sPW9qLz+qOY2mIvt8ROmW8K3O
+         vgjSZ2CbNaI1AL9Fh2olAqbMe0EKeFaCK77njSGAsQ8FQxwP2AtpEwMubkAwQs3nvaer
+         MGLg==
+X-Gm-Message-State: AOJu0Yx8C/mLOirqy2e8qNB56Ghn898bPb/VpvQ+uRxZ5Ova94IfiHio
+        OWRJ2Td66gr4vcSv7busgQ2BLg==
+X-Google-Smtp-Source: AGHT+IFpvXi4fjnNXJ2u7zaCwDs8iSYEeMB5aZQE3cjcHpzGBtrCL/j3jjyZohowM9qd1n8rJPG8YA==
+X-Received: by 2002:a05:6512:6cb:b0:4f8:4b19:9533 with SMTP id u11-20020a05651206cb00b004f84b199533mr8533138lff.19.1693051423583;
+        Sat, 26 Aug 2023 05:03:43 -0700 (PDT)
+Received: from [192.168.1.101] (abyl74.neoplus.adsl.tpnet.pl. [83.9.31.74])
+        by smtp.gmail.com with ESMTPSA id f17-20020ac25331000000b00500a2091e2bsm689347lfh.99.2023.08.26.05.03.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 26 Aug 2023 05:03:43 -0700 (PDT)
+Message-ID: <024ded8e-d6b9-45dd-9633-03daa403f125@linaro.org>
+Date:   Sat, 26 Aug 2023 14:03:42 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/3] ARM: dts: qcom-msm8916-samsung-fortuna: Include
+ dts from arm64
+Content-Language: en-US
+To:     "Lin, Meng-Bo" <linmengbo0689@protonmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Nikita Travkin <nikita@trvn.ru>, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        Gareth Peoples <mail@gpeopl.es>
+References: <20230801111745.4629-1-linmengbo0689@protonmail.com>
+ <20230801112134.4689-1-linmengbo0689@protonmail.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20230801112134.4689-1-linmengbo0689@protonmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
-        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(Cc: Peter)
-
-On Fri, 25 Aug 2023 18:12:07 +0200
-Florent Revest <revest@chromium.org> wrote:
-
-> On Wed, Aug 23, 2023 at 5:16 PM Masami Hiramatsu (Google)
-> <mhiramat@kernel.org> wrote:
-> >
-> > diff --git a/kernel/trace/trace_fprobe.c b/kernel/trace/trace_fprobe.c
-> > index c60d0d9f1a95..90ad28260a9f 100644
-> > --- a/kernel/trace/trace_fprobe.c
-> > +++ b/kernel/trace/trace_fprobe.c
-> > +#else /* CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS && !CONFIG_HAVE_PT_REGS_TO_FTRACE_REGS_CAST */
-> > +
-> > +/* Since fprobe handlers can be nested, pt_regs buffer need to be a stack */
-> > +#define PERF_FPROBE_REGS_MAX   4
-> > +
-> > +struct pt_regs_stack {
-> > +       struct pt_regs regs[PERF_FPROBE_REGS_MAX];
-> > +       int idx;
-> > +};
-> > +
-> > +static DEFINE_PER_CPU(struct pt_regs_stack, perf_fprobe_regs);
-> > +
-> > +static __always_inline
-> > +struct pt_regs *perf_fprobe_partial_regs(struct ftrace_regs *fregs)
-> > +{
-> > +       struct pt_regs_stack *stack = this_cpu_ptr(&perf_fprobe_regs);
-> > +       struct pt_regs *regs;
-> > +
-> > +       if (stack->idx < PERF_FPROBE_REGS_MAX) {
-> > +               regs = stack->regs[stack->idx++];
+On 1.08.2023 13:22, Lin, Meng-Bo wrote:
+> After adding all necessary support for MSM8916 SMP/cpuidle without PSCI
+> on ARM32, build fortunaltezt and heatqlte device trees from the arm64
+> tree together with the ARM32 include to allow booting this device on ARM32.
 > 
-> This is missing an &:
-> regs = &stack->regs[stack->idx++];
-
-Oops, good point. I'm curious it didin't cause compile error...
-(I thought I built it on arm64)
-
+> The approach to include device tree files from other architectures is
+> inspired from e.g. the Raspberry Pi (bcm2711-rpi-4-b.dts) where this is
+> used to build the device tree for both ARM32 and ARM64.
 > 
-> > +               return ftrace_partial_regs(fregs, regs);
+> [Add workaround to TSENS problem]
+> Co-developed-by: Stephan Gerhold <stephan@gerhold.net>
+> Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+> [Add heatqlte]
+> Co-developed-by: Gareth Peoples <mail@gpeopl.es>
+> Signed-off-by: Gareth Peoples <mail@gpeopl.es>
+> Signed-off-by: Lin, Meng-Bo <linmengbo0689@protonmail.com>
+> ---
+>  arch/arm/boot/dts/qcom-msm8916-samsung-fortunaltezt.dts | 8 ++++++++
+>  arch/arm/boot/dts/qcom-msm8916-samsung-heatqlte.dts     | 8 ++++++++
+>  arch/arm/boot/dts/qcom/Makefile                         | 2 ++
+>  3 files changed, 18 insertions(+)
+>  create mode 100644 arch/arm/boot/dts/qcom-msm8916-samsung-fortunaltezt.dts
+>  create mode 100644 arch/arm/boot/dts/qcom-msm8916-samsung-heatqlte.dts
 > 
-> I think this is incorrect on arm64 and will likely cause very subtle
-> failure modes down the line on other architectures too. The problem on
-> arm64 is that Perf calls "user_mode(regs)" somewhere down the line,
-> that macro tries to read the "pstate" register, which is not populated
-> in ftrace_regs, so it's not copied into a "partial" pt_regs either and
-> Perf can take wrong decisions based on that.
+> diff --git a/arch/arm/boot/dts/qcom-msm8916-samsung-fortunaltezt.dts b/arch/arm/boot/dts/qcom-msm8916-samsung-fortunaltezt.dts
+> new file mode 100644
+> index 000000000000..b9704fea7029
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/qcom-msm8916-samsung-fortunaltezt.dts
+> @@ -0,0 +1,8 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +#include "arm64/qcom/msm8916-samsung-fortunaltezt.dts"
+> +#include "qcom-msm8916-smp.dtsi"
+> +
+> +&tsens {
+> +	/* FIXME: The device crashes when accessing the SROT region for some reason */
+> +	status = "disabled";
+All of SROT, or just e.g. TSENS_EN?
 
-I think we can assure the ftrace_regs is always !user_mode() so in that case
-ftrace_partial_regs() should fill the 'pstate' register as kernel mode.
+If only the headswitch is inaccessible, you may still reach
+the hardware if it's been turned on from bl
 
-> 
-> I already mentioned this problem in the past:
-> - in the third answer block of:
-> https://lore.kernel.org/all/CABRcYmJjtVq-330ktqTAUiNO1=yG_aHd0xz=c550O5C7QP++UA@mail.gmail.com/
-> - in the fourth answer block of:
-> https://lore.kernel.org/all/CABRcYm+esb8J2O1v6=C+h+HSa5NxraPUgo63w7-iZj0CXbpusg@mail.gmail.com/
-> 
-
-Oops, sorry I missed that. And I basically agreed that we need a special
-care for perf. Let me reply it.
-
-> It is quite possible that other architectures at some point introduce
-> a light ftrace "args" trampoline that misses one of the registers
-> expected by Perf because they don't realize that this trampoline calls
-> fprobe which calls Perf which has specific registers expectations.
-
-Agreed.
-
-> 
-> We got the green light from Alexei to use ftrace_partial_regs for "BPF
-> mutli_kprobe" because these BPF programs can gracefully deal with
-> sparse pt_regs but I think a similar conversation needs to happen with
-> the Perf folks.
-
-Indeed. Who is the best person to involve, Peterz? (but I think
-we need arm64 PMU part maintainer to talk)
-
-> 
-> ----
-> 
-> On a side-note, a subtle difference between ftrace_partial_regs with
-> and without HAVE_PT_REGS_TO_FTRACE_REGS_CAST is that one does a copy
-> and the other does not. If a subsystem receives a partial regs under
-> HAVE_PT_REGS_TO_FTRACE_REGS_CAST, it can modify register fields and
-> the modified values will be restored by the ftrace trampoline. Without
-> HAVE_PT_REGS_TO_FTRACE_REGS_CAST, only the copy will be modified and
-> ftrace won't restore them. I think the least we can do is to document
-> thoroughly the guarantees of the ftrace_partial_regs API: users
-> shouldn't rely on modifying the resulting regs because depending on
-> the architecture this could do different things. People shouldn't rely
-> on any register that isn't covered by one of the ftrace_regs_get_*
-> helpers because it can be unpopulated on some architectures. I believe
-> this is the case for BPF multi_kprobe but not for Perf.
-
-I agree with the documentation requirement, but since the fprobe official
-interface becomes ftrace_regs, user naturally expects it is not pt_regs.
-The problem is that the perf's case. Since the perf is natively only
-support pt_regs (and there is no reason to support ftrace_regs, yes).
-Hmm, I will recheck how the perf events on trace-event is implementd.
-
-Thank you,
-
-> 
-> > +       }
-> > +       return NULL;
-> > +}
-> > +
-> > +static __always_inline void perf_fprobe_return_regs(struct pt_regs *regs)
-> > +{
-> > +       struct pt_regs_stack *stack = this_cpu_ptr(&perf_fprobe_regs);
-> > +
-> > +       if (WARN_ON_ONCE(regs != stack->regs[stack->idx]))
-> 
-> This is missing an & too:
-> if (WARN_ON_ONCE(regs != &stack->regs[stack->idx]))
-> 
-> 
-> 
-> 
-> > +               return;
-> > +
-> > +       --stack->idx;
-> > +}
-> > +
-> > +#endif /* !CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS || CONFIG_HAVE_PT_REGS_TO_FTRACE_REGS_CAST */
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Konrad
