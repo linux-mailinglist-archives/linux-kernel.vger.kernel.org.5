@@ -2,74 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2493A789310
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 03:26:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A535E789313
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 03:30:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231483AbjHZB0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 21:26:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47856 "EHLO
+        id S231562AbjHZBaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 21:30:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231723AbjHZB0P (ORCPT
+        with ESMTP id S231329AbjHZBaE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 21:26:15 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5EEDE77;
-        Fri, 25 Aug 2023 18:26:12 -0700 (PDT)
-Received: from kwepemd100002.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RXfFR2dxLzNnH1;
-        Sat, 26 Aug 2023 09:22:35 +0800 (CST)
-Received: from huawei.com (10.67.174.28) by kwepemd100002.china.huawei.com
- (7.221.188.184) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.1258.23; Sat, 26 Aug
- 2023 09:26:10 +0800
-From:   Liao Chang <liaochang1@huawei.com>
-To:     <rafael@kernel.org>, <viresh.kumar@linaro.org>
-CC:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] cpufreq: governor: Free dbs_data directly when gov->init() fails
-Date:   Sat, 26 Aug 2023 01:24:15 +0000
-Message-ID: <20230826012415.1126955-1-liaochang1@huawei.com>
-X-Mailer: git-send-email 2.34.1
+        Fri, 25 Aug 2023 21:30:04 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E8B21FD7;
+        Fri, 25 Aug 2023 18:30:01 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-525bd0b2b48so2014057a12.0;
+        Fri, 25 Aug 2023 18:30:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693013400; x=1693618200;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=S2D36dOoa06BWR5AgzTMO8lYHiZ+scFy120F5WcTjb4=;
+        b=FDM7incZcG0SAgE8+njJbysK0lJLfbZ5w5pqVsOhU0RVVKAbbu9S2DM/Ck1prs72Pq
+         I1r85m4ckvcMwSk1x9V/A6/mHix2474u+E+NzTZ4GWI3bHSDYt9JoYxCISI9J3MBWfQ7
+         g1CoUg3IzIojkWoDzheYx/OTFNTt1V/6tkwFQ2peXQWpAEhQxGcVNC70/9TV7NC3NfW8
+         1qLkYtq3W7SQg4Mgvc4a12z8gMdWJX+3B0OJlVtmliGYW/Qpm5PV/EYkpVeVqO+FiNyh
+         OPmriR2FLEwDSulrTmguaW/O2uxJ3T/ZR5TdkJL5lv9TmqjEHrUTVKdnmaV385nDHbxF
+         Xiuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693013400; x=1693618200;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=S2D36dOoa06BWR5AgzTMO8lYHiZ+scFy120F5WcTjb4=;
+        b=h8131xYGlNH73KWewRU28PEBeerSFZkJMACOsr32VHBzQU45ASacy6yGTLd97/As/l
+         eOGye3Vb6RLGsjpSTiQQVIW0Yc2xWloKvPfMLo+c41d30As7/fkFnhPnDCb/qmKw44TY
+         9zbGj1AqvQ6BR+f8F4dtTlc5jaSUPnzltxrmEI2isoW8/U1Q38yfmMhTPwblmSjGIrtB
+         JVPwmLQw99aTA3HfFa0AUXXdvflms0+fKrMOHnWY4nkGTdksw49Xv/umKZFUQGsAaehA
+         9GF9ZF76eKpxsuMVl4UXxYnGvv5yzsZG0IEx118tVv7uxcdHSh1PN95fwb2FidPKi2Ze
+         TzPQ==
+X-Gm-Message-State: AOJu0YwjoAyJQcFpV1xOjZYI239UroQCz3uwHdW+8VPjCN5xepfZ9TQc
+        pRkuTDJEYs+GMxxmCrEAQnH5Uf4uM6ePYEr9nSs=
+X-Google-Smtp-Source: AGHT+IEXsOl+EHSkkBQhRH9RjwYOfhOsIxG3m6cpaf528qm11nkEYjjL1pWzb1LveXcoEDTjgx812Dp7EL91FKYuxKo=
+X-Received: by 2002:a05:6402:34b:b0:525:69ec:e1c8 with SMTP id
+ r11-20020a056402034b00b0052569ece1c8mr12651629edw.40.1693013399773; Fri, 25
+ Aug 2023 18:29:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.174.28]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemd100002.china.huawei.com (7.221.188.184)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230825-topic-6375_gpu_id-v1-1-e24f46d7f139@linaro.org>
+In-Reply-To: <20230825-topic-6375_gpu_id-v1-1-e24f46d7f139@linaro.org>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Fri, 25 Aug 2023 18:29:48 -0700
+Message-ID: <CAF6AEGsNr+5zaXqKRhyeY6NV+iRD+Yz8ftqiX6Z08esoyh=DzQ@mail.gmail.com>
+Subject: Re: [PATCH] drm/msm/adreno: Fix SM6375 GPU ID
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Rob Clark <robdclark@chromium.org>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Due to the kobject embedded in the dbs_data doest not has a release()
-method yet, it needs to use kfree() to free dbs_data directly when
-governor fails to allocate the tunner field of dbs_data.
+On Fri, Aug 25, 2023 at 2:11=E2=80=AFPM Konrad Dybcio <konrad.dybcio@linaro=
+.org> wrote:
+>
+> SM6375 comes with a patchlevel=3D1. Fix the chipid up to reflect that.
+>
+> Fixes: 90b593ce1c9e ("drm/msm/adreno: Switch to chip-id for identifying G=
+PU")
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> ---
+>  drivers/gpu/drm/msm/adreno/adreno_device.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/msm/adreno/adreno_device.c b/drivers/gpu/drm=
+/msm/adreno/adreno_device.c
+> index 575e7c56219f..f2d9d34ed50f 100644
+> --- a/drivers/gpu/drm/msm/adreno/adreno_device.c
+> +++ b/drivers/gpu/drm/msm/adreno/adreno_device.c
+> @@ -331,7 +331,7 @@ static const struct adreno_info gpulist[] =3D {
+>                 ),
+>         }, {
+>                 .machine =3D "qcom,sm6375",
+> -               .chip_ids =3D ADRENO_CHIP_IDS(0x06010900),
+> +               .chip_ids =3D ADRENO_CHIP_IDS(0x06010901),
 
-Signed-off-by: Liao Chang <liaochang1@huawei.com>
----
- drivers/cpufreq/cpufreq_governor.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+r-b, but maybe we should list both to be safe?  But unsure if any
+patchlevel=3D0 things are out there in the wild... I guess we could add
+it back in later if needed
 
-diff --git a/drivers/cpufreq/cpufreq_governor.c b/drivers/cpufreq/cpufreq_governor.c
-index 85da677c43d6..6e1ac864e87e 100644
---- a/drivers/cpufreq/cpufreq_governor.c
-+++ b/drivers/cpufreq/cpufreq_governor.c
-@@ -438,8 +438,10 @@ int cpufreq_dbs_governor_init(struct cpufreq_policy *policy)
- 	gov_attr_set_init(&dbs_data->attr_set, &policy_dbs->list);
- 
- 	ret = gov->init(dbs_data);
--	if (ret)
-+	if (ret) {
-+		kfree(dbs_data);
- 		goto free_policy_dbs_info;
-+	}
- 
- 	/*
- 	 * The sampling interval should not be less than the transition latency
--- 
-2.34.1
+BR,
+-
 
+>                 .family =3D ADRENO_6XX_GEN1,
+>                 .revn =3D 619,
+>                 .fw =3D {
+>
+> ---
+> base-commit: 6269320850097903b30be8f07a5c61d9f7592393
+> change-id: 20230825-topic-6375_gpu_id-cf1596e2b147
+>
+> Best regards,
+> --
+> Konrad Dybcio <konrad.dybcio@linaro.org>
+>
