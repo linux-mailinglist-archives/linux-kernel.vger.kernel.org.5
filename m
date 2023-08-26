@@ -2,63 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E10578989A
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 20:09:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E66A78989D
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 20:11:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231223AbjHZSJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 14:09:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36838 "EHLO
+        id S231235AbjHZSKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 14:10:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231425AbjHZSI5 (ORCPT
+        with ESMTP id S230465AbjHZSKZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 14:08:57 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D1C01711
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 11:08:55 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C039262437
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 18:08:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 103CEC433C8;
-        Sat, 26 Aug 2023 18:08:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693073334;
-        bh=ifnoNNwq6D5LDNLUIVQ0u3oj+uGHxFSLn2T8iZuNR7I=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=nlFEHPPVJ7vILA3dhnbdeLguHpLiQKDIEZ0/4l4qOmCz7m0zCYtBxzyOMiz+UBvON
-         02BSq/3mdQl0om4SMRLEA2i5TnD0mOYLEj3CUM8eCXHjHpX54zydeUYA4SKgpgxvk+
-         kT8pBhlAe0exrC85H9ZGc2sMfidRN8TseA5nlio2tORrYu/0kBftNjS8hoIrZwJywu
-         6pb6YCIeTbT1rIV8FiNYFZa5SF4vWTgIMTaawY0C8uuzOVerPQiUjv6GBZpFOhXK17
-         CM1XbAs7m+z0W0YbkJ1/Gl7/17A+rqGeqNESwMsrOoDwpLn0mGngdmBFDInsJmp7Hi
-         PnzbrlzsfkjzQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id DD3B0C595C5;
-        Sat, 26 Aug 2023 18:08:53 +0000 (UTC)
-Subject: Re: [GIT PULL] x86 fixes
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <ZOo8XxiWEKL+BJeB@gmail.com>
-References: <ZOo8XxiWEKL+BJeB@gmail.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <ZOo8XxiWEKL+BJeB@gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-urgent-2023-08-26
-X-PR-Tracked-Commit-Id: 2c66ca3949dc701da7f4c9407f2140ae425683a5
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 28f20a19294da7df158dfca259d0e2b5866baaf9
-Message-Id: <169307333383.28172.7712860656083367167.pr-tracker-bot@kernel.org>
-Date:   Sat, 26 Aug 2023 18:08:53 +0000
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Sat, 26 Aug 2023 14:10:25 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4D0810FF
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 11:10:21 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-523b066d7ceso2696342a12.2
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 11:10:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693073420; x=1693678220;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4QiagJfRx5PmjGMtP0dUi7DvNIVha/t7dHrhZvI83zo=;
+        b=WsSgNBrqrlOgtnKRSmIfPV2pbGKqfKX1GCK0whPtAztjTVsT9PPs8OSoQxSvtsQJdF
+         D5Ndk9sTCcE4q9tyc77eUdIr2fBshZGlNcx2yrwpIRoSa5lIcr5zPKfu4Y1JzN+ViqUZ
+         1u359VPuql8fwxk3ebKBBU0lbyZ9VGWRruygvtu68RJjPWwa1MsUGw8XAGe5Ldpqdnss
+         9Ji0wJJhYWa+b91DpYAPLpnJO4GvlfTzPA7vBd3t9DJBizJqxuqR6WweN51WddUOEmGC
+         4Dm69tTgQpazyJ4CZNrryqIoUL0JIA0f8z+Acnw5snEqsp2PD/+IascZAwPD50xwewTz
+         pndA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693073420; x=1693678220;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4QiagJfRx5PmjGMtP0dUi7DvNIVha/t7dHrhZvI83zo=;
+        b=GhFrr8EcDlzTOJNKveqTWi8c37PqV3zhkP7vWJb6rpOf+eEKJSZYWO5lHVRaWLgyDS
+         UYGa0Of1Kb0itzh9M3dZ6W9EJLGdSvN/gJObZRWOc3+c03iANxBYFj5IcH7qEp+1JK5v
+         eNSgHBjF3ZNRdk0sdBZjYJ7fNr/ry5IkBTc4qpyaILWTe/aNL+cetiwLeOefNhf7qy5w
+         gPwFzs58XZzjFRMeU6wRnFD8lupKb8OTxejuwgtbc+ixiEKlWhx0+24SJ/Hz8EA1DHcb
+         L2OkS3EnnLyZ2x8vZjf5ka2V1+mpIGl/0glVUw4+FXU7R/cW904aU5uGh6Bi4MJAAZhn
+         Yq8A==
+X-Gm-Message-State: AOJu0Yyrd4oG4T4DrgZAGxGYoKHT2W4+lPSL+HHhEny7jX9A5Iu9bYfW
+        k6uOcJVV7FjP9UesRLVTzO4ZBw==
+X-Google-Smtp-Source: AGHT+IEFWoVX8d9z28lL17g6Z+qe5o8zR28N7GoXPVvbRQc4gaGzV9XT5uFIFnm8ML7Ge9ve5Sb9tQ==
+X-Received: by 2002:a17:906:1090:b0:99b:c8db:d92f with SMTP id u16-20020a170906109000b0099bc8dbd92fmr17059997eju.69.1693073420226;
+        Sat, 26 Aug 2023 11:10:20 -0700 (PDT)
+Received: from [192.168.0.22] ([77.252.47.198])
+        by smtp.gmail.com with ESMTPSA id q22-20020a170906361600b00982cfe1fe5dsm2452697ejb.65.2023.08.26.11.10.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 26 Aug 2023 11:10:19 -0700 (PDT)
+Message-ID: <6fd3a9ab-667d-934b-f1c2-03776be93d4d@linaro.org>
+Date:   Sat, 26 Aug 2023 20:10:18 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v2 0/2] arm64: dts: exynos: Enable USB for E850-96 board
+Content-Language: en-US
+To:     Sam Protsenko <semen.protsenko@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Conor Dooley <conor+dt@kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        JaeHun Jung <jh0801.jung@samsung.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230825215445.28309-1-semen.protsenko@linaro.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230825215445.28309-1-semen.protsenko@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,15 +81,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 26 Aug 2023 19:54:39 +0200:
+On 25/08/2023 23:54, Sam Protsenko wrote:
+> This patch series enables USB gadget, USB host and Ethernet support for
+> E850-96 board. The most major change was done in USB PHY driver, as the
+> register layout of PHY block in Exynos850 is very different from
+> Exynos5 one.
+> 
+> Changes in v2:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-urgent-2023-08-26
+Thank you for the patch. Looks good.
+It is too late in the cycle for me to pick it up. I will take it after
+the merge window.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/28f20a19294da7df158dfca259d0e2b5866baaf9
+Best regards,
+Krzysztof
 
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
