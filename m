@@ -2,119 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4796C789880
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 19:43:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35199789884
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 19:48:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230513AbjHZRnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 13:43:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43864 "EHLO
+        id S230348AbjHZRr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 13:47:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230456AbjHZRmk (ORCPT
+        with ESMTP id S229600AbjHZRrW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 13:42:40 -0400
-Received: from smtp.smtpout.orange.fr (smtp-21.smtpout.orange.fr [80.12.242.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8757E7A
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 10:42:38 -0700 (PDT)
-Received: from pop-os.home ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id ZxInqYKe17qfuZxIzqGrR5; Sat, 26 Aug 2023 19:42:37 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1693071757;
-        bh=QTIm/KtA3vhwN8cxnOOJvoO7+sH2uOIZpMI8GWwMiqw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=ZKLAgxe0jXbDOKq1GyiKn7ylNbFayEaNogLejRQcu90GaIae+cmlBqpnhTxhxDH7I
-         Hx7irQUuQraeQcWUbRMUpuF6O8ds/gkCUS9kg6R2thfL+OugE57Yu1mrK9Ojn8PuFq
-         OF35YKkp8QS8iTxNSC7B7MBQKA9fOQxXBuyfRnjnzMTIXRYObF+pZhOq5ePTYnEIw3
-         KseeEd1dFmF8z2hC69YMFDooDN7Sm+WpHG5i4SsmOa6jOWdX2GULeGJPF4g/UTDoFk
-         xNffvtVM8OqL9n9drabhnuBXyZhM2kRk7vLX43swB8Pnq/CEpGnf9Ry/a0SdRacB8j
-         JzBaiqAd6A2tQ==
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 26 Aug 2023 19:42:37 +0200
-X-ME-IP: 86.243.2.178
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     rrameshbabu@nvidia.com, jikos@kernel.org,
-        benjamin.tissoires@redhat.com
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH 3/3] HID: nvidia-shield: Introduce thunderstrike_destroy()
-Date:   Sat, 26 Aug 2023 19:42:19 +0200
-Message-Id: <4c9a8c7f6b4eb879dd7ef4d44bb6a80b3f126d25.1693070958.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1693070958.git.christophe.jaillet@wanadoo.fr>
-References: <cover.1693070958.git.christophe.jaillet@wanadoo.fr>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        Sat, 26 Aug 2023 13:47:22 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6732EB6;
+        Sat, 26 Aug 2023 10:47:20 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E4CD960FB5;
+        Sat, 26 Aug 2023 17:47:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 397A4C433C8;
+        Sat, 26 Aug 2023 17:47:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693072039;
+        bh=Vk/QybRG7sDvLhmb2DrEFPqd1gLupxqm/qaNQai4U7E=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=kt0NV4MdO3QwOcZn77m5WndNhCxmTthN8T1YFSJPDBueLYM4EcryyL3RXut97XFUS
+         epkAU1xMvYD+hzeyGh5n+Y8a8DRvNVLWCLUYkx/Ip1zvMFNEVzfm4IqZSjnwE690RK
+         3bpxmu/ZTlks3sanEsEW3gArns99etxhJ7eFHsxZBqLqzBR57BH89+b0vHJT+poZ3S
+         vc8EqmageT0KoK2f+OYvwfGbMxnw5/PInoPBvScfdu7dBlTqfaGhV/iLDNTJnLxjRZ
+         qHTmdax+FwtDuSCV2oxsAq6Ed67xO+MPWE4Ka4Y8UdZB6QxCq4lZZcaAOycTy0qhg/
+         leAXIxfbFpkvA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 16CB6C595C5;
+        Sat, 26 Aug 2023 17:47:19 +0000 (UTC)
+Subject: Re: [GIT PULL] LoongArch fixes for v6.5-final
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20230826163427.4193691-1-chenhuacai@loongson.cn>
+References: <20230826163427.4193691-1-chenhuacai@loongson.cn>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20230826163427.4193691-1-chenhuacai@loongson.cn>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/chenhuacai/linux-loongson.git tags/loongarch-fixes-6.5-2
+X-PR-Tracked-Commit-Id: 9730870b484e9de852b51df08a8b357b1129489e
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: c313761337fb8fa7fc44296f0e10844505916208
+Message-Id: <169307203902.18628.8102755158821564804.pr-tracker-bot@kernel.org>
+Date:   Sat, 26 Aug 2023 17:47:19 +0000
+To:     Huacai Chen <chenhuacai@loongson.cn>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Guo Ren <guoren@kernel.org>, Xuerui Wang <kernel@xen0n.name>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Huacai Chen <chenhuacai@loongson.cn>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to simplify some error handling paths, and avoid code duplication
-introduce thunderstrike_destroy() which undoes thunderstrike_create().
+The pull request you sent on Sun, 27 Aug 2023 00:34:27 +0800:
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/hid/hid-nvidia-shield.c | 26 ++++++++++++++++----------
- 1 file changed, 16 insertions(+), 10 deletions(-)
+> git://git.kernel.org/pub/scm/linux/kernel/git/chenhuacai/linux-loongson.git tags/loongarch-fixes-6.5-2
 
-diff --git a/drivers/hid/hid-nvidia-shield.c b/drivers/hid/hid-nvidia-shield.c
-index 849b3f8409a0..4e39e7c1a2c3 100644
---- a/drivers/hid/hid-nvidia-shield.c
-+++ b/drivers/hid/hid-nvidia-shield.c
-@@ -915,6 +915,20 @@ static struct shield_device *thunderstrike_create(struct hid_device *hdev)
- 	return ERR_PTR(ret);
- }
- 
-+static void thunderstrike_destroy(struct hid_device *hdev)
-+{
-+	struct shield_device *dev = hid_get_drvdata(hdev);
-+	struct thunderstrike *ts;
-+
-+	ts = container_of(dev, struct thunderstrike, base);
-+
-+	power_supply_unregister(ts->base.battery_dev.psy);
-+	if (ts->haptics_dev)
-+		input_unregister_device(ts->haptics_dev);
-+	led_classdev_unregister(&ts->led_dev);
-+	ida_free(&thunderstrike_ida, ts->id);
-+}
-+
- static int android_input_mapping(struct hid_device *hdev, struct hid_input *hi,
- 				 struct hid_field *field,
- 				 struct hid_usage *usage, unsigned long **bit,
-@@ -1074,11 +1088,7 @@ static int shield_probe(struct hid_device *hdev, const struct hid_device_id *id)
- err_stop:
- 	hid_hw_stop(hdev);
- err_haptics:
--	power_supply_unregister(ts->base.battery_dev.psy);
--	if (ts->haptics_dev)
--		input_unregister_device(ts->haptics_dev);
--	led_classdev_unregister(&ts->led_dev);
--	ida_free(&thunderstrike_ida, ts->id);
-+	thunderstrike_destroy(hdev);
- 	return ret;
- }
- 
-@@ -1090,11 +1100,7 @@ static void shield_remove(struct hid_device *hdev)
- 	ts = container_of(dev, struct thunderstrike, base);
- 
- 	hid_hw_close(hdev);
--	power_supply_unregister(dev->battery_dev.psy);
--	if (ts->haptics_dev)
--		input_unregister_device(ts->haptics_dev);
--	led_classdev_unregister(&ts->led_dev);
--	ida_free(&thunderstrike_ida, ts->id);
-+	thunderstrike_destroy(hdev);
- 	del_timer_sync(&ts->psy_stats_timer);
- 	cancel_work_sync(&ts->hostcmd_req_work);
- 	hid_hw_stop(hdev);
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/c313761337fb8fa7fc44296f0e10844505916208
+
+Thank you!
+
 -- 
-2.34.1
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
