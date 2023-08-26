@@ -2,133 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ADE27899B8
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 00:24:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA30D7899C0
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 00:55:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229940AbjHZWYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 18:24:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44764 "EHLO
+        id S229893AbjHZWsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 18:48:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229847AbjHZWYG (ORCPT
+        with ESMTP id S229588AbjHZWrv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 18:24:06 -0400
-Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E9FB1BC
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 15:24:04 -0700 (PDT)
-Received: by mail-oo1-xc2a.google.com with SMTP id 006d021491bc7-5734b893a11so1038172eaf.1
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 15:24:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693088643; x=1693693443;
-        h=content-transfer-encoding:to:subject:message-id:date:from:sender
-         :reply-to:mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=pTK2P+dSNpLdhHcbff7i9fxYGYQXK5wNucMBi2Hv5F0=;
-        b=WiVYDkyXjmo68r8MWhq+C29UmOxeouMmYP/OJJeCxtbD7KgmGWQGDI5EqYgVCDqlPM
-         xrBDoqvoj02bzDXTQypVM43frC2KeoN/CwgYmiPHEu8ZgR1dbAOIOBLTWVSiXILyBYDu
-         SMQShMb6ZLpXFfQd12r+wquntSs/P/5QRUuztR4ymx1YVKNFmeIHitfYdV70PSZLTU3P
-         MS1+Pcsr3iktEN4PDmwBrb38GNlhSIGywLh7buISSSQiu8stWhcffoRjK/AbNKC/MtSZ
-         8qb8JKSZrGLS2Jh1awBhFTDbK8kKdTc6/GY6FV4B1VbNXXRH/ooA2EUiHCSMypOlubsJ
-         Gjog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693088643; x=1693693443;
-        h=content-transfer-encoding:to:subject:message-id:date:from:sender
-         :reply-to:mime-version:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pTK2P+dSNpLdhHcbff7i9fxYGYQXK5wNucMBi2Hv5F0=;
-        b=QFqOVKOiTiL44CJHDvPrxp1VSkVeDPKSF0ESJ6FqQ76vUUu7SlWEFxV3AuOfRgqhD7
-         J1uTNuxf/5Mk7G7dcp/rC4mrgqxiQFiml3JJSsTcAMYVfOABFf4wm2PfVhh9jkide8D/
-         KcWOCyYIQAQDxpIXUde4hKeOT/ka67CYpQqI+Em1aZewzNhbUqQgmN3HB3YeFRc2TFph
-         C0EIzSK/8J2sU+X0VVCDzDkE6pplC0lFMshdiDa+fhqVjAix9tpHeZBTnnpOKUVQNgp+
-         kTU7uDtMPyvvh79SB68dHcAS6uOovfAtRGCYbaAy1JFktSk0c2PCDZJgvzbURuXpS5tb
-         mGfA==
-X-Gm-Message-State: AOJu0YyKDfFSqZdejbOReJvb5SmNSNOvINMqAvK6FAPzTuMv6L8ePom2
-        BcdR+RndbqOrb2yPmqg3FiEG8wXSYy9pa4U2aqQ=
-X-Google-Smtp-Source: AGHT+IH3/4FqdEi+0VbRuiDiqN95qIVZ31Hm3GEWhygTBlrJbJETMRw2gI3Td9C2ioa8Xj9JLdpsKnF3LkWWXDj0UvE=
-X-Received: by 2002:a05:6358:63a8:b0:139:cf80:1845 with SMTP id
- k40-20020a05635863a800b00139cf801845mr29488028rwh.12.1693088643260; Sat, 26
- Aug 2023 15:24:03 -0700 (PDT)
+        Sat, 26 Aug 2023 18:47:51 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94B6A18C
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 15:47:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693090067; x=1724626067;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=kDRlpeY0vEITNN+Wdwk2GZcPgOoVK5u0o6s78q+jodA=;
+  b=CJFeUqFBhp3W5xiCht5p9gHuJ33ssK9MUS4UKSaQvXHiEhwfZ+dONJep
+   4ifXb6/0s8PctR7Xc3la3DJzaDqjTKO2QY/i9wrVedqU02kRQKYh/1h/v
+   /SJmhPaE892eNnjxs0XbYi+4VgisPflDqKuKRp9a3PgZt9SfaI3f7Wq0s
+   GSpPRWcQ8G25TW7LNC7Iclk7hEGi/rShtTe9gYmgBly/HGuv0zH+8sne5
+   d0Vurm6ib+jMzsdFLcPXIHnefVGi2M0YFYXkLr/lUDBHWdRUvOjudvyys
+   JE9zoC3N+nqRqofD5MGE8okhTtzueKc2dpSQHv0J5zU9B7wr+Kns0Jbyp
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10814"; a="373782338"
+X-IronPort-AV: E=Sophos;i="6.02,204,1688454000"; 
+   d="scan'208";a="373782338"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2023 15:47:47 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10814"; a="984478530"
+X-IronPort-AV: E=Sophos;i="6.02,204,1688454000"; 
+   d="scan'208";a="984478530"
+Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
+  by fmsmga006.fm.intel.com with ESMTP; 26 Aug 2023 15:47:45 -0700
+Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qa22a-000595-2Z;
+        Sat, 26 Aug 2023 22:46:36 +0000
+Date:   Sun, 27 Aug 2023 06:45:16 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Alexander Potapenko <glider@google.com>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: warning: unsafe memset() usage lacked '__write_overflow' symbol in
+ lib/test_fortify/write_overflow-memset.c
+Message-ID: <202308270621.uCWbWfPY-lkp@intel.com>
 MIME-Version: 1.0
-Reply-To: mrselizabethedward13@gmail.com
-Sender: olamidevirgil@gmail.com
-Received: by 2002:a05:7300:5798:b0:d9:922:9031 with HTTP; Sat, 26 Aug 2023
- 15:24:02 -0700 (PDT)
-From:   "Mrs. Elizabeth" <mrselizabethedward13@gmail.com>
-Date:   Sat, 26 Aug 2023 15:24:02 -0700
-X-Google-Sender-Auth: zWfgx6L3fuQgntQ62Ij6dZEDgIo
-Message-ID: <CAM6Xz8J2m+RB54ud59KsuKk++aaoq50c2_c-V-RqT2x8X_WUoQ@mail.gmail.com>
-Subject: Am Expecting Your Response
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: Yes, score=6.2 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        FREEMAIL_REPLYTO_END_DIGIT,LOTS_OF_MONEY,MONEY_FRAUD_8,
-        MONEY_FREEMAIL_REPTO,RCVD_IN_DNSWL_BLOCKED,RISK_FREE,SPF_HELO_NONE,
-        SPF_PASS,T_HK_NAME_FM_MR_MRS,T_MONEY_PERCENT,UNDISC_MONEY autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
-X-Spam-Report: *  0.0 RCVD_IN_DNSWL_BLOCKED RBL: ADMINISTRATOR NOTICE: The query to
-        *      DNSWL was blocked.  See
-        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
-        *      for more information.
-        *      [2607:f8b0:4864:20:0:0:0:c2a listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [mrselizabethedward13[at]gmail.com]
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [olamidevirgil[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        *  0.0 T_HK_NAME_FM_MR_MRS No description available.
-        *  0.0 LOTS_OF_MONEY Huge... sums of money
-        *  2.4 MONEY_FREEMAIL_REPTO Lots of money from someone using free
-        *      email?
-        *  0.0 T_MONEY_PERCENT X% of a lot of money for you
-        *  0.0 RISK_FREE No risk!
-        *  0.0 MONEY_FRAUD_8 Lots of money and very many fraud phrases
-        *  3.0 UNDISC_MONEY Undisclosed recipients + money/fraud signs
-X-Spam-Level: ******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-My Dear Friend,
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   28f20a19294da7df158dfca259d0e2b5866baaf9
+commit: 78a498c3a227f2ac773a8234b2ce092a4403f2c3 x86: fortify: kmsan: fix KMSAN fortify builds
+date:   10 months ago
+config: x86_64-buildonly-randconfig-002-20230827 (https://download.01.org/0day-ci/archive/20230827/202308270621.uCWbWfPY-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce: (https://download.01.org/0day-ci/archive/20230827/202308270621.uCWbWfPY-lkp@intel.com/reproduce)
 
-I am Mrs. Elizabeth Edward, 63 years, from USA, I am childless and I
-am suffering from a pro-long critical cancer, my doctors confirmed I
-may not live beyond two months from now as my ill health has defile
-all forms of medical treatment.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308270621.uCWbWfPY-lkp@intel.com/
 
-Please forgive me for stressing you with my predicaments and am sorry
-to approach you through this media, it is because it serves the
-fastest means of communication. I came across your E-mail from my
-personal search and I decided to contact you believing you will be
-honest to fulfill my final wish before I die.
+All warnings (new ones prefixed by >>):
 
-Since my days are numbered, I=E2=80=99ve decided, willingly to fulfill my l=
-ong
-time promise to donate you the sum(=E2=82=AC9.5 Million Euros) I nherited f=
-rom
-my late husband Mr. Edward Herbart, foreign bank account over years. I
-need a very honest person who can assist in transfer of this money to
-his or her account and use the funds for charities work of God while
-you use 50% for yourself. I want you to know there are no risks
-involved; it is 100% hitch free & safe. If you will be interesting to
-assist in getting this fund into your account for charity project to
-fulfill my promise before I die please let me know immediately. I will
-appreciate your utmost confidentiality as I wait for your reply.
+>> warning: unsafe memset() usage lacked '__write_overflow' symbol in lib/test_fortify/write_overflow-memset.c
+--
+>> warning: unsafe memset() usage lacked '__write_overflow_field' symbol in lib/test_fortify/write_overflow_field-memset.c
 
-Best Regards
-
-Mrs. Elizabeth Edward.
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
