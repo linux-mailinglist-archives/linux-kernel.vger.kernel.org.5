@@ -2,92 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 067047898D1
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 21:52:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BEAA7898D9
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 21:56:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229534AbjHZTrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 15:47:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42452 "EHLO
+        id S229583AbjHZTzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 15:55:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbjHZTrX (ORCPT
+        with ESMTP id S229605AbjHZTzg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 15:47:23 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 829E11711
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 12:47:20 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-500b0f06136so885302e87.0
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 12:47:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693079239; x=1693684039;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=JfqtSyOOEfYeYXPTw3WvhRqU9e0vvdpGdFZBiD7IMmM=;
-        b=fw2iNj9Em5f7sj12SJcskjFuQM5sRPS6mGTZYIck6eSj9Xy4xQaUl6bA2aMC9A1aix
-         a3f62p5aLukbSQz1bkTravregpJUVE9HcLQDHqSUUg+IEwwoxhLA1JmZ/gnhDLycldML
-         vwWf18/OyN947xDFz8T8Iw2Yw6xOeJR+0ZyBzKfP57SGD1epCVcLFKUCplq4y/KuMygT
-         /1/4L+GswEAhu3vZYYxI7Jn71TmNaQbKkkTK6CvqLxHVOU6XpWvvvg7TO8qiD94LLMQH
-         btuft6vPPIB0pCeTAXDnmb7TQlK99WW66+j/y9GEfaJnFXoGsVNonorroXvv1gkR1i3o
-         NpRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693079239; x=1693684039;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JfqtSyOOEfYeYXPTw3WvhRqU9e0vvdpGdFZBiD7IMmM=;
-        b=fIc06g2UDb8GxLMzYQ7h6vPGQnPwm1TjWCxP5xumh+0vTEYn3PgwzKyY2/9bfIoGwb
-         HtJoxIQ410U3nJwMuTk1fboy3L709PPzXn6fKKH12GF6KFnRXG5Yn3ba5526PRgNTjqU
-         Zcd0c8rgE+HHRQAFK1DVDYMb9DNdNJU+0wd0MDvDXCXpt0jnzFilxCcYQTJA9PVY8hWy
-         kcmjMZ8Q66vlwU/VPKEbjtTPDSo3EUptjBE3PWnlwaSl/7Qgt8RqFX7kjH8bUI1X6sdy
-         hDuyRh5fJ8IRDbi00n4VGQe6CftQoxJGNEEETxSObIqbps49bKoqw4g6HDF9EM7CGiqb
-         NXbg==
-X-Gm-Message-State: AOJu0Yx3v3r7/nju2sjwcejovBS3/JmEzopevxcEhkBidi2X/s3E/PQ9
-        1CGkdUm+fr4JJ+wSQjrdvhM=
-X-Google-Smtp-Source: AGHT+IH6qDpM6m/YAxoJlYEq00WDgoVHO/8PUUtiAVqxMxmaYkeqIRnLFr71BPhd0b7U0lVKDdaOdA==
-X-Received: by 2002:a05:6512:313b:b0:500:81fa:46f1 with SMTP id p27-20020a056512313b00b0050081fa46f1mr11357717lfd.67.1693079238415;
-        Sat, 26 Aug 2023 12:47:18 -0700 (PDT)
-Received: from nam-dell (ip-217-105-46-58.ip.prioritytelecom.net. [217.105.46.58])
-        by smtp.gmail.com with ESMTPSA id f18-20020a170906825200b0099364d9f0e9sm2543939ejx.102.2023.08.26.12.47.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 26 Aug 2023 12:47:17 -0700 (PDT)
-Date:   Sat, 26 Aug 2023 21:47:16 +0200
-From:   Nam Cao <namcaov@gmail.com>
-To:     Alexon Oliveira <alexondunkan@gmail.com>
-Cc:     gregkh@linuxfoundation.org, martyn@welchs.me.uk,
-        manohar.vanga@gmail.com, linux-kernel@vger.kernel.org,
-        linux-staging@lists.linux.dev
-Subject: Re: [PATCH v2 1/4] staging: vme_user: fix check alignment of open
- parenthesis in vme_fake.c
-Message-ID: <ZOpWxBjONs0QpFlU@nam-dell>
-References: <ZOoWgZ7ZnGyWHUKe@alolivei-thinkpadt480s.gru.csb>
+        Sat, 26 Aug 2023 15:55:36 -0400
+Received: from px.funlab.cc (px.funlab.cc [IPv6:2a01:4f8:c010:6bd5::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4039E1
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 12:55:33 -0700 (PDT)
+Received: from [192.168.1.40] (83.27.115.100.ipv4.supernova.orange.pl [83.27.115.100])
+        (Authenticated sender: doka@funlab.cc)
+        by px.funlab.cc (Postfix) with ESMTPSA id 0579960273;
+        Sat, 26 Aug 2023 22:55:31 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=funlab.cc; s=dkim;
+        t=1693079732; bh=Nq3E/C8MCYZ1MyUM+3Izi3Rw+2P9w68chIky07w10lg=;
+        h=Date:From:Subject:To:Cc:From;
+        b=IjSmHpWmwOWJ/CDnl4bLhyDZI+bDQOcWjQN1UEvEydXyvAuZdh48zIdK3xBv/sEd7
+         jCCbwOAW0TijS/dOBaqHpEN2yOZaKE3MIWHgsqofuPnCrp+V510OtAwwAp/d0LxNB1
+         FKkH5mxjOZP3d3tgf6dcxEkY84yYhY4TYOOu7l9cRNzO2dH9RXCHwzU4Cq/pFdshpw
+         /eAfUsjU3OefbgRv8NCxBSO1TVqsPNmt0ygjBid9gLRmr4t23gJeFpnRned426GQNY
+         BCr81B8qqeJb5ucgAJypcql8F6cDJAFZrDXe/+rzmRwbCVYjpq7Fp1iKhn0HKOY4l4
+         g+UIhhjLV0T3Q==
+Message-ID: <eaf3d0d8-fca2-029e-9c57-ddae31f17726@funlab.cc>
+Date:   Sat, 26 Aug 2023 21:55:30 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZOoWgZ7ZnGyWHUKe@alolivei-thinkpadt480s.gru.csb>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+From:   Volodymyr Litovka <doka@funlab.cc>
+Subject: [Networking] ERSPAN decapsulation drops DHCP unicast packets
+To:     linux-kernel@vger.kernel.org
+Cc:     doka@funlab.cc
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 26, 2023 at 12:13:05PM -0300, Alexon Oliveira wrote:
-> Fixed all CHECK: Alignment should match open parenthesis
-> as reported by checkpatch to adhere to the Linux kernel
-> coding-style guidelines.
-> 
-> Signed-off-by: Alexon Oliveira <alexondunkan@gmail.com>
+Hi colleagues,
 
-Patch series should be in a single email thread. But your 4 patches are sent
-separately :(
+I'm trying to catch and process (in 3rd party analytics app) DHCP 
+packets from ERSPAN session, but cannot do this due to absence of DHCP 
+unicast packets after decapsulation.
 
-Have a look at how your patches are sent on https://lore.kernel.org/linux-staging/
-and you will see what I am referring to.
+The model is pretty simple: there is PHY interface (enp2s0) which 
+receive ERSPAN traffic and erspan-type interface to get decapsulated 
+packets (inspan, created using command "ip link add inspan type erspan 
+seq key 10 local 10.171.165.65 erspan_ver 1", where 10.171.165.65 is 
+ERSPAN target). Then I'm going to rewrite headers in the proper ways 
+(nftable's netdev family) and forward packets to the pool of workers.
 
-Here's an example of how patch series should be:
-https://lore.kernel.org/linux-staging/736c8159-90e9-4575-3c22-5a62515d5c03@gmail.com/T/#t
+Having this, I'm expecting everything, which is encapsulated inside 
+ERSPAN, on 'inspan' interface. And there is _almost_ everything except 
+DHCP unicast packets - tcpdump shows about 1kps on this interface of 
+decapsulated packets, but no DHCP unicast (see below traces).
 
-Best regards,
-Nam
+To avoid any interactions, I removed and disabled everything that can 
+catch DHCP in userspace - systemd-networkd, netplan, dhcp-client. There 
+is no DHCP server and ifupdown - for test purposes, I'm bringing 
+networking manually. Apparmor disabled as well. Kernel (Linux 
+5.19.0-42-generic #43~22.04.1-Ubuntu SMP PREEMPT_DYNAMIC) compiled 
+without CONFIG_IP_PNP (according to /boot/config-5.19.0-42-generic). 
+Nothing in userspace listens on UDP/68 and UDP/67:
+
+# netstat -tunlpa
+Active Internet connections (servers and established)
+Proto Recv-Q Send-Q Local Address           Foreign Address         
+State       PID/Program name
+tcp        0      0 0.0.0.0:22 0.0.0.0:*               LISTEN      
+544/sshd: /usr/sbin
+tcp6       0      0 :::22 :::*                    LISTEN      544/sshd: 
+/usr/sbin
+
+I have no ideas, why this is happening. Decapsulation itself works, but 
+particular kind of packets get lost.
+
+I will appreciate if anyone can help me understand where is the bug - in 
+my configuration or somewhere inside the kernel?
+
+Evidence of traffic presence/absence is below.
+
+Thank you.
+
+Encapsulated ERSPAN session (udp and port 67/68) contains lot of 
+different kinds of DHCP packets:
+
+# tcpdump -s0 -w- -i enp2s0 'proto gre and ether[73:1]=17 and 
+(ether[84:2]=67 or ether[84:2]=68)' | tshark -r- -l
+  [ ... ]
+     7   0.001942  0.0.0.0 → 255.255.255.255 DHCP 392 DHCP Discover - 
+Transaction ID 0x25c096fc
+     8   0.003432  z.z.z.z → a.a.a.a         DHCP 418 DHCP ACK      - 
+Transaction ID 0x5515126a
+     9   0.005170  m.m.m.m → z.z.z.z         DHCP 435 DHCP Discover - 
+Transaction ID 0xa7b7
+    10   0.005171  m.m.m.m → z.z.z.z         DHCP 435 DHCP Discover - 
+Transaction ID 0xa7b7
+    11   0.015399  n.n.n.n → z.z.z.z         DHCP 690 DHCP Request  - 
+Transaction ID 0x54955233
+    12   0.025537  z.z.z.z → n.n.n.n         DHCP 420 DHCP ACK      - 
+Transaction ID 0x54955233
+    13   0.030313  z.z.z.z → m.m.m.m         DHCP 413 DHCP Offer    - 
+Transaction ID 0xa7b7
+
+but decapsulated traffic (which I'm seeing on inspan interface) contains 
+just the following:
+
+# tcpdump -i inspan 'port 67 or port 68'
+listening on inspan, link-type EN10MB (Ethernet), snapshot length 262144 
+bytes
+17:23:36.540721 IP 0.0.0.0.bootpc > 255.255.255.255.bootps: BOOTP/DHCP, 
+Request from 00:1a:64:33:8d:fa (oui Unknown), length 300
+17:23:39.760036 IP 0.0.0.0.bootpc > 255.255.255.255.bootps: BOOTP/DHCP, 
+Request from 00:1a:64:33:8d:fa (oui Unknown), length 300
+17:23:44.135711 IP 0.0.0.0.bootpc > 255.255.255.255.bootps: BOOTP/DHCP, 
+Request from 00:1a:64:33:8d:fa (oui Unknown), length 300
+17:23:52.008504 IP 0.0.0.0.bootpc > 255.255.255.255.bootps: BOOTP/DHCP, 
+Request from 00:1a:64:33:8d:fa (oui Unknown), length 300
+
+Thanks again for the help.
+
+
+-- 
+Volodymyr Litovka
+   "Vision without Execution is Hallucination." -- Thomas Edison
+
