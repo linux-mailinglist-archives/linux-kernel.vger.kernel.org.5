@@ -2,39 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E81BC7897B9
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 17:26:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5364E7897B4
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 17:22:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230283AbjHZPZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 11:25:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50230 "EHLO
+        id S230074AbjHZPV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 11:21:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229800AbjHZPZ2 (ORCPT
+        with ESMTP id S229968AbjHZPVd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 11:25:28 -0400
-Received: from mail.enpas.org (zhong.enpas.org [IPv6:2a03:4000:2:537::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FFF3199F
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 08:25:26 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        by mail.enpas.org (Postfix) with ESMTPSA id B3E3D101532;
-        Sat, 26 Aug 2023 15:25:20 +0000 (UTC)
-From:   Max Staudt <max@enpas.org>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     Vicki Pfau <vi@endrift.com>, Pavel Rojtberg <rojtberg@gmail.com>,
-        Roderick Colenbrander <roderick@gaikai.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Max Staudt <max@enpas.org>
-Subject: [PATCH 2/2] hid-sony: DS3: Report analog buttons for Sixaxis
-Date:   Sun, 27 Aug 2023 00:21:11 +0900
-Message-Id: <20230826152111.13525-3-max@enpas.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230826152111.13525-1-max@enpas.org>
-References: <20230826152111.13525-1-max@enpas.org>
+        Sat, 26 Aug 2023 11:21:33 -0400
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FD3A172D
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 08:21:31 -0700 (PDT)
+Received: by mail-oi1-x22b.google.com with SMTP id 5614622812f47-3a85cc7304fso1391842b6e.1
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 08:21:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693063291; x=1693668091;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Hd7adZZYOTiFa760wWHbvro1iAu1WnMNCa9ih8fX4BY=;
+        b=rIfVMQCJThxrfongc1TNXRgOCpwRWM5Y/NYtBN5JZETFs5eqaD03F7yoPgwSZa24sk
+         OZhaJcG3CoHGlVv7t9FwJ3GO9hqz4tlmrySztdY9UQqitMFgTwF0n78h187Odv6rRvPP
+         iN1VXUva6lSBtt+7FG8qq4QI44R7Spv0LdwDpWy8817HCS6oAlrREDumSpSKrfI3c8dS
+         1WLmRz73M0WHo5usq1XyCAE883blLbLC9KAf8pzB6f15m4QfTyIIaD+JEoCT2svPeNlZ
+         /SpQXz0RIgmTwoowd9Jf5erDA8uzo353IhLnVfD3EE4NZ/9qMacc+MjC+8ngVzn0xyJb
+         nuHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693063291; x=1693668091;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Hd7adZZYOTiFa760wWHbvro1iAu1WnMNCa9ih8fX4BY=;
+        b=T6y3Ex+gb2dJKlzSm7v1xY/Lxgv8fsb7pkbqo2wNP5Uvk3dgHmMaL4F967QCn2L8WB
+         GSzlB+ITP5eGAe8t9jQ7vMjYDy0MAtF9GHmYt+90gT51OXgDv6MceBQXmRGLg8UFyQ1f
+         OrFgYWdO3EXZPqHt+YjRrXSEfeI2SiJT/zJwqfe0HuC8+yz5xaKBs5YDZCcITGZeZBeA
+         zc66BPMx5jcn6QUiOX3kGMB+nkBAPef9H+2SNtEaerCvh8tGmd+UUSC+hdxIFUjTRUuX
+         Vm0U1H/EnzyrHnbwm8nccdIZpvciwq4G4mEPpTy00Uan0Tdv3/n74ALRpPvL57cIK8lI
+         vDfg==
+X-Gm-Message-State: AOJu0Yx+fTucP6+4m7gpTycOuK5ZrRV2ADgWZvroQdMRxkzDwdo7hasv
+        8l+9KPGfCQgSy55h2DvG6zlqjRH/QC8=
+X-Google-Smtp-Source: AGHT+IGMBg02sEa4hS1aKKX+LM72sLA42B9wE6fuIYdZvvSb5r5V5/YYMKA0SV+5mK4w9Cu+YGvb+g==
+X-Received: by 2002:aca:1716:0:b0:3a9:bc8d:42c3 with SMTP id j22-20020aca1716000000b003a9bc8d42c3mr1663122oii.50.1693063290941;
+        Sat, 26 Aug 2023 08:21:30 -0700 (PDT)
+Received: from alolivei-thinkpadt480s.gru.csb ([2804:14c:bf20:82ea:8c7c:b784:3f92:988a])
+        by smtp.gmail.com with ESMTPSA id q12-20020a056808200c00b003a89019d5fesm1780379oiw.51.2023.08.26.08.21.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 26 Aug 2023 08:21:30 -0700 (PDT)
+Date:   Sat, 26 Aug 2023 12:21:25 -0300
+From:   Alexon Oliveira <alexondunkan@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     martyn@welchs.me.uk, manohar.vanga@gmail.com,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: [PATCH v2 4/4] staging: vme_user: fix check unnecessary space after
+ a cast in vme_fake.c
+Message-ID: <ZOoYdRNn/XYbzKqU@alolivei-thinkpadt480s.gru.csb>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -43,157 +69,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Sixaxis and DualShock 3 controllers report 12 buttons in an analog
-fashion, in addition to the digital on/off state:
+Fixed all CHECK: No space is necessary after a cast
+as reported by checkpatch to adhere to the Linux kernel
+coding-style guidelines.
 
- - D-Pad up/down/left/right
- - Action buttons Triangle/Circle/Cross/Square
- - L1/R1
- - Triggers L2/R2
-
-Up until now, only the triggers L2/R2 are reported as values 0-255. The
-other pressure sensitive buttons are reported as digital buttons, as
-found on other controllers.
-
-This change exposes these buttons as axes in a way that is as backwards
-compatible and as close to the Linux gamepad spec as possible.
-The new axes are merely added, and numbered after any existing axes.
-This way, libraries like SDL which renumber axes in enumeration order,
-can keep their button/axis mapping as-is. Userspace can keep working as
-before, and can optionally use the new values when handling this type of
-gamepad.
-
- - The D-Pad as ABS_HAT0X/ABS_HAT0Y, -255 to 255
- - R1 as ABS_HAT1X, 0 to 255
- - L1 as ABS_HAT1Y, 0 to 255
- - BTN_A..BTN_Z mapped to ABS_MISC+0..ABS_MISC+5, 0 to 255
-
-Most buttons are straight HID remappings in sixaxis_mapping().
-For the D-Pad, two pairs of buttons need to be merged to a single axis
-each, so this is handled manually in sixaxis_parse_report().
-
-Signed-off-by: Max Staudt <max@enpas.org>
+Signed-off-by: Alexon Oliveira <alexondunkan@gmail.com>
 ---
- drivers/hid/hid-sony.c | 66 ++++++++++++++++++++++++++++++++----------
- 1 file changed, 50 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/hid/hid-sony.c b/drivers/hid/hid-sony.c
-index dd942061fd77..642fd715ba39 100644
---- a/drivers/hid/hid-sony.c
-+++ b/drivers/hid/hid-sony.c
-@@ -484,6 +484,7 @@ struct sony_sc {
- 	spinlock_t lock;
- 	struct list_head list_node;
- 	struct hid_device *hdev;
-+	struct input_dev *gamepad;
- 	struct input_dev *touchpad;
- 	struct input_dev *sensor_dev;
- 	struct led_classdev *leds[MAX_LEDS];
-@@ -711,22 +712,37 @@ static int sixaxis_mapping(struct hid_device *hdev, struct hid_input *hi,
- 	} else if (usage->hid == HID_GD_POINTER) {
- 		/* The DS3 provides analog values for most buttons and even
- 		 * for HAT axes through GD Pointer. L2 and R2 are reported
--		 * among these as well instead of as GD Z / RZ. Remap L2
--		 * and R2 and ignore other analog 'button axes' as there is
--		 * no good way for reporting them.
-+		 * among these as well instead of as GD Z / RZ.
- 		 */
-+		__u16 c;
-+
- 		switch (usage->usage_index) {
-+		case 10: /* L1 */
-+			c = ABS_HAT1Y;
-+			break;
-+		case 11: /* R1 */
-+			c = ABS_HAT1X;
-+			break;
-+		case 12: /* NORTH */
-+		case 13: /* EAST */
-+		case 14: /* SOUTH */
-+		case 15: /* WEST */
-+			c = sixaxis_keymap[usage->usage_index + 1]
-+				- BTN_GAMEPAD + ABS_MISC;
-+			break;
- 		case 8: /* L2 */
- 			usage->hid = HID_GD_Z;
-+			c = ABS_Z;
- 			break;
- 		case 9: /* R2 */
- 			usage->hid = HID_GD_RZ;
-+			c = ABS_RZ;
- 			break;
- 		default:
- 			return -1;
- 		}
+Changes in v2:
+- Fixed summary phrase with tags to indicate commit order
+in the patch series, noted by Greg KH
+
+ drivers/staging/vme_user/vme_fake.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/staging/vme_user/vme_fake.c b/drivers/staging/vme_user/vme_fake.c
+index 4258ed6033e7..4ccb16dd0d0b 100644
+--- a/drivers/staging/vme_user/vme_fake.c
++++ b/drivers/staging/vme_user/vme_fake.c
+@@ -95,7 +95,7 @@ static void fake_VIRQ_tasklet(unsigned long data)
+ 	struct vme_bridge *fake_bridge;
+ 	struct fake_driver *bridge;
  
--		hid_map_usage_clear(hi, usage, bit, max, EV_ABS, usage->hid & 0xf);
-+		hid_map_usage_clear(hi, usage, bit, max, EV_ABS, c);
- 		return 1;
- 	} else if ((usage->hid & HID_USAGE_PAGE) == HID_UP_GENDESK) {
- 		unsigned int abs = usage->hid & HID_USAGE;
-@@ -837,6 +853,17 @@ static void sixaxis_parse_report(struct sony_sc *sc, u8 *rd, int size)
- 		val = 511 - ((rd[offset+3] << 8) | rd[offset+2]);
- 		input_report_abs(sc->sensor_dev, ABS_Z, val);
+-	fake_bridge = (struct vme_bridge *) data;
++	fake_bridge = (struct vme_bridge *)data;
+ 	bridge = fake_bridge->driver_priv;
  
-+		/* Report analog D-pad */
-+		if (rd[17] > rd[15])  /* left */
-+			input_report_abs(sc->gamepad, ABS_HAT0X, 0 - rd[17]);
-+		else  /* right */
-+			input_report_abs(sc->gamepad, ABS_HAT0X, rd[15]);
-+
-+		if (rd[14] > rd[16]) /* up */
-+			input_report_abs(sc->gamepad, ABS_HAT0Y, 0 - rd[14]);
-+		else /* down */
-+			input_report_abs(sc->gamepad, ABS_HAT0Y, rd[16]);
-+
- 		input_sync(sc->sensor_dev);
- 	}
- }
-@@ -1597,18 +1624,8 @@ static int sony_play_effect(struct input_dev *dev, void *data,
+ 	vme_irq_handler(fake_bridge, bridge->int_level, bridge->int_statid);
+@@ -1092,7 +1092,7 @@ static int __init fake_init(void)
+ 	mutex_init(&fake_device->vme_int);
+ 	mutex_init(&fake_bridge->irq_mtx);
+ 	tasklet_init(&fake_device->int_tasklet, fake_VIRQ_tasklet,
+-		     (unsigned long) fake_bridge);
++		     (unsigned long)fake_bridge);
  
- static int sony_init_ff(struct sony_sc *sc)
- {
--	struct hid_input *hidinput;
--	struct input_dev *input_dev;
--
--	if (list_empty(&sc->hdev->inputs)) {
--		hid_err(sc->hdev, "no inputs found\n");
--		return -ENODEV;
--	}
--	hidinput = list_entry(sc->hdev->inputs.next, struct hid_input, list);
--	input_dev = hidinput->input;
--
--	input_set_capability(input_dev, EV_FF, FF_RUMBLE);
--	return input_ff_create_memless(input_dev, NULL, sony_play_effect);
-+	input_set_capability(sc->gamepad, EV_FF, FF_RUMBLE);
-+	return input_ff_create_memless(sc->gamepad, NULL, sony_play_effect);
- }
+ 	strcpy(fake_bridge->name, driver_name);
  
- #else
-@@ -2039,6 +2056,23 @@ static int sony_input_configured(struct hid_device *hdev,
- 		}
- 	}
- 
-+	if (sc->quirks & (SONY_FF_SUPPORT | SIXAXIS_CONTROLLER)) {
-+		struct hid_input *hidinput;
-+
-+		if (list_empty(&sc->hdev->inputs)) {
-+			hid_err(sc->hdev, "no inputs found\n");
-+			return -ENODEV;
-+		}
-+		hidinput = list_entry(sc->hdev->inputs.next, struct hid_input, list);
-+		sc->gamepad = hidinput->input;
-+	}
-+
-+	if (sc->quirks & SIXAXIS_CONTROLLER) {
-+		/* Register axes for analog buttons */
-+		input_set_abs_params(sc->gamepad, ABS_HAT0X, -255, 255, 0, 0);
-+		input_set_abs_params(sc->gamepad, ABS_HAT0Y, -255, 255, 0, 0);
-+	}
-+
- 	if (sc->quirks & SONY_FF_SUPPORT) {
- 		ret = sony_init_ff(sc);
- 		if (ret < 0)
 -- 
-2.39.2
+2.41.0
 
