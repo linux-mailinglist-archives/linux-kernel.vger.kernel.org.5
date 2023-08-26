@@ -2,72 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19083789609
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 12:44:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6AD3789605
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 12:38:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232399AbjHZKoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 06:44:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40520 "EHLO
+        id S232268AbjHZKhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 06:37:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231821AbjHZKoQ (ORCPT
+        with ESMTP id S232251AbjHZKhA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 06:44:16 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F05C4AD;
-        Sat, 26 Aug 2023 03:44:13 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-31c4d5bd69cso1392947f8f.3;
-        Sat, 26 Aug 2023 03:44:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693046652; x=1693651452;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=G/C4x/hTrmKiRaEYUrNM9oFSxwi2qXvH1zCeFJdbxME=;
-        b=p9ETMnLf5DTT/n8Wxkwu5e2kyZIiZYPV1RTsLmDEC8P+B317UCKtY8vIgg8GAErjNM
-         RosKAz6iq/1WCDkpO749hAcgVPpJUQOSYy+FKChH1etSjAvENcu9IYeIX2S0dDWDAZmU
-         usLbrpUboLSmNYr8FAKiomdQU0nuoishyRYlhyWKXRZpDB/GcLL3AlMnfA0tfwBeMHWs
-         QaNzackvVamPUiO7kmrbPzCb+EC8Agg5viUU7mQyNMDufX+PoLlrVwXFRT7rjWMeVNi/
-         MoFnNQy1Rjet3eQO/iNBOElZJ3CI0l8zNXnbnSOaBvXP7MFGPiZxNJu780/9IMiuYiR6
-         byjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693046652; x=1693651452;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=G/C4x/hTrmKiRaEYUrNM9oFSxwi2qXvH1zCeFJdbxME=;
-        b=Us4rwc3PnmsEsL+ZicRtWKNWqmm+x6PJRRn7zujkpDSWrpcFICeRdmBMnWwj+2CsbQ
-         LCHl7HFTlSnGB/xlziX+QcynKalYbs0xgI438jM5gBNTYACCxXwQcP4UFTsnzLOBVRJC
-         D0l1aG8SqjjIRRjiBC9ZBOv8vcQJaz6pjOisTiC6hNnKuXejGwB3j+ud+s/S83JHrBJ0
-         VO9FstrH4fGEjICYZH2YogBpECNrgNM3aKPT0FEvGm8V96K9zZTKtJvNV2FHnKG0oXgX
-         mjygAmaDuDCAP0WkeyrNeuCDzjN6lVfrb0t1scf+n4qWNLLNUJ/yTJjYJWzDryh5QbXt
-         G46w==
-X-Gm-Message-State: AOJu0YxzhybAYtNFE6JF0zldNi3kqODrjBpzvKih1sr1pXqc2TdR3R0x
-        lYFxiWbtB4MErzxUcJmP4u2g5+AJGXe4jQ==
-X-Google-Smtp-Source: AGHT+IHLByqWoC7LACF1/D4PlkivuyE/SSe0J9HP/ibzNaVzo6ZRxqLyBjgvTrCz7hXg+HGbzrtEqA==
-X-Received: by 2002:adf:cf02:0:b0:317:6b0d:1b1 with SMTP id o2-20020adfcf02000000b003176b0d01b1mr15894262wrj.4.1693046651600;
-        Sat, 26 Aug 2023 03:44:11 -0700 (PDT)
-Received: from localhost.localdomain (cpc157791-rdng31-2-0-cust585.15-3.cable.virginm.net. [86.24.214.74])
-        by smtp.gmail.com with ESMTPSA id c12-20020a05600c0acc00b003fee6f027c7sm7777114wmr.19.2023.08.26.03.44.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 26 Aug 2023 03:44:11 -0700 (PDT)
-From:   Stuart Hayhurst <stuart.a.hayhurst@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Stuart Hayhurst <stuart.a.hayhurst@gmail.com>,
-        platform-driver-x86@vger.kernel.org,
-        Mark Gross <markgross@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Ike Panhc <ike.pan@canonical.com>,
-        ilpo.jarvinen@linux.intel.com
-Subject: [PATCH v2] platform/x86: ideapad-laptop: Add support for keyboard backlights using KBLC ACPI symbol
-Date:   Sat, 26 Aug 2023 11:35:32 +0100
-Message-ID: <20230826103530.9641-1-stuart.a.hayhurst@gmail.com>
-X-Mailer: git-send-email 2.40.1.521.gf1e218fcd8
-In-Reply-To: <7ab13275-b433-597a-bc5b-d1416c637974@redhat.com>
-References: 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        Sat, 26 Aug 2023 06:37:00 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0C951FEC;
+        Sat, 26 Aug 2023 03:36:57 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 46FB760F1E;
+        Sat, 26 Aug 2023 10:36:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9021CC433C7;
+        Sat, 26 Aug 2023 10:36:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693046216;
+        bh=x1hOMfWCNnRRZv1VfAf0PBdXlkAf5G9BLURODcZBglk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=INzayd/CTmJb+InHsokVpOULz3x6muV25aBm0mPqEw5jfo+8CgFASIKNwIygd2qRz
+         ASLD4A6FPW2/bVKVqRWz9Tmnq3x/ryEhj7kB5JqwIIljpwsz0XyBaigRicvQ2MUxZ6
+         9SeIUiYTlUSOqPcXab93ZFCURk9AEjjZFPX74JkMLwEW6HV0sDIcL0L+UsNC0CW+Nd
+         ejD8KU80BIUMYLKxmIZusLkv+rADwxfx8fUZvvHSUgEcd64pNj+32X8SCWfv+DFrbE
+         K6iWQ3Csc4DwvMEQ8c/gLicqpfOPlgawDltamb847SQOFnwV6M/U2XavLzVM7jB+NL
+         xuWH/NY09ITuQ==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qZqez-008Gjw-Rk;
+        Sat, 26 Aug 2023 11:36:54 +0100
+Date:   Sat, 26 Aug 2023 11:36:53 +0100
+Message-ID: <86bkeuf5tm.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        kgdb-bugreport@lists.sourceforge.net,
+        Lecopzer Chen <lecopzer.chen@mediatek.com>,
+        linux-perf-users@vger.kernel.org,
+        Masayoshi Mizuma <msys.mizuma@gmail.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        linux-arm-kernel@lists.infradead.org, ito-yuichi@fujitsu.com,
+        Stephen Boyd <swboyd@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v11 1/6] irqchip/gic-v3: Enable support for SGIs to act as NMIs
+In-Reply-To: <20230824083012.v11.1.I1223c11c88937bd0cbd9b086d4ef216985797302@changeid>
+References: <20230824153233.1006420-1-dianders@chromium.org>
+        <20230824083012.v11.1.I1223c11c88937bd0cbd9b086d4ef216985797302@changeid>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: dianders@chromium.org, mark.rutland@arm.com, catalin.marinas@arm.com, will@kernel.org, sumit.garg@linaro.org, daniel.thompson@linaro.org, rafael.j.wysocki@intel.com, ardb@kernel.org, tglx@linutronix.de, kgdb-bugreport@lists.sourceforge.net, lecopzer.chen@mediatek.com, linux-perf-users@vger.kernel.org, msys.mizuma@gmail.com, wens@csie.org, linux-arm-kernel@lists.infradead.org, ito-yuichi@fujitsu.com, swboyd@chromium.org, peterz@infradead.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -76,217 +83,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Newer Lenovo laptops seem to use the KBLC symbol to control the backlight
-Add support for handling the keyboard backlight on these devices
+On Thu, 24 Aug 2023 16:30:27 +0100,
+Douglas Anderson <dianders@chromium.org> wrote:
+> 
+> As of commit 6abbd6988971 ("irqchip/gic, gic-v3: Make SGIs use
+> handle_percpu_devid_irq()") SGIs are treated the same as PPIs/EPPIs
+> and use handle_percpu_devid_irq() by default. Unfortunately,
+> handle_percpu_devid_irq() isn't NMI safe, and so to run in an NMI
+> context those should use handle_percpu_devid_fasteoi_nmi().
+> 
+> In order to accomplish this, we just have to make room for SGIs in the
+> array of refcounts that keeps track of which interrupts are set as
+> NMI. We also rename the array and create a new indexing scheme that
+> accounts for SGIs.
+> 
+> Also, enable NMI support prior to gic_smp_init() as allocation of SGIs
+> as IRQs/NMIs happen as part of this routine.
+> 
+> Co-developed-by: Sumit Garg <sumit.garg@linaro.org>
+> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
+> In v10 I removed the previous Reviewed-by and Tested-by tags since the
+> patch contents changed pretty drastically.
+> 
+> I'll also note that this change is a little more black magic to me
+> than others in this series. I don't have a massive amounts of
+> familiarity with all the moving parts of gic-v3, so I mostly just
+> followed Mark Rutland's advice [1]. Please pay extra attention to make
+> sure I didn't do anything too terrible.
+> 
+> Mark's advice wasn't a full patch and I ended up doing a bit of work
+> to translate it to reality, so I did not add him as "Co-developed-by"
+> here. Mark: if you would like this tag then please provide it and your
+> Signed-off-by. I certainly won't object.
+> 
+> [1] https://lore.kernel.org/r/ZNC-YRQopO0PaIIo@FVFF77S0Q05N.cambridge.arm.com
+> 
+> (no changes since v10)
+> 
+> Changes in v10:
+> - Rewrite as needed for 5.11+ as per Mark Rutland and Sumit.
+> 
+>  drivers/irqchip/irq-gic-v3.c | 54 ++++++++++++++++++++++++------------
+>  1 file changed, 36 insertions(+), 18 deletions(-)
+> 
+> diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
+> index eedfa8e9f077..49d18cf3f636 100644
+> --- a/drivers/irqchip/irq-gic-v3.c
+> +++ b/drivers/irqchip/irq-gic-v3.c
+> @@ -78,6 +78,8 @@ static DEFINE_STATIC_KEY_TRUE(supports_deactivate_key);
+>  #define GIC_LINE_NR	min(GICD_TYPER_SPIS(gic_data.rdists.gicd_typer), 1020U)
+>  #define GIC_ESPI_NR	GICD_TYPER_ESPIS(gic_data.rdists.gicd_typer)
+>  
+> +#define SGI_NR		16
 
-Signed-off-by: Stuart Hayhurst <stuart.a.hayhurst@gmail.com>
----
+Why 16? We only allocate 8, as the other 8 are potentially stolen by
+the secure side. We do try and initialise them all so that they have a
+known state if they were actually configured as Group-1NS, but we
+don't use them.
 
-v1 -> v2:
- - Replace keyboard identification hex literals with defines
- - Use a helper macro for checking a keyboard type is tristate
- - Reworked ideapad_kbd_bl_brightness_set
- - Reworked ideapad_kbd_bl_brightness_get
- - Clean up newlines and stray change
- - Use GENMASK, FIELD_GET and FIELD_PUT instead of manual masking and shifting
- - Correct format specifiers for new warnings
+I understand that this simplifies the indexing in the rdist_nmi_refs
+array and I'm not going to cry over 32 wasted bytes, but this
+definitely deserves a comment.
 
----
- drivers/platform/x86/ideapad-laptop.c | 113 ++++++++++++++++++++++++--
- 1 file changed, 107 insertions(+), 6 deletions(-)
+	M.
 
-diff --git a/drivers/platform/x86/ideapad-laptop.c b/drivers/platform/x86/ideapad-laptop.c
-index d2fee9a3e239..6149852bf27f 100644
---- a/drivers/platform/x86/ideapad-laptop.c
-+++ b/drivers/platform/x86/ideapad-laptop.c
-@@ -10,6 +10,7 @@
- 
- #include <linux/acpi.h>
- #include <linux/backlight.h>
-+#include <linux/bitfield.h>
- #include <linux/bitops.h>
- #include <linux/bug.h>
- #include <linux/debugfs.h>
-@@ -85,6 +86,32 @@ enum {
- 	SALS_FNLOCK_OFF       = 0xf,
- };
- 
-+/*
-+ * These correspond to the number of supported states - 1
-+ * Future keyboard types may need a new system, if there's a collision
-+ * KBD_BL_TRISTATE_AUTO has no way to report or set the auto state
-+ * so it effectively has 3 states, but needs to handle 4
-+ */
-+enum {
-+	KBD_BL_STANDARD      = 1,
-+	KBD_BL_TRISTATE      = 2,
-+	KBD_BL_TRISTATE_AUTO = 3,
-+};
-+
-+#define KBD_BL_QUERY_TYPE		0x1
-+#define KBD_BL_TRISTATE_TYPE		0x5
-+#define KBD_BL_TRISTATE_AUTO_TYPE	0x7
-+
-+#define KBD_BL_COMMAND_GET		0x2
-+#define KBD_BL_COMMAND_SET		0x3
-+
-+#define KBD_BL_GET_BRIGHTNESS_MASK	GENMASK(15, 0)
-+#define KBD_BL_SET_BRIGHTNESS_MASK	GENMASK(19, 16)
-+#define KBD_BL_SET_TYPE_MASK		GENMASK(7, 4)
-+
-+#define CHECK_KBD_BL_TRISTATE(TYPE)	(TYPE == KBD_BL_TRISTATE || \
-+					TYPE == KBD_BL_TRISTATE_AUTO)
-+
- struct ideapad_dytc_priv {
- 	enum platform_profile_option current_profile;
- 	struct platform_profile_handler pprof;
-@@ -122,6 +149,7 @@ struct ideapad_private {
- 	} features;
- 	struct {
- 		bool initialized;
-+		int type;
- 		struct led_classdev led;
- 		unsigned int last_brightness;
- 	} kbd_bl;
-@@ -242,6 +270,16 @@ static int exec_sals(acpi_handle handle, unsigned long arg)
- 	return exec_simple_method(handle, "SALS", arg);
- }
- 
-+static int exec_kblc(acpi_handle handle, unsigned long arg)
-+{
-+	return exec_simple_method(handle, "KBLC", arg);
-+}
-+
-+static int eval_kblc(acpi_handle handle, unsigned long cmd, unsigned long *res)
-+{
-+	return eval_int_with_arg(handle, "KBLC", cmd, res);
-+}
-+
- static int eval_dytc(acpi_handle handle, unsigned long cmd, unsigned long *res)
- {
- 	return eval_int_with_arg(handle, "DYTC", cmd, res);
-@@ -1272,14 +1310,39 @@ static void ideapad_backlight_notify_brightness(struct ideapad_private *priv)
-  */
- static int ideapad_kbd_bl_brightness_get(struct ideapad_private *priv)
- {
--	unsigned long hals;
-+	unsigned long value;
- 	int err;
- 
--	err = eval_hals(priv->adev->handle, &hals);
-+	if (CHECK_KBD_BL_TRISTATE(priv->kbd_bl.type)) {
-+		err = eval_kblc(priv->adev->handle,
-+				(priv->kbd_bl.type << 4) | KBD_BL_COMMAND_GET,
-+				&value);
-+
-+		if (err)
-+			return err;
-+
-+		/* Convert returned value to brightness level */
-+		value = FIELD_GET(KBD_BL_GET_BRIGHTNESS_MASK, value) >> 1;
-+
-+		/* Off, low or high */
-+		if (value <= priv->kbd_bl.led.max_brightness)
-+			return value;
-+
-+		/* Auto, report as off */
-+		if (value == priv->kbd_bl.led.max_brightness + 1)
-+			return 0;
-+
-+		/* Unknown value */
-+		dev_warn(&priv->platform_device->dev,
-+			 "Unknown keyboard backlight value: %lu", value);
-+		return -EINVAL;
-+	}
-+
-+	err = eval_hals(priv->adev->handle, &value);
- 	if (err)
- 		return err;
- 
--	return !!test_bit(HALS_KBD_BL_STATE_BIT, &hals);
-+	return !!test_bit(HALS_KBD_BL_STATE_BIT, &value);
- }
- 
- static enum led_brightness ideapad_kbd_bl_led_cdev_brightness_get(struct led_classdev *led_cdev)
-@@ -1291,7 +1354,21 @@ static enum led_brightness ideapad_kbd_bl_led_cdev_brightness_get(struct led_cla
- 
- static int ideapad_kbd_bl_brightness_set(struct ideapad_private *priv, unsigned int brightness)
- {
--	int err = exec_sals(priv->adev->handle, brightness ? SALS_KBD_BL_ON : SALS_KBD_BL_OFF);
-+	int err;
-+	unsigned long value;
-+	int type = priv->kbd_bl.type;
-+
-+	if (CHECK_KBD_BL_TRISTATE(type)) {
-+		if (brightness > priv->kbd_bl.led.max_brightness)
-+			return -EINVAL;
-+
-+		value = FIELD_PREP(KBD_BL_SET_BRIGHTNESS_MASK, brightness) |
-+			FIELD_PREP(KBD_BL_SET_TYPE_MASK, type) |
-+			KBD_BL_COMMAND_SET;
-+		err = exec_kblc(priv->adev->handle, value);
-+	} else {
-+		err = exec_sals(priv->adev->handle, brightness ? SALS_KBD_BL_ON : SALS_KBD_BL_OFF);
-+	}
- 
- 	if (err)
- 		return err;
-@@ -1344,8 +1421,13 @@ static int ideapad_kbd_bl_init(struct ideapad_private *priv)
- 
- 	priv->kbd_bl.last_brightness = brightness;
- 
-+	if (CHECK_KBD_BL_TRISTATE(priv->kbd_bl.type)) {
-+		priv->kbd_bl.led.max_brightness = 2;
-+	} else {
-+		priv->kbd_bl.led.max_brightness = 1;
-+	}
-+
- 	priv->kbd_bl.led.name                    = "platform::" LED_FUNCTION_KBD_BACKLIGHT;
--	priv->kbd_bl.led.max_brightness          = 1;
- 	priv->kbd_bl.led.brightness_get          = ideapad_kbd_bl_led_cdev_brightness_get;
- 	priv->kbd_bl.led.brightness_set_blocking = ideapad_kbd_bl_led_cdev_brightness_set;
- 	priv->kbd_bl.led.flags                   = LED_BRIGHT_HW_CHANGED;
-@@ -1456,6 +1538,7 @@ static void ideapad_acpi_notify(acpi_handle handle, u32 event, void *data)
- 		case 2:
- 			ideapad_backlight_notify_power(priv);
- 			break;
-+		case 12:
- 		case 1:
- 			/*
- 			 * Some IdeaPads report event 1 every ~20
-@@ -1557,13 +1640,31 @@ static void ideapad_check_features(struct ideapad_private *priv)
- 			if (test_bit(HALS_FNLOCK_SUPPORT_BIT, &val))
- 				priv->features.fn_lock = true;
- 
--			if (test_bit(HALS_KBD_BL_SUPPORT_BIT, &val))
-+			if (test_bit(HALS_KBD_BL_SUPPORT_BIT, &val)) {
- 				priv->features.kbd_bl = true;
-+				priv->kbd_bl.type = KBD_BL_STANDARD;
-+			}
- 
- 			if (test_bit(HALS_USB_CHARGING_SUPPORT_BIT, &val))
- 				priv->features.usb_charging = true;
- 		}
- 	}
-+
-+	if (acpi_has_method(handle, "KBLC")) {
-+		if (!eval_kblc(priv->adev->handle, KBD_BL_QUERY_TYPE, &val)) {
-+			if (val == KBD_BL_TRISTATE_TYPE) {
-+				priv->features.kbd_bl = true;
-+				priv->kbd_bl.type = KBD_BL_TRISTATE;
-+			} else if (val == KBD_BL_TRISTATE_AUTO_TYPE) {
-+				priv->features.kbd_bl = true;
-+				priv->kbd_bl.type = KBD_BL_TRISTATE_AUTO;
-+			} else {
-+				dev_warn(&priv->platform_device->dev,
-+					 "Unknown keyboard type: %lu",
-+					 val);
-+			}
-+		}
-+	}
- }
- 
- #if IS_ENABLED(CONFIG_ACPI_WMI)
 -- 
-2.40.1.521.gf1e218fcd8
-
+Without deviation from the norm, progress is not possible.
