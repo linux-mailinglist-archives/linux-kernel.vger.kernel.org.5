@@ -2,66 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A227789400
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 08:15:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C51A5789402
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 08:22:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231841AbjHZGOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 02:14:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57728 "EHLO
+        id S231852AbjHZGWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 02:22:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231799AbjHZGNx (ORCPT
+        with ESMTP id S230104AbjHZGWK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 02:13:53 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B4C42682;
-        Fri, 25 Aug 2023 23:13:51 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id 5614622812f47-3a7d4030621so1013592b6e.3;
-        Fri, 25 Aug 2023 23:13:51 -0700 (PDT)
+        Sat, 26 Aug 2023 02:22:10 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86EF92682
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 23:22:07 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-58d428d4956so23806527b3.0
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 23:22:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693030430; x=1693635230;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=sgU8Ln5Lgx/RyqorzJt1zp0SL+mSfYjwzgmS5gdi1bI=;
-        b=VJ/IhqnxcNSiLJr3e+7lBNC9NPpr8c0TSDH3lo/IBe9gFpwnzNXUnHZi1pbgLlK3vx
-         M9x6L7YjK0D1rfF+DHhl8YNETJ4p9WLByCR0amXTAX2ONhPPDpJc+t6Axw1wcvS+2Ea1
-         0bVKtjwmL5E4WRZIJxu8vBlJu5TB2Xz+KZGOtf/JuL8gAERxdj8/x2vZUu+0UuZPy3O8
-         r7x6PzR9etlZyEl2l5xZGxT/x6EI6LKQPfTsLIyZWxAuXVpxTs+rDYSoVpNF6WjSrNJa
-         tvKLhLeY3cJHic86KYz6xX3GEg+715nBQluBP6kYZb9u8bpm9k8xHwcZlt6Hlnvz9ugv
-         UpOA==
+        d=google.com; s=20221208; t=1693030927; x=1693635727;
+        h=cc:to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=RFQVboYu+kktG1+tXeHnttxhbtZCnqVNF8qlf7e9WxE=;
+        b=i6MGCuBUzrcwhd++Q/E3/0Gy73rr2OPrxc4zjgZyauZ7FZo3pLogzbHtM7/ZZdpIOA
+         xi4tDGaHEkAxAQ68NQrhKoXGYyG7fc6IXVYaami/WZE7glh1LU2iAFLT92THq7eeFgVf
+         R4p61ZDXqyDvxBWwQTSOgU21jbEImma8ZNXtppxUvHx6kyoQPwA8xgO3qp01kcLqTBH+
+         oDSWTbw+S5vDBHE7KqiR4PYRjO9dKOJRv8Ey1gryhJhE4mlUp71+oH3WtKeUIJTxGV0y
+         N62PjpMw0AplC/jKqLvpkGb3RN0dYPjQYu0pOVsjexJXMB0oo0rxMavqUMCkssAs0uPN
+         WUTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693030430; x=1693635230;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=sgU8Ln5Lgx/RyqorzJt1zp0SL+mSfYjwzgmS5gdi1bI=;
-        b=iOu02tom1Zv5WppsBrRIKzteYPgSrIddoZF8oP1t8D/L6CappacMcsBDT4exiICU/d
-         5un1xNuf5mfqvsT0GtimKG8TVHGa7veQE0eLRbwPhHK3Ym2+vsN5SQIhfFWpYH2p2Fe8
-         3myhetLnghTKPVDL4hmY9/1DFM4GFLXYPmgwIi+N5KXjLBcNSYs+wInvUxQD5ymleSb4
-         s2AHfEnEgobWJLAgiPj9ElVU43v383hXSNBWtsPomzvXkdTLy53KWyN965l1RCrjJo+T
-         okFhgOdniTUDG5g3B5a+2bA45fkDbZ3JE1g/6L/IL37mnlhXeOIVJwbZSqWfmXDTI93I
-         3nvQ==
-X-Gm-Message-State: AOJu0Yzev71EgCh1xPyPnTo+DOQtqm+o7XIJYN1D1cB6JGieA+MvoW/q
-        vgjG0K+uw6dvcQu1p7heKcPaUN4hO/IOxipdndk=
-X-Google-Smtp-Source: AGHT+IGnBRlCy/GHk0hYXyJ3W+bjgnmngqX6N4H7rzMmNwfLoYz7Zw5qoS9HgRRNXRSSlRw+/0U4uy2u46DpP9m1DaE=
-X-Received: by 2002:a05:6808:2d7:b0:3a8:6c27:c1f6 with SMTP id
- a23-20020a05680802d700b003a86c27c1f6mr4884677oid.19.1693030430437; Fri, 25
- Aug 2023 23:13:50 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230824084206.22844-1-qiang.zhang1211@gmail.com>
- <162989fe-5ed8-4d1f-8c99-144e2de532f5@paulmck-laptop> <CALm+0cVgg9u1-E+XrnbEyD75a_H3ifN9oB9j6xx0=cm8kuXE-Q@mail.gmail.com>
- <20e7f112-ff70-4ba7-b39f-a0fea499d8d7@paulmck-laptop>
-In-Reply-To: <20e7f112-ff70-4ba7-b39f-a0fea499d8d7@paulmck-laptop>
-From:   Z qiang <qiang.zhang1211@gmail.com>
-Date:   Sat, 26 Aug 2023 14:13:39 +0800
-Message-ID: <CALm+0cV8GP_gbbiCwmKyMxE=Qm1pLVWXWkmHUjdaDS8L0hZgFw@mail.gmail.com>
-Subject: Re: [PATCH] rcutorture: Traverse possible cpu to set maxcpu in rcu_nocb_toggle()
-To:     paulmck@kernel.org
-Cc:     joel@joelfernandes.org, linux-kernel@vger.kernel.org,
-        rcu@vger.kernel.org
+        d=1e100.net; s=20221208; t=1693030927; x=1693635727;
+        h=cc:to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=RFQVboYu+kktG1+tXeHnttxhbtZCnqVNF8qlf7e9WxE=;
+        b=kk1zHSMJpTKP5GvL9YZU/lcQgye+ASqgBAskeo6SuktvBLNBljZ6IlsRuAWsg2gYsy
+         uHwA1ct8VBM9YAo9cU/YMGF7RpL3HS2ZpJu2fXeuWSbl3IlzU06Zy+MACgzzyeRukYDX
+         b+i8Ywx7fNlnPup+bH9epdZJcgsyNVKgzn3JpJ+0vlYjmauQ8Jwjd3tinypESzrt8aFY
+         WvWuozNUUrzzMiRRzlx1vMljNZbPXzpNCUuVFHlKvi1gt0wjuO2luk6ik4AkgksFGwSs
+         ePUkgCrSpZpoikWWWpU32VahtMAKTPpSW73bOFPxpdxk9SC/FFIjp9RPOQa0MPXroc2o
+         23/A==
+X-Gm-Message-State: AOJu0Yz3nRKV5XttI2Vfo+WGS0tf/VQDXBwcnrA9GPGmqDW5noDMFVsP
+        y1CGsdgaTqnCzKcFnaEF9z59+69dZhkJ
+X-Google-Smtp-Source: AGHT+IFIuIPm5S9+xu52QjoN0JXjgPeVqacz7WzK9+rPznPBejkHS9yA6ingSsBJFeLX9cc6VJUAd3ALshqh
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:7f44:ad7d:19a6:8de2])
+ (user=irogers job=sendgmr) by 2002:a25:bc8a:0:b0:d78:2f4c:7df with SMTP id
+ e10-20020a25bc8a000000b00d782f4c07dfmr295506ybk.12.1693030926800; Fri, 25 Aug
+ 2023 23:22:06 -0700 (PDT)
+Date:   Fri, 25 Aug 2023 23:22:03 -0700
+Message-Id: <20230826062203.1058041-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.rc2.253.gd59a3bf2b4-goog
+Subject: [PATCH v1] perf jevents: Use "default_core" for events with no Unit
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        John Garry <john.g.garry@oracle.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Jing Zhang <renyu.zj@linux.alibaba.com>,
+        James Clark <james.clark@arm.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Thomas Richter <tmricht@linux.ibm.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,79 +79,141 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->
-> On Fri, Aug 25, 2023 at 10:28:37AM +0800, Z qiang wrote:
-> > >
-> > > On Thu, Aug 24, 2023 at 04:42:06PM +0800, Zqiang wrote:
-> > > > Currently, the maxcpu is set by traversing online CPUs, however, if
-> > > > the rcutorture.onoff_holdoff is set zero and onoff_interval is set
-> > > > non-zero, and the some CPUs with larger cpuid has been offline before
-> > > > setting maxcpu, for these CPUs, even if they are online again, also
-> > > > cannot be offload or deoffload.
-> > > >
-> > > > This commit therefore use for_each_possible_cpu() instead of
-> > > > for_each_online_cpu() in rcu_nocb_toggle().
-> > > >
-> > > > Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
-> > > > ---
-> > > >  kernel/rcu/rcutorture.c | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-> > > > index a58372bdf0c1..b75d0fe558ce 100644
-> > > > --- a/kernel/rcu/rcutorture.c
-> > > > +++ b/kernel/rcu/rcutorture.c
-> > > > @@ -2131,7 +2131,7 @@ static int rcu_nocb_toggle(void *arg)
-> > > >       VERBOSE_TOROUT_STRING("rcu_nocb_toggle task started");
-> > > >       while (!rcu_inkernel_boot_has_ended())
-> > > >               schedule_timeout_interruptible(HZ / 10);
-> > > > -     for_each_online_cpu(cpu)
-> > > > +     for_each_possible_cpu(cpu)
-> > >
-> > > Last I checked, bad things could happen if the code attempted to
-> > > nocb_toggle a CPU that had not yet come online.  Has that changed?
-> >
-> > For example, there are 8 online CPUs in the system, before we traversing online
-> > CPUs and set maxcpu,  CPU7 has been offline, this causes us to miss nocb_toggle
-> > for CPU7(maxcpu=6)
-> >
-> > Even though we still use for_each_online_cpu(), the things described
-> > above also happen.  before we toggle the CPU, this CPU has been offline.
->
-> Suppose we have a system whose possible CPUs are 0, 1, 2, and 3.  However,
-> only 0 and 1 are present in this system, and until some manual action is
-> taken, only 0 and 1 will ever be online.  (Yes, this really can happen!)
-> In that state, won't toggling CPU 2 and 3 result in failures?
->
+The json Unit field encodes the name of the PMU to match the events
+to. When no name is given it has meant the "cpu" core PMU except for
+tests. On ARM, Intel hybrid and s390 the core PMU is named differently
+which means that using "cpu" for this case causes the events not to
+get matched to the PMU. Introduce a new "default_core" string for this
+case and in the pmu__name_match force all core PMUs to match this
+name.
 
-Agree.
-As long as we enabled rcutorture.onoff_interval,  regardless of whether we use
-online CPUs or possible CPUs to set maxcpu,  It is all possible to
-toggling the CPUs failure
-and print "NOCB: Cannot CB-offload offline CPU" log. but the failures
-due to CPU offline are acceptable.
+Reported-by: Thomas Richter <tmricht@linux.ibm.com>
+Reported-by: Arnaldo Carvalho de Melo <acme@kernel.org>
+Fixes: 2e255b4f9f41 ("perf jevents: Group events by PMU")
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/pmu-events/jevents.py |  2 +-
+ tools/perf/tests/pmu-events.c    | 19 ++++++++++---------
+ tools/perf/util/pmu.c            |  7 ++++++-
+ 3 files changed, 17 insertions(+), 11 deletions(-)
 
-but at least the toggling operation on CPU7 will not be missed. when
-CPU7 comes online again.
+diff --git a/tools/perf/pmu-events/jevents.py b/tools/perf/pmu-events/jevents.py
+index 712f80d7d071..a7e88332276d 100755
+--- a/tools/perf/pmu-events/jevents.py
++++ b/tools/perf/pmu-events/jevents.py
+@@ -266,7 +266,7 @@ class JsonEvent:
+     def unit_to_pmu(unit: str) -> Optional[str]:
+       """Convert a JSON Unit to Linux PMU name."""
+       if not unit:
+-        return 'cpu'
++        return 'default_core'
+       # Comment brought over from jevents.c:
+       # it's not realistic to keep adding these, we need something more scalable ...
+       table = {
+diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
+index ce4da9b1d115..f5321fbdee79 100644
+--- a/tools/perf/tests/pmu-events.c
++++ b/tools/perf/tests/pmu-events.c
+@@ -44,7 +44,7 @@ struct perf_pmu_test_pmu {
+ 
+ static const struct perf_pmu_test_event bp_l1_btb_correct = {
+ 	.event = {
+-		.pmu = "cpu",
++		.pmu = "default_core",
+ 		.name = "bp_l1_btb_correct",
+ 		.event = "event=0x8a",
+ 		.desc = "L1 BTB Correction",
+@@ -56,7 +56,7 @@ static const struct perf_pmu_test_event bp_l1_btb_correct = {
+ 
+ static const struct perf_pmu_test_event bp_l2_btb_correct = {
+ 	.event = {
+-		.pmu = "cpu",
++		.pmu = "default_core",
+ 		.name = "bp_l2_btb_correct",
+ 		.event = "event=0x8b",
+ 		.desc = "L2 BTB Correction",
+@@ -68,7 +68,7 @@ static const struct perf_pmu_test_event bp_l2_btb_correct = {
+ 
+ static const struct perf_pmu_test_event segment_reg_loads_any = {
+ 	.event = {
+-		.pmu = "cpu",
++		.pmu = "default_core",
+ 		.name = "segment_reg_loads.any",
+ 		.event = "event=0x6,period=200000,umask=0x80",
+ 		.desc = "Number of segment register loads",
+@@ -80,7 +80,7 @@ static const struct perf_pmu_test_event segment_reg_loads_any = {
+ 
+ static const struct perf_pmu_test_event dispatch_blocked_any = {
+ 	.event = {
+-		.pmu = "cpu",
++		.pmu = "default_core",
+ 		.name = "dispatch_blocked.any",
+ 		.event = "event=0x9,period=200000,umask=0x20",
+ 		.desc = "Memory cluster signals to block micro-op dispatch for any reason",
+@@ -92,7 +92,7 @@ static const struct perf_pmu_test_event dispatch_blocked_any = {
+ 
+ static const struct perf_pmu_test_event eist_trans = {
+ 	.event = {
+-		.pmu = "cpu",
++		.pmu = "default_core",
+ 		.name = "eist_trans",
+ 		.event = "event=0x3a,period=200000,umask=0x0",
+ 		.desc = "Number of Enhanced Intel SpeedStep(R) Technology (EIST) transitions",
+@@ -104,7 +104,7 @@ static const struct perf_pmu_test_event eist_trans = {
+ 
+ static const struct perf_pmu_test_event l3_cache_rd = {
+ 	.event = {
+-		.pmu = "cpu",
++		.pmu = "default_core",
+ 		.name = "l3_cache_rd",
+ 		.event = "event=0x40",
+ 		.desc = "L3 cache access, read",
+@@ -391,8 +391,8 @@ static int compare_alias_to_test_event(struct pmu_event_info *alias,
+ 		return -1;
+ 	}
+ 
+-
+-	if (!is_same(alias->pmu_name, test_event->event.pmu)) {
++	if (!is_same(alias->pmu_name, test_event->event.pmu) &&
++	    !is_same(alias->pmu_name, "default_core")) {
+ 		pr_debug("testing aliases PMU %s: mismatched pmu_name, %s vs %s\n",
+ 			  pmu_name, alias->pmu_name, test_event->event.pmu);
+ 		return -1;
+@@ -409,7 +409,7 @@ static int test__pmu_event_table_core_callback(const struct pmu_event *pe,
+ 	struct perf_pmu_test_event const **test_event_table;
+ 	bool found = false;
+ 
+-	if (strcmp(pe->pmu, "cpu"))
++	if (strcmp(pe->pmu, "default_core"))
+ 		test_event_table = &uncore_events[0];
+ 	else
+ 		test_event_table = &core_events[0];
+@@ -543,6 +543,7 @@ static int __test_core_pmu_event_aliases(const char *pmu_name, int *count)
+ 	INIT_LIST_HEAD(&pmu->caps);
+ 	INIT_LIST_HEAD(&pmu->list);
+ 	pmu->name = strdup(pmu_name);
++	pmu->is_core = true;
+ 
+ 	pmu->events_table = table;
+ 	pmu_add_cpu_aliases_table(pmu, table);
+diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+index 502fd58c3ea7..cde33e01959a 100644
+--- a/tools/perf/util/pmu.c
++++ b/tools/perf/util/pmu.c
+@@ -1747,7 +1747,12 @@ int perf_pmu__for_each_event(struct perf_pmu *pmu, bool skip_duplicate_pmus,
+ bool pmu__name_match(const struct perf_pmu *pmu, const char *pmu_name)
+ {
+ 	return !strcmp(pmu->name, pmu_name) ||
+-		(pmu->is_uncore && pmu_uncore_alias_match(pmu_name, pmu->name));
++		(pmu->is_uncore && pmu_uncore_alias_match(pmu_name, pmu->name)) ||
++		/*
++		 * jevents and tests use default_core as a marker for any core
++		 * PMU as the PMU name varies across architectures.
++		 */
++	        (pmu->is_core && !strcmp(pmu_name, "default_core"));
+ }
+ 
+ bool perf_pmu__is_software(const struct perf_pmu *pmu)
+-- 
+2.42.0.rc2.253.gd59a3bf2b4-goog
 
-Would it be better to use for_each_present_cpu() ?
-
-Thanks
-Zqiang
-
->
->                                                         Thanx, Paul
->
-> > Thanks
-> > Zqiang
-> >
-> >
-> > >
-> > >                                                         Thanx, Paul
-> > >
-> > > >               maxcpu = cpu;
-> > > >       WARN_ON(maxcpu < 0);
-> > > >       if (toggle_interval > ULONG_MAX)
-> > > > --
-> > > > 2.17.1
-> > > >
